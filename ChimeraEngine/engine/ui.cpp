@@ -1953,9 +1953,20 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             float px = scrub_rect_[0] + static_cast<float>(lt / clk_total_) * scrub_rect_[2];
             rect(px - 1, bar_y - 2, 3, bar_h + 4, 1.f, 1.f, 1.f, 1.f);
             // per-loop marker labels: current joint's name over its window
+            // 2026-09-04 (the eye's defect backlog): in EDIT mode this footer
+            // shows the POSED joint ("EDIT ..."), not the sweep's — the same
+            // owner/selection law the HUD row now follows. Sweep mode keeps
+            // the "joint k/N" counter form.
             char jb[96];
-            snprintf(jb, sizeof(jb), "joint %u/%u: %s  (%.1f s windows)", clk_cur_ + 1, clk_n_,
-                     clk_name_.c_str(), clk_period_);
+            if (joints_owner_ui_ == 1 && joints_sel_ui_ >= 0
+                && joints_sel_ui_ < static_cast<int>(joints_.size())) {
+                const StudioJoint& s = joints_[static_cast<size_t>(joints_sel_ui_)];
+                snprintf(jb, sizeof(jb), "EDIT %s  theta %+.2f deg  ( posing - PLAY returns the pose )",
+                         s.name.c_str(), s.theta);
+            } else {
+                snprintf(jb, sizeof(jb), "joint %u/%u: %s  (%.1f s windows)", clk_cur_ + 1, clk_n_,
+                         clk_name_.c_str(), clk_period_);
+            }
             text(x, bar_y + bar_h + 6, jb, 0.62f, 0.66f, 0.74f, 1.f);
         }
 
@@ -1969,7 +1980,11 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         // no-clock hint text. A dope sheet is rows ALONG a time axis; without
         // a clock there is no axis, so the sheet waits for one.
         if (clk_n_ > 0 || clk_total_ > 0.0 || (hinge_live_ && clk_hinge_period_ > 0.f)) {
-            float dy = bar_y + bar_h + 22;   // start below the info text
+            // 2026-09-04 (the eye's defect backlog): rows started at +22 while
+            // the info line below the bar (drawn at +6, lh tall) reaches ~+24 —
+            // the sheet's first row background painted over the footer's
+            // descenders. The sheet waits for the footer it must not cover.
+            float dy = bar_y + bar_h + 6 + lh + 6;   // start BELOW the info line
             float dw = scrub_rect_[2];        // same width as the master bar
             float dh = 14.f;                  // row height
             const float label_w = 90.f;      // joint name column width
@@ -2130,6 +2145,22 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         rect(gizmo_[0] - 3, gizmo_[1] - 3, 6, 6, 1.0f, 0.85f, 0.20f, 1.f);   // J, the center
         rect_outline(gizmo_[0] - 5, gizmo_[1] - 5, 10, 10, 1.f, 0.2f, 0.2f, 0.2f, 1.f);
         text(gizmo_[0] + 8, gizmo_[1] - lh * 0.5f, gizmo_label_, 1.0f, 0.85f, 0.40f, 1.f);
+    }
+
+    // ── PER-JOINT TAGS (2026-09-04, the operator): every joint wears the chip.
+    // Same language as the selected gizmo's label — the operator approved that
+    // display verbatim ("the way you displayed them is perfect") — so the tags
+    // differ only in emphasis: the SELECTED joint is amber like its gizmo, a
+    // POSED joint (theta != 0) glows green, the rest are cool gray-blue. A dot
+    // pins the chip to the joint; the text reads to its right.
+    if (visible && !joint_tags_.empty()) {
+        for (const auto& t : joint_tags_) {
+            const float tr = t.selected ? 1.0f : (t.posed ? 0.35f : 0.55f);
+            const float tg = t.selected ? 0.85f : (t.posed ? 0.95f : 0.70f);
+            const float tb = t.selected ? 0.20f : (t.posed ? 0.55f : 0.82f);
+            rect(t.x - 2, t.y - 2, 4, 4, tr, tg, tb, 0.95f);          // the pin dot
+            text(t.x + 7, t.y - lh * 0.5f, t.label, tr, tg, tb, 0.95f);
+        }
     }
 
     // D3: resolve hover from the current frame's timeline geometry. This is
@@ -2332,9 +2363,22 @@ void StudioUI::build_chrome() {
     float hy = visible ? R[0][3] + 8.f : 10.f;
     hud_rows_.clear();
     if (hud_show_on()) {
-        const StudioJoint& j = joints_[clk_cur_ < joints_.size() ? clk_cur_ : 0];
-        snprintf(b, sizeof(b), "SHOW %s  theta %.2f deg  ROM [%.1f .. %.1f]",
-                 clk_name_.c_str(), clk_theta_, j.ext, j.flex);
+        // 2026-09-04 (the eye's defect backlog): the readout named the SHOW
+        // sweep's current joint even while the operator was posing a different
+        // one in EDIT mode — the number under the cursor's gizmo and the
+        // number on the HUD were different joints. In edit mode the row
+        // follows the selection: its name, its live theta from the same state
+        // buffer the pose kernel reads (st +7), its ROM from the pack.
+        if (joints_owner_ui_ == 1 && joints_sel_ui_ >= 0
+            && joints_sel_ui_ < static_cast<int>(joints_.size())) {
+            const StudioJoint& s = joints_[static_cast<size_t>(joints_sel_ui_)];
+            snprintf(b, sizeof(b), "EDIT %s  theta %+.2f deg  ROM [%.1f .. %.1f]",
+                     s.name.c_str(), s.theta, s.ext, s.flex);
+        } else {
+            const StudioJoint& j = joints_[clk_cur_ < joints_.size() ? clk_cur_ : 0];
+            snprintf(b, sizeof(b), "SHOW %s  theta %.2f deg  ROM [%.1f .. %.1f]",
+                     clk_name_.c_str(), clk_theta_, j.ext, j.flex);
+        }
         hud_rows_.emplace_back(b);
     }
     if (hud_gait_.on) {
@@ -2518,10 +2562,17 @@ void StudioUI::build_chrome() {
                         bool good = (word.find("SHIP") != std::string::npos || word.find("CLEAN") != std::string::npos ||
                                      word.find("PASS") != std::string::npos || word.find("GROUNDED") != std::string::npos ||
                                      word.find("IMPROVED") != std::string::npos);
-                        bool bad  = (word.find("HOLD") != std::string::npos || word.find("DEFECTS") != std::string::npos);
-                        eye_r = bad ? 0.95f : (good ? 0.30f : 0.45f);
-                        eye_g = bad ? 0.62f : (good ? 0.85f : 0.47f);
-                        eye_b = bad ? 0.25f : (good ? 0.40f : 0.52f);
+                        bool bad  = (word.find("HOLD") != std::string::npos);
+                        // 2026-09-04 (the eye's defect backlog): DEFECTS is the
+                        // AUDIT REPORT'S noun — a completed review that found
+                        // things, not a demand for attention like HOLD. It was
+                        // warning-red beside HOLD, so a healthy audit stream
+                        // read as an alarm. DEFECTS ships info-cyan (a report
+                        // to read); HOLD alone keeps the warning color.
+                        bool info = (word.find("DEFECTS") != std::string::npos);
+                        eye_r = bad ? 0.95f : (info ? 0.45f : (good ? 0.30f : 0.45f));
+                        eye_g = bad ? 0.62f : (info ? 0.82f : (good ? 0.85f : 0.47f));
+                        eye_b = bad ? 0.25f : (info ? 0.95f : (good ? 0.40f : 0.52f));
                     }
                 }
             }

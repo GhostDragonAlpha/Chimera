@@ -275,6 +275,17 @@ public:
         gizmo_vis_ = vis; gizmo_[0] = x0; gizmo_[1] = y0; gizmo_[2] = x1; gizmo_[3] = y1;
         gizmo_label_ = label;
     }
+    // ── PER-JOINT TAGS (2026-09-04, the operator): every joint wears the same
+    // chip the selected joint's gizmo draws — name + live theta, projected by
+    // the engine each frame (same project_world path as the rig overlay).
+    // The operator's decree: "deploy those tags on everything ... the labels
+    // are going to be important" — the viewport becomes self-describing: an
+    // instrument for checking which side is the creature's left (the tag sits
+    // ON the geometry it names), and the pattern for any future labeled
+    // mechanism (thrusters, hatches, whatever a spaceship needs).
+    struct JointTag { float x, y; std::string label; bool selected; bool posed; };
+    std::vector<JointTag> joint_tags_;
+    void set_joint_tags(std::vector<JointTag> t) { joint_tags_ = std::move(t); }
 
     // ── THE VIEWPORT REFERENCE FRAME (2026-08-31 — the eye's #1 defect) ───────
     // An empty 3D viewport reads as BROKEN, not as empty: "no grid, no origin

@@ -2138,6 +2138,93 @@ void Engine::compute_strain() {
     }
 }
 
+// THE STRAIN OVERLAY, JOINTS LANE (2026-09-04): the tint must answer the law
+// the creature actually moves under. The hinge mirror above poses with the
+// hinge band law; when a JNT2 pack is live the membrane moves under TWO-bone
+// LBS instead, so this twin computes area strain from the SAME analytic LBS
+// the joints kernel (joints.comp) executes — CPU, zero readbacks:
+//   1. pose every pack-touched vert exactly as the LBS branch does:
+//      v' = w * R(j) v + (1-w) * R(parent) v (Rodrigues about J/axis/theta);
+//   2. e = area'/area_rest - 1 on triangles with >=1 touched corner;
+//   3. area-weighted mean per vertex -> the SHARED strain SSBO (binding 6).
+// The kernel tints scalar -> color (same ramp as hinge.comp bit1).
+void Engine::compute_strain_joints() {
+    if (!strain_on_.load(std::memory_order_relaxed)) return;
+    if (!joints_loaded_ || !j_lbs_mode_ || j_state_map_ == nullptr || strain_map_ == nullptr
+        || mesh_tris_.empty() || tri_rest_area_.empty()
+        || j_assign_cpu_.empty() || j_w_cpu_.empty()) return;
+    const size_t nv = j_assign_cpu_.size();
+    if (hinge_rest_.size() < nv * 9) return;
+    const float* rest = hinge_rest_.data();
+    const float* st = static_cast<const float*>(j_state_map_);
+
+    // 1. pose the touched verts (compact domain: assign >= 0) — the EXACT LBS
+    // law of joints.comp's JNT2 branch, vertex for vertex:
+    //   o = wgt * R(J1, a1, th1) v  +  (1-wgt) * R(J2, a2, th2) v
+    // Two FULL rigid motions of the same rest point, convexly blended — the
+    // blend-of-transforms form, not angle scaling. (An earlier draft composed
+    // angle-scaled Rodrigues calls: the JNT1-shaped law, and at 125 deg it
+    // disagreed with the kernel by tens of degrees at the crease — a flooded,
+    // lying tint. The falsifier caught it; this is the correction.)
+    for (size_t i = 0; i < nv; ++i) {
+        const int j = j_assign_cpu_[i];
+        if (j < 0) continue;                        // untouched stays posed_ = rest
+        const uint32_t jo = static_cast<uint32_t>(j) * 8u;
+        const float w = j_w_cpu_[i];
+        const float th1 = st[jo + 7];               // FULL joint angle (no w scaling)
+        const int pj = (j < static_cast<int>(j_parents_.size())) ? j_parents_[j] : -1;
+        // (No early skip on zero angles: Rodrigues at th=0 is bit-exact rest,
+        // and skipping would leave the PREVIOUS frame's position in the scratch
+        // — phantom strain on every frame after a pose change. Always write.)
+        const float* src = rest + i * 9;
+        const float v0x = src[0], v0y = src[1], v0z = src[2];
+        auto rodr = [&](float th, uint32_t o, float& ox, float& oy, float& oz) {
+            const float Jx = st[o + 0], Jy = st[o + 1], Jz = st[o + 2];
+            const float ax = st[o + 3], ay = st[o + 4], az = st[o + 5];
+            const float c = cosf(th), s = sinf(th);
+            const float vx = v0x - Jx, vy = v0y - Jy, vz = v0z - Jz;
+            const float cx = ay * vz - az * vy, cy = az * vx - ax * vz, cz = ax * vy - ay * vx;
+            const float d = ax * vx + ay * vy + az * vz;
+            ox = vx * c + cx * s + ax * d * (1.f - c) + Jx;
+            oy = vy * c + cy * s + ay * d * (1.f - c) + Jy;
+            oz = vz * c + cz * s + az * d * (1.f - c) + Jz;
+        };
+        float r1x, r1y, r1z, r2x = v0x, r2y = v0y, r2z = v0z;
+        rodr(th1, jo, r1x, r1y, r1z);
+        // pj == -1 (root): the parent term is R(0) = identity — keep r2 = rest
+        // and SKIP the call (an unsigned (-1)*8 index was the OOB read that
+        // killed the first /strain-on frame; found by arithmetic, not debugger).
+        if (pj >= 0)
+            rodr(st[static_cast<uint32_t>(pj) * 8u + 7], static_cast<uint32_t>(pj) * 8u, r2x, r2y, r2z);
+        strain_posed_[strain_rank_[i] * 3 + 0] = w * r1x + (1.f - w) * r2x;
+        strain_posed_[strain_rank_[i] * 3 + 1] = w * r1y + (1.f - w) * r2y;
+        strain_posed_[strain_rank_[i] * 3 + 2] = w * r1z + (1.f - w) * r2z;
+    }
+
+    // 2+3. per-triangle area strain, scattered to touched verts by area weight
+    std::fill(strain_cnt_.begin(), strain_cnt_.end(), 0u);
+    const size_t ntri = mesh_tris_.size() / 3;
+    for (size_t tci = 0; tci < ntri; ++tci) {
+        const uint32_t ia = mesh_tris_[tci * 3], ib = mesh_tris_[tci * 3 + 1], ic = mesh_tris_[tci * 3 + 2];
+        const int32_t ra = (ia < nv) ? strain_rank_[ia] : -1;
+        const int32_t rb = (ib < nv) ? strain_rank_[ib] : -1;
+        const int32_t rc = (ic < nv) ? strain_rank_[ic] : -1;
+        if (ra < 0 && rb < 0 && rc < 0) continue;
+        const float e = tri_area_posed(mesh_tris_.data() + tci * 3, ra, rb, rc,
+                                       strain_posed_, rest)
+                        / tri_rest_area_[tci] - 1.f;
+        if (ra >= 0) { strain_acc_[ra] += e; ++strain_cnt_[ra]; }
+        if (rb >= 0) { strain_acc_[rb] += e; ++strain_cnt_[rb]; }
+        if (rc >= 0) { strain_acc_[rc] += e; ++strain_cnt_[rc]; }
+    }
+    // 4. area-weighted mean per touched vertex -> SSBO (0 stays untouched)
+    for (size_t r = 0; r < strain_vt_.size(); ++r) {
+        const float s = strain_cnt_[r] ? strain_acc_[r] / static_cast<float>(strain_cnt_[r]) : 0.f;
+        strain_acc_[r] = 0.f;
+        strain_map_[strain_vt_[r]] = s;
+    }
+}
+
 // ── THE GAIT CPG ON THE CA FIELD (H7 stage 2) ────────────────────────────────
 // Port of .tmp/gait_ref.py (the golden CPU reference). Schedule: per engine
 // tick, one workgroup of 8 invocations runs one fixed-order RK4 step
@@ -3474,17 +3561,17 @@ void Engine::hinge_rebind() {
 // before the joints dispatch — same discipline as water_vis_rebind (W4).
 void Engine::joints_rebind() {
     if (joints_desc_set_ == VK_NULL_HANDLE || !joints_loaded_ || !has_mesh_) return;
-    VkBuffer bufs[6] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_, j_parent_buf_ };
-    VkWriteDescriptorSet w[6]{};
-    VkDescriptorBufferInfo infos[6]{};
-    for (uint32_t k = 0; k < 6; ++k) {
+    VkBuffer bufs[7] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_, j_parent_buf_, strain_buf_ };
+    VkWriteDescriptorSet w[7]{};
+    VkDescriptorBufferInfo infos[7]{};
+    for (uint32_t k = 0; k < 7; ++k) {
         infos[k].buffer = bufs[k]; infos[k].range = VK_WHOLE_SIZE;
         w[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         w[k].dstSet = joints_desc_set_; w[k].dstBinding = k; w[k].descriptorCount = 1;
         w[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
         w[k].pBufferInfo = &infos[k];
     }
-    vkUpdateDescriptorSets(device_, 6, w, 0, nullptr);
+    vkUpdateDescriptorSets(device_, 7, w, 0, nullptr);
     joints_desc_dirty_ = false;
 }
 
@@ -3863,6 +3950,12 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
     }
     j_lbs_mode_ = is_jnt2;
     if (j_parents_.empty()) j_parents_.assign(nj, -1);   // JNT1: all roots — the legacy law never reads this
+    // THE STRAIN OVERLAY, JOINTS LANE (2026-09-04): keep the pack's CPU copies
+    // (the pack arrays are transient pointers into the blob). The GPU side
+    // (shared strain SSBO + compact domain) is built AFTER vkDeviceWaitIdle
+    // below — validate first, idle, then touch GPU state (set_hinge's order).
+    j_assign_cpu_.assign(assign, assign + nv);
+    j_w_cpu_.assign(w, w + nv);
     // Count law against the MESH, not the hinge: tri_vfloats_ is the live
     // vertex payload the kernel's Out buffer (tri_vbuf_) actually holds.
     // (hinge_wL_.size() was set_hinge-only state — always empty on a boot
@@ -3882,6 +3975,44 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
     if (hinge_rest_buf_ == VK_NULL_HANDLE)
         upload_buffer(hinge_rest_.data(), hinge_rest_.size() * sizeof(float),
                       VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, hinge_rest_buf_, hinge_rest_mem_);
+    // THE STRAIN OVERLAY, JOINTS LANE (2026-09-04): build the compact strain
+    // domain — every vert the pack can move (assign >= 0) is 'touched' in the
+    // LBS law; rank scatters the compact index exactly as set_hinge's lane
+    // does. The SSBO is SHARED with the hinge lane: the lanes are mutually
+    // exclusive per mesh load (a joints_bin replay zeroes it), so one buffer
+    // serves both mirrors. Device is idle here — safe to (re)create.
+    strain_vt_.clear(); strain_vt_.reserve(nv);
+    for (size_t i = 0; i < nv; ++i)
+        if (assign[i] >= 0) strain_vt_.push_back(static_cast<uint32_t>(i));
+    strain_rank_.assign(nv, -1);
+    for (size_t r = 0; r < strain_vt_.size(); ++r) strain_rank_[strain_vt_[r]] = static_cast<int32_t>(r);
+    strain_acc_.assign(strain_vt_.size(), 0.f);
+    strain_posed_.assign(strain_vt_.size() * 3, 0.f);
+    strain_cnt_.assign(strain_vt_.size(), 0u);
+    {
+        const VkDeviceSize need = static_cast<VkDeviceSize>(nv) * sizeof(float);
+        if (strain_buf_ == VK_NULL_HANDLE || strain_cap_ < nv) {
+            if (strain_map_) { vkUnmapMemory(device_, strain_mem_); strain_map_ = nullptr; }
+            if (strain_buf_ != VK_NULL_HANDLE) { vkDestroyBuffer(device_, strain_buf_, nullptr); strain_buf_ = VK_NULL_HANDLE; }
+            if (strain_mem_ != VK_NULL_HANDLE) { vkFreeMemory(device_, strain_mem_, nullptr); strain_mem_ = VK_NULL_HANDLE; }
+            VkBufferCreateInfo sbci{};
+            sbci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+            sbci.size  = need;
+            sbci.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+            vkCreateBuffer(device_, &sbci, nullptr, &strain_buf_);
+            VkMemoryRequirements smr; vkGetBufferMemoryRequirements(device_, strain_buf_, &smr);
+            VkMemoryAllocateInfo sai{};
+            sai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+            sai.allocationSize = smr.size;
+            sai.memoryTypeIndex = find_mem_type(smr.memoryTypeBits,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+            vkAllocateMemory(device_, &sai, nullptr, &strain_mem_);
+            vkBindBufferMemory(device_, strain_buf_, strain_mem_, 0);
+            vkMapMemory(device_, strain_mem_, 0, need, 0, reinterpret_cast<void**>(&strain_map_));
+            strain_cap_ = nv;
+        }
+        if (strain_map_) std::memset(strain_map_, 0, need);   // 0 = rest color until the first frame
+    }
     j_n_verts_ = nv; j_n_joints_ = nj;
     j_rom_.assign(rom, rom + nj * 2);
 
@@ -3939,14 +4070,14 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
         }
     }
 
-    // pipeline (6 SSBOs + 16 B push constants: n, nj, paint, flags — C1/JNT2)
-    if (!w_make_pipeline(device_, "shaders/joints.spv", 6, 16,
+    // pipeline (7 SSBOs + 16 B push constants: n, nj, paint, flags — C1/JNT2 + strain)
+    if (!w_make_pipeline(device_, "shaders/joints.spv", 7, 16,
                          joints_mod_, joints_dsl_, joints_layout_, joints_pipe_)) {
         fprintf(stderr, "joints: pipeline failed\n"); return false;
     }
     {
         VkDescriptorPoolSize ps{};
-        ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; ps.descriptorCount = 6;
+        ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; ps.descriptorCount = 7;
         if (joints_desc_pool_) vkDestroyDescriptorPool(device_, joints_desc_pool_, nullptr);
         VkDescriptorPoolCreateInfo dpci{};
         dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -3957,10 +4088,10 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
         dsai.descriptorPool = joints_desc_pool_; dsai.descriptorSetCount = 1;
         dsai.pSetLayouts = &joints_dsl_;
         vkAllocateDescriptorSets(device_, &dsai, &joints_desc_set_);
-        VkBuffer bufs[6] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_, j_parent_buf_ };
-        VkWriteDescriptorSet wr[6]{};
-        VkDescriptorBufferInfo infos[6]{};
-        for (uint32_t k = 0; k < 6; ++k) {
+        VkBuffer bufs[7] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_, j_parent_buf_, strain_buf_ };
+        VkWriteDescriptorSet wr[7]{};
+        VkDescriptorBufferInfo infos[7]{};
+        for (uint32_t k = 0; k < 7; ++k) {
             infos[k].buffer = bufs[k]; infos[k].range = VK_WHOLE_SIZE;
             wr[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
             wr[k].dstSet = joints_desc_set_; wr[k].dstBinding = k;
@@ -3968,7 +4099,7 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
             wr[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
             wr[k].pBufferInfo = &infos[k];
         }
-        vkUpdateDescriptorSets(device_, 6, wr, 0, nullptr);
+        vkUpdateDescriptorSets(device_, 7, wr, 0, nullptr);
     }
     joints_t0_ = std::chrono::steady_clock::now();
     joints_loaded_ = true;
@@ -4731,6 +4862,36 @@ static void record_glass_copy(VkCommandBuffer cb, VkImage swap_img,
 // D8: THE AUTHORED FK TOPOLOGY — these links are the native rig's semantic
 // parent map. The JNT1 upload intentionally carries centers/axes/ROM but no
 // parent array, so the overlay uses this map and refuses spatial inference.
+// ── PER-JOINT TAGS (2026-09-04, the operator): every joint wears the label ──
+// Same projection path as the rig overlay, same chip language as the gizmo:
+// each joint is projected through the frame's VP and the UI draws its tag.
+// The label is the TRUTH SURFACE: "which side is the creature's left" is read
+// off the creature itself, and any future labeled mechanism (a spaceship's
+// thrusters as vectors, the operator's example) reuses exactly this path.
+// Off-frame joints are skipped (project_world says so); no depth test — a tag
+// is an instrument, not matter.
+void Engine::push_joint_tags() {
+    std::vector<StudioUI::JointTag> tags;
+    if (!joints_loaded_ || !j_state_map_ || !last_vp_valid_) {
+        ui_.set_joint_tags(std::move(tags));
+        return;
+    }
+    const int selected = selected_joint_.load(std::memory_order_relaxed);
+    const float* st = static_cast<const float*>(j_state_map_);
+    tags.reserve(j_n_joints_);
+    for (uint32_t k = 0; k < j_n_joints_; ++k) {
+        float J[3] = { st[k * 8 + 0], st[k * 8 + 1], st[k * 8 + 2] };
+        float sx, sy;
+        if (!project_world(J, sx, sy)) continue;      // behind/off-frame: no tag
+        char lb[64];
+        snprintf(lb, sizeof(lb), "%s %+.0f", j_names_[k].c_str(), st[k * 8 + 7] * 57.29577951308232f);
+        tags.push_back({ sx, sy, std::string(lb),
+                         static_cast<int>(k) == selected,
+                         fabsf(st[k * 8 + 7]) > 1e-4f });
+    }
+    ui_.set_joint_tags(std::move(tags));
+}
+
 void Engine::push_rig_overlay() {
     std::vector<StudioRigSegment> segments;
     if (!rig_overlay_on() || !joints_loaded_ || !j_state_map_ || !last_vp_valid_) {
@@ -5714,7 +5875,11 @@ bool Engine::frame() {
     // THE STRAIN OVERLAY: the CPU computes true area strain from the SAME
     // analytic FK law (works for both the CPU fallback and the GPU kernel),
     // then the kernel tints when the overlay flag is set. One call, both paths.
+    // 2026-09-04: the JOINTS lane gets its own twin — when a JNT2 pack is live
+    // the creature moves under LBS, not the hinge band law, so the mirror must
+    // pose with LBS or the tint lies about the surface.
     compute_strain();
+    compute_strain_joints();
 
     // CPU hinge fallback (only when the GPU kernel didn't build); the GPU path
     // is recorded into the command buffer below.
@@ -5725,6 +5890,7 @@ bool Engine::frame() {
     update_camera_matrices(proj, view);
     push_grid_overlay();
     push_rig_overlay();          // the viewport's frame of reference (see its note)
+    push_joint_tags();           // the operator's decree: every joint wears its label (see its note)
 
     // Depth sort is done on the GPU (radix sort, recorded in the command buffer below). Stash the
     // view matrix's z-row, which the depth-key pass needs as push constants.
@@ -5942,10 +6108,12 @@ bool Engine::frame() {
         }
 
         // JNT2: bit0 of the old pad field is now the POSE LAW flag — legacy
-        // (JNT1) or 2-bone LBS (JNT2). The push-constant block stays 16 B.
+        // (JNT1) or 2-bone LBS (JNT2). bit1: the strain tint (hinge.comp's
+        // contract, same ramp, same CPU mirror). The push-constant block stays 16 B.
         struct JointsPC { uint32_t n, nj; int32_t paint; uint32_t flags; }
             jpc{ j_n_verts_, j_n_joints_, selected_joint_.load(std::memory_order_relaxed),
-                 j_lbs_mode_ ? 0u : 1u };
+                 (j_lbs_mode_ ? 0u : 1u)
+                 | (strain_on_.load(std::memory_order_relaxed) ? 2u : 0u) };
         if (joints_desc_dirty_) joints_rebind();   // rest/Out recreated -> rebind BEFORE dispatch
         vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, joints_pipe_);
         vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_COMPUTE, joints_layout_,

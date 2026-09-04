@@ -50,6 +50,16 @@ assert N == 18459, f'canonical frame expects 18459 verts, blob says {N}'
 print(f'canonical frame: {N} verts (engine order, mesh_bin.blob)')
 
 # ── 2. MEASURED L-CHAIN LANDMARKS (on-mesh survivors of every audit) ─────────
+# THE SIDE LAW (2026-09-04, the operator caught it on the viewport tags):
+# anatomical LEFT := up x forward. The creature's forward is +z (the tail
+# extends to -z, the jaw to +z — measured from this very table), so
+# left = y-hat x z-hat = +x. The original anchors were stamped under the
+# DEFAULT CAMERA's left, which mirrored the creature's own — every _L/_R tag
+# was on the wrong limb. The anchors below are the SAME measured points,
+# renamed to the creature's perspective: _L anchors now sit at +x, and the
+# mirror law (J_R := -J_L.x, ...) builds the other side as always. Rotation
+# about x-hat acts only in y-z, so the sagittal AXIS table and the ROM stops
+# are mirror-invariant — no re-derivation, the same numbers serve both sides.
 L_landmarks = {
     'neck':        (0.0260, 8.3711, 0.6614),
     'jaw':         (0.1843, 9.0493, 0.3625),
@@ -58,12 +68,12 @@ L_landmarks = {
     'spine_lower': (0.0260, 5.6824, 0.0874),
     'tail_base':   (0.0260, 3.9607, -0.7033),
     'tail_mid':    (0.0260, 3.9497, -1.8190),
-    'shoulder_L':  (-0.9975, 6.0733, -0.0677),
-    'elbow_L':     (-1.8279, 5.0633, -0.0892),
-    'wrist_L':     (-2.3269, 4.1482, -0.1016),
-    'hip_L':       (-0.4727, 3.1696, 0.1627),
-    'knee_L':      (-0.4937, 1.7670, 0.1299),
-    'ankle_L':     (-0.5132, 1.1693, 0.0325),
+    'shoulder_L':  (0.9975, 6.0733, -0.0677),
+    'elbow_L':     (1.8279, 5.0633, -0.0892),
+    'wrist_L':     (2.3269, 4.1482, -0.1016),
+    'hip_L':       (0.4727, 3.1696, 0.1627),
+    'knee_L':      (0.4937, 1.7670, 0.1299),
+    'ankle_L':     (0.5132, 1.1693, 0.0325),
 }
 # ROMs: central = measured stops (anchors were on the axis); pairs take L on
 # both sides (the R stops were folded from off-frame anchors — retired).

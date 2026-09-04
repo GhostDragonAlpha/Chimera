@@ -2127,3 +2127,47 @@ real editor-defect backlog: timeline footer clip, EYE:DEFECTS orange
 semantics, HUD/timeline not following posed joints, strain tint wired to
 the march clock instead of live angles, referee chips missing B-numbers,
 blank backtick glyph.
+
+## 2026-09-04 — The operator's tags on EVERY joint + THE SIDE LAW (left := up x forward)
+- THE OPERATOR CAUGHT A MIRROR BUG BY EYE on the elbow tag: "considering the creature,
+  that would be its RIGHT elbow — the side of a thing is its own perspective." The
+  factory had stamped _L/_R under the DEFAULT CAMERA's left. Measured, no probe needed:
+  tail_mid extends to -z, jaw to +z => forward := +z => anatomical left := up x forward
+  = y-hat x z-hat = +x. Every paired joint's tag was on the wrong limb.
+- THE SIDE LAW SHIPPED IN THE FACTORY: the six _L anchors' x-signs flipped (SAME measured
+  points, renamed to the creature's perspective); the mirror law (J_R := -J_L.x, ...)
+  rebuilds the other side as always. Rotation about x-hat acts only in y-z, so the
+  sagittal AXIS table and the referee's ROM stops are mirror-INVARIANT — no
+  re-derivation; the name order (and D7 key indices) are untouched. Gate: green.
+  Live: elbow_L now at Jx=+1.777 (was -1.777), all six pairs flipped.
+- PER-JOINT TAGS (the operator's decree: "deploy those tags on everything... a spaceship's
+  thrusters as vectors — the labels are going to be important"): every joint now wears
+  the chip the selected joint's gizmo had (name + live theta, the approved display).
+  Engine::push_joint_tags projects each joint through the frame VP each frame (same
+  path as the rig overlay); StudioUI draws pin dot + label — selected = amber (the
+  gizmo's own), posed (theta != 0) = green, rest = gray-blue. The viewport is now
+  SELF-DESCRIBING: which side is the creature's left is read off the creature itself.
+  Off-frame joints get no tag (project_world refuses); no depth test — a tag is an
+  instrument, not matter. The pattern generalizes to any labeled mechanism.
+- STRAIN TINT, JOINTS LANE (the backlog's fix 4, the substantive one): the tint existed
+  only in the hinge lane; the JNT2 lane that actually drives the creature had none.
+  joints.comp binding 6 (per-vert strain SSBO, shared with the hinge lane) + bit1
+  (same ramp, same +/-10% saturation); Out is now read-write so the tint reads the REST
+  colors from its own previous pass (per-frame chrome, never a cumulative stain).
+  Engine::compute_strain_joints mirrors the kernel EXACTLY (blend of two FULL rigid
+  Rodrigues motions — an earlier composed/angle-scaled draft disagreed with the kernel
+  by tens of degrees at 125 deg and flooded the arm with phantom strain; the falsifier
+  caught it). Compact domain: assign >= 0. VERDICT: REST tint exactly 0 px (the stale-
+  scratch bug class died with the no-early-skip law); FLEX 12,227 warm px localized in
+  a 143-px crease band, compression tail 106 px. An OOB read (unsigned (-1)*8 index on
+  root-joint parents) crashed the first /strain-on frame — found by arithmetic.
+- FIX 1 (timeline footer clip): the dope sheet started at +22 while the info line below
+  the bar reaches ~+24 — rows painted over the footer's descenders. Sheet now starts
+  BELOW the footer (bar_y + bar_h + 6 + lh + 6).
+- FIX 2 (EYE:DEFECTS semantics): DEFECTS is the audit report's noun, not a demand for
+  attention — it ships info-cyan; HOLD alone keeps warning-red.
+- FIX 3 (HUD/timeline follow the POSED joint): in edit mode the HUD row and the timeline
+  footer read "EDIT <joint> theta <live>" from the per-frame joints push; the sweep's
+  "joint k/N" form returns with the show. VERIFIED live: hud_rows = ["EDIT elbow_L
+  theta +0.00 deg ROM [-145.0 .. 125.0]"] while the show was paused and the elbow owned.
+- Operator state restored after verification: selection cleared, show playing.

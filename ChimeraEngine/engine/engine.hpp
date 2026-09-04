@@ -461,6 +461,13 @@ private:
     // Authority is the overlay FK table (push_rig_overlay); the pack carries it.
     std::vector<int32_t> j_parents_;            // per joint (-1 = root/central)
     bool                j_lbs_mode_ = false;    // JNT2: 2-bone LBS; false = JNT1 legacy
+    // THE STRAIN OVERLAY, JOINTS LANE (2026-09-04): the tint must answer the
+    // SAME law the joints kernel executes, exactly as set_hinge's lane does.
+    // CPU copies of the pack's assignment/weight arrays — the compact strain
+    // domain is 'verts the pack can move' (assign >= 0), the joints twin of
+    // the hinge's wL/wR!=0 test.
+    std::vector<int32_t> j_assign_cpu_;         // pack copy: per vert its joint (or -1)
+    std::vector<float>   j_w_cpu_;              // pack copy: per vert its weight
     VkBuffer        j_assign_buf_ = VK_NULL_HANDLE, j_w_buf_ = VK_NULL_HANDLE,
                     j_state_buf_ = VK_NULL_HANDLE, j_parent_buf_ = VK_NULL_HANDLE;
     VkDeviceMemory  j_assign_mem_ = VK_NULL_HANDLE, j_w_mem_ = VK_NULL_HANDLE,
@@ -835,6 +842,8 @@ private:
     uint32_t              strain_cap_ = 0;
     std::atomic<bool>     strain_on_{false};
     void            compute_strain();          // per-frame, before the pose dispatch
+    void            compute_strain_joints();   // the JNT2 lane's twin (live LBS angles)
+    void            push_joint_tags();         // per-joint viewport labels (the operator's decree)
     // GPU hinge kernel (the CA-field path): rest state + weights as SSBOs,
     // pose computed by hinge.comp into the vertex buffer each frame.
     VkShaderModule  hinge_mod_ = VK_NULL_HANDLE;

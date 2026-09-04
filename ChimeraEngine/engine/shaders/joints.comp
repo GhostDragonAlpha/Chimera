@@ -44,8 +44,9 @@ layout(std430, binding = 1) readonly  buffer Assign  { int   joint[]; };   // jo
 layout(std430, binding = 2) readonly  buffer Weights { float w[]; };
 // joints state: per joint 8 floats [Jx Jy Jz Ax Ay Az 0 theta(rad)]
 layout(std430, binding = 3) readonly  buffer JState  { float js[]; };
-layout(std430, binding = 4) writeonly buffer Out     { float vout[]; };
+layout(std430, binding = 4) buffer Out      { float vout[]; };      // In+Out: the tint reads back its own pass-through colors
 layout(std430, binding = 5) readonly  buffer Parent  { int   parent[]; };  // JNT2: FK parent per joint (-1 = none)
+layout(std430, binding = 6) readonly  buffer Strain  { float strain[]; };  // per-vert area strain (CPU mirror of THIS law)
 
 vec3 heat(float w) {                          // the standard weight ramp on [0,1]
     w = clamp(w, 0.0, 1.0);
@@ -122,15 +123,34 @@ void main() {
             vout[i * 9 + kk * 3 + 2] = o.z;
         }
     }
+    float cr = rest[i * 9 + 6];                    // colors: rest by default
+    float cg = rest[i * 9 + 7];
+    float cb = rest[i * 9 + 8];
     if (pc.paint >= 0) {
         vec3 col = (j == pc.paint) ? heat(w[i])
-                                   : vec3(rest[i * 9 + 6], rest[i * 9 + 7], rest[i * 9 + 8]) * 0.25;
-        vout[i * 9 + 6] = col.x;
-        vout[i * 9 + 7] = col.y;
-        vout[i * 9 + 8] = col.z;
-    } else {
-        vout[i * 9 + 6] = rest[i * 9 + 6];           // colors pass through
-        vout[i * 9 + 7] = rest[i * 9 + 7];
-        vout[i * 9 + 8] = rest[i * 9 + 8];
+                                   : vec3(cr, cg, cb) * 0.25;
+        cr = col.x; cg = col.y; cb = col.z;
     }
+    if ((pc.flags & 2u) != 0u) {
+        // THE STRAIN OVERLAY, JOINTS LANE (2026-09-04): the SAME ramp the hinge
+        // lane ships (hinge.comp bit1) over the SAME scalar the CPU mirror of
+        // THIS law computes (Engine::compute_strain_joints) — blue =
+        // compression, red = stretch, +/-10% saturates. Written to Out (also
+        // bound read-only) so the next frame's pass-through sees the REST
+        // colors — the tint is per-frame chrome, never a cumulative stain.
+        float s = strain[i] * 10.0;
+        float t = clamp(abs(s), 0.0, 1.0);
+        if (s >= 0.0) {
+            cr = min(cr + 0.55 * t, 1.0);
+            cg = min(cg + 0.10 * t, 1.0);
+            cb = max(cb - 0.55 * t, 0.0);
+        } else {
+            cr = max(cr - 0.35 * t, 0.0);
+            cg = max(cg - 0.10 * t, 0.0);
+            cb = min(cb + 0.55 * t, 1.0);
+        }
+    }
+    vout[i * 9 + 6] = cr;
+    vout[i * 9 + 7] = cg;
+    vout[i * 9 + 8] = cb;
 }
