@@ -471,6 +471,8 @@ private:
     // JNT2: the FK parent map — the second bone of every crease (LBS blend).
     // Authority is the overlay FK table (push_rig_overlay); the pack carries it.
     std::vector<int32_t> j_parents_;            // per joint (-1 = root/central)
+    // JNT3: per-vertex second-owner joint — term 2's bone (sibling seams).
+    std::vector<int32_t> j_joint2_;             // per vert (-1 = parent fallback)
     bool                j_lbs_mode_ = false;    // JNT2: 2-bone LBS; false = JNT1 legacy
     // THE STRAIN OVERLAY, JOINTS LANE (2026-09-04): the tint must answer the
     // SAME law the joints kernel executes, exactly as set_hinge's lane does.
@@ -480,9 +482,11 @@ private:
     std::vector<int32_t> j_assign_cpu_;         // pack copy: per vert its joint (or -1)
     std::vector<float>   j_w_cpu_;              // pack copy: per vert its weight
     VkBuffer        j_assign_buf_ = VK_NULL_HANDLE, j_w_buf_ = VK_NULL_HANDLE,
-                    j_state_buf_ = VK_NULL_HANDLE, j_parent_buf_ = VK_NULL_HANDLE;
+                    j_state_buf_ = VK_NULL_HANDLE, j_parent_buf_ = VK_NULL_HANDLE,
+                    j_joint2_buf_ = VK_NULL_HANDLE;
     VkDeviceMemory  j_assign_mem_ = VK_NULL_HANDLE, j_w_mem_ = VK_NULL_HANDLE,
-                    j_state_mem_ = VK_NULL_HANDLE, j_parent_mem_ = VK_NULL_HANDLE;
+                    j_state_mem_ = VK_NULL_HANDLE, j_parent_mem_ = VK_NULL_HANDLE,
+                    j_joint2_mem_ = VK_NULL_HANDLE;
     void*           j_state_map_ = nullptr;      // host-visible: J/axis/theta per joint
     // THE MATTER PASS (M1, 2026-09-04): the posed surface is a COMMAND; matter
     // is the surface itself carrying constraints. Mesh adjacency as CSR (unique

@@ -62,7 +62,8 @@ N, idx_count = struct.unpack('<II', raw[:8])
 V = np.frombuffer(raw, np.float32, N * 9, 24).reshape(-1, 9)[:, :3].astype(np.float64)
 
 b = open(PACK, 'rb').read()
-assert b[:4] in (b'JNT1', b'JNT2')
+IS_JNT3 = (b[:4] == b'JNT3')
+assert b[:4] in (b'JNT1', b'JNT2', b'JNT3')
 nv, nj, nl = struct.unpack('<III', b[4:16])
 p = 16 + nl
 assign = np.frombuffer(b, np.int32, nv, p).copy(); p += nv * 4
@@ -70,7 +71,17 @@ w = np.frombuffer(b, np.float32, nv, p).copy(); p += nv * 4
 J = np.frombuffer(b, np.float32, nj * 3, p).reshape(nj, 3).copy(); p += nj * 12
 ax = np.frombuffer(b, np.float32, nj * 3, p).reshape(nj, 3).copy(); p += nj * 12
 rom = np.frombuffer(b, np.float32, nj * 2, p).copy().reshape(nj, 2); p += nj * 8
-parents = (np.frombuffer(b, np.int32, nj, p) if b[:4] == b'JNT2' else None)
+parents = (np.frombuffer(b, np.int32, nj, p) if b[:4] in (b'JNT2', b'JNT3') else None)
+# JNT3: carry the per-vertex second-owner arrays through the ROM rewrite —
+# the referee patches ROMs, never the blend law. Losing the tail here would
+# silently downgrade the pack to JNT2 (the sibling seams would lose their
+# transition law with no error anywhere — the exact failure class Rule 0
+# forbids: a tool that quietly writes an older law).
+joint2 = None; w2 = None
+if IS_JNT3:
+    q = p + nj * 4
+    joint2 = np.frombuffer(b, np.int32, nv, q); q += nv * 4
+    w2 = np.frombuffer(b, np.float32, nv, q)
 names = [n.decode() for n in b[16:16 + nl].split(b'\x00')[:nj]]
 ix = {n: i for i, n in enumerate(names)}
 
@@ -296,12 +307,16 @@ if all(checks.values()):
             i = ix[pair + side]
             rom[i] = (tab['ext_stop_deg'], tab['flex_stop_deg'])
     names_blob = b''.join(n.encode() + b'\x00' for n in names)
-    pack = (b'JNT2' + struct.pack('<III', nv, nj, len(names_blob)) + names_blob
+    magic = b'JNT3' if IS_JNT3 else b'JNT2'
+    pack = (magic + struct.pack('<III', nv, nj, len(names_blob)) + names_blob
             + assign.astype(np.int32).tobytes() + w.astype(np.float32).tobytes()
             + J.astype(np.float32).tobytes() + ax.astype(np.float32).tobytes()
             + rom.astype(np.float32).tobytes()
             + (parents.astype(np.int32).tobytes() if parents is not None
                else np.full(nj, -1, np.int32).tobytes()))
+    if IS_JNT3:
+        pack += (joint2.astype(np.int32).tobytes()
+                 + w2.astype(np.float32).tobytes())
     open(PACK, 'wb').write(pack)
     result['pack_patched'] = True
     print(f"\npack patched with symmetric paired flex ROMs: {PACK}")

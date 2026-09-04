@@ -2189,7 +2189,30 @@ void Engine::compute_strain_joints() {
         // (No early skip on zero angles: identity composes to exact rest, and
         // skipping would leave the PREVIOUS frame's position in the scratch —
         // phantom strain. Always write.)
-        for (int k = depth - 1; k >= 0; --k) {      // root first, own last
+        auto step = [](const float R[9], const float Jv[3], float M[9], float T[3]) {
+            float nM[9], nT[3];
+            for (int r = 0; r < 3; ++r) {
+                const float Rt0 = R[r * 3], Rt1 = R[r * 3 + 1], Rt2 = R[r * 3 + 2];
+                nT[r] = Rt0 * T[0] + Rt1 * T[1] + Rt2 * T[2]
+                      + (Jv[r] - (Rt0 * Jv[0] + Rt1 * Jv[1] + Rt2 * Jv[2]));
+                for (int cc = 0; cc < 3; ++cc)
+                    nM[r * 3 + cc] = Rt0 * M[cc] + Rt1 * M[3 + cc] + Rt2 * M[6 + cc];
+            }
+            for (int q = 0; q < 9; ++q) M[q] = nM[q];
+            T[0] = nT[0]; T[1] = nT[1]; T[2] = nT[2];
+        };
+        // JNT3: term 2's bone is the vertex's SECOND OWNER (its own FULL FK
+        // chain — the sibling at limb/torso seams); the -1/missing fallback
+        // keeps the JNT2 parent law exactly. Same law as joints.comp, or the
+        // tint lies.
+        int j2 = (i < j_joint2_.size()) ? j_joint2_[i] : -1;
+        if (j2 < 0) j2 = (depth > 1) ? chain[1] : -1;
+        int chain2[8]; int depth2 = 0;
+        for (int cj = j2; cj >= 0 && depth2 < 8; ++depth2) {
+            chain2[depth2] = cj;
+            cj = (cj < static_cast<int>(j_parents_.size())) ? j_parents_[cj] : -1;
+        }
+        for (int k = depth - 1; k >= 0; --k) {      // term 1: the band's whole chain
             const uint32_t o = static_cast<uint32_t>(chain[k]) * 8u;
             const float th = st[o + 7];
             const float Jv[3] = { st[o + 0], st[o + 1], st[o + 2] };
@@ -2199,20 +2222,19 @@ void Engine::compute_strain_joints() {
                 c + ic * ax * ax,     ic * ax * ay - s * az,  ic * ax * az + s * ay,
                 ic * ay * ax + s * az,  c + ic * ay * ay,     ic * ay * az - s * ax,
                 ic * az * ax - s * ay,  ic * az * ay + s * ax,  c + ic * az * az };
-            auto step = [&](float M[9], float T[3]) {
-                float nM[9], nT[3];
-                for (int r = 0; r < 3; ++r) {
-                    const float Rt0 = R[r * 3], Rt1 = R[r * 3 + 1], Rt2 = R[r * 3 + 2];
-                    nT[r] = Rt0 * T[0] + Rt1 * T[1] + Rt2 * T[2]
-                          + (Jv[r] - (Rt0 * Jv[0] + Rt1 * Jv[1] + Rt2 * Jv[2]));
-                    for (int cc = 0; cc < 3; ++cc)
-                        nM[r * 3 + cc] = Rt0 * M[cc] + Rt1 * M[3 + cc] + Rt2 * M[6 + cc];
-                }
-                for (int q = 0; q < 9; ++q) M[q] = nM[q];
-                T[0] = nT[0]; T[1] = nT[1]; T[2] = nT[2];
-            };
-            step(M1, T1);
-            if (k > 0) step(M2, T2);                // parent frame: stop before own
+            step(R, Jv, M1, T1);
+        }
+        for (int k = depth2 - 1; k >= 0; --k) {     // term 2: the second owner's chain
+            const uint32_t o = static_cast<uint32_t>(chain2[k]) * 8u;
+            const float th = st[o + 7];
+            const float Jv[3] = { st[o + 0], st[o + 1], st[o + 2] };
+            const float ax = st[o + 3], ay = st[o + 4], az = st[o + 5];
+            const float c = cosf(th), s = sinf(th), ic = 1.f - c;
+            const float R[9] = {
+                c + ic * ax * ax,     ic * ax * ay - s * az,  ic * ax * az + s * ay,
+                ic * ay * ax + s * az,  c + ic * ay * ay,     ic * ay * az - s * ax,
+                ic * az * ax - s * ay,  ic * az * ay + s * ax,  c + ic * az * az };
+            step(R, Jv, M2, T2);
         }
         const float* src = rest + i * 9;
         const float v0x = src[0], v0y = src[1], v0z = src[2];
@@ -2386,7 +2408,7 @@ std::vector<StudioUI::SceneRow> Engine::scene_rows() {
         strain_on_.load() ? 1 : 0, hinge_active_);
     {
         char d[96]; snprintf(d, sizeof(d), "%zu edges, k=%.2f, %d it",
-                             j_edge_nbr_.size() / 2, matter_k(), (int)MATTER_ITERS);
+                             j_edge_nbr_.size() / 2, matter_k(), (int)matter_iters());
         add("matter", "matter", joints_loaded_ && j_lbs_mode_ ? d : "needs JNT2",
             matter_on_.load() ? 1 : 0, joints_loaded_ && j_lbs_mode_);
     }
@@ -3654,11 +3676,11 @@ void Engine::hinge_rebind() {
 // before the joints dispatch — same discipline as water_vis_rebind (W4).
 void Engine::joints_rebind() {
     if (joints_desc_set_ == VK_NULL_HANDLE || !joints_loaded_ || !has_mesh_) return;
-    VkBuffer bufs[11] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_, j_parent_buf_, strain_buf_,
-                          j_csr_buf_, j_csr_buf_, j_csr_buf_, j_work_buf_ };
-    VkWriteDescriptorSet w[11]{};
-    VkDescriptorBufferInfo infos[11]{};
-    for (uint32_t k = 0; k < 11; ++k) {
+    VkBuffer bufs[12] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_, j_parent_buf_, strain_buf_,
+                          j_csr_buf_, j_csr_buf_, j_csr_buf_, j_work_buf_, j_joint2_buf_ };
+    VkWriteDescriptorSet w[12]{};
+    VkDescriptorBufferInfo infos[12]{};
+    for (uint32_t k = 0; k < 12; ++k) {
         infos[k].buffer = bufs[k];
         if (k == 7 || k == 8 || k == 9)
             infos[k].range = (k == 7) ? j_csr_off_sz_ : (k == 8) ? j_csr_nbr_sz_ : j_csr_len_sz_;
@@ -4003,9 +4025,10 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
     // copy, not a source. When a hinge IS engaged the two are equal by
     // construction, so the old behavior is preserved bit-for-bit there.
     if (!has_mesh_ || mesh_cpu_.empty()) { fprintf(stderr, "joints: no mesh rest\n"); return false; }
+    const bool is_jnt3 = (blob.size() >= 16 && memcmp(blob.data(), "JNT3", 4) == 0);
     const bool is_jnt2 = (blob.size() >= 16 && memcmp(blob.data(), "JNT2", 4) == 0);
     if (blob.size() < 16 ||
-        (!is_jnt2 && memcmp(blob.data(), "JNT1", 4) != 0)) {
+        (!is_jnt2 && !is_jnt3 && memcmp(blob.data(), "JNT1", 4) != 0)) {
         fprintf(stderr, "joints: bad blob\n"); return false;
     }
     const uint8_t* p = blob.data() + 4;
@@ -4030,24 +4053,46 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
     const float* ax = reinterpret_cast<const float*>(p); p += nj * 12;
     const float* rom = reinterpret_cast<const float*>(p);
     p += nj * 8;   // JNT1 ended here; JNT2 continues past the ROM array
-    // JNT2: trailing FK parent map (i32 per joint). A JNT1 blob ends at ROM —
-    // a JNT2 blob must carry nj more int32s, or it is truncated, not legacy.
+    // JNT2/JNT3: trailing FK parent map (i32 per joint). A JNT1 blob ends at
+    // ROM — a JNT2/3 blob must carry nj more int32s, or it is truncated.
+    // JNT3 then carries the per-vertex SECOND-OWNER arrays (the coverage law:
+    // term 2's bone + its blend share). A JNT2 pack gets the synthesized law
+    // (joint2 = parent) so the shipped behavior survives bit-for-bit.
     j_parents_.clear();
-    if (is_jnt2) {
+    if (is_jnt2 || is_jnt3) {
         if (blob.size() < static_cast<size_t>(p - blob.data()) + size_t(nj) * 4) {
-            fprintf(stderr, "joints: JNT2 truncated parent map\n"); return false;
+            fprintf(stderr, "joints: JNT2/3 truncated parent map\n"); return false;
         }
         const int32_t* par = reinterpret_cast<const int32_t*>(p);
         j_parents_.assign(par, par + nj);
         for (uint32_t k = 0; k < nj; ++k) {
             int32_t pk = j_parents_[k];
             if (pk >= static_cast<int32_t>(nj)) {   // -1 legal (root); >= nj is not
-                fprintf(stderr, "joints: JNT2 parent %d out of range\n", k); return false;
+                fprintf(stderr, "joints: JNT2/3 parent %d out of range\n", k); return false;
             }
         }
         p += size_t(nj) * 4;
     }
-    j_lbs_mode_ = is_jnt2;
+    j_joint2_.clear();
+    if (is_jnt3) {
+        if (blob.size() < static_cast<size_t>(p - blob.data()) + size_t(nv) * 8) {
+            fprintf(stderr, "joints: JNT3 truncated second-owner arrays\n"); return false;
+        }
+        const int32_t* j2 = reinterpret_cast<const int32_t*>(p);
+        j_joint2_.assign(j2, j2 + nv);
+        const float* w2 = reinterpret_cast<const float*>(p + size_t(nv) * 4);
+        for (uint32_t k = 0; k < nv; ++k) {
+            int32_t jk = j_joint2_[k];
+            if (jk >= static_cast<int32_t>(nj)) {   // -1 legal (kernel falls back)
+                fprintf(stderr, "joints: JNT3 joint2 %d out of range\n", k); return false;
+            }
+        }
+        (void)w2;   // share = 1 - w (the kernel derives it; the gate verifies)
+        p += size_t(nv) * 8;
+    } else {
+        j_joint2_.assign(nv, -1);   // JNT1/JNT2: the kernel's parent fallback
+    }
+    j_lbs_mode_ = is_jnt2 || is_jnt3;
     if (j_parents_.empty()) j_parents_.assign(nj, -1);   // JNT1: all roots — the legacy law never reads this
     // THE STRAIN OVERLAY, JOINTS LANE (2026-09-04): keep the pack's CPU copies
     // (the pack arrays are transient pointers into the blob). The GPU side
@@ -4245,8 +4290,18 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
     upload_buffer(w, nv * sizeof(float), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, j_w_buf_, j_w_mem_);
     // JNT2: the parent map rides along as binding 5. Always uploaded (JNT1
     // gets the all-(-1) map) so the descriptor set is never partially bound.
+    // Reload hygiene (2026-09-04): the parent buffer had no reload destroy —
+    // a leak on every pack reload. Destroyed then re-uploaded; the descriptor
+    // writes below rebind to the new handle.
+    if (j_parent_buf_) { vkDestroyBuffer(device_, j_parent_buf_, nullptr); vkFreeMemory(device_, j_parent_mem_, nullptr); j_parent_buf_ = VK_NULL_HANDLE; }
     upload_buffer(j_parents_.data(), nj * sizeof(int32_t), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
                   j_parent_buf_, j_parent_mem_);
+    // JNT3: the per-vertex second-owner joint rides as binding 11. Always
+    // uploaded (JNT1/JNT2 get all -1 = the kernel's parent fallback) so the
+    // descriptor set is never partially bound.
+    if (j_joint2_buf_) { vkDestroyBuffer(device_, j_joint2_buf_, nullptr); vkFreeMemory(device_, j_joint2_mem_, nullptr); j_joint2_buf_ = VK_NULL_HANDLE; }
+    upload_buffer(j_joint2_.data(), nv * sizeof(int32_t), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
+                  j_joint2_buf_, j_joint2_mem_);
 
     // joints state: per joint 8 floats [Jx Jy Jz Ax Ay Az 0 theta(rad)], host-visible
     {
@@ -4277,14 +4332,14 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
         }
     }
 
-    // pipeline (11 SSBOs + 32 B push constants: n, nj, paint, flags + matter params — M1)
-    if (!w_make_pipeline(device_, "shaders/joints.spv", 11, 32,
+    // pipeline (12 SSBOs + 32 B push constants: n, nj, paint, flags + matter params — M1)
+    if (!w_make_pipeline(device_, "shaders/joints.spv", 12, 32,
                          joints_mod_, joints_dsl_, joints_layout_, joints_pipe_)) {
         fprintf(stderr, "joints: pipeline failed\n"); return false;
     }
     {
         VkDescriptorPoolSize ps{};
-        ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; ps.descriptorCount = 11;
+        ps.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; ps.descriptorCount = 12;
         if (joints_desc_pool_) vkDestroyDescriptorPool(device_, joints_desc_pool_, nullptr);
         VkDescriptorPoolCreateInfo dpci{};
         dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -4295,11 +4350,11 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
         dsai.descriptorPool = joints_desc_pool_; dsai.descriptorSetCount = 1;
         dsai.pSetLayouts = &joints_dsl_;
         vkAllocateDescriptorSets(device_, &dsai, &joints_desc_set_);
-        VkBuffer bufs[11] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_, j_parent_buf_, strain_buf_,
-                              j_csr_buf_, j_csr_buf_, j_csr_buf_, j_work_buf_ };
-        VkWriteDescriptorSet wr[11]{};
-        VkDescriptorBufferInfo infos[11]{};
-        for (uint32_t k = 0; k < 11; ++k) {
+        VkBuffer bufs[12] = { hinge_rest_buf_, j_assign_buf_, j_w_buf_, j_state_buf_, tri_vbuf_, j_parent_buf_, strain_buf_,
+                              j_csr_buf_, j_csr_buf_, j_csr_buf_, j_work_buf_, j_joint2_buf_ };
+        VkWriteDescriptorSet wr[12]{};
+        VkDescriptorBufferInfo infos[12]{};
+        for (uint32_t k = 0; k < 12; ++k) {
             infos[k].buffer = bufs[k];
             // the CSR rides as THREE arrays in one buffer — point each binding
             // at its own offset (off | nbr | len)
@@ -4315,7 +4370,13 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
             wr[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
             wr[k].pBufferInfo = &infos[k];
         }
-        vkUpdateDescriptorSets(device_, 11, wr, 0, nullptr);
+        // THE COUNT IS THE LAW (2026-09-04): this said 11 after the array grew
+        // to 12 — binding 11 (joint2) was NEVER written, the freshly-allocated
+        // set served UNINITIALIZED descriptor reads, and the kernel walked
+        // garbage FK chains: a whole-body twist on every neck pose while the
+        // CPU map (and every probe of it) read perfectly upright. The write
+        // count MUST equal the array count, always.
+        vkUpdateDescriptorSets(device_, 12, wr, 0, nullptr);
     }
     joints_t0_ = std::chrono::steady_clock::now();
     joints_loaded_ = true;
@@ -4397,6 +4458,16 @@ std::string Engine::joints_editor_json() {
             st ? st[k * 8 + 0] : 0.f, st ? st[k * 8 + 1] : 0.f, st ? st[k * 8 + 2] : 0.f,
             st ? st[k * 8 + 3] : 0.f, st ? st[k * 8 + 4] : 0.f, st ? st[k * 8 + 5] : 0.f);
         s += jb;
+        if (k + 1 < j_n_joints_) s += ",";
+    }
+    s += "]";
+    // THE FK MAP IS OBSERVABLE (2026-09-04): the runtime parent map is the
+    // one authority the editor doc never exposed — and the exact field whose
+    // corruption cost a day of diagnosis (a missing buffer upload made the
+    // kernel read an all-zero map). Exposed for probes and gates.
+    s += ",\"parents\":[";
+    for (uint32_t k = 0; k < j_n_joints_; ++k) {
+        s += std::to_string(k < j_parents_.size() ? j_parents_[k] : -1);
         if (k + 1 < j_n_joints_) s += ",";
     }
     s += "]}";

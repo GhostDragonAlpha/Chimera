@@ -87,6 +87,10 @@ layout(std430, binding = 7) readonly  buffer EdgeOff { uint  eoff[]; };  // nv+1
 layout(std430, binding = 8) readonly  buffer EdgeNbr { uint  enbr[]; };  // 2E
 layout(std430, binding = 9) readonly  buffer EdgeLen { float elen[]; };  // 2E rest lengths
 layout(std430, binding = 10) buffer  Work    { float work[]; };          // nv*6: two halves (ping-pong)
+// JNT3 (2026-09-04): per-vertex SECOND-OWNER joint — term 2's bone. The pack
+// carries it; the engine synthesizes "parent of band" for JNT2 packs, so the
+// JNT2 law is the exact fallback. j2 < 0 -> parent fallback in-kernel too.
+layout(std430, binding = 11) readonly  buffer Joint2  { int   joint2[]; };
 
 vec3 heat(float w) {                          // the standard weight ramp on [0,1]
     w = clamp(w, 0.0, 1.0);
@@ -195,12 +199,22 @@ void main() {
             vout[i * 9 + kk * 3 + 2] = o.z;
         }
     } else {
-        // ── LBS (JNT2): blend the two COMPOSED world frames of this rest vert.
-        // Walk the FK chain root->own once; term 1 consumes the whole chain,
-        // term 2 stops before the band joint (the parent's frame).
+        // ── LBS (JNT2/JNT3): blend the two COMPOSED world frames of this rest
+        // vert. Term 1 consumes the band joint's whole FK chain. JNT2: term 2
+        // is the band's PARENT (the parent-crease law). JNT3: term 2 is the
+        // vertex's SECOND OWNER (binding 11) — the parent at parent-child
+        // creases, the SIBLING bone at limb/torso seams (the coverage law:
+        // "the bone structure must encompass the whole surface" — the
+        // armpit/groin/flank seams had NO transition law before this). j2 < 0
+        // falls back to the parent, so JNT2 semantics survive bit-for-bit.
         int chain[8]; int depth = 0;
         int cj = j;
         while (cj >= 0 && depth < 8) { chain[depth++] = cj; cj = parent[cj]; }
+        int j2 = joint2[i];
+        if (j2 < 0 || j2 >= int(pc.n_joints)) j2 = (depth > 1) ? chain[1] : -1;
+        int chain2[8]; int depth2 = 0;
+        cj = j2;
+        while (cj >= 0 && depth2 < 8) { chain2[depth2++] = cj; cj = parent[cj]; }
         mat3 M1 = mat3(1.0); vec3 T1 = vec3(0.0);
         mat3 M2 = mat3(1.0); vec3 T2 = vec3(0.0);
         for (int k = depth - 1; k >= 0; --k) {      // root first, own last
@@ -217,7 +231,20 @@ void main() {
                                 vec3( ak.y, -ak.x, 0.0));
             vec3 off = Jk - Rk * Jk;                // the pivot's translation
             T1 = Rk * T1 + off;  M1 = Rk * M1;
-            if (k > 0) { T2 = Rk * T2 + off;  M2 = Rk * M2; }
+        }
+        for (int k = depth2 - 1; k >= 0; --k) {     // term 2: its own full chain
+            uint po = uint(chain2[k]) * 8u;
+            vec3 Jk = vec3(js[po + 0u], js[po + 1u], js[po + 2u]);
+            vec3 ak = vec3(js[po + 3u], js[po + 4u], js[po + 5u]);
+            float tk = js[po + 7u];
+            float ck = cos(tk), sk = sin(tk);
+            mat3 Rk = ck * mat3(1.0)
+                    + (1.0 - ck) * outerProduct(ak, ak)
+                    + sk * mat3(vec3(0.0,  ak.z, -ak.y),
+                                vec3(-ak.z, 0.0,  ak.x),
+                                vec3( ak.y, -ak.x, 0.0));
+            vec3 off = Jk - Rk * Jk;
+            T2 = Rk * T2 + off;  M2 = Rk * M2;
         }
         for (uint kk = 0; kk < 2; ++kk) {            // 0 = position, 1 = normal
             vec3 v = vec3(rest[i * 9 + kk * 3 + 0],

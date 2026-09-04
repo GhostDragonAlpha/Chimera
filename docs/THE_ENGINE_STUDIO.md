@@ -2282,3 +2282,45 @@ k=0.5 diverged; measured optimum k=0.2, 48 iters — at knee 120°/elbow 90°:
 worst-edge error 147.1% (pure LBS) → 18.9% (matter); RMS 2.49% → 0.65%.
 Frame cost 0.43 → 0.53 ms avg at 300 fps. Live-tunable via /matter {k, iters};
 iters=0 is the pure-LBS readback control.
+
+## JNT3 — the upright tree + the second-owner law (2026-09-04)
+
+The operator's conviction — "the bone structure does not encompass the entire
+triangle structure… the joint seems to tilt the entire body" — split into two
+diseases, both cured this arc:
+
+1. **THE INVERTED TREE.** The pack's FK parent map hung the skeleton from the
+   SKULL (neck root, spine descending), so the neck's arc composed into every
+   band: neck +30 deg moved 349,357 px — the entire frame (knee_R +30, the
+   control, moved only its leg). The MJCF template and the rig overlay had it
+   right all along; the render rig now matches them: **spine_lower (pelvis) is
+   the root**, the spine ascends, the skull hangs from the withers, the tail
+   hangs from the pelvis. Verified: neck's in-silhouette reach is now confined
+   to its head/neck/upper-chest bands; tail_mid and knee_L are exactly local;
+   spine joints legitimately move what sits above them.
+
+2. **THE SECOND-OWNER LAW (JNT3 pack).** The factory computed each vertex's
+   second-nearest different-owner segment and threw it away — sibling seams
+   (armpit, groin, flank) had NO transition law at all. The pack now carries
+   per-vertex (joint2, w2); kernel binding 11 blends term 2 against that
+   bone's full FK chain. Parent-crease verts keep the proven envelope
+   (10,428), sibling verts get the distance-ratio blend (7,881, clamped to
+   the 0.5 floor), jaw keeps its dedicated 0.85. The gate's check [8] holds
+   the law: joint2 must be FK-adjacent (parent/sibling/child), share must
+   equal 1−w, term 1 always dominates. 14,801/18,459 verts blend actively.
+
+**THE BUG THE PROBES EARNED:** after the array grew to 12, the descriptor
+submit still said `vkUpdateDescriptorSets(device_, 11, …)` — binding 11 was
+NEVER written, the freshly-allocated set served uninitialized descriptor
+reads, and the kernel walked garbage FK chains: a whole-statue twist on every
+neck pose while the CPU map (and every probe of it) read perfectly upright.
+Found by calibration: tail/knee local + neck/spine global is impossible under
+ANY single map — the CPU and GPU were running different laws. The count is
+the law; the write count MUST equal the array count. `/joints` now also
+exposes the runtime parent map so the next divergence is one GET away.
+
+Also fixed en route: the matter scene row printed the compile-time iteration
+constant instead of the live value; the parent map was double-uploaded after
+the reload-hygiene patch; the referee now carries the JNT3 tail through its
+ROM rewrite. Falsifiers: rest identity 0 px (matter on vs off), edge-error
+readbacks sane (neck 84.9% max at the seams, knee 21.1%), 300 FPS / 0.45 ms.

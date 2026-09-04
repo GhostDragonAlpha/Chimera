@@ -314,19 +314,26 @@ else:
     print("WARNING: no referee verdict file .tmp/skeleton/rom_referee_r2.json — "
           "pack carries factory fallback ROMs; run tools/rom_referee_r2.py")
 assign_i32 = np.array([names.index(a) for a in assign_name], np.int32)
-w_f32 = w.astype(np.float32)
+# (w_f32 snapshotted after the second-owner law below — it needs the FINAL
+#  term-1 share; the kernel derives the second share as 1−w.)
 
 os.makedirs(os.path.dirname(PACK_OUT), exist_ok=True)
 if os.path.exists(PACK_OUT) and not os.path.exists(PACK_OUT + '.pre_refit.bak'):
     shutil.copyfile(PACK_OUT, PACK_OUT + '.pre_refit.bak')   # keep the ORIGINAL convict
 names_blob = b''.join(n.encode() + b'\x00' for n in names)
-# JNT2: the FK parent map — the SECOND BONE of every crease. Authority is the
-# engine's own overlay FK table (Engine::push_rig_overlay); the LBS kernel
-# blends each vertex between its joint and this parent. -1 = root/central.
+# JNT3 (2026-09-04): THE TREE WAS INVERTED — the pack hung the skeleton from
+# the SKULL (neck root, spine descending), so the neck's arc composed into
+# every band below it and the whole body tilted when the neck turned (the
+# operator's conviction, measured: neck +30 deg moved 349,357 px — the
+# entire frame; knee_R +30 moved only its leg). The MJCF template below had
+# it RIGHT the whole time; the render rig now matches it: spine_lower (the
+# pelvis) is the root, the spine ascends, the skull hangs from the withers,
+# the tail hangs from the pelvis.
 JNT2_PARENTS = {
-    'neck': -1, 'jaw': 'neck',
-    'spine_upper': 'neck', 'spine_mid': 'spine_upper',
-    'spine_lower': 'spine_mid', 'tail_base': 'spine_lower', 'tail_mid': 'tail_base',
+    'spine_lower': -1,
+    'spine_mid': 'spine_lower', 'spine_upper': 'spine_mid',
+    'neck': 'spine_upper', 'jaw': 'neck',
+    'tail_base': 'spine_lower', 'tail_mid': 'tail_base',
     'shoulder_L': 'spine_upper', 'elbow_L': 'shoulder_L', 'wrist_L': 'elbow_L',
     'shoulder_R': 'spine_upper', 'elbow_R': 'shoulder_R', 'wrist_R': 'elbow_R',
     'hip_L': 'spine_lower', 'knee_L': 'hip_L', 'ankle_L': 'knee_L',
@@ -334,12 +341,73 @@ JNT2_PARENTS = {
 }
 parents_i32 = np.array([-1 if JNT2_PARENTS[nme] == -1 else names.index(JNT2_PARENTS[nme])
                         for nme in names], np.int32)
-pack = (b'JNT2' + struct.pack('<III', N, nj, len(names_blob)) + names_blob
+
+# ── JNT3: THE SECOND-OWNER LAW (2026-09-04) ──────────────────────────────────
+# The operator's coverage conviction: "the bone structure does not encompass
+# the entire triangle structure" — measured cause: term 2 of the blend was
+# hardwired to the band's PARENT, so sibling seams (armpit, groin, flank —
+# where a limb band meets a DIFFERENT torso band) had NO transition law:
+# w jumps across the seam and the surface tears there. The factory already
+# computed the second-nearest DIFFERENT-owner segment (d2/second above) and
+# threw the ratio away. The cure: emit per-vertex (joint2, w2) — term 2's
+# joint is the second owner, w2 = 1 − w.
+#   • parent-crease verts keep the shipped envelope exactly (j2 = parent,
+#     w = 0.5+0.5·smoothstep — bit-compatible with every verdict since).
+#   • sibling-seam verts get the distance-ratio law, clamped to the same
+#     0.5 floor (term 1 stays dominant everywhere; the seam gets the blend).
+#   • no second owner (d2 = inf) → w2 = 0, term 2 = term 1 (identity).
+j2_name = np.array([owners[s] for s in second])
+w_ratio = d1v / (d1v + d2v + 1e-9)          # term-1 share under the ratio law
+w_ratio = np.clip(w_ratio, 0.5, 1.0)         # the envelope's 0.5 floor, kept
+# THE ADJACENCY LAW (the gate convicts its absence): a second owner is legal
+# only if it is FK-ADJACENT to the band joint — its parent, its child, or its
+# sibling (shares the parent). A belly vert whose second-nearest segment is
+# the SHOULDER's chain (two levels up) must NOT blend against it — it falls
+# back to the parent-crease envelope. Non-adjacent + parentless owner keeps
+# the neighbor but ONLY at w_ratio == 1 (zero second share = no blend).
+pj_of = np.array([-1 if JNT2_PARENTS[nme] == -1 else names.index(JNT2_PARENTS[nme])
+                  for nme in names], np.int32)      # per-joint FK parent
+own_p = pj_of[assign_i32]
+j2_idx = np.array([names.index(jn) for jn in j2_name], np.int32)
+j2_p = pj_of[j2_idx]
+adjacent = (j2_idx == own_p) | (j2_p == own_p) | (j2_p == assign_i32)
+is_parent_j2 = adjacent & (j2_idx == own_p)          # the crease case
+is_sibling_j2 = adjacent & (j2_idx != own_p)          # the NEW coverage case
+w_final = np.where(is_parent_j2, w, np.where(is_sibling_j2, w_ratio, w))
+joint2_name = np.where(is_parent_j2,
+                       np.array([JNT2_PARENTS[a] if JNT2_PARENTS[a] != -1 else 'spine_lower'
+                                 for a in assign_name]),
+                       np.where(is_sibling_j2, j2_name,
+                                np.array(['spine_lower'] * N, dtype=object)))  # placeholder, replaced below
+# non-adjacent fallback: parent when one exists; else the zero-share escape
+non_adj = ~adjacent
+has_parent = own_p >= 0
+joint2_name[non_adj & has_parent] = np.array([names[p] for p in own_p[non_adj & has_parent]])
+joint2_name[non_adj & ~has_parent] = j2_name[non_adj & ~has_parent]
+# parentless bands (the root's own): NO legal partner exists — fully rigid.
+# (Blending a root band against identity/neighbor at t=0 was the old law's
+# accidental dilution, not a design.) The matter pass owns those seams.
+w_final[non_adj & ~has_parent] = 1.0
+# JAW special case: the 150 face verts were reassigned FROM neck TO jaw after
+# the d2 table was built; their blend partner is their former owner, and the
+# jaw keeps its DEDICATED share (0.85 for the jaw itself — the old law).
+joint2_name[face] = 'neck'
+w_final[face] = 0.85
+# THE PACK'S w IS THE FINAL TERM-1 SHARE (the kernel blends w + (1−w) — any
+# other number in the w array makes the second share a lie; the gate's
+# share==1−w check keeps them honest).
+w = w_final
+joint2_i32 = np.array([names.index(jn) for jn in joint2_name], np.int32)
+w2_f32 = (1.0 - w_final).astype(np.float32)
+w_f32 = w.astype(np.float32)   # the FINAL term-1 share — one law, one number
+# JNT3 magic: joint2/w2 appended (JNT2 packs still decode — the engine
+# synthesizes joint2 = parent, w2 = 1−w for them, the old law exactly).
+pack = (b'JNT3' + struct.pack('<III', N, nj, len(names_blob)) + names_blob
         + assign_i32.tobytes() + w_f32.tobytes() + Jf.tobytes() + AXf.tobytes() + ROMf.tobytes()
-        + parents_i32.tobytes())
+        + parents_i32.tobytes() + joint2_i32.tobytes() + w2_f32.tobytes())
 open(PACK_OUT, 'wb').write(pack)
 np.savez(NPZ_OUT, vert_joint=assign_i32, vert_w=w_f32, J=Jf, axis=AXf, rom=ROMf,
-         parents=parents_i32,
+         parents=parents_i32, vert_joint2=joint2_i32, vert_w2=w2_f32,
          names=np.array(names, dtype='<U11'))
 
 # ── 6. MJCF TEMPLATE — the mirror law lives in the tree itself ───────────────
@@ -418,6 +486,10 @@ empty = [n for i, n in enumerate(names) if not (assign_i32 == i).any()]
 lines += ['', 'EMPTY BANDS: ' + (', '.join(empty) if empty else 'NONE — every joint owns vertices')]
 unassigned = int((assign_i32 < 0).sum())
 lines.append(f'unassigned verts: {unassigned}')
+# JNT3 health: how much of the surface carries a real sibling blend
+n_parent = int(is_parent_j2.sum()); n_sib = int(N - n_parent - len(face))
+lines.append(f'second-owner: parent-crease {n_parent}, sibling {n_sib}, '
+             f'jaw {len(face)}; w<0.99 anywhere: {int((w_final < 0.99).sum())} verts')
 open(REPORT, 'w').write('\n'.join(lines))
 print('\n'.join(lines))
 print(f'\nwritten: {PACK_OUT}\n         {MJCF_OUT}\n         {ROM_OUT}\n         {REPORT}')

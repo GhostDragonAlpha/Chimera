@@ -46,7 +46,8 @@ V = np.frombuffer(raw, np.float32, N * 9, 24).reshape(-1, 9)[:, :3].astype(np.fl
 
 b = open(PACK, 'rb').read()
 IS_JNT2 = (b[:4] == b'JNT2')
-assert b[:4] in (b'JNT1', b'JNT2'), 'not a JNT pack'
+IS_JNT3 = (b[:4] == b'JNT3')
+assert b[:4] in (b'JNT1', b'JNT2', b'JNT3'), 'not a JNT pack'
 nv, nj, nl = struct.unpack('<III', b[4:16])
 p = 16 + nl
 assign = np.frombuffer(b, np.int32, nv, p); p += nv * 4
@@ -54,10 +55,16 @@ w = np.frombuffer(b, np.float32, nv, p); p += nv * 4
 J = np.frombuffer(b, np.float32, nj * 3, p).reshape(nj, 3); p += nj * 12
 ax = np.frombuffer(b, np.float32, nj * 3, p).reshape(nj, 3); p += nj * 12
 rom = np.frombuffer(b, np.float32, nj * 2, p); p += nj * 8
-# JNT2: trailing FK parent map — the second bone of every crease (LBS).
+# JNT2+: trailing FK parent map — the second bone of every crease (LBS).
+# JNT3: + per-vertex second-owner joint and its blend share (w2).
 parents = None
-if IS_JNT2:
+if IS_JNT2 or IS_JNT3:
     parents = np.frombuffer(b, np.int32, nj, p)
+joint2 = None; w2 = None
+if IS_JNT3:
+    q = p + nj * 4                                # past the parent map
+    joint2 = np.frombuffer(b, np.int32, nv, q); q += nv * 4
+    w2 = np.frombuffer(b, np.float32, nv, q)
 names = [n.decode() for n in b[16:16 + nl].split(b'\x00')[:nj]]
 ix = {n: i for i, n in enumerate(names)}
 
@@ -155,12 +162,18 @@ zz_detail = ', '.join(bad_zz + axial_short) if (bad_zz or axial_short) else \
     'limb bends < 90 deg; axial links >= 0.2 wu'
 check(6, 'no zigzag at rest', not (bad_zz or axial_short), zz_detail)
 
-# 7 — FK parent map (JNT2; the LBS second bone must be the overlay's own law)
-if IS_JNT2:
+# 7 — FK parent map (JNT2/3; the LBS second bone must be the overlay's own law)
+# TREE RIGHTS (2026-09-04): the FIRST pack hung the skeleton from the SKULL
+# (neck root, spine descending) — the neck's arc composed into every band and
+# the whole body tilted (measured: neck +30 deg moved 349,357 px whole-frame).
+# The pelvis (spine_lower) is the root; the spine ascends; the skull hangs
+# from the withers; the tail hangs from the pelvis. Matches the MJCF template.
+if IS_JNT2 or IS_JNT3:
     FK_PARENTS = {
-        'neck': -1, 'jaw': 'neck',
-        'spine_upper': 'neck', 'spine_mid': 'spine_upper',
-        'spine_lower': 'spine_mid', 'tail_base': 'spine_lower', 'tail_mid': 'tail_base',
+        'spine_lower': -1,
+        'spine_mid': 'spine_lower', 'spine_upper': 'spine_mid',
+        'neck': 'spine_upper', 'jaw': 'neck',
+        'tail_base': 'spine_lower', 'tail_mid': 'tail_base',
         'shoulder_L': 'spine_upper', 'elbow_L': 'shoulder_L', 'wrist_L': 'elbow_L',
         'shoulder_R': 'spine_upper', 'elbow_R': 'shoulder_R', 'wrist_R': 'elbow_R',
         'hip_L': 'spine_lower', 'knee_L': 'hip_L', 'ankle_L': 'knee_L',
@@ -173,9 +186,40 @@ if IS_JNT2:
         if got != want_ix:
             bad_par.append(f'{nme}: {got} != {want_ix}')
     check(7, 'FK parent map', not bad_par,
-          ', '.join(bad_par) if bad_par else f'all {nj} parents match the overlay FK law')
+          ', '.join(bad_par) if bad_par else f'all {nj} parents match the upright FK law (pelvis root)')
 else:
     print('  [7] FK parent map        SKIP  (JNT1 pack — legacy pose law)')
+
+# 8 — second-owner law (JNT3): the blend partner must be FK-ADJACENT to the
+# band joint — its parent, its child, or its sibling (shares the parent). A
+# partner outside that set would blend the surface across NON-adjacent bones
+# (an armpit blending against the knee, nonsense matter). w2 must equal
+# 1−w (the kernel's blend share) and never exceed 0.5 — term 1 dominates
+# everywhere; seams blend, bands never surrender to their neighbor.
+if IS_JNT3:
+    j2o = joint2
+    bad_range = int((j2o >= nj).sum())            # -1 is the LEGAL parent fallback
+    act = w2 > 0.02
+    own_p = parents[assign[act]]                    # band joint's FK parent
+    j2v = j2o[act]
+    j2_par = np.full(j2v.shape, -2, dtype=parents.dtype)  # -2 = no parent
+    pos = j2v >= 0
+    j2_par[pos] = parents[j2v[pos]]
+    # adjacent = parent (own crease) | sibling (shares my parent) | child (mine)
+    # | fallback (-1 -> the kernel uses the parent, adjacent by definition)
+    adjacent = (j2v == own_p) | (j2_par == own_p) | (j2_par == assign[act]) | (j2v < 0)
+    bad_adj = int((~adjacent).sum())
+    bad_self = int((j2v == assign[act]).sum())
+    bad_share = int((np.abs(w2 - (1.0 - w)) > 1e-3).sum())
+    bad_dom = int((w2 > 0.5 + 1e-6).sum())
+    n_blend = int((w2 > 0.01).sum())
+    ok8 = (bad_range == 0 and bad_self == 0 and bad_adj == 0 and
+           bad_share == 0 and bad_dom == 0)
+    check(8, 'second-owner law', ok8,
+          f'range {bad_range}, self {bad_self}, non-adjacent {bad_adj}, '
+          f'share!=1-w {bad_share}, dominant {bad_dom}; blending verts {n_blend}/{nv}')
+else:
+    print('  [8] second-owner law     SKIP  (not a JNT3 pack)')
 
 print()
 if fails:
