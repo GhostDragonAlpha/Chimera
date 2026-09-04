@@ -1883,3 +1883,6 @@ reads the shadow as more natural. **Falsifier:** contact lightens / wash detache
 - VERDICT (eye recovered, gsq-rco): "separates cleanly... nothing floats... darkening
   right — subtle rather than dramatic... VERDICT: SHIP." Minor notes: faint straight
   horizon seam (quad edge vs sky) + the standing neck pixel. Seam cure queued.
+- SEAM CURE: floor quad R 60->300 (same two triangles) — the edge sits beyond every
+  framing the fit can produce. MEASURED: zero strong horizontal transitions in the upper
+  frame (was the seam), floor@55 31,361 px, pool intact, body 122,808 px, show playing.

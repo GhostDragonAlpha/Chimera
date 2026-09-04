@@ -1427,7 +1427,12 @@ bool Engine::create_triangle_pipeline() {
     // the draw site's guard silently skipped the quad every frame. The buffer
     // never depended on the pipeline; gate on the buffer alone.
     if (floor_vbuf_ == VK_NULL_HANDLE) {
-        const float R = 60.f;
+        // R=300 (was 60): the eye on the cyclorama caught "a faint straight
+        // horizon seam" — the quad's edge was IN frame at wide/radius cameras.
+        // At 300 wu the edge sits beyond every framing the fit can produce
+        // (r_max ~ 60), so the sweep fades out in-frame and the quad never
+        // terminates on screen. Zero cost: same two triangles.
+        const float R = 300.f;
         const float q[FLOOR_VERTS * 3] = {
             -R, 0.f, -R,   R, 0.f, -R,   R, 0.f,  R,
             -R, 0.f, -R,   R, 0.f,  R,  -R, 0.f,  R,
