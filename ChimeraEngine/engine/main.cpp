@@ -281,6 +281,27 @@ void handleSignal(int) { exit(0); }
 int main(int argc, char** argv) {
     // 1 ms timer granularity for the frame-cap sleeps (Windows default is 15.6 ms).
     timeBeginPeriod(1);
+    // THE SHADER-PATH RELEASE FIX (2026-09-03): every shader path in the engine is
+    // CWD-relative ("shaders/*.spv"), so launching from anywhere but build/Release
+    // failed at pipeline creation. If the shaders are not in the CWD, adopt the
+    // EXE's directory — the engine carries its shaders beside its binary, which is
+    // the layout every Windows game ships. A dev run from build/Release is
+    // unchanged (the guard makes the change a no-op there).
+    {
+        DWORD attrs = GetFileAttributesA("shaders\\render.vert.spv");
+        if (attrs == INVALID_FILE_ATTRIBUTES) {
+            char mod[MAX_PATH];
+            DWORD n = GetModuleFileNameA(nullptr, mod, MAX_PATH);
+            if (n > 0 && n < MAX_PATH) {
+                std::string dir(mod, n);
+                size_t s = dir.find_last_of("/\\");
+                if (s != std::string::npos) {
+                    dir.resize(s);
+                    SetCurrentDirectoryA(dir.c_str());
+                }
+            }
+        }
+    }
     // Config
     EngineConfig cfg;
     // 2K DECREE (2026-08-31, operator): "we will make this project run on a 2K

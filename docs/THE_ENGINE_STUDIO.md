@@ -1901,3 +1901,14 @@ reads the shadow as more natural. **Falsifier:** contact lightens / wash detache
 - HONEST LIMIT: the end-to-end live-pose apply needs a mesh+pack pair in one session; the
   birth mesh's pack pairing is a mesher-side task (queued). The write path, the gates, and
   the persistence are verified; the flicker-free swap is the render thread's own pattern.
+
+## 2026-09-03 — RELEASE READINESS: the engine now boots from any directory
+- BLOCKER: every shader path was CWD-relative — launching from anywhere but build/Release
+  died at pipeline creation (the 2026-09-03 morning diagnosis, now fixed at the root).
+- FIX (main): if shaders/render.vert.spv is not in the CWD, adopt the exe's directory —
+  the game-ship layout (shaders ride beside the binary). Dev runs from build/Release are
+  a measured no-op (the guard short-circuits). MEASURED: launched with CWD = repo root —
+  mesh auto-restored (36,424 tris), 296 fps / 0.36 ms.
+- THE SHIP FOLDER: build/Release = chimera_engine.exe + shaders/ (26 spv, 385 KB).
+  The state files (camera bookmarks, keymarks, studio state) are created beside the exe
+  on first boot — the folder is self-contained.
