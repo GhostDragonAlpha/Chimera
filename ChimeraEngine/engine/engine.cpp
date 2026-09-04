@@ -254,6 +254,35 @@ static HWND create_window(uint32_t w, uint32_t h) {
                                r.right - r.left, r.bottom - r.top,
                                nullptr, nullptr, wc.hInstance, nullptr);
     if (!hwnd) return nullptr;
+    // THE BAR-OFF-SCREEN FIX (2026-09-03, the operator: "until I see it we're not
+    // doing anything else"): the outer frame is 16px wider and ~39px taller than
+    // the client, and CW_USEDEFAULT placed that excess OFF THE BOTTOM of a 1440
+    // screen — the status bar (the eye's verdict line) rendered below the physical
+    // display while /glass captures (which read the swapchain, not the monitor)
+    // kept "proving" it was visible. Clamp at creation: the client's BOTTOM edge
+    // lands on the work area's bottom; the title bar may hang off the top —
+    // content beats chrome.
+    {
+        RECT wr; if (GetWindowRect(hwnd, &wr)) {
+            HMONITOR mon = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+            MONITORINFO mi{}; mi.cbSize = sizeof(mi);
+            if (GetMonitorInfoA(mon, &mi)) {
+                int outer_h = wr.bottom - wr.top;
+                int work_h  = mi.rcWork.bottom - mi.rcWork.top;
+                // Frame taller than the screen (the 1440-client case): the client's
+                // BOTTOM goes FLUSH to the work-area bottom — measured both ways:
+                // CW_USEDEFAULT lands either 39px past the bottom (bar invisible)
+                // or 48px short (bar floating). Flush is the only state that is
+                // correct by construction. The title bar hangs off the top; drag
+                // with Win+Arrow / Alt+Space. Content beats chrome.
+                if (outer_h > work_h) {
+                    int dy = wr.bottom - mi.rcWork.bottom;
+                    SetWindowPos(hwnd, nullptr, wr.left, wr.top - dy, 0, 0,
+                                 SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+                }
+            }
+        }
+    }
     ShowWindow(hwnd, SW_SHOW);
     UpdateWindow(hwnd);
     g_hwnd = hwnd;

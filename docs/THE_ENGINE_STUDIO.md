@@ -1842,3 +1842,15 @@ reads the shadow as more natural. **Falsifier:** contact lightens / wash detache
   the WRITER (every human line now ends "| VERDICT: X" extracted from the full report) and
   the mirror was backfilled from the authoritative .jsonl (18 lines).
 - FPS falsifier: not observed. Show restored playing.
+
+## 2026-09-03 — THE BAR WAS OFF THE OPERATOR'S SCREEN (root cause of "I don't see it")
+- The engine window's outer frame is 16px wider / ~39px taller than its 1440px client;
+  CW_USEDEFAULT placed that excess OFF THE BOTTOM of the 1440 monitor. The status bar —
+  the eye's verdict line — rendered below the physical display on every boot. /glass
+  captures read the swapchain, not the monitor, so every verification "passed" while the
+  operator saw nothing. Lesson: a UI instrument is verified against the WINDOW RECT, not
+  the framebuffer.
+- FIX (create_window): when the outer frame is taller than the monitor's work area, the
+  window is placed FLUSH — client bottom == work-area bottom (measured: (0,-87)-(2576,1392);
+  1392 == 1440 taskbar-adjusted work bottom). Title bar hangs off the top by design:
+  content beats chrome. Durable: every boot, any launch path.
