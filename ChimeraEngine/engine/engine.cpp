@@ -3785,7 +3785,14 @@ bool Engine::set_eye_class(const std::vector<uint32_t>& cls) {
 // Blob 'JNT1': [magic][u32 n_verts][u32 n_joints][u32 names_len][names][assign
 // i32*n][w f32*n][J f32*3j][axis f32*3j][rom f32*2j (deg, ext|flex)].
 bool Engine::load_joints(const std::vector<uint8_t>& blob) {
-    if (!has_mesh_ || hinge_rest_.empty()) { fprintf(stderr, "joints: no mesh/hinge rest\n"); return false; }
+    // THE JOINTS LANE STANDS ALONE (2026-09-03): the rest pose is the MESH —
+    // hinge_rest_ is a set_hinge artifact, and requiring it forced every clean
+    // boot (restore replays mesh_bin -> joints_bin, no hinge) to reject the
+    // pack. mesh_cpu_ holds the identical record layout (pos3 nrm3 col3,
+    // stride 9) written by the same full-load; hinge_rest_ = mesh_cpu_ is a
+    // copy, not a source. When a hinge IS engaged the two are equal by
+    // construction, so the old behavior is preserved bit-for-bit there.
+    if (!has_mesh_ || mesh_cpu_.empty()) { fprintf(stderr, "joints: no mesh rest\n"); return false; }
     if (blob.size() < 16 || memcmp(blob.data(), "JNT1", 4) != 0) {
         fprintf(stderr, "joints: bad blob\n"); return false;
     }
@@ -3810,12 +3817,25 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
     const float* J = reinterpret_cast<const float*>(p); p += nj * 12;
     const float* ax = reinterpret_cast<const float*>(p); p += nj * 12;
     const float* rom = reinterpret_cast<const float*>(p);
-    size_t nv_mesh = hinge_wL_.size();
+    // Count law against the MESH, not the hinge: tri_vfloats_ is the live
+    // vertex payload the kernel's Out buffer (tri_vbuf_) actually holds.
+    // (hinge_wL_.size() was set_hinge-only state — always empty on a boot
+    // restore, so a correct pack still failed.)
+    size_t nv_mesh = tri_vfloats_ / 9;
     if (nv != nv_mesh) {
         fprintf(stderr, "joints: %u assignments vs %zu mesh verts\n", nv, nv_mesh);
         return false;
     }
     vkDeviceWaitIdle(device_);
+    // The Rest SSBO (binding 0) is hinge_rest_buf_ — created only by set_hinge.
+    // A boot restore never engages a hinge, so the lane claims it here from the
+    // mesh: identical records (set_hinge writes mesh_cpu_ into this same
+    // buffer), identical layout, identical convention. If a hinge IS already
+    // engaged, the buffer exists and holds mesh_cpu_ bit-for-bit — no touch.
+    if (hinge_rest_.empty()) hinge_rest_ = mesh_cpu_;
+    if (hinge_rest_buf_ == VK_NULL_HANDLE)
+        upload_buffer(hinge_rest_.data(), hinge_rest_.size() * sizeof(float),
+                      VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, hinge_rest_buf_, hinge_rest_mem_);
     j_n_verts_ = nv; j_n_joints_ = nj;
     j_rom_.assign(rom, rom + nj * 2);
 

@@ -1912,3 +1912,49 @@ reads the shadow as more natural. **Falsifier:** contact lightens / wash detache
 - THE SHIP FOLDER: build/Release = chimera_engine.exe + shaders/ (26 spv, 385 KB).
   The state files (camera bookmarks, keymarks, studio state) are created beside the exe
   on first boot — the folder is self-contained.
+
+## 2026-09-03 (late) — THE RIG FITS THE MESH: the canonical-frame refit
+
+**The defect chain, all measured:** the old joints pack was built offline against a
+vertex ordering that is not the engine's (npz/GLB ≠ `mesh_cpu_` order). Consequences:
+8 of 19 joints shipped with EMPTY vertex bands (their rotations moved nothing),
+`elbow_R`'s center floated off the creature entirely (0 body verts within 0.3 wu),
+and the R-side ROMs were folded from those off-frame anchors. The engine's joints
+lane itself could not load on a clean boot at all (`load_joints` demanded
+`hinge_rest_`, a set_hinge artifact; gate counted against `hinge_wL_.size()`).
+
+**Three fixes shipped:**
+1. **Engine:** `load_joints` stands alone — rest = the mesh (`mesh_cpu_`), count law
+   = `tri_vfloats_/9`, and the Rest SSBO (binding 0) is claimed from the mesh when no
+   hinge exists. Clean boots now load the rig; theta=0 dispatch measured a no-op
+   (342 px = noise floor); FPS untouched.
+2. **The refit (`tools/rig_factory_fit.py`):** reads the CANONICAL frame
+   (`session_snapshot/mesh_bin.blob`, the engine's own vertex order), medoid-snaps
+   13 measured L landmarks onto vertex patches, builds every R limb by THE MIRROR
+   LAW (x-negation, never fitted), assigns every vertex to its nearest bone segment
+   with OWNERSHIP SHELLS (limbs capped at 0.7 wu reach; belly flank belongs to the
+   torso), blended weights d2/(d1+d2). Result: all 19 bands non-empty (min 58),
+   0 unassigned verts, exact L/R band parity (318/318 elbows, 172/172 knees),
+   jaw owns its 150 face verts. MJCF primate template emitted for the B6 referee
+   (`.tmp/skeleton/chimera_primate.xml`); asymmetric R ROM stops RETIRED with a
+   referee note (`factory_rom_r2.json`) — re-measurable on the fitted frame.
+3. **The gate (`tools/rig_gate.py`):** six hard checks — full assignment, no empty
+   bands, on-mesh centers (eps 0.3), mirror law (tol 0.05), segment parity (2%),
+   limb zigzag < 90 deg (axial exempt — a primate neck IS oblique; axial links
+   >= 0.2 wu instead). It PASSes the refit and CONVICTS the old pack (empty jaw
+   band) — the gate earns its keep against its own history.
+
+**Live verification:** POST accepted; knee_L theta=45 moved 2,219 px (lower body
+bbox), elbow_L theta=60 moved 2,411 px (arm bbox), neck theta=30 moved 12,317 px
+(head+torso) — every joint class deforms with spatially correct reach.
+Boot snapshot carries the refit pack (blob elbow_R = 1.7766, 4.9094, −0.0935).
+
+**The eye's verdict on the new frame:** neck/arm dots on-surface, pose
+mirror-symmetric. Three flags raised, three dispositioned by measurement: the
+"loop on the back" is the shoulder girdle (FK table anatomy); the "central dot
+between the thighs" is tail_base, measured ON the mesh; "pink lines" NOT OBSERVED
+(0 pink px — amber UI accents misread). Operator confirmed the elbow repair
+visually before the refit; the refit generalizes it to the whole skeleton.
+
+**Queued:** re-measure paired ROM bone stops on the fitted frame (B5 referee,
+round 2); gait development against the symmetric frame in the mujoco-warp lab.
