@@ -1825,3 +1825,20 @@ reads the shadow as more natural. **Falsifier:** contact lightens / wash detache
   low-poly clay shading"; HOLD on: neck speckle ring (mesher-side, standing item), HOT FOOT
   HIGHLIGHTS (up-facing normals saturating under key+fill+hemisphere), flat shadow flank.
   QUEUED: foot-highlight clamp membrane; crease skin-layer separation at the mesher.
+
+## 2026-09-03 — The editor speaks human + the eye's verdict lives in the bar (operator decree)
+- THE COMPLAINT: "B0 to B-10 — what the fuck is that supposed to mean"; the dyad's reports
+  were buried in the DOCS picker. Both communication failures fixed at the root.
+- STRIP: stage NAME now renders first in full brightness, the code (B3) demoted to a dim
+  suffix; every stage pointer reads "NAME (CODE)" (bottom bar included). The EYE (gsq-rco)
+  transcribed "ARTICULATE (B7)" — read correctly, measured.
+- THE BAR: newest dyad verdict is a PERMANENT line in the status bar, every mode, no picker:
+  "T19:07:28  EYE: HOLD" — amber for HOLD/DEFECTS, green for SHIP/CLEAN/PASS/GROUNDED/
+  IMPROVED. Click jumps straight to the DYAD LOG page (full history). 1 Hz mtime poll,
+  degrades before overlapping the legend. The EYE (gsq-rco, transcription probe):
+  "T19:07:2 EYE: HOLD ... cleanly separated ... SEEN: yes".
+- ROOT CAUSE (why the bar was silent): dyad_log.py's human twin truncated reports at 220
+  chars — the VERDICT token lives at the END, amputated exactly where it mattered. Fixed in
+  the WRITER (every human line now ends "| VERDICT: X" extracted from the full report) and
+  the mirror was backfilled from the authoritative .jsonl (18 lines).
+- FPS falsifier: not observed. Show restored playing.

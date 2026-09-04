@@ -109,6 +109,17 @@ def append(kind: str, *, model=None, served=None, tag: str = "",
             human += " | " + (flat[:220] + "..." if len(flat) > 220 else flat)
         if finish_reason:
             human += f" [{finish_reason}]"
+        # THE VERDICT RIDES LAST, ALWAYS (2026-09-03, the operator's decree: "I need
+        # to see it in the editor"). The verdict token sits at the END of a report,
+        # so the 220-char preview amputated exactly the thing the editor's eye-bar
+        # parses. Extracted from the FULL report (not the flat preview) and appended
+        # after everything else: the newest line's verdict is the file's last one.
+        import re as _re
+        _v = None
+        for _m in _re.finditer(r"VERDICT:\s*([A-Za-z][A-Za-z-]*)", rep):
+            _v = _m.group(1).upper()
+        if _v:
+            human += f" | VERDICT: {_v}"
         with dyad_log_txt_path().open("a", encoding="utf-8") as f:
             f.write(human + "\n")
     except Exception as e:                                   # never break perception

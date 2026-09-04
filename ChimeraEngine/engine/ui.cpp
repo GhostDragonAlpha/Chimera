@@ -379,6 +379,12 @@ bool StudioUI::on_lbutton(int x, int y, bool down) {
                 docs_.follow_tail = true;
                 docs_.scroll = docs_scroll_max_;
             }
+            if (h.id == 860) {                                           // THE EYE chip: straight to the dyad's page
+                docs_init();
+                docs_set(docs_.log_page);
+                left_mode_ = 2;
+                selected_stage_ = -1;
+            }
             if (h.id >= 600 && h.id < 700) {                             // C4: the outliner's rows
                 int i = h.id - 600;
                 if (i >= 0 && i < static_cast<int>(scene_.size()) &&
@@ -1043,14 +1049,22 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 rect_outline(x, y0, bw, node_h, s.status == "next" ? 3.f : (sel ? 2.f : 1.f), cr, cg, cb, 1.f);
                 if (sel) rect_outline(x - 2, y0 - 2, bw + 4, node_h + 4, 1.5f, 1.f, 1.f, 1.f, 1.f);
                 hots_.push_back({ x, y0, bw, node_h, 100 + static_cast<int>(i) });   // B3: click -> its panel
-                // id centered, name under it (monospace: centering is arithmetic)
-                float idw = s.id.size() * advance_;
-                text(x + (bw - idw) * 0.5f, y0 + 4, s.id, 1.f, 1.f, 1.f, 1.f);
-                if (node_h > 2 * lh + 8) {
+                // THE OPERATOR'S DECREE (2026-09-03): the NAME is the stage's face —
+                // the code ("B3") is plumbing for tools and links, not for eyes.
+                // Name on top in FULL brightness; the code demoted to a dim suffix.
+                {
                     std::string nm = s.name.size() * advance_ > bw - 4
                                    ? s.name.substr(0, static_cast<size_t>((bw - 4) / advance_)) : s.name;
                     float nw = nm.size() * advance_;
-                    text(x + (bw - nw) * 0.5f, y0 + 6 + lh, nm, TR, TG, TB, 0.85f);
+                    text(x + (bw - nw) * 0.5f, y0 + 4, nm, TR, TG, TB, 1.f);
+                }
+                if (node_h > 2 * lh + 8) {
+                    std::string cd = s.id;
+                    float cw2 = cd.size() * advance_;
+                    text(x + (bw - cw2) * 0.5f, y0 + 6 + lh, cd, TR, TG, TB, 0.45f);
+                } else {
+                    std::string cd = " " + s.id;
+                    text(x + 4, y0 + 4, cd, TR, TG, TB, 0.45f);
                 }
                 if (node_h > 3 * lh + 10) {
                     std::string st = s.status;
@@ -2322,7 +2336,7 @@ void StudioUI::build_chrome() {
     chrome_stage_.clear();
     if (board_.loaded) {
         for (const auto& s : board_.stages) {
-            if (s.status == "next") { chrome_stage_ = s.id + " " + s.name; break; }
+            if (s.status == "next") { chrome_stage_ = s.name + " (" + s.id + ")"; break; }
         }
         // no 'next' row (every gate green, or the board says something we do not
         // model) -- fall back to the standing line rather than showing nothing.
@@ -2359,6 +2373,77 @@ void StudioUI::build_chrome() {
     float gpu_x = W - 8.f - static_cast<float>(chrome_gpu_.size()) * advance_;
     text(gpu_x, by + (bar_h() - lh) * 0.5f, chrome_gpu_, 0.55f, 0.58f, 0.65f, 1.f);
 
+    // THE EYE'S VERDICT, ALWAYS VISIBLE (2026-09-03, the operator's decree: "I need
+    // to see it in the editor" — a report buried in the DOCS picker is a report the
+    // operator never sees; the dyad log page remains for the full history). Reads
+    // dyad_log.txt (the human-readable mirror the writer maintains), extracts the
+    // NEWEST "VERDICT: X" token, shows it in every mode. The verdict line carries
+    // the color: amber = HOLD (attention), green = SHIP/CLEAN/PASS/GROUNDED/IMPROVED,
+    // gray = no verdict yet. The mtime poll: 1 Hz max, only re-read when the file moves.
+    float eye_chip_left = -1.f;   // the legend starts LEFT of this (the no-overlap law)
+    {
+        static std::string eye_line;      // the last parsed verdict line
+        static float eye_r = 0.45f, eye_g = 0.47f, eye_b = 0.52f;
+        static long long last_mtime = -1;
+        static FILETIME ft_prev{};
+        FILETIME ft_now{};
+        bool moved = false;
+        {
+            WIN32_FILE_ATTRIBUTE_DATA fa{};
+            char mod[MAX_PATH];
+            DWORD mn = GetModuleFileNameA(nullptr, mod, MAX_PATH);
+            std::string p = (mn > 0 && mn < MAX_PATH) ? std::string(mod, mn) : "Saved/dyad/dyad_log.txt";
+            for (int i = 0; i < 5; ++i) {
+                size_t s2 = p.find_last_of("/\\");
+                if (s2 == std::string::npos) break;
+                p.resize(s2);
+            }
+            p += "/Saved/dyad/dyad_log.txt";
+            if (GetFileAttributesExA(p.c_str(), GetFileExInfoStandard, &fa)) {
+                moved = memcmp(&fa.ftLastWriteTime, &ft_prev, sizeof(FILETIME)) != 0;
+                ft_prev = fa.ftLastWriteTime;
+            }
+            if (moved || last_mtime < 0) {
+                last_mtime = 1;
+                std::ifstream f(p.c_str());
+                std::string all, line;
+                while (std::getline(f, line)) { all += line; all += '\n'; }
+                size_t vpos = all.rfind("VERDICT:");
+                if (vpos != std::string::npos) {
+                    size_t e = vpos + 8;
+                    while (e < all.size() && (all[e] == ' ' || all[e] == '\t')) ++e;
+                    size_t eend = e;
+                    while (eend < all.size() && all[eend] != '\r' && all[eend] != '\n') ++eend;
+                    std::string word = all.substr(e, eend - e);
+                    // trim trailing punctuation the model may trail with
+                    while (!word.empty() && (word.back() == '.' || word.back() == ',' || word.back() == '*')) word.pop_back();
+                    if (!word.empty()) {
+                        // the newest entry's time-of-day (the date is noise in a bar)
+                        size_t ts = all.rfind('\n', vpos);
+                        std::string head = (ts == std::string::npos || ts + 20 > vpos) ? "" : all.substr(ts + 12, 8);
+                        eye_line = head + "  EYE: " + word;
+                        bool good = (word.find("SHIP") != std::string::npos || word.find("CLEAN") != std::string::npos ||
+                                     word.find("PASS") != std::string::npos || word.find("GROUNDED") != std::string::npos ||
+                                     word.find("IMPROVED") != std::string::npos);
+                        bool bad  = (word.find("HOLD") != std::string::npos || word.find("DEFECTS") != std::string::npos);
+                        eye_r = bad ? 0.95f : (good ? 0.30f : 0.45f);
+                        eye_g = bad ? 0.62f : (good ? 0.85f : 0.47f);
+                        eye_b = bad ? 0.25f : (good ? 0.40f : 0.52f);
+                    }
+                }
+            }
+        }
+        if (!eye_line.empty()) {
+            float ex = gpu_x - 24.f - static_cast<float>(eye_line.size()) * advance_;
+            if (ex > cx + hist_w + 180.f)   // degrade, never overlap (the legend's law)
+            {
+                text(ex, by + (bar_h() - lh) * 0.5f, eye_line, eye_r, eye_g, eye_b, 1.f);
+                hots_.push_back({ ex - 4, by, static_cast<float>(eye_line.size()) * advance_ + 8, bar_h(), 860 });
+                eye_chip_left = ex;
+            }
+        }
+    }
+
     // THE LEGEND (2026-09-02, the eye on the glass: "two competing progress
     // metaphors ... no legend explaining why B8 is brown or B10 purple").
     // Drawn right-to-left from the GPU text: swatch + word, the swatch carrying
@@ -2371,7 +2456,9 @@ void StudioUI::build_chrome() {
                                     {"next", 0.30f, 0.60f, 1.00f}, {"partial", 0.90f, 0.70f, 0.20f},
                                     {"done", 0.25f, 0.75f, 0.35f} };
         const int NLEG = 5;
-        float lx = gpu_x - 24.f;   // breathing gap before the GPU text
+        // the eye chip owns the space right of the legend when present — the
+        // first capture proved the collision ("EYE11Hog D" over the timestamp)
+        float lx = (eye_chip_left > 0.f) ? eye_chip_left - 24.f : gpu_x - 24.f;
         float ly = by + (bar_h() - lh) * 0.5f;
         for (int i = 0; i < NLEG; ++i) {
             float ww = 6.f + 5.f + strlen(legs[i].w) * advance_ + 16.f;
