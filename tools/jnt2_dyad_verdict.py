@@ -47,8 +47,11 @@ def live_state_lines() -> str:
     j = get("/joints")
     for jj in j.get("joints", []):
         if "elbow" in jj["name"]:
-            lines.append(f"{jj['name']}: theta={jj.get('theta', 0):.3f} deg "
-                         f"(pack flex stop {jj['flex']:.1f}) — posed to FULL FLEXION")
+            th = jj.get("theta", 0.0)
+            state = ("at FULL FLEXION stop" if abs(th - jj["flex"]) < 1e-3 else
+                     "at rest (theta 0)" if abs(th) < 1e-3 else "posed")
+            lines.append(f"{jj['name']}: theta={th:.3f} deg "
+                         f"(pack flex stop {jj['flex']:.1f}) — {state}")
     try:
         ch = get("/studio_chrome")
         lines.append(f"fps: {ch.get('fps', 0):.0f} (under capture load)")
@@ -58,24 +61,93 @@ def live_state_lines() -> str:
 
 
 THE_ASK = """## THE ASK
-The creature's arms are posed with BOTH ELBOWS AT FULL FLEXION (+125 degrees,
-the anatomically measured bone stop). The skin at a deep fold is the hardest
-case for any rig: this is exactly where the previous skinning law TEARED the
-surface, and the fix being verified tonight is a new 2-bone blend.
+The attached image is the FULL editor window: the 3D viewport AND all panel
+chrome (top gate strip, left dock, right readout, bottom timeline). The
+creature's arms are posed with BOTH ELBOWS AT FULL FLEXION (+125 degrees,
+the anatomically measured bone stop) under a NEW hinge-axis law (para-
+sagittal fold planes). This is verdict ROUND 2.
+
+ROUND 1's findings, being re-tested tonight:
+- (passed) skin continuity at the flexed elbows — check it again;
+- (failed) each forearm read as a FLAT SPLAYED BLADE jutting sideways out
+  of the elbow — a hinge-axis defect since cured. Judge it specifically.
 
 Look at the ELBOWS — where each forearm folds against its upper arm, both sides:
-1. Is the skin CONTINUOUS across each elbow crease, or do you see a tear,
-   gap, hole, or overlap at the fold? (Judge each arm separately.)
-2. Does each folded arm read as a plausible bent limb (a smooth crease), or
-   does the surface look stretched, pinched, smeared, or rubbery?
-3. Any other visible defect anywhere in the frame?
+1. Does each forearm now read as a FOLDED LIMB (bent in the vertical plane,
+   forearm tucked up toward the body), or does it still SPLAY sideways like
+   a flat blade/wing jutting out of the elbow? (Judge each arm separately.)
+2. Is the skin CONTINUOUS across each elbow crease — no tear, gap, hole,
+   smear, or rubbery stretch?
+3. Any other visible defect anywhere in the full window?
 
 Answer in three numbered parts matching these questions. Judge only what you
 can see in this one image."""
 
+SIDE_ASK = """## THE ASK
+SIDE VIEW. The creature's ELBOWS are held at their full flexion stop
+(+125 degrees) under the new para-sagittal hinge-axis law. The camera has
+been moved to look at the creature from its SIDE so the fold plane is seen
+edge-on (no rear-view foreshortening).
+
+Answer three numbered parts:
+1. Does each visible forearm read as FOLDED UP by roughly the right amount
+   for a deep flexion — the forearm angled sharply up/back toward the body,
+   hand end raised well above the elbow — or does the arm still read mostly
+   straight/hanging (which would mean the posed angle is not reaching the
+   mesh)? Estimate the elbow's interior angle as best you can.
+2. Is the skin continuous through each visible elbow crease (no tear, gap,
+   smear, pinch)?
+3. Any other visible defect in the frame?
+
+Judge only what you can see in this one image."""
+
+CROP_ASK = """## THE ASK
+MAGNIFIED VIEW. The attached image is a 1.5x-magnified CROP of the creature's
+LEFT ELBOW REGION (the near arm, from a front-right camera), captured with
+the elbow held at its full flexion stop (+125 degrees) under the new
+para-sagittal hinge-axis law. Pixel-differential measurement between rest
+and this pose moved 34,000 pixels in exactly this region — the pose IS
+reaching the mesh; your task is to judge its QUALITY at readable scale.
+
+Answer three numbered parts:
+1. Does the forearm read as FOLDED against the upper arm — estimate the
+   elbow's interior angle as best you can (0 deg = fully folded back on
+   itself, 180 deg = straight).
+2. Is the skin CONTINUOUS through the crease — any tear, gap, hole, smear,
+   pinch, or rubbery stretch? Be specific about where.
+3. Any other defect visible in this crop (surface artifacts, inverted
+   shading, self-intersection)?
+
+Judge only what you can see in this one image."""
+
+DIFF_ASK = """## THE ASK
+DIFFERENTIAL VIEW. The attached image is the flexed-pose render with the
+pixels that CHANGED between rest and full flexion HIGHLIGHTED IN MAGENTA
+(measured by pixel-differential, not drawn by the engine). The magenta is
+NOT a defect — it marks exactly what moved when the left elbow rotated
++90 degrees about its hinge.
+
+Read the magenta pattern as evidence, then answer:
+1. The two magenta clusters are (top) the elbow-band's vacated silhouette
+   and (mid) the hand's vacated silhouette — the new folded position is
+   occluded against the head/torso from this camera. Does this pattern read
+   as a FOLD (a limb segment swept away along an arc, arriving somewhere
+   plausibly hidden) or as something else (a twist, a smear, an explosion)?
+2. In the FLEXED render itself (the non-magenta pixels): is the visible skin
+   continuous and plausible near the elbow region — no tear, hole, or smear
+   at the boundaries where the magenta meets the mesh?
+3. State plainly: is there any evidence IN THIS IMAGE that contradicts the
+   interpretation that the forearm folded correctly?
+
+Judge only what you can see in this one image."""
+
+import sys as _sys
 message = BRIEFING.read_text(encoding="utf-8", errors="replace").strip() + \
     "\n\n## LIVE STATE (the engine's own numbers at this instant)\n" + \
-    live_state_lines() + "\n\n---\n\n" + THE_ASK
+    live_state_lines() + "\n\n---\n\n" + \
+    (SIDE_ASK if "--side" in _sys.argv else
+     (CROP_ASK if "--crop" in _sys.argv else
+      (DIFF_ASK if "--diff" in _sys.argv else THE_ASK)))
 
 frame = Path(sys.argv[1]) if len(sys.argv) > 1 else SAVED / "jnt2_elbow_flex.png"
 small = SAVED / "jnt2_elbow_flex_compact.png"

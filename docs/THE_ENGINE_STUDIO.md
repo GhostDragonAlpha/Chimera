@@ -2070,3 +2070,60 @@ report is Saved/dyad/jnt2_elbow_verdict.md.
   envelope-weights re-emit had silently regressed the referee's measured
   stops (elbow 125 -> round-1 60); a missing verdict file is now a loud
   warning, never a silent fall-back.
+
+## THE SAGITTAL AXIS LAW — FLEXION FOLDS NOW (2026-09-04)
+
+The wing-splay cure, shipped and verified end to end.
+
+**The law.** Every paired limb hinge axis := the shared signed sagittal
+x-hat, sign per joint from the CLOSING TEST (+theta must swing the distal
+bone toward its parent): shoulder/elbow/hip/knee +x, wrist/ankle -x.
+Justified by measurement BEFORE shipping (tools/axis_sagittal_probe.py):
+every limb bends < 26 deg at rest, so the old n = u x v derivation was
+degenerate for the ENTIRE class (alignment with the true plane normal as
+low as 0.10); the closing signs agreed old-vs-sagittal on all six (the law
+changes the fold PLANE, never the flexion DIRECTION); Rodrigues about x-hat
+preserves v.x exactly, so a splay is geometrically impossible. Shared-axis
+mirror law survives (x-hat is invariant under the y/z-negation mirror).
+
+**Referee round 3 on the new axes: ALL CHECKS PASS.** Conjugation exact at
+0.00e+00 wu on all six pairs. Re-measured bone stops in the honest
+(para-sagittal) fold plane: hip 124/124 -> ship 119, knee 156/156 -> ship
+151. The pre-registered falsifier "a stop moved >30 deg" fired on the knee
+(114 -> 151) and is adjudicated: the old 114 was the shank sweeping
+SIDEWAYS into neighboring geometry (the splay's own artifact); the contact
+plane changed, so the stop legitimately re-measured. Ligament-limited pairs
+(shoulder/elbow/wrist/ankle) keep pack ROMs; the elbow's working 125 is now
+the factory FALLBACK (never again a round-1 placeholder). Gate: PASS, all
+seven checks.
+
+**The verification saga — instruments convicted one by one, honestly.**
+Round 2 (rear view): splay cured, skin continuous — but the eye read the
+posed arm as "straight," which contradicted the projection arithmetic. The
+chase: kernel_axis_probe.py (candidate-axis bbox discriminator: NO candidate
+matched, because) the selection gizmo was contaminating the diff; cleared,
+the clean diff showed two disjoint clusters — the band's vacated silhouette
+(top) and the hand's vacated silhouette (mid), the arrival occluded. The
+cyan rig overlay was discovered to draw the REST skeleton (static under
+posing — never verify a pose against it). The "side-view horizontal band =
+twist" interpretation was MY error: on the fitted side camera +x projects
+down-screen, so an x-hat fold legitimately leaves a horizontal band
+(/project axis-mapping measured: +x down, +y up, +z screen-left). Final
+arbitration: the MAGENTA DIFFERENTIAL (changed pixels highlighted) shown to
+the eye, which ruled: **FOLD — one coherent vacated limb silhouette, no
+twist/smear/explosion signature; skin continuous; no contradiction.**
+
+**Capture-channel discipline (learned the hard way):** /frame = clean
+viewport only (no chrome, no rig overlay); /glass = the composited window
+(chrome + overlay). Every verdict request captions its channel; the
+verdict script's LIVE STATE now reports each elbow's actual state
+(rest/posed/at-stop) after it briefly mislabeled theta=0 as "FULL FLEXION."
+
+**Residue (honest):** the folded forearm's destination is occluded from the
+front camera — the fold verdict rests on the differential + projection
+arithmetic + the eye's differential read; a closeup camera looking down the
+fold plane is the ideal final picture. The eye's repeat audits also left a
+real editor-defect backlog: timeline footer clip, EYE:DEFECTS orange
+semantics, HUD/timeline not following posed joints, strain tint wired to
+the march clock instead of live angles, referee chips missing B-numbers,
+blank backtick glyph.

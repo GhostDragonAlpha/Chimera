@@ -1,65 +1,99 @@
 # dyad verdict — JNT2 elbow at full flexion (125 deg)
 
-- frame: `jnt2_elbow_flex.png`
+- frame: `clean_diff_crop.png`
 - model: `qwen3.8-27b-gsq-rco`
-- attempts: 1  last finish: stop  last read: 198.9s
+- attempts: 1  last finish: stop  last read: 499.8s
 
 ## THE EYE'S REPORT
 
-## Part A — LOOK (composition, framing, drift from THE SCAFFOLDING)
+# DIFFERENTIAL READ — flexed‑pose render + magenta pixel‑diff overlay
 
-**Subject & framing.** The monkey‑head creature is centered horizontally and sits in the upper‑middle of the frame: crown of head ≈ 18 % down, feet ≈ 52 % down. The whole subject is inside the viewport with nothing cut off at any edge (no limb clipped), so this is *not* a `fit`/bounding‑sphere framing bug — but the subject occupies only ~35 % of the vertical extent and there is a large empty floor band below it (~48 % of the frame) plus a large black void above. The hero reads small; if "fit" was meant to make the creature the dominant element, the camera distance/FOV constant is too generous (minor drift, not a defect).
-
-**Contact shadow — present and tracking.** There *is* a dark flattened copy on the floor under/behind the feet, cast toward the back‑right (light from front‑left), and it includes horizontal splayed lobes that match the arm pose. So the contact‑shadow pass is alive and pose‑consistent. Good.
-
-**Floor grid — I could not see it in THIS view.** The floor is a flat uniform dark‑gray plane with a hard horizon edge against black; there are **no perspective lines at y=0 and no brighter axis lines through the origin**, which THE SCAFFOLDING lists as intended instruments. (Reconcile: if this PNG is a tight crop of only the 3D viewport, the grid could in principle be outside it — but the origin sits directly under the centered creature, so radial grid lines *should* still cross this frame; their total absence points to the grid instrument layer not being drawn.)
-
-**Strain tint — I could not see any blue or red anywhere in THIS view.** The whole mesh is a uniform matte tan/brown with only directional shading. Per THE SCAFFOLDING the strain overlay appears *"while marching,"* and LIVE STATE says `playing=False, clock=joints` (a held pose), so **the absence of tint here is actually consistent / expected**, not a defect — *provided* strain is defined as a velocity/rate quantity that goes to zero when paused. If instead strain is meant to be a static geometric compression metric (which would light up the 125° elbow creases even while held), then its absence *would* mean the overlay pass isn't evaluating the static pose. Flag for you to confirm which definition is intended.
-
-**Editor chrome — I could not see ANY of it in THIS view.** No top strip with B0..B10 gate chips, no left dock (BOARD/SCENE/JOINTS/DOCS/LOG/CAPTURE), no right dock FPS/state readout, **no camera chips `[1 name]…[9 name][+ cam]` in the viewport's top‑right**, no HUD rows top‑left, no reel strip, no timeline bar (play/pause, ±1f, speed, KEY, scrub + amber diamonds, `t = …s / 4.0 s`), and no bottom status bar (stage / fps histogram / GPU / color legend). There is **zero text of any color anywhere** in the image — including no orange warning line. This is the single biggest drift from THE SCAFFOLDING *if this PNG is the full 2560×1440 client area*. Crucially, the camera chips and HUD rows are specified to live **inside** the viewport, so even under a "this is just a viewport crop" hypothesis they should still appear at the top of *this* frame — and they do not. That tips the diagnosis toward: the entire 2D/overlay layer produced no draw calls this frame (see Part B). I am stating this as an absence in THIS view, per the honesty rule; please confirm whether the capture is full‑window or viewport‑only before we treat it as a crash vs. a crop.
-
-**Background.** Pure black void above the horizon — acceptable default clear color, not flagged.
+> Scope note up front: this attachment is **only the 3D render with the diff painted on top** (black upper backdrop, dark‑gray floor plane). It is *not* the full "Engine Studio" window. Everything below that depends on UI chrome is therefore judged under the honesty rule — *"I could not see X in THIS view"* — and I flag whether its absence is most likely a crop or genuine drift.
 
 ---
 
-## Part B — REASON (the three numbered answers, each with mechanism + fix)
+## PART A — LOOK (composition, framing, legibility, scaffold drift) + the three questions
 
-### 1) Is the skin CONTINUOUS across each elbow crease? (each arm separately)
+### A.1 Composition / framing / collision / contrast
+- **Subject placement:** The creature's body column runs vertically down the **left third** of the frame; the long thin tapering curve (tail‑like) sweeps into the upper‑right and balances it slightly. Roughly the right 50–60% of the image is empty backdrop (black on top, gray floor below). It reads as a *zoomed / cropped* framing, not a fitted full‑body shot.
+- **Top edge crop:** The vertical body column **exits the top frame edge** — I could **not see the head/monkey‑head in THIS view**; whatever is at the top of the mesh is cut off by the frame border. If this image were meant to be the boot‑`fit` viewport (target = mesh center, distance = bounding sphere), a subject whose crown is clipped at the top edge would be a **framing bug** (subject not fully inside with margin). My leading read is that this is a *crop taken for the differential*, in which case the crop — not the camera fit — is responsible. I cannot disambiguate from one image, so I state it as an observation, not a confirmed defect.
+- **Bottom edge:** The two clawed hands/feet on the floor sit at the lower‑left corner; they are visible but close to the border. No limb is sliced *through* mid‑segment at any edge that I can see — only the top crown is out of frame.
+- **Collision / overlap:** There is **no UI chrome in this view**, so there is nothing for the magenta or the mesh to collide with. The magenta blob's edges abut (a) pure black backdrop and (b) the tan body silhouette, and they stop cleanly at the silhouette line — no bleed onto a panel, no overlap with an FPS readout, because neither exists here.
+- **Contrast / legibility:** Magenta‑on‑black (top blob) = very high contrast, instantly readable. Magenta‑on‑gray (floor streak) = also clearly readable. Tan mesh on black/gray = good separation. There is **no text at all** in this image (no readouts, no chips, no legend), so nothing to be illegible.
+- **Scaffold drift (honesty‑framed):** In THIS view I could **not see** any of the following intended elements: top‑strip B0..B10 gate chips; left‑dock modes (BOARD/SCENE/JOINTS/DOCS/LOG/CAPTURE); right‑dock FPS + engine‑state rows; viewport camera chips `[1 name]…[9 name][+ cam]`; HUD rows; the REEL strip; the TIMELINE (play/pause, ±1f, speed, KEY, scrub bar with amber diamonds, `t = …s / 4.0 s`); or the bottom STATUS BAR (stage, fps histogram, GPU name, color legend). I also could **not see** any blue/red **strain tint** anywhere on the skin, and no gizmo (expected — nothing selected). Two interpretations: **(a)** most likely — this screenshot is a *viewport‑only crop* handed over specifically for the differential ask, so the chrome was simply not captured; **(b)** less likely but possible — if this image is supposed to represent the whole window, then *all* of the above scaffold elements are absent = major drift. I lean (a) because the backdrop (black sky + gray floor plane with a projected contact shadow) is exactly what a bare render pass produces, and the ask explicitly frames the file as "the flexed‑pose render," not "the editor window."
 
-- **Left arm (our left = creature's `elbow_L`):** On the *visible* rear/convex surface I could not see a tear, gap, hole, or missing‑triangle void; the silhouette is closed and the thin inner ridge reads as unbroken. **However**, at 125° of flexion the *concave* (compressed) face of the bend points away from this camera — toward the head/front — so any tear, pinhole, or self‑intersection on that hidden face **cannot be ruled out from THIS view**. I also could not see a clean boundary between upper arm and forearm: they fuse into one flat fan near the armpit, which is itself a warning sign of overlap/self‑intersection at the junction, though I can't confirm it from behind.
-- **Right arm (our right = `elbow_R`):** mirror image — same read. No visible hole/tear on the rear face; inner crease occluded; hidden‑side defect not excludable.
+### A.2 What the magenta actually shows in THIS view
+I resolve **two** magenta elements, not three:
+1. **Top cluster** — one chunky, limb‑shaped blob in the upper‑left/center against black. It has a wider upper lobe and a tapering downward‑pointing lower lobe (a spike), with a small black wedge notching into its left side. Its outline is crisp and follows plausible limb silhouettes; there is **no gradient trail, no rotational smear, no radial starburst, no scattered fragments**.
+2. **Floor streak** — a thin, roughly horizontal magenta line sitting *on the gray floor*, inside the dark contact‑shadow region (lower‑middle of frame).
 
-**Verdict:** continuity is *not disproven* but also *not confirmed clean*. Because the surface is flattened so badly (see #2), a "looks continuous" read from one rear angle is unreliable. **Fix / next probe:** render an orthographic side view of each elbow, and/or toggle backface‑culling off / add a wireframe or inside‑out pass over just the two elbow regions, to actually inspect the concave crease where a tear would hide. Don't sign off on continuity from this single rear frame.
+I could **not see** a separate **mid‑height** magenta cluster in THIS view: the central hanging five‑finger clawed hand and the faceted elbow band are tan, not magenta. So if the briefing's "(mid) hand's vacated silhouette" is meant as a *distinct* middle blob, I cannot confirm it here — what I see instead is (i) the top blob's lower tapering lobe (which could itself be the "hand vacated" part merged with the "elbow‑band vacated" upper lobe) and (ii) the floor streak. I state that plainly rather than inventing a middle cluster.
 
-### 2) Does each folded arm read as a plausible bent limb (smooth crease)?
+### A.3 Direct answers to the three questions
 
-**No — it fails on both arms.** Neither forearm reads as a smooth bent cylindrical limb with a tight fold. Each reads instead as a **flat, broad, splayed blade / wing** jutting roughly horizontally outward from the elbow, showing:
-- a sharp thin **pinch/ridge line** along its inner edge (the would‑be crease),
-- a wide thin **fan of surface flaring out** to a pointed outer edge, and
-- a thin stretched **tendril drooping at the hand**.
+**Q1 — FOLD vs twist/smearexplosion?**
+It reads as a **FOLD**. Reasoning from shape alone:
+- The top blob is a *single coherent silhouette* shaped like an extended limb (broad segment → tapering hand), which is exactly what you get when you subtract the rest‑pose limb silhouette from the flexed frame and the new position lands behind already‑filled body pixels (so it contributes no diff). That is the signature of a **rigid segment swept along an arc to a hidden destination**, not of a deformation.
+- A **twist** would show shear: two copies of the silhouette rotated relative to each other, or an arc‑shaped smear connecting them. Neither is present — edges are hard and unrotated.
+- An **explosion** would show many disconnected fragments radiating from a point, or a starburst of diff pixels. We have one chunky blob + one thin shadow band; no fragmentation.
+- A **smear/blur** would show anti‑aliased gradient trailing in the motion direction. The magenta is binary‑clean (1‑px edges), no trail.
+- The **thin floor streak** independently supports "fold, not chaos": a controlled hinge rotation that keeps the limb's mass within roughly its own ground footprint produces only a *small* change in the projected contact shadow — exactly a thin band. An explosion or wild twist would perturb the shadow silhouette much more broadly.
+- The **asymmetry** (magenta only on one side of the body, none mirrored) matches a *single‑elbow* event, consistent with LIVE STATE `elbow_L theta=90 / elbow_R theta=0`.
 
-That is the textbook deep‑flexion skinning signature: **smeared / stretched / rubbery / flat**, not a smooth crease. Note the upper‑arm segments (shoulder→elbow) are normal thin tapered cylinders and the legs are normal cylinders — so the base topology is fine; only the *forearm transition zone* deforms into a blade, which localizes the fault to the skinning/pose of that region, not to the mesh.
+So: **fold**, with the new folded position occluded against head/torso as hypothesized. I see no evidence for twist, smear, or explosion.
 
-**Mechanism hypotheses (most → least likely):**
-1. **Wide linear weight blend collapsing to a flat bisector sheet.** If the "new 2‑bone blend" still uses a broad transition band where many vertices sit near 0.5/0.5 and are combined by *linear matrix lerp* (or naive dual‑quaternion average), then when the two bones are ~125° apart relative to rest, the averaged transform orients those mid‑vertices along the **bisector** of the two bone directions — which is exactly a horizontal flat sheet. Linear lerp does not preserve arc length, so the skin between the bones stretches into a fan instead of folding like paper. This matches the flat blade + stretched hand tendril precisely.
-2. **Mis‑oriented elbow rotation axis.** An anatomical elbow flexes in the sagittal plane (rotation about a left/right axis through the joint), bending the forearm up/back toward the body. Here the forearms are flung **horizontally outward like wings**, which is what you get if the FK law's rotation for `elbow_L/R` is applied about the wrong local axis (e.g., an axis pointing forward or along the forearm). If the *bone* motion itself is wrong, even a perfect skin blend will follow it into a wing splay.
-3. **New blend not actually active on these vertices** — weight table still bound to the old law / wrong bone indices for the elbow region, so we're seeing the old tear‑prone behavior in a new guise.
+**Q2 — Skin continuity near the elbow in the non‑magenta pixels?**
+Yes — it looks **continuous and plausible**. At the faceted elbow band I see low‑poly shading facets and a slight crease/fold line where segments meet (expected for a hinge "elbow‑band"), but:
+- **No tear:** no jagged gap splitting the surface, no crack line.
+- **No hole:** no patch of black backdrop showing *through* the mesh; the tan surface is unbroken across the joint.
+- **No smear:** no texture bleeding or gradient smudge at the boundary where magenta meets mesh — the magenta stops exactly at the body silhouette edge and does not bleed onto the skin.
+The only "roughness" is geometric faceting/aliasing on the hinge band, which is normal low‑poly rig geometry, not a surface defect.
 
-**Concrete fixes:**
-- Inspect the per‑vertex weight table for both elbow regions: confirm distal‑side vertices are ≈1.0 on the forearm bone and proximal‑side ≈1.0 on the upper‑arm bone, with a **narrow** transition band (a few cm), not a wide 50/50 zone. A wide linear blend at 125° is mathematically guaranteed to produce this flat sheet.
-- Replace linear matrix lerp in the transition with a length‑preserving scheme — rigid per‑vertex assignment, or slerp/dual‑quaternion that conserves skin arc length — so the crease *folds* rather than flattens.
-- Print/inspect the actual FK rotation matrices for `elbow_L` and `elbow_R` at θ=125° and verify the rotation axis is perpendicular to the arm in the sagittal plane; if it's flinging the forearm sideways, correct the bone rest orientation / joint axis before re‑judging the skin.
-- Re‑capture with an orthographic side view of each elbow after the fix; a smooth crease should show a tight concave fold with no horizontal fan.
+**Q3 — Any evidence IN THIS IMAGE contradicting correct folding?**
+No **hard** contradiction. The pattern is internally consistent with a +90° fold of one elbow. However I flag three *ambiguities* that this single view cannot resolve (and which would become contradictions only under an assumption about limb identity):
+1. **The long thin curve to the upper‑right is unchanged (no magenta).** If that element were actually the left forearm, then it did *not* move, contradicting `elbow_L=90°`. But its thinness/taper and lack of diff read as a **static tail or other limb**, so I treat this as "cannot confirm identity," not a confirmed failure.
+2. **The central hanging five‑finger clawed hand is unchanged (no magenta).** If *that* hand were the left hand, it should have moved with the flexion; its being static would contradict +90°. Again, limb identity can't be pinned down from one view — it may be a different arm/leg. Flagged as ambiguity.
+3. **The floor shadow streak is very thin.** A dramatic upward fold might be *expected* to shrink the ground silhouette more noticeably; a thin band means the mass stayed within its footprint (consistent with folding *against* the body) but could also be read as "the limb didn't move much." Mild tension, not a contradiction.
 
-### 3) Any other visible defect anywhere in the frame?
+Net: **nothing in this image disproves correct folding**; the two unchanged limbs are an identity ambiguity, and the top‑edge head crop is a framing issue, neither of which attacks the fold logic itself.
 
-Yes — several, ranked:
+---
 
-1. **Total absence of editor chrome (top priority if full‑window).** Mechanism: the 2D/overlay render pass recorded/submitted nothing this frame — e.g., UI command buffer empty, font/glyph atlas failed to load (which would also kill *all* text including orange warnings, matching "no text at all"), the composite step that blends the UI image over the 3D swapchain didn't run, or the layout root collapsed to zero size. Because even the in‑viewport camera chips/HUD rows are missing, this is not a "docks cropped out" situation — the whole overlay layer is silent. **Fix:** confirm full‑window vs. viewport crop; if full, ensure the UI pass is recorded and submitted every frame and its output composited over the 3D image, and verify the glyph atlas loaded (a dead atlas explains the total lack of text).
-2. **Floor grid instrument not drawn** (no y=0 perspective lines, no origin axes) despite origin being under the centered subject. Mechanism: grid mesh/material not bound or its draw call gated off in `clock=joints` mode, or 1‑px lines lost against near‑black floor with axis lines not brightened. **Fix:** make the y=0 line set + brighter origin axes an unconditional instrument layer; check depth/write so it isn't z‑fought by the floor plane or culled.
-3. **Strain tint absent** — reconciled as *expected while paused* per the "while marching" spec, but flag: if you intended a static compression metric at full flexion, the overlay isn't evaluating held poses. Confirm definition; if static is intended, enable/verify the strain pass on `clock=joints` frames so the 125° creases light up blue (compression) and we can *see* the stretch that #2's flat blade implies.
-4. **Subject small in frame** (minor): `fit` distance/FOV likely too generous; tighten the bounding‑sphere→distance factor or widen FOV so the creature fills more of the hero area. Not a limb‑cut bug — nothing is clipped.
+## PART B — REASON (mechanism hypotheses + concrete fixes)
 
-**Reconciliation with LIVE STATE.** No contradiction: `playing=False, clock=joints`, both elbows explicitly posed to the 125° stop, fps=300 (no stutter artifact visible) all match what I see — a held stress pose of exactly the case being verified tonight. The one thing LIVE STATE does *not* tell me is whether this PNG is the full client area or a viewport crop, which is the deciding factor for defect #1; please confirm that, because it changes "catastrophic UI‑render failure" into "expected crop."
+> Talking to the developer: hypotheses/fixes first, praise last. Each item ties a visible thing to a likely mechanism and a fix.
 
-**Bottom line for tonight's verification:** from this single rear frame, the new 2‑bone blend is **not yet passing** the full‑flexion test — both elbows read as flat splayed blades (smeared/stretched), not smooth creases, and continuity on the hidden concave side can't be confirmed. Get an orthographic side view + inside/backface render of each elbow, check the weight falloff width and the elbow rotation axis, and re‑capture before signing off.
+**B.1 The top magenta blob = vacated old forearm+hand silhouette.**
+- *Mechanism:* pixel‑diff between the rest frame and the full‑flexion frame. Where the limb used to be, the flexed frame now shows backdrop (or body), so those pixels differ → flagged magenta. The blob's two lobes (broad upper = old forearm/elbow‑band position; tapering lower spike = old hand position) match a *rigid* segment that was extended and is now folded away. The black wedge notching the left side is where the torso already occluded part of that region in *both* poses, so it never entered the diff — geometrically coherent.
+- *Why the new folded position shows no magenta:* it lands on/behind head/torso pixels that were **already filled in the rest frame**, so `rest == flexed` there → zero diff → invisible. That is exactly the "occluded against the body" hypothesis, and it is *correct* behavior of a 2‑frame diff, not a bug.
+- *Fix / action:* none required for correctness. If you *want* to visualize the new folded limb in the differential (to prove where it landed), don't rely on the raw 2‑frame diff — render an **X‑ray / depth‑peel pass** of just the left forearm+hand in the flexed pose, or take a 3rd frame from a side camera where the fold is unoccluded. The current magenta correctly says "old spot vacated"; it cannot by itself show the new spot when occluded.
+
+**B.2 The thin floor magenta streak = contact‑shadow differential.**
+- *Mechanism:* the contact shadow is projected along the light; changing the pose changes the projected silhouette, so the shadow's pixels change in a band. A *thin* band means the limb's mass stayed within roughly its own ground footprint (folded against the body), which is consistent with a hinge fold and inconsistent with an explosion/twist.
+- *Why it matters:* this is actually **positive evidence** that the shadow system is tracking pose (the briefing requires the shadow to track the pose). If the streak were *absent*, I'd suspect the shadow wasn't re‑projected for the joint pose; its presence says the projection updated.
+- *Fix / action:* none if the thickness looks right to you. If you expected a thicker change, verify the light direction used for the shadow matches the key light in the viewport (a mismatch would make the projected silhouette shift more/less than expected). Check that the shadow is re‑cast from the *current* skinned mesh each frame, not cached from rest.
+
+**B.3 Head/top cropped at the top edge.**
+- *Mechanism:* either (a) this image is a manual crop for the diff (most likely), or (b) the boot `fit` computed target/distance from a bounding sphere that excluded the crown, or the camera was zoomed in after fit.
+- *Fix / action:* if (b), recompute `fit` against the **full** mesh bounding sphere including the head, and confirm the whole subject sits inside with margin; add an assert/log when any vertex projects outside the viewport NDC at boot. If (a), no engine fix — just capture the full window next time so framing can be audited alongside the diff.
+
+**B.4 No editor chrome visible in THIS view.**
+- *Mechanism:* most likely a **viewport‑only crop / render‑pass capture** used for the differential, so the UI layer was never composited into this file. Less likely: the capture path that produced this image rendered only the 3D pass and skipped the 2D UI overlay (a real bug if this *is* supposed to be the window).
+- *Fix / action:* confirm which pipeline emitted this PNG. If it's a dedicated "diff frame" export, make sure that export either (i) includes the full composited window so chrome can be audited in the same artifact, or (ii) is explicitly labeled as viewport‑only so reviewers don't mistake the crop for missing UI. If the 2D UI layer genuinely isn't rendering in some capture path, fix the composite order (3D pass → post/diff → UI overlay → present).
+
+**B.5 No blue/red strain tint visible at the flexed elbow.**
+- *Mechanism:* the scaffold ties strain tint to *"the skin near the knees while marching,"* and LIVE STATE says `clock=joints, playing=False` — i.e., this is a **static joint‑pose test**, not the 4‑s marching clock. If the FK‑law strain overlay is only wired to the *marching* clock source (not to manual/joint poses), then a hand‑posed elbow would show no tint even though it's at full flexion — that would be a **wiring gap**: strain should be a function of *current joint angles*, independent of which clock is driving them.
+- *Fix / action:* drive the strain overlay from the **live per‑joint angle** (and its derivative) every frame regardless of `clock` source, so a manually flexed elbow also shows compressed/stretched tint at the hinge band. If the design truly intends tint only during marching, then this image is correct and no fix is needed — but document that so it isn't later read as a missing feature. (Stated under honesty rule: I could not see any strain tint in THIS view; whether that's expected depends on the clock wiring above.)
+
+**B.6 Reconciling LIVE STATE with what I see.**
+- `playing=False` → matches a **static, crisp** frame (no motion blur, hard magenta edges). Consistent.
+- `clock=joints` → matches a joint‑pose test rather than marching; supports the *absence* of knee strain tint and of any march‑related HUD rows in this view.
+- `t=22722.88 s` → elapsed engine time only; irrelevant to a 2‑frame rest↔flex diff (the diff is pose‑to‑pose, not time‑to‑time). No contradiction.
+- `fps: 300 (under capture load)` → explains why we have a clean high‑res frame suitable for pixel‑diffing; no visual consequence in the image itself.
+- **One text‑side oddity (outside the image, flagged only because it could mislead interpretation):** the LIVE STATE line `elbow_R: theta=0.000 deg … — posed to FULL FLEXION` is internally inconsistent (theta 0 vs "full flexion"). That does not affect this image, but if it's a real label bug in the status readout, fix the annotation so the displayed pose word matches `theta`. The *image* itself shows magenta on **one** side only, which agrees with `elbow_L=90 / elbow_R=0` (a single‑elbow event), so the pixels and the numeric state are mutually consistent on that point.
+
+### Bottom line
+- **Q1:** reads as a **FOLD** — one coherent vacated limb silhouette + a thin shadow band; no twist/smearexplosion signature.
+- **Q2:** skin is **continuous** at the elbow in the non‑magenta pixels — no tear, hole, or smear; only expected low‑poly hinge faceting.
+- **Q3:** **no hard contradiction** of correct folding in this image; the two unchanged limbs (upper‑right curve, central hanging hand) are an *identity ambiguity* I can't resolve from one view, and the top‑edge head crop is a framing/crop issue, not a fold‑logic failure.
+- Most actionable items for you: confirm whether this PNG is a viewport crop or a full‑window capture (B.4); decide if strain tint should be angle‑driven rather than march‑clock‑driven (B.5); and if you want to *see* the folded limb's destination, add an X‑ray/depth‑peel or a side‑camera frame, because a 2‑frame diff will never show an occluded new position (B.1).

@@ -11,9 +11,12 @@ the exact bytes the engine holds — and derives everything from the mesh:
      patch's medoid, so every center is ON the creature by construction.
   2. THE MIRROR LAW builds every R limb: J_R := (-J_L.x, J_L.y, J_L.z).
      R is never independently fitted — the elbow-bug class is structurally
-     impossible. Flexion axes stay UNmirrored (same axis both sides = both
-     limbs flex the same world direction; the old pack already did this
-     and it was correct).
+     impossible. Hinge axes follow the SAGITTAL LAW (2026-09-04): paired
+     joints share the identical signed x-hat, sign per joint from the
+     closing test (flexion closes the interior angle). The earlier u x v
+     derivation is degenerate for near-collinear bones (every limb bends
+     < 26 deg at rest) and inherited the rest pose's sideways splay — the
+     wing-splay defect the dyad convicted at verdict round 1.
   3. ROM LAW: paired joints take the L stop on both sides. The asymmetric R
      stops (elbow_R 166.78, hip_R -104.74, ...) were measured by folding
      from OFF-FRAME anchors — retired with a referee note, re-measurable
@@ -71,16 +74,26 @@ ROM_central = {  # ext, flex (deg)
     'tail_mid': (-139.06, 138.73),
 }
 ROM_L = {
-    'shoulder_L': (-30.0, 60.0), 'elbow_L': (-30.0, 60.0), 'wrist_L': (-30.0, 60.0),
+    # Fallbacks for joints the referee measures as ligament-limited (no
+    # separable bone stop in the sagittal plane — the referee's own finding,
+    # round 3). "Kept" echoes THESE, so they must be the working values the
+    # operator has been living with, never round-1 placeholders: the elbow's
+    # 125 is the round-2 shipped stop (now understood as a soft/anatomical
+    # limit, the 130 contact it came from having been a splay artifact).
+    'shoulder_L': (-30.0, 60.0), 'elbow_L': (-30.0, 125.0), 'wrist_L': (-30.0, 60.0),
     'hip_L': (-150.23, 60.0), 'knee_L': (-147.89, 140.15), 'ankle_L': (-159.21, 131.44),
 }
-AXIS_L = {  # measured flexion axes (kept unmirrored on R — see docstring)
+AXIS_L = {  # PAIRED joints: the SAGITTAL LAW (2026-09-04, see the EMIT block).
+    # Sign per joint from the closing test (tools/axis_sagittal_probe.py):
+    # +theta must swing the distal bone TOWARD its parent — shoulder/elbow/hip/
+    # knee close under +x, wrist/ankle under -x. Central joints keep their
+    # measured sweep axes (x-hat for the spine chain, unchanged).
     'neck': (1.0, 0.0, 0.0), 'jaw': (1.0, 0.0, 0.0),
     'spine_upper': (1.0, 0.0, 0.0), 'spine_mid': (1.0, 0.0, 0.0),
     'spine_lower': (1.0, 0.0, 0.0), 'tail_base': (1.0, 0.0, 0.0), 'tail_mid': (1.0, 0.0, 0.0),
-    'shoulder_L': (-0.9967, 0.0803, 0.0087), 'elbow_L': (-0.8955, -0.4449, -0.0117),
-    'wrist_L': (-0.9983, 0.0586, 0.0039), 'hip_L': (-0.9617, -0.2740, 0.0067),
-    'knee_L': (-0.9930, 0.1168, 0.0171), 'ankle_L': (-0.9670, 0.2547, 0.0058),
+    'shoulder_L': (1.0, 0.0, 0.0), 'elbow_L': (1.0, 0.0, 0.0),
+    'wrist_L': (-1.0, 0.0, 0.0), 'hip_L': (1.0, 0.0, 0.0),
+    'knee_L': (1.0, 0.0, 0.0), 'ankle_L': (-1.0, 0.0, 0.0),
 }
 
 def medoid_snap(landmark, k=8, r_cap=0.8):
@@ -223,38 +236,21 @@ for i, nme in enumerate(names):
     Jf[i] = J[nme]
     src = nme if not nme.endswith('_R') else nme[:-2] + '_L'
     axl = AXIS_L[src]
-    # THE HINGE AXIS IS DERIVED, NOT CARRIED (referee round 2 finding): the
-    # round-1 axes were rod-fold artifacts — the elbow's was 27 deg from
-    # PARALLEL to its own parent bone, a cone sweep that can never fold.
-    # A hinge's axis is the NORMAL of the plane containing the bones it
-    # connects: n = (J - parent) x (child - J). And since R bones are
-    # x-negations of L bones, (-u) x (-v) = u x v — L and R share the
-    # IDENTICAL axis vector, the mirror law for axes via the cross product.
-    # Central joints (neck/spine/tail/jaw) keep their measured sweep axes.
-    parent_of = {'shoulder': 'spine_upper', 'elbow': 'shoulder', 'wrist': 'elbow',
-                 'hip': 'spine_lower', 'knee': 'hip', 'ankle': 'knee'}
-    child_of = {'shoulder': 'elbow', 'elbow': 'wrist', 'hip': 'knee', 'knee': 'ankle'}
-    base = nme[:-2] if nme.endswith(('_L', '_R')) else None
-    if base in parent_of:
-        pk = parent_of[base] + ('_' + nme[-1] if parent_of[base] + '_' + nme[-1] in J else '')
-        P = J[pk]
-        C = None
-        if base in child_of:
-            C = J[child_of[base] + '_' + nme[-1]]
-        elif base == 'wrist':   # distal links end at the measured mesh tips
-            C = hand_tip_L if nme.endswith('_L') else np.array([-hand_tip_L[0], hand_tip_L[1], hand_tip_L[2]])
-        elif base == 'ankle':
-            C = foot_tip_L if nme.endswith('_L') else np.array([-foot_tip_L[0], foot_tip_L[1], foot_tip_L[2]])
-        if C is not None:
-            u = J[nme] - P
-            v2 = C - J[nme]
-            nax = np.cross(u, v2)
-            nn = np.linalg.norm(nax)
-            AXf[i] = nax / nn if nn > 1e-9 else axl
-        else:
-            AXf[i] = axl
-    else:
-        AXf[i] = axl
+    # THE HINGE AXIS IS THE BODY'S SAGITTAL LAW (2026-09-04, successor to the
+    # u x v derivation the referee shipped in round 2): n = (J-parent) x
+    # (child-J) is DEGENERATE for near-collinear bones — every limb bends
+    # < 26 deg at rest (tools/axis_sagittal_probe.py, alignment with the true
+    # plane normal as low as 0.10), so the derived axis inherited the rest
+    # pose's sideways splay: the elbow's axis pointed mostly world-forward
+    # (z), and 125 deg of flexion swung the forearm 1.40 in x vs 0.29 in z —
+    # the wing splay the dyad caught at verdict round 1. A primate limb hinge
+    # folds in the PARA-SAGITTAL plane: shared +/-x-hat, the spine chain's
+    # own axis. x-hat is invariant under the y/z-negation mirror, so L and R
+    # share the identical axis by construction (the mirror law for axes
+    # survives); Rodrigues about x-hat preserves v.x exactly, so flexion
+    # moves the distal bone strictly in y-z — a splay is geometrically
+    # impossible. Central joints keep their measured sweep axes.
+    AXf[i] = axl
     ROMf[i] = ROM_central.get(nme, ROM_L.get(src, (-30.0, 60.0)))
 # THE REFEREE OWNS THE PAIRED STOPS (2026-09-04): the tables above are only the
 # factory's fallback — the B5 referee's measured bone stops are the authority,
