@@ -180,8 +180,13 @@ def live_state_lines() -> str:
         ch = req_json("GET", "/studio_chrome", timeout=8)
         lines.append(f"stage: {ch.get('stage', '?')}  "
                      f"board stages parsed: {ch.get('board', {}).get('stages', '?')}")
+        # 2026-09-05: fps and ft_int share one window (ft_int = 1000/fps by
+        # construction), so the pair the eye compares agrees; render_avg/max
+        # are the stutter instrument and may differ under the cap.
         lines.append(f"fps: {ch.get('fps', 0):.0f}  "
-                     f"ft_avg_ms: {ch.get('ft_avg', 0):.2f}  "
+                     f"ms/frame: {ch.get('ft_int', ch.get('ft_avg', 0)):.2f}  "
+                     f"render_avg_ms: {ch.get('ft_avg', 0):.2f}  "
+                     f"render_max_ms: {ch.get('ft_max', 0):.2f}  "
                      "(NOTE: under capture load; clean fps is sampled separately)")
         lines.append(f"ui draw ok: {ch.get('rec', {}).get('ok')}")
     except Exception as e:

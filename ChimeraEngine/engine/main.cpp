@@ -1726,6 +1726,7 @@ int main(int argc, char** argv) {
                      + ",\"bar_h\":" + std::to_string(StudioUI::BAR_H)
                      + ",\"fps\":" + std::to_string(u.fps_f())
                      + ",\"ft_avg\":" + std::to_string(u.ft_avg_f())
+                     + ",\"ft_int\":" + std::to_string(u.ft_int_f())
                      + ",\"ft_max\":" + std::to_string(u.ft_max_f())
                      + ",\"pushes\":" + std::to_string(static_cast<unsigned long long>(u.ft_pushes_))
                      + ",\"rec\":{" + std::string(u.ok() ? "\"ok\":true" : "\"ok\":false")

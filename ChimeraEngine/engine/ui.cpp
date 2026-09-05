@@ -611,6 +611,20 @@ void StudioUI::rect(float x, float y, float w, float h, float r, float g, float 
     verts_.insert(verts_.end(), v, v + 6);
 }
 
+void StudioUI::diamond(float cx, float cy, float r,
+                       float cr, float cg, float cb, float ca) {
+    float u0, v0, u1, v1; uv_white(u0, v0, u1, v1);
+    Vert v[6] = {
+        {cx,     cy - r, u0, v0, cr, cg, cb, ca, 0.f},
+        {cx + r, cy,     u1, v0, cr, cg, cb, ca, 0.f},
+        {cx,     cy + r, u1, v1, cr, cg, cb, ca, 0.f},
+        {cx,     cy - r, u0, v0, cr, cg, cb, ca, 0.f},
+        {cx,     cy + r, u1, v1, cr, cg, cb, ca, 0.f},
+        {cx - r, cy,     u0, v1, cr, cg, cb, ca, 0.f},
+    };
+    verts_.insert(verts_.end(), v, v + 6);
+}
+
 void StudioUI::rect_outline(float x, float y, float w, float h, float t,
                             float r, float g, float b, float a) {
     rect(x, y, w, t, r, g, b, a);
@@ -1123,19 +1137,42 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 // THE OPERATOR'S DECREE (2026-09-03): the NAME is the stage's face —
                 // the code ("B3") is plumbing for tools and links, not for eyes.
                 // Name on top in FULL brightness; the code demoted to a dim suffix.
-                {
-                    std::string nm = s.name.size() * advance_ > bw - 4
-                                   ? s.name.substr(0, static_cast<size_t>((bw - 4) / advance_)) : s.name;
-                    float nw = nm.size() * advance_;
-                    text(x + (bw - nw) * 0.5f, y0 + 4, nm, TR, TG, TB, 1.f);
-                }
+                // 2026-09-05 (the eye, run 2026-09-05_071124): a TALL node gets
+                // the centered full-brightness name with the id on its own line;
+                // a SHORT node (strip at 92 px: node_h 21 < 2*lh+8) gets ONE
+                // string — dim prefix " B5 " then the name LEFT-ALIGNED after
+                // it, truncated to the chip. The old short fallback drew the
+                // prefix ON TOP of the still-drawn centered name, which the eye
+                // read as "doubled/ghosted" glyphs. One path draws the name
+                // per node, never two.
                 if (node_h > 2 * lh + 8) {
+                    {
+                        std::string nm = s.name.size() * advance_ > bw - 4
+                                       ? s.name.substr(0, static_cast<size_t>((bw - 4) / advance_)) : s.name;
+                        float nw = nm.size() * advance_;
+                        text(x + (bw - nw) * 0.5f, y0 + 4, nm, TR, TG, TB, 1.f);
+                    }
                     std::string cd = s.id;
                     float cw2 = cd.size() * advance_;
                     text(x + (bw - cw2) * 0.5f, y0 + 6 + lh, cd, TR, TG, TB, 0.45f);
                 } else {
-                    std::string cd = " " + s.id;
+                    // short node: dim prefix + truncated left-aligned name —
+                    // the prefix is always visible by construction, the name
+                    // and the prefix can never collide.
+                    std::string cd = " " + s.id + " ";
+                    float idw = cd.size() * advance_;
                     text(x + 4, y0 + 4, cd, TR, TG, TB, 0.45f);
+                    float name_x = x + 4 + idw;
+                    float name_w = bw - 4 - idw;
+                    if (name_w > advance_) {
+                        // 2026-09-05 (the eye): a truncated name ended in a
+                        // cut word ("ANATOMY REFERE") — an ellipsis says the
+                        // cut is the chip's width, not a missing letter.
+                        const size_t maxc = static_cast<size_t>(name_w / advance_);
+                        std::string nm = s.name.size() > maxc
+                                       ? s.name.substr(0, maxc > 2 ? maxc - 2 : 1) + ".." : s.name;
+                        text(name_x, y0 + 4, nm, TR, TG, TB, 1.f);
+                    }
                 }
                 if (node_h > 3 * lh + 10) {
                     std::string st = s.status;
@@ -1674,7 +1711,9 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         float avail = R[2][2] - 20.f;                       // the panel's own padding
         int   maxch = (int)(avail / (advance_ > 0.f ? advance_ : 8.f));
         char buf[128];
-        snprintf(buf, sizeof(buf), "FPS %.0f | ft avg %.2f ms | max %.2f ms", fps_, ft_avg_, ft_max_);
+        // 2026-09-05 (the eye): label the stutter instrument honestly —
+        // ft_avg_/ft_max_ are RENDER cost, not the fps-matching interval.
+        snprintf(buf, sizeof(buf), "FPS %.0f | render avg %.2f ms | max %.2f ms", fps_, ft_avg_, ft_max_);
         if ((int)strlen(buf) > maxch)
             snprintf(buf, sizeof(buf), "FPS %.0f | ft %.2f ms | max %.2f", fps_, ft_avg_, ft_max_);
         if ((int)strlen(buf) > maxch)
@@ -1839,9 +1878,18 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         button(bx, " KEY ", 905, false);   // key the live clock time (tool feature 4)
 
         // the readout: time / loop, joint, theta, state — the engine's own rows
+        // 2026-09-05 (the eye): the readout printed the RAW clock (t = 135.2
+        // / 112) while the PLAYHEAD wrapped — number and marker disagreed.
+        // Same law as the fps pair: one window. The readout now shows the
+        // wrapped time PLUS the lap count, so it agrees with where the
+        // playhead sits and no information is lost.
         char tb[192];
-        snprintf(tb, sizeof(tb), "t = %.3f s / %.1f s  |  %s theta = %+.2f deg  |  %s",
-                 clk_t_, clk_total_, clk_name_.c_str(), clk_theta_,
+        const double wrap_t = clk_total_ > 0.0
+            ? clk_t_ - floor(clk_t_ / clk_total_) * clk_total_ : clk_t_;
+        const long lap_n = clk_total_ > 0.0
+            ? static_cast<long>(floor(clk_t_ / clk_total_)) : 0;
+        snprintf(tb, sizeof(tb), "t = %.3f s / %.1f s (lap %ld)  |  %s theta = %+.2f deg  |  %s",
+                 wrap_t, clk_total_, lap_n, clk_name_.c_str(), clk_theta_,
                  clk_playing_ ? "PLAYING" : "PAUSED (scrub/step = exact poses)");
         text(bx + 10, y + (20 - lh) * 0.5f, tb, 1.0f, 0.85f, 0.40f, 1.f);
 
@@ -1874,17 +1922,43 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                     else if (marker.kind == 3) { mr = 0.90f; mg = 0.55f; mb = 0.20f; }
                     rect(mx - 0.5f, bar_y - 2.f, 1.f, 4.f, mr, mg, mb, 0.95f);
                 }
-                // THE KEY MARKS: diamonds on the bar, amber, clickable — click
-                // one and the clock lands that pose (a paused clock = exact).
-                for (size_t ki = 0; ki < key_marks_ui_.size() && ki < 99; ++ki) {
-                    double kt = key_marks_ui_[ki].second;
-                    double lkt = clk_hinge_period_ > 0.0
-                                 ? kt - floor(kt / clk_hinge_period_) * clk_hinge_period_ : kt;
-                    float kx = scrub_rect_[0] + static_cast<float>(lkt / clk_hinge_period_) * scrub_rect_[2];
-                    float cw = fminf(7.f, bar_h * 0.45f);
-                    rect(kx - cw * 0.5f, bar_y + (bar_h - cw) * 0.5f, cw, cw, 1.f, 0.72f, 0.25f, 1.f);
-                    hots_.push_back({ kx - cw * 0.5f, bar_y + (bar_h - cw) * 0.5f, cw, cw,
-                                      700 + static_cast<int>(ki) });
+                // THE KEY MARKS: FILLED DIAMONDS on the bar, amber, clickable —
+                // click one and the clock lands that pose (a paused clock =
+                // exact). 2026-09-05 (the eye): 7 px squares read as
+                // indistinct ticks — now diamonds, raised to the bar's midline.
+                // THE OVERLAP LAW (same round): the 9 saved poses were captured
+                // ~2 s apart in show time and wrap into a ~40 px span — nine
+                // diamonds at true positions merge into one uncountable blob.
+                // Dense centers are pushed apart monotonically by the diamond's
+                // own footprint (order and time-direction never cross; the
+                // stretch is a few px per key, inside the glyph's own size).
+                {
+                    std::vector<float> kxs; std::vector<int> kidx;
+                    const float rr = fminf(4.5f, bar_h * 0.30f);
+                    for (size_t ki = 0; ki < key_marks_ui_.size() && ki < 99; ++ki) {
+                        double kt = key_marks_ui_[ki].second;
+                        double lkt = clk_hinge_period_ > 0.0
+                                     ? kt - floor(kt / clk_hinge_period_) * clk_hinge_period_ : kt;
+                        kxs.push_back(scrub_rect_[0] + static_cast<float>(lkt / clk_hinge_period_) * scrub_rect_[2]);
+                        kidx.push_back(static_cast<int>(ki));
+                    }
+                    std::vector<size_t> order(kxs.size());
+                    for (size_t a = 0; a < order.size(); ++a) order[a] = a;
+                    std::sort(order.begin(), order.end(), [&](size_t a, size_t b) { return kxs[a] < kxs[b]; });
+                    // 2026-09-05 (the eye, round 2): diameter+1px left the
+                    // diamonds TOUCHING — one 4.5 px/key cluster read as a
+                    // single blob ("count = 1"). +3 px gives a real visual
+                    // gap; a 9-key run fans to ~2 % of the bar.
+                    const float sep = rr * 2.f + 3.f;
+                    for (size_t ai = 1; ai < order.size(); ++ai)
+                        if (kxs[order[ai]] - kxs[order[ai - 1]] < sep)
+                            kxs[order[ai]] = kxs[order[ai - 1]] + sep;
+                    for (size_t ai = 0; ai < order.size(); ++ai) {
+                        const float kx = kxs[order[ai]];
+                        diamond(kx, bar_y + bar_h * 0.5f, rr, 1.f, 0.72f, 0.25f, 1.f);
+                        hots_.push_back({ kx - rr, bar_y + bar_h * 0.5f - rr, rr * 2.f, rr * 2.f,
+                                          700 + kidx[order[ai]] });
+                    }
                 }
                 double lt = clk_hinge_period_ > 0.0 ? clk_t_ - floor(clk_t_ / clk_hinge_period_) * clk_hinge_period_ : 0.0;
                 float px = scrub_rect_[0] + static_cast<float>(lt / clk_hinge_period_) * scrub_rect_[2];
@@ -1937,16 +2011,31 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 else if (marker.kind == 3) { mr = 0.90f; mg = 0.55f; mb = 0.20f; }
                 rect(mx - 0.5f, bar_y - 2.f, 1.f, 4.f, mr, mg, mb, 0.95f);
             }
-            // key marks over the joints show's total (same diamonds, same law)
-            for (size_t ki = 0; ki < key_marks_ui_.size() && ki < 99; ++ki) {
-                double kt = key_marks_ui_[ki].second;
-                double lkt = clk_total_ > 0.0 ? kt - floor(kt / clk_total_) * clk_total_ : kt;
-                if (lkt < 0.0 || lkt > clk_total_) continue;
-                float kx = scrub_rect_[0] + static_cast<float>(lkt / clk_total_) * scrub_rect_[2];
-                float cw = fminf(7.f, bar_h * 0.45f);
-                rect(kx - cw * 0.5f, bar_y + (bar_h - cw) * 0.5f, cw, cw, 1.f, 0.72f, 0.25f, 1.f);
-                hots_.push_back({ kx - cw * 0.5f, bar_y + (bar_h - cw) * 0.5f, cw, cw,
-                                  700 + static_cast<int>(ki) });
+            // key marks over the joints show's total (same diamonds, same
+            // law — including the overlap resolution the hinge branch uses)
+            {
+                std::vector<float> kxs; std::vector<int> kidx;
+                const float rr = fminf(4.5f, bar_h * 0.30f);
+                for (size_t ki = 0; ki < key_marks_ui_.size() && ki < 99; ++ki) {
+                    double kt = key_marks_ui_[ki].second;
+                    double lkt = clk_total_ > 0.0 ? kt - floor(kt / clk_total_) * clk_total_ : kt;
+                    if (lkt < 0.0 || lkt > clk_total_) continue;
+                    kxs.push_back(scrub_rect_[0] + static_cast<float>(lkt / clk_total_) * scrub_rect_[2]);
+                    kidx.push_back(static_cast<int>(ki));
+                }
+                std::vector<size_t> order(kxs.size());
+                for (size_t a = 0; a < order.size(); ++a) order[a] = a;
+                std::sort(order.begin(), order.end(), [&](size_t a, size_t b) { return kxs[a] < kxs[b]; });
+                const float sep = rr * 2.f + 3.f;
+                for (size_t ai = 1; ai < order.size(); ++ai)
+                    if (kxs[order[ai]] - kxs[order[ai - 1]] < sep)
+                        kxs[order[ai]] = kxs[order[ai - 1]] + sep;
+                for (size_t ai = 0; ai < order.size(); ++ai) {
+                    const float kx = kxs[order[ai]];
+                    diamond(kx, bar_y + bar_h * 0.5f, rr, 1.f, 0.72f, 0.25f, 1.f);
+                    hots_.push_back({ kx - rr, bar_y + bar_h * 0.5f - rr, rr * 2.f, rr * 2.f,
+                                      700 + kidx[order[ai]] });
+                }
             }
             // the playhead (loops over the show's total)
             double lt = clk_total_ > 0.0 ? clk_t_ - floor(clk_t_ / clk_total_) * clk_total_ : 0.0;
@@ -2520,7 +2609,11 @@ void StudioUI::build_chrome() {
     // center: FPS + the frame-time histogram (the ring, oldest -> newest)
     float hist_w = static_cast<float>(FT_RING) * 3.f;
     float cx = W * 0.5f - hist_w * 0.5f;
-    snprintf(b, sizeof(b), "%.0f fps  %.2f ms", fps_, ft_avg_);
+    // 2026-09-05 (the eye): the pair shares one window — ft_int_ is derived
+    // from fps_ (1000/fps), so "34 fps / 26.62 ms" contradictions are gone by
+    // construction. The histogram below still plots the RENDER cost (ft_ring_),
+    // the stutter instrument; the budget line stays render-relevant.
+    snprintf(b, sizeof(b), "%.0f fps  %.2f ms/frame", fps_, ft_int_);
     chrome_fps_ = b;
     text(cx - 8 - static_cast<float>(chrome_fps_.size()) * advance_,
          by + (bar_h() - lh) * 0.5f, chrome_fps_, 0.86f, 0.88f, 0.92f, 1.f);

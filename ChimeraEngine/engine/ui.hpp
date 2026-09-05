@@ -75,7 +75,17 @@ public:
     bool create_swap_resources(const std::vector<VkImageView>& views, VkExtent2D ext);
 
     void set_board_file(const std::string& path) { board_path_ = path; }
-    void set_fps(float fps, float ft_avg, float ft_max) { fps_ = fps; ft_avg_ = ft_avg; ft_max_ = ft_max; }
+    // 2026-09-05 (the eye): fps and ft_avg came from DIFFERENT sample windows
+    // — fps counted whole loop ticks (incl. the cap sleep), ft_avg measured
+    // only the render cost — so the bar's two numbers disagreed ("34 fps /
+    // 26.62 ms" on one frame). The law: the pair the human compares shares
+    // ONE window. ft_int_ is DERIVED from fps_ at the setter (1000/fps), so
+    // it agrees by construction; ft_avg_/ft_max_ keep the render-cost stutter
+    // instrument (the histogram's data).
+    void set_fps(float fps, float ft_avg, float ft_max) {
+        fps_ = fps; ft_avg_ = ft_avg; ft_max_ = ft_max;
+        ft_int_ = fps_ > 0.f ? 1000.f / fps_ : 0.f;
+    }
     void set_visible(bool on) { visible = on; studio_state_save(); }
     bool studio_visible() const { return visible; }
     void toggle_visible() { set_visible(!visible); }
@@ -134,6 +144,10 @@ private:
     std::vector<Vert> verts_;
     void rect(float x, float y, float w, float h, float r, float g, float b, float a);
     void rect_outline(float x, float y, float w, float h, float t, float r, float g, float b, float a);
+    // 2026-09-05 (the eye): the saved-pose key marks were 7 px amber SQUARES
+    // that read as indistinct ticks. A filled diamond (two triangles: top /
+    // right / bottom, then top / bottom / left) is the timeline's key mark.
+    void diamond(float cx, float cy, float r, float cr, float cg, float cb, float ca);
     void text(float x, float y, const std::string& s, float r, float g, float b, float a);
     void line(float x0, float y0, float x1, float y1, float th,
               float r, float g, float b, float a);   // C1: the gizmo's axis (rotated quad)
@@ -424,6 +438,7 @@ public:
     void        build_chrome();               // the bar + HUD draw list (+ twin strings)
     float fps_f()    const { return fps_; }      // the twin reads the same
     float ft_avg_f() const { return ft_avg_; }   // numbers the bar draws
+    float ft_int_f() const { return ft_int_; }   // 1000/fps — the bar's second number
     float ft_max_f() const { return ft_max_; }
 
     // ── F1: THE CONSOLE — the HTTP API's interactive twin ──
@@ -625,7 +640,7 @@ public:
 
     // ── status lines (the engine's own live state, composed in main.cpp) ──
     std::vector<std::string> status_lines_;
-    float fps_ = 0.f, ft_avg_ = 0.f, ft_max_ = 0.f;
+    float fps_ = 0.f, ft_avg_ = 0.f, ft_max_ = 0.f, ft_int_ = 0.f;
 
     // ── Vulkan resources ──
     VkDevice         dev_  = VK_NULL_HANDLE;

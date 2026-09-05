@@ -2433,3 +2433,53 @@ into the REEL header (the panel-suppression law needs the reel's rect); the
 contact shadow is not clearly readable; amber key diamonds are not
 distinguishable from tick lines; status-bar fps vs ft_avg_ms come from
 different sample windows (34 fps / 26.62 ms on one frame).
+
+---
+
+## 2026-09-05 — the eye's defect backlog: four fixes, three falsifier classes
+
+**The batch** (one-shot law: each fix convicted by the eye, fixed by a law,
+re-certified):
+
+1. **FPS pair, one window** (`ui.hpp`, `ui.cpp`, `main.cpp`): the status bar
+   drew fps (whole loop ticks, incl. the cap sleep) beside ft_avg (render
+   cost only) — "34 fps / 26.62 ms" contradicted itself. The law: the pair
+   the human compares shares ONE window — `ft_int_` is DERIVED from fps
+   (1000/fps) at the setter, so the bar reads "288 fps 3.46 ms/frame" and
+   agrees by construction. Render cost stays as the stutter instrument
+   (histogram + dock "render avg/max"), honestly labeled. The twin serves
+   `ft_int`; the dyad brief prints the agreeing pair. Numeric falsifier:
+   fps·ft_int = 1000 within 0.01 (live: 298.7 × 3.348).
+2. **Label-extent panel law** (`engine.cpp`): the fifth-round law tested only
+   the tag PIN; `knee_L +0` bled into the REEL header because the LABEL
+   (drawn at the pin, one line high) reached into the panel. A tag now
+   survives only if BOTH pin AND inline label rect clear every panel + the
+   status bar. Eye: no bleed, two rounds running.
+3. **Strip chip prefixes** (`ui.cpp`): at strip height 92, `node_h` 21 < 2·lh+8
+   sent EVERY chip to the fallback that drew `" B5"` ON the centered name's
+   line — long names (ANATOMY/DYNAMICS REFEREE) ghosted over the prefix. The
+   law: a short node draws ONE string — dim prefix, name left-aligned after
+   it, truncated with ".." (an honest ellipsis, not a cut word). Round-1 fix
+   failed (left the centered name drawing — the eye caught the double-draw);
+   round 2 restructured to one-path-per-node. Eye: PASS, prefixes legible.
+4. **Key diamonds** (`ui.cpp` + new `StudioUI::diamond`): 7 px amber squares
+   read as ticks. Now filled diamonds (two triangles), raised to the bar's
+   midline — PLUS the overlap law: the 9 saved poses sit at t=121.1..123.1
+   (≈33 px wrapped) and merged into one blob; dense centers are fanned
+   monotonically by the glyph's own footprint (+3 px gap after round 2's
+   "touching" conviction). **Pixel falsifier at full resolution: 9 components,
+   8 px each, uniform 4 px gaps** — the eye's "merge" was the compact image
+   downscaling 3 px gaps to ~2 px. Lesson recorded: the eye reads a PROXY;
+   when its conviction contradicts the full-res pixels, measure the pixels.
+
+**Also shipped:** the timeline readout wraps (`t = 2.195 s / 112.0 s (lap 2)`)
+— it printed the raw clock (135.2 > 112) while the playhead wrapped; same
+one-window law, agrees with the playhead by construction.
+
+**Not defects (measured, not chased):** the right STATUS dock reads collapsed
+— the operator's own persisted workspace state; the on-screen fps vs LIVE
+STATE skew is capture load (dyad_scan's documented caveat); the value skew
+between LIVE t and the glass t is the seconds between the twin fetch and the
+shutter. New backlog: camera fit targets the head sphere (legs clip at the
+bottom edge); no contact shadow resolvable; top-strip chip colors vs the
+bottom legend enum mismatch; amber reused for benign reel captions.
