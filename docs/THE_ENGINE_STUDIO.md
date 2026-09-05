@@ -2324,3 +2324,49 @@ constant instead of the live value; the parent map was double-uploaded after
 the reload-hygiene patch; the referee now carries the JNT3 tail through its
 ROM rewrite. Falsifiers: rest identity 0 px (matter on vs off), edge-error
 readbacks sane (neck 84.9% max at the seams, knee 21.1%), 300 FPS / 0.45 ms.
+
+## 2026-09-04 — TIER A: THE FACE AND THE TAIL TIP (commit pending)
+
+The operator's direction: the skeleton has a body but no extremities — ears,
+eyes, brows, mouth corners, tail tip. The anatomy survey (.tmp/face_probe.py)
+voted first: ears 480 verts each (mirrored exactly), eye bulges 29 verts each
+proud of the face plane, brow band 437, mouth-corner zone 114, tail plenty.
+Hands/feet are mittens (no separated digits) — that is a mesh-surgery arc,
+named honestly as Tier B, not attempted here.
+
+**Nine joints appended** (legacy 19 order untouched — D7 dope-sheet keys
+reference indices): tail_tip, ear_L/R, lid_L/R, brow_L/R, mouth_L/R.
+
+Laws shipped with them:
+- **Measured landmarks** — every seed from face_probe.py bins, not guesses:
+  ear base (±1.08, 8.90, 0.36), lid above the bulge (±0.55, 8.75, 1.30),
+  brow at the eye line, mouth corner at the patch's inner edge.
+- **The mask law** — face bands claim their verts by measured mask (the jaw
+  precedent generalized); a face segment against head skin would otherwise
+  steal a cheek ring into the ear band. Mask verts get dedicated share 0.80;
+  the blend partner is the former owner (neck, or jaw for the mouth).
+- **The axial mirror law** — an axial vector conjugates under the x-reflection
+  as (ax, -ay, -az): no-op for x-hat (lid/brow keep the sagittal invariance),
+  sign flip for z-hat (ear/mouth), which is what makes +theta lift BOTH ears.
+- **The referee's design-ROM law** — bone-contact folding is meaningless on a
+  0.2 wu skin patch (it contacts its own link at once); face pairs SKIP S/Z
+  and ship factory design ranges. Their M mirror check probes the band's
+  farthest vertex, with the R probe taken as the exact x-negation of the L
+  probe (mesh asymmetry stays in the info block where it belongs).
+- **Gate conviction** — check [8] caught 167 neck verts blending against
+  THEMSELVES (the d2 census ran before the mask reassignment). Fix: self-j2
+  verts take the FK parent at the same share; parentless self goes rigid.
+  The gate now also tolerates legacy packs missing Tier-A entries.
+
+**Engine-side**: overlay FK table extended (absent anatomy is omitted, legacy
+packs render unchanged), and the LAZY rebind path still said 11 where the
+loop fills 12 — the whole-statue-twist disease in its second lair, fixed
+(joint2 uninitialized → garbage chains, again caught by falsifier before
+the operator ever saw it).
+
+**Verdicts**: gate 8/8 on the referee-patched pack. Mirror law proven at
+mesh level (iters=0 strain stats, mirrored poses): lid 30.391/30.391% max,
+ear 5.18/5.21%, mouth 8.235/8.235%. Pixel-frame mirror tests at 3/4 view
+condemned as projection artifacts — screen-space flipping of a perspective
+view is not a law test; mesh-space statistics are. FPS 56 with 28 joints +
+matter 48 iters.

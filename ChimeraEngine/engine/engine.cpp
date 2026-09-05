@@ -3692,7 +3692,11 @@ void Engine::joints_rebind() {
         w[k].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
         w[k].pBufferInfo = &infos[k];
     }
-    vkUpdateDescriptorSets(device_, 11, w, 0, nullptr);
+    // THE COUNT IS THE LAW (the whole-statue twist, round 2): the loop fills
+    // ALL 12 bindings — submitting 11 left joint2 (binding 11) uninitialized,
+    // and the GPU walked garbage FK chains. The lazy rebind path had the
+    // same disease the load path was cured of; both now say 12.
+    vkUpdateDescriptorSets(device_, 12, w, 0, nullptr);
     joints_desc_dirty_ = false;
 }
 
@@ -5198,7 +5202,16 @@ void Engine::push_rig_overlay() {
         {"spine_lower", "hip_L"}, {"hip_L", "knee_L"},
         {"knee_L", "ankle_L"},
         {"spine_lower", "hip_R"}, {"hip_R", "knee_R"},
-        {"knee_R", "ankle_R"}
+        {"knee_R", "ankle_R"},
+        // Tier A (2026-09-04): the tail tip and the face rig — the operator's
+        // "arrows on the face" (every feature draws its own bone+tag, and the
+        // tags name which side is the creature's own left). Absent anatomy is
+        // omitted (legacy packs render exactly as before).
+        {"tail_mid", "tail_tip"},
+        {"neck", "ear_L"}, {"neck", "ear_R"},
+        {"neck", "lid_L"}, {"neck", "lid_R"},
+        {"neck", "brow_L"}, {"neck", "brow_R"},
+        {"jaw", "mouth_L"}, {"jaw", "mouth_R"}
     };
     const int selected = selected_joint_.load(std::memory_order_relaxed);
     const float* st = static_cast<const float*>(j_state_map_);

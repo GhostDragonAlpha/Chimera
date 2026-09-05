@@ -52,7 +52,14 @@ N_SAMPLES = 60
 # child direction per paired joint (the bone that folds); tips measured from
 # the mesh in the factory's own style, mirrored for R.
 CHILD_OF = {'shoulder': 'elbow', 'elbow': 'wrist', 'wrist': 'hand_tip',
-            'hip': 'knee', 'knee': 'ankle', 'ankle': 'foot_tip'}
+            'hip': 'knee', 'knee': 'ankle', 'ankle': 'foot_tip',
+            # TIER A face pairs (2026-09-04): the 'child' is a SKIN PATCH, not
+            # a bone — the sentinel selects the band's farthest vertex as the
+            # probe tip for the M mirror check, and S/Z bone-contact folding
+            # is SKIPPED for them (a 0.2 wu patch contacts its own link at
+            # once; a 'stop' measured there is fiction). Their ranges are
+            # DESIGN laws and ship from the factory tables.
+            'ear': '_band', 'lid': '_band', 'brow': '_band', 'mouth': '_band'}
 # FK parent of each paired joint (to exclude the parent link from static set)
 PARENT_OF = {'shoulder': 'spine_upper', 'elbow': 'shoulder', 'wrist': 'elbow',
              'hip': 'spine_lower', 'knee': 'hip', 'ankle': 'knee'}
@@ -94,6 +101,16 @@ def tip_from(anchor, exclude_joint, maxr, count=30):
     ids = np.where((d_ex < d_an) & (d_an < maxr))[0]
     ids = ids[np.argsort(-d_an[ids])][:count]
     return V[ids].mean(axis=0)
+
+def band_C(pair, side):
+    """Tier-A face pairs: the band's farthest vertex is the probe tip."""
+    kk = ix[pair + '_' + side]
+    sel = np.where(assign == kk)[0]
+    P = V[sel]
+    return P[np.argmax(np.linalg.norm(P - J[kk], axis=1))]
+
+def point_of2(pair, child, side):
+    return band_C(pair, side) if child == '_band' else point_of(child, side)
 
 hand_L = tip_from(Jc['wrist_L'], 'elbow_L', 1.2)
 foot_L = tip_from(Jc['ankle_L'], 'knee_L', 1.0)
@@ -151,7 +168,7 @@ def bone_stop(pair, side):
     nm = pair + ('_' + side if side else '')
     kk = ix[nm]
     child = CHILD_OF[pair]
-    C = point_of(child, side)
+    C = point_of2(pair, child, side)
     bone_len = float(np.linalg.norm(C - J[kk]))
     u = (C - J[kk]) / bone_len
     parent = PARENT_OF[pair]
@@ -224,9 +241,16 @@ for pair in PAIRS:
     errs = []
     for theta in (0.35, 0.7, 1.2):
         urot = {}
+        # For '_band' pairs the probe is a SKIN VERTEX, and the mesh is not
+        # x-symmetric (brow: chamfer 0.071 — the info block's business). The
+        # LAW under test is the rig's conjugation, so the R probe is the
+        # x-negation of the L probe BY CONSTRUCTION — the same exact-mirror
+        # property the anatomical pairs get from their joint positions.
+        CL = point_of2(pair, child, 'L')
+        CRm = CL * np.array([-1.0, 1.0, 1.0]) if child == '_band' else point_of2(pair, child, 'R')
         for side in ('L', 'R'):
             Jp = J[ix[pair + '_' + side]]
-            C = point_of(child, side)
+            C = CL if side == 'L' else CRm
             u = C - Jp
             k = ax[ix[pair + '_' + side]] / (np.linalg.norm(ax[ix[pair + '_' + side]]) + 1e-12)
             c, s = np.cos(theta), np.sin(theta)
@@ -256,6 +280,18 @@ print(f'\n[S/Z] bone-stop fold (bone_radius {BONE_RADIUS} wu, pivot clear {PIVOT
 checks = {'M': m_ok, 'S': True, 'Z': True}
 shipped = {}
 for pair in PAIRS:
+    if CHILD_OF.get(pair) == '_band':
+        # TIER A face pairs: the bone-contact fold is meaningless on a skin
+        # patch (it contacts its own link at once — a fiction, not a stop).
+        # Their ranges are DESIGN laws; ship the factory ROMs untouched.
+        ship_f = float(rom[ix[pair + '_L']][1])
+        ship_e = float(rom[ix[pair + '_L']][0])
+        shipped[pair] = {'flex_stop_deg': ship_f, 'ext_stop_deg': ship_e,
+                         'raw': {'L': None, 'R': None},
+                         'flex_note': 'design law (face patch — no bone stop)',
+                         'ext_note': 'design law (face patch — no bone stop)'}
+        print(f'  {pair:<10} DESIGN (face patch) -> ship {ship_f:.0f}/{ship_e:.0f}')
+        continue
     stL = bone_stop(pair, 'L')
     stR = bone_stop(pair, 'R')
     Lf, Rf = stL['flex'], stR['flex']

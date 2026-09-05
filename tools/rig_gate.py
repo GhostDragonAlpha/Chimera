@@ -178,9 +178,18 @@ if IS_JNT2 or IS_JNT3:
         'shoulder_R': 'spine_upper', 'elbow_R': 'shoulder_R', 'wrist_R': 'elbow_R',
         'hip_L': 'spine_lower', 'knee_L': 'hip_L', 'ankle_L': 'knee_L',
         'hip_R': 'spine_lower', 'knee_R': 'hip_R', 'ankle_R': 'knee_R',
+        # TIER A (2026-09-04): tail tip continues its chain; the face hangs
+        # off the head, mouth corners off the jaw (they ride jaw motion).
+        'tail_tip': 'tail_mid',
+        'ear_L': 'neck', 'ear_R': 'neck',
+        'lid_L': 'neck', 'lid_R': 'neck',
+        'brow_L': 'neck', 'brow_R': 'neck',
+        'mouth_L': 'jaw', 'mouth_R': 'jaw',
     }
     bad_par = []
     for nme, want in FK_PARENTS.items():
+        if nme not in ix:
+            continue          # legacy pack without Tier-A anatomy — not its law to check
         got = int(parents[ix[nme]])
         want_ix = -1 if want == -1 else ix[want]
         if got != want_ix:

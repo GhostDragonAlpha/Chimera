@@ -88,6 +88,24 @@ L_landmarks = {
     # 1.17 was mid-shank) — which also makes the leg segments EQUAL: femur
     # 3.42->1.90 = 1.52, tibia 1.90->0.38 = 1.52.
     'ankle_L':     (0.5132, 0.3800, 0.0325),
+    # ── TIER A: THE FACE AND THE TAIL TIP (2026-09-04, operator direction) ────
+    # Every seed below is MEASURED from the canonical mesh (.tmp/face_probe.py),
+    # not guessed — the law that convicted the old neck/jaw seeds. The R twins
+    # come from the mirror law as always.
+    #   ear_L  : base of the ear wing (ear patch x 1.052..1.743, 480 verts,
+    #            mirrored exactly; the wing's medial edge ~1.05).
+    #   lid_L  : top of the eyeball bulge (the proud-of-face patch: 29 verts,
+    #            centroid (0.546, 8.659, 1.307) — hinge above so +theta closes
+    #            the lid DOWN over the eye, the closing-test sign).
+    #   brow_L : the brow ridge just above the eye line (band y 9.02..9.32,
+    #            437 verts full-width).
+    #   mouth_L: the mouth-corner zone (114 verts, x 0.55..0.93) — hinge at the
+    #            patch's inner edge so +theta (axis z-hat) lifts the corner =
+    #            smile.
+    'ear_L':       (1.0800, 8.9000, 0.3600),
+    'lid_L':       (0.5500, 8.7500, 1.3000),
+    'brow_L':      (0.5500, 9.0000, 1.2000),
+    'mouth_L':     (0.6000, 8.0600, 1.3000),
 }
 # ROMs: central = measured stops (anchors were on the axis); pairs take L on
 # both sides (the R stops were folded from off-frame anchors — retired).
@@ -96,6 +114,9 @@ ROM_central = {  # ext, flex (deg)
     'spine_upper': (-169.73, 119.16), 'spine_mid': (-124.51, 126.17),
     'spine_lower': (-117.87, 152.51), 'tail_base': (-30.0, 87.14),
     'tail_mid': (-139.06, 138.73),
+    # tail_tip: symmetric curl (the tip may coil either way; sign symmetric
+    # so the closing test does not constrain it).
+    'tail_tip': (-45.0, 45.0),
 }
 ROM_L = {
     # Fallbacks for joints the referee measures as ligament-limited (no
@@ -106,6 +127,16 @@ ROM_L = {
     # limit, the 130 contact it came from having been a splay artifact).
     'shoulder_L': (-30.0, 60.0), 'elbow_L': (-30.0, 125.0), 'wrist_L': (-30.0, 60.0),
     'hip_L': (-150.23, 60.0), 'knee_L': (-147.89, 140.15), 'ankle_L': (-159.21, 131.44),
+    # TIER A pairs (factory fallbacks — the referee owns the final stops):
+    #   ear  : flick both ways, perk-dominant (+theta lifts the wing).
+    #   lid  : close-dominant (+theta sweeps the lid DOWN over the eye —
+    #          Rodrigues about x-hat: a point in front of J (dz>0) gains
+    #          dy = -z*sin(theta), down for +theta), a little wide-eye room.
+    #   brow : raise-dominant (-theta lifts the ridge; +theta furrows).
+    #   mouth: smile-dominant (+theta about z-hat lifts the corner: a lateral
+    #          point (dx>0) gains dy = x*sin(theta) — up for +theta).
+    'ear_L': (-35.0, 40.0), 'lid_L': (-20.0, 50.0),
+    'brow_L': (-30.0, 10.0), 'mouth_L': (-25.0, 35.0),
 }
 AXIS_L = {  # PAIRED joints: the SAGITTAL LAW (2026-09-04, see the EMIT block).
     # Sign per joint from the closing test (tools/axis_sagittal_probe.py):
@@ -115,9 +146,18 @@ AXIS_L = {  # PAIRED joints: the SAGITTAL LAW (2026-09-04, see the EMIT block).
     'neck': (1.0, 0.0, 0.0), 'jaw': (1.0, 0.0, 0.0),
     'spine_upper': (1.0, 0.0, 0.0), 'spine_mid': (1.0, 0.0, 0.0),
     'spine_lower': (1.0, 0.0, 0.0), 'tail_base': (1.0, 0.0, 0.0), 'tail_mid': (1.0, 0.0, 0.0),
+    'tail_tip': (1.0, 0.0, 0.0),   # central: rides the tail chain's sweep axis
     'shoulder_L': (1.0, 0.0, 0.0), 'elbow_L': (1.0, 0.0, 0.0),
     'wrist_L': (-1.0, 0.0, 0.0), 'hip_L': (1.0, 0.0, 0.0),
     'knee_L': (1.0, 0.0, 0.0), 'ankle_L': (-1.0, 0.0, 0.0),
+    # TIER A axes: x-hat for the sagittal features (lid/brow — same invariance
+    # law as the limbs, L and R share it). z-hat for the lateral features
+    # (ear flick, mouth smile): the hinge axis must run ALONG the viewing
+    # direction so the wing/corner swings up/down. z-hat is NOT mirror-
+    # invariant (an axial vector flips under x-reflection), so the EMIT block
+    # negates y/z for the R twins — the afl law the MJCF builder already used.
+    'ear_L': (0.0, 0.0, 1.0), 'mouth_L': (0.0, 0.0, 1.0),
+    'lid_L': (1.0, 0.0, 0.0), 'brow_L': (1.0, 0.0, 0.0),
 }
 
 def medoid_snap(landmark, k=8, r_cap=0.8):
@@ -190,6 +230,10 @@ tail_ids = np.where(V[:, 2] < J['tail_mid'][2] - 0.3)[0]
 tail_d = np.linalg.norm(V[tail_ids] - J['tail_mid'], axis=1)
 tip_ids = tail_ids[np.argsort(-tail_d)][:50]
 tail_tip = V[tip_ids].mean(axis=0)
+J['tail_tip'] = tail_tip * np.array([0.0, 1.0, 1.0])   # the central axis law
+# ear wing tip: the centroid of the measured ear patch (the segment target)
+EAR_IDS_L = np.where((V[:, 0] > 1.05) & (V[:, 1] > 8.2))[0]
+ear_tip_L = V[EAR_IDS_L].mean(axis=0)   # (1.411, 8.919, 0.389) — face_probe
 head_top = V[np.argsort(-V[:, 1])][:60].mean(axis=0)
 
 # ── 4. SEGMENTS (owner <- verts nearest this segment) ────────────────────────
@@ -202,6 +246,17 @@ segments = [
     seg(J['tail_base'], J['spine_lower'], 'tail_base'),
     seg(J['tail_mid'], J['tail_base'], 'tail_mid'),
     seg(tail_tip, J['tail_mid'], 'tail_mid'),
+    # tail_tip owns the OUTWARD half (a segment sharing both endpoints with
+    # the tail_mid tip segment would tie argmin and win nothing — empty band).
+    seg(0.5 * (J['tail_mid'] + tail_tip), tail_tip, 'tail_tip'),
+    # TIER A face segments: short hinges inside the measured feature masks;
+    # the mask law below (not nearest-segment) decides ownership, because a
+    # face segment sits against head skin and would otherwise steal a ring
+    # of cheek that must stay with the head.
+    seg(J['ear_L'], ear_tip_L, 'ear_L'),
+    seg(J['lid_L'], np.array([0.546, 8.659, 1.307]), 'lid_L'),
+    seg(J['brow_L'], np.array([0.05, 9.10, 1.10]), 'brow_L'),
+    seg(J['mouth_L'], np.array([0.93, 8.06, 1.30]), 'mouth_L'),
     seg(J['shoulder_L'], J['elbow_L'], 'shoulder_L'),
     seg(J['elbow_L'], J['wrist_L'], 'elbow_L'),
     seg(hand_tip_L, J['wrist_L'], 'wrist_L'),
@@ -255,6 +310,28 @@ face = np.where((assign_name == 'neck') & (djaw < 0.8))[0]
 face = face[np.argsort(djaw[face])][:150]
 assign_name[face] = 'jaw'
 
+# TIER A FACE BANDS (2026-09-04, the jaw precedent generalized): measured
+# masks claim their verts, and ONLY mask verts may hold the feature — a face
+# segment pressed against head skin would otherwise steal a ring of cheek
+# into the ear/lid band, and the feature's rotation would tear the head.
+# Masks are mutually exclusive by construction (face_probe.py bins).
+_sg = V[:, 0]
+FACE_BANDS = {   # name -> (mask, FK partner for the blend, dedicated share)
+    'ear_L':   ((_sg >  1.05) & (V[:, 1] > 8.2),                                'neck', 0.80),
+    'ear_R':   ((_sg < -1.05) & (V[:, 1] > 8.2),                                'neck', 0.80),
+    'lid_L':   ((_sg >  0.30) & (_sg <  1.00) & (V[:, 1] > 8.50) & (V[:, 1] < 8.85) & (V[:, 2] > 1.15), 'neck', 0.80),
+    'lid_R':   ((_sg < -0.30) & (_sg > -1.00) & (V[:, 1] > 8.50) & (V[:, 1] < 8.85) & (V[:, 2] > 1.15), 'neck', 0.80),
+    'brow_L':  ((_sg >  0.05) & (_sg <  1.00) & (V[:, 1] > 9.00) & (V[:, 1] < 9.35) & (V[:, 2] > 0.95), 'neck', 0.80),
+    'brow_R':  ((_sg < -0.05) & (_sg > -1.00) & (V[:, 1] > 9.00) & (V[:, 1] < 9.35) & (V[:, 2] > 0.95), 'neck', 0.80),
+    'mouth_L': ((_sg >  0.55) & (_sg <  0.95) & (V[:, 1] > 7.70) & (V[:, 1] < 8.26) & (V[:, 2] > 0.80), 'jaw',  0.80),
+    'mouth_R': ((_sg < -0.55) & (_sg > -0.95) & (V[:, 1] > 7.70) & (V[:, 1] < 8.26) & (V[:, 2] > 0.80), 'jaw',  0.80),
+}
+for _fn, (_fm, _fp, _fw) in FACE_BANDS.items():
+    assign_name[np.where(_fm)[0]] = _fn
+for _fn, (_fm, _fp, _fw) in FACE_BANDS.items():
+    _stolen = np.where((assign_name == _fn) & ~_fm)[0]
+    assign_name[_stolen] = 'neck'   # the cheek ring stays with the head
+
 # ENVELOPE WEIGHTS (the rigger's law, JNT2 — 2026-09-03): w fades from 0.5 at
 # the segment's OWN crease (t=0, blending with the PARENT bone — exactly the
 # kernel's second influence) to 1.0 mid-segment. The measured tear lived in
@@ -266,12 +343,18 @@ t_own = t[np.arange(N), best]                   # projection along OWN segment
 smooth = t_own * t_own * (3.0 - 2.0 * t_own)    # C1 smoothstep
 w = 0.5 + 0.5 * smooth
 w[face] = 0.85                                  # jaw keeps its dedicated weight
+for _fn, (_fm, _fp, _fw) in FACE_BANDS.items():
+    w[np.where(_fm)[0]] = _fw                   # face features: dedicated share
 
 # ── 5. EMIT: names fixed to the legacy order (D7 keys reference indices) ─────
 names = ['neck', 'jaw', 'spine_upper', 'spine_mid', 'spine_lower', 'tail_base',
          'tail_mid', 'shoulder_L', 'shoulder_R', 'elbow_L', 'elbow_R',
          'wrist_L', 'wrist_R', 'hip_L', 'hip_R', 'knee_L', 'knee_R',
-         'ankle_L', 'ankle_R']
+         'ankle_L', 'ankle_R',
+         # TIER A (2026-09-04): APPENDED — the legacy prefix is fixed order
+         # (D7 dope-sheet keys reference the indices); never insert before it.
+         'tail_tip', 'ear_L', 'ear_R', 'lid_L', 'lid_R',
+         'brow_L', 'brow_R', 'mouth_L', 'mouth_R']
 nj = len(names)
 Jf = np.zeros((nj, 3), np.float32)
 AXf = np.zeros((nj, 3), np.float32)
@@ -295,6 +378,13 @@ for i, nme in enumerate(names):
     # moves the distal bone strictly in y-z — a splay is geometrically
     # impossible. Central joints keep their measured sweep axes.
     AXf[i] = axl
+    # THE AXIAL MIRROR LAW (Tier A): an AXIAL vector conjugates under the
+    # x-reflection as (ax, -ay, -az) — a no-op for x-hat (the sagittal law's
+    # invariance survives untouched) and a sign flip for z-hat (ear flick,
+    # mouth smile), which is what makes +theta lift BOTH ears and BOTH mouth
+    # corners. Without it the R corner DROPS under the L's smile theta.
+    if nme.endswith('_R'):
+        AXf[i] = np.array([axl[0], -axl[1], -axl[2]], np.float32)
     ROMf[i] = ROM_central.get(nme, ROM_L.get(src, (-30.0, 60.0)))
 # THE REFEREE OWNS THE PAIRED STOPS (2026-09-04): the tables above are only the
 # factory's fallback — the B5 referee's measured bone stops are the authority,
@@ -338,6 +428,13 @@ JNT2_PARENTS = {
     'shoulder_R': 'spine_upper', 'elbow_R': 'shoulder_R', 'wrist_R': 'elbow_R',
     'hip_L': 'spine_lower', 'knee_L': 'hip_L', 'ankle_L': 'knee_L',
     'hip_R': 'spine_lower', 'knee_R': 'hip_R', 'ankle_R': 'knee_R',
+    # TIER A: the tail tip continues its chain; the face hangs off the head
+    # (mouth corners off the JAW — they ride jaw motion, as anatomy says).
+    'tail_tip': 'tail_mid',
+    'ear_L': 'neck', 'ear_R': 'neck',
+    'lid_L': 'neck', 'lid_R': 'neck',
+    'brow_L': 'neck', 'brow_R': 'neck',
+    'mouth_L': 'jaw', 'mouth_R': 'jaw',
 }
 parents_i32 = np.array([-1 if JNT2_PARENTS[nme] == -1 else names.index(JNT2_PARENTS[nme])
                         for nme in names], np.int32)
@@ -393,10 +490,29 @@ w_final[non_adj & ~has_parent] = 1.0
 # jaw keeps its DEDICATED share (0.85 for the jaw itself — the old law).
 joint2_name[face] = 'neck'
 w_final[face] = 0.85
+# TIER A face bands: same compensation — the d2 table predates the masks, so
+# the feature verts get their measured partner (neck, or jaw for the mouth)
+# at their dedicated share.
+for _fn, (_fm, _fp, _fw) in FACE_BANDS.items():
+    _ids = np.where(_fm)[0]
+    joint2_name[_ids] = _fp
+    w_final[_ids] = _fw
 # THE PACK'S w IS THE FINAL TERM-1 SHARE (the kernel blends w + (1−w) — any
 # other number in the w array makes the second share a lie; the gate's
 # share==1−w check keeps them honest).
 w = w_final
+joint2_i32 = np.array([names.index(jn) for jn in joint2_name], np.int32)
+# THE SELF-BLEND CONVICTION (gate check 8, Tier A round): 167 neck verts
+# blended against THEMSELVES — the d2 census ran before the face masks
+# reassigned bands, so a vert whose original best was a jaw-adjacent segment
+# kept a neck segment as its "different owner". Self is numerically identity
+# but it is not a LAW. The legal partner is the FK parent at the same share;
+# a parentless self goes fully rigid (the root-band law).
+_selfj2 = np.where(joint2_i32 == assign_i32)[0]
+_haspar = own_p[_selfj2] >= 0
+joint2_name[_selfj2[_haspar]] = [names[p] for p in own_p[_selfj2[_haspar]]]
+w_final[_selfj2[~_haspar]] = 1.0
+w = w_final                     # re-sync after the conviction fix
 joint2_i32 = np.array([names.index(jn) for jn in joint2_name], np.int32)
 w2_f32 = (1.0 - w_final).astype(np.float32)
 w_f32 = w.astype(np.float32)   # the FINAL term-1 share — one law, one number
@@ -481,15 +597,18 @@ lines = ['RIG FIT REPORT — canonical frame = engine mesh_bin.blob order',
 for i, nme in enumerate(names):
     sel = assign_i32 == i
     nb = int(sel.sum())
-    lines.append(f'{nme:<13}{str(np.round(Jf[i], 4)):<30}{snap[nme]:7.3f}{nb:7d}{w[sel].min() if nb else 0:7.2f}{w[sel].mean() if nb else 0:8.2f}')
+    lines.append(f'{nme:<13}{str(np.round(Jf[i], 4)):<30}{snap.get(nme, 0.0):7.3f}{nb:7d}{w[sel].min() if nb else 0:7.2f}{w[sel].mean() if nb else 0:8.2f}')
 empty = [n for i, n in enumerate(names) if not (assign_i32 == i).any()]
 lines += ['', 'EMPTY BANDS: ' + (', '.join(empty) if empty else 'NONE — every joint owns vertices')]
 unassigned = int((assign_i32 < 0).sum())
 lines.append(f'unassigned verts: {unassigned}')
 # JNT3 health: how much of the surface carries a real sibling blend
-n_parent = int(is_parent_j2.sum()); n_sib = int(N - n_parent - len(face))
+n_parent = int(is_parent_j2.sum())
+n_masked = len(face) + sum(int(m.sum()) for m, _, _ in FACE_BANDS.values())
+n_sib = int(N - n_parent - n_masked)
 lines.append(f'second-owner: parent-crease {n_parent}, sibling {n_sib}, '
-             f'jaw {len(face)}; w<0.99 anywhere: {int((w_final < 0.99).sum())} verts')
+             f'jaw {len(face)}, face bands {n_masked - len(face)}; '
+             f'w<0.99 anywhere: {int((w_final < 0.99).sum())} verts')
 open(REPORT, 'w').write('\n'.join(lines))
 print('\n'.join(lines))
 print(f'\nwritten: {PACK_OUT}\n         {MJCF_OUT}\n         {ROM_OUT}\n         {REPORT}')
