@@ -2385,3 +2385,51 @@ and the leader lines fan into a spiderweb over the eyes. Rig is right; the
 overlay needs screen-space de-crowding for short face bones (min-separation
 or zoom-gated face tags). Measured context note: a 2-shot scan cost ~11k
 tokens per read on the 60k eye — 60k is comfortable for standard scans.
+
+---
+
+## 2026-09-05 — the camera-chip row: the wrap law + shot-tool hygiene
+
+**Defect (the eye's backlog + the operator):** with 16 bookmarks in the store,
+the single right-aligned chip row overflowed — the clamped start pushed the
+row's TAIL under the right dock, and the tail was exactly the `[+ cam]` chip,
+the save affordance itself. Root cause was TWO diseases:
+
+1. **No wrap law (engine, `StudioUI::build_chrome`).** One row, right-aligned,
+   `start = max(vw - row_w, hx-6)`. Chips beyond the viewport vanished —
+   CPU mirror measured `[+ cam]`'s tail at x=3772 with vw=2220.
+2. **The shot tool polluted the store (tools/dyad_shot.py).** Every run minted
+   `_shot_scratch` + `_pre_shot_<ts>` and NEVER deleted them — 8 of the 16
+   entries were shot scratch. The tool is a consumer of the store, and a
+   consumer that leaves litter turns a toolbar into a landfill.
+
+**The law (wrap):** chips pack left-to-right within the viewport's span; a
+chip that would not fit opens the NEXT LINE DOWN (into the viewport's empty
+middle — never UP, into the HUD rows); every row stays right-aligned so the
+2026-09-02 balance (viewport left, shot controls right) holds. Order
+preserved: bookmark 1 leftmost, `[+ cam]` rightmost, always on-screen.
+
+**The law (hygiene):** the shot tool deletes its scratch bookmarks when it
+finishes, after restoring the operator's view (delete can never move the
+camera). `--keep-bookmarks` opts out. The delete verb rides the existing
+`POST /cameras {"op":"delete"}` twin — no new HTTP surface.
+
+**Falsifiers (all PASS):**
+- F1 no chip crosses the right edge — mirror: OLD had 7 chips + `[+ cam]`
+  outside (tail 3772 > 2220); NEW: NONE inside/outside violation at 16 chips.
+- F2 `[+ cam]` on-screen, last — tail exactly at vw=2220 at both 8 and 16.
+- F3 order preserved — 1..16 then `[+ cam]`, left-to-right across rows.
+- F4 few chips = one row, many = wrapped rows — 8 → 1 row; 16 → 2 rows.
+- F5 eye on the glass: "[+ cam] present, single row, no dock/HUD overlap, all
+  text legible" — the reader's verdict on the live build at the clean count.
+
+**Store restored:** 8 scratch entries deleted from the live store; 8 real
+bookmarks remain (alpha, beta, closeup, monkey_full, cam7, cam8, fit_dyad,
+operator_pre_tierA).
+
+**Backlog noted (the eye's other reads, NOT this arc):** REFEREE chips lose
+their `B5`/`B6` prefixes for long role names; the `knee_L +0` 3D label bleeds
+into the REEL header (the panel-suppression law needs the reel's rect); the
+contact shadow is not clearly readable; amber key diamonds are not
+distinguishable from tick lines; status-bar fps vs ft_avg_ms come from
+different sample windows (34 fps / 26.62 ms on one frame).

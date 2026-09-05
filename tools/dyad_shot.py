@@ -102,6 +102,11 @@ def main() -> int:
     ap.add_argument("--save-view", default=None,
                     help="bookmark name for the operator's pre-shot view "
                          "(default: auto '_pre_shot_<ts>'); '' disables restore")
+    ap.add_argument("--keep-bookmarks", action="store_true",
+                    help="leave the scratch bookmarks in the engine's store "
+                         "(default: delete them — they overflowed the chip row "
+                         "on 2026-09-04: 8 of 16 entries were shot scratch, and "
+                         "the row's tail, the [+ cam] chip, slid under the dock)")
     a = ap.parse_args()
 
     if not a.prompt and not a.prompt_file:
@@ -168,6 +173,19 @@ def main() -> int:
     if pre_name:
         cam_recall(pre_name)
         print(f"operator view restored from '{pre_name}'")
+
+    # 8. the store's hygiene law (2026-09-04): the scratch bookmarks this tool
+    # mints are staging, not state — every one left behind is a chip on the
+    # glass forever, and enough of them wrap the row into the viewport's face.
+    # The operator's view is ALSO scratch-named but it is recalled first (the
+    # live camera is back before the delete), so the cleanup can never change
+    # what the operator sees.
+    if not a.keep_bookmarks:
+        for scratch_name in ([pre_name] if pre_name else []) + ["_shot_scratch"]:
+            try:
+                req_json("POST", "/cameras", {"op": "delete", "name": scratch_name})
+            except Exception as e:      # cleanup is best-effort; never mask the verdict
+                print(f"warn: scratch '{scratch_name}' delete failed: {e}")
 
     print("\n=== THE EYE SAYS ===\n")
     print(answer or "(the eye returned nothing)")

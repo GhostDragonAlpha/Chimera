@@ -2419,50 +2419,74 @@ void StudioUI::build_chrome() {
     rctx_.clear();                                  // right-click customers rebuild every frame
     {
         // 2026-09-02, the eye (defect d): the row was left-pinned under the
-        // HUD rows, leaving the toolbar's right half dead. Right-ALIGN the
-        // whole chip row to the viewport's right edge (10 px margin): the
-        // viewport keeps the left, the shot controls own the right — the
-        // balance the eye asked for. Row width first (names are known),
-        // then draw from the computed start.
-        float row_w = 0.f;
+        // HUD rows, leaving the toolbar's right half dead — it became
+        // right-aligned at the RIGHT DOCK'S LEFT edge (never over a panel).
+        // 2026-09-04 (the eye's defect backlog + the operator): with 16
+        // bookmarks that single row OVERFLOWED — the clamped start pushed the
+        // row's tail under the dock, and the tail was exactly the "[+ cam]"
+        // chip, the save affordance itself, gone from the glass. The law is
+        // the WRAP: chips pack left-to-right within the viewport's span, a
+        // row that would not fit opens the NEXT LINE DOWN (into the
+        // viewport's empty middle — never UP, into the HUD rows), and every
+        // row stays right-aligned so the balance the eye asked for holds.
+        // Order is preserved: bookmark 1 leftmost, "[+ cam]" rightmost.
+        struct CamChip { std::string cap; int hot; int mark; bool save; };
+        std::vector<CamChip> chips;
         for (size_t i = 0; i < cam_marks_.size(); ++i)
-            row_w += static_cast<float>(std::string("[" + std::to_string(i + 1) + " " + cam_marks_[i] + "]").size()) * advance_ + 12.f + 6.f;
-        row_w += 6.f + 7.f * advance_ + 12.f;   // the "[+ cam]" chip: gap + 7-char cap + the chips' 12px padding
-        // 2nd-scan fix: right-align at the RIGHT DOCK'S LEFT edge (not its right
-        // edge — that ran the row THROUGH the dock's top, colliding with the
-        // FPS readout). The chips live in the viewport, never over a panel.
-        float vw = visible ? (R[2][0] - 10.f) : (W - 10.f);   // viewport's right edge
-        float cx2 = (vw - row_w) > (hx - 6) ? (vw - row_w) : (hx - 6);
-        float cy = hy - 3;
-        for (size_t i = 0; i < cam_marks_.size(); ++i) {
-            std::string cap = "[" + std::to_string(i + 1) + " " + cam_marks_[i] + "]";
-            // 2026-09-02, the eye: backing must be OPAQUE — at 0.85 a finger's
-            // bright pixels bleed through and "merge into the chip borders".
-            float cw = static_cast<float>(cap.size()) * advance_ + 12.f;
-            rect(cx2, cy, cw, lh + 6, 0.07f, 0.08f, 0.12f, 1.f);
-            rect_outline(cx2, cy, cw, lh + 6, 1.f, 0.30f, 0.60f, 1.00f, 0.9f);
-            text(cx2 + 6, cy + 3, cap, 0.30f, 0.60f, 1.00f, 1.f);
-            hots_.push_back({ cx2, cy, cw, lh + 6, 800 + static_cast<int>(i) });
-            cam_mark_rects_[i] = { cx2, cy, cw, lh + 6 };
-            // THE CONTEXT MENU's first customer: each bookmark chip carries its
-            // verbs — Recall / Overwrite / Delete. The click/drag split keeps
-            // pan on the same button (ui.hpp, the context-menu block).
-            rctx_.push_back({ cx2, cy, cw, lh + 6, static_cast<int>(i),
-                { { "Recall", 0 }, { "Overwrite", 1 }, { "Delete", 2 } } });
-            cx2 += cw + 6;
-        }
-        std::string cap = "[+ cam]";
+            chips.push_back({ "[" + std::to_string(i + 1) + " " + cam_marks_[i] + "]",
+                              800 + static_cast<int>(i), static_cast<int>(i), false });
         // 2026-09-02, the eye (2nd scan): grammar unified — brackets, border, row
         // blue. 2026-09-03, the eye (loaded review r1) STILL read the chip as a
         // "dim grey box" — the dimmed ink was the remaining tell. Two rounds is
         // the law: the save/recall distinction lives in the LABEL (+ cam), the
         // color carries only affordance (clickable = the row's blue).
-        float cw = static_cast<float>(cap.size()) * advance_ + 12.f;
-        rect(cx2, cy, cw, lh + 6, 0.07f, 0.08f, 0.12f, 1.f);
-        rect_outline(cx2, cy, cw, lh + 6, 1.f, 0.30f, 0.60f, 1.00f, 0.9f);
-        text(cx2 + 6, cy + 3, cap, 0.30f, 0.60f, 1.00f, 1.f);
-        hots_.push_back({ cx2, cy, cw, lh + 6, 850 });
-        cam_save_rect_ = { cx2, cy, cw, lh + 6 };
+        chips.push_back({ "[+ cam]", 850, -1, true });
+        float vw = visible ? (R[2][0] - 10.f) : (W - 10.f);   // viewport's right edge
+        const float rowspan = vw - (hx - 6.f);
+        std::vector<std::vector<const CamChip*>> rows;
+        {
+            std::vector<const CamChip*> cur;
+            float acc = 0.f;
+            for (const auto& ch : chips) {
+                float cw = static_cast<float>(ch.cap.size()) * advance_ + 12.f;
+                float need = acc + (cur.empty() ? 0.f : 6.f) + cw;
+                if (!cur.empty() && need > rowspan) {
+                    rows.push_back(std::move(cur));
+                    cur.clear();
+                    acc = 0.f; need = cw;
+                }
+                acc = need;
+                cur.push_back(&ch);
+            }
+            if (!cur.empty()) rows.push_back(std::move(cur));
+        }
+        float cy = hy - 3;
+        for (const auto& row : rows) {
+            float row_w = 0.f;
+            for (size_t k = 0; k < row.size(); ++k)
+                row_w += (k ? 6.f : 0.f) + static_cast<float>(row[k]->cap.size()) * advance_ + 12.f;
+            float cx2 = vw - row_w;                     // right-aligned, always inside
+            for (const auto* ch : row) {
+                // 2026-09-02, the eye: backing must be OPAQUE — at 0.85 a finger's
+                // bright pixels bleed through and "merge into the chip borders".
+                float cw = static_cast<float>(ch->cap.size()) * advance_ + 12.f;
+                rect(cx2, cy, cw, lh + 6, 0.07f, 0.08f, 0.12f, 1.f);
+                rect_outline(cx2, cy, cw, lh + 6, 1.f, 0.30f, 0.60f, 1.00f, 0.9f);
+                text(cx2 + 6, cy + 3, ch->cap, 0.30f, 0.60f, 1.00f, 1.f);
+                hots_.push_back({ cx2, cy, cw, lh + 6, ch->hot });
+                if (ch->save) cam_save_rect_ = { cx2, cy, cw, lh + 6 };
+                else {
+                    cam_mark_rects_[static_cast<size_t>(ch->mark)] = { cx2, cy, cw, lh + 6 };
+                    // THE CONTEXT MENU's first customer: each bookmark chip carries its
+                    // verbs — Recall / Overwrite / Delete. The click/drag split keeps
+                    // pan on the same button (ui.hpp, the context-menu block).
+                    rctx_.push_back({ cx2, cy, cw, lh + 6, ch->mark,
+                        { { "Recall", 0 }, { "Overwrite", 1 }, { "Delete", 2 } } });
+                }
+                cx2 += cw + 6.f;
+            }
+            cy += lh + 6.f;                              // the next line DOWN
+        }
     }
 
     // ── F2: the status bar ──
