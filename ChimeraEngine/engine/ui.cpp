@@ -2159,7 +2159,17 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             const float tg = t.selected ? 0.85f : (t.posed ? 0.95f : 0.70f);
             const float tb = t.selected ? 0.20f : (t.posed ? 0.55f : 0.82f);
             rect(t.x - 2, t.y - 2, 4, 4, tr, tg, tb, 0.95f);          // the pin dot
-            text(t.x + 7, t.y - lh * 0.5f, t.label, tr, tg, tb, 0.95f);
+            if (!t.show_label) continue;        // zoom gate: dot only, no chip
+            // De-crowded chips draw at their offset with a pin->chip leader
+            // line; spread chips keep the proven inline display (dx=dy=0,
+            // leader=false renders identically to before).
+            const float cx = t.x + t.dx + 7.f;
+            const float cy = t.y + t.dy - lh * 0.5f;
+            if (t.leader) {
+                line(t.x, t.y, t.x + t.dx + 2.f, t.y + t.dy,
+                     1.25f, tr, tg, tb, 0.55f);
+            }
+            text(cx, cy, t.label, tr, tg, tb, 0.95f);
         }
     }
 

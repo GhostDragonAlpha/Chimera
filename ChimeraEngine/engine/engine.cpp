@@ -5161,6 +5161,23 @@ static void record_glass_copy(VkCommandBuffer cb, VkImage swap_img,
 // thrusters as vectors, the operator's example) reuses exactly this path.
 // Off-frame joints are skipped (project_world says so); no depth test — a tag
 // is an instrument, not matter.
+//
+// THE DE-CROWDING LAW (2026-09-04, the dyad's facial-tag verdict, run
+// 2026-09-04_195741): at fit distance the eight face chips project into one
+// vertical stack — jaw merging into mouth_L, neck colliding with mouth_R,
+// the brow/lid pairs touching, leader lines spiderwebbing over the eyes.
+// The rig was right; the LAYOUT had no law. Three regimes, measured in font
+// units (lh = line height) so the law is resolution- and zoom-invariant:
+//   spread  (nearest neighbor > 2.5 lh): label inline at the pin — the
+//           proven display, untouched.
+//   crowded (< 2.5 lh): the chip moves to a tidy column just outside the
+//           cluster, a leader line pin->chip, labels KEPT (moving a label
+//           is layout; deleting one is hiding the instrument). The vertical
+//           de-overlap IS the legibility guarantee — the column de-tangles
+//           any density, so there is no dot-only regime: the first eye
+//           verdict (2026-09-04_204618, read 0/1) convicted the zoom gate
+//           for hiding half the facial set at fit distance, against the
+//           operator's standing law: labels on EVERYTHING.
 void Engine::push_joint_tags() {
     std::vector<StudioUI::JointTag> tags;
     if (!joints_loaded_ || !j_state_map_ || !last_vp_valid_) {
@@ -5169,16 +5186,208 @@ void Engine::push_joint_tags() {
     }
     const int selected = selected_joint_.load(std::memory_order_relaxed);
     const float* st = static_cast<const float*>(j_state_map_);
-    tags.reserve(j_n_joints_);
+
+    struct Cand { float x, y; uint32_t k; };
+    std::vector<Cand> cands;
+    cands.reserve(j_n_joints_);
     for (uint32_t k = 0; k < j_n_joints_; ++k) {
         float J[3] = { st[k * 8 + 0], st[k * 8 + 1], st[k * 8 + 2] };
         float sx, sy;
         if (!project_world(J, sx, sy)) continue;      // behind/off-frame: no tag
+        cands.push_back({ sx, sy, k });
+    }
+
+    const float lh   = ui_.line_height();
+    const float ad   = ui_.advance();
+    const VkExtent2D ext = ui_.ext();
+    const float SPREAD = 2.5f * lh;   // beyond: inline
+
+    // THE PANEL LAW (fifth eye round, run 2026-09-04_230949): a label whose
+    // ANCHOR projects inside a UI panel (strip/docks/bottom/reel) or on the
+    // status bar overprints that panel — *wrist_L / *elbow_R garbled the
+    // timeline, REEL #4's caption ate a stray string. Those tags are
+    // suppressed: the anchor is not in the 3D region, so there is nothing to
+    // point at anyway. (Clamping would draw a tag pointing at a lie.)
+    {
+        float R[5][4];
+        ui_.get_layout(ext.width, ext.height, R);
+        const float bar_top = static_cast<float>(ext.height) - (ui_.bar_on() ? ui_.bar_h() : 0.f);
+        auto in_panel = [&](float x, float y) {
+            if (y >= bar_top) return true;                     // the status bar
+            for (int r = 0; r < 5; ++r)                        // 5 panel rects
+                if (x >= R[r][0] && x < R[r][0] + R[r][2] &&
+                    y >= R[r][1] && y < R[r][1] + R[r][3]) return true;
+            return false;
+        };
+        std::vector<Cand> keep;
+        keep.reserve(cands.size());
+        for (const Cand& c : cands)
+            if (!in_panel(c.x, c.y)) keep.push_back(c);
+        cands.swap(keep);
+    }
+
+    // nearest-neighbor distance per tag (O(n^2), n <= joint count)
+    std::vector<float> nearest(cands.size(), 1e9f);
+    for (size_t i = 0; i < cands.size(); ++i)
+        for (size_t j = 0; j < cands.size(); ++j) {
+            if (i == j) continue;
+            const float ddx = cands[i].x - cands[j].x;
+            const float ddy = cands[i].y - cands[j].y;
+            const float d = std::sqrt(ddx * ddx + ddy * ddy);
+            if (d < nearest[i]) nearest[i] = d;
+        }
+
+    tags.resize(cands.size());
+    for (size_t i = 0; i < cands.size(); ++i) {
+        const Cand& c = cands[i];
+        const bool sel = (static_cast<int>(c.k) == selected);
+        const bool pos = fabsf(st[c.k * 8 + 7]) > 1e-4f;
         char lb[64];
-        snprintf(lb, sizeof(lb), "%s %+.0f", j_names_[k].c_str(), st[k * 8 + 7] * 57.29577951308232f);
-        tags.push_back({ sx, sy, std::string(lb),
-                         static_cast<int>(k) == selected,
-                         fabsf(st[k * 8 + 7]) > 1e-4f });
+        snprintf(lb, sizeof(lb), "%s %+.0f", j_names_[c.k].c_str(),
+                 st[c.k * 8 + 7] * 57.29577951308232f);
+        StudioUI::JointTag& t = tags[i];
+        t = { c.x, c.y, std::string(lb), sel, pos, false, 0.f, 0.f, true };
+    }
+    // THE LABEL-RECT LAW (fifth eye round, runs 2026-09-04_224349 + 225408):
+    // crowding was judged by PIN distance, but the collision that matters is
+    // between LABEL RECTS (~100 px wide at this UI scale). Two pins ~140 px
+    // apart in x and ~6 px in y pass the SPREAD pin test while their inline
+    // labels superimpose into unreadable glyphs — the eye caught ear_L/lid_L
+    // doing exactly that mid-show, while the right side only escaped because
+    // its pins happened to fall under SPREAD. A tag is crowded if its INLINE
+    // label rect intersects another tag's rect, or the pins are close.
+    std::vector<size_t> crowd;
+    {
+        auto push_crowd = [&](size_t k) {
+            if (std::find(crowd.begin(), crowd.end(), k) == crowd.end())
+                crowd.push_back(k);
+        };
+        std::vector<float> w(cands.size());
+        for (size_t i = 0; i < cands.size(); ++i)
+            w[i] = ad * static_cast<float>(tags[i].label.size());
+        for (size_t i = 0; i < cands.size(); ++i)
+            for (size_t j = i + 1; j < cands.size(); ++j) {
+                const bool xhit = tags[i].x < tags[j].x + w[j] &&
+                                  tags[j].x < tags[i].x + w[i];
+                const bool yhit = fabsf(tags[i].y - tags[j].y) < lh;
+                if (xhit && yhit) { push_crowd(i); push_crowd(j); continue; }
+                if (nearest[i] < SPREAD) push_crowd(i);
+                if (nearest[j] < SPREAD) push_crowd(j);
+            }
+    }
+    // THE COLUMN, CLUSTER-LOCAL (second eye round, run 2026-09-04_210427):
+    // one global chain pushed the whole skeleton's crowd into a single strip
+    // that ran down THROUGH the face (lid_* over neck/mouth_*, leaders
+    // crossing the head mesh). The law: a pin gap > SPREAD starts a NEW
+    // cluster; each cluster gets its own column side (flipped at the frame's
+    // right edge) and a CENTERED vertical expansion — half the extra space
+    // above, half below — so a dense head cluster grows into a readable
+    // strip centered on the HEAD, not a braid dragged through the mesh.
+    std::sort(crowd.begin(), crowd.end(), [&](size_t a, size_t b) {
+        return tags[a].y < tags[b].y;
+    });
+    const float col_dx = 2.4f * lh;
+    const float gap    = 1.08f * lh;
+    std::vector<std::vector<size_t>> clusters;
+    for (size_t ci = 0; ci < crowd.size(); ++ci) {
+        const size_t i = crowd[ci];
+        if (clusters.empty() || tags[i].y - tags[crowd[ci - 1]].y > SPREAD)
+            clusters.push_back({});
+        clusters.back().push_back(i);
+    }
+    for (const std::vector<size_t>& cl : clusters) {
+        // THE TWO-COLUMN LAW (third eye round, run 2026-09-04_211701): one
+        // shared column made every leader braid through a single hub — a tag's
+        // words were legible but its NODE unmatchable. Pins left of the
+        // cluster's mean label LEFT, pins right label RIGHT: leaders fan
+        // outward to their own side (matching how the anatomy reads), and
+        // same-point pins (the mouth pair in 3/4 view) split by side instead
+        // of merging.
+        float sumx = 0.f;
+        for (size_t i : cl) sumx += tags[i].x;
+        const float mean_x = sumx / static_cast<float>(cl.size());
+        std::vector<size_t> L, R;
+        for (size_t i : cl) (tags[i].x < mean_x ? L : R).push_back(i);
+        auto col_dx_for = [&](std::vector<size_t>& side, bool left) {
+            float maxw = 0.f, mean = 0.f;
+            for (size_t i : side) {
+                maxw = fmaxf(maxw, ad * static_cast<float>(tags[i].label.size()));
+                mean += tags[i].x;
+            }
+            mean /= fmaxf(1.f, static_cast<float>(side.size()));
+            float dx = left ? -(col_dx + maxw) : col_dx;
+            // frame-edge flip: a left column that would run off-screen goes right
+            if (left && mean + dx < 8.f)                dx = col_dx;
+            if (!left && mean + dx + maxw > static_cast<float>(ext.width) - 8.f)
+                                            dx = -(col_dx + maxw);
+            return dx;
+        };
+        auto layout_side = [&](std::vector<size_t>& side, float dx) {
+            if (side.empty()) return;
+            std::sort(side.begin(), side.end(), [&](size_t a, size_t b) {
+                return tags[a].y < tags[b].y;
+            });
+            const float span_nat  = tags[side.back()].y - tags[side.front()].y;
+            const float span_need = static_cast<float>(side.size() - 1) * gap;
+            const float extra     = fmaxf(0.f, span_need - span_nat);
+            const size_t n = side.size();
+            for (size_t idx = 0; idx < n; ++idx) {
+                StudioUI::JointTag& t = tags[side[idx]];
+                const float fi = (n > 1) ? static_cast<float>(idx) / static_cast<float>(n - 1) : 0.f;
+                t.dx = dx;
+                t.dy = extra * (fi - 0.5f);    // centered: half up, half down
+                t.leader = true;
+            }
+            float prev_bottom = -1e9f;         // residual de-overlap, downward
+            for (size_t idx = 0; idx < n; ++idx) {
+                StudioUI::JointTag& t = tags[side[idx]];
+                const float y_now = t.y + t.dy;
+                if (y_now - prev_bottom < gap) t.dy += (prev_bottom + gap - y_now);
+                prev_bottom = t.y + t.dy;
+            }
+        };
+        layout_side(L, col_dx_for(L, true));
+        layout_side(R, col_dx_for(R, false));
+    }
+    // THE RESIDUAL LAW (fourth eye round, run 2026-09-04_224349): clusters are
+    // formed by PIN gaps, so two crowded tags in DIFFERENT clusters (or on
+    // opposite columns of adjacent clusters) can still land on each other —
+    // the eye caught lid_R +0 and ear_R +0 colliding exactly this way. A
+    // global sweep over DISPLACED (leader) tags only: label rects that still
+    // overlap push apart vertically, away from the pair midpoint. Inline tags
+    // are never moved — an isolated joint's tag belongs exactly on its anchor.
+    {
+        std::vector<size_t> led;
+        for (size_t i = 0; i < tags.size(); ++i) led.push_back(i);
+        for (int iter = 0; iter < 3; ++iter) {
+            bool moved = false;
+            for (size_t a = 0; a < led.size(); ++a)
+                for (size_t b = a + 1; b < led.size(); ++b) {
+                    StudioUI::JointTag& ta = tags[led[a]];
+                    StudioUI::JointTag& tb = tags[led[b]];
+                    // two inline tags sit ON their anchors by law — only a
+                    // displaced tag may be moved to resolve a collision
+                    if (!ta.leader && !tb.leader) continue;
+                    const float wa = ad * static_cast<float>(ta.label.size());
+                    const float wb = ad * static_cast<float>(tb.label.size());
+                    // the label draws left-aligned from (x+dx): its rect is
+                    // [x+dx, x+dx+w] x [y+dy - lh/2, y+dy + lh/2]
+                    const float xa0 = ta.x + ta.dx, xa1 = xa0 + wa;
+                    const float xb0 = tb.x + tb.dx, xb1 = xb0 + wb;
+                    const bool xhit = (xa0 < xb1) && (xb0 < xa1);
+                    const float ya0 = ta.y + ta.dy - 0.5f * lh;
+                    const float ya1 = ta.y + ta.dy + 0.5f * lh;
+                    const float yb0 = tb.y + tb.dy - 0.5f * lh;
+                    const float yb1 = tb.y + tb.dy + 0.5f * lh;
+                    if (!xhit || ya1 <= yb0 || yb1 <= ya0) continue;
+                    const float push = 0.5f * (fminf(ya1, yb1) - fmaxf(ya0, yb0))
+                                     + 0.04f * lh;
+                    if (ta.y + ta.dy <= tb.y + tb.dy) { ta.dy -= push; tb.dy += push; }
+                    else                              { ta.dy += push; tb.dy -= push; }
+                    moved = true;
+                }
+            if (!moved) break;
+        }
     }
     ui_.set_joint_tags(std::move(tags));
 }
@@ -5203,15 +5412,28 @@ void Engine::push_rig_overlay() {
         {"knee_L", "ankle_L"},
         {"spine_lower", "hip_R"}, {"hip_R", "knee_R"},
         {"knee_R", "ankle_R"},
-        // Tier A (2026-09-04): the tail tip and the face rig — the operator's
-        // "arrows on the face" (every feature draws its own bone+tag, and the
-        // tags name which side is the creature's own left). Absent anatomy is
-        // omitted (legacy packs render exactly as before).
-        {"tail_mid", "tail_tip"},
-        {"neck", "ear_L"}, {"neck", "ear_R"},
-        {"neck", "lid_L"}, {"neck", "lid_R"},
-        {"neck", "brow_L"}, {"neck", "brow_R"},
-        {"jaw", "mouth_L"}, {"jaw", "mouth_R"}
+        // Tier A (2026-09-04): the tail tip continues its chain. The FACE
+        // features deliberately do NOT draw as FK edges — the eye's round-5
+        // verdict (run 2026-09-04_213428): neck→feature lines read as "long
+        // radial spokes fanning out of one hub, mechanically wrong." A facial
+        // feature's bone is its LOCAL vector, drawn from FACE_VEC below.
+        {"tail_mid", "tail_tip"}
+    };
+    // THE FACE ARROWS (the operator's "arrows on the face", measured from the
+    // factory's feature segments): each feature draws its own short stick —
+    // ear base→wing (outward), lid hinge→bulge center (down-forward), brow
+    // hinge→inner ridge (inward along the ridge), mouth hinge→corner
+    // (outward). R mirrors the x component. The stick rides its anchor under
+    // pose (translation-only approximation — an instrument, not skin).
+    static const struct { const char* j; float dx, dy, dz; } FACE_VEC[] = {
+        {"ear_L",   0.29f,  0.05f, -0.01f}, {"ear_R",  -0.29f,  0.05f, -0.01f},
+        {"lid_L",   0.00f, -0.12f, -0.07f}, {"lid_R",   0.00f, -0.12f, -0.07f},
+        // brow: SHORT OUTWARD ticks along the ridge (fourth eye round,
+        // run 2026-09-04_224349: the old +-0.50 vectors pointed the two sticks
+        // AT each other and they bridged mid-face as one long cross-face line).
+        // +x is the creature's left, so outward = +x for the L feature.
+        {"brow_L",  0.20f,  0.02f, -0.05f}, {"brow_R", -0.20f,  0.02f, -0.05f},
+        {"mouth_L", 0.33f,  0.00f,  0.00f}, {"mouth_R", -0.33f,  0.00f,  0.00f},
     };
     const int selected = selected_joint_.load(std::memory_order_relaxed);
     const float* st = static_cast<const float*>(j_state_map_);
@@ -5224,6 +5446,16 @@ void Engine::push_rig_overlay() {
         float x0, y0, x1, y1;
         if (project_world(pa, x0, y0) && project_world(pb, x1, y1))
             segments.push_back({x0, y0, x1, y1, a == selected || b == selected});
+    }
+    for (const auto& fv : FACE_VEC) {
+        int a = joint_index(fv.j);
+        if (a < 0 || a >= static_cast<int>(j_n_joints_))
+            continue;  // absent anatomy is omitted
+        float pa[3] = { st[a * 8 + 0], st[a * 8 + 1], st[a * 8 + 2] };
+        float pb[3] = { pa[0] + fv.dx, pa[1] + fv.dy, pa[2] + fv.dz };
+        float x0, y0, x1, y1;
+        if (project_world(pa, x0, y0) && project_world(pb, x1, y1))
+            segments.push_back({x0, y0, x1, y1, a == selected});
     }
     ui_.set_rig_segments(std::move(segments), true);
 }

@@ -94,17 +94,23 @@ L_landmarks = {
     # come from the mirror law as always.
     #   ear_L  : base of the ear wing (ear patch x 1.052..1.743, 480 verts,
     #            mirrored exactly; the wing's medial edge ~1.05).
-    #   lid_L  : top of the eyeball bulge (the proud-of-face patch: 29 verts,
-    #            centroid (0.546, 8.659, 1.307) — hinge above so +theta closes
-    #            the lid DOWN over the eye, the closing-test sign).
-    #   brow_L : the brow ridge just above the eye line (band y 9.02..9.32,
-    #            437 verts full-width).
+    #   lid_L  : TOP OF THE EYEBALL BULGE — re-derived 2026-09-04 (operator
+    #            conviction: "eyelids and eyebrows are too low"). The first
+    #            seeds (y 8.75/9.00, z 1.30/1.20) medoid-snapped onto the FLAT
+    #            face wall (z ~1.0-1.1) SUNK BEHIND the bulge (z up to 1.6);
+    #            from the 3/4 camera a sunken pin projects down the face —
+    #            read as "too low". The z-profile (eye column x 0.35..0.9):
+    #            bulge crest y 8.55-8.75 z<=1.6, wall above z<=1.11. New seeds
+    #            sit ON the surface: lid at the bulge's upper edge (y 8.78,
+    #            z 1.38), brow on the band (y 9.08, z 1.15).
+    #   brow_L : the brow band (y 9.02..9.32, 437 verts full-width) — hinge at
+    #            its lower-center where the raise motion lives.
     #   mouth_L: the mouth-corner zone (114 verts, x 0.55..0.93) — hinge at the
     #            patch's inner edge so +theta (axis z-hat) lifts the corner =
     #            smile.
     'ear_L':       (1.0800, 8.9000, 0.3600),
-    'lid_L':       (0.5500, 8.7500, 1.3000),
-    'brow_L':      (0.5500, 9.0000, 1.2000),
+    'lid_L':       (0.5500, 8.7800, 1.3800),
+    'brow_L':      (0.5500, 9.0800, 1.1500),
     'mouth_L':     (0.6000, 8.0600, 1.3000),
 }
 # ROMs: central = measured stops (anchors were on the axis); pairs take L on
@@ -203,6 +209,17 @@ STATION_J = {
 for _cn, (_sy, _sz) in STATION_J.items():
     J[_cn] = np.array([0.0, _sy, _sz])
     snap[_cn] = 0.0                    # exact by construction, not fit distance
+# THE FACE-STATION LAW (2026-09-04, the operator's "eyelids and eyebrows are
+# too low"): the medoid is for INTERIOR anchors — in the skull it drags the
+# point to the nearest skin WALL, and the wall beside the eye sits BEHIND the
+# eyeball bulge (z ~1.0-1.1 vs the bulge's 1.6), which from the 3/4 camera
+# projects down the face. Lid and brow are SURFACE features measured on the
+# surface (the z-profile, face_probe.py) — exact by construction, the same
+# law as the central stations. Ear and mouth KEEP the medoid: their anchors
+# snap onto thin skin where the medoid IS the refinement (snap_d 0.066 / 0.128).
+for _fn in ('lid_L', 'brow_L'):
+    J[_fn] = np.array(L_landmarks[_fn])
+    snap[_fn] = 0.0                    # exact by construction
 # THE AXIS LAW: CENTRAL joints ride the mirror axis (x := 0). The medoid
 # snaps drift off-axis because the mesh itself is asymmetric (x up to 0.20);
 # a spine that is not on the axis breaks the mirror conjugation for every

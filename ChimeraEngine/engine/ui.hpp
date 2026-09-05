@@ -283,7 +283,13 @@ public:
     // instrument for checking which side is the creature's left (the tag sits
     // ON the geometry it names), and the pattern for any future labeled
     // mechanism (thrusters, hatches, whatever a spaceship needs).
-    struct JointTag { float x, y; std::string label; bool selected; bool posed; };
+    // De-crowding contract (2026-09-04, the dyad's tag-stack verdict):
+    // x,y stay the PIN (the dot's position, unchanged law); dx,dy move the
+    // CHIP away from a crowded pin; leader=true draws the pin->chip line;
+    // show_label=false renders the dot only (the far-out zoom gate — a tag
+    // too small to read is an instrument for nobody).
+    struct JointTag { float x, y; std::string label; bool selected; bool posed;
+                      bool leader; float dx, dy; bool show_label; };
     std::vector<JointTag> joint_tags_;
     void set_joint_tags(std::vector<JointTag> t) { joint_tags_ = std::move(t); }
 
@@ -312,6 +318,7 @@ public:
     // (the same discipline as B3's w/h: the UI publishes, never hides)
     float line_height() const { return cell_h_; }
     float advance() const { return advance_; }
+    VkExtent2D ext() const { return ext_; }   // tag de-crowding measures against the frame
 
     // ── E1: the docs browser's HTTP twin (agents read what the panel shows) ──
     bool        on_wheel(int x, int y, float delta);   // true = a panel took it
@@ -365,6 +372,10 @@ public:
     static constexpr float DESIGN_FONT_PX = 16.f;     // the Consolas it was read at
     static constexpr float DESIGN_TITLE_H = 22.f;     // a collapsed panel's title bar
     float ui_scale_ = 1.f;                            // derived in prepare()
+    // the engine computes per-tag suppression against panel rects (the eye's
+    // "labels overprint the timeline/reel" conviction, 2026-09-04) — make the
+    // layout law readable from Engine
+    void  get_layout(uint32_t w, uint32_t h, float out_rects[5][4]) const { layout(w, h, out_rects); }
     float bar_h()   const { return BAR_H * ui_scale_; }
     float title_h() const { return DESIGN_TITLE_H * ui_scale_; }
 
