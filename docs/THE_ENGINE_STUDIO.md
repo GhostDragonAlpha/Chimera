@@ -2370,3 +2370,18 @@ ear 5.18/5.21%, mouth 8.235/8.235%. Pixel-frame mirror tests at 3/4 view
 condemned as projection artifacts — screen-space flipping of a perspective
 view is not a law test; mesh-space statistics are. FPS 56 with 28 joints +
 matter 48 iters.
+
+### Dyad verdict on the facial rig (run 2026-09-04_195741, 60k eye, 6/6 reads clean)
+
+The eye confirms: **all nine joints present, tagged, and placed on anatomy** —
+no floating tags, `tail_tip` "cleanly placed at the very end of the tail",
+leader dots landing on skull/eye/muzzle/ear regions, no skin tearing reported
+near the new features, no clipped limbs, board and docks reading as intended.
+
+**One new editor defect (backlog):** at `monkey_full` fit distance the eight
+facial tags project into a single crowded vertical stack — `jaw +0` merges
+into `mouth_L +0`, `neck` collides with `mouth_R`, the brow/lid pairs touch,
+and the leader lines fan into a spiderweb over the eyes. Rig is right; the
+overlay needs screen-space de-crowding for short face bones (min-separation
+or zoom-gated face tags). Measured context note: a 2-shot scan cost ~11k
+tokens per read on the 60k eye — 60k is comfortable for standard scans.
