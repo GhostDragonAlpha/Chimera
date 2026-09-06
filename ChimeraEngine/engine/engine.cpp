@@ -41,6 +41,18 @@ VkCommandPool g_ui_cmd_pool = VK_NULL_HANDLE;
 // first OUT_OF_DATE froze the window forever while the loop kept logging FPS.
 static std::atomic<uint32_t> g_pending_resize_w{0};
 static std::atomic<uint32_t> g_pending_resize_h{0};
+// CAM_PHI_BAND (2026-09-06, the operator's under-floor view): the orbit's
+// legal elevation band. phi is elevation FROM THE HORIZON; the derivative
+// up-vector ("free spin", set_camera) stays pole-safe for any phi, but past
+// ±PI/2 the EYE is below the floor plane (eye.y = target.y + R·sin(phi)) and
+// the frame rolls — the operator watched the creature's underside. This is
+// the band the geometry itself defines, clamped at every ingest (drag,
+// set_camera, bookmark recall, fit) and backstopped at the eye.
+static constexpr float CAM_PHI_BAND = 1.5533430f;   // just under PI/2 (89°)
+// Clamp helper: the one law, applied at every phi ingest.
+static float cam_phi_band(float phi) {
+    return fmaxf(-CAM_PHI_BAND, fminf(CAM_PHI_BAND, phi));
+}
 // Bounding-sphere radius of the posted triangle mesh, measured at upload.
 // The zoom floor: below 1.02x this radius the eye enters the mesh and the
 // near plane SLICES it (operator report: "the nose and one hand are severed
@@ -193,6 +205,17 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         float  dm_y = static_cast<float>(my - g_last_my);
         g_cam.theta -= dm * 0.005f;
         g_cam.phi   -= dm_y * 0.003f;   // drag UP -> camera UP (screen y grows downward)
+        // CAM_PHI_BAND (2026-09-06, the operator's under-floor view): the pole
+        // stopper died with the derivative up-vector (line "free spin" below),
+        // but the horizon + floor did not. phi is the ELEVATION FROM THE
+        // HORIZON — past ±PI/2 the eye is below the floor plane and the
+        // derivative up-vector rolls the frame upside down (measured: a live
+        // bookmark caught phi = -6.01 rad, the underside of the subject). The
+        // band is the half-open interval the up-vector law itself defines; the
+        // free-spin claim holds for theta only. Clamped at INPUT, so a drag
+        // beyond the band simply stops at the horizon.
+        if (g_cam.phi >  CAM_PHI_BAND) g_cam.phi =  CAM_PHI_BAND;
+        if (g_cam.phi < -CAM_PHI_BAND) g_cam.phi = -CAM_PHI_BAND;
         g_last_mx = mx;
         g_last_my = my;
         return 0;
@@ -2987,13 +3010,25 @@ bool Engine::camera_fit(float out[8]) {
     float dist = fmaxf(radius_floor(), fmaxf(fmaxf(dist_v, dist_h), sphere_dist * 0.0f));
     camera_state(out);
     out[0] = dist;
+    // FIT v6 (2026-09-06, the operator: "too zoomed in"): fit OWNS its
+    // elevation. v5 only unwrapped free-spun values, but a session can carry
+    // a LEGAL yet poisoned phi (−1.31 rad survived the band): with that
+    // elevation the fitted eye computes below the floor, CAM_FLOOR_GATE
+    // hoists it to y≈0, and the shot reads as a ground-level close-up. The
+    // certified framing elevation is the boot default (CameraState phi =
+    // 0.3) — every eye-confirmed fit scan ran under it, so it is the
+    // reference, not a taste. Theta stays (the operator's azimuth is
+    // legitimate); the band-center shift below uses phi_fit so the target
+    // and the elevation agree.
+    const float phi_fit = 0.3f;
+    out[2] = phi_fit;
     out[3] = cx; out[4] = cy; out[5] = cz;
     // center the subject in the visible band (vertical — the docks' horizontal
     // asymmetry is <1% of the width, invisible)
     const float band_center_py = 0.5f * (vy0 + vy1);
     const float world_per_px = 2.f * dist * tan_half / Hf;
     const float shift = (0.5f * Hf - band_center_py) * world_per_px;
-    const float c2 = cosf(g_cam.phi), s2 = sinf(g_cam.phi);
+    const float c2 = cosf(phi_fit), s2 = sinf(phi_fit);
     const float sx2 = sinf(g_cam.theta), cx2 = cosf(g_cam.theta);
     out[3] += -shift * (-s2 * sx2);                        // target -= shift·up_vec
     out[4] += -shift * (c2);
@@ -3005,7 +3040,7 @@ bool Engine::camera_fit(float out[8]) {
 void Engine::set_camera_full(const float v[8]) {
     g_cam.radius    = fmaxf(radius_floor(), v[0]);
     g_cam.theta     = v[1];
-    g_cam.phi       = v[2];
+    g_cam.phi       = cam_phi_band(v[2]);   // CAM_PHI_BAND: banded at ingest — a pre-band bookmark or a derived shot can carry an under-floor phi
     g_cam.target[0] = v[3]; g_cam.target[1] = v[4]; g_cam.target[2] = v[5];
     g_cam.pan_x     = v[6]; g_cam.pan_y     = v[7];
 }
@@ -5750,9 +5785,18 @@ void Engine::update_camera_matrices(float proj[16], float view[16]) {
         g_cam.target[1] + g_cam.radius * s              + g_cam.pan_y,
         g_cam.target[2] - g_cam.radius * c * cx
     };
+    // CAM_FLOOR_GATE (2026-09-06, the operator's under-floor view): the last
+    // gate — the eye itself never sinks below the floor plane. pan_y and
+    // pan_x are unbounded by design (framing is the operator's), but a low
+    // pan under a low horizon put the eye at y<0: the whole scene reads from
+    // underneath the grid. The floor is the scene law (grid, contact shadow,
+    // walk cycle all live on y=0), so the gate is DERIVED, not taste.
+    if (eye[1] < 0.02f) eye[1] = 0.02f;
     // Up vector = ∂(eye)/∂phi (the direction the camera tilts "up" as elevation increases).
     // This is unit-length for every (theta, phi) — no pole singularity — so the camera can spin
     // continuously over the top (free rotation on both axes) without the old +-1.55 rad stopper.
+    // (2026-09-06: theta keeps its free spin; phi no longer does — CAM_PHI_BAND
+    // clamps it at every ingest because past ±PI/2 the eye lands under the floor.)
     float up_vec[3] = {-s * sx, c, s * cx};
     look_at(view, eye, g_cam.target, up_vec);
     // publish the eye too: the frost light and anything else that needs "where the
@@ -6182,7 +6226,7 @@ bool Engine::load_membrane(const std::string& term, const std::vector<float>& po
 void Engine::set_camera(float radius, float theta, float phi) {
     g_cam.radius = fmaxf(radius_floor(), radius);
     g_cam.theta  = theta;
-    g_cam.phi    = phi;   // free spin — the camera up vector handles any elevation
+    g_cam.phi    = cam_phi_band(phi);   // CAM_PHI_BAND: banded at ingest (the up-vector stays pole-safe; the floor does not)
     g_cam.target[0] = g_cam.target[1] = g_cam.target[2] = 0.0f;
     g_cam.pan_x = g_cam.pan_y = 0.0f;
 }
