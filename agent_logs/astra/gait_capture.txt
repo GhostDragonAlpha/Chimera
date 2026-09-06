@@ -1,0 +1,43 @@
+pack_vertices=18459 joints=28 triangles=36630; original_brief_triangles=36424 (nonbinding, repo wins)
+calibration H_com=5.615639986 leg=3.091284678 omega=1.321480348
+clock_candidate T_stance=T_swing=1.831964036 stride=3.663928073 cadence_hz=0.545862244 step_length=4.314915816
+clock_loop_iterations=10 clock_loop_residual=4.403e-12s independent_swing_return_residual=4.409e-12s
+cp_only_10pct_capture_T_max=1.673330718s required_swing_period_at_bound=1.817999952s coupling_gap_at_capture_bound=0.144669233s
+clock_status=CONDITIONAL point-pendulum, fixed hip; physical stride clock=UNIDENTIFIED
+boundary_velocity=3.407010996 midpoint_velocity=1.865289511 orbital_energy=1.739652480
+first_step_impulse_per_mass=1.865289511 wu/s at x=0; first_contact_time=0.915982018s
+stable_manifold_startup_impulse_per_mass=0.555972770 wu/s; nominal_first_contact_time=1.831964036s
+controlled_lean_for_stable_manifold_x=0.420719666 wu geometric_angle=0.074779572rad
+first_step_total_impulse=UNKNOWN (mass missing); impulse_budget=UNKNOWN; passive_lean_only_exact_E_entry=IMPOSSIBLE
+flow_rk4_residual=9.193e-14 deadbeat_cp_convergence_steps=1 deadbeat_full_state_with_impulse_steps=1
+cp_only_full_state_error_after_one=2.068224169 (NOT full-state deadbeat)
+10pct_velocity hybrid_placement=5.754466305 signed_impulse_per_mass=-1.932605984 cp_only_placement=7.216921640
+perturbed_controller=cp_only step=0 d=7.216921640 placement_margin_optimistic=-1.034352283 J_over_m=0.000000000 xi_error=4.441e-16 full_state_error=1.462e+00 E_before=2.958463493 E_after=2.814128782
+perturbed_controller=cp_only step=1 d=4.314915816 placement_margin_optimistic=1.867653541 J_over_m=0.000000000 xi_error=8.882e-16 full_state_error=1.299e-01 E_before=2.814128782 E_after=1.835110273
+perturbed_controller=cp_only step=2 d=4.314915816 placement_margin_optimistic=1.867653541 J_over_m=0.000000000 xi_error=0.000e+00 full_state_error=1.154e-02 E_before=1.835110273 E_after=1.748133067
+perturbed_controller=cp_only step=3 d=4.314915816 placement_margin_optimistic=1.867653541 J_over_m=0.000000000 xi_error=8.882e-16 full_state_error=1.025e-03 E_before=1.748133067 E_after=1.740405906
+perturbed_controller=two_step step=0 d=7.240190927 placement_margin_optimistic=-1.057621570 J_over_m=0.000000000 xi_error=2.327e-02 full_state_error=1.486e+00 E_before=2.958463493 E_after=2.666559394
+perturbed_controller=two_step step=1 d=4.052995892 placement_margin_optimistic=2.129573465 J_over_m=0.000000000 xi_error=4.441e-16 full_state_error=3.997e-15 E_before=2.666559394 E_after=1.739652480
+perturbed_controller=two_step step=2 d=4.314915816 placement_margin_optimistic=1.867653541 J_over_m=0.000000000 xi_error=2.665e-15 full_state_error=5.773e-15 E_before=1.739652480 E_after=1.739652480
+perturbed_controller=two_step step=3 d=4.314915816 placement_margin_optimistic=1.867653541 J_over_m=0.000000000 xi_error=1.776e-15 full_state_error=1.277e-14 E_before=1.739652480 E_after=1.739652480
+perturbed_controller=hybrid step=0 d=5.754466305 placement_margin_optimistic=0.428103052 J_over_m=-1.932605984 xi_error=4.441e-16 full_state_error=4.441e-16 E_before=2.958463493 E_after=1.739652480
+perturbed_controller=hybrid step=1 d=4.314915816 placement_margin_optimistic=1.867653541 J_over_m=-0.000000000 xi_error=4.441e-16 full_state_error=4.441e-16 E_before=1.739652480 E_after=1.739652480
+perturbed_controller=hybrid step=2 d=4.314915816 placement_margin_optimistic=1.867653541 J_over_m=-0.000000000 xi_error=4.441e-16 full_state_error=4.441e-16 E_before=1.739652480 E_after=1.739652480
+perturbed_controller=hybrid step=3 d=4.314915816 placement_margin_optimistic=1.867653541 J_over_m=-0.000000000 xi_error=4.441e-16 full_state_error=4.441e-16 E_before=1.739652480 E_after=1.739652480
+capture intervals: scheduled [0,step_length]; optimistic reach [-2*leg,+2*leg], NOT certified FK reach
+step=0 next_support=4.314915816 stopping_margin_scheduled=-0.420719666 stopping_margin_optimistic_min=1.446933875 continuing_placement_margin=1.867653541
+step=1 next_support=8.629831632 stopping_margin_scheduled=-0.420719666 stopping_margin_optimistic_min=1.446933875 continuing_placement_margin=1.867653541
+step=2 next_support=12.944747448 stopping_margin_scheduled=-0.420719666 stopping_margin_optimistic_min=1.446933875 continuing_placement_margin=1.867653541
+step=3 next_support=17.259663264 stopping_margin_scheduled=-0.420719666 stopping_margin_optimistic_min=1.446933875 continuing_placement_margin=1.867653541
+first_halfstep_optimistic_stopping_margin=1.446933875
+minimum_LIPM_stance_friction_coefficient=0.384187361 (availability unknown)
+rig_result={'max_error': 0.12203788074981307, 'rms_error': 0.024728394083038018, 'full_subset_error': 0.0, 'flat_seed_unreachable': 414, 'max_full_frame_tilt': 3.5605020670997716, 'pose_loop_error': 0.29644995623031734, 'samples': 221, 'theta_loop_error': 1.9757434403165992, 'target_loop_error': 0.0}
+foot_error_max=0.122037881 foot_error_rms=0.024728394 threshold=0.028078200 wu
+foot_tracking_gate=FAIL
+exact_Rodrigues_substeps=1; accumulated_small_angle_drift=0 (algebraic, excludes float roundoff)
+substeps_for_total_stride_0.5pctH=UNATTAINABLE_FOR_RECORDED_PROFILE; finer timing cannot fix the same erroneous sampled poses
+swing_stance_velocity_jump=3.407010996 wu/s; startup_swing_time_deficit=0.915982018s
+missing_moving_hip_forcing_at_toeoff=0.872863923 rad/s^2
+full_clock_loop_residual=UNDEFINED: surrogate return passes, coupled FK/contact swing has not closed
+integration_gate=CLOSED: actuator/impact budget absent; ballistic contact/startup closure falsified; lateral balance uncertified
+No fallback cadence, engine writes, or changed blob data. See docs/THE_CAPTURE_LAW.md.
