@@ -371,3 +371,41 @@ Run `python tools/gait_capture.py` from repo root (numpy + stdlib only).
 when gait is uncertified. Normal exit 0 means the falsification report ran,
 not that a walk passed. Full output: `agent_logs/astra/gait_capture.txt`.
 The executable coordinator contract is `THE_CAPTURE_INTEGRATION.md`.
+
+## COORDINATOR'S RIG AUDIT (2026-09-05, post-merge 73f40bf3)
+
+Phase-1 "hip band repair" is RETRACTED before surgery — the weights are innocent:
+
+- hip_L/R own 300 verts each; only 47 sit above the anchor, all at crease-blend
+  0.5, ZERO above 0.6. (The coordinator's earlier "863 contaminated" was a
+  1.5-ball neighborhood count that included other joints' verts — misread.)
+- `max_full_frame_tilt` is |q| summed over the leg's three hinge angles:
+  legs bending IS the walk. Not a defect.
+
+THE SURGICAL DECOMPOSITION (coordinator re-run, per-sample, one full stride):
+
+  swing-phase errors          max = 0.0000
+  reachable-stance errors     max = 0.0000
+  flat-seed-miss errors (414) max = 0.1220  <- THE ENTIRE DEFECT
+  worst window: phase 0.45..0.63 of T=1.832 (mid-stance), all on the R leg
+
+Mid-stance is where the foot passes under the hip: the demanded hip->ankle
+span equals full leg extension. Geometry: rest hip_L->ankle_L = 3.089 vs
+leg = 3.0913 — the frame was fitted essentially straight-legged, so mid-stance
+sits exactly on the singularity. Two open questions for the theorist:
+
+  Q1 the ROM PARADOX: shipped knee_L ext = -147.89 deg (hyperextension allowed),
+     so a straight knee is INSIDE the shipped ROM — yet the flat seed reports
+     unreachable. Suspect the seed law / the ROM sign convention inside the
+     solver, not the skeleton.
+  Q2 the L/R ASYMMETRY: every top-12 error is the R leg. The chains are
+     mirror-identical (measured). Why does only R fail? (solver warm-start
+     order: L is solved first each frame and R inherits `previous`.)
+
+  Also retracted: the coordinator's delta-sweep (Orbit(h,...) never flowed into
+  gait_target — stance targets displace the rest marker horizontally only;
+  identical outputs for every h proved the poke void before it misled anyone).
+
+The ask: derive the STANCE CLOSURE LAW — how the stance leg must carry flexion
+margin at mid-stance (root drop vs knee bias vs seed reformulation), with the
+reachability proof and the corrected probe. The 0.0281 gate is unchanged.
