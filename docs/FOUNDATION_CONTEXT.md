@@ -95,3 +95,12 @@ Workers must not expand into fixing them during the foundation wave.
 | Typed mechanism membranes | Composes a knee/tool/cup from validated constituents and interfaces | First two-port conservation and orientation test |
 
 Ideas are candidates. None is silently an assigned feature or a performance claim.
+
+## Portability decision — 2026-09-06 follow-up
+
+Alan delegated Windows/Linux architecture to ASTRA. Decision: keep one C++/Vulkan core,
+preserve the Win32 backend, extract OS services, then add Linux and genuine headless
+testing in stages. See [THE_PLATFORM_BOUNDARY.md](THE_PLATFORM_BOUNDARY.md) for audited
+seams, failure gates, and reserved P01. G01 remains unchanged. P01 is not dispatched;
+Linux/software-Vulkan operation is not yet implemented or tested. Neither platform must
+host the other's physics. Real-window DYAD acceptance remains mandatory for product behavior.
