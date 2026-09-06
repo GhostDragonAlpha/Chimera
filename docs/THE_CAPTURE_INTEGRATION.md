@@ -1,0 +1,188 @@
+# Capture integration contract — coordinator only
+
+Companion derivation and Rule-0 ledger: `THE_CAPTURE_LAW.md`.
+**Current result: CLOSED. Do not enable a walk from this PR.** This is an
+offline controller/probe and a C++ integration specification, not an engine
+patch. The measured FK error, pose return and passive contact closure fail;
+signed impulse limits, lateral support and full swing dynamics are unmeasured.
+
+## STATEMENT / PREDICTION / FALSIFIER
+
+**STATEMENT:** a capture gate must evaluate physical feasibility before issuing
+poses or changing support; analytic CP convergence alone is insufficient.
+
+**PREDICTION:** this calibration produces a closed gate with the supplied
+candidate. A +10% velocity perturbation can yield one-step full-state recovery
+only if the independent placement and signed-impulse requirements are both
+admitted and the actual contact/rig trajectory meets the tolerance.
+
+**FALSIFIER:** enabling the candidate despite a missing budget, out-of-ROM or
+unreachable target, pose-loop/contact error over tolerance, unvalidated lateral
+support, or a clipped command subsequently described as deadbeat.
+
+## Units, ownership and interfaces
+
+* Scalar forward x below corresponds to mesh Z; mesh Y is up. The local ground
+  frame must be supplied explicitly if heading or ground normal changes.
+* Angles in the pack's ROM are **degrees**; math and shader theta are radians.
+  `main.cpp` POST `/joint` accepts `{joint:name_or_index,theta:degrees}` for the
+  editor. POST `/joints` accepts `{on:bool}` and is not an array-of-angles API.
+  GET `/joints` reports state. Inspect the current handlers when implementing;
+  the requested dedicated HTTP schema was not found under `docs/` at this SHA.
+* Existing `Engine::gait_theta(double&,double&)` serves the older two-knee CPG.
+  It is NOT the 28-element JNT3 gait function below. Do not silently overwrite
+  its meaning. A separate coordinator change must establish ownership and
+  populate the six named hip/knee/ankle entries of the joint state buffer.
+* Python is the offline derivation bench only. All runtime state, control and
+  FK evaluation belong to the engine (C++/GPU); no HTTP-per-frame Python loop.
+* Preserve the shader's fixed-rest-pivot root-first/own-last product and JNT3
+  second-owner blend. Do not accumulate rotations into last frame's vertices.
+
+## Exact tested candidate `gait_theta(k,t)`
+
+The mathematical profile is defined by targets plus a constrained inverse,
+not six invented sinusoidal amplitudes. Let k be the integer support-step
+number, t in [0,T) the time since that step began, and absolute phase time
+u=k*T+t. T here is the conditional surrogate fixed point from the derivation;
+it may only be used by the offline falsifier until the full clock is certified.
+
+```text
+gait_theta(k, t, previous_theta):
+    theta[0..27] = 0
+    for side in {L, R}:
+        phase = modulo(k*T + t + (side==R ? T : 0), 2*T)
+        P = calibrated_rest_sole_centroid[side]
+        if phase < T:
+            target = P - forward * lipm_x(phase; -a, vb, omega)
+        else:
+            phi = pendulum_solution(phase-T; phi0=-asin(a/L), phidot0=0)
+            target = P + forward * L*sin(phi)
+                       + up * L*(cos(phi)-cos(asin(a/L)))
+        seeds = {previous_theta[side], both_reverse_FK_planar_IK_branches(target)}
+        candidates = constrained_DLS(actual_JNT3_sole_centroid, target, seeds, ROM)
+        q = candidate_with_smallest_position_residual
+        theta[hip_side, knee_side, ankle_side] = q
+    evaluate BOTH legs simultaneously with actual_JNT3_pose_points(theta)
+    return theta, measured_residuals, validity
+```
+
+This is exactly `gait_target` + `Rig.solve` + simultaneous evaluation in
+`gait_capture.py`. Numerical solver history is part of the state: the measured
+nonzero pose return means **there is currently no certified periodic
+theta(k,t) depending only on phase**. Do not concatenate this failed first
+stride indefinitely, force its endpoint equal to its start, or conceal the
+joint jump in a blend. The coordinator must solve/verify a periodic inverse
+branch before an offline table can be accepted.
+
+Mirror rule: M=diag(-1,1,1), pivot_R=M*pivot_L, axis_R=det(M)*M*axis_L.
+For this pack hip/knee axes are +X and ankle axes -X on both sides. Therefore
+theta_R(phase)=theta_L(phase+T) for ideal mirrored geometry: **no extra angle
+negation**. Use side-specific LBS weights/vertices for the final test.
+
+## Controlled support transitions
+
+Keep measured state `(p,X,v,contact_side,t,previous_theta)` in the engine.
+Never replace measured X,v with reference values to manufacture convergence.
+The ideal integrator and support transition are:
+
+```text
+predict at intended touchdown:
+    x = X-p
+    (xm,vm) = A(remaining_time) * (x,v)
+
+capture-only mode:
+    d = xm + vm/omega - xi_ref
+    j = 0
+
+one-step full-state mode:
+    d = xm + a
+    j = vb - vm                 # signed J/m, including braking
+
+    next_foot = p+d
+    planned_x_plus = xm-d
+    planned_v_plus = vm+j
+```
+
+At a full step start these equations use remaining_time=T. During an ongoing
+swing, changing the planned landing foot changes the swing boundary-value
+problem. Do not extrapolate a changing target while retaining a stale
+reachability/actuation certificate. At a confirmed contact event, apply the
+certified physical impulse/impact law and update the support label. A variable
+called `j` is not an implementation of push-off. Record the actual impulse,
+the actual foot location and the resulting state; compare with the prediction.
+
+The nominal target recipe above only covers `d=2a`. For corrected d, use the
+**absolute intended foot** and actual predicted root trajectory to form the
+stance target `Q_body=foot_world-root_translation`. A swing must join its
+current world position/velocity to that foot with **zero world foot velocity
+at touchdown** (unless an explicit impact law accepts a nonzero value).
+
+One completely specified **driven** candidate, for the coordinator to test
+after deriving actuator budgets, is a quintic Hermite trajectory in world
+coordinates with measured initial position/velocity/acceleration and desired
+touchdown position/velocity/acceleration. For duration T and normalized u:
+
+    Q(u)=c0+c1*u+c2*u²+c3*u³+c4*u⁴+c5*u⁵
+    c0=Q0; c1=T*V0; c2=T²*A0/2
+    D=Q1-c0-c1-c2; V=T*V1-c1-2*c2; A=T²*A1-2*c2
+    c3=10*D-4*V+A/2; c4=-15*D+7*V-A; c5=6*D-3*V+A/2
+
+Specify Q1 on the ground and V1=A1=0 for a planted foot. These six boundary
+conditions uniquely fix the polynomial; terrain clearance is an additional
+constraint and must be checked, not assumed. This driven candidate is **not
+the tested passive trajectory** and supplies no clock by itself. Its duration
+must be determined from swing dynamics/effort limits together with stance,
+capture and contact constraints. No polynomial frequency is a derived gait.
+
+## Capture gate (all conditions, fail closed)
+
+```text
+capture_gate(state, candidate, certificate):
+    require finite(state, candidate), canonical_pack_and_axes_match
+    require certificate.full_coupled_clock_loop_closed
+    require certificate.periodic_inverse_branch_closed
+    require certificate.continuous_foot_error <= 0.005*H
+    require certificate.ground_clearance_and_touchdown_contact
+    require certificate.lateral_balance_and_support_polygon
+    require certificate.signed_impulse_bounds_are_measured
+    require certificate.j_min <= candidate.j <= certificate.j_max
+    require candidate.foot in certified_reachable_foot_set(remaining_time, state)
+    require candidate.theta within ROM without clipping
+    require abs((xm-d)+(vm+j)/omega-xi_ref) <= declared_state_tolerance
+    if exact_full_state_mode:
+        require abs(xm-d+a), abs((vm+j-vb)/omega) <= declared_state_tolerance
+    require predicted_contact_forces inside measured friction cone
+    require no unsupported interval; verify actual contact before switching support
+    require energy/reset ledger agrees with stated impulse and impact model
+    return ADMITTED
+
+if not ADMITTED while preparing to start:
+    keep the independently certified standing controller in charge
+    publish the actual failing conditions
+if not ADMITTED during motion:
+    invoke an independently certified recovery/stop policy
+    # Freezing theta or zeroing velocity is NOT a fall-prevention policy.
+```
+
+No recovery policy is supplied or certified by this PR. A stopping step needs
+its own delayed capture point in the true reachable set, rather than simply
+using the next nominal walking foot. With no such policy, walking cannot be
+enabled under a "without falling" claim.
+
+## Startup and handoff gates
+
+The smallest ideal stable-manifold kickoff at x=0 is
+`J/m=omega*xi_ref=0.555972770` followed by periodic supports. A controlled lean
+`x=xi_ref,v=0` is another manifold point. Both need a physical preparation and
+first-swing certificate. Exact midpoint kickoff `J/m=vc=1.865289511` needs
+touchdown after T/2 and cannot inherit a full-duration passive swing.
+
+Before the coordinator enables anything: identify a swing/impact/actuator law
+and measure its budgets; derive a coupled period within its capture/reach
+domain; close the inverse branch with contact and foot orientation; verify
+continuous error and lateral balance; certify in the live engine. These are
+unclosed dependencies, not permission requests or claims about work performed.
+
+Exact Rodrigues uses one evaluation per pose. Do not port the mirror's
+hypothetical small-angle substep count. For the tested profile, even infinitely
+fine temporal sampling leaves the measured bad poses and contact discontinuity.
