@@ -1,6 +1,8 @@
 # Capture integration contract — coordinator only
 
-**Latest amendment:** sampled stance/foot position now passes with the
+**Current continuity amendment:** see [THE_CONTINUITY_LAW.md](THE_CONTINUITY_LAW.md) and the appended integration update. A low-lift persistent section passes the proposed 60 Hz geometric bound; finite-force startup closes from rest. Full physical integration remains CLOSED. Earlier results below are preserved history.
+
+**Prior stance amendment:** sampled stance/foot position now passes with the
 free-frame inverse. Use the appended "Stance-closure amendment" for current
 seed selection, ROM parity and clamp/referee propagation. The earlier
 candidate specification is retained as history; full gait readiness is CLOSED.
@@ -303,3 +305,116 @@ for measuring the actual LBS contact patch and sole orientation.
 The coordinator can now evaluate continuous inverse-branch tracking and
 contact dynamics without the old false flat-seed reach restriction. No new
 ankle DOF or band surgery is supported by this position test alone.
+
+## Continuity amendment — supersedes pointwise inverse playback
+
+Companion: `THE_CONTINUITY_LAW.md` (K1–K4, complete derivation and falsifiers).
+The default probe now prints the old pointwise inverse as `baseline_*` and
+then the continuous section as `continuity_result`. The baseline's 2.38 rad
+jump is not part of the new command stream.
+
+**STATEMENT:** evaluate the certified branch and C1 boundary law in the engine;
+never use an exact-residual competition to replace its branch mid-motion.
+
+**PREDICTION:** nominal contact velocities and joint angles close; actual 60 Hz
+increments stay below the proposed 0.116378172 rad bound (ankles constant).
+
+**FALSIFIER:** branch/ROM loss, foot gate failure, wrong phase at first contact,
+an unchecked perturbation impulse, or a frame-bound violation. This is not
+permission to integrate before force, contact and visual gates are ratified.
+
+### Exact state/phase and angle law
+
+Compile side-specific H,K,A,P, axis signs and ROM from the SAME pack. Derive
+b, Kstar, sigma, c and d exactly as `ContinuitySection` and `continuity_probe`.
+For this pack sigma=+1 on both sides, b=0.05310943 physical +X radians,
+c=0.001928210330 wu, d=0.081709942273 wu. These are a low-lift section, not the
+old pendulum target and not a requested ROM/band revision.
+
+```text
+section_inverse(side, Q):
+    require Q.X == P[side].X within numerical tolerance
+    U = (Q-Kstar)[YZ]; r = norm(U)
+    require abs(l0-l1) < r < l0+l1
+    delta = acos((r*r-l0*l0-l1*l1)/(2*l0*l1))
+    h = sigma*delta - arg(B0) + arg(B1)
+    knee = arg(U) - arg(B1 + R(h)*B0) - b
+    candidates = ROM_representatives([h,knee,b] / axis_X)
+    require exactly one candidate on the certified section
+    return candidate                      # never clamp, flip, or reseed
+
+prepare(s):                              # COM stationary, 0 <= s <= 1
+    theta = (3*s*s-2*s*s*s) * theta_section_at_rest
+    duration = prepare_frames / 60        # measured 1 frame, separately gated
+
+start_from_rest(t):                       # 0 <= t <= T after preparation
+    u = omega^2*a / (cosh(omega*T)-1)
+    X = u/omega^2 * (cosh(omega*t)-1)
+    v = u/omega * sinh(omega*t)
+    Q_L = P_L - forward*X
+    Q_R = P_R + driven_swing(t,T,0,a,0,-vb,d,c)
+    theta[leg_L] = section_inverse(L,Q_L)
+    theta[leg_R] = section_inverse(R,Q_R)
+    at t=T: verify measured (X,v) == (a,vb); confirm contact
+            stop the extra force; switch support by 2a
+            enter periodic phase T, not phase zero
+
+gait_theta(k, t):                         # absolute phase tau=k*T+t
+    tau = k*T+t                          # first periodic k is 1
+    theta[0..27] = 0
+    for side in {L,R}:
+        phase = modulo(tau + (side==R ? T : 0),2*T)
+        if phase < T:
+            Q = P_side - forward*lipm_x(phase)
+        else:
+            Q = P_side + driven_swing(phase-T,T,-a,a,-vb,-vb,d,c)
+        theta[leg_side] = section_inverse(side,Q)
+    return theta
+```
+
+`driven_swing` is the three-piece sagittal law and quartic lift in K3 and the
+Python function of that name. Its return offsets are Y,Z (not X,Y). Start
+speed zero removes the initial turning piece; never divide by zero there.
+Its joins are C1 and acceleration is allowed to jump. The initial preparation
+also starts/stops at zero joint velocity. Keep the calibrated standing
+support/COM coordinate offsets when converting body-relative Z to world X.
+
+The L/R rule is unchanged: M=diag(-1,1,1), a_R=s*det(M)*M*a_L, theta_R=s*theta_L
+at corresponding local phases, with a T phase offset in periodic motion.
+Here s=+1. Recompute the small geometric side differences rather than assuming
+bitwise-identical vertices. ROM sign-swap is conditional on s=-1; no new clamp
+or referee convention is requested. Bulk pose paths must still validate ROM.
+
+### Gate before scheduling; preserve analytic continuity
+
+1. Verify the section's whole planned target interval, continuous ROM margin,
+   LBS bound and required timing/overshoot reserve. The probe's proof
+   subdivisions (878 intervals) do not become extra rendered frames.
+2. Ratify the proposed per-frame geometric bound. At 60 Hz and fixed ankles:
+   `Delta <= sqrt(8*(eps-e_LBS-Amax*dt^2/8)/C)`, with eps=0.005H,
+   e_LBS=0.000250545733, Amax=71.030061, C=14.980247749. Preparation moves
+   three hinges, uses C=35.610701037, and has its own 0.079066594 bound.
+3. Verify the actual clock dt and angle increment, including the first and
+   repeated stride seams. Do not divide a 60 Hz jump into hidden offline
+   substeps and report the smaller increments as engine compliance.
+4. Prefer evaluating the analytic C1 section in C++/GPU. Linear interpolation
+   of an angle table retains the proved position-chord bound, but is only C0
+   in velocity. It does not inherit the C1 claim. Another interpolation law
+   needs another ROM/position certificate. Never accumulate FK into vertices.
+5. For finite startup, the required horizontal force is m*0.806343648 for
+   T=1.831964036 s; its integral is m*1.477192564 and work is m*1.739652480.
+   Confirm an actual contact/actuator law supplies it. It is not an assignment
+   to measured X,v. Stop extra forcing at exchange; the resulting E is the
+   existing orbit's E. No instantaneous startup impulse is needed by this law.
+6. At nominal exchanges, d=2a and j=0. A perturbed hybrid reset with j!=0
+   requires a separately certified impact/joint impulse or finite-force
+   boundary problem; do not claim this nominal C1 path covers it.
+7. Keep the integration gate CLOSED for missing actuator budget, whole-sole
+   contact/slip, lateral balance, physical clock, terrain/clearance or visual
+   ratification. Plan/reject before scheduling. A sudden runtime freeze of the
+   legs with a moving COM is not a derived safe fallback.
+
+The engine's exact Rodrigues FK has no special angular stability limit at
+60 Hz. The proposed limit bounds geometric interpolation deviation; it does
+not prove absent triangle tearing or perceived smoothness. The coordinator
+must judge the live movie and ratify or reject the proposal.

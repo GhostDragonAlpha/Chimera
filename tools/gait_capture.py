@@ -454,6 +454,10 @@ class Rig:
             q = min(accurate,key=lambda q:np.linalg.norm(q-previous))
         else:
             q = min(candidates, key=lambda q: np.linalg.norm(fun(q)-target))
+        self.last_solve = dict(selected_seed=next(i for i,v in enumerate(candidates) if v is q),
+                               local_error=float(np.linalg.norm(fun(candidates[0])-target)),
+                               local_jump=float(np.max(abs(candidates[0]-previous))),
+                               local_at_ROM=bool(np.min(np.minimum(candidates[0]-lo,hi-candidates[0]))<IK_TOL))
         return q, not bool(flat_seeds)
 
 
@@ -497,6 +501,7 @@ def rig_stride(o, rig, swing):
     previous = {s: np.zeros(3) for s in 'LR'}
     errors, thetas, targets, misses, tilt = [], [], [], 0, []
     records = []
+    transitions = []
     min_bend = math.inf
     min_seed_count = math.inf
     max_seed_fk_error = 0.0
@@ -507,6 +512,14 @@ def rig_stride(o, rig, swing):
         for side in 'LR':
             target = gait_target(rig, side, t, o, swing)
             q, outside = rig.solve(target, side, previous[side])
+            if fi:
+                H,K,A=rig.pack.pivot[rig.chain[side]]
+                angle=lambda v:math.atan2(v[2],v[1])
+                elbow=lambda v:float(math.sin(v[1]*rig.pack.axis[rig.chain[side][1],0]+angle(H-K)-angle(K-A)))
+                before,after=elbow(previous[side]),elbow(q)
+                transitions.append(dict(side=side,time=float(t),phase=float(((t+(o.T if side=='R' else 0))%(2*o.T))/o.T),
+                    jump=float(np.max(abs(q-previous[side]))),old=previous[side].tolist(),new=q.tolist(),
+                    elbow_before=before,elbow_after=after,elbow_sign_change=bool(before*after<0),**rig.last_solve))
             seeds,bend = free_frame_seeds(rig.pack,rig.chain[side],rig.marker[side],target)
             min_bend = min(min_bend,bend)
             min_seed_count = min(min_seed_count,len(seeds))
@@ -550,7 +563,12 @@ def rig_stride(o, rig, swing):
                         (('swing' if r['phase']>=1 else ('stance_flat_miss' if r['flat_miss'] else 'stance_flat_seed'))==category)]
             phase_errors[side+'_'+category] = dict(count=len(selected),max=max(selected,default=0.),
                                                   rms=math.sqrt(float(np.mean(np.square(selected)))) if selected else 0.)
-    return dict(max_error=max(errors), rms_error=math.sqrt(float(np.mean(np.square(errors)))),
+    return dict(jump_distribution=jump_distribution(th,np.concatenate(list(rig.chain.values()))),
+                per_side_jump={s:jump_distribution(th,rig.chain[s]) for s in 'LR'},
+                elbow_sign_changes=sum(r['elbow_sign_change'] for r in transitions),
+                remote_seed_selections=sum(r['selected_seed']!=0 for r in transitions),
+                largest_joint_transitions=sorted(transitions,key=lambda r:-r['jump'])[:6],
+                max_error=max(errors), rms_error=math.sqrt(float(np.mean(np.square(errors)))),
                 full_subset_error=max_full_error, flat_seed_unreachable=misses,
                 max_full_frame_tilt=max(tilt), pose_loop_error=endpoint_error,
                 samples=len(times), theta_loop_error=float(np.max(abs(th[-1]-th[0]))),
@@ -560,16 +578,407 @@ def rig_stride(o, rig, swing):
                 worst_samples=sorted(records,key=lambda r:-r['error'])[:3])
 
 
+
+def rotate2(v, angle):
+    co, si = math.cos(angle), math.sin(angle)
+    return np.array([co*v[0]-si*v[1], si*v[0]+co*v[1]])
+
+
+class ContinuitySection:
+    """One ROM-filtered inverse chart, not framewise competition of seeds.
+
+    The constant ankle sends K-A vertically upward. The two remaining virtual
+    links have a strict inner-annulus margin. An elbow sign is chosen ONCE at
+    rest; loss of its ROM representative is a rejection, never a reseed.
+    """
+    def __init__(self, rig, side):
+        self.rig, self.side = rig, side
+        self.chain = rig.chain[side]
+        self.H, self.K, self.A = rig.pack.pivot[self.chain]
+        self.P = rig.marker[side]
+        self.B0, self.B1, self.B2 = map(plane, (self.P-self.H, self.H-self.K, self.K-self.A))
+        self.l0, self.l1, self.l2 = map(float, map(np.linalg.norm, (self.B0,self.B1,self.B2)))
+        self.axis = rig.pack.axis[self.chain,0]
+        self.lo, self.hi = np.radians(rig.pack.rom[self.chain]).T
+        self.b = -math.atan2(self.B2[1], self.B2[0])
+        self.center = self.A.copy(); self.center[1] += self.l2
+        self.clearance = float((self.l2-(self.P-self.A)[1]-(self.l0-self.l1))/2)
+        if not self.clearance > 0:
+            raise ValueError('K2: no positive fixed-ankle lift/margin')
+        choices = [(float(np.linalg.norm(q)),sign,q) for sign in (-1,1)
+                   for q in self.representatives(self.P,sign)]
+        if not choices:
+            raise ValueError('K2: standing chart not in ROM')
+        _, self.sign, self.initial = min(choices,key=lambda row:row[0])
+        # Exact scalar LBS discrepancy bound: secondary owner must be knee.
+        small = rig.small[side]
+        if not np.all(small.joint2 == self.chain[1]):
+            raise ValueError('K2: section bound needs knee-secondary sole ownership')
+        ids = rig.ids[side]
+        radii = (np.linalg.norm((rig.rest[ids]-self.H)[:,1:],axis=1)
+                 + self.l1+self.l2)
+        self.lbs_bound = float(2*abs(math.sin(self.b/2))*np.mean((1-small.weight)*radii))
+
+    def representatives(self, target, sign):
+        if abs(target[0]-self.P[0])>IK_TOL:
+            return []
+        U = plane(target-self.center)
+        r = float(np.linalg.norm(U))
+        if not abs(self.l0-self.l1) < r < self.l0+self.l1:
+            return []
+        delta = math.acos(float(np.clip((r*r-self.l0**2-self.l1**2)/(2*self.l0*self.l1),-1,1)))
+        h = sign*delta-math.atan2(self.B0[1],self.B0[0])+math.atan2(self.B1[1],self.B1[0])
+        V = self.B1+rotate2(self.B0,h)
+        k = math.atan2(U[1],U[0])-math.atan2(V[1],V[0])-self.b
+        return rom_representatives(np.array([h,k,self.b])/self.axis,self.lo,self.hi)
+
+    def solve(self, target):
+        choices = self.representatives(target,self.sign)
+        if len(choices) != 1:
+            raise ValueError(f'K2: persistent branch lost ({self.side}, {target.tolist()})')
+        return choices[0]
+
+    def velocity(self, q, velocity):
+        # Analytic Jacobian of the FULL-FRAME inverse, with fixed ankle.
+        h,k,b = q*self.axis
+        v0 = rotate2(self.B0,h+k+b)
+        v1 = rotate2(self.B1,k+b)
+        skew = lambda v: np.array([-v[1],v[0]])
+        J = np.column_stack((skew(v0)*self.axis[0],skew(v0+v1)*self.axis[1]))
+        return np.r_[np.linalg.solve(J,plane(velocity)),0.]
+
+    def reach_interval(self, height):
+        """All boundary circles, then the connected valid interval at z=0.
+
+        This enumerates analytic ROM/annulus events; it is not a cadence or
+        parameter sweep. A midpoint only identifies each event interval.
+        """
+        y = self.P[1]+height
+        roots = []
+        def circle(center, radius):
+            squared = radius*radius-(y-center[0])**2
+            if squared >= 0:
+                dz = math.sqrt(squared)
+                roots.extend([center[1]-self.P[2]-dz,center[1]-self.P[2]+dz])
+        for radius in (abs(self.l0-self.l1),self.l0+self.l1):
+            circle(plane(self.center),radius)
+        for h in (self.lo[0]*self.axis[0], self.hi[0]*self.axis[0]):
+            circle(plane(self.center),np.linalg.norm(self.B1+rotate2(self.B0,h)))
+        for k in (self.lo[1]*self.axis[1], self.hi[1]*self.axis[1]):
+            circle(plane(self.center)+rotate2(self.B1,self.b+k),self.l0)
+        roots = sorted(set(roots))
+        valid = []
+        for a,b in zip(roots,roots[1:]):
+            target = self.P+np.array([0.,height,(a+b)/2])
+            valid.append(bool(self.representatives(target,self.sign)))
+        index = next((i for i,(a,b) in enumerate(zip(roots,roots[1:])) if a<=0<=b and valid[i]),None)
+        if index is None:
+            raise ValueError('K2: no connected sagittal interval at standing offset')
+        left = right = index
+        while left>0 and valid[left-1]: left-=1
+        while right+1<len(valid) and valid[right+1]: right+=1
+        return float(roots[left]),float(roots[right+1])
+
+
+def driven_swing(t, duration, z0, z1, v0, v1, reserve, clearance):
+    """C1 active swing; return body-relative (Y,Z) position, speed, accel.
+
+    Two constant-acceleration turns use the derived overshoot reserve.
+    The unique cubic joins their zero-speed endpoints. This is NOT ballistic.
+    """
+    if v0 > 0 or v1 >= 0 or reserve <= 0:
+        raise ValueError('K3: initial speed must be nonpositive and terminal speed negative')
+    d0 = reserve if v0 < 0 else 0.
+    t0, t1 = (-2*d0/v0 if v0 < 0 else 0.), -2*reserve/v1
+    middle = duration-t0-t1
+    if middle <= 0:
+        raise ValueError('K3: no positive central swing time')
+    if t < t0:
+        z = z0+v0*t-v0*t*t/(2*t0); vz = v0*(1-t/t0); az = -v0/t0
+    elif t > duration-t1:
+        u = t-(duration-t1)
+        z = z1+reserve+v1*u*u/(2*t1); vz = v1*u/t1; az = v1/t1
+    else:
+        u = (t-t0)/middle; distance = z1-z0+d0+reserve
+        z = z0-d0+distance*(3*u*u-2*u**3)
+        vz = distance*6*u*(1-u)/middle
+        az = distance*6*(1-2*u)/middle**2
+    u = t/duration
+    y = 16*clearance*u*u*(1-u)**2
+    vy = 32*clearance*u*(1-u)*(1-2*u)/duration
+    ay = 32*clearance*(1-6*u+6*u*u)/duration**2
+    return np.array([y,z]),np.array([vy,vz]),np.array([ay,az])
+
+
+def rotation_coefficient(rig, moving):
+    """Global FK second-derivative coefficient for an angular chord.
+
+    ||d²F/ds²|| <= C*||Delta q||_infinity², s in [0,1]. Expand each
+    fixed-pivot chain into rotated rest/pivot differences, then convex LBS.
+    Constant intervening rotations are isometries and do not add angle rate.
+    This conservative implementation includes their lever arms.
+    """
+    pack, rest = rig.pack, rig.rest
+    if np.any((pack.weight<0)|(pack.weight>1)):
+        raise ValueError('K4: convex LBS bound requires weights in [0,1]')
+    moving = set(moving)
+    def coefficients(owner):
+        chain=[];j=owner
+        while j>=0:
+            chain.append(j); j=int(pack.parent[j])
+        chain.reverse()
+        first=next((i for i,j in enumerate(chain) if j in moving),None)
+        if first is None:return np.zeros(len(rest))
+        # Ancestors before the first commanded joint have zero theta.
+        chain=chain[first:]
+        remaining = sum(j in moving for j in chain)
+        out = np.linalg.norm((rest-pack.pivot[chain[0]])[:,1:],axis=1)*remaining**2
+        for before,after in zip(chain,chain[1:]):
+            remaining -= int(before in moving)
+            out += np.linalg.norm(plane(pack.pivot[before]-pack.pivot[after]))*remaining**2
+        return out
+    cache={j:coefficients(j) for j in range(len(pack.names))}
+    result=np.zeros(len(rest))
+    for j in range(len(pack.names)):
+        ids=np.flatnonzero(pack.assign==j)
+        second=pack.joint2[ids].copy()
+        second[(second<0)|(second>=len(pack.names))]=pack.parent[j]
+        result[ids]=pack.weight[ids]*cache[j][ids]
+        for other in np.unique(second):
+            take=ids[second==other]
+            if other>=0:result[take]+=(1-pack.weight[take])*cache[int(other)][take]
+    return float(np.max(result))
+
+
+def jump_distribution(thetas, active):
+    """All active joint increments; zeros included, with frame max separate."""
+    delta=np.abs(np.diff(np.asarray(thetas)[:,active],axis=0))
+    return dict(count=int(delta.size),max=float(np.max(delta)),rms=float(np.sqrt(np.mean(delta**2))),
+                p50=float(np.quantile(delta,.5)),p90=float(np.quantile(delta,.9)),
+                p99=float(np.quantile(delta,.99)),frame_max_rms=float(np.sqrt(np.mean(np.max(delta,axis=1)**2))))
+
+
+def continuity_probe(o,rig):
+    sections={s:ContinuitySection(rig,s) for s in 'LR'}
+    clearance=min(s.clearance for s in sections.values())
+    intervals={side:[section.reach_interval(y) for y in (0.,clearance)] for side,section in sections.items()}
+    reach=min(min(-a,b) for rows in intervals.values() for a,b in rows)
+    reserve=(reach-o.a)/2
+    if reserve<=0:raise ValueError('K3: orbit leaves no ROM turn reserve')
+    eps=FOOT_FRACTION*o.h
+    startup_force=o.w**2*o.a/(math.cosh(o.w*o.T)-1)
+    def startup_state(t):
+        return np.array([startup_force/o.w**2*(math.cosh(o.w*t)-1),startup_force/o.w*math.sinh(o.w*t)])
+    active=np.concatenate(list(rig.chain.values()))
+    moving=np.concatenate([chain[:2] for chain in rig.chain.values()])
+    C=rotation_coefficient(rig,moving)
+    Cprepare=rotation_coefficient(rig,active)
+    error_bound=max(s.lbs_bound for s in sections.values())
+    # Cartesian target curvature bound, including the finite-force startup.
+    def acceleration_bound(duration,z0,z1,v0,v1):
+        d0=reserve if v0<0 else 0.
+        t0,t1=(-2*d0/v0 if v0<0 else 0.),-2*reserve/v1
+        middle=duration-t0-t1
+        if middle<=0:raise ValueError('K3: startup/periodic swing cannot fit')
+        az=max(abs(v0)/t0 if t0 else 0.,abs(v1)/t1,6*(z1-z0+d0+reserve)/middle**2)
+        return math.hypot(az,32*clearance/duration**2)
+    curvature=max(o.w**2*o.a,acceleration_bound(o.T,-o.a,o.a,-o.vb,-o.vb),
+                  acceleration_bound(o.T,0.,o.a,0.,-o.vb),o.w**2*o.a+startup_force)
+    target_chord=curvature/(8*mirror.FPS**2)
+    remaining=eps-error_bound-target_chord
+    if remaining<=0:raise ValueError('K4: no interpolation budget')
+    frame_bound=math.sqrt(8*remaining/C)
+    prepare_bound=math.sqrt(8*(eps-error_bound)/Cprepare)
+    n=max(2,math.ceil(o.T*mirror.FPS))
+    def law(side,phase,kind='periodic'):
+        if kind=='periodic':
+            phase=phase%(2*o.T)
+            if phase<o.T:
+                x,v=o.state(phase);return np.array([0.,-x]),np.array([0.,-v])
+            y,v,_=driven_swing(phase-o.T,o.T,-o.a,o.a,-o.vb,-o.vb,reserve,clearance)
+        elif kind=='stance':
+            x,v=startup_state(phase);return np.array([0.,-x]),np.array([0.,-v])
+        else:
+            y,v,_=driven_swing(phase,o.T,0.,o.a,0.,-o.vb,reserve,clearance)
+        return y,v
+    errors=[];rows=[];min_margin=math.inf;min_ground=math.inf;parity=0.
+    def evaluate(time,kind='periodic'):
+        nonlocal min_margin,min_ground,parity
+        theta=np.zeros(len(rig.pack.names));targets=[]
+        for side in 'LR':
+            section=sections[side]
+            phase=time+(o.T if side=='R' else 0.) if kind=='periodic' else time
+            mode=kind if kind=='periodic' else ('stance' if side=='L' else 'swing')
+            offset,_=law(side,phase,mode)
+            target=section.P+np.r_[0.,offset]
+            q=section.solve(target)
+            min_margin=min(min_margin,float(min(np.min(q-section.lo),np.min(section.hi-q))))
+            theta[section.chain]=q;targets.append(target)
+        for side,target in zip('LR',targets):
+            points=rig.points(theta,side)
+            errors.append(float(np.linalg.norm(points.mean(axis=0)-target)))
+            min_ground=min(min_ground,float(np.min(points[:,1])-np.min(rig.rest[:,1])))
+        return theta
+    # Exact boundaries at <=1/60 s; PLUS actual 60 Hz samples, including
+    # off-grid exchanges and a second stride. Offline oversampling is not a fix.
+    times=np.linspace(0,2*o.T,2*n+1)
+    rows=[evaluate(t) for t in times]
+    periodic_errors=errors.copy()
+    real_times=np.r_[np.arange(0,4*o.T,1/mirror.FPS),4*o.T]
+    real_rows=[evaluate(t) for t in real_times]
+    startup_times=np.linspace(0,o.T,math.ceil(o.T*mirror.FPS)+1)
+    startup=[evaluate(t,'startup') for t in startup_times]
+    # Prepare from all-zero theta with COM held; do not snap to the chart.
+    initial=startup[0]
+    prepare_frames=max(1,math.ceil(float(np.max(abs(initial)))/prepare_bound))
+    preparation=[initial*i/prepare_frames for i in range(prepare_frames+1)]
+    prepare_error=max(float(np.linalg.norm(rig.points(th,s).mean(axis=0)-rig.marker[s]))
+                      for th in preparation for s in 'LR')
+    # Bounded full-mesh chord coefficient certifies BETWEEN preparation samples.
+    prepare_certificate=error_bound+Cprepare*float(np.max(abs(initial)))**2/8
+    # Actual 60 Hz startup-to-periodic stream, with its off-grid first
+    # exchange and preparation. No phase reset at contact.
+    stream_times=np.r_[np.arange(0,3*o.T,1/mirror.FPS),3*o.T]
+    stream=[evaluate(t,'startup') if t<o.T else evaluate(t) for t in stream_times]
+    stream_dist=jump_distribution(stream,active)
+    prepared_stream_dist=jump_distribution(preparation[:-1]+stream,active)
+    all_dist=jump_distribution(rows,active);real_dist=jump_distribution(real_rows,active)
+    startup_dist=jump_distribution(startup,active)
+    maximum=max(all_dist['max'],real_dist['max'],startup_dist['max'],stream_dist['max'])
+    certificate=error_bound+target_chord+C*maximum**2/8
+    # Analytic C1 endpoint matching, including inverse Jacobian and actual LBS.
+    velocity_jump=joint_velocity_jump=contact_slip=0.
+    for side,sec in sections.items():
+        for t in (0.,o.T):
+            off,vel,_=driven_swing(t,o.T,-o.a,o.a,-o.vb,-o.vb,reserve,clearance)
+            position=sec.P+np.r_[0.,off]
+            q=sec.solve(position)
+            swing_dq=sec.velocity(q,np.r_[0.,vel])
+            stance_dq=sec.velocity(q,np.array([0.,0.,-o.vb]))
+            joint_velocity_jump=max(joint_velocity_jump,float(np.max(abs(swing_dq-stance_dq))))
+            # Same q, two one-sided tangents; a shared finite-difference J
+            # transports the analytic equality into the imported actual LBS.
+            J=np.column_stack([(rig.endpoint(q+np.eye(3)[j]*1e-5,side)-rig.endpoint(q-np.eye(3)[j]*1e-5,side))/2e-5 for j in range(3)])
+            velocity_jump=max(velocity_jump,float(np.linalg.norm(J@(swing_dq-stance_dq))))
+            contact_slip=max(contact_slip,float(np.linalg.norm(J@swing_dq+np.array([0.,0.,o.vb]))))
+        full=mirror.pose_points(rig.rest,rig.pack,rows[0])
+        parity=max(parity,float(np.max(abs(full[rig.ids[side]]-rig.points(rows[0],side)))))
+    # Analytic branch/ROM certificate between samples. A uniform inverse-
+    # Jacobian bound supplies a Lipschitz constant, then interval bisection
+    # proves ROM containment. These are proof subdivisions, not render frames.
+    def swing_speed_bound(duration,z0,z1,v0,v1):
+        d0=reserve if v0<0 else 0.
+        t0=-2*d0/v0 if v0<0 else 0.
+        middle=duration-t0+2*reserve/v1
+        return math.hypot(max(-v0,-v1,1.5*(z1-z0+d0+reserve)/middle),8*clearance/duration)
+    speed_bound=max(o.vb,swing_speed_bound(o.T,-o.a,o.a,-o.vb,-o.vb),swing_speed_bound(o.T,0.,o.a,0.,-o.vb))
+    certified_intervals=0
+    for side,sec in sections.items():
+        ymin=sec.P[1]-sec.center[1];ymax=ymin+clearance
+        zmax=abs(sec.P[2]-sec.center[2])+o.a+reserve
+        rmin=-ymax;rmax=math.hypot(ymin,zmax)
+        cosines=[(r*r-sec.l0**2-sec.l1**2)/(2*sec.l0*sec.l1) for r in (rmin,rmax)]
+        assert max(abs(v) for v in cosines)<1,'K2 continuous annulus'
+        determinant=sec.l0*sec.l1*math.sqrt(1-max(v*v for v in cosines))
+        lipschitz=speed_bound*max(rmax,sec.l0)/determinant
+        for kind,duration in (('periodic',2*o.T),('stance',o.T),('swing',o.T)):
+            stack=[(0.,duration)]
+            while stack:
+                start,end=stack.pop();mid=(start+end)/2
+                off,_=law(side,mid,kind);q=sec.solve(sec.P+np.r_[0.,off])
+                margin=float(np.min(np.minimum(q[:2]-sec.lo[:2],sec.hi[:2]-q[:2])))
+                if lipschitz*(end-start)/2<margin:
+                    certified_intervals+=1
+                else:
+                    if end-start<1e-10:raise ValueError('K2 continuous ROM certificate failed')
+                    stack.extend(((start,mid),(mid,end)))
+        # An unreachable target must actually reject the persistent chart.
+        unreachable=sec.center.copy();unreachable[0]=sec.P[0];unreachable[1]-=(sec.l0-sec.l1)/2
+        assert not sec.representatives(unreachable,sec.sign),'K2 annulus negative control'
+    assert 2.38>frame_bound,'K4 known tearing-jump rejection control'
+    # Check the derived full-mesh chord instrument on a nonzero known motion.
+    q0=np.zeros(len(rig.pack.names));q1=q0.copy()
+    for side,sec in sections.items():q0[sec.chain[2]]=q1[sec.chain[2]]=sec.b/sec.axis[2]
+    q1[moving]+=frame_bound
+    f0=mirror.pose_points(rig.rest,rig.pack,q0);f1=mirror.pose_points(rig.rest,rig.pack,q1)
+    fm=mirror.pose_points(rig.rest,rig.pack,(q0+q1)/2)
+    chord_control=float(np.max(np.linalg.norm(fm-(f0+f1)/2,axis=1)))
+    assert chord_control<=C*frame_bound**2/8,'K4 full-mesh chord control'
+    startup_velocity_join=0.
+    for side,sec in sections.items():
+        off,v=law(side,o.T,'stance' if side=='L' else 'swing')
+        nextoff,nextv=law(side,o.T if side=='L' else 0.,'periodic')
+        startup_velocity_join=max(startup_velocity_join,float(np.linalg.norm(v-nextv)))
+        assert np.linalg.norm(off-nextoff)<STATE_TOL,'K3 startup target join'
+    assert startup_velocity_join<STATE_TOL,'K3 startup velocity join'
+    contact=startup_state(o.T)
+    independent=np.zeros(2)
+    for i in range(2048):
+        independent=rk4(lambda t,z:np.array([z[1],o.w**2*z[0]+startup_force]),independent,i*o.T/2048,o.T/2048)
+    startup_rk4=float(np.max(abs(independent-contact)))
+    assert startup_rk4<1e-8,'K3 forced-entry RK4'
+    assert abs(startup_force*o.a-o.energy)<STATE_TOL,'K3 entry work ledger'
+    for side in 'LR':
+        _,v=law(side,0.,'stance' if side=='L' else 'swing')
+        assert np.max(abs(v))<STATE_TOL,'K3 start from zero joint speed'
+    startup_closure=float(np.max(abs(contact-[o.a,o.vb])))
+    startup_join=float(np.max(abs(startup[-1]-rows[n])))
+    loop=float(np.max(abs(rows[-1]-rows[0])))
+    gate=max(errors)<=eps and maximum<=frame_bound and loop<=STATE_TOL and startup_join<=STATE_TOL
+    assert max(errors)<=error_bound+1e-10,'K2 weighted FK bound falsified'
+    assert certificate<=eps,'K4 full-stride chord certificate'
+    assert prepare_certificate<=eps and prepare_error<=eps,'K4 preparation certificate'
+    assert velocity_jump<STATE_TOL and joint_velocity_jump<STATE_TOL,'K3 contact C1'
+    assert startup_closure<STATE_TOL and startup_join<STATE_TOL,'K3 startup closure'
+    assert parity<1e-10,'K2 actual full/subset FK parity'
+    assert gate,'K2/K4 continuity candidate rejected'
+    return dict(jump=all_dist,actual_60fps_two_stride_jump=real_dist,startup_jump=startup_dist,
+                actual_startup_exchange_jump=stream_dist,including_preparation_jump=prepared_stream_dist,
+                max_inter_sample_jump=maximum,frame_angle_bound=frame_bound,frame_rate_bound=60*frame_bound,
+                rotation_coefficient=C,preparation_coefficient=Cprepare,target_acceleration_bound=curvature,
+                tracked_error_certificate=certificate,lbs_error_bound=error_bound,
+                foot_max=max(periodic_errors),foot_rms=math.sqrt(float(np.mean(np.square(periodic_errors)))),
+                all_trajectories_foot_max=max(errors),
+                velocity_jump=velocity_jump,joint_velocity_jump=joint_velocity_jump,
+                actual_LBS_contact_world_speed=contact_slip,
+                startup_closure=startup_closure,startup_time_deficit=0.,startup_pose_join=startup_join,
+                startup_impulse_per_mass=startup_force*o.T,startup_specific_force=startup_force,
+                startup_work_per_mass=startup_force*o.a,startup_rk4_error=startup_rk4,
+                startup_contact_friction_required=(o.w**2*o.a+startup_force)/mirror.G,
+                startup_duration=o.T,preparation_frames=prepare_frames,
+                preparation_seconds=prepare_frames/mirror.FPS,preparation_foot_error=prepare_error,
+                preparation_certificate=prepare_certificate,preparation_angle_bound=prepare_bound,
+                joint_loop=loop,proxy_lift=clearance,overshoot_reserve=reserve,reach_intervals=intervals,
+                minimum_ROM_margin=min_margin,minimum_sole_vertex_ground_clearance=min_ground,
+                section_signs={s:sec.sign for s,sec in sections.items()},full_subset_error=parity,
+                continuous_ROM_certificate_intervals=certified_intervals,full_mesh_chord_control=chord_control,
+                startup_velocity_join=startup_velocity_join,
+                tracking_gate='PASS',physical_contact_gate='UNVERIFIED')
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--self-test', action='store_true')
+    ap.add_argument('--baseline-only',action='store_true',help='run the preserved pointwise inverse ablation only')
     ap.add_argument('--require-ready', action='store_true')
     ap.add_argument('--seed-law',choices=('flat','free'),default='free',help='flat retains the PR #5 ablation; free is the corrected inverse')
     args = ap.parse_args()
     if args.self_test:
         T, _, _ = candidate_clock(3.091285, math.sqrt(mirror.FR_WALK*mirror.G*3.091285))
         numerical_controls(Orbit(5.615640, 3.091285, T, math.sqrt(mirror.FR_WALK*mirror.G*3.091285)))
-        print('analytic controls PASS (synthetic calibration; not a real-blob run)')
+        # Independent integral of the reported velocity on each polynomial
+        # piece must equal the requested displacement (Simpson is exact here).
+        for v0 in (-.5,0.):
+            D,z0,z1,v1,d,c=2.,-1.,1.,-.5,.1,.02
+            cuts=[0.,-2*d/v0 if v0<0 else 0.,D+2*d/v1,D]
+            integral=np.zeros(2)
+            for left,right in zip(cuts,cuts[1:]):
+                values=[driven_swing(t,D,z0,z1,v0,v1,d,c)[1] for t in (left,(left+right)/2,right)]
+                integral+=(right-left)*(values[0]+4*values[1]+values[2])/6
+            assert np.max(abs(integral-[0.,z1-z0]))<STATE_TOL,'K3 velocity-integral control'
+            assert np.max(abs(driven_swing(0.,D,z0,z1,v0,v1,d,c)[1]-[0.,v0]))<STATE_TOL
+            assert np.max(abs(driven_swing(D,D,z0,z1,v0,v1,d,c)[1]-[0.,v1]))<STATE_TOL
+        print('capture-state and active-swing analytic controls PASS (synthetic; continuity/ROM checks require real blobs)')
         return 0
     rest, indices = mirror.load_mesh(mirror.DEFAULT_MESH)
     pack = mirror.load_pack(mirror.DEFAULT_PACK)
@@ -607,7 +1016,7 @@ def main():
           f'coupling_gap_at_capture_bound={swing_period(cap_T,leg,speed)-cap_T:.9f}s')
     print('clock_status=CONDITIONAL point-pendulum, fixed hip; physical stride clock=UNIDENTIFIED')
     print(f'boundary_velocity={o.vb:.9f} midpoint_velocity={o.vc:.9f} orbital_energy={o.energy:.9f}')
-    print(f'first_step_impulse_per_mass={o.vc:.9f} wu/s at x=0; first_contact_time={T/2:.9f}s')
+    print(f'instantaneous_midpoint_entry_impulse_per_mass={o.vc:.9f} wu/s at x=0; first_contact_time={T/2:.9f}s')
     print(f'stable_manifold_startup_impulse_per_mass={o.w*o.xi0:.9f} wu/s; nominal_first_contact_time={T:.9f}s')
     print(f'controlled_lean_for_stable_manifold_x={o.xi0:.9f} wu geometric_angle={math.atan(o.xi0/h):.9f}rad')
     print('first_step_total_impulse=UNKNOWN (mass missing); impulse_budget=UNKNOWN; passive_lean_only_exact_E_entry=IMPOSSIBLE')
@@ -633,19 +1042,27 @@ def main():
     print(f'first_halfstep_optimistic_stopping_margin={capture_margin(o.vc/o.w,T/2,o.w,-2*leg,2*leg):.9f}')
     print(f'minimum_LIPM_stance_friction_coefficient={o.a/o.h:.9f} (availability unknown)')
     result = rig_stride(o, rig, swing)
+    continuous = None if args.baseline_only else continuity_probe(o,rig)
     print('synchronized_LR_control='+repr(synchronized_side_control(o,rig,swing)))
     eps = FOOT_FRACTION*h
-    print('rig_result=' + repr(result))
-    print(f'foot_error_max={result["max_error"]:.12g} foot_error_rms={result["rms_error"]:.12g} threshold={eps:.9f} wu')
-    print(f'foot_tracking_gate={"PASS" if result["max_error"] <= eps else "FAIL"}')
+    print('baseline_rig_result=' + repr(result))
+    print(f'baseline_foot_error_max={result["max_error"]:.12g} baseline_foot_error_rms={result["rms_error"]:.12g} threshold={eps:.9f} wu')
+    print(f'baseline_foot_tracking_gate={"PASS" if result["max_error"] <= eps else "FAIL"}')
     print('exact_Rodrigues_substeps=1; accumulated_small_angle_drift=0 (algebraic, excludes float roundoff)')
-    print('substeps_for_total_stride_0.5pctH=' + ('UNATTAINABLE_FOR_RECORDED_PROFILE' if result['max_error'] > eps else 'NOT_CERTIFIED_CONTINUOUSLY') + '; finer timing cannot fix the same erroneous sampled poses')
+    print('baseline_substeps_for_total_stride_0.5pctH=' + ('UNATTAINABLE_FOR_RECORDED_PROFILE' if result['max_error'] > eps else 'NOT_CERTIFIED_CONTINUOUSLY') + '; finer timing cannot fix the same erroneous sampled poses')
     # At transfer the passive relative swing velocity is zero whereas planted
     # contact requires -vb. This falsifies the full coupled ballistic closure.
-    print(f'swing_stance_velocity_jump={o.vb:.9f} wu/s; startup_swing_time_deficit={T/2:.9f}s')
+    print(f'baseline_swing_stance_velocity_jump={o.vb:.9f} wu/s; startup_swing_time_deficit={T/2:.9f}s')
     print(f'missing_moving_hip_forcing_at_toeoff={o.w**2*o.a*math.cos(math.asin(o.a/leg))/leg:.9f} rad/s^2')
     print('full_clock_loop_residual=UNDEFINED: surrogate return passes, coupled FK/contact swing has not closed')
-    print('integration_gate=CLOSED: actuator/impact budget absent; ballistic contact/startup closure falsified; lateral balance uncertified')
+    if continuous is not None:
+        print('continuity_result='+repr(continuous))
+        print(f'continuity jump-max={continuous["max_inter_sample_jump"]:.12g} jump-RMS={continuous["actual_60fps_two_stride_jump"]["rms"]:.12g} velocity-jump={continuous["velocity_jump"]:.12g} startup-closure={continuous["startup_closure"]:.12g}')
+        print(f'foot_error_max={continuous["foot_max"]:.12g} foot_error_rms={continuous["foot_rms"]:.12g} threshold={eps:.9f} wu')
+        print(f'proposed_60fps_frame_angle_bound={continuous["frame_angle_bound"]:.12g} rad; coordinator_ratification=PENDING')
+        print(f'finite_startup_required_force_per_mass={continuous["startup_specific_force"]:.12g} impulse_per_mass={continuous["startup_impulse_per_mass"]:.12g} duration={continuous["startup_duration"]:.12g}s available_budget=UNKNOWN')
+        print('foot_tracking_gate=PASS; continuity_tracking_gate=PASS; physical_clock=UNIDENTIFIED (active swing replaces passive clock closure)')
+    print('integration_gate=CLOSED: actuator/contact budget absent; low-clearance active swing unratified; lateral balance uncertified')
     print('No fallback cadence, engine writes, or changed blob data. See docs/THE_CAPTURE_LAW.md.')
     return 2 if args.require_ready else 0
 

@@ -1,5 +1,7 @@
 # The capture law — ASTRA derivation bench
 
+**Current continuity amendment:** see [THE_CONTINUITY_LAW.md](THE_CONTINUITY_LAW.md) and the appended integration update. A low-lift persistent section passes the proposed 60 Hz geometric bound; finite-force startup closes from rest. Full physical integration remains CLOSED. Earlier results below are preserved history.
+
 **Latest stance-position verdict (42c6f5db): PASS with the free-frame inverse;
 no ROM, axis or skeleton change.** See the appended STANCE CLOSURE LAW and
 S1–S4 results. Earlier PR #5 results below remain historical. Full physical
@@ -657,3 +659,95 @@ default. Logs: `agent_logs/astra/stance_closure_baseline.txt` and
 engine-side clamp and referee propagation. No recommended ROM/axis changes
 are needed for the committed pack; the general sign-swap rule is guarded by
 measured axial parity instead of being applied by side name.
+PRE-RUN CONTINUITY MEMBRANES (ASTRA)
+D1 STATEMENT: the prior exact-residual filter can reject a continuous gate-valid local solution and jump to a remote seed; elbow changes, ROM contacts and seed changes must be counted separately.
+PREDICTION: jumps correlate with inverse candidate replacement, not evidence of changed ROM.
+FALSIFIER: log every large transition with old/new angles, virtual elbow sign, endpoint error, distance to ROM, and local-only refinement residual; unrelated jumps refute the classification.
+D2 STATEMENT: fixing a redundant hip chart to its standing value reduces the actual reverse FK to U=R(b)[B2+R(k)(P-K)], a two-link inverse. Where its strict annulus and ROM hold, one unwrapped elbow branch gives continuous q and exact marker tracking. This is a testable candidate, NOT a promised global solution.
+PREDICTION: a standing-connected chart may remove remote free-frame reseeding.
+FALSIFIER: any annulus/ROM miss, branch sign loss, foot error >0.005H, or periodic winding incompatible with ROM refutes this chart on the requested path.
+D3 STATEMENT: a cubic Hermite sagittal swing joining (-a,-vb) to (+a,-vb), with nonnegative quartic lift having zero endpoint slopes, removes the contact velocity mismatch. It needs active swing, not an unforced pendulum.
+PREDICTION: analytic relative endpoint velocities agree with stance within 1e-9 wu/s.
+FALSIFIER: endpoint position/velocity mismatch, negative clearance or actual inverse foot error above gate.
+D4 STATEMENT: a first swing of duration T/2 with its own boundary data can close at the midpoint-impulse orbit's first exchange; the old deficit is a reuse-of-full-swing-duration defect, not a proof of insufficient impulse.
+PREDICTION: time closure exactly zero under specified active swing, COM J/m=vc unchanged.
+FALSIFIER: first contact state differs from (a,vb), active swing misses boundary, or estimated impulse is called an actuator-budget certification without mass/force data.
+D5 STATEMENT: proposed visual interpolation bound follows a Cartesian error allowance and a bound on FK second derivatives; it is not a measured perceptual limit. At 60 Hz the actual frame intervals and cyclic seam must satisfy it. Coordinator ratification is still required.
+PREDICTION: a smooth branch may meet this finite bound without increasing cadence or inserting hidden frames.
+FALSIFIER: any real 60 Hz frame exceeds the derived bound, or proof assumes that merely subdividing offline steps changes render-time jumps.
+
+### Continuity refinement, declared before the production probe
+
+**STATEMENT:** choose the ankle's physical angle b=-arg(K-A) in the YZ plane,
+so its virtual link is vertical upward. The remaining inverse is
+`Q-Kstar=R(b+k)[B1+R(h)B0]`, with Kstar=A+(0,l2,0),
+B1=H-K and B0=P-H. Keep the elbow sign selected nearest the standing pose.
+Set `c=(l2-(P-A)_y-(l0-l1))/2`: equal retained inner-annulus margin and lift.
+This is a NEW, very low-clearance active swing; the old pendulum clearance is
+not preserved. Do not claim it certifies sole contact or practical walking.
+
+**PREDICTION:** the fixed-ankle section admits the stance and an active swing
+with bounded endpoint overshoot; both sides share one periodic branch. The
+full JNT3 centroid differs slightly from the full-frame analytic marker, but
+an explicit weighted Rodrigues bound keeps this difference below 0.005H.
+
+**FALSIFIER:** any missing branch representative, out-of-ROM sample, tracked
+foot error above 0.005H, cyclic joint mismatch, contact velocity mismatch above
+1e-9 wu/s, or 60 Hz jump above the geometric frame bound rejects the candidate.
+The frame bound uses only the TWO moving joints during this section; initial
+preparation uses the three-joint bound. It is proposed for coordinator
+ratification, not a perceptual fact. It must not be widened after the run.
+
+**STATEMENT:** solve the ROM boundary circles to obtain connected sagittal
+reach. Half the minimum overshoot reserve beyond +/-a is d. Each swing has
+constant-acceleration endpoint turns of duration 2d/|v_endpoint|, joined by the
+unique cubic zero-end-speed translation of the remaining distance. A quartic
+vertical lift has zero endpoint velocity. The first swing uses duration T/2
+and initial relative velocity -vc, not the periodic swing's T and -vb.
+
+**PREDICTION:** analytic and actual-FK one-sided contact velocities coincide,
+startup reaches (a,vb) with J/m=vc after T/2, and time deficit is zero.
+
+**FALSIFIER:** nonpositive remaining swing duration, ROM/foot/frame rejection,
+startup boundary disagreement, or calling the required acceleration/impulse
+an available actuator budget. The inherited T remains a conditional timing
+reference; replacing passive swing with active swing does not derive a unique
+physical clock.
+
+### K3 refinement: finite-force startup (pre-run)
+
+**STATEMENT:** under `x''=omega^2*x+u`, starting at (0,0), the unique constant
+specific force that reaches the periodic exchange in one full T is
+`u=omega^2*a/(cosh(omega*T)-1)=E/a`. Then
+`x=u/omega^2*(cosh(omega*t)-1)`, `v=u/omega*sinh(omega*t)`.
+The first swing uses T, relative start speed 0 and terminal speed -vb.
+The earlier half-period driven candidate remains a comparison, not the
+recommended startup: finite forcing also closes the joint velocity at rest.
+
+**PREDICTION:** (x(T),v(T))=(a,vb); integrated specific impulse is u*T,
+energy injected is u*a=E, the first swing ends simultaneously, and its
+initial joint velocity is zero after preparation. No instantaneous COM or
+joint-velocity jump is needed by this entry model.
+
+**FALSIFIER:** independent RK4 of the forced equation misses the boundary by
+more than 1e-8, the energy/impulse ledger fails, initial or terminal target
+velocity disagrees, or the required u is presented as available authority.
+The engine must supply a horizontal actuator/contact law admitting u; the
+pack contains no such budget. Normal force/friction and torque remain gates.
+
+### Continuity verdict and law of record
+
+The full derived continuation and finite-force startup are in
+[`THE_CONTINUITY_LAW.md`](THE_CONTINUITY_LAW.md). Measured actual-60-Hz jump
+max/RMS = 0.095247312/0.024130364 rad, proposed bound 0.116378172 rad.
+One-stride foot max/RMS = 9.542360332e-5/5.643409958e-5 wu. Nominal velocity
+jump = 6.875e-15 wu/s; startup state closure = 4.441e-16; timing deficit = 0.
+Finite startup requires u=0.806343648 wu/s^2 for T, not an instantaneous
+midpoint impulse. Its work injects E; subsequent nominal exchanges conserve E.
+
+This success uses a newly derived **0.001928210330 wu proxy lift** and active
+endpoint turns; it does not certify the old pendulum swing height or available
+actuation. Full integration remains CLOSED. The detailed document preserves
+the unsuccessful attempts and the distinction between a geometric frame
+bound and perceptual ratification. The old pointwise/free-frame results above
+remain valid history and reproducible ablations.
