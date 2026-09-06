@@ -104,3 +104,12 @@ testing in stages. See [THE_PLATFORM_BOUNDARY.md](THE_PLATFORM_BOUNDARY.md) for 
 seams, failure gates, and reserved P01. G01 remains unchanged. P01 is not dispatched;
 Linux/software-Vulkan operation is not yet implemented or tested. Neither platform must
 host the other's physics. Real-window DYAD acceptance remains mandatory for product behavior.
+
+P01 first execution: ASTRA completed the read-only dependency inventory and added a
+standalone native C++ screenshot-encoder probe. See FOUNDATION_P01_REPORT.md and
+tools/platform_probe/README.md. Linux compilation and all nine instrument checks passed;
+66,992 synthetic channel bytes matched exactly. No production runtime edits. Full Linux
+engine execution, Windows baseline, and DYAD acceptance remain unverified. Named Windows
+shared memory is an additional required platform seam. G01 remains unchanged; no external
+worker is claimed to be running. The earlier reserved status now applies to production
+backend extraction, not this completed supporting probe.

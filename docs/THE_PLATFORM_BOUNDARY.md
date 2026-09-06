@@ -121,3 +121,9 @@ Read-only inventory can run alongside G01. Do not divert GLM from its material a
 
 ASTRA must issue the production edit scope and single window/camera lease before an agent
 changes or exercises the live platform backend. Alan's Windows workflow remains protected.
+
+P01 supporting work is now recorded in [FOUNDATION_P01_REPORT.md](FOUNDATION_P01_REPORT.md).
+The native Linux capture-encoder probe passes; it is not a Linux renderer or headless
+engine. Production extraction remains gated on the Windows baseline. The inventory also
+identifies named shared-memory transport as an OS seam with a packet-layout and
+synchronization contract. See `tools/platform_probe/README.md` for reproducible checks.
