@@ -2638,6 +2638,98 @@ bool Engine::key_capture_pose(std::vector<float>& out) {
     return true;
 }
 
+// STRIDE: buffer a certified stride (raw f32 rows from /stride_bin).
+// Validation is strict: joint count must match the loaded pack, dt finite and
+// positive, loop0 in range — a wrong stream is REJECTED, never blended.
+bool Engine::set_stride_stream(const std::vector<float>& rows, uint32_t n, uint32_t j,
+                             float dt, uint32_t loop0) {
+    if (!joints_loaded_ || j_n_joints_ == 0) return false;
+    if (j != j_n_joints_) return false;                       // pack mismatch
+    if (n == 0 || rows.size() != static_cast<size_t>(n) * j) return false;
+    if (!(dt > 1e-5f && dt < 1.0f)) return false;
+    if (loop0 >= n) loop0 = 0;
+    for (float v : rows) if (!std::isfinite(v)) return false;  // no NaN/inf enters the pose
+    std::lock_guard<std::mutex> lk(stride_m_);
+    stride_rows_ = rows;
+    stride_n_ = n; stride_j_ = j; stride_dt_ = dt; stride_loop0_ = loop0;
+    return true;
+}
+
+// STRIDE: render-thread tick. Interpolates the buffered rows at the frame
+// rate and writes the pose DIRECTLY into j_state_map_'s theta slots — the same
+// memory the editor's whole-pose lane writes. While active+playing, this lane
+// owns the leg/face thetas; /joint edits and the show clock do not fight it.
+void Engine::stride_tick() {
+    if (!stride_active_.load(std::memory_order_relaxed) ||
+        !stride_playing_.load(std::memory_order_relaxed) || stride_n_ < 2 ||
+        j_state_map_ == nullptr || j_n_joints_ == 0 || j_n_joints_ != stride_j_) return;
+    // WALL CLOCK: the stride's certified clock (T_stance = 1.832 s from LIPM)
+    // lives in wall seconds. dt comes from steady_clock deltas, not cfg_.dt,
+    // which is the uncapped physics step (6x fast at ~300 fps uncapped).
+    auto now = std::chrono::steady_clock::now();
+    if (stride_last_ == std::chrono::steady_clock::time_point{}) {
+        stride_last_ = now;
+        return;                                     // first tick: only arm the stamp
+    }
+    double dt_wall = std::chrono::duration<double>(now - stride_last_).count();
+    if (dt_wall <= 0.0 || dt_wall > 0.5) dt_wall = 1.0 / 60.0;   // hitches don't teleport the gait
+    stride_last_ = now;
+    double t = stride_t_.load(std::memory_order_relaxed);
+    t += dt_wall * stride_speed_.load(std::memory_order_relaxed);
+    std::vector<float> row_a, row_b;
+    float alpha = 0.f;
+    {
+        std::lock_guard<std::mutex> lk(stride_m_);
+        // LOOP: after the startup segment, wrap within [loop0, n) so the
+        // stride plays forever; startup plays once from t=0.
+        double tu = t;
+        if (tu > static_cast<double>(stride_loop0_) * stride_dt_) {
+            double span = static_cast<double>(stride_n_ - 1 - stride_loop0_) * stride_dt_;
+            if (span <= 0.0) { stride_t_.store(t, std::memory_order_relaxed); return; }
+            tu = static_cast<double>(stride_loop0_) * stride_dt_
+               + std::fmod(tu - static_cast<double>(stride_loop0_) * stride_dt_, span);
+        }
+        float     ft  = static_cast<float>(tu / stride_dt_);
+        uint32_t  i0  = static_cast<uint32_t>(ft);
+        if (i0 >= stride_n_ - 1) i0 = stride_n_ - 2;
+        alpha = ft - static_cast<float>(i0);
+        // row_a holds TWO consecutive rows [i0, i0+2); row_b is the second one.
+        // (An earlier off-by-one gave row_a a single row, leaving row_b empty
+        // and row_b[k] reading through a null data() — the playback segfault.)
+        row_a.assign(stride_rows_.begin() + static_cast<size_t>(i0) * stride_j_,
+                     stride_rows_.begin() + static_cast<size_t>(i0 + 2) * stride_j_);
+        row_b.assign(row_a.begin() + stride_j_, row_a.end());
+        if (row_a.size() != static_cast<size_t>(stride_j_) * 2 || row_b.size() != stride_j_)
+            return;                                             // never write a pose from a broken window
+    }
+    if (j_state_map_ == nullptr) return;                        // re-check: the guard ran before the lock
+    float* st = static_cast<float*>(j_state_map_);
+    for (uint32_t k = 0; k < j_n_joints_; ++k) {
+        float th = row_a[k] + (row_b[k] - row_a[k]) * alpha;
+        st[k * 8 + 7] = th;                                     // radians, pack order
+    }
+    stride_t_.store(t, std::memory_order_relaxed);
+}
+
+// STRIDE: HTTP-thread control + status. The handler never touches the
+// raw members — one chokepoint, one law.
+void Engine::stride_control(bool on, bool playing, float speed, bool has_t, float t) {
+    stride_speed_.store(speed, std::memory_order_relaxed);
+    if (has_t) stride_t_.store(static_cast<double>(t), std::memory_order_relaxed);
+    stride_active_.store(on, std::memory_order_relaxed);
+    stride_playing_.store(playing, std::memory_order_relaxed);
+    if (on && playing) joints_owner_.store(1, std::memory_order_relaxed);
+}
+Engine::StrideStatus Engine::stride_status() {
+    std::lock_guard<std::mutex> lk(stride_m_);
+    StrideStatus s;
+    s.active = stride_active_.load(std::memory_order_relaxed);
+    s.playing = stride_playing_.load(std::memory_order_relaxed);
+    s.n = stride_n_; s.j = stride_j_; s.loop0 = stride_loop0_; s.dt = stride_dt_;
+    s.t = stride_t_.load(std::memory_order_relaxed);
+    return s;
+}
+
 // D7-POSE: restore a whole pose. The snapshot goes through the render thread
 // (pose_pending_/pose_applied_ — the same race-safe pattern as single-joint
 // intents): it swaps all thetas at once (no joint-at-a-time flicker) and flips
@@ -6699,10 +6791,19 @@ bool Engine::frame() {
     // (joints_owner_ == 1, thetas persist where intents put them). One owner
     // at a time, observable in GET /joints; the show never overwrites an edit.
     const bool edit_mode = joints_owner_.load(std::memory_order_relaxed) == 1;
-    if ((joints_on_.load(std::memory_order_relaxed) || edit_mode) &&
+    // STRIDE: while active+playing, the certified stride owns the pose.
+    // It advances on the frame delta and writes interpolated thetas into the
+    // SAME state lane; the editor/show owners defer to it for the frame.
+    stride_tick();
+    const bool stride_drives = stride_active_.load(std::memory_order_relaxed) &&
+                             stride_playing_.load(std::memory_order_relaxed);
+    if ((joints_on_.load(std::memory_order_relaxed) || edit_mode || stride_drives) &&
         joints_loaded_ && joints_pipe_ != VK_NULL_HANDLE) {
         float* st = static_cast<float*>(j_state_map_);
-        if (edit_mode) {
+        if (stride_drives) {
+            // the gait lane already wrote thetas this frame — skip both
+            // legacy owners so the show clock cannot overwrite the stride
+        } else if (edit_mode) {
             // C1: THE EDITOR owns the pose. Consume a pending intent (clamped
             // to the pack's derived ROM — the slider's hard range is the law);
             // every other theta stays exactly where the last intent left it.

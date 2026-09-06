@@ -839,6 +839,57 @@ int main(int argc, char** argv) {
             bool ok = g_volp_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_volp_applied; });
             body = ok && g_volp_req.ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"load failed\"}";
             content_type = "application/json";
+        } else if (p == "/stride_bin" && method == "POST") {
+            // STRIDE: binary upload of a certified stride.
+            //   [u32 magic=0x47415431 ('GAT1')][u32 n_samples][u32 n_joints]
+            //   [f32 dt][u32 loop0][f32*n_samples*n_joints thetas, radians, pack order]
+            if (req_body.size() < 20) {
+                body = "{\"ok\":false,\"error\":\"short header\"}";
+            } else {
+                uint32_t magic = 0, n = 0, j = 0, loop0 = 0; float dt = 0.f;
+                std::memcpy(&magic, req_body.data() + 0, 4);
+                std::memcpy(&n, req_body.data() + 4, 4);
+                std::memcpy(&j, req_body.data() + 8, 4);
+                std::memcpy(&dt, req_body.data() + 12, 4);
+                std::memcpy(&loop0, req_body.data() + 16, 4);
+                if (magic != 0x47415431u) {
+                    body = "{\"ok\":false,\"error\":\"bad magic\"}";
+                } else if (req_body.size() != 20 + static_cast<size_t>(n) * j * 4) {
+                    body = "{\"ok\":false,\"error\":\"size mismatch\"}";
+                } else {
+                    std::vector<float> rows(static_cast<size_t>(n) * j);
+                    std::memcpy(rows.data(), req_body.data() + 20, static_cast<size_t>(n) * j * 4);
+                    bool ok = g_engine ? g_engine->set_stride_stream(rows, n, j, dt, loop0) : false;
+                    body = ok ? "{\"ok\":true,\"n\":" + std::to_string(n) + "}"
+                              : "{\"ok\":false,\"error\":\"stream rejected (pack mismatch or bad values)\"}";
+                }
+            }
+            content_type = "application/json";
+        } else if (p == "/stride" && method == "POST") {
+            // STRIDE control: {"on":true,"playing":true,"speed":1.0,"t":0.0}
+            if (g_engine) {
+                bool on = get_bool(req_body, "on", true);
+                bool playing = get_bool(req_body, "playing", true);
+                float speed = get_float(req_body, "speed", 1.0f);
+                if (speed <= 0.f) speed = 1.0f;
+                bool has_t = req_body.find("\"t\"") != std::string::npos;
+                float t = get_float(req_body, "t", 0.f);
+                g_engine->stride_control(on, playing, speed, has_t, t);
+                body = "{\"ok\":true}";
+            } else body = "{\"ok\":false,\"error\":\"no engine\"}";
+            content_type = "application/json";
+        } else if (p == "/stride" && method == "GET") {
+            if (g_engine) {
+                auto s = g_engine->stride_status();
+                body = "{\"ok\":true,\"active\":" + std::string(s.active ? "true" : "false")
+                     + ",\"playing\":" + std::string(s.playing ? "true" : "false")
+                     + ",\"n\":" + std::to_string(s.n)
+                     + ",\"j\":" + std::to_string(s.j)
+                     + ",\"dt\":" + std::to_string(s.dt)
+                     + ",\"loop0\":" + std::to_string(s.loop0)
+                     + ",\"t\":" + std::to_string(s.t) + "}";
+            } else body = "{\"ok\":false,\"error\":\"no engine\"}";
+            content_type = "application/json";
         } else if (p == "/joints" && method == "POST") {
             // JSON {"on":bool} — the show owns the pose while on.
             if (g_engine) {
@@ -2293,7 +2344,7 @@ int main(int argc, char** argv) {
             // SESSION SNAPSHOT status — what a restore would replay.
             body = "{";
             bool first = true;
-            for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "water_bin"}) {
+            for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "stride_bin", "water_bin"}) {
                 std::ifstream f(std::string("session_snapshot/") + ep + ".blob", std::ios::binary | std::ios::ate);
                 if (!first) body += ",";
                 first = false;
@@ -2314,7 +2365,7 @@ int main(int argc, char** argv) {
                 // (Without this, default-on boot restore would resurrect a
                 // subject the operator deliberately removed.)
                 int cleared = 0;
-                for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "water_bin"}) {
+                for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "stride_bin", "water_bin"}) {
                     std::string fp = std::string("session_snapshot/") + ep + ".blob";
                     if (DeleteFileA(fp.c_str())) ++cleared;
                 }
@@ -2322,7 +2373,7 @@ int main(int argc, char** argv) {
             } else if (op == "restore") {
                 int done = 0, failed = 0;
                 std::string detail;
-                for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "water_bin"}) {
+                for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "stride_bin", "water_bin"}) {
                     std::string fp = std::string("session_snapshot/") + ep + ".blob";
                     std::ifstream f(fp, std::ios::binary);
                     if (!f) continue;
@@ -2353,7 +2404,7 @@ int main(int argc, char** argv) {
         // restarts cost three hand-run scripts; a reload is now one flag.
         if (g_engine && method == "POST" &&
             (p == "/mesh_bin" || p == "/hinge_bin" || p == "/joints_bin" ||
-             p == "/gait_bin" || p == "/water_bin") &&
+             p == "/gait_bin" || p == "/stride_bin" || p == "/water_bin") &&
             body.find("\"ok\":true") != std::string::npos) {
             CreateDirectoryA("session_snapshot", nullptr);   // idempotent
             std::string fn = "session_snapshot/" + p.substr(1) + ".blob";
@@ -2368,8 +2419,8 @@ int main(int argc, char** argv) {
         if (g_engine && method == "POST") {
             const char* kind = nullptr;
             if (p == "/mesh_bin" || p == "/hinge_bin" || p == "/joints_bin" ||
-                p == "/gait_bin" || p == "/water_bin") kind = "upload";
-            else if (p == "/show" || p == "/joints" || p == "/gait" ||
+                p == "/gait_bin" || p == "/stride_bin" || p == "/water_bin") kind = "upload";
+            else if (p == "/show" || p == "/joints" || p == "/gait" || p == "/stride" ||
                      p == "/water_clock" || p == "/studio" ||
                      p == "/studio_chrome" || p == "/link") kind = "mode";
             else if (p == "/joint") kind = "intent";

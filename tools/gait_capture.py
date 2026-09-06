@@ -932,6 +932,36 @@ def continuity_probe(o,rig):
     assert startup_closure<STATE_TOL and startup_join<STATE_TOL,'K3 startup closure'
     assert parity<1e-10,'K2 actual full/subset FK parity'
     assert gate,'K2/K4 continuity candidate rejected'
+    # EXPORT HOOK (2026-09-05): the certified rows are THIS function's own
+    # output — dumped verbatim (plus the metrics that certified them) when
+    # CHIMERA_EXPORT_STRIDE is set, so playback can never drift from the law
+    # of record. No duplicated trajectory math exists anywhere else.
+    import os, json as _json
+    _out = os.environ.get('CHIMERA_EXPORT_STRIDE')
+    if _out:
+        _names = list(rig.pack.names)
+        _doc = {
+            'format': 'chimera-stride-1',
+            'dt': 1.0 / mirror.FPS,
+            'n_samples': len(stream),
+            'n_joints': len(_names),
+            'names': _names,
+            'theta': [[float(v) for v in row] for row in stream],
+            'prep': [[float(v) for v in row] for row in preparation],
+            'loop_t0': float(o.T),          # periodic phase begins here
+            'stride_t': float(2 * o.T),     # one full L/R cycle
+            'clock': {'T_stance': float(o.T), 'omega': float(o.w),
+                      'h_com': float(o.h), 'leg': float(o.leg),
+                      'speed': float(math.sqrt(mirror.FR_WALK * mirror.G * o.leg))},
+            'gates': {'foot_max': float(max(errors)), 'gate': float(eps),
+                      'jump_max': float(maximum), 'jump_bound': float(frame_bound),
+                      'velocity_jump': float(velocity_jump),
+                      'startup_closure': float(startup_closure),
+                      'tracking': 'PASS', 'physical_contact': 'UNVERIFIED'},
+        }
+        with open(_out, 'w', encoding='utf-8') as _f:
+            _json.dump(_doc, _f)
+        print(f'stride exported -> {_out} ({len(stream)} samples @60Hz, prep {len(preparation)})', flush=True)
     return dict(jump=all_dist,actual_60fps_two_stride_jump=real_dist,startup_jump=startup_dist,
                 actual_startup_exchange_jump=stream_dist,including_preparation_jump=prepared_stream_dist,
                 max_inter_sample_jump=maximum,frame_angle_bound=frame_bound,frame_rate_bound=60*frame_bound,

@@ -266,6 +266,13 @@ public:
     void        key_marks_clear();
     bool        key_capture_pose(std::vector<float>& out);   // D7-POSE: snapshot all thetas
     bool        key_apply_pose(const std::vector<float>& pose); // D7-POSE: restore via render thread
+    // STRIDE: buffer a certified stride + render-thread playback tick.
+    bool        set_stride_stream(const std::vector<float>& rows, uint32_t n, uint32_t j,
+                                float dt, uint32_t loop0);   // HTTP thread; buffers under mutex
+    void        stride_tick();                                  // render thread; advance+write pose
+    struct StrideStatus { bool active=false, playing=false; uint32_t n=0, j=0, loop0=0; float dt=0.f; double t=0.; };
+    void        stride_control(bool on, bool playing, float speed, bool has_t, float t);  // HTTP thread
+    StrideStatus  stride_status();                                  // consistent snapshot under lock
     std::vector<std::pair<std::string, double>> key_marks_list();
     struct KeyMarkInfo { std::string name; double t; std::string joint; };
     std::vector<KeyMarkInfo> key_marks_list_info();
@@ -529,6 +536,22 @@ private:
     // C1 editor internals (the public API is up with the show clock):
     std::atomic<int>      edit_joint_{-1};            // pending intent: which joint
     std::atomic<float>    edit_theta_deg_{0.0f};      // pending intent: requested theta
+    // STRIDE (2026-09-05): ASTra's certified stride, uploaded as raw f32
+    // rows via /stride_bin and played back by the render thread through the SAME
+    // j_state_map_ lane the editor owns. Playback is INTERPOLATED at 60 Hz
+    // between samples whose chord error is already certified (gait_capture.py),
+    // so no new kinematic claim is made here — the stream IS the certificate.
+    std::mutex              stride_m_;
+    std::vector<float>      stride_rows_;        // n_samples * n_joints thetas (radians)
+    uint32_t                stride_n_ = 0;       // samples
+    uint32_t                stride_j_ = 0;       // joints (must equal j_n_joints_)
+    float                   stride_dt_ = 1.f / 60.f;
+    uint32_t                stride_loop0_ = 0;   // first periodic sample (post-startup)
+    std::atomic<bool>       stride_active_{false};
+    std::atomic<bool>       stride_playing_{false};
+    std::atomic<double>     stride_t_{0.0};
+    std::atomic<float>      stride_speed_{1.0f};
+    std::chrono::steady_clock::time_point stride_last_{};   // wall stamp — the certified stride clock is WALL time (T_stance 1.832 s), not the uncapped physics dt
     // D7-POSE: whole-pose restore intents. pose_pending_ carries a snapshot; the
     // render thread swaps it into j_state_map_ (all thetas at once — no
     // joint-at-a-time flicker) and flips the owner to EDIT, same as an intent.
