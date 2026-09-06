@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass, replace
+from itertools import product
 import math
 
 import numpy as np
@@ -22,6 +23,7 @@ except ImportError:
 STATE_TOL = 1e-9
 CLOCK_TOL = 1e-10
 FOOT_FRACTION = 0.005
+IK_TOL = 1e-10  # numerical inverse tolerance, distinct from the task's foot gate
 
 
 @dataclass(frozen=True)
@@ -262,9 +264,139 @@ def planar_seed(pack, chain, marker, target):
     return seeds
 
 
+def rom_representatives(q, lo, hi):
+    """Enumerate equivalent angles in the actual ROM; never clip a seed."""
+    choices = []
+    for angle, lower, upper in zip(q, lo, hi):
+        first = math.ceil((lower-angle)/(2*math.pi)-1e-12)
+        last = math.floor((upper-angle)/(2*math.pi)+1e-12)
+        choices.append([angle+2*math.pi*k for k in range(first,last+1)])
+    return [np.array(v) for v in product(*choices)]
+
+
+def free_frame_seeds(pack, chain, marker, target):
+    """Reverse three-hinge IK with a DERIVED redundant-frame orientation.
+
+    U=Q-A, b0=P-H, b1=H-K, b2=K-A.  Select |U-R(phi)b0|^2
+    halfway through the intersection of the two attainable squared-radius
+    intervals: this maximizes the minimum squared slack to their four edges.
+    Both orientations and both elbow branches are enumerated, then ROM-filtered.
+    The returned delta is virtual-link bend, not the stored knee angle.
+    """
+    H,K,A = pack.pivot[chain]
+    b0,b1,b2,U = map(plane, (marker-H,H-K,K-A,target-A))
+    l0,l1,l2,r = map(float, map(np.linalg.norm, (b0,b1,b2,U)))
+    if abs(target[0]-marker[0]) > 1e-10:
+        return [], float('nan')
+    lower = max(abs(l1-l2), abs(l0-r))
+    upper = min(l1+l2, l0+r)
+    if lower > upper+1e-12 or l0*l1*l2 == 0:
+        return [], float('nan')
+    rho2 = (lower*lower+upper*upper)/2
+    delta = math.acos(float(np.clip((rho2-l1*l1-l2*l2)/(2*l1*l2),-1,1)))
+    if r < 1e-12:
+        orientations = [0.0]  # rotationally degenerate; not an exhaustive ROM proof
+    else:
+        alpha = math.acos(float(np.clip((r*r+l0*l0-rho2)/(2*r*l0),-1,1)))
+        offset = math.atan2(U[1],U[0])-math.atan2(b0[1],b0[0])
+        orientations = [offset-alpha,offset+alpha]
+    lo,hi = np.radians(pack.rom[chain]).T
+    seeds = []
+    for phi in orientations:
+        virtual_marker = H + mirror.rot(np.array([1.,0.,0.]),phi) @ (marker-H)
+        for q in planar_seed(pack,chain,virtual_marker,target):
+            q[0] += phi / pack.axis[chain[0],0]
+            seeds.extend(rom_representatives(q,lo,hi))
+    return seeds, delta
+
+
+def mirrored_rom(pack):
+    """Return a copied recommended ROM table and measured axial parity.
+
+    M=diag(-1,1,1) reflects positions. Axial vectors reflect by det(M)*M.
+    If a_R=s*det(M)*M*a_L, theta_R=s*theta_L and I_R=s*I_L.
+    Left intervals are the declared reference; a nonparallel axis needs a
+    new spatial joint law, not an invented scalar sign adjustment.
+    """
+    ix = {name:i for i,name in enumerate(pack.names)}
+    rom = pack.rom.copy()
+    rows = []
+    for name,i in ix.items():
+        if not name.endswith('_L') or name[:-2]+'_R' not in ix:
+            continue
+        j = ix[name[:-2]+'_R']
+        expected_axis = np.array([1.,-1.,-1.])*pack.axis[i]
+        dot = float(pack.axis[j] @ expected_axis)
+        if abs(abs(dot)-1) > 1e-10:
+            raise ValueError(f'{name}: axes are not related by scalar mirror parity')
+        sign = 1 if dot >= 0 else -1
+        recommended = pack.rom[i].copy() if sign == 1 else -pack.rom[i,::-1]
+        rows.append((pack.names[j],sign,pack.rom[j].copy(),recommended.copy()))
+        rom[j] = recommended
+    return replace(pack,rom=rom), rows
+
+
+def rom_gauge_control(rest,pack):
+    """One contrived opposite-axis knee is a known-answer S2 control only."""
+    knee = pack.names.index('knee_R')
+    axes = pack.axis.copy(); axes[knee] *= -1
+    changed = replace(pack,axis=axes)
+    corrected,_ = mirrored_rom(changed)
+    assert np.array_equal(corrected.rom[knee],-pack.rom[knee,::-1]), 'S2 sign-swap'
+    theta = np.zeros(len(pack.names))
+    theta[knee] = math.radians(pack.rom[knee,1])
+    negated_theta = theta.copy(); negated_theta[knee] *= -1
+    error = float(np.max(abs(mirror.pose_points(rest,pack,theta)-mirror.pose_points(rest,corrected,negated_theta))))
+    assert error <= IK_TOL, 'S2 negated-axis spatial equivalence'
+    for angle in np.radians(pack.rom[knee]):
+        assert np.radians(corrected.rom[knee,0])-1e-12 <= -angle <= np.radians(corrected.rom[knee,1])+1e-12
+    # Show the unchanged-ROM ablation loses a real spatial endpoint.
+    endpoint_lost = not (pack.rom[knee,0] <= -pack.rom[knee,1] <= pack.rom[knee,1])
+    assert endpoint_lost, 'S2 missing ROM swap must be observable on this asymmetric interval'
+    return error
+
+
+def bounded_refine(fun,target,seed,lo,hi):
+    """Same bounded Gauss-Newton objective as the mirror, stable at rank loss.
+
+    Stop on a solved residual. Solve the augmented least-squares system rather
+    than squaring its condition number in J.T J. Inward differences retain a
+    derivative at an upper ROM boundary. Constants match the inherited solver.
+    """
+    q = np.clip(seed.copy(),lo,hi)
+    damping = 1e-4
+    for _ in range(80):
+        residual = fun(q)-target
+        if np.linalg.norm(residual) <= IK_TOL:
+            break
+        jac = np.empty((len(residual),len(q)))
+        for k in range(len(q)):
+            d = min(1e-5,hi[k]-q[k])
+            if d < 1e-10:
+                d = -min(1e-5,q[k]-lo[k])
+            if d == 0:
+                jac[:,k] = 0
+            else:
+                perturbed=q.copy(); perturbed[k]+=d
+                jac[:,k]=(fun(perturbed)-fun(q))/d
+        augmented=np.vstack((jac,math.sqrt(damping)*np.eye(len(q))))
+        rhs=np.concatenate((-residual,np.zeros(len(q))))
+        step=np.linalg.lstsq(augmented,rhs,rcond=None)[0]
+        candidate=np.clip(q+step,lo,hi)
+        if np.linalg.norm(fun(candidate)-target) < np.linalg.norm(residual):
+            q=candidate
+            damping=max(damping*.3,np.finfo(float).eps)
+        else:
+            damping*=10
+        if np.linalg.norm(step)<1e-7:
+            break
+    return q
+
+
 class Rig:
-    def __init__(self, rest, pack):
+    def __init__(self, rest, pack, seed_law='free'):
         self.rest, self.pack = rest, pack
+        self.seed_law = seed_law
         self.ix = {s: i for i, s in enumerate(pack.names)}
         self.chain = {s: np.array([self.ix[f'{j}_{s}'] for j in ('hip', 'knee', 'ankle')]) for s in 'LR'}
         self.ids, self.small, self.marker = {}, {}, {}
@@ -307,13 +439,22 @@ class Rig:
     def solve(self, target, side, previous):
         chain = self.chain[side]
         lo, hi = np.radians(self.pack.rom[chain]).T
-        seeds = planar_seed(self.pack, chain, self.marker[side], target)
+        flat_seeds = planar_seed(self.pack, chain, self.marker[side], target)
+        free_seeds, _ = free_frame_seeds(self.pack, chain, self.marker[side], target) if self.seed_law == 'free' else ([],0)
+        seeds = [*flat_seeds, *free_seeds]
         fun = lambda q: self.endpoint(q, side)
         # A continuous previous solution plus BOTH analytic IK branches; not a
         # parameter sweep. No claim of global impossibility from a local miss.
-        candidates = [mirror.damped_ls(fun, target, seed, lo, hi) for seed in [previous, *seeds]]
-        q = min(candidates, key=lambda q: np.linalg.norm(fun(q)-target))
-        return q, not bool(seeds)
+        refine = bounded_refine if self.seed_law == 'free' else mirror.damped_ls
+        candidates = [refine(fun, target, seed, lo, hi) for seed in [previous, *seeds]]
+        accurate = [q for q in candidates if np.linalg.norm(fun(q)-target) <= IK_TOL]
+        if self.seed_law == 'free' and accurate:
+            # Once numerically solved, tiny residual differences are not a
+            # reason to jump between redundant branches. Keep the closest pose.
+            q = min(accurate,key=lambda q:np.linalg.norm(q-previous))
+        else:
+            q = min(candidates, key=lambda q: np.linalg.norm(fun(q)-target))
+        return q, not bool(flat_seeds)
 
 
 def gait_target(rig, side, t, o, swing):
@@ -331,12 +472,34 @@ def gait_target(rig, side, t, o, swing):
     return target
 
 
+def synchronized_side_control(o,rig,swing):
+    """Same local phase and same initial warm starts: distinguish history
+    from a genuine L/R spatial law difference. No live pack mutation.
+    """
+    previous = {s:np.zeros(3) for s in 'LR'}
+    max_position_difference = max_angle_difference = 0.0
+    for local in (0.,.25,.5,.75,1.,1.5,2.):
+        achieved,angles = {},{}
+        for side in 'LR':
+            target = gait_target(rig,side,(local-(1 if side=='R' else 0))*o.T,o,swing)
+            q,_ = rig.solve(target,side,previous[side]); previous[side] = q
+            achieved[side] = rig.endpoint(q,side); angles[side] = q
+        max_position_difference = max(max_position_difference,float(np.linalg.norm(achieved['L']*[-1,1,1]-achieved['R'])))
+        max_angle_difference = max(max_angle_difference,float(np.max(abs(angles['L']-angles['R']))))
+    assert max_position_difference < 1e-6, 'S4 synchronized spatial parity'
+    return dict(position=max_position_difference,angle=max_angle_difference)
+
+
 def rig_stride(o, rig, swing):
     # Mirror's 60 Hz measurement convention, rounded UP and exact boundaries.
     n = max(2, math.ceil(o.T*mirror.FPS))
     times = np.linspace(0, 2*o.T, 2*n+1)
     previous = {s: np.zeros(3) for s in 'LR'}
     errors, thetas, targets, misses, tilt = [], [], [], 0, []
+    records = []
+    min_bend = math.inf
+    min_seed_count = math.inf
+    max_seed_fk_error = 0.0
     max_full_error = 0.0
     for fi, t in enumerate(times):
         theta = np.zeros(len(rig.pack.names))
@@ -344,6 +507,16 @@ def rig_stride(o, rig, swing):
         for side in 'LR':
             target = gait_target(rig, side, t, o, swing)
             q, outside = rig.solve(target, side, previous[side])
+            seeds,bend = free_frame_seeds(rig.pack,rig.chain[side],rig.marker[side],target)
+            min_bend = min(min_bend,bend)
+            min_seed_count = min(min_seed_count,len(seeds))
+            for seed in seeds:
+                tt = np.zeros(len(rig.pack.names)); tt[rig.chain[side]] = seed
+                mats,trans = mirror.frames(rig.pack,tt)
+                ankle = rig.chain[side][2]
+                seed_error = np.linalg.norm(mats[ankle] @ rig.marker[side]+trans[ankle]-target)
+                max_seed_fk_error = max(max_seed_fk_error,float(seed_error))
+                assert seed_error <= IK_TOL, 'S1 free-frame seed FK parity'
             previous[side] = q
             theta[rig.chain[side]] = q
             desired.append(target)
@@ -352,7 +525,12 @@ def rig_stride(o, rig, swing):
         # Both legs active together, including any second-owner dependencies.
         for si, side in enumerate('LR'):
             actual = rig.points(theta, side).mean(axis=0)
-            errors.append(float(np.linalg.norm(actual-desired[si])))
+            error = float(np.linalg.norm(actual-desired[si]))
+            errors.append(error)
+            local = float(((t+(o.T if side=='R' else 0))%(2*o.T))/o.T)
+            flat_miss = not bool(planar_seed(rig.pack,rig.chain[side],rig.marker[side],desired[si]))
+            records.append(dict(error=error,side=side,phase=local,flat_miss=flat_miss,
+                                q=theta[rig.chain[side]].tolist()))
         if fi in (0, n//2, n, 3*n//2, 2*n):
             full = mirror.pose_points(rig.rest, rig.pack, theta)
             for side in 'LR':
@@ -365,17 +543,28 @@ def rig_stride(o, rig, swing):
     endpoint_error = max(float(np.max(abs(rig.points(th[-1], s)-rig.points(th[0], s)))) for s in 'LR')
     target_loop_error = float(np.max(abs(np.array(targets[-1])-np.array(targets[0]))))
     assert target_loop_error < 1e-10, 'C6 target position closure'
+    phase_errors = {}
+    for side in 'LR':
+        for category in ('swing','stance_flat_miss','stance_flat_seed'):
+            selected = [r['error'] for r in records if r['side']==side and
+                        (('swing' if r['phase']>=1 else ('stance_flat_miss' if r['flat_miss'] else 'stance_flat_seed'))==category)]
+            phase_errors[side+'_'+category] = dict(count=len(selected),max=max(selected,default=0.),
+                                                  rms=math.sqrt(float(np.mean(np.square(selected)))) if selected else 0.)
     return dict(max_error=max(errors), rms_error=math.sqrt(float(np.mean(np.square(errors)))),
                 full_subset_error=max_full_error, flat_seed_unreachable=misses,
                 max_full_frame_tilt=max(tilt), pose_loop_error=endpoint_error,
                 samples=len(times), theta_loop_error=float(np.max(abs(th[-1]-th[0]))),
-                target_loop_error=target_loop_error)
+                target_loop_error=target_loop_error, max_sample_joint_jump=float(np.max(abs(np.diff(th,axis=0)))),
+                free_seed_min_bend_rad=min_bend,free_seed_min_count=min_seed_count,
+                free_seed_max_fk_error=max_seed_fk_error,phase_errors=phase_errors,
+                worst_samples=sorted(records,key=lambda r:-r['error'])[:3])
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--self-test', action='store_true')
     ap.add_argument('--require-ready', action='store_true')
+    ap.add_argument('--seed-law',choices=('flat','free'),default='free',help='flat retains the PR #5 ablation; free is the corrected inverse')
     args = ap.parse_args()
     if args.self_test:
         T, _, _ = candidate_clock(3.091285, math.sqrt(mirror.FR_WALK*mirror.G*3.091285))
@@ -386,7 +575,13 @@ def main():
     pack = mirror.load_pack(mirror.DEFAULT_PACK)
     if pack.tag != b'JNT3':
         raise ValueError('requires the canonical JNT3 pack')
-    rig = Rig(rest, pack)
+    pack,rom_rows = mirrored_rom(pack)
+    gauge_error = rom_gauge_control(rest,pack)
+    rig = Rig(rest, pack,args.seed_law)
+    print(f'seed_law={args.seed_law} root_drop=0 skeleton_delta=0 rom_gauge_control_error={gauge_error:.3e}')
+    for name,parity,old,new in rom_rows:
+        if name.startswith(('hip','knee','ankle')):
+            print(f'ROM {name} axial_parity={parity:+d} shipped={old.tolist()} recommended={new.tolist()}')
     com = rest.mean(axis=0)
     if len(indices) % 3 or np.max(indices) >= len(rest) or len(pack.assign) != len(rest):
         raise ValueError('invalid mesh/pack topology')
@@ -438,9 +633,10 @@ def main():
     print(f'first_halfstep_optimistic_stopping_margin={capture_margin(o.vc/o.w,T/2,o.w,-2*leg,2*leg):.9f}')
     print(f'minimum_LIPM_stance_friction_coefficient={o.a/o.h:.9f} (availability unknown)')
     result = rig_stride(o, rig, swing)
+    print('synchronized_LR_control='+repr(synchronized_side_control(o,rig,swing)))
     eps = FOOT_FRACTION*h
     print('rig_result=' + repr(result))
-    print(f'foot_error_max={result["max_error"]:.9f} foot_error_rms={result["rms_error"]:.9f} threshold={eps:.9f} wu')
+    print(f'foot_error_max={result["max_error"]:.12g} foot_error_rms={result["rms_error"]:.12g} threshold={eps:.9f} wu')
     print(f'foot_tracking_gate={"PASS" if result["max_error"] <= eps else "FAIL"}')
     print('exact_Rodrigues_substeps=1; accumulated_small_angle_drift=0 (algebraic, excludes float roundoff)')
     print('substeps_for_total_stride_0.5pctH=' + ('UNATTAINABLE_FOR_RECORDED_PROFILE' if result['max_error'] > eps else 'NOT_CERTIFIED_CONTINUOUSLY') + '; finer timing cannot fix the same erroneous sampled poses')

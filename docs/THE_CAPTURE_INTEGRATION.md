@@ -1,5 +1,10 @@
 # Capture integration contract — coordinator only
 
+**Latest amendment:** sampled stance/foot position now passes with the
+free-frame inverse. Use the appended "Stance-closure amendment" for current
+seed selection, ROM parity and clamp/referee propagation. The earlier
+candidate specification is retained as history; full gait readiness is CLOSED.
+
 Companion derivation and Rule-0 ledger: `THE_CAPTURE_LAW.md`.
 **Current result: CLOSED. Do not enable a walk from this PR.** This is an
 offline controller/probe and a C++ integration specification, not an engine
@@ -186,3 +191,115 @@ unclosed dependencies, not permission requests or claims about work performed.
 Exact Rodrigues uses one evaluation per pose. Do not port the mirror's
 hypothetical small-angle substep count. For the tested profile, even infinitely
 fine temporal sampling leaves the measured bad poses and contact discontinuity.
+
+## Stance-closure amendment — 42c6f5db / S1–S4
+
+This section supersedes the **inverse selection and foot-position verdict**
+above. It does not supersede the full capture/contact gate. See the appended
+STANCE CLOSURE LAW in `THE_CAPTURE_LAW.md` for the derivation and Rule-0 tests.
+
+**Recommended fix:** port the free-frame seed plus stable bounded refinement;
+retain the current axes, ROM, weights, pivots and root height. The real-blob
+probe now passes the sampled foot gate: max/RMS 9.873789293e-11 /
+2.182060552e-11 wu. Do not apply an unconditional right-side ROM reversal.
+
+### Exact inverse update
+
+The stance/swing target formulas and capture clock are unchanged. Replace the
+`seeds` and candidate-selection lines in `gait_theta` as follows:
+
+```text
+U=target-A; B0=P-H; B1=H-K; B2=K-A     # all in the Y,Z plane
+l0=length(B0); l1=length(B1); l2=length(B2); r=length(U)
+rho_lo=max(abs(l1-l2),abs(l0-r))
+rho_hi=min(l1+l2,l0+r)
+if rho_lo>rho_hi: reject geometric seed (never move the target into range)
+rho_squared=(rho_lo^2+rho_hi^2)/2
+delta=acos((rho_squared-l1^2-l2^2)/(2*l1*l2))
+
+for both solutions phi of
+    cos(arg(U)-arg(B0)-phi)=(r^2+l0^2-rho_squared)/(2*r*l0):
+    D=U-R(phi)*B0
+    for both two-link inverse branches D=R(phi1)*B1+R(phi2)*B2:
+        signed_plane_angles=(phi-phi1, phi1-phi2, phi2)
+        theta_j=signed_plane_angles_j / axis_j.x
+        enumerate theta_j+2*pi*n within the actual ROM
+        retain admissible triples; verify their rigid full-frame FK
+
+seeds={previous_theta[side], old_flat_seeds, new_free_frame_seeds}
+for each seed:
+    solve actual_JNT3_sole_centroid(theta)=target within ROM
+    use augmented least squares [J;sqrt(lambda)I], not normal equations
+    stop when residual<=1e-10 wu
+    use an inward finite difference at an upper ROM boundary
+if any refined candidates have residual<=1e-10:
+    select the one closest to previous_theta[side]
+else:
+    select the least residual and report the failed target if above 0.005 H
+```
+
+Use bounded acos arguments only to absorb floating-point roundoff, not to
+admit geometry outside the interval. r=0 is orientation-degenerate: the probe
+tries phi=0 and expressly makes no exhaustive ROM claim for that case. The
+new code is `free_frame_seeds`, `rom_representatives`, and `bounded_refine` in
+`tools/gait_capture.py`. It still calls the mirror for actual FK/LBS.
+
+Delta is a derived virtual-link extension margin, not a knee-angle bias or
+root drop. Its continuous geometric lower bound for these targets is
+0.141938983 rad; its sampled minimum is 0.173619618 rad. No delta is added to
+engine joint commands. Propagate actual derived angles, not a blanket crouch.
+
+### Correct ROM parity and clamp propagation
+
+For each pair, compute a_expected=det(M)*M*a_L. If a_R=s*a_expected, then
+theta_R=s*theta_L. For s=-1 the interval must become [-hi_L,-lo_L]; for s=+1
+it stays [lo_L,hi_L]. Do not infer s by the suffix `_R`, or confuse ordinary
+vector reflection M with axial reflection det(M)*M. Here s=+1 for all six leg
+joints' pairs, so the shipped paired table remains correct.
+
+If a future pack genuinely negates an axis, its scalar interval, stored pose,
+velocity, torque sign, caches and command producers must change representation
+consistently. Specifically,
+
+    clamp(s*theta, mirrored_interval) = s*clamp(theta, original_interval).
+
+The probe applies the derived table to a COPY in memory. An engine change
+must instead establish a single canonical table and use it in all readers:
+`j_rom_`, the single-joint editor, show sweep, UI limit labels, bulk-pose input,
+GPU state and any gait authoring path. Swapping the numbers only in the CPU
+probe would leave the engine executing a different feasible set.
+
+At the audited engine SHA, the single-joint editor clamps degree input using
+`j_rom_`, then writes radians. The bulk `pose_pending_` render-thread path
+copies radians directly into joint state, without a clamp in that block.
+The coordinator must validate that whole path before integration; no live
+clamp change is made in this PR. Do not silently clip a gait command and then
+report deadbeat recovery against the unclipped state.
+
+### Referee propagation
+
+`tools/rom_referee_r2.py` currently tests a_R=-M*a_L and compares mirrored
+L(+theta) with R(+theta), which matches this pack. For a general parity s,
+its spatial test must compare mirrored L(theta) with R(s*theta). Test BOTH
+transformed interval endpoints, not just shared positive sample angles.
+Flexion/extension labels must refer to spatial movement: a negative scalar
+endpoint may be the right-side flexion extreme when s=-1. Convert the measured
+right stops into the common spatial convention before comparing L/R budgets,
+and only then convert the recommended interval back into each stored axis.
+The referee's current practice of publishing paired common bounds is valid
+only after that convention is established. This is a specification for the
+coordinator, not a claim that the referee has been modified or run here.
+
+### What still prohibits a live walk
+
+The corrected local selection reports maximum sampled joint jump
+2.381311797 rad and pose-return discrepancy 0.297065513 wu. It solves sampled
+foot positions but does not produce a certified continuous periodic joint
+path. Keep the old pose-history, contact, effort, lateral and physical-clock
+conditions in the gate; none becomes satisfied by a small centroid residual.
+The net full-frame angle statistic is not a contamination test or a substitute
+for measuring the actual LBS contact patch and sole orientation.
+
+The coordinator can now evaluate continuous inverse-branch tracking and
+contact dynamics without the old false flat-seed reach restriction. No new
+ankle DOF or band surgery is supported by this position test alone.

@@ -1,5 +1,10 @@
 # The capture law — ASTRA derivation bench
 
+**Latest stance-position verdict (42c6f5db): PASS with the free-frame inverse;
+no ROM, axis or skeleton change.** See the appended STANCE CLOSURE LAW and
+S1–S4 results. Earlier PR #5 results below remain historical. Full physical
+gait readiness remains CLOSED.
+
 Base: `04d7bd7a8eb10167cbab05e4da469cb222a1c53a`. Scope: offline theory,
 CPU falsification, and an integration contract; not live-engine certification.
 The coordinator's clock retraction in `THE_MATHEMATICS_OF_WALKING.md` binds.
@@ -409,3 +414,246 @@ sits exactly on the singularity. Two open questions for the theorist:
 The ask: derive the STANCE CLOSURE LAW — how the stance leg must carry flexion
 margin at mid-stance (root drop vs knee bias vs seed reformulation), with the
 reachability proof and the corrected probe. The 0.0281 gate is unchanged.
+
+## ASTRA stance-closure membranes — before the corrective run
+
+Base `42c6f5db33541da8e50e2713752e42f6fc06dcbd`; calibration and protected
+blobs unchanged. The following tests concern offline position reachability,
+not live contact/clock certification. Earlier results remain historical.
+
+| ID | STATEMENT | PREDICTION | FALSIFIER |
+|---|---|---|---|
+| S1 | The old seed imposes zero full-frame orientation; its annulus is not the full three-hinge workspace. | A derived free-orientation seed produces FK-valid solutions for targets the old flat seed rejects, to 1e-10 wu in the rigid full-frame model. | Any seed fails imported FK, or no new admissible seeds exist. |
+| S2 | Mirror ROMs transform with the sign relating the actual right axis to det(M) M times the left axis. | Identical stored +/-X axes here need no ROM change; deliberately negating a right axis AND mapping [lo,hi] to [-hi,-lo] preserves the spatial workspace. | Pack shows opposite axial parity, or the paired transformation changes FK/ROM membership beyond 1e-10. |
+| S3 | Solving the redundant inverse before bounded LBS refinement can remove the position defect without editing the skeleton or lowering the root. | Full-stride max error <=0.005 H; phase/side decomposition and pose-return error are printed separately. | Any sample exceeds the unchanged threshold; a root-height modification is needed but not propagated into both targets and dynamics. |
+| S4 | Side asymmetry can arise from different phase histories even when the chains are spatially mirrored. | Equal-phase, equal-seed L/R solves agree in sagittal position to 1e-6 wu; warm-start order cannot be called cross-leg inheritance because the dictionaries are separate. | Paired pack data or synchronized solves disagree beyond that bound. |
+
+Numerical tolerances are predeclared verification bounds; 0.005 H is the
+existing task gate. A failed local solve is not a global non-reachability
+proof. No axis, ROM, weight or pivot in a protected blob will be changed.
+
+## STANCE CLOSURE LAW — derivation and verdict on 42c6f5db
+
+### 1. What the committed pack actually says (S2)
+
+The recommended table for **this pack** is the shipped table, unchanged:
+
+| Pair | L axis | R axis | L ROM, degrees | Recommended R ROM, degrees |
+|---|---|---|---|---|
+| hip | +X | +X | [-159,119] | [-159,119] |
+| knee | +X | +X | [-131,147] | [-131,147] |
+| ankle | -X | -X | [-159.2100067,131.4400024] | [-159.2100067,131.4400024] |
+
+Thus the latest message's negated-right-axis premise does not hold in the
+canonical blob at this SHA. The preceding audit's knee extension -147.89
+also does not match this blob's -131. These may describe an uncommitted
+instrument or another pack; they cannot justify altering the canonical data.
+
+For reflection M=diag(-1,1,1), angular axes are pseudovectors, so the expected
+mirrored axis is a_expected=det(M)*M*a_L. Define s=+1 or -1 from the actual
+relation a_R=s*a_expected. Then
+
+    theta_R=s*theta_L
+    [lo_R,hi_R] = [lo_L,hi_L]       if s=+1
+                 [-hi_L,-lo_L]     if s=-1.
+
+This follows from Rodrigues conjugacy, M R(a,theta) M^-1 =
+R(det(M) M a,theta), and R(-a,-theta)=R(a,theta). An axis not parallel to
+either expected sign cannot be repaired by scalar ROM swapping.
+
+`mirrored_rom()` implements this law in a copied, in-memory table. No
+canonical blob is rewritten. For a hypothetically negated right knee, its
+correct table would be [-147,131]; leaving [-131,147] loses one spatial
+endpoint by 16 degrees. A deliberately negated-axis control plus the corrected
+interval reproduces the full original mesh pose **exactly (0.0 wu error)**.
+The unchanged-ROM ablation rejects that endpoint. This confirms the general
+sign-swap law while rejecting its proposed application to the present pack.
+
+### 2. The apparent straight-knee paradox (S1)
+
+The old seed's necessary precondition was NOT "knee angle is in ROM". It
+imposed h+k+b=0 (zero full-ankle-frame orientation) before it considered ROM.
+With the reverse fixed-pivot product from §7,
+
+    Q-A = R(b)(K-A)+R(b+k)(H-K)+R(b+k+h)(P-H),
+
+that precondition reduces the problem to a virtual two-link vector
+D=Q-A-(P-H). Write B1=H-K, B2=K-A and l1=|B1|, l2=|B2| in Y,Z.
+The old seed accepts only |l1-l2|<=|D|<=l1+l2; it then proposes angles.
+`flat_seed_unreachable` historically counted failure of this **restricted
+geometric seed**, before any angle interval test, not full-chain reachability.
+
+For the left calibrated sole marker, the planar lengths are
+
+    |P-H| = 3.077611891
+    l1 = 1.517644855, l2 = 1.567741580
+    |H-A| = 3.077884422, l1+l2 = 3.085386435.
+
+At exact midstance Q=P, the flat annulus has **positive** radial margin
+0.007502013 wu and virtual-link bend 7.993686832 degrees. It is near straight,
+but not on the extension singularity, and it is not rejected by the flat law.
+The vector-straight knee parameter is k_straight=arg(B2)-arg(B1), about
+-7.993686832 degrees for the +X knee; it lies inside [-131,147]. A stored
+knee angle of zero means the rest geometry, not necessarily collinear links.
+
+At a stance sagittal offset s, Q=P+(0,0,s), the flat restriction tests
+
+    (H_y-A_y)^2+(H_z-A_z+s)^2 <= (l1+l2)^2.
+
+It only accepts s in [-0.268014393,0.172516620] wu, whereas the requested
+stance traverses +/-2.157457908 wu. That is the source of its many misses;
+hyperextension permission cannot enlarge a radius fixed by this extra
+orientation constraint. Most of those misses already solved through LBS
+refinement. The largest original error occurs at right local stance phase
+0.290909091, with ankle at its lower ROM bound -2.778738819 rad (-159.21 deg).
+This differs from the brief's phase window; the log defines phase explicitly
+as time since that leg's touchdown divided by T.
+
+### 3. Free-frame inverse and closed-form flexion margin (S1, S3)
+
+Keep all three hinges. Let phi=h+k+b be the full-frame orientation, U=Q-A,
+B0=P-H, l0=|B0|, r=|U|. Instead of forcing phi=0, solve
+
+    D=U-R(phi)B0 = R(phi1)B1+R(phi2)B2
+    phi1=b+k, phi2=b.
+
+The possible length rho=|D| must lie in the intersection
+
+    rho_lo=max(|l1-l2|, |l0-r|)
+    rho_hi=min(l1+l2, l0+r).
+
+This interval is the complete planar three-vector geometric reach test
+before ROM: nonempty iff max(0,2*max(l0,l1,l2)-(l0+l1+l2)) <= r <=
+l0+l1+l2. Here the inner radius is zero. Positive interval width allows an
+interior seed. Rather than choosing a knee bias, solve the explicit objective
+of maximizing minimum **squared-radius slack** to both interval boundaries:
+
+    rho^2 = (rho_lo^2+rho_hi^2)/2
+    delta(Q) = acos((rho^2-l1^2-l2^2)/(2*l1*l2)).
+
+The midpoint follows by equating the two slacks; it is not a fitted angle or
+parameter sweep. Delta is the virtual-link flexion margin away from collinear
+extension, not a new ROM parameter. The stored +X knee candidates are
+k=k_straight +/- delta, with orientation/ROM decided by the full inverse.
+
+For r>0, the two full-frame orientations are
+
+    phi=arg(U)-arg(B0) +/- acos((r^2+l0^2-rho^2)/(2*r*l0)).
+
+For each phi, solve the two branches of the earlier planar inverse using
+the virtual rest point H+R(phi)(P-H). Recover
+
+    h=phi-phi1, k=phi1-phi2, b=phi2.
+
+Convert these signed +X angles to the stored axes, enumerate equivalent
+theta+2*pi*n within each actual ROM, and reject inadmissible branches. There
+are at most four geometric branches before equivalent-angle enumeration.
+At r=0 the orientation is underdetermined; the implementation tries phi=0
+and does NOT claim exhaustive ROM reachability there. The tested trajectory
+does not require that degenerate branch.
+
+**Continuous geometric margin:** throughout this candidate trajectory
+r<=|P-A|+a < l0-|l1-l2|. (The pendulum arc displacement magnitude is at most
+a for alpha<pi/2, as is the stance offset.) Put R=l1+l2. In this domain the
+largest selected rho^2 occurs at r=R-l0 and equals l0^2+(R-l0)^2. Therefore
+
+    delta >= acos((l0^2+(R-l0)^2-l1^2-l2^2)/(2*l1*l2))
+          = 0.141938983 rad = 8.132504654 degrees.
+
+At exact midstance the selected delta is 0.388681290 rad (22.269797521 deg).
+Across the sampled stride its minimum is 0.173619618 rad. No skeleton bend
+or root drop is required: **recommended skeleton delta = 0, root drop = 0**.
+This bound is for the full-frame geometric seeds; it does not certify a
+periodic joint path, an oriented LBS sole, continuous ROM admissibility, or
+load-bearing dynamics after numerical refinement.
+
+For comparison, a root drop d>0 would add +d to body-relative foot Y. Under
+the OLD flat inverse it changes D_y to H_y-A_y+d, making its extension
+inequality worse. If a flat virtual-link bend beta were externally required,
+its condition would be
+
+    (H_y-A_y+d)^2+(H_z-A_z+s)^2 <= l1^2+l2^2+2*l1*l2*cos(beta).
+
+Thus an allowed d must obey the corresponding square-root bound; it is not
+an arbitrary positive crouch amount. Applying conventional-chain crouch
+intuition to this reverse product would change the wrong geometric quantity.
+No such target or height modification is used by the recommended fix.
+
+### 4. Numerical refinement and the asymmetric history (S3, S4)
+
+Each geometric seed is checked through imported `gait_mirror.frames`;
+the worst rigid seed residual is 4.866020254e-15 wu. At least two
+ROM-admissible free-frame seeds exist at every sampled target on each side.
+Then the actual JNT3 sole-centroid law, with the same weights and second-owner
+frames, is solved by bounded Gauss-Newton. This retains the real LBS model,
+not a substituted two-link endpoint.
+
+An additional equal-phase control exposed the inherited normal-equation
+solver throwing `LinAlgError: Singular matrix` after damping shrank toward
+roundoff at a nearly solved redundant pose. The correction in this probe
+(the original mirror is unchanged) stops at residual <=1e-10 wu and solves
+the augmented least-squares system [J;sqrt(lambda)I], without forming J^T J.
+Finite differences point inward at an upper ROM boundary. Iteration count,
+initial damping and finite-difference increment retain the mirror's values.
+The 1e-10 numerical threshold is many orders tighter than the 0.005 H gate.
+
+Once several candidates meet numerical tolerance, choose the pose closest
+to that side's previous pose, rather than preferring a meaningless 1e-15
+residual improvement that jumps branches. This is a local continuity rule,
+not a global periodic path solver. An initial minimum-residual-only trial
+gave max error 9.288e-14 and zero pose-return residual; that attractive return
+was not accepted as proof of continuous motion. The final continuity-aware
+implementation reports its remaining joint/pose discontinuities explicitly.
+
+The old probe had separate `previous['L']` and `previous['R']` states. R did
+not inherit L's solution: it started half a stride away, so its optimization
+history was different. With synchronized local phases and equal initial
+warm starts, the baseline mirrored-position difference is 1.869e-8 wu and
+angle difference 7.356e-9 rad. The corrected equivalents are 1.869e-8 wu and
+7.349e-9 rad. This refutes a material spatial flexion-budget asymmetry in the
+committed pack; history-dependent local minima explain the original result
+without changing the body.
+
+Also, `max_full_frame_tilt` computes max |h+k+b| = max |theta_hip+
+theta_knee-theta_ankle| here, **not** sum |q_i|. It is an unwrapped net
+full-frame angle, not a hip-contamination measurement or an independently
+defined rigid-sole tilt test. No weight defect follows from that statistic.
+
+### 5. Measured verdict and remaining boundary
+
+| Check | Original flat-seed ablation | Recommended free-frame seed |
+|---|---:|---:|
+| Foot max, wu | 0.122037880750 | 9.873789293e-11 |
+| Foot RMS, wu | 0.024728394083 | 2.182060552e-11 |
+| Foot gate, 0.028078200 wu | FAIL | PASS |
+| Full/subset FK discrepancy | 0 | 0 |
+| Worst sampled joint change, rad | 2.686601588 | 2.381311797 |
+| Pose-return discrepancy, wu | 0.296449956 | 0.297065513 |
+| Clock scalar residual, s | 4.403e-12 | unchanged |
+| Signed-axis/ROM gauge control, wu | 0 | 0 |
+
+All six phase/side cohorts now meet the foot-position gate; the logs contain
+their counts, max/RMS, worst phases and angles. Floating-point boundary
+classification can put exact-endpoint samples in adjacent phase cohorts;
+the endpoint positions are identical and all samples remain counted.
+
+**The stance POSITION defect is closed on this sample grid. The walk is not
+certified.** The local inverse still has joint jumps and nonperiodic pose
+history; sole orientation/contact, driven swing, signed impulse limits,
+lateral balance and full physical clock closure are still unproved. The
+readiness command deliberately exits 2. No live-engine or referee process
+was executed and no protected file was written.
+
+Reproduce from repo root:
+
+```bash
+python tools/gait_capture.py --seed-law flat
+python tools/gait_capture.py --require-ready
+```
+
+The first is the preserved ablation; the second uses the recommended law by
+default. Logs: `agent_logs/astra/stance_closure_baseline.txt` and
+`agent_logs/astra/stance_closure.txt`. The amended integration note specifies
+engine-side clamp and referee propagation. No recommended ROM/axis changes
+are needed for the committed pack; the general sign-swap rule is guarded by
+measured axial parity instead of being applied by side name.
