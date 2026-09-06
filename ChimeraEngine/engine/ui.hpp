@@ -90,6 +90,19 @@ public:
     bool studio_visible() const { return visible; }
     void toggle_visible() { set_visible(!visible); }
     void set_bar_on(bool on) { bar_on_ = on; studio_state_save(); }
+    // 2026-09-05: HTTP-twin panel controls — the API and the drag handle drive
+    // the same state (the every-control-has-an-HTTP-twin law). A POST that only
+    // wrote the file left the live UI on its startup values.
+    void set_panel_collapsed(int which, bool c) {
+        Panel* p = which == 0 ? &strip_ : which == 1 ? &left_ : which == 2 ? &right_
+                 : which == 3 ? &bottom_ : &reel_;
+        p->collapsed = c; studio_state_save();
+    }
+    void set_panel_size(int which, float s) {
+        Panel* p = which == 0 ? &strip_ : which == 1 ? &left_ : which == 2 ? &right_
+                 : which == 3 ? &bottom_ : &reel_;
+        p->size = s; studio_state_save();
+    }
     // ── THE LIGHT: one scene-level fact (2026-09-03, membrane) ──────────────
     // Owned by the Studio (persisted in the state file, steered over /light),
     // consumed ONLY by vertex stages through the UBO — fragment UBO reads are
@@ -430,9 +443,19 @@ public:
         hud_water_.on = on; hud_water_.steps = steps; hud_water_.dt = dt;
         hud_water_.inj_t = it; hud_water_.inj_c = ic;
     }
+    // THE EYE ROW (2026-09-05): the dyad is a collaborator the operator cannot
+    // see — its reports land in a file, and until you open the DOCS page you
+    // cannot tell alive from dead. The HUD carries one row: EYE + the age of
+    // the dyad log's last write (a quiet eye reads as "idle", not "broken";
+    // the age only grows while the file does not move). The engine stats the
+    // file at 1 Hz — never per frame.
+    void set_eye_hud(bool on, double age_s) {
+        hud_eye_.on = on; hud_eye_.age_s = age_s;
+    }
+    struct HudEye   { bool on = false; double age_s = -1; } hud_eye_;
     bool hud_show_on() const { return !joints_.empty() && clk_n_ > 0; }
     bool wants_chrome() const {
-        return bar_on_ || hud_show_on() || hud_gait_.on || hud_water_.on || console_open_;
+        return bar_on_ || hud_show_on() || hud_gait_.on || hud_water_.on || hud_eye_.on || console_open_;
     }
     std::string board_standing() const { return board_.standing; }
     void        build_chrome();               // the bar + HUD draw list (+ twin strings)

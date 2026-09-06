@@ -32,10 +32,16 @@ layout(set = 0, binding = 0) uniform Ubo {
 layout(location = 0) out float vAlpha;   // per-vertex shadow opacity
 
 void main() {
-    vec3 L = normalize(ubo.uLightDir.xyz);       // THE light (the frag's key, one fact)
-    float t = (aPos.y - ubo.uFloorY) / max(L.y, 1e-4);
-    vec3 sp = aPos - L * t;                      // slide down the light ray...
-    sp.y = ubo.uFloorY;                          // ...and pin to the floor plane
+    // 2026-09-05 (shadow-disk SPA + the eye's "shadow detached from contact"):
+    // the shadow now projects ALONG THE FLOOR NORMAL (world +Y) instead of along the
+    // light direction — the light-direction projection shifted the shadow disk sideways
+    // (up to 2.15 wu left for high-y vertices), detaching it from the subject's base.
+    // Projecting along +Y keeps the mesh's xz footprint and lands the shadow disk DIRECTLY
+    // under the subject's center of mass — flat translucent disk at the mesh's xz extent,
+    // centered at (0,0) on the floor, under the subject's (0, 1.4, 0) center of mass.
+    // The penumbra is preserved: alpha = A0/(1+h/H0) where h = max(aPos.y - uFloorY, 0)
+    // still falls with vertex height above the floor (the contact (h=0) is darkest).
+    vec3 sp = vec3(aPos.xz, ubo.uFloorY);        // keep xz, pin y to floor (project along +Y)
     gl_Position = ubo.uProj * ubo.uView * vec4(sp, 1.0);
 
     float h = max(aPos.y - ubo.uFloorY, 0.0);

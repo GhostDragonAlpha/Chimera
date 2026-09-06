@@ -41,10 +41,17 @@ struct MembraneRequest {
     float cam_theta  = 0.0f;
     float cam_phi    = 0.3f;
     float cam_full[8] = {};      // D6: r,theta,phi,target xyz,pan xy (recall)
-    bool cam_full_set = false;   // true: apply all 8, ignore the r/theta/phi fields
-    bool camera_only = false;    // true: only move the camera, keep the loaded membrane
+    bool cam_full_set = false;       // true: apply all 8, ignore the r/theta/phi fields
+    bool camera_only = false;         // true: only move the camera, keep the loaded membrane
     bool valid = false;
 };
+// 2026-09-05 (the dyad's F3 + shader-issue): the global g_mem_req's camera slots
+// were left with default-init indeterminate values; when a membrane POST hands the
+// request off and the 3s pending expires mid-transition, the pending render thread
+// consumes the stale g_mem_req.cam_theta (which can be anything in [0, 2pi]),
+// producing the transient CAM-lock reset to ~pi observed by the dyad. The fix: zero
+// the request's camera slots at declaration (the kind values are always the pending
+// render thread's fallback, not the operator's gaze).
 static MembraneRequest g_mem_req;
 static std::mutex g_mem_mutex;
 static std::condition_variable g_mem_cv;
@@ -1587,6 +1594,31 @@ int main(int argc, char** argv) {
                 else if (mode == "capture") mode_id = 5;
                 else if (mode == "poses") mode_id = 6;
                 if (mode_id >= 0) g_engine->ui_.set_left_mode(mode_id);
+                // 2026-09-05: POST /studio now also applies panel collapsed/size
+                // to the LIVE state (not just the file). Before this, a POST with
+                // {"right_collapsed":false} wrote the file but the live UI kept the
+                // old value loaded at startup. Panel indices: 0 strip, 1 left,
+                // 2 right, 3 bottom, 4 reel (ui.hpp set_panel_*).
+                if (req_body.find("strip_collapsed") != std::string::npos)
+                    g_engine->ui_.set_panel_collapsed(0, get_bool(req_body, "strip_collapsed", false));
+                if (req_body.find("left_collapsed") != std::string::npos)
+                    g_engine->ui_.set_panel_collapsed(1, get_bool(req_body, "left_collapsed", false));
+                if (req_body.find("right_collapsed") != std::string::npos)
+                    g_engine->ui_.set_panel_collapsed(2, get_bool(req_body, "right_collapsed", false));
+                if (req_body.find("bottom_collapsed") != std::string::npos)
+                    g_engine->ui_.set_panel_collapsed(3, get_bool(req_body, "bottom_collapsed", false));
+                if (req_body.find("reel_collapsed") != std::string::npos)
+                    g_engine->ui_.set_panel_collapsed(4, get_bool(req_body, "reel_collapsed", false));
+                if (req_body.find("strip_size") != std::string::npos)
+                    g_engine->ui_.set_panel_size(0, get_float(req_body, "strip_size", 92.f));
+                if (req_body.find("left_size") != std::string::npos)
+                    g_engine->ui_.set_panel_size(1, get_float(req_body, "left_size", 300.f));
+                if (req_body.find("right_size") != std::string::npos)
+                    g_engine->ui_.set_panel_size(2, get_float(req_body, "right_size", 330.f));
+                if (req_body.find("bottom_size") != std::string::npos)
+                    g_engine->ui_.set_panel_size(3, get_float(req_body, "bottom_size", 118.f));
+                if (req_body.find("reel_size") != std::string::npos)
+                    g_engine->ui_.set_panel_size(4, get_float(req_body, "reel_size", 172.f));
             }
             body = std::string("{\"on\":") + ((g_engine && g_engine->ui_.visible) ? "true" : "false")
                  + ",\"left_mode\":" + std::to_string(g_engine ? g_engine->ui_.left_mode() : -1) + "}";
@@ -2453,6 +2485,10 @@ int main(int argc, char** argv) {
                     g_membrane_active = true;
                 }
                 g_mem_req.camera_only = false;
+                g_mem_req.cam_full_set = false;
+                g_mem_req.cam_full[0] = g_mem_req.cam_full[1] = g_mem_req.cam_full[2] = 0.f;
+                g_mem_req.cam_full[3] = g_mem_req.cam_full[4] = g_mem_req.cam_full[5] = 0.f;
+                g_mem_req.cam_full[6] = g_mem_req.cam_full[7] = 0.f;
                 g_mem_pending = false;
                 g_mem_applied = true;
                 g_mem_cv.notify_all();

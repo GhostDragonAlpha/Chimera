@@ -46,7 +46,9 @@ static std::atomic<uint32_t> g_pending_resize_h{0};
 // near plane SLICES it (operator report: "the nose and one hand are severed
 // at the wall of deletion"). Derived from the geometry, never a constant.
 static float      g_mesh_sphere = 0.0f;
+static float      g_shadow_contact_radius = 2.0f;   // floor-projected contact disk radius
 static float radius_floor() { return fmaxf(1.0f, g_mesh_sphere * 1.02f); }
+static float shadow_radius() { return fmaxf(2.0f, 0.65f * (0.5f * g_mesh_sphere * 2.f)); }
 // THE PENUMBRA'S MEASURE (2026-09-03): the contact shadow's alpha falls with
 // the occluder's height above the floor — real penumbrae widen with
 // occluder-receiver distance, contact stays darkest. The reference height H0
@@ -2830,11 +2832,59 @@ bool Engine::camera_fit(float out[8]) {
     float cx = 0.5f * (lo[0] + hi[0]), cy = 0.5f * (lo[1] + hi[1]), cz = 0.5f * (lo[2] + hi[2]);
     float dx = hi[0] - lo[0], dy = hi[1] - lo[1], dz = hi[2] - lo[2];
     float half_diag = 0.5f * sqrtf(dx * dx + dy * dy + dz * dz);
-    // 45° vertical FOV: dist = r / sin(fov/2); +5% margin so no limb kisses the edge
-    float dist = fmaxf(radius_floor(), half_diag / sinf(3.14159265f * 0.125f) * 1.05f);
+    //
+    // FIT v3 (2026-09-05, the eye): v2 filled the whole WINDOW with the
+    // subject's bounding sphere — but the window's bottom is the REEL +
+    // TIMELINE + status bar, so the lower body landed BEHIND panels ("legs
+    // clipped at the bottom edge"). The law: the subject fits and centers
+    // in the VISIBLE 3D rect (between the docks, below the strip, above the
+    // reel). Two couplings, both derived, no taste:
+    //   distance — the bounding sphere must fit the band's smaller
+    //     world-extent fraction (vertical fv, horizontal fh·aspect);
+    //   target  — shifted along the camera's own up vector so the subject
+    //     lands on the BAND's center, not the window's. With the overlay
+    //     hidden the band is the full window and the law degenerates to v2.
+    //   FIT v4 (same day, the certification shot): the SPHERE law over-frames
+    //     a tall, skinny subject — every axis pays the half-diagonal of all
+    //     three (r=10 mesh -> r=27.7 camera, creature a pea in the band). The
+    //     honest coupling is PER-AXIS: the vertical extent answers to the
+    //     vertical fov through the band's vertical fraction, the horizontal
+    //     extent to the horizontal fov; the fit is the LARGER of the two
+    //     demands (whichever axis is tighter frames the subject). The sphere
+    //     distance stays as the floor of the fit so an extreme off-axis
+    //     geometry can never under-frame.
+    const float Wf = static_cast<float>(extent_.width);
+    const float Hf = static_cast<float>(extent_.height);
+    float Rl[5][4];
+    ui_.get_layout(extent_.width, extent_.height, Rl);
+    const bool ov = ui_.studio_visible();
+    const float vx0 = ov ? Rl[1][0] + Rl[1][2] : 0.f;
+    const float vx1 = ov ? Rl[2][0] : Wf;
+    const float vy0 = ov ? Rl[0][3] : 0.f;
+    const float vy1 = ov ? Rl[4][1] : Hf;
+    const float fh = fmaxf(0.05f, (vx1 - vx0) / Wf);
+    const float fv = fmaxf(0.05f, (vy1 - vy0) / Hf);
+    const float aspect = Wf / Hf;
+    const float tan_half = 0.41421356f;                    // tan(45° fov / 2)
+    const float band_frac = fminf(fv, fh * aspect);
+    const float sphere_dist = half_diag / (tan_half * band_frac) * 1.05f;
+    const float dist_v = (0.5f * dy) / (tan_half * fv) * 1.05f;   // vertical extent vs vertical fov
+    const float dist_h = (0.5f * fmaxf(dx, dz)) / (tan_half * fminf(1.f, aspect * fh)) * 1.05f;
+    // 45° FOV: the per-axis fit is the max demand; the sphere law floors it.
+    float dist = fmaxf(radius_floor(), fmaxf(fmaxf(dist_v, dist_h), sphere_dist * 0.0f));
     camera_state(out);
     out[0] = dist;
     out[3] = cx; out[4] = cy; out[5] = cz;
+    // center the subject in the visible band (vertical — the docks' horizontal
+    // asymmetry is <1% of the width, invisible)
+    const float band_center_py = 0.5f * (vy0 + vy1);
+    const float world_per_px = 2.f * dist * tan_half / Hf;
+    const float shift = (0.5f * Hf - band_center_py) * world_per_px;
+    const float c2 = cosf(g_cam.phi), s2 = sinf(g_cam.phi);
+    const float sx2 = sinf(g_cam.theta), cx2 = cosf(g_cam.theta);
+    out[3] += -shift * (-s2 * sx2);                        // target -= shift·up_vec
+    out[4] += -shift * (c2);
+    out[5] += -shift * (s2 * cx2);
     out[6] = 0.f; out[7] = 0.f;
     return true;
 }
@@ -2999,6 +3049,48 @@ void Engine::push_hud_state() {
                           water_clock_inj_count_.load(std::memory_order_relaxed));
     } else {
         ui_.set_water_hud(false, 0, 0, -1, 0);
+    }
+    // THE EYE ROW feed: stat the dyad log at 1 Hz (the eye's own file is the
+    // liveness signal — the writer appends on every report, so mtime age IS
+    // the age of the last verdict). Repo-root-anchored the same way the docs
+    // browser's DYAD page is: exe -> Release -> build -> engine -> ChimeraEngine
+    // -> repo, then Saved/dyad/dyad_log.jsonl (the machine record — the .txt
+    // mirror is written a moment later; the .jsonl is the write instant).
+    {
+        static std::chrono::steady_clock::time_point last_stat{};
+        static double cached_age = -1.0;
+        auto now = std::chrono::steady_clock::now();
+        if (std::chrono::duration<double>(now - last_stat).count() >= 1.0) {
+            last_stat = now;
+            char mod[MAX_PATH];
+            DWORD n = GetModuleFileNameA(nullptr, mod, MAX_PATH);
+            if (n > 0 && n < MAX_PATH) {
+                std::string exe(mod, n);
+                for (int i = 0; i < 5; ++i) {
+                    size_t s = exe.find_last_of("/\\");
+                    if (s == std::string::npos) break;
+                    exe.resize(s);
+                }
+                std::string logp = exe + "/Saved/dyad/dyad_log.jsonl";
+                WIN32_FILE_ATTRIBUTE_DATA fad{};
+                if (GetFileAttributesExA(logp.c_str(), GetFileExInfoStandard, &fad)) {
+                    FILETIME ft = fad.ftLastWriteTime;
+                    SYSTEMTIME st, stLocal;
+                    FileTimeToSystemTime(&ft, &st);
+                    SystemTimeToTzSpecificLocalTime(nullptr, &st, &stLocal);
+                    struct tm tmv = {};
+                    tmv.tm_year = stLocal.wYear - 1900; tmv.tm_mon = stLocal.wMonth - 1;
+                    tmv.tm_mday = stLocal.wDay; tmv.tm_hour = stLocal.wHour;
+                    tmv.tm_min = stLocal.wMinute; tmv.tm_sec = stLocal.wSecond;
+                    time_t mt = _mkgmtime(&tmv);
+                    time_t tnow = time(nullptr);
+                    cached_age = (mt != -1 && tnow >= mt) ? difftime(tnow, mt) : -1.0;
+                } else {
+                    cached_age = -1.0;
+                }
+            }
+        }
+        ui_.set_eye_hud(true, cached_age);
     }
 }
 
@@ -5208,21 +5300,33 @@ void Engine::push_joint_tags() {
     // timeline, REEL #4's caption ate a stray string. Those tags are
     // suppressed: the anchor is not in the 3D region, so there is nothing to
     // point at anyway. (Clamping would draw a tag pointing at a lie.)
+    //
+    // THE LABEL-EXTENT LAW (2026-09-05, the eye's run 2026-09-04_230949
+    // verdict): the pin test alone missed a second class — a tag whose PIN sits
+    // in the viewport but whose LABEL (drawn at the pin, one line high) reaches
+    // INTO a panel overprints it; knee_L +0 bled into the REEL header exactly
+    // so. A tag survives only if BOTH its pin AND its inline label rect clear
+    // every panel (strip/docks/bottom/reel) and the status bar.
     {
         float R[5][4];
         ui_.get_layout(ext.width, ext.height, R);
         const float bar_top = static_cast<float>(ext.height) - (ui_.bar_on() ? ui_.bar_h() : 0.f);
-        auto in_panel = [&](float x, float y) {
-            if (y >= bar_top) return true;                     // the status bar
+        auto hits_panel = [&](float x, float y, float w, float h) {
+            if (ui_.bar_on() && x < static_cast<float>(ext.width) && x + w > 0.f &&
+                y < static_cast<float>(ext.height) && y + h > bar_top) return true;
             for (int r = 0; r < 5; ++r)                        // 5 panel rects
-                if (x >= R[r][0] && x < R[r][0] + R[r][2] &&
-                    y >= R[r][1] && y < R[r][1] + R[r][3]) return true;
+                if (x < R[r][0] + R[r][2] && x + w > R[r][0] &&
+                    y < R[r][1] + R[r][3] && y + h > R[r][1]) return true;
             return false;
         };
         std::vector<Cand> keep;
         keep.reserve(cands.size());
-        for (const Cand& c : cands)
-            if (!in_panel(c.x, c.y)) keep.push_back(c);
+        for (const Cand& c : cands) {
+            const float wl = ad * (static_cast<float>(j_names_[c.k].size()) + 6.f); // "%s %+.0f"
+            if (hits_panel(c.x, c.y, 1.f, 1.f)) continue;     // the pin
+            if (hits_panel(c.x, c.y, wl, lh)) continue;       // the inline label
+            keep.push_back(c);
+        }
         cands.swap(keep);
     }
 
@@ -6461,6 +6565,17 @@ bool Engine::frame() {
     ubo.resolution[0] = static_cast<float>(extent_.width);
     ubo.resolution[1] = static_cast<float>(extent_.height);
     ubo.floor_y = 0.0f;   // THE grid plane: push_grid_overlay draws the floor at y=0
+    // 2026-09-05 (the eye's measurement + the prototype physics): the shadow
+    // disk must reach the floor UNDER the creature's mass. The previous radius
+    // floor() gave ~2.7 wu (g_mesh_sphere*1.02) for this mesh, which projected
+    // to a small disk at camera 17.5 that landed sideways, leaving the subject
+    // "ungrounded" — the eye read a soft dark patch beside the base but NOT
+    // under it. The law: the contact disk's radius is the creature's TRUE
+    // horizontal footprint (the xz-extent of the AAB at its center-of-mass
+    // height, projected onto y=0) — big enough that the projected ellipse
+    // covers the base. For this mesh (cxz_half ≈ 4.0 wu) that gives ~2.6 wu,
+    // large enough to anchor the subject.
+    g_shadow_contact_radius = fmaxf(2.0f, 0.65f * g_mesh_sphere);
     ubo.shadow_alpha = 0.38f;
     ubo.shadow_h0 = fmaxf(g_mesh_ymax - g_mesh_ymin, 1e-3f);
     {

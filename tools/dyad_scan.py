@@ -318,9 +318,22 @@ def run(run_dir: Path, shots: int, reads: int, prompt: str, radius: float,
         # show clock is a parameter, not a wall clock.)
         theta = None
         show_t = None
+        # THE CLOCK-FREEZE WINDOW (2026-09-05 defect): with the show clock
+        # PLAYING, every twin read after the grab is seconds ahead of the drawn
+        # frame — the eye then "finds" a timeline-vs-state desync that is really
+        # capture skew (the bracket falsifier: the drawn frame's raw t provably
+        # sits between the pre-grab and post-grab /show reads). So inside the
+        # window the clock is FROZEN: pause (recalling the operator's pause
+        # state), settle, grab, read twins, compose LIVE STATE — then resume.
+        # The drawn frame and its state block now describe the same instant.
+        operator_was_playing = True
+        try:
+            operator_was_playing = req_json("GET", "/show", timeout=8)["playing"]
+        except Exception:
+            pass
+        req_json("POST", "/show", {"playing": False})   # FREEZE first, every mode
         if POSES:
             show_t = (PERIOD * i / max(1, shots)) if shots > 1 else 0.0
-            req_json("POST", "/show", {"playing": False})
             req_json("POST", "/show", {"time": show_t, "step": 0})
         elif ORBIT:
             theta = 2.0 * 3.14159265358979 * i / max(1, shots)
@@ -397,6 +410,12 @@ def run(run_dir: Path, shots: int, reads: int, prompt: str, radius: float,
         if not keep_raw:
             raw.unlink(missing_ok=True)
             shot["raw_png"] = None
+
+        # END OF THE CLOCK-FREEZE WINDOW: hand the clock back exactly as the
+        # operator left it. A scan must never be audible in the operator's
+        # session — pausing their show is a loan, not a seizure.
+        if not POSES and operator_was_playing:
+            req_json("POST", "/show", {"playing": True})
 
     report["fps_after"] = clean_fps()
     print("  fps at rest (after): ", [s.get("fps") for s in report["fps_after"]["samples"]])

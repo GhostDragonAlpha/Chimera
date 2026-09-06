@@ -1062,6 +1062,25 @@ bool StudioUI::on_wheel(int x, int y, float delta) {
     return true;
 }
 
+// THE STATUS MAP - the one place a board status string gets its color. The strip
+// chips, the stage panel and (since 2026-09-05) the bottom-bar legend all ASK
+// this function; none of them keeps a copy.
+//
+// kStatusNames IS the vocabulary this map covers - the six words the board's own
+// classifier can emit (tools/studio_board.py: classify()). Five have their own
+// branch; "pending" takes the fallback grey, which is exactly what a chip shows
+// for it. Declaring the list HERE, beside the branches it names, is what makes
+// the legend law enforceable rather than aspirational: the legend iterates this
+// array and asks status_color() for every swatch, so adding a branch here puts a
+// new word in the legend and changing a color here moves the swatch. There is
+// nothing left to hand-copy, therefore nothing that can drift. (The legend this
+// replaces DID hand-copy five literal RGBs, and carried a "done" entry the board
+// never emits - stale swatches beside chips they no longer explained.)
+static const char* const kStatusNames[] = { "green", "partial", "next", "blocked",
+                                            "rolling", "pending" };
+static constexpr int kStatusCount =
+    static_cast<int>(sizeof(kStatusNames) / sizeof(kStatusNames[0]));
+
 static void status_color(const std::string& s, float& r, float& g, float& b) {
     if      (s == "green")   { r = 0.25f; g = 0.75f; b = 0.35f; }
     else if (s == "partial") { r = 0.90f; g = 0.70f; b = 0.20f; }
@@ -1839,8 +1858,20 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 std::string s1 = tl.l1.size() > fit ? tl.l1.substr(0, fit) : tl.l1;
                 std::string s2 = tl.l2.size() > fit ? tl.l2.substr(0, fit) : tl.l2;
                 std::string s3 = tl.l3.size() > fit ? tl.l3.substr(0, fit) : tl.l3;
-                text(tx, ly,          s1, 1.0f, 0.85f, 0.40f, 1.f);
-                text(tx, ly + lh,     s2, TR, TG, TB, 0.95f);
+                // THE CAPTION LADDER (2026-09-05): these same three caption
+                // lines render in the D4 A/B compare view as bright neutral
+                // readout -> mid grey -> dim grey. Here line 1 wore amber
+                // (1,0.85,0.40) - the falsifier/warning color - so a healthy reel
+                // of grabs read as an alarm, and one caption changed meaning
+                // between the two views that show it. The strip now uses the
+                // compare view's ladder: the status bar's neutral readout grey,
+                // then mid, then dim. Line 2 moves with it deliberately - at
+                // amber's old slot it was the only tier below full brightness,
+                // and making line 1 grey while leaving line 2 there would leave
+                // the two indistinguishable. Amber stays where it means
+                // something: HOLD, "no board file", FALSIFIER rows, key marks.
+                text(tx, ly,          s1, 0.86f, 0.88f, 0.92f, 1.f);
+                text(tx, ly + lh,     s2, 0.62f, 0.66f, 0.74f, 1.f);
                 text(tx, ly + 2 * lh, s3, 0.45f, 0.47f, 0.52f, 1.f);
                 hots_.push_back({tx, ty, tw, th, 1100 + slot});
             }
@@ -1891,7 +1922,12 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         snprintf(tb, sizeof(tb), "t = %.3f s / %.1f s (lap %ld)  |  %s theta = %+.2f deg  |  %s",
                  wrap_t, clk_total_, lap_n, clk_name_.c_str(), clk_theta_,
                  clk_playing_ ? "PLAYING" : "PAUSED (scrub/step = exact poses)");
-        text(bx + 10, y + (20 - lh) * 0.5f, tb, 1.0f, 0.85f, 0.40f, 1.f);
+        // 2026-09-05 (the eye): benign captions (timeline readout, reel strip
+        // captions) used amber (1,0.85,0.40) — the warning signal — so a healthy
+        // editor stream read as an alarm next to the HOLD/warning color. Benign
+        // captions use the neutral readout grey; amber keeps HOLD + the eye
+        // chip + "no board file" only.
+        text(bx + 10, y + (20 - lh) * 0.5f, tb, 0.86f, 0.88f, 0.92f, 1.f);
 
         // the scrub bar: joint markers auto from the show clock (D2's seed)
         float bar_y = y + 30;
@@ -2492,6 +2528,21 @@ void StudioUI::build_chrome() {
                  hud_water_.inj_t, hud_water_.inj_c);
         hud_rows_.emplace_back(b);
     }
+    // THE EYE ROW (2026-09-05): the dyad's liveness, on the glass. age < 0
+    // means no log found (the lane never ran); otherwise the age of the last
+    // report — a growing number is a resting eye, not a dead one. Amber past
+    // 10 min so a stuck lane is visible at a glance without being an alarm.
+    if (hud_eye_.on) {
+        if (hud_eye_.age_s < 0)
+            snprintf(b, sizeof(b), "EYE offline (no dyad log)");
+        else if (hud_eye_.age_s < 60.0)
+            snprintf(b, sizeof(b), "EYE last report %.0f s ago", hud_eye_.age_s);
+        else if (hud_eye_.age_s < 3600.0)
+            snprintf(b, sizeof(b), "EYE last report %.0f min ago", hud_eye_.age_s / 60.0);
+        else
+            snprintf(b, sizeof(b), "EYE last report %.1f h ago", hud_eye_.age_s / 3600.0);
+        hud_rows_.emplace_back(b);
+    }
     for (size_t i = 0; i < hud_rows_.size(); ++i) {
         // a dark chip behind each row keeps it readable over any render
         float rw = static_cast<float>(hud_rows_[i].size()) * advance_ + 16.f;
@@ -2715,28 +2766,40 @@ void StudioUI::build_chrome() {
         }
     }
 
-    // THE LEGEND (2026-09-02, the eye on the glass: "two competing progress
-    // metaphors ... no legend explaining why B8 is brown or B10 purple").
-    // Drawn right-to-left from the GPU text: swatch + word, the swatch carrying
-    // the EXACT status_color() values the strip draws, so the legend cannot
-    // drift from the map it explains. Fits between the histogram and the GPU
-    // row or it degrades (drops the two hues the board least uses), never overlaps.
+    // THE LEGEND - THE LAW: the legend cannot drift from the map it explains.
+    // It owns no colors and no status list of its own: it iterates kStatusNames
+    // (declared beside status_color) and asks status_color() for every swatch, so
+    // an entry's color IS what a chip draws for that exact string. Only the LABEL
+    // may add a word for the human - "green" is the board's done state, so it
+    // reads "green/done"; every other label IS its status string. The label is
+    // DERIVED from the name inside this loop rather than kept in a parallel array:
+    // a second list to maintain is exactly the thing that drifted before.
+    //
+    // Degraded fit, same contract as before (drop an entry, never overlap): laid
+    // out right-to-left from the eye chip - or from the GPU readout when the chip
+    // degraded away - and any entry that would cross the histogram's right edge
+    // stops the walk. The array is ordered commonest -> rarest and the walk runs
+    // in that same order, so what a tight bar loses first is exactly what the
+    // board shows least: "pending", then "rolling", then "blocked"; "green/done"
+    // is anchored nearest the chip and survives to the end. (Ordering this the
+    // other way round drops the commonest entry instead -- the live bar at
+    // 2560x1440 fits three entries, so the direction is not cosmetic.) Width
+    // comes from the label that actually draws, never from the key: "green/done"
+    // is twice "green", and an entry measured short walks over its neighbour.
     {
-        struct Leg { const char* w; float r, g, b; };
-        static const Leg legs[] = { {"rolling", 0.60f, 0.45f, 0.90f}, {"blocked", 0.85f, 0.28f, 0.28f},
-                                    {"next", 0.30f, 0.60f, 1.00f}, {"partial", 0.90f, 0.70f, 0.20f},
-                                    {"done", 0.25f, 0.75f, 0.35f} };
-        const int NLEG = 5;
-        // the eye chip owns the space right of the legend when present — the
+        // the eye chip owns the space right of the legend when present - the
         // first capture proved the collision ("EYE11Hog D" over the timestamp)
         float lx = (eye_chip_left > 0.f) ? eye_chip_left - 24.f : gpu_x - 24.f;
-        float ly = by + (bar_h() - lh) * 0.5f;
-        for (int i = 0; i < NLEG; ++i) {
-            float ww = 6.f + 5.f + strlen(legs[i].w) * advance_ + 16.f;
+        const float ly = by + (bar_h() - lh) * 0.5f;
+        for (int i = 0; i < kStatusCount; ++i) {
+            const char* nm = kStatusNames[i];
+            std::string label = (std::strcmp(nm, "green") == 0) ? "green/done" : nm;
+            float cr, cg, cb; status_color(nm, cr, cg, cb);
+            const float ww = 6.f + 5.f + static_cast<float>(label.size()) * advance_ + 16.f;
             if (lx - ww < cx + hist_w + 16.f) break;   // out of room: degrade, don't overlap
             lx -= ww;
-            rect(lx, ly + lh * 0.28f, 6.f, lh * 0.44f, legs[i].r, legs[i].g, legs[i].b, 1.f);
-            text(lx + 11.f, ly, legs[i].w, legs[i].r, legs[i].g, legs[i].b, 0.95f);
+            rect(lx, ly + lh * 0.28f, 6.f, lh * 0.44f, cr, cg, cb, 1.f);
+            text(lx + 11.f, ly, label, cr, cg, cb, 0.95f);
         }
     }
 }

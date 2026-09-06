@@ -48,9 +48,15 @@ EYE_CONTEXT_FLOOR = 60000                # the operator's 60k token budget
 
 
 def _lms(*args, timeout_s: float = None) -> tuple[int, str]:
-    """lms CLI, unbounded by default (decree 2: no transport clocks on the eye)."""
+    """lms CLI, unbounded by default (decree 2: no transport clocks on the eye).
+    2026-09-05: text=True decodes with the locale codec (cp1252 on this box) and
+    LM Studio's status output carries non-ASCII bytes — the reader thread died
+    with UnicodeDecodeError mid-load and the eye read as "FAILED" while the load
+    itself proceeded. The subprocess must decode like everything else here: utf-8
+    with replacement, never the locale's silent trap."""
     cmd = ["lms", *args]
-    p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_s)
+    p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_s,
+                       encoding="utf-8", errors="replace")
     return p.returncode, (p.stdout + p.stderr)
 
 
