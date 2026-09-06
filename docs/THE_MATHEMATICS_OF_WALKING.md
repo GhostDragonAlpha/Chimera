@@ -154,3 +154,24 @@ Capture point / XcoM: [Hof 2008](https://pubmed.ncbi.nlm.nih.gov/17935808/) ·
 Pendular recovery: [Cavagna](https://pubmed.ncbi.nlm.nih.gov/1011078/) ·
 Froude scaling & the walk-run transition: Alexander's dynamic similarity ·
 Reduced-gravity walking: [J Appl Physiol 1999](https://journals.physiology.org/doi/full/10.1152/jappl.1999.86.1.383)
+
+## CLOCK DISCREPANCY — resolved 2026-09-05 (ASTra's calibration gate)
+
+ASTra (remote theorist, branch astra/gait-capture) stopped the walk task at the
+brief's calibration table: step_length 4.2765 / cadence 0.5508 Hz were briefed,
+but the committed mirror prints 1.7824 / 1.3215 Hz. Audit result:
+
+- The BLOBS agree (COM, H_com, leg, residual match to rounding) — the pack is
+  identical; ASTra's inference was correct.
+- The discrepancy is a CLOCK discrepancy, coordinator-side: the brief's numbers
+  correspond to T = 2.4/omega (recomputed 4.2777/1.8161), the committed file to
+  T = 1/omega (1.7824/0.7567). The file differs from the variant the coordinator
+  executed before committing; the commit shipped without a re-run.
+- GOVERNING LAW: LIPM supplies omega but no clock. Cadence is a FREE PARAMETER
+  of the orbit family and must be DERIVED by the capture law under the
+  self-consistency constraint T_stance = T_swing. Reference candidate: ballistic
+  swing pendulum T = pi*sqrt(leg/g) = 1.7638 s (step 4.155, 0.567 Hz), subject
+  to capture-region feasibility. Neither 1/omega nor 2.4/omega is canonical;
+  the mirror's 1/omega figures are diagnostic only, as its own docstring says.
+- Process falsifier for the coordinator: never commit an instrument without
+  executing it first. Enforced from this line forward.
