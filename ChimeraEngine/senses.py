@@ -169,7 +169,7 @@ _PROBE_PNG_B64 = ("iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAFElEQVR4nGMUE
 # error: it is a truncated read that looks like a verdict. 0 = no ceiling (use
 # only when you know the resident model has the room). The ollama lane sizes
 # num_ctx instead (see _post).
-MAX_IMAGES_PER_CALL = int(os.environ.get("CHIMERA_SENSES_MAX_IMAGES", "1"))
+# ── THE 30k LAW (measured 2026-09-06, not guessed) ┐
 
 
 def _lm_gateway():
@@ -438,6 +438,50 @@ def ensure_eye() -> bool:
         return False
 
 
+# ── THE 30k LAW (measured 2026-09-06, not guessed) ──────────────────────────
+# The operator loads the eye at what fits VRAM: LM Studio reports
+# loaded_context_length=30208 for the 27b nvfp4. A capacity probe against the
+# live server measured the per-image cost exactly:
+#   text+1 image = 3668 tok, each extra 2K compact PNG = +3602 tok
+#   (probe .tmp/dyad_capacity.py, confirmed N=8 -> 28882 tok, finish=stop)
+# Input + reasoning + answer share one context, so a request that fills the
+# context with pixels leaves NOTHING for the verdict — the eye thinks into a
+# wall and returns empty. The guard below enforces headroom for the answer.
+EYE_LOADED_CONTEXT = 30208          # from /api/v0/models, the operator's load
+EYE_TOKENS_TEXT_1IMG = 3668         # measured: briefing-scale text + 1 image
+EYE_TOKENS_PER_IMAGE = 3602         # measured: each extra 2K compact PNG
+EYE_OUTPUT_HEADROOM = 8000          # reserve: reasoning channel + the report
+
+
+def capacity_report(n_images: int) -> dict:
+    """The measured token budget for an n-image request, and whether it fits
+    with room for the eye to actually answer. Honest arithmetic, no guesses."""
+    inp = EYE_TOKENS_TEXT_1IMG + max(0, n_images - 1) * EYE_TOKENS_PER_IMAGE
+    out = EYE_LOADED_CONTEXT - inp
+    return {"n_images": n_images, "input_tokens_est": inp,
+            "left_for_output": out,
+            "fits": out >= EYE_OUTPUT_HEADROOM,
+            "loaded_context": EYE_LOADED_CONTEXT}
+
+
+def max_images() -> int:
+    """The most frames one request may carry while leaving answer headroom."""
+    n = 1
+    while capacity_report(n + 1)["fits"]:
+        n += 1
+    return n
+
+
+# THE ONE-IMAGE WALL, RETIRED (2026-09-06): the default ceiling of 1 existed
+# because the wedged 262k-context load could not hold a batch. The operator's
+# reload cured the root cause, and the batch cost is now MEASURED above, so the
+# ceiling is DERIVED from the loaded context instead of asserted.
+# CHIMERA_SENSES_MAX_IMAGES may still override downward (0 disables the wall).
+_DEFAULT_MAX_IMAGES = max_images()
+MAX_IMAGES_PER_CALL = int(os.environ.get(
+    "CHIMERA_SENSES_MAX_IMAGES", str(_DEFAULT_MAX_IMAGES)))
+
+
 def see(png: str, prompt: str, timeout: int = 300) -> str | None:
     """EYE: the resident model reads one image -> a term. None if the eye is dark.
     The timeout argument is accepted for compatibility and IGNORED (decree:
@@ -474,7 +518,29 @@ def watch_one(png: str, prompt: str, timeout: int = 300) -> str | None:
 
 def watch(frames: list[str], prompt: str, timeout: int = 360) -> str | None:
     """MOVIE: an ORDERED sequence of frames read as video -> a term describing the
-    unfolding. None if dark. Timeout ignored (decree: disabled)."""
+    unfolding. None if dark. Timeout ignored (decree: disabled).
+
+    THE 30k LAW (2026-09-06): the operator loads the eye at what fits VRAM
+    (30208 tokens for the 27b nvfp4). Each extra 2K compact image costs a
+    measured 3602 input tokens, and input+reasoning+answer share that one
+    context. A request exceeding the ceiling is REFUSED here — the alternative
+    is the silent empty-read failure mode (2026-09-06_085110's N=8 probe at
+    28882 tok would leave ~1.3k for the whole verdict). One frame over the
+    line: warn and proceed (the read may still close); more: refuse loudly."""
+    if len(frames) > 1:
+        cap = capacity_report(len(frames))
+        if cap["input_tokens_est"] > EYE_LOADED_CONTEXT:
+            dyad_log.append("watch", model=dyad_model(), n_images=len(frames),
+                            error=f"REFUSED: {cap['input_tokens_est']} tok input "
+                                  f"> loaded context {EYE_LOADED_CONTEXT}")
+            raise ValueError(
+                f"watch refused: {len(frames)} frames = ~{cap['input_tokens_est']} input "
+                f"tokens > the eye's loaded context ({EYE_LOADED_CONTEXT}). "
+                f"Practical max with answer headroom: {max_images()} frames.")
+        if not cap["fits"]:
+            print(f"[senses] watch WARNING: {len(frames)} frames leaves only "
+                  f"{cap['left_for_output']} tok for reasoning+answer — the read "
+                  f"may come back empty (burned on thinking).")
     ensure_eye()
     t0 = time.time()
     try:

@@ -269,7 +269,8 @@ public:
     // STRIDE: buffer a certified stride + render-thread playback tick.
     bool        set_stride_stream(const std::vector<float>& rows, uint32_t n, uint32_t j,
                                 float dt, uint32_t loop0);   // HTTP thread; buffers under mutex
-    void        stride_tick();                                  // render thread; advance+write pose
+    bool        write_stride_pose(double t);                    // thetas at stride wall-time t — one law for playback AND the paused seek (the seek must be visible; 2026-09-06)
+    void        stride_tick();                                  // render thread; advance+write pose (paused: honors one-shot stride_seek_)
     struct StrideStatus { bool active=false, playing=false; uint32_t n=0, j=0, loop0=0; float dt=0.f; double t=0.; };
     void        stride_control(bool on, bool playing, float speed, bool has_t, float t);  // HTTP thread
     StrideStatus  stride_status();                                  // consistent snapshot under lock
@@ -549,6 +550,7 @@ private:
     uint32_t                stride_loop0_ = 0;   // first periodic sample (post-startup)
     std::atomic<bool>       stride_active_{false};
     std::atomic<bool>       stride_playing_{false};
+    std::atomic<bool>       stride_seek_{false};    // one-shot: apply thetas once at the current stride_t_ even while paused (scanned scrubbing needs a visible seek)
     std::atomic<double>     stride_t_{0.0};
     std::atomic<float>      stride_speed_{1.0f};
     std::chrono::steady_clock::time_point stride_last_{};   // wall stamp — the certified stride clock is WALL time (T_stance 1.832 s), not the uncapped physics dt

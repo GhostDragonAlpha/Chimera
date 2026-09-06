@@ -2659,23 +2659,11 @@ bool Engine::set_stride_stream(const std::vector<float>& rows, uint32_t n, uint3
 // rate and writes the pose DIRECTLY into j_state_map_'s theta slots — the same
 // memory the editor's whole-pose lane writes. While active+playing, this lane
 // owns the leg/face thetas; /joint edits and the show clock do not fight it.
-void Engine::stride_tick() {
-    if (!stride_active_.load(std::memory_order_relaxed) ||
-        !stride_playing_.load(std::memory_order_relaxed) || stride_n_ < 2 ||
-        j_state_map_ == nullptr || j_n_joints_ == 0 || j_n_joints_ != stride_j_) return;
-    // WALL CLOCK: the stride's certified clock (T_stance = 1.832 s from LIPM)
-    // lives in wall seconds. dt comes from steady_clock deltas, not cfg_.dt,
-    // which is the uncapped physics step (6x fast at ~300 fps uncapped).
-    auto now = std::chrono::steady_clock::now();
-    if (stride_last_ == std::chrono::steady_clock::time_point{}) {
-        stride_last_ = now;
-        return;                                     // first tick: only arm the stamp
-    }
-    double dt_wall = std::chrono::duration<double>(now - stride_last_).count();
-    if (dt_wall <= 0.0 || dt_wall > 0.5) dt_wall = 1.0 / 60.0;   // hitches don't teleport the gait
-    stride_last_ = now;
-    double t = stride_t_.load(std::memory_order_relaxed);
-    t += dt_wall * stride_speed_.load(std::memory_order_relaxed);
+// Write the stride pose at wall-time t (seconds): interpolate rows i0/i0+1,
+// write thetas into the joints map. Shared by playback and the paused seek —
+// ONE law for how a stride instant becomes a pose. Returns false (writes
+// nothing) when the window is broken: never write a pose from bad data.
+bool Engine::write_stride_pose(double t) {
     std::vector<float> row_a, row_b;
     float alpha = 0.f;
     {
@@ -2685,7 +2673,7 @@ void Engine::stride_tick() {
         double tu = t;
         if (tu > static_cast<double>(stride_loop0_) * stride_dt_) {
             double span = static_cast<double>(stride_n_ - 1 - stride_loop0_) * stride_dt_;
-            if (span <= 0.0) { stride_t_.store(t, std::memory_order_relaxed); return; }
+            if (span <= 0.0) return false;
             tu = static_cast<double>(stride_loop0_) * stride_dt_
                + std::fmod(tu - static_cast<double>(stride_loop0_) * stride_dt_, span);
         }
@@ -2700,22 +2688,55 @@ void Engine::stride_tick() {
                      stride_rows_.begin() + static_cast<size_t>(i0 + 2) * stride_j_);
         row_b.assign(row_a.begin() + stride_j_, row_a.end());
         if (row_a.size() != static_cast<size_t>(stride_j_) * 2 || row_b.size() != stride_j_)
-            return;                                             // never write a pose from a broken window
+            return false;                                   // never write a pose from a broken window
     }
-    if (j_state_map_ == nullptr) return;                        // re-check: the guard ran before the lock
+    if (j_state_map_ == nullptr) return false;              // re-check: the guard ran before the lock
     float* st = static_cast<float*>(j_state_map_);
     for (uint32_t k = 0; k < j_n_joints_; ++k) {
         float th = row_a[k] + (row_b[k] - row_a[k]) * alpha;
-        st[k * 8 + 7] = th;                                     // radians, pack order
+        st[k * 8 + 7] = th;                                 // radians, pack order
     }
+    return true;
+}
+
+void Engine::stride_tick() {
+    if (!stride_active_.load(std::memory_order_relaxed) ||
+        stride_n_ < 2 ||
+        j_state_map_ == nullptr || j_n_joints_ == 0 || j_n_joints_ != stride_j_) return;
+    // THE PAUSED SEEK (2026-09-06): /stride {"t":X} while paused sets
+    // stride_seek_ — one pose write at the sought instant, no clock advance.
+    // Scanning needs a VISIBLE seek: the eye can only compare poses it can see.
+    if (!stride_playing_.load(std::memory_order_relaxed)) {
+        if (stride_seek_.exchange(false, std::memory_order_acq_rel))
+            write_stride_pose(stride_t_.load(std::memory_order_relaxed));
+        return;
+    }
+    // WALL CLOCK: the stride's certified clock (T_stance = 1.832 s from LIPM)
+    // lives in wall seconds. dt comes from steady_clock deltas, not cfg_.dt,
+    // which is the uncapped physics step (6x fast at ~300 fps uncapped).
+    auto now = std::chrono::steady_clock::now();
+    if (stride_last_ == std::chrono::steady_clock::time_point{}) {
+        stride_last_ = now;
+        return;                                     // first tick: only arm the stamp
+    }
+    double dt_wall = std::chrono::duration<double>(now - stride_last_).count();
+    if (dt_wall <= 0.0 || dt_wall > 0.5) dt_wall = 1.0 / 60.0;   // hitches don't teleport the gait
+    stride_last_ = now;
+    double t = stride_t_.load(std::memory_order_relaxed);
+    t += dt_wall * stride_speed_.load(std::memory_order_relaxed);
+    if (!write_stride_pose(t)) return;
     stride_t_.store(t, std::memory_order_relaxed);
 }
 
 // STRIDE: HTTP-thread control + status. The handler never touches the
-// raw members — one chokepoint, one law.
+// raw members — one chokepoint, one law. A seek (has_t) while paused arms
+// stride_seek_: the next render tick applies thetas ONCE at that instant.
 void Engine::stride_control(bool on, bool playing, float speed, bool has_t, float t) {
     stride_speed_.store(speed, std::memory_order_relaxed);
-    if (has_t) stride_t_.store(static_cast<double>(t), std::memory_order_relaxed);
+    if (has_t) {
+        stride_t_.store(static_cast<double>(t), std::memory_order_relaxed);
+        if (!playing) stride_seek_.store(true, std::memory_order_relaxed);
+    }
     stride_active_.store(on, std::memory_order_relaxed);
     stride_playing_.store(playing, std::memory_order_relaxed);
     if (on && playing) joints_owner_.store(1, std::memory_order_relaxed);
