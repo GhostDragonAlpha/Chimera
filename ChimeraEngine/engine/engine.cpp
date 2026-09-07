@@ -1,4 +1,5 @@
 #include "engine.hpp"
+#include "platform/vulkan_surface.h"
 #include <windows.h>
 #include <vulkan/vulkan_win32.h>
 #include <stdio.h>
@@ -452,24 +453,19 @@ bool Engine::init(const EngineConfig& cfg) {
     // Get required extensions
     std::vector<const char*> instance_extensions;
     // Always need surface: VK_KHR_win32_surface (if present) + VK_KHR_surface.
-    // NOTE: use the STRING LITERAL macro, not a pointer into a local enumeration vector --
-    // a pointer into `exts` dangles once that block's vector is destroyed (a use-after-scope
-    // that made vkCreateInstance read garbage and return VK_ERROR_EXTENSION_NOT_PRESENT).
-    bool has_win32_surface = false;
-    {
-        uint32_t cnt = 0;
-        vkEnumerateInstanceExtensionProperties(nullptr, &cnt, nullptr);
-        std::vector<VkExtensionProperties> exts(cnt);
-        vkEnumerateInstanceExtensionProperties(nullptr, &cnt, exts.data());
-        for (auto& e : exts) {
-            if (strcmp(e.extensionName, VK_KHR_WIN32_SURFACE_EXTENSION_NAME) == 0) {
-                has_win32_surface = true;
-                break;
-            }
-        }
+    // ── 2.5 Instance extensions ──────────────────────────────────────────────────────
+    // The surface-specific gate moved into the platform seam
+    // (engine/platform/vulkan_surface.*): it enumerates, requires
+    // VK_KHR_win32_surface, and reports `blocked` when the mandatory extension
+    // is absent (the historical hard-fail below). The names it returns are
+    // STRING-LITERAL-backed (pointer-stable), so vkCreateInstance never sees a
+    // dangled pointer into a local enumeration vector.
+    plat::SurfaceExtensionSet surf_exts = plat::surface_instance_extensions();
+    if (surf_exts.required) {
+        if (surf_exts.blocked) { fprintf(stderr, "VK_KHR_win32_surface not available\n"); return false; }
+        for (uint32_t i = 0; i < surf_exts.count; ++i)
+            instance_extensions.push_back(surf_exts.names[i]);
     }
-    if (has_win32_surface) instance_extensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-    else { fprintf(stderr, "VK_KHR_win32_surface not available\n"); return false; }
     instance_extensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
 
     // Try to enable validation layers (development) + debug utils messenger
@@ -526,13 +522,25 @@ bool Engine::init(const EngineConfig& cfg) {
     }
 
     // ── 3. Surface ───────────────────────────────────────────────────────────────────
-    VkWin32SurfaceCreateInfoKHR surface_info{};
-    surface_info.sType         = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-    surface_info.hwnd          = g_hwnd;
-    surface_info.hinstance     = GetModuleHandle(nullptr);
-    VkResult surf_res = vkCreateWin32SurfaceKHR(instance_, &surface_info, nullptr, &surface_);
-    if (surf_res != VK_SUCCESS) {
-        fprintf(stderr, "Failed to create Win32 surface (VkResult=%d)\n", (int)surf_res);
+    // Created through the platform seam (engine/platform/vulkan_surface.*). The
+    // seam preserves the exact creation arguments (sType, g_hwnd,
+    // GetModuleHandle(nullptr), no alloc callbacks) and carries out the loader's
+    // REAL VkResult on failure. The output handle is written only on kCreated,
+    // so surface_ retains its VK_NULL_HANDLE sentinel on any non-created
+    // outcome. Destruction order is unchanged (shutdown still destroys the
+    // surface before device, instance, and window).
+    plat::SurfaceCreateOutcome surf_out{};
+    surf_out.result  = VK_SUCCESS;
+    surf_out.surface = surface_;                       // sentinel (VK_NULL_HANDLE)
+    plat::create_surface(instance_, g_hwnd, surf_out);
+    if (surf_out.status == plat::SurfaceStatus::kCreated) {
+        surface_ = surf_out.surface;
+    } else if (surf_out.status == plat::SurfaceStatus::kFailed) {
+        fprintf(stderr, "Failed to create Win32 surface (VkResult=%d)\n", (int)surf_out.result);
+        return false;
+    } else { // kUnavailable: no surface can exist on this platform — there is
+             // deliberately NO headless engine path (P05).
+        fprintf(stderr, "Vulkan surface unavailable on this platform (no headless engine path)\n");
         return false;
     }
 

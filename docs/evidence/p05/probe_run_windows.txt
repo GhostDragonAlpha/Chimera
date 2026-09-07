@@ -1,0 +1,32 @@
+platform_surface_probe ΓÇö P05 seam harness (Win32 + Unavailable, real loader)
+[A] UnavailableBackend
+  [PASS] extensions: required == false
+  [PASS] extensions: blocked == false
+  [PASS] extensions: count == 0
+  [PASS] extensions: names == nullptr
+  [PASS] create_surface -> kUnavailable
+  [PASS] create_surface: result untouched (VK_SUCCESS)
+  [PASS] create_surface: output handle byte-for-byte untouched
+[B] Win32Backend
+  [PASS] extensions: required == true
+  [PASS] extensions: blocked == false (win32 surface present on this loader)
+  [PASS] extensions: count == 1
+  [PASS] extensions: names != nullptr
+  [PASS] extensions: name == VK_KHR_win32_surface
+  [PASS] extensions: VK_KHR_win32_surface IS present in the loader list
+  [PASS] extensions: blocked agrees with loader presence
+  [PASS] extensions: pointer-stable across calls
+  [PASS] instance: created with the surface ext set
+  [PASS] window: class registered
+  [PASS] window: HWND created
+  [PASS] create_surface (real instance+window) -> kCreated
+  [PASS] create_surface: non-null surface
+  [PASS] create_surface: result == VK_SUCCESS
+  [PASS] teardown: vkDestroySurfaceKHR executed cleanly (engine-order compatible)
+  [PASS] instance: bare (no surface ext) created
+  [PASS] error-path: kFailed (no win32 ext on instance)
+  [PASS] error-path: REAL VkResult is not swallowed
+  [PASS] error-path: output handle untouched on failure
+[C] zero-arg platform entry point
+  [PASS] entry point agrees with the platform-selected backend
+27 checks, 0 failed -> PASS

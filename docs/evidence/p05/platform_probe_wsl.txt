@@ -1,0 +1,73 @@
+{
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "artifact_directory": "/mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub/.tmp/platform_probe/run_0cgjphyf",
+  "scope": "synthetic byte-transport instrument; not renderer/DYAD",
+  "checked_out_header_sha256": "354d2ebbee15af6cef6fb0216612a83a7bbd2feb06739af91e5f7be2b5c3f93c",
+  "build_provenance": "compile_in_this_run",
+  "checks": [
+    {
+      "name": "standalone_native_compile",
+      "status": "PASS"
+    },
+    {
+      "name": "lossless_fixture_0",
+      "status": "PASS",
+      "channels_checked": 4,
+      "channel_errors": 0
+    },
+    {
+      "name": "lossless_fixture_1",
+      "status": "PASS",
+      "channels_checked": 84,
+      "channel_errors": 0
+    },
+    {
+      "name": "lossless_fixture_2",
+      "status": "PASS",
+      "channels_checked": 66820,
+      "channel_errors": 0
+    },
+    {
+      "name": "lossless_fixture_3",
+      "status": "PASS",
+      "channels_checked": 84,
+      "channel_errors": 0
+    },
+    {
+      "name": "distinct_input_phases",
+      "status": "PASS"
+    },
+    {
+      "name": "corrupt_crc",
+      "status": "PASS",
+      "rejected_for": "CRC"
+    },
+    {
+      "name": "swapped_phase",
+      "status": "PASS",
+      "rejected_for": "pixels"
+    },
+    {
+      "name": "swapped_channels",
+      "status": "PASS",
+      "rejected_for": "pixels"
+    }
+  ],
+  "runtime": "NOT RUN",
+  "visual": "NOT RUN",
+  "human": "PENDING",
+  "compile_command": [
+    "/usr/bin/c++",
+    "-std=c++17",
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-I",
+    "/mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub/ChimeraEngine/engine",
+    "/mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub/tools/platform_probe/capture_fixture.cpp",
+    "-o",
+    "/mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub/.tmp/platform_probe/run_0cgjphyf/capture_fixture"
+  ],
+  "executable_sha256": "c34f737869e8c0ccca20d323b3962973fc88854e74a1f028ae3d7bc13fe1403b",
+  "status": "PASS"
+}
