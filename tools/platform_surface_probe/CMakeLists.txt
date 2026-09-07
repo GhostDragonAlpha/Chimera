@@ -4,16 +4,14 @@ project(platform_surface_probe LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# P05 surface-seam probe: a STANDALONE harness that exercises BOTH backends of
-# the platform seam (Win32 + Unavailable) against the REAL Vulkan loader and
-# headers. It deliberately does NOT build the engine, does NOT compile shaders,
-# and writes nothing outside its own build dir. On a host with no Vulkan
-# headers the harness still builds and runs the Unavailable-backend leg.
-set(VULKAN_SDK "C:/VulkanSDK/1.4.328.1" CACHE STRING "Vulkan SDK install path")
-set(SEAM_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../ChimeraEngine/engine/platform")
-
+# P05-R1: the standalone probe uses DISCOVERED Vulkan dependencies
+# (find_package -> Vulkan::Vulkan), NOT a hard-coded SDK path.
+# R1 correction: this target REQUIRES Vulkan headers + discovery; it does NOT
+# "still build without Vulkan headers" (the R0 comment was wrong and is
+# removed). On a host without them, configure fails fast here on purpose.
 find_package(Vulkan REQUIRED)
 
+set(SEAM_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../ChimeraEngine/engine/platform")
 set(PROBE_SOURCES
     probe_surface.cpp
     "${SEAM_DIR}/vulkan_surface_unavailable.cpp"
@@ -24,8 +22,9 @@ endif()
 
 add_executable(platform_surface_probe ${PROBE_SOURCES})
 
+# Vulkan::Vulkan carries the discovered include directories and import lib;
+# no manual SDK include path is hard-coded here.
 target_include_directories(platform_surface_probe PRIVATE
-    "${VULKAN_SDK}/Include"
     "${CMAKE_CURRENT_SOURCE_DIR}/../../ChimeraEngine/engine"
 )
 

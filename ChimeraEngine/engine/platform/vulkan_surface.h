@@ -7,10 +7,16 @@
 //      the loader actually provides them (the old inline gate in Engine::init);
 //   2. how a presentable surface is created from a native window handle.
 //
-// The seam is behavior-preserving for Win32: same extension strings, same
-// creation arguments, same real VkResult carried out on failure, same teardown
-// contract (the ENGINE still destroys the surface, in the same order — this
-// header owns nothing).
+// Behavior contract vs. the code it replaces — R1-corrected wording:
+//   - HAPPY-PATH behaviour is preserved: Win32 uses the same extension string
+//     (VK_KHR_win32_surface), the same creation arguments (sType, hwnd,
+//     GetModuleHandle(nullptr), null allocator), the same hard-fail signal on
+//     absence, and the same teardown contract (the ENGINE destroys the
+//     surface, in the same order — this header owns nothing).
+//   - The ERROR-PATH is STRICTER, not identical: the pre-seam gate ignored
+//     vkEnumerateInstanceExtensionProperties VkResults; this seam checks them,
+//     and enumeration failure / VK_INCOMPLETE / allocation failure all fold
+//     into blocked=true (documented in docs/evidence/p05/P05_REPAIR_R1.md).
 //
 // Two tagged backend implementations exist (selected by the build):
 //   - Win32Backend        engine/platform/vulkan_surface_win32.cpp
@@ -30,14 +36,18 @@ struct UnavailableBackend {};
 
 // Which instance extensions a surface on this platform needs declared, and
 // whether surface functionality is mandatory for this build.
-//   names   extension-name string LITERALS (static storage; valid for the
-//           process lifetime, pointer-stable across calls). Only the
-//           platform-conditional name is listed (Win32: VK_KHR_win32_surface);
-//           the engine pushes the generic VK_KHR_surface itself, as before.
+//   names   extension-name string LITERALS in FIXED static storage (valid for
+//           the process lifetime; the pointer is stable by construction —
+//           there is no per-process mutable cache). count names follow. Only
+//           the platform-conditional name is listed (Win32:
+//           VK_KHR_win32_surface); the engine pushes the generic VK_KHR_surface
+//           itself, as before.
 //   required  the engine must NOT permit a surface-less run (Win32: true;
 //             unavailable backend: false).
-//   blocked   a REQUIRED platform extension is absent from the loader:
-//             instance creation must abort (Win32's historical hard-fail).
+//   blocked   the required platform extension cannot be established: absent
+//             from the loader, OR the enumeration itself failed, VK_INCOMPLETE,
+//             or the allocation failed (explicit policy). The engine aborts
+//             init on blocked, exactly like the historical hard-fail.
 struct SurfaceExtensionSet {
     const char* const* names;
     uint32_t           count;
@@ -45,19 +55,21 @@ struct SurfaceExtensionSet {
     bool               blocked;
 };
 
-// Enumerates instance extensions and reports the surface-relevant result.
-// The result is cached in a function-local static (pointer-stable; second
-// and later calls return the same pointers — see regression P1).  noexcept:
-// allocation failures are folded into blocked=true per explicit policy (a
-// surface cannot be coerced under OOM; the engine aborts init for the same
-// reason today).
+// Enumerates the loader's instance extensions in FRESH LOCAL STORAGE on every
+// call and reports the surface-relevant result (no mutable state between
+// queries). names always points at the fixed static array above; count is 0
+// and blocked=true on failure/incomplete/absent.  noexcept with a declared
+// failure policy: every potentially-throwing allocation in this function is
+// covered — std::bad_alloc folds into blocked=true. (See P05_REPAIR_R1.md for
+// the exact enumeration-error semantics.)
 SurfaceExtensionSet surface_instance_extensions(Win32Backend) noexcept;
 SurfaceExtensionSet surface_instance_extensions(UnavailableBackend) noexcept;
 
 enum class SurfaceStatus : uint8_t {
     kCreated,     // surface holds a real loader-created handle; result == its VkResult (VK_SUCCESS)
     kUnavailable, // this platform can never produce a surface; surface + result untouched
-    kFailed       // loader returned an error; result holds the REAL VkResult, surface untouched
+    kFailed       // the (injected or real) call returned an error; result holds the EXACT
+                  // VkResult; surface untouched — caller keeps its sentinel
 };
 
 // Single outcome struct, passed by reference so the caller can observe the
