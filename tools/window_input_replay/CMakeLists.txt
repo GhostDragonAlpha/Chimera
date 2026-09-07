@@ -24,3 +24,21 @@ add_test(NAME window_input_replay
                  ${CMAKE_CURRENT_SOURCE_DIR}/../../docs/evidence/p06/goldens/P06_GOLDEN_TRANSCRIPT_W2.txt
                  ${CMAKE_CURRENT_SOURCE_DIR}/../../docs/evidence/p06/goldens/P06_GOLDEN_TRANSCRIPT_W3.txt
                  ${CMAKE_CURRENT_SOURCE_DIR}/../../docs/evidence/p06/goldens/P06_GOLDEN_TRANSCRIPT_W4.txt)
+
+# BP-PAN (2026-09-07): offline fixture for the PROPOSED right-drag-pan routing
+# patch (docs/evidence/p06/PAN_ROUTING_PATCH.md). Compiles the PATCH AS SPEC
+# (pan_routing_replay.cpp) against the SAME P06 types (platform/window_input.h)
+# — NOT the engine and NOT the current translator window_input.cpp. See the
+# file top for the separation.
+add_executable(pan_routing_replay
+    pan_routing_replay.cpp
+)
+target_include_directories(pan_routing_replay PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../ChimeraEngine/engine
+)
+add_test(NAME pan_routing_replay
+         COMMAND pan_routing_replay
+                 ${CMAKE_CURRENT_SOURCE_DIR}/../../docs/evidence/p06/goldens/PAN_ROUTING_P1.txt
+                 ${CMAKE_CURRENT_SOURCE_DIR}/../../docs/evidence/p06/goldens/PAN_ROUTING_P2.txt
+                 ${CMAKE_CURRENT_SOURCE_DIR}/../../docs/evidence/p06/goldens/PAN_ROUTING_P3.txt
+                 ${CMAKE_CURRENT_SOURCE_DIR}/../../docs/evidence/p06/goldens/PAN_ROUTING_P4.txt)

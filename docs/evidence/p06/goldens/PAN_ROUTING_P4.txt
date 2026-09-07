@@ -1,0 +1,30 @@
+# golden PAN-P4 — drag-button state does not LEAK between drags (proposed
+#   patch, BP-PAN; g_drag_button cleared on each UP, set on each DOWN)
+# PROOF: an L-drag sequence then an R-drag sequence in one transcript: after
+#   the first, pan stayed 0 (orbit lane); after the second, pan moved while the
+#   pre-existing orbit deltas are preserved (the R arm never touches theta/phi).
+mode ui 0
+mode console 0
+> ldown 100 100
+> move 104 102
+|
+! cam theta -0.02
+! cam phi 0.294
+! cam pan_x 0
+! cam pan_y 0
+> lup
+|
+! captured 0
+! calls capture:on capture:off
+> rdown 200 200
+> move 205 205
+|
+! captured 1
+! cam pan_x -0.1
+! cam pan_y 0.1
+! cam theta -0.02          # orbit deltas from the L lane PRESERVED
+! cam phi 0.294
+> rup
+|
+! captured 0
+! calls capture:on capture:off
