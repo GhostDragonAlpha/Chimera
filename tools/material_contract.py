@@ -68,6 +68,10 @@ _UNIT_FAMILIES: dict[str, dict[str, float]] = {
     "length":      {"m": 1.0, "mm": 1e-3, "cm": 1e-2},
     "energy_area": {"j/m^2": 1.0},
     "stiffness":   {"n/m^3": 1.0},
+    # A1-5: fracture toughness has its OWN dimensional family (Pa*m^0.5 =
+    # MPa*sqrt(m)), never the pressure family: a toughness is not a modulus.
+    "fracture_toughness": {"pa*m^0.5": 1.0, "mpa*m^0.5": 1e6,
+                           "mpa*sqrt(m)": 1e6},
     "dimensionless": {"1": 1.0, "ratio": 1.0, "sg": 1.0},
 }
 
@@ -101,9 +105,29 @@ def convert(value: float, unit_from: str, unit_to: str) -> float:
                               f"'{unit_from}' and '{unit_to}' are in different "
                               f"unit families ({fam_from} vs {fam_to}); "
                               f"cross-family conversion is not registered")
+    # A1-2: convert requires a finite INPUT and yields a finite OUTPUT or a
+    # refusal. 1e308 GPa -> Pa overflows to inf in the arithmetic; refusing
+    # the non-finite RESULT is the honest outcome (an inf conversion is not
+    # a number the contract may hand out). numpy-scalar inputs convert via
+    # float() exactly as the property gate does.
+    try:
+        fvalue = float(value)
+    except (TypeError, ValueError):
+        raise ContractRefusal(RefusalKind.NONFINITE,
+                              f"value {value!r} is not a finite real number")
+    if not math.isfinite(fvalue):
+        raise ContractRefusal(RefusalKind.NONFINITE,
+                              f"value {value!r} is not finite; refusing to "
+                              f"convert a non-finite number")
     if u == v:
         return value
-    return value * _UNIT_FAMILIES[fam_from][u] / _UNIT_FAMILIES[fam_to][v]
+    result = value * _UNIT_FAMILIES[fam_from][u] / _UNIT_FAMILIES[fam_to][v]
+    if not math.isfinite(float(result)):
+        raise ContractRefusal(RefusalKind.NONFINITE,
+                              f"{value} {unit_from} -> {unit_to} overflows "
+                              f"to {result}; refusing the non-finite result "
+                              f"instead of handing out inf")
+    return result
 
 
 # ── records ──────────────────────────────────────────────────────────────────
@@ -131,20 +155,33 @@ class MaterialProperty:
 # a closed auditable table — not on open-ended substring logic. Hint-match
 # rule: a hint matches iff the lowercased name EQUALS the hint, or the hint
 # ends with '_' and the name starts with it (so "e" matches only the exact
-# name "E"/"e", while "e_" matches "E_L" — and "ET_EL" correctly falls
-# through to the un-gated ratio type). Each type names the value gate and
+# name "E"/"e", while "e_" matches "E_L"). Each type names the value gate and
 # the unit FAMILIES it may carry; families=None means no family tie.
+#
+# G01-A1 (P-8kq/a1-1): the RATIO fallback is no longer an escape hatch.
+# There is NO un-gated type in the table: everything a name can land on,
+# including the fallback "ratio" for unclassified names, carries a sign gate
+# and/or a unit-family gate. The repo's ratio names (ET_EL/ER_EL/GLR_EL) are
+# positive dimensionless quantities (a ratio to E_L in the Handbook); surface
+# energy gets its own explicit type and family. `_property_type` returns
+# "ratio" as its DEFAULT, which here means "positive dimensionless" — a
+# constrained default, never a pass-through.
 _PROPERTY_TYPES: dict[str, dict] = {
     # The repo's RATIO names are declared EXACTLY first (they end in _EL: a
     # ratio TO E_L) so the modulus hints below cannot shadow them -- GLR_EL
     # is dimensionless, not a modulus, and its unit "1" is correct.
     "ratio":    {"hints": ("et_el", "er_el", "glr_el"),
-                 "positive": False, "families": None},
-    "modulus":  {"hints": ("e", "k_ic", "e_", "g_", "modulus"),
+                 "positive": True,  "families": ("dimensionless",)},
+    "surface_energy": {"hints": ("gamma", "surface_energy"),
+                       "positive": False, "nonnegative": True,
+                       "families": ("energy_area",)},
+    "modulus":  {"hints": ("e", "e_", "g_", "modulus"),
                  "positive": True,  "families": ("pressure",)},
+    "fracture_toughness": {"hints": ("k_ic", "k1c", "fracture"),
+                           "positive": True, "families": ("fracture_toughness",)},
     "strength": {"hints": ("mor", "ucs", "sigma_t", "tens_", "shear_"),
                  "positive": True,  "families": ("pressure",)},
-    "density":  {"hints": ("density", "rho"),
+    "density":  {"hints": ("density", "rho", "derived:density"),
                  "positive": True,  "families": ("density",)},
     "sg":       {"hints": ("sg",),
                  "positive": True,  "families": ("dimensionless",)},
@@ -171,14 +208,36 @@ def _family_of(unit: str) -> str | None:
 
 def _validate_property(p: MaterialProperty) -> None:
     """Physics and hygiene gates at the door (P-8d, P-8e, P-8c; G01-R2:
-    P-8k modulus-by-type, P-8l family law, P-8m provenance hygiene)."""
-    if isinstance(p.value, float) and not math.isfinite(p.value):
+    P-8k modulus-by-type, P-8l family law, P-8m provenance hygiene; G01-A1:
+    A1-2 numpy finiteness / provenance membership / nonblank derivation)."""
+    # A1-2 finiteness by VALUE, not by Python type. np.float32(np.inf) is a
+    # numpy scalar (not isinstance float) and used to pass the old gate --
+    # G01-A1 reproduces this defect; the gate now converts then tests, and a
+    # value that will not convert to a real number is itself not finite.
+    try:
+        fv = float(p.value)
+    except (TypeError, ValueError):
+        raise ContractRefusal(RefusalKind.NONFINITE,
+                              f"{p.name} value {p.value!r} is not a finite "
+                              f"real number")
+    if not math.isfinite(fv):
         raise ContractRefusal(RefusalKind.NONFINITE,
                               f"{p.name} value is not finite ({p.value})")
-    if p.provenance is Provenance.DERIVED and not p.derivation:
-        raise ContractRefusal(RefusalKind.MISSING_BASIS,
-                              f"{p.name} is declared derived but carries no "
-                              f"derivation (arithmetic + inputs)")
+    if not isinstance(p.provenance, Provenance):
+        raise ContractRefusal(RefusalKind.PHYSICALLY_INVALID,
+                              f"{p.name}: provenance must be a Provenance "
+                              f"class (researched | parent | derived), got "
+                              f"{p.provenance!r}")
+    if p.provenance is Provenance.DERIVED:
+        # A1-2: derivation must be present AND nonblank (whitespace-only is
+        # no basis at all).
+        if not isinstance(p.derivation, str) or not p.derivation.strip():
+            raise ContractRefusal(
+                RefusalKind.MISSING_BASIS,
+                f"{p.name} is declared derived but carries no derivation "
+                f"(arithmetic + inputs)" if not isinstance(p.derivation, str)
+                else f"{p.name} is declared derived but its derivation is "
+                     f"blank; an arithmetic/input basis must be stated")
     # P-8m: a property without provenance is not a property. Empty or
     # whitespace-only source/conditions is refused -- nothing to cite, so
     # nothing to verify.
@@ -197,10 +256,14 @@ def _validate_property(p: MaterialProperty) -> None:
     # "E", -1, "Pa") because "e" != "E" against a lowercased name).
     ptype = _property_type(p.name)
     spec = _PROPERTY_TYPES[ptype]
-    if spec["positive"] and not (p.value > 0):
+    if spec.get("positive") and not (fv > 0):
         raise ContractRefusal(RefusalKind.PHYSICALLY_INVALID,
                               f"{p.name} = {p.value} {p.unit}: a {ptype} "
                               f"must be positive")
+    if spec.get("nonnegative") and fv < 0.0:
+        raise ContractRefusal(RefusalKind.PHYSICALLY_INVALID,
+                              f"{p.name} = {p.value} {p.unit}: a {ptype} "
+                              f"must be nonnegative")
     fams = spec["families"]
     if fams is not None:
         fam = _family_of(_norm_unit(p.unit))
@@ -210,7 +273,7 @@ def _validate_property(p: MaterialProperty) -> None:
                 f"{p.name} = {p.value} {p.unit}: a {ptype} must carry a "
                 f"unit from families {fams}; '{p.unit}' belongs to family "
                 f"'{fam}'")
-    if ptype == "fraction" and not (0.0 <= p.value <= 1.0):
+    if ptype == "fraction" and not (0.0 <= fv <= 1.0):
         raise ContractRefusal(RefusalKind.PHYSICALLY_INVALID,
                               f"{p.name} = {p.value}: a fraction must lie in [0, 1]")
 
@@ -227,6 +290,42 @@ class MaterialRecord:
         self.properties[prop.name] = prop
 
 
+def _validate_record(rec: MaterialRecord) -> None:
+    """G01-A1 (A1-3): re-validate the WHOLE record at every execution
+    boundary. `MaterialRecord.properties` is a public mutable dict --
+    `add()`/`register()` validate, but a direct dict write bypasses them.
+    The boundary (register + record, the single choke-point every accessor
+    passes through) re-checks the record's name, model-set and EVERY stored
+    property, so an unvalidated or non-`MaterialProperty` entry can never be
+    served. The existing legal P-8h surgery (writing a CONSTRUCTED,
+    validated MaterialProperty into the shared record) still passes."""
+    if not isinstance(rec, MaterialRecord):
+        raise ContractRefusal(RefusalKind.MISSING_INPUT,
+                              f"a contract stores MaterialRecord instances; "
+                              f"got {type(rec).__name__}")
+    if not isinstance(rec.name, str) or not rec.name.strip():
+        raise ContractRefusal(RefusalKind.MISSING_INPUT,
+                              "a material record must carry a nonblank name")
+    if not isinstance(rec.models, (frozenset, set)) or not rec.models:
+        raise ContractRefusal(RefusalKind.MISSING_INPUT,
+                              f"material '{rec.name}' must declare the "
+                              f"non-empty model set its sources support")
+    for key, prop in rec.properties.items():
+        if not isinstance(prop, MaterialProperty):
+            raise ContractRefusal(
+                RefusalKind.MISSING_INPUT,
+                f"material '{rec.name}' stores '{key}' as "
+                f"{type(prop).__name__}, not a MaterialProperty -- a "
+                f"direct dict write bypassed the record gate; validation "
+                f"at the execution boundary refuses to serve it")
+        if prop.name != key:
+            raise ContractRefusal(
+                RefusalKind.PHYSICALLY_INVALID,
+                f"material '{rec.name}': dict key '{key}' disagrees with the "
+                f"property's own name '{prop.name}' -- the store is corrupt")
+        _validate_property(prop)
+
+
 # ── the contract ─────────────────────────────────────────────────────────────
 
 class MaterialContract:
@@ -237,6 +336,7 @@ class MaterialContract:
         self._materials: dict[str, MaterialRecord] = {}
 
     def register(self, record: MaterialRecord) -> None:
+        _validate_record(record)         # A1-3: full validation at the door
         if record.name in self._materials:
             raise ContractRefusal(RefusalKind.MISSING_INPUT,
                                   f"material '{record.name}' already registered")
@@ -247,6 +347,7 @@ class MaterialContract:
         if rec is None:
             raise ContractRefusal(RefusalKind.MISSING_INPUT,
                                   f"no material named '{name}' is registered")
+        _validate_record(rec)            # A1-3: re-validate at every access
         return rec
 
     # -- property access -----------------------------------------------------
@@ -287,6 +388,16 @@ class MaterialContract:
         whose derivation string carries the arithmetic (P-8i second half).
         The basis itself is validated (positive, finite) -- a garbage basis
         is refused, not divided through."""
+        # A1-5: the derivation needs the DECLARED basis CONDITIONS, not just
+        # a number -- SG->density without stated conditions is a MISSING_BASIS
+        # refusal, never a silent derivation. Checked before the numeric
+        # basis so a basis that is missing in either way is refused.
+        if not isinstance(basis_conditions, str) or \
+                not basis_conditions.strip():
+            raise ContractRefusal(
+                RefusalKind.MISSING_BASIS,
+                "SG -> density derivation requires the declared reference "
+                "basis CONDITIONS (e.g. 'water at 4 C'); none were stated")
         if math.isnan(basis_kg_m3) or math.isinf(basis_kg_m3) or basis_kg_m3 <= 0:
             raise ContractRefusal(RefusalKind.PHYSICALLY_INVALID,
                                   "reference basis density must be a positive "
@@ -309,13 +420,15 @@ class MaterialContract:
 
 # ── orthotropic stiffness + material frame validation (P-8f, P-8g) ───────────
 
-def validate_orthotropic(C: "list[list[float]] | object",
-                         frame: "list[tuple[float, float, float]] | None" = None,
-                         tol: float = 1e-9) -> None:
-    """C: 6x6 stiffness (Voigt). Checks, each with its named convention:
-      symmetry        C must equal C^T (orthotropic constitutive law)
-      positive        all eigenvalues > 0 (stored elastic energy > 0)
-      frame           the material frame's axes must be orthonormal
+def validate_positive_definite(C: "list[list[float]] | object",
+                               tol: float = 1e-9) -> None:
+    """GENERAL symmetric positive-definite stiffness check -- STRUCTURE-BLIND
+    (G01-A1, A1-4). Symmetry and stored-energy positivity only; it does NOT
+    assert the orthotropic block structure (a fully general anisotropic
+    tangent may be coupled while positive-definite, and that is legal here).
+
+      symmetry   C must equal C^T (a symmetric tangent for energy storage)
+      positive   all eigenvalues > 0 (stored elastic energy > 0)
     Raises ContractRefusal naming the FIRST violated convention."""
     try:
         import numpy as np
@@ -325,10 +438,6 @@ def validate_orthotropic(C: "list[list[float]] | object",
     if M.shape != (6, 6):
         raise ContractRefusal(RefusalKind.PHYSICALLY_INVALID,
                               f"stiffness must be 6x6 Voigt, got {M.shape}")
-    # NaN-SAFE GATES (G01-R2, P-8o): `dev > tol` and `eig.min() <= 0` are
-    # silently False for NaN -- NaN slipped through every old comparison.
-    # Law: explicit finiteness first, then comparisons in `not (x <= tol)`
-    # form so a NaN verdict is a refusal, never a pass.
     if not np.all(np.isfinite(M)):
         raise ContractRefusal(RefusalKind.PHYSICALLY_INVALID,
                               "stiffness matrix contains NaN or infinity")
@@ -342,6 +451,44 @@ def validate_orthotropic(C: "list[list[float]] | object",
         raise ContractRefusal(RefusalKind.PHYSICALLY_INVALID,
                               f"stiffness is not positive definite: min "
                               f"eigenvalue {eig.min():.6e} <= 0")
+
+
+def validate_orthotropic(C: "list[list[float]] | object",
+                         frame: "list[tuple[float, float, float]] | None" = None,
+                         tol: float = 1e-9) -> None:
+    """C: 6x6 stiffness (Voigt). Checks, each with its named convention:
+      symmetry        C must equal C^T (orthotropic constitutive law)
+      positive        all eigenvalues > 0 (stored elastic energy > 0)
+      orthotropic     THE declared frame must DECOUPLE normal from shear:
+                      the (rows 0..2)x(cols 3..5) and (3..5)x(0..2) coupling
+                      blocks vanish within tol (A1-4 -- a general symmetric
+                      PD tangent with normal-shear coupling, e.g.
+                      eye(6)+0.1*ones, is NOT orthotropic and is refused
+                      here; it still passes validate_positive_definite).
+                      Voigt index convention: (xx, yy, zz, yz, xz, xy), so
+                      the 3x3 normal block is C[:3,:3] and the 3x3 shear
+                      block C[3:,3:].
+      frame           the material frame's axes must be orthonormal
+    Raises ContractRefusal naming the FIRST violated convention."""
+    try:
+        import numpy as np
+    except ImportError:  # pragma: no cover - numpy is a repo baseline
+        raise
+    M = np.asarray(C, dtype=float)
+    # Keep the convention ORDER stable (P-8f asserts the FIRST refusal is
+    # named): shape/finiteness, then symmetry, then positive-definiteness,
+    # then the orthotropic decoupling.
+    validate_positive_definite(M, tol=tol)
+    coupling = max(float(np.abs(M[:3, 3:]).max()),
+                   float(np.abs(M[3:, :3]).max()))
+    if not (coupling <= tol):
+        raise ContractRefusal(
+            RefusalKind.PHYSICALLY_INVALID,
+            f"matrix is symmetric positive definite but NOT orthotropic: "
+            f"normal-shear coupling max|C[:3,3:]| = {coupling:.3e} > "
+            f"{tol:.1e} in the declared frame (Voigt xx,yy,zz,yz,xz,xy); "
+            f"a general coupled tangent belongs to "
+            f"validate_positive_definite, not the orthotropic law")
     if frame is not None:
         E = np.asarray(frame, dtype=float)
         if E.shape != (3, 3):

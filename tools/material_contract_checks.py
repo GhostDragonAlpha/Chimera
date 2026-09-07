@@ -41,6 +41,23 @@ EXPECTED_CHECKS = [
     "R2n_convert_validates_before_identity",
     "R2o_nan_frame_and_matrix_refused",
     "R2p_metric_refuses_degenerate_geometry",
+    # G01-A1 regression checks (predictions registered in report section 9-A1)
+    "A1_1a_surface_energy_gated",
+    "A1_1b_ratio_gated_positive_dimensionless",
+    "A1_2a_numpy_scalar_nonfinite_refused",
+    "A1_2b_convert_overflow_refused",
+    "A1_2c_convert_nonfinite_input_refused",
+    "A1_2d_provenance_membership_enforced",
+    "A1_2e_blank_derivation_refused",
+    "A1_3a_register_refuses_non_property_entry",
+    "A1_3b_execution_boundary_refuses_mutation",
+    "A1_3c_blank_record_name_refused",
+    "A1_4a_orthotropic_refuses_normal_shear_coupling",
+    "A1_4b_orthotropic_control_passes",
+    "A1_4c_coupled_pd_passes_general_check",
+    "A1_5a_sg_requires_basis_conditions",
+    "A1_5b_fracture_toughness_family_control",
+    "A1_5c_fracture_toughness_not_pressure",
 ]
 
 
@@ -521,6 +538,348 @@ def r2p() -> dict:
             "cur_collinear_f1": r_cur_collinear_f1,
             "zero_edge": r_zero_edge, "rest_collapsed": r_rest_collapsed,
             "near_degenerate": r_near}
+
+
+# ===================================================================
+# G01-A1 CHECKS (preregistered section 9-A1; falsifiers A1-1..A1-9)
+# ===================================================================
+
+@port_test(
+    "A1_1a_surface_energy_gated",
+    "A1-1: MaterialProperty('gamma', -1.0, 'J/m^2', ...) is refused "
+    "physically_invalid naming nonnegative: surface energy has its OWN type "
+    "(nonnegative, energy_area family). A positive J/m^2 control constructs.",
+    "A negative surface-energy property constructs, or the control is "
+    "refused.")
+def a1_1a() -> dict:
+    refused = named = False
+    try:
+        mc.MaterialProperty(name="gamma", value=-1.0, unit="J/m^2",
+                            source="fixture (A1-1)", conditions="fixture",
+                            provenance=mc.Provenance.RESEARCHED)
+    except mc.ContractRefusal as ex:
+        refused = ex.kind is mc.RefusalKind.PHYSICALLY_INVALID
+        named = "nonnegative" in ex.detail
+    control_ok = True
+    try:
+        mc.MaterialProperty(name="gamma", value=0.05, unit="J/m^2",
+                            source="fixture (A1-1)", conditions="fixture",
+                            provenance=mc.Provenance.RESEARCHED)
+    except mc.ContractRefusal:
+        control_ok = False
+    return {"pass": bool(refused and named and control_ok),
+            "refused": refused, "named_nonnegative": named,
+            "control_ok": control_ok}
+
+
+@port_test(
+    "A1_1b_ratio_gated_positive_dimensionless",
+    "A1-1: the RATIO type is a gated default, not an escape hatch -- "
+    "MaterialProperty('ET_EL', -1.0, 'Pa', ...) is refused (positive), a "
+    "positive ratio with a PRESSURE unit is refused (dimensionless family), "
+    "and a positive dimensionless control ('ET_EL', 0.072, '1') constructs.",
+    "A negative or mis-united ratio property constructs, or the "
+    "dimensionless control is refused.")
+def a1_1b() -> dict:
+    neg_refused = False
+    try:
+        mc.MaterialProperty(name="ET_EL", value=-1.0, unit="Pa",
+                            source="fixture (A1-1)", conditions="fixture",
+                            provenance=mc.Provenance.RESEARCHED)
+    except mc.ContractRefusal as ex:
+        neg_refused = ex.kind is mc.RefusalKind.PHYSICALLY_INVALID
+    fam_refused = False
+    try:
+        mc.MaterialProperty(name="ET_EL", value=0.5, unit="Pa",
+                            source="fixture (A1-1)", conditions="fixture",
+                            provenance=mc.Provenance.RESEARCHED)
+    except mc.ContractRefusal as ex:
+        fam_refused = ex.kind is mc.RefusalKind.PHYSICALLY_INVALID
+    control_ok = True
+    try:
+        mc.MaterialProperty(name="ET_EL", value=0.072, unit="1",
+                            source="fixture (A1-1)", conditions="fixture",
+                            provenance=mc.Provenance.RESEARCHED)
+    except mc.ContractRefusal:
+        control_ok = False
+    return {"pass": bool(neg_refused and fam_refused and control_ok),
+            "negative_refused": neg_refused,
+            "mistyped_unit_refused": fam_refused,
+            "dimensionless_control": control_ok}
+
+
+@port_test(
+    "A1_2a_numpy_scalar_nonfinite_refused",
+    "A1-2: finiteness is decided by VALUE, not by Python type -- "
+    "MaterialProperty with value np.float32(np.inf) (a numpy scalar, not "
+    "isinstance-float) is refused nonfinite, as are np.float64(nan) controls.",
+    "A non-finite numpy scalar property value is accepted.")
+def a1_2a() -> dict:
+    refusals = []
+    for v in (np.float32(np.inf), np.float64(np.nan), np.float32(-np.inf),
+              np.float16(np.inf)):
+        try:
+            mc.MaterialProperty(name="E_L", value=v, unit="Pa",
+                                source="fixture (A1-2)", conditions="fixture",
+                                provenance=mc.Provenance.RESEARCHED)
+            refusals.append((repr(v), False, "accepted"))
+        except mc.ContractRefusal as ex:
+            refusals.append((repr(v),
+                             ex.kind is mc.RefusalKind.NONFINITE,
+                             ex.kind.value))
+    control_ok = True
+    try:
+        mc.MaterialProperty(name="E_L", value=12.3e9, unit="Pa",
+                            source="fixture (A1-2)", conditions="fixture",
+                            provenance=mc.Provenance.RESEARCHED)
+    except mc.ContractRefusal:
+        control_ok = False
+    return {"pass": bool(all(r[1] for r in refusals) and control_ok),
+            "cases": refusals, "control_ok": control_ok}
+
+
+@port_test(
+    "A1_2b_convert_overflow_refused",
+    "A1-2: convert() refuses a NON-FINITE RESULT -- convert(1e308, 'GPa', "
+    "'Pa') overflows the Pa scale to inf and is refused nonfinite (an inf "
+    "conversion is not a number the contract may hand out).",
+    "convert() returns a non-finite conversion result.")
+def a1_2b() -> dict:
+    refused = named = False
+    try:
+        r = mc.convert(1e308, "GPa", "Pa")
+        got = r
+    except mc.ContractRefusal as ex:
+        refused = ex.kind is mc.RefusalKind.NONFINITE
+        named = "inf" in ex.detail.lower() or "non-finite" in ex.detail.lower()
+    return {"pass": bool(refused and named), "refused": refused,
+            "named": named}
+
+
+@port_test(
+    "A1_2c_convert_nonfinite_input_refused",
+    "A1-2: convert() requires a finite INPUT -- converting a non-finite "
+    "value (even at the unit identity) is refused nonfinite.",
+    "convert() accepts a non-finite input value.")
+def a1_2c() -> dict:
+    refused = False
+    try:
+        mc.convert(np.float64(np.inf), "Pa", "Pa")
+    except mc.ContractRefusal as ex:
+        refused = ex.kind is mc.RefusalKind.NONFINITE
+    return {"pass": refused, "refused": refused}
+
+
+@port_test(
+    "A1_2d_provenance_membership_enforced",
+    "A1-2: provenance must be a Provenance enum member -- a raw string like "
+    "'researched' is refused physically_invalid (a claim about a property's "
+    "origin is not a string).",
+    "A raw-string provenance is accepted.")
+def a1_2d() -> dict:
+    refused = False
+    try:
+        mc.MaterialProperty(name="E_L", value=12.3e9, unit="Pa",
+                            source="fixture (A1-2)", conditions="fixture",
+                            provenance="researched")
+    except mc.ContractRefusal as ex:
+        refused = ex.kind is mc.RefusalKind.PHYSICALLY_INVALID
+    return {"pass": refused, "refused": refused}
+
+
+@port_test(
+    "A1_2e_blank_derivation_refused",
+    "A1-2: a DERIVED property whose derivation is blank/whitespace-only is "
+    "refused missing_basis -- a derivation that states no arithmetic/inputs "
+    "is no basis at all. A DERIVED property with a real derivation "
+    "constructs.",
+    "A derived property with a blank derivation is accepted.")
+def a1_2e() -> dict:
+    refused = False
+    try:
+        mc.MaterialProperty(name="derived:density", value=680.0,
+                            unit="kg/m^3", source="fixture (A1-2)",
+                            conditions="fixture",
+                            provenance=mc.Provenance.DERIVED,
+                            derivation="   \t ")
+    except mc.ContractRefusal as ex:
+        refused = ex.kind is mc.RefusalKind.MISSING_BASIS
+    control_ok = True
+    try:
+        mc.MaterialProperty(name="derived:density", value=680.0,
+                            unit="kg/m^3", source="derived from SG x 1000",
+                            conditions="water at 4 C",
+                            provenance=mc.Provenance.DERIVED,
+                            derivation="rho = 0.68 x 1000.0 = 680.0 kg/m^3")
+    except mc.ContractRefusal:
+        control_ok = False
+    return {"pass": bool(refused and control_ok), "blank_refused": refused,
+            "real_derivation_control": control_ok}
+
+
+@port_test(
+    "A1_3a_register_refuses_non_property_entry",
+    "A1-3: a record whose public properties dict holds a non-"
+    "MaterialProperty (a direct dict write bypassing add()) is refused at "
+    "register() -- the execution boundary validates the whole record.",
+    "A record storing a non-property entry is registered.")
+def a1_3a() -> dict:
+    rec = mc.MaterialRecord(name="evil", models=frozenset({"m"}))
+    rec.properties["E_L"] = "not a MaterialProperty"
+    refused = named = False
+    try:
+        mc.MaterialContract().register(rec)
+    except mc.ContractRefusal as ex:
+        refused = ex.kind is mc.RefusalKind.MISSING_INPUT
+        named = "MaterialProperty" in ex.detail
+    return {"pass": bool(refused and named), "refused": refused,
+            "named_type": named}
+
+
+@port_test(
+    "A1_3b_execution_boundary_refuses_mutation",
+    "A1-3: after register(), a direct dict mutation to a non-property is "
+    "refused at the execution boundary when get() runs (get traverses "
+    "record() which re-validates the whole record).",
+    "A corrupted record entry is served from get().")
+def a1_3b() -> dict:
+    c = _contract()
+    rec = c.record("white_oak")
+    rec.properties["E_L"] = "corrupted"
+    refused = False
+    try:
+        c.get("white_oak", "E_L")
+    except mc.ContractRefusal as ex:
+        refused = ex.kind is mc.RefusalKind.MISSING_INPUT
+    return {"pass": refused, "refused": refused}
+
+
+@port_test(
+    "A1_3c_blank_record_name_refused",
+    "A1-3: a record with a blank name, or a blank model set, is refused at "
+    "register() -- the boundary gate does not admit half-formed records.",
+    "A blank-named or model-less record is registered.")
+def a1_3c() -> dict:
+    blank_name = False
+    try:
+        mc.MaterialContract().register(
+            mc.MaterialRecord(name="   ", models=frozenset({"m"})))
+    except mc.ContractRefusal as ex:
+        blank_name = ex.kind is mc.RefusalKind.MISSING_INPUT
+    no_models = False
+    try:
+        mc.MaterialContract().register(
+            mc.MaterialRecord(name="m", models=frozenset()))
+    except mc.ContractRefusal as ex:
+        no_models = ex.kind is mc.RefusalKind.MISSING_INPUT
+    return {"pass": bool(blank_name and no_models),
+            "blank_name_refused": blank_name,
+            "model_set_refused": no_models}
+
+
+@port_test(
+    "A1_4a_orthotropic_refuses_normal_shear_coupling",
+    "A1-4: validate_orthotropic refuses a symmetric positive-definite "
+    "matrix with NORMAL-SHEAR coupling -- eye(6)+0.1*ones is not an "
+    "orthotropic law (Voigt xx,yy,zz,yz,xz,xy; the 3x3 normal block must "
+    "decouple from the 3x3 shear block within tol).",
+    "A normal-shear-coupled symmetric PD matrix passes "
+    "validate_orthotropic.")
+def a1_4a() -> dict:
+    C = np.eye(6) + 0.1 * np.ones((6, 6))
+    refused = named = False
+    try:
+        mc.validate_orthotropic(C)
+    except mc.ContractRefusal as ex:
+        refused = ex.kind is mc.RefusalKind.PHYSICALLY_INVALID
+        named = "orthotropic" in ex.detail
+    return {"pass": bool(refused and named), "refused": refused,
+            "named_orthotropic": named}
+
+
+@port_test(
+    "A1_4b_orthotropic_control_passes",
+    "A1-4: a genuinely orthotropic block-diagonal control (and the identity) "
+    "still pass validate_orthotropic -- the tightened law rejects coupling, "
+    "not orthotropic matrices.",
+    "A block-diagonal orthotropic control is refused.")
+def a1_4b() -> dict:
+    control_ok = True
+    try:
+        mc.validate_orthotropic(_sym_pd_orthotropic())
+        mc.validate_orthotropic(np.eye(6))
+    except mc.ContractRefusal:
+        control_ok = False
+    return {"pass": control_ok, "control_ok": control_ok}
+
+
+@port_test(
+    "A1_4c_coupled_pd_passes_general_check",
+    "A1-4: the GENERAL symmetric positive-definite check is structure-blind "
+    "-- eye(6)+0.1*ones passes validate_positive_definite (coupled but "
+    "positive-definite is a legal general tangent), while it is refused by "
+    "the orthotropic law (A1_4a).",
+    "validate_positive_definite refuses a coupled-but-PD matrix, or the two "
+    "checks are not distinguished.")
+def a1_4c() -> dict:
+    general_ok = True
+    try:
+        mc.validate_positive_definite(np.eye(6) + 0.1 * np.ones((6, 6)))
+    except mc.ContractRefusal:
+        general_ok = False
+    return {"pass": general_ok, "general_check_accepts_coupled_pd": general_ok}
+
+
+@port_test(
+    "A1_5a_sg_requires_basis_conditions",
+    "A1-5: density_from_sg refuses a whitespace-only basis CONDITIONS "
+    "string -- an SG->density derivation without DECLARED conditions is "
+    "missing_basis, never a silent derivation.",
+    "An SG->density derivation with blank basis conditions succeeds.")
+def a1_5a() -> dict:
+    c = _contract()
+    refused = False
+    try:
+        c.density_from_sg("white_oak", 1000.0, "   \t ")
+    except mc.ContractRefusal as ex:
+        refused = ex.kind is mc.RefusalKind.MISSING_BASIS
+    return {"pass": refused, "refused": refused}
+
+
+@port_test(
+    "A1_5b_fracture_toughness_family_control",
+    "A1-5: K_IC has its OWN type and unit family -- a control in "
+    "'Pa*m^0.5' (fracture toughness, Pa*sqrt(m)) constructs.",
+    "A fracture-toughness control in Pa*sqrt(m) is refused.")
+def a1_5b() -> dict:
+    control_ok = True
+    try:
+        mc.MaterialProperty(name="K_IC", value=2.4e6, unit="Pa*m^0.5",
+                            source="fixture (A1-5)", conditions="fixture",
+                            provenance=mc.Provenance.RESEARCHED)
+        mc.MaterialProperty(name="K_IC", value=2.4, unit="MPa*sqrt(m)",
+                            source="fixture (A1-5)", conditions="fixture",
+                            provenance=mc.Provenance.RESEARCHED)
+    except mc.ContractRefusal:
+        control_ok = False
+    return {"pass": control_ok, "control_ok": control_ok}
+
+
+@port_test(
+    "A1_5c_fracture_toughness_not_pressure",
+    "A1-5: K_IC in a PRESSURE unit (Pa) is refused physically_invalid -- a "
+    "fracture toughness is not a modulus and does not carry the pressure "
+    "family (Pa*m^0.5 != Pa).",
+    "K_IC in Pa is accepted.")
+def a1_5c() -> dict:
+    refused = False
+    try:
+        mc.MaterialProperty(name="K_IC", value=2.4e6, unit="Pa",
+                            source="fixture (A1-5)", conditions="fixture",
+                            provenance=mc.Provenance.RESEARCHED)
+    except mc.ContractRefusal as ex:
+        refused = ex.kind is mc.RefusalKind.PHYSICALLY_INVALID
+    return {"pass": refused, "refused": refused}
 
 
 expect(len(EXPECTED_CHECKS))

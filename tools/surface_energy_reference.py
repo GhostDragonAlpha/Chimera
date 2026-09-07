@@ -80,6 +80,12 @@ class RejectionReason:
     COLLAPSED_TRIANGLE = "collapsed_triangle"
     NEAR_DEGENERATE = "near_degenerate_triangle"
     BAD_DTYPE = "bad_dtype"
+    # G01-A1 (A1-8): finite input whose arithmetic overflows to inf/NaN is
+    # REFUSED under this name, never returned as a valid Evaluation/Metric
+    # (e.g. a right triangle scaled by 1e100: |cross| computed via
+    # sqrt(sum(x^2)) overflows to inf and the old code handed out an
+    # inf-energy Evaluation with zeroed normals).
+    NONFINITE_RESULT = "nonfinite_result"
 
 
 def _as_positions(positions) -> np.ndarray:
@@ -133,7 +139,10 @@ def _as_faces(faces, n_vertices: int) -> np.ndarray:
 
 def _as_gamma(gamma, n_faces: int) -> np.ndarray:
     """Validate + broadcast gamma. Nonnegative scalar or per-face vector."""
-    gam = np.asarray(gamma, dtype=np.float64)
+    # A1-9: np.array (always COPIES, unlike np.asarray) so Evaluation.gamma
+    # never aliases a caller's float64 per-face array -- mutating the input
+    # after evaluation must not change the reported snapshot.
+    gam = np.array(gamma, dtype=np.float64)
     if not np.all(np.isfinite(gam)):
         raise InvalidSurface(RejectionReason.NONFINITE_GAMMA,
                              "gamma contains NaN or infinity")
@@ -190,6 +199,18 @@ def evaluate_surface(positions, faces, gamma) -> Evaluation:
     edge_sq = np.maximum(np.maximum(
         np.sum((b - a) ** 2, axis=1), np.sum((c - b) ** 2, axis=1)),
         np.sum((a - c) ** 2, axis=1))
+    # A1-8: explicit finite gates on the fundamental magnitudes BEFORE any
+    # degeneracy comparison or division. np.linalg.norm computes
+    # sqrt(sum(x^2)) -- for a finite input scaled to 1e100 the squaring
+    # overflows to inf, `inf <= floor` is silently False, and the old code
+    # then returned an Evaluation with energy=inf and zeroed normals. An
+    # overflowing magnitude is a named refusal, never a valid output.
+    if not (np.all(np.isfinite(cross_mag)) and np.all(np.isfinite(edge_sq))):
+        raise InvalidSurface(
+            RejectionReason.NONFINITE_RESULT,
+            "triangle edge/cross magnitudes overflow float64 from finite "
+            "input -- refusing the non-finite intermediate instead of "
+            "returning an Evaluation with inf energy and zeroed normals")
     floor = DEGENERACY_FLOOR * np.maximum(edge_sq, np.finfo(np.float64).tiny)
 
     if np.any(cross_mag <= floor):
@@ -244,6 +265,17 @@ def evaluate_surface(positions, faces, gamma) -> Evaluation:
         np.add.at(vertex_forces, corner_of, flat[corner_idx])
 
     energy = float(np.sum(gam * areas))
+    # A1-8: a valid Evaluation must be entirely finite -- energy, normals,
+    # forces. Finite input gives finite output or a named refusal; an
+    # inf/NaN leaking through any arithmetic is a refusal, never a result.
+    if not (math.isfinite(energy) and np.all(np.isfinite(normals))
+            and np.all(np.isfinite(face_corner_forces))
+            and np.all(np.isfinite(vertex_forces))):
+        raise InvalidSurface(
+            RejectionReason.NONFINITE_RESULT,
+            "evaluation produced non-finite energy/normals/forces from "
+            "finite input -- refusing the non-finite result instead of "
+            "handing it out")
     return Evaluation(energy=energy, areas=areas,
                       face_corner_forces=face_corner_forces,
                       vertex_forces=vertex_forces, normals=normals,
@@ -358,6 +390,17 @@ def triangle_metric(rest_positions, positions, faces) -> MetricResult:
         e2len = np.linalg.norm(e2, axis=1)
         e3len = np.linalg.norm(e2 - e1, axis=1)          # third edge
         max_edge = np.maximum(e1len, np.maximum(e2len, e3len))
+        # A1-8: finite gate on the frame magnitudes BEFORE the degeneracy
+        # comparisons (which are silently False for inf). A finite input
+        # whose norm/squaring overflows is refused as NONFINITE_RESULT, not
+        # accidentally reported as near-degenerate from an inf area2.
+        if not (np.all(np.isfinite(area2))
+                and np.all(np.isfinite(max_edge))):
+            raise InvalidSurface(
+                RejectionReason.NONFINITE_RESULT,
+                "triangle edge/cross magnitudes overflow float64 from "
+                "finite input in the metric path -- refusing the non-finite "
+                "intermediate")
         # GEOMETRY BEFORE NORMALIZATION (G01-R2, P-8p): degenerate faces are
         # refused BY NAME before any division -- the old code divided by
         # area2 and e1len first and let NaN flow into C. The floor is the
@@ -426,6 +469,17 @@ def triangle_metric(rest_positions, positions, faces) -> MetricResult:
     J[:, 1, 1] = (b22 * a11 - b21 * a12) / det
     C = np.einsum("fji,fjk->fik", J, J)               # J^T J
 
+    area_ratio = cur_areas / rest_areas
+    # A1-8: a valid MetricResult is entirely finite -- a non-finite C, area
+    # or ratio from finite input is refused, never handed out.
+    if not (np.all(np.isfinite(C)) and np.all(np.isfinite(rest_areas))
+            and np.all(np.isfinite(cur_areas))
+            and np.all(np.isfinite(area_ratio))):
+        raise InvalidSurface(
+            RejectionReason.NONFINITE_RESULT,
+            "metric produced a non-finite C/area/ratio from finite input -- "
+            "refusing the non-finite result instead of handing it out")
+
     return MetricResult(C=C, tangent_basis=np.stack([t1r, t2r], axis=1),
                         rest_areas=rest_areas, current_areas=cur_areas,
-                        area_ratio=cur_areas / rest_areas)
+                        area_ratio=area_ratio)

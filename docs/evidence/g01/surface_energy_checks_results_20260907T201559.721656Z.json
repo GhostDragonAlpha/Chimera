@@ -1,0 +1,192 @@
+{
+ "results": {
+  "F1_force_vs_heron_fd": {
+   "pass": true,
+   "worst": 2.2201256920055585e-10,
+   "limit": 9.387143328002652e-09,
+   "per_fixture": {
+    "octahedron_L0": 5.2764750040484516e-11,
+    "octahedron_L1_distorted": 2.2201256920055585e-10,
+    "open_grid_3x3": 7.04635794157582e-11
+   },
+   "note": "open patch included: FD applies at boundary vertices (their forces are real boundary traction)"
+  },
+  "F2_invariances": {
+   "pass": true,
+   "worst": 4.440892098500626e-16,
+   "limit": 1.1368683772161603e-13,
+   "per_invariance": {
+    "force_rotation": 1.6109219248749635e-16,
+    "torque_covariance": 4.440892098500626e-16,
+    "force_balance": 0.0,
+    "torque_balance": 0.0,
+    "zero_gamma_exact": 0.0,
+    "gamma_scaling": 0.0,
+    "energy_scaling": 0.0
+   }
+  },
+  "F3_negative_controls": {
+   "pass": true,
+   "limit": 9.387143328002652e-09,
+   "controls": {
+    "sign_reversal": {
+     "err": 2.000000000052765,
+     "detected": true
+    },
+    "zero_force": {
+     "err": 2.3094010768803583,
+     "detected": true
+    },
+    "spurious_vertex_force": {
+     "err": 4.3306546670278537e-07,
+     "detected": true
+    },
+    "frozen_normal_after_rotation": {
+     "err": 2.0000000001055294,
+     "detected": true
+    },
+    "current_normal_control_still_passes": {
+     "err": 5.2764750040484516e-11,
+     "detected": false
+    }
+   }
+  },
+  "F4_rejections": {
+   "pass": true,
+   "cases": {
+    "indices_out_of_range": {
+     "refused": true,
+     "reason": "malformed_indices",
+     "expected": "malformed_indices"
+    },
+    "nan_positions": {
+     "refused": true,
+     "reason": "nonfinite_positions",
+     "expected": "nonfinite_positions"
+    },
+    "negative_gamma": {
+     "refused": true,
+     "reason": "negative_gamma",
+     "expected": "negative_gamma"
+    },
+    "nan_gamma": {
+     "refused": true,
+     "reason": "nonfinite_gamma",
+     "expected": "nonfinite_gamma"
+    },
+    "empty_faces": {
+     "refused": true,
+     "reason": "empty_faces",
+     "expected": "empty_faces"
+    },
+    "repeated_vertex": {
+     "refused": true,
+     "reason": "repeated_vertex_face",
+     "expected": "repeated_vertex_face"
+    },
+    "collapsed_repeated": {
+     "refused": true,
+     "reason": "repeated_vertex_face",
+     "expected": "repeated_vertex_face"
+    },
+    "collinear_collapsed": {
+     "refused": true,
+     "reason": "collapsed_triangle",
+     "expected": "collapsed_triangle"
+    },
+    "near_degenerate_sliver": {
+     "refused": true,
+     "reason": "near_degenerate_triangle",
+     "expected": "near_degenerate_triangle"
+    },
+    "valid_fixtures_accepted": {
+     "refused": false
+    }
+   }
+  },
+  "F5_sphere_refinement": {
+   "pass": true,
+   "monotone": true,
+   "level4_within_1pct": true,
+   "per_level": {
+    "0": {
+     "n_faces": 8,
+     "P_disc": 3.464101615137755,
+     "rel_err": 0.7320508075688774
+    },
+    "1": {
+     "n_faces": 32,
+     "P_disc": 2.3600470104480413,
+     "rel_err": 0.18002350522402066
+    },
+    "2": {
+     "n_faces": 128,
+     "P_disc": 2.085210700686879,
+     "rel_err": 0.042605350343439596
+    },
+    "3": {
+     "n_faces": 512,
+     "P_disc": 2.0212895644448055,
+     "rel_err": 0.010644782222402727
+    },
+    "4": {
+     "n_faces": 2048,
+     "P_disc": 2.005322700389384,
+     "rel_err": 0.002661350194691936
+    }
+   },
+   "target": 2.0,
+   "gamma": 1.0,
+   "R": 1.0
+  },
+  "F6_equal_area_distortion": {
+   "pass": true,
+   "area_ratio_max_dev": 0.0,
+   "tri0_dev_from_diag4_quarter": 0.0,
+   "detC_vs_area_ratio_sq_dev": 6.661338147750939e-16,
+   "metric_dev_from_identity": 3.0,
+   "identity_control_dev": 0.0,
+   "limit": 1.1368683772161603e-13,
+   "frame_law": "C is per-triangle-frame; tri0's frame is world axes (first edge), tri1's is its diagonal -- the frame-free invariant is det(C) = (area ratio)^2"
+  },
+  "F7_moving_geometry_control": {
+   "pass": true,
+   "worst": 2.0136230421336436e-10,
+   "at_t": 0.2833333333333333,
+   "limit": 9.387143328002652e-09,
+   "n_samples": 121,
+   "sample_rate_hz": 60.0,
+   "honesty": "prescribed input control; no dynamics integrated"
+  },
+  "F8_adjacency_gather_matches_scatter": {
+   "pass": true,
+   "complete": true,
+   "segments_sorted": true,
+   "gather_vs_scatter_dev": 2.0156264665534287e-16,
+   "limit": 1.1368683772161603e-13,
+   "note": "gather (CSR reduceat) and scatter (add.at) sum the same values in different orders; 512*e is the algebraic allowance, exact bit equality is not claimed"
+  },
+  "A1_8a_evaluate_refuses_overflow": {
+   "pass": true,
+   "refused": true,
+   "reason": "nonfinite_result"
+  },
+  "A1_8b_healthy_evaluation_finite": {
+   "pass": true,
+   "energy": 6.928203230275509
+  },
+  "A1_8c_metric_path_overflow_refused": {
+   "pass": true,
+   "overflow_refused": true,
+   "healthy_finite": "True"
+  },
+  "A1_9_gamma_snapshot_no_aliasing": {
+   "pass": true,
+   "reported_gamma": [
+    1.0,
+    1.0
+   ]
+  }
+ },
+ "failed": 0
+}

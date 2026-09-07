@@ -50,7 +50,7 @@ EPS = float(np.finfo(np.float64).eps)
 FD_H = ser.FD_H
 DERIV_LIMIT = ser.DERIV_LIMIT
 INV_LIMIT = ser.INVARIANCE_LIMIT
-EXPECTED_CHECKS = 8
+EXPECTED_CHECKS = 12
 
 
 # ── fixtures ─────────────────────────────────────────────────────────────────
@@ -557,6 +557,79 @@ def f8_adjacency_gather_matches_scatter() -> dict:
                     "allowance, exact bit equality is not claimed"}
 
 
+# ── G01-A1: finite-in/finite-out or named refusal (A1-8), no aliasing (A1-9)
+
+@port_test(
+    "A1_8a_evaluate_refuses_overflow",
+    "A1-8: a right triangle scaled by 1e100 reaches evaluate_surface with "
+    "finite positions, but its |cross| (np.linalg.norm = sqrt(sum(x^2))) "
+    "overflows to inf -- the reference REFUSES with nonfinite_result instead "
+    "of returning an Evaluation with energy=inf and zeroed normals.",
+    "evaluate_surface returns a non-finite Evaluation for finite input.")
+def a1_8a_refuses_overflow() -> dict:
+    V = np.array([[0., 0., 0.], [1., 0., 0.], [0., 1., 0.]]) * 1e100
+    F = np.array([[0, 1, 2]], dtype=np.int64)
+    try:
+        ev = ser.evaluate_surface(V, F, 1.0)
+        return {"pass": False, "accepted": True, "energy": ev.energy,
+                "normals_finite": bool(np.all(np.isfinite(ev.normals)))}
+    except ser.InvalidSurface as ex:
+        ok = ex.reason == ser.RejectionReason.NONFINITE_RESULT
+        return {"pass": ok, "refused": True, "reason": ex.reason}
+
+
+@port_test(
+    "A1_8b_healthy_evaluation_finite",
+    "A1-8: healthy O(1) fixtures still return FINITE energy, normals and "
+    "forces -- the finite gates refuse overflow only, they never refuse "
+    "legitimate geometry.",
+    "A healthy fixture is refused by the A1-8 finite gates.")
+def a1_8b_healthy_finite() -> dict:
+    ev = ser.evaluate_surface(*unit_octahedron(), 1.0)
+    ok = (math.isfinite(ev.energy)
+          and np.all(np.isfinite(ev.normals))
+          and np.all(np.isfinite(ev.vertex_forces))
+          and np.all(np.isfinite(ev.areas)))
+    return {"pass": bool(ok), "energy": ev.energy}
+
+
+@port_test(
+    "A1_8c_metric_path_overflow_refused",
+    "A1-8: the metric path (triangle_metric/_frame) applies the same finite "
+    "gate -- the 1e100-scaled triangle is refused nonfinite_result (edge "
+    "lengths overflow in norm()), and a healthy metric stays finite.",
+    "triangle_metric returns a non-finite metric for finite input.")
+def a1_8c_metric_path_refuses() -> dict:
+    V = np.array([[0., 0., 0.], [1., 0., 0.], [0., 1., 0.]])
+    F = np.array([[0, 1, 2]], dtype=np.int64)
+    refuse_ok = False
+    try:
+        ser.triangle_metric(V * 1e100, V * 1e100, F)
+    except ser.InvalidSurface as ex:
+        refuse_ok = ex.reason == ser.RejectionReason.NONFINITE_RESULT
+    healthy = ser.triangle_metric(V, V, F)
+    healthy_ok = (np.all(np.isfinite(healthy.C))
+                  and np.all(np.isfinite(healthy.area_ratio)))
+    return {"pass": bool(refuse_ok and healthy_ok),
+            "overflow_refused": refuse_ok, "healthy_finite": healthy_ok}
+
+
+@port_test(
+    "A1_9_gamma_snapshot_no_aliasing",
+    "A1-9: Evaluation.gamma is a SNAPSHOT, not a view -- a caller's float64 "
+    "per-face gamma array mutated after evaluate_surface() must not change "
+    "the reported gamma (np.array copies; the old np.asarray aliased).",
+    "Evaluation.gamma reflects a post-evaluation mutation of the input "
+    "array.")
+def a1_9_gamma_no_aliasing() -> dict:
+    V, F = flat_square()                 # 2 faces
+    gam = np.ones(2, dtype=np.float64)
+    ev = ser.evaluate_surface(V, F, gam)
+    gam[:] = 99.0                       # mutate the CALLER's array only
+    ok = np.array_equal(ev.gamma, np.ones(2))
+    return {"pass": bool(ok), "reported_gamma": ev.gamma.tolist()}
+
+
 expect(EXPECTED_CHECKS)
 
 
@@ -580,7 +653,11 @@ def main(argv: list[str]) -> int:
         return EVIDENCE_REFUSAL_EXIT
     order = ["F1_force_vs_heron_fd", "F2_invariances", "F3_negative_controls",
              "F4_rejections", "F5_sphere_refinement", "F6_equal_area_distortion",
-             "F7_moving_geometry_control", "F8_adjacency_gather_matches_scatter"]
+             "F7_moving_geometry_control", "F8_adjacency_gather_matches_scatter",
+             "A1_8a_evaluate_refuses_overflow",
+             "A1_8b_healthy_evaluation_finite",
+             "A1_8c_metric_path_overflow_refused",
+             "A1_9_gamma_snapshot_no_aliasing"]
     results = {}
     failed = 0
     print("=" * 100)

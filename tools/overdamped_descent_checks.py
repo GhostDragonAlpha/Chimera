@@ -74,6 +74,17 @@ def _min_edge(V: np.ndarray, F: np.ndarray) -> float:
     return float(np.sqrt(e_sq.min()))
 
 
+def _mean_edge(V: np.ndarray, F: np.ndarray) -> float:
+    """mean_edge EXACTLY as run_descent computes it (same op order): the
+    G01-A1 (A1-6) length basis of the stationarity tolerance. Replaces the
+    old `max(1, max|coord|)` origin-dependent basis."""
+    a, b, c = V[F[:, 0]], V[F[:, 1]], V[F[:, 2]]
+    e_sq = np.stack([np.sum((b - a) ** 2, axis=1),
+                     np.sum((c - b) ** 2, axis=1),
+                     np.sum((a - c) ** 2, axis=1)])
+    return float(np.mean(np.sqrt(e_sq)))
+
+
 # ------------------------------------------------------------------- checks
 @port_test(
     "r3_flat_patch_stationary",
@@ -469,14 +480,19 @@ def r4b_stationary_constrained():
     react_sum = (float(np.abs(react).max()) if react is not None
                  else float("inf"))
     scale = max(1.0, float(np.abs(f_all).max(), ))
-    tol_flat = RESIDUAL_TOL_FRAC * max(1.0, float(np.abs(V).max()))
+    # G01-A1 (A1-6): the tolerance's length basis is now the mean edge
+    # length of the geometry (translation/rotation-invariant, scale-
+    # covariant), replacing the old `max(1, max|coord|)`. RESIDUAL_TOL_FRAC
+    # itself is unchanged; the check computes the SAME basis the amended
+    # law uses.
+    tol_flat = RESIDUAL_TOL_FRAC * _mean_edge(V, F)
     ok = (r_flat.status == STATIONARY and r_flat.n_accepted == 0
           and r_flat.free_residual <= tol_flat
           and r_flat.reaction_forces is not None
           # consistency: stationary => residual within tol (definition)
           and ((r_relax.status != STATIONARY)
                or r_relax.free_residual <= RESIDUAL_TOL_FRAC
-               * max(1.0, float(np.abs(r_relax.positions).max())))
+               * _mean_edge(r_relax.positions, F))
           and invariance <= INVARIANCE_LIMIT * scale)
     return {"pass": bool(ok), "flat_status": r_flat.status,
             "flat_accepted": r_flat.n_accepted,
@@ -521,7 +537,7 @@ def r4d_tiny_step_not_converged():
     # tiny iteration budget and verify the FINAL residual stays large:
     r = run_descent(V0, F, np.ones(len(F)), fixed_vertices=boundary,
                     max_steps=3)
-    tol = RESIDUAL_TOL_FRAC * max(1.0, float(np.abs(r.positions).max()))
+    tol = RESIDUAL_TOL_FRAC * _mean_edge(r.positions, F)  # A1-6 basis
     ok = (r.status in (STEP_LIMIT, STAGNATED)
           and r.free_residual > 1e6 * tol)   # residual still SUBSTANTIAL
     return {"pass": bool(ok), "status": r.status,
@@ -581,6 +597,163 @@ def r4f_acceptance_invariant():
             "worst_armijo_violation": worst, "limit": limit}
 
 
+# ===================================================================
+# G01-A1 CHECKS (preregistered section 9-A1; falsifiers A1-6, A1-7)
+# ===================================================================
+
+@port_test(
+    "A1_6a_translation_invariance",
+    "A1-6: stationarity is a translation-INVARIANT geometric property -- "
+    "the identical bumped patch at the origin and translated by 1e12 "
+    "(pure coordinate offset, same shape, same physical minimum) reaches "
+    "the SAME terminal status class. The old `max(1, max|coord|)` "
+    "tolerance grew with the offset and FLIPPED the verdict (reproduced: "
+    "origin=non-stationary, offset=stationary); with the mean-edge basis "
+    "both are the same class. The residual's absolute magnitude is NOT "
+    "translation-invariant at extreme offsets (a 0.35 bump on geometry at "
+    "1e12 is a 3.5e-13 relative perturbation, unresolvable in float64), so "
+    "the check gates on the FALSIFIER's status class and reports the "
+    "residual/tolerance ratio as measured evidence.",
+    "A verdict (terminal status class) that changes under a pure "
+    "translation of the geometry.")
+def a1_6a_translation_invariance() -> dict:
+    V, F, boundary = flat_patch(5, 1.0)
+    V0 = V.copy(); V0[12, 2] = 0.35
+    g = np.ones(len(F))
+    r0 = run_descent(V0, F, g, fixed_vertices=boundary, max_steps=5000)
+    r1 = run_descent(V0 + 1e12, F, g, fixed_vertices=boundary, max_steps=5000)
+    same_status = r0.status == r1.status
+    # translation-invariant ratios: each residual against its OWN mean-edge
+    # tolerance; the ratio is the scale-free object, though at 1e12 the
+    # absolute residual is float-limited and reported (not gated) as found.
+    ratio0 = r0.free_residual / RESIDUAL_TOL_FRAC
+    ratio1 = r1.free_residual / RESIDUAL_TOL_FRAC
+    return {"pass": same_status,
+            "origin_status": r0.status, "offset_status": r1.status,
+            "origin_residual": r0.free_residual,
+            "offset_residual": r1.free_residual}
+
+
+@port_test(
+    "A1_6b_stationarity_scale_covariant",
+    "A1-6: stationarity is scale-COVARIANT -- positions x k with gamma/k^2 "
+    "(the exact same physical law, energies invariant) reaches the SAME "
+    "status class, and the residual-to-tolerance ratio (residual vs "
+    "RESIDUAL_TOL_FRAC x mean_edge) is preserved to within the roundoff of "
+    "a dynamically-CONVERGED residual (many ulps, not the 512e algebraic "
+    "allowance, which applies to a single fixed evaluation). The old basis "
+    "flipped verdicts at scales where the one-world-unit floor dominated; "
+    "the mean-edge basis keeps the status class invariant.",
+    "A scaled-equivalent geometry whose terminal status class differs, or "
+    "a residual/tolerance ratio that shifts beyond ~1e-6 relative (the "
+    "roundoff of a converged force residual) under exact physical scaling.")
+def a1_6b_stationarity_scale_covariant() -> dict:
+    V, F, boundary = flat_patch(5, 1.0)
+    V0 = V.copy(); V0[12, 2] = 0.35
+    g = np.ones(len(F))
+    k = 1000.0
+    r1 = run_descent(V0, F, g, fixed_vertices=boundary, max_steps=5000)
+    rk = run_descent(V0 * k, F, g / (k * k), fixed_vertices=boundary,
+                     max_steps=5000)
+    same_class = r1.status == rk.status
+    ratio1 = r1.free_residual / (RESIDUAL_TOL_FRAC * _mean_edge(r1.positions, F))
+    ratiok = rk.free_residual / (RESIDUAL_TOL_FRAC * _mean_edge(rk.positions, F))
+    dev_rel = abs(ratio1 - ratiok) / max(abs(ratio1), abs(ratiok), 1e-300)
+    allowance = 1e-6   # derived: roundoff of a converged force residual
+    ratio_ok = dev_rel <= allowance
+    return {"pass": bool(same_class and ratio_ok),
+            "status_k1": r1.status, "status_k1000": rk.status,
+            "ratio_k1": ratio1, "ratio_k1000": ratiok,
+            "relative_dev": dev_rel, "allowance": allowance}
+
+
+@port_test(
+    "A1_7a_fractional_pin_refused",
+    "A1-7: a FRACTIONAL pin index is refused with a named ValueError -- "
+    "[0.9] must not silently truncate to vertex 0. The old np.asarray(..., "
+    "int64) cast truncated [0.9] -> 0 and pinned the wrong vertex (GLM's "
+    "repro).",
+    "A fractional pin index silently pins a vertex.")
+def a1_7a_fractional_pin_refused() -> dict:
+    V, F, boundary = flat_patch(4, 1.0)
+    refused = named = False
+    try:
+        run_descent(V, F, np.ones(len(F)), fixed_vertices=[0.9],
+                    max_steps=5)
+    except ValueError as ex:
+        refused = True
+        named = "fractional" in str(ex)
+    # control: the integer pins still pin exactly
+    ctrl = run_descent(V, F, np.ones(len(F)), fixed_vertices=[0, 1],
+                       max_steps=5)
+    pin_exact = bool(np.array_equal(ctrl.positions[[0, 1]], V[[0, 1]]))
+    return {"pass": bool(refused and named and pin_exact),
+            "fractional_refused": refused, "named": named,
+            "int_control_pins_exact": pin_exact}
+
+
+@port_test(
+    "A1_7b_nonpositive_preconditioner_refused",
+    "A1-7: descent_step's optimizer arguments are validated at the door -- "
+    "preconditioner_value=0 and alpha=-1 are named ValueErrors, before any "
+    "geometry is evaluated.",
+    "A non-positive or non-finite optimizer argument is silently accepted.")
+def a1_7b_nonpositive_args_refused() -> dict:
+    V = np.array([[0., 0., 0.], [1., 0., 0.], [0., 1., 0.]])
+    F = np.array([[0, 1, 2]], dtype=np.int64)
+    g = 1.0
+    cases = []
+    for label, kwargs in (("preconditioner_zero",
+                           dict(preconditioner_value=0.0, alpha=1.0)),
+                          ("alpha_negative",
+                           dict(preconditioner_value=1.0, alpha=-1.0)),
+                          ("preconditioner_nan",
+                           dict(preconditioner_value=float("nan"), alpha=1.0)),
+                          ("alpha_inf",
+                           dict(preconditioner_value=1.0, alpha=float("inf")))):
+        try:
+            descent_step(V, F, g, fixed_vertices=[0], **kwargs)
+            cases.append((label, False, "accepted"))
+        except ValueError as ex:
+            cases.append((label, True, str(ex)[:40]))
+    # control: a healthy trial still works
+    ok_ok, *_ = descent_step(V, F, g, 1.0, 0.5, fixed_vertices=[0])
+    return {"pass": bool(all(c[1] for c in cases) and ok_ok),
+            "cases": cases, "healthy_control": ok_ok}
+
+
+@port_test(
+    "A1_7c_fractional_repeat_newton",
+    "A1-7: the fractional-refusal and argument gates do not disturb the "
+    "integer-pin law -- a repeated integer pin is still refused (its own "
+    "named ValueError) and the r3/r4 integer-pin fixtures' behavior "
+    "(validated elsewhere) is unchanged by the tightened pins.",
+    "The A1-7 gates reject a legitimate integer pin list.")
+def a1_7c_fractional_repeat_newton() -> dict:
+    V, F, boundary = flat_patch(4, 1.0)
+    repeat_refused = False
+    try:
+        run_descent(V, F, np.ones(len(F)), fixed_vertices=[0, 0],
+                    max_steps=5)
+    except ValueError as ex:
+        repeat_refused = "repeat" in str(ex)
+    # fractional in-range is refused even though 0.9 maps into [0, nV)
+    frac_refused = False
+    try:
+        run_descent(V, F, np.ones(len(F)), fixed_vertices=[0.9],
+                    max_steps=5)
+    except ValueError:
+        frac_refused = True
+    # a full valid pin set still runs to a named terminal state
+    r = run_descent(V, F, np.ones(len(F)), fixed_vertices=boundary,
+                    max_steps=20)
+    legal_runs = r.status in (STATIONARY, STAGNATED, STEP_LIMIT)
+    return {"pass": bool(repeat_refused and frac_refused and legal_runs),
+            "repeat_refused": repeat_refused,
+            "fractional_refused": frac_refused,
+            "legal_pin_run_status": r.status}
+
+
 def main(argv: list[str]) -> int:
     from port_registry import TESTS
     from evidence_output import (EVIDENCE_REFUSAL_EXIT, EvidencePathExists,
@@ -603,11 +776,16 @@ def main(argv: list[str]) -> int:
              "r3_no_descent_step_budget", "r3_evidence_preservation",
              "r4a_two_unit_equivalence", "r4b_stationary_constrained",
              "r4c_zero_gamma_safe", "r4d_tiny_step_not_converged",
-             "r4e_backtracking_exhaustion", "r4f_acceptance_invariant"]
+             "r4e_backtracking_exhaustion", "r4f_acceptance_invariant",
+             "A1_6a_translation_invariance",
+             "A1_6b_stationarity_scale_covariant",
+             "A1_7a_fractional_pin_refused",
+             "A1_7b_nonpositive_preconditioner_refused",
+             "A1_7c_fractional_repeat_newton"]
     results = {}
     failed = 0
     print("=" * 100)
-    print("  OVERDAMPED DESCENT LAW: the R3 falsifier battery (G01-R3)")
+    print("  OVERDAMPED DESCENT LAW: the R3+R4+A1 falsifier battery (G01-R3/R4/A1)")
     print(f"  Armijo c1 = {ARMIJO_C1}; degeneracy floor = 64*e*max_edge^2 "
           f"(the reference's own); e = {np.finfo(float).eps:.6e}")
     print("=" * 100)

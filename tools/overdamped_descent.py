@@ -65,7 +65,9 @@ tuned to make a fixture pass --
   GUARD_FRAC         1e-3   the demoted R2/R3 displacement bound, kept
                             ONLY as the initial trial-scale cap (first
                             trial moves <= half a min_edge).
-  RESIDUAL_TOL_FRAC  1e-12  stationarity length scale, x scene_scale.
+   RESIDUAL_TOL_FRAC  1e-12  stationarity length scale, x mean_edge_length
+                            (A1-6: translation/rotation invariant; the old
+                            `max(1, max|coord|)` was origin-dependent)
   STAGNATION_FRAC    8      machine-precision decrease scale (R3
                             stagnation amendment, f64-derived).
   DEFAULT_MAX_STEPS  200    iteration budget (a resource cap).
@@ -76,6 +78,7 @@ degeneracy floor.
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -173,14 +176,30 @@ def descent_step(positions, faces, gamma, preconditioner_value: float,
     Pinned vertices receive EXACTLY zero displacement (R3 D5, unchanged):
     the direction is zeroed at the fixed indices before the geometry is
     formed -- equality by construction, not a clamp after drift.
+
+    A1-7: preconditioner_value and alpha are validated at the door --
+    non-positive or non-finite values are refused with a NAMED ValueError
+    before any geometry is touched.
     """
+    # A1-7: validate optimizer arguments at the door (reject 0, -1, nan, inf
+    # preconditioner or alpha before any geometry is formed or evaluated).
+    for label, v in (("preconditioner_value", preconditioner_value),
+                     ("alpha", alpha)):
+        try:
+            fv = float(v)
+        except (TypeError, ValueError):
+            raise ValueError(
+                f"{label} must be a finite number, got {v!r}")
+        if not math.isfinite(fv) or fv <= 0:
+            raise ValueError(
+                f"{label} must be positive and finite, got {v}")
     pos = np.asarray(positions, dtype=np.float64)
     ev = evaluate_surface(pos, faces, gamma)   # current state must be valid
     F = ev.vertex_forces                       # [J/wu]
     p = preconditioner_value * F               # [wu]
     if fixed_vertices is not None and len(fixed_vertices) > 0:
         p = p.copy()
-        p[np.asarray(fixed_vertices, dtype=np.int64)] = 0.0   # exact pin
+        p[_as_fixed_mask(pos, fixed_vertices)] = 0.0   # exact pin
 
     trial = pos + alpha * p
     try:
@@ -245,16 +264,22 @@ def run_descent(positions, faces, gamma, fixed_vertices=None,
 
     P = 1.0 / gamma_max                        # [wu^2/J] -- dimensionally exact
 
-    scene_scale = max(1.0, float(np.abs(pos).max()))
-    residual_tol = RESIDUAL_TOL_FRAC * scene_scale   # [wu]
-
+    # A1-6: mean-edge-length is the translation- and rotation-invariant,
+    # scale-covariant geometric length that anchors the stationarity
+    # tolerance. The old law `max(1, max|coord|)` imposed a one-world-unit
+    # floor and was origin-dependent: the same triangle at the origin and
+    # translated by 1e12 produced different verdicts. mean_edge is the
+    # arithmetic mean of all edge lengths; no 1-unit floor is needed
+    # because a zero-edge mesh is already refused by the reference.
     # min_edge for the step-scale guard (a GUARD, not a descent proof)
     tri = np.asarray(faces)
     a, b, c = pos[tri[:, 0]], pos[tri[:, 1]], pos[tri[:, 2]]
     e_sq = np.stack([np.sum((b - a) ** 2, axis=1),
                      np.sum((c - b) ** 2, axis=1),
                      np.sum((a - c) ** 2, axis=1)])
+    mean_edge = float(np.mean(np.sqrt(e_sq)))
     min_edge = float(np.sqrt(e_sq.min()))
+    residual_tol = RESIDUAL_TOL_FRAC * mean_edge      # [wu]
 
     result = DescentResult(status="", reason="", positions=pos,
                            energy=ev.energy, energies=[ev.energy],
@@ -345,12 +370,28 @@ def run_descent(positions, faces, gamma, fixed_vertices=None,
 
 
 def _as_fixed_mask(pos, fixed_vertices) -> np.ndarray:
-    """Validate the pin list. Out-of-range or repeated indices are a named
-    ValueError (a pinned vertex list is a claim about the mesh; a bad claim
-    is refused, not clamped)."""
-    idx = np.asarray(fixed_vertices, dtype=np.int64)
-    if idx.ndim != 1:
+    """Validate the pin list. Out-of-range, FRACTIONAL, or repeated indices
+    are a named ValueError (a pinned vertex list is a claim about the mesh;
+    a bad claim is refused, not clamped). A1-7: fractional indices are
+    checked BEFORE integer conversion -- the old np.asarray(..., int64)
+    truncated [0.9] to 0 silently pinning vertex 0; the law now refuses."""
+    raw = np.asarray(fixed_vertices)
+    if raw.ndim != 1:
         raise ValueError("fixed_vertices must be a 1-D index list")
+    # A1-7: finite + integral BEFORE the int cast. numpy floor-then-equal is
+    # exact for representable floats; a fractional index is a refuse.
+    try:
+        raw_f = raw.astype(np.float64)
+    except (TypeError, ValueError):
+        raise ValueError("fixed_vertices indices must be real numbers")
+    if not np.all(np.isfinite(raw_f)):
+        raise ValueError("fixed_vertices must be finite")
+    if raw_f.size and not np.all(np.equal(raw_f, np.floor(raw_f))):
+        bad = raw_f[np.where(~np.equal(raw_f, np.floor(raw_f)))[0]]
+        raise ValueError(
+            f"fixed_vertices contains a fractional index {bad.tolist()} -- "
+            f"a vertex index is an integer; refusing to truncate it")
+    idx = raw_f.astype(np.int64)
     if idx.size and (idx.min() < 0 or idx.max() >= pos.shape[0]):
         raise ValueError(f"fixed_vertices index out of [0,{pos.shape[0]})")
     if len(set(idx.tolist())) != idx.size:
