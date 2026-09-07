@@ -1,0 +1,129 @@
+{
+ "results": {
+  "P8a_sourced_property_available": {
+   "pass": true,
+   "value": 12300000000.0,
+   "unit": "Pa",
+   "source": "USDA Wood Handbook FPL-GTR-190 Table 5-3b (SI, clear straight-grained, 12% MC)",
+   "provenance": "researched"
+  },
+  "P8b_missing_property_refused": {
+   "pass": true,
+   "kind": "missing_input",
+   "detail": "'white_oak' has no published 'G_LT' in any ingested source; the contract refuses to default it"
+  },
+  "P8c_unknown_unit_rejected": {
+   "pass": true,
+   "gate": "test_E unit 'psi' is not registered; register it with a family or do not ship it",
+   "convert": "unit 'psi' is not registered; no conversion factor may be invented for it"
+  },
+  "P8d_negative_density_rejected": {
+   "pass": true,
+   "kind": "physically_invalid",
+   "detail": "density = -5.0 kg/m^3: a density must be positive"
+  },
+  "P8e_nonfinite_rejected": {
+   "pass": true,
+   "kind": "nonfinite",
+   "detail": "E_L value is not finite (nan)"
+  },
+  "P8f_orthotropic_matrix_validated": {
+   "pass": true,
+   "asymmetric_refused": true,
+   "named_symmetry": true,
+   "nonpd_refused": true,
+   "named_pd": true
+  },
+  "P8g_nonorthonormal_frame_rejected": {
+   "pass": true,
+   "detail": "material frame is not orthonormal: max|E E^T - I| = 1.000e+00"
+  },
+  "P8h_shared_binding_propagates": {
+   "pass": true,
+   "before": [
+    12300000000.0,
+    12300000000.0
+   ],
+   "after": [
+    13000000000.0,
+    13000000000.0
+   ],
+   "as_MPa": 13000.0
+  },
+  "P8i_sg_requires_basis": {
+   "pass": true,
+   "value": 680.0,
+   "unit": "kg/m^3",
+   "provenance": "derived",
+   "derivation": "rho = SG x rho_ref = 0.68 x 1000.0 = 680.0 kg/m^3"
+  },
+  "P8j_model_claim_refused": {
+   "pass": true,
+   "refused": true,
+   "named": true
+  },
+  "R2k_negative_modulus_by_type": {
+   "pass": true,
+   "refused": true,
+   "named": true,
+   "control_ok": true
+  },
+  "R2l_density_unit_family": {
+   "pass": true,
+   "refused": true,
+   "named_families": true,
+   "control_ok": true
+  },
+  "R2m_blank_provenance_refused": {
+   "pass": true,
+   "cases": [
+    [
+     "empty_source",
+     true,
+     "E_L: source is empty or blank; a property without provenance is not a property in this contract"
+    ],
+    [
+     "blank_source",
+     true,
+     "E_L: source is empty or blank; a property without provenance is not a property in this contract"
+    ],
+    [
+     "empty_conditions",
+     true,
+     "E_L: conditions is empty or blank; a property without provenance is not a property in this contract"
+    ],
+    [
+     "blank_conditions",
+     true,
+     "E_L: conditions is empty or blank; a property without provenance is not a property in this contract"
+    ]
+   ],
+   "control_ok": true
+  },
+  "R2n_convert_validates_before_identity": {
+   "pass": true,
+   "bogus_refused": true,
+   "named": true,
+   "legal_identity_ok": true,
+   "cross_family_still_refused": true
+  },
+  "R2o_nan_frame_and_matrix_refused": {
+   "pass": true,
+   "frame_refused": true,
+   "frame_named": true,
+   "matrix_refused": true,
+   "matrix_named": true,
+   "control_ok": true
+  },
+  "R2p_metric_refuses_degenerate_geometry": {
+   "pass": true,
+   "control_finite": true,
+   "cur_collinear_f0": "collapsed_triangle",
+   "cur_collinear_f1": "collapsed_triangle",
+   "zero_edge": "collapsed_triangle",
+   "rest_collapsed": "collapsed_triangle",
+   "near_degenerate": "near_degenerate_triangle"
+  }
+ },
+ "failed": 0
+}

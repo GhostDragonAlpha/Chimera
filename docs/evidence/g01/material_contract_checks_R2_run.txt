@@ -1,0 +1,16 @@
+[PASS] P8a_sourced_property_available
+[PASS] P8b_missing_property_refused
+[PASS] P8c_unknown_unit_rejected
+[PASS] P8d_negative_density_rejected
+[PASS] P8e_nonfinite_rejected
+[PASS] P8f_orthotropic_matrix_validated
+[PASS] P8g_nonorthonormal_frame_rejected
+[PASS] P8h_shared_binding_propagates
+[PASS] P8i_sg_requires_basis
+[PASS] P8j_model_claim_refused
+[PASS] R2k_negative_modulus_by_type
+[PASS] R2l_density_unit_family
+[PASS] R2m_blank_provenance_refused
+[PASS] R2n_convert_validates_before_identity
+[PASS] R2o_nan_frame_and_matrix_refused
+[PASS] R2p_metric_refuses_degenerate_geometry
