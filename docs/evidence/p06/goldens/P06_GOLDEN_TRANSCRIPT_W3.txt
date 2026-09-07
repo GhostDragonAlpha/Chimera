@@ -1,0 +1,22 @@
+# golden P06 W3 — resize/minimize intent ordering (hand-authored bedside case;
+#   source of behavior: engine.cpp:104-110 + 6451-6458 @ 902dc80a)
+# STATEMENT: kResize writes pending_resize_* only; frame() consumes the pair
+#   and skips when either is 0 (minimized) — later nonzero overwrites prep for
+#   the rebuild after restore. This golden proves the STORE side (frame()
+#   consume behaviour is exercised by the harness's psize reads matching the
+#   atomic values).
+mode ui 0
+> resize 0 0
+|
+! psize 0 0
+> resize 800 600
+|
+! psize 800 600
+> resize 1920 1080
+|
+! psize 1920 1080
+> resize 0 0
+> resize 1280 720
+|
+! psize 1280 720
+! calls <none>

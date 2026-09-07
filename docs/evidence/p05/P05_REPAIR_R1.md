@@ -98,6 +98,19 @@ Teardown order remains untouched.
 - Pre-existing deployed binary's actual shader set (build-dir set regenerates
   deterministically; 23/23 proven).
 
+## P06 append (2026-09-07): command-record correction
+
+This document's build-`-S`/`-B`<span></span> placeholders and the run
+evidence's missing probe half are corrected by a dedicated record appended in
+the P06 evidence commit: `docs/evidence/p06/P06_COMMAND_RECORD_CORRECTION.md`
+holds the ACTUAL commands as run (three distinct configure sources, absolute
+paths, verified against each build dir's `CMakeCache.txt`). The correction is
+a NEW file + this pointer; nothing above was edited.
+
+Short form of what changed: the probe configures from
+`tools/platform_surface_probe`; the engine (both trees) configures from
+`ChimeraEngine/engine`; these are three `-S` targets, not one shorthand.
+
 ## Evidence manifest (this commit)
 
 | File | Kind |

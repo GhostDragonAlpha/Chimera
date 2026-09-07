@@ -1,0 +1,33 @@
+# golden P06 W4 — console gating (the focus discipline) (hand-authored bedside
+#   case; source of behavior: engine.cpp:63-98, 113-160 @ 902dc80a)
+# STATEMENT: while the console is open, the keyed camera poll and the P/F1/F2-F8
+#   arms are suppressed EXACTLY as today — the gating lives in the translator
+#   over host.console_open(), so the backend can never leak keyboard.
+mode console 0
+mode ui 0
+mode sphere 4
+> down W
+|
+! cam target2 0
+poll 1
+|
+! cam target2 4
+mode console 1
+> down D
+> down 'P'
+|
+! calls <none>
+poll 1
+|
+! cam target2 4
+! cam target0 0
+> char 65
+|
+! calls console_char:65
+> down GRAVE
+|
+! calls console_toggle
+mode console 0
+> down 'P'
+|
+! calls toggle_pose
