@@ -1,0 +1,194 @@
+=== line 85 ts=2026-09-06T12:37:04 image=final_baseline.png elapsed=53.0 ===
+1. **Overall layout / screen division.** The frame is a full‑bleed 3D viewport with no side panels, toolbars, or window chrome. It is divided horizontally into two bands: (a) a solid black strip running across the entire top edge (roughly the top ~9% of the height), which reads as an empty void/sky; and (b) below a straight horizontal horizon line, a flat, uniform dark‑gray plane that fills the remaining ~90% of the frame and acts as the ground. There are no left/right UI columns, no header bar with buttons, and no footer — just the black top band over the gray floor.
+
+2. **3D object(s) in the viewport.** A single humanoid figure is centered in the scene, rendered in a flat tan / clay‑brown untextured material (default‑shader look), viewed from behind so we see its back, spine line, and the lower edge of the head/neck at the very top. It has: an upright torso; two long thin arms hanging down and slightly outward, ending in hands with elongated, claw‑like fingers (left hand near mid‑left, right hand near mid‑right); a smooth curved tube‑shaped appendage (tail‑ or limb‑like) emerging from the right hip/lower back and curving out to the right then up; two thin vertical legs descending from the hips; and foot‑like shapes at the bottom that are partly merged into the dark area beneath. Small bright dotted markings are visible along the neck/upper‑spine line and a few notches near the wrists (possible joint/vertex markers). **Ground:** a flat dark‑gray plane with no texture. **Shadow/reflection:** yes — directly under the figure is a darker black region containing finger‑like reflected shapes and a thin vertical streak, consistent with a glossy‑floor reflection or drop shadow. **Grid:** not visible (no grid lines, checkerboard, axis gizmo, or coordinate markers on the floor).
+
+3. **Overlay UI.** None visible. There are no text labels, no panels, no windows, no buttons/sliders/controls, no HUD, no stats/FPS readout, and no axis widget anywhere in the frame. No text of any kind is legible — the only content is the rendered 3D scene plus the black top band.
+
+4. **Animated vs. static.** As a single still capture there is no direct evidence of motion: no motion blur, no trailing/ghosting, and no mid‑action pose that unambiguously implies movement (the figure holds a fixed standing pose with arms down). The reflection/shadow beneath it is consistent with a stationary pose. Therefore, within this one frame the scene **appears static**; whether the engine is actually animating cannot be confirmed from a single image without a second frame to compare.
+
+5. **Most prominent visual element.** The tan/clay‑colored humanoid figure (with its tail‑like limb and long‑fingered hands), located in the horizontal center of the screen, spanning roughly the upper‑middle third vertically — from the top edge (neck/head) down to about the vertical midpoint where it meets the dark floor reflection. It is by far the brightest and most detailed object against the otherwise empty black‑and‑gray background.
+
+=== line 86 ts=2026-09-06T12:37:58 image=frame_000.png elapsed=31.3 ===
+1. The figure is seen from behind (rear view, essentially facing away from the camera, with at most a very slight angle). Head is upright and large/rounded with two flat ear‑like discs on its sides; no facial features are visible. Both arms hang down along the sides of the body, angled slightly outward, ending in open hands with long splayed fingers pointing down. The legs are thin and straight, standing vertically with flat feet at the bottom. A single curved, tube‑like tail/limb emerges from the lower back/buttock region and arcs out to the figure's left side (the viewer's right), its tip ending near the right hand.
+
+2. The pose is largely bilaterally symmetric in the arms and legs (both hanging/standing similarly), but it is broken by the tail‑like limb, which exists on only one side and curves to the viewer's right. Notable: the limbs are very thin and elongated relative to a large head (cartoonish proportions); the hands have long, widely spread fingers, and the tip of the tail nearly overlaps/touches the right hand.
+
+3. Horizontally the figure is roughly centered in the frame (slightly left of true center). Vertically it occupies the upper‑middle band: top of the head sits about one‑fifth down from the top edge, the feet end near the vertical middle, leaving the lower half of the frame as empty ground.
+
+4. There is a flat dark‑gray ground plane meeting a black void at a horizon line in the upper third of the image. Beneath the figure there is a soft dark contact shadow together with a darker, smudged mirror‑like shape that resembles a reflection of the limbs/feet on the floor. A thin straight vertical line (spike/axis) descends from under the torso down into the ground. No grid lines are visible.
+
+5. no UI
+
+=== line 87 ts=2026-09-06T12:39:33 image=orbitOK_00.png elapsed=74.9 ===
+1. **Rear / back view.** The camera is positioned behind the figure — essentially a straight‑on back view (azimuth ≈ 180° relative to the direction it faces; not front, not left/right side). We see the back of the torso (with the gluteal cleft and the tail's base), both arms hanging at the sides, both legs/feet. Of the listed parts: **face – NOT visible** (the head is cropped off by the top edge of the frame; only a sliver of jaw/neck shows); **ears – NOT visible** (head out of frame); **tail – clearly visible**; **hands – both clearly visible**, with long splayed fingers.
+
+2. The tail exits from the lower back / base of the spine and sweeps out toward the figure's right side (the viewer's right), dipping slightly then curling upward so its pointed tip angles up‑and‑to‑the‑right, ending around waist/shoulder height on that side — a hook/arc shape concave downward.
+
+3. Horizontally **centered** (roughly mid‑frame). Vertically the body sits in the **upper / top‑middle** of the frame: the head is cut off at the very top edge, the feet end near the vertical middle, and the lower half of the image is mostly empty dark space (apart from the reflection).
+
+4. Yes to all four: a flat dark‑gray **ground plane** with a horizon line in the upper third; a soft **contact shadow** under the feet; a glossy mirror‑like **reflection** of the figure (reflected hands, legs) on the floor; and a thin dark **vertical spike/line** dropping straight down from beneath the figure into the floor.
+
+5. no UI
+
+=== line 88 ts=2026-09-06T12:41:25 image=orbitOK_05.png elapsed=112.0 ===
+1. **Rear (back) view** – the camera is positioned behind the figure, essentially straight‑on (only a negligible off‑axis angle). We are looking at the back of the torso/buttocks, not the chest. Of the listed parts: the **tail** and both **hands** (dorsal side, fingers splayed) are clearly visible; the **face** and **ears** are *not* visible because the head is cropped off by the top edge of the frame (only the neck/nape and chin line remain in view).
+
+2. The tail‑like limb emerges from the lower back / sacral region and arcs **outward toward the left side of the image (the figure's left side)**, then hooks **downward**, ending in a tapered tip at roughly mid‑thigh height. It does not point straight up or down – it curves out to one side and droops.
+
+3. The figure is **centered horizontally** and occupies the **upper‑to‑middle vertical band** of the frame (head cropped at the very top, feet ending around the vertical middle). The entire lower half of the frame is empty dark floor.
+
+4. Yes to all: a flat dark **ground plane**, a soft **shadow** blob under the feet, and a glossy‑floor **reflection** (mirrored splayed hands and faint mirrored body/tail) are visible. There is also a thin vertical dark line/spike‑like mark extending downward from beneath the figure in the reflection area.
+
+5. no UI
+
+=== line 89 ts=2026-09-06T12:42:14 image=joint_pose_base.png elapsed=31.0 ===
+1. LEFT leg (left side of the image): The leg is essentially **straight** – it runs vertically from the hip down to the foot with no angular break at the knee. There is no visible flexion or extension; if any bend exists it is only a negligible/slight curve in the calf, not a true knee bend. Therefore there is effectively **no bend direction** (neither forward nor backward) and the amount is **none / slight at most**. The foot at the bottom points outward (laterally).
+
+2. RIGHT leg (right side of the image): Same as the left – the leg is **straight**, hanging vertically with an unbent knee, no discernible bend direction, and only a negligible/slight curve if any. Its foot also points outward, mirroring the other side.
+
+3. The pose is **symmetric**. Both legs are straight, parallel, and equally vertical, and both feet splay outward by the same amount; neither leg differs from the other in bend or orientation (the arms likewise hang symmetrically at the sides).
+
+4. no UI
+
+=== line 90 ts=2026-09-06T12:43:36 image=joint_pose_kneeL_100.png elapsed=81.9 ===
+1. **LEFT leg / LEFT knee (the leg on the left side of the frame):** The knee is **bent**, not straight. The thigh descends from the hip and then the joint flexes so that the lower leg (shin) rotates forward toward the camera, appearing as a thick, foreshortened column; the foot at its base points outward to the left. The bend direction is **forward / toward the viewer** (the knee protrudes anteriorly relative to the thigh). Magnitude: **moderate** – a clear, visible flexion (roughly 30–45° off vertical), not a fully folded ~90° angle and not just a hairline curve.
+
+2. **RIGHT leg / RIGHT knee (the leg on the right side of the frame):** This leg is essentially **straight**. The thigh and shin form a single near‑vertical column from hip to foot, with at most a very slight natural bend; there is no pronounced flexion like on the left. The foot points outward to the right.
+
+3. **Symmetry:** The pose is **asymmetric** – the two legs are clearly different: one (left) carries a moderate forward knee bend while the other (right) remains straight/vertical, so the stance is not mirrored.
+
+4. **Text / HUD / UI:** no UI
+
+=== line 91 ts=2026-09-06T12:45:42 image=glass_001.png elapsed=113.7 ===
+**1. Text transcribed, grouped by panel/area (exact quotes)**
+
+*Top chrome / title bar*
+- `THE ENGINE STUDIO`
+- `[F1] hide   [click bar] collapse   [drag edge] resize   [ ] console`
+
+*Stage‑tab strip (full width)*
+- `B0 ACQUIRE` · `B1 REPAIR` · `B2 REGISTER` · `B3 SKELETON` · `B4 FACTORY` · `B5 ANATOMY REF..` · `B6 DYNAMICS REF..` · `B7 ARTICULATE` (selected) · `B8 BEHAVE` · `B9 APPEAR` · `B10 DYAD & SHIP`
+
+*Sub‑header line under tabs*
+- Left: `EARLIEST NON-GREEN GATE: B7 articulate -- the next stage  [next]`
+- Right: `docs/THE_BODY_PIPELINE.md  2026-08-30`
+
+*Left dock — “DOCS - the browser (E1)”*
+- Header: `DOCS - the browser (E1)`
+- List: `THE_BODY_PIPELINE` (selected) / `THE_ARTISTS_SOLID` / `THE_MASTER_LIST` / `THE_TRIANGLE_GUIDE` / `THE_OPERATING_MANUAL` / `DYAD LOG - the eye's reports` / `ENGINE LOG - this session` / `SESSIONS - boot/exit record`
+- Status line: `144 lines | read-only | re-read on file change (1 Hz)`
+- Body text:
+  ```
+  none). The referee gate is
+  DERIVED: MuJoCo must
+     agree with estimator B at
+  least as tightly as estimator
+  A does. Result:
+    R(N_B, N_mjc) = 0.955/0.953
+  vs band 0.601/0.595 per foot;
+  stance windows
+    10-11 samples vs the
+  estimators' own 37-39; duty
+  inside the spread;
+    correction-law (solref)
+  provably irrelevant (1 - R
+  = 0.000000). Two
+  amendments recorded with
+  their evidence in
+  b6_compare.py: exact state
+  prescription replaced the
+  servo (it could not track
+  through contact -
+  measured 143.8), and
+  peak-argmax timing was
+  replaced by the stance
+  window (the channel's press
+  is a measured 14%-of-stride
+  plateau).
+    **Verdict: our G3 contact
+  solve is NOT wrong** - no
+  mismatch to assign.
+  - **B7 is the next stage.**
+  (B7b volp-generalization;
+  then B8, B10.)
+  ```
+
+*Center viewport — top overlay strip*
+- `SHOW ear_R theta 0.00 deg ROM [-35.0 .. 40.0]`
+- `EYE last report 8.1 h ago`
+- Camera buttons: `[1 alpha] [2 beta] [3 closeup] [4 monkey_full] [5 cam7] [6 cam8] [7 fit_dyad] [8 operator_pre_tierA] [+ cam]`
+
+*Center viewport — joint labels (blue, with leader lines)*
+- `brow_L +0`, `lid_L +0`, `ear_R +0`, `jaw +0`, `mouth_R +0`, `mouth_L +0`, `neck +0`, `spine_upper +0`, `shoulder_R +0`, `shoulder_L +0`, `elbow_R +0`, `spine_mid +0`, `elbow_L +0`, `wrist_R +0`, `tail_base +0`, `tail_tip +0`, `wrist_L +0`, `tail_mid +0`, `hip_R +0`, `spine_lower +0`, `hip_L +0`, `knee_R +0`, `knee_L +0`, `ankle_R +0`, `ankle_L +0`
+
+*Right dock — “STATUS (live)”*
+- Header: `STATUS (live)`
+- `FPS 103 | ft 7.05 ms | max 1287.76`
+- `mesh: see viewport | splats: 0`
+- `hinge: off`
+- `joints_show: loaded`
+- `gait CPG: no pack | steps 0`
+- `water clock: off | macro steps 0`
+- `volp-ARAP: no pack | mode volp`
+- `frost decode: off | frames 0`
+- `SCENE - live systems (view_only)`
+- Bulleted list:
+  ```
+  body   36424 tris, 18459 verts,
+  r=10.0
+  overlay none
+  show t=1430.65s x1.00
+  joints 28 joints
+  volp no kernel
+  gait steps=0 omega=7.85
+  water clock steps_total=0
+  inj=0/-1
+  water vis the field, drawn
+  frost no pack
+  strain no hinge
+  matter 54771 edges, k=0.20, 48
+  it
+  chrome the studio bar
+  ```
+
+*Bottom‑center dock — “REEL (D3)”*
+- Header: `REEL (D3) - every /frame grab lands here  [2/12]`
+- Under thumb 1: `t1429.21 ear_R` / `+0.0d  12:28:34` / `r20.3 0.50/0.30`
+- Under thumb 2: `t1425.75 ear_L` / `+0.0d  12:28:31` / `r20.3 0.50/0.30`
+
+*Bottom‑center dock — “TIMELINE (D1)”*
+- Header: `TIMELINE (D1) - the show clock is a parameter`
+- Control row: `[PAUSE] [-1f] [+1f] [1x] KEY   t = 86.655 s / 112.0 s (lap 12) | ear_R theta = +0.00 deg | PLAYING`
+- `joint 22/28: ear_R (4.0 s windows)`
+- `UNKEYED`
+
+*Global bottom status bar (full width)*
+- Left: `ARTICULATE (B7)`
+- Middle: `103 fps   9.70 ms/frame`
+- Right legend + readout: `next` · `partial` · `green/done` · `08:12:07` · `EYE: DEFECTS` · `NVIDIA GeForce RTX 4090` · `2560x1440`
+
+**2. Visible panels / docks and their positions**
+- **Top (full width):** window‑chrome title bar, the B0–B10 stage‑tab strip, and the “EARLIEST NON‑GREEN GATE …” sub‑header line.
+- **Left:** `DOCS - the browser (E1)` dock (file list + document body).
+- **Right:** `STATUS (live)` dock.
+- **Center:** the 3D viewport, with a top overlay strip (`SHOW…` / `EYE…` + camera buttons) and overlaid joint labels; a grid floor beneath the figure.
+- **Bottom‑center (stacked):** `REEL (D3)` above `TIMELINE (D1)`.
+- **Very bottom (full width):** global status bar (`ARTICULATE (B7)` … GPU/resolution).
+
+**3. Values that look like live‑updating readouts**
+- `FPS 103 | ft 7.05 ms | max 1287.76` and the matching bottom‑bar `103 fps   9.70 ms/frame` (per‑frame performance counters).
+- `show t=1430.65s x1.00` (running show clock / speed).
+- Timeline `t = 86.655 s / 112.0 s (lap 12)` plus the moving playhead and the orange keyframe diamonds on the scrubber, and the `PLAYING` state flag.
+- Reel timestamps `t1429.21 ear_R … 12:28:34` and `t1425.75 ear_L … 12:28:31` (frame‑grab time + wall clock).
+- Bottom‑bar wall clock `08:12:07`.
+- The horizontal gauge bar in the bottom status line (a progress/level meter with a moving marker).
+- `EYE last report 8.1 h ago` (an elapsed‑time counter that drifts).
+- (Borderline, currently zeroed but wired as live:) `SHOW ear_R theta 0.00 deg`, `ear_R theta = +0.00 deg`, and the various `steps 0 / frames 0 / steps_total=0` counters in STATUS.
+
+**4. 3D figure pose (brief)**
+A smooth tan/brown humanoid (rounded, faceless head) standing upright on a wireframe grid floor, seen from a rear three‑quarter angle. Arms hang relaxed at the sides, slightly away from the torso, hands open; legs straight and together with feet flat on the ground (a soft shadow beneath). A tail extends laterally out to one side. A blue skeleton/wireframe overlay traces every joint (head→spine→shoulders→elbows→wrists, hips→knees→ankles) matching the labeled joints.
+
+**5. Live vs static — verdict and evidence**
+It reads as a **live, updating UI**, not a frozen render. Evidence: an explicit `STATUS (live)` header; multiple per‑frame/per‑second counters that would change continuously (`FPS 103`, `ft 7.05 ms` / `9.70 ms/frame`, `max 1287.76`); two distinct running clocks (`show t=1430.65s`, timeline `t = 86.655 s … (lap 12)`) with a `PLAYING` flag and an advancing playhead; timestamped reel grabs with wall‑clock times (`12:28:34 / 12:28:31`); a running bottom‑bar clock `08:12:07`; and an animated progress/gauge bar. The single frame can’t show motion, but every one of these fields is the kind that ticks in real time, so the composite window is presented as a live engine session rather than a static image.
+

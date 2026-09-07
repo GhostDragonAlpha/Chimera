@@ -1,0 +1,42 @@
+=== P02 audit lines ===
+  16: | Other branches | `agent/local`, `rogue-backup`, `remotes/origin/astra/gait-capture` |
+ 165: | Registry/state | `/state`, `/studio`, `/studio_chrome`, `/scene`, `/light` | body 36424 tris / 18459 verts; show, volp, chrome ON; joints/gait/water/frost/matter OFF |
+ 189: 3. **FINDING — the automated SHOW sweep drives ZERO on-mesh motion in the current state.** `/show` clock advances (`1660→1675`, then `t≈1698`) and `current` joint rotates in the reel, but `/frame` stays byte-id
+ 194: The live UI (`glass_001`) shows: `hinge: off`, `gait CPG: no pack | steps 0`, `show t=1430s…`, `PLAYING`, `SHOW ear_R theta 0.00 deg`. The show clock and reel advance but every joint theta readout is `+0`/`0.00
+ 219: - **The automated SHOW currently produces no mesh deformation** — the eye reads a static symmetric pose across `/frame` captures, matching byte-identical md5, because no gait/steps are feeding the mesh despite 
+
+=== dyad_log.txt lines ===
+line 43 ts=2026-09-04T20:18:16 kind=see image=shot_01_compact.png
+     7. **Feet near lower viewport edge.** *Mechanism:* `fit` framing uses the bounding sphere so the lowest vertex lands close to the bottom; with the REEL panel below, one more step of the gait could cli
+line 50 ts=2026-09-04T21:09:14 kind=see image=shot_00_compact.png
+     1. **Full‑bleed solid RED band across the top ~25 % of the viewport** with an irregular/wavy lower edge — this is *not* in THE SCAFFOLDING and not explained by any live state (`water_vis` would be blu
+line 51 ts=2026-09-04T21:12:23 kind=see image=shot_00_compact.png
+     1. **Right dock missing/collapsed.** I could not see a right‑side STATUS panel (FPS + frame‑time readout, then engine‑state rows) anywhere in THIS view — the viewport's red/dark background runs to the
+line 53 ts=2026-09-04T21:20:32 kind=see image=shot_00_compact.png
+     SKIN: In THIS view the skin reads as continuous matter — I could not see tearing, stretching, disconnected patches, or holes around any of the new joints; the head and torso are a smooth unbroken brow
+line 58 ts=2026-09-04T21:37:45 kind=see image=shot_01_compact.png
+     SKIN: Around the eyes and mouth the skin reads as continuous matter — I see a single smooth tan surface across the face with no visible tearing, pinching, disconnected patches, or stretched triangles 
+line 64 ts=2026-09-04T21:56:25 kind=see image=shot_01_compact.png
+     **Left dock (STUDIO).** Present and legible in blue monospace: `BOARD (this strip)`, `SCENE - the outliner (C4)`, `JOINTS - the editor (C1)`, `POSES - the library (G1)`, `WATER - parked`, `FROST - par
+line 71 ts=2026-09-04T22:58:06 kind=see image=face_vec_right_compact.png
+     **Non-defects I explicitly cleared (reconciled with LIVE STATE):** no strain tint (`overlay=none`, `strain=no hinge`); head-only framing with legs out of frame (`EYE: FACE` close-up, not a fit bug); n
+line 74 ts=2026-09-05T06:52:00 kind=see image=chip_row_wrap_compact.png
+     **TIMELINE.** `PAUSE` (so playing), `-1f`, `+1f`, `1x`, `KEY`, then `t = 86.819 s / 112.0 s | ear_R theta = +0.00 deg | PLAYING`. The `/112.0 s` denominator matches LIVE STATE `total: 112.00s` (the sc
+line 82 ts=2026-09-06T08:54:39 kind=see image=shot_00_compact.png
+     - `playing: False` / `PAUSED` / `gait steps=0`: consistent across all three surfaces — **this is a frozen pose**, not motion. Your intro says "legs are mid‑walk," but at this instant the CPG is paused
+     - **Right dock:** FPS+frame‑time then engine rows — present and well structured (mesh/hinge/joints_show/gait/water/volp/frost + SCENE live systems). OK except the FPS value noted above.
+     2. *Strain tint missing at a bent knee.* `strain=no hinge` + `overlay=none` means the strain shader/pack isn't bound this session, so the per‑frame FK‑law tint never runs even though `knee_L=+30°`. **
+     **1 — THE LEGS.** I cannot read leg *geometry* because no solid legs are rendered; I can only read the overlay numbers: **right leg `hip_R −12°, knee_R +1°, ankle_R −3°`** vs **left leg `hip_L −10°, k
+     **Bottom line for you:** the rig's *numbers* describe a plausible asymmetric mid‑stride (left knee flexed, right extended, hips near‑neutral), but the *pixels* don't show a walking creature — they sho
+line 84 ts=2026-09-06T09:12:46 kind=watch image=burst_00_compact.png
+     **1. THE LEGS.** They are *not* doing a tidy mirror‑opposite stride. The right leg (the one on the left side of the view, hip_R −44) is flung out to the side and back — it reads as splayed almost hori
+     **2. THE BODY.** It reads as *bolted in place*, not carried. Every spine joint (spine_lower/mid/upper) is +0 — the torso is perfectly level and static, no pitch, no sway, no vertical bob that walking 
+     **5. OVERALL IMPRESSION.** Squinting, it does *not* fully read as "a creature walking." It reads as a torso on a pole with two legs doing a stride in place while everything above the hips is frozen an
+line 85 ts=2026-09-06T09:22:02 kind=watch image=burst_00_compact.png
+     **5. OVERALL IMPRESSION.** Squinting, it does *not* read as a creature walking; it reads as a frozen mannequin torso with two legs pumping in unison on a fixed platform — a robot marching in place, no
+line 92 ts=2026-09-06T12:45:42 kind=see image=glass_001.png
+       is a measured 14%-of-stride
+     - `gait CPG: no pack | steps 0`
+     - `volp-ARAP: no pack | mode volp`
+       gait steps=0 omega=7.85
+       frost no pack
