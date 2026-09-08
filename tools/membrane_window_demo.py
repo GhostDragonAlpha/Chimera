@@ -104,6 +104,14 @@ CAM_THETA = 0.0
 CAM_PHI = 0.3
 NEUTRAL_RGB = (0.60, 0.60, 0.65)
 
+# THE B2 COORDINATE MAPPING (declared, GLM-WINDOW-02): 1 world unit = 1 metre.
+# gamma is admitted ONLY in J/m^2; with positions in metres the energy
+# U = sum gamma_t A_t is dimensionally exact (m^2 * J/m^2 = J) and forces are
+# newtons. NO generic J/wu^2 unit is added to the contract -- the "wu" table
+# in tools/overdamped_descent.py is bound to metres HERE, at this boundary.
+WU_TO_M = 1.0
+GAMMA_UNIT = "J/m^2"
+
 
 def sha256_bytes(b: bytes) -> str:
     return hashlib.sha256(b).hexdigest()
@@ -150,6 +158,72 @@ def contract_gamma(gamma_value: float) -> tuple[MaterialContract, object]:
     b = bind(contract, "b2_fixture_gamma", FIXTURE)
     prop = b.get("gamma", as_unit="J/m^2")
     return contract, prop
+
+
+def admitted_gamma_snapshot(gprop) -> dict:
+    """The IMMUTABLE per-run admitted-value snapshot (GLM-WINDOW-02): the
+    exact property the contract admitted, with its value bits, written into
+    this run's evidence before any computation consumes it. Synthetic by
+    declaration: this is the analytic control fixture's gamma, NOT a
+    calibrated physical material."""
+    return {
+        "record_name": "b2_fixture_gamma",
+        "synthetic": True,
+        "synthetic_label": "dimensionless analytic control fixture gamma; "
+                           "NOT a calibrated physical material",
+        "property": {
+            "name": gprop.name,
+            "value": float(gprop.value),
+            "value_hex": float(gprop.value).hex(),
+            "unit": gprop.unit,
+            "source": gprop.source,
+            "conditions": gprop.conditions,
+            "provenance": gprop.provenance.value,
+        },
+        "admission_path": "MaterialProperty.__post_init__ gate -> "
+                          "MaterialRecord.add -> MaterialContract.register "
+                          "-> bind -> Binding.get(as_unit='J/m^2')",
+        "contract_refusals": "none",
+    }
+
+
+# ── the f32 upload boundary (GLM-WINDOW-02) ─────────────────────────────────
+
+
+def quantize_positions_f32(positions_f64: np.ndarray):
+    """THE f32 UPLOAD BOUNDARY. Policy: round-to-nearest f32 (the GPU vertex
+    format). A converted value that is non-finite (overflow) is REFUSED, not
+    clamped; a positive f64 value that rounds to zero is REPORTED as
+    quantization loss -- never claimed as preservation. The original f64
+    value alone is not sufficient: the validation happens on the CONVERTED
+    value, at the boundary where precision is actually lost."""
+    pos = np.asarray(positions_f64, dtype=np.float64)
+    if not np.all(np.isfinite(pos)):
+        raise ValueError("upload positions contain non-finite f64 values")
+    pos32 = np.ascontiguousarray(pos, dtype="<f4")
+    nonfinite = ~np.isfinite(pos32)
+    if np.any(nonfinite):
+        idx = np.argwhere(nonfinite)[0]
+        raise ValueError(
+            f"f32 upload boundary refuses overflow: f64 value "
+            f"{pos[tuple(idx)]:.6e} at vertex {int(idx[0])} component "
+            f"{int(idx[1])} is not representable in float32; refusing the "
+            f"upload rather than clamping")
+    under_mask = (pos != 0.0) & (pos32.astype(np.float64) == 0.0)
+    under_idx = np.argwhere(under_mask)
+    report = {
+        "policy": "round-to-nearest-f32; overflow refused, never clamped; "
+                  "positive underflow reported, never claimed as preservation",
+        "n_values": int(pos.size),
+        "overflow_refused": 0,
+        "positive_underflow_count": int(under_idx.shape[0]),
+        "positive_underflow_values_f64": [float(pos[tuple(i)])
+                                          for i in under_idx[:16]],
+        "max_abs_f64": float(np.max(np.abs(pos))),
+        "max_abs_roundtrip_error_f64": float(np.max(np.abs(
+            pos32.astype(np.float64) - pos))),
+    }
+    return pos32, report
 
 
 # ── state IDs ───────────────────────────────────────────────────────────────
@@ -370,8 +444,11 @@ def encode_mesh_bin(positions_f64: np.ndarray, faces: np.ndarray,
 
 def upload_positions_f32(positions_f64: np.ndarray) -> bytes:
     """The exact f32 vertex positions the payload carries (recorded so the
-    render-vs-state link is checkable byte-for-byte)."""
-    return np.ascontiguousarray(positions_f64, dtype="<f4").tobytes()
+    render-vs-state link is checkable byte-for-byte). Uses the SAME validated
+    boundary as the driver: quantize_positions_f32 (overflow refused, positive
+    underflow reported)."""
+    pos32, _report = quantize_positions_f32(positions_f64)
+    return pos32.tobytes()
 
 
 def http_post(url: str, body: bytes, content_type: str, timeout: float = 30.0):
@@ -479,6 +556,10 @@ def main() -> int:
         "centre_force_z_retained": ev_upload.vertex_forces[CENTRE, 2],
     }
 
+    # the f32 upload boundary is validated on the CONVERTED values (the
+    # accepted geometry), before anything is encoded for the engine
+    pos32_upload, upload_report = quantize_positions_f32(run["positions"])
+
     # the zero-gamma control, recorded alongside (F2's evidence source)
     zero_run = projected_descent(b2["positions"], b2["faces"],
                                  np.zeros(len(b2["faces"])), commit,
@@ -489,9 +570,12 @@ def main() -> int:
         "schema": "chimera-membrane-window-demo-v1", "utc": stamp,
         "source_commit": commit, "fixture": FIXTURE,
         "gamma_J_per_m2": gamma_val,
-        "gamma_provenance": {"source": gprop.source, "unit": gprop.unit,
-                             "provenance": gprop.provenance.value,
-                             "conditions": gprop.conditions},
+        "gamma_admitted": admitted_gamma_snapshot(gprop),
+        "coordinate_mapping": {"wu_to_m": WU_TO_M,
+                               "gamma_unit": GAMMA_UNIT,
+                               "declaration": "1 wu = 1 m; gamma admitted "
+                                              "only in J/m^2"},
+        "f32_upload_boundary": upload_report,
         "rim_pinned": RIM, "centre_vertex": CENTRE,
         "rail": "centre x,y fixed at initial; z free (vertical rail)",
         "upload_state": upload_state,

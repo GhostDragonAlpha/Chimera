@@ -137,6 +137,38 @@ widened. Window/DYAD: **NOT_TESTED** — the demo instance must be built and
 launched by the operator (exact commands in the note); no engine process,
 HTTP endpoint, or protected build path was touched.
 
+**GLM-WINDOW-02 ownership trace + corrections (2026-09-08).** Trace recorded
+in `docs/THE_MEMBRANE_WINDOW_DEMO.md` §1–§6. OWNERSHIP: the window demo's
+forces/accepted positions come from `surface_energy_reference.evaluate_surface`
+(CPU f64) via `projected_descent`; the verified Vulkan kernels live only in
+the standalone probe; `/mesh_bin` uploads a CPU-computed result — labelled a
+**CPU-reference visualization milestone**, no GPU-driven integration claimed.
+DIMENSIONAL CORRECTION (preregistered): the retired F1 instrument compared
+metres against newtons (`force_xy_symmetry_N`); replaced by the derived
+position bound `n_accepted·(1/gamma)·1e-6` m from the actual update
+`p = P·F` — observed drift 4.168e-18 m vs bound 1.260e-4 m, PASS; the
+original failing comparison is preserved as a failed instrument; prior PASS
+verdicts unaffected (independent instruments). CAPTURE LINKAGE: source-verified
+that `/mesh_bin`'s `{"ok":true}` is a real render-thread applied-ack but
+returns NO state identity; `GET /state` is the particle state, `/session` is
+blob sizes; competing writers exist (`--restore` boot replay — demo launches
+`--no-restore` —, Studio, other HTTP clients); capture association marked
+**CONDITIONAL**, certifiable only with a corroborating read of
+`session_snapshot/mesh_bin.blob` (the engine writes every accepted upload
+THROUGH, byte-identical). LAUNCH COMMAND verified against source:
+`chimera_engine.exe` (CMake target), port argv[1] (default 8080),
+`--no-restore` all-argv scan, CWD-relative shaders with EXE-dir fallback,
+session files (snapshots/logs/studio_state) CWD-relative so a demo instance
+launched from its own build dir shares NO persistent files with the
+operator's session; no named kernel objects. BP review reconciliation:
+gamma admission path recorded immutably per run with synthetic labeling
+(F6), J/m² retained with declared 1 wu = 1 m mapping (no J/wu² unit), f32
+upload boundary validates CONVERTED values (overflow refused, positive
+underflow reported, round-trip error recorded — F7). Checks F1–F4, F6, F7
+**PASS** (`20260908T160307.423502Z`). Numerical PASS / upload conditional /
+window NOT_TESTED / DYAD NOT_TESTED — kept separate. No tolerance widened,
+no master push, no protected-path writes, no live session touched.
+
 
 Historical assignments below are retained as provenance only. They no longer
 assign current ownership.

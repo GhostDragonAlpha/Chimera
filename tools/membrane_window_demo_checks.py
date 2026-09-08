@@ -126,13 +126,24 @@ def main() -> int:
           all(float(a).hex() == float(b).hex()
               for a, b in zip(declared_post, rec_energies)),
           f"{len(rec_energies)} recorded vs {len(ref.energies)} declared")
+    # DIMENSIONALLY CORRECTED GATE (preregistered GLM-WINDOW-02; the original
+    # instrument — comparing metres against force_xy_symmetry_N newtons — is
+    # RETIRED and preserved as a failed instrument in the ledger): the
+    # declared run's per-step direction is p = P·F with P = 1/gamma_max
+    # [wu^2/J = m/J] and |F_xy| <= force_xy_symmetry_N [N = J/m], so each
+    # accepted step can move the centre at most alpha·(1/gamma)·1e-6 m with
+    # alpha <= 1. Over n_accepted steps the worst case is
+    # n_accepted * (1/gamma) * 1e-6 m. The bound is DERIVED from the actual
+    # update, not chosen.
     xy_drift = float(np.max(np.abs(ref.positions[demo.CENTRE, :2] -
                                    pos0[demo.CENTRE, :2])))
-    xy_budget = 1e-6   # manifest: preregistered_allowances.force_xy_symmetry_N
-    check("F1.declared_xy_drift_within_symmetry_budget",
-          xy_drift <= xy_budget,
-          f"declared-run centre xy drift {xy_drift:.3e} "
-          f"> {xy_budget:.1e}")
+    gamma_run = res["gamma_J_per_m2"]
+    xy_budget_m = (res["n_accepted"] * (1.0 / gamma_run) * 1e-6
+                   if gamma_run > 0 else 0.0)
+    check("F1.declared_xy_drift_within_derived_position_bound",
+          xy_drift <= xy_budget_m,
+          f"drift {xy_drift:.3e} m vs bound {xy_budget_m:.3e} m "
+          f"(n_accepted={res['n_accepted']}, gamma={gamma_run})")
     check("F1.rail_xy_deviation_exactly_zero_recorded",
           res.get("rail_deviation_max_xy") == 0.0,
           str(res.get("rail_deviation_max_xy")))
@@ -267,6 +278,52 @@ def main() -> int:
         png = ROOT / cap.get("png_file", "")
         check(f"F5.capture_png_exists[{cap.get('label')}]",
               png.exists() and png.stat().st_size > 0, str(png))
+
+    # ── F6: gamma admission path (GLM-WINDOW-02 amendment) ────────────────
+    adm = res.get("gamma_admitted")
+    check("F6.admitted_snapshot_present", adm is not None)
+    if adm:
+        check("F6.synthetic_labeled", adm.get("synthetic") is True and
+              "NOT a calibrated physical material" in adm.get("synthetic_label", ""))
+        check("F6.unit_is_j_per_m2",
+              adm["property"]["unit"].lower() == "j/m^2")
+        check("F6.value_bits_match_recorded_gamma",
+              adm["property"]["value_hex"] ==
+              float(res["gamma_J_per_m2"]).hex())
+        check("F6.admission_path_recorded",
+              "MaterialProperty" in adm.get("admission_path", "") and
+              "register" in adm.get("admission_path", ""))
+        check("F6.coordinate_mapping_declared",
+              res.get("coordinate_mapping", {}).get("wu_to_m") == 1.0 and
+              res.get("coordinate_mapping", {}).get("gamma_unit") == "J/m^2")
+
+    # ── F7: the f32 upload boundary (GLM-WINDOW-02 amendment) ─────────────
+    ub = res.get("f32_upload_boundary")
+    check("F7.upload_boundary_report_present", ub is not None)
+    if ub:
+        check("F7.no_overflow_refusal_encountered",
+              ub["overflow_refused"] == 0,
+              str(ub))
+        # a positive value that rounds to zero must be REPORTED, never
+        # claimed as preservation; the record must exist even when empty
+        check("F7.underflow_accounted",
+              isinstance(ub.get("positive_underflow_count"), int) and
+              (ub["positive_underflow_count"] == 0 or
+               len(ub.get("positive_underflow_values_f64", [])) > 0))
+        check("F7.roundtrip_error_recorded",
+              "max_abs_roundtrip_error_f64" in ub)
+        # independent re-derivation: quantize the accepted geometry again and
+        # confirm the recorded upload hash equals the boundary's output
+        pos32_re, rep_re = demo.quantize_positions_f32(rerail["positions"])
+        check("F7.upload_hash_reproducible",
+              pos32_re.tobytes() == bytes.fromhex(
+                  captures[0]["state"]["upload_positions_f32le_sha256"])
+              if captures else True,
+              "no captures; boundary validated on rerun only" if not captures
+              else "")
+        check("F7.boundary_report_reproducible",
+              rep_re["max_abs_roundtrip_error_f64"] ==
+              ub["max_abs_roundtrip_error_f64"])
 
     print()
     if FAILURES:

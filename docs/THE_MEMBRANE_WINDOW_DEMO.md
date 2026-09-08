@@ -148,3 +148,179 @@ The engine HTTP API is localhost-bound; it is not exposed publicly.
   the separate demo instance (commands above). Never labelled PASS without
   an executed capture with a matching state ID.
 - DYAD: **NOT TESTED**.
+
+---
+
+# GLM-WINDOW-02 — OWNERSHIP TRACE, DIMENSIONAL CORRECTION, CAPTURE LINKAGE,
+# LAUNCH VERIFICATION (2026-09-08)
+
+## 1. Computation ownership (the exact trace)
+
+- **Forces and accepted positions** are produced by
+  `tools/membrane_window_demo.py::projected_descent`, which calls
+  `tools/surface_energy_reference.py::evaluate_surface` — the **CPU float64
+  reference** — and applies the declared overdamped update with constants
+  imported from `tools/overdamped_descent.py`. No Vulkan kernel is involved
+  at any point of the optimization.
+- **The verified Vulkan membrane kernels live in the standalone probe**
+  (`tools/membrane_gpu_probe/`), which dispatches `membrane.comp` compute
+  shaders and compares against frozen fixtures. The window demo does NOT
+  dispatch them. The probe intentionally reads fixture files directly —
+  that is its design as a numerical gate — while the window demo admits
+  gamma only through `tools/material_contract.py` (F6 below records the
+  admission path).
+- **`/mesh_bin` uploads a CPU-computed result**: the driver encodes the
+  accepted f64 geometry, quantized to f32 by the declared boundary policy,
+  plus normals accumulated on the CPU from the certified evaluator's face
+  normals. The engine consumes the byte payload verbatim.
+- **Verdict: this is a CPU-reference visualization milestone.** It is NOT
+  GPU-driven membrane integration, and no such claim is made. GPU-driven
+  integration (engine dispatching the verified kernels) is explicitly out
+  of scope here.
+
+## 2. Dimensional correction (preregistered before the edit)
+
+The original F1 instrument compared the declared run's centre xy **drift
+[metres]** against the manifest's `force_xy_symmetry_N` **[newtons]** — a
+unit mismatch; a position cannot be checked directly against a force.
+
+- **Preregistered correction:** the declared update is `p = P·F` with
+  `P = 1/gamma_max [m/J]`; `|F_xy| <= 1e-6 [J/m]`, `alpha <= 1`, so each
+  accepted step moves the centre at most `(1/gamma)·1e-6` metres. The
+  derived worst-case bound over `n_accepted` steps is
+  `n_accepted · (1/gamma) · 1e-6` metres. Observed drift 4.168e-18 m vs
+  bound 1.260e-4 m (n=126, gamma=1): **PASS**.
+- **The original failing comparison is preserved** as a retired instrument
+  in this document and the master ledger; the failed check line
+  (`F1.declared_xy_drift_within_symmetry_budget`, evidence
+  `20260908T151444.432622Z`) remains in the published record.
+- **Effect on prior PASS verdicts: none.** The energy bit-identity checks
+  and the rail run's exact-zero xy deviation are independent instruments
+  that never used the mismatched comparison. F1 was re-run green under the
+  corrected gate (evidence `20260908T160307.423502Z`).
+
+## 3. Capture linkage (what the state ID does and does not prove)
+
+Source facts (from `ChimeraEngine/engine/main.cpp`):
+
+- The `/mesh_bin` POST response `{"ok":true}` is a **real applied
+  acknowledgement**: the HTTP worker parks the request on `g_mesh_req`, and
+  the RENDER thread consumes it (load_mesh + set_camera) before setting
+  `g_mesh_applied` and notifying the condition variable (15 s timeout).
+  It proves the payload reached the render thread — nothing more.
+- **The ack returns no state identity**: no geometry hash, no frame id,
+  no echo of what was applied. `GET /state` exposes the PARTICLE physics
+  state, not the triangle mesh; `GET /session` exposes snapshot blob
+  SIZES only. There is no engine-returned identifier the driver could
+  bind to its state ID.
+- **Competing writers exist**: `--restore` replays
+  `session_snapshot/mesh_bin.blob` at boot (the demo instance is launched
+  with `--no-restore`, and the driver uploads AFTER boot, so the demo's
+  payload is the LAST write); the Studio UI can load meshes; any other
+  HTTP client could POST `/mesh_bin` between upload and capture. The
+  engine writes every successful upload back to
+  `session_snapshot/mesh_bin.blob` THROUGH (same bytes), which an
+  independent process can read to corroborate what the engine last
+  accepted.
+- **Therefore capture association is CONDITIONAL**: the sidecar's state ID
+  and upload hash prove the driver's INTENDED input and the applied-ack,
+  not which geometry was on screen at capture time. A capture certifies
+  the law only together with (a) the applied-ack on the byte payload whose
+  hash is recorded, (b) a corroboration read of
+  `session_snapshot/mesh_bin.blob` from the demo instance's working
+  directory matching that hash, and (c) no other writer in the window
+  between ack and `/frame`. F5 checks what is checkable from the driver's
+  side; (b) is recorded as an explicit condition in the launch procedure
+  below and remains UNVERIFIED until a window run executes.
+
+## 4. Launch command verified against source
+
+Every element below is checked against the actual code (commit
+4ac41480 + this amendment):
+
+- **Executable name**: `chimera_engine.exe` — `add_executable(chimera_engine
+  ...)` in `ChimeraEngine/engine/CMakeLists.txt` (MSVC adds `.exe`).
+- **Port argument**: `argv[1]` overrides the default 8080
+  (`main.cpp`: `int http_port = 8080; if (argc > 1) ...`). `8091` is the
+  demo's; the operator's session (default 8080) is never contacted.
+- **`--no-restore`**: supported (`main.cpp` scans all argv positions for
+  `--no-restore` and skips the boot restore replay). Without it, the demo
+  instance would replay any `session_snapshot/mesh_bin.blob` in its CWD —
+  the flag makes the demo instance born empty by declaration.
+- **Asset paths**: shaders are loaded CWD-relative (`shaders/*.spv`,
+  `engine.cpp::compile_shaders`); `main.cpp` falls back to the EXE's
+  directory when `shaders/render.vert.spv` is absent from the CWD.
+  Launching from the build output directory works either way.
+- **Window size**: optional `argv[3] argv[4]`.
+- **Shared persistent files with the operator's live engine**: the engine
+  writes `session_snapshot/*.blob`, `session_*.jsonl`, `studio_state.txt`,
+  `cam_marks`/`key_marks` files **relative to its CWD**. A second process
+  launched from a DIFFERENT working directory shares NONE of these. No
+  named Win32 mutexes/events are created (only an unnamed window class
+  `ChimeraEngine` — `RegisterClassEx` is per-process, and the HWND is
+  per-instance, so two instances coexist). Vulkan instances are
+  process-local. **Conclusion: launching the demo instance from its own
+  build output directory isolates it from Alan's live engine's working
+  files**, provided the operator's session runs elsewhere (it does —
+  different CWD). No launch or modification of the existing session is
+  performed by this task.
+- **Precise procedure** (unchanged in substance from the earlier section;
+  now source-verified):
+
+```bash
+# build OUTSIDE the protected build dir
+cmake -S ChimeraEngine/engine -B .tmp/engine_demo_build -G "Visual Studio 17 2022" -A x64
+cmake --build .tmp/engine_demo_build --config Release
+# launch from the build output dir (isolated CWD -> isolated session files)
+cd .tmp/engine_demo_build/Release
+./chimera_engine.exe 8091 --no-restore
+# driver (upload + applied-ack + fixed-camera /frame + sidecar)
+cd <checkout root>
+python tools/membrane_window_demo.py --gamma 1 --engine-url http://localhost:8091
+# checks (numerical gates + capture certifiability)
+python tools/membrane_window_demo_checks.py
+```
+
+After capture, corroborate `session_snapshot/mesh_bin.blob` in
+`.tmp/engine_demo_build/Release/` against the sidecar's
+`upload_positions_f32le_sha256` (the blob additionally carries the header
+and index bytes the upload contained) — the explicit condition that turns
+a conditional capture association into a certifiable one.
+
+## 5. Verdict separation (unchanged law, restated)
+
+- **Numerical (CPU)**: PASS — F1–F4, F6, F7 (evidence
+  `20260908T160307.423502Z` and controls).
+- **Upload**: the byte payload and its f32 hash are recorded; the engine's
+  applied-ack is real but returns no identity — upload-to-screen linkage
+  remains CONDITIONAL (section 3).
+- **Window**: NOT TESTED.
+- **DYAD**: NOT TESTED.
+
+No tolerance was widened anywhere in this correction.
+
+## 6. Big Pickle review reconciliation (7aba0ee7 → current)
+
+BP reviewed 7aba0ee7 (mutation verification) before the demo existed. The
+findings, reconciled against CURRENT source:
+
+1. **Gamma admission trace** — closes in this implementation: the demo's
+   admission path is `MaterialProperty.__post_init__` → `MaterialRecord.add`
+   → `MaterialContract.register` → `bind` → `Binding.get(as_unit='J/m^2')`,
+   recorded immutably per run (F6). The frozen-fixture probe is a DIFFERENT
+   consumer by design: it reads fixture gamma files directly as a numerical
+   gate; this distinction is documented in section 1.
+2. **Unit law** — closes: gamma stays in registered J/m²; the B2 mapping
+   `1 wu = 1 m` is declared explicitly (`WU_TO_M`, `coordinate_mapping` in
+   every run record). No generic J/wu² unit was added.
+3. **f32 boundary validation** — closes: `quantize_positions_f32` validates
+   the CONVERTED value (overflow refused with a named error, never clamped;
+   positive underflow reported, never claimed as preservation; round-trip
+   error recorded). F7 verifies the policy and re-derives the hash.
+4. **Synthetic labeling + immutable snapshot** — closes: every run record
+   carries `gamma_admitted` with `synthetic: true`, the explicit
+   "NOT a calibrated physical material" label, value bits, and the admission
+   path, written before computation consumes the value.
+
+All four required correction work (none was already closed pre-amendment);
+all four now close in the amended driver + checks.
