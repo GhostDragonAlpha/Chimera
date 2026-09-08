@@ -71,8 +71,19 @@ complete-force error ~1.79e-7; fixed-order degree-6 and degree-12 CSR gates
 pass. The first failed runs remain preserved and were caused by a GLSL
 portability issue, a Windows DLL launch environment, and an initially wrong
 host comparison of complete force against the assembly-only reference; no
-physics tolerance was widened. Engine-window/runtime/DYAD/Alan acceptance is
-**NOT TESTED**, and no engine process or HTTP endpoint was touched.
+physics tolerance was widened. **Linux/WSL portability rerun (2026-09-08):**
+`python3 tools/run_membrane_verification.py` reached the runner and recorded
+fresh raw inventory at
+`docs/evidence/membrane_gpu_probe/20260908T044248.110251Z/`. WSL has GCC/G++
+13.3, a Vulkan loader, Mesa ICDs, and `vulkaninfo`; it enumerates only the
+software `llvmpipe (LLVM 20.1.2, 256 bits)` device. NumPy, CMake, GLSL compiler,
+and Vulkan development headers are absent, so CPU/build/GPU are explicitly
+**NOT_TESTED**, not failures or passes. The runner now uses native Linux
+build names/generators and records missing tools, loader, and ICD evidence;
+no dependencies or system configuration were changed. Windows rerun
+`20260908T044310.438669Z` remained CPU/build/GPU **PASS**. Engine-window/runtime/
+DYAD/Alan acceptance is **NOT TESTED**, and no engine process or HTTP endpoint
+was touched.
 
 Historical assignments below are retained as provenance only. They no longer
 assign current ownership.

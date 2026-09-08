@@ -58,7 +58,38 @@ comparison failure that incorrectly compared complete GPU force against the
 assembly-only reference. Those failures were corrected without widening a
 physics budget; the final run uses the separated contracts.
 
-## Buffer layout contract
+## Linux/WSL verification
+
+The exact Linux command is the same command shown above, run from the
+repository root:
+
+```bash
+python3 tools/run_membrane_verification.py
+```
+
+Fresh WSL2 evidence is recorded at
+`20260908T044248.110251Z/`. The captured host has GCC/G++ 13.3, Python 3.12,
+the Vulkan loader, Mesa ICDs, and `vulkaninfo`; it enumerates only
+`llvmpipe (LLVM 20.1.2, 256 bits)`, a software Vulkan device (Vulkan 1.4.318,
+Mesa 25.2.8). It does not have CMake, `glslc`/`glslangValidator`, Vulkan
+development headers, or Python NumPy. Therefore the honest result is:
+
+| Check | State |
+|---|---|
+| Frozen CPU fixture verifier | NOT_TESTED — NumPy missing |
+| Linux probe configure/build | NOT_TESTED — CMake and shader compiler missing |
+| Vulkan comparison | NOT_TESTED — no Linux executable/shader was produced |
+| Engine-window capture | NOT_TESTED — no scoped session supplied |
+
+The runner now captures missing-tool records instead of aborting, selects the
+native CMake generator and executable name on Linux, and records loader/ICD
+inventory. The minimum non-invasive setup for a future Linux run is a Python
+environment containing NumPy, CMake, Vulkan development headers plus loader
+dev files, and a GLSL-to-SPIR-V compiler such as `glslc`; an operator must
+authorize any installation. No dependencies or system configuration were
+changed for this run. The Windows rerun at `20260908T044310.438669Z` remains
+CPU PASS, build PASS, and GPU PASS on the RTX 4090.
+
 
 The shader and host use explicit storage layouts rather than relying on packed
 `vec3`/`uvec3` arrays:
