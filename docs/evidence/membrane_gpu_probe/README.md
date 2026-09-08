@@ -90,6 +90,27 @@ authorize any installation. No dependencies or system configuration were
 changed for this run. The Windows rerun at `20260908T044310.438669Z` remains
 CPU PASS, build PASS, and GPU PASS on the RTX 4090.
 
+## LUNA-LINUX-02 installation blocker
+
+The follow-up WSL run attempted to install the minimum packages and create an isolated Python environment:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y cmake libvulkan-dev glslc python3-venv
+cd /mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub
+python3 -m venv .venv-linux
+.venv-linux/bin/python -m pip install --disable-pip-version-check --no-input numpy
+```
+
+The exact non-interactive attempt is preserved at
+`20260908T050146Z/install_attempt.txt`; it stopped before `apt-get` because
+`sudo: a password is required`. No package, virtual environment, driver,
+display, or engine configuration changed. The post-attempt inventory is in
+`inventory.txt`, and `result.json` records installation `BLOCKED` with CPU,
+build, GPU, and engine-window verification all `NOT_TESTED`. WSL still
+enumerates only the software `llvmpipe (LLVM 20.1.2, 256 bits)` Vulkan device;
+this does not establish RTX 4090 access, hardware performance, or
+engine-window support.
 
 The shader and host use explicit storage layouts rather than relying on packed
 `vec3`/`uvec3` arrays:

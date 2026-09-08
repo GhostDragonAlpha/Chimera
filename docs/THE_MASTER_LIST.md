@@ -81,9 +81,16 @@ and Vulkan development headers are absent, so CPU/build/GPU are explicitly
 **NOT_TESTED**, not failures or passes. The runner now uses native Linux
 build names/generators and records missing tools, loader, and ICD evidence;
 no dependencies or system configuration were changed. Windows rerun
-`20260908T044310.438669Z` remained CPU/build/GPU **PASS**. Engine-window/runtime/
-DYAD/Alan acceptance is **NOT TESTED**, and no engine process or HTTP endpoint
-was touched.
+`20260908T044310.438669Z` remained CPU/build/GPU **PASS**. **LUNA-LINUX-02
+install attempt (2026-09-08):** the authorized WSL dependency command is
+preserved at `docs/evidence/membrane_gpu_probe/20260908T050146Z/`; it was
+blocked before `apt-get` because `sudo -n` reported `sudo: a password is
+required`. Apt candidates were present for CMake, `libvulkan-dev`, `glslc`,
+`python3-venv`, and NumPy, but no packages or venv were installed. The
+observed Vulkan device remains software `llvmpipe (LLVM 20.1.2, 256 bits)`;
+this does not establish RTX 4090 access. CPU/build/GPU are **NOT_TESTED**;
+no Linux PASS is claimed. Engine-window/runtime/DYAD/Alan acceptance is
+**NOT TESTED**, and no engine process or HTTP endpoint was touched.
 
 Historical assignments below are retained as provenance only. They no longer
 assign current ownership.
