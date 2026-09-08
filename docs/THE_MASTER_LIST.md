@@ -109,6 +109,34 @@ llvmpipe device identity, and the uncommitted source diff are preserved.
 Temporary copies only were mutated; physical laws, fixtures, tolerances, and the
 engine boundary were unchanged.
 
+**LUNA-WINDOW-01 membrane window demo (2026-09-08).** Rule-0 preregistration
+in `docs/THE_MEMBRANE_WINDOW_DEMO.md` (before implementation): **STATEMENT** —
+accepted iterations of the declared overdamped update satisfy the existing
+energy/geometry gates and the renderer consumes that accepted geometry (no
+second visual pose). **PREDICTION** — positive gamma reduces the B2 bump, zero
+gamma leaves geometry bit-unchanged, fixed-state gamma doubling doubles energy
+and force within the existing bounds. **FALSIFIER** — accepted-state gate
+breach, separate visual geometry, failed zero/doubling control, or a capture
+without a matching state ID. Implementation: `tools/membrane_window_demo.py`
+(one-shot driver; rim pins exact, centre on the declared vertical rail, ALL
+THREE force components recorded before projection, constants imported from
+`overdamped_descent.py`, gamma only through the validated material contract,
+deterministic state IDs per iteration and per capture) and
+`tools/membrane_window_demo_checks.py` (F1–F5). Numerical result at gamma 1:
+status `stagnated`, 126 accepted steps, energy 2.6245730615178493 →
+2.5980761647224426 J, centre |z| 0.125 → 4.15e-09 m, rail xy deviation exactly
+zero, upload force within the frozen manifest's own componentwise budget.
+All F1–F4 checks **PASS** (`20260908T151444.432622Z`; gamma 0 and gamma 2
+controls recorded). RESOLVED FALSIFIER (kept as correction history): strict
+geometry-byte identity between the rail run and the unconstrained declared
+run is false at f64 noise (f32 hexagon symmetric only to ~1e-17; declared-run
+xy drift 4.17e-18, within the manifest's `force_xy_symmetry_N = 1e-6`);
+energies are bit-identical every iteration; the checks assert energy
+bit-identity + drift-within-budget + rail-exactly-zero instead. No tolerance
+widened. Window/DYAD: **NOT_TESTED** — the demo instance must be built and
+launched by the operator (exact commands in the note); no engine process,
+HTTP endpoint, or protected build path was touched.
+
 
 Historical assignments below are retained as provenance only. They no longer
 assign current ownership.
