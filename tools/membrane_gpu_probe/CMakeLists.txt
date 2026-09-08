@@ -35,6 +35,17 @@ target_link_libraries(membrane_gpu_probe PRIVATE Vulkan::Vulkan)
 target_compile_definitions(membrane_gpu_probe PRIVATE
     CHIMERA_PROBE_SHADER_PATH="$<TARGET_FILE_DIR:membrane_gpu_probe>/membrane.comp.spv"
 )
+
+# GLM-RELAX-GPU-01: the GPU-driven relaxation gate. Same verified shader,
+# same probe core; the loop lives in relax.cpp with one derived stage-4
+# trial kernel compiled at runtime.
+add_executable(relax_gpu_probe relax.cpp)
+add_dependencies(relax_gpu_probe membrane_shader)
+target_link_libraries(relax_gpu_probe PRIVATE Vulkan::Vulkan)
+target_compile_definitions(relax_gpu_probe PRIVATE
+    CHIMERA_PROBE_SHADER_PATH="$<TARGET_FILE_DIR:membrane_gpu_probe>/membrane.comp.spv"
+)
+target_include_directories(relax_gpu_probe PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 add_custom_command(TARGET membrane_gpu_probe POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${SHADER_BINARY}" "$<TARGET_FILE_DIR:membrane_gpu_probe>/membrane.comp.spv"

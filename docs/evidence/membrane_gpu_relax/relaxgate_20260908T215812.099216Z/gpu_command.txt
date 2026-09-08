@@ -1,0 +1,1 @@
+C:\Users\allen\AppData\Local\Temp\opencode\chimera_pub\.tmp\relax_build\Release\relax_gpu_probe.exe --fixtures C:\Users\allen\AppData\Local\Temp\opencode\chimera_pub\docs\evidence\gpu_fixtures --fixture b2 --gamma-case gamma1 --shader C:\Users\allen\AppData\Local\Temp\opencode\chimera_pub\.tmp\relax_build\Release\membrane.comp.spv --max-steps 200

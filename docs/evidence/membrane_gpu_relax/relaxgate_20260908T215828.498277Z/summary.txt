@@ -1,0 +1,10 @@
+GLM-RELAX-GPU-01 gate -- FAIL
+device: NVIDIA GeForce RTX 4090
+GPU loop: status=stagnated n_accepted=126 energy 2.625 -> 2.59807611 J (f32 state of record)
+CPU reference: status=stagnated n_accepted=126 energy -> 2.5980761647224426 J (f64 law on widened f32 start)
+R1 frozen single-shot: PASS
+R2 energy drift worst 1.224e+02 (budget 1.1e-05): FAIL
+R3 final centre gap 1.949e-07 m (bound 1.502e-05): PASS
+R4 named state 'stagnated': PASS
+R5 Armijo worst margin -2.562e+00: FAIL
+evidence: C:\Users\allen\AppData\Local\Temp\opencode\chimera_pub\docs\evidence\membrane_gpu_relax\relaxgate_20260908T215828.498277Z

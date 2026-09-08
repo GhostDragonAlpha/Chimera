@@ -317,6 +317,38 @@ stopped) / human NOT CLAIMED (contrast pair presented) / NO GPU-dynamics
 claim. No master push, no force-push, no protected-path writes, no
 tolerance change, no control of Alan's engine.
 
+**GLM-RELAX-GPU-01 GATE PASS (2026-09-08).** Continue point `c38ffe84…`.
+Preregistered first (`docs/THE_RELAX_GPU01_PREREGISTRATION.md`):
+STATEMENT — the compiled verified kernels (frozen-certified face-eval,
+CSR-gather, energy-reduce) plus one derived stage-4 trial-update kernel
+can DRIVE the declared overdamped descent on B2 gamma=1 with the GPU
+state of record in f32, matching the CPU f64 law within FROZEN budgets
+at iteration 0 and DERIVED f32-accumulation budgets afterward; FALSIFIER
+— frozen-budget breach, energy drift beyond 1.1e-5, position beyond
+n·2^-23·max|coord|, unnamed terminal state, Armijo violation, or any
+tolerance widening. Implementation: probe.cpp core extracted VERBATIM to
+probe_core.hpp (certified single-shot probe unchanged and re-verified),
+new `relax_gpu_probe` target mirrors run_descent 1:1 (residual test on
+free DOFs, exact-zero pins, GUARD_FRAC first-trial cap, backtracking
+Armijo with the trial built IN-KERNEL, five named terminal states).
+RESULT on the NVIDIA GeForce RTX 4090: R1 frozen single-shot PASS (worst
+1.79e-7); R2 per-iteration energy worst drift 3.269e-7 (budget 1.1e-5);
+R3 final centre gap 1.949e-7 m (derived bound 1.502e-5); R4 named state
+`stagnated` matching the CPU law; R5 Armijo re-checked from the trail,
+margin ≥ 0; R6 frozen/derived budgets only. GPU loop 126 accepted steps
+(= CPU law), energy 2.625 → 2.59807611 J vs CPU 2.5980761647224426 J.
+Corrections preserved: draft harness rewritten before compile; float&
+energy mismatch; main() stripped from the extracted header; quoted
+glslc std::system failure on Windows; RELAX_FINAL_POS printed the
+initial state until fixed; HARNESS parse bug (indices parsed as values)
+caused a preserved false-FAIL run before the fix. Record:
+`docs/THE_RELAX_GPU01_RECORD.md`; evidence
+`docs/evidence/membrane_gpu_relax/relaxgate_20260908T220009.757271Z/`.
+Verdicts separate: CPU PASS / GPU PASS / runtime-window-DYAD NOT TESTED
+/ human NOT CLAIMED / GPU-driven ENGINE integration NOT CLAIMED (next
+bounded task). No master push, no force-push, no protected-path writes,
+no tolerance change, no control of Alan's engine.
+
 
 Historical assignments below are retained as provenance only. They no longer
 assign current ownership.
