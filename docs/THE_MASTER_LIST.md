@@ -203,6 +203,35 @@ conditional-with-corroboration / window EXECUTED (visual/DYAD acceptance
 NOT claimed — the local vision agent reviews next). No tolerance widening,
 no master push, no protected-path writes, no control of Alan's engine.
 
+**GLM-DYAD-01 dyad review EXECUTED (2026-09-08).** Per
+`docs/THE_DYAD_PROTOCOL.md` (one image per call, non-leading structured
+questions, no timeouts, full recording; served model read back as
+`qwen3.8-27b-nvfp4-mtp`; human acceptance NOT claimed). Review record:
+`docs/THE_MEMBRANE_DYAD_REVIEW.md`; raw evidence
+`docs/evidence/membrane_window_demo/dyad_*` (rounds 1–3, prompts, context,
+image hashes, raw responses, finish reasons) + the protocol's dyad_log.jsonl.
+ROUND 1 (original phi 0.3 fill captures): dyad judged the membrane NOT
+VISIBLE — pixel measurement confirmed (mesh rendered near-black, edge-on)
+and source inspection found the ROOT CAUSE: B2 is z-up, the engine world
+y-up. CORRECTION (Rule-0 preregistered, falsified by round-2/3
+improvement): explicit axis-convention mapping
+`(x,y,z)_b2 -> (x,z,-y)_engine` at the upload boundary — a rigid rotation
+of the ACCEPTED geometry (presentation transform, NOT a second simulation;
+f64 state of record unchanged, both hashes recorded) — plus recorded
+phi 0.7 and fill+wire mode (the dyad's own request). Two live-found
+defects preserved as failed runs before the fix. ROUND 2 (recaptured):
+dyad judged BOTH captures **consistent** — flat state's spokes converge at
+an in-plane centre and the dyad cross-checked 2.598 J = flat-hexagon area;
+bump sign/magnitude NOT visually certifiable (stated with uncertainty).
+ROUND 3 (dyad-requested near-top-down diagnostic pair, upload↔blob
+corroboration MATCH): both **consistent**; NEW unresolved render defect
+recorded — coplanar mesh/floor depth ambiguity (banding + black lens) for
+the render lane. DYAD VERDICT: rendered results CONSISTENT with the
+declared accepted states at every checked capture after correction;
+membrane visible and suitably framed; no GPU-dynamics claim; Alan's
+acceptance NOT claimed (reserved). Numerical/upload/window verdicts
+unchanged and separate.
+
 
 Historical assignments below are retained as provenance only. They no longer
 assign current ownership.

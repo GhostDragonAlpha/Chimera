@@ -335,10 +335,12 @@ def main() -> int:
                len(ub.get("positive_underflow_values_f64", [])) > 0))
         check("F7.roundtrip_error_recorded",
               "max_abs_roundtrip_error_f64" in ub)
-        # independent re-derivation: quantize the accepted geometry again and
-        # confirm the recorded upload hash equals the boundary's output HASH
-        # (the sidecar stores a digest, so both sides are hashed)
-        pos32_re, rep_re = demo.quantize_positions_f32(rerail["positions"])
+        # independent re-derivation: quantize the accepted geometry again
+        # THROUGH THE SAME UPLOAD BOUNDARY (axis mapping -> f32 quantization)
+        # and confirm the recorded upload hash equals the boundary's output
+        # HASH (the sidecar stores a digest, so both sides are hashed).
+        pos32_re, rep_re = demo.quantize_positions_f32(
+            demo.axis_map_b2_to_engine(rerail["positions"]))
         if captures:
             h_re = demo.sha256_bytes(pos32_re.tobytes())
             check("F7.upload_hash_reproducible",

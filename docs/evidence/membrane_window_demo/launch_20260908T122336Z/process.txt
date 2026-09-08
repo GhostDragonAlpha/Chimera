@@ -1,0 +1,10 @@
+demo engine instance launch record #2 (GLM-DYAD-01 recapture round)
+executable: .tmp/engine_demo_build/Release/chimera_engine.exe (same build as launch #1)
+exe_sha256: 25f9b34967e907da97b5686edfb7e6b563e00618d1d69acc888e15112f287b28
+pid: 20956
+port: 8091 (verified free before launch; no process terminated)
+argv: chimera_engine.exe 8091 --no-restore
+working_directory: C:/Users/allen/AppData/Local/Temp/opencode/chimera_pub/.tmp/engine_demo_build/Release
+endpoint: http://localhost:8091
+purpose: recapture after the dyad's round-1 findings (axis mapping fix,
+         phi 0.3 -> 0.7, fill+wire mode). Only this PID is controlled.

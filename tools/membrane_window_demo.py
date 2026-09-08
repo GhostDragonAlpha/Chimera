@@ -99,9 +99,18 @@ RIM = list(range(6))
 CENTRE = 6
 # Fixed demonstration camera (the same values for every capture of this demo;
 # recorded in each capture's sidecar so captures are comparable).
+# GLM-DYAD-01 amendment: phi raised 0.3 -> 0.7 rad. The dyad + pixel
+# measurement showed phi=0.3 (~17 deg, near grazing) foreshortens the
+# membrane to a sliver and hides the centre offset; 0.7 rad (~40 deg)
+# resolves the height while keeping the fixed-camera comparability law
+# (all captures of a run share one camera, recorded in the sidecar).
 CAM_RADIUS = 6.0
 CAM_THETA = 0.0
-CAM_PHI = 0.3
+CAM_PHI = 0.7
+# slotmode 2 = fill + wireframe (engine: mode = slotmode % 10): the dyad's
+# requested additional evidence -- rim edges and the centre fan visible as
+# lines regardless of shading.
+SLOTMODE = 2.0
 NEUTRAL_RGB = (0.60, 0.60, 0.65)
 
 # THE B2 COORDINATE MAPPING (declared, GLM-WINDOW-02): 1 world unit = 1 metre.
@@ -116,6 +125,35 @@ NEUTRAL_RGB = (0.60, 0.60, 0.65)
 # tools/overdamped_descent.py are bound to metres HERE, at this boundary.
 WU_TO_M = 1.0
 GAMMA_UNIT = "J/m^2"
+
+# THE AXIS-CONVENTION MAPPING (declared, GLM-DYAD-01; found by the dyad +
+# pixel measurement): the B2 fixture is Z-UP (height in z, rim in the xy
+# plane at z=0) while the engine world is Y-UP (floor = XZ, height = Y).
+# Uploaded without mapping, the membrane stands VERTICALLY with the bump
+# pointing along the view axis and its face normals 90 degrees from the
+# top light -- the dyad read it as "empty viewport". The mapping below is a
+# RIGID rotation of the ACCEPTED geometry at the upload boundary (a
+# presentation transform, NOT a second simulation and not a visual
+# approximation): the state of record stays the f64 B2 geometry; the engine
+# consumes the mapped f32 bytes, and both hashes are recorded.
+#   (x, y, z)_b2  ->  (x, z, -y)_engine      (rotation about X by -90 deg)
+# so height z_b2 -> y_engine: the membrane lies IN the floor plane with the
+# bump pointing UP, matching the engine's ground grid and lighting.
+def axis_map_b2_to_engine(v: np.ndarray) -> np.ndarray:
+    v = np.asarray(v, dtype=np.float64)
+    out = np.empty_like(v)
+    out[:, 0] = v[:, 0]
+    out[:, 1] = v[:, 2]
+    out[:, 2] = -v[:, 1]
+    return out
+AXIS_MAPPING = {
+    "name": "b2_zup_to_engine_yup",
+    "formula": "(x, y, z)_b2 -> (x, z, -y)_engine",
+    "reason": "fixture is z-up; engine world is y-up; uploaded unmapped the "
+              "membrane stood vertically and read as invisible (dyad finding)",
+    "kind": "rigid rotation of the accepted geometry at the upload boundary; "
+            "state of record unchanged",
+}
 
 
 def sha256_bytes(b: bytes) -> str:
@@ -442,17 +480,24 @@ def encode_mesh_bin(positions_f64: np.ndarray, faces: np.ndarray,
                     slotmode: float = 0.0) -> bytes:
     """The engine's /mesh_bin payload: [u32 N][u32 idxCount][f32 cr][f32 ct]
     [f32 cp][f32 slotmode][f32*9*N verts][u32*idxCount].  Vertex layout
-    pos3 normal3 color3.  Normals are the area-weighted accumulation of the
-    ACCEPTED geometry's face normals (from the certified evaluator's
-    current-geometry normals); colors are a fixed neutral -- no second
-    visual law."""
-    pos32 = np.ascontiguousarray(positions_f64, dtype="<f4")
+    pos3 normal3 color3.
+
+    THE AXIS MAPPING (GLM-DYAD-01): the accepted B2 geometry (z-up) is
+    rotated into the engine's y-up world at this boundary (axis_map_b2_to_
+    engine) BEFORE quantization; normals are mapped with the same rotation.
+    This is a presentation transform of the accepted state, not a second
+    simulation: the f64 B2 geometry of record and the mapped f32 upload
+    bytes are BOTH hashed and recorded."""
+    mapped = axis_map_b2_to_engine(positions_f64)
+    pos32 = np.ascontiguousarray(mapped, dtype="<f4")
     ev = evaluate_surface(np.asarray(positions_f64, dtype=np.float64),
                           faces, np.zeros(len(faces)))
     acc = np.zeros((len(positions_f64), 3), dtype=np.float64)
     for f_idx, tri in enumerate(faces):
         for v in tri:
             acc[v] += ev.normals[f_idx]
+    # map the accumulated normals with the same rigid rotation
+    acc = axis_map_b2_to_engine(acc)
     nrm = np.linalg.norm(acc, axis=1, keepdims=True)
     nrm32 = np.where(nrm > 0, acc / np.where(nrm > 0, nrm, 1.0), 0.0).astype("<f4")
     col = np.tile(np.asarray(NEUTRAL_RGB, dtype="<f4"), (len(positions_f64), 1))
@@ -470,10 +515,11 @@ def encode_mesh_bin(positions_f64: np.ndarray, faces: np.ndarray,
 
 def upload_positions_f32(positions_f64: np.ndarray) -> bytes:
     """The exact f32 vertex positions the payload carries (recorded so the
-    render-vs-state link is checkable byte-for-byte). Uses the SAME validated
-    boundary as the driver: quantize_positions_f32 (overflow refused, positive
-    underflow reported)."""
-    pos32, _report = quantize_positions_f32(positions_f64)
+    render-vs-state link is checkable byte-for-byte): the AXIS-MAPPED
+    geometry, quantized by the SAME validated boundary as the driver
+    (overflow refused, positive underflow reported)."""
+    mapped = axis_map_b2_to_engine(positions_f64)
+    pos32, _report = quantize_positions_f32(mapped)
     return pos32.tobytes()
 
 
@@ -497,7 +543,8 @@ def capture_from_engine(engine_url: str, positions_f64: np.ndarray,
     final iteration record (iteration/state_id/energy_J/geometry hash).
     Returns the capture record; the sidecar is what makes the capture
     certifiable."""
-    payload = encode_mesh_bin(positions_f64, faces, CAM_RADIUS, CAM_THETA, CAM_PHI)
+    payload = encode_mesh_bin(positions_f64, faces, CAM_RADIUS, CAM_THETA,
+                              CAM_PHI, SLOTMODE)
     status, body = http_post(f"{engine_url}/mesh_bin", payload,
                              "application/octet-stream")
     if status != 200 or b'"ok":true' not in body:
@@ -518,6 +565,7 @@ def capture_from_engine(engine_url: str, positions_f64: np.ndarray,
         "png_file": str(png_path.relative_to(ROOT)),
         "png_sha256": sha256_bytes(png),
         "camera": {"radius": CAM_RADIUS, "theta": CAM_THETA, "phi": CAM_PHI},
+        "slotmode": SLOTMODE,
         "state_id": state["state_id"],
         "state": {
             "fixture": FIXTURE, "gamma_J_per_m2": gamma_value,
@@ -588,7 +636,9 @@ def main() -> int:
     # accepted geometry), before anything is encoded for the engine. This
     # boundary applies to POSITIONS ONLY; gamma has no upload boundary in
     # this demo (gamma_f32_boundary_status records NOT_APPLICABLE).
-    pos32_upload, upload_report = quantize_positions_f32(run["positions"])
+    pos32_upload, upload_report = quantize_positions_f32(
+        axis_map_b2_to_engine(run["positions"]))
+    upload_report["axis_mapping"] = AXIS_MAPPING
 
     # the zero-gamma control, recorded alongside (F2's evidence source)
     zero_run = projected_descent(b2["positions"], b2["faces"],

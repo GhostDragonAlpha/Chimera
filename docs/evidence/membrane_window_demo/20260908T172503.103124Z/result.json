@@ -1,0 +1,176 @@
+{
+  "schema": "chimera-membrane-window-demo-v1",
+  "utc": "20260908T172503.103124Z",
+  "source_commit": "759d73f325c4fdab92224f814a37a6a1ccfce6bb",
+  "fixture": "b2",
+  "gamma_J_per_m2": 0.0,
+  "gamma_admitted": {
+    "record_name": "b2_fixture_gamma",
+    "synthetic": true,
+    "synthetic_label": "dimensionless analytic control fixture gamma; NOT a calibrated physical material",
+    "property": {
+      "name": "gamma",
+      "value": 0.0,
+      "value_hex": "0x0.0p+0",
+      "unit": "J/m^2",
+      "source": "docs/evidence/gpu_fixtures/b2/geometry/gamma*_f32.npy",
+      "conditions": "dimensionless analytic control fixture; constant per-face gamma held fixed during the derivative; not water or cup material calibration",
+      "provenance": "researched"
+    },
+    "admission_path": "MaterialProperty.__post_init__ gate -> MaterialRecord.add -> MaterialContract.register -> bind -> Binding.get(as_unit='J/m^2')",
+    "contract_refusals": "none"
+  },
+  "coordinate_mapping": {
+    "wu_to_m": 1.0,
+    "gamma_unit": "J/m^2",
+    "declaration": "1 wu = 1 m; gamma admitted only in J/m^2"
+  },
+  "f32_upload_boundary": {
+    "policy": "round-to-nearest-f32; overflow refused, never clamped; positive underflow reported, never claimed as preservation",
+    "applies_to": "positions_only",
+    "n_values": 21,
+    "overflow_refused": 0,
+    "positive_underflow_count": 0,
+    "positive_underflow_values_f64": [],
+    "max_abs_f64": 1.0,
+    "max_abs_roundtrip_error_f64": 0.0,
+    "axis_mapping": {
+      "name": "b2_zup_to_engine_yup",
+      "formula": "(x, y, z)_b2 -> (x, z, -y)_engine",
+      "reason": "fixture is z-up; engine world is y-up; uploaded unmapped the membrane stood vertically and read as invisible (dyad finding)",
+      "kind": "rigid rotation of the accepted geometry at the upload boundary; state of record unchanged"
+    }
+  },
+  "gamma_f32_boundary": {
+    "status": "NOT_APPLICABLE",
+    "reason": "this CPU demo performs no gamma upload or f32 gamma conversion; gamma stays float64 end to end",
+    "precision_path": "float64",
+    "certifies_future_gpu_gamma_boundary": false
+  },
+  "rim_pinned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "centre_vertex": 6,
+  "rail": "centre x,y fixed at initial; z free (vertical rail)",
+  "upload_state": {
+    "iteration": 0,
+    "state_id": "8f234d9a27f4a52445b58c3aa71fd54c9017e3d83defd5a320ad79ada7995649",
+    "energy_J": 0.0,
+    "geometry_sha256_f64le": "349a9b20311c25b649ef3c123e9c0610658858f93025d71a134688ec46fff831",
+    "centre_force_N": [
+      0.0,
+      0.0,
+      -0.0
+    ],
+    "centre_force_x_retained": 0.0,
+    "centre_force_y_retained": 0.0,
+    "centre_force_z_retained": -0.0
+  },
+  "status": "stationary",
+  "reason": "",
+  "n_accepted": 0,
+  "n_trials": 0,
+  "energy_initial_J": 0.0,
+  "energy_final_J": 0.0,
+  "centre_force_initial_N": [
+    0.0,
+    0.0,
+    -0.0
+  ],
+  "centre_force_final_N": [
+    0.0,
+    0.0,
+    -0.0
+  ],
+  "rail_deviation_max_xy": null,
+  "iterations": [
+    {
+      "iteration": 0,
+      "state_id": "8f234d9a27f4a52445b58c3aa71fd54c9017e3d83defd5a320ad79ada7995649",
+      "energy_J": 0.0,
+      "centre_force_N": [
+        0.0,
+        0.0,
+        -0.0
+      ],
+      "centre_force_x_retained": 0.0,
+      "centre_force_y_retained": 0.0,
+      "centre_force_z_retained": -0.0,
+      "geometry_sha256_f64le": "349a9b20311c25b649ef3c123e9c0610658858f93025d71a134688ec46fff831",
+      "max_abs_force_component_N": 0.0,
+      "n_faces_valid": 6
+    }
+  ],
+  "constants": {
+    "ARMIJO_C1": 0.0001,
+    "BACKTRACK_FACTOR": 0.5,
+    "MAX_BACKTRACKS": 50,
+    "GUARD_FRAC": 0.001,
+    "RESIDUAL_TOL_FRAC": 1e-12,
+    "STAGNATION_FRAC": 8.0,
+    "DEFAULT_MAX_STEPS": 200
+  },
+  "iterations_are_not_time": true,
+  "gamma_double_control_fixed_state": {
+    "energy_gamma1_J": 0.0,
+    "energy_gamma2_J": 0.0,
+    "energy_ratio": null,
+    "energy_abs_err_J": 0.0,
+    "energy_bound_J": 9.36375259151094e-07,
+    "force_gamma1_N": [
+      0.0,
+      0.0,
+      -0.0
+    ],
+    "force_gamma2_N": [
+      0.0,
+      0.0,
+      -0.0
+    ],
+    "force_z_ratio": null,
+    "force_component_abs_err_N": 0.0,
+    "force_bound_N": 1e-06
+  },
+  "zero_gamma_control": {
+    "status": "stationary",
+    "reason": "",
+    "n_accepted": 0,
+    "n_trials": 0,
+    "energy_J": 0.0,
+    "iteration": 0,
+    "geometry_sha256_f64le": "349a9b20311c25b649ef3c123e9c0610658858f93025d71a134688ec46fff831",
+    "state_id": "8f234d9a27f4a52445b58c3aa71fd54c9017e3d83defd5a320ad79ada7995649"
+  },
+  "checks_script": "tools/membrane_window_demo_checks.py",
+  "captures": [
+    {
+      "label": "dyad2_gamma0_bump",
+      "utc": "2026-09-08T17:25:04.597601+00:00",
+      "engine_url": "http://localhost:8091",
+      "png_file": "docs\\evidence\\membrane_window_demo\\20260908T172503.103124Z\\dyad2_gamma0_bump.png",
+      "png_sha256": "2d042854530665231b3fae26df1ffda5ac74880f47caa8de7e192fab0e3c53a7",
+      "camera": {
+        "radius": 6.0,
+        "theta": 0.0,
+        "phi": 0.7
+      },
+      "slotmode": 2.0,
+      "state_id": "8f234d9a27f4a52445b58c3aa71fd54c9017e3d83defd5a320ad79ada7995649",
+      "state": {
+        "fixture": "b2",
+        "gamma_J_per_m2": 0.0,
+        "iteration": 0,
+        "energy_J": 0.0,
+        "geometry_sha256_f64le": "349a9b20311c25b649ef3c123e9c0610658858f93025d71a134688ec46fff831",
+        "upload_positions_f32le_sha256": "3ca3e4643c2f6da2261302dbd197a1437e1c944cf5f73c7fe57a5df588961dac"
+      },
+      "certifiable": true,
+      "sidecar": "docs\\evidence\\membrane_window_demo\\20260908T172503.103124Z\\dyad2_gamma0_bump.capture.json"
+    }
+  ]
+}
