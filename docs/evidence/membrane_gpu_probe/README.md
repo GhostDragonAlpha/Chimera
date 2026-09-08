@@ -161,3 +161,36 @@ The manifest must be created by an operator-controlled, scoped engine session
 and may contain camera IDs, state IDs, and ordered capture paths. The runner
 only records those fields; it never starts, stops, replaces, or POSTs to the
 engine, and it never exposes the engine API publicly.
+
+## STEP-GPU-02 mutation verification
+
+The reproducible negative-control runner is:
+
+```bash
+.venv-linux/bin/python tools/run_membrane_mutation_verification.py
+```
+
+Evidence is preserved at
+`docs/evidence/membrane_gpu_mutations/20260908T062453.860121Z/`. The preregistered
+statement was that the clean probe passes and each temporary mutation is rejected
+by a numerical or validity gate. The unmodified control passed; all six controls
+were compiled and executed on WSL2 llvmpipe, so no compile failure was counted as
+detection:
+
+| Control | Build | Detection |
+|---|---|---|
+| clean | PASS | PASS (GPU_RESULT PASS) |
+| reversed force sign | PASS | PASS (corner/complete numerical gate) |
+| permuted corner ownership | PASS | PASS (corner/complete numerical gate) |
+| zero force with positive gamma | PASS | PASS (corner/complete numerical gate) |
+| incorrect normal | PASS | PASS (normal gate) |
+| invalid face with gamma=0 | PASS | PASS (validity gate; gamma-zero case) |
+| reused prior output after geometry change | PASS | PASS (stale reuse detected) |
+
+The actual selected device in each run was `llvmpipe (LLVM 20.1.2, 256 bits)`,
+a software Vulkan device. The result does not establish RTX access, hardware
+performance, engine-window support, or runtime acceptance. Each control records
+fixture hashes, copied-source hashes, compiled SPIR-V hash, executable hash,
+commands, exit codes, and raw output; the clean source diff and pre-existing
+uncommitted files are also recorded. Temporary mutation copies are not committed
+as production source or fixtures.

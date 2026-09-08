@@ -1,0 +1,2 @@
+cwd: /mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub
+command: /mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub/docs/evidence/membrane_gpu_mutations/20260908T062453.860121Z/stale_buffer_reuse/build/membrane_gpu_probe --fixtures /mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub/docs/evidence/gpu_fixtures --shader /mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub/docs/evidence/membrane_gpu_mutations/20260908T062453.860121Z/stale_buffer_reuse/build/membrane.comp.spv --stale-reuse

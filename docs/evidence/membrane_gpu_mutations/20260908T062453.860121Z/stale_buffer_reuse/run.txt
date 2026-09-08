@@ -1,0 +1,9 @@
+GPU membrane probe
+device: llvmpipe (LLVM 20.1.2, 256 bits)
+  b2/gamma0 stale_reuse=DETECTED changed_center_z=0.15625
+  b2/gamma1 stale_reuse=DETECTED changed_center_z=0.15625
+  b2/gamma2 stale_reuse=DETECTED changed_center_z=0.15625
+  fan12/gamma0 stale_reuse=DETECTED changed_center_z=0.15625
+  fan12/gamma1 stale_reuse=DETECTED changed_center_z=0.15625
+  fan12/gamma2 stale_reuse=DETECTED changed_center_z=0.15625
+STALE_REUSE_RESULT DETECTED

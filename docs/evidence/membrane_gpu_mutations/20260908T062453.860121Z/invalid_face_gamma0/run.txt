@@ -1,0 +1,9 @@
+GPU membrane probe
+device: llvmpipe (LLVM 20.1.2, 256 bits)
+  b2/gamma0 FAIL face_max=0.989743 corner_max=0 assembly_max=0 complete_max=0 energy=0 predicates(area=0,normal=0,corner=1,assembly=1,energy=1,zero=1,validity=0)
+  b2/gamma1 FAIL face_max=0.989743319 corner_max=0.502604029 assembly_max=0 complete_max=0.502604035 energy=2.1875 predicates(area=0,normal=0,corner=0,assembly=1,energy=0,zero=1,validity=0) bad_complete(v=1,c=1,diff=0.502604035,budget=2.5e-05)
+  b2/gamma2 FAIL face_max=0.989743319 corner_max=1.00520806 assembly_max=0 complete_max=1.00520807 energy=4.375 predicates(area=0,normal=0,corner=0,assembly=1,energy=0,zero=1,validity=0) bad_complete(v=1,c=1,diff=1.00520807,budget=2.5e-05)
+  fan12/gamma0 PASS face_max=7.99252764e-08 corner_max=0 assembly_max=0 complete_max=0 energy=0 predicates(area=1,normal=1,corner=1,assembly=1,energy=1,zero=1,validity=1)
+  fan12/gamma1 PASS face_max=7.99252764e-08 corner_max=4.87645385e-08 assembly_max=0 complete_max=6.09172482e-08 energy=3.02501631 predicates(area=1,normal=1,corner=1,assembly=1,energy=1,zero=1,validity=1)
+  fan12/gamma2 PASS face_max=7.99252764e-08 corner_max=9.7529077e-08 assembly_max=0 complete_max=1.21834496e-07 energy=6.05003262 predicates(area=1,normal=1,corner=1,assembly=1,energy=1,zero=1,validity=1)
+GPU_RESULT FAIL worst_abs=1.00520807

@@ -90,8 +90,25 @@ post-install run `20260908T052316.891102Z` remains as failed correction
 history because NumPy 2.5.3 violated the fixture's frozen 2.2.6 version
 identity; no fixtures, laws, or numerical tolerances changed. Windows rerun
 `20260908T044310.438669Z` remained CPU/build/GPU **PASS**. Engine-window/
-runtime/DYAD/Alan acceptance is **NOT TESTED**, and no engine process or HTTP
+runtime/DYAD/Alan acceptance is **NOT_TESTED**, and no engine process or HTTP
 endpoint was touched.
+
+**STEP-GPU-02 mutation verification (2026-09-08).** Rule-0 preregistration:
+**STATEMENT** — the standalone probe detects each specified temporary mutation
+through a numerical or validity gate while the clean control passes.
+**PREDICTION** — all six compiled/executed controls are rejected on WSL2
+llvmpipe. **FALSIFIER** — clean failure, compile-only detection, accepted
+mutation, or accepted stale output. Evidence
+`docs/evidence/membrane_gpu_mutations/20260908T062453.860121Z/` records the
+clean control and all six detections as **PASS**: reversed force sign,
+permuted corner ownership, zero force with positive gamma, incorrect normal,
+invalid face with gamma=0 via emitted validity predicate, and true stale-buffer
+reuse after changing mapped geometry. Every control built and executed; source,
+SPIR-V, executable, fixture hashes, commands, exit codes, raw outputs, actual
+llvmpipe device identity, and the uncommitted source diff are preserved.
+Temporary copies only were mutated; physical laws, fixtures, tolerances, and the
+engine boundary were unchanged.
+
 
 Historical assignments below are retained as provenance only. They no longer
 assign current ownership.

@@ -1,0 +1,2 @@
+C:\Windows\System32\vulkan-1.dll
+C:\Program Files\NVIDIA Corporation\SDK Manager\vulkan-1.dll
