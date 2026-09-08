@@ -126,6 +126,16 @@ NEUTRAL_RGB = (0.60, 0.60, 0.65)
 WU_TO_M = 1.0
 GAMMA_UNIT = "J/m^2"
 
+# THE PRESENTATION LIFT (GLM-DYAD-02, preregistered BEFORE the controlled
+# test it enables; the full preregistration is PRESENTATION_LIFT below):
+# the engine rasterizes its floor and the mesh shadow in the SAME y=0 plane
+# the flat membrane's rim maps to, so a coplanar flat membrane fights the
+# floor for depth (round-3 dyad artifact: banding + black lens). The lift
+# is a RIGID PRESENTATION TRANSLATION of the mapped upload bytes along the
+# engine's vertical axis -- render presentation, never the physics.
+PRESENTATION_LIFT_M = 0.5
+LIFT_AXIS_ENGINE = "y"   # the engine world's vertical (B2 z maps to -y)
+
 # THE AXIS-CONVENTION MAPPING (declared, GLM-DYAD-01; found by the dyad +
 # pixel measurement): the B2 fixture is Z-UP (height in z, rim in the xy
 # plane at z=0) while the engine world is Y-UP (floor = XZ, height = Y).
@@ -139,11 +149,14 @@ GAMMA_UNIT = "J/m^2"
 #   (x, y, z)_b2  ->  (x, z, -y)_engine      (rotation about X by -90 deg)
 # so height z_b2 -> y_engine: the membrane lies IN the floor plane with the
 # bump pointing UP, matching the engine's ground grid and lighting.
-def axis_map_b2_to_engine(v: np.ndarray) -> np.ndarray:
+def axis_map_b2_to_engine(v: np.ndarray, lift_m: float = 0.0) -> np.ndarray:
+    """B2 (z-up) -> engine (y-up) rigid rotation, plus an optional rigid
+    vertical PRESENTATION lift (`lift_m`, engine y): render presentation
+    only, the physical state of record is untouched."""
     v = np.asarray(v, dtype=np.float64)
     out = np.empty_like(v)
     out[:, 0] = v[:, 0]
-    out[:, 1] = v[:, 2]
+    out[:, 1] = v[:, 2] + lift_m
     out[:, 2] = -v[:, 1]
     return out
 AXIS_MAPPING = {
@@ -153,6 +166,51 @@ AXIS_MAPPING = {
               "membrane stood vertically and read as invisible (dyad finding)",
     "kind": "rigid rotation of the accepted geometry at the upload boundary; "
             "state of record unchanged",
+}
+# DIAGNOSTIC VIEW CAMERAS (explicitly recorded; never mixed with the fixed
+# camera law -- each sidecar labels its camera). 'top' is the dyad-requested
+# near-top-down from GLM-DYAD-01; 'low' is a mid-elevation view where the
+# centre's height separates from the rim in SILHOUETTE (the top view
+# collapses the rail axis almost entirely). GLM-DYAD-02 test view: 'low'.
+DIAGNOSTIC_VIEWS = (
+    ("top", {"radius": 3.5, "theta": 0.0, "phi": 1.45,
+             "why": "near-top-down (~83 deg): minimal projection of the rail "
+                    "axis; dyad-requested in GLM-DYAD-01"}),
+    ("low", {"radius": 4.0, "theta": 0.0, "phi": 1.10,
+             "why": "~63 deg elevation: centre height separates from the rim "
+                    "in silhouette; the GLM-DYAD-02 test view"}),
+    ("oblique", {"radius": 3.0, "theta": 0.0, "phi": 0.55,
+                 "why": "~32 deg elevation (dyad round-4 request after the "
+                        "phi=1.10 pair read INCONCLUSIVE): the 0.125 m centre "
+                        "height must break the hexagon silhouette or show as "
+                        "rim/centre parallax; the minimal discriminator the "
+                        "dyad named"}),
+)
+
+# The engine's persisted /mesh_bin blob (CWD-relative inside the demo
+# instance's own working directory; a second demo instance shares no
+# persistent files with the operator's session -- verified in source).
+MESH_BLOB = (ROOT / ".tmp" / "engine_demo_build" / "Release" /
+             "session_snapshot" / "mesh_bin.blob")
+
+PRESENTATION_LIFT = {
+    "task": "GLM-DYAD-02 (preregistered before the controlled test)",
+    "statement": "Removing floor overlap (rigid +0.5 m presentation lift "
+                 "along engine y, identical across compared captures) "
+                 "improves surface legibility without changing the accepted "
+                 "physical geometry.",
+    "prediction": "With the lift, rim and centre are distinguishable and a "
+                  "raised-vs-flat comparison becomes resolvable in captures "
+                  "made with identical presentation, camera and render "
+                  "settings.",
+    "falsifier": "The depth/banding ambiguity persists in lifted captures, "
+                 "the uploaded physical geometry changes, or centre height "
+                 "remains visually unresolved (recorded INCONCLUSIVE for "
+                 "that visual comparison).",
+    "lift_m": PRESENTATION_LIFT_M, "axis": LIFT_AXIS_ENGINE,
+    "no_exaggeration": "lift is rigid, applied identically to every compared "
+                       "capture; the physical geometry of record is hashed "
+                       "unchanged and no contact physics is introduced",
 }
 
 
@@ -477,7 +535,8 @@ def gamma_double_control(positions, faces, gamma1: float) -> dict:
 
 def encode_mesh_bin(positions_f64: np.ndarray, faces: np.ndarray,
                     cam_radius: float, cam_theta: float, cam_phi: float,
-                    slotmode: float = 0.0) -> bytes:
+                    slotmode: float = 0.0,
+                    lift_m: float = PRESENTATION_LIFT_M) -> bytes:
     """The engine's /mesh_bin payload: [u32 N][u32 idxCount][f32 cr][f32 ct]
     [f32 cp][f32 slotmode][f32*9*N verts][u32*idxCount].  Vertex layout
     pos3 normal3 color3.
@@ -485,10 +544,12 @@ def encode_mesh_bin(positions_f64: np.ndarray, faces: np.ndarray,
     THE AXIS MAPPING (GLM-DYAD-01): the accepted B2 geometry (z-up) is
     rotated into the engine's y-up world at this boundary (axis_map_b2_to_
     engine) BEFORE quantization; normals are mapped with the same rotation.
-    This is a presentation transform of the accepted state, not a second
-    simulation: the f64 B2 geometry of record and the mapped f32 upload
-    bytes are BOTH hashed and recorded."""
-    mapped = axis_map_b2_to_engine(positions_f64)
+    THE PRESENTATION LIFT (GLM-DYAD-02, default PRESENTATION_LIFT_M): a
+    rigid translation of the mapped upload along engine y so the surface no
+    longer lies in the floor/shadow plane. Presentation only: the f64 B2
+    geometry of record and the mapped f32 upload bytes are BOTH hashed and
+    recorded; lift=0.0 reproduces the coplanar presentation exactly."""
+    mapped = axis_map_b2_to_engine(positions_f64, lift_m=lift_m)
     pos32 = np.ascontiguousarray(mapped, dtype="<f4")
     ev = evaluate_surface(np.asarray(positions_f64, dtype=np.float64),
                           faces, np.zeros(len(faces)))
@@ -496,7 +557,8 @@ def encode_mesh_bin(positions_f64: np.ndarray, faces: np.ndarray,
     for f_idx, tri in enumerate(faces):
         for v in tri:
             acc[v] += ev.normals[f_idx]
-    # map the accumulated normals with the same rigid rotation
+    # map the accumulated normals with the same rigid rotation (no lift:
+    # normals are directions, not positions)
     acc = axis_map_b2_to_engine(acc)
     nrm = np.linalg.norm(acc, axis=1, keepdims=True)
     nrm32 = np.where(nrm > 0, acc / np.where(nrm > 0, nrm, 1.0), 0.0).astype("<f4")
@@ -513,14 +575,88 @@ def encode_mesh_bin(positions_f64: np.ndarray, faces: np.ndarray,
     return header + verts.tobytes() + idx.tobytes()
 
 
-def upload_positions_f32(positions_f64: np.ndarray) -> bytes:
+def upload_positions_f32(positions_f64: np.ndarray,
+                         lift_m: float = PRESENTATION_LIFT_M) -> bytes:
     """The exact f32 vertex positions the payload carries (recorded so the
-    render-vs-state link is checkable byte-for-byte): the AXIS-MAPPED
-    geometry, quantized by the SAME validated boundary as the driver
+    render-vs-state link is checkable byte-for-byte): the AXIS-MAPPED and
+    LIFTED geometry, quantized by the SAME validated boundary as the driver
     (overflow refused, positive underflow reported)."""
-    mapped = axis_map_b2_to_engine(positions_f64)
+    mapped = axis_map_b2_to_engine(positions_f64, lift_m=lift_m)
     pos32, _report = quantize_positions_f32(mapped)
     return pos32.tobytes()
+
+
+def blob_position_hash() -> str:
+    """Hash of the POSITION bytes in the engine's persisted /mesh_bin blob
+    (documented format: [u32 N][u32 idxCount][f32 cr ct cp slotmode][verts
+    pos3+nrm3+col3 f32][u32 indices]) -- positions only, NEVER a whole-blob
+    hash compared against a position hash (GLM-WINDOW-03 rule)."""
+    blob = MESH_BLOB.read_bytes()
+    n, _idx_count = struct.unpack_from("<II", blob, 0)
+    pos = b"".join(blob[24 + i * 36: 24 + i * 36 + 12] for i in range(n))
+    return sha256_bytes(pos)
+
+
+def diagnostic_capture(engine_url: str, positions_f64: np.ndarray,
+                       faces: np.ndarray, state: dict, outdir: Path,
+                       label: str, gamma_value: float, view_name: str,
+                       view: dict, lift_m: float) -> dict:
+    """One DIAGNOSTIC extra view of the SAME uploaded state: an
+    explicitly-labelled recorded camera (never the fixed demo camera), with
+    the blob corroboration asserted AT capture time (no other upload may
+    intervene)."""
+    upload32 = upload_positions_f32(positions_f64, lift_m=lift_m)
+    upload_hash = sha256_bytes(upload32)
+    payload = encode_mesh_bin(positions_f64, faces, view["radius"],
+                              view["theta"], view["phi"], SLOTMODE,
+                              lift_m=lift_m)
+    status, body = http_post(f"{engine_url}/mesh_bin", payload,
+                             "application/octet-stream")
+    if status != 200 or b'"ok":true' not in body:
+        raise RuntimeError(f"mesh_bin upload failed: {status} {body[:200]!r}")
+    cam = json.dumps({"cam_radius": view["radius"],
+                      "cam_theta": view["theta"],
+                      "cam_phi": view["phi"]}).encode()
+    http_post(f"{engine_url}/camera", cam, "application/json")
+    status, png, ctype = http_get(f"{engine_url}/frame")
+    if status != 200 or "image/png" not in ctype:
+        raise RuntimeError(f"/frame failed: {status} {ctype!r}")
+    blob_hash = blob_position_hash()
+    if blob_hash != upload_hash:
+        raise RuntimeError(
+            f"blob corroboration FAILED at capture: {blob_hash} != {upload_hash}")
+    png_path = outdir / f"{label}_{view_name}.png"
+    png_path.write_bytes(png)
+    record = {
+        "label": f"{label}_{view_name}",
+        "kind": "DIAGNOSTIC extra view; explicitly-labelled recorded camera, "
+                "not the demo's fixed camera",
+        "view": view,
+        "engine_url": engine_url,
+        "png_file": str(png_path.relative_to(ROOT)),
+        "png_sha256": sha256_bytes(png),
+        "camera": {"radius": view["radius"], "theta": view["theta"],
+                   "phi": view["phi"]},
+        "slotmode": SLOTMODE,
+        "presentation_lift": {"axis": LIFT_AXIS_ENGINE, "metres": lift_m,
+                              "kind": "rigid render-presentation translation; "
+                                      "physical state of record unchanged"},
+        "upload_positions_f32le_sha256": upload_hash,
+        "blob_position_hash_at_capture": blob_hash,
+        "blob_corroboration": "MATCH",
+        "state_id": state["state_id"],
+        "state": {
+            "fixture": FIXTURE, "gamma_J_per_m2": gamma_value,
+            "iteration": state["iteration"], "energy_J": state["energy_J"],
+            "geometry_sha256_f64le": state["geometry_sha256_f64le"],
+            "centre_height_b2_z_m": float(positions_f64[CENTRE, 2]),
+            "upload_positions_f32le_sha256": upload_hash,
+        },
+    }
+    sidecar = outdir / f"{label}_{view_name}.capture.json"
+    sidecar.write_text(json.dumps(record, indent=2), encoding="utf-8")
+    record["sidecar"] = str(sidecar.relative_to(ROOT))
+    return record
 
 
 def http_post(url: str, body: bytes, content_type: str, timeout: float = 30.0):
@@ -538,13 +674,15 @@ def http_get(url: str, timeout: float = 30.0):
 
 def capture_from_engine(engine_url: str, positions_f64: np.ndarray,
                         faces: np.ndarray, state: dict, outdir: Path,
-                        label: str, gamma_value: float) -> dict:
+                        label: str, gamma_value: float,
+                        lift_m: float = PRESENTATION_LIFT_M) -> dict:
     """One fixed-camera capture with its state-ID sidecar.  `state` is the
     final iteration record (iteration/state_id/energy_J/geometry hash).
-    Returns the capture record; the sidecar is what makes the capture
-    certifiable."""
+    `lift_m` is the preregistered presentation lift (identical across every
+    compared capture; recorded in the sidecar). Returns the capture record;
+    the sidecar is what makes the capture certifiable."""
     payload = encode_mesh_bin(positions_f64, faces, CAM_RADIUS, CAM_THETA,
-                              CAM_PHI, SLOTMODE)
+                              CAM_PHI, SLOTMODE, lift_m=lift_m)
     status, body = http_post(f"{engine_url}/mesh_bin", payload,
                              "application/octet-stream")
     if status != 200 or b'"ok":true' not in body:
@@ -558,7 +696,7 @@ def capture_from_engine(engine_url: str, positions_f64: np.ndarray,
         raise RuntimeError(f"/frame failed: {status} {ctype!r}")
     png_path = outdir / f"{label}.png"
     png_path.write_bytes(png)
-    upload32 = upload_positions_f32(positions_f64)
+    upload32 = upload_positions_f32(positions_f64, lift_m=lift_m)
     record = {
         "label": label, "utc": datetime.now(timezone.utc).isoformat(),
         "engine_url": engine_url,
@@ -566,11 +704,15 @@ def capture_from_engine(engine_url: str, positions_f64: np.ndarray,
         "png_sha256": sha256_bytes(png),
         "camera": {"radius": CAM_RADIUS, "theta": CAM_THETA, "phi": CAM_PHI},
         "slotmode": SLOTMODE,
+        "presentation_lift": {"axis": LIFT_AXIS_ENGINE, "metres": lift_m,
+                              "kind": "rigid render-presentation translation; "
+                                      "physical state of record unchanged"},
         "state_id": state["state_id"],
         "state": {
             "fixture": FIXTURE, "gamma_J_per_m2": gamma_value,
             "iteration": state["iteration"], "energy_J": state["energy_J"],
             "geometry_sha256_f64le": state["geometry_sha256_f64le"],
+            "centre_height_b2_z_m": float(positions_f64[CENTRE, 2]),
             "upload_positions_f32le_sha256": sha256_bytes(upload32),
         },
         "certifiable": True,   # the CHECKS verify this, not this flag
@@ -595,6 +737,13 @@ def main() -> int:
     ap.add_argument("--label", default=None)
     ap.add_argument("--no-capture", action="store_true",
                     help="numerical run only; no engine contact")
+    ap.add_argument("--lift-m", type=float, default=PRESENTATION_LIFT_M,
+                    help="rigid vertical PRESENTATION lift (engine y, "
+                         "metres); 0.0 = the original coplanar presentation")
+    ap.add_argument("--view", choices=("fixed", "top", "low", "oblique", "both"),
+                    default="fixed",
+                    help="additional explicitly-recorded diagnostic cameras "
+                         "to capture of the same uploaded state")
     args = ap.parse_args()
 
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ")
@@ -637,8 +786,10 @@ def main() -> int:
     # boundary applies to POSITIONS ONLY; gamma has no upload boundary in
     # this demo (gamma_f32_boundary_status records NOT_APPLICABLE).
     pos32_upload, upload_report = quantize_positions_f32(
-        axis_map_b2_to_engine(run["positions"]))
+        axis_map_b2_to_engine(run["positions"], lift_m=args.lift_m))
     upload_report["axis_mapping"] = AXIS_MAPPING
+    upload_report["presentation_lift"] = {"axis": LIFT_AXIS_ENGINE,
+                                          "metres": args.lift_m}
 
     # the zero-gamma control, recorded alongside (F2's evidence source)
     zero_run = projected_descent(b2["positions"], b2["faces"],
@@ -690,7 +841,21 @@ def main() -> int:
     if args.engine_url and not args.no_capture:
         captures.append(capture_from_engine(
             args.engine_url, run["positions"], b2["faces"], final_state,
-            outdir, args.label or f"gamma{gamma_val:g}_final", gamma_val))
+            outdir, args.label or f"gamma{gamma_val:g}_final", gamma_val,
+            lift_m=args.lift_m))
+        for view_name, view in DIAGNOSTIC_VIEWS:
+            if args.view == "fixed":
+                continue
+            if args.view in ("top", "low") and view_name != args.view:
+                continue
+            captures.append(diagnostic_capture(
+                args.engine_url, run["positions"], b2["faces"], final_state,
+                outdir, args.label or f"gamma{gamma_val:g}_final", gamma_val,
+                view_name, view, lift_m=args.lift_m))
+    result["presentation_lift"] = {
+        "metres": args.lift_m, "axis": LIFT_AXIS_ENGINE,
+        "preregistration": PRESENTATION_LIFT,
+    }
     result["captures"] = captures
     (outdir / "result.json").write_text(json.dumps(result, indent=2),
                                         encoding="utf-8")
@@ -698,6 +863,7 @@ def main() -> int:
     print(json.dumps({
         "evidence": str(outdir), "status": run["status"],
         "gamma_J_per_m2": gamma_val,
+        "lift_m": args.lift_m,
         "n_accepted": run["n_accepted"],
         "energy_initial_J": result["energy_initial_J"],
         "energy_final_J": result["energy_final_J"],

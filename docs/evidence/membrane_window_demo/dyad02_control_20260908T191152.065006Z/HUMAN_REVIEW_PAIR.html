@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>GLM-DYAD-02 — membrane pair for human review (Alan)</title>
+<style>
+  body { background:#141414; color:#ddd; font-family:Segoe UI,system-ui,sans-serif; margin:24px; }
+  h1 { font-size:20px; color:#fff; } h2 { font-size:15px; color:#9cf; }
+  .pair { display:flex; gap:16px; flex-wrap:wrap; }
+  figure { margin:0; flex:1 1 600px; }
+  img { width:100%; border:1px solid #333; border-radius:4px; }
+  figcaption { font-size:13px; margin-top:6px; line-height:1.5; }
+  .verdict { background:#1d1d1d; border-left:3px solid #e8b339; padding:10px 14px; font-size:13px; line-height:1.6; max-width:1100px; }
+  code { color:#9cf; }
+</style>
+</head>
+<body>
+<h1>GLM-DYAD-02 — raised vs relaxed membrane, identical presentation (for your review)</h1>
+<p class="verdict">
+Both images: the SAME view (oblique φ=0.55 rad, r=3.0), the SAME rigid +0.5 m presentation
+lift off the engine floor, the SAME render mode (fill+wireframe) and lighting — captured from
+the isolated demo instance, each upload corroborated byte-for-byte against the engine's
+persisted snapshot. They differ ONLY in the accepted physical state of the frozen B2 fixture.
+Numerical gates: ALL PASS. DYAD (qwen3.8-27b-nvfp4-mtp): judged the flat state consistent in
+every round but could <b>not</b> visually resolve the bump — the height comparison is recorded
+INCONCLUSIVE; the wireframe pass draws the same colour as the fill and the lighting produces no
+shading gradient across the bump, so the interior carries no cue. <b>Your acceptance is not
+claimed or assumed — this pair is presented for that review.</b>
+</p>
+<div class="pair">
+<figure>
+<img src="../20260908T192702.077867Z/raised_gamma0_oblique.png" alt="raised state">
+<figcaption><h2>Image 1 — RAISED (γ = 0 J/m², optimizer stationary at 0 steps)</h2>
+Declared physical centre height: <b>+0.125 m</b> above the rim plane (the untouched fixture).
+State ID <code>cc62542f…aa87cef</code>; PNG sha256 <code>f7a6e595…75702</code>.
+<br><small>Path: <code>docs/evidence/membrane_window_demo/20260908T192702.077867Z/raised_gamma0_oblique.png</code></small>
+</figcaption>
+</figure>
+<figure>
+<img src="../20260908T192708.250952Z/relaxed_gamma1_oblique.png" alt="relaxed state">
+<figcaption><h2>Image 2 — RELAXED (γ = 1 J/m², 126 accepted steps, energy 2.6245731 → 2.5980762 J)</h2>
+Declared physical centre height: <b>≈ 0 m</b> (4.1×10⁻⁹ m; area-minimized flat state).
+State ID <code>a25d27e5…7001f8e</code>; PNG sha256 <code>39b861a8…e30fa9</code>.
+<br><small>Path: <code>docs/evidence/membrane_window_demo/20260908T192708.250952Z/relaxed_gamma1_oblique.png</code></small>
+</figcaption>
+</figure>
+</div>
+<p class="verdict">
+Verdict classes kept separate — numerical CPU: PASS · upload: CONDITIONAL with position-byte
+corroboration MATCH · window: EXECUTED (isolated instance) · DYAD: floor artifact RESOLVED
+(controlled evidence), centre-height comparison INCONCLUSIVE · human: NOT CLAIMED (this page) ·
+GPU-driven dynamics: NO CLAIM. Task record: <code>docs/THE_MEMBRANE_DYAD02_RECORD.md</code>.
+</p>
+</body>
+</html>

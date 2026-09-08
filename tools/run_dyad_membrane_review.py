@@ -1,4 +1,4 @@
-"""run_dyad_membrane_review.py -- GLM-DYAD-01: the dyad reads the membrane captures.
+"""run_dyad_membrane_review.py -- GLM-DYAD-01/02: the dyad reads the membrane captures.
 
 Follows docs/THE_DYAD_PROTOCOL.md and ChimeraEngine/senses.py:
 - ONE image per senses.watch_one call (the one-image wall; N images = N calls,
@@ -112,6 +112,25 @@ RUN_FACTS = """RUN AND RENDER FACTS (from the recorded evidence of the run that 
   captures; each capture's uploaded vertex bytes were verified byte-identical
   to the engine's persisted snapshot for that capture."""
 
+# ── GLM-DYAD-02 preregistration (written into the shared context verbatim) ──
+PREREG_BRIEF = """PREREGISTERED COMPARISON UNDER TEST (declared before these captures were made):
+
+STATEMENT: removing floor overlap -- a rigid +0.5 m PRESENTATION lift of the
+uploaded geometry along the engine's vertical axis, applied IDENTICALLY to
+both captures -- improves surface legibility without changing the accepted
+physical geometry.
+PREDICTION: with the lift, the rim and the centre are distinguishable, so a
+raised-centre state and a flat state can be told apart in the images.
+FALSIFIER: the earlier depth/banding ambiguity persists, the physical
+geometry changed, or the centre height remains visually unresolved (an
+unresolved height is recorded INCONCLUSIVE for this visual comparison).
+
+The two images below are a PAIR captured with identical presentation lift,
+camera, render mode and lighting; they differ ONLY in their accepted
+physical state (declared under each). Use their DIFFERENCE to answer what is
+visible -- observations only, with uncertainty.
+"""
+
 QUESTIONS = """QUESTIONS (answer each with its number; give observations and your uncertainty; if something is not visible, say NOT VISIBLE rather than guessing):
 
 1. What geometry is visibly distinguishable in this image? Describe shapes,
@@ -131,9 +150,97 @@ QUESTIONS = """QUESTIONS (answer each with its number; give observations and you
 SHARED = PHYSICS_BRIEF + "\n\n" + RUN_FACTS + "\n\n" + QUESTIONS
 
 
+def declared_from_sidecar(label: str, sc: dict) -> str:
+    """The declared state of one image, built ONLY from its recorded
+    sidecar (never guessed): physical state of record, presentation lift,
+    camera, and the at-capture blob corroboration."""
+    st = sc.get("state", {})
+    lift = sc.get("presentation_lift", {})
+    cam = sc.get("camera", {})
+    corr = sc.get("blob_corroboration") or sc.get("blob_position_hash_at_capture")
+    h = st.get("centre_height_b2_z_m")
+    height_txt = (f"The PHYSICAL centre height above the rim plane in this "
+                  f"state is {h} m (recorded from the accepted geometry; "
+                  f"this is separate from the presentation lift below). ") if \
+        h is not None else ""
+    return (f"gamma = {st.get('gamma_J_per_m2')} J/m^2; optimizer terminal "
+            f"state: iteration {st.get('iteration')}, energy "
+            f"{st.get('energy_J')} J. {height_txt}Uploaded geometry carries "
+            f"a RIGID PRESENTATION LIFT of +{lift.get('metres')} m along the "
+            f"engine's vertical axis, IDENTICAL in both images of this pair "
+            f"(the physical geometry of record is hashed unchanged). "
+            f"Camera: radius {cam.get('radius')}, theta {cam.get('theta')}, "
+            f"phi {cam.get('phi')} rad; render mode fill+wireframe. "
+            f"Uploaded position bytes were verified against the engine's "
+            f"persisted snapshot at capture time: {corr}.")
+
+
+def pair_facts_from_sidecars(scs: list[dict]) -> str:
+    """RUN AND RENDER FACTS for a comparison pair, derived from the two
+    sidecars: what is identical, what differs."""
+    a, b = scs
+    ca, cb = a["camera"], b["camera"]
+    la = a["presentation_lift"]["metres"]
+    lb = b["presentation_lift"]["metres"]
+    same_cam = ca == cb
+    same_lift = la == lb
+    ha = a["state"].get("centre_height_b2_z_m")
+    hb = b["state"].get("centre_height_b2_z_m")
+    return (
+        "PAIR FACTS (from the recorded sidecars of these two captures):\n\n"
+        f"- Identical presentation: rigid vertical lift = {la} m on BOTH "
+        f"images (same lift: {same_lift}); render mode fill+wireframe; "
+        "lighting is the engine's default.\n"
+        f"- Camera: radius {ca.get('radius')}, theta {ca.get('theta')}, "
+        f"phi {ca.get('phi')} rad -- identical in both images: {same_cam}.\n"
+        "- The surface sits LIFTED clear of the engine floor plane; the "
+        "engine's ground grid, floor and shadow plane are BELOW it and "
+        "separated, so any banding/depth-fighting with the floor plane is "
+        "a renderer property, not a mesh property.\n"
+        f"- The two uploaded states differ ONLY in the centre vertex height "
+        f"along the vertical rail: the DECLARED PHYSICAL centre heights are "
+        f"{ha} m and {hb} m (recorded from each accepted geometry). The "
+        f"visible raised-vs-flat difference comes from these heights, NOT "
+        f"from the presentation lift, which is identical on both.\n"
+        "- Each image is a full 2560x1440 window frame captured over HTTP "
+        "from a separately launched demo engine instance; no other mesh "
+        "was uploaded between the two captures.")
+
+
 def main() -> int:
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ")
+    # CAPTURES may be overridden on the CLI: --captures label=DIR/PNG.png
+    # (repeatable). Default: the round-2 top-down pair from GLM-DYAD-01.
+    args_iter = sys.argv[2:]
+    new_caps = []
+    i = 0
+    while i < len(args_iter):
+        if args_iter[i] == "--captures" and i + 1 < len(args_iter):
+            label, path = args_iter[i + 1].split("=", 1)
+            p = Path(path)
+            if not p.is_absolute():
+                p = (ROOT / p).resolve()
+            new_caps.append({"label": label, "dir": p.parent, "png": p.name,
+                             "state": "(declared in the pair context below)"})
+            i += 2
+        else:
+            i += 1
+    caps = new_caps or CAPTURES
     round_tag = sys.argv[1] if len(sys.argv) > 1 else "r1"
+    shared = SHARED
+    declared_override = {}
+    if new_caps:
+        # Pair mode: declared states + run facts come from the SIDECARS.
+        scs = []
+        for cap in caps:
+            sc_path = cap["dir"] / (cap["png"].rsplit(".", 1)[0] +
+                                    ".capture.json")
+            sc = json.loads(sc_path.read_text(encoding="utf-8"))
+            scs.append(sc)
+            declared_override[cap["label"]] = declared_from_sidecar(
+                cap["label"], sc)
+        shared = (PHYSICS_BRIEF + "\n\n" + pair_facts_from_sidecars(scs) +
+                  "\n\n" + PREREG_BRIEF + "\n\n" + QUESTIONS)
     outdir = ROOT / "docs" / "evidence" / "membrane_window_demo" / f"dyad_{round_tag}_{stamp}"
     outdir.mkdir(parents=True, exist_ok=False)
 
@@ -141,32 +248,36 @@ def main() -> int:
     record = {
         "schema": "chimera-dyad-membrane-review-v1",
         "utc": stamp,
-        "task": "GLM-DYAD-01",
+        "task": "GLM-DYAD-01/GLM-DYAD-02",
         "eye_ready": ok, "served_model": served, "eye_reason": reason,
         "pinned_model_file": str(Path(ROOT / "Saved" / "dyad_model.txt")
                                   .exists() and
                                   (ROOT / "Saved" / "dyad_model.txt").read_text().strip()),
         "protocol": "docs/THE_DYAD_PROTOCOL.md",
         "one_image_per_call": True,
-        "shared_context": SHARED,
+        "shared_context": shared,
         "human_acceptance": "NOT CLAIMED (reserved to Alan)",
         "gpu_dynamics_claim": "NONE",
+        "comparison_pair": len(caps) == 2,
+        "preregistration": PREREG_BRIEF if new_caps else None,
         "images": [],
     }
 
-    for cap in CAPTURES:
+    for cap in caps:
         png_path = cap["dir"] / cap["png"]
         png_bytes = png_path.read_bytes()
+        declared = declared_override.get(cap["label"], cap["state"])
         prompt = (f"You are reviewing ONE image from a physics visualization "
                   f"run. Image label: {cap['label']}.\n\n"
-                  f"DECLARED STATE OF THIS IMAGE: {cap['state']}\n\n" + SHARED)
+                  f"DECLARED STATE OF THIS IMAGE: {declared}\n\n" + shared)
         report = senses.watch_one(str(png_path), prompt)
         rec = {
             "label": cap["label"],
-            "png": str(png_path.relative_to(ROOT)),
+            "png": str(png_path if png_path.is_absolute()
+                       else png_path.relative_to(ROOT.resolve())),
             "png_sha256": hashlib.sha256(png_bytes).hexdigest(),
             "png_bytes": len(png_bytes),
-            "declared_state": cap["state"],
+            "declared_state": declared,
             "prompt_chars": len(prompt),
             "served_model": senses._last_served_model(),
             "finish_reason": senses.last_finish_reason(),

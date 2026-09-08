@@ -336,11 +336,14 @@ def main() -> int:
         check("F7.roundtrip_error_recorded",
               "max_abs_roundtrip_error_f64" in ub)
         # independent re-derivation: quantize the accepted geometry again
-        # THROUGH THE SAME UPLOAD BOUNDARY (axis mapping -> f32 quantization)
-        # and confirm the recorded upload hash equals the boundary's output
-        # HASH (the sidecar stores a digest, so both sides are hashed).
+        # THROUGH THE SAME UPLOAD BOUNDARY (axis mapping + the RECORDED
+        # presentation lift -> f32 quantization) and confirm the recorded
+        # upload hash equals the boundary's output HASH (the sidecar stores
+        # a digest, so both sides are hashed).
+        lift_rec = res.get("presentation_lift") or {}
+        lift_m = float(lift_rec.get("metres", demo.PRESENTATION_LIFT_M))
         pos32_re, rep_re = demo.quantize_positions_f32(
-            demo.axis_map_b2_to_engine(rerail["positions"]))
+            demo.axis_map_b2_to_engine(rerail["positions"], lift_m=lift_m))
         if captures:
             h_re = demo.sha256_bytes(pos32_re.tobytes())
             check("F7.upload_hash_reproducible",
@@ -353,6 +356,34 @@ def main() -> int:
         check("F7.boundary_report_reproducible",
               rep_re["max_abs_roundtrip_error_f64"] ==
               ub["max_abs_roundtrip_error_f64"])
+
+    # ── F8: GLM-DYAD-02 presentation-lift law (recorded in the evidence) ──
+    pl = res.get("presentation_lift")
+    check("F8.presentation_lift_preregistered",
+          pl is not None and
+          "GLM-DYAD-02" in (pl.get("preregistration") or {}).get("task", ""),
+          "every lifted capture must carry the preregistration record")
+    if pl:
+        check("F8.lift_axis_is_engine_y", pl.get("axis") == "y", str(pl))
+        check("F8.lift_matches_preregistered_value",
+              (pl.get("preregistration") or {}).get("lift_m") ==
+              pl.get("metres"))
+        # FALSIFIER GUARD (rule 2 of the task): the lift must never touch the
+        # physical state. The upload_state geometry hash is the PRE-step,
+        # PRE-lift f64 fixture state; it must equal the frozen fixture.
+        upst = res.get("upload_state") or {}
+        check("F8.physical_geometry_of_record_unchanged",
+              upst.get("geometry_sha256_f64le") == geom_hash(pos0),
+              "upload-state f64 geometry must be the untouched fixture")
+        # each capture's recorded geometry of record must be the run's own
+        # accepted state (the lift must never substitute another geometry;
+        # for gamma=0 the accepted state IS the fixture, hash-equal)
+        final_geom = res["iterations"][-1]["geometry_sha256_f64le"]
+        for cap in captures:
+            check(f"F8.capture_geometry_of_record_unchanged[{cap['label']}]",
+                  cap["state"]["geometry_sha256_f64le"] == final_geom,
+                  "capture geometry hash must equal the accepted state of "
+                  "the run that produced it")
 
     print()
     if FAILURES:

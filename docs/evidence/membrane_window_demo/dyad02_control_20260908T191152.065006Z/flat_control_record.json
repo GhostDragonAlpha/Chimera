@@ -1,0 +1,39 @@
+{
+  "schema": "chimera-dyad02-coplanarity-control-v2",
+  "utc": "2026-09-08T19:35:00Z",
+  "task": "GLM-DYAD-02",
+  "hypothesis": "the round-3 banding/black-lens artifact is the coplanar depth conflict between the FLAT membrane (gamma=1 accepted state, centre height ~4e-9 m) and the engine's floor/shadow plane (both rasterize y=0)",
+  "why_this_control": "the first control (control_record.json in this directory) used the BUMPED fixture state at phi=1.10 and showed NO artifact in either presentation -- correct outcome, wrong state: the bump fill is not coplanar with the floor (only its rim is). The round-3 artifact was reported on the FLAT gamma-1 capture, so the control was re-aimed at that exact state and the exact round-3 camera.",
+  "conditions": {
+    "state": "gamma=1 accepted terminal state (stagnated, 126 steps, energy 2.5980761647224426 J), recomputed by tools/membrane_window_demo.projected_descent -- identical procedure to the published runs",
+    "camera": {"radius": 3.5, "theta": 0.0, "phi": 1.45, "note": "the EXACT round-3 diagnostic camera"},
+    "render": "fill+wireframe (slotmode 2), engine default lighting; only the preregistered rigid presentation lift differs between the two captures",
+    "engine": "isolated demo instance PID 66400, exe sha256 25f9b349..., endpoint http://localhost:8091 (launch_20260908T183000Z)"
+  },
+  "results": [
+    {
+      "label": "flat_lift0_coplanar",
+      "png": "flat_lift0_phi145.png",
+      "png_sha256": "c7d839114a8cc4970e4167a364e511c6ff583e3deeac55d6ada1afc73f521930",
+      "presentation_lift_metres": 0.0,
+      "pixels_lum_lt_20": 0,
+      "pixels_lum_lt_32": 61138,
+      "row_band_std": 21.32,
+      "blob_corroboration": "MATCH",
+      "provenance": "BYTE-IDENTICAL to the round-3 gamma-1 capture dyad2top_gamma1_flat_topdown.png (sha256 c7d83911... recorded in 20260908T173204.430256Z/dyad2top_gamma1_flat_topdown.capture.json) -- the artifact reproduces exactly at lift 0"
+    },
+    {
+      "label": "flat_lift1_presented",
+      "png": "flat_lift0.5_phi145.png",
+      "png_sha256": "83f4b364f15fe7cc (first 16 hex)",
+      "presentation_lift_metres": 0.5,
+      "pixels_lum_lt_20": 0,
+      "pixels_lum_lt_32": 0,
+      "row_band_std": 11.83,
+      "blob_corroboration": "MATCH"
+    }
+  ],
+  "verdict": "HYPOTHESIS SUPPORTED by controlled comparison: identical state+camera+render, only the lift differs; the coplanar presentation shows the artifact (61k sub-background pixels) and the lifted presentation shows none. The byte-identical lift-0 reproduction ties the round-3 artifact to the coplanar presentation specifically.",
+  "preserved_failed_first_control": "control_record.json (bumped-state control, artifact absent in both presentations -- retained as history)",
+  "operator_engine_untouched": true
+}

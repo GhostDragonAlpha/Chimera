@@ -1,0 +1,65 @@
+{
+  "schema": "chimera-dyad02-coplanarity-control-v1",
+  "utc": "2026-09-08T19:11:55.100741+00:00",
+  "task": "GLM-DYAD-02",
+  "hypothesis": "the round-3 banding/black-lens artifact is the coplanar depth conflict between the flat membrane and the engine's floor/shadow plane (both rasterize y=0)",
+  "control": "identical uploaded state + camera + render mode; only the preregistered rigid presentation lift differs (0.0 vs +0.5 m along engine y)",
+  "metric": "near-black pixels (luminance < 20) inside the projected mesh region (central 40% x 40% box); background ~32, fill ~106+",
+  "captures": [
+    {
+      "label": "lift0_coplanar",
+      "png": "docs\\evidence\\membrane_window_demo\\dyad02_control_20260908T191152.065006Z\\lift0_coplanar.png",
+      "png_sha256": "c0a6fe545252c79ba0bd2d3d6e78f85c7fc004a44e3a10e59a2bf12dfcfdeed6",
+      "camera": {
+        "radius": 4.0,
+        "theta": 0.0,
+        "phi": 1.1
+      },
+      "presentation_lift_metres": 0.0,
+      "upload_positions_f32le_sha256": "3ca3e4643c2f6da2261302dbd197a1437e1c944cf5f73c7fe57a5df588961dac",
+      "blob_position_hash_at_capture": "3ca3e4643c2f6da2261302dbd197a1437e1c944cf5f73c7fe57a5df588961dac",
+      "blob_corroboration": "MATCH",
+      "region_metrics": {
+        "box": [
+          768,
+          432,
+          1792,
+          1007
+        ],
+        "near_black_px": 0,
+        "fill_px": 393359,
+        "near_black_fraction_of_fill": 0.0,
+        "mean_luminance_box": 115.60706408514487
+      }
+    },
+    {
+      "label": "lift1_presented",
+      "png": "docs\\evidence\\membrane_window_demo\\dyad02_control_20260908T191152.065006Z\\lift1_presented.png",
+      "png_sha256": "6cc1d8fc9397d4e2dff91598a50ea637cc8f24d4fe07cf918423631fdf4de408",
+      "camera": {
+        "radius": 4.0,
+        "theta": 0.0,
+        "phi": 1.1
+      },
+      "presentation_lift_metres": 0.5,
+      "upload_positions_f32le_sha256": "635d1e26a95bc8e4501e73b7ba9fd922e73b5ce723202abd350e4079b9fcaa82",
+      "blob_position_hash_at_capture": "635d1e26a95bc8e4501e73b7ba9fd922e73b5ce723202abd350e4079b9fcaa82",
+      "blob_corroboration": "MATCH",
+      "region_metrics": {
+        "box": [
+          768,
+          432,
+          1792,
+          1007
+        ],
+        "near_black_px": 0,
+        "fill_px": 455313,
+        "near_black_fraction_of_fill": 0.0,
+        "mean_luminance_box": 128.81935235507248
+      }
+    }
+  ],
+  "artifact_supported_by_control": false,
+  "interpretation": "NOT supported by this control: the ambiguity's cause remains open; report descriptively",
+  "operator_engine_untouched": true
+}

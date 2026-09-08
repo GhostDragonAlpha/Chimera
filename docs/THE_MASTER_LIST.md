@@ -232,6 +232,47 @@ membrane visible and suitably framed; no GPU-dynamics claim; Alan's
 acceptance NOT claimed (reserved). Numerical/upload/window verdicts
 unchanged and separate.
 
+**GLM-DYAD-02 EXECUTED (2026-09-08).** Continue point
+`931ce1e596fffbc08212bf07b13e4f294c35bd7a`. Preregistered before the test:
+STATEMENT — removing floor overlap (rigid +0.5 m presentation lift along
+engine y, identical across compared captures) improves surface legibility
+without changing the accepted physical geometry; PREDICTION — rim and
+centre distinguishable, raised-vs-flat comparison resolvable under
+identical presentation/camera/render; FALSIFIER — ambiguity persists,
+physical geometry changes, or centre height remains unresolved
+(INCONCLUSIVE for that comparison). (1) Floor/mesh ambiguity: treated as a
+HYPOTHESIS and tested by controlled comparison in the isolated instance
+(PID 66400, launch_20260908T183000Z): same flat accepted state, same
+exact round-3 camera, only the lift differs — the lift-0.0 capture is
+BYTE-IDENTICAL to the round-3 artifact capture (`c7d83911…`), and shows
+61,138 sub-background pixels where the lifted capture shows 0. VERDICT:
+hypothesis SUPPORTED (coplanar depth conflict with the floor/shadow
+plane); a first bumped-state control showing no artifact is preserved as
+history. (2) The lift is a documented rigid PRESENTATION translation of
+the upload (no floor-visibility control exists in the engine surface);
+accepted f64 geometry, energies, forces and state IDs untouched; gates F8
+enforce geometry-of-record invariance; no bump exaggeration, no contact
+physics, no renderer repair. (3) Raised (γ=0, 0 steps) vs relaxed (γ=1,
+126 steps) pairs captured with identical lift/camera/render, blob
+corroboration MATCH each; checks F1–F8 ALL PASS. (4) DYAD rounds 4–5
+(φ=1.10 pair, then the dyad-requested oblique φ=0.55 pair): relaxed state
+CONSISTENT every round; raised state NOT visually resolvable —
+**centre-height comparison INCONCLUSIVE per the preregistered rule**;
+expectation retired. Remaining cause MEASURED + source-verified: zero
+shading response across the bump (identical fill statistics at every
+camera) and the wireframe pass draws the SAME vertex color as the fill
+(`engine.cpp` ~1439, "identical in every state except polygon mode"), so
+interior contrast is zero by construction — making the height legible is a
+general-renderer improvement, recorded for the operator, out of scope
+here. Task record: `docs/THE_MEMBRANE_DYAD02_RECORD.md`; evidence
+`dyad02_control_20260908T191152.065006Z`, capture dirs
+`20260908T1919…`–`20260908T1927…`, `dyad_r4_*`, `dyad_r5_*`. Verdicts
+separate: numerical PASS / upload CONDITIONAL-with-corroboration / window
+EXECUTED / DYAD artifact-RESOLVED + height-INCONCLUSIVE / human NOT
+CLAIMED — the oblique pair is presented to Alan for review; NO
+GPU-dynamics claim. No master push, no force-push, no protected-path
+writes, no tolerance change, no control of Alan's engine.
+
 
 Historical assignments below are retained as provenance only. They no longer
 assign current ownership.
