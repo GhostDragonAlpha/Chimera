@@ -590,8 +590,13 @@ def blob_position_hash() -> str:
     """Hash of the POSITION bytes in the engine's persisted /mesh_bin blob
     (documented format: [u32 N][u32 idxCount][f32 cr ct cp slotmode][verts
     pos3+nrm3+col3 f32][u32 indices]) -- positions only, NEVER a whole-blob
-    hash compared against a position hash (GLM-WINDOW-03 rule)."""
-    blob = MESH_BLOB.read_bytes()
+    hash compared against a position hash (GLM-WINDOW-03 rule). The blob is
+    CWD-relative to the DEMO INSTANCE; when a second build directory is in
+    use, CHIMERA_MESH_BLOB overrides the default path so corroboration
+    always reads the engine that actually served the capture."""
+    import os
+    blob_path = os.environ.get("CHIMERA_MESH_BLOB") or MESH_BLOB
+    blob = Path(blob_path).read_bytes()
     n, _idx_count = struct.unpack_from("<II", blob, 0)
     pos = b"".join(blob[24 + i * 36: 24 + i * 36 + 12] for i in range(n))
     return sha256_bytes(pos)

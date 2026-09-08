@@ -10,6 +10,7 @@
 #include <cmath>
 #include <vector>
 #include <string>
+#include <cstdlib>
 #include <unordered_set>
 #include <atomic>
 #include <ctime>
@@ -1128,6 +1129,16 @@ bool Engine::compile_shaders() {
     tri_vert_mod_ = create_shader_module(device_, trivert_spv);
     tri_frag_mod_ = create_shader_module(device_, trifrag_spv);
     if (tri_vert_mod_ == VK_NULL_HANDLE || tri_frag_mod_ == VK_NULL_HANDLE) return false;
+    // GLM-DEMO-CONTRAST-01: the opt-in edge-contrast fragment. OPTIONAL by
+    // law (the shadow/floor pattern): a stale/missing spv costs the demo
+    // feature, not the engine. The env gate is latched here; the pipeline is
+    // only created when latched on.
+    tri_edge_contrast_ = getenv("CHIMERA_TRI_EDGE_CONTRAST") != nullptr;
+    if (tri_edge_contrast_) {
+        auto edgspv = read_file((base + "/shaders/render_tri_edge.frag.spv").c_str());
+        if (!edgspv.empty())
+            tri_edge_frag_mod_ = create_shader_module(device_, edgspv);
+    }
     // THE CONTACT SHADOW: optional at init (the engine still runs if the spv
     // is stale) — the shadow is an instrument upgrade, not a load-bearing wall.
     {
@@ -1448,6 +1459,29 @@ bool Engine::create_triangle_pipeline() {
     if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr, &tri_wire_pipeline_) != VK_SUCCESS) {
         fprintf(stderr, "Failed to create triangle wireframe pipeline\n");
         return false;
+    }
+    // GLM-DEMO-CONTRAST-01: the edge-contrast twin — same geometry, same LINE
+    // raster, but a CONSTANT LIGHT edge fragment instead of the fill color.
+    // Created only when the env gate latched on AND the module compiled; any
+    // failure leaves the ordinary wireframe in charge (opt-in, never a wall).
+    if (tri_edge_contrast_ && tri_edge_frag_mod_ != VK_NULL_HANDLE) {
+        VkPipelineShaderStageCreateInfo estages[2] = {};
+        estages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        estages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
+        estages[0].module = tri_vert_mod_;
+        estages[0].pName = "main";
+        estages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        estages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+        estages[1].module = tri_edge_frag_mod_;   // the ONLY difference
+        estages[1].pName = "main";
+        gpci.pStages = estages;
+        if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr, &tri_edge_pipeline_) != VK_SUCCESS) {
+            fprintf(stderr, "edge-contrast pipeline failed; ordinary wireframe stays active\n");
+            tri_edge_pipeline_ = VK_NULL_HANDLE;
+        } else {
+            printf("edge-contrast wireframe: created (CHIMERA_TRI_EDGE_CONTRAST)\n");
+        }
+        gpci.pStages = stages;   // restore for any later pipeline creation
     }
     // THE GROUND PLANE geometry: one static quad on the xz plane, big enough
     // that the camera's usual orbits never see its edge. y is IGNORED by the
@@ -4756,6 +4790,8 @@ void Engine::destroy_triangle_resources() {
     if (floor_frag_mod_) { vkDestroyShaderModule(device_, floor_frag_mod_, nullptr); floor_frag_mod_ = VK_NULL_HANDLE; }
     if (tri_pipeline_) { vkDestroyPipeline(device_, tri_pipeline_, nullptr); tri_pipeline_ = VK_NULL_HANDLE; }
     if (tri_wire_pipeline_) { vkDestroyPipeline(device_, tri_wire_pipeline_, nullptr); tri_wire_pipeline_ = VK_NULL_HANDLE; }
+    if (tri_edge_pipeline_) { vkDestroyPipeline(device_, tri_edge_pipeline_, nullptr); tri_edge_pipeline_ = VK_NULL_HANDLE; }
+    if (tri_edge_frag_mod_) { vkDestroyShaderModule(device_, tri_edge_frag_mod_, nullptr); tri_edge_frag_mod_ = VK_NULL_HANDLE; }
     if (tri_vert_mod_) { vkDestroyShaderModule(device_, tri_vert_mod_, nullptr); tri_vert_mod_ = VK_NULL_HANDLE; }
     if (tri_frag_mod_) { vkDestroyShaderModule(device_, tri_frag_mod_, nullptr); tri_frag_mod_ = VK_NULL_HANDLE; }
     if (tri_vbuf_) { vkDestroyBuffer(device_, tri_vbuf_, nullptr); vkFreeMemory(device_, tri_vmem_, nullptr); tri_vbuf_ = VK_NULL_HANDLE; }
@@ -7294,7 +7330,12 @@ bool Engine::frame() {
             vkCmdDrawIndexed(cmd_bufs_[img_idx], tri_idx_count_, 1, 0, 0, 0);
         }
         if (mesh_mode_ >= 1 && tri_wire_pipeline_ != VK_NULL_HANDLE) {
-            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, tri_wire_pipeline_);
+            // GLM-DEMO-CONTRAST-01: when the opt-in edge-contrast pipeline
+            // exists it replaces the same-color wire pass; otherwise the
+            // ordinary path is untouched (default remains byte-identical).
+            VkPipeline wire = (tri_edge_pipeline_ != VK_NULL_HANDLE)
+                                  ? tri_edge_pipeline_ : tri_wire_pipeline_;
+            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, wire);
             vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &vb, &off);
             vkCmdBindIndexBuffer(cmd_bufs_[img_idx], tri_ibuf_, 0, VK_INDEX_TYPE_UINT32);
             vkCmdDrawIndexed(cmd_bufs_[img_idx], tri_idx_count_, 1, 0, 0, 0);

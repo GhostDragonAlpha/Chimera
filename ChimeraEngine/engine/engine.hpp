@@ -814,6 +814,7 @@ private:
     // ── triangle mesh rendering ──────────────────────────────────────────────
     bool create_triangle_pipeline();
     VkShaderModule tri_vert_mod_ = VK_NULL_HANDLE, tri_frag_mod_ = VK_NULL_HANDLE;
+    VkShaderModule tri_edge_frag_mod_ = VK_NULL_HANDLE;   // GLM-DEMO-CONTRAST-01 (opt-in)
     VkShaderModule tri_shadow_frag_mod_ = VK_NULL_HANDLE;   // contact shadow (planar projection)
     VkShaderModule tri_shadow_vert_mod_ = VK_NULL_HANDLE;   // projects to the floor plane
     VkShaderModule floor_vert_mod_ = VK_NULL_HANDLE;        // THE GROUND PLANE — the surface the
@@ -824,6 +825,12 @@ private:
     static constexpr uint32_t FLOOR_VERTS = 6;              // two triangles, xz plane
     VkPipeline      tri_pipeline_ = VK_NULL_HANDLE;   // reuses pipeline_layout_
     VkPipeline      tri_wire_pipeline_ = VK_NULL_HANDLE; // same shaders, VK_POLYGON_MODE_LINE
+    // GLM-DEMO-CONTRAST-01: opt-in edge-contrast wire twin (constant light
+    // edge color in render_tri_edge.frag). Created ONLY when the env var
+    // CHIMERA_TRI_EDGE_CONTRAST is set at engine start; when absent this
+    // pointer stays null and rendering is byte-identical to the ordinary path.
+    VkPipeline      tri_edge_pipeline_ = VK_NULL_HANDLE;
+    bool            tri_edge_contrast_ = false;   // latched from the env at init
     VkPipeline      tri_shadow_pipeline_ = VK_NULL_HANDLE; // shadow twin: blended, no depth write
     uint32_t        mesh_mode_ = 0;   // 0 = fill, 1 = wire only, 2 = fill + wire overlay
     VkBuffer        tri_vbuf_ = VK_NULL_HANDLE, tri_ibuf_ = VK_NULL_HANDLE;

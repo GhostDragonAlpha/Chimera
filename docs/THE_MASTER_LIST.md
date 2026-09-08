@@ -273,6 +273,50 @@ CLAIMED — the oblique pair is presented to Alan for review; NO
 GPU-dynamics claim. No master push, no force-push, no protected-path
 writes, no tolerance change, no control of Alan's engine.
 
+**GLM-DEMO-CONTRAST-01 EXECUTED (2026-09-08).** Continue point
+`ae5c5d6ed0a20c88c75ea29fb9055203de1e3c0e`. Preregistered: STATEMENT —
+contrasting edges make the actual centre/rim geometry more
+distinguishable without changing accepted simulation state; PREDICTION —
+DYAD can locate centre and rim and distinguish raised vs relaxed in a
+fixed oblique view; FALSIFIER — geometry changes, ordinary rendering
+regresses, or the height distinction stays unresolved (INCONCLUSIVE).
+Implemented the SMALLEST opt-in rendering change: new
+`render_tri_edge.frag` (constant light edge color (0.90,0.90,0.95),
+derived from the measured fill band 147–167 + the family's +0.05 blue),
+a LINE-mode pipeline twin created ONLY when env
+`CHIMERA_TRI_EDGE_CONTRAST` is latched at engine start (optional-
+instrument law: stale/missing spv costs the feature, not the engine),
+substituted at the existing wire draw; ordinary path untouched when
+unset. REGRESSION PROVEN byte-identical: patched exe (f3714eb9…), gate
+UNSET, lifts 0.0/+0.5 reproduce the pre-patch PNG sha256s c7d83911… /
+83f4b364… exactly (a corroboration FAIL was tooling — build1's stale
+blob path — fixed with the CHIMERA_MESH_BLOB override, re-run green).
+Physics invariance: F1–F8 ALL PASS on the contrast-pair run (state IDs
+shift only because they are commit-scoped; energies and geometry hashes
+bit-identical). Captures with gate ON (PID 25480): raised
+`20260908T203620.679992Z/raised_contrast_oblique.png`, relaxed
+`20260908T203626.782212Z/relaxed_contrast_oblique.png`, identical +0.5 m
+lift + oblique camera, blob corroboration MATCH; measured edge pixels
+408/376 where pre-patch had 0, fill statistics unchanged. DYAD round 6
+(full recording `dyad_r6_20260908T203756.192289Z`): the patch ACHIEVED
+its aim — the dyad LOCATES the centre ("the spoke junction") and rim and
+reads the mesh floating clear of the floor — but the height distinction
+REMAINS NOT RESOLVABLE ("spokes are straight line segments whether or
+not the centre is raised"; perspective confounds the junction offset).
+VERDICT: height distinction INCONCLUSIVE per the preregistered
+falsifier; per the stop rule THIS VISUAL EXPERIMENT STOPS. Now
+two independent mutually-confirming proofs that this rendering approach
+cannot resolve the B2 bump height (zero shading response — GLM-DYAD-02;
+projection invariance of straight spokes — this task); resolving height
+needs a different evidence class (side/elevation ortho view, rim-plane
+reference overlay, or height/normal color ramp), left to the operator.
+Record: `docs/THE_MEMBRANE_CONTRAST01_RECORD.md`. Verdicts separate:
+numerical PASS / upload CONDITIONAL-with-corroboration / window
+EXECUTED / DYAD centre-locatable + height-INCONCLUSIVE (experiment
+stopped) / human NOT CLAIMED (contrast pair presented) / NO GPU-dynamics
+claim. No master push, no force-push, no protected-path writes, no
+tolerance change, no control of Alan's engine.
+
 
 Historical assignments below are retained as provenance only. They no longer
 assign current ownership.
