@@ -1,0 +1,412 @@
+{
+  "what": "GLM-FREEZE frozen GPU-comparison fixture: b2",
+  "registration": "GLM-FREEZE 2026-09-07 (ASTRA-authorized continuation)",
+  "fixture_class": "force-evaluation fixture; NOT optimizer/dynamics",
+  "verification_class": "CPU numerical only; no engine-window/DYAD claim",
+  "source": {
+    "repo": "https://github.com/GhostDragonAlpha/Chimera",
+    "branch": "astra/gait-capture",
+    "commit": "cf2a0ae2c7bd68f1c64db630c4db5de32785580a",
+    "source_file_hashes": {
+      "tools/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+      "tools/material_contract.py": "6af75efe12da4ba81e3c95cddbcffd083fe5dfb926eb698acda2f0145b9e2d19",
+      "tools/overdamped_descent.py": "a940ac9da88a8852ee57709fe7a44df5469d418be73a75801ea7123d91d930f6",
+      "tools/gpu_fixtures_generate.py": "e233cfc145b8f1a6a8519b653efebdcbbba086cb141d0fa55fef3b43cb220b4d",
+      "tools/gpu_fixtures_recovered/membrane_fixture_b2.py": "72e9f4ba938d007348c83e3ea85f1e0751b7bfd6c50e7f11dc9b26077f06c22f",
+      "tools/gpu_fixtures_recovered/membrane_demo.py": "7212c80fd7579bc75ba2b4149161c9df07246f0f71a5b2d4eaa905536b03229d"
+    }
+  },
+  "python": "3.14.3",
+  "numpy": "2.2.6",
+  "upload_law": "positions/gamma binary32 little-endian, uploaded ONCE; reference evaluates their exact binary64 promotion; face indices uint32",
+  "units": {
+    "positions": "m (1 wu = 1 m here)",
+    "gamma": "J/m^2",
+    "areas": "m^2",
+    "forces": "N",
+    "energy": "J"
+  },
+  "adjacency": {
+    "order": "vertex asc, face asc, corner slot asc (build_vertex_corner_adjacency, fixed order)",
+    "offsets_dtype": "int64",
+    "corner_idx_dtype": "int64",
+    "corner_layout": "face-major flat 3*f+k"
+  },
+  "budget_law": "B_vj = eta_(d_v-1) * sum_incident |binary32 corner force component|; eta_n = n*u/(1-n*u), u=2^-24; bounds GPU binary32 sequential ASSEMBLY only \u2014 face arithmetic is gated by the recorded adopted B2 budgets, not verified here",
+  "scope_note": "the recovered 25-vertex/36-face disk demo remains its own fixture; it is not relabeled as a fan",
+  "generated_utc": "2026-09-07T21:12:02.730061+00:00",
+  "name": "b2",
+  "n_rim": 6,
+  "n_vertices": 7,
+  "n_faces": 6,
+  "files": [
+    {
+      "path": "geometry/positions_f32.npy",
+      "sha256": "46ceecfbfad1a021a2ddba8f1719c72335142712e25add6971754af77900d028",
+      "shape": [
+        7,
+        3
+      ],
+      "dtype": "float32"
+    },
+    {
+      "path": "geometry/indices_u32.npy",
+      "sha256": "97a0302b476d0c8cad97d85c20a04b99a15b3e76dd779fdbfa34f87436c01d71",
+      "shape": [
+        6,
+        3
+      ],
+      "dtype": "uint32"
+    },
+    {
+      "path": "geometry/gamma0_f32.npy",
+      "sha256": "c515444fcd73a5aa350c5bf219d2dc5eeaaff903072d1d8589fb51c62673d171",
+      "shape": [
+        6
+      ],
+      "dtype": "float32"
+    },
+    {
+      "path": "geometry/gamma1_f32.npy",
+      "sha256": "c3d5962f5d28bcd9bd926f0ec6edd6b85da90b0c02d79cec3c35d4591b3587fc",
+      "shape": [
+        6
+      ],
+      "dtype": "float32"
+    },
+    {
+      "path": "geometry/gamma2_f32.npy",
+      "sha256": "23286e8e881dc66ce3dd269d478889e3a83912b88b5844d54927616de99edf4d",
+      "shape": [
+        6
+      ],
+      "dtype": "float32"
+    },
+    {
+      "path": "adjacency/csr_offsets_i64.npy",
+      "sha256": "9a41f0d3f85868ec5ae42fd554402334e703bc5693926b231dff6fc1e37dffd7",
+      "shape": [
+        8
+      ],
+      "dtype": "int64"
+    },
+    {
+      "path": "adjacency/csr_corner_idx_i64.npy",
+      "sha256": "e979477c9e0023d91fab9d2a728769b3f3c96c92e89ccdbb5d75777700443d75",
+      "shape": [
+        18
+      ],
+      "dtype": "int64"
+    },
+    {
+      "path": "adjacency/incident_counts_i64.npy",
+      "sha256": "83fa2d41a537e6d1b9c0311ab0439928f1bbc3d99ca6a22c5a01e94a68f80566",
+      "shape": [
+        7
+      ],
+      "dtype": "int64"
+    },
+    {
+      "path": "case_gamma0/areas_f64.npy",
+      "sha256": "09b3daf0a1935231a87ef47379c55445ceff72d8c0231c726eb2fa54bdc2a208",
+      "shape": [
+        6
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma0/normals_f64.npy",
+      "sha256": "f80d2bfdf717a5d2e876111e9f7630106df36b6269cb688aac0962756fb028b5",
+      "shape": [
+        6,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma0/corner_forces_f64.npy",
+      "sha256": "c855eb51eb584d627b716a8116001d5306d797d64afeb600f0b59fe695c1d860",
+      "shape": [
+        6,
+        3,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma0/vertex_forces_f64.npy",
+      "sha256": "412b77a2af54bceaa8ec25fed40f151c284d171acb5d4e9a7378e9684924e072",
+      "shape": [
+        7,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma0/vertex_forces_asmref_f64.npy",
+      "sha256": "412b77a2af54bceaa8ec25fed40f151c284d171acb5d4e9a7378e9684924e072",
+      "shape": [
+        7,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma0/assembly_budgets_f64.npy",
+      "sha256": "f91a581a3dab3181a62c55ab8ab5b4d591382e835ccb82da85e1b3f90d3dd03b",
+      "shape": [
+        7,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma0/energy_f64.npy",
+      "sha256": "a0d329eb3937582ac064de62a424759a98f7c8a8e478fab934328ea35b92fe0b",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma1/areas_f64.npy",
+      "sha256": "09b3daf0a1935231a87ef47379c55445ceff72d8c0231c726eb2fa54bdc2a208",
+      "shape": [
+        6
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma1/normals_f64.npy",
+      "sha256": "f80d2bfdf717a5d2e876111e9f7630106df36b6269cb688aac0962756fb028b5",
+      "shape": [
+        6,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma1/corner_forces_f64.npy",
+      "sha256": "d55d8dbb2b65b321a3b4677248fda58ac7e4c7ea05f7de5338c05b059cab4221",
+      "shape": [
+        6,
+        3,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma1/vertex_forces_f64.npy",
+      "sha256": "3b1b02fdcbcb97c074134d6283f594fa34514acb968039615cef1841fea039ce",
+      "shape": [
+        7,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma1/vertex_forces_asmref_f64.npy",
+      "sha256": "f541b493167335a082f1baf36c75c3ac9da6b6d71e3fe4c6a4277aac68634d2e",
+      "shape": [
+        7,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma1/assembly_budgets_f64.npy",
+      "sha256": "ecbb24e709318a78b5e722d121a02424f3128c270531c6b2212938de9d090075",
+      "shape": [
+        7,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma1/energy_f64.npy",
+      "sha256": "2bf32d2a729828dac488839b5a87f66a915f4d370cf8c27949e6e207fe0d3ac0",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma2/areas_f64.npy",
+      "sha256": "09b3daf0a1935231a87ef47379c55445ceff72d8c0231c726eb2fa54bdc2a208",
+      "shape": [
+        6
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma2/normals_f64.npy",
+      "sha256": "f80d2bfdf717a5d2e876111e9f7630106df36b6269cb688aac0962756fb028b5",
+      "shape": [
+        6,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma2/corner_forces_f64.npy",
+      "sha256": "fd4c22e82ff1760050cff54461e9737bbe8d7147828800fa7346450d5b63aac4",
+      "shape": [
+        6,
+        3,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma2/vertex_forces_f64.npy",
+      "sha256": "b67488ea95d859f144060f05fbacb53c4907c41a34a4caded834128015d2a3ce",
+      "shape": [
+        7,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma2/vertex_forces_asmref_f64.npy",
+      "sha256": "99501bf9d08a7c9e058f50c96fe77ec0f886d2e368512f027b08020bb63a05c7",
+      "shape": [
+        7,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma2/assembly_budgets_f64.npy",
+      "sha256": "93bedb0b9f3b895e7870283163fae048d9dfe2929a07cd1e0614d0dfd9d96653",
+      "shape": [
+        7,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "path": "case_gamma2/energy_f64.npy",
+      "sha256": "b5a0fb3a1fe21639aa68fcba27e08e26f8c15cce27fef67391a31e36e3032e16",
+      "shape": [],
+      "dtype": "float64"
+    }
+  ],
+  "cases": {
+    "gamma0": {
+      "gamma_J_per_m2": 0.0,
+      "energy_J": 0.0,
+      "centre_vertex_index": 6,
+      "centre_force_N": [
+        0.0,
+        0.0,
+        -0.0
+      ],
+      "centre_asmref_N": [
+        0.0,
+        0.0,
+        -0.0
+      ],
+      "total_area_m2": 2.6249999533666486,
+      "budget_centre_N": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "budget_max_rim_N": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "budget_law": "B_vj = eta_(d_v-1) * sum_incident |f32 corner comp|",
+      "degree_centre": 6,
+      "degree_rim": 2,
+      "eta_centre": 2.9802331269482156e-07,
+      "eta_rim": 5.960464832810452e-08
+    },
+    "gamma1": {
+      "gamma_J_per_m2": 1.0,
+      "energy_J": 2.6249999533666486,
+      "centre_vertex_index": 6,
+      "centre_force_N": [
+        0.0,
+        0.0,
+        -0.42857142849293783
+      ],
+      "centre_asmref_N": [
+        0.0,
+        0.0,
+        -0.428571417927742
+      ],
+      "total_area_m2": 2.6249999533666486,
+      "budget_centre_N": [
+        5.108971125521438e-07,
+        5.899331493963422e-07,
+        1.2772427369714252e-07
+      ],
+      "budget_max_rim_N": [
+        5.1621881404427424e-08,
+        4.470586034713575e-08,
+        4.257475070902852e-09
+      ],
+      "budget_law": "B_vj = eta_(d_v-1) * sum_incident |f32 corner comp|",
+      "degree_centre": 6,
+      "degree_rim": 2,
+      "eta_centre": 2.9802331269482156e-07,
+      "eta_rim": 5.960464832810452e-08
+    },
+    "gamma2": {
+      "gamma_J_per_m2": 2.0,
+      "energy_J": 5.249999906733297,
+      "centre_vertex_index": 6,
+      "centre_force_N": [
+        0.0,
+        0.0,
+        -0.8571428569858757
+      ],
+      "centre_asmref_N": [
+        0.0,
+        0.0,
+        -0.857142835855484
+      ],
+      "total_area_m2": 2.6249999533666486,
+      "budget_centre_N": [
+        1.0217942251042876e-06,
+        1.1798662987926844e-06,
+        2.5544854739428505e-07
+      ],
+      "budget_max_rim_N": [
+        1.0324376280885485e-07,
+        8.94117206942715e-08,
+        8.514950141805704e-09
+      ],
+      "budget_law": "B_vj = eta_(d_v-1) * sum_incident |f32 corner comp|",
+      "degree_centre": 6,
+      "degree_rim": 2,
+      "eta_centre": 2.9802331269482156e-07,
+      "eta_rim": 5.960464832810452e-08
+    }
+  },
+  "analytic_ideal": {
+    "h_m": 0.125,
+    "A_m2": 2.625,
+    "dA_dh_m": 0.42857142857142844,
+    "F_cz_at_gamma1_N": -0.42857142857142844,
+    "A_flat_m2": 2.5980762113533156,
+    "reduction_J_at_gamma1": 0.026923788646684207
+  },
+  "preregistered_allowances": {
+    "u_binary32": 5.960464477539063e-08,
+    "max_abs_coord_deviation_uploaded_vs_ideal": 1.5543624831693137e-08,
+    "coord_bound_used": "sqrt(3)*u per corner (conservative)",
+    "area_J_at_gamma1": 9.36375259151094e-07,
+    "area_allowance_note": "gamma-independent: areas do not scale with gamma; the x2 energy scaling is exact and needs no widened allowance",
+    "energy_J_at_gamma1_bound": 9.36375259151094e-07,
+    "force_z_N": 1e-06,
+    "force_z_provenance": "preserved PROVISIONAL from recovered B2 C2 allowance",
+    "force_xy_symmetry_N": 1e-06
+  },
+  "adopted_b2_budgets_recorded": {
+    "corner_component_N": 4e-06,
+    "assembly_only_component_N": 1e-06,
+    "complete_force_component_N": 2.5e-05,
+    "energy_J": 1.1e-05,
+    "note": "adopted at ASTRA-B2 (M1); gate GPU face arithmetic and fixture-level assembly; NOT derived from and NOT replaced by the per-vertex eta law frozen in these fixtures"
+  },
+  "angle_formula": "np.pi/3 * arange(6)  (recovered B2 formula)"
+}

@@ -1,0 +1,9 @@
+GPU membrane probe
+device: NVIDIA GeForce RTX 4090
+  b2/gamma0 PASS face_max=3.36881e-08 corner_max=0 assembly_max=0 energy=0 predicates(area=1,normal=1,corner=1,assembly=1,energy=1,zero=1)
+  b2/gamma1 FAIL face_max=3.36880868e-08 corner_max=3.83895765e-08 assembly_max=1.04308128e-07 energy=2.625 predicates(area=1,normal=1,corner=1,assembly=0,energy=1,zero=1) bad(v=1,c=1,diff=1.04308128e-07,budget=4.47058603e-08)
+  b2/gamma2 FAIL face_max=3.36880868e-08 corner_max=7.6779153e-08 assembly_max=2.08616257e-07 energy=5.25 predicates(area=1,normal=1,corner=1,assembly=0,energy=1,zero=1) bad(v=1,c=1,diff=2.08616257e-07,budget=8.94117207e-08)
+  fan12/gamma0 PASS face_max=3.93429312e-08 corner_max=0 assembly_max=0 energy=0 predicates(area=1,normal=1,corner=1,assembly=1,energy=1,zero=1)
+  fan12/gamma1 FAIL face_max=3.93429312e-08 corner_max=2.2713266e-08 assembly_max=8.94069672e-08 energy=3.02501655 predicates(area=1,normal=1,corner=1,assembly=0,energy=1,zero=1) bad(v=5,c=2,diff=5.58793545e-09,budget=1.97986783e-09)
+  fan12/gamma2 FAIL face_max=3.93429312e-08 corner_max=4.54265321e-08 assembly_max=1.78813934e-07 energy=6.05003309 predicates(area=1,normal=1,corner=1,assembly=0,energy=1,zero=1) bad(v=5,c=2,diff=1.11758709e-08,budget=3.95973566e-09)
+GPU_RESULT FAIL worst_abs=2.08616257e-07

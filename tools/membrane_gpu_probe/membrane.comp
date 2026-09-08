@@ -1,0 +1,123 @@
+#version 450
+
+// GPU membrane probe, Rule-0 first gate.
+// One dispatch mode owns one stage. No floating-point atomic scatter.
+
+layout(local_size_x = 64) in;
+
+struct FaceRecord {
+    vec4 normal_area; // xyz = current unit normal, w = current area
+    vec4 corner0;     // force at face corner 0
+    vec4 corner1;     // force at face corner 1
+    vec4 corner2;     // force at face corner 2
+};
+
+layout(std430, set = 0, binding = 0) readonly buffer Positions {
+    vec4 positions[];
+};
+layout(std430, set = 0, binding = 1) readonly buffer Indices {
+    uvec4 indices[];
+};
+layout(std430, set = 0, binding = 2) readonly buffer Gamma {
+    float gamma[];
+};
+layout(std430, set = 0, binding = 3) readonly buffer CsrOffsets {
+    uint offsets[];
+};
+layout(std430, set = 0, binding = 4) readonly buffer CsrCorners {
+    uint corner_indices[];
+};
+layout(std430, set = 0, binding = 5) buffer FaceRecords {
+    FaceRecord faces[];
+};
+layout(std430, set = 0, binding = 6) writeonly buffer VertexForces {
+    vec4 vertex_forces[];
+};
+layout(std430, set = 0, binding = 7) writeonly buffer Energy {
+    float energy[];
+};
+layout(std430, set = 0, binding = 8) writeonly buffer Validity {
+    uint valid[];
+};
+
+layout(push_constant) uniform Params {
+    uint stage;
+    uint vertex_count;
+    uint face_count;
+    uint corner_count;
+} params;
+
+void eval_face(uint f) {
+    uvec3 tri = indices[f].xyz;
+    vec3 a = positions[tri.x].xyz;
+    vec3 b = positions[tri.y].xyz;
+    vec3 c = positions[tri.z].xyz;
+    vec3 cross_bc = cross(b - a, c - a);
+    float cross2 = dot(cross_bc, cross_bc);
+    float eab2 = dot(b - a, b - a);
+    float ebc2 = dot(c - b, c - b);
+    float eca2 = dot(a - c, a - c);
+    float max_edge2 = max(eab2, max(ebc2, eca2));
+    FaceRecord out_face;
+    bool finite_geometry = all(equal(a, a)) && all(equal(b, b)) && all(equal(c, c));
+    bool valid_geometry = finite_geometry && (cross2 > 0.0);
+    if (!valid_geometry) {
+        out_face.normal_area = vec4(0.0);
+        out_face.corner0 = vec4(0.0);
+        out_face.corner1 = vec4(0.0);
+        out_face.corner2 = vec4(0.0);
+        faces[f] = out_face;
+        valid[f] = 0u;
+        return;
+    }
+    float twice_area = sqrt(cross2);
+    float area = 0.5 * twice_area;
+    vec3 n = cross_bc / twice_area;
+    float g = gamma[f];
+    vec3 ga = cross(b - c, n) * 0.5;
+    vec3 gb = cross(c - a, n) * 0.5;
+    vec3 gc = cross(a - b, n) * 0.5;
+
+    out_face.normal_area = vec4(n, area);
+    out_face.corner0 = vec4(-g * ga, 0.0);
+    out_face.corner1 = vec4(-g * gb, 0.0);
+    out_face.corner2 = vec4(-g * gc, 0.0);
+    faces[f] = out_face;
+    valid[f] = 1u;
+}
+
+vec3 face_corner(uint flat_corner) {
+    FaceRecord f = faces[flat_corner / 3u];
+    uint slot = flat_corner % 3u;
+    if (slot == 0u) return f.corner0.xyz;
+    if (slot == 1u) return f.corner1.xyz;
+    return f.corner2.xyz;
+}
+
+void assemble_vertex(uint v) {
+    vec3 sum = vec3(0.0);
+    for (uint p = offsets[v]; p < offsets[v + 1u]; ++p)
+        sum += face_corner(corner_indices[p]);
+    vertex_forces[v] = vec4(sum, 0.0);
+}
+
+void reduce_energy(uint f) {
+    // A single invocation performs a fixed face-order reduction. This is a
+    // deliberately isolated gate; later production code may use a tree.
+    if (f != 0u) return;
+    float total = 0.0;
+    for (uint i = 0u; i < params.face_count; ++i)
+        total += faces[i].normal_area.w * gamma[i];
+    energy[0] = total;
+}
+
+void main() {
+    uint id = gl_GlobalInvocationID.x;
+    if (params.stage == 0u) {
+        if (id < params.face_count) eval_face(id);
+    } else if (params.stage == 1u) {
+        if (id < params.vertex_count) assemble_vertex(id);
+    } else if (params.stage == 2u) {
+        if (id == 0u) reduce_energy(id);
+    }
+}

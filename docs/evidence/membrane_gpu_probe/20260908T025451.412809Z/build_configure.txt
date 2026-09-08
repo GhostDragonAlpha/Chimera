@@ -1,0 +1,10 @@
+-- The CXX compiler identification is GNU 15.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/ProgramData/mingw64/mingw64/bin/c++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found Vulkan: C:/VulkanSDK/1.4.328.1/Lib/vulkan-1.lib (found version "1.4.328") found components: glslc glslangValidator
+-- Configuring done (0.8s)
+-- Generating done (0.2s)
+-- Build files have been written to: C:/Users/allen/AppData/Local/Temp/opencode/chimera_pub/.tmp/membrane_gpu_probe_runner/20260908T025451.412809Z

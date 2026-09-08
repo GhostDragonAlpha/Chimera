@@ -5,6 +5,78 @@ vision"). The 32-continuation history is compressed, not erased: every claim
 below names its run record or commit. When docs fight, run records beat prose;
 `python tools/orient.py` prints live state.*
 
+## 0 · RECOVERY AMENDMENT — LUNA SOLE PROJECT AGENT (2026-09-07)
+
+Alan explicitly assigns all current project work to **GPT 5.6 Luna**. This
+amendment supersedes the historical multi-agent roster and publication
+ownership statements below; those statements remain historical evidence and
+are not erased. Luna owns architecture, implementation, testing, recovery,
+documentation, review, and publication. No parallel handoff is awaited from
+GLM, North, Big Pickle, Inkling, the local model, or ASTRA; surviving artifacts
+are assessed as evidence in place.
+
+**Recovered state.** The working checkout `E:/PythonChimera` is on `master` at
+`51cd7212` with preserved uncommitted work and is not the integration surface.
+The isolated publication checkout is `C:/Users/allen/AppData/Local/Temp/opencode/chimera_pub`
+on `astra/gait-capture` at `cf2a0ae2c7bd68f1c64db630c4db5de32785580a`. The
+reported BP-A1 commit is therefore verified on the authorized publication
+branch; `master` remains untouched. The frozen fixture recovery checkout is
+`E:/Chimera_GLM_freeze`, whose fixture files were untracked and whose verifier
+has been run locally.
+
+**Rule-0 membrane for the first GPU gate.**
+
+- **STATEMENT** — For exact binary32-uploaded positions, uint32 topology, and
+  fixed-order vertex-to-corner CSR, a compiled Vulkan compute transcription of
+  current-area surface energy will produce per-face area/normal/corner-force
+  outputs, CSR vertex forces, and total energy matching the frozen CPU
+  references within their preregistered numerical budgets, without floating-
+  point atomic scatter.
+- **PREDICTION** — On both frozen meshes (B2: 7 vertices/6 triangles;
+  Fan12: 13 vertices/12 triangles) and gamma 0/1/2, the GPU readback will pass
+  the face, assembly, energy, zero-gamma, gamma-doubling, and corrupted
+  corner-order gates; a higher-degree Fan12 assembly budget will remain
+  distinct from B2's degree-six budget.
+- **FALSIFIER** — Any compiled GPU run with a hash/shape/dtype mismatch,
+  readback outside the frozen per-stage budgets, nonzero gamma-zero force,
+  non-exact gamma doubling where required, incorrect fixed-order CSR assembly,
+  or an undetected corner-order corruption falsifies this gate. CPU fixture
+  verification alone cannot close the GPU claim.
+
+**Concrete recovery queue (Luna-owned, ordered).**
+
+1. Preserve and publish the frozen fixture inputs, references, verifier,
+   recovery provenance, and failed-run history under `docs/evidence/gpu_fixtures/`;
+   rerun the verifier from the publication checkout.
+2. Record actual Linux Vulkan loader, headers/compiler, ICD/device, compute
+   queue, subgroup, storage-buffer, float-arithmetic, and headless capability;
+   do not install or alter system configuration.
+3. Build `tools/membrane_gpu_probe/` in a permitted scratch directory, using
+   real Vulkan SDK types and compiled compute shaders. Bring up face evaluation,
+   isolated CSR assembly, complete force/energy reduction, and readback gates
+   separately against the frozen references.
+4. Keep CPU, GPU, runtime, visual/DYAD, and Alan acceptance as separate fields;
+   no window or visual claim follows from a successful CPU verifier.
+
+**First GPU gate result (Luna, 2026-09-08).** The standalone numerical probe
+is now implemented at `tools/membrane_gpu_probe/` and the reproducible runner
+is `tools/run_membrane_verification.py`. Successful evidence is preserved at
+`docs/evidence/membrane_gpu_probe/20260908T030158.528749Z/`. Exact command:
+`python tools/run_membrane_verification.py`. CPU reference **PASS**; shader and
+host build **PASS** outside `ChimeraEngine/engine/build/`; Vulkan comparison
+**PASS** on the reported NVIDIA GeForce RTX 4090 with the captured
+`vulkaninfo` output. B2 and Fan12 each pass gamma 0/1/2. Maximum observed
+face/normal absolute error is ~3.94e-8, corner-force error ~7.68e-8, and
+complete-force error ~1.79e-7; fixed-order degree-6 and degree-12 CSR gates
+pass. The first failed runs remain preserved and were caused by a GLSL
+portability issue, a Windows DLL launch environment, and an initially wrong
+host comparison of complete force against the assembly-only reference; no
+physics tolerance was widened. Engine-window/runtime/DYAD/Alan acceptance is
+**NOT TESTED**, and no engine process or HTTP endpoint was touched.
+
+Historical assignments below are retained as provenance only. They no longer
+assign current ownership.
+
 ## 1 · THE ONE CLAIM (what this is for)
 
 **A holographic engine: the triangle is BOTH the structure of reality AND the
@@ -249,28 +321,22 @@ copy, which is why the human is a terminal of this system, not a user of it.
 | B11 | **L7 GPU port** — per runtime packet 02 (SSBO ping-pong, subcycle seam SOLVED) | unassigned | READY — after B7 lands |
 | B12 | **Chimera packet 02 construction** — static split/graft buildable now (Stage-1 falsifiers need no CA/frost) | unassigned | READY — after teddy qualifies |
 
-**Division of labor (operator decree 2026-08-27, AMENDED 2026-08-28):** Kimi
-holds project context and writes elaborate prompts IN CHAT (never in docs)
-for transfer to Open Code, where local agents run long construction loops.
-~~HARD BOUNDARY: Kimi edits ONLY this file~~ **AMENDED by the operator during
-the leg night (2026-08-28): when the local agents stall, the main agent
-constructs directly** — it fixed the torn leg, the engine (B1/B3/input/
-streaming), and the knee axis itself, by explicit operator instruction
-("I want you to do the work"). The master list remains Kimi's exclusive
-edit surface among docs; everything else now carries a workflow:
+**Division of labor (historical, superseded 2026-09-07):** Kimi
+held project context and wrote elaborate prompts IN CHAT (never in docs)
+for transfer to Open Code, where local agents ran long construction loops.
+~~HARD BOUNDARY: Kimi edits ONLY this file~~ **Historical amendment:** when
+local agents stalled, the main agent constructed directly. The master list was
+Kimi's exclusive edit surface among docs; everything else carried a workflow:
 `docs/THE_OPERATING_MANUAL.md` (boundaries, the loop, the task envelope) +
-`docs/THE_TRIANGLE_GUIDE.md` (the laws). This file is the guide for BOTH
-sides: the prompter writes from it, the builder reads it first and runs
-`python tools/orient.py` second. The operator ratifies, steers, and is the
-human terminal of every dyad.
+`docs/THE_TRIANGLE_GUIDE.md` (the laws). **This historical division is now
+superseded by the Luna sole-agent amendment in §0; Luna owns the current
+construction, documentation, testing, and publication work.**
 
-**ROSTER (2026-08-28, operator report):** the free model supply was cut;
-Big Pickle and hy3 are RETIRED with their service (their packets/audits
-stand — the work is independent of the worker). Active: **CatCoder 2.5**
-(construction lane) and **Ling 3.0 Flash FIN** (bounded verification lane).
-**Addendum (leg night, 2026-08-28):** the local agents stalled on the torn
-leg; the main agent closed it directly and now shares the construction lane
-per the amended division of labor above. Quinn 3.8's fate unconfirmed.
+**ROSTER (historical, superseded 2026-09-07):** the free model supply was cut;
+Big Pickle and hy3 were retired with their service; the packets/audits stand
+as surviving evidence independent of the worker. CatCoder and Ling were the
+then-active bounded lanes. **No parallel agent handoff is awaited now; all
+surviving work is assessed by Luna.**
 
 ## 8 · THE RULES OF THIS PAGE
 

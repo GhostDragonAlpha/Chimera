@@ -1,0 +1,15 @@
+[ 33%] Compiling membrane compute shader
+
+[stderr]
+C:/Users/allen/AppData/Local/Temp/opencode/chimera_pub/tools/membrane_gpu_probe/membrane.comp:62: error: 'isfinite' : no matching overloaded function found
+C:/Users/allen/AppData/Local/Temp/opencode/chimera_pub/tools/membrane_gpu_probe/membrane.comp:62: error: 'all' : no matching overloaded function found
+C:/Users/allen/AppData/Local/Temp/opencode/chimera_pub/tools/membrane_gpu_probe/membrane.comp:62: error: 'isfinite' : no matching overloaded function found
+C:/Users/allen/AppData/Local/Temp/opencode/chimera_pub/tools/membrane_gpu_probe/membrane.comp:62: error: 'all' : no matching overloaded function found
+C:/Users/allen/AppData/Local/Temp/opencode/chimera_pub/tools/membrane_gpu_probe/membrane.comp:62: error: '&&' :  wrong operand types: no operation '&&' exists that takes a left-hand operand of type ' const float' and a right operand of type ' const float' (or there is no acceptable conversion)
+C:/Users/allen/AppData/Local/Temp/opencode/chimera_pub/tools/membrane_gpu_probe/membrane.comp:62: error: 'isfinite' : no matching overloaded function found
+C:/Users/allen/AppData/Local/Temp/opencode/chimera_pub/tools/membrane_gpu_probe/membrane.comp:62: error: 'all' : no matching overloaded function found
+C:/Users/allen/AppData/Local/Temp/opencode/chimera_pub/tools/membrane_gpu_probe/membrane.comp:62: error: '&&' :  wrong operand types: no operation '&&' exists that takes a left-hand operand of type ' const bool' and a right operand of type ' const float' (or there is no acceptable conversion)
+8 errors generated.
+mingw32-make[2]: *** [CMakeFiles\membrane_shader.dir\build.make:72: membrane.comp.spv] Error 1
+mingw32-make[1]: *** [CMakeFiles\Makefile2:115: CMakeFiles/membrane_shader.dir/all] Error 2
+mingw32-make: *** [Makefile:100: all] Error 2

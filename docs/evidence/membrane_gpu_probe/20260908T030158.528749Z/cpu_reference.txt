@@ -1,0 +1,32 @@
+[b2]
+  V1_artifact_hashes_shapes_dtypes                 PASS
+  V1b_numpy_version_matches_generation             PASS
+  V2_csr_coverage_and_order                        PASS
+  V2b_manifest_analytic_bitwise_reproducible       PASS
+  V3_bitwise_reload_reproducibility                PASS
+  V4_independent_scatter_within_eps64_bound        PASS
+  V5_asmref_bitwise_and_f32_rounding_bound         PASS
+  V6_zero_gamma_numerically_zero                   PASS
+  V7_gamma2_bitwise_double_of_gamma1               PASS
+  V8_analytic_within_preregistered_allowances      PASS
+  V9_budgets_bitwise_recompute_and_eta5_contract   PASS
+  gamma1: A=2.62499995337 m^2  F_c=(+0.000e+00, +0.000e+00, -0.428571428493) N
+  budget centre (deg 6, eta=2.980233e-07): ['5.1090e-07', '5.8993e-07', '1.2772e-07'] N
+  budget max rim (deg 2, eta=5.960465e-08): ['5.1622e-08', '4.4706e-08', '4.2575e-09'] N
+[fan12]
+  V1_artifact_hashes_shapes_dtypes                 PASS
+  V1b_numpy_version_matches_generation             PASS
+  V2_csr_coverage_and_order                        PASS
+  V2b_manifest_analytic_bitwise_reproducible       PASS
+  V3_bitwise_reload_reproducibility                PASS
+  V4_independent_scatter_within_eps64_bound        PASS
+  V5_asmref_bitwise_and_f32_rounding_bound         PASS
+  V6_zero_gamma_numerically_zero                   PASS
+  V7_gamma2_bitwise_double_of_gamma1               PASS
+  V8_analytic_within_preregistered_allowances      PASS
+  V9_budgets_bitwise_recompute_and_eta5_contract   PASS
+  gamma1: A=3.02501588342 m^2  F_c=(+0.000e+00, -8.327e-17, -0.398600004352) N
+  budget centre (deg 12, eta=6.556515e-07): ['1.3005e-06', '1.3005e-06', '2.6134e-07'] N
+  budget max rim (deg 2, eta=5.960465e-08): ['5.2116e-08', '5.2116e-08', '1.9799e-09'] N
+[corner-order corruption control] DETECTED (control PASS)  failed_checks=['V3_bitwise_reload_reproducibility', 'V4_independent_scatter_within_eps64_bound', 'V5_asmref_bitwise_and_f32_rounding_bound', 'V7_gamma2_bitwise_double_of_gamma1', 'V9_budgets_bitwise_recompute_and_eta5_contract']
+  results: C:\Users\allen\AppData\Local\Temp\opencode\chimera_pub\docs\evidence\gpu_fixtures\verify_results_20260908T030159.309784Z.json
