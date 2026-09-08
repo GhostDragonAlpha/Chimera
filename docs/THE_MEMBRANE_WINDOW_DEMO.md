@@ -290,14 +290,87 @@ a conditional capture association into a certifiable one.
 ## 5. Verdict separation (unchanged law, restated)
 
 - **Numerical (CPU)**: PASS — F1–F4, F6, F7 (evidence
-  `20260908T160307.423502Z` and controls).
+  `20260908T160307.423502Z`, `20260908T161354.929940Z` and controls).
 - **Upload**: the byte payload and its f32 hash are recorded; the engine's
   applied-ack is real but returns no identity — upload-to-screen linkage
-  remains CONDITIONAL (section 3).
-- **Window**: NOT TESTED.
-- **DYAD**: NOT TESTED.
+  remains CONDITIONAL (section 3); blob corroboration MATCH ×3 (below).
+- **Window**: EXECUTED 2026-09-08 (GLM-WINDOW-03) — see section 7.
+- **DYAD**: NOT TESTED — the local vision agent reviews next; no DYAD
+  acceptance is claimed.
 
 No tolerance was widened anywhere in this correction.
+
+## 7. GLM-WINDOW-03 — boundary corrections and the executed window demo
+
+### 7.1 P-unit correction and trajectory verification
+
+GLM-WINDOW-02's derivation note wrote `P = 1/gamma_max [m/J]` — WRONG unit.
+`P = 1/gamma_max` carries the **area** unit of the energy's denominator:
+**P = [m²/J]**, and the update is `[m²/J]·[J/m] = [m]` — dimensionally a
+length, as required. The dimensionless RATIO 1/gamma is m²/J (the R4 units
+table's `wu²/J` with 1 wu = 1 m), never m/J.
+
+The bound's assumptions were verified over the ACTUAL compared trajectory
+(recorded per-iteration data, not assumed): max recorded `alpha = 1.0` over
+all 126 accepted steps, and max recorded `|F_xy| = 1.11e-16 N` — far inside
+the manifest's `force_xy_symmetry_N = 1e-6` allowance. The cumulative bound
+becomes `n_accepted · alpha_max · (1/gamma) · 1e-6` m = 1.260e-4 m; observed
+drift 4.168e-18 m. **The original GLM-WINDOW-02 dimensional check (metres
+vs newtons) is SUPERSEDED, NOT VALID** — it was never a valid instrument;
+it is preserved as failed-instrument history only. The independently valid
+energy and rail gates are retained regardless of this gate, and the drift
+is also reported descriptively.
+
+### 7.2 Position vs gamma quantization — separate boundaries
+
+- **Positions**: the only f32 boundary in this demo (`applies_to:
+  "positions_only"`). Overflow refused, positive underflow reported,
+  round-trip error recorded (F7).
+- **Gamma**: **NOT APPLICABLE** in this CPU demo — gamma is admitted f64
+  through the material contract, broadcast to an f64 per-face array,
+  consumed by the f64 evaluator, and never uploaded (the `/mesh_bin`
+  payload carries positions/normals/colors only; there is no per-face
+  gamma field). `gamma_f32_boundary.status = NOT_APPLICABLE` is recorded
+  per run. **The future GPU gamma boundary is NOT certified by this demo.**
+
+### 7.3 The executed isolated window demonstration
+
+- Build: `cmake -S ChimeraEngine/engine -B .tmp/engine_demo_build -A x64`
+  + `cmake --build ... --config Release` (VS 18 2026 generator, MSVC
+  14.51, Vulkan SDK 1.4.328.1) — OUTSIDE `ChimeraEngine/engine/build/`.
+- Launch record: `docs/evidence/membrane_window_demo/launch_20260908T112500Z/`
+  — exe sha256 `25f9b34967e907da97b5686edfb7e6b563e00618d1d69acc888e15112f287b28`,
+  PID 57124, port 8091 verified free before launch (no process terminated),
+  `--no-restore`, own CWD (`.../.tmp/engine_demo_build/Release`), endpoint
+  `http://localhost:8091`. Only this PID was controlled; it was stopped
+  after the captures (`taskkill //PID 57124`), and the engine's stdout/
+  stderr logs are preserved.
+- Two LIVE-FOUND defects, both preserved as failed runs before the fix:
+  the driver packed `len(faces)` (6) where the engine expects the INDEX
+  count (18) — `"size mismatch"` (`20260908T161935.386951Z`,
+  `20260908T162022.834592Z`); then a sidecar key error. Both fixed in the
+  driver only; the engine was never modified.
+- Captures (fixed camera 6.0/0.0/0.3, each PNG + sidecar with state ID,
+  geometry hash, upload f32 hash):
+  - `20260908T162114.706091Z/window_gamma1_final.png` — positive gamma,
+    accepted state (126 steps, 2.5980761647224426 J).
+  - `20260908T162207.936281Z/window_gamma0_unchanged.png` — zero gamma,
+    STATIONARY at 0 steps; upload bytes equal the raw fixture f32 bytes.
+  - `20260908T162328.481149Z/window_gamma2_doubling.png` — matched-state
+    doubling: final geometry hash IDENTICAL to gamma-1's; energy ratio
+    exactly 2.0 (bit-exact); 126 == 126 accepted steps (the update is
+    gamma-invariant); iterations are NOT time — no twice-speed claim.
+- Blob corroboration (position-bytes hashing per the documented format —
+  the first 12 bytes of each 36-byte vertex record, hashed in the
+  sidecar's declared order; a whole-blob hash is NEVER compared to a
+  position-only hash): **MATCH ×3**, recorded in
+  `launch_20260908T112500Z/blob_corroboration.txt`.
+- Association remains **CONDITIONAL** (section 3): the applied-ack returns
+  no state identity and competing writers cannot be excluded from the
+  driver side alone; the corroboration is supporting evidence, not proof
+  of which geometry was on screen at `/frame` time.
+- Checks with captures present: **ALL PASS** (F1–F7, including F5 capture
+  certifiability on all three captures).
 
 ## 6. Big Pickle review reconciliation (7aba0ee7 → current)
 

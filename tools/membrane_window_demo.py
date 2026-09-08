@@ -105,10 +105,15 @@ CAM_PHI = 0.3
 NEUTRAL_RGB = (0.60, 0.60, 0.65)
 
 # THE B2 COORDINATE MAPPING (declared, GLM-WINDOW-02): 1 world unit = 1 metre.
-# gamma is admitted ONLY in J/m^2; with positions in metres the energy
-# U = sum gamma_t A_t is dimensionally exact (m^2 * J/m^2 = J) and forces are
-# newtons. NO generic J/wu^2 unit is added to the contract -- the "wu" table
-# in tools/overdamped_descent.py is bound to metres HERE, at this boundary.
+# gamma is admitted ONLY in J/m^2. With positions in metres:
+#   area  [m^2] * gamma [J/m^2]  -> energy [J]
+#   force [J/m]
+# and the preconditioner P = 1/gamma_max carries [m^2/J] (GLM-WINDOW-03
+# correction: the dimensionless ratio 1/gamma has the AREA unit of the
+# energy's denominator -- m^2/J, NOT m/J), so the update p = P·F is
+#   [m^2/J] · [J/m] = [m]   -- dimensionally a length.
+# NO generic J/wu^2 unit is added to the contract; the "wu" tables in
+# tools/overdamped_descent.py are bound to metres HERE, at this boundary.
 WU_TO_M = 1.0
 GAMMA_UNIT = "J/m^2"
 
@@ -214,6 +219,7 @@ def quantize_positions_f32(positions_f64: np.ndarray):
     report = {
         "policy": "round-to-nearest-f32; overflow refused, never clamped; "
                   "positive underflow reported, never claimed as preservation",
+        "applies_to": "positions_only",
         "n_values": int(pos.size),
         "overflow_refused": 0,
         "positive_underflow_count": int(under_idx.shape[0]),
@@ -224,6 +230,22 @@ def quantize_positions_f32(positions_f64: np.ndarray):
             pos32.astype(np.float64) - pos))),
     }
     return pos32, report
+
+
+def gamma_f32_boundary_status() -> dict:
+    """GLM-WINDOW-03: gamma does NOT cross any float32 boundary in this CPU
+    demo. It is admitted as f64 through the material contract, broadcast to
+    an f64 per-face array, consumed by the f64 evaluator, and never uploaded
+    to the engine (the /mesh_bin payload carries positions/normals/colors
+    only -- no per-face gamma field). Stated NOT_APPLICABLE here; the future
+    GPU gamma boundary is NOT certified by this demo."""
+    return {
+        "status": "NOT_APPLICABLE",
+        "reason": "this CPU demo performs no gamma upload or f32 gamma "
+                  "conversion; gamma stays float64 end to end",
+        "precision_path": "float64",
+        "certifies_future_gpu_gamma_boundary": False,
+    }
 
 
 # ── state IDs ───────────────────────────────────────────────────────────────
@@ -435,8 +457,12 @@ def encode_mesh_bin(positions_f64: np.ndarray, faces: np.ndarray,
     nrm32 = np.where(nrm > 0, acc / np.where(nrm > 0, nrm, 1.0), 0.0).astype("<f4")
     col = np.tile(np.asarray(NEUTRAL_RGB, dtype="<f4"), (len(positions_f64), 1))
     verts = np.concatenate([pos32, nrm32, col], axis=1).astype("<f4")
-    idx = np.ascontiguousarray(faces, dtype="<u4")
-    header = struct.pack("<IIffff", len(positions_f64), len(faces),
+    idx = np.ascontiguousarray(faces, dtype="<u4").reshape(-1)
+    # idxCount is the NUMBER OF INDICES (3 per triangle), matching the
+    # engine's expected size 24 + N*9*4 + idxCount*4 (main.cpp /mesh_bin).
+    # Defect found live 2026-09-08: packing len(faces) here made the payload
+    # 24 bytes longer than declared -> "size mismatch" (preserved failed run).
+    header = struct.pack("<IIffff", len(positions_f64), int(idx.size),
                          float(cam_radius), float(cam_theta), float(cam_phi),
                          float(slotmode))
     return header + verts.tobytes() + idx.tobytes()
@@ -466,9 +492,11 @@ def http_get(url: str, timeout: float = 30.0):
 
 def capture_from_engine(engine_url: str, positions_f64: np.ndarray,
                         faces: np.ndarray, state: dict, outdir: Path,
-                        label: str) -> dict:
-    """One fixed-camera capture with its state-ID sidecar.  Returns the
-    capture record; the sidecar is what makes the capture certifiable."""
+                        label: str, gamma_value: float) -> dict:
+    """One fixed-camera capture with its state-ID sidecar.  `state` is the
+    final iteration record (iteration/state_id/energy_J/geometry hash).
+    Returns the capture record; the sidecar is what makes the capture
+    certifiable."""
     payload = encode_mesh_bin(positions_f64, faces, CAM_RADIUS, CAM_THETA, CAM_PHI)
     status, body = http_post(f"{engine_url}/mesh_bin", payload,
                              "application/octet-stream")
@@ -492,8 +520,8 @@ def capture_from_engine(engine_url: str, positions_f64: np.ndarray,
         "camera": {"radius": CAM_RADIUS, "theta": CAM_THETA, "phi": CAM_PHI},
         "state_id": state["state_id"],
         "state": {
-            "fixture": FIXTURE, "gamma_J_per_m2": state["gamma"],
-            "iteration": state["iteration"], "energy_J": state["energy"],
+            "fixture": FIXTURE, "gamma_J_per_m2": gamma_value,
+            "iteration": state["iteration"], "energy_J": state["energy_J"],
             "geometry_sha256_f64le": state["geometry_sha256_f64le"],
             "upload_positions_f32le_sha256": sha256_bytes(upload32),
         },
@@ -557,7 +585,9 @@ def main() -> int:
     }
 
     # the f32 upload boundary is validated on the CONVERTED values (the
-    # accepted geometry), before anything is encoded for the engine
+    # accepted geometry), before anything is encoded for the engine. This
+    # boundary applies to POSITIONS ONLY; gamma has no upload boundary in
+    # this demo (gamma_f32_boundary_status records NOT_APPLICABLE).
     pos32_upload, upload_report = quantize_positions_f32(run["positions"])
 
     # the zero-gamma control, recorded alongside (F2's evidence source)
@@ -576,6 +606,7 @@ def main() -> int:
                                "declaration": "1 wu = 1 m; gamma admitted "
                                               "only in J/m^2"},
         "f32_upload_boundary": upload_report,
+        "gamma_f32_boundary": gamma_f32_boundary_status(),
         "rim_pinned": RIM, "centre_vertex": CENTRE,
         "rail": "centre x,y fixed at initial; z free (vertical rail)",
         "upload_state": upload_state,
@@ -609,7 +640,7 @@ def main() -> int:
     if args.engine_url and not args.no_capture:
         captures.append(capture_from_engine(
             args.engine_url, run["positions"], b2["faces"], final_state,
-            outdir, args.label or f"gamma{gamma_val:g}_final"))
+            outdir, args.label or f"gamma{gamma_val:g}_final", gamma_val))
     result["captures"] = captures
     (outdir / "result.json").write_text(json.dumps(result, indent=2),
                                         encoding="utf-8")

@@ -1,0 +1,29 @@
+mesh blob corroboration (GLM-WINDOW-03) -- position-bytes hashing, per capture
+method: parse session_snapshot/mesh_bin.blob per the documented format
+[u32 N][u32 idxCount][f32 cr][f32 ct][f32 cp][f32 slotmode][f32*9*N verts][u32*idxCount];
+extract the first 3 f32 (12 bytes) of each 36-byte vertex record; hash THOSE
+bytes in the sidecar's declared upload order. A whole-blob hash is NEVER
+compared to the position-only hash.
+
+blob header observed: N=7 idxCount=18 cam=(6.0, 0.0, 0.3) slotmode=0 size=348 == expected
+
+capture window_gamma1_final  (20260908T162114.706091Z):
+  blob position-bytes sha256 8de79b51ae3285a58fb6622eb6204df7f9575ad2a46b88b80134063ec4cce4a4
+  sidecar upload sha256     8de79b51ae3285a58fb6622eb6204df7f9575ad2a46b88b80134063ec4cce4a4  -> MATCH
+capture window_gamma0_unchanged (20260908T162207.936281Z):
+  blob position-bytes sha256 == sidecar -> MATCH; upload bytes also equal the
+  raw frozen fixture positions_f32.npy bytes (zero-gamma geometry untouched)
+capture window_gamma2_doubling (20260908T162328.481149Z):
+  blob position-bytes sha256 == sidecar -> MATCH
+
+matched-state doubling result: gamma2 final geometry hash IDENTICAL to gamma1's;
+energies 5.196152329444885 J vs 2.5980761647224426 J (ratio exactly 2.0,
+bit-exact: (2*U1).hex() == U2.hex()); accepted steps 126 == 126 (the update
+p = P*F is gamma-invariant at fixed P law P = 1/gamma_max, so the trajectory
+is identical by the derivation; iterations are NOT time).
+
+association status: CONDITIONAL as declared -- the applied-ack returns no
+state identity and competing writers cannot be excluded from the driver side
+alone; the corroborating position-byte match (captured BEFORE any later
+upload overwrote the blob) is the recorded supporting evidence, not a proof
+of which geometry was on screen at /frame time.

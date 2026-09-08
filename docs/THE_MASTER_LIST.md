@@ -169,6 +169,40 @@ underflow reported, round-trip error recorded — F7). Checks F1–F4, F6, F7
 window NOT_TESTED / DYAD NOT_TESTED — kept separate. No tolerance widened,
 no master push, no protected-path writes, no live session touched.
 
+**GLM-WINDOW-03 isolated window demonstration EXECUTED (2026-09-08).**
+Pre-launch corrections: (1) P units corrected to **m²/J** (1/gamma carries
+the energy denominator's AREA unit; the GLM-WINDOW-02 note's `[m/J]` was a
+unit error) and the cumulative drift bound's assumptions VERIFIED over the
+actual compared trajectory — max recorded alpha 1.0, max recorded |F_xy|
+1.11e-16 N over all 126 steps — bound 1.260e-4 m, observed drift 4.168e-18 m;
+the original metres-vs-newtons check is recorded as SUPERSEDED, NOT VALID
+(failed-instrument history only); energy and rail gates retained
+independently. (2) Position quantization (`positions_only`, overflow
+refused, underflow reported) is SEPARATE from gamma quantization, which is
+**NOT APPLICABLE** in this CPU demo (gamma stays f64 end-to-end; no gamma
+field in the payload) — the future GPU gamma boundary is NOT certified.
+Execution: engine built into `.tmp/engine_demo_build` (outside the
+protected path), port 8091 verified free, demo instance launched
+`--no-restore` with its own CWD (exe sha256 25f9b349…, PID 57124, recorded
+in `launch_20260908T112500Z/process.txt`); only that PID was controlled and
+it was stopped after capture. Two live-found driver defects preserved as
+failed runs (index-count header `"size mismatch"`; sidecar key error) and
+fixed driver-side only — the engine was never modified. Captures with
+fixed camera and sidecars: gamma-1 accepted state
+(`20260908T162114.706091Z`), gamma-0 zero control — upload bytes equal the
+raw fixture f32 (`20260908T162207.936281Z`), gamma-2 matched-state doubling
+— final geometry hash IDENTICAL to gamma-1, energy ratio exactly 2.0
+bit-exact, 126==126 steps (`20260908T162328.481149Z`). Mesh corroboration by
+PARSING the documented blob format and hashing the extracted POSITION bytes
+only (never whole-blob vs position hash): MATCH ×3
+(`launch_20260908T112500Z/blob_corroboration.txt`). Capture association
+remains **CONDITIONAL** (no engine-returned state/frame identity; competing
+writers not excludable from the driver side). Checks F1–F7 including F5
+capture certifiability: **ALL PASS**. Verdicts: numerical PASS / upload
+conditional-with-corroboration / window EXECUTED (visual/DYAD acceptance
+NOT claimed — the local vision agent reviews next). No tolerance widening,
+no master push, no protected-path writes, no control of Alan's engine.
+
 
 Historical assignments below are retained as provenance only. They no longer
 assign current ownership.

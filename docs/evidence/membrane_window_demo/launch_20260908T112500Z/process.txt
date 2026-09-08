@@ -1,0 +1,15 @@
+demo engine instance launch record (GLM-WINDOW-03)
+utc_launched: 2026-09-08 ~11:25Z (local)
+executable: .tmp/engine_demo_build/Release/chimera_engine.exe
+exe_sha256: 25f9b34967e907da97b5686edfb7e6b563e00618d1d69acc888e15112f287b28
+pid: 57124
+port: 8091 (checked free before launch via netstat; no process terminated)
+argv: chimera_engine.exe 8091 --no-restore
+working_directory: C:/Users/allen/AppData/Local/Temp/opencode/chimera_pub/.tmp/engine_demo_build/Release
+endpoint: http://localhost:8091/state (frame: /frame, mesh: /mesh_bin)
+isolation: own CWD -> own session_snapshot/, session_*.jsonl, studio_state.txt;
+           --no-restore -> born empty; no shared persistent files with any
+           other engine instance; only this PID is controlled.
+build: cmake -S ChimeraEngine/engine -B .tmp/engine_demo_build -A x64
+       cmake --build .tmp/engine_demo_build --config Release
+       (outside ChimeraEngine/engine/build/; MSB8029 temp-dir warning benign)

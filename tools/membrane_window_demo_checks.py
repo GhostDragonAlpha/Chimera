@@ -126,24 +126,47 @@ def main() -> int:
           all(float(a).hex() == float(b).hex()
               for a, b in zip(declared_post, rec_energies)),
           f"{len(rec_energies)} recorded vs {len(ref.energies)} declared")
-    # DIMENSIONALLY CORRECTED GATE (preregistered GLM-WINDOW-02; the original
-    # instrument — comparing metres against force_xy_symmetry_N newtons — is
-    # RETIRED and preserved as a failed instrument in the ledger): the
-    # declared run's per-step direction is p = P·F with P = 1/gamma_max
-    # [wu^2/J = m/J] and |F_xy| <= force_xy_symmetry_N [N = J/m], so each
-    # accepted step can move the centre at most alpha·(1/gamma)·1e-6 m with
-    # alpha <= 1. Over n_accepted steps the worst case is
-    # n_accepted * (1/gamma) * 1e-6 m. The bound is DERIVED from the actual
-    # update, not chosen.
+    # DIMENSIONALLY CORRECTED GATE (GLM-WINDOW-03: P units corrected to
+    # m^2/J; the ORIGINAL instrument — comparing metres against
+    # force_xy_symmetry_N newtons — is SUPERSEDED, NOT VALID, and preserved
+    # only as failed-instrument history). DERIVATION from the actual update:
+    # the declared run's per-step direction is p = P·F with P = 1/gamma_max
+    # [m^2/J]; force components carry [J/m]; so P·F_xy is a LENGTH [m]. Each
+    # accepted step moves the centre at most alpha·P·|F_xy| with alpha <= 1.
+    # ASSUMPTIONS VERIFIED OVER THE ACTUAL COMPARED TRAJECTORY (recorded
+    # per-iteration data, not assumed):
+    #   (i)   max recorded alpha == 1.0 <= 1  (verified below);
+    #   (ii)  max recorded |F_xy| = 1.11e-16 N over all 126 accepted steps,
+    #         far inside the manifest's preregistered
+    #         force_xy_symmetry_N = 1e-6 N (verified below).
+    # The cumulative worst case over n_accepted steps is therefore
+    # n_accepted · alpha_max · (1/gamma) · 1e-6 metres (the conservative
+    # bound uses the preregistered allowance, not the observed force).
+    # The observed drift is ALSO reported descriptively. Independently valid
+    # energy and rail gates are retained regardless of this gate.
     xy_drift = float(np.max(np.abs(ref.positions[demo.CENTRE, :2] -
                                    pos0[demo.CENTRE, :2])))
     gamma_run = res["gamma_J_per_m2"]
-    xy_budget_m = (res["n_accepted"] * (1.0 / gamma_run) * 1e-6
-                   if gamma_run > 0 else 0.0)
+    its = [it for it in res["iterations"] if "alpha" in it]
+    alpha_max_obs = max((it["alpha"] for it in its), default=0.0)
+    fxy_max_obs = max((max(abs(it["centre_force_x_retained"]),
+                           abs(it["centre_force_y_retained"]))
+                       for it in its), default=0.0)
+    check("F1.alpha_assumption_over_actual_trajectory",
+          alpha_max_obs <= 1.0,
+          f"max recorded alpha {alpha_max_obs}")
+    check("F1.force_assumption_over_actual_trajectory",
+          fxy_max_obs <= 1e-6,
+          f"max recorded |F_xy| {fxy_max_obs:.3e} N vs allowance 1e-6 N")
+    xy_budget_m = (res["n_accepted"] * alpha_max_obs *
+                   (1.0 / gamma_run) * 1e-6 if gamma_run > 0 else 0.0)
     check("F1.declared_xy_drift_within_derived_position_bound",
           xy_drift <= xy_budget_m,
           f"drift {xy_drift:.3e} m vs bound {xy_budget_m:.3e} m "
-          f"(n_accepted={res['n_accepted']}, gamma={gamma_run})")
+          f"[P = 1/gamma m^2/J; alpha<={alpha_max_obs}; "
+          f"|F_xy|<=1e-6 N]")
+    print(f"[INFO] declared-run xy drift (descriptive): {xy_drift:.3e} m "
+          f"over {res['n_accepted']} accepted steps")
     check("F1.rail_xy_deviation_exactly_zero_recorded",
           res.get("rail_deviation_max_xy") == 0.0,
           str(res.get("rail_deviation_max_xy")))
@@ -313,14 +336,18 @@ def main() -> int:
         check("F7.roundtrip_error_recorded",
               "max_abs_roundtrip_error_f64" in ub)
         # independent re-derivation: quantize the accepted geometry again and
-        # confirm the recorded upload hash equals the boundary's output
+        # confirm the recorded upload hash equals the boundary's output HASH
+        # (the sidecar stores a digest, so both sides are hashed)
         pos32_re, rep_re = demo.quantize_positions_f32(rerail["positions"])
-        check("F7.upload_hash_reproducible",
-              pos32_re.tobytes() == bytes.fromhex(
-                  captures[0]["state"]["upload_positions_f32le_sha256"])
-              if captures else True,
-              "no captures; boundary validated on rerun only" if not captures
-              else "")
+        if captures:
+            h_re = demo.sha256_bytes(pos32_re.tobytes())
+            check("F7.upload_hash_reproducible",
+                  h_re == captures[0]["state"]["upload_positions_f32le_sha256"],
+                  f"recomputed={h_re[:16]}... recorded="
+                  f"{captures[0]['state']['upload_positions_f32le_sha256'][:16]}...")
+        else:
+            check("F7.upload_hash_reproducible_no_captures", True,
+                  "boundary validated on rerun only")
         check("F7.boundary_report_reproducible",
               rep_re["max_abs_roundtrip_error_f64"] ==
               ub["max_abs_roundtrip_error_f64"])
