@@ -1,0 +1,11 @@
+total 40
+drwxr-xr-x 2 root root 4096 Jul 16 06:02 .
+drwxr-xr-x 6 root root 4096 Sep  8 00:15 ..
+-rw-r--r-- 1 root root  137 Apr 21 09:43 asahi_icd.json
+-rw-r--r-- 1 root root  141 Apr 21 09:43 gfxstream_vk_icd.json
+-rw-r--r-- 1 root root  143 Apr 21 09:43 intel_hasvk_icd.json
+-rw-r--r-- 1 root root  137 Apr 21 09:43 intel_icd.json
+-rw-r--r-- 1 root root  135 Apr 21 09:43 lvp_icd.json
+-rw-r--r-- 1 root root  139 Apr 21 09:43 nouveau_icd.json
+-rw-r--r-- 1 root root  138 Apr 21 09:43 radeon_icd.json
+-rw-r--r-- 1 root root  138 Apr 21 09:43 virtio_icd.json

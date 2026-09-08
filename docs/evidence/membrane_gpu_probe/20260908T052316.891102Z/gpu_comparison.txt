@@ -1,0 +1,9 @@
+GPU membrane probe
+device: llvmpipe (LLVM 20.1.2, 256 bits)
+  b2/gamma0 PASS face_max=2.61885e-08 corner_max=0 assembly_max=0 complete_max=0 energy=0 predicates(area=1,normal=1,corner=1,assembly=1,energy=1,zero=1)
+  b2/gamma1 PASS face_max=2.61884582e-08 corner_max=2.21102232e-08 assembly_max=0 complete_max=4.2595369e-08 energy=2.625 predicates(area=1,normal=1,corner=1,assembly=1,energy=1,zero=1)
+  b2/gamma2 PASS face_max=2.61884582e-08 corner_max=4.42204464e-08 assembly_max=0 complete_max=8.5190738e-08 energy=5.25 predicates(area=1,normal=1,corner=1,assembly=1,energy=1,zero=1)
+  fan12/gamma0 PASS face_max=7.99252764e-08 corner_max=0 assembly_max=0 complete_max=0 energy=0 predicates(area=1,normal=1,corner=1,assembly=1,energy=1,zero=1)
+  fan12/gamma1 PASS face_max=7.99252764e-08 corner_max=4.87645385e-08 assembly_max=0 complete_max=6.09172482e-08 energy=3.02501631 predicates(area=1,normal=1,corner=1,assembly=1,energy=1,zero=1)
+  fan12/gamma2 PASS face_max=7.99252764e-08 corner_max=9.7529077e-08 assembly_max=0 complete_max=1.21834496e-07 energy=6.05003262 predicates(area=1,normal=1,corner=1,assembly=1,energy=1,zero=1)
+GPU_RESULT PASS worst_abs=1.21834496e-07

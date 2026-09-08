@@ -74,23 +74,24 @@ host comparison of complete force against the assembly-only reference; no
 physics tolerance was widened. **Linux/WSL portability rerun (2026-09-08):**
 `python3 tools/run_membrane_verification.py` reached the runner and recorded
 fresh raw inventory at
-`docs/evidence/membrane_gpu_probe/20260908T044248.110251Z/`. WSL has GCC/G++
-13.3, a Vulkan loader, Mesa ICDs, and `vulkaninfo`; it enumerates only the
-software `llvmpipe (LLVM 20.1.2, 256 bits)` device. NumPy, CMake, GLSL compiler,
-and Vulkan development headers are absent, so CPU/build/GPU are explicitly
-**NOT_TESTED**, not failures or passes. The runner now uses native Linux
-build names/generators and records missing tools, loader, and ICD evidence;
-no dependencies or system configuration were changed. Windows rerun
-`20260908T044310.438669Z` remained CPU/build/GPU **PASS**. **LUNA-LINUX-02
-install attempt (2026-09-08):** the authorized WSL dependency command is
-preserved at `docs/evidence/membrane_gpu_probe/20260908T050146Z/`; it was
-blocked before `apt-get` because `sudo -n` reported `sudo: a password is
-required`. Apt candidates were present for CMake, `libvulkan-dev`, `glslc`,
-`python3-venv`, and NumPy, but no packages or venv were installed. The
-observed Vulkan device remains software `llvmpipe (LLVM 20.1.2, 256 bits)`;
-this does not establish RTX 4090 access. CPU/build/GPU are **NOT_TESTED**;
-no Linux PASS is claimed. Engine-window/runtime/DYAD/Alan acceptance is
-**NOT TESTED**, and no engine process or HTTP endpoint was touched.
+`docs/evidence/membrane_gpu_probe/20260908T044248.110251Z/`. WSL initially
+lacked CMake, GLSL compiler, Vulkan development headers, and NumPy; that
+inventory remains preserved as evidence, not a Linux result. After Alan
+installed the WSL development packages, the checkout-local `.venv-linux` was
+created and NumPy was pinned to the frozen manifest version `2.2.6`. Exact
+command: `.venv-linux/bin/python tools/run_membrane_verification.py`.
+Final evidence: `docs/evidence/membrane_gpu_probe/20260908T052638.020543Z/`.
+CPU reference **PASS**; Linux host/shader build **PASS**; Vulkan comparison
+**PASS** for B2 and Fan12 at gamma 0/1/2. The selected device is software
+`llvmpipe (LLVM 20.1.2, 256 bits)`, Vulkan 1.4.318 / Mesa 25.2.8; this
+certifies Linux software-Vulkan execution only and does not establish RTX
+4090 access, hardware performance, or engine-window support. The first
+post-install run `20260908T052316.891102Z` remains as failed correction
+history because NumPy 2.5.3 violated the fixture's frozen 2.2.6 version
+identity; no fixtures, laws, or numerical tolerances changed. Windows rerun
+`20260908T044310.438669Z` remained CPU/build/GPU **PASS**. Engine-window/
+runtime/DYAD/Alan acceptance is **NOT TESTED**, and no engine process or HTTP
+endpoint was touched.
 
 Historical assignments below are retained as provenance only. They no longer
 assign current ownership.

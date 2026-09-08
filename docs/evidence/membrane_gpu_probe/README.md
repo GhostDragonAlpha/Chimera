@@ -68,27 +68,37 @@ python3 tools/run_membrane_verification.py
 ```
 
 Fresh WSL2 evidence is recorded at
-`20260908T044248.110251Z/`. The captured host has GCC/G++ 13.3, Python 3.12,
-the Vulkan loader, Mesa ICDs, and `vulkaninfo`; it enumerates only
+`20260908T052638.020543Z/`. The exact command was:
+
+```bash
+.venv-linux/bin/python tools/run_membrane_verification.py
+```
+
+The checkout-local environment uses NumPy `2.2.6`, the exact version frozen in
+both fixture manifests. WSL has GCC/G++ 13.3, CMake 3.28.3, `glslc` 2023.8,
+Vulkan development headers/loader, and `vulkaninfo`; it enumerates only
 `llvmpipe (LLVM 20.1.2, 256 bits)`, a software Vulkan device (Vulkan 1.4.318,
-Mesa 25.2.8). It does not have CMake, `glslc`/`glslangValidator`, Vulkan
-development headers, or Python NumPy. Therefore the honest result is:
+Mesa 25.2.8). The final result is:
 
-| Check | State |
-|---|---|
-| Frozen CPU fixture verifier | NOT_TESTED — NumPy missing |
-| Linux probe configure/build | NOT_TESTED — CMake and shader compiler missing |
-| Vulkan comparison | NOT_TESTED — no Linux executable/shader was produced |
-| Engine-window capture | NOT_TESTED — no scoped session supplied |
+| Check | State | Evidence |
+|---|---|---|
+| Frozen CPU fixture verifier | PASS | `cpu_reference.txt` |
+| Linux probe configure/build + shader | PASS | `build_configure.txt`, `build.txt` |
+| Vulkan compute comparison | PASS | `gpu_comparison.txt` |
+| Engine-window capture | NOT_TESTED | no scoped engine session was supplied |
 
-The runner now captures missing-tool records instead of aborting, selects the
-native CMake generator and executable name on Linux, and records loader/ICD
-inventory. The minimum non-invasive setup for a future Linux run is a Python
-environment containing NumPy, CMake, Vulkan development headers plus loader
-dev files, and a GLSL-to-SPIR-V compiler such as `glslc`; an operator must
-authorize any installation. No dependencies or system configuration were
-changed for this run. The Windows rerun at `20260908T044310.438669Z` remains
-CPU PASS, build PASS, and GPU PASS on the RTX 4090.
+All B2 and Fan12 cases pass at gamma 0/1/2, including face arithmetic,
+validity, fixed-order CSR assembly, energy, zero-gamma, gamma doubling, and
+the corruption control. The llvmpipe result certifies software Vulkan
+execution only; it does not establish RTX 4090 access, hardware performance,
+or engine-window support.
+
+The first post-install run at `20260908T052316.891102Z` is retained as failed
+correction history: build and GPU passed, but the CPU verifier rejected NumPy
+`2.5.3` against the frozen manifest version `2.2.6`. Pinning the environment to
+that pre-registered version fixed the environment mismatch without changing
+fixtures, laws, or tolerances.
+
 
 ## LUNA-LINUX-02 installation blocker
 
