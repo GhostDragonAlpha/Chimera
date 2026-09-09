@@ -3975,6 +3975,15 @@ bool Engine::membrane_demo_init(const MembraneDemoUpload& up) {
         up.csr_offsets.size() != up.n_verts + 1 ||
         up.csr_corners.size() != up.n_faces * 3 ||
         up.gamma_f32.size() != up.n_faces) return false;
+    // Snapshot request-owned vectors before any Vulkan allocation/driver call.
+    // The request is held behind the HTTP/render handoff lock, but keeping the
+    // CPU mirrors independent also prevents a driver-side failure from ever
+    // leaving the accepted-state bookkeeping dependent on request storage.
+    const std::vector<float> input_positions = up.positions_f32;
+    const std::vector<uint32_t> input_indices = up.indices;
+    const std::vector<uint32_t> input_csr_offsets = up.csr_offsets;
+    const std::vector<uint32_t> input_csr_corners = up.csr_corners;
+    const std::vector<float> input_gamma = up.gamma_f32;
     vkDeviceWaitIdle(device_);
 
     const VkDeviceSize pos_bytes = VkDeviceSize(up.n_verts) * 4 * sizeof(float);
@@ -4096,9 +4105,9 @@ bool Engine::membrane_demo_init(const MembraneDemoUpload& up) {
                       VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
                       md_render_ibuf_, md_render_imem_);
     }
-    std::memcpy(md_gamma_map_, up.gamma_f32.data(), size_t(up.n_faces) * sizeof(float));
-    std::memcpy(md_csr_off_map_, up.csr_offsets.data(), size_t(up.n_verts + 1) * sizeof(uint32_t));
-    std::memcpy(md_csr_c_map_, up.csr_corners.data(), size_t(up.n_faces) * 3 * sizeof(uint32_t));
+    std::memcpy(md_gamma_map_, input_gamma.data(), size_t(up.n_faces) * sizeof(float));
+    std::memcpy(md_csr_off_map_, input_csr_offsets.data(), size_t(up.n_verts + 1) * sizeof(uint32_t));
+    std::memcpy(md_csr_c_map_, input_csr_corners.data(), size_t(up.n_faces) * 3 * sizeof(uint32_t));
     md_pos_host_ = up.positions_f32;
     md_pos_host_init_ = md_pos_host_;
     md_idx_host_.assign(up.indices.begin(), up.indices.end());
@@ -4124,6 +4133,7 @@ bool Engine::membrane_demo_init(const MembraneDemoUpload& up) {
     // First verified evaluation of the initial accepted state.
     float e0 = 0.f;
     if (md_eval(1, e0)) {
+
         md_energy_last_ = e0;
         md_energy_initial_ = e0;
         const float* vf = static_cast<const float*>(md_vf_map_);

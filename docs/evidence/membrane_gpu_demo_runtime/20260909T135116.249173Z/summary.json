@@ -1,0 +1,17 @@
+{
+ "utc": "20260909T135120.359382Z",
+ "command": "status",
+ "rc": 1,
+ "checks": [
+  {
+   "name": "GET /membrane_demo",
+   "verdict": "CRASH",
+   "detail": {
+    "cause": "URLError(ConnectionRefusedError(10061, 'No connection could be made because the target machine actively refused it', None, 10061, None))"
+   },
+   "utc": "20260909T135120.359280Z"
+  }
+ ],
+ "fixture": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub\\docs\\evidence\\gpu_fixtures\\b2",
+ "fixture_sha256": "3e264f49929f216b6bc07024f9b7ca0a5d96ca166b8114df5198776420642c77"
+}

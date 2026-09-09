@@ -319,6 +319,39 @@ tolerance change, no control of Alan's engine.
 
 **GLM-GPU-DEMO-01 runtime bring-up (2026-09-08/09).** The isolated engine source now includes the opt-in GPU membrane controller, separate accepted/trial buffers, certified stage-0/1/2 evaluation, in-kernel trial update, present-stage accepted-state mapping, compute-to-vertex barrier, and `/membrane_demo_bin` plus `/membrane_demo` controls. The source and shaders build with MSVC/Visual Studio 17 2022 outside the protected directory. The first runtime attempt found and fixed the emitted-shader filename mismatch (`membrane_demo.spv` versus the requested `membrane_demo.comp.spv`). With the firewall prompt allowed, an isolated `--no-restore` instance started on free port 8091, initialized the B2 upload, returned the expected initial energy/centre/material snapshot, completed one GPU step, and served a PNG frame. A later post-correction control/upload attempt crashed the isolated process with Windows Application Error 1000 (`VCRUNTIME140.dll`, `0xc0000005`); the exact source fault remains unresolved. A subsequent source correction restores initial gamma/snapshot on reset and re-evaluates energy/force after gamma admission, but those controls have not yet been rerun successfully. Runtime full relaxation, gamma controls, rejection integrity, capture state linkage, visual/DYAD, and human acceptance remain **NOT_TESTED**. Full record: `docs/THE_GPU_DEMO01_RUNTIME_RECORD.md`. No GPU-driven engine milestone PASS is claimed.
 
+**GLM-GPU-DEMO-02 RESOLVED — runtime gate PASS (2026-09-09).** The
+DEMO-01 blocker was resolved by diagnosis, not guesswork. (1) The isolated
+`0xc0000005` crash (9 identical WER records, VCRUNTIME140 offset
+`0x1ddea`, inside `memcpy`) was localized by a stderr marker ladder to a
+valid-sized vector assign in `membrane_demo_init` and root-caused to a
+STALE TRANSLATION UNIT: the MSVC build directory under the user Temp dir
+(CMake MSB8029) retained an object compiled against a pre-layout-change
+`engine.hpp`. A `--clean-first` rebuild of unchanged source eliminated the
+crash; reproducibility falsifier checked (crashed before, never after,
+four later builds). No source change fixes the crash; the clean-build law
+is recorded in the runtime record. (2) The gate then exposed an
+independent real defect: `main.cpp::find_colon_after` matched the FIRST
+textual occurrence of a JSON key, so `{"op":"gamma","gamma":2.0}` shadowed
+the actual member and `get_double` silently returned its default 0.0,
+which `md_admit_gamma` legally admitted as a zero material (energy/force
+exactly 0, validity intact). Fixed to scan all occurrences with a
+closing-quote prefix guard; no tolerance/fixture/shader/physics change.
+(3) Astra's review was answered and the source-publication discrepancy
+closed: `35f97e34` had never been pushed (the crash session died first);
+pushed as a fast-forward — remote head `35f97e346abb7cb3f703d5af0e1d7edf
+e5313680`. (4) New option-b runtime gate `tools/membrane_demo_client.py`
+(separated requests, frozen-fixture upload, own-process launch discipline,
+per-run engine log archival): TWO consecutive clean-build runs, 20 PASS +
+1 INFO each — init vs frozen ref, EXACT fixed-state doubling (E and force),
+gamma restore, step1, full run terminal `stagnated` at iteration 126 with
+E=2.59807611 matching the CPU law 2.5980761647, reset restore, rejection
+integrity (state id unchanged), gamma=0 stationary, state-linked captures.
+CPU regression rerun after the shared-parser change: unchanged PASS. Full
+record appended: `docs/THE_GPU_DEMO01_RUNTIME_RECORD.md` (GLM-GPU-DEMO-02
+section). Remaining: visual/DYAD review of the GPU-driven demo (NOT
+TESTED), render-side capture certification still conditional,
+per-iteration trajectory dump NOT TESTED, human acceptance NOT CLAIMED.
+
 **GLM-RELAX-GPU-01 GATE PASS (2026-09-08).** Continue point `c38ffe84…`.
 Preregistered first (`docs/THE_RELAX_GPU01_PREREGISTRATION.md`):
 STATEMENT — the compiled verified kernels (frozen-certified face-eval,

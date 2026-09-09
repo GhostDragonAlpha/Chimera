@@ -160,13 +160,27 @@ static std::string fmt_float(float f) {
 }
 
 static size_t find_colon_after(const std::string& body, const char* key) {
+    // GLM-GPU-DEMO-02 fix: the FIRST textual occurrence of "key" may be a
+    // VALUE, not a name ({"op":"gamma","gamma":2.0} shadowed the real
+    // "gamma": member and get_double silently returned its default 0.0,
+    // which md_admit_gamma legally admitted as a zero material). Scan all
+    // occurrences and accept the first one that is actually followed by
+    // ':'. The closing-quote guard rejects longer names that merely share
+    // the key as a prefix ("n_steps" vs "n_steps_x").
     std::string needle = std::string("\"") + key + "\"";
-    size_t pos = body.find(needle);
-    if (pos == std::string::npos) return std::string::npos;
-    size_t after_key = pos + needle.size();
-    while (after_key < body.size() && (body[after_key] == ' ' || body[after_key] == '\t')) ++after_key;
-    if (after_key >= body.size() || body[after_key] != ':') return std::string::npos;
-    return after_key + 1;
+    size_t pos = 0;
+    while ((pos = body.find(needle, pos)) != std::string::npos) {
+        size_t after_quote = pos + needle.size();
+        if (after_quote < body.size() && body[after_quote] == '"') {
+            pos = after_quote;
+            continue;   // prefix of a longer name; keep scanning
+        }
+        size_t after_key = after_quote;
+        while (after_key < body.size() && (body[after_key] == ' ' || body[after_key] == '\t')) ++after_key;
+        if (after_key < body.size() && body[after_key] == ':') return after_key + 1;
+        pos = after_quote;   // value occurrence; keep scanning
+    }
+    return std::string::npos;
 }
 
 static float get_float(const std::string& body, const char* key, float def) {

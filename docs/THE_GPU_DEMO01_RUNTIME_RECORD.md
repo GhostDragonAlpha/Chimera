@@ -101,3 +101,97 @@ The remaining blocker is a concrete isolated Windows access violation during
 post-correction control/upload handling. Do not infer RTX hardware identity,
 full numerical parity, or window/DYAD acceptance from the successful startup,
 initialization, or single-step observations.
+
+---
+
+# GLM-GPU-DEMO-02 — crash resolved, full runtime gate PASS (2026-09-09)
+
+## Crash diagnosis (marker ladder, all evidence preserved)
+
+Nine WER records (2026-09-08 22:39 through 23:59) showed the IDENTICAL fault:
+`0xc0000005` at VCRUNTIME140.dll offset `0x1ddea` (inside `memcpy`), across
+rebuilds — deterministic, hence logic/toolchain-state, not random. A
+stderr marker ladder through `membrane_demo_init` bound the crash to the
+statement after "[md] initial position copy ready": the valid-sized
+`md_idx_host_.assign(...)` — whose inputs were independently valid. A
+valid-size memcpy crashing there means corrupted CRT vector internals.
+
+**Root cause: a stale translation unit.** The build directory sits under the
+user Temp dir (CMake warning MSB8029: "Intermediate/Output directory cannot
+reside under the Temporary directory as it could lead to issues with
+incremental build"); earlier `engine.hpp` member-layout changes had left a
+stale object compiled against the old header. A `--clean-first` rebuild of
+the SAME source eliminated the crash entirely. No source change fixes this
+crash; the fix is the clean build, recorded here.
+
+Falsifier check: the crash reproduced exactly (single `/membrane_demo_bin`
+request, exit 0xC0000005) before the clean rebuild and never after — across
+four subsequent builds including two more `--clean-first` passes.
+
+## Second, independent defect: JSON value-shadowing (source fix)
+
+With the crash gone the gate exposed: after any `/membrane_demo` gamma
+request, energy and force read EXACTLY 0 (validity stayed 1; the kernel ran
+and wrote the energy buffer). Root cause in `main.cpp::find_colon_after`:
+it returned the FIRST textual occurrence of the key, which in
+`{"op":"gamma","gamma":2.0}` is the VALUE of `op`; no colon follows, so
+`get_double("gamma", 0.0)` silently returned its DEFAULT 0.0, which
+`md_admit_gamma(0.0)` legally admitted as a zero material — every observed
+symptom, including the never-recovering status refresh (each subsequent
+admission parsed 0.0 again).
+
+Fix: scan ALL occurrences of the key; accept the first followed by ':';
+skip value occurrences and longer names sharing the prefix (closing-quote
+guard). No tolerance, fixture, shader or physics change.
+
+## New runtime gate (option-b per Astra; Astra review answered)
+
+Astra's review items were resolved: no prior symbolized record of this
+crash; the source-publication discrepancy was real — commit `35f97e34` had
+never been pushed (the crash session died before `git push`); pushed as a
+fast-forward, remote head now `35f97e346abb7cb3f703d5af0e1d7edfe5313680`.
+The runtime numerical gate is option (b): a separate engine-runtime gate
+reusing the frozen fixtures/references — `tools/membrane_demo_client.py`
+(separated requests; launch discipline: refuses occupied ports, terminates
+only the PID it launched; archives engine stdout/stderr per run).
+
+Preregistered: STATEMENT — the demo executes the declared law through its
+actual runtime path. PREDICTION — comparisons and state-transition controls
+meet their preregistered bounds. FALSIFIER — any bound breach,
+accepted-state corruption, incomplete readback, or unverifiable state
+association.
+
+## Results (two consecutive clean-build gates, 20 PASS + 1 INFO each)
+
+- init: E=2.625 vs frozen ref 2.6249999533666486 (f32 readback); centre
+  [0,0,0.125]; material snapshot gamma f64=1/f32=1, J/m^2, wu_to_m=1.0.
+- Fixed-state gamma doubling: E2=5.25=2×E0 EXACT; centre force
+  -0.857142866 = 2×F0 EXACT.
+- gamma back to 1: E=2.625 restored.
+- step1: it=1, E=2.62457323 (CPU law first step 2.6245730615, f32-consistent).
+- Full run: terminal `stagnated` at iteration 126, E=2.59807611 vs CPU
+  2.5980761647224426 — SAME terminal state as the CPU law, not just an
+  iteration-count match.
+- reset: E=2.625, it=0, z=0.125 restored.
+- rejection integrity: `invalid_trial_REFUSED`, accepted_state_id unchanged.
+- gamma=0: `stationary`, it=0, no accepted step.
+- Captures `final_relaxed.png` / `raised_gamma0.png` with status sidecars
+  and accepted_state_id linkage (render-side certification remains
+  conditional per GLM-WINDOW-02; not upgraded here).
+- CPU regression rerun (shared-code rule): gamma=1 `stagnated`, 126
+  accepted, 2.6245730615178493 → 2.5980761647224426; gamma=0 `stationary`.
+- The leftover single-request CRASH in evidence 20260909T135116 was the
+  client probing a port after its own gate had terminated the engine; the
+  engine was not running; no engine defect.
+
+## Verdicts after GLM-GPU-DEMO-02
+- Engine runtime numerical gate (frozen B2, actual 11-binding/32-byte ABI,
+  GPU readback): PASS.
+- CPU: PASS. Engine build/shader: PASS. Startup/listener: PASS.
+- Full matched CPU/GPU relaxation: PASS at terminal state and endpoints;
+  per-iteration trajectory dump remains NOT TESTED.
+- Gamma-zero, fixed-state doubling, reset, rejection integrity: PASS.
+- Visual/DYAD review of the GPU-driven demo: NOT TESTED (next task).
+- Human acceptance: NOT CLAIMED. GPU-driven engine milestone: implementation
+  and numerical runtime gate complete; DYAD/human verdicts pending.
+
