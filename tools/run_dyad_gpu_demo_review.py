@@ -61,7 +61,12 @@ RUN_FACTS = {
     "camera": {"cam_radius": 6.0, "cam_theta": 0.0, "cam_phi": 0.7,
                "note": "camera POSTed to /camera before /frame; oblique view, "
                        "phi 0.7 rad above the rim plane; engine world y-up"},
-    "render": {"mode": "fill + 1px GPU wireframe edges (slotmode 2)",
+    "render": {"mode": "fill only (mesh_mode_ 0): the demo path sets no "
+                       "render mode and the wire pass requires mesh_mode_ >= 1, "
+                       "so NO wireframe edges are drawn (CORRECTED during "
+                       "GLM-GPU-DEMO-03: the earlier 'slotmode 2' claim was "
+                       "imported from the CPU-demo /mesh_bin law and does not "
+                       "apply to the GPU demo path)",
                "presentation": "rigid B2(z-up)->engine(y-up) rotation plus a "
                                "0.5 m presentation lift; the lift is render "
                                "presentation only"},

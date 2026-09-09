@@ -352,6 +352,24 @@ section). Remaining: visual/DYAD review of the GPU-driven demo (NOT
 TESTED), render-side capture certification still conditional,
 per-iteration trajectory dump NOT TESTED, human acceptance NOT CLAIMED.
 
+**GLM-GPU-DEMO-03 DYAD EXECUTED (2026-09-09).** Per
+`docs/THE_DYAD_PROTOCOL.md` (`tools/run_dyad_gpu_demo_review.py`, served
+model qwen3.8-27b-nvfp4-mtp, one image per call, physical briefing verbatim,
+non-leading numbered questions, full recording): the dyad reviewed the
+GPU-driven demo's raised (gamma=0) and relaxed (gamma=1, iteration 126)
+captures. Observations: rim clearly visible in both; centre vertex NOT
+visible; the 0.125 m height offset NOT RESOLVABLE (fill-only presentation:
+source-verified — the GPU demo path sets no `mesh_mode_`, so the wire pass
+and edge-contrast pipeline never draw; the runner's earlier wireframe claim
+was imported from the CPU-demo law and was wrong, corrected in the runner
+and the record). No rendering defect beyond the already-recorded
+presentation limitation; no contradiction of the numerical record; the
+dyad correctly left numerical confirmation to the numerical evidence.
+Height resolvability remains INCONCLUSIVE until the demo path enables the
+existing opt-in edge-contrast presentation or profile views. Evidence:
+`docs/evidence/membrane_gpu_demo_runtime/20260909T140408.398190Z/
+dyad_gpu_demo_review.json`. Human acceptance NOT CLAIMED.
+
 **GLM-RELAX-GPU-01 GATE PASS (2026-09-08).** Continue point `c38ffe84…`.
 Preregistered first (`docs/THE_RELAX_GPU01_PREREGISTRATION.md`):
 STATEMENT — the compiled verified kernels (frozen-certified face-eval,

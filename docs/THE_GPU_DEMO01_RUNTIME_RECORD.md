@@ -195,3 +195,65 @@ association.
 - Human acceptance: NOT CLAIMED. GPU-driven engine milestone: implementation
   and numerical runtime gate complete; DYAD/human verdicts pending.
 
+---
+
+# GLM-GPU-DEMO-03 — DYAD review of the GPU-driven demo (2026-09-09)
+
+Protocol: `docs/THE_DYAD_PROTOCOL.md`; runner `tools/run_dyad_gpu_demo_review.py`;
+run reviewed `20260909T140408.398190Z` (the third consecutive 20-PASS gate, with
+the capture camera now POSTed, not assumed). Eye verification first: LM Studio
+resident VLM accepted the capability probe; served model recorded per call.
+One image per `senses.watch_one` call, `PYTHONIOENCODING=utf-8`, no timeouts,
+physical briefing verbatim, six numbered non-leading questions, image sha256
++ raw responses + finish reasons recorded to
+`docs/evidence/membrane_gpu_demo_runtime/20260909T140408.398190Z/dyad_gpu_demo_review.json`
+and `Saved/dyad/dyad_log.jsonl`. (Note: at first run the eye was dark — no
+model loaded after the PC-crash reboot; the runner reports BLOCKED with the
+operator action and Chimera never loads a model itself. Alan loaded
+qwen3.8-27b-nvfp4-mtp; the review then ran.)
+
+## What the dyad observed (raw responses preserved in the evidence JSON)
+
+Both frames: a single light hexagonal membrane on a dark void, with a darker
+hexagonal region read as a cast shadow on an implied (unrendered) floor.
+- rim: clearly visible in both states; centre vertex: NOT visible — inferred
+  only from the shading highlight.
+- Raised (gamma=0) frame: the 0.125 m centre offset is **NOT RESOLVABLE**;
+  the silhouette reads as a flat hexagon; the central specular sheen is
+  consistent with either a raised cone or a flat plate lit from above.
+- Relaxed (gamma=1, 126 iterations) frame: reads flat, qualitatively
+  consistent with the recorded state, but only weakly — the image cannot
+  confirm the numerical facts, which the dyad correctly leaves to the
+  numerical record.
+- Named worst problem (both): the membrane's defining geometry (six-triangle
+  fan spokes, centre vertex) is invisible; a smooth highlight on a flat plate
+  can masquerade as a residual bump.
+- The dyad also flagged the runner's claimed "1-px wireframe" as not visible.
+
+## Measurement/source reconciliation (the two-lens law)
+
+The dyad's wireframe observation was checked against source and found
+CORRECT: the GPU demo path sets no render mode, `mesh_mode_` is only set via
+`/mesh_bin`, and the wire pass requires `mesh_mode_ >= 1` — so the demo
+renders FILL ONLY. The runner's earlier "slotmode 2" fact was imported from
+the CPU-demo `/mesh_bin` law and was WRONG for this path; the runner and the
+recorded facts are corrected. The dyad's rim/centre/height findings reproduce
+the GLM-DYAD-01/02 findings for the CPU-reference demo: height resolvability
+requires the edge-contrast presentation (or a profile view), which the GPU
+demo path does not yet enable.
+
+## Verdicts
+
+- DYAD (GPU-driven demo): EXECUTED. Rim visible; centre vertex not visible;
+  height NOT RESOLVABLE in both states with the current fill-only
+  presentation. No rendering defect beyond the already-recorded presentation
+  limitation; no contradiction of the numerical record.
+- Numerical (unchanged): GPU runtime gate 20 PASS; CPU law unchanged.
+- Corrections made: runner render-mode fact (wireframe claim removed);
+  capture camera now POSTed and recorded as applied (GLM-GPU-DEMO-03 prep).
+- Visual/height resolvability: remains INCONCLUSIVE until the demo path gets
+  the edge-contrast presentation (GLM-DEMO-CONTRAST-01's opt-in pipeline
+  exists in the engine; the demo path does not enable it) or profile views.
+- Human acceptance: NOT CLAIMED. GPU-driven claim: unchanged — compute drives
+  the accepted state; presentation findings are render-path facts.
+
