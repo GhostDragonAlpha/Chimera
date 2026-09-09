@@ -1,0 +1,41 @@
+test_agent_cannot_accuse_to_take_over (test_control.ControlTests.test_agent_cannot_accuse_to_take_over) ... ok
+test_claim_capacity (test_control.ControlTests.test_claim_capacity) ... ok
+test_concurrent_claim_one_winner (test_control.ControlTests.test_concurrent_claim_one_winner) ... ok
+test_confirmed_failure_elects_qualified_standby (test_control.ControlTests.test_confirmed_failure_elects_qualified_standby) ... ok
+test_dependency_waits_for_integration (test_control.ControlTests.test_dependency_waits_for_integration) ... ok
+test_dyad_reserves_gpu_and_release_order (test_control.ControlTests.test_dyad_reserves_gpu_and_release_order) ... ok
+test_each_slot_has_its_own_engine_plan (test_control.ControlTests.test_each_slot_has_its_own_engine_plan) ... ok
+test_explicit_yield_uses_same_recovery_rules (test_control.ControlTests.test_explicit_yield_uses_same_recovery_rules) ... ok
+test_failure_holds_task_and_resources (test_control.ControlTests.test_failure_holds_task_and_resources) ... ok
+test_feedback_does_not_accept_task (test_control.ControlTests.test_feedback_does_not_accept_task) ... ok
+test_feedback_retains_original_and_appends_dispositions (test_control.ControlTests.test_feedback_retains_original_and_appends_dispositions) ... ok
+test_feedback_unknown_category_and_task_refused (test_control.ControlTests.test_feedback_unknown_category_and_task_refused) ... ok
+test_five_slots_and_sixth_refusal (test_control.ControlTests.test_five_slots_and_sixth_refusal) ... ok
+test_foreign_and_stale_claim_refused_without_revision (test_control.ControlTests.test_foreign_and_stale_claim_refused_without_revision) ... ok
+test_gpu_exclusive_even_same_agent_two_tasks (test_control.ControlTests.test_gpu_exclusive_even_same_agent_two_tasks) ... ok
+test_human_feedback_cannot_be_forged_by_worker (test_control.ControlTests.test_human_feedback_cannot_be_forged_by_worker) ... ok
+test_integration_ack_and_explicit_slot_release (test_control.ControlTests.test_integration_ack_and_explicit_slot_release) ... ok
+test_integration_request_stale_after_failover (test_control.ControlTests.test_integration_request_stale_after_failover) ... ok
+test_inventory_is_read_only_and_bounded (test_control.ControlTests.test_inventory_is_read_only_and_bounded) ... ok
+test_master_base_refused (test_control.ControlTests.test_master_base_refused) ... ok
+test_master_list_claim_lead_only (test_control.ControlTests.test_master_list_claim_lead_only) ... ok
+test_no_ready_successor_leaves_vacancy (test_control.ControlTests.test_no_ready_successor_leaves_vacancy) ... ok
+test_old_lead_cannot_disposition_feedback (test_control.ControlTests.test_old_lead_cannot_disposition_feedback) ... ok
+test_protected_and_traversal_scope (test_control.ControlTests.test_protected_and_traversal_scope) ... ok
+test_real_http_roundtrip_and_refusal (test_control.ControlTests.test_real_http_roundtrip_and_refusal) ... ok
+test_recovery_requires_attestation_and_new_generation (test_control.ControlTests.test_recovery_requires_attestation_and_new_generation) ... ok
+test_restart_retains_identity_and_claims (test_control.ControlTests.test_restart_retains_identity_and_claims) ... ok
+test_review_not_acceptance_or_free_slot (test_control.ControlTests.test_review_not_acceptance_or_free_slot) ... ok
+test_same_agent_multiple_tasks_distinct_slots (test_control.ControlTests.test_same_agent_multiple_tasks_distinct_slots) ... ok
+test_scope_conflict_casefold (test_control.ControlTests.test_scope_conflict_casefold) ... ok
+test_silence_suspicion_does_not_elect (test_control.ControlTests.test_silence_suspicion_does_not_elect) ... ok
+test_snapshot_and_events_do_not_expose_tokens (test_control.ControlTests.test_snapshot_and_events_do_not_expose_tokens) ... ok
+test_stop_feedback_preserves_authority_requirement (test_control.ControlTests.test_stop_feedback_preserves_authority_requirement) ... ok
+test_task_branch_wrong_refused (test_control.ControlTests.test_task_branch_wrong_refused) ... ok
+test_unqualified_agent_cannot_offer_or_claim (test_control.ControlTests.test_unqualified_agent_cannot_offer_or_claim) ... ok
+test_wrong_epoch_current_lead_refused (test_control.ControlTests.test_wrong_epoch_current_lead_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 36 tests in 0.652s
+
+OK

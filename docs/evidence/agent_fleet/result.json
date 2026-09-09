@@ -1,0 +1,20 @@
+{
+  "source_base": "bf0a62162008c8415b88091c671ac180dbb50193",
+  "class": "offline_control_plane_and_roadmap_only",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.39",
+    "sqlite": "3.53.1"
+  },
+  "test_command": "python -m unittest discover -s tools/agent_fleet -p 'test_*.py' -v",
+  "tests_passed": 36,
+  "master_history_preserved": true,
+  "windows_slot_provisioning": "NOT_TESTED",
+  "engine_runtime": "NOT_TESTED",
+  "actual_provider_failover": "NOT_TESTED",
+  "github_merge_broker": "NOT_IMPLEMENTED",
+  "production_implementation": "UNCHANGED",
+  "documentation_inventory_files": 843,
+  "full_documentation_semantic_review": "NOT_COMPLETE",
+  "human_feedback_adapter": "NOT_IMPLEMENTED"
+}

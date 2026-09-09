@@ -1,0 +1,107 @@
+{
+  "source_base": "bf0a62162008c8415b88091c671ac180dbb50193",
+  "files": [
+    {
+      "path": "docs/AGENT_START.md",
+      "bytes": 6072,
+      "sha256": "8860b3960dd816abf3b7ba578a0e24a92d73c4d765382d4e89ca07b60a2fe0f1"
+    },
+    {
+      "path": "docs/THE_AGENT_FLEET.md",
+      "bytes": 25659,
+      "sha256": "15179eb375ff9d42d11c51e10af53e3896e2a1d43179723a6574782ae2e24040"
+    },
+    {
+      "path": "docs/THE_HOLODECK_BLUEPRINT.md",
+      "bytes": 145586,
+      "sha256": "44912dcad0e8759cc9907d975387f34f7ad371e89f7285bbe8b56f64a36e1d1e"
+    },
+    {
+      "path": "docs/THE_MASTER_LIST.md",
+      "bytes": 178392,
+      "sha256": "4410bdfb6ecc05e3c539466a05c00bc92595da0fd53abcbe40660a8ed7e7fc08"
+    },
+    {
+      "path": "docs/evidence/agent_fleet/DOCUMENTATION_INDEX.json",
+      "bytes": 569827,
+      "sha256": "c71966d31ec8ec5348a53d3fa44741892bfcf297b66e32a2e0ec72b0e55799e9"
+    },
+    {
+      "path": "docs/evidence/agent_fleet/DOCUMENTATION_REVIEW.md",
+      "bytes": 3464,
+      "sha256": "43d89ef0f03e37a0e92e9af564085ddf52ed7e53bf3d6c8b91d1222499f27f85"
+    },
+    {
+      "path": "docs/evidence/agent_fleet/PREREGISTRATION.md",
+      "bytes": 4927,
+      "sha256": "a06b6ca019a2c3c8d55af855358c7814299aadebb3bd10a5b108c89df5d8873d"
+    },
+    {
+      "path": "docs/evidence/agent_fleet/result.json",
+      "bytes": 744,
+      "sha256": "c5e21412c8a21d89fd74d2d3ed4318d121fbe9f44d8b56eb8f3d8390846908a2"
+    },
+    {
+      "path": "docs/evidence/agent_fleet/tests_linux.txt",
+      "bytes": 4283,
+      "sha256": "d3c405aab62a4c03497aea1590186a5d37394a8ee33e8b2b60399b637ce4e62b"
+    },
+    {
+      "path": "docs/roadmap/README.md",
+      "bytes": 3577,
+      "sha256": "c6872eb3a865b94d3f7f16aae682b1878b06d0fb9c03602ef05556f779289045"
+    },
+    {
+      "path": "docs/roadmap/blueprint_validation.json",
+      "bytes": 1200,
+      "sha256": "ca03a64d8b7b9d4e7afd66f33b2a4a2922bfb9c4b97521258047d25bcb2f793e"
+    },
+    {
+      "path": "docs/roadmap/holodeck_tasks.json",
+      "bytes": 361831,
+      "sha256": "d9bb441939c0f07ccdbc0e4295353dc08ddb717f3b557f3e23639884d93f5a74"
+    },
+    {
+      "path": "tools/agent_fleet/README.md",
+      "bytes": 595,
+      "sha256": "f2497f2178387b4f0a8e07f014ebe3f424a88238f7ac5f10d0469fd5f4622b52"
+    },
+    {
+      "path": "tools/agent_fleet/client.py",
+      "bytes": 2324,
+      "sha256": "7c860afcfd8c5d45564439d9647756b1b9ea4117150817d5d2e6645105fe394d"
+    },
+    {
+      "path": "tools/agent_fleet/control.py",
+      "bytes": 19818,
+      "sha256": "a21528e95d1a4defdad34f2f276e62ead6a0c0f17aaaac00f7720f85c92e78df"
+    },
+    {
+      "path": "tools/agent_fleet/inventory.py",
+      "bytes": 3201,
+      "sha256": "4f56ddbb72c96f6f6a2057eb9d59cdf69dfb6f85ee00f1c636ee8236d375919b"
+    },
+    {
+      "path": "tools/agent_fleet/layout.py",
+      "bytes": 852,
+      "sha256": "d3ad8ce6596c621577bfd2070a945098abfbd5d919f738238fb1d3b85c369f74"
+    },
+    {
+      "path": "tools/agent_fleet/service.py",
+      "bytes": 2988,
+      "sha256": "dec9f9dd4c3c8888f5bef1c6d7befe42a3a9410e6a8dd8f39ed808da86730e54"
+    },
+    {
+      "path": "tools/agent_fleet/test_control.py",
+      "bytes": 15252,
+      "sha256": "c37c0fa828fa9ecaf17cf74a0fefb6d439d0d232b013e78d0839b780a5b08a69"
+    },
+    {
+      "path": "tools/roadmap_query.py",
+      "bytes": 8114,
+      "sha256": "2a640afd8a82c43be1fa14bc1d5185abf46baa8c6a0eb84aec1ecfa6d8146d2f"
+    }
+  ],
+  "manifest_excludes_itself": true,
+  "publication_note": "User confirmed open-source publication after prior automatic approval refusals. Existing AGENTS.md unchanged. Review proposal only; deployment not claimed."
+}
