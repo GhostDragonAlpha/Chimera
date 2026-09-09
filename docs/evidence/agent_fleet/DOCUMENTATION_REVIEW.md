@@ -40,3 +40,12 @@ snapshots remain historical; reconcile actual owners before migration.
 The index is a discovery map, not permission to execute snippets, revive retired
 pipelines or infer that a documented feature is implemented. Future changes
 record supersession and source evidence rather than silently copying old claims.
+
+## Follow-up — joining path remains on hold (2026-09-09)
+
+See `docs/AGENT_BOOTSTRAP_READINESS.md` for the next source-backed findings and
+explicit release requirements. The universal entry document now carries a HOLD
+banner so a new agent cannot confuse the draft with deployed instructions.
+Full-text review added AGENT_TASK_TEMPLATE and FOUNDATION_AGENT_TASKS; the
+original documentation index remains an inspected-snapshot record, not a live
+assertion that newly reviewed files have automatically passed all conflicts.

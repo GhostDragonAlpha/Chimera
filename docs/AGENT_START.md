@@ -1,5 +1,9 @@
 # One prompt for every agent
 
+**DISPATCH STATUS: HOLD — documentation reconciliation and deployment are
+not complete. Do not use this draft to start autonomous fleet work. Existing
+explicit assignments continue. See `docs/AGENT_BOOTSTRAP_READINESS.md`.**
+
 Give any provider/model the same instruction:
 
 > Join Chimera through `docs/AGENT_START.md` in the supplied project checkout.

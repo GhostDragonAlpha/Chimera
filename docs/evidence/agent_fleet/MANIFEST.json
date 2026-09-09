@@ -2,9 +2,14 @@
   "source_base": "bf0a62162008c8415b88091c671ac180dbb50193",
   "files": [
     {
+      "path": "docs/AGENT_BOOTSTRAP_READINESS.md",
+      "bytes": 3996,
+      "sha256": "40dac38be03a73bec0a7ffea7f0c9d4b9a59df2fbd065013321eefd407d4dfe9"
+    },
+    {
       "path": "docs/AGENT_START.md",
-      "bytes": 6072,
-      "sha256": "8860b3960dd816abf3b7ba578a0e24a92d73c4d765382d4e89ca07b60a2fe0f1"
+      "bytes": 6300,
+      "sha256": "938f02eb5a118d55ddb0026b9c8256fe5332fccb899f321687a4fb6bf8c6c80e"
     },
     {
       "path": "docs/THE_AGENT_FLEET.md",
@@ -28,8 +33,8 @@
     },
     {
       "path": "docs/evidence/agent_fleet/DOCUMENTATION_REVIEW.md",
-      "bytes": 3464,
-      "sha256": "43d89ef0f03e37a0e92e9af564085ddf52ed7e53bf3d6c8b91d1222499f27f85"
+      "bytes": 3989,
+      "sha256": "b627b0b611f02bc340c7d3e999d34eb8aacab5bb62ebce8734aaf4d618b8f198"
     },
     {
       "path": "docs/evidence/agent_fleet/PREREGISTRATION.md",
