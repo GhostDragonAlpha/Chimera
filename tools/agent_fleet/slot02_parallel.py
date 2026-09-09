@@ -264,12 +264,19 @@ def main() -> int:
                        state='RUNNING',
                        checkpoint='CPU law done rc=%d; building standalone probe' % cp_cpu.returncode)
             bd = wt2 / '.tmp' / 'probe_build'
+            # Fresh dir every attempt: MSB8029 (build under Temp) makes a stale
+            # TU the GLM-GPU-DEMO-02 crash hazard; never reuse probe objects.
+            if bd.exists():
+                shutil.rmtree(bd, ignore_errors=True)
             bd.mkdir(parents=True, exist_ok=True)
             cp_cfg = subprocess.run(['cmake', '-S', str(wt2 / 'tools' / 'membrane_gpu_probe'),
                                      '-B', str(bd)], capture_output=True, text=True)
-            cp_b = subprocess.run(['cmake', '--build', str(bd), '--parallel', '2'],
+            # Multi-config generator: exes land under Release/ only with
+            # --config; --clean-first keeps the build free of stale objects.
+            cp_b = subprocess.run(['cmake', '--build', str(bd), '--config', 'Release',
+                                   '--parallel', '2', '--clean-first'],
                                   capture_output=True, text=True) if cp_cfg.returncode == 0 else None
-            probe_exe = bd / 'membrane_gpu_probe.exe'
+            probe_exe = bd / 'Release' / 'membrane_gpu_probe.exe'
             spv = bd / 'membrane.comp.spv'
             probe_rc = None
             if cp_b is not None and cp_b.returncode == 0 and probe_exe.exists() and spv.exists():
@@ -339,19 +346,65 @@ def main() -> int:
                    evidence='handoff verified; CPU-law task holds no GPU process')
 
         # ---- 4. ENGINE-LOSS DRILL on slot-01 ---------------------------------
+        # The engine must be ALIVE at loss time: re-acquire the GPU (free after
+        # the handoff), start the engine, make accepted progress (the durable
+        # checkpoint), then terminate ONLY the owned engine process.
         t1s = fleet.snapshot()['tasks'][T1]
         gen_before_fail = t1s['generation']
-        # durable checkpoint already recorded (build + gate evidence); the
-        # accepted-state IDs live in the gate's summary.json (committed below).
-        fleet.call('lead01', 'checkpoint', task=T1,
-                   generation=gen_before_fail, state='RUNNING',
-                   checkpoint='engine-loss drill arm: accepted states recorded in '
-                              'gate evidence; about to lose the engine process')
+        fleet.call('lead01', 'resource_acquire', task=T1, generation=gen_before_fail,
+                   resource='rtx4090',
+                   evidence='engine-loss drill: engine goes live again under '
+                            'an accounted reservation')
+        if port_busy(PORT_SLOT1) or port_bound(PORT_SLOT1):
+            raise RuntimeError(f'port {PORT_SLOT1} not free before drill engine')
+        drill_exe = Path(ident1['runtime_dir']) / 'chimera_engine.exe'
+        drill_log = open(fleet.ev / 'drill_engine_stdout.log', 'wb')
+        drill_proc = subprocess.Popen([str(drill_exe), str(PORT_SLOT1),
+                                       '--no-restore', '1280', '720'],
+                                      cwd=str(ident1['runtime_dir']),
+                                      stdout=drill_log, stderr=subprocess.STDOUT)
+        fleet.record('drill_engine_started', pid=drill_proc.pid,
+                     exe_sha256=ident1['exe_sha256'])
+        for _ in range(100):
+            if port_busy(PORT_SLOT1):
+                break
+            if drill_proc.poll() is not None:
+                raise RuntimeError('drill engine exited early rc=%s' % drill_proc.returncode)
+            time.sleep(0.2)
+        drill_base = 'http://localhost:%d' % PORT_SLOT1
+        sys.path.insert(0, str(repo / 'tools'))
+        import membrane_demo_client as mdc  # noqa: E402
+        b2 = mdc.load_b2('case_gamma1')
+        mdc.check_init(drill_base, b2)                 # accepted init state
+        mdc.demo_ctl(drill_base, 'step', n_steps=3)    # accepted progress
+        s_resp = mdc.jget(drill_base, '/membrane_demo')
+        s_now = s_resp.get('status', s_resp)  # both response shapes in the wild
+        fleet.call('lead01', 'checkpoint', task=T1, generation=gen_before_fail,
+                   state='RUNNING',
+                   checkpoint='DURABLE CHECKPOINT before engine loss: it=%s '
+                              'E=%s accepted_state_id=%s'
+                              % (s_now.get('iteration'), s_now.get('energy'),
+                                 s_now.get('accepted_state_id')))
+        # terminate ONLY the owned engine (the drill's interruption)
+        subprocess.run(['taskkill', '/F', '/PID', str(drill_proc.pid)],
+                       capture_output=True, text=True)
+        drill_proc.wait(10)
+        drill_log.close()
+        stages['engine_loss'] = {'killed_pid': drill_proc.pid,
+                                 'failed_runtime_exe_sha256': ident1['exe_sha256'],
+                                 'port': PORT_SLOT1,
+                                 'checkpoint_before_loss': {
+                                     'iteration': s_now.get('iteration'),
+                                     'energy_J': s_now.get('energy'),
+                                     'accepted_state_id': s_now.get('accepted_state_id')}}
+        fleet.record('drill_engine_terminated', pid=drill_proc.pid)
+        # worker session lost WITH the engine (coordinator unaffected)
         r_fail = fleet.call('SUPERVISOR', 'fail', agent='lead01',
                             reason='PROCESS_EXIT',
-                            evidence='engine-loss drill: the gate-owned engine '
-                                     'process was terminated; worker session '
-                                     'lost with it (coordinator unaffected)')
+                            evidence='engine-loss drill: the owned engine '
+                                     '(pid %s, exe %s) was terminated; the '
+                                     'worker session is lost with it'
+                                     % (drill_proc.pid, ident1['exe_sha256'][:12]))
         fleet.record('failover_after_engine_loss', new_leader=r_fail['leader'],
                      epoch=r_fail['epoch'])
         t1s = fleet.snapshot()['tasks'][T1]
@@ -406,10 +459,15 @@ def main() -> int:
         g1b = re1['generation']
         assert g1b > gen_before_fail
         provision(fleet, repo, wt1, c1['branch'], base0)
-        # rerun the affected gate under the new owner + reservation
+        # rerun the affected gate under the new owner + reservation; the eye
+        # is reserved explicitly for the DYAD leg (AGENT_START law: DYAD also
+        # reserves the eye, and the eye requires the GPU reservation held).
         fleet.call(new_owner, 'resource_acquire', task=T1, generation=g1b,
                    resource='rtx4090',
                    evidence='post-recovery gate rerun on fresh runtime identity')
+        fleet.call(new_owner, 'resource_acquire', task=T1, generation=g1b,
+                   resource='dyad_eye',
+                   evidence='post-recovery DYAD review requires the eye')
         cp_gate2 = run_gate(repo / 'tools' / 'membrane_demo_client.py',
                             Path(ident1b['runtime_dir']) / 'chimera_engine.exe',
                             PORT_SLOT1, Path(ident1b['runtime_dir']))
@@ -496,12 +554,11 @@ def main() -> int:
                         ['docs/evidence/membrane_gpu_probe/' + probe_sum.name])
 
         # ---- 5. integration: serialized, stale-base case, superseded leader --
-        # T2 first (advances the base legitimately)
-        fleet.call('worker02', 'submit_review', task=T2, generation=g2,
-                   branch=c2['branch'],
-                   head=sh(wt2, 'rev-parse', 'HEAD').stdout.strip(),
-                   evidence='slot02 leg complete; evidence in repo')
-        pub2 = integrate(fleet, T2, str(wt2), base0, leader='lead01')
+        # T2 first (advances the base legitimately); integrate() performs the
+        # review submission itself (a duplicate submit would freeze the task).
+        # The request MUST come from the CURRENT leader: after the engine-loss
+        # failover, lead01 is revoked; standby01 holds integration authority.
+        pub2 = integrate(fleet, T2, str(wt2), base0, leader=new_owner)
         base1 = pub2['verified_remote_head']
         stages['T2_integrated'] = base1
         fleet.record('T2_integrated', verified=base1)
@@ -516,7 +573,15 @@ def main() -> int:
         except ValueError as e:
             stages['superseded_leader_refused'] = str(e)
             fleet.record('superseded_leader_refused', error=str(e))
-        # T1: expected_base=base0 is now stale (base advanced) -> refused
+        # T1: expected_base=base0 is now stale (base advanced) -> refused.
+        # Single submit_review here; integrate() is NOT used for this attempt.
+        # The review law demands drained resources first: gate2+DYAD are done
+        # and the engine drained itself (client terminated its own PID).
+        if port_busy(PORT_SLOT1) or port_bound(PORT_SLOT1):
+            raise RuntimeError('engine not drained before review; refusing release')
+        fleet.call(new_owner, 'resource_release', task=T1, generation=g1b,
+                   resource='rtx4090',
+                   evidence='gate2+dyad complete; engine drained; port %d free' % PORT_SLOT1)
         head1 = sh(wt1, 'rev-parse', 'HEAD').stdout.strip()
         fleet.call(new_owner, 'submit_review', task=T1, generation=g1b,
                    branch=c1['branch'], head=head1,
@@ -530,9 +595,18 @@ def main() -> int:
              '--task-branch', c1['branch'], '--head', head1,
              '--expected-base', base0], capture_output=True, text=True)
         (fleet.ev / 'publish-T1-stale-attempt.json').write_text(cp_pub.stdout, encoding='utf-8')
-        refused = cp_pub.returncode != 0 and 'base_rewritten_since_task_fork' in cp_pub.stdout
-        stages['stale_base_refused'] = bool(refused)
-        fleet.record('stale_base_refusal', detail=cp_pub.stdout[:200])
+        # A legitimately-advanced base is refused as non_fast_forward_refused;
+        # a rewritten base as base_rewritten_since_task_fork. Both are correct
+        # no-force refusals of the stale-base attempt; record which fired.
+        reason = ''
+        try:
+            reason = json.loads(cp_pub.stdout).get('refused', '')
+        except Exception:
+            pass
+        refused = cp_pub.returncode != 0 and reason in (
+            'non_fast_forward_refused', 'base_rewritten_since_task_fork')
+        stages['stale_base_refused'] = {'refused': bool(refused), 'reason': reason}
+        fleet.record('stale_base_refusal', reason=reason, detail=cp_pub.stdout[:200])
         if not refused:
             raise RuntimeError('stale base was NOT refused: ' + cp_pub.stdout)
         # reconcile: task returns to RUNNING at a new generation; rerun gates
@@ -581,18 +655,21 @@ def main() -> int:
         commit_and_push(wt1, c1['branch'],
                         'slot02-parallel %s: gate rerun on reconciled tree' % T1,
                         ['docs/evidence/membrane_gpu_demo_runtime/' + gate3_dir.name])
-        fleet.call(new_owner, 'submit_review', task=T1, generation=g1c,
-                   branch=c1['branch'],
-                   head=sh(wt1, 'rev-parse', 'HEAD').stdout.strip(),
-                   evidence='reconciled review; gate rerun PASS on the new base')
+        # the review law demands drained resources before submit_review
+        if port_busy(PORT_SLOT1) or port_bound(PORT_SLOT1):
+            raise RuntimeError('engine not drained after gate3; refusing release')
+        fleet.call(new_owner, 'resource_release', task=T1, generation=g1c,
+                   resource='rtx4090',
+                   evidence='gate3 complete on reconciled tree; engine drained; '
+                            'port %d free' % PORT_SLOT1)
         pub1 = integrate(fleet, T1, str(wt1), base1, leader=new_owner)
         stages['T1_integrated'] = pub1['verified_remote_head']
         fleet.record('T1_integrated', verified=pub1['verified_remote_head'])
 
         # ---- 6. close both slots ----------------------------------------------
-        fleet.call(new_owner, 'resource_release', task=T1, generation=g1c,
-                   resource='rtx4090',
-                   evidence='gate3+dyad done; engine drained; eye idle')
+        # (resources were released before each review, per the review law;
+        #  verify nothing lingers instead of releasing what no longer exists)
+        assert not fleet.snapshot()['resources'], 'reservations linger at close'
         assert not port_bound(PORT_SLOT1) and not port_busy(PORT_SLOT1)
         assert not port_bound(PORT_SLOT2) and not port_busy(PORT_SLOT2)
         ev = fleet.call('SUPERVISOR', 'events', since=0)
