@@ -101,3 +101,37 @@ The remaining blocker is a concrete isolated Windows access violation during
 post-correction control/upload handling. Do not infer RTX hardware identity,
 full numerical parity, or window/DYAD acceptance from the successful startup,
 initialization, or single-step observations.
+
+## Recovery (GPU-DEMO-RECOVERY-01, 2026-09-09, branch gpu-demo-recovery-01)
+
+GLM's commit `35f97e34` was recovered from `chimera_pub` (never pushed) and
+transferred bit-identical; all 8 WER dumps decode to the SAME fault:
+`VCRUNTIME140!memcpy` writing dst=0xF size=72 in `membrane_demo_init`'s
+`md_idx_host_.assign()` (init:4115, B2's 18 indices) — a wild host-mirror
+header read on the render thread. Six independent disasm anchors confirm the
+site; the header value's writer is unidentified (no legitimate op produces
+it; triggering history unrecoverable). Adjacent proven defects were fixed
+instead of worked around: cross-size re-init refused by name (create-once
+mapped buffers), incoherent-mirror tripwire refusal with stderr evidence,
+invalid initial states refused (degenerate/NaN no longer ok:true), gamma
+key-parse order-independent, reset refreshes forces, present-buffer hash
+reported as render_state_id (CONDITIONAL). No law, material, tolerance, or
+criterion changed. Regression 0/7 unpatched → 7/7 patched; same-size flows
+bit-identical (state ids match).
+
+Runtime gate 20/20 on the fixed build (exe `9BCC53A6…`, shader unchanged
+`71B5F8D3…`, RTX 4090): P1 frozen fixtures worst 1.79e-7; P2 126/126 steps,
+per-iteration drift 3.269e-7 (budget 1.1e-5), stagnated/stagnated, centre gap
+1.947e-07 (bound 1.502e-5); P3 52 refused trials, accepted+render
+bit-identical incl. PNG bytes; P4 gamma-0 stationary, doubling exact
+(E=5.25, Fz=-0.857142866), reset restores id+material; P5 counters coherent,
+reset bit-exact; P6 render id tracks accepted state; P7 ordinary mesh path
+intact; invalid inputs named; 5× legal cycles clean; clean shutdown+restart
+reproduces canonical ids. DYAD (resident `qwen3.8-27b-nvfp4-mtp`, untouched):
+initial/mid/final all read as an intact pale hexagonal fan, no defects;
+height change visually INCONCLUSIVE (motion certified by measurement).
+Evidence: `docs/evidence/gpu_demo_recovery/` (sequences, gate, dyad,
+regression); instrument: `tools/gpu_demo_recovery/`. Human (Alan)
+acceptance: NOT CLAIMED (Alan may be asleep; gate left explicitly open).
+Residual: the 0xF writer is unfound — the tripwire logs it loudly if it ever
+recurs; no AV observed across ~200 fixed-build operations.
