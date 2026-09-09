@@ -2155,6 +2155,48 @@ Live task ownership now flows through the fleet control plane (`tools/agent_flee
 
 One bounded GPU membrane verification task executed end-to-end through the fleet control plane on slot-01 (task `slot01-membrane-143008`): claim, clean slot build, runtime gate PASS, real interruption + failover recovery at generation 4, DYAD executed, fetch-verified publication. SINGLE-SLOT VERIFIED; not a five-slot deployment.
 
+### SLOT02-PARALLEL-01 — TWO-SLOT VERIFIED (2026-09-09, run 164741)
+
+All behaviors from the assignment executed through the real operating path
+(driver `tools/agent_fleet/slot02_parallel.py`; evidence
+`docs/evidence/agent_fleet/SLOT02-PARALLEL-par-engine-gate-164741/`).
+
+- **Overlapping concurrent work (measured from the legs' own intervals):**
+  slot-01 (build+gate, 26.5 s) overlapped slot-02 (CPU-law + standalone
+  Vulkan probe, 5.3 s); `overlapped: True` in `SUMMARY.json`. An earlier run
+  measured overlap with a post-barrier timestamp that mislabeled full overlap
+  as none — corrected in the driver; both legs' work was real and committed
+  in all runs.
+- **GPU arbitration:** slot-02's `resource_acquire` on `rtx4090` REFUSED
+  (`resource_not_available`) while slot-01 held it; granted after release
+  (handoff). `dyad_eye` reserved explicitly for the DYAD leg; the
+  `release_dyad_first` dependency law fired correctly once and was then
+  obeyed (eye releases before the GPU it requires).
+- **Engine-loss drill:** owned gate engine (PID 42680) killed after a durable
+  checkpoint; failover elected `standby01` (epoch 2); zombie write REFUSED
+  (`session_revoked`); GPU reservation retained until the supervisor verified
+  actual drain (`resource_clear` seq 26); recovery reconciled the worktree;
+  reclaim at generation 4 (1→fail→4). Fresh runtime identity: old exe
+  `dc371d04…` → new exe `b43698d8…` (clean rebuild). Post-recovery gate
+  rerun PASS.
+- **DYAD executed** post-recovery (`qwen3.8-27b-nvfp4-mtp`, rc 0, run
+  `20260909T214850.509519Z`); edge-contrast raised/relaxed pair at matched
+  presentation; INCONCLUSIVE/conditional linkage retained as such.
+- **Serialized integration + stale base:** T2 integrated first (`9a2e3e54`),
+  legitimately advancing the base; T1's stale-base attempt REFUSED
+  (`non_fast_forward_refused` — correct no-force refusal); reconciled via the
+  new lead-only `review_requeue` op (offline suite 50/50), tree re-gated PASS
+  (gate3), integrated (`7d5d7ccd`). Superseded leader (`lead01`, revoked)
+  could NOT issue an integration request (`session_revoked`).
+- **Closure:** final registry snapshot — leader `standby01` epoch 2,
+  resources `{}`, tasks INTEGRATED (T1 gen 5, T2 gen 1), all five slots free;
+  ports 8101/8102 verified free; no orphan engine; no worktree left.
+- **Ancestry:** `af1ea12e → 006c4118 → 9a2e3e54 → 75606af0 → 7d5d7ccd`,
+  every arrow a verified fast-forward; master untouched.
+- **Label earned: TWO-SLOT VERIFIED** for the behaviors actually exercised
+  (one integration-class + one worker-class slot). Five-slot deployment
+  remains unclaimed. Human acceptance NOT CLAIMED.
+
 ### Publication-sequence clarification (no remote rewind; 2026-09-09)
 
 The bootstrap report's summary line `eb169df1 → 53b733eb → eb169df1(work) →

@@ -235,6 +235,7 @@ def main() -> int:
         # ---- concurrent legs: slot-01 engine gate vs slot-02 CPU+probe -------
         # slot-01: build + reserve GPU + gate (engine leg)
         def slot01_build_and_gate():
+            s1 = time.time()
             ident = build_engine(wt1 / 'ChimeraEngine' / 'engine',
                                  wt1 / '.tmp' / 'engine_build',
                                  wt1 / '.tmp' / 'engine_runtime')
@@ -249,10 +250,12 @@ def main() -> int:
             cp = run_gate(repo / 'tools' / 'membrane_demo_client.py',
                           Path(ident['runtime_dir']) / 'chimera_engine.exe',
                           PORT_SLOT1, Path(ident['runtime_dir']))
-            return ident, cp
+            e1 = time.time()
+            return ident, cp, s1, e1
 
         # slot-02: CPU law + standalone probe build/run (CPU+own-GPU leg)
         def slot02_cpu_and_probe():
+            s2 = time.time()
             fleet.call('worker02', 'checkpoint', task=T2, generation=g2,
                        state='RUNNING', checkpoint='starting CPU-law descent')
             cp_cpu = subprocess.run(
@@ -290,19 +293,27 @@ def main() -> int:
                                       capture_output=True, text=True, env=env,
                                       encoding='utf-8', errors='replace')
                 probe_rc = cp_p.returncode
-            return cp_cpu, probe_rc, cp_b.returncode if cp_b else 127
+            e2 = time.time()
+            return cp_cpu, probe_rc, cp_b.returncode if cp_b else 127, s2, e2
 
         with concurrent.futures.ThreadPoolExecutor(2) as pool:
             f1 = pool.submit(slot01_build_and_gate)
             f2 = pool.submit(slot02_cpu_and_probe)
             t0 = time.time()
-            ident1, cp_gate = f1.result()
-            t1 = time.time()
-            cp_cpu, probe_rc, probe_build_rc = f2.result()
-            t2 = time.time()
-        stages['overlap'] = {'slot01_build_gate_seconds': round(t1 - t0, 1),
-                             'slot02_cpu_probe_finished_at_second': round(t2 - t0, 1),
-                             'overlapped': t2 - t0 < t1 - t0}
+            ident1, cp_gate, s1, e1 = f1.result()
+            cp_cpu, probe_rc, probe_build_rc, s2, e2 = f2.result()
+        # Overlap from the legs' OWN wall-clock intervals (recorded inside each
+        # worker): t after f1.result() is contaminated by the first barrier, so
+        # an early-finishing slot-02 would read t2 == t1 and mislabel full
+        # overlap as none. Two intervals overlap iff each starts before the
+        # other ends; require substantive durations so "both trivially quick"
+        # cannot masquerade as concurrency.
+        stages['overlap'] = {
+            'slot01_interval_s': [round(s1 - t0, 1), round(e1 - t0, 1)],
+            'slot02_interval_s': [round(s2 - t0, 1), round(e2 - t0, 1)],
+            'overlapped': s2 < e1 and s1 < e2,
+            'slot01_duration_s': round(e1 - s1, 1),
+            'slot02_duration_s': round(e2 - s2, 1)}
         fleet.record('overlap', **stages['overlap'])
         (fleet.ev / 'slot01_gate_stdout.txt').write_text(cp_gate.stdout or '', encoding='utf-8')
         (fleet.ev / 'slot01_gate_stderr.txt').write_text(cp_gate.stderr or '', encoding='utf-8')
@@ -579,6 +590,11 @@ def main() -> int:
         # and the engine drained itself (client terminated its own PID).
         if port_busy(PORT_SLOT1) or port_bound(PORT_SLOT1):
             raise RuntimeError('engine not drained before review; refusing release')
+        # dependency order: the eye requires the GPU held, so the eye releases
+        # first (release_dyad_first refusal otherwise fires — correctly).
+        fleet.call(new_owner, 'resource_release', task=T1, generation=g1b,
+                   resource='dyad_eye',
+                   evidence='dyad review complete post-recovery')
         fleet.call(new_owner, 'resource_release', task=T1, generation=g1b,
                    resource='rtx4090',
                    evidence='gate2+dyad complete; engine drained; port %d free' % PORT_SLOT1)
