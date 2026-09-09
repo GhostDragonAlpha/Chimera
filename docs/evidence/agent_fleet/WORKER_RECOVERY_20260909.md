@@ -9,7 +9,7 @@ It records Alan's relayed handoffs, not independent acceptance of their results.
 | Big Pickle | COMPLETE_REPORTED: BP-ELASTIC-FOUNDATION | Source review and publication; no GPU implementation claimed |
 | Muse Spark 1.3 | COMPLETE_REPORTED: MUSE-ROBUSTNESS-01 | Review reported verifier/API defects against current source |
 | Step 3.7 Flash | COMPLETE_REPORTED: STEP-SCALE-01 | CPU lab results only; GPU timings and candidate acceptance pending |
-| DeepSeek V4 Flash | SESSION_INTERRUPTED_REPORTED | Window closed; task outcome, surviving files and child processes unknown |
+| DeepSeek V4 Flash | COMPLETE_REPORTED: DS-STATE-INTEGRITY-01 | Handoff recovered; uncommitted files, source/evidence review pending |
 | Local DYAD | SERVICE | Runtime owner invokes its documented protocol |
 
 No new assignment, engine control, resource release or acceptance follows from
@@ -26,9 +26,8 @@ this status record. Preserve all unpublished work.
   depth is not a measured speedup; candidate B remains a proposal.
 - Big Pickle's STVK membrane requires source/formula/frame/unit and independent
   force-oracle review before acceptance.
-- Recover DeepSeek's existing DS-STATE-INTEGRITY-01 files and process ownership
-  read-only before resuming. A closed window does not establish lost files or
-  stopped child processes.
+- DeepSeek's completed handoff was subsequently recovered. Preserve its files;
+  there is no need to restart the campaign because its window was closed.
 
 ## Publication identity discrepancy
 
@@ -40,3 +39,10 @@ At its next checkpoint GLM should record full SHA, push destination and exact
 remote ref. Do not interrupt the crash investigation solely for this check.
 
 The universal-prompt dispatch hold remains in effect.
+
+## DeepSeek recovery update
+
+Alan recovered the completed handoff after reporting a Kilo window-management
+issue. The previous interrupted-session label is superseded; no process was
+stopped or worker reassigned by ASTRA. See DS_HANDOFF_REVIEW_20260909.md for
+source-backed qualifications to the reported force-update and stale-buffer claims.
