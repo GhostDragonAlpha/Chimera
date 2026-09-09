@@ -257,3 +257,75 @@ demo path does not yet enable.
 - Human acceptance: NOT CLAIMED. GPU-driven claim: unchanged — compute drives
   the accepted state; presentation findings are render-path facts.
 
+---
+
+# GLM-GPU-DEMO-EDGE-01 — edge contrast closes the visual loop (2026-09-09)
+
+Preregistered: STATEMENT — edge contrast exposes the accepted geometry
+without changing it. PREDICTION — centre and spokes become visible; a
+suitable fixed view makes the raised/relaxed distinction assessable.
+FALSIFIER — geometry/state changes, contrast remains absent, or height
+remains unresolved (INCONCLUSIVE).
+
+## Implementation (smallest opt-in)
+
+Source inspection first: `tri_edge_pipeline_` (GLM-DEMO-CONTRAST-01) is
+created only when `CHIMERA_TRI_EDGE_CONTRAST` latches, and the wire pass
+runs only when `mesh_mode_ >= 1`; the demo path sets neither. Added
+`md_edge_contrast_`, latched at init from `CHIMERA_MD_EDGE`, extending the
+wire-pass condition ONLY while the demo owns the triangle draw
+(`mesh_mode_ >= 1 || (md_draw && md_edge_contrast_)`) and joining the
+contrast-instrument creation gate. `mesh_mode_` is never written by the
+demo, so ordinary presentation is untouched by construction (demo exit
+restores prior presentation — the flag IS the demo scope).
+
+## Attempts (both preserved — the falsifier fired twice before the PASS)
+
+1. `20260909T142006.842279Z` — wire pass opened, but the CONTRAST pipeline
+   did not exist (its own latch unset) so the pass fell back to the
+   fill-colored ordinary wire. PNGs byte-differed from fill-only, yet the
+   dyad saw no edges: contrast absent = falsifier FIRED. Correction: the
+   instrument is created when either opt-in latches.
+2. `20260909T143120.546189Z` + `20260909T143341.345560Z` — spokes visible
+   at the oblique demo camera (phi 0.7), but height still not resolvable;
+   documented profile phi 0.06 put the rim plane at eye level (a few
+   pixels of bump) — still unresolved. (A client-side NameError aborted one
+   run at the capture step; fixed; engine was fine.)
+3. `20260909T143821.177952Z` — PASS. Camera radius 3.0, phi 0.35, uniform
+   for BOTH states (a camera change is presentation, not geometry).
+
+## Final dyad reads (raw responses in the run's dyad_gpu_demo_review.json)
+
+- RAISED: centre = the spoke-convergence point, displaced toward the
+  upper/far side of the projected rim (not the centroid); front facets
+  broad, rear facets slivers — "a fan that bulges rather than lying flat…
+  a 3D apex, not a point on a flat plane"; offset "resolvable in
+  principle, but only qualitatively — I would not trust a pixel-measured
+  magnitude."
+- RELAXED: convergence coincides with the projected centroid (y~345 vs
+  midline ~345), "consistent with centre height ~0"; and the dyad affirms
+  discriminability: "a gross offset such as the 0.125 m raised case WOULD
+  be visible here."
+
+The raised/relaxed distinction is ASSESSABLE in this fixed view: apex
+above centroid + bulging fan vs centroid-converged planar fan. The dyad's
+no-pixel-magnitude caveat is recorded as its stated uncertainty; the
+numerical magnitudes remain owned by the numerical gates.
+
+## State identity across every presentation change
+
+accepted_state_id is BIT-IDENTICAL across fill-only, wire-fallback, edge,
+profile, and close-camera runs: raised `17560123212910228982`, relaxed
+`16501489447187382864`. The full numerical gate re-ran green (20 PASS +
+1 INFO) in EVERY presentation configuration. Presentation provably never
+moved geometry. (One relaxed capture at r=3 shows a magenta top-edge bar
+artifact — recorded as an observation, not blocking.)
+
+## Verdicts
+
+- Edge contrast: PASS (centre and spokes visible; raised/relaxed
+  distinction assessable at phi 0.35, radius 3.0).
+- Numerical: PASS (unchanged, rerun per configuration).
+- Human acceptance: NOT CLAIMED — the phi-0.35 pair is the one to review.
+- The visual loop opened by GLM-DYAD-01 is CLOSED for this demo.
+

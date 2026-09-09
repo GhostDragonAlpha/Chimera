@@ -1166,7 +1166,14 @@ bool Engine::compile_shaders() {
     // feature, not the engine. The env gate is latched here; the pipeline is
     // only created when latched on.
     tri_edge_contrast_ = getenv("CHIMERA_TRI_EDGE_CONTRAST") != nullptr;
-    if (tri_edge_contrast_) {
+    // GLM-GPU-DEMO-EDGE-01: the membrane demo latches its own opt-in wire
+    // flag (independent of CHIMERA_TRI_EDGE_CONTRAST so either can be tested
+    // alone); see engine.hpp for the scope law.
+    md_edge_contrast_ = getenv("CHIMERA_MD_EDGE") != nullptr;
+    // EDGE-01 correction: the contrast INSTRUMENT (module + pipeline) is
+    // created when either opt-in latches; the first edge run proved the
+    // pass alone falls back to the fill-colored ordinary wire (invisible).
+    if (tri_edge_contrast_ || md_edge_contrast_) {
         auto edgspv = read_file((base + "/shaders/render_tri_edge.frag.spv").c_str());
         if (!edgspv.empty())
             tri_edge_frag_mod_ = create_shader_module(device_, edgspv);
@@ -1496,7 +1503,7 @@ bool Engine::create_triangle_pipeline() {
     // raster, but a CONSTANT LIGHT edge fragment instead of the fill color.
     // Created only when the env gate latched on AND the module compiled; any
     // failure leaves the ordinary wireframe in charge (opt-in, never a wall).
-    if (tri_edge_contrast_ && tri_edge_frag_mod_ != VK_NULL_HANDLE) {
+    if ((tri_edge_contrast_ || md_edge_contrast_) && tri_edge_frag_mod_ != VK_NULL_HANDLE) {
         VkPipelineShaderStageCreateInfo estages[2] = {};
         estages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
         estages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
@@ -8006,7 +8013,7 @@ bool Engine::frame() {
             vkCmdBindIndexBuffer(cmd_bufs_[img_idx], ib, 0, VK_INDEX_TYPE_UINT32);
             vkCmdDrawIndexed(cmd_bufs_[img_idx], draw_idx_count, 1, 0, 0, 0);
         }
-        if (mesh_mode_ >= 1 && tri_wire_pipeline_ != VK_NULL_HANDLE) {
+        if (mesh_mode_ >= 1 || (md_draw && md_edge_contrast_)) {
             // GLM-DEMO-CONTRAST-01: when the opt-in edge-contrast pipeline
             // exists it replaces the same-color wire pass; otherwise the
             // ordinary path is untouched (default remains byte-identical).

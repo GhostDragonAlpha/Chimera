@@ -160,7 +160,8 @@ def check_status(base: str, name: str) -> dict:
     return s.get("status", s)
 
 
-def gate(base: str, b2: dict, outdir: Path) -> int:
+def gate(base: str, b2: dict, outdir: Path, capture_phi: float = 0.7,
+         capture_radius: float = 6.0) -> int:
     fails = 0
 
     def fail(name: str, detail: dict) -> None:
@@ -222,9 +223,11 @@ def gate(base: str, b2: dict, outdir: Path) -> int:
 
     def capture(label: str) -> None:
         # The fixed demo camera is SET, not assumed: the sidecar camera record
-        # must describe a camera the engine actually applied.
-        cam = json.dumps({"cam_radius": 6.0, "cam_theta": 0.0,
-                          "cam_phi": 0.7}).encode()
+        # must describe a camera the engine actually applied. --capture-phi
+        # (GLM-GPU-DEMO-EDGE-01) allows the documented near-edge-on profile
+        # view; same geometry, same lift, no exaggeration.
+        cam = json.dumps({"cam_radius": capture_radius, "cam_theta": 0.0,
+                          "cam_phi": capture_phi}).encode()
         http_req(base, "POST", "/camera", cam)
         st, png = http_req(base, "GET", "/frame")
         if st != 200 or png[:8] != b"\x89PNG\r\n\x1a\n":
@@ -235,8 +238,10 @@ def gate(base: str, b2: dict, outdir: Path) -> int:
         s_now = check_status(base, f"capture.{label}.status")
         sidecar = {"label": label, "png_sha256": hashlib.sha256(png).hexdigest(),
                    "png_bytes": len(png), "utc": utc(),
-                   "status": s_now, "camera": {"radius": 6.0, "theta": 0.0,
-                                               "phi": 0.7, "fixed_demo_camera": True}}
+                   "status": s_now, "camera": {"radius": capture_radius, "theta": 0.0,
+                                               "phi": capture_phi,
+                                               "fixed_demo_camera": True,
+                                               "profile_view": capture_phi < 0.2}}
         (outdir / f"{label}.json").write_text(json.dumps(sidecar, indent=1))
         record(f"capture.{label}", "PASS", {"png": p.name,
                                             "state_id": s_now.get("accepted_state_id")})
@@ -296,6 +301,14 @@ def main() -> int:
     ap.add_argument("--steps", type=int, default=126)
     ap.add_argument("--gamma", type=float, default=1.0)
     ap.add_argument("--case", default="case_gamma1")
+    ap.add_argument("--capture-phi", type=float, default=0.7,
+                    help="camera elevation (rad) used for /frame captures; "
+                         "the oblique demo default is 0.7, the documented "
+                         "profile view is near-edge-on (e.g. 0.06)")
+    ap.add_argument("--capture-radius", type=float, default=6.0,
+                    help="camera distance for captures; changing the camera "
+                         "uniformly for BOTH compared states is presentation, "
+                         "not geometry change")
     args = ap.parse_args()
 
     b2 = load_b2(args.case)
@@ -328,7 +341,8 @@ def main() -> int:
     rc = 2
     try:
         if args.command == "gate":
-            rc = gate(base, b2, outdir)
+            rc = gate(base, b2, outdir, capture_phi=args.capture_phi,
+                      capture_radius=args.capture_radius)
         elif args.command == "init":
             check_init(base, b2); rc = 0
         elif args.command == "status":

@@ -370,6 +370,26 @@ existing opt-in edge-contrast presentation or profile views. Evidence:
 `docs/evidence/membrane_gpu_demo_runtime/20260909T140408.398190Z/
 dyad_gpu_demo_review.json`. Human acceptance NOT CLAIMED.
 
+**GLM-GPU-DEMO-EDGE-01 VISUAL LOOP CLOSED (2026-09-09).** Opt-in demo-scoped
+edge contrast implemented (`CHIMERA_MD_EDGE` latch + `md_edge_contrast_`;
+wire pass extended only while the demo draws; `mesh_mode_` never touched, so
+ordinary presentation is restored by construction). Falsifier fired TWICE on
+the way to PASS (wire pass without the contrast instrument = invisible
+fill-colored edges; oblique phi 0.7 and near-edge-on phi 0.06 left height
+unresolved), all attempts preserved. Final configuration phi 0.35 / radius
+3.0, uniform for both states: the dyad locates the raised apex ABOVE the
+projected rim centroid with a bulging fan ("resolvable in principle"), and
+the relaxed fan converging AT the centroid ("consistent with ~0"), itself
+affirming the 0.125 m case "WOULD be visible here." accepted_state_id
+BIT-IDENTICAL across all presentation runs (raised
+`17560123212910228982`, relaxed `16501489447187382864`); numerical gate
+green in every configuration (20 PASS + 1 INFO). Raised/relaxed distinction
+ASSESSABLE. Human acceptance NOT CLAIMED — phi-0.35 pair ready for Alan's
+review. Evidence: `docs/evidence/membrane_gpu_demo_runtime/
+20260909T143821.177952Z/` (+ preserved failed attempts 142006, 143120,
+143341, 143341-Z records) and the EDGE-01 section of
+`docs/THE_GPU_DEMO01_RUNTIME_RECORD.md`.
+
 **GLM-RELAX-GPU-01 GATE PASS (2026-09-08).** Continue point `c38ffe84…`.
 Preregistered first (`docs/THE_RELAX_GPU01_PREREGISTRATION.md`):
 STATEMENT — the compiled verified kernels (frozen-certified face-eval,

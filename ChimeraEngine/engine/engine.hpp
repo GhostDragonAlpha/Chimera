@@ -949,6 +949,12 @@ private:
     // ── GLM-GPU-DEMO-01: membrane demo state (all inert until md_active_) ──
     bool            md_active_ = false;
     bool            md_running_ = false;
+    // GLM-GPU-DEMO-EDGE-01: demo-scoped wire pass. Latched from
+    // CHIMERA_MD_EDGE at init; extends the mesh_mode_ >= 1 wire condition
+    // ONLY while the demo owns the triangle draw (md_draw), never touches
+    // mesh_mode_ itself, so ordinary presentation is bit-identical before,
+    // after, and during any non-demo session.
+    bool            md_edge_contrast_ = false;
     VkPipeline      md_pipe_ = VK_NULL_HANDLE;          // membrane_demo.comp
     VkShaderModule  md_mod_ = VK_NULL_HANDLE;
     VkDescriptorSetLayout md_dsl_ = VK_NULL_HANDLE;

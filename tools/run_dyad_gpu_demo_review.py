@@ -87,10 +87,24 @@ def sha256_file(p: Path) -> str:
 
 
 def main() -> int:
-    if len(sys.argv) < 2:
-        run_dir = sorted(RUN.glob("2*"))[-1]
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("run_dir", nargs="?", help="evidence run dir name under "
+                    "docs/evidence/membrane_gpu_demo_runtime")
+    ap.add_argument("--edge", action="store_true",
+                    help="the reviewed run latched CHIMERA_MD_EDGE: record "
+                         "fill + edge-contrast wire as the render mode")
+    args = ap.parse_args()
+    if args.run_dir:
+        run_dir = RUN / args.run_dir
     else:
-        run_dir = RUN / sys.argv[1]
+        run_dir = sorted(RUN.glob("2*"))[-1]
+    if args.edge:
+        RUN_FACTS["render"]["mode"] = (
+            "fill + edge-contrast wire pass (GLM-GPU-DEMO-EDGE-01: the demo "
+            "instance latched CHIMERA_MD_EDGE at init; demo-scoped, "
+            "mesh_mode_ untouched; verified against the fill-only run by "
+            "byte-differing PNGs and identical accepted_state_id values)")
     images = [
         ("gpu_demo_raised_gamma0", run_dir / "raised_gamma0.png",
          "The INITIAL-HEIGHT state under ZERO gamma: the optimizer took zero "
