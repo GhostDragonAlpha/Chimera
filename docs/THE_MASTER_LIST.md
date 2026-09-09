@@ -5,6 +5,80 @@ vision"). The 32-continuation history is compressed, not erased: every claim
 below names its run record or commit. When docs fight, run records beat prose;
 `python tools/orient.py` prints live state.*
 
+## CURRENT CONTROL — LIVING HOLODECK BLUEPRINT (2026-09-08)
+
+**Proposed operational amendment: adoption does not deploy the fleet.** Preserve all
+historical sections below, including the superseded Luna-only roster. Alan's
+later instructions assign GLM 5.3 the active production milestone and sole
+publication role. This entry updates ownership, not historical run evidence.
+
+| Actor | Current assignment | State |
+|---|---|---|
+| GLM 5.3 | Autonomous GPU material milestone; runtime integration and mandatory GLM-operated DYAD | ACTIVE |
+| Big Pickle | BP-ELASTIC-FOUNDATION; isolated CPU elasticity/reference work | ACTIVE |
+| Muse Spark 1.3 | MUSE-ROBUSTNESS-01; isolated numerical-boundary campaign | ACTIVE |
+| DeepSeek V4 Flash | DS-STATE-INTEGRITY-01; source/trace/capture verifier | ACTIVE |
+| Step 3.7 Flash | STEP-SCALE-01; isolated scaling lab, GPU work only in an available slot | ACTIVE |
+| Local DYAD eye | Service operated by GLM; actual served model recorded | SERVICE |
+| Luna | No current implementation assignment | INACTIVE |
+
+These are assignment claims, not acceptance verdicts. Reconcile each actor's
+latest checkpoint before changing its row. ASTRA supplies architectural and
+physics guidance; Alan supplies product direction and actual human acceptance.
+
+The design annex is [THE_HOLODECK_BLUEPRINT.md](THE_HOLODECK_BLUEPRINT.md):
+240 task cards across 40 domains, coupled-law contracts, the integration ladder,
+frontier limits and autonomous packet rules. Machine-readable definitions:
+[holodeck_tasks.json](roadmap/holodeck_tasks.json). The card appendix is generated
+from that catalogue. This Master list remains the sole operational status and
+ownership entry point; the annex is not a competing live task board.
+
+Use `python tools/roadmap_query.py validate`, `search <term>`, `show <ID>` or
+`packet <ID>` to inspect proposals. The tool is read-only and cannot assign,
+claim, publish or certify. Reserve dependencies, owned scopes and hardware via
+GLM before beginning. Continue current assignments; do not restart them because
+the new catalogue has unreconciled future cards. Preserve branch restrictions,
+protected build paths and the GPU runtime law. No new physical or perceptual
+claim is accepted without its preregistered falsifier and appropriate evidence.
+
+**Next integration spine:** accepted GPU state rendered by the engine → elastic
+object workshop → physical time/contact → rigid cup with water → two-way
+compliant container → embodied creatures and persistent authored worlds.
+Parallel research is permitted where its scopes and resources are independent.
+Advanced chemistry, quantum effects and human cognition remain scoped research,
+not prerequisites for a useful game and not claims of complete physical reality.
+
+### Criticism steers development (2026-09-09)
+
+Alan's input is recorded as DYAD criticism: original words, classification,
+affected claim/task and disposition. Stops, permissions and scope changes
+retain their direct authority. Runtime engine instances must be visible and
+non-headless; each slot owns its build/session/endpoint. The fleet follows
+the existing ORIENT/NEXT/PROVE/CHECK loop and preserves canonical verdicts.
+See THE_AGENT_FLEET.md for the evidence and activation boundaries.
+
+### Five-slot fleet adoption
+
+The universal prompt is [AGENT_START.md](AGENT_START.md); the operating contract
+is [THE_AGENT_FLEET.md](THE_AGENT_FLEET.md). Five sibling worktrees share Git
+objects but each owns its engine build, runtime CWD, session files and endpoint.
+One session may own multiple tasks within its approved capacity. Task branches
+are `astra/tasks/<task-id>`; PRs target `astra/gait-capture`. The current lead
+integrates through the trusted publication path. No master push or force-push.
+
+During migration the roster above remains a checkpoint, not a live readout.
+After activation, live ownership, resource reservations, leadership epochs and
+recovery holds come exclusively from the control-service snapshot/events.
+Do not edit five divergent copies of active state. Catalogue proposals need
+reviewed dependencies, scopes and gates before the controller admits them.
+Silence starts investigation; confirmed failure and qualified readiness govern
+succession. An epoch fences controller actions, not direct shell/Git access;
+real publication fencing is an explicit deployment prerequisite.
+
+The reference has no model launcher, GitHub merge broker or Windows engine
+provisioner. Do not migrate running jobs or claim autonomous deployment from
+offline tests. Every slot's own engine must be built/tested during activation.
+
 ## 0 · RECOVERY AMENDMENT — LUNA SOLE PROJECT AGENT (2026-09-07)
 
 Alan explicitly assigns all current project work to **GPT 5.6 Luna**. This

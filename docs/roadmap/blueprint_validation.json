@@ -1,0 +1,62 @@
+{
+  "kind": "roadmap_structure_and_tool_validation_only",
+  "physical_tests": "NOT_EXECUTED",
+  "checks": [
+    {
+      "name": "catalogue schema and DAG",
+      "pass": true
+    },
+    {
+      "name": "duplicate task negative control",
+      "pass": true
+    },
+    {
+      "name": "missing dependency negative control",
+      "pass": true
+    },
+    {
+      "name": "cycle negative control",
+      "pass": true
+    },
+    {
+      "name": "acceptance without evidence negative control",
+      "pass": true
+    },
+    {
+      "name": "CLI summary",
+      "pass": true
+    },
+    {
+      "name": "CLI search",
+      "pass": true
+    },
+    {
+      "name": "CLI packet",
+      "pass": true
+    },
+    {
+      "name": "CLI ready",
+      "pass": true
+    },
+    {
+      "name": "all historical Master text preserved",
+      "pass": true
+    },
+    {
+      "name": "pre-existing tracked dirty-file scope unchanged",
+      "pass": true
+    },
+    {
+      "name": "all 240 cards in book",
+      "pass": true
+    },
+    {
+      "name": "no future task silently certified",
+      "pass": true
+    },
+    {
+      "name": "JSON catalogue regenerates book cards byte-identically",
+      "pass": true
+    }
+  ]
+}
