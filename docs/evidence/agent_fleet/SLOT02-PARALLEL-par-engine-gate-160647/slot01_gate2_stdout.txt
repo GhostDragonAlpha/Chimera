@@ -1,0 +1,24 @@
+launched pid=44408 exe=C:\Users\allen\AppData\Local\Temp\opencode\fleet-slot02par-20260909T160647\state\slot-01\.tmp\engine_runtime\chimera_engine.exe cwd=C:\Users\allen\AppData\Local\Temp\opencode\fleet-slot02par-20260909T160647\state\slot-01\.tmp\engine_runtime
+  [PASS] init: {"E": 2.625, "E_ref": 2.6249999533666486, "centre": [0, 0, 0.125], "it": 0, "snapshot": {"gamma_admitted_f64": 1, "gamma_uploaded_f32": 1, "unit": "J/m^2", "wu_to_m": 1.0}}
+  [PASS] init.energy_vs_fixture: {"gpu": 2.625, "ref": 2.6249999533666486}
+  [PASS] init.centre_z: {"z": 0.125}
+  [PASS] doubling.energy: {"E2": 5.25, "2E0": 5.25}
+  [PASS] doubling.force: {"F2": -0.857142866, "2F0": -0.857142866}
+  [PASS] gamma_back_to_1: {"it": 0, "E": 2.625, "terminal": ""}
+  [PASS] gamma_back.energy: {"E": 2.625, "E0": 2.625}
+  [PASS] step1: {"it": 1, "E": 2.62457323, "terminal": ""}
+  [PASS] step1.descends: {"it": 1, "E": 2.62457323, "E0": 2.625}
+  [PASS] run: {"it": 126, "E": 2.59807611, "terminal": "stagnated"}
+  [INFO] run.terminal: {"terminal": "stagnated", "it": 126, "acc": null, "E": 2.59807611}
+  [PASS] capture.final_relaxed.status: {"it": 126, "E": 2.59807611, "terminal": "stagnated"}
+  [PASS] capture.final_relaxed: {"png": "final_relaxed.png", "state_id": 16501489447187382864}
+  [PASS] reset: {"it": 0, "E": 2.625, "terminal": ""}
+  [PASS] reset.restore: {"E": 2.625, "it": 0, "z": 0.125}
+  [PASS] reject: {"it": 0, "E": 2.625, "terminal": "no_descent_step"}
+  [PASS] reject.refused: {"last_control": "invalid_trial_REFUSED", "state_id": 17560123212910228982}
+  [PASS] gamma0_step: {"it": 0, "E": 0, "terminal": "stationary"}
+  [PASS] gamma0.stationary: {"terminal": "stationary", "it": 0}
+  [PASS] capture.raised_gamma0.status: {"it": 0, "E": 0, "terminal": "stationary"}
+  [PASS] capture.raised_gamma0: {"png": "raised_gamma0.png", "state_id": 17560123212910228982}
+evidence: C:\Users\allen\AppData\Local\Temp\opencode\chimera_pub\docs\evidence\membrane_gpu_demo_runtime\20260909T210759.046207Z\summary.json
+terminated own pid=44408 rc=1

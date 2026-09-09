@@ -1,0 +1,66 @@
+{
+ "what": "GLM-GPU-DEMO-03 dyad review of the GPU-driven membrane demo",
+ "utc": "2026-09-09T21:08:06.757520+00:00",
+ "served_model": "qwen3.8-27b-nvfp4-mtp",
+ "run_facts": {
+  "source": "docs/evidence/membrane_gpu_demo_runtime/20260909T210759.046207Z",
+  "engine": "chimera_engine.exe (slot-built isolated MSVC engine, port 8101, --no-restore; launched by the runtime gate, which terminates only the PID it launched)",
+  "camera": {
+   "cam_radius": 3.0,
+   "cam_theta": 0.0,
+   "cam_phi": 0.35,
+   "note": "camera from THIS run's recorded sidecar (POSTed to /camera before /frame; sidecar is the record, not a guess)"
+  },
+  "render": {
+   "mode": "fill + edge-contrast wire pass (GLM-GPU-DEMO-EDGE-01: the demo instance latched CHIMERA_MD_EDGE at init; demo-scoped, mesh_mode_ untouched; verified against the fill-only run by byte-differing PNGs and identical accepted_state_id values)",
+   "presentation": "rigid B2(z-up)->engine(y-up) rotation plus a 0.5 m presentation lift; the lift is render presentation only"
+  },
+  "states": {
+   "raised": {
+    "gamma_J_m2": 0.0,
+    "terminal": "stationary",
+    "iteration": 0,
+    "energy_J": 0,
+    "centre_xyz_m": [
+     0,
+     0,
+     0.125
+    ],
+    "note": "numerical facts from THIS run's recorded sidecar",
+    "accepted_state_id": 17560123212910228982
+   },
+   "relaxed": {
+    "gamma_J_m2": 1.0,
+    "terminal": "stagnated",
+    "iteration": 126,
+    "energy_J": 2.59807611,
+    "note": "numerical facts from THIS run's recorded sidecar",
+    "centre_xyz_m": [
+     0,
+     0,
+     1.90596523e-07
+    ],
+    "accepted_state_id": 16501489447187382864
+   }
+  }
+ },
+ "physical_briefing": "This object is six triangles joined around one centre vertex. The six outer vertices are fixed in a flat hexagonal rim. The centre can move only perpendicular to the rim plane.\n\nIts energy is U = gamma x total triangle area. Forces are the negative gradient of that energy. For positive gamma, the optimizer seeks less area, so the raised centre approaches the rim plane. At gamma=0 this model produces no force, so the initial bump remains.\n\nThis is an area-minimization experiment. It contains no certified elasticity, bending stiffness, water pressure, gravity or contact dynamics. Optimization iterations are not physical time.\n\nAt identical geometry, doubling gamma doubles calculated energy and force; that alone does not require a visible shape change.",
+ "calls": [
+  {
+   "label": "gpu_demo_raised_gamma0",
+   "image": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub\\docs\\evidence\\membrane_gpu_demo_runtime\\20260909T210759.046207Z\\raised_gamma0.png",
+   "image_sha256": "249e0cc6375d05244f0876e0bed8b4b1140a23bfbe6edb81ed2f593cd217f4a8",
+   "served_model": "qwen3.8-27b-nvfp4-mtp",
+   "prompt_chars": 3566,
+   "report": "**1. What is visibly distinguishable**\nThe 3D area contains two hexagonal forms against a near\u2011black background. In front is a light\u2011grey hexagonal membrane rendered with flat fill plus a thin white edge\u2011contrast wire pass: I can see six triangular faces meeting at an interior point, with six pale spokes radiating from that point to the outer corners, and a radial shading gradient (brightest near the centre/upper area, darker toward the front edges). Behind and larger than it is a second, much darker hexagonal flat panel with no visible grid lines, axes, or text; its role (a reference rim\u2011plane, a floor, or just background shading) cannot be confirmed from the image. There are no other scene objects, no coordinate axes, no scale bar, and no labels in the 3D region. Outside the viewport there is a solid blue horizontal bar across the very top and a thin black strip along the bottom edge \u2014 these read as UI/window chrome, not scene geometry.\n\n**2. Locating centre vertex and rim**\nThe centre vertex is the point where the six white radial spokes converge and where the fill gradient peaks (roughly the middle of the light hexagon). The outer rim is the convex\u2011hull outline of the light hexagon \u2014 the six outer corners joined by the bright edge loop. What tells me this is purely the wire topology (six spokes from one interior node) and the silhouette; I am *not* using the dark panel behind as a reliable rim marker, because its vertices do not visibly align with the membrane's rim in this view and it has no edges to anchor against.\n\n**3. Is the offset resolvable? \u2014 uncertain.**\nThe membrane does not look like a perfectly flat sheet: the front\u2011facing triangles are shaded differently from the back\u2011facing ones and the spoke convergence point appears displaced from the apparent midline of the rim, which is qualitatively consistent with a small out\u2011of\u2011plane raise. However I cannot confirm the 0.125 m magnitude by eye. Two confounds dominate: (a) at this shallow elevation a *flat* tilted plane also projects its far edge higher in the image than its near edge, so \"top looks higher than bottom\" is not evidence of a bump; and (b) the radial lighting gradient can mimic or mask a slight dome. The offset is small relative to the rim size and compressed by the view angle, so from pixels alone I judge it borderline / **uncertain**, not cleanly resolvable.\n\n**4. Consistent with the stated state? \u2014 consistent.**\nThe visible object shows an *unrelaxed* membrane (a low umbrella/3\u2011D surface, not a flat coplanar sheet), which is exactly what a zero\u2011gamma, iteration\u20110 initial fixture should look like: with no force applied the initial bump remains. Nothing in the image contradicts \"centre raised, untouched.\" I add the caveat that I cannot independently read off 0.125 m or gamma from pixels; consistency here means \"no visible contradiction and the presence of a non\u2011flat surface matches an unrelaxed initial state,\" not a measurement confirmation.\n\n**5. Could viewpoint/occlusion/lighting explain apparent discrepancy, and what would distinguish it?**\nYes. The low camera elevation compresses any vertical (out\u2011of\u2011plane) displacement into a small screen\u2011space shift, so a 0.125 m raise is easy to under\u2011read; the overhead radial shading can be mistaken for curvature that isn't there or hide curvature that is; and the dark hexagon behind gives no visible vertices/edges, so it cannot serve as an in\u2011image datum for \"the rim plane,\" leaving the offset with nothing to compare against. Occlusion is not a factor \u2014 the membrane is fully visible. To distinguish raised vs flat unambiguously I would want: (a) an edge\u2011on / side view where 0.125 m appears as a clear vertical gap between centre and rim; (b) a top\u2011down orthographic view with depth/shading cues; (c) the rim plane rendered as an explicit flat reference grid at z=0 so the offset is measurable in\u2011image; or (d) back\u2011projection of the centre vs rim vertex pixel positions using the recorded camera extrinsics/intrinsics, plus a side\u2011by\u2011side silhouette/depth comparison against the relaxed state.\n\n**6. Single worst visual problem.**\nThe height offset is not visually legible: at this near\u2011edge\u2011on elevation the 0.125 m raise reads as an almost\u2011flat sheet, and there is no in\u2011image flat reference plane with visible edges/grid or any scale cue to anchor \"the rim level.\" In short, the view angle plus the absence of a marked reference/scale make it impossible for a viewer to confirm from this image alone that the centre is actually raised \u2014 which defeats the purpose of an initial\u2011height screenshot. (Secondary, lesser issues: the ambiguous dark hexagon behind and the top/bottom UI bars that could be misread as scene content.)"
+  },
+  {
+   "label": "gpu_demo_final_relaxed",
+   "image": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub\\docs\\evidence\\membrane_gpu_demo_runtime\\20260909T210759.046207Z\\final_relaxed.png",
+   "image_sha256": "53d3b187476dc8c3bcf552ef649c2bcfd24da3bdeaaf5fb374035f034435d51f",
+   "served_model": "qwen3.8-27b-nvfp4-mtp",
+   "prompt_chars": 3524,
+   "report": "**1. What is visibly distinguishable**\n- A single light\u2011grey/silver **flat hexagonal plate** in the centre of the frame. Its fill is a smooth gradient (brightest near the middle, darker toward the edges) and its perimeter is outlined by a thin bright edge\u2011contrast wire. Inside it I can see thin white lines: a clear \"X\" made of two long diagonals plus fainter radial segments, i.e. the centre\u2011to\u2011vertex triangle edges drawn by the wire pass.\n- Behind/below that plate there is a **larger, darker hexagon** (near\u2011black fill, no texture) whose top and bottom edges are horizontal and which is shifted downward on screen relative to the bright plate. It reads as either an untextured floor \"pad\" or a cast shadow of the lifted membrane; from this image alone I cannot tell which.\n- The rest of the frame is a uniform dark\u2011grey background. **No grid lines, no axes, no other panels** are visible.\n- A solid saturated\u2011blue horizontal bar runs across the very top edge of the image (full width). This looks like a 2D UI/status strip overlaid on the viewport, not part of the 3D scene; it does not overlap the membrane.\n\n**2. Locating centre and rim**\n- **Outer rim:** the six corners of the bright hexagon \u2013 the points where the bright perimeter wire changes direction (leftmost \u2248 mid\u2011height, rightmost \u2248 mid\u2011height, plus two upper and two lower vertices). The edge\u2011contrast outline is what marks it.\n- **Centre vertex:** the point where the internal white diagonals cross, near the middle of the plate. Because the wire pass draws edges from the centre to each outer vertex, their common intersection is the projected position of the centre vertex.\n\n**3. Is the offset resolvable?**\n**Not resolvable** as a measurable quantity. What I can say from pixels: there is *no gross pyramid/bump* \u2013 the plate reads as planar and the wire lines converge to a single point that lies within the flat outline, which is consistent with the centre being in (or extremely close to) the rim plane. But at this shallow camera elevation the vertical axis is heavily compressed, and the smooth radial fill gives no reliable depth cue, so I cannot confirm exact coplanarity or measure any residual offset; a small non\u2011zero height would look essentially identical here. So: \"no visible bump\" is resolvable, but the actual offset value is not.\n\n**4. Consistency with the stated state**\n**Consistent.** The relaxed state predicts the centre has returned to the rim plane (z \u2248 1.9\u00d710\u207b\u2077 m), and the image shows a flat hexagonal membrane with no raised centre \u2013 exactly what that state should look like from this angle. Nothing in the visible geometry contradicts it. Caveat: because the offset is not visually resolvable (Q3), the image *corroborates* \"no bump\" but cannot by itself confirm the tiny residual value; consistency here means \"no contradiction,\" not \"pixel\u2011level proof of 10\u207b\u2077 m.\"\n\n**5. Could viewpoint/occlusion/lighting/rendering explain a discrepancy, and what would distinguish it?**\nThere is no obvious discrepancy to explain (the flat look matches the relaxed state), but several rendering/view factors limit what can be judged:\n- The shallow camera angle compresses vertical differences, so any small residual height is invisible.\n- The smooth top\u2011down fill gradient produces a bright centre that mimics curvature; it cannot distinguish a flat plate lit from above from a very low pyramid.\n- The 0.5 m presentation lift and the B2\u2192engine rotation mean screen position does not map 1:1 to world z, so vertical offsets on screen are not directly interpretable.\n- The untextured dark hexagon behind is ambiguous (floor vs shadow) and could be misread as part of the membrane or its rim.\nThe blue top bar is a UI overlay and does not occlude the membrane, so it is not a source of geometric confusion.\n\nEvidence that would distinguish flat\u2011vs\u2011raised unambiguously: an **edge\u2011on / orthographic side view** (camera at 90\u00b0 elevation) to read any vertical offset directly; a **wire\u2011only render without the fill gradient** so facet orientation/height is visible; a **known reference marker or height scale on the rim plane**; and a **side\u2011by\u2011side of the raised vs relaxed frames from the same camera**, which would make the loss of the bump explicit.\n\n**6. Single worst visual problem**\nThe rendering provides **no reliable depth cue for the centre's height**: the shallow view angle combined with the smooth radial fill gradient makes a flat plate and a slightly raised centre look essentially identical, so the image gives no visible evidence that optimisation actually flattened the membrane (the central highlight could even be misread as residual curvature). In other words, the very quantity this experiment is about \u2013 the centre's height above the rim plane \u2013 is invisible in this view. (Secondary issues: the unexplained blue UI bar at top and the ambiguous untextured dark hexagon behind the plate.)"
+  }
+ ]
+}

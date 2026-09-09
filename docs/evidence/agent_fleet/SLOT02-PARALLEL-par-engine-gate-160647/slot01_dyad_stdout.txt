@@ -1,0 +1,31 @@
+[dyad] gpu_demo_raised_gamma0: calling senses.watch_one ...
+[dyad] gpu_demo_raised_gamma0: OK
+[dyad] gpu_demo_final_relaxed: calling senses.watch_one ...
+[dyad] gpu_demo_final_relaxed: OK
+evidence: C:\Users\allen\AppData\Local\Temp\opencode\chimera_pub\docs\evidence\membrane_gpu_demo_runtime\20260909T210759.046207Z\dyad_gpu_demo_review.json
+
+===== gpu_demo_raised_gamma0 =====
+**1. What is visibly distinguishable**
+The 3D area contains two hexagonal forms against a near‑black background. In front is a light‑grey hexagonal membrane rendered with flat fill plus a thin white edge‑contrast wire pass: I can see six triangular faces meeting at an interior point, with six pale spokes radiating from that point to the outer corners, and a radial shading gradient (brightest near the centre/upper area, darker toward the front edges). Behind and larger than it is a second, much darker hexagonal flat panel with no visible grid lines, axes, or text; its role (a reference rim‑plane, a floor, or just background shading) cannot be confirmed from the image. There are no other scene objects, no coordinate axes, no scale bar, and no labels in the 3D region. Outside the viewport there is a solid blue horizontal bar across the very top and a thin black strip along the bottom edge — these read as UI/window chrome, not scene geometry.
+
+**2. Locating centre vertex and rim**
+The centre vertex is the point where the six white radial spokes converge and where the fill gradient peaks (roughly the middle of the light hexagon). The outer rim is the convex‑hull outline of the light hexagon — the six outer corners joined by the bright edge loop. What tells me this is purely the wire topology (six spokes from one interior node) and the silhouette; I am *not* using the dark panel behind as a reliable rim marker, because its vertices do not visibly align with the membrane's rim in this view and it has no edges to anchor against.
+
+**3. Is the offset resolvable? — uncertain.**
+The membrane does not look like a perfectly flat sheet: the front‑facing triangles are shaded differently from the back‑facing ones and the spoke convergence point appears displaced from the apparent midline of the rim, which is qualitatively consistent with a small out‑of‑plane raise. However I cannot confirm the 0.125 m magnitude by eye. Two confounds dominate: (a) at this shallow elevation a *flat* t
+
+
+===== gpu_demo_final_relaxed =====
+**1. What is visibly distinguishable**
+- A single light‑grey/silver **flat hexagonal plate** in the centre of the frame. Its fill is a smooth gradient (brightest near the middle, darker toward the edges) and its perimeter is outlined by a thin bright edge‑contrast wire. Inside it I can see thin white lines: a clear "X" made of two long diagonals plus fainter radial segments, i.e. the centre‑to‑vertex triangle edges drawn by the wire pass.
+- Behind/below that plate there is a **larger, darker hexagon** (near‑black fill, no texture) whose top and bottom edges are horizontal and which is shifted downward on screen relative to the bright plate. It reads as either an untextured floor "pad" or a cast shadow of the lifted membrane; from this image alone I cannot tell which.
+- The rest of the frame is a uniform dark‑grey background. **No grid lines, no axes, no other panels** are visible.
+- A solid saturated‑blue horizontal bar runs across the very top edge of the image (full width). This looks like a 2D UI/status strip overlaid on the viewport, not part of the 3D scene; it does not overlap the membrane.
+
+**2. Locating centre and rim**
+- **Outer rim:** the six corners of the bright hexagon – the points where the bright perimeter wire changes direction (leftmost ≈ mid‑height, rightmost ≈ mid‑height, plus two upper and two lower vertices). The edge‑contrast outline is what marks it.
+- **Centre vertex:** the point where the internal white diagonals cross, near the middle of the plate. Because the wire pass draws edges from the centre to each outer vertex, their common intersection is the projected position of the centre vertex.
+
+**3. Is the offset resolvable?**
+**Not resolvable** as a measurable quantity. What I can say from pixels: there is *no gross pyramid/bump* – the plate reads as planar and the wire lines converge to a single point that lies within the flat outline, which is consistent with the centre being in (or extremely close to) the rim plane. But at this shallow ca
+
