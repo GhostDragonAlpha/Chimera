@@ -1,0 +1,35 @@
+[dyad] gpu_demo_raised_gamma0: calling senses.watch_one ...
+[dyad] gpu_demo_raised_gamma0: OK
+[dyad] gpu_demo_final_relaxed: calling senses.watch_one ...
+[dyad] gpu_demo_final_relaxed: OK
+evidence: C:\Users\allen\AppData\Local\Temp\opencode\chimera_pub\docs\evidence\membrane_gpu_demo_runtime\20260909T204841.198533Z\dyad_gpu_demo_review.json
+
+===== gpu_demo_raised_gamma0 =====
+**1. What is visibly distinguishable**
+- A near‑black background with a faint vertical gradient (slightly lighter in the middle). No grid lines, no axis gizmo, no text labels are visible in the 3D area.
+- A solid **blue horizontal bar** spanning the full width at the very top, and a thin black strip along the bottom edge. These read as UI/status overlays, not part of the 3D scene (no depth, no shading).
+- In the centre: a light‑silver **hexagonal plate** with white wireframe edges (the edge‑contrast pass). The fill is brightest near the middle and darkens toward the perimeter (a smooth radial‑ish gradient), and six thin white lines radiate from an interior point to the six outer corners.
+- Behind/around that bright plate is a **larger, darker hexagonal silhouette** (uniform dark fill, no wireframe) that extends both above and below the bright plate. Its identity (floor disc, shadow, or flat reference plane) is not labelled and cannot be confirmed from this single image.
+
+**2. Locating centre vertex and rim**
+- **Centre vertex:** the point where the six white radial edges converge. It sits in the *upper third* of the bright plate (clearly closer to the top edge than to the bottom edge), coinciding with the brightest highlight spot. That off‑centre‑upward position is what marks it as the raised centre rather than the flat geometric middle.
+- **Outer rim:** the hexagonal perimeter of the bright plate — six outer vertices joined by the brighter outline edges. (The dark hexagon behind *could* be a flat reference/rim plane, but its size does not match the bright plate's perimeter, so I cannot confirm it is the same rim.)
+
+**3. Is the centre offset resolvable?**
+**Resolvable** — with caveats. The wireframe apex is visibly displaced upward from where a *flat* hexagon's centre would project (the vertical midline between top and bottom edges), and the top silhouette/fill read as a shallow tent rather than a flat disc. So a *positive* offset is visible by eye. What I **cannot*
+
+
+===== gpu_demo_final_relaxed =====
+**1. What is visibly distinguishable**
+- A solid **blue horizontal bar across the very top edge**, full width. It looks like a 2‑D UI/status strip overlaid on the frame, not part of the 3D scene (no depth, no perspective). I cannot tell from this image what it represents.
+- In the centre: a **flat, light‑gray hexagonal plate** with crisp white wire edges. Inside it are thin white lines that read as three long diagonals crossing at one central point — i.e. six spokes from rim vertices to a centre vertex (opposite spokes appear collinear). The fill is essentially planar; I see no dome or bulge, only a mild shading gradient across the triangles.
+- Behind and below the bright plate: a **larger, darker gray hexagon** with no grid lines on it. It reads ambiguously as either a floor patch or a cast shadow.
+- Background is uniform dark charcoal. **No visible ground grid, no axes, no text/labels, no other objects.**
+
+**2. Locating centre vertex and rim**
+- **Outer rim** = the six corners of the bright hexagon: the leftmost and rightmost tips are two opposite rim vertices; the upper and lower edges give the remaining four.
+- **Centre vertex** = the single point where the internal white spokes intersect, at the geometric middle of the plate. The wire (edge‑contrast) pass draws centre‑to‑rim edges, so their common node marks the centre; in a flat configuration that node lies in the rim plane and projects to the hexagon's centre.
+
+**3. Is the offset resolvable? — *not resolvable***
+The plate looks perfectly flat: the fill shows no height gradient across triangles, and the wire spokes are straight lines that, by symmetry, would look identical even if the centre were raised (opposite spokes stay collinear in this projection). A ~1.9×10⁻⁷ m offset is far below pixel resolution at a 3 m camera distance, and even the 0.125 m "raised" case would be only a subtle bulge that is *not* present here. So from pixels I cannot measure any offset; what I see is consistent with zero but gives n
+
