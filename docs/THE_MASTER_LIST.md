@@ -2150,6 +2150,27 @@ Live task ownership now flows through the fleet control plane (`tools/agent_flee
 - **Next executable task**: provision slot-01's engine build/runtime from the
   verified demo engine path, then run one GPU numerical task through a slot
   runtime with its own port and evidence root.
+- **GLM-WF-01 slot registry + orient.py reconciliation PENDING INTEGRATION
+  (2026-09-09, branch `astra/tasks/glm-wf-01`, base `d7c47446`).** The audit's
+  named follow-up, executed as a RECORD (no code changed): ten lanes
+  inventoried read-only — the live term store (`ChimeraEngine/engine_state.json`)
+  exists ONLY in the operator checkout (gitignored, untracked, 24,869 B,
+  sha256 `2bc21ed7…`); the verdict lane is tracked and commit-reproducible
+  (blob `cfba404b`); the four review checkouts carry neither store; the
+  `E:/ChimeraWork` fleet root did not exist. Preregistered falsifiers fired
+  3×: `tools/orient.py` in a store-less fresh worktree exits 0 with a
+  plausible default term tree (silent default, no marker, nothing written —
+  source + measured); the store is NOT tracked at `cf2a0ae2` or `d7c47446`;
+  the operator checkout moved `51cd7212`→`d7c47446` mid-session (not by this
+  worker; recorded, not owned). Reconciled rules R1–R5 recorded (store-presence
+  + hash in every orientation; orient.py approved read-only; `--strict` fix
+  NAMED NOT BUILT; reads commit-safe, writes stay serialized). The freeze
+  checkout is drained (all four leftovers published) and safe to retire.
+  Session status reported as BOOTSTRAP_NOT_CONFIGURED: no control service, no
+  provisioned session file, universal dispatch on HOLD. Record:
+  `docs/evidence/glm_wf01/SLOT_REGISTRY.md`. No engine runtime, no DYAD, no
+  GPU work (none in scope); verdicts are source-inspection and filesystem
+  measurements, reproducible from the quoted commands.
 
 ## SLOT01-E2E (universal dispatch, single slot)
 
