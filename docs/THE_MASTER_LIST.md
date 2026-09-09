@@ -2113,3 +2113,7 @@ docks' blue container line (the original defect 2's perceptual root); the
 empty REEL tray draws all `REEL_MAX` slots sized to the band — the header's
 count and the tray's shape now agree. Dyad round-4: no region reads as broken
 or placeholder.
+
+## FLEET REGISTRY (WORKFLOW-BOOTSTRAP-01 live)
+
+Live task ownership now flows through the fleet control plane (`tools/agent_fleet/`): authenticated HTTP, transactional SQLite store, generation-fenced claims, five private slots, fetch-verified fast-forward publication into this branch. This section records adoption; the registry is the live authority for fleet task ownership, this list remains the human-readable roadmap.
