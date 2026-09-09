@@ -1,0 +1,23 @@
+[dyad] gpu_demo_raised_gamma0: calling senses.watch_one ...
+[dyad] gpu_demo_raised_gamma0: OK
+[dyad] gpu_demo_final_relaxed: calling senses.watch_one ...
+[dyad] gpu_demo_final_relaxed: OK
+evidence: C:\Users\allen\AppData\Local\Temp\opencode\chimera_pub\docs\evidence\membrane_gpu_demo_runtime\20260909T211359.258727Z\dyad_gpu_demo_review.json
+
+===== gpu_demo_raised_gamma0 =====
+**1. What is visibly distinguishable.** The frame is dominated by a near‑black background with no grid, axes, tick marks or scale reference anywhere. In the centre there is one light‑grey/silver filled polygon with thin white edge lines (the fill + edge‑contrast pass). That polygon reads as a roughly horizontal hexagon seen at a low angle: it has a left and right corner that are the widest points, a straighter lower edge, and a shallower upper edge; six faint white spokes fan out from an interior point to the outer corners. Behind/around and below this light shape there is a second, larger, much darker hexagonal panel (a flat plate or "floor"/reference disc) whose outline is only slightly brighter than the background – it has no grid on it either. Across the very top of the image runs a solid, full‑width blue horizontal bar that does not look like part of the 3D scene at all (it looks like a UI/status strip or capture artifact), and there is a thin black line along the bottom edge. So: one light membrane, one dark hexagonal plate behind it, no grid, plus an unexplained top blue band.
+
+**2. Locating centre vertex and rim.** The outer rim is the closed hexagonal loop of outermost vertices (left corner, right corner, and the four upper/lower corners) joined by the white boundary edges – that loop is the fixed flat rim. The centre vertex is the single interior point where all six radial spokes meet; in this image that convergence sits on the vertical symmetry axis of the shape, a little above its visual mid‑height. What tells me which is which: the wireframe pass draws exactly one closed outer loop (the rim) and six edges that share a common endpoint inside it (the centre); the common endpoint cannot be a rim vertex because it is interior to the loop.
+
+**3. Is the offset resolvable?** *Uncertain.* The spokes do converge at a point on the symmetry axis that looks at or only slightly above the projected mid‑plane of the rim, and there is a faint "tent"/shading gradient (b
+
+
+===== gpu_demo_final_relaxed =====
+1. **What is visibly distinguishable.** Against a near‑black background with a soft vignette I can see three things. (a) A solid, full‑width bright‑blue horizontal bar across the very top of the frame — this looks like a UI/status strip, not part of the 3D scene. (b) In the centre, a light‑grey flat hexagonal panel with thin white wire edges; inside it six faint radial lines meet at one central point, i.e. six triangles sharing a centre vertex — this is the membrane, rendered as fill + edge‑contrast wire (matching the stated render mode). (c) Behind and below the bright panel there is a *second*, darker, larger hexagon silhouette with no visible grid lines on it. I cannot tell from the image alone what that dark hexagon is — it could be a floor/ground pad, a shadow, or a back‑face; its identity is uncertain. There are **no** visible axis triad, no grid lines, no text labels, and no other panels.
+
+2. **Locating centre vs rim.** Yes, both are locatable. The **centre vertex** is the single point in the middle of the bright hexagon where the six white radial wire edges converge. The **outer rim** is the outer hexagonal outline — the six corners where those radial lines terminate (the boundary of the bright fill). The dark hexagon behind is *not* the membrane's rim; it is a separate, larger shape.
+
+3. **Is the offset resolvable?** **Not resolvable.** The relaxed centre z is ~1.9×10⁻⁷ m, which is many orders of magnitude below one pixel at this camera distance (cam_radius 3.0). In addition the view is oblique (phi ≈ 0.35 rad), so any vertical displacement is foreshortened onto an even smaller screen extent. What I can say visually is only that the panel *looks flat* and the wire edges are straight and meet at one point — consistent with a coplanar centre — but I cannot measure or distinguish a sub‑micrometre offset from zero in this image.
+
+4. **Consistency with stated state.** **Consistent** (with caveats). The stated relaxed state has centre ≈ 0, i.e. the membrane shoul
+
