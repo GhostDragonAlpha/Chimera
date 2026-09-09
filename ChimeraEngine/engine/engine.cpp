@@ -3975,6 +3975,39 @@ bool Engine::membrane_demo_init(const MembraneDemoUpload& up) {
         up.csr_offsets.size() != up.n_verts + 1 ||
         up.csr_corners.size() != up.n_faces * 3 ||
         up.gamma_f32.size() != up.n_faces) return false;
+    // GPU-DEMO-RECOVERY-01: the create-once mapped buffers below are sized by
+    // the FIRST accepted upload. A re-init with different sizes would write
+    // past those allocations (host overrun) while the kernels read past them
+    // (device OOB, silently degenerate faces). Refuse by name instead; a new
+    // mesh size needs a process restart. Same-size re-init reuses the buffers.
+    if (md_pos_buf_ != VK_NULL_HANDLE &&
+        (up.n_verts != md_nv_ || up.n_faces != md_nf_)) {
+        fprintf(stderr, "membrane_demo: re-init size mismatch refused "
+                "(have nv=%u nf=%u, got nv=%u nf=%u)\n",
+                md_nv_, md_nf_, up.n_verts, up.n_faces);
+        return false;
+    }
+    // Host-mirror coherence tripwire (recovery forensics: the index-mirror
+    // assign below once faulted on a wild vector header, dst=0xF; the writer
+    // was never identified). This read-only check refuses insane headers
+    // loudly with evidence instead of faulting inside the assign.
+    auto mirror_sane = [](size_t sz, size_t cap) {
+        return sz <= cap && sz <= (size_t(1) << 30) && cap <= (size_t(1) << 30);
+    };
+    if (!mirror_sane(md_idx_host_.size(), md_idx_host_.capacity()) ||
+        !mirror_sane(md_pos_host_.size(), md_pos_host_.capacity()) ||
+        !mirror_sane(md_pos_host_init_.size(), md_pos_host_init_.capacity()) ||
+        (!md_idx_host_.empty() && md_idx_host_.size() != size_t(md_nf_) * 3) ||
+        (!md_pos_host_.empty() && md_pos_host_.size() != size_t(md_nv_) * 3) ||
+        (!md_pos_host_init_.empty() && md_pos_host_init_.size() != size_t(md_nv_) * 3)) {
+        fprintf(stderr, "membrane_demo: host mirror incoherent refused "
+                "(idx %zu/%zu pos %zu/%zu init %zu/%zu have nv=%u nf=%u)\n",
+                md_idx_host_.size(), md_idx_host_.capacity(),
+                md_pos_host_.size(), md_pos_host_.capacity(),
+                md_pos_host_init_.size(), md_pos_host_init_.capacity(),
+                md_nv_, md_nf_);
+        return false;
+    }
     // Snapshot request-owned vectors before any Vulkan allocation/driver call.
     // The request is held behind the HTTP/render handoff lock, but keeping the
     // CPU mirrors independent also prevents a driver-side failure from ever
@@ -4109,9 +4142,7 @@ bool Engine::membrane_demo_init(const MembraneDemoUpload& up) {
     std::memcpy(md_csr_off_map_, input_csr_offsets.data(), size_t(up.n_verts + 1) * sizeof(uint32_t));
     std::memcpy(md_csr_c_map_, input_csr_corners.data(), size_t(up.n_faces) * 3 * sizeof(uint32_t));
     md_pos_host_ = up.positions_f32;
-    fprintf(stderr, "[md] before initial position copy\\n"); fflush(stderr);
     md_pos_host_init_ = md_pos_host_;
-    fprintf(stderr, "[md] initial position copy ready\\n"); fflush(stderr);
     md_idx_host_.assign(up.indices.begin(), up.indices.end());
     if (!std::isfinite(up.gamma_admitted) || up.gamma_admitted < 0.0) return false;
     md_gamma_admitted_ = up.gamma_admitted;
@@ -4132,9 +4163,11 @@ bool Engine::membrane_demo_init(const MembraneDemoUpload& up) {
     md_active_ = true;
     md_geom_stats(md_pos_host_, md_idx_host_, md_min_edge_, md_mean_edge_);
 
-    // First verified evaluation of the initial accepted state.
+    // First verified evaluation of the initial accepted state. An initial
+    // state the verified kernels refuse (degenerate/nonfinite upload) is a
+    // named invalid_surface refusal, never a silent ok:true acceptance.
     float e0 = 0.f;
-    if (md_eval(1, e0)) {
+    if (md_eval(1, e0) && md_valid_all()) {
         md_energy_last_ = e0;
         md_energy_initial_ = e0;
         const float* vf = static_cast<const float*>(md_vf_map_);
@@ -4143,6 +4176,9 @@ bool Engine::membrane_demo_init(const MembraneDemoUpload& up) {
         md_last_vf_centre_[2] = vf[size_t(md_centre_) * 4 + 2];
     } else {
         md_terminal_ = "invalid_surface";
+        md_active_ = false;
+        fprintf(stderr, "membrane_demo: initial state refused (invalid_surface)\n");
+        return false;
     }
     {
         const float* p = static_cast<const float*>(md_pos_map_);
@@ -4206,6 +4242,16 @@ void Engine::membrane_demo_frame(VkCommandBuffer cb) {
 
 bool Engine::membrane_demo_status(MembraneDemoStatus& out) {
     if (!md_active_) return false;
+    // P6 capture association (CONDITIONAL, preregistered): the draw path binds
+    // md_vbuf_, so hashing its host-visible mirror at status time associates
+    // the capture with the accepted state whenever no present dispatch is
+    // in flight. Present re-dispatches only on accepted-state change, so the
+    // hash is stable per accepted id outside races (documented residual race).
+    if (md_render_pending_ && md_vmap_ != nullptr) {
+        md_render_id_ = md_fnv1a(md_vmap_, size_t(md_nv_) * 9 * sizeof(float));
+        md_render_ready_ = true;
+        md_render_pending_ = false;
+    }
     out.active = true;
     out.iteration = md_iteration_; out.n_accepted = md_accepted_; out.n_trials = md_trials_;
     out.terminal_state = md_terminal_;
@@ -4499,6 +4545,10 @@ bool Engine::membrane_demo_ctl(int kind, uint32_t n_steps, double gamma,
         md_geom_stats(md_pos_host_, md_idx_host_, md_min_edge_, md_mean_edge_);
         float U = 0.f; md_eval(1, U);
         md_energy_last_ = U;
+        const float* vfr = static_cast<const float*>(md_vf_map_);
+        md_last_vf_centre_[0] = vfr[size_t(md_centre_) * 4 + 0];
+        md_last_vf_centre_[1] = vfr[size_t(md_centre_) * 4 + 1];
+        md_last_vf_centre_[2] = vfr[size_t(md_centre_) * 4 + 2];
         if (md_energy_initial_ == 0.0) md_energy_initial_ = U;
         md_present_dirty_ = true;
         break;

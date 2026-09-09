@@ -159,14 +159,27 @@ static std::string fmt_float(float f) {
     return std::string(buf);
 }
 
-static size_t find_colon_after(const std::string& body, const char* key) {
+static size_t find_key_colon(const std::string& body, const char* key) {
+    // GPU-DEMO-RECOVERY-01 (D1): the first `"key"` occurrence may sit inside a
+    // STRING VALUE (e.g. {"op": "gamma", ...} contains "gamma" as a value).
+    // Scan occurrences and take the first actually followed by ':'; a value
+    // occurrence is followed by ','/'}'/etc. and is skipped. (A value that
+    // itself embeds `"key":` can still fool this; control payloads are
+    // machine-generated, so that shape is out of contract.)
     std::string needle = std::string("\"") + key + "\"";
-    size_t pos = body.find(needle);
-    if (pos == std::string::npos) return std::string::npos;
-    size_t after_key = pos + needle.size();
-    while (after_key < body.size() && (body[after_key] == ' ' || body[after_key] == '\t')) ++after_key;
-    if (after_key >= body.size() || body[after_key] != ':') return std::string::npos;
-    return after_key + 1;
+    size_t pos = 0;
+    for (;;) {
+        pos = body.find(needle, pos);
+        if (pos == std::string::npos) return std::string::npos;
+        size_t after_key = pos + needle.size();
+        while (after_key < body.size() && (body[after_key] == ' ' || body[after_key] == '\t')) ++after_key;
+        if (after_key < body.size() && body[after_key] == ':') return after_key + 1;
+        pos = after_key;
+    }
+}
+
+static size_t find_colon_after(const std::string& body, const char* key) {
+    return find_key_colon(body, key);
 }
 
 static float get_float(const std::string& body, const char* key, float def) {
@@ -191,13 +204,9 @@ static double get_double(const std::string& body, const char* key, double def) {
 }
 
 static std::string get_string(const std::string& body, const char* key) {
-    std::string needle = std::string("\"") + key + "\"";
-    size_t pos = body.find(needle);
-    if (pos == std::string::npos) return "";
-    size_t p = pos + needle.size();
+    size_t p = find_key_colon(body, key);
+    if (p == std::string::npos) return "";
     while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
-    if (p >= body.size() || body[p] != ':') return "";
-    p++; while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
     if (p >= body.size() || body[p] != '"') return "";
     p++;
     // F1: posted console lines carry escaped JSON (\" \\ \n) — unescape them
@@ -274,13 +283,9 @@ static bool get_bool(const std::string& body, const char* key, bool def) {
 }
 
 static bool parse_float_array(const std::string& body, const char* key, std::vector<float>& out) {
-    std::string needle = std::string("\"") + key + "\"";
-    size_t pos = body.find(needle);
-    if (pos == std::string::npos) return false;
-    size_t p = pos + needle.size();
+    size_t p = find_key_colon(body, key);
+    if (p == std::string::npos) return false;
     while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
-    if (p >= body.size() || body[p] != ':') return false;
-    p++; while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
     if (p >= body.size() || body[p] != '[') return false;
     p++;
     out.clear();
