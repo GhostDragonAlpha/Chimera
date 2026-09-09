@@ -31,6 +31,7 @@ import re
 import socket
 import subprocess
 import sys
+import threading
 import time
 from pathlib import Path
 
@@ -67,12 +68,16 @@ class Fleet:
         self.supervisor_session = None
         self.sessions = {}
         self.log = []
+        self.rlock = threading.Lock()
 
     def record(self, step, **data):
-        item = {'step': step, 't': time.strftime('%H:%M:%S'), **data}
-        self.log.append(item)
-        (self.ev / 'demo_log.json').write_text(
-            json.dumps(self.log, indent=2), encoding='utf-8')
+        # Threads (two-slot legs) record concurrently; the log+file write is
+        # one critical section or the JSON evidence can interleave badly.
+        with self.rlock:
+            item = {'step': step, 't': time.strftime('%H:%M:%S'), **data}
+            self.log.append(item)
+            (self.ev / 'demo_log.json').write_text(
+                json.dumps(self.log, indent=2), encoding='utf-8')
         print('[demo] %s' % step, flush=True)
         return item
 

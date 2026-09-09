@@ -300,6 +300,17 @@ class Control:
             t.update(state='INTEGRATED',integration={'commit':sha(p.get('commit')),'evidence':text(p.get('evidence'),'published_review_evidence')})
             r['state']='ACKNOWLEDGED'
             return {'state':'INTEGRATED','slot':'held until cleanup attestation'}
+        if op=='review_requeue':
+            # Stale-base reconciliation WITHOUT force-push: a REVIEW blocked by
+            # a publication refusal (e.g. the base advanced legitimately while
+            # the task ran) returns to RUNNING at a NEW generation. The review
+            # is void (head cleared); the worktree, checkpoint history and
+            # slot ownership are preserved. Lead-only, current epoch.
+            self._lead(s,actor,p.get('epoch'))
+            t=s['tasks'].get(p.get('task'));require(t is not None and t['state']=='REVIEW','not_in_review')
+            t.update(state='RUNNING',head=None,generation=t['generation']+1,
+                     checkpoint=text(p.get('evidence'),'requeue_reconciliation_evidence'))
+            return {'state':'RUNNING','generation':t['generation'],'worktree_preserved':True}
         if op=='provision_slot':
             require(actor=='SUPERVISOR','supervisor_only')
             t=s['tasks'].get(p.get('task'));require(t is not None,'unknown_task')

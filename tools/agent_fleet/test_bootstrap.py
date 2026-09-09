@@ -434,6 +434,44 @@ class BootstrapTests(unittest.TestCase):
         with self.assertRaisesRegex(Refusal, 'no_free_slot'):
             self.claim('sixth', 'other')
 
+    # --- SLOT02-PARALLEL-01: stale-base reconciliation path -------------
+    def test_review_requeue_reconciles_stale_base_without_force(self):
+        self.task('rb')
+        self.call('claim', actor='worker', task='rb')
+        t = self.call('snapshot')['tasks']['rb']
+        self.call('submit_review', actor='worker', task='rb',
+                  generation=t['generation'], branch='astra/tasks/rb',
+                  head=HEAD, evidence='review evidence')
+        self.assertEqual(self.call('snapshot')['tasks']['rb']['state'], 'REVIEW')
+        # non-lead requeue refused
+        try:
+            self.call('review_requeue', actor='worker', task='rb',
+                      epoch=self.call('snapshot')['epoch'], evidence='x')
+            self.fail('non-lead requeue was not refused')
+        except Refusal:
+            pass
+        # lead requeue at the current epoch: RUNNING at a NEW generation,
+        # head cleared, slot/worktree ownership preserved
+        r = self.call('review_requeue', actor='lead', task='rb',
+                      epoch=self.call('snapshot')['epoch'],
+                      evidence='stale base reconciled; worktree preserved')
+        t = self.call('snapshot')['tasks']['rb']
+        self.assertEqual(t['state'], 'RUNNING')
+        self.assertEqual(t['generation'], 2)
+        self.assertIsNone(t['head'])
+        self.assertEqual(t['slot'], self.call('snapshot')['tasks']['rb']['slot'])
+        # owner's stale-generation submit_review is refused; fresh one works
+        try:
+            self.call('submit_review', actor='worker', task='rb', generation=1,
+                      branch='astra/tasks/rb', head=HEAD, evidence='stale')
+            self.fail('stale-generation submit_review was not refused')
+        except Refusal:
+            pass
+        self.call('submit_review', actor='worker', task='rb',
+                  generation=t['generation'], branch='astra/tasks/rb',
+                  head=HEAD, evidence='reconciled review evidence')
+        self.assertEqual(self.call('snapshot')['tasks']['rb']['state'], 'REVIEW')
+
     def test_untracked_demo_shader_recorded(self):
         """Closed by task demo-track-shader: the shader is tracked."""
         import subprocess as sp
