@@ -351,3 +351,13 @@ artifact — recorded as an observation, not blocking.)
 - Fresh runtime identity: old exe 92eb7bc3aa48 -> new exe eed67d9ef575 (clean rebuild; hashes differ: True).
 - Post-recovery gate rerun: PASS (rc=0). DYAD: executed (served qwen3.8-27b-nvfp4-mtp).
 - Engine failure vs worker vs coordinator: the ENGINE process died (drill); the worker session was revoked as lost WITH it; the coordinator stayed up. Verdicts kept separate; human acceptance NOT CLAIMED.
+
+---
+
+# GLM-SLOT02-PARALLEL-01 — engine-loss recovery leg (2026-09-09)
+
+- Two-slot concurrent run; slot-01 task `par-engine-gate-163658`; the gate ran, then the owned engine was terminated as the drill.
+- Registry failover to `standby01`; zombie write refused; GPU reservation retained until verified drain; recovered at generation 4.
+- Fresh runtime identity: old exe 3d0453ad065f -> new exe 401d9ce6e551 (clean rebuild; hashes differ: True).
+- Post-recovery gate rerun: PASS (rc=0). DYAD: executed (served qwen3.8-27b-nvfp4-mtp).
+- Engine failure vs worker vs coordinator: the ENGINE process died (drill); the worker session was revoked as lost WITH it; the coordinator stayed up. Verdicts kept separate; human acceptance NOT CLAIMED.
