@@ -1,0 +1,354 @@
+[
+  {
+    "step": "primary_sync",
+    "t": "15:54:17",
+    "exit": 0
+  },
+  {
+    "step": "preflight",
+    "t": "15:54:17",
+    "base": "319522525db621eed409f013b61b2f9474faf781",
+    "shader_blob_ok": true
+  },
+  {
+    "step": "service_started",
+    "t": "15:54:17",
+    "port": 55650,
+    "pid": 45428
+  },
+  {
+    "step": "enrolled",
+    "t": "15:54:17",
+    "agent": "lead01"
+  },
+  {
+    "step": "enrolled",
+    "t": "15:54:18",
+    "agent": "standby01"
+  },
+  {
+    "step": "enrolled",
+    "t": "15:54:18",
+    "agent": "worker02"
+  },
+  {
+    "step": "http:qualify",
+    "t": "15:54:18",
+    "actor": "SUPERVISOR",
+    "revision": 4
+  },
+  {
+    "step": "http:qualify",
+    "t": "15:54:18",
+    "actor": "SUPERVISOR",
+    "revision": 5
+  },
+  {
+    "step": "http:qualify",
+    "t": "15:54:18",
+    "actor": "SUPERVISOR",
+    "revision": 6
+  },
+  {
+    "step": "http:snapshot",
+    "t": "15:54:18",
+    "actor": "lead01",
+    "revision": 6
+  },
+  {
+    "step": "http:offer_lead",
+    "t": "15:54:18",
+    "actor": "lead01",
+    "revision": 7
+  },
+  {
+    "step": "http:elect",
+    "t": "15:54:18",
+    "actor": "SUPERVISOR",
+    "revision": 8
+  },
+  {
+    "step": "http:snapshot",
+    "t": "15:54:18",
+    "actor": "SUPERVISOR",
+    "revision": 8
+  },
+  {
+    "step": "http:snapshot",
+    "t": "15:54:18",
+    "actor": "standby01",
+    "revision": 8
+  },
+  {
+    "step": "http:offer_lead",
+    "t": "15:54:18",
+    "actor": "standby01",
+    "revision": 9
+  },
+  {
+    "step": "elected",
+    "t": "15:54:18",
+    "leader": "lead01"
+  },
+  {
+    "step": "http:snapshot",
+    "t": "15:54:18",
+    "actor": "lead01",
+    "revision": 9
+  },
+  {
+    "step": "http:create_task",
+    "t": "15:54:18",
+    "actor": "lead01",
+    "revision": 10
+  },
+  {
+    "step": "http:snapshot",
+    "t": "15:54:18",
+    "actor": "lead01",
+    "revision": 10
+  },
+  {
+    "step": "http:create_task",
+    "t": "15:54:18",
+    "actor": "lead01",
+    "revision": 11
+  },
+  {
+    "step": "http:claim",
+    "t": "15:54:18",
+    "actor": "lead01",
+    "revision": 12
+  },
+  {
+    "step": "http:claim",
+    "t": "15:54:18",
+    "actor": "worker02",
+    "revision": 13
+  },
+  {
+    "step": "claimed",
+    "t": "15:54:18",
+    "T1": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-slot02par-20260909T155416\\state\\slot-01",
+    "T2": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-slot02par-20260909T155416\\state\\slot-02"
+  },
+  {
+    "step": "http:snapshot",
+    "t": "15:54:24",
+    "actor": "SUPERVISOR",
+    "revision": 13
+  },
+  {
+    "step": "http:provision_slot",
+    "t": "15:54:24",
+    "actor": "SUPERVISOR",
+    "revision": 14
+  },
+  {
+    "step": "http:snapshot",
+    "t": "15:54:29",
+    "actor": "SUPERVISOR",
+    "revision": 14
+  },
+  {
+    "step": "http:provision_slot",
+    "t": "15:54:30",
+    "actor": "SUPERVISOR",
+    "revision": 15
+  },
+  {
+    "step": "http:checkpoint",
+    "t": "15:54:30",
+    "actor": "worker02",
+    "revision": 16
+  },
+  {
+    "step": "http:checkpoint",
+    "t": "15:54:30",
+    "actor": "worker02",
+    "revision": 17
+  },
+  {
+    "step": "http:checkpoint",
+    "t": "15:54:47",
+    "actor": "lead01",
+    "revision": 18
+  },
+  {
+    "step": "http:resource_acquire",
+    "t": "15:54:47",
+    "actor": "lead01",
+    "revision": 19
+  },
+  {
+    "step": "overlap",
+    "t": "15:54:57",
+    "slot01_build_gate_seconds": 27.1,
+    "slot02_cpu_probe_finished_at_second": 27.1,
+    "overlapped": false
+  },
+  {
+    "step": "slot01_gate_PASS",
+    "t": "15:54:57"
+  },
+  {
+    "step": "slot02_leg_PASS",
+    "t": "15:54:57",
+    "cpu_law_rc": 0,
+    "probe_rc": 0
+  },
+  {
+    "step": "gpu_refused_second_claimant",
+    "t": "15:54:57",
+    "error": "{\"error\": \"resource_not_available\"}"
+  },
+  {
+    "step": "http:resource_release",
+    "t": "15:55:01",
+    "actor": "lead01",
+    "revision": 20
+  },
+  {
+    "step": "http:resource_acquire",
+    "t": "15:55:01",
+    "actor": "worker02",
+    "revision": 21
+  },
+  {
+    "step": "gpu_handoff_granted",
+    "t": "15:55:01"
+  },
+  {
+    "step": "http:resource_release",
+    "t": "15:55:01",
+    "actor": "worker02",
+    "revision": 22
+  },
+  {
+    "step": "http:snapshot",
+    "t": "15:55:01",
+    "actor": "SUPERVISOR",
+    "revision": 22
+  },
+  {
+    "step": "http:resource_acquire",
+    "t": "15:55:01",
+    "actor": "lead01",
+    "revision": 23
+  },
+  {
+    "step": "drill_engine_started",
+    "t": "15:55:05",
+    "pid": 45752,
+    "exe_sha256": "bc102b6c3d6b5c73967080a39b8af167c32927fc96d0a610569b6125cc35603d"
+  },
+  {
+    "step": "http:checkpoint",
+    "t": "15:55:05",
+    "actor": "lead01",
+    "revision": 24
+  },
+  {
+    "step": "drill_engine_terminated",
+    "t": "15:55:06",
+    "pid": 45752
+  },
+  {
+    "step": "http:fail",
+    "t": "15:55:06",
+    "actor": "SUPERVISOR",
+    "revision": 25
+  },
+  {
+    "step": "failover_after_engine_loss",
+    "t": "15:55:06",
+    "new_leader": "standby01",
+    "epoch": 2
+  },
+  {
+    "step": "http:snapshot",
+    "t": "15:55:06",
+    "actor": "SUPERVISOR",
+    "revision": 25
+  },
+  {
+    "step": "zombie_write_refused_after_engine_loss",
+    "t": "15:55:06",
+    "error": "{\"error\": \"session_revoked\"}"
+  },
+  {
+    "step": "http:snapshot",
+    "t": "15:55:06",
+    "actor": "SUPERVISOR",
+    "revision": 25
+  },
+  {
+    "step": "gpu_retained_after_engine_loss",
+    "t": "15:55:06"
+  },
+  {
+    "step": "http:resource_clear",
+    "t": "15:55:10",
+    "actor": "SUPERVISOR",
+    "revision": 26
+  },
+  {
+    "step": "reconcile_slot01",
+    "t": "15:55:11",
+    "head": "319522525db6",
+    "status": "clean"
+  },
+  {
+    "step": "http:recover",
+    "t": "15:55:11",
+    "actor": "SUPERVISOR",
+    "revision": 27
+  },
+  {
+    "step": "http:snapshot",
+    "t": "15:55:11",
+    "actor": "SUPERVISOR",
+    "revision": 27
+  },
+  {
+    "step": "fresh_runtime_identity",
+    "t": "15:55:27",
+    "old_exe_sha256": "bc102b6c3d6b5c73967080a39b8af167c32927fc96d0a610569b6125cc35603d",
+    "new_exe_sha256": "1b2c175037c42cb5120de263b53cc598c12f52037602c64aac262bd4ec7841cb",
+    "differs": true,
+    "note": "drain verified by port+HTTP checks regardless of hash determinism"
+  },
+  {
+    "step": "http:claim",
+    "t": "15:55:27",
+    "actor": "standby01",
+    "revision": 28
+  },
+  {
+    "step": "provision_create_refused",
+    "t": "15:55:27",
+    "detail": "{\"provisioned\": false, \"refused\": \"branch_already_exists\", \"detail\": \"no task-branch reuse; pick a new task id\"}",
+    "fallback": "verify"
+  },
+  {
+    "step": "http:snapshot",
+    "t": "15:55:27",
+    "actor": "SUPERVISOR",
+    "revision": 28
+  },
+  {
+    "step": "http:resource_acquire",
+    "t": "15:55:27",
+    "actor": "standby01",
+    "revision": 29
+  },
+  {
+    "step": "slot01_gate2_PASS_after_recovery",
+    "t": "15:55:33"
+  },
+  {
+    "step": "dyad_executed_post_recovery",
+    "t": "15:59:56",
+    "run_dir": "20260909T205527.847175Z"
+  }
+]

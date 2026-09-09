@@ -1,0 +1,28 @@
+[dyad] gpu_demo_raised_gamma0: calling senses.watch_one ...
+[dyad] gpu_demo_raised_gamma0: OK
+[dyad] gpu_demo_final_relaxed: calling senses.watch_one ...
+[dyad] gpu_demo_final_relaxed: OK
+evidence: C:\Users\allen\AppData\Local\Temp\opencode\chimera_pub\docs\evidence\membrane_gpu_demo_runtime\20260909T205527.847175Z\dyad_gpu_demo_review.json
+
+===== gpu_demo_raised_gamma0 =====
+**1. What is visible.** The frame is dominated by a near‑black uniform background. Across the very top edge there is a solid blue horizontal bar spanning the full width (this reads as a UI/status strip or window chrome, not 3D scene content), and there is a thin black band along the bottom edge. In the centre of the view is one light‑grey shaded object with bright white wireframe edges overlaid on it (the fill + edge‑contrast pass). That object reads as a shallow hexagonal "tent"/pyramid: a roughly hexagonal grey silhouette whose internal white spokes converge to a single point, with two front faces that are brightly lit and fade in brightness toward their lower edges. Behind and below the grey tent is a second, larger, very dark (near‑black) flat hexagonal panel/plate lying flatter in the scene; its outline does not visibly coincide with the grey object's rim. I see **no grid lines**, no other panels, no axes, no text labels, and no visible light‑source gizmo.
+
+**2. Centre vertex vs outer rim.** The centre vertex is best located at the point where the six white radial spokes converge (upper‑middle of the grey tent). The outer rim is the convex hexagonal boundary of the grey fill — i.e., the six outermost vertices (left, right, two front‑lower, two back‑upper corners) joined by the perimeter wireframe. What tells me this: the spoke convergence marks the apex/centre, and the outer closed loop marks the rim; the edge‑contrast pass makes both legible against the dark background. Caveat: I am inferring the centre from the spoke intersection by eye; I cannot independently confirm that exact pixel is the centre rather than a back rim vertex without an aligned reference.
+
+**3. Resolvable / not resolvable / uncertain → *uncertain*.** The grey object does look peaked (front faces sloping down to a lower front edge, spokes meeting above that edge), which is *consistent with* a raised centre; but I cannot confidently confirm a non‑zero offset from this single view. Reasons: (a
+
+
+===== gpu_demo_final_relaxed =====
+Below is a per‑question visual review. I am describing only what pixels support; where the image does not give enough information I say so plainly.
+
+**1. What geometry is visibly distinguishable?**
+- Background: a uniform very dark gray (near‑black) void, no gradient, no horizon line.
+- Top edge of the frame: a solid, full‑width bright‑blue horizontal bar. It looks like UI chrome / a status or progress strip; it has no label and is not part of the 3D scene as far as I can tell.
+- Centre of frame: a flat, light‑gray/silver hexagonal "membrane" rendered with fill plus a white edge‑contrast wire pass. The fill shows a smooth shading gradient (brightest near the middle, darker toward the edges). The wire pass draws the outer six‑edge hexagon boundary and three internal straight lines that all cross at one central point (a horizontal line plus an "X"). In a flat configuration this is exactly what six centre‑to‑vertex spokes project to (opposite pairs become collinear), so I read these as the triangle edges of the six‑triangle fan.
+- Behind/around the bright hexagon: a larger, darker‑gray hexagonal panel of the same orientation but bigger in screen space and shifted downward. It has no grid lines, no texture, no label. It could be intended as a floor/ground plane or a cast shadow, but nothing in the image confirms which; it is ambiguous.
+- Not present: no visible grid, no axes, no text/labels, no scale bar, no other objects, no lighting fixtures.
+
+**2. Locating the centre vertex and outer rim.**
+- Outer rim = the six bright corner vertices of the white hexagon outline (the perimeter loop). I identify them as the rim because they are the closed 6‑edge boundary and match "six outer vertices fixed in a flat hexagonal rim."
+- Centre vertex = the single point where the three internal wire lines intersect, at the middle of the bright hexagon. I identify it there because the wire pass connects each outer vertex to that common intersection (the six spokes), so their meeting point
+
