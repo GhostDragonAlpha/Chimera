@@ -53,7 +53,8 @@ class Control:
         self.db=str(db); self.supervisor=digest(supervisor_token);self.enrollment=digest(enrollment_token)
         root=str(Path(root).resolve())
         Path(db).parent.mkdir(parents=True,exist_ok=True)
-        with self.connect() as con:
+        con=self.connect()
+        try:
             con.execute('CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), body TEXT NOT NULL)')
             con.execute('CREATE TABLE IF NOT EXISTS events (seq INTEGER PRIMARY KEY, kind TEXT NOT NULL, body TEXT NOT NULL)')
             initial={'schema':1,'revision':0,'root':root,'supervisor_hash':self.supervisor,'enrollment_hash':self.enrollment,
@@ -63,6 +64,7 @@ class Control:
             saved=json.loads(con.execute('SELECT body FROM state WHERE id=1').fetchone()[0])
             require(saved['schema']==1 and saved['root']==root,'configuration_mismatch')
             require(saved['supervisor_hash']==self.supervisor and saved['enrollment_hash']==self.enrollment,'service_identity_mismatch')
+        finally: con.close()
 
     def connect(self):
         return sqlite3.connect(self.db,timeout=10,isolation_level=None)
@@ -298,11 +300,26 @@ class Control:
             t.update(state='INTEGRATED',integration={'commit':sha(p.get('commit')),'evidence':text(p.get('evidence'),'published_review_evidence')})
             r['state']='ACKNOWLEDGED'
             return {'state':'INTEGRATED','slot':'held until cleanup attestation'}
+        if op=='provision_slot':
+            require(actor=='SUPERVISOR','supervisor_only')
+            t=s['tasks'].get(p.get('task'));require(t is not None,'unknown_task')
+            slot=s['slots'].get(str(t['slot']));require(slot is not None and slot['task']==t['id'],'task_has_no_slot')
+            require(t['state']=='RUNNING','task_not_running')
+            require(not slot['engine'].get('provisioned'),'slot_already_provisioned')
+            slot['engine']['provisioned']=True
+            slot['engine']['worktree_head']=sha(p.get('worktree_head'))
+            slot['engine']['provision_evidence']=text(p.get('evidence'),'provision_evidence')
+            return {'slot':t['slot'],'provisioned':True}
         if op=='release_slot':
             require(actor=='SUPERVISOR','supervisor_only')
             t=s['tasks'].get(p.get('task'));require(t and t['state']=='INTEGRATED' and t['slot'],'task_not_integrated_in_slot')
             text(p.get('evidence'),'preserved_clean_workspace_and_stopped_processes')
             require(not any(r['task']==t['id'] for r in s['resources'].values()),'resource_still_held')
-            s['slots'][t['slot']]['task']=None;t['slot']=None
+            slot=s['slots'][t['slot']]
+            if slot['engine'].get('provisioned'):
+                slot['engine']['provisioned']=False
+                slot['engine'].pop('worktree_head',None)
+                slot['engine'].pop('provision_evidence',None)
+            slot['task']=None;t['slot']=None
             return {'released':True,'filesystem_deleted':False}
         raise Refusal('unknown_operation')
