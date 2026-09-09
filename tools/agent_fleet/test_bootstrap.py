@@ -435,21 +435,15 @@ class BootstrapTests(unittest.TestCase):
             self.claim('sixth', 'other')
 
     def test_untracked_demo_shader_recorded(self):
-        """Documented repo gap: membrane_demo.comp was never committed.
-
-        This test pins the gap until the demo task closes it; the demo task in
-        the live loop is exactly 'commit the shader'. It must NOT pass once the
-        shader is tracked — update this test in that task.
-        """
+        """Closed by task demo-track-shader: the shader is tracked."""
         import subprocess as sp
         here = Path(__file__).resolve()
         repo = here.parents[2]
         cp = sp.run(['git', '-C', str(repo), 'ls-files', '--error-unmatch',
                      'ChimeraEngine/engine/shaders/membrane_demo.comp'],
                     capture_output=True, text=True)
-        self.assertNotEqual(
-            cp.returncode, 0,
-            'shader now tracked: update this gap test and close demo task')
+        self.assertEqual(cp.returncode, 0,
+                         'membrane_demo.comp must stay tracked')
 
 
 if __name__ == '__main__':
