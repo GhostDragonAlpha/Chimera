@@ -1,0 +1,105 @@
+{
+ "gates": [
+  {
+   "gate": "P5-init-clean",
+   "pass": true,
+   "detail": "E=2.625 id=17560123212910228982"
+  },
+  {
+   "gate": "P2-count-match",
+   "pass": true,
+   "detail": "gpu_acc=126 cpu_acc=126 E0exact=True"
+  },
+  {
+   "gate": "P2-energy-trail",
+   "pass": true,
+   "detail": "worst per-iter drift=3.269e-07 <= 1.1e-5"
+  },
+  {
+   "gate": "P2-terminal-match",
+   "pass": true,
+   "detail": "gpu=stagnated cpu=stagnated"
+  },
+  {
+   "gate": "P2-final-centre",
+   "pass": true,
+   "detail": "gap=1.947e-07 <= 1.502e-05"
+  },
+  {
+   "gate": "P2-strict-decrease",
+   "pass": true,
+   "detail": "126 accepted steps"
+  },
+  {
+   "gate": "P6-render-id-nonzero",
+   "pass": true,
+   "detail": "rid=18318914354920626203"
+  },
+  {
+   "gate": "P6-render-stable",
+   "pass": true,
+   "detail": "png 7fc05db0c4a8 repeat stable"
+  },
+  {
+   "gate": "P6-render-tracks-accepted",
+   "pass": true,
+   "detail": "init_rid=12983548845491599170 mid_rid=18318914354920626203"
+  },
+  {
+   "gate": "P3-accepted-unchanged",
+   "pass": true,
+   "detail": "id 13045020052590168641 -> 13045020052590168641 E=2.62457323"
+  },
+  {
+   "gate": "P3-render-unchanged",
+   "pass": true,
+   "detail": "png 7fc05db0c4a8==7fc05db0c4a8 rid 18318914354920626203->18318914354920626203"
+  },
+  {
+   "gate": "P3-terminal",
+   "pass": true,
+   "detail": "no_descent_step trials=52"
+  },
+  {
+   "gate": "P4-gamma0-stationary",
+   "pass": true,
+   "detail": "stationary id_unchanged=True"
+  },
+  {
+   "gate": "P4-gamma-double",
+   "pass": true,
+   "detail": "E=5.25 Fz=-0.857142866"
+  },
+  {
+   "gate": "P4-reset-restores",
+   "pass": true,
+   "detail": "id True gamma=1"
+  },
+  {
+   "gate": "P5-counters-coherent",
+   "pass": true,
+   "detail": "iter 1->2->2"
+  },
+  {
+   "gate": "P5-reset-bitexact",
+   "pass": true,
+   "detail": "id_match=True"
+  },
+  {
+   "gate": "P7-ordinary-path",
+   "pass": true,
+   "detail": "mesh_bin=True png_bytes=3687468"
+  },
+  {
+   "gate": "P-invalid-named",
+   "pass": true,
+   "detail": "short=1; badmagic=1; badop=1; gamma-neg=1; gamma-overflow=1"
+  },
+  {
+   "gate": "P-repeated-legal",
+   "pass": true,
+   "detail": "5x upload/step/reset, ids match, alive"
+  }
+ ],
+ "port": 8093
+}
