@@ -1,0 +1,218 @@
+{
+  "events": [
+    {
+      "sequence": 1,
+      "kind": "enroll",
+      "agent": "alpha",
+      "actor": "ENROLLMENT"
+    },
+    {
+      "sequence": 2,
+      "kind": "enroll",
+      "agent": "beta",
+      "actor": "ENROLLMENT"
+    },
+    {
+      "sequence": 3,
+      "kind": "enroll",
+      "agent": "gamma",
+      "actor": "ENROLLMENT"
+    },
+    {
+      "sequence": 4,
+      "kind": "enroll",
+      "agent": "lead",
+      "actor": "ENROLLMENT"
+    },
+    {
+      "sequence": 5,
+      "kind": "qualify",
+      "agent": "alpha",
+      "actor": "SUPERVISOR"
+    },
+    {
+      "sequence": 6,
+      "kind": "qualify",
+      "agent": "beta",
+      "actor": "SUPERVISOR"
+    },
+    {
+      "sequence": 7,
+      "kind": "qualify",
+      "agent": "gamma",
+      "actor": "SUPERVISOR"
+    },
+    {
+      "sequence": 8,
+      "kind": "qualify",
+      "agent": "lead",
+      "actor": "SUPERVISOR"
+    },
+    {
+      "sequence": 9,
+      "kind": "offer_lead",
+      "epoch": 0,
+      "actor": "lead"
+    },
+    {
+      "sequence": 10,
+      "kind": "elect",
+      "actor": "SUPERVISOR"
+    },
+    {
+      "sequence": 11,
+      "kind": "create_task",
+      "task": "demo-track-shader-122537",
+      "epoch": 1,
+      "actor": "lead"
+    },
+    {
+      "sequence": 12,
+      "kind": "claim",
+      "task": "demo-track-shader-122537",
+      "actor": "alpha"
+    },
+    {
+      "sequence": 13,
+      "kind": "provision_slot",
+      "task": "demo-track-shader-122537",
+      "actor": "SUPERVISOR"
+    },
+    {
+      "sequence": 14,
+      "kind": "submit_review",
+      "task": "demo-track-shader-122537",
+      "generation": 1,
+      "actor": "alpha"
+    },
+    {
+      "sequence": 15,
+      "kind": "integration_request",
+      "task": "demo-track-shader-122537",
+      "epoch": 1,
+      "actor": "lead"
+    },
+    {
+      "sequence": 16,
+      "kind": "ack_integration",
+      "request": "847b2fa18e5ab7e6272085db",
+      "actor": "SUPERVISOR"
+    },
+    {
+      "sequence": 17,
+      "kind": "release_slot",
+      "task": "demo-track-shader-122537",
+      "actor": "SUPERVISOR"
+    },
+    {
+      "sequence": 18,
+      "kind": "create_task",
+      "task": "demo-recovery-drill-122537",
+      "epoch": 1,
+      "actor": "lead"
+    },
+    {
+      "sequence": 19,
+      "kind": "claim",
+      "task": "demo-recovery-drill-122537",
+      "actor": "beta"
+    },
+    {
+      "sequence": 20,
+      "kind": "provision_slot",
+      "task": "demo-recovery-drill-122537",
+      "actor": "SUPERVISOR"
+    },
+    {
+      "sequence": 21,
+      "kind": "fail",
+      "agent": "beta",
+      "reason": "PROCESS_EXIT",
+      "actor": "SUPERVISOR"
+    },
+    {
+      "sequence": 22,
+      "kind": "recover",
+      "task": "demo-recovery-drill-122537",
+      "actor": "SUPERVISOR"
+    },
+    {
+      "sequence": 23,
+      "kind": "claim",
+      "task": "demo-recovery-drill-122537",
+      "actor": "gamma"
+    },
+    {
+      "sequence": 24,
+      "kind": "submit_review",
+      "task": "demo-recovery-drill-122537",
+      "generation": 4,
+      "actor": "gamma"
+    },
+    {
+      "sequence": 25,
+      "kind": "integration_request",
+      "task": "demo-recovery-drill-122537",
+      "epoch": 1,
+      "actor": "lead"
+    },
+    {
+      "sequence": 26,
+      "kind": "ack_integration",
+      "request": "a9d365a943b86c90358c11c3",
+      "actor": "SUPERVISOR"
+    },
+    {
+      "sequence": 27,
+      "kind": "release_slot",
+      "task": "demo-recovery-drill-122537",
+      "actor": "SUPERVISOR"
+    },
+    {
+      "sequence": 28,
+      "kind": "create_task",
+      "task": "demo-master-list-row-122537",
+      "epoch": 1,
+      "actor": "lead"
+    },
+    {
+      "sequence": 29,
+      "kind": "claim",
+      "task": "demo-master-list-row-122537",
+      "actor": "lead"
+    },
+    {
+      "sequence": 30,
+      "kind": "provision_slot",
+      "task": "demo-master-list-row-122537",
+      "actor": "SUPERVISOR"
+    },
+    {
+      "sequence": 31,
+      "kind": "submit_review",
+      "task": "demo-master-list-row-122537",
+      "generation": 1,
+      "actor": "lead"
+    },
+    {
+      "sequence": 32,
+      "kind": "integration_request",
+      "task": "demo-master-list-row-122537",
+      "epoch": 1,
+      "actor": "lead"
+    },
+    {
+      "sequence": 33,
+      "kind": "ack_integration",
+      "request": "fc8d1efb823567ff391db5df",
+      "actor": "SUPERVISOR"
+    },
+    {
+      "sequence": 34,
+      "kind": "release_slot",
+      "task": "demo-master-list-row-122537",
+      "actor": "SUPERVISOR"
+    }
+  ],
+  "revision": 34
+}

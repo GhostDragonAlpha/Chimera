@@ -2117,3 +2117,36 @@ or placeholder.
 ## FLEET REGISTRY (WORKFLOW-BOOTSTRAP-01 live)
 
 Live task ownership now flows through the fleet control plane (`tools/agent_fleet/`): authenticated HTTP, transactional SQLite store, generation-fenced claims, five private slots, fetch-verified fast-forward publication into this branch. This section records adoption; the registry is the live authority for fleet task ownership, this list remains the human-readable roadmap.
+
+**Status 2026-09-09 — the loop is implemented and demonstrated end-to-end.**
+
+- **Implemented** (commit `be615277`, then extended through the loop itself):
+  `control.py` (transactional registry; Windows DB-handle fix; `provision_slot`),
+  `publish.py` (the only task-branch→integration-base path: fetch-verified
+  fast-forward, no force, never master; interrupted integrations reconciled
+  against re-read remote state), `provision_slot.py` (worktree create/verify
+  bound to claims), `enroll_agent.py` (credentials stay out of logs),
+  `demo_live.py` (the live loop driver).
+- **Verified offline**: 49/49 protocol tests (`test_control.py` 36 +
+  `test_bootstrap.py` 13), including the operator-required fault-injection
+  scenarios: single-winner claim race over HTTP, dependency blocking,
+  restart preservation, obsolete-generation refusal, one authorized
+  integrator per epoch, publish FF/verify/reconcile, provisioning gates,
+  unique ports. Windows-green.
+- **Verified live** (`docs/evidence/agent_fleet/BOOTSTRAP_LIVE-122537/`):
+  two HTTP clients raced for one task (one winner, one refusal); a worker
+  was marked failed mid-task, its zombie generation-refused write recorded,
+  worktree reconciled and preserved, task recovered and reassigned at a new
+  generation; three real tasks (run record, recovery-drill record, this
+  master-list row) published through fetch-verified fast-forward pushes
+  `eb169df1 → 53b733eb → eb169df1(work) → c08873e5`. The membrane demo shader
+  tracking task (`53b733eb`) was itself delivered through an earlier demo run.
+- **Limits (not claimed)**: slot engines are still unbuilt (no per-slot GPU
+  runtime yet); supervisor-only steps are performed by the trusted launcher,
+  not a separate service; direct-GitHub publication bypass cannot be
+  technically prevented (documented in `publish.py`); universal dispatch
+  beyond current assignments waits on Alan's explicit go
+  (`docs/AGENT_START.md` dispatch status).
+- **Next executable task**: provision slot-01's engine build/runtime from the
+  verified demo engine path, then run one GPU numerical task through a slot
+  runtime with its own port and evidence root.

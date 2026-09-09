@@ -1,0 +1,260 @@
+{
+  "schema": 1,
+  "revision": 34,
+  "root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state",
+  "leader": "lead",
+  "epoch": 1,
+  "agents": {
+    "alpha": {
+      "label": "demo worker A",
+      "alive": true,
+      "qualified": true,
+      "capabilities": [
+        "git",
+        "python",
+        "windows-shell"
+      ],
+      "max_tasks": 1,
+      "can_lead": false,
+      "rank": 1,
+      "ready_epoch": null,
+      "qualification": "demo qualification (live loop)"
+    },
+    "beta": {
+      "label": "demo worker B",
+      "alive": false,
+      "qualified": true,
+      "capabilities": [
+        "git",
+        "python",
+        "windows-shell"
+      ],
+      "max_tasks": 1,
+      "can_lead": false,
+      "rank": 1,
+      "ready_epoch": null,
+      "qualification": "demo qualification (live loop)"
+    },
+    "gamma": {
+      "label": "recovery worker",
+      "alive": true,
+      "qualified": true,
+      "capabilities": [
+        "git",
+        "python",
+        "windows-shell"
+      ],
+      "max_tasks": 1,
+      "can_lead": false,
+      "rank": 1,
+      "ready_epoch": null,
+      "qualification": "demo qualification (live loop)"
+    },
+    "lead": {
+      "label": "demo lead",
+      "alive": true,
+      "qualified": true,
+      "capabilities": [
+        "git",
+        "python",
+        "windows-shell"
+      ],
+      "max_tasks": 1,
+      "can_lead": true,
+      "rank": 10,
+      "ready_epoch": 0,
+      "qualification": "demo qualification (live loop)",
+      "recovery_offer": "demo start; no foreign work"
+    }
+  },
+  "tasks": {
+    "demo-track-shader-122537": {
+      "id": "demo-track-shader-122537",
+      "state": "INTEGRATED",
+      "owner": "alpha",
+      "slot": null,
+      "generation": 1,
+      "kind": "worker",
+      "base": "eb169df1181ca9caa65be9d2f6cbacf5dc4d2e6c",
+      "branch": "astra/tasks/demo-track-shader-122537",
+      "pr_base": "astra/gait-capture",
+      "scopes": [
+        "docs/evidence/agent_fleet"
+      ],
+      "dependencies": [],
+      "capabilities": [
+        "python",
+        "git"
+      ],
+      "packet": "STATEMENT: the run record documents the live bootstrap loop, including the shader-tracking integration completed by a prior demo run. PREDICTION: unique per-run record lands through the full claim->review->publish->ack loop. FALSIFIER: any loop step bypassed or refused.",
+      "checkpoint": null,
+      "head": "0e218161914ec5cded3a491b45b1eb9d3d9b7a67",
+      "review": "commit 0e218161914ec5cded3a491b45b1eb9d3d9b7a67 in C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-02",
+      "integration": {
+        "commit": "0e218161914ec5cded3a491b45b1eb9d3d9b7a67",
+        "evidence": "publish.py verified remote head 0e218161914ec5cded3a491b45b1eb9d3d9b7a67"
+      }
+    },
+    "demo-recovery-drill-122537": {
+      "id": "demo-recovery-drill-122537",
+      "state": "INTEGRATED",
+      "owner": "gamma",
+      "slot": null,
+      "generation": 4,
+      "kind": "worker",
+      "base": "0e218161914ec5cded3a491b45b1eb9d3d9b7a67",
+      "branch": "astra/tasks/demo-recovery-drill-122537",
+      "pr_base": "astra/gait-capture",
+      "scopes": [
+        "docs/evidence/agent_fleet"
+      ],
+      "dependencies": [],
+      "capabilities": [
+        "python",
+        "git"
+      ],
+      "packet": "STATEMENT: a failed worker task is held, reconciled, recovered and reassigned at a new generation without losing preserved work. PREDICTION: obsolete-generation writes refused; new worker lands the drill record. FALSIFIER: any stale write accepted or lost work.",
+      "checkpoint": "reconciled: worktree C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-02 at 0e218161914ec5cded3a491b45b1eb9d3d9b7a67, status clean; writer stopped",
+      "head": "aada23c1430c03cafba1a8003eb9b9f3679ef76c",
+      "review": "commit aada23c1430c03cafba1a8003eb9b9f3679ef76c in C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-02",
+      "integration": {
+        "commit": "aada23c1430c03cafba1a8003eb9b9f3679ef76c",
+        "evidence": "publish.py verified remote head aada23c1430c03cafba1a8003eb9b9f3679ef76c"
+      }
+    },
+    "demo-master-list-row-122537": {
+      "id": "demo-master-list-row-122537",
+      "state": "INTEGRATED",
+      "owner": "lead",
+      "slot": null,
+      "generation": 1,
+      "kind": "worker",
+      "base": "aada23c1430c03cafba1a8003eb9b9f3679ef76c",
+      "branch": "astra/tasks/demo-master-list-row-122537",
+      "pr_base": "astra/gait-capture",
+      "scopes": [
+        "docs/THE_MASTER_LIST.md"
+      ],
+      "dependencies": [],
+      "capabilities": [
+        "git"
+      ],
+      "packet": "STATEMENT: the master list records the live fleet bootstrap. PREDICTION: lead-only claim succeeds; row lands via the loop. FALSIFIER: non-lead claim succeeds (refused in tests).",
+      "checkpoint": null,
+      "head": "c08873e5e7d6e3a256e610abca43854d4f2a6958",
+      "review": "commit c08873e5e7d6e3a256e610abca43854d4f2a6958 in C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-02",
+      "integration": {
+        "commit": "c08873e5e7d6e3a256e610abca43854d4f2a6958",
+        "evidence": "publish.py verified remote head c08873e5e7d6e3a256e610abca43854d4f2a6958"
+      }
+    }
+  },
+  "resources": {},
+  "requests": {
+    "847b2fa18e5ab7e6272085db": {
+      "task": "demo-track-shader-122537",
+      "head": "0e218161914ec5cded3a491b45b1eb9d3d9b7a67",
+      "branch": "astra/tasks/demo-track-shader-122537",
+      "base_branch": "astra/gait-capture",
+      "expected_base": "eb169df1181ca9caa65be9d2f6cbacf5dc4d2e6c",
+      "epoch": 1,
+      "leader": "lead",
+      "review": "demo lead review: diff inspected, tests green",
+      "state": "ACKNOWLEDGED"
+    },
+    "a9d365a943b86c90358c11c3": {
+      "task": "demo-recovery-drill-122537",
+      "head": "aada23c1430c03cafba1a8003eb9b9f3679ef76c",
+      "branch": "astra/tasks/demo-recovery-drill-122537",
+      "base_branch": "astra/gait-capture",
+      "expected_base": "0e218161914ec5cded3a491b45b1eb9d3d9b7a67",
+      "epoch": 1,
+      "leader": "lead",
+      "review": "demo lead review: diff inspected, tests green",
+      "state": "ACKNOWLEDGED"
+    },
+    "fc8d1efb823567ff391db5df": {
+      "task": "demo-master-list-row-122537",
+      "head": "c08873e5e7d6e3a256e610abca43854d4f2a6958",
+      "branch": "astra/tasks/demo-master-list-row-122537",
+      "base_branch": "astra/gait-capture",
+      "expected_base": "aada23c1430c03cafba1a8003eb9b9f3679ef76c",
+      "epoch": 1,
+      "leader": "lead",
+      "review": "demo lead review: diff inspected, tests green",
+      "state": "ACKNOWLEDGED"
+    }
+  },
+  "slots": {
+    "1": {
+      "task": null,
+      "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-01",
+      "kind": "integration",
+      "engine": {
+        "build_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-01\\.tmp\\engine_build",
+        "runtime_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-01\\.tmp\\engine_runtime",
+        "evidence_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-01\\.tmp\\engine_evidence",
+        "port_candidate": 8101,
+        "port_reserved": false,
+        "provisioned": false,
+        "binary_identity": "UNBUILT: bind source head, dirty diff, executable and shader hashes before launch"
+      }
+    },
+    "2": {
+      "task": null,
+      "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-02",
+      "kind": "worker",
+      "engine": {
+        "build_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-02\\.tmp\\engine_build",
+        "runtime_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-02\\.tmp\\engine_runtime",
+        "evidence_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-02\\.tmp\\engine_evidence",
+        "port_candidate": 8102,
+        "port_reserved": false,
+        "provisioned": false,
+        "binary_identity": "UNBUILT: bind source head, dirty diff, executable and shader hashes before launch"
+      }
+    },
+    "3": {
+      "task": null,
+      "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-03",
+      "kind": "worker",
+      "engine": {
+        "build_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-03\\.tmp\\engine_build",
+        "runtime_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-03\\.tmp\\engine_runtime",
+        "evidence_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-03\\.tmp\\engine_evidence",
+        "port_candidate": 8103,
+        "port_reserved": false,
+        "provisioned": false,
+        "binary_identity": "UNBUILT: bind source head, dirty diff, executable and shader hashes before launch"
+      }
+    },
+    "4": {
+      "task": null,
+      "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-04",
+      "kind": "worker",
+      "engine": {
+        "build_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-04\\.tmp\\engine_build",
+        "runtime_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-04\\.tmp\\engine_runtime",
+        "evidence_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-04\\.tmp\\engine_evidence",
+        "port_candidate": 8104,
+        "port_reserved": false,
+        "provisioned": false,
+        "binary_identity": "UNBUILT: bind source head, dirty diff, executable and shader hashes before launch"
+      }
+    },
+    "5": {
+      "task": null,
+      "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-05",
+      "kind": "worker",
+      "engine": {
+        "build_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-05\\.tmp\\engine_build",
+        "runtime_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-05\\.tmp\\engine_runtime",
+        "evidence_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-05\\.tmp\\engine_evidence",
+        "port_candidate": 8105,
+        "port_reserved": false,
+        "provisioned": false,
+        "binary_identity": "UNBUILT: bind source head, dirty diff, executable and shader hashes before launch"
+      }
+    }
+  }
+}

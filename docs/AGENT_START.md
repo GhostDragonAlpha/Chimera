@@ -1,8 +1,11 @@
 # One prompt for every agent
 
-**DISPATCH STATUS: HOLD — documentation reconciliation and deployment are
-not complete. Do not use this draft to start autonomous fleet work. Existing
-explicit assignments continue. See `docs/AGENT_BOOTSTRAP_READINESS.md`.**
+**DISPATCH STATUS: PROTOTYPE LIVE (2026-09-09) — the loop in this document is
+implemented and demonstrated end-to-end (see
+`docs/evidence/agent_fleet/BOOTSTRAP_LIVE-122537/`). Universal dispatch to
+other models still waits on Alan's explicit go: slot engines are unbuilt, the
+supervisor steps are launcher-performed, and publication bypass cannot be
+technically prevented. Existing explicit assignments continue.**
 
 Give any provider/model the same instruction:
 

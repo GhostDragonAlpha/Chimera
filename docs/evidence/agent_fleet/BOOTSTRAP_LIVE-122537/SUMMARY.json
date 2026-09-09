@@ -1,0 +1,14 @@
+{
+  "claim_race": {
+    "winner": "alpha",
+    "refused": "beta"
+  },
+  "tasks": {
+    "demo-track-shader-122537": "INTEGRATED",
+    "demo-recovery-drill-122537": "INTEGRATED",
+    "demo-master-list-row-122537": "INTEGRATED"
+  },
+  "base_before": "eb169df1181ca9caa65be9d2f6cbacf5dc4d2e6c",
+  "base_after": "c08873e5e7d6e3a256e610abca43854d4f2a6958",
+  "run_dir": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537"
+}
