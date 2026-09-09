@@ -135,6 +135,51 @@ public:
         std::vector<uint32_t> occ, color_start, inj, edge_active;  // inj: pairs (cell, count)
     };
     bool load_water(const WaterUpload& up);
+
+    // ── GLM-GPU-DEMO-01: the membrane demo (GPU-computed accepted geometry) ──
+    // Opt-in: every path is inert until membrane_demo_init succeeds. The
+    // certified stage-0/1/2 kernels are the state of record; the present
+    // stage maps the ACCEPTED f32 buffer to render vertices; the draw site
+    // substitutes the demo vertex/index buffers only while md_active_.
+    struct MembraneDemoUpload {
+        uint32_t n_verts = 0, n_faces = 0;
+        std::vector<float>  positions_f32;   // n_verts * 3, B2 frame (z-up)
+        std::vector<uint32_t> indices;       // n_faces * 3
+        std::vector<uint32_t> csr_offsets;   // n_verts + 1
+        std::vector<uint32_t> csr_corners;   // 3 * n_faces face-major corners
+        std::vector<float>  gamma_f32;       // n_faces, admitted+converted (validated)
+        double gamma_admitted = 0.0;         // the admitted f64 scalar gamma [J/m^2]
+        std::string material_snapshot_json;  // per-run admitted-value snapshot
+        float lift_m = 0.0f;                 // presentation lift (engine y)
+        uint32_t centre_index = 0;           // free vertex (B2: last)
+    };
+    struct MembraneDemoStatus {
+        bool active = false;
+        uint32_t iteration = 0, n_accepted = 0, n_trials = 0;
+        double energy = 0.0, energy_initial = 0.0;
+        std::string terminal_state;          // "", running, stationary, stagnated, no_descent_step, invalid_surface, step_limit
+        double centre[3] = {0, 0, 0};        // accepted f32 centre (B2 frame)
+        double centre_force[3] = {0, 0, 0};  // latest accepted-state centre force (all 3 components retained)
+        uint64_t accepted_state_id = 0;      // FNV-1a over accepted buffer
+        uint64_t render_state_id = 0;        // FNV-1a over last presented bytes
+        std::string last_control;            // last control outcome (rejection-integrity evidence)
+        std::string material_snapshot;       // admitted-gamma snapshot (JSON)
+    };
+    bool membrane_demo_init(const MembraneDemoUpload& up);
+    // kind: 0 reset, 1 step (one accepted iteration), 2 run(n), 3 pause,
+    // 4 set_gamma (re-admit through the material contract), 5 force-invalid
+    // trial (rejection-integrity control).
+    bool membrane_demo_ctl(int kind, uint32_t n_steps, double gamma,
+                           MembraneDemoStatus& out);
+    bool membrane_demo_status(MembraneDemoStatus& out);
+    void membrane_demo_frame(VkCommandBuffer cb);   // per-frame present dispatch
+    void md_dispatch(VkCommandBuffer cb, uint32_t stage, uint32_t sets,
+                     const void* pc, size_t pc_size, bool to_vertex_input);
+    bool md_eval(uint32_t sets, float& energy_out);  // stages 0,1,2 on a submitted cb
+    bool md_valid_all();
+    bool md_step_once(bool force_invalid_trial = false); // one accepted iteration (declared law)
+    bool md_admit_gamma(double gamma);               // the material admission boundary
+    uint32_t find_mem_type_pub(uint32_t types, VkMemoryPropertyFlags flags) { return find_mem_type(types, flags); }
     // Runs n_macro macro-steps at dt_macro; records V after each step for
     // readback. Returns (final_sum, final_min).
     bool water_run(uint32_t n_macro, double dt_macro, int64_t& sum_out, int64_t& min_out);
@@ -901,6 +946,82 @@ private:
     // The R1 signature — front stretch / back compression at the knee —
     // rendered live on the march. Color map is FIXED (honest saturation),
     // no per-band normalization constants to tune.
+    // ── GLM-GPU-DEMO-01: membrane demo state (all inert until md_active_) ──
+    bool            md_active_ = false;
+    bool            md_running_ = false;
+    VkPipeline      md_pipe_ = VK_NULL_HANDLE;          // membrane_demo.comp
+    VkShaderModule  md_mod_ = VK_NULL_HANDLE;
+    VkDescriptorSetLayout md_dsl_ = VK_NULL_HANDLE;
+    VkPipelineLayout md_layout_ = VK_NULL_HANDLE;
+    VkDescriptorPool md_dpool_ = VK_NULL_HANDLE;
+    VkDescriptorSet md_set_ = VK_NULL_HANDLE;           // 11 storage bindings, binding0 = ACCEPTED
+    VkDescriptorSet md_set_trial_ = VK_NULL_HANDLE;     // same layout, binding0 = TRIAL
+    VkBuffer        md_pos_buf_ = VK_NULL_HANDLE;       // ACCEPTED state (host-visible, r/w, persistent map)
+    VkDeviceMemory  md_pos_mem_ = VK_NULL_HANDLE;
+    void*           md_pos_map_ = nullptr;              // persistent host map of the ACCEPTED buffer
+    VkBuffer        md_trial_buf_ = VK_NULL_HANDLE;     // TRIAL state (never rendered)
+    VkDeviceMemory  md_trial_mem_ = VK_NULL_HANDLE;
+    void*           md_trial_map_ = nullptr;            // host map (trial build/inspection)
+    VkBuffer        md_dir_buf_ = VK_NULL_HANDLE;       // descent direction p
+    VkDeviceMemory  md_dir_mem_ = VK_NULL_HANDLE;
+    void*           md_dir_map_ = nullptr;              // host map (host writes p)
+    VkBuffer        md_faces_buf_ = VK_NULL_HANDLE;     // FaceRecord x NF
+    VkDeviceMemory  md_faces_mem_ = VK_NULL_HANDLE;
+    void*           md_faces_map_ = nullptr;            // persistent host map (readback)
+    VkBuffer        md_vf_buf_ = VK_NULL_HANDLE;        // vertex forces (readback)
+    VkDeviceMemory  md_vf_mem_ = VK_NULL_HANDLE;
+    void*           md_vf_map_ = nullptr;
+    VkBuffer        md_energy_buf_ = VK_NULL_HANDLE;    // scalar energy (readback)
+    VkDeviceMemory  md_energy_mem_ = VK_NULL_HANDLE;
+    void*           md_energy_map_ = nullptr;
+    VkBuffer        md_valid_buf_ = VK_NULL_HANDLE;     // per-face validity
+    VkDeviceMemory  md_valid_mem_ = VK_NULL_HANDLE;
+    void*           md_valid_map_ = nullptr;
+    VkBuffer        md_idx_buf_ = VK_NULL_HANDLE;       // indices u32 x3 per face
+    VkDeviceMemory  md_idx_mem_ = VK_NULL_HANDLE;
+    void*           md_idx_map_ = nullptr;
+    VkBuffer        md_gamma_buf_ = VK_NULL_HANDLE;     // per-face gamma f32
+    VkDeviceMemory  md_gamma_mem_ = VK_NULL_HANDLE;
+    void*           md_gamma_map_ = nullptr;            // host map for set_gamma re-admission
+    VkBuffer        md_csr_off_buf_ = VK_NULL_HANDLE;
+    VkDeviceMemory  md_csr_off_mem_ = VK_NULL_HANDLE;
+    void*           md_csr_off_map_ = nullptr;
+    VkBuffer        md_csr_c_buf_ = VK_NULL_HANDLE;
+    VkDeviceMemory  md_csr_c_mem_ = VK_NULL_HANDLE;
+    void*           md_csr_c_map_ = nullptr;
+    VkBuffer        md_vbuf_ = VK_NULL_HANDLE;          // PRESENT vertex buffer (pos3,n3,c3)
+    VkDeviceMemory  md_vmem_ = VK_NULL_HANDLE;
+    void*           md_vmap_ = nullptr;                 // persistent host map (CPU hash/readback)
+    VkBuffer        md_render_ibuf_ = VK_NULL_HANDLE;   // render-only tightly packed u32 indices
+    VkDeviceMemory  md_render_imem_ = VK_NULL_HANDLE;
+    uint32_t        md_nv_ = 0, md_nf_ = 0;             // vertex/face counts
+    uint32_t        md_centre_ = 0;                     // free vertex index
+    float           md_lift_ = 0.0f;                    // presentation lift
+    double          md_gamma_admitted_ = 0.0;           // admitted scalar gamma [J/m^2]
+    float           md_gamma_f32_ = 0.0f;               // its float32 conversion
+    double          md_gamma_initial_ = 0.0;            // reset restores the initial material admission
+    float           md_gamma_initial_f32_ = 0.0f;
+    std::string     md_material_snapshot_;              // per-run admitted-value snapshot
+    std::string     md_material_snapshot_initial_;      // reset restores this immutable snapshot
+    double          md_energy_initial_ = 0.0;
+    uint32_t        md_iteration_ = 0, md_accepted_ = 0, md_trials_ = 0;
+    std::string     md_terminal_;                       // named terminal state
+    uint64_t        md_accepted_id_ = 0;                // FNV-1a over accepted f32 bytes
+    uint64_t        md_render_id_ = 0;                  // FNV-1a over last presented bytes
+    bool            md_present_dirty_ = false;          // accepted state changed -> present again
+    bool            md_render_pending_ = false;         // present dispatch submitted; finalize hash after its fence
+    bool            md_render_ready_ = false;           // present output has completed on the GPU
+    std::vector<uint32_t> md_idx_host_;                 // host copy of indices (geom stats)
+    std::string     md_last_control_;                   // last control outcome (P3 evidence)
+    // host-side loop bookkeeping (the GPU state of record stays on device)
+    std::vector<float> md_pos_host_;                    // mirror of accepted buffer (memcpy from map)
+    std::vector<float> md_pos_host_init_;               // the initial accepted state (reset source)
+    double          md_min_edge_ = 0.0, md_mean_edge_ = 0.0;
+    static void md_geom_stats(const std::vector<float>& pos, const std::vector<uint32_t>& ind,
+                               double& min_edge, double& mean_edge);
+    double          md_energy_last_ = 0.0;              // latest f32-readback energy [J]
+    float           md_last_vf_centre_[3] = {0, 0, 0};  // latest accepted-state centre force (all 3)
+
     std::vector<uint32_t> mesh_tris_;         // index list, kept from /mesh_bin
     std::vector<float>    tri_rest_area_;     // per-triangle rest area (mesh-set)
     std::vector<uint32_t> strain_vt_;         // touched verts (hinge bands)

@@ -20,6 +20,7 @@
 #include <cstdint>
 #include <functional>
 #include <mutex>
+#include <cmath>
 
 struct StudioStage {
     std::string id;       // "B0" .. "B10"
