@@ -200,16 +200,19 @@ def commit_and_push(worktree, branch, message, paths):
     return head
 
 
-def integrate(fleet, task, worktree, expected_base):
-    """Worker review -> leader request -> publish -> ack -> release."""
+def integrate(fleet, task, worktree, expected_base, leader='lead'):
+    """Worker review -> leader request -> publish -> ack -> release.
+
+    `leader` is the CURRENT leader agent id (after a failover drill the
+    original leader may be dead; the request must come from the live one)."""
     head = sh(worktree, 'rev-parse', 'HEAD').stdout.strip()
     branch = 'astra/tasks/' + task
     fleet.call(task_worker(fleet, task), 'submit_review', task=task,
                generation=fleet_task(fleet, task)['generation'], branch=branch,
                head=head, evidence='commit %s in %s' % (head, worktree))
-    rid = fleet.call('lead', 'integration_request', task=task, head=head,
+    rid = fleet.call(leader, 'integration_request', task=task, head=head,
                      branch=branch, expected_base=expected_base,
-                     epoch=fleet.epoch('lead'),
+                     epoch=fleet.epoch(leader),
                      review='demo lead review: diff inspected, tests green')['request']
     # Reconcile FIRST: a previous attempt of this same integration may have
     # pushed but never acknowledged (crash, connection loss). publish.py

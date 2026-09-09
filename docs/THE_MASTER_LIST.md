@@ -2154,3 +2154,43 @@ Live task ownership now flows through the fleet control plane (`tools/agent_flee
 ## SLOT01-E2E (universal dispatch, single slot)
 
 One bounded GPU membrane verification task executed end-to-end through the fleet control plane on slot-01 (task `slot01-membrane-143008`): claim, clean slot build, runtime gate PASS, real interruption + failover recovery at generation 4, DYAD executed, fetch-verified publication. SINGLE-SLOT VERIFIED; not a five-slot deployment.
+
+### Publication-sequence clarification (no remote rewind; 2026-09-09)
+
+The bootstrap report's summary line `eb169df1 → 53b733eb → eb169df1(work) →
+c08873e5` mixed two demo runs and wrongly implies the remote base moved
+backward. It did not. Git evidence (`git merge-base --is-ancestor` on each
+successive pair; command preserved in the run evidence):
+
+- **Remote-visible first-parent chain (each arrow a verified fast-forward):**
+  `be615277 → 53b733eb → eb169df1 → 0e218161 → aada23c1 → c08873e5 →
+  f9a4623e → f96530d2`.
+- `eb169df1`/`0e218161` are run-record commits of demo runs 122443/122537;
+  `53b733eb` is the shader-tracking integration of demo run 121757, which
+  happened **before** those runs and is their ancestor (`53b733eb →
+  eb169df1`: FF-ancestor OK). The `→ eb169df1(work)` in the old line was a
+  *local worktree HEAD* inside run 122537, not a remote branch transition.
+- Every integration was a fetch-verified fast-forward push by `publish.py`
+  (`non_fast_forward_refused` gate never bypassed); `master` untouched at
+  `51cd7212`; no force-push. The original report text is preserved above —
+  this row supersedes its summary line, not its evidence.
+
+### Slot build provenance (added at the SLOT01-E2E gate)
+
+Shader source blob `4f7a356e` verified equal between the tested revision and
+the integration base before build; compiled SPIR-V `71B5F8D3…` and runtime exe
+SHA-256 recorded in the run's `slot01_binary_identity.json`. Runtime exe and
+build-dir exe hash-equal; `ChimeraEngine/engine/build/` untouched.
+
+### Remaining limits after SLOT01-E2E
+
+- The drill terminated the owned worker *client* (session process); it did
+  not kill the slot engine mid-request — engine-loss handling remains a
+  different drill.
+- `agent_id` at `checkpoint` is the launcher-held session, not a separate
+  long-lived agent process. Recovery was exercised against a genuinely
+  terminated client with a real revoked session.
+- Publication bypass (direct GitHub push) still cannot be technically
+  prevented; detected only by remote re-read (documented in `publish.py`).
+- This is SINGLE-SLOT VERIFIED: slots 02–05 remain unprovisioned; universal
+  dispatch beyond current assignments still waits on Alan's explicit go.

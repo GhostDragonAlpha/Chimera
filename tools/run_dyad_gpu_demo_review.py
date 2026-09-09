@@ -105,6 +105,44 @@ def main() -> int:
             "instance latched CHIMERA_MD_EDGE at init; demo-scoped, "
             "mesh_mode_ untouched; verified against the fill-only run by "
             "byte-differing PNGs and identical accepted_state_id values)")
+    # Recorded facts from THIS run override the defaults: the review must
+    # describe the run under review, not a previous one (the two-lens law).
+    import os
+    slot_port = os.environ.get("CHIMERA_RUN_PORT")
+    if slot_port:
+        RUN_FACTS["engine"] = (
+            "chimera_engine.exe (slot-built isolated MSVC engine, port "
+            + slot_port + ", --no-restore; launched by the runtime gate, "
+            "which terminates only the PID it launched)")
+    RUN_FACTS["source"] = "docs/evidence/membrane_gpu_demo_runtime/" + run_dir.name
+    sidecars = {}
+    for key, fname in (("raised", "raised_gamma0.json"),
+                       ("relaxed", "final_relaxed.json")):
+        p = run_dir / fname
+        if p.exists():
+            try:
+                sidecars[key] = json.loads(p.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+    if "raised" in sidecars:
+        cam = sidecars["raised"].get("camera", {})
+        if cam:
+            RUN_FACTS["camera"] = {
+                "cam_radius": cam.get("radius"), "cam_theta": cam.get("theta", 0.0),
+                "cam_phi": cam.get("phi"),
+                "note": "camera from THIS run's recorded sidecar (POSTed to "
+                        "/camera before /frame; sidecar is the record, not a "
+                        "guess)"}
+    for key, sc in sidecars.items():
+        st = sc.get("status", {})
+        if st:
+            RUN_FACTS["states"][key].update({
+                "iteration": st.get("iteration"),
+                "terminal": st.get("terminal_state"),
+                "energy_J": st.get("energy"),
+                "centre_xyz_m": st.get("centre"),
+                "accepted_state_id": st.get("accepted_state_id"),
+                "note": "numerical facts from THIS run's recorded sidecar"})
     images = [
         ("gpu_demo_raised_gamma0", run_dir / "raised_gamma0.png",
          "The INITIAL-HEIGHT state under ZERO gamma: the optimizer took zero "
