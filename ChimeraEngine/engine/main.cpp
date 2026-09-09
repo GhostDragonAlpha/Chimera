@@ -59,6 +59,24 @@ static bool g_mem_pending = false;
 static bool g_mem_applied = false;
 static bool g_membrane_active = true;  // 3DGS-only: the N-body sim (7-float) is retired
 
+// ── Pending GPU membrane-demo request (Vulkan work remains on the render thread)
+// Binary layout, little-endian: MD01 magic, nv, nf, centre, gamma f64, lift f32,
+// reserved u32 (32-byte header), then positions f32[nv*3], indices u32[nf*3],
+// CSR offsets u32[nv+1], CSR corner ids u32[nf*3], gamma f32[nf].
+struct MembraneDemoRequest {
+    int kind = 0;       // 1 init, 2 control, 3 status
+    int ctl_kind = 0;   // 0 reset, 1 step, 2 run, 3 pause, 4 gamma, 5 reject
+    Engine::MembraneDemoUpload upload;
+    uint32_t n_steps = 0;
+    double gamma = 0.0;
+    Engine::MembraneDemoStatus status{};
+    bool ok = false;
+};
+static MembraneDemoRequest g_md_req;
+static std::mutex g_md_mutex;
+static std::condition_variable g_md_cv;
+static bool g_md_pending = false, g_md_applied = false;
+
 // ── Pending triangle mesh request (same handoff: Vulkan work stays on the render thread) ──
 struct MeshReq { std::vector<float> verts; std::vector<uint32_t> indices; uint32_t N=0, idxCount=0; float cam_radius=12.f, cam_theta=0.f, cam_phi=0.3f; uint32_t slot=0, mode=0; bool update_only=false; bool valid=false; };
 static MeshReq g_mesh_req;
@@ -278,6 +296,20 @@ static bool parse_float_array(const std::string& body, const char* key, std::vec
     return !out.empty();
 }
 
+static std::string membrane_demo_status_json(const Engine::MembraneDemoStatus& s, bool ok) {
+    char b[2048];
+    snprintf(b, sizeof(b),
+        "{\"ok\":%s,\"active\":%s,\"iteration\":%u,\"accepted\":%u,\"trials\":%u,\"energy\":%.9g,\"energy_initial\":%.9g,\"terminal_state\":\"%s\",\"centre\":[%.9g,%.9g,%.9g],\"centre_force\":[%.9g,%.9g,%.9g],\"accepted_state_id\":%llu,\"render_state_id\":%llu,\"last_control\":\"%s\",\"material_snapshot\":%s}",
+        ok ? "true" : "false", s.active ? "true" : "false",
+        s.iteration, s.n_accepted, s.n_trials, s.energy, s.energy_initial,
+        s.terminal_state.c_str(), s.centre[0], s.centre[1], s.centre[2],
+        s.centre_force[0], s.centre_force[1], s.centre_force[2],
+        static_cast<unsigned long long>(s.accepted_state_id),
+        static_cast<unsigned long long>(s.render_state_id),
+        s.last_control.c_str(), s.material_snapshot.empty() ? "null" : s.material_snapshot.c_str());
+    return b;
+}
+
 // Signal handler for graceful shutdown
 #ifdef _WIN32
 BOOL WINAPI handleCtrlC(DWORD) { return TRUE; }
@@ -458,6 +490,97 @@ int main(int argc, char** argv) {
                     body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
                 }
             }
+            content_type = "application/json";
+        } else if (p == "/membrane_demo_bin" && method == "POST") {
+            if (req_body.size() < 32) {
+                body = "{\"ok\":false,\"error\":\"short membrane demo header\"}";
+            } else {
+                const uint8_t* d = reinterpret_cast<const uint8_t*>(req_body.data());
+                uint32_t magic = 0, nv = 0, nf = 0, centre = 0, reserved = 0;
+                double gamma = 0.0; float lift = 0.0f;
+                std::memcpy(&magic, d + 0, 4); std::memcpy(&nv, d + 4, 4);
+                std::memcpy(&nf, d + 8, 4); std::memcpy(&centre, d + 12, 4);
+                std::memcpy(&gamma, d + 16, 8); std::memcpy(&lift, d + 24, 4);
+                std::memcpy(&reserved, d + 28, 4);
+                const size_t pos_bytes = static_cast<size_t>(nv) * 3 * sizeof(float);
+                const size_t idx_bytes = static_cast<size_t>(nf) * 3 * sizeof(uint32_t);
+                const size_t off_bytes = static_cast<size_t>(nv + 1) * sizeof(uint32_t);
+                const size_t csr_bytes = static_cast<size_t>(nf) * 3 * sizeof(uint32_t);
+                const size_t gam_bytes = static_cast<size_t>(nf) * sizeof(float);
+                const size_t expect = 32 + pos_bytes + idx_bytes + off_bytes + csr_bytes + gam_bytes;
+                if (magic != 0x3130444Du || nv == 0 || nf == 0 || centre >= nv ||
+                    !std::isfinite(gamma) || gamma < 0.0 || !std::isfinite(lift) ||
+                    req_body.size() != expect) {
+                    body = "{\"ok\":false,\"error\":\"invalid membrane demo upload\"}";
+                } else {
+                    size_t at = 32;
+                    Engine::MembraneDemoUpload up{};
+                    up.n_verts = nv; up.n_faces = nf; up.centre_index = centre; up.lift_m = lift;
+                    up.gamma_admitted = gamma;
+                    up.positions_f32.resize(static_cast<size_t>(nv) * 3);
+                    up.indices.resize(static_cast<size_t>(nf) * 3);
+                    up.csr_offsets.resize(static_cast<size_t>(nv) + 1);
+                    up.csr_corners.resize(static_cast<size_t>(nf) * 3);
+                    up.gamma_f32.resize(nf);
+                    std::memcpy(up.positions_f32.data(), d + at, pos_bytes); at += pos_bytes;
+                    std::memcpy(up.indices.data(), d + at, idx_bytes); at += idx_bytes;
+                    std::memcpy(up.csr_offsets.data(), d + at, off_bytes); at += off_bytes;
+                    std::memcpy(up.csr_corners.data(), d + at, csr_bytes); at += csr_bytes;
+                    std::memcpy(up.gamma_f32.data(), d + at, gam_bytes);
+                    char snap[256];
+                    snprintf(snap, sizeof(snap),
+                             "{\"gamma_admitted_f64\":%.17g,\"gamma_uploaded_f32\":%.9g,\"unit\":\"J/m^2\",\"wu_to_m\":1.0}",
+                             gamma, static_cast<double>(static_cast<float>(gamma)));
+                    up.material_snapshot_json = snap;
+                    {
+                        std::lock_guard<std::mutex> lk(g_md_mutex);
+                        g_md_req = MembraneDemoRequest{};
+                        g_md_req.kind = 1; g_md_req.upload = std::move(up);
+                        g_md_pending = true; g_md_applied = false;
+                    }
+                    std::unique_lock<std::mutex> lk(g_md_mutex);
+                    bool waited = g_md_cv.wait_for(lk, std::chrono::seconds(30), []{ return g_md_applied; });
+                    body = waited && g_md_req.ok ? membrane_demo_status_json(g_md_req.status, true)
+                                                  : "{\"ok\":false,\"error\":\"membrane demo init failed or timed out\"}";
+                }
+            }
+            content_type = "application/json";
+        } else if (p == "/membrane_demo" && method == "POST") {
+            int ctl = -1;
+            std::string op = get_string(req_body, "op");
+            if (op == "reset") ctl = 0;
+            else if (op == "step") ctl = 1;
+            else if (op == "run") ctl = 2;
+            else if (op == "pause") ctl = 3;
+            else if (op == "gamma") ctl = 4;
+            else if (op == "reject") ctl = 5;
+            if (ctl < 0) {
+                body = "{\"ok\":false,\"error\":\"op must be reset|step|run|pause|gamma|reject\"}";
+            } else {
+                {
+                    std::lock_guard<std::mutex> lk(g_md_mutex);
+                    g_md_req = MembraneDemoRequest{};
+                    g_md_req.kind = 2; g_md_req.ctl_kind = ctl;
+                    g_md_req.n_steps = get_uint(req_body, "n_steps", ctl == 1 ? 1u : 126u);
+                    g_md_req.gamma = get_double(req_body, "gamma", 0.0);
+                    g_md_pending = true; g_md_applied = false;
+                }
+                std::unique_lock<std::mutex> lk(g_md_mutex);
+                bool waited = g_md_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_md_applied; });
+                body = waited ? membrane_demo_status_json(g_md_req.status, g_md_req.ok)
+                              : "{\"ok\":false,\"error\":\"membrane demo control timeout\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/membrane_demo" && method == "GET") {
+            {
+                std::lock_guard<std::mutex> lk(g_md_mutex);
+                g_md_req = MembraneDemoRequest{};
+                g_md_req.kind = 3; g_md_pending = true; g_md_applied = false;
+            }
+            std::unique_lock<std::mutex> lk(g_md_mutex);
+            bool waited = g_md_cv.wait_for(lk, std::chrono::seconds(10), []{ return g_md_applied; });
+            body = waited ? membrane_demo_status_json(g_md_req.status, g_md_req.ok)
+                          : "{\"ok\":false,\"error\":\"membrane demo status timeout\"}";
             content_type = "application/json";
         } else if (p == "/mesh_bin" && method == "POST") {
             // Binary protocol (application/octet-stream), little-endian:
@@ -2543,6 +2666,30 @@ int main(int argc, char** argv) {
                 g_mem_pending = false;
                 g_mem_applied = true;
                 g_mem_cv.notify_all();
+            }
+        }
+
+        // Apply a pending GPU membrane-demo request on the render thread.
+        {
+            std::lock_guard<std::mutex> lk(g_md_mutex);
+            if (g_md_pending) {
+                bool ok = false;
+                if (g_md_req.kind == 1) {
+                    ok = engine.membrane_demo_init(g_md_req.upload);
+                    if (ok) {
+                        g_membrane_active = true;
+                        engine.membrane_demo_status(g_md_req.status);
+                    }
+                } else if (g_md_req.kind == 2) {
+                    ok = engine.membrane_demo_ctl(g_md_req.ctl_kind, g_md_req.n_steps,
+                                                  g_md_req.gamma, g_md_req.status);
+                } else {
+                    ok = engine.membrane_demo_status(g_md_req.status);
+                }
+                g_md_req.ok = ok;
+                g_md_pending = false;
+                g_md_applied = true;
+                g_md_cv.notify_all();
             }
         }
 

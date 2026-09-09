@@ -164,6 +164,7 @@ target_include_directories(chimera_engine PRIVATE
 target_link_libraries(chimera_engine PRIVATE
     "${VULKAN_SDK}/Lib/vulkan-1.lib"
     ws2_32
+    winmm
     secur32
     crypt32
     ncrypt
