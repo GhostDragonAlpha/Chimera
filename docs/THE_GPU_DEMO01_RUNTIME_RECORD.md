@@ -341,3 +341,13 @@ artifact — recorded as an observation, not blocking.)
 - DYAD: executed per THE_DYAD_PROTOCOL (served model qwen3.8-27b-nvfp4-mtp; one image per call; raw responses in dyad_gpu_demo_review.json).
 - Capture association remains CONDITIONAL per GLM-WINDOW-02 (accepted_state_id linkage is the strongest implemented linkage; competing-writer exclusion is not proven).
 - Human acceptance: NOT CLAIMED. GPU-driven claim unchanged (compute drives the accepted state; presentation findings are render-path facts).
+
+---
+
+# GLM-SLOT02-PARALLEL-01 — engine-loss recovery leg (2026-09-09)
+
+- Two-slot concurrent run; slot-01 task `par-engine-gate-161828`; the gate ran, then the owned engine was terminated as the drill.
+- Registry failover to `standby01`; zombie write refused; GPU reservation retained until verified drain; recovered at generation 4.
+- Fresh runtime identity: old exe 92eb7bc3aa48 -> new exe eed67d9ef575 (clean rebuild; hashes differ: True).
+- Post-recovery gate rerun: PASS (rc=0). DYAD: executed (served qwen3.8-27b-nvfp4-mtp).
+- Engine failure vs worker vs coordinator: the ENGINE process died (drill); the worker session was revoked as lost WITH it; the coordinator stayed up. Verdicts kept separate; human acceptance NOT CLAIMED.
