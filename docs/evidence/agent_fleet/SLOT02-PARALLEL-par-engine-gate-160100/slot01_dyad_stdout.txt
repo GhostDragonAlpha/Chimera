@@ -1,0 +1,29 @@
+[dyad] gpu_demo_raised_gamma0: calling senses.watch_one ...
+[dyad] gpu_demo_raised_gamma0: OK
+[dyad] gpu_demo_final_relaxed: calling senses.watch_one ...
+[dyad] gpu_demo_final_relaxed: OK
+evidence: C:\Users\allen\AppData\Local\Temp\opencode\chimera_pub\docs\evidence\membrane_gpu_demo_runtime\20260909T210210.209212Z\dyad_gpu_demo_review.json
+
+===== gpu_demo_raised_gamma0 =====
+**1. What is visibly distinguishable**
+The frame is dominated by a near‑black, faintly noisy background. Across the very top edge runs a solid bright‑blue horizontal bar spanning the full width (looks like a 2D UI/status strip, not part of the 3D scene; its meaning isn't shown). In the centre there are two stacked planar/faceted objects:
+- A large **dark hexagonal flat panel** (a "floor"/planar reference), rendered almost black with only a slight contrast against the background. I see no grid lines, ticks, axes or text inside it – it is a solid dark hexagon with flat top and bottom edges and pointed left/right corners.
+- On/above that panel sits a **light‑grey faceted object made of six triangles** meeting at one apex, with thin white wire edges (the edge‑contrast pass). The facets show a smooth shading gradient – brighter toward the upper/apex region, darker toward the front lower edge.
+No other scene content is visible: no coordinate axes, no scale bar, no labels, no second object.
+
+**2. Locating centre vertex and outer rim**
+- **Centre vertex:** the point where all six white radial edges converge – a bright node in the *upper‑middle* of the light shape (a bit above its vertical midline). The convergence of the six spokes is what identifies it; nothing else in the scene has that pattern.
+- **Outer rim:** the hexagonal outline of the light shape. The front edge reads as a straight horizontal line at the bottom of the light shape, and the leftmost/rightmost points are sharp side corners. The *back* outer vertices are not crisply visible – they merge into the top silhouette / sit behind the raised apex, so I can only confirm three rim vertices (front‑left, front‑right via the bottom edge, plus the two side points) with confidence; the rear ones are inferred, not seen.
+- The **dark hexagon** gives a planar reference for the rim plane, but its boundary does *not* obviously coincide with the membrane's outer outline – it appears larger and shifted downward relative to t
+
+
+===== gpu_demo_final_relaxed =====
+**1. What is visibly distinguishable**
+The scene is almost empty: a near‑black/dark‑gray background with a faint vertical gradient, and no visible grid lines, axis markers, or scale bar anywhere. In the centre there is one bright silver‑gray hexagonal patch outlined in thin white (the edge‑contrast wire pass). Inside it I can see six straight white spokes radiating from a single interior point to the six corners, i.e. six triangles sharing one centre vertex; the fill has a soft radial shading gradient (brightest near the upper‑middle, darker toward the edges) but no silhouette change that would indicate a bump or pyramid. Behind and slightly below the bright patch is a second, much darker gray hexagon of similar footprint — most plausibly a ground‑plane shadow / reference panel rather than part of the membrane. Across the very top edge there is a solid, full‑width saturated‑blue horizontal bar with hard edges; this looks like UI/capture chrome (a status strip or window highlight), not 3D scene content. The hexagon is foreshortened vertically (left/right corners are the widest points), consistent with an oblique view from above (~20° elevation).
+
+**2. Locating centre vertex and outer rim**
+The **centre vertex** is the single point where all six white spokes converge, at the geometric centroid of the bright hexagon (roughly the image middle). I identify it as the common interior endpoint of the six triangle edges drawn by the wire pass. The **outer rim** is the perimeter of that same white‑outlined hexagon — its six corner vertices are the fixed outer vertices. Because the shape reads as flat, the centre projects exactly to the rim's centroid and there is no separate "raised apex" silhouette to look for; the only cue that a centre vertex exists at all is the wireframe convergence point.
+
+**3. Is the centre's offset resolvable?**
+**Not resolvable.** The membrane reads as perfectly planar: no pyramid, no bump, no change in foreshortening of the spokes, and the centre ve
+
