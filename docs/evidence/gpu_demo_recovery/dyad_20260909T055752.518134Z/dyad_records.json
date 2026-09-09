@@ -1,0 +1,53 @@
+{
+ "model_requested": "qwen3.8-27b-nvfp4-mtp",
+ "records": [
+  {
+   "label": "initial",
+   "energy": 2.625,
+   "centre": [
+    0,
+    0,
+    0.125
+   ],
+   "accepted_id": 17560123212910228982,
+   "render_id": 4702197819130933928,
+   "png": "docs\\evidence\\gpu_demo_recovery\\dyad_20260909T055752.518134Z\\dyad_initial.png",
+   "png_sha": "aa5fe4da8cb683efbe1bf5aa09739ebaab62ba68502805ac321fe92b85ed0b98",
+   "png_bytes": 3687468,
+   "prompt": "Context: isolated Vulkan engine demo of a constant-gamma surface-energy membrane (B2 fixture: hexagonal fan, 6 rim vertices pinned, centre vertex on a vertical rail, gamma=1 J/m^2). Prior review round (contrast-01): the membrane centre was locatable but its height was visually INCONCLUSIVE. Fixed camera. The membrane renders pale against a dark scene.\nState: initial: energy=2.62500000 J, centre=[0, 0, 0.125], accepted_id=17560123212910228982, render_id=4702197819130933928.\nAnswer with numbered items only:\n1. Describe the central object in this image (shape, extent, position).\n2. Is there a single worst visual defect (tearing, clipping, absence,\n   wrong colors, overlay text obscuring the object)? Name it or say none.\n3. Where is the brightest compact feature? (clock-face position + fraction from centre)",
+   "response": "1. A small, flat, low‑poly hexagonal membrane (six‑sided fan) in pale gray/white with a soft highlight on one upper facet; it spans roughly 250 px wide by 80 px tall, sits near the horizontal centre of the frame and slightly above the vertical midpoint, with a faint darker hexagonal shadow directly beneath it.\n2. None (no tearing, clipping, absence, wrong colors, or overlay text obscuring the object).\n3. The highlight on the upper‑right facet of the membrane — about the 1–2 o'clock position relative to the object's centre, roughly 0.3 of its radius from that centre."
+  },
+  {
+   "label": "mid",
+   "energy": 2.62088251,
+   "centre": [
+    0,
+    0,
+    0.11499998
+   ],
+   "accepted_id": 17324252307501387563,
+   "render_id": 5305837627925416825,
+   "png": "docs\\evidence\\gpu_demo_recovery\\dyad_20260909T055752.518134Z\\dyad_mid.png",
+   "png_sha": "aab289649c2fd111e341658b469c13e653b54926221ba518ccb51a2656122ff7",
+   "png_bytes": 3687468,
+   "prompt": "Context: isolated Vulkan engine demo of a constant-gamma surface-energy membrane (B2 fixture: hexagonal fan, 6 rim vertices pinned, centre vertex on a vertical rail, gamma=1 J/m^2). Prior review round (contrast-01): the membrane centre was locatable but its height was visually INCONCLUSIVE. Fixed camera. The membrane renders pale against a dark scene.\nState: mid: energy=2.62088251 J, centre=[0, 0, 0.11499998], accepted_id=17324252307501387563, render_id=5305837627925416825.\nAnswer with numbered items only:\n1. Describe the central object in this image (shape, extent, position).\n2. Is there a single worst visual defect (tearing, clipping, absence,\n   wrong colors, overlay text obscuring the object)? Name it or say none.\n3. Where is the brightest compact feature? (clock-face position + fraction from centre)",
+   "response": "1. A small, flat, pale grey‑lavender hexagonal patch (the membrane fan) lies nearly horizontal in the middle of the frame; seen at a grazing angle it reads as a thin, slightly irregular six‑sided polygon about 250 px wide and ~60 px tall (~10–12 % of frame width), centred horizontally and sitting just above mid‑height, with a faint darker shadow/reflection directly beneath it.\n2. None (no tearing, clipping, missing geometry, wrong colours, or overlay text is visible).\n3. Brightest compact feature = the white specular highlight on the membrane's upper‑right face: clock position ≈ 2 o'clock from the object's centre, at roughly 0.5 of the distance to its right rim (about halfway between centre and edge)."
+  },
+  {
+   "label": "final",
+   "energy": 2.59807611,
+   "centre": [
+    0,
+    0,
+    1.90596523e-07
+   ],
+   "accepted_id": 16501489447187382864,
+   "render_id": 12983548845491599170,
+   "png": "docs\\evidence\\gpu_demo_recovery\\dyad_20260909T055752.518134Z\\dyad_final.png",
+   "png_sha": "c73a2c7ab15a30211e844cea84b79382522e5d81f7ad5667c7df89e2cd01a517",
+   "png_bytes": 3687468,
+   "prompt": "Context: isolated Vulkan engine demo of a constant-gamma surface-energy membrane (B2 fixture: hexagonal fan, 6 rim vertices pinned, centre vertex on a vertical rail, gamma=1 J/m^2). Prior review round (contrast-01): the membrane centre was locatable but its height was visually INCONCLUSIVE. Fixed camera. The membrane renders pale against a dark scene.\nState: final: energy=2.59807611 J, centre=[0, 0, 1.90596523e-07], accepted_id=16501489447187382864, render_id=12983548845491599170.\nAnswer with numbered items only:\n1. Describe the central object in this image (shape, extent, position).\n2. Is there a single worst visual defect (tearing, clipping, absence,\n   wrong colors, overlay text obscuring the object)? Name it or say none.\n3. Where is the brightest compact feature? (clock-face position + fraction from centre)",
+   "response": "1. A small, pale‑gray flat membrane (the hexagonal fan) seen at a grazing angle, appearing as an irregular polygonal disc with a bright whitish core and a slightly darker rim on its right edge; it spans roughly 250 px wide by 70–80 px tall, sits in the dead horizontal centre of the frame and just above the vertical midline, with a faint dark shadow directly beneath it.\n2. None (no tearing, clipping, absence, wrong‑colour, or overlay‑text defect is visible; the membrane is intact and correctly pale against the dark scene).\n3. The white core of the membrane – essentially at frame centre, marginally above it: clock position ≈ 12 o'clock, fraction from centre ≈ 0.05–0.1 (i.e. within ~10 % of half‑height)."
+  }
+ ]
+}
