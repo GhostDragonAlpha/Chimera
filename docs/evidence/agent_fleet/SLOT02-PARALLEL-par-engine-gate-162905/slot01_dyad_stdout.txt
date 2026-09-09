@@ -1,0 +1,27 @@
+[dyad] gpu_demo_raised_gamma0: calling senses.watch_one ...
+[dyad] gpu_demo_raised_gamma0: OK
+[dyad] gpu_demo_final_relaxed: calling senses.watch_one ...
+[dyad] gpu_demo_final_relaxed: OK
+evidence: C:\Users\allen\AppData\Local\Temp\opencode\chimera_pub\docs\evidence\membrane_gpu_demo_runtime\20260909T213015.720582Z\dyad_gpu_demo_review.json
+
+===== gpu_demo_raised_gamma0 =====
+**1. What is visibly distinguishable**
+- A near‑black dark‑gray background fills most of the frame.
+- A solid **blue horizontal bar** spans the full width at the very top, and a thin black line runs along the bottom edge. These read as window/UI chrome or status strips, *not* as 3D scene content (no depth, no shading).
+- In the centre is a light‑gray hexagonal mesh drawn with white edge lines (the fill + edge‑contrast pass). It is rendered as **six triangles meeting at an interior point**, i.e. a shallow "tent"/dome rather than a perfectly flat plate: the six spokes converge to a central vertex and the shading runs from a brighter band near that centre down to a darker front face, which is what gives it a 3‑D (non‑flat) look.
+- Behind/around the membrane is a **larger, much darker gray hexagon** whose vertical extent is far greater than its width relative to the membrane's. It has no grid lines, ticks, or labels on it. I cannot tell from this image alone whether it is meant to be a floor, a reference plane in the rim plane, a backdrop, or a shadow; its foreshortening looks *less* extreme than the membrane's, so it does not look coplanar with the membrane — but that is an inference, not something I can confirm.
+- No other panels, axes, scale bars, text, or grid are visible.
+
+**2. Locating centre vertex and outer rim**
+- **Centre vertex:** the point where all six white radial edges converge, near the middle of the light‑gray shape (slightly above its vertical midline). The wireframe pass is what pins it down — without the spokes you could not tell which interior pixel is the centre.
+- **Outer rim:** the hexagonal perimeter of the light‑gray mesh; its six corners/points are the outer vertices. Again, the white outline + the fact that exactly six edges terminate there identify it as the rim.
+- The darker background hexagon is *not* the rim — it is larger and differently foreshortened, so I treat it as separate scene content (or backdrop), not as the membrane's boundary.
+
+
+===== gpu_demo_final_relaxed =====
+**1. What is visibly distinguishable.** The frame is dominated by a near‑uniform charcoal/dark‑gray background with no visible grid lines, axis triad, scale bar, or text labels in the 3D region. In the centre there is one bright silver/light‑gray flat hexagonal plate (the membrane) drawn with thin white wire edges: a closed six‑edge outer loop plus internal spokes that read as one horizontal line through the left/right vertices and four diagonals forming an "X", all meeting at a single interior point — i.e. the rim edges plus the six centre‑to‑vertex triangle edges. Behind/around it is a second, much darker hexagonal shape of the same flat‑top orientation but larger on screen and centred lower; this could be a ground‑plane reference or a cast shadow of the lifted membrane, but its identity is not labelled and it is barely above background contrast (uncertain). At the very top there is a solid bright‑blue horizontal bar spanning the full width, and a thin black strip along the bottom edge. No other panels, objects, or scene content are visible.
+
+**2. Locating centre vs rim.** The outer rim is the bright six‑vertex hexagon outline (corners roughly at left ≈(600,437), top‑left ≈(925,318), top‑right ≈(1345,318), right ≈(1670,437), bottom‑right ≈(1510,553), bottom‑left ≈(760,553)). The centre vertex is the point where all internal spokes converge, at about (1135,437) — the crossing of the X and the horizontal spoke. What tells me this: in a six‑triangle fan every interior edge runs from an outer vertex to the shared centre, so their common intersection *is* the centre, while the closed 6‑edge loop is the rim. (This is inference from topology + wire pass; there is no explicit marker dot on the centre.)
+
+**3. Is the centre's offset resolvable?** **Not resolvable.** The membrane renders as a clean planar hexagon with smooth flat shading and no apex highlight, no facet‑orientation shading differences, and no silhouette bulge that would betray a raised centre. A recorded offs
+
