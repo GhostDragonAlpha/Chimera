@@ -390,6 +390,30 @@ review. Evidence: `docs/evidence/membrane_gpu_demo_runtime/
 143341, 143341-Z records) and the EDGE-01 section of
 `docs/THE_GPU_DEMO01_RUNTIME_RECORD.md`.
 
+**UNIVERSAL-AGENT WORKFLOW BOOTSTRAP — audit recorded (2026-09-09).** Full
+record: `docs/THE_WORKFLOW_BOOTSTRAP_AUDIT.md` (at `60b77671`). Findings:
+the fleet's pieces EXIST as law and practice — master list (sole claim/record
+surface), `ChimeraEngine/AGENT_PROTOCOL.md` (session contract; its CURRENT
+TASK slot is stale pre-2026-08-23 content), `docs/THE_DYAD_PROTOCOL.md`
+(parallel-operation rules: ports, kill discipline, binary identity),
+`Chimera/core/membrane.py` (the proven isolation primitive), five physical
+review checkouts on E: demonstrating the slot pattern — but the fleet itself
+(the five-slot registry, claim/lease semantics, integration ownership,
+cross-slot evidence pointers, universal prompt) is PROPOSED ONLY, with no
+committed artifact. The EDGE-01 disagreement is recorded there as the
+concrete claimed-setting → observed-contradiction → source-inspection →
+correction → rerun-with-state-identity example. ONE blocking architectural
+choice is named for the operator: per-slot private session stores vs a
+shared namespaced store — it determines claim/lease mechanics, evidence
+placement, and the recovery step, and the universal prompt cannot honestly
+be announced ready until it is decided (the 2026-07-14 shared-live-graph
+incident vs the single-writer success of the master list/dyad log are the
+recorded evidence on each side). Next choice-independent task: write the
+slot registry for the five observed lanes as a RECORD (paths, ports, build
+dirs, owners) and reconcile `tools/orient.py` (verified live in this
+checkout, prints the correct HEAD) with the universal prompt's recovery
+step. Universal prompt is NOT announced ready.
+
 **GLM-RELAX-GPU-01 GATE PASS (2026-09-08).** Continue point `c38ffe84…`.
 Preregistered first (`docs/THE_RELAX_GPU01_PREREGISTRATION.md`):
 STATEMENT — the compiled verified kernels (frozen-certified face-eval,
