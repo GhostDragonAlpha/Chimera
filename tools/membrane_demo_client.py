@@ -221,6 +221,11 @@ def gate(base: str, b2: dict, outdir: Path) -> int:
                                     "E": s.get("energy")})
 
     def capture(label: str) -> None:
+        # The fixed demo camera is SET, not assumed: the sidecar camera record
+        # must describe a camera the engine actually applied.
+        cam = json.dumps({"cam_radius": 6.0, "cam_theta": 0.0,
+                          "cam_phi": 0.7}).encode()
+        http_req(base, "POST", "/camera", cam)
         st, png = http_req(base, "GET", "/frame")
         if st != 200 or png[:8] != b"\x89PNG\r\n\x1a\n":
             fail(f"capture.{label}", {"http": st})

@@ -1,0 +1,17 @@
+{
+ "utc": "20260909T133605.258311Z",
+ "command": "gate",
+ "rc": 1,
+ "checks": [
+  {
+   "name": "POST /membrane_demo_bin",
+   "verdict": "CRASH",
+   "detail": {
+    "cause": "ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)"
+   },
+   "utc": "20260909T133605.258241Z"
+  }
+ ],
+ "fixture": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub\\docs\\evidence\\gpu_fixtures\\b2",
+ "fixture_sha256": "3e264f49929f216b6bc07024f9b7ca0a5d96ca166b8114df5198776420642c77"
+}
