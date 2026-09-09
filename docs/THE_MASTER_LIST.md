@@ -2150,3 +2150,7 @@ Live task ownership now flows through the fleet control plane (`tools/agent_flee
 - **Next executable task**: provision slot-01's engine build/runtime from the
   verified demo engine path, then run one GPU numerical task through a slot
   runtime with its own port and evidence root.
+
+## SLOT01-E2E (universal dispatch, single slot)
+
+One bounded GPU membrane verification task executed end-to-end through the fleet control plane on slot-01 (task `slot01-membrane-143008`): claim, clean slot build, runtime gate PASS, real interruption + failover recovery at generation 4, DYAD executed, fetch-verified publication. SINGLE-SLOT VERIFIED; not a five-slot deployment.

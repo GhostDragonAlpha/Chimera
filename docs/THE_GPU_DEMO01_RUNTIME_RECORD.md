@@ -329,3 +329,15 @@ artifact — recorded as an observation, not blocking.)
 - Human acceptance: NOT CLAIMED — the phi-0.35 pair is the one to review.
 - The visual loop opened by GLM-DYAD-01 is CLOSED for this demo.
 
+
+---
+
+# GLM-SLOT01-E2E — slot-01 end-to-end through the fleet control plane (2026-09-09)
+
+- Task `slot01-membrane-143008` on the fleet registry (integration-kind, slot-01); base f9a4623e4ee8; evidence dir 20260909T193041.370670Z.
+- Built clean from the slot worktree head f9a4623e4ee8; exe sha256 26fff49b9ee1; spv sha256 71b5f8d37acf; shader source blob 4f7a356e34cd (provenance verified against the tested revision).
+- Runtime numerical gate (edge-contrast presentation, phi 0.35 radius 3.0): init=PASS, init.energy_vs_fixture=PASS, init.centre_z=PASS, doubling.energy=PASS, doubling.force=PASS, gamma_back_to_1=PASS, gamma_back.energy=PASS, step1=PASS, step1.descends=PASS, run=PASS, run.terminal=INFO, capture.final_relaxed.status=PASS, capture.final_relaxed=PASS, reset=PASS, reset.restore=PASS, reject=PASS, reject.refused=PASS, gamma0_step=PASS, gamma0.stationary=PASS, capture.raised_gamma0.status=PASS, capture.raised_gamma0=PASS.
+- Interruption drill: worker client terminated post-checkpoint; registry failover to standby01; zombie write refused; GPU reservation retained until verified drain (port 8101 free); worktree reconciled at f9a4623e4ee8; reassigned at generation 4.
+- DYAD: executed per THE_DYAD_PROTOCOL (served model qwen3.8-27b-nvfp4-mtp; one image per call; raw responses in dyad_gpu_demo_review.json).
+- Capture association remains CONDITIONAL per GLM-WINDOW-02 (accepted_state_id linkage is the strongest implemented linkage; competing-writer exclusion is not proven).
+- Human acceptance: NOT CLAIMED. GPU-driven claim unchanged (compute drives the accepted state; presentation findings are render-path facts).
