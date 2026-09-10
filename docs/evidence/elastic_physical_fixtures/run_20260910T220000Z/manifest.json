@@ -1,0 +1,28 @@
+{
+  "outputs": [
+    "docs\\evidence\\elastic_physical_fixtures\\run_20260910T220000Z\\patch_8x4_shear.json",
+    "docs\\evidence\\elastic_physical_fixtures\\run_20260910T220000Z\\trisingle_stretch.json"
+  ],
+  "packet_version": "elastic-physical-fixtures/v1",
+  "source_run": "docs\\evidence\\elastic_foundation\\fixtures\\v1\\run_20260908T231140Z",
+  "verification": [
+    {
+      "all_ok": true,
+      "finite": true,
+      "fixture": "trisingle_stretch",
+      "full_corner_equal": true,
+      "full_energy_equal": true,
+      "full_vertex_equal": true,
+      "source_npz_sha256": "2cb83077485447909e22e4322152bdfd8baa835f43dea973604a111024035ded"
+    },
+    {
+      "all_ok": true,
+      "finite": true,
+      "fixture": "patch_8x4_shear",
+      "full_corner_equal": true,
+      "full_energy_equal": true,
+      "full_vertex_equal": true,
+      "source_npz_sha256": "73aaad4a030e7a60b418b07f819a61abe6ac4344c97fee64e23aaa35e7533fd7"
+    }
+  ]
+}
