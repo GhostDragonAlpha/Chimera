@@ -1,11 +1,9 @@
 # One prompt for every agent
 
-**DISPATCH STATUS: PROTOTYPE LIVE (2026-09-09) — the loop in this document is
-implemented and demonstrated end-to-end (see
-`docs/evidence/agent_fleet/BOOTSTRAP_LIVE-122537/`). Universal dispatch to
-other models still waits on Alan's explicit go: slot engines are unbuilt, the
-supervisor steps are launcher-performed, and publication bypass cannot be
-technically prevented. Existing explicit assignments continue.**
+**Current assignments, qualification, provisioning and leadership come from the
+live controller.** The 2026-09-09 bootstrap demonstration is historical evidence
+(`docs/evidence/agent_fleet/BOOTSTRAP_LIVE-122537/`), not a current readiness or
+dispatch decision. Alan's current explicit assignments remain authoritative.
 
 Give any provider/model the same instruction:
 
@@ -15,8 +13,12 @@ Give any provider/model the same instruction:
 > your owned milestones, or claim eligible work within your approved capacity.
 > Keep every action tied to its task, branch, worktree and claim generation.
 > Work autonomously through derivation, implementation, tests, corrections and
-> required runtime/DYAD verification. Checkpoint evidence and submit for lead
-> integration. If qualified and ready, offer leadership recovery; follow the
+> required runtime/DYAD verification. Workers checkpoint evidence, submit review,
+> and open their own task PRs targeting `astra/gait-capture`. Slot 1 periodically
+> checks all open PRs and owns their review, follow-up and authorized integration,
+> following `docs/THE_AGENT_FLEET.md`'s PR workflow. Use cheaper subagents for
+> suitable bounded work; retain responsibility for their results. If qualified
+> and ready, offer leadership recovery; follow the
 > controller's current epoch, never appoint yourself from a timeout. Complete
 > useful independent work before reporting an exact blocker. Do not invent
 > access, ownership, acceptance or permissions.
@@ -77,10 +79,13 @@ Alan's engine and other workers' processes; no unloading their model or killing
 an unknown process. Missing runtime/vision access stays NOT_TESTED.
 
 Submit checkpoint and review with the exact claim generation and task branch.
-Review submission is not acceptance. The lead reviews; the trusted broker
-publishes through a task PR targeting `astra/gait-capture`. Never push master,
-force-push or write protected build files. Follow current granted commit/push
-rights; this prompt does not give a worker integration credentials.
+Workers push their task branch and open their own PR targeting
+`astra/gait-capture`, with the reviewed head, tests and evidence. Slot 1 checks
+the GitHub queue periodically; workers do not need Alan to relay each PR.
+Follow the [PR workflow](THE_AGENT_FLEET.md#pull-request-workflow) for ownership,
+corrections and integration. Review submission is not acceptance. Never push
+master, force-push or write protected build files. Task PR publication does not
+grant workers merge rights or permission to use another agent's credentials.
 
 ## Recovery and leadership
 
