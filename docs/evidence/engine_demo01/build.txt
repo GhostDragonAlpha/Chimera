@@ -1,0 +1,66 @@
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  1>Checking Build System
+  Compiling compute.glsl -> compute.glsl.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/compute.glsl
+  Compiling floor.frag -> floor.frag.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/floor.frag
+  Compiling floor.vert -> floor.vert.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/floor.vert
+  Compiling frost_decode.comp -> frost_decode.comp.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/frost_decode.comp
+  Compiling gait.comp -> gait.comp.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/gait.comp
+  Compiling hinge.comp -> hinge.comp.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/hinge.comp
+  Compiling joints.comp -> joints.comp.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/joints.comp
+  Compiling membrane_demo.comp -> membrane_demo.comp.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/membrane_demo.comp
+  Compiling render.frag -> render.frag.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/render.frag
+  Compiling render.vert -> render.vert.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/render.vert
+  Compiling render_tri.frag -> render_tri.frag.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/render_tri.frag
+  Compiling render_tri.vert -> render_tri.vert.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/render_tri.vert
+  Compiling render_tri_edge.frag -> render_tri_edge.frag.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/render_tri_edge.frag
+  Compiling render_tri_frost.frag -> render_tri_frost.frag.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/render_tri_frost.frag
+  Compiling render_tri_shadow.frag -> render_tri_shadow.frag.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/render_tri_shadow.frag
+  Compiling render_tri_shadow.vert -> render_tri_shadow.vert.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/render_tri_shadow.vert
+  Compiling skin.comp -> skin.comp.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/skin.comp
+  Compiling sort.comp -> sort.comp.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/sort.comp
+  Compiling ui.frag -> ui.frag.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/ui.frag
+  Compiling ui.vert -> ui.vert.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/ui.vert
+  Compiling volp.comp -> volp.comp.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/volp.comp
+  Compiling water_color.comp -> water_color.comp.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/water_color.comp
+  Compiling water_depth.comp -> water_depth.comp.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/water_depth.comp
+  Compiling water_occ.comp -> water_occ.comp.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/water_occ.comp
+  Compiling water_vis.comp -> water_vis.comp.spv
+  E:/ChimeraWork/slot-01/ChimeraEngine/engine/shaders/water_vis.comp
+  Building Custom Rule E:/ChimeraWork/slot-01/ChimeraEngine/engine/CMakeLists.txt
+  Building Custom Rule E:/ChimeraWork/slot-01/ChimeraEngine/engine/CMakeLists.txt
+  main.cpp
+  engine.cpp
+  physics.cpp
+  http_server.cpp
+  ui.cpp
+  vulkan_surface_win32.cpp
+  Generating Code...
+  chimera_engine.vcxproj -> E:\ChimeraWork\slot-01\.tmp\engine_build\Release\chimera_engine.exe
+  Building Custom Rule E:/ChimeraWork/slot-01/ChimeraEngine/engine/CMakeLists.txt

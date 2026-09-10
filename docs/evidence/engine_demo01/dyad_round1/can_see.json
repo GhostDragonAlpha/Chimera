@@ -1,0 +1,6 @@
+{
+  "can_see": true,
+  "served_model": "qwen3.8-27b-nvfp4-mtp",
+  "reason": null,
+  "finish_reason": "stop"
+}

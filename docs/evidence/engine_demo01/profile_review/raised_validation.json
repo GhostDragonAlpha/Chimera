@@ -1,0 +1,14 @@
+{
+  "verdict": "consistent_snapshot",
+  "reasons": [],
+  "accepted_state_ids": [
+    17560123212910228982,
+    17560123212910228982
+  ],
+  "render_submission_identity": "unbound",
+  "render_state_ids_present": [
+    0,
+    0
+  ],
+  "physics_certified": false
+}

@@ -1,0 +1,39 @@
+{
+  "action": "Initialize B2 actual pointer click",
+  "panel_pid": 32024,
+  "hit_hwnd": 5837412,
+  "point": [
+    181,
+    193
+  ],
+  "after": {
+    "ok": true,
+    "active": true,
+    "iteration": 0,
+    "accepted": 0,
+    "trials": 0,
+    "energy": 2.625,
+    "energy_initial": 2.625,
+    "terminal_state": "",
+    "centre": [
+      0,
+      0,
+      0.125
+    ],
+    "centre_force": [
+      0,
+      2.98023224e-08,
+      -0.428571433
+    ],
+    "accepted_state_id": 17560123212910228982,
+    "render_state_id": 0,
+    "last_control": "init",
+    "material_snapshot": {
+      "gamma_admitted_f64": 1,
+      "gamma_uploaded_f32": 1,
+      "unit": "J/m^2",
+      "wu_to_m": 1.0
+    }
+  },
+  "unix": 1789055927.6960883
+}

@@ -1,0 +1,181 @@
+{
+  "identity": {
+    "source_head": "7d3601e7d9e04019cc3794ccf0a9738627c9fd71",
+    "worktree": "E:\\ChimeraWork\\slot-01",
+    "exe": "E:\\ChimeraWork\\slot-01\\.tmp\\engine_runtime\\demo01\\chimera_engine.exe",
+    "exe_sha256": "a661fba147b3b7f840fa3505f6ae4e44f4e0f5ab1e4bc401c658aba6b7cfa687",
+    "shader_sha256": "71b5f8d37acff921ea249c74ade6d4074d79ea80d39bf03d66488f1c47c3898f",
+    "shader_source_sha256": "45e7e679c0acbd388c8608b5a443d0297799aa292f10d0510b4073a5b125e72f",
+    "runtime": "E:\\ChimeraWork\\slot-01\\.tmp\\engine_runtime\\demo01",
+    "port": 8101,
+    "protected_build_used": false,
+    "gpu_context": "Functional shared-hardware run; RTX4090 memory used21806 of24564MiB before start, utilization37%; resident eye preserved. Not performance certification."
+  },
+  "base": "http://127.0.0.1:8101",
+  "runner_sha256": "9f5a79bfd7abee3ff5e4c56059967f8bbd64b8f865ae45b20347f9f1abf3e24d",
+  "comparison": "exact serialized initialization fields",
+  "checks": [
+    {
+      "name": "zero_gamma_then_reset",
+      "before_reset": {
+        "ok": true,
+        "active": true,
+        "iteration": 0,
+        "accepted": 0,
+        "trials": 0,
+        "energy": 0,
+        "energy_initial": 2.625,
+        "terminal_state": "",
+        "centre": [
+          0,
+          0,
+          0.125
+        ],
+        "centre_force": [
+          0,
+          0,
+          0
+        ],
+        "accepted_state_id": 17560123212910228982,
+        "render_state_id": 0,
+        "last_control": "gamma_admitted",
+        "material_snapshot": {
+          "gamma_admitted_f64": 0,
+          "gamma_admitted_f64_hex": "see_admission_input",
+          "gamma_uploaded_f32": 0,
+          "gamma_uploaded_f32_hex": "see_float32_input",
+          "unit": "J/m^2",
+          "wu_to_m": 1.0
+        }
+      },
+      "after_reset": {
+        "ok": true,
+        "active": true,
+        "iteration": 0,
+        "accepted": 0,
+        "trials": 0,
+        "energy": 2.625,
+        "energy_initial": 2.625,
+        "terminal_state": "",
+        "centre": [
+          0,
+          0,
+          0.125
+        ],
+        "centre_force": [
+          0,
+          0,
+          0
+        ],
+        "accepted_state_id": 17560123212910228982,
+        "render_state_id": 0,
+        "last_control": "reset",
+        "material_snapshot": {
+          "gamma_admitted_f64": 1,
+          "gamma_uploaded_f32": 1,
+          "unit": "J/m^2",
+          "wu_to_m": 1.0
+        }
+      },
+      "mismatched": [
+        "centre_force"
+      ],
+      "verdict": "FAIL"
+    },
+    {
+      "name": "step_then_reset",
+      "before_reset": {
+        "ok": true,
+        "active": true,
+        "iteration": 1,
+        "accepted": 1,
+        "trials": 1,
+        "energy": 2.62457323,
+        "energy_initial": 2.625,
+        "terminal_state": "",
+        "centre": [
+          0,
+          0,
+          0.123999998
+        ],
+        "centre_force": [
+          0,
+          -2.98023224e-08,
+          -0.425212026
+        ],
+        "accepted_state_id": 13045020052590168641,
+        "render_state_id": 0,
+        "last_control": "accepted",
+        "material_snapshot": {
+          "gamma_admitted_f64": 1,
+          "gamma_uploaded_f32": 1,
+          "unit": "J/m^2",
+          "wu_to_m": 1.0
+        }
+      },
+      "after_reset": {
+        "ok": true,
+        "active": true,
+        "iteration": 0,
+        "accepted": 0,
+        "trials": 0,
+        "energy": 2.625,
+        "energy_initial": 2.625,
+        "terminal_state": "",
+        "centre": [
+          0,
+          0,
+          0.125
+        ],
+        "centre_force": [
+          0,
+          -2.98023224e-08,
+          -0.425212026
+        ],
+        "accepted_state_id": 17560123212910228982,
+        "render_state_id": 0,
+        "last_control": "reset",
+        "material_snapshot": {
+          "gamma_admitted_f64": 1,
+          "gamma_uploaded_f32": 1,
+          "unit": "J/m^2",
+          "wu_to_m": 1.0
+        }
+      },
+      "mismatched": [
+        "centre_force"
+      ],
+      "verdict": "FAIL"
+    }
+  ],
+  "initial": {
+    "ok": true,
+    "active": true,
+    "iteration": 0,
+    "accepted": 0,
+    "trials": 0,
+    "energy": 2.625,
+    "energy_initial": 2.625,
+    "terminal_state": "",
+    "centre": [
+      0,
+      0,
+      0.125
+    ],
+    "centre_force": [
+      0,
+      2.98023224e-08,
+      -0.428571433
+    ],
+    "accepted_state_id": 17560123212910228982,
+    "render_state_id": 0,
+    "last_control": "init",
+    "material_snapshot": {
+      "gamma_admitted_f64": 1,
+      "gamma_uploaded_f32": 1,
+      "unit": "J/m^2",
+      "wu_to_m": 1.0
+    }
+  },
+  "passed": false
+}
