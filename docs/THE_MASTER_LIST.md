@@ -21,6 +21,14 @@ submission and a passing demo do not constitute completion of the Master list.
 Slot 1 maintains a dependency-aware supply of executable tasks for available
 workers and resolves missing task contracts when no eligible work is admitted.
 
+The Master list is a living scope, not a frozen checklist. Add requirements
+discovered through implementation, testing, agent review and Alan's game needs,
+with stable IDs, dependencies, acceptance gates and provenance. Preserve the
+history and reasons when splitting, replacing or retiring a task; do not delete
+unfinished requirements or weaken their gates to manufacture completion.
+Workers reread current shared direction during their sessions and between
+milestones; completed evidence remains tied to the revision and scope tested.
+
 Alan also requires the **entire Master list** in the controller catalogue,
 including all 240 linked roadmap cards and the legacy task rows below, with
 source coverage, IDs, dependencies and evidence preserved. Importing the
