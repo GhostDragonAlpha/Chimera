@@ -115,7 +115,7 @@ def main() -> int:
                 "continuation": {"hierarchy_complete": False,
                                  "route": "canonical_master_controller",
                                  "authority": "controller_snapshot",
-                                 "action": "read AGENT_START and obtain an authenticated controller snapshot before continuing",
+                                 "action": "obtain an authoritative controller snapshot before continuing",
                                  "owner": None, "eligible_tasks": None}}, indent=2, sort_keys=True))
         else:
             print(f"UNORIENTED -- {head}")
@@ -130,7 +130,7 @@ def main() -> int:
             print(f"  verdict lane tracked at this HEAD: {verdict_commit} "
                   f"(commit-identity recorded; reads commit-safe per R4)")
         if a.allow_synthetic:
-            synthetic = Engine(STORE)
+            synthetic = Engine()
             if a.json:
                 # emitted above with oriented:false; append nothing further
                 return 0
@@ -142,7 +142,7 @@ def main() -> int:
             return 0
         return 3 if not store["exists"] else 4
 
-    eng = Engine(STORE)
+    eng = Engine()
     if a.json:
         continuation = eng.continuation()
         out = {

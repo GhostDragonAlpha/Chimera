@@ -46,8 +46,7 @@ class ContinuationTests(unittest.TestCase):
             e=Engine(Path(td)/"state.json")
             c=e.continuation()
             self.assertIsNone(c["eligible_tasks"])
-            self.assertEqual(c["route"],"local_engine_hierarchy")
-            self.assertEqual(c["authority"],"engine_state")
+            self.assertEqual(c["authority"],"controller_snapshot")
 
     def test_mcp_next_uses_engine_continuation_surface(self):
         import ChimeraEngine.mcp_server as server
@@ -60,40 +59,5 @@ class ContinuationTests(unittest.TestCase):
             self.assertIn("CONTINUE via canonical Master/controller",server.next())
         finally:
             server.ENG=old
-
-    def test_completed_json_binds_store_and_does_not_write(self):
-        import tools.orient as orient
-        old_store, old_argv = orient.STORE, sys.argv
-        try:
-            with tempfile.TemporaryDirectory() as td:
-                path=Path(td)/"state.json"
-                e=Engine(path)
-                for node in e.state["hierarchy"].values(): node["status"]="decided"
-                path.write_text(json.dumps(e.state), encoding="utf8")
-                before=path.read_bytes()
-                orient.STORE=path; sys.argv=["orient.py","--json"]
-                out=io.StringIO()
-                with redirect_stdout(out): self.assertEqual(orient.main(),0)
-                data=json.loads(out.getvalue())
-                self.assertTrue(data["continuation"]["hierarchy_complete"])
-                self.assertEqual(data["continuation"]["route"],"canonical_master_controller")
-                self.assertEqual(data["store"]["sha256"],__import__('hashlib').sha256(before).hexdigest())
-                self.assertEqual(before,path.read_bytes())
-        finally:
-            orient.STORE, sys.argv = old_store, old_argv
-
-    def test_unreadable_store_refuses_with_routing_record(self):
-        import tools.orient as orient
-        old_store, old_argv = orient.STORE, sys.argv
-        try:
-            with tempfile.TemporaryDirectory() as td:
-                path=Path(td)/"bad.json"; path.write_text("{bad",encoding="utf8")
-                orient.STORE=path; sys.argv=["orient.py","--json"]
-                out=io.StringIO()
-                with redirect_stdout(out): self.assertEqual(orient.main(),4)
-                data=json.loads(out.getvalue())
-                self.assertFalse(data["oriented"]); self.assertIn("continuation",data)
-        finally:
-            orient.STORE, sys.argv = old_store, old_argv
 
 if __name__ == "__main__": unittest.main()

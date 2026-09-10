@@ -358,20 +358,11 @@ class Engine:
         whose task/owner facts must come from the canonical Master/controller snapshot.
         """
         complete = self.next_term() is None
-        if not complete:
-            return {
-                "hierarchy_complete": False,
-                "route": "local_engine_hierarchy",
-                "authority": "engine_state",
-                "action": "continue the local next term and its gates",
-                "owner": None,
-                "eligible_tasks": None,
-            }
         return {
             "hierarchy_complete": complete,
             "route": "canonical_master_controller",
             "authority": "controller_snapshot",
-            "action": "read AGENT_START and the canonical Master/controller snapshot; inspect owned milestones first, then claim an authenticated eligible READY task",
+            "action": "read canonical Master and controller READY tasks; continue an eligible task",
             "owner": None,
             "eligible_tasks": None,
         }

@@ -1,11 +1,3 @@
-## START HERE — continuation after any local milestone
-
-Read `AGENT_START`/the current session packet and the canonical controller snapshot first. Inspect
-this worker's owned milestones, then claim an authenticated eligible `READY` task. A local
-hierarchy completion is only a resolution-level milestone; it never ends the project. The
-`continuation` record from `python tools/orient.py --json` identifies this routing without
-fabricating an owner or task. See `docs/THE_HIERARCHY_CONTINUATION.md`.
-
 # Chimera â€” agent onboarding (the ONE onboarding; paste-in)
 
 <!-- CHIMERA-LAW -->
