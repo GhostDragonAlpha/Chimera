@@ -16,7 +16,12 @@ from master_catalogue import (SCHEMA, build_records, parse_master_rows,
 BASE = 'a' * 40
 HEAD = 'b' * 40
 MERGED = 'c' * 40
-CURRENT_MASTER_FIXTURE = HERE / 'fixtures' / 'MASTER_CURRENT_EXCERPT_20260910.md'
+# gen-5: the verbatim current-Master fixture is committed alongside the
+# parser so the no-silent-omission control is pinned to an exact source
+# revision (the same revision the live import reads).
+CURRENT_MASTER_FIXTURE = (HERE.parent.parent / 'docs' / 'evidence' / 'agent_fleet'
+                          / 'MASTER_CATALOGUE_SYNC'
+                          / 'MASTER_CURRENT_EXCERPT_20260910.md')
 
 
 def _sha(value):
@@ -107,11 +112,14 @@ class CatalogueTests(unittest.TestCase):
         built = build_records()
         self.assertEqual(built['coverage']['cards'], 240)
         self.assertEqual(built['coverage']['domains'], 40)
-        # gen-2 correction: the parser classifies EVERY pipe row in EVERY
-        # section; the discovered-requirements table (backticked kebab-case
-        # IDs) is captured, not counted into an opaque bucket.
-        self.assertEqual(built['coverage']['master_row_ids'], 56)
-        self.assertEqual(built['coverage']['master_row_observations'], 58)
+        # gen-4 correction: coverage is pinned to the CURRENT canonical
+        # source (spine 9022d669) and counters are recomputed at validation.
+        sv = built['source_versions']
+        self.assertEqual(sv['master']['path'].endswith('THE_MASTER_LIST.md'), True)
+        self.assertRegex(sv['master']['git_commit'] or '', r'^[0-9a-f]{40}$')
+        self.assertRegex(sv['master']['sha256'], r'^[0-9a-f]{64}$')
+        self.assertEqual(built['coverage']['master_row_ids'], 59)
+        self.assertEqual(built['coverage']['master_row_observations'], 62)
         ids = {r['id'] for r in built['master_rows']}
         for required in ('demo-studio-state-01', 'math-contract-audit-01',
                          'fleet-slot-binding-01', 'studio-grid-depth-01',
@@ -119,6 +127,18 @@ class CatalogueTests(unittest.TestCase):
                          'L1', 'B1', 'H1'):
             self.assertIn(required, ids)
         self.assertFalse(validate_payload(built))
+        # gen-4: unkeyed requirement prose (e.g. the plain B7b requirement
+        # lines and Research Annex falsifier bullets - no keyed ID) is
+        # preserved with provenance/classification, never dropped.
+        unkeyed_text = json.dumps(built['coverage']['unkeyed_requirements'])
+        self.assertIn('B7b', unkeyed_text,
+                      'the plain B7b requirement prose must be preserved')
+        self.assertTrue(built['coverage']['unkeyed_requirements'],
+                        'annex/honest-negative requirement bullets must be kept')
+        for u in built['coverage']['unkeyed_requirements']:
+            self.assertIn('line', u)
+            self.assertIn('section', u)
+            self.assertEqual(u['kind'], 'unkeyed_requirement')
         r = self.imp(built)
         self.assertEqual(r['coverage']['cards'], 240)
         d = r['digest']
@@ -305,6 +325,12 @@ class CatalogueTests(unittest.TestCase):
             rows=[row_record('B1', 'B1 | skin | main | OPEN'),
                   row_record('B1', 'B1 | skin | main | OPEN2')]
         )
+        # gen-5: the validator recomputes coverage from the records, so the
+        # duplicate-row payload must declare the HONEST count (2) or the
+        # forged-count check fires first. With the honest count, the
+        # duplicate-ID structural check is what fires.
+        row_dups['coverage']['master_row_ids'] = 2
+        row_dups['coverage']['master_row_observations'] = 2
         self.assertIn('duplicate_master_row_id:B1',
                       validate_payload(row_dups))
         cyc = payload(cards=[card_record('MATH-01', deps=('MATH-02',)),
@@ -408,6 +434,75 @@ class CatalogueTests(unittest.TestCase):
         p = payload(cards=[card_record('MATH-01')])
         p.pop('coverage')
         self.assertEqual(validate_payload(p), ['missing_catalogue_coverage'])
+
+    def test_forged_coverage_counts_refused(self):
+        # gen-4 lead finding: coverage counts were trusted from the submitter.
+        # The validator now recomputes them from the records.
+        good = payload(cards=[card_record('MATH-01'), card_record('MATH-02')],
+                       rows=[row_record('B1', 'B1 | x | y | z')])
+        self.assertEqual(validate_payload(good), [])
+        forged = json.loads(json.dumps(good))
+        forged['coverage']['cards'] = 240
+        self.assertEqual(validate_payload(forged), ['coverage_mismatch:cards'])
+        forged2 = json.loads(json.dumps(good))
+        forged2['coverage']['master_row_observations'] = 99
+        self.assertEqual(validate_payload(forged2),
+                         ['coverage_mismatch:master_row_observations'])
+        forged3 = json.loads(json.dumps(good))
+        forged3['coverage']['unresolved'] = 'nothing to see'
+        self.assertEqual(validate_payload(forged3),
+                         ['coverage_mismatch:unresolved'])
+        forged4 = json.loads(json.dumps(good))
+        forged4['coverage']['unresolved'] = [{'no': 'provenance'}]
+        self.assertEqual(validate_payload(forged4),
+                         ['malformed_coverage_unresolved'])
+
+    def test_unkeyed_requirement_capture_control(self):
+        text = ('## 9 - RESEARCH ANNEX (concepts)\n\n'
+                '- **External concept entry.** Some approach description with'
+                ' enough length to qualify as content in the record.\n'
+                '  Falsifier for us: any rule that cannot be written as a'
+                ' discrete operator is a smell, not a law.\n'
+                'Short.\n')
+        rows, extra = parse_master_rows(text)
+        self.assertEqual(len(extra['unkeyed_requirements']), 2)
+        kinds = {u['kind'] for u in extra['unkeyed_requirements']}
+        self.assertEqual(kinds, {'unkeyed_requirement'})
+        texts = ' '.join(u['text'] for u in extra['unkeyed_requirements'])
+        self.assertIn('Falsifier for us', texts)
+        self.assertNotIn('Short.', texts)
+
+    def test_new_prefix_and_new_section_controls(self):
+        # No-silent-omission control: a brand-new backticked controller ID in
+        # prose and a brand-new table row in a brand-new section must BOTH be
+        # captured with their own provenance, whatever section they live in.
+        text = ('## 99 - FRESH SECTIONS (proposed)\n\n'
+                'A brand-new task `zeta-probe-07` is proposed here, and a '
+                'brand-new section carries its own table.\n\n'
+                '### NEW LAB\n\n'
+                '| # | Item | Owner | State |\n'
+                '| --- | --- | --- | --- |\n'
+                '| omega-lab-02 | new thing | nobody | OPEN |\n')
+        rows, extra = parse_master_rows(text)
+        self.assertIn('zeta-probe-07', rows)
+        self.assertIn('omega-lab-02', rows)
+        # distinct provenance: the prose candidate is a mention, the fresh
+        # section's row is a table_row - they must not be conflated.
+        self.assertEqual(rows['zeta-probe-07']['observations'][0]['kind'],
+                         'prose_mention')
+        self.assertEqual(rows['omega-lab-02']['observations'][0]['kind'],
+                         'table_row')
+        self.assertEqual(rows['omega-lab-02']['observations'][0]['section'],
+                         '### NEW LAB')
+        self.assertEqual(extra['unresolved'], [])
+        # and a row with no recognizable ID in a fresh section is reported,
+        # never silently dropped.
+        text2 = ('### ANOTHER NEW SECTION\n\n'
+                 '| not-a-task | just a row |\n')
+        _, extra2 = parse_master_rows(text2)
+        self.assertEqual(len(extra2['unresolved']), 1)
+        self.assertEqual(extra2['unresolved'][0]['section'],
+                         '### ANOTHER NEW SECTION')
 
 
 if __name__ == '__main__':

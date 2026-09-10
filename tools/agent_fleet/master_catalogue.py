@@ -74,6 +74,8 @@ def parse_master_rows(text):
       extras['structural_rows']  separator/header rows
       extras['prose_mentions']   non-table lines naming a task ID
       extras['campaign_prose_refs']  uppercase project labels in prose
+      extras['unkeyed_requirements']  unkeyed requirement records (kept,
+                                 classified, never dropped)
     """
     lines = text.splitlines()
 
@@ -98,6 +100,7 @@ def parse_master_rows(text):
     structural = 0
     prose_mentions = []
     campaign_prose = []
+    unkeyed = []
     section = None
 
     def record(ident, observation):
@@ -167,15 +170,54 @@ def parse_master_rows(text):
                 if '`' + cand + '`' not in line:
                     campaign_prose.append({'id': cand, 'line': lineno,
                                            'class': 'prose_candidate'})
+            # Unkeyed REQUIREMENT prose (the lead's gen-4 finding): a bullet
+            # stating a requirement, result or gate with no task ID key is
+            # still content - keep it with section/line provenance, distinct
+            # from prose that mentions a keyed ID. The Research Annex's
+            # "Falsifier for us: ..." lines land here, as does any plain
+            # requirement sentence elsewhere in the document.
+            stripped = re.sub(r'`[^`]*`', '', line)  # ID-free view
+            if re.match(r'^[-*]\s+', stripped) and len(stripped) > 40:
+                unkeyed.append({'kind': 'unkeyed_requirement',
+                                'section': section, 'line': lineno,
+                                'text': line[:200],
+                                'content_sha256': _sha(line)})
+            elif re.search(r'\b(falsifier|must|require[ds]?|gate|falsif\w*)\b',
+                           stripped, re.IGNORECASE) and len(stripped) > 40:
+                unkeyed.append({'kind': 'unkeyed_requirement',
+                                'section': section, 'line': lineno,
+                                'text': line[:200],
+                                'content_sha256': _sha(line)})
     extras = {'unresolved': unresolved, 'structural_rows': structural,
               'prose_mentions': prose_mentions,
-              'campaign_prose_refs': campaign_prose}
+              'campaign_prose_refs': campaign_prose,
+              'unkeyed_requirements': unkeyed}
     return rows, extras
+
+
+def _git_commit(path):
+    """Best-effort HEAD of the tree containing `path` (None outside a repo)."""
+    import subprocess
+    try:
+        out = subprocess.run(['git', '-C', str(Path(path).parent), 'rev-parse',
+                              'HEAD'], capture_output=True, text=True,
+                             timeout=10)
+        if out.returncode == 0:
+            return out.stdout.strip() or None
+    except (OSError, ValueError):
+        pass
+    return None
 
 
 def build_records(catalog_path=DEFAULT_CATALOG, master_path=DEFAULT_MASTER,
                   catalog_text=None, master_text=None):
-    """Build the import payload from the canonical sources (read-only)."""
+    """Build the import payload from the canonical sources (read-only).
+
+    Coverage counters are computed from the emitted records and the payload
+    is VERSION-PINNED: source_versions carries path, sha256 and (best-effort)
+    git HEAD for each source, so coverage is always relative to an exact
+    source revision - never a universal claim.
+    """
     catalog_text = (catalog_text if catalog_text is not None
                     else Path(catalog_path).read_text(encoding='utf-8'))
     master_text = (master_text if master_text is not None
@@ -201,8 +243,15 @@ def build_records(catalog_path=DEFAULT_CATALOG, master_path=DEFAULT_MASTER,
                                                         ensure_ascii=False)),
                       'card': card})
     rows, extra = parse_master_rows(master_text)
+    catalog_sha = _sha(catalog_text)
+    master_sha = _sha(master_text)
     return {'schema': SCHEMA, 'cards': cards,
             'master_rows': [rows[k] for k in sorted(rows)],
+            'source_versions': {
+                'catalog': {'path': str(catalog_path), 'sha256': catalog_sha,
+                            'git_commit': _git_commit(catalog_path)},
+                'master': {'path': str(master_path), 'sha256': master_sha,
+                           'git_commit': _git_commit(master_path)}},
             'coverage': {'cards': len(cards),
                          'domains': len(data.get('domains', [])),
                          'master_row_ids': len(rows),
@@ -211,7 +260,8 @@ def build_records(catalog_path=DEFAULT_CATALOG, master_path=DEFAULT_MASTER,
                          'unresolved': extra['unresolved'],
                          'structural_rows': extra['structural_rows'],
                          'prose_mentions': extra['prose_mentions'],
-                         'campaign_prose_refs': extra['campaign_prose_refs']}}
+                         'campaign_prose_refs': extra['campaign_prose_refs'],
+                         'unkeyed_requirements': extra['unkeyed_requirements']}}
 
 
 def validate_payload(payload):
@@ -226,6 +276,27 @@ def validate_payload(payload):
         return ['empty_catalogue_payload']
     if not isinstance(payload.get('coverage'), dict):
         return ['missing_catalogue_coverage']
+    # Coverage counters are RECOMPUTED from the records, never trusted from
+    # the submitter (lead gen-4 finding: forged coverage counts were accepted).
+    coverage = payload['coverage']
+    computed = {
+        'cards': len([c for c in cards if isinstance(c, dict)]),
+        'master_row_ids': len([r for r in rows if isinstance(r, dict)
+                               and isinstance(r.get('id'), str)]),
+        'master_row_observations': sum(
+            len(r.get('observations') or []) for r in rows
+            if isinstance(r, dict)),
+    }
+    for key, want in computed.items():
+        if coverage.get(key) != want:
+            return ['coverage_mismatch:' + key]
+    unres = coverage.get('unresolved')
+    if not isinstance(unres, list):
+        return ['coverage_mismatch:unresolved']
+    for u in unres:
+        if (not isinstance(u, dict) or type(u.get('line')) is not int
+                or not isinstance(u.get('row'), str)):
+            return ['malformed_coverage_unresolved']
     errors = []
     by_id = set()
     row_ids = set()
