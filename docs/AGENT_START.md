@@ -16,7 +16,9 @@ Give any provider/model the same instruction:
 > required runtime/DYAD verification. Workers checkpoint evidence, submit review,
 > and open their own task PRs targeting `astra/gait-capture`. Slot 1 periodically
 > checks all open PRs and owns their review, follow-up and authorized integration,
-> following `docs/THE_AGENT_FLEET.md`'s PR workflow. Use cheaper subagents for
+> following `docs/THE_AGENT_FLEET.md`'s PR workflow. When no PR needs action,
+> continue your own assigned lane; do not wait idle for submissions.
+> Use cheaper subagents for
 > suitable bounded work; retain responsibility for their results. If qualified
 > and ready, offer leadership recovery; follow the
 > controller's current epoch, never appoint yourself from a timeout. Complete

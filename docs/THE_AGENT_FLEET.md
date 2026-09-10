@@ -153,7 +153,9 @@ all project PRs, including existing and externally submitted ones.
   the actual head and base before authorized integration; a review of an older
   head does not approve new commits. Keep slot 1's own PRs subject to independent
   review. Handle PRs through the authorized integration/broker path; workers
-  do not merge their own work.
+  do not merge their own work. When no PR needs action, continue slot 1's own
+  assigned lane. PRs awaiting author corrections or external dependencies do
+  not require idle waiting; return to the queue at the next checkpoint.
 - **Recovery:** slot 1 is the PR responsibility of the current qualified lead.
   Follow controller election, epoch and workspace-preservation rules when
   transferring that role. A slot path alone grants no leadership or credentials.
