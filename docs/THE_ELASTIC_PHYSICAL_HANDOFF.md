@@ -1,6 +1,6 @@
 # Elastic physical fixture handoff
 
-Status: CPU prerequisite packet v2 complete; GPU admission remains open.
+Status: CPU prerequisite candidate has passing observed tests; roundoff-bound derivation and GPU admission remain open.
 
 The rejected first candidate and its raw outputs are preserved under
 `docs/evidence/elastic_physical_fixtures/superseded-rejected-v1-20260910_*`. Its output
@@ -31,5 +31,6 @@ python tools/elastic_foundation/physical_fixtures.py verify --manifest docs/evid
 ```
 
 Both commands returned zero; the verification report records both fixtures `ok: true` and
-`gpu_acceptance: OPEN`. No f32 GPU tolerance, ABI, performance, or real-material claim is made.
-Future GPU admission must run the separate GPU_HANDOFF Stage C checks.
+`gpu_acceptance: OPEN`. These are observed CPU results, not proof that the preregistered
+gamma bound is derived or that a GPU consumes this packet. The new packet's GPU ABI, ordering,
+and binary32 budget are open; the legacy GPU_HANDOFF Stage C does not certify this packet.

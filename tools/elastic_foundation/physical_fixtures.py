@@ -16,8 +16,8 @@ from typing import Any
 
 import numpy as np
 
-_candidate_repo = os.environ.get("CHIMERA_FIXTURE_REPO")
-if _candidate_repo and _candidate_repo not in sys.path:
+_candidate_repo = os.environ.get("CHIMERA_FIXTURE_REPO") or str(Path(__file__).resolve().parents[2])
+if _candidate_repo not in sys.path:
     sys.path.insert(0, _candidate_repo)
 
 from tools.elastic_foundation.geometry import build_rest_geometry
