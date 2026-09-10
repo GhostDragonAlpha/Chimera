@@ -82,12 +82,17 @@ def payload(cards=(), rows=(), master_text=None, catalog_text=None):
     if not rows and master_text is None:
         # No master-plane records: an empty partition is the honest shape.
         partition = {}
-    manifest = {'catalog': source_manifest(catalog_text or '{}', 'fixture',
-                                           None, retained=False),
+    if catalog_text is None:
+        # gen-6 contract: the SAME catalog text feeds both the manifest hash
+        # and the payload's catalog_text field (validator recomputes).
+        catalog_text = (json.dumps({'tasks': [c['card'] for c in cards]},
+                                   ensure_ascii=False) if cards else '{}')
+    manifest = {'catalog': source_manifest(catalog_text, 'fixture',
+                                           None, retained=True),
                 'master': source_manifest(master_text, 'fixture',
                                           None, retained=bool(rows or
                                                               master_text is not None))}
-    return {'schema': SCHEMA, 'cards': list(cards), 'master_rows': list(rows),
+    payload_body = {'schema': SCHEMA, 'cards': list(cards), 'master_rows': list(rows),
             'source_manifest': manifest,
             'coverage': {'cards': len(cards),
                          'domains': len({c['domain'] for c in cards}),
@@ -107,6 +112,8 @@ def payload(cards=(), rows=(), master_text=None, catalog_text=None):
                          'version_pin': {
                              'master_sha256': manifest['master']['sha256'],
                              'catalog_sha256': manifest['catalog']['sha256']}}}
+    payload_body['catalog_text'] = catalog_text
+    return payload_body
 
 
 class CatalogueTests(unittest.TestCase):
@@ -166,7 +173,9 @@ class CatalogueTests(unittest.TestCase):
         self.assertRegex(sm['master']['git_commit'] or '', r'^[0-9a-f]{40}$')
         self.assertRegex(sm['master']['sha256'], r'^[0-9a-f]{64}$')
         self.assertTrue(sm['master']['retained'])
-        self.assertFalse(sm['catalog']['retained'])
+        # gen-6: the catalog JSON text is ALSO retained verbatim and its
+        # manifest hash is recomputed by the validator.
+        self.assertTrue(sm['catalog']['retained'])
         self.assertEqual(built['coverage']['master_row_ids'], 65)
         self.assertEqual(built['coverage']['master_row_observations'], 68)
         ids = {r['id'] for r in built['master_rows']}
@@ -545,6 +554,45 @@ class CatalogueTests(unittest.TestCase):
         no_pin = json.loads(json.dumps(built))
         no_pin['coverage'].pop('version_pin')
         self.assertEqual(validate_payload(no_pin), ['missing_version_pin'])
+
+    def test_gen6_catalog_manifest_is_verified(self):
+        # Lead gen-6 finding: the catalog entry of the manifest (hash and
+        # git_commit) could be altered without rejection because the
+        # validator never checked it against retained source.
+        built = payload(cards=[card_record('MATH-01')])
+        self.assertEqual(validate_payload(built), [])
+        self.assertTrue(built['source_manifest']['catalog']['retained'])
+        # altered catalog hash is refused
+        forged = json.loads(json.dumps(built))
+        forged['source_manifest']['catalog']['sha256'] = 'f' * 64
+        self.assertEqual(validate_payload(forged),
+                         ['source_manifest_catalog_hash_mismatch'])
+        # altered version_pin catalog sha is refused
+        forged2 = json.loads(json.dumps(built))
+        forged2['coverage']['version_pin']['catalog_sha256'] = 'e' * 64
+        self.assertEqual(validate_payload(forged2), ['missing_version_pin'])
+        # a tampered catalog_text is refused: the manifest hash (recomputed
+        # from the submitted text) fires first, and the card records would
+        # no longer reproduce from it either.
+        forged3 = json.loads(json.dumps(built))
+        catalog = json.loads(forged3['catalog_text'])
+        catalog['tasks'][0]['status'] = 'READY'
+        forged3['catalog_text'] = json.dumps(catalog)
+        self.assertEqual(validate_payload(forged3),
+                         ['source_manifest_catalog_hash_mismatch'])
+        # missing catalog text with cards present is refused
+        forged4 = json.loads(json.dumps(built))
+        forged4.pop('catalog_text')
+        self.assertEqual(validate_payload(forged4), ['missing_catalog_text'])
+        # git_commit fields are format-constrained (null or full hex sha)
+        forged5 = json.loads(json.dumps(built))
+        forged5['source_manifest']['catalog']['git_commit'] = 'not-a-sha'
+        self.assertEqual(validate_payload(forged5), ['malformed_git_commit'])
+        # an honest full-sha git_commit passes
+        ok = json.loads(json.dumps(built))
+        ok['source_manifest']['catalog']['git_commit'] = 'a' * 40
+        ok['source_manifest']['master']['git_commit'] = 'b' * 40
+        self.assertEqual(validate_payload(ok), [])
 
     def test_gen5_exhaustive_partition_no_silent_omissions(self):
         # Falsifier 3: dropping or tampering with ANY line - specifically the

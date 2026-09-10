@@ -239,17 +239,20 @@ PARTITION_CLASSES = ('header', 'structural', 'task_row', 'cell_reference',
                      'unresolved', 'prose', 'blank')
 
 
-def source_manifest(text, path, git_commit=None, retained=False):
-    """Manifest computed FROM the retained source text (never supplied).
+def source_manifest(text, path, git_commit=None, retained=False,
+                    canonical=True):
+    r"""Manifest computed FROM the retained source text (never supplied).
 
-    The retained form is the LF-normalized reconstruction of the source
-    ('\\n'.join(text.splitlines())) - the same normalization
-    validate_payload applies to the submitted line partition, so hashes are
-    comparable on both sides regardless of the file's trailing newline.
+    canonical=True (master document) hashes the LF-normalized form
+    ('\n'.join(text.splitlines())) - the same normalization
+    validate_payload applies to the submitted line partition.
+    canonical=False (catalog JSON, which travels verbatim in the
+    payload) hashes the exact submitted bytes.
     """
-    canonical = '\n'.join(text.splitlines())
-    return {'path': str(path), 'sha256': _sha(canonical),
-            'bytes': len(canonical.encode('utf-8')),
+    if canonical:
+        text = '\n'.join(text.splitlines())
+    return {'path': str(path), 'sha256': _sha(text),
+            'bytes': len(text.encode('utf-8')),
             'lines': len(text.splitlines()),
             'git_commit': git_commit, 'retained': bool(retained)}
 
@@ -299,7 +302,8 @@ def build_records(catalog_path=DEFAULT_CATALOG, master_path=DEFAULT_MASTER,
     master_manifest = source_manifest(master_text, master_path,
                                       _git_commit(master_path), retained=True)
     catalog_manifest = source_manifest(catalog_text, catalog_path,
-                                       _git_commit(catalog_path), retained=False)
+                                       _git_commit(catalog_path), retained=True,
+                                       canonical=False)
     return {'schema': SCHEMA, 'cards': cards,
             'master_rows': [rows[k] for k in sorted(rows)],
             # source_versions (gen<=4) carried submitter-supplied hashes that
@@ -308,6 +312,7 @@ def build_records(catalog_path=DEFAULT_CATALOG, master_path=DEFAULT_MASTER,
             # source at validation time instead.
             'source_manifest': {'master': master_manifest,
                                 'catalog': catalog_manifest},
+            'catalog_text': catalog_text,
             'coverage': {'cards': len(cards),
                          'domains': len({c['domain'] for c in cards
                                          if isinstance(c.get('domain'), str)}),
@@ -415,6 +420,63 @@ def validate_payload(payload):
             return ['source_manifest_consistency:' + field]
     if manifest['master'].get('retained') is not True:
         return ['source_manifest_master_not_retained']
+    # gen-6 finding: the catalog entry of the manifest was trusted as
+    # submitted (its hash and git_commit could be altered without
+    # rejection). Verify it against the retained catalog JSON text.
+    catalog_text = payload.get('catalog_text')
+    if not isinstance(catalog_text, str):
+        return ['missing_catalog_text']
+    cat_manifest = manifest.get('catalog')
+    if not isinstance(cat_manifest, dict):
+        return ['missing_source_manifest']
+    if (cat_manifest.get('sha256') != _sha(catalog_text)
+            or cat_manifest.get('retained') is not True):
+        return ['source_manifest_catalog_hash_mismatch']
+    if cards:
+        # The card records must reproduce EXACTLY from the retained catalog
+        # source - same projection build_records applies.
+        try:
+            catalog_data = json.loads(catalog_text)
+        except ValueError:
+            return ['malformed_catalog_text']
+        if (not isinstance(catalog_data, dict)
+                or not isinstance(catalog_data.get('tasks'), list)):
+            return ['malformed_catalog_text']
+        rebuilt_cards = []
+        for index, card in enumerate(catalog_data['tasks']):
+            if not isinstance(card, dict):
+                return ['malformed_catalog_text']
+            cid = card.get('id')
+            if not isinstance(cid, str) or not cid.strip():
+                return ['malformed_catalog_text']
+            rebuilt_cards.append({'plane': 'card', 'id': cid,
+                                  'domain': card.get('domain'),
+                                  'title': card.get('title'),
+                                  'status': card.get('status'),
+                                  'depends_on': card.get('depends_on', []),
+                                  'content_sha256': _sha(json.dumps(
+                                      card, sort_keys=True,
+                                      ensure_ascii=False)),
+                                  'card': card})
+        # The record CONTENT must reproduce exactly from the retained
+        # catalog source; source.path claims must name the manifest path
+        # with an integer index (provenance, checked separately).
+        strip = lambda recs: [{k: v for k, v in r.items() if k != 'source'}
+                              for r in recs]
+        if strip(rebuilt_cards) != strip(cards):
+            return ['catalog_cards_mismatch']
+        for c in cards:
+            src = c.get('source')
+            if (not isinstance(src, dict)
+                    or src.get('path') != cat_manifest.get('path')
+                    or type(src.get('index')) is not int):
+                return ['catalog_cards_mismatch']
+    # Advisory git_commit provenance fields are format-constrained: absent,
+    # null, or a full hex sha (gen-6 finding - they were freely alterable).
+    for entry in (manifest['master'], cat_manifest):
+        gc = entry.get('git_commit')
+        if gc is not None and not re.fullmatch('[0-9a-f]{40}', str(gc)):
+            return ['malformed_git_commit']
     # Coverage counters are RECOMPUTED from the records, never trusted from
     # the submitter (lead gen-4 finding: forged coverage counts were accepted;
     # gen-5 falsifier 2: coverage.domains=999 was accepted).
@@ -459,7 +521,9 @@ def validate_payload(payload):
     pin = coverage.get('version_pin')
     if (not isinstance(pin, dict)
             or pin.get('master_sha256') != manifest['master'].get('sha256')
-            or not re.fullmatch('[0-9a-f]{64}', str(pin.get('master_sha256', '')))):
+            or not re.fullmatch('[0-9a-f]{64}', str(pin.get('master_sha256', '')))
+            or pin.get('catalog_sha256') != cat_manifest.get('sha256')
+            or not re.fullmatch('[0-9a-f]{64}', str(pin.get('catalog_sha256', '')))):
         return ['missing_version_pin']
     errors = []
     by_id = set()
