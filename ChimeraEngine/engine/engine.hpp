@@ -39,7 +39,7 @@ public:
     uint32_t particle_count() const { return n_; }
     // Nothing to draw: frame() early-returns in this state — the main loop must
     // pace itself instead of spinning a core at millions of FPS (B5).
-    bool idle() const { return n_ == 0 && !has_mesh_; }
+    bool idle() const { return n_ == 0 && !has_mesh_ && !md_active_; }
 
     // ── membrane streaming (the C++ engine is the emission target) ──────────────
     bool load_membrane(const std::string& term, const std::vector<float>& pos, uint32_t count);

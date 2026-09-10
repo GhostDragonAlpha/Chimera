@@ -1,0 +1,10 @@
+{
+  "pid": 38668,
+  "manifest": "E:\\ChimeraWork\\slot-03\\.tmp\\engine_runtime\\studio_final\\manifest.json",
+  "files": {
+    "E:\\ChimeraWork\\slot-03\\ChimeraEngine\\engine\\engine.cpp": "8d6ff5f10229e3364107d843e59611f9adf7ad1bc262dd3c111c84c720d4d49e",
+    "E:\\ChimeraWork\\slot-03\\ChimeraEngine\\engine\\ui.cpp": "ae8d0a4e7aa457a6a6684726727e194dc13e5b1b94b382f6fd8ff3e06d1ffb1e",
+    "E:\\ChimeraWork\\slot-03\\.tmp\\engine_runtime\\studio_final\\chimera_engine.exe": "706c8e84de393525dc1a01f438c841135f0e59b6e2af90371ac94dbd59dae9ab",
+    "E:\\ChimeraWork\\slot-03\\.tmp\\engine_runtime\\studio_final\\shaders\\membrane_demo.spv": "71b5f8d37acff921ea249c74ade6d4074d79ea80d39bf03d66488f1c47c3898f"
+  }
+}
