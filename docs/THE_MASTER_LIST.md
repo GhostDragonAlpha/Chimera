@@ -53,6 +53,15 @@ and dependency eligibility remain in the controller.
 | `demo-studio-state-01` | The captured native Studio labels a visible active GPU demo as "no mesh loaded" and infers eye-offline from a missing local log. [Window evidence](evidence/engine_demo01/native_window_gen4.png). | After `engine-demo-01` integrates, bind displayed state to the actual active demo and distinguish an unavailable evidence feed from a tested eye failure; verify numerically and through runtime/DYAD. |
 | `gov01-evidence-reconcile-01` — slot binding gap | Slot 5 inherited a historical provisioning record on a new claim. Controller feedback `1e2ea0f99e63d12478804913` preserves the observation. | Safely bind provisioning to the current task/generation before editing that checkout; preserve old work and test stale-binding refusal. |
 | `math-contract-audit-01` — preparation for `MATH-01` | Inventory existing unit/frame contracts and demonstrated conversion gaps before admitting implementation. Controller task created at revision 189. | Source/evidence matrix and minimal implementation envelope; preserve canonical `MATH-01` dependency on `GOV-01`. An audit alone does not accept the card. |
+| `fleet-slot-binding-01` | Source provisioning can retain an earlier task's binding and prevent safe recovery of the current GOV claim. Follow-on to feedback `1e2ea0f99e63d12478804913`; controller task created at revision 218. | After catalogue integration, test current-task/generation binding and supervisor-only preserved/drained recovery in isolated registries. No direct live database edits. |
+| `studio-grid-depth-01` | DYAD interprets the Studio reference grid crossing the membrane as additional physical faces, while the frozen B2 geometry has six. Feedback `ffd13d484e32cd09dad00399`; task created at revision 219. | After the Studio-state repair, derive and test grid/depth/projection ownership with unchanged accepted geometry and numerical gates; retain actual window/DYAD comparisons. |
+| `fleet-controller-upgrade-01` | The existing launcher lacks a coordinated source-transition barrier and complete process-identity/rollback gates. [Inspected requirements](THE_CONTROLLER_TRANSITION.md). | After catalogue and slot-binding repairs, rehearse same-store upgrade/rollback with stale-ack, wrong-process and held-resource refusals before any controlled live deployment. |
+
+Controller source deployment also requires a controlled transition, separately
+from code integration. [Transition requirements](THE_CONTROLLER_TRANSITION.md)
+record the missing quiescence/identity/recovery gates; they are not a claim that
+the running controller has been upgraded. These discoveries add work without
+retiring existing catalogue cards or their acceptance dependencies.
 
 **Proposed operational amendment: adoption does not deploy the fleet.** Preserve all
 historical sections below, including the superseded Luna-only roster. Alan's
