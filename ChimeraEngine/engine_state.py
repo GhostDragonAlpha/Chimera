@@ -98,6 +98,12 @@ GATE_FIX = {
 # ledger survives a story migration and its proofs were verified under the old pointer regime.)
 GRANDFATHERED_TERMS = set()
 
+CONTINUATION_ACTION = (
+    "read docs/AGENT_START.md and the current canonical Master/controller snapshot; "
+    "continue an owned milestone first; only if approved capacity remains, request an "
+    "authenticated claim for an eligible READY task"
+)
+
 
 def _now() -> float:
     return time.time()
@@ -345,6 +351,9 @@ class Engine:
 
     def next_action(self, name) -> str:
         if name is None:
+            local = self.next_term()
+            if local is not None:
+                return f"continue local term `{local}` and its gates"
             return self.continuation_message()
         for g, ok, d in self.gates(name):
             if not ok:
@@ -357,28 +366,27 @@ class Engine:
         The engine cannot inspect or claim the fleet controller; it emits a routing instruction
         whose task/owner facts must come from the canonical Master/controller snapshot.
         """
-        complete = self.next_term() is None
-        if not complete:
+        local = self.next_term()
+        if local is not None:
             return {
                 "hierarchy_complete": False,
                 "route": "local_engine_hierarchy",
                 "authority": "engine_state",
-                "action": "continue the local next term and its gates",
+                "action": f"continue local term `{local}` and its gates",
                 "owner": None,
                 "eligible_tasks": None,
             }
         return {
-            "hierarchy_complete": complete,
+            "hierarchy_complete": True,
             "route": "canonical_master_controller",
             "authority": "controller_snapshot",
-            "action": "read AGENT_START and the canonical Master/controller snapshot; inspect owned milestones first, then claim an authenticated eligible READY task",
+            "action": CONTINUATION_ACTION,
             "owner": None,
             "eligible_tasks": None,
         }
 
     def continuation_message(self) -> str:
-        return ("LOCAL HIERARCHY COMPLETE at this resolution. CONTINUE via the canonical "
-                "Master/controller: read its current READY tasks and continue an eligible task. "
+        return ("LOCAL HIERARCHY COMPLETE at this resolution. " + CONTINUATION_ACTION + ". "
                 "This local completion does not end the project; no owner or task is claimed here.")
 
     # --- tool verbs (the MCP surface wraps these) --------------------------------
