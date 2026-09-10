@@ -1,0 +1,27 @@
+Change Dir: 'E:/ChimeraWork/slot-01/.tmp/engine_local_control_gen1/build_mingw'
+
+Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/ProgramData/mingw64/mingw64/bin/mingw32-make.exe -f Makefile
+"C:\Program Files\CMake\bin\cmake.exe" -SE:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1 -BE:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1\build_mingw --check-build-system CMakeFiles\Makefile.cmake 0
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_progress_start E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1\build_mingw\CMakeFiles E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1\build_mingw\\CMakeFiles\progress.marks
+C:/ProgramData/mingw64/mingw64/bin/mingw32-make.exe  -f CMakeFiles\Makefile2 all
+mingw32-make[1]: Entering directory 'E:/ChimeraWork/slot-01/.tmp/engine_local_control_gen1/build_mingw'
+C:/ProgramData/mingw64/mingw64/bin/mingw32-make.exe  -f CMakeFiles\engine_local_control_harness.dir\build.make CMakeFiles/engine_local_control_harness.dir/depend
+mingw32-make[2]: Entering directory 'E:/ChimeraWork/slot-01/.tmp/engine_local_control_gen1/build_mingw'
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_depends "MinGW Makefiles" E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1 E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1 E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1\build_mingw E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1\build_mingw E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1\build_mingw\CMakeFiles\engine_local_control_harness.dir\DependInfo.cmake "--color=" engine_local_control_harness
+mingw32-make[2]: Leaving directory 'E:/ChimeraWork/slot-01/.tmp/engine_local_control_gen1/build_mingw'
+C:/ProgramData/mingw64/mingw64/bin/mingw32-make.exe  -f CMakeFiles\engine_local_control_harness.dir\build.make CMakeFiles/engine_local_control_harness.dir/build
+mingw32-make[2]: Entering directory 'E:/ChimeraWork/slot-01/.tmp/engine_local_control_gen1/build_mingw'
+[ 33%] Building CXX object CMakeFiles/engine_local_control_harness.dir/harness.cpp.obj
+C:\ProgramData\mingw64\mingw64\bin\g++.exe  @CMakeFiles/engine_local_control_harness.dir/includes_CXX.rsp -std=gnu++17 -MD -MT CMakeFiles/engine_local_control_harness.dir/harness.cpp.obj -MF CMakeFiles\engine_local_control_harness.dir\harness.cpp.obj.d -o CMakeFiles\engine_local_control_harness.dir\harness.cpp.obj -c E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1\harness.cpp
+[ 66%] Building CXX object CMakeFiles/engine_local_control_harness.dir/E_/ChimeraWork/slot-01/ChimeraEngine/engine/http_server.cpp.obj
+C:\ProgramData\mingw64\mingw64\bin\g++.exe  @CMakeFiles/engine_local_control_harness.dir/includes_CXX.rsp -std=gnu++17 -MD -MT CMakeFiles/engine_local_control_harness.dir/E_/ChimeraWork/slot-01/ChimeraEngine/engine/http_server.cpp.obj -MF CMakeFiles\engine_local_control_harness.dir\E_\ChimeraWork\slot-01\ChimeraEngine\engine\http_server.cpp.obj.d -o CMakeFiles\engine_local_control_harness.dir\E_\ChimeraWork\slot-01\ChimeraEngine\engine\http_server.cpp.obj -c E:\ChimeraWork\slot-01\ChimeraEngine\engine\http_server.cpp
+[100%] Linking CXX executable engine_local_control_harness.exe
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\engine_local_control_harness.dir\link.txt --verbose=1
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\engine_local_control_harness.dir/objects.a
+C:\ProgramData\mingw64\mingw64\bin\ar.exe qc CMakeFiles\engine_local_control_harness.dir/objects.a @CMakeFiles\engine_local_control_harness.dir\objects1.rsp
+C:\ProgramData\mingw64\mingw64\bin\g++.exe -Wl,--whole-archive CMakeFiles\engine_local_control_harness.dir/objects.a -Wl,--no-whole-archive -o engine_local_control_harness.exe -Wl,--out-implib,libengine_local_control_harness.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\engine_local_control_harness.dir\linkLibs.rsp
+mingw32-make[2]: Leaving directory 'E:/ChimeraWork/slot-01/.tmp/engine_local_control_gen1/build_mingw'
+[100%] Built target engine_local_control_harness
+mingw32-make[1]: Leaving directory 'E:/ChimeraWork/slot-01/.tmp/engine_local_control_gen1/build_mingw'
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_progress_start E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1\build_mingw\CMakeFiles 0
+

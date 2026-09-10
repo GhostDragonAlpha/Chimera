@@ -29,3 +29,39 @@ The API is local development control, not a multiplayer endpoint. This change
 does not add a LAN opt-in or a firewall exception. Remote/LAN control would
 require a separately declared authenticated interface contract. Preserve the
 operator process, protected build artifacts, and all failed evidence.
+
+## Executed results
+
+The network change is committed at `c2de9df4`; the combined build also includes
+the integrated Studio correction. Evidence is in
+`docs/evidence/engine_local_control/`.
+
+- Two fresh-path MSVC native executables bound only `127.0.0.1:8101`, verified
+  through Windows socket enumeration. Frozen B2 initialization by POST and
+  status by GET succeeded, reporting active state and energy 2.625 J. This is
+  control-path evidence, not a new numerical certificate.
+- Neither fresh-path launch produced an observed `PickerHost` process during
+  launch and later checks. The previously observed Security prompt used that
+  host. This supports the tested no-new-popup observation; it cannot guarantee
+  behavior under every policy or identify every possible future notification.
+- Connections through the two machine-owned non-loopback addresses timed out.
+  They did not connect. The independent CPU harness's stricter expectation of
+  an immediate connection-refused error **did not pass**; its failed result and
+  preregistration are preserved. Timeout alone does not establish the reason
+  for rejection; OS listener enumeration establishes the loopback binding.
+- A separate fresh MinGW executable using the actual HTTP server passed local
+  GET and POST and bound only `127.0.0.1:49173`. Its source, build attempts,
+  binary hashes and commands are retained. No Vulkan was used in that harness.
+
+No firewall setting or rule was changed, and no Security dialog was operated.
+The existing operator executable was inspected but not replaced or restarted;
+already-running old builds retain their old listener until rebuilt/relaunched.
+Owned native test processes and the CPU harness were verified drained.
+
+`prompt_before.json` preserves the original empty output from a no-match process
+query; later snapshots are explicit JSON arrays. It is not a successful JSON
+verifier input or an independent universal proof that no dialog could exist.
+
+The server's existing shutdown lifecycle also needs repair: `stop()` joins its
+accept thread before closing the listening socket. `engine-http-lifecycle-01`
+records that separate requirement; it was not silently changed in this fix.

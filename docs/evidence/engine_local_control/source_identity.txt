@@ -1,0 +1,5 @@
+Baseline requested at task start: 513724db295a893f3f57e2b10d3972c34be1f114
+Source implementation commit now present: c2de9df4 (Bind embedded engine control to IPv4 loopback)
+Current shared checkout after later merge: 91d5c683db0bbac773591917b8c157a834014d8d
+Branch: astra/tasks/engine-local-control-01
+The harness was compiled from the source bytes identified by source_binary_hashes.json; the http_server.cpp/.hpp bytes are unchanged across the later merge.

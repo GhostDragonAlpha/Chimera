@@ -1,0 +1,11 @@
+{
+  "pid": 36596,
+  "executable": "E:\\ChimeraWork\\slot-01\\.tmp\\engine_runtime\\local_control_01\\chimera_engine.exe",
+  "listeners": [
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 8101
+    }
+  ],
+  "security_prompt_processes": []
+}

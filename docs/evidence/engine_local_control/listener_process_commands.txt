@@ -1,0 +1,3 @@
+Get-Process -Id 31672 | Select-Object Id,ProcessName,Path,MainWindowTitle | Format-List
+Get-NetTCPConnection -State Listen -LocalPort 49173 | Select-Object LocalAddress,LocalPort,OwningProcess,State | Format-Table -AutoSize
+Get-Process | Where-Object { $_.ProcessName -match 'PickerHost' -or $_.MainWindowTitle -match 'PickerHost' } | Select-Object Id,ProcessName,Path,MainWindowTitle | Format-Table -AutoSize

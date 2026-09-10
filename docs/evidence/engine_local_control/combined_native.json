@@ -1,0 +1,164 @@
+{
+  "pid": 31708,
+  "source_head": "91d5c683db0bbac773591917b8c157a834014d8d",
+  "manifest": "E:\\ChimeraWork\\slot-01\\.tmp\\engine_runtime\\local_control_combined_01\\manifest.json",
+  "exe_sha256": "f491e179e0935bec937ff0228c2433b2dc60a24a1cd252ea108876d19e0549d4",
+  "http_source_sha256": "510f2849f70b61656a9d1e93dd33ef59b850a062bd9c4d8e5a88809f542fe493",
+  "post_init": {
+    "ok": true,
+    "active": true,
+    "iteration": 0,
+    "accepted": 0,
+    "trials": 0,
+    "energy": 2.625,
+    "energy_initial": 2.625,
+    "terminal_state": "",
+    "centre": [
+      0,
+      0,
+      0.125
+    ],
+    "centre_force": [
+      0,
+      2.98023224e-08,
+      -0.428571433
+    ],
+    "accepted_state_id": 17560123212910228982,
+    "render_state_id": 0,
+    "last_control": "init",
+    "material_snapshot": {
+      "gamma_admitted_f64": 1,
+      "gamma_uploaded_f32": 1,
+      "unit": "J/m^2",
+      "wu_to_m": 1.0
+    }
+  },
+  "get_status": {
+    "ok": true,
+    "active": true,
+    "iteration": 0,
+    "accepted": 0,
+    "trials": 0,
+    "energy": 2.625,
+    "energy_initial": 2.625,
+    "terminal_state": "",
+    "centre": [
+      0,
+      0,
+      0.125
+    ],
+    "centre_force": [
+      0,
+      2.98023224e-08,
+      -0.428571433
+    ],
+    "accepted_state_id": 17560123212910228982,
+    "render_state_id": 0,
+    "last_control": "init",
+    "material_snapshot": {
+      "gamma_admitted_f64": 1,
+      "gamma_uploaded_f32": 1,
+      "unit": "J/m^2",
+      "wu_to_m": 1.0
+    }
+  },
+  "scene": {
+    "left_mode": 0,
+    "inspect_row": -1,
+    "rows": [
+      {
+        "id": "body",
+        "label": "body",
+        "detail": "no mesh",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "overlay",
+        "label": "overlay",
+        "detail": "none",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "show",
+        "label": "show",
+        "detail": "t=0.32s x1.00",
+        "state": 1,
+        "toggleable": true
+      },
+      {
+        "id": "joints",
+        "label": "joints",
+        "detail": "0 joints",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "volp",
+        "label": "volp",
+        "detail": "no kernel",
+        "state": 1,
+        "toggleable": false
+      },
+      {
+        "id": "gait",
+        "label": "gait",
+        "detail": "steps=0 omega=7.85",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "water_clock",
+        "label": "water clock",
+        "detail": "steps_total=0 inj=0/-1",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "water_vis",
+        "label": "water vis",
+        "detail": "the field, drawn",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "frost",
+        "label": "frost",
+        "detail": "no pack",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "strain",
+        "label": "strain",
+        "detail": "no hinge",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "matter",
+        "label": "matter",
+        "detail": "needs JNT2",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "chrome",
+        "label": "chrome",
+        "detail": "the studio bar",
+        "state": 1,
+        "toggleable": true
+      },
+      {
+        "id": "membrane_demo",
+        "label": "membrane demo",
+        "detail": "6 faces, iter 0, ready",
+        "state": 1,
+        "toggleable": false
+      }
+    ],
+    "rects": [],
+    "sel_rects": []
+  }
+}
