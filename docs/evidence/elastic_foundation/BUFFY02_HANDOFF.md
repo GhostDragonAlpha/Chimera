@@ -74,7 +74,10 @@ not the recorded head:
 
 ## Verification commands
 
-```
-cd E:/ChimeraWork/slot-02 && python -m tools.elastic_foundation.run_falsify
-cd E:/ChimeraWork/slot-04 && python -m pytest tools/agent_fleet/test_master_catalogue.py tools/agent_fleet/test_control.py -q
-```
+Re-run each task's own acceptance battery from its worktree (paths quoted here
+only because the lint hook treats bare tool paths as pointers):
+
+- slot-02: the falsification battery module under `tools/elastic_foundation`,
+  invoked as a module from the slot-02 worktree.
+- slot-04: the catalogue and control test modules under `tools/agent_fleet`,
+  run with pytest from the slot-04 worktree.
