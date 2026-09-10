@@ -6,7 +6,7 @@
 #include <functional>
 #include <string>
 
-// Minimal embedded HTTP server using Winsock2.
+// Minimal IPv4-loopback-only embedded HTTP server using Winsock2.
 // No external deps — httplib is header-only but we keep this self-contained
 // for the first pass; swap to httplib later if needed.
 

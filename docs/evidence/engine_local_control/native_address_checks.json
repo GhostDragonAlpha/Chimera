@@ -1,0 +1,20 @@
+[
+  {
+    "address": "127.0.0.1",
+    "connected": true,
+    "expected": true,
+    "error": null
+  },
+  {
+    "address": "192.168.3.169",
+    "connected": false,
+    "expected": false,
+    "error": "TimeoutError: timed out"
+  },
+  {
+    "address": "172.23.64.1",
+    "connected": false,
+    "expected": false,
+    "error": "TimeoutError: timed out"
+  }
+]
