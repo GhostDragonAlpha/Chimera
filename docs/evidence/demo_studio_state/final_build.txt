@@ -1,0 +1,4 @@
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  engine.cpp
+  chimera_engine.vcxproj -> E:\ChimeraWork\slot-03\.tmp\engine_build\studio01\Release\chimera_engine.exe

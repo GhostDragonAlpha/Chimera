@@ -2528,13 +2528,13 @@ void StudioUI::build_chrome() {
                  hud_water_.inj_t, hud_water_.inj_c);
         hud_rows_.emplace_back(b);
     }
-    // THE EYE ROW (2026-09-05): the dyad's liveness, on the glass. age < 0
-    // means no log found (the lane never ran); otherwise the age of the last
+    // THE EYE ROW: local evidence age, not a service liveness probe. age < 0
+    // means no local log found; otherwise the age of the last
     // report — a growing number is a resting eye, not a dead one. Amber past
     // 10 min so a stuck lane is visible at a glance without being an alarm.
     if (hud_eye_.on) {
         if (hud_eye_.age_s < 0)
-            snprintf(b, sizeof(b), "EYE offline (no dyad log)");
+            snprintf(b, sizeof(b), "EYE local log unavailable; service status unknown");
         else if (hud_eye_.age_s < 60.0)
             snprintf(b, sizeof(b), "EYE last report %.0f s ago", hud_eye_.age_s);
         else if (hud_eye_.age_s < 3600.0)
@@ -2547,7 +2547,11 @@ void StudioUI::build_chrome() {
         // a dark chip behind each row keeps it readable over any render
         float rw = static_cast<float>(hud_rows_[i].size()) * advance_ + 16.f;
         rect(hx - 6, hy - 3, rw, lh + 6, 0.05f, 0.06f, 0.09f, 0.75f);
-        text(hx, hy, hud_rows_[i], 0.55f, 0.90f, 0.65f, 1.f);
+        if (hud_eye_.age_s < 0 && hud_rows_[i].rfind("EYE ", 0) == 0)
+            // Unknown service state uses the existing neutral tooltip ink.
+            text(hx, hy, hud_rows_[i], 0.86f, 0.88f, 0.92f, 1.f);
+        else
+            text(hx, hy, hud_rows_[i], 0.55f, 0.90f, 0.65f, 1.f);
         hy += lh + 4;
     }
 

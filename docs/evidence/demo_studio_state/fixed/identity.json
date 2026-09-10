@@ -1,0 +1,9 @@
+{
+  "pid": 31472,
+  "manifest": "E:\\ChimeraWork\\slot-03\\.tmp\\engine_runtime\\studio_fixed_01\\manifest.json",
+  "source_head": "8d72c4f36f5565aa33edf04da86d9f2d86347dc0",
+  "source_dirty": true,
+  "engine_cpp_sha256": "23adbaf944149b6adf249ff931f0a7e0b46bbef0a5c6083075646af3170fb90c",
+  "ui_cpp_sha256": "ae8d0a4e7aa457a6a6684726727e194dc13e5b1b94b382f6fd8ff3e06d1ffb1e",
+  "exe_sha256": "afce0edd970d6d7a85bed2c75196ea5c46acf39f1e6f4979e59a85d52d691d86"
+}

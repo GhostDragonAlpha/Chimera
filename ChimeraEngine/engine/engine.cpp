@@ -2496,6 +2496,13 @@ std::vector<StudioUI::SceneRow> Engine::scene_rows() {
             matter_on_.load() ? 1 : 0, joints_loaded_ && j_lbs_mode_);
     }
     add("chrome", "chrome", "the studio bar", ui_.bar_on_ ? 1 : 0, true);
+    // Append so initialization does not move existing index-based selections.
+    if (md_active_) {
+        char d[160];
+        snprintf(d, sizeof(d), "%u faces, iter %u, %s", md_nf_, md_iteration_,
+                 md_terminal_.empty() ? "ready" : md_terminal_.c_str());
+        add("membrane_demo", "membrane demo", d, 1, false);
+    }
     return rows;
 }
 
@@ -2541,6 +2548,15 @@ std::vector<std::pair<std::string, std::string>> Engine::inspect_kv(int row) {
     if (id == "body") {
         add("mesh", b(has_mesh_));
         snprintf(nb, sizeof(nb), "%u", tri_idx_count_ / 3); add("tris", nb);
+    } else if (id == "membrane_demo") {
+        add("active", b(md_active_));
+        add("law", "constant-gamma surface energy");
+        add("clock", "optimization iterations (not physical time)");
+        snprintf(nb, sizeof(nb), "%u", md_nf_); add("faces", nb);
+        snprintf(nb, sizeof(nb), "%u", md_iteration_); add("iteration", nb);
+        add("terminal", md_terminal_.empty() ? "ready" : md_terminal_);
+        snprintf(nb, sizeof(nb), "%llu", (unsigned long long)md_accepted_id_);
+        add("accepted state", nb);
     } else if (id == "overlay") {
         add("loaded", b(has_overlay_));
         snprintf(nb, sizeof(nb), "%u", ov_idx_count_ / 3); add("tris", nb);
@@ -6409,7 +6425,7 @@ void Engine::push_rig_overlay() {
 void Engine::push_grid_overlay() {
     std::vector<StudioGridLine> lines;
     lines.reserve(128);
-    ui_.set_viewport_empty(n_ == 0 && !has_mesh_);
+    ui_.set_viewport_empty(n_ == 0 && !has_mesh_ && !md_active_);
     if (!last_vp_valid_) { ui_.set_grid_lines(std::move(lines)); return; }
 
     const float R  = (g_cam.radius > 1e-3f) ? g_cam.radius : 1e-3f;
