@@ -10,9 +10,9 @@ companion window.
 and gamma `1`; Run advances one accepted request at a time, while Pause stops
 future requests and Reset restores the frozen initial state.
 
-**Falsifier:** any launch that attaches to an unowned process, any upload that
-does not receive an applied response, a UI-thread network call, or a control
-sequence that sends a step after Pause has taken effect.
+**Falsifier:** any launch that targets an occupied port or reused runtime, any
+upload that does not receive an applied response, a UI-thread network call, or
+a control sequence that sends a step after Pause has taken effect.
 
 ## Launch
 
@@ -23,25 +23,20 @@ executable and unused port:
 python tools/engine_demo.py --exe E:\path\to\chimera_engine.exe --port 8106
 ```
 
-The controller creates a sibling `demo_runtime\` directory beside the
-executable, launches with `--no-restore`, and records ownership in
-`demo_runtime\manifest.json`. It keeps the native engine window open until the
-companion window is closed. Only the `Popen` it created is terminated.
+The controller creates a fresh private runtime directory beside the
+executable, stages the exact executable and `shaders\` tree, launches with
+`--no-restore`, and records ownership in `manifest.json`. It refuses an
+occupied port or a reused runtime directory before starting anything. It keeps
+the native engine window open until the companion window is closed. Only the
+`Popen` it created is terminated; there is no attach mode.
 
-To connect the companion to an already-running, explicitly supplied runtime,
-use its manifest:
-
-```powershell
-python tools/engine_demo.py --attach E:\path\to\demo_runtime\manifest.json
-```
-
-Attach mode never terminates the process. The manifest must name the loopback
-base URL and a live runtime; a stale or malformed manifest is refused.
-
-The buttons initialize frozen B2, run one step per background request, pause
-future steps, reset, change gamma, and refresh status. The rendered membrane is
+The buttons initialize frozen B2, take one step, run one step per background
+request, pause future steps, reset, apply gamma 0/1/2 fixture controls, and
+refresh status. The rendered membrane is
 visible in the native engine window. The status panel displays iteration,
 energy, centre height, terminal state, and the last control response.
+
+Optimization iterations are control steps, not physical time.
 
 The controller uses `tools/membrane_demo_client.py::load_b2` and
 `md01_packet`; it does not define geometry, gamma, lift, or optimizer constants.

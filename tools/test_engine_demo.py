@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import subprocess
 import sys
 import threading
 import time
@@ -59,6 +60,16 @@ class FakeProcess:
 
 
 class DemoSessionTests(unittest.TestCase):
+    def test_read_only_pid_probe_does_not_kill_process(self):
+        proc = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(2)"])
+        try:
+            image = demo._pid_image(proc.pid)
+            self.assertTrue(image)
+            self.assertIsNone(proc.poll())
+        finally:
+            proc.terminate()
+            proc.wait(timeout=3)
+
     def test_pause_prevents_next_scheduled_step(self):
         transport = FakeTransport()
         messages = []
