@@ -7,7 +7,8 @@ from pathlib import Path
 import sqlite3
 import sys
 
-from control import Control, Refusal
+from control import Refusal
+from review_handoff import ReviewHandoffControl
 
 MAX_BODY=65536  # Transport policy, not a physics constant.
 
@@ -52,7 +53,7 @@ def main():
     enroll=os.environ.get('CHIMERA_FLEET_ENROLLMENT_TOKEN','')
     if not admin or not enroll:
         p.error('Set distinct supervisor/enrollment secrets outside agent worktrees; never paste secrets into prompts.')
-    ctl=Control(a.db,admin,enroll,a.root)
+    ctl=ReviewHandoffControl(a.db,admin,enroll,a.root)
     # Loopback only. Remote/WSL transport needs an explicit deployment adapter.
     server=Server(('127.0.0.1',a.port),ctl)
     print(f'Control service listening on 127.0.0.1:{server.server_port}; no engine/Git/model actions enabled.',flush=True)

@@ -2497,3 +2497,20 @@ Inspected integration `265dad9822f49c38eaba8a336e8e823c13cf96d8` and controller 
 The shutdown resource errors are a concrete open defect, not harmless warnings: the Vulkan contract requires explicitly destroyable device children to be freed before `vkDestroyDevice`. [Khronos reference](https://docs.vulkan.org/refpages/latest/refpages/source/vkDestroyDevice.html). PR27 fixes host admission/cancellation ordering and does not certify leak-free Vulkan teardown. The retained log also reports a duplicate-message limit, so ten reported objects are not a complete allocation census.
 
 The empty Studio image still shows overlapping/clipped text. It does not certify physical state visibility, gameplay, or performance. The eye's claimed black margins on the test backdrop were disproved by exact edge-column pixel values; [the retained pixel check](evidence/engine_shutdown_order/parent_runtime/owned_visual/pixel_check.json) and raw report remain available. Measured contradictions are preserved rather than used to rewrite acceptance thresholds.
+
+
+## Review slot handoff correction — 2026-09-10
+
+Controller revision 390 binds lead task `fleet-review-slot-handoff-01`, generation
+1, to slot 1. Alan requires PR submission to release execution capacity while
+review continues separately. The current service requires INTEGRATED before slot
+release and counts all REVIEW tasks against worker capacity; both prevent useful
+continued work after submission.
+
+| Stable task | Current evidence and remaining gate |
+| --- | --- |
+| `fleet-review-slot-handoff-01` | RUNNING: implement and test preserved REVIEW without slot/capacity occupancy, exact pushed PR identity, correction reclaim, recovery and integration compatibility. [Contract and preregistered falsifiers](THE_REVIEW_SLOT_HANDOFF.md). Live deployment and actual release remain pending. |
+| `fleet-client-instance-01` | Existing identity milestone remains open: concurrent tabs shared `buffy-02`, making model/tab ownership ambiguous. Alan reports the extra Buffy tab stopped. This does not identify which historical task belonged to that tab, and does not authorize revoking the surviving shared session. |
+| `window-capture-ownership-01` | PR34 at `00a556b3444fd02a3f230519fd985f9bb0316707` remains under review. Lead reproduced the exists/open evidence overwrite race in the actual extracted writer; review corrections are recorded on the PR. Preserve the successful fixture run and its honestly falsified screen-occlusion prediction. No engine/GPU certification implied. |
+
+No existing milestone is removed or marked complete by this workflow correction.
