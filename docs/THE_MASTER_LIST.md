@@ -2363,3 +2363,24 @@ unclaimed; the earlier 99-test evidence is preserved.
 Follow-up prefix regressions and a compatibility correction bring the final
 verifier suite to **119/119**. The overbroad intermediate detector's four
 failures are retained; no compatibility assertion or tolerance was weakened.
+
+## Runtime integration and discovered shutdown requirements — 2026-09-10
+
+This is an evidence checkpoint at integration revision `7616771cdc15ccfb2dd0297b6961bc0bedfea400`
+and controller revision 248, not a substitute for current claims. Historical
+observations above remain intact. The complete evolving Master and linked
+roadmap remain the goal; these bounded repairs do not certify the whole engine.
+
+| Stable task ID | Observed state / dependency | Requirement and acceptance evidence |
+|---|---|---|
+| `demo-studio-state-01` | INTEGRATED, PR21, `cde18631e43ee684bc2851d0e2bcdb09d12d99d6` | Active membrane state drives viewport/idle and an appended scene row; inspector values match the endpoint. Actual native gate: 20 PASS + 1 INFO, plus four state-transition checks. The eye label distinguishes unavailable local logs from unknown service status. [Record](THE_DEMO_STUDIO_STATE.md) preserves DYAD ambiguity; grid depth remains `studio-grid-depth-01`, not accepted material topology. |
+| `engine-local-control-01` | INTEGRATED, PR22, `7616771cdc15ccfb2dd0297b6961bc0bedfea400` | Embedded control binds IPv4 loopback. Two fresh native builds served local GET/POST and had no observed new Security prompt host. OS listener inspection proves the binding; non-loopback timeouts do **not** pass the stricter immediate-refusal predicate. [Record](THE_ENGINE_LOCAL_CONTROL.md) preserves that failure. No firewall policy changed; older binaries are not retroactively repaired. |
+| `engine-http-lifecycle-01` | RUNNING, root owner, slot 3 generation 1; depends on `engine-local-control-01` | Stop must wake quiet accept and partial-request I/O, drain owned threads/sockets, and survive repeated cycles/start failure without new external traffic. Preregister an actual Winsock CPU baseline failure and corrected tests. Reject socket ownership races, leaked threads, loopback regressions or weakened watchdog predicates. Implementation and independent review remain pending at this checkpoint. |
+| `engine-shutdown-order-01` | OPEN / dependency not integrated: `engine-http-lifecycle-01` | At the inspected source, `main.cpp` starts a local HTTP server but calls `engine.shutdown()` without explicitly stopping it; callbacks capture engine state and can wait for engine commands. The detached boot-restore thread also captures the engine. Derive admission stop, command cancellation/drain and resource destruction order, including boot restore and console workers. Reject callback access after teardown, joinable-thread destruction, false success for cancelled work or hangs requiring unrelated traffic. CPU ownership tests precede resource-admitted native window/DYAD verification. No whole-engine shutdown acceptance is claimed. |
+
+The controller stores the last row as READY with a dependency; it is not
+eligible to claim until that dependency integrates. Source integration of fleet
+fixes is still distinct from deploying them to the running controller. Catalogue
+corrections, slot binding recovery, controller transition, and GOV-01 acceptance
+remain open under their existing IDs and owners. No task is removed or marked
+complete merely because this checkpoint makes its state discoverable.
