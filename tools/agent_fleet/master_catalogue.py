@@ -21,12 +21,37 @@ SCHEMA = 'chimera-master-catalogue-v1'
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CATALOG = ROOT / 'docs/roadmap/holodeck_tasks.json'
 DEFAULT_MASTER = ROOT / 'docs/THE_MASTER_LIST.md'
-ROW_RE = re.compile(r'^\|\s*([LBH][A-Za-z]?\d+[A-Za-z0-9-]*)\s*\|')
-TRACKED = ('THE LINES', 'THE BACKLOG', 'NEXT HARD QUEUE')
+# Task-ID families found in the canonical document:
+#  - legacy row codes: L1, B13b, H13b ...
+#  - controller task IDs: kebab-case with a two-digit suffix
+#    (demo-studio-state-01, gov01-evidence-reconcile-01, ...), possibly
+#    backtick-quoted and followed by an em-dash qualifier in the same cell.
+LEGACY_ID_RE = re.compile(r'[LBH][A-Za-z]?\d+[A-Za-z0-9-]*')
+KEBAB_ID_RE = re.compile(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*-\d{2}\b')
+# Uppercase campaign/project labels (BP-ELASTIC-FOUNDATION,
+# MUSE-ROBUSTNESS-01) - recorded as references, never as row identities.
+CAMPAIGN_RE = re.compile(r'[A-Z][A-Z0-9]+(?:-[A-Z0-9]+)+')
+# Structural table rows that carry no task content.
+HEADER_CELLS = {'#', 'id', 'task', 'line'}
 
 
 def _sha(value):
     return hashlib.sha256(value.encode('utf-8')).hexdigest()
+
+
+def _cell_id(cell):
+    """Extract a task ID from a table cell, or None.
+
+    Handles backtick quoting and em-dash qualifiers
+    ("`engine-demo-01` — reset-state correction" -> engine-demo-01).
+    """
+    head = re.split(r'[—–]| -- ', cell, maxsplit=1)[0]
+    head = head.strip().strip('`').strip()
+    if LEGACY_ID_RE.fullmatch(head):
+        return head
+    if KEBAB_ID_RE.fullmatch(head):
+        return head
+    return None
 
 
 def payload_digest(payload):
@@ -34,47 +59,118 @@ def payload_digest(payload):
 
 
 def parse_master_rows(text):
-    """Return ({id: row record}, {'unresolved': [...], 'outside': n}).
+    """Return ({id: row record}, coverage extras).
 
+    EVERY pipe-table row in EVERY section is classified (task-bearing rows
+    are not gated on specific section names); rows whose first cell yields a
+    task ID (legacy L/B/H codes or backticked kebab-case controller IDs,
+    em-dash qualifiers stripped) become observations keyed by that ID.
     Repeated rows of the same ID each become one observation; nothing is
-    deduplicated. Rows inside the scoped sections that do not carry a task ID
-    are reported as unresolved mappings. Rows outside the scoped sections are
-    only counted (they are status tables, not task rows) - still not silent.
+    deduplicated. Non-task pipe rows and prose lines mentioning controller
+    task IDs are reported with section/line provenance - never silently
+    dropped:
+      extras['unresolved']       pipe rows with no recognizable task ID
+                                 (separator/header structure rows excluded)
+      extras['structural_rows']  separator/header rows
+      extras['prose_mentions']   non-table lines naming a task ID
+      extras['campaign_prose_refs']  uppercase project labels in prose
     """
-    rows = {}
-    unresolved = []
-    outside = 0
-    section = None
+    lines = text.splitlines()
 
     def separator(cells):
         return bool(cells) and all(re.fullmatch(r':?-{3,}:?', c) for c in cells)
 
-    for lineno, raw in enumerate(text.splitlines(), 1):
+    # Markdown headers precede their separator: precompute which pipe rows
+    # are headers so they are classified structurally, not as data.
+    pipe_rows = []
+    for lineno, raw in enumerate(lines, 1):
+        line = raw.strip()
+        if line.startswith('|'):
+            cells = [c.strip() for c in line.strip('|').split('|')]
+            pipe_rows.append((lineno, cells, separator(cells)))
+    header_lines = set()
+    for i, (lineno, cells, sep) in enumerate(pipe_rows):
+        if sep and i > 0 and not pipe_rows[i - 1][2]:
+            header_lines.add(pipe_rows[i - 1][0])
+
+    rows = {}
+    unresolved = []
+    structural = 0
+    prose_mentions = []
+    campaign_prose = []
+    section = None
+
+    def record(ident, observation):
+        rows.setdefault(ident, {'plane': 'master_row', 'id': ident,
+                                'observations': []})['observations'].append(
+            observation)
+
+    def campaign_refs(cells):
+        found = []
+        seen = set()
+        for cell in cells:
+            for m in CAMPAIGN_RE.finditer(cell):
+                if m.group(0) not in seen:
+                    seen.add(m.group(0))
+                    found.append(m.group(0))
+        return found
+
+    for lineno, raw in enumerate(lines, 1):
         line = raw.strip()
         if line.startswith('#'):
             section = line
             continue
-        if not line.startswith('|'):
+        if line.startswith('|'):
+            cells = [c.strip() for c in line.strip('|').split('|')]
+            if separator(cells) or lineno in header_lines or (
+                    cells and cells[0].strip('` ').casefold() in HEADER_CELLS):
+                structural += 1  # table structure, not a task row
+                continue
+            ident = _cell_id(cells[0]) if cells else None
+            if ident is None:
+                refs = campaign_refs(cells)
+                if refs:
+                    # Assignment-style row without a leading task ID: keep
+                    # every campaign reference with full provenance.
+                    for ref in refs:
+                        record(ref, {'kind': 'cell_reference', 'section': section,
+                                     'line': lineno, 'columns': cells,
+                                     'content_sha256': _sha(json.dumps(
+                                         cells, ensure_ascii=False))})
+                else:
+                    unresolved.append({'line': lineno, 'section': section,
+                                       'row': line[:200]})
+                continue
+            record(ident, {'kind': 'table_row', 'section': section,
+                           'line': lineno, 'columns': cells,
+                           'content_sha256': _sha(json.dumps(
+                               cells, ensure_ascii=False))})
             continue
-        cells = [c.strip() for c in line.strip('|').split('|')]
-        if separator(cells) or (cells and cells[0] in ('#', 'ID', 'id', 'Id')):
-            continue  # table structure, not a task row
-        tracked = any(name in (section or '') for name in TRACKED)
-        m = ROW_RE.match(line)
-        if not m:
-            if tracked:
-                unresolved.append({'line': lineno, 'section': section,
-                                   'row': line[:200]})
-            else:
-                outside += 1
-            continue
-        ident = m.group(1)
-        columns = cells
-        rows.setdefault(ident, {'plane': 'master_row', 'id': ident,
-                                'observations': []})['observations'].append(
-            {'section': section, 'line': lineno, 'columns': columns,
-             'content_sha256': _sha(json.dumps(columns, ensure_ascii=False))})
-    return rows, {'unresolved': unresolved, 'outside': outside}
+        if line:
+            # Prose: controller task IDs are cited backtick-quoted; capture
+            # those by ID. Unbackticked hyphen-numbered candidates (dates,
+            # figure/section numbers) are REPORTED in extras - visible and
+            # classified, without polluting the catalogue ID set.
+            for span in re.findall(r'`([^`]+)`', line):
+                span = span.strip()
+                if LEGACY_ID_RE.fullmatch(span) or KEBAB_ID_RE.fullmatch(span):
+                    if re.search(r'\d{4}', span):
+                        continue  # a dated reference, not a task ID
+                    record(span, {'kind': 'prose_mention', 'section': section,
+                                  'line': lineno, 'text': line[:200],
+                                  'content_sha256': _sha(line)})
+                    prose_mentions.append({'id': span, 'line': lineno})
+            for m in KEBAB_ID_RE.finditer(line):
+                cand = m.group(0)
+                if re.search(r'\d{4}', cand):
+                    continue
+                if '`' + cand + '`' not in line:
+                    campaign_prose.append({'id': cand, 'line': lineno,
+                                           'class': 'prose_candidate'})
+    extras = {'unresolved': unresolved, 'structural_rows': structural,
+              'prose_mentions': prose_mentions,
+              'campaign_prose_refs': campaign_prose}
+    return rows, extras
 
 
 def build_records(catalog_path=DEFAULT_CATALOG, master_path=DEFAULT_MASTER,
@@ -113,7 +209,9 @@ def build_records(catalog_path=DEFAULT_CATALOG, master_path=DEFAULT_MASTER,
                          'master_row_observations': sum(
                              len(r['observations']) for r in rows.values()),
                          'unresolved': extra['unresolved'],
-                         'pipe_rows_outside_scoped_sections': extra['outside']}}
+                         'structural_rows': extra['structural_rows'],
+                         'prose_mentions': extra['prose_mentions'],
+                         'campaign_prose_refs': extra['campaign_prose_refs']}}
 
 
 def validate_payload(payload):
@@ -163,8 +261,16 @@ def validate_payload(payload):
             errors.append('malformed_master_row:' + r['id'])
             continue
         for o in obs:
-            if (not isinstance(o, dict) or not isinstance(o.get('columns'), list)
-                    or len(o['columns']) < 3 or type(o.get('line')) is not int):
+            kind = o.get('kind') if isinstance(o, dict) else None
+            ok_shape = (
+                isinstance(o, dict) and type(o.get('line')) is int
+                and re.fullmatch('[0-9a-f]{64}', str(o.get('content_sha256', '')))
+                and ((kind in ('table_row', 'cell_reference')
+                      and isinstance(o.get('columns'), list)
+                      and bool(o['columns']))
+                     or (kind == 'prose_mention'
+                         and isinstance(o.get('text'), str) and o['text'])))
+            if not ok_shape:
                 errors.append('malformed_master_row:' + r['id'])
                 break
     state = {}

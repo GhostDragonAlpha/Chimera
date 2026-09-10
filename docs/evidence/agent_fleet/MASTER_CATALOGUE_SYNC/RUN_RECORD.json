@@ -2,18 +2,20 @@
   "task": "master-catalogue-sync-01",
   "owner": "buffy-02",
   "slot": "4",
-  "generation": 1,
+  "generation": 2,
   "base": "7d3601e7d9e04019cc3794ccf0a9738627c9fd71",
+  "merged_spine": "origin/astra/gait-capture at 513724db (stale-base reconciliation merge, no force-push)",
   "branch": "astra/tasks/master-catalogue-sync-01",
   "pr_base": "astra/gait-capture",
-  "preregistration": "controller checkpoint at rev 159 (statement/prediction/falsifier preregistered before code)",
+  "preregistration": "controller checkpoint at rev 159 (statement/prediction/falsifier before code); gen-2 correction per lead review of 14546ac6",
+  "gen2_correction": "Parser no longer gates on L/B/H section names: EVERY pipe row in EVERY section is classified. Backticked kebab-case controller IDs with em-dash qualifiers (the discovered-requirements tables) are captured by ID with provenance; legacy L/B/H rows unchanged; assignment-style actor rows keep campaign labels (BP-ELASTIC-FOUNDATION, MUSE-ROBUSTNESS-01, DS-STATE-INTEGRITY-01, STEP-SCALE-01) as cell_reference observations; task-less actor rows (GLM, Local DYAD eye, Luna) stay in coverage.unresolved WITH section/line provenance - identifiable, never an opaque count. Prose capture is gated on backtick-quoted IDs (dates excluded); unbackticked hyphen-numbered candidates are reported in campaign_prose_refs without polluting the ID set.",
   "executed_tests": [
     {
       "command": "python -m pytest test_master_catalogue.py test_control.py -q",
       "cwd": "E:/ChimeraWork/slot-04/tools/agent_fleet",
-      "result": "47 passed",
+      "result": "50 passed",
       "isolated_registry": true,
-      "note": "11 catalogue tests (predictions a-f, negative controls, parser units) + 36 pre-existing controller tests (no regressions). All registries are temp SQLite; the live registry was never touched."
+      "note": "14 catalogue tests (predictions a-f; currentMaster fixture control; synthetic new-prefix zeta-probe-07 / new-section omega-lab-02 controls; provenance-bearing unresolved control) + 36 pre-existing controller tests (no regressions). All registries are temp SQLite; the live registry was never touched."
     }
   ],
   "real_source_build": {
@@ -21,17 +23,20 @@
     "coverage": {
       "cards": 240,
       "domains": 40,
-      "master_row_ids": 41,
-      "master_row_observations": 41,
-      "unresolved": [],
-      "pipe_rows_outside_scoped_sections": 8
+      "master_row_ids": 56,
+      "master_row_observations": 58,
+      "unresolved": 3,
+      "structural_rows": 10,
+      "prose_mentions": 6,
+      "note": "unresolved = the 3 task-less actor-roster rows (GLM 5.3, Local DYAD eye, Luna), each reported with section+line and verified to carry no recognizable task ID in its first cell."
     },
-    "payload_digest": "eebb977fe269f20b806b2a82e3b11c7843d6391e4fba94bb4049ed2146ba70d0",
-    "note": "Every repeated observation preserved (none currently repeated in the live document); zero unresolved mappings inside THE LINES / THE BACKLOG / THE NEXT HARD QUEUE; 8 pipe rows elsewhere counted, none dropped."
+    "required_ids_present": ["demo-studio-state-01", "math-contract-audit-01", "gov01-evidence-reconcile-01", "fleet-slot-binding-01", "studio-grid-depth-01", "fleet-controller-upgrade-01", "engine-demo-01", "L1", "B1", "H1", "H13b", "verifier-repair-02"],
+    "payload_digest": "see commit-time build output; recomputed per tree state",
+    "fixture": "tools/agent_fleet/fixtures/MASTER_CURRENT_EXCERPT_20260910.md (verbatim rows from the current canonical Master at spine review state 8d72c4f3/513724db)"
   },
-  "scope_check": "changed files: tools/agent_fleet/master_catalogue.py (new), tools/agent_fleet/test_master_catalogue.py (new), tools/agent_fleet/control.py (catalogue ops only), tools/roadmap_query.py (wording), docs/THE_AGENT_FLEET.md (catalogue ops documentation), docs/AGENT_START.md (unchanged - already current policy)",
+  "scope_check": "changed files: tools/agent_fleet/master_catalogue.py, tools/agent_fleet/test_master_catalogue.py, tools/agent_fleet/fixtures/MASTER_CURRENT_EXCERPT_20260910.md (new), tools/agent_fleet/control.py (catalogue ops only), tools/roadmap_query.py (wording), docs/THE_AGENT_FLEET.md (catalogue ops documentation), docs/evidence/agent_fleet/MASTER_CATALOGUE_SYNC/ (this record + MIGRATION.md)",
   "remaining_gates": [
-    "lead re-review of the PR head",
+    "lead re-review of the gen-2 head",
     "authorized integration into astra/gait-capture",
     "lead executes the live-registry import per MIGRATION.md (deliberately NOT performed by this worker)"
   ]
