@@ -1,0 +1,76 @@
+{
+  "before": {
+    "ok": true,
+    "active": true,
+    "iteration": 0,
+    "accepted": 0,
+    "trials": 0,
+    "energy": 2.625,
+    "energy_initial": 2.625,
+    "terminal_state": "",
+    "centre": [
+      0,
+      0,
+      0.125
+    ],
+    "centre_force": [
+      0,
+      2.98023224e-08,
+      -0.428571433
+    ],
+    "accepted_state_id": 17560123212910228982,
+    "render_state_id": 0,
+    "last_control": "gamma_admitted",
+    "material_snapshot": {
+      "gamma_admitted_f64": 1,
+      "gamma_admitted_f64_hex": "see_admission_input",
+      "gamma_uploaded_f32": 1,
+      "gamma_uploaded_f32_hex": "see_float32_input",
+      "unit": "J/m^2",
+      "wu_to_m": 1.0
+    }
+  },
+  "after": {
+    "ok": true,
+    "active": true,
+    "iteration": 0,
+    "accepted": 0,
+    "trials": 0,
+    "energy": 2.625,
+    "energy_initial": 2.625,
+    "terminal_state": "",
+    "centre": [
+      0,
+      0,
+      0.125
+    ],
+    "centre_force": [
+      0,
+      2.98023224e-08,
+      -0.428571433
+    ],
+    "accepted_state_id": 17560123212910228982,
+    "render_state_id": 0,
+    "last_control": "gamma_admitted",
+    "material_snapshot": {
+      "gamma_admitted_f64": 1,
+      "gamma_admitted_f64_hex": "see_admission_input",
+      "gamma_uploaded_f32": 1,
+      "gamma_uploaded_f32_hex": "see_float32_input",
+      "unit": "J/m^2",
+      "wu_to_m": 1.0
+    }
+  },
+  "image_sha256": "1ab109b623be99be60535954a14162da2be9c68694d03f3be12303f612c81fea",
+  "exact_render_submission": "INSUFFICIENT_EVIDENCE",
+  "camera_bookmark": [
+    3,
+    0,
+    0,
+    0,
+    0.5,
+    0,
+    0,
+    0
+  ]
+}

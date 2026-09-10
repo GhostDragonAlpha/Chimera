@@ -1,0 +1,57 @@
+test_boolean_or_nonfinite_component_fails (__main__.ResetGateTests.test_boolean_or_nonfinite_component_fails) ... ok
+test_ignored_controls_fail_instead_of_passing (__main__.ResetGateTests.test_ignored_controls_fail_instead_of_passing) ... ok
+test_malformed_force_shape_fails (__main__.ResetGateTests.test_malformed_force_shape_fails) ... ok
+test_step_without_accepted_geometry_change_fails (__main__.ResetGateTests.test_step_without_accepted_geometry_change_fails) ... ok
+test_valid_controls_and_restores_pass (__main__.ResetGateTests.test_valid_controls_and_restores_pass) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.021s
+
+OK
+{
+  "passed": false,
+  "checks": [],
+  "error": "ValueError: centre[0] must be a finite JSON number"
+}
+{
+  "passed": false,
+  "checks": [],
+  "error": "ValueError: centre[0] must be a finite JSON number"
+}
+{
+  "passed": false,
+  "checks": [],
+  "error": "ValueError: gamma=0 control did not produce zero gamma and energy"
+}
+{
+  "passed": false,
+  "checks": [],
+  "error": "ValueError: centre_force must contain exactly three components"
+}
+{
+  "passed": false,
+  "checks": [
+    {
+      "name": "zero_gamma_then_reset",
+      "verdict": "PASS",
+      "mismatched": []
+    }
+  ],
+  "error": "ValueError: step control did not change accepted_state_id"
+}
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "zero_gamma_then_reset",
+      "verdict": "PASS",
+      "mismatched": []
+    },
+    {
+      "name": "step_then_reset",
+      "verdict": "PASS",
+      "mismatched": []
+    }
+  ],
+  "error": null
+}

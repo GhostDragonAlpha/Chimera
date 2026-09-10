@@ -1,0 +1,8 @@
+{
+  "step_advances": true,
+  "reset_restores": true,
+  "gamma_doubles_fixed_energy": true,
+  "pause_stops_iteration": true,
+  "run_reaches_terminal": true,
+  "zero_gamma_energy": true
+}

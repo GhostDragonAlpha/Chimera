@@ -1,0 +1,69 @@
+{
+  "action": "Run",
+  "panel_pid": 32024,
+  "widget_hwnd": 6754540,
+  "before": {
+    "ok": true,
+    "active": true,
+    "iteration": 16,
+    "accepted": 16,
+    "trials": 16,
+    "energy": 2.6185739,
+    "energy_initial": 2.625,
+    "terminal_state": "",
+    "centre": [
+      0,
+      0,
+      0.108999968
+    ],
+    "centre_force": [
+      0,
+      0,
+      -0.374631286
+    ],
+    "accepted_state_id": 7263530020595823929,
+    "render_state_id": 0,
+    "last_control": "pause",
+    "material_snapshot": {
+      "gamma_admitted_f64": 1,
+      "gamma_admitted_f64_hex": "see_admission_input",
+      "gamma_uploaded_f32": 1,
+      "gamma_uploaded_f32_hex": "see_float32_input",
+      "unit": "J/m^2",
+      "wu_to_m": 1.0
+    }
+  },
+  "after": {
+    "ok": true,
+    "active": true,
+    "iteration": 21,
+    "accepted": 21,
+    "trials": 21,
+    "energy": 2.61674285,
+    "energy_initial": 2.625,
+    "terminal_state": "",
+    "centre": [
+      0,
+      0,
+      0.103999957
+    ],
+    "centre_force": [
+      0,
+      -2.98023224e-08,
+      -0.357696414
+    ],
+    "accepted_state_id": 3529467993816862430,
+    "render_state_id": 0,
+    "last_control": "accepted",
+    "material_snapshot": {
+      "gamma_admitted_f64": 1,
+      "gamma_admitted_f64_hex": "see_admission_input",
+      "gamma_uploaded_f32": 1,
+      "gamma_uploaded_f32_hex": "see_float32_input",
+      "unit": "J/m^2",
+      "wu_to_m": 1.0
+    }
+  },
+  "started_unix": 1789056098.691059,
+  "finished_unix": 1789056098.9341748
+}

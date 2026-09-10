@@ -51,6 +51,15 @@ remained **INCONCLUSIVE**. No human acceptance is inferred. Profile-view
 experiments have their own preregistration; an edge-on flat surface can become
 almost invisible and is not stronger evidence merely because its view changed.
 
+The final `profile_review/` captures have unchanged before/after state fields
+and pass the PR #16 bounded snapshot validator. Both additional eye responses
+completed with finish reason `stop` on the same served model. The raised view
+shows a shallow central peak. The relaxed view supplies no visible center cue;
+the eye attributed the dark hexagonal region to surface geometry, but this
+image does not establish that attribution. Retain that response as an
+observation, not a topology or physical-state verdict. Use the numerical gate
+for the relaxed state and retain the oblique view for visible triangle layout.
+
 `native_window_gen4.png` shows the native renderer displaying the membrane
 while Studio labels report no mesh. The new `demo-studio-state-01` requirement
 tracks this discrepancy and the distinction between an absent local eye log

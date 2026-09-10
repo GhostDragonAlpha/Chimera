@@ -1,0 +1,7 @@
+{
+  "statement": "The retained captures permit bounded visual inspection.",
+  "prediction": "The eye returns complete descriptions of both captures.",
+  "falsifier": "Missing image, unavailable eye, empty or truncated response.",
+  "prompt": "You are reviewing one actual capture from a C++/Vulkan engineering\ndemonstration of a triangulated membrane with a fixed boundary. GPU relaxation\nminimizes surface energy; its iterations are not physical time. The capture is\nfrom a recorded run, not a live view. No numerical values or state label are\nprovided because this review concerns only visible evidence.\n\nPrior reviews of this demonstration found height interpretation inconclusive\nfrom some views, and an earlier presentation lacked useful triangle edges.\nThose are historical observations, not assertions about this image.\n\nAnswer these numbered questions using only the supplied image:\n1. Describe the visible geometry, silhouette, triangle edges and background.\n2. What visual evidence, if any, establishes the center's height relative to\nthe boundary? State any ambiguity; do not infer a numerical displacement.\n3. Identify the single most important visibility or presentation problem.\n4. Which claims cannot be determined from this image alone?\nDo not infer correct forces, conservation, convergence, timing, exact GPU\nsubmission identity or human acceptance from a screenshot.\n",
+  "acceptance": "VISUAL_OBSERVATIONS_ONLY"
+}
