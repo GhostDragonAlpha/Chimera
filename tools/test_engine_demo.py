@@ -52,6 +52,13 @@ class TerminalTransport(FakeTransport):
         return result
 
 
+class RefusingTransport(FakeTransport):
+    def control(self, op, **values):
+        with self.lock:
+            self.calls.append((op, values))
+        return {"ok": False, "error": "not initialized"}
+
+
 class FakeProcess:
     def __init__(self):
         self.terminated = False
@@ -111,6 +118,21 @@ class DemoSessionTests(unittest.TestCase):
         time.sleep(.12)
         self.assertEqual(len([c for c in transport.calls if c[0] == "step"]), 1)
         self.assertFalse(session.running)
+        session.close()
+
+    def test_refused_run_stops_after_one_request_without_completion(self):
+        transport = RefusingTransport()
+        messages = []
+        session = demo.DemoSession(transport, Path("."), callback=messages.append)
+        session.run(3)
+        deadline = time.time() + 1
+        while session.running and time.time() < deadline:
+            time.sleep(.01)
+        time.sleep(.05)
+        self.assertEqual(len([c for c in transport.calls if c[0] == "step"]), 1)
+        self.assertFalse(session.running)
+        self.assertTrue(any("ERROR: not initialized" in m for m in messages))
+        self.assertFalse(any("run complete" in m for m in messages))
         session.close()
 
     def test_reset_cancels_inflight_run_before_reset_request(self):

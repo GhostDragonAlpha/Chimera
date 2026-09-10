@@ -178,6 +178,12 @@ class DemoSession:
                     if self._closed or not self.running or generation != self._run_generation:
                         return
                 result = self.transport.control("step", n_steps=1)
+            nested = result.get("status") if isinstance(result, dict) else None
+            refused = (isinstance(result, dict) and result.get("ok") is False)
+            if isinstance(nested, dict) and nested.get("ok") is False:
+                refused = True
+            if refused:
+                raise RuntimeError(str(result.get("error", "step request refused")))
             self._say("step: " + _status_line(result))
             terminal = result.get("terminal_state")
             if not terminal and isinstance(result.get("status"), dict):
