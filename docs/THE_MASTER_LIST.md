@@ -2447,3 +2447,33 @@ Read against integration `0e878758aa5eb4ad8fbd98648d59a8356e41f4fe` and controll
 The first shutdown screen captures were disqualified and preserved privately outside Git publication. Later engine client captures were inspected by the parent; they establish visible window behavior only. The small test window shows overlapping Studio content and a narrow viewport, so neither polished presentation nor physical-state visibility is certified. Runtime records distinguish an internal named API cancellation from the pending HTTP client's transport disconnect.
 
 PR19 catalogue corrections remain with `buffy-02` in slot 4, current generation 5 after exact-head review of `45018287`. Missing source pins, forged domain coverage and an omitted multiline B7b requirement were reproduced and returned to the owner. The integrated reconciliation instrument (PR24) is available; canonical onboarding pointers still need review through their existing owner. Do not treat a stale handoff's “no ready tasks” as live dispatch state: recover current claims, review feedback and eligible dependency-complete tasks through the controller.
+
+
+### Permanent DYAD selection — 2026-09-10 (active integration task)
+
+Alan permanently selects `qwen3.8-27b-nvfp4-mtp` and the exact
+`Qwen3.8-27B-NVFP4-MTP-VERY-LOW.gguf` artifact. Task
+`dyad-permanent-model-01` owns policy enforcement, CPU falsifiers and actual
+served-identity verification; it supersedes historical DYAD auto-follow
+instructions, while preserving text-client routing and resource ownership.
+See `docs/THE_DYAD_PROTOCOL.md` and `docs/evidence/dyad_model_policy/`.
+
+The separately registered `dyad-resident-identity-01` records a reproduced
+on-disk-only model falsely reported resident; the permanent-policy task
+addresses the shared senses path first, so workers must reconcile its
+integrated evidence before claiming a duplicate repair. No completion is
+asserted here. The elastic domain audit is integrated through PR29 at
+`accd15b61d7ac3805edfc36535ef99de121baf65`; `elastic-units-contract-01`
+continues with independent nonzero CPU oracles after the original scaling-only
+test accepted a zero-output mutant. Historical fixtures remain unchanged.
+
+Permanent-policy validation is now executed: 13 mocked CPU tests and actual
+can_see plus one-image watch returned the selected id with finish_reason=stop;
+source/policy hashes were stable. Raw evidence and the failed recording-wrapper
+round remain in `docs/evidence/dyad_model_policy/`. This does not certify
+physics or UI presentation. The units boundary is integrated through PR30 at
+`e398775c4e2cc75aa5c2c566f5c26bc47982f8c1` (12 oracle/refusal/mutation tests,
+19 legacy checks, unchanged frozen fixtures). Its next registered CPU task is
+`elastic-physical-fixtures-01`: explicit physical-input and binary32-upload
+reference fixtures before GPU transcription, with ABI/budgets left open until
+derived.

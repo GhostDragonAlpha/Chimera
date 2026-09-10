@@ -1,0 +1,6 @@
+{
+  "schema": "chimera-dyad-model-policy-v1",
+  "mode": "fixed",
+  "model_id": "qwen3.8-27b-nvfp4-mtp",
+  "model_relative_path": "esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF/Qwen3.8-27B-NVFP4-MTP-VERY-LOW.gguf"
+}

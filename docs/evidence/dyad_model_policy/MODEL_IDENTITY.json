@@ -1,0 +1,227 @@
+{
+  "selected_path": "C:/Users/allen/.lmstudio/models/esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF/Qwen3.8-27B-NVFP4-MTP-VERY-LOW.gguf",
+  "selected_sha256": "74ea17ea05e0e0241af8d5b29cdea38b3f4509f66d9b96c1ab05f0e1f0e537d9",
+  "selected_size_bytes": 14862277984,
+  "configured_model_id": "qwen3.8-27b-nvfp4-mtp",
+  "loaded_by_this_task": false,
+  "lms_ls": [
+    {
+      "type": "llm",
+      "modelKey": "tiel-coder-35b-a3b-mtp",
+      "format": "gguf",
+      "displayName": "Tiel Coder 35B A3B MTP UD",
+      "publisher": "peculiar-ragdoll",
+      "path": "peculiar-ragdoll/Tiel-Coder-35B-A3B-GGUF-MTP/Tiel-Coder-35B-A3B-MTP-UD-Q3_K_XL.gguf",
+      "sizeBytes": 18647364256,
+      "indexedModelIdentifier": "peculiar-ragdoll/Tiel-Coder-35B-A3B-GGUF-MTP/Tiel-Coder-35B-A3B-MTP-UD-Q3_K_XL.gguf",
+      "deviceIdentifier": null,
+      "paramsString": "35B",
+      "architecture": "qwen35moe",
+      "quantization": {
+        "name": "Q3_K_XL",
+        "bits": 3
+      },
+      "vision": true,
+      "trainedForToolUse": false,
+      "maxContextLength": 262144
+    },
+    {
+      "type": "llm",
+      "modelKey": "qwen3.8-27b-nvfp4-mtp",
+      "format": "gguf",
+      "displayName": "Qwen3.8 27B NVFP4 MTP VERY LOW",
+      "publisher": "esatapedico",
+      "path": "esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF/Qwen3.8-27B-NVFP4-MTP-VERY-LOW.gguf",
+      "sizeBytes": 15793424416,
+      "indexedModelIdentifier": "esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF/Qwen3.8-27B-NVFP4-MTP-VERY-LOW.gguf",
+      "deviceIdentifier": null,
+      "paramsString": "27B",
+      "architecture": "qwen35",
+      "vision": true,
+      "trainedForToolUse": true,
+      "maxContextLength": 262144
+    },
+    {
+      "type": "llm",
+      "modelKey": "qwen3.8-flash-next",
+      "format": "gguf",
+      "displayName": "Qwen3.8 Flash Next",
+      "publisher": "bartowski",
+      "path": "bartowski/Qwen3.8-Flash-Next-GGUF/Qwen3.8-Flash-Next-IQ4_NL-00001-of-00003.gguf",
+      "sizeBytes": 101197531072,
+      "indexedModelIdentifier": "bartowski/Qwen3.8-Flash-Next-GGUF/Qwen3.8-Flash-Next-IQ4_NL-00001-of-00003.gguf",
+      "deviceIdentifier": null,
+      "paramsString": "512x56B",
+      "architecture": "qwen4exp",
+      "quantization": {
+        "name": "IQ4_NL",
+        "bits": 4
+      },
+      "vision": true,
+      "trainedForToolUse": true,
+      "maxContextLength": 262144
+    },
+    {
+      "type": "embedding",
+      "modelKey": "text-embedding-nomic-embed-text-v1.5",
+      "format": "gguf",
+      "displayName": "Nomic Embed Text v1.5",
+      "publisher": "nomic-ai",
+      "path": "nomic-ai/nomic-embed-text-v1.5-GGUF/nomic-embed-text-v1.5.Q4_K_M.gguf",
+      "sizeBytes": 84106624,
+      "indexedModelIdentifier": "nomic-ai/nomic-embed-text-v1.5-GGUF/nomic-embed-text-v1.5.Q4_K_M.gguf",
+      "deviceIdentifier": null,
+      "architecture": "nomic-bert",
+      "quantization": {
+        "name": "Q4_K_M",
+        "bits": 4
+      },
+      "maxContextLength": 2048
+    }
+  ],
+  "lms_ps": [
+    {
+      "type": "llm",
+      "modelKey": "qwen3.8-27b-nvfp4-mtp",
+      "format": "gguf",
+      "displayName": "Qwen3.8 27B NVFP4 MTP VERY LOW",
+      "publisher": "esatapedico",
+      "path": "esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF/Qwen3.8-27B-NVFP4-MTP-VERY-LOW.gguf",
+      "sizeBytes": 15793424416,
+      "indexedModelIdentifier": "esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF/Qwen3.8-27B-NVFP4-MTP-VERY-LOW.gguf",
+      "deviceIdentifier": null,
+      "paramsString": "27B",
+      "architecture": "qwen35",
+      "identifier": "qwen3.8-27b-nvfp4-mtp",
+      "ttlMs": null,
+      "lastUsedTime": 1789068581462,
+      "vision": true,
+      "trainedForToolUse": true,
+      "maxContextLength": 262144,
+      "contextLength": 30208,
+      "status": "idle",
+      "queued": 0,
+      "parallel": 4
+    }
+  ],
+  "api_v1": {
+    "models": [
+      {
+        "type": "llm",
+        "publisher": "peculiar-ragdoll",
+        "key": "tiel-coder-35b-a3b-mtp",
+        "display_name": "Tiel Coder 35B A3B MTP UD",
+        "architecture": "qwen35moe",
+        "quantization": {
+          "name": "Q3_K_XL",
+          "bits_per_weight": 3
+        },
+        "size_bytes": 18647364256,
+        "params_string": "35B",
+        "loaded_instances": [],
+        "max_context_length": 262144,
+        "format": "gguf",
+        "capabilities": {
+          "vision": true,
+          "trained_for_tool_use": false,
+          "reasoning": {
+            "allowed_options": [
+              "off",
+              "on"
+            ],
+            "default": "on"
+          }
+        },
+        "description": null
+      },
+      {
+        "type": "llm",
+        "publisher": "esatapedico",
+        "key": "qwen3.8-27b-nvfp4-mtp",
+        "display_name": "Qwen3.8 27B NVFP4 MTP VERY LOW",
+        "architecture": "qwen35",
+        "quantization": null,
+        "size_bytes": 15793424416,
+        "params_string": "27B",
+        "loaded_instances": [
+          {
+            "id": "qwen3.8-27b-nvfp4-mtp",
+            "config": {
+              "context_length": 30208,
+              "eval_batch_size": 2048,
+              "physical_batch_size": 512,
+              "parallel": 4,
+              "flash_attention": true,
+              "context_checkpoints": 32,
+              "reasoning_budget_message": "I have to answer now.",
+              "speculative_draft_mtp": true,
+              "speculative_draft_simple": false,
+              "speculative_draft_model": "",
+              "speculative_draft_max_tokens": 3,
+              "speculative_draft_min_tokens": 0,
+              "speculative_draft_min_continue_probability": 0,
+              "offload_kv_cache_to_gpu": true
+            }
+          }
+        ],
+        "max_context_length": 262144,
+        "format": "gguf",
+        "capabilities": {
+          "vision": true,
+          "trained_for_tool_use": true,
+          "reasoning": {
+            "allowed_options": [
+              "off",
+              "on"
+            ],
+            "default": "on"
+          }
+        },
+        "description": null
+      },
+      {
+        "type": "llm",
+        "publisher": "bartowski",
+        "key": "qwen3.8-flash-next",
+        "display_name": "Qwen3.8 Flash Next",
+        "architecture": "qwen4exp",
+        "quantization": {
+          "name": "IQ4_NL",
+          "bits_per_weight": 4
+        },
+        "size_bytes": 101197531072,
+        "params_string": "512x56B",
+        "loaded_instances": [],
+        "max_context_length": 262144,
+        "format": "gguf",
+        "capabilities": {
+          "vision": true,
+          "trained_for_tool_use": true,
+          "reasoning": {
+            "allowed_options": [
+              "off",
+              "on"
+            ],
+            "default": "on"
+          }
+        },
+        "description": null
+      },
+      {
+        "type": "embedding",
+        "publisher": "nomic-ai",
+        "key": "text-embedding-nomic-embed-text-v1.5",
+        "display_name": "Nomic Embed Text v1.5",
+        "quantization": {
+          "name": "Q4_K_M",
+          "bits_per_weight": 4
+        },
+        "size_bytes": 84106624,
+        "params_string": null,
+        "loaded_instances": [],
+        "max_context_length": 2048,
+        "format": "gguf"
+      }
+    ]
+  }
+}
