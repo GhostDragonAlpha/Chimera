@@ -1,0 +1,55 @@
+{
+  "panel_pid": 32024,
+  "widget_hwnd": 5837412,
+  "action": "Initialize B2 via actual Tk button",
+  "before": {
+    "ok": false,
+    "active": false,
+    "iteration": 0,
+    "accepted": 0,
+    "trials": 0,
+    "energy": 0,
+    "energy_initial": 0,
+    "terminal_state": "",
+    "centre": [
+      0,
+      0,
+      0
+    ],
+    "centre_force": [
+      0,
+      0,
+      0
+    ],
+    "accepted_state_id": 0,
+    "render_state_id": 0,
+    "last_control": "",
+    "material_snapshot": null
+  },
+  "started_unix": 1789055878.3330317,
+  "after": {
+    "ok": false,
+    "active": false,
+    "iteration": 0,
+    "accepted": 0,
+    "trials": 0,
+    "energy": 0,
+    "energy_initial": 0,
+    "terminal_state": "",
+    "centre": [
+      0,
+      0,
+      0
+    ],
+    "centre_force": [
+      0,
+      0,
+      0
+    ],
+    "accepted_state_id": 0,
+    "render_state_id": 0,
+    "last_control": "",
+    "material_snapshot": null
+  },
+  "finished_unix": 1789055883.362584
+}

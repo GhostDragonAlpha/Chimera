@@ -1,0 +1,11 @@
+{
+  "head": "35b564aa50991d9243bace2cf21bb3326faafe53",
+  "calls_after_refusal": 3,
+  "messages": [
+    "step: ERROR: not initialized",
+    "step: ERROR: not initialized",
+    "step: ERROR: not initialized",
+    "run complete"
+  ],
+  "expected": "one refused step then stop; never run complete"
+}

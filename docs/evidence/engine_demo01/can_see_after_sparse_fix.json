@@ -1,0 +1,7 @@
+{
+  "can_see": true,
+  "served_model": "qwen3.8-27b-nvfp4-mtp",
+  "reason": null,
+  "finish_reason": "stop",
+  "source_prerequisite": "tracked Chimera/core/lm_gateway.py materialized in sparse worktree; prior missing-file failure retained"
+}

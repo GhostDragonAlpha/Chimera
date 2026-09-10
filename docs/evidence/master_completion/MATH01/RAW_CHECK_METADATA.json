@@ -1,0 +1,12 @@
+{
+  "command": [
+    "C:\\Python314\\python.exe",
+    "tools/material_contract_checks.py"
+  ],
+  "exit_code": 0,
+  "python_version": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "source_commit": "8a1428a7d8b915123f744d1ef511130ec0c1ef7e",
+  "source_sha256": "6af75efe12da4ba81e3c95cddbcffd083fe5dfb926eb698acda2f0145b9e2d19",
+  "stdout_sha256": "ce3e1a98c3ab5bcd1e9100268a329e3f335349345b3b40617f5fae552b171663"
+}

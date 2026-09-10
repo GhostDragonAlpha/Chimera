@@ -1,0 +1,27 @@
+diff --git a/ChimeraEngine/engine/engine.cpp b/ChimeraEngine/engine/engine.cpp
+index ec76ebfd..5771ee35 100644
+--- a/ChimeraEngine/engine/engine.cpp
++++ b/ChimeraEngine/engine/engine.cpp
+@@ -4503,8 +4503,21 @@ bool Engine::membrane_demo_ctl(int kind, uint32_t n_steps, double gamma,
+         std::memcpy(md_gamma_map_, reset_gamma.data(), reset_gamma.size() * sizeof(float));
+         md_last_control_ = "reset";
+         md_geom_stats(md_pos_host_, md_idx_host_, md_min_edge_, md_mean_edge_);
+-        float U = 0.f; md_eval(1, U);
++        float U = 0.f;
++        if (!md_eval(1, U) || !md_valid_all()) {
++            md_terminal_ = "invalid_surface";
++            md_last_control_ = "reset_failed";
++            membrane_demo_status(out);
++            return false;
++        }
+         md_energy_last_ = U;
++        // Status must describe the restored accepted state, including forces.
++        // md_eval refreshes the GPU force buffer; the status cache still holds
++        // the preceding step/material evaluation until copied here.
++        const float* vf = static_cast<const float*>(md_vf_map_);
++        md_last_vf_centre_[0] = vf[size_t(md_centre_) * 4 + 0];
++        md_last_vf_centre_[1] = vf[size_t(md_centre_) * 4 + 1];
++        md_last_vf_centre_[2] = vf[size_t(md_centre_) * 4 + 2];
+         if (md_energy_initial_ == 0.0) md_energy_initial_ = U;
+         md_present_dirty_ = true;
+         break;

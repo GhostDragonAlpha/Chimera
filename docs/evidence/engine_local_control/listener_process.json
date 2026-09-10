@@ -1,0 +1,21 @@
+[
+  {
+    "kind": "process",
+    "id": 31672,
+    "name": "engine_local_control_harness",
+    "path": "E:\\ChimeraWork\\slot-01\\.tmp\\engine_local_control_gen1\\build_mingw\\engine_local_control_harness.exe",
+    "main_window_title": ""
+  },
+  {
+    "kind": "listener",
+    "local_address": "127.0.0.1",
+    "local_port": 49173,
+    "owning_process": 31672,
+    "state": "Listen"
+  },
+  {
+    "kind": "PickerHost_observation",
+    "count": 0,
+    "processes": []
+  }
+]

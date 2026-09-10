@@ -1,0 +1,27 @@
+{
+  "all_local_pass": true,
+  "all_nonloop_refused": false,
+  "local_get": {
+    "body": "{\"method\":\"GET\",\"path\":\"/health\",\"body\":\"\"}",
+    "status_line": "HTTP/1.1 200 OK"
+  },
+  "local_post": {
+    "body": "{\"method\":\"POST\",\"path\":\"/control\",\"body\":\"{\"probe\":true}\"}",
+    "status_line": "HTTP/1.1 200 OK"
+  },
+  "nonloopback": {
+    "172.23.64.1": {
+      "address": "172.23.64.1",
+      "connected": false,
+      "error": "timed out",
+      "outcome": "TIMEOUT"
+    },
+    "192.168.3.169": {
+      "address": "192.168.3.169",
+      "connected": false,
+      "error": "timed out",
+      "outcome": "TIMEOUT"
+    }
+  },
+  "pass": false
+}

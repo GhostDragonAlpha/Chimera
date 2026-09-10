@@ -1,0 +1,67 @@
+{
+  "action": "gamma2",
+  "panel_pid": 32024,
+  "widget_hwnd": 9376290,
+  "before": {
+    "ok": true,
+    "active": true,
+    "iteration": 0,
+    "accepted": 0,
+    "trials": 0,
+    "energy": 2.625,
+    "energy_initial": 2.625,
+    "terminal_state": "",
+    "centre": [
+      0,
+      0,
+      0.125
+    ],
+    "centre_force": [
+      0,
+      -2.98023224e-08,
+      -0.425212026
+    ],
+    "accepted_state_id": 17560123212910228982,
+    "render_state_id": 0,
+    "last_control": "reset",
+    "material_snapshot": {
+      "gamma_admitted_f64": 1,
+      "gamma_uploaded_f32": 1,
+      "unit": "J/m^2",
+      "wu_to_m": 1.0
+    }
+  },
+  "after": {
+    "ok": true,
+    "active": true,
+    "iteration": 0,
+    "accepted": 0,
+    "trials": 0,
+    "energy": 5.25,
+    "energy_initial": 2.625,
+    "terminal_state": "",
+    "centre": [
+      0,
+      0,
+      0.125
+    ],
+    "centre_force": [
+      0,
+      5.96046448e-08,
+      -0.857142866
+    ],
+    "accepted_state_id": 17560123212910228982,
+    "render_state_id": 0,
+    "last_control": "gamma_admitted",
+    "material_snapshot": {
+      "gamma_admitted_f64": 2,
+      "gamma_admitted_f64_hex": "see_admission_input",
+      "gamma_uploaded_f32": 2,
+      "gamma_uploaded_f32_hex": "see_float32_input",
+      "unit": "J/m^2",
+      "wu_to_m": 1.0
+    }
+  },
+  "started_unix": 1789056095.2404583,
+  "finished_unix": 1789056095.479164
+}
