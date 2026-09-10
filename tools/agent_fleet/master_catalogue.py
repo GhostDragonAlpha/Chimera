@@ -228,6 +228,7 @@ def validate_payload(payload):
         return ['missing_catalogue_coverage']
     errors = []
     by_id = set()
+    row_ids = set()
     for c in cards:
         if (not isinstance(c, dict) or c.get('plane') != 'card'
                 or not isinstance(c.get('id'), str) or not c['id']):
@@ -245,6 +246,8 @@ def validate_payload(payload):
             d = c.get('depends_on', [])
             if not isinstance(d, list):
                 errors.append('malformed_card_record:' + c['id'])
+            elif any(not isinstance(dep, str) for dep in d):
+                errors.append('malformed_card_dependency:' + c['id'])
             else:
                 deps[c['id']] = d
     for ident, d in deps.items():
@@ -256,6 +259,9 @@ def validate_payload(payload):
                 or not isinstance(r.get('id'), str) or not r['id']):
             errors.append('malformed_master_row')
             continue
+        if r['id'] in row_ids:
+            errors.append('duplicate_master_row_id:' + r['id'])
+        row_ids.add(r['id'])
         obs = r.get('observations')
         if not isinstance(obs, list) or not obs:
             errors.append('malformed_master_row:' + r['id'])

@@ -300,6 +300,13 @@ class CatalogueTests(unittest.TestCase):
         dups = payload(cards=[card_record('MATH-01'), card_record('MATH-01')])
         with self.assertRaisesRegex(Refusal, 'duplicate_catalogue_id'):
             self.imp(dups)
+        row_dups = payload(
+            cards=[card_record('MATH-01')],
+            rows=[row_record('B1', 'B1 | skin | main | OPEN'),
+                  row_record('B1', 'B1 | skin | main | OPEN2')]
+        )
+        self.assertIn('duplicate_master_row_id:B1',
+                      validate_payload(row_dups))
         cyc = payload(cards=[card_record('MATH-01', deps=('MATH-02',)),
                              card_record('MATH-02', deps=('MATH-01',))])
         with self.assertRaisesRegex(Refusal, 'catalogue_dependency_cycle'):
@@ -307,6 +314,9 @@ class CatalogueTests(unittest.TestCase):
         unknown = payload(cards=[card_record('MATH-01', deps=('GHOST',))])
         with self.assertRaisesRegex(Refusal, 'catalogue_unknown_dependency'):
             self.imp(unknown)
+        bad_dep = payload(cards=[card_record('MATH-01', deps=({},))])
+        self.assertIn('malformed_card_dependency:MATH-01',
+                      validate_payload(bad_dep))
         with self.assertRaisesRegex(Refusal, 'invalid_catalogue_payload'):
             self.imp('not even json')
         bad_row = payload(rows=[{'plane': 'master_row', 'id': 'B1',
