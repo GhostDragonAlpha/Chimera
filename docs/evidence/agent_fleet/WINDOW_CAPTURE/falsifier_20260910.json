@@ -1,0 +1,1 @@
+{"contract":"WINDOW_CAPTURE_OWNERSHIP","falsifier":"synthetic_no_window_must_return_none","evidence_path":"docs/evidence/agent_fleet/WINDOW_CAPTURE/falsifier_20260910.json","scope":"tools/agent_fleet/capture_window.py"}
