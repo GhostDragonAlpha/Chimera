@@ -21,3 +21,22 @@ The existing 20-PASS/1-INFO frozen runtime gate remains unchanged and must still
 pass after the repair. This adds an accepted-state consistency test; it does
 not replace the f64 reference oracle, certify performance, or infer physics
 from a picture. No protected build files or operator process are touched.
+
+## Gate negative controls
+
+These controls are preregistered for the CPU-only fake-request regression test
+at `test_reset_gate.py`; they do not contact or launch the engine.
+
+STATEMENT: the metamorphic gate must demonstrate that each named control took
+effect before judging whether Reset restored the initial state.
+PREDICTION: a fake endpoint that returns the initialization status for every
+control, a gamma-zero response with nonzero gamma/energy/force, a step response
+whose iteration advances without changing the accepted ID or centre, and a
+status with a non-three-component force vector each cause a nonzero exit and a
+`passed: false` result. A valid fake sequence must retain two PASS checks.
+FALSIFIER: any negative control exits zero or records `passed: true`, or the
+valid sequence fails. The test uses finite B2-shaped values and writes only to
+temporary output directories.
+
+The strict-schema negative control also includes a boolean and a nonfinite
+centre component; both must be rejected as non-JSON-number status values.

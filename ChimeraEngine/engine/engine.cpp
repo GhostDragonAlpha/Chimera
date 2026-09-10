@@ -4508,6 +4508,10 @@ bool Engine::membrane_demo_ctl(int kind, uint32_t n_steps, double gamma,
             md_terminal_ = "invalid_surface";
             md_last_control_ = "reset_failed";
             membrane_demo_status(out);
+            // A failed evaluation cannot supply a coherent accepted status.
+            // Require reinitialization before any later control or rendering.
+            md_running_ = false;
+            md_active_ = false;
             return false;
         }
         md_energy_last_ = U;
