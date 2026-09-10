@@ -142,24 +142,30 @@ class DemoSession:
         self._schedule_step(max(0, int(steps)), generation)
 
     def _schedule_step(self, remaining: int, generation: int) -> None:
-        if remaining <= 0:
-            with self._lock:
-                self.running = False
-            self._say("run complete")
-            return
         with self._lock:
             if self._closed or not self.running or generation != self._run_generation:
                 return
+        if remaining <= 0:
+            with self._lock:
+                if generation != self._run_generation or self._closed:
+                    return
+                self.running = False
+            self._say("run complete")
+            return
         threading.Thread(target=self._step_worker, args=(remaining, generation), daemon=True).start()
 
     def _step_worker(self, remaining: int, generation: int) -> None:
         try:
             with self._control_lock:
+                with self._lock:
+                    if self._closed or not self.running or generation != self._run_generation:
+                        return
                 result = self.transport.control("step", n_steps=1)
             self._say("step: " + _status_line(result))
         except Exception as exc:
             with self._lock:
-                self.running = False
+                if generation == self._run_generation:
+                    self.running = False
             self._say("ERROR: " + str(exc))
             return
         with self._lock:
@@ -183,12 +189,7 @@ class DemoSession:
         with self._lock:
             self._closed = True
             self.running = False
-        if self.process is not None and self.process.poll() is None:
-            self.process.terminate()
-            try:
-                self.process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                self.process.kill()
+        _stop_owned(self.process)
         if self.manifest is not None and self.manifest.exists():
             try:
                 data = json.loads(self.manifest.read_text(encoding="utf-8"))
@@ -215,6 +216,25 @@ def _write_manifest(path: Path, exe: Path, port: int, pid: int) -> None:
                     encoding="utf-8")
 
 
+def _stop_owned(proc) -> None:
+    """Terminate and reap one known Popen; tolerate slow/half-started children."""
+    if proc is None:
+        return
+    try:
+        if proc.poll() is None:
+            proc.terminate()
+        try:
+            proc.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            try:
+                proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                pass
+    except (OSError, ProcessLookupError):
+        pass
+
+
 def _launch(exe: Path, port: int, runtime: Path | None) -> tuple[subprocess.Popen, Path]:
     exe = exe.resolve()
     if not exe.is_file():
@@ -233,10 +253,16 @@ def _launch(exe: Path, port: int, runtime: Path | None) -> tuple[subprocess.Pope
     staged_exe = runtime / exe.name
     shutil.copy2(exe, staged_exe)
     shutil.copytree(shaders, runtime / "shaders")
-    proc = subprocess.Popen([str(staged_exe), str(port), "--no-restore"], cwd=runtime,
-                            stdout=(runtime / "engine.stdout.log").open("ab"),
-                            stderr=(runtime / "engine.stderr.log").open("ab"))
-    _write_manifest(manifest, staged_exe, port, proc.pid)
+    proc = None
+    try:
+        with (runtime / "engine.stdout.log").open("ab") as stdout, \
+             (runtime / "engine.stderr.log").open("ab") as stderr:
+            proc = subprocess.Popen([str(staged_exe), str(port), "--no-restore"], cwd=runtime,
+                                    stdout=stdout, stderr=stderr)
+        _write_manifest(manifest, staged_exe, port, proc.pid)
+    except Exception:
+        _stop_owned(proc)
+        raise
     return proc, manifest
 
 
@@ -267,52 +293,56 @@ def main(argv=None) -> int:
         process, manifest_path = _launch(args.exe, args.port, runtime)
         _wait_ready(process, args.port)
     except Exception:
-        if process is not None and process.poll() is None:
-            process.terminate()
-            process.wait(timeout=5)
+        _stop_owned(process)
         raise
     runtime = manifest_path.parent
     transport = DemoTransport(f"http://127.0.0.1:{args.port}")
 
-    import tkinter as tk
-    root = tk.Tk()
-    root.title("Chimera membrane demo")
-    text = tk.StringVar(value="connecting…")
-    tk.Label(root, textvariable=text, width=82, anchor="w").pack(padx=12, pady=10)
-    messages = Queue()
-    session = DemoSession(transport, runtime, process=process,
-                          manifest=manifest_path,
-                          callback=messages.put)
-    def pump_messages():
-        try:
-            while True:
-                text.set(messages.get_nowait())
-        except Empty:
-            pass
-        root.after(50, pump_messages)
-    root.after(0, pump_messages)
-    buttons = tk.Frame(root); buttons.pack(padx=12, pady=4)
-    for label, action in (("Initialize B2", session.initialize), ("Step", session.step),
-                          ("Run", lambda: session.run(args.steps)),
-                          ("Pause", session.pause), ("Reset", session.reset),
-                          ("Status", session.status)):
-        tk.Button(buttons, text=label, command=action, width=14).pack(side="left", padx=3)
-    gamma_frame = tk.Frame(root); gamma_frame.pack(pady=4)
-    tk.Label(gamma_frame, text="gamma (J/m²):").pack(side="left")
-    for value in (0.0, 1.0, 2.0):
-        tk.Button(gamma_frame, text=f"{value:g}", width=8,
-                  command=lambda g=value: session.gamma(g)).pack(side="left", padx=2)
-    root.protocol("WM_DELETE_WINDOW", lambda: (session.close(), root.destroy()))
-    def probe():
-        try:
-            transport.ready()
-            messages.put("engine ready — click Initialize B2")
-        except Exception as exc:
-            messages.put("ERROR: " + str(exc))
-            if process is not None:
+    session = None
+    try:
+        import tkinter as tk
+        root = tk.Tk()
+        root.title("Chimera membrane demo")
+        text = tk.StringVar(value="connecting…")
+        tk.Label(root, textvariable=text, width=82, anchor="w").pack(padx=12, pady=10)
+        messages = Queue()
+        session = DemoSession(transport, runtime, process=process,
+                              manifest=manifest_path,
+                              callback=messages.put)
+        def pump_messages():
+            try:
+                while True:
+                    text.set(messages.get_nowait())
+            except Empty:
+                pass
+            root.after(50, pump_messages)
+        root.after(0, pump_messages)
+        buttons = tk.Frame(root); buttons.pack(padx=12, pady=4)
+        for label, action in (("Initialize B2", session.initialize), ("Step", session.step),
+                              ("Run", lambda: session.run(args.steps)),
+                              ("Pause", session.pause), ("Reset", session.reset),
+                              ("Status", session.status)):
+            tk.Button(buttons, text=label, command=action, width=14).pack(side="left", padx=3)
+        gamma_frame = tk.Frame(root); gamma_frame.pack(pady=4)
+        tk.Label(gamma_frame, text="gamma (J/m²):").pack(side="left")
+        for value in (0.0, 1.0, 2.0):
+            tk.Button(gamma_frame, text=f"{value:g}", width=8,
+                      command=lambda g=value: session.gamma(g)).pack(side="left", padx=2)
+        root.protocol("WM_DELETE_WINDOW", lambda: (session.close(), root.destroy()))
+        def probe():
+            try:
+                transport.ready()
+                messages.put("engine ready — click Initialize B2")
+            except Exception as exc:
+                messages.put("ERROR: " + str(exc))
                 session.close()
-    threading.Thread(target=probe, daemon=True).start()
-    root.mainloop()
+        threading.Thread(target=probe, daemon=True).start()
+        root.mainloop()
+    finally:
+        if session is not None:
+            session.close()
+        else:
+            _stop_owned(process)
     return 0
 
 

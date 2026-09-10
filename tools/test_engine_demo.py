@@ -5,6 +5,9 @@ import sys
 import threading
 import time
 import unittest
+import tempfile
+import types
+from unittest.mock import patch
 from pathlib import Path
 
 
@@ -45,6 +48,7 @@ class FakeProcess:
     def __init__(self):
         self.terminated = False
         self.killed = False
+        self.pid = 424242
 
     def poll(self):
         return None if not self.terminated else 0
@@ -57,6 +61,13 @@ class FakeProcess:
 
     def kill(self):
         self.killed = True
+
+
+class SlowExitProcess(FakeProcess):
+    def wait(self, timeout=None):
+        if not self.killed:
+            raise subprocess.TimeoutExpired("fake", timeout)
+        return 0
 
 
 class DemoSessionTests(unittest.TestCase):
@@ -89,6 +100,55 @@ class DemoSessionTests(unittest.TestCase):
         session.close()
         self.assertTrue(process.terminated)
         self.assertFalse(process.killed)
+
+    def test_stop_owned_kills_and_reaps_after_terminate_timeout(self):
+        process = SlowExitProcess()
+        demo._stop_owned(process)
+        self.assertTrue(process.terminated)
+        self.assertTrue(process.killed)
+
+    def test_stale_zero_schedule_cannot_clear_newer_run(self):
+        session = demo.DemoSession(FakeTransport(), Path("."))
+        session.running = True
+        session._run_generation = 2
+        session._schedule_step(0, 1)
+        self.assertTrue(session.running)
+        session.close()
+
+    def test_stale_step_error_cannot_clear_newer_run(self):
+        session = demo.DemoSession(FakeTransport(), Path("."))
+        session.running = True
+        session._run_generation = 2
+        session._step_worker(1, 1)
+        self.assertTrue(session.running)
+        session.close()
+
+    def test_manifest_write_failure_stops_owned_child(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            exe = root / "engine.exe"
+            exe.write_bytes(b"fake")
+            (root / "shaders").mkdir()
+            (root / "shaders" / "x.spv").write_bytes(b"shader")
+            process = FakeProcess()
+            with patch.object(demo.subprocess, "Popen", return_value=process), \
+                 patch.object(demo, "_write_manifest", side_effect=OSError("disk")):
+                with self.assertRaises(OSError):
+                    demo._launch(exe, 54321, root / "runtime")
+            self.assertTrue(process.terminated)
+
+    def test_tk_construction_failure_stops_owned_child(self):
+        process = FakeProcess()
+        fake_tk = types.SimpleNamespace(Tk=lambda: (_ for _ in ()).throw(RuntimeError("tk")))
+        with tempfile.TemporaryDirectory() as td:
+            manifest = Path(td) / "manifest.json"
+            manifest.write_text("{}", encoding="utf-8")
+            with patch.object(demo, "_launch", return_value=(process, manifest)), \
+                 patch.object(demo, "_wait_ready"), \
+                 patch.dict(sys.modules, {"tkinter": fake_tk}):
+                with self.assertRaises(RuntimeError):
+                    demo.main(["--exe", "engine.exe", "--port", "54321"])
+            self.assertTrue(process.terminated)
 
     def test_status_line_contains_b2_observables(self):
         line = demo._status_line({"status": {"iteration": 0, "energy": 2.625,
