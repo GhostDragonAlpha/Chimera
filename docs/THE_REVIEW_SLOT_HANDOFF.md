@@ -1,7 +1,9 @@
 # Review and execution slot handoff
 
-Status: implementation and validation in progress under
-`fleet-review-slot-handoff-01`. The live controller has not adopted this contract.
+Status: integrated through PR35 and deployed on 2026-09-10. Controller revision
+397 released the window-capture review from slot 2 while retaining its exact
+REVIEW head and leaving catalogue work unchanged. See the
+[deployment record](evidence/agent_fleet/REVIEW_SLOT_HANDOFF_DEPLOYMENT/REPORT.md).
 
 Alan's requirement is that a submitted task PR releases execution capacity while
 the task remains available for lead review. A pending PR is not accepted work.
@@ -50,6 +52,11 @@ A detached REVIEW retains its exact submitted head, branch and evidence. It stil
 protects its write scope from overlapping claims. It does not consume a slot or
 the submitter's execution capacity. Slot 1 may integrate its exact reviewed head
 through the existing fenced publication path.
+
+An owner field is attribution, not an execution-capacity count. In a snapshot,
+detached reviews have `slot: null` and a `review_slot_handoffs` receipt. Do not
+refuse to request eligible work merely because two records still name your agent;
+the controller enforces the actual capacity during `claim`.
 
 For corrections, the current lead records the rejected/revised review head and
 reason, cancels pending integration requests for that review, and returns it to
