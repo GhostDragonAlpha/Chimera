@@ -1,0 +1,33 @@
+{
+  "id": "chatcmpl-tedqjyttuodafozcaq56j",
+  "object": "chat.completion",
+  "created": 1789069388,
+  "model": "qwen3.8-27b-nvfp4-mtp",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "seen",
+        "reasoning_content": "The user wants a single-word reply: \"seen\". The instruction is explicit and unambiguous. No further reasoning needed beyond complying exactly. Output must be just that word.\n",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 71,
+    "completion_tokens": 39,
+    "total_tokens": 110,
+    "completion_tokens_details": {
+      "reasoning_tokens": 35
+    }
+  },
+  "stats": {
+    "total_draft_tokens_count": 51,
+    "accepted_draft_tokens_count": 22,
+    "rejected_draft_tokens_count": 29
+  },
+  "system_fingerprint": "qwen3.8-27b-nvfp4-mtp"
+}

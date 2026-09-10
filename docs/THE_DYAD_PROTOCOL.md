@@ -1,5 +1,18 @@
 # THE_DYAD_PROTOCOL.md — the standing eye loop
 
+> **Current operator selection (2026-09-10):** DYAD permanently uses
+> `qwen3.8-27b-nvfp4-mtp`, bound to
+> `C:\Users\allen\.lmstudio\models\esatapedico\Qwen3.8-27B-NVFP4-MTP-GGUF\Qwen3.8-27B-NVFP4-MTP-VERY-LOW.gguf`.
+> This supersedes the historical auto-follow model instructions below for
+> DYAD. The persistent policy lives in `ChimeraEngine/dyad_model_policy.json`.
+> Selection, local artifact identity, loaded instance, and response-reported
+> identity are separate facts. Missing or different response identity is a
+> failed observation, never permission to silently substitute another model.
+> Preserve resource admission, the fair inference queue, one image per call,
+> UTF-8 logging, and the operator's existing load/context settings. This
+> selection does not change non-DYAD text-client routing. Recorded identity
+> and verification evidence: `docs/evidence/dyad_model_policy/`.
+
 <!-- THE LOOP, CODIFIED 2026-09-03 after four verified rounds (see
      docs/THE_ENGINE_STUDIO.md, "the loaded review" chain). The dyad is the
      resident vision model (Qwen3 32B NVFP-MTP, LM Studio, ~23.3 GB VRAM).
