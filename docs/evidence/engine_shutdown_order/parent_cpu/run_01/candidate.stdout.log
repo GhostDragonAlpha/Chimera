@@ -1,0 +1,15 @@
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+actual_helpers: nine channel cancellations observed
+shutdown_test: wait_entered
+actual_helpers: already-applied success preserved
+actual_helpers: notification owns matching mutex
+shutdown_test: boot_wait_entered
+actual_helpers: observed parked boot delay cancelled and joined

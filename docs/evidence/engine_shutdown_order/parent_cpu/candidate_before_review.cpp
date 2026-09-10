@@ -328,9 +328,6 @@ static std::string membrane_demo_status_json(const Engine::MembraneDemoStatus& s
 // Signal handler for graceful shutdown
 struct ShutdownCancellation {};
 static std::atomic<bool> g_shutdown_closing{false};
-#ifdef CHIMERA_SHUTDOWN_TEST
-static std::atomic<bool> g_shutdown_test_boot_waiting{false};
-#endif
 
 template <class Condition, class Lock, class Rep, class Period, class Predicate>
 static bool wait_for_shutdown(Condition& cv, Lock& lock,
@@ -355,21 +352,6 @@ template <class Mutex, class Condition>
 static void notify_shutdown(Mutex& mutex, Condition& cv) {
     std::lock_guard<Mutex> lock(mutex);
     cv.notify_all();
-}
-
-static bool wait_for_shutdown_delay(std::mutex& mutex, std::condition_variable& cv,
-                                    const std::atomic<bool>& cancel,
-                                    std::chrono::milliseconds delay) {
-    std::unique_lock<std::mutex> lock(mutex);
-#ifdef CHIMERA_SHUTDOWN_TEST
-    g_shutdown_test_boot_waiting.store(true, std::memory_order_release);
-    printf("shutdown_test: boot_wait_entered\n");
-    fflush(stdout);
-#endif
-    return cv.wait_for(lock, delay, [&] {
-        return cancel.load(std::memory_order_acquire)
-            || g_shutdown_closing.load(std::memory_order_acquire);
-    });
 }
 
 static void notify_shutdown_channels() {
@@ -2592,10 +2574,6 @@ int main(int argc, char** argv) {
                      + ",\"replayed\":" + std::to_string(done)
                      + ",\"failed\":" + std::to_string(failed)
                      + ",\"detail\":\"" + detail + "\"}";
-#ifdef CHIMERA_SHUTDOWN_TEST
-                printf("shutdown_test: session_result %s\n", body.c_str());
-                fflush(stdout);
-#endif
             } else {
                 body = "{\"ok\":false,\"error\":\"want op=restore|clear\"}";
             }
@@ -2647,10 +2625,6 @@ int main(int argc, char** argv) {
             // becomes a failed replay item rather than a false restore success.
             body = "{\"ok\":false,\"error\":\"shutdown in progress\"}";
             content_type = "application/json";
-#ifdef CHIMERA_SHUTDOWN_TEST
-            printf("shutdown_test: cancelled %s\n", path.c_str());
-            fflush(stdout);
-#endif
         }
     };
     bool http_ok = server.start(http_port, api);
@@ -2683,8 +2657,11 @@ int main(int argc, char** argv) {
             boot_restore_thread = std::thread([&engine, &boot_restore_mutex,
                                                &boot_restore_cv, &boot_restore_cancel] {
                 auto delay_or_cancel = [&](std::chrono::milliseconds delay) {
-                    return wait_for_shutdown_delay(boot_restore_mutex, boot_restore_cv,
-                                                   boot_restore_cancel, delay);
+                    std::unique_lock<std::mutex> lock(boot_restore_mutex);
+                    return boot_restore_cv.wait_for(lock, delay, [&] {
+                        return boot_restore_cancel.load(std::memory_order_acquire)
+                            || g_shutdown_closing.load(std::memory_order_acquire);
+                    });
                 };
                 if (delay_or_cancel(std::chrono::milliseconds(1500))) return;
                 for (int attempt = 0; attempt < 3; ++attempt) {
@@ -2739,7 +2716,6 @@ int main(int argc, char** argv) {
 #ifdef CHIMERA_SHUTDOWN_TEST
     const bool shutdown_test_hold_md = std::getenv("CHIMERA_SHUTDOWN_TEST_HOLD") != nullptr;
     bool shutdown_test_md_marked = false;
-    bool shutdown_test_mesh_marked = false;
 #endif
 
     while (true) {
@@ -2818,15 +2794,6 @@ int main(int argc, char** argv) {
         // Apply a pending mesh request (Vulkan work must stay on this thread)
         {
             std::lock_guard<std::mutex> lk(g_mesh_mutex);
-#ifdef CHIMERA_SHUTDOWN_TEST
-            if (shutdown_test_hold_md && g_mesh_pending) {
-                if (!shutdown_test_mesh_marked) {
-                    printf("shutdown_test: mesh_pending_held\n");
-                    fflush(stdout);
-                    shutdown_test_mesh_marked = true;
-                }
-            } else
-#endif
             if (g_mesh_pending) {
                 if (g_mesh_req.update_only) {
                     engine.update_mesh(g_mesh_req.verts, g_mesh_req.N);
@@ -3118,7 +3085,7 @@ int main(int argc, char** argv) {
     fflush(stdout);
     notify_shutdown_channels();
     boot_restore_cancel.store(true, std::memory_order_release);
-    notify_shutdown(boot_restore_mutex, boot_restore_cv);
+    boot_restore_cv.notify_all();
     if (boot_restore_thread.joinable()) boot_restore_thread.join();
     printf("shutdown: boot_joined\n");
     fflush(stdout);
@@ -3129,12 +3096,6 @@ int main(int argc, char** argv) {
     engine.shutdown();
     printf("shutdown: engine_shutdown\n");
     fflush(stdout);
-#ifdef CHIMERA_SHUTDOWN_TEST
-    std::string late_body, late_type;
-    api("GET", "/membrane_demo", "", late_body, late_type);
-    printf("shutdown_test: late_api %s\n", late_body.c_str());
-    fflush(stdout);
-    if (late_body != "{\"ok\":false,\"error\":\"shutdown in progress\"}") return 2;
-#endif
     return 0;
 }
+

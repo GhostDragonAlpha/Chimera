@@ -1,0 +1,10 @@
+Source verification:
+git -C E:\ChimeraWork\slot-02 rev-parse HEAD
+
+CPU harness:
+cmake -S E:\ChimeraWork\slot-02\docs\evidence\engine_shutdown_order -B E:\ChimeraWork\slot-02\.tmp\engine_shutdown_order_cpu_02 -G "MinGW Makefiles"
+cmake --build E:\ChimeraWork\slot-02\.tmp\engine_shutdown_order_cpu_02 -j2
+E:\ChimeraWork\slot-02\.tmp\engine_shutdown_order_cpu_02\engine_shutdown_order_cpu.exe
+
+Private native witness build option (parent runtime only):
+-DCHIMERA_SHUTDOWN_TEST=ON with CHIMERA_SHUTDOWN_TEST_HOLD=1

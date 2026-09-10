@@ -1,0 +1,5 @@
+[
+  false,
+  null,
+  "No model is loaded in LM Studio. Load one (vision-capable) and the studio will adopt it. Chimera never loads or picks a model for you."
+]

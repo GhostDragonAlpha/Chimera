@@ -1,0 +1,78 @@
+[
+  {
+    "name": "candidate",
+    "build_exit": 0,
+    "exit": 0,
+    "watchdog": false,
+    "source_sha256": "abc9b5f4d71178444b94c5094a3e4dc279566e16835b7cd7112ccdf195893a62",
+    "command": [
+      "C:/ProgramData/mingw64/mingw64/bin/g++.exe",
+      "-std=c++17",
+      "-O2",
+      "-static",
+      "-pthread",
+      "-DCHIMERA_SHUTDOWN_TEST",
+      "-IE:\\ChimeraWork\\slot-02\\.tmp\\shutdown_parent_cpu_01\\candidate",
+      "E:\\ChimeraWork\\slot-02\\docs\\evidence\\engine_shutdown_order\\parent_cpu\\harness.cpp",
+      "-o",
+      "E:\\ChimeraWork\\slot-02\\.tmp\\shutdown_parent_cpu_01\\candidate\\harness.exe"
+    ]
+  },
+  {
+    "name": "ignore_cancel",
+    "build_exit": 0,
+    "exit": 1,
+    "watchdog": true,
+    "source_sha256": "94a29e98d124c2839b88b0a89bd87c7472ec9e68143f768d5d4ea8bfb9d9d736",
+    "command": [
+      "C:/ProgramData/mingw64/mingw64/bin/g++.exe",
+      "-std=c++17",
+      "-O2",
+      "-static",
+      "-pthread",
+      "-DCHIMERA_SHUTDOWN_TEST",
+      "-IE:\\ChimeraWork\\slot-02\\.tmp\\shutdown_parent_cpu_01\\ignore_cancel",
+      "E:\\ChimeraWork\\slot-02\\docs\\evidence\\engine_shutdown_order\\parent_cpu\\harness.cpp",
+      "-o",
+      "E:\\ChimeraWork\\slot-02\\.tmp\\shutdown_parent_cpu_01\\ignore_cancel\\harness.exe"
+    ]
+  },
+  {
+    "name": "false_success",
+    "build_exit": 0,
+    "exit": 10,
+    "watchdog": false,
+    "source_sha256": "d5677ff44b69b7cd06fd7c3241792debfbbf8063f7d47a3c4e2d8ea09f54831a",
+    "command": [
+      "C:/ProgramData/mingw64/mingw64/bin/g++.exe",
+      "-std=c++17",
+      "-O2",
+      "-static",
+      "-pthread",
+      "-DCHIMERA_SHUTDOWN_TEST",
+      "-IE:\\ChimeraWork\\slot-02\\.tmp\\shutdown_parent_cpu_01\\false_success",
+      "E:\\ChimeraWork\\slot-02\\docs\\evidence\\engine_shutdown_order\\parent_cpu\\harness.cpp",
+      "-o",
+      "E:\\ChimeraWork\\slot-02\\.tmp\\shutdown_parent_cpu_01\\false_success\\harness.exe"
+    ]
+  },
+  {
+    "name": "unlocked_notify",
+    "build_exit": 0,
+    "exit": 13,
+    "watchdog": false,
+    "source_sha256": "e042cba0c6e6f41df58ee9a4ce21878df2d9875f14a92aff5542785559e5c8f0",
+    "command": [
+      "C:/ProgramData/mingw64/mingw64/bin/g++.exe",
+      "-std=c++17",
+      "-O2",
+      "-static",
+      "-pthread",
+      "-DCHIMERA_SHUTDOWN_TEST",
+      "-IE:\\ChimeraWork\\slot-02\\.tmp\\shutdown_parent_cpu_01\\unlocked_notify",
+      "E:\\ChimeraWork\\slot-02\\docs\\evidence\\engine_shutdown_order\\parent_cpu\\harness.cpp",
+      "-o",
+      "E:\\ChimeraWork\\slot-02\\.tmp\\shutdown_parent_cpu_01\\unlocked_notify\\harness.exe"
+    ]
+  }
+]

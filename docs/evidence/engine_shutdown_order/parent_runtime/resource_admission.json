@@ -1,0 +1,41 @@
+{
+  "revision": 305,
+  "result": {
+    "id": "30e24406a15c9196",
+    "task": "engine-shutdown-order-01",
+    "owner": "codex-lead-20260910",
+    "generation": 1,
+    "wants": [
+      {
+        "name": "rtx4090",
+        "class": "gpu_functionality",
+        "memory_mb": null
+      },
+      {
+        "name": "engine_demo",
+        "class": "engine_demo",
+        "memory_mb": null
+      },
+      {
+        "name": "dyad_eye",
+        "class": "dyad_inference",
+        "memory_mb": null
+      }
+    ],
+    "priority": 5,
+    "enqueued_revision": 305,
+    "waiting_revisions": 0,
+    "served": true,
+    "granted": true,
+    "allocation_failed": false,
+    "stalled": null,
+    "granted_revision": 305,
+    "revoked": false,
+    "dropped_reason": null,
+    "grant_keys": [
+      "rtx4090",
+      "engine_demo",
+      "dyad_eye"
+    ]
+  }
+}
