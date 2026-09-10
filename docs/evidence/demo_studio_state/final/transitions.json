@@ -1,0 +1,510 @@
+[
+  {
+    "op": "reset",
+    "status": {
+      "ok": true,
+      "active": true,
+      "iteration": 0,
+      "accepted": 0,
+      "trials": 0,
+      "energy": 2.625,
+      "energy_initial": 2.625,
+      "terminal_state": "",
+      "centre": [
+        0,
+        0,
+        0.125
+      ],
+      "centre_force": [
+        0,
+        2.98023224e-08,
+        -0.428571433
+      ],
+      "accepted_state_id": 17560123212910228982,
+      "render_state_id": 0,
+      "last_control": "reset",
+      "material_snapshot": {
+        "gamma_admitted_f64": 1,
+        "gamma_uploaded_f32": 1,
+        "unit": "J/m^2",
+        "wu_to_m": 1.0
+      }
+    },
+    "scene": [
+      {
+        "id": "body",
+        "label": "body",
+        "detail": "no mesh",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "overlay",
+        "label": "overlay",
+        "detail": "none",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "show",
+        "label": "show",
+        "detail": "t=3.75s x1.00",
+        "state": 1,
+        "toggleable": true
+      },
+      {
+        "id": "joints",
+        "label": "joints",
+        "detail": "0 joints",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "volp",
+        "label": "volp",
+        "detail": "no kernel",
+        "state": 1,
+        "toggleable": false
+      },
+      {
+        "id": "gait",
+        "label": "gait",
+        "detail": "steps=0 omega=7.85",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "water_clock",
+        "label": "water clock",
+        "detail": "steps_total=0 inj=0/-1",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "water_vis",
+        "label": "water vis",
+        "detail": "the field, drawn",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "frost",
+        "label": "frost",
+        "detail": "no pack",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "strain",
+        "label": "strain",
+        "detail": "no hinge",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "matter",
+        "label": "matter",
+        "detail": "needs JNT2",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "chrome",
+        "label": "chrome",
+        "detail": "the studio bar",
+        "state": 1,
+        "toggleable": true
+      },
+      {
+        "id": "membrane_demo",
+        "label": "membrane demo",
+        "detail": "6 faces, iter 0, ready",
+        "state": 1,
+        "toggleable": false
+      }
+    ],
+    "existing_row_indices_preserved": true,
+    "passed": true
+  },
+  {
+    "op": "step",
+    "status": {
+      "ok": true,
+      "active": true,
+      "iteration": 1,
+      "accepted": 1,
+      "trials": 1,
+      "energy": 2.62457323,
+      "energy_initial": 2.625,
+      "terminal_state": "",
+      "centre": [
+        0,
+        0,
+        0.123999998
+      ],
+      "centre_force": [
+        0,
+        -2.98023224e-08,
+        -0.425212026
+      ],
+      "accepted_state_id": 13045020052590168641,
+      "render_state_id": 0,
+      "last_control": "accepted",
+      "material_snapshot": {
+        "gamma_admitted_f64": 1,
+        "gamma_uploaded_f32": 1,
+        "unit": "J/m^2",
+        "wu_to_m": 1.0
+      }
+    },
+    "scene": [
+      {
+        "id": "body",
+        "label": "body",
+        "detail": "no mesh",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "overlay",
+        "label": "overlay",
+        "detail": "none",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "show",
+        "label": "show",
+        "detail": "t=3.76s x1.00",
+        "state": 1,
+        "toggleable": true
+      },
+      {
+        "id": "joints",
+        "label": "joints",
+        "detail": "0 joints",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "volp",
+        "label": "volp",
+        "detail": "no kernel",
+        "state": 1,
+        "toggleable": false
+      },
+      {
+        "id": "gait",
+        "label": "gait",
+        "detail": "steps=0 omega=7.85",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "water_clock",
+        "label": "water clock",
+        "detail": "steps_total=0 inj=0/-1",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "water_vis",
+        "label": "water vis",
+        "detail": "the field, drawn",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "frost",
+        "label": "frost",
+        "detail": "no pack",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "strain",
+        "label": "strain",
+        "detail": "no hinge",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "matter",
+        "label": "matter",
+        "detail": "needs JNT2",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "chrome",
+        "label": "chrome",
+        "detail": "the studio bar",
+        "state": 1,
+        "toggleable": true
+      },
+      {
+        "id": "membrane_demo",
+        "label": "membrane demo",
+        "detail": "6 faces, iter 1, ready",
+        "state": 1,
+        "toggleable": false
+      }
+    ],
+    "existing_row_indices_preserved": true,
+    "passed": true
+  },
+  {
+    "op": "pause",
+    "status": {
+      "ok": true,
+      "active": true,
+      "iteration": 1,
+      "accepted": 1,
+      "trials": 1,
+      "energy": 2.62457323,
+      "energy_initial": 2.625,
+      "terminal_state": "",
+      "centre": [
+        0,
+        0,
+        0.123999998
+      ],
+      "centre_force": [
+        0,
+        -2.98023224e-08,
+        -0.425212026
+      ],
+      "accepted_state_id": 13045020052590168641,
+      "render_state_id": 0,
+      "last_control": "pause",
+      "material_snapshot": {
+        "gamma_admitted_f64": 1,
+        "gamma_uploaded_f32": 1,
+        "unit": "J/m^2",
+        "wu_to_m": 1.0
+      }
+    },
+    "scene": [
+      {
+        "id": "body",
+        "label": "body",
+        "detail": "no mesh",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "overlay",
+        "label": "overlay",
+        "detail": "none",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "show",
+        "label": "show",
+        "detail": "t=3.78s x1.00",
+        "state": 1,
+        "toggleable": true
+      },
+      {
+        "id": "joints",
+        "label": "joints",
+        "detail": "0 joints",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "volp",
+        "label": "volp",
+        "detail": "no kernel",
+        "state": 1,
+        "toggleable": false
+      },
+      {
+        "id": "gait",
+        "label": "gait",
+        "detail": "steps=0 omega=7.85",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "water_clock",
+        "label": "water clock",
+        "detail": "steps_total=0 inj=0/-1",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "water_vis",
+        "label": "water vis",
+        "detail": "the field, drawn",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "frost",
+        "label": "frost",
+        "detail": "no pack",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "strain",
+        "label": "strain",
+        "detail": "no hinge",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "matter",
+        "label": "matter",
+        "detail": "needs JNT2",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "chrome",
+        "label": "chrome",
+        "detail": "the studio bar",
+        "state": 1,
+        "toggleable": true
+      },
+      {
+        "id": "membrane_demo",
+        "label": "membrane demo",
+        "detail": "6 faces, iter 1, ready",
+        "state": 1,
+        "toggleable": false
+      }
+    ],
+    "existing_row_indices_preserved": true,
+    "passed": true
+  },
+  {
+    "op": "run",
+    "status": {
+      "ok": true,
+      "active": true,
+      "iteration": 126,
+      "accepted": 126,
+      "trials": 126,
+      "energy": 2.59807611,
+      "energy_initial": 2.625,
+      "terminal_state": "stagnated",
+      "centre": [
+        0,
+        0,
+        1.90596523e-07
+      ],
+      "centre_force": [
+        0,
+        -1.49011612e-08,
+        -6.60245689e-07
+      ],
+      "accepted_state_id": 16501489447187382864,
+      "render_state_id": 0,
+      "last_control": "accepted",
+      "material_snapshot": {
+        "gamma_admitted_f64": 1,
+        "gamma_uploaded_f32": 1,
+        "unit": "J/m^2",
+        "wu_to_m": 1.0
+      }
+    },
+    "scene": [
+      {
+        "id": "body",
+        "label": "body",
+        "detail": "no mesh",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "overlay",
+        "label": "overlay",
+        "detail": "none",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "show",
+        "label": "show",
+        "detail": "t=4.08s x1.00",
+        "state": 1,
+        "toggleable": true
+      },
+      {
+        "id": "joints",
+        "label": "joints",
+        "detail": "0 joints",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "volp",
+        "label": "volp",
+        "detail": "no kernel",
+        "state": 1,
+        "toggleable": false
+      },
+      {
+        "id": "gait",
+        "label": "gait",
+        "detail": "steps=0 omega=7.85",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "water_clock",
+        "label": "water clock",
+        "detail": "steps_total=0 inj=0/-1",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "water_vis",
+        "label": "water vis",
+        "detail": "the field, drawn",
+        "state": 0,
+        "toggleable": true
+      },
+      {
+        "id": "frost",
+        "label": "frost",
+        "detail": "no pack",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "strain",
+        "label": "strain",
+        "detail": "no hinge",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "matter",
+        "label": "matter",
+        "detail": "needs JNT2",
+        "state": 0,
+        "toggleable": false
+      },
+      {
+        "id": "chrome",
+        "label": "chrome",
+        "detail": "the studio bar",
+        "state": 1,
+        "toggleable": true
+      },
+      {
+        "id": "membrane_demo",
+        "label": "membrane demo",
+        "detail": "6 faces, iter 126, stagnated",
+        "state": 1,
+        "toggleable": false
+      }
+    ],
+    "existing_row_indices_preserved": true,
+    "passed": true
+  }
+]

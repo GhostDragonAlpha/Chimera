@@ -1,0 +1,174 @@
+{
+  "identity": {
+    "pid": 31472,
+    "manifest": "E:\\ChimeraWork\\slot-03\\.tmp\\engine_runtime\\studio_fixed_01\\manifest.json",
+    "source_head": "8d72c4f36f5565aa33edf04da86d9f2d86347dc0",
+    "source_dirty": true,
+    "engine_cpp_sha256": "23adbaf944149b6adf249ff931f0a7e0b46bbef0a5c6083075646af3170fb90c",
+    "ui_cpp_sha256": "ae8d0a4e7aa457a6a6684726727e194dc13e5b1b94b382f6fd8ff3e06d1ffb1e",
+    "exe_sha256": "afce0edd970d6d7a85bed2c75196ea5c46acf39f1e6f4979e59a85d52d691d86"
+  },
+  "base": "http://127.0.0.1:8103",
+  "runner_sha256": "06620b31369472a3e4bb9811a2915565c9fbaae052983e69abacb2b40cb3da08",
+  "comparison": "exact serialized initialization fields",
+  "checks": [
+    {
+      "name": "zero_gamma_then_reset",
+      "before_reset": {
+        "ok": true,
+        "active": true,
+        "iteration": 0,
+        "accepted": 0,
+        "trials": 0,
+        "energy": 0,
+        "energy_initial": 2.625,
+        "terminal_state": "",
+        "centre": [
+          0,
+          0,
+          0.125
+        ],
+        "centre_force": [
+          0,
+          0,
+          0
+        ],
+        "accepted_state_id": 17560123212910228982,
+        "render_state_id": 0,
+        "last_control": "gamma_admitted",
+        "material_snapshot": {
+          "gamma_admitted_f64": 0,
+          "gamma_admitted_f64_hex": "see_admission_input",
+          "gamma_uploaded_f32": 0,
+          "gamma_uploaded_f32_hex": "see_float32_input",
+          "unit": "J/m^2",
+          "wu_to_m": 1.0
+        }
+      },
+      "after_reset": {
+        "ok": true,
+        "active": true,
+        "iteration": 0,
+        "accepted": 0,
+        "trials": 0,
+        "energy": 2.625,
+        "energy_initial": 2.625,
+        "terminal_state": "",
+        "centre": [
+          0,
+          0,
+          0.125
+        ],
+        "centre_force": [
+          0,
+          2.98023224e-08,
+          -0.428571433
+        ],
+        "accepted_state_id": 17560123212910228982,
+        "render_state_id": 0,
+        "last_control": "reset",
+        "material_snapshot": {
+          "gamma_admitted_f64": 1,
+          "gamma_uploaded_f32": 1,
+          "unit": "J/m^2",
+          "wu_to_m": 1.0
+        }
+      },
+      "mismatched": [],
+      "verdict": "PASS"
+    },
+    {
+      "name": "step_then_reset",
+      "before_reset": {
+        "ok": true,
+        "active": true,
+        "iteration": 1,
+        "accepted": 1,
+        "trials": 1,
+        "energy": 2.62457323,
+        "energy_initial": 2.625,
+        "terminal_state": "",
+        "centre": [
+          0,
+          0,
+          0.123999998
+        ],
+        "centre_force": [
+          0,
+          -2.98023224e-08,
+          -0.425212026
+        ],
+        "accepted_state_id": 13045020052590168641,
+        "render_state_id": 0,
+        "last_control": "accepted",
+        "material_snapshot": {
+          "gamma_admitted_f64": 1,
+          "gamma_uploaded_f32": 1,
+          "unit": "J/m^2",
+          "wu_to_m": 1.0
+        }
+      },
+      "after_reset": {
+        "ok": true,
+        "active": true,
+        "iteration": 0,
+        "accepted": 0,
+        "trials": 0,
+        "energy": 2.625,
+        "energy_initial": 2.625,
+        "terminal_state": "",
+        "centre": [
+          0,
+          0,
+          0.125
+        ],
+        "centre_force": [
+          0,
+          2.98023224e-08,
+          -0.428571433
+        ],
+        "accepted_state_id": 17560123212910228982,
+        "render_state_id": 0,
+        "last_control": "reset",
+        "material_snapshot": {
+          "gamma_admitted_f64": 1,
+          "gamma_uploaded_f32": 1,
+          "unit": "J/m^2",
+          "wu_to_m": 1.0
+        }
+      },
+      "mismatched": [],
+      "verdict": "PASS"
+    }
+  ],
+  "initial": {
+    "ok": true,
+    "active": true,
+    "iteration": 0,
+    "accepted": 0,
+    "trials": 0,
+    "energy": 2.625,
+    "energy_initial": 2.625,
+    "terminal_state": "",
+    "centre": [
+      0,
+      0,
+      0.125
+    ],
+    "centre_force": [
+      0,
+      2.98023224e-08,
+      -0.428571433
+    ],
+    "accepted_state_id": 17560123212910228982,
+    "render_state_id": 0,
+    "last_control": "init",
+    "material_snapshot": {
+      "gamma_admitted_f64": 1,
+      "gamma_uploaded_f32": 1,
+      "unit": "J/m^2",
+      "wu_to_m": 1.0
+    }
+  },
+  "passed": true
+}

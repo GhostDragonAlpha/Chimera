@@ -89,3 +89,17 @@ color ambiguity. Review of that final capture remains a separately retained
 result, not an assumption from source inspection. The generic status mesh
 line and the no-show/playing timeline ambiguity remain outside this repair.
 No human acceptance, simulation certification or performance result is inferred.
+
+Final DYAD (`dyad/eye_label.json`, served `qwen3.8-27b-nvfp4-mtp`, finish `stop`)
+explicitly reads the local-log/service-unknown distinction correctly. It still
+reports grid/topology ambiguity and wrapped inspector values. The claim that
+wrapped rows reserve no vertical space is not supported by the renderer:
+`ui.cpp` advances `y` from `text_wrap` before drawing the next key, and the
+capture places the clock below the law value. The long accepted-state ID does
+wrap; that readability observation is retained. No universal clean-UI verdict
+is claimed. All four reviews, including contradictory readings, are preserved.
+
+The final executable's owned PID 14208 was path-verified, closed via its own
+window, and confirmed exited. Engine, eye and GPU reservations were released
+at controller revisions 221–223. The later network-binding repair is a separate
+task; these captures record the pre-repair listener behavior.
