@@ -2363,3 +2363,68 @@ unclaimed; the earlier 99-test evidence is preserved.
 Follow-up prefix regressions and a compatibility correction bring the final
 verifier suite to **119/119**. The overbroad intermediate detector's four
 failures are retained; no compatibility assertion or tolerance was weakened.
+
+## Runtime integration and discovered shutdown requirements — 2026-09-10
+
+This is an evidence checkpoint at integration revision `7616771cdc15ccfb2dd0297b6961bc0bedfea400`
+and controller revision 248, not a substitute for current claims. Historical
+observations above remain intact. The complete evolving Master and linked
+roadmap remain the goal; these bounded repairs do not certify the whole engine.
+
+| Stable task ID | Observed state / dependency | Requirement and acceptance evidence |
+|---|---|---|
+| `demo-studio-state-01` | INTEGRATED, PR21, `cde18631e43ee684bc2851d0e2bcdb09d12d99d6` | Active membrane state drives viewport/idle and an appended scene row; inspector values match the endpoint. Actual native gate: 20 PASS + 1 INFO, plus four state-transition checks. The eye label distinguishes unavailable local logs from unknown service status. [Record](THE_DEMO_STUDIO_STATE.md) preserves DYAD ambiguity; grid depth remains `studio-grid-depth-01`, not accepted material topology. |
+| `engine-local-control-01` | INTEGRATED, PR22, `7616771cdc15ccfb2dd0297b6961bc0bedfea400` | Embedded control binds IPv4 loopback. Two fresh native builds served local GET/POST and had no observed new Security prompt host. OS listener inspection proves the binding; non-loopback timeouts do **not** pass the stricter immediate-refusal predicate. [Record](THE_ENGINE_LOCAL_CONTROL.md) preserves that failure. No firewall policy changed; older binaries are not retroactively repaired. |
+| `engine-http-lifecycle-01` | RUNNING, root owner, slot 3 generation 1; depends on `engine-local-control-01` | Stop must wake quiet accept and partial-request I/O, drain owned threads/sockets, and survive repeated cycles/start failure without new external traffic. Preregister an actual Winsock CPU baseline failure and corrected tests. Reject socket ownership races, leaked threads, loopback regressions or weakened watchdog predicates. Implementation and independent review remain pending at this checkpoint. |
+| `engine-shutdown-order-01` | OPEN / dependency not integrated: `engine-http-lifecycle-01` | At the inspected source, `main.cpp` starts a local HTTP server but calls `engine.shutdown()` without explicitly stopping it; callbacks capture engine state and can wait for engine commands. The detached boot-restore thread also captures the engine. Derive admission stop, command cancellation/drain and resource destruction order, including boot restore and console workers. Reject callback access after teardown, joinable-thread destruction, false success for cancelled work or hangs requiring unrelated traffic. CPU ownership tests precede resource-admitted native window/DYAD verification. No whole-engine shutdown acceptance is claimed. |
+
+The controller stores the last row as READY with a dependency; it is not
+eligible to claim until that dependency integrates. Source integration of fleet
+fixes is still distinct from deploying them to the running controller. Catalogue
+corrections, slot binding recovery, controller transition, and GOV-01 acceptance
+remain open under their existing IDs and owners. No task is removed or marked
+complete merely because this checkpoint makes its state discoverable.
+
+## Concurrent-client reconciliation requirements — 2026-09-10
+
+Alan confirms many agents are active. A changed Git head is a reason to
+reconcile the current claim, ancestry and bytes, not by itself a reason to
+stop and ask the operator. At the inspected slot-02 revisions,
+`fc5711eb` is a direct child of `9877179b` adding a separate evidence run;
+implementation bytes are unchanged and another distinct run remains staged.
+Both runs must be preserved. After refreshing the actual owner/generation and
+checking that state is stable, the owning worker can commit its remaining
+evidence and submit the new exact head through the existing PR workflow.
+This observation does not authorize ignoring source changes, divergent history,
+evidence deletion, a changed claim, or a concurrently changing index.
+
+| Stable task ID | Dependency / state at controller revision 273 | Requirement and falsifier |
+|---|---|---|
+| `fleet-head-reconcile-tool-01` | RUNNING, root slot 1 generation 1 | Read-only Git reconciliation instrument and real temporary-repository tests. Distinguish evidence-only additions from changed source, divergence, evidence modification/deletion and unstable reads. Reject any false continuation claim or modification of staged/untracked bytes. [Contract and results](THE_WORKTREE_RECONCILIATION.md). |
+| `fleet-head-reconcile-01` | OPEN; tool delivery and release of catalogue-owned onboarding/Fleet documentation scopes precede prompt integration | Incorporate the tested reconciliation procedure in canonical onboarding. A benign append must not require operator permission; conflicting ownership must be routed through the controller. The original scope claim was refused with `write_scope_conflict`; this is respected, not bypassed. |
+| `fleet-client-instance-01` | OPEN; depends on `master-catalogue-sync-01` and `fleet-slot-binding-01` | Bind independent client instances through the trusted launcher, fence stale/duplicate writers, and retain instance/request identity without secrets in audit events. Isolated baseline reproduced two clients sharing one fixture bearer both saving the same generation's checkpoint, with actor-only audit. Reject simultaneous admitted writers, guessed process ownership or a permissive compatibility path described as enforcement. Live migration requires coordinated acknowledgements and preserved claims; source integration alone is insufficient. |
+
+Git author configuration is shared in this repository's common `.git/config`;
+the current `buffy-02` setting does not identify which client wrote a commit.
+Agent/process counts likewise do not prove task ownership. Instance enforcement
+remains open: neither the new reconciliation tool nor a claim-generation bump
+alone prevents two clients with the same credential from acting as one agent.
+
+## Reconciliation delivery and next gates — 2026-09-10
+
+PR24 integrated the read-only worktree reconciliation tool at `b8bb5de5`:
+parent tests report nine passes and one unavailable Windows symlink test;
+actual slot-02 inspection preserves ignored caches and both distinct evidence
+runs. This is a bounded Git observation, not client-instance enforcement.
+
+PR14 integrated `elastic-ref-publish` at `d00304e9` (controller acknowledgement
+285). All 85 changed paths satisfy its two declared scopes after the regression
+test was relocated. Seven focused tests pass, the retained 19-check battery
+and shear/release demo satisfy their recorded gates, and both concurrent runs
+are preserved. GPU upload/corner validation and unrestricted STVK material
+certification remain unclaimed.
+
+| Stable task ID | Dependency / observed state | Requirement and falsifier |
+|---|---|---|
+| `elastic-domain-audit-01` | Registered at revision 287; depends on integrated `elastic-ref-publish` | Derive proper rigid-motion covariance, compression/reflection domain limits and modulus/thickness or 2D-stiffness units from the actual CPU law. Preregister analytic cases; report refusals and limitations. Reject invented inputs, invalid material certification, changed frozen fixtures or weakened tolerances. Own CPU runner and evidence, separate from GPU transcription. |
+| `doclint-header-path-01` | Root slot 1 generation 1, provisioned revision 290 | The HTTP commit hook matched a header-extension prefix and reported a nonexistent file. Check complete supported header tokens; existing headers must pass and missing headers must still fail. Preserve genuine broken-pointer detection and historical command evidence; no hook bypass or allowlist suppression. Temporary-path regression controls precede integration. |

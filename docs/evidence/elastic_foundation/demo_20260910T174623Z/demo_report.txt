@@ -1,0 +1,20 @@
+elastic-foundation D1 material-response demo
+============================================================
+run tag           : demo_20260910T174623Z
+python / numpy    : 3.14.3 / 2.2.6
+sheet             : 2.0 x 1.0 m, 8x4 grid, gamma=1.0, imposed +0.25 y
+------------------------------------------------------------
+A PINNED SHEAR
+  net right-edge internal y-reaction : -9.340659e-01
+  opposes implied displacement       : True
+B RELEASE (optimization steps, not time)
+  outcome       : stationary (iters 1130, accepted 1129, rejected 2907)
+  final |grad|  : 2.204e-13
+  max free dev  : 6.894e-12 m  (limit 2.0e-04)
+  energy final  : 1.115e-24  (limit 1.624e-13)
+C LAW CONTRAST (same pose)
+  elastic shear resistance (right edge) : 2.335e-01  (floor 0.1)
+  gamma max interior force              : 0.000e+00  (ceiling 1e-12)
+------------------------------------------------------------
+all named numbers hold: True
+============================================================

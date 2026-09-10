@@ -1,0 +1,65 @@
+test_existing_hpp_and_supported_files_pass (header_tests.HeaderPathTests.test_existing_hpp_and_supported_files_pass) ... FAIL
+test_extension_prefix_is_not_truncated (header_tests.HeaderPathTests.test_extension_prefix_is_not_truncated) ... FAIL
+test_missing_headers_and_full_path_prefix_fail (header_tests.HeaderPathTests.test_missing_headers_and_full_path_prefix_fail) ... FAIL
+test_relative_markdown_links_still_apply (header_tests.HeaderPathTests.test_relative_markdown_links_still_apply) ... ok
+
+======================================================================
+FAIL: test_existing_hpp_and_supported_files_pass (header_tests.HeaderPathTests.test_existing_hpp_and_supported_files_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:/ChimeraWork/slot-01/tools/test_doc_lint.py", line 35, in test_existing_hpp_and_supported_files_pass
+    self.assertEqual(self.scan(text), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'file': 'doc.md', 'ref': 'ChimeraEngine/[34 chars]th'}] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+{'file': 'doc.md', 'ref': 'ChimeraEngine/engine/http_server.h', 'kind': 'path'}
+
++ []
+- [{'file': 'doc.md',
+-   'kind': 'path',
+-   'ref': 'ChimeraEngine/engine/http_server.h'}]
+
+======================================================================
+FAIL: test_extension_prefix_is_not_truncated (header_tests.HeaderPathTests.test_extension_prefix_is_not_truncated)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:/ChimeraWork/slot-01/tools/test_doc_lint.py", line 48, in test_extension_prefix_is_not_truncated
+    self.assertEqual(self.scan("ChimeraEngine/engine/http_server.hxx"), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'file': 'doc.md', 'ref': 'ChimeraEngine/[34 chars]th'}] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+{'file': 'doc.md', 'ref': 'ChimeraEngine/engine/http_server.h', 'kind': 'path'}
+
++ []
+- [{'file': 'doc.md',
+-   'kind': 'path',
+-   'ref': 'ChimeraEngine/engine/http_server.h'}]
+
+======================================================================
+FAIL: test_missing_headers_and_full_path_prefix_fail (header_tests.HeaderPathTests.test_missing_headers_and_full_path_prefix_fail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:/ChimeraWork/slot-01/tools/test_doc_lint.py", line 41, in test_missing_headers_and_full_path_prefix_fail
+    self.assertEqual({x["ref"] for x in broken}, {
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "ChimeraEngine/engine/http_server.h",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "ChimeraEngine/engine/missing.hpp",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "ChimeraEngine/engine/missing.cpp",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    })
+    ^^
+AssertionError: Items in the first set but not the second:
+'ChimeraEngine/engine/missing.h'
+Items in the second set but not the first:
+'ChimeraEngine/engine/missing.hpp'
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.018s
+
+FAILED (failures=3)
