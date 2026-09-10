@@ -11,8 +11,9 @@ Gen5 correction evidence (elastic-ref-publish, lead review findings 1 and 2):
               with no run_* children exits 1; a run directory whose manifest
               lists zero fixtures exits 1. Neither writes a sidecar.
   POSITIVE    the real frozen v1 fixtures still verify (exit 0, rel err 0.0)
-              and the tracked .verified.json sidecar stays BYTE-IDENTICAL
-              after the run (historical evidence is append-only).
+              from a TEMP COPY of the fixture root, and the recomputed
+              sidecar stays byte-identical to the tracked one (gen-6 lead
+              correction: the tracked tree is never a write target).
 
 Synthetic fixtures are built with the committed law itself in pytest tmp_path
 roots; no file under docs/evidence is ever written by the negative controls.
@@ -151,13 +152,21 @@ def test_zero_fixture_manifest_refused(tmp_path):
     assert not (tmp_path / "hollow" / ".verified.json").exists()
 
 
-def test_real_v1_baseline_green_and_sidecar_byte_identical():
-    """The frozen fixtures must still pass, and the tracked sidecar must be
-    byte-identical after the verifier rewrites it (append-only evidence)."""
-    sidecar = REAL_FIX_ROOT / "v1" / ".verified.json"
-    before = sidecar.read_bytes()
-    rc = vf.run(_args("v1"))
-    after = sidecar.read_bytes()
+def test_real_v1_baseline_green_and_sidecar_byte_identical(tmp_path):
+    """The frozen v1 fixtures must still pass -- verified against a TEMP COPY
+    of the fixture root (gen-6 lead correction: never run the verifier on the
+    tracked tree, so the tracked historical sidecar is never a write target).
+    The recomputed sidecar must be byte-identical to the tracked one, which
+    additionally proves the tracked sidecar is exactly what a completed
+    verification of the current frozen fixtures produces."""
+    import shutil
+    work = tmp_path / "fixtures"
+    shutil.copytree(REAL_FIX_ROOT / "v1", work / "v1")
+    before = (work / "v1" / ".verified.json").read_bytes()
+    tracked = (REAL_FIX_ROOT / "v1" / ".verified.json").read_bytes()
+    assert before == tracked, "tracked sidecar drifted from its committed copy"
+    rc = vf.run(_args("v1"), fix_root=work)
+    after = (work / "v1" / ".verified.json").read_bytes()
     assert rc == 0
     out = json.loads(after.decode("utf8"))
     assert out["all_ok"] is True
@@ -165,7 +174,8 @@ def test_real_v1_baseline_green_and_sidecar_byte_identical():
         assert rec["sha256_ok"] is True
         assert rec["energy_rel_err"] == 0.0
         assert rec["vertex_rel_err"] == 0.0
-    assert before == after, "tracked .verified.json changed under recompute"
+    assert before == after, "recompute changed the sidecar in the temp copy"
+    assert tracked == after
 
 
 def test_rel_array_rejects_shape_mismatch_and_nonfinite():
