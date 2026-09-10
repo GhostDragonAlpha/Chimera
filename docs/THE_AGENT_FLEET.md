@@ -167,6 +167,17 @@ PR ownership does not authorize unreviewed changes, weakened gates, controller
 deployment or modification of the operator's checkout. Specific current user
 restrictions still govern integration and publication.
 
+Benign head changes are reconciled, not escalated (2026-09-10): refresh the
+actual controller owner/generation and compare the expected head with the
+read-only inspector `tools/agent_fleet/worktree_reconcile.py` (contract:
+THE_WORKTREE_RECONCILIATION.md). Evidence-only descendant commits with
+preserved staged runs need no operator confirmation: retain both, commit the
+remaining own evidence, and submit the exact current head. Changed
+implementation requires targeted revalidation; conflicting claims or history
+route to the lead while other owned work continues. Never reset, clean, or
+force-push to restore an old prompt. Git author is not authenticated identity,
+and stronger client-instance fencing remains separate pending work.
+
 Use cheaper subagents for bounded research, tests or independent reviews when
 they can run usefully in parallel. The owning agent checks their evidence and
 remains accountable. Helpers receive only the scope and access they need; they

@@ -89,6 +89,17 @@ corrections and integration. Review submission is not acceptance. Never push
 master, force-push or write protected build files. Task PR publication does not
 grant workers merge rights or permission to use another agent's credentials.
 
+Benign head changes are reconciled, not escalated: refresh the actual controller
+owner/generation and compare the expected head with the read-only inspector
+(`tools/agent_fleet/worktree_reconcile.py`; contract in
+[THE_WORKTREE_RECONCILIATION.md](THE_WORKTREE_RECONCILIATION.md)). Evidence-only
+descendant commits with preserved staged runs need no operator confirmation:
+retain both, commit your remaining evidence, and submit the exact current head.
+Changed implementation requires targeted revalidation; conflicting claims or
+history route to the lead while other owned work continues. Never reset, clean,
+or force-push to restore an old prompt, and remember Git authorship is not
+authenticated identity.
+
 ## Recovery and leadership
 
 If your context is lost, reread the controller and files; do not infer another

@@ -11,7 +11,8 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from control import Control, Refusal
 from master_catalogue import (SCHEMA, build_records, parse_master_rows,
-                              payload_digest, validate_payload)
+                              payload_digest, source_manifest,
+                              validate_payload)
 
 BASE = 'a' * 40
 HEAD = 'b' * 40
@@ -52,16 +53,60 @@ def row_record(rid, text, section='THE BACKLOG', line=1,
     return {'plane': 'master_row', 'id': rid, 'observations': [obs]}
 
 
-def payload(cards=(), rows=()):
+def payload(cards=(), rows=(), master_text=None, catalog_text=None):
+    """Build a minimal VALID payload around the given records.
+
+    The payload shape is the gen-5 contract: source_manifest (no supplied
+    source_versions) plus an exhaustive verbatim line_partition from which
+    the validator recomputes the manifest hash and every counter.
+    """
+    partition = {}
+    if master_text is None:
+        # Honest default: retain a synthetic master line per row record so
+        # the manifest/retention contract holds for every fixture payload.
+        lines = []
+        for r in rows:
+            obs = r.get('observations') or []
+            if not obs:
+                # Malformed records must still be transportable to the
+                # validator - that is exactly what the negative controls test.
+                lines.append(str(r.get('id') or 'unidentifiable-row'))
+                continue
+            o = obs[0]
+            lines.append(o.get('text') if o.get('kind') == 'prose_mention'
+                         else ' | '.join(o.get('columns') or [r.get('id')]))
+        master_text = '\n'.join(lines)
+    for n, textline in enumerate(master_text.splitlines(), 1):
+        partition[n] = {'class': 'prose', 'text': textline,
+                        'sha256': _sha(textline)}
+    if not rows and master_text is None:
+        # No master-plane records: an empty partition is the honest shape.
+        partition = {}
+    manifest = {'catalog': source_manifest(catalog_text or '{}', 'fixture',
+                                           None, retained=False),
+                'master': source_manifest(master_text, 'fixture',
+                                          None, retained=bool(rows or
+                                                              master_text is not None))}
     return {'schema': SCHEMA, 'cards': list(cards), 'master_rows': list(rows),
-            'coverage': {'cards': len(cards), 'domains': 1,
+            'source_manifest': manifest,
+            'coverage': {'cards': len(cards),
+                         'domains': len({c['domain'] for c in cards}),
                          'master_row_ids': len({r['id'] for r in rows}),
                          'master_row_observations': sum(
                              len(r['observations']) for r in rows),
-                         'unresolved': [],
+                         'unresolved': 0,
+                         'unresolved_records': [],
                          'structural_rows': 0,
-                         'prose_mentions': [],
-                         'campaign_prose_refs': []}}
+                         'prose_mentions': 0,
+                         'prose_mention_records': [],
+                         'campaign_prose_refs': 0,
+                         'campaign_prose_records': [],
+                         'unkeyed_requirements': 0,
+                         'unkeyed_requirement_records': [],
+                         'line_partition': partition,
+                         'version_pin': {
+                             'master_sha256': manifest['master']['sha256'],
+                             'catalog_sha256': manifest['catalog']['sha256']}}}
 
 
 class CatalogueTests(unittest.TestCase):
@@ -112,14 +157,18 @@ class CatalogueTests(unittest.TestCase):
         built = build_records()
         self.assertEqual(built['coverage']['cards'], 240)
         self.assertEqual(built['coverage']['domains'], 40)
-        # gen-4 correction: coverage is pinned to the CURRENT canonical
-        # source (spine 9022d669) and counters are recomputed at validation.
-        sv = built['source_versions']
-        self.assertEqual(sv['master']['path'].endswith('THE_MASTER_LIST.md'), True)
-        self.assertRegex(sv['master']['git_commit'] or '', r'^[0-9a-f]{40}$')
-        self.assertRegex(sv['master']['sha256'], r'^[0-9a-f]{64}$')
-        self.assertEqual(built['coverage']['master_row_ids'], 59)
-        self.assertEqual(built['coverage']['master_row_observations'], 62)
+        # gen-5 correction: source_versions (submitter-supplied hashes) is
+        # GONE; source_manifest is computed from the retained source and the
+        # validator recomputes its hash from the verbatim line partition.
+        self.assertNotIn('source_versions', built)
+        sm = built['source_manifest']
+        self.assertEqual(sm['master']['path'].endswith('THE_MASTER_LIST.md'), True)
+        self.assertRegex(sm['master']['git_commit'] or '', r'^[0-9a-f]{40}$')
+        self.assertRegex(sm['master']['sha256'], r'^[0-9a-f]{64}$')
+        self.assertTrue(sm['master']['retained'])
+        self.assertFalse(sm['catalog']['retained'])
+        self.assertEqual(built['coverage']['master_row_ids'], 65)
+        self.assertEqual(built['coverage']['master_row_observations'], 68)
         ids = {r['id'] for r in built['master_rows']}
         for required in ('demo-studio-state-01', 'math-contract-audit-01',
                          'fleet-slot-binding-01', 'studio-grid-depth-01',
@@ -127,15 +176,23 @@ class CatalogueTests(unittest.TestCase):
                          'L1', 'B1', 'H1'):
             self.assertIn(required, ids)
         self.assertFalse(validate_payload(built))
+        # gen-5: the EXHAUSTIVE partition retains every line verbatim.
+        part = built['coverage']['line_partition']
+        self.assertEqual(sorted(part), list(range(1, len(part) + 1)))
+        # the lead's exact falsifier: Master line 1825 (the plain-prose B7b
+        # requirement continuation) must be retained, not dropped.
+        self.assertEqual(part[1825]['class'], 'prose')
+        self.assertIn('B7b', part[1825]['text'])
+        self.assertIn('B7b', json.dumps(built['coverage']['unkeyed_requirement_records']))
         # gen-4: unkeyed requirement prose (e.g. the plain B7b requirement
         # lines and Research Annex falsifier bullets - no keyed ID) is
         # preserved with provenance/classification, never dropped.
-        unkeyed_text = json.dumps(built['coverage']['unkeyed_requirements'])
+        unkeyed_text = json.dumps(built['coverage']['unkeyed_requirement_records'])
         self.assertIn('B7b', unkeyed_text,
                       'the plain B7b requirement prose must be preserved')
         self.assertTrue(built['coverage']['unkeyed_requirements'],
                         'annex/honest-negative requirement bullets must be kept')
-        for u in built['coverage']['unkeyed_requirements']:
+        for u in built['coverage']['unkeyed_requirement_records']:
             self.assertIn('line', u)
             self.assertIn('section', u)
             self.assertEqual(u['kind'], 'unkeyed_requirement')
@@ -166,8 +223,9 @@ class CatalogueTests(unittest.TestCase):
         # provenance (identifiable classification), never silently dropped,
         # and none of them carries a task ID in its first cell.
         built = build_records()
-        unresolved = built['coverage']['unresolved']
+        unresolved = built['coverage']['unresolved_records']
         self.assertTrue(unresolved, 'actor-roster rows must be reported')
+        self.assertEqual(built['coverage']['unresolved'], len(unresolved))
         from master_catalogue import _cell_id
         for u in unresolved:
             self.assertIn('section', u)
@@ -211,18 +269,9 @@ class CatalogueTests(unittest.TestCase):
                          ['observations'][0]['kind'], 'prose_mention')
         # Structure rows are counted, never misread as data.
         self.assertGreaterEqual(extra['structural_rows'], 4)
-        built = {'schema': SCHEMA,
-                 'cards': [],
-                 'master_rows': [rows[k] for k in sorted(rows)],
-                 'coverage': {'cards': 0, 'domains': 0,
-                              'master_row_ids': len(rows),
-                              'master_row_observations': sum(
-                                  len(r['observations']) for r in rows.values()),
-                              'unresolved': extra['unresolved'],
-                              'structural_rows': extra['structural_rows'],
-                              'prose_mentions': extra['prose_mentions'],
-                              'campaign_prose_refs':
-                                  extra['campaign_prose_refs']}}
+        built = payload(rows=[rows[k] for k in sorted(rows)],
+                        master_text=CURRENT_MASTER_FIXTURE.read_text(
+                            encoding='utf-8'))
         self.assertEqual(validate_payload(built), [])
 
     def test_new_prefix_and_new_section_controls(self):
@@ -453,9 +502,79 @@ class CatalogueTests(unittest.TestCase):
         self.assertEqual(validate_payload(forged3),
                          ['coverage_mismatch:unresolved'])
         forged4 = json.loads(json.dumps(good))
-        forged4['coverage']['unresolved'] = [{'no': 'provenance'}]
+        forged4['coverage']['unresolved'] = 1
+        forged4['coverage']['unresolved_records'] = [{'no': 'provenance'}]
         self.assertEqual(validate_payload(forged4),
                          ['malformed_coverage_unresolved'])
+
+    # --- gen-5 lead falsifiers, mirrored exactly --------------------------
+    def test_gen5_supplied_source_versions_refused(self):
+        # Falsifier 1: build_records() no longer emits source_versions, and
+        # validate_payload refuses any supplied version block outright - a
+        # submitter hash can never masquerade as proof against live files.
+        built = build_records()
+        self.assertNotIn('source_versions', built)
+        forged = json.loads(json.dumps(built))
+        forged['source_versions'] = {'master': {'sha256': 'f' * 64}}
+        self.assertEqual(validate_payload(forged),
+                         ['supplied_source_versions_refused'])
+        # Manifest hash is RECOMPUTED from the retained partition, so an
+        # altered manifest hash cannot pass.
+        forged2 = json.loads(json.dumps(built))
+        forged2['source_manifest']['master']['sha256'] = 'f' * 64
+        self.assertEqual(validate_payload(forged2),
+                         ['source_manifest_hash_mismatch'])
+        missing = json.loads(json.dumps(built))
+        missing.pop('source_manifest')
+        self.assertEqual(validate_payload(missing), ['missing_source_manifest'])
+
+    def test_gen5_forged_domain_count_refused(self):
+        # Falsifier 2: coverage.domains=999 was accepted; the count is now
+        # recomputed from the card records.
+        built = payload(cards=[card_record('MATH-01', domain='GOV'),
+                               card_record('MATH-02', domain='SIM')])
+        self.assertEqual(built['coverage']['domains'], 2)
+        forged = json.loads(json.dumps(built))
+        forged['coverage']['domains'] = 999
+        self.assertEqual(validate_payload(forged),
+                         ['coverage_mismatch:domains'])
+        forged2 = json.loads(json.dumps(built))
+        forged2['coverage']['unkeyed_requirements'] = 999
+        self.assertEqual(validate_payload(forged2),
+                         ['coverage_mismatch:unkeyed_requirements'])
+        no_pin = json.loads(json.dumps(built))
+        no_pin['coverage'].pop('version_pin')
+        self.assertEqual(validate_payload(no_pin), ['missing_version_pin'])
+
+    def test_gen5_exhaustive_partition_no_silent_omissions(self):
+        # Falsifier 3: dropping or tampering with ANY line - specifically the
+        # lead's B7b continuation at Master line 1825 - is refused; every
+        # line must be retained verbatim with a consistent hash.
+        built = build_records()
+        part = built['coverage']['line_partition']
+        # 2430 lines at the current canonical Master (post-merge, head
+        # 0e878758); the count is descriptive - exhaustiveness is what the
+        # validator enforces, independent of any frozen total.
+        self.assertEqual(len(part), 2430)
+        dropped = json.loads(json.dumps(built))
+        dropped['coverage']['line_partition'].pop('1825')  # JSON-stringified
+        self.assertEqual(validate_payload(dropped),
+                         ['line_partition_not_exhaustive'])
+        tampered = json.loads(json.dumps(built))
+        tampered['coverage']['line_partition']['1825'] = {
+            'class': 'prose', 'text': 'tampered', 'sha256': _sha('tampered')}
+        self.assertEqual(validate_payload(tampered),
+                         ['source_manifest_hash_mismatch'])
+        # a partition with self-inconsistent hashes is refused
+        bad_hash = json.loads(json.dumps(built))
+        bad_hash['coverage']['line_partition']['10']['sha256'] = '0' * 64
+        self.assertEqual(validate_payload(bad_hash),
+                         ['malformed_line_partition'])
+        # an unknown partition class is refused
+        bad_class = json.loads(json.dumps(built))
+        bad_class['coverage']['line_partition']['10']['class'] = 'mystery'
+        self.assertEqual(validate_payload(bad_class),
+                         ['malformed_line_partition'])
 
     def test_unkeyed_requirement_capture_control(self):
         text = ('## 9 - RESEARCH ANNEX (concepts)\n\n'

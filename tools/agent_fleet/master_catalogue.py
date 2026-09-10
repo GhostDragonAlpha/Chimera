@@ -8,8 +8,19 @@ creates, claims, admits or mutates live tasks/claims/resources/slots.
 
 No silent omissions: every parsed task row is kept (repeated observations of
 the same ID accumulate as a list - history is preserved, never overwritten),
-and pipe rows that do not resolve to a task ID inside the scoped sections are
-counted in coverage.unresolved instead of being dropped.
+pipe rows that do not resolve to a task ID are counted in coverage.unresolved
+instead of being dropped, and the source document is partitioned EXHAUSTIVELY:
+every line of the Master list lands in exactly one coverage.line_partition
+class, with plain prose and unkeyed requirements retained verbatim (text +
+sha256) so an unknown sentence or continuation line cannot vanish (lead
+gen-5 finding: Master line 1825, a B7b requirement continuation, was dropped).
+
+The payload carries a source_manifest per source (path, sha256, byte/line
+counts, best-effort git commit) computed from the retained source text.
+validate_payload RECOMPUTES those hashes from the submitted records, so a
+supplied hash can never masquerade as proof against live files; whether the
+manifest matches the CURRENT canonical sources is a separate admission gate
+(coverage.version_pin reports the pinned revision explicitly).
 """
 import hashlib
 import json
@@ -76,6 +87,9 @@ def parse_master_rows(text):
       extras['campaign_prose_refs']  uppercase project labels in prose
       extras['unkeyed_requirements']  unkeyed requirement records (kept,
                                  classified, never dropped)
+    Every line is additionally assigned to exactly one partition class in
+    extras['line_partition'] (exhaustive no-silent-omission accounting; the
+    classes sum to the line count of the source).
     """
     lines = text.splitlines()
 
@@ -101,6 +115,7 @@ def parse_master_rows(text):
     prose_mentions = []
     campaign_prose = []
     unkeyed = []
+    partition = {}  # lineno -> partition class (exhaustive over all lines)
     section = None
 
     def record(ident, observation):
@@ -122,12 +137,14 @@ def parse_master_rows(text):
         line = raw.strip()
         if line.startswith('#'):
             section = line
+            partition[lineno] = 'header'
             continue
         if line.startswith('|'):
             cells = [c.strip() for c in line.strip('|').split('|')]
             if separator(cells) or lineno in header_lines or (
                     cells and cells[0].strip('` ').casefold() in HEADER_CELLS):
                 structural += 1  # table structure, not a task row
+                partition[lineno] = 'structural'
                 continue
             ident = _cell_id(cells[0]) if cells else None
             if ident is None:
@@ -135,6 +152,7 @@ def parse_master_rows(text):
                 if refs:
                     # Assignment-style row without a leading task ID: keep
                     # every campaign reference with full provenance.
+                    partition[lineno] = 'cell_reference'
                     for ref in refs:
                         record(ref, {'kind': 'cell_reference', 'section': section,
                                      'line': lineno, 'columns': cells,
@@ -143,12 +161,19 @@ def parse_master_rows(text):
                 else:
                     unresolved.append({'line': lineno, 'section': section,
                                        'row': line[:200]})
+                    partition[lineno] = 'unresolved'
                 continue
             record(ident, {'kind': 'table_row', 'section': section,
                            'line': lineno, 'columns': cells,
                            'content_sha256': _sha(json.dumps(
                                cells, ensure_ascii=False))})
+            partition[lineno] = 'task_row'
             continue
+        # Every remaining line - blank, prose, anything - is exhaustively
+        # partitioned. Prose is retained VERBATIM (text + sha256) in the
+        # partition so no sentence or continuation line can silently vanish
+        # (the lead's gen-5 falsifier: Master line 1825 was dropped).
+        partition[lineno] = 'blank' if not line else 'prose'
         if line:
             # Prose: controller task IDs are cited backtick-quoted; capture
             # those by ID. Unbackticked hyphen-numbered candidates (dates,
@@ -191,7 +216,8 @@ def parse_master_rows(text):
     extras = {'unresolved': unresolved, 'structural_rows': structural,
               'prose_mentions': prose_mentions,
               'campaign_prose_refs': campaign_prose,
-              'unkeyed_requirements': unkeyed}
+              'unkeyed_requirements': unkeyed,
+              'line_partition': partition}
     return rows, extras
 
 
@@ -207,6 +233,25 @@ def _git_commit(path):
     except (OSError, ValueError):
         pass
     return None
+
+
+PARTITION_CLASSES = ('header', 'structural', 'task_row', 'cell_reference',
+                     'unresolved', 'prose', 'blank')
+
+
+def source_manifest(text, path, git_commit=None, retained=False):
+    """Manifest computed FROM the retained source text (never supplied).
+
+    The retained form is the LF-normalized reconstruction of the source
+    ('\\n'.join(text.splitlines())) - the same normalization
+    validate_payload applies to the submitted line partition, so hashes are
+    comparable on both sides regardless of the file's trailing newline.
+    """
+    canonical = '\n'.join(text.splitlines())
+    return {'path': str(path), 'sha256': _sha(canonical),
+            'bytes': len(canonical.encode('utf-8')),
+            'lines': len(text.splitlines()),
+            'git_commit': git_commit, 'retained': bool(retained)}
 
 
 def build_records(catalog_path=DEFAULT_CATALOG, master_path=DEFAULT_MASTER,
@@ -243,29 +288,62 @@ def build_records(catalog_path=DEFAULT_CATALOG, master_path=DEFAULT_MASTER,
                                                         ensure_ascii=False)),
                       'card': card})
     rows, extra = parse_master_rows(master_text)
-    catalog_sha = _sha(catalog_text)
-    master_sha = _sha(master_text)
+    # Exhaustive no-silent-omission accounting: EVERY line of the Master is
+    # retained verbatim in exactly one partition class, so continuations and
+    # unknown sentences cannot vanish (lead gen-5 falsifier: line 1825).
+    classes = extra.pop('line_partition')
+    master_lines = master_text.splitlines()
+    partition = {n: {'class': cls, 'text': master_lines[n - 1],
+                     'sha256': _sha(master_lines[n - 1])}
+                 for n, cls in classes.items()}
+    master_manifest = source_manifest(master_text, master_path,
+                                      _git_commit(master_path), retained=True)
+    catalog_manifest = source_manifest(catalog_text, catalog_path,
+                                       _git_commit(catalog_path), retained=False)
     return {'schema': SCHEMA, 'cards': cards,
             'master_rows': [rows[k] for k in sorted(rows)],
-            'source_versions': {
-                'catalog': {'path': str(catalog_path), 'sha256': catalog_sha,
-                            'git_commit': _git_commit(catalog_path)},
-                'master': {'path': str(master_path), 'sha256': master_sha,
-                           'git_commit': _git_commit(master_path)}},
+            # source_versions (gen<=4) carried submitter-supplied hashes that
+            # validate_payload could only trust - removed per the lead's
+            # gen-5 finding. source_manifest is recomputed from the retained
+            # source at validation time instead.
+            'source_manifest': {'master': master_manifest,
+                                'catalog': catalog_manifest},
             'coverage': {'cards': len(cards),
-                         'domains': len(data.get('domains', [])),
+                         'domains': len({c['domain'] for c in cards
+                                         if isinstance(c.get('domain'), str)}),
                          'master_row_ids': len(rows),
                          'master_row_observations': sum(
                              len(r['observations']) for r in rows.values()),
-                         'unresolved': extra['unresolved'],
-                         'structural_rows': extra['structural_rows'],
-                         'prose_mentions': extra['prose_mentions'],
-                         'campaign_prose_refs': extra['campaign_prose_refs'],
-                         'unkeyed_requirements': extra['unkeyed_requirements']}}
+                         # Scalar counters carry COUNTS; the detailed records
+                         # travel alongside in *_records fields so the
+                         # validator can recompute every count from them.
+                         'unresolved': len(extra['unresolved']),
+                         'unresolved_records': extra['unresolved'],
+                         'structural_rows': sum(
+                             1 for e in partition.values()
+                             if e['class'] == 'structural'),
+                         'prose_mentions': len(extra['prose_mentions']),
+                         'prose_mention_records': extra['prose_mentions'],
+                         'campaign_prose_refs': len(extra['campaign_prose_refs']),
+                         'campaign_prose_records': extra['campaign_prose_refs'],
+                         'unkeyed_requirements': len(extra['unkeyed_requirements']),
+                         'unkeyed_requirement_records': extra['unkeyed_requirements'],
+                         'line_partition': partition,
+                         'version_pin': {'master_sha256': master_manifest['sha256'],
+                                         'catalog_sha256': catalog_manifest['sha256']}}}
 
 
 def validate_payload(payload):
-    """Controller-side validation. Returns a list of named errors (empty=ok)."""
+    """Controller-side validation. Returns a list of named errors (empty=ok).
+
+    Nothing submitted is trusted except the records themselves: every
+    coverage counter and every manifest hash is RECOMPUTED here from the
+    submitted records (lead gen-4/gen-5 findings: forged counters and
+    submitter-supplied source hashes were accepted). The manifest is required
+    to be consistent with the retained source records; whether it matches the
+    CURRENT canonical files is deliberately NOT decided here - that is a
+    separate admission gate (coverage.version_pin surfaces the pinned sha).
+    """
     if not isinstance(payload, dict) or payload.get('schema') != SCHEMA:
         return ['invalid_catalogue_payload']
     cards = payload.get('cards')
@@ -276,27 +354,113 @@ def validate_payload(payload):
         return ['empty_catalogue_payload']
     if not isinstance(payload.get('coverage'), dict):
         return ['missing_catalogue_coverage']
-    # Coverage counters are RECOMPUTED from the records, never trusted from
-    # the submitter (lead gen-4 finding: forged coverage counts were accepted).
+    # A supplied source_versions block is a gen<=4 artifact the validator can
+    # only trust on faith - refuse it outright (lead gen-5 falsifier 1: a
+    # removed/altered source_versions was accepted).
+    if 'source_versions' in payload:
+        return ['supplied_source_versions_refused']
+    manifest = payload.get('source_manifest')
+    if (not isinstance(manifest, dict)
+            or not isinstance(manifest.get('master'), dict)):
+        return ['missing_source_manifest']
     coverage = payload['coverage']
+    partition = coverage.get('line_partition')
+    if not isinstance(partition, dict):
+        return ['missing_line_partition']
+    # Recompute the master manifest from the retained verbatim partition.
+    # The partition must be EXACTLY exhaustive over the manifest's claimed
+    # line count; an empty partition is only honest when the payload carries
+    # no master-plane records at all (cards-only imports - which admission
+    # then rejects as not matching the current canonical Master).
+    # JSON transport (HTTP body, state persistence) stringifies dict keys,
+    # so accept string line numbers and coerce them - then demand exact
+    # integer exhaustiveness.
+    norm = {}
+    for key, entry in partition.items():
+        try:
+            n = int(key)
+        except (TypeError, ValueError):
+            return ['malformed_line_partition']
+        if n in norm:
+            return ['malformed_line_partition']
+        norm[n] = entry
+    partition_lines = sorted(norm)
+    claimed = manifest['master'].get('lines')
+    if not isinstance(claimed, int) or claimed < 0:
+        return ['source_manifest_consistency:lines']
+    if partition_lines != list(range(1, claimed + 1)):
+        return ['line_partition_not_exhaustive']
+    if claimed == 0 and (rows or coverage.get('unresolved_records')
+                         or coverage.get('unkeyed_requirement_records')
+                         or coverage.get('prose_mention_records')
+                         or coverage.get('campaign_prose_records')):
+        return ['line_partition_not_exhaustive']
+    rebuilt = []
+    for n in partition_lines:
+        entry = norm[n]
+        if (not isinstance(entry, dict)
+                or entry.get('class') not in PARTITION_CLASSES
+                or not isinstance(entry.get('text'), str)
+                or not re.fullmatch('[0-9a-f]{64}', str(entry.get('sha256', '')))
+                or entry['sha256'] != _sha(entry['text'])):
+            return ['malformed_line_partition']
+        rebuilt.append(entry['text'])
+    retained_text = '\n'.join(rebuilt)
+    if manifest['master'].get('sha256') != _sha(retained_text):
+        return ['source_manifest_hash_mismatch']
+    for field in ('bytes', 'lines'):
+        want = {'bytes': len(retained_text.encode('utf-8')),
+                'lines': len(rebuilt)}[field]
+        if manifest['master'].get(field) != want:
+            return ['source_manifest_consistency:' + field]
+    if manifest['master'].get('retained') is not True:
+        return ['source_manifest_master_not_retained']
+    # Coverage counters are RECOMPUTED from the records, never trusted from
+    # the submitter (lead gen-4 finding: forged coverage counts were accepted;
+    # gen-5 falsifier 2: coverage.domains=999 was accepted).
+    partition = norm
+    unres_records = coverage.get('unresolved_records')
+    if not isinstance(unres_records, list):
+        return ['missing_unresolved_records']
+    for u in unres_records:
+        if (not isinstance(u, dict) or type(u.get('line')) is not int
+                or not isinstance(u.get('row'), str)):
+            return ['malformed_coverage_unresolved']
     computed = {
         'cards': len([c for c in cards if isinstance(c, dict)]),
+        'domains': len({c['domain'] for c in cards
+                        if isinstance(c, dict)
+                        and isinstance(c.get('domain'), str)}),
         'master_row_ids': len([r for r in rows if isinstance(r, dict)
                                and isinstance(r.get('id'), str)]),
         'master_row_observations': sum(
             len(r.get('observations') or []) for r in rows
             if isinstance(r, dict)),
+        'unresolved': len(unres_records),
+        'structural_rows': sum(
+            1 for e in partition.values()
+            if isinstance(e, dict) and e.get('class') == 'structural'),
+        'prose_mentions': len([m for m in
+                               coverage.get('prose_mention_records') or []
+                               if isinstance(m, dict)]),
+        'campaign_prose_refs': len([m for m in
+                                    coverage.get('campaign_prose_records') or []
+                                    if isinstance(m, dict)]),
+        'unkeyed_requirements': len([u for u in
+                                     coverage.get('unkeyed_requirement_records')
+                                     or [] if isinstance(u, dict)]),
     }
     for key, want in computed.items():
         if coverage.get(key) != want:
             return ['coverage_mismatch:' + key]
-    unres = coverage.get('unresolved')
-    if not isinstance(unres, list):
-        return ['coverage_mismatch:unresolved']
-    for u in unres:
-        if (not isinstance(u, dict) or type(u.get('line')) is not int
-                or not isinstance(u.get('row'), str)):
-            return ['malformed_coverage_unresolved']
+    # version_pin must carry the pinned source digests and agree with the
+    # recomputed manifest - historical source is distinguishable from current
+    # canonical source only by stating the pin explicitly.
+    pin = coverage.get('version_pin')
+    if (not isinstance(pin, dict)
+            or pin.get('master_sha256') != manifest['master'].get('sha256')
+            or not re.fullmatch('[0-9a-f]{64}', str(pin.get('master_sha256', '')))):
+        return ['missing_version_pin']
     errors = []
     by_id = set()
     row_ids = set()
