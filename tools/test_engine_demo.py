@@ -44,6 +44,14 @@ class FakeTransport:
                             "terminal_state": "", "last_control": op}}
 
 
+class TerminalTransport(FakeTransport):
+    def control(self, op, **values):
+        result = super().control(op, **values)
+        if op == "step":
+            result["status"]["terminal_state"] = "stagnated"
+        return result
+
+
 class FakeProcess:
     def __init__(self):
         self.terminated = False
@@ -92,6 +100,29 @@ class DemoSessionTests(unittest.TestCase):
         time.sleep(.12)
         steps = [call for call in transport.calls if call[0] == "step"]
         self.assertEqual(len(steps), 1)
+        session.close()
+
+    def test_terminal_reply_halts_scheduled_run(self):
+        transport = TerminalTransport()
+        session = demo.DemoSession(transport, Path("."))
+        session.run(3)
+        self.assertTrue(transport.step_started.wait(1))
+        transport.release_step.set()
+        time.sleep(.12)
+        self.assertEqual(len([c for c in transport.calls if c[0] == "step"]), 1)
+        self.assertFalse(session.running)
+        session.close()
+
+    def test_reset_cancels_inflight_run_before_reset_request(self):
+        transport = FakeTransport()
+        session = demo.DemoSession(transport, Path("."))
+        session.run(3)
+        self.assertTrue(transport.step_started.wait(1))
+        session.reset()
+        transport.release_step.set()
+        time.sleep(.12)
+        self.assertEqual(len([c for c in transport.calls if c[0] == "step"]), 1)
+        self.assertEqual(len([c for c in transport.calls if c[0] == "reset"]), 1)
         session.close()
 
     def test_close_terminates_only_owned_process(self):

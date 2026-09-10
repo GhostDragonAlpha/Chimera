@@ -121,16 +121,24 @@ class DemoSession:
         self.callback(message)
 
     def initialize(self) -> None:
+        self._cancel_run()
         self._background("initializing", self.transport.initialize)
 
     def status(self) -> None:
         self._background("status", self.transport.status)
 
     def reset(self) -> None:
+        self._cancel_run()
         self._background("reset", lambda: self.transport.control("reset"))
 
     def gamma(self, value: float) -> None:
+        self._cancel_run()
         self._background("gamma", lambda: self.transport.control("gamma", gamma=value))
+
+    def _cancel_run(self) -> None:
+        with self._lock:
+            self.running = False
+            self._run_generation += 1
 
     def pause(self) -> None:
         with self._lock:
@@ -171,6 +179,13 @@ class DemoSession:
                         return
                 result = self.transport.control("step", n_steps=1)
             self._say("step: " + _status_line(result))
+            terminal = result.get("terminal_state")
+            if not terminal and isinstance(result.get("status"), dict):
+                terminal = result["status"].get("terminal_state")
+            if terminal:
+                with self._lock:
+                    if generation == self._run_generation:
+                        self.running = False
         except Exception as exc:
             with self._lock:
                 if generation == self._run_generation:
