@@ -1,0 +1,1 @@
+FINITE_CALLBACK entered=yes held_before_release=yes callback_exited=yes stop_returned=yes

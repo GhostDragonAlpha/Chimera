@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.20)
+project(engine_http_lifecycle_gen2_review LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(REPO_ENGINE "${CMAKE_CURRENT_LIST_DIR}/../../../../ChimeraEngine/engine")
+add_executable(engine_http_lifecycle_gen2_review harness.cpp "${REPO_ENGINE}/http_server.cpp")
+target_include_directories(engine_http_lifecycle_gen2_review PRIVATE "${REPO_ENGINE}")
+target_link_libraries(engine_http_lifecycle_gen2_review PRIVATE ws2_32)

@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.20)
+project(engine_http_lifecycle_baseline LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+add_executable(engine_http_lifecycle_baseline harness.cpp http_server.cpp)
+target_include_directories(engine_http_lifecycle_baseline PRIVATE .)
+target_link_libraries(engine_http_lifecycle_baseline PRIVATE ws2_32)

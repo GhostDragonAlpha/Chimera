@@ -1,0 +1,12 @@
+Commands:
+git -C E:\ChimeraWork\slot-03 rev-parse HEAD
+git -C E:\ChimeraWork\slot-03 show 7616771c:ChimeraEngine/engine/http_server.cpp > .tmp/engine_http_lifecycle_gen2/baseline_source/http_server.cpp
+git -C E:\ChimeraWork\slot-03 show 7616771c:ChimeraEngine/engine/http_server.hpp > .tmp/engine_http_lifecycle_gen2/baseline_source/http_server.hpp
+cmake -S .tmp/engine_http_lifecycle_gen2/baseline_source -B .tmp/engine_http_lifecycle_gen2/baseline_build2 -G "MinGW Makefiles"
+cmake --build .tmp/engine_http_lifecycle_gen2/baseline_build2 -j2
+cmake -S .tmp/engine_http_lifecycle_gen2 -B .tmp/engine_http_lifecycle_gen2/fixed_build -G "MinGW Makefiles"
+cmake --build .tmp/engine_http_lifecycle_gen2/fixed_build -j2
+
+Baseline executable: .tmp/engine_http_lifecycle_gen2/baseline_build2/engine_http_lifecycle_baseline.exe
+Fixed executable: .tmp/engine_http_lifecycle_gen2/fixed_build/engine_http_lifecycle_harness.exe
+Each mode was started with Start-Process, waited 3000 ms, and killed only after Win32_Process.ExecutablePath exactly matched the expected baseline executable path.

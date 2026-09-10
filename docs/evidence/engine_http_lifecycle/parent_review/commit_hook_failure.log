@@ -1,0 +1,9 @@
+The initial generation-2 commit attempt was refused by doc_lint:
+
+BROKEN POINTERS (1):
+  docs/evidence/engine_http_lifecycle/gen2/commands.txt: ChimeraEngine/engine/http_server.h  [path]
+
+The actual command names the existing header with extension .hpp. The linter
+matched its shorter .h prefix. No commit was created and no hook was bypassed.
+Task doclint-header-path-01 repairs the scanner with missing-header negative
+controls; this record preserves the original refusal.
