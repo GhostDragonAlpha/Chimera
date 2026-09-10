@@ -1,0 +1,18 @@
+test_auth_identity_drain_and_resource_refusals_rollback (test_review_handoff.ReviewHandoffTests.test_auth_identity_drain_and_resource_refusals_rollback) ... ok
+test_correction_requeues_ready_then_replacement_claims_once_and_provisions_exact_head (test_review_handoff.ReviewHandoffTests.test_correction_requeues_ready_then_replacement_claims_once_and_provisions_exact_head) ... ok
+test_detached_review_resource_request_cannot_grant (test_review_handoff.ReviewHandoffTests.test_detached_review_resource_request_cannot_grant) ... ok
+test_existing_slotted_review_requeue_behavior_is_preserved (test_review_handoff.ReviewHandoffTests.test_existing_slotted_review_requeue_behavior_is_preserved) ... ok
+test_failed_owner_of_detached_review_uses_slotless_recovery (test_review_handoff.ReviewHandoffTests.test_failed_owner_of_detached_review_uses_slotless_recovery) ... ok
+test_handoff_preserves_review_and_agent_but_frees_execution_capacity (test_review_handoff.ReviewHandoffTests.test_handoff_preserves_review_and_agent_but_frees_execution_capacity) ... ok
+test_handoff_refuses_a_preexisting_actual_hold (test_review_handoff.ReviewHandoffTests.test_handoff_refuses_a_preexisting_actual_hold) ... ok
+test_http_service_routes_to_extension_and_refuses_worker (test_review_handoff.ReviewHandoffTests.test_http_service_routes_to_extension_and_refuses_worker) ... ok
+test_requeue_does_not_need_free_slot_but_following_claim_does (test_review_handoff.ReviewHandoffTests.test_requeue_does_not_need_free_slot_but_following_claim_does) ... ok
+test_restart_preserves_detached_review_and_reclaim_receipts (test_review_handoff.ReviewHandoffTests.test_restart_preserves_detached_review_and_reclaim_receipts) ... ok
+test_slotless_review_integrates_and_post_ack_release_is_idempotent (test_review_handoff.ReviewHandoffTests.test_slotless_review_integrates_and_post_ack_release_is_idempotent) ... ok
+test_slotted_integration_ack_keeps_base_response (test_review_handoff.ReviewHandoffTests.test_slotted_integration_ack_keeps_base_response) ... ok
+test_two_detached_reviews_do_not_exhaust_execution_capacity (test_review_handoff.ReviewHandoffTests.test_two_detached_reviews_do_not_exhaust_execution_capacity) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 2.034s
+
+OK

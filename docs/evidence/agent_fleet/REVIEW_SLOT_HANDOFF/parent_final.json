@@ -1,0 +1,16 @@
+{
+  "command": [
+    "C:\\Python314\\python.exe",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools/agent_fleet",
+    "-p",
+    "test_review_handoff.py",
+    "-v"
+  ],
+  "returncode": 0,
+  "cwd": "E:\\ChimeraWork\\slot-01",
+  "override": null
+}
