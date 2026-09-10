@@ -1,0 +1,85 @@
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  1>Checking Build System
+  Compiling compute.glsl -> compute.glsl.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/compute.glsl
+  Compiling floor.frag -> floor.frag.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/floor.frag
+  Compiling floor.vert -> floor.vert.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/floor.vert
+  Compiling frost_decode.comp -> frost_decode.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/frost_decode.comp
+  Compiling gait.comp -> gait.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/gait.comp
+  Compiling hinge.comp -> hinge.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/hinge.comp
+  Compiling joints.comp -> joints.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/joints.comp
+  Compiling membrane_demo.comp -> membrane_demo.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/membrane_demo.comp
+  Compiling render.frag -> render.frag.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render.frag
+  Compiling render.vert -> render.vert.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render.vert
+  Compiling render_tri.frag -> render_tri.frag.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render_tri.frag
+  Compiling render_tri.vert -> render_tri.vert.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render_tri.vert
+  Compiling render_tri_edge.frag -> render_tri_edge.frag.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render_tri_edge.frag
+  Compiling render_tri_frost.frag -> render_tri_frost.frag.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render_tri_frost.frag
+  Compiling render_tri_shadow.frag -> render_tri_shadow.frag.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render_tri_shadow.frag
+  Compiling render_tri_shadow.vert -> render_tri_shadow.vert.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render_tri_shadow.vert
+  Compiling skin.comp -> skin.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/skin.comp
+  Compiling sort.comp -> sort.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/sort.comp
+  Compiling ui.frag -> ui.frag.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/ui.frag
+  Compiling ui.vert -> ui.vert.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/ui.vert
+  Compiling volp.comp -> volp.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/volp.comp
+  Compiling water_color.comp -> water_color.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/water_color.comp
+  Compiling water_depth.comp -> water_depth.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/water_depth.comp
+  Compiling water_occ.comp -> water_occ.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/water_occ.comp
+  Compiling water_vis.comp -> water_vis.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/water_vis.comp
+  Building Custom Rule E:/ChimeraWork/slot-02/ChimeraEngine/engine/CMakeLists.txt
+  Building Custom Rule E:/ChimeraWork/slot-02/ChimeraEngine/engine/CMakeLists.txt
+  main.cpp
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\main.cpp(157,9): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\main.cpp(159,9): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\main.cpp(2336,29): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\main.cpp(2439,60): warning C4996: 'localtime': This function or variable may be unsafe. Consider using localtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\main.cpp(2502,31): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\main.cpp(2740,45): warning C4996: 'getenv': This function or variable may be unsafe. Consider using _dupenv_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+  engine.cpp
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\engine.cpp(427,19): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\engine.cpp(1168,26): warning C4996: 'getenv': This function or variable may be unsafe. Consider using _dupenv_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\engine.cpp(1172,25): warning C4996: 'getenv': This function or variable may be unsafe. Consider using _dupenv_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\engine.cpp(1952,27): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\engine.cpp(2646,15): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\engine.cpp(2651,17): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\engine.cpp(2658,21): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\engine.cpp(2679,15): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\engine.cpp(2908,15): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\engine.cpp(2914,13): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\engine.cpp(2926,15): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+  physics.cpp
+  http_server.cpp
+  ui.cpp
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\ui.cpp(292,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\ui.cpp(2034,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+  vulkan_surface_win32.cpp
+  Generating Code...
+  chimera_engine.vcxproj -> E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\Release\chimera_engine.exe
+  Building Custom Rule E:/ChimeraWork/slot-02/ChimeraEngine/engine/CMakeLists.txt

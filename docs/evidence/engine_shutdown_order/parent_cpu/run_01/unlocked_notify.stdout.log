@@ -1,0 +1,12 @@
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+shutdown_test: wait_entered
+actual_helpers: nine channel cancellations observed
+shutdown_test: wait_entered
+actual_helpers: already-applied success preserved

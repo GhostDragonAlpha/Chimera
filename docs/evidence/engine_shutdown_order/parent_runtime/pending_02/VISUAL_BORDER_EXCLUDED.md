@@ -1,0 +1,1 @@
+Window image included the nonclient shadow boundary with a narrow strip of unrelated background; preserved privately outside publication. owned_glass.png is the engine-only render. New runner captures only the verified client rectangle. Numerical lifecycle results remain unchanged.
