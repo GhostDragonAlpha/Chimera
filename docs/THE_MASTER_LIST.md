@@ -2409,3 +2409,22 @@ the current `buffy-02` setting does not identify which client wrote a commit.
 Agent/process counts likewise do not prove task ownership. Instance enforcement
 remains open: neither the new reconciliation tool nor a claim-generation bump
 alone prevents two clients with the same credential from acting as one agent.
+
+## Reconciliation delivery and next gates — 2026-09-10
+
+PR24 integrated the read-only worktree reconciliation tool at `b8bb5de5`:
+parent tests report nine passes and one unavailable Windows symlink test;
+actual slot-02 inspection preserves ignored caches and both distinct evidence
+runs. This is a bounded Git observation, not client-instance enforcement.
+
+PR14 integrated `elastic-ref-publish` at `d00304e9` (controller acknowledgement
+285). All 85 changed paths satisfy its two declared scopes after the regression
+test was relocated. Seven focused tests pass, the retained 19-check battery
+and shear/release demo satisfy their recorded gates, and both concurrent runs
+are preserved. GPU upload/corner validation and unrestricted STVK material
+certification remain unclaimed.
+
+| Stable task ID | Dependency / observed state | Requirement and falsifier |
+|---|---|---|
+| `elastic-domain-audit-01` | Registered at revision 287; depends on integrated `elastic-ref-publish` | Derive proper rigid-motion covariance, compression/reflection domain limits and modulus/thickness or 2D-stiffness units from the actual CPU law. Preregister analytic cases; report refusals and limitations. Reject invented inputs, invalid material certification, changed frozen fixtures or weakened tolerances. Own CPU runner and evidence, separate from GPU transcription. |
+| `doclint-header-path-01` | Root slot 1 generation 1, provisioned revision 290 | The HTTP commit hook matched a header-extension prefix and reported a nonexistent file. Check complete supported header tokens; existing headers must pass and missing headers must still fail. Preserve genuine broken-pointer detection and historical command evidence; no hook bypass or allowlist suppression. Temporary-path regression controls precede integration. |
