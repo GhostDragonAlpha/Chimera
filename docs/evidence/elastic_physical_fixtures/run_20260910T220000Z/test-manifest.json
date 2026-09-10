@@ -1,0 +1,9 @@
+{
+  "command": "python -m unittest tools.elastic_foundation.test_physical_fixtures tools.elastic_foundation.test_units_contract tools.elastic_foundation.test_verify_fixtures -v",
+  "output_sha256": "d8436ab6051d9892a0afd4050866b6372b7e1446b8109ddfd9beeee49c1579af",
+  "exit_code": 0,
+  "source_sha256": {
+    "test_physical_fixtures": "3b4910ae32243851223f441c6536639f98628ef4b2d06be25dab6a3d57e751a9",
+    "physical_fixtures": "861c790ac887f505dc7cec98bba18cc07c8291252ea04cde049263178081d439"
+  }
+}
