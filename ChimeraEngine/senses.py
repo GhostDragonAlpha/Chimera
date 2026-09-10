@@ -272,8 +272,7 @@ def resident_model(timeout: float = 8.0):
         for m in payload.get("data", []):
             if m.get("state") == "loaded" or m.get("status") == "loaded":
                 return m.get("id")
-        ids = [m.get("id") for m in payload.get("data", [])]
-        return ids[0] if ids else None
+        return None
     except Exception:
         return None
 
