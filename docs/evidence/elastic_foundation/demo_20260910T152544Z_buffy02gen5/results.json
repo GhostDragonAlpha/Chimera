@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "tag": "demo_20260910T152544Z_buffy02gen5",
+    "timestamp_utc": "20260910T152544Z",
+    "sheet": {
+      "W": 2.0,
+      "H": 1.0,
+      "nx": 8,
+      "ny": 4,
+      "gamma": 1.0,
+      "imposed_shear_y": 0.25
+    },
+    "python": "3.14.3",
+    "numpy": "2.2.6",
+    "eps64": 2.220446049250313e-16,
+    "alg_budget": 1.1368683772161603e-13,
+    "git_e_pythonchimera": {
+      "head": "fc029ab68373e045d75e46e31a5c039cab8dbf2e",
+      "describe": "fc029ab6",
+      "status": "M tools/elastic_foundation/verify_fixtures.py\n?? docs/evidence/elastic_foundation/run_20260910T152543Z_buffy02gen5/\n?? tools/test_verify_fixtures.py",
+      "dirty": true
+    }
+  },
+  "phases": {
+    "A_pinned_shear": {
+      "imposed": "+0.25 y",
+      "right_edge_vertices": 5,
+      "net_internal_y_reaction": -0.9340659340659343,
+      "opposes_imposed": true,
+      "energy": 0.08241758241758244,
+      "max_abs_force": 0.23351648351648358
+    },
+    "B_release": {
+      "outcome": "stationary",
+      "iters": 1130,
+      "accepted": 1129,
+      "rejected_steps": 2907,
+      "final_grad_norm": 2.2041663366310542e-13,
+      "max_free_dev_from_rest": 6.894335310361729e-12,
+      "dev_limit": 0.0002,
+      "energy_final": 1.1145591421646828e-24,
+      "energy_limit": 1.6240976817373716e-13,
+      "gamma_max_free_force_at_relax": 0.2500000000006479,
+      "energy_scale": 1.4285714285714284
+    },
+    "C_law_contrast": {
+      "elastic_right_edge_shear_resistance": 0.23351648351648358,
+      "gamma_max_interior_force": 0.0,
+      "interior_vertices": 21,
+      "resistance_floor": 0.1,
+      "gamma_blind_ceiling": 1e-12
+    }
+  },
+  "all_named_numbers_hold": true
+}
