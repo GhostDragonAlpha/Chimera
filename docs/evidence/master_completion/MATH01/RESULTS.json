@@ -7,6 +7,8 @@
   "result": "PASS",
   "passed": 32,
   "failed": 0,
+  "raw_stdout": "RAW_CHECK_STDOUT.txt",
+  "raw_metadata": "RAW_CHECK_METADATA.json",
   "coverage": [
     "registered unit families and conversion refusal",
     "finite values and overflow refusal",

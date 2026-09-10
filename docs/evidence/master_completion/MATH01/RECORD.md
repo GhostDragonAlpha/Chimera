@@ -9,7 +9,10 @@ audit; it does not accept catalogue card MATH-01 or alter its dependencies.
 - CPU command: `python tools/material_contract_checks.py`.
 - No engine executable, GPU API, DYAD service, or HTTP runtime was started.
 
-The command reports **32/32 PASS**. Its checks cover registered-family unit
+The command reports **32/32 PASS**. Its complete raw stdout/stderr, exit code,
+Python version, source commit, and SHA-256 identities are preserved in
+`RAW_CHECK_STDOUT.txt` and `RAW_CHECK_METADATA.json`; the earlier summary in
+`RESULTS.json` is therefore corroborated by the raw run record. Its checks cover registered-family unit
 conversion, nonfinite and negative values, provenance and derivation, material
 frames, orthotropic matrix structure, and refusal at the execution boundary.
 The captured summary is in `RESULTS.json`.
@@ -53,6 +56,33 @@ declares metres and a derived `g_sim` conversion in the worked `.chimera`
 format, but this is documentation convention rather than a typed parser-level
 quantity contract.
 
+## Native presentation and elasticity corrections
+
+The native membrane path is an explicit presentation mapping, not a general
+world-unit conversion. `ChimeraEngine/engine/engine.cpp:4090-4095` copies the
+uploaded f32 positions directly into a four-float storage layout. The shader
+`ChimeraEngine/engine/shaders/membrane_demo.comp:143-166` maps each accepted
+position as `(x, z + lift_m, -y)` and applies the same component permutation to
+the face normal; its push constant declares `lift_m` as an engine-Y
+presentation lift and `scale` as reserved `1.0` (`:63-70`). The native upload
+response in `ChimeraEngine/engine/main.cpp:544-547` reports `unit: J/m^2` and
+`wu_to_m: 1.0`, while `engine.cpp:4441-4459` records the same value in the
+material snapshot. These lines establish the B2 demo's declared identity
+mapping and axis permutation. They do not establish a general conversion API,
+runtime validation of arbitrary `wu_to_m`, or a frame identity for other
+meshes; those remain **OPEN**.
+
+The elastic assumptions inspected are dimensionally explicit inside their
+individual modules: `ChimeraEngine/core/hertz.py:73-79` uses
+`c_p = sqrt((B + 4G/3)/rho)` for a solid, `:99-113` uses Hertz/Mindlin force
+and stiffness expressions, and `ChimeraEngine/core/viscoelastic.py:57-73`
+declares dimensionless relaxation strength and `tau = a^2/D`. However, these
+functions accept plain floats and do not carry unit or frame metadata at their
+boundaries. The current branch has no `tools/elastic_foundation/` source tree
+or `docs/evidence/elastic_foundation/` directory to audit; that linked elastic
+catalogue work is therefore **OPEN / absent from this checkout**, with no
+completion inferred.
+
 ## Result and follow-on envelope
 
 The preregistered prediction is **supported**: the repository has several
@@ -67,4 +97,3 @@ composition rules, and round-trip/error gates. It should include independent
 reference calculations and negative controls for unknown units, cross-family
 conversion, nonfinite values, rotated nested frames, and mismatched frame
 identity. Existing material gates and frozen constants must remain unchanged.
-
