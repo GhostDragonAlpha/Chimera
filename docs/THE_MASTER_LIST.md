@@ -42,6 +42,17 @@ Current demo work: `engine-demo-01` owns slot-1 build/runtime/DYAD evidence;
 assignments/statuses remain the live controller's records. The underlying
 theShape term remains unproven; an engineering demo does not close it.
 
+### Discovered requirements — 2026-09-10
+
+These additions preserve the existing roadmap and history. Live claim state
+and dependency eligibility remain in the controller.
+
+| Task | Requirement and evidence | Next acceptance gate |
+|---|---|---|
+| `engine-demo-01` — reset-state correction | Actual reset tests returned restored geometry/energy with stale center forces. [Preregistration](evidence/engine_demo01/RESET_PREREGISTRATION.md) adds this consistency requirement to the owned milestone. | Both retained counterexamples must fail before repair and pass afterward; existing frozen numerical gates remain unchanged. |
+| `demo-studio-state-01` | The captured native Studio labels a visible active GPU demo as "no mesh loaded" and infers eye-offline from a missing local log. [Window evidence](evidence/engine_demo01/native_window_gen4.png). | After `engine-demo-01` integrates, bind displayed state to the actual active demo and distinguish an unavailable evidence feed from a tested eye failure; verify numerically and through runtime/DYAD. |
+| `gov01-evidence-reconcile-01` — slot binding gap | Slot 5 inherited a historical provisioning record on a new claim. Controller feedback `1e2ea0f99e63d12478804913` preserves the observation. | Safely bind provisioning to the current task/generation before editing that checkout; preserve old work and test stale-binding refusal. |
+
 **Proposed operational amendment: adoption does not deploy the fleet.** Preserve all
 historical sections below, including the superseded Luna-only roster. Alan's
 later instructions assign GLM 5.3 the active production milestone and sole
