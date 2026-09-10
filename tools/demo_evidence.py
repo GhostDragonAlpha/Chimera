@@ -5,6 +5,7 @@ import argparse
 import hashlib
 import json
 import math
+import re
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse
@@ -24,6 +25,19 @@ def _finite(value) -> bool:
     if isinstance(value, dict):
         return all(_finite(v) for v in value.values())
     return True
+
+
+def _uint64(value, positive=False) -> bool:
+    return (isinstance(value, int) and not isinstance(value, bool)
+            and (value > 0 if positive else value >= 0) and value <= 0xFFFFFFFFFFFFFFFF)
+
+
+def _number(value) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+
+
+def _hex(value, length: int) -> bool:
+    return isinstance(value, str) and re.fullmatch(rf"[0-9a-fA-F]{{{length}}}", value) is not None
 
 
 def _parse_time(value: str) -> datetime:
@@ -50,7 +64,7 @@ def validate_record(record: dict, expected: dict | None = None) -> dict:
     after = record.get("after", {})
     capture = record.get("capture", {})
     request = record.get("request", {})
-    if not isinstance(source, dict) or any(not source.get(k) for k in IDENTITY_KEYS):
+    if not isinstance(source, dict) or not _hex(source.get("commit"), 40) or not _hex(source.get("executable_sha256"), 64) or not _hex(source.get("shader_sha256"), 64):
         reasons.append("incomplete_source_identity")
     if expected:
         for key in IDENTITY_KEYS:
@@ -59,7 +73,7 @@ def validate_record(record: dict, expected: dict | None = None) -> dict:
     parsed = urlparse(str(record.get("endpoint", "")))
     if parsed.scheme != "http" or parsed.hostname not in {"127.0.0.1", "localhost", "::1"}:
         reasons.append("endpoint_not_loopback")
-    if not isinstance(process, dict) or not isinstance(process.get("pid"), int) or process.get("pid", 0) <= 0 or not process.get("exe"):
+    if not isinstance(process, dict) or not _uint64(process.get("pid"), positive=True) or not isinstance(process.get("exe"), str) or not process.get("exe"):
         reasons.append("incomplete_process_identity")
     if expected:
         if "pid" in expected and process.get("pid") != expected["pid"]:
@@ -69,11 +83,22 @@ def validate_record(record: dict, expected: dict | None = None) -> dict:
     for name, status in (("before", before), ("after", after)):
         if not isinstance(status, dict):
             reasons.append(f"{name}_status_not_object")
-        elif not _finite(status):
-            reasons.append(f"{name}_status_nonfinite")
-        elif not status.get("accepted_state_id"):
-            reasons.append(f"{name}_accepted_state_id_missing")
-    if not isinstance(capture, dict) or not capture.get("path") or not capture.get("sha256"):
+        else:
+            for field in ("accepted_state_id", "render_state_id", "iteration", "energy", "centre"):
+                if field not in status:
+                    reasons.append(f"{name}_{field}_missing")
+            if not _uint64(status.get("accepted_state_id"), positive=True):
+                reasons.append(f"{name}_accepted_state_id_invalid")
+            if not _uint64(status.get("render_state_id")):
+                reasons.append(f"{name}_render_state_id_invalid")
+            if not _uint64(status.get("iteration")):
+                reasons.append(f"{name}_iteration_invalid")
+            if not _number(status.get("energy")):
+                reasons.append(f"{name}_energy_invalid")
+            centre = status.get("centre")
+            if not isinstance(centre, list) or len(centre) != 3 or not all(_number(v) for v in centre):
+                reasons.append(f"{name}_centre_invalid")
+    if not isinstance(capture, dict) or not capture.get("path") or not _hex(capture.get("sha256"), 64):
         reasons.append("capture_identity_missing")
     else:
         path = Path(capture["path"])

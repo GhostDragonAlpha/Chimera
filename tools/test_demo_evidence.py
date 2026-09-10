@@ -55,7 +55,7 @@ class EvidenceTests(unittest.TestCase):
         result = mod.validate_record(self.record)
         self.assertEqual(result["verdict"], "insufficient_evidence")
         self.assertIn("before_accepted_state_id_missing", result["reasons"])
-        self.assertIn("after_status_nonfinite", result["reasons"])
+        self.assertIn("after_energy_invalid", result["reasons"])
 
     def test_source_mismatch_fails(self):
         expected = dict(self.record["source"])
@@ -69,6 +69,26 @@ class EvidenceTests(unittest.TestCase):
         mod.write_result({"verdict": "consistent_snapshot"}, out)
         with self.assertRaises(FileExistsError):
             mod.write_result({"verdict": "changed_during_capture"}, out)
+
+    def test_required_status_shape_rejects_partial_status(self):
+        self.record["before"] = {"accepted_state_id": 1}
+        self.assertEqual(mod.validate_record(self.record)["verdict"], "insufficient_evidence")
+
+    def test_status_numeric_strings_none_and_bool_are_rejected(self):
+        self.record["before"]["energy"] = "nan"
+        self.record["after"]["centre"] = [0, None, 0]
+        self.record["before"]["accepted_state_id"] = True
+        self.assertEqual(mod.validate_record(self.record)["verdict"], "insufficient_evidence")
+
+    def test_ids_and_pid_must_be_positive_uint64_integers(self):
+        self.record["before"]["accepted_state_id"] = -7
+        self.record["process"]["pid"] = True
+        self.assertEqual(mod.validate_record(self.record)["verdict"], "insufficient_evidence")
+
+    def test_source_and_capture_hashes_require_exact_hex_lengths(self):
+        self.record["source"]["commit"] = "x"
+        self.record["capture"]["sha256"] = "short"
+        self.assertEqual(mod.validate_record(self.record)["verdict"], "insufficient_evidence")
 
 
 if __name__ == "__main__":
