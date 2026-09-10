@@ -1,0 +1,499 @@
+..........................FFFFFFFFFFFFFFFFFF.............                [100%]
+================================== FAILURES ===================================
+_________________ test_rejects_invalid_file[rod_inf-explicit] _________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_rod_0')
+mode = 'explicit', name = 'rod_inf'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...ion=0.05\n======================================================================\n\n[run] tick=99 | rod=tension(inf)\n'
+reason = 'NONFINITE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-56\test_rejects_invalid_file_rod_0\LightEngine\output\print_bad_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E       assert 'NONFINITE' in "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_rod_0\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n"
+E        +  where "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_rod_0\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle..._invalid_file_rod_0\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+________________ test_rejects_invalid_file[rod_inf-directory] _________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_rod_1')
+mode = 'directory', name = 'rod_inf'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...ion=0.05\n======================================================================\n\n[run] tick=99 | rod=tension(inf)\n'
+reason = 'NONFINITE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E         LightEngine\output\print_bad_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E         
+E       assert 'NONFINITE' in "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n"
+E        +  where "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...         VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+________________ test_rejects_invalid_file[rope_nan-explicit] _________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_rope0')
+mode = 'explicit', name = 'rope_nan'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...=============================================================\n\n[run] tick=99 | rope links T/S/C=1/0/0 max_comp=nan\n'
+reason = 'NONFINITE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-56\test_rejects_invalid_file_rope0\LightEngine\output\print_bad_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E       assert 'NONFINITE' in "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_rope0\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n"
+E        +  where "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_rope0\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle..._invalid_file_rope0\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+________________ test_rejects_invalid_file[rope_nan-directory] ________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_rope1')
+mode = 'directory', name = 'rope_nan'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...=============================================================\n\n[run] tick=99 | rope links T/S/C=1/0/0 max_comp=nan\n'
+reason = 'NONFINITE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E         LightEngine\output\print_bad_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E         
+E       assert 'NONFINITE' in "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n"
+E        +  where "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...         VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+________________ test_rejects_invalid_file[theta_nan-explicit] ________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_thet0')
+mode = 'explicit', name = 'theta_nan'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...=0.05\n======================================================================\n\n[run] tick=99 | theta=[nan, 1.0]deg\n'
+reason = 'NONFINITE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-56\test_rejects_invalid_file_thet0\LightEngine\output\print_bad_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E       assert 'NONFINITE' in "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_thet0\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n"
+E        +  where "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_thet0\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle..._invalid_file_thet0\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+_______________ test_rejects_invalid_file[theta_nan-directory] ________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_thet1')
+mode = 'directory', name = 'theta_nan'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...=0.05\n======================================================================\n\n[run] tick=99 | theta=[nan, 1.0]deg\n'
+reason = 'NONFINITE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E         LightEngine\output\print_bad_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E         
+E       assert 'NONFINITE' in "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n"
+E        +  where "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...         VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+_______________ test_rejects_invalid_file[theta_trunc-explicit] _______________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_thet2')
+mode = 'explicit', name = 'theta_trunc'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...ession=0.05\n======================================================================\n\n[run] tick=99 | theta=[-120,]\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-56\test_rejects_invalid_file_thet2\LightEngine\output\print_bad_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E       assert 'MALFORMED' in "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_thet2\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n"
+E        +  where "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_thet2\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle..._invalid_file_thet2\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+______________ test_rejects_invalid_file[theta_trunc-directory] _______________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_thet3')
+mode = 'directory', name = 'theta_trunc'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...ession=0.05\n======================================================================\n\n[run] tick=99 | theta=[-120,]\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E         LightEngine\output\print_bad_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E         
+E       assert 'MALFORMED' in "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n"
+E        +  where "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...         VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+________________ test_rejects_invalid_file[rod_trunc-explicit] ________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_rod_2')
+mode = 'explicit', name = 'rod_trunc'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...sion=0.05\n======================================================================\n\n[run] tick=99 | rod=tension(1.0\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-56\test_rejects_invalid_file_rod_2\LightEngine\output\print_bad_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E       assert 'MALFORMED' in "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_rod_2\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n"
+E        +  where "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_rod_2\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle..._invalid_file_rod_2\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+_______________ test_rejects_invalid_file[rod_trunc-directory] ________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_rod_3')
+mode = 'directory', name = 'rod_trunc'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...sion=0.05\n======================================================================\n\n[run] tick=99 | rod=tension(1.0\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E         LightEngine\output\print_bad_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E         
+E       assert 'MALFORMED' in "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n"
+E        +  where "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...         VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+_______________ test_rejects_invalid_file[rope_trunc-explicit] ________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_rope2')
+mode = 'explicit', name = 'rope_trunc'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...=============================================================\n\n[run] tick=99 | rope links T/S/C=1/0/0 max_comp=1e+\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-56\test_rejects_invalid_file_rope2\LightEngine\output\print_bad_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E       assert 'MALFORMED' in "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_rope2\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n"
+E        +  where "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_rope2\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle..._invalid_file_rope2\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+_______________ test_rejects_invalid_file[rope_trunc-directory] _______________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_rope3')
+mode = 'directory', name = 'rope_trunc'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...=============================================================\n\n[run] tick=99 | rope links T/S/C=1/0/0 max_comp=1e+\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E         LightEngine\output\print_bad_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E         
+E       assert 'MALFORMED' in "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n"
+E        +  where "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...         VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+________________ test_rejects_invalid_file[gap_empty-explicit] ________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_gap_0')
+mode = 'explicit', name = 'gap_empty'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ....00 compression=0.05\n======================================================================\n\n[run] tick=99 | gap=\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-56\test_rejects_invalid_file_gap_0\LightEngine\output\print_bad_log.txt
+E         ERROR TypeError: '<' not supported between instances of 'str' and 'float'
+E         NOT VERIFIED
+E         
+E       assert 'MALFORMED' in "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_gap_0\\LightEngine\\output\\print_bad_log.txt\nERROR TypeError: '<' not supported between instances of 'str' and 'float'\nNOT VERIFIED\n"
+E        +  where "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_gap_0\\LightEngine\\output\\print_bad_log.txt\nERROR TypeError: '<' not supported between instances of 'str' and 'float'\nNOT VERIFIED\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...int_bad_log.txt\nERROR TypeError: '<' not supported between instances of 'str' and 'float'\nNOT VERIFIED\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+_______________ test_rejects_invalid_file[gap_empty-directory] ________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_gap_1')
+mode = 'directory', name = 'gap_empty'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ....00 compression=0.05\n======================================================================\n\n[run] tick=99 | gap=\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E         LightEngine\output\print_bad_log.txt
+E         ERROR TypeError: '<' not supported between instances of 'str' and 'float'
+E         NOT VERIFIED
+E         
+E         
+E       assert 'MALFORMED' in "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ...output\\print_bad_log.txt\nERROR TypeError: '<' not supported between instances of 'str' and 'float'\nNOT VERIFIED\n\n"
+E        +  where "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ...output\\print_bad_log.txt\nERROR TypeError: '<' not supported between instances of 'str' and 'float'\nNOT VERIFIED\n\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...t_bad_log.txt\nERROR TypeError: '<' not supported between instances of 'str' and 'float'\nNOT VERIFIED\n\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+______________ test_rejects_invalid_file[contact_trunc-explicit] ______________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_cont0')
+mode = 'explicit', name = 'contact_trunc'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...pression=0.05\n======================================================================\n\n[run] tick=99 | contact=1e+\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-56\test_rejects_invalid_file_cont0\LightEngine\output\print_bad_log.txt
+E         ERROR TypeError: '<' not supported between instances of 'str' and 'float'
+E         NOT VERIFIED
+E         
+E       assert 'MALFORMED' in "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_cont0\\LightEngine\\output\\print_bad_log.txt\nERROR TypeError: '<' not supported between instances of 'str' and 'float'\nNOT VERIFIED\n"
+E        +  where "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_cont0\\LightEngine\\output\\print_bad_log.txt\nERROR TypeError: '<' not supported between instances of 'str' and 'float'\nNOT VERIFIED\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...int_bad_log.txt\nERROR TypeError: '<' not supported between instances of 'str' and 'float'\nNOT VERIFIED\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+_____________ test_rejects_invalid_file[contact_trunc-directory] ______________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_cont1')
+mode = 'directory', name = 'contact_trunc'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...pression=0.05\n======================================================================\n\n[run] tick=99 | contact=1e+\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E         LightEngine\output\print_bad_log.txt
+E         ERROR TypeError: '<' not supported between instances of 'str' and 'float'
+E         NOT VERIFIED
+E         
+E         
+E       assert 'MALFORMED' in "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ...output\\print_bad_log.txt\nERROR TypeError: '<' not supported between instances of 'str' and 'float'\nNOT VERIFIED\n\n"
+E        +  where "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ...output\\print_bad_log.txt\nERROR TypeError: '<' not supported between instances of 'str' and 'float'\nNOT VERIFIED\n\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...t_bad_log.txt\nERROR TypeError: '<' not supported between instances of 'str' and 'float'\nNOT VERIFIED\n\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+_____________ test_rejects_invalid_file[invalid_boolean-explicit] _____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_inva0')
+mode = 'explicit', name = 'invalid_boolean'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...05\n======================================================================\n\n[run] tick=99 | com_over_support=maybe\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-56\test_rejects_invalid_file_inva0\LightEngine\output\print_bad_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E       assert 'MALFORMED' in "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_inva0\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n"
+E        +  where "LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-56\\test_rejects_invalid_file_inva0\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle..._invalid_file_inva0\\LightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+____________ test_rejects_invalid_file[invalid_boolean-directory] _____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-56/test_rejects_invalid_file_inva1')
+mode = 'directory', name = 'invalid_boolean'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...05\n======================================================================\n\n[run] tick=99 | com_over_support=maybe\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E         LightEngine\output\print_bad_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E         
+E       assert 'MALFORMED' in "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n"
+E        +  where "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...         VERDICTS\nLightEngine\\output\\print_bad_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:51: AssertionError
+=========================== short test summary info ===========================
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[rod_inf-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[rod_inf-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[rope_nan-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[rope_nan-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[theta_nan-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[theta_nan-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[theta_trunc-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[theta_trunc-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[rod_trunc-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[rod_trunc-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[rope_trunc-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[rope_trunc-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[gap_empty-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[gap_empty-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[contact_trunc-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[contact_trunc-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[invalid_boolean-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[invalid_boolean-directory]
+18 failed, 39 passed in 4.26s

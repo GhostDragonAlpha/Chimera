@@ -1,0 +1,210 @@
+.........F...F....F..................................................... [ 60%]
+...........................F...................                          [100%]
+================================== FAILURES ===================================
+______________ test_settled_sign_matches_balance_verdict[path4] _______________
+
+path = WindowsPath('LightEngine/output/print_leg_v3_control_log.txt')
+
+    @pytest.mark.parametrize("path", FIXTURES)
+    def test_settled_sign_matches_balance_verdict(path: Path) -> None:
+        parsed = verify_run.parse_log(path)
+>       metrics = verify_run.recompute_metrics(parsed)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tools\test_verify_run.py:38: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+parsed = {'capture_band': None, 'derived': {'R_true': 0.573, 'a_l': 0.36546, 'a_m': 0.23405, 'contact_x': -0.06563, ...}, 'fals...: 'all five bodies one cluster; plate/fulcrum pins hold', 'name': 'INTEGRITY'}, ...}, 'frame_migration_bar': None, ...}
+
+    def recompute_metrics(parsed: dict) -> dict:
+        """Recompute physics metrics directly from the tick table."""
+        if parsed.get("input_errors"):
+>           raise ValueError("; ".join(parsed["input_errors"]))
+E           ValueError: MALFORMED line 13: invalid verdict: (and R_slack(0) in [0.5, 1.0]), the load end tips load-side-down
+
+tools\verify_run.py:350: ValueError
+______________________ test_exit_code_all_fixtures_agree ______________________
+
+    def test_exit_code_all_fixtures_agree() -> None:
+        result = subprocess.run(
+            [sys.executable, "tools/verify_run.py"] + [str(p) for p in FIXTURES],
+            capture_output=True,
+            text=True,
+        )
+>       assert result.returncode == 0, result.stdout + "\n" + result.stderr
+E       AssertionError: ======================================================================
+E         LOG: LightEngine\output\print_leg_v2_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E         ======================================================================
+E         LOG: LightEngine\output\print_lever_v6_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0224 at tick 200
+E           settled angle        -13.10 deg (sign -1)
+E           gap                  min 0.0391  max 0.0814  mean 0.0567
+E           contact              min -16.641  max +21.123  max_positive tick 400
+E           cluster max/body     1/1/1/1
+E           gap                min 0.0391 max 0.0814
+E         
+E         PHYSICS FLAGS
+E           REVERSAL SPIKE       tick 400  contact=+21.123  (threshold 16.641, cold |contact| 16.641)
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E         
+E         ======================================================================
+E         LOG: LightEngine\output\print_leg_v1_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0075 at tick 200
+E           settled angle        -71.76 deg (sign -1)
+E           gap                  min 0.0200  max 0.1008  mean 0.0943
+E           contact              min -978.767  max +2093.801  max_positive tick 600
+E           tip_to_drop          min 0.0247  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0755
+E           rod fractions        tension=0.93  compression=0.07  slack=0.00
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0200 max 0.1008
+E         
+E         PHYSICS FLAGS
+E           LEAP                 apex_z range 0.0755 > 0.01
+E           COMPRESSION EVENTS   tick 200 force=-48.75, tick 600 force=-56.77, tick 800 force=-40.30
+E           FLOOR BREACH         tip_to_drop min 0.0247 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0755         0.0755         AGREE     
+E           tendon min tip-to-drop   0.0247         0.0247         AGREE     
+E         
+E         ======================================================================
+E         LOG: LightEngine\output\print_leg_v3_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0000 at tick 0
+E           settled angle        +48.65 deg (sign 1)
+E           gap                  min 0.0573  max 0.2149  mean 0.1994
+E           contact              min -965.198  max +3400.079  max_positive tick 400
+E           tip_to_drop          min 0.0281  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rope fractions       tension=0.05  slack=0.95  compression=0.00
+E           theta                max |angle| 49.22 vs muscle_stop 18.54, load_stop -120.00  THETA_EXCEED
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0573 max 0.2149
+E         
+E         PHYSICS FLAGS
+E           FLOOR BREACH         tip_to_drop min 0.0281 < d_eq 0.0484
+E           THETA EXCEEDANCE     max |angle| 49.22 outside [-120.00, 18.54]
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    DETECTED   detected     AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           rope tension fraction    0.05           0.05           AGREE     
+E           rope slack fraction      0.95           0.95           AGREE     
+E           rope compression fraction 0.00           0.00           AGREE     
+E           rope apex z range        0.0000         0.0000         AGREE     
+E           rope min tip-to-drop     0.0281         0.0281         AGREE     
+E         
+E         LOG: LightEngine\output\print_leg_v3_control_log.txt
+E         MALFORMED line 13: invalid verdict: (and R_slack(0) in [0.5, 1.0]), the load end tips load-side-down
+E         NOT VERIFIED
+E         
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Python314\\python.exe', 'tools/verify_run.py', 'LightEngine\\output\\print_leg_v2_log.txt'...line 13: invalid verdict: (and R_slack(0) in [0.5, 1.0]), the load end tips load-side-down\nNOT VERIFIED\n', stderr='').returncode
+
+tools\test_verify_run.py:75: AssertionError
+_____________________ test_v3_control_no_theta_exceedance _____________________
+
+    def test_v3_control_no_theta_exceedance() -> None:
+        parsed = verify_run.parse_log(V3_CONTROL)
+>       metrics = verify_run.recompute_metrics(parsed)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tools\test_verify_run.py:120: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+parsed = {'capture_band': None, 'derived': {'R_true': 0.573, 'a_l': 0.36546, 'a_m': 0.23405, 'contact_x': -0.06563, ...}, 'fals...: 'all five bodies one cluster; plate/fulcrum pins hold', 'name': 'INTEGRITY'}, ...}, 'frame_migration_bar': None, ...}
+
+    def recompute_metrics(parsed: dict) -> dict:
+        """Recompute physics metrics directly from the tick table."""
+        if parsed.get("input_errors"):
+>           raise ValueError("; ".join(parsed["input_errors"]))
+E           ValueError: MALFORMED line 13: invalid verdict: (and R_slack(0) in [0.5, 1.0]), the load end tips load-side-down
+
+tools\verify_run.py:350: ValueError
+______ test_valid_output_is_byte_identical[print_leg_v3_control_log.txt] ______
+
+name = 'print_leg_v3_control_log.txt'
+
+    @pytest.mark.parametrize('name',[
+     'print_leg_v2_log.txt','print_lever_v6_log.txt','print_leg_v1_log.txt',
+     'print_leg_v3_log.txt','print_leg_v3_control_log.txt'])
+    def test_valid_output_is_byte_identical(name):
+        baseline=json.loads((ROOT/'docs/evidence/verifier-repair-02/baseline.json').read_text())
+        cp=subprocess.run([sys.executable,str(CLI),'LightEngine/output/'+name],cwd=ROOT,capture_output=True)
+>       assert cp.returncode==0 and not cp.stderr
+E       AssertionError: assert (1 == 0)
+E        +  where 1 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'LightEngine/out...13: invalid verdict: (and R_slack(0) in [0.5, 1.0]), the load end tips load-side-down\r\nNOT VERIFIED\r\n', stderr=b'').returncode
+
+tools\test_verify_run_integrity.py:110: AssertionError
+=========================== short test summary info ===========================
+FAILED tools/test_verify_run.py::test_settled_sign_matches_balance_verdict[path4]
+FAILED tools/test_verify_run.py::test_exit_code_all_fixtures_agree - Assertio...
+FAILED tools/test_verify_run.py::test_v3_control_no_theta_exceedance - ValueE...
+FAILED tools/test_verify_run_integrity.py::test_valid_output_is_byte_identical[print_leg_v3_control_log.txt]
+4 failed, 115 passed in 7.49s
