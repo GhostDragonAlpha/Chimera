@@ -41,9 +41,11 @@ It reports `consistent_snapshot` only when the accepted IDs are equal and all
 checks pass, or `changed_during_capture` when the IDs differ. Missing or
 contradictory evidence reports `insufficient_evidence` with named reasons.
 
-`render_state_id == 0` is recorded as `render_submission_identity: "unbound"`.
-The result is a bounded before/after snapshot correspondence; it does not claim
-that the captured PNG was the exact GPU submission or physics certification.
+`render_submission_identity` is always `"unbound"` in this schema. The optional
+`render_state_id` values are reported as presence data only; even nonzero IDs do
+not prove submission, completion, or frame linkage. The result is a bounded
+before/after snapshot correspondence; it does not claim that the captured PNG
+was the exact GPU submission or physics certification.
 
 The writer CLI refuses to overwrite an existing output path and creates parent
 directories only under the requested output directory. Failed validations are

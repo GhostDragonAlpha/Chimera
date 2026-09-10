@@ -43,6 +43,15 @@ class EvidenceTests(unittest.TestCase):
         self.record["after"]["accepted_state_id"] = 78
         self.assertEqual(mod.validate_record(self.record)["verdict"], "changed_during_capture")
 
+    def test_meaningful_energy_and_render_state_changes_are_detected(self):
+        self.record["after"]["energy"] = 99.0
+        self.assertEqual(mod.validate_record(self.record)["verdict"], "changed_during_capture")
+        self.record["after"]["energy"] = self.record["before"]["energy"]
+        self.record["after"]["render_state_id"] = 999
+        result = mod.validate_record(self.record)
+        self.assertEqual(result["verdict"], "changed_during_capture")
+        self.assertEqual(result["render_submission_identity"], "unbound")
+
     def test_swapped_capture_bytes_fail_hash_binding(self):
         (self.root / "frame.png").write_bytes(b"swapped bytes")
         result = mod.validate_record(self.record)
@@ -63,6 +72,23 @@ class EvidenceTests(unittest.TestCase):
         result = mod.validate_record(self.record, expected)
         self.assertEqual(result["verdict"], "insufficient_evidence")
         self.assertIn("source_mismatch_commit", result["reasons"])
+
+    def test_malformed_nested_objects_and_endpoint_expected_fail_safely(self):
+        self.record["before"] = None
+        result = mod.validate_record(self.record)
+        self.assertEqual(result["verdict"], "insufficient_evidence")
+        self.record["before"] = dict(self.record["after"])
+        result = mod.validate_record(self.record, {"endpoint": "http://localhost:9999"})
+        self.assertIn("endpoint_mismatch", result["reasons"])
+
+    def test_bad_expected_identity_numeric_time_and_path_type_are_named(self):
+        result = mod.validate_record(self.record, {"commit": "x"})
+        self.assertIn("expected_identity_invalid", result["reasons"])
+        self.record["request"]["started_utc"] = 123
+        self.record["capture"]["path"] = 42
+        result = mod.validate_record(self.record)
+        self.assertIn("request_timestamps_invalid", result["reasons"])
+        self.assertIn("capture_identity_missing", result["reasons"])
 
     def test_writer_refuses_overwrite(self):
         out = self.root / "result.json"
