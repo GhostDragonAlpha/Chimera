@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "stable": true,
+  "authority": "none",
+  "head": "03b7f6d4032ce89bb55d02ba17291f9b3e2d0835",
+  "expected_head": "03b7f6d4032ce89bb55d02ba17291f9b3e2d0835",
+  "classification": [
+    "evidence_only_added",
+    "preserved_ignored",
+    "preserved_untracked_outside_scope"
+  ],
+  "errors": []
+}

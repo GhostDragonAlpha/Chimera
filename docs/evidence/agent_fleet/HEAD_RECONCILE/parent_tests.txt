@@ -1,0 +1,14 @@
+test_changed_index_during_read_is_unstable (__main__.WorktreeReconcileTests.test_changed_index_during_read_is_unstable) ... ok
+test_clean_and_evidence_addition_are_read_only (__main__.WorktreeReconcileTests.test_clean_and_evidence_addition_are_read_only) ... ok
+test_fast_forward_evidence_commit_continues (__main__.WorktreeReconcileTests.test_fast_forward_evidence_commit_continues) ... ok
+test_filesystem_root_is_rejected_before_git (__main__.WorktreeReconcileTests.test_filesystem_root_is_rejected_before_git) ... ok
+test_historical_modify_and_delete_are_distinct (__main__.WorktreeReconcileTests.test_historical_modify_and_delete_are_distinct) ... ok
+test_outside_scope_and_divergent_head (__main__.WorktreeReconcileTests.test_outside_scope_and_divergent_head) ... ok
+test_staged_new_source_requires_revalidation (__main__.WorktreeReconcileTests.test_staged_new_source_requires_revalidation) ... ok
+test_unreadable_index_fails_closed (__main__.WorktreeReconcileTests.test_unreadable_index_fails_closed) ... ok
+test_unsafe_arguments_and_symlink_escape_refuse (__main__.WorktreeReconcileTests.test_unsafe_arguments_and_symlink_escape_refuse) ... skipped 'symlink creation unavailable'
+
+----------------------------------------------------------------------
+Ran 9 tests in 4.446s
+
+OK (skipped=1)
