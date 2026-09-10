@@ -1,0 +1,29 @@
+{
+  "continuation": {
+    "action": "read canonical Master and controller READY tasks; continue an eligible task",
+    "authority": "controller_snapshot",
+    "eligible_tasks": null,
+    "hierarchy_complete": false,
+    "owner": null,
+    "route": "canonical_master_controller"
+  },
+  "current": "theSeed",
+  "head": "6e240af1 Merge pull request #35 from GhostDragonAlpha/astra/tasks/fleet-review-slot-handoff-01",
+  "next_term": "theSeed",
+  "open_terms": 15,
+  "oriented": true,
+  "proven_terms": 1,
+  "store": {
+    "exists": true,
+    "path": "E:\\ChimeraWork\\slot-03\\ChimeraEngine\\engine_state.json",
+    "sha256": "bf0253046b3d8d7b187bcabe1137bb60f1d2b4dabc738bb0aac35f9712a6dc8b",
+    "size_bytes": 2173
+  },
+  "synthetic": false,
+  "verdicts": {
+    "closed": 2,
+    "next_number": 63,
+    "open": 0
+  },
+  "verdicts_commit": "cfba404b0b33"
+}

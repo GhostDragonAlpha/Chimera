@@ -345,11 +345,32 @@ class Engine:
 
     def next_action(self, name) -> str:
         if name is None:
-            return "the hierarchy is complete at this resolution."
+            return self.continuation_message()
         for g, ok, d in self.gates(name):
             if not ok:
                 return f"{GATE_FIX.get(g, g)}   (blocked at {g}: {d})"
         return f"prove({name!r}) -- every gate passes."
+
+    def continuation(self) -> dict:
+        """Describe the next routing authority when this local hierarchy has no open term.
+
+        The engine cannot inspect or claim the fleet controller; it emits a routing instruction
+        whose task/owner facts must come from the canonical Master/controller snapshot.
+        """
+        complete = self.next_term() is None
+        return {
+            "hierarchy_complete": complete,
+            "route": "canonical_master_controller",
+            "authority": "controller_snapshot",
+            "action": "read canonical Master and controller READY tasks; continue an eligible task",
+            "owner": None,
+            "eligible_tasks": None,
+        }
+
+    def continuation_message(self) -> str:
+        return ("LOCAL HIERARCHY COMPLETE at this resolution. CONTINUE via the canonical "
+                "Master/controller: read its current READY tasks and continue an eligible task. "
+                "This local completion does not end the project; no owner or task is claimed here.")
 
     # --- tool verbs (the MCP surface wraps these) --------------------------------
     def frame(self, name: str, claim: str) -> str:
@@ -582,5 +603,5 @@ class Engine:
             L.append(f"NEXT MOVE -> term `{nxt}`  (context: {' > '.join(self.context(nxt))})")
             L.append(f"            {self.next_action(nxt)}")
         else:
-            L.append("NEXT MOVE -> hierarchy complete at this resolution.")
+            L.append(f"NEXT MOVE -> {self.continuation_message()}")
         return "\n".join(L)

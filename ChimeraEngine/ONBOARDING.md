@@ -214,3 +214,7 @@ which is the move this very rule forbids.
 The gate refuses a run whose speeds are not scaled by sqrt(g/g_E), whose strides are not scaled by
 sqrt(g_E/g), or which disagrees with what the body publishes about itself. Full account: rule 1 of
 `Chimera/docs/EXPERIMENTAL_METHOD.md`.
+
+## Continuing after a local hierarchy completes
+
+A completed hierarchy is a resolution-level milestone. Follow the `continuation` record from `python tools/orient.py --json` to the canonical Master/controller READY-task snapshot; the engine does not claim ownership or end the project. See `docs/THE_HIERARCHY_CONTINUATION.md`.

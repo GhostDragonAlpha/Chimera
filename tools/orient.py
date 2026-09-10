@@ -111,7 +111,12 @@ def main() -> int:
                 "oriented": False, "synthetic": store["exists"] is False,
                 "reason": reason, "store": store, "head": head,
                 "verdicts": {"neutral_note": "verdict lane tracked separately"},
-                "current": None, "next_term": None}, indent=2, sort_keys=True))
+                "current": None, "next_term": None,
+                "continuation": {"hierarchy_complete": False,
+                                 "route": "canonical_master_controller",
+                                 "authority": "controller_snapshot",
+                                 "action": "obtain an authoritative controller snapshot before continuing",
+                                 "owner": None, "eligible_tasks": None}}, indent=2, sort_keys=True))
         else:
             print(f"UNORIENTED -- {head}")
             print("=" * 100)
@@ -139,6 +144,7 @@ def main() -> int:
 
     eng = Engine()
     if a.json:
+        continuation = eng.continuation()
         out = {
             "oriented": True, "synthetic": False, "store": store,
             "current": eng.state.get("current"),
@@ -150,6 +156,7 @@ def main() -> int:
             "proven_terms": len([1 for v in eng.state["hierarchy"].values()
                                  if v.get("status") in ("proven", "decided")]),
             "verdicts": {"open": None, "closed": None, "next_number": None},
+            "continuation": continuation,
         }
         ledger = VerdictLedger()
         st = ledger.status()

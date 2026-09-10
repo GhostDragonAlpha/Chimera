@@ -33,7 +33,7 @@ def next() -> str:
     proven, i.e. setting-first descent from the seed. You do not pick the term; the hierarchy does."""
     n = ENG.next_term()
     if not n:
-        return "The hierarchy is complete at this resolution. Nothing open to prove."
+        return ENG.continuation_message()
     ENG.state["current"] = n
     ENG._save()
     return (f"NEXT TERM: `{n}`\ncontext (the story you carry here): {' > '.join(ENG.context(n))}\n"
