@@ -113,20 +113,65 @@ not the reusable slot or model. Do not push different tasks onto one worker
 branch. Do not check out a shared branch in multiple linked worktrees using
 force/override options.
 
-The lead reviews and requests integration. A trusted publication broker verifies:
+The slot-1 lead reviews and requests integration under the PR workflow below.
+A trusted publication broker verifies:
 current leader epoch, task branch, exact reviewed head, current integration base,
 scoped diff, required evidence and branch protections. It then serializes the
 actual GitHub operation and records the resulting commit. If the base changes,
 reconcile and retest affected paths; never force-push to make a check succeed.
 `master` remains untouched. New task branches do not authorize main-branch
-merges. Existing workers retain their previous no-push instructions until their
-new task packet and broker access are explicitly provisioned.
+merges. Alan's 2026-09-10 instruction authorizes workers to push their own task
+branches and open PRs; it supersedes the earlier blanket worker no-push rule.
+Use the provisioned GitHub identity; missing access is not permission to borrow
+another agent's credentials.
 
 The reference's `integration_request` stores a **pending intent**. It executes
 no GitHub call. `ack_integration` accepts only a trusted publisher's result for
 the current leadership epoch and exact stored base/head. It is not proof of a
 real merge by itself; the publisher must supply actual GitHub evidence. Do not
 advertise end-to-end merge fencing until the broker is deployed and tested.
+
+### Pull request workflow
+
+Alan's current direction (2026-09-10): workers issue their own PRs; the person
+in slot 1 periodically checks for them and deals with them. This applies to
+all project PRs, including existing and externally submitted ones.
+
+- **Workers:** implement and test in their assigned worktree, checkpoint and
+  submit review with the actual claim generation, push their task branch, and
+  open a PR against `astra/gait-capture`. Include the task ID, exact commit,
+  concise behavior change, executed tests, evidence and remaining gates. Use
+  a draft when work or required verification remains incomplete. Respond to
+  review on that branch; use the controller's review-requeue path before
+  further edits to a frozen REVIEW task. Keep failed evidence and never
+  force-push. No separate message through Alan is required to announce a PR.
+- **Slot 1:** check the GitHub open-PR queue at the start of each active work
+  turn, at task checkpoints and before selecting new work. Review new PRs and
+  changed heads, request concrete corrections from their authors, verify the
+  required evidence, and resolve integration order and conflicts. Track
+  disposition through GitHub and the existing controller/Master list. Recheck
+  the actual head and base before authorized integration; a review of an older
+  head does not approve new commits. Keep slot 1's own PRs subject to independent
+  review. Handle PRs through the authorized integration/broker path; workers
+  do not merge their own work. When no PR needs action, continue slot 1's own
+  assigned lane. PRs awaiting author corrections or external dependencies do
+  not require idle waiting; return to the queue at the next checkpoint.
+- **Recovery:** slot 1 is the PR responsibility of the current qualified lead.
+  Follow controller election, epoch and workspace-preservation rules when
+  transferring that role. A slot path alone grants no leadership or credentials.
+  Report a role/assignment mismatch to the trusted launcher for reconciliation.
+
+Periodic checks are an agent duty while active; this document does not install
+a background polling service or claim that an inactive agent monitors GitHub.
+PR ownership does not authorize unreviewed changes, weakened gates, controller
+deployment or modification of the operator's checkout. Specific current user
+restrictions still govern integration and publication.
+
+Use cheaper subagents for bounded research, tests or independent reviews when
+they can run usefully in parallel. The owning agent checks their evidence and
+remains accountable. Helpers receive only the scope and access they need; they
+do not inherit fleet ownership or supervisor authority. Avoid duplicate work
+with live workers and do not use a model's name as proof of qualification.
 
 ## Leadership recovery stronger than a timeout
 

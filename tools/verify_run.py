@@ -3,13 +3,16 @@
 
 Parses a log file, recomputes physics metrics from the tick table, and checks
 each printed falsifier verdict against an independent recomputation.  Exits 0
-only when every parsed verdict agrees with the recomputed one.
+only for nonempty, valid input with no unknown or disagreeing verdicts.
+Known rules without enough evidence retain their explicit UNCHECKED status.
 
 ASCII-only output; safe for Windows cp1252 consoles.  Pure stdlib.
 """
 from __future__ import annotations
 
+import math
 import re
+from collections import Counter
 import statistics
 import sys
 from pathlib import Path
@@ -29,14 +32,14 @@ def _sign(x: float) -> int:
 
 
 _DERIVED_RE = re.compile(
-    r"Derived\s+(\w+)\s*=\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)"
+    r"\bDerived\s+(\w+)\s*=\s*(\S+)"
 )
-_ROD_RE = re.compile(r"^(tension|compression|slack)\(([+-]?\d+\.?\d*)\)$")
+_ROD_RE = re.compile(r"^(tension|compression|slack)\(([^()]+)\)$")
 _ROPE_RE = re.compile(
-    r"rope\s+links\s+T/S/C=(\d+)/(\d+)/(\d+)\s+max_comp=(\d+\.?\d*)"
+    r"rope\s+links\s+T/S/C=(\d+)/(\d+)/(\d+)\s+max_comp=(\S+)"
 )
 _THETA_RANGE_RE = re.compile(
-    r"^\[\s*([-+]?\d+\.?\d*)\s*,\s*([-+]?\d+\.?\d*)\s*\]deg?$"
+    r"^\[\s*([^,\[\]]+)\s*,\s*([^,\[\]]+)\s*\]deg?$"
 )
 _FALSIFIER_RE = re.compile(r"^\s*\(([a-z])\)\s+([\w-]+)\s*-\s*(.*)$")
 _BAR_RE = re.compile(r"([<>]=?)\s*(\d+\.?\d*)")
@@ -44,6 +47,21 @@ _BAND_RE = re.compile(r"band=\[\s*([\d.]+)\s*,\s*([\d.]+)\s*\]")
 # Extracts key=value pairs from a segment, allowing whitespace around '=' and
 # multiple pairs in one segment (e.g. "tick=0 phase=init").
 _KEYVAL_RE = re.compile(r"(\w[\w/]*)\s*=\s*([^=]*?)(?=(?:\s+\w[\w/]*\s*=|$))")
+_KNOWN_VERDICTS = frozenset(("LIFT", "HOLD", "BALANCE", "INTEGRITY", "SAG",
+                             "SLACK", "FRAME", "CAPTURE-CLOSED"))
+_NUMERIC_COLUMNS = frozenset(("gap", "plate_F", "contact", "tip_to_drop", "apex_z"))
+
+
+class NonfiniteValue(ValueError):
+    """A numeric input exists but cannot be used as finite evidence."""
+
+
+def _finite_number(value: str) -> float:
+    # float consumes the WHOLE token; a regex prefix must not turn 1e+ into 1.
+    number = float(value)
+    if not math.isfinite(number):
+        raise NonfiniteValue(value)
+    return number
 
 
 def _parse_sample_line(line: str) -> dict | None:
@@ -61,14 +79,14 @@ def _parse_sample_line(line: str) -> dict | None:
 
         # v3 rope column: "rope links T/S/C=1/0/0 max_comp=0.00"
         if segment.startswith("rope"):
-            m = _ROPE_RE.match(segment)
+            m = _ROPE_RE.fullmatch(segment)
             if m:
                 sample["rope_t"] = int(m.group(1))
                 sample["rope_s"] = int(m.group(2))
                 sample["rope_c"] = int(m.group(3))
-                sample["rope_max_comp"] = float(m.group(4))
+                sample["rope_max_comp"] = _finite_number(m.group(4))
             else:
-                sample["rope_raw"] = segment
+                raise ValueError("invalid rope field: " + segment)
             continue
 
         if "=" not in segment:
@@ -77,42 +95,52 @@ def _parse_sample_line(line: str) -> dict | None:
         for m in _KEYVAL_RE.finditer(segment):
             key = m.group(1).strip()
             value = m.group(2).strip()
+            if not value:
+                raise ValueError("empty value for " + key)
 
             if key == "tick":
                 sample["tick"] = int(value)
             elif key == "load_gain":
-                sample["load_gain"] = float(value)
+                sample["load_gain"] = _finite_number(value)
             elif key == "angle":
-                sample["angle"] = float(value.replace("deg", ""))
+                sample["angle"] = _finite_number(value.removesuffix("deg"))
             elif key == "theta/theta_stop":
                 parts = value.split("/", 1)
                 if len(parts) == 2:
-                    sample["theta"] = float(parts[0].strip())
-                    sample["theta_stop"] = float(parts[1].replace("deg", "").strip())
+                    sample["theta"] = _finite_number(parts[0].strip())
+                    sample["theta_stop"] = _finite_number(parts[1].removesuffix("deg").strip())
+                else:
+                    raise ValueError("invalid theta/stop field: " + value)
             elif key == "theta":
                 # v3 range: theta=[-120.00,  18.54]deg
                 m2 = _THETA_RANGE_RE.match(value)
                 if m2:
-                    sample["theta_stop_load"] = float(m2.group(1))
-                    sample["theta_stop_muscle"] = float(m2.group(2))
+                    sample["theta_stop_load"] = _finite_number(m2.group(1))
+                    sample["theta_stop_muscle"] = _finite_number(m2.group(2))
+                else:
+                    raise ValueError("invalid theta range: " + value)
             elif key == "clusters":
                 sample["clusters"] = value
             elif key in ("lintel_gap", "cheek_gap", "lintel", "cheek"):
                 # Capture gap columns (socket uses lintel/cheek without _gap).
-                sample[key] = float(value)
+                sample[key] = _finite_number(value)
             elif key == "sacrum_tilt":
-                sample["sacrum_tilt"] = float(value.replace("deg", ""))
+                sample["sacrum_tilt"] = _finite_number(value.removesuffix("deg"))
             elif key == "base_migration":
-                sample["base_migration"] = float(value)
+                sample["base_migration"] = _finite_number(value)
             elif key == "com_over_support":
+                if value.lower() not in ("true", "false", "1", "0"):
+                    raise ValueError("invalid com_over_support: " + value)
                 sample["com_over_support"] = value.lower() in ("true", "1")
             elif key == "rod":
                 m2 = _ROD_RE.match(value)
                 if m2:
                     sample["rod_label"] = m2.group(1)
-                    sample["rod_force"] = float(m2.group(2))
+                    sample["rod_force"] = _finite_number(m2.group(2))
                 else:
-                    sample["rod_raw"] = value
+                    raise ValueError("invalid rod field: " + value)
+            elif key in _NUMERIC_COLUMNS:
+                sample[key] = _finite_number(value)
             else:
                 # Generic float columns: gap, plate_F, contact, tip_to_drop, apex_z, ...
                 try:
@@ -133,6 +161,7 @@ def parse_log(path: Path) -> dict:
     falsifiers: dict[str, dict] = {}
     tendon: dict[str, str] = {}
     rope: dict[str, str] = {}
+    input_errors: list[str] = []
 
     in_falsifiers_header = False
     current_falsifier: str | None = None
@@ -143,18 +172,40 @@ def parse_log(path: Path) -> dict:
     frame_tilt_bar: float | None = None
     frame_migration_bar: float | None = None
 
-    for line in lines:
+    for lineno, line in enumerate(lines, 1):
         # Derived values
         m = _DERIVED_RE.search(line)
         if m:
-            derived[m.group(1)] = float(m.group(2))
+            try:
+                derived[m.group(1)] = _finite_number(m.group(2))
+            except NonfiniteValue:
+                input_errors.append(f"NONFINITE line {lineno}: {line.strip()}")
+            except ValueError:
+                input_errors.append(f"MALFORMED line {lineno}: {line.strip()}")
+            continue
+        if re.match(r"\s*Derived\b", line):
+            input_errors.append(f"MALFORMED line {lineno}: {line.strip()}")
             continue
 
         # Telemetry sample
-        if line.startswith("[") and "tick=" in line and "|" in line:
-            sample = _parse_sample_line(line)
+        if line.lstrip().startswith("[") and re.search(r"\btick\s*=", line):
+            try:
+                sample = _parse_sample_line(line.strip())
+            except NonfiniteValue as exc:
+                input_errors.append(f"NONFINITE line {lineno}: {exc}")
+                continue
+            except (ValueError, OverflowError) as exc:
+                input_errors.append(f"MALFORMED line {lineno}: {exc}")
+                continue
             if sample is not None and "tick" in sample:
+                bad = [k for k, v in sample.items()
+                       if isinstance(v, float) and not math.isfinite(v)]
+                if bad:
+                    input_errors.append(f"NONFINITE line {lineno}: {','.join(bad)}")
+                    continue
                 samples.append(sample)
+            else:
+                input_errors.append(f"MALFORMED line {lineno}: missing tick")
             continue
 
         # FALSIFIERS header block (the bars/definitions)
@@ -177,18 +228,22 @@ def parse_log(path: Path) -> dict:
             continue
 
         # Verdict lines near the end of the log
-        m = re.match(r"^\s*\(([a-z])\)\s+([\w-]+)\s*:\s(.*)$", line)
+        m = re.match(r"^\s*\(([a-z])\)\s+([\w-]+)\s*:\s*(.*)$", line)
         if m:
             letter, name, after = m.groups()
+            if not after.strip():
+                input_errors.append(f"MALFORMED line {lineno}: empty verdict")
+                continue
             # Status may be PASS/FAIL/skipped, "not detected", or "DETECTED".
-            status_match = re.match(r"(PASS|FAIL|skipped|not detected|DETECTED)\b", after)
+            status_match = re.match(r"(PASS|FAIL|skipped|not detected|DETECTED)(?=\s|$)", after)
             if status_match:
                 status = status_match.group(1)
                 rest = after[status_match.end() :].strip()
             else:
-                parts = after.split(None, 1)
-                status = parts[0]
-                rest = parts[1] if len(parts) > 1 else ""
+                input_errors.append(f"MALFORMED line {lineno}: invalid verdict status: {after}")
+                if name not in _KNOWN_VERDICTS:
+                    input_errors.append(f"UNKNOWN ({letter}) {name}")
+                continue
             verdicts.append(
                 {
                     "letter": letter,
@@ -197,6 +252,12 @@ def parse_log(path: Path) -> dict:
                     "rest": rest,
                 }
             )
+            continue
+
+        # A result-shaped line must not disappear just because its colon or
+        # identifier is malformed. Definitions were handled in their block.
+        if re.match(r"^\s*\((?:[^()\s]+\)|[a-zA-Z0-9]\s+[A-Z][\w-]*)", line):
+            input_errors.append(f"MALFORMED line {lineno}: invalid verdict: {line.strip()}")
             continue
 
         # Tendon / rope telemetry summary blocks
@@ -221,6 +282,17 @@ def parse_log(path: Path) -> dict:
             elif "=" in stripped:
                 key, val = stripped.split("=", 1)
                 target[key.strip()] = val.strip()
+
+    # A field absent throughout a log can belong to another log family. A field
+    # present in only some samples cannot silently disappear from its metrics.
+    # Use all samples so an incomplete first row cannot disable an entire check.
+    columns = {key for sample in samples for key, value in sample.items()
+               if isinstance(value, (int, float)) or key in ("clusters", "rod_label")}
+    for sample in samples:
+        missing = columns - sample.keys()
+        if missing:
+            input_errors.append(
+                f"MISSING_COLUMN tick={sample['tick']}: {','.join(sorted(missing))}")
 
     # Post-process: extract capture band and frame-meter bars from verdict rests
     # and falsifier descriptions.
@@ -260,6 +332,7 @@ def parse_log(path: Path) -> dict:
         "verdicts": verdicts,
         "tendon_telemetry": tendon,
         "rope_telemetry": rope,
+        "input_errors": input_errors,
         "capture_band": capture_band,
         "frame_tilt_bar": frame_tilt_bar,
         "frame_migration_bar": frame_migration_bar,
@@ -273,6 +346,8 @@ def parse_log(path: Path) -> dict:
 
 def recompute_metrics(parsed: dict) -> dict:
     """Recompute physics metrics directly from the tick table."""
+    if parsed.get("input_errors"):
+        raise ValueError("; ".join(parsed["input_errors"]))
     samples = parsed["samples"]
     derived = parsed["derived"]
     n = len(samples)
@@ -543,12 +618,12 @@ def check_verdicts(parsed: dict, metrics: dict) -> list[dict]:
     samples = parsed["samples"]
     derived = parsed["derived"]
     falsifiers = parsed["falsifiers"]
-    verdict_map = {v["letter"]: v for v in parsed["verdicts"]}
+    counts = Counter(v["letter"] for v in parsed["verdicts"])
     bars = {letter: _extract_bar(info) for letter, info in falsifiers.items()}
 
     results: list[dict] = []
-    for letter in sorted(verdict_map.keys()):
-        verdict = verdict_map[letter]
+    for verdict in sorted(parsed["verdicts"], key=lambda v: v["letter"]):
+        letter = verdict["letter"]
         name = verdict["name"]
         printed = verdict["status"]
         recomputed = "UNCHECKED"
@@ -631,7 +706,11 @@ def check_verdicts(parsed: dict, metrics: dict) -> list[dict]:
             # e.g. lever_v6's CAPTURE, bladder SEAL/YIELD/NECK, skin CONFORM...
             recomputed = "UNCHECKED"
 
-        if printed == "skipped" or recomputed == "skipped":
+        if counts[letter] > 1:
+            agree = "DISAGREE"
+        elif name not in _KNOWN_VERDICTS:
+            agree = "UNKNOWN"
+        elif printed == "skipped" or recomputed == "skipped":
             agree = "UNCHECKED"
         elif recomputed == "UNCHECKED":
             agree = "UNCHECKED"
@@ -645,6 +724,7 @@ def check_verdicts(parsed: dict, metrics: dict) -> list[dict]:
                 "printed": printed,
                 "recomputed": recomputed,
                 "agree": agree,
+                "duplicate": counts[letter] > 1,
             }
         )
     return results
@@ -1095,22 +1175,51 @@ def _format_batch_row(path: Path, parsed: dict, metrics: dict, verdicts: list[di
     )
 
 
+def _verify_file(path: Path, *, batch: bool = False) -> tuple[str, bool]:
+    """One admission/error policy for both CLI forms; keep other files reportable."""
+    prefix = str(path) if batch else "LOG: " + str(path)
+    try:
+        parsed = parse_log(path)
+        errors = list(parsed["input_errors"])
+        if not parsed["samples"]:
+            errors.append("EMPTY LOG: no valid telemetry samples")
+        if not parsed["verdicts"]:
+            errors.append("NO VERDICTS: nothing to verify")
+        if errors:
+            report = prefix + "\n" + "\n".join(errors) + "\nNOT VERIFIED\n"
+            return report.encode("ascii", "backslashreplace").decode("ascii"), True
+        metrics = recompute_metrics(parsed)
+        verdicts = check_verdicts(parsed, metrics)
+        errors = [f"DUPLICATE letter ({letter})" for letter in sorted(
+            {v["letter"] for v in verdicts if v["duplicate"]})]
+        errors += [f"UNKNOWN ({v['letter']}) {v['name']}" for v in verdicts
+                   if v["agree"] == "UNKNOWN"]
+        report = (_format_batch_row(path, parsed, metrics, verdicts) if batch
+                  else format_section(parsed, metrics, verdicts))
+        if errors:
+            report += "\nINPUT INTEGRITY\n" + "\n".join(errors) + "\n"
+        failed = bool(errors) or any(v["agree"] == "DISAGREE" for v in verdicts)
+        return report, failed
+    except Exception as exc:
+        # A broken input or instrument is a failure, never agreement. Keep the
+        # exception class and cause observable without aborting later files.
+        report = f"{prefix}\nERROR {type(exc).__name__}: {exc}\nNOT VERIFIED\n"
+        return report.encode("ascii", "backslashreplace").decode("ascii"), True
+
+
 def run_batch(output_dir: Path) -> int:
     """Scan output_dir/print_*_log.txt, verify each, print a one-line summary table."""
     paths = sorted(output_dir.glob("print_*_log.txt"))
     if not paths:
-        sys.stdout.write("no print_*_log.txt files found in {}\n".format(output_dir))
-        return 0
+        sys.stdout.write("NO LOGS: no print_*_log.txt files found in {}\n".format(output_dir))
+        return 1
 
     rows: list[str] = []
     any_disagree = False
     for path in paths:
-        parsed = parse_log(path)
-        metrics = recompute_metrics(parsed)
-        verdicts = check_verdicts(parsed, metrics)
-        rows.append(_format_batch_row(path, parsed, metrics, verdicts))
-        if any(v["agree"] == "DISAGREE" for v in verdicts):
-            any_disagree = True
+        report, failed = _verify_file(path, batch=True)
+        rows.append(report)
+        any_disagree |= failed
 
     sys.stdout.write("BATCH VERIFICATION SUMMARY\n")
     sys.stdout.write(
@@ -1136,14 +1245,9 @@ def main(argv: list[str]) -> int:
     all_agree = True
     sections: list[str] = []
     for arg in argv[1:]:
-        path = Path(arg)
-        parsed = parse_log(path)
-        metrics = recompute_metrics(parsed)
-        verdicts = check_verdicts(parsed, metrics)
-        sections.append(format_section(parsed, metrics, verdicts))
-        for v in verdicts:
-            if v["agree"] == "DISAGREE":
-                all_agree = False
+        report, failed = _verify_file(Path(arg))
+        sections.append(report)
+        all_agree &= not failed
 
     sys.stdout.write("\n".join(sections))
     return 0 if all_agree else 1

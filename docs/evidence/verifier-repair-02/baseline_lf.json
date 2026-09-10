@@ -1,0 +1,11 @@
+{
+  "base": "cf27528166b7df1e20ddf474396624c8bf7f63a3",
+  "normalization": "CRLF to LF only",
+  "fixtures": {
+    "print_leg_v2_log.txt": "a6faa6c3358e4ff4e9453de80c2d1a5c3be77c5df0f98b771d7b0e29a799ee1b",
+    "print_lever_v6_log.txt": "34ca7275eae73761160d1c8183f0e66ce212eabeb8d0718903e5ceebc5e5948e",
+    "print_leg_v1_log.txt": "447c8823b24b128a91a2c0db226daa3be128bd3cb99aa2f0b3f3de802b302e68",
+    "print_leg_v3_log.txt": "1483ed6339272e1abbe60970a2a7a00dfacf062a327aff092a906231c4a4e79d",
+    "print_leg_v3_control_log.txt": "0ecc9d8cbd5c099753772f14165efedc3ae77169d5c62a0f3a5cd84f0b3fcf42"
+  }
+}

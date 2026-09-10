@@ -1,0 +1,760 @@
+FFFFFFFFFFFFFFFF                                                         [100%]
+================================== FAILURES ===================================
+____ test_review_rejects_malformed_verdict[  (z) FROBNICATE PASS-explicit] ____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_0')
+mode = 'explicit', verdict = '  (z) FROBNICATE PASS'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-62\test_review_rejects_malformed_0\LightEngine\output\print_review_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+___ test_review_rejects_malformed_verdict[  (z) FROBNICATE PASS-directory] ____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_1')
+mode = 'directory', verdict = '  (z) FROBNICATE PASS'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_review_log.txt               review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+______ test_review_rejects_malformed_verdict[  (Z) HOLD: PASS-explicit] _______
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_2')
+mode = 'explicit', verdict = '  (Z) HOLD: PASS'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-62\test_review_rejects_malformed_2\LightEngine\output\print_review_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+______ test_review_rejects_malformed_verdict[  (Z) HOLD: PASS-directory] ______
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_3')
+mode = 'directory', verdict = '  (Z) HOLD: PASS'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_review_log.txt               review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+______ test_review_rejects_malformed_verdict[  (zz) HOLD: PASS-explicit] ______
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_4')
+mode = 'explicit', verdict = '  (zz) HOLD: PASS'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-62\test_review_rejects_malformed_4\LightEngine\output\print_review_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+_____ test_review_rejects_malformed_verdict[  (zz) HOLD: PASS-directory] ______
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_5')
+mode = 'directory', verdict = '  (zz) HOLD: PASS'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_review_log.txt               review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+______ test_review_rejects_malformed_verdict[  (z) HOLD!: PASS-explicit] ______
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_6')
+mode = 'explicit', verdict = '  (z) HOLD!: PASS'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-62\test_review_rejects_malformed_6\LightEngine\output\print_review_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+_____ test_review_rejects_malformed_verdict[  (z) HOLD!: PASS-directory] ______
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_7')
+mode = 'directory', verdict = '  (z) HOLD!: PASS'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_review_log.txt               review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+______ test_review_rejects_malformed_verdict[  (z) HOLD: BOGUS-explicit] ______
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_8')
+mode = 'explicit', verdict = '  (z) HOLD: BOGUS'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-62\test_review_rejects_malformed_8\LightEngine\output\print_review_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E           (z) HOLD   BOGUS      UNCHECKED    UNCHECKED 
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+_____ test_review_rejects_malformed_verdict[  (z) HOLD: BOGUS-directory] ______
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_9')
+mode = 'directory', verdict = '  (z) HOLD: BOGUS'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_review_log.txt               review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=2
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=2\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+_______ test_review_rejects_malformed_verdict[  (z) HOLD: PAS-explicit] _______
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_10')
+mode = 'explicit', verdict = '  (z) HOLD: PAS'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-62\test_review_rejects_malformed_10\LightEngine\output\print_review_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E           (z) HOLD   PAS        UNCHECKED    UNCHECKED 
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+______ test_review_rejects_malformed_verdict[  (z) HOLD: PAS-directory] _______
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_11')
+mode = 'directory', verdict = '  (z) HOLD: PAS'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_review_log.txt               review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=2
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=2\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+__ test_review_rejects_malformed_verdict[  (z) HOLD: PASS-garbage-explicit] ___
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_12')
+mode = 'explicit', verdict = '  (z) HOLD: PASS-garbage'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-62\test_review_rejects_malformed_12\LightEngine\output\print_review_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E           (z) HOLD   PASS       UNCHECKED    UNCHECKED 
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+__ test_review_rejects_malformed_verdict[  (z) HOLD: PASS-garbage-directory] __
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_13')
+mode = 'directory', verdict = '  (z) HOLD: PASS-garbage'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_review_log.txt               review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=2
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=2\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+_ test_review_rejects_malformed_verdict[  (z) HOLD: skipped-garbage-explicit] _
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_14')
+mode = 'explicit', verdict = '  (z) HOLD: skipped-garbage'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-62\test_review_rejects_malformed_14\LightEngine\output\print_review_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E           (z) HOLD   skipped    skipped      UNCHECKED 
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+_ test_review_rejects_malformed_verdict[  (z) HOLD: skipped-garbage-directory] _
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-62/test_review_rejects_malformed_15')
+mode = 'directory', verdict = '  (z) HOLD: skipped-garbage'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('verdict',[
+     '  (z) FROBNICATE PASS',
+     '  (Z) HOLD: PASS',
+     '  (zz) HOLD: PASS',
+     '  (z) HOLD!: PASS',
+     '  (z) HOLD: BOGUS',
+     '  (z) HOLD: PAS',
+     '  (z) HOLD: PASS-garbage',
+     '  (z) HOLD: skipped-garbage',
+    ])
+    def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        path=output/'print_review_log.txt'
+        path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_review_log.txt               review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=2
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            review_log          41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=2\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:55: AssertionError
+=========================== short test summary info ===========================
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (z) FROBNICATE PASS-explicit]
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (z) FROBNICATE PASS-directory]
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (Z) HOLD: PASS-explicit]
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (Z) HOLD: PASS-directory]
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (zz) HOLD: PASS-explicit]
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (zz) HOLD: PASS-directory]
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (z) HOLD!: PASS-explicit]
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (z) HOLD!: PASS-directory]
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (z) HOLD: BOGUS-explicit]
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (z) HOLD: BOGUS-directory]
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (z) HOLD: PAS-explicit]
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (z) HOLD: PAS-directory]
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (z) HOLD: PASS-garbage-explicit]
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (z) HOLD: PASS-garbage-directory]
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (z) HOLD: skipped-garbage-explicit]
+FAILED tools/test_verify_run_integrity.py::test_review_rejects_malformed_verdict[  (z) HOLD: skipped-garbage-directory]
+16 failed, 76 deselected in 1.63s

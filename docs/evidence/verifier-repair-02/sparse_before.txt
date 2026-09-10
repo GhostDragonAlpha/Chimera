@@ -1,0 +1,1006 @@
+FFFFFFFFFFFFFFFFFF.                                                      [100%]
+================================== FAILURES ===================================
+_____ test_sparse_columns_are_named_and_other_files_survive[0-0-explicit] _____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_0')
+mode = 'explicit', file_position = 0, sample_position = 0
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+>       assert cp.returncode==1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:108: AssertionError
+____ test_sparse_columns_are_named_and_other_files_survive[0-0-directory] _____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_1')
+mode = 'directory', file_position = 0, sample_position = 0
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+>       assert cp.returncode==1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:108: AssertionError
+_____ test_sparse_columns_are_named_and_other_files_survive[0-1-explicit] _____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_2')
+mode = 'explicit', file_position = 1, sample_position = 0
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+>       assert cp.returncode==1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:108: AssertionError
+____ test_sparse_columns_are_named_and_other_files_survive[0-1-directory] _____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_3')
+mode = 'directory', file_position = 1, sample_position = 0
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+>       assert cp.returncode==1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:108: AssertionError
+_____ test_sparse_columns_are_named_and_other_files_survive[0-2-explicit] _____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_4')
+mode = 'explicit', file_position = 2, sample_position = 0
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+>       assert cp.returncode==1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...KED \n  (e) SAG    not detected not detected AGREE     \n  (f) SLACK  PASS       PASS         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:108: AssertionError
+____ test_sparse_columns_are_named_and_other_files_survive[0-2-directory] _____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_5')
+mode = 'directory', file_position = 2, sample_position = 0
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+>       assert cp.returncode==1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            2_log               42 samples  settled=-1  flags=REV_SPIKE             verdicts A=4 D=0 U=2\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:108: AssertionError
+____ test_sparse_columns_are_named_and_other_files_survive[20-0-explicit] _____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_6')
+mode = 'explicit', file_position = 0, sample_position = 20
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+        assert cp.returncode==1
+>       assert 'MISSING_COLUMN' in cp.stdout and 'tip_to_drop' in cp.stdout,cp.stdout
+E       AssertionError: LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_6\LightEngine\output\print_0_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E         ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_6\LightEngine\output\print_1_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E         ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_6\LightEngine\output\print_2_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert ('MISSING_COLUMN' in 'LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-58\\test_sparse_columns_are_named_6\\LightEngine...e      0.0000         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n')
+E        +  where 'LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-58\\test_sparse_columns_are_named_6\\LightEngine...e      0.0000         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:109: AssertionError
+____ test_sparse_columns_are_named_and_other_files_survive[20-0-directory] ____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_7')
+mode = 'directory', file_position = 0, sample_position = 20
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+        assert cp.returncode==1
+>       assert 'MISSING_COLUMN' in cp.stdout and 'tip_to_drop' in cp.stdout,cp.stdout
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E         LightEngine\output\print_0_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E           print_1_log.txt                    1_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E           print_2_log.txt                    2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         
+E       assert ('MISSING_COLUMN' in 'BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ....txt                    2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n')
+E        +  where 'BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ....txt                    2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:109: AssertionError
+____ test_sparse_columns_are_named_and_other_files_survive[20-1-explicit] _____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_8')
+mode = 'explicit', file_position = 1, sample_position = 20
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+        assert cp.returncode==1
+>       assert 'MISSING_COLUMN' in cp.stdout and 'tip_to_drop' in cp.stdout,cp.stdout
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_8\LightEngine\output\print_0_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_8\LightEngine\output\print_1_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E         ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_8\LightEngine\output\print_2_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert ('MISSING_COLUMN' in '======================================================================\nLOG: C:\\Users\\allen\\AppData\\Local\\Temp\\...e      0.0000         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n')
+E        +  where '======================================================================\nLOG: C:\\Users\\allen\\AppData\\Local\\Temp\\...e      0.0000         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:109: AssertionError
+____ test_sparse_columns_are_named_and_other_files_survive[20-1-directory] ____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_9')
+mode = 'directory', file_position = 1, sample_position = 20
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+        assert cp.returncode==1
+>       assert 'MISSING_COLUMN' in cp.stdout and 'tip_to_drop' in cp.stdout,cp.stdout
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_0_log.txt                    0_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         LightEngine\output\print_1_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E           print_2_log.txt                    2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         
+E       assert ('MISSING_COLUMN' in 'BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ....txt                    2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n')
+E        +  where 'BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ....txt                    2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:109: AssertionError
+____ test_sparse_columns_are_named_and_other_files_survive[20-2-explicit] _____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_10')
+mode = 'explicit', file_position = 2, sample_position = 20
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+        assert cp.returncode==1
+>       assert 'MISSING_COLUMN' in cp.stdout and 'tip_to_drop' in cp.stdout,cp.stdout
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_10\LightEngine\output\print_0_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E         ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_10\LightEngine\output\print_1_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_10\LightEngine\output\print_2_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E       assert ('MISSING_COLUMN' in "======================================================================\nLOG: C:\\Users\\allen\\AppData\\Local\\Temp\\...\test_sparse_columns_are_named_10\\LightEngine\\output\\print_2_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n")
+E        +  where "======================================================================\nLOG: C:\\Users\\allen\\AppData\\Local\\Temp\\...\test_sparse_columns_are_named_10\\LightEngine\\output\\print_2_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle..._columns_are_named_10\\LightEngine\\output\\print_2_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:109: AssertionError
+____ test_sparse_columns_are_named_and_other_files_survive[20-2-directory] ____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_11')
+mode = 'directory', file_position = 2, sample_position = 20
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+        assert cp.returncode==1
+>       assert 'MISSING_COLUMN' in cp.stdout and 'tip_to_drop' in cp.stdout,cp.stdout
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_0_log.txt                    0_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E           print_1_log.txt                    1_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         LightEngine\output\print_2_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E         
+E       assert ('MISSING_COLUMN' in "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ...           verdicts A=5 D=0 U=1\nLightEngine\\output\\print_2_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n")
+E        +  where "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ...           verdicts A=5 D=0 U=1\nLightEngine\\output\\print_2_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...erdicts A=5 D=0 U=1\nLightEngine\\output\\print_2_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:109: AssertionError
+____ test_sparse_columns_are_named_and_other_files_survive[41-0-explicit] _____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_12')
+mode = 'explicit', file_position = 0, sample_position = 41
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+        assert cp.returncode==1
+>       assert 'MISSING_COLUMN' in cp.stdout and 'tip_to_drop' in cp.stdout,cp.stdout
+E       AssertionError: LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_12\LightEngine\output\print_0_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E         ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_12\LightEngine\output\print_1_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E         ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_12\LightEngine\output\print_2_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert ('MISSING_COLUMN' in 'LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-58\\test_sparse_columns_are_named_12\\LightEngin...e      0.0000         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n')
+E        +  where 'LOG: C:\\Users\\allen\\AppData\\Local\\Temp\\pytest-of-allen\\pytest-58\\test_sparse_columns_are_named_12\\LightEngin...e      0.0000         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:109: AssertionError
+____ test_sparse_columns_are_named_and_other_files_survive[41-0-directory] ____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_13')
+mode = 'directory', file_position = 0, sample_position = 41
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+        assert cp.returncode==1
+>       assert 'MISSING_COLUMN' in cp.stdout and 'tip_to_drop' in cp.stdout,cp.stdout
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E         LightEngine\output\print_0_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E           print_1_log.txt                    1_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E           print_2_log.txt                    2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         
+E       assert ('MISSING_COLUMN' in 'BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ....txt                    2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n')
+E        +  where 'BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ....txt                    2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:109: AssertionError
+____ test_sparse_columns_are_named_and_other_files_survive[41-1-explicit] _____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_14')
+mode = 'explicit', file_position = 1, sample_position = 41
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+        assert cp.returncode==1
+>       assert 'MISSING_COLUMN' in cp.stdout and 'tip_to_drop' in cp.stdout,cp.stdout
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_14\LightEngine\output\print_0_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_14\LightEngine\output\print_1_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E         ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_14\LightEngine\output\print_2_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert ('MISSING_COLUMN' in '======================================================================\nLOG: C:\\Users\\allen\\AppData\\Local\\Temp\\...e      0.0000         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n')
+E        +  where '======================================================================\nLOG: C:\\Users\\allen\\AppData\\Local\\Temp\\...e      0.0000         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:109: AssertionError
+____ test_sparse_columns_are_named_and_other_files_survive[41-1-directory] ____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_15')
+mode = 'directory', file_position = 1, sample_position = 41
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+        assert cp.returncode==1
+>       assert 'MISSING_COLUMN' in cp.stdout and 'tip_to_drop' in cp.stdout,cp.stdout
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_0_log.txt                    0_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         LightEngine\output\print_1_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E           print_2_log.txt                    2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         
+E       assert ('MISSING_COLUMN' in 'BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ....txt                    2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n')
+E        +  where 'BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ....txt                    2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:109: AssertionError
+____ test_sparse_columns_are_named_and_other_files_survive[41-2-explicit] _____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_16')
+mode = 'explicit', file_position = 2, sample_position = 41
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+        assert cp.returncode==1
+>       assert 'MISSING_COLUMN' in cp.stdout and 'tip_to_drop' in cp.stdout,cp.stdout
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_16\LightEngine\output\print_0_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E         ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_16\LightEngine\output\print_1_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-58\test_sparse_columns_are_named_16\LightEngine\output\print_2_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E       assert ('MISSING_COLUMN' in "======================================================================\nLOG: C:\\Users\\allen\\AppData\\Local\\Temp\\...\test_sparse_columns_are_named_16\\LightEngine\\output\\print_2_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n")
+E        +  where "======================================================================\nLOG: C:\\Users\\allen\\AppData\\Local\\Temp\\...\test_sparse_columns_are_named_16\\LightEngine\\output\\print_2_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle..._columns_are_named_16\\LightEngine\\output\\print_2_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:109: AssertionError
+____ test_sparse_columns_are_named_and_other_files_survive[41-2-directory] ____
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-58/test_sparse_columns_are_named_17')
+mode = 'directory', file_position = 2, sample_position = 41
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('file_position',[0,1,2])
+    @pytest.mark.parametrize('sample_position',[0,20,41])
+    def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+        lines=GOOD.splitlines()
+        samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+        at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+        lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+        sparse='\n'.join(lines)+'\n'
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+        assert cp.returncode==1
+>       assert 'MISSING_COLUMN' in cp.stdout and 'tip_to_drop' in cp.stdout,cp.stdout
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_0_log.txt                    0_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E           print_1_log.txt                    1_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         LightEngine\output\print_2_log.txt
+E         ERROR KeyError: 'tip_to_drop'
+E         NOT VERIFIED
+E         
+E         
+E       assert ('MISSING_COLUMN' in "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ...           verdicts A=5 D=0 U=1\nLightEngine\\output\\print_2_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n")
+E        +  where "BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ...           verdicts A=5 D=0 U=1\nLightEngine\\output\\print_2_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n" = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...erdicts A=5 D=0 U=1\nLightEngine\\output\\print_2_log.txt\nERROR KeyError: 'tip_to_drop'\nNOT VERIFIED\n\n", stderr='').stdout
+
+tools\test_verify_run_integrity.py:109: AssertionError
+=========================== short test summary info ===========================
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[0-0-explicit]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[0-0-directory]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[0-1-explicit]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[0-1-directory]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[0-2-explicit]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[0-2-directory]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[20-0-explicit]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[20-0-directory]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[20-1-explicit]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[20-1-directory]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[20-2-explicit]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[20-2-directory]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[41-0-explicit]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[41-0-directory]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[41-1-explicit]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[41-1-directory]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[41-2-explicit]
+FAILED tools/test_verify_run_integrity.py::test_sparse_columns_are_named_and_other_files_survive[41-2-directory]
+18 failed, 1 passed, 57 deselected in 1.94s
