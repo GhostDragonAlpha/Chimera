@@ -1,0 +1,7 @@
+{
+  "candidate_source_sha256": "4c18db0451aa59bdc379bfb0ce652608036e582609656107c8060d7f8cc6d759",
+  "mutant": "zero evaluator vertex forces and volume density",
+  "suite_passed": true,
+  "tests_run": 2,
+  "stdout": "test_physical_evaluator_scales_components_and_volume (tools.elastic_foundation.test_units_contract.UnitsContractTests.test_physical_evaluator_scales_components_and_volume) ... ok\ntest_provenance_and_overflow_refuse (tools.elastic_foundation.test_units_contract.UnitsContractTests.test_provenance_and_overflow_refuse) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.040s\n\nOK\n"
+}
