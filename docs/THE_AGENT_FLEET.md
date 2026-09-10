@@ -474,3 +474,35 @@ Live control plane: deployment E:\ChimeraWork\control (service.py pidfile-alive;
 Scheduling: resources serialize through the controller — `resource_request` grants under FIFO + priority-aging + benchmark exclusivity + memory budget; `allocation_refused` entries auto-grant on a later promotion when memory frees (do not re-request). GPU runs are guarded by reservations over the WHOLE machine for `gpu_benchmark`; `gpu_functionality` grants are per-slot and chained to `dyad_eye`. An interrupted owner enters RECOVERY_HOLD with resources intentionally retained until trusted drain evidence clears them; recovery bumps the generation and the fresh generation is claimed again.
 
 Remaining before the three-agent universal-prompt start: (1) operator loads a vision-capable model in LM Studio and the three slot DYAD reviews (one image per call) are run or deferred explicitly; (2) the certification record integrates (task `five-slot-integration-record`); (3) Alan asserts the go.
+
+## Resource lifecycle repair (2026-09-10, Linux-reviewed proposal)
+
+The resource lifecycle patch prevents replacement of an existing non-memory
+reservation, including a same-task class change. Release engine_demo and dyad_eye
+before releasing their GPU parent; supervisor clear follows the same dependency
+checks. A retained child from an older registry blocks a foreign GPU grant.
+Legacy engine acquisition also requires the task's GPU reservation.
+
+A task retaining resources may acquire an immediately available extension, but
+an infeasible request becomes terminal (`served:true`, `granted:false`,
+`dropped_reason:release_required`). Its resources remain held. The owner must drain
+and release them, then request its complete bundle. Do not keep polling that
+terminal request as if it will auto-promote. A nonholder's pending request retains
+normal promotion behavior. Existing blocked-holder requests are reconciled on the
+next promotion; no process is stopped or reservation forcibly released.
+
+`memory.admitted_mb` is recomputed from held allocations on release/clear and
+snapshot reads. It remains declared accounting, not measured physical GPU memory.
+Missing or non-string resource names now receive `invalid_resource_name`.
+
+Correction to older strict-FIFO/priority-aging claims: the existing promotion
+loop scans arrival order but permits an eligible group to bypass an older
+ineligible group. Priority and waiting-revision values are metadata, not an
+implemented starvation bound. This patch does not change that policy; a bounded
+fairness decision and implementation remain open.
+
+Evidence and executed regression counts are recorded in
+[evidence/agent_fleet/RESOURCE_FIX_20260910/REPORT.md](evidence/agent_fleet/RESOURCE_FIX_20260910/REPORT.md).
+Live Windows migration and consumer handling of terminal release_required results
+must be reviewed by the current local lead. No live service was modified by this
+Linux review. The universal prompt does not change.

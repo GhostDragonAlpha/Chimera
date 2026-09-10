@@ -1,0 +1,49 @@
+diff --git a/tools/agent_fleet/bootstrap_fleet.py b/tools/agent_fleet/bootstrap_fleet.py
+index 4080c7e..cd09a70 100644
+--- a/tools/agent_fleet/bootstrap_fleet.py
++++ b/tools/agent_fleet/bootstrap_fleet.py
+@@ -163,10 +163,13 @@ class FleetBootstrap:
+         return data if data.get("port") == self.port else None
+ 
+     def _write_pidfile(self, pid):
+-        self.pidfile.write_text(json.dumps({"pid": pid, "port": self.port,
++        record={"pid": pid, "port": self.port,
+                                             "root": str(self.root),
+-                                            "started_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())},
+-                                           indent=2), encoding="utf-8")
++                                            "started_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
++        if sys.platform.startswith('linux'):
++            from linux_process import identity
++            record['linux_identity']=identity(pid)
++        self.pidfile.write_text(json.dumps(record, indent=2), encoding="utf-8")
+ 
+     def _pid_alive(self, pid):
+         if pid is None:
+@@ -360,6 +363,20 @@ class FleetBootstrap:
+             self.pidfile.unlink(missing_ok=True)
+             return {"already_stopped": True}
+         # The listener owner is the truth; the pid file is the consent record.
++        if sys.platform.startswith('linux'):
++            from linux_process import stop_owned
++            pf=self._read_pidfile()
++            if not pf or pf.get('root')!=str(self.root) or not pf.get('linux_identity'):
++                self.fail('refusing_stop_unmanaged: missing Linux process identity',1)
++            try:
++                stop_owned(pf.get('pid'),pf['linux_identity'],self.port)
++            except (OSError,ValueError,RuntimeError) as exc:
++                self.fail('refusing_stop_unmanaged: '+str(exc),1)
++            if fleet_on_port(self.port)[0]:
++                self.fail('stop_incomplete: port remains occupied after owned process exit',1)
++            self.pidfile.unlink(missing_ok=True)
++            self.log('stopped pid %d (transition recorded: %s)' % (pf['pid'],ack))
++            return {'stopped_pid':pf['pid'],'ack':ack}
+         listener = self._listener_pid()
+         pf = self._read_pidfile()
+         if listener is None:
+@@ -426,4 +443,4 @@ def main(argv=None):
+ 
+ 
+ if __name__ == "__main__":
+-    sys.exit(main())
+\ No newline at end of file
++    sys.exit(main())

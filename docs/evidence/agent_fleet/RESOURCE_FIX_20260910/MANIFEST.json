@@ -1,0 +1,22 @@
+{
+  "base": "f2c4f7e850267f400ea3eb7441e7c67d7fdc4466",
+  "sha256": {
+    "docs/THE_AGENT_FLEET.md": "d672298d67b241e95897cbf4be6de8a4d08dbbeec41672fba5cb2e53782a07f6",
+    "docs/evidence/agent_fleet/RESOURCE_FIX_20260910/PREREGISTRATION.md": "bb457ec8cbbc56bbc3474598d68e66882b70230634310990b7d1012e33f215fc",
+    "docs/evidence/agent_fleet/RESOURCE_FIX_20260910/REPORT.md": "e07cdaf15e1c7496c6b3bdd0ec9ecaa34b35df74e3d2ab43a18bb78f83dfd374",
+    "docs/evidence/agent_fleet/RESOURCE_FIX_20260910/before_fix.txt": "606e4e773e062037851b7275e5895f48cd1859493a2025b12d1393b04680cedb",
+    "docs/evidence/agent_fleet/RESOURCE_FIX_20260910/before_fix_final.txt": "eb46d20a1a737a5c33b5479d2b1f373550a8b02f26d9dc7ddb133e4ac3ab71b3",
+    "docs/evidence/agent_fleet/RESOURCE_FIX_20260910/final_suite.txt": "394f35ed3c855334c93a62f74f576ceda1804533ae17da58bb02839004fa1bd4",
+    "docs/evidence/agent_fleet/RESOURCE_FIX_20260910/full_suite.txt": "33196b98d4ee6962cb3f57f07603e5af6bbeac745c435283199b52671f08b20e",
+    "docs/evidence/agent_fleet/RESOURCE_FIX_20260910/full_suite_linux.txt": "03d5add864a6d097d4a2df8a3dc00c4b5d5ad43766d1c9ab9cdfab53b1bc689b",
+    "docs/evidence/agent_fleet/RESOURCE_FIX_20260910/linux_attempt/STATUS.md": "97ca79b3850ab6969c0da4e186f850678173368faf56f6be0302eb2dac29a41c",
+    "docs/evidence/agent_fleet/RESOURCE_FIX_20260910/linux_attempt/bootstrap_candidate.diff": "b59a1141e393894ed6687cc6495e960751416e6af007095ce6423728120eaa9c",
+    "docs/evidence/agent_fleet/RESOURCE_FIX_20260910/linux_attempt/linux_process.py": "f62386b74240a722404e665b90c3e0511855f2e92060b086086ba421220a3a1d",
+    "docs/evidence/agent_fleet/RESOURCE_FIX_20260910/linux_attempt/test_linux_process.py": "ca54b12ba01ff8e5b081edfa29123242bc54e07a4fa0f672599ec7a0f224803a",
+    "docs/evidence/agent_fleet/RESOURCE_FIX_20260910/linux_identity.txt": "595ead25941aaf4e31248242adad3c2701f978332aa06fb432c8150f229e23d5",
+    "docs/evidence/agent_fleet/RESOURCE_FIX_20260910/targeted.txt": "6a4e8cd1fe929652379e3f05abd30c003702f68e806def6a6a7c300a450eae47",
+    "docs/evidence/agent_fleet/RESOURCE_FIX_20260910/targeted_final.txt": "4819a7a5c2b1b812655ed468b604ea86165a761915a114e5c18e5d9a5fef0bac",
+    "tools/agent_fleet/control.py": "20bf483ded653d48bb9fdb80dc10ddd31e5e4aea5d99a94b0000a42d90e89759",
+    "tools/agent_fleet/test_resource_lifecycle.py": "d1ac40dfc17860ff9372257858152f2299b4d76e5d2b1d52dd0d2452d2da0957"
+  }
+}
