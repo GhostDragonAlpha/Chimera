@@ -1,0 +1,266 @@
+{
+  "version": "v1",
+  "generated_utc": "20260908T231140Z",
+  "law": "isotropic STVK membrane, energy per rest area (DERIVATION.md)",
+  "material": {
+    "E": 1.0,
+    "nu": 0.3,
+    "h": 1.0,
+    "synthetic": true
+  },
+  "fixtures": {
+    "trisingle_stretch": {
+      "file": "trisingle_stretch.npz",
+      "sha256": "2cb83077485447909e22e4322152bdfd8baa835f43dea973604a111024035ded",
+      "arrays": {
+        "rest_pos": {
+          "shape": [
+            3,
+            3
+          ],
+          "dtype": "float32"
+        },
+        "cur_pos": {
+          "shape": [
+            3,
+            3
+          ],
+          "dtype": "float32"
+        },
+        "faces_int32": {
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "int32"
+        },
+        "E": {
+          "shape": [],
+          "dtype": "float32"
+        },
+        "nu": {
+          "shape": [],
+          "dtype": "float32"
+        },
+        "h": {
+          "shape": [],
+          "dtype": "float32"
+        },
+        "lam_bar": {
+          "shape": [],
+          "dtype": "float32"
+        },
+        "mu_bar": {
+          "shape": [],
+          "dtype": "float32"
+        },
+        "E_f64": {
+          "shape": [],
+          "dtype": "float64"
+        },
+        "nu_f64": {
+          "shape": [],
+          "dtype": "float64"
+        },
+        "h_f64": {
+          "shape": [],
+          "dtype": "float64"
+        },
+        "rest_t1": {
+          "shape": [
+            3
+          ],
+          "dtype": "float32"
+        },
+        "rest_t2": {
+          "shape": [
+            3
+          ],
+          "dtype": "float32"
+        },
+        "rest_n": {
+          "shape": [
+            3
+          ],
+          "dtype": "float32"
+        },
+        "rest_B_f32": {
+          "shape": [
+            1,
+            2,
+            2
+          ],
+          "dtype": "float32"
+        },
+        "rest_areas0_f32": {
+          "shape": [
+            1
+          ],
+          "dtype": "float32"
+        },
+        "exp_energy_f64": {
+          "shape": [],
+          "dtype": "float64"
+        },
+        "exp_corner_f64": {
+          "shape": [
+            1,
+            3,
+            3
+          ],
+          "dtype": "float64"
+        },
+        "exp_vertex_f64": {
+          "shape": [
+            3,
+            3
+          ],
+          "dtype": "float64"
+        },
+        "exp_source": {
+          "shape": [],
+          "dtype": "<U15"
+        }
+      }
+    },
+    "patch_8x4_shear": {
+      "file": "patch_8x4_shear.npz",
+      "sha256": "73aaad4a030e7a60b418b07f819a61abe6ac4344c97fee64e23aaa35e7533fd7",
+      "arrays": {
+        "rest_pos": {
+          "shape": [
+            45,
+            3
+          ],
+          "dtype": "float32"
+        },
+        "cur_pos": {
+          "shape": [
+            45,
+            3
+          ],
+          "dtype": "float32"
+        },
+        "faces_int32": {
+          "shape": [
+            64,
+            3
+          ],
+          "dtype": "int32"
+        },
+        "E": {
+          "shape": [],
+          "dtype": "float32"
+        },
+        "nu": {
+          "shape": [],
+          "dtype": "float32"
+        },
+        "h": {
+          "shape": [],
+          "dtype": "float32"
+        },
+        "lam_bar": {
+          "shape": [],
+          "dtype": "float32"
+        },
+        "mu_bar": {
+          "shape": [],
+          "dtype": "float32"
+        },
+        "E_f64": {
+          "shape": [],
+          "dtype": "float64"
+        },
+        "nu_f64": {
+          "shape": [],
+          "dtype": "float64"
+        },
+        "h_f64": {
+          "shape": [],
+          "dtype": "float64"
+        },
+        "rest_t1": {
+          "shape": [
+            64,
+            3
+          ],
+          "dtype": "float32"
+        },
+        "rest_t2": {
+          "shape": [
+            64,
+            3
+          ],
+          "dtype": "float32"
+        },
+        "rest_n": {
+          "shape": [
+            64,
+            3
+          ],
+          "dtype": "float32"
+        },
+        "rest_B_f32": {
+          "shape": [
+            64,
+            2,
+            2
+          ],
+          "dtype": "float32"
+        },
+        "rest_areas0_f32": {
+          "shape": [
+            64
+          ],
+          "dtype": "float32"
+        },
+        "csr_offsets_u32": {
+          "shape": [
+            46
+          ],
+          "dtype": "uint32"
+        },
+        "csr_corners_u32": {
+          "shape": [
+            192
+          ],
+          "dtype": "uint32"
+        },
+        "exp_energy_f64": {
+          "shape": [],
+          "dtype": "float64"
+        },
+        "exp_corner_f64": {
+          "shape": [
+            64,
+            3,
+            3
+          ],
+          "dtype": "float64"
+        },
+        "exp_vertex_f64": {
+          "shape": [
+            45,
+            3
+          ],
+          "dtype": "float64"
+        },
+        "exp_source": {
+          "shape": [],
+          "dtype": "<U15"
+        }
+      }
+    }
+  },
+  "env": {
+    "python": "3.14.3",
+    "numpy": "2.2.6"
+  },
+  "git_e_pythonchimera": {
+    "head": "51cd7212fd6ef2cfda95c330abcc2ff154cc6141",
+    "describe": "matter-era-end-585-g51cd7212",
+    "status": "M Chimera/docs/DREAM_REPORT.md\n M Chimera/docs/EXPECTATION_VIOLATIONS.md\n M Chimera/docs/HERALD.md\n M Chimera/docs/HISTORY_BOOK.md\n M Chimera/docs/chimera_dna_graph.json\n M ChimeraEngine/engine/_native_end.png\n M ChimeraEngine/engine/_native_start.png\n?? Chimera/tools/\n?? ChimeraEngine/ctx_launch.err\n?? ChimeraEngine/ctx_launch.out\n?? ChimeraEngine/engine/engine_launch.err\n?? ChimeraEngine/engine/engine_launch.out\n?? ChimeraEngine/jnt2_launch.err\n?? ChimeraEngine/jnt2_launch.out\n?? Saved/dyad/2026-09-02_001124/\n?? Saved/dyad/2026-09-02_002341/\n?? Saved/dyad/2026-09-02_004300/\n?? Saved/dyad/2026-09-02_010015/\n?? Saved/dyad/2026-09-02_085351/\n?? Saved/dyad/2026-09-02_120925/\n?? Saved/dyad/2026-09-02_120954/\n?? Saved/dyad/2026-09-02_132118/\n?? Saved/dyad/2026-09-02_143752/\n?? Saved/dyad/2026-09-02_155719/\n?? Saved/dyad/2026-09-03_loaded_review/\n?? Saved/dyad/2026-09-03_logs_review/\n?? Saved/dyad/2026-09-04_143649/\n?? Saved/dyad/2026-09-04_165954/\n?? Saved/dyad/2026-09-04_195741/\n?? Saved/dyad/2026-09-04_204618/\n?? Saved/dyad/2026-09-04_210427/\n?? Saved/dyad/2026-09-04_211701/\n?? Saved/dyad/2026-09-04_212352/\n?? Saved/dyad/2026-09-04_213428/\n?? Saved/dyad/2026-09-04_215512/\n?? Saved/dyad/2026-09-05_225854/\n?? Saved/dyad/2026-09-06_085110/\n?? Saved/dyad/2026-09-06_090801_burst/\n?? Saved/dyad/2026-09-06_091001_burst/\n?? Saved/dyad/2026-09-06_091837_burst/\n?? Saved/dyad/2026-09-06_092701_burst/\n?? Saved/dyad/cam_before_side.json\n?? Saved/dyad/clean_diff_crop.png\n?? Saved/dyad/clean_diff_vis.png\n?? Saved/dyad/clean_t0.png\n?? Saved/dyad/clean_t90.png\n?? Saved/dyad/d8_rig_off_glass.png\n?? Saved/dyad/d8_rig_on_glass.png\n?? Saved/dyad/d8_rig_overlay_clipped_glass.png\n?? Saved/dyad/d8_rig_overlay_final_glass.png\n?? Saved/dyad/d8_rig_overlay_fitted_glass.png\n?? Saved/dyad/d8_rig_overlay_glass.png\n?? Saved/dyad/d8_rig_overlay_joints_glass.png\n?? Saved/dyad/dyad_log.jsonl\n?? Saved/dyad/dyad_log.txt\n?? Saved/dyad/dyad_shots/\n?? Saved/dyad/jnt2_elbow_flex.png\n?? Saved/dyad/jnt2_elbow_flex_compact.png\n?? Saved/dyad/jnt2_sagittal_flex.png\n?? Saved/dyad/jnt2_sagittal_glass.png\n?? Saved/dyad/jnt2_side2_glass.png\n?? Saved/dyad/jnt2_side_glass.png\n?? Saved/dyad/probe_framed.png\n?? Saved/dyad/probe_gate.png\n?? Saved/dyad/probe_max.png\n?? Saved/dyad/render_lane/\n?? Saved/dyad/sag_flex.png\n?? Saved/dyad/sag_flex_Lcrop.png\n?? Saved/dyad/sag_flex_rig.png\n?? Saved/dyad/sag_glass_flex.png\n?? Saved/dyad/sag_glass_rest.png\n?? Saved/dyad/sag_rest.png\n?? Saved/dyad/sag_rest_rig.png\n?? Saved/dyad/seg_f0.png\n?? Saved/dyad/seg_f90.png\n?? Saved/dyad/seg_t0.png\n?? Saved/dyad/seg_t90.png\n?? Saved/dyad/shots/\n?? Saved/dyad/side_t0.png\n?? Saved/dyad/side_t90.png\n?? Saved/dyad/strain_flex.png\n?? Saved/dyad/strain_rest.png\n?? Saved/dyad/t2_off.png\n?? Saved/dyad/t2_on.png\n?? Saved/dyad/t3_off.png\n?? Saved/dyad/t3_on.png\n?? Saved/dyad/t4_flex_off.png\n?? Saved/dyad/t4_flex_on.png\n?? Saved/dyad/t4_rest_off.png\n?? Saved/dyad/t4_rest_on.png\n?? Saved/dyad/t5_flex_off.png\n?? Saved/dyad/t5_flex_on.png\n?? Saved/dyad/t5_rest_off.png\n?? Saved/dyad/t5_rest_on.png\n?? Saved/dyad/tags_check.png\n?? Saved/dyad/tint_off.png\n?? Saved/dyad/tint_on.png\n?? Saved/dyad_model.txt\n?? Saved/engine_frame_now.png\n?? Saved/engine_frame_r14.png\n?? Saved/engine_frame_r20.png\n?? Saved/gait/\n?? Saved/local_agent/\n?? Saved/meshes/monkey_joints.bin.pre_refit.bak\n?? Saved/scratch/\n?? Saved/vision_trial/\n?? docs/PHYSICS_NOTES.md\n?? docs/THE_CONTACT_SHADOW.md\n?? docs/THE_WALK_DERIVATION.md\n?? docs/evidence/\n?? docs/scratch/DS_MEMBRANE_VIS_01_screenshot_spec_20260908T1518.md\n?? linux_inventory_20260907183000/\n?? membrane_scale_lab_checkout/\n?? review-mutations-01/\n?? robustness-01/\n?? \"s -ExecutionPolicy RemoteSigned) ; (& e\\357\\200\\272PythonChimera.venv-gaScriptsActivate.ps1)\"\n?? session_20260903_080650.jsonl\n?? state-integrity-01/\n?? tools/Saved/\n?? tools/dyad_timed_capture.py\n?? tools/elastic_foundation/\n?? tools/membrane_scale_lab/\n?? tools/physics/",
+    "dirty": true
+  }
+}
