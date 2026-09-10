@@ -1,0 +1,23 @@
+{
+  "task": "math-contract-audit-01",
+  "generation": 1,
+  "source_commit": "c0c84873056e69339dda85e3c16656cc5c33697c",
+  "command": "python tools/material_contract_checks.py",
+  "scope": "CPU-only contract checks; no engine, GPU, DYAD, or HTTP runtime",
+  "result": "PASS",
+  "passed": 32,
+  "failed": 0,
+  "coverage": [
+    "registered unit families and conversion refusal",
+    "finite values and overflow refusal",
+    "material provenance and derivation",
+    "material frame orthonormality",
+    "orthotropic Voigt structure",
+    "execution-boundary refusal"
+  ],
+  "limitations": [
+    "does not prove repository-wide quantity typing",
+    "does not prove rotated nested-frame round trips",
+    "does not prove runtime or GPU behavior"
+  ]
+}
