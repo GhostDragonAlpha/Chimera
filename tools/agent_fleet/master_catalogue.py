@@ -17,10 +17,14 @@ gen-5 finding: Master line 1825, a B7b requirement continuation, was dropped).
 
 The payload carries a source_manifest per source (path, sha256, byte/line
 counts, best-effort git commit) computed from the retained source text.
-validate_payload RECOMPUTES those hashes from the submitted records, so a
-supplied hash can never masquerade as proof against live files; whether the
-manifest matches the CURRENT canonical sources is a separate admission gate
-(coverage.version_pin reports the pinned revision explicitly).
+validate_payload RECOMPUTES those hashes and counts from the submitted
+records, so a supplied hash can never masquerade as proof against live
+files; whether the manifest matches the CURRENT canonical sources is a
+separate admission gate (coverage.version_pin reports the pinned revision
+explicitly). The git_commit fields are ADVISORY provenance only: a
+well-formed SHA string is not authentication and never proves the payload
+was produced from that Git revision - retained-source consistency is
+checked, authorship of the source text is not.
 """
 import hashlib
 import json
@@ -66,7 +70,13 @@ def _cell_id(cell):
 
 
 def payload_digest(payload):
-    return _sha(json.dumps(payload, sort_keys=True, ensure_ascii=False))
+    # Digest must be reproducible over the payload AS TRANSPORTED. Any JSON
+    # round-trip converts dict keys to strings (the exhaustive line_partition
+    # is keyed by integer line numbers in memory), so an in-memory digest
+    # with integer keys can never equal a digest recomputed from the
+    # transported body. Canonicalize through a round-trip first.
+    canonical = json.loads(json.dumps(payload, ensure_ascii=False))
+    return _sha(json.dumps(canonical, sort_keys=True, ensure_ascii=False))
 
 
 def parse_master_rows(text):
@@ -432,45 +442,57 @@ def validate_payload(payload):
     if (cat_manifest.get('sha256') != _sha(catalog_text)
             or cat_manifest.get('retained') is not True):
         return ['source_manifest_catalog_hash_mismatch']
-    if cards:
-        # The card records must reproduce EXACTLY from the retained catalog
-        # source - same projection build_records applies.
-        try:
-            catalog_data = json.loads(catalog_text)
-        except ValueError:
+    # gen-7 counterexample 2: bytes/lines of the catalog manifest were not
+    # recomputed. Both are derived from the retained text, exactly like the
+    # master manifest.
+    for field in ('bytes', 'lines'):
+        want = {'bytes': len(catalog_text.encode('utf-8')),
+                'lines': len(catalog_text.splitlines())}[field]
+        if cat_manifest.get(field) != want:
+            return ['source_manifest_consistency:' + field]
+    # gen-7 counterexample 1: `if cards:` skipped catalog reconstruction for
+    # an empty submitted list, so all cards could be omitted while tasks
+    # remained in catalog_text. ALWAYS parse/rebuild and compare, including
+    # the empty case; a legitimated empty catalog is the empty-tasks JSON.
+    try:
+        catalog_data = json.loads(catalog_text)
+    except ValueError:
+        return ['malformed_catalog_text']
+    if (not isinstance(catalog_data, dict)
+            or not isinstance(catalog_data.get('tasks'), list)):
+        return ['malformed_catalog_text']
+    if len(cards) != len(catalog_data['tasks']):
+        return ['catalog_cards_mismatch']
+    rebuilt_cards = []
+    for index, card in enumerate(catalog_data['tasks']):
+        if not isinstance(card, dict):
             return ['malformed_catalog_text']
-        if (not isinstance(catalog_data, dict)
-                or not isinstance(catalog_data.get('tasks'), list)):
+        cid = card.get('id')
+        if not isinstance(cid, str) or not cid.strip():
             return ['malformed_catalog_text']
-        rebuilt_cards = []
-        for index, card in enumerate(catalog_data['tasks']):
-            if not isinstance(card, dict):
-                return ['malformed_catalog_text']
-            cid = card.get('id')
-            if not isinstance(cid, str) or not cid.strip():
-                return ['malformed_catalog_text']
-            rebuilt_cards.append({'plane': 'card', 'id': cid,
-                                  'domain': card.get('domain'),
-                                  'title': card.get('title'),
-                                  'status': card.get('status'),
-                                  'depends_on': card.get('depends_on', []),
-                                  'content_sha256': _sha(json.dumps(
-                                      card, sort_keys=True,
-                                      ensure_ascii=False)),
-                                  'card': card})
-        # The record CONTENT must reproduce exactly from the retained
-        # catalog source; source.path claims must name the manifest path
-        # with an integer index (provenance, checked separately).
-        strip = lambda recs: [{k: v for k, v in r.items() if k != 'source'}
-                              for r in recs]
-        if strip(rebuilt_cards) != strip(cards):
+        rebuilt_cards.append({'plane': 'card', 'id': cid,
+                              'domain': card.get('domain'),
+                              'title': card.get('title'),
+                              'status': card.get('status'),
+                              'depends_on': card.get('depends_on', []),
+                              'content_sha256': _sha(json.dumps(
+                                  card, sort_keys=True,
+                                  ensure_ascii=False)),
+                              'card': card})
+    # The record CONTENT must reproduce exactly from the retained catalog
+    # source; each record must claim its EXACT enumeration position (gen-7
+    # counterexample 3: arbitrary or duplicate indices passed before).
+    strip = lambda recs: [{k: v for k, v in r.items() if k != 'source'}
+                          for r in recs]
+    if strip(rebuilt_cards) != strip(cards):
+        return ['catalog_cards_mismatch']
+    for claimed_index, c in enumerate(cards):
+        src = c.get('source')
+        if (not isinstance(src, dict)
+                or src.get('path') != cat_manifest.get('path')
+                or type(src.get('index')) is not int
+                or src.get('index') != claimed_index):
             return ['catalog_cards_mismatch']
-        for c in cards:
-            src = c.get('source')
-            if (not isinstance(src, dict)
-                    or src.get('path') != cat_manifest.get('path')
-                    or type(src.get('index')) is not int):
-                return ['catalog_cards_mismatch']
     # Advisory git_commit provenance fields are format-constrained: absent,
     # null, or a full hex sha (gen-6 finding - they were freely alterable).
     for entry in (manifest['master'], cat_manifest):

@@ -1,5 +1,23 @@
 # Master catalogue sync — migration instructions for the lead
 
+> **CURRENT ADDENDUM (generation 7, head `c23fd00f`+ gen-7 commit).** The
+> sections below were written at generation 1 and are preserved as history.
+> The parser has since been generalized (every section, unkeyed requirements,
+> exhaustive line partition) and the validator hardened (recomputed manifests
+> and counters; catalog text retained and always rebuilt; exact source-index
+> enumeration). Current verified coverage at spine `0e878758`: **240 cards,
+> 40 domains, 65 master-row IDs, 68 observations, 3 unresolved (identifiable
+> actor roster), 271 unkeyed requirements, 2,430-line exhaustive partition**
+> — pinned to Master sha `f389f91300f2…`, catalog sha `d9bb441939c0…`.
+> `git_commit` fields are ADVISORY provenance, not authentication: a
+> well-formed SHA string never proves the payload was produced from that Git
+> revision. Tested import arguments for the CURRENT source state are in
+> `import_arguments_CURRENT.json` (payload + digest, built by
+> `python tools/agent_fleet/master_catalogue.py`); import via
+> `POST /v1/action` with `operation: catalogue_import` and those arguments,
+> from the current lead's session. Never import a payload whose digest was
+> computed against a different source state — rebuild if the Master changed.
+
 Task: `master-catalogue-sync-01` (owner buffy-02, slot-04, generation 1).
 Packet requirement: the ENTIRE canonical Master list in the controller task
 catalogue, imported as tested, idempotent, provenance-preserving planning

@@ -597,6 +597,17 @@ class CatalogueTests(unittest.TestCase):
         ok['source_manifest']['master']['git_commit'] = 'b' * 40
         self.assertEqual(validate_payload(ok), [])
 
+    def test_gen7_digest_is_transport_reproducible(self):
+        # The controller recomputes payload_digest on the RECEIVED JSON body.
+        # JSON round-trips stringify dict keys (line_partition is keyed by
+        # int line numbers in memory), so the digest must be computed over
+        # the round-tripped form or every transported payload fails the
+        # digest gate. Falsifier: any in-memory vs round-tripped digest
+        # mismatch on the real payload.
+        built = build_records()
+        self.assertEqual(payload_digest(built),
+                         payload_digest(json.loads(json.dumps(built))))
+
     def test_gen7_catalog_consistency_counterexamples(self):
         # Lead gen-7 counterexample 1: `if cards:` skipped catalog
         # reconstruction for an empty submitted list, so all cards could be
