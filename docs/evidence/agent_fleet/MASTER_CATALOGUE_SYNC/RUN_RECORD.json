@@ -1,0 +1,38 @@
+{
+  "task": "master-catalogue-sync-01",
+  "owner": "buffy-02",
+  "slot": "4",
+  "generation": 1,
+  "base": "7d3601e7d9e04019cc3794ccf0a9738627c9fd71",
+  "branch": "astra/tasks/master-catalogue-sync-01",
+  "pr_base": "astra/gait-capture",
+  "preregistration": "controller checkpoint at rev 159 (statement/prediction/falsifier preregistered before code)",
+  "executed_tests": [
+    {
+      "command": "python -m pytest test_master_catalogue.py test_control.py -q",
+      "cwd": "E:/ChimeraWork/slot-04/tools/agent_fleet",
+      "result": "47 passed",
+      "isolated_registry": true,
+      "note": "11 catalogue tests (predictions a-f, negative controls, parser units) + 36 pre-existing controller tests (no regressions). All registries are temp SQLite; the live registry was never touched."
+    }
+  ],
+  "real_source_build": {
+    "command": "python tools/agent_fleet/master_catalogue.py",
+    "coverage": {
+      "cards": 240,
+      "domains": 40,
+      "master_row_ids": 41,
+      "master_row_observations": 41,
+      "unresolved": [],
+      "pipe_rows_outside_scoped_sections": 8
+    },
+    "payload_digest": "eebb977fe269f20b806b2a82e3b11c7843d6391e4fba94bb4049ed2146ba70d0",
+    "note": "Every repeated observation preserved (none currently repeated in the live document); zero unresolved mappings inside THE LINES / THE BACKLOG / THE NEXT HARD QUEUE; 8 pipe rows elsewhere counted, none dropped."
+  },
+  "scope_check": "changed files: tools/agent_fleet/master_catalogue.py (new), tools/agent_fleet/test_master_catalogue.py (new), tools/agent_fleet/control.py (catalogue ops only), tools/roadmap_query.py (wording), docs/THE_AGENT_FLEET.md (catalogue ops documentation), docs/AGENT_START.md (unchanged - already current policy)",
+  "remaining_gates": [
+    "lead re-review of the PR head",
+    "authorized integration into astra/gait-capture",
+    "lead executes the live-registry import per MIGRATION.md (deliberately NOT performed by this worker)"
+  ]
+}

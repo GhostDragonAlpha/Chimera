@@ -81,16 +81,19 @@ Preserve failed runs and report each actual evidence class separately.
 DYAD: {t['dyad']}
 
 Read docs/THE_MASTER_LIST.md and relevant law/protocol documents. Reserve
-write scope and device access with GLM; no work in other actors' files.
-Use isolated checkouts and git -C <explicit checkout>. No master push,
-force-push, protected engine/build/ writes or control of Alan's live engine.
-GLM remains sole publisher. No installations, external actions or physical
-device control are granted by this packet. Python is not the per-frame
-physical runtime. Human acceptance must come from the human.
+write scope and device access through the controller (task claim, scopes,
+resources); no work in other actors' files. Use isolated checkouts and
+git -C <explicit checkout>. No master push, force-push, protected
+engine/build/ writes or control of Alan's live engine. Workers push their own
+task-branch PRs targeting astra/gait-capture; only the slot-1 lead carries
+reviewed PRs through authorized integration. No installations, external
+actions or physical device control are granted by this packet. Python is not
+the per-frame physical runtime. Human acceptance must come from the human.
 
 Finish independent work if one portion is blocked. Return concrete files,
 commands, actual test outcomes, source/artifact identity, limitations and
-integration recommendations. Stop at completion or an exact remaining blocker.
+integration recommendations. After completion, continue other authorized
+work or report an exact remaining blocker; do not wait idle for relay.
 '''
 
 def main(argv=None):

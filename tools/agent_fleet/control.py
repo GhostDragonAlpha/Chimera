@@ -10,6 +10,11 @@ import re
 import secrets
 import sqlite3
 from layout import slot_layout
+# Master-catalogue import extension (planning data only; see packet).
+# Additive wiring: registries created before this extension gain the plane via
+# the setdefault in call(); catalogue ops validate payloads independently so
+# the controller refuses stale or malformed imports by name.
+from master_catalogue import payload_digest, validate_payload
 
 class Refusal(ValueError):
     pass
@@ -256,9 +261,13 @@ class Control:
             # Also reconcile summaries read from a pre-repair registry.
             s['memory']['admitted_mb']=sum(
                 (r.get('memory_mb') or 0) for r in s['resources'].values())
+            # Schema-1 additive catalogue plane (present in registries created
+            # before the master-catalogue extension): planning data only.
+            s.setdefault('catalogue',{'import':None,'imports':[]})
             actor=self._actor(s,token)
             result=self._dispatch(s,actor,op,p)
-            if op not in ('snapshot','events'):
+            # Catalogue reads are pure reads: no revision bump, no event.
+            if op not in ('snapshot','events','catalogue_read','catalogue_next'):
                 s['revision']+=1
                 # Do not persist credentials or arbitrary request text in audit events.
                 event={k:p[k] for k in ('task','agent','generation','epoch','reason','request') if k in p}
@@ -323,6 +332,9 @@ class Control:
         if op=='snapshot':
             out=json.loads(json.dumps(s));out.pop('supervisor_hash');out.pop('enrollment_hash')
             for a in out['agents'].values():a.pop('token_hash')
+            # Catalogue snapshot carries only the summary (digest+counts);
+            # full imported content is served record-by-record via catalogue_read.
+            (out.get('catalogue') or {}).pop('payload',None)
             return out
         if op=='events':return None
         if op=='qualify':
@@ -515,6 +527,56 @@ class Control:
             slot['engine']['worktree_head']=sha(p.get('worktree_head'))
             slot['engine']['provision_evidence']=text(p.get('evidence'),'provision_evidence')
             return {'slot':t['slot'],'provisioned':True}
+        if op=='catalogue_import':
+            # Catalogue plane import: lead-protected, validated, idempotent.
+            # The payload is planning data (cards + master rows); it never
+            # creates, claims, admits or mutates live tasks/resources/slots.
+            self._lead(s,actor,p.get('epoch'))
+            current=s['catalogue'].get('import')
+            if current is not None:
+                require(p.get('digest')==current['digest'],'stale_catalogue_import')
+            payload=p.get('payload');require(isinstance(payload,dict),'invalid_catalogue_payload')
+            errors=validate_payload(payload)
+            if errors:raise Refusal('invalid_catalogue_payload:'+str(errors[0]))
+            digest_value=payload_digest(payload)
+            if current is not None and current['digest']==digest_value:
+                raise Refusal('duplicate_catalogue_import')
+            import_revision=s['revision']+1
+            s['catalogue']['import']={'digest':digest_value,'imported_revision':import_revision,
+                'epoch':s['epoch'],'leader':actor,'source_evidence':text(p.get('evidence'),'import_evidence')}
+            s['catalogue']['imports'].append({'digest':digest_value,'imported_revision':import_revision,'epoch':s['epoch']})
+            s['catalogue']['payload']=payload
+            return {'digest':digest_value,'coverage':payload['coverage'],'imported_revision':import_revision}
+        if op=='catalogue_read':
+            digest_value=p.get('digest');require(isinstance(digest_value,str),'missing_catalogue_digest')
+            require(s['catalogue'].get('import') is not None and digest_value==s['catalogue']['import']['digest'],'unknown_catalogue_digest')
+            plane=p.get('plane');require(plane in ('card','master_row'),'unknown_catalogue_plane')
+            ident=p.get('id');require(isinstance(ident,str) and bool(ident),'missing_catalogue_id')
+            for rec in (s['catalogue'].get('payload') or {}).get('cards' if plane=='card' else 'master_rows',[]):
+                if isinstance(rec,dict) and rec.get('id')==ident:
+                    return {'plane':plane,'record':rec,'digest':digest_value,
+                            'imported_revision':s['catalogue']['import']['imported_revision']}
+            raise Refusal('unknown_catalogue_id')
+        if op=='catalogue_next':
+            digest_value=p.get('digest');require(isinstance(digest_value,str),'missing_catalogue_digest')
+            require(s['catalogue'].get('import') is not None and digest_value==s['catalogue']['import']['digest'],'unknown_catalogue_digest')
+            payload=s['catalogue'].get('payload') or {}
+            # Live task IDs are lowercase; card IDs are uppercase. Match
+            # case-insensitively so a card already realized as a live task is
+            # never re-proposed.
+            live={tid.casefold() for tid,t in s['tasks'].items() if t['state'] not in ('INTEGRATED',)}
+            done={tid.casefold() for tid,t in s['tasks'].items() if t['state']=='INTEGRATED'}
+            candidates=[]
+            for c in payload.get('cards',[]):
+                if not isinstance(c,dict) or not isinstance(c.get('id'),str):continue
+                cid=c['id'].casefold()
+                if cid in live or cid in done:continue
+                if c.get('status')!='PROPOSED':continue
+                deps=c.get('depends_on') if isinstance(c.get('depends_on'),list) else []
+                if all(str(d).casefold() in done for d in deps):candidates.append(c['id'])
+            candidates.sort()
+            return {'digest':digest_value,'candidates':candidates,'live_tasks':sorted(live),
+                    'note':'PLANNING CANDIDATES ONLY: catalogue records are not claims, not READY tasks and grant no authority; admission runs through the normal lead-authorized task lifecycle.'}
         if op=='release_slot':
             require(actor=='SUPERVISOR','supervisor_only')
             t=s['tasks'].get(p.get('task'));require(t and t['state']=='INTEGRATED' and t['slot'],'task_not_integrated_in_slot')
