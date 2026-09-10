@@ -1,0 +1,44 @@
+{
+  "cases": [
+    {
+      "energy": 0.0,
+      "max_abs_force": 0.0,
+      "name": "identity",
+      "status": "accepted"
+    },
+    {
+      "energy": 0.0,
+      "energy_delta": 0.0,
+      "force_norm_delta": 0.0,
+      "name": "proper_rotation_z_90deg",
+      "status": "accepted"
+    },
+    {
+      "energy": 0.0,
+      "inverted_faces": 1,
+      "name": "reflection_x",
+      "status": "accepted_with_inversion_flag"
+    },
+    {
+      "message": "face 0 collapsed: |cross| = 0.000e+00 <= floor",
+      "name": "collapsed_triangle",
+      "reason": "collapsed_triangle",
+      "status": "refused"
+    },
+    {
+      "message": "Young modulus must be > 0; got 0.0",
+      "name": "invalid_material",
+      "reason": "nonpositive_young_modulus",
+      "status": "refused"
+    }
+  ],
+  "energy_units": "force/length (per reference area)",
+  "law": "isotropic STVK plane-stress membrane",
+  "provenance": [
+    "docs/evidence/elastic_foundation/DERIVATION.md\u00a7\u00a72-3,6,12",
+    "docs/evidence/elastic_foundation/GPU_HANDOFF.md\u00a7\u00a73-4"
+  ],
+  "schema": "elastic-domain-audit-1",
+  "status": "bounded_diagnostic",
+  "thickness": "explicit input metadata; not multiplied into per-area energy"
+}
