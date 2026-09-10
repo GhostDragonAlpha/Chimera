@@ -2296,3 +2296,14 @@ Immediate dependency: review and integrate the verifier task PR before using
 its new input-admission claim on the integration branch. The material/runtime
 product spine above remains the project direction; this task repairs a shared
 evidence instrument, not a water, material or gait certificate.
+
+Verifier review follow-up (2026-09-10): PR12 at fe27095d received independent
+read-only review. Two malformed-verdict false-PASS cases reopened
+`verifier-repair-02` at generation 2. Sixteen new regressions failed before
+correction; **115/115** now pass, with valid fixture output unchanged. See the
+appended task record and review_before/review_after logs. Integration remains
+unclaimed; the earlier 99-test evidence is preserved.
+
+Follow-up prefix regressions and a compatibility correction bring the final
+verifier suite to **119/119**. The overbroad intermediate detector's four
+failures are retained; no compatibility assertion or tolerance was weakened.

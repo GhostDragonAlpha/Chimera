@@ -35,6 +35,29 @@ CASES=[
  ('invalid_boolean', GOOD+'\n[run] tick=99 | com_over_support=maybe\n', 'MALFORMED'),
 ]
 
+@pytest.mark.parametrize('mode',['explicit','directory'])
+@pytest.mark.parametrize('verdict',[
+ '  (z) FROBNICATE PASS',
+ '  (z)HOLD: PASS',
+ '  (z HOLD: PASS',
+ '  (Z) HOLD: PASS',
+ '  (zz) HOLD: PASS',
+ '  (z) HOLD!: PASS',
+ '  (z) HOLD: BOGUS',
+ '  (z) HOLD: PAS',
+ '  (z) HOLD: PASS-garbage',
+ '  (z) HOLD: skipped-garbage',
+])
+def test_review_rejects_malformed_verdict(tmp_path,mode,verdict):
+    output=tmp_path/'LightEngine/output'
+    output.mkdir(parents=True)
+    path=output/'print_review_log.txt'
+    path.write_text(GOOD+'\n'+verdict+'\n',encoding='utf-8')
+    cp=run(['--all'] if mode=='directory' else [path],tmp_path)
+    assert cp.returncode==1,cp.stdout+cp.stderr
+    assert 'MALFORMED' in cp.stdout,cp.stdout
+    assert 'Traceback' not in cp.stderr
+
 def run(args,cwd):
     return subprocess.run([sys.executable,str(CLI),*map(str,args)],cwd=cwd,
                           capture_output=True,text=True,timeout=15)

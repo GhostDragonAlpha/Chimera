@@ -235,14 +235,15 @@ def parse_log(path: Path) -> dict:
                 input_errors.append(f"MALFORMED line {lineno}: empty verdict")
                 continue
             # Status may be PASS/FAIL/skipped, "not detected", or "DETECTED".
-            status_match = re.match(r"(PASS|FAIL|skipped|not detected|DETECTED)\b", after)
+            status_match = re.match(r"(PASS|FAIL|skipped|not detected|DETECTED)(?=\s|$)", after)
             if status_match:
                 status = status_match.group(1)
                 rest = after[status_match.end() :].strip()
             else:
-                parts = after.split(None, 1)
-                status = parts[0]
-                rest = parts[1] if len(parts) > 1 else ""
+                input_errors.append(f"MALFORMED line {lineno}: invalid verdict status: {after}")
+                if name not in _KNOWN_VERDICTS:
+                    input_errors.append(f"UNKNOWN ({letter}) {name}")
+                continue
             verdicts.append(
                 {
                     "letter": letter,
@@ -251,6 +252,12 @@ def parse_log(path: Path) -> dict:
                     "rest": rest,
                 }
             )
+            continue
+
+        # A result-shaped line must not disappear just because its colon or
+        # identifier is malformed. Definitions were handled in their block.
+        if re.match(r"^\s*\((?:[^()\s]+\)|[a-zA-Z0-9]\s+[A-Z][\w-]*)", line):
+            input_errors.append(f"MALFORMED line {lineno}: invalid verdict: {line.strip()}")
             continue
 
         # Tendon / rope telemetry summary blocks

@@ -86,3 +86,33 @@ No universal malformed-input or physics-verification completeness is claimed.
 Independent prior fleet review evidence is retained as windows_fleet_pr11.txt:
 78/78 Windows tests at 8bf8f643, including stop/restart; it does not certify
 external model-client retry handling or deploy the candidate.
+
+## Independent review correction — 2026-09-10
+
+A separate read-only review helper found two false-PASS cases at fe27095d:
+`(z) FROBNICATE PASS` was ignored, and `(i) HOLD: BOGUS` became UNCHECKED with
+exit 0. The original 99-test suite still passed during that review. These
+findings narrow the earlier claim; the original passing evidence is retained.
+
+Controller review was reopened at claim generation 2. Preregistered syntax
+and status regressions failed 16/16 before correction (review_before.txt).
+Result-shaped lines outside the definition block now fail when their syntax
+is invalid. A status must match a complete supported token before a verdict
+can reach the known-but-undecidable UNCHECKED path. Unknown rule diagnostics
+are retained even when their status is malformed.
+
+After correction: `python -m pytest tools/test_verify_run.py
+tools/test_verify_run_integrity.py -q` passed **115/115**, Windows CPython
+3.14.3, 6.80 s (review_after.txt). This includes five original valid output
+oracles. `git diff --check` passed. No physics formulas or tolerances changed.
+The malformed-line detector covers result-shaped parenthesized identifiers;
+this remains bounded log admission, not an arbitrary-text grammar certificate.
+
+Follow-up review reproduced missing separator/closing-parenthesis prefixes;
+four new CLI-mode regressions failed (review_prefix_before.txt). An overly
+broad opening-parenthesis detector then rejected a legitimate `(and ... )`
+narrative in the v3 control fixture: four full-suite failures retained in
+review_final.txt. No assertion was relaxed. The detector now distinguishes
+closed identifier prefixes or a single identifier followed by an uppercase
+rule name from that narrative. Final correction: **119/119** pass in 7.33 s,
+review_corrected.txt, including all five unchanged valid stdout oracles.

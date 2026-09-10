@@ -50,3 +50,20 @@ tokens must obey the same finite, complete-token policy as scalars. Prediction:
 NaN/Inf/overflow in these fields yields NONFINITE; a truncated field, empty
 generic numeric field, or invalid boolean yields MALFORMED. Falsifier: exit 0,
 generic ERROR instead of the named cause, or valid-format output change.
+
+## Independent review correction — generation 2
+
+Read-only reviewer found two counterexamples at fe27095d: a missing-colon
+verdict is ignored, and HOLD: BOGUS succeeds as UNCHECKED. Before correction:
+STATEMENT: verdict-shaped lines outside the FALSIFIERS definition block must
+have valid syntax and a complete supported status token before recomputation.
+PREDICTION: missing colon, invalid identifiers, and unknown/truncated statuses
+produce MALFORMED and exit 1 in both CLI modes, including known undecidable
+rules. Valid fixture output and known skipped behavior remain unchanged.
+FALSIFIER: any new case exits 0, any valid golden output changes, or a missing
+physics prerequisite is invented to make a known rule computable. Unknown
+rule names with a valid status remain UNKNOWN. Record failing tests first.
+
+Follow-up before the second correction: the reviewer reproduced `(z)HOLD: PASS`
+and `(z HOLD: PASS` disappearing. The same prediction/falsifier now explicitly
+covers missing whitespace and a missing closing parenthesis in a result prefix.
