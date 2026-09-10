@@ -28,3 +28,9 @@ The applied evaluator retains physical thickness, explicit 2-D equivalence,
 full force/energy/volume outputs, structured provenance, and named refusal
 paths. Historical compatibility remains separately labelled; no GPU or engine
 claim follows.
+
+Final evidence correction: `reproduce_final.py` requires a new `--output`
+path, refuses overwrite before launching children, uses `sys.executable`,
+removes `CHIMERA_UNITS_CANDIDATE`, propagates either child failure, and its
+self-test rejects forced test/verifier failures. Outputs are
+`reproduce-final-20260910.json` and `reproduce-correction-20260910.json`.
