@@ -1,0 +1,1 @@
+{"model": "qwen3.8-27b-nvfp4-mtp", "messages": [{"role": "user", "content": [{"type": "text", "text": "Reply with the single word: seen."}, {"type": "image_url", "image_url": {"url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAFElEQVR4nGMUERFhwAaYsIoOWgkANXAATOBnBRAAAAAASUVORK5CYII="}}]}], "max_tokens": 60000, "temperature": 0.2, "stream": false}

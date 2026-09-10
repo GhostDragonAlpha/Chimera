@@ -1,0 +1,19 @@
+{
+  "source_sha256_before": {
+    "ChimeraEngine/senses.py": "74627198b189a8b3b8391a70c58cdd008979e802033958540530caa9e7e0e4a2",
+    "ChimeraEngine/dyad_model_policy.json": "3e390dc9808608d2a2b5c0ca5774dd15c496d18a66312557112cc2bd5d347a28"
+  },
+  "image_path": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\engine_shutdown_order\\parent_runtime\\quiet_normal_regression_01\\window_before.png",
+  "image_sha256": "b309081f61671fefe65b9ee3367bfcae52462a6212c393c6b63a1a471d92253f",
+  "cpu_exit": 0,
+  "inference_timeout": null,
+  "can_see": [
+    false,
+    null,
+    "'_BufferedResponse' object has no attribute 'close'"
+  ],
+  "source_sha256_after": {
+    "ChimeraEngine/senses.py": "74627198b189a8b3b8391a70c58cdd008979e802033958540530caa9e7e0e4a2",
+    "ChimeraEngine/dyad_model_policy.json": "3e390dc9808608d2a2b5c0ca5774dd15c496d18a66312557112cc2bd5d347a28"
+  }
+}

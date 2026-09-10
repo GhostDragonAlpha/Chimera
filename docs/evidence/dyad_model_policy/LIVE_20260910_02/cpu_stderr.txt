@@ -1,0 +1,18 @@
+test_available_and_can_see_name_missing_policy_model_without_inference (tools.test_dyad_model_policy.PermanentDyadPolicyTests.test_available_and_can_see_name_missing_policy_model_without_inference) ... ok
+test_checked_in_policy_is_exact_and_independent_of_saved_or_env (tools.test_dyad_model_policy.PermanentDyadPolicyTests.test_checked_in_policy_is_exact_and_independent_of_saved_or_env) ... ok
+test_ensure_eye_never_loads_or_reconfigures (tools.test_dyad_model_policy.PermanentDyadPolicyTests.test_ensure_eye_never_loads_or_reconfigures) ... ok
+test_invalid_or_missing_policy_refuses_by_name (tools.test_dyad_model_policy.PermanentDyadPolicyTests.test_invalid_or_missing_policy_refuses_by_name) ... ok
+test_non_lmstudio_backend_override_is_named_refusal_and_clears_identity (tools.test_dyad_model_policy.PermanentDyadPolicyTests.test_non_lmstudio_backend_override_is_named_refusal_and_clears_identity) ... ok
+test_one_image_wall_remains_enforced (tools.test_dyad_model_policy.PermanentDyadPolicyTests.test_one_image_wall_remains_enforced) ... ok
+test_policy_is_read_fresh_on_every_call (tools.test_dyad_model_policy.PermanentDyadPolicyTests.test_policy_is_read_fresh_on_every_call) ... ok
+test_private_gateway_change_does_not_mutate_non_dyad_gateway (tools.test_dyad_model_policy.PermanentDyadPolicyTests.test_private_gateway_change_does_not_mutate_non_dyad_gateway) ... ok
+test_required_model_missing_rejects_before_transport_and_clears_stale_identity (tools.test_dyad_model_policy.PermanentDyadPolicyTests.test_required_model_missing_rejects_before_transport_and_clears_stale_identity) ... ok
+test_resident_model_never_falls_back_to_on_disk_and_reports_ambiguity (tools.test_dyad_model_policy.PermanentDyadPolicyTests.test_resident_model_never_falls_back_to_on_disk_and_reports_ambiguity) ... ok
+test_runtime_setter_and_cli_refuse_alternatives_without_writing_saved (tools.test_dyad_model_policy.PermanentDyadPolicyTests.test_runtime_setter_and_cli_refuse_alternatives_without_writing_saved) ... ok
+test_wrong_or_missing_response_identity_is_rejected_without_stale_proof (tools.test_dyad_model_policy.PermanentDyadPolicyTests.test_wrong_or_missing_response_identity_is_rejected_without_stale_proof) ... ok
+test_wrong_resident_cannot_retarget_permanent_dyad_request (tools.test_dyad_model_policy.PermanentDyadPolicyTests.test_wrong_resident_cannot_retarget_permanent_dyad_request) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.019s
+
+OK

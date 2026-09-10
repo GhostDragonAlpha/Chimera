@@ -1,0 +1,5 @@
+[senses] permanent dyad model: qwen3.8-27b-nvfp4-mtp
+[senses] ensure_eye FAILED [dyad_required_model_not_loaded]: [dyad_required_model_not_loaded] permanent DYAD model 'qwen3.8-27b-nvfp4-mtp' is not explicitly loaded; loaded=[]
+[senses] permanent dyad model: qwen3.8-27b-nvfp4-mtp
+[senses] permanent dyad model: operator-changed-policy
+[senses] permanent dyad model: qwen3.8-27b-nvfp4-mtp

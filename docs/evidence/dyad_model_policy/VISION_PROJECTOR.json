@@ -1,0 +1,6 @@
+{
+  "file": "C:/Users/allen/.lmstudio/models/esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF/mmproj-BF16.gguf",
+  "size_bytes": 931146432,
+  "sha256": "83ee4f4f205fa514161778c41df1ea14144faa0f713510893b63c2395f5c2d53",
+  "observation": "Companion file present in selected model directory. GGUF plus projector sizes equal the local index bundle size. This is file evidence; loaded model identity is recorded separately by LM Studio."
+}
