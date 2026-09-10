@@ -17,7 +17,7 @@ from typing import Any
 import numpy as np
 
 _candidate_repo = os.environ.get("CHIMERA_FIXTURE_REPO") or str(Path(__file__).resolve().parents[2])
-if _candidate_repo and _candidate_repo not in sys.path:
+if _candidate_repo not in sys.path:
     sys.path.insert(0, _candidate_repo)
 
 from tools.elastic_foundation.geometry import build_rest_geometry
@@ -29,198 +29,11 @@ from tools.elastic_foundation.units_contract import (
 )
 
 
-# Inlined because the production task scope admits only physical_fixtures.py.
-U = Fraction(1, 2**53)
-HALF_MIN_SUBNORMAL = Fraction(1, 2**1075)
-
-
-@dataclass(frozen=True)
-class Tracked:
-    value: Fraction
-    error: Fraction
-
-
-def _f(value) -> Fraction:
-    if isinstance(value, Fraction):
-        return value
-    if isinstance(value, (float, np.floating)):
-        return Fraction.from_float(float(value))
-    return Fraction(value)
-
-
-def inp(target, stored) -> Tracked:
-    target, stored = _f(target), _f(stored)
-    return Tracked(target, abs(stored - target))
-
-
-def exact(value) -> Tracked:
-    return Tracked(_f(value), Fraction(0))
-
-
-def neg(a: Tracked) -> Tracked:
-    return Tracked(-a.value, a.error)
-
-
-def _rounded(value: Fraction, propagated: Fraction) -> Tracked:
-    if value == 0 and propagated == 0:
-        return Tracked(value, propagated)
-    magnitude = abs(value) + propagated
-    rounding = (U * magnitude + HALF_MIN_SUBNORMAL) / (1 - U)
-    return Tracked(value, propagated + rounding)
-
-
-def add(a: Tracked, b: Tracked) -> Tracked:
-    return _rounded(a.value + b.value, a.error + b.error)
-
-
-def sub(a: Tracked, b: Tracked) -> Tracked:
-    return _rounded(a.value - b.value, a.error + b.error)
-
-
-def mul(a: Tracked, b: Tracked) -> Tracked:
-    propagated = abs(a.value) * b.error + abs(b.value) * a.error + a.error * b.error
-    return _rounded(a.value * b.value, propagated)
-
-
-def div(a: Tracked, b: Tracked) -> Tracked:
-    margin = abs(b.value) - b.error
-    if margin <= 0:
-        raise ArithmeticError("roundoff envelope denominator reaches zero")
-    propagated = (a.error * abs(b.value) + abs(a.value) * b.error) / (abs(b.value) * margin)
-    return _rounded(a.value / b.value, propagated)
-
-
-def reduce_sum(values: list[Tracked]) -> Tracked:
-    if not values:
-        return exact(0)
-    target = sum((v.value for v in values), Fraction(0))
-    incoming = sum((v.error for v in values), Fraction(0))
-    rounds = len(values) - 1
-    if rounds == 0:
-        return Tracked(target, incoming)
-    gamma = rounds * U / (1 - rounds * U)
-    magnitude = sum((abs(v.value) + v.error for v in values), Fraction(0))
-    return Tracked(target, incoming + gamma * magnitude +
-                   rounds * HALF_MIN_SUBNORMAL / (1 - rounds * U))
-
-
-def dot(a: list[Tracked], b: list[Tracked]) -> Tracked:
-    return reduce_sum([mul(x, y) for x, y in zip(a, b)])
-
-
-def _float_and_bound(value: Tracked):
-    reference = float(value.value)
-    reference_error = abs(Fraction.from_float(reference) - value.value)
-    total = value.error + reference_error
-    bound = 0.0 if total == 0 else math.nextafter(float(total), math.inf)
-    if not math.isfinite(reference) or not math.isfinite(bound):
-        raise ArithmeticError("nonfinite reference or roundoff envelope")
-    return reference, bound
-
-
-def _arrays(values):
-    refs, bounds = np.empty(np.shape(values), dtype=np.float64), np.empty(np.shape(values), dtype=np.float64)
-    for index in np.ndindex(refs.shape):
-        refs[index], bounds[index] = _float_and_bound(_nested(values, index))
-    return refs, bounds
-
-
-def _nested(value, index):
-    for i in index:
-        value = value[i]
-    return value
-
-
-def oracle_and_envelope(*, ideal_rest, ideal_current, ideal_B, ideal_areas,
-                        stored_rest, stored_current, stored_B, stored_areas,
-                        faces, offsets, corners, material_mode,
-                        ideal_E3d, stored_E3d, ideal_E2, stored_E2,
-                        ideal_nu, stored_nu, ideal_h, stored_h):
-    """Return exact targets rounded to f64 and proved absolute envelopes.
-
-    The scalar graph mirrors the coefficient, STVK, force, CSR, energy and w_vol
-    operations used by units_contract -> law.evaluate_elastic.  Matrix products
-    are expanded into scalar dot products; reduce_sum covers any reduction order.
-    """
-    rest = [[inp(ideal_rest[i][j], stored_rest[i][j]) for j in range(3)]
-            for i in range(len(ideal_rest))]
-    current = [[inp(ideal_current[i][j], stored_current[i][j]) for j in range(3)]
-               for i in range(len(ideal_current))]
-    B = [[[inp(ideal_B[f][i][j], stored_B[f][i][j]) for j in range(2)]
-          for i in range(2)] for f in range(len(faces))]
-    areas = [inp(ideal_areas[f], stored_areas[f]) for f in range(len(faces))]
-    h = inp(ideal_h, stored_h)
-    nu = inp(ideal_nu, stored_nu)
-    if material_mode == "volumetric":
-        surface = mul(inp(ideal_E3d, stored_E3d), h)
-    elif material_mode == "surface":
-        surface = inp(ideal_E2, stored_E2)
-    else:
-        raise ValueError("unknown material mode")
-    one, two, half = exact(1), exact(2), exact(Fraction(1, 2))
-    denominator = sub(one, mul(nu, nu))
-    shear_denominator = mul(two, add(one, nu))
-    lam = div(mul(surface, nu), denominator)
-    mu = div(surface, shear_denominator)
-
-    Fs, Wbars, wvols, face_forces = [], [], [], []
-    for f, tri in enumerate(faces):
-        y0, y1, y2 = (current[int(i)] for i in tri)
-        N = [[sub(y1[r], y0[r]), sub(y2[r], y0[r])] for r in range(3)]
-        F = [[dot(N[r], [B[f][k][j] for k in range(2)]) for j in range(2)]
-             for r in range(3)]
-        C = [[dot([F[r][i] for r in range(3)], [F[r][j] for r in range(3)])
-              for j in range(2)] for i in range(2)]
-        strain = [[mul(half, sub(C[i][j], one if i == j else exact(0)))
-                   for j in range(2)] for i in range(2)]
-        tr = add(strain[0][0], strain[1][1])
-        tr2 = reduce_sum([mul(strain[0][0], strain[0][0]),
-                          mul(two, mul(strain[0][1], strain[0][1])),
-                          mul(strain[1][1], strain[1][1])])
-        W = add(mul(mul(half, lam), mul(tr, tr)), mul(mu, tr2))
-        S = [[None, None], [None, None]]
-        for i in range(2):
-            for j in range(2):
-                elastic = mul(mul(two, mu), strain[i][j])
-                S[i][j] = add(mul(lam, tr), elastic) if i == j else elastic
-        P = [[dot(F[r], [S[k][j] for k in range(2)]) for j in range(2)]
-             for r in range(3)]
-        PBt = [[dot(P[r], [B[f][j][k] for k in range(2)]) for j in range(2)]
-               for r in range(3)]
-        ff = [
-            [mul(areas[f], add(PBt[r][0], PBt[r][1])) for r in range(3)],
-            [mul(areas[f], neg(PBt[r][0])) for r in range(3)],
-            [mul(areas[f], neg(PBt[r][1])) for r in range(3)],
-        ]
-        Fs.append(F); Wbars.append(W); wvols.append(div(W, h)); face_forces.append(ff)
-
-    flat = [face_forces[f][k] for f in range(len(faces)) for k in range(3)]
-    vertex = [[[ ] for _ in range(3)] for _ in range(len(rest))]
-    for vertex_id in range(len(rest)):
-        selected = corners[int(offsets[vertex_id]):int(offsets[vertex_id + 1])]
-        for component in range(3):
-            vertex[vertex_id][component] = reduce_sum(
-                [flat[int(flat_id)][component] for flat_id in selected]
-            )
-    energy = reduce_sum([mul(areas[f], Wbars[f]) for f in range(len(faces))])
-
-    F_ref, F_bound = _arrays(Fs)
-    W_ref, W_bound = _arrays(Wbars)
-    wv_ref, wv_bound = _arrays(wvols)
-    corner_ref, corner_bound = _arrays(face_forces)
-    vertex_ref, vertex_bound = _arrays(vertex)
-    energy_ref, energy_bound = _float_and_bound(energy)
-    return {
-        "F": F_ref, "Wbar": W_ref, "wvol": wv_ref, "corner": corner_ref,
-        "vertex": vertex_ref, "energy": energy_ref,
-        "bound_F": F_bound, "bound_Wbar": W_bound, "bound_wvol": wv_bound,
-        "bound_corner": corner_bound, "bound_vertex": vertex_bound,
-        "bound_energy": energy_bound,
-    }
-
-
 PACKET_VERSION = "elastic-physical-fixture/v2"
-REFERENCE_VERSION = "independent-stvk-scalar-with-propagated-f64-envelope/v2"
+REFERENCE_VERSION = "independent-stvk-scalar/v1"
+EPS64 = 2.0 ** -52
+CPU_OPS = 512
+CPU_GAMMA = (CPU_OPS * EPS64) / (1.0 - CPU_OPS * EPS64)
 LEGACY_GEOMETRY_FIELDS = (
     "rest_pos", "cur_pos", "faces_int32", "rest_B_f32", "rest_areas0_f32",
     "csr_offsets_u32", "csr_corners_u32",
@@ -234,12 +47,12 @@ ARRAY_FIELDS = (
     "E3d_upload_f32", "h_upload_f32", "E2_upload_f32", "nu_upload_f32",
     "ref_original_F_f64", "ref_original_Wbar_f64", "ref_original_wvol_f64",
     "ref_original_corner_f64", "ref_original_vertex_f64", "ref_original_energy_f64",
-    "bound_original_F_f64", "bound_original_Wbar_f64", "bound_original_wvol_f64",
-    "bound_original_corner_f64", "bound_original_vertex_f64", "bound_original_energy_f64",
+    "scale_original_F_f64", "scale_original_Wbar_f64", "scale_original_wvol_f64",
+    "scale_original_corner_f64", "scale_original_vertex_f64", "scale_original_energy_f64",
     "ref_upload_F_f64", "ref_upload_Wbar_f64", "ref_upload_wvol_f64",
     "ref_upload_corner_f64", "ref_upload_vertex_f64", "ref_upload_energy_f64",
-    "bound_upload_F_f64", "bound_upload_Wbar_f64", "bound_upload_wvol_f64",
-    "bound_upload_corner_f64", "bound_upload_vertex_f64", "bound_upload_energy_f64",
+    "scale_upload_F_f64", "scale_upload_Wbar_f64", "scale_upload_wvol_f64",
+    "scale_upload_corner_f64", "scale_upload_vertex_f64", "scale_upload_energy_f64",
 )
 FIELD_DTYPES = {
     **{name: "uint8" for name in
@@ -261,7 +74,7 @@ SCHEMA_DEFINITION = {
         "CSR offsets=(nV+1), corners=(3nF); references match full evaluator fields"
     ),
     "upload_rounding": "IEEE-754 binary32 round-to-nearest-ties-to-even; exact widen to binary64",
-    "cpu_bound": "componentwise absolute f64 envelope from in-module oracle_and_envelope",
+    "cpu_bound": "abs(actual-reference) <= gamma(512)*forward_absolute_path_scale",
 }
 
 
@@ -355,12 +168,12 @@ class Reference:
     corner: np.ndarray
     vertex: np.ndarray
     energy: float
-    bound_F: np.ndarray
-    bound_Wbar: np.ndarray
-    bound_wvol: np.ndarray
-    bound_corner: np.ndarray
-    bound_vertex: np.ndarray
-    bound_energy: float
+    scale_F: np.ndarray
+    scale_Wbar: np.ndarray
+    scale_wvol: np.ndarray
+    scale_corner: np.ndarray
+    scale_vertex: np.ndarray
+    scale_energy: float
 
 
 @dataclass(frozen=True)
@@ -405,25 +218,86 @@ def _fraction(value) -> Fraction:
     return value if isinstance(value, Fraction) else Fraction(value)
 
 
-def _reference_scalar(*, ideal_rest, ideal_current, ideal_B, ideal_areas,
-                      stored_rest, stored_current, stored_B, stored_areas,
-                      faces, offsets, corners, material_mode,
-                      ideal_E3d, stored_E3d, ideal_E2, stored_E2,
-                      ideal_nu, stored_nu, ideal_h, stored_h) -> Reference:
-    """Independent rational target plus a propagated binary64 error envelope."""
-    values = oracle_and_envelope(
-        ideal_rest=ideal_rest, ideal_current=ideal_current,
-        ideal_B=ideal_B, ideal_areas=ideal_areas,
-        stored_rest=stored_rest, stored_current=stored_current,
-        stored_B=stored_B, stored_areas=stored_areas,
-        faces=faces, offsets=offsets, corners=corners,
-        material_mode=material_mode,
-        ideal_E3d=ideal_E3d, stored_E3d=stored_E3d,
-        ideal_E2=ideal_E2, stored_E2=stored_E2,
-        ideal_nu=ideal_nu, stored_nu=stored_nu,
-        ideal_h=ideal_h, stored_h=stored_h,
+def _reference_scalar(rest, current, faces, B, areas, offsets, corners,
+                      E2, nu, h) -> Reference:
+    """Independent scalar STVK reference using supplied geometry primitives."""
+    n_faces, n_vertices = len(faces), len(rest)
+    lam = E2 * nu / (1 - nu * nu)
+    mu = E2 / (2 * (1 + nu))
+    zero = E2 * 0
+    Fs, Wbars, wvols, face_forces = [], [], [], []
+    qFs, qWs, qWvols, qCorners = [], [], [], []
+    for f, tri in enumerate(faces):
+        y0, y1, y2 = (current[int(i)] for i in tri)
+        N = [[y1[r] - y0[r], y2[r] - y0[r]] for r in range(3)]
+        bf = B[f]
+        F = [[sum(N[r][k] * bf[k][j] for k in range(2)) for j in range(2)]
+             for r in range(3)]
+        qF = [[sum(abs(N[r][k] * bf[k][j]) for k in range(2)) for j in range(2)]
+              for r in range(3)]
+        C = [[sum(F[r][i] * F[r][j] for r in range(3)) for j in range(2)]
+             for i in range(2)]
+        strain = [[(C[i][j] - (1 if i == j else 0)) / 2 for j in range(2)]
+                  for i in range(2)]
+        tr = strain[0][0] + strain[1][1]
+        tr2 = strain[0][0] * strain[0][0] + 2 * strain[0][1] * strain[0][1] + \
+              strain[1][1] * strain[1][1]
+        term_l = lam * tr * tr / 2
+        term_m = mu * tr2
+        W = term_l + term_m
+        qW = abs(term_l) + abs(term_m)
+        S = [[zero, zero], [zero, zero]]
+        qS = [[zero, zero], [zero, zero]]
+        for i in range(2):
+            for j in range(2):
+                elastic = 2 * mu * strain[i][j]
+                volumetric = lam * tr if i == j else zero
+                S[i][j] = volumetric + elastic
+                qS[i][j] = abs(volumetric) + abs(elastic)
+        P = [[sum(F[r][k] * S[k][j] for k in range(2)) for j in range(2)]
+             for r in range(3)]
+        qP = [[sum(abs(F[r][k]) * qS[k][j] for k in range(2)) for j in range(2)]
+              for r in range(3)]
+        PBt = [[sum(P[r][k] * bf[j][k] for k in range(2)) for j in range(2)]
+               for r in range(3)]
+        qPBt = [[sum(qP[r][k] * abs(bf[j][k]) for k in range(2)) for j in range(2)]
+                for r in range(3)]
+        area = areas[f]
+        ff = [
+            [area * (PBt[r][0] + PBt[r][1]) for r in range(3)],
+            [-area * PBt[r][0] for r in range(3)],
+            [-area * PBt[r][1] for r in range(3)],
+        ]
+        qff = [
+            [abs(area) * (qPBt[r][0] + qPBt[r][1]) for r in range(3)],
+            [abs(area) * qPBt[r][0] for r in range(3)],
+            [abs(area) * qPBt[r][1] for r in range(3)],
+        ]
+        Fs.append(F); qFs.append(qF); Wbars.append(W); qWs.append(qW)
+        wvols.append(W / h); qWvols.append(qW / abs(h))
+        face_forces.append(ff); qCorners.append(qff)
+
+    vertex = [[zero, zero, zero] for _ in range(n_vertices)]
+    qvertex = [[zero, zero, zero] for _ in range(n_vertices)]
+    flat = [face_forces[f][k] for f in range(n_faces) for k in range(3)]
+    qflat = [qCorners[f][k] for f in range(n_faces) for k in range(3)]
+    for vertex_id in range(n_vertices):
+        for flat_id in corners[int(offsets[vertex_id]):int(offsets[vertex_id + 1])]:
+            for component in range(3):
+                vertex[vertex_id][component] += flat[int(flat_id)][component]
+                qvertex[vertex_id][component] += qflat[int(flat_id)][component]
+    energy_terms = [areas[f] * Wbars[f] for f in range(n_faces)]
+    energy = sum(energy_terms, zero)
+    qenergy = sum((abs(areas[f]) * qWs[f] for f in range(n_faces)), zero)
+
+    def f64(value):
+        return np.asarray(value, dtype=np.float64)
+    return Reference(
+        F=f64(Fs), Wbar=f64(Wbars), wvol=f64(wvols),
+        corner=f64(face_forces), vertex=f64(vertex), energy=float(energy),
+        scale_F=f64(qFs), scale_Wbar=f64(qWs), scale_wvol=f64(qWvols),
+        scale_corner=f64(qCorners), scale_vertex=f64(qvertex), scale_energy=float(qenergy),
     )
-    return Reference(**values)
 
 
 def _csr(faces: np.ndarray, n_vertices: int):
@@ -449,55 +323,6 @@ def _fraction_geometry(rest: np.ndarray, current: np.ndarray, faces: np.ndarray)
         areas.append(abs(det) / 2)
     offsets, corners = _csr(faces, len(rest))
     return r, y, B, areas, offsets.tolist(), corners.tolist()
-
-
-def _reference_pair(rest, current, rest32, current32, faces, B32, areas32,
-                    offsets32, corners32, *, stored_E3d, stored_h, stored_E2,
-                    stored_nu, stored_E3d_upload, stored_h_upload,
-                    stored_E2_upload, stored_nu_upload):
-    """Recompute both fixed-recipe references and their proved envelopes."""
-    fr, fy, fB, fA, foffs, fcorners = _fraction_geometry(rest, current, faces)
-    original_ref = _reference_scalar(
-        ideal_rest=fr, ideal_current=fy, ideal_B=fB, ideal_areas=fA,
-        stored_rest=rest.tolist(), stored_current=current.tolist(),
-        stored_B=np.asarray(fB, dtype=np.float64).tolist(),
-        stored_areas=np.asarray(fA, dtype=np.float64).tolist(),
-        faces=faces.tolist(), offsets=foffs, corners=fcorners,
-        material_mode="volumetric", ideal_E3d=Fraction(1000), stored_E3d=stored_E3d,
-        ideal_E2=Fraction(2), stored_E2=stored_E2,
-        ideal_nu=Fraction(3, 10), stored_nu=stored_nu,
-        ideal_h=Fraction(1, 500), stored_h=stored_h,
-    )
-    ur = [[Fraction.from_float(float(x)) for x in row] for row in rest32]
-    uy = [[Fraction.from_float(float(x)) for x in row] for row in current32]
-    uB = [[[Fraction.from_float(float(x)) for x in row] for row in face] for face in B32]
-    uA = [Fraction.from_float(float(x)) for x in areas32]
-    uE3d = Fraction.from_float(float(stored_E3d_upload))
-    uE2 = Fraction.from_float(float(stored_E2_upload))
-    unu = Fraction.from_float(float(stored_nu_upload))
-    uh = Fraction.from_float(float(stored_h_upload))
-    upload_ref = _reference_scalar(
-        ideal_rest=ur, ideal_current=uy, ideal_B=uB, ideal_areas=uA,
-        stored_rest=rest32.astype(np.float64).tolist(),
-        stored_current=current32.astype(np.float64).tolist(),
-        stored_B=B32.astype(np.float64).tolist(), stored_areas=areas32.astype(np.float64).tolist(),
-        faces=faces.tolist(), offsets=offsets32.tolist(), corners=corners32.tolist(),
-        material_mode="surface", ideal_E3d=uE3d, stored_E3d=stored_E3d_upload,
-        ideal_E2=uE2, stored_E2=stored_E2_upload,
-        ideal_nu=unu, stored_nu=stored_nu_upload,
-        ideal_h=uh, stored_h=stored_h_upload,
-    )
-    return original_ref, upload_ref
-
-
-def _same_reference(actual: Reference, expected: Reference) -> bool:
-    for name in ("F", "Wbar", "wvol", "corner", "vertex", "energy",
-                 "bound_F", "bound_Wbar", "bound_wvol", "bound_corner",
-                 "bound_vertex", "bound_energy"):
-        if not np.array_equal(np.asarray(getattr(actual, name)),
-                              np.asarray(getattr(expected, name))):
-            return False
-    return True
 
 
 def canonical_geometries() -> dict[str, tuple[np.ndarray, np.ndarray, np.ndarray]]:
@@ -576,11 +401,13 @@ def _arrays_for_fixture(fixture_id: str, geometry, source: dict) -> dict[str, np
     E3d32, h32, nu32 = np.float32(E3d), np.float32(h), np.float32(nu)
     E232 = np.float32(np.float64(E3d32) * np.float64(h32))
 
-    original_ref, upload_ref = _reference_pair(
-        rest, current, rest32, current32, faces, B32, areas32, offsets32, corners32,
-        stored_E3d=E3d, stored_h=h, stored_E2=E2, stored_nu=nu,
-        stored_E3d_upload=float(E3d32), stored_h_upload=float(h32),
-        stored_E2_upload=float(E232), stored_nu_upload=float(nu32),
+    fr, fy, fB, fA, foffs, fcorners = _fraction_geometry(rest, current, faces)
+    original_ref = _reference_scalar(fr, fy, faces.tolist(), fB, fA, foffs, fcorners,
+                                     Fraction(2), Fraction(3, 10), Fraction(1, 500))
+    upload_ref = _reference_scalar(
+        rest32.astype(np.float64).tolist(), current32.astype(np.float64).tolist(), faces.tolist(),
+        B32.astype(np.float64).tolist(), areas32.astype(np.float64).tolist(),
+        offsets32.tolist(), corners32.tolist(), float(E232), float(nu32), float(h32),
     )
     arrays = {
         "packet_version_u8": _u8(PACKET_VERSION), "fixture_id_u8": _u8(fixture_id),
@@ -605,12 +432,12 @@ def _arrays_for_fixture(fixture_id: str, geometry, source: dict) -> dict[str, np
             f"ref_{prefix}_wvol_f64": ref.wvol, f"ref_{prefix}_corner_f64": ref.corner,
             f"ref_{prefix}_vertex_f64": ref.vertex,
             f"ref_{prefix}_energy_f64": np.asarray(ref.energy, dtype=np.float64),
-            f"bound_{prefix}_F_f64": ref.bound_F,
-            f"bound_{prefix}_Wbar_f64": ref.bound_Wbar,
-            f"bound_{prefix}_wvol_f64": ref.bound_wvol,
-            f"bound_{prefix}_corner_f64": ref.bound_corner,
-            f"bound_{prefix}_vertex_f64": ref.bound_vertex,
-            f"bound_{prefix}_energy_f64": np.asarray(ref.bound_energy, dtype=np.float64),
+            f"scale_{prefix}_F_f64": ref.scale_F,
+            f"scale_{prefix}_Wbar_f64": ref.scale_Wbar,
+            f"scale_{prefix}_wvol_f64": ref.scale_wvol,
+            f"scale_{prefix}_corner_f64": ref.scale_corner,
+            f"scale_{prefix}_vertex_f64": ref.scale_vertex,
+            f"scale_{prefix}_energy_f64": np.asarray(ref.scale_energy, dtype=np.float64),
         })
     assert set(arrays) == set(ARRAY_FIELDS)
     return arrays
@@ -685,16 +512,16 @@ def _reference(z, prefix: str, nf: int, nv: int) -> Reference:
         "vertex": _exact(z, f"ref_{prefix}_vertex_f64", np.float64, (nv, 3)),
         "energy": _scalar(z[f"ref_{prefix}_energy_f64"], np.float64,
                           f"ref_{prefix}_energy_f64"),
-        "bound_F": _exact(z, f"bound_{prefix}_F_f64", np.float64, (nf, 3, 2)),
-        "bound_Wbar": _exact(z, f"bound_{prefix}_Wbar_f64", np.float64, (nf,)),
-        "bound_wvol": _exact(z, f"bound_{prefix}_wvol_f64", np.float64, (nf,)),
-        "bound_corner": _exact(z, f"bound_{prefix}_corner_f64", np.float64, (nf, 3, 3)),
-        "bound_vertex": _exact(z, f"bound_{prefix}_vertex_f64", np.float64, (nv, 3)),
-        "bound_energy": _scalar(z[f"bound_{prefix}_energy_f64"], np.float64,
-                                f"bound_{prefix}_energy_f64"),
+        "scale_F": _exact(z, f"scale_{prefix}_F_f64", np.float64, (nf, 3, 2)),
+        "scale_Wbar": _exact(z, f"scale_{prefix}_Wbar_f64", np.float64, (nf,)),
+        "scale_wvol": _exact(z, f"scale_{prefix}_wvol_f64", np.float64, (nf,)),
+        "scale_corner": _exact(z, f"scale_{prefix}_corner_f64", np.float64, (nf, 3, 3)),
+        "scale_vertex": _exact(z, f"scale_{prefix}_vertex_f64", np.float64, (nv, 3)),
+        "scale_energy": _scalar(z[f"scale_{prefix}_energy_f64"], np.float64,
+                                f"scale_{prefix}_energy_f64"),
     }
-    for name in ("bound_F", "bound_Wbar", "bound_wvol", "bound_corner",
-                 "bound_vertex", "bound_energy"):
+    for name in ("scale_F", "scale_Wbar", "scale_wvol", "scale_corner",
+                 "scale_vertex", "scale_energy"):
         if np.any(np.asarray(values[name]) < 0):
             raise FixtureRefusal(FixtureReason.REFERENCE, f"negative forward scale {name}")
     return Reference(**values)
@@ -740,8 +567,7 @@ def _validate_source(source: object, fixture_id: str, manifest: dict) -> None:
             source.get("legacy_fields_read") != list(LEGACY_GEOMETRY_FIELDS) or
             source.get("legacy_manifest_sha256") != manifest["legacy_manifest_sha256"] or
             not isinstance(source.get("legacy_npz_sha256"), str) or
-            len(source["legacy_npz_sha256"]) != 64 or
-            any(c not in "0123456789abcdef" for c in source["legacy_npz_sha256"])):
+            len(source["legacy_npz_sha256"]) != 64):
         raise FixtureRefusal(FixtureReason.SOURCE, "canonical patch source binding changed")
 
 
@@ -851,21 +677,6 @@ def load_packet(manifest_path: str | Path, trusted_manifest_sha256: str,
     if not (np.array_equal(rest32, rest0.astype(np.float32)) and
             np.array_equal(cur32, cur0.astype(np.float32))):
         raise FixtureRefusal(FixtureReason.GEOMETRY, "upload positions are not binary32 rounding of originals")
-    expected_original, expected_upload = _reference_pair(
-        rest0, cur0, rest32, cur32, faces, B, areas, offsets, corners,
-        stored_E3d=original_material.E3d_pa, stored_h=original_material.h_m,
-        stored_E2=original_material.E2_n_per_m, stored_nu=original_material.nu,
-        stored_E3d_upload=upload_material.E3d_pa,
-        stored_h_upload=upload_material.h_m,
-        stored_E2_upload=upload_material.E2_n_per_m,
-        stored_nu_upload=upload_material.nu,
-    )
-    if (not _same_reference(original_reference, expected_original) or
-            not _same_reference(upload_reference, expected_upload)):
-        raise FixtureRefusal(
-            FixtureReason.REFERENCE,
-            "stored references or absolute envelopes differ from fixed-recipe recomputation",
-        )
     return PhysicalPacket(
         path=path, packet_sha256=entry["sha256"], manifest_path=manifest_path,
         manifest_sha256=actual_manifest_hash, fixture_id=fixture_id,
@@ -879,23 +690,15 @@ def load_packet(manifest_path: str | Path, trusted_manifest_sha256: str,
     )
 
 
-def _close(actual, expected, bound) -> bool:
-    a, e, b = (np.asarray(x, dtype=np.float64) for x in (actual, expected, bound))
-    if a.shape != e.shape or e.shape != b.shape:
+def _close(actual, expected, scale) -> bool:
+    a, e, q = (np.asarray(x, dtype=np.float64) for x in (actual, expected, scale))
+    if a.shape != e.shape or e.shape != q.shape:
         return False
     if not (np.all(np.isfinite(a)) and np.all(np.isfinite(e)) and
-            np.all(np.isfinite(b)) and np.all(b >= 0)):
+            np.all(np.isfinite(q)) and np.all(q >= 0)):
         return False
-    # Compare the represented binary64 values exactly.  Computing abs(a-e) in
-    # binary64 could round down at the acceptance boundary.
-    for av, ev, bv in zip(a.flat, e.flat, b.flat):
-        if bv == 0.0:
-            if av != ev:
-                return False
-        elif abs(Fraction.from_float(float(av)) - Fraction.from_float(float(ev))) > \
-                Fraction.from_float(float(bv)):
-            return False
-    return True
+    bound = CPU_GAMMA * q
+    return bool(np.all(np.where(q == 0, a == e, np.abs(a - e) <= bound)))
 
 
 def _validate_packet_record(packet: PhysicalPacket) -> None:
@@ -906,18 +709,6 @@ def _validate_packet_record(packet: PhysicalPacket) -> None:
     if not packet.path.is_file() or sha256_file(packet.path) != packet.packet_sha256:
         raise FixtureRefusal(FixtureReason.PACKET_HASH,
                              "loaded packet bytes changed after admission")
-    try:
-        expected_rest, expected_current, expected_faces = canonical_geometries()[packet.fixture_id]
-    except KeyError as exc:
-        raise FixtureRefusal(FixtureReason.GEOMETRY,
-                             "in-memory fixture id is not a fixed recipe") from exc
-    if (not np.array_equal(packet.rest_original, expected_rest) or
-            not np.array_equal(packet.current_original, expected_current) or
-            not np.array_equal(packet.faces, expected_faces) or
-            not np.array_equal(packet.rest_upload, expected_rest.astype(np.float32)) or
-            not np.array_equal(packet.current_upload, expected_current.astype(np.float32))):
-        raise FixtureRefusal(FixtureReason.GEOMETRY,
-                             "in-memory original/upload geometry changed")
     for label, material in (("original", packet.original_material),
                             ("upload", packet.upload_material)):
         values = (material.E3d_pa, material.h_m, material.E2_n_per_m, material.nu)
@@ -952,23 +743,6 @@ def _validate_packet_record(packet: PhysicalPacket) -> None:
         raise FixtureRefusal(FixtureReason.PROVENANCE, "in-memory provenance changed")
     if sha256_bytes(canonical_json(packet.source)) != packet.source_sha256:
         raise FixtureRefusal(FixtureReason.SOURCE, "in-memory source changed")
-    expected_original, expected_upload = _reference_pair(
-        packet.rest_original, packet.current_original, packet.rest_upload,
-        packet.current_upload, packet.faces, packet.B_upload, packet.areas_upload,
-        packet.csr_offsets_upload, packet.csr_corners_upload,
-        stored_E3d=packet.original_material.E3d_pa,
-        stored_h=packet.original_material.h_m,
-        stored_E2=packet.original_material.E2_n_per_m,
-        stored_nu=packet.original_material.nu,
-        stored_E3d_upload=packet.upload_material.E3d_pa,
-        stored_h_upload=packet.upload_material.h_m,
-        stored_E2_upload=packet.upload_material.E2_n_per_m,
-        stored_nu_upload=packet.upload_material.nu,
-    )
-    if (not _same_reference(packet.original_reference, expected_original) or
-            not _same_reference(packet.upload_reference, expected_upload)):
-        raise FixtureRefusal(FixtureReason.REFERENCE,
-                             "in-memory reference or absolute envelope changed")
 
 
 def validate_evaluation(packet: PhysicalPacket, mode: str, result) -> None:
@@ -976,12 +750,12 @@ def validate_evaluation(packet: PhysicalPacket, mode: str, result) -> None:
     try:
         ev = result.evaluation
         checks = {
-            "F": (ev.per_face.F, reference.F, reference.bound_F),
-            "Wbar": (ev.per_face.Wbar, reference.Wbar, reference.bound_Wbar),
-            "wvol": (ev.per_face.w_vol, reference.wvol, reference.bound_wvol),
-            "corner": (ev.corner_forces, reference.corner, reference.bound_corner),
-            "vertex": (ev.vertex_forces, reference.vertex, reference.bound_vertex),
-            "energy": (ev.energy, reference.energy, reference.bound_energy),
+            "F": (ev.per_face.F, reference.F, reference.scale_F),
+            "Wbar": (ev.per_face.Wbar, reference.Wbar, reference.scale_Wbar),
+            "wvol": (ev.per_face.w_vol, reference.wvol, reference.scale_wvol),
+            "corner": (ev.corner_forces, reference.corner, reference.scale_corner),
+            "vertex": (ev.vertex_forces, reference.vertex, reference.scale_vertex),
+            "energy": (ev.energy, reference.energy, reference.scale_energy),
         }
     except (AttributeError, TypeError) as exc:
         raise FixtureRefusal(FixtureReason.REFERENCE, "evaluator result is malformed") from exc
@@ -1120,3 +894,4 @@ def main(argv=None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

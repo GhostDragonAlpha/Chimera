@@ -1,0 +1,10 @@
+{
+  "cpu_reference": "passed",
+  "fixtures": [
+    "canonical_patch_8x4",
+    "rational_triangle"
+  ],
+  "gpu_acceptance": "OPEN",
+  "manifest_sha256": "8bbe19872e82287eeeb053d8c3f1e51e8c2e5c9a83dd02d230e4eb8929a1cc8c",
+  "packet_version": "elastic-physical-fixture/v2"
+}
