@@ -1,0 +1,176 @@
+elastic-foundation falsification battery
+============================================================
+run tag            : run_20260908T225945Z_smoke4
+timestamp (UTC)    : 20260908T225945Z
+python / numpy     : 3.14.3 / 2.2.6
+eps64 / ALG / FD   : 2.220e-16 / 1.137e-13 / 9.387e-09
+git (workspace)    : head=51cd7212fd6ef2cfda95c330abcc2ff154cc6141 dirty=True status='M Chimera/docs/DREAM_REPORT.md\n M Chimera/docs/EXPECTATION_VIOLATIONS.md\n M Chimera/docs/HERALD.md\n M Chimera/docs/HISTORY_BOOK.md\n M Chimera/docs/chimera_dna_graph.json\n M ChimeraEngine/engine/_native_end.png\n M ChimeraEngine/engine/_native_start.png\n?? Chimera/tools/\n?? ChimeraEngine/ctx_launch.err\n?? ChimeraEngine/ctx_launch.out\n?? ChimeraEngine/engine/engine_launch.err\n?? ChimeraEngine/engine/engine_launch.out\n?? ChimeraEngine/jnt2_launch.err\n?? ChimeraEngine/jnt2_launch.out\n?? Saved/dyad/2026-09-02_001124/\n?? Saved/dyad/2026-09-02_002341/\n?? Saved/dyad/2026-09-02_004300/\n?? Saved/dyad/2026-09-02_010015/\n?? Saved/dyad/2026-09-02_085351/\n?? Saved/dyad/2026-09-02_120925/\n?? Saved/dyad/2026-09-02_120954/\n?? Saved/dyad/2026-09-02_132118/\n?? Saved/dyad/2026-09-02_143752/\n?? Saved/dyad/2026-09-02_155719/\n?? Saved/dyad/2026-09-03_loaded_review/\n?? Saved/dyad/2026-09-03_logs_review/\n?? Saved/dyad/2026-09-04_143649/\n?? Saved/dyad/2026-09-04_165954/\n?? Saved/dyad/2026-09-04_195741/\n?? Saved/dyad/2026-09-04_204618/\n?? Saved/dyad/2026-09-04_210427/\n?? Saved/dyad/2026-09-04_211701/\n?? Saved/dyad/2026-09-04_212352/\n?? Saved/dyad/2026-09-04_213428/\n?? Saved/dyad/2026-09-04_215512/\n?? Saved/dyad/2026-09-05_225854/\n?? Saved/dyad/2026-09-06_085110/\n?? Saved/dyad/2026-09-06_090801_burst/\n?? Saved/dyad/2026-09-06_091001_burst/\n?? Saved/dyad/2026-09-06_091837_burst/\n?? Saved/dyad/2026-09-06_092701_burst/\n?? Saved/dyad/cam_before_side.json\n?? Saved/dyad/clean_diff_crop.png\n?? Saved/dyad/clean_diff_vis.png\n?? Saved/dyad/clean_t0.png\n?? Saved/dyad/clean_t90.png\n?? Saved/dyad/d8_rig_off_glass.png\n?? Saved/dyad/d8_rig_on_glass.png\n?? Saved/dyad/d8_rig_overlay_clipped_glass.png\n?? Saved/dyad/d8_rig_overlay_final_glass.png\n?? Saved/dyad/d8_rig_overlay_fitted_glass.png\n?? Saved/dyad/d8_rig_overlay_glass.png\n?? Saved/dyad/d8_rig_overlay_joints_glass.png\n?? Saved/dyad/dyad_log.jsonl\n?? Saved/dyad/dyad_log.txt\n?? Saved/dyad/dyad_shots/\n?? Saved/dyad/jnt2_elbow_flex.png\n?? Saved/dyad/jnt2_elbow_flex_compact.png\n?? Saved/dyad/jnt2_sagittal_flex.png\n?? Saved/dyad/jnt2_sagittal_glass.png\n?? Saved/dyad/jnt2_side2_glass.png\n?? Saved/dyad/jnt2_side_glass.png\n?? Saved/dyad/probe_framed.png\n?? Saved/dyad/probe_gate.png\n?? Saved/dyad/probe_max.png\n?? Saved/dyad/render_lane/\n?? Saved/dyad/sag_flex.png\n?? Saved/dyad/sag_flex_Lcrop.png\n?? Saved/dyad/sag_flex_rig.png\n?? Saved/dyad/sag_glass_flex.png\n?? Saved/dyad/sag_glass_rest.png\n?? Saved/dyad/sag_rest.png\n?? Saved/dyad/sag_rest_rig.png\n?? Saved/dyad/seg_f0.png\n?? Saved/dyad/seg_f90.png\n?? Saved/dyad/seg_t0.png\n?? Saved/dyad/seg_t90.png\n?? Saved/dyad/shots/\n?? Saved/dyad/side_t0.png\n?? Saved/dyad/side_t90.png\n?? Saved/dyad/strain_flex.png\n?? Saved/dyad/strain_rest.png\n?? Saved/dyad/t2_off.png\n?? Saved/dyad/t2_on.png\n?? Saved/dyad/t3_off.png\n?? Saved/dyad/t3_on.png\n?? Saved/dyad/t4_flex_off.png\n?? Saved/dyad/t4_flex_on.png\n?? Saved/dyad/t4_rest_off.png\n?? Saved/dyad/t4_rest_on.png\n?? Saved/dyad/t5_flex_off.png\n?? Saved/dyad/t5_flex_on.png\n?? Saved/dyad/t5_rest_off.png\n?? Saved/dyad/t5_rest_on.png\n?? Saved/dyad/tags_check.png\n?? Saved/dyad/tint_off.png\n?? Saved/dyad/tint_on.png\n?? Saved/dyad_model.txt\n?? Saved/engine_frame_now.png\n?? Saved/engine_frame_r14.png\n?? Saved/engine_frame_r20.png\n?? Saved/gait/\n?? Saved/local_agent/\n?? Saved/meshes/monkey_joints.bin.pre_refit.bak\n?? Saved/scratch/\n?? Saved/vision_trial/\n?? docs/PHYSICS_NOTES.md\n?? docs/THE_CONTACT_SHADOW.md\n?? docs/THE_WALK_DERIVATION.md\n?? docs/evidence/\n?? docs/scratch/DS_MEMBRANE_VIS_01_screenshot_spec_20260908T1518.md\n?? linux_inventory_20260907183000/\n?? membrane_scale_lab_checkout/\n?? review-mutations-01/\n?? robustness-01/\n?? "s -ExecutionPolicy RemoteSigned) ; (& e\\357\\200\\272PythonChimera.venv-gaScriptsActivate.ps1)"\n?? session_20260903_080650.jsonl\n?? state-integrity-01/\n?? tools/Saved/\n?? tools/dyad_timed_capture.py\n?? tools/elastic_foundation/\n?? tools/membrane_scale_lab/\n?? tools/physics/'
+totals             : 19 checks, 1 failed
+------------------------------------------------------------
+[F0] PASS  membrane preamble
+        statement: preregistered on record
+        source: docs/evidence/elastic_foundation/PREREGISTRATION.md
+[F1] PASS  rest-state energy/stress/force
+        single_energy: 8.634938651758154e-33
+        single_Emax: 2.220446049250313e-16
+        single_Cmax: 4.440892098500626e-16
+        single_fmax: 1.0370215065180034e-16
+        single_u_lim: 2.5884056802689357e-14
+        single_f_lim: 2.1532696576234626e-14
+        2x2 patch_energy: 0.0
+        2x2 patch_Emax: 0.0
+        2x2 patch_Cmax: 0.0
+        2x2 patch_fmax: 0.0
+        2x2 patch_u_lim: 1.6968184734569555e-13
+        2x2 patch_f_lim: 2.3996636980480377e-13
+[F2] PASS  rigid translation and finite-rotation invariance
+        a_energy: 2.2742236404994412e-32
+        a_lim: 2.5884056802689357e-14
+        b_du: 1.474514954580286e-17
+        b_df: 8.326672684688674e-17
+        b_u_lim: 2.5884056802689357e-14
+        b_f_lim: 2.1532696576234626e-14
+        c_elastic_energy: 2.9142917949683773e-33
+        c_linear_strain_energy: 0.029569110234241004
+[F3] PASS  analytic force vs central-difference energy gradient
+        errs: [4.3415010382802853e-10, 1.704748030050576e-10, 8.934211972124041e-11, 6.231597307077505e-11, 8.809957121941199e-10, 8.011547462558153e-09, 8.90067491549041e-08, 8.900682363094915e-06]
+        hvals: [2e-07, 5e-07, 1e-06, 3e-06, 1e-05, 3e-05, 0.0001, 0.001]
+        hbest: 3e-06
+        best: 6.231597307077505e-11
+        fd_limit: 9.387143328002652e-09
+        trunc_coef_a: 8.900682438323242
+        round_coef_b: 0.3958293288443784
+        predicted_hstar: 1.70280518710116e-06
+        predicted_best: 7.74238012722552e-11
+        round_arm_ratio: 2.5467112803476786
+        trunc_arm_ratio: 100.00008367460418
+[F4] PASS  net internal force and torque balance
+        single_fnet: 1.3877787807814457e-17
+        single_torque: 0.0
+        single_sf: 2.1532696576234626e-14
+        single_st: 2.5884056802689357e-14
+        patch_fnet: 6.071532165918825e-18
+        patch_torque: 6.938893903907228e-18
+        patch_sf: 1.3513309541229898e-13
+        patch_st: 8.12048840868686e-14
+[F5] PASS  uniform extension and shear vs analytic closed form
+        biaxial_dC: 4.440892098500626e-16
+        biaxial_dE: 2.220446049250313e-16
+        biaxial_dW: 4.85722573273506e-17
+        biaxial_dCorner: 1.5265566588595902e-16
+        shear_dC: 4.440892098500626e-16
+        shear_dE: 2.220446049250313e-16
+        shear_dW: 2.0816681711721685e-17
+        shear_dCorner: 1.6653345369377348e-16
+[F6] PASS  stiffness and thickness scaling
+        E2_ratio_u: 2.0
+        E2_dU: 0.0
+        E2_dF: 0.0
+        E2_ratio_wvol: 2.0
+        E2_dVol: 0.0
+        E0.1_ratio_u: 0.10000000000000002
+        E0.1_dU: 1.3877787807814457e-16
+        E0.1_dF: 1.5496988049743285e-17
+        E0.1_ratio_wvol: 0.10000000000000002
+        E0.1_dVol: 1.3877787807814457e-16
+        h2_ratio_u: 1.0
+        h2_dU: 0.0
+        h2_dF: 0.0
+        h2_ratio_wvol: 0.5
+        h2_dVol: 0.0
+[F7] FAIL  material-axis rotation, isotropy and named orthotropic refusal
+        ang0.5235987755982988_dU: 3.148248774314162e-15
+        ang0.5235987755982988_dF: 1.2456066838891284e-15
+        ang0.5235987755982988_dC: 0.24902560485821507
+        ang1.5707963267948966_dU: 4.834810617696749e-15
+        ang1.5707963267948966_dF: 2.0515874793468e-15
+        ang1.5707963267948966_dC: 0.5751000000000005
+        orthotropic: orthotropic_unsupported
+        library_rock: poisson_ratio_not_measured
+[F8] PASS  coordinate re-scaling s: U -> s^2 U, f -> s f, Wbar invariant
+        s1000.0_dWbar: 2.0070085936252782e-15
+        s1000.0_dU: 1.8863874895858554e-15
+        s1000.0_dF: 1.142561934931473e-15
+        s0.37_dWbar: 5.017521484063195e-15
+        s0.37_dU: 4.722537423642501e-15
+        s0.37_dF: 3.518235124806584e-15
+[F9] PASS  collapse, inversion, nonfinite, invalid-material refusal
+        nan_pos: ['nonfinite_positions', 'positions contain NaN or infinity']
+        collapsed: ['collapsed_triangle', 'face 0 collapsed: |cross| = 0.000e+00 <= floor']
+        near_degen: ['near_degenerate_triangle', 'face 0 near-degenerate: |cross| = 9.021e-16 <= floor 1.183e-14']
+        overflow: ['nonfinite_result', 'current edge/cross magnitudes overflow float64 -- refusing']
+        mat_E0: ['nonpositive_young_modulus', 'Young modulus must be > 0; got 0.0']
+        mat_Eneg: ['nonpositive_young_modulus', 'Young modulus must be > 0; got -1.0']
+        mat_nu_-1: ['poisson_out_of_range', 'nu must be in (-1, 1/2) for a positive-definite 2D quadratic form; got -1.0']
+        mat_nu_05: ['poisson_out_of_range', 'nu must be in (-1, 1/2) for a positive-definite 2D quadratic form; got 0.5']
+        mat_nu_1: ['poisson_out_of_range', 'nu must be in (-1, 1/2) for a positive-definite 2D quadratic form; got 1.0']
+        mat_h0: ['nonpositive_thickness', 'thickness must be > 0; got 0.0']
+        inverted: [[True], 8.634938651758154e-33, True]
+[F10] PASS  winding and index changes under the declared convention
+        cyclic1_dU: 0.0
+        cyclic1_dF: 1.2397590439794628e-16
+        cyclic2_dU: 0.0
+        cyclic2_dF: 2.7894578489537914e-16
+        reverse_dU: 0.0
+        reverse_dF: 0.0
+        patch_reverse_dU: 0.0
+        patch_reverse_dF: 0.0
+        patch_reverse_f_lim: 1.1484104840658467e-13
+[F11] PASS  affine patch tests across triangulations
+        density_ref: 0.01419522664835162
+        A_3x2_density: 0.014195226648351628
+        A_3x2_f_max_interior: 3.122502256758253e-16
+        A_3x2_f_lim: 1.948917218084846e-13
+        A_3x2_inverted_any: False
+        B_3x2_flip_density: 0.014195226648351628
+        B_3x2_flip_f_max_interior: 3.122502256758253e-16
+        B_3x2_flip_f_lim: 1.948917218084846e-13
+        B_3x2_flip_inverted_any: False
+        C_6x4_density: 0.014195226648351676
+        C_6x4_f_max_interior: 6.973588373426765e-16
+        C_6x4_f_lim: 3.8978344361696907e-13
+        C_6x4_inverted_any: False
+        densities: [0.014195226648351628, 0.014195226648351628, 0.014195226648351676]
+        density_spread: 3.4217317222610688e-15
+        density_vs_ref: 3.910550539726951e-15
+[F12] PASS  nonuniform deformation and discretization dependence
+        coarse_U: 0.004692651098901105
+        coarse_min_detF: 0.95
+        mid_U: 0.045000018863692884
+        mid_min_detF: 0.76
+        fine_U: 0.054555824478606255
+        fine_min_detF: 0.6248379397693616
+        gap_coarse_mid: 8.589466149365057
+        gap_mid_fine: 0.21235114687081227
+        coarse_fine_diff: 10.62580028406156
+[M1] PASS  mutation sign (must fail F3: gradient FD)
+        message: mutation must fail its independent check
+        violation: 2.0000000008809957
+        why: gradient FD
+        must_fail: True
+[M2] PASS  mutation swap_corners (must fail F3: gradient FD)
+        message: mutation must fail its independent check
+        violation: 0.6470588237903014
+        why: gradient FD
+        must_fail: True
+[M3] PASS  mutation current_area_source (must fail F5: analytic uniform-extension energy)
+        message: mutation must fail its independent check
+        violation: 0.1160000000000023
+        why: analytic uniform-extension energy
+        must_fail: True
+[M4] PASS  mutation linear_strain (must fail F2: finite-rotation invariance)
+        message: mutation must fail its independent check
+        violation: 0.6306842797949823
+        why: finite-rotation invariance
+        must_fail: True
+[M5] PASS  mutation eulerian_frame (must fail F2: finite-rotation invariance)
+        message: mutation must fail its independent check
+        violation: 0.03188150064194823
+        why: finite-rotation invariance
+        must_fail: True
+[M6] PASS  mutation gather_drop (must fail F4: net-force balance on connected patch)
+        message: mutation must fail its independent check
+        violation: 0.09218538461538474
+        why: net-force balance on connected patch
+        must_fail: True
+============================================================

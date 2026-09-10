@@ -1,0 +1,1 @@
+MUTATION_GATE early_return_rejected=yes callback_exited_after_join=yes

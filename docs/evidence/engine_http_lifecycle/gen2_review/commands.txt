@@ -1,0 +1,5 @@
+Commands:
+cmake -S E:\ChimeraWork\slot-03\docs\evidence\engine_http_lifecycle\gen2_review -B E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen2_review_v2 -G "MinGW Makefiles"
+cmake --build E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen2_review_v2 -j2
+for each mode in quiet, partial_header, partial_body, local, blocked_send, finite_callback, cycles, mutation_gate, start_failure, destructor:
+  E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen2_review_v2\engine_http_lifecycle_gen2_review.exe <mode>

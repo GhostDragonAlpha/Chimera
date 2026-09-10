@@ -1,0 +1,4 @@
+quiet_stop=PASS
+partial_request_stop=PASS
+repeated_cycles=PASS
+start_failure_occupied_port=PASS
