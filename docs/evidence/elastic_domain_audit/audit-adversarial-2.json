@@ -1,0 +1,101 @@
+adversarial_gate_controls=PASS
+{
+  "certification": "NOT_CERTIFIED_UNITS_CONFLICT",
+  "compression": [
+    {
+      "abs_error": 2.205956899257165e-33,
+      "analytic_energy": 0.0,
+      "energy": 2.205956899257165e-33,
+      "scale": 1.0
+    },
+    {
+      "abs_error": 2.7755575615628914e-17,
+      "analytic_energy": 0.050595236158678426,
+      "energy": 0.050595236158678454,
+      "scale": 0.5773502691896258
+    },
+    {
+      "abs_error": 1.3877787807814457e-17,
+      "analytic_energy": 0.11383928135679884,
+      "energy": 0.11383928135679885,
+      "scale": 1e-06
+    }
+  ],
+  "fixture": "docs/evidence/elastic_foundation/fixtures/v1\\run_20260908T231140Z\\trisingle_stretch.npz",
+  "frozen_oracle": {
+    "energy_budget": 8.770001051858134e-16,
+    "energy_error": 0.0,
+    "expected_energy": 0.007714174505700615,
+    "expected_force_max": 0.11193943872700896,
+    "force_budget": 1.2726040805206248e-14,
+    "force_error_max": 0.0
+  },
+  "known_law_mutation": {
+    "covariance_broken": true,
+    "energy_delta": 0.0,
+    "force_covariance_max": 0.24461757268640794,
+    "name": "eulerian_frame",
+    "status": "known_failure"
+  },
+  "law_gate": "PASS",
+  "negative_controls": [
+    {
+      "name": "collapsed_triangle",
+      "reason": "collapsed_triangle",
+      "status": "refused"
+    },
+    {
+      "name": "invalid_material",
+      "reason": "nonpositive_young_modulus",
+      "status": "refused"
+    }
+  ],
+  "numeric_gate": "PASS",
+  "proper_rotation": {
+    "det": 1.0,
+    "energy_budget": 8.770001051858134e-16,
+    "energy_delta": 0.0,
+    "force_budget": 1.2726040805206248e-14,
+    "force_covariance_max": 0.0,
+    "gate": "PASS",
+    "matrix": [
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        1.0,
+        0.0,
+        0.0
+      ]
+    ]
+  },
+  "provenance": [
+    "docs/evidence/elastic_foundation/DERIVATION.md\u00a7\u00a72-3,6,12",
+    "docs/evidence/elastic_foundation/GPU_HANDOFF.md\u00a7\u00a73-4",
+    "docs/evidence/elastic_foundation/fixtures/v1/trisingle_stretch.npz"
+  ],
+  "reflection": {
+    "energy": 0.007714174505700615,
+    "expected_inverted_faces": 1,
+    "force_finite": true,
+    "inverted_faces": 1,
+    "status": "accepted_with_inversion_flag"
+  },
+  "schema": "elastic-domain-audit-2",
+  "status": "bounded_diagnostic",
+  "units": {
+    "E_input": "Pa",
+    "contract": "CONTRACT_CONFLICT_NOT_CERTIFIED: lambda_bar/mu_bar omit h; law uses implicit unit thickness",
+    "h_input": "m",
+    "per_area_energy": "force/length",
+    "same_pose_energy_2h": 0.007714174505700615,
+    "same_pose_energy_h": 0.007714174505700615
+  }
+}
