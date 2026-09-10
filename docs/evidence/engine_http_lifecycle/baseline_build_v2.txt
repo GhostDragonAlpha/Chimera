@@ -1,0 +1,31 @@
+Change Dir: 'E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build'
+
+Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/ProgramData/mingw64/mingw64/bin/mingw32-make.exe -f Makefile
+"C:\Program Files\CMake\bin\cmake.exe" -SE:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1 -BE:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\baseline_build --check-build-system CMakeFiles\Makefile.cmake 0
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_progress_start E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\baseline_build\CMakeFiles E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\baseline_build\\CMakeFiles\progress.marks
+C:/ProgramData/mingw64/mingw64/bin/mingw32-make.exe  -f CMakeFiles\Makefile2 all
+mingw32-make[1]: Entering directory 'E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build'
+C:/ProgramData/mingw64/mingw64/bin/mingw32-make.exe  -f CMakeFiles\engine_http_lifecycle_harness.dir\build.make CMakeFiles/engine_http_lifecycle_harness.dir/depend
+mingw32-make[2]: Entering directory 'E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build'
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_depends "MinGW Makefiles" E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1 E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1 E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\baseline_build E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\baseline_build E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\baseline_build\CMakeFiles\engine_http_lifecycle_harness.dir\DependInfo.cmake "--color=" engine_http_lifecycle_harness
+Dependencies file "CMakeFiles/engine_http_lifecycle_harness.dir/E_/ChimeraWork/slot-03/ChimeraEngine/engine/http_server.cpp.obj.d" is newer than depends file "E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build/CMakeFiles/engine_http_lifecycle_harness.dir/compiler_depend.internal".
+Dependencies file "CMakeFiles/engine_http_lifecycle_harness.dir/harness.cpp.obj.d" is newer than depends file "E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build/CMakeFiles/engine_http_lifecycle_harness.dir/compiler_depend.internal".
+Consolidate compiler generated dependencies of target engine_http_lifecycle_harness
+mingw32-make[2]: Leaving directory 'E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build'
+C:/ProgramData/mingw64/mingw64/bin/mingw32-make.exe  -f CMakeFiles\engine_http_lifecycle_harness.dir\build.make CMakeFiles/engine_http_lifecycle_harness.dir/build
+mingw32-make[2]: Entering directory 'E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build'
+[ 33%] Building CXX object CMakeFiles/engine_http_lifecycle_harness.dir/harness.cpp.obj
+C:\ProgramData\mingw64\mingw64\bin\g++.exe  @CMakeFiles/engine_http_lifecycle_harness.dir/includes_CXX.rsp -std=gnu++17 -MD -MT CMakeFiles/engine_http_lifecycle_harness.dir/harness.cpp.obj -MF CMakeFiles\engine_http_lifecycle_harness.dir\harness.cpp.obj.d -o CMakeFiles\engine_http_lifecycle_harness.dir\harness.cpp.obj -c E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\harness.cpp
+E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\harness.cpp:56:16: error: stray '\' in program
+   56 |     Sleep(250);\n    std::cout << "BEFORE_STOP quiet pid=" << GetCurrentProcessId() << std::endl;
+      |                ^
+E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\harness.cpp: In function 'int quiet_stop()':
+E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\harness.cpp:56:17: error: 'n' was not declared in this scope
+   56 |     Sleep(250);\n    std::cout << "BEFORE_STOP quiet pid=" << GetCurrentProcessId() << std::endl;
+      |                 ^
+mingw32-make[2]: *** [CMakeFiles\engine_http_lifecycle_harness.dir\build.make:79: CMakeFiles/engine_http_lifecycle_harness.dir/harness.cpp.obj] Error 1
+mingw32-make[2]: Leaving directory 'E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build'
+mingw32-make[1]: *** [CMakeFiles\Makefile2:86: CMakeFiles/engine_http_lifecycle_harness.dir/all] Error 2
+mingw32-make[1]: Leaving directory 'E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build'
+mingw32-make: *** [Makefile:90: all] Error 2
+

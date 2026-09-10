@@ -1,0 +1,27 @@
+Change Dir: 'E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build'
+
+Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/ProgramData/mingw64/mingw64/bin/mingw32-make.exe -f Makefile
+"C:\Program Files\CMake\bin\cmake.exe" -SE:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1 -BE:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\baseline_build --check-build-system CMakeFiles\Makefile.cmake 0
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_progress_start E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\baseline_build\CMakeFiles E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\baseline_build\\CMakeFiles\progress.marks
+C:/ProgramData/mingw64/mingw64/bin/mingw32-make.exe  -f CMakeFiles\Makefile2 all
+mingw32-make[1]: Entering directory 'E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build'
+C:/ProgramData/mingw64/mingw64/bin/mingw32-make.exe  -f CMakeFiles\engine_http_lifecycle_harness.dir\build.make CMakeFiles/engine_http_lifecycle_harness.dir/depend
+mingw32-make[2]: Entering directory 'E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build'
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_depends "MinGW Makefiles" E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1 E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1 E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\baseline_build E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\baseline_build E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\baseline_build\CMakeFiles\engine_http_lifecycle_harness.dir\DependInfo.cmake "--color=" engine_http_lifecycle_harness
+Dependencies file "CMakeFiles/engine_http_lifecycle_harness.dir/harness.cpp.obj.d" is newer than depends file "E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build/CMakeFiles/engine_http_lifecycle_harness.dir/compiler_depend.internal".
+Consolidate compiler generated dependencies of target engine_http_lifecycle_harness
+mingw32-make[2]: Leaving directory 'E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build'
+C:/ProgramData/mingw64/mingw64/bin/mingw32-make.exe  -f CMakeFiles\engine_http_lifecycle_harness.dir\build.make CMakeFiles/engine_http_lifecycle_harness.dir/build
+mingw32-make[2]: Entering directory 'E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build'
+[ 33%] Building CXX object CMakeFiles/engine_http_lifecycle_harness.dir/harness.cpp.obj
+C:\ProgramData\mingw64\mingw64\bin\g++.exe  @CMakeFiles/engine_http_lifecycle_harness.dir/includes_CXX.rsp -std=gnu++17 -MD -MT CMakeFiles/engine_http_lifecycle_harness.dir/harness.cpp.obj -MF CMakeFiles\engine_http_lifecycle_harness.dir\harness.cpp.obj.d -o CMakeFiles\engine_http_lifecycle_harness.dir\harness.cpp.obj -c E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\harness.cpp
+[ 66%] Linking CXX executable engine_http_lifecycle_harness.exe
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\engine_http_lifecycle_harness.dir\link.txt --verbose=1
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\engine_http_lifecycle_harness.dir/objects.a
+C:\ProgramData\mingw64\mingw64\bin\ar.exe qc CMakeFiles\engine_http_lifecycle_harness.dir/objects.a @CMakeFiles\engine_http_lifecycle_harness.dir\objects1.rsp
+C:\ProgramData\mingw64\mingw64\bin\g++.exe -Wl,--whole-archive CMakeFiles\engine_http_lifecycle_harness.dir/objects.a -Wl,--no-whole-archive -o engine_http_lifecycle_harness.exe -Wl,--out-implib,libengine_http_lifecycle_harness.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\engine_http_lifecycle_harness.dir\linkLibs.rsp
+mingw32-make[2]: Leaving directory 'E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build'
+[100%] Built target engine_http_lifecycle_harness
+mingw32-make[1]: Leaving directory 'E:/ChimeraWork/slot-03/.tmp/engine_http_lifecycle_gen1/baseline_build'
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_progress_start E:\ChimeraWork\slot-03\.tmp\engine_http_lifecycle_gen1\baseline_build\CMakeFiles 0
+
