@@ -268,4 +268,4 @@ Derived R_true = 1.500
     verdicts = verify_run.check_verdicts(parsed, metrics)
     assert len(verdicts) == 8
     h = next(v for v in verdicts if v["letter"] == "h")
-    assert h["agree"] == "UNCHECKED"
+    assert h["agree"] == "UNKNOWN"

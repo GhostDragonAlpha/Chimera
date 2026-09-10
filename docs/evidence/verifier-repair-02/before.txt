@@ -1,0 +1,1152 @@
+.......................FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF.....           [100%]
+================================== FAILURES ===================================
+_________________ test_rejects_invalid_file[unknown-explicit] _________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_unkn0')
+mode = 'explicit', name = 'unknown'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...compression=0.05\n======================================================================\n\n  (z) FROBNICATE: KABOOM\n'
+reason = 'UNKNOWN'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-54\test_rejects_invalid_file_unkn0\LightEngine\output\print_bad_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E           (z) FROBNICATE KABOOM     UNCHECKED    UNCHECKED 
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+________________ test_rejects_invalid_file[unknown-directory] _________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_unkn1')
+mode = 'directory', name = 'unknown'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...compression=0.05\n======================================================================\n\n  (z) FROBNICATE: KABOOM\n'
+reason = 'UNKNOWN'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_bad_log.txt                  bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=2
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=2\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+_____________ test_rejects_invalid_file[unknown_skipped-explicit] _____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_unkn2')
+mode = 'explicit', name = 'unknown_skipped'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...ompression=0.05\n======================================================================\n\n  (z) FROBNICATE: skipped\n'
+reason = 'UNKNOWN'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-54\test_rejects_invalid_file_unkn2\LightEngine\output\print_bad_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E           (z) FROBNICATE skipped    UNCHECKED    UNCHECKED 
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+____________ test_rejects_invalid_file[unknown_skipped-directory] _____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_unkn3')
+mode = 'directory', name = 'unknown_skipped'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...ompression=0.05\n======================================================================\n\n  (z) FROBNICATE: skipped\n'
+reason = 'UNKNOWN'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_bad_log.txt                  bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=2
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=2\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+________________ test_rejects_invalid_file[duplicate-explicit] ________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_dupl0')
+mode = 'explicit', name = 'duplicate'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...0.00 compression=0.05\n======================================================================\n\n  (c) BALANCE: FAIL\n'
+reason = 'DUPLICATE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-54\test_rejects_invalid_file_dupl0\LightEngine\output\print_bad_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+_______________ test_rejects_invalid_file[duplicate-directory] ________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_dupl1')
+mode = 'directory', name = 'duplicate'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...0.00 compression=0.05\n======================================================================\n\n  (c) BALANCE: FAIL\n'
+reason = 'DUPLICATE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_bad_log.txt                  bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+__________ test_rejects_invalid_file[conflicting_duplicate-explicit] __________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_conf0')
+mode = 'explicit', name = 'conflicting_duplicate'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...0.00 compression=0.05\n======================================================================\n\n  (c) BALANCE: PASS\n'
+reason = 'DUPLICATE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-54\test_rejects_invalid_file_conf0\LightEngine\output\print_bad_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE PASS       FAIL         DISAGREE  
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 'DUPLICATE' in '======================================================================\nLOG: C:\\Users\\allen\\AppData\\Local\\Temp\\...e      0.0000         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n'
+E        +  where '======================================================================\nLOG: C:\\Users\\allen\\AppData\\Local\\Temp\\...e      0.0000         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').stdout
+
+tools\test_verify_run_integrity.py:42: AssertionError
+_________ test_rejects_invalid_file[conflicting_duplicate-directory] __________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_conf1')
+mode = 'directory', name = 'conflicting_duplicate'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...0.00 compression=0.05\n======================================================================\n\n  (c) BALANCE: PASS\n'
+reason = 'DUPLICATE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_bad_log.txt                  bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=4 D=1 U=1
+E         
+E       assert 'DUPLICATE' in 'BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ...og.txt                  bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=4 D=1 U=1\n'
+E        +  where 'BATCH VERIFICATION SUMMARY\n  LOG                                TAG                  N        SETTLED  FLAGS        ...og.txt                  bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=4 D=1 U=1\n' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=4 D=1 U=1\n', stderr='').stdout
+
+tools\test_verify_run_integrity.py:42: AssertionError
+________________ test_rejects_invalid_file[truncated-explicit] ________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_trun0')
+mode = 'explicit', name = 'truncated'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...0 compression=0.05\n======================================================================\n\n[run] tick=99 | angle=\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 1153, in <module>
+E             sys.exit(main(sys.argv))
+E                      ~~~~^^^^^^^^^^
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 1140, in main
+E             parsed = parse_log(path)
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 155, in parse_log
+E             sample = _parse_sample_line(line)
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 86, in _parse_sample_line
+E             sample["angle"] = float(value.replace("deg", ""))
+E                               ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         ValueError: could not convert string to float: ''
+E         
+E       assert 'MALFORMED' in ''
+E        +  where '' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...", ""))\n                      ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: could not convert string to float: \'\'\n').stdout
+
+tools\test_verify_run_integrity.py:42: AssertionError
+_______________ test_rejects_invalid_file[truncated-directory] ________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_trun1')
+mode = 'directory', name = 'truncated'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...0 compression=0.05\n======================================================================\n\n[run] tick=99 | angle=\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 1153, in <module>
+E             sys.exit(main(sys.argv))
+E                      ~~~~^^^^^^^^^^
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 1134, in main
+E             return run_batch(Path("LightEngine/output"))
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 1108, in run_batch
+E             parsed = parse_log(path)
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 155, in parse_log
+E             sample = _parse_sample_line(line)
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 86, in _parse_sample_line
+E             sample["angle"] = float(value.replace("deg", ""))
+E                               ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         ValueError: could not convert string to float: ''
+E         
+E       assert 'MALFORMED' in ''
+E        +  where '' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...", ""))\n                      ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: could not convert string to float: \'\'\n').stdout
+
+tools\test_verify_run_integrity.py:42: AssertionError
+____________ test_rejects_invalid_file[derived_truncated-explicit] ____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_deri0')
+mode = 'explicit', name = 'derived_truncated'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...ack=0.00 compression=0.05\n======================================================================\n\nDerived Foo=1e+\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-54\test_rejects_invalid_file_deri0\LightEngine\output\print_bad_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+___________ test_rejects_invalid_file[derived_truncated-directory] ____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_deri1')
+mode = 'directory', name = 'derived_truncated'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...ack=0.00 compression=0.05\n======================================================================\n\nDerived Foo=1e+\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_bad_log.txt                  bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+_____________ test_rejects_invalid_file[derived_suffix-explicit] ______________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_deri2')
+mode = 'explicit', name = 'derived_suffix'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ....00 compression=0.05\n======================================================================\n\nDerived Foo=1garbage\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-54\test_rejects_invalid_file_deri2\LightEngine\output\print_bad_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+_____________ test_rejects_invalid_file[derived_suffix-directory] _____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_deri3')
+mode = 'directory', name = 'derived_suffix'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ....00 compression=0.05\n======================================================================\n\nDerived Foo=1garbage\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_bad_log.txt                  bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+_______________ test_rejects_invalid_file[derived_inf-explicit] _______________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_deri4')
+mode = 'explicit', name = 'derived_inf'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...ack=0.00 compression=0.05\n======================================================================\n\nDerived Foo=inf\n'
+reason = 'NONFINITE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-54\test_rejects_invalid_file_deri4\LightEngine\output\print_bad_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+______________ test_rejects_invalid_file[derived_inf-directory] _______________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_deri5')
+mode = 'directory', name = 'derived_inf'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...ack=0.00 compression=0.05\n======================================================================\n\nDerived Foo=inf\n'
+reason = 'NONFINITE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_bad_log.txt                  bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+____________ test_rejects_invalid_file[derived_overflow-explicit] _____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_deri6')
+mode = 'explicit', name = 'derived_overflow'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...k=0.00 compression=0.05\n======================================================================\n\nDerived Foo=1e999\n'
+reason = 'NONFINITE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-54\test_rejects_invalid_file_deri6\LightEngine\output\print_bad_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+____________ test_rejects_invalid_file[derived_overflow-directory] ____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_deri7')
+mode = 'directory', name = 'derived_overflow'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...k=0.00 compression=0.05\n======================================================================\n\nDerived Foo=1e999\n'
+reason = 'NONFINITE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_bad_log.txt                  bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+____________ test_rejects_invalid_file[sample_nonfinite-explicit] _____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_samp0')
+mode = 'explicit', name = 'sample_nonfinite'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...======================================================================\n\n[run] tick=99 | angle=nandeg | contact=inf\n'
+reason = 'NONFINITE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 1153, in <module>
+E             sys.exit(main(sys.argv))
+E                      ~~~~^^^^^^^^^^
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 1141, in main
+E             metrics = recompute_metrics(parsed)
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 333, in recompute_metrics
+E             tip_to_drop_min = min(s["tip_to_drop"] for s in samples)
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 333, in <genexpr>
+E             tip_to_drop_min = min(s["tip_to_drop"] for s in samples)
+E                                   ~^^^^^^^^^^^^^^^
+E         KeyError: 'tip_to_drop'
+E         
+E       assert 'NONFINITE' in ''
+E        +  where '' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...min = min(s["tip_to_drop"] for s in samples)\n                          ~^^^^^^^^^^^^^^^\nKeyError: \'tip_to_drop\'\n').stdout
+
+tools\test_verify_run_integrity.py:42: AssertionError
+____________ test_rejects_invalid_file[sample_nonfinite-directory] ____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_samp1')
+mode = 'directory', name = 'sample_nonfinite'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ...======================================================================\n\n[run] tick=99 | angle=nandeg | contact=inf\n'
+reason = 'NONFINITE'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 1153, in <module>
+E             sys.exit(main(sys.argv))
+E                      ~~~~^^^^^^^^^^
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 1134, in main
+E             return run_batch(Path("LightEngine/output"))
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 1109, in run_batch
+E             metrics = recompute_metrics(parsed)
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 333, in recompute_metrics
+E             tip_to_drop_min = min(s["tip_to_drop"] for s in samples)
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 333, in <genexpr>
+E             tip_to_drop_min = min(s["tip_to_drop"] for s in samples)
+E                                   ~^^^^^^^^^^^^^^^
+E         KeyError: 'tip_to_drop'
+E         
+E       assert 'NONFINITE' in ''
+E        +  where '' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...min = min(s["tip_to_drop"] for s in samples)\n                          ~^^^^^^^^^^^^^^^\nKeyError: \'tip_to_drop\'\n').stdout
+
+tools\test_verify_run_integrity.py:42: AssertionError
+__________________ test_rejects_invalid_file[empty-explicit] __________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_empt0')
+mode = 'explicit', name = 'empty', body = '', reason = 'EMPTY LOG'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+        assert cp.returncode==1,cp.stdout+cp.stderr
+>       assert reason in cp.stdout,cp.stdout+cp.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 1153, in <module>
+E             sys.exit(main(sys.argv))
+E                      ~~~~^^^^^^^^^^
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 1143, in main
+E             sections.append(format_section(parsed, metrics, verdicts))
+E                             ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "E:\ChimeraWork\slot-01\tools\verify_run.py", line 826, in format_section
+E             metrics["max_load_gain"], metrics["max_load_tick"]
+E             ~~~~~~~^^^^^^^^^^^^^^^^^
+E         KeyError: 'max_load_gain'
+E         
+E       assert 'EMPTY LOG' in ''
+E        +  where '' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...\n    metrics["max_load_gain"], metrics["max_load_tick"]\n    ~~~~~~~^^^^^^^^^^^^^^^^^\nKeyError: \'max_load_gain\'\n').stdout
+
+tools\test_verify_run_integrity.py:42: AssertionError
+_________________ test_rejects_invalid_file[empty-directory] __________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_empt1')
+mode = 'directory', name = 'empty', body = '', reason = 'EMPTY LOG'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_bad_log.txt                  bad_log              0 samples  settled= 0  flags=-                     verdicts A=0 D=0 U=0
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            bad_log              0 samples  settled= 0  flags=-                     verdicts A=0 D=0 U=0\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+_______________ test_rejects_invalid_file[no_verdicts-explicit] _______________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_no_v0')
+mode = 'explicit', name = 'no_verdicts', body = '[run] tick=0 | angle=0deg\n'
+reason = 'NO VERDICTS'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-54\test_rejects_invalid_file_no_v0\LightEngine\output\print_bad_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              1 (last 1 used for settled angle)
+E           max load_gain        +0.0000 at tick 0
+E           settled angle        +0.00 deg (sign 0)
+E           gap                  min 0.0000  max 0.0000  mean 0.0000
+E           contact              min +0.000  max +0.000
+E         
+E         PHYSICS FLAGS
+E           (none)
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle... +0.000\n\nPHYSICS FLAGS\n  (none)\n\nVERDICT AGREEMENT\n  FALSIFIER  PRINTED    RECOMPUTED   STATUS    \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+______________ test_rejects_invalid_file[no_verdicts-directory] _______________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_no_v1')
+mode = 'directory', name = 'no_verdicts', body = '[run] tick=0 | angle=0deg\n'
+reason = 'NO VERDICTS'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_bad_log.txt                  bad_log              1 samples  settled= 0  flags=-                     verdicts A=0 D=0 U=0
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            bad_log              1 samples  settled= 0  flags=-                     verdicts A=0 D=0 U=0\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+____________ test_rejects_invalid_file[truncated_verdict-explicit] ____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_trun2')
+mode = 'explicit', name = 'truncated_verdict'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ... slack=0.00 compression=0.05\n======================================================================\n\n  (z) EXTRA:\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: ======================================================================
+E         LOG: C:\Users\allen\AppData\Local\Temp\pytest-of-allen\pytest-54\test_rejects_invalid_file_trun2\LightEngine\output\print_bad_log.txt
+E         ======================================================================
+E         RECOMPUTED METRICS
+E           samples              41 (last 8 used for settled angle)
+E           max load_gain        +0.0017 at tick 200
+E           settled angle        -8.18 deg (sign -1)
+E           gap                  min 0.0547  max 0.1561  mean 0.1441
+E           contact              min -906.244  max +4226.815  max_positive tick 400
+E           tip_to_drop          min 0.0214  (d_eq 0.04840)  FLOOR_BREACH
+E           apex_z               range 0.0000
+E           rod fractions        tension=0.95  compression=0.05  slack=0.00
+E           theta                max |theta| 17.07 vs stop 27.79
+E           cluster max/body     1/1/1/1/1
+E           gap                min 0.0547 max 0.1561
+E         
+E         PHYSICS FLAGS
+E           COMPRESSION EVENTS   tick 200 force=-181.78, tick 400 force=-25.62
+E           FLOOR BREACH         tip_to_drop min 0.0214 < d_eq 0.0484
+E         
+E         VERDICT AGREEMENT
+E           FALSIFIER  PRINTED    RECOMPUTED   STATUS    
+E           (a) LIFT   FAIL       FAIL         AGREE     
+E           (b) HOLD   skipped    skipped      UNCHECKED 
+E           (c) BALANCE FAIL       FAIL         AGREE     
+E           (d) INTEGRITY PASS       PASS         AGREE     
+E           (e) SAG    not detected not detected AGREE     
+E           (f) SLACK  PASS       PASS         AGREE     
+E         
+E         TELEMETRY CROSS-CHECK
+E           ITEM                     PRINTED        RECOMPUTED     STATUS    
+E           tendon apex z range      0.0000         0.0000         AGREE     
+E           tendon min tip-to-drop   0.0214         0.0214         AGREE     
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...0         0.0000         AGREE     \n  tendon min tip-to-drop   0.0214         0.0214         AGREE     \n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+___________ test_rejects_invalid_file[truncated_verdict-directory] ____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_rejects_invalid_file_trun3')
+mode = 'directory', name = 'truncated_verdict'
+body = '======================================================================\nTHE KERNEL - LEG v2 print run (main)\nN=568, ... slack=0.00 compression=0.05\n======================================================================\n\n  (z) EXTRA:\n'
+reason = 'MALFORMED'
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('name,body,reason',CASES,ids=[c[0] for c in CASES])
+    def test_rejects_invalid_file(tmp_path,mode,name,body,reason):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        p=output/'print_bad_log.txt'
+        p.write_text(body,encoding='utf-8')
+        cp=run(['--all'] if mode=='directory' else [p],tmp_path)
+>       assert cp.returncode==1,cp.stdout+cp.stderr
+E       AssertionError: BATCH VERIFICATION SUMMARY
+E           LOG                                TAG                  N        SETTLED  FLAGS                 VERDICTS
+E           print_bad_log.txt                  bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1
+E         
+E       assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            bad_log             41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:41: AssertionError
+____________ test_bad_file_preserves_remaining_reports[0-explicit] ____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_bad_file_preserves_remain0')
+mode = 'explicit', position = 0
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('position',[0,1,2])
+    def test_bad_file_preserves_remaining_reports(tmp_path,mode,position):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text('Derived Foo=1e999' if i==position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+        assert cp.returncode==1
+>       assert all(p.name in cp.stdout for p in paths),cp.stdout
+E       AssertionError: 
+E       assert False
+E        +  where False = all(<generator object test_bad_file_preserves_remaining_reports.<locals>.<genexpr> at 0x00000194651765E0>)
+
+tools\test_verify_run_integrity.py:57: AssertionError
+___________ test_bad_file_preserves_remaining_reports[0-directory] ____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_bad_file_preserves_remain1')
+mode = 'directory', position = 0
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('position',[0,1,2])
+    def test_bad_file_preserves_remaining_reports(tmp_path,mode,position):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text('Derived Foo=1e999' if i==position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+>       assert cp.returncode==1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:56: AssertionError
+____________ test_bad_file_preserves_remaining_reports[1-explicit] ____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_bad_file_preserves_remain2')
+mode = 'explicit', position = 1
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('position',[0,1,2])
+    def test_bad_file_preserves_remaining_reports(tmp_path,mode,position):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text('Derived Foo=1e999' if i==position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+        assert cp.returncode==1
+>       assert all(p.name in cp.stdout for p in paths),cp.stdout
+E       AssertionError: 
+E       assert False
+E        +  where False = all(<generator object test_bad_file_preserves_remaining_reports.<locals>.<genexpr> at 0x0000019465176A40>)
+
+tools\test_verify_run_integrity.py:57: AssertionError
+___________ test_bad_file_preserves_remaining_reports[1-directory] ____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_bad_file_preserves_remain3')
+mode = 'directory', position = 1
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('position',[0,1,2])
+    def test_bad_file_preserves_remaining_reports(tmp_path,mode,position):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text('Derived Foo=1e999' if i==position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+>       assert cp.returncode==1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            2_log               41 samples  settled=-1  flags=COMP,FLOOR            verdicts A=5 D=0 U=1\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:56: AssertionError
+____________ test_bad_file_preserves_remaining_reports[2-explicit] ____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_bad_file_preserves_remain4')
+mode = 'explicit', position = 2
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('position',[0,1,2])
+    def test_bad_file_preserves_remaining_reports(tmp_path,mode,position):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text('Derived Foo=1e999' if i==position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+        assert cp.returncode==1
+>       assert all(p.name in cp.stdout for p in paths),cp.stdout
+E       AssertionError: 
+E       assert False
+E        +  where False = all(<generator object test_bad_file_preserves_remaining_reports.<locals>.<genexpr> at 0x0000019465176CE0>)
+
+tools\test_verify_run_integrity.py:57: AssertionError
+___________ test_bad_file_preserves_remaining_reports[2-directory] ____________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_bad_file_preserves_remain5')
+mode = 'directory', position = 2
+
+    @pytest.mark.parametrize('mode',['explicit','directory'])
+    @pytest.mark.parametrize('position',[0,1,2])
+    def test_bad_file_preserves_remaining_reports(tmp_path,mode,position):
+        output=tmp_path/'LightEngine/output'
+        output.mkdir(parents=True)
+        paths=[]
+        for i in range(3):
+            p=output/f'print_{i}_log.txt'
+            p.write_text('Derived Foo=1e999' if i==position else GOOD,encoding='utf-8')
+            paths.append(p)
+        cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+>       assert cp.returncode==1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], return...            2_log                0 samples  settled= 0  flags=-                     verdicts A=0 D=0 U=0\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:56: AssertionError
+_________________ test_missing_file_does_not_abort_later_file _________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_missing_file_does_not_abo0')
+
+    def test_missing_file_does_not_abort_later_file(tmp_path):
+        good=tmp_path/'good.txt'
+        good.write_text(GOOD,encoding='utf-8')
+        cp=run([tmp_path/'absent.txt',good],tmp_path)
+>       assert cp.returncode==1 and 'ERROR' in cp.stdout and good.name in cp.stdout
+E       AssertionError: assert (1 == 1 and 'ERROR' in '')
+E        +  where 1 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...llen\\\\AppData\\\\Local\\\\Temp\\\\pytest-of-allen\\\\pytest-54\\\\test_missing_file_does_not_abo0\\\\absent.txt\'\n').returncode
+E        +  and   '' = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', 'C:\\Users\\alle...llen\\\\AppData\\\\Local\\\\Temp\\\\pytest-of-allen\\\\pytest-54\\\\test_missing_file_does_not_abo0\\\\absent.txt\'\n').stdout
+
+tools\test_verify_run_integrity.py:65: AssertionError
+_________________________ test_empty_directory_fails __________________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-54/test_empty_directory_fails0')
+
+    def test_empty_directory_fails(tmp_path):
+        cp=run(['--all'],tmp_path)
+>       assert cp.returncode==1 and 'NO LOGS' in cp.stdout
+E       AssertionError: assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\slot-01\\tools\\verify_run.py', '--all'], returncode=0, stdout='no print_*_log.txt files found in LightEngine\\output\n', stderr='').returncode
+
+tools\test_verify_run_integrity.py:70: AssertionError
+=========================== short test summary info ===========================
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[unknown-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[unknown-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[unknown_skipped-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[unknown_skipped-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[duplicate-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[duplicate-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[conflicting_duplicate-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[conflicting_duplicate-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[truncated-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[truncated-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[derived_truncated-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[derived_truncated-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[derived_suffix-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[derived_suffix-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[derived_inf-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[derived_inf-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[derived_overflow-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[derived_overflow-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[sample_nonfinite-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[sample_nonfinite-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[empty-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[empty-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[no_verdicts-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[no_verdicts-directory]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[truncated_verdict-explicit]
+FAILED tools/test_verify_run_integrity.py::test_rejects_invalid_file[truncated_verdict-directory]
+FAILED tools/test_verify_run_integrity.py::test_bad_file_preserves_remaining_reports[0-explicit]
+FAILED tools/test_verify_run_integrity.py::test_bad_file_preserves_remaining_reports[0-directory]
+FAILED tools/test_verify_run_integrity.py::test_bad_file_preserves_remaining_reports[1-explicit]
+FAILED tools/test_verify_run_integrity.py::test_bad_file_preserves_remaining_reports[1-directory]
+FAILED tools/test_verify_run_integrity.py::test_bad_file_preserves_remaining_reports[2-explicit]
+FAILED tools/test_verify_run_integrity.py::test_bad_file_preserves_remaining_reports[2-directory]
+FAILED tools/test_verify_run_integrity.py::test_missing_file_does_not_abort_later_file
+FAILED tools/test_verify_run_integrity.py::test_empty_directory_fails - Asser...
+34 failed, 28 passed in 3.46s
