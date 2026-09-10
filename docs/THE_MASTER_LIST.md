@@ -7,6 +7,33 @@ below names its run record or commit. When docs fight, run records beat prose;
 
 ## CURRENT CONTROL — LIVING HOLODECK BLUEPRINT (2026-09-08)
 
+### Current operating direction — 2026-09-10
+
+This dated amendment supersedes historical actor/publication assignments below.
+Live claims and leadership come from the controller. Slot 1 handles the PR
+queue; workers open their own task PRs. With no actionable PR, slot 1 continues
+its own lane. Alan's latest instruction makes **completion of all tasks in this
+Master list** the primary objective. A runnable, inspectable engine demo is one
+milestone within that objective, not the stopping condition. Continue through
+implementation, testing, correction, review and integration of eligible work.
+Completion requires each task's acceptance evidence; catalogue import, review
+submission and a passing demo do not constitute completion of the Master list.
+Slot 1 maintains a dependency-aware supply of executable tasks for available
+workers and resolves missing task contracts when no eligible work is admitted.
+
+Alan also requires the **entire Master list** in the controller catalogue,
+including all 240 linked roadmap cards and the legacy task rows below, with
+source coverage, IDs, dependencies and evidence preserved. Importing the
+catalogue must not silently mark proposed work ready, completed work unfinished,
+or historical owners current. `master-catalogue-sync-01` implements that full
+projection and eligibility path; it is not a new competing task ledger.
+
+Current demo work: `engine-demo-01` owns slot-1 build/runtime/DYAD evidence;
+`demo-launcher-01` supplies the independently scoped control panel;
+`demo-evidence-01` supplies capture-manifest validation. The executable
+assignments/statuses remain the live controller's records. The underlying
+theShape term remains unproven; an engineering demo does not close it.
+
 **Proposed operational amendment: adoption does not deploy the fleet.** Preserve all
 historical sections below, including the superseded Luna-only roster. Alan's
 later instructions assign GLM 5.3 the active production milestone and sole
