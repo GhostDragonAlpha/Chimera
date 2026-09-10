@@ -83,12 +83,12 @@ def payload(cards=(), rows=(), master_text=None, catalog_text=None):
         # No master-plane records: an empty partition is the honest shape.
         partition = {}
     if catalog_text is None:
-        # gen-6 contract: the SAME catalog text feeds both the manifest hash
-        # and the payload's catalog_text field (validator recomputes).
-        catalog_text = (json.dumps({'tasks': [c['card'] for c in cards]},
-                                   ensure_ascii=False) if cards else '{}')
+        # gen-6/7 contract: catalog_text must be exact JSON bytes matching
+        # validator rebuild. source_manifest(catalog) requires canonical=False.
+        catalog_text = json.dumps({'tasks': [c['card'] for c in cards]},
+                                   ensure_ascii=False)
     manifest = {'catalog': source_manifest(catalog_text, 'fixture',
-                                           None, retained=True),
+                                           None, retained=True, canonical=False),
                 'master': source_manifest(master_text, 'fixture',
                                           None, retained=bool(rows or
                                                               master_text is not None))}
@@ -113,6 +113,9 @@ def payload(cards=(), rows=(), master_text=None, catalog_text=None):
                              'master_sha256': manifest['master']['sha256'],
                              'catalog_sha256': manifest['catalog']['sha256']}}}
     payload_body['catalog_text'] = catalog_text
+    # gen-7 contract: each card record claims its EXACT enumeration position.
+    for i, c in enumerate(cards):
+        c['source'] = {'path': 'fixture', 'index': i}
     return payload_body
 
 
@@ -593,6 +596,50 @@ class CatalogueTests(unittest.TestCase):
         ok['source_manifest']['catalog']['git_commit'] = 'a' * 40
         ok['source_manifest']['master']['git_commit'] = 'b' * 40
         self.assertEqual(validate_payload(ok), [])
+
+    def test_gen7_catalog_consistency_counterexamples(self):
+        # Lead gen-7 counterexample 1: `if cards:` skipped catalog
+        # reconstruction for an empty submitted list, so all cards could be
+        # omitted while catalog_text.tasks remained nonempty.
+        built = payload(cards=[card_record('MATH-01')],
+                        rows=[row_record('B1', 'B1 | x | y | z')])
+        empty = json.loads(json.dumps(built))
+        empty['cards'] = []
+        empty['coverage']['cards'] = 0
+        empty['coverage']['domains'] = 0
+        self.assertEqual(validate_payload(empty), ['catalog_cards_mismatch'])
+        # a fully-empty payload still cannot smuggle a hidden catalog: the
+        # emptiness guard refuses it outright.
+        bare = payload(cards=[])
+        self.assertEqual(validate_payload(bare), ['empty_catalogue_payload'])
+        # an honest empty-cards payload carries the empty-tasks JSON text
+        # (always-rebuild contract), and a fully-empty import is still
+        # refused by the preregistered vacuity gate - independently of the
+        # catalog-text check.
+        ok_empty = payload(cards=[])
+        self.assertEqual(ok_empty['catalog_text'], json.dumps({'tasks': []},
+                                                              ensure_ascii=False))
+        self.assertEqual(validate_payload(ok_empty),
+                         ['empty_catalogue_payload'])
+        # counterexample 2: catalog manifest bytes/lines were alterable.
+        forged = json.loads(json.dumps(built))
+        forged['source_manifest']['catalog']['bytes'] = 1
+        self.assertEqual(validate_payload(forged),
+                         ['source_manifest_consistency:bytes'])
+        forged2 = json.loads(json.dumps(built))
+        forged2['source_manifest']['catalog']['lines'] = 99
+        self.assertEqual(validate_payload(forged2),
+                         ['source_manifest_consistency:lines'])
+        # counterexample 3: arbitrary/duplicate source indices passed.
+        forged3 = json.loads(json.dumps(built))
+        forged3['cards'][0]['source']['index'] = 999
+        self.assertEqual(validate_payload(forged3),
+                         ['catalog_cards_mismatch'])
+        pair = payload(cards=[card_record('MATH-01'), card_record('MATH-02')])
+        self.assertEqual(validate_payload(pair), [])
+        dup = json.loads(json.dumps(pair))
+        dup['cards'][1]['source']['index'] = 0  # duplicate of card 0
+        self.assertEqual(validate_payload(dup), ['catalog_cards_mismatch'])
 
     def test_gen5_exhaustive_partition_no_silent_omissions(self):
         # Falsifier 3: dropping or tampering with ANY line - specifically the
