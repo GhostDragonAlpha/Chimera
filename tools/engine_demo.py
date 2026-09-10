@@ -65,7 +65,16 @@ def _pid_image(pid: int) -> str | None:
             return None
     try:
         import ctypes
+        from ctypes import wintypes
         k = ctypes.WinDLL("kernel32", use_last_error=True)
+        k.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+        k.OpenProcess.restype = wintypes.HANDLE
+        k.QueryFullProcessImageNameW.argtypes = [wintypes.HANDLE, wintypes.DWORD,
+                                                  wintypes.LPWSTR,
+                                                  ctypes.POINTER(wintypes.DWORD)]
+        k.QueryFullProcessImageNameW.restype = wintypes.BOOL
+        k.CloseHandle.argtypes = [wintypes.HANDLE]
+        k.CloseHandle.restype = wintypes.BOOL
         h = k.OpenProcess(0x1000, False, pid)  # PROCESS_QUERY_LIMITED_INFORMATION
         if not h:
             return None
@@ -180,6 +189,9 @@ class DemoSession:
         def work():
             try:
                 with self._control_lock:
+                    with self._lock:
+                        if self._closed:
+                            return
                     self._say(label + ": " + _status_line(fn()))
             except Exception as exc:
                 self._say("ERROR: " + str(exc))
@@ -201,7 +213,13 @@ class DemoSession:
 
 
 def _status_line(payload: dict) -> str:
+    if payload.get("ok") is False:
+        return "ERROR: " + str(payload.get("error", "request refused"))
     status = payload.get("status", payload)
+    if status.get("ok") is False:
+        return "ERROR: " + str(status.get("error", "request refused"))
+    if status.get("active") is False:
+        return "not initialized — click Initialize B2"
     return (f"it={status.get('iteration', '?')} E={status.get('energy', '?')} "
             f"z={status.get('centre', ['?', '?', '?'])[-1]} "
             f"terminal={status.get('terminal_state', '')} "
@@ -305,6 +323,8 @@ def main(argv=None) -> int:
         root.title("Chimera membrane demo")
         text = tk.StringVar(value="connecting…")
         tk.Label(root, textvariable=text, width=82, anchor="w").pack(padx=12, pady=10)
+        tk.Label(root, text="Optimization iterations are control steps, not physical time.",
+                 anchor="w").pack(padx=12, pady=2)
         messages = Queue()
         session = DemoSession(transport, runtime, process=process,
                               manifest=manifest_path,

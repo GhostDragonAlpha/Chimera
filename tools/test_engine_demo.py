@@ -159,6 +159,19 @@ class DemoSessionTests(unittest.TestCase):
         self.assertIn("z=0.125", line)
         self.assertIn("terminal=stationary", line)
 
+    def test_status_line_surfaces_refusal_and_uninitialized_state(self):
+        self.assertEqual(demo._status_line({"ok": False, "error": "not active"}),
+                         "ERROR: not active")
+        self.assertIn("not initialized", demo._status_line({"active": False}))
+
+    def test_closed_session_drops_queued_control_before_transport(self):
+        transport = FakeTransport()
+        session = demo.DemoSession(transport, Path("."))
+        session.close()
+        session.reset()
+        time.sleep(.05)
+        self.assertEqual(transport.calls, [])
+
 
 if __name__ == "__main__":
     unittest.main()
