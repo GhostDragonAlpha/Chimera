@@ -2257,3 +2257,15 @@ build-dir exe hash-equal; `ChimeraEngine/engine/build/` untouched.
   prevented; detected only by remote re-read (documented in `publish.py`).
 - This is SINGLE-SLOT VERIFIED: slots 02–05 remain unprovisioned; universal
   dispatch beyond current assignments still waits on Alan's explicit go.
+
+## FIVE-SLOT-READINESS-01 (five independent slots via the fleet control plane)
+
+Five slots provisioned on the live controller (deployment E:\ChimeraWork\control, service pidfile-alive, epoch 1 leader big-pickle). Slots 01-05: integration-kind slot-01 (certification record), worker slots 02-05.
+
+- SLOT-01: `five-slot-integration-record` — certification record (this section + THE_AGENT_FLEET.md + certification evidence).
+- SLOT-02: `five-slot-readiness` — INTEGRATED at `bb61993e` (fetch-verified FF from `af71bece`; base astra/gait-capture now at `bb61993e`). Deliverable: five-client coordination driver `tools/agent_fleet/five_slot_coordination.py` + `docs/evidence/agent_fleet/FIVE-CLIENT-COORDINATION/20260909Z-A` — 9/9 preregistered scenarios on an isolated registry (capacity, FIFO contention, benchmark isolation, memory admission, fail-hold+recovery, bootstrap guards, restart durability, evidence gate, deadlock-free progress).
+- SLOT-03: frozen-B2 runtime gate on port 8103 — 21/21 PASS (run `20260910T015238.101816Z`); binary id exe `7fd7225d…` spv `71b5f8d3…` blob `4f7a356e…`.
+- SLOT-04: frozen-B2 runtime gate on port 8104 — 21/21 PASS (run `20260910T015600.626632Z`); binary id exe `87a76649…`; shader provenance identical.
+- SLOT-05: frozen-B2 runtime gate on port 8105 — 21/21 PASS (run `20260910T020453.603679Z`); replacement drill: worker client terminated -> RECOVERY_HOLD gen2, zombie write refused (`session_revoked`), GPU retained until verified drain (port free + no orphan), recover gen3, leader reclaim gen4. All recoveries gate on trusted drain evidence.
+- DYAD: attempted per slot and checkpointed BLOCKED — the eye is dark (no vision model loaded in LM Studio). The chained `rtx4090`+`dyad_eye` acquire path was exercised (slot-05 revs 42/43). DYAD completion awaits a loaded model; it is NOT claimed.
+- Certification gate: FIVE SLOTS PROVISIONED / RESOURCE SCHEDULER VERIFIED / LIVE RESOURCE LIFECYCLE VERIFIED met. FIVE INDEPENDENT AGENTS VERIFIED NOT met — per the readiness sprint, three additional agents start only on Alan's explicit go with the universal prompt.
