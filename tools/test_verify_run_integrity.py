@@ -85,4 +85,38 @@ def test_valid_output_is_byte_identical(name):
     baseline=json.loads((ROOT/'docs/evidence/verifier-repair-02/baseline.json').read_text())
     cp=subprocess.run([sys.executable,str(CLI),'LightEngine/output/'+name],cwd=ROOT,capture_output=True)
     assert cp.returncode==0 and not cp.stderr
-    assert hashlib.sha256(cp.stdout).hexdigest()==baseline['fixtures'][name]['stdout_sha256']
+    if sys.platform=='win32':
+        assert hashlib.sha256(cp.stdout).hexdigest()==baseline['fixtures'][name]['stdout_sha256']
+    portable=json.loads((ROOT/'docs/evidence/verifier-repair-02/baseline_lf.json').read_text())
+    assert hashlib.sha256(cp.stdout.replace(b'\r\n',b'\n')).hexdigest()==portable['fixtures'][name]
+
+
+@pytest.mark.parametrize('mode',['explicit','directory'])
+@pytest.mark.parametrize('file_position',[0,1,2])
+@pytest.mark.parametrize('sample_position',[0,20,41])
+def test_sparse_columns_are_named_and_other_files_survive(tmp_path,mode,file_position,sample_position):
+    lines=GOOD.splitlines()
+    samples=[i for i,line in enumerate(lines) if 'tick=' in line and '|' in line]
+    at=samples[sample_position] if sample_position<len(samples) else samples[-1]+1
+    lines.insert(at,'[leg_v2] tick=99 | angle=1.0deg')
+    sparse='\n'.join(lines)+'\n'
+    output=tmp_path/'LightEngine/output'
+    output.mkdir(parents=True)
+    paths=[]
+    for i in range(3):
+        p=output/f'print_{i}_log.txt'
+        p.write_text(sparse if i==file_position else GOOD,encoding='utf-8')
+        paths.append(p)
+    cp=run(['--all'] if mode=='directory' else paths,tmp_path)
+    assert cp.returncode==1
+    assert 'MISSING_COLUMN' in cp.stdout and 'tip_to_drop' in cp.stdout,cp.stdout
+    assert all(p.name in cp.stdout for p in paths)
+    assert 'Traceback' not in cp.stderr
+
+
+def test_uniform_minimal_schema_remains_legal(tmp_path):
+    p=tmp_path/'minimal.txt'
+    p.write_text('[run] tick=0 | clusters=1/1\n[run] tick=1 | clusters=1/1\n'
+                 '  (d) INTEGRITY: PASS\n',encoding='utf-8')
+    cp=run([p],tmp_path)
+    assert cp.returncode==0,cp.stdout+cp.stderr

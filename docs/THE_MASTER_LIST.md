@@ -2269,3 +2269,30 @@ Five slots provisioned on the live controller (deployment E:\ChimeraWork\control
 - SLOT-05: frozen-B2 runtime gate on port 8105 — 21/21 PASS (run `20260910T020453.603679Z`); replacement drill: worker client terminated -> RECOVERY_HOLD gen2, zombie write refused (`session_revoked`), GPU retained until verified drain (port free + no orphan), recover gen3, leader reclaim gen4. All recoveries gate on trusted drain evidence.
 - DYAD: attempted per slot and checkpointed BLOCKED — the eye is dark (no vision model loaded in LM Studio). The chained `rtx4090`+`dyad_eye` acquire path was exercised (slot-05 revs 42/43). DYAD completion awaits a loaded model; it is NOT claimed.
 - Certification gate: FIVE SLOTS PROVISIONED / RESOURCE SCHEDULER VERIFIED / LIVE RESOURCE LIFECYCLE VERIFIED met. FIVE INDEPENDENT AGENTS VERIFIED NOT met — per the readiness sprint, three additional agents start only on Alan's explicit go with the universal prompt.
+
+## Codex recovery and verifier repair — 2026-09-10
+
+Alan transferred ASTRA's engineering lead role and confirmed Codex is the only
+active project agent. The original controller was offline; its existing
+bootstrap restored service over the reconciled durable database. Trusted
+enrollment/qualification and operator-directed session revocation elected
+`codex-lead-20260910` at epoch 2. Live ownership remains the controller's
+snapshot/events, not this dated checkpoint. Old files and evidence are preserved.
+
+- `verifier-repair-02`: claimed slot1, generation1, branch
+  `astra/tasks/verifier-repair-02`, base `cf275281`; core repair plus separate
+  sparse-column increment, **99 Windows tests pass**. Source review and
+  before/after evidence: [record](evidence/verifier-repair-02/RECORD.md).
+  Task PR targets `astra/gait-capture`; INTEGRATED is not claimed here.
+- `elastic-ref-publish`: recovery hold; commit `302da837` and dirty operator
+  checkout preserved. Requires separate source/evidence review before publication.
+- Fleet resource fixes PR11 (`8bf8f643`): independent Windows suite **78/78**,
+  retained with the verifier evidence. External client compatibility and
+  controlled deployment remain open; running controller uses original source.
+- Shape reconciliation/silhouette reports remain unaccepted historical evidence;
+  no geometry, eye prompt or acceptance threshold was changed by this task.
+
+Immediate dependency: review and integrate the verifier task PR before using
+its new input-admission claim on the integration branch. The material/runtime
+product spine above remains the project direction; this task repairs a shared
+evidence instrument, not a water, material or gait certificate.

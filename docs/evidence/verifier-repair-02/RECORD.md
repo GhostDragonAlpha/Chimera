@@ -54,3 +54,35 @@ engine/build path does not exist in slot1. No shared operator file was changed
 except new quarantined recovery script .tmp/codex_recover_20260910.py.
 The controller still runs original source, not PR11; PR11 deployment remains
 separate from its independently passing Windows suite.
+
+## S1 — sparse-column increment
+
+Preregistered separately above; implemented after core commit 6ca08bba.
+The union of observed numeric and structured sample columns defines the
+per-file schema. Each sample must contain these columns. This catches sparse
+first rows as well as later omissions, while intentionally minimal uniform
+logs remain legal. Direct recomputation also refuses parsed integrity errors.
+No missing sample is synthesized or zero-filled to make a metric pass.
+
+Before S1: 18 sparse placement regressions fail, one minimal-schema control
+passes (sparse_before.txt). After S1: all 99 combined tests pass. Raw final:
+final_tests.txt, 99 passed in 5.42 s, Windows CPython 3.14.3. Sparse sample
+positions first/middle/last cross bad-file positions first/middle/last and both
+CLI modes. Each must report MISSING_COLUMN, include tip_to_drop, retain all
+three file reports and exit 1 without traceback.
+
+Compatibility: baseline_lf.json adds a portable LF oracle derived from the
+immutable cf275281 source, with the original Windows byte hashes checked again
+first. Windows tests retain raw-byte checks; only native line-ending conversion
+is normalized for the additional portable check. Original baseline.json and
+all failed evidence are unchanged. Linux execution is not claimed here.
+
+Review limits: the schema detects inconsistent observed columns, not a complete
+schema for every log family. A column absent from every sample is still governed
+by the existing supported/UNCHECKED rule behavior. Unsupported physical verdicts
+are UNKNOWN and fail. Skipped known rules remain UNCHECKED by existing policy.
+No universal malformed-input or physics-verification completeness is claimed.
+
+Independent prior fleet review evidence is retained as windows_fleet_pr11.txt:
+78/78 Windows tests at 8bf8f643, including stop/restart; it does not certify
+external model-client retry handling or deploy the candidate.

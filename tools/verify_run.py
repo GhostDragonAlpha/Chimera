@@ -276,6 +276,17 @@ def parse_log(path: Path) -> dict:
                 key, val = stripped.split("=", 1)
                 target[key.strip()] = val.strip()
 
+    # A field absent throughout a log can belong to another log family. A field
+    # present in only some samples cannot silently disappear from its metrics.
+    # Use all samples so an incomplete first row cannot disable an entire check.
+    columns = {key for sample in samples for key, value in sample.items()
+               if isinstance(value, (int, float)) or key in ("clusters", "rod_label")}
+    for sample in samples:
+        missing = columns - sample.keys()
+        if missing:
+            input_errors.append(
+                f"MISSING_COLUMN tick={sample['tick']}: {','.join(sorted(missing))}")
+
     # Post-process: extract capture band and frame-meter bars from verdict rests
     # and falsifier descriptions.
     for v in verdicts:
@@ -328,6 +339,8 @@ def parse_log(path: Path) -> dict:
 
 def recompute_metrics(parsed: dict) -> dict:
     """Recompute physics metrics directly from the tick table."""
+    if parsed.get("input_errors"):
+        raise ValueError("; ".join(parsed["input_errors"]))
     samples = parsed["samples"]
     derived = parsed["derived"]
     n = len(samples)
