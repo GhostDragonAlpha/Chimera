@@ -1,0 +1,1 @@
+Original Master bytes are an exact prefix after the append; append_check.json retains lengths and hashes. Read-only controller and Git evidence informed the append. No source/runtime change or new physical certificate. Normal doclint and scope checks precede the task PR.
