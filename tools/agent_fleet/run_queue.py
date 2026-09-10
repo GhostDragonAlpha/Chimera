@@ -4,6 +4,8 @@ This module deliberately performs no Git, engine, network, or filesystem work.
 The service adapter supplies those effects after an assignment is accepted.
 """
 from dataclasses import dataclass, field
+import math
+from dataclasses import replace
 from typing import Iterable
 
 
@@ -44,10 +46,10 @@ class RunQueue:
         self._sequence += 1
         run = Run(task, deps, priority, self._sequence)
         self._runs[task] = run
-        return run
+        return self._view(run)
 
     def dispatch(self, *, owner: str, capacity: int, now: float, lease_seconds: float) -> list[Run]:
-        if not owner or capacity < 0 or lease_seconds <= 0:
+        if not owner or capacity < 0 or not math.isfinite(now) or not math.isfinite(lease_seconds) or lease_seconds <= 0:
             raise QueueRefusal("invalid_dispatch_parameters")
         active = sum(r.owner == owner and r.state == "RUNNING" for r in self._runs.values())
         room = max(0, capacity - active)
@@ -62,25 +64,29 @@ class RunQueue:
             run.generation += 1
             run.lease_until = now + lease_seconds
             run.history.append(f"dispatched:{owner}:{run.generation}")
-        return selected
+        return [self._view(r) for r in selected]
 
     def heartbeat(self, task: str, *, owner: str, generation: int, now: float, lease_seconds: float) -> Run:
         run = self._owned_running(task, owner, generation)
+        if not math.isfinite(now) or not math.isfinite(lease_seconds):
+            raise QueueRefusal("nonfinite_lease_parameters")
         if run.lease_until is None or now >= run.lease_until:
             raise QueueRefusal("lease_expired")
         if lease_seconds <= 0:
             raise QueueRefusal("invalid_lease")
         run.lease_until = now + lease_seconds
-        return run
+        return self._view(run)
 
-    def submit_review(self, task: str, *, owner: str, generation: int, head: str, evidence: str) -> Run:
+    def submit_review(self, task: str, *, owner: str, generation: int, now: float, head: str, evidence: str) -> Run:
         run = self._owned_running(task, owner, generation)
+        if run.lease_until is None or not math.isfinite(now) or now >= run.lease_until:
+            raise QueueRefusal("lease_expired")
         if not head or not evidence:
             raise QueueRefusal("review_identity_and_evidence_required")
         run.state, run.lease_until = "REVIEW", None
         run.head, run.evidence = head, evidence
         run.history.append(f"review:{head}")
-        return run
+        return self._view(run)
 
     def acknowledge_integration(self, task: str, *, head: str) -> Run:
         run = self._runs.get(task)
@@ -90,7 +96,7 @@ class RunQueue:
             raise QueueRefusal("review_head_mismatch")
         run.state = "INTEGRATED"
         run.history.append(f"integrated:{head}")
-        return run
+        return self._view(run)
 
     def expire(self, *, now: float) -> list[Run]:
         expired = [r for r in self._runs.values() if r.state == "RUNNING" and r.lease_until is not None and now >= r.lease_until]
@@ -112,3 +118,8 @@ class RunQueue:
         if run.owner != owner or run.generation != generation:
             raise QueueRefusal("stale_generation_or_owner")
         return run
+
+    @staticmethod
+    def _view(run: Run) -> Run:
+        """Return a detached value so callers cannot mutate queue state."""
+        return replace(run, dependencies=tuple(run.dependencies), history=list(run.history))
