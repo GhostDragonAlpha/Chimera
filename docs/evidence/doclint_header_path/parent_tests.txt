@@ -1,0 +1,9 @@
+test_existing_hpp_and_supported_files_pass (__main__.HeaderPathTests.test_existing_hpp_and_supported_files_pass) ... ok
+test_extension_prefix_is_not_truncated (__main__.HeaderPathTests.test_extension_prefix_is_not_truncated) ... ok
+test_missing_headers_and_full_path_prefix_fail (__main__.HeaderPathTests.test_missing_headers_and_full_path_prefix_fail) ... ok
+test_relative_markdown_links_still_apply (__main__.HeaderPathTests.test_relative_markdown_links_still_apply) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.022s
+
+OK
