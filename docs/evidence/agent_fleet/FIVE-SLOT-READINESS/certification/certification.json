@@ -60,8 +60,8 @@
     "evidence": "slot05_drill_evidence.json in slot-05 worktree; FIVE-SLOT-READINESS/slot-05/RECORD.md SLOT05-DRILL appendix"
   },
   "open_items": {
-    "dyad_requires_operator_model": "Load a vision-capable model in LM Studio; then run run_dyad_gpu_demo_review.py <run_dir> --edge for each slot's newest run under fresh reservations",
-    "pentest_of_spawned_agents": "three additional agents start only after this certification intersects Alan's explicit go and the DYAD deferral is reported",
+    "dyad_phase": "CLOSED 2026-09-10: operator loaded the vision model (qwen3.8-27b-nvfp4-mtp); the deferred DYAD review of the three gate runs executed as five-slot-dyad-review (six image calls, all reported; images consistent with recorded states; offset magnitude unresolved by eye at phi 0.35, resolved by the recorded energies instead). Evidence: docs/evidence/agent_fleet/FIVE-SLOT-READINESS/DYAD-20260910/. Human acceptance remains NOT claimed.",
+    "pentest_of_spawned_agents": "three additional agents start only after this certification intersects Alan's explicit go; slots are free and claimable, stage03/04 alive, stage05 recorded dead by the drill (re-enroll via the trusted launcher before it serves a live agent)",
     "persistent_service": "deployment at E:\\ChimeraWork\\control (service.py pidfile-alive) remains the active live control plane"
   },
   "not_claimed": {
