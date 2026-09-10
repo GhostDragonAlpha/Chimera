@@ -90,6 +90,19 @@ class EvidenceTests(unittest.TestCase):
         self.assertIn("request_timestamps_invalid", result["reasons"])
         self.assertIn("capture_identity_missing", result["reasons"])
 
+    def test_nonfinite_optional_status_field_fails(self):
+        self.record["before"]["centre_force"] = [float("inf"), 0.0, 0.0]
+        self.record["after"]["centre_force"] = [float("inf"), 0.0, 0.0]
+        result = mod.validate_record(self.record)
+        self.assertEqual(result["verdict"], "insufficient_evidence")
+        self.assertIn("before_status_nonfinite", result["reasons"])
+
+    def test_malformed_url_is_named_insufficient_evidence(self):
+        self.record["endpoint"] = "http://[bad"
+        result = mod.validate_record(self.record)
+        self.assertEqual(result["verdict"], "insufficient_evidence")
+        self.assertIn("endpoint_not_loopback", result["reasons"])
+
     def test_writer_refuses_overwrite(self):
         out = self.root / "result.json"
         mod.write_result({"verdict": "consistent_snapshot"}, out)

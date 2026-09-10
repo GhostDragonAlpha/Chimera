@@ -19,7 +19,10 @@ def _finite(value) -> bool:
     if isinstance(value, bool):
         return True
     if isinstance(value, (int, float)):
-        return math.isfinite(value)
+        try:
+            return math.isfinite(value)
+        except (OverflowError, ValueError):
+            return False
     if isinstance(value, list):
         return all(_finite(v) for v in value)
     if isinstance(value, dict):
@@ -86,7 +89,10 @@ def validate_record(record: dict, expected: dict | None = None) -> dict:
             if key in expected and source_obj.get(key) != expected.get(key):
                 reasons.append(f"source_mismatch_{key}")
     endpoint = record.get("endpoint")
-    parsed = urlparse(endpoint) if isinstance(endpoint, str) else None
+    try:
+        parsed = urlparse(endpoint) if isinstance(endpoint, str) else None
+    except ValueError:
+        parsed = None
     try:
         endpoint_bad = (parsed is None or parsed.scheme != "http"
                         or parsed.hostname not in {"127.0.0.1", "localhost", "::1"}
@@ -109,6 +115,8 @@ def validate_record(record: dict, expected: dict | None = None) -> dict:
         if not isinstance(status, dict):
             reasons.append(f"{name}_status_not_object")
         else:
+            if not _finite(status):
+                reasons.append(f"{name}_status_nonfinite")
             for field in ("accepted_state_id", "render_state_id", "iteration", "energy", "centre"):
                 if field not in status:
                     reasons.append(f"{name}_{field}_missing")
