@@ -47,7 +47,8 @@ bool HttpServer::start(int port, std::function<void(const std::string&, const st
 
     sockaddr_in addr{};
     addr.sin_family      = AF_INET;
-    addr.sin_addr.s_addr = INADDR_ANY;
+    // The embedded API is local engine control, not a LAN service.
+    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
     addr.sin_port        = htons(static_cast<u_short>(port));
 
     int opt = 1;
