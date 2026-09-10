@@ -9,6 +9,7 @@ just the door. That is what makes the workflow force the agent instead of ask it
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import sys
 import time
@@ -107,6 +108,17 @@ class Engine:
 
     def __init__(self, path: Path = STATE_PATH):
         self.path = Path(path)
+        self.store_present = self.path.exists()
+        self.store_sha256 = None
+        self.store_size_bytes = None
+        if self.store_present:
+            try:
+                raw = self.path.read_bytes()
+                self.store_size_bytes = len(raw)
+                self.store_sha256 = hashlib.sha256(raw).hexdigest()
+            except OSError:
+                self.store_sha256 = None
+                self.store_size_bytes = None
         self.state = self._load()
 
     def _load(self) -> dict:

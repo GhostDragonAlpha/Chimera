@@ -121,3 +121,10 @@ core/test_rep_engine.py
 core/test_task_board.py
 core/test_wave.py
 core/rehearsal.py
+
+# glm-wf-01: gitignored per-checkout live term store - intentionally untracked, never a shared store; see docs/evidence/glm_wf01/SLOT_REGISTRY.md
+ChimeraEngine/engine_state.json
+
+# glm-wf-01: same class - gitignored per-checkout run artifacts (T2 membrane record) cited by tracked prose; retention decision belongs to the evidence-policy owner
+models/cad_bear/ca_run.json
+models/cad_bear/frost_binding.json

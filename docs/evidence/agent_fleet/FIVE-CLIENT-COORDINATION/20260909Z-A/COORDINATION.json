@@ -1,0 +1,54 @@
+{
+  "preregistration": {
+    "statement": "five isolated clients coordinate through one controller without cross-client mutation",
+    "prediction": "S1-S9 all pass on a fresh isolated registry",
+    "falsifier": "any scenario FAIL or partial snapshot"
+  },
+  "scenarios": {
+    "S1": {
+      "pass": true,
+      "detail": "sixth claim refused (no_free_slot), registry unmutated"
+    },
+    "S2": {
+      "pass": true,
+      "detail": "later rtx request queued; earlier FIFO wins on release"
+    },
+    "S3": {
+      "pass": true,
+      "detail": "benchmark waits under utilization; grants on empty; excludes interactive"
+    },
+    "S4": {
+      "pass": true,
+      "detail": "over-budget refused (queued all-or-nothing); release admits the queued grant automatically (grant=True refus=True autoadmit=True)"
+    },
+    "S5": {
+      "pass": true,
+      "detail": "fail holds task+resource; recover gated on drain; fresh generation (hold=True retained=True gated=True fresh=True)"
+    },
+    "S6": {
+      "pass": true,
+      "detail": "foreign listener and duplicate start both refused"
+    },
+    "S7": {
+      "pass": true,
+      "detail": "restart preserves revision/epoch/claims/tokens (rev=True claims=True token=True)"
+    },
+    "S8": {
+      "pass": true,
+      "detail": "review refused while resources held; gate cleared after drain"
+    },
+    "S9": {
+      "pass": true,
+      "detail": "overlapping wants progress without deadlock; FIFO on record; benchmark gates on full-machine drain"
+    }
+  },
+  "all_pass": true,
+  "run": {
+    "port": 52265,
+    "registry": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-dij75ok6\\deploy",
+    "revision_final": 49,
+    "leader": "a1",
+    "epoch": 1
+  },
+  "label": "scripted clients: does NOT claim FIVE INDEPENDENT AGENTS VERIFIED"
+}

@@ -1,0 +1,13 @@
+{
+ "worktree_head": "d7c47446b94acc75d1d32505de1665feb0fa0133",
+ "worktree": "E:\\ChimeraWork\\slot-03",
+ "build_dir": "E:\\ChimeraWork\\slot-03\\.tmp\\engine_build",
+ "runtime_dir": "E:\\ChimeraWork\\slot-03\\.tmp\\engine_runtime",
+ "comp_sha256": "45e7e679c0acbd388c8608b5a443d0297799aa292f10d0510b4073a5b125e72f",
+ "comp_blob": "4f7a356e34cdf06716515f0b21e9a998fa35ff21",
+ "spv_sha256": "71b5f8d37acff921ea249c74ade6d4074d79ea80d39bf03d66488f1c47c3898f",
+ "exe_sha256_runtime": "7fd7225d96fc8eda1baebef662c19594adbce5b986b4aa3ce403710793b8513f",
+ "exe_sha256_builddir": "7fd7225d96fc8eda1baebef662c19594adbce5b986b4aa3ce403710793b8513f",
+ "port_candidate": 8103,
+ "protected_build_path_used": false
+}

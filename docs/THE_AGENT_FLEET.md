@@ -421,3 +421,11 @@ headless. Five slots own five builds; concurrent GPU runtime requires measured
 capacity and an explicit scheduler policy. Initially serialize hardware runs
 and preserve the resident eye. The fleet launcher/viewer integrations remain
 NOT_IMPLEMENTED; these requirements are not claims of current deployment.
+
+## Five-slot readiness (2026-09-10, FIVE-SLOT-READINESS-01)
+
+Live control plane: deployment E:\ChimeraWork\control (service.py pidfile-alive; supervisor + agent sessions under control\sessions). Slots 01-05 of the fleet registry are provisioned; worker slots 02-05 host scripted readiness stage agents (`stage03/04/05`, labeled FIVE-SLOT-READINESS-01) that are NOT independent human/prompt-spawned agents. Slot-01 is the integration slot (certification record). Slot-02 published the coordination driver at `bb61993e` (fetch-verified FF through publish.py; base advanced).
+
+Scheduling: resources serialize through the controller — `resource_request` grants under FIFO + priority-aging + benchmark exclusivity + memory budget; `allocation_refused` entries auto-grant on a later promotion when memory frees (do not re-request). GPU runs are guarded by reservations over the WHOLE machine for `gpu_benchmark`; `gpu_functionality` grants are per-slot and chained to `dyad_eye`. An interrupted owner enters RECOVERY_HOLD with resources intentionally retained until trusted drain evidence clears them; recovery bumps the generation and the fresh generation is claimed again.
+
+Remaining before the three-agent universal-prompt start: (1) operator loads a vision-capable model in LM Studio and the three slot DYAD reviews (one image per call) are run or deferred explicitly; (2) the certification record integrates (task `five-slot-integration-record`); (3) Alan asserts the go.

@@ -1,0 +1,72 @@
+{
+  "certification": "FIVE-SLOT-READINESS-01",
+  "subject": "five independent slots provisioned and verified through the live fleet control plane on the primary checkout workflow",
+  "certified_claims": {
+    "five_slots_provisioned": true,
+    "resource_scheduler_verified": "12-test offline suite + 9 live coordination scenarios; FIFO fairness, benchmark exclusivity, memory admission, allocation_refused auto-grant on promotion",
+    "live_resource_lifecycle_verified": true,
+    "five_independent_agents_verified": false,
+    "note": "live step-agents stage03/04/05 are scripted readiness stages labeled FIVE-SLOT-READINESS-01; independent human-spawned agents start only on Alan's explicit go (universal prompt)"
+  },
+  "slots": {
+    "1": {
+      "task": "five-slot-integration-record",
+      "kind": "integration",
+      "status": "integration-kind; authoring certification record; DYAD scopes (THE_MASTER_LIST / THE_AGENT_FLEET / certification evidence) carried by this task"
+    },
+    "2": {
+      "task": "five-slot-readiness",
+      "kind": "worker",
+      "head": "bb61993e69630b9204c0f2afea55f1299219d616",
+      "base": "d7c47446b94acc75d1d32505de1665feb0fa0133",
+      "status": "INTEGRATED (published fetch-verified; base astra/gait-capture advanced to bb61993e)",
+      "deliverable": "five_client_coordination.py driver + FIVE-CLIENT-COORDINATION evidence (9/9 preregistered scenarios)"
+    },
+    "3": {
+      "task": "slot03-runtime-probe",
+      "kind": "worker",
+      "gate_run": "20260910T015238.101816Z",
+      "gate_verdicts": "21/21 PASS",
+      "binary_id": {"exe": "7fd7225d", "spv": "71b5f8d3", "comp_blob": "4f7a356e"},
+      "port": 8103,
+      "dyad": "BLOCKED: eye dark (no vision model loaded in LM Studio); operator action recorded",
+      "head_base": "d7c47446b94acc75d1d32505de1665feb0fa0133"
+    },
+    "4": {
+      "task": "slot04-runtime-probe",
+      "kind": "worker",
+      "gate_run": "20260910T015600.626632Z",
+      "gate_verdicts": "21/21 PASS",
+      "binary_id": {"exe": "87a76649", "spv": "71b5f8d3", "comp_blob": "4f7a356e"},
+      "port": 8104,
+      "dyad": "BLOCKED: eye dark (no vision model loaded in LM Studio); operator action recorded",
+      "head_base": "d7c47446b94acc75d1d32505de1665feb0fa0133"
+    },
+    "5": {
+      "task": "slot05-runtime-probe",
+      "kind": "worker",
+      "gate_run": "20260910T020453.603679Z",
+      "gate_verdicts": "21/21 PASS",
+      "binary_id": {"exe": "175f6df4", "spv": "71b5f8d3", "comp_blob": "4f7a356e"},
+      "port": 8105,
+      "interruption_drill": "VERIFIED: worker client terminated -> RECOVERY_HOLD gen2, zombie write refused (session_revoked), rtx retained until verified drain, recover gen3, leader reclaim gen4",
+      "drill_revisions": {"fail": 34, "resource_clear": 35, "recover": 36, "reclaim": 41},
+      "dyad": "BLOCKED: eye dark (no vision model loaded in LM Studio); operator action recorded; rtx+dyad_eye chained acquire verified (revs 42/43)"
+    }
+  },
+  "recovery_summary": {
+    "drill_falsifier_targets": ["zombie write refusal", "reservation retained past fail", "drain-gated resource_clear", "recover gated on no-held-resources", "reclaim at fresh generation"],
+    "all_observed": true,
+    "evidence": "slot05_drill_evidence.json in slot-05 worktree; FIVE-SLOT-READINESS/slot-05/RECORD.md SLOT05-DRILL appendix"
+  },
+  "open_items": {
+    "dyad_requires_operator_model": "Load a vision-capable model in LM Studio; then run run_dyad_gpu_demo_review.py <run_dir> --edge for each slot's newest run under fresh reservations",
+    "pentest_of_spawned_agents": "three additional agents start only after this certification intersects Alan's explicit go and the DYAD deferral is reported",
+    "persistent_service": "deployment at E:\\ChimeraWork\\control (service.py pidfile-alive) remains the active live control plane"
+  },
+  "not_claimed": {
+    "human_acceptance": true,
+    "dyad_completion": true,
+    "independent_agents_running": true
+  }
+}
