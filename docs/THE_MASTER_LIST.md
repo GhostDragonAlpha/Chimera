@@ -2514,3 +2514,27 @@ continued work after submission.
 | `window-capture-ownership-01` | PR34 at `00a556b3444fd02a3f230519fd985f9bb0316707` remains under review. Lead reproduced the exists/open evidence overwrite race in the actual extracted writer; review corrections are recorded on the PR. Preserve the successful fixture run and its honestly falsified screen-occlusion prediction. No engine/GPU certification implied. |
 
 No existing milestone is removed or marked complete by this workflow correction.
+
+
+## Live workflow handoff and documentation — 2026-09-10
+
+PR35 merged as `6e240af129bb496e1555a9c6e142deda765f0812`. Its reviewed handoff
+extension was deployed over the exact prior live controller, separately from the
+resource/catalogue upgrades. The controlled restart preserved revision 396,
+leadership, sessions, assignments, slots, resources and integration requests.
+At revision 397, window-capture REVIEW retained head `00a556b3` while slot 2 and
+Buffy's execution capacity were freed. Catalogue generation 7 was unchanged.
+[Deployment evidence](evidence/agent_fleet/REVIEW_SLOT_HANDOFF_DEPLOYMENT/REPORT.md).
+
+| Stable task | Current state and next gate |
+| --- | --- |
+| `fleet-review-slot-handoff-01` | INTEGRATED and deployed. Actual review-slot release observed; no automatic task acceptance. |
+| `fleet-review-handoff-docs-01` | RUNNING, lead slot 1: current README/entry pointers, historical README preservation, live deployment record and Master reconciliation. |
+| `fleet-orient-continuation-01` | RUNNING, worker slot 3 generation 1: fix CLI/JSON/MCP/onboarding routing when a local hierarchy is complete; Master/controller work remains authoritative. Exact fixture tests and review required. |
+| `elastic-physical-fixtures-01` | PR33 integrated as `386f31c0572ec73a095034fb44317b4ffc73db94`; 22 physical-fixture and 12 units tests passed. Fixed-recipe CPU acceptance only; GPU ABI/order/binary32 budgets and real-material admission remain open. |
+
+A report of 16 proven codebook terms is a report about one local store, not a
+certificate for the entire engine. Earlier operator overrides and later model
+observations must retain separate provenance. The reported multi-frame/movie
+verification limitation remains open until the actual required gate is executed;
+no threshold or proof record is weakened to keep agents busy.
