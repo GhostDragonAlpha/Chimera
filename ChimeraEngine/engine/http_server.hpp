@@ -5,6 +5,7 @@
 #include <atomic>
 #include <functional>
 #include <string>
+#include <mutex>
 
 // Minimal IPv4-loopback-only embedded HTTP server using Winsock2.
 // No external deps — httplib is header-only but we keep this self-contained
@@ -19,7 +20,9 @@ public:
     int  port() const { return port_; }
 
 private:
-    bool listen_ = false;
+    std::mutex lifecycle_;
+    std::atomic<bool> listen_{false};
+    std::atomic<SOCKET> client_{INVALID_SOCKET};
     SOCKET sock_ = INVALID_SOCKET;
     std::thread thread_;
     int port_ = 8080;

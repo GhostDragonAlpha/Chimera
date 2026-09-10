@@ -7,6 +7,7 @@
 #include <sstream>
 #include <cctype>
 #include <algorithm>
+#include <cstring>
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -36,6 +37,11 @@ static long long content_length(const std::string& headers) {
 }
 
 bool HttpServer::start(int port, std::function<void(const std::string&, const std::string&, const std::string&, std::string&, std::string&)> handler) {
+    std::scoped_lock lock(lifecycle_);
+    if (listen_.load()) return false;
+    if (thread_.joinable()) return false;
+    client_.store(INVALID_SOCKET);
+
     port_ = port;
     handler_ = handler;
 
@@ -43,7 +49,7 @@ bool HttpServer::start(int port, std::function<void(const std::string&, const st
     if (WSAStartup(MAKEWORD(2,2), &wsa) != 0) return false;
 
     sock_ = socket(AF_INET, SOCK_STREAM, 0);
-    if (sock_ == INVALID_SOCKET) return false;
+    if (sock_ == INVALID_SOCKET) { WSACleanup(); return false; }
 
     sockaddr_in addr{};
     addr.sin_family      = AF_INET;
@@ -55,39 +61,64 @@ bool HttpServer::start(int port, std::function<void(const std::string&, const st
     setsockopt(sock_, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&opt), sizeof(opt));
 
     if (bind(sock_, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == SOCKET_ERROR) {
-        closesocket(sock_); sock_ = INVALID_SOCKET; return false;
+        closesocket(sock_); sock_ = INVALID_SOCKET; WSACleanup(); return false;
     }
     if (listen(sock_, 8) == SOCKET_ERROR) {
-        closesocket(sock_); sock_ = INVALID_SOCKET; return false;
+        closesocket(sock_); sock_ = INVALID_SOCKET; WSACleanup(); return false;
     }
 
-    listen_ = true;
-    thread_ = std::thread([this]() {
+    SOCKET listen_socket = sock_;
+    listen_.store(true);
+    thread_ = std::thread([this, listen_socket]() {
         char buf[16384];
         while (listen_) {
             sockaddr_in client_addr{};
             int addr_len = sizeof(client_addr);
-            SOCKET client = accept(sock_, reinterpret_cast<sockaddr*>(&client_addr), &addr_len);
+            SOCKET client = accept(listen_socket, reinterpret_cast<sockaddr*>(&client_addr), &addr_len);
             if (client == INVALID_SOCKET) {
                 // A transient accept error (port exhaustion, aborted handshake,
                 // contention) must NOT kill the listener — the old `break` here
                 // silently ended the HTTP server while the engine kept rendering
                 // (every driver then died on "connection refused").
-                if (!listen_) break;
+                if (!listen_.load()) break;
+                int err = WSAGetLastError();
+                if (err == WSAEWOULDBLOCK || err == WSAEINTR || err == WSAECONNRESET || err == WSAENOTSOCK) {
+                    Sleep(10);
+                    continue;
+                }
                 Sleep(10);
                 continue;
             }
+            client_.store(client);
+            int timeout_ms = 250;
+            setsockopt(client, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char*>(&timeout_ms), sizeof(timeout_ms));
+            setsockopt(client, SOL_SOCKET, SO_SNDTIMEO, reinterpret_cast<const char*>(&timeout_ms), sizeof(timeout_ms));
 
             // Read until the end of headers (blank line), up to a sane cap.
+            // cancellation can interrupt blocking network ops only if the owning
+            // stop() call closes this client.
             std::string req;
             while (req.size() < (1u << 20) && req.find("\r\n\r\n") == std::string::npos) {
                 int n = recv(client, buf, sizeof(buf) - 1, 0);
-                if (n <= 0) break;
+                if (n <= 0) {
+                    if (n == SOCKET_ERROR) {
+                        int err = WSAGetLastError();
+                        if ((err == WSAEWOULDBLOCK || err == WSAETIMEDOUT || err == WSAECONNRESET || err == WSAESHUTDOWN) && listen_.load()) {
+                            Sleep(1);
+                            continue;
+                        }
+                    }
+                    break;
+                }
                 req.append(buf, n);
             }
 
             size_t header_end = req.find("\r\n\r\n");
-            if (header_end == std::string::npos) { closesocket(client); continue; }
+            if (header_end == std::string::npos) {
+                SOCKET active = client_.exchange(INVALID_SOCKET);
+                if (active == client) { closesocket(client); }
+                continue;
+            }
             std::string headers = req.substr(0, header_end);
             std::string body = req.substr(header_end + 4);
 
@@ -100,11 +131,25 @@ bool HttpServer::start(int port, std::function<void(const std::string&, const st
             if (cl > 0) {
                 while (static_cast<long long>(body.size()) < cl) {
                     int n = recv(client, buf, sizeof(buf) - 1, 0);
-                    if (n <= 0) break;
+                    if (n <= 0) {
+                        if (n == SOCKET_ERROR) {
+                            int err = WSAGetLastError();
+                            if ((err == WSAEWOULDBLOCK || err == WSAETIMEDOUT || err == WSAECONNRESET || err == WSAESHUTDOWN) && listen_.load()) {
+                                Sleep(1);
+                                continue;
+                            }
+                        }
+                        break;
+                    }
                     body.append(buf, n);
                     if (static_cast<long long>(body.size()) > cl + (1 << 20)) break;
                 }
                 if (static_cast<long long>(body.size()) > cl) body.resize(static_cast<size_t>(cl));
+            }
+            if (!listen_.load()) {
+                SOCKET active = client_.exchange(INVALID_SOCKET);
+                if (active == client) { closesocket(client); }
+                break;
             }
 
             std::string out_body;
@@ -119,15 +164,24 @@ bool HttpServer::start(int port, std::function<void(const std::string&, const st
             resp += out_body;
 
             send_all(client, resp.c_str(), static_cast<int>(resp.size()));
-            closesocket(client);
+            SOCKET active = client_.exchange(INVALID_SOCKET);
+            if (active == client) closesocket(client);
         }
     });
     return true;
 }
 
 void HttpServer::stop() {
-    listen_ = false;
+    std::scoped_lock lock(lifecycle_);
+    if (!listen_.load() && !thread_.joinable()) return;
+    listen_.store(false);
+    if (sock_ != INVALID_SOCKET) {
+        shutdown(sock_, SD_BOTH);
+        closesocket(sock_);
+        sock_ = INVALID_SOCKET;
+    }
+    SOCKET client = client_.exchange(INVALID_SOCKET);
+    if (client != INVALID_SOCKET) closesocket(client);
     if (thread_.joinable()) thread_.join();
-    if (sock_ != INVALID_SOCKET) { closesocket(sock_); sock_ = INVALID_SOCKET; }
     WSACleanup();
 }
