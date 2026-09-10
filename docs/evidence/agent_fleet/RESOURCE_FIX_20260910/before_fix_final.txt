@@ -1,0 +1,160 @@
+test_available_child_acquisition_still_works (test_resource_lifecycle.ResourceLifecycleTests.test_available_child_acquisition_still_works) ... ok
+test_gpu_release_preserves_engine_owner_until_drained (test_resource_lifecycle.ResourceLifecycleTests.test_gpu_release_preserves_engine_owner_until_drained) ... FAIL
+test_legacy_engine_requires_parent (test_resource_lifecycle.ResourceLifecycleTests.test_legacy_engine_requires_parent) ... FAIL
+test_legacy_memory_has_named_refusal (test_resource_lifecycle.ResourceLifecycleTests.test_legacy_memory_has_named_refusal) ... ERROR
+test_malformed_resource_returns_json_and_preserves_state (test_resource_lifecycle.ResourceLifecycleTests.test_malformed_resource_returns_json_and_preserves_state) ... ----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 49850)
+Traceback (most recent call last):
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/socketserver.py", line 766, in __init__
+    self.handle()
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/http/server.py", line 440, in handle
+    self.handle_one_request()
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/http/server.py", line 428, in handle_one_request
+    method()
+  File "/workspace/scratch/972c485a50c0/fleet_linux_review/tools/agent_fleet/service.py", line 31, in do_POST
+    result=self.server.control.call(request['operation'],auth[7:],**args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/972c485a50c0/fleet_linux_review/tools/agent_fleet/control.py", line 238, in call
+    result=self._dispatch(s,actor,op,p)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/972c485a50c0/fleet_linux_review/tools/agent_fleet/control.py", line 388, in _dispatch
+    or name=='memory' or name.startswith('memory.'),'unknown_resource')
+                         ^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'startswith'
+----------------------------------------
+ERROR
+test_memory_total_release_and_clear (test_resource_lifecycle.ResourceLifecycleTests.test_memory_total_release_and_clear) ... FAIL
+test_nonholder_stays_queued_and_auto_promotes (test_resource_lifecycle.ResourceLifecycleTests.test_nonholder_stays_queued_and_auto_promotes) ... ok
+test_old_pending_holder_is_terminal_on_promotion (test_resource_lifecycle.ResourceLifecycleTests.test_old_pending_holder_is_terminal_on_promotion) ... FAIL
+test_same_owner_benchmark_class_requires_release (test_resource_lifecycle.ResourceLifecycleTests.test_same_owner_benchmark_class_requires_release) ... FAIL
+test_split_acquisition_is_terminal_not_pending (test_resource_lifecycle.ResourceLifecycleTests.test_split_acquisition_is_terminal_not_pending) ... FAIL
+test_stale_registry_hold_cannot_be_overwritten (test_resource_lifecycle.ResourceLifecycleTests.test_stale_registry_hold_cannot_be_overwritten) ... FAIL
+test_supervisor_clear_requires_engine_drain (test_resource_lifecycle.ResourceLifecycleTests.test_supervisor_clear_requires_engine_drain) ... FAIL
+
+======================================================================
+ERROR: test_legacy_memory_has_named_refusal (test_resource_lifecycle.ResourceLifecycleTests.test_legacy_memory_has_named_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/972c485a50c0/fleet_linux_git/tools/agent_fleet/test_resource_lifecycle.py", line 182, in test_legacy_memory_has_named_refusal
+    self.call('resource_acquire', 'worker', task='a', generation=1, resource='memory')
+  File "/workspace/scratch/972c485a50c0/fleet_linux_review/tools/agent_fleet/test_resources.py", line 63, in call
+    return self.c.call(op, self.tok.get(actor, actor), **p)['result']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/972c485a50c0/fleet_linux_review/tools/agent_fleet/control.py", line 238, in call
+    result=self._dispatch(s,actor,op,p)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/972c485a50c0/fleet_linux_review/tools/agent_fleet/control.py", line 392, in _dispatch
+    klass={'rtx4090':'gpu_functionality','dyad_eye':'dyad_inference','engine_demo':'engine_demo'}[name]
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: 'memory'
+
+======================================================================
+ERROR: test_malformed_resource_returns_json_and_preserves_state (test_resource_lifecycle.ResourceLifecycleTests.test_malformed_resource_returns_json_and_preserves_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/972c485a50c0/fleet_linux_git/tools/agent_fleet/test_resource_lifecycle.py", line 171, in test_malformed_resource_returns_json_and_preserves_state
+    urlopen(req, timeout=3)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/urllib/request.py", line 515, in open
+    response = self._open(req, data)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/urllib/request.py", line 532, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/urllib/request.py", line 1373, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/urllib/request.py", line 1348, in do_open
+    r = h.getresponse()
+        ^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/http/client.py", line 1478, in getresponse
+    response.begin()
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/http/client.py", line 343, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/http/client.py", line 312, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+http.client.RemoteDisconnected: Remote end closed connection without response
+
+======================================================================
+FAIL: test_gpu_release_preserves_engine_owner_until_drained (test_resource_lifecycle.ResourceLifecycleTests.test_gpu_release_preserves_engine_owner_until_drained)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/972c485a50c0/fleet_linux_git/tools/agent_fleet/test_resource_lifecycle.py", line 37, in test_gpu_release_preserves_engine_owner_until_drained
+    with self.assertRaisesRegex(Refusal, 'release_engine_first'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Refusal not raised
+
+======================================================================
+FAIL: test_legacy_engine_requires_parent (test_resource_lifecycle.ResourceLifecycleTests.test_legacy_engine_requires_parent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/972c485a50c0/fleet_linux_git/tools/agent_fleet/test_resource_lifecycle.py", line 57, in test_legacy_engine_requires_parent
+    with self.assertRaisesRegex(Refusal, 'engine_requires_gpu_reservation'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Refusal not raised
+
+======================================================================
+FAIL: test_memory_total_release_and_clear (test_resource_lifecycle.ResourceLifecycleTests.test_memory_total_release_and_clear)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/972c485a50c0/fleet_linux_git/tools/agent_fleet/test_resource_lifecycle.py", line 97, in test_memory_total_release_and_clear
+    self.assertEqual(self.snap()['memory']['admitted_mb'], 0)
+AssertionError: 1024 != 0
+
+======================================================================
+FAIL: test_old_pending_holder_is_terminal_on_promotion (test_resource_lifecycle.ResourceLifecycleTests.test_old_pending_holder_is_terminal_on_promotion)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/972c485a50c0/fleet_linux_git/tools/agent_fleet/test_resource_lifecycle.py", line 144, in test_old_pending_holder_is_terminal_on_promotion
+    self.assertTrue(queued['served'])
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_same_owner_benchmark_class_requires_release (test_resource_lifecycle.ResourceLifecycleTests.test_same_owner_benchmark_class_requires_release)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/972c485a50c0/fleet_linux_git/tools/agent_fleet/test_resource_lifecycle.py", line 88, in test_same_owner_benchmark_class_requires_release
+    self.assertFalse(r['granted'])
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_split_acquisition_is_terminal_not_pending (test_resource_lifecycle.ResourceLifecycleTests.test_split_acquisition_is_terminal_not_pending)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/972c485a50c0/fleet_linux_git/tools/agent_fleet/test_resource_lifecycle.py", line 111, in test_split_acquisition_is_terminal_not_pending
+    self.assertTrue(r['served'])
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_stale_registry_hold_cannot_be_overwritten (test_resource_lifecycle.ResourceLifecycleTests.test_stale_registry_hold_cannot_be_overwritten)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/972c485a50c0/fleet_linux_git/tools/agent_fleet/test_resource_lifecycle.py", line 75, in test_stale_registry_hold_cannot_be_overwritten
+    self.assertFalse(r['granted'])
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_supervisor_clear_requires_engine_drain (test_resource_lifecycle.ResourceLifecycleTests.test_supervisor_clear_requires_engine_drain)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/972c485a50c0/fleet_linux_git/tools/agent_fleet/test_resource_lifecycle.py", line 49, in test_supervisor_clear_requires_engine_drain
+    with self.assertRaisesRegex(Refusal, 'release_engine_first'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Refusal not raised
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.563s
+
+FAILED (failures=8, errors=2)
+original_source_successful: False
+failures: 8 errors: 2

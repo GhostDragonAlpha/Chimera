@@ -158,10 +158,10 @@ class Control:
 
     def _promote_one(self,s,req):
         """Satisfy one queued request all-or-nothing (atomic: caller holds the
-        BEGIN IMMEDIATE transaction). Same-resource fairness is strict FIFO --
-        a later request never jumps an earlier request that wants the SAME
-        resource, regardless of priority (priority is a stamp, aging is the
-        recorded waiting count)."""
+        BEGIN IMMEDIATE transaction). Queues are scanned in arrival order,
+        but a later feasible group can pass an earlier infeasible group.
+        This is not strict FIFO or a starvation bound; priority and waiting
+        revision counts are recorded metadata, not scheduling weights."""
         t=s['tasks'].get(req['task'])
         if t is None or t['owner']!=req['owner'] or t['generation']!=req['generation'] \
                 or t['state'] not in ('RUNNING','BLOCKED'):
@@ -183,6 +183,15 @@ class Control:
             else:
                 req['stalled'] = 'contended:rtx4090'
             return 'contended'
+        # Never replace a reservation, including a same-task class change.
+        # An owner must drain/release before acquiring a replacement.
+        for name in names:
+            if name != 'memory' and name in held:
+                req['stalled']='contended:'+name;return 'contended'
+        if 'rtx4090' in names:
+            for child in self.CHAINED:
+                if child in held and held[child]['task']!=req['task']:
+                    req['stalled']='retained_child:'+child;return 'contended'
         if ('engine_demo' in names or 'dyad_eye' in names) and 'rtx4090' not in names:
             if rtx is None or rtx['task']!=req['task']:
                 req['stalled']='chained_requires_gpu_same_task';return 'contended'
@@ -220,10 +229,20 @@ class Control:
             for req in s['resource_queues']:
                 if req['served']:
                     continue
-                if self._promote_one(s,req)=='granted':
+                outcome=self._promote_one(s,req)
+                if outcome=='granted':
                     moved=True
+                elif outcome in ('contended','allocation_refused') and any(
+                        r['task']==req['task'] for r in s['resources'].values()):
+                    # Do not wait for another resource while retaining one.
+                    # Preserve the actual holds; the client must drain them
+                    # and request its complete bundle again.
+                    req['served']=True
+                    req['dropped_reason']='release_required'
             if not moved:
                 break
+        s['memory']['admitted_mb']=sum(
+            (r.get('memory_mb') or 0) for r in s['resources'].values())
 
     def call(self,op,token,**p):
         con=self.connect()
@@ -234,6 +253,9 @@ class Control:
             # resource scheduler extension).
             s.setdefault('resource_queues',[])
             s.setdefault('memory',{'budget_mb':self.memory_budget_mb,'admitted_mb':0})
+            # Also reconcile summaries read from a pre-repair registry.
+            s['memory']['admitted_mb']=sum(
+                (r.get('memory_mb') or 0) for r in s['resources'].values())
             actor=self._actor(s,token)
             result=self._dispatch(s,actor,op,p)
             if op not in ('snapshot','events'):
@@ -384,11 +406,17 @@ class Control:
                         q['served']=True;q['dropped_reason']='reviewed'
                 t.update(state='REVIEW',head=sha(p.get('head')),review=text(p.get('evidence'),'review_evidence'))
                 return {'state':'REVIEW','acceptance':'NOT_CLAIMED'}
-            name=p.get('resource');require((name in ('rtx4090','dyad_eye','engine_demo'))
+            name=p.get('resource');require(isinstance(name,str),'invalid_resource_name')
+            require((name in ('rtx4090','dyad_eye','engine_demo'))
                                            or name=='memory' or name.startswith('memory.'),'unknown_resource')
             if op=='resource_acquire':
+                require(name in self.PHYSICAL+self.CHAINED,'use_resource_request_for_memory')
                 require(t['state']=='RUNNING' and name not in s['resources'],'resource_not_available')
+                if name=='rtx4090':
+                    require(not any(r in s['resources'] and s['resources'][r]['task']!=t['id']
+                                    for r in self.CHAINED),'retained_gpu_child')
                 if name=='dyad_eye':require(s['resources'].get('rtx4090',{}).get('task')==t['id'],'dyad_requires_gpu_reservation')
+                if name=='engine_demo':require(s['resources'].get('rtx4090',{}).get('task')==t['id'],'engine_requires_gpu_reservation')
                 klass={'rtx4090':'gpu_functionality','dyad_eye':'dyad_inference','engine_demo':'engine_demo'}[name]
                 s['resources'][name]={'task':t['id'],'owner':actor,'generation':t['generation'],
                                       'class':klass,'since_revision':s['revision']+1,'memory_mb':None}
@@ -399,6 +427,7 @@ class Control:
                 for k in targets:
                     r=s['resources'].get(k);require(r and r['task']==t['id'] and r['generation']==t['generation'],'foreign_resource')
                     require(not(k=='rtx4090' and s['resources'].get('dyad_eye',{}).get('task')==t['id']),'release_dyad_first')
+                    require(not(k=='rtx4090' and s['resources'].get('engine_demo',{}).get('task')==t['id']),'release_engine_first')
                     text(p.get('evidence'),'resource_drained_evidence');del s['resources'][k]
                 self._promote_queues(s)
             return {'resource':name,'action':op}
@@ -406,6 +435,7 @@ class Control:
             require(actor=='SUPERVISOR','supervisor_only')
             name=p.get('resource');require(name in s['resources'],'resource_not_held')
             if name=='rtx4090':require('dyad_eye' not in s['resources'],'release_dyad_first')
+            if name=='rtx4090':require('engine_demo' not in s['resources'],'release_engine_first')
             text(p.get('evidence'),'actual_process_drained_evidence');del s['resources'][name]
             self._promote_queues(s)
             return {'cleared':name}
