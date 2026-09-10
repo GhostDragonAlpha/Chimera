@@ -2384,3 +2384,28 @@ fixes is still distinct from deploying them to the running controller. Catalogue
 corrections, slot binding recovery, controller transition, and GOV-01 acceptance
 remain open under their existing IDs and owners. No task is removed or marked
 complete merely because this checkpoint makes its state discoverable.
+
+## Concurrent-client reconciliation requirements — 2026-09-10
+
+Alan confirms many agents are active. A changed Git head is a reason to
+reconcile the current claim, ancestry and bytes, not by itself a reason to
+stop and ask the operator. At the inspected slot-02 revisions,
+`fc5711eb` is a direct child of `9877179b` adding a separate evidence run;
+implementation bytes are unchanged and another distinct run remains staged.
+Both runs must be preserved. After refreshing the actual owner/generation and
+checking that state is stable, the owning worker can commit its remaining
+evidence and submit the new exact head through the existing PR workflow.
+This observation does not authorize ignoring source changes, divergent history,
+evidence deletion, a changed claim, or a concurrently changing index.
+
+| Stable task ID | Dependency / state at controller revision 273 | Requirement and falsifier |
+|---|---|---|
+| `fleet-head-reconcile-tool-01` | RUNNING, root slot 1 generation 1 | Read-only Git reconciliation instrument and real temporary-repository tests. Distinguish evidence-only additions from changed source, divergence, evidence modification/deletion and unstable reads. Reject any false continuation claim or modification of staged/untracked bytes. [Contract and results](THE_WORKTREE_RECONCILIATION.md). |
+| `fleet-head-reconcile-01` | OPEN; tool delivery and release of catalogue-owned onboarding/Fleet documentation scopes precede prompt integration | Incorporate the tested reconciliation procedure in canonical onboarding. A benign append must not require operator permission; conflicting ownership must be routed through the controller. The original scope claim was refused with `write_scope_conflict`; this is respected, not bypassed. |
+| `fleet-client-instance-01` | OPEN; depends on `master-catalogue-sync-01` and `fleet-slot-binding-01` | Bind independent client instances through the trusted launcher, fence stale/duplicate writers, and retain instance/request identity without secrets in audit events. Isolated baseline reproduced two clients sharing one fixture bearer both saving the same generation's checkpoint, with actor-only audit. Reject simultaneous admitted writers, guessed process ownership or a permissive compatibility path described as enforcement. Live migration requires coordinated acknowledgements and preserved claims; source integration alone is insufficient. |
+
+Git author configuration is shared in this repository's common `.git/config`;
+the current `buffy-02` setting does not identify which client wrote a commit.
+Agent/process counts likewise do not prove task ownership. Instance enforcement
+remains open: neither the new reconciliation tool nor a claim-generation bump
+alone prevents two clients with the same credential from acting as one agent.
