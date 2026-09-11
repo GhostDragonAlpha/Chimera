@@ -19,3 +19,9 @@ the new guarantees are pinned in test_slot_expansion. Test-found
 implementation fix: the guard binds the NEXT id, not the count (retired
 ids are never reused) - a count-only guard crashes past the layout bound
 instead of refusing by name.
+
+Correction 2026-09-11 (fleet-followups-batch-02, append-only): the scale
+probe row above cites the UNRETAINED 1456 ops / p50 13.6ms run; the
+retained figures are the three retained runs recorded in
+MEASUREMENT.json (`mixed_load_probe`): 1473 ops p50 13.3ms / 1243 ops
+p50 15.5ms / 1426 ops p50 13.5ms, zero database-locked in all.

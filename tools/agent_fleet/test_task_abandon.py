@@ -4,8 +4,12 @@ Isolated tests over a temp registry root (the test_control.py harness
 pattern): every test builds its own Control store, enrolls/qualifies fixture
 agents, elects a lead, and drives the real controller state machine. No live
 service, no deployed store, no filesystem mutation by the ops under test.
-Covers both positive paths, all named refusals, reopen invariants, audit
-events, no session revocation, and the untouched yield -> recover path.
+Covers both positive paths, all named refusals (the two claim_abandon slot
+arms that are unreachable by design are documented and their invariant
+pinned instead of driven -- see
+test_claim_abandon_slot_refusals_pinned_unreachable_by_design), reopen
+invariants, audit events, no session revocation, and the untouched
+yield -> recover path.
 """
 import json
 from pathlib import Path
@@ -111,9 +115,16 @@ class TaskAbandonTests(unittest.TestCase):
         with self.assertRaisesRegex(Refusal,'task_not_ready'):self.abandon('reviewed')
     def test_task_abandon_requires_reason_and_evidence(self):
         self.task('stale-three')
-        for p in ({'evidence':'e'},{'reason':'r'},{'reason':'','evidence':'e'},
-                  {'reason':'r','evidence':''},{'reason':'  ','evidence':'e'}):
-            with self.assertRaises(Refusal):
+        # Named refusals (PR #62 review F3, landed by followups-batch-02):
+        # text() validates reason FIRST and evidence SECOND, so each blank
+        # case names its exact missing_* arm instead of a bare Refusal.
+        for p,name in (({'evidence':'e'},'missing_abandon_reason'),
+                       ({'reason':'','evidence':'e'},'missing_abandon_reason'),
+                       ({'reason':'  ','evidence':'e'},'missing_abandon_reason'),
+                       ({'reason':'r'},'missing_abandon_evidence'),
+                       ({'reason':'r','evidence':''},'missing_abandon_evidence'),
+                       ({'reason':'r','evidence':'  '},'missing_abandon_evidence')):
+            with self.assertRaisesRegex(Refusal,name):
                 self.call('task_abandon','super-secret',task='stale-three',**p)
         self.assertEqual(self.snap()['tasks']['stale-three']['state'],'READY')
 
@@ -218,6 +229,31 @@ class TaskAbandonTests(unittest.TestCase):
         self.assertEqual(s['tasks']['prov']['state'],'RUNNING')
         self.assertTrue(s['slots'][t['slot']]['engine']['provisioned'])
         self.assertEqual(s['slots'][t['slot']]['task'],'prov')
+    def test_claim_abandon_slot_refusals_pinned_unreachable_by_design(self):
+        # PR #62 review F2/F3 (landed by followups-batch-02): the
+        # `task_has_no_slot` and `slot_binding_mismatch` refusal arms have NO
+        # executable refusal test because they are UNREACHABLE BY DESIGN, and
+        # faking a state to reach them would mean corrupting the registry by
+        # hand -- exactly what the arms exist to catch. Why they cannot fire
+        # through any legal op sequence: a task enters RUNNING only through
+        # claim, which binds a free slot and writes slot['task']=task_id in
+        # the SAME single-writer transaction; every slot-freeing op
+        # (claim_abandon, recover, slot_rebind, release_review_slot) clears
+        # both sides together. So a RUNNING task can never have slot=None
+        # (task_has_no_slot) and slots[task.slot].task can never name another
+        # task (slot_binding_mismatch). The arms stay in control.py as
+        # defense-in-depth; the honest coverage is pinning the INVARIANT that
+        # makes them unreachable, asserted here through the public snapshot:
+        self.task('bound');self.claim('bound')
+        s=self.snap()
+        self.assertIsNotNone(s['tasks']['bound']['slot'])
+        self.assertEqual(s['slots'][s['tasks']['bound']['slot']]['task'],'bound')
+        # ...and it still holds for the SECOND claimer on the same slot
+        # family after the first claim is abandoned back to READY:
+        self.claim_abandon('bound');self.claim('bound','other')
+        s=self.snap()
+        self.assertIsNotNone(s['tasks']['bound']['slot'])
+        self.assertEqual(s['slots'][s['tasks']['bound']['slot']]['task'],'bound')
     def test_claim_abandon_refuses_while_resources_still_held(self):
         # recover's exact guard, mirrored: a claim that ITSELF holds a
         # resource cannot be retired until the holder drains it.
@@ -231,11 +267,15 @@ class TaskAbandonTests(unittest.TestCase):
         self.assertEqual(self.snap()['tasks']['gpu-one']['state'],'READY')
     def test_claim_abandon_requires_both_attestations(self):
         self.task('attest');self.claim('attest')
-        for p in ({'drain_evidence':DRAINED},{'preservation_evidence':PRESERVED},
-                  {'preservation_evidence':'','drain_evidence':DRAINED},
-                  {'preservation_evidence':PRESERVED,'drain_evidence':''},
-                  {'preservation_evidence':'  ','drain_evidence':DRAINED}):
-            with self.assertRaises(Refusal):
+        # Named refusals (PR #62 review F3, landed by followups-batch-02):
+        # preservation is validated FIRST, drain SECOND, so each blank case
+        # names its exact missing_* arm instead of a bare Refusal.
+        for p,name in (({'drain_evidence':DRAINED},'missing_preservation_evidence'),
+                       ({'preservation_evidence':'','drain_evidence':DRAINED},'missing_preservation_evidence'),
+                       ({'preservation_evidence':'  ','drain_evidence':DRAINED},'missing_preservation_evidence'),
+                       ({'preservation_evidence':PRESERVED},'missing_drain_evidence'),
+                       ({'preservation_evidence':PRESERVED,'drain_evidence':''},'missing_drain_evidence')):
+            with self.assertRaisesRegex(Refusal,name):
                 self.call('claim_abandon','super-secret',task='attest',**p)
         s=self.snap()
         self.assertEqual(s['tasks']['attest']['state'],'RUNNING');self.assertIsNotNone(s['tasks']['attest']['slot'])
