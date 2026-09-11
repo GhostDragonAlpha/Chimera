@@ -676,6 +676,15 @@ bool Engine::init(const EngineConfig& cfg) {
                                                 VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
         if (ui_.init(device_, phys_dev_, swap_fmt_, extent_.width, extent_.height, host_mt)) {
             ui_.create_swap_resources(img_views_, extent_);
+            // GRID DEPTH CONTRACT (docs/THE_STUDIO_GRID_DEPTH.md): build the
+            // grid's stencil-tested twin against the OFFSCREEN scene pass (the
+            // pass that owns the depth attachment). The rt pass already exists
+            // (created in step 8.5); a resize recreates it with IDENTICAL state
+            // — pass compatibility holds, the pipeline stays legal, same as the
+            // scene pipelines created here. Failure is the declared degradation:
+            // the UI overlay keeps drawing the grid the old way.
+            if (!ui_.create_scene_grid_pipeline(rt_render_pass_, rt_samples_))
+                fprintf(stderr, "studio: grid depth twin unavailable — UI overlay grid stays\n");
             // D1: the timeline panel issues intents; the engine owns the clock.
             ui_.cb_play_toggle_ = [this] {
                 bool np = !show_playing_.load();
@@ -1450,14 +1459,32 @@ bool Engine::create_triangle_pipeline() {
     static const VkDynamicState dyn_states[] = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
     dyn.pDynamicStates     = dyn_states;
 
-    // Depth stencil — enable depth test/write for triangle occlusion
+    // Depth stencil — enable depth test/write for triangle occlusion.
+    // STENCIL (studio-grid-depth-01, docs/THE_STUDIO_GRID_DEPTH.md): the ACCEPTED
+    // fill draw marks its depth-passed coverage with stencil 1; the grid twin
+    // (ui.cpp create_scene_grid_pipeline) draws only where the stencil is 0.
+    // Because every grid fragment lies on the floor plane (opaque, depth-
+    // writing), a fragment that passed depth against the floor IS in front of
+    // the grid — coverage-by-depth-passed-fragments is exact depth occlusion.
+    // The twins below (shadow, floor) PIN stencil off: the shadow is ink ON the
+    // floor (the grid draws over it), the floor IS the grid's plane.
+    VkStencilOpState mark_stencil{};
+    mark_stencil.failOp      = VK_STENCIL_OP_KEEP;
+    mark_stencil.passOp      = VK_STENCIL_OP_REPLACE;
+    mark_stencil.depthFailOp = VK_STENCIL_OP_KEEP;
+    mark_stencil.compareOp   = VK_COMPARE_OP_ALWAYS;   // depth test still gates the fragment
+    mark_stencil.compareMask = 0x00;
+    mark_stencil.writeMask   = 0x01;
+    mark_stencil.reference   = 1;
     VkPipelineDepthStencilStateCreateInfo ds{};
     ds.sType             = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
     ds.depthTestEnable   = VK_TRUE;
     ds.depthWriteEnable  = VK_TRUE;
     ds.depthCompareOp    = VK_COMPARE_OP_LESS;
     ds.depthBoundsTestEnable = VK_FALSE;
-    ds.stencilTestEnable = VK_FALSE;
+    ds.stencilTestEnable = VK_TRUE;                    // test is ALWAYS; this gates the MARK
+    ds.front = mark_stencil;
+    ds.back  = mark_stencil;
 
     // Graphics pipeline — reuse the existing pipeline_layout_ (UBO binding 0)
     VkGraphicsPipelineCreateInfo gpci{};
@@ -1564,6 +1591,9 @@ bool Engine::create_triangle_pipeline() {
         blend.alphaBlendOp        = VK_BLEND_OP_ADD;
         ds.depthWriteEnable = VK_FALSE;
         ds.depthTestEnable  = VK_FALSE;
+        // GRID DEPTH CONTRACT: the shadow is ink ON the floor, not an occluder —
+        // the grid draws OVER it (pinned; the shared ds carries the fill's mark)
+        ds.stencilTestEnable = VK_FALSE;
         // FLOOR-COEXIST (2026-09-03, two rounds): the shadow projects onto the
         // SAME y=0 plane the floor rasterizes, so its fragment depth equals the
         // floor's only up to float ulps — LESS rejected every fragment (shadow
@@ -1608,6 +1638,8 @@ bool Engine::create_triangle_pipeline() {
         ds.depthCompareOp    = VK_COMPARE_OP_LESS; // shared ds carries the shadow's
                                                    // LESS_OR_EQUAL — pin the floor's
                                                    // own law explicitly
+        ds.stencilTestEnable = VK_FALSE;          // the floor IS the grid's plane —
+                                                  // it never marks (grid draws on it)
         ras.cullMode = VK_CULL_MODE_NONE;         // winding kept unordered by intent
 
         if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr, &floor_pipeline_) != VK_SUCCESS) {
@@ -4834,6 +4866,21 @@ bool Engine::load_frost(const uint8_t* blob, size_t size) {
         ds.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
         ds.depthTestEnable = VK_TRUE; ds.depthWriteEnable = VK_TRUE;
         ds.depthCompareOp = VK_COMPARE_OP_LESS;
+        // frost REPLACES the fill when live — the accepted body, so it must mark
+        // the stencil exactly like create_triangle_pipeline's fill (grid contract)
+        {
+            VkStencilOpState mark{};
+            mark.failOp      = VK_STENCIL_OP_KEEP;
+            mark.passOp      = VK_STENCIL_OP_REPLACE;
+            mark.depthFailOp = VK_STENCIL_OP_KEEP;
+            mark.compareOp   = VK_COMPARE_OP_ALWAYS;
+            mark.compareMask = 0x00;
+            mark.writeMask   = 0x01;
+            mark.reference   = 1;
+            ds.stencilTestEnable = VK_TRUE;
+            ds.front = mark;
+            ds.back  = mark;
+        }
         VkPipelineVertexInputStateCreateInfo vi{};
         vi.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
         vi.vertexBindingDescriptionCount = 1; vi.pVertexBindingDescriptions = &binding;
@@ -7325,6 +7372,9 @@ bool Engine::frame() {
     ui_.set_cam_view(cam_mark_names());
     // D5: the capture session document — one formatting site
     ui_.set_capture_view(capture_kv());
+    // grid depth contract: the scene pass owns the grid this frame — the quads
+    // route to the stencil-tested twin (no-op if that pipeline never built)
+    ui_.set_grid_scene_owned(ui_.scene_grid_ok());
     ui_.prepare(extent_.width, extent_.height);   // build the draw list (cheap no-op when hidden)
 
     // ── THE STUDIO CLOCK (D1): consume a pending scrub, then advance if playing.
@@ -7986,12 +8036,18 @@ bool Engine::frame() {
     rpb.renderPass        = rt_render_pass_;
     rpb.framebuffer       = rt_framebuffer_;
     rpb.renderArea.extent = extent_;
-    VkClearValue clears[2] = {};
+    // [3]: color resolve (att 0), depth+stencil (att 1), the MSAA canvas (att 2).
+    // Was declared [2] with count 3 — the canvas cleared from stack garbage,
+    // masked by the resolve overwriting every pixel. The stencil plane must
+    // clear deterministically to 0 for the grid contract, so the array is now
+    // sized honestly and the depth+stencil clear is explicit.
+    VkClearValue clears[3] = {};
     clears[0].color.float32[0] = 0.015f;
     clears[0].color.float32[1] = 0.02f;
     clears[0].color.float32[2] = 0.06f;
     clears[0].color.float32[3] = 1.0f;
-    clears[1].depthStencil.depth = 1.0f;
+    clears[1].depthStencil.depth   = 1.0f;
+    clears[1].depthStencil.stencil = 0;    // the grid contract's clean slate
     rpb.clearValueCount   = 3;   // att 2 (the MSAA canvas) also LOAD_OP_CLEARs at 4x
     rpb.pClearValues       = clears;
 
@@ -8093,6 +8149,13 @@ bool Engine::frame() {
             vkCmdDraw(cmd_bufs_[img_idx], n_, 1, 0, 0);
         }
     }
+
+    // THE GRID DEPTH CONTRACT (docs/THE_STUDIO_GRID_DEPTH.md): the viewport
+    // reference frame draws INSIDE the scene pass, stencil-tested against the
+    // accepted fills' depth-passed coverage — it never draws through an
+    // occluding body. Last draw of the pass: over the floor and shadow, under
+    // nothing (the UI chrome still composites on top at swapchain time).
+    ui_.record_grid_scene(cmd_bufs_[img_idx]);
 
     vkCmdEndRenderPass(cmd_bufs_[img_idx]);
 
@@ -8404,6 +8467,10 @@ bool Engine::frame_idle_ui() {
     ui_.set_cam_view(cam_mark_names());
     // D5: the capture session answers in idle too — same document
     ui_.set_capture_view(capture_kv());
+    // grid depth contract: the idle path has NO scene pass — nothing is loaded,
+    // nothing occludes, so the UI-pass grid keeps serving the empty viewport
+    // (the eye's #1-defect law); the scene twin's quads stay unused.
+    ui_.set_grid_scene_owned(false);
     ui_.prepare(extent_.width, extent_.height);
     uint32_t img_idx = image_idx_;
     VkResult fence_res = vkWaitForFences(device_, 1, &fences_[img_idx], VK_TRUE, UINT64_MAX);
@@ -8705,12 +8772,15 @@ void Engine::create_offscreen() {
     msaa_ref.layout     = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
     VkAttachmentDescription depth{};
-    depth.format         = VK_FORMAT_D32_SFLOAT;
+    // D32S8 (studio-grid-depth-01): the same attachment now carries the stencil
+    // the grid-depth contract needs — the accepted fills mark their depth-passed
+    // coverage, the grid twin draws only where the stencil is 0.
+    depth.format         = VK_FORMAT_D32_SFLOAT_S8_UINT;
     depth.samples        = rt_samples_;
     depth.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
     depth.storeOp        = VK_ATTACHMENT_STORE_OP_STORE;
-    depth.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    depth.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    depth.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    depth.stencilStoreOp = VK_ATTACHMENT_STORE_OP_STORE;
     depth.initialLayout  = VK_IMAGE_LAYOUT_UNDEFINED;
     depth.finalLayout    = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
@@ -8800,11 +8870,12 @@ void Engine::create_offscreen() {
     vci.subresourceRange.layerCount = 1;
     vkCreateImageView(device_, &vci, nullptr, &rt_view_);
 
-    // Depth attachment for triangle depth testing
+    // Depth attachment for triangle depth testing — D32S8: the stencil plane
+    // carries the accepted fills' depth-passed coverage (grid depth contract).
     VkImageCreateInfo di{};
     di.sType         = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     di.imageType     = VK_IMAGE_TYPE_2D;
-    di.format        = VK_FORMAT_D32_SFLOAT;
+    di.format        = VK_FORMAT_D32_SFLOAT_S8_UINT;
     di.extent        = {extent_.width, extent_.height, 1};
     di.mipLevels     = 1; di.arrayLayers = 1; di.samples = rt_samples_;   // MSAA depth (matches the pass)
     di.tiling        = VK_IMAGE_TILING_OPTIMAL;
@@ -8822,8 +8893,9 @@ void Engine::create_offscreen() {
     dvi.sType    = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     dvi.image    = rt_depth_image_;
     dvi.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    dvi.format   = VK_FORMAT_D32_SFLOAT;
-    dvi.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+    dvi.format   = VK_FORMAT_D32_SFLOAT_S8_UINT;
+    // a depth+stencil attachment view must expose BOTH aspects
+    dvi.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
     dvi.subresourceRange.levelCount = 1; dvi.subresourceRange.layerCount = 1;
     vkCreateImageView(device_, &dvi, nullptr, &rt_depth_view_);
 

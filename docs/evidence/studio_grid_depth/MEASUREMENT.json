@@ -1,0 +1,55 @@
+{
+  "task": "studio-grid-depth-01",
+  "generated_utc": "2026-09-11T12:30:00Z",
+  "agent": "subagent-worker-02",
+  "resources": {
+    "granted": ["rtx4090 (gpu_functionality)", "engine_demo"],
+    "grant_revision": 662,
+    "released_with_drain": "see RESULT.md resource record; engine processes drained rc=1 (taskkill forced exit), ports freed, verified before submit_review"
+  },
+  "engine": {
+    "build_dir": ".tmp/engine_build/studio01 (private; ChimeraEngine/engine/build untouched)",
+    "runtime_dirs": ".tmp/engine_runtime/grid_* (own CWD, port 8127)",
+    "exe_sha256_after": "see after/records.json launch record",
+    "env": {"CHIMERA_MD_EDGE": "1"}
+  },
+  "fixed_camera": {"cam_radius": 3.0, "cam_theta": 0.0, "cam_phi": 0.35, "set_via": "POST /camera"},
+  "probe": {
+    "script": "docs/evidence/studio_grid_depth/grid_depth_probe.py",
+    "projection_source": "engine /project (the engine's own stashed VP; the probe re-implements no matrix math)",
+    "geometry_source": "frozen B2 fixture (docs/evidence/gpu_fixtures/b2), present-stage mapping vec3(x, z+LIFT_M, -y), iteration 0 after POST /membrane_demo {op:reset}",
+    "occlusion_partition": "monotone-ray equivalence: a grid point on y=0 whose projected pixel lies inside the projected fixture coverage is occluded (sheet strictly above the opaque floor, lift 0.5 > 0)",
+    "detector": "v2/v3 local-contrast line structure (9x9, center vs 80th-percentile background): DARK_LINE < -12 (grid ink over fill), BRIGHT_LINE > +8 (grid over floor), WIRE > +55 (edge-contrast ink); v3 adds a 14px boundary-exclusion zone (lifted sheet's near-edge shadow strip + AA)",
+    "capture_channel": "/glass (the composited window the operator and DYAD see). The retired runs measured /frame, which never contained the UI-pass grid pre-fix — see *_retired/"
+  },
+  "primary_result": {
+    "metric": "DARK_LINE fraction over grid samples occluded by the 6-face membrane, /glass, fixed camera",
+    "before_glass": {"darkline_at_occluded": 2818, "occluded_total": 4160, "frac": 0.6774, "dir": "before_glass/"},
+    "after_glass": {"darkline_at_occluded": 1, "occluded_total": 4160, "frac": 0.0002, "dir": "after/"},
+    "verdict": "the through-drawn grid (the DYAD's 'additional physical tessellation') is removed; the floor grid outside the silhouette remains (brightline_at_visible 0.2147 before / 0.1581 after — present both sides, AA differs: UI swapchain quads vs MSAA canvas)"
+  },
+  "numerical_gates": {
+    "b2_gate_before_glass": {"rc": 0, "records": 21, "fails": 0, "file": "before_glass/b2_gate_records.txt"},
+    "b2_gate_after": {"rc": 0, "records": 21, "fails": 0, "file": "after/b2_gate_records.txt"},
+    "frozen_verdict_set": "20 PASS 1 INFO — unchanged",
+    "faces": 6,
+    "accepted_state_id_stable_across_captures": true
+  },
+  "regressions": {
+    "V3_ordinary_mesh": "/mesh_bin 5-face box: grid draws on the floor, yields to the box silhouette (after/v3_mesh_glass.png)",
+    "V4_idle_viewport": "empty viewport keeps the UI-pass grid + triad + honesty hint (after/v4_idle_glass.png)",
+    "V2_gamma0_raised": "parent's retained view reproduced, probe identical to V1 (after/v2_glass.png)"
+  },
+  "dyad_review": {
+    "status": "NOT_TESTED",
+    "reason": "this lane has no subagent spawn capability (the template's spawn is the lead's Agent call) and the operator's LM Studio eye is off-limits to fleet lanes; plan-stage handoff prepared at dyad_review_handoff/",
+    "handoff": "docs/evidence/studio_grid_depth/dyad_review_handoff/"
+  },
+  "retained_failed_or_superseded_runs": [
+    "before/ (v1 absolute-color detector on /frame — wrong channel; PNGs hash-manifested, in git history)",
+    "after_v1detector_retired/ (v1 detector, fixed binary, /frame)",
+    "before_v2detector_retired/ + after_v2detector_retired/ (v2 structure detector, no boundary exclusion: both ~196 — measured the near-edge shadow strip, not grid)",
+    "after_v3framechannel_retired/ + before_v3framechannel_retired/ (v3 detector still on /frame: clean both sides — this exposed the channel error)",
+    "inverted-reference diagnostic (stencil ref=1: grid draws ONLY on the fill's coverage — mechanism proof; .tmp local, described in RESULT.md)"
+  ]
+}

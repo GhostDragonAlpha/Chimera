@@ -1,0 +1,183 @@
+
+PORT TESTS -- one instruction at a time, prediction computed BEFORE the run
+====================================================================================================
+
+  RIGID_BODY     PASS
+    claims     an unsupported mass falls as z = z0 - 0.5*g*t^2, with g the value theHuman publishes
+    measured   drop 0.5s (500 steps): predicted 8.771717 m, got 8.771717 m, err 0.00000%  |  continuous form would say 8.774169 (discretisation 2.452 mm)  |  Earth would give 8.774169
+
+  CONTACT        PASS
+    claims     a mass at rest on the ground returns exactly its own weight through the contact
+    measured   4.1888 kg at rest: predicted 41.0780 N, measured 41.0780 N, err 0.000%  (|vz| 2.23e-15)
+
+  hill_muscle    ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  spindle        ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  joint_limit    ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  passive_force  ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  tendon_elasticity ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  force_velocity ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  gto            ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  OTOLITH        PASS
+    claims     an otolith measures the GRAVITY VECTOR IN HEAD COORDINATES: tilt by theta and the lateral component reads g*sin(theta), the vertical g*cos(theta). Derived from the head's own rotation, which is the only thing an organ could have access to
+    measured   head tilted 20 deg: lateral 3.3541 m/s2 (predicted 3.3541, 0.0000% off), vertical 9.2152 (predicted 9.2152, 0.0000% off)
+
+  plantar_pressure ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  PHASE_OSCILLATOR PASS
+    claims     two coupled oscillators started in ANTIPHASE converge; an uncoupled pair does not. omega is DERIVED from theHuman's own stride, not chosen
+    measured   omega 5.7120 rad/s from theHuman's 1.1000 s stride | antiphase start: coupled(eps=2) -> 2.11e-12 rad, uncoupled(eps=0) -> 3.1416 rad (coupling does the work)
+
+  GRASS_BLADE    PASS
+    claims     a grass blade is passive tissue in the human's own form -- but it is a DISTRIBUTED beam, not a lumped root spring. k_seg = E*I/ell with E from Vincent 1982's measured Lolium perenne modulus and I from the published lamina section; a tip load then deflects the chain by the exact discrete-cantilever sum, and a SINGLE root spring of k = E*I/L is wrong by a factor computed in advance
+    measured   E 554.0 MPa (Vincent 1982, Lolium perenne), I = w*t^3/12 = 0.004*0.00025^3/12 = 5.208e-15 m^4, blade 12.0x4.0x0.25 mm -> EI 2.885e-06 N.m^2
+    24 hinges of k_seg = EI/ell = 0.0005771 N.m/rad, tip load 12.023 uN
+    predicted tip droop 2.552083 mm (discrete sum, 0.354456xPL^3/EI), got 2.550943 mm, err 0.0447%  |  continuum PL^3/3EI = 2.400000 mm (discretisation +6.34%)
+    settled |qvel| 1.19e-09 after 306800 steps
+    LUMPED ROOT SPRING k = EI/L would droop 7.200000 mm = 3.0000x the beam -- 200% wrong under a TIP FORCE, and EXACT under a pure moment. To match deflection k = 3EI/L = 7.214e-05; to match root slope k = 2EI/L = 4.809e-05. NO SINGLE SPRING MATCHES BOTH (50% apart), so a blade is distributed or it is wrong.
+    STILL REFUSED: blade damping c, and the earlier justification for the refusal was itself overreach. It said Vincent's dynamic modulus (44.38 MPa against 554 static) PROVES the blade is viscoelastic. It proves nothing of the sort: for a viscoelastic solid the dynamic modulus is the HIGHER one -- stiffer the faster you load it -- and a dynamic value 12x BELOW the static is backwards. Either the pair is a storage-vs-loss mislabel in a second-hand reading, or the two were measured on different axes. Until the primary is read, that pair is evidence of nothing.
+    WHAT WOULD ACTUALLY CLOSE IT: a loss tangent (tan delta) for leaf tissue, from which c = 2*zeta*sqrt(k*I) with zeta = tan(delta)/2. A search of the DMA literature returns the method and no plant-tissue number. c stays refused, and now the refusal names the measurement instead of leaning on a pair that points the wrong way.
+
+  ROCK_FRACTURE  PASS
+    claims     basalt obeys sigma = E*eps up to a tensile limit, with E, sigma_t and K_IC each published by a different study -- so the three are OVER-DETERMINED and the flaw size that reconciles them is a prediction about the rock's microstructure, not a fitted parameter
+    measured   E 78.0 GPa (library, Quaglio 2020), sigma_t 14.5 +- 3.3 MPa (Schultz 1993), K_IC 2.4 MPa*sqrt(m) (Balme 2004)
+    10 mm rod, 1 m, 1000 N -> sigma 12.732 MPa = 87.8% of the tensile limit
+    predicted stretch 163.236 um (PL/EA), got 163.236 um, err 0.0000%  (16 springs of EA/ell in series, |qvel| 3.0e-09 after 11400 steps)
+    FRACTURE at P = sigma_t*A = 1138.8 N. The published spread gives +-259.2 N = +-22.8%, which is WIDER than the 20% the brief asked fracture to land inside: that falsifier tests the literature, not the port, and is replaced by the spread.
+    OVER-DETERMINATION: a = (K_IC/sigma_t)^2/pi = (2.4e+06/1.45e+07)^2/pi = 8.720 mm -- a vesicle scale, not a mineral-grain scale (the library calls basalt's 2 mm 'surface texture, not mineral grains', so it may NOT be substituted here).
+    UCS/sigma_t = 18.3. Griffith 1921 predicts 8 for elliptical flaws; the published pair says 18.3, and the 2.3x excess IS the known crack-closure correction. The law loses cleanly and the amount it loses by is the finding.
+
+  TREE_TRUNK     PASS
+    claims     wood is ORTHOTROPIC and the trunk's two published moduli do different jobs: E_L sets the bending deflection, G_LR the shear deflection, and the Wood Handbook's G_LR/E_L = 0.086 is 4.5x lower than any isotropic solid's -- so a hinge chain, which has no shear compliance at all, must under-predict deflection by a share computable from slenderness alone
+    measured   white oak (Wood Handbook T5-3b/T5-1, 12% MC): E_L 12.30 GPa, G_LR/E_L 0.086 -> G_LR 1.058 GPa. An isotropic solid would have G/E = 0.385 -- wood is 4.47x more shear-compliant relative to its bending stiffness, and THAT is what orthotropy costs.
+    d 0.30 m (declared specimen -- no chapter grows a trunk yet; the claim is in L/d, which is dimensionless), P 500 N lateral
+    L/d    5: chain   0.1223 mm vs discrete   0.1223 mm ( 0.006%)  |  shear adds  9.690% (predicted  9.690%), isotropic wood would add only 2.167%
+    L/d   10: chain   0.9785 mm vs discrete   0.9784 mm ( 0.002%)  |  shear adds  2.422% (predicted  2.422%), isotropic wood would add only 0.542%
+    L/d   20: chain   7.8276 mm vs discrete   7.8276 mm ( 0.000%)  |  shear adds  0.606% (predicted  0.606%), isotropic wood would add only 0.135%
+    FAILURE MODE: bending governs above L/d = 3*MOR/(16*tau_par) = 1.43 (MOR 105 MPa, shear-parallel 13.8 MPa). No tree is stubbier than 1.43, so a trunk ALWAYS fails in bending -- which is why the bending model is allowed to be the whole model, and it is a prediction that could have come back at 20 and forced a shear port.
+    HONEST LIMIT: the chain carries E_L and no shear compliance, so it is right to <1% only where the shear share is small. At L/d 5 that share is already 9.69% and a branch stub would need a Timoshenko element, not this one.
+
+  TERRAIN_FOOTPRINT REFUSED as absent structure
+    claims     soil under a foot has an ELASTIC branch and a PLASTIC one, and they come from two literatures that never cite each other: Terzaghi's subgrade modulus gives a recoverable settlement p/k_s, Terzaghi's bearing capacity gives the depth at which the ground stops yielding. Fed this world's OWN published foot pressure and soil, the two must land on the same millimetre scale -- and whether a print PERSISTS is decided by the published cohesion
+    measured   REFUSED: no theGround/numbers.json under story/ -- run `python Chimera/core/grow.py`. Refusing to assume a value for a membrane that has not been grown.
+    theGround was a MATTER-ERA membrane, deleted with story/ on 2026-08-06 (THE_LIGHT_SEED); it is not a membrane of the light-era world. This port stays as the regression guard for when terrain returns (roadmap Phase 2, passive tissue) -- the typed-cohesion conviction and the two-literatures check are earned and kept, not re-run against a substitute value.
+
+  GRANULAR_REPOSE REFUSED as absent structure
+    claims     theta_r = atan(mu) is a statement about SLIDING, and it is the pile's angle only for a grain that can neither roll nor interlock. At this world's OWN published friction, rigid grains BRACKET it rather than reach it: spheres roll and hold less, boxes interlock and hold more. So a rigid-body engine cannot produce a repose angle from a friction coefficient, which is why this world grows its regolith from a topple rule -- and that grown angle must land inside the friction band Mitchell 1972 actually published
+    measured   REFUSED: no theGround/numbers.json under story/ -- run `python Chimera/core/grow.py`. Refusing to assume a value for a membrane that has not been grown.
+    theGround was a MATTER-ERA membrane, deleted with story/ on 2026-08-06 (THE_LIGHT_SEED); it is not a membrane of the light-era world. This port stays as the regression guard for when terrain returns (roadmap Phase 2, passive tissue) -- the shape-ablation bracket and the monolayer falsifier are earned and kept, not re-run against a substitute value.
+
+  FIBRE_ROPE     PASS
+    claims     a rope has no Young's modulus -- it is a helix whose apparent stiffness rises as the lay tightens, which is exactly why the industry publishes STRAIN AT A STATED FRACTION OF BREAKING STRENGTH instead. Take that as F = kx: EA = 0.1*F_break/eps_at_10pct. Then the SAME standard's published break elongation is an independent check on the linear model, and it refutes it for polyester
+    measured   Cordage Institute / ASTM D-4268 elongation figures; specimen F_break 10 kN over 10 m (a RATIO cancels it out of every conclusion)
+    nylon      eps@10%BS  2.5% -> EA 4.000*F_break; at the rated WLL (F_break/5) the linear model says  5.00% strain,  23.3% of its published 21.5% break elongation | engine  500.00 mm vs PL/EA  500.00 mm (0.0000%)
+    polyester  eps@10%BS  6.0% -> EA 1.667*F_break; at the rated WLL (F_break/5) the linear model says 12.00% strain,  96.0% of its published 12.5% break elongation | engine 1200.00 mm vs PL/EA 1200.00 mm (0.0000%)
+    F = kx SURVIVES for nylon (23% of break at rated load) and is REFUTED for polyester: a rope at its RATED load cannot be at 96% of its own breaking elongation, so the real curve STIFFENS and the secant taken at 10% BS is its softest part. Two numbers from one standard, and no experiment was needed to see it.
+    CONSEQUENCE FOR THE GAME: a rope modelled as a linear spring from the published low-load figure stretches 2.4x too far in polyester and will look slack under a load it should hold taut.
+    THE SEAM, no longer refused: a rope does not fail in its middle, it fails where it was TERMINATED. Splice retains 90% +- 5, knot 50% +- 10 (Cordage Institute).
+    AND THE SAFETY FACTOR IS NOT A PROPERTY OF THE ROPE. WLL is BS/5, so the published factor of 5 is really 4.5 on a spliced rope and 2.5 on a knotted one -- a knot spends HALF the safety margin the rating was sold with, and it spends it at the one place the rope is guaranteed to break. That is derived from two published fractions and the rating's own definition; nothing here was chosen.
+
+  SUSPENSION     PASS
+    claims     F = kx + cv, and NEITHER k NOR c is ingested: both are DERIVED from the published dynamic targets a suspension is designed to hit -- ride frequency and damping ratio -- against the published quarter-car sprung mass. The step response then has a closed form, and the widely-used default spring/damper pair becomes an INDEPENDENT check that lands outside the comfort band it is usually quoted for
+    measured   DERIVED, not ingested: m 250 kg (published quarter-car sprung mass), ride 1.10 Hz (comfort band 1.0-1.2) -> k = m*(2*pi*f)^2 = 11942.2 N/m; zeta 0.30 (published 0.2-0.4) -> c = 2*zeta*sqrt(km) = 1036.7 N*s/m
+    step 2452 N (one g on the sprung mass): overshoot predicted 37.23%, measured 37.24% (0.023% off); 2% settling predicted 1.6248 s, measured 1.6250 s (0.012% off); peak predicted 0.4765 s, measured 0.4764 s
+    the textbook envelope estimate 4/(zeta*w_n) would say 1.9292 s -- +18.7%, because a response only TOUCHES its envelope at the extrema. The shortcut is reported beside the solved value rather than hidden in a tolerance.
+    THE INDEPENDENT CHECK DISAGREES, INFORMATIVELY: the widely-quoted default pair k 20000 N/m, c 545.5 N*s/m on the SAME 250 kg implies f_n 1.424 Hz and zeta 0.122. The frequency lands in the published SPORT band (1.2-1.5), not comfort; the damping falls BELOW the whole passenger-car range. That pair is a sport spring with an under-damped shock, and citing it as a comfort car is the right quantity at the wrong interface.
+    THE SLIDER IS REAL: k and c are functions of the ride frequency and the damping ratio, so moving either moves every number above. An ingested pair would have sat still while the world changed around it.
+
+  BUILDING_RC    PASS
+    claims     concrete and steel bonded together are ONE material with two stiffnesses: at any fibre they share a strain, so they split the load by E*A and 3% of the area carries 19% of it. And ACI's balanced-ratio formula, which looks like an empirical curve with a bare 600 MPa in it, is a similar-triangles argument in disguise -- the 600 is E_s * eps_cu, and the derivation closes
+    measured   ACI 318: E_c = 4700*sqrt(30 MPa) = 25.74 GPa, rho_b = 0.85*0.8357*(30/420)*600/(600+420) = 2.985%
+    modular ratio n = E_s/E_c = 7.769; a 900 cm^2 column, 3 m, 500 kN, steel 2.98% of the area
+    THE SOLVER SPLITS THE LOAD, not this test: two bodies on two joints tied by one equality constraint, load applied to the CONCRETE alone.
+    predicted steel share n*rho/(1+n*rho) = 18.824%, solver gave 18.824% (0.0000% off); bond slip 4.07e-08 (the constraint holds)
+    extension predicted 525.56 um, got 525.56 um (0.0000%)
+    SO 3.0% OF THE AREA CARRIES 18.8% OF THE LOAD -- a 6.3x amplification, and it is nothing but E_s/E_c. That is what reinforcement IS.
+    THE CODE CONSTANT IS DERIVED: ACI's bare 600 MPa is E_s*eps_cu = 200 GPa * 0.003 = 600 MPa, and eps_cu/(eps_cu+eps_y) = 0.58823529 against 600/(600+f_y) = 0.58823529 -- identical. The balanced ratio is a similar-triangles argument hidden inside a number.
+    AND IT PREDICTS THE FAILURE MODE, which is why the code cares: below rho_b the steel yields first and the beam sags visibly before it goes; above it the concrete crushes with no warning. ACI caps rho at 0.75*rho_b = 2.24%, and that cap is a CONSEQUENCE of the line above rather than a separate rule.
+    HONEST LIMIT: every constant here is from a design CODE, not a lab. A lab number can be wrong about the world; a code number can only be wrong about the code. What makes it testable is that ACI's constants are over-determined and predict each other.
+
+  PLANT_SELFBUCKLING PASS
+    claims     a blade must hold up its OWN WEIGHT, which is a different question from how it answers a push -- port 13 measured the response, this measures the STABILITY. Greenhill's self-buckling length L_crit = (7.8373*EI/(rho*g*A))^(1/3) says how tall a column of this tissue can stand before its own mass folds it, and the published blade length should sit just under it
+    measured   E 554 MPa (Vincent 1982), I 5.208e-15 m^4, A 1e-06 m^2, rho 1000 kg/m^3 (water -- fresh tissue)
+    Greenhill L_crit = (7.8373*EI/(rho*g*A))^(1/3): 13.21 cm at g 9.807, 13.21 cm at EARTH's 9.807
+    ENGINE, the crossing: at 0.70*L_crit the tip drifted 97.104 -> 55.193 um (RETURNS); at 1.40*L_crit 194.209 -> 14929.070 um (FALLS AWAY)
+    THE PREDICTION IT WAS NOT FITTED TO: Kew publishes this species' blade at 12 cm (range 4-20). Earth L_crit is 13.21 cm, so the blade sits 9.2% UNDER its own buckling limit. Vincent measured a modulus in 1982 and Kew described a plant; neither was computing this, and they meet inside 10%.
+    AND THE PUBLISHED RANGE BRACKETS IT: 4 cm blades are far inside the limit, 20 cm blades are PAST 13.2 cm and cannot stand -- which is what long grass does. On THIS world's lower gravity the same tissue stands 0.00 cm taller.
+    REFUSED: turgor. The Plant row names cell-wall turgor P = k(V-V0) and it is not ported. Vincent's modulus was measured on LIVING leaf, so it already contains whatever turgor contributes; separating them needs a wilted modulus on the same tissue and no such pair is published. A port claiming to isolate turgor from this data would be inventing the split.
+
+====================================================================================================
+  11/19 ports validated, 2 REFUSED as absent structure.
+  A port that has not been tested alone cannot be ruled out when a composition built on it fails.
+====================================================================================================
+  7 PRIMITIVES over 12 of 12 validated ports
+====================================================================================================
+
+  STIFFNESS          ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  END_STOP           ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  WEIGHT_TRANSFER    ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  DAMPING            ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  LOAD_RELIEF        ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  UPRIGHT            ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  RHYTHM_DRIVE       ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+====================================================================================================
+  0/7 primitives validated. A primitive whose ABLATION also passes proved nothing:
+  it would mean the ports compose to something one of them already did alone.
+====================================================================================================
+  14 ACTION PRIMITIVES -- one thing the body DOES, as a program over validated ports
+  Every PREDICTION below was declared at REGISTRATION, which is before any of them ran.
+====================================================================================================
+
+  RHYTHM_DRIVE ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  UPRIGHT    ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  STANCE     ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  SWING      ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  BALANCE    ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  LIFT       ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  PUSH       ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  PULL       ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  GRIP       ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  THROW      ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  LAND       ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  STEP       ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  TURN       ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+  CROUCH     ERROR  ValueError: ParseXML: Error opening file 'E:\ChimeraWork\slot-02\external\myo_sim\body\myobody.xml'
+
+====================================================================================================
+  0/14 action primitives validated, 0 REFUSED as absent structure.
+  A refusal is not a failure of the body -- it is a gap that is COUNTED rather than forgotten.
+
+---
+BASE COMPARISON (verification): identical results at the branch base 8d72c4f3
+(temp worktree .tmp/basecheck, removed): 11/19 ports, 0/7 primitives, 0/14
+actions. The refusals are absent grown-state data (the grown-state record (theGround numbers)
+— "run python Chimera/core/grow.py"), an environment state this documentation
+lane does not produce; they are NOT introduced by this task's diff, which
+touches only ChimeraEngine/engine/{engine.cpp,ui.cpp,ui.hpp} and docs/.
+FLEET SUITE: tools/agent_fleet test_*.py — exit 0 (all pass); suite_fleet.txt.

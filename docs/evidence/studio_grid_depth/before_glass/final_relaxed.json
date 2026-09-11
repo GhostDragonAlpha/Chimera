@@ -1,0 +1,44 @@
+{
+ "label": "final_relaxed",
+ "png_sha256": "3e0ed3d94c25a183944065a35308d3e345dbc9afc320b6c4220d3cd3d6a1eb5a",
+ "png_bytes": 14748233,
+ "utc": "20260911T160910.918037Z",
+ "status": {
+  "ok": true,
+  "active": true,
+  "iteration": 126,
+  "accepted": 126,
+  "trials": 126,
+  "energy": 2.59807611,
+  "energy_initial": 2.625,
+  "terminal_state": "stagnated",
+  "centre": [
+   0,
+   0,
+   1.90596523e-07
+  ],
+  "centre_force": [
+   0,
+   -1.49011612e-08,
+   -6.60245689e-07
+  ],
+  "accepted_state_id": 16501489447187382864,
+  "render_state_id": 0,
+  "last_control": "accepted",
+  "material_snapshot": {
+   "gamma_admitted_f64": 1,
+   "gamma_admitted_f64_hex": "see_admission_input",
+   "gamma_uploaded_f32": 1,
+   "gamma_uploaded_f32_hex": "see_float32_input",
+   "unit": "J/m^2",
+   "wu_to_m": 1.0
+  }
+ },
+ "camera": {
+  "radius": 3.0,
+  "theta": 0.0,
+  "phi": 0.35,
+  "fixed_demo_camera": true,
+  "profile_view": false
+ }
+}

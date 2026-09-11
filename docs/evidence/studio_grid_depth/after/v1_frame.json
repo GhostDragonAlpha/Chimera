@@ -1,0 +1,24 @@
+{
+ "endpoint": "/frame",
+ "http": 200,
+ "png_sha256": "fe0983583b2bcee9d0fda8e4bf620b71a5d4277203f18610fc93264ce04ecdcc",
+ "png_bytes": 14748233,
+ "utc": "2026-09-11T16:06:09Z",
+ "view": "V1 membrane reset (fixture geometry)",
+ "attempt": 1,
+ "camera": {
+  "cam_radius": 3.0,
+  "cam_theta": 0.0,
+  "cam_phi": 0.35
+ },
+ "cam_echo": [
+  3.0,
+  0.0,
+  0.35,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ]
+}
