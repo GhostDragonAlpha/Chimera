@@ -1,0 +1,134 @@
+CHIMERA FLEET - INSTANCE-PLANE LIVE SMOKE - PREREGISTRATION
+============================================================
+task: instance-plane-live-smoke-01 (generation 1, slot 13)
+worker: subagent-worker-05 (client instance subagent-worker-05-f317492bfc32,
+       first instance-fenced fleet worker; this lane is its second task)
+deployment under test: E:\ChimeraWork\control\deployments\slot-expansion-e1e0ab98
+                       (MANIFEST source revision e1e0ab98, lineage PR #55/#56/#61/#63)
+scope: docs/evidence/agent_fleet/INSTANCE_LIVE_SMOKE (*.txt only)
+base: 4c31999797a9383ea252019be1f32511709fa280 (merge of PR #63 fleet-slot-expansion-03)
+branch: astra/tasks/instance-plane-live-smoke-01
+
+PREREG-OF-RECORD ORDERING (declared before any outcome text exists in this lane)
+--------------------------------------------------------------------------------
+The STATEMENT/PREDICTION/FALSIFIER triplet below was registered in the task
+packets by the lead at controller create_task events seq 736
+(instance-plane-live-smoke-01) and seq 737 (instance-smoke-scratch), BEFORE the
+run. This document-level prereg is necessarily written after the controller-side
+run because the registry's write-scope contract refuses concurrent activation of
+overlapping scopes (docs/evidence/agent_fleet/INSTANCE_LIVE_SMOKE contains the
+scratch scope .../SCRATCH), so the scratch lifecycle had to reach ABANDONED
+before this task could claim and this branch could exist. The packet at seq
+736/737 is therefore the prereg of record for the run; this file preregisters
+the DOCUMENT (what the evidence must contain, which payloads were requested,
+what counts as a hit) and carries no outcome data: no event sequence numbers of
+the run, no refusal bodies, no states. All outcomes live in RESULT.txt.
+
+STATEMENT (packet, instance-plane-live-smoke-01)
+------------------------------------------------
+"The deployed planes behave per their reviewed contracts in production
+(auto-spawn included - your claim will land on an auto-spawned slot)."
+
+PREDICTIONS (packet)
+--------------------
+P1  The instance claim event carries the scratch instance id.
+P2  A header-less checkpoint on the bound task refuses instance_not_bound.
+P3  The run completes claim -> checkpoint -> review-handoff with zero
+    legacy-unfenced events for the scratch agent.
+P4  Every step recorded with event seq numbers.
+
+FALSIFIERS (packet)
+-------------------
+FL1  Any unfenced mutation by the twin.
+FL2  Auto-spawn failing.
+FL3  Events missing instance ids.
+FL4  The scratch task left active after the smoke.
+
+METHOD (preregistered before outcomes; the twin-probe sequence was approved by
+the lead glm53-lead-02 epoch 5 before execution)
+---------------------------------------------------------------------------
+M1  Enroll a scratch instance agent (id instance-smoke-agent-01) through the
+    instance-protocol launcher enroll_agent.py ONLY: enrollment token passed
+    via env CHIMERA_FLEET_ENROLLMENT_TOKEN set programmatically from the
+    service secrets file, never printed, never echoed; private session file
+    under %TEMP% (0600-equivalent); the launcher mints the per-enrollment
+    client instance and stores only a fingerprint server-side.
+M2  Qualification and supervisor steps are requested by EXACT call payloads in
+    auditable lane feedback (feedback_add, categories PERMISSION/SCOPE/DEFECT)
+    and executed by the lead + supervisor; every execution is verified from
+    controller events before the lane proceeds. The worker cannot qualify and
+    does not hold supervisor credentials.
+M3  Scratch claim of instance-smoke-scratch from the scratch session; the slot
+    identity (free-slot vs spawned) is recorded as observed.
+M4  Fenced checkpoint from the scratch session: the deployment client sends the
+    X-Chimera-Instance header automatically from the private session file.
+M5  Fence probes, in this order:
+    a. Inert probe FIRST: a header-less resource_queue call on the bound task
+       (read-only; passes through the same _task instance check; cannot mutate
+       task state even on success). This classifies the fence harmlessly.
+    b. Only if the inert probe SUCCEEDS, run ONE header-less twin checkpoint
+       with content IDENTICAL to the fenced checkpoint (bounded mutation:
+       identical payload), then immediately re-assert the fenced checkpoint so
+       the audit trail ends instance-stamped. The twin's acceptance is the
+       FL1 evidence; its event is expected to be audited legacy-unfenced.
+M6  Scratch submit_review (head = the task base commit; no deliverable exists
+    by packet; the SCRATCH scope is never written). Retire plane by exact
+    payloads: release_review_slot -> review_requeue -> task_abandon. The
+    requeue is the registry-legal bridge because task_abandon requires READY
+    while release_review_slot leaves REVIEW; the slotless requeue path applies
+    after the release (task.slot null, handoff receipt appended).
+M7  Worker-05 claims instance-plane-live-smoke-01; lead provisions the slot;
+    the worktree is verified against the registry record with the deployer's
+    own tool (provision_slot.py verify): branch, HEAD, clean status. Evidence
+    lands in this lane (*.txt only); push no-force; PR base astra/gait-capture;
+    submit_review at the exact pushed HEAD.
+
+PRE-REGISTERED SUPERVISOR PAYLOADS (exact JSON as submitted in lane feedback;
+execution and any refusal are recorded in RESULT.txt)
+---------------------------------------------------------------------------
+R1 qualify (worker-05 needs the task-required 'fleet' capability):
+{"operation":"qualify","arguments":{"agent":"subagent-worker-05","capabilities":["cpu","docs","evidence","fleet","git","python"],"max_tasks":2,"can_lead":false,"rank":0,"evidence":"instance-plane-live-smoke-01 worker request 2026-09-11: adds the task-required 'fleet' capability to the existing set; grants no new authority beyond the instance/retire/spawn planes this task exercises; all other caps unchanged."}}
+
+R2 slot_retire x3 (arm the auto-spawn plane: while any free worker slot exists
+   the claim contract takes a free slot and the spawn branch correctly never
+   fires; also exercises the retire plane on task-free, never-provisioned slots):
+{"operation":"slot_retire","arguments":{"slot":"9","evidence":"...spare worker slot retired so the scratch claim exercises the live auto-spawn plane; slot task-free and never provisioned."}}
+{"operation":"slot_retire","arguments":{"slot":"10","evidence":"...same..."}}
+{"operation":"slot_retire","arguments":{"slot":"11","evidence":"...same..."}}
+
+R3 qualify (scratch agent; exact payload in lane feedback d09fb0597236e38e4a0dcba3):
+{"operation":"qualify","arguments":{"agent":"instance-smoke-agent-01","capabilities":["cpu"],"max_tasks":1,"can_lead":false,"rank":0,"evidence":"...scratch agent enrolled through the instance-protocol launcher; bounded to the single scratch task instance-smoke-scratch with capabilities cpu only; no GPU/engine/lead authority; lifecycle ends at task_abandon."}}
+
+R4 unblock slot_spawn (contingent, only if the claim refuses for lack of free slots):
+{"operation":"slot_spawn","arguments":{"kind":"worker"}}
+
+R5 retire plane for the scratch task (exact payloads in lane feedback
+   9e4e5bc1df6ff84b0bd61c28): release_review_slot (head == pushed_head ==
+   pr_head == the task base commit; attestation fields declaring: no PR - the
+   scratch has no deliverable; controller events are the remote record; no
+   files written; scratch agent idle after submit_review; no resources; slot
+   released unprovisioned) -> review_requeue (task, head, evidence) ->
+   task_abandon (reason "smoke_retired").
+
+FALSIFIER MAPPING (what counts as a hit; fixed before outcomes were read)
+---------------------------------------------------------------------------
+FL2 hit: the scratch claim returns any refusal (any name) at a moment when zero
+    free worker-kind slots exist - the base contract says spawn, not refuse.
+FL1 hit: the inert probe or the twin checkpoint returns 2xx on the bound task.
+FL3 hit: any scratch-agent event lacking its instance id, EXCLUDING the events
+    of the preregistered twin probes (M5), whose legacy-unfenced audit is the
+    predicted and desired evidence.
+FL4 hit: final scratch state anything other than ABANDONED.
+
+EVIDENCE CONTRACT
+-----------------
+- RESULT.txt carries: the chronological run record with event seq numbers, the
+  verbatim refusal/acceptance bodies, no-mutation proofs (revision invariance),
+  the prediction-to-observation mapping, the falsifier verdicts, supervisor
+  step execution receipts, final states, and a fix-options draft for the
+  findings (the fix itself is NOT this lane's scope).
+- No tokens, secrets or session-file contents appear anywhere; instance IDs and
+  event records are public registry data.
+- Files in this lane: PREREG.txt (this file) and RESULT.txt, both *.txt.
+
+Agent: subagent-worker-05
