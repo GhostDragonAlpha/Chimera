@@ -1,0 +1,99 @@
+PREREGISTRATION - fleet-catalogue-realization-matching-01 (gen 1)
+==================================================================
+
+- Agent: subagent-worker-04. Slot 3, worktree E:\ChimeraWork\slot-03,
+  branch astra/tasks/fleet-catalogue-realization-matching-01, claimed at
+  base e004c33228b6f28516715e21914f66e632a2702b and reconciled to the
+  claim-time origin tip d8e3b5f54ce95e0f9690a73c381bc5ef20d76f8b (the PR
+  #80 merge - this lane's own predecessor fix, fast-forward, zero local
+  commits existed; verified clean before any work). Scopes:
+  tools/agent_fleet/control.py + tools/agent_fleet/test_catalogue_realization.py.
+  Evidence home (repo convention, per lead): this directory.
+- Fixes the production gap MEASURED by holodeck-gov-06 (PR #84, in
+  review; finding retained in its checks/r7_intended_vs_deployed.txt):
+  the deployed catalogue_next (control.py:816-825 at that base) matches
+  card ids to live/done task ids by raw casefold equality, which never
+  binds card GOV-0X to realized task holodeck-gov-0X - the realized root
+  is perpetually re-proposed and every dependent permanently blocked.
+- SOURCE-ONLY development; DYAD: NOT_APPLICABLE (no executed visible
+  behavior; controller-source change verified by the local suites).
+- This commit carries the prereg + the instrument only. No fix, no
+  actuals.
+
+## STATEMENT (from the packet, sharpened)
+
+Matching realized cards to tasks via the task provenance field
+realized_from (a task CITES the card it realizes) instead of id-string
+matching restores the intended frontier semantics WITHOUT loosening any
+gate: a card counts as realized iff a task citing it (realized_from ==
+card id, case-insensitive) exists in a realized-or-active state
+(anything but ABANDONED); an ABANDONED attempt re-proposes the card and
+satisfies no dependency; the ORIGINAL id-string matching remains in
+force as the fallback for every task created without realized_from, so
+old-era resolutions are unchanged byte for byte.
+
+## PREDICTIONS (unmeasured in this task until the runs below)
+
+P1. After the fix, the retained gov-06 fixtures resolve exactly per the
+    preregistered intended model (gov06_reference_model.py outputs,
+    retained verbatim in holodeck-gov-06 checks/r3_r4_frontier.txt -
+    PR #84 not yet merged at this base, so the oracle EXPECTATIONS are
+    embedded as constants sourced from that file; PR #84 remains the
+    provenance):
+    S1 holodeck-gov-01 INTEGRATED(realized GOV-01) ->
+       ['GOV-02','GOV-03','GOV-04','GOV-05','GOV-06','MATH-01'];
+    S2 + holodeck-gov-02..05 live + holodeck-gov-06 RUNNING ->
+       ['MATH-01'];
+    S3 holodeck-gov-01 ABANDONED -> ['GOV-01'] (card re-proposed,
+       dependents blocked).
+P2. Old-era fallback is byte-identical: the same card graph with
+    realization tasks that carry NO realized_from resolves exactly as
+    the unfixed code resolves it (S1-old: ['GOV-01']; the root card is
+    offered and dependents blocked - asserted UNCHANGED, not "fixed").
+    Zero-realized_from registries produce outputs identical to the
+    pre-fix code on every fixture.
+P3. create_task carries an optional realized_from provenance string
+    (validated non-empty string or absent; stored on the task; visible
+    in snapshot; migrated to None for pre-existing tasks like
+    owner_instance at control.py:323).
+P4. Gates are NOT loosened: catalogue_import refusals unchanged
+    (stale/duplicate/invalid/lead - covered by test_master_catalogue
+    23/23 staying green); catalogue_next stays a pure read; a card
+    lacking PROPOSED status is still never offered; unknown digest still
+    refuses; and an ABANDONED realization satisfies no dependency.
+P5. test_catalogue_realization.py is green at the fixed head AND fails
+    before the fix (fail-pre-fix proof retained verbatim: the provenance
+    scenarios fail with the old id-only matching). test_master_catalogue
+    23/23 unchanged; the full local agent_fleet suite green at the fixed
+    head modulo the two known environmental flakes (scale-probe
+    zero-lock-errors under fleet load; capture occlusion) - recorded
+    verbatim with isolation reruns if they fire.
+
+## FALSIFIERS (named before the run)
+
+F-1. Any scenario disagrees with the intended model
+     (gov06_reference_model.py) - statement false.
+F-2. Any old-resolution regression (a no-realized_from registry changing
+     behavior vs the pre-fix code) - statement false.
+F-3. Any gate loosened or any test weakened (incl. test_master_catalogue
+     drifting from 23/23) - task void.
+F-4. Any edit outside the two scoped files plus this evidence directory.
+
+## METHOD
+
+1. Prereg + instrument commit (this file +
+   tools/agent_fleet/test_catalogue_realization.py with the retained
+   oracle constants and the fail-pre-fix assertions) precedes the fix.
+2. Fail-pre-fix run of the new module at the unfixed base, retained
+   verbatim (PRE_FIX_FAILURES.txt here).
+3. Fix control.py: catalogue_next computes live_cards/done_cards
+   provenance sets (tasks citing a card via realized_from, split by
+   realized-or-active vs INTEGRATED); a card is excluded when its id
+   matches by id OR provenance; a dependency is satisfied by id OR
+   provenance; create_task carries optional realized_from; migration
+   setdefault for old registries.
+4. Rerun the new module, test_master_catalogue, then the full local
+   agent_fleet suite; retain verbatim outputs (RUN_*.txt here) and
+   RESULT.txt with the scoreboard and any disclosures.
+
+Agent: subagent-worker-04
