@@ -28,3 +28,10 @@ stopped pid 76708 (transition recorded: test teardown controlled transition)
 stopped pid 78512 (transition recorded: test teardown controlled transition)
 SCALE_PROBE_MIXED {"threads": 8, "duration_s": 20.3, "ops": 868, "p50_ms": 20.8, "p95_ms": 362.5, "p99_ms": 4765.4, "max_ms": 11962.2, "lock_errors": 0, "other_refusals": 56, "spawn_cost_ms": 7.9}
 SCALE_PROBE_SATURATED {"ops": 465, "lock_or_err": 0, "p50_ms": 11.3, "p95_ms": 120.2, "max_ms": 5362.4}
+
+---
+RERUN (isolation): test_verify_hwnd_capture_none_pin_adopts_measured_size —
+OK (0.297s). The single failure in the batch run was capture-environment
+transient occlusion of the fixture window on the shared desktop (the test
+creates a real fixture window and PrintWindow-captures it); this lane changed
+no code under tools/agent_fleet — the diff is docs/evidence-only.
