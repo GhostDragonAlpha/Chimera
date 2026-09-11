@@ -1,0 +1,21 @@
+R8 KNOWN-REGRESSION DELTA (recorded finding, NOT adopted as the model truth) — the live claim path is served by the review-handoff interceptor whose claim bind omits owner_instance; fix in flight as PR #80 (in review at capture time).
+
+measured owner_instance occurrences: review_handoff.py = 0 (preregistered prediction: 0); control.py = 8 (prereg-time count 8; exact measured count reported)
+R8-a interceptor claim path free of owner_instance: HOLDS
+interceptor claim bind site (review_handoff.py:90):
+    90:         task.update(owner=actor, slot=number, state="RUNNING",
+    91:                     generation=task["generation"] + 1)
+R8-b interceptor bind omits owner_instance: HOLDS
+intended bind site (control.py:554):
+    552:             n,slot=available[0];slot['task']=t['id']
+    553:             t.update(owner=actor,slot=n,state='RUNNING',generation=t['generation']+1,
+    554:                      owner_instance=p.get('_resolved_instance'))
+intended CAS gate (control.py:121):
+    121:         owner_instance=t.get('owner_instance')
+    122:         if owner_instance is not None:
+    123:             require(instance==owner_instance,'instance_not_bound')
+
+CONSEQUENCE (measured, static): for interceptor-claimed tasks owner_instance stays None, so the _task instance check (control.py:121-123) is skipped — the INTENDED per-instance fencing is inert on the live claim path while instance_fencing=='compat'. The reference model models the INTENDED binding (claim carries owner_instance); the deviation is recorded here, matching the coordinator's known-regression note.
+all owner_instance sites in control.py: 121, 122, 123, 323, 499, 501, 554, 697
+
+R8 verdict: HOLDS (2/2 preregistered assertions)

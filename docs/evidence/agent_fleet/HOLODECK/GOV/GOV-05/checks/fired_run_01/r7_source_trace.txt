@@ -1,0 +1,126 @@
+R7 DEPLOYED-SOURCE TRACE at base 62b8e357 (source-only; the live
+service was never contacted) — threshold 8/8 semantics present
+with quoted lines. Line numbers below are MEASURED at this base;
+where PREREG cited approximate numbers, the actuals are recorded
+here and noted in RESULT.md.
+
+(1) recover gates (not_recovery_hold + resources_still_held + READY ownerless at generation+1, provision preserved, slot freed) at control.py:629 -> PRESENT
+    629:         if op=='recover':
+    630:             require(actor=='SUPERVISOR','preservation_observer_required')
+    631:             t=s['tasks'].get(p.get('task'));require(t and t['state']=='RECOVERY_HOLD','not_recovery_hold')
+    632:             require(not any(r['task']==t['id'] for r in s['resources'].values()),'resources_still_held')
+    633:             for q in s['resource_queues']:
+    634:                 if q['task']==t['id'] and not q['served']:
+    635:                     q['served']=True;q['dropped_reason']='recovered_generation'
+    636:             t['checkpoint']=text(p.get('evidence'),'preserved_and_writer_stopped_evidence')
+    637:             # A recovered generation can never leave its old provision active:
+    638:             # the record is preserved and the binding cleared so the slot
+    639:             # cannot hand source authority to the next claimant.
+    640:             self._preserve_provision(s,s['slots'][t['slot']],'recovered_task_generation',t['checkpoint'])
+    641:             s['slots'][t['slot']]['task']=None
+    642:             t.update(state='READY',owner=None,slot=None,generation=t['generation']+1)
+    643:             self._promote_queues(s)
+    644:             return {'state':'READY','old_workspace':'must remain preserved until lead explicitly provisions replacement'}
+    645:         if op=='task_abandon':
+    646:             # fleet-task-abandon-01 (2026-09-11): retire a stale READY task.
+
+(2) _fail: owned RUNNING/BLOCKED/REVIEW -> RECOVERY_HOLD with generation+1 at control.py:134 -> PRESENT
+    134:     def _fail(self,s,aid,reason,evidence):
+    135:         require(aid in s['agents'] and s['agents'][aid]['alive'],'not_live_agent')
+    136:         text(evidence,'failure_evidence')
+    137:         s['agents'][aid]['alive']=False
+    138:         for t in s['tasks'].values():
+    139:             if t['owner']==aid and t['state'] in ('RUNNING','BLOCKED','REVIEW'):
+    140:                 t['state']='RECOVERY_HOLD';t['generation']+=1
+    141:         for q in s['resource_queues']:
+    142:             if q['owner']==aid and not q['served']:
+    143:                 q['served']=True;q['dropped_reason']='owner_failed'
+    144:         # Resource ownership is intentionally retained until trusted process-drain evidence.
+    145:         if s['leader']==aid:self._elect(s)
+    146:         return {'leader':s['leader'],'epoch':s['epoch'],'reason':reason}
+    147: 
+    148:     PROVISION_FIELDS=('provision_task','provision_generation','worktree_head',
+    149:                       'provision_base','provision_evidence')
+
+(3) _preserve_provision: bounded preserved_provisions history + active fields cleared at control.py:152 -> PRESENT
+    152:     def _preserve_provision(self,s,slot,reason,evidence):
+    153:         """Retire a slot's ACTIVE provision without deleting its evidence.
+    154: 
+    155:         The full record moves to engine['preserved_provisions'] (bounded; the
+    156:         oldest entries drop first when the cap is exceeded) and the active
+    157:         binding fields clear, so no later task/generation can inherit source
+    158:         authority from an earlier provision. Returns the preserved record, or
+    159:         None when the slot had no active provision.
+    160:         """
+    161:         engine=slot['engine']
+    162:         if not engine.get('provisioned'):
+    163:             return None
+    164:         record={'reason':reason,'evidence':evidence,'cleared_revision':s['revision']+1}
+    165:         for key in self.PROVISION_FIELDS:
+    166:             record[key]=engine.get(key)
+    167:         history=engine.setdefault('preserved_provisions',[])
+    168:         history.append(record)
+    169:         del history[:-self.PRESERVED_PROVISION_LIMIT]
+    170:         engine['provisioned']=False
+    171:         for key in self.PROVISION_FIELDS:
+    172:             engine.pop(key,None)
+    173:         return record
+
+(4) review_requeue: lead+epoch-only, REVIEW->RUNNING at a NEW generation, review void (head cleared) at control.py:722 -> PRESENT
+    722:         if op=='review_requeue':
+    723:             # Stale-base reconciliation WITHOUT force-push: a REVIEW blocked by
+    724:             # a publication refusal (e.g. the base advanced legitimately while
+    725:             # the task ran) returns to RUNNING at a NEW generation. The review
+    726:             # is void (head cleared); the worktree, checkpoint history and
+    727:             # slot ownership are preserved. Lead-only, current epoch.
+    728:             self._lead(s,actor,p.get('epoch'))
+    729:             t=s['tasks'].get(p.get('task'));require(t is not None and t['state']=='REVIEW','not_in_review')
+    730:             t.update(state='RUNNING',head=None,generation=t['generation']+1,
+    731:                      checkpoint=text(p.get('evidence'),'requeue_reconciliation_evidence'))
+    732:             return {'state':'RUNNING','generation':t['generation'],'worktree_preserved':True}
+    733:         if op=='provision_slot':
+    734:             require(actor=='SUPERVISOR','supervisor_only')
+
+(5) integration_request: serialized ONE-request procedure, content-addressed expected_base, epoch+leader bound at control.py:703 -> PRESENT
+    703:         if op=='integration_request':
+    704:             self._lead(s,actor,p.get('epoch'))
+    705:             t=s['tasks'].get(p.get('task'));require(t and t['state']=='REVIEW','not_in_review')
+    706:             require(p.get('head')==t['head'] and p.get('branch')==t['branch'],'head_or_branch_mismatch')
+    707:             rid=secrets.token_hex(12)
+    708:             s['requests'][rid]={'task':t['id'],'head':t['head'],'branch':t['branch'],'base_branch':t['pr_base'],
+    709:                 'expected_base':sha(p.get('expected_base')),'epoch':s['epoch'],'leader':actor,'review':text(p.get('review'),'independent_review'),
+    710:                 'state':'PENDING_EXTERNAL_BROKER'}
+    711:             return {'request':rid,**s['requests'][rid],'publication_executed':False}
+    712:         if op=='ack_integration':
+    713:             require(actor=='SUPERVISOR','trusted_publisher_only')
+
+(6) ack_integration: trusted-publisher-only + stale_integration_epoch + integration_already_acknowledged + review_changed -> INTEGRATED with content-addressed commit at control.py:712 -> PRESENT
+    712:         if op=='ack_integration':
+    713:             require(actor=='SUPERVISOR','trusted_publisher_only')
+    714:             r=s['requests'].get(p.get('request'));require(r is not None,'unknown_integration_request')
+    715:             require(r['epoch']==s['epoch'] and r['leader']==s['leader'],'stale_integration_epoch')
+    716:             require(r['state']=='PENDING_EXTERNAL_BROKER','integration_already_acknowledged')
+    717:             t=s['tasks'][r['task']];require(t['state']=='REVIEW' and t['head']==r['head'],'review_changed')
+    718:             require(p.get('base_branch')=='astra/gait-capture' and p.get('expected_base')==r['expected_base'],'wrong_integration_base')
+    719:             t.update(state='INTEGRATED',integration={'commit':sha(p.get('commit')),'evidence':text(p.get('evidence'),'published_review_evidence')})
+    720:             r['state']='ACKNOWLEDGED'
+    721:             return {'state':'INTEGRATED','slot':'held until cleanup attestation'}
+
+(7) atomic journal(event seq=revision)+state transaction (BEGIN/INSERT/UPDATE/COMMIT/ROLLBACK) and restart identity gates at control.py:308,350,351,356,359,74,75 -> PRESENT
+    308:             con.execute('BEGIN IMMEDIATE')
+    350:                 con.execute('INSERT INTO events VALUES(?,?,?)',(s['revision'],op,json.dumps(event)))
+    351:                 con.execute('UPDATE state SET body=? WHERE id=1',(json.dumps(s),))
+    356:             con.execute('COMMIT')
+    359:             if con.in_transaction:con.execute('ROLLBACK')
+    74:             require(saved['schema']==1 and saved['root']==root,'configuration_mismatch')
+    75:             require(saved['supervisor_hash']==self.supervisor and saved['enrollment_hash']==self.enrollment,'service_identity_mismatch')
+
+(8) publish.py gate chain (never master; content-addressed identity; interrupted-integration reconciliation before refusal; base-rewrite detection; FF-only; post-push re-verification) -> PRESENT
+    tools/agent_fleet/publish.py:64:             'forbidden_branch')
+    tools/agent_fleet/publish.py:73:     require(task_remote == a.head, 'task_head_mismatch_remote',
+    tools/agent_fleet/publish.py:80:         print(json.dumps({'published': True, 'already_integrated': True,
+    tools/agent_fleet/publish.py:94:             'base_rewritten_since_task_fork')
+    tools/agent_fleet/publish.py:101:     require(mb.stdout.strip() == base_remote, 'non_fast_forward_refused',
+    tools/agent_fleet/publish.py:120:     require(verified == a.head, 'verification_failed_after_push',
+
+R7 verdict: HOLDS (8/8)

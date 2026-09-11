@@ -1,0 +1,30 @@
+R6 REPLAY/RESTART RECONSTRUCTION (card prediction: "Replay
+reconstructs accepted task state without overwriting unpublished
+work") — threshold 14/14
+
+Replay re-executes the journal through the public gate chain on a
+fresh registry that restarts from the fixture baseline and shares
+the content-addressed remote; the committed registry is compared
+field by field. The journal itself is the audit of executions and
+is re-recorded at replay time (a replayed publish of an already-
+pushed head records already_integrated, exactly as the deployed
+idempotence requires), so journal-body equality is not a
+task-truth property and is not asserted.
+
+  t1.state: 'RUNNING' == 'RUNNING' -> OK
+  t1.owner: 'bob' == 'bob' -> OK
+  t1.generation: 4 == 4 -> OK
+  t1.slot: '1' == '1' -> OK
+  t1.head: '3dc76076ff54ba4d9cb8fee953524aa9c692145c' == '3dc76076ff54ba4d9cb8fee953524aa9c692145c' -> OK
+  t2.state: 'INTEGRATED' == 'INTEGRATED' -> OK
+  t2.owner: 'bob' == 'bob' -> OK
+  t2.generation: 1 == 1 -> OK
+  t2.slot: '2' == '2' -> OK
+  t2.head: '19b342b24cdfa5efd4bc964ad982e3d4f643432e' == '19b342b24cdfa5efd4bc964ad982e3d4f643432e' -> OK
+  revision: 14 == 14 -> OK
+  pending integration requests: 1 == 1 -> OK
+(13) post-replay stale ack refused: (REFUSED, 'stale_integration_epoch')
+(14) post-replay diverged publish refused: (REFUSED, 'non_fast_forward_refused (base has diverged; rebase instead)'); base still at the accepted head: OK
+  replay push_count witness: 2 (replay never republishes — the deployed already_integrated idempotence)
+
+R6 verdict: HOLDS (14/14)
