@@ -1,0 +1,340 @@
+PREREGISTRATION — holodeck-mat-05 (gen 1)
+
+Agent: subagent-worker-05. Slot 7, worktree E:\ChimeraWork\slot-07, branch
+astra/tasks/holodeck-mat-05, base 4812b55b407107a34b708af1700e071a7eecbab4
+(provision verified before any work: HEAD==base 4812b55b407107a34b708af1700e071a7eecbab4,
+working tree clean, git ls-files 6249 entries).
+Admitted from draft DRAFT-holodeck-mat-05 (PR #67; catalogue card MAT-05,
+digest b9d32319b43a03bbb713f1a4e6120f24065839f15383b0729fb587ba04f9000a,
+content_sha256 e0992c8378867f25458a9e35c921dd9b9434de899c6beff848d7a22f82d09b20,
+source docs/roadmap/holodeck_tasks.json index 28).
+Dependencies INTEGRATED per the controller at claim: holodeck-math-01
+(3889755d, PR #87), holodeck-gov-03 (4812b55b, PR #88), holodeck-mat-01
+(2352fc1b, PR #96 -- merged into astra/gait-capture AFTER this task's base
+4812b55b; its integrated evidence is read from git objects, its PR #96
+result is the newest worked example of the GOV-01/PR #77 pattern, and its
+conclusions are cited, not re-derived).
+
+This commit contains the PREREGISTRATION ONLY. No reference model, no
+controls, no results, no measured counts beyond orientation reads quoted
+as PREDICTIONS below (every number in R1-R6 is a threshold declared before
+any implementation test; the checks re-measure everything independently
+and report deltas).
+
+SOURCE-ONLY LANE: the deployed material plane is studied from source text
+at base (file identities recorded in RESULT.txt). The live service is
+NEVER contacted; no engine process, GPU, or controller resource is used.
+DYAD: NOT_APPLICABLE -- source-only scope produces and alters no executed
+runtime behavior of the deployed system, so there is no visible behavior
+for the eye to judge; reason restated in RESULT.txt per the card's DYAD
+policy ("Reference-only or source-only scope records NOT_APPLICABLE with
+reason").
+
+FROZEN GATES: this lane writes ONLY under
+docs/evidence/agent_fleet/HOLODECK/MAT/MAT-05/ (the task's exclusive
+scope). No deployed file, gate or threshold is modified; the card's
+"preserve existing frozen gates" clause holds by construction and is
+re-asserted in RESULT.txt with the final diff file list.
+
+## RULE 0 MEMBRANE (card fields verbatim + my theory of this lane)
+
+- CARD STATEMENT: Synthetic presets clearly separated from calibrated
+  materials.
+- CARD PREDICTION: Authoring remains in supported domains or gives
+  explicit refusals.
+- CARD FALSIFIER (named BEFORE the run, both for the reference model and
+  the deployed-source hunt): A fictional preset is presented as measured
+  wood, metal or water.
+- CARD MATHEMATICS: admissible domains; nondimensional controls.
+- CARD THRESHOLD POLICY: derive the fixture-specific bound BEFORE
+  implementation tests (done below: the SG admissible domain); preserve
+  existing frozen gates; a catalogue prediction is not a preregistered
+  numeric certificate.
+- MY STATEMENT: the deployed material plane at base already keeps the
+  card's separation as THREE distinct, honestly-labeled stores --
+  (1) the SYNTHETIC PRESET plane: tools/materials.py's composition table
+  (PLUSH_STUFFED/KNIT/ACRYLIC + PART_MATERIAL), key names that say what
+  the stuff IS, values with documented literature sources, consumed by
+  tools/cad_sample.py:172;
+  (2) the DECLARED-SYNTHETIC fixture plane: tools/membrane_window_demo.py
+  admitted_gamma_snapshot ("synthetic": True + synthetic_label "NOT a
+  calibrated physical material", enforced by a check) and
+  tools/gpu_fixtures_recovered/membrane_demo.py ("SYNTHETIC DECLARED
+  interface ... no physical calibration is claimed");
+  (3) the CALIBRATED plane: tools/matter_data.py's researched tables
+  (WOOD/GRASS/BASALT with citations and the Uncited named refusal,
+  provenance-enforced read-through to the library) behind
+  tools/material_contract.py's typed records (provenance
+  researched|parent|derived gate, named refusals, UNSUPPORTED_MODEL
+  authoring gate, declared-basis density_from_sg, dimensionless unit
+  family).
+  A5 (this lane's prediction): an independent MATH-01-backed model of the
+  INTENDED contract -- two separated stores where synthetic authoring is
+  confined to supported domains and every path from a fictional preset to
+  a measured claim is refused by name -- reproduces the card's contract
+  and refuses every falsifier path.
+- MY PREDICTION: every preregistered row below reaches its full N/N, and
+  the derived SG admissible domain (0, 22.59] contains every preset and
+  every researched material the deployed plane actually ships (fixture
+  band [0.25, 1.18]; white oak 0.68).
+- FALSIFIER CONSEQUENCE: if any row misses, the miss is REPORTED with the
+  fired run retained (GOV-05/MAT-01 precedent), never patched around; a
+  fired card falsifier in the DEPLOYED hunt (any site presenting a
+  fictional/synthetic value as measured wood, metal or water) is a
+  FINDING recorded in RESULT.txt -- deployed findings are never edited
+  and never adopted as the model's truth.
+
+## DERIVED BOUND (card threshold policy: derive the fixture-specific bound
+   before implementation tests)
+
+The card's nondimensional control for this domain is SPECIFIC GRAVITY
+(SG): density = SG x rho_basis, rho_basis = 1000 kg/m^3 (water, 4 C --
+the declared basis; SG is Dimension.DIMENSIONLESS in MATH-01's algebra,
+so the composition SG x basis carries dimension (L^-3 M) exactly).
+Admissible SG domain DERIVED, not tuned:
+  - lower: SG > 0 strictly. A nonpositive SG means a nonpositive density,
+    which the calibrated plane's own physics gate refuses
+    (material_contract.py PHYSICALLY_INVALID: negative density).
+  - upper: SG <= 22.59. Osmium 22.59 g/cm^3 (SG 22.59 against water) is
+    the densest naturally occurring elemental solid at standard
+    conditions -- an absolute physical ceiling for any real-material
+    claim; a preset claiming more presents fiction as physics.
+  - fixture band (what the deployed plane actually ships, measured from
+    its constants, NOT a gate): plush_stuffed 250 kg/m^3 -> SG 0.25,
+    knit 300 -> 0.30, acrylic 1180 -> 1.18; Wood Handbook white oak
+    SG 0.68 (matter_data.py:172). All inside (0, 22.59].
+A preset authored with SG outside (0, 22.59] is refused by name before
+any arithmetic. The bound is fixed NOW; it is never widened after a run
+(AGENTS.md: do not widen failed tolerances).
+
+## UNITS BACKBONE (MATH-01 citation duty)
+
+The reference model imports MATH-01's integrated typed-quantity algebra
+(docs/evidence/agent_fleet/HOLODECK/MATH/MATH-01/reference/
+math01_reference_model.py: exact (L,M,T) Dimension vectors, Quantity with
+named dimension_mismatch refusals, UnitRegistry declared-only
+conversions, DIMENSIONLESS = (0,0,0)). Independence is claimed from the
+AUDITED deployed code (tools/materials.py, tools/material_contract.py,
+tools/matter_data.py), NOT from the MATH-01 backbone -- the task packet
+designates MATH-01 the units backbone of this lane. Where authoring
+touches dimensional analysis (SG dimensionlessness, SG x basis ->
+density composition, cross-dimension refusal), the model defers to
+MATH-01's algebra and cites it; the model adds the SEPARATION + AUTHORING
+layer (preset plane vs calibrated plane, domain-confined authoring,
+measured-claim refusals) that MATH-01 and MAT-01 deliberately do not
+carry (MAT-01 built the raw->admitted record door; this lane builds the
+synthetic/calibrated partition those records live behind).
+
+## REFERENCE MODEL CONTRACT (fixed before implementation)
+
+stdlib-only (+ the MATH-01 import), <300 lines, at
+reference/mat05_reference_model.py:
+
+- TWO separated stores, two classes, no shared mutable state:
+  PresetStore (synthetic) and CalibratedStore (calibrated). Every
+  PresetRecord is frozen and carries synthetic=True, a nonblank
+  synthetic_label naming the fiction, provenance=SYNTHETIC, and its
+  declared domain. Every CalibratedRecord is frozen and carries
+  provenance in {researched, parent, derived}, a nonblank source locator
+  and nonblank conditions (MAT-01's admission semantics, restated here
+  as the other side of the partition).
+- SUPPORTED AUTHORING DOMAINS (closed, declared set for the synthetic
+  plane): {plush_stuffed, knit, acrylic} -- the domains the deployed
+  preset plane actually serves. author_preset(domain=...) outside the
+  set -> refusal unsupported_domain (explicit, named, listing the
+  supported set -- the matter_data.py Uncited pattern).
+- author_preset(...) gate order: nonblank label (missing_label) ->
+  finite value (nonfinite) -> supported domain (unsupported_domain) ->
+  SG in (0, 22.59] when an SG control is authored (sg_out_of_domain) ->
+  fraction controls in [0, 1) (fraction_out_of_domain). Success returns
+  a frozen PresetRecord in the preset store ONLY.
+- admit_calibrated(...): the calibrated door. Refuses blank
+  source/conditions (missing_basis), nonfinite (nonfinite), provenance
+  outside {researched, parent, derived} -- and a record whose provenance
+  says researched/parent/derived while its declared kind is SYNTHETIC
+  (fictional_claim: presenting fiction as measured). Success returns a
+  frozen CalibratedRecord in the calibrated store ONLY.
+- THE SEPARATION DOOR (the card statement's surface):
+  calibrated_get(name, prop) serves ONLY from the calibrated store; a
+  name that exists only in the preset store -> refusal
+  synthetic_not_calibrated. preset_get serves only the preset store and
+  always returns the record with its synthetic label intact.
+- present_as_measured(preset_record, ...) -- the FALSIFIER API: every
+  path from a fictional preset to a measured claim is refused by name:
+  provenance mutation on a frozen record raises; label overwrite raises;
+  serving through the calibrated door refuses; admitting the same values
+  as researched with a fabricated source refuses fictional_claim; a
+  foreign/dict impostor into either store is refused at the serve-time
+  boundary type check.
+- sg_to_density(sg, basis_kg_m3): the nondimensional control's real
+  caller. Accepts only a domain-checked SG and a positive finite basis;
+  returns a MATH-01 Quantity(value = sg*basis, Dimension (L^-3 M)) --
+  composition deferred to MATH-01's exact algebra (cited, not
+  reimplemented). Domain violations refuse before arithmetic.
+
+## PREREGISTERED NUMBERS / THRESHOLDS (stated before ANY implementation test)
+
+Verdict rule: each row must reach its full N/N; any miss = that row's
+falsifier fired and is REPORTED with the fired run retained. Post-state
+assertions accompany every refusal (nothing added to either store, no
+calculation executed).
+
+- R1 positive controls (model must ACCEPT): N=7/7 --
+  (a) author synthetic preset domain plush_stuffed, SG control 0.25 ->
+      frozen record, synthetic=True, nonblank synthetic_label;
+  (b) author preset domain acrylic with density 1180 kg/m^3 -> admitted
+      to the PRESET store (calibrated store still empty);
+  (c) admit calibrated researched density (white oak 680 kg/m^3, source
+      "USDA FPL GTR-190 T5-3b via SG 0.68", conditions "12% MC") ->
+      admitted to the CALIBRATED store;
+  (d) sg_to_density(0.68, 1000) -> Quantity 680 with Dimension (L^-3 M),
+      exact through MATH-01's algebra;
+  (e) SG 0.25/0.30/1.18 (fixture band) all inside the derived domain
+      (0, 22.59] -- three admissions;
+  (f) calibrated snapshot is an immutable mapping with identical
+      content, and the preset snapshot is a SEPARATE mapping with no
+      shared keys;
+  (g) preset_get returns the record with synthetic=True and the label
+      intact (the synthetic door preserves the fiction marking).
+- R2 card-prediction negatives -- authoring refusals (model must REFUSE,
+  reason verbatim): N=8/8 --
+  (a) author_preset(domain="unobtanium") -> unsupported_domain;
+  (b) author_preset(domain="wood", ...) -> unsupported_domain (wood is
+      NOT a supported SYNTHETIC domain: measured wood lives on the
+      calibrated plane only);
+  (c) author_preset(domain="metal", ...) -> unsupported_domain;
+  (d) author_preset(domain="water", ...) -> unsupported_domain;
+  (e) SG control NaN -> nonfinite;
+  (f) SG control 0 -> sg_out_of_domain;
+  (g) SG control 30 (> 22.59 osmium ceiling) -> sg_out_of_domain;
+  (h) admit_calibrated with blank source -> missing_basis.
+  Post-state in every case: preset store AND calibrated store unchanged;
+  no Quantity produced.
+- R3 CARD FALSIFIER probes -- every path from fictional preset to
+  measured wood/metal/water (model must REFUSE all): N=6/6 --
+  (a) flip an admitted preset's provenance to researched -> raises
+      (frozen), record byte-identical after;
+  (b) strip/overwrite the synthetic_label -> raises (frozen), label
+      intact after;
+  (c) calibrated_get(<preset name>) -> synthetic_not_calibrated;
+  (d) admit the preset's exact values as provenance=researched with a
+      fabricated handbook-style source string -> fictional_claim (the
+      fabricated-citation path);
+  (e) hostile plain-dict injected into a store, then served -> boundary
+      type re-check refuses at serve time;
+  (f) copy a preset record into the calibrated store through
+      admit_calibrated as-is -> fictional_claim (provenance SYNTHETIC
+      outside {researched, parent, derived}).
+  Threshold: 6/6 refusals, no arithmetic executed on any path.
+- R4 separation invariants: N=4/4 --
+  (a) a mutation of the preset store leaves the calibrated store
+      byte-identical (no shared state);
+  (b) the same name on both planes is TWO distinct records with
+      different provenance and no aliasing (calibrated_get resolves to
+      the calibrated one; preset_get to the labeled one);
+  (c) snapshot -> re-serve round trip reproduces identical records
+      (value bits via float.hex());
+  (d) re-authoring the same preset name is refused (duplicate) with the
+      first record intact.
+- R5 deployed-source trace at base 4812b55b (card statement + prediction
+  judged against the DEPLOYED text): 4/4 separation/authoring families
+  present with quoted lines (prediction is SEMANTICS PRESENT; if line
+  numbers moved from my orientation reads below, the MEASURED numbers
+  are reported) --
+  (a) THE SYNTHETIC PRESET PLANE: tools/materials.py -- header states
+      the derivation duty ("Every constant derives from what the stuff
+      IS, not from what looks nice"); PLUSH_STUFFED=250.0 (:31),
+      KNIT=300.0 (:34), ACRYLIC=1180.0 (:36) each with a literature
+      source comment; PART_MATERIAL (:39) and DENSITY (:51) with
+      HONESTLY NAMED keys (predicted key set {plush_stuffed, knit,
+      acrylic} -- no wood/metal/water keys; measured key lists
+      reported); consumer tools/cad_sample.py:172
+      ("rho = DENSITY[PART_MATERIAL[name]]");
+  (b) THE DECLARED-SYNTHETIC LABEL + ITS ENFORCING CHECK:
+      tools/membrane_window_demo.py admitted_gamma_snapshot --
+      "synthetic": True (:272), synthetic_label "...NOT a calibrated
+      physical material" (:273-276, measured); enforced by
+      tools/membrane_window_demo_checks.py:309-310
+      (check "F6.synthetic_labeled");
+  (c) THE HONEST SEAM: tools/gpu_fixtures_recovered/membrane_demo.py
+      :41-45 ("The material is a SYNTHETIC DECLARED interface ...
+      no physical calibration is claimed. Admission routing through
+      material_contract is deferred until BP-A1 lands") -- the known
+      open seam, declared, not hidden (MAT-01 R6b verdict carried
+      forward, re-measured here);
+  (d) THE CALIBRATED PLANE + AUTHORING REFUSALS:
+      tools/material_contract.py -- Provenance researched|parent|derived
+      (:35-39) and its admission gate (:225-230), UNSUPPORTED_MODEL
+      authoring refusal (model(), :371-377), declared-basis
+      density_from_sg (:384+), dimensionless unit family {"1","ratio",
+      "sg"} (:75); tools/matter_data.py -- Uncited named refusals that
+      LIST what exists (:61-78, :328-332) and the provenance=="researched"
+      enforcement (:78-84, "A design or seed value is a CHOICE and may
+      not be cited as a measurement").
+      Threshold: 4/4 families quoted at measured line numbers.
+- R6 findings + current-state measurements (reported, never patched,
+  never adopted as the model's truth): N=4 measurements --
+  (a) OWNER_INSTANCE CURRENT STATE (task packet: the PR #80 fix is FIXED
+      AND DEPLOYED -- measure the current state, NO stale deviation
+      language): predicted occurrence counts at base 4812b55b --
+      tools/agent_fleet/control.py == 8 (sites: _task instance fence,
+      state setdefault, yield guard, claim-path bind, release clear --
+      exact sites quoted) and tools/agent_fleet/review_handoff.py == 1
+      (the claim-path instance bind, :113, owner_instance=p.get(
+      "_resolved_instance")). A count of 0 in either file = SURPRISE
+      FINDING (the fix not at this base), reported as such. Contrast:
+      GOV-01 R6 measured review_handoff.py==0 at d59518b9 (the
+      pre-fix deviation); MAT-01 R6c measured the fix present at this
+      same base.
+  (b) CARD FALSIFIER HUNT in the deployed source: for each of the four
+      planes in R5, measure the verdict advertised-as-measured on a
+      fictional value? (yes/no + quoted basis). Predicted 4x NO: the
+      preset table's keys and header claim derivation-from-what-the-stuff-IS
+      with literature sources, not measurement; the fixture plane
+      self-labels synthetic; the seam declares itself; the calibrated
+      plane refuses fictional provenance by name. Any YES = the card
+      falsifier FIRES; the instance is reported with exact file:line.
+  (c) NONDIMENSIONAL CONTROL in the deployed plane: the "sg" unit in
+      material_contract.py's dimensionless family (:75) and the white
+      oak SG 0.68 entry (matter_data.py:172, unit "1",
+      provenance researched) -- quoted; cross-check 0.68 x 1000 kg/m^3
+      = 680 kg/m^3 inside the derived SG domain, matching R1(d).
+  (d) INDEPENDENCE AUDIT of this lane's artifacts: the reference model
+      imports MATH-01's algebra (by design, the packet-designated
+      backbone, cited) and NOTHING from tools/materials.py,
+      tools/material_contract.py, tools/matter_data.py (the audited
+      code) -- the full import list is measured and reported.
+
+## CARD VERDICT RULE (fixed now)
+
+Card prediction "Authoring remains in supported domains or gives explicit
+refusals" = SUPPORTED iff R1-R4 reach full N/N AND R5 reaches 4/4.
+Card falsifier "A fictional preset is presented as measured wood, metal
+or water" = NOT reproduced iff R3 = 6/6 AND all four R6(b) verdicts are
+NO (no deployed site presents a fictional/synthetic value as measured);
+otherwise the falsifier FIRES and the instance is reported with its
+exact file:line and the quoted advertisement.
+
+## METHOD
+
+1. Commit this prereg (alone, zero actuals). Mail the prereg pointer to
+   subagent-worker-10 for the charter pre-check BEFORE submit_review.
+2. Write reference/mat05_reference_model.py (stdlib-only + MATH-01
+   import, <300 lines).
+3. controls/run_controls.py executes R1-R4 in one process and writes
+   checks/r1_positive.txt, checks/r2_authoring_refusals.txt,
+   checks/r3_falsifier_paths.txt, checks/r4_separation.txt (verbatim
+   refusal reasons, post-state assertions; any fired run retained as
+   checks/<name>.run1-FIRED-<cause>.txt).
+4. A read-only source script writes checks/r5_source_trace.txt (quoted
+   lines at base) and checks/r6_findings.txt (the four measurements).
+5. RESULT.txt: scoreboard (rows vs thresholds), card verdict, measured
+   SG domain table, reproduction commands, source identities (git sha +
+   file sha256 at base), limitations, DYAD NOT_APPLICABLE record,
+   integration contract + autonomous handoff (what MAT-06+ inherit: the
+   separation layer complements MAT-01's admission layer).
+6. Commit chain on astra/tasks/holodeck-mat-05 (every commit trailer
+   `Agent: subagent-worker-05`), push no-force, PR into
+   astra/gait-capture, submit_review with the exact HEAD sha.
+
+Trailer: Agent: subagent-worker-05

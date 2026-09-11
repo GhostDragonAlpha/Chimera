@@ -1,0 +1,216 @@
+RESULT — holodeck-mat-05 (gen 1)
+
+Agent: subagent-worker-05. Slot 7, worktree E:\ChimeraWork\slot-07, branch
+astra/tasks/holodeck-mat-05. Task base 4812b55b407107a34b708af1700e071a7eecbab4
+(verified at claim: HEAD==base, tree clean, 6249 ls-files entries).
+Commits: b64afa32 (prereg, RULE 0, zero actuals) -> 53e71f47 (reference
+model + executed controls R1-R6) -> this RESULT commit.
+Scope touched: docs/evidence/agent_fleet/HOLODECK/MAT/MAT-05/** ONLY (the
+task's exclusive scope; verified by the final diff file list -- no deployed
+file, gate or threshold modified; the card's "preserve existing frozen
+gates" clause holds).
+
+Card: MAT-05 "Synthetic materials and authorship" (domain MAT, kind
+engineering), catalogue digest b9d32319b43a..., content_sha256 e0992c83...,
+docs/roadmap/holodeck_tasks.json index 28. Admitted from DRAFT-holodeck-mat-05
+(PR #67). Dependencies INTEGRATED: holodeck-math-01 (3889755d, PR #87),
+holodeck-gov-03 (4812b55b, PR #88), holodeck-mat-01 (2352fc1b, PR #96 --
+merged into astra/gait-capture AFTER this task's base; its integrated files
+are absent from this worktree and were read from git objects; its result is
+cited as the newest worked example of the GOV-01/PR #77 pattern, not
+re-derived).
+
+================================================================================
+1. SCOREBOARD (rows vs preregistered thresholds; every row measured post-prereg)
+================================================================================
+
+  Row  Threshold  Measured  Verdict  Evidence
+  R1   7/7        7/7       HOLD     checks/r1_positive.txt
+  R2   8/8        8/8       HOLD     checks/r2_authoring_refusals.txt
+  R3   6/6        6/6       HOLD     checks/r3_falsifier_paths.txt
+  R4   4/4        4/4       HOLD     checks/r4_separation.txt
+  R5   4/4        4/4       HOLD     checks/r5_source_trace.txt
+  R6   4 meas.    4 meas.   HOLD     checks/r6_findings.txt
+                            HOLD     checks/controls_summary.txt
+
+  Pre-run defects (disclosed, fired first run RETAINED — never patched):
+  - R3e probe, run 1: the hostile-dict injection keyed the record bag with a
+    bare string while the serve lookup used the (name, prop) tuple key, so the
+    probe hit unknown_material instead of the serve-time type re-check. This
+    was a defect in the CONTROL probe, not in the model. Fixed probe, re-run:
+    6/6. Fired run retained: checks/r3_falsifier_paths.run1-FIRED.txt.
+  - R5 probe needles: two orientation-predicted quote needles did not match
+    the actual line wrapping ("Admission routing through material_contract
+    is deferred" wraps across lines 42-43; the matter_data provenance-gate
+    needle was malformed). Fixed to stable substrings, re-run: 4/4. (No
+    fired-run file: these were source-trace probe fixes; both runs' scripts
+    are in controls/run_source_checks.py history at 53e71f47 vs this commit.)
+  - ROOT path bug in run_source_checks.py (parents[5] vs parents[6]) raised
+    FileNotFoundError on first execution — fixed before any evidence was
+    written.
+
+================================================================================
+2. CARD VERDICT (rule fixed in PREREGISTRATION.txt before any implementation)
+================================================================================
+
+  Card prediction "Authoring remains in supported domains or gives explicit
+  refusals" = SUPPORTED:
+  - R1-R4 reached full N/N (7/7, 8/8, 6/6, 4/4), and
+  - R5 reached 4/4: every deployed authoring door studied gives either a
+    supported domain or a NAMED refusal (materials.py's closed preset set;
+    material_contract.py's UNSUPPORTED_MODEL + provenance gate;
+    matter_data.py's Uncited refusals that LIST what exists).
+
+  Card falsifier "A fictional preset is presented as measured wood, metal or
+  water" = NOT REPRODUCED:
+  - R3 = 6/6: every fictional->measured path in the reference model is
+    refused by name BEFORE arithmetic (frozen-record mutation, label strip,
+    calibrated-door serve, fabricated citation, hostile injection, as-is
+    provenance crossing), and
+  - R6(b) measured all four deployed-plane verdicts NO (no site presents a
+    fictional/synthetic value as measured): the preset table's keys are
+    honest part/material names with literature sources and a derivation-duty
+    header; the fixture plane self-labels ("synthetic": True + "NOT a
+    calibrated physical material") and a CHECK enforces the label
+    (F6.synthetic_labeled); the recovered seam DECLARES itself synthetic
+    with no calibration claimed; the calibrated plane refuses
+    non-researched provenance by name.
+
+================================================================================
+3. DERIVED SG ADMISSIBLE DOMAIN (fixed pre-build; measured table)
+================================================================================
+
+  Bound derivation (prereg): 0 < SG <= 22.59.
+    Lower: SG > 0 strictly — a nonpositive SG is a nonpositive density,
+    refused by the calibrated plane's own PHYSICALLY_INVALID gate.
+    Upper: osmium 22.59 g/cm^3 (densest natural elemental solid) is an
+    absolute physical ceiling for any real-material claim.
+  Measured occupants (all inside; nothing widened after any run):
+    plush_stuffed  250 kg/m^3 -> SG 0.25   (materials.py:31)
+    knit           300 kg/m^3 -> SG 0.30   (materials.py:34)
+    acrylic       1180 kg/m^3 -> SG 1.18   (materials.py:36)
+    white oak      680 kg/m^3 -> SG 0.68   (matter_data.py:172, Wood
+                                             Handbook T5-3b, researched)
+  Nondimensional composition (MATH-01 backbone, exact algebra):
+    sg_to_density(0.68, 1000) = Quantity(680.0, Dimension(L=-3, M=1, T=0))
+    -- dimensionless x (L^-3 M) = (L^-3 M); R1d PASS.
+
+================================================================================
+4. OWNER_INSTANCE CURRENT STATE (R6a — task packet's known-regression note)
+================================================================================
+
+  The task packet directs: PR #80 (deployment claim-restore) is FIXED AND
+  DEPLOYED — measure the current state, carry no stale deviation language.
+  Measured at base 4812b55b:
+    tools/agent_fleet/control.py        owner_instance: 8 occurrences
+      lines [121, 122, 123, 323, 499, 501, 554, 697]
+      (_task instance fence x3, state setdefault, yield guard x2,
+       claim-path bind, release clear)
+    tools/agent_fleet/review_handoff.py owner_instance: 1 occurrence
+      line 113:  owner_instance=p.get("_resolved_instance")
+      (the claim path BINDS the caller's instance — the PR #80 fix)
+  Prereg predictions (8 and 1 at :113) matched exactly. The surprise-finding
+  check (a 0 count would mean the fix is not at this base) did NOT fire.
+  Contrast baseline: GOV-01's R6 measured review_handoff.py==0 at d59518b9
+  (the pre-fix deviation); this lane measures the fix present. No deviation
+  language is carried forward.
+
+================================================================================
+5. REPRODUCTION (commands; python 3.14, stdlib-only model + MATH-01 import)
+================================================================================
+
+  cd <worktree>/docs/evidence/agent_fleet/HOLODECK/MAT/MAT-05
+  python controls/run_controls.py          # R1-R4 vs the reference model
+  python controls/run_source_checks.py     # R5-R6 vs deployed source text
+
+  Both scripts are read-only against the repo (they write only under
+  checks/). Exit 0 = all rows HOLD. The model is at
+  reference/mat05_reference_model.py (299 lines incl. docstring; imports:
+  math, sys, dataclasses, pathlib, types + math01_reference_model).
+
+  SOURCE IDENTITY at base 4812b55b (sha256 prefixes; full values in
+  checks/source_identities.json):
+    tools/materials.py                        7c3575fda733f741...
+    tools/cad_sample.py                       df092674ddf0b1f5...
+    tools/membrane_window_demo.py             df57e867309b2e23...
+    tools/membrane_window_demo_checks.py      287af9ff51b1ca86...
+    tools/gpu_fixtures_recovered/membrane_demo.py 11b2b5015946ae8a...
+    tools/material_contract.py                6af75efe12da4ba8...
+    tools/matter_data.py                      88cc670017aa3f1e...
+    tools/agent_fleet/control.py              7cee259b35a21ebe...
+    tools/agent_fleet/review_handoff.py       e8f6a939b81f3525...
+
+================================================================================
+6. LIMITATIONS
+================================================================================
+
+  - SOURCE-ONLY lane: this is a measured comparison of the DEPLOYED REPO
+    STATE at base, executed controls against an independent reference model
+    of the INTENDED contract. The live controller service was never
+    contacted (no request to the service endpoint; the only controller calls
+    this lane made were its own claim/checkpoint/mail operations through its
+    own provisioned client). Runtime behaviors beyond source text are NOT
+    tested here.
+  - The reference model is a MODEL of the intended contract, not a patch:
+    it introduces no deployed change and adopts no deployed finding as its
+    truth.
+  - The fabricated-citation guard (R3d) is scoped to name+property+value
+    identity against the same partition's preset store: a value-identical
+    re-claim under a preset's name is refused as the fictional-citation
+    path. A genuinely new measured value under the same name admits (the
+    planes are separate namespaces — R4b). The model's supported-domain set
+    mirrors the deployed preset plane's three domains; it is a closed set by
+    design, and new synthetic domains are an authoring-contract extension,
+    not a widening of any gate.
+  - SG upper bound 22.59 uses osmium density as a physical ceiling; exotic
+    states of matter (stellar, lab pressures) are outside every plane's
+    domain here.
+  - MAT-01's integrated evidence tree is not in this worktree (its merge
+    postdates the base); conclusions attributed to it were read from git
+    objects at 2352fc1b and are cited, not re-measured.
+
+================================================================================
+7. DYAD RECORD (card policy)
+================================================================================
+
+  NOT_APPLICABLE — source-only scope: this lane produces and alters no
+  executed runtime behavior of the deployed system (no engine, no window,
+  no GPU, no visible artifact), so there is no visible behavior for the
+  eye to judge. Reason recorded here per the card's DYAD policy
+  ("Reference-only or source-only scope records NOT_APPLICABLE with
+  reason"). The eye was not reserved and no image was served.
+
+================================================================================
+8. INTEGRATION CONTRACT + AUTONOMOUS HANDOFF
+================================================================================
+
+  What this lane adds to the MAT plane: the SEPARATION + AUTHORING layer.
+    - MAT-01 (integrated, PR #96) built the ADMISSION layer: raw data ->
+      typed immutable parameter record through one door, with named
+      refusals.
+    - MAT-05 (this lane) builds what those records live behind: TWO
+      partitioned stores — synthetic presets (declared fiction, labeled,
+      domain-confined authoring, SG/fraction admissible domains) and
+      calibrated materials (measured provenance, source+conditions) — with
+      named refusals on every fictional->measured path
+      (synthetic_not_calibrated, fictional_claim, unsupported_domain,
+      sg_out_of_domain).
+  Contract for downstream cards (MAT-06+ / any consumer):
+    - Consume presets ONLY through the preset door and calibrated materials
+      ONLY through the calibrated door; a consumer that renders a preset
+      value must carry its synthetic_label through to the rendered artifact
+      (the deployed F6.synthetic_labeled check is the pattern).
+    - Reuse the derived SG domain (0, 22.59] and the fixture band [0.25,
+      1.18] as declared constants; extend the domain only by re-derivation,
+      never by widening after a run.
+    - The units backbone stays MATH-01 (PR #87); the admission layer stays
+      MAT-01 (PR #96); neither is duplicated here.
+  Handoff: worktree E:\ChimeraWork\slot-07 is clean at this commit; all
+  evidence regenerates with the two commands in section 5; no runtime
+  process, GPU reservation or controller resource was used or is held.
+  Reviewer re-derivation hint: the R3 falsifier probes are six independent
+  attempts to move one PresetRecord's values from the preset plane to a
+  measured claim — the fastest independent check is to try a seventh path
+  (e.g. deepcopy + relabel + calibrated.admit) and observe the refusal.
+
+Trailer: Agent: subagent-worker-05

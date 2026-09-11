@@ -1,0 +1,38 @@
+R5 deployed-source trace at base 4812b55b407107a34b708af1700e071a7eecbab4
+claim: SEMANTICS PRESENT (threshold 4/4 families); measured line numbers reported
+
+(a) THE SYNTHETIC PRESET PLANE)
+  tools/materials.py:1: """materials.py -- the composition table. Every constant derives from what the
+  tools/materials.py:31: PLUSH_STUFFED = 250.0
+  tools/materials.py:34: KNIT = 300.0
+  tools/materials.py:36: ACRYLIC = 1180.0
+  tools/materials.py:39: PART_MATERIAL = {
+  tools/materials.py:51: DENSITY = {"plush_stuffed": PLUSH_STUFFED, "knit": KNIT, "acrylic": ACRYLIC}
+  tools/cad_sample.py:172:         rho = DENSITY[PART_MATERIAL[name]]
+  family verdict: PRESENT
+
+(b) THE DECLARED-SYNTHETIC LABEL + ENFORCING CHECK)
+  tools/membrane_window_demo.py:272:         "synthetic": True,
+  tools/membrane_window_demo.py:273:         "synthetic_label": "dimensionless analytic control fixture gamma; "
+  tools/membrane_window_demo_checks.py:309:         check("F6.synthetic_labeled", adm.get("synthetic") is True and
+  family verdict: PRESENT
+
+(c) THE HONEST SEAM (declared, not hidden))
+  tools/gpu_fixtures_recovered/membrane_demo.py:41: The material is a SYNTHETIC DECLARED interface (GAMMA below, provenance:
+  tools/gpu_fixtures_recovered/membrane_demo.py:42: fixture declaration); no physical calibration is claimed. Admission routing
+  tools/gpu_fixtures_recovered/membrane_demo.py:43: through material_contract is deferred until BP-A1 lands (unit-family table).
+  family verdict: PRESENT
+
+(d) THE CALIBRATED PLANE + AUTHORING REFUSALS)
+  tools/material_contract.py:36:     RESEARCHED = "researched"   # published value, locator attached
+  tools/material_contract.py:229:                               f"class (researched | parent | derived), got "
+  tools/material_contract.py:377:                 RefusalKind.UNSUPPORTED_MODEL,
+  tools/material_contract.py:384:     def density_from_sg(self, material: str, basis_kg_m3: float,
+  tools/material_contract.py:75:     "dimensionless": {"1": 1.0, "ratio": 1.0, "sg": 1.0},
+  tools/matter_data.py:44: class Uncited(RuntimeError):
+  tools/matter_data.py:71:         raise Uncited(f"the library holds no material {material!r} -- it holds "
+  tools/matter_data.py:77:     if ent.get("provenance") != "researched":
+  tools/matter_data.py:79:                       f"'researched'. A design or seed value is a CHOICE and may not be cited "
+  family verdict: PRESENT
+
+R5 verdict: 4/4 HOLD (a=True, b=True, c=True, d=True)
