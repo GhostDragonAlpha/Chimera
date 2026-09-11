@@ -166,3 +166,31 @@ scope and nothing was weakened or tolerated). Catalogue lane should re-pin.
    the contract's answer.
 7. Run from the repo root; commit trailer `Agent: <your-id>`; acceptance
    stays NOT_CLAIMED until lead review and authorized integration.
+
+## pinned_size=None adoption semantics (fleet-review-followups-02, 2026-09-11)
+
+Recorded non-blocking review finding (PR #51 finding 2), landed as
+documentation + regression test, NOT a behavior change:
+
+`verify_hwnd_capture(hwnd, expected_pattern, pinned_size=None, title=None)`
+silently ADOPTS the measured client size as the pin when `pinned_size` is
+`None`. The record's `pinned_size` field is then equal to `client_size`, so
+the `window_resized` fail-closed verdict can NEVER fire for a non-pinning
+caller - the size gate is inert on that path by construction. This is the
+documented contract from here on, not an accident to be silently relied on:
+
+- Callers that need the resized gate must pass an EXPLICIT pin.
+  `verify_owned_capture` does exactly this: it pins the fixture's
+  creation-measured size, which is what makes `test_resize_fails_closed`
+  (a real resized window refused `window_resized` before any pixel is
+  trusted) work.
+- Calling the hwnd-level entry without a pin is legal only when adopting
+  the measured size is intended (e.g. a one-shot forensic check of whatever
+  size the window currently is).
+- The decision ORDER and every other verdict are unchanged; the regression
+  test (`test_verify_hwnd_capture_none_pin_adopts_measured_size`) asserts
+  the documented adoption behavior on a self-created fixture: without a pin
+  the record proceeds past the size gate on a resized window (verdict is
+  never `window_resized`) with `pinned_size == client_size`.
+
+Every in-repo caller still pins; no caller behavior changed.

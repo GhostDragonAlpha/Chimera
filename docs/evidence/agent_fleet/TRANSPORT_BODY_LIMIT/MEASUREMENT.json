@@ -27,4 +27,24 @@
     "post-change live import (executed only after the documented controlled transition)",
     "deployment identity beyond the one evidenced live transition"
   ]
+,
+  "correction_20260911": {
+  "by": "subagent-worker-02 (fleet-review-followups-02, slot 2, generation 1)",
+  "worktree_head": "recorded in RESULT.md of docs/evidence/agent_fleet/REVIEW_FOLLOWUPS_02; catalogue sources identical to base c1a1ec5a5a166d8f32816cdacc9569e03857fa0e",
+  "reason": "feedback 97b871b5: this file did not embed the exact payload-measurement command/serializer, so the recorded 1518593 B was not byte-reproducible from committed evidence. This APPENDED block closes that gap; the original block above is untouched.",
+  "discovery_context_note": "canonical_payload_bytes_at_tip_95f25b33 = 1518593 is DISCOVERY-CONTEXT: the size measured during the first live import refusal, not a reproducible committed measurement (rebuild variants span 1518018-1526171 B).",
+  "exact_command": "python -c \"import json,sys; sys.path.insert(0,'tools/agent_fleet'); import master_catalogue as m; p=m.build_records(); errs=m.validate_payload(p); assert not errs, errs[:5]; d=m.payload_digest(p); body=json.dumps({'operation':'catalogue_import','arguments':{'payload':p,'digest':d}}).encode('utf-8'); print('transport_envelope_bytes', len(body)); print('payload_digest', d)\"",
+  "exact_command_note": "run from the REPO ROOT; serialization mirrors client.call exactly: json.dumps({'operation':..., 'arguments':...}) with json.dumps defaults (ensure_ascii=True, separators (', ', ': ')) then .encode('utf-8') - the exact bytes the HTTP transport carries.",
+  "remeasured_output_verbatim": "transport_envelope_bytes 1519534\npayload_digest 67c89fd5dca137093344d4c1486035b9d3e4a0bab412a184477df25e1c0298d9",
+  "transport_envelope_bytes": 1519534,
+  "transport_envelope_within_recorded_variant_span": true,
+  "variant_b": {
+    "what": "master_catalogue.py --out artifact (the import-arguments file, ensure_ascii=False serializer)",
+    "command": "python tools/agent_fleet/master_catalogue.py --out <temp>/import_args.json",
+    "bytes": 1511333,
+    "sha256": "0223f5b4d4f9723ff79e3635a2f15c18ccd40ee6eca9e495d9a5110232cbe11f"
+  },
+  "derivation_unchanged": "x8 headroom over the worst recorded variant 1526171*8 = 12209368 B remains under 2**24 = 16777216 B (~27% margin); the empirical boundary regression test_4 pins the deployed limit.",
+  "raw_outputs": "docs/evidence/agent_fleet/REVIEW_FOLLOWUPS_02/RUN_PAYLOAD_MEASUREMENT.txt, RUN_MASTER_CATALOGUE_OUT.txt"
+}
 }

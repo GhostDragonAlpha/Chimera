@@ -1,0 +1,14 @@
+test_1_upgrade_preserves_registry_and_sessions_then_rollback_restores (tools.agent_fleet.test_controller_transition.ControllerTransitionRehearsalTests.test_1_upgrade_preserves_registry_and_sessions_then_rollback_restores) ... ok
+test_2_refusal_matrix_refuses_before_stop_or_mutation (tools.agent_fleet.test_controller_transition.ControllerTransitionRehearsalTests.test_2_refusal_matrix_refuses_before_stop_or_mutation) ... ok
+test_3_credentials_never_appear_in_reports_events_status_or_logs (tools.agent_fleet.test_controller_transition.ControllerTransitionRehearsalTests.test_3_credentials_never_appear_in_reports_events_status_or_logs) ... ok
+test_4_transport_body_limit_boundary (tools.agent_fleet.test_controller_transition.ControllerTransitionRehearsalTests.test_4_transport_body_limit_boundary)
+MAX_BODY is the derived 2**24 transport cap: a canonical-catalogue- ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 96.581s
+
+OK
+stopped pid 27212 (transition recorded: test teardown controlled transition)
+stopped pid 66696 (transition recorded: test teardown controlled transition)
+stopped pid 61864 (transition recorded: test teardown controlled transition)
+stopped pid 31708 (transition recorded: test teardown controlled transition)
