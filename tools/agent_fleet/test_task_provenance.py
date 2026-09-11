@@ -173,7 +173,10 @@ class TaskProvenanceTests(unittest.TestCase):
             self.setprov('holodeck-gov-01','GOV-02')
         self.assertEqual(self.snap()['tasks']['holodeck-gov-01']['realized_from'],'GOV-01')
         # A forward-cited task (create_task practice) is likewise closed:
+        # claimed (RUNNING, the real lead-practice shape), so the state gate
+        # passes and the already-cited gate is what fires.
         self.task('cited-at-create',realized_from='GOV-01')
+        self.call('claim','worker',task='cited-at-create')
         with self.assertRaisesRegex(Refusal,'provenance_already_set'):
             self.setprov('cited-at-create','GOV-06')
         self.assertEqual(self.snap()['tasks']['cited-at-create']['realized_from'],'GOV-01')
@@ -295,19 +298,20 @@ class TaskProvenanceTests(unittest.TestCase):
         self.assertEqual(rec['actor'],'SUPERVISOR')
         self.assertEqual(rec['revision'],before+1)
     def test_refusals_leave_revision_and_audit_untouched(self):
-        self.task('quiet')
+        # Target is INTEGRATED so the state gate passes and the later gates
+        # (actor / id / state-for-READY) fire; READY-state refusals are
+        # pinned separately in test_state_gate_precedes_id_validation.
+        self.drive('settled')
         before=self.snap()['revision'];events_before=self.events(since=0)
         with self.assertRaisesRegex(Refusal,'supervisor_only'):
-            self.setprov('quiet','GOV-01',_actor='worker')
+            self.setprov('settled','GOV-01',_actor='worker')
         with self.assertRaisesRegex(Refusal,'unknown_task'):
             self.setprov('absent','GOV-01')
-        with self.assertRaisesRegex(Refusal,'task_not_terminal_or_active'):
-            self.setprov('quiet','GOV-01')
         with self.assertRaisesRegex(Refusal,'malformed_realized_from'):
-            self.setprov('quiet','gov-01')
+            self.setprov('settled','gov-01')
         self.assertEqual(before,self.snap()['revision'])
         self.assertEqual(events_before,self.events(since=0))
-        self.assertIsNone(self.snap()['tasks']['quiet']['realized_from'])
+        self.assertIsNone(self.snap()['tasks']['settled']['realized_from'])
     def test_op_is_registry_state_only_never_touches_the_filesystem(self):
         digest=self.import_cards(GOV_CARDS)
         self.drive('holodeck-gov-01')

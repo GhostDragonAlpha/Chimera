@@ -292,3 +292,296 @@ AssertionError: "task_not_terminal_or_active" does not match "unknown_operation"
 Ran 16 tests in 1.637s
 
 FAILED (failures=7, errors=8)
+
+
+==================================================================
+RERUN 2 OF RECORD - FINAL INSTRUMENT (supersedes the capture above)
+==================================================================
+
+Command:  python -m unittest test_task_provenance -v
+Run at:   HEAD ece2fe58 + instrument fix 2 (control.py STILL the
+          untouched PR #92 base bf1a72f6 - verified via git stash).
+
+INSTRUMENT CORRECTION 2 (disclosed; both prior captures retained in
+history at fa1bd8e5 and ece2fe58): two refusal tests targeted READY
+tasks where the state gate fires by design (task_not_terminal_or_active,
+pinned by test_state_gate_precedes_id_validation) instead of the arm
+they meant to exercise - test_provenance_set_refuses_when_citation_
+already_present now claims its forward-cited target (RUNNING, the real
+lead-practice shape) so the already-cited gate fires, and
+test_refusals_leave_revision_and_audit_untouched now targets an
+INTEGRATED task so the actor/id gates fire. At the PRE-FIX base the
+verdict is UNCHANGED: FAILED (failures=7, errors=8) of 16, the failing
+set is test-for-test IDENTICAL to rerun 1 (diff of FAIL/ERROR names:
+empty - verified), the only green test is still
+test_forward_path_create_task_citation_needs_no_op. The backfill op
+does not exist at the base: NO backfill is possible without it
+(falsifier F-1 mechanically armed). This rerun is the fail-pre-fix
+proof of record for the final instrument.
+
+--- verbatim output ----------------------------------------------
+
+test_audit_event_and_task_record (test_task_provenance.TaskProvenanceTests.test_audit_event_and_task_record) ... ERROR
+test_eight_task_backfill_offers_true_frontier (test_task_provenance.TaskProvenanceTests.test_eight_task_backfill_offers_true_frontier) ... ERROR
+test_evidence_gate_after_id_gate (test_task_provenance.TaskProvenanceTests.test_evidence_gate_after_id_gate) ... FAIL
+test_forward_path_create_task_citation_needs_no_op (test_task_provenance.TaskProvenanceTests.test_forward_path_create_task_citation_needs_no_op) ... ok
+test_op_is_registry_state_only_never_touches_the_filesystem (test_task_provenance.TaskProvenanceTests.test_op_is_registry_state_only_never_touches_the_filesystem) ... ERROR
+test_provenance_set_on_abandoned_task_satisfies_nothing (test_task_provenance.TaskProvenanceTests.test_provenance_set_on_abandoned_task_satisfies_nothing) ... ERROR
+test_provenance_set_on_active_running_task (test_task_provenance.TaskProvenanceTests.test_provenance_set_on_active_running_task) ... ERROR
+test_provenance_set_on_review_task_mirrors_live_registry (test_task_provenance.TaskProvenanceTests.test_provenance_set_on_review_task_mirrors_live_registry) ... ERROR
+test_provenance_set_refuses_when_citation_already_present (test_task_provenance.TaskProvenanceTests.test_provenance_set_refuses_when_citation_already_present) ... ERROR
+test_refusals_leave_revision_and_audit_untouched (test_task_provenance.TaskProvenanceTests.test_refusals_leave_revision_and_audit_untouched) ... FAIL
+test_refuses_missing_and_malformed_card_ids (test_task_provenance.TaskProvenanceTests.test_refuses_missing_and_malformed_card_ids) ... FAIL
+test_refuses_non_supervisor_actors (test_task_provenance.TaskProvenanceTests.test_refuses_non_supervisor_actors) ... FAIL
+test_refuses_ready_and_recovery_hold (test_task_provenance.TaskProvenanceTests.test_refuses_ready_and_recovery_hold) ... FAIL
+test_refuses_unknown_task (test_task_provenance.TaskProvenanceTests.test_refuses_unknown_task) ... FAIL
+test_s1_fixture_passes_with_backfilled_provenance (test_task_provenance.TaskProvenanceTests.test_s1_fixture_passes_with_backfilled_provenance) ... ERROR
+test_state_gate_precedes_id_validation (test_task_provenance.TaskProvenanceTests.test_state_gate_precedes_id_validation) ... FAIL
+
+======================================================================
+ERROR: test_audit_event_and_task_record (test_task_provenance.TaskProvenanceTests.test_audit_event_and_task_record)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 285, in test_audit_event_and_task_record
+    self.setprov('holodeck-gov-01','GOV-01')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 89, in setprov
+    p.update(kw);return self.call('task_provenance_set',_actor,**p)
+                        ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 73, in call
+    def call(self,op,actor='lead',**p):return self.c.call(op,self.tokens.get(actor,actor),**p)['result']
+                                              ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 344, in call
+    result=self._dispatch(s,actor,op,p)
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 862, in _dispatch
+    raise Refusal('unknown_operation')
+control.Refusal: unknown_operation
+
+======================================================================
+ERROR: test_eight_task_backfill_offers_true_frontier (test_task_provenance.TaskProvenanceTests.test_eight_task_backfill_offers_true_frontier)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 146, in test_eight_task_backfill_offers_true_frontier
+    self.setprov(tid,card)
+    ~~~~~~~~~~~~^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 89, in setprov
+    p.update(kw);return self.call('task_provenance_set',_actor,**p)
+                        ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 73, in call
+    def call(self,op,actor='lead',**p):return self.c.call(op,self.tokens.get(actor,actor),**p)['result']
+                                              ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 344, in call
+    result=self._dispatch(s,actor,op,p)
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 862, in _dispatch
+    raise Refusal('unknown_operation')
+control.Refusal: unknown_operation
+
+======================================================================
+ERROR: test_op_is_registry_state_only_never_touches_the_filesystem (test_task_provenance.TaskProvenanceTests.test_op_is_registry_state_only_never_touches_the_filesystem)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 319, in test_op_is_registry_state_only_never_touches_the_filesystem
+    self.setprov('holodeck-gov-01','GOV-01')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 89, in setprov
+    p.update(kw);return self.call('task_provenance_set',_actor,**p)
+                        ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 73, in call
+    def call(self,op,actor='lead',**p):return self.c.call(op,self.tokens.get(actor,actor),**p)['result']
+                                              ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 344, in call
+    result=self._dispatch(s,actor,op,p)
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 862, in _dispatch
+    raise Refusal('unknown_operation')
+control.Refusal: unknown_operation
+
+======================================================================
+ERROR: test_provenance_set_on_abandoned_task_satisfies_nothing (test_task_provenance.TaskProvenanceTests.test_provenance_set_on_abandoned_task_satisfies_nothing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 215, in test_provenance_set_on_abandoned_task_satisfies_nothing
+    self.setprov('holodeck-gov-01','GOV-01')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 89, in setprov
+    p.update(kw);return self.call('task_provenance_set',_actor,**p)
+                        ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 73, in call
+    def call(self,op,actor='lead',**p):return self.c.call(op,self.tokens.get(actor,actor),**p)['result']
+                                              ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 344, in call
+    result=self._dispatch(s,actor,op,p)
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 862, in _dispatch
+    raise Refusal('unknown_operation')
+control.Refusal: unknown_operation
+
+======================================================================
+ERROR: test_provenance_set_on_active_running_task (test_task_provenance.TaskProvenanceTests.test_provenance_set_on_active_running_task)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 189, in test_provenance_set_on_active_running_task
+    self.setprov('holodeck-gov-01','GOV-01')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 89, in setprov
+    p.update(kw);return self.call('task_provenance_set',_actor,**p)
+                        ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 73, in call
+    def call(self,op,actor='lead',**p):return self.c.call(op,self.tokens.get(actor,actor),**p)['result']
+                                              ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 344, in call
+    result=self._dispatch(s,actor,op,p)
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 862, in _dispatch
+    raise Refusal('unknown_operation')
+control.Refusal: unknown_operation
+
+======================================================================
+ERROR: test_provenance_set_on_review_task_mirrors_live_registry (test_task_provenance.TaskProvenanceTests.test_provenance_set_on_review_task_mirrors_live_registry)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 202, in test_provenance_set_on_review_task_mirrors_live_registry
+    self.setprov('holodeck-gov-06','GOV-06')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 89, in setprov
+    p.update(kw);return self.call('task_provenance_set',_actor,**p)
+                        ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 73, in call
+    def call(self,op,actor='lead',**p):return self.c.call(op,self.tokens.get(actor,actor),**p)['result']
+                                              ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 344, in call
+    result=self._dispatch(s,actor,op,p)
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 862, in _dispatch
+    raise Refusal('unknown_operation')
+control.Refusal: unknown_operation
+
+======================================================================
+ERROR: test_provenance_set_refuses_when_citation_already_present (test_task_provenance.TaskProvenanceTests.test_provenance_set_refuses_when_citation_already_present)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 171, in test_provenance_set_refuses_when_citation_already_present
+    self.setprov('holodeck-gov-01','GOV-01')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 89, in setprov
+    p.update(kw);return self.call('task_provenance_set',_actor,**p)
+                        ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 73, in call
+    def call(self,op,actor='lead',**p):return self.c.call(op,self.tokens.get(actor,actor),**p)['result']
+                                              ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 344, in call
+    result=self._dispatch(s,actor,op,p)
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 862, in _dispatch
+    raise Refusal('unknown_operation')
+control.Refusal: unknown_operation
+
+======================================================================
+ERROR: test_s1_fixture_passes_with_backfilled_provenance (test_task_provenance.TaskProvenanceTests.test_s1_fixture_passes_with_backfilled_provenance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 120, in test_s1_fixture_passes_with_backfilled_provenance
+    self.setprov('holodeck-gov-01','GOV-01')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 89, in setprov
+    p.update(kw);return self.call('task_provenance_set',_actor,**p)
+                        ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 73, in call
+    def call(self,op,actor='lead',**p):return self.c.call(op,self.tokens.get(actor,actor),**p)['result']
+                                              ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 344, in call
+    result=self._dispatch(s,actor,op,p)
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\control.py", line 862, in _dispatch
+    raise Refusal('unknown_operation')
+control.Refusal: unknown_operation
+
+======================================================================
+FAIL: test_evidence_gate_after_id_gate (test_task_provenance.TaskProvenanceTests.test_evidence_gate_after_id_gate)
+----------------------------------------------------------------------
+control.Refusal: unknown_operation
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 270, in test_evidence_gate_after_id_gate
+    with self.assertRaisesRegex(Refusal,'missing_provenance_evidence'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "missing_provenance_evidence" does not match "unknown_operation"
+
+======================================================================
+FAIL: test_refusals_leave_revision_and_audit_untouched (test_task_provenance.TaskProvenanceTests.test_refusals_leave_revision_and_audit_untouched)
+----------------------------------------------------------------------
+control.Refusal: unknown_operation
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 306, in test_refusals_leave_revision_and_audit_untouched
+    with self.assertRaisesRegex(Refusal,'supervisor_only'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "supervisor_only" does not match "unknown_operation"
+
+======================================================================
+FAIL: test_refuses_missing_and_malformed_card_ids (test_task_provenance.TaskProvenanceTests.test_refuses_missing_and_malformed_card_ids)
+----------------------------------------------------------------------
+control.Refusal: unknown_operation
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 264, in test_refuses_missing_and_malformed_card_ids
+    with self.assertRaisesRegex(Refusal,name):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+AssertionError: "missing_realized_from" does not match "unknown_operation"
+
+======================================================================
+FAIL: test_refuses_non_supervisor_actors (test_task_provenance.TaskProvenanceTests.test_refuses_non_supervisor_actors)
+----------------------------------------------------------------------
+control.Refusal: unknown_operation
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 225, in test_refuses_non_supervisor_actors
+    with self.assertRaisesRegex(Refusal,'supervisor_only'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "supervisor_only" does not match "unknown_operation"
+
+======================================================================
+FAIL: test_refuses_ready_and_recovery_hold (test_task_provenance.TaskProvenanceTests.test_refuses_ready_and_recovery_hold)
+----------------------------------------------------------------------
+control.Refusal: unknown_operation
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 234, in test_refuses_ready_and_recovery_hold
+    with self.assertRaisesRegex(Refusal,'task_not_terminal_or_active'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "task_not_terminal_or_active" does not match "unknown_operation"
+
+======================================================================
+FAIL: test_refuses_unknown_task (test_task_provenance.TaskProvenanceTests.test_refuses_unknown_task)
+----------------------------------------------------------------------
+control.Refusal: unknown_operation
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 229, in test_refuses_unknown_task
+    with self.assertRaisesRegex(Refusal,'unknown_task'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "unknown_task" does not match "unknown_operation"
+
+======================================================================
+FAIL: test_state_gate_precedes_id_validation (test_task_provenance.TaskProvenanceTests.test_state_gate_precedes_id_validation)
+----------------------------------------------------------------------
+control.Refusal: unknown_operation
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_task_provenance.py", line 249, in test_state_gate_precedes_id_validation
+    with self.assertRaisesRegex(Refusal,'task_not_terminal_or_active'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "task_not_terminal_or_active" does not match "unknown_operation"
+
+----------------------------------------------------------------------
+Ran 16 tests in 1.612s
+
+FAILED (failures=7, errors=8)
