@@ -180,8 +180,10 @@ class CatalogueTests(unittest.TestCase):
         # gen-6: the catalog JSON text is ALSO retained verbatim and its
         # manifest hash is recomputed by the validator.
         self.assertTrue(sm['catalog']['retained'])
-        self.assertEqual(built['coverage']['master_row_ids'], 65)
-        self.assertEqual(built['coverage']['master_row_observations'], 68)
+        # repinned to measured builder output (CATALOGUE_REPIN, tip d012b4b1):
+        # later merged lanes grew the corpus past the 65/68 pins.
+        self.assertEqual(built['coverage']['master_row_ids'], 76)
+        self.assertEqual(built['coverage']['master_row_observations'], 96)
         ids = {r['id'] for r in built['master_rows']}
         for required in ('demo-studio-state-01', 'math-contract-audit-01',
                          'fleet-slot-binding-01', 'studio-grid-depth-01',
@@ -659,10 +661,11 @@ class CatalogueTests(unittest.TestCase):
         # line must be retained verbatim with a consistent hash.
         built = build_records()
         part = built['coverage']['line_partition']
-        # 2430 lines at the current canonical Master (post-merge, head
-        # 0e878758); the count is descriptive - exhaustiveness is what the
-        # validator enforces, independent of any frozen total.
-        self.assertEqual(len(part), 2430)
+        # 2540 lines at the current canonical Master (measured via the
+        # builder at tip d012b4b1, CATALOGUE_REPIN); the count is descriptive
+        # - exhaustiveness is what the validator enforces, independent of any
+        # frozen total.
+        self.assertEqual(len(part), 2540)
         dropped = json.loads(json.dumps(built))
         dropped['coverage']['line_partition'].pop('1825')  # JSON-stringified
         self.assertEqual(validate_payload(dropped),
