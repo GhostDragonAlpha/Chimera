@@ -1,0 +1,217 @@
+{
+  "schema": "chimera-vulkan-resource-lifetime-case-v1",
+  "declared_layouts_xywh": [
+    [
+      64,
+      64,
+      1280,
+      720
+    ],
+    [
+      64,
+      64,
+      1000,
+      640
+    ],
+    [
+      64,
+      64,
+      1180,
+      680
+    ]
+  ],
+  "watchdog_seconds": 10,
+  "source": {
+    "main_cpp_sha256": "89f8071ba2cdbea6d6ad9d214291dbb1cc5247e62cab14815e7049a1308402dc",
+    "engine_cpp_sha256": "5e29a813cb38bbd667f532b68fb4cedbfcd112c50d6fb62629a261cd5b9d935b",
+    "engine_hpp_sha256": "7f38a8dc8397d80e8f601115e1da05671f779cafb7a663bd4654d386f28ae4f5",
+    "ui_cpp_sha256": "543460a85534bc39ce1d1c21e4f9d5a19b25fd6c9ca10afddb1bc8feb58118d8",
+    "runner_sha256": "5a1e18e779644683ad9f0b753dc5c875cabb6e7ebe4c251067512e7326b15a46",
+    "shader_hashes": {
+      "shaders\\compute.spv": "2a22bf45212204113f5d4b8785a52ac9eb6280b6302ade133efd5d676bbe91ab",
+      "shaders\\floor.frag.spv": "b8f7e06a2bd4fd782b8211bca475e59efc9186a1015c4a225949dcc3c599431f",
+      "shaders\\floor.vert.spv": "bb118b9db9627f102e182120f2d0042738d94acfdc353813db8bb21fc6c58c74",
+      "shaders\\frost_decode.spv": "fd4287fafb487d662d592ee26c7718613b516e682700af460a2b74541ef8c545",
+      "shaders\\gait.spv": "36c26a9df5d095e1d01d765a16e1538dffddf5d660585b0f495c4be9ed1933a7",
+      "shaders\\hinge.spv": "3a3326fe7485ad6601e8bea6f8ab584564c7898f1a0edf1ec213c416c8c64b94",
+      "shaders\\joints.spv": "e2e10b2d269943610e91e2266b8f0cf75c13e43f12334eaad4410c9dcfbb7da5",
+      "shaders\\membrane_demo.spv": "71b5f8d37acff921ea249c74ade6d4074d79ea80d39bf03d66488f1c47c3898f",
+      "shaders\\render.frag.spv": "5f8d792dbd6f2b4184aa6fb9218bb6238339a64fa40a1d638b514fa34436be40",
+      "shaders\\render.vert.spv": "a36b5acc73a3a01086d2dc0fa1d24c2b7c7d2c7f0985058f9531c403449ae8a9",
+      "shaders\\render_tri.frag.spv": "714852424e4c9bfdb17a0e1ad2c75d7b8e2f8826707cc473bad85dbee10158b4",
+      "shaders\\render_tri.vert.spv": "43c3b8fd6bc04112463bb7048b059379355f7e78177436397cdc40b53ab418f4",
+      "shaders\\render_tri_edge.frag.spv": "59f7213e2ee27bec45840fa48c99bada928af0638736f7f9d6f5383c7d47957d",
+      "shaders\\render_tri_frost.frag.spv": "7ea15d358ecf1fa35eafdead08032a3c8c1e2218bc7c05f5391c2a34cf52e8af",
+      "shaders\\render_tri_shadow.frag.spv": "77d591d5e4714f216cf8c65b0867385c289393cb1b1eebd801cf1e61d4525a8e",
+      "shaders\\render_tri_shadow.vert.spv": "08eaba474a8745905ace8de74501571c7cd7efc0a270337b339f39b615c57381",
+      "shaders\\skin.spv": "7e3d5580c5e8442946dabac7e7d7aca16dcbf6983c7a0f6e8c4ccf765b0af8f3",
+      "shaders\\sort.spv": "a582577800675712c9ec614af1504b3078b5c3cd5be03d11a17ee8516b79e177",
+      "shaders\\ui.frag.spv": "eb1f89e00ba352d3662132be8d86dbdd43d032ec562bb209eb01afa62b9b0fd6",
+      "shaders\\ui.vert.spv": "6163718742b52974a5b5119aacb42294d4454d86375ec9daa1f60d4b5b51b97d",
+      "shaders\\volp.spv": "4d4c3c7e8139c64fb0ec000db97977e15e41ab355cce9b3c772e2f80f486d877",
+      "shaders\\water_color.spv": "78165aa62ae6b8eac82f37c2c20c39b42a767627110621d384134a62ee18d017",
+      "shaders\\water_depth.spv": "5cc325a665e46278e0c9c208605523ba48b41ddd398e15546d78066c8618f6b0",
+      "shaders\\water_occ.spv": "a28781dc32dcf8b1c8bf315cd2fac09d6552b6088396c4ae4a2f12c51cbd75d8",
+      "shaders\\water_vis.spv": "72f422800dd0a8032fe5dfc1590610eac2159dc85ad06d1346a7ca3eab79f38d"
+    },
+    "shader_manifest_sha256": "7e7964ec7732d3b88b9deef76e734b1b9847e2f3410b7e730cc48841e9b9bed1"
+  },
+  "command": [
+    "E:\\ChimeraWork\\slot-04\\.tmp\\engine_runtime\\vkl_repair_02\\chimera_engine.exe",
+    "8104",
+    "--no-restore"
+  ],
+  "validation": {
+    "layer": "VK_LAYER_KHRONOS_validation (engine-enabled when present, engine.cpp:474-500)",
+    "stderr_is_verbatim": true,
+    "suppression": "none"
+  },
+  "cases": {
+    "V0_startup": {
+      "passed": true,
+      "state_keys": [
+        "n",
+        "particles"
+      ],
+      "state_sha256": "ac1b6475c44d59f8ea0f082c964e02b4c7b0820bd7f834cbf3ae3b058609e5ca"
+    },
+    "V1_resize": {
+      "passed": true,
+      "generations": 3,
+      "rects_ltrb": [
+        [
+          64,
+          64,
+          1344,
+          784
+        ],
+        [
+          64,
+          64,
+          1064,
+          704
+        ],
+        [
+          64,
+          64,
+          1244,
+          744
+        ]
+      ],
+      "window_visible": true
+    },
+    "V2_capture": {
+      "passed": true,
+      "png_bytes": 2985430,
+      "sha256": "544cabae19add0b40c75a9ef1e61991ced881af8bca6b9a51af267c942d096c2",
+      "window_visible_at_capture": true,
+      "captured_utc": "2026-09-11T12:43:47.937156+00:00"
+    },
+    "V3_membrane_demo": {
+      "passed": true,
+      "upload_bytes": 212,
+      "init_ok": true,
+      "reset_ok": true,
+      "step_ok": true,
+      "status_ok": true,
+      "post_demo_png_bytes": 2985430,
+      "post_demo_png_sha256": "f6e6431ac166e890e09d7b51b76afd0cbb27c10891c54a4166fe4f51d669b526",
+      "window_visible": true
+    },
+    "V4_ordered_shutdown": {
+      "passed": true,
+      "exit_code": 0,
+      "watchdog": false,
+      "window_after_close": false,
+      "ordered_markers": true,
+      "marker_positions": [
+        990,
+        1017,
+        1039,
+        1103
+      ]
+    }
+  },
+  "backdrop": {
+    "pid": 67256,
+    "hwnd": 6556318,
+    "title": "CHIMERA OWNED SHUTDOWN TEST BACKDROP - VISUAL OBSERVATION ONLY",
+    "class_name": "ChimeraOwnedBackdrop_67256_1dc842b4590",
+    "paint_revision": "chimera-owned-backdrop-v1",
+    "declared_outer_rect_xywh": [
+      64,
+      64,
+      1280,
+      720
+    ],
+    "actual_outer_rect_ltrb": [
+      64,
+      64,
+      1344,
+      784
+    ]
+  },
+  "backdrop_reference": {
+    "path": "E:\\ChimeraWork\\slot-04\\docs\\evidence\\vulkan_resource_lifetime\\repair_run_02\\backdrop_reference.png",
+    "sha256": "9c84a2363350f80ffd0eada74513c1b9956d5b573f5064d3f47cecf8721ccf55",
+    "width": 1264,
+    "height": 681,
+    "rgba_extrema": [
+      [
+        20,
+        255
+      ],
+      [
+        36,
+        255
+      ],
+      [
+        48,
+        255
+      ]
+    ],
+    "capture_api": "PrintWindow(PW_CLIENTONLY)",
+    "captured_hwnd": 6556318,
+    "captured_pid": 67256
+  },
+  "engine": {
+    "pid": 54828,
+    "exe_sha256": "680790014c40d7662c75b9b5170b0494dccb9ac5e8b729f606ce481c6197cb7a",
+    "staged_exe": "E:\\ChimeraWork\\slot-04\\.tmp\\engine_runtime\\vkl_repair_02\\chimera_engine.exe",
+    "hwnd": 16783050,
+    "resize_rects_ltrb": [
+      [
+        64,
+        64,
+        1344,
+        784
+      ],
+      [
+        64,
+        64,
+        1064,
+        704
+      ],
+      [
+        64,
+        64,
+        1244,
+        744
+      ]
+    ]
+  },
+  "window_before_close": true,
+  "exit_code": 0,
+  "window_after_close": false,
+  "ordered_markers": true,
+  "marker_positions": [
+    990,
+    1017,
+    1039,
+    1103
+  ],
+  "backdrop_unchanged": true,
+  "validation_vuid_vkDestroyDevice_05137_count": 0,
+  "validation_error_lines": 0,
+  "passed": true
+}

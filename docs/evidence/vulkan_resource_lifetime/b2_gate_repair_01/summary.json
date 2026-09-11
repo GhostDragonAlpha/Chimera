@@ -1,0 +1,221 @@
+{
+ "utc": "20260911T124736.131261Z",
+ "command": "gate",
+ "rc": 0,
+ "checks": [
+  {
+   "name": "init",
+   "verdict": "PASS",
+   "detail": {
+    "E": 2.625,
+    "E_ref": 2.6249999533666486,
+    "centre": [
+     0,
+     0,
+     0.125
+    ],
+    "it": 0,
+    "snapshot": {
+     "gamma_admitted_f64": 1,
+     "gamma_uploaded_f32": 1,
+     "unit": "J/m^2",
+     "wu_to_m": 1.0
+    }
+   },
+   "utc": "20260911T124735.027034Z"
+  },
+  {
+   "name": "init.energy_vs_fixture",
+   "verdict": "PASS",
+   "detail": {
+    "gpu": 2.625,
+    "ref": 2.6249999533666486
+   },
+   "utc": "20260911T124735.027116Z"
+  },
+  {
+   "name": "init.centre_z",
+   "verdict": "PASS",
+   "detail": {
+    "z": 0.125
+   },
+   "utc": "20260911T124735.027144Z"
+  },
+  {
+   "name": "doubling.energy",
+   "verdict": "PASS",
+   "detail": {
+    "E2": 5.25,
+    "2E0": 5.25
+   },
+   "utc": "20260911T124735.045078Z"
+  },
+  {
+   "name": "doubling.force",
+   "verdict": "PASS",
+   "detail": {
+    "F2": -0.857142866,
+    "2F0": -0.857142866
+   },
+   "utc": "20260911T124735.045140Z"
+  },
+  {
+   "name": "gamma_back_to_1",
+   "verdict": "PASS",
+   "detail": {
+    "it": 0,
+    "E": 2.625,
+    "terminal": ""
+   },
+   "utc": "20260911T124735.075850Z"
+  },
+  {
+   "name": "gamma_back.energy",
+   "verdict": "PASS",
+   "detail": {
+    "E": 2.625,
+    "E0": 2.625
+   },
+   "utc": "20260911T124735.075890Z"
+  },
+  {
+   "name": "step1",
+   "verdict": "PASS",
+   "detail": {
+    "it": 1,
+    "E": 2.62457323,
+    "terminal": ""
+   },
+   "utc": "20260911T124735.083402Z"
+  },
+  {
+   "name": "step1.descends",
+   "verdict": "PASS",
+   "detail": {
+    "it": 1,
+    "E": 2.62457323,
+    "E0": 2.625
+   },
+   "utc": "20260911T124735.083464Z"
+  },
+  {
+   "name": "run",
+   "verdict": "PASS",
+   "detail": {
+    "it": 126,
+    "E": 2.59807611,
+    "terminal": "stagnated"
+   },
+   "utc": "20260911T124735.166665Z"
+  },
+  {
+   "name": "run.terminal",
+   "verdict": "INFO",
+   "detail": {
+    "terminal": "stagnated",
+    "it": 126,
+    "acc": null,
+    "E": 2.59807611
+   },
+   "utc": "20260911T124735.166716Z"
+  },
+  {
+   "name": "capture.final_relaxed.status",
+   "verdict": "PASS",
+   "detail": {
+    "it": 126,
+    "E": 2.59807611,
+    "terminal": "stagnated"
+   },
+   "utc": "20260911T124735.573705Z"
+  },
+  {
+   "name": "capture.final_relaxed",
+   "verdict": "PASS",
+   "detail": {
+    "png": "final_relaxed.png",
+    "state_id": 16501489447187382864
+   },
+   "utc": "20260911T124735.575669Z"
+  },
+  {
+   "name": "reset",
+   "verdict": "PASS",
+   "detail": {
+    "it": 0,
+    "E": 2.625,
+    "terminal": ""
+   },
+   "utc": "20260911T124735.618101Z"
+  },
+  {
+   "name": "reset.restore",
+   "verdict": "PASS",
+   "detail": {
+    "E": 2.625,
+    "it": 0,
+    "z": 0.125
+   },
+   "utc": "20260911T124735.618143Z"
+  },
+  {
+   "name": "reject",
+   "verdict": "PASS",
+   "detail": {
+    "it": 0,
+    "E": 2.625,
+    "terminal": "no_descent_step"
+   },
+   "utc": "20260911T124735.662847Z"
+  },
+  {
+   "name": "reject.refused",
+   "verdict": "PASS",
+   "detail": {
+    "last_control": "invalid_trial_REFUSED",
+    "state_id": 17560123212910228982
+   },
+   "utc": "20260911T124735.662894Z"
+  },
+  {
+   "name": "gamma0_step",
+   "verdict": "PASS",
+   "detail": {
+    "it": 0,
+    "E": 0,
+    "terminal": "stationary"
+   },
+   "utc": "20260911T124735.710655Z"
+  },
+  {
+   "name": "gamma0.stationary",
+   "verdict": "PASS",
+   "detail": {
+    "terminal": "stationary",
+    "it": 0
+   },
+   "utc": "20260911T124735.710730Z"
+  },
+  {
+   "name": "capture.raised_gamma0.status",
+   "verdict": "PASS",
+   "detail": {
+    "it": 0,
+    "E": 0,
+    "terminal": "stationary"
+   },
+   "utc": "20260911T124736.129044Z"
+  },
+  {
+   "name": "capture.raised_gamma0",
+   "verdict": "PASS",
+   "detail": {
+    "png": "raised_gamma0.png",
+    "state_id": 17560123212910228982
+   },
+   "utc": "20260911T124736.131119Z"
+  }
+ ],
+ "fixture": "E:\\ChimeraWork\\slot-04\\docs\\evidence\\gpu_fixtures\\b2",
+ "fixture_sha256": "3e264f49929f216b6bc07024f9b7ca0a5d96ca166b8114df5198776420642c77"
+}

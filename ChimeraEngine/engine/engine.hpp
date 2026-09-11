@@ -638,6 +638,7 @@ private:
     void create_depth_resources();
     void destroy_depth_resources();
     void create_offscreen();
+    void destroy_offscreen_resources();
     VkCommandBuffer begin_single_time_cmd();
     void end_single_time_cmd(VkCommandBuffer cb);
     uint32_t find_mem_type(uint32_t types, VkMemoryPropertyFlags flags);
