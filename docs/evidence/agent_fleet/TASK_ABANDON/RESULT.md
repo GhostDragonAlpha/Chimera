@@ -106,3 +106,11 @@ documented skip); yield-recover path proven intact.
   engine-vulkan-cleanup-01, window-capture-ownership-01,
   fleet-controller-upgrade-01) with the new ops, per the third-wave Master
   amendment.
+
+Append 2026-09-11 (fleet-followups-batch-02, subagent-worker-06, PR #62
+review F2/F3 landed): `tools/agent_fleet/test_task_abandon.py` now asserts
+the exact `missing_*` refusal NAMES in both attestation tests (was bare
+`assertRaises(Refusal)`) and pins the RUNNING-implies-bound-slot invariant
+that makes the `task_has_no_slot` / `slot_binding_mismatch` refusal arms
+unreachable by design (documented in the test, not driven). 19 -> 20 tests,
+module green at the batch delivery head; no assertion removed or loosened.

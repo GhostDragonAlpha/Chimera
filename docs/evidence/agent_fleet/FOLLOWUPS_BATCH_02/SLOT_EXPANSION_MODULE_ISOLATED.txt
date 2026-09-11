@@ -1,0 +1,20 @@
+test_claim_auto_spins_slot_and_preserves_stale_refusal (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_claim_auto_spins_slot_and_preserves_stale_refusal) ... ok
+test_layout_bounds_and_inventory_default (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_layout_bounds_and_inventory_default) ... ok
+test_reopen_existing_registry_changes_nothing (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_reopen_existing_registry_changes_nothing) ... ok
+test_scale_probe_lock_errors_and_latency (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_scale_probe_lock_errors_and_latency) ... FAIL
+test_slot_spawn_and_retire_roundtrip_with_refusals (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_slot_spawn_and_retire_roundtrip_with_refusals) ... ok
+
+======================================================================
+FAIL: test_scale_probe_lock_errors_and_latency (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_scale_probe_lock_errors_and_latency)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-09\tools\agent_fleet\test_slot_expansion.py", line 268, in test_scale_probe_lock_errors_and_latency
+    self.assertEqual(lock_err, 0, 'lock errors: %s' % summary)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : lock errors: {'threads': 8, 'duration_s': 20.4, 'ops': 1056, 'p50_ms': 19.7, 'p95_ms': 341.2, 'p99_ms': 2814.0, 'max_ms': 12264.4, 'lock_errors': 1, 'other_refusals': 106, 'spawn_cost_ms': 8.5}
+
+----------------------------------------------------------------------
+Ran 5 tests in 21.322s
+
+FAILED (failures=1)
+SCALE_PROBE_MIXED {"threads": 8, "duration_s": 20.4, "ops": 1056, "p50_ms": 19.7, "p95_ms": 341.2, "p99_ms": 2814.0, "max_ms": 12264.4, "lock_errors": 1, "other_refusals": 106, "spawn_cost_ms": 8.5}

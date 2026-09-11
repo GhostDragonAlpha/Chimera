@@ -1,0 +1,6 @@
+test_verify_hwnd_capture_none_pin_adopts_measured_size (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_verify_hwnd_capture_none_pin_adopts_measured_size) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.272s
+
+OK

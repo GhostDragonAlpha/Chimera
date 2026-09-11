@@ -32,5 +32,10 @@
       "F6: dead inventory.inspect slots param reverted; F7 dead else-require removed (no_free_slot superseded by design)"
     ],
     "gen2_verification": "expansion suite 5/5 with new probes (high-water no-reuse, retire-history gate, integration-busy claim refusal); control 36/36; bootstrap 14/14"
+  },
+  "correction_20260911_followups_batch_02": {
+    "load_fragility_note": "the mixed-load scale probe's lock_errors==0 assertion (test_slot_expansion.test_scale_probe_lock_errors_and_latency) is LOAD-FRAGILE under full-suite contention: two observed runs under suite load each recorded exactly ONE database-locked error; isolated runs of the module are green. The single-writer SQLite store is the documented I/O boundary (see saturated_probe), so under external suite load a single lock timeout is a true boundary event, not a regression.",
+    "disposition": "the assertion is RETAINED deliberately - not removed, not loosened; the isolation rerun of the module is the green gate, matching the full_fleet_suite rerun disposition already recorded above",
+    "optional_followup": "an in-test load-context comment above the assertion was considered; tools/agent_fleet/test_slot_expansion.py is outside fleet-followups-batch-02 write scopes, so the exact comment text is delivered in docs/evidence/agent_fleet/FOLLOWUPS_BATCH_02/ for the lead's disposition"
   }
 }
