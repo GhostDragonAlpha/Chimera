@@ -1,0 +1,24 @@
+test_abandoned_card_is_reproposable_in_catalogue_next (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_abandoned_card_is_reproposable_in_catalogue_next) ... ok
+test_abandoned_id_is_permanent_scope_freed_and_dependency_blocking (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_abandoned_id_is_permanent_scope_freed_and_dependency_blocking) ... ok
+test_abandoned_task_not_counted_as_owner_capacity_or_active (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_abandoned_task_not_counted_as_owner_capacity_or_active) ... ok
+test_audit_trail_append_only_and_token_free (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_audit_trail_append_only_and_token_free) ... ok
+test_claim_abandon_drops_queued_resource_requests (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_claim_abandon_drops_queued_resource_requests) ... ok
+test_claim_abandon_refuses_active_provision_naming_slot_rebind (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_claim_abandon_refuses_active_provision_naming_slot_rebind) ... ok
+test_claim_abandon_refuses_non_supervisor_and_wrong_states (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_claim_abandon_refuses_non_supervisor_and_wrong_states) ... ok
+test_claim_abandon_refuses_while_resources_still_held (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_claim_abandon_refuses_while_resources_still_held) ... ok
+test_claim_abandon_requires_both_attestations (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_claim_abandon_requires_both_attestations) ... ok
+test_claim_abandon_returns_ready_at_new_generation_without_revoking_session (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_claim_abandon_returns_ready_at_new_generation_without_revoking_session) ... ok
+test_refusals_leave_revision_and_audit_untouched (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_refusals_leave_revision_and_audit_untouched) ... ok
+test_stale_generation_refused_after_claim_abandon (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_stale_generation_refused_after_claim_abandon) ... ok
+test_task_abandon_never_touches_the_filesystem (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_task_abandon_never_touches_the_filesystem) ... ok
+test_task_abandon_refuses_inactive_states (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_task_abandon_refuses_inactive_states) ... ok
+test_task_abandon_refuses_non_supervisor_actors (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_task_abandon_refuses_non_supervisor_actors) ... ok
+test_task_abandon_refuses_unknown_task (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_task_abandon_refuses_unknown_task) ... ok
+test_task_abandon_requires_reason_and_evidence (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_task_abandon_requires_reason_and_evidence) ... ok
+test_task_abandon_retires_ready_task_with_audit_record (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_task_abandon_retires_ready_task_with_audit_record) ... ok
+test_yield_recover_path_still_works_alongside_claim_abandon (tools.agent_fleet.test_task_abandon.TaskAbandonTests.test_yield_recover_path_still_works_alongside_claim_abandon) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 1.099s
+
+OK

@@ -635,3 +635,65 @@ sandbox — same-OS-account shell access remains outside the model. Tests:
 fence matrix, secret-absence scan across state/snapshot/events, reopen
 persistence, enforced-mode gating, transport refusal, supervisor-marker
 absence).
+
+## Abandon: retiring stale READY records and unprovisionable claims (2026-09-11, fleet-task-abandon-01)
+
+Two supervisor-only, audited ops close the controller gaps recorded in the
+third-wave Master amendment. Neither ever touches the filesystem, and
+neither ever revokes an agent session. Preregistration and measured
+results: [TASK_ABANDON](evidence/agent_fleet/TASK_ABANDON/PREREGISTRATION.md).
+
+`task_abandon(task, reason, evidence)` retires a stale READY task: the task
+becomes **ABANDONED** — a new TERMINAL state — with `{reason, evidence,
+actor, revision}` recorded on the task and an audit event carrying the
+reason. Refusals: `supervisor_only`, `unknown_task`, `task_not_ready` for
+every non-READY state (RUNNING, BLOCKED, REVIEW, RECOVERY_HOLD, INTEGRATED,
+already ABANDONED), and blank attestations. The id is retired permanently
+(`create_task` refuses it as a duplicate): redoing the work means a NEW task
+id, so the retired record's audit history is preserved, never rewritten.
+
+ABANDONED coherence rule (one rule, applied everywhere): ABANDONED joins NO
+active-state tuple (`RUNNING/BLOCKED/REVIEW/RECOVERY_HOLD`), so claim
+eligibility, capacity accounting, the write-scope-conflict predicate, the
+`_fail`/`yield` recovery sweep and stale-claim queue drops all treat it as
+INACTIVE with no further edits, and the dependency gate
+(`dependencies_not_integrated`) treats it as NOT satisfying a dependency
+(`INTEGRATED`-only, unchanged). The one complement-enumeration was fixed
+explicitly: `catalogue_next` no longer counts ABANDONED as `live`, so the
+card of an abandoned realization becomes a PROPOSED candidate again (while
+cards DEPENDING on it stay blocked — `done` remains INTEGRATED-only). The
+run-queue surfaces (`run_queue.py` reference model, `run_queue_worker.py`
+adapter) read READY/active tuples only, so they ignore ABANDONED records
+with no change — audited, pinned by tests.
+
+`claim_abandon(task, preservation_evidence, drain_evidence)` retires an
+unprovisionable RUNNING claim WITHOUT ending the owner's session — the gap
+the yield→recover path filled at the cost of the session (that path remains
+available and unchanged, still the right tool when the session itself must
+end). The supervisor attests work preservation AND process/resource drain
+(`recover`'s exact guard: `resources_still_held` until drained); the slot
+frees through the same `_preserve_provision` machinery as
+recover/slot_rebind/release_slot; queued resource requests for the task die
+(`dropped_reason='claim_abandoned'`); the task returns to READY at
+generation+1 with owner, slot and instance bindings cleared and the
+attestations stored as its checkpoint, so any qualified agent — including
+the same one, which stays `alive` with its remaining capacity — can re-claim
+at the new generation. A slot carrying an ACTIVE provision is refused by
+name (`provision_active_use_slot_rebind`): that situation belongs to
+`slot_rebind`, whose contract this op does not weaken or duplicate.
+Refusals: `supervisor_only`, `unknown_task`, `task_not_running`,
+`task_has_no_slot`, `slot_binding_mismatch`,
+`provision_active_use_slot_rebind`, `resources_still_held`, and blank
+attestations — every refusal leaves revision and audit untouched.
+
+Tests: `tools/agent_fleet/test_task_abandon.py` (19: both positive paths
+with reopen invariants, every named refusal with revision-preservation,
+ABANDONED coherence across claim/dependency/scope/capacity/catalogue,
+permanent-id retirement, never-touches-filesystem proof, append-only
+token-free audit, and the yield→recover path still intact). Deployment note:
+`control.py` is also the deployed service source — this change reaches the
+live controller only through the next controlled transition; nothing here
+mutates the live service. The documented stale records
+(fleet-run-queue-01, fleet-orient-continuation-01, engine-vulkan-cleanup-01,
+window-capture-ownership-01, fleet-controller-upgrade-01) are to be retired
+by the SUPERVISOR with these ops AFTER review, per the Master amendment.
