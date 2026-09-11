@@ -1,0 +1,53 @@
+R5 DEPLOYED-SOURCE TRACE at base 62b8e35757c71e31d621c26b32a7c52558905b02
+source identity: control.py sha256=7cee259b35a21ebe689feb5d77c8f2bb10b7125cd1ea9c3ac06e1cb6254bfa30 (839 lines); review_handoff.py sha256=ad3674bd2e1f1a60a3762e44cd26578150b2c475b064af042a40bace30b51811 (227 lines)
+The live service was NEVER contacted; static read of the reference text only.
+
+G1 supervisor_only (qualification authority):
+  control.py:431:             require(actor=='SUPERVISOR','supervisor_only')
+
+G2 qualification_evidence required (evidence text is not optional):
+  control.py:438:                      qualification=text(p.get('evidence'),'qualification_evidence'))
+
+G3 claim caps gate capability_missing:
+  control.py:526:             require(set(t['capabilities']) <= set(a['capabilities']),'capability_missing')
+
+G4 closed resource-class set (per-device classes are a typed vocabulary):
+  control.py:190:             require(isinstance(klass,str) and klass in ('gpu_functionality','gpu_benchmark',
+  control.py:191:                                                         'engine_demo','dyad_inference','memory'),'invalid_resource_class')
+
+G5 dyad_requires_gpu_reservation (DYAD class chains to same-task GPU):
+  control.py:581:                 if name=='dyad_eye':require(s['resources'].get('rtx4090',{}).get('task')==t['id'],'dyad_requires_gpu_reservation')
+
+G6 engine_requires_gpu_reservation:
+  control.py:582:                 if name=='engine_demo':require(s['resources'].get('rtx4090',{}).get('task')==t['id'],'engine_requires_gpu_reservation')
+
+G7 scheduler chain chained_requires_gpu_same_task:
+  control.py:255:                 req['stalled']='chained_requires_gpu_same_task';return 'contended'
+
+G8 NO-MUTATION property: evidence text stored by checkpoint/submit_review never
+mutates capability/qualification state. Quoted op bodies:
+  control.py:556-557 (checkpoint/submit_review/resource ops block):
+    556:         if op in ('checkpoint','submit_review','resource_acquire','resource_release'):
+    557:             t=self._task(s,actor,p.get('task'),p.get('generation'),instance=p.get('_resolved_instance'))
+  (No assignment to any agents[x][capabilities] or qualified flag occurs in this
+   block; the only capability mutations in the file are at qualify (436-438),
+   enroll init (403-405), and elect/reset paths - verified by grep below.)
+
+G8 grep: lines containing capabilities= or qualified= mutations:
+  control.py:436: a.update(qualified=True,capabilities=sorted(set(caps)),max_tasks=integer(p.get('max_tasks',1),1,5,'capacity'),
+
+R5 verdict: 8/8 mapped gates found and quoted at base.
+
+R6 DEVIATION RE-MEASURE at THIS base (62b8e357):
+  owner_instance occurrences: review_handoff.py=0 (predicted 0 -> MATCH); control.py=9 (predicted 9, file byte-identical to gov-01 base sha 7cee259b -> MATCH)
+  interceptor claim bind (review_handoff.py:90-91):
+    90:         task.update(owner=actor, slot=number, state="RUNNING",
+    91:                     generation=task["generation"] + 1)
+  base claim bind (control.py:553-554):
+    553:             t.update(owner=actor,slot=n,state='RUNNING',generation=t['generation']+1,
+    554:                      owner_instance=p.get('_resolved_instance'))
+  DEVIATION PERSISTS at this base: the live claim path (interceptor) still drops
+  the owner_instance binding and performs no enforced-fencing gate; the INTENDED
+  contract (modeled by reference/gov02_capability_registry.py where applicable and
+  by the gov-01 model for claim CAS) is not altered by this finding. Fix in review
+  as PR #80 (fleet-review-handoff-claim-delegation-01).

@@ -1,0 +1,8 @@
+R2 FALSIFIER-DIRECTION NEGATIVES (card prediction clause 1 + falsifier: "Any inferred capability is advertised as executed") — model must REJECT — threshold 4/4
+
+(a) unit-test pass advertising runtime as executed: (REFUSED, 'inferred_advertised_as_executed'); runtime stays MISSING
+(b) INFERRED runtime advertised as executed: (REFUSED, 'inferred_advertised_as_executed'); stays INFERRED
+(c) unit+runtime EXECUTED, dyad MISSING: visual-as-executed (REFUSED, 'inferred_advertised_as_executed'); dyad stays MISSING (unknown despite unit-test success)
+(d) INFERRED from "benchmark suite passed 100%": (REFUSED, 'inferred_advertised_as_executed'); stays INFERRED
+
+CARD FALSIFIER in the reference model: NOT reproducible (every inferred/missing-as-executed path refused by name) -> HOLDS
