@@ -1,0 +1,96 @@
+PREREGISTRATION — dyad-template-hardening-01 (generation 3, slot 6)
+
+- agent: subagent-worker-08 (host-delegated CPU/docs/python worker; lead glm53-lead-02, epoch 5)
+- record base: bf9d532b361361137e8253c00d498a9326d38fe8 (PR #64 merge; contains the
+  retained-reviews lane and both advisory findings, controller feedback dce2c81370a3172d2a899d19)
+- branch: astra/tasks/dyad-template-hardening-01, reconciled to the astra/gait-capture tip
+  4c31999797a9383ea252019be1f32511709fa280 by merge BEFORE this preregistration commit
+  (record base is an ancestor of the tip; merge was fast-forward, no conflicts)
+- written: 2026-09-11, BEFORE any implementation or test run of this task (no actuals below)
+
+## What this task lands
+
+The two advisory findings recorded from the PR #64 review (feedback dce2c813):
+
+F1 (question guidance): the template's question guidance must not presuppose
+    non-determinability. The retained reviews' Q5 ("What features of these frames prevent
+    you from determining exact positions, heights, or distances?") presumes the reviewer
+    CANNOT determine. The guidance is rephrased to the determinability-neutral form:
+    "Can you determine X? If not, what limits you?" — pinned in the template driver as a
+    named constant, documented in docs/THE_DYAD_SUBAGENT_TEMPLATE.md, and pinned by unit
+    test (guidance form present; presupposing form absent from the template document).
+
+F2 (OPTIONAL blind frame ordering): camera/runtime metadata in prompts discloses sidecar
+    state values (which frame is "supposed" raised — e.g. frame_1_state / frame_2_state in
+    the retained prompts). The request builder gains an OPTIONAL blind mode, keyed by a
+    spec field "blind": {"seed": <int>}:
+      - frames are listed in SEEDED-RANDOMIZED order (random.Random(seed).shuffle;
+        reproducible byte-identical prompts across plan and assemble runs),
+      - state values are STRIPPED from the prompt-visible runtime_metadata
+        (frame_<i>_state keys moved out of the prompt text),
+      - a fail-closed leak scan refuses blind_state_leak if any retained state value
+        string still appears anywhere in the built prompt,
+      - the unblinding map (original order + paths + declared sha256 + states +
+        redacted keys + seed + prompt_sha256) is retained to the evidence root as
+        unblinding_<attempt>.json, sha-recorded in the plan output
+        (unblinding_sha256); deterministic bytes (no timestamps) so plan and assemble
+        agree and assemble verifies-or-refuses (unblinding_mismatch) on tamper,
+      - DEFAULT mode (no "blind" key) stays BYTE-IDENTICAL to today: same exact-prompt
+        bytes, same request-spec bytes, same plan output keys.
+
+## Scopes (only these paths change)
+
+Authoritative scope list lives in the controller task record (dyad-template-hardening-01,
+generation 3); it is pointed at, not duplicated here. In prose: this lane changes the
+template driver named above, the template document named above, this evidence directory,
+and adds one NEW unit suite beside the driver (dyad_subagent_template_tests.py — created
+in the implementation commit that follows this prereg; named here without its repo path
+because at prereg time it intentionally does not exist yet, and this document must not
+carry a pointer that cannot resolve).
+
+tools/dyad_provider.py is NOT in scope and is NOT modified: the reviewed provider
+contract (validate/build_prompt/refusals/verdict ceiling) is consumed exactly as
+reviewed; blinding happens at the template/spec layer, before DyadReviewRequest is
+constructed. The prompt bytes in blind mode are produced by the UNCHANGED
+DyadReviewRequest.build_prompt() from a re-indexed, state-redacted request.
+
+## STATEMENT (theory, per task packet)
+
+Both hardenings strengthen DYAD non-leading discipline without changing the reviewed
+provider contract: a reviewer subagent whose prompt neither presupposes an answer (F1)
+nor discloses which frame carries which sidecar state (F2) is led strictly less, and the
+unblinding record keeps the lane's evidence auditable after the fact.
+
+## PREDICTION (stated before any run)
+
+1. Unit tests pin the new question-form guidance: the constant carries exactly the
+   "Can you determine X? If not, what limits you?" form; the template document carries
+   the same form; the presupposing "prevent you from determining" phrasing appears in
+   neither the constant nor the template document.
+2. Blind mode produces prompts whose frame order is randomized (seeded, reproducible:
+   same seed -> identical prompt and unblinding bytes on repeated runs; a different seed
+   yields the permutation that seed defines), with state values ABSENT from the prompt
+   text (string scan) and PRESENT in the retained unblinding record.
+3. The unblinding map is recoverable: its sha256 matches the plan-recorded
+   unblinding_sha256; its blind_order maps every blind position back to the original
+   capture index; assemble reproduces byte-identical unblinding bytes and refuses
+   (unblinding_mismatch) a tampered map.
+4. Default mode is byte-identical to today: for a spec without "blind", the exact-prompt
+   bytes equal both a golden literal pinned in the test suite and the prompt built
+   independently through the unchanged provider contract from the same spec.
+5. tools/test_dyad_provider.py passes unchanged (14/14) — no provider-contract weakening.
+
+## FALSIFIER (named before the run)
+
+- Default-mode prompt bytes changed (golden literal or independent-construction mismatch).
+- State values leaking into any blind prompt (leak scan or unit scan finds one).
+- Unblinding record absent, unrecoverable, not sha-recorded, or not reproducible.
+- Any provider-contract weakening (test_dyad_provider regression; dyad_provider.py edit).
+- A leading/presupposing phrasing surviving in the template guidance or its constant.
+
+## NOT_CLAIMED
+
+- No DYAD review is run by this task; no visual acceptance of anything is claimed.
+- No change to the verdict ceiling (agreement stays INCONCLUSIVE, never acceptance).
+- No live control-plane mutation beyond this task's own claim/checkpoint/review ops;
+  no GPU, no model load, no engine run (CPU-only unit tests on temp roots).
