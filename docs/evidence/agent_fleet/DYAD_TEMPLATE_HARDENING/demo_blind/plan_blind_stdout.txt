@@ -1,0 +1,27 @@
+{
+ "planned": true,
+ "attempt": "hard-demo-blind",
+ "review_type": "ordered_frames",
+ "captures": [
+  {
+   "index": 1,
+   "path": "E:\\ChimeraWork\\slot-06\\docs\\evidence\\agent_fleet\\DYAD_TEMPLATE_HARDENING\\demo_blind\\captures\\frame_c.png",
+   "sha256": "b13105d205c086558be3077c30f2eade347f595771d78d931f6385a113d59295"
+  },
+  {
+   "index": 2,
+   "path": "E:\\ChimeraWork\\slot-06\\docs\\evidence\\agent_fleet\\DYAD_TEMPLATE_HARDENING\\demo_blind\\captures\\frame_a.png",
+   "sha256": "bdc46784088bc3ca1e61a1df9ab70182560330a59a2b1d6168f58b711b6a3d87"
+  },
+  {
+   "index": 3,
+   "path": "E:\\ChimeraWork\\slot-06\\docs\\evidence\\agent_fleet\\DYAD_TEMPLATE_HARDENING\\demo_blind\\captures\\frame_b.png",
+   "sha256": "427cc28c00ce284fac91c14d57a4ee0772af004e5d39d2cdaaccd356d6180ab7"
+  }
+ ],
+ "prompt_file": "docs\\evidence\\agent_fleet\\DYAD_TEMPLATE_HARDENING\\demo_blind\\exact_prompt_hard-demo-blind.txt",
+ "prompt_sha256": "a751df5ef43452537fc166cebff32a115897ed845a6eb61e5674d244c5d80341",
+ "blind": true,
+ "unblinding_file": "docs\\evidence\\agent_fleet\\DYAD_TEMPLATE_HARDENING\\demo_blind\\unblinding_hard-demo-blind.json",
+ "unblinding_sha256": "919a3c57ddf6afd14dce9e9341077de5f41c7420720f35fe3dae96787be5e639"
+}

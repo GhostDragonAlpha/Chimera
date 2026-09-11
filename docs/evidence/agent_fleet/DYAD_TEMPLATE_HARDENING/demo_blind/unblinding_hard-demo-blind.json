@@ -1,0 +1,48 @@
+{
+ "attempt": "hard-demo-blind",
+ "blind_order": [
+  {
+   "blind_index": 1,
+   "original_index": 3
+  },
+  {
+   "blind_index": 2,
+   "original_index": 1
+  },
+  {
+   "blind_index": 3,
+   "original_index": 2
+  }
+ ],
+ "mode": "blind",
+ "original_order": [
+  {
+   "index": 1,
+   "path": "E:\\ChimeraWork\\slot-06\\docs\\evidence\\agent_fleet\\DYAD_TEMPLATE_HARDENING\\demo_blind\\captures\\frame_a.png",
+   "sha256": "bdc46784088bc3ca1e61a1df9ab70182560330a59a2b1d6168f58b711b6a3d87"
+  },
+  {
+   "index": 2,
+   "path": "E:\\ChimeraWork\\slot-06\\docs\\evidence\\agent_fleet\\DYAD_TEMPLATE_HARDENING\\demo_blind\\captures\\frame_b.png",
+   "sha256": "427cc28c00ce284fac91c14d57a4ee0772af004e5d39d2cdaaccd356d6180ab7"
+  },
+  {
+   "index": 3,
+   "path": "E:\\ChimeraWork\\slot-06\\docs\\evidence\\agent_fleet\\DYAD_TEMPLATE_HARDENING\\demo_blind\\captures\\frame_c.png",
+   "sha256": "b13105d205c086558be3077c30f2eade347f595771d78d931f6385a113d59295"
+  }
+ ],
+ "prompt_sha256": "a751df5ef43452537fc166cebff32a115897ed845a6eb61e5674d244c5d80341",
+ "redacted_keys": [
+  "frame_1_state",
+  "frame_2_state",
+  "frame_3_state"
+ ],
+ "seed": 7,
+ "states": {
+  "frame_1_state": "sidecar: gamma=0 J/m^2, centre height 0.125 m",
+  "frame_2_state": "sidecar: gamma=1 J/m^2, relaxed, centre height ~0 m",
+  "frame_3_state": "sidecar: gamma=0.5 J/m^2, mid-relaxation"
+ },
+ "task": "dyad-template-hardening-01"
+}

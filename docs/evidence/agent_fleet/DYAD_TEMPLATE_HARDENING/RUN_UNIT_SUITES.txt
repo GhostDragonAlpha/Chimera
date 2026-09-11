@@ -1,0 +1,50 @@
+RUN_UNIT_SUITES — dyad-template-hardening-01 (generation 3, slot 6, subagent-worker-08)
+when: 2026-09-11 at task HEAD (re-captured at the final code state: byte-exact unblinding retention)
+branch: astra/tasks/dyad-template-hardening-01 (record base bf9d532b reconciled to tip 4c319997, then prereg -> implementation -> evidence)
+host: Windows Git Bash, python (CPU only; no engine, no model, no GPU, no live control-plane ops)
+
+== python tools/test_dyad_provider.py -v (reviewed contract suite — must stay 14/14) ==
+test_capability_validated_at_construction (__main__.ProviderTests.test_capability_validated_at_construction) ... ok
+test_capture_integrity_fail_closed (__main__.ProviderTests.test_capture_integrity_fail_closed) ... ok
+test_local_adapter_contract (__main__.ProviderTests.test_local_adapter_contract) ... ok
+test_malformed_callback_is_named_refusal (__main__.ProviderTests.test_malformed_callback_is_named_refusal) ... ok
+test_missing_served_identity_is_named_uncertainty (__main__.ProviderTests.test_missing_served_identity_is_named_uncertainty) ... ok
+test_no_vision_refusal (__main__.ProviderTests.test_no_vision_refusal) ... ok
+test_numeric_mentions_only_tagged (__main__.ProviderTests.test_numeric_mentions_only_tagged) ... ok
+test_prompt_deterministic_and_not_leading (__main__.ProviderTests.test_prompt_deterministic_and_not_leading) ... ok
+test_provider_selection_no_fallback (__main__.ProviderTests.test_provider_selection_no_fallback) ... ok
+test_remote_review_refuses_unwired_by_name (__main__.ProviderTests.test_remote_review_refuses_unwired_by_name) ... ok
+test_request_validation (__main__.ProviderTests.test_request_validation) ... ok
+test_subagent_adapter_retains_evidence (__main__.ProviderTests.test_subagent_adapter_retains_evidence) ... ok
+test_temporal_capability_ladder (__main__.ProviderTests.test_temporal_capability_ladder) ... ok
+test_verdict_mapping_and_contradiction (__main__.ProviderTests.test_verdict_mapping_and_contradiction) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.025s
+
+OK
+
+== NEW suite: tools/dyad_subagent_template_tests.py -v ==
+test_assemble_reproduces_prompt_and_retains_blind_response (__main__.BlindAssembleTests.test_assemble_reproduces_prompt_and_retains_blind_response) ... ok
+test_assemble_unblinding_bytes_identical_to_plan (__main__.BlindAssembleTests.test_assemble_unblinding_bytes_identical_to_plan) ... ok
+test_tampered_unblinding_refused (__main__.BlindAssembleTests.test_tampered_unblinding_refused) ... ok
+test_blind_order_is_seeded_and_reproducible (__main__.BlindOrderingTests.test_blind_order_is_seeded_and_reproducible) ... ok
+test_blind_requires_integer_seed_and_multiple_captures (__main__.BlindOrderingTests.test_blind_requires_integer_seed_and_multiple_captures) ... ok
+test_state_leak_fails_closed (__main__.BlindOrderingTests.test_state_leak_fails_closed)
+A state value re-introduced under a non-redacted key is a named ... ok
+test_states_absent_from_prompt_present_in_unblinding (__main__.BlindOrderingTests.test_states_absent_from_prompt_present_in_unblinding) ... ok
+test_unblinding_recoverable_and_sha_recorded (__main__.BlindOrderingTests.test_unblinding_recoverable_and_sha_recorded) ... ok
+test_default_plan_output_keys_unchanged (__main__.DefaultByteIdentityTests.test_default_plan_output_keys_unchanged) ... ok
+test_prompt_bytes_equal_golden_literal (__main__.DefaultByteIdentityTests.test_prompt_bytes_equal_golden_literal) ... ok
+test_prompt_bytes_equal_independent_contract_construction (__main__.DefaultByteIdentityTests.test_prompt_bytes_equal_independent_contract_construction)
+Built through the provider classes DIRECTLY from the original spec — ... ok
+test_constant_carries_only_the_neutral_form (__main__.F1GuidanceFormTests.test_constant_carries_only_the_neutral_form) ... ok
+test_document_carries_the_neutral_form (__main__.F1GuidanceFormTests.test_document_carries_the_neutral_form) ... ok
+test_presupposing_phrasing_absent_from_constant_and_document (__main__.F1GuidanceFormTests.test_presupposing_phrasing_absent_from_constant_and_document) ... ok
+test_default_and_blind_prompts_both_come_from_build_prompt (__main__.ProviderContractUntouchedTests.test_default_and_blind_prompts_both_come_from_build_prompt) ... ok
+test_driver_uses_provider_module_without_shadowing (__main__.ProviderContractUntouchedTests.test_driver_uses_provider_module_without_shadowing) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.269s
+
+OK

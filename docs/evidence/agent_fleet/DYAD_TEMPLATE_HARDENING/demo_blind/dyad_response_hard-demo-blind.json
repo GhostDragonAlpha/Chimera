@@ -1,0 +1,54 @@
+{
+ "attempt": "hard-demo-blind",
+ "capture_identities": [
+  {
+   "index": 1,
+   "path": "E:\\ChimeraWork\\slot-06\\docs\\evidence\\agent_fleet\\DYAD_TEMPLATE_HARDENING\\demo_blind\\captures\\frame_c.png",
+   "sha256": "b13105d205c086558be3077c30f2eade347f595771d78d931f6385a113d59295"
+  },
+  {
+   "index": 2,
+   "path": "E:\\ChimeraWork\\slot-06\\docs\\evidence\\agent_fleet\\DYAD_TEMPLATE_HARDENING\\demo_blind\\captures\\frame_a.png",
+   "sha256": "bdc46784088bc3ca1e61a1df9ab70182560330a59a2b1d6168f58b711b6a3d87"
+  },
+  {
+   "index": 3,
+   "path": "E:\\ChimeraWork\\slot-06\\docs\\evidence\\agent_fleet\\DYAD_TEMPLATE_HARDENING\\demo_blind\\captures\\frame_b.png",
+   "sha256": "427cc28c00ce284fac91c14d57a4ee0772af004e5d39d2cdaaccd356d6180ab7"
+  }
+ ],
+ "exact_prompt": "DYAD visual review request\ntask: dyad-template-hardening-01\nattempt: hard-demo-blind\nphysical/programming context: three window frames of one triangulated membrane object at one fixed camera (synthetic builder-demo captures, no engine run)\nclaim under examination: the recorded states are visually distinguishable\nreview type: ordered_frames\nordered captures: #1 frame_c.png (sha256 b13105d205c0...), #2 frame_a.png (sha256 bdc46784088b...), #3 frame_b.png (sha256 427cc28c00ce...)\ncamera/runtime metadata: {\"camera\": \"fixed demo camera phi 0.35 / radius 3.0\"}\nevidence limits: builder demo only: no vision model ran; numbers would be observations, not measurements\n\nAnswer EVERY question with its number. Report only what you can observe in the supplied images; state uncertainty explicitly. Do not guess. Numbers you mention are observations to verify, not measurements.\n1. Describe what frame 1 shows.\n2. Describe what frame 2 shows.\n3. Describe what frame 3 shows.\n4. Can you determine which frame was recorded first? If not, what limits you?",
+ "finish_status": "complete",
+ "observations": [
+  "six-triangle fan, light edges, grey fill"
+ ],
+ "provider_id": "subagent-dyad-glm53flash",
+ "raw_response": "1. fan of light-edged triangles over grey fill.\n2. same fan; convergence point lower.\n3. similar structure.\n4. I cannot determine which frame was recorded first; the pixels carry no recording-order information.",
+ "review_type": "ordered_frames",
+ "served_identity_note": "reported: builder-demo only (no vision model ran; identity not applicable)",
+ "served_model": "builder-demo only (no vision model ran; identity not applicable)",
+ "task": "dyad-template-hardening-01",
+ "uncertainty": "recording order and exact heights are not resolvable from stills alone",
+ "verdict": {
+  "numeric_mentions": [
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4"
+   }
+  ],
+  "status": "NOT_CLAIMED",
+  "supports_claim": null
+ }
+}
