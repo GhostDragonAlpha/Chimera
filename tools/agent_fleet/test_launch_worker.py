@@ -1,6 +1,7 @@
 from pathlib import Path
 import tempfile, unittest
-from tools.agent_fleet.launch_worker import launch_worker, load_secrets
+from unittest.mock import patch
+from tools.agent_fleet.launch_worker import _enroll, launch_worker, load_secrets
 
 class LauncherTests(unittest.TestCase):
     def test_enroll_qualify_start_removes_secrets_from_child(self):
@@ -29,5 +30,17 @@ class LauncherTests(unittest.TestCase):
                               supervisor_token="s", enrollment_token="e", capabilities=["cpu"],
                               worker_script=Path("worker.py"), enroll_runner=lambda *x: None,
                               qualify_call=lambda *x: None, process_runner=lambda *x, **k: None)
+
+    def test_enrollment_child_receives_only_enrollment_secret(self):
+        with tempfile.TemporaryDirectory() as d:
+            seen = {}
+            def run(argv, **kwargs): seen.update(kwargs); return type("R", (), {"returncode": 0})()
+            with patch.dict("os.environ", {
+                "CHIMERA_FLEET_SUPERVISOR_TOKEN": "super",
+                "CHIMERA_FLEET_ENROLLMENT_TOKEN": "old",
+            }, clear=False), patch("subprocess.run", run):
+                _enroll("http://127.0.0.1:8099/v1/action", "a", "label", Path(d) / "s.json", "new")
+            self.assertEqual(seen["env"]["CHIMERA_FLEET_ENROLLMENT_TOKEN"], "new")
+            self.assertNotIn("CHIMERA_FLEET_SUPERVISOR_TOKEN", seen["env"])
 
 if __name__ == "__main__": unittest.main()

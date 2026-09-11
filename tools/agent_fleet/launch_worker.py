@@ -36,7 +36,9 @@ def launch_worker(*, endpoint: str, agent: str, label: str, session_path: Path,
     return process_runner([python_exe, str(worker_script), "--session", str(session_path)], env=child_env)
 
 def _enroll(endpoint, agent, label, session_path, enrollment_token):
-    env = dict(os.environ, CHIMERA_FLEET_ENROLLMENT_TOKEN=enrollment_token)
+    env = {k: v for k, v in os.environ.items()
+           if k not in ("CHIMERA_FLEET_SUPERVISOR_TOKEN", "CHIMERA_FLEET_ENROLLMENT_TOKEN")}
+    env["CHIMERA_FLEET_ENROLLMENT_TOKEN"] = enrollment_token
     cmd = [sys.executable, str(Path(__file__).with_name("enroll_agent.py")), "--endpoint", endpoint,
            "--agent", agent, "--label", label, "--out", str(session_path)]
     result = subprocess.run(cmd, env=env, capture_output=True, text=True, check=False)
