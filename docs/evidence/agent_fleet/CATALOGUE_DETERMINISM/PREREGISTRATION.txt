@@ -1,0 +1,107 @@
+PREREGISTRATION - catalogue-determinism-audit-01
+====================================================
+
+Written BEFORE any builder run of this audit; no measured value appears in
+this file. Task: catalogue-determinism-audit-01, owner subagent-worker-04,
+base 4c31999797a9383ea252019be1f32511709fa280, branch
+astra/tasks/catalogue-determinism-audit-01, scope
+docs/evidence/agent_fleet/CATALOGUE_DETERMINISM only.
+
+BACKGROUND
+----------
+The PR #57 review root-caused path- and HEAD-bound non-determinism in the
+catalogue builder output (tools/agent_fleet/master_catalogue.py): absolute
+source paths and best-effort git HEAD provenance feed json.dumps, so the
+transported envelope ({"payload": ..., "digest": ...} written by --out) is
+expected to change when the checkout path or HEAD changes even with
+identical source bytes. By reading the builder (revision 4c31999...), the
+fields that can carry that provenance are exactly:
+
+  PATH carriers
+    cards[*].source.path                 (= str(catalog_path), one per card)
+    source_manifest.catalog.path         (= str(catalog_path))
+    source_manifest.master.path          (= str(master_path))
+  HEAD carriers
+    source_manifest.catalog.git_commit   (=_git_commit(catalog_path))
+    source_manifest.master.git_commit    (=_git_commit(master_path))
+  DERIVED
+    digest (sha256 over the canonical round-trip of the whole payload)
+
+Nothing else in build_records/parse_master_rows/source_manifest reads the
+filesystem beyond the two source texts, so at fixed path + fixed HEAD +
+fixed source bytes the envelope should be a pure function of those bytes.
+
+STATEMENT (disagreeable)
+------------------------
+At a FIXED checkout path and FIXED HEAD, the catalogue builder is
+byte-deterministic across consecutive runs: the raw --out envelope bytes
+and the digest are identical. Every path- or HEAD-induced change to the
+envelope is confined to the provenance fields that carry it: the source
+path fields carry path provenance, the git_commit fields carry HEAD
+provenance, and no other field of the payload moves under either
+variation.
+
+PREDICTIONS (unmeasured until the runs below)
+---------------------------------------------
+P1. >= 3 consecutive builder runs in ONE fixed checkout (same path, same
+    HEAD, unmodified sources) produce byte-identical envelopes: the same
+    sha256 over each envelope's raw bytes and the same payload digest.
+P2. The same checkout reached at a DIFFERENT absolute path (a throwaway
+    detached git worktree of the same repository at the same commit, so
+    identical source bytes and identical HEAD sha) moves ONLY the
+    path-provenance fields: the leaf-diff versus the baseline payload is
+    exactly {cards[*].source.path, source_manifest.master.path,
+    source_manifest.catalog.path} plus the derived digest.
+P3. The SAME throwaway worktree with HEAD advanced by ONE empty commit
+    (git commit --allow-empty on top of the pinned HEAD; no tracked file
+    byte changes, verified by an empty diff) moves ONLY the HEAD-provenance
+    fields: the leaf-diff versus that worktree's pre-commit run is exactly
+    {source_manifest.master.git_commit,
+    source_manifest.catalog.git_commit} plus the derived digest.
+P4. The variant digests (P2, P3) differ from the baseline digest: the
+    provenance fields are inside the digest preimage.
+
+METHOD (fixed before measurement)
+---------------------------------
+M1. Baseline: in the task worktree at the pinned HEAD, run
+      python tools/agent_fleet/master_catalogue.py --out <run>.json
+    N >= 3 times into distinct scratch files. For every run record
+    verbatim: the command, the full console output, sha256 of the raw
+    envelope bytes, and the reported digest line.
+M2. Path variant: `git worktree add --detach <new-abs-path> <pinned HEAD>`
+    (same repo, same commit, different absolute path); run the builder
+    from the worktree the same way; diff the worktree payload against the
+    baseline payload leaf-by-leaf, aggregating list indices to [*].
+M3. HEAD variant: in the SAME throwaway worktree, create one empty commit
+    on top of the pinned HEAD and prove it carried no source change
+    (empty `git diff` between the two heads, identical source sha256);
+    run the builder again; diff against the worktree's pre-commit run.
+    The task worktree itself stays at the pinned HEAD throughout.
+M4. Attribution: a recursive leaf-diff walk records every differing JSON
+    path with old and new values; list indices aggregate to [*]. The
+    field-attribution table lists, per comparison, the differing field
+    patterns, per-pattern counts, and every other-field check. PASS
+    requires P2/P3 pattern sets to equal the predicted sets EXACTLY (any
+    extra differing field is unattributed drift).
+M5. Retention: all evidence committed under
+    docs/evidence/agent_fleet/CATALOGUE_DETERMINISM/ as *.txt only. The
+    comparison driver is scratch (not committed); the retained records
+    carry the raw console outputs, envelope byte hashes, digests, and the
+    full leaf-diff listings needed to re-derive the table.
+
+FALSIFIERS (named before the run)
+---------------------------------
+F1. The >= 3 baseline runs differ in raw envelope bytes or digest at fixed
+    path + fixed HEAD -> the determinism statement is FALSE.
+F2. Under M2 any field outside the path-carrier set differs, or under M3
+    any field outside the HEAD-carrier set differs (unattributed drift)
+    -> the attribution claim is FALSE.
+F3. Any edit to builder or test source anywhere in this task's diff
+    -> the audit is void (audit-only lane).
+
+BOUNDARY
+--------
+This is an audit of CURRENT builder behavior, not an approval of path/HEAD
+binding as a design. Whether provenance fields SHOULD ride inside the
+transport digest is a design decision outside this task's scope; this task
+only measures and attributes the binding.
