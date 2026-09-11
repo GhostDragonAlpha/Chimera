@@ -1,0 +1,27 @@
+[load_mesh] normal hygiene: repaired 53/18572 verts (0 broken + 53 deviant)
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+[load_mesh] normal hygiene: repaired 53/18572 verts (0 broken + 53 deviant)
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x1a5009000d0, VkBuffer 0xe800000000e8 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x1a5009000d0, VkBuffer 0xec00000000ec has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x1a5009000d0, VkBuffer 0xf400000000f4 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x1a5009000d0, VkBuffer 0xe400000000e4 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x1a5009000d0, VkBuffer 0xb000000000b0 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x1a5009000d0, VkBuffer 0xf000000000f0 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x1a5009000d0, VkDeviceMemory 0xe900000000e9 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x1a5009000d0, VkDeviceMemory 0xed00000000ed has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x1a5009000d0, VkDeviceMemory 0xf500000000f5 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] (Warning - This VUID has now been reported 10 times, which is the duplicate_message_limit value, this will be the last time reporting it).
+vkDestroyDevice(): Object Tracking - For VkDevice 0x1a5009000d0, VkDeviceMemory 0xf100000000f1 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)

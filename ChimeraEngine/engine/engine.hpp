@@ -639,6 +639,11 @@ private:
     void destroy_depth_resources();
     void create_offscreen();
     void destroy_offscreen_resources();
+    // feature-lifetime-02: per-family teardown (null-guarded, idempotent)
+    void destroy_strain_resources();
+    void destroy_joints_resources();
+    void destroy_water_resources();
+    void destroy_frost_resources();
     VkCommandBuffer begin_single_time_cmd();
     void end_single_time_cmd(VkCommandBuffer cb);
     uint32_t find_mem_type(uint32_t types, VkMemoryPropertyFlags flags);

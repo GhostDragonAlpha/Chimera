@@ -1,0 +1,6 @@
+[load_mesh] normal hygiene: repaired 53/18572 verts (0 broken + 53 deviant)
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+[load_mesh] normal hygiene: repaired 53/18572 verts (0 broken + 53 deviant)
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)

@@ -803,6 +803,97 @@ bool Engine::init(const EngineConfig& cfg) {
     return true;
 }
 
+// ── feature-lifetime-02: per-family teardown ────────────────────────────────
+// Each declared loaded feature releases its explicit device children exactly
+// once, after the drain (vkDeviceWaitIdle precedes every caller here).
+// All helpers are null-guarded and idempotent: single ownership, nulled as
+// they die. Mapped host memories are UNMAPPED before their memory is freed
+// (VUID-vkFreeMemory-memory-00677), in the dependency order the loaders used.
+void Engine::destroy_strain_resources() {
+    if (strain_map_) { vkUnmapMemory(device_, strain_mem_); strain_map_ = nullptr; }
+    if (strain_buf_) { vkDestroyBuffer(device_, strain_buf_, nullptr); strain_buf_ = VK_NULL_HANDLE; }
+    if (strain_mem_) { vkFreeMemory(device_, strain_mem_, nullptr); strain_mem_ = VK_NULL_HANDLE; }
+}
+
+void Engine::destroy_joints_resources() {
+    auto j_destroy_buf = [&](VkBuffer& b, VkDeviceMemory& m) {
+        if (b) { vkDestroyBuffer(device_, b, nullptr); vkFreeMemory(device_, m, nullptr); b = VK_NULL_HANDLE; m = VK_NULL_HANDLE; }
+    };
+    if (joints_desc_pool_) { vkDestroyDescriptorPool(device_, joints_desc_pool_, nullptr); joints_desc_pool_ = VK_NULL_HANDLE; }
+    if (joints_pipe_)   { vkDestroyPipeline(device_, joints_pipe_, nullptr); joints_pipe_ = VK_NULL_HANDLE; }
+    if (joints_layout_) { vkDestroyPipelineLayout(device_, joints_layout_, nullptr); joints_layout_ = VK_NULL_HANDLE; }
+    if (joints_dsl_)    { vkDestroyDescriptorSetLayout(device_, joints_dsl_, nullptr); joints_dsl_ = VK_NULL_HANDLE; }
+    if (joints_mod_)    { vkDestroyShaderModule(device_, joints_mod_, nullptr); joints_mod_ = VK_NULL_HANDLE; }
+    if (j_state_map_) { vkUnmapMemory(device_, j_state_mem_); j_state_map_ = nullptr; }
+    j_destroy_buf(j_state_buf_, j_state_mem_);
+    j_destroy_buf(j_assign_buf_, j_assign_mem_);
+    j_destroy_buf(j_w_buf_, j_w_mem_);
+    j_destroy_buf(j_parent_buf_, j_parent_mem_);
+    j_destroy_buf(j_joint2_buf_, j_joint2_mem_);
+    if (j_work_map_) { vkUnmapMemory(device_, j_work_mem_); j_work_map_ = nullptr; }
+    j_destroy_buf(j_work_buf_, j_work_mem_);
+    j_destroy_buf(j_csr_buf_, j_csr_mem_);   // M1 pair moved here from shutdown (single ownership)
+}
+
+void Engine::destroy_water_resources() {
+    auto w_destroy_buf = [&](VkBuffer& b, VkDeviceMemory& m) {
+        if (b) { vkDestroyBuffer(device_, b, nullptr); vkFreeMemory(device_, m, nullptr); b = VK_NULL_HANDLE; m = VK_NULL_HANDLE; }
+    };
+    auto w_destroy_pipe = [&](VkPipeline& p, VkPipelineLayout& l, VkDescriptorSetLayout& d, VkShaderModule& m) {
+        if (p) { vkDestroyPipeline(device_, p, nullptr); p = VK_NULL_HANDLE; }
+        if (l) { vkDestroyPipelineLayout(device_, l, nullptr); l = VK_NULL_HANDLE; }
+        if (d) { vkDestroyDescriptorSetLayout(device_, d, nullptr); d = VK_NULL_HANDLE; }
+        if (m) { vkDestroyShaderModule(device_, m, nullptr); m = VK_NULL_HANDLE; }
+    };
+    if (w_fence_) { vkDestroyFence(device_, w_fence_, nullptr); w_fence_ = VK_NULL_HANDLE; }
+    if (w_desc_pool_) { vkDestroyDescriptorPool(device_, w_desc_pool_, nullptr); w_desc_pool_ = VK_NULL_HANDLE; }
+    w_destroy_pipe(w_depth_pipe_, w_depth_layout_, w_depth_dsl_, w_depth_mod_);
+    w_destroy_pipe(w_color_pipe_, w_color_layout_, w_color_dsl_, w_color_mod_);
+    w_destroy_pipe(w_occ_pipe_, w_occ_layout_, w_occ_dsl_, w_occ_mod_);
+    w_destroy_pipe(w_vis_pipe_, w_vis_layout_, w_vis_dsl_, w_vis_mod_);
+    if (w_readback_map_) { vkUnmapMemory(device_, w_readback_mem_); w_readback_map_ = nullptr; }
+    w_destroy_buf(w_readback_buf_, w_readback_mem_);
+    w_destroy_buf(w_states_buf_, w_states_mem_);
+    w_destroy_buf(w_V_buf_, w_V_mem_);
+    w_destroy_buf(w_depth_buf_, w_depth_mem_);
+    w_destroy_buf(w_areas_buf_, w_areas_mem_);
+    w_destroy_buf(w_bed_buf_, w_bed_mem_);
+    w_destroy_buf(w_eij_buf_, w_eij_mem_);
+    w_destroy_buf(w_ke_buf_, w_ke_mem_);
+    w_destroy_buf(w_lij_buf_, w_lij_mem_);
+    w_destroy_buf(w_qe_buf_, w_qe_mem_);
+    w_destroy_buf(w_eactive_buf_, w_eactive_mem_);
+    w_destroy_buf(w_occ_buf_, w_occ_mem_);
+}
+
+void Engine::destroy_frost_resources() {
+    auto f_destroy_buf = [&](VkBuffer& b, VkDeviceMemory& m) {
+        if (b) { vkDestroyBuffer(device_, b, nullptr); vkFreeMemory(device_, m, nullptr); b = VK_NULL_HANDLE; m = VK_NULL_HANDLE; }
+    };
+    if (frost_desc_pool_) { vkDestroyDescriptorPool(device_, frost_desc_pool_, nullptr); frost_desc_pool_ = VK_NULL_HANDLE; }
+    if (tri_frost_pipeline_) { vkDestroyPipeline(device_, tri_frost_pipeline_, nullptr); tri_frost_pipeline_ = VK_NULL_HANDLE; }
+    if (tri_frost_frag_mod_) { vkDestroyShaderModule(device_, tri_frost_frag_mod_, nullptr); tri_frost_frag_mod_ = VK_NULL_HANDLE; }
+    if (frost_frag_pool_)    { vkDestroyDescriptorPool(device_, frost_frag_pool_, nullptr); frost_frag_pool_ = VK_NULL_HANDLE; }
+    if (frost_render_layout_) { vkDestroyPipelineLayout(device_, frost_render_layout_, nullptr); frost_render_layout_ = VK_NULL_HANDLE; }
+    if (frost_frag_dsl_)     { vkDestroyDescriptorSetLayout(device_, frost_frag_dsl_, nullptr); frost_frag_dsl_ = VK_NULL_HANDLE; }
+    if (frost_pipe_)   { vkDestroyPipeline(device_, frost_pipe_, nullptr); frost_pipe_ = VK_NULL_HANDLE; }
+    if (frost_layout_) { vkDestroyPipelineLayout(device_, frost_layout_, nullptr); frost_layout_ = VK_NULL_HANDLE; }
+    if (frost_dsl_)    { vkDestroyDescriptorSetLayout(device_, frost_dsl_, nullptr); frost_dsl_ = VK_NULL_HANDLE; }
+    if (frost_mod_)    { vkDestroyShaderModule(device_, frost_mod_, nullptr); frost_mod_ = VK_NULL_HANDLE; }
+    f_destroy_buf(f_eye_buf_, f_eye_mem_);
+    if (f_dbg_rb_map_) { vkUnmapMemory(device_, f_dbg_rb_mem_); f_dbg_rb_map_ = nullptr; }
+    f_destroy_buf(f_dbg_rb_, f_dbg_rb_mem_);
+    if (f_color_rb_map_) { vkUnmapMemory(device_, f_color_rb_mem_); f_color_rb_map_ = nullptr; }
+    f_destroy_buf(f_color_rb_, f_color_rb_mem_);
+    f_destroy_buf(f_dbg_buf_, f_dbg_mem_);
+    f_destroy_buf(f_color_buf_, f_color_mem_);
+    f_destroy_buf(f_lut_buf_, f_lut_mem_);
+    f_destroy_buf(f_ab_buf_, f_ab_mem_);
+    f_destroy_buf(f_w_buf_, f_w_mem_);
+    f_destroy_buf(f_m_buf_, f_m_mem_);
+    f_destroy_buf(f_lat_buf_, f_lat_mem_);
+}
+
 void Engine::shutdown() {
     // F1: stop the console worker first — it may be inside the api handler,
     // so give it the device-idle barrier before joining
@@ -894,6 +985,13 @@ void Engine::shutdown() {
     destroy_sort_resources();
     destroy_skin_resources();
     destroy_triangle_resources();
+    // feature-lifetime-02: the four declared loaded families die here, before
+    // vkDestroyDevice (the offscreen family above; membrane/sort/skin/hinge/
+    // volp/gait blocks below are unchanged).
+    destroy_strain_resources();
+    destroy_joints_resources();
+    destroy_water_resources();
+    destroy_frost_resources();
 
     if (compute_desc_pool_)     vkDestroyDescriptorPool(device_,     compute_desc_pool_,      nullptr);
     if (compute_desc_layout_)   vkDestroyDescriptorSetLayout(device_, compute_desc_layout_,   nullptr);
@@ -924,10 +1022,9 @@ void Engine::shutdown() {
     if (volp_st_buf_)    { vkDestroyBuffer(device_, volp_st_buf_, nullptr);  vkFreeMemory(device_, volp_st_mem_, nullptr); }
     if (volp_rb_buf_)    { vkDestroyBuffer(device_, volp_rb_buf_, nullptr);  vkFreeMemory(device_, volp_rb_mem_, nullptr); }
 
-    // THE MATTER PASS (M1): the adjacency CSR + the ping-pong Work buffer.
-    if (j_csr_buf_) { vkDestroyBuffer(device_, j_csr_buf_, nullptr); vkFreeMemory(device_, j_csr_mem_, nullptr); j_csr_buf_ = VK_NULL_HANDLE; }
-    if (j_work_buf_) { vkDestroyBuffer(device_, j_work_buf_, nullptr); vkFreeMemory(device_, j_work_mem_, nullptr); j_work_buf_ = VK_NULL_HANDLE; }
-
+    // THE MATTER PASS (M1): the adjacency CSR + the ping-pong Work buffer now
+    // die inside destroy_joints_resources() (feature-lifetime-02) — single
+    // ownership, with j_work_map_/j_state_map_ unmapped before their memory.
     // gait CPG resources
     if (gait_pipe_)        vkDestroyPipeline(device_, gait_pipe_, nullptr);
     if (gait_layout_)      vkDestroyPipelineLayout(device_, gait_layout_, nullptr);
@@ -3594,6 +3691,14 @@ static bool w_make_pipeline(VkDevice device, const char* spv_path, uint32_t n_bi
                             VkPipeline& pipe) {
     std::vector<char> spv = read_file(spv_path);
     if (spv.empty()) { fprintf(stderr, "water: %s missing\n", spv_path); return false; }
+    // feature-lifetime-02: w_make_pipeline OWNS pipeline-family replacement —
+    // the previous generation's four objects die exactly once before the new
+    // ones exist (reload used to overwrite all four, leaking per generation).
+    if (pipe)   { vkDestroyPipeline(device, pipe, nullptr); pipe = VK_NULL_HANDLE; }
+    if (layout) { vkDestroyPipelineLayout(device, layout, nullptr); layout = VK_NULL_HANDLE; }
+    if (dsl)    { vkDestroyDescriptorSetLayout(device, dsl, nullptr); dsl = VK_NULL_HANDLE; }
+    if (mod)    { vkDestroyShaderModule(device, mod, nullptr); mod = VK_NULL_HANDLE; }
+
     VkShaderModuleCreateInfo smci{};
     smci.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     smci.codeSize = spv.size();

@@ -1,0 +1,27 @@
+studio: session log -> session_20260911_124058.jsonl
+floor: building pipeline (modules ok)
+floor: pipeline created
+Compute pipeline created
+THE ENGINE STUDIO: overlay ready (F1)
+Vulkan engine initialized: 2560 x 1440, 2 frames in flight
+Chimera Engine running at http://localhost:8102/state
+  /frame  -> PNG of the current render (membrane if one is loaded)
+  /membrane (POST) -> load a story membrane scene
+Window: 2560x1440, Press Ctrl+C to stop.
+Controls: Left-drag orbit | Scroll zoom | Right-drag pan
+          WASD move | Q/E up-down | Space/Ctrl zoom | R reset | P pose toggle
+          F1 THE ENGINE STUDIO overlay (pipeline board + live status)
+FPS: 52 (frame 53) | ft ms avg 9.90 max 27.72 | >16.7ms: 2 >33ms: 0
+FROST paths: scalar-int32 IMAD (PINNED, exact) | DP4a: no GLSL binding (glslang 1.4.328) | VK_NV_cooperative_vector: present (inactive)
+FROST model: 36815 tris, lut 65537 | PP 15 QN 30 SD 14 RM 14 SZ 12 R 24 QO 16 ACT_HI 64
+FROST loaded: 36815 triangles of relighting state
+FPS: 54 (frame 55) | ft ms avg 9.19 max 9.96 | >16.7ms: 0 >33ms: 0
+FROST paths: scalar-int32 IMAD (PINNED, exact) | DP4a: no GLSL binding (glslang 1.4.328) | VK_NV_cooperative_vector: present (inactive)
+FROST model: 36815 tris, lut 65537 | PP 15 QN 30 SD 14 RM 14 SZ 12 R 24 QO 16 ACT_HI 64
+FROST loaded: 36815 triangles of relighting state
+shutdown: admission_closed
+shutdown: boot_joined
+shutdown: http_stopped
+Shutting down...
+Vulkan engine shut down
+shutdown: engine_shutdown
