@@ -1,0 +1,22 @@
+R1 -- positive imports (model must ACCEPT)
+==============================================================================
+threshold: 8/8 legal admissions; source identity retained verbatim; affine degC->K and percent->fraction exact; versioned amendment; uncertainty propagation; in-envelope interpolation
+
+[PASS] (a) complete dataset imports, v1 stored
+        listing={'measured_A': [1]} records=2
+[PASS] (b) citation verbatim + stored content_sha256 == recomputed
+        source_id='FHWA-TUB-2020' sha256=1130f133c29aa6b0...
+[PASS] (c) 26.85 degC -> canonical 300.0 K exactly (offset applied, not a scale)
+        measured 300.0
+[PASS] (d) 50 percent -> canonical 0.5 fraction
+        measured 0.5
+[PASS] (e) v2 amendment imports; v1 byte-identical; history [1, 2]
+        listing={'measured_A': [1, 2], 'measured_degc': [1], 'measured_pct': [1]}
+[PASS] (f) propagate_sum: value a+b, u=sqrt(ua^2+ub^2), both parent citations carried
+        value=2350000000.0 u=55172456.89653489 dim=Dimension(L=-1, M=1, T=-2)
+[PASS] (g) propagate_product: Pa x dimensionless -> Pa via MATH-01 algebra; u relative form exact
+        value=4800000.0 u=288444.1020371192 dim=Dimension(L=-1, M=1, T=-2)
+[PASS] (h) interpolate at 310 K: linear value + linear uncertainty, both bracket citations, marked interpolated
+        value=1175000000.0 u=39000000.0 citations=['FHWA-TUB-2020', 'FHWA-TUB-2020']
+
+passed 8  failed 0

@@ -1,0 +1,20 @@
+R4 -- versioned datasets + immutability (card statement)
+==============================================================================
+threshold: 6/6: frozen records/datasets; v1 byte-identical after v2; duplicate re-imports refused; bad_version refused; history order preserved
+
+[PASS] (a) admitted dataset/records are frozen (assignment raises)
+        dataset.version: FrozenInstanceError; record.uncertainty: FrozenInstanceError
+[PASS] (b) v1 hash + records byte-identical after v2 exists
+        sha256=1130f133c29aa6b0...
+[PASS] (c) re-import measured_new v1 (current max), different content -> duplicate_version
+        refused verbatim: Mat03Refusal('duplicate_version', 'measured_new v1 is already stored; no silent overwrite, no idempotent second row')
+[PASS] (d) re-import measured_new v1 (current max), identical content -> duplicate_version (no idempotent second row)
+        refused verbatim: Mat03Refusal('duplicate_version', 'measured_new v1 is already stored; no silent overwrite, no idempotent second row')
+[PASS] post-state: stored measured_new v1 unchanged after c-d
+        sha256=48b4098243300f61...
+[PASS] (e) version 0 -> bad_version
+        refused verbatim: Mat03Refusal('bad_version', 'dataset version must be an integer >= 1, got 0')
+[PASS] (f) listing exposes (id, versions...) with history order
+        listing={'measured_A': [1, 2], 'measured_degc': [1], 'measured_new': [1], 'measured_pct': [1], 'measured_strain': [1]}
+
+passed 7  failed 0
