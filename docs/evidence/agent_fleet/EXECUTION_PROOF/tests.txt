@@ -1,0 +1,79 @@
+test_enroll_qualify_start_removes_secrets_from_child (tools.agent_fleet.test_launch_worker.LauncherTests.test_enroll_qualify_start_removes_secrets_from_child) ... ok
+test_enrollment_child_receives_only_enrollment_secret (tools.agent_fleet.test_launch_worker.LauncherTests.test_enrollment_child_receives_only_enrollment_secret) ... ok
+test_executor_missing_refuses_before_enrollment (tools.agent_fleet.test_launch_worker.LauncherTests.test_executor_missing_refuses_before_enrollment) ... ok
+test_missing_secrets_and_existing_session_refuse (tools.agent_fleet.test_launch_worker.LauncherTests.test_missing_secrets_and_existing_session_refuse) ... ok
+test_expired_lease_holds_owner_until_evidenced_recovery (tools.agent_fleet.test_run_queue.RunQueueTests.test_expired_lease_holds_owner_until_evidenced_recovery) ... ok
+test_expired_review_and_nonfinite_lease_are_refused (tools.agent_fleet.test_run_queue.RunQueueTests.test_expired_review_and_nonfinite_lease_are_refused) ... ok
+test_heartbeat_rejects_overflow_without_mutating_lease (tools.agent_fleet.test_run_queue.RunQueueTests.test_heartbeat_rejects_overflow_without_mutating_lease) ... ok
+test_no_fabricated_dependency_or_duplicate_dispatch (tools.agent_fleet.test_run_queue.RunQueueTests.test_no_fabricated_dependency_or_duplicate_dispatch) ... ok
+test_numeric_boundaries_are_refused (tools.agent_fleet.test_run_queue.RunQueueTests.test_numeric_boundaries_are_refused) ... ok
+test_priority_and_dependency_dispatch (tools.agent_fleet.test_run_queue.RunQueueTests.test_priority_and_dependency_dispatch) ... ok
+test_returned_runs_are_defensive_views (tools.agent_fleet.test_run_queue.RunQueueTests.test_returned_runs_are_defensive_views) ... ok
+test_review_releases_capacity_but_requires_exact_integration_head (tools.agent_fleet.test_run_queue.RunQueueTests.test_review_releases_capacity_but_requires_exact_integration_head) ... ok
+test_authentication_and_transport_failures_are_not_masked (tools.agent_fleet.test_run_queue_worker.WorkerQueueTests.test_authentication_and_transport_failures_are_not_masked) ... ok
+test_claim_race_advances_to_next_ready_task (tools.agent_fleet.test_run_queue_worker.WorkerQueueTests.test_claim_race_advances_to_next_ready_task) ... ok
+test_empty_queue_does_not_fabricate_work (tools.agent_fleet.test_run_queue_worker.WorkerQueueTests.test_empty_queue_does_not_fabricate_work) ... ok
+test_loop_reads_fresh_snapshot_each_cycle (tools.agent_fleet.test_run_queue_worker.WorkerQueueTests.test_loop_reads_fresh_snapshot_each_cycle) ... ok
+test_no_executor_refuses_before_claim (tools.agent_fleet.test_run_queue_worker.WorkerQueueTests.test_no_executor_refuses_before_claim) ... ok
+test_no_secret_or_whole_response_is_required (tools.agent_fleet.test_run_queue_worker.WorkerQueueTests.test_no_secret_or_whole_response_is_required) ... ok
+test_owned_work_resumes_before_new_claim (tools.agent_fleet.test_run_queue_worker.WorkerQueueTests.test_owned_work_resumes_before_new_claim) ... ok
+test_duplicate_runner_lock_and_missing_profile (tools.agent_fleet.test_execution_proof.ExecutionProof.test_duplicate_runner_lock_and_missing_profile) ... ok
+test_no_provision_no_execution_and_zero_exit_not_acceptance (tools.agent_fleet.test_execution_proof.ExecutionProof.test_no_provision_no_execution_and_zero_exit_not_acceptance) ... ok
+test_three_http_workers_execute_overlapping_processes_and_restart_owned (tools.agent_fleet.test_execution_proof.ExecutionProof.test_three_http_workers_execute_overlapping_processes_and_restart_owned) ... ok
+test_timeout_preserves_claim_instead_of_reassigning (tools.agent_fleet.test_execution_proof.ExecutionProof.test_timeout_preserves_claim_instead_of_reassigning) ... ok
+test_agent_cannot_accuse_to_take_over (tools.agent_fleet.test_control.ControlTests.test_agent_cannot_accuse_to_take_over) ... ok
+test_claim_capacity (tools.agent_fleet.test_control.ControlTests.test_claim_capacity) ... ok
+test_concurrent_claim_one_winner (tools.agent_fleet.test_control.ControlTests.test_concurrent_claim_one_winner) ... ok
+test_confirmed_failure_elects_qualified_standby (tools.agent_fleet.test_control.ControlTests.test_confirmed_failure_elects_qualified_standby) ... ok
+test_dependency_waits_for_integration (tools.agent_fleet.test_control.ControlTests.test_dependency_waits_for_integration) ... ok
+test_dyad_reserves_gpu_and_release_order (tools.agent_fleet.test_control.ControlTests.test_dyad_reserves_gpu_and_release_order) ... ok
+test_each_slot_has_its_own_engine_plan (tools.agent_fleet.test_control.ControlTests.test_each_slot_has_its_own_engine_plan) ... ok
+test_explicit_yield_uses_same_recovery_rules (tools.agent_fleet.test_control.ControlTests.test_explicit_yield_uses_same_recovery_rules) ... ok
+test_failure_holds_task_and_resources (tools.agent_fleet.test_control.ControlTests.test_failure_holds_task_and_resources) ... ok
+test_feedback_does_not_accept_task (tools.agent_fleet.test_control.ControlTests.test_feedback_does_not_accept_task) ... ok
+test_feedback_retains_original_and_appends_dispositions (tools.agent_fleet.test_control.ControlTests.test_feedback_retains_original_and_appends_dispositions) ... ok
+test_feedback_unknown_category_and_task_refused (tools.agent_fleet.test_control.ControlTests.test_feedback_unknown_category_and_task_refused) ... ok
+test_five_slots_and_sixth_refusal (tools.agent_fleet.test_control.ControlTests.test_five_slots_and_sixth_refusal) ... ok
+test_foreign_and_stale_claim_refused_without_revision (tools.agent_fleet.test_control.ControlTests.test_foreign_and_stale_claim_refused_without_revision) ... ok
+test_gpu_exclusive_even_same_agent_two_tasks (tools.agent_fleet.test_control.ControlTests.test_gpu_exclusive_even_same_agent_two_tasks) ... ok
+test_human_feedback_cannot_be_forged_by_worker (tools.agent_fleet.test_control.ControlTests.test_human_feedback_cannot_be_forged_by_worker) ... ok
+test_integration_ack_and_explicit_slot_release (tools.agent_fleet.test_control.ControlTests.test_integration_ack_and_explicit_slot_release) ... ok
+test_integration_request_stale_after_failover (tools.agent_fleet.test_control.ControlTests.test_integration_request_stale_after_failover) ... ok
+test_inventory_is_read_only_and_bounded (tools.agent_fleet.test_control.ControlTests.test_inventory_is_read_only_and_bounded) ... ok
+test_master_base_refused (tools.agent_fleet.test_control.ControlTests.test_master_base_refused) ... ok
+test_master_list_claim_lead_only (tools.agent_fleet.test_control.ControlTests.test_master_list_claim_lead_only) ... ok
+test_no_ready_successor_leaves_vacancy (tools.agent_fleet.test_control.ControlTests.test_no_ready_successor_leaves_vacancy) ... ok
+test_old_lead_cannot_disposition_feedback (tools.agent_fleet.test_control.ControlTests.test_old_lead_cannot_disposition_feedback) ... ok
+test_protected_and_traversal_scope (tools.agent_fleet.test_control.ControlTests.test_protected_and_traversal_scope) ... ok
+test_real_http_roundtrip_and_refusal (tools.agent_fleet.test_control.ControlTests.test_real_http_roundtrip_and_refusal) ... C:\Python314\Lib\tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 409: 'Conflict'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+ok
+test_recovery_requires_attestation_and_new_generation (tools.agent_fleet.test_control.ControlTests.test_recovery_requires_attestation_and_new_generation) ... ok
+test_restart_retains_identity_and_claims (tools.agent_fleet.test_control.ControlTests.test_restart_retains_identity_and_claims) ... ok
+test_review_not_acceptance_or_free_slot (tools.agent_fleet.test_control.ControlTests.test_review_not_acceptance_or_free_slot) ... ok
+test_same_agent_multiple_tasks_distinct_slots (tools.agent_fleet.test_control.ControlTests.test_same_agent_multiple_tasks_distinct_slots) ... ok
+test_scope_conflict_casefold (tools.agent_fleet.test_control.ControlTests.test_scope_conflict_casefold) ... ok
+test_silence_suspicion_does_not_elect (tools.agent_fleet.test_control.ControlTests.test_silence_suspicion_does_not_elect) ... ok
+test_snapshot_and_events_do_not_expose_tokens (tools.agent_fleet.test_control.ControlTests.test_snapshot_and_events_do_not_expose_tokens) ... ok
+test_stop_feedback_preserves_authority_requirement (tools.agent_fleet.test_control.ControlTests.test_stop_feedback_preserves_authority_requirement) ... ok
+test_task_branch_wrong_refused (tools.agent_fleet.test_control.ControlTests.test_task_branch_wrong_refused) ... ok
+test_unqualified_agent_cannot_offer_or_claim (tools.agent_fleet.test_control.ControlTests.test_unqualified_agent_cannot_offer_or_claim) ... ok
+test_wrong_epoch_current_lead_refused (tools.agent_fleet.test_control.ControlTests.test_wrong_epoch_current_lead_refused) ... ok
+test_auth_identity_drain_and_resource_refusals_rollback (tools.agent_fleet.test_review_handoff.ReviewHandoffTests.test_auth_identity_drain_and_resource_refusals_rollback) ... ok
+test_correction_requeues_ready_then_replacement_claims_once_and_provisions_exact_head (tools.agent_fleet.test_review_handoff.ReviewHandoffTests.test_correction_requeues_ready_then_replacement_claims_once_and_provisions_exact_head) ... ok
+test_detached_review_resource_request_cannot_grant (tools.agent_fleet.test_review_handoff.ReviewHandoffTests.test_detached_review_resource_request_cannot_grant) ... ok
+test_existing_slotted_review_requeue_behavior_is_preserved (tools.agent_fleet.test_review_handoff.ReviewHandoffTests.test_existing_slotted_review_requeue_behavior_is_preserved) ... ok
+test_failed_owner_of_detached_review_uses_slotless_recovery (tools.agent_fleet.test_review_handoff.ReviewHandoffTests.test_failed_owner_of_detached_review_uses_slotless_recovery) ... ok
+test_handoff_preserves_review_and_agent_but_frees_execution_capacity (tools.agent_fleet.test_review_handoff.ReviewHandoffTests.test_handoff_preserves_review_and_agent_but_frees_execution_capacity) ... ok
+test_handoff_refuses_a_preexisting_actual_hold (tools.agent_fleet.test_review_handoff.ReviewHandoffTests.test_handoff_refuses_a_preexisting_actual_hold) ... ok
+test_http_service_routes_to_extension_and_refuses_worker (tools.agent_fleet.test_review_handoff.ReviewHandoffTests.test_http_service_routes_to_extension_and_refuses_worker) ... ok
+test_requeue_does_not_need_free_slot_but_following_claim_does (tools.agent_fleet.test_review_handoff.ReviewHandoffTests.test_requeue_does_not_need_free_slot_but_following_claim_does) ... ok
+test_restart_preserves_detached_review_and_reclaim_receipts (tools.agent_fleet.test_review_handoff.ReviewHandoffTests.test_restart_preserves_detached_review_and_reclaim_receipts) ... ok
+test_slotless_review_integrates_and_post_ack_release_is_idempotent (tools.agent_fleet.test_review_handoff.ReviewHandoffTests.test_slotless_review_integrates_and_post_ack_release_is_idempotent) ... ok
+test_slotted_integration_ack_keeps_base_response (tools.agent_fleet.test_review_handoff.ReviewHandoffTests.test_slotted_integration_ack_keeps_base_response) ... ok
+test_two_detached_reviews_do_not_exhaust_execution_capacity (tools.agent_fleet.test_review_handoff.ReviewHandoffTests.test_two_detached_reviews_do_not_exhaust_execution_capacity) ... ok
+
+----------------------------------------------------------------------
+Ran 72 tests in 7.714s
+
+OK
