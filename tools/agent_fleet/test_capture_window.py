@@ -39,6 +39,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
 import unittest
 import uuid
 from pathlib import Path
@@ -47,28 +48,34 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 from capture_window import (CLASS_PREFIX, DEFAULT_HEIGHT, DEFAULT_WIDTH,
-                            FixtureWindow, capture_client_pixels,
-                            default_pattern, matrices_equal, pattern_sha256,
-                            solid_pattern, verdict_verdicts,
-                            verify_hwnd_capture, verify_owned_capture,
-                            window_rect, write_evidence)
+                            DEFAULT_WATCHDOG_CADENCE_S, FixtureWindow,
+                            WATCHDOG_ENV_VAR, capture_client_pixels,
+                            default_pattern, install_parent_watchdog,
+                            matrices_equal, pattern_sha256, solid_pattern,
+                            verdict_verdicts, verify_hwnd_capture,
+                            verify_owned_capture, window_rect, write_evidence)
 
 IS_WINDOWS = os.name == 'nt'
 
 # Child-process fixture: the child is spawned from THIS interpreter with THIS
 # module, creates its own ChimeraFixture-class window with a distinct known
-# solid fill, prints (hwnd, pinned client w, pinned client h), then pumps
-# messages until the PARENT terminates it. It is my own code and my own
-# process tree - never a third-party window.
+# solid fill, prints (hwnd, pinned client w, pinned client h), installs the
+# parent watchdog (fleet-evidence-hygiene-01 F2: the child polls its parent
+# and exits by itself when orphaned -- it can no longer outlive this test
+# run), then pumps messages until the PARENT terminates it (or the watchdog
+# fires). It is my own code and my own process tree - never a third-party
+# window.
 CHILD_FIXTURE_CODE = (
     "import sys, ctypes\n"
     "from ctypes import wintypes\n"
     "sys.path.insert(0, sys.argv[1])\n"
-    "from capture_window import FixtureWindow, solid_pattern\n"
+    "from capture_window import (FixtureWindow, solid_pattern,\n"
+    "                            install_parent_watchdog)\n"
     "f = FixtureWindow('chimera-child-' + sys.argv[2],\n"
     "                  paint_fn=solid_pattern((255, 0, 0)),\n"
     "                  width=96, height=64)\n"
     "print(f.hwnd, f.width, f.height, flush=True)\n"
+    "install_parent_watchdog()\n"
     "user32 = ctypes.windll.user32\n"
     "msg = wintypes.MSG()\n"
     "while user32.GetMessageW(ctypes.byref(msg), None, 0, 0) > 0:\n"
@@ -94,12 +101,22 @@ class CaptureWindowTests(unittest.TestCase):
         self.fixtures.append(f)
         return f
 
-    def _spawn_child_fixture(self):
-        """Spawn a REAL foreign-process fixture owned by this process tree."""
+    def _spawn_child_fixture(self, parent_pid=None):
+        """Spawn a REAL foreign-process fixture owned by this process tree.
+
+        The child installs the F2 orphan watchdog pointed at `parent_pid`
+        (default: THIS test process), so it can never outlive this run even
+        if the whole test process dies.
+        """
         suffix = uuid.uuid4().hex[:12]
+        if parent_pid is None:
+            parent_pid = os.getpid()
+        env = dict(os.environ)
+        env[WATCHDOG_ENV_VAR] = str(parent_pid)
         proc = subprocess.Popen(
             [sys.executable, '-c', CHILD_FIXTURE_CODE, str(HERE), suffix],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+            env=env,
             creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
         guard = threading.Timer(60.0, proc.terminate)
         guard.start()
@@ -485,6 +502,236 @@ class CaptureWindowTests(unittest.TestCase):
 def capture_window_module():
     import capture_window
     return capture_window
+
+
+# ==== fleet-evidence-hygiene-01 F2: the fixture-child orphan watchdog ========
+
+@unittest.skipUnless(IS_WINDOWS, 'Windows process-watchdog contract')
+class FixtureChildWatchdogTests(unittest.TestCase):
+    """Prediction (F2): a fixture child whose parent dies exits on its own,
+    within the guard window; a fixture child with a live parent keeps
+    pumping (watchdog must NOT fire); normal fixture behavior unchanged.
+
+    The orphan path is exercised for REAL: a sacrificial parent process is
+    spawned, the REAL fixture child (same CHILD_FIXTURE_CODE the suite uses)
+    watches IT via CHIMERA_FIXTURE_PARENT_PID, and the sacrificial process is
+    killed mid-run. Every process here is self-created; the finally block
+    reaps both. The test process itself is never the sacrificed parent.
+    """
+
+    GUARD_WINDOW_S = 30.0   # test bound; cadence 0.25 s -> expected ~1 s
+
+    @staticmethod
+    def _close_streams(proc):
+        for stream in (proc.stdout, proc.stderr):
+            try:
+                if stream and not stream.closed:
+                    stream.close()
+            except Exception:
+                pass
+
+    def test_orphaned_fixture_child_exits_within_guard_window(self):
+        sacrificial = subprocess.Popen(
+            [sys.executable, '-c', 'import time; time.sleep(300)'],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
+        child = None
+        try:
+            suffix = uuid.uuid4().hex[:12]
+            env = dict(os.environ)
+            env[WATCHDOG_ENV_VAR] = str(sacrificial.pid)
+            child = subprocess.Popen(
+                [sys.executable, '-c', CHILD_FIXTURE_CODE, str(HERE), suffix],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                env=env,
+                creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
+            guard = threading.Timer(60.0, child.terminate)
+            guard.start()
+            try:
+                line = child.stdout.readline().strip()
+            finally:
+                guard.cancel()
+            if not line:
+                # Only read stderr when the start line never arrived: the
+                # child is ALIVE on the success path and its stderr pipe
+                # has no EOF -- an eager read here blocks until the child
+                # dies (the exact hang this suite exists to prevent).
+                self.fail('fixture child failed to start: '
+                          + child.stderr.read())
+            hwnd, w, h = (int(part) for part in line.split())
+            user32 = ctypes.windll.user32
+            self.assertTrue(user32.IsWindow(hwnd))
+            # (i) LIVE parent: the child keeps pumping -- the watchdog must
+            # not fire on a healthy parent (normal fixture behavior).
+            time.sleep(max(2.0, 6 * DEFAULT_WATCHDOG_CADENCE_S))
+            self.assertIsNone(child.poll(),
+                              'watchdog fired on a live parent')
+            # (ii) ORPHANING: the parent dies; the child must exit ON ITS OWN
+            # with code 0 within the guard window.
+            sacrificial.kill()
+            sacrificial.wait(timeout=10)
+            deadline = time.time() + self.GUARD_WINDOW_S
+            while child.poll() is None and time.time() < deadline:
+                time.sleep(0.05)
+            self.assertIsNotNone(
+                child.poll(),
+                'orphaned fixture child survived the guard window')
+            self.assertEqual(child.returncode, 0)
+        finally:
+            if child is not None and child.poll() is None:
+                child.terminate()
+                try:
+                    child.wait(timeout=10)
+                except Exception:
+                    child.kill()
+            if child is not None:
+                self._close_streams(child)
+            if sacrificial.poll() is None:
+                sacrificial.kill()
+                sacrificial.wait(timeout=10)
+
+    def test_watchdog_disabled_without_resolvable_parent(self):
+        # No resolvable parent pid -> disabled, no thread, no crash: callers
+        # outside the fixture-child path are unaffected.
+        self.assertIsNone(install_parent_watchdog(parent_pid=0))
+
+
+# ==== fleet-evidence-hygiene-01 F1: the *.log evidence-trap warning gate =====
+
+class EvidenceLogGuardTests(unittest.TestCase):
+    """Prediction (F1), driven END-TO-END against the REAL guard script in
+    throwaway git repos (no mocks): the trap case warns with exit 0, every
+    clean case is silent with exit 0, a crashed guard still cannot block,
+    and the hook wiring keeps every pre-existing gate and is warn-only.
+
+    (This suite hosts the guard tests because this task's test scope is
+    this file; the guard itself lives at the repo's conventional hook-script
+    location and is wired into the repo-committed .githooks/pre-commit.)
+    """
+
+    EVID_DIR = 'docs/evidence/agent_fleet/HYGIENE_TEST'
+
+    @classmethod
+    def setUpClass(cls):
+        cls.guard = HERE / 'evidence_log_guard.py'
+        cls.hook = HERE.parents[1] / '.githooks' / 'pre-commit'
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.repo = Path(self.tmp.name) / 'repo'
+        (self.repo / self.EVID_DIR).mkdir(parents=True)
+        (self.repo / 'tools').mkdir()
+        # The repo-wide rule that creates the trap:
+        (self.repo / '.gitignore').write_text('*.log\n', encoding='utf-8')
+        self.git('init', '-q')
+        self.git('config', 'user.email', 'hygiene@test.invalid')
+        self.git('config', 'user.name', 'hygiene-test')
+        (self.repo / self.EVID_DIR / 'RESULT.txt').write_text(
+            'result\n', encoding='utf-8')
+        self.git('add', '.')
+        self.git('commit', '-qm', 'base')
+
+    # -- harness -----------------------------------------------------------
+    def git(self, *args):
+        return subprocess.run(['git', '-C', str(self.repo), *args],
+                              check=True, capture_output=True, text=True,
+                              encoding='utf-8')
+
+    def run_guard(self):
+        """Run the REAL script the way the hook does (--staged)."""
+        return subprocess.run(
+            [sys.executable, str(self.guard), '--staged',
+             '--repo', str(self.repo)],
+            capture_output=True, text=True, encoding='utf-8')
+
+    def stage_new_evidence(self, name='record.txt'):
+        path = self.repo / self.EVID_DIR / name
+        path.write_text('committed record\n', encoding='utf-8')
+        self.git('add', str(path))
+
+    def add_ignored_log(self, relpath):
+        path = self.repo / relpath
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text('raw output that would silently vanish\n',
+                        encoding='utf-8')
+
+    # -- the trap case -----------------------------------------------------
+    def test_trap_case_warns_and_exits_zero(self):
+        # Falsifier check: the trap must NOT pass silently.
+        self.add_ignored_log(self.EVID_DIR + '/raw_output.log')
+        self.stage_new_evidence()
+        proc = self.run_guard()
+        self.assertEqual(proc.returncode, 0,
+                         'the guard WARNS, it never blocks: ' + proc.stderr)
+        self.assertIn('[evidence-log-guard] WARNING', proc.stdout)
+        self.assertIn('raw_output.log', proc.stdout)
+        self.assertIn('git add -f', proc.stdout)
+
+    # -- the clean cases ---------------------------------------------------
+    def test_clean_staged_evidence_without_logs_is_silent(self):
+        self.stage_new_evidence()
+        proc = self.run_guard()
+        self.assertEqual(proc.returncode, 0)
+        self.assertEqual(proc.stdout, '')
+
+    def test_clean_ignored_log_outside_evidence_is_silent(self):
+        self.add_ignored_log('tools/stray.log')
+        self.stage_new_evidence()
+        proc = self.run_guard()
+        self.assertEqual(proc.returncode, 0)
+        self.assertEqual(proc.stdout, '')
+
+    def test_clean_ignored_log_but_nothing_staged_is_silent(self):
+        # The trap needs a STAGED evidence add; an ignored log alone is just
+        # a log sitting in a worktree.
+        self.add_ignored_log(self.EVID_DIR + '/raw_output.log')
+        proc = self.run_guard()
+        self.assertEqual(proc.returncode, 0)
+        self.assertEqual(proc.stdout, '')
+
+    def test_force_added_log_is_silent(self):
+        # Remedy 1 verified by construction: once force-added the .log is
+        # tracked, so it can no longer silently vanish.
+        self.add_ignored_log(self.EVID_DIR + '/raw_output.log')
+        self.git('add', '-f', self.EVID_DIR + '/raw_output.log')
+        self.stage_new_evidence()
+        proc = self.run_guard()
+        self.assertEqual(proc.returncode, 0)
+        self.assertEqual(proc.stdout, '')
+
+    # -- never blocks, even when broken -------------------------------------
+    def test_guard_cannot_block_on_internal_error(self):
+        # A repo path that does not exist makes every git call fail
+        # deterministically (git directory discovery cannot rescue it, unlike
+        # an existing non-repo path, which can discover an ancestor repo);
+        # the guard must degrade to a non-blocking warning, exit 0.
+        missing = Path(self.tmp.name) / 'definitely' / 'missing'
+        proc = subprocess.run(
+            [sys.executable, str(self.guard), '--staged',
+             '--repo', str(missing)],
+            capture_output=True, text=True, encoding='utf-8')
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn('non-blocking', proc.stdout)
+
+    # -- the hook wiring: warn-only, existing gates intact ------------------
+    def test_hook_wiring_preserves_every_gate_and_is_warn_only(self):
+        text = self.hook.read_text(encoding='utf-8')
+        # Every pre-existing gate stanza still present and still able to
+        # fail the commit (their `fail=1` lines untouched).
+        for gate in ('core.bind_guard --staged',
+                     'core.objective_lint --staged',
+                     'core.library_guard --staged',
+                     'core.saturation --staged',
+                     'perf_witness.py',
+                     'SPIACE_RPG_PLAN.md',
+                     'tools/doc_lint.py --staged',
+                     '.git/hooks/pre-commit "$@"'):
+            self.assertIn(gate, text, 'existing gate weakened: ' + gate)
+        # The new stanza invokes the guard and CANNOT set the fail flag.
+        self.assertIn('evidence_log_guard.py --staged || true', text)
+        stanza = text.split('evidence *.log trap')[1].split('# --- delegate')[0]
+        self.assertNotIn('fail=1', stanza)
 
 
 if __name__ == '__main__':

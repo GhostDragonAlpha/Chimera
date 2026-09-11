@@ -22,6 +22,7 @@ import hashlib
 import json
 import os
 import struct
+import threading
 from ctypes import wintypes
 
 user32 = ctypes.windll.user32
@@ -91,6 +92,17 @@ gdi32.CreateDIBSection.argtypes = [wintypes.HDC,
                                    ctypes.POINTER(ctypes.c_void_p),
                                    wintypes.HANDLE,
                                    wintypes.DWORD]
+# Fixture-child orphan watchdog prototypes (fleet-evidence-hygiene-01 F2).
+# Same rule as the block above: an undeclared handle prototype truncates and
+# turns a guard into a crash. WAIT_OBJECT_0/WAIT_TIMEOUT are plain DWORDs.
+kernel32.OpenProcess.restype = wintypes.HANDLE
+kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+kernel32.WaitForSingleObject.restype = wintypes.DWORD
+kernel32.WaitForSingleObject.argtypes = [wintypes.HANDLE, wintypes.DWORD]
+kernel32.CloseHandle.restype = wintypes.BOOL
+kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+kernel32.ExitProcess.restype = None
+kernel32.ExitProcess.argtypes = [wintypes.UINT]
 
 CLASS_PREFIX = 'ChimeraFixture'
 DEFAULT_WIDTH = 320
@@ -485,6 +497,76 @@ def verdict_verdicts():
             'capture_refused:stale_or_invalid_handle',
             'capture_refused:no_window_dc', 'capture_refused:dib_allocation_failed',
             'capture_refused:memory_dc_unavailable'}
+
+
+# ---- fixture-child orphan watchdog (fleet-evidence-hygiene-01 F2) -----------
+# The leak (controller feedback 5cfa9382): the capture suite's foreign-process
+# fixture is a CHILD PYTHON PROCESS that creates a ChimeraFixture-class window
+# and pumps GetMessageW forever. Every cleanup (addCleanup, the in-parent
+# Timer) lives in the PARENT, so when the parent test process itself died the
+# child kept pumping, inherited cwd intact, and held the directory busy. The
+# fix lives in the CHILD: poll parent liveness at the message-pump cadence and
+# exit the process when the parent is gone. A fixture can no longer outlive
+# its test run.
+
+WATCHDOG_ENV_VAR = 'CHIMERA_FIXTURE_PARENT_PID'
+DEFAULT_WATCHDOG_CADENCE_S = 0.25
+_SYNCHRONIZE = 0x00100000
+_WAIT_OBJECT_0 = 0
+_WAIT_TIMEOUT = 0x00000102
+_WAIT_FAILED = 0xFFFFFFFF
+
+
+def install_parent_watchdog(parent_pid=None,
+                            cadence_s=DEFAULT_WATCHDOG_CADENCE_S):
+    """Start the child-side orphan guard; returns the daemon Thread or None.
+
+    Resolves the parent pid from `parent_pid`, else the environment variable
+    WATCHDOG_ENV_VAR (set by the spawner; lets a test point the watchdog at a
+    sacrificial parent), else os.getppid(). The thread opens the parent with
+    SYNCHRONIZE and waits in a cadence loop; when the handle is signaled the
+    parent has exited and this process exits 0. Fail-closed toward hygiene:
+    a parent handle that cannot be OPENED counts as orphaned too (no parent,
+    no permission to keep living). Disabled (returns None) when no parent pid
+    resolves, so callers on non-Windows/non-fixture paths are unaffected.
+    """
+    if os.name != 'nt':
+        return None
+    if parent_pid is None:
+        raw = os.environ.get(WATCHDOG_ENV_VAR, '')
+        try:
+            parent_pid = int(raw) if raw else os.getppid()
+        except (TypeError, ValueError):
+            parent_pid = 0
+    parent_pid = int(parent_pid or 0)
+    if parent_pid <= 0:
+        return None
+
+    def _watch():
+        handle = kernel32.OpenProcess(_SYNCHRONIZE, False, parent_pid)
+        if not handle:
+            kernel32.ExitProcess(0)  # cannot observe the parent: orphaned
+        try:
+            while True:
+                wait = kernel32.WaitForSingleObject(
+                    handle, int(cadence_s * 1000))
+                if wait == _WAIT_OBJECT_0:
+                    kernel32.ExitProcess(0)  # parent exited: we are orphaned
+                if wait == _WAIT_FAILED:
+                    kernel32.CloseHandle(handle)
+                    handle = kernel32.OpenProcess(
+                        _SYNCHRONIZE, False, parent_pid)
+                    if not handle:
+                        kernel32.ExitProcess(0)
+                # _WAIT_TIMEOUT (or anything else): keep pumping
+        finally:
+            if handle:
+                kernel32.CloseHandle(handle)
+
+    thread = threading.Thread(target=_watch, name='fixture-parent-watchdog',
+                              daemon=True)
+    thread.start()
+    return thread
 
 
 # ---- helpers -----------------------------------------------------------------

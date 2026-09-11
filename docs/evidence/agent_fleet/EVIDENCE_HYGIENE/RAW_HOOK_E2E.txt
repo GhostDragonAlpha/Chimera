@@ -1,0 +1,19 @@
+== fleet-evidence-hygiene-01 F1: hook END-TO-END through real git commit ==
+date: 2026-09-11T15:38:04Z
+throwaway worktree of slot-04 HEAD ec766e43, new hook + guard copied in (simulates post-landing state). Probe records are deliberately extension-less throwaway files, so no dead path tokens appear in this raw output (doc_lint gate stays clean without bypass).
+
+### CASE A: trap (staged evidence + ignored-untracked sibling .log) -> expect named WARNING, exit 0, existing gates intact
+warning: in the working copy of 'docs/evidence/agent_fleet/EVIDENCE_HYGIENE/PROBE-A-record', LF will be replaced by CRLF the next time Git touches it
+  [library-guard] PASS: Construction/export_genome.py is the only writer of recovered_genomes.json (0 file(s) considered)
+doc_lint: clean -- no broken pointers, .roomodes valid.
+[evidence-log-guard] WARNING (not blocking): staged evidence in docs/evidence/agent_fleet/EVIDENCE_HYGIENE cites work whose RAW *.log files are ignored-and-untracked -- they will silently vanish behind the *.log gitignore rule:
+  vanished: docs/evidence/agent_fleet/EVIDENCE_HYGIENE/probe_raw.log
+  remedy 1: git add -f docs/evidence/agent_fleet/EVIDENCE_HYGIENE/*.log   (commit the raw output)
+  remedy 2: copy/rename the raw output to a committed format (*.txt) and cite that
+case-A-commit-exit=0
+
+### CASE B: clean (ignored .logs removed) -> expect SILENCE, exit 0
+warning: in the working copy of 'docs/evidence/agent_fleet/EVIDENCE_HYGIENE/PROBE-B-record', LF will be replaced by CRLF the next time Git touches it
+  [library-guard] PASS: Construction/export_genome.py is the only writer of recovered_genomes.json (0 file(s) considered)
+doc_lint: clean -- no broken pointers, .roomodes valid.
+case-B-commit-exit=0
