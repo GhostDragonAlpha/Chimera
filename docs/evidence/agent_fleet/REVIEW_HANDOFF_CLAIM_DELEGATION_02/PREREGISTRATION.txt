@@ -1,0 +1,127 @@
+PREREGISTRATION - fleet-review-handoff-claim-delegation-02
+===========================================================
+
+Written BEFORE the fix or any new-suite run of this successor task; no new
+measured value appears in this file. Owner subagent-worker-04, base
+d59518b9d9dc002cba43d071495576a236b9d498 (tip; PR #66 merge), branch
+astra/tasks/fleet-review-handoff-claim-delegation-02, scopes
+tools/agent_fleet/review_handoff.py +
+tools/agent_fleet/test_review_handoff_claim.py +
+tools/agent_fleet/test_review_handoff.py. Evidence *.txt in this
+directory. Trailer Agent: subagent-worker-04.
+
+LINEAGE (successor of -01)
+--------------------------
+Predecessor fleet-review-handoff-claim-delegation-01 (base f219d7e6) was
+abandoned by the lead with a complete preservation record (slot_rebind rev
+819, claim_abandon rev 820, task_abandon rev 821) for exactly one reason:
+its scope set omitted tools/agent_fleet/test_review_handoff.py, which
+contains a test PINNING the regressed behavior this lane fixes - updating
+that test is part of the fix, not a violation. The -01 branch commits
+6a04e2ab (preregistration + instrument, RULE 0, no actuals) and 05f2dac5
+(fail-pre-fix proof: 5 of 12 new-suite tests fail at the unfixed base,
+7 preservation tests pass) remain in the shared object store and are
+carried into this task: the PRE_FIX_FAILURES.txt verbatim record is
+reproduced into this directory with its provenance header, and the
+fail-pre-fix run is REPEATED here at the d59518b9 base so the proof is
+tied to THIS branch's history (review_handoff.py is byte-identical between
+f219d7e6 and d59518b9 - empty `git diff --stat f219d7e6 d59518b9 --
+tools/agent_fleet/review_handoff.py tools/agent_fleet/control.py` - so
+the regression is the same regression).
+
+BACKGROUND (unchanged theory from -01, feedback c4212657 rev 767)
+-----------------------------------------------------------------
+ReviewHandoffControl._dispatch intercepts claim UNCONDITIONALLY and
+_claim_with_detached_review_capacity re-implements claim omitting three
+base Control.claim behaviors:
+  F1 auto-spawn - the fleet-slot-expansion-03 plane (PR #63): no free slot
+     of the task kind -> SPIN ONE UP under the named guards
+     (integration_slot_busy / slot_guard_reached; a free-but-provisioned
+     slot refuses stale_provision_requires_recovery, never masked by
+     spawn). The wrapper dead-ends at no_free_slot: PR #63's plane is DEAD
+     CODE in production. Found live TWICE: the smoke's scratch claim
+     (rev 767) and this worker's own -01 claim (409 no_free_slot rev 781).
+  F2 owner_instance binding - base ends
+     t.update(..., owner_instance=p.get('_resolved_instance')); the
+     wrapper omits it, so the instance fence (instance_not_bound) never
+     binds and a header-less twin succeeds where it must refuse.
+  F3 enforced-mode guard - base refuses instance-less claims with
+     instance_binding_required when instance_fencing is enforced; the
+     wrapper has no such guard.
+
+STATEMENT (disagreeable)
+------------------------
+Re-including the three behaviors inside _claim_with_detached_review_capacity
+(control.py stays untouched - out of scope) restores all three base
+behaviors through the review-handoff layer WITHOUT changing the one
+deviation the wrapper exists to add: a slotless REVIEW task carrying
+review_slot_handoffs does not count against its owner's agent capacity.
+Updating the single pinned test in test_review_handoff.py is part of the
+fix: it asserts the regressed no_free_slot refusal that the restoration
+replaces with auto-spawn.
+
+PREDICTIONS (unmeasured in this task until the runs below)
+----------------------------------------------------------
+P1. At the unfixed d59518b9 base, the carried new suite
+    (test_review_handoff_claim.py, 12 tests) reproduces the -01
+    fail-pre-fix split: the five F1/F2/F3-focused tests fail, the seven
+    preservation tests pass.
+P2. After the fix: a claim through ReviewHandoffControl with zero free
+    slots of the task kind auto-spawns a new slot (next id by persisted
+    high-water) and lands RUNNING on it; the named guards hold
+    (integration_slot_busy for a second integration claim;
+    slot_guard_reached at the SLOT_GUARD fuse;
+    stale_provision_requires_recovery for a free-but-provisioned slot).
+P3. After the fix: a claim carrying a verified instance header binds
+    owner_instance; a header-less call by the same bearer on the bound
+    task refuses instance_not_bound; the correctly-headed twin is
+    admitted; in compat mode a header-less claim binds owner_instance=None
+    exactly like base (legacy-unfenced admission unchanged).
+P4. After the fix: an instance-less claim in enforced mode refuses
+    instance_binding_required; with a header it succeeds and binds.
+P5. Detached-REVIEW capacity accounting is UNCHANGED by the fix: a
+    slotless REVIEW task with review_slot_handoffs does not consume its
+    owner's agent capacity while RUNNING tasks do (agent_capacity_reached)
+    - identical to pre-fix behavior.
+P6. After the fix, the updated pinned test
+    test_requeue_does_not_need_free_slot_and_following_claim_auto_spawns
+    (renamed from test_requeue_does_not_need_free_slot_but_following_
+    claim_does): the requeue half is unchanged (requeue needs no free
+    slot and lands READY with correction_base_head), and the following
+    claim now SUCCEEDS via auto-spawn - new slot id above the pre-claim
+    high-water, task RUNNING, slot bound. At the unfixed base this updated
+    test FAILS (the claim refuses no_free_slot), which is its fail-pre-fix
+    proof, retained verbatim.
+P7. At the fixed head: test_review_handoff_claim 12/12,
+    test_review_handoff 13/13, test_slot_expansion 5/5,
+    test_client_instance 9/9, test_capture_window 28/28.
+
+FAIL-PRE-FIX PROOF
+------------------
+Before the fix commit: run the carried new suite AND the updated pinned
+test at the unfixed d59518b9 base; retain verbatim output as
+PRE_FIX_FAILURES_02.txt in this directory. Expected: the five regression
+tests fail (including the updated pinned test), preservation tests pass.
+
+FALSIFIERS (named before the run)
+---------------------------------
+F-1. Any listed behavior still shadowed after the fix - statement false.
+F-2. Capacity accounting changed by the fix (a review-slot task wrongly
+     consuming capacity, or any free-claim past max_tasks) - false.
+F-3. Any listed suite failing at the fixed head - false.
+F-4. Any edit outside the three scoped files plus this evidence directory
+     - task void.
+
+METHOD
+------
+M1. This prereg commit precedes all -02 measurement.
+M2. Carry the fix (+33/-9 in review_handoff.py, from scratch preservation
+    E:\ChimeraWork\.cda_carry_01\fix_review_handoff.patch) and the new
+    test file; update the one pinned test per the packet's exact recipe.
+M3. Fail-pre-fix run at d59518b9's review_handoff.py, retained verbatim;
+    then the fix commit; then full suite runs, retained verbatim.
+M4. Evidence: PREREGISTRATION.txt, PRE_FIX_FAILURES_01_CARRIED.txt,
+    PRE_FIX_FAILURES_02.txt, RUN_NEW_SUITE.txt, RUN_REVIEW_HANDOFF.txt,
+    RUN_NAMED_SUITES.txt, RUN_FULL_SUITE.txt, RESULT.txt - all *.txt here.
+
+Agent: subagent-worker-04
