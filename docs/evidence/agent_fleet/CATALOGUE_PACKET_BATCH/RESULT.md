@@ -48,3 +48,21 @@ Agent: subagent-worker-10 · lead glm53-lead-02 epoch 5 · slot 5 (auto-spawned 
 
 - Commit chain: a01c1c7e (PREREG) -> this RESULT/artifact commit; pushed no-force; PR into astra/gait-capture; submit_review called with the exact pushed HEAD (recorded in the controller event log).
 - Files changed: docs/evidence/agent_fleet/CATALOGUE_PACKET_BATCH/** only.
+
+## CORRECTIONS - 2026-09-11 - evidence-corrections-batch-01 (append-only; dated; every byte above this line is untouched)
+
+### C3 (PR #67 review LOW-1) - delivered-file count, made verifiable
+
+This directory delivers **39 files** (tracked files, `git ls-files`):
+
+- root: `RESULT.md`, `PREREG.md`, `COVERAGE.md` - 3
+- `drafts/DRAFT-holodeck-*.md`: gov-01..06, math-01, mat-01..05 - 12
+- `raw/catalogue_next_batch01.json` - 1
+- `raw/catalogue_read/*.json`: GOV-01..06, MATH-01..06, MAT-01..05 - 17
+- `checks/`: `p1_batch_replay.txt`, `p1_batch_replay.run1-CHECKER-BUG-casefold.txt`, `p3_no_acceptance.txt`, `p4_scope_safety.txt`, `p4_scope_safety.run1-CORRECTLY-REFUSED-trailing-slash.txt`, `p5_op_audit.txt` - 6
+
+3 + 12 + 1 + 17 + 6 = **39**. Accuracy note on the LOW-1 premise: RESULT.md above itemizes deliverable CLASSES and states no running total. A naive count of the DELIVERABLES bullets yields 36 (37 if p1's inline-mentioned `.run1` copy is counted); adding the p4 `.run1` run-copy (never named by path above - the easily-uncounted retained-raw-class file) and RESULT.md itself reaches 39. This correction pins the verified enumeration so no recount is needed.
+
+### C4 (PR #67 review LOW-2) - the P1-driven batch swap between the two p4 runs
+
+`checks/p4_scope_safety.run1-CORRECTLY-REFUSED-trailing-slash.txt` (retained) is not comparable to `checks/p4_scope_safety.txt` without this note: run1 scanned the PREREG-PREDICTED batch (its card list is gov-01..06 + math-01..06 - the prediction that P1 falsified) AND the then-current draft scope forms still carried trailing slashes, so every line REFUSED bad_part and run1 printed "P4 FALSIFIED". The p1 replay pair then isolated the real procedure output (`p1_batch_replay.run1-CHECKER-BUG-casefold.txt`: first replay falsified by a casefold bug in the CHECKER itself, producing a bogus GOV-01x12 batch; `p1_batch_replay.txt`: the fixed replay's batch GOV-01..06, MATH-01, MAT-01..05 = the SHIPPED batch, disclosed in "THE BATCH AND THE FALSIFIED PREDICTION" above). The drafts were then re-aimed from the predicted to the shipped batch with trailing-slash-free scope forms, and the final p4 run (`checks/p4_scope_safety.txt`) scanned the SHIPPED batch: every proposed scope and id OK, "P4 HOLDS". run1's FALSIFIED verdict is the check correctly refusing bad scope forms over the wrong-batch drafts; the HOLDS verdict applies to the shipped set. Both runs are retained so the swap stays auditable.

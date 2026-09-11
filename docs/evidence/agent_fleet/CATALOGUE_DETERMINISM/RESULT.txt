@@ -70,3 +70,49 @@ DIFF BOUNDARY (audit-only lane)
   no test, no tool, no source file (verifiable from the PR file list).
 
 Agent: subagent-worker-04
+
+--------------------------------------------------------------------------------
+CORRECTIONS - 2026-09-11 - evidence-corrections-batch-01 (append-only; dated;
+every byte above this line is untouched)
+--------------------------------------------------------------------------------
+C1 (PR #66 review info-1) - the RAW_RUN_*.txt hash "mismatch" is line-ending
+normalization, not a content change. The console sha256/sizes pinned in the
+RUN records here are the LIVE working-tree forms (CRLF, captured before
+commit). Git stores the LF-normalized blobs: core.autocrlf=true (attr
+text=auto), each console contains exactly 3 newlines, so each committed blob
+is exactly 3 bytes shorter and the CR-stripped bytes are identical to the live
+form. Measured by this lane at HEAD d59518b9 (git cat-file blob vs working
+tree); full values so no re-derivation is needed:
+
+  RAW_RUN_BASELINE_CONSOLE.txt
+    live (CRLF, as pinned in RUN_BASELINE_REPEATS.txt, run 1)
+      009ee83e22a358542eff8489dd5caa0d1a64e67ce9ad4c33ff834a4893405773  650198 B
+      (matches that record's "console size each: 650198 bytes" pin)
+    committed blob (LF)
+      634fad48098cca36719ef0b91c9fa9a5cfbed06cfbe8519597ebaabfb64c3a88  650195 B
+  RAW_RUN_PATHVAR_CONSOLE.txt
+    live (CRLF, as pinned in RUN_PATH_VARIANT.txt)
+      b052ddb5dba7c20f922e8fa777e78b7ce50d41bb53b1868f5162e794184ebb2b  650220 B
+    committed blob (LF)
+      310cda694a9181523659c93be4e649b753f46f0637e5bfd8d8eda9de81837ce3  650217 B
+  RAW_RUN_HEADVAR_CONSOLE.txt
+    live (CRLF, as pinned in RUN_HEAD_VARIANT.txt)
+      d60a9bb89e409875c7b8e775bdf514c0c784b6f048a481b47d1b1f4ea1e0b783  650220 B
+    committed blob (LF)
+      6443fea8c4c617ef87fbec0e45c145d023a6c71c8730073026b58879b3d76636  650217 B
+
+(The pathvar/headvar run records pin hashes but not sizes; the sizes above are
+this lane's measurements.) Re-derive with:
+  git cat-file blob HEAD:docs/evidence/agent_fleet/CATALOGUE_DETERMINISM/<file> | sha256sum
+  sha256sum docs/evidence/agent_fleet/CATALOGUE_DETERMINISM/<file>
+
+C2 (PR #66 review info-2) - which form the recorded builder sha pins: the
+builder sha256 recorded in FIELD_ATTRIBUTION.txt and the three RUN records,
+cc47c240034a940ebb7b1b59a4310d8f8fedc9b99df03ae20f7e723e6d331014, is the
+WORKING-TREE CRLF form of tools/agent_fleet/master_catalogue.py (33737 B,
+667 CR bytes under core.autocrlf=true). The repository blob - what
+`git cat-file blob HEAD:tools/agent_fleet/master_catalogue.py`, a fresh clone,
+and the fleet deployment MANIFEST.json pin - is the LF form
+f32d16ac105eb6fca11e27d466f61352b79174ef0d8780553dcea7052ae05c0e (33070 B).
+Both forms describe the same source; to reproduce the recorded value from a
+fresh clone, convert LF->CRLF before hashing.
