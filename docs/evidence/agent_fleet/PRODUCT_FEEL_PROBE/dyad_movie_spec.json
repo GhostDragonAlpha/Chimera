@@ -1,0 +1,25 @@
+{
+ "task": "product-feel-probe-01",
+ "attempt": "product-feel-after-movie-v1",
+ "physical_context": "A desktop engineering application window: a central 3D viewport showing a brown teddy-bear-like creature standing on a grid floor, with tool panels around the viewport. A short scripted clip of the creature plays.",
+ "claim_under_exam": "A viewer watching this short clip can tell what the creature is doing and what a human would learn from watching it.",
+ "questions": [
+  "1. Describe what happens in the clip, in order.",
+  "2. What kind of motion or behavior is being demonstrated \u2014 name it as you would to a friend.",
+  "3. If a non-physicist watched this clip, what ONE sentence would you tell them about what they just learned?",
+  "4. Is anything unclear, ambiguous, or unconvincing about the clip?"
+ ],
+ "captures": [
+  {
+   "index": 1,
+   "path": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\product_feel_after.mp4"
+  }
+ ],
+ "runtime_metadata": {
+  "movie_artifact": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\product_feel_after.mp4",
+  "camera": "fixed 3/4 orbit (set once before the clip; unchanged during)",
+  "state": "the creature is the application loaded subject; a short pose clip plays"
+ },
+ "review_type": "movie",
+ "evidence_limits": "one movie artifact (~4.5 s); on-screen application text is part of the product surface and may be read; numbers are observations, not measurements"
+}
