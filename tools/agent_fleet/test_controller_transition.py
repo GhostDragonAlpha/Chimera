@@ -36,6 +36,8 @@ import sys
 import tempfile
 import unittest
 import hashlib
+import urllib.error
+import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -518,7 +520,7 @@ class ControllerTransitionRehearsalTests(unittest.TestCase):
     def test_3_credentials_never_appear_in_reports_events_status_or_logs(self):
         self.r.start(self.dep_old)
         wk, op = self.seed_agents()
-        secrets = [self.secrets['supervisor'], self.secrets['enrollment'], wk]
+        secrets = [self.secrets['supervisor'], self.secrets['enrollment'], wk, op]
         secrets_path = self.root / 'control' / '.service_secrets.json'
         # sanity: the strings under test are real and live only in the
         # private secrets file under the temp root
@@ -544,6 +546,59 @@ class ControllerTransitionRehearsalTests(unittest.TestCase):
         self.assertNotIn('enrollment_hash', snap)
         for agent in snap['agents'].values():
             self.assertNotIn('token_hash', agent)
+
+
+    # --- test 4: transport body-limit boundary (fleet-transport-body-limit-01)
+    def test_4_transport_body_limit_boundary(self):
+        """MAX_BODY is the derived 2**24 transport cap: a canonical-catalogue-
+        sized body passes the transport layer; a body one byte above the cap
+        refuses request_size; the listener survives both."""
+        import service as service_module
+        self.assertEqual(service_module.MAX_BODY, 2 ** 24)
+        self.r.start(self.dep_old)
+        sup = self.secrets['supervisor']
+        endpoint = 'http://127.0.0.1:%d/v1/action' % self.port
+
+        def post(body):
+            req = urllib.request.Request(
+                endpoint, data=body,
+                headers={'Authorization': 'Bearer ' + sup,
+                         'Content-Type': 'application/json'})
+            try:
+                with urllib.request.urlopen(req, timeout=60) as resp:
+                    return resp.status, json.load(resp)
+            except urllib.error.HTTPError as exc:
+                return exc.code, json.loads(exc.read().decode('utf-8'))
+            except (ConnectionError, OSError):
+                # The server refuses an oversized body from its
+                # Content-Length header BEFORE reading it; the early
+                # 409+close surfaces client-side as a connection abort.
+                return 'aborted', None
+
+        def sized(target):
+            base = json.dumps({'operation': 'snapshot',
+                               'arguments': {'pad': ''}}).encode('utf-8')
+            body = json.dumps({'operation': 'snapshot',
+                               'arguments': {'pad': 'x' * (target - len(base))}}).encode('utf-8')
+            assert abs(len(body) - target) < 8, (len(body), target)
+            return body
+
+        # Below the cap (canonical catalogue payload is ~1.52 MB, well under):
+        status, payload = post(sized(2 ** 24 - 1024))
+        self.assertEqual(status, 200)
+        self.assertIn('revision', payload['result'])
+        # Above the cap, by a hair: the named transport refusal (either a
+        # readable 409 request_size or the early-close abort it causes
+        # mid-upload); nothing else runs either way.
+        status, payload = post(sized(2 ** 24 + 2048))
+        if status != 'aborted':
+            self.assertEqual(status, 409)
+            self.assertEqual(payload.get('error'), 'request_size')
+        # The listener is unaffected by either.
+        on_port, kind = fleet_on_port(self.port)
+        self.assertEqual(kind, 'fleet')
+        snap = self.r.snap()
+        self.assertIn('revision', snap)
 
 
 if __name__ == '__main__':

@@ -100,3 +100,17 @@ skip pre-exist at this base and belong to the catalogue lane.
 Any future live transition must still clear gates 1-5 above with its own
 pre-restart fingerprint, backup, quiescence verification and post-restart
 reconciliation; this suite proves the procedure, not a deployment.
+
+## Transport body cap (2026-09-11, fleet-transport-body-limit-01)
+
+The first full catalogue import (GOV-01 clause-4 milestone) was refused by
+the live transport: `MAX_BODY` 64 KB versus the canonical payload
+1,518,593 B measured at tip `95f25b33`. The cap is transport policy ("not a
+physics constant", per its own comment) and is now the derived 2**24
+(16 MiB): measured payload, corpus-doubling headroom (×8), power-of-two
+convention. `test_controller_transition.py::test_4` pins the boundary both
+ways (under-cap served; over-cap refused `request_size` — note the refusal
+may surface client-side as a mid-upload connection abort because the server
+decides from the Content-Length header before reading the body). The change
+deploys only through the controlled transition above; the live import retry
+follows the transition and is recorded separately.

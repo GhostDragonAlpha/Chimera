@@ -1,0 +1,30 @@
+{
+  "task": "fleet-transport-body-limit-01",
+  "generation": 1,
+  "slot": 2,
+  "worktree": "E:\ChimeraWork\slot-02",
+  "base": "95f25b33aff1cc4d03e6c9a0d9cf10005ca085a2",
+  "preregistration_commit": "a539f2b9",
+  "producing_commands": [
+    "python -m py_compile tools/agent_fleet/service.py tools/agent_fleet/test_controller_transition.py",
+    "PYTHONIOENCODING=utf-8 python -m unittest tools.agent_fleet.test_controller_transition -v",
+    "PYTHONIOENCODING=utf-8 python -m unittest discover -s tools/agent_fleet -p 'test_*.py'"
+  ],
+  "measured": {
+    "canonical_payload_bytes_at_tip_95f25b33": 1518593,
+    "canonical_payload_envelope_digest_prefix": "dc1b860f9cfc5409",
+    "derived_limit_bytes": 16777216,
+    "derivation": "1,518,593 B measured; corpus can realistically double; x8 headroom = 12,148,744 B; power-of-two transport convention 2**24 = 16,777,216 B",
+    "previous_limit_bytes": 65536,
+    "transition_suite": "4 tests, 0 failures (test_4 new: under-cap 16MiB-1KiB body served 200 with revision; over-cap 16MiB+2KiB body refused request_size-or-early-close-abort; listener alive after both)",
+    "full_fleet_suite": "187 tests, 0 failures, 1 Windows-symlink skip"
+  },
+  "live_import_attempt_before_fix": {
+    "result": "REFUSED request_size (HTTP 409); error body lost to early-close connection abort (WinError 10053) - consistent with the server refusing from Content-Length before body read",
+    "store_mutated": false
+  },
+  "not_claimed": [
+    "post-change live import (executed only after the documented controlled transition)",
+    "deployment identity beyond the one evidenced live transition"
+  ]
+}

@@ -10,7 +10,12 @@ import sys
 from control import Refusal
 from review_handoff import ReviewHandoffControl
 
-MAX_BODY=65536  # Transport policy, not a physics constant.
+# Transport policy, not a physics constant. Derived (fleet-transport-body-limit-01,
+# 2026-09-11): canonical catalogue payload measured 1,518,593 B at tip 95f25b33;
+# corpus can realistically double -> x8 headroom = 12,148,744 B -> power-of-two
+# transport convention 2**24 = 16 MiB. The 64 KB predecessor silently excluded
+# the full catalogue import from the live transport.
+MAX_BODY=2**24
 
 class Handler(BaseHTTPRequestHandler):
     def log_message(self,*args): pass  # Never echo tokens or request bodies.
