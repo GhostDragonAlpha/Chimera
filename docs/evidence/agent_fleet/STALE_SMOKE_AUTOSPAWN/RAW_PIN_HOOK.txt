@@ -1,0 +1,10 @@
+RAW PIN-HOOK CHECK -- stale-smoke-autospawn-01
+hook: five_slot_coordination.test_scenario_pins_are_current (guarded import, loader-visible)
+
+[PASS] POSITIVE control -- fixed source: hook accepts
+       detail={'expected_sixth_auto_spawn': True, 'source': 'E:\\ChimeraWork\\slot-12\\tools\\agent_fleet\\five_slot_coordination.py', 'scenarios': ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9']}
+[PASS] NEGATIVE control -- stale fixture: hook DETECTED the drift
+       detail: Traceback (most recent call last):
+
+RESULT: HOLDS 2/2 (hook passes on fixed source, fails on stale fixture)
+falsifier status: NOT TRIGGERED for R2

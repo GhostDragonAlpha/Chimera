@@ -1,0 +1,647 @@
+{
+  "schema": 1,
+  "revision": 50,
+  "root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy",
+  "leader": "a1",
+  "epoch": 1,
+  "agents": {
+    "a1": {
+      "label": "a1",
+      "alive": true,
+      "qualified": true,
+      "capabilities": [
+        "cpu",
+        "gpu"
+      ],
+      "max_tasks": 2,
+      "can_lead": true,
+      "rank": 10,
+      "ready_epoch": 0,
+      "qualification": "five-client coordination fixture",
+      "instances": {},
+      "recovery_offer": "no foreign work; fixture ready"
+    },
+    "a2": {
+      "label": "a2",
+      "alive": false,
+      "qualified": true,
+      "capabilities": [
+        "cpu",
+        "gpu"
+      ],
+      "max_tasks": 2,
+      "can_lead": false,
+      "rank": 1,
+      "ready_epoch": null,
+      "qualification": "five-client coordination fixture",
+      "instances": {}
+    },
+    "a3": {
+      "label": "a3",
+      "alive": true,
+      "qualified": true,
+      "capabilities": [
+        "cpu",
+        "gpu"
+      ],
+      "max_tasks": 2,
+      "can_lead": false,
+      "rank": 1,
+      "ready_epoch": null,
+      "qualification": "five-client coordination fixture",
+      "instances": {}
+    },
+    "a4": {
+      "label": "a4",
+      "alive": true,
+      "qualified": true,
+      "capabilities": [
+        "cpu",
+        "gpu"
+      ],
+      "max_tasks": 2,
+      "can_lead": false,
+      "rank": 1,
+      "ready_epoch": null,
+      "qualification": "five-client coordination fixture",
+      "instances": {}
+    },
+    "a5": {
+      "label": "a5",
+      "alive": true,
+      "qualified": true,
+      "capabilities": [
+        "cpu",
+        "gpu"
+      ],
+      "max_tasks": 2,
+      "can_lead": false,
+      "rank": 1,
+      "ready_epoch": null,
+      "qualification": "five-client coordination fixture",
+      "instances": {}
+    }
+  },
+  "tasks": {
+    "coord-1": {
+      "id": "coord-1",
+      "state": "RUNNING",
+      "owner": "a1",
+      "slot": "1",
+      "generation": 1,
+      "kind": "integration",
+      "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "branch": "astra/tasks/coord-1",
+      "pr_base": "astra/gait-capture",
+      "scopes": [
+        "docs/evidence/agent_fleet/FIVE-CLIENT-COORDINATION/coord-1"
+      ],
+      "dependencies": [],
+      "capabilities": [
+        "cpu",
+        "gpu"
+      ],
+      "resources": [
+        {
+          "name": "rtx4090",
+          "class": "gpu_functionality",
+          "memory_mb": null
+        }
+      ],
+      "packet": "coordination fixture",
+      "checkpoint": "session token survived restart",
+      "head": null,
+      "review": null,
+      "integration": null,
+      "owner_instance": null
+    },
+    "coord-2": {
+      "id": "coord-2",
+      "state": "RUNNING",
+      "owner": "a3",
+      "slot": "2",
+      "generation": 4,
+      "kind": "worker",
+      "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "branch": "astra/tasks/coord-2",
+      "pr_base": "astra/gait-capture",
+      "scopes": [
+        "docs/evidence/agent_fleet/FIVE-CLIENT-COORDINATION/coord-2"
+      ],
+      "dependencies": [],
+      "capabilities": [
+        "cpu",
+        "gpu"
+      ],
+      "resources": [
+        {
+          "name": "rtx4090",
+          "class": "gpu_functionality",
+          "memory_mb": null
+        }
+      ],
+      "packet": "coordination fixture",
+      "checkpoint": "preserved workspace; writer gone",
+      "head": null,
+      "review": null,
+      "integration": null,
+      "owner_instance": null
+    },
+    "coord-3": {
+      "id": "coord-3",
+      "state": "RUNNING",
+      "owner": "a3",
+      "slot": "3",
+      "generation": 1,
+      "kind": "worker",
+      "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "branch": "astra/tasks/coord-3",
+      "pr_base": "astra/gait-capture",
+      "scopes": [
+        "docs/evidence/agent_fleet/FIVE-CLIENT-COORDINATION/coord-3"
+      ],
+      "dependencies": [],
+      "capabilities": [
+        "cpu",
+        "gpu"
+      ],
+      "resources": [
+        {
+          "name": "rtx4090",
+          "class": "gpu_functionality",
+          "memory_mb": null
+        }
+      ],
+      "packet": "coordination fixture",
+      "checkpoint": null,
+      "head": null,
+      "review": null,
+      "integration": null,
+      "owner_instance": null
+    },
+    "coord-4": {
+      "id": "coord-4",
+      "state": "RUNNING",
+      "owner": "a4",
+      "slot": "4",
+      "generation": 1,
+      "kind": "worker",
+      "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "branch": "astra/tasks/coord-4",
+      "pr_base": "astra/gait-capture",
+      "scopes": [
+        "docs/evidence/agent_fleet/FIVE-CLIENT-COORDINATION/coord-4"
+      ],
+      "dependencies": [],
+      "capabilities": [
+        "cpu",
+        "gpu"
+      ],
+      "resources": [
+        {
+          "name": "rtx4090",
+          "class": "gpu_functionality",
+          "memory_mb": null
+        }
+      ],
+      "packet": "coordination fixture",
+      "checkpoint": null,
+      "head": null,
+      "review": null,
+      "integration": null,
+      "owner_instance": null
+    },
+    "coord-5": {
+      "id": "coord-5",
+      "state": "RUNNING",
+      "owner": "a5",
+      "slot": "5",
+      "generation": 1,
+      "kind": "worker",
+      "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "branch": "astra/tasks/coord-5",
+      "pr_base": "astra/gait-capture",
+      "scopes": [
+        "docs/evidence/agent_fleet/FIVE-CLIENT-COORDINATION/coord-5"
+      ],
+      "dependencies": [],
+      "capabilities": [
+        "cpu",
+        "gpu"
+      ],
+      "resources": [
+        {
+          "name": "rtx4090",
+          "class": "gpu_functionality",
+          "memory_mb": null
+        }
+      ],
+      "packet": "coordination fixture",
+      "checkpoint": null,
+      "head": null,
+      "review": null,
+      "integration": null,
+      "owner_instance": null
+    },
+    "coord-sixth": {
+      "id": "coord-sixth",
+      "state": "RECOVERY_HOLD",
+      "owner": "a2",
+      "slot": "6",
+      "generation": 2,
+      "kind": "worker",
+      "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "branch": "astra/tasks/coord-sixth",
+      "pr_base": "astra/gait-capture",
+      "scopes": [
+        "docs/evidence/agent_fleet/FIVE-CLIENT-COORDINATION/coord-sixth"
+      ],
+      "dependencies": [],
+      "capabilities": [
+        "cpu"
+      ],
+      "resources": [],
+      "packet": "sixth task",
+      "checkpoint": null,
+      "head": null,
+      "review": null,
+      "integration": null,
+      "owner_instance": null
+    }
+  },
+  "resources": {},
+  "requests": {},
+  "resource_queues": [
+    {
+      "id": "7ff5dfbdddaf9ab2",
+      "task": "coord-1",
+      "owner": "a1",
+      "generation": 1,
+      "wants": [
+        {
+          "name": "rtx4090",
+          "class": "gpu_functionality",
+          "memory_mb": null
+        }
+      ],
+      "priority": 5,
+      "enqueued_revision": 25,
+      "served": true,
+      "granted": true,
+      "allocation_failed": false,
+      "stalled": null,
+      "granted_revision": 25,
+      "dropped_reason": null,
+      "revoked": false,
+      "grant_keys": [
+        "rtx4090"
+      ]
+    },
+    {
+      "id": "348f380285ff0239",
+      "task": "coord-2",
+      "owner": "a2",
+      "generation": 1,
+      "wants": [
+        {
+          "name": "rtx4090",
+          "class": "gpu_functionality",
+          "memory_mb": null
+        }
+      ],
+      "priority": 5,
+      "enqueued_revision": 26,
+      "served": true,
+      "granted": true,
+      "allocation_failed": false,
+      "stalled": null,
+      "granted_revision": 27,
+      "dropped_reason": null,
+      "revoked": false,
+      "grant_keys": [
+        "rtx4090"
+      ]
+    },
+    {
+      "id": "7044a2f7e4e1f2b2",
+      "task": "coord-3",
+      "owner": "a3",
+      "generation": 1,
+      "wants": [
+        {
+          "name": "rtx4090",
+          "class": "gpu_functionality",
+          "memory_mb": null
+        }
+      ],
+      "priority": 5,
+      "enqueued_revision": 29,
+      "served": true,
+      "granted": true,
+      "allocation_failed": false,
+      "stalled": null,
+      "granted_revision": 29,
+      "dropped_reason": null,
+      "revoked": false,
+      "grant_keys": [
+        "rtx4090"
+      ]
+    },
+    {
+      "id": "33949a0728ca56f6",
+      "task": "coord-4",
+      "owner": "a4",
+      "generation": 1,
+      "wants": [
+        {
+          "name": "rtx4090",
+          "class": "gpu_benchmark",
+          "memory_mb": null
+        }
+      ],
+      "priority": 5,
+      "enqueued_revision": 30,
+      "served": true,
+      "granted": true,
+      "allocation_failed": false,
+      "stalled": null,
+      "granted_revision": 31,
+      "dropped_reason": null,
+      "revoked": false,
+      "grant_keys": [
+        "rtx4090"
+      ]
+    },
+    {
+      "id": "1b678b657c919587",
+      "task": "coord-3",
+      "owner": "a3",
+      "generation": 1,
+      "wants": [
+        {
+          "name": "rtx4090",
+          "class": "gpu_functionality",
+          "memory_mb": null
+        }
+      ],
+      "priority": 5,
+      "enqueued_revision": 32,
+      "served": true,
+      "granted": true,
+      "allocation_failed": false,
+      "stalled": null,
+      "granted_revision": 33,
+      "dropped_reason": null,
+      "revoked": false,
+      "grant_keys": [
+        "rtx4090"
+      ]
+    },
+    {
+      "id": "10fcbab568d9e3f0",
+      "task": "coord-1",
+      "owner": "a1",
+      "generation": 1,
+      "wants": [
+        {
+          "name": "memory",
+          "class": "memory",
+          "memory_mb": 16000
+        }
+      ],
+      "priority": 5,
+      "enqueued_revision": 35,
+      "served": true,
+      "granted": true,
+      "allocation_failed": false,
+      "stalled": null,
+      "granted_revision": 35,
+      "dropped_reason": null,
+      "revoked": false,
+      "grant_keys": [
+        "memory.10fcbab568d9e3f0"
+      ]
+    },
+    {
+      "id": "3f174e1a52f70a9d",
+      "task": "coord-2",
+      "owner": "a2",
+      "generation": 1,
+      "wants": [
+        {
+          "name": "memory",
+          "class": "memory",
+          "memory_mb": 2000
+        }
+      ],
+      "priority": 5,
+      "enqueued_revision": 36,
+      "served": true,
+      "granted": true,
+      "allocation_failed": true,
+      "stalled": null,
+      "granted_revision": 37,
+      "dropped_reason": null,
+      "revoked": false,
+      "grant_keys": [
+        "memory.3f174e1a52f70a9d"
+      ]
+    },
+    {
+      "id": "645041a9a3a433a6",
+      "task": "coord-2",
+      "owner": "a3",
+      "generation": 4,
+      "wants": [
+        {
+          "name": "rtx4090",
+          "class": "gpu_functionality",
+          "memory_mb": null
+        }
+      ],
+      "priority": 5,
+      "enqueued_revision": 43,
+      "served": true,
+      "granted": true,
+      "allocation_failed": false,
+      "stalled": null,
+      "granted_revision": 43,
+      "dropped_reason": null,
+      "revoked": false,
+      "grant_keys": [
+        "rtx4090"
+      ]
+    },
+    {
+      "id": "a31241560d954607",
+      "task": "coord-2",
+      "owner": "a3",
+      "generation": 4,
+      "wants": [
+        {
+          "name": "rtx4090",
+          "class": "gpu_functionality",
+          "memory_mb": null
+        }
+      ],
+      "priority": 5,
+      "enqueued_revision": 45,
+      "served": true,
+      "granted": true,
+      "allocation_failed": false,
+      "stalled": null,
+      "granted_revision": 45,
+      "dropped_reason": null,
+      "revoked": false,
+      "grant_keys": [
+        "rtx4090"
+      ]
+    },
+    {
+      "id": "7c52e25d551d5b2d",
+      "task": "coord-4",
+      "owner": "a4",
+      "generation": 1,
+      "wants": [
+        {
+          "name": "rtx4090",
+          "class": "gpu_benchmark",
+          "memory_mb": null
+        }
+      ],
+      "priority": 5,
+      "enqueued_revision": 46,
+      "served": true,
+      "granted": true,
+      "allocation_failed": false,
+      "stalled": null,
+      "granted_revision": 49,
+      "dropped_reason": null,
+      "revoked": false,
+      "grant_keys": [
+        "rtx4090"
+      ]
+    },
+    {
+      "id": "70b5333bf7b631f2",
+      "task": "coord-5",
+      "owner": "a5",
+      "generation": 1,
+      "wants": [
+        {
+          "name": "memory",
+          "class": "memory",
+          "memory_mb": 6000
+        }
+      ],
+      "priority": 5,
+      "enqueued_revision": 47,
+      "served": true,
+      "granted": true,
+      "allocation_failed": false,
+      "stalled": null,
+      "granted_revision": 47,
+      "dropped_reason": null,
+      "revoked": false,
+      "grant_keys": [
+        "memory.70b5333bf7b631f2"
+      ]
+    }
+  ],
+  "memory": {
+    "budget_mb": 16384,
+    "admitted_mb": 0
+  },
+  "slots": {
+    "1": {
+      "task": "coord-1",
+      "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-01",
+      "kind": "integration",
+      "engine": {
+        "build_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-01\\.tmp\\engine_build",
+        "runtime_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-01\\.tmp\\engine_runtime",
+        "evidence_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-01\\.tmp\\engine_evidence",
+        "port_candidate": 8101,
+        "port_reserved": false,
+        "provisioned": false,
+        "binary_identity": "UNBUILT: bind source head, dirty diff, executable and shader hashes before launch"
+      }
+    },
+    "2": {
+      "task": "coord-2",
+      "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-02",
+      "kind": "worker",
+      "engine": {
+        "build_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-02\\.tmp\\engine_build",
+        "runtime_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-02\\.tmp\\engine_runtime",
+        "evidence_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-02\\.tmp\\engine_evidence",
+        "port_candidate": 8102,
+        "port_reserved": false,
+        "provisioned": false,
+        "binary_identity": "UNBUILT: bind source head, dirty diff, executable and shader hashes before launch"
+      }
+    },
+    "3": {
+      "task": "coord-3",
+      "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-03",
+      "kind": "worker",
+      "engine": {
+        "build_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-03\\.tmp\\engine_build",
+        "runtime_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-03\\.tmp\\engine_runtime",
+        "evidence_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-03\\.tmp\\engine_evidence",
+        "port_candidate": 8103,
+        "port_reserved": false,
+        "provisioned": false,
+        "binary_identity": "UNBUILT: bind source head, dirty diff, executable and shader hashes before launch"
+      }
+    },
+    "4": {
+      "task": "coord-4",
+      "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-04",
+      "kind": "worker",
+      "engine": {
+        "build_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-04\\.tmp\\engine_build",
+        "runtime_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-04\\.tmp\\engine_runtime",
+        "evidence_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-04\\.tmp\\engine_evidence",
+        "port_candidate": 8104,
+        "port_reserved": false,
+        "provisioned": false,
+        "binary_identity": "UNBUILT: bind source head, dirty diff, executable and shader hashes before launch"
+      }
+    },
+    "5": {
+      "task": "coord-5",
+      "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-05",
+      "kind": "worker",
+      "engine": {
+        "build_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-05\\.tmp\\engine_build",
+        "runtime_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-05\\.tmp\\engine_runtime",
+        "evidence_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-05\\.tmp\\engine_evidence",
+        "port_candidate": 8105,
+        "port_reserved": false,
+        "provisioned": false,
+        "binary_identity": "UNBUILT: bind source head, dirty diff, executable and shader hashes before launch"
+      }
+    },
+    "6": {
+      "task": "coord-sixth",
+      "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-06",
+      "kind": "worker",
+      "engine": {
+        "build_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-06\\.tmp\\engine_build",
+        "runtime_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-06\\.tmp\\engine_runtime",
+        "evidence_root": "C:\\Users\\allen\\AppData\\Local\\Temp\\coord-registry-63k6lgmw\\deploy\\slot-06\\.tmp\\engine_evidence",
+        "port_candidate": 8106,
+        "port_reserved": false,
+        "provisioned": false,
+        "binary_identity": "UNBUILT: bind source head, dirty diff, executable and shader hashes before launch"
+      }
+    }
+  },
+  "instance_fencing": "compat",
+  "catalogue": {
+    "import": null,
+    "imports": []
+  },
+  "slot_high_water": 6
+}
