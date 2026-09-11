@@ -1,0 +1,29 @@
+# C9 gate-capture console (fleet-followups-batch-03): test_task_abandon.py after C1 tighten
+# worktree E:/ChimeraWork/slot-07 at prereg + C1+C2 working tree; command + full raw output below
+
+$ python tools/agent_fleet/test_task_abandon.py -v
+test_abandoned_card_is_reproposable_in_catalogue_next (__main__.TaskAbandonTests.test_abandoned_card_is_reproposable_in_catalogue_next) ... ok
+test_abandoned_id_is_permanent_scope_freed_and_dependency_blocking (__main__.TaskAbandonTests.test_abandoned_id_is_permanent_scope_freed_and_dependency_blocking) ... ok
+test_abandoned_task_not_counted_as_owner_capacity_or_active (__main__.TaskAbandonTests.test_abandoned_task_not_counted_as_owner_capacity_or_active) ... ok
+test_audit_trail_append_only_and_token_free (__main__.TaskAbandonTests.test_audit_trail_append_only_and_token_free) ... ok
+test_claim_abandon_drops_queued_resource_requests (__main__.TaskAbandonTests.test_claim_abandon_drops_queued_resource_requests) ... ok
+test_claim_abandon_refuses_active_provision_naming_slot_rebind (__main__.TaskAbandonTests.test_claim_abandon_refuses_active_provision_naming_slot_rebind) ... ok
+test_claim_abandon_refuses_non_supervisor_and_wrong_states (__main__.TaskAbandonTests.test_claim_abandon_refuses_non_supervisor_and_wrong_states) ... ok
+test_claim_abandon_refuses_while_resources_still_held (__main__.TaskAbandonTests.test_claim_abandon_refuses_while_resources_still_held) ... ok
+test_claim_abandon_requires_both_attestations (__main__.TaskAbandonTests.test_claim_abandon_requires_both_attestations) ... ok
+test_claim_abandon_returns_ready_at_new_generation_without_revoking_session (__main__.TaskAbandonTests.test_claim_abandon_returns_ready_at_new_generation_without_revoking_session) ... ok
+test_claim_abandon_slot_refusals_pinned_unreachable_by_design (__main__.TaskAbandonTests.test_claim_abandon_slot_refusals_pinned_unreachable_by_design) ... ok
+test_refusals_leave_revision_and_audit_untouched (__main__.TaskAbandonTests.test_refusals_leave_revision_and_audit_untouched) ... ok
+test_stale_generation_refused_after_claim_abandon (__main__.TaskAbandonTests.test_stale_generation_refused_after_claim_abandon) ... ok
+test_task_abandon_never_touches_the_filesystem (__main__.TaskAbandonTests.test_task_abandon_never_touches_the_filesystem) ... ok
+test_task_abandon_refuses_inactive_states (__main__.TaskAbandonTests.test_task_abandon_refuses_inactive_states) ... ok
+test_task_abandon_refuses_non_supervisor_actors (__main__.TaskAbandonTests.test_task_abandon_refuses_non_supervisor_actors) ... ok
+test_task_abandon_refuses_unknown_task (__main__.TaskAbandonTests.test_task_abandon_refuses_unknown_task) ... ok
+test_task_abandon_requires_reason_and_evidence (__main__.TaskAbandonTests.test_task_abandon_requires_reason_and_evidence) ... ok
+test_task_abandon_retires_ready_task_with_audit_record (__main__.TaskAbandonTests.test_task_abandon_retires_ready_task_with_audit_record) ... ok
+test_yield_recover_path_still_works_alongside_claim_abandon (__main__.TaskAbandonTests.test_yield_recover_path_still_works_alongside_claim_abandon) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 4.355s
+
+OK

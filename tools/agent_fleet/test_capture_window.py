@@ -566,8 +566,10 @@ def verify_with_transient_tolerance(window, expected_pattern,
 
     capture-flake-tolerance-01. Attempt 1 calls verify_hwnd_capture with
     the caller's EXACT arguments. Anything other than the recorded
-    transient verdict ('occluded_or_foreign_content') is returned
-    untouched -- deterministic contract verdicts are never retried. On the
+    transient verdict ('occluded_or_foreign_content') -- or a transient
+    record whose pinned and client sizes disagree (C2,
+    fleet-followups-batch-03: verdict + SIZE-MATCH trigger) -- is returned
+    untouched: deterministic contract outcomes are never retried. On the
     transient: ONE repaint of the SAME fixture (never recreated, never
     retuned), the fixture parameters are ASSERTED identical between
     attempts (hwnd, measured client size, expected-pattern digest, title;
@@ -592,9 +594,20 @@ def verify_with_transient_tolerance(window, expected_pattern,
                       pinned_size=pinned_size, title=title)
     provenance = {'max_retries': TRANSIENT_TOLERANCE_MAX_RETRIES,
                   'deadline_s': deadline_s, 'started': started}
-    if first.get('verdict') != 'occluded_or_foreign_content':
+    # C2 (fleet-followups-batch-03, PR #75 LOW): the trigger is VERDICT +
+    # SIZE-MATCH, narrowed from verdict-only. Today the occluded verdict
+    # implies the size gate passed (measured == pinned, or adopted), so the
+    # set of legal retries is unchanged; the explicit size-match makes the
+    # tolerance immune to future verdict-path changes: a record whose sizes
+    # disagree can never be retried (its failure is deterministic, not the
+    # recorded transient).
+    size_consistent = first.get('pinned_size') == first.get('client_size')
+    if (first.get('verdict') != 'occluded_or_foreign_content'
+            or not size_consistent):
         provenance['retries'] = 0
         provenance['fired'] = False
+        if first.get('verdict') == 'occluded_or_foreign_content':
+            provenance['reason'] = 'size_mismatch_not_transient'
         first['transient_tolerance'] = provenance
         return first
     # First attempt failed with the recorded transient: RETAIN it.
@@ -674,10 +687,15 @@ class _ToleranceScriptedWindow(object):
         self.repaints += 1
 
 
-def _tolerance_record(verdict, size=(100, 70), title='tolerance-test'):
+def _tolerance_record(verdict, size=(100, 70), title='tolerance-test',
+                      pinned=None):
+    # C2: faithful records always carry pinned_size (the real contract
+    # writes it, adopted or explicit); it defaults to the client size.
     return {'verdict': verdict,
             'publishable': verdict == 'unobscured',
-            'client_size': list(size), 'title': title}
+            'client_size': list(size),
+            'pinned_size': list(size) if pinned is None else list(pinned),
+            'title': title}
 
 
 def _tolerance_scripted_verify(script, calls):
@@ -764,6 +782,24 @@ class TransientToleranceTests(unittest.TestCase):
         self.assertEqual(rec['verdict'], 'window_destroyed')
         self.assertEqual(len(calls), 1)  # deterministic verdicts: no retry
         self.assertFalse(rec['transient_tolerance']['fired'])
+
+    def test_size_mismatched_occlusion_not_retried(self):
+        # C2 (fleet-followups-batch-03, PR #75 LOW): the trigger is
+        # VERDICT + SIZE-MATCH. An occluded record whose sizes disagree is
+        # a deterministic refusal, not the recorded transient: it must be
+        # returned WITHOUT any retry.
+        calls = []
+        first = _tolerance_record('occluded_or_foreign_content',
+                                  pinned=(90, 60))  # != client (100, 70)
+        window = _ToleranceScriptedWindow()
+        rec = self._tolerance(window, [first], calls)
+        self.assertEqual(rec['verdict'], 'occluded_or_foreign_content')
+        self.assertEqual(len(calls), 1)   # NO second attempt
+        self.assertEqual(window.repaints, 0)  # no repaint was driven
+        self.assertFalse(rec['transient_tolerance']['fired'])
+        self.assertEqual(rec['transient_tolerance']['reason'],
+                         'size_mismatch_not_transient')
+        self.assertIs(rec, first)  # the record itself, nothing retried
 
     def test_deadline_exhausted_before_retry_means_no_retry(self):
         calls = []

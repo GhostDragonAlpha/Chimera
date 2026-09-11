@@ -267,3 +267,14 @@ SAFETY / HYGIENE
   checkpoint, 1x restore, the two preregistered probes, submit_review.
 
 Agent: subagent-worker-05
+
+================================================================--------
+CORRECTION 2026-09-11 - fleet-followups-batch-03 item C3 (origin PR #74
+LOW-1). APPEND-ONLY: every byte above is unchanged.
+FL3 RELABELED per the preregistered mapping: this smoke's prereg EXCLUDES
+the deliberate twin probes from the FL3 population, so the FL3 line above
+("HIT only by the deliberate twin probes (777/778)") mislabeled its own
+observation. The observations stand verbatim; the corrected label of the
+substance is: FL3 NOT HIT - no unplanned instance-less event occurred.
+(fleet-followups-batch-03, Agent: subagent-worker-11)
+========================================================================

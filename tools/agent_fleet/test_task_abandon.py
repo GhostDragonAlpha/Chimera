@@ -307,7 +307,7 @@ class TaskAbandonTests(unittest.TestCase):
     def test_refusals_leave_revision_and_audit_untouched(self):
         self.task('quiet')
         before=self.snap()['revision'];events_before=self.events(since=0)
-        with self.assertRaises(Refusal):self.abandon('quiet',reason='',evidence='e')
+        with self.assertRaisesRegex(Refusal,'missing_abandon_reason'):self.abandon('quiet',reason='',evidence='e')
         with self.assertRaisesRegex(Refusal,'supervisor_only'):
             self.call('task_abandon','worker',task='quiet',reason='r',evidence='e')
         with self.assertRaisesRegex(Refusal,'unknown_task'):self.claim_abandon('absent')

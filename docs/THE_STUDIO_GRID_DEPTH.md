@@ -114,3 +114,17 @@ gap.
 - Treating the grid as scene geometry (it never enters the depth solution; it
   writes no depth, marks no stencil of its own).
 - Cosmetic global hiding (dimming, dashing) as a substitute for occlusion.
+
+## AMENDMENT 2026-09-11 (fleet-followups-batch-03 item C5, origin PR #76
+MINOR-1; append-only, prior text unchanged)
+
+The parenthetical above ("the contract's mark comes only from the accepted
+fill draw (`create_triangle_pipeline`, `ds.depthTestEnable = VK_TRUE` /
+`ds.stencilTestEnable = VK_TRUE`") is incomplete on one point: the accepted
+fill is a FAMILY, not a single pipeline. The frost pipeline also marks the
+stencil when live - engine.cpp ~4865-4879 at d59518b9: "frost REPLACES the
+fill when live - the accepted body, so it must mark the stencil exactly
+like create_triangle_pipeline's fill (grid contract)" (same
+VkStencilOpState mark). Read the sentence as: the mark comes only from
+accepted fill-family draws (create_triangle_pipeline family incl. frost
+when live), never from the splat or the grid's own draws.
