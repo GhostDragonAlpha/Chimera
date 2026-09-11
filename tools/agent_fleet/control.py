@@ -585,6 +585,64 @@ class Control:
             t.update(state='READY',owner=None,slot=None,generation=t['generation']+1)
             self._promote_queues(s)
             return {'state':'READY','old_workspace':'must remain preserved until lead explicitly provisions replacement'}
+        if op=='task_abandon':
+            # fleet-task-abandon-01 (2026-09-11): retire a stale READY task.
+            # Supervisor-only, audited, terminal. A READY task holds no slot,
+            # no provision and no resources by construction, so this is a pure
+            # registry-state transition: the filesystem is NEVER touched. The
+            # task id is retired permanently (re-creating it is refused as a
+            # duplicate); redoing the work means a new task id, so the audit
+            # history of the retired record is preserved, never rewritten.
+            require(actor=='SUPERVISOR','supervisor_only')
+            t=s['tasks'].get(p.get('task'));require(t is not None,'unknown_task')
+            require(t['state']=='READY','task_not_ready')
+            reason=text(p.get('reason'),'abandon_reason')
+            evidence=text(p.get('evidence'),'abandon_evidence')
+            t['state']='ABANDONED'
+            t['abandon']={'reason':reason,'evidence':evidence,'actor':actor,
+                          'revision':s['revision']+1}
+            return {'task':t['id'],'state':'ABANDONED','filesystem_touched':False}
+        if op=='claim_abandon':
+            # fleet-task-abandon-01 (2026-09-11): retire an unprovisionable
+            # RUNNING claim WITHOUT ending the owner's session (the yield ->
+            # recover path works but costs the session; acceptable for ended
+            # host sessions, wrong for persistent ones). Supervisor-only; the
+            # caller attests work preservation AND process/resource drain.
+            # The slot is freed through the existing preserved-provisions
+            # machinery exactly like recover/slot_rebind/release_slot, the
+            # task returns to READY at generation+1 (stale generations and
+            # queued requests die), and the owner session is left intact.
+            # A slot with an ACTIVE provision is refused by name: it needs
+            # supervisor slot_rebind, whose contract this op does not weaken.
+            require(actor=='SUPERVISOR','supervisor_only')
+            t=s['tasks'].get(p.get('task'));require(t is not None,'unknown_task')
+            require(t['state']=='RUNNING','task_not_running')
+            require(t['slot'] is not None,'task_has_no_slot')
+            slot=s['slots'].get(str(t['slot']))
+            require(slot is not None and slot['task']==t['id'],'slot_binding_mismatch')
+            require(not slot['engine'].get('provisioned'),'provision_active_use_slot_rebind')
+            require(not any(r['task']==t['id'] for r in s['resources'].values()),'resources_still_held')
+            preservation=text(p.get('preservation_evidence'),'preservation_evidence')
+            drain=text(p.get('drain_evidence'),'drain_evidence')
+            t['checkpoint']='preservation: '+preservation+' | drain: '+drain
+            for q in s['resource_queues']:
+                if q['task']==t['id'] and not q['served']:
+                    q['served']=True;q['dropped_reason']='claim_abandoned'
+            # No ACTIVE provision exists here (refused above), so the preserved
+            # -provisions machinery is a verified no-op; it is still the single
+            # slot-retirement route so this op can never leak a binding.
+            self._preserve_provision(s,slot,'claim_abandoned_generation',t['checkpoint'])
+            slot['task']=None
+            t['claim_abandoned']={'preservation_evidence':preservation,'drain_evidence':drain,
+                                  'actor':actor,'generation':t['generation'],
+                                  'revision':s['revision']+1}
+            freed=t['slot']
+            t.update(state='READY',owner=None,slot=None,owner_instance=None,
+                     generation=t['generation']+1)
+            self._promote_queues(s)
+            return {'task':t['id'],'state':'READY','generation':t['generation'],
+                    'slot_freed':freed,'owner_session_revoked':False,
+                    'filesystem_touched':False}
         if op=='integration_request':
             self._lead(s,actor,p.get('epoch'))
             t=s['tasks'].get(p.get('task'));require(t and t['state']=='REVIEW','not_in_review')
@@ -692,8 +750,13 @@ class Control:
             payload=s['catalogue'].get('payload') or {}
             # Live task IDs are lowercase; card IDs are uppercase. Match
             # case-insensitively so a card already realized as a live task is
-            # never re-proposed.
-            live={tid.casefold() for tid,t in s['tasks'].items() if t['state'] not in ('INTEGRATED',)}
+            # never re-proposed. ABANDONED is retired, not live (fleet-task
+            # -abandon-01): its realization blocked re-proposal forever would
+            # contradict retiring it; a card whose task was abandoned becomes
+            # a PROPOSED candidate again. ABANDONED still satisfies no
+            # dependency: `done` stays INTEGRATED-only, so cards depending on
+            # an abandoned realization remain blocked.
+            live={tid.casefold() for tid,t in s['tasks'].items() if t['state'] not in ('INTEGRATED','ABANDONED')}
             done={tid.casefold() for tid,t in s['tasks'].items() if t['state']=='INTEGRATED'}
             candidates=[]
             for c in payload.get('cards',[]):
