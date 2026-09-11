@@ -1,0 +1,298 @@
+PREREGISTRATION — holodeck-mat-04 (gen 1)
+
+Agent: subagent-worker-11. Slot 8, worktree E:\ChimeraWork\slot-08, branch
+astra/tasks/holodeck-mat-04, base 4812b55b407107a34b708af1700e071a7eecbab4
+(provision verified before any work: HEAD==base, working tree clean, 6249
+tracked files). Claimed at controller rev 1087, generation 1, slot 8.
+Admitted from draft DRAFT-holodeck-mat-04 (PR #67; catalogue card MAT-04
+"Parameter identification", digest b9d32319..., content_sha256 4de84484...,
+card index 27). Dependencies INTEGRATED: holodeck-math-01 (3889755d, PR #87),
+holodeck-gov-03 (4812b55b, PR #88), holodeck-mat-01 (a26ef5e8, PR #96).
+
+This commit contains the PREREGISTRATION ONLY. No reference model, no
+controls, no results, no measured actuals anywhere in it. Every N below is a
+threshold fixed before implementation; zero rows have been executed.
+
+SOURCE-ONLY LANE: the deployed material plane is studied from source text at
+base (identities recorded in RESULT.txt). The live service is NEVER
+contacted; no engine process, GPU, or controller resource is used. DYAD:
+NOT_APPLICABLE — source-only scope produces and alters no executed runtime
+behavior of the deployed system; reason restated in RESULT.txt per the
+card's DYAD policy ("Reference-only or source-only scope records
+NOT_APPLICABLE with reason").
+
+## RULE 0 MEMBRANE (card fields verbatim + my theory of this lane)
+
+- CARD STATEMENT: Calibration tools with confidence and parameter-correlation
+  outputs.
+- CARD PREDICTION: Held-out experiments agree within declared predictive
+  uncertainty.
+- CARD FALSIFIER (named BEFORE the run, both for the reference model and the
+  deployed-source trace): Training-fit success is called predictive material
+  validation.
+- CARD MATHEMATICS: inverse problems; sensitivity; experimental design.
+- MY STATEMENT: the deployed material plane at base ADMIITS parameters
+  (material_contract.py, MAT-01's finding) and DOCUMENTS them
+  (tools/materials.py literature sources), but IDENTIFIES none: no tool at
+  base fits material parameters to experiments with confidence intervals and
+  a parameter-correlation output; the repo itself names the hole twice
+  (membrane_demo.py "no physical calibration is claimed ... deferred until
+  BP-A1 lands"; elastic_foundation/materials.py "no measured
+  E11/E22/nu12/G12"). A4 (this lane's prediction): an independent
+  MATH-01-backed inverse-problem model realizes the INTENDED contract —
+  least-squares identification with declared confidence intervals, a
+  parameter-correlation matrix, D-optimal experimental design over candidate
+  load programs, and a held-out judge whose AGREES/DISAGREES verdict is
+  computed, never advertised — and it refuses every path by which a
+  training-fit success could pose as predictive validation.
+- MY PREDICTION: every preregistered row below reaches its full N/N.
+- FALSIFIER CONSEQUENCE: if any row misses, the miss is REPORTED with the
+  fired run retained (GOV-05 / MAT-01 precedent), never patched around, and
+  no tolerance is widened. A fired card falsifier in the DEPLOYED trace (any
+  deployed text calling training-fit success predictive material validation)
+  is a FINDING recorded in RESULT.txt — deployed findings are never edited
+  and never adopted as the model's truth.
+
+## UNITS BACKBONE (MATH-01 citation duty)
+
+The reference model imports MATH-01's integrated typed-quantity algebra
+(docs/evidence/agent_fleet/HOLODECK/MATH/MATH-01/reference/
+math01_reference_model.py: Dimension over exact Fraction (L,M,T) exponents,
+Quantity with named `dimension_mismatch` refusals, UnitRegistry
+declared-only conversions). Independence is claimed from the AUDITED
+deployed code (tools/material_contract.py, tools/materials.py,
+tools/elastic_foundation/*), NOT from the MATH-01 backbone — the task packet
+designates MATH-01 the units backbone of this lane. Parameter identification
+is the most dimensionally-loaded MAT card: fitted parameters carry physical
+dimensions (compliance 1/N, offset L), the sensitivity/design columns carry
+dimensions whose product with the parameter dimension must equal the
+observation dimension, and the declared predictive band is a Quantity of
+Dimension L. Every such touchpoint defers to MATH-01's exact algebra and
+cites it; the model adds the IDENTIFICATION layer (experiments -> fit ->
+uncertainty -> held-out judge) that MATH-01 and MAT-01 deliberately do not
+have (MAT-01 admitted records; it never fitted one).
+
+## REFERENCE MODEL CONTRACT (fixed before implementation)
+
+stdlib-only (+ the MATH-01 import), target < 450 lines, at
+reference/mat04_reference_model.py. Domain fixture (DECLARED, derived below,
+not tuned): a uniaxial tension identification — extension d = k*F + d0,
+theta = (k [m/N], d0 [m]); k is the specimen's longitudinal compliance,
+d0 the zero-load offset. Synthetic declared material: gauge L = 0.1 m,
+area A = 1e-4 m^2, E = 2.0e9 Pa -> k_true = L/(A*E) = 5.0e-7 m/N exactly;
+d0_true = 2.0e-5 m. Both true values enter as EXACT closed-form constants
+of the declared fixture, recomputed independently by the control from
+L, A, E via Fraction arithmetic.
+
+- Experiment: (exp_id, load Quantity [N], observed extension Quantity [m]
+  with declared unit, noise sigma). The observation arrives with a UNIT;
+  unregistered units refuse (MATH-01 declared-only registry, cited).
+- Design matrix: rows [F_i, 1]; each column carries the MATH-01 Dimension it
+  implies (col 0: Dimension.N; col 1: DIMENSIONLESS). Design gate: for every
+  column, column Dimension x parameter Dimension == observation Dimension
+  (exact MATH-01 algebra) or refuse `dimension_mismatch` BEFORE any fit.
+  Rank gate: exact-Fraction determinant of the Gramian F^T F; |det| == 0
+  refuses `rank_deficient_design` (unidentifiable is refused, never fitted).
+  Noise gate: sigma finite and > 0 else `invalid_noise_sigma`.
+- fit(experiments, design) -> FitResult (frozen dataclass): theta_hat via
+  exact-normal-equations solve (float64 partial-pivot Gaussian elimination
+  on the 2x2/3x3 system), residual scale s^2 = SSR/(n-p), parameter
+  covariance C = s^2 (F^T F)^-1, CORRELATION MATRIX
+  R_ij = C_ij/sqrt(C_ii*C_jj) (dimensionless — the card's
+  parameter-correlation output), dof = n-p.
+- confidence interval: theta_j +/- t_{1-alpha/2, dof} * sqrt(C_jj) — the
+  card's confidence output. t quantile computed stdlib-only: Simpson
+  integration of the Student-t pdf + bisection inversion of its CDF
+  (no table constants inside the model).
+- declare_predictive_band(fit, load) -> Prediction (frozen): mean prediction
+  Quantity [m] and 95% band half-width t * s * sqrt(1 + x*' (F^T F)^-1 x*),
+  carried as a MATH-01 Quantity of Dimension L. Declared BEFORE reveal.
+- judge(prediction, observed) -> verdict in the CLOSED vocabulary
+  {AGREES, DISAGREES}: |observed - mean| <= half-width -> AGREES else
+  DISAGREES. The judge is the card prediction's surface. Guards:
+  observed experiment present in the training ledger refuses
+  `heldout_overlaps_training` (a training point agreeing with its own fit
+  is NOT validation); empty held-out set refuses `no_heldout_evidence`.
+- choose_design(candidate_designs) -> D-optimal choice: maximize
+  det(F^T F) by exact-Fraction determinant (the card's experimental-design
+  mathematics); ties refuse `ambiguous_design`.
+
+## THE FIXTURE'S EXACT ALGEBRA (derived now, before any run)
+
+Two candidate 2-experiment load programs; rows [F_i, 1], so
+F^T F = [[sum F^2, sum F],[sum F, 2]] and rho = sum F / sqrt(2*sum F^2):
+
+- DESIGN A (clustered loads 10, 10.1 N):
+  F^T F = [[202.01, 20.1],[20.1, 2]]; det = 404.02 - 404.01 = 0.01 (exact);
+  rho_A = 20.1/sqrt(404.02) = (201/10)/sqrt(20201/50) (closed form) > 0.999.
+- DESIGN B (spread loads 10, 100 N):
+  F^T F = [[10100, 110],[110, 2]]; det = 20200 - 12100 = 8100 (exact);
+  rho_B = 110/sqrt(20200) = 11/sqrt(202) (closed form) < 0.8.
+- D-RATIO: det_B/det_A = 8100/0.01 = 810000 (exact): the spread program is
+  the D-optimal one by six orders of magnitude — derived, not preferred.
+- TRAINING program (the fit fixture): loads [10, 25, 40, 70, 85, 100] N
+  (n=6, p=2, dof=4); HELD-OUT load 55 N (strictly interior —
+  interpolation). Noise sigma = 5e-6 m (declared).
+
+## PREREGISTERED NUMBERS / THRESHOLDS (stated before ANY implementation test)
+
+Verdict rule: each row must reach its full N/N; any miss = the row's
+falsifier fired and is REPORTED with the fired run retained. Refusals carry
+named reasons verbatim; post-state assertions accompany every refusal.
+
+- R1 positive identifications (model must PRODUCE, N=8/8) —
+  (a) seeded fixture fit (seed 20260911): the 95% CI on k contains k_true
+      = 5.0e-7 m/N AND the 95% CI on d0 contains d0_true = 2.0e-5 m
+      (true constants recomputed by the control from L,A,E via Fraction);
+  (b) parameter covariance symmetric positive definite on BOTH designs:
+      C00 > 0 and det(C) > 0 (exact 2x2 criterion);
+  (c) rho_B measured within 1e-9 (absolute) of the control's independent
+      exact closed form 11/sqrt(202), and < 0.8;
+  (d) rho_A measured within 1e-9 (absolute) of the control's closed form
+      (201/10)/sqrt(20201/50), and > 0.999;
+  (e) D-optimality: measured det(F^T F) within 1e-6 relative of 0.01 (A)
+      and 8100 (B); measured ratio within 1e-6 relative of 810000;
+      choose_design returns DESIGN B;
+  (f) t quantile: model t_{0.975, dof=4} within 1e-9 RELATIVE of the
+      published table value 2.7764451051977987 (independent oracle: the
+      table; the model contains no table);
+  (g) COVERAGE (card prediction, statistical form): 200 replications
+      (seeds 20260911+i, i=0..199; each replication regenerates training
+      noise AND the held-out observation, refits, redeclares the band):
+      covered count in [180, 200] — the derived 3-sigma binomial band
+      (mean 190 = 200*0.95, sd sqrt(200*0.95*0.05) = 3.082, 190 +/- 3 sd
+      = [180.75, 199.25]); covered == 200 additionally requires a SURPRISE
+      note in the evidence (a 95% band covering 100% of the time suggests
+      overconservative bands — reported, not celebrated);
+  (h) card prediction, fixture form: the held-out observed extension at
+      55 N lies inside its declared 95% band; the band half-width is a
+      MATH-01 Quantity of Dimension L; and the column algebra
+      dim(k) x dim(F) == dim(d) holds through MATH-01's exact composition
+      (cited, not reimplemented).
+- R2 inverse-problem negatives (model must REFUSE, reason verbatim, N=7/7) —
+  (a) observation in an unregistered unit ("furlong") ->
+      undeclared_observation_unit (MATH-01 declared-only, cited);
+  (b) NaN observation value -> nonfinite_observation;
+  (c) design column whose Dimension x parameter Dimension != observation
+      Dimension (a force column against a FORCE observation, i.e. the
+      metre-newton pose) -> dimension_mismatch (MATH-01);
+  (d) rank-deficient design (two identical load rows) ->
+      rank_deficient_design, before any parameter is produced;
+  (e) declared noise sigma = -1e-6 -> invalid_noise_sigma;
+  (f) judge() with an EMPTY held-out set -> no_heldout_evidence;
+  (g) judge() on an experiment already in the training ledger ->
+      heldout_overlaps_training.
+  Post-state in every case: no FitResult/verdict produced by the refused
+  call; previously computed fits unchanged.
+- R3 CARD FALSIFIER probes — training-fit success posing as predictive
+  material validation (model must REFUSE all, N=4/4) —
+  (a) validate-with-no-held-out-data: the only validation surface is
+      judge(); with an empty held-out ledger it refuses
+      no_heldout_evidence, and the verdict vocabulary is closed
+      {AGREES, DISAGREES} — no "VALIDATED"/"OK" label exists to return;
+  (b) the PERFECT training fit: n == p design reproducing the observations
+      exactly (s^2 == 0, residuals exactly zero, R^2 == 1) STILL refuses
+      held-out validation — a perfect training fit must not read as
+      predictive validation;
+  (c) forced disagreement: a held-out observation 10 declared sigmas
+      outside the band returns DISAGREES (verdict is computed from the
+      band, never silently AGREES);
+  (d) post-refusal state: the refusal object carries the named reason
+      verbatim and no verdict was recorded anywhere (ledger unchanged).
+  Threshold: 4/4 refusals; the card falsifier is NOT reproducible against
+  the intended contract.
+- R4 immutability / determinism (N=4/4) —
+  (a) FitResult frozen: attribute assignment raises and the value is
+      unchanged after;
+  (b) determinism: two identical fits from identical inputs compare equal
+      on (theta_hat, C, R) with exact == on every float;
+  (c) Prediction frozen: the declared band half-width is identical before
+      and after judge() reveal (no post-hoc widening);
+  (d) defensive copy: mutating the caller's experiment ledger after fit()
+      leaves the stored fit data unchanged.
+- R5 deployed-source trace at base 4812b55b (the card statement judged
+  against the DEPLOYED text): 4/4 families quoted at recorded file:line —
+  (a) THE ABSENT TOOL: zero material-parameter identification tools with
+      confidence + parameter-correlation outputs exist at base; measured
+      git grep counts for identification markers over the material plane
+      reported (expected 0); plus the repo's own declaration of missing
+      measurement: tools/elastic_foundation/materials.py:6 ("no measured
+      E11/E22/nu12/G12") and :87 (orthotropic refused for exactly that);
+  (b) THE DECLARED SEAM: tools/gpu_fixtures_recovered/membrane_demo.py:41-43
+      ("The material is a SYNTHETIC DECLARED interface ... no physical
+      calibration is claimed. Admission routing through material_contract is
+      deferred until BP-A1 lands");
+  (c) THE HONEST NON-CALIBRATION: Chimera/core/trainer.py:271 ("neither was
+      ever calibrated against a measurement") — the project's own doctrine
+      that training/fitting success is not calibration;
+  (d) FALSE-POSITIVE CONTROL: tools/surface_energy_checks.py:241
+      "torque_covariance" quoted and CLASSIFIED: a rigid-transform
+      comparison norm between torque vectors, NOT a parameter-estimation
+      covariance — recorded so the absence claim cannot be defeated by a
+      name match.
+  Threshold: 4/4 quoted at the recorded lines (if lines moved from my
+  predicted numbers, measured numbers are reported — the prediction is
+  about SEMANTICS PRESENT, with exact locations measured).
+- R6 deployed findings + current-state measurements (never patched, never
+  adopted as the model's truth): N=4 measurements reported —
+  (a) OWNER_INSTANCE CURRENT STATE (task packet: the PR #80 claim-path fix
+      is FIXED AND DEPLOYED — measure current state, no stale deviation
+      language): predicted review_handoff.py = 1 occurrence (the claim-path
+      bind) and control.py = 8 occurrences (fence :121-123, setdefault
+      :323, yield guard :499-501, claim bind :554, release clear :697),
+      with instance_fencing enforced. Contrast baseline: GOV-01's R6
+      measured review_handoff == 0 at d59518b9. A review_handoff count of
+      0 at this base would be a SURPRISE FINDING (fix not actually
+      deployed here), reported as such.
+  (b) FALSIFIER HUNT: deployed-source scan for training-fit success being
+      called predictive material validation — git grep over tracked *.py
+      for the phrases ("predictive material validation", "material
+      validation", "validated predictor"): predicted 0 hits; ANY hit is
+      the card falsifier FIRING in the deployed text, reported with exact
+      file:line.
+  (c) CONSTANTS PLANE: tools/materials.py documents literature sources
+      (polyester fiberfill datasheets, Kawabata 1980, Polymer Handbook) —
+      parameters ARRIVE documented; measured count of parameters at base
+      carrying an identified standard error or correlation output = 0
+      (expected 0).
+  (d) INDEPENDENCE AUDIT of this lane's own artifacts: the reference model
+      imports MATH-01's algebra (by design, cited) and NOTHING from
+      tools/* (the audited code) — full import list measured and reported.
+
+## CARD VERDICT RULE (fixed now)
+
+- Card STATEMENT ("Calibration tools with confidence and
+  parameter-correlation outputs") = SUPPORTED-AS-REFERENCE-REALIZATION iff
+  R1-R4 reach full N/N; the DEPLOYED presence is measured in R5 and
+  EXPECTED ABSENT (that absence is the card's reason to exist) — the
+  reference model realizes the intended contract; it is NOT a claim that
+  the deployed repo already has the tool.
+- Card PREDICTION ("Held-out experiments agree within declared predictive
+  uncertainty") = SUPPORTED iff R1(g) AND R1(h) reach their preregistered
+  bands.
+- Card FALSIFIER ("Training-fit success is called predictive material
+  validation") = NOT REPRODUCED iff R3 = 4/4 AND R6(b) = 0 hits; otherwise
+  it FIRES and every instance is reported with exact file:line.
+- Any missed row: REPORTED with the fired run retained; tolerances are
+  never widened after a miss.
+
+## METHOD
+
+1. Commit this prereg (alone). 2. Write reference/mat04_reference_model.py.
+3. controls/run_controls.py executes R1-R4 in one process and writes
+   checks/r1_identification.txt, checks/r2_negatives.txt,
+   checks/r3_falsifier_pose.txt, checks/r4_immutability.txt (verbatim
+   refusals, post-state assertions). 4. controls/run_source_checks.py
+   (read-only over the deployed tree) writes checks/r5_source_trace.txt and
+   checks/r6_findings.txt. Any FIRED first run is RETAINED in checks/ with
+   a .run1-FIRED-*.txt name. 5. RESULT.txt: scoreboard, card verdict,
+   reproduction commands, source identities, limitations, DYAD
+   NOT_APPLICABLE record, integration contract + handoff (the judge/band
+   seam is what BP-A1's calibration tool must consume).
+6. Commit chain on astra/tasks/holodeck-mat-04 (trailer
+   `Agent: subagent-worker-11`), push (no force), PR into
+   astra/gait-capture, mailbox prereg pointer to subagent-worker-10 for
+   the charter pre-check BEFORE submit_review, then submit_review with the
+   exact HEAD.
+
+Trailer: Agent: subagent-worker-11
