@@ -2538,3 +2538,47 @@ certificate for the entire engine. Earlier operator overrides and later model
 observations must retain separate provenance. The reported multi-frame/movie
 verification limitation remains open until the actual required gate is executed;
 no threshold or proof record is weakened to keep agents busy.
+
+### Fleet operating status — 2026-09-11 (glm53-lead-02, epoch 5)
+
+Dated amendment; live authority remains the controller. Today's integrations
+into `astra/gait-capture`: **PR #42** `fleet-slot-binding-01` (task/generation-
+bound provisioning, supervisor `slot_rebind`, evidence-preserving
+recover/release; 11 regressions), **PR #43** `fleet-layer-guard-01` (deployed
+`ReviewHandoffControl` layer adopts the guard; reason-code refusals; 8
+regressions), **PR #44** `dyad-provider-interface-01` (DYAD review contract
+separated from vision provider — subagent/remote/local adapters, fail-closed
+capability ladder; 14 synthetic tests; visual acceptance NOT_CLAIMED),
+**PR #45** `fleet-docs-operating-model-01` (canonical operating-model docs +
+four role prompts; 25+ claims line-verified by independent review),
+**PR #46** `gov01-evidence-reconcile-01` (GOV-01 acceptance matrix: clauses
+1-3 SUPPORTED, clause 4 OPEN with named milestones; evidence independently
+re-verified). Pending review at amendment time: **PR #47**
+`fleet-catalogue-repin-01` (three stale catalogue pins re-measured; full fleet
+suite 166/0 failures).
+
+The controller service was upgraded through the documented controlled
+transition to reviewed source `d012b4b1` (deployments
+`slot-binding-d012b4b1`, MANIFEST sha256 per file): SQLite-consistent backup,
+quiescence verification, authorized stop/start, epoch/leader/claims preserved
+(snapshot comparison), command-line identity confirmed. Stale slot provisions
+(3/4/5) were recovered via `slot_rebind` with preserved evidence; slot-03's
+foreign uncommitted logs preserved under control/preservations. The review-slot
+handoff (`release_review_slot` -> ack `RELEASED_AT_REVIEW_HANDOFF`) freed
+execution capacity before integration, demonstrated live on gov01.
+
+Live fleet: slot 1 integration (lead `glm53-lead-02`, epoch 5, Alan-appointed
+after the recorded self-yield error and successor recovery); three
+lead-delegated subagent workers (`subagent-worker-01/02/03`) completed one
+bounded task each with overlapping execution, own sessions, own PRs
+(operations record: `docs/evidence/agent_fleet/FLEET_OPERATIONS_RECORD/`).
+
+Remaining OPEN (dependency-ordered, unchanged gates): `fleet-client-instance-01`
+(instance identity binding), `fleet-controller-upgrade-01` rehearsal-lane
+closure (live transition now evidenced once), DYAD provider visual acceptance
+(requires a live vision run with retained evidence), `fleet-head-reconcile-01`
+docs half, engine/GPU lanes (`studio-grid-depth-01`, `engine-vulkan-cleanup-01`,
+`engine-feature-resource-lifetime-01`), `dyad-resident-identity-01` fresh-system
+re-verification, `window-capture-ownership-01` re-verification. GOV-01 clause 4
+canonical acceptance remains NOT_CLAIMED pending slot-1 review and full
+catalogue import.

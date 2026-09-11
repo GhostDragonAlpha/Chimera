@@ -590,7 +590,7 @@ After a worker stops writing, drains, pushes its task branch, opens its PR and
 independently verifies the remote branch, PR identity and head, then calls
 `release_review_slot`. The receipt appended to the task's
 `review_slot_handoffs` carries the frozen binding (owner, generation, slot,
-head, branch, review, checkpoint), the PR identity and pushed/PR heads, the four
+head, branch, review, checkpoint), the PR identity and pushed/PR heads, the five
 attestations (remote verification, preservation, writer stopped, runtime
 drained, slot reprovision-ready), the retained **provision identity**
 (`provision_task`, `provision_generation`, `provision_base`, `worktree_head`,
