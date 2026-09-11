@@ -1,0 +1,19 @@
+== fleet-evidence-hygiene-01 F1: evidence_log_guard deterministic tests ==
+date: 2026-09-11T15:30:17Z
+worktree: E:/ChimeraWork/slot-04 @ ec766e4365b62a672ec5ab6ff077aa2b17cc047b
+command: python -m unittest tools.agent_fleet.test_capture_window.EvidenceLogGuardTests -v
+
+test_clean_ignored_log_but_nothing_staged_is_silent (tools.agent_fleet.test_capture_window.EvidenceLogGuardTests.test_clean_ignored_log_but_nothing_staged_is_silent) ... ok
+test_clean_ignored_log_outside_evidence_is_silent (tools.agent_fleet.test_capture_window.EvidenceLogGuardTests.test_clean_ignored_log_outside_evidence_is_silent) ... ok
+test_clean_staged_evidence_without_logs_is_silent (tools.agent_fleet.test_capture_window.EvidenceLogGuardTests.test_clean_staged_evidence_without_logs_is_silent) ... ok
+test_force_added_log_is_silent (tools.agent_fleet.test_capture_window.EvidenceLogGuardTests.test_force_added_log_is_silent) ... ok
+test_guard_cannot_block_on_internal_error (tools.agent_fleet.test_capture_window.EvidenceLogGuardTests.test_guard_cannot_block_on_internal_error) ... ok
+test_hook_wiring_preserves_every_gate_and_is_warn_only (tools.agent_fleet.test_capture_window.EvidenceLogGuardTests.test_hook_wiring_preserves_every_gate_and_is_warn_only) ... ok
+test_trap_case_warns_and_exits_zero (tools.agent_fleet.test_capture_window.EvidenceLogGuardTests.test_trap_case_warns_and_exits_zero) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 2.265s
+
+OK
+
+exit: 0

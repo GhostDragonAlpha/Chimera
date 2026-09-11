@@ -113,6 +113,19 @@ if command -v python >/dev/null 2>&1 && [ -f tools/doc_lint.py ]; then
   fi
 fi
 
+# --- evidence *.log trap (fleet-evidence-hygiene-01 F1) ---------------------
+# Twice in wave 3 a worker cited RAW .log evidence beside a committed record
+# and the repo-wide `*.log` gitignore rule silently dropped it from the
+# commit -- the cited raw output never existed in history. This gate WARNS,
+# it never blocks: evidence_log_guard.py exits 0 on every checked path AND on
+# internal error, and the `|| true` keeps even the impossible failure
+# non-blocking, so this stanza cannot set the hook's fail flag.
+# Existence-guarded like every optional gate above: a missing script must not
+# break every commit.
+if command -v python >/dev/null 2>&1 && [ -f tools/agent_fleet/evidence_log_guard.py ]; then
+  python tools/agent_fleet/evidence_log_guard.py --staged || true
+fi
+
 # --- delegate to shazam ----------------------------------------------------
 if [ -x .git/hooks/pre-commit ] && [ "${CHIMERA_SKIP_SHAZAM:-}" != "1" ]; then
   .git/hooks/pre-commit "$@" || fail=1
