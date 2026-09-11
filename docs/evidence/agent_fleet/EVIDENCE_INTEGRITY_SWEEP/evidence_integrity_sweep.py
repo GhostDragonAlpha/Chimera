@@ -25,6 +25,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))                                # .../EVIDENCE_INTEGRITY_SWEEP
@@ -78,6 +79,42 @@ def classify_absolute(p):
     return 'out', None
 
 
+def sha256_bytes(b, normalized):
+    if normalized:
+        b = b.replace(b'\r\n', b'\n')
+    return hashlib.sha256(b).hexdigest()
+
+
+def git_cat_blob(cert_rev, rel):
+    """Exact committed bytes at cert_rev, or None if not tracked there."""
+    r = subprocess.run(['git', 'cat-file', 'blob', cert_rev + ':' + rel],
+                       capture_output=True)
+    return r.stdout if r.returncode == 0 else None
+
+
+def autocrlf_value():
+    r = subprocess.run(['git', 'config', 'core.autocrlf'], capture_output=True, text=True)
+    return r.stdout.strip() if r.returncode == 0 else ''
+
+
+def check_mode_guard(byte_source):
+    """A2-b: refuse on-disk certification under a smudging checkout.
+
+    core.autocrlf=true rewrites LF blobs to CRLF on checkout, which made
+    the gen-1 disk-byte table checkout-dependent. 'input' and unset do
+    not smudge on checkout and are safe for disk mode; blob mode is safe
+    under every value.
+    """
+    if byte_source != 'disk':
+        return None
+    v = autocrlf_value().lower()
+    if v == 'true':
+        return ('REFUSED: --byte-source disk with core.autocrlf=true '
+                '(amendment A2-b): a smudged checkout makes disk hashing '
+                'checkout-dependent; use the canonical blob byte source.')
+    return None
+
+
 def sha256_file(path, normalized):
     h = hashlib.sha256()
     with open(path, 'rb') as f:
@@ -89,31 +126,38 @@ def sha256_file(path, normalized):
     return h.hexdigest()
 
 
-def resolve_and_check(recorded_path, sidecar_dir, recorded_hash, normalized):
-    """Deterministic resolution. Returns (status, target_desc, computed|None)."""
+def resolve_and_check(recorded_path, sidecar_dir, recorded_hash, normalized,
+                      byte_source, cert_rev):
+    """Deterministic resolution (amendment A2-a byte source). Returns
+    (status, target_desc, computed|None, method_note)."""
     p = norm_path(recorded_path)
     if is_truncated(p):
-        return 'UNRESOLVABLE', p + ' (truncated by capture tool)', None
+        return 'UNRESOLVABLE', p + ' (truncated by capture tool)', None, ''
     if re.match(r'^[A-Za-z]:', p) or p.startswith('//'):
         where, rel = classify_absolute(p)
         if where == 'out':
-            return 'OUT_OF_TREE', p + ' (outside repo root)', None
-        candidates = [('abs', rel)]
+            return 'OUT_OF_TREE', p + ' (outside repo root)', None, ''
+        candidates = [rel]
     else:
-        candidates = [('rel_sidecar', os.path.relpath(os.path.join(sidecar_dir, p), ROOT).replace('\\', '/')),
-                      ('rel_root', p)]
+        candidates = [os.path.relpath(os.path.join(sidecar_dir, p), ROOT).replace('\\', '/'),
+                      p]
     tried = []
-    for _kind, c in candidates:
+    for c in candidates:
         tried.append(c)
         fp = os.path.join(ROOT, c)
-        if os.path.isfile(fp):
+        if os.path.isfile(fp):  # presence is a disk check (A2-a)
+            if byte_source == 'blob':
+                b = git_cat_blob(cert_rev, c)
+                if b is not None:
+                    got = sha256_bytes(b, normalized)
+                    return ('MATCH' if got == recorded_hash.lower() else 'MISMATCH'), c, got, 'method=blob@' + cert_rev[:12]
+                got = sha256_file(fp, normalized)  # untracked at cert_rev
+                return ('MATCH' if got == recorded_hash.lower() else 'MISMATCH'), c, got, 'method=disk-untracked'
             got = sha256_file(fp, normalized)
-            if got == recorded_hash.lower():
-                return 'MATCH', c, got
-            return 'MISMATCH', c, got
+            return ('MATCH' if got == recorded_hash.lower() else 'MISMATCH'), c, got, 'method=disk'
     if len(tried) == 2:
-        return 'MISSING', tried[0] + ' | also tried ' + tried[1], None
-    return 'MISSING', tried[0], None
+        return 'MISSING', tried[0] + ' | also tried ' + tried[1], None, ''
+    return 'MISSING', tried[0], None, ''
 
 
 def json_key_pathlike(k):
@@ -241,7 +285,10 @@ def gather_sources(source_root, exclude_dirs):
     return files
 
 
-def run(source_root, exclude_dirs, header):
+def run(source_root, exclude_dirs, header, byte_source='blob', cert_rev=None):
+    if byte_source == 'blob' and cert_rev is None:
+        cert_rev = subprocess.run(['git', 'rev-parse', 'HEAD'],
+                                  capture_output=True, text=True).stdout.strip()
     rows = []
     cov = {}
     hexlen_hist = {}
@@ -259,8 +306,12 @@ def run(source_root, exclude_dirs, header):
         for st, cls, h, pv, anchor in scan_source(rel, fp):
             if st is None:
                 nz = 'crlf_normalized_to_lf' in pv.lower() or 'crlf_normalized_to_lf' in anchor.lower()
-                st, tgt, got = resolve_and_check(pv, os.path.dirname(fp), h, nz)
-                rows.append((st, cls, h, rel + ':' + anchor, tgt, ('computed=' + got) if got else ''))
+                st, tgt, got, method = resolve_and_check(
+                    pv, os.path.dirname(fp), h, nz, byte_source, cert_rev)
+                if method:
+                    cov[method] = cov.get(method, 0) + 1
+                note = ' '.join(x for x in (('computed=' + got) if got else '', method) if x)
+                rows.append((st, cls, h, rel + ':' + anchor, tgt, note))
             else:
                 rows.append((st, cls, h, rel + ':' + anchor, '-', ''))
         # hex-length histogram over the raw text (non-64 token visibility)
@@ -273,6 +324,8 @@ def run(source_root, exclude_dirs, header):
     for r in rows:
         counts[r[0]] += 1
     cov.update(hexlen_hist)
+    header = header + ' byte_source=' + byte_source + (
+        ' cert_rev=' + cert_rev if cert_rev and byte_source == 'blob' else '')
     return header, counts, rows, cov
 
 
@@ -288,14 +341,45 @@ def main():
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument('--selftest', action='store_true')
     g.add_argument('--sweep', metavar='OUT_TXT')
+    ap.add_argument('--byte-source', choices=('blob', 'disk'), default='blob',
+                    help='blob (default, A2-a canonical) hashes the certified '
+                         'git blob; disk hashes working-tree bytes (guarded, A2-b)')
+    ap.add_argument('--cert-rev', default=None,
+                    help='revision whose blobs are certified (blob mode; default HEAD)')
     a = ap.parse_args()
 
+    refusal = check_mode_guard(a.byte_source)
+    if refusal:
+        print(refusal)
+        sys.exit(3)
+
     if a.selftest:
-        header, counts, rows, cov = run(FIXTURE, set(), 'FIXTURE RUN (self-test) source_root=fixture/')
+        header, counts, rows, cov = run(
+            FIXTURE, set(), 'FIXTURE RUN (self-test) source_root=fixture/',
+            byte_source=a.byte_source, cert_rev=a.cert_rev)
+        if a.byte_source == 'blob':
+            # A2-c: the fixture itself must not depend on normalization --
+            # its payload blobs must be CRLF-free.
+            crlfs = []
+            for name in ('payload_good.txt', 'payload_bad.txt', 'named_good.txt'):
+                b = git_cat_blob(a.cert_rev if a.cert_rev else
+                                 subprocess.run(['git', 'rev-parse', 'HEAD'],
+                                                capture_output=True,
+                                                text=True).stdout.strip(),
+                                 os.path.relpath(os.path.join(FIXTURE, name), ROOT).replace('\\', '/'))
+                if b is None:
+                    crlfs.append(name + ':untracked')
+                elif b'\r' in b:
+                    crlfs.append(name + ':CR-in-blob')
+            if crlfs:
+                print('FIXTURE POLLUTED (CR bytes in blobs): ' + ', '.join(crlfs))
+                sys.exit(3)
         print(raw_table(header, rows), end='')
+        print('MODECHECK autocrlf=' + (autocrlf_value() or 'unset') +
+              ' byte_source=' + a.byte_source + ' -> certified')
         print('COUNTS ' + json.dumps(counts, sort_keys=True))
-        # amendment A1 (2026-09-11): +1 MATCH (backtick+comma token),
-        # +1 MISMATCH (backtick token); see PREREGISTRATION.txt amendment.
+        # amendment A1 counts (A2-c leaves them unchanged under the blob
+        # byte source, which is checkout-independent)
         expect = {'MATCH': 8, 'MISMATCH': 3, 'MISSING': 3, 'OUT_OF_TREE': 0,
                   'UNRESOLVABLE': 0, 'UNASSOCIATED': 0}
         print('EXPECTED ' + json.dumps(expect, sort_keys=True))
@@ -307,7 +391,8 @@ def main():
         EVIDENCE, {os.path.normpath(HERE)},
         'SWEEP source_root=docs/evidence excluded=' +
         os.path.relpath(HERE, ROOT).replace('\\', '/') +
-        ' (self-exclusion per PREREGISTRATION.txt P1)')
+        ' (self-exclusion per PREREGISTRATION.txt P1)',
+        byte_source=a.byte_source, cert_rev=a.cert_rev)
     with open(a.sweep, 'w', encoding='utf-8', newline='\n') as f:
         f.write(raw_table(header, rows))
     print(header)

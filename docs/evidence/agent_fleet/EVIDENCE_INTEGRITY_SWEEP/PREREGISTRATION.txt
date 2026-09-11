@@ -190,3 +190,80 @@ AMENDED RULES (supersede the corresponding parts of P4 only):
   bring-up run are discarded and not used as findings.
 
 Trailer: Agent: subagent-worker-12
+
+============================================================
+AMENDMENT A2 (2026-09-11, generation 2; committed BEFORE the gen-2
+re-measurement. Inputs are the independent review's findings, cited as
+received; this amendment carries no new measured counts of its own.)
+============================================================
+Independent review agent_9ba36bc6 (APPROVE_WITH_FOLLOWUPS, 2 HIGH)
+requeued this task at generation 2 with findings F1-F5:
+
+  F1  the gen-1 retained table is not reproducible from the commit it
+      certifies: slot-08 runs core.autocrlf=true, so gen-1 hashed the
+      CRLF-smudged working-tree bytes while most recorded hashes are
+      LF blob hashes; 181 unique-key verdict flips; the review's
+      canonical blob-exact counts are matched=302, mismatched=298,
+      missing_file=1616 (auxiliary 59/11/10436 unchanged).
+  F2  the gen-1 FINDINGS hand-verification is false for 4/5 rows
+      (circular: verified against the same CRLF disk bytes; e.g.
+      AGENT_BOOTSTRAP_READINESS.md's manifest and file changed in the
+      SAME commit 077e0ae1 -- no drift possible).
+  F3  the 'earlier source_bases' mechanism is overstated: spot-checked
+      stable-mismatch recorded hashes match NO committed version ever
+      -- they hashed uncommitted working states.
+  F4  the fixture teeth are checkout-dependent: 8/3/3 holds only when
+      disk bytes equal blob bytes; a fresh autocrlf=true checkout
+      smudges the fixture payloads CRLF and a disk-hashing selftest
+      would fail 0/11/3.
+  F5  46 gen-1 MATCH rows are CRLF-hashes (canonical MISMATCH).
+  F6  (commendation) process discipline retained; this is a byte-source
+      bug, not a process failure.
+
+CONFIRMED PRE-MEASUREMENT (git plumbing, not the sweep): for
+docs/AGENT_BOOTSTRAP_READINESS.md the recorded 40dac38b... equals
+`git cat-file blob HEAD:` exactly, and the disk copy is CRLF (F1/F2
+mechanism verified). Of the five gen-1 hand-verified rows, four recorded
+hashes equal the HEAD blob (canonically MATCH); the fifth
+(ChimeraEngine/engine_state.py, recorded 1dffea21...) matches none of
+the five commits touching that path -- it hashed an uncommitted working
+state (F3 pattern verified for the reviewer's example class).
+
+A2-a  P4 BYTE-SOURCE REDEFINITION (supersedes P4's recomputation rule):
+      the canonical byte source for recomputation is the GIT BLOB at
+      the certified revision: `git cat-file blob <cert_rev>:<path>`,
+      where cert_rev is the worktree HEAD at sweep time, pinned in the
+      run header of the raw table. On-disk bytes are used ONLY for
+      paths not tracked at cert_rev (untracked), and every such row is
+      noted method=disk-untracked (non-canonical, counted in coverage).
+      Presence (the MISSING class) remains a disk check: "still present
+      in the tree" = present in the worktree; content truth = the
+      certified blob. The crlf-normalization variant of P4 remains
+      defined over the same canonical bytes.
+A2-b  MODE GUARD: the on-disk byte source (--byte-source disk) REFUSES
+      to run when core.autocrlf is not exactly false, because a smudged
+      checkout makes disk hashing checkout-dependent (the gen-1 bug).
+      Blob mode (the declared default) runs under any autocrlf value
+      and is checkout-independent by construction.
+A2-c  FIXTURE TEETH under A2: the selftest runs under the selected
+      byte source with the same mode guard; in blob mode (canonical) it
+      additionally asserts the fixture payload blobs contain no CR
+      bytes, so the fixture cannot silently depend on normalization
+      itself. The selftest PASS criteria remain exactly the amendment
+      -A1 counts: matched=8, mismatched=3, missing_file=3, others 0.
+A2-d  GEN-2 ARTIFACTS (gen-1 artifacts are RETAINED UNTOUCHED, not
+      deleted; gen-2 supersedes alongside): SWEEP_RAW_TABLE_GEN2.txt,
+      SWEEP_STDOUT_GEN2.txt, FIXTURE_TEST_GEN2.txt, FINDINGS_GEN2.txt,
+      make_findings_gen2.py. FINDINGS_GEN2.txt must (i) explicitly
+      RETRACT the four false gen-1 hand-verifications with the
+      blob-exact hashes, (ii) state the corrected mechanism (recorded
+      hashes of stable mismatches came from uncommitted working states,
+      not older commits -- each retracted/corrected row backed by a
+      commit-walk of the path's blob history), and (iii) report the
+      gen-2 counts. The review's 302/298/1616 is the expected outcome;
+      if the re-measurement differs, the difference is retained and
+      explained, not reconciled by force.
+A2-e  The gen-1 raw table and findings remain in history as the record
+      of the disk-byte measurement; they are superseded, not deleted.
+
+Trailer: Agent: subagent-worker-12
