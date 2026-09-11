@@ -224,12 +224,12 @@ test_unreadable_index_fails_closed (test_worktree_reconcile.WorktreeReconcileTes
 test_unsafe_arguments_and_symlink_escape_refuse (test_worktree_reconcile.WorktreeReconcileTests.test_unsafe_arguments_and_symlink_escape_refuse) ... skipped 'symlink creation unavailable'
 
 ----------------------------------------------------------------------
-Ran 217 tests in 186.928s
+Ran 217 tests in 189.201s
 
 OK (skipped=1)
-stopped pid 38776 (transition recorded: test teardown controlled transition)
-stopped pid 71624 (transition recorded: test teardown controlled transition)
-stopped pid 11852 (transition recorded: test teardown controlled transition)
-stopped pid 72428 (transition recorded: test teardown controlled transition)
-stopped pid 71420 (transition recorded: test teardown controlled transition)
-stopped pid 71976 (transition recorded: test teardown controlled transition)
+stopped pid 69996 (transition recorded: test teardown controlled transition)
+stopped pid 70636 (transition recorded: test teardown controlled transition)
+stopped pid 71756 (transition recorded: test teardown controlled transition)
+stopped pid 48756 (transition recorded: test teardown controlled transition)
+stopped pid 72560 (transition recorded: test teardown controlled transition)
+stopped pid 72508 (transition recorded: test teardown controlled transition)

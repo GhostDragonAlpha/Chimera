@@ -35,8 +35,12 @@ Raw outputs (all `*.txt` by design — the `*.log` ignore trap):
   **Ran 198 tests, OK (skipped=1)** — the documented Windows-symlink skip.
 - `TASK_ABANDON_TESTS.txt` — the new module: **Ran 19 tests, OK**.
 - `SUITE_FULL_WITH_TASK_ABANDON.txt` — full fleet suite from the repo root
-  with the implementation: **Ran 217 tests, OK (skipped=1)**; 198 + 19 = 217,
-  no existing test removed, skipped or weakened.
+  with the implementation, re-captured at the exact DELIVERY HEAD
+  `555d76c0` after a scope-string constant in one new test was renamed to
+  satisfy the doc-lint pointer pass (behavior-free rename): **Ran 217
+  tests, OK (skipped=1)**; 198 + 19 = 217, no existing test removed,
+  skipped or weakened. An intermediate full-suite run before the rename
+  was also 217 OK.
 
 Prediction-by-prediction:
 
