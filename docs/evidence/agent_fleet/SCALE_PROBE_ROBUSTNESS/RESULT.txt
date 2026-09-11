@@ -1,0 +1,112 @@
+SCALE-PROBE ROBUSTNESS - RESULTS
+=================================
+task: scale-probe-robustness-01 (gen 1, slot 5) | worker: subagent-worker-05
+base 5487260c ff-reconciled to tip e004c332 (zero own commits at reconcile;
+tip = merge of PR #79). Commits: prereg 56cba6a9 -> implementation 200ce2b9 ->
+evidence (this file + RUN_FULL_SUITE_N.txt). Preregistration:
+PREREGISTRATION.txt in this directory; all post-change runs happened after it.
+
+WHAT CHANGED (test_slot_expansion.py, one file)
+-----------------------------------------------
+The lock-verdict regime was SPLIT along the RULE-1 line derived in the prereg:
+- THE GUARD (verdict): lock_errors==0 is asserted ONLY in the subprocess
+  zero-lock probe (W=3 writers, 5 s, isolated temp registry, separate
+  interpreter; regime derived in the prereg: writer queue ~20-40 ms vs a
+  10 s busy timeout, so only a discipline regression can fire it).
+- THE TELEMETRY (measurement): the loaded 20 s / 8-writer in-suite phase
+  keeps the exact mixed 4:1 profile and REPORTS lock_errors (its six
+  historical sightings were the conflation of host contention with
+  discipline regressions); its only bound is the DERIVED p95 <
+  BUSY_TIMEOUT_S/2 (half of control.py's connect timeout = 10 s, the
+  service-level unusability line; the constant is read from control.py's
+  timeout, no free parameters). SATURATED phase unchanged (reported).
+- THE MUTATION PROBE (mandatory): test_lock_regression_mutation_probe_fires
+  copies control.py, applies ONE textual discipline mutation
+  (con.execute('BEGIN IMMEDIATE') -> 'BEGIN DEFERRED' - the deferred-lock
+  upgrade class the busy handler cannot clear), and REQUIRES the probe to
+  fire (lock_errors > 0) against the mutated copy.
+
+OPTIONS REJECTED (prereg justification, restated): verdict-exact retry
+rejected because a retry can retry a real discipline regression into green;
+an error-budget ceiling rejected because the regression signal is quantal
+(any lock error at low contention is the signal), not gradual.
+
+PREDICTION MAP
+--------------
+PP1 (N=5 consecutive full-suite runs under live fleet load stay green):
+     SPLIT VERDICT - see FOREIGN FLAKE DISCLOSURE below. The five runs:
+       run 1: 238 tests, FAILED (failures=1, skipped=1) - the failure is
+              test_capture_window.test_failed_memory_dc_is_named_refusal
+              (foreign lane, see disclosure); scale-probe tests GREEN.
+       run 2: 238 tests, FAILED (failures=1, skipped=1) - SAME foreign test,
+              same signature; scale-probe tests GREEN.
+       run 3: 238 tests, OK (skipped=1).
+       run 4: 238 tests, OK (skipped=1).
+       run 5: 238 tests, OK (skipped=1).
+     The scale-probe lane's own tests (both, incl. the subprocess guard and
+     the mutation probe) were GREEN in 5/5 runs under live fleet load; the
+     telemetry lock_errors were 0 in the loaded regime in 5/5 runs; the
+     subprocess guard reported lock_errors==0 in 5/5 runs; the latency
+     ceiling was never violated (max p95 seen 762.9 ms < 5000 ms). PP1's
+     SUBSTANCE (the flapping test no longer flaps) HELD 5/5. PP1's LETTER
+     ("every test OK") did not hold in 2/5 runs because of a foreign
+     pre-existing environmental flake - disclosed, isolated, and
+     base-proven unchanged; it is NOT this lane's fix and must not be
+     silently absorbed (see disclosure + recommendation).
+PP2 (the mutation probe fires): HELD - 6/6 observed firings. Standalone
+     pre-commit run: 41 lock errors. In-suite across the five runs:
+     33, 9, 25, 59, 21 lock errors (retained in RUN_FULL_SUITE_N.txt). The
+     guard is alive: the BEGIN-DEFERRED discipline break is caught at W=3
+     in 5 s, deterministically.
+PP3 (subprocess probe on the UNMUTATED control: lock_errors==0, ops>0):
+     HELD - 5/5 runs. LOCK_PROBE_GUARD lines verbatim in
+     RUN_FULL_SUITE_N.txt: lock_errors==0 every run; ops
+     295/268/391/311/378 (runs 1-5).
+FF1 (any run flapping under load): did not fire for the scale probe (0/5
+     flaps; the historical flap test held green under the same load that
+     produced the six sightings).
+FF2 (the regression mutation passing): did not fire - the mutation was
+     caught 6/6 times.
+FF3 (guard removed / telemetry removed): did not fire - the zero-lock claim
+     exists in the subprocess regime, telemetry retained, all old assertions
+     either preserved (spawn cost, saturated reporting) or replaced by the
+     derived bound.
+FF4 (taste parameters): did not fire - W=3/5s and busy_timeout/2 carry
+     derivations in the prereg and code comments; one real defect was caught
+     during bring-up by the suite itself (p95 compared against seconds
+     instead of ms on the first module run - fixed before any full-suite
+     run; the first module run's failure output is quoted in the
+     implementation commit message).
+
+FOREIGN FLAKE DISCLOSURE (not this lane's fix; recorded for the lead)
+---------------------------------------------------------------------
+Runs 1 and 2 each failed exactly one of 238 tests:
+test_capture_window.CaptureWindowTests.test_failed_memory_dc_is_named_refusal,
+asserting a rendered pixel pattern against an expected pattern and receiving
+an all-white frame (signature retained in the run logs; the assertion diff is
+the white-frame-vs-pattern mismatch documented in the PR #62 review era as "a
+pre-existing environmental flake ... at both head and base").
+Non-causality vs this lane's change, three ways:
+  1. The branch diff touches ONLY tools/agent_fleet/test_slot_expansion.py;
+     test_capture_window.py, control.py and every fixture module are
+     byte-identical from base 5487260c through tip e004c332 to this branch
+     (git diff 5487260c..e004c332 -- tools/ is EMPTY).
+  2. The test passes 3/3 in isolation at this exact HEAD (same working tree,
+     correct module cwd), so the code path is sound; the failure occurs only
+     mid-suite under load - the environmental fixture/contention class.
+  3. The suite itself is verdict-non-deterministic on it: same commit, same
+     load era - failed runs 1-2, passed runs 3-5.
+RECOMMENDATION (for the lead, not this lane): the capture-window white-frame
+class persists at tip (2/5 full-suite runs) despite capture-flake-tolerance-01
+(PR #75); that lane's tolerance evidently does not cover
+test_failed_memory_dc_is_named_refusal. A follow-up card in the capture lane
+(apply the capture-flake verdict-exact tolerance pattern to this test, or fix
+its fixture contention) would make full-suite runs a usable green signal.
+This lane did NOT touch it (out of scope).
+
+FALSIFIER WATCH NOTE (transparency): had the foreign flake hit a scale-probe
+test, FF1 would have fired and this lane would STOP; it never did - the
+scale-probe tests were green in every run including the two foreign-failed
+runs.
+
+Agent: subagent-worker-05
