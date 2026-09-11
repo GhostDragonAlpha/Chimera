@@ -1,0 +1,12 @@
+R4 separation invariants (card statement's structural side)
+threshold: 4/4 required; measured: 4/4
+verdict: HOLD
+
+[PASS] R4a
+  calibrated store before 0 records / after 0 records; snapshot repr identical: True
+[PASS] R4b
+  calibrated_get(p1) -> 298.0 (researched); preset_get(p1) -> 300.0 (synthetic=True); distinct objects: True
+[PASS] R4c
+  snapshot value bits 0x1.2c00000000000p+8 == served 0x1.2c00000000000p+8
+[PASS] R4d
+  refused: ('duplicate_authoring', "('p1', 'density') already exists on the preset plane; first record intact"); first record intact at 300.0

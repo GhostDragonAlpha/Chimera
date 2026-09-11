@@ -1,0 +1,22 @@
+R2 card-prediction negatives -- authoring refusals (model must REFUSE, reason verbatim)
+threshold: 8/9 required; measured: 9/9
+verdict: HOLD
+
+[PASS] R2a
+  refused: ('unsupported_domain', "domain 'unobtanium' is not supported for synthetic presets (supported: ['acrylic', 'knit', 'plush_stuffed']); measured wood/metal/water lives on the calibrated plane only")
+[PASS] R2b
+  refused: ('unsupported_domain', "domain 'wood' is not supported for synthetic presets (supported: ['acrylic', 'knit', 'plush_stuffed']); measured wood/metal/water lives on the calibrated plane only")
+[PASS] R2c
+  refused: ('unsupported_domain', "domain 'metal' is not supported for synthetic presets (supported: ['acrylic', 'knit', 'plush_stuffed']); measured wood/metal/water lives on the calibrated plane only")
+[PASS] R2d
+  refused: ('unsupported_domain', "domain 'water' is not supported for synthetic presets (supported: ['acrylic', 'knit', 'plush_stuffed']); measured wood/metal/water lives on the calibrated plane only")
+[PASS] R2e
+  refused: ('nonfinite', 'nonfinite value nan refused at the door')
+[PASS] R2f
+  refused: ('sg_out_of_domain', 'SG 0.0 outside the derived domain (0 exclusive, 22.59]: fiction may not claim nonphysical matter')
+[PASS] R2g
+  refused: ('sg_out_of_domain', 'SG 30.0 outside the derived domain (0 exclusive, 22.59]: fiction may not claim nonphysical matter')
+[PASS] R2h
+  refused: ('missing_basis', 'no nonblank source locator AND conditions: no basis, no calibrated record')
+[PASS] R2-post
+  store sizes before (0, 0) == after (0, 0): True (nothing admitted on any refusal)
