@@ -1,0 +1,9 @@
+R4 CARD MATHEMATICS — topological scheduling, critical path, resource constraints (prereg: 4/4)
+Fixture DAG (PREREG t_a; t_b; t_c<-{t_a}; t_d<-{t_b}; t_e<-{t_c}; t_f<-{t_c,t_d}; t_g<-{t_e,t_f}, rendered with the deployed id regex's hyphen form: underscores are refused by control.py:506 — recorded in RESULT.md)
+
+R4(a) topological order valid: ['t-a', 't-b', 't-c', 't-d', 't-e', 't-f', 't-g']: PASS
+R4(b) critical path == 4 nodes (a->...->g): ['t-a', 't-c', 't-e', 't-g']: PASS
+R4(c) resource constraint, 2 worker slots, batches=[['t-a', 't-b'], ['t-c', 't-d'], ['t-e', 't-f'], ['t-g']] max_batch=2: PASS
+R4(d) packets in topo order, 7/7 with 4/4 required elements: PASS
+
+R4 VERDICT: 4/4 (prereg threshold 4/4)

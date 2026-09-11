@@ -1,0 +1,12 @@
+R1 positive controls — model must ACCEPT (prereg: 8/8)
+
+R1(a) create_task legal: PASS
+R1(b) claim READY dep-free task: PASS (owner=w-03, inst=inst-w03-0001)
+R1(c) packet 4/4 required elements ['id', 'base', 'branch', 'kind', 'capabilities', 'dependencies', 'evidence', 'write_scope', 'finish_criteria']: PASS
+R1(d) second task admitted+claimed on disjoint scope: PASS
+R1(e) catalogue_next eligibility: before=[] after=['GOV-04']: PASS
+R1(f) topo order valid: ['t-a', 't-b', 't-c', 't-d', 't-e', 't-f', 't-g']: PASS
+R1(g) capacity boundary 2 of max_tasks=2: PASS
+R1(h) binding-instance mutation accepted (foreign refused instance_not_bound): PASS
+
+R1 VERDICT: 8/8 (prereg threshold 8/8)

@@ -1,0 +1,43 @@
+R5 deployed-source trace at base 62b8e357 (tools/agent_fleet/control.py, 839 lines) — 6/6 semantics
+
+NOTE (prereg correction, disclosed): the PREREG quoted approximate line anchors read before measurement; the rows below are SEARCH-ANCHORED — each row's exact measured file:line is recorded here and in RESULT.md.
+
+control.py:41-48 (path_scope: relative, no . .. empty, .git, protected build BOTH directions):
+  41: def path_scope(value):
+  42:     value=text(value,'scope').replace('\\','/')
+  43:     p=PurePosixPath(value)
+  44:     require(not p.is_absolute() and ':' not in value and not any(x in ('.','..','') for x in value.split('/')), 'invalid_scope')
+  45:     require('.git' not in [x.casefold() for x in p.parts], 'git_metadata_scope')
+  46:     v=value.casefold()
+  47:     protected='chimeraengine/engine/build'
+  48:     require(not (v==protected or v.startswith(protected+'/') or protected.startswith(v+'/')), 'protected_build_scope')
+
+control.py:503-506 (lead-only create via _lead:113 + id regex):
+  503:         if op=='create_task':
+  504:             self._lead(s,actor,p.get('epoch'))
+  505:             tid=text(p.get('task'),'task')
+  506:             require(re.fullmatch('[a-z0-9][a-z0-9-]{0,63}',tid) and tid not in s['tasks'],'invalid_or_duplicate_task')
+
+control.py:509 (deps must exist):             deps=p.get('dependencies',[]);require(isinstance(deps,list) and all(x in s['tasks'] for x in deps),'dependencies_must_exist')
+
+control.py:522 (claim READY gate — refused for BLOCKED/REVIEW/RUNNING):             a=s['agents'][actor]; t=s['tasks'].get(p.get('task'));require(t is not None and t['state']=='READY','task_not_ready')
+control.py:529 (deps INTEGRATED):             require(all(s['tasks'][d]['state']=='INTEGRATED' for d in t['dependencies']),'dependencies_not_integrated')
+control.py:532 (write_scope_conflict vs ACTIVE):                     require(not any(overlaps(x,y) for x in t['scopes'] for y in other['scopes']),'write_scope_conflict')
+
+control.py:804+ (catalogue_next eligibility: PROPOSED, casefold live/done, INTEGRATED-only deps):
+  822:                 if cid in live or cid in done:continue
+  823:                 if c.get('status')!='PROPOSED':continue
+  825:                 if all(str(d).casefold() in done for d in deps):candidates.append(c['id'])
+
+control.py:113-114 (_lead, applied at the create_task head) — lead-only admission:
+  113:     def _lead(self,s,actor,epoch):
+  114:         require(actor==s['leader'] and epoch==s['epoch'],'stale_or_nonleader')
+
+R5(a): PASS
+R5(b): PASS
+R5(c): PASS
+R5(d): PASS
+R5(e): PASS
+R5(f): PASS
+
+R5 VERDICT: 6/6 (prereg threshold 6/6)
