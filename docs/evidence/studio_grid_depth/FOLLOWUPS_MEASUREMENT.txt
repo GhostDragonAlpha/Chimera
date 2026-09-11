@@ -1,0 +1,21 @@
+MEASUREMENT — studio-grid-followups-01 (generation 1, slot 5, subagent-worker-08)
+
+Branch astra/tasks/studio-grid-followups-01 at base d59518b9d9dc002cba43d071495576a236b9d498
+(current tip at claim; no reconcile needed). CPU/docs only: no engine source change, no
+rebuild, no new capture, no GPU, no live control-plane ops beyond claim/submit_review.
+
+RUN TABLE (actuals; commands/method verbatim)
+
+| check | method | result |
+|---|---|---|
+| F1 quote fidelity | git show d59518b9:ChimeraEngine/engine/engine.cpp, sed -n <line>p for 1330/1331/1334/1348/1481/1485; ui.cpp 2988/2990/2997 | every quoted line byte-matches the base blob (prediction 1) |
+| F1 pipeline attribution | grep of all depthTestEnable/stencilTestEnable sites at base in engine.cpp + ui.cpp | splat pipeline (create_pipeline, vertex format pos+color+alpha+scale+rot) is the ONLY undeclared depth/stencil-OFF body renderer into rt_render_pass_; fill marks stencil 1 (1481/1485); shadow/floor pins and the grid twin's EQUAL-0 are as the contract already states |
+| F2 manifests | git cat-file blob d59518b9:docs/evidence/studio_grid_depth/<dir>/<name> per tracked PNG; sha256; written as "<64-hex> *<name>" (retired-generation format), sorted by name | before_glass: 10 captures; after: 10 captures; identical name sets |
+| F2 integrity triple | per capture: sha256(git blob at base) == sha256(working-tree file) == sidecar png_sha256 | 20/20 OK (both dirs, every capture) — includes the reviewer-verified sidecar values; note before_glass and after correctly hold DIFFERENT content per capture name (before vs after the fix); e.g. v1_frame.png is e5a8e295... in before_glass and fe0983583... in after, each matching its own dir's sidecar |
+| scope cleanliness | git status/diff --name-only per commit | only docs/THE_STUDIO_GRID_DEPTH.md + docs/evidence/studio_grid_depth/** changed; zero files under ChimeraEngine/ |
+| doc lint | python tools/doc_lint.py --staged per commit | clean |
+
+METHOD NOTE (F2): manifests are computed from GIT BLOBS at the task base, never from a
+re-render or a new capture. The working-tree equality assertion (blob == file, clean
+tree) is checked at generation time; future readers can re-verify with
+`git sha256sum`-equivalent over `git cat-file blob <base>:<path>` or the on-disk files.
