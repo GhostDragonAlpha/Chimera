@@ -1,0 +1,23 @@
+{
+ "digest": "b9d32319b43a03bbb713f1a4e6120f24065839f15383b0729fb587ba04f9000a",
+ "candidates": [
+  "GOV-01"
+ ],
+ "live_tasks": [
+  "catalogue-packet-batch-01",
+  "docs-evidence-link-audit-01",
+  "dyad-template-hardening-01",
+  "engine-feature-resource-lifetime-01",
+  "engine-feature-resource-lifetime-02",
+  "engine-vulkan-cleanup-01",
+  "fleet-controller-upgrade-01",
+  "fleet-orient-continuation-01",
+  "fleet-regression-sweep-01",
+  "fleet-run-queue-01",
+  "fleet-slot-expansion-01",
+  "fleet-slot-expansion-02",
+  "studio-grid-depth-01",
+  "window-capture-ownership-01"
+ ],
+ "note": "PLANNING CANDIDATES ONLY: catalogue records are not claims, not READY tasks and grant no authority; admission runs through the normal lead-authorized task lifecycle."
+}

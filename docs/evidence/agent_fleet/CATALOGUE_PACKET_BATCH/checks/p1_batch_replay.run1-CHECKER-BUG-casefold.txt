@@ -1,0 +1,22 @@
+P1 batch derivation replay (deterministic sorted-frontier expansion)
+catalogue digest: b9d32319b43a03bbb713f1a4e6120f24065839f15383b0729fb587ba04f9000a
+population: 240 PROPOSED cards at source revision 5199d9c3 == import source
+live (non-INTEGRATED) task ids excluded: 14 (retained in raw/catalogue_next_batch01.json)
+
+frontier at each pop (first 6 sorted candidates | picked):
+  pop  1: picked GOV-01   frontier-head: ['GOV-01']
+  pop  2: picked GOV-01   frontier-head: ['GOV-01', 'GOV-02', 'GOV-03', 'GOV-04', 'GOV-05', 'GOV-06']
+  pop  3: picked GOV-01   frontier-head: ['GOV-01', 'GOV-02', 'GOV-03', 'GOV-04', 'GOV-05', 'GOV-06']
+  pop  4: picked GOV-01   frontier-head: ['GOV-01', 'GOV-02', 'GOV-03', 'GOV-04', 'GOV-05', 'GOV-06']
+  pop  5: picked GOV-01   frontier-head: ['GOV-01', 'GOV-02', 'GOV-03', 'GOV-04', 'GOV-05', 'GOV-06']
+  pop  6: picked GOV-01   frontier-head: ['GOV-01', 'GOV-02', 'GOV-03', 'GOV-04', 'GOV-05', 'GOV-06']
+  pop  7: picked GOV-01   frontier-head: ['GOV-01', 'GOV-02', 'GOV-03', 'GOV-04', 'GOV-05', 'GOV-06']
+  pop  8: picked GOV-01   frontier-head: ['GOV-01', 'GOV-02', 'GOV-03', 'GOV-04', 'GOV-05', 'GOV-06']
+  pop  9: picked GOV-01   frontier-head: ['GOV-01', 'GOV-02', 'GOV-03', 'GOV-04', 'GOV-05', 'GOV-06']
+  pop 10: picked GOV-01   frontier-head: ['GOV-01', 'GOV-02', 'GOV-03', 'GOV-04', 'GOV-05', 'GOV-06']
+  pop 11: picked GOV-01   frontier-head: ['GOV-01', 'GOV-02', 'GOV-03', 'GOV-04', 'GOV-05', 'GOV-06']
+  pop 12: picked GOV-01   frontier-head: ['GOV-01', 'GOV-02', 'GOV-03', 'GOV-04', 'GOV-05', 'GOV-06']
+
+batch == ["GOV-01", "GOV-01", "GOV-01", "GOV-01", "GOV-01", "GOV-01", "GOV-01", "GOV-01", "GOV-01", "GOV-01", "GOV-01", "GOV-01"]
+expected == ["GOV-01", "GOV-02", "GOV-03", "GOV-04", "GOV-05", "GOV-06", "MATH-01", "MATH-02", "MATH-03", "MATH-04", "MATH-05", "MATH-06"]
+P1 FALSIFIED

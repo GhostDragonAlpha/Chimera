@@ -1,0 +1,41 @@
+{
+ "plane": "card",
+ "record": {
+  "plane": "card",
+  "id": "GOV-01",
+  "domain": "GOV",
+  "title": "Authoritative ledger and ownership",
+  "status": "PROPOSED",
+  "depends_on": [],
+  "source": {
+   "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\import-5199\\docs\\roadmap\\holodeck_tasks.json",
+   "index": 0
+  },
+  "content_sha256": "b0919b86e7b71402218223d0df1bc84504c6e9c5f244d4d44545fbc7354e67d4",
+  "card": {
+   "id": "GOV-01",
+   "title": "Authoritative ledger and ownership",
+   "domain": "GOV",
+   "kind": "engineering",
+   "status": "PROPOSED",
+   "owner": null,
+   "depends_on": [],
+   "mathematics": "dependency DAG; transactions; compare-and-swap",
+   "statement": "Canonical task IDs, claims, owners and publication queue",
+   "prediction": "Conflicting claims are rejected and active assignments survive restart",
+   "falsifier": "Two agents own the same write scope or stale state replaces a newer claim",
+   "deliverables": [
+    "Canonical task IDs, claims, owners and publication queue",
+    "Independent reference/benchmark and executed negative controls appropriate to this scope",
+    "Reproduction commands, source identity, preserved evidence and limitations",
+    "Integration contract and full autonomous handoff"
+   ],
+   "threshold_policy": "Derive the fixture-specific bound or ratify product target before implementation tests; preserve existing frozen gates; a catalogue prediction is not a preregistered numeric certificate.",
+   "write_scope": "UNRESERVED: coordinator must assign exact exclusive paths before implementation.",
+   "evidence": [],
+   "dyad": "REQUIRED when integrated changes affect visible behavior; GLM operates the documented image/question workflow. Reference-only or source-only scope records NOT_APPLICABLE with reason."
+  }
+ },
+ "digest": "b9d32319b43a03bbb713f1a4e6120f24065839f15383b0729fb587ba04f9000a",
+ "imported_revision": 651
+}

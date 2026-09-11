@@ -1,0 +1,45 @@
+{
+ "plane": "card",
+ "record": {
+  "plane": "card",
+  "id": "MATH-01",
+  "domain": "MATH",
+  "title": "Units and coordinate algebra",
+  "status": "PROPOSED",
+  "depends_on": [
+   "GOV-01"
+  ],
+  "source": {
+   "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\import-5199\\docs\\roadmap\\holodeck_tasks.json",
+   "index": 6
+  },
+  "content_sha256": "d7fb68e14b18e300cb1499ec38c55afa589cb0bf059a45d594ab3ce290de9b5f",
+  "card": {
+   "id": "MATH-01",
+   "title": "Units and coordinate algebra",
+   "domain": "MATH",
+   "kind": "engineering",
+   "status": "PROPOSED",
+   "owner": null,
+   "depends_on": [
+    "GOV-01"
+   ],
+   "mathematics": "SI dimensions; nondimensionalization; Buckingham Pi",
+   "statement": "Typed quantity/frame contract and reversible coordinate transforms",
+   "prediction": "Unit and frame changes preserve dimensionless predictions",
+   "falsifier": "A metre-newton comparison or undeclared world-unit conversion is admitted",
+   "deliverables": [
+    "Typed quantity/frame contract and reversible coordinate transforms",
+    "Independent reference/benchmark and executed negative controls appropriate to this scope",
+    "Reproduction commands, source identity, preserved evidence and limitations",
+    "Integration contract and full autonomous handoff"
+   ],
+   "threshold_policy": "Derive the fixture-specific bound or ratify product target before implementation tests; preserve existing frozen gates; a catalogue prediction is not a preregistered numeric certificate.",
+   "write_scope": "UNRESERVED: coordinator must assign exact exclusive paths before implementation.",
+   "evidence": [],
+   "dyad": "REQUIRED when integrated changes affect visible behavior; GLM operates the documented image/question workflow. Reference-only or source-only scope records NOT_APPLICABLE with reason."
+  }
+ },
+ "digest": "b9d32319b43a03bbb713f1a4e6120f24065839f15383b0729fb587ba04f9000a",
+ "imported_revision": 651
+}

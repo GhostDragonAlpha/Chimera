@@ -1,0 +1,16 @@
+P4 proposed-scope path-safety check (path_scope semantics: relative, no drive, no "."/".."/"" parts, no ".git" part, no overlap with chimeraengine/engine/build)
+
+holodeck-gov-01 scope=docs/evidence/agent_fleet/HOLODECK/GOV/GOV-01/             -> REFUSED: bad_part
+holodeck-gov-02 scope=docs/evidence/agent_fleet/HOLODECK/GOV/GOV-02/             -> REFUSED: bad_part
+holodeck-gov-03 scope=docs/evidence/agent_fleet/HOLODECK/GOV/GOV-03/             -> REFUSED: bad_part
+holodeck-gov-04 scope=docs/evidence/agent_fleet/HOLODECK/GOV/GOV-04/             -> REFUSED: bad_part
+holodeck-gov-05 scope=docs/evidence/agent_fleet/HOLODECK/GOV/GOV-05/             -> REFUSED: bad_part
+holodeck-gov-06 scope=docs/evidence/agent_fleet/HOLODECK/GOV/GOV-06/             -> REFUSED: bad_part
+holodeck-math-01 scope=docs/evidence/agent_fleet/HOLODECK/MATH/MATH-01/           -> REFUSED: bad_part
+holodeck-math-02 scope=docs/evidence/agent_fleet/HOLODECK/MATH/MATH-02/           -> REFUSED: bad_part
+holodeck-math-03 scope=docs/evidence/agent_fleet/HOLODECK/MATH/MATH-03/           -> REFUSED: bad_part
+holodeck-math-04 scope=docs/evidence/agent_fleet/HOLODECK/MATH/MATH-04/           -> REFUSED: bad_part
+holodeck-math-05 scope=docs/evidence/agent_fleet/HOLODECK/MATH/MATH-05/           -> REFUSED: bad_part
+holodeck-math-06 scope=docs/evidence/agent_fleet/HOLODECK/MATH/MATH-06/           -> REFUSED: bad_part
+
+P4 FALSIFIED
