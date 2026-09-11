@@ -1,0 +1,49 @@
+R1 positive identifications (mat04_reference_model) -- thresholds from PREREGISTRATION.txt + AMENDMENT 1
+========================================================================
+base: 308790ab33a19d5265036deabf25556af8b83f18
+       fixture noise stream: seed 20260911, draws 1-6 training gauss(0, 5e-06), draw 7 held-out
+       training noises: [1.7156645054470996e-06, -4.420340906214198e-06, -2.0745474792766996e-06, 6.946232313239284e-07, 5.2248671850932495e-06, -2.799535263446953e-06]
+       held-out noise (draw 7): -4.886136305251452e-06
+[PASS] R1(a) CI-contains-truth
+       K_TRUE (control, exact Fraction) = 1/2000000 = 5e-07
+       D0_TRUE = 2e-05
+       k_hat = 5.202713990155556e-07, 95% CI = (3.85521404920282e-07, 6.550213931108291e-07)
+       d0_hat = 1.8608528266298824e-05, 95% CI = (1.000666447390733e-05, 2.7210392058690318e-05)
+       dof = 4, n = 6, s2 = 1.4839520795252066e-11
+[PASS] R1(b) covariance SPD
+       scale-free SPD of C = s2*(F^T F)^-1 (s2 > 0):
+         design A: det(F^T F) exact = 0.01 -> C00>0 and det(C)>0: True
+         design B: det(F^T F) exact = 8100.0 -> C00>0 and det(C)>0: True
+       training_6 numeric cov = ((2.3554794913098517e-15, -1.2955137202204185e-13), (-1.2955137202204185e-13, 9.598578927087646e-12))
+       numeric SPD (C00>0, det>0): True
+[PASS] R1(c) rho_B closed form + sign
+       model design_correlation(B) = -0.7739572992033211
+       control closed form -11/sqrt(202) = -0.773957299203321
+       |diff| = 1.1102230246251565e-16 (threshold 1e-9 absolute)
+       sign band -0.8 < rho_B < 0: True
+       fit.corr(training_6) = -0.8615864949867531 equals design_correlation(loads_6) within 1e-12: True
+[PASS] R1(d) rho_A closed form + sign
+       model design_correlation(A) = -0.999987624298452
+       control closed form -(201/10)/sqrt(20201/50) = -0.999987624298452
+       |diff| = 0.0 (threshold 1e-9 absolute)
+       rho_A < -0.999: True
+[PASS] R1(e) D-optimal design
+       choose_design winner = 'B' (predicted B)
+       det(A) measured = Fraction(1, 100) float 0.01 (target 0.01, rel 0.0)
+       det(B) measured = Fraction(8100, 1) float 8100.0 (target 8100, rel 0.0)
+       ratio det_B/det_A = 810000.0 (target 810000, rel 0.0)
+[PASS] R1(f) t_{0.975,4} vs table
+       model t_two_sided(4) = 2.7764451051978156
+       published table = 2.7764451051977987
+       relative error = 6.078056412032014e-15 (threshold 1e-9 relative)
+[PASS] R1(g) held-out coverage
+       200 replications, seeds 20260911..20261110, each refits and redeclares the 95% band before judging
+       covered = 190/200 (derived 3-sigma binomial band [180, 200]; mean 190, sd 3.082)
+       SURPRISE note (covered == 200): False
+[PASS] R1(h) card prediction fixture + composition
+       band mean = 4.722345521215438e-05 m, half-width = 1.1552405493176328e-05 m at F* = 55.0 N
+       half_width.dimension = Dimension(L=1, M=0, T=0) (must be Dimension L)
+       observed = 4.2613863694748554e-05 m -> verdict 'AGREES', distance = 4.6095915174058265e-06
+       MATH-01 composition (cited): dim(k) x dim(F) == dim(d): Dimension(L=0, M=-1, T=2) * Dimension(L=1, M=1, T=-2) == Dimension(L=1, M=0, T=0) -> True
+
+RESULT r1_identification.txt: 8/8 (failed: none)

@@ -1,0 +1,33 @@
+R2 inverse-problem negatives -- named refusals, verbatim reasons, post-state assertions
+========================================================================
+base: 308790ab33a19d5265036deabf25556af8b83f18
+[PASS] R2(a) undeclared unit
+       expected refusal reason: 'undeclared_observation_unit'
+       observed: Mat04Refusal(reason='undeclared_observation_unit', message="no declared unit 'furlong': the declared-only unit registry (MATH-01, cited) refuses it")
+       post-state: prior fit theta/cov/corr unchanged: True
+[PASS] R2(b) nonfinite observation
+       expected refusal reason: 'nonfinite_observation'
+       observed: Mat04Refusal(reason='nonfinite_observation', message='observation value must be finite, got nan')
+       post-state: prior fit theta/cov/corr unchanged: True
+[PASS] R2(c) metre-newton pose
+       expected refusal reason: 'dimension_mismatch'
+       observed: Mat04Refusal(reason='dimension_mismatch', message="design column 'load' (Dimension(L=1, M=1, T=-2)) x parameter (Dimension(L=0, M=-1, T=2)) != observation dimension (Dimension(L=1, M=1, T=-2)): MATH-01 dimension_mismatch (cited)")
+       post-state: prior fit theta/cov/corr unchanged: True
+[PASS] R2(d) rank-deficient design
+       expected refusal reason: 'rank_deficient_design'
+       observed: Mat04Refusal(reason='rank_deficient_design', message='Gramian determinant is exactly 0: the design cannot identify (k, d0); refusing to fit')
+       post-state: prior fit theta/cov/corr unchanged: True
+[PASS] R2(e) negative noise sigma
+       expected refusal reason: 'invalid_noise_sigma'
+       observed: Mat04Refusal(reason='invalid_noise_sigma', message="declared noise sigma must be finite and positive, got -1e-06 on experiment 'bad_sigma'")
+       post-state: prior fit theta/cov/corr unchanged: True
+[PASS] R2(f) empty held-out set
+       expected refusal reason: 'no_heldout_evidence'
+       observed: Mat04Refusal(reason='no_heldout_evidence', message='the held-out ledger is empty: training-fit success is NOT predictive material validation')
+       post-state: no verdict returned (refusal raised)
+[PASS] R2(g) held-out overlaps training
+       expected refusal reason: 'heldout_overlaps_training'
+       observed: Mat04Refusal(reason='heldout_overlaps_training', message="experiment 'train_00_F10' is in the training ledger: a training point cannot validate the fit that consumed it")
+       post-state: no verdict returned (refusal raised)
+
+RESULT r2_negatives.txt: 7/7 (failed: none)
