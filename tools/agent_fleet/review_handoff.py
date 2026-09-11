@@ -76,8 +76,15 @@ class ReviewHandoffControl(Control):
                 require(not any(overlaps(left, right) for left in task["scopes"]
                                 for right in other["scopes"]), "write_scope_conflict")
         available = [(number, slot) for number, slot in state["slots"].items()
-                     if slot["task"] is None and slot["kind"] == task["kind"]]
-        require(available, "no_free_slot")
+                     if slot["task"] is None and slot["kind"] == task["kind"]
+                     and not slot["engine"].get("provisioned")]
+        if not available:
+            # Same actionable guard as the base controller: a free slot still
+            # carrying an ACTIVE provision from an earlier task/generation is
+            # recovered by supervisor slot_rebind, never silently adopted.
+            require(any(slot["task"] is None and slot["kind"] == task["kind"]
+                        for slot in state["slots"].values()), "no_free_slot")
+            require(False, "stale_provision_requires_recovery")
         number, slot = available[0]
         slot["task"] = task["id"]
         task.update(owner=actor, slot=number, state="RUNNING",
@@ -126,11 +133,24 @@ class ReviewHandoffControl(Control):
             "writer_stopped_evidence": writer_stopped,
             "runtime_drained_evidence": runtime_drained,
             "slot_reprovision_ready_evidence": slot_ready,
+            # Provision identity is retained on the task-side receipt as well
+            # as in the slot's preserved_provisions history.
+            "provision": {key: slot["engine"].get(key)
+                          for key in ("provision_task", "provision_generation",
+                                      "provision_base", "worktree_head",
+                                      "provision_evidence")},
             "released_revision": state["revision"] + 1,
         }
         task.setdefault("review_slot_handoffs", []).append(receipt)
         slot["task"] = None
-        slot["engine"] = slot_layout(state["root"], int(slot_id))["engine"]
+        # Retire the provision into bounded slot history instead of deleting
+        # it, then reset the engine plan while carrying that history forward.
+        self._preserve_provision(state, slot, "released_for_review_handoff",
+                                 "preservation: " + preservation
+                                 + " | writer stopped: " + writer_stopped
+                                 + " | runtime drained: " + runtime_drained)
+        slot["engine"] = {**slot_layout(state["root"], int(slot_id))["engine"],
+                          "preserved_provisions": slot["engine"].get("preserved_provisions", [])}
         task["slot"] = None
         return {"state": "REVIEW", "head": head, "generation": generation,
                 "slot_released": slot_id, "filesystem_deleted": False,

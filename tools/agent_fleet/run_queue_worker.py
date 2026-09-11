@@ -68,6 +68,9 @@ class WorkerQueue:
         return code in {
             "task_not_ready", "no_free_slot", "write_scope_conflict",
             "dependencies_not_integrated", "capability_missing", "agent_capacity_reached",
+            # A stale-provisioned free slot needs supervisor slot_rebind; skip
+            # and retry later rather than crashing the worker loop.
+            "stale_provision_requires_recovery",
         }
 
     def run_forever(self, *, poll_seconds: float = 5.0, max_cycles: int | None = None,
