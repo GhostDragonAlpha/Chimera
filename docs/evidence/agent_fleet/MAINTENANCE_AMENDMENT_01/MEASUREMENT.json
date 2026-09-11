@@ -1,0 +1,24 @@
+{
+  "task": "fleet-maintenance-amendment-01",
+  "generation": 1,
+  "slot": 1,
+  "base": "ecc839abc2e22eb63ed416de8761ad82fb7e16",
+  "preregistration_commit": "c56006c5",
+  "amendment_commit": "977e7dcf",
+  "repin_commit": "e81585ca",
+  "producing_commands": [
+    "python tools/agent_fleet/master_catalogue.py --out <temp> (measured at amended head 977e7dcf)",
+    "python -m unittest tools.agent_fleet.test_master_catalogue -v",
+    "perturbation: throwaway detached worktree at e81585ca + one appended dated pipe-row in docs/THE_MASTER_LIST.md + same unittest run",
+    "python -m unittest discover -s tools/agent_fleet -p 'test_*.py'"
+  ],
+  "measured": {
+    "amendment_delta": "docs/THE_MASTER_LIST.md +62/-0 (single dated section; append-only)",
+    "pins_old_to_new": {"master_row_ids": "85 -> 89", "master_row_observations": "119 -> 127", "line_partition_total": "2630 -> 2692"},
+    "catalogue_tests": "23/23 OK at repinned head",
+    "perturbation_control": "exit 1, AssertionError 2694 != 2692 and 90 != 89 (the +1 row / +2 lines delta from the appended probe row) - pins demonstrably bind to measurement",
+    "full_fleet_suite": "198 tests, 0 failures, 1 Windows-symlink skip (exit 0)"
+  },
+  "retained_first_attempt": "The first perturbation run was executed at the WRONG base (the operator checkout's detached HEAD via a mis-rooted worktree add) and its failure was confounded (old-tree counts vs old pins); that run is retained here as the correction - the clean control above ran at the amended commit 977e7dcf (pre-repin, showing 2694!=2630/90!=85 vs then-current pins) and at the repinned commit e81585ca (2694!=2692/90!=89 vs the NEW pins). The operator checkout was never written (the perturbed file lived only in throwaway worktrees, both removed).",
+  "not_claimed": ["anything beyond the measured counts at this head"]
+}
