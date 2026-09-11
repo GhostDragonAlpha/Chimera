@@ -1,0 +1,9 @@
+R3 STALE-STATE MUTATION (card falsifier clause 2: "stale state replaces a newer claim") — model must REJECT — threshold 4/4
+
+(a) stale generation (0 < 1): (REFUSED, 'stale_or_foreign_claim'); payload after: {'v': 1}
+  stale payload NOT applied: True
+(b) foreign actor with owner generation: (REFUSED, 'stale_or_foreign_claim')
+(c) unknown task: (REFUSED, 'unknown_task')
+(d) old owner gen 1 vs newer claim gen 2: (REFUSED, 'stale_or_foreign_claim'); owner now bob
+
+CARD FALSIFIER CLAUSE 2 in the reference model: NOT reproduced (every stale-write path refused) -> HOLDS

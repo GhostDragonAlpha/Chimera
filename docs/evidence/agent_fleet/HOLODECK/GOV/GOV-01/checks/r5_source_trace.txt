@@ -1,0 +1,43 @@
+R5 DEPLOYED-SOURCE TRACE at base d59518b9d9dc002cba43d071495576a236b9d498
+source identity: control.py sha256=7cee259b35a21ebe689feb5d77c8f2bb10b7125cd1ea9c3ac06e1cb6254bfa30 (839 lines); review_handoff.py sha256=ad3674bd2e1f1a60a3762e44cd26578150b2c475b064af042a40bace30b51811 (227 lines)
+The live service was NEVER contacted; this is a static read of the reference text.
+
+SEMANTIC 1 - conflicting claims refused (card prediction clause 1):
+  control.py:530-532 (base claim, write-scope gate):
+    530:             for other in s['tasks'].values():
+    531:                 if other['state'] in ('RUNNING','BLOCKED','REVIEW','RECOVERY_HOLD'):
+    532:                     require(not any(overlaps(x,y) for x in t['scopes'] for y in other['scopes']),'write_scope_conflict')
+  review_handoff.py:74-77 (interceptor copy of the same gate):
+    74:         for other in state["tasks"].values():
+    75:             if other["state"] in ("RUNNING", "BLOCKED", "REVIEW", "RECOVERY_HOLD"):
+    76:                 require(not any(overlaps(left, right) for left in task["scopes"]
+    77:                                 for right in other["scopes"]), "write_scope_conflict")
+  serialization guaranteeing the refusal is total (no torn state): control.py:308 BEGIN IMMEDIATE:
+    308:             con.execute('BEGIN IMMEDIATE')
+  and ROLLBACK on any refusal, control.py:358-360:
+    358:         except Exception:
+    359:             if con.in_transaction:con.execute('ROLLBACK')
+    360:             raise
+
+SEMANTIC 2 - stale state cannot replace a newer claim (CAS):
+  control.py:116-124 (_task gate: owner AND generation AND instance):
+    116:     def _task(self,s,actor,tid,generation,instance=None):
+    117:         t=s['tasks'].get(tid)
+    118:         require(t is not None,'unknown_task')
+    119:         require(t['owner']==actor and t['generation']==generation,'stale_or_foreign_claim')
+    120:         require(t['state'] in ('RUNNING','BLOCKED','REVIEW'),'task_not_owned_active')
+    121:         owner_instance=t.get('owner_instance')
+    122:         if owner_instance is not None:
+    123:             require(instance==owner_instance,'instance_not_bound')
+    124:         return t
+  refusal name stale_or_foreign_claim is produced at line 119.
+
+SEMANTIC 3 - active assignments survive restart (persistence):
+  control.py:65-66 (committed state + events tables):
+    65:             con.execute('CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), body TEXT NOT NULL)')
+    66:             con.execute('CREATE TABLE IF NOT EXISTS events (seq INTEGER PRIMARY KEY, kind TEXT NOT NULL, body TEXT NOT NULL)')
+  control.py:344 (revision bump per mutating op) and 351 (state committed in the same transaction):
+    344:                 s['revision']+=1
+    351:                 con.execute('UPDATE state SET body=? WHERE id=1',(json.dumps(s),))
+
+R5 verdict: 3/3 semantics present in the deployed text at base with exact lines quoted above.

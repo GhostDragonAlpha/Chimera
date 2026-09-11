@@ -1,0 +1,17 @@
+R4 RESTART PERSISTENCE (card prediction clause 2: "active assignments survive restart") — model must PRESERVE — threshold 10/10 + 2
+
+  t1.owner: 'alice' == 'alice' -> OK
+  t1.generation: 1 == 1 -> OK
+  t1.state: 'RUNNING' == 'RUNNING' -> OK
+  t1.slot: '1' == '1' -> OK
+  t1.checkpoint: 'mutated@3' == 'mutated@3' -> OK
+  t2.owner: 'bob' == 'bob' -> OK
+  t2.generation: 1 == 1 -> OK
+  t2.state: 'RUNNING' == 'RUNNING' -> OK
+  t2.slot: '2' == '2' -> OK
+  t2.checkpoint: None == None -> OK
+  instance binding preserved: t1.owner_instance='inst-alice'
+post-reload stale mutation refused: (REFUSED, 'stale_or_foreign_claim')
+post-reload legal mutation accepted: OK
+
+R4 verdict: HOLDS (13/13)

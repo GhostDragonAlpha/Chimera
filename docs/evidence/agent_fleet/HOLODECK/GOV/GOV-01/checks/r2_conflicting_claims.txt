@@ -1,0 +1,34 @@
+R2 CONFLICTING CLAIMS (card falsifier clause 1: "Two agents own the same write scope") — model must REJECT — threshold 5/5
+
+(a) equal scope: alice(ta)=OK; bob(tb)=(REFUSED, 'write_scope_conflict')
+  assert tb.owner == None (actual None) -> OK
+  assert tb.generation == 0 (actual 0) -> OK
+  assert tb.state == 'READY' (actual 'READY') -> OK
+  assert tb.slot == None (actual None) -> OK
+  tb post-state: INTACT
+(b) parent/child overlap: alice(ta)=OK; bob(tb)=(REFUSED, 'write_scope_conflict')
+  assert tb.owner == None (actual None) -> OK
+  assert tb.generation == 0 (actual 0) -> OK
+  assert tb.state == 'READY' (actual 'READY') -> OK
+  assert tb.slot == None (actual None) -> OK
+  tb post-state: INTACT
+(c) child/parent overlap: alice(ta)=OK; bob(tb)=(REFUSED, 'write_scope_conflict')
+  assert tb.owner == None (actual None) -> OK
+  assert tb.generation == 0 (actual 0) -> OK
+  assert tb.state == 'READY' (actual 'READY') -> OK
+  assert tb.slot == None (actual None) -> OK
+  tb post-state: INTACT
+(d) casefold duplicate: alice(ta)=OK; bob(tb)=(REFUSED, 'write_scope_conflict')
+  assert tb.owner == None (actual None) -> OK
+  assert tb.generation == 0 (actual 0) -> OK
+  assert tb.state == 'READY' (actual 'READY') -> OK
+  assert tb.slot == None (actual None) -> OK
+  tb post-state: INTACT
+(e) same task twice: alice=OK; bob=(REFUSED, 'task_not_ready')
+  assert t1.owner == 'alice' (actual 'alice') -> OK
+  assert t1.generation == 1 (actual 1) -> OK
+  assert t1.state == 'RUNNING' (actual 'RUNNING') -> OK
+  assert t1.slot == '1' (actual '1') -> OK
+  t1 post-state: INTACT (single owner)
+
+CARD FALSIFIER CLAUSE 1 in the reference model: NOT reproduced (every dual-ownership path refused) -> HOLDS
