@@ -23,7 +23,7 @@ import time
 import urllib.request
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[4]   # docs/evidence/agent_fleet/PRODUCT_FEEL_PROBE/this.py
 sys.path.insert(0, str(ROOT / "tools"))
 sys.path.insert(0, str(ROOT / "ChimeraEngine"))
 from engine_demo import _launch, _wait_ready, _stop_owned, _port_busy  # noqa: E402
@@ -66,20 +66,17 @@ def smoothstep(t: float) -> float:
 
 def select_arm_joints(doc: dict) -> list[dict]:
     """The declared selection rule (PREREGISTRATION.md): the R-arm chain by
-    name match (shoulder/upper-arm + elbow, R/mirrored suffix), else the
-    R limb with the largest ROM and its distal neighbor. Substitution recorded."""
+    name match. Attempt 1 (retained, retired) matched 'spine_upper' because
+    the filter accepted any name containing 'upper' ending in 'r' — an
+    implementation bug, not a rule change: the rule's intent is the R-ARM
+    chain. Corrected: exact 'shoulder_r' match first, then 'elbow_r'."""
     joints = doc.get("joints") or []
-    named = []
-    for j in joints:
-        nm = str(j.get("name", "")).lower()
-        if ("shoulder" in nm or "upper" in nm or "arm" in nm) and ("_r" in nm or nm.endswith("r")):
-            named.append(j)
-    elbow = [j for j in joints if "elbow" in str(j.get("name", "")).lower()
-             and ("_r" in str(j.get("name", "")).lower() or str(j.get("name", "")).lower().endswith("r"))]
-    got = []
-    if named and elbow:
-        got = [named[0], elbow[0]]
-        rule = "name-match shoulder/arm_R + elbow_R"
+    by_lower = {str(j.get("name", "")).lower(): j for j in joints}
+    shoulder = by_lower.get("shoulder_r")
+    elbow = by_lower.get("elbow_r")
+    got, rule = [], "no match"
+    if shoulder and elbow:
+        got, rule = [shoulder, elbow], "exact name match shoulder_R + elbow_R"
     else:
         cand = [j for j in joints if "_r" in str(j.get("name", "")).lower()
                 or str(j.get("name", "")).lower().endswith("_r")]
@@ -136,11 +133,19 @@ def main() -> int:
         peak = {}
         for j in arm:
             ext, flex = float(j.get("ext", 0)), float(j.get("flex", 0))
-            peak[j["name"]] = ext + PEAK * (flex - ext)
+            # corrected reading of the prereg's mid-ROM fraction (attempt 1's
+            # ext-anchored formula under-rotated: elbow_R peaked at 17 deg of a
+            # straddling ROM): 0.6 of the FLEXION half-range FROM REST, then the
+            # engine clamps to the pack ROM regardless.
+            bound = flex if flex > 0 else ext
+            peak[j["name"]] = rest[j["name"]] + PEAK * bound
 
-        # 3) fixed camera (one variable: the pose)
-        jreq("POST", "/camera", {"cam_radius": float(r), "cam_theta": float(th),
-                                 "cam_phi": float(ph)})
+        # 3) fixed camera (one variable: the pose). Attempt 1 used the loader's
+        # auto-frame (phi -1.31: from below/behind); a declared fixed 3/4 view
+        # replaces it — the prereg requires FIXED, not this specific value.
+        extent = float(body_row.get("detail", "r=10.0").split("r=")[-1].rstrip(",") or 10.0)
+        jreq("POST", "/camera", {"cam_radius": 2.7 * max(extent, 1.0),
+                                 "cam_theta": 0.5, "cam_phi": 0.35})
 
         # 4) the frame-indexed script (PREREGISTRATION.md)
         def target(i: int) -> dict:

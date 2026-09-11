@@ -1,0 +1,162 @@
+[
+ {
+  "name": "launch",
+  "verdict": "PASS",
+  "detail": {
+   "pid": 81016,
+   "port": 8131,
+   "exe_sha256": "6c539ae69d673a19d67f0ef9070ff188965f73db72ca516697f28f05663d253a"
+  }
+ },
+ {
+  "name": "load.mesh",
+  "verdict": "PASS",
+  "detail": {
+   "r": 27.862994463376467,
+   "theta": 3.141592653589793,
+   "phi": -1.3101939350475558
+  }
+ },
+ {
+  "name": "load.joints_bin",
+  "verdict": "PASS",
+  "detail": {
+   "http": 200,
+   "resp": "{\"ok\":true}"
+  }
+ },
+ {
+  "name": "load.body_row",
+  "verdict": "PASS",
+  "detail": {
+   "detail": "36424 tris, 18459 verts, r=10.0"
+  }
+ },
+ {
+  "name": "rig.doc",
+  "verdict": "MEASURED",
+  "detail": {
+   "n_joints": 28,
+   "names": [
+    "neck",
+    "jaw",
+    "spine_upper",
+    "spine_mid",
+    "spine_lower",
+    "tail_base",
+    "tail_mid",
+    "shoulder_L",
+    "shoulder_R",
+    "elbow_L",
+    "elbow_R",
+    "wrist_L",
+    "wrist_R",
+    "hip_L",
+    "hip_R",
+    "knee_L",
+    "knee_R",
+    "ankle_L",
+    "ankle_R",
+    "tail_tip",
+    "ear_L",
+    "ear_R",
+    "lid_L",
+    "lid_R",
+    "brow_L",
+    "brow_R",
+    "mouth_L",
+    "mouth_R"
+   ]
+  }
+ },
+ {
+  "name": "script.joint_selection",
+  "verdict": "PASS",
+  "detail": {
+   "rule": "exact name match shoulder_R + elbow_R",
+   "joints": [
+    [
+     "shoulder_R",
+     -149.0,
+     60.0
+    ],
+    [
+     "elbow_R",
+     -145.0,
+     125.0
+    ]
+   ]
+  }
+ },
+ {
+  "name": "capture.frame",
+  "verdict": "PASS",
+  "detail": {
+   "i": 0,
+   "thetas": {
+    "shoulder_R": 0.0,
+    "elbow_R": 0.0
+   }
+  }
+ },
+ {
+  "name": "capture.frame",
+  "verdict": "PASS",
+  "detail": {
+   "i": 10,
+   "thetas": {
+    "shoulder_R": 1.0080000000000002,
+    "elbow_R": 2.1
+   }
+  }
+ },
+ {
+  "name": "capture.frame",
+  "verdict": "PASS",
+  "detail": {
+   "i": 20,
+   "thetas": {
+    "shoulder_R": 36.0,
+    "elbow_R": 75.0
+   }
+  }
+ },
+ {
+  "name": "capture.frame",
+  "verdict": "PASS",
+  "detail": {
+   "i": 30,
+   "thetas": {
+    "shoulder_R": 35.541333333333334,
+    "elbow_R": 74.04444444444445
+   }
+  }
+ },
+ {
+  "name": "capture.frame",
+  "verdict": "PASS",
+  "detail": {
+   "i": 40,
+   "thetas": {
+    "shoulder_R": 6.314666666666668,
+    "elbow_R": 13.155555555555559
+   }
+  }
+ },
+ {
+  "name": "capture.frames",
+  "verdict": "PASS",
+  "detail": {
+   "n": 45
+  }
+ },
+ {
+  "name": "encode.movie",
+  "verdict": "PASS",
+  "detail": {
+   "glass": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\product_feel_after.mp4",
+   "frame": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\product_feel_after_frame.mp4",
+   "glass_sha256": "e7d85b3de1732e9cecb487ef2a8addfbc9b22ab0e8bf12208333a4df8d4d2275"
+  }
+ }
+]

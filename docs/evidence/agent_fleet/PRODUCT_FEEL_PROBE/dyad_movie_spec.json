@@ -1,7 +1,7 @@
 {
  "task": "product-feel-probe-01",
  "attempt": "product-feel-after-movie-v1",
- "physical_context": "A desktop engineering application window: a central 3D viewport showing a brown teddy-bear-like creature standing on a grid floor, with tool panels around the viewport. A short scripted clip of the creature plays.",
+ "physical_context": "A desktop engineering application window: a central 3D viewport showing a small brown creature figure standing on a grid floor, with tool panels around the viewport. A short scripted clip of the creature plays.",
  "claim_under_exam": "A viewer watching this short clip can tell what the creature is doing and what a human would learn from watching it.",
  "questions": [
   "1. Describe what happens in the clip, in order.",
@@ -12,7 +12,41 @@
  "captures": [
   {
    "index": 1,
-   "path": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\product_feel_after.mp4"
+   "path": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\product_feel_after.mp4",
+   "sha256": "e7d85b3de1732e9cecb487ef2a8addfbc9b22ab0e8bf12208333a4df8d4d2275",
+   "metadata": {
+    "kind": "movie",
+    "fps": 10,
+    "duration_s": 4.5,
+    "frames": 45
+   }
+  },
+  {
+   "index": 2,
+   "path": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\frames\\g000.png",
+   "sha256": "39995a61c1cfb919b484e8feb22b4d584f2dc33c6bcc8191c7557590d1e19779",
+   "metadata": {
+    "kind": "still",
+    "phase": "rest (first frame)"
+   }
+  },
+  {
+   "index": 3,
+   "path": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\frames\\g020.png",
+   "sha256": "609692265e45617034ca1c35d345aa2c6a05ccc6e99165be86de56c989eaf400",
+   "metadata": {
+    "kind": "still",
+    "phase": "hold (peak)"
+   }
+  },
+  {
+   "index": 4,
+   "path": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\frames\\g044.png",
+   "sha256": "1973448c074cce47b50502ee5b64fc46ed99f2444f2305b8b8f6f82e2dccd345",
+   "metadata": {
+    "kind": "still",
+    "phase": "returned to rest (last frame)"
+   }
   }
  ],
  "runtime_metadata": {
@@ -21,5 +55,5 @@
   "state": "the creature is the application loaded subject; a short pose clip plays"
  },
  "review_type": "movie",
- "evidence_limits": "one movie artifact (~4.5 s); on-screen application text is part of the product surface and may be read; numbers are observations, not measurements"
+ "evidence_limits": "one movie artifact (~4.5 s, 45 frames) plus three anchor stills (first/peak/last); on-screen application text is part of the product surface and may be read; numbers are observations, not measurements"
 }
