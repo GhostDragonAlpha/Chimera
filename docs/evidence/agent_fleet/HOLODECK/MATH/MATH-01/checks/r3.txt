@@ -1,0 +1,14 @@
+R3 undeclared-conversion negatives (card falsifier clause 2: model must REJECT; prereg N=5/5)
+  [OK] (a) convert 1 m to undeclared unit 'wu'
+        refused as expected: Math01Refusal('undeclared_conversion', "no declared unit 'wu': an undeclared world-unit conversion is refused, never admitted")
+  [OK] (b) convert 1 m to 's' (no such declared unit)
+        refused as expected: Math01Refusal('undeclared_conversion', "no declared unit 's': an undeclared world-unit conversion is refused, never admitted")
+  [OK] (c) declaration 'ft' of time dimension: 1 m -> 'ft'
+        refused as expected: Math01Refusal('conversion_dimension_mismatch', "cannot convert 'm' of Dimension(L=1, M=0, T=0) to 'ft' of Dimension(L=0, M=0, T=1)")
+  [OK] (d) second contradicting declaration of 'ft' (different scale)
+        refused as expected: Math01Refusal('contradictory_conversion', "unit 'ft' already declared as (Dimension(L=1, M=0, T=0), 0.3048); conflicting declaration (Dimension(L=1, M=0, T=0), 0.3)")
+  [OK] (e) MIRROR: after the correct declaration the same conversion succeeds (3 m -> 3 wu)
+
+  CARD FALSIFIER CLAUSE 2 VERDICT: an undeclared world-unit conversion is REFUSED (declaration makes it legal: case (e))
+
+R3 HOLDS 5/5

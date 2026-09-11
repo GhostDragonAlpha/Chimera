@@ -1,0 +1,15 @@
+R4 reversibility of coordinate transforms (card statement; prereg N=5/5, round-trip bound <= 1e-12: 3 chained float64 orthogonal products, Higham gamma_9 ~= 2.0e-15 => ~500x headroom)
+  [OK] (a) pure-rotation round-trip <= 1e-12
+        max abs deviation 0.000e+00
+  [OK] (b) rotation+translation round-trip <= 1e-12
+        max abs deviation 0.000e+00
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-15\docs\evidence\agent_fleet\HOLODECK\MATH\MATH-01\controls\run_controls.py", line 401, in <module>
+    ok = ROWS[row]()
+  File "E:\ChimeraWork\slot-15\docs\evidence\agent_fleet\HOLODECK\MATH\MATH-01\controls\run_controls.py", line 202, in r4
+    chain = m.compose(t_ab, t_bc)
+  File "E:\ChimeraWork\slot-15\docs\evidence\agent_fleet\HOLODECK\MATH\MATH-01\reference\math01_reference_model.py", line 329, in compose
+    raise Math01Refusal(
+        "frame_mismatch",
+        "compose requires inner.target == outer.source")
+math01_reference_model.Math01Refusal: compose requires inner.target == outer.source
