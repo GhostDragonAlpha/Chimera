@@ -1,0 +1,37 @@
+{
+  "task": "window-capture-ownership-01",
+  "owner": "buffy-02",
+  "slot": "2",
+  "generation": 1,
+  "base": "0e878758aa5eb4ad8fbd98648d59a8356e41f4fe",
+  "branch": "astra/tasks/window-capture-ownership-01",
+  "pr_base": "astra/gait-capture",
+  "preregistration": "controller checkpoints rev 379 (statement/prediction/falsifier before code) and rev 384 (test-derived amendment of prediction (b), recorded before submission)",
+  "provisioning": {
+    "mode": "verify",
+    "note": "slot-02 switched from released shutdown-order branch to the task branch at the exact recorded base; prior branch preserved as local ref preserved/engine-shutdown-order-01-a3b12a86; foreign untracked elastic evidence dir retained untouched (evidence-only classification)",
+    "verify": "provision_slot.py verify PASS (branch+head match claim)"
+  },
+  "integrity_notes": [
+    "preemptive stub files tools/agent_fleet/capture_window.py and test_capture_window.py appeared in the operator primary checkout at 15:07 (2 minutes after claim); they are NOT on this branch; GetForegroundWindow is not ownership verification; stubs preserved as evidence in the primary checkout",
+    "this is the fourth session-misuse pattern incident in this fleet (see controller feedback rev 358); no force-push used at any point"
+  ],
+  "executed_tests": [
+    {
+      "command": "python -m pytest test_capture_window.py -v",
+      "cwd": "E:/ChimeraWork/slot-02/tools/agent_fleet",
+      "result": "12 passed",
+      "note": "real Win32 fixture windows (self-created, class prefix ChimeraFixture); covers predictions (a),(c)-(g) and the amended (b); falsifier controls: stale handle refused, size mismatch refused, evidence overwrite refused, verdict vocabulary pinned; AST-verified absence of CreateDC/GetDC(NULL)/GetWindowDC/GetDCEx and presence of the PrintWindow window-specific path"
+    }
+  ],
+  "preregistration_amendment": {
+    "prediction_b_original": "overlap by second owned fixture yields occluded_or_foreign_content",
+    "prediction_b_result": "FALSIFIED AS STATED for the window-specific path: PrintWindow/PW_CLIENTONLY reads the window own surface, so screen occlusion cannot contaminate the record (validated by fixture test with overlap present and capture exactly equal to the expected full matrix). This is the engine-render vs screen-presentation separation the packet asked to establish. The occluded_or_foreign_content verdict remains reachable via CONTENT deviation (captured matrix != expected matrix).",
+    "tests_e_f_note": "decision-table checks; creating true foreign-process/foreign-class windows would require manipulating windows outside my ownership, which the packet forbids; pid-equality and class-prefix positive controls asserted against the real fixture"
+  },
+  "scope_check": "changed files: tools/agent_fleet/capture_window.py (new), tools/agent_fleet/test_capture_window.py (new), docs/THE_WINDOW_CAPTURE_OWNERSHIP.md (new), docs/evidence/agent_fleet/WINDOW_CAPTURE/RUN_RECORD.json (this file)",
+  "remaining_gates": [
+    "lead review of the gen-1 head",
+    "authorized integration into astra/gait-capture"
+  ]
+}
