@@ -1,0 +1,169 @@
+PREREGISTRATION - holodeck-gov-06 (gen 1)
+==========================================
+
+- Agent: subagent-worker-04. Slot 13, worktree E:\ChimeraWork\slot-13,
+  branch astra/tasks/holodeck-gov-06, base
+  62b8e35757c71e31d621c26b32a7c52558905b02 (verified HEAD==base==origin
+  tip, clean, before any work). Dependency holodeck-gov-01 INTEGRATED.
+- Admitted from draft DRAFT-holodeck-gov-06.md (PR #67; catalogue card
+  GOV-06, digest b9d32319..., content_sha256 8b2e6a09def84e669bc806bc4d4813
+  612a8c71bed1eda0a38e5479557a716814). Pattern precedent: holodeck-gov-01
+  (PR #77) - evidence-only realization of the card.
+- SOURCE-ONLY lane: the DEPLOYED contract is studied from the source text
+  at base (tools/agent_fleet/control.py sha256
+  7cee259b35a21ebe689feb5d77c8f2bb10b7125cd1ea9c3ac06e1cb6254bfa30;
+  tools/agent_fleet/review_handoff.py sha256
+  ad3674bd2e1f1a60a3762e44cd26578150b2c475b064af042a40bace30b51811;
+  canonical card source docs/roadmap/holodeck_tasks.json sha256
+  d5c7aa8b9e264e96bb3de6a0f3d48069ee0b88c9f10ae84b52bd8cfce797fcd8;
+  git sha 62b8e35757c71e31d621c26b32a7c52558905b02). The live service at
+  127.0.0.1:8099 is NEVER contacted. DYAD: NOT_APPLICABLE - source-only
+  scope records no executed visible behavior; reason recorded in
+  RESULT.txt per the card's DYAD policy.
+- This commit contains the prereg ONLY. No reference model, no controls,
+  no results.
+
+## CARD MEMBRANE (quoted from the card / task packet)
+
+- CARD STATEMENT: Append-only proposal, contradiction and supersession
+  workflow.
+- CARD PREDICTION: New concepts have parent requirements and explicit
+  integration dependencies.
+- CARD FALSIFIER (named BEFORE the run, for the reference model, the
+  controls, and the source trace): **A speculative idea is promoted
+  directly into a certified production claim.**
+- CARD MATHEMATICS: requirements traceability; Bayesian decision reasoning
+  (out of mechanical scope here - see Limitations in RESULT).
+- CARD THRESHOLD POLICY: derive the fixture-specific bound or ratify the
+  product target BEFORE implementation tests; a catalogue prediction is
+  not a preregistered numeric certificate.
+
+## REFERENCE MODEL CONTRACT (fixed before implementation)
+
+A self-contained stdlib-only module (gov06_reference_model.py, inside this
+evidence scope, importing NOTHING from the repository) implementing the
+INTENDED catalogue-discovery contract - what the card promises, not what
+the deployed interceptor happens to do:
+
+- state: imports ledger (APPEND-ONLY list of {digest, imported_revision,
+  epoch}); current import {digest, payload, imported_revision, epoch,
+  leader}; tasks{id: state, realized_from}; revision counter.
+- catalogue_import(lead, epoch, digest_echo, payload): lead+epoch gate;
+  when an import is current the caller must echo its digest (else refusal
+  stale_catalogue_import); payload validated (cards: id, status, deps;
+  malformed -> invalid_catalogue_payload:*); digest RECOMPUTED from the
+  payload (caller-claimed digest never trusted); same-digest re-import ->
+  duplicate_catalogue_import; ledger APPENDS (history never rewritten).
+- catalogue_next(digest): unknown digest -> unknown_catalogue_digest;
+  frontier = cards where status=='PROPOSED', id neither live nor done,
+  and EVERY depends_on satisfied by an INTEGRATED realization - intended
+  dependency mapping: a card X is satisfied by an INTEGRATED task whose
+  realized_from == X; the fleet's documented realization-id convention is
+  'holodeck-' + card-id lowercase (per the draft's own id derivation), so
+  satisfaction is checked through the mapping, never by raw string luck.
+- supersede/contradict/promote: APPEND-ONLY workflow records. promote()
+  refuses (speculative_not_certifiable) unless a lead-authorized lifecycle
+  trail exists for the card: an INTEGRATED task realized from it. Catalogue
+  operations NEVER create, claim, admit or mutate tasks - a card is
+  planning data and grants no authority (the card falsifier, enforced).
+
+## PREREGISTERED NUMBERS / THRESHOLDS (stated before ANY implementation test)
+
+Verdict rule: each R row must reach its full N/N; any miss = the row's
+falsifier fired and the miss is REPORTED, never patched around. For the
+reference model a fired card falsifier means the model (or the semantics
+reading) is wrong: fix the model and disclose the fired run in RESULT.txt;
+deployed-source findings are never edited.
+
+- R1 import positive controls (model must ACCEPT): N=4/4 -
+  (a) first valid import (no current) accepted, ledger length 1,
+      imported_revision == revision+1;
+  (b) second import, NEW digest, correct echo of current -> accepted,
+      ledger length 2 (append-only growth, entry[0] byte-identical);
+  (c) returned digest == model-recomputed digest, caller's claimed digest
+      field ignored (tamper check: caller digest wrong, payload valid ->
+      stored digest is the recomputed one);
+  (d) returned coverage == payload coverage.
+- R2 import negative controls (model must REJECT): N=4/4, each with the
+  refusal verbatim AND post-state assertion (ledger length, current
+  digest, revision all unchanged) -
+  (a) wrong echo while import current -> stale_catalogue_import;
+  (b) exact same-digest re-import -> duplicate_catalogue_import;
+  (c) malformed payload (bad id / non-PROPOSED status in a fresh import
+      set / dependency cycle) -> invalid_catalogue_payload:*;
+  (d) non-lead actor or missing epoch -> lead-gate refusal.
+- R3 intended frontier on the REAL card graph at base (240 cards read
+  from docs/roadmap/holodeck_tasks.json at 62b8e357; GOV-01 is the unique
+  root; registry states are explicit fixture inputs): N=4/4 EXACT sorted
+  candidate-list equality -
+  (a) S0 no realizations: frontier == ['GOV-01'];
+  (b) S1 holodeck-gov-01 INTEGRATED (the actual registry fact this task
+      inherited): frontier == ['GOV-02','GOV-03','GOV-04','GOV-05',
+      'GOV-06','MATH-01'];
+  (c) S2 + holodeck-gov-02..05 admitted live + holodeck-gov-06 RUNNING
+      (this task): frontier == ['MATH-01'];
+  (d) S3 holodeck-gov-01 ABANDONED instead: GOV-01 re-enters the frontier
+      (retirement, fleet-task-abandon-01 semantics) AND GOV-02..GOV-06,
+      MATH-01 are all blocked (ABANDONED satisfies no dependency).
+- R4 frontier negative controls: N=4/4 -
+  (a) unknown digest -> unknown_catalogue_digest;
+  (b) card with status SUPERSEDED/CONTESTED (append-only workflow states)
+      never offered;
+  (c) diamond: two parents, exactly one INTEGRATED -> child blocked;
+  (d) catalogue_next is a pure read: state (tasks, ledger, revision)
+      byte-identical before/after.
+- R5 promotion gate - the CARD FALSIFIER executed as control: N=4/4 -
+  (a) promote(card) with no realization trail -> speculative_not_certifiable;
+  (b) with a READY/RUNNING realization only (not INTEGRATED) -> refused;
+  (c) catalogue_import/catalogue_next calls leave the task table
+      byte-identical (a catalogue record NEVER becomes a claim/task);
+  (d) supersession record allowed ONLY with an INTEGRATED realization
+      trail, appended to the append-only workflow log.
+- R6 deployed-source trace (SOURCE at 62b8e357, read-only script): N=11/11
+  named semantics each quoted with exact file:line -
+  import lead gate control.py:778; stale echo :780-781; payload
+  validation :782-784; digest recomputation :785; duplicate :786-787;
+  append-only ledger :791; next digest gate :805-806; exact-casefold
+  live/done match :816-822; PROPOSED gate :823; deps-in-done :824-825;
+  planning-data-only note :827-828.
+- R7 measured comparison INTENDED vs DEPLOYED (a second, faithful
+  transcription of control.py:804-828 run on the SAME fixtures; not the
+  model): agreement matrix over S0-S3 plus the negative set. PREDICTED,
+  before running:
+  * S0 AGREE (both offer ['GOV-01']);
+  * S1/S2/S3 DISAGREE in the deployed's favor of nothing - predicted
+    deployed behavior under the fleet's realization-id convention
+    ('holodeck-' prefix + case): the exact-casefold live/done match
+    (:816-822) never binds card GOV-0X to task holodeck-gov-0X, and the
+    deps-in-done check (:824-825) never sees card-family deps satisfied,
+    so the deployed frontier is predicted to offer ['GOV-01'] in EVERY
+    scenario (realized root perpetually re-proposed; all dependents
+    permanently blocked). These disagreements are the MEASURED FINDINGS
+    of this card lane, recorded with the exact sets - never reconciled
+    into the model silently.
+- R8 known-regression delta (owner_instance, feedback c4212657): measured
+  occurrence counts at this base - predicted review_handoff.py == 0 and
+  control.py == 4 (claim bind :554, _task check :121-123, yield guard
+  :497-501; setdefault :323). Fix PR #80 is in independent review and NOT
+  in this base; if the counts measure differently, that is reported as a
+  surprise finding. The model implements the INTENDED binding (F2) and
+  the deviation is recorded as a finding.
+
+## METHOD
+
+1. Prereg commit (this file) precedes all implementation and tests.
+2. Write the reference model (stdlib-only, no repo imports) and the
+   faithful deployed-transcription comparison; controls/run_controls.py
+   executes R1-R5 and R7 in one process, writing checks/r1..r7 .txt files
+   (each refusal and each assertion verbatim); r6/r8 measured by a
+   read-only source script writing checks/r6_source_trace.txt and
+   checks/r8_owner_instance_delta.txt.
+3. RESULT.txt: scoreboard (all R rows N/N), reproduction commands, source
+   identity, the two measured findings (R7 discovery-plane id-convention
+   divergence; R8 owner_instance regression), limitations, DYAD
+   NOT_APPLICABLE record, integration contract + handoff.
+4. Commit chain on astra/tasks/holodeck-gov-06 (trailer
+   Agent: subagent-worker-04), push no-force, PR into astra/gait-capture,
+   submit_review with exact HEAD.
+
+Agent: subagent-worker-04
