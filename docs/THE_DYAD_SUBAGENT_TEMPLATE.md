@@ -23,7 +23,7 @@ each lane's content-level acceptance is separately earned.
      "physical_context": "<what the image physically shows, camera, presentation>",
      "claim_under_exam": "<neutral statement of the claim being examined>",
      "questions": ["<numbered-neutral-question-1>", "..."],
-     "captures": [{"index": 1, "path": "<absolute path to image>"}],
+     "captures": [{"index": 1, "path": "<absolute path to image>", "sha256": "<optional declared sha256; verified fail-closed when present>"}],
      "runtime_metadata": {"camera": "...", "state": "..."},
      "review_type": "still",
      "evidence_limits": "<single still; numbers are observations, not measurements>"
@@ -32,8 +32,10 @@ each lane's content-level acceptance is separately earned.
    `still` = exactly ONE capture (the one-image law). `ordered_frames` = 2+
    captures the reviewer reads in order (declared temporal capability);
    `movie` additionally requires `runtime_metadata.movie_artifact`.
-2. **Plan** (validates the request, verifies every capture sha256, retains
-   the exact prompt):
+2. **Plan** (validates the request, records each capture's sha256 and — when
+   the spec declares one — VERIFIES the file against that declaration,
+   failing closed `capture_hash_mismatch` on any tamper; retains the exact
+   prompt):
    ```bash
    python tools/dyad_subagent_template.py plan --spec <spec.json> \
        --evidence-root docs/evidence/agent_fleet/DYAD_SUBAGENT_TEMPLATE

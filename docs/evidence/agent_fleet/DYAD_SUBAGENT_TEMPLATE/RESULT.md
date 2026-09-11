@@ -40,3 +40,28 @@ HUMAN feedback `d015187c`.
 Spawn-to-report ~46 s for the single-still review, versus minutes-per-call
 for the local 27B eye — consistent with the operator's expectation; not
 claimed as a benchmark.
+
+## Correction (2026-09-11, generation 2 — review finding landed on-branch)
+
+Independent review of head `01080c5f` (APPROVE_WITH_FOLLOWUPS) found the
+driver's hash verification tautological: a spec-declared capture sha256 was
+ignored (always recomputed), so `capture_hash_mismatch` was unreachable and
+the template doc's "verifies every capture sha256" overstated — the hash was
+computed and recorded, not verified against an independent declaration. The
+reviewer proved it empirically with a mutated PNG.
+
+Fixes at generation 2 (worktree preserved by review_requeue; prior review
+void per contract):
+1. `_build_request` honors a declared sha256 (`declared or computed`), making
+   `verify_captures` a real check. Retained falsifier proof:
+   `tamper_falsifier_20260911.txt` — mutated copy + declared original hash →
+   `capture_hash_mismatch`, exit 2; unmodified original still passes (plan
+   replay byte-identical).
+2. Parser continuation fix (LOW finding): continuation lines after an inline
+   header are now APPENDED to that section (never silently dropped);
+   appended prose on CONCLUSION/FINISH fails strict validation — fail-closed.
+3. Doc/spec wording corrected (declared sha256 optional, verified when
+   present).
+
+Regression: `plan` and `assemble` replay of the original live run are
+byte-identical to the retained evidence; `tools/test_dyad_provider.py` 14/14.

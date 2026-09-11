@@ -45,16 +45,20 @@ def _load_spec(path: str) -> dict:
 
 
 def _build_request(spec: dict) -> DyadReviewRequest:
-    captures = tuple(
-        Capture(index=int(c['index']), path=str(c['path']),
-                sha256=hashlib.sha256(Path(c['path']).read_bytes()).hexdigest(),
-                metadata=c.get('metadata', {}))
-        for c in spec['captures'])
+    captures = []
+    for c in spec['captures']:
+        computed = hashlib.sha256(Path(c['path']).read_bytes()).hexdigest()
+        declared = str(c.get('sha256') or '').strip().lower() or None
+        # A declared hash makes verify_captures a REAL check (tamper fails
+        # closed); without one the computed hash is recorded, not "verified".
+        captures.append(Capture(index=int(c['index']), path=str(c['path']),
+                                sha256=declared or computed,
+                                metadata=c.get('metadata', {})))
     return DyadReviewRequest(
         task=spec['task'], attempt=spec['attempt'],
         physical_context=spec['physical_context'],
         claim_under_exam=spec['claim_under_exam'],
-        questions=tuple(spec['questions']), captures=captures,
+        questions=tuple(spec['questions']), captures=tuple(captures),
         runtime_metadata=spec.get('runtime_metadata', {}),
         review_type=spec['review_type'],
         evidence_limits=spec['evidence_limits'])
@@ -90,6 +94,19 @@ def cmd_plan(args):
     }, indent=1))
 
 
+def _flush(sections, inline, current, buf):
+    """Close a section: continuation lines after an inline header are
+    APPENDED to that section's value (never silently dropped). Appended prose
+    on single-value sections (CONCLUSION/FINISH) fails their strict
+    validation — fail-closed, which is the correct outcome."""
+    text = '\n'.join(buf).strip()
+    if inline.get(current):
+        if text:
+            inline[current] = inline[current] + '\n' + text
+    else:
+        sections[current] = text
+
+
 _SECTION = re.compile(r'^(RAW_RESPONSE|OBSERVATIONS|UNCERTAINTY|CONCLUSION|FINISH):[ \t]*(.*)$')
 
 
@@ -102,16 +119,16 @@ def _parse_report(text: str):
     for line in block.splitlines():
         m = _SECTION.match(line.strip())
         if m:
-            if current is not None and not inline.get(current):
-                sections[current] = '\n'.join(buf).strip()
+            if current is not None:
+                _flush(sections, inline, current, buf)
             current, buf = m.group(1), []
             rest = m.group(2).strip()
             if rest:
                 inline[current] = rest
         else:
             buf.append(line)
-    if current is not None and not inline.get(current):
-        sections[current] = '\n'.join(buf).strip()
+    if current is not None:
+        _flush(sections, inline, current, buf)
     sections.update(inline)
     missing = [k for k in ('RAW_RESPONSE', 'OBSERVATIONS', 'UNCERTAINTY',
                            'CONCLUSION', 'FINISH') if not sections.get(k)]
