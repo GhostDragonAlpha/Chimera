@@ -1,0 +1,269 @@
+retained-evidence-integrity-sweep-01 preregistration
+task: retained-evidence-integrity-sweep-01 generation 1, slot 8, worktree
+E:\ChimeraWork\slot-08, base 4c31999797a9383ea252019be1f32511709fa280,
+branch astra/tasks/retained-evidence-integrity-sweep-01, pr_base
+astra/gait-capture. Auditory lane: deterministic AUDIT, zero edits outside
+docs/evidence/agent_fleet/EVIDENCE_INTEGRITY_SWEEP.
+
+TASK PACKET (verbatim from the controller)
+  STATEMENT: every sha256 recorded in evidence sidecars and MEASUREMENT
+  files that references a file still present in the tree recomputes
+  identically; mismatches and missing-file references are enumerated
+  (findings, not edits).
+  PREDICTION: a deterministic sweep script (tested against a fixture with
+  known-good/known-bad/known-missing hashes) reports three counts; the raw
+  table is retained; zero docs are modified.
+  FALSIFIER: the sweep edits anything; hash classes silently skipped;
+  findings not retained verbatim.
+
+P1. SCOPE AND ONLY-EDITS RULE
+- Everything this task writes lives under
+  docs/evidence/agent_fleet/EVIDENCE_INTEGRITY_SWEEP/ (script, fixture,
+  raw outputs, findings; evidence artifacts *.txt per packet).
+- The sweep is read-only over the rest of the tree: it opens referenced
+  target files for reading only and writes nothing outside its own scope
+  dir. Proof recorded post-run: `git status --porcelain` before/after the
+  sweep run, retained verbatim in the findings artifact.
+- Self-exclusion (declared BEFORE the run): the sweep does not enumerate
+  docs/evidence/agent_fleet/EVIDENCE_INTEGRITY_SWEEP itself as a source,
+  because this task's own fixture (P5) intentionally contains a wrong
+  hash, and the raw table/findings would otherwise recursively reference
+  themselves. The exclusion is printed in every run header.
+
+P2. STATEMENT OF THE SWEEP
+- Extraction sources: every file under docs/evidence/ (self-exclusion
+  above applied) whose extension is in the text whitelist
+  {json, txt, md, log, py, sha256, jsonl, html, diff, patch, source,
+  ps1, csv, yml, yaml}. Every extension found under docs/evidence/ that
+  is NOT whitelisted is counted in a coverage table in the findings
+  (never silently dropped; this is the anti-"hash classes silently
+  skipped" guard at the source level).
+- A reference is a (recorded_sha256, file_path) association found by the
+  extractor classes in P3. Only sha256-class hashes are recomputed:
+  exactly 64 hex digits ([0-9a-fA-F]{64} with non-hex boundaries).
+  Shorter/other digests (e.g. 40-hex git sha1, 8-hex truncated prose
+  digests) are out of scope by definition and appear only in the
+  coverage counts of encountered hex-token lengths, so no hash class is
+  silently skipped.
+- Three headline counts (the packet's "three counts"):
+    matched      = reference path exists and recomputed sha256 equals
+                   the recorded hash (case-insensitive)
+    mismatched   = reference path exists and recomputed sha256 differs
+    missing_file = reference path recorded but no candidate resolution
+                   exists on disk
+  Auxiliary counts, reported alongside and never merged into the three:
+    out_of_tree  = resolved absolute path outside this repo root
+                   (e.g. E:\ChimeraWork\slot-03\... written by another
+                   slot; recomputing there is not tree integrity)
+    unassociated = 64-hex token with no file path the extractor may
+                   defensibly bind (e.g. runtime state ids, stdout
+                   digests, data-array digests with no path). Enumerated
+                   one line per instance in the raw table.
+    unresolvable = path association found but truncated by the original
+                   capture tool (e.g. Get-FileHash Format-Table
+                   ellipsis "...") so no deterministic candidate exists.
+
+P3. EXTRACTION CLASSES (fixed, deterministic)
+  C1 sha256sum_line : text line "<hex64> [marker]<path>" (sha256sum/cksum
+     convention); path resolved relative to the sidecar's directory,
+     then the repo root.
+  C2 line_path_token: same line contains the hex64 and exactly one other
+     path-like token (contains '/' or '\' or a dot-extension; not a URL
+     scheme, not itself hex) -- covers Get-FileHash tables and inline
+     "SHA256 <hash> <path>" rows. Resolution as C1; absolute paths
+     classified per P2.
+  C3 json_key_path  : parsed JSON object whose KEY is a path-like string
+     and whose VALUE is exactly 64 hex digits (source manifests).
+  C4 json_sibling   : parsed JSON object with a 64-hex value under key K;
+     sibling binding searched in priority order: exact keys
+     path/file/filename/filepath/location/artifact; then K with a
+     '_sha256'/'sha256' suffix stripped plus _path/_file/_filename; then
+     any sibling key ending _path/_file/_filename (sorted, first wins).
+  C5 named_sidecar  : file named "X.sha256" whose whole content is one
+     bare hex64 -- binds to sibling "X" in the same directory (the
+     convention the artifact itself is named by).
+  C6 labeled_nearby : hex64 on a line carrying a sha256-ish label but no
+     same-line path; searches at most the 3 previous and 2 following
+     non-empty lines for "file|path|filename : <path-like token>".
+     Conservative: bare unlabeled path tokens in prose are never bound.
+  Anything not bound by C1-C6 is `unassociated`. First class that binds
+  wins (deterministic); the raw table records which class bound.
+
+P4. RESOLUTION AND RECOMPUTATION RULES
+- Path normalization: backslashes to slashes; strip surrounding quotes,
+  angle brackets, and trailing punctuation.
+- Absolute paths inside this repo root resolve to their repo-relative
+  form; absolute paths outside -> out_of_tree.
+- Relative candidates tried in fixed order: <sidecar_dir>/<path>, then
+  <repo_root>/<path>. Neither exists -> missing_file.
+- Recomputation: hashlib.sha256 over the target file's raw bytes. The
+  single recorded normalization variant ("sha256_crlf_normalized_to_lf")
+  is recomputed with b"\r\n" -> b"\n" applied first; no other transform
+  is guessed at. Comparison case-insensitive.
+
+P5. FIXTURE (the falsifier's teeth), BUILT BEFORE THE SWEEP, INSIDE THE
+    SCOPE DIR, EXCLUDED FROM THE SWEEP ITSELF
+- fixture/payload_good.txt, payload_bad.txt: real files with computed
+  hashes.
+- Sidecars exercising every class with known outcomes:
+    fixture/sumlist.sha256        (C1): one line good, one line bad
+                                  (deliberately altered digit), one line
+                                  pointing at fixture/absent.bin
+                                  (missing)
+    fixture/inline_table.txt      (C2): one good inline row
+    fixture/json_manifest.json    (C3+C4): one good path-keyed, one bad
+                                  sibling-paired, one missing-file
+                                  sibling pair
+    fixture/named_good.txt.sha256 (C5): bare hash, sibling exists
+    fixture/named_ghost.txt.sha256(C5): bare hash, sibling absent
+    fixture/nearby.md             (C6): labeled hash + path on a
+                                  neighboring line
+- PASS CRITERIA (declared now, checked mechanically): the fixture run
+  must report exactly matched=7, mismatched=2, missing_file=3,
+  out_of_tree=0, unassociated=0, unresolvable=0 and zero other classes;
+  the script must exit nonzero if fixture self-check fails, and the
+  sweep refuses to run until the fixture test passes. Fixture run
+  stdout is retained verbatim as FIXTURE_TEST.txt.
+
+P6. DETERMINISM AND RUN PROTOCOL
+- Enumeration order: sorted full paths; JSON keys iterated in document
+  order via object_pairs_hook; per-line scanning left to right.
+- The sweep is run twice; the two raw tables must be byte-identical and
+  their sha256 recorded in the findings (determinism proof).
+- Raw per-reference table retained verbatim: SWEEP_RAW_TABLE.txt (one
+  line per hash instance: class, source file:line, status, recorded
+  hash, resolved target, and on mismatch the recomputed hash).
+- Findings: FINDINGS.txt -- the three counts, auxiliary counts, full
+  mismatch enumeration, full missing-file enumeration (verbatim rows
+  from the raw table), coverage table of non-whitelisted extensions and
+  encountered hex-token lengths, the before/after git status proof, and
+  the raw-table digest.
+- No doc outside the scope dir is modified by this task; mismatches are
+  reported, never "fixed".
+
+P7. PREDICTIONS (testable now)
+  a. The fixture test passes with exactly the counts in P5.
+  b. The sweep runs to completion over the whole retained evidence tree
+     and reports three finite counts; its two runs are byte-identical.
+  c. git status after the sweep shows zero modifications outside
+     docs/evidence/agent_fleet/EVIDENCE_INTEGRITY_SWEEP.
+  Falsification of any of a-c falsifies the prediction. Whether any
+  real mismatch exists in the retained tree is an OPEN EMPIRICAL
+  QUESTION this task measures and reports either way -- a clean sweep
+  and a dirty sweep both satisfy the packet; a sweep that cannot say
+  which references failed does not.
+
+Trailer: Agent: subagent-worker-12
+
+============================================================
+AMENDMENT A1 (2026-09-11, committed BEFORE the sweep re-run; contains no
+measured counts)
+============================================================
+During script bring-up, inspecting extraction behavior on the retained
+tree revealed two token-wrapping conventions the P3/P4 rules did not
+cover, each causing a recorded reference to fail resolution purely
+because of wrapper characters (never because of content):
+
+  A1-a  markdown backtick-wrapped tokens, e.g. a line of the form
+        "- `path`: `<hex64>`," -- the path token arrives wrapped in
+        backticks and followed by a colon. The original single-pass
+        strip could leave the closing backtick after the colon was
+        stripped (strip order artifact), mis-resolving the reference.
+  A1-b  sha256sum binary-mode markers, e.g. manifest lines of the form
+        "<hex64> *path" -- the leading '*' is the sha256sum binary-mode
+        convention, not part of the path.
+
+AMENDED RULES (supersede the corresponding parts of P4 only):
+- norm_path strips the character set {quote, apostrophe, backtick,
+  asterisk, angle/curly/square brackets, trailing punctuation} to a
+  FIXPOINT (repeat until stable), so wrappers compose correctly. No
+  other resolution or recompute rule changes.
+- Fixture extended with fixture/backtick_table.md exercising A1-a with
+  two rows (one known-good with trailing backtick+comma, one known-bad
+  wrapped in backticks). P5 pass criteria are AMENDED to:
+  matched=8, mismatched=3, missing_file=3, out_of_tree=0,
+  unresolvable=0, unassociated=0, zero other classes.
+- The self-test must PASS under the amended counts before the sweep
+  runs; the sweep is then re-run from scratch (twice, byte-identical,
+  per P6). No measured counts were known or recorded when this
+  amendment was written; the artifacts of the first (pre-amendment)
+  bring-up run are discarded and not used as findings.
+
+Trailer: Agent: subagent-worker-12
+
+============================================================
+AMENDMENT A2 (2026-09-11, generation 2; committed BEFORE the gen-2
+re-measurement. Inputs are the independent review's findings, cited as
+received; this amendment carries no new measured counts of its own.)
+============================================================
+Independent review agent_9ba36bc6 (APPROVE_WITH_FOLLOWUPS, 2 HIGH)
+requeued this task at generation 2 with findings F1-F5:
+
+  F1  the gen-1 retained table is not reproducible from the commit it
+      certifies: slot-08 runs core.autocrlf=true, so gen-1 hashed the
+      CRLF-smudged working-tree bytes while most recorded hashes are
+      LF blob hashes; 181 unique-key verdict flips; the review's
+      canonical blob-exact counts are matched=302, mismatched=298,
+      missing_file=1616 (auxiliary 59/11/10436 unchanged).
+  F2  the gen-1 FINDINGS hand-verification is false for 4/5 rows
+      (circular: verified against the same CRLF disk bytes; e.g.
+      AGENT_BOOTSTRAP_READINESS.md's manifest and file changed in the
+      SAME commit 077e0ae1 -- no drift possible).
+  F3  the 'earlier source_bases' mechanism is overstated: spot-checked
+      stable-mismatch recorded hashes match NO committed version ever
+      -- they hashed uncommitted working states.
+  F4  the fixture teeth are checkout-dependent: 8/3/3 holds only when
+      disk bytes equal blob bytes; a fresh autocrlf=true checkout
+      smudges the fixture payloads CRLF and a disk-hashing selftest
+      would fail 0/11/3.
+  F5  46 gen-1 MATCH rows are CRLF-hashes (canonical MISMATCH).
+  F6  (commendation) process discipline retained; this is a byte-source
+      bug, not a process failure.
+
+CONFIRMED PRE-MEASUREMENT (git plumbing, not the sweep): for
+docs/AGENT_BOOTSTRAP_READINESS.md the recorded 40dac38b... equals
+`git cat-file blob HEAD:` exactly, and the disk copy is CRLF (F1/F2
+mechanism verified). Of the five gen-1 hand-verified rows, four recorded
+hashes equal the HEAD blob (canonically MATCH); the fifth
+(ChimeraEngine/engine_state.py, recorded 1dffea21...) matches none of
+the five commits touching that path -- it hashed an uncommitted working
+state (F3 pattern verified for the reviewer's example class).
+
+A2-a  P4 BYTE-SOURCE REDEFINITION (supersedes P4's recomputation rule):
+      the canonical byte source for recomputation is the GIT BLOB at
+      the certified revision: `git cat-file blob <cert_rev>:<path>`,
+      where cert_rev is the worktree HEAD at sweep time, pinned in the
+      run header of the raw table. On-disk bytes are used ONLY for
+      paths not tracked at cert_rev (untracked), and every such row is
+      noted method=disk-untracked (non-canonical, counted in coverage).
+      Presence (the MISSING class) remains a disk check: "still present
+      in the tree" = present in the worktree; content truth = the
+      certified blob. The crlf-normalization variant of P4 remains
+      defined over the same canonical bytes.
+A2-b  MODE GUARD: the on-disk byte source (--byte-source disk) REFUSES
+      to run when core.autocrlf is not exactly false, because a smudged
+      checkout makes disk hashing checkout-dependent (the gen-1 bug).
+      Blob mode (the declared default) runs under any autocrlf value
+      and is checkout-independent by construction.
+A2-c  FIXTURE TEETH under A2: the selftest runs under the selected
+      byte source with the same mode guard; in blob mode (canonical) it
+      additionally asserts the fixture payload blobs contain no CR
+      bytes, so the fixture cannot silently depend on normalization
+      itself. The selftest PASS criteria remain exactly the amendment
+      -A1 counts: matched=8, mismatched=3, missing_file=3, others 0.
+A2-d  GEN-2 ARTIFACTS (gen-1 artifacts are RETAINED UNTOUCHED, not
+      deleted; gen-2 supersedes alongside): SWEEP_RAW_TABLE_GEN2.txt,
+      SWEEP_STDOUT_GEN2.txt, FIXTURE_TEST_GEN2.txt, FINDINGS_GEN2.txt,
+      make_findings_gen2.py. FINDINGS_GEN2.txt must (i) explicitly
+      RETRACT the four false gen-1 hand-verifications with the
+      blob-exact hashes, (ii) state the corrected mechanism (recorded
+      hashes of stable mismatches came from uncommitted working states,
+      not older commits -- each retracted/corrected row backed by a
+      commit-walk of the path's blob history), and (iii) report the
+      gen-2 counts. The review's 302/298/1616 is the expected outcome;
+      if the re-measurement differs, the difference is retained and
+      explained, not reconciled by force.
+A2-e  The gen-1 raw table and findings remain in history as the record
+      of the disk-byte measurement; they are superseded, not deleted.
+
+Trailer: Agent: subagent-worker-12
