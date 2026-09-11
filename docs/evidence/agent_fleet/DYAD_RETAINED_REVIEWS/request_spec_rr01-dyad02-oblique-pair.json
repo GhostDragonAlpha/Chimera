@@ -1,0 +1,35 @@
+{
+ "attempt": "rr01-dyad02-oblique-pair",
+ "captures": [
+  {
+   "index": 1,
+   "path": "E:/ChimeraWork/slot-05/docs/evidence/membrane_window_demo/20260908T192702.077867Z/raised_gamma0_oblique.png",
+   "sha256": "f7a6e595cd74231661cbe7058ea0cf800e45398fba991e340c57dd2a16875702"
+  },
+  {
+   "index": 2,
+   "path": "E:/ChimeraWork/slot-05/docs/evidence/membrane_window_demo/20260908T192708.250952Z/relaxed_gamma1_oblique.png",
+   "sha256": "39b861a83ea7c0c7c8ef7500491c821a675de9951ace0bbd77e81d1152e30fa9"
+  }
+ ],
+ "claim_under_exam": "Whether the two recorded states are visually distinguishable in this oblique pair, and what structure a fresh vision reviewer can resolve from the pair alone.",
+ "evidence_limits": "ordered pair of two stills; the listed order is the only temporal fact; numbers you mention are observations, not measurements",
+ "physical_context": "Two full window frames of the same triangulated membrane object (hexagonal fan: 6 triangles, 7 vertices), same recorded camera (phi 0.55 rad, radius 3.0), fill+wireframe rendering, rigid +0.5 m presentation lift above the engine floor plane; captured from separately launched demo engine instances of the same uploaded mesh. The two recorded states differ only in the centre vertex height along the vertical rail (sidecars: 0.125 m vs approximately 0 m).",
+ "questions": [
+  "Describe what frame 1 shows: shapes, lines, colors, and anything else visible.",
+  "Describe what frame 2 shows: shapes, lines, colors, and anything else visible.",
+  "Describe the differences between frame 1 and frame 2, and what appears identical between them.",
+  "In each frame, where does the point where the interior lines converge sit relative to the outer boundary? Describe each frame separately and state your uncertainty explicitly.",
+  "What features of these frames prevent you from determining exact positions, heights, or distances?",
+  "What single aspect of these frames is visually most confusing or least legible, and why?"
+ ],
+ "review_type": "ordered_frames",
+ "runtime_metadata": {
+  "camera": "oblique phi 0.55 / radius 3.0 (both sidecars), theta 0.0",
+  "frame_1_state": "sidecar: gamma=0 J/m^2, iteration 0, energy 0.0 J, centre height 0.125 m",
+  "frame_2_state": "sidecar: gamma=1 J/m^2, relaxed state, centre height approximately 0 m",
+  "presentation": "fill+wireframe, +0.5 m rigid presentation lift",
+  "source": "GLM-DYAD-02 oblique pair retained evidence docs/evidence/membrane_window_demo/20260908T192702.077867Z + 20260908T192708.250952Z"
+ },
+ "task": "dyad-retained-reviews-01"
+}
