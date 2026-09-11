@@ -54,20 +54,29 @@ class WorkerQueue:
             except Exception as exc:  # only named controller contention is recoverable
                 if not self._claim_contention(exc):
                     raise
-                refusals.append(f"{task['id']}:{type(exc).__name__}")
+                refusals.append(f"{task['id']}:{self._refusal_code(exc)}")
         return {"task": None, "refusals": refusals} if ready else None
 
     @staticmethod
-    def _claim_contention(exc: Exception) -> bool:
-        """Classify only expected claim races; never mask auth or transport errors."""
+    def _refusal_code(exc: Exception) -> str:
+        """Machine-readable refusal reason (JSON body when present, else the text)."""
         message = str(exc)
         try:
             code = json.loads(message).get("error")
         except (ValueError, TypeError, AttributeError):
             code = message
-        return code in {
+        return code if isinstance(code, str) else type(exc).__name__
+
+    @staticmethod
+    def _claim_contention(exc: Exception) -> bool:
+        """Classify only expected claim races; never mask auth or transport errors."""
+        return WorkerQueue._refusal_code(exc) in {
             "task_not_ready", "no_free_slot", "write_scope_conflict",
             "dependencies_not_integrated", "capability_missing", "agent_capacity_reached",
+            # A stale-provisioned free slot needs supervisor slot_rebind; skip
+            # and retry later rather than crashing the worker loop. Observable
+            # through claim_once's refusals list (run_forever does not alert).
+            "stale_provision_requires_recovery",
         }
 
     def run_forever(self, *, poll_seconds: float = 5.0, max_cycles: int | None = None,
