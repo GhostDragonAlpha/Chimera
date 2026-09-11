@@ -79,6 +79,18 @@ gdi32.StretchDIBits.argtypes = [wintypes.HDC, ctypes.c_int, ctypes.c_int,
                                 ctypes.c_int, ctypes.c_int, ctypes.c_int,
                                 ctypes.c_void_p, ctypes.c_void_p,
                                 wintypes.UINT, wintypes.DWORD]
+# FRESH-SYSTEM FIX (window-capture-ownership-02): CreateCompatibleDC and
+# CreateDIBSection had no declared argtypes in the inherited module, so a
+# window DC whose handle value exceeds 2^31 - 1 (GDI hands out such values
+# on this system) crashed with OverflowError instead of producing a named
+# fail-closed verdict. Declared handle prototypes keep every refusal NAMED.
+gdi32.CreateCompatibleDC.argtypes = [wintypes.HDC]
+gdi32.CreateDIBSection.argtypes = [wintypes.HDC,
+                                   ctypes.c_void_p,
+                                   wintypes.UINT,
+                                   ctypes.POINTER(ctypes.c_void_p),
+                                   wintypes.HANDLE,
+                                   wintypes.DWORD]
 
 CLASS_PREFIX = 'ChimeraFixture'
 DEFAULT_WIDTH = 320
@@ -251,6 +263,36 @@ def default_pattern(width, height):
              for x in range(width)] for y in range(height)]
 
 
+def solid_pattern(color):
+    """Paint-function factory: a deterministic SOLID fill of exactly `color`.
+
+    Every pixel of every row is the same [r, g, b] triple, derived from the
+    color alone (no time, no OS state). Gives fixture cases DISTINCT known
+    pixel content so a cross-window content mismatch is detectable by full
+    matrix equality rather than assumption.
+    """
+    r, g, b = (int(c) % 256 for c in color)
+
+    def paint(width, height):
+        return [[[r, g, b] for _ in range(width)] for _ in range(height)]
+
+    return paint
+
+
+def window_rect(hwnd):
+    """Outer window rect (left, top, right, bottom) incl. nonclient, or None.
+
+    Used to demonstrate the nonclient chrome (caption, borders, DWM shadow /
+    rounded-corner region) is strictly larger than the pinned client rect on
+    the running system - the captured matrix is sized to the client rect and
+    uses PW_CLIENTONLY, so chrome pixels cannot enter a record.
+    """
+    rect = wintypes.RECT()
+    if not user32.GetWindowRect(hwnd, ctypes.byref(rect)):
+        return None
+    return (rect.left, rect.top, rect.right, rect.bottom)
+
+
 def pattern_sha256(pattern):
     h = hashlib.sha256()
     for row in pattern:
@@ -325,26 +367,34 @@ def matrices_equal(a, b):
 
 # ---- the contract ------------------------------------------------------------
 
-def verify_owned_capture(window, expected_pattern=None):
-    """Full contract check on a FixtureWindow. Fail-closed, named verdicts.
+def verify_hwnd_capture(hwnd, expected_pattern, pinned_size=None, title=None):
+    """Full contract check at the HWND level. Fail-closed, named verdicts.
 
-    Returns a record; only verdict 'unobscured' with publishable=True may be
-    published as engine evidence. No desktop or screen pixels ever enter the
-    record.
+    Same decision order and verdict vocabulary as the contract has always
+    had: destroyed -> foreign_process -> foreign_window_class ->
+    not_visible -> resized -> capture -> content. Taking ANY hwnd is what
+    lets a REAL foreign-process fixture (a child process of this test's own
+    interpreter, never a third-party window) be refused on pid before any
+    pixel is trusted. `expected_pattern` is required: content is always
+    verified against a known deterministic matrix. Only verdict
+    'unobscured' with publishable=True may be published as engine evidence;
+    no desktop or screen pixels ever enter the record.
     """
-    record = {'contract': 'WINDOW_CAPTURE_OWNERSHIP_V1', 'title': window.title}
+    record = {'contract': 'WINDOW_CAPTURE_OWNERSHIP_V1'}
+    if title is not None:
+        record['title'] = title
     pid = wintypes.DWORD()
-    user32.GetWindowThreadProcessId(window.hwnd, ctypes.byref(pid))
+    user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
     my_pid = kernel32.GetCurrentProcessId()
     record['pid'] = pid.value
     record['owns_process'] = pid.value == my_pid
 
     cls_buf = ctypes.create_unicode_buffer(256)
-    user32.GetClassNameW(window.hwnd, cls_buf, 256)
+    user32.GetClassNameW(hwnd, cls_buf, 256)
     record['window_class'] = cls_buf.value
     record['class_owned'] = cls_buf.value.startswith(CLASS_PREFIX)
-    record['is_window'] = bool(user32.IsWindow(window.hwnd))
-    style = user32.GetWindowLongW(window.hwnd, GWL_STYLE)
+    record['is_window'] = bool(user32.IsWindow(hwnd))
+    style = user32.GetWindowLongW(hwnd, GWL_STYLE)
     record['visible'] = bool(style & WS_VISIBLE)
 
     if not record['is_window']:
@@ -364,35 +414,48 @@ def verify_owned_capture(window, expected_pattern=None):
         record['publishable'] = False
         return record
 
-    width, height = window.width, window.height
-    rect = window.client_rect()
-    if rect is None:
+    rect = wintypes.RECT()
+    if not user32.GetClientRect(hwnd, ctypes.byref(rect)):
         record['verdict'] = 'stale_or_invalid_handle'
         record['publishable'] = False
         return record
-    if (rect[2], rect[3]) != (width, height):
+    measured = (rect.right - rect.left, rect.bottom - rect.top)
+    record['client_size'] = list(measured)
+    if pinned_size is None:
+        pinned_size = measured
+    record['pinned_size'] = list(pinned_size)
+    if measured != tuple(pinned_size):
         record['verdict'] = 'window_resized'
         record['publishable'] = False
-        record['client_size'] = list(rect[2:4])
-        record['pinned_size'] = [width, height]
         return record
 
-    want = expected_pattern if expected_pattern is not None \
-        else window.expected_pattern()
-    rows, reason = capture_client_pixels(window.hwnd, width, height)
+    rows, reason = capture_client_pixels(hwnd, pinned_size[0], pinned_size[1])
     if rows is None:
         record['verdict'] = 'capture_refused:' + (reason or 'unknown')
         record['publishable'] = False
         return record
     record['capture_sha256'] = pattern_sha256(rows)
-    record['expected_sha256'] = pattern_sha256(want)
-    if not matrices_equal(rows, want):
+    record['expected_sha256'] = pattern_sha256(expected_pattern)
+    if not matrices_equal(rows, expected_pattern):
         record['verdict'] = 'occluded_or_foreign_content'
         record['publishable'] = False
         return record
     record['verdict'] = 'unobscured'
     record['publishable'] = True
     return record
+
+
+def verify_owned_capture(window, expected_pattern=None):
+    """Full contract check on a FixtureWindow (delegates to the hwnd level).
+
+    Returns a record; only verdict 'unobscured' with publishable=True may be
+    published as engine evidence.
+    """
+    want = expected_pattern if expected_pattern is not None \
+        else window.expected_pattern()
+    return verify_hwnd_capture(window.hwnd, want,
+                               pinned_size=(window.width, window.height),
+                               title=window.title)
 
 
 def verdict_verdicts():

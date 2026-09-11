@@ -1,19 +1,33 @@
-"""test_capture_window.py -- window-capture-ownership-01 contract tests.
+"""test_capture_window.py -- window-capture-ownership-01/02 contract tests.
 
 Isolated by construction: every window used here is SELF-CREATED via
-FixtureWindow (class prefix ChimeraFixture). No foreign window is moved,
-closed, or captured; no desktop screenshots are taken; no GPU/DYAD/engine
-resources are touched (CPU/GDI only).
+FixtureWindow (class prefix ChimeraFixture) or by a CHILD PROCESS of this
+test's own Python interpreter (never a third-party window). No foreign
+window is moved, closed, or captured; no desktop screenshots are taken;
+no GPU/DYAD/engine resources are touched (CPU/GDI only).
 
-Mirrors the preregistered predictions (a)-(g) and the falsifiers:
+Inherited predictions (a)-(g), re-verified fresh by -02:
   (a) unobscured owned capture -> verdict unobscured, exact full matrix
-  (b) overlap by second owned fixture -> occluded_or_foreign_content
+  (b) overlap by second owned fixture -> the window-specific PrintWindow
+      path reads the window's OWN surface (recorded amendment), any content
+      deviation still fails closed as occluded_or_foreign_content
   (c) resized client area -> window_resized
   (d) destroyed window -> window_destroyed
   (e) wrong pid -> foreign_process
   (f) foreign-class window -> foreign_window_class (read-only inspection)
   (g) no screen/desktop DC construction anywhere in the module source; a
       stale handle after destroy is refused, never fallen back
+Fresh -02 predictions (preregistered in PREREGISTRATION.md before the run):
+  (a2) fixtures with DISTINCT known solid content each capture exactly
+  (b2) real cross-window content mismatch (live hwnd, another owned
+       fixture's expected pattern) -> occluded_or_foreign_content
+  (e2) REAL foreign-process fixture (child of this interpreter, matching
+       ChimeraFixture class, known content) -> foreign_process, refused for
+       publication even though the content is known and matching
+  (f2) captured extent equals the pinned CLIENT rect; the outer window
+       rect (nonclient chrome: caption/borders/DWM shadow) is strictly
+       larger on this system, so no chrome pixel can enter a record
+  (d2) a raw stale hwnd refused at the hwnd-level contract entry
 Falsifiers: foreign/occluded/stale/resized/destroyed pixels published,
 full-desktop fallback, evidence overwrite, point-sampling substitution.
 """
@@ -21,9 +35,12 @@ import ctypes
 import inspect
 import json
 import os
+import subprocess
 import sys
 import tempfile
+import threading
 import unittest
+import uuid
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -32,10 +49,32 @@ sys.path.insert(0, str(HERE))
 from capture_window import (CLASS_PREFIX, DEFAULT_HEIGHT, DEFAULT_WIDTH,
                             FixtureWindow, capture_client_pixels,
                             default_pattern, matrices_equal, pattern_sha256,
-                            verdict_verdicts, verify_owned_capture,
-                            write_evidence)
+                            solid_pattern, verdict_verdicts,
+                            verify_hwnd_capture, verify_owned_capture,
+                            window_rect, write_evidence)
 
 IS_WINDOWS = os.name == 'nt'
+
+# Child-process fixture: the child is spawned from THIS interpreter with THIS
+# module, creates its own ChimeraFixture-class window with a distinct known
+# solid fill, prints (hwnd, pinned client w, pinned client h), then pumps
+# messages until the PARENT terminates it. It is my own code and my own
+# process tree - never a third-party window.
+CHILD_FIXTURE_CODE = (
+    "import sys, ctypes\n"
+    "from ctypes import wintypes\n"
+    "sys.path.insert(0, sys.argv[1])\n"
+    "from capture_window import FixtureWindow, solid_pattern\n"
+    "f = FixtureWindow('chimera-child-' + sys.argv[2],\n"
+    "                  paint_fn=solid_pattern((255, 0, 0)),\n"
+    "                  width=96, height=64)\n"
+    "print(f.hwnd, f.width, f.height, flush=True)\n"
+    "user32 = ctypes.windll.user32\n"
+    "msg = wintypes.MSG()\n"
+    "while user32.GetMessageW(ctypes.byref(msg), None, 0, 0) > 0:\n"
+    "    user32.TranslateMessage(ctypes.byref(msg))\n"
+    "    user32.DispatchMessageW(ctypes.byref(msg))\n"
+)
 
 
 @unittest.skipUnless(IS_WINDOWS, 'Windows Win32/GDI contract')
@@ -54,6 +93,48 @@ class CaptureWindowTests(unittest.TestCase):
         f = FixtureWindow(title, **kw)
         self.fixtures.append(f)
         return f
+
+    def _spawn_child_fixture(self):
+        """Spawn a REAL foreign-process fixture owned by this process tree."""
+        suffix = uuid.uuid4().hex[:12]
+        proc = subprocess.Popen(
+            [sys.executable, '-c', CHILD_FIXTURE_CODE, str(HERE), suffix],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+            creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
+        guard = threading.Timer(60.0, proc.terminate)
+        guard.start()
+        try:
+            line = proc.stdout.readline().strip()
+        finally:
+            guard.cancel()
+        if not line:
+            err = proc.stderr.read()
+            proc.terminate()
+            proc.wait(timeout=10)
+            for stream in (proc.stdout, proc.stderr):
+                try:
+                    stream.close()
+                except Exception:
+                    pass
+            self.fail('child fixture failed to start: ' + err)
+        hwnd, w, h = (int(part) for part in line.split())
+        self.addCleanup(self._terminate_child, proc)
+        return hwnd, w, h
+
+    @staticmethod
+    def _terminate_child(proc):
+        try:
+            proc.terminate()
+            proc.wait(timeout=10)
+        except Exception:
+            pass
+        finally:
+            for stream in (proc.stdout, proc.stderr):
+                try:
+                    if stream and not stream.closed:
+                        stream.close()
+                except Exception:
+                    pass
 
     # --- (a) unobscured owned capture ------------------------------------
     def test_unobscured_owned_capture_is_exact(self):
@@ -231,6 +312,103 @@ class CaptureWindowTests(unittest.TestCase):
         self.assertEqual(len(a), 32)
         self.assertEqual(len(a[0]), 64)
         self.assertNotEqual(default_pattern(65, 32), a)
+
+    # --- (a2) fresh: distinct known solid content, each exact -----------------
+    def test_distinct_solid_content_fixtures_are_unobscured(self):
+        red = solid_pattern((255, 0, 0))
+        blue = solid_pattern((0, 0, 255))
+        fa = self.fixture('chimera-solid-red', paint_fn=red,
+                          width=100, height=70)
+        fb = self.fixture('chimera-solid-blue', paint_fn=blue,
+                          width=100, height=70)
+        # Same pinned size, different content: any swap must be detectable.
+        self.assertEqual((fa.width, fa.height), (fb.width, fb.height),
+                         'system pinned different client sizes for equal '
+                         'requests; content comparison would conflate size')
+        w, h = fa.width, fa.height
+        ra = verify_owned_capture(fa)
+        rb = verify_owned_capture(fb)
+        self.assertEqual(ra['verdict'], 'unobscured', ra)
+        self.assertEqual(rb['verdict'], 'unobscured', rb)
+        self.assertTrue(ra['publishable'])
+        self.assertTrue(rb['publishable'])
+        self.assertEqual(ra['capture_sha256'], pattern_sha256(red(w, h)))
+        self.assertEqual(rb['capture_sha256'], pattern_sha256(blue(w, h)))
+        self.assertNotEqual(ra['capture_sha256'], rb['capture_sha256'])
+        # Full matrix equality (not point sampling) on the captured bytes.
+        rows_a, reason_a = capture_client_pixels(fa.hwnd, w, h)
+        self.assertIsNone(reason_a)
+        self.assertEqual(rows_a, red(w, h))
+
+    # --- (b2) fresh: REAL cross-window content mismatch refused ---------------
+    def test_real_cross_window_content_mismatch_refused(self):
+        red = solid_pattern((255, 0, 0))
+        blue = solid_pattern((0, 0, 255))
+        fa = self.fixture('chimera-mix-red', paint_fn=red,
+                          width=100, height=70)
+        fb = self.fixture('chimera-mix-blue', paint_fn=blue,
+                          width=100, height=70)
+        self.assertEqual((fa.width, fa.height), (fb.width, fb.height))
+        w, h = fa.width, fa.height
+        # Live owned hwnd, but the EXPECTED pattern belongs to the other
+        # fixture: only the full-matrix content gate can catch this.
+        rec = verify_hwnd_capture(fb.hwnd, red(w, h), pinned_size=(w, h),
+                                  title=fb.title)
+        self.assertEqual(rec['verdict'], 'occluded_or_foreign_content', rec)
+        self.assertFalse(rec['publishable'])
+        # Positive control: same window against its own pattern is publishable.
+        ok = verify_hwnd_capture(fb.hwnd, blue(w, h), pinned_size=(w, h),
+                                 title=fb.title)
+        self.assertEqual(ok['verdict'], 'unobscured', ok)
+
+    # --- (e2) fresh: REAL foreign-process fixture refused on pid --------------
+    def test_real_foreign_process_fixture_refused_on_pid(self):
+        hwnd, w, h = self._spawn_child_fixture()
+        red = solid_pattern((255, 0, 0))(w, h)
+        # The child's content is known and matching (cross-process capture
+        # proves the pixels are readable) - the refusal must come from the
+        # OWNERSHIP gate alone, which is the packet's falsifier shape.
+        rows, reason = capture_client_pixels(hwnd, w, h)
+        self.assertIsNone(reason, 'cross-process capture of own child failed')
+        self.assertEqual(rows, red)
+        rec = verify_hwnd_capture(hwnd, red, pinned_size=(w, h),
+                                  title='chimera-child-fixture')
+        self.assertTrue(rec['is_window'], rec)
+        self.assertTrue(rec['visible'], rec)
+        self.assertTrue(rec['class_owned'], rec)
+        self.assertFalse(rec['owns_process'], rec)
+        self.assertNotEqual(rec['pid'], os.getpid())
+        self.assertEqual(rec['verdict'], 'foreign_process', rec)
+        self.assertFalse(rec['publishable'])
+
+    # --- (f2) fresh: captured extent is the client rect, chrome excluded ------
+    def test_client_rect_excludes_nonclient_chrome(self):
+        f = self.fixture('chimera-chrome', width=120, height=90)
+        w, h = f.width, f.height
+        outer = window_rect(f.hwnd)
+        self.assertIsNotNone(outer)
+        outer_w, outer_h = outer[2] - outer[0], outer[3] - outer[1]
+        # On this system's DWM chrome the outer rect is strictly larger than
+        # the pinned client rect - and the capture is sized to the client.
+        self.assertGreater(outer_w, w, (outer_w, w))
+        self.assertGreater(outer_h, h, (outer_h, h))
+        rows, reason = capture_client_pixels(f.hwnd, w, h)
+        self.assertIsNone(reason)
+        self.assertEqual(len(rows), h, 'captured rows != client height')
+        self.assertEqual(len(rows[0]), w, 'captured cols != client width')
+        self.assertEqual(rows, f.expected_pattern())
+
+    # --- (d2) fresh: raw stale hwnd refused at the hwnd-level entry -----------
+    def test_hwnd_level_contract_refuses_raw_stale_handle(self):
+        f = self.fixture('chimera-doomed-hwnd')
+        raw_hwnd = f.hwnd
+        w, h = f.width, f.height
+        f.close()
+        rec = verify_hwnd_capture(raw_hwnd, solid_pattern((0, 0, 0))(w, h),
+                                  pinned_size=(w, h), title='stale-hwnd')
+        self.assertEqual(rec['verdict'], 'window_destroyed', rec)
+        self.assertFalse(rec['publishable'])
+        self.assertFalse(rec['is_window'])
 
 
 def capture_window_module():
