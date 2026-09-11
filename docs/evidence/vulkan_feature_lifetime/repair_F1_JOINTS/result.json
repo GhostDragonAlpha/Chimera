@@ -1,0 +1,171 @@
+{
+  "schema": "chimera-vulkan-feature-lifetime-case-v1",
+  "case": "F1_JOINTS",
+  "declared_layout_xywh": [
+    64,
+    64,
+    1280,
+    720
+  ],
+  "watchdog_seconds": 10,
+  "source": {
+    "main_cpp_sha256": "89f8071ba2cdbea6d6ad9d214291dbb1cc5247e62cab14815e7049a1308402dc",
+    "engine_cpp_sha256": "eb4e6de0d60ec30f30c713f3acf22fe00b75ac6a26e24c2b1882de8da39f2432",
+    "engine_hpp_sha256": "949358583fc5ca82501984033e1130dd7f8709faeb720e3ed9fd3668957427f6",
+    "ui_cpp_sha256": "543460a85534bc39ce1d1c21e4f9d5a19b25fd6c9ca10afddb1bc8feb58118d8",
+    "runner_sha256": "671ad693a8d0e756887f5c4ff64e39c1abc28af8ce17c74a5dade33f39a7a14f",
+    "fixture_root": "E:\\PythonChimera\\.tmp",
+    "fixture_sha256": {
+      "skeleton/joints_pack.bin": "b47f3b62e0e3903a40568ffc86c8a9a440182d9a101977dcc9168403d1bcde3e",
+      "skeleton/joints_pack.npz": "fa9a2afe3ac26ad29f58d8a223d59102e1eba43dea52b92089b1b2ae75085ab4",
+      "water_gpu/water_payload.npz": "1dfb620494f2d9dadd4414596853ef780d0af559056137b8bc7c89ee30e4cd5b",
+      "frost_gt/frost_engine.bin": "a99b79dbdbcd3492242caaf88ade537d38d15111a7fc20b2a55d9cff393cb309",
+      "monkey_assets/recon/8955fb5b9c9b4e169456ccbae7c465f7_birth.glb": "1192beb7bbe17900dbe9ec8cd54da15de7e6bd7b44d69949ff827d5349d3d0fa",
+      "eye_build/eye_geom.npz": "7c33a84765b100dcf9ec45f072f8f3508fdef914af1d7bda9ad8ca017bf16af2"
+    },
+    "staged_shader_records": [],
+    "shader_manifest_sha256": "7e7964ec7732d3b88b9deef76e734b1b9847e2f3410b7e730cc48841e9b9bed1"
+  },
+  "command": [
+    "E:\\ChimeraWork\\slot-02\\.tmp\\engine_runtime\\vklf_rep2_F1_JOINTS\\chimera_engine.exe",
+    "8102",
+    "--no-restore"
+  ],
+  "validation": {
+    "layer": "VK_LAYER_KHRONOS_validation (engine-enabled when present, engine.cpp:474-500)",
+    "stderr_is_verbatim": true,
+    "suppression": "none"
+  },
+  "steps": [
+    {
+      "step": "mesh_load",
+      "ok": true,
+      "detail": "{\"ok\":true}"
+    },
+    {
+      "step": "hinge_scaffold",
+      "ok": true,
+      "detail": "{\"ok\":true}"
+    },
+    {
+      "step": "joints_load",
+      "ok": true,
+      "detail": "{\"ok\":true}"
+    },
+    {
+      "step": "joints_gate",
+      "ok": true,
+      "detail": {
+        "loaded": true,
+        "n_joints": 19
+      }
+    },
+    {
+      "step": "joints_reload",
+      "ok": true,
+      "detail": "{\"ok\":true}"
+    },
+    {
+      "step": "joints_gate_after_reload",
+      "ok": true,
+      "detail": {
+        "loaded": true,
+        "n_joints": 19
+      }
+    },
+    {
+      "step": "mesh_clear",
+      "ok": true,
+      "detail": "{\"ok\":true}"
+    },
+    {
+      "step": "mesh_reupload",
+      "ok": true,
+      "detail": "{\"ok\":true}"
+    },
+    {
+      "step": "strain_gate",
+      "ok": true,
+      "detail": {
+        "on": true,
+        "hinge": true
+      }
+    },
+    {
+      "step": "joints_gate_after_clear_cycle",
+      "ok": true,
+      "detail": {
+        "loaded": true,
+        "n_joints": 19
+      }
+    }
+  ],
+  "backdrop_reference": {
+    "path": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\vulkan_feature_lifetime\\repair_F1_JOINTS\\backdrop_reference.png",
+    "sha256": "9c84a2363350f80ffd0eada74513c1b9956d5b573f5064d3f47cecf8721ccf55",
+    "width": 1264,
+    "height": 681,
+    "rgba_extrema": [
+      [
+        20,
+        255
+      ],
+      [
+        36,
+        255
+      ],
+      [
+        48,
+        255
+      ]
+    ],
+    "capture_api": "PrintWindow(PW_CLIENTONLY)",
+    "captured_hwnd": 47255088,
+    "captured_pid": 73220
+  },
+  "engine": {
+    "pid": 77324,
+    "exe_sha256": "c3cfe41f30d95dcc442bbd486aacd411100c35818c341f868642f785d5d9e25e",
+    "staged_exe": "E:\\ChimeraWork\\slot-02\\.tmp\\engine_runtime\\vklf_rep2_F1_JOINTS\\chimera_engine.exe",
+    "hwnd": 71960654
+  },
+  "cases_V0_startup": {
+    "passed": true
+  },
+  "fixture_provenance": {
+    "mesh_verts": 18572,
+    "mesh_tris": 36815
+  },
+  "loaded_glass": {
+    "png_bytes": 3444145,
+    "sha256": "6b092865f41899c316567ed9105b814976fa769d37c9fdaf4cdf34a9a7ee1369"
+  },
+  "window_before_close": true,
+  "exit_code": 0,
+  "window_after_close": false,
+  "ordered_markers": true,
+  "marker_positions": [
+    1577,
+    1604,
+    1626,
+    1690
+  ],
+  "cases_V4_ordered_shutdown": {
+    "passed": true,
+    "exit_code": 0,
+    "watchdog": false,
+    "window_after_close": false,
+    "ordered_markers": true,
+    "marker_positions": [
+      1577,
+      1604,
+      1626,
+      1690
+    ]
+  },
+  "backdrop_unchanged": true,
+  "validation_error_lines": 0,
+  "vuid_vkDestroyDevice_05137_count": 0,
+  "vuid_vkFreeMemory_memory_00677_count": 0,
+  "passed": true
+}

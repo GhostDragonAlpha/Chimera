@@ -1,0 +1,33 @@
+studio: session log -> session_20260911_124047.jsonl
+floor: building pipeline (modules ok)
+floor: pipeline created
+Compute pipeline created
+THE ENGINE STUDIO: overlay ready (F1)
+Vulkan engine initialized: 2560 x 1440, 2 frames in flight
+Chimera Engine running at http://localhost:8102/state
+  /frame  -> PNG of the current render (membrane if one is loaded)
+  /membrane (POST) -> load a story membrane scene
+Window: 2560x1440, Press Ctrl+C to stop.
+Controls: Left-drag orbit | Scroll zoom | Right-drag pan
+          WASD move | Q/E up-down | Space/Ctrl zoom | R reset | P pose toggle
+          F1 THE ENGINE STUDIO overlay (pipeline board + live status)
+FPS: 53 (frame 53) | ft ms avg 9.75 max 27.80 | >16.7ms: 3 >33ms: 0
+FPS: 55 (frame 56) | ft ms avg 9.04 max 10.00 | >16.7ms: 0 >33ms: 0
+snapshot: session_snapshot/mesh_bin.blob (1110396 B)
+Hinge engaged: 18572 verts, period 4.0s, ROM L 147.0 R 147.0 deg
+snapshot: session_snapshot/hinge_bin.blob (148632 B)
+JOINTS loaded: 18572 verts, 19 joints (JNT1 legacy pose law; the show sweeps each through its ROM)
+snapshot: session_snapshot/joints_bin.blob (149358 B)
+FPS: 153 (frame 153) | ft ms avg 2.42 max 9.88 | >16.7ms: 0 >33ms: 0
+JOINTS loaded: 18572 verts, 19 joints (JNT1 legacy pose law; the show sweeps each through its ROM)
+snapshot: session_snapshot/joints_bin.blob (149358 B)
+snapshot: session_snapshot/mesh_bin.blob (24 B)
+snapshot: session_snapshot/mesh_bin.blob (1110396 B)
+FPS: 291 (frame 291) | ft ms avg 0.69 max 9.66 | >16.7ms: 0 >33ms: 0
+FPS: 206 (frame 214) | ft ms avg 2.40 max 329.29 | >16.7ms: 1 >33ms: 1
+shutdown: admission_closed
+shutdown: boot_joined
+shutdown: http_stopped
+Shutting down...
+Vulkan engine shut down
+shutdown: engine_shutdown
