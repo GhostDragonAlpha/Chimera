@@ -109,6 +109,9 @@ class LayerGuardTests(unittest.TestCase):
         self.assertEqual(history[-1]['provision_evidence'], 'provision evidence text')
         self.assertEqual(history[-1]['worktree_head'], HEAD)
         self.assertEqual(history[-1]['provision_generation'], t['generation'])
+        self.assertIn('preservation: tree preserved', history[-1]['evidence'])
+        self.assertIn('writer stopped: exited', history[-1]['evidence'])
+        self.assertIn('runtime drained: none held', history[-1]['evidence'])
         receipt = snap['tasks']['one']['review_slot_handoffs'][-1]
         self.assertEqual(receipt['provision']['worktree_head'], HEAD)
         self.assertEqual(receipt['provision']['provision_evidence'], 'provision evidence text')
@@ -154,22 +157,52 @@ class LayerGuardTests(unittest.TestCase):
         for slot in ('3', '4'):
             self.fixture_stale_provision(slot, 'legacy-' + slot, 1)
         self.task('two')
-        calls = {'n': 0}
 
         def fake_call(op, args):
-            calls['n'] += 1
             if op == 'snapshot':
                 return {'result': self.snap()}
             assert op == 'claim' and args['task'] == 'two'
-            # first attempt (slot 3/4 stale, 5 clean? make all stale to force refusal)
             raise ValueError('{"error": "stale_provision_requires_recovery"}')
 
-        self.fixture_stale_provision('5', 'legacy-5', 1)
         q = WorkerQueue(fake_call, agent='other')
         out = q.claim_once()
         self.assertIsNotNone(out)
         self.assertEqual(out['task'], None)
-        self.assertTrue(any('two' in x for x in out['refusals']))
+        # The refusal entry carries the machine-readable reason code.
+        self.assertEqual(out['refusals'], ['two:stale_provision_requires_recovery'])
+        self.assertTrue(WorkerQueue._refusal_code(ValueError('{"error": "no_free_slot"}')),
+                        'no_free_slot')
+
+    # Layer-level rebind refusals inherited from the base controller.
+    def test_layer_rebind_refusals_inherited(self):
+        self.task('one')
+        self.call('claim', 'worker', task='one')
+        with self.assertRaisesRegex(Refusal, 'no_stale_provision'):
+            self.call('slot_rebind', 'super-secret', slot='3', preservation_evidence='p',
+                      drain_evidence='d')
+        with self.assertRaisesRegex(Refusal, 'supervisor_only'):
+            self.call('slot_rebind', 'worker', slot='3', preservation_evidence='p',
+                      drain_evidence='d')
+
+    # Releasing a never-provisioned slot: no-op preserve, all-None receipt block.
+    def test_release_review_slot_without_provision(self):
+        self.task('one')
+        t = self.call('claim', 'worker', task='one')
+        self.call('submit_review', 'worker', task='one', generation=t['generation'],
+                  branch=t['branch'], head=HEAD, evidence='review evidence')
+        r = self.call('release_review_slot', 'super-secret',
+                      task='one', owner='worker', generation=t['generation'],
+                      slot=t['slot'], head=HEAD, pushed_head=HEAD, pr_head=HEAD,
+                      pr_identity='PR#fixture', remote_verification_evidence='v',
+                      preservation_evidence='p', writer_stopped_evidence='w',
+                      runtime_drained_evidence='d', slot_reprovision_ready_evidence='r')
+        self.assertTrue(r['slot_released'])
+        snap = self.snap()
+        engine = snap['slots'][t['slot']]['engine']
+        self.assertFalse(engine['provisioned'])
+        self.assertEqual(engine.get('preserved_provisions', []), [])
+        receipt = snap['tasks']['one']['review_slot_handoffs'][-1]
+        self.assertTrue(all(v is None for v in receipt['provision'].values()))
 
 
 if __name__ == '__main__':
