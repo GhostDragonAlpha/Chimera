@@ -27,3 +27,11 @@ review bypass, missing dependency refusal, or mutation outside the queue state.
 The next implementation step is an adapter that calls the existing authenticated
 controller operations and GitHub PR API. It must be tested against a temporary
 store before any live service transition.
+
+`tools/agent_fleet/run_queue_worker.py` is the worker-side adapter. It reads a
+fresh authenticated snapshot for every cycle, attempts READY tasks in
+deterministic order, and advances after a normal claim race. A successful
+claim is only metadata; the worker must still verify and provision the returned
+worktree before writing. The module has no direct database, Git, engine, or
+credential output path. The `--poll-seconds` loop is deliberately separate
+from task execution so build, runtime, and DYAD admission remain explicit.
