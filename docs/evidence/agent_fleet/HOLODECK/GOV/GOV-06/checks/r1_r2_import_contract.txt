@@ -1,0 +1,17 @@
+R1a first import: {'digest': '3b75362f7403b7bc3b7ec85645f59260592aa68bf28435dc960992081445462f', 'coverage': {'cards': 5}, 'imported_revision': 101}
+R1a ledger==1 and imported_revision==101 and digest==recomputed: True
+R1b second import: {'digest': 'd789c911faf86777855f6415d882444ddb90bc680d9c9fa6fc721e15540ff305', 'coverage': {'cards': 6}, 'imported_revision': 102}
+R1b ledger==2 append-only (entry0 untouched): True
+R1c claimed-digest tamper ignored, stored==recomputed: True
+R1d coverage echo == payload coverage: True
+R2 stale echo                   -> stale_catalogue_import
+R2 duplicate same digest        -> duplicate_catalogue_import
+R2 malformed: empty id          -> invalid_catalogue_payload:card_missing_id
+R2 malformed: duplicate id      -> invalid_catalogue_payload:duplicate_card_id:A-01
+R2 malformed: unknown dep       -> invalid_catalogue_payload:unknown_dependency:A-01->ZZ-99
+R2 malformed: cycle             -> invalid_catalogue_payload:dependency_cycle:X-01
+R2 non-lead actor               -> lead_gate
+R2 wrong epoch                  -> lead_gate
+R2 all 8 refusals by the preregistered names: True
+R2 post-state unchanged after every refusal: True
+R1R2 SCORE: R1 4/4 positive; R2 8/8 named refusals; post-state UNCHANGED; fired=none

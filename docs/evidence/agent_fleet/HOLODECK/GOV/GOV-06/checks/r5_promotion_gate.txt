@@ -1,0 +1,5 @@
+R5a promote(speculative A-01, no trail) -> speculative_not_certifiable
+R5b promote(RUNNING realization B-01)  -> speculative_not_certifiable
+R5c tasks byte-identical across catalogue_import/next: True
+R5d supersession appended ONLY with INTEGRATED trail: True (wf=[{'card': 'A-01', 'kind': 'SUPERSESSION', 'note': 'certified by task-a01', 'certified_trail': True, 'revision': 102}])
+R5 SCORE PASS (4/4) - card falsifier "a speculative idea is promoted directly into a certified production claim" executed as negative control
