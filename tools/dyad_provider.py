@@ -33,11 +33,13 @@ class Capture:
     index: int
     path: str
     sha256: str
-    metadata: dict = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)  # shallow-frozen record; treat as read-only
 
 
 @dataclass(frozen=True)
 class DyadReviewRequest:
+    # NOTE: runtime_metadata/metadata are dict fields inside frozen dataclasses
+    # (shallow freeze only). Treat them as read-only construction inputs.
     task: str
     attempt: str
     physical_context: str
@@ -59,15 +61,19 @@ class DyadReviewRequest:
         if not self.captures:
             raise DyadRefusal('captures_required')
         seen = set()
+        indexes = []
         for c in self.captures:
             if not isinstance(c, Capture):
                 raise DyadRefusal('invalid_capture')
-            if c.index < 1 or c.path in seen:
+            if c.path in seen:
                 raise DyadRefusal('invalid_capture_order_or_duplicate')
             seen.add(c.path)
+            indexes.append(c.index)
             if not re.fullmatch('[0-9a-f]{64}', c.sha256 or ''):
                 raise DyadRefusal('invalid_capture_hash')
         ordered = sorted(self.captures, key=lambda c: c.index)
+        if sorted(indexes) != list(range(1, len(indexes) + 1)):
+            raise DyadRefusal('invalid_capture_order_or_duplicate')
         n = len(ordered)
         if self.review_type == 'still' and n != 1:
             raise DyadRefusal('still_requires_exactly_one_capture')
@@ -155,10 +161,16 @@ def build_verdict(conclusion: str, observations, raw_response: str) -> DyadVerdi
 
 
 class DyadProvider:
-    """Base class. Capability declaration is explicit and never inferred."""
+    """Base class. Capability declaration is explicit, constructor-validated
+    and never inferred; treat the attributes as read-only after construction."""
     id = 'abstract'
     vision = False
     temporal = 'none'   # 'none' | 'frames' | 'movie'
+    VALID_TEMPORAL = ('none', 'frames', 'movie')
+
+    def __init__(self):
+        if self.temporal not in self.VALID_TEMPORAL:
+            raise DyadRefusal('invalid_temporal_capability:%s' % self.temporal)
 
     def check_request(self, request: DyadReviewRequest):
         if not self.vision:
@@ -191,7 +203,9 @@ class DyadProvider:
 class SubagentDyadProvider(DyadProvider):
     """Lead-delegated reviewer subagent: a callback receiving the exact prompt
     and capture paths, returning (raw_response, served_model_or_None,
-    finish_status, observations, uncertainty, conclusion)."""
+    finish_status, observations, uncertainty, conclusion). Malformed callback
+    results are named refusals — never unnamed crashes — because a misbehaving
+    provider is exactly when the evidence trail matters."""
     def __init__(self, callback: Callable, provider_id='subagent-dyad'):
         if not callable(callback):
             raise DyadRefusal('subagent_callback_required')
@@ -199,19 +213,33 @@ class SubagentDyadProvider(DyadProvider):
         self.id = provider_id
         self.vision = True
         self.temporal = 'frames'  # a subagent may inspect ordered captures; movie needs declared support
+        super().__init__()  # validates temporal against VALID_TEMPORAL
 
     def _review(self, request, ordered):
-        raw, served, finish, observations, uncertainty, conclusion = self.callback(
-            request.build_prompt(), [c.path for c in ordered])
+        try:
+            result = self.callback(request.build_prompt(), [c.path for c in ordered])
+            raw, served, finish, observations, uncertainty, conclusion = result
+        except (TypeError, ValueError) as exc:
+            raise DyadRefusal('subagent_callback_malformed:%s' % type(exc).__name__) from exc
+        if not isinstance(raw, str) or not raw.strip():
+            raise DyadRefusal('subagent_callback_malformed:raw_response_missing')
+        if served is not None and not isinstance(served, str):
+            raise DyadRefusal('subagent_callback_malformed:served_model_not_string')
+        if not isinstance(observations, (list, tuple)):
+            raise DyadRefusal('subagent_callback_malformed:observations_not_list')
+        if not isinstance(uncertainty, str) or not isinstance(conclusion, str):
+            raise DyadRefusal('subagent_callback_malformed:fields_not_string')
+        prompt = request.build_prompt()
         return DyadResponse(
             task=request.task, attempt=request.attempt, review_type=request.review_type,
             provider_id=self.id, served_model=served,
             served_identity_note=('reported: %s' % served) if served else
             'served identity unavailable from provider; recorded as named uncertainty, no substitution',
             capture_identities=[{'index': c.index, 'path': c.path, 'sha256': c.sha256} for c in ordered],
-            exact_prompt=request.build_prompt(), raw_response=raw,
-            finish_status=finish or 'unknown', observations=list(observations or []),
-            uncertainty=uncertainty or '', verdict=build_verdict(conclusion, observations or [], raw))
+            exact_prompt=prompt, raw_response=raw,
+            finish_status=finish if isinstance(finish, str) and finish else 'unknown',
+            observations=list(observations),
+            uncertainty=uncertainty, verdict=build_verdict(conclusion, observations, raw))
 
 
 class RemoteDyadProvider(DyadProvider):
@@ -223,7 +251,9 @@ class RemoteDyadProvider(DyadProvider):
         if not auth_env_var:
             raise DyadRefusal('auth_env_var_required')
         self.endpoint, self.auth_env_var = endpoint, auth_env_var
-        self.id, self.vision, self.temporal = provider_id, True, temporal
+        self.id, self.vision = provider_id, True
+        self.temporal = temporal
+        super().__init__()  # validates temporal against VALID_TEMPORAL
 
     def _review(self, request, ordered):  # pragma: no cover - network path
         raise NotImplementedError(
@@ -234,8 +264,10 @@ class RemoteDyadProvider(DyadProvider):
 
 class LocalSensesDyadProvider(DyadProvider):
     """The existing local eye (ChimeraEngine senses / LM Studio), retained.
-    Lazily imported so CPU contract tests need no engine or loaded model.
-    One image per call remains the law: ordered frames are a call sequence."""
+    Nothing in this module imports senses, keeping CPU contract tests free of
+    engine/model requirements. One image per call remains the eye's own law
+    (THE_DYAD_PROTOCOL); ordered frames are a call sequence, and this adapter
+    never collapses them into one image."""
     def __init__(self, temporal='none', provider_id='local-senses'):
         if temporal not in ('none', 'frames'):
             raise DyadRefusal('local_eye_temporal_capability_is_stills_or_looped_frames')

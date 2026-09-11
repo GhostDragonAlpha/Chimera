@@ -54,6 +54,13 @@ class ProviderTests(unittest.TestCase):
             make_request([bad]).validate()
         with self.assertRaisesRegex(DyadRefusal, 'missing_claim_under_exam'):
             make_request(one, claim_under_exam='  ').validate()
+        # index set must be exactly 1..n (no duplicates, no gaps)
+        dup = [Capture(1, 'a.png', 'f' * 64, {}), Capture(1, 'b.png', 'f' * 64, {})]
+        with self.assertRaisesRegex(DyadRefusal, 'invalid_capture_order_or_duplicate'):
+            make_request(dup, review_type='ordered_frames').validate()
+        gap = [Capture(1, 'a.png', 'f' * 64, {}), Capture(3, 'b.png', 'f' * 64, {})]
+        with self.assertRaisesRegex(DyadRefusal, 'invalid_capture_order_or_duplicate'):
+            make_request(gap, review_type='ordered_frames').validate()
         make_request(two, review_type='ordered_frames').validate()
         make_request(two, review_type='movie',
                      runtime_metadata={'movie_artifact': 'rot.mp4'}).validate()
@@ -72,15 +79,16 @@ class ProviderTests(unittest.TestCase):
     def test_temporal_capability_ladder(self):
         one = [make_capture(self.tmp.name, 1)]
         two = [make_capture(self.tmp.name, 1), make_capture(self.tmp.name, 2, b'f2')]
-        still_only = SubagentDyadProvider(lambda *a: ('', None, 'stop', [], '', 'unclear'))
-        still_only.temporal = 'none'
+        still_only = SubagentDyadProvider(lambda *a: ('raw', None, 'stop', [], '', 'unclear'),
+                                          provider_id='still-only')
+        still_only.temporal = 'none'  # pin to still-only for the ladder test
         still_only.review(make_request(one))
         with self.assertRaisesRegex(DyadRefusal, 'provider_cannot_verify_temporal_claim'):
             still_only.review(make_request(two, review_type='ordered_frames'))
         with self.assertRaisesRegex(DyadRefusal, 'provider_cannot_verify_temporal_claim'):
             still_only.review(make_request(two, review_type='movie',
                                            runtime_metadata={'movie_artifact': 'm.mp4'}))
-        frames = SubagentDyadProvider(lambda *a: ('', None, 'stop', [], '', 'unclear'))
+        frames = SubagentDyadProvider(lambda *a: ('raw', None, 'stop', [], '', 'unclear'))
         frames.temporal = 'frames'
         frames.review(make_request(two, review_type='ordered_frames'))
         with self.assertRaisesRegex(DyadRefusal, 'provider_cannot_verify_temporal_claim'):
@@ -106,6 +114,8 @@ class ProviderTests(unittest.TestCase):
         resp = prov.review(make_request(one))
         self.assertEqual(resp.exact_prompt, seen['prompt'])
         self.assertEqual(seen['paths'], [one[0].path])
+        self.assertEqual(resp.raw_response,
+                         'Frame shows a smooth shell with 3 visible seams.')  # raw retained verbatim
         self.assertEqual(resp.served_model, 'subagent-test-eye')
         self.assertEqual(resp.finish_status, 'stop')
         self.assertEqual(resp.capture_identities[0]['sha256'], one[0].sha256)
@@ -163,6 +173,39 @@ class ProviderTests(unittest.TestCase):
             self.fail('local adapter executed without engine wiring')
         except NotImplementedError as e:
             self.assertIn('senses.py', str(e))
+
+    def test_malformed_callback_is_named_refusal(self):
+        one = [make_capture(self.tmp.name, 1)]
+        for bad in (lambda *a: None,
+                    lambda *a: (None, 'm', 'stop', [], '', 'unclear'),
+                    lambda *a: ('', None, 'stop', [], '', 'unclear'),
+                    lambda *a: ('raw', 7, 'stop', [], '', 'unclear'),
+                    lambda *a: ('raw', None, 'stop', 'not-a-list', '', 'unclear'),
+                    lambda *a: ('raw', None, 'stop', [], None, 'unclear')):
+            prov = SubagentDyadProvider(bad)
+            with self.assertRaisesRegex(DyadRefusal, 'subagent_callback_malformed'):
+                prov.review(make_request(one))
+
+    def test_capability_validated_at_construction(self):
+        from dyad_provider import DyadProvider as Base
+        class Bogus(Base):
+            def __init__(self):
+                self.temporal = 'hologram'
+                self.vision = True
+                super().__init__()
+        with self.assertRaisesRegex(DyadRefusal, 'invalid_temporal_capability'):
+            Bogus()
+        with self.assertRaisesRegex(DyadRefusal, 'invalid_temporal_capability'):
+            RemoteDyadProvider('https://eye.example', 'EYE', temporal='bogus')
+
+    def test_remote_review_refuses_unwired_by_name(self):
+        rem = RemoteDyadProvider('https://eye.example', 'EYE')
+        one = [make_capture(self.tmp.name, 1)]
+        try:
+            rem.review(make_request(one))
+            self.fail('remote review executed without transport wiring')
+        except NotImplementedError as e:
+            self.assertIn('deployment', str(e))
 
     def test_prompt_deterministic_and_not_leading(self):
         one = [make_capture(self.tmp.name, 1)]
