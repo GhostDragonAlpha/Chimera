@@ -180,12 +180,14 @@ class CatalogueTests(unittest.TestCase):
         # gen-6: the catalog JSON text is ALSO retained verbatim and its
         # manifest hash is recomputed by the validator.
         self.assertTrue(sm['catalog']['retained'])
-        # repinned to measured builder output (CATALOGUE_REPIN_02, base
-        # f9ef0ebe): the 2026-09-11 second-wave doc merges (PR #49 Master
-        # maintenance amendment + PR #50 evidence) grew the corpus past the
-        # 76/96 pins left by CATALOGUE_REPIN at d012b4b1.
-        self.assertEqual(built['coverage']['master_row_ids'], 97)
-        self.assertEqual(built['coverage']['master_row_observations'], 142)
+        # repinned to measured builder output (CATALOGUE_REPIN_03, base
+        # cb874a3a): the fourth-wave Master amendment (dispositions for the
+        # claim-path fix, catalogue provenance, product surface, MAT
+        # assignment, efrl-01 supersession) added six id observations and
+        # eight row observations over the 97/142 pins of
+        # CATALOGUE_REPIN_02 at f9ef0ebe.
+        self.assertEqual(built['coverage']['master_row_ids'], 103)
+        self.assertEqual(built['coverage']['master_row_observations'], 150)
         ids = {r['id'] for r in built['master_rows']}
         for required in ('demo-studio-state-01', 'math-contract-audit-01',
                          'fleet-slot-binding-01', 'studio-grid-depth-01',
@@ -663,11 +665,12 @@ class CatalogueTests(unittest.TestCase):
         # line must be retained verbatim with a consistent hash.
         built = build_records()
         part = built['coverage']['line_partition']
-        # 2780 lines at the current canonical Master (measured via the
-        # builder at base f9ef0ebe, CATALOGUE_REPIN_02); the count is
-        # descriptive - exhaustiveness is what the validator enforces,
-        # independent of any frozen total.
-        self.assertEqual(len(part), 2780)
+        # 2844 lines at the current canonical Master (measured via the
+        # builder at the fourth-wave amendment head + its gen-2 correction
+        # appends, base cb874a3a, CATALOGUE_REPIN_03 - was 2780 at f9ef0ebe,
+        # CATALOGUE_REPIN_02); the count is descriptive - exhaustiveness is
+        # what the validator enforces, independent of any frozen total.
+        self.assertEqual(len(part), 2844)
         dropped = json.loads(json.dumps(built))
         dropped['coverage']['line_partition'].pop('1825')  # JSON-stringified
         self.assertEqual(validate_payload(dropped),

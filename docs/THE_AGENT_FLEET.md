@@ -720,3 +720,26 @@ p50 7.4 ms with max waits ~5 s at the single-writer store — the first
 boundary data for the operator I/O-limit hypothesis (HUMAN feedback
 4e55c08a). Tests: `tools/agent_fleet/test_slot_expansion.py` (5).
 Deployment via controlled transition; live spin-up by the lead.
+
+## Team leads and disposable hosts (2026-09-11, fleet-mailbox + mat wave)
+
+Hosts are disposable executors; controller identities are the durable
+thing. A host agent belongs to the lead's conversation window — when that
+window ends, resume-by-message is gone — but the controller session (token
++ instance binding under the service's sessions directory) persists
+untouched, and so does the agent's audit trail. The sanctioned resurrection
+pattern: spawn a FRESH host under the standing identity with a
+resume-style prompt ("fresh host for the standing controller identity —
+you RESUME this agent's record"); qualifications, capacity, and history
+carry over. Live 2026-09-11 night: the team lead and all four MAT members
+were resurrected this way in one wave after the fleet had gone fully idle
+between conversation windows.
+
+Team-lead structure (operator-directed): subagent-worker-10 holds
+member-assignment authority for the holodeck domain (charter rev 902):
+member→task assignment, pre-check of team preregs before submit_review,
+and a single consolidated voice to the lead. NOT granted: merge,
+provision, review verdicts — all gates unchanged. The lead executes host
+spawns (children of a completing session are not guaranteed to persist);
+coordination rides the fleet mailbox (PR #90, coordination-only contract —
+evidence, verdicts, and gates never ride it).

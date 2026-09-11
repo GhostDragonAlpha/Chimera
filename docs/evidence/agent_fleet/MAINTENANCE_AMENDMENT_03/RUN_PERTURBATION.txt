@@ -1,0 +1,5 @@
+BASELINE returncode: 0
+PERTURBED row_ids 103->104: returncode 1 -> FLIPS (good) | restore rc 0
+PERTURBED observations 150->151: returncode 1 -> FLIPS (good) | restore rc 0
+PERTURBED line_partition 2833->2834: returncode 1 -> FLIPS (good) | restore rc 0
+PERTURBATION_CONTROL: PASS

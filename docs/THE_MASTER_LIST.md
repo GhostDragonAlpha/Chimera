@@ -2778,3 +2778,67 @@ non-zero) in addition to HEAD and clean status.
 Catalogue pins re-measured to the builder output at this amended head (same
 PR; perturbation control retained in
 `docs/evidence/agent_fleet/MAINTENANCE_AMENDMENT_02/`).
+
+## 2026-09-11 (late): fourth-wave dispositions — claim-path fix landed, catalogue provenance live, product surface opened
+
+**fleet-review-handoff-claim-delegation CLOSED**: PR #80 (gen 2, head
+2c8fb069) integrated and DEPLOYED via controlled transition
+`claim-restore-d8e3b5f5` (post-transition state ALL-EQUAL). The three
+dropped base-claim behaviors — F1 claim auto-spawn, F2 `owner_instance`
+binding, F3 enforced-mode instance guard — are live again (mutation probes
+4/4). The "disposition PENDING integration" note earlier in this file is
+answered by this entry.
+
+**Catalogue provenance LIVE, with a measured legacy gap**: PR #92
+(`fleet-catalogue-realization-matching-01`, merged bf1a72f6) binds card →
+task via `realized_from` provenance sets + id-fallback; DEPLOYED via
+controlled transition `catalogue-provenance-bf1a72f6` (ALL-EQUAL). Data gap
+recorded at deployment: the eight pre-field holodeck tasks (gov-01..06,
+math-01, mat-01) carry `realized_from=None` by the additive migration, so
+`catalogue_next` still re-proposes realized roots. Lane
+`fleet-task-provenance-backfill-01` (RUNNING, worker-04) lands the
+supervisor op `task_provenance_set` + backfill execution plan + tests; the
+lead's controlled transition #3 follows ITS integration, then the eight
+citations land in that order. Forward admissions carry `realized_from` at
+create_task (lead practice, effective immediately).
+
+**Product surface opened** (PR #97 `product-feel-probe-01`, merged
+cb874a3a): the first blind-judged product-surface measurement — the
+ordered-frames dyad judge PASSED 2/2 ("a puppet with 28 named joints, and
+the program is testing them one at a time"). Five defects measured, findings
+verbatim in the lane's DYAD_REPORT.txt: (a) only the right arm visibly
+moves; (b) the HUD banner reads "theta 0.00 deg" naming joints other than
+the one moving; (c) the head is cropped by the viewport top; (d) the
+on-screen clock advances ~36 s per frame wrapping a 112 s lap while the
+take spans 4.5 s; (e) gait steps=0, no locomotion. Admitted follow-on
+lanes: `product-hud-truth-01` (HUD truth — driven-joint row with live
+theta + interaction-or-labeled clock; engine lane, worker-02) and
+`product-motion-sweep-01` (one authored take, ≥8 joints across ≥3 body
+regions via the public HTTP API; worker-03). Queued behind them: framing
+(head crop), locomotion.
+
+**MAT wave assigned through the team lead**: MAT-02..05 admitted (revs
+987–990) and assigned by team lead subagent-worker-10 (charter rev 902) —
+mat-02 → worker-12 (mat-01 author, seam continuity), mat-03 → worker-09
+(import/validation record), mat-04 → worker-11 (math-01 units backbone),
+mat-05 → worker-05 (authorship/provenance record); worker-07 held reserve.
+Member-assignment authority delegated end-to-end over the fleet mailbox
+(PR #90's plane); the lead executes host spawns.
+
+**engine-feature-resource-lifetime-01 SUPERSEDED BY CONSTRUCTION** by the
+INTEGRATED `engine-feature-resource-lifetime-02` (dependencies corrected to
+`engine-vulkan-cleanup-02`, integrated as PR #58): `-01`'s dependency names
+the ABANDONED `engine-vulkan-cleanup-01`, making it permanently unclaimable
+(`dependencies_not_integrated`). `-01` retires via supervisor task_abandon
+AFTER this PR integrates; this entry is the evidence.
+
+**Correction to this section (post-review, gen 2 of this PR)**: the entry
+above stating PR #80 as "gen 2, head 2c8fb069" is WRONG on the head — the
+merged gen-2 head is **1c565ba0** (second parent of merge commit d8e3b5f5;
+repo head at merge a02ff3bd; verified against the object store and the
+GitHub API by this lane's reviewer and re-verified by the lead). 2c8fb069
+is the SOURCE HEAD of the SUPERSEDED deployment
+`review-handoff-2c8fb069`; the lead's draft conflated the two. Also
+disambiguated per review finding 3: "integrated as PR #58" above names the
+DEPENDENCY's PR (engine-vulkan-cleanup-02); engine-feature-resource-lifetime-02
+itself integrated as PR #79.
