@@ -167,6 +167,17 @@ PR ownership does not authorize unreviewed changes, weakened gates, controller
 deployment or modification of the operator's checkout. Specific current user
 restrictions still govern integration and publication.
 
+Benign head changes are reconciled, not escalated (2026-09-10): refresh the
+actual controller owner/generation and compare the expected head with the
+read-only inspector `tools/agent_fleet/worktree_reconcile.py` (contract:
+THE_WORKTREE_RECONCILIATION.md). Evidence-only descendant commits with
+preserved staged runs need no operator confirmation: retain both, commit the
+remaining own evidence, and submit the exact current head. Changed
+implementation requires targeted revalidation; conflicting claims or history
+route to the lead while other owned work continues. Never reset, clean, or
+force-push to restore an old prompt. Git author is not authenticated identity,
+and stronger client-instance fencing remains separate pending work.
+
 Use cheaper subagents for bounded research, tests or independent reviews when
 they can run usefully in parallel. The owning agent checks their evidence and
 remains accountable. Helpers receive only the scope and access they need; they
@@ -333,6 +344,18 @@ mutation; operations do not all have idempotency keys in this reference.
 | Trusted supervisor | qualify, elect when vacant, fail with evidence, recover, resource_clear, ack_integration, release_slot |
 | Qualified agent | claim, checkpoint, submit_review, resource_acquire/release |
 | Lead-qualified ready agent | offer_lead; authenticated yield by any live agent |
+| Current lead (catalogue plane) | catalogue_import (validated, idempotent, stale-refusing); any live agent may read via catalogue_read and catalogue_next |
+
+The catalogue plane is discoverable planning data, separate from the live
+plane: `catalogue_import` stores validated records built by
+`tools/agent_fleet/master_catalogue.py` (all roadmap cards plus the
+Master-list task rows, with provenance and content hashes); the snapshot
+carries only a summary (digest, counts), and `catalogue_read` returns records
+by digest. `catalogue_next` lists planning-only candidates whose dependencies
+are integrated and never creates tasks, claims or admissions. A repeated
+identical import is refused (`duplicate_catalogue_import`); replacing content
+requires the current digest (`stale_catalogue_import` otherwise) and leaves
+tasks, claims, resources and slots untouched.
 | Current lead with matching epoch | create_task, integration_request |
 | Live agent or supervisor | snapshot, events, suspect |
 
@@ -388,7 +411,8 @@ that the finished game is physically correct or complete.
   orchestration checks.
 
 Until those pass, call this the tested control-plane reference, not a deployed
-self-building engine. Current GLM work continues without interruption.
+self-building engine. Current work continues under the live controller's
+leadership epoch and the PR workflow below, without interruption.
 
 ## Documentation reconciliation and continuing DYAD criticism (2026-09-09)
 
