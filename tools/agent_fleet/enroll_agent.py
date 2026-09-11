@@ -27,8 +27,15 @@ def main():
     if not token:
         print('REFUSED: CHIMERA_FLEET_ENROLLMENT_TOKEN not set', file=sys.stderr)
         return 2
+    # Per-enrollment client instance (fleet-client-instance-01): minted
+    # here, fingerprint stored by the controller, secret only in the
+    # private session file (never printed, never logged).
+    import secrets as _secrets
+    instance = {'id': a.agent + '-' + _secrets.token_hex(6),
+                'secret': _secrets.token_urlsafe(32)}
     body = json.dumps({'operation': 'enroll',
-                       'arguments': {'agent': a.agent, 'label': a.label}}).encode()
+                       'arguments': {'agent': a.agent, 'label': a.label,
+                                     'instance': instance}}).encode()
     req = Request(a.endpoint, data=body,
                   headers={'Authorization': 'Bearer ' + token,
                            'Content-Type': 'application/json'})
@@ -44,7 +51,8 @@ def main():
         print('REFUSED: enrollment did not return a session token', file=sys.stderr)
         return 2
     a.out.parent.mkdir(parents=True, exist_ok=True)
-    a.out.write_text(json.dumps({'endpoint': a.endpoint, 'token': secret}),
+    a.out.write_text(json.dumps({'endpoint': a.endpoint, 'token': secret,
+                                  'instance': instance}),
                      encoding='utf-8')
     try:
         a.out.chmod(a.out.stat().st_mode & ~(stat.S_IRWXG | stat.S_IRWXO))

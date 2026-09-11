@@ -19,7 +19,13 @@ def call(session,operation,arguments):
     if u.scheme=='http' and u.hostname not in ('127.0.0.1','localhost','::1'):
         raise ValueError('nonlocal_transport_requires_https_adapter')
     body=json.dumps({'operation':operation,'arguments':arguments}).encode()
-    req=Request(endpoint,data=body,headers={'Authorization':'Bearer '+session['token'],'Content-Type':'application/json'})
+    headers={'Authorization':'Bearer '+session['token'],'Content-Type':'application/json'}
+    inst=session.get('instance')
+    if isinstance(inst,dict) and inst.get('id') and inst.get('secret'):
+        # Per-enrollment client identity (fleet-client-instance-01); the
+        # controller verifies it against the stored fingerprint.
+        headers['X-Chimera-Instance']=str(inst['id'])+':'+str(inst['secret'])
+    req=Request(endpoint,data=body,headers=headers)
     try:
         with urlopen(req,timeout=30) as r:return json.load(r)
     except HTTPError as e:
