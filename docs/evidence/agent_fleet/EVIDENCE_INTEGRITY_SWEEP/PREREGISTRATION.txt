@@ -154,3 +154,39 @@ P7. PREDICTIONS (testable now)
   which references failed does not.
 
 Trailer: Agent: subagent-worker-12
+
+============================================================
+AMENDMENT A1 (2026-09-11, committed BEFORE the sweep re-run; contains no
+measured counts)
+============================================================
+During script bring-up, inspecting extraction behavior on the retained
+tree revealed two token-wrapping conventions the P3/P4 rules did not
+cover, each causing a recorded reference to fail resolution purely
+because of wrapper characters (never because of content):
+
+  A1-a  markdown backtick-wrapped tokens, e.g. a line of the form
+        "- `path`: `<hex64>`," -- the path token arrives wrapped in
+        backticks and followed by a colon. The original single-pass
+        strip could leave the closing backtick after the colon was
+        stripped (strip order artifact), mis-resolving the reference.
+  A1-b  sha256sum binary-mode markers, e.g. manifest lines of the form
+        "<hex64> *path" -- the leading '*' is the sha256sum binary-mode
+        convention, not part of the path.
+
+AMENDED RULES (supersede the corresponding parts of P4 only):
+- norm_path strips the character set {quote, apostrophe, backtick,
+  asterisk, angle/curly/square brackets, trailing punctuation} to a
+  FIXPOINT (repeat until stable), so wrappers compose correctly. No
+  other resolution or recompute rule changes.
+- Fixture extended with fixture/backtick_table.md exercising A1-a with
+  two rows (one known-good with trailing backtick+comma, one known-bad
+  wrapped in backticks). P5 pass criteria are AMENDED to:
+  matched=8, mismatched=3, missing_file=3, out_of_tree=0,
+  unresolvable=0, unassociated=0, zero other classes.
+- The self-test must PASS under the amended counts before the sweep
+  runs; the sweep is then re-run from scratch (twice, byte-identical,
+  per P6). No measured counts were known or recorded when this
+  amendment was written; the artifacts of the first (pre-amendment)
+  bring-up run are discarded and not used as findings.
+
+Trailer: Agent: subagent-worker-12
