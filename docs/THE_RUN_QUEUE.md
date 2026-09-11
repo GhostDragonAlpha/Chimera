@@ -35,3 +35,10 @@ claim is only metadata; the worker must still verify and provision the returned
 worktree before writing. The module has no direct database, Git, engine, or
 credential output path. The `--poll-seconds` loop is deliberately separate
 from task execution so build, runtime, and DYAD admission remain explicit.
+
+`tools/agent_fleet/launch_worker.py` is the trusted launcher boundary. It
+enrolls a fresh identity, qualifies it through the supervisor path, removes
+service secrets from the child environment, and starts the worker with only its
+private session-file path. It refuses to overwrite an existing session file.
+The launcher does not provision worktrees; a claimed task still requires the
+documented supervisor provisioning step.
