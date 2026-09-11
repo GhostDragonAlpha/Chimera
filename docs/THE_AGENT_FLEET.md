@@ -603,3 +603,35 @@ consumes neither a slot nor the submitter's execution capacity, and
 failed reviewer-side recovery through supervisor `recover`, and a redundant
 `release_slot` on an already handed-off task is a no-op attestation. The full
 contract is [THE_REVIEW_SLOT_HANDOFF.md](THE_REVIEW_SLOT_HANDOFF.md).
+
+## Client instance identity: task-centric fence with staged migration (2026-09-11, fleet-client-instance-01)
+
+Distinct durable client identities are now part of the protocol
+(`tools/agent_fleet/`, reviewed with the lane). The trusted launcher mints a
+per-enrollment instance (`instance_id` + `instance_secret`) into the private
+session file; the controller stores ONLY the secret's sha256 fingerprint; the
+client sends `X-Chimera-Instance: <id>:<secret>` on every call (malformed →
+named refusal `invalid_instance_header`). Identity is a secret, never a PID.
+
+The fence is TASK-CENTRIC: `claim` binds the claiming instance
+(`owner_instance`); every owner-mutation op (checkpoint, submit_review,
+resource_*) on a bound task requires that instance — a second client sharing
+the bearer is refused by name (`instance_not_bound`;
+`instance_secret_mismatch` for a forged secret). Lead/supervisor integration
+paths (review_requeue, integration_request, ack, release*) are exempt by
+design: the integrator is not the task owner.
+
+Migration is staged and auditable: registry flag `instance_fencing`
+(supervisor `instance_fencing_set`) starts in `compat` — legacy sessions
+remain admitted, and their task events carry the explicit marker
+`legacy-unfenced` (the audit can always distinguish fenced from unfenced
+writes; the proven two-writer baseline is retained as a test). `enforced`
+refuses instance-less CLAIMS (existing unfenced claims drain naturally);
+flip only through a reviewed deployment transition after per-client
+migration. Bound state persists across restart (same store). Cooperative
+boundary unchanged: bearer+instance fencing is capability fencing, not a
+sandbox — same-OS-account shell access remains outside the model. Tests:
+`tools/agent_fleet/test_client_instance.py` (7: baseline before-picture,
+fence matrix, secret-absence scan across state/snapshot/events, reopen
+persistence, enforced-mode gating, transport refusal, supervisor-marker
+absence).

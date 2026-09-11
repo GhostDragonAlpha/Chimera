@@ -34,7 +34,15 @@ class Handler(BaseHTTPRequestHandler):
             if not isinstance(request,dict) or set(request)-{'operation','arguments'}:raise Refusal('invalid_envelope')
             args=request.get('arguments',{})
             if not isinstance(args,dict) or not isinstance(request.get('operation'),str):raise Refusal('invalid_envelope')
-            result=self.server.control.call(request['operation'],auth[7:],**args)
+            # Instance plane (fleet-client-instance-01): optional per-
+            # enrollment client identity. Malformed -> named refusal.
+            instance=None
+            iheader=self.headers.get('X-Chimera-Instance','')
+            if iheader:
+                iid,isecret=iheader.split(':',1) if ':' in iheader else ('','')
+                if not iid or not isecret: raise Refusal('invalid_instance_header')
+                instance={'id':iid,'secret':isecret}
+            result=self.server.control.call(request['operation'],auth[7:],_instance=instance,**args)
             return self.reply(200,result)
         except (Refusal,ValueError,TypeError,KeyError) as e:
             return self.reply(409,{'error':str(e)})

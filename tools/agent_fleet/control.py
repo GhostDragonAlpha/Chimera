@@ -67,7 +67,8 @@ class Control:
             initial={'schema':1,'revision':0,'root':root,'supervisor_hash':self.supervisor,'enrollment_hash':self.enrollment,
                      'leader':None,'epoch':0,'agents':{},'tasks':{},'resources':{},'requests':{},
                      'resource_queues':[],'memory':{'budget_mb':self.memory_budget_mb,'admitted_mb':0},
-                     'slots':{str(i):{'task':None,**slot_layout(root,i)} for i in range(1,6)}}
+                     'slots':{str(i):{'task':None,**slot_layout(root,i)} for i in range(1,6)},
+                     'instance_fencing':'compat'}
             con.execute('INSERT OR IGNORE INTO state VALUES(1,?)',(json.dumps(initial),))
             saved=json.loads(con.execute('SELECT body FROM state WHERE id=1').fetchone()[0])
             require(saved['schema']==1 and saved['root']==root,'configuration_mismatch')
@@ -90,11 +91,14 @@ class Control:
     def _lead(self,s,actor,epoch):
         require(actor==s['leader'] and epoch==s['epoch'],'stale_or_nonleader')
 
-    def _task(self,s,actor,tid,generation):
+    def _task(self,s,actor,tid,generation,instance=None):
         t=s['tasks'].get(tid)
         require(t is not None,'unknown_task')
         require(t['owner']==actor and t['generation']==generation,'stale_or_foreign_claim')
         require(t['state'] in ('RUNNING','BLOCKED','REVIEW'),'task_not_owned_active')
+        owner_instance=t.get('owner_instance')
+        if owner_instance is not None:
+            require(instance==owner_instance,'instance_not_bound')
         return t
 
     def _elect(self,s):
@@ -291,13 +295,33 @@ class Control:
             # Schema-1 additive catalogue plane (present in registries created
             # before the master-catalogue extension): planning data only.
             s.setdefault('catalogue',{'import':None,'imports':[]})
+            # fleet-client-instance-01 (2026-09-11): additive instance plane.
+            s.setdefault('instance_fencing','compat')
+            for a in s['agents'].values(): a.setdefault('instances',{})
+            for t in s['tasks'].values(): t.setdefault('owner_instance',None)
             actor=self._actor(s,token)
+            # Instance plane: optional per-enrollment client identity
+            # (header-parsed by the service). Only its sha256 fingerprint
+            # is stored; the secret never reaches state or events.
+            inst=p.pop('_instance',None)
+            require(inst is None or isinstance(inst,dict),'invalid_instance_payload')
+            instance_id=None
+            if inst is not None:
+                require(actor in s['agents'],'instance_requires_agent_session')
+                fps=s['agents'][actor].get('instances') or {}
+                require(inst.get('id') in fps and
+                        secrets.compare_digest(fps[inst['id']]['secret_hash'],digest(inst.get('secret',''))),
+                        'instance_secret_mismatch')
+                instance_id=inst['id']
+            p['_resolved_instance']=instance_id
             result=self._dispatch(s,actor,op,p)
             # Catalogue reads are pure reads: no revision bump, no event.
             if op not in ('snapshot','events','catalogue_read','catalogue_next'):
                 s['revision']+=1
                 # Do not persist credentials or arbitrary request text in audit events.
                 event={k:p[k] for k in ('task','agent','generation','epoch','reason','request','slot') if k in p}
+                if instance_id is not None: event['instance']=instance_id
+                elif actor not in ('SUPERVISOR','ENROLLMENT') and 'task' in event: event['instance']='legacy-unfenced'
                 event['actor']=actor
                 con.execute('INSERT INTO events VALUES(?,?,?)',(s['revision'],op,json.dumps(event)))
                 con.execute('UPDATE state SET body=? WHERE id=1',(json.dumps(s),))
@@ -353,12 +377,27 @@ class Control:
             require(re.fullmatch('[a-zA-Z0-9_-]{1,80}',aid) and aid not in s['agents'],'invalid_or_existing_agent')
             secret=secrets.token_urlsafe(32)
             s['agents'][aid]={'label':text(p.get('label'),'label'),'token_hash':digest(secret),'alive':True,
-                'qualified':False,'capabilities':[],'max_tasks':1,'can_lead':False,'rank':0,'ready_epoch':None,'qualification':None}
-            return {'agent':aid,'session_token':secret,'qualified':False}
+                'qualified':False,'capabilities':[],'max_tasks':1,'can_lead':False,'rank':0,'ready_epoch':None,'qualification':None,
+                'instances':{}}
+            out={'agent':aid,'session_token':secret,'qualified':False}
+            inst=p.get('instance')
+            if inst is not None:
+                require(isinstance(inst,dict) and bool(inst.get('id')),
+                        'invalid_instance_payload')
+            if isinstance(inst,dict) and inst.get('id'):
+                iid=inst.get('id');isecret=inst.get('secret')
+                require(isinstance(iid,str) and re.fullmatch('[A-Za-z0-9_-]{4,64}',iid),'invalid_instance_id')
+                require(isinstance(isecret,str) and len(isecret)>=16,'instance_secret_too_short')
+                s['agents'][aid]['instances'][iid]={'secret_hash':digest(isecret)}
+                out['instance_id']=iid
+            return out
         require(actor!='ENROLLMENT','enrollment_cannot_control')
         if op=='snapshot':
             out=json.loads(json.dumps(s));out.pop('supervisor_hash');out.pop('enrollment_hash')
-            for a in out['agents'].values():a.pop('token_hash')
+            for a in out['agents'].values():
+                a.pop('token_hash')
+                a['instances']={k:{kk:vv for kk,vv in v.items() if kk!='secret_hash'}
+                                for k,v in (a.get('instances') or {}).items()}
             # Catalogue snapshot carries only the summary (digest+counts);
             # full imported content is served record-by-record via catalogue_read.
             (out.get('catalogue') or {}).pop('payload',None)
@@ -385,6 +424,14 @@ class Control:
         if op=='elect':
             require(actor=='SUPERVISOR' and s['leader'] is None,'initial_or_vacant_supervisor_election_only')
             return self._elect(s)
+        if op=='instance_fencing_set':
+            require(actor=='SUPERVISOR','supervisor_only')
+            mode=p.get('mode')
+            require(mode in ('compat','enforced'),'invalid_fencing_mode')
+            require(any((a.get('instances') or {}) for a in s['agents'].values()) or mode=='compat',
+                    'no_instance_bearing_agents')
+            s['instance_fencing']=mode
+            return {'instance_fencing':mode}
         if op=='suspect':
             require(p.get('agent') in s['agents'],'unknown_agent')
             return {'investigation_required':True,'leader_unchanged':s['leader'],'reason':text(p.get('reason'),'suspicion')}
@@ -394,6 +441,15 @@ class Control:
             return self._fail(s,p.get('agent'),p['reason'],p.get('evidence'))
         if op=='yield':
             require(actor in s['agents'],'agent_only')
+            # fleet-client-instance-01 gen-2 (review finding 1): a duplicated
+            # bearer must not evict a bound instance's claim. Yielding an
+            # instance-bound task requires that instance; unfenced legacy
+            # claims yield as before (audited legacy-unfenced).
+            instance_id=p.get('_resolved_instance')
+            for t in s['tasks'].values():
+                if t.get('owner')==actor and t.get('owner_instance') is not None \
+                        and t['state'] in ('RUNNING','BLOCKED','REVIEW'):
+                    require(instance_id==t['owner_instance'],'instance_not_bound')
             return self._fail(s,actor,'EXPLICIT_YIELD',text(p.get('checkpoint'),'preservation_checkpoint'))
         if op=='create_task':
             self._lead(s,actor,p.get('epoch'))
@@ -434,10 +490,14 @@ class Control:
                 require(any(v['task'] is None and v['kind']==t['kind'] for v in s['slots'].values()),
                         'no_free_slot')
                 require(False,'stale_provision_requires_recovery')
-            n,slot=available[0];slot['task']=t['id'];t.update(owner=actor,slot=n,state='RUNNING',generation=t['generation']+1)
+            if s.get('instance_fencing')=='enforced':
+                require(p.get('_resolved_instance') is not None,'instance_binding_required')
+            n,slot=available[0];slot['task']=t['id']
+            t.update(owner=actor,slot=n,state='RUNNING',generation=t['generation']+1,
+                     owner_instance=p.get('_resolved_instance'))
             return {**t,'worktree':slot['path'],'engine':slot['engine'],'provisioning':'REQUIRED: claim metadata does not create or modify a worktree'}
         if op in ('checkpoint','submit_review','resource_acquire','resource_release'):
-            t=self._task(s,actor,p.get('task'),p.get('generation'))
+            t=self._task(s,actor,p.get('task'),p.get('generation'),instance=p.get('_resolved_instance'))
             if op=='checkpoint':
                 require(t['state'] in ('RUNNING','BLOCKED'),'review_is_frozen')
                 state=p.get('state','RUNNING');require(state in ('RUNNING','BLOCKED'),'invalid_checkpoint_state')
@@ -486,7 +546,7 @@ class Control:
             self._promote_queues(s)
             return {'cleared':name}
         if op=='resource_request':
-            t=self._task(s,actor,p.get('task'),p.get('generation'))
+            t=self._task(s,actor,p.get('task'),p.get('generation'),instance=p.get('_resolved_instance'))
             wants=self._declare_wants(p.get('wants'))
             priority=integer(p.get('priority',5),0,9,'priority')
             req={'id':secrets.token_hex(8),'task':t['id'],'owner':actor,'generation':t['generation'],
@@ -497,12 +557,12 @@ class Control:
             self._promote_queues(s)
             return self._queue_entry(s,req)
         if op=='resource_queue':
-            t=self._task(s,actor,p.get('task'),p.get('generation'))
+            t=self._task(s,actor,p.get('task'),p.get('generation'),instance=p.get('_resolved_instance'))
             entries=[self._queue_entry(s,q) for q in s['resource_queues']
                      if q['task']==t['id'] and not q['served']]
             return {'queued':entries}
         if op=='resource_revoke_pending':
-            t=self._task(s,actor,p.get('task'),p.get('generation'))
+            t=self._task(s,actor,p.get('task'),p.get('generation'),instance=p.get('_resolved_instance'))
             n=0
             for q in s['resource_queues']:
                 if q['task']==t['id'] and not q['served']:
