@@ -1,0 +1,46 @@
+RESULT — fleet-mailbox-hardening-01 (generation 1, slot 2, subagent-worker-08)
+
+Prediction scorecard (PREREGISTRATION.txt, judged against MEASUREMENT.txt):
+
+| # | prediction | verdict |
+|---|---|---|
+| 1 | atomicity probe: 100 posts / 4 concurrent OS processes / zero lost, zero partials | CONFIRMED (100 files, 100 unique ids, all parse, 25 per sender, no ".tmp-*" survivors) |
+| 2 | take idempotent; served append-only (2 -> 4 across takes; bytes never change; nothing deleted) | CONFIRMED (TakeAndServedTests; unreadable files moved to served too, never dropped) |
+| 3 | name-safety refusals fire with zero filesystem writes | CONFIRMED (separators, traversal, leading dot, reserved chars, empty; temp root empty after all refusals; read-side refusals too) |
+| 4 | live-tree guard passes: E:\ChimeraWork\mailbox untouched by the suite | CONFIRMED (no test agent name in the live tree before/after any test; all tests on temp roots; the lane's only live interaction was one read-only poll) |
+| 5 | repo copy CLI behavior-identical to live v0; defaults unchanged | CONFIRMED (diff = docstring + root seam only; CLI surface and output JSON keys identical; default ROOT is the live instance) |
+
+Falsifier disposition (named in PREREGISTRATION.txt before any edit):
+
+- Any lost message (missing file, unparseable, duplicate id, surviving ".tmp-*") ...... NOT FIRED
+- Any take deleting history (served loss/decrease/byte-change) ....................... NOT FIRED
+- Any test touching the live tree .................................................... NOT FIRED (guard in every test + teardown)
+- A refusal that still writes ........................................................ NOT FIRED (tree empty after refusals)
+- A repo copy whose default CLI behavior differs from live v0 ........................ NOT FIRED (seam-only delta)
+
+What landed (scoped paths):
+
+- tools/agent_fleet/fleet_mailbox.py — behavior-identical promotion of the live v0 with
+  the instance-root seam (root= / FLEET_MAILBOX_ROOT) for tests and alternate instances.
+- tools/agent_fleet/test_fleet_mailbox.py — NEW: 10 temp-root tests pinning the
+  predictions above (4-process atomicity probe, take idempotence, append-only served,
+  name safety, unreadable retention, missing-inbox shape, CLI surface, live-tree guard).
+- docs/THE_FLEET_MAILBOX.md — the coordination-ONLY contract (self-declared senders,
+  polling pattern, atomic posting, append-only served, name safety, live instance
+  authority) + the controller-plane successor DESIGN (mailbox_post/mailbox_take in the
+  single-writer store with instance-fenced senders; why better; the deployment-transition
+  rule that no wrapper may shadow the new ops — the PR #80 dispatch-interception lesson).
+- docs/evidence/agent_fleet/FLEET_MAILBOX/ — this record set (scope nuance flagged to
+  the lead: the task record lists three scoped files; the rule-0 evidence home follows
+  the repo convention and overlaps no other active task).
+
+NOT CLAIMED:
+
+- No authentication claim: self-declared senders remain a declared limit; the
+  instance-fenced successor is DESIGN here, not delivery.
+- No change to the live production mailbox, its tools copy, or its data; the fleet-space
+  instance stays authoritative until a successor lane executes the transition.
+- No delivery guarantees beyond the code's actual behavior (poll-based; no push).
+- Human acceptance (reserved to Alan / the reviewer).
+
+Acceptance: NOT CLAIMED.
