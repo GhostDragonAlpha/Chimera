@@ -1,0 +1,17 @@
+test_auto_spawn_respects_integration_named_guard (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_auto_spawn_respects_integration_named_guard) ... ok
+test_auto_spawn_respects_slot_guard_fuse (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_auto_spawn_respects_slot_guard_fuse) ... ok
+test_claim_auto_spawns_when_no_free_worker_slot (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_claim_auto_spawns_when_no_free_worker_slot) ... ok
+test_claim_binds_owner_instance_and_fence_holds (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_claim_binds_owner_instance_and_fence_holds) ... ok
+test_compat_mode_headerless_claim_stays_legacy_unfenced (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_compat_mode_headerless_claim_stays_legacy_unfenced) ... ok
+test_correction_interception_still_gates_post_requeue (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_correction_interception_still_gates_post_requeue) ... ok
+test_detached_review_task_does_not_consume_agent_capacity (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_detached_review_task_does_not_consume_agent_capacity) ... ok
+test_enforced_mode_refuses_instanceless_claim (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_enforced_mode_refuses_instanceless_claim) ... ok
+test_free_but_provisioned_slot_still_refuses_not_spawned (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_free_but_provisioned_slot_still_refuses_not_spawned) ... ok
+test_recover_stays_supervisor_only_and_release_routes_slotless (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_recover_stays_supervisor_only_and_release_routes_slotless) ... ok
+test_running_task_still_counts_toward_agent_capacity (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_running_task_still_counts_toward_agent_capacity) ... ok
+test_slotless_requeue_requires_exact_head_then_requeues (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_slotless_requeue_requires_exact_head_then_requeues) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 3.017s
+
+OK
