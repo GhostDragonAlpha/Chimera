@@ -1,0 +1,122 @@
+{
+  "schema": "chimera-measurement-v1",
+  "task": "dyad-resident-identity-01",
+  "generation": 5,
+  "slot": "4",
+  "worktree": "E:\\ChimeraWork\\slot-04",
+  "branch": "astra/tasks/dyad-resident-identity-01",
+  "recorded_base": "accd15b61d7ac3805edfc36535ef99de121baf65",
+  "stale_base_reconciliation": {
+    "action": "git fetch origin && git merge origin/astra/gait-capture",
+    "result": "fast-forward (no local commits existed yet; no new commit created)",
+    "merged_head": "4604de40bd6cdd02d3cc277019f8bac5030c2dbe"
+  },
+  "environment": {
+    "python": "3.14.3",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "shell": "Git Bash",
+    "measured_at_utc": "2026-09-11T05:36:57Z"
+  },
+  "producing_commands": [
+    {
+      "id": "base_counterexample",
+      "command": "CHIMERA_RESIDENT_IDENTITY_SENSES_MODULE=docs/evidence/dyad_resident_identity/base_senses_accd15b6.py PYTHONIOENCODING=utf-8 python -m unittest tools.test_dyad_resident_identity -v",
+      "cwd": "E:\\ChimeraWork\\slot-04 (repo root)",
+      "exit_code": 1,
+      "raw_output": "docs/evidence/dyad_resident_identity/base_counterexample_cpu_stderr.txt"
+    },
+    {
+      "id": "canonical",
+      "command": "PYTHONIOENCODING=utf-8 python -m unittest tools.test_dyad_resident_identity -v",
+      "cwd": "E:\\ChimeraWork\\slot-04 (repo root)",
+      "exit_code": 0,
+      "raw_output": "docs/evidence/dyad_resident_identity/cpu_stderr.txt"
+    },
+    {
+      "id": "related_policy_suite",
+      "command": "PYTHONIOENCODING=utf-8 python -m unittest tools.test_dyad_model_policy -v",
+      "cwd": "E:\\ChimeraWork\\slot-04 (repo root)",
+      "exit_code": 0,
+      "raw_output": "docs/evidence/dyad_resident_identity/related_test_dyad_model_policy_cpu_stderr.txt"
+    },
+    {
+      "id": "correction_diff",
+      "command": "git diff accd15b61d7ac3805edfc36535ef99de121baf65 HEAD -- ChimeraEngine/senses.py > docs/evidence/dyad_resident_identity/senses_base_to_head.diff",
+      "cwd": "E:\\ChimeraWork\\slot-04",
+      "exit_code": 0,
+      "raw_output": "docs/evidence/dyad_resident_identity/senses_base_to_head.diff"
+    },
+    {
+      "id": "base_snapshot_extraction",
+      "command": "git show accd15b61d7ac3805edfc36535ef99de121baf65:ChimeraEngine/senses.py > docs/evidence/dyad_resident_identity/base_senses_accd15b6.py",
+      "exit_code": 0,
+      "raw_output": "docs/evidence/dyad_resident_identity/base_senses_accd15b6.py",
+      "integrity": "git hash-object of the extracted file = 3250ecb498df54f45fdd93db7948a793f09e420a, equal to the base blob hash (git ls-tree accd15b6:ChimeraEngine senses.py)"
+    }
+  ],
+  "runs": {
+    "base_counterexample": {
+      "module_under_test": "verbatim accd15b6 ChimeraEngine/senses.py (snapshot, blob 3250ecb498df54f45fdd93db7948a793f09e420a)",
+      "tests_run": 6,
+      "failures": 3,
+      "failed": [
+        "test_case2_on_disk_only_returns_none_never_on_disk_id: base returned 'on-disk-model' (on-disk id reported resident) -- THE ORIGINAL COUNTEREXAMPLE, reproduced fresh",
+        "test_case4_multiple_loaded_returns_none_not_first (state records): base returned 'resident-a' (hidden first-selection)",
+        "test_case4_multiple_loaded_returns_none_not_first (status records): base returned 'resident-a' (hidden first-selection)"
+      ],
+      "passed": [
+        "test_case1_no_model_returns_none",
+        "test_case3_single_loaded_returns_that_id",
+        "test_case5_malformed_payload_returns_none_no_escape",
+        "test_case6_transport_failure_returns_none"
+      ],
+      "matches_preregistration": "YES -- preregistration predicted failures confined to cases 2 and 4"
+    },
+    "canonical": {
+      "module_under_test": "installed ChimeraEngine/senses.py at branch head (canonical merged code, senses.py UNMODIFIED by this task)",
+      "tests_run": 6,
+      "failures": 0,
+      "errors": 0,
+      "result": "OK (6/6)"
+    },
+    "related_policy_suite": {
+      "module_under_test": "tools/test_dyad_model_policy.py (imports ChimeraEngine.senses)",
+      "tests_run": 13,
+      "failures": 0,
+      "errors": 0,
+      "result": "OK (13/13)"
+    }
+  },
+  "prediction_verification_table": [
+    {"case": 1, "name": "no-model", "stimulus": "{\"data\": []}", "preregistered_result": "None", "canonical": "PASS", "base_behavior": "None (passed at base too)"},
+    {"case": 2, "name": "on-disk-only", "stimulus": "records present, none loaded", "preregistered_result": "None, never an on-disk id", "canonical": "PASS", "base_behavior": "returned 'on-disk-model' (falsifier FIRED)"},
+    {"case": 3, "name": "loaded (unambiguous)", "stimulus": "exactly one explicitly loaded record", "preregistered_result": "that id", "canonical": "PASS", "base_behavior": "that id (passed at base too)"},
+    {"case": 4, "name": "multiple-loaded", "stimulus": "two explicitly loaded records", "preregistered_result": "None, named ambiguity, never first-selected", "canonical": "PASS", "base_behavior": "returned first loaded id (falsifier FIRED)"},
+    {"case": 5, "name": "malformed", "stimulus": "payload not object / data not list / data missing", "preregistered_result": "None, no exception escapes", "canonical": "PASS", "base_behavior": "None via caught exception (passed at base too)"},
+    {"case": 6, "name": "transport-failure", "stimulus": "URLError / OSError / invalid JSON body", "preregistered_result": "None", "canonical": "PASS", "base_behavior": "None (passed at base too)"}
+  ],
+  "side_effect_laws": {
+    "only_metadata_surface": "every recorded urlopen call targeted /api/v0/models with no request body (GET read)",
+    "no_load_pick_evict": "strict eye_control Mock stand-in asserted load/unload/evict/pick/chat_completions never called in all 6 canonical cases",
+    "served_identity_response_derived": "_SERVED/_FINISH remained None after every metadata read; no inference surface touched",
+    "real_inference_or_gpu": "none occurred -- all transports synthetic; no network, no model load, no GPU"
+  },
+  "correction_provenance": {
+    "senses_py_modified_by_this_task": false,
+    "rationale": "Smallest coherent correction: the canonical history merged during stale-base reconciliation already supplies and exceeds the base fix (ids[0] fallback removed -> single unambiguous explicitly-loaded id, None otherwise via _loaded_model_ids/DyadModelFailure). A competing re-fix was preregistered out; this task pins the contract with the missing regressions.",
+    "diff_artifact": "docs/evidence/dyad_resident_identity/senses_base_to_head.diff",
+    "prior_attempt_reference": "b8d37f1f (misbound review branch, retained; its test was a placeholder -- this suite replaces it with executable falsifiers)"
+  },
+  "falsifier_status": {
+    "on_disk_id_reported_resident": "FIRED at base (retained); does NOT fire on branch head",
+    "guessed_served_model": "NOT FIRED",
+    "hidden_model_selection": "FIRED at base (retained); does NOT fire on branch head",
+    "real_inference_during_cpu_tests": "NOT FIRED",
+    "old_failed_evidence_overwritten": "NOT FIRED -- all base-failure artifacts retained verbatim; nothing deleted"
+  },
+  "not_claimed": [
+    "No live model load, inference, eviction, or GPU operation performed or claimed.",
+    "DYAD visual acceptance NOT_CLAIMED.",
+    "Task acceptance NOT_CLAIMED (pending lead review; slot-01 integrates after review)."
+  ]
+}

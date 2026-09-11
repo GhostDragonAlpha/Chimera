@@ -1,0 +1,537 @@
+diff --git a/ChimeraEngine/senses.py b/ChimeraEngine/senses.py
+index 3250ecb4..5a3bb133 100644
+--- a/ChimeraEngine/senses.py
++++ b/ChimeraEngine/senses.py
+@@ -1,27 +1,23 @@
+ """senses.py -- the DYAD's PERCEPTION (eye + ear + movie).
+ 
+-VISION + TEXT ride on **LM STUDIO'S RESIDENT MODEL** by operator decree (2026-08-26): "Vision
+-Judge should be set to whatever the current model is loaded in LM Studio" -- adopted, never
+-pinned, routed through core/lm_gateway's fair queue (the single-endpoint law), which raises
+-NoModelLoaded when nothing is resident -> the eye is DARK -> a FAIL, never a skip. Requests go
+-over the OpenAI-compatible /v1/chat/completions as base64 data-URL image parts; context budget
+-is the server's own (60,672 at time of update), so no num_ctx math here. Set
+-CHIMERA_VISION_BACKEND=ollama to restore the retired qwen3.8 path (kept verbatim below).
++VISION + TEXT use the checked-in permanent DYAD policy. The operator's 2026-09-10
++selection supersedes the older auto-follow rule for the DYAD only. Requests still
++use core/lm_gateway's fair queue, but this module's freshly loaded private gateway
++instance may not retarget the policy's exact model id. The intended id must already
++be loaded; this module never loads, evicts, or reconfigures it.
+ 
+ AUDIO (the sound dyad) still needs the Omni model on the dedicated llama-server; when that
+ server is down the ear is DARK -- an advisory FAIL, never a block (sound is additive).
+ 
+-THE ONE-IMAGE WALL (2026-08-31, operator): the eye is whatever LM Studio has resident.
+-The current resident is `qwen3.8-27b-nvfp4-mtp` -- a fast VLM with 60,672 context.
++THE ONE-IMAGE WALL (2026-08-31, operator) remains: one picture per report.
++The permanent eye is `qwen3.8-27b-nvfp4-mtp`; its loaded context is configured
++by the operator and is not changed here.
+ A movie inlined as twelve 384px frames does not fit, and the failure is not a clean error:
+ it is a truncated read that looks like a verdict. The operator's rule: **one picture per
+ report.** N frames means N calls and N reports, aggregated afterwards.
+ 
+-So the wall is enforced HERE, in code, instead of living as a thing to remember. It is an
+-env-tunable ceiling rather than a hard-coded 1, because the model is ADOPTED, never pinned:
+-when a resident model has room for a batch, raise CHIMERA_SENSES_MAX_IMAGES and the lane
+-obeys. The ollama lane keeps sizing num_ctx to the frames it is given (that is what
+-FRAME_TOKENS is for), so it is exempt.
++So the wall is enforced HERE, in code, instead of living as a thing to remember. Its
++historical environment control remains for compatibility; the default is one image.
+ 
+ BUDGET (2026-09-02, operator): "no prompt to it will have more than 60,000 tokens in one
+ shot but you should try to fill up as much of that 60,000 as you can" -- the eye's answer
+@@ -40,8 +36,9 @@ from pathlib import Path
+ 
+ import dyad_log   # every report lands in Saved/dyad/dyad_log.jsonl (operator decree 2026-09-03)
+ 
+-# VISION / TEXT backend selection -- LM Studio resident model is the decree default.
+-VISION_BACKEND = os.environ.get("CHIMERA_VISION_BACKEND", "lmstudio").strip().lower()
++# VISION / TEXT backend selection is fixed for the DYAD. Environment variables
++# may still configure the endpoint, but may not silently bypass model policy.
++VISION_BACKEND = "lmstudio"
+ VISION_URL = os.environ.get("CHIMERA_VISION_URL", "http://localhost:11434")      # ollama lane
+ VISION_MODEL = os.environ.get("CHIMERA_VISION_MODEL", "qwen3.8")                 # ollama lane
+ LMSTUDIO_URL = os.environ.get("CHIMERA_LMSTUDIO_URL", "http://localhost:1234")   # decree lane
+@@ -49,10 +46,9 @@ LMSTUDIO_URL = os.environ.get("CHIMERA_LMSTUDIO_URL", "http://localhost:1234")
+ # AUDIO backend -- the dedicated llama-server (the Omni model) for the ear only.
+ AUDIO_URL = os.environ.get("CHIMERA_SENSES_URL", "http://127.0.0.1:1235")
+ 
+-# The eye's answer budget. qwen3.8-27b-nvfp4-mtp is a REASONING model with a 60,672-token
+-# context window. The operator wants elaborate answers: fill as much of the 60k budget
+-# as possible. We cap at 60,000 tokens. This is the speed lever: more tokens = longer answer = more time.
+-# The model is VERY FAST with this quant, so the trade-off favors quality.
++# The historical answer request cap remains unchanged in this policy-only patch.
++# LM Studio's loaded context is operator-owned (observed as 30,208 on
++# 2026-09-10); senses does not load or reconfigure it.
+ #
+ # Previous budget was 2,600 (qwen3.8-flash-next era). The new model has 23x more
+ # context, and the operator wants every token used. Truncation at 60k is a LOST
+@@ -64,8 +60,7 @@ MAX_TOKENS = int(os.environ.get("CHIMERA_SENSES_MAX_TOKENS", "60000"))
+ # movie. Re-measure if you change the frame resolution (see `_post`). (Ollama lane only.)
+ FRAME_TOKENS = int(os.environ.get("CHIMERA_SENSES_FRAME_TOKENS", "86"))
+ 
+-# ── THE EYE IS NAMED AND HARD-CODED (operator decree 2026-09-02) ─────────────
+-#   CHIMERA SENSES MODEL = qwen3.8-27b-nvfp4-mtp   context 60,672 (operator)
++# ── THE EYE IS NAMED BY CHECKED-IN POLICY (operator decree 2026-09-10) ───────
+ #
+ # THE CONTEXT IS THE OPERATOR'S CALL, NOT OURS TO MANAGE. They set it — loaded
+ # by them, in LM Studio, at load time (a request cannot change it; the context
+@@ -73,102 +68,145 @@ FRAME_TOKENS = int(os.environ.get("CHIMERA_SENSES_FRAME_TOKENS", "86"))
+ # push a num_ctx at it: LM Studio owns the loaded context, and overriding it can
+ # trigger a reload, which is the eviction war core/lm_gateway exists to prevent.
+ #
+-# For the record, so the next agent does not re-derive it: the context is the
+-# dominant cost of a read. Loaded at 60,672, one 2560x1440 frame takes ~30-60s
+-# on this fast quant. A frame that size is ~3,771 prompt tokens (measured), the
+-# briefing is ~1,500 tokens, and the question ~500 tokens, so ~5,800 is what is
+-# actually needed as INPUT. The remaining ~55,000 tokens are the eye's answer
+-# budget — fill it with elaborate, detailed analysis.
+-#
+ # `type: vlm` is the whole ballgame — the model MUST accept images.
+-# qwen3.8-27b-nvfp4-mtp is a VLM (vision-language model) that accepts images
+-# and has a 60,672-token context. The operator chose it for speed + quality.
+-#
+-# The ceiling is the SERVER'S OWN reported loaded context (60,672), not a guess.
+-# It is a budget, not a licence: the one-image-per-call wall (MAX_IMAGES_PER_CALL)
+-# stays, because a report is ABOUT one picture — batching frames would make the
+-# eye describe a sequence instead of judging a frame. The headroom is there if
+-# a future decree wants it.
+-SENSES_MODEL = os.environ.get("CHIMERA_SENSES_MODEL", "qwen3.8-27b-nvfp4-mtp")
+-
+-# 2026-09-03, operator decree (revised after the wrong-model incident): the dyad
+-# FOLLOWS THE OPERATOR'S LOADED MODEL. Precedence:
+-#   1. Saved/dyad_model.txt        — an EXPLICIT pin (one model id), only for
+-#                                    controlled A/B comparisons. Read fresh
+-#                                    every call. "auto"/blank = not pinned.
+-#   2. AUTO-FOLLOW (the default):  whatever vision model the operator has LOADED
+-#                                    in LM Studio right now (/api/v0/models,
+-#                                    state=="loaded", type vlm). The operator
+-#                                    loads GSQ RCO -> the dyad is GSQ RCO. They
+-#                                    load nvfp4-mtp -> the dyad follows. The dyad
+-#                                    NEVER asks the server to load or evict.
+-#   3. default (nvfp4-mtp)         — only reachable when nothing is loaded (the
+-#                                    on-demand path; eye_control refuses to load
+-#                                    over a resident model, so this cannot evict).
+-# Every identity change is logged once (the identity law: reports from different
+-# eyes are not comparable, so the change itself must be on the record).
+-_DYAD_MODEL_FILE = Path(__file__).resolve().parent.parent / "Saved" / "dyad_model.txt"
+-_ACTIVE_MODEL = SENSES_MODEL
+-
+-def _pinned_model() -> str | None:
+-    """The explicit pin, if any. "auto"/blank/missing = not pinned."""
+-    try:
+-        if _DYAD_MODEL_FILE.exists():
+-            txt = _DYAD_MODEL_FILE.read_text(encoding="utf-8").strip()
+-            if txt and txt.lower() != "auto":
+-                return txt
+-    except OSError:
+-        pass
+-    return None
++# The selected qwen3.8 id must accept images; can_see measures that separately.
++SENSES_MODEL = "qwen3.8-27b-nvfp4-mtp"  # compatibility name; policy is authoritative
++_DYAD_POLICY_FILE = Path(__file__).with_name("dyad_model_policy.json")
++_ACTIVE_MODEL: str | None = None
++
++
++class DyadModelFailure(RuntimeError):
++    """Named failure of the permanent DYAD identity contract."""
++
++    def __init__(self, reason: str, message: str):
++        super().__init__(f"[{reason}] {message}")
++        self.reason = reason
++
+ 
+-def _loaded_vlm() -> str | None:
+-    """The operator's loaded vision model, if any. Pure read; never loads."""
++class DyadModelReason:
++    POLICY_MISSING = "dyad_model_policy_missing"
++    POLICY_INVALID = "dyad_model_policy_invalid"
++    POLICY_PERMANENT = "dyad_model_policy_permanent"
++    BACKEND_FORBIDDEN = "dyad_backend_forbidden"
++    MODEL_LIST_UNAVAILABLE = "dyad_loaded_model_list_unavailable"
++    REQUIRED_MODEL_NOT_LOADED = "dyad_required_model_not_loaded"
++    RESPONSE_MODEL_MISSING = "dyad_response_model_missing"
++    RESPONSE_MODEL_WRONG = "dyad_response_model_wrong"
++
++
++def _dyad_policy() -> dict:
++    """Read and validate the checked-in policy afresh for every DYAD call."""
+     try:
+-        with urllib.request.urlopen(LMSTUDIO_URL + "/api/v0/models", timeout=4) as r:
+-            models = json.load(r).get("data", [])
+-    except Exception:
+-        return None
+-    for m in models:
+-        if m.get("state") == "loaded" and m.get("type") == "vlm":
+-            return m.get("id")
+-    return None
++        payload = json.loads(_DYAD_POLICY_FILE.read_text(encoding="utf-8"))
++    except FileNotFoundError as e:
++        raise DyadModelFailure(
++            DyadModelReason.POLICY_MISSING,
++            f"permanent DYAD policy missing: {_DYAD_POLICY_FILE}",
++        ) from e
++    except (OSError, UnicodeError, json.JSONDecodeError) as e:
++        raise DyadModelFailure(
++            DyadModelReason.POLICY_INVALID,
++            f"cannot read permanent DYAD policy {_DYAD_POLICY_FILE}: {e}",
++        ) from e
++    if not isinstance(payload, dict):
++        raise DyadModelFailure(
++            DyadModelReason.POLICY_INVALID, "permanent DYAD policy must be a JSON object"
++        )
++    required = {
++        "schema": "chimera-dyad-model-policy-v1",
++        "mode": "fixed",
++    }
++    for field, expected in required.items():
++        if payload.get(field) != expected:
++            raise DyadModelFailure(
++                DyadModelReason.POLICY_INVALID,
++                f"permanent DYAD policy {field!r} must equal {expected!r}",
++            )
++    for field in ("model_id", "model_relative_path"):
++        if not isinstance(payload.get(field), str) or not payload[field].strip():
++            raise DyadModelFailure(
++                DyadModelReason.POLICY_INVALID,
++                f"permanent DYAD policy requires non-empty {field!r}",
++            )
++    return payload
++
++
++def _enforce_dyad_backend_policy() -> None:
++    requested = os.environ.get("CHIMERA_VISION_BACKEND", "lmstudio").strip().lower()
++    if requested not in ("", "lmstudio"):
++        raise DyadModelFailure(
++            DyadModelReason.BACKEND_FORBIDDEN,
++            f"permanent DYAD policy requires LM Studio; backend {requested!r} is forbidden",
++        )
++
++
++def _loaded_model_ids(timeout: float = 4.0) -> list[str]:
++    """Return only explicitly loaded ids; never fall back to on-disk entries."""
++    try:
++        with urllib.request.urlopen(LMSTUDIO_URL + "/api/v0/models", timeout=timeout) as r:
++            payload = json.load(r)
++    except Exception as e:
++        raise DyadModelFailure(
++            DyadModelReason.MODEL_LIST_UNAVAILABLE,
++            f"cannot verify loaded DYAD model through /api/v0/models: {e}",
++        ) from e
++    if not isinstance(payload, dict) or not isinstance(payload.get("data", []), list):
++        raise DyadModelFailure(
++            DyadModelReason.MODEL_LIST_UNAVAILABLE,
++            "LM Studio /api/v0/models returned a malformed model list",
++        )
++    loaded = []
++    for record in payload.get("data", []):
++        if not isinstance(record, dict):
++            continue
++        if record.get("state") == "loaded" or record.get("status") == "loaded":
++            model_id = record.get("id")
++            if isinstance(model_id, str) and model_id and model_id not in loaded:
++                loaded.append(model_id)
++    return loaded
++
++
++def _require_policy_model_loaded(policy: dict, timeout: float = 4.0) -> str:
++    intended = policy["model_id"]
++    loaded = _loaded_model_ids(timeout=timeout)
++    if intended not in loaded:
++        raise DyadModelFailure(
++            DyadModelReason.REQUIRED_MODEL_NOT_LOADED,
++            f"permanent DYAD model {intended!r} is not explicitly loaded; loaded={loaded!r}",
++        )
++    return intended
++
+ 
+ def dyad_model() -> str:
+-    """The dyad's current eye: pin > loaded > default. Fresh every call."""
++    """Return the permanent checked-in model id, read fresh every call."""
+     global _ACTIVE_MODEL
+-    m = _pinned_model() or _loaded_vlm() or SENSES_MODEL
+-    if m != _ACTIVE_MODEL:
+-        print(f"[senses] dyad model switch: {_ACTIVE_MODEL} -> {m}", flush=True)
+-        _ACTIVE_MODEL = m
+-    return m
++    model_id = _dyad_policy()["model_id"]
++    if model_id != _ACTIVE_MODEL:
++        print(f"[senses] permanent dyad model: {model_id}", flush=True)
++        _ACTIVE_MODEL = model_id
++    return model_id
++
+ 
+ def set_dyad_model(name: str) -> None:
+-    """Write the pin ("" or "auto" = follow the loaded model). Verified against
+-    LM Studio's served list when reachable — a typo'd id is a silently dark eye."""
+-    _DYAD_MODEL_FILE.parent.mkdir(parents=True, exist_ok=True)
+-    name = (name or "auto").strip()
+-    _DYAD_MODEL_FILE.write_text(name + "\n", encoding="utf-8")
+-    if name not in ("", "auto"):
+-        try:
+-            with urllib.request.urlopen(LMSTUDIO_URL + "/v1/models", timeout=3) as r:
+-                served = [m.get("id") for m in json.load(r).get("data", [])]
+-            if served and name not in served:
+-                print(f"[senses] WARNING: '{name}' not in LM Studio's served list: {served}", flush=True)
+-        except Exception:
+-            pass  # server down: the write stands; _post will name the miss
+-    print(f"[senses] dyad pin set to: {name or 'auto (follow the loaded model)'}", flush=True)
+-SENSES_CTX   = int(os.environ.get("CHIMERA_SENSES_CTX", "60672"))
++    """Refuse runtime alternatives; policy changes require an operator-owned code change."""
++    intended = dyad_model()
++    if (name or "").strip() != intended:
++        raise DyadModelFailure(
++            DyadModelReason.POLICY_PERMANENT,
++            f"DYAD model is permanently {intended!r}; runtime pin/auto overrides are disabled",
++        )
++    print(f"[senses] permanent dyad model already set: {intended}", flush=True)
++# Legacy compatibility value. It is not sent to LM Studio and does not describe
++# or alter the operator-owned loaded context.
++SENSES_CTX = int(os.environ.get("CHIMERA_SENSES_CTX", "60672"))
+ 
+ # A MINIMAL 8x8 PNG, inlined. Not for reading — for the capability probe: the
+ # smallest possible image that still proves the resident model ACCEPTS an image
+ # at all. See can_see().
+ _PROBE_PNG_B64 = ("iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAFElEQVR4nGMUERFhwAaYsIoOWgkA"
+                   "NXAATOBnBRAAAAAASUVORK5CYII=")
+-# The resident model (qwen3.8-27b-nvfp4-mtp) has 60,672 context tokens. A movie
+-# inlined as twelve 384px frames does not fit, and the failure is not a clean
+-# error: it is a truncated read that looks like a verdict. 0 = no ceiling (use
+-# only when you know the resident model has the room). The ollama lane sizes
+-# num_ctx instead (see _post).
++# The one-image ceiling is independent of the operator-owned loaded context.
++# A breach is a refusal rather than a silently truncated multi-image report.
+ MAX_IMAGES_PER_CALL = int(os.environ.get("CHIMERA_SENSES_MAX_IMAGES", "1"))
+ 
+ 
+@@ -186,16 +224,12 @@ def _lm_gateway():
+ 
+ 
+ def available(timeout: float = 3.0) -> bool:
+-    """Is the vision backend up? Decree default probes LM Studio's resident-model list;
+-    the ollama lane keeps its old probe."""
++    """Is the permanent DYAD model explicitly loaded?"""
+     try:
+-        if VISION_BACKEND == "ollama":
+-            with urllib.request.urlopen("http://localhost:11434/api/tags", timeout=timeout) as r:
+-                return getattr(r, "status", 200) == 200
+-        with urllib.request.urlopen(LMSTUDIO_URL + "/v1/models", timeout=timeout) as r:
+-            models = json.load(r).get("data", [])
+-            return len(models) > 0                      # a resident model = an open eye
+-    except Exception:
++        _enforce_dyad_backend_policy()
++        policy = _dyad_policy()
++        return _require_policy_model_loaded(policy, timeout=timeout) == policy["model_id"]
++    except DyadModelFailure:
+         return False
+ 
+ 
+@@ -211,19 +245,20 @@ def can_see(timeout: int = 60):
+       "The provided messages contain images, but <model> does not support image
+        inputs."
+ 
+-    WHICH MODEL THIS TESTS — read this before trusting it: Chimera/core/lm_gateway
+-    ADOPTS THE RESIDENT model and rewrites every outgoing body at it
+-    (ADOPT_RESIDENT), deliberately, so two clients on one GPU cannot evict each
+-    other. So naming a model does not select it. This probe therefore reports on
+-    the model that is RESIDENT — which is exactly the one that will serve, i.e.
+-    the one that matters. `served` below is read back from the response, not
+-    assumed, so a decree that is not actually loaded is visible instead of silent.
++    WHICH MODEL THIS TESTS — read this before trusting it: the checked-in DYAD
++    policy names the exact model. The probe first requires that id to be explicitly
++    loaded, disables resident retargeting on its private fair-gateway instance, and
++    verifies the response's served id. A different resident therefore cannot turn
++    into silent evidence for the permanent eye.
+ 
+     Returns (True, served_id, None) if the eye sees, else (False, served_id, reason).
+     A dyad whose eye cannot see is not a dyad — it is a monad with a delay.
+     """
+-    if not available(timeout=min(timeout, 10)):
+-        return False, None, "no model is resident (the eye is dark)"
++    try:
++        _enforce_dyad_backend_policy()
++        _require_policy_model_loaded(_dyad_policy(), timeout=min(timeout, 10))
++    except DyadModelFailure as e:
++        return False, None, f"{e.reason}: {e}"
+     served = None
+     reason = None
+     # TRY MORE THAN ONCE. A 400 here is not proof of blindness: swapping the
+@@ -263,18 +298,14 @@ def can_see(timeout: int = 60):
+ 
+ 
+ def resident_model(timeout: float = 8.0):
+-    """The model id RESIDENT in memory — the one the gateway will serve.
++    """The single model id RESIDENT in memory, when it is unambiguous.
+     /api/v0/models is the only surface that distinguishes loaded from on-disk.
+-    Returns None when it cannot be determined (and the caller must say so)."""
++    Returns None for zero, multiple, malformed, or unreachable loaded records;
++    it never promotes an on-disk id to resident status."""
+     try:
+-        with urllib.request.urlopen(LMSTUDIO_URL + "/api/v0/models", timeout=timeout) as r:
+-            payload = json.load(r)
+-        for m in payload.get("data", []):
+-            if m.get("state") == "loaded" or m.get("status") == "loaded":
+-                return m.get("id")
+-        ids = [m.get("id") for m in payload.get("data", [])]
+-        return ids[0] if ids else None
+-    except Exception:
++        loaded = _loaded_model_ids(timeout=timeout)
++        return loaded[0] if len(loaded) == 1 else None
++    except DyadModelFailure:
+         return None
+ 
+ 
+@@ -293,9 +324,8 @@ def _count_images(content) -> int:
+ def _enforce_image_wall(content) -> None:
+     """THE ONE-IMAGE WALL, raised before the request goes out.
+ 
+-    The resident model is ADOPTED, never pinned, so this is a ceiling that can be
+-    raised (CHIMERA_SENSES_MAX_IMAGES) rather than a hard ban -- but the default
+-    is 1, and a breach is an ERROR rather than a silent truncation. A movie that
++    The historical CHIMERA_SENSES_MAX_IMAGES control remains, but the default is
++    1 and a breach is an ERROR rather than a silent truncation. A movie that
+     quietly loses its last eight frames still returns a confident-sounding
+     verdict, which is the one failure mode an instrument must not have.
+ 
+@@ -313,8 +343,16 @@ def _enforce_image_wall(content) -> None:
+             f"(watch_one / see) and aggregate the reports.")
+ 
+ 
++def _clear_response_identity() -> None:
++    global _SERVED, _FINISH
++    _SERVED = None
++    _FINISH = None
++
++
+ def _post(content, timeout: int, temperature: float = 0.2, max_tokens: int = MAX_TOKENS,
+           endpoint: str = VISION_URL, model: str = VISION_MODEL):
++    _clear_response_identity()
++    _enforce_dyad_backend_policy()
+     if VISION_BACKEND != "ollama":
+         _enforce_image_wall(content)
+         return _post_lmstudio(content, timeout, temperature, max_tokens)
+@@ -346,22 +384,22 @@ def _post(content, timeout: int, temperature: float = 0.2, max_tokens: int = MAX
+ 
+ 
+ def _post_lmstudio(content, timeout: int, temperature: float, max_tokens: int = MAX_TOKENS):
+-    """THE DECREE LANE: LM Studio's RESIDENT model over /v1/chat/completions, through the
+-    fair-queue gateway (single endpoint law; adopt-never-pin; NoModelLoaded = eye dark).
+-    Images pass as base64 data URLs -- the OpenAI parts format needs no reassembly here."""
++    """Call the permanent, already-loaded DYAD model through the fair gateway."""
++    # A failed new call must never inherit identity/completion proof from an old one.
++    _clear_response_identity()
++    policy = _dyad_policy()
++    intended = _require_policy_model_loaded(policy)
+     gw = _lm_gateway()
+-# max_tokens IS SENT HERE. The budget is 60,000 tokens — filling as much of
+-# the 60,672 context as possible. The model is fast (nvfp4 quant), so longer
+-# answers are feasible. Truncation at 60k is a LOST answer.
+-#
+-# num_ctx is deliberately NOT sent: LM Studio owns the loaded context
+-# (60,672, reported by /api/v0/models), and pushing a num_ctx at it can
+-# trigger a reload -- which is the eviction war core/lm_gateway exists to
+-# prevent. We cap what the eye may SAY, never what it may SEE.
+-    body = {"model": dyad_model(),    # named per call: override file > env > default.
+-                                     # A dyad whose eye changes identity between
+-                                     # readings produces reports that cannot be
+-                                     # compared, and comparison is the instrument.
++    # _lm_gateway() loads a private module instance on every call. Disable its
++    # auto-retarget only for this DYAD request; other text clients retain the
++    # canonical gateway's resident-adoption policy.
++    gw.ADOPT_RESIDENT = False
++    # max_tokens is sent unchanged from the historical DYAD protocol. This patch
++    # does not alter LM Studio's operator-owned loaded context.
++    #
++    # num_ctx is deliberately NOT sent: LM Studio owns the loaded context, and
++    # pushing one at it can trigger a reload.
++    body = {"model": intended,
+             "messages": [{"role": "user", "content": content}],
+             "max_tokens": max_tokens,
+             "temperature": temperature, "stream": False}
+@@ -372,14 +410,30 @@ def _post_lmstudio(content, timeout: int, temperature: float, max_tokens: int =
+     resp = gw.lm_urlopen(req, timeout=timeout if timeout is None else max(timeout, 600),
+                          agent="senses")
+     payload = json.loads(resp.read())
+-    global _SERVED, _FINISH
++    served = payload.get("model") if isinstance(payload, dict) else None
++    if not isinstance(served, str) or not served:
++        raise DyadModelFailure(
++            DyadModelReason.RESPONSE_MODEL_MISSING,
++            "LM Studio response omitted the served model id",
++        )
++    if served != intended:
++        raise DyadModelFailure(
++            DyadModelReason.RESPONSE_MODEL_WRONG,
++            f"permanent DYAD requested {intended!r} but response reports {served!r}",
++        )
+     try:
+-        _SERVED = payload.get("model") or _SERVED
+-        choice = (payload.get("choices") or [{}])[0]
+-        _FINISH = choice.get("finish_reason") or _FINISH
+-    except Exception:
+-        pass
+-    return payload["choices"][0]["message"].get("content") or ""
++        choice = payload["choices"][0]
++        answer = choice["message"].get("content") or ""
++        finish = choice.get("finish_reason")
++    except (KeyError, IndexError, TypeError, AttributeError) as e:
++        raise DyadModelFailure(
++            DyadModelReason.RESPONSE_MODEL_MISSING,
++            "LM Studio response omitted the DYAD answer envelope",
++        ) from e
++    global _SERVED, _FINISH
++    _SERVED = served
++    _FINISH = finish
++    return answer
+ 
+ 
+ _SERVED: str | None = None
+@@ -397,8 +451,8 @@ def last_finish_reason():
+     THIS IS THE TRUNCATION TELL. `finish_reason == "length"` means the report was
+     cut off by max_tokens — mid-sentence, usually mid-word. A truncated report is
+     a LOST report, and filing one as if it were complete is exactly the silent
+-    success this project exists to kill.    With the 60k budget, truncation is rare
+-    but still possible on very elaborate answers.
++    success this project exists to kill. Truncation remains possible and is
++    always retained in the report identity.
+     """
+     return _FINISH
+ 
+@@ -411,30 +465,14 @@ READ_TIMEOUT_DISABLED = None
+ 
+ 
+ def ensure_eye() -> bool:
+-    """Light the eye WITHOUT touching the operator's loaded models. Laws:
+-    - the resolved eye (dyad_model()) already loaded -> True.
+-    - a DIFFERENT model is resident -> NEVER load (lms load can evict the
+-      operator's choice — measured 2026-09-03). Report honestly, stay dark.
+-    - NOTHING is resident -> load the resolved eye (the documented on-demand
+-      decree); nothing can be evicted because nothing is loaded."""
++    """Verify the permanent DYAD model is loaded; never load or reconfigure it."""
+     try:
+-        import eye_control
+-        want = dyad_model()
+-        st = eye_control.status(want)          # the RESOLVED eye's state, not the default's
+-        if st.get("eye_state") == "loaded":
+-            return True
+-        resident = st.get("loaded") or []
+-        if resident:
+-            print(f"[senses] eye '{want}' is dark but {resident} is resident — "
+-                  f"NOT auto-loading (eviction risk). Load '{want}' yourself or "
+-                  f"clear the pin to follow the loaded model.", flush=True)
+-            return False
+-        print(f"[senses] eye dark, nothing resident — loading {want} on demand "
+-              f"(unbounded wait; the operator decides when to start over) ...", flush=True)
+-        r = eye_control.load(model=want)
+-        return bool(r.get("ok"))
+-    except Exception as e:
+-        print(f"[senses] ensure_eye FAILED: {e}")
++        _enforce_dyad_backend_policy()
++        policy = _dyad_policy()
++        _require_policy_model_loaded(policy)
++        return True
++    except DyadModelFailure as e:
++        print(f"[senses] ensure_eye FAILED [{e.reason}]: {e}")
+         return False
+ 
+ 
