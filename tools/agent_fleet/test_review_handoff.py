@@ -204,17 +204,33 @@ class ReviewHandoffTests(unittest.TestCase):
                   generation=claimed["generation"], branch=claimed["branch"],
                   head=MERGED, evidence="corrected review after exact provision")
 
-    def test_requeue_does_not_need_free_slot_but_following_claim_does(self):
+    def test_requeue_does_not_need_free_slot_and_following_claim_auto_spawns(self):
+        # fleet-review-handoff-claim-delegation-02: this test previously
+        # pinned the REGRESSED wrapper behavior (claim refusing no_free_slot
+        # when no free slot exists). The fleet-slot-expansion-03 plane
+        # (PR #63) is base-claim behavior and is restored by this lane: the
+        # requeue half keeps its meaning (a requeue needs no free slot),
+        # while the following claim now AUTO-SPAWNS instead of refusing.
         self.review(); self.handoff()
         # Occupy all four worker slots after the detached review freed one.
         for index, actor in enumerate(("worker", "replacement", "other", "other")):
             task = f"fill-{index}"; self.create(task); self.claim(task, actor)
+        high_water = max(int(k) for k in self.snap()["slots"] if str(k).isdigit())
         self.call("review_requeue", task="reviewed", epoch=self.snap()["epoch"],
                   head=HEAD, evidence="correction requested while fleet full")
-        before = self.snap()
-        with self.assertRaisesRegex(Refusal, "no_free_slot"):
-            self.claim("reviewed", "replacement")
-        self.assertEqual(self.snap(), before)
+        # The requeue itself needs no free slot: READY, slotless, correction
+        # base pinned at the reviewed head.
+        ready = self.snap()["tasks"]["reviewed"]
+        self.assertEqual(ready["state"], "READY")
+        self.assertIsNone(ready["slot"])
+        self.assertEqual(ready["correction_base_head"], HEAD)
+        # The following claim auto-spawns a slot above the high-water mark
+        # and lands RUNNING on it - never a no_free_slot refusal.
+        claimed = self.claim("reviewed", "replacement")
+        self.assertEqual(claimed["state"], "RUNNING")
+        self.assertGreater(int(claimed["slot"]), high_water)
+        self.assertEqual(self.snap()["slots"][claimed["slot"]]["task"],
+                         "reviewed")
 
     def test_auth_identity_drain_and_resource_refusals_rollback(self):
         t = self.review(); valid = self.release_args()

@@ -79,16 +79,38 @@ class ReviewHandoffControl(Control):
                      if slot["task"] is None and slot["kind"] == task["kind"]
                      and not slot["engine"].get("provisioned")]
         if not available:
-            # Same actionable guard as the base controller: a free slot still
-            # carrying an ACTIVE provision from an earlier task/generation is
-            # recovered by supervisor slot_rebind, never silently adopted.
-            require(any(slot["task"] is None and slot["kind"] == task["kind"]
-                        for slot in state["slots"].values()), "no_free_slot")
-            require(False, "stale_provision_requires_recovery")
+            # fleet-review-handoff-claim-delegation-01 (F1 restored; found
+            # live twice - feedback c4212657 rev 767, and this fix task's
+            # own claim refused 409 no_free_slot at rev 781): the
+            # fleet-slot-expansion-03 plane (PR #63) is included VERBATIM
+            # from base Control.claim - no free slot of this kind at all ->
+            # SPIN ONE UP under the named guards. A free slot still carrying
+            # an ACTIVE provision from an earlier task/generation is
+            # recovered by supervisor slot_rebind; auto-spawn never masks it.
+            if not any(slot["task"] is None and slot["kind"] == task["kind"]
+                       for slot in state["slots"].values()):
+                # Integration-kind tasks never auto-spawn: slot 1 is the
+                # unique integration slot (review finding 1).
+                require(task["kind"] != "integration", "integration_slot_busy")
+                require(len(state["slots"]) < self.SLOT_GUARD,
+                        "slot_guard_reached")
+                number, _ = self._spawn_slot(state, task["kind"])
+                available = [(number, state["slots"][number])]
+            else:
+                require(False, "stale_provision_requires_recovery")
+        # fleet-review-handoff-claim-delegation-01 (F3 restored): enforced
+        # instance fencing refuses an instance-less claim, exactly like base.
+        if state.get("instance_fencing") == "enforced":
+            require(p.get("_resolved_instance") is not None,
+                    "instance_binding_required")
         number, slot = available[0]
         slot["task"] = task["id"]
+        # fleet-review-handoff-claim-delegation-01 (F2 restored): bind the
+        # resolved instance so the _task fence (instance_not_bound) holds
+        # against a header-less twin of the same bearer.
         task.update(owner=actor, slot=number, state="RUNNING",
-                    generation=task["generation"] + 1)
+                    generation=task["generation"] + 1,
+                    owner_instance=p.get("_resolved_instance"))
         return {**task, "worktree": slot["path"], "engine": slot["engine"],
                 "provisioning": "REQUIRED: claim metadata does not create or modify a worktree"}
 

@@ -1,0 +1,100 @@
+RESULT - fleet-review-handoff-claim-delegation-02
+==================================================
+
+Owner: subagent-worker-04. Branch:
+astra/tasks/fleet-review-handoff-claim-delegation-02. Preregistration
+committed FIRST on this branch (aed647e1, no actuals); fail-pre-fix proof
+committed before the fix (c9a03ca0). Successor of -01 (abandoned rev
+819-821 for the incomplete scope set; lineage commits 6a04e2ab/05f2dac5
+cited and carried). Audit trail: feedback c4212657 (rev 767), own -01
+claim refusal 409 no_free_slot (rev 781) - the regression found live
+twice.
+
+VERDICT: fix SHIPPED GREEN on every suite that exercises the changed
+code; all predictions hold; no falsifier fired by the change itself.
+
+THE FIX (tools/agent_fleet/review_handoff.py, +29/-7 vs d59518b9;
+control.py untouched - out of scope):
+  _claim_with_detached_review_capacity keeps its ONE legitimate deviation
+  (slotless REVIEW tasks with review_slot_handoffs are excluded from the
+  owner's agent-capacity count) and now re-includes the three base
+  Control.claim behaviors:
+  - F1: the fleet-slot-expansion-03 auto-spawn plane VERBATIM - no free
+    slot of the task kind at all -> integration_slot_busy (integration
+    never auto-spawns; slot 1 unique) / slot_guard_reached (SLOT_GUARD
+    fuse) / self._spawn_slot(...) / stale_provision_requires_recovery for
+    a free-but-provisioned slot (spawn never masks it). The no_free_slot
+    dead-end is gone.
+  - F3: instance_fencing=='enforced' refuses an instance-less claim with
+    instance_binding_required.
+  - F2: the claim binds owner_instance=p.get('_resolved_instance') so the
+    _task fence (instance_not_bound) holds against a header-less twin.
+
+MEASURED (all *.txt in this directory):
+  PRE_FIX_FAILURES_01_CARRIED.txt  -01's verbatim proof (5/12 at f219d7e6)
+  PRE_FIX_FAILURES_02.txt          -02 repetition at d59518b9: new suite
+                                   4+1 of 12 FAIL (same five), updated
+                                   pinned test ERRORS (no_free_slot
+                                   raised), 19/25 instrument tests green
+  RUN_NEW_SUITE.txt                12/12 OK at the fixed head
+  RUN_REVIEW_HANDOFF.txt           13/13 OK at the fixed head (incl. the
+                                   updated pinned test
+                                   test_requeue_does_not_need_free_slot_
+                                   and_following_claim_auto_spawns:
+                                   requeue needs no free slot; following
+                                   claim AUTO-SPAWNS above high-water,
+                                   RUNNING, slot bound)
+  RUN_NAMED_SUITES.txt             test_client_instance 9/9 OK;
+                                   test_capture_window 28/28 OK;
+                                   test_slot_expansion run captured under
+                                   peak fleet load - see below
+  RUN_SLOT_EXPANSION_ISOLATION.txt the scale-probe record + triage
+  RUN_FULL_SUITE.txt               243 tests at the fixed head: 1 failure
+                                   (the same scale probe), 1 skip
+
+PREDICTION LEDGER
+  P1 fail-pre-fix reproduced at d59518b9 ............ HOLD
+  P2 auto-spawn + named guards ....................... HOLD
+  P3 owner_instance binding + fence + compat ......... HOLD
+  P4 enforced instance_binding_required .............. HOLD
+  P5 detached-REVIEW capacity accounting unchanged ... HOLD
+     (preservation tests green at BOTH heads)
+  P6 updated pinned test: requeue half kept, claim
+     auto-spawns above high-water .................... HOLD
+  P7 suites: new 12/12, review_handoff 13/13,
+     client_instance 9/9, capture 28/28 .............. HOLD
+
+FALSIFIER LEDGER
+  F-1 behavior still shadowed ........ did not fire
+  F-2 capacity accounting changed .... did not fire
+  F-3 any listed suite failing ....... did not fire BY THE CHANGE - see
+      the one environmental exception below
+  F-4 edit outside scopes ............ did not fire (diff = the three
+      scoped files + this evidence directory)
+
+THE ONE EXCEPTION, MECHANICALLY INDEPENDENT OF THE FIX
+  test_slot_expansion.test_scale_probe_lock_errors_and_latency asserts
+  ZERO sqlite lock errors under 8-thread contention. It is a BOX-LOAD
+  measure: the fleet ran 10 concurrently-active slots during the capture
+  windows, and the probe failed with 5 lock_errors (p99 23.3s), then 1
+  lock_error, while the SAME test at the SAME head passed 5/5 OK in 26.8s
+  and a 1-test isolation rerun passed in 26.4s with lock_errors=0 when the
+  fleet was quieter. It is not even routable through the changed code:
+  test_slot_expansion's fixture instantiates BASE Control directly, never
+  ReviewHandoffControl, so the claim-delegation diff cannot influence it.
+  Same environmental class as the capture-occlusion flake of the -01
+  full-suite run (capture_window was 28/28 in isolation) and the live
+  capture-flake-tolerance-01 lane. Committed verbatim, both directions.
+
+PROVISION-CLEANUP NOTE (lead-verified)
+  The first -02 worktree repoint aborted on -01's leftover staged files;
+  the lead verified the scratch carry (E:\ChimeraWork\.cda_carry_01\:
+  patch, test file, 4 evidence .txt) complete before discarding the
+  working-tree copies. Nothing unbacked was destroyed.
+
+INTEGRATION BOUNDARY
+  Source-PR only. The live deployment (slot-expansion-e1e0ab98) still
+  runs the unfixed wrapper; its transition is the lead's separate
+  supervisor procedure and is NOT part of this task.
+
+Agent: subagent-worker-04

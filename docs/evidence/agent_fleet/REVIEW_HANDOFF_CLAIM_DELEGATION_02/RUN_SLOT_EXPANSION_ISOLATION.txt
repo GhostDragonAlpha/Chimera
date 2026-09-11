@@ -1,0 +1,29 @@
+=== test_slot_expansion rerun at fixed head (fleet load: 10 busy slots) ===
+Mechanical triage: test_slot_expansion exercises BASE Control directly
+(its _spin helper instantiates Control, not ReviewHandoffControl), so the
+claim-delegation fix cannot influence it. The probe asserts zero sqlite
+lock errors under 8-thread contention - a measure of BOX load (all fleet
+slots share the machine), not of this change. Earlier at this exact head:
+5/5 OK in 26.8s and a 1-test isolation rerun OK in 26.4s with
+SCALE_PROBE_MIXED lock_errors=0 (quieter fleet).
+
+test_claim_auto_spins_slot_and_preserves_stale_refusal (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_claim_auto_spins_slot_and_preserves_stale_refusal) ... ok
+test_layout_bounds_and_inventory_default (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_layout_bounds_and_inventory_default) ... ok
+test_reopen_existing_registry_changes_nothing (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_reopen_existing_registry_changes_nothing) ... ok
+test_scale_probe_lock_errors_and_latency (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_scale_probe_lock_errors_and_latency) ... FAIL
+test_slot_spawn_and_retire_roundtrip_with_refusals (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_slot_spawn_and_retire_roundtrip_with_refusals) ... ok
+
+======================================================================
+FAIL: test_scale_probe_lock_errors_and_latency (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_scale_probe_lock_errors_and_latency)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-12\tools\agent_fleet\test_slot_expansion.py", line 268, in test_scale_probe_lock_errors_and_latency
+    self.assertEqual(lock_err, 0, 'lock errors: %s' % summary)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : lock errors: {'threads': 8, 'duration_s': 20.4, 'ops': 949, 'p50_ms': 21.6, 'p95_ms': 331.9, 'p99_ms': 4150.5, 'max_ms': 17672.0, 'lock_errors': 1, 'other_refusals': 76, 'spawn_cost_ms': 8.5}
+
+----------------------------------------------------------------------
+Ran 5 tests in 21.349s
+
+FAILED (failures=1)
+SCALE_PROBE_MIXED {"threads": 8, "duration_s": 20.4, "ops": 949, "p50_ms": 21.6, "p95_ms": 331.9, "p99_ms": 4150.5, "max_ms": 17672.0, "lock_errors": 1, "other_refusals": 76, "spawn_cost_ms": 8.5}

@@ -1,0 +1,139 @@
+CARRIED EVIDENCE - fail-pre-fix proof from predecessor -01 (verbatim)
+======================================================================
+
+Provenance: this file is the committed evidence of -01 commit 05f2dac5
+(branch astra/tasks/fleet-review-handoff-claim-delegation-01, base
+f219d7e6d61afc37419f18e89ee3de9ab8b13ba0), reproduced here so the -02
+review sees it without crossing branches. The -01 run measured the SAME
+regression: tools/agent_fleet/review_handoff.py is byte-identical between
+f219d7e6 and this branch's base d59518b9 (empty git diff of the two
+controller sources between the bases), so these failures describe this
+branch's base exactly. The -02 repetition against d59518b9 is retained as
+PRE_FIX_FAILURES_02.txt in this directory.
+
+PRE-FIX FAILURES (verbatim) - fleet-review-handoff-claim-delegation-01
+=======================================================================
+
+Command:  python -m unittest tools.agent_fleet.test_review_handoff_claim -v
+Run at:   commit 6a04e2ab (base f219d7e6d61afc37419f18e89ee3de9ab8b13ba0 +
+          prereg/instrument commit); tools/agent_fleet/review_handoff.py
+          UNCHANGED from base f219d7e6 - the UNFIXED production behavior.
+Expectation (PREREGISTRATION.txt): the five F1/F2/F3-focused tests FAIL on
+the unfixed base (fail-pre-fix proof); the seven preservation tests PASS.
+
+Result: Ran 12 tests - FAILED (failures=4, errors=1). FAILING exactly the
+regression tests; PASSING exactly the preservation tests:
+  ERROR test_claim_auto_spawns_when_no_free_worker_slot   (F1: live no_free_slot)
+  FAIL  test_auto_spawn_respects_integration_named_guard  (F1 named guard)
+  FAIL  test_auto_spawn_respects_slot_guard_fuse          (F1 fuse guard)
+  FAIL  test_claim_binds_owner_instance_and_fence_holds   (F2 binding)
+  FAIL  test_enforced_mode_refuses_instanceless_claim     (F3 guard)
+  ok    test_compat_mode_headerless_claim_stays_legacy_unfenced
+  ok    test_correction_interception_still_gates_post_requeue
+  ok    test_detached_review_task_does_not_consume_agent_capacity
+  ok    test_free_but_provisioned_slot_still_refuses_not_spawned
+  ok    test_recover_stays_supervisor_only_and_release_routes_slotless
+  ok    test_running_task_still_counts_toward_agent_capacity
+  ok    test_slotless_requeue_requires_exact_head_then_requeues
+
+VERBATIM OUTPUT BEGINS HERE
+===========================
+test_auto_spawn_respects_integration_named_guard (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_auto_spawn_respects_integration_named_guard) ... FAIL
+test_auto_spawn_respects_slot_guard_fuse (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_auto_spawn_respects_slot_guard_fuse) ... FAIL
+test_claim_auto_spawns_when_no_free_worker_slot (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_claim_auto_spawns_when_no_free_worker_slot) ... ERROR
+test_claim_binds_owner_instance_and_fence_holds (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_claim_binds_owner_instance_and_fence_holds) ... FAIL
+test_compat_mode_headerless_claim_stays_legacy_unfenced (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_compat_mode_headerless_claim_stays_legacy_unfenced) ... ok
+test_correction_interception_still_gates_post_requeue (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_correction_interception_still_gates_post_requeue) ... ok
+test_detached_review_task_does_not_consume_agent_capacity (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_detached_review_task_does_not_consume_agent_capacity) ... ok
+test_enforced_mode_refuses_instanceless_claim (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_enforced_mode_refuses_instanceless_claim) ... FAIL
+test_free_but_provisioned_slot_still_refuses_not_spawned (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_free_but_provisioned_slot_still_refuses_not_spawned) ... ok
+test_recover_stays_supervisor_only_and_release_routes_slotless (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_recover_stays_supervisor_only_and_release_routes_slotless) ... ok
+test_running_task_still_counts_toward_agent_capacity (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_running_task_still_counts_toward_agent_capacity) ... ok
+test_slotless_requeue_requires_exact_head_then_requeues (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_slotless_requeue_requires_exact_head_then_requeues) ... ok
+
+======================================================================
+ERROR: test_claim_auto_spawns_when_no_free_worker_slot (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_claim_auto_spawns_when_no_free_worker_slot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-12\tools\agent_fleet\test_review_handoff_claim.py", line 124, in test_claim_auto_spawns_when_no_free_worker_slot
+    claimed = self.call("claim", "worker", task="overflow")
+  File "E:\ChimeraWork\slot-12\tools\agent_fleet\test_review_handoff_claim.py", line 76, in call
+    return self.c.call(op, token, _instance=_instance, **p)["result"]
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-12\tools\agent_fleet\control.py", line 341, in call
+    result=self._dispatch(s,actor,op,p)
+  File "E:\ChimeraWork\slot-12\tools\agent_fleet\review_handoff.py", line 19, in _dispatch
+    return self._claim_with_detached_review_capacity(state, actor, arguments)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-12\tools\agent_fleet\review_handoff.py", line 85, in _claim_with_detached_review_capacity
+    require(any(slot["task"] is None and slot["kind"] == task["kind"]
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                for slot in state["slots"].values()), "no_free_slot")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-12\tools\agent_fleet\control.py", line 24, in require
+    raise Refusal(reason)
+control.Refusal: no_free_slot
+
+======================================================================
+FAIL: test_auto_spawn_respects_integration_named_guard (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_auto_spawn_respects_integration_named_guard)
+----------------------------------------------------------------------
+control.Refusal: no_free_slot
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-12\tools\agent_fleet\test_review_handoff_claim.py", line 134, in test_auto_spawn_respects_integration_named_guard
+    self.refused("claim", "lead", "integration_slot_busy",
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 task="lead-work-2")
+                 ^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-12\tools\agent_fleet\test_review_handoff_claim.py", line 79, in refused
+    with self.assertRaisesRegex(Refusal, error):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: "integration_slot_busy" does not match "no_free_slot"
+
+======================================================================
+FAIL: test_auto_spawn_respects_slot_guard_fuse (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_auto_spawn_respects_slot_guard_fuse)
+----------------------------------------------------------------------
+control.Refusal: no_free_slot
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-12\tools\agent_fleet\test_review_handoff_claim.py", line 141, in test_auto_spawn_respects_slot_guard_fuse
+    self.refused("claim", "worker", "slot_guard_reached", task="overflow")
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-12\tools\agent_fleet\test_review_handoff_claim.py", line 79, in refused
+    with self.assertRaisesRegex(Refusal, error):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: "slot_guard_reached" does not match "no_free_slot"
+
+======================================================================
+FAIL: test_claim_binds_owner_instance_and_fence_holds (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_claim_binds_owner_instance_and_fence_holds)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-12\tools\agent_fleet\test_review_handoff_claim.py", line 169, in test_claim_binds_owner_instance_and_fence_holds
+    self.assertEqual(self.snap()["tasks"]["fenced"]["owner_instance"],
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     self.instance["id"])
+                     ^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'wk-inst-1'
+
+======================================================================
+FAIL: test_enforced_mode_refuses_instanceless_claim (tools.agent_fleet.test_review_handoff_claim.ReviewHandoffClaimTests.test_enforced_mode_refuses_instanceless_claim)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-12\tools\agent_fleet\test_review_handoff_claim.py", line 197, in test_enforced_mode_refuses_instanceless_claim
+    self.refused("claim", "worker", "instance_binding_required",
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                 task="must-bind")
+                 ^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-12\tools\agent_fleet\test_review_handoff_claim.py", line 79, in refused
+    with self.assertRaisesRegex(Refusal, error):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: Refusal not raised
+
+----------------------------------------------------------------------
+Ran 12 tests in 1.049s
+
+FAILED (failures=4, errors=1)
