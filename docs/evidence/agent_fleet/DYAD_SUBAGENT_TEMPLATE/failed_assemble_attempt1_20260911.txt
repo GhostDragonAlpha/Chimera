@@ -1,0 +1,5 @@
+# first assemble attempt — retained failure (2026-09-11T05:50:40Z)
+$ python tools/dyad_subagent_template.py assemble ... --served 'GLM 5.3 Flash (vision) [...]'
+{"refused": "subagent_callback_malformed:DyadRefusal"}
+
+cause: _parse_report accepted only bare section headers; the template emits 'CONCLUSION: supports' inline, so sections CONCLUSION/FINISH never matched and the provider refused fail-closed. Corrective fix: accept inline values; refusal retained per evidence discipline.

@@ -140,3 +140,31 @@ selected by configuration with no silent fallback. CPU contract tests:
 `tools/test_dyad_provider.py` (11 synthetic tests). ACTUAL VISUAL ACCEPTANCE
 STAYS NOT_CLAIMED until a live provider run with retained evidence; a protocol
 unit test alone is not visual acceptance.
+
+## SUBAGENT PROVIDER TEMPLATE (2026-09-11, dyad-subagent-template-01)
+
+Operator direction (HUMAN feedback `d015187c`, 2026-09-11): the DYAD reviewer
+can be *another agent asked the dyad questions and given the picture or
+movie* — the subagent fleet runs GLM 5.3 Flash (vision), faster than the
+local eye; the local eye remains a legal provider class and is unchanged.
+
+Easy creation lives in
+[THE_DYAD_SUBAGENT_TEMPLATE.md](THE_DYAD_SUBAGENT_TEMPLATE.md): a request
+spec, `tools/dyad_subagent_template.py plan` (validates the reviewed
+contract, verifies capture sha256, retains the exact prompt), a copy-paste
+spawn template for the reviewer subagent, and `assemble` which parses the
+structured report through `SubagentDyadProvider` so the reviewed refusals,
+verdict ceiling (agreement is INCONCLUSIVE, never acceptance) and
+numeric-mention tagging execute on the real path. Served identity for this
+class is the harness declaration (operator-asserted), never the model's
+self-report. The subagent class consumes no local GPU/model; the
+`dyad_eye` → `rtx4090` chain governs the local-senses class only.
+
+First live run (retained): a still review of the EDGE-01 raised capture
+through this template — request spec, exact prompt (sha256 retained), the
+reviewer's verbatim report, the assembled response JSON and the dyad log are
+in `docs/evidence/agent_fleet/DYAD_SUBAGENT_TEMPLATE/`. One fail-closed
+refusal (`subagent_callback_malformed`, report-parse contract) fired on the
+way and is retained there as correction history. The run certifies the
+provider path only; content-level visual acceptance stays with each owning
+lane's gates.
