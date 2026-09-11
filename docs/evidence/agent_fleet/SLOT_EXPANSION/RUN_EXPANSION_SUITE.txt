@@ -1,0 +1,12 @@
+test_claim_auto_spins_slot_and_preserves_stale_refusal (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_claim_auto_spins_slot_and_preserves_stale_refusal) ... ok
+test_layout_bounds_and_inventory_default (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_layout_bounds_and_inventory_default) ... ok
+test_reopen_existing_registry_changes_nothing (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_reopen_existing_registry_changes_nothing) ... ok
+test_scale_probe_lock_errors_and_latency (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_scale_probe_lock_errors_and_latency) ... ok
+test_slot_spawn_and_retire_roundtrip_with_refusals (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_slot_spawn_and_retire_roundtrip_with_refusals) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 26.263s
+
+OK
+SCALE_PROBE_MIXED {"threads": 8, "duration_s": 20.3, "ops": 1473, "p50_ms": 13.3, "p95_ms": 307.9, "p99_ms": 2550.6, "max_ms": 7957.5, "lock_errors": 0, "other_refusals": 150, "spawn_cost_ms": 5.4}
+SCALE_PROBE_SATURATED {"ops": 694, "lock_or_err": 0, "p50_ms": 7.4, "p95_ms": 162.0, "max_ms": 4055.3}

@@ -9,7 +9,7 @@ from pathlib import Path, PurePosixPath
 import re
 import secrets
 import sqlite3
-from layout import slot_layout
+from layout import SLOT_MAX, slot_layout
 # Master-catalogue import extension (planning data only; see packet).
 # Additive wiring: registries created before this extension gain the plane via
 # the setdefault in call(); catalogue ops validate payloads independently so
@@ -74,6 +74,28 @@ class Control:
             require(saved['schema']==1 and saved['root']==root,'configuration_mismatch')
             require(saved['supervisor_hash']==self.supervisor and saved['enrollment_hash']==self.enrollment,'service_identity_mismatch')
         finally: con.close()
+
+    # fleet-slot-expansion-03: on-demand slots; the fuse makes unbounded
+    # growth degrade by named refusal instead of corruption.
+    SLOT_GUARD = SLOT_MAX
+
+    def _next_slot_id(self, s):
+        # Persisted high-water mark: retired ids are NEVER reused even after
+        # the max live id drops (review finding 2 - path/port reuse hazard).
+        nums = [int(k) for k in s['slots'] if str(k).isdigit()]
+        hwm = s.get('slot_high_water') or 0
+        n = max(max(nums) if nums else 0, hwm) + 1
+        s['slot_high_water'] = n
+        return n
+
+    def _spawn_slot(self, s, kind):
+        n = self._next_slot_id(s)
+        # The fuse binds the NEXT ID, not the count: retired ids are never
+        # reused, so a registry below the count limit must still refuse by
+        # name once the id space is exhausted (never crash past layout).
+        require(n <= self.SLOT_GUARD, 'slot_guard_reached')
+        s['slots'][str(n)] = {'task': None, **slot_layout(s['root'], n)}
+        return str(n), s['slots'][str(n)]
 
     def connect(self):
         return sqlite3.connect(self.db,timeout=10,isolation_level=None)
@@ -299,6 +321,8 @@ class Control:
             s.setdefault('instance_fencing','compat')
             for a in s['agents'].values(): a.setdefault('instances',{})
             for t in s['tasks'].values(): t.setdefault('owner_instance',None)
+            s['slot_high_water']=max(int(s.get('slot_high_water') or 0),
+                                     max((int(k) for k in s['slots'] if str(k).isdigit()), default=0))
             actor=self._actor(s,token)
             # Instance plane: optional per-enrollment client identity
             # (header-parsed by the service). Only its sha256 fingerprint
@@ -424,6 +448,31 @@ class Control:
         if op=='elect':
             require(actor=='SUPERVISOR' and s['leader'] is None,'initial_or_vacant_supervisor_election_only')
             return self._elect(s)
+        if op=='slot_spawn':
+            require(actor=='SUPERVISOR','supervisor_only')
+            kind=p.get('kind','worker')
+            require(kind in ('worker','integration'),'invalid_slot_kind')
+            # Slot 1 is the unique, immortal integration slot; a second
+            # integration-kind slot would silently break the kind-family
+            # invariant (review finding 1).
+            require(kind!='integration','integration_slot_unique')
+            require(len(s['slots'])<self.SLOT_GUARD,'slot_guard_reached')
+            n,slot=self._spawn_slot(s,kind)
+            return {'slot':n,'kind':kind,'path':slot['path'],
+                    'slots_total':len(s['slots'])}
+        if op=='slot_retire':
+            require(actor=='SUPERVISOR','supervisor_only')
+            n=text(p.get('slot'),'slot')
+            slot=s['slots'].get(n)
+            require(slot is not None,'unknown_slot')
+            require(slot.get('task') is None,'slot_busy')
+            require(not slot['engine'].get('provisioned'),'slot_provisioned')
+            require(n!='1','integration_slot_immortal')
+            text(p.get('evidence'),'retire_evidence')
+            require(not slot['engine'].get('preserved_provisions'),
+                    'slot_has_preserved_history')
+            del s['slots'][n]
+            return {'retired':n,'slots_total':len(s['slots'])}
         if op=='instance_fencing_set':
             require(actor=='SUPERVISOR','supervisor_only')
             mode=p.get('mode')
@@ -484,12 +533,20 @@ class Control:
             available=[(n,v) for n,v in s['slots'].items()
                        if v['task'] is None and v['kind']==t['kind'] and not v['engine'].get('provisioned')]
             if not available:
-                # Name the actionable cause: a free slot still carrying an
-                # ACTIVE provision from an earlier task/generation must be
-                # recovered (supervisor slot_rebind), never silently adopted.
-                require(any(v['task'] is None and v['kind']==t['kind'] for v in s['slots'].values()),
-                        'no_free_slot')
-                require(False,'stale_provision_requires_recovery')
+                # fleet-slot-expansion-03: no free slot of this kind ->
+                # SPIN ONE UP (worktree semantics) under the guard. A free
+                # slot still carrying an ACTIVE provision must be recovered
+                # (supervisor slot_rebind) — auto-spawn never masks that:
+                # it fires only when NO free slot of the kind exists at all.
+                if not any(v['task'] is None and v['kind']==t['kind'] for v in s['slots'].values()):
+                    # Integration-kind tasks never auto-spawn: slot 1 is the
+                    # unique integration slot (review finding 1).
+                    require(t['kind']!='integration','integration_slot_busy')
+                    require(len(s['slots'])<self.SLOT_GUARD,'slot_guard_reached')
+                    n,_=self._spawn_slot(s,t['kind'])
+                    available=[(n,s['slots'][n])]
+                else:
+                    require(False,'stale_provision_requires_recovery')
             if s.get('instance_fencing')=='enforced':
                 require(p.get('_resolved_instance') is not None,'instance_binding_required')
             n,slot=available[0];slot['task']=t['id']

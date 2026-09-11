@@ -424,15 +424,20 @@ class BootstrapTests(unittest.TestCase):
         ports = [v['engine']['port_candidate'] for v in snap['slots'].values()]
         self.assertEqual(len(ports), len(set(ports)))
         self.assertEqual(sorted(ports), [8101, 8102, 8103, 8104, 8105])
-        # claiming all five slots leaves none for a sixth
+        # fleet-slot-expansion-03: a sixth claim auto-spawns a slot (on-demand
+        # worktree semantics) instead of refusing no_free_slot; the spawned
+        # slot joins the same unique-port family.
         self.task('integrate', kind='integration')
         self.claim('integrate', 'lead')
         for i in range(4):
             self.task('w%d' % i)
             self.claim('w%d' % i, 'other' if i % 2 else 'worker')
         self.task('sixth')
-        with self.assertRaisesRegex(Refusal, 'no_free_slot'):
-            self.claim('sixth', 'other')
+        r = self.claim('sixth', 'other')
+        self.assertEqual(r['slot'], '6')
+        ports = [v['engine']['port_candidate'] for v in self.call('snapshot')['slots'].values()]
+        self.assertEqual(len(ports), len(set(ports)))
+        self.assertIn(8106, ports)
 
     # --- SLOT02-PARALLEL-01: stale-base reconciliation path -------------
     def test_review_requeue_reconciles_stale_base_without_force(self):

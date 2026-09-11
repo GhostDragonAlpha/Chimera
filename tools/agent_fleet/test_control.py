@@ -65,12 +65,17 @@ class ControlTests(unittest.TestCase):
         with self.assertRaises(Refusal):
             self.call('feedback_disposition',epoch=epoch,feedback=f['id'],status='ADDRESSED',reason='stale',evidence='stale')
 
-    def test_five_slots_and_sixth_refusal(self):
+    def test_five_slots_then_auto_spawn_on_sixth(self):
+        # fleet-slot-expansion-03: on-demand slots. The old no_free_slot
+        # refusal is superseded - a sixth claim AUTO-SPINS a slot (the guard
+        # fuse slot_guard_reached replaces the count wall; see
+        # test_slot_expansion for the guard + stale-provision semantics).
         self.task('integrate',kind='integration');self.claim('integrate','lead')
         for i in range(4):self.task('w'+str(i));self.claim('w'+str(i))
         self.task('sixth')
-        with self.assertRaisesRegex(Refusal,'no_free_slot'):self.claim('sixth','other')
-        self.assertEqual(sum(x['task'] is not None for x in self.snap()['slots'].values()),5)
+        r=self.claim('sixth','other')
+        self.assertEqual(r['slot'],'6')
+        self.assertEqual(sum(x['task'] is not None for x in self.snap()['slots'].values()),6)
     def test_same_agent_multiple_tasks_distinct_slots(self):
         self.task('one');self.task('two');a=self.claim('one');b=self.claim('two')
         self.assertNotEqual(a['worktree'],b['worktree'])
@@ -87,7 +92,7 @@ class ControlTests(unittest.TestCase):
         with concurrent.futures.ThreadPoolExecutor(2) as pool:r=list(pool.map(take,['worker','other']))
         self.assertEqual(sum(r),1)
     def test_scope_conflict_casefold(self):
-        self.task('one',scopes=['tools/Foo']);self.task('two',scopes=['tools/foo/sub.py']);self.claim('one')
+        self.task('one',scopes=['tools/Foo']);self.task('two',scopes=['tools/foo/sub']);self.claim('one')
         with self.assertRaisesRegex(Refusal,'write_scope_conflict'):self.claim('two','other')
     def test_foreign_and_stale_claim_refused_without_revision(self):
         self.task('one');t=self.claim('one');before=self.snap()['revision']

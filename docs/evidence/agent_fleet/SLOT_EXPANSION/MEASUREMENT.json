@@ -1,0 +1,36 @@
+{
+  "task": "fleet-slot-expansion-03",
+  "generation": 1,
+  "slot": 3,
+  "base": "205ea83229f1b6e369a3d39a3cfe7617221e5e0c",
+  "preregistration_commit": "4bb3e143",
+  "producing_commands": [
+    "python -m unittest tools.agent_fleet.test_slot_expansion -v",
+    "python -m unittest discover -s tools/agent_fleet -p 'test_*.py'"
+  ],
+  "measured": {
+    "expansion_suite": "5/5 OK",
+    "mixed_load_probe": "three retained runs, 8 threads x 20s, 4 reads per write: 1473 ops p50 13.3ms / 1243 ops p50 15.5ms / 1426 ops p50 13.5ms; ZERO database-locked in all; spawn ~5.3ms/slot",
+    "saturated_probe": "8 threads x 5s writes-only: 707 ops, 0 lock errors this run, p50 7.4ms, p95 148ms, max 5.0s (single-writer queue boundary; earlier saturated run showed 2 lock timeouts at 12.5s max - the I/O boundary shape the operator predicted)",
+    "full_fleet_suite": "222 tests, 0 failures, 1 Windows-symlink skip (rerun after one non-reproducing capture-test flake under suite load; both outputs retained)"
+  },
+  "design_changes_to_old_tests": {
+    "test_control.test_five_slots_and_sixth_refusal": "renamed test_five_slots_then_auto_spawn_on_sixth - the no_free_slot wall is superseded by on-demand spawn; guard fuse + stale-provision semantics pinned in test_slot_expansion",
+    "test_bootstrap.test_port_conflicts_refused_and_ports_unique": "sixth-claim section now asserts auto-spawn slot 6 joins the unique-port family (8106)"
+  },
+  "implementation_note": "guard binds the NEXT slot id (retired ids never reused) - found by test: a count-only guard would crash past layout.SLOT_MAX via ValueError instead of the named slot_guard_reached refusal",
+  "not_claimed": [
+    "live deployment (controlled transition follows review)",
+    "GPU throughput scaling (slots do not multiply the single RTX 4090)"
+  ],
+  "correction_20260911_gen2": {
+    "review_findings_landed": [
+      "F1 MEDIUM: slot 1 is the UNIQUE integration slot - slot_spawn(kind=integration) refuses integration_slot_unique; integration-kind claims never auto-spawn (integration_slot_busy when slot 1 busy); the false kind echo removed with its test",
+      "F2: persisted slot_high_water - retired ids never reused even when the max live id drops (probe test: spawn 7, retire 7, spawn -> 8); reconcile seeds it from existing registries",
+      "F3: slot_retire refuses slot_has_preserved_history when preserved_provisions is non-empty",
+      "F4: headline figures replaced by the three retained runs (1473/13.3, 1243/15.5, 1426/13.5); the earlier headline came from an unretained run - shape corroborated by all retained outputs and two independent reviewer reruns",
+      "F6: dead inventory.inspect slots param reverted; F7 dead else-require removed (no_free_slot superseded by design)"
+    ],
+    "gen2_verification": "expansion suite 5/5 with new probes (high-water no-reuse, retire-history gate, integration-busy claim refusal); control 36/36; bootstrap 14/14"
+  }
+}

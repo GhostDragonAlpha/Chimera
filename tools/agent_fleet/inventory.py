@@ -36,11 +36,11 @@ def inspect(path,max_entries=1000000):
         except OSError as e:out['complete']=False;out['errors'].append(type(e).__name__+': '+str(p))
     return out
 
-def plan(root,base):
+def plan(root,base,slots=5):
     # Intentionally names no active task branch: the lead binds real task IDs
     # after preservation/migration and uses the control service's branch value.
     return {'root':str(root),'shared_store':str(root/'repo.git'),'base':base,
-        'slots':[{'id':i,**slot_layout(root,i)} for i in range(1,6)],
+        'slots':[{'id':i,**slot_layout(root,i)} for i in range(1,(slots if isinstance(slots,int) and slots>0 else 5)+1)],
         'pr_base':'astra/gait-capture','branch_template':'astra/tasks/<unique-task-id>',
         'provisioned':False,'policy':'No task branches are reused; no worktree is removed before preserved-evidence and clean/process-stop checks.'}
 
