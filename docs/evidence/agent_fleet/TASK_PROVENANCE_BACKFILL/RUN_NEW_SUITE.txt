@@ -1,0 +1,33 @@
+POST-FIX RUN - test_task_provenance (final instrument)
+======================================================
+
+Command:  python -m unittest tools.agent_fleet.test_task_provenance -v
+Run at:   tools/agent_fleet via repo root, worktree E:\ChimeraWork\slot-02,
+          branch astra/tasks/fleet-task-provenance-backfill-01
+          HEAD: this branch, control.py carrying task_provenance_set.
+          Verdict: OK - 16/16 (the pre-fix capture of the SAME
+          instrument is PRE_FIX_FAILURES.txt: FAILED 7F+8E).
+
+--- verbatim output ----------------------------------------------
+
+test_audit_event_and_task_record (test_task_provenance.TaskProvenanceTests.test_audit_event_and_task_record) ... ok
+test_eight_task_backfill_offers_true_frontier (test_task_provenance.TaskProvenanceTests.test_eight_task_backfill_offers_true_frontier) ... ok
+test_evidence_gate_after_id_gate (test_task_provenance.TaskProvenanceTests.test_evidence_gate_after_id_gate) ... ok
+test_forward_path_create_task_citation_needs_no_op (test_task_provenance.TaskProvenanceTests.test_forward_path_create_task_citation_needs_no_op) ... ok
+test_op_is_registry_state_only_never_touches_the_filesystem (test_task_provenance.TaskProvenanceTests.test_op_is_registry_state_only_never_touches_the_filesystem) ... ok
+test_provenance_set_on_abandoned_task_satisfies_nothing (test_task_provenance.TaskProvenanceTests.test_provenance_set_on_abandoned_task_satisfies_nothing) ... ok
+test_provenance_set_on_active_running_task (test_task_provenance.TaskProvenanceTests.test_provenance_set_on_active_running_task) ... ok
+test_provenance_set_on_review_task_mirrors_live_registry (test_task_provenance.TaskProvenanceTests.test_provenance_set_on_review_task_mirrors_live_registry) ... ok
+test_provenance_set_refuses_when_citation_already_present (test_task_provenance.TaskProvenanceTests.test_provenance_set_refuses_when_citation_already_present) ... ok
+test_refusals_leave_revision_and_audit_untouched (test_task_provenance.TaskProvenanceTests.test_refusals_leave_revision_and_audit_untouched) ... ok
+test_refuses_missing_and_malformed_card_ids (test_task_provenance.TaskProvenanceTests.test_refuses_missing_and_malformed_card_ids) ... ok
+test_refuses_non_supervisor_actors (test_task_provenance.TaskProvenanceTests.test_refuses_non_supervisor_actors) ... ok
+test_refuses_ready_and_recovery_hold (test_task_provenance.TaskProvenanceTests.test_refuses_ready_and_recovery_hold) ... ok
+test_refuses_unknown_task (test_task_provenance.TaskProvenanceTests.test_refuses_unknown_task) ... ok
+test_s1_fixture_passes_with_backfilled_provenance (test_task_provenance.TaskProvenanceTests.test_s1_fixture_passes_with_backfilled_provenance) ... ok
+test_state_gate_precedes_id_validation (test_task_provenance.TaskProvenanceTests.test_state_gate_precedes_id_validation) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 2.305s
+
+OK

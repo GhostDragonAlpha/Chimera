@@ -709,6 +709,47 @@ class Control:
             return {'task':t['id'],'state':'READY','generation':t['generation'],
                     'slot_freed':freed,'owner_session_revoked':False,
                     'filesystem_touched':False}
+        if op=='task_provenance_set':
+            # fleet-task-provenance-backfill-01 (2026-09-11): backfill ONE
+            # card citation onto an EXISTING task. The deployed provenance
+            # matching (fleet-catalogue-realization-matching-01) is correct,
+            # but every pre-existing holodeck task was created BEFORE the
+            # realized_from field existed (the additive migration setdefaults
+            # None), so live_cards/done_cards are empty and the id-fallback
+            # never binds GOV-0X to holodeck-gov-0X: catalogue_next keeps
+            # offering [GOV-01]. This op fills the provenance plane the
+            # matching already reads; catalogue_next itself is NOT touched.
+            # Supervisor-only, audited like task_abandon: evidence + actor +
+            # revision stored on the task record, one revision-bumped event
+            # naming task + actor (payload never enters the event stream).
+            # Refusal arms, each named: supervisor_only; unknown_task;
+            # task_not_terminal_or_active (allowed = terminal INTEGRATED/
+            # ABANDONED or active RUNNING/BLOCKED/REVIEW - the established
+            # state families; READY never started and RECOVERY_HOLD awaits
+            # recovery are neither, and holodeck-gov-06's live REVIEW state
+            # is exactly why active states must backfill too);
+            # provenance_already_set (a citation, once present - forward via
+            # create_task or backfilled here - is never silently rewritten);
+            # missing_realized_from / malformed_realized_from (card-id shape
+            # [A-Z][A-Z0-9]*-[0-9]+: every one of the 240 canonical card ids
+            # matches it; matching downstream stays case-insensitive); and
+            # missing_provenance_evidence, validated AFTER the id so neither
+            # gate can mask the other. Registry-state only; the filesystem
+            # is NEVER touched.
+            require(actor=='SUPERVISOR','supervisor_only')
+            t=s['tasks'].get(p.get('task'));require(t is not None,'unknown_task')
+            require(t['state'] in ('RUNNING','BLOCKED','REVIEW','INTEGRATED','ABANDONED'),
+                    'task_not_terminal_or_active')
+            require(not t.get('realized_from'),'provenance_already_set')
+            rf=text(p.get('realized_from'),'realized_from')
+            require(re.fullmatch(r'[A-Z][A-Z0-9]*-[0-9]+',rf) is not None,
+                    'malformed_realized_from')
+            evidence=text(p.get('evidence'),'provenance_evidence')
+            t['realized_from']=rf
+            t['provenance_set']={'realized_from':rf,'evidence':evidence,'actor':actor,
+                                 'revision':s['revision']+1}
+            return {'task':t['id'],'realized_from':rf,'state':t['state'],
+                    'filesystem_touched':False}
         if op=='integration_request':
             self._lead(s,actor,p.get('epoch'))
             t=s['tasks'].get(p.get('task'));require(t and t['state']=='REVIEW','not_in_review')

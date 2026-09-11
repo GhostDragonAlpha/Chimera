@@ -1,0 +1,47 @@
+GATE RUN - test_catalogue_realization + test_master_catalogue
+=============================================================
+
+Command:  python -m unittest tools.agent_fleet.test_catalogue_realization tools.agent_fleet.test_master_catalogue -v
+Run at:   tools/agent_fleet via repo root, worktree E:\ChimeraWork\slot-02,
+          branch astra/tasks/fleet-task-provenance-backfill-01
+          Verdict: OK - 31 tests (PR #92 realization suite 7/7 +
+          master catalogue 24/24; see RESULT.txt D4): no matching rule changed.
+
+--- verbatim output ----------------------------------------------
+
+test_create_task_carries_realized_from (test_catalogue_realization.CatalogueRealizationTests.test_create_task_carries_realized_from) ... ok
+test_legacy_exact_id_realization_still_satisfies (test_catalogue_realization.CatalogueRealizationTests.test_legacy_exact_id_realization_still_satisfies) ... ok
+test_old_era_no_provenance_resolves_exactly_as_before (test_catalogue_realization.CatalogueRealizationTests.test_old_era_no_provenance_resolves_exactly_as_before) ... ok
+test_s1_integrated_root_offers_dependents (test_catalogue_realization.CatalogueRealizationTests.test_s1_integrated_root_offers_dependents) ... ok
+test_s2_active_realizations_narrow_frontier (test_catalogue_realization.CatalogueRealizationTests.test_s2_active_realizations_narrow_frontier) ... ok
+test_s3_abandonment_reproposes_card_and_blocks_dependents (test_catalogue_realization.CatalogueRealizationTests.test_s3_abandonment_reproposes_card_and_blocks_dependents) ... ok
+test_unknown_digest_and_status_gate_and_pure_read (test_catalogue_realization.CatalogueRealizationTests.test_unknown_digest_and_status_gate_and_pure_read) ... ok
+test_cli_stdout_survives_ascii_console_and_writes_out_first (test_master_catalogue.CatalogueTests.test_cli_stdout_survives_ascii_console_and_writes_out_first) ... ok
+test_current_master_fixture_control (test_master_catalogue.CatalogueTests.test_current_master_fixture_control) ... ok
+test_duplicate_cycle_malformed_empty_refused_without_mutation (test_master_catalogue.CatalogueTests.test_duplicate_cycle_malformed_empty_refused_without_mutation) ... ok
+test_forged_coverage_counts_refused (test_master_catalogue.CatalogueTests.test_forged_coverage_counts_refused) ... ok
+test_gen5_exhaustive_partition_no_silent_omissions (test_master_catalogue.CatalogueTests.test_gen5_exhaustive_partition_no_silent_omissions) ... ok
+test_gen5_forged_domain_count_refused (test_master_catalogue.CatalogueTests.test_gen5_forged_domain_count_refused) ... ok
+test_gen5_supplied_source_versions_refused (test_master_catalogue.CatalogueTests.test_gen5_supplied_source_versions_refused) ... ok
+test_gen6_catalog_manifest_is_verified (test_master_catalogue.CatalogueTests.test_gen6_catalog_manifest_is_verified) ... ok
+test_gen7_catalog_consistency_counterexamples (test_master_catalogue.CatalogueTests.test_gen7_catalog_consistency_counterexamples) ... ok
+test_gen7_digest_is_transport_reproducible (test_master_catalogue.CatalogueTests.test_gen7_digest_is_transport_reproducible) ... ok
+test_import_creates_no_live_tasks_or_claims (test_master_catalogue.CatalogueTests.test_import_creates_no_live_tasks_or_claims) ... ok
+test_import_real_sources_full_coverage (test_master_catalogue.CatalogueTests.test_import_real_sources_full_coverage) ... ok
+test_new_prefix_and_new_section_controls (test_master_catalogue.CatalogueTests.test_new_prefix_and_new_section_controls) ... ok
+test_new_section_requirement_row_and_prose_mention_unresolved_visible (test_master_catalogue.CatalogueTests.test_new_section_requirement_row_and_prose_mention_unresolved_visible) ... ok
+test_next_candidates_planning_only_never_creates_tasks (test_master_catalogue.CatalogueTests.test_next_candidates_planning_only_never_creates_tasks) ... ok
+test_parser_classification_units (test_master_catalogue.CatalogueTests.test_parser_classification_units) ... ok
+test_reimport_after_change_preserves_live_state_and_restart (test_master_catalogue.CatalogueTests.test_reimport_after_change_preserves_live_state_and_restart) ... ok
+test_reimport_identical_refused_and_state_unchanged (test_master_catalogue.CatalogueTests.test_reimport_identical_refused_and_state_unchanged) ... ok
+test_snapshot_summary_only (test_master_catalogue.CatalogueTests.test_snapshot_summary_only) ... ok
+test_stale_import_refused (test_master_catalogue.CatalogueTests.test_stale_import_refused) ... ok
+test_unkeyed_requirement_capture_control (test_master_catalogue.CatalogueTests.test_unkeyed_requirement_capture_control) ... ok
+test_unresolved_rows_carry_identifiable_provenance (test_master_catalogue.CatalogueTests.test_unresolved_rows_carry_identifiable_provenance) ... ok
+test_validate_rejects_wrong_schema_and_missing_coverage (test_master_catalogue.CatalogueTests.test_validate_rejects_wrong_schema_and_missing_coverage) ... ok
+test_worker_and_stale_epoch_import_refused (test_master_catalogue.CatalogueTests.test_worker_and_stale_epoch_import_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 31 tests in 4.913s
+
+OK

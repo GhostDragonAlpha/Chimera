@@ -1,0 +1,58 @@
+FULL SUITE RUN - discover (PR #92 invocation)
+=============================================
+
+Command:  python -m unittest discover -s tools/agent_fleet -p "test_*.py"
+Run at:   tools/agent_fleet via repo root, worktree E:\ChimeraWork\slot-02,
+          branch astra/tasks/fleet-task-provenance-backfill-01
+          Verdict: Ran 286 tests, FAILED (failures=1, skipped=1).
+          The single failure is the KNOWN environmental capture
+          flake (screen occlusion during the batch; disclosed in
+          PR #92's prereg). Isolation rerun: OK (0.289s) - quoted
+          verbatim below the suite output. skipped=1 is the known
+          symlink-unavailability skip.
+
+--- verbatim output ----------------------------------------------
+
+.......warning: You appear to have cloned an empty repository.
+.warning: You appear to have cloned an empty repository.
+.warning: You appear to have cloned an empty repository.
+.C:\Python314\Lib\tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 409: 'Conflict'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+..........................F........................................................................................................................................................................................................................................................s
+======================================================================
+FAIL: test_verify_hwnd_capture_none_pin_adopts_measured_size (test_capture_window.CaptureWindowTests.test_verify_hwnd_capture_none_pin_adopts_measured_size)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-02\tools\agent_fleet\test_capture_window.py", line 505, in test_verify_hwnd_capture_none_pin_adopts_measured_size
+    self.assertEqual(rec2['verdict'], 'unobscured', rec2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'occluded_or_foreign_content' != 'unobscured'
+- occluded_or_foreign_content
++ unobscured
+ : {'contract': 'WINDOW_CAPTURE_OWNERSHIP_V1', 'title': 'chimera-adoption', 'pid': 75608, 'owns_process': True, 'window_class': 'ChimeraFixture_aa37133277', 'class_owned': True, 'is_window': True, 'visible': True, 'client_size': [400, 240], 'pinned_size': [400, 240], 'capture_sha256': '1f337280037c5cb01243961306bc8c06a325bdd6d9ad4ab18bc7bb15713f9b62', 'expected_sha256': 'd1bdb15caba22e36569339006222fb131022083d37a075232c4bbb65c27a9e73', 'verdict': 'occluded_or_foreign_content', 'publishable': False, 'first_attempt': {'contract': 'WINDOW_CAPTURE_OWNERSHIP_V1', 'title': 'chimera-adoption', 'pid': 75608, 'owns_process': True, 'window_class': 'ChimeraFixture_aa37133277', 'class_owned': True, 'is_window': True, 'visible': True, 'client_size': [400, 240], 'pinned_size': [400, 240], 'capture_sha256': '1f337280037c5cb01243961306bc8c06a325bdd6d9ad4ab18bc7bb15713f9b62', 'expected_sha256': 'd1bdb15caba22e36569339006222fb131022083d37a075232c4bbb65c27a9e73', 'verdict': 'occluded_or_foreign_content', 'publishable': False, 'transient_tolerance': {'max_retries': 1, 'deadline_s': 5.0, 'started': 1789166811.6641538, 'retries': 0, 'fired': True}}, 'transient_tolerance': {'max_retries': 1, 'deadline_s': 5.0, 'started': 1789166811.6641538, 'retries': 1, 'fired': True, 'healed': False, 'deadline_respected': True}}
+
+----------------------------------------------------------------------
+Ran 286 tests in 249.456s
+
+FAILED (failures=1, skipped=1)
+stopped pid 84620 (transition recorded: test teardown controlled transition)
+stopped pid 21464 (transition recorded: test teardown controlled transition)
+stopped pid 86416 (transition recorded: test teardown controlled transition)
+stopped pid 81928 (transition recorded: test teardown controlled transition)
+stopped pid 86348 (transition recorded: test teardown controlled transition)
+stopped pid 85264 (transition recorded: test teardown controlled transition)
+LOCK_PROBE_MUTATED {"writers": 3, "duration_s": 5.0, "ops": 717, "lock_errors": 45, "other_refusals": 445, "p50_ms": 11.7, "p95_ms": 92.3, "p99_ms": 134.2, "max_ms": 180.6}
+SCALE_PROBE_MIXED {"writers": 8, "duration_s": 20.2, "ops": 1137, "lock_errors": 0, "other_refusals": 78, "p50_ms": 17.7, "p95_ms": 901.5, "p99_ms": 2656.4, "max_ms": 4868.3, "threads": 8, "spawn_cost_ms": 7.4}
+LOCK_PROBE_GUARD {"writers": 3, "duration_s": 5.0, "ops": 442, "lock_errors": 0, "other_refusals": 127, "p50_ms": 12.5, "p95_ms": 135.2, "p99_ms": 462.8, "max_ms": 1184.7}
+SCALE_PROBE_SATURATED {"ops": 413, "lock_or_err": 0, "p50_ms": 8.7, "p95_ms": 102.5, "max_ms": 5302.7}
+
+--- isolation rerun of the flake ----------------------------------
+
+Command:  python -m unittest tools.agent_fleet.test_capture_window.CaptureWindowTests.test_verify_hwnd_capture_none_pin_adopts_measured_size -v
+
+test_verify_hwnd_capture_none_pin_adopts_measured_size (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_verify_hwnd_capture_none_pin_adopts_measured_size) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.289s
+
+OK
