@@ -1,0 +1,21 @@
+== fleet-regression-sweep-01: per-lane decisive command ==
+date: 2026-09-11T17:07:47Z
+worktree: E:/ChimeraWork/slot-04 @ 92a67a4cbab0c51d2596001d87a2ddecc0c803d0
+command: python -m unittest tools.agent_fleet.test_client_instance -v
+
+test_baseline_two_legacy_clients_both_admitted_unfenced (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_baseline_two_legacy_clients_both_admitted_unfenced) ... ok
+test_bound_task_refuses_second_instance_and_header_less_caller (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_bound_task_refuses_second_instance_and_header_less_caller) ... ok
+test_enforced_mode_requires_instance_for_new_claims (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_enforced_mode_requires_instance_for_new_claims) ... ok
+test_enroll_rejects_malformed_instance_payload (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_enroll_rejects_malformed_instance_payload) ... ok
+test_fence_survives_reopen_on_same_store (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_fence_survives_reopen_on_same_store) ... ok
+test_instance_secret_absent_from_snapshot_events_and_state (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_instance_secret_absent_from_snapshot_events_and_state) ... ok
+test_supervisor_events_have_no_instance_marker (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_supervisor_events_have_no_instance_marker) ... ok
+test_transport_malformed_instance_header_refused (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_transport_malformed_instance_header_refused) ... ok
+test_yield_requires_bound_instance (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_yield_requires_bound_instance) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.935s
+
+OK
+
+exit_code: 0

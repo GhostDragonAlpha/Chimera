@@ -1,0 +1,26 @@
+== fleet-regression-sweep-01: per-lane decisive command ==
+date: 2026-09-11T17:07:48Z
+worktree: E:/ChimeraWork/slot-04 @ 92a67a4cbab0c51d2596001d87a2ddecc0c803d0
+command: python -m unittest tools.test_dyad_provider -v
+
+test_capability_validated_at_construction (tools.test_dyad_provider.ProviderTests.test_capability_validated_at_construction) ... ok
+test_capture_integrity_fail_closed (tools.test_dyad_provider.ProviderTests.test_capture_integrity_fail_closed) ... ok
+test_local_adapter_contract (tools.test_dyad_provider.ProviderTests.test_local_adapter_contract) ... ok
+test_malformed_callback_is_named_refusal (tools.test_dyad_provider.ProviderTests.test_malformed_callback_is_named_refusal) ... ok
+test_missing_served_identity_is_named_uncertainty (tools.test_dyad_provider.ProviderTests.test_missing_served_identity_is_named_uncertainty) ... ok
+test_no_vision_refusal (tools.test_dyad_provider.ProviderTests.test_no_vision_refusal) ... ok
+test_numeric_mentions_only_tagged (tools.test_dyad_provider.ProviderTests.test_numeric_mentions_only_tagged) ... ok
+test_prompt_deterministic_and_not_leading (tools.test_dyad_provider.ProviderTests.test_prompt_deterministic_and_not_leading) ... ok
+test_provider_selection_no_fallback (tools.test_dyad_provider.ProviderTests.test_provider_selection_no_fallback) ... ok
+test_remote_review_refuses_unwired_by_name (tools.test_dyad_provider.ProviderTests.test_remote_review_refuses_unwired_by_name) ... ok
+test_request_validation (tools.test_dyad_provider.ProviderTests.test_request_validation) ... ok
+test_subagent_adapter_retains_evidence (tools.test_dyad_provider.ProviderTests.test_subagent_adapter_retains_evidence) ... ok
+test_temporal_capability_ladder (tools.test_dyad_provider.ProviderTests.test_temporal_capability_ladder) ... ok
+test_verdict_mapping_and_contradiction (tools.test_dyad_provider.ProviderTests.test_verdict_mapping_and_contradiction) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.027s
+
+OK
+
+exit_code: 0

@@ -1,0 +1,35 @@
+== fleet-regression-sweep-01: per-lane decisive command ==
+date: 2026-09-11T17:09:03Z
+worktree: E:/ChimeraWork/slot-04 @ 92a67a4cbab0c51d2596001d87a2ddecc0c803d0
+command: python -m unittest tools.agent_fleet.test_master_catalogue -v
+
+test_cli_stdout_survives_ascii_console_and_writes_out_first (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_cli_stdout_survives_ascii_console_and_writes_out_first) ... ok
+test_current_master_fixture_control (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_current_master_fixture_control) ... ok
+test_duplicate_cycle_malformed_empty_refused_without_mutation (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_duplicate_cycle_malformed_empty_refused_without_mutation) ... ok
+test_forged_coverage_counts_refused (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_forged_coverage_counts_refused) ... ok
+test_gen5_exhaustive_partition_no_silent_omissions (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_gen5_exhaustive_partition_no_silent_omissions) ... ok
+test_gen5_forged_domain_count_refused (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_gen5_forged_domain_count_refused) ... ok
+test_gen5_supplied_source_versions_refused (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_gen5_supplied_source_versions_refused) ... ok
+test_gen6_catalog_manifest_is_verified (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_gen6_catalog_manifest_is_verified) ... ok
+test_gen7_catalog_consistency_counterexamples (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_gen7_catalog_consistency_counterexamples) ... ok
+test_gen7_digest_is_transport_reproducible (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_gen7_digest_is_transport_reproducible) ... ok
+test_import_creates_no_live_tasks_or_claims (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_import_creates_no_live_tasks_or_claims) ... ok
+test_import_real_sources_full_coverage (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_import_real_sources_full_coverage) ... ok
+test_new_prefix_and_new_section_controls (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_new_prefix_and_new_section_controls) ... ok
+test_next_candidates_planning_only_never_creates_tasks (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_next_candidates_planning_only_never_creates_tasks) ... ok
+test_parser_classification_units (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_parser_classification_units) ... ok
+test_reimport_after_change_preserves_live_state_and_restart (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_reimport_after_change_preserves_live_state_and_restart) ... ok
+test_reimport_identical_refused_and_state_unchanged (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_reimport_identical_refused_and_state_unchanged) ... ok
+test_snapshot_summary_only (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_snapshot_summary_only) ... ok
+test_stale_import_refused (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_stale_import_refused) ... ok
+test_unkeyed_requirement_capture_control (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_unkeyed_requirement_capture_control) ... ok
+test_unresolved_rows_carry_identifiable_provenance (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_unresolved_rows_carry_identifiable_provenance) ... ok
+test_validate_rejects_wrong_schema_and_missing_coverage (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_validate_rejects_wrong_schema_and_missing_coverage) ... ok
+test_worker_and_stale_epoch_import_refused (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_worker_and_stale_epoch_import_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 3.483s
+
+OK
+
+exit_code: 0

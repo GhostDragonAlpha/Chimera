@@ -1,0 +1,22 @@
+== fleet-regression-sweep-01: per-lane decisive command ==
+date: 2026-09-11T17:05:32Z
+worktree: E:/ChimeraWork/slot-04 @ 92a67a4cbab0c51d2596001d87a2ddecc0c803d0
+command: python -m unittest tools.agent_fleet.test_worktree_reconcile -v
+
+test_changed_index_during_read_is_unstable (tools.agent_fleet.test_worktree_reconcile.WorktreeReconcileTests.test_changed_index_during_read_is_unstable) ... ok
+test_clean_and_evidence_addition_are_read_only (tools.agent_fleet.test_worktree_reconcile.WorktreeReconcileTests.test_clean_and_evidence_addition_are_read_only) ... ok
+test_fast_forward_evidence_commit_continues (tools.agent_fleet.test_worktree_reconcile.WorktreeReconcileTests.test_fast_forward_evidence_commit_continues) ... ok
+test_filesystem_root_is_rejected_before_git (tools.agent_fleet.test_worktree_reconcile.WorktreeReconcileTests.test_filesystem_root_is_rejected_before_git) ... ok
+test_historical_modify_and_delete_are_distinct (tools.agent_fleet.test_worktree_reconcile.WorktreeReconcileTests.test_historical_modify_and_delete_are_distinct) ... ok
+test_ignored_cache_is_preserved_without_blocking (tools.agent_fleet.test_worktree_reconcile.WorktreeReconcileTests.test_ignored_cache_is_preserved_without_blocking) ... ok
+test_outside_scope_and_divergent_head (tools.agent_fleet.test_worktree_reconcile.WorktreeReconcileTests.test_outside_scope_and_divergent_head) ... ok
+test_staged_new_source_requires_revalidation (tools.agent_fleet.test_worktree_reconcile.WorktreeReconcileTests.test_staged_new_source_requires_revalidation) ... ok
+test_unreadable_index_fails_closed (tools.agent_fleet.test_worktree_reconcile.WorktreeReconcileTests.test_unreadable_index_fails_closed) ... ok
+test_unsafe_arguments_and_symlink_escape_refuse (tools.agent_fleet.test_worktree_reconcile.WorktreeReconcileTests.test_unsafe_arguments_and_symlink_escape_refuse) ... skipped 'symlink creation unavailable'
+
+----------------------------------------------------------------------
+Ran 10 tests in 4.396s
+
+OK (skipped=1)
+
+exit_code: 0
