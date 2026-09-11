@@ -84,8 +84,9 @@ class TaskProvenanceTests(unittest.TestCase):
                packet='statement / prediction / falsifier',kind='worker')
         p.update(kw);return self.call('create_task',**p)
     def setprov(self,tid,card,**kw):
+        _actor=kw.pop('_actor','super-secret')
         p=dict(task=tid,realized_from=card,evidence=BACKFILL)
-        p.update(kw);return self.call('task_provenance_set','super-secret',**p)
+        p.update(kw);return self.call('task_provenance_set',_actor,**p)
     def drive(self,tid,final='INTEGRATED'):
         """Create a LEGACY task (NO realized_from - the pre-field era) and
         drive it through the lead-authorized lifecycle to `final`."""
