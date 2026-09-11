@@ -1,0 +1,129 @@
+RESULT - holodeck-gov-06 "Discovery and roadmap evolution"
+===========================================================
+
+Agent: subagent-worker-04. Slot 13, worktree E:\ChimeraWork\slot-13,
+branch astra/tasks/holodeck-gov-06, base
+62b8e35757c71e31d621c26b32a7c52558905b02 (= origin tip at claim; PR #77
+merge - the direct GOV-01 predecessor). Dependency holodeck-gov-01
+INTEGRATED. Evidence-only lane per the GOV-01 (PR #77) pattern.
+
+SOURCE IDENTITY (all work judged from SOURCE; 127.0.0.1:8099 never contacted)
+  git base            62b8e35757c71e31d621c26b32a7c52558905b02
+  control.py          sha256 7cee259b35a21ebe689feb5d77c8f2bb10b7125cd1ea9c3ac06e1cb6254bfa30
+  review_handoff.py   sha256 ad3674bd2e1f1a60a3762e44cd26578150b2c475b064af042a40bace30b51811
+  holodeck_tasks.json sha256 d5c7aa8b9e264e96bb3de6a0f3d48069ee0b88c9f10ae84b52bd8cfce797fcd8
+                      (240 cards, all status PROPOSED; GOV-01 the unique root)
+
+SCOREBOARD (prereg a2c00adb; every row at its full N/N)
+  R1 import positive controls ................ 4/4 PASS
+  R2 import negative controls ................ 8/8 named refusals,
+                                               post-state UNCHANGED  PASS
+  R3 intended frontier, real graph ........... 4/4 PASS (exact lists)
+  R4 frontier negative controls .............. 4/4 PASS
+  R5 promotion gate (CARD FALSIFIER) ......... 4/4 PASS
+  R6 deployed-source trace ................... 11/11 quoted with lines
+  R7 intended-vs-deployed matrix ............. executed; findings below
+  R8 owner_instance delta .................... measured; surprise below
+
+CARD FALSIFIER (executed, not just quoted): "A speculative idea is
+promoted directly into a certified production claim" - checks/
+r5_promotion_gate.txt: promote() without a certified trail refuses
+speculative_not_certifiable (speculative card: REFUSED; RUNNING
+realization: REFUSED); catalogue_import/catalogue_next leave the task
+table byte-identical (a catalogue record NEVER becomes a claim); a
+supersession record is appended ONLY with an INTEGRATED realization
+trail. The model cannot express the falsifier's promotion.
+
+CARD PREDICTION (executed): "New concepts have parent requirements and
+explicit integration dependencies" - checks/r3_r4_frontier.txt on the
+REAL 240-card graph: with holodeck-gov-01 INTEGRATED the frontier is
+exactly [GOV-02, GOV-03, GOV-04, GOV-05, GOV-06, MATH-01]; with this very
+task RUNNING the frontier narrows to [MATH-01]; a partially-satisfied
+diamond stays blocked; an ABANDONED realization re-proposes its card and
+blocks every dependent.
+
+MEASURED FINDING 1 (R7 - the discovery plane is INERT under the fleet's
+realization-id convention). The deployed catalogue_next
+(control.py:816-825, transcribed faithfully in controls/run_controls.py)
+matches card ids to live/done task ids by raw casefold equality, and
+satisfies dependencies the same way. The fleet's realization convention
+is 'holodeck-' + card-id-lowercase (the GOV-06 draft's own id derivation;
+all admitted holodeck-* tasks follow it), so card 'GOV-01' never equals
+task 'holodeck-gov-01'. Measured agreement matrix (checks/
+r7_intended_vs_deployed.txt):
+  S0 no realizations .......... both ['GOV-01']        AGREE
+  S1 holodeck-gov-01 INTEGRATED  intended 6 candidates / deployed
+                                 ['GOV-01']            DISAGREE
+  S2 +02..05 live, -06 RUNNING   intended ['MATH-01'] / deployed
+                                 ['GOV-01']            DISAGREE
+  S3 holodeck-gov-01 ABANDONED .. both ['GOV-01']        AGREE
+  Deployed offers ['GOV-01'] in EVERY scenario: the realized root is
+  perpetually re-proposed (its own advice contradicted by reality - the
+  fleet correctly never re-admitted it because admission runs through the
+  lead, not the catalogue) and every dependent card is permanently
+  blocked. Consequence: catalogue_next cannot drive roadmap discovery for
+  this fleet until the matching is provenance-based (realized_from) or
+  the convention mapping is applied. Prereg S3 label correction,
+  disclosed: the prereg called S3 a disagreement; measured S3 sets AGREE
+  (the deployed-everywhere ['GOV-01'] prediction itself held 4/4).
+
+MEASURED FINDING 2 (R8 - known regression, feedback c4212657). At this
+base review_handoff.py contains ZERO owner_instance occurrences
+(prediction held: the interceptor claim binds owner/slot/state/generation
+only, so instance fencing is inert on the live claim path). Surprise
+vs prereg: I predicted 4 occurrences in control.py; measured 8 lines /
+5 sites - _task fence 121-123 (3), migration setdefault 323 (1), yield
+guard 499+501 (2), claim bind 554 (1), release/requeue reset 697 (1).
+Reported per the prereg's surprise rule; full breakdown in checks/
+r8_owner_instance_delta.txt. Fix in independent review as PR #80.
+
+HARNESS DISCLOSURES (verdict-rule compliance; the MODEL needed no change)
+  - Two runner accounting bugs were found by the first execution
+    (R1 scoreboard accumulator; R5 captured tasks_before before its own
+    fixture placement) and fixed in controls/run_controls.py before the
+    commit; every committed checks/*.txt is from the corrected runner.
+  - Prereg R2(c) example "non-PROPOSED status in a fresh import set" is
+    VALID data under the intended append-only workflow (supersession
+    history travels inside the payload - rejecting it would break
+    deliverable 1). R2 was therefore executed with four structural
+    malformations (empty id, duplicate id, unknown dependency, cycle),
+    all refusing invalid_catalogue_payload:*.
+
+LIMITATIONS
+  - The model covers discovery/import/promotion semantics. The card's
+    "Bayesian decision reasoning" mathematics and requirements
+    traceability beyond the DAG are not mechanized here (no numeric
+    certificate is claimed - the card's own threshold policy says a
+    catalogue prediction is not one).
+  - The deployed side is a faithful SOURCE transcription at one commit,
+    not a differential test of the binary; the live service was never
+    contacted (so no runtime conformance claim is made).
+  - Registry states in R3 scenarios are explicit fixture inputs built
+    around the real card graph; the single live-registry fact used
+    (holodeck-gov-01 INTEGRATED) is the task's own recorded dependency.
+
+DYAD: NOT_APPLICABLE - source-only scope; no executed visible behavior
+was produced or observed, so there is nothing to show to the vision
+model per the card's DYAD policy.
+
+REPRODUCTION
+  cd docs/evidence/agent_fleet/HOLODECK/GOV/GOV-06
+  python controls/run_controls.py          # writes/refreshes checks/r1..r7
+  python -m json.tool docs/roadmap/holodeck_tasks.json > /dev/null
+  grep -c owner_instance tools/agent_fleet/control.py      # 8
+  grep -c owner_instance tools/agent_fleet/review_handoff.py  # 0
+  (run from the worktree root at 62b8e357)
+
+INTEGRATION CONTRACT + HANDOFF
+  - Evidence-only lane: nothing to integrate beyond this directory.
+  - Finding 1 is actionable for a FOLLOW-UP lane (not this one): make
+    catalogue_next provenance-based (realized_from mapping) or apply the
+    documented realization-id convention in the live/done sets. Until
+    then catalogue_next output should not be used as the roadmap source
+    of truth.
+  - Finding 2 is already owned: PR #80 (in review). This lane's model
+    implements the intended binding and records the deviation.
+  - Handoff: reference model + controls are self-contained and re-runnable
+    at any base; update the source-identity block when re-running.
+
+Agent: subagent-worker-04

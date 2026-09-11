@@ -1,0 +1,19 @@
+R8 - KNOWN-REGRESSION DELTA: owner_instance at 62b8e357 (fix PR #80 in review, NOT in this base)
+
+grep -c owner_instance tools/agent_fleet/review_handoff.py:
+0
+grep -c owner_instance tools/agent_fleet/control.py:
+8
+
+control.py occurrence sites:
+121:        owner_instance=t.get('owner_instance')
+122:        if owner_instance is not None:
+123:            require(instance==owner_instance,'instance_not_bound')
+323:            for t in s['tasks'].values(): t.setdefault('owner_instance',None)
+499:                if t.get('owner')==actor and t.get('owner_instance') is not None \
+501:                    require(instance_id==t['owner_instance'],'instance_not_bound')
+554:                     owner_instance=p.get('_resolved_instance'))
+697:            t.update(state='READY',owner=None,slot=None,owner_instance=None,
+
+review_handoff.py occurrence sites:
+(empty = zero occurrences)

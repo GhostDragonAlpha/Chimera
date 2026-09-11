@@ -1,0 +1,38 @@
+R6 - DEPLOYED-SOURCE TRACE at 62b8e35757c71e31d621c26b32a7c52558905b02
+control.py sha256 7cee259b35a21ebe689feb5d77c8f2bb10b7125cd1ea9c3ac06e1cb6254bfa30
+Each preregistered semantics with its exact lines (verbatim):
+
+--- 1 import lead gate (control.py lines 774,778) ---
+  774:         if op=='catalogue_import':
+  778:             self._lead(s,actor,p.get('epoch'))
+--- 2 stale echo refusal (control.py lines 779,780,781) ---
+  779:             current=s['catalogue'].get('import')
+  780:             if current is not None:
+  781:                 require(p.get('digest')==current['digest'],'stale_catalogue_import')
+--- 3 payload validation (control.py lines 782,783,784) ---
+  782:             payload=p.get('payload');require(isinstance(payload,dict),'invalid_catalogue_payload')
+  783:             errors=validate_payload(payload)
+  784:             if errors:raise Refusal('invalid_catalogue_payload:'+str(errors[0]))
+--- 4 digest recomputed from payload (control.py lines 785) ---
+  785:             digest_value=payload_digest(payload)
+--- 5 duplicate refusal (control.py lines 786,787) ---
+  786:             if current is not None and current['digest']==digest_value:
+  787:                 raise Refusal('duplicate_catalogue_import')
+--- 6 append-only imports ledger (control.py lines 791) ---
+  791:             s['catalogue']['imports'].append({'digest':digest_value,'imported_revision':import_revision,'epoch':s['epoch']})
+--- 7 catalogue_next digest gate (control.py lines 805,806) ---
+  805:             digest_value=p.get('digest');require(isinstance(digest_value,str),'missing_catalogue_digest')
+  806:             require(s['catalogue'].get('import') is not None and digest_value==s['catalogue']['import']['digest'],'unknown_catalogue_digest')
+--- 8 exact-casefold live/done match (control.py lines 816,817,821,822) ---
+  816:             live={tid.casefold() for tid,t in s['tasks'].items() if t['state'] not in ('INTEGRATED','ABANDONED')}
+  817:             done={tid.casefold() for tid,t in s['tasks'].items() if t['state']=='INTEGRATED'}
+  821:                 cid=c['id'].casefold()
+  822:                 if cid in live or cid in done:continue
+--- 9 PROPOSED status gate (control.py lines 823) ---
+  823:                 if c.get('status')!='PROPOSED':continue
+--- 10 deps-in-done frontier rule (control.py lines 824,825) ---
+  824:                 deps=c.get('depends_on') if isinstance(c.get('depends_on'),list) else []
+  825:                 if all(str(d).casefold() in done for d in deps):candidates.append(c['id'])
+--- 11 planning-data-only note (no authority) (control.py lines 827,828) ---
+  827:             return {'digest':digest_value,'candidates':candidates,'live_tasks':sorted(live),
+  828:                     'note':'PLANNING CANDIDATES ONLY: catalogue records are not claims, not READY tasks and grant no authority; admission runs through the normal lead-authorized task lifecycle.'}
