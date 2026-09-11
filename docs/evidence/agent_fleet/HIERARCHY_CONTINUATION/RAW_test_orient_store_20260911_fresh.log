@@ -1,0 +1,13 @@
+command: python -m unittest tools.test_orient_store -v
+cwd: /e/ChimeraWork/slot-03 (fresh worktree, repo root)
+test_corrupt_store_is_unreadable_not_recovered (tools.test_orient_store.OrientStoreTests.test_corrupt_store_is_unreadable_not_recovered) ... ok
+test_store_present_orients_with_r3_provenance (tools.test_orient_store.OrientStoreTests.test_store_present_orients_with_r3_provenance) ... skipped 'no authoritative store in this checkout'
+test_storeless_allow_synthetic_explicit_mode (tools.test_orient_store.OrientStoreTests.test_storeless_allow_synthetic_explicit_mode) ... ok
+test_storeless_default_fails_closed (tools.test_orient_store.OrientStoreTests.test_storeless_default_fails_closed) ... ok
+test_storeless_json_labels_synthetic (tools.test_orient_store.OrientStoreTests.test_storeless_json_labels_synthetic) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 15.488s
+
+OK (skipped=1)
+exit_code=0
