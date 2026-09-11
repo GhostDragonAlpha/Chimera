@@ -30,6 +30,18 @@ Fresh -02 predictions (preregistered in PREREGISTRATION.md before the run):
   (d2) a raw stale hwnd refused at the hwnd-level contract entry
 Falsifiers: foreign/occluded/stale/resized/destroyed pixels published,
 full-desktop fallback, evidence overwrite, point-sampling substitution.
+
+capture-flake-tolerance-01 adds a bounded single-retry transient
+tolerance (verify_with_transient_tolerance) around the adoption test's
+verify calls: the recorded suite-load flake (a mid-erase surface read by
+PrintWindow -> occluded_or_foreign_content on an unobscured fixture) is a
+transient window-state race the content gate correctly fails closed on.
+The retry is single, deadline-bounded, asserts IDENTICAL fixture
+parameters between attempts, and RETAINS the first-attempt failure on
+the returned record; the assertion set of every test is unchanged (the
+retry wraps, never skips). TransientToleranceTests are the tolerance's
+own synthetic falsifiers, including the real-occlusion-is-not-masked
+proof.
 """
 import ctypes
 import inspect
@@ -465,10 +477,13 @@ class CaptureWindowTests(unittest.TestCase):
     def test_verify_hwnd_capture_none_pin_adopts_measured_size(self):
         f = self.fixture('chimera-adoption')
         w, h = f.width, f.height
+        # Each verify_hwnd_capture call is WRAPPED (capture-flake-tolerance-01)
+        # in the bounded single-retry transient tolerance: identical
+        # arguments, identical assertions -- the retry wraps, never skips.
         # 1) No pin, unresized window: adopted pin == measured client size,
         #    record proceeds to a full capture and is publishable.
-        rec = verify_hwnd_capture(f.hwnd, f.expected_pattern(),
-                                  pinned_size=None, title=f.title)
+        rec = verify_with_transient_tolerance(
+            f, f.expected_pattern(), pinned_size=None, title=f.title)
         self.assertEqual(rec['verdict'], 'unobscured', rec)
         self.assertTrue(rec['publishable'])
         self.assertEqual(rec['pinned_size'], rec['client_size'])
@@ -480,8 +495,8 @@ class CaptureWindowTests(unittest.TestCase):
         new_w, new_h = rect[2], rect[3]
         f.width, f.height = new_w, new_h
         f.repaint()
-        rec2 = verify_hwnd_capture(f.hwnd, f.expected_pattern(),
-                                   pinned_size=None, title=f.title)
+        rec2 = verify_with_transient_tolerance(
+            f, f.expected_pattern(), pinned_size=None, title=f.title)
         # Documented adoption: the pin adopted the NEW measured size, the
         # resized gate did not fire, and the record is publishable.
         self.assertEqual(rec2['client_size'], [new_w, new_h], rec2)
@@ -491,12 +506,278 @@ class CaptureWindowTests(unittest.TestCase):
         self.assertTrue(rec2['publishable'])
         # 3) Contrast (gate intact for pinning callers): the SAME resized
         #    window against the ORIGINAL creation pin is window_resized.
-        rec3 = verify_hwnd_capture(f.hwnd, f.expected_pattern(),
-                                   pinned_size=(w, h), title=f.title)
+        rec3 = verify_with_transient_tolerance(
+            f, f.expected_pattern(), pinned_size=(w, h), title=f.title)
         self.assertEqual(rec3['verdict'], 'window_resized', rec3)
         self.assertFalse(rec3['publishable'])
         self.assertEqual(rec3['pinned_size'], [w, h])
         self.assertEqual(rec3['client_size'], [new_w, new_h])
+
+
+# ==== capture-flake-tolerance-01: bounded single-retry transient tolerance ===
+#
+# Recorded flake (PR #57 review LOW; two observed fleet-suite occurrences,
+# and reproduced AT BASE in this task's RUN_LOAD_BASELINE_SUITE.txt): the
+# adoption test's post-resize verify observed 'occluded_or_foreign_content'
+# against an unobscured expectation. Mechanism: resize_client() queues
+# CS_HREDRAW|CS_VREDRAW erase/paint work (the fixture class background is a
+# GRAY_BRUSH) and under suite load that queued work can land AFTER the
+# test's deterministic repaint() blit, so PrintWindow reads a mid-erase
+# surface and the content gate fails closed. The gate is CORRECT to fail
+# closed; the failure is transient because the SAME fixture parameters
+# repaint to the SAME deterministic matrix. The tolerance below WRAPS the
+# verify calls: at most ONE retry (TRANSIENT_TOLERANCE_MAX_RETRIES), inside
+# a wall-clock deadline (TRANSIENT_TOLERANCE_DEADLINE_S), only for the
+# recorded transient verdict, only against IDENTICAL fixture parameters
+# (ASSERTED between attempts, not assumed), with the first-attempt failure
+# RETAINED on the returned record ('first_attempt'). The retry wraps,
+# never skips: a persistent (real) occlusion fails on both attempts and
+# still raises the original assertion -- with both records attached.
+
+TRANSIENT_TOLERANCE_DEADLINE_S = 5.0
+TRANSIENT_TOLERANCE_MAX_RETRIES = 1
+TRANSIENT_EVIDENCE_ENV_VAR = 'CHIMERA_TRANSIENT_TOLERANCE_EVIDENCE'
+# In-memory retention of every fired tolerance in this process; when
+# TRANSIENT_EVIDENCE_ENV_VAR names a directory, each event is ALSO
+# appended (one JSON line) to transient_tolerance_events.txt there -- the
+# durable *.txt surface used by the verification harness. Env unset ->
+# no filesystem writes; the suite stays hermetic by default.
+TRANSIENT_TOLERANCE_EVENTS = []
+
+
+def _record_transient_event(event):
+    TRANSIENT_TOLERANCE_EVENTS.append(event)
+    evid_dir = os.environ.get(TRANSIENT_EVIDENCE_ENV_VAR)
+    if not evid_dir:
+        return
+    try:
+        path = Path(evid_dir) / 'transient_tolerance_events.txt'
+        with open(path, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(event, default=str) + '\n')
+    except OSError:
+        pass  # evidence retention must never alter the test outcome
+
+
+def verify_with_transient_tolerance(window, expected_pattern,
+                                    pinned_size=None, title=None,
+                                    verify=None, repaint=None, clock=None,
+                                    deadline_s=None):
+    """verify_hwnd_capture wrapped in the bounded single-retry tolerance.
+
+    capture-flake-tolerance-01. Attempt 1 calls verify_hwnd_capture with
+    the caller's EXACT arguments. Anything other than the recorded
+    transient verdict ('occluded_or_foreign_content') is returned
+    untouched -- deterministic contract verdicts are never retried. On the
+    transient: ONE repaint of the SAME fixture (never recreated, never
+    retuned), the fixture parameters are ASSERTED identical between
+    attempts (hwnd, measured client size, expected-pattern digest, title;
+    any drift raises AssertionError naming the drift instead of retrying),
+    then attempt 2 runs with identical arguments inside the wall-clock
+    deadline. The full first-attempt record is attached to the returned
+    record as 'first_attempt' -- a healed transient retains its failure;
+    a persistent one fails the original assertions with both records in
+    the message. Nothing is skipped and no assertion is weakened: the
+    retry wraps, never skips. verify/repaint/clock are injection seams
+    for the synthetic falsifiers (TransientToleranceTests) only.
+    """
+    verify_fn = verify_hwnd_capture if verify is None else verify
+    repaint_fn = (lambda: window.repaint()) if repaint is None else repaint
+    now = time.time if clock is None else clock
+    if deadline_s is None:
+        deadline_s = TRANSIENT_TOLERANCE_DEADLINE_S
+    started = now()
+    deadline = started + deadline_s
+
+    first = verify_fn(window.hwnd, expected_pattern,
+                      pinned_size=pinned_size, title=title)
+    provenance = {'max_retries': TRANSIENT_TOLERANCE_MAX_RETRIES,
+                  'deadline_s': deadline_s, 'started': started}
+    if first.get('verdict') != 'occluded_or_foreign_content':
+        provenance['retries'] = 0
+        provenance['fired'] = False
+        first['transient_tolerance'] = provenance
+        return first
+    # First attempt failed with the recorded transient: RETAIN it.
+    first['transient_tolerance'] = dict(provenance, retries=0, fired=True)
+    if now() >= deadline:
+        # Time-bounded: past the deadline there is no retry at all.
+        first['transient_tolerance']['reason'] = \
+            'deadline_exhausted_before_retry'
+        _record_transient_event({'healed': False, 'retries': 0,
+                                 'reason': 'deadline_exhausted_before_retry',
+                                 'title': title,
+                                 'first_attempt_verdict': first.get('verdict')})
+        return first
+    # The identical-fixture-parameters assert (the anti-mask teeth): the
+    # retry re-tests THE SAME window handle, client size, content digest
+    # and title. Any drift means the failure is not the recorded
+    # transient, and the retry is refused with a loud failure.
+    hwnd_first = window.hwnd
+    measured_first = tuple(first.get('client_size') or ())
+    sha_first = pattern_sha256(expected_pattern)
+    repaint_fn()
+    drifted = []
+    if window.hwnd != hwnd_first:
+        drifted.append(('hwnd', hwnd_first, window.hwnd))
+    measured_now = window.client_rect()
+    # client_rect() is (left, top, width, height); the record's
+    # client_size is [width, height] -- project before comparing.
+    measured_now = (tuple(measured_now[2:4])
+                    if measured_now and len(measured_now) >= 4 else None)
+    if measured_now != measured_first:
+        drifted.append(('client_size', list(measured_first),
+                        None if measured_now is None else list(measured_now)))
+    if pattern_sha256(expected_pattern) != sha_first:
+        drifted.append(('expected_pattern_sha256', sha_first,
+                        pattern_sha256(expected_pattern)))
+    if title != first.get('title', title):
+        drifted.append(('title', first.get('title', title), title))
+    if drifted:
+        raise AssertionError(
+            'transient-tolerance refused: fixture parameters drifted '
+            'between attempts (a retry would re-test a DIFFERENT '
+            'fixture): ' + repr(drifted) + ' first_attempt=' + repr(first))
+    second = verify_fn(window.hwnd, expected_pattern,
+                       pinned_size=pinned_size, title=title)
+    healed = (second.get('verdict') == 'unobscured'
+              and second.get('publishable') is True)
+    second['first_attempt'] = first
+    second['transient_tolerance'] = dict(
+        provenance, retries=1, fired=True, healed=healed,
+        deadline_respected=now() <= deadline)
+    _record_transient_event({'healed': healed, 'retries': 1,
+                             'title': title,
+                             'deadline_respected':
+                                 second['transient_tolerance'][
+                                     'deadline_respected'],
+                             'first_attempt_verdict': first.get('verdict'),
+                             'second_verdict': second.get('verdict')})
+    return second
+
+
+class _ToleranceScriptedWindow(object):
+    """Minimal fixture-shaped stand-in for the synthetic falsifiers.
+
+    Only what the tolerance touches: hwnd, client_rect(), repaint(). No
+    Win32, no real window -- the tolerance's LOGIC is what is under test.
+    """
+
+    def __init__(self, hwnd=12345, size=(100, 70)):
+        self.hwnd = hwnd
+        self._size = tuple(size)
+        self.repaints = 0
+
+    def client_rect(self):
+        return (0, 0, self._size[0], self._size[1])
+
+    def repaint(self):
+        self.repaints += 1
+
+
+def _tolerance_record(verdict, size=(100, 70), title='tolerance-test'):
+    return {'verdict': verdict,
+            'publishable': verdict == 'unobscured',
+            'client_size': list(size), 'title': title}
+
+
+def _tolerance_scripted_verify(script, calls):
+    def verify(hwnd, expected_pattern, pinned_size=None, title=None):
+        calls.append({'hwnd': hwnd, 'pinned_size': pinned_size,
+                      'title': title,
+                      'pattern_len': len(expected_pattern)})
+        return script[len(calls) - 1]
+    return verify
+
+
+class TransientToleranceTests(unittest.TestCase):
+    """The tolerance's own synthetic falsifiers (capture-flake-tolerance-01).
+
+    Deterministic (scripted attempt records, injected clock): prove the
+    retry is single, time-bounded, parameter-identical, failure-retaining,
+    and that a REAL occlusion is not masked. Pure logic -- no Win32.
+    """
+
+    PATTERN = [[1, 2, 3]]  # any deterministic stand-in matrix
+
+    def _tolerance(self, window, script, calls, times=None, **kw):
+        times = [0.0, 0.01, 0.02, 0.03] if times is None else times
+        ticks = iter(times)
+        return verify_with_transient_tolerance(
+            window, self.PATTERN, pinned_size=kw.pop('pinned_size', None),
+            title=kw.pop('title', 'tolerance-test'),
+            verify=_tolerance_scripted_verify(script, calls),
+            repaint=kw.pop('repaint', None) or window.repaint,
+            clock=lambda: next(ticks), **kw)
+
+    def test_single_retry_heals_transient_and_retains_first_failure(self):
+        calls = []
+        first = _tolerance_record('occluded_or_foreign_content')
+        second = _tolerance_record('unobscured')
+        window = _ToleranceScriptedWindow()
+        rec = self._tolerance(window, [first, second], calls)
+        self.assertEqual(rec['verdict'], 'unobscured')
+        self.assertIs(rec['first_attempt'], first)  # failure RETAINED
+        self.assertEqual(rec['transient_tolerance']['retries'], 1)
+        self.assertTrue(rec['transient_tolerance']['healed'])
+        self.assertTrue(rec['transient_tolerance']['deadline_respected'])
+        self.assertEqual(len(calls), 2)      # EXACTLY one retry
+        self.assertEqual(window.repaints, 1)  # exactly one repaint between
+        self.assertEqual(calls[0], calls[1])  # IDENTICAL arguments
+
+    def test_real_occlusion_not_masked_single_retry_failure_retained(self):
+        calls = []
+        first = _tolerance_record('occluded_or_foreign_content')
+        second = _tolerance_record('occluded_or_foreign_content')
+        window = _ToleranceScriptedWindow()
+        rec = self._tolerance(window, [first, second], calls)
+        # A REAL (persistent) occlusion: retried ONCE, never more, still
+        # failed, first attempt retained on the returned record.
+        self.assertEqual(rec['verdict'], 'occluded_or_foreign_content')
+        self.assertIs(rec['first_attempt'], first)
+        self.assertFalse(rec['transient_tolerance']['healed'])
+        self.assertEqual(len(calls), 2)
+        # The ORIGINAL assertion shape still fires on this record: nothing
+        # is masked; the failure message carries both records.
+        with self.assertRaises(AssertionError):
+            self.assertEqual(rec['verdict'], 'unobscured', rec)
+
+    def test_retry_refused_when_fixture_parameters_drift(self):
+        calls = []
+        first = _tolerance_record('occluded_or_foreign_content')
+        window = _ToleranceScriptedWindow()
+
+        def repaint_with_drift():
+            window.repaints += 1
+            window._size = (180, 70)  # drift AFTER the first attempt
+
+        with self.assertRaisesRegex(AssertionError, 'drifted'):
+            self._tolerance(window, [first], calls,
+                            repaint=repaint_with_drift)
+        self.assertEqual(len(calls), 1)  # NO second attempt: parameters
+        # drifted, so a retry would re-test a different fixture.
+
+    def test_non_transient_verdicts_return_without_retry(self):
+        calls = []
+        destroyed = _tolerance_record('window_destroyed')
+        window = _ToleranceScriptedWindow()
+        rec = self._tolerance(window, [destroyed], calls)
+        self.assertEqual(rec['verdict'], 'window_destroyed')
+        self.assertEqual(len(calls), 1)  # deterministic verdicts: no retry
+        self.assertFalse(rec['transient_tolerance']['fired'])
+
+    def test_deadline_exhausted_before_retry_means_no_retry(self):
+        calls = []
+        first = _tolerance_record('occluded_or_foreign_content')
+        window = _ToleranceScriptedWindow()
+        rec = self._tolerance(window, [first], calls,
+                              times=[0.0, 100.0], deadline_s=5.0)
+        self.assertEqual(len(calls), 1)  # time-bounded: no attempt 2
+        self.assertEqual(rec['transient_tolerance']['reason'],
+                         'deadline_exhausted_before_retry')
+        # The returned record IS the first attempt: the failure is
+        # retained as the record itself, never discarded.
+        self.assertEqual(rec['verdict'], 'occluded_or_foreign_content')
+        self.assertEqual(rec['transient_tolerance']['retries'], 0)
 
 
 def capture_window_module():
