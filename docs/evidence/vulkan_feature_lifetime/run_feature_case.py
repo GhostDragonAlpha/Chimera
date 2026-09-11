@@ -282,6 +282,8 @@ def main(argv=None) -> int:
         time.sleep(1.2)
 
         def step(name, ok, detail):
+            if isinstance(detail, bytes):   # route bodies are raw bytes; keep JSON-serializable
+                detail = detail.decode("utf-8", errors="replace")
             result["steps"].append({"step": name, "ok": bool(ok), "detail": detail})
             if not ok:
                 raise AssertionError(f"{name} failed: {detail}")
