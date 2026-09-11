@@ -1,0 +1,10 @@
+C3 clean-build verification (fresh configure+build in slot .tmp/engine_build_fresh; protected build path untouched)
+
+C3(a) derived frag.spv produced by the build's own glslc: True
+C3(a) derived sha256: 7ea15d358ecf1fa35eafdead08032a3c8c1e2218bc7c05f5391c2a34cf52e8af
+C3(a) source render_tri_frost.frag sha256: 84061d7ac9826d782a0c4f878ac0bf17c370c1f6ee3647d96346ba2d27608f3e
+C3(b) bare render_tri_frost.spv anywhere under slot .tmp: []
+C3(c) fixed loader name == derived artifact name: True
+C3(d) hand staging performed: False
+
+C3 VERDICT: 4/4 (prereg threshold 4/4)

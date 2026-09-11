@@ -4888,8 +4888,12 @@ bool Engine::load_frost(const uint8_t* blob, size_t size) {
     }
     // ── frost render pipeline: same vertex stage, frag reads the color SSBO ──
     {
-        std::vector<char> spv = read_file("shaders/render_tri_frost.spv");
-        if (spv.empty()) { fprintf(stderr, "frost: render_tri_frost.spv missing\n"); return false; }
+        // frost-shader-name-01: read the DERIVED name. CMake emits
+        // <name>.<stage>.spv for vert/frag sources (render_tri_frost.frag
+        // -> render_tri_frost.frag.spv); the bare name was a stale hand-build
+        // artifact no clean build produces. Same rule as every sibling frag.
+        std::vector<char> spv = read_file("shaders/render_tri_frost.frag.spv");
+        if (spv.empty()) { fprintf(stderr, "frost: render_tri_frost.frag.spv missing\n"); return false; }
         if (tri_frost_frag_mod_) vkDestroyShaderModule(device_, tri_frost_frag_mod_, nullptr);
         VkShaderModuleCreateInfo smci{};
         smci.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;

@@ -1,0 +1,5 @@
+POST summary (prereg thresholds)
+  read sites: 23
+  violators: 0 (prereg: PRE=1, POST=0)
+  all reads resolve in manifest: True
+  threshold: POST expects 0 violators and 23 reads resolving in the derived manifest
