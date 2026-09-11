@@ -1,0 +1,74 @@
+{
+  "task": "engine-vulkan-cleanup-02",
+  "generation": 1,
+  "slot": 4,
+  "worker": "subagent-worker-03",
+  "worktree": "E:/ChimeraWork/slot-04",
+  "base": "265dad9822f49c38eaba8a336e8e823c13cf96d8",
+  "reconciled_base": "c1a1ec5a5a166d8f32816cdacc9569e03857fa0e (merge of origin/astra/gait-capture, no force; engine.cpp blob identical 3892217f821fc3e0c0868bbe966f88c9a6068997 across base/tip/worktree)",
+  "preregistration_commit": "499f3902",
+  "implementation_commit": "527bde2f",
+  "resources": {
+    "rtx4090": "acquired through controller before build/run; released after drain",
+    "engine_demo": "acquired (chained to rtx4090) before build/run; released after drain"
+  },
+  "producing_commands": [
+    "cmake -S ChimeraEngine/engine -B .tmp/engine_build -G \"Visual Studio 17 2022\" -A x64",
+    "cmake --build .tmp/engine_build --config Release -- -m",
+    "PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 python docs/evidence/vulkan_resource_lifetime/run_case.py --repo E:/ChimeraWork/slot-04 --exe E:/ChimeraWork/slot-04/.tmp/engine_build/Release/chimera_engine.exe --output E:/ChimeraWork/slot-04/docs/evidence/vulkan_resource_lifetime/baseline_run_01 --runtime-name vkl_baseline_01 --port 8104",
+    "PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 python docs/evidence/vulkan_resource_lifetime/run_case.py --repo E:/ChimeraWork/slot-04 --exe E:/ChimeraWork/slot-04/.tmp/engine_build/Release/chimera_engine.exe --output E:/ChimeraWork/slot-04/docs/evidence/vulkan_resource_lifetime/repair_run_01 --runtime-name vkl_repair_01 --port 8104",
+    "PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 python docs/evidence/vulkan_resource_lifetime/run_case.py --repo E:/ChimeraWork/slot-04 --exe E:/ChimeraWork/slot-04/.tmp/engine_build/Release/chimera_engine.exe --output E:/ChimeraWork/slot-04/docs/evidence/vulkan_resource_lifetime/repair_run_02 --runtime-name vkl_repair_02 --port 8104",
+    "PYTHONIOENCODING=utf-8 python tools/membrane_demo_client.py gate --launch .tmp/engine_build/Release/chimera_engine.exe --port 8094 --base http://localhost:8094",
+    "PYTHONIOENCODING=utf-8 python -m unittest discover -s tools/agent_fleet -p 'test_*.py' -v"
+  ],
+  "binaries": {
+    "baseline_exe_sha256": "3a6cab5107761d7922af38d18b84d781f0633f6bc0b26ba043f416e72a6da1d4 (built from preregistration-commit source; engine.cpp == base blob 3892217f)",
+    "repair_exe_sha256": "680790014c40d7662c75b9b5170b0494dccb9ac5e8b729f606ce481c6197cb7a (built from implementation commit 527bde2f)",
+    "build_root": "E:/ChimeraWork/slot-04/.tmp/engine_build (private slot scratch; protected build path untouched)",
+    "toolchain": "CMake + Visual Studio 17 2022 x64, Vulkan SDK 1.4.328.1"
+  },
+  "validation_configuration": {
+    "layer": "VK_LAYER_KHRONOS_validation, engine-enabled when present (engine.cpp:474-500), debug messenger -> stderr [VK ERROR]",
+    "sdk": "1.4.328.1",
+    "suppression": "none (no env filters, no disabled checks, identical for baseline and repair)",
+    "duplicate_message_limit": 10,
+    "note": "the baseline report is TRUNCATED by the validator's duplicate_message_limit after 10 reports; the repair runs report zero [VK ERROR] lines so no truncation applies"
+  },
+  "validation_error_table": {
+    "schema": "case -> baseline -> repair",
+    "V0_startup": { "cases_pass": "PASS -> PASS", "vuid_vkDestroyDevice_05137": "reported at close only" },
+    "V1_resize_3_generations": { "cases_pass": "PASS -> PASS", "vuid_vkDestroyDevice_05137": "reported at close only" },
+    "V2_glass_capture": { "cases_pass": "PASS -> PASS", "png_bytes": "2985430 -> 2985430" },
+    "V3_membrane_demo": { "cases_pass": "PASS -> PASS", "detail": "init nv=4 nf=4 ok; reset ok; step ok; status ok" },
+    "V4_ordered_shutdown": { "cases_pass": "PASS -> PASS x2 (repair_run_01, repair_run_02)", "detail": "exit 0, no watchdog, HWND destroyed, markers admission_closed->boot_joined->http_stopped->engine_shutdown in order" },
+    "VUID-vkDestroyDevice-device-05137_reports": { "baseline_run_01": 10, "repair_run_01": 0, "repair_run_02": 0 },
+    "VK_ERROR_lines_total": { "baseline_run_01": 10, "repair_run_01": 0, "repair_run_02": 0 },
+    "engine_stderr_bytes": { "baseline_run_01": 4305, "repair_run_01": 0, "repair_run_02": 0 },
+    "baseline_truncated_report_content": "5 VkImage + 5 VkDeviceMemory live children reported before duplicate_message_limit(10) cut reporting; VkImageView/VkShaderModule/VkPipeline children live but unreported. Counting law: live images at close = leaked rt_depth resize-generation trios + 1 never-destroyed rt_msaa trio (PR27 run: 3 images = 2 depth + 1 msaa; this run: 5 = 4 depth [init generation + >=1 early WM_SIZE generation + 3 commanded SetWindowPos generations] + 1 msaa). Field identities are source-derived, never from numeric handles.",
+    "original_retained_evidence": "docs/evidence/engine_shutdown_order/parent_runtime/owned_visual/run_01/engine.stderr.log (PR27 lane, unchanged) + baseline_run_01/engine.stderr.log (this task, verbatim)"
+  },
+  "frozen_gates": {
+    "b2_membrane_reset_step_gate": {
+      "command": "python tools/membrane_demo_client.py gate --launch .tmp/engine_build/Release/chimera_engine.exe --port 8094 --base http://localhost:8094",
+      "summary_rc": 0,
+      "checks": 21,
+      "verdicts": "PASS/INFO only",
+      "fixture_sha256": "3e264f49929f216b6bc07024f9b7ca0a5d96ca166b8114df5198776420642c77",
+      "retained_values": "E0 2.625 vs fixture 2.6249999533666486; doubling E2=2*E0; gamma-back E=2.625; step1 descent; run stagnation at it=126; reset restore; reject refused; gamma0 stationary",
+      "evidence": "docs/evidence/vulkan_resource_lifetime/b2_gate_repair_01/ (its engine_gate_stderr.log is 0 bytes: second full engine+membrane lifecycle also validation-clean)",
+      "failed_first_attempt": "docs/evidence/vulkan_resource_lifetime/b2_gate_failed_attempt_01/ — worker passed --port without --base (client POSTed to default :8091, ConnectionRefused); worker error, not an engine defect; retained verbatim"
+    },
+    "fleet_suite": {
+      "command": "PYTHONIOENCODING=utf-8 python -m unittest discover -s tools/agent_fleet -p 'test_*.py' -v",
+      "result": "OK (skipped=1) — 0 failures, 1 expected Windows-symlink skip"
+    }
+  },
+  "dyad": "NOT_TESTED — the SUBAGENT provider class requires spawning a reviewer subagent (lead's Agent call); this worker has no subagent-spawn capability, and the local LM Studio eye is operator-owned and off-limits to this lane. Rendering retention is certified by the engine-produced swapchain readbacks (PNG sha256 in run result.json) with the owned window visible at capture.",
+  "cpu_ownership_unit_test": "NOT_APPLICABLE — engine internals are not CPU-unit-testable without restructuring; the preregistered decisive gate is the native validation run, which is decisive here.",
+  "scope_discipline": {
+    "protected_build_path": "untouched (ChimeraEngine/engine/build/ never written)",
+    "operator_checkout": "untouched",
+    "foreign_processes": "none touched; every launched process was this task's own child and was verified drained before resource release",
+    "out_of_scope_writes": "none committed; the B2 gate's auto-evidence dir (docs/evidence/membrane_gpu_demo_runtime/) was relocated into this task's scope dir immediately after each run"
+  }
+}
