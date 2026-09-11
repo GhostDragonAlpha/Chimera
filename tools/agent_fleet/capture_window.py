@@ -320,6 +320,14 @@ def capture_client_pixels(hwnd, expected_width, expected_height):
     if not hdc_window:
         return None, 'no_window_dc'
     mem_dc = gdi32.CreateCompatibleDC(hdc_window)
+    if not mem_dc:
+        # fleet-review-followups-02 (F1): a failed CreateCompatibleDC must
+        # never flow NULL into SelectObject/PrintWindow - that used to
+        # surface as the mislabeled capture_refused:printwindow_refused.
+        # Fail CLOSED with the named verdict before the DIB is allocated and
+        # before any pixel path is touched (and release the window DC).
+        user32.ReleaseDC(hwnd, hdc_window)
+        return None, 'memory_dc_unavailable'
     bmi = BITMAPINFO()
     bmi.bmiHeader.biSize = ctypes.sizeof(BITMAPINFOHEADER)
     bmi.bmiHeader.biWidth = width
@@ -379,6 +387,15 @@ def verify_hwnd_capture(hwnd, expected_pattern, pinned_size=None, title=None):
     verified against a known deterministic matrix. Only verdict
     'unobscured' with publishable=True may be published as engine evidence;
     no desktop or screen pixels ever enter the record.
+
+    `pinned_size` semantics (documented, fleet-review-followups-02): with an
+    explicit pin the measured client size must equal it or the record fails
+    closed as 'window_resized'. With ``pinned_size=None`` the MEASURED
+    client size is silently ADOPTED as the pin, so 'window_resized' can
+    never fire - the size gate is inert for a non-pinning caller. Every
+    in-repo caller pins (verify_owned_capture passes the fixture's
+    creation-measured size); only call this entry without a pin when that
+    adoption is intended.
     """
     record = {'contract': 'WINDOW_CAPTURE_OWNERSHIP_V1'}
     if title is not None:
@@ -466,7 +483,8 @@ def verdict_verdicts():
             'capture_refused:printwindow_refused',
             'capture_refused:client_size_mismatch',
             'capture_refused:stale_or_invalid_handle',
-            'capture_refused:no_window_dc', 'capture_refused:dib_allocation_failed'}
+            'capture_refused:no_window_dc', 'capture_refused:dib_allocation_failed',
+            'capture_refused:memory_dc_unavailable'}
 
 
 # ---- helpers -----------------------------------------------------------------

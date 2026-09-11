@@ -410,6 +410,77 @@ class CaptureWindowTests(unittest.TestCase):
         self.assertFalse(rec['publishable'])
         self.assertFalse(rec['is_window'])
 
+    # --- F1 (fleet-review-followups-02): a failed CreateCompatibleDC is a
+    # NAMED fail-closed refusal, never a NULL flowing into SelectObject /
+    # PrintWindow mislabeled as printwindow_refused -------------------------
+    def test_failed_memory_dc_is_named_refusal(self):
+        import capture_window as cw
+        f = self.fixture('chimera-nomemdc')
+        original = cw.gdi32.CreateCompatibleDC
+
+        def failing_create_compatible_dc(hdc):
+            # Same shape as the real prototype's failure return: NULL HDC.
+            return cw.wintypes.HDC(0)
+
+        cw.gdi32.CreateCompatibleDC = failing_create_compatible_dc
+        self.addCleanup(setattr, cw.gdi32, 'CreateCompatibleDC', original)
+        try:
+            rows, reason = capture_client_pixels(f.hwnd, f.width, f.height)
+        finally:
+            # Restore BEFORE the next assertion block so the patch window is
+            # exactly one capture (addCleanup is the idempotent backstop).
+            cw.gdi32.CreateCompatibleDC = original
+        self.assertIsNone(rows)
+        self.assertEqual(reason, 'memory_dc_unavailable', (rows, reason))
+        # The refusal is a NAMED verdict in the contract's vocabulary, not a
+        # mislabeled printwindow_refused.
+        self.assertIn('capture_refused:memory_dc_unavailable',
+                      verdict_verdicts())
+        # The real prototype still works after the patch window: the same
+        # fixture captures exactly (the patch was test-scoped).
+        rows2, reason2 = capture_client_pixels(f.hwnd, f.width, f.height)
+        self.assertIsNone(reason2)
+        self.assertEqual(rows2, f.expected_pattern())
+
+    # --- F2 (fleet-review-followups-02): pinned_size=None ADOPTS the
+    # measured client size (documented semantics; the window_resized gate
+    # is inert for a non-pinning caller) ------------------------------------
+    def test_verify_hwnd_capture_none_pin_adopts_measured_size(self):
+        f = self.fixture('chimera-adoption')
+        w, h = f.width, f.height
+        # 1) No pin, unresized window: adopted pin == measured client size,
+        #    record proceeds to a full capture and is publishable.
+        rec = verify_hwnd_capture(f.hwnd, f.expected_pattern(),
+                                  pinned_size=None, title=f.title)
+        self.assertEqual(rec['verdict'], 'unobscured', rec)
+        self.assertTrue(rec['publishable'])
+        self.assertEqual(rec['pinned_size'], rec['client_size'])
+        self.assertEqual(rec['client_size'], [w, h])
+        # 2) Resize the real client area (the creation pin stays w x h),
+        #    repaint at the new measured size so the CONTENT gate is fair.
+        f.resize_client(w + 80, h + 40)
+        rect = f.client_rect()
+        new_w, new_h = rect[2], rect[3]
+        f.width, f.height = new_w, new_h
+        f.repaint()
+        rec2 = verify_hwnd_capture(f.hwnd, f.expected_pattern(),
+                                   pinned_size=None, title=f.title)
+        # Documented adoption: the pin adopted the NEW measured size, the
+        # resized gate did not fire, and the record is publishable.
+        self.assertEqual(rec2['client_size'], [new_w, new_h], rec2)
+        self.assertEqual(rec2['pinned_size'], rec2['client_size'], rec2)
+        self.assertNotEqual(rec2['verdict'], 'window_resized', rec2)
+        self.assertEqual(rec2['verdict'], 'unobscured', rec2)
+        self.assertTrue(rec2['publishable'])
+        # 3) Contrast (gate intact for pinning callers): the SAME resized
+        #    window against the ORIGINAL creation pin is window_resized.
+        rec3 = verify_hwnd_capture(f.hwnd, f.expected_pattern(),
+                                   pinned_size=(w, h), title=f.title)
+        self.assertEqual(rec3['verdict'], 'window_resized', rec3)
+        self.assertFalse(rec3['publishable'])
+        self.assertEqual(rec3['pinned_size'], [w, h])
+        self.assertEqual(rec3['client_size'], [new_w, new_h])
+
 
 def capture_window_module():
     import capture_window
