@@ -1,0 +1,16 @@
+A=baseline_1.json digest=7c2ab66573938fff9b873e4fb6408267da2a072890c56f0414d70d3389140a7d
+B=pathvar_1.json digest=92054a265937fafbdadc5a787d8375562c5436cd07ce221b4a853bc378e63504
+digest moved: True
+differing leaf-patterns (3 patterns):
+  cards[*].source.path  x240
+      'E:\\ChimeraWork\\slot-07\\docs\\roadmap\\holodeck_tasks.json' -> 'E:\\ChimeraWork\\cda-throwaway-20260911\\docs\\roadmap\\holodeck_tasks.json'
+      'E:\\ChimeraWork\\slot-07\\docs\\roadmap\\holodeck_tasks.json' -> 'E:\\ChimeraWork\\cda-throwaway-20260911\\docs\\roadmap\\holodeck_tasks.json'
+      'E:\\ChimeraWork\\slot-07\\docs\\roadmap\\holodeck_tasks.json' -> 'E:\\ChimeraWork\\cda-throwaway-20260911\\docs\\roadmap\\holodeck_tasks.json'
+      'E:\\ChimeraWork\\slot-07\\docs\\roadmap\\holodeck_tasks.json' -> 'E:\\ChimeraWork\\cda-throwaway-20260911\\docs\\roadmap\\holodeck_tasks.json'
+      ... (236 more)
+  source_manifest.catalog.path  x1
+      'E:\\ChimeraWork\\slot-07\\docs\\roadmap\\holodeck_tasks.json' -> 'E:\\ChimeraWork\\cda-throwaway-20260911\\docs\\roadmap\\holodeck_tasks.json'
+  source_manifest.master.path  x1
+      'E:\\ChimeraWork\\slot-07\\docs\\THE_MASTER_LIST.md' -> 'E:\\ChimeraWork\\cda-throwaway-20260911\\docs\\THE_MASTER_LIST.md'
+PREDICTED SET: ['cards[*].source.path', 'source_manifest.catalog.path', 'source_manifest.master.path']
+MATCH: True

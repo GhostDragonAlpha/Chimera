@@ -1,0 +1,10 @@
+A=pathvar_1.json digest=92054a265937fafbdadc5a787d8375562c5436cd07ce221b4a853bc378e63504
+B=headvar_1.json digest=8f722f8a05aef9237b0d83fe68c92528ca91e6fe19bd2a036fafcea89698ac1d
+digest moved: True
+differing leaf-patterns (2 patterns):
+  source_manifest.catalog.git_commit  x1
+      '72af259c6648847d0c4fbc7fd37574589ae70eac' -> '8da4f4dc67a291978929b9c78a3ae559ca2ef40d'
+  source_manifest.master.git_commit  x1
+      '72af259c6648847d0c4fbc7fd37574589ae70eac' -> '8da4f4dc67a291978929b9c78a3ae559ca2ef40d'
+PREDICTED SET: ['source_manifest.catalog.git_commit', 'source_manifest.master.git_commit']
+MATCH: True
