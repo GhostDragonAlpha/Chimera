@@ -49,3 +49,54 @@ There is no implemented automatic pause/drain/source-rollback orchestrator at
 this inspected revision. These are explicit remaining engineering requirements,
 not instructions to improvise a direct database mutation. They extend the
 existing fleet rather than replace its ledger or controller.
+
+## Isolated transition rehearsal suite (2026-09-11, fleet-controller-upgrade-rehearsal-01)
+
+`tools/agent_fleet/test_controller_transition.py` closes gate 4 ("isolated
+same-store upgrade/restart/rollback evidence") as a rerunnable rehearsal. It
+does not perform or claim any live deployment; the one live transition
+(87e281e5-era service -> `slot-binding-d012b4b1`) remains evidenced only by
+`evidence/agent_fleet/FLEET_OPERATIONS_RECORD/RECORD.md`.
+
+How it works, entirely on temporary roots under the gitignored worktree
+scratch and free loopback ports:
+
+- Two deployment directories per test are built in the MANIFEST pattern of
+  the live deployment (copied `tools/agent_fleet` runtime files, per-file
+  sha256 manifest, `credentials_copied: false`), verified by re-hashing
+  before use, and differentiated by an inert `SERVICE_MARKER`. Services are
+  spawned only from these directories through the real `bootstrap_fleet.py`
+  CLI — never from the integration checkout, which the served command line
+  is explicitly asserted against.
+- `Rehearsal.preflight` composes the required gates, read-only and strictly
+  before any stop: deployment integrity; listener PID (netstat) vs pidfile
+  consent record; listener executable-image path (process command line);
+  store schema and credential identity hashes via a read-only open;
+  acknowledged quiescence (for every RUNNING task, the latest `checkpoint`
+  audit event must name the task's current generation — silence or an old
+  "done" report is insufficient); actual runtime/eye drainage (registry
+  resources empty).
+- Backup/rollback use the SQLite backup API into
+  `<root>/control/snapshots/pre-<label>.sqlite` plus `PRAGMA
+  integrity_check`; rollback is exclusively the verified file restore over
+  the same store. A row-level SQL patch is never a rollback path; the one
+  crafted incompatible-schema store in the suite exists only to be refused
+  (preflight `incompatible_store_schema`, then the controller constructor's
+  `configuration_mismatch` at start), and only the backup restores service.
+
+Measured at base `4604de40` (evidence:
+`evidence/agent_fleet/CONTROLLER_TRANSITION/`, preregistration committed
+before the code): 3/3 suite tests pass — upgrade and backup-restore rollback
+both preserve the registry byte-for-byte (leader/epoch, claims, generations,
+checkpoints, slots, audit events) and keep pre-upgrade session tokens valid
+in both directions; stale acknowledgment, unacknowledged active worker, held
+runtime/eye resource, tampered pidfile, image mismatch and incompatible
+schema each refuse BEFORE any stop or mutation, leaving the old service
+answering with an unchanged revision; credentials never appear in snapshot,
+events, status or service logs. Full-suite context: the two
+`test_master_catalogue.py` count-drift failures and the one Windows symlink
+skip pre-exist at this base and belong to the catalogue lane.
+
+Any future live transition must still clear gates 1-5 above with its own
+pre-restart fingerprint, backup, quiescence verification and post-restart
+reconciliation; this suite proves the procedure, not a deployment.
