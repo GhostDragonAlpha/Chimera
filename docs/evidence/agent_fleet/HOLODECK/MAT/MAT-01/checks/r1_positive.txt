@@ -1,0 +1,11 @@
+R1 positive admissions (model must ACCEPT)
+threshold: 7/7
+verdict: HOLDS (7/7)
+
+  PASS [1] density admitted: Quantity(250, (L^-3 M)) exact
+  PASS [2] modulus kPa admitted: SI value 120000 with Pa dimension
+  PASS [3] density_from_sg WITH basis: derived record carries arithmetic (rho = SG x rho_ref = 0.25 x 1000.0 = 250.0 kg/m^3)
+  PASS [4] fraction 0.4 admitted dimensionless
+  PASS [5] snapshot() is an immutable mapping with identical content
+  PASS [6] MATH-01 composition: Pa x 1 x m^3 -> (2,1,-2) = L^2 M T^-2 = J dimension (algebra cited from MATH-01, not reimplemented)
+  PASS [7] bulk_mass(admitted rho, Quantity volume) -> M dimension, value 0.002

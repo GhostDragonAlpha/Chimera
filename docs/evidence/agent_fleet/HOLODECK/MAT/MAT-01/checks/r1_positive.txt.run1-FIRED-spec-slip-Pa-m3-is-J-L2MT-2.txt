@@ -1,0 +1,11 @@
+R1 positive admissions (model must ACCEPT)
+threshold: 7/7
+verdict: FIRED (6/7)
+
+  PASS [1] density admitted: Quantity(250, (L^-3 M)) exact
+  PASS [2] modulus kPa admitted: SI value 120000 with Pa dimension
+  PASS [3] density_from_sg WITH basis: derived record carries arithmetic (rho = SG x rho_ref = 0.25 x 1000.0 = 250.0 kg/m^3)
+  PASS [4] fraction 0.4 admitted dimensionless
+  PASS [5] snapshot() is an immutable mapping with identical content
+  FAIL [?] composed dimension Dimension(L=2, M=1, T=-2)
+  PASS [6] bulk_mass(admitted rho, Quantity volume) -> M dimension, value 0.002
