@@ -69,7 +69,7 @@ def realize_via_lifecycle(call, tid, card_id, final='INTEGRATED'):
                    branch=claimed['branch'], expected_base=BASE,
                    epoch=call('snapshot')['epoch'],
                    review='independent review')
-    call('ack_integration', 'supervisor-secret', request=request['request'],
+    call('ack_integration', 'super-secret', request=request['request'],
          base_branch='astra/gait-capture', expected_base=BASE, commit=MERGED,
          evidence='publisher verified remote head')
     return claimed
@@ -132,17 +132,21 @@ class CatalogueRealizationTests(unittest.TestCase):
         self.assertEqual(self.frontier(), ['MATH-01'])
 
     def test_s3_abandonment_reproposes_card_and_blocks_dependents(self):
-        claimed = realize_via_lifecycle(self.call, 'holodeck-gov-01', 'GOV-01')
-        self.c.call('claim_abandon', 'super-secret', task='holodeck-gov-01',
-                    generation=claimed['generation'],
-                    preservation_evidence='fixture preservation',
-                    drain_evidence='fixture drain')
-        # ABANDONED satisfies nothing: the card re-proposes, dependents stay
-        # blocked (this scenario is expected green at BOTH heads - the old
-        # id matching never bound in the first place; it pins the semantics).
-        self.assertEqual(self.frontier(), ['GOV-01'])
+        # A READY attempt still cites the card: GOV-01 is active, not
+        # re-proposed. Retiring the attempt (task_abandon -> ABANDONED,
+        # terminal) re-proposes the card while satisfying no dependency.
+        self.call('create_task', task='holodeck-gov-01', epoch=self.epoch(),
+                  base=BASE, scopes=['tools/labs/holodeck-gov-01'],
+                  packet='statement / prediction / falsifier', kind='worker',
+                  realized_from='GOV-01')
+        self.assertNotIn('GOV-01', self.frontier())
+        self.assertEqual(self.frontier(), [])
+        self.c.call('task_abandon', 'super-secret', task='holodeck-gov-01',
+                    reason='realization attempt retired',
+                    evidence='fixture abandonment evidence')
         ready = self.call('snapshot')['tasks']['holodeck-gov-01']
         self.assertEqual(ready['state'], 'ABANDONED')
+        self.assertEqual(self.frontier(), ['GOV-01'])
 
     # --- P2: old-era fallback is byte-identical ---------------------------
     def test_old_era_no_provenance_resolves_exactly_as_before(self):

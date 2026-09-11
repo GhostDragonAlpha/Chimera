@@ -1,0 +1,25 @@
+PRE-FIX FAILURES (verbatim) - fleet-catalogue-realization-matching-01
+======================================================================
+
+Command:  python -m unittest tools.agent_fleet.test_catalogue_realization -v
+Run at:   commit 078a00ce (d8e3b5f5 + prereg/instrument);
+          tools/agent_fleet/control.py UNFIXED (no realized_from anywhere).
+
+Expected per PREREGISTRATION.txt (fail-pre-fix): the provenance scenarios
+FAIL at base (S1/S2 frontier stuck at [GOV-01]; S3's active-citation and
+abandonment assertions fail; P3 KeyError - the field does not exist), the
+old-era fallback baselines and the gates test PASS at base (byte-identity
+pinned at both heads).
+
+Result: Ran 7 - FAILED (failures=3, errors=1); exactly that split.
+
+HARNESS DISCLOSURE: two corrections were made to the INSTRUMENT before
+this retained run (the model/fix was not touched - it does not exist yet):
+(1) supervisor ops must use the fixture's supervisor token 'super-secret'
+    (first run failed unauthorized); (2) S3 was re-scoped to the correct
+    abandonment semantics - claim_abandon returns a task to READY (still
+    an ACTIVE citation, card NOT re-proposed) while task_abandon produces
+    the terminal ABANDONED state that re-proposes; S3 now asserts both.
+
+VERBATIM OUTPUT BEGINS HERE
+===========================
