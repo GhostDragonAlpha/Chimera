@@ -46,6 +46,14 @@ class WorkerQueueTests(unittest.TestCase):
         self.assertEqual(result["task"], "a")
         self.assertNotIn("token", result)
 
+    def test_authentication_and_transport_failures_are_not_masked(self):
+        def call(op, args):
+            if op == "snapshot":
+                return {"result": {"tasks": {"a": {"id": "a", "state": "READY"}}}}
+            raise ValueError('{"error":"session_revoked"}')
+        with self.assertRaisesRegex(ValueError, "session_revoked"):
+            WorkerQueue(call).claim_once()
+
 
 if __name__ == "__main__":
     unittest.main()

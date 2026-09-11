@@ -6,6 +6,7 @@ requests claims; it never edits Git, SQLite, worktrees, or engine state.
 from __future__ import annotations
 
 import argparse
+import json
 import time
 from typing import Callable
 
@@ -27,9 +28,24 @@ class WorkerQueue:
             try:
                 result = self.call("claim", {"task": task["id"]})
                 return {"task": task["id"], "claim": result.get("result", result)}
-            except Exception as exc:  # claim races are expected in a shared queue
+            except Exception as exc:  # only named controller contention is recoverable
+                if not self._claim_contention(exc):
+                    raise
                 refusals.append(f"{task['id']}:{type(exc).__name__}")
         return {"task": None, "refusals": refusals} if ready else None
+
+    @staticmethod
+    def _claim_contention(exc: Exception) -> bool:
+        """Classify only expected claim races; never mask auth or transport errors."""
+        message = str(exc)
+        try:
+            code = json.loads(message).get("error")
+        except (ValueError, TypeError, AttributeError):
+            code = message
+        return code in {
+            "task_not_ready", "no_free_slot", "write_scope_conflict",
+            "dependencies_not_integrated", "capability_missing", "agent_capacity_reached",
+        }
 
     def run_forever(self, *, poll_seconds: float = 5.0, max_cycles: int | None = None,
                     on_assignment: Callable[[dict], None] | None = None) -> None:
