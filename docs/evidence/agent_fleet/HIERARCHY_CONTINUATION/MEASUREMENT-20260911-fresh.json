@@ -1,0 +1,95 @@
+{
+  "task": "fleet-orient-continuation-02",
+  "agent": "subagent-worker-04",
+  "slot": "3",
+  "generation": 1,
+  "date": "2026-09-11",
+  "worktree": "E:\\ChimeraWork\\slot-03",
+  "branch": "astra/tasks/fleet-orient-continuation-02",
+  "preregistration": "docs/evidence/agent_fleet/HIERARCHY_CONTINUATION/PREREGISTRATION-20260911-fresh.md",
+  "lineage": {
+    "base_6e240af1": "6e240af129bb496e1555a9c6e142deda765f0812",
+    "inherited_merge": "origin/astra/tasks/fleet-orient-continuation-01 @ 6a03ae9165163036e4045d7b12f57a0065304603 (fast-forward from base; 4 commits route/refine/finalize + gen3 logs)",
+    "tip_reconcile": "origin/astra/gait-capture @ c1a1ec5a5a166d8f32816cdacc9569e03857fa0e (true merge 0bf09e09; scoped files verified byte-identical base<->tip before merge, branch versions won cleanly)",
+    "prereg_commit": "6bcb2153"
+  },
+  "environment": {
+    "python": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+    "os": "win32 10.0.26200 x64, Git Bash",
+    "env_overrides": "PYTHONIOENCODING=utf-8 only; CHIMERA_FIXTURE_REPO unset"
+  },
+  "commands": [
+    {
+      "id": "S1",
+      "command": "python -m unittest tools.test_orient_continuation -v",
+      "cwd": "worktree root",
+      "raw_output": "docs/evidence/agent_fleet/HIERARCHY_CONTINUATION/RAW_test_orient_continuation_20260911_fresh.log",
+      "result": "Ran 9 tests, OK, exit 0"
+    },
+    {
+      "id": "S2",
+      "command": "python -m unittest tools.test_orient_store -v",
+      "cwd": "worktree root",
+      "raw_output": "docs/evidence/agent_fleet/HIERARCHY_CONTINUATION/RAW_test_orient_store_20260911_fresh.log",
+      "result": "Ran 5 tests, OK (skipped=1), exit 0"
+    },
+    {
+      "id": "S3",
+      "command": "python -m unittest ChimeraEngine.tests.test_engine_gates -v",
+      "cwd": "worktree root",
+      "raw_output": "docs/evidence/agent_fleet/HIERARCHY_CONTINUATION/RAW_test_engine_gates_20260911_fresh.log",
+      "result": "Ran 0 tests, NO TESTS RAN, exit 5 (module is a standalone script, not a unittest module)"
+    },
+    {
+      "id": "S3-standalone",
+      "command": "python ChimeraEngine/tests/test_engine_gates.py",
+      "cwd": "worktree root",
+      "raw_output": "docs/evidence/agent_fleet/HIERARCHY_CONTINUATION/RAW_test_engine_gates_20260911_fresh.log",
+      "result": "6/9 passed, exit 1; FAIL set == FAIL set measured identically at base 6e240af1, inherited 6a03ae91, and tip c1a1ec5a (pre-existing, out of scope)"
+    },
+    {
+      "id": "S4",
+      "command": "python -m unittest discover -s tools/agent_fleet -p 'test_*.py' -v",
+      "cwd": "worktree root",
+      "raw_output": "docs/evidence/agent_fleet/HIERARCHY_CONTINUATION/RAW_fleet_discover_20260911_fresh.log",
+      "result": "Ran 187 tests, OK (skipped=1: symlink creation unavailable on Windows), exit 0"
+    },
+    {
+      "id": "P-A",
+      "command": "python tools/orient.py --json  (real CLI subprocess; default store absent on fresh worktree)",
+      "cwd": "worktree root",
+      "raw_output": "docs/evidence/agent_fleet/HIERARCHY_CONTINUATION/orient-json-fresh-20260911.txt",
+      "result": "exit 3, oriented:false, truthful UNORIENTED refusal, continuation.owner=null, continuation.eligible_tasks=null, no store file created"
+    },
+    {
+      "id": "P-B",
+      "command": "python /tmp/oc2_probe_b.py  (driver at worktree root: real tools.orient.main() and real ChimeraEngine.engine_state.Engine with STORE patched to ephemeral temp paths; probes completed --json, completed text, missing --json, malformed --json, synthetic --json --allow-synthetic; sha256 before/after each)",
+      "cwd": "worktree root",
+      "raw_output": "docs/evidence/agent_fleet/HIERARCHY_CONTINUATION/orient-json-fresh-20260911.txt",
+      "result": "all cases as preregistered: completed -> exit 0, hierarchy_complete true, route canonical_master_controller, action==CONTINUATION_ACTION, owner/eligible_tasks null, store bytes hash-unchanged in both modes; missing -> exit 3, no file created; malformed -> exit 4, bytes unchanged; synthetic -> exit 0, synthetic:true, oriented:false, no file created; exit 0",
+      "note": "driver script was temporary (/tmp), deleted after capture; only its verbatim output is evidence"
+    },
+    {
+      "id": "PIN-CHECK",
+      "command": "python -c \"hashlib.sha256(open(f,'rb').read().replace(b'\\r\\n', b'\\n')).hexdigest() for f in [engine_state.py, mcp_server.py, orient.py]\"",
+      "cwd": "worktree root",
+      "raw_output": "inline (values mirrored in RESULT-20260911-fresh.md)",
+      "result": "c1a5f5781489b91488bcbf5777e822868f4d2c673da917d0af026c385596c01d; d9944a0275ebea4687f665dc1b10d96d9ca13a9789c3645d56b5f6cb3483303c; 3d899219c8cb277a8bc7be11bf53c9d10e2b31f569f0bca57a3368c127a01345 -- all three equal the inherited test-module pins; no re-pinning"
+    },
+    {
+      "id": "EQUIV-CHECK",
+      "command": "git archive <commit> | tar -x -C <tmp> ; python ChimeraEngine/tests/test_engine_gates.py  (for commits c1a1ec5a, 6e240af1, 6a03ae91; throwaway exports deleted after comparison)",
+      "cwd": "each temp export root",
+      "raw_output": "inline (failure sets identical across all four trees; per-tree runs observed in session)",
+      "result": "identical 6/9 with identical FAIL set at base, inherited, tip, and merged worktree -> zero regression introduced by the merges; failures pre-date the routing work and sit outside the 7-file task scope"
+    }
+  ],
+  "prereg_predictions_actuals": {
+    "P1_nine_tests_pass": true,
+    "P2_completed_store_route_and_no_write": true,
+    "P3_refusals_without_writes": true,
+    "P4_pins_hold_unchanged": true,
+    "P5_related_suites_green": "PARTIAL: tools.test_orient_store green (5, 1 skip); fleet discover green (187, 1 Windows-symlink skip); engine-gates standalone RED 6/9 IDENTICALLY at base/tip/inherited/merged (pre-existing, out of scope, not caused by this branch)"
+  },
+  "falsifiers_fired": []
+}

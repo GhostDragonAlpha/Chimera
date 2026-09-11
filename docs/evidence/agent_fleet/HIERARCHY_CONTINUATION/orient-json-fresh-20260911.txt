@@ -1,0 +1,39 @@
+command A (real CLI subprocess, default store ABSENT on fresh worktree): python tools/orient.py --json
+{
+  "continuation": {
+    "action": "read docs/AGENT_START.md and obtain an authenticated controller snapshot before continuing",
+    "authority": "controller_snapshot",
+    "eligible_tasks": null,
+    "hierarchy_complete": false,
+    "owner": null,
+    "route": "canonical_master_controller"
+  },
+  "current": null,
+  "head": "6bcb2153 preregistration for fresh-system re-verification (fleet-orient-continuation-02)",
+  "next_term": null,
+  "oriented": false,
+  "reason": "no term store",
+  "store": {
+    "exists": false,
+    "path": "E:\\ChimeraWork\\slot-03\\ChimeraEngine\\engine_state.json",
+    "sha256": null,
+    "size_bytes": null
+  },
+  "synthetic": true,
+  "verdicts": {
+    "neutral_note": "verdict lane tracked separately"
+  }
+}
+exit_code_A=3
+store_created_after_A=NO
+
+command B (driver /tmp/oc2_probe_b.py run from worktree root: real orient.main() with STORE patched to ephemeral temp paths; probes completed/missing/malformed/synthetic stores)
+B1 completed --json: exit 0 | oriented True | next_term None
+B1 continuation: {"action": "read docs/AGENT_START.md and the current canonical Master/controller snapshot; continue an owned milestone first; only if approved capacity remains, request an authenticated claim for an eligible READY task", "authority": "controller_snapshot", "eligible_tasks": null, "hierarchy_complete": true, "owner": null, "route": "canonical_master_controller"}
+B1 action==CONTINUATION_ACTION: True
+B1 store sha before==after: True | bytes unchanged: True
+B1t text: exit 0 | action in text: True | sha12 in text: True | bytes unchanged: True
+B2 missing --json: exit 3 | oriented False | file created: False | owner None | eligible_tasks None
+B3 malformed --json: exit 4 | unreadable: json decode failed: Ex | bytes unchanged: True
+B4 synthetic --json --allow-synthetic: exit 0 | synthetic True | oriented False | file created: False | owner None | eligible_tasks None
+exit_code_B=0
