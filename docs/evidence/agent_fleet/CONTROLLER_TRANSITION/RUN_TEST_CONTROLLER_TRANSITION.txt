@@ -1,0 +1,11 @@
+test_1_upgrade_preserves_registry_and_sessions_then_rollback_restores (tools.agent_fleet.test_controller_transition.ControllerTransitionRehearsalTests.test_1_upgrade_preserves_registry_and_sessions_then_rollback_restores) ... ok
+test_2_refusal_matrix_refuses_before_stop_or_mutation (tools.agent_fleet.test_controller_transition.ControllerTransitionRehearsalTests.test_2_refusal_matrix_refuses_before_stop_or_mutation) ... ok
+test_3_credentials_never_appear_in_reports_events_status_or_logs (tools.agent_fleet.test_controller_transition.ControllerTransitionRehearsalTests.test_3_credentials_never_appear_in_reports_events_status_or_logs) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 82.878s
+
+OK
+stopped pid 61148 (transition recorded: test teardown controlled transition)
+stopped pid 67692 (transition recorded: test teardown controlled transition)
+stopped pid 38308 (transition recorded: test teardown controlled transition)

@@ -1,0 +1,35 @@
+# command: python -m unittest discover -s tools/agent_fleet -p 'test_*.py'
+# cwd: E:/ChimeraWork/slot-03 (repo root)
+# head: 37e1b8800342261b739d5d6311e9cbfd5555901e
+# date -Is: 2026-09-11T00:41:10-05:00
+# python: Python 3.14.3
+.......warning: You appear to have cloned an empty repository.
+.warning: You appear to have cloned an empty repository.
+.warning: You appear to have cloned an empty repository.
+.C:\Python314\Lib\tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 409: 'Conflict'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+.................................................................................F......F...................................................................................s
+======================================================================
+FAIL: test_gen5_exhaustive_partition_no_silent_omissions (test_master_catalogue.CatalogueTests.test_gen5_exhaustive_partition_no_silent_omissions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-03\tools\agent_fleet\test_master_catalogue.py", line 668, in test_gen5_exhaustive_partition_no_silent_omissions
+    self.assertEqual(len(part), 2540)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 2584 != 2540
+
+======================================================================
+FAIL: test_import_real_sources_full_coverage (test_master_catalogue.CatalogueTests.test_import_real_sources_full_coverage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-03\tools\agent_fleet\test_master_catalogue.py", line 185, in test_import_real_sources_full_coverage
+    self.assertEqual(built['coverage']['master_row_ids'], 76)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 82 != 76
+
+----------------------------------------------------------------------
+Ran 183 tests in 88.064s
+
+FAILED (failures=2, skipped=1)
+stopped pid 42824 (transition recorded: test teardown controlled transition)
+stopped pid 63736 (transition recorded: test teardown controlled transition)

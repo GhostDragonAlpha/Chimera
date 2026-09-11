@@ -1,0 +1,27 @@
+{
+ "attempt": "live-raised-gamma0-20260911",
+ "captures": [
+  {
+   "index": 1,
+   "path": "E:/ChimeraWork/slot-05/docs/evidence/membrane_gpu_demo_runtime/20260909T143821.177952Z/raised_gamma0.png",
+   "sha256": "53e994e08d8ecc5e36fe39b86ede680bb3801c83b8ae734c08855d1034aee1ea"
+  }
+ ],
+ "claim_under_exam": "A single oblique still of the raised (gamma=0) state; the question is only what structure is visually resolvable to a fresh vision reviewer.",
+ "evidence_limits": "single still; no temporal claims; numbers you mention are observations, not measurements",
+ "physical_context": "Vulkan-rendered 2D triangulated membrane (hexagonal fan: 6 triangles, 7 vertices) with an edge-contrast presentation, oblique camera (phi ~0.35, radius 3.0), rigid +0.5 m presentation lift above a floor plane; gamma=0 state (no relaxation applied).",
+ "questions": [
+  "Describe the overall shape and structure of the object at the center of the image.",
+  "Do spoke-like or fan-like lines appear? If so, describe where they start and where they meet or converge.",
+  "In this single view, does the central region where the lines meet sit above, at the same level as, or below the outer boundary of the fan? State your uncertainty explicitly.",
+  "What else is visible in the image besides the central object?"
+ ],
+ "review_type": "still",
+ "runtime_metadata": {
+  "camera": "oblique phi 0.35 / radius 3.0",
+  "presentation": "edge contrast, +0.5 m lift",
+  "source": "EDGE-01 retained evidence 20260909T143821.177952Z",
+  "state": "gamma=0 raised"
+ },
+ "task": "dyad-subagent-template-01"
+}

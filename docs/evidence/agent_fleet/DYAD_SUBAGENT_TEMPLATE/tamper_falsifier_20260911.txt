@@ -1,0 +1,10 @@
+# review-finding correction: tamper falsifier — 2026-09-11T06:05:09Z
+finding: MEDIUM (independent review of 01080c5f) — driver recomputed capture sha256 and ignored a spec-declared value, so capture_hash_mismatch was unreachable and doc wording overstated verification.
+fix: _build_request honors a declared sha256 (declared or computed); verify_captures then performs a real check.
+
+probe: middle byte of a copy of raised_gamma0.png flipped; spec declared the ORIGINAL file's true sha256 (53e994e08d8ecc5e36fe39b86ede680bb3801c83b8ae734c08855d1034aee1ea).
+command: python tools/dyad_subagent_template.py plan --spec <tamper-spec> --evidence-root <temp>
+result: exit 2
+{"refused": "capture_hash_mismatch:C:\Users\allen\AppData\Local\Temp\tampered_raised_gamma0.png"}
+
+control: same spec against the UNMODIFIED original file passes (plan replay below).

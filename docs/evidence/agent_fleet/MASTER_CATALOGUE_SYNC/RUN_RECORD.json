@@ -1,0 +1,54 @@
+{
+  "task": "master-catalogue-sync-01",
+  "owner": "buffy-02",
+  "slot": "4",
+  "generation": 5,
+  "base": "7d3601e7d9e04019cc3794ccf0a9738627c9fd71",
+  "merged_spine": "origin/astra/gait-capture at 0e878758 (stale-base reconciliation merge after PRs #24-#26 integrated; no force-push)",
+  "branch": "astra/tasks/master-catalogue-sync-01",
+  "pr_base": "astra/gait-capture",
+  "preregistration": "controller checkpoint at rev 159 (statement/prediction/falsifier before code); gen-2..gen-5 corrections per lead reviews of 14546ac6, c324df8d and 45018287",
+  "gen5_correction": {
+    "falsifier_1_source_versions": "build_records() no longer emits source_versions (submitter-supplied hashes). Replaced by source_manifest computed FROM the retained source text; validate_payload refuses any supplied source_versions block ('supplied_source_versions_refused') and RECOMPUTES the master manifest sha256/bytes/lines from the submitted verbatim line_partition, so a supplied hash can never masquerade as proof against live files. Whether the manifest matches the CURRENT canonical sources is a separate admission gate: coverage.version_pin carries the pinned master/catalog sha256 explicitly.",
+    "falsifier_2_forged_domains": "coverage.domains=999 refused: the validator recomputes domains from the card records, and every other counter (cards, master_row_ids, master_row_observations, unresolved, structural_rows, prose_mentions, campaign_prose_refs, unkeyed_requirements) is recomputed from records/partition - scalar coverage fields carry COUNTS only; the detailed records travel in sibling *_records fields.",
+    "falsifier_3_line_1825": "The B7b requirement continuation at Master line 1825 is retained: coverage.line_partition is an EXHAUSTIVE per-line partition of the whole Master (classes: header/structural/task_row/cell_reference/unresolved/prose/blank, each entry with verbatim text + sha256). The validator enforces exact exhaustiveness against the manifest line count, per-entry hash consistency, known classes, and that the rebuilt text reproduces the manifest hash - dropping or tampering with any line is a named refusal, not a silent omission. An independent no-silent-omission control (test_gen5_exhaustive_partition_no_silent_omissions) asserts exactly this, plus the unkeyed-requirement capture of the plain B7b line.",
+    "onboarding_reconciliation_pointer": "Per the lead's PR comment on PR24 (b8bb5de5): AGENT_START.md and THE_AGENT_FLEET.md now carry the worktree-reconciliation rule - refresh actual controller owner/generation, compare expected head via the read-only inspector tools/agent_fleet/worktree_reconcile.py (contract docs/THE_WORKTREE_RECONCILIATION.md); evidence-only descendant commits with preserved staged runs need no operator confirmation; changed implementation requires targeted revalidation; conflicting claims/history route to the lead; never reset/clean/force-push to restore an old prompt; Git author is not authenticated identity."
+  },
+  "executed_tests": [
+    {
+      "command": "python -m pytest . -q",
+      "cwd": "E:/ChimeraWork/slot-04/tools/agent_fleet",
+      "result": "106 passed, 1 skipped",
+      "isolated_registry": true,
+      "note": "Full agent_fleet suite on the merged branch: 19 catalogue tests (predictions a-f; currentMaster fixture control; synthetic new-prefix/new-section controls; gen-5 falsifier controls for supplied source_versions, forged domains=999, dropped/tampered line 1825, missing version_pin) + pre-existing controller/resource/worktree-reconcile tests (no regressions). All registries are temp SQLite; the live registry was never touched."
+    },
+    {
+      "command": "python -m pytest test_master_catalogue.py test_control.py -q",
+      "cwd": "E:/ChimeraWork/slot-04/tools/agent_fleet",
+      "result": "55 passed",
+      "isolated_registry": true
+    }
+  ],
+  "real_source_build": {
+    "command": "python -c build_records()+validate_payload()",
+    "source_revision": "docs/THE_MASTER_LIST.md sha256 f389f91300f2... at merged spine 0e878758 (2430 lines)",
+    "coverage": {
+      "cards": 240,
+      "domains": 40,
+      "master_row_ids": 65,
+      "master_row_observations": 68,
+      "unresolved": 3,
+      "unkeyed_requirements": 271,
+      "line_partition_lines": 2430,
+      "note": "unresolved = the 3 task-less actor-roster rows (GLM, Local DYAD eye, Luna), each with section+line provenance and verified to carry no recognizable task ID. validate_payload returns [] for the real payload."
+    },
+    "required_ids_present": ["demo-studio-state-01", "math-contract-audit-01", "gov01-evidence-reconcile-01", "fleet-slot-binding-01", "studio-grid-depth-01", "fleet-controller-upgrade-01", "engine-demo-01", "L1", "B1", "H1", "H13b", "verifier-repair-02"],
+    "fixture": "tools/agent_fleet/fixtures/MASTER_CURRENT_EXCERPT_20260910.md (verbatim rows from the current canonical Master)"
+  },
+  "scope_check": "changed files: tools/agent_fleet/master_catalogue.py (manifest/partition/validator), tools/agent_fleet/test_master_catalogue.py (gen-5 controls), tools/agent_fleet/control.py (catalogue ops only), docs/AGENT_START.md + docs/THE_AGENT_FLEET.md (PR24 reconciliation pointer), docs/evidence/agent_fleet/MASTER_CATALOGUE_SYNC/ (this record)",
+  "remaining_gates": [
+    "lead re-review of the gen-5 head",
+    "authorized integration into astra/gait-capture",
+    "lead executes the live-registry import per MIGRATION.md (deliberately NOT performed by this worker)"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "before_revision": 396,
+  "after_revision": 396,
+  "preserved": {
+    "revision": true,
+    "leader": true,
+    "epoch": true,
+    "agents": true,
+    "tasks": true,
+    "slots": true,
+    "resources": true,
+    "requests": true
+  },
+  "package": "E:\\ChimeraWork\\control\\deployments\\review-handoff-2c8fb069",
+  "backup": "E:\\ChimeraWork\\control\\transitions\\review-handoff-20260910T211047Z",
+  "pid": 49592
+}

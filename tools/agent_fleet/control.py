@@ -10,6 +10,11 @@ import re
 import secrets
 import sqlite3
 from layout import slot_layout
+# Master-catalogue import extension (planning data only; see packet).
+# Additive wiring: registries created before this extension gain the plane via
+# the setdefault in call(); catalogue ops validate payloads independently so
+# the controller refuses stale or malformed imports by name.
+from master_catalogue import payload_digest, validate_payload
 
 class Refusal(ValueError):
     pass
@@ -113,6 +118,33 @@ class Control:
         # Resource ownership is intentionally retained until trusted process-drain evidence.
         if s['leader']==aid:self._elect(s)
         return {'leader':s['leader'],'epoch':s['epoch'],'reason':reason}
+
+    PROVISION_FIELDS=('provision_task','provision_generation','worktree_head',
+                      'provision_base','provision_evidence')
+    PRESERVED_PROVISION_LIMIT=20
+
+    def _preserve_provision(self,s,slot,reason,evidence):
+        """Retire a slot's ACTIVE provision without deleting its evidence.
+
+        The full record moves to engine['preserved_provisions'] (bounded; the
+        oldest entries drop first when the cap is exceeded) and the active
+        binding fields clear, so no later task/generation can inherit source
+        authority from an earlier provision. Returns the preserved record, or
+        None when the slot had no active provision.
+        """
+        engine=slot['engine']
+        if not engine.get('provisioned'):
+            return None
+        record={'reason':reason,'evidence':evidence,'cleared_revision':s['revision']+1}
+        for key in self.PROVISION_FIELDS:
+            record[key]=engine.get(key)
+        history=engine.setdefault('preserved_provisions',[])
+        history.append(record)
+        del history[:-self.PRESERVED_PROVISION_LIMIT]
+        engine['provisioned']=False
+        for key in self.PROVISION_FIELDS:
+            engine.pop(key,None)
+        return record
 
     PHYSICAL=('rtx4090',)
     CHAINED=('engine_demo','dyad_eye')
@@ -256,12 +288,16 @@ class Control:
             # Also reconcile summaries read from a pre-repair registry.
             s['memory']['admitted_mb']=sum(
                 (r.get('memory_mb') or 0) for r in s['resources'].values())
+            # Schema-1 additive catalogue plane (present in registries created
+            # before the master-catalogue extension): planning data only.
+            s.setdefault('catalogue',{'import':None,'imports':[]})
             actor=self._actor(s,token)
             result=self._dispatch(s,actor,op,p)
-            if op not in ('snapshot','events'):
+            # Catalogue reads are pure reads: no revision bump, no event.
+            if op not in ('snapshot','events','catalogue_read','catalogue_next'):
                 s['revision']+=1
                 # Do not persist credentials or arbitrary request text in audit events.
-                event={k:p[k] for k in ('task','agent','generation','epoch','reason','request') if k in p}
+                event={k:p[k] for k in ('task','agent','generation','epoch','reason','request','slot') if k in p}
                 event['actor']=actor
                 con.execute('INSERT INTO events VALUES(?,?,?)',(s['revision'],op,json.dumps(event)))
                 con.execute('UPDATE state SET body=? WHERE id=1',(json.dumps(s),))
@@ -323,6 +359,9 @@ class Control:
         if op=='snapshot':
             out=json.loads(json.dumps(s));out.pop('supervisor_hash');out.pop('enrollment_hash')
             for a in out['agents'].values():a.pop('token_hash')
+            # Catalogue snapshot carries only the summary (digest+counts);
+            # full imported content is served record-by-record via catalogue_read.
+            (out.get('catalogue') or {}).pop('payload',None)
             return out
         if op=='events':return None
         if op=='qualify':
@@ -386,8 +425,15 @@ class Control:
             for other in s['tasks'].values():
                 if other['state'] in ('RUNNING','BLOCKED','REVIEW','RECOVERY_HOLD'):
                     require(not any(overlaps(x,y) for x in t['scopes'] for y in other['scopes']),'write_scope_conflict')
-            available=[(n,v) for n,v in s['slots'].items() if v['task'] is None and v['kind']==t['kind']]
-            require(available,'no_free_slot')
+            available=[(n,v) for n,v in s['slots'].items()
+                       if v['task'] is None and v['kind']==t['kind'] and not v['engine'].get('provisioned')]
+            if not available:
+                # Name the actionable cause: a free slot still carrying an
+                # ACTIVE provision from an earlier task/generation must be
+                # recovered (supervisor slot_rebind), never silently adopted.
+                require(any(v['task'] is None and v['kind']==t['kind'] for v in s['slots'].values()),
+                        'no_free_slot')
+                require(False,'stale_provision_requires_recovery')
             n,slot=available[0];slot['task']=t['id'];t.update(owner=actor,slot=n,state='RUNNING',generation=t['generation']+1)
             return {**t,'worktree':slot['path'],'engine':slot['engine'],'provisioning':'REQUIRED: claim metadata does not create or modify a worktree'}
         if op in ('checkpoint','submit_review','resource_acquire','resource_release'):
@@ -471,6 +517,10 @@ class Control:
                 if q['task']==t['id'] and not q['served']:
                     q['served']=True;q['dropped_reason']='recovered_generation'
             t['checkpoint']=text(p.get('evidence'),'preserved_and_writer_stopped_evidence')
+            # A recovered generation can never leave its old provision active:
+            # the record is preserved and the binding cleared so the slot
+            # cannot hand source authority to the next claimant.
+            self._preserve_provision(s,s['slots'][t['slot']],'recovered_task_generation',t['checkpoint'])
             s['slots'][t['slot']]['task']=None
             t.update(state='READY',owner=None,slot=None,generation=t['generation']+1)
             self._promote_queues(s)
@@ -514,17 +564,96 @@ class Control:
             slot['engine']['provisioned']=True
             slot['engine']['worktree_head']=sha(p.get('worktree_head'))
             slot['engine']['provision_evidence']=text(p.get('evidence'),'provision_evidence')
-            return {'slot':t['slot'],'provisioned':True}
+            # The provision is bound to this task at this generation over this
+            # base, so stale authority is distinguishable from current authority.
+            slot['engine']['provision_task']=t['id']
+            slot['engine']['provision_generation']=t['generation']
+            slot['engine']['provision_base']=t['base']
+            return {'slot':t['slot'],'provisioned':True,'provision_task':t['id'],
+                    'provision_generation':t['generation'],'provision_base':t['base']}
+        if op=='slot_rebind':
+            # Supervisor-only recovery for a slot whose ACTIVE provision belongs
+            # to an earlier task/generation (including provision-orphaned free
+            # slots from legacy registries). The physical workspace is never
+            # touched here: the caller attests work preservation AND process/
+            # resource drain, the stale record moves to preserved_provisions,
+            # and the slot becomes provisionable again for its current claim.
+            require(actor=='SUPERVISOR','supervisor_only')
+            n=text(p.get('slot'),'slot')
+            slot=s['slots'].get(n);require(slot is not None,'unknown_slot')
+            engine=slot['engine']
+            require(engine.get('provisioned'),'no_stale_provision')
+            bound=slot.get('task')
+            if bound is not None:
+                t=s['tasks'].get(bound)
+                require(t is not None and t['state']=='RUNNING','slot_task_not_running')
+            preservation=text(p.get('preservation_evidence'),'preservation_evidence')
+            drain=text(p.get('drain_evidence'),'process_and_resource_drain_evidence')
+            old_task=engine.get('provision_task')
+            if old_task is not None:
+                require(not any(r['task']==old_task for r in s['resources'].values()),'resources_still_held')
+            record=self._preserve_provision(s,slot,'supervisor_slot_rebind',
+                                            'preservation: '+preservation+' | drain: '+drain)
+            return {'slot':n,'rebound':True,'filesystem_touched':False,
+                    'cleared':{k:record.get(k) for k in ('provision_task','provision_generation','worktree_head')}}
+        if op=='catalogue_import':
+            # Catalogue plane import: lead-protected, validated, idempotent.
+            # The payload is planning data (cards + master rows); it never
+            # creates, claims, admits or mutates live tasks/resources/slots.
+            self._lead(s,actor,p.get('epoch'))
+            current=s['catalogue'].get('import')
+            if current is not None:
+                require(p.get('digest')==current['digest'],'stale_catalogue_import')
+            payload=p.get('payload');require(isinstance(payload,dict),'invalid_catalogue_payload')
+            errors=validate_payload(payload)
+            if errors:raise Refusal('invalid_catalogue_payload:'+str(errors[0]))
+            digest_value=payload_digest(payload)
+            if current is not None and current['digest']==digest_value:
+                raise Refusal('duplicate_catalogue_import')
+            import_revision=s['revision']+1
+            s['catalogue']['import']={'digest':digest_value,'imported_revision':import_revision,
+                'epoch':s['epoch'],'leader':actor,'source_evidence':text(p.get('evidence'),'import_evidence')}
+            s['catalogue']['imports'].append({'digest':digest_value,'imported_revision':import_revision,'epoch':s['epoch']})
+            s['catalogue']['payload']=payload
+            return {'digest':digest_value,'coverage':payload['coverage'],'imported_revision':import_revision}
+        if op=='catalogue_read':
+            digest_value=p.get('digest');require(isinstance(digest_value,str),'missing_catalogue_digest')
+            require(s['catalogue'].get('import') is not None and digest_value==s['catalogue']['import']['digest'],'unknown_catalogue_digest')
+            plane=p.get('plane');require(plane in ('card','master_row'),'unknown_catalogue_plane')
+            ident=p.get('id');require(isinstance(ident,str) and bool(ident),'missing_catalogue_id')
+            for rec in (s['catalogue'].get('payload') or {}).get('cards' if plane=='card' else 'master_rows',[]):
+                if isinstance(rec,dict) and rec.get('id')==ident:
+                    return {'plane':plane,'record':rec,'digest':digest_value,
+                            'imported_revision':s['catalogue']['import']['imported_revision']}
+            raise Refusal('unknown_catalogue_id')
+        if op=='catalogue_next':
+            digest_value=p.get('digest');require(isinstance(digest_value,str),'missing_catalogue_digest')
+            require(s['catalogue'].get('import') is not None and digest_value==s['catalogue']['import']['digest'],'unknown_catalogue_digest')
+            payload=s['catalogue'].get('payload') or {}
+            # Live task IDs are lowercase; card IDs are uppercase. Match
+            # case-insensitively so a card already realized as a live task is
+            # never re-proposed.
+            live={tid.casefold() for tid,t in s['tasks'].items() if t['state'] not in ('INTEGRATED',)}
+            done={tid.casefold() for tid,t in s['tasks'].items() if t['state']=='INTEGRATED'}
+            candidates=[]
+            for c in payload.get('cards',[]):
+                if not isinstance(c,dict) or not isinstance(c.get('id'),str):continue
+                cid=c['id'].casefold()
+                if cid in live or cid in done:continue
+                if c.get('status')!='PROPOSED':continue
+                deps=c.get('depends_on') if isinstance(c.get('depends_on'),list) else []
+                if all(str(d).casefold() in done for d in deps):candidates.append(c['id'])
+            candidates.sort()
+            return {'digest':digest_value,'candidates':candidates,'live_tasks':sorted(live),
+                    'note':'PLANNING CANDIDATES ONLY: catalogue records are not claims, not READY tasks and grant no authority; admission runs through the normal lead-authorized task lifecycle.'}
         if op=='release_slot':
             require(actor=='SUPERVISOR','supervisor_only')
             t=s['tasks'].get(p.get('task'));require(t and t['state']=='INTEGRATED' and t['slot'],'task_not_integrated_in_slot')
-            text(p.get('evidence'),'preserved_clean_workspace_and_stopped_processes')
+            evidence=text(p.get('evidence'),'preserved_clean_workspace_and_stopped_processes')
             require(not any(r['task']==t['id'] for r in s['resources'].values()),'resource_still_held')
             slot=s['slots'][t['slot']]
-            if slot['engine'].get('provisioned'):
-                slot['engine']['provisioned']=False
-                slot['engine'].pop('worktree_head',None)
-                slot['engine'].pop('provision_evidence',None)
+            # Retire the provision into bounded history instead of dropping it.
+            self._preserve_provision(s,slot,'released_after_integration',evidence)
             slot['task']=None;t['slot']=None
             return {'released':True,'filesystem_deleted':False}
         raise Refusal('unknown_operation')

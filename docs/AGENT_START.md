@@ -1,5 +1,14 @@
 # One prompt for every agent
 
+Current execution limits and the operator-free target are recorded in
+[THE_RUN_QUEUE.md](THE_RUN_QUEUE.md). A Python claim poller alone is not a
+coding agent. The lead supplies and verifies a real provider executor,
+provisions the assigned Git worktree, and handles review/resource handoff.
+Workers resume owned work before claiming more; they do not interpret a missing
+executor or unprovisioned worktree as permission to consume additional tasks.
+Never automatically reassign work from a timeout alone. Preserve ownership until
+the existing writer and its resources are verified drained.
+
 **Current assignments, qualification, provisioning and leadership come from the
 live controller.** The 2026-09-09 bootstrap demonstration is historical evidence
 (`docs/evidence/agent_fleet/BOOTSTRAP_LIVE-122537/`), not a current readiness or
@@ -57,8 +66,14 @@ explicitly authorized task. Do not create a competing local registry.
    A rejected claim is not permission to take files anyway.
 4. Store the returned task ID, generation, worktree and branch as one context.
    Verify actual Git identity before writes. Claim metadata does not provision
-   a folder or make an old dirty slot safe. Ask the supervisor to reconcile a
-   mismatch and continue other valid owned work.
+   a folder or make an old dirty slot safe. On a slot/provision mismatch — the
+   claim is refused with `stale_provision_requires_recovery`, or the returned
+   worktree does not match your claim — STOP writing to that slot. The
+   documented recovery is the supervisor's `slot_rebind` operation (see
+   THE_AGENT_FLEET.md's 2026-09-11 section); record the refusal in your
+   evidence and continue your other owned work while the supervisor reconciles.
+   You do not need Alan or the lead to relay commands: the supervisor acts on
+   its own session, and your next claim or snapshot picks up the result.
 5. On parallel tasks, use an explicit workdir and `git -C` for every command;
    never rely on the last task's current directory. Separate evidence streams.
 6. Build and test that slot's own engine. Use its returned build/runtime plan,
@@ -88,6 +103,17 @@ Follow the [PR workflow](THE_AGENT_FLEET.md#pull-request-workflow) for ownership
 corrections and integration. Review submission is not acceptance. Never push
 master, force-push or write protected build files. Task PR publication does not
 grant workers merge rights or permission to use another agent's credentials.
+
+Benign head changes are reconciled, not escalated: refresh the actual controller
+owner/generation and compare the expected head with the read-only inspector
+(`tools/agent_fleet/worktree_reconcile.py`; contract in
+[THE_WORKTREE_RECONCILIATION.md](THE_WORKTREE_RECONCILIATION.md)). Evidence-only
+descendant commits with preserved staged runs need no operator confirmation:
+retain both, commit your remaining evidence, and submit the exact current head.
+Changed implementation requires targeted revalidation; conflicting claims or
+history route to the lead while other owned work continues. Never reset, clean,
+or force-push to restore an old prompt, and remember Git authorship is not
+authenticated identity.
 
 ## Recovery and leadership
 

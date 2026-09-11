@@ -167,6 +167,17 @@ PR ownership does not authorize unreviewed changes, weakened gates, controller
 deployment or modification of the operator's checkout. Specific current user
 restrictions still govern integration and publication.
 
+Benign head changes are reconciled, not escalated (2026-09-10): refresh the
+actual controller owner/generation and compare the expected head with the
+read-only inspector `tools/agent_fleet/worktree_reconcile.py` (contract:
+THE_WORKTREE_RECONCILIATION.md). Evidence-only descendant commits with
+preserved staged runs need no operator confirmation: retain both, commit the
+remaining own evidence, and submit the exact current head. Changed
+implementation requires targeted revalidation; conflicting claims or history
+route to the lead while other owned work continues. Never reset, clean, or
+force-push to restore an old prompt. Git author is not authenticated identity,
+and stronger client-instance fencing remains separate pending work.
+
 Use cheaper subagents for bounded research, tests or independent reviews when
 they can run usefully in parallel. The owning agent checks their evidence and
 remains accountable. Helpers receive only the scope and access they need; they
@@ -333,6 +344,18 @@ mutation; operations do not all have idempotency keys in this reference.
 | Trusted supervisor | qualify, elect when vacant, fail with evidence, recover, resource_clear, ack_integration, release_slot |
 | Qualified agent | claim, checkpoint, submit_review, resource_acquire/release |
 | Lead-qualified ready agent | offer_lead; authenticated yield by any live agent |
+| Current lead (catalogue plane) | catalogue_import (validated, idempotent, stale-refusing); any live agent may read via catalogue_read and catalogue_next |
+
+The catalogue plane is discoverable planning data, separate from the live
+plane: `catalogue_import` stores validated records built by
+`tools/agent_fleet/master_catalogue.py` (all roadmap cards plus the
+Master-list task rows, with provenance and content hashes); the snapshot
+carries only a summary (digest, counts), and `catalogue_read` returns records
+by digest. `catalogue_next` lists planning-only candidates whose dependencies
+are integrated and never creates tasks, claims or admissions. A repeated
+identical import is refused (`duplicate_catalogue_import`); replacing content
+requires the current digest (`stale_catalogue_import` otherwise) and leaves
+tasks, claims, resources and slots untouched.
 | Current lead with matching epoch | create_task, integration_request |
 | Live agent or supervisor | snapshot, events, suspect |
 
@@ -388,7 +411,8 @@ that the finished game is physically correct or complete.
   orchestration checks.
 
 Until those pass, call this the tested control-plane reference, not a deployed
-self-building engine. Current GLM work continues without interruption.
+self-building engine. Current work continues under the live controller's
+leadership epoch and the PR workflow below, without interruption.
 
 ## Documentation reconciliation and continuing DYAD criticism (2026-09-09)
 
@@ -506,3 +530,76 @@ Evidence and executed regression counts are recorded in
 Live Windows migration and consumer handling of terminal release_required results
 must be reviewed by the current local lead. No live service was modified by this
 Linux review. The universal prompt does not change.
+
+## Slot-provision binding, supervisor rebind, and detached review capacity (2026-09-11, fleet-docs-operating-model-01)
+
+Deployed operating model, verified against controller source `d012b4b1`
+(deployment `E:\ChimeraWork\control\deployments\slot-binding-d012b4b1`, service
+live since 2026-09-11). Every operation named here was read from that deployed
+source; the verification table is
+[evidence/agent_fleet/OPERATING_MODEL/VERIFICATION.md](evidence/agent_fleet/OPERATING_MODEL/VERIFICATION.md).
+Copy-paste joining prompts per role are in
+[evidence/agent_fleet/OPERATING_MODEL/PROMPTS.md](evidence/agent_fleet/OPERATING_MODEL/PROMPTS.md).
+The historical sections above remain unchanged and govern where they speak.
+
+### Task/generation-bound provisioning
+
+Supervisor `provision_slot` no longer records a bare head. The active provision
+is bound to its task and generation: `provision_task`, `provision_generation`,
+`provision_base`, plus `worktree_head` and `provision_evidence`. Stale authority
+is therefore distinguishable from current authority by inspection of the slot's
+engine record.
+
+### Claim refusal `stale_provision_requires_recovery`
+
+A `claim` that finds a free slot of the right kind still carrying an ACTIVE
+provision from an earlier task/generation is refused with
+`stale_provision_requires_recovery` (distinguished from `no_free_slot`). The
+refusal names the actionable cause: the slot is recovered by supervisor
+`slot_rebind`, never silently adopted by the next claimant. The worker-side
+claim loop treats this refusal as recoverable contention — it skips the task and
+retries later; the refusal appears in the loop's refusals list and never crashes
+the worker.
+
+### Supervisor `slot_rebind` with preservation + drain attestations
+
+`slot_rebind` is the supervisor-only recovery for a slot whose active provision
+belongs to an earlier task/generation. The caller attests work preservation
+(`preservation_evidence`) AND process/resource drain (`drain_evidence`). The
+physical workspace is never touched (`filesystem_touched: False`). Named
+refusals: `no_stale_provision` (nothing stale to clear), `slot_task_not_running`
+(the slot's bound task is not RUNNING), `resources_still_held` (the old
+provision's task still holds resources). On success the stale record moves to
+the slot's preserved history with reason `supervisor_slot_rebind`.
+
+### Evidence-preserving recover/release: `preserved_provisions` (cap 20)
+
+Retiring a provision never deletes its evidence. The full record moves to
+`engine['preserved_provisions']`, bounded at 20 entries with the oldest dropped
+first, and the active binding fields clear so no later task/generation can
+inherit source authority. Preserve reasons: `recovered_task_generation`
+(supervisor `recover`, which refuses `resources_still_held` until trusted drain
+evidence), `released_after_integration` (supervisor `release_slot`, which
+refuses `resource_still_held` and never deletes the workspace),
+`supervisor_slot_rebind`, and `released_for_review_handoff`.
+
+### Review-slot handoff flow: detached REVIEW capacity
+
+After a worker stops writing, drains, pushes its task branch, opens its PR and
+`submit_review`s the exact head from its own session, the trusted lead/broker
+independently verifies the remote branch, PR identity and head, then calls
+`release_review_slot`. The receipt appended to the task's
+`review_slot_handoffs` carries the frozen binding (owner, generation, slot,
+head, branch, review, checkpoint), the PR identity and pushed/PR heads, the five
+attestations (remote verification, preservation, writer stopped, runtime
+drained, slot reprovision-ready), the retained **provision identity**
+(`provision_task`, `provision_generation`, `provision_base`, `worktree_head`,
+`provision_evidence`) and the released revision. The slot frees immediately
+while the task stays REVIEW: the detached review protects its write scope but
+consumes neither a slot nor the submitter's execution capacity, and
+`ack_integration` on a handed-off task returns `slot: null` /
+`RELEASED_AT_REVIEW_HANDOFF`. Corrections go through lead `review_requeue`
+(READY with `correction_base_head`; provisioning must match that exact head), a
+failed reviewer-side recovery through supervisor `recover`, and a redundant
+`release_slot` on an already handed-off task is a no-op attestation. The full
+contract is [THE_REVIEW_SLOT_HANDOFF.md](THE_REVIEW_SLOT_HANDOFF.md).

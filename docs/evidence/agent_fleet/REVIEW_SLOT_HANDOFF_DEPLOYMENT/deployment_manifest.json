@@ -1,0 +1,32 @@
+{
+  "files": {
+    "control.py": {
+      "sha256": "87e6046638cfd552f4a986a2775afc84d6bd2c95d5996c3acc34080d2403dadd",
+      "source": "current deployed base"
+    },
+    "layout.py": {
+      "sha256": "ee1bbd18d6185f9f6ad292b38d3aca7d3afb886f89df3a4054c163a438eb643d",
+      "source": "current deployed base"
+    },
+    "bootstrap_fleet.py": {
+      "sha256": "c695c6b487a014c5a9b78b9677bbc2cddd9f29b1ca3450a41b29773b0cdc33b3",
+      "source": "current deployed base"
+    },
+    "client.py": {
+      "sha256": "9d4eeba8ce206f599da1b1731ba3a30954ab05472c4d493a96de2f252f68e896",
+      "source": "current deployed base"
+    },
+    "service.py": {
+      "sha256": "2ea4a29feb5df43b33510c4d10f9f5784fa5bef3f2f72138d64455d97ae60284",
+      "source": "reviewed head 2c8fb0694de2a2e2336fb8f53dd5651ad2063e24 working-tree bytes"
+    },
+    "review_handoff.py": {
+      "sha256": "51b975478c44f6fa610c7fba7da2ecd6b43ff2982bbcd22a7a8f7bab6ff0ae77",
+      "source": "reviewed head 2c8fb0694de2a2e2336fb8f53dd5651ad2063e24 working-tree bytes"
+    }
+  },
+  "activated": true,
+  "credentials_copied": false,
+  "activation_evidence": "transition_result.json",
+  "private_credentials_copied": false
+}

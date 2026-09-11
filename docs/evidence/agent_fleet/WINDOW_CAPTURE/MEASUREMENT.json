@@ -1,0 +1,121 @@
+{
+ "task": "window-capture-ownership-02",
+ "owner": "subagent-worker-02",
+ "slot": "3",
+ "generation": 1,
+ "base": "4604de40bd6cdd02d3cc277019f8bac5030c2dbe",
+ "branch": "astra/tasks/window-capture-ownership-02",
+ "pr_base": "astra/gait-capture",
+ "implementation_head": "37e1b8800342261b739d5d6311e9cbfd5555901e",
+ "provenance": {
+  "inherited": "merge e8705580 of origin/astra/tasks/window-capture-ownership-01 (00a556b3), additive, no conflicts",
+  "not_ported": "b8d37f1f (dyad-resident-identity-01 lane) explicitly excluded; not an ancestor of the merged origin ref",
+  "base_to_head_files": [
+   "docs/THE_WINDOW_CAPTURE_OWNERSHIP.md",
+   "docs/evidence/agent_fleet/WINDOW_CAPTURE/* (this dir)",
+   "tools/agent_fleet/capture_window.py",
+   "tools/agent_fleet/test_capture_window.py"
+  ]
+ },
+ "preregistration": {
+  "committed_before_any_result": true,
+  "commit": "c55a8383 (PREREGISTRATION.md, own commit, precedes all runs of this task)",
+  "path": "docs/evidence/agent_fleet/WINDOW_CAPTURE/PREREGISTRATION.md"
+ },
+ "producing_commands": [
+  "python -m unittest tools.agent_fleet.test_capture_window -v   # cwd = repo root E:/ChimeraWork/slot-03, raw output: RAW_TESTS_OUTPUT.txt",
+  "python -m unittest discover -s tools/agent_fleet -p 'test_*.py'   # cwd = repo root, raw output: RAW_FLEET_SUITE_OUTPUT.txt",
+  "python - <measurement stdin script using the committed capture_window module>   # raw output: RAW_MEASUREMENT_OUTPUT.txt (verbatim JSON below)"
+ ],
+ "environment": {
+  "windows_version": "10.0.26200",
+  "python": "3.14.3",
+  "notes": "DPI-scaled desktop: requested fixture client sizes get pinned to MEASURED sizes (e.g. 100x70 request -> 120x70 pinned: system minimum width); the contract pins measured size by design, so no tolerance was adjusted."
+ },
+ "verification_table": {
+  "a_unobscured_owned_exact": {
+   "prediction": "owned fixture at pinned client size -> unobscured, publishable, capture == expected full matrix",
+   "measured": "verdict=unobscured, publishable=true, capture_sha256 == expected_sha256, full matrix equality (not point sampling)",
+   "verdict": "PASS"
+  },
+  "a2_distinct_solid_content": {
+   "prediction": "fixtures with distinct known solid content each capture exactly; contents distinguishable",
+   "measured": "red sha 5fcbf650... != blue sha da076b0e..., both unobscured",
+   "verdict": "PASS"
+  },
+  "b_overlap_window_specific": {
+   "prediction": "overlap by second owned fixture does not contaminate the record (PrintWindow/PW_CLIENTONLY reads the window's own surface); content deviation would fail closed",
+   "measured": "overlap present, capture_sha == expected_sha, verdict=unobscured",
+   "verdict": "PASS"
+  },
+  "b2_real_cross_window_content_mismatch": {
+   "prediction": "live owned hwnd verified against ANOTHER fixture's expected pattern -> occluded_or_foreign_content, unpublishable",
+   "measured": "verdict=occluded_or_foreign_content, publishable=false (REAL windows, not synthetic tamper)",
+   "verdict": "PASS"
+  },
+  "c_resize_fail_closed": {
+   "prediction": "real client area moved from pinned size -> window_resized with both sizes named",
+   "measured": "verdict=window_resized, publishable=false, client_size=[200,110], pinned_size=[120,70]",
+   "verdict": "PASS"
+  },
+  "d_destroyed_stale_refused": {
+   "prediction": "destroyed fixture -> window_destroyed; stale hwnd capture refused, never fallback",
+   "measured": "verdict=window_destroyed; stale capture rows=null reason=stale_or_invalid_handle",
+   "verdict": "PASS"
+  },
+  "e2_real_foreign_process_refused": {
+   "prediction": "REAL foreign-process fixture (child of own interpreter, ChimeraFixture class, known red content) -> foreign_process, unpublishable even with known matching content",
+   "measured": "child_pid=56876 != capturing_pid=64712, class_owned=true, visible=true, content_known_and_matching=true, verdict=foreign_process, publishable=false",
+   "verdict": "PASS"
+  },
+  "f_client_rect_excludes_nonclient": {
+   "prediction": "captured extent == pinned client rect; outer chrome strictly larger; no shadow/rounded nonclient pixels possible",
+   "measured": "client=120x90, outer=136x129 (strictly larger), captured matrix shape=[90,120]",
+   "verdict": "PASS"
+  },
+  "g_no_screen_dc_no_overwrite": {
+   "prediction": "no CreateDC*/GetWindowDC/GetDCEx/GetDC(NULL) in module (AST); PrintWindow present; evidence writes refuse overwrites byte-exact",
+   "measured": "AST test passed in suite; evidence_overwrite_refused=true, bytes_identical_after_refusal=true",
+   "verdict": "PASS"
+  }
+ },
+ "falsifier_check": {
+  "foreign_pixels_publishable": false,
+  "stale_hwnd_or_pid_accepted": false,
+  "full_desktop_captured_by_fallback": false,
+  "evidence_overwritten": false,
+  "unknown_windows_moved_or_closed": false,
+  "point_sampling_substituted": false,
+  "triggered": false
+ },
+ "fresh_system_bug_fixed": {
+  "bug": "inherited capture_window.py crashed with ctypes OverflowError at CreateCompatibleDC/CreateDIBSection when the window DC handle value exceeded 2^31-1 (GDI hands out such values on this system); an exception is not a named fail-closed verdict",
+  "fix": "declared handle prototypes (argtypes) for both functions; every path now returns named verdicts",
+  "effect_on_prior_attempt": "explains why -01 could pass while -02 crashed at the same code: GDI handle values differ per session/process"
+ },
+ "suite_results": {
+  "task_suite": {
+   "command": "python -m unittest tools.agent_fleet.test_capture_window -v",
+   "tests": 17,
+   "failures": 0,
+   "errors": 0,
+   "skipped": 0
+  },
+  "full_fleet_suite": {
+   "command": "python -m unittest discover -s tools/agent_fleet -p 'test_*.py'",
+   "tests": 183,
+   "failures": 2,
+   "skipped": 1,
+   "expected_baseline": "0 failures, 1 Windows-symlink skip",
+   "baseline_assessment": "the 2 failures PRE-EXIST at base 4604de40 on this fresh system and are NOT caused by this branch: git diff --name-only base..HEAD touches only this task's scope files; the failing assertions (test_master_catalogue: pinned 2540 vs parsed 2584 lines; pinned 76 vs 82 master_row_ids) and their inputs (THE_MASTER_LIST.md, master_catalogue.py, test_master_catalogue.py) are bit-identical between base and head, so the outcome at base is identical. Catalogue files are OUTSIDE this task's write scope; nothing weakened, nothing tolerated.",
+   "skip": "test_worktree_reconcile.test_unsafe_arguments_and_symlink_escape_refuse -> 'symlink creation unavailable' (Windows), the expected skip"
+  }
+ },
+ "acceptance": "NOT_CLAIMED (lead review and authorized integration are separate gates)",
+ "engine_render_vs_screen_presentation": "kept explicit: this contract certifies the content of a window's OWN surface (engine-render capture path via PrintWindow/PW_CLIENTONLY); it makes no claim about what the desktop compositor presents on screen, and no screen/desktop DC exists in the module (AST-verified)",
+ "raw_outputs": [
+  "RAW_TESTS_OUTPUT.txt",
+  "RAW_FLEET_SUITE_OUTPUT.txt",
+  "RAW_MEASUREMENT_OUTPUT.txt"
+ ]
+}
