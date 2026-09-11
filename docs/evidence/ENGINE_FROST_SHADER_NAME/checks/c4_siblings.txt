@@ -1,0 +1,8 @@
+C4 sibling contract preserved (prereg threshold said 16/16 names; precision-corrected: 22 sibling names of 23 total reads)
+
+base read names: 23 | post-fix read names: 23
+names removed: ['render_tri_frost.spv'] (must be exactly the bare frost name)
+names added: ['render_tri_frost.frag.spv'] (must be exactly the stage-suffixed frost name)
+sibling names byte-identical and resolving in the derived manifest: 22/22
+
+C4 VERDICT: PASS (falsifier check: no sibling name contract broken)

@@ -1,0 +1,5 @@
+PRE summary (prereg thresholds)
+  read sites: 23
+  violators: 1 (prereg: PRE=1, POST=0)
+  all reads resolve in manifest: False
+  threshold: PRE expects exactly 1 violator

@@ -1,0 +1,30 @@
+PRE run — engine text: .tmp/engine_base_51864412.cpp
+derived manifest entries: 25 (comp/glsl -> bare stem.spv; vert/frag -> name.stage.spv)
+shader read sites found: 23
+
+  engine.cpp:1242 reads render.vert.spv                      [graphics] source=render.vert
+  engine.cpp:1243 reads render.frag.spv                      [graphics] source=render.frag
+  engine.cpp:1244 reads compute.spv                          [compute ] source=compute.glsl
+  engine.cpp:1245 reads sort.spv                             [compute ] source=sort.comp
+  engine.cpp:1246 reads skin.spv                             [compute ] source=skin.comp
+  engine.cpp:1261 reads render_tri.vert.spv                  [graphics] source=render_tri.vert
+  engine.cpp:1262 reads render_tri.frag.spv                  [graphics] source=render_tri.frag
+  engine.cpp:1281 reads render_tri_edge.frag.spv             [graphics] source=render_tri_edge.frag
+  engine.cpp:1288 reads render_tri_shadow.frag.spv           [graphics] source=render_tri_shadow.frag
+  engine.cpp:1291 reads render_tri_shadow.vert.spv           [graphics] source=render_tri_shadow.vert
+  engine.cpp:1296 reads floor.vert.spv                       [graphics] source=floor.vert
+  engine.cpp:1299 reads floor.frag.spv                       [graphics] source=floor.frag
+  engine.cpp:2087 reads hinge.spv                            [compute ] source=hinge.comp
+  engine.cpp:3483 reads gait.spv                             [compute ] source=gait.comp
+  engine.cpp:3621 reads volp.spv                             [compute ] source=volp.comp
+  engine.cpp:3815 reads water_depth.spv                      [compute ] source=water_depth.comp
+  engine.cpp:3816 reads water_color.spv                      [compute ] source=water_color.comp
+  engine.cpp:3817 reads water_occ.spv                        [compute ] source=water_occ.comp
+  engine.cpp:3819 reads water_vis.spv                        [compute ] source=water_vis.comp
+  engine.cpp:4151 reads membrane_demo.spv                    [compute ] source=membrane_demo.comp
+  engine.cpp:4878 reads frost_decode.spv                     [compute ] source=frost_decode.comp
+  engine.cpp:4891 reads render_tri_frost.spv                 [compute ] source=<ABSENT FROM DERIVED MANIFEST>
+  engine.cpp:5424 reads joints.spv                           [compute ] source=joints.comp
+
+violators (read name absent from the derived manifest): 1
+  engine.cpp:4891 reads render_tri_frost.spv — INCOHERENT
