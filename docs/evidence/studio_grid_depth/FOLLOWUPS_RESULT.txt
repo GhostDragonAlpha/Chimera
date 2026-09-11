@@ -1,0 +1,41 @@
+RESULT — studio-grid-followups-01 (generation 1, slot 5, subagent-worker-08)
+
+Prediction scorecard (all three predictions from FOLLOWUPS_PREREGISTRATION.txt, judged
+against actuals in FOLLOWUPS_MEASUREMENT.txt):
+
+| # | prediction | verdict |
+|---|---|---|
+| 1 | F1 dated section quotes the base engine.cpp splat-pipeline state byte-exactly with line numbers, attributes the right pipeline/pass, and states the exact observable | CONFIRMED (1330/1331/1334/1348 quoted verbatim; fill-mark 1481/1485 and twin EQUAL-0 ui.cpp 2988-2997 cited; observable = grid lines visible across splat-covered pixels where no accepted fill left stencil 1) |
+| 2 | F2 manifests list exactly the ten tracked PNGs per accepted dir; every sha256 equals git blob at base AND working-tree file AND sidecar png_sha256 | CONFIRMED (20/20 across before_glass + after; identical capture name sets; before/after dirs correctly differ in content per name) |
+| 3 | doc lint clean on every commit; nothing outside the two scoped paths changes | CONFIRMED (staged lint clean per commit; git diff --name-only shows only docs/THE_STUDIO_GRID_DEPTH.md + docs/evidence/studio_grid_depth/**) |
+
+Falsifier disposition (named before the edit in FOLLOWUPS_PREREGISTRATION.txt):
+
+- F1 declaration contradicts the engine.cpp condition at base ..... NOT FIRED (every
+  quoted line byte-matches the base blob at its cited line; pipeline/pass attribution
+  verified against the full enumeration of depth/stencil sites at base)
+- A manifest sha256 differs from the git blob at base or the tracked file .......... NOT FIRED (20/20 equal)
+- Any edit outside the two scoped paths (in particular ANY ChimeraEngine/ file), any
+  rebuild, any new capture ......................................................... NOT FIRED
+
+What landed (scopes only):
+
+- docs/THE_STUDIO_GRID_DEPTH.md — contract item 9 (pointer) + dated section
+  "DECLARED: THE SPLAT VIEW (2026-09-11)": the splat-view draw-through is DECLARED as
+  a bounded degradation of the occlusion clause, with the exact engine condition
+  quoted from base d59518b9 and the exact observable condition stated.
+- docs/evidence/studio_grid_depth/before_glass/MANIFEST_sha256.txt and
+  docs/evidence/studio_grid_depth/after/MANIFEST_sha256.txt — NEW: accepted-pair
+  manifests in the retired-generation format, computed from git blobs at base.
+- docs/evidence/studio_grid_depth/FOLLOWUPS_PREREGISTRATION.txt /
+  FOLLOWUPS_MEASUREMENT.txt / FOLLOWUPS_RESULT.txt — this lane's rule-0 record set.
+
+NOT CLAIMED:
+
+- No fix or mitigation of the splat-view degradation is delivered or claimed; it is
+  declared. Extending the clause to splats is left to a future lane.
+- No re-measurement of the studio-grid-depth contract; the 20/20 sidecar agreement is
+  a consistency verification of retained evidence, not a new capture run.
+- Human acceptance (reserved to Alan / the reviewer).
+
+Acceptance: NOT CLAIMED.

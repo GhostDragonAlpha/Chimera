@@ -56,6 +56,57 @@ that survives the run.
    instrument upgrade never becomes a load-bearing wall. The fallback is
    observable (`StudioUI::scene_grid_ok()`), never silent-by-design.
 
+9. **The splat view is declared, not silent.** The 3DGS splat pipeline runs with
+   depth/stencil OFF in the same scene pass, so the clause does not bind there.
+   Declared in full below (`DECLARED: THE SPLAT VIEW`, 2026-09-11 — PR #65 review
+   followup F1).
+
+## DECLARED: THE SPLAT VIEW (2026-09-11)
+
+**The behavior.** In any view whose body is presented by the 3DGS splat pipeline
+(`Engine::create_pipeline`), the occlusion clause (contract item 2) does NOT hold:
+splat fragments run no depth test and write no stencil, so every pixel they cover
+keeps the attachment's stencil at 0 and the grid twin draws there — grid lines
+remain visible through/behind the splat body. That is the pre-fix draw-through
+degradation, bounded to the splat presentation.
+
+**The engine condition at base `d59518b9d9dc002cba43d071495576a236b9d498`** —
+`ChimeraEngine/engine/engine.cpp`, quoted verbatim (line numbers from
+`git show d59518b9:ChimeraEngine/engine/engine.cpp`):
+
+```text
+1330:    ds.depthTestEnable   = VK_FALSE;   // 3DGS: sorted back-to-front + alpha blend, no depth test
+1331:    ds.depthWriteEnable  = VK_FALSE;
+1334:    ds.stencilTestEnable = VK_FALSE;
+1348:    gpci.renderPass                   = rt_render_pass_;   // frame() renders to the offscreen target
+```
+
+The splat pipeline therefore renders into the SAME stencil-carrying offscreen
+scene pass the contract uses, but leaves no stencil: the contract's mark comes
+only from the accepted fill draw (`create_triangle_pipeline`,
+`ds.depthTestEnable = VK_TRUE` / `ds.stencilTestEnable = VK_TRUE` marking
+stencil 1 on depth-passed fragments, engine.cpp 1481/1485), and the grid twin
+draws only where that mark is absent (`ui.cpp` `create_scene_grid_pipeline`,
+`dss.stencilTestEnable = VK_TRUE` with `dss.front.reference = 0` — stencil
+EQUAL 0). No splat-covered pixel ever carries the mark.
+
+**The exact observable condition.** A view exhibits this declared degradation if
+and only if the body geometry in it is drawn by `create_pipeline` (splat
+presentation): grid lines are visible across splat-covered pixels where no
+accepted fill left stencil 1. Views whose body is drawn by the accepted fill
+family are unaffected — the clause holds there and was measured working
+(`docs/evidence/studio_grid_depth/after/records.txt`: `darkline_at_occluded_frac`
+2e-4 against 0.1581 bright-line at visible). The shadow and floor twins pin
+stencil OFF by design (ink ON the grid's plane — contract item 4), which is a
+different, already-declared case.
+
+**Declaration.** This is recorded as DEGRADATION, bounded to the splat view —
+named, observable, and unchanged by this document (docs/evidence-only lane; no
+engine file is modified here). Whether to extend the clause to splats (e.g.
+stencil-marking from the splat draw itself) is a future lane's decision; this
+section exists so the behavior is a stated limit of the contract, not a silent
+gap.
+
 ## WHAT THIS CONTRACT FORBIDS
 
 - Changing the B2 fixture, gate tolerances, or face count to fit a visual
