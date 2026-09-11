@@ -1,0 +1,119 @@
+PREREGISTRATION - fleet-review-handoff-claim-delegation-01
+===========================================================
+
+Written BEFORE the fix or any new test run of this task; no measured value
+appears in this file. Owner subagent-worker-04, base
+f219d7e6d61afc37419f18e89ee3de9ab8b13ba0 (= tip, PR #65 merge), branch
+astra/tasks/fleet-review-handoff-claim-delegation-01, scopes
+tools/agent_fleet/review_handoff.py +
+tools/agent_fleet/test_review_handoff_claim.py. Evidence *.txt in this
+directory. Trailer Agent: subagent-worker-04.
+
+BACKGROUND
+----------
+PRODUCTION REGRESSION, found live twice: instance-plane-live-smoke-01
+(feedback c4212657, rev 767) and this worker's own claim of THIS task
+(HTTP 409 {"error":"no_free_slot"} at rev 781, no state mutation; the
+premised free slot was still held by the smoke scratch). In the shipped
+deployment (slot-expansion-e1e0ab98), ReviewHandoffControl._dispatch
+intercepts claim UNCONDITIONALLY (review_handoff.py line 18-19) and routes
+to _claim_with_detached_review_capacity, which - despite its docstring
+"changing only detached REVIEW capacity accounting" - re-implements claim
+and OMITS three base Control.claim behaviors (control.py lines 520-555):
+
+  F1 auto-spawn: base has the fleet-slot-expansion-03 plane (PR #63) -
+     when no free slot of the task kind exists at all, claim SPINS ONE UP
+     (integration tasks refuse integration_slot_busy instead; the
+     SLOT_GUARD fuse refuses slot_guard_reached; a free-but-provisioned
+     slot refuses stale_provision_requires_recovery, never masked by
+     spawn). The wrapper instead dead-ends at no_free_slot: PR #63's
+     plane is DEAD CODE in production.
+  F2 owner_instance binding: base ends
+     t.update(..., owner_instance=p.get('_resolved_instance')); the
+     wrapper's task.update omits it, so the instance fence
+     (_task: require(instance==owner_instance,'instance_not_bound'))
+     never binds and a header-less twin would succeed where it must
+     refuse.
+  F3 enforced-mode guard: base refuses an instance-less claim with
+     instance_binding_required when state.instance_facing=='enforced'
+     (instance_fencing); the wrapper has no such guard.
+
+STATEMENT (disagreeable)
+------------------------
+Re-including the three behaviors inside _claim_with_detached_review_capacity
+(control.py is OUT of this task's scopes and stays untouched) restores all
+three base behaviors through the review-handoff layer WITHOUT changing the
+one deviation the wrapper exists to add: a slotless REVIEW task carrying
+review_slot_handoffs does not count against its owner's agent capacity.
+
+PREDICTIONS (unmeasured until the runs below)
+---------------------------------------------
+P1. After the fix, a claim through ReviewHandoffControl with zero free
+    slots of the task kind auto-spawns a new slot (next id by persisted
+    high-water) and the claim lands RUNNING on it; the named guards hold:
+    integration-kind claim with slot 1 busy refuses integration_slot_busy;
+    a registry at the SLOT_GUARD fuse refuses slot_guard_reached; a free
+    but provisioned slot of the kind still refuses
+    stale_provision_requires_recovery (spawn never masks it).
+P2. After the fix, a claim carrying a verified instance header binds
+    owner_instance on the task; a header-less call by the same bearer on
+    an owner_instance-bound task refuses instance_not_bound (checkpoint,
+    submit_review), and the correctly-headed twin is admitted. In compat
+    mode a header-less claim binds owner_instance=None exactly like base
+    (legacy-unfenced), never breaking legacy admission.
+P3. After the fix, an instance-less claim in enforced instance-fencing
+    mode refuses instance_binding_required; with a header it succeeds.
+P4. The detached-REVIEW capacity accounting is UNCHANGED by the fix: a
+    slotless REVIEW task with review_slot_handoffs still does not consume
+    its owner's agent capacity (new task claims succeed at max_tasks),
+    while a RUNNING task still does (agent_capacity_reached), identical
+    to pre-fix behavior.
+P5. Non-regression of the wrapper's OTHER interception paths: the
+    release_review_slot / review_requeue / recover / release_slot /
+    ack_integration slotless variants route exactly as at base -
+    specifically review_requeue requires the exact reviewed head
+    (invalid_commit refusal without it), recovery stays
+    SUPERVISOR-only, and the correction_provision_required interception
+    still fires for submit_review after a requeue.
+P6. At the fixed head: the new suite test_review_handoff_claim.py passes
+    in full, and test_slot_expansion (5/5), test_client_instance (9/9),
+    test_capture_window (28/28), test_review_handoff, and the rest of the
+    local agent_fleet suite pass unchanged.
+
+FAIL-PRE-FIX PROOF
+------------------
+The new test file is written and run against the UNFIXED base BEFORE the
+fix commit; the F1/F2/F3-focused tests must FAIL there (refusing
+no_free_slot / never binding / no enforced guard respectively), and the
+verbatim failures are retained as PRE_FIX_FAILURES.txt in this directory.
+The preservation tests (P4/P5) are expected to PASS at base - they pin the
+behavior the fix must not disturb.
+
+FALSIFIERS (named before the run)
+---------------------------------
+F-1. Any listed behavior still shadowed after the fix (no auto-spawn, no
+     binding, no enforced guard) - statement false.
+F-2. Capacity accounting changed by the fix: a review-slot task would
+     wrongly consume capacity, or worse, any task would free-claim past
+     max_tasks (e.g. a REVIEW task WITH slot attached counting as
+     detached) - statement false.
+F-3. Any listed suite failing at the fixed head, or any regression in the
+     wrapper's other interception paths - statement false.
+F-4. Any edit outside the two scoped files
+     (tools/agent_fleet/review_handoff.py,
+     tools/agent_fleet/test_review_handoff_claim.py) plus this evidence
+     directory - task void.
+
+METHOD
+------
+M1. Prereg commit (this file) precedes all measurement.
+M2. New test file mirrors the existing ephemeral-SQLite harness
+    (ReviewHandoffControl on a temp store; enroll/qualify/elect; in-op
+    refusals asserted by name via Refusal).
+M3. Run new suite at unfixed base; retain verbatim output; then apply the
+    scoped fix; rerun new suite, then the full local agent_fleet suite;
+    retain verbatim outputs.
+M4. Evidence: PREREGISTRATION.txt, PRE_FIX_FAILURES.txt, RUN_NEW_SUITE.txt,
+    RUN_FULL_SUITE.txt, RESULT.txt - all *.txt in this directory.
+
+Agent: subagent-worker-04
