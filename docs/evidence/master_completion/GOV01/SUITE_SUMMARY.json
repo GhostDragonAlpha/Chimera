@@ -1,0 +1,32 @@
+{
+  "command": "python -B -m unittest discover -s tools/agent_fleet -p test_*.py -v",
+  "workdir": "E:\\ChimeraWork\\slot-02",
+  "capture": "SUITE_RAW_OUTPUT.txt (verbatim stdout+stderr, cmd /c redirection)",
+  "python": "3.14.3",
+  "ran": 166,
+  "ok": 163,
+  "skipped": 1,
+  "failures": 2,
+  "errors": 0,
+  "duration_seconds": 89.67,
+  "raw_accounting": "166 result lines counted in SUITE_RAW_OUTPUT.txt: 163 '... ok', 1 '... skipped' (test_unsafe_arguments_and_symlink_escape_refuse: symlink creation unavailable on Windows), 2 '... FAIL'",
+  "failures_detail": [
+    {
+      "test": "test_master_catalogue.CatalogueTests.test_gen5_exhaustive_partition_no_silent_omissions",
+      "assertion": "len(part) == 2430",
+      "actual": "2540",
+      "file_line": "tools/agent_fleet/test_master_catalogue.py:665"
+    },
+    {
+      "test": "test_master_catalogue.CatalogueTests.test_import_real_sources_full_coverage",
+      "assertion": "built['coverage']['master_row_ids'] == 65",
+      "actual": "76",
+      "file_line": "tools/agent_fleet/test_master_catalogue.py:183"
+    }
+  ],
+  "failures_disposition": "PRE-EXISTING AND DOCUMENTED, NOT OWNED BY THIS TASK: both are Master-list/catalogue count pins lagging the Master list growth (2540 lines / 76 rows now); the task packet designates them as known and being repaired by the parallel master-catalogue worker. No test, tolerance or gate was weakened or edited by this task.",
+  "controller_plane_failures": 0,
+  "fixtures": "each unittest fixture builds private TemporaryDirectory SQLite registries; the two spawned bootstrap fixtures stopped their own processes at teardown (see tail of SUITE_RAW_OUTPUT.txt); no live controller, DB, slot or GPU/DYAD process touched",
+  "exit_code": 1,
+  "exit_code_reason": "unittest exit reflects exactly the two documented pre-existing catalogue count-pin failures"
+}
