@@ -1,0 +1,33 @@
+{
+ "revision_under_test": "f9ef0ebeab10da13b2f134403946063a441833e7",
+ "worktree": "E:/ChimeraWork/slot-04",
+ "branch": "astra/tasks/fleet-catalogue-repin-02",
+ "coverage_scalars": {
+  "cards": 240,
+  "domains": 40,
+  "master_row_ids": 85,
+  "master_row_observations": 119,
+  "unresolved": 3,
+  "structural_rows": 24,
+  "prose_mentions": 36,
+  "campaign_prose_refs": 36,
+  "unkeyed_requirements": 285
+ },
+ "line_partition_len": 2630,
+ "line_1825": {
+  "class": "prose",
+  "text": "r1_precond.json`); (4) the ratified B7b splu+Schur golden solve remains the",
+  "sha256": "de760d93fc51dca78832f0e6e74a3bf2453e013a1f239003f130191b1070af85"
+ },
+ "partition_classes_sum_check": {
+  "total": 2630
+ },
+ "digest": "08d8b6eccabba03806d474c449020b7e09aa3e916047128ed8a4045f26b0db7c",
+ "source_manifest_master_git_commit": "77bc15881b34535f63af87bac96c6261d7c54d9d",
+ "source_manifest_master_lines": null,
+ "producing_commands": [
+  "cd E:/ChimeraWork/slot-04",
+  "python tools/agent_fleet/master_catalogue.py  # raw output: BUILDER_OUTPUT_HEAD.raw",
+  "python -c \"import sys; sys.path.insert(0,'tools/agent_fleet'); from master_catalogue import build_records, payload_digest; b=build_records(); c=b['coverage']; print(json.dumps({k:c[k] for k in ('cards','domains','master_row_ids','master_row_observations','unresolved','structural_rows','prose_mentions','campaign_prose_refs','unkeyed_requirements')})); print('partition_len', len(c['line_partition']))\""
+ ]
+}
