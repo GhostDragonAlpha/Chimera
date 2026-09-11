@@ -75,8 +75,8 @@ def _store_record() -> dict:
 
 def _git(log: bool = False) -> str:
     try:
-        r = subprocess.run(["git", "-C", str(ROOT), "log", "--oneline",
-                            "-5" if log else "-1"], capture_output=True, text=True)
+        r = subprocess.run(["git", "log", "--oneline", "-5" if log else "-1"],
+                           capture_output=True, text=True, cwd=ROOT)
         return r.stdout.strip()
     except Exception:
         return "(no git)"
@@ -97,9 +97,8 @@ def main() -> int:
     store_ok = (store["exists"] and store.get("sha256") is not None
                 and "unreadable" not in store)
     verdict_commit = "(not recorded)"
-    vcommit = subprocess.run(
-        ["git", "-C", str(ROOT), "rev-parse", "HEAD:tools/verdict_registry.json"],
-        capture_output=True, text=True)
+    vcommit = subprocess.run(["git", "rev-parse", "HEAD:tools/verdict_registry.json"],
+                             capture_output=True, text=True, cwd=ROOT)
     if vcommit.returncode == 0:
         verdict_commit = vcommit.stdout.strip()[:12]
     head = _git()
@@ -116,7 +115,7 @@ def main() -> int:
                 "continuation": {"hierarchy_complete": False,
                                  "route": "canonical_master_controller",
                                  "authority": "controller_snapshot",
-                                 "action": "read docs/AGENT_START.md and obtain an authenticated controller snapshot before continuing",
+                                 "action": "obtain an authoritative controller snapshot before continuing",
                                  "owner": None, "eligible_tasks": None}}, indent=2, sort_keys=True))
         else:
             print(f"UNORIENTED -- {head}")
@@ -131,7 +130,7 @@ def main() -> int:
             print(f"  verdict lane tracked at this HEAD: {verdict_commit} "
                   f"(commit-identity recorded; reads commit-safe per R4)")
         if a.allow_synthetic:
-            synthetic = Engine(STORE)
+            synthetic = Engine()
             if a.json:
                 # emitted above with oriented:false; append nothing further
                 return 0
@@ -143,7 +142,7 @@ def main() -> int:
             return 0
         return 3 if not store["exists"] else 4
 
-    eng = Engine(STORE)
+    eng = Engine()
     if a.json:
         continuation = eng.continuation()
         out = {
