@@ -1,0 +1,23 @@
+R3 CARD FALSIFIER probes -- training-fit success posing as predictive material validation (card falsifier: 'Training-fit success is called predictive material validation')
+========================================================================
+base: 308790ab33a19d5265036deabf25556af8b83f18
+[PASS] R3(a) no held-out data -> refusal; closed vocabulary
+       expected refusal reason: 'no_heldout_evidence'
+       observed: Mat04Refusal(reason='no_heldout_evidence', message='the held-out ledger is empty: training-fit success is NOT predictive material validation')
+       verdict vocabulary (model constant): ['AGREES', 'DISAGREES']
+       closed {AGREES, DISAGREES} and no VALIDATED/OK label: True
+[PASS] R3(b) perfect training fit is NOT validation
+       perfect fit: n = 2, dof = 0, s2 = None
+       training residuals vanish: |resid| = 1.0164395367051604e-20, R^2 = 1.0 (training-fit SUCCESS by every fit metric)
+       validate(held-out) observed: Mat04Refusal(reason='no_dof_for_uncertainty', message='dof = 0: no declared uncertainty can exist, so no agreement verdict can exist')
+       declare_predictive_band observed: Mat04Refusal(reason='no_dof_for_uncertainty', message='dof = 0: a perfect training fit declares no predictive uncertainty and can never be judged')
+       post-state: no verdict exists for the perfect fit (both refusals)
+[PASS] R3(c) verdict is computed (DISAGREES at 10 sigma)
+       observed = band mean + 10*sigma; verdict = 'DISAGREES'
+       distance = 5.0276544787845645e-05 > half-width = 1.1552405493176328e-05
+[PASS] R3(d) refusal verbatim; no verdict store
+       refusal reason captured verbatim: 'no_heldout_evidence'
+       module-level verdict stores (must be none): []
+       post-state: the refused validation recorded nothing anywhere
+
+RESULT r3_falsifier_pose.txt: 4/4 (failed: none)

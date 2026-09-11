@@ -1,0 +1,19 @@
+R4 immutability / determinism
+========================================================================
+base: 308790ab33a19d5265036deabf25556af8b83f18
+[PASS] R4(a) FitResult frozen
+       attribute assignment: FrozenInstanceError: FrozenInstanceError("cannot assign to field 'theta'")
+       theta unchanged after: True
+[PASS] R4(b) determinism
+       theta identical: True
+       cov identical: True
+       corr identical: True
+       theta = (5.202713990155556e-07, 1.8608528266298824e-05)
+[PASS] R4(c) Prediction frozen; no post-hoc widening
+       attribute assignment: FrozenInstanceError: FrozenInstanceError("cannot assign to field 'half_width'")
+       half-width before judge = 1.1552405493176328e-05, after judge = 1.1552405493176328e-05, identical: True
+[PASS] R4(d) defensive copy
+       caller appended an experiment after fit(); stored n = 6 (snapshot 6)
+       stored loads unchanged: True
+
+RESULT r4_immutability.txt: 4/4 (failed: none)
