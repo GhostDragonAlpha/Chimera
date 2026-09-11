@@ -1,0 +1,18 @@
+R2 -- CARD FALSIFIER CLAUSE 1 + decision-side (model must REJECT)
+==============================================================================
+threshold: 5/5 named refusals, byte-identical post-state
+
+R2 -- card falsifier clause 1 ('a physical claim lacks a falsifier') + decision-side: the model must REJECT all five paths, each refusal named, post-state byte-identical.
+[PASS] REJECT admission without falsifier
+        refusal: 'REFUSED (card falsifier): a physical claim lacks a falsifier -- missing_falsifier'; post-state identical: True
+[PASS] REJECT admission with whitespace-only falsifier
+        refusal: 'REFUSED (card falsifier): a physical claim lacks a falsifier -- missing_falsifier'; post-state identical: True
+[PASS] REJECT decision citing a never-admitted law
+        refusal: 'REFUSED: law_not_admitted'; post-state identical: True
+[PASS] REJECT decision with empty evidence
+        refusal: 'REFUSED: a decision needs an EVIDENCE pointer -- missing_evidence'
+[PASS] REJECT decision with outcome outside the fixed vocabulary
+        refusal: "REFUSED: bad_outcome (must be one of ('ADOPT', 'REJECT', 'REVISE'))"
+
+RESULT: 5 passed, 0 failed (threshold HOLDS)
+falsifier status: NOT TRIGGERED for this row

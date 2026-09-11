@@ -1,0 +1,43 @@
+R6 -- MEASURED DELTAS vs the preregistered predictions (GOV-03 PREREG.md, written before this measurement)
+==============================================================================
+threshold: 14/14 measured counts equal the predicted counts; any miss is a disclosed surprise
+
+regex form: python re, search across the WHOLE file, findall count; casefold where stated; \b boundaries mean re word-boundaries (so 'original' never matches \borigin\b).
+
+[PASS] tools/port_registry.py :: \bdomain\b (casefold)
+          predicted=0 measured=0
+[PASS] tools/port_registry.py :: \boracle\b (casefold)
+          predicted=0 measured=0
+[PASS] tools/port_registry.py :: \blimitation\b (casefold)
+          predicted=0 measured=0
+[PASS] tools/port_registry.py :: \borigin\b (casefold, excludes 'original')
+          predicted=0 measured=0
+[PASS] tools/port_registry.py :: \bdimension\b (casefold)
+          predicted=0 measured=0
+[PASS] tools/port_registry.py :: \bassumption\b (casefold)
+          predicted=0 measured=0
+[PASS] tools/verdict.py :: \bdomain\b (casefold)
+          predicted=0 measured=0
+[PASS] tools/verdict.py :: \boracle\b (casefold)
+          predicted=0 measured=0
+[PASS] tools/verdict.py :: \blimitation\b (casefold)
+          predicted=0 measured=0
+[PASS] tools/verdict.py :: \borigin\b (casefold, excludes 'original')
+          predicted=0 measured=0
+[PASS] tools/verdict.py :: \bdimension\b (casefold)
+          predicted=0 measured=0
+[PASS] tools/verdict.py :: \bassumption\b (casefold)
+          predicted=0 measured=0
+[PASS] tools/agent_fleet/review_handoff.py :: owner_instance
+          predicted=0 measured=0
+[PASS] tools/agent_fleet/control.py :: owner_instance
+          predicted=9 measured=9
+
+SOURCE IDENTITY at measurement time:
+  tools/verdict.py: sha256 0d03d930188c8db882b806509615c1cb5ef405898ee2b55e8c3052e593e90504 (241 lines)
+  tools/port_registry.py: sha256 127110da6202cab1ee8e395be0607719a6e08ea80afaa2c2d89b093dbf2a153d (151 lines)
+  tools/agent_fleet/control.py: sha256 7c7b91cf15917e096530a893db0c2f5e24d54a7e3c1b517fed85fcff3f9f0a1c (839 lines)
+  tools/agent_fleet/review_handoff.py: sha256 bf0625ce061cf0b81ac91099fc1011286bb3562fac043529b36b5ddb3316ed86 (227 lines)
+
+RESULT: 14 passed, 0 missed (threshold HOLDS)
+falsifier status: NOT TRIGGERED for this row
