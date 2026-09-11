@@ -1,0 +1,15 @@
+holodeck-mat-02 controls -- run_controls.py (one process)
+python 3.14.3 on Windows-11-10.0.26200-SP0
+thresholds preregistered in ../PREREGISTRATION.txt; verdict rule: each row reaches its full N/N or the row's falsifier FIRED
+
+ROW: R3 CARD FALSIFIER probes (rho + one modulus never suffice)  (threshold 6/6)
+
+  - (a) every-response claim on {rho,E} at the isotropic model -> missing_input: missing required inputs ['nu']; the capability claim is refused, never defaulted; density is not a stiffness constant: rho carries the (L^-3 M) dimension and counts toward NO model's independent stiffness constants
+  - (b) G from E alone -> missing_input BEFORE arithmetic: missing required inputs ['nu']; the claim is refused, never defaulted
+  - (c) isotropic inputs offered to the orthotropic model -> missing_input: missing required inputs ['E1', 'E2', 'E3', 'G12', 'G13', 'G23', 'nu12', 'nu13', 'nu23']; the capability claim is refused, never defaulted; density is not a stiffness constant: rho carries the (L^-3 M) dimension and counts toward NO model's independent stiffness constants
+  - (d) 3D family demanded FROM the uniaxial claim -> unsupported_response: claim on 'uniaxial_along_grain' licenses 'axial_static_along_grain' only; 'isotropic_3d_linear_elastic' is not supported by that model's inputs -- no extrapolated capability may be invented
+  - (e) wildcard 'any' model -> unknown_model: model 'any' is not in the supported registry ['isotropic_linear_elastic', 'isotropic_plane_stress_sheet', 'linear_viscoelastic', 'mass', 'orthotropic_3d_elastic', 'uniaxial_along_grain']; there is deliberately no 'any response' wildcard model
+  - (f) nu-from-density pseudo-derivation -> unsupported_derivation: no derivation 'nu_from_density' is declared in this registry; deriving it would invent physics
+  - CARD FALSIFIER 'Density and one modulus are assumed sufficient for every response': NOT REPRODUCED in the reference model -- no registered model admits rho as a stiffness constant, no derivation invents a constant, no wildcard model exists
+
+VERDICT: HOLDS 6/6

@@ -1,0 +1,185 @@
+RESULT — holodeck-mat-02 "Constitutive capability matrix" (gen 1)
+
+Agent: subagent-worker-12 · slot 5 · worktree E:\ChimeraWork\slot-05 · branch
+astra/tasks/holodeck-mat-02 · base 4812b55b407107a34b708af1700e071a7eecbab4
+(provision verified HEAD==base, clean, ls-files non-empty, before any work).
+CPU only; no GPU/model/engine process; no controller resources; the live
+service at 127.0.0.1:8099 was NEVER contacted. Preregistration: 3dc3c48f
+(this branch), thresholds fixed before any implementation test.
+
+## DELIVERABLES
+
+- reference/mat02_reference_model.py — independent stdlib-only reference
+  model of the INTENDED contract (the card statement): a closed, frozen
+  CapabilityMatrix of six supported constitutive models (mass;
+  uniaxial_along_grain; isotropic_linear_elastic with the declared (E,nu) |
+  (E,G) alternatives; isotropic_plane_stress_sheet; orthotropic_3d_elastic;
+  linear_viscoelastic), each declaring its REQUIRED typed parameters
+  (MATH-01 Dimensions + ratified gates), required STATE variables
+  (relaxation_spectrum, temperature_k), a declared validity DOMAIN, and the
+  DERIVED independent-constant count of its symmetry class with its
+  constant_origin string (isotropy 2; orthotropy 9 — classical Voigt
+  reduction; GOV-03 discipline). claim() is the card prediction's surface:
+  gate order unknown_model -> missing_input (EVERY absent parameter named;
+  when rho is present but the stiffness set is incomplete the refusal states
+  density is not a stiffness constant) -> dimension_mismatch (via MATH-01)
+  -> physically_invalid -> missing_state -> state_out_of_domain; success
+  returns a frozen CapabilityClaim. demand() licenses only the claimed
+  response family (the deployed P-8j shape, modeled). derive() runs ONLY
+  declared derivations (mass = rho x V; G = E/(2(1+nu));
+  plane_stress_mu_bar) carrying their arithmetic; unknown derivation ids
+  (e.g. nu-from-density) are refused unsupported_derivation.
+- controls/run_controls.py — R1-R4 in one process; controls/
+  run_source_checks.py — read-only R5/R6 source measurements at base.
+- checks/*.txt — six evidence files + one RETAINED fired run
+  (r6_findings.txt.run1-FIRED-needle-wrap-materials-docstring.txt: my
+  search needle spanned a wrapped docstring line and missed; fixed needle,
+  rerun; the fired file is retained per the retain-failures rule — a
+  harness artifact, not a deployed-state finding).
+
+## SCOREBOARD (preregistered thresholds)
+
+| Row | threshold | verdict |
+|---|---|---|
+| R1 positive claims (model must ACCEPT) | 8/8 | HOLDS 8/8 |
+| R2 card-prediction negatives (missing inputs prevent the claim) | 8/8 | HOLDS 8/8 |
+| R3 CARD FALSIFIER probes (rho + one modulus never suffice) | 6/6 | HOLDS 6/6 |
+| R4 registry consistency / immutability | 5/5 | HOLDS 5/5 |
+| R5 deployed gate families PRESENT at base (quoted, measured lines) | 4/4 | HOLDS 4/4 |
+| R6 falsifier hunt + current-state measurements | 5 reported | 5/5, no surprise findings |
+
+## CARD VERDICT
+
+- Card prediction "Missing inputs prevent unsupported capability claims" =
+  SUPPORTED: R1-R4 full N/N AND R5 4/4 (the deployed text enforces the same
+  refusal shape at four measured gate families).
+- Card falsifier "Density and one modulus are assumed sufficient for every
+  response" = NOT REPRODUCED: R3 6/6 in the reference model AND the R6 hunt
+  found no deployed consumer that claims a response its inputs do not
+  support:
+  (a) the matter library itself carries the falsifier's exact INPUT SET
+      (18 materials; 10 with density; 4 with youngs_modulus_gpa; 0 with any
+      poisson key — all four counts as predicted), and the only modulus
+      consumer refuses at exactly the point where the assumption would be
+      required: poisson_ratio_not_measured, "Refusing by name instead of
+      inventing a Poisson ratio or an empirical shear relationship"
+      (tools/elastic_foundation/materials.py:115-119);
+  (b) cad_sample's density consumer advertises a MASS-CLASS claim only
+      (measured line 172; referee tolerances mass_err/iner_err); the
+      composition table's declared domain leaves stiffness/friction OPEN
+      (tools/materials.py:23-24);
+  (c) the model-claim gate refuses invented capability claims
+      (UNSUPPORTED_MODEL, "...no isotropic or 3D claim may be invented from
+      uniaxial data", tools/material_contract.py:375-380).
+  The capability knowledge is enforced DISTRIBUTIVELY across these gates;
+  the one explicit required-parameter registry this card asks for is the
+  reference model's delivered contract (a gap the card anticipated — that
+  is why the lane exists).
+
+## MEASURED CURRENT STATE (no stale deviation language)
+
+- owner_instance (task packet: PR #80 fix FIXED AND DEPLOYED — measured
+  now): review_handoff.py 1 occurrence (line 113, the claim-path bind) and
+  control.py 8 occurrences (lines 121, 122, 123, 323, 499, 501, 554, 697).
+  Both as predicted; the GOV-01-era deviation (rh==0 at d59518b9) remains
+  FIXED at this base. No surprise finding.
+- MAT-01's recorded seams (cad_sample raw constants; membrane_demo BP-A1
+  admission deferral at tools/gpu_fixtures_recovered/membrane_demo.py:43)
+  are UNCHANGED at this base, matching MAT-01's measurements of the same
+  base (branch astra/tasks/holodeck-mat-01, commit 2352fc1b, read-only via
+  the git object store — my checked-out base predates that merge).
+
+## DYAD RECORD
+
+NOT_APPLICABLE — source-only scope: no executed runtime behavior of the
+deployed system was produced or altered; the deliverables are a reference
+model, its in-process controls, and static source measurements. Per the
+card's DYAD policy ("Reference-only or source-only scope records
+NOT_APPLICABLE with reason").
+
+## REPRODUCTION
+
+```
+git -C <checkout> rev-parse 4812b55b              # base identity
+cd docs/evidence/agent_fleet/HOLODECK/MAT/MAT-02
+python controls/run_controls.py                   # rewrites checks/r1..r4
+python controls/run_source_checks.py              # rewrites checks/r5, r6
+```
+MATH-01 resolves via the relative path ../../MATH/MATH-01/reference
+(integrated at this base; the model imports it and nothing else non-stdlib).
+Source quotes re-derivable at the recorded line numbers with any base-
+identical checkout.
+
+## SOURCE IDENTITIES
+
+Recorded with sha256 + line counts in checks/r5_source_trace.txt
+(material_contract.py 559 lines; elastic_foundation/materials.py 124;
+materials.py 51; cad_sample.py 235; matter_data.py 446;
+gpu_fixtures_recovered/membrane_demo.py 196; agent_fleet/control.py 839;
+agent_fleet/review_handoff.py 249; matter_library.json 1298 lines — all at
+base 4812b55b).
+
+## LIMITATIONS
+
+- The reference model is an INTENDED-contract model: six preregistered
+  model families covering the card's four mathematics (isotropy,
+  orthotropy, state variables, domains). It does not model temperature-
+  dependent elasticity, plasticity, damage, or rate effects beyond the
+  viscoelastic state-variable row, and its parameter gates are the RATIFIED
+  deployed ones (positive moduli, fraction [0,1], nu in (-1, 1/2)) plus the
+  derived count laws — no new physical fixture bound is introduced (card
+  threshold policy honored; nothing frozen was weakened).
+- PRereg CONFORMANCE DISCLOSURES (both are prose-contract misses in MY
+  prereg text, reported not patched; the scored N/N rows are unaffected):
+  (1) the prereg's contract prose says the reference model is "<300 lines";
+      the shipped model measures 411 lines — the six-spec registry with its
+      verbatim domain/origin strings would not fit without deleting
+      evidence-bearing content, so the miss is disclosed instead of
+      silently gutting the artifact;
+  (2) R2(d) prose predicted "the 8 absent constants" for the orthotropic
+      refusal; the measured refusal names NINE (E is not E1) — the count
+      was my arithmetic slip in the prereg prose; the gate behavior is the
+      predicted one and is counted honestly in checks/r2_missing_inputs.txt.
+- R5/R6 are static textual measurements of ONE base revision; the live
+  service is never contacted and no runtime behavior of the deployed
+  controller is observed.
+- The verdict "NOT a card-falsifier instance" for the density consumers
+  rests on the consumers' own advertising text (quoted); a future lane
+  that advertises validated stiffness from the density table would flip
+  the verdict — the seam is recorded, not closed.
+
+## INTEGRATION CONTRACT + HANDOFF (card deliverable 4)
+
+- Scope delivered exactly inside docs/evidence/agent_fleet/HOLODECK/MAT/
+  MAT-02; zero edits outside; MATH-01's integrated tree consumed read-only
+  via its integrated path; MAT-01's records consumed read-only from the git
+  object store (base predates PR #96's merge — declared in the prereg).
+- Handoff to the MAT lane team and the lead:
+  (a) reference/mat02_reference_model.py is the MAT plane's model-registry
+      seed: CapabilityMatrix/ModelSpec/claim() is the explicit "supported
+      model + required parameters" table the card asked for; extending it
+      (new models, new unit families) MUST go through declared
+      constant_origin strings and MATH-01 Dimension algebra — never by
+      inventing counts or conversion factors;
+  (b) the two MAT-01 seams (cad_sample raw constants; membrane_demo BP-A1
+      deferral) remain the routing work items: a lane that routes them
+      through the admission + capability layers should prereg its own
+      thresholds (this lane's claim()/demand() pair is the natural surface:
+      a consumer must hold a CapabilityClaim for the family it advertises);
+  (c) the falsifier stays closed only while the library's E-only port
+      refuses (materials.py:115-119); any "empirical nu" shortcut would
+      fire the card falsifier in deployed source;
+  (d) evidence pattern for this plane is unchanged: PREREG with concrete
+      N/N, retained fired runs, source trace with measured line numbers,
+      owner_instance measured-current.
+- No follow-up task is created by this lane; the lead coordinates MAT-03+
+  member assignment per the standing structure.
+
+## SHIP RECORD
+
+- Commit chain: 3dc3c48f (PREREG, alone) -> artifact commit(s) -> pushed
+  HEAD recorded in the controller submit_review event; PR into
+  astra/gait-capture; pushed no-force.
+- Files changed: docs/evidence/agent_fleet/HOLODECK/MAT/MAT-02/** only.
+
+Trailer: Agent: subagent-worker-12

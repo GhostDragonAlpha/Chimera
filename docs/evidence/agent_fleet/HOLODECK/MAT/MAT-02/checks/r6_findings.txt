@@ -1,0 +1,19 @@
+holodeck-mat-02 source checks -- run_source_checks.py
+R6 falsifier hunt + current-state measurements (threshold: 5 measurements REPORTED; surprise findings flagged)
+
+(a) LIBRARY SHAPE: matter_library.json measured -- materials=18 (predicted 18), with density_kg_m3=10 (predicted 10), with youngs_modulus_gpa=4 (predicted 4), with ANY poisson key=0 (predicted 0). The library carries the falsifier's exact INPUT SET (density + at most one modulus, no poisson anywhere); the gate between that input set and any stiffness claim is R5(d)'s poisson_ratio_not_measured refusal (quoted in r5_source_trace.txt). VERDICT: falsifier instance? NO -- the consumer refuses at the exact point where 'density+one modulus suffices' would have to be assumed.
+
+(b) CONSUMER ADVERTISING: cad_sample.py consumes DENSITY at measured line 172 for the mass/inertia sampler ONLY (its referee tolerances are mass_err/iner_err -- a MASS-CLASS claim, the one response the 'mass' model licenses); the composition table's declared domain is quoted at materials.py:23 ('Stiffness/friction join the table when the force laws that read them are built'); matter_data.py reads density/E from the library as CITED constants (read-through at measured line 429), never deriving nu from them. VERDICT per consumer: claims-beyond-inputs? NO for all three (basis: mass-class advertising + declared open domain).
+
+(c) MAT-01 SEAMS at this base: cad_sample raw-constants consumer present (same measured line as (b)); membrane_demo.py BP-A1 admission deferral measured at line 43:
+  tools/gpu_fixtures_recovered/membrane_demo.py:41: The material is a SYNTHETIC DECLARED interface (GAMMA below, provenance:
+  tools/gpu_fixtures_recovered/membrane_demo.py:42: fixture declaration); no physical calibration is claimed. Admission routing
+  tools/gpu_fixtures_recovered/membrane_demo.py:43: through material_contract is deferred until BP-A1 lands (unit-family table).
+  tools/gpu_fixtures_recovered/membrane_demo.py:44: 
+Both match MAT-01's measurements at the SAME base 4812b55b (branch astra/tasks/holodeck-mat-01, commit 2352fc1b) -- unchanged, as expected; any drift would have been a surprise finding.
+
+(d) OWNER_INSTANCE CURRENT STATE (task packet: the PR #80 claim-path fix is FIXED AND DEPLOYED -- measured now, no stale deviation language): review_handoff.py occurrences=1 at measured lines [113] (predicted >= 1; the claim-path bind) and control.py occurrences=8 at measured lines [121, 122, 123, 323, 499, 501, 554, 697] (predicted 8: the _task fence, setdefault, yield guard, claim bind, release clear). No surprise: rh >= 1 as predicted; the GOV-01-era deviation (rh==0 at d59518b9) remains FIXED at this base.
+
+(e) INDEPENDENCE AUDIT: mat02_reference_model.py imports ['__future__', 'dataclasses', 'math01_reference_model', 'pathlib', 'sys', 'types'] -- stdlib plus math01_reference_model (the designated MATH-01 units backbone) ONLY; imports from the audited deployed code: NONE. run_controls.py imports the model + stdlib; run_source_checks.py (this file) READS the audited files as text and imports neither.
+
+VERDICT: 5/5 measured; no surprise findings
