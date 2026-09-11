@@ -10,6 +10,7 @@ operator's I/O-limit hypothesis.
 import json
 from pathlib import Path
 import statistics
+import subprocess
 import sys
 import tempfile
 import threading
@@ -21,6 +22,23 @@ from control import Control, Refusal
 from layout import SLOT_MAX, slot_layout
 
 BASE = 'a' * 40
+# Derived bound, not a taste parameter: the control plane's writer wait cap is
+# the busy timeout passed to sqlite3.connect(timeout=...) in control.py (10 s).
+# An operation resolving slower than HALF that cap makes the registry
+# operationally unusable regardless of cause; lock_errors==0, by contrast, is
+# asserted only in the low-contention subprocess regime (_LOCK_PROBE_*
+# constants below), where the writer queue is far below the busy timeout.
+BUSY_TIMEOUT_S = 10.0
+# Subprocess zero-lock regression probe regime (derivation in
+# docs/evidence/agent_fleet/SCALE_PROBE_ROBUSTNESS/PREREGISTRATION.txt):
+# W=3 writers x ~10 ms transactions -> worst-case queue ~2 ops (~20-40 ms);
+# a lock error requires starving a correct writer for >10 s (>250x the queue
+# wait). Environmental noise of that magnitude stalls the production
+# controller itself; a DISCIPLINE regression (e.g. deferred-lock upgrade)
+# produces busy failures at ANY writer count. So lock_errors==0 is
+# verdict-exact here and noise-immune.
+LOCK_PROBE_WRITERS = 3
+LOCK_PROBE_SECONDS = 5.0
 
 
 def _spin(root):
@@ -46,6 +64,129 @@ def _task(c, tok, tid, epoch, scopes=None):
     return c.call('create_task', tok, task=tid, epoch=epoch, base=BASE,
                   scopes=scopes or ['tools/labs/' + tid], kind='worker',
                   packet='statement / prediction / falsifier')['result']
+
+
+def _mixed_churn(c, worker_toks, tasks, seconds):
+    """The 4-reads:1-write mixed profile; returns the probe summary dict."""
+    lat = []
+    errs = []
+    stop = time.monotonic() + seconds
+    lock_err = 0
+
+    def churn(i):
+        nonlocal lock_err
+        n = 0
+        while time.monotonic() < stop:
+            t0 = time.monotonic()
+            try:
+                for _ in range(4):
+                    c.call('snapshot', worker_toks[i])
+                tid = tasks[n % len(tasks)]
+                t = c.call('claim', worker_toks[i], task=tid)['result']
+                c.call('checkpoint', worker_toks[i], task=tid,
+                       generation=t['generation'],
+                       checkpoint='probe n%d' % n)
+                c.call('claim_abandon', 'super-secret', task=tid,
+                       generation=t['generation'],
+                       preservation_evidence='probe preservation',
+                       drain_evidence='probe drain')
+            except Refusal as e:
+                errs.append(str(e))
+                if 'database is locked' in str(e):
+                    lock_err += 1
+            except Exception as e:  # noqa: BLE001 - probe counts everything
+                errs.append('%s:%s' % (type(e).__name__, e))
+                if 'locked' in str(e).lower():
+                    lock_err += 1
+            lat.append(time.monotonic() - t0)
+            n += 1
+
+    threads = [threading.Thread(target=churn, args=(i,))
+               for i in range(len(worker_toks))]
+    t_start = time.monotonic()
+    for th in threads:
+        th.start()
+    for th in threads:
+        th.join()
+    wall = time.monotonic() - t_start
+    lat.sort()
+    pct = lambda q: lat[min(len(lat) - 1, int(q * len(lat)))]
+    return {'writers': len(worker_toks), 'duration_s': round(wall, 1),
+            'ops': len(lat), 'lock_errors': lock_err,
+            'other_refusals': len(errs) - lock_err,
+            'p50_ms': round(pct(0.50) * 1000, 1),
+            'p95_ms': round(pct(0.95) * 1000, 1),
+            'p99_ms': round(pct(0.99) * 1000, 1),
+            'max_ms': round(lat[-1] * 1000, 1)}
+
+
+def _run_lock_probe_subprocess(control_dir, writers, seconds, timeout_s=120):
+    """Run the zero-lock probe in a SEPARATE interpreter against control_dir.
+
+    The subprocess imports `control` with control_dir FIRST on sys.path (this
+    is what lets the mutation probe point it at a mutated copy). Returns the
+    parsed LOCK_PROBE summary dict.
+    """
+    cmd = [sys.executable, str(Path(__file__).resolve()), '--lock-probe',
+           '--writers', str(writers), '--seconds', str(seconds)]
+    if control_dir is not None:
+        cmd += ['--control-dir', str(control_dir)]
+    proc = subprocess.run(cmd, capture_output=True, text=True,
+                          timeout=timeout_s)
+    lines = [l for l in proc.stdout.splitlines()
+             if l.startswith('LOCK_PROBE ')]
+    if proc.returncode != 0 or not lines:
+        raise AssertionError(
+            'lock probe subprocess failed rc=%s\nstdout:\n%s\nstderr:\n%s'
+            % (proc.returncode, proc.stdout[-2000:], proc.stderr[-2000:]))
+    return json.loads(lines[-1][len('LOCK_PROBE '):])
+
+
+def _lock_probe_main(argv):
+    """--lock-probe entry: churn an isolated registry, print LOCK_PROBE json.
+
+    Used by the subprocess zero-lock regression assertion and by the mutation
+    probe (which points --control-dir at a mutated control copy).
+    """
+    import argparse
+    p = argparse.ArgumentParser()
+    p.add_argument('--lock-probe', action='store_true')
+    p.add_argument('--writers', type=int, default=LOCK_PROBE_WRITERS)
+    p.add_argument('--seconds', type=float, default=LOCK_PROBE_SECONDS)
+    p.add_argument('--control-dir', default=None,
+                   help='dir to import `control` from (defaults to this file\'s dir)')
+    a = p.parse_args(argv)
+    if a.control_dir:
+        # The module-level `from control import ...` already bound this
+        # file's control; rebind from the requested dir (mutation probe).
+        sys.path.insert(0, str(Path(a.control_dir).resolve()))
+        sys.modules.pop('control', None)
+        import control as _control
+        Control_cls = _control.Control
+    else:
+        Control_cls = Control
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        c = Control_cls(root / 'state.sqlite', 'super-secret',
+                        'enroll-secret', root / 'slots')
+        tok = c.call('enroll', 'enroll-secret', agent='lead', label='lead')['result']['session_token']
+        c.call('qualify', 'super-secret', agent='lead', capabilities=['cpu'],
+               max_tasks=5, can_lead=True, rank=1, evidence='probe lead')
+        c.call('offer_lead', tok, epoch=0, checkpoint='probe')
+        c.call('elect', 'super-secret')
+        ep = c.call('snapshot', tok)['result']['epoch']
+        worker_toks = []
+        for i in range(a.writers):
+            worker_toks.append(_worker(c, 'w%d' % i))
+        tasks = []
+        for i in range(a.writers):
+            tasks.append(_task(c, tok, 'p%d' % i, ep,
+                               scopes=['tools/labs/p%d' % i])['id'])
+        # NOTE: _mixed_churn matches lock errors by string, and its generic
+        # handler counts exceptions raised by a MUTATED control's own Refusal
+        # class too - no rebinding of the module-level Refusal is needed.
+        summary = _mixed_churn(c, worker_toks, tasks, a.seconds)
+    print('LOCK_PROBE ' + json.dumps(summary))
 
 
 class SlotExpansionTests(unittest.TestCase):
@@ -194,56 +335,23 @@ class SlotExpansionTests(unittest.TestCase):
             c.call('claim', w, task='t6')['result']
         self.assertEqual(len(c.call('snapshot', tok)['result']['slots']), 6)
 
-    # --- 4. scale probe: lock errors + latency percentiles + spawn cost ---
+    # --- 4. scale probe: telemetry in-suite, zero-lock guard in subprocess ---
     def test_scale_probe_lock_errors_and_latency(self):
+        # REGIME SPLIT (RULE-1 derivation, SCALE_PROBE_ROBUSTNESS prereg):
+        # lock_errors==0 guards the single-writer DISCIPLINE (BEGIN IMMEDIATE),
+        # so it is asserted ONLY in the low-contention subprocess regime where
+        # the writer queue is far below the busy timeout - noise-immune and
+        # verdict-exact. The loaded 8-writer in-suite regime MEASURES (its six
+        # flaps were exactly the conflation of host contention with discipline
+        # regressions); its only bound is the derived busy_timeout/2 ceiling.
         c, tok = _spin(self.root)
         w = [_worker(c, 'w%d' % i) for i in range(8)]
         ep = c.call('snapshot', tok)['result']['epoch']
+        tasks = []
         for i in range(24):
-            _task(c, tok, 'p%d' % i, ep, scopes=['tools/labs/p%d' % i])
-        lat = []
-        errs = []
-        stop = time.monotonic() + 20.0
-        lock_err = 0
-
-        def churn(i):
-            # MIXED load per the prediction: 4 reads per 1 write cycle
-            # (fleet-realistic; workers poll snapshots far more often than
-            # they write).
-            nonlocal lock_err
-            n = 0
-            while time.monotonic() < stop:
-                t0 = time.monotonic()
-                try:
-                    for _ in range(4):
-                        c.call('snapshot', w[i])
-                    tid = 'p%d' % (n % 24)
-                    t = c.call('claim', w[i], task=tid)['result']
-                    c.call('checkpoint', w[i], task=tid,
-                           generation=t['generation'],
-                           checkpoint='probe n%d' % n)
-                    c.call('claim_abandon', 'super-secret', task=tid,
-                           generation=t['generation'],
-                           preservation_evidence='probe preservation',
-                           drain_evidence='probe drain')
-                except Refusal as e:
-                    errs.append(str(e))
-                    if 'database is locked' in str(e):
-                        lock_err += 1
-                except Exception as e:  # noqa: BLE001 - probe counts everything
-                    errs.append('%s:%s' % (type(e).__name__, e))
-                    if 'locked' in str(e).lower():
-                        lock_err += 1
-                lat.append(time.monotonic() - t0)
-                n += 1
-
-        threads = [threading.Thread(target=churn, args=(i,)) for i in range(8)]
-        t_start = time.monotonic()
-        for th in threads:
-            th.start()
-        for th in threads:
-            th.join()
-        wall = time.monotonic() - t_start
+            tasks.append(_task(c, tok, 'p%d' % i, ep,
+                               scopes=['tools/labs/p%d' % i])['id'])
+        summary = _mixed_churn(c, w, tasks, 20.0)
         spawn_t0 = time.monotonic()
         spawned = 0
         while spawned < 20:
@@ -252,21 +360,26 @@ class SlotExpansionTests(unittest.TestCase):
             spawned += 1
             assert len(c.call('snapshot', tok)['result']['slots']) == before + 1
         spawn_cost = (time.monotonic() - spawn_t0) / spawned
-        lat.sort()
-        pct = lambda q: lat[min(len(lat) - 1, int(q * len(lat)))]
-        summary = {
-            'threads': 8, 'duration_s': round(wall, 1), 'ops': len(lat),
-            'p50_ms': round(pct(0.50) * 1000, 1),
-            'p95_ms': round(pct(0.95) * 1000, 1),
-            'p99_ms': round(pct(0.99) * 1000, 1),
-            'max_ms': round(lat[-1] * 1000, 1),
-            'lock_errors': lock_err,
-            'other_refusals': len(errs) - lock_err,
-            'spawn_cost_ms': round(spawn_cost * 1000, 1),
-        }
+        summary['threads'] = 8
+        summary['spawn_cost_ms'] = round(spawn_cost * 1000, 1)
         print('SCALE_PROBE_MIXED ' + json.dumps(summary))
-        self.assertEqual(lock_err, 0, 'lock errors: %s' % summary)
-        self.assertLess(summary['p95_ms'], 1000.0, summary)
+        # Measurement assertions only (no zero-lock claim in the loaded
+        # regime): ops happened, and ops resolve inside half the busy
+        # timeout - beyond that the registry is unusable for the fleet
+        # regardless of cause. (p95 is reported in ms; the bound is
+        # BUSY_TIMEOUT_S/2 converted to ms.)
+        self.assertGreater(summary['ops'], 0, summary)
+        self.assertLess(summary['p95_ms'],
+                        (BUSY_TIMEOUT_S / 2.0) * 1000.0, summary)
+        # THE GUARD: zero lock errors in the low-contention subprocess
+        # regime (W=3, 5 s, isolated registry, separate interpreter).
+        probe = _run_lock_probe_subprocess(control_dir=None,
+                                           writers=LOCK_PROBE_WRITERS,
+                                           seconds=LOCK_PROBE_SECONDS)
+        print('LOCK_PROBE_GUARD ' + json.dumps(probe))
+        self.assertEqual(probe['lock_errors'], 0,
+                         'single-writer discipline regression: %s' % probe)
+        self.assertGreater(probe['ops'], 0, probe)
         # SATURATED phase (writes only, no reads): recorded as boundary data
         # for the operator I/O hypothesis; lock errors are REPORTED, not
         # asserted - this is the deliberate overload profile.
@@ -278,7 +391,7 @@ class SlotExpansionTests(unittest.TestCase):
             while time.monotonic() < stop_sat:
                 t0 = time.monotonic()
                 try:
-                    tid = 'p%d' % (n % 24)
+                    tid = tasks[n % len(tasks)]
                     t = c.call('claim', w[i], task=tid)['result']
                     c.call('claim_abandon', 'super-secret', task=tid,
                            generation=t['generation'],
@@ -301,6 +414,32 @@ class SlotExpansionTests(unittest.TestCase):
                'max_ms': round(sat_lat[-1]*1000, 1)}
         print('SCALE_PROBE_SATURATED ' + json.dumps(sat))
 
+    # --- 4b. the guard must catch the regression it exists for ------------
+    def test_lock_regression_mutation_probe_fires(self):
+        # Mutation probe (mandatory): break the single-writer discipline in a
+        # COPY - BEGIN IMMEDIATE -> BEGIN DEFERRED is the exact regression
+        # class the zero-lock guard exists for (deferred-to-write lock
+        # upgrades are the busy-handler-cannot-retry case) - and require the
+        # probe to FIRE (lock_errors > 0) against the mutated control. A
+        # guard that passes on a broken discipline guards nothing.
+        src = (Path(__file__).resolve().parent / 'control.py').read_text(
+            encoding='utf-8')
+        good, bad = "con.execute('BEGIN IMMEDIATE')", "con.execute('BEGIN DEFERRED')"
+        self.assertIn(good, src, 'mutation anchor missing - control changed')
+        mutated = src.replace(good, bad)
+        self.assertNotEqual(mutated, src, 'mutation applied zero times')
+        with tempfile.TemporaryDirectory() as td:
+            mut_dir = Path(td)
+            (mut_dir / 'control.py').write_text(mutated, encoding='utf-8')
+            probe = _run_lock_probe_subprocess(control_dir=mut_dir,
+                                               writers=LOCK_PROBE_WRITERS,
+                                               seconds=LOCK_PROBE_SECONDS)
+        print('LOCK_PROBE_MUTATED ' + json.dumps(probe))
+        self.assertGreater(
+            probe['lock_errors'], 0,
+            'MUTATION SURVIVED: zero-lock probe did not catch the '
+            'BEGIN-DEFERRED discipline break: %s' % probe)
+
     # --- 5. layout + inventory parameterization ---------------------------
     def test_layout_bounds_and_inventory_default(self):
         self.assertEqual(slot_layout(self.root, 64)['engine']['port_candidate'], 8164)
@@ -315,4 +454,7 @@ class SlotExpansionTests(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main(verbosity=2)
+    if '--lock-probe' in sys.argv:
+        _lock_probe_main(sys.argv[1:])
+    else:
+        unittest.main(verbosity=2)

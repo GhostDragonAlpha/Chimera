@@ -1,0 +1,128 @@
+SCALE-PROBE ROBUSTNESS - PREREGISTRATION
+=========================================
+task: scale-probe-robustness-01 (gen 1, slot 5) | worker: subagent-worker-05
+scope: tools/agent_fleet/test_slot_expansion.py
+       docs/evidence/agent_fleet/SCALE_PROBE_ROBUSTNESS
+base: 5487260c, ff-reconciled to tip e004c332 BEFORE this prereg (zero own
+commits at reconcile; tip = merge of PR #79).
+Committed BEFORE any post-change run of the touched test. Historical sighting
+data below is quoted from the task packet (inputs, not this lane's results).
+
+THE FLAP (historical, from the packet)
+--------------------------------------
+test_scale_probe_lock_errors_and_latency flapped under host load in six
+independent sightings (PR #68 sweep F2-adjacent; PR #71 both runs; PR #73
+review; PR #80 review 5->1 lock errors under 10-slot load; PR #72 review 2/2
+runs + proven at base; #85 era). The test asserts lock_errors==0 on a 20 s
+8-thread SQLite churn executed IN-PROCESS on a SHARED host; the fleet now
+runs 10+ concurrent lanes, and lock errors appear when host starvation
+stretches a writer past the 10 s busy timeout (Control.connect timeout=10).
+
+RULE 1 DERIVATION - what question does lock_errors==0 answer?
+-------------------------------------------------------------
+The control plane's single-writer discipline is: every state transition runs
+inside ONE SQLite BEGIN IMMEDIATE transaction (control.py call(), the
+`con.execute('BEGIN IMMEDIATE')` line). Under that discipline a writer never
+upgrades a deferred lock and every write conflict is a simple lock wait that
+the busy handler retries; lock errors therefore require a writer to be stuck
+behind contention for >busy_timeout. The assertion lock_errors==0 guards
+REGRESSIONS OF THIS DISCIPLINE (someone replacing BEGIN IMMEDIATE with
+BEGIN DEFERRED - the upgrade-deadlock class the busy handler cannot clear -
+or serializing writes around client-visible waits). It does NOT guard host
+contention delays: a lock error caused by the OS starving a correct writer
+for 10 s is a different failure class, and at 8 in-process writers whose
+client threads share a GIL with the service, starvation-driven lock errors
+are routine on a loaded host. CONSEQUENCE (derived, not tasted): the
+zero-lock claim is VALID exactly when writer-count x op-latency is far below
+busy_timeout, and is NOISE exactly where the old test asserted it (8 writers,
+20 s, in-process with the service). The assertion must move to the regime
+where it discriminates, and the loaded regime must keep its measurement duty.
+
+CHOSEN OPTION (a), with the derived content
+-------------------------------------------
+Option (a): isolated registry + isolated subprocess carries the zero-lock
+REGRESSION claim; the in-suite probe keeps latency telemetry with load-aware
+bounds; verdict-exact retries and error-budget ceilings are REJECTED because
+a retry teaches the suite to ignore the very signal the probe exists for
+(a discipline regression can be retried into green), and an error-budget
+ceiling on lock errors would bless "a few" lock errors - the regression
+signal is quantal, not gradual.
+1. SUBPROCESS ZERO-LOCK REGRESSION PROBE (new, the guard): the test file
+   gains a __main__ mode (--lock-probe) that runs the SAME mixed 4-read:1-
+   write churn against an ISOLATED temp registry with W=3 workers for 5 s in
+   a SEPARATE interpreter process, prints LOCK_PROBE <json>. The in-suite
+   test runs it (subprocess imports control from a given --control-dir) and
+   asserts lock_errors==0 and ops>0. DERIVATION OF THE REGIME: at W=3 with
+   ~10 ms transactions the worst-case queue behind a writer is ~2 ops
+   (~20-40 ms); a lock error requires starving a correct writer for >10 s
+   (>250x the expected queue wait) - noise of that magnitude stalls the
+   production controller itself and is not this suite's guard duty. A
+   DISCIPLINE regression, by contrast, produces busy/upgrades failures at
+   ANY writer count, including W=3 - so the assertion is verdict-exact for
+   the regression class and noise-immune for the environmental class.
+   Registry isolation: the probe builds its own tempfile root; subprocess
+   isolation: the churn runs in its own interpreter (no GIL coupling with
+   the service or the unittest process).
+2. IN-SUITE 20 s MIXED PHASE (kept, duty reduced to measurement + the
+   operationally-derived bound): lock_errors REPORTED in the summary, no
+   longer asserted (this is where the six sightings lived; the loaded
+   regime measures, it does not verdict). Retained assertions: ops>0, and
+   p95 < busy_timeout/2 = 5.0 s - derived as HALF the service's connect
+   timeout constant (10 s, control.py), i.e. an op that resolves slower
+   than half the busy timeout makes the registry operationally unusable
+   regardless of cause; no free parameters.
+3. SATURATED 5 s phase: unchanged (writes-only boundary data, reported,
+   never asserted).
+4. MUTATION PROBE (mandatory, new test): copy control.py to a temp dir,
+   apply ONE textual discipline mutation - BEGIN IMMEDIATE -> BEGIN DEFERRED
+   (the exact regression the guard exists for; deferred-to-write upgrades
+   are the busy-handler-cannot-retry class) - and run the same subprocess
+   probe against the mutated copy. ASSERT the probe reports lock_errors>0:
+   the guard MUST fire on the regression. Contingency, declared in advance:
+   if the deferred mutation alone does not produce lock errors at W=3/5 s,
+   escalate to the second canonical discipline break (hold the write
+   transaction open across a client-visible sleep inside the mutated copy)
+   and document which mutation fired; the guard claim is "a real single-
+   writer regression is caught", not "this exact one-line patch is caught".
+
+PREDICTIONS
+-----------
+PP1 After the change, N=5 consecutive FULL-SUITE runs under live fleet load
+    stay green (every test OK; this test included). N is derived: the packet
+    documents five independent sightings in this suite's recent history, all
+    of them single-run events; N green runs = running the length of the
+    observed flapping history without a flap, under the same live-load
+    conditions. (Capture-flake precedent: consecutive-green-in-load-context
+    counting.)
+PP2 The mutation probe FIRES: the subprocess probe run against the
+    BEGIN-DEFERRED-mutated copy reports lock_errors>0 (guard still catches
+    the regression).
+PP3 The subprocess probe on the UNMUTATED control reports lock_errors==0 and
+    ops>0 in each of the N runs.
+
+FALSIFIERS
+----------
+FF1 any post-change full-suite run flapping under live fleet load (the very
+    failure the change exists to remove).
+FF2 the mutation probe passing (guard dead: the probe no longer catches the
+    regression it was moved and rewritten for).
+FF3 any assertion of the old test deleted without a replacement guard
+    (zero-lock claim must exist SOMEWHERE; p95 bound must remain, derived);
+    measurement telemetry removed.
+FF4 hand-tuning parameters by taste (busy-timeout halves and writer counts
+    must carry their derivations; no sweep).
+
+METHOD
+------
+M1 implement 1-4 above in tools/agent_fleet/test_slot_expansion.py; the
+   subprocess probe and the mutation probe are deterministic parts of the
+   suite (no skips, no retries).
+M2 run the full suite N=5 times consecutively on the shared host while the
+   fleet is live; retain all five runs' SCALE_PROBE_MIXED /
+   SCALE_PROBE_SATURATED / LOCK_PROBE lines + suite verdicts in RUN_*.txt.
+M3 run the mutation probe once with its raw output retained
+   (MUTATION_PROBE.txt); record mutated-line count and the reported
+   lock_errors.
+M4 every run's verdict goes into RESULT.txt with the prediction map.
+
+Agent: subagent-worker-05
