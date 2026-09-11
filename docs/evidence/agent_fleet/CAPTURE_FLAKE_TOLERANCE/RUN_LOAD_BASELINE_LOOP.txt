@@ -1,0 +1,38 @@
+[harness] baseline load context start 2026-09-11T12:17:20 worktree=E:/ChimeraWork/slot-10 base=4c319997 + prereg 3354d5a1
+[harness] fleet suite pid=72504 started (concurrent load)
+[iter 01] OK 7.2s capture_module_referenced=False
+[iter 02] OK 6.5s capture_module_referenced=False
+[iter 03] OK 6.4s capture_module_referenced=False
+[iter 04] OK 6.9s capture_module_referenced=False
+[iter 05] OK 7.2s capture_module_referenced=False
+[iter 06] OK 6.8s capture_module_referenced=False
+[iter 07] OK 6.8s capture_module_referenced=False
+[iter 08] OK 6.5s capture_module_referenced=False
+[iter 09] OK 6.6s capture_module_referenced=False
+[iter 10] OK 6.5s capture_module_referenced=False
+[iter 11] OK 6.2s capture_module_referenced=False
+[iter 12] OK 7.1s capture_module_referenced=False
+[iter 13] OK 6.5s capture_module_referenced=False
+[iter 14] OK 6.4s capture_module_referenced=False
+[iter 15] OK 6.7s capture_module_referenced=False
+[iter 16] OK 6.5s capture_module_referenced=False
+[iter 17] OK 6.4s capture_module_referenced=False
+[iter 18] OK 6.5s capture_module_referenced=False
+[iter 19] OK 7.2s capture_module_referenced=False
+[iter 20] OK 6.7s capture_module_referenced=False
+[iter 21] OK 6.8s capture_module_referenced=False
+[iter 22] OK 6.9s capture_module_referenced=False
+[iter 23] OK 6.6s capture_module_referenced=False
+[iter 24] OK 6.8s capture_module_referenced=False
+[iter 25] OK 7.4s capture_module_referenced=False
+[iter 26] OK 7.1s capture_module_referenced=False
+[iter 27] OK 6.7s capture_module_referenced=False
+[iter 28] OK 7.1s capture_module_referenced=False
+[iter 29] OK 6.9s capture_module_referenced=False
+[iter 30] OK 7.0s capture_module_referenced=False
+[iter 31] OK 8.1s capture_module_referenced=False
+[iter 32] OK 7.8s capture_module_referenced=False
+[iter 33] OK 7.2s capture_module_referenced=False
+[iter 34] OK 8.2s capture_module_referenced=False
+[harness] suite finished before iteration 35; stopping loop
+[harness] suite rc=1 total_elapsed=234s iterations=34 failed=0

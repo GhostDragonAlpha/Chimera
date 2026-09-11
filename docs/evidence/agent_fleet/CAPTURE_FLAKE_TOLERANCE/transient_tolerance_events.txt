@@ -1,0 +1,45 @@
+{"healed": false, "retries": 0, "reason": "deadline_exhausted_before_retry", "title": "tolerance-test", "first_attempt_verdict": "occluded_or_foreign_content"}
+{"healed": false, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "occluded_or_foreign_content"}
+{"healed": true, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "unobscured"}
+{"healed": false, "retries": 0, "reason": "deadline_exhausted_before_retry", "title": "tolerance-test", "first_attempt_verdict": "occluded_or_foreign_content"}
+{"healed": false, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "occluded_or_foreign_content"}
+{"healed": true, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "unobscured"}
+{"healed": false, "retries": 0, "reason": "deadline_exhausted_before_retry", "title": "tolerance-test", "first_attempt_verdict": "occluded_or_foreign_content"}
+{"healed": false, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "occluded_or_foreign_content"}
+{"healed": true, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "unobscured"}
+{"healed": false, "retries": 0, "reason": "deadline_exhausted_before_retry", "title": "tolerance-test", "first_attempt_verdict": "occluded_or_foreign_content"}
+{"healed": false, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "occluded_or_foreign_content"}
+{"healed": true, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "unobscured"}
+{"healed": false, "retries": 0, "reason": "deadline_exhausted_before_retry", "title": "tolerance-test", "first_attempt_verdict": "occluded_or_foreign_content"}
+{"healed": false, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "occluded_or_foreign_content"}
+{"healed": true, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "unobscured"}
+{"healed": false, "retries": 0, "reason": "deadline_exhausted_before_retry", "title": "tolerance-test", "first_attempt_verdict": "occluded_or_foreign_content"}
+{"healed": false, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "occluded_or_foreign_content"}
+{"healed": true, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "unobscured"}
+{"healed": false, "retries": 0, "reason": "deadline_exhausted_before_retry", "title": "tolerance-test", "first_attempt_verdict": "occluded_or_foreign_content"}
+{"healed": false, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "occluded_or_foreign_content"}
+{"healed": true, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "unobscured"}
+{"healed": false, "retries": 0, "reason": "deadline_exhausted_before_retry", "title": "tolerance-test", "first_attempt_verdict": "occluded_or_foreign_content"}
+{"healed": false, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "occluded_or_foreign_content"}
+{"healed": true, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "unobscured"}
+{"healed": false, "retries": 0, "reason": "deadline_exhausted_before_retry", "title": "tolerance-test", "first_attempt_verdict": "occluded_or_foreign_content"}
+{"healed": false, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "occluded_or_foreign_content"}
+{"healed": true, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "unobscured"}
+{"healed": false, "retries": 0, "reason": "deadline_exhausted_before_retry", "title": "tolerance-test", "first_attempt_verdict": "occluded_or_foreign_content"}
+{"healed": false, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "occluded_or_foreign_content"}
+{"healed": true, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "unobscured"}
+{"healed": false, "retries": 0, "reason": "deadline_exhausted_before_retry", "title": "tolerance-test", "first_attempt_verdict": "occluded_or_foreign_content"}
+{"healed": false, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "occluded_or_foreign_content"}
+{"healed": true, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "unobscured"}
+{"healed": false, "retries": 0, "reason": "deadline_exhausted_before_retry", "title": "tolerance-test", "first_attempt_verdict": "occluded_or_foreign_content"}
+{"healed": false, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "occluded_or_foreign_content"}
+{"healed": true, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "unobscured"}
+{"healed": false, "retries": 0, "reason": "deadline_exhausted_before_retry", "title": "tolerance-test", "first_attempt_verdict": "occluded_or_foreign_content"}
+{"healed": false, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "occluded_or_foreign_content"}
+{"healed": true, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "unobscured"}
+{"healed": false, "retries": 0, "reason": "deadline_exhausted_before_retry", "title": "tolerance-test", "first_attempt_verdict": "occluded_or_foreign_content"}
+{"healed": false, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "occluded_or_foreign_content"}
+{"healed": true, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "unobscured"}
+{"healed": false, "retries": 0, "reason": "deadline_exhausted_before_retry", "title": "tolerance-test", "first_attempt_verdict": "occluded_or_foreign_content"}
+{"healed": false, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "occluded_or_foreign_content"}
+{"healed": true, "retries": 1, "title": "tolerance-test", "deadline_respected": true, "first_attempt_verdict": "occluded_or_foreign_content", "second_verdict": "unobscured"}

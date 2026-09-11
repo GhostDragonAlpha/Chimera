@@ -1,0 +1,150 @@
+capture-flake-tolerance-01 preregistration (2026-09-11, subagent-worker-11)
+
+Task capture-flake-tolerance-01 generation 1, slot 10, worktree
+E:\ChimeraWork\slot-10, base 4c31999797a9383ea252019be1f32511709fa280
+(= current remote tip of astra/gait-capture; no reconcile needed, worktree
+verified clean on the record branch). Recorded followup: PR #57 review LOW
+finding + two observed occurrences (incl. the expansion-lane suite run) of
+test_verify_hwnd_capture_none_pin_adopts_measured_size flaking under
+fleet-suite load. This file is committed BEFORE any fix, measurement, or
+test run and names no measured actuals. All evidence under this directory
+is *.txt per the packet and the *.log trap guard.
+
+## SCOPE (exact)
+
+tools/agent_fleet/test_capture_window.py   (the only code file touched)
+docs/evidence/agent_fleet/CAPTURE_FLAKE_TOLERANCE/  (evidence, *.txt only)
+
+capture_window.py is NOT touched: the capture contract, its decision
+order, its verdict vocabulary and every publish rule stay byte-identical.
+
+## THE MECHANISM (theory of the flake, stated before the run)
+
+The fixture window class is registered with CS_HREDRAW|CS_VREDRAW and a
+GRAY_BRUSH background. In step 2 of the flaky test, resize_client() moves
+the real window (SetWindowPos), which queues erase/paint work; the test
+then re-measures, repaint()s the deterministic pattern (a direct DC blit),
+and immediately calls verify_hwnd_capture -> PrintWindow. Under suite load
+the queued erase can land AFTER the blit (PrintWindow and GetClientRect
+can dispatch queued sent messages), so the captured surface is a half-
+erased (gray) or mid-state window and the content gate fails closed as
+occluded_or_foreign_content. Same fixture, same deterministic pattern, a
+moment later: the capture is exact. That is a transient window-state race,
+not a contract defect -- and the gate behaved CORRECTLY when it fired
+(fail-closed on content deviation is the contract working).
+
+## STATEMENT
+
+The flake is a transient-window-state race, not a contract defect; a
+bounded, evidence-retaining retry (with the failure retained on first
+attempt) makes the test deterministic WITHOUT weakening what it asserts.
+
+## PREDICTIONS (numbered, each falsifiable)
+
+P1 (baseline measurement, "measure first"): running the capture module in
+a documented bounded loop WHILE the fleet suite runs concurrently (the
+recorded suite-load context; the installed fixture-child orphan watchdog
+from fleet-evidence-hygiene-01 F2 addresses orphaned children, not
+paint/occlusion timing, so no material change to this race is expected
+from it -- the baseline measures exactly that) reproduces the recorded
+first-attempt failure mode: at least one run in which
+test_verify_hwnd_capture_none_pin_adopts_measured_size fails with
+occluded_or_foreign_content against an unobscured expectation, and the
+same run passes when re-driven. If the flake does not reproduce naturally
+within the documented loop bound, that null result is RETAINED and the
+transient-heal behavior is demonstrated instead by the deterministic
+synthetic falsifiers (P4) -- the packet explicitly allows "a documented
+bounded loop" as the reproduction context, and an honest null is evidence.
+
+P2 (post-change determinism): with the tolerance in place the module is
+green across >= 10 consecutive runs executed in the SAME suite-load
+context (capture module looped while the fleet suite runs; raw output
+retained as *.txt with provenance).
+
+P3 (assertion set unchanged): the diff removes no assertion and no
+assertion argument from the existing module; every existing
+test_... method keeps exactly its current assertions; the three
+verify_hwnd_capture calls of the flaky test are individually WRAPPED by
+the tolerance (retry wraps, never skips). Verifiable by diff inspection.
+
+P4 (the tolerance's own falsifiers, synthetic and deterministic, added
+alongside -- never replacing -- the existing tests):
+  (i)  scripted first attempt occluded_or_foreign_content, second attempt
+       unobscured, SAME arguments -> wrapper returns unobscured, the
+       returned record RETAINS the full first-attempt record, the verify
+       function was called EXACTLY twice (single retry), the repaint was
+       driven exactly once between attempts, and both attempts received
+       identical fixture parameters (same hwnd, same expected pattern,
+       same pinned size, same title).
+ (ii)  scripted ALWAYS-occluded (a REAL occlusion) -> the wrapper returns
+       the failed record with the first attempt retained and calls verify
+       EXACTLY twice (a real occlusion cannot be retried away), and the
+       ORIGINAL assertion shape
+       assertEqual(rec['verdict'], 'unobscured', rec)
+       still raises AssertionError on that record -- nothing is masked.
+(iii)  fixture parameters drift between attempts (client size changes) ->
+       the wrapper REFUSES to retry and raises AssertionError naming the
+       drift (retry only ever re-tests identical parameters).
+ (iv)  a first attempt that is NOT the recorded transient verdict (e.g.
+       window_destroyed) is returned immediately with NO retry (the
+       tolerance never papers over deterministic contract verdicts).
+  (v)  deadline exhausted before the retry -> no second attempt (the
+       tolerance is time-bounded).
+
+## FALSIFIERS (what would kill this deliverable)
+
+F-A: the retry masks a REAL occlusion -- i.e. the tolerance is not
+     time-bounded, or retries more than once, or retries against drifted
+     fixture parameters, or a persistent occlusion ends in anything other
+     than the original assertion failing with both records retained.
+F-B: any assertion removed or weakened anywhere in the module (checked by
+     diff: the assertion set is unchanged; retry wraps, never skips).
+F-C: failures not retained -- a healed transient whose first-attempt
+     record is discarded rather than carried on the returned record
+     (and surfaced in the evidence *.txt when one occurs naturally).
+D:   suite failures anywhere (the fleet suite must stay green).
+
+## IMPLEMENTATION SHAPE (bound on the run)
+
+A module-level helper verify_with_transient_tolerance(window,
+expected_pattern, pinned_size, title, ...) in test_capture_window.py:
+  - attempt 1: verify_hwnd_capture with the caller's exact arguments;
+  - returns immediately unless the verdict is the recorded transient
+    'occluded_or_foreign_content';
+  - on the transient: bounded by a module constant wall-clock deadline
+    (TRANSIENT_TOLERANCE_DEADLINE_S = 5.0 s) and a module constant single
+    retry (TRANSIENT_TOLERANCE_MAX_RETRIES = 1); drives window.repaint()
+    once (same fixture, same deterministic paint; NEVER recreates or
+    retunes the window); asserts identical fixture parameters between
+    attempts (hwnd unchanged, measured client size unchanged, title
+    unchanged, expected pattern sha unchanged) and raises AssertionError
+    on any drift; performs attempt 2 with identical arguments;
+  - attaches the FULL first-attempt record to the returned record
+    ('first_attempt') plus a 'transient_tolerance' provenance dict
+    (retries, deadline, deadline_respected) -- failures are retained,
+    never discarded;
+  - when a transient event occurs and the environment variable
+    CHIMERA_TRANSIENT_TOLERANCE_EVIDENCE names a directory, one JSON line
+    per event is APPENDED to transient_tolerance_events.txt there (the
+    verification harness sets it; unset -> no filesystem writes, the
+    suite stays hermetic).
+The flaky test's three verify_hwnd_capture calls are wrapped individually;
+their assertions are byte-identical to today's. New class
+TransientToleranceTests hosts the synthetic falsifiers P4(i)-(v) (pure
+logic, no Win32, injection-seamed verify/repaint/clock).
+
+## Method notes (binding on the run)
+
+- Baseline and verification load context: from the slot-10 worktree run
+  `python -m unittest discover -s tools/agent_fleet -p 'test_*.py' -v`
+  (the fleet suite) as a concurrent background process while the capture
+  module is run in a documented bounded loop
+  (`python tools/agent_fleet/test_capture_window.py` per iteration, the
+  recorded iteration count retained with the raw output). Every process
+  involved is self-created; no third-party window is touched.
+- Evidence: raw outputs verbatim under this directory as *.txt; a null
+  reproduction is recorded as faithfully as a hit; failures are retained,
+  never tolerated away. Commit trailer `Agent: subagent-worker-11` on
+  every commit; push no-force; PR against astra/gait-capture; submit_review
+  names the exact HEAD. Acceptance stays NOT_CLAIMED until lead review and
+  authorized integration.
