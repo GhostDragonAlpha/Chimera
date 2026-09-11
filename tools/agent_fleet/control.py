@@ -304,6 +304,7 @@ class Control:
             # (header-parsed by the service). Only its sha256 fingerprint
             # is stored; the secret never reaches state or events.
             inst=p.pop('_instance',None)
+            require(inst is None or isinstance(inst,dict),'invalid_instance_payload')
             instance_id=None
             if inst is not None:
                 require(actor in s['agents'],'instance_requires_agent_session')
@@ -380,6 +381,9 @@ class Control:
                 'instances':{}}
             out={'agent':aid,'session_token':secret,'qualified':False}
             inst=p.get('instance')
+            if inst is not None:
+                require(isinstance(inst,dict) and bool(inst.get('id')),
+                        'invalid_instance_payload')
             if isinstance(inst,dict) and inst.get('id'):
                 iid=inst.get('id');isecret=inst.get('secret')
                 require(isinstance(iid,str) and re.fullmatch('[A-Za-z0-9_-]{4,64}',iid),'invalid_instance_id')
@@ -437,6 +441,15 @@ class Control:
             return self._fail(s,p.get('agent'),p['reason'],p.get('evidence'))
         if op=='yield':
             require(actor in s['agents'],'agent_only')
+            # fleet-client-instance-01 gen-2 (review finding 1): a duplicated
+            # bearer must not evict a bound instance's claim. Yielding an
+            # instance-bound task requires that instance; unfenced legacy
+            # claims yield as before (audited legacy-unfenced).
+            instance_id=p.get('_resolved_instance')
+            for t in s['tasks'].values():
+                if t.get('owner')==actor and t.get('owner_instance') is not None \
+                        and t['state'] in ('RUNNING','BLOCKED','REVIEW'):
+                    require(instance_id==t['owner_instance'],'instance_not_bound')
             return self._fail(s,actor,'EXPLICIT_YIELD',text(p.get('checkpoint'),'preservation_checkpoint'))
         if op=='create_task':
             self._lead(s,actor,p.get('epoch'))

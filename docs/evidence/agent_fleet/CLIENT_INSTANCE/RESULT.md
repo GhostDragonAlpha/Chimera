@@ -34,3 +34,33 @@ not the task owner (test 7 pins the marker absence for supervisor events).
 Legacy claims drain naturally; `enforced` gates only NEW claims. The live
 deployment flips only after client migration, through a reviewed controlled
 transition (NOT_CLAIMED here).
+
+## Gen-2 correction (2026-09-11, review findings landed on-branch)
+
+Independent review of `dc582225` (APPROVE_WITH_FOLLOWUPS) findings and their
+dispositions — prereg history never rewritten:
+
+1. **MEDIUM (yield unfenced) — FIXED.** `yield` now requires the bound
+   instance for every instance-bound task it would evict
+   (`instance_not_bound`); the bound instance itself yields as before
+   (documented handoff path); legacy unfenced claims still yield (compat,
+   audited). Regression: `test_yield_requires_bound_instance` (twin refused;
+   bound yield lands in RECOVERY_HOLD; legacy yield unchanged).
+2. **LOW (prereg listed integration_request among gated ops) — DOCUMENTED.**
+   The implementation exempts it (lead-only integrator, declared in the dated
+   doc section); this note is the correction of record; the committed prereg
+   stays as written history.
+3. **LOW (enroll best-effort instance; minted id could exceed the 64-char
+   cap) — FIXED.** Malformed instance payloads now refuse by name
+   (`invalid_instance_payload`); the launcher caps the minted prefix (31
+   chars + 12 hex ≤ 64). Regression:
+   `test_enroll_rejects_malformed_instance_payload`.
+4. **TRIVIAL (non-dict `_instance` on the library path raised AttributeError)
+   — FIXED** with the same named refusal.
+5. **NOTE (recover leaves a stale `owner_instance` on a READY task) —
+   documented harmless:** no guard applies while READY and `claim` always
+   overwrites the binding; reviewer-verified.
+
+Gen-2 verification: instance suite 9/9 (7 + 2 new regressions); control
+regression 36/36; full fleet suite **196 tests, 0 failures, 1 Windows-symlink
+skip** (`RUN_FULL_SUITE_GEN2.txt`).

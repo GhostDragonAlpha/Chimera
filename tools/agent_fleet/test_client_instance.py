@@ -199,6 +199,38 @@ class ClientInstanceTests(unittest.TestCase):
         sup = [e for e in events if e.get('actor') == 'SUPERVISOR' and 'task' in e]
         self.assertTrue(all('instance' not in e for e in sup))
 
+    # --- 8. gen-2: yield is fenced on instance-bound tasks ----------------
+    def test_yield_requires_bound_instance(self):
+        tok, inst = self.enroll_instance_agent()
+        t = self.claim_probe(tok, instance=inst)
+        # duplicated bearer WITHOUT the instance secret cannot evict the claim
+        with self.assertRaisesRegex(Refusal, 'instance_not_bound'):
+            self.call('yield', tok, checkpoint='twin tries to evict the bound claim')
+        # the bound instance CAN yield (documented handoff path, audited)
+        self.call('yield', tok, _instance=inst,
+                  checkpoint='bound instance hands off with preservation')
+        snap = self.snap()
+        self.assertEqual(snap['tasks']['probe']['state'], 'RECOVERY_HOLD')
+        self.assertFalse(snap['agents']['wk']['alive'])
+        # legacy unfenced claims still yield without an instance (compat)
+        ltok, _ = self.enroll_instance_agent('legacy2', with_instance=False)
+        self.c.call('create_task', self.lead_tok, task='probe2', epoch=snap['epoch'],
+                    base=BASE, scopes=['tools/labs/probe2'], kind='worker',
+                    packet='statement / prediction / falsifier')
+        self.call('claim', ltok, task='probe2')
+        self.call('yield', ltok, checkpoint='legacy claim yields unfenced')
+        self.assertEqual(self.snap()['tasks']['probe2']['state'], 'RECOVERY_HOLD')
+
+    # --- 9. gen-2: malformed instance payloads refused by name ------------
+    def test_enroll_rejects_malformed_instance_payload(self):
+        for bad in ('a-string', 7, {}, {'secret': 'x' * 20}):
+            with self.assertRaisesRegex(Refusal, 'invalid_instance_payload|invalid_instance_id'):
+                self.c.call('enroll', 'enroll-secret',
+                            agent='bad%d' % id(bad), label='bad', instance=bad)
+        # library-path guard: non-dict _instance -> named refusal
+        with self.assertRaisesRegex(Refusal, 'invalid_instance_payload'):
+            self.c.call('snapshot', self.lead_tok, _instance='not-a-dict')
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

@@ -31,7 +31,8 @@ def main():
     # here, fingerprint stored by the controller, secret only in the
     # private session file (never printed, never logged).
     import secrets as _secrets
-    instance = {'id': a.agent + '-' + _secrets.token_hex(6),
+    _prefix = (a.agent + '-')[:31]  # controller cap: id <= 64 chars total
+    instance = {'id': _prefix + _secrets.token_hex(6),
                 'secret': _secrets.token_urlsafe(32)}
     body = json.dumps({'operation': 'enroll',
                        'arguments': {'agent': a.agent, 'label': a.label,
