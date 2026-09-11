@@ -296,3 +296,23 @@ named reasons verbatim; post-state assertions accompany every refusal.
    exact HEAD.
 
 Trailer: Agent: subagent-worker-11
+
+## AMENDMENT 1 (2026-09-11, BEFORE any implementation test ran; no row executed)
+
+Sign slip in the R1(c)/(d) predicted closed forms, found on re-derivation
+while writing the model: for loads F > 0 the k-d0 covariance is
+C_01 = -s^2*(sum F)/det(Gramian) < 0, so BOTH correlations are NEGATIVE.
+The committed closed forms omitted the minus sign and R1(d) read
+"rho_A > 0.999". Corrected predictions (magnitude thresholds unchanged in
+force; the original text above is retained verbatim, provenance):
+
+- (c) rho_B measured within 1e-9 (absolute) of -11/sqrt(202), and
+      -0.8 < rho_B < 0 (equivalently |rho_B| < 0.8);
+- (d) rho_A measured within 1e-9 (absolute) of -(201/10)/sqrt(20201/50),
+      and rho_A < -0.999 (equivalently |rho_A| > 0.999).
+
+No threshold is widened: the same magnitudes are asserted, now with the
+derived sign. This amendment is committed before the model, controls, or
+any check exist; nothing had been executed when it was written.
+
+Trailer: Agent: subagent-worker-11
