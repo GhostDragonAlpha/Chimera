@@ -2628,3 +2628,65 @@ dyad-resident-identity-01 gen 5 slot 4); lead claimed
   one evidenced transition.
 - `dyad-resident-identity-01` fresh re-verification in flight (slot 4); PR
   links appended to the controller review records on submission.
+
+### Fleet maintenance — 2026-09-11, third wave (glm53-lead-02, epoch 5)
+
+Dated append; live authority remains the controller snapshot. Wave-3
+integrations into `astra/gait-capture`, each through independent adversarial
+review with pinned-head merge and preserving slot release:
+
+- **PR #56** `fleet-client-instance-01` — task-centric client-instance
+  fence with staged migration (launcher-minted instance identity,
+  fingerprint-only storage, `X-Chimera-Instance` transport, `owner_instance`
+  claim binding, named refusals, explicit `legacy-unfenced` audit marker,
+  supervisor `instance_fencing_set` compat→enforced). Review found the
+  unfenced-`yield` gap; corrections landed on-branch at gen 2 (tests proven
+  to fail pre-fix). The last major open fleet item from the 2026-09-11
+  status amendment is closed. Deployment of the changed controller source
+  rides the next controlled transition.
+- **PR #57** `fleet-review-followups-02` — the four recorded LOW/TRIVIAL
+  followups (memory-dc named refusal; pinned_size semantics documented with
+  contrast control; transport MEASUREMENT reproducing one-liner appended
+  with digests reproduced exactly by the reviewer; warning-free test
+  helper). Reviewer root-caused the path/HEAD-bound reproducibility.
+- **PR #58** `engine-vulkan-cleanup-02` — explicit Vulkan resource
+  ownership: the reviewer traced the full create→destroy map; baseline
+  retained 10× `VUID-vkDestroyDevice-device-05137`, repair shows ZERO
+  validation errors across the preregistered cases V0–V4 (twice), frozen
+  B2 membrane gate 21 PASS fixture-identical. Gen-2 evidence completion
+  (cited empty B2 stderr force-added past the `*.log` ignore).
+  **Engine-lane link owed by agreement:** canonical record
+  `docs/evidence/vulkan_resource_lifetime/`; contract
+  `docs/THE_VULKAN_RESOURCE_LIFETIME.md`. Followups recorded: freeze the
+  runner before the baseline run in future lanes. This integration unblocks
+  `engine-feature-resource-lifetime-01` (its dependency).
+- **PR #59** `fleet-orient-continuation-02` — fresh-system re-verification
+  of the orientation continuation routing (zero source edits; every claim
+  reproduced by the reviewer including the honest-negative provenance
+  re-proven at base; gen-2 completion: the four cited RAW logs force-added
+  past the `*.log` ignore — second occurrence of that ignore trap this
+  wave; see the followup ledger).
+
+Dispositions this wave: `fleet-orient-continuation-01` CLOSED via the
+authorized yield–recover handoff (worker-01's session ended by design;
+full read-only prep preserved in the recovery checkpoint; successor `-02`
+integrated as PR #59). `engine-vulkan-cleanup-01` SUPERSEDED by `-02` —
+unclaimable by construction (its Master-list scope made the claim lead-only
+while the lead holds no engine capabilities); the `-02` realization carries
+identical theory with the Master link appended here by the lead.
+
+**Controller gaps recorded (candidate `fleet-task-abandon-01`):** (1) no op
+retires a stale READY task (dispositions live in these amendments);
+(2) no supervisor op retires an unprovisionable RUNNING claim without
+revoking the owning agent's session (the yield–recover path works but costs
+the session — acceptable for ended host subagents, wrong for persistent
+ones). **Followup ledger:** `5cfa9382` leaked capture-fixture child (job
+object / watchdog candidate), `ec6bcff3` multi-instance yield deadlock
+note, `97b871b5` remnants (path/HEAD-bound reproducibility wording;
+pre-existing invalid-JSON escape in the TRANSPORT MEASUREMENT), the
+`*.log`-ignore force-add trap (twice this wave — candidate: a pre-commit
+warning when cited evidence files remain untracked-ignored).
+
+Catalogue pins re-measured to the builder output at this amended head (same
+PR; perturbation control retained in
+`docs/evidence/agent_fleet/MAINTENANCE_AMENDMENT_01/`).
