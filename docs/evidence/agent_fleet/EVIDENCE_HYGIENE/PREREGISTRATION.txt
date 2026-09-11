@@ -1,0 +1,115 @@
+PREREGISTRATION -- fleet-evidence-hygiene-01 (wave 4)
+======================================================
+
+Worker: subagent-worker-05 (instance-protocol enrollment,
+instance id subagent-worker-05-f317492bfc32 -- first instance-fenced
+agent in the fleet; claim event seq 670 carries this instance id).
+Base: 5199d9c3015f6840b12186f34c3e0c2fd5d7b0a4 (wave-3 close tip).
+Slot: 4 (E:\ChimeraWork\slot-04), branch astra/tasks/fleet-evidence-hygiene-01.
+Written BEFORE any implementation or test code. Refined verbatim from the
+controller task packet (create_task rev 658, epoch 5, lead glm53-lead-02).
+
+Two twice-hit evidence-hygiene defects from wave 3, closed as the two
+smallest coherent corrections.
+
+
+F1 -- the *.log evidence trap (hit twice in wave 3: orient + engine lanes)
+-------------------------------------------------------------------------
+A worker cites RAW .log run outputs next to committed evidence; the
+repo-wide `*.log` gitignore rule (E:\PythonChimera\.gitignore line 13,
+`*.log`) silently excludes those files from the commit. The evidence
+commit lands; the cited raw output never existed in history.
+
+REPO HOOK CONVENTION (inspected before writing code, per packet):
+  * .git/hooks/pre-commit is HOST-level (pi-shazam auto-installs and
+    rewrites it; it also skips every non-main branch, so it never runs on
+    astra/* task branches).
+  * A REPO-LEVEL hook mechanism EXISTS and is enabled:
+    `core.hooksPath = .githooks`, tracked at .githooks/pre-commit and
+    .githooks/commit-msg. .githooks/pre-commit is the canonical wiring
+    point: each gate is an existence-guarded stanza (a missing optional
+    gate must not block every commit) delegating to a python script run
+    from the repo root (e.g. `python -m core.bind_guard --staged`,
+    `python tools/doc_lint.py --staged`), with a WHY comment.
+  * Therefore the guard ships as: script `tools/agent_fleet/
+    evidence_log_guard.py` (mode `--staged`, repo convention) + a
+    warn-only stanza appended to .githooks/pre-commit. NO new hook
+    infrastructure is invented; nothing existing is weakened, removed,
+    or bypassed (the shazam delegation and every existing gate stanza
+    stays byte-for-byte intact).
+
+STATEMENT F1: A repository-committed pre-commit guard WARNS (never
+blocks) when a commit stages added files under docs/evidence/ while
+ignored-and-untracked *.log files sit in the same directory -- the trap
+signature. Specifically: warn when any staged add under docs/evidence/
+coexists with ignored *.log files in the same directory.
+
+PREDICTION F1: A deterministic test suite drives the guard script in a
+throwaway git repo and observes:
+  (i)  TRAP CASE -- staged evidence under docs/evidence/ plus an
+       ignored-and-untracked sibling *.log in the same directory: the
+       guard prints a named warning naming the .log file(s) and exits 0
+       (warn, never block);
+  (ii) CLEAN CASES -- (a) staged evidence, no *.log anywhere; (b) staged
+       evidence with an ignored *.log OUTSIDE docs/evidence/; (c) an
+       ignored *.log inside docs/evidence/ but nothing staged under
+       docs/evidence/; (d) a force-added (tracked) *.log staged beside
+       evidence: each is SILENT (no warning on stdout) with exit 0;
+  (iii) HOOK WIRING -- .githooks/pre-commit still contains every
+       pre-existing gate stanza (bind_guard, objective_lint,
+       library_guard, saturation, perf-guard, doc-guard PLAN wipe guard,
+       doc_lint, shazam delegation) unchanged, and the added
+       evidence-log-guard stanza is warn-only: it cannot set the hook's
+       fail flag.
+
+FALSIFIER F1: the trap case passes silently; any clean case warns; the
+guard blocks (nonzero exit on the warn path) where warning was
+specified; any existing gate or hook stanza weakened, removed, or
+bypassed.
+
+
+F2 -- the leaked fixture child (controller feedback 5cfa9382)
+-------------------------------------------------------------
+The capture suite's foreign-process fixture (a CHILD PYTHON PROCESS of
+the test interpreter that creates a ChimeraFixture-class window and
+pumps messages via GetMessageW) survived its parent test process and
+held a directory busy (the inherited cwd). Parent-side cleanup
+(addCleanup + in-parent Timer) dies with the parent; nothing in the
+CHILD knows the parent is gone.
+
+STATEMENT F2: The fixture child installs a parent watchdog -- poll the
+parent process liveness at its message-pump cadence (OpenProcess with
+SYNCHRONIZE + WaitForSingleObject loop, cadence
+DEFAULT_WATCHDOG_CADENCE_S = 0.25 s) and exit the whole child process
+when the parent is gone (fail-closed: an unopenable parent handle also
+counts as orphaned) -- so no self-created fixture child can outlive its
+test run. The watchdog lives in tools/agent_fleet/capture_window.py
+(`install_parent_watchdog`), is passed the target pid via environment
+variable CHIMERA_FIXTURE_PARENT_PID (default: os.getppid()), and the
+suite's child fixture code calls it before entering the message pump.
+
+PREDICTION F2: A deterministic test spawns a sacrificial parent python
+process, spawns the REAL fixture child watching it, and observes:
+  (i)  the child keeps running (still pumping) while the parent lives --
+       normal fixture behavior unchanged (watchdog must NOT fire on a
+       live parent);
+  (ii) after the parent is killed, the child exits on its own with code 0
+       within the guard window (test bound: 30 s; expected ~1 s);
+  (iii) the existing capture contract suite (predictions a-g, a2-f2 of
+       window-capture-ownership-01/02) stays green, and the full fleet
+       suite passes (normal fixture behavior unchanged).
+
+FALSIFIER F2: an orphaned fixture child surviving the guard window in
+the test; the watchdog firing on a live parent; existing capture
+behavior or the verdict vocabulary changed; any capture or fleet suite
+test regressing.
+
+
+Method
+------
+Preregistration (this commit) -> implementation -> deterministic tests
+-> raw outputs as *.txt under this directory (RAW_CAPTURE_SUITE.txt,
+RAW_FLEET_SUITE.txt, RAW_GUARD_TEST.txt) -> RESULT.txt -> single
+implementation+evidence history, trailer `Agent: subagent-worker-05`,
+PR base astra/gait-capture. All fixture processes are self-created and
+cleaned in teardown; CPU/GDI only; no engine/GPU/controller resources.
