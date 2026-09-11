@@ -6,3 +6,11 @@
 *.png binary
 *.jar binary
 *.exe binary
+
+# evidence-forensics-byte-stability-01 (PR #73 review LOW-1; PR #69 gen-2 HIGH root):
+# sha-recorded evidence must be checkout-invariant. Last match wins over * text=auto:
+# no eol/encoding conversion either way, so checkout bytes == committed bytes and
+# recorded sha256s verify on every platform. Enumerated classes (all under docs/evidence/**):
+# capture sidecars, MANIFEST_sha256.txt manifests, DYAD request specs/responses,
+# unblinding maps, raw consoles recording payload hashes, run records.
+docs/evidence/** -text
