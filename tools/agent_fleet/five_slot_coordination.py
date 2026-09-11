@@ -43,6 +43,56 @@ MEMORY_BUDGET = 16384
 SCOPE_DIR = 'docs/evidence/agent_fleet/FIVE-CLIENT-COORDINATION'
 SCENARIOS = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9']
 
+# stale-smoke-autospawn-01: DRIFT-CATCHABLE HOOK. This driver is not
+# test-imported (the unittest suite never executes it), so its scenario
+# expectations can drift from the controller -- as happened when the capacity
+# scenario kept pinning the superseded no_free_slot refusal after the
+# slot-expansion fix deployed. The module imports with zero side effects
+# (everything runs from main()), so any runner -- and main() itself -- can
+# execute the loader-visible check below and refuse stale pins.
+EXPECTED_SIXTH_AUTO_SPAWN = True
+
+
+def test_scenario_pins_are_current():
+    """Drift-catchable self-check, loader-visible for guarded import.
+
+    Asserts the scenario source still expects the auto-spawn semantics
+    (test_control.py test_five_slots_then_auto_spawn_on_sixth) and never
+    re-pins the superseded no_free_slot refusal. Raises AssertionError on
+    drift; returns a machine-readable detail dict otherwise. unittest can
+    bind this directly: TestCase(lambda: test_scenario_pins_are_current()).
+    """
+    import re
+    import unittest
+    src = Path(__file__).read_text(encoding='utf-8')
+    # Built by concatenation so this hook's own source never contains the
+    # stale marker it greps for. The grep targets the capacity SCENARIO's
+    # source only (prose elsewhere may name the refusal historically).
+    stale_marker = 'no_free_' + 'slot'
+    m = re.search(r"    def s1_capacity\(self\):.*?(?=\n    def )", src, re.S)
+    scenario_src = m.group(0) if m else ''
+
+    def _case():
+        assert EXPECTED_SIXTH_AUTO_SPAWN, \
+            'scenario regressed to the pre-fix refusal pin'
+        assert scenario_src, 'capacity scenario not found in the driver source'
+        assert stale_marker not in scenario_src, \
+            'stale refusal pin re-appeared inside s1_capacity'
+        assert 'auto-spawn' in scenario_src, \
+            'auto-spawn expectation missing from the capacity scenario'
+        assert 'test_five_slots_then_auto_spawn_on_sixth' in src, \
+            'semantics anchor to the controller test suite missing'
+
+    case = unittest.FunctionTestCase(_case)
+    result = unittest.TestResult()
+    case.run(result)
+    if result.failures or result.errors:
+        detail = (result.failures + result.errors)[0][1]
+        raise AssertionError('scenario pins are STALE: %s' % detail)
+    return {'expected_sixth_auto_spawn': True,
+            'source': str(Path(__file__)),
+            'scenarios': list(SCENARIOS)}
+
 
 def free_port():
     s = socket.socket()
@@ -155,17 +205,28 @@ class Driver:
                   scopes=[SCOPE_DIR + '/coord-sixth'],
                   capabilities=['cpu'], packet='sixth task')
         before = self.snap()
-        try:
-            self.call('a2', 'claim', task='coord-sixth')
-            return False, 'sixth claim accepted'
-        except ValueError as e:
-            err = str(e)
-            after = self.snap()
-            ok = ('no_free_slot' in err
-                  and after['tasks']['coord-sixth']['state'] == 'READY'
-                  and after['tasks']['coord-sixth']['owner'] is None
-                  and after['revision'] == before['revision'])
-            return ok, 'sixth claim refused (no_free_slot), registry unmutated'
+        # stale-smoke-autospawn-01: the sixth claim AUTO-SPAWNS a fresh worker
+        # slot above the registry high-water (the pre-fix refusal pin is
+        # superseded by the slot-expansion fuse; semantics anchor:
+        # test_control.py test_five_slots_then_auto_spawn_on_sixth).
+        high_water = max(int(k) for k in before['slots'] if str(k).isdigit())
+        claim = self.call('a2', 'claim', task='coord-sixth')
+        after = self.snap()
+        new_slot = str(claim['slot'])
+        task = after['tasks']['coord-sixth']
+        ok = (new_slot not in before['slots']
+              and int(new_slot) > high_water
+              and task['state'] == 'RUNNING'
+              and task['owner'] == 'a2'
+              and task['generation'] == 1
+              and str(task['slot']) == new_slot
+              and after['slots'][new_slot]['task'] == 'coord-sixth'
+              and after['revision'] > before['revision']
+              and sum(1 for s in after['slots'].values()
+                      if s['task'] is not None) == 6)
+        return ok, ('sixth claim auto-spawned slot %s above high-water %d; '
+                    'coord-sixth RUNNING owned by a2 at generation 1; six '
+                    'slots bound' % (new_slot, high_water))
 
     def s2_fifo_contention(self):
         self.call(self.tasks['coord-1'], 'resource_request', task='coord-1',
@@ -380,6 +441,12 @@ def main(argv=None):
     ap.add_argument('--out', default=None)
     ap.add_argument('--keep', action='store_true')
     a = ap.parse_args(argv)
+    try:
+        pins = test_scenario_pins_are_current()
+        print('[pins] scenario pins current: %s' % json.dumps(pins), flush=True)
+    except AssertionError as e:
+        print('REFUSING TO RUN: %s' % e, file=sys.stderr)
+        return 3
     if a.out is None:
         a.out = Path(__file__).resolve().parents[2] / 'docs' / 'evidence' / \
             'agent_fleet' / 'FIVE-CLIENT-COORDINATION' / \
