@@ -66,8 +66,14 @@ explicitly authorized task. Do not create a competing local registry.
    A rejected claim is not permission to take files anyway.
 4. Store the returned task ID, generation, worktree and branch as one context.
    Verify actual Git identity before writes. Claim metadata does not provision
-   a folder or make an old dirty slot safe. Ask the supervisor to reconcile a
-   mismatch and continue other valid owned work.
+   a folder or make an old dirty slot safe. On a slot/provision mismatch — the
+   claim is refused with `stale_provision_requires_recovery`, or the returned
+   worktree does not match your claim — STOP writing to that slot. The
+   documented recovery is the supervisor's `slot_rebind` operation (see
+   THE_AGENT_FLEET.md's 2026-09-11 section); record the refusal in your
+   evidence and continue your other owned work while the supervisor reconciles.
+   You do not need Alan or the lead to relay commands: the supervisor acts on
+   its own session, and your next claim or snapshot picks up the result.
 5. On parallel tasks, use an explicit workdir and `git -C` for every command;
    never rely on the last task's current directory. Separate evidence streams.
 6. Build and test that slot's own engine. Use its returned build/runtime plan,

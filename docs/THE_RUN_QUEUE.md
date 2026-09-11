@@ -6,6 +6,15 @@ The live SQLite controller is the durable task authority. `run_queue.py` is an
 in-memory reference only. Earlier descriptions calling that module durable, or
 describing the claim-printing poller as a coding worker, were incorrect.
 
+Dated note (2026-09-11, fleet-docs-operating-model-01): the durable in-registry
+lifecycle — READY → RUNNING → (BLOCKED) → REVIEW → INTEGRATED, with
+RECOVERY_HOLD, resource reservations and the detached review-slot handoff — IS
+the production path. `run_queue.py` is a pure in-memory reference model of those
+transitions, useful for tests and reasoning; it is NOT a second scheduler and
+grants no authority. The only scheduling authority is the deployed controller
+(source `d012b4b1`); `run_queue_worker.py` is its authenticated claim loop, and
+it defers slot/provision mismatches to supervisor `slot_rebind`.
+
 The execution correction requires an explicit executor profile before enrollment
 or a continuous claiming loop. The profile contains an `argv` array whose first
 entry is an absolute executable path. The child receives a JSON task envelope
