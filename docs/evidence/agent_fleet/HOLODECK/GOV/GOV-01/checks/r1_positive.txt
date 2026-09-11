@@ -1,0 +1,10 @@
+R1 POSITIVE CONTROLS (model must ACCEPT) — threshold 6/6
+
+(a) legal claim: OK {'state': 'RUNNING', 'owner': 'alice', 'generation': 1, 'owner_instance': None, 'scopes': ['docs/evidence/x'], 'capabilities': {'cpu'}, 'dependencies': [], 'kind': 'worker', 'slot': '1', 'checkpoint': None, 'data': {}}
+(b) scope-disjoint second claim: OK {'state': 'RUNNING', 'owner': 'bob', 'generation': 1, 'owner_instance': None, 'scopes': ['docs/evidence/y'], 'capabilities': {'cpu'}, 'dependencies': [], 'kind': 'worker', 'slot': '2', 'checkpoint': None, 'data': {}}
+(c) mutate with exact generation: OK {'state': 'RUNNING', 'owner': 'alice', 'generation': 1, 'owner_instance': None, 'scopes': ['docs/evidence/x'], 'capabilities': {'cpu'}, 'dependencies': [], 'kind': 'worker', 'slot': '1', 'checkpoint': 'mutated@3', 'data': {'k': 'v'}}
+(d) post-reload legal mutate (gen 1): OK 
+(e) capacity boundary claim (2 of max_tasks=2): OK {'state': 'RUNNING', 'owner': 'alice', 'generation': 1, 'owner_instance': None, 'scopes': ['docs/evidence/z'], 'capabilities': {'cpu'}, 'dependencies': [], 'kind': 'worker', 'slot': '3', 'checkpoint': None, 'data': {}}
+(f) a/b vs a/bc disjoint (prefix semantics, not string prefix): claim p (OK, {'state': 'RUNNING', 'owner': 'alice', 'generation': 1, 'owner_instance': None, 'scopes': ['docs/w/a/b'], 'capabilities': {'cpu'}, 'dependencies': [], 'kind': 'worker', 'slot': '1', 'checkpoint': None, 'data': {}}); claim q (OK, {'state': 'RUNNING', 'owner': 'bob', 'generation': 1, 'owner_instance': None, 'scopes': ['docs/w/a/bc'], 'capabilities': {'cpu'}, 'dependencies': [], 'kind': 'worker', 'slot': '2', 'checkpoint': None, 'data': {}})
+
+R1 verdict: HOLDS (6/6)
