@@ -1,0 +1,47 @@
+R4 -- CARD PREDICTION (each admitted law names its domain, independent oracle and limitations) + versioning
+==============================================================================
+threshold: 6x5=30 field rows + 6 versioning rows = 36/36
+
+R4 -- card prediction ('each admitted law names its domain, independent oracle and limitations') + versioned assumptions + supersede + monotone decisions.
+[PASS] kinetic-energy names its domain
+[PASS] kinetic-energy names its oracle
+[PASS] kinetic-energy names its limitations
+[PASS] kinetic-energy names its falsifier
+[PASS] kinetic-energy carries constants each with an origin
+[PASS] damped-contact-force names its domain
+[PASS] damped-contact-force names its oracle
+[PASS] damped-contact-force names its limitations
+[PASS] damped-contact-force names its falsifier
+[PASS] damped-contact-force carries constants each with an origin
+[PASS] radiant-flux-area names its domain
+[PASS] radiant-flux-area names its oracle
+[PASS] radiant-flux-area names its limitations
+[PASS] radiant-flux-area names its falsifier
+[PASS] radiant-flux-area carries constants each with an origin
+[PASS] wall-pressure-balance names its domain
+[PASS] wall-pressure-balance names its oracle
+[PASS] wall-pressure-balance names its limitations
+[PASS] wall-pressure-balance names its falsifier
+[PASS] wall-pressure-balance carries constants each with an origin
+[PASS] segment-domain-scale names its domain
+[PASS] segment-domain-scale names its oracle
+[PASS] segment-domain-scale names its limitations
+[PASS] segment-domain-scale names its falsifier
+[PASS] segment-domain-scale carries constants each with an origin
+[PASS] restitution-ratio names its domain
+[PASS] restitution-ratio names its oracle
+[PASS] restitution-ratio names its limitations
+[PASS] restitution-ratio names its falsifier
+[PASS] restitution-ratio carries constants each with an origin
+[PASS] amend bumps the version v1 -> v2
+[PASS] the v1 assumption text is preserved verbatim after the amend
+        assumptions=['v1: initial statement', 'v2: rotational correction deferred to the rigid-body assumption record']
+[PASS] supersede marks the old law SUPERSEDED and still readable
+[PASS] the old law records its successor and the successor is ACTIVE
+[PASS] decision citing the superseded law refused, ledger unchanged
+        refusal: 'REFUSED: law_superseded'
+[PASS] decision numbering is monotone (next = highest + 1)
+        numbers=[1, 2]
+
+RESULT: 36 passed, 0 failed (threshold HOLDS)
+falsifier status: NOT TRIGGERED for this row
