@@ -1,0 +1,102 @@
+{
+ "environment": {
+  "machine": "windows-fleet-host",
+  "windows_version": "10.0.26200",
+  "python": "3.14.3",
+  "pid_of_measurement_process": 64712
+ },
+ "a2_unobscured_distinct_content": {
+  "pinned_client": [
+   120,
+   70
+  ],
+  "red_record": {
+   "verdict": "unobscured",
+   "publishable": true,
+   "pid": 64712,
+   "owns_process": true,
+   "window_class": "ChimeraFixture_bb24222e0e",
+   "class_owned": true,
+   "capture_sha256": "5fcbf650b882c9f57ef053f7444977a15abae20f916c0f66e8a7f24dd61a4800"
+  },
+  "blue_record": {
+   "verdict": "unobscured",
+   "publishable": true,
+   "capture_sha256": "da076b0e3ed4ed32e26b23925ad3c33e2231c058ffc950d4b7ee906f02daf6d6"
+  },
+  "sha_distinct": true,
+  "capture_equals_expected_full_matrix": true
+ },
+ "b_overlap_window_specific": {
+  "overlap_present": true,
+  "record_verdict": "unobscured",
+  "capture_sha_equal_expected": true
+ },
+ "b2_cross_window_content_mismatch": {
+  "expected_pattern_source": "red fixture pattern",
+  "captured_window": "blue fixture",
+  "verdict": "occluded_or_foreign_content",
+  "publishable": false
+ },
+ "c_resize_fail_closed": {
+  "verdict": "window_resized",
+  "publishable": false,
+  "client_size": [
+   200,
+   110
+  ],
+  "pinned_size": [
+   120,
+   70
+  ]
+ },
+ "d_destroyed_and_stale": {
+  "verify_verdict": "window_destroyed",
+  "publishable": false,
+  "stale_capture_rows": null,
+  "stale_capture_reason": "stale_or_invalid_handle"
+ },
+ "e2_foreign_process_child_fixture": {
+  "child_hwnd": 6557040,
+  "child_pinned_client": [
+   120,
+   64
+  ],
+  "child_pid": 56876,
+  "capturing_pid": 64712,
+  "pid_differs": true,
+  "window_class": "ChimeraFixture_fbc0873a2b",
+  "class_owned": true,
+  "visible": true,
+  "content_known_and_matching": [
+   true,
+   null
+  ],
+  "verdict": "foreign_process",
+  "publishable": false
+ },
+ "f2_nonclient_exclusion": {
+  "pinned_client": [
+   120,
+   90
+  ],
+  "outer_rect": [
+   40,
+   40,
+   176,
+   169
+  ],
+  "outer_size": [
+   136,
+   129
+  ],
+  "captured_matrix_shape": [
+   90,
+   120
+  ]
+ },
+ "g_evidence_and_refusals": {
+  "evidence_overwrite_refused": true,
+  "bytes_identical_after_refusal": true
+ }
+}
