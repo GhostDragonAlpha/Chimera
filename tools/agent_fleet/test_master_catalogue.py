@@ -291,7 +291,7 @@ class CatalogueTests(unittest.TestCase):
                             encoding='utf-8'))
         self.assertEqual(validate_payload(built), [])
 
-    def test_new_prefix_and_new_section_controls(self):
+    def test_new_section_requirement_row_and_prose_mention_unresolved_visible(self):
         # A brand-new kebab-case task ID in a brand-new section, in both the
         # discovered-requirements row shape and plain prose, must be captured
         # (no silent omission on future Master edits). A first cell outside
