@@ -244,6 +244,13 @@ private:
     std::vector<StudioJoint> joints_;           // the engine's per-frame push
     int   joints_owner_ui_ = 0;                 // 0 show, 1 edit (display only)
     int   joints_sel_ui_ = -1;                  // the engine's selected (gizmo+paint) joint
+    // product-hud-truth-01: WHICH joints the edit/script path actually drove.
+    // Derived (never pushed): while owner==1 the show sweep cannot write thetas
+    // (engine.cpp's edit branch is exclusive of the show branch), so any theta
+    // change in the pushed view comes from a programmatic pose driver. Bit k =
+    // joint k. Cleared when the show reclaims the pose and on each new claim.
+    uint32_t joints_edit_mask_ui_ = 0;
+    double  clk_edit_t0_ = 0.0;                 // the engine clock at the claim (age origin)
     std::vector<std::array<float, 4>> slider_tracks_;   // row i's track rect (prepare-owned)
     int   drag_joint_ = -1;                     // drag_kind_ 7: which slider is grabbed
     float slider_theta_at(int row, int x) const;        // linear map track-x -> theta (ROM-clamped)
@@ -333,9 +340,29 @@ public:
     std::function<void(int, float)>  cb_joint_theta_;
 
     // C1: the engine's per-frame pushes (render thread; the UI draws, never owns)
+    // product-hud-truth-01: this push is also where the edit-driven set is
+    // derived — the same view that feeds the row (thetas ARE st+7, the buffer
+    // the pose kernel read this frame). While owner==1 any theta change is a
+    // programmatic drive (the sweep branch cannot run); a joint whose theta
+    // moved IS a joint the demo/script is driving. The readouts follow it.
     void set_joints_view(const std::vector<StudioJoint>& j, int owner, int selected) {
+        if (owner == 1) {
+            if (joints_owner_ui_ != 1) {            // 0->1: a fresh claim episode
+                joints_edit_mask_ui_ = 0;
+                clk_edit_t0_ = clk_t_;              // age origin on the ENGINE's clock
+            }
+            for (size_t k = 0; k < j.size() && k < 32; ++k) {
+                const float prev = (k < joints_.size()) ? joints_[k].theta : j[k].theta;
+                if (std::fabs(j[k].theta - prev) > 1e-4f)
+                    joints_edit_mask_ui_ |= (1u << k);
+            }
+        } else {
+            joints_edit_mask_ui_ = 0;               // the show owns the pose again
+            if (joints_owner_ui_ == 1) clk_edit_t0_ = 0.0;
+        }
         joints_ = j; joints_owner_ui_ = owner; joints_sel_ui_ = selected;
     }
+    uint32_t joints_edit_mask_ui() const { return joints_edit_mask_ui_; }
     void set_gizmo(bool vis, float x0, float y0, float x1, float y1, const std::string& label) {
         gizmo_vis_ = vis; gizmo_[0] = x0; gizmo_[1] = y0; gizmo_[2] = x1; gizmo_[3] = y1;
         gizmo_label_ = label;
