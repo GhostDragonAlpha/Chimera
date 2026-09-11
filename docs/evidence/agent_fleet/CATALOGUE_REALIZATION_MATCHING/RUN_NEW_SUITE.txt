@@ -1,0 +1,12 @@
+test_create_task_carries_realized_from (tools.agent_fleet.test_catalogue_realization.CatalogueRealizationTests.test_create_task_carries_realized_from) ... ok
+test_legacy_exact_id_realization_still_satisfies (tools.agent_fleet.test_catalogue_realization.CatalogueRealizationTests.test_legacy_exact_id_realization_still_satisfies) ... ok
+test_old_era_no_provenance_resolves_exactly_as_before (tools.agent_fleet.test_catalogue_realization.CatalogueRealizationTests.test_old_era_no_provenance_resolves_exactly_as_before) ... ok
+test_s1_integrated_root_offers_dependents (tools.agent_fleet.test_catalogue_realization.CatalogueRealizationTests.test_s1_integrated_root_offers_dependents) ... ok
+test_s2_active_realizations_narrow_frontier (tools.agent_fleet.test_catalogue_realization.CatalogueRealizationTests.test_s2_active_realizations_narrow_frontier) ... ok
+test_s3_abandonment_reproposes_card_and_blocks_dependents (tools.agent_fleet.test_catalogue_realization.CatalogueRealizationTests.test_s3_abandonment_reproposes_card_and_blocks_dependents) ... ok
+test_unknown_digest_and_status_gate_and_pure_read (tools.agent_fleet.test_catalogue_realization.CatalogueRealizationTests.test_unknown_digest_and_status_gate_and_pure_read) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 2.116s
+
+OK

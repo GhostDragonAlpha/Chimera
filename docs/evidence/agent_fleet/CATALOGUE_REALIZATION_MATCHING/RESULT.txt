@@ -1,0 +1,97 @@
+RESULT - fleet-catalogue-realization-matching-01
+=================================================
+
+Agent: subagent-worker-04. Slot 3, worktree E:\ChimeraWork\slot-03,
+branch astra/tasks/fleet-catalogue-realization-matching-01. Claimed at
+base e004c33228b6f28516715e21914f66e632a2702b, reconciled (fast-forward,
+no local commits) to the claim-time origin tip d8e3b5f54ce95e0f9690a73c
+381bc5ef20d76f8b - the PR #80 merge, this lane's predecessor fix.
+Fixes the production gap measured by holodeck-gov-06 (PR #84, in review;
+finding retained in its checks/r7_intended_vs_deployed.txt).
+
+VERDICT: fix SHIPPED GREEN; every prediction holds; no falsifier fired.
+
+THE FIX (tools/agent_fleet/control.py, +26/-3; test file is the
+instrument):
+  1. catalogue_next computes two PROVENANCE sets alongside the legacy id
+     sets: live_cards (tasks CITING a card via realized_from in any
+     non-ABANDONED state) and done_cards (citing task INTEGRATED). A card
+     is excluded when its casefold id matches by id OR provenance; a
+     dependency is satisfied by id OR provenance. ABANDONED citations
+     satisfy nothing and re-propose the card (fleet-task-abandon-01
+     semantics preserved). The original id matching remains verbatim as
+     the fallback for tasks created without realized_from.
+  2. create_task carries an optional realized_from provenance string
+     (validated: absent or non-empty string -> else
+     invalid_realized_from).
+  3. Additive migration: existing registries setdefault realized_from
+     None on every task (same pattern as owner_instance, control.py:323).
+
+SCOREBOARD
+  P1 gov-06 oracle fixtures resolve per the intended model ... HOLD
+     S1 holodeck-gov-01 INTEGRATED ->
+        [GOV-02, GOV-03, GOV-04, GOV-05, GOV-06, MATH-01]
+     S2 + holodeck-gov-02..06 live (mixed active states) -> [MATH-01]
+     S3 READY citation blocks re-proposal; task_abandon -> ABANDONED
+        re-proposes [GOV-01] and dependents stay blocked
+  P2 old-era fallback byte-identical ........................... HOLD
+     the two fallback baselines (no-provenance realization; legacy
+     exact-id realization) pass with IDENTICAL expectations at BOTH
+     heads (green in PRE_FIX_FAILURES.txt at base and in
+     RUN_NEW_SUITE.txt at the fix) - a zero-realized_from registry
+     cannot change behavior: the added sets are empty by construction.
+  P3 create_task carries realized_from ......................... HOLD
+  P4 gates not loosened ........................................ HOLD
+     test_master_catalogue 23/23 unchanged (stale/duplicate/invalid/
+     lead gates, coverage, events); catalogue_next still a pure read;
+     unknown digest still refuses; SUPERSEDED cards still never offered.
+  P5 fail-pre-fix then green ................................... HOLD
+     PRE_FIX_FAILURES.txt: final instrument at base = 3 FAIL + 1 ERROR
+     (S1/S2 frontier stuck at [GOV-01]; S3 active-citation + abandonment;
+     P3 KeyError), fallback baselines + gates green at base.
+     RUN_NEW_SUITE.txt: 7/7 OK at the fixed head.
+     RUN_MASTER_CATALOGUE.txt: 23/23 OK.
+     RUN_FULL_SUITE.txt: 257 tests, OK (skipped=1) - NO flakes this run.
+
+FALSIFIER LEDGER
+  F-1 any scenario disagreeing with gov06_reference_model.py ... did not
+      fire (S1/S2/S3 resolve exactly per the model's retained outputs)
+  F-2 any old-resolution regression ............................ did not
+      fire (dual-head identical baselines; additive-only code path)
+  F-3 gates loosened / tests weakened .......................... did not
+      fire (test_master_catalogue 23/23 untouched and green; the new
+      module adds refusals, removes none)
+  F-4 edits outside scopes ..................................... did not
+      fire (diff = control.py + test_catalogue_realization.py + this
+      evidence directory)
+
+HARNESS DISCLOSURES (instrument corrections before the retained runs;
+the deployed source was never touched by them - full account in
+PRE_FIX_FAILURES.txt header):
+  1. supervisor ops use the fixture supervisor token 'super-secret'.
+  2. S3 re-scoped to the real abandonment semantics: claim_abandon
+     returns a task to READY (still an ACTIVE citation - the card is
+     correctly NOT re-proposed; now asserted) while task_abandon produces
+     the terminal ABANDONED state that re-proposes (now asserted).
+  3. S2 fixture aligned to the retained gov-06 oracle (GOV-03/04/05 live
+     citing tasks present; without them [MATH-01] is under-determined).
+
+LIMITATIONS
+  - realized_from is FREE provenance: the controller does not verify the
+    cited card exists in the current import (a citation to an unknown
+    card simply matches nothing). Card-existence validation would couple
+    create_task to the import plane and is left to a follow-up if the
+    lead wants it.
+  - The live deployment still runs the pre-fix catalogue plane; the
+    deployment transition is the supervisor's separate procedure (same
+    class as PR #80).
+  - Merge note per the lead: file the integration_request when the
+    review verdict lands; merge_gate handles pin-check + merge.
+
+REPRODUCTION
+  cd worktree root (this branch)
+  python -m unittest tools.agent_fleet.test_catalogue_realization -v   # 7/7
+  python -m unittest tools.agent_fleet.test_master_catalogue -v        # 23/23
+  python -m unittest discover -s tools/agent_fleet -p "test_*.py"      # 257 OK
+
+Agent: subagent-worker-04

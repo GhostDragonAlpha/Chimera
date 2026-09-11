@@ -127,6 +127,15 @@ class CatalogueRealizationTests(unittest.TestCase):
         realize_via_lifecycle(self.call, 'holodeck-gov-01', 'GOV-01')
         realize_via_lifecycle(self.call, 'holodeck-gov-02', 'GOV-02',
                               final='RUNNING')
+        # the retained oracle fixture has GOV-03/04/05 live in mixed
+        # active states (READY/REVIEW/BLOCKED all count as active);
+        # READY created-and-citing tasks are the same provenance class
+        for extra in ('GOV-03', 'GOV-04', 'GOV-05'):
+            self.call('create_task', task='holodeck-' + extra.lower(),
+                      epoch=self.epoch(), base=BASE,
+                      scopes=['tools/labs/holodeck-' + extra.lower()],
+                      packet='statement / prediction / falsifier', kind='worker',
+                      realized_from=extra)
         realize_via_lifecycle(self.call, 'holodeck-gov-06', 'GOV-06',
                               final='RUNNING')
         self.assertEqual(self.frontier(), ['MATH-01'])
