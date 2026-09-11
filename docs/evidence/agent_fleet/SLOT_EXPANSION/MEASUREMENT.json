@@ -1,0 +1,23 @@
+{
+  "task": "fleet-slot-expansion-03",
+  "generation": 1,
+  "slot": 3,
+  "base": "205ea83229f1b6e369a3d39a3cfe7617221e5e0c",
+  "preregistration_commit": "4bb3e143",
+  "producing_commands": [
+    "python -m unittest tools.agent_fleet.test_slot_expansion -v",
+    "python -m unittest discover -s tools/agent_fleet -p 'test_*.py'"
+  ],
+  "measured": {
+    "expansion_suite": "5/5 OK",
+    "mixed_load_probe": "8 threads x 20.4s, 4 reads per write cycle: 1456 ops, ZERO database-locked errors, p50 13.6ms, p95 306.1ms, p99 2358ms, spawn cost ~5.3ms/slot",
+    "saturated_probe": "8 threads x 5s writes-only: 707 ops, 0 lock errors this run, p50 7.4ms, p95 148ms, max 5.0s (single-writer queue boundary; earlier saturated run showed 2 lock timeouts at 12.5s max - the I/O boundary shape the operator predicted)",
+    "full_fleet_suite": "222 tests, 0 failures, 1 Windows-symlink skip (rerun after one non-reproducing capture-test flake under suite load; both outputs retained)"
+  },
+  "design_changes_to_old_tests": {
+    "test_control.test_five_slots_and_sixth_refusal": "renamed test_five_slots_then_auto_spawn_on_sixth - the no_free_slot wall is superseded by on-demand spawn; guard fuse + stale-provision semantics pinned in test_slot_expansion",
+    "test_bootstrap.test_port_conflicts_refused_and_ports_unique": "sixth-claim section now asserts auto-spawn slot 6 joins the unique-port family (8106)"
+  },
+  "implementation_note": "guard binds the NEXT slot id (retired ids never reused) - found by test: a count-only guard would crash past layout.SLOT_MAX via ValueError instead of the named slot_guard_reached refusal",
+  "not_claimed": ["live deployment (controlled transition follows review)", "GPU throughput scaling (slots do not multiply the single RTX 4090)"]
+}

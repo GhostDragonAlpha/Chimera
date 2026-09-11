@@ -697,3 +697,23 @@ mutates the live service. The documented stale records
 (fleet-run-queue-01, fleet-orient-continuation-01, engine-vulkan-cleanup-01,
 window-capture-ownership-01, fleet-controller-upgrade-01) are to be retired
 by the SUPERVISOR with these ops AFTER review, per the Master amendment.
+
+## On-demand slots: worktree semantics (2026-09-11, fleet-slot-expansion-03)
+
+Slots now materialize on demand, like worktrees. The registry dict IS the
+state: a claim finding no free slot of its kind auto-spawns one; supervisor
+`slot_spawn`/`slot_retire` manage the lifecycle explicitly (free +
+unprovisioned only; slot 1 is the immortal integration slot); fresh
+registries still initialize 5; retired ids are never reused and the guard
+binds the NEXT id against `layout.SLOT_MAX` (64) — a safety fuse that makes
+unbounded growth degrade by named refusal (`slot_guard_reached`) instead of
+corrupting. Auto-spawn never masks a stale provision: a free slot with an
+ACTIVE provision still refuses `stale_provision_requires_recovery`.
+
+Measured (isolated registry, 8 threads, 20 s mixed load — 4 reads per
+write cycle): zero `database is locked`, p50 13.6 ms, p95 306 ms, ~5.3 ms
+per slot spawn. Saturated write-only profile (recorded, not asserted):
+p50 7.4 ms with max waits ~5 s at the single-writer store — the first
+boundary data for the operator I/O-limit hypothesis (HUMAN feedback
+4e55c08a). Tests: `tools/agent_fleet/test_slot_expansion.py` (5).
+Deployment via controlled transition; live spin-up by the lead.
