@@ -1,0 +1,45 @@
+{
+ "plane": "card",
+ "record": {
+  "plane": "card",
+  "id": "GOV-02",
+  "domain": "GOV",
+  "title": "Capability and evidence registry",
+  "status": "PROPOSED",
+  "depends_on": [
+   "GOV-01"
+  ],
+  "source": {
+   "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\import-5199\\docs\\roadmap\\holodeck_tasks.json",
+   "index": 1
+  },
+  "content_sha256": "46a03c8e5f7b829b3b920494abb74a4444c819eb91c6b9364f2fca357da2fc78",
+  "card": {
+   "id": "GOV-02",
+   "title": "Capability and evidence registry",
+   "domain": "GOV",
+   "kind": "engineering",
+   "status": "PROPOSED",
+   "owner": null,
+   "depends_on": [
+    "GOV-01"
+   ],
+   "mathematics": "typed states; proof obligations; epistemic uncertainty",
+   "statement": "Per-device and per-law support records with independent evidence classes",
+   "prediction": "Missing runtime or DYAD evidence remains unknown regardless of unit-test success",
+   "falsifier": "Any inferred capability is advertised as executed",
+   "deliverables": [
+    "Per-device and per-law support records with independent evidence classes",
+    "Independent reference/benchmark and executed negative controls appropriate to this scope",
+    "Reproduction commands, source identity, preserved evidence and limitations",
+    "Integration contract and full autonomous handoff"
+   ],
+   "threshold_policy": "Derive the fixture-specific bound or ratify product target before implementation tests; preserve existing frozen gates; a catalogue prediction is not a preregistered numeric certificate.",
+   "write_scope": "UNRESERVED: coordinator must assign exact exclusive paths before implementation.",
+   "evidence": [],
+   "dyad": "REQUIRED when integrated changes affect visible behavior; GLM operates the documented image/question workflow. Reference-only or source-only scope records NOT_APPLICABLE with reason."
+  }
+ },
+ "digest": "b9d32319b43a03bbb713f1a4e6120f24065839f15383b0729fb587ba04f9000a",
+ "imported_revision": 651
+}

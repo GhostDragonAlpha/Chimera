@@ -1,0 +1,16 @@
+P4 proposed-scope path-safety check (path_scope semantics: relative, no drive, no "."/".."/"" parts, no ".git" part, no overlap with chimeraengine/engine/build)
+
+holodeck-gov-01 scope=docs/evidence/agent_fleet/HOLODECK/GOV/GOV-01              -> OK
+holodeck-gov-02 scope=docs/evidence/agent_fleet/HOLODECK/GOV/GOV-02              -> OK
+holodeck-gov-03 scope=docs/evidence/agent_fleet/HOLODECK/GOV/GOV-03              -> OK
+holodeck-gov-04 scope=docs/evidence/agent_fleet/HOLODECK/GOV/GOV-04              -> OK
+holodeck-gov-05 scope=docs/evidence/agent_fleet/HOLODECK/GOV/GOV-05              -> OK
+holodeck-gov-06 scope=docs/evidence/agent_fleet/HOLODECK/GOV/GOV-06              -> OK
+holodeck-math-01 scope=docs/evidence/agent_fleet/HOLODECK/MATH/MATH-01            -> OK
+holodeck-mat-01 scope=docs/evidence/agent_fleet/HOLODECK/MAT/MAT-01              -> OK
+holodeck-mat-02 scope=docs/evidence/agent_fleet/HOLODECK/MAT/MAT-02              -> OK
+holodeck-mat-03 scope=docs/evidence/agent_fleet/HOLODECK/MAT/MAT-03              -> OK
+holodeck-mat-04 scope=docs/evidence/agent_fleet/HOLODECK/MAT/MAT-04              -> OK
+holodeck-mat-05 scope=docs/evidence/agent_fleet/HOLODECK/MAT/MAT-05              -> OK
+
+P4 HOLDS: every proposed scope and draft id passes

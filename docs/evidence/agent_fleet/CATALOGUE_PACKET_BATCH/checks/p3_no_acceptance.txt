@@ -1,0 +1,50 @@
+P3 acceptance-claim scan over drafts/ (prereg: no draft claims its card accepted/integrated/approved; every draft carries the DRAFT header)
+
+drafts/DRAFT-holodeck-gov-03.md:1
+drafts/DRAFT-holodeck-mat-05.md:1
+drafts/DRAFT-holodeck-math-01.md:1
+drafts/DRAFT-holodeck-gov-01.md:1
+drafts/DRAFT-holodeck-gov-02.md:1
+drafts/DRAFT-holodeck-gov-06.md:1
+drafts/DRAFT-holodeck-mat-02.md:1
+drafts/DRAFT-holodeck-mat-04.md:1
+drafts/DRAFT-holodeck-gov-05.md:1
+drafts/DRAFT-holodeck-gov-04.md:1
+drafts/DRAFT-holodeck-mat-01.md:1
+drafts/DRAFT-holodeck-mat-03.md:1
+
+--- acceptance-phrase hits (claim-context scan; review hits manually):
+drafts/DRAFT-holodeck-gov-01.md:3:STATUS: DRAFT (PLANNING DATA for the lead — NOT ADMITTED; this lane never calls create_task; nothing here claims acceptance, integration or approval)
+drafts/DRAFT-holodeck-gov-05.md:3:STATUS: DRAFT (PLANNING DATA for the lead — NOT ADMITTED; this lane never calls create_task; nothing here claims acceptance, integration or approval)
+drafts/DRAFT-holodeck-gov-05.md:24:- CARD PREDICTION: Replay reconstructs accepted task state without overwriting unpublished work
+drafts/DRAFT-holodeck-gov-02.md:3:STATUS: DRAFT (PLANNING DATA for the lead — NOT ADMITTED; this lane never calls create_task; nothing here claims acceptance, integration or approval)
+drafts/DRAFT-holodeck-mat-02.md:3:STATUS: DRAFT (PLANNING DATA for the lead — NOT ADMITTED; this lane never calls create_task; nothing here claims acceptance, integration or approval)
+drafts/DRAFT-holodeck-gov-04.md:3:STATUS: DRAFT (PLANNING DATA for the lead — NOT ADMITTED; this lane never calls create_task; nothing here claims acceptance, integration or approval)
+drafts/DRAFT-holodeck-gov-06.md:3:STATUS: DRAFT (PLANNING DATA for the lead — NOT ADMITTED; this lane never calls create_task; nothing here claims acceptance, integration or approval)
+drafts/DRAFT-holodeck-gov-03.md:3:STATUS: DRAFT (PLANNING DATA for the lead — NOT ADMITTED; this lane never calls create_task; nothing here claims acceptance, integration or approval)
+drafts/DRAFT-holodeck-gov-03.md:24:- CARD PREDICTION: Each admitted law names its domain, independent oracle and limitations
+drafts/DRAFT-holodeck-mat-03.md:3:STATUS: DRAFT (PLANNING DATA for the lead — NOT ADMITTED; this lane never calls create_task; nothing here claims acceptance, integration or approval)
+drafts/DRAFT-holodeck-mat-05.md:3:STATUS: DRAFT (PLANNING DATA for the lead — NOT ADMITTED; this lane never calls create_task; nothing here claims acceptance, integration or approval)
+drafts/DRAFT-holodeck-math-01.md:3:STATUS: DRAFT (PLANNING DATA for the lead — NOT ADMITTED; this lane never calls create_task; nothing here claims acceptance, integration or approval)
+drafts/DRAFT-holodeck-math-01.md:25:- CARD FALSIFIER: A metre-newton comparison or undeclared world-unit conversion is admitted
+drafts/DRAFT-holodeck-math-01.md:37:**Falsifier (named before the run, from the card):** A metre-newton comparison or undeclared world-unit conversion is admitted
+drafts/DRAFT-holodeck-mat-04.md:3:STATUS: DRAFT (PLANNING DATA for the lead — NOT ADMITTED; this lane never calls create_task; nothing here claims acceptance, integration or approval)
+drafts/DRAFT-holodeck-mat-01.md:3:STATUS: DRAFT (PLANNING DATA for the lead — NOT ADMITTED; this lane never calls create_task; nothing here claims acceptance, integration or approval)
+drafts/DRAFT-holodeck-mat-01.md:23:- CARD STATEMENT: Admitted parameter records distinct from raw data
+drafts/DRAFT-holodeck-mat-01.md:30:  1. Admitted parameter records distinct from raw data
+
+--- 'NOT CLAIMED' presence per draft:
+drafts/DRAFT-holodeck-gov-03.md:1
+drafts/DRAFT-holodeck-gov-01.md:1
+drafts/DRAFT-holodeck-math-01.md:1
+drafts/DRAFT-holodeck-gov-02.md:1
+drafts/DRAFT-holodeck-mat-03.md:1
+drafts/DRAFT-holodeck-mat-02.md:1
+drafts/DRAFT-holodeck-gov-04.md:1
+drafts/DRAFT-holodeck-mat-05.md:1
+drafts/DRAFT-holodeck-mat-04.md:1
+drafts/DRAFT-holodeck-mat-01.md:1
+drafts/DRAFT-holodeck-gov-05.md:1
+drafts/DRAFT-holodeck-gov-06.md:1
+
+MANUAL REVIEW VERDICT: every hit above is (a) the negating DRAFT header, (b) the 'Acceptance: NOT CLAIMED' line (present in all 12 drafts), or (c) a VERBATIM field of the card itself (e.g. GOV-05 card prediction 'accepted task state', GOV-03 card prediction 'admitted law', MATH-01 card falsifier, MAT-01 card statement 'Admitted parameter records'). No draft claims acceptance for itself. P3 HOLDS.

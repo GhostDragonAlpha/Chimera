@@ -1,0 +1,45 @@
+{
+ "plane": "card",
+ "record": {
+  "plane": "card",
+  "id": "GOV-05",
+  "domain": "GOV",
+  "title": "Crash recovery and publication",
+  "status": "PROPOSED",
+  "depends_on": [
+   "GOV-01"
+  ],
+  "source": {
+   "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\import-5199\\docs\\roadmap\\holodeck_tasks.json",
+   "index": 4
+  },
+  "content_sha256": "d0f492ac4aaf212a3bd5498f348ba21031c0c4122c43db538c62bd4a2ee4b30c",
+  "card": {
+   "id": "GOV-05",
+   "title": "Crash recovery and publication",
+   "domain": "GOV",
+   "kind": "engineering",
+   "status": "PROPOSED",
+   "owner": null,
+   "depends_on": [
+    "GOV-01"
+   ],
+   "mathematics": "event sourcing; content addressing; idempotence",
+   "statement": "Recovery journal and serialized integration procedure",
+   "prediction": "Replay reconstructs accepted task state without overwriting unpublished work",
+   "falsifier": "Duplicate publication or orphaned ownership changes task truth",
+   "deliverables": [
+    "Recovery journal and serialized integration procedure",
+    "Independent reference/benchmark and executed negative controls appropriate to this scope",
+    "Reproduction commands, source identity, preserved evidence and limitations",
+    "Integration contract and full autonomous handoff"
+   ],
+   "threshold_policy": "Derive the fixture-specific bound or ratify product target before implementation tests; preserve existing frozen gates; a catalogue prediction is not a preregistered numeric certificate.",
+   "write_scope": "UNRESERVED: coordinator must assign exact exclusive paths before implementation.",
+   "evidence": [],
+   "dyad": "REQUIRED when integrated changes affect visible behavior; GLM operates the documented image/question workflow. Reference-only or source-only scope records NOT_APPLICABLE with reason."
+  }
+ },
+ "digest": "b9d32319b43a03bbb713f1a4e6120f24065839f15383b0729fb587ba04f9000a",
+ "imported_revision": 651
+}
