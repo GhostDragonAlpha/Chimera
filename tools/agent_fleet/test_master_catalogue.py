@@ -665,12 +665,12 @@ class CatalogueTests(unittest.TestCase):
         # line must be retained verbatim with a consistent hash.
         built = build_records()
         part = built['coverage']['line_partition']
-        # 2833 lines at the current canonical Master (measured via the
-        # builder at the fourth-wave amendment head, base cb874a3a,
-        # CATALOGUE_REPIN_03 - was 2780 at f9ef0ebe, CATALOGUE_REPIN_02);
-        # the count is descriptive - exhaustiveness is what the validator
-        # enforces, independent of any frozen total.
-        self.assertEqual(len(part), 2833)
+        # 2844 lines at the current canonical Master (measured via the
+        # builder at the fourth-wave amendment head + its gen-2 correction
+        # appends, base cb874a3a, CATALOGUE_REPIN_03 - was 2780 at f9ef0ebe,
+        # CATALOGUE_REPIN_02); the count is descriptive - exhaustiveness is
+        # what the validator enforces, independent of any frozen total.
+        self.assertEqual(len(part), 2844)
         dropped = json.loads(json.dumps(built))
         dropped['coverage']['line_partition'].pop('1825')  # JSON-stringified
         self.assertEqual(validate_payload(dropped),

@@ -2831,3 +2831,14 @@ INTEGRATED `engine-feature-resource-lifetime-02` (dependencies corrected to
 the ABANDONED `engine-vulkan-cleanup-01`, making it permanently unclaimable
 (`dependencies_not_integrated`). `-01` retires via supervisor task_abandon
 AFTER this PR integrates; this entry is the evidence.
+
+**Correction to this section (post-review, gen 2 of this PR)**: the entry
+above stating PR #80 as "gen 2, head 2c8fb069" is WRONG on the head — the
+merged gen-2 head is **1c565ba0** (second parent of merge commit d8e3b5f5;
+repo head at merge a02ff3bd; verified against the object store and the
+GitHub API by this lane's reviewer and re-verified by the lead). 2c8fb069
+is the SOURCE HEAD of the SUPERSEDED deployment
+`review-handoff-2c8fb069`; the lead's draft conflated the two. Also
+disambiguated per review finding 3: "integrated as PR #58" above names the
+DEPENDENCY's PR (engine-vulkan-cleanup-02); engine-feature-resource-lifetime-02
+itself integrated as PR #79.

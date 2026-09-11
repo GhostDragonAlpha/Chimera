@@ -52,3 +52,17 @@ No measured actuals appear in this prereg. All counts above the fold are
 predictions. Builder output, suite runs, and perturbation results land only
 in the later evidence files (RUN_BUILDER_AMENDED_HEAD.txt,
 RUN_FULL_FLEET_SUITE.txt, RESULT.md).
+
+## CORRECTION (2026-09-11, post-review, this PR's gen 2 — appended; original above retained verbatim)
+
+The prereg's line "head 2c8fb069 at merge" is FALSE. PR #80's merged gen-2
+head is **1c565ba0** (merge commit d8e3b5f5; parents a02ff3bd + 1c565ba0,
+verified against the object store and the GitHub API). 2c8fb069 is the
+SOURCE HEAD of the SUPERSEDED deployment `review-handoff-2c8fb069`, not
+PR #80's head. Cause: the author (the lead) drafted from compressed session
+memory, where that deployment name stood adjacent to PR #80, instead of
+deriving from the primary source. The independent higher-bar review caught
+it — the preregistered falsifier ("any disposition entry that misstates a
+controller/PR fact") fired, as designed. The gen-2 correction commit fixes
+the Master text via an appended correction paragraph and repins to the
+newly measured counts.

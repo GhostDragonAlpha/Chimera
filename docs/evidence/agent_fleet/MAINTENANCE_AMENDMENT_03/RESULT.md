@@ -65,3 +65,30 @@ down, a perturbed pin that still passes) — none fired. The lane's own
 falsifier for the amendment text: any disposition entry that misstates a
 controller/PR fact (all facts above re-verified against the live snapshot
 and origin during RESULT authoring).
+
+## REVIEW OUTCOME — gen 1 REJECTED, gen 2 correction (appended)
+
+Verdict (reviewer label subagent-worker-07, higher-bar lead-PR brief):
+**REJECT, blockers=true** — the Master entry "PR #80 (gen 2, head
+2c8fb069)" is falsified; the true merged head is **1c565ba0** (merge
+d8e3b5f5, parents a02ff3bd + 1c565ba0). The lane's own preregistered
+falsifier ("any disposition entry that misstates a controller/PR fact")
+fired on the lead's own PR — the higher bar held.
+
+Everything else was re-derived clean by the reviewer: byte-prefix
+append-only on both docs (raw-blob forensics), builder recomputed at head
+AND base (deltas +6/+8/+53 exact), suite 270 OK first pass, 3/3
+perturbation flips independently reproduced, PR #84/#92/#97 and efrl
+facts verified against primaries, and the third-pin disclosure judged
+honest rather than scope creep.
+
+Gen-2 corrections (this commit): appended corrections to the prereg and
+the Master section (both original texts retained), disambiguated PR
+#58 vs PR #79, repinned to the newly measured counts below. No byte
+above the base prefix was modified — append-only still holds.
+
+Reviewer findings accepted to backlog: (2, MEDIUM) commit a
+transition-record artifact per controlled transition; (4, LOW) preregs
+enumerate every pin a repin will touch; (5, INFO) 822 pre-existing
+doc_lint refs repo-wide + LOCK_PROBE_MUTATED is box-load-sensitive.
+Finding (3, LOW) is DONE in this correction.
