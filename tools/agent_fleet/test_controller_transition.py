@@ -551,7 +551,7 @@ class ControllerTransitionRehearsalTests(unittest.TestCase):
     # --- test 4: transport body-limit boundary (fleet-transport-body-limit-01)
     def test_4_transport_body_limit_boundary(self):
         """MAX_BODY is the derived 2**24 transport cap: a canonical-catalogue-
-        sized body passes the transport layer; a body one byte above the cap
+        sized body passes the transport layer; a body 2 KiB above the cap
         refuses request_size; the listener survives both."""
         import service as service_module
         self.assertEqual(service_module.MAX_BODY, 2 ** 24)
@@ -568,7 +568,13 @@ class ControllerTransitionRehearsalTests(unittest.TestCase):
                 with urllib.request.urlopen(req, timeout=60) as resp:
                     return resp.status, json.load(resp)
             except urllib.error.HTTPError as exc:
-                return exc.code, json.loads(exc.read().decode('utf-8'))
+                # fleet-review-followups-02 (F4): the HTTPError holds an
+                # open response; read then CLOSE it so no ResourceWarning
+                # leaks into retained output.
+                try:
+                    return exc.code, json.loads(exc.read().decode('utf-8'))
+                finally:
+                    exc.close()
             except (ConnectionError, OSError):
                 # The server refuses an oversized body from its
                 # Content-Length header BEFORE reading it; the early
