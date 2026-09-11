@@ -1,0 +1,15 @@
+R1 positive controls (model must ACCEPT; prereg N=6/6)
+  [OK] (a) 3 m + 2 m = 5 m (dimension-equal addition)
+        Quantity(5.0, Dimension(L=1, M=0, T=0))
+  [OK] (b) E3d [Pa] * h [m] reduces to N/m (kg s^-2) == the deployed E2 dimension
+        Quantity(2000000000.0, Dimension(L=0, M=1, T=-2)) (deployed: units_contract.py:324 'reducing exactly once')
+  [OK] (c) declared 1 MPa = 1e6 Pa: 2.5 MPa -> 2.5e6 Pa
+        Quantity(2500000.0, Dimension(L=-1, M=1, T=-2))
+  [OK] (d) after DECLARING world-unit = 1 m: 3 m -> 3 wu
+        Quantity(3.0, Dimension(L=1, M=0, T=0))
+  [OK] (e) rigid round-trip T then T^-1 returns p (<= 1e-12, Higham-derived bound)
+        max abs deviation 8.882e-16
+  [OK] (f) nondimensionalize(3 m, 2 m): both dimensionless, ratio 1.5 preserved
+        [Quantity(1.0, Dimension(L=0, M=0, T=0)), Quantity(0.6666666666666666, Dimension(L=0, M=0, T=0))], ratio 1.5
+
+R1 HOLDS 6/6

@@ -1,0 +1,9 @@
+R5 unit and frame changes preserve dimensionless predictions (card prediction; prereg N=3/3)
+  [OK] (a) aspect ratio h/L identical in m and in mm (<= 1e-15 relative)
+        m: 0.02  mm: 0.02  rel diff 0.000e+00
+  [OK] (b) point-pair distance invariant under a rigid frame change (<= 1e-12 relative)
+        A: 5.0  B: 4.999999999999999  rel diff 1.776e-16
+  [OK] (c) Buckingham Pi: {T, L, g} -> exactly 1 group with normalized exponents {T:+2, L:-1, g:+1} EXACT (T^2 g / L); invariant under unit re-declaration
+        groups: [(['T', 'L', 'g'], ['2', '-1', '1'])] == [2, -1, 1]: True
+
+R5 HOLDS 3/3
