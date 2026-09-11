@@ -37,6 +37,7 @@ FPS = 10
 N_FRAMES = 45
 PEAK = 0.6  # the declared mid-ROM fraction (PR #97 preregistration)
 KEYFRAMES = (0, 12, 20, 25, 35, 44)  # the same ordered keyframes as PR #97
+RUN_ID = os.environ.get("HUD_TRUTH_RUN_ID", "run2")   # per-run runtime identity
 
 RECORDS: list[dict] = []
 KEYFRAME_DOCS: list[dict] = []
@@ -125,7 +126,7 @@ def main() -> int:
     old = os.environ.get("CHIMERA_MD_EDGE")
     os.environ.pop("CHIMERA_MD_EDGE", None)
     try:
-        proc, _ = _launch(EXE, PORT, ROOT / ".tmp/engine_runtime/hudtruth")
+        proc, _ = _launch(EXE, PORT, ROOT / f".tmp/engine_runtime/hudtruth-{RUN_ID}")
         _wait_ready(proc, PORT)
         record("launch", "PASS", {"pid": proc.pid, "port": PORT,
                                   "exe_sha256": hashlib.sha256(EXE.read_bytes()).hexdigest()})

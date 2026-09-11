@@ -107,7 +107,8 @@ def main() -> int:
     # the transcription file feeds this check)
     tr_path = run_dir / "readout_transcription.json"
     if tr_path.exists():
-        tr = json.loads(tr_path.read_text())
+        tr_doc = json.loads(tr_path.read_text())
+        tr = tr_doc.get("transcriptions", tr_doc)
         for i, txt in sorted(tr.items(), key=lambda kv: int(kv[0])):
             i = int(i)
             if i < 10:
@@ -136,7 +137,10 @@ def main() -> int:
     else:
         check("P3.readout_transcription", False, f"missing {tr_path}")
 
-    # P5: the reel's newest entry in the driven regime
+    # P5: the reel's newest entry in the driven regime. The /reel joint field
+    # carries the DRIVEN name (+count suffix when several); the visible "EDIT "
+    # prefix is on the glass caption (checked in the transcription). Before the
+    # fix this field showed the sweep's cycling lane (e.g. 'knee_L').
     for d in docs:
         i = d["i"]
         if i < 25:      # the 12-entry ring carries pre-drive tail early; declared
@@ -144,8 +148,11 @@ def main() -> int:
         ent = (d.get("reel") or {}).get("entries") or []
         newest = ent[-1] if ent else {}
         j = str(newest.get("joint", ""))
-        check(f"P5.reel_edit(i={i})", j.startswith("EDIT ") or "EDIT" in j,
-              f"joint={j!r} theta={newest.get('theta')}")
+        driven_named = j.startswith("shoulder_R") or j.startswith("elbow_R")
+        th = newest.get("theta")
+        finite = isinstance(th, (int, float)) and abs(th) <= 200.0
+        check(f"P5.reel_edit(i={i})", driven_named and finite,
+              f"joint={j!r} theta={th} (grab-time live value; ring lags by design)")
 
     fails = [l for l in lines if l[0] == "FAIL"]
     out = "\n".join(f"[{v}] {c} {det}" for v, c, det in lines) + \

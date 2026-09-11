@@ -1,0 +1,12 @@
+{
+ "source": "hand-transcribed from the judge-visible TIMELINE (D1) readout in the run-2 keyframe glass PNGs (frames/gNNN.png)",
+ "transcriptions": {
+  "0": "t = 0.000 s / 112.0 s (lap 0)  |  neck theta = +0.00 deg  |  PAUSED (scrub/step = exact poses) [REST regime: NOT eye-transcribed from run-2 PNG; derived from the else-branch format (owner held, mask empty at f0) + numeric hud_rows 'SHOW neck theta 0.00' at i=0 in keyframe_docs.json]",
+  "12": "EDIT t = 1.200 s (show clock; show sweep paused)  |  shoulder_R +7.78 / elbow_R +16.20 deg",
+  "20": "EDIT t = 2.000 s (show clock; show sweep paused)  |  shoulder_R +36.00 / elbow_R +75.00 deg",
+  "25": "EDIT t = 2.500 s (show clock; show sweep paused)  |  shoulder_R +36.00 / elbow_R +75.00 deg",
+  "35": "EDIT t = 3.500 s (show clock; show sweep paused)  |  shoulder_R +23.33 / elbow_R +48.60 deg",
+  "44": "EDIT t = 4.400 s (show clock; show sweep paused)  |  shoulder_R +0.00 / elbow_R +0.00 deg"
+ },
+ "note_run1": "run-1 retained frames g012/g020 read: 'EDIT t = 0.963 s (pose claim = 0) | ...' and 'EDIT t = 1.763 s (pose claim = 0) | ...' \u2014 the origin-offset failure F2, retained in run1_retained_F2/"
+}

@@ -1,0 +1,47 @@
+[PASS] P3.show_pin(i=0) GET /show time=0.0 want=0.0
+[PASS] P2.engine_theta(i=0,shoulder_R) st+7=0.0 commanded=0.0
+[PASS] P2.engine_theta(i=0,elbow_R) st+7=0.0 commanded=0.0
+[PASS] P3.show_pin(i=12) GET /show time=1.2 want=1.2
+[PASS] P2.engine_theta(i=12,shoulder_R) st+7=7.776 commanded=7.776
+[PASS] P2.engine_theta(i=12,elbow_R) st+7=16.2 commanded=16.2
+[PASS] P3.show_pin(i=20) GET /show time=2.0 want=2.0
+[PASS] P2.engine_theta(i=20,shoulder_R) st+7=36.0 commanded=36.0
+[PASS] P2.engine_theta(i=20,elbow_R) st+7=75.0 commanded=75.0
+[PASS] P3.show_pin(i=25) GET /show time=2.5 want=2.5
+[PASS] P2.engine_theta(i=25,shoulder_R) st+7=36.0 commanded=36.0
+[PASS] P2.engine_theta(i=25,elbow_R) st+7=75.0 commanded=75.0
+[PASS] P3.show_pin(i=35) GET /show time=3.5 want=3.5
+[PASS] P2.engine_theta(i=35,shoulder_R) st+7=23.328 commanded=23.327999999999996
+[PASS] P2.engine_theta(i=35,elbow_R) st+7=48.6 commanded=48.599999999999994
+[PASS] P3.show_pin(i=44) GET /show time=4.4 want=4.4
+[PASS] P2.engine_theta(i=44,shoulder_R) st+7=0.0 commanded=0.0
+[PASS] P2.engine_theta(i=44,elbow_R) st+7=0.0 commanded=0.0
+[PASS] P4.row_prefix(i=0) SHOW neck  theta 0.00 deg  ROM [-35.8 ..
+[PASS] P1.row_prefix(i=12) EDIT shoulder_R+7.78  elbow_R+16.20  deg
+[PASS] P1.row_names(i=12) EDIT shoulder_R+7.78  elbow_R+16.20  deg
+[PASS] P1.row_theta(i=12,shoulder_R) row=7.78 commanded=7.776
+[PASS] P1.row_theta(i=12,elbow_R) row=16.2 commanded=16.2
+[PASS] P1.row_prefix(i=20) EDIT shoulder_R+36.00  elbow_R+75.00  de
+[PASS] P1.row_names(i=20) EDIT shoulder_R+36.00  elbow_R+75.00  deg
+[PASS] P1.row_theta(i=20,shoulder_R) row=36.0 commanded=36.0
+[PASS] P1.row_theta(i=20,elbow_R) row=75.0 commanded=75.0
+[PASS] P1.row_prefix(i=25) EDIT shoulder_R+36.00  elbow_R+75.00  de
+[PASS] P1.row_names(i=25) EDIT shoulder_R+36.00  elbow_R+75.00  deg
+[PASS] P1.row_theta(i=25,shoulder_R) row=36.0 commanded=36.0
+[PASS] P1.row_theta(i=25,elbow_R) row=75.0 commanded=75.0
+[PASS] P1.row_prefix(i=35) EDIT shoulder_R+23.33  elbow_R+48.60  de
+[PASS] P1.row_names(i=35) EDIT shoulder_R+23.33  elbow_R+48.60  deg
+[PASS] P1.row_theta(i=35,shoulder_R) row=23.33 commanded=23.327999999999996
+[PASS] P1.row_theta(i=35,elbow_R) row=48.6 commanded=48.599999999999994
+[PASS] P1.row_prefix(i=44) EDIT shoulder_R+0.00  elbow_R+0.00  deg
+[PASS] P1.row_names(i=44) EDIT shoulder_R+0.00  elbow_R+0.00  deg
+[PASS] P1.row_theta(i=44,shoulder_R) row=0.0 commanded=0.0
+[PASS] P1.row_theta(i=44,elbow_R) row=0.0 commanded=0.0
+[PASS] P1.peaks(g020) EDIT shoulder_R+36.00  elbow_R+75.00  deg
+[PASS] P1.peaks(g025) EDIT shoulder_R+36.00  elbow_R+75.00  deg
+[FAIL] P3.readout_transcription missing readout_transcription.json
+[FAIL] P5.reel_edit(i=25) joint='shoulder_R+1' theta=18.0
+[FAIL] P5.reel_edit(i=35) joint='shoulder_R+1' theta=36.0
+[FAIL] P5.reel_edit(i=44) joint='shoulder_R+1' theta=29.6853
+
+TOTAL 45 checks, 4 FAIL
