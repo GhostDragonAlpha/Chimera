@@ -43,7 +43,7 @@ Docs only: `docs/THE_AGENT_FLEET.md` (append-only dated section), `docs/AGENT_ST
 NO code changes, NO edits to `docs/THE_MASTER_LIST.md`, NO GPU/engine/DYAD work, NO
 writes outside the worktree `E:\ChimeraWork\slot-04`.
 
-## VERDICT FORM (filled in RESULT.md after the run)
+## VERDICT FORM (filled in VERIFICATION.md after the run - the actual retained artifact)
 
 - PASS: all named operations verified present; prompts self-contained; no falsifier fired.
 - FAIL: any falsifier observed, with the exact operation/prompt/line named.
