@@ -1,0 +1,74 @@
+{
+  "task": "dyad-retained-reviews-01",
+  "generation": 1,
+  "agent": "subagent-worker-06",
+  "utc_started": "2026-09-11",
+  "base": "5199d9c3015f6840b12186f34c3e0c2fd5d7b0a4",
+  "preregistration_commit": "2a45587d",
+  "worktree": "E:/ChimeraWork/slot-05",
+  "provider_path": "tools/dyad_subagent_template.py plan/assemble over tools/dyad_provider.py SubagentDyadProvider (PR #52 integrated)",
+  "provider_id": "subagent-dyad-glm53flash",
+  "served_identity": "subagent-worker-06 (vision-capable host subagent) [harness-declared by lead 2026-09-11]",
+  "local_eye_used": false,
+  "local_model_or_gpu_used": false,
+  "captures_modified": false,
+  "verdict_ceiling": "INCONCLUSIVE",
+  "cases": [
+    {
+      "attempt": "rr01-edge01-pair",
+      "review_type": "ordered_frames",
+      "captures": [
+        {"path": "docs/evidence/membrane_gpu_demo_runtime/20260909T143821.177952Z/raised_gamma0.png", "sha256": "53e994e08d8ecc5e36fe39b86ede680bb3801c83b8ae734c08855d1034aee1ea", "hash_source": "sidecar raised_gamma0.json", "verified_fail_closed": true},
+        {"path": "docs/evidence/membrane_gpu_demo_runtime/20260909T143821.177952Z/final_relaxed.png", "sha256": "20021e7871f7721762b0c4e870dcb1662c489f4637a37911897173a9b9397807", "hash_source": "sidecar final_relaxed.json", "verified_fail_closed": true}
+      ],
+      "finish": "complete",
+      "verdict": "INCONCLUSIVE",
+      "supports_claim": true,
+      "numeric_mentions": 20,
+      "reviewer_summary": "Pair distinguishable: interior-line convergence near the upper (far) edge in frame 1 vs near the outline centroid in frame 2; outline/background/lighting identical; magnitude not determinable from the images."
+    },
+    {
+      "attempt": "rr01-edge01-relaxed-still",
+      "review_type": "still",
+      "captures": [
+        {"path": "docs/evidence/membrane_gpu_demo_runtime/20260909T143821.177952Z/final_relaxed.png", "sha256": "20021e7871f7721762b0c4e870dcb1662c489f4637a37911897173a9b9397807", "hash_source": "sidecar final_relaxed.json", "verified_fail_closed": true}
+      ],
+      "finish": "complete",
+      "verdict": "INCONCLUSIVE",
+      "supports_claim": true,
+      "numeric_mentions": 5,
+      "reviewer_summary": "Single still resolves fan structure (six spokes converging at the projected centroid) but not height; no large offset toward the far edge apparent; small-amplitude curvature not excludable."
+    },
+    {
+      "attempt": "rr01-dyad02-oblique-pair",
+      "review_type": "ordered_frames",
+      "captures": [
+        {"path": "docs/evidence/membrane_window_demo/20260908T192702.077867Z/raised_gamma0_oblique.png", "sha256": "f7a6e595cd74231661cbe7058ea0cf800e45398fba991e340c57dd2a16875702", "hash_source": "sidecar raised_gamma0_oblique.capture.json", "verified_fail_closed": true},
+        {"path": "docs/evidence/membrane_window_demo/20260908T192708.250952Z/relaxed_gamma1_oblique.png", "sha256": "39b861a83ea7c0c7c8ef7500491c821a675de9951ace0bbd77e81d1152e30fa9", "hash_source": "sidecar relaxed_gamma1_oblique.capture.json", "verified_fail_closed": true}
+      ],
+      "finish": "complete",
+      "verdict": "NOT_CLAIMED",
+      "supports_claim": null,
+      "numeric_mentions": 16,
+      "reviewer_summary": "Fill-only wireframe pair read as nearly identical; interior spokes not resolvable by this reviewer at this presentation; only a subtle fill-shading difference apparent; centre vertex not locatable. Matches the historical single-still/pair INCONCLUSIVE on height resolvability."
+    },
+    {
+      "attempt": "rr01-contrast-oblique-pair",
+      "review_type": "ordered_frames",
+      "captures": [
+        {"path": "docs/evidence/membrane_window_demo/20260908T203620.679992Z/raised_contrast_oblique.png", "sha256": "a1c24291f09547fc09077889cbef6b3a768f38dbcc761db2c593ab43e506868f", "hash_source": "sidecar raised_contrast_oblique.capture.json", "verified_fail_closed": true},
+        {"path": "docs/evidence/membrane_window_demo/20260908T203626.782212Z/relaxed_contrast_oblique.png", "sha256": "8da47c82501968e48ab5b0832e7c41a8098aa0271f7a5713bb107a32b0c35552", "hash_source": "sidecar relaxed_contrast_oblique.capture.json", "verified_fail_closed": true}
+      ],
+      "finish": "complete",
+      "verdict": "INCONCLUSIVE",
+      "supports_claim": true,
+      "numeric_mentions": 19,
+      "reviewer_summary": "Edge-contrast pair distinguishable: convergence point in the upper part of the outline (frame 1) vs near the centroid (frame 2); direction visible, magnitude not determinable from the images."
+    }
+  ],
+  "dyad_log_entries": 4,
+  "fail_closed_refusals": [],
+  "content_level_physics_acceptance": "NOT CLAIMED",
+  "local_eye_equivalence": "NOT CLAIMED",
+  "human_acceptance": "NOT CLAIMED (reserved to Alan)"
+}

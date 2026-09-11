@@ -1,0 +1,35 @@
+{
+ "attempt": "rr01-edge01-pair",
+ "captures": [
+  {
+   "index": 1,
+   "path": "E:/ChimeraWork/slot-05/docs/evidence/membrane_gpu_demo_runtime/20260909T143821.177952Z/raised_gamma0.png",
+   "sha256": "53e994e08d8ecc5e36fe39b86ede680bb3801c83b8ae734c08855d1034aee1ea"
+  },
+  {
+   "index": 2,
+   "path": "E:/ChimeraWork/slot-05/docs/evidence/membrane_gpu_demo_runtime/20260909T143821.177952Z/final_relaxed.png",
+   "sha256": "20021e7871f7721762b0c4e870dcb1662c489f4637a37911897173a9b9397807"
+  }
+ ],
+ "claim_under_exam": "Whether the two recorded states are visually distinguishable in this pair at the identical camera, and what structure a fresh vision reviewer can resolve from the pair alone.",
+ "evidence_limits": "ordered pair of two stills; the listed order is the only temporal fact; numbers you mention are observations, not measurements",
+ "physical_context": "Two Vulkan-rendered frames of the same triangulated membrane object (hexagonal fan: 6 triangles, 7 vertices), same fixed demo camera (phi 0.35 rad, radius 3.0) and same edge-contrast presentation (constant light-coloured triangle edges and rim over grey fill), rigid +0.5 m presentation lift above a floor plane. The two frames were captured from the same engine at different recorded states, at the same camera.",
+ "questions": [
+  "Describe what frame 1 shows: shapes, lines, colors, and anything else visible.",
+  "Describe what frame 2 shows: shapes, lines, colors, and anything else visible.",
+  "Describe the differences between frame 1 and frame 2, and what appears identical between them.",
+  "In each frame, where does the point where the interior lines converge sit relative to the outer boundary? Describe each frame separately and state your uncertainty explicitly.",
+  "What features of these frames prevent you from determining exact positions, heights, or distances?",
+  "What single aspect of these frames is visually most confusing or least legible, and why?"
+ ],
+ "review_type": "ordered_frames",
+ "runtime_metadata": {
+  "camera": "fixed demo camera phi 0.35 / radius 3.0 (both sidecars)",
+  "frame_1_state": "sidecar: gamma=0 J/m^2, iteration 0, terminal stationary, centre [0,0,0.125] m",
+  "frame_2_state": "sidecar: gamma=1 J/m^2, iteration 126, terminal stagnated, centre z ~1.9e-07 m",
+  "presentation": "edge-contrast fill+wire, +0.5 m presentation lift",
+  "source": "EDGE-01 retained evidence docs/evidence/membrane_gpu_demo_runtime/20260909T143821.177952Z"
+ },
+ "task": "dyad-retained-reviews-01"
+}

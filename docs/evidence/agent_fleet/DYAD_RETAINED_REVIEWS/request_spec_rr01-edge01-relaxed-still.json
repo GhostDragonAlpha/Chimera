@@ -1,0 +1,28 @@
+{
+ "attempt": "rr01-edge01-relaxed-still",
+ "captures": [
+  {
+   "index": 1,
+   "path": "E:/ChimeraWork/slot-05/docs/evidence/membrane_gpu_demo_runtime/20260909T143821.177952Z/final_relaxed.png",
+   "sha256": "20021e7871f7721762b0c4e870dcb1662c489f4637a37911897173a9b9397807"
+  }
+ ],
+ "claim_under_exam": "A single oblique still of the relaxed recorded state; the question is only what structure is visually resolvable to a fresh vision reviewer from this one image.",
+ "evidence_limits": "single still; no temporal claims; numbers you mention are observations, not measurements",
+ "physical_context": "Vulkan-rendered 2D triangulated membrane (hexagonal fan: 6 triangles, 7 vertices) with an edge-contrast presentation (constant light-coloured triangle edges and rim over grey fill), fixed demo camera (phi 0.35 rad, radius 3.0), rigid +0.5 m presentation lift above a floor plane; recorded state after a relaxation run.",
+ "questions": [
+  "Describe the overall shape and structure of the object at the center of the image.",
+  "Do spoke-like or fan-like lines appear? If so, describe where they start and where they meet or converge.",
+  "In this single view, does the central region where the lines meet sit above, at the same level as, or below the outer boundary of the fan? State your uncertainty explicitly.",
+  "What can you observe about whether the surface shown is flat or curved in this view? State your uncertainty explicitly.",
+  "What else is visible in the image besides the central object?"
+ ],
+ "review_type": "still",
+ "runtime_metadata": {
+  "camera": "fixed demo camera phi 0.35 / radius 3.0 (sidecar)",
+  "presentation": "edge contrast, +0.5 m lift",
+  "source": "EDGE-01 retained evidence docs/evidence/membrane_gpu_demo_runtime/20260909T143821.177952Z",
+  "state": "gamma=1 J/m^2, iteration 126, terminal stagnated (sidecar)"
+ },
+ "task": "dyad-retained-reviews-01"
+}

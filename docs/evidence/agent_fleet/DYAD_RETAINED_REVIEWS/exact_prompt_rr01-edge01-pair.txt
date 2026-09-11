@@ -1,0 +1,17 @@
+DYAD visual review request
+task: dyad-retained-reviews-01
+attempt: rr01-edge01-pair
+physical/programming context: Two Vulkan-rendered frames of the same triangulated membrane object (hexagonal fan: 6 triangles, 7 vertices), same fixed demo camera (phi 0.35 rad, radius 3.0) and same edge-contrast presentation (constant light-coloured triangle edges and rim over grey fill), rigid +0.5 m presentation lift above a floor plane. The two frames were captured from the same engine at different recorded states, at the same camera.
+claim under examination: Whether the two recorded states are visually distinguishable in this pair at the identical camera, and what structure a fresh vision reviewer can resolve from the pair alone.
+review type: ordered_frames
+ordered captures: #1 raised_gamma0.png (sha256 53e994e08d8e...), #2 final_relaxed.png (sha256 20021e7871f7...)
+camera/runtime metadata: {"camera": "fixed demo camera phi 0.35 / radius 3.0 (both sidecars)", "frame_1_state": "sidecar: gamma=0 J/m^2, iteration 0, terminal stationary, centre [0,0,0.125] m", "frame_2_state": "sidecar: gamma=1 J/m^2, iteration 126, terminal stagnated, centre z ~1.9e-07 m", "presentation": "edge-contrast fill+wire, +0.5 m presentation lift", "source": "EDGE-01 retained evidence docs/evidence/membrane_gpu_demo_runtime/20260909T143821.177952Z"}
+evidence limits: ordered pair of two stills; the listed order is the only temporal fact; numbers you mention are observations, not measurements
+
+Answer EVERY question with its number. Report only what you can observe in the supplied images; state uncertainty explicitly. Do not guess. Numbers you mention are observations to verify, not measurements.
+1. Describe what frame 1 shows: shapes, lines, colors, and anything else visible.
+2. Describe what frame 2 shows: shapes, lines, colors, and anything else visible.
+3. Describe the differences between frame 1 and frame 2, and what appears identical between them.
+4. In each frame, where does the point where the interior lines converge sit relative to the outer boundary? Describe each frame separately and state your uncertainty explicitly.
+5. What features of these frames prevent you from determining exact positions, heights, or distances?
+6. What single aspect of these frames is visually most confusing or least legible, and why?
