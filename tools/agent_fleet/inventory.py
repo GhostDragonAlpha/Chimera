@@ -12,7 +12,7 @@ import stat
 import subprocess
 from layout import slot_layout
 
-def inspect(path,max_entries=1000000, slots=5):
+def inspect(path,max_entries=1000000):
     root=Path(path)
     out={'path':str(root),'logical_bytes':0,'files':0,'directories':0,'skipped_links':0,'errors':[], 'complete':True}
     if not root.exists():out.update(complete=False,errors=['path_missing']);return out

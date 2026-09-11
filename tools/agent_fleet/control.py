@@ -80,8 +80,13 @@ class Control:
     SLOT_GUARD = SLOT_MAX
 
     def _next_slot_id(self, s):
+        # Persisted high-water mark: retired ids are NEVER reused even after
+        # the max live id drops (review finding 2 - path/port reuse hazard).
         nums = [int(k) for k in s['slots'] if str(k).isdigit()]
-        return (max(nums) + 1) if nums else 1
+        hwm = s.get('slot_high_water') or 0
+        n = max(max(nums) if nums else 0, hwm) + 1
+        s['slot_high_water'] = n
+        return n
 
     def _spawn_slot(self, s, kind):
         n = self._next_slot_id(s)
@@ -316,6 +321,8 @@ class Control:
             s.setdefault('instance_fencing','compat')
             for a in s['agents'].values(): a.setdefault('instances',{})
             for t in s['tasks'].values(): t.setdefault('owner_instance',None)
+            s['slot_high_water']=max(int(s.get('slot_high_water') or 0),
+                                     max((int(k) for k in s['slots'] if str(k).isdigit()), default=0))
             actor=self._actor(s,token)
             # Instance plane: optional per-enrollment client identity
             # (header-parsed by the service). Only its sha256 fingerprint
@@ -445,6 +452,10 @@ class Control:
             require(actor=='SUPERVISOR','supervisor_only')
             kind=p.get('kind','worker')
             require(kind in ('worker','integration'),'invalid_slot_kind')
+            # Slot 1 is the unique, immortal integration slot; a second
+            # integration-kind slot would silently break the kind-family
+            # invariant (review finding 1).
+            require(kind!='integration','integration_slot_unique')
             require(len(s['slots'])<self.SLOT_GUARD,'slot_guard_reached')
             n,slot=self._spawn_slot(s,kind)
             return {'slot':n,'kind':kind,'path':slot['path'],
@@ -458,6 +469,8 @@ class Control:
             require(not slot['engine'].get('provisioned'),'slot_provisioned')
             require(n!='1','integration_slot_immortal')
             text(p.get('evidence'),'retire_evidence')
+            require(not slot['engine'].get('preserved_provisions'),
+                    'slot_has_preserved_history')
             del s['slots'][n]
             return {'retired':n,'slots_total':len(s['slots'])}
         if op=='instance_fencing_set':
@@ -526,12 +539,13 @@ class Control:
                 # (supervisor slot_rebind) — auto-spawn never masks that:
                 # it fires only when NO free slot of the kind exists at all.
                 if not any(v['task'] is None and v['kind']==t['kind'] for v in s['slots'].values()):
+                    # Integration-kind tasks never auto-spawn: slot 1 is the
+                    # unique integration slot (review finding 1).
+                    require(t['kind']!='integration','integration_slot_busy')
                     require(len(s['slots'])<self.SLOT_GUARD,'slot_guard_reached')
                     n,_=self._spawn_slot(s,t['kind'])
                     available=[(n,s['slots'][n])]
                 else:
-                    require(any(v['task'] is None and v['kind']==t['kind'] for v in s['slots'].values()),
-                            'no_free_slot')
                     require(False,'stale_provision_requires_recovery')
             if s.get('instance_fencing')=='enforced':
                 require(p.get('_resolved_instance') is not None,'instance_binding_required')

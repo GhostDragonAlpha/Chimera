@@ -78,9 +78,9 @@ class SlotExpansionTests(unittest.TestCase):
         self.assertEqual(r['path'], str(self.root / 'slots' / 'slot-06'))
         self.assertEqual(slot_layout(self.root, 6)['engine']['port_candidate'],
                          8106)
-        # integration-kind spawn works and is distinct
-        r2 = c.call('slot_spawn', 'super-secret', kind='integration')['result']
-        self.assertEqual(r2['kind'], 'integration')
+        # slot 1 is the UNIQUE integration slot: a second one refuses by name
+        with self.assertRaisesRegex(Refusal, 'integration_slot_unique'):
+            c.call('slot_spawn', 'super-secret', kind='integration')
         # refusals by name
         for args, err in ((dict(kind='gpu'), 'invalid_slot_kind'),
                           (dict(), 'supervisor_only')):
@@ -107,6 +107,34 @@ class SlotExpansionTests(unittest.TestCase):
             actor = w if err == 'supervisor_only' else 'super-secret'
             with self.assertRaisesRegex(Refusal, err):
                 c.call('slot_retire', actor, **args)
+        # retired ids are NEVER reused (persisted high-water mark) and slots
+        # with preserved history refuse to retire
+        sub = self.root / 'r2'; sub.mkdir()
+        c2, tok2 = _spin(sub)
+        ra = c2.call('slot_spawn', 'super-secret')['result']      # id 6
+        rb = c2.call('slot_spawn', 'super-secret')['result']      # id 7
+        self.assertEqual(rb['slot'], '7')
+        c2.call('slot_retire', 'super-secret', slot='7', evidence='hwm test')
+        rc = c2.call('slot_spawn', 'super-secret')['result']
+        self.assertEqual(rc['slot'], '8')  # NOT 7 - high-water held
+        # preserved history blocks retire
+        con = c2.connect(); con.execute('BEGIN IMMEDIATE')
+        s = json.loads(con.execute('SELECT body FROM state WHERE id=1').fetchone()[0])
+        s['slots']['8']['engine']['preserved_provisions'] = [{'reason': 'x'}]
+        con.execute('UPDATE state SET body=? WHERE id=1', (json.dumps(s),))
+        con.execute('COMMIT'); con.close()
+        with self.assertRaisesRegex(Refusal, 'slot_has_preserved_history'):
+            c2.call('slot_retire', 'super-secret', slot='8', evidence='blocked')
+        # integration task never auto-spawns when slot 1 is busy
+        ep2 = c2.call('snapshot', tok2)['result']['epoch']
+        c2.call('create_task', tok2, task='ilead', epoch=ep2, base=BASE,
+                scopes=['tools/labs/ilead'], kind='integration', packet='f')
+        c2.call('claim', tok2, task='ilead')  # takes slot 1
+        c2.call('create_task', tok2, task='ilead2', epoch=ep2, base=BASE,
+                scopes=['tools/labs/ilead2'], kind='integration', packet='f')
+        with self.assertRaisesRegex(Refusal, 'integration_slot_busy'):
+            c2.call('claim', tok2, task='ilead2')
+
         # guard fuse: spawn until the named refusal fires (ids grow past
         # retired slots, so the refusal may arrive before the count hits
         # SLOT_MAX - exactly the id-space binding the guard now enforces)
