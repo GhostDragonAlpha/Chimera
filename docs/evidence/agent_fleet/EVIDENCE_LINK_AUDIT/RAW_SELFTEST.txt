@@ -1,0 +1,36 @@
+SELF-TEST -- docs-evidence-link-audit-01 enumeration teeth
+fixture: docs/fixture/FIXTURE.md (17 planted refs, 9 distractors)
+planted found: 17/17
+
+ALL RECORDS (26):
+  L03 RESOLVED          PATH   docs/AGENT_START.md                        anchor=                     node=            
+  L03 RESOLVED          PATH   tools/agent_fleet/control.py               anchor=                     node=            
+  L04 RESOLVED          PATH   control.py                                 anchor=                     node=            
+  L04 RESOLVED          PATH   tools/agent_fleet                          anchor=                     node=            
+  L05 DANGLING          PATH   docs/DOES_NOT_EXIST_XYZ.md                 anchor=                     node=            path-not-in-tree
+  L05 DANGLING          PATH   tools/no_such_dir_zz/file.py               anchor=                     node=            path-not-in-tree
+  L06 RESOLVED          MDLINK AGENT_START.md                             anchor=                     node=            
+  L06 RESOLVED          MDLINK THE_AGENT_FLEET.md                         anchor=pull-request-workflo node=            
+  L07 DANGLING          MDLINK THE_AGENT_FLEET.md                         anchor=no-such-anchor       node=            anchor-missing
+  L08 IGNORED           ANCHOR #section-anchor                            anchor=                     node=            anchor
+  L09 RESOLVED          PR     #51                                        anchor=                     node=            
+  L09 RESOLVED          PR     PR #64                                     anchor=                     node=            
+  L09 RESOLVED          PR     https://github.com/x/y/pull/62             anchor=                     node=            
+  L10 DANGLING          PR     PR #98                                     anchor=                     node=            pr-not-in-history
+  L11 CONTROLLER_LABELED PR     PR #99                                     anchor=                     node=            pr-labeled-open
+  L12 CONTROLLER_LABELED TASKID fleet-maintenance-amendment-01             anchor=                     node=            controller-id:labeled
+  L14 DANGLING          TASKID some-worker-task-01                        anchor=                     node=            unlabeled-controller-id
+  L15 IGNORED           GITREF astra/gait-capture                         anchor=                     node=            git-ref
+  L15 IGNORED           GLOB   test_*.py                                  anchor=                     node=            glob
+  L15 IGNORED           SHA    be615277                                   anchor=                     node=            sha
+  L15 IGNORED           URL    https://git-scm.com/docs/git-worktree      anchor=                     node=            external-url
+  L16 IGNORED           PROSE  9/9                                        anchor=                     node=            prose-slash-pair
+  L16 IGNORED           PROSE  CPU/GDI                                    anchor=                     node=            prose-slash-pair
+  L16 IGNORED           PROSE  before/after                               anchor=                     node=            prose-slash-pair
+  L17 IGNORED           GITREF origin/astra/tasks/fleet-orient-continuati anchor=                     node=            git-ref
+  L18 RESOLVED          PATH   test_capture_window.py                     anchor=                     node=test_exists 
+
+COUNTS: CONTROLLER_LABELED=2, DANGLING=5, IGNORED=9, RESOLVED=10
+
+FAILURES: 0
+FALSIFIER STATUS: NOT TRIGGERED (every planted ref enumerated and classified exactly; distractors ignored with reasons)

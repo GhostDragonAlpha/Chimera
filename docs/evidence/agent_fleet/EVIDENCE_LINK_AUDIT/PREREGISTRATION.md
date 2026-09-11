@@ -146,3 +146,16 @@ Preregistration (this commit) -> script + self-test -> raw outputs (*.txt)
 -> FINDINGS.md -> RESULT.md -> trailer `Agent: subagent-worker-09`, PR base
 astra/gait-capture. Read-only against every doc; no engine, no GPU, no DYAD,
 no controller mutation, no network.
+
+## GEN-1 CLARIFICATION (appended before the implementation commit, same lane)
+
+First enumeration pass over the real fleet docs (commit-time check) showed the
+PATH shape `[\w.-]+/[\w.-]+` also matches PROSE slash-pairs ("CPU/GDI",
+"task/generation", "9/9", "before/after"). These are plain prose under the
+pinned "everything else ... is not a candidate" clause, and are now recorded as
+IGNORED(prose-slash-pair) -- never silently skipped, never counted dangling.
+Deterministic rule: a slash-token with no known extension, not starting with
+./ or ../, whose FIRST segment is not an existing repo directory, is prose.
+Git ref tokens (astra/..., origin/...) are IGNORED(git-ref), recorded. Nothing
+else changed; the label vocabulary, context window, and resolution order are
+exactly as pinned above. Fixture updated to plant both classes.
