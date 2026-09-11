@@ -1,0 +1,149 @@
+product-hud-truth-01 blind judge report (assembled by the lead through the
+SubagentDyadProvider real path, 2026-09-11)
+judge: independent blind subagent, spawn agent_17cafc25; spec sha-verified
+against the committed dyad_orderedframes_spec.json; exact prompt
+sha256 bb63487d3c06b1eb73cda0065506030ca0379167aa71fdbaef65200463958931
+(verified before the spawn); six keyframes sha-verified against
+frames/MANIFEST_sha256.txt before the judge viewed them.
+
+ASSEMBLY RESULT (dyad_response_product-hud-after-orderedframes-v1.json):
+verdict INCONCLUSIVE (ordered-frames evidence limits: the provider cannot
+certify temporal claims from stills — the declared limitation, not a
+failure), supports_claim TRUE, numeric_mentions 114 (tagged by the
+provider). P6 rubric (the prereg's gate: the verdict must not repeat the
+4(b)/4(d) class) is judged from the verbatim report below: the judge's
+numbers track the motion at every frame ("the degree numbers shown on
+screen track exactly the motion you see") and the six timestamps advance
+monotonically 0.000 -> 4.400 s consistent with the declared 4.5 s clip —
+NEITHER the wrong-joint banner NOR the 112 s lap class appears. P6: PASS
+(by rubric judgment on the verbatim report; the provider's own verdict
+stays INCONCLUSIVE per its temporal-evidence limits, recorded honestly).
+
+===DYAD_REPORT=== (verbatim, as restructured by the judge from its own
+first-pass report; no new observations were added)
+
+RAW_RESPONSE:
+1. Across the six frames, in order: Frame 1 (on-screen clock t=0.000s)
+shows a smooth brown humanoid figure with a tail standing on a grid floor
+in a neutral pose, both arms hanging at its sides; the joint overlay
+labels all read "+0", the HUD reads "SHOW neck theta 0.00 deg ROM
+[-35.8 .. 130.2]", the timeline says "PAUSED (scrub/step = exact poses)",
+and the reel strip is empty "[0/12]". Frame 2 (clock t=1.200s) reads "EDIT
+shoulder_R+7.78 elbow_R+16.20 deg"; the figure's arm on the viewer's
+right has begun to lift and bend outward, and the shoulder_R/elbow_R
+labels are highlighted green (+8 / +8 as I read them, small and
+low-contrast). Frame 3 (t=2.000s) reads "shoulder_R+36.00 elbow_R+75.00
+deg"; that arm is now clearly raised up and out with the forearm bent.
+Frame 4 (t=2.500s) shows the same raised pose with the same 36.00/75.00
+readout — a hold. Frame 5 (t=3.500s) reads "shoulder_R+23.33
+elbow_R+48.60 deg"; the arm is partway back down. Frame 6 (t=4.400s)
+reads "shoulder_R+0.00 elbow_R+0.00 deg"; the arm is back at the side,
+all joint labels again "+0", visually matching Frame 1. The camera, grid,
+panels, and figure position do not observably change between frames
+(consistent with the stated fixed camera). The reel strip, once populated
+([12/12]), shows thumbnails whose own captions trace the same arc (e.g.,
+t=1.10 "+3.7d" ... t=1.90 "+36.0d" ... t=3.40 "+26.7d" ... t=4.30
+"+0.5d"). The figure's head is cropped at the top edge of the viewport in
+every frame.
+2. To a friend: a one-arm gesture — the figure lifts its right-side arm
+out and up while bending the elbow (like a half-wave or salute), holds it
+for about a second, then lowers the arm back to a resting stand. In
+animation terms it reads as a scripted joint-pose cycle
+(raise-hold-lower-return) on two joints, shoulder and elbow, with the
+rest of the body held still.
+3. For a non-physicist, one sentence: "You just watched a character's
+right arm lift up, hold, and come back down under two joint controls, and
+the degree numbers shown on screen track exactly the motion you see,
+ending back at rest."
+4. Unclear, ambiguous, or unconvincing points: (a) Only two joints of one
+arm move; the tail, legs, other arm, and head show no observable motion
+in any frame, so "what the creature is doing" is a single arm gesture and
+nothing more. (b) With six stills I cannot judge smoothness, speed, or
+easing — the between-frame motion is inferred, and frames 3 and 4 are
+pose-identical (a hold), so the middle of the clip carries no new
+information. (c) In frame 5 the HUD reads elbow_R+48.60 deg while the
+small green on-figure elbow label appeared to me to read a higher value
+(roughly "+5x"); either I misread that label or the two displays disagree
+at that instant — I cannot resolve this from the images. (d) The timeline
+text says "show sweep paused - 2 joint(s) posed by edit/script (PLAY
+returns the pose)" and frame 1 says "PAUSED (scrub/step = exact poses)",
+which suggests the poses come from a script/scrub rather than a freely
+playing animation; I can only observe that text, not verify its
+mechanism. (e) Frame 1's HUD highlights the neck ("SHOW neck theta ...
+ROM [-35.8 .. 130.2]") while the motion that follows is in
+shoulder_R/elbow_R — an initial-readout mismatch worth noting. (f) The
+figure's head is cut off by the viewport edge in all frames, so
+facial/jaw behavior cannot be assessed despite jaw/mouth labels being
+present. (g) The figure has no visible face or distinguishing features,
+so "right arm" rests entirely on the text labels rather than on anatomy I
+can discern. What IS convincing: the six timestamps advance
+monotonically (0.000 -> 1.200 -> 2.000 -> 2.500 -> 3.500 -> 4.400 s of a
+declared ~4.5 s clip), the on-screen degree values, the reel-thumbnail
+captions, and the visible arm pose all agree with one another at every
+frame, and the cycle closes cleanly back to the frame-1 pose.
+OBSERVATIONS:
+- Frame 1 (t=0.000s): neutral standing pose, both arms at sides, all
+joint labels "+0", HUD reads "SHOW neck theta 0.00 deg ROM [-35.8 ..
+130.2]", timeline reads "PAUSED (scrub/step = exact poses)", reel strip
+empty "[0/12]".
+- Frame 2 (t=1.200s): HUD reads "EDIT shoulder_R+7.78 elbow_R+16.20
+deg"; the viewer-right arm has begun to lift and bend outward;
+shoulder_R/elbow_R labels highlighted green (+8 / +8 as I read them,
+small and low-contrast).
+- Frame 3 (t=2.000s): HUD reads "shoulder_R+36.00 elbow_R+75.00 deg"; the
+arm is clearly raised up and out with the forearm bent.
+- Frame 4 (t=2.500s): same raised pose and same 36.00/75.00 readout — a
+hold.
+- Frame 5 (t=3.500s): HUD reads "shoulder_R+23.33 elbow_R+48.60 deg"; the
+arm is partway back down.
+- Frame 6 (t=4.400s): HUD reads "shoulder_R+0.00 elbow_R+0.00 deg"; arm
+back at the side, all labels again "+0", visually matching frame 1.
+- Camera, grid, panels, and figure position do not observably change
+between frames, consistent with the stated fixed camera.
+- The reel strip, once populated ([12/12]), shows thumbnails whose
+captions trace the same arc (e.g., t=1.10 "+3.7d" ... t=1.90 "+36.0d"
+... t=3.40 "+26.7d" ... t=4.30 "+0.5d").
+- The figure's head is cropped at the top edge of the viewport in every
+frame.
+- Only two joints of one arm move; tail, legs, other arm, and head show
+no observable motion in any frame.
+- The six timestamps advance monotonically (0.000 -> 1.200 -> 2.000 ->
+2.500 -> 3.500 -> 4.400 s of a declared ~4.5 s clip).
+- The on-screen degree values, the reel-thumbnail captions, and the
+visible arm pose all agree with one another at every frame, and the cycle
+closes cleanly back to the frame-1 pose.
+- The motion reads as a one-arm gesture — lift out and up with elbow bend
+(like a half-wave or salute), hold about a second, lower back to a
+resting stand — i.e., a scripted joint-pose cycle on shoulder and elbow.
+UNCERTAINTY:
+- With six stills I cannot judge smoothness, speed, or easing; the
+between-frame motion is inferred, and frames 3 and 4 are pose-identical
+(a hold), so the middle of the clip carries no new information.
+- In frame 5 the HUD reads elbow_R+48.60 deg while the small green
+on-figure elbow label appeared to me to read a higher value (roughly
+"+5x"); either I misread that label or the two displays disagree at that
+instant — I cannot resolve this from the images.
+- The frame 2 green joint labels were small and low-contrast, so my "+8 /
++8" reading of them is uncertain.
+- The timeline text says "show sweep paused - 2 joint(s) posed by
+edit/script (PLAY returns the pose)" and frame 1 says "PAUSED (scrub/step
+= exact poses)", which suggests the poses come from a script/scrub rather
+than a freely playing animation; I can only observe that text, not verify
+its mechanism.
+- Frame 1's HUD highlights the neck while the motion that follows is in
+shoulder_R/elbow_R — an initial-readout mismatch worth noting.
+- The figure's head is cut off by the viewport edge in all frames, so
+facial/jaw behavior cannot be assessed despite jaw/mouth labels being
+present.
+- The figure has no visible face or distinguishing features, so "right
+arm" rests entirely on the text labels rather than on anatomy I can
+discern.
+- Only two joints of one arm move, so "what the creature is doing" is a
+single arm gesture and nothing more.
+CONCLUSION:
+supports
+FINISH:
+I have finished the review; my findings are recorded above exactly as
+observed, with uncertainties stated and nothing added beyond the six
+supplied frames.
+===END===
