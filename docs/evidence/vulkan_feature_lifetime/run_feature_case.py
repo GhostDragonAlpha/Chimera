@@ -193,6 +193,26 @@ def main(argv=None) -> int:
     shutil.copy2(exe, staged)
     shutil.copytree(exe.parent / "shaders", runtime / "shaders")
 
+    staged_shader_records: list[dict] = []
+    if args.case == "F3_FROST":
+        # DISCOVERED ADJACENT DEFECT (recorded, not fixed here — outside this
+        # task's scopes/statement): the derived shader build emits
+        # render_tri_frost.frag.spv but Engine::load_frost reads the BARE name
+        # shaders/render_tri_frost.spv (engine.cpp:4754), the only read that
+        # breaks the derived convention. Historical runtimes carried that file
+        # by hand. To execute the shipped frost load path from a clean private
+        # build, stage a DERIVED copy: glslc-compiled from the repo's own
+        # render_tri_frost.frag, command + hashes recorded below.
+        frag_src = repo / "ChimeraEngine" / "engine" / "shaders" / "render_tri_frost.frag"
+        glslc = shutil.which("glslc") or str(
+            Path(os.environ.get("VULKAN_SDK", "C:/VulkanSDK/1.4.328.1")) / "Bin" / "glslc.exe")
+        derived = runtime / "shaders" / "render_tri_frost.spv"
+        cmd = [str(glslc), "-fshader-stage=frag", "-O", str(frag_src), "-o", str(derived)]
+        subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+        staged_shader_records.append({"command": cmd,
+                                      "source_sha256": sha256_file(frag_src),
+                                      "output_sha256": sha256_file(derived)})
+
     fixture_hashes = {name: sha256_file(fixtures / name) for name in (
         "skeleton/joints_pack.bin", "skeleton/joints_pack.npz",
         "water_gpu/water_payload.npz", "frost_gt/frost_engine.bin",
@@ -210,6 +230,7 @@ def main(argv=None) -> int:
         "runner_sha256": sha256_file(Path(__file__).resolve()),
         "fixture_root": str(fixtures),
         "fixture_sha256": fixture_hashes,
+        "staged_shader_records": staged_shader_records,
         "shader_manifest_sha256": hashlib.sha256(
             json.dumps(shader_hashes, sort_keys=True, separators=(",", ":")).encode("utf-8")
         ).hexdigest(),
