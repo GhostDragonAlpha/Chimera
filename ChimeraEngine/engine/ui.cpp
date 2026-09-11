@@ -1940,14 +1940,16 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         if (joints_owner_ui_ == 1 && joints_edit_mask_ui_ != 0) {
             // product-hud-truth-01 (the PR #97 blind judge, finding 4(d)):
             // beside edit-held motion this plane presented the sweep's idle
-            // 112 s lap — a clock nobody was driving. The pose claim IS the
-            // interaction's t=0, and the readout follows the timeline the
-            // operator/script drives through the show clock's own scrub
-            // (POST /show {"time":T} — the timeline's HTTP twin). Time stays
-            // engine-owned (D1): this only differences the pushed clk_t_.
+            // 112 s lap — a clock nobody was driving. The readout now shows
+            // the show-clock PARAMETER itself — the exact timeline the driving
+            // interaction pins through /show's scrub (the timeline's HTTP
+            // twin) — labeled with the sweep's state, so no unlabeled lap and
+            // no second clock can disagree with the timeline panel's own bar.
+            // (Correction, run1 F2 retained: an origin subtracted at the pose
+            // claim captured the pre-scrub clock and shifted every reading by
+            // a constant; the parameter itself needs no origin.)
             // The named thetas are the driven joints' live values, the same
             // source the HUD row uses.
-            const double edit_t = clk_t_ - clk_edit_t0_;
             std::string js;
             int named = 0;
             for (size_t k = 0; k < joints_.size() && k < 32 && named < 2; ++k) {
@@ -1959,8 +1961,8 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
                 ++named;
             }
             snprintf(tb, sizeof(tb),
-                     "EDIT t = %.3f s (pose claim = 0)  |  %s deg  |  show sweep paused",
-                     edit_t, js.c_str());
+                     "EDIT t = %.3f s (show clock; show sweep paused)  |  %s deg",
+                     clk_t_, js.c_str());
         } else {
         // the readout: time / loop, joint, theta, state — the engine's own rows
         // 2026-09-05 (the eye): the readout printed the RAW clock (t = 135.2

@@ -1,0 +1,6 @@
+i=0 wall=1789167789.336 hud_rows=[] show={"time": 0.0, "playing": false, "clock": "joints"} joints_owner=edit thetas={"shoulder_R": 0.0, "elbow_R": 0.0}
+i=12 wall=1789167826.014 hud_rows=[] show={"time": 1.2, "playing": false, "clock": "joints"} joints_owner=edit thetas={"shoulder_R": 7.776, "elbow_R": 16.2}
+i=20 wall=1789167852.786 hud_rows=[] show={"time": 2.0, "playing": false, "clock": "joints"} joints_owner=edit thetas={"shoulder_R": 36.0, "elbow_R": 75.0}
+i=25 wall=1789167868.692 hud_rows=[] show={"time": 2.5, "playing": false, "clock": "joints"} joints_owner=edit thetas={"shoulder_R": 36.0, "elbow_R": 75.0}
+i=35 wall=1789167899.740 hud_rows=[] show={"time": 3.5, "playing": false, "clock": "joints"} joints_owner=edit thetas={"shoulder_R": 23.328, "elbow_R": 48.6}
+i=44 wall=1789167928.610 hud_rows=[] show={"time": 4.4, "playing": false, "clock": "joints"} joints_owner=edit thetas={"shoulder_R": 0.0, "elbow_R": 0.0}

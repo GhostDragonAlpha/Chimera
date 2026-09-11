@@ -248,9 +248,8 @@ private:
     // Derived (never pushed): while owner==1 the show sweep cannot write thetas
     // (engine.cpp's edit branch is exclusive of the show branch), so any theta
     // change in the pushed view comes from a programmatic pose driver. Bit k =
-    // joint k. Cleared when the show reclaims the pose and on each new claim.
+    // joint k. Cleared when the show reclaims the pose.
     uint32_t joints_edit_mask_ui_ = 0;
-    double  clk_edit_t0_ = 0.0;                 // the engine clock at the claim (age origin)
     std::vector<std::array<float, 4>> slider_tracks_;   // row i's track rect (prepare-owned)
     int   drag_joint_ = -1;                     // drag_kind_ 7: which slider is grabbed
     float slider_theta_at(int row, int x) const;        // linear map track-x -> theta (ROM-clamped)
@@ -345,12 +344,12 @@ public:
     // the pose kernel read this frame). While owner==1 any theta change is a
     // programmatic drive (the sweep branch cannot run); a joint whose theta
     // moved IS a joint the demo/script is driving. The readouts follow it.
+    // (Correction, run1 F2 retained: the clock plane shows the show-clock
+    // PARAMETER itself — the timeline the script drives through /show's scrub
+    // — so no origin event is recorded here; an origin taken at the owner
+    // transition captured the pre-scrub clock and shifted every reading.)
     void set_joints_view(const std::vector<StudioJoint>& j, int owner, int selected) {
         if (owner == 1) {
-            if (joints_owner_ui_ != 1) {            // 0->1: a fresh claim episode
-                joints_edit_mask_ui_ = 0;
-                clk_edit_t0_ = clk_t_;              // age origin on the ENGINE's clock
-            }
             for (size_t k = 0; k < j.size() && k < 32; ++k) {
                 const float prev = (k < joints_.size()) ? joints_[k].theta : j[k].theta;
                 if (std::fabs(j[k].theta - prev) > 1e-4f)
@@ -358,7 +357,6 @@ public:
             }
         } else {
             joints_edit_mask_ui_ = 0;               // the show owns the pose again
-            if (joints_owner_ui_ == 1) clk_edit_t0_ = 0.0;
         }
         joints_ = j; joints_owner_ui_ = owner; joints_sel_ui_ = selected;
     }
