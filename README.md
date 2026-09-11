@@ -8,6 +8,12 @@ geometry, with the CPU providing derivations and reference tests before GPU port
 The engine and its verification workflow are under active development. A passing
 fixture or a completed local term hierarchy is not a completed game engine.
 
+Parallel agent execution is still being integrated. See the
+[run-queue acceptance record](docs/THE_RUN_QUEUE.md) for the tested controller,
+subprocess and isolation behavior and the remaining provider/provisioning gates.
+The launcher requires an explicit execution profile; a claim poller by itself
+does not run a coding model.
+
 ## Start here
 
 - **Agents:** [universal entry](docs/AGENT_START.md), then the live controller and

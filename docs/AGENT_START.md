@@ -1,5 +1,14 @@
 # One prompt for every agent
 
+Current execution limits and the operator-free target are recorded in
+[THE_RUN_QUEUE.md](THE_RUN_QUEUE.md). A Python claim poller alone is not a
+coding agent. The lead supplies and verifies a real provider executor,
+provisions the assigned Git worktree, and handles review/resource handoff.
+Workers resume owned work before claiming more; they do not interpret a missing
+executor or unprovisioned worktree as permission to consume additional tasks.
+Never automatically reassign work from a timeout alone. Preserve ownership until
+the existing writer and its resources are verified drained.
+
 **Current assignments, qualification, provisioning and leadership come from the
 live controller.** The 2026-09-09 bootstrap demonstration is historical evidence
 (`docs/evidence/agent_fleet/BOOTSTRAP_LIVE-122537/`), not a current readiness or

@@ -21,12 +21,23 @@ class RunQueueTests(unittest.TestCase):
         with self.assertRaisesRegex(QueueRefusal, "review_head_mismatch"):
             q.acknowledge_integration("one", head="changed")
 
-    def test_expired_lease_requeues_and_fences_old_worker(self):
+    def test_expired_lease_holds_owner_until_evidenced_recovery(self):
         q = RunQueue(); q.enqueue("one")
         run = q.dispatch(owner="a", capacity=1, now=0, lease_seconds=3)[0]
-        self.assertEqual([r.task for r in q.expire(now=3)], ["one"])
+        expired = q.expire(now=3)
+        self.assertEqual([r.task for r in expired], ["one"])
+        self.assertEqual((expired[0].state, expired[0].owner, expired[0].generation),
+                         ("RECOVERY_HOLD", "a", 1))
         with self.assertRaisesRegex(QueueRefusal, "task_not_running"):
             q.heartbeat("one", owner="a", generation=run.generation, now=3, lease_seconds=3)
+        # The former expectation dispatched owner b immediately after timeout.
+        # That is unsafe because timeout is not evidence that owner a drained.
+        self.assertEqual(q.dispatch(owner="b", capacity=1, now=4, lease_seconds=3), [])
+        with self.assertRaisesRegex(QueueRefusal, "preserved_and_drained_evidence_required"):
+            q.recover("one", preserved_evidence="workspace preserved", drained_evidence="")
+        recovered = q.recover("one", preserved_evidence="workspace preserved",
+                              drained_evidence="writer and runtime stopped")
+        self.assertEqual(recovered.generation, 1)
         fresh = q.dispatch(owner="b", capacity=1, now=4, lease_seconds=3)[0]
         self.assertEqual(fresh.generation, 2)
 
@@ -44,11 +55,50 @@ class RunQueueTests(unittest.TestCase):
         with self.assertRaisesRegex(QueueRefusal, "lease_expired"):
             q.submit_review("one", owner="a", generation=run.generation, now=2, head="h", evidence="e")
 
+    def test_numeric_boundaries_are_refused(self):
+        q = RunQueue(); q.enqueue("one")
+        for capacity in (True, 1.5, -1):
+            with self.subTest(capacity=capacity), self.assertRaisesRegex(QueueRefusal, "invalid_dispatch_parameters"):
+                q.dispatch(owner="a", capacity=capacity, now=0, lease_seconds=1)
+        for now, duration in ((float("inf"), 1), (0, float("nan")), (1e308, 1e308)):
+            with self.subTest(now=now, duration=duration), self.assertRaisesRegex(QueueRefusal, "invalid_dispatch_parameters"):
+                q.dispatch(owner="a", capacity=1, now=now, lease_seconds=duration)
+        for now in (float("nan"), float("inf"), True):
+            with self.subTest(expiry=now), self.assertRaisesRegex(QueueRefusal, "invalid_expiry_time"):
+                q.expire(now=now)
+        run = q.dispatch(owner="a", capacity=1, now=0, lease_seconds=2)[0]
+        with self.assertRaisesRegex(QueueRefusal, "nonfinite_lease_parameters"):
+            q.heartbeat("one", owner="a", generation=run.generation,
+                        now=True, lease_seconds=1)
+        with self.assertRaisesRegex(QueueRefusal, "lease_expired"):
+            q.submit_review("one", owner="a", generation=run.generation,
+                            now=True, head="h", evidence="e")
+
+    def test_heartbeat_rejects_overflow_without_mutating_lease(self):
+        q = RunQueue(); q.enqueue("one")
+        run = q.dispatch(owner="a", capacity=1, now=0, lease_seconds=10)[0]
+        with self.assertRaisesRegex(QueueRefusal, "lease_overflow"):
+            q.heartbeat("one", owner="a", generation=run.generation,
+                        now=1e308, lease_seconds=1e308)
+        self.assertEqual(q.expire(now=9), [])
+
     def test_returned_runs_are_defensive_views(self):
         q = RunQueue(); q.enqueue("one")
         run = q.dispatch(owner="a", capacity=1, now=0, lease_seconds=2)[0]
         run.state = "INTEGRATED"; run.history.append("forged")
         self.assertEqual(q.snapshot()[0]["state"], "RUNNING")
+
+        expired = q.expire(now=2)
+        expired[0].state = "READY"; expired[0].owner = None
+        expired[0].history.append("forged expiry")
+        held = q.snapshot()[0]
+        self.assertEqual((held["state"], held["owner"]), ("RECOVERY_HOLD", "a"))
+        with self.assertRaisesRegex(QueueRefusal, "task_not_running"):
+            q.heartbeat("one", owner="a", generation=1, now=1, lease_seconds=1)
+        recovered = q.recover("one", preserved_evidence="files retained",
+                              drained_evidence="process stopped")
+        recovered.state = "INTEGRATED"; recovered.history.append("forged recovery")
+        self.assertEqual(q.snapshot()[0]["state"], "READY")
 
 
 if __name__ == "__main__":
