@@ -828,11 +828,9 @@ void Engine::shutdown() {
     ui_.shutdown();   // THE STUDIO: before any pool/device teardown
     if (cmd_pool_)    vkDestroyCommandPool(device_, cmd_pool_,   nullptr);
     destroy_depth_resources();
-    if (rt_framebuffer_) vkDestroyFramebuffer(device_, rt_framebuffer_, nullptr);
-    if (rt_render_pass_) vkDestroyRenderPass(device_, rt_render_pass_, nullptr);
-    if (rt_view_)     vkDestroyImageView(device_, rt_view_,      nullptr);
-    if (rt_mem_)      vkFreeMemory(device_,  rt_mem_,            nullptr);
-    if (rt_image_)    vkDestroyImage(device_,  rt_image_,        nullptr);
+    destroy_offscreen_resources();   // VUID-vkDestroyDevice-device-05137: the offscreen
+                                     // family (color/MSAA/depth + pass + framebuffer) dies
+                                     // here, once, before the device.
 
     for (auto f : frames_) vkDestroyFramebuffer(device_, f, nullptr);
     for (auto v : img_views_) vkDestroyImageView(device_, v, nullptr);
@@ -5509,9 +5507,16 @@ void Engine::destroy_triangle_resources() {
     if (ov_ibuf_) { vkDestroyBuffer(device_, ov_ibuf_, nullptr); vkFreeMemory(device_, ov_imem_, nullptr); ov_ibuf_ = VK_NULL_HANDLE; }
     if (w_vis_vbuf_) { vkDestroyBuffer(device_, w_vis_vbuf_, nullptr); vkFreeMemory(device_, w_vis_vmem_, nullptr); w_vis_vbuf_ = VK_NULL_HANDLE; }
     if (w_vis_indirect_buf_) { vkDestroyBuffer(device_, w_vis_indirect_buf_, nullptr); vkFreeMemory(device_, w_vis_indirect_mem_, nullptr); w_vis_indirect_buf_ = VK_NULL_HANDLE; }
-    if (rt_depth_view_)  { vkDestroyImageView(device_, rt_depth_view_, nullptr); rt_depth_view_ = VK_NULL_HANDLE; }
-    if (rt_depth_image_) { vkDestroyImage(device_, rt_depth_image_, nullptr); rt_depth_image_ = VK_NULL_HANDLE; }
-    if (rt_depth_mem_)   { vkFreeMemory(device_, rt_depth_mem_, nullptr); rt_depth_mem_ = VK_NULL_HANDLE; }
+    // THE CONTACT SHADOW instruments are triangle-family tools: they die with the
+    // family (they had NO destroy anywhere — the VkShaderModule children reported
+    // live by VUID-vkDestroyDevice-device-05137).
+    if (tri_shadow_pipeline_) { vkDestroyPipeline(device_, tri_shadow_pipeline_, nullptr); tri_shadow_pipeline_ = VK_NULL_HANDLE; }
+    if (tri_shadow_frag_mod_) { vkDestroyShaderModule(device_, tri_shadow_frag_mod_, nullptr); tri_shadow_frag_mod_ = VK_NULL_HANDLE; }
+    if (tri_shadow_vert_mod_) { vkDestroyShaderModule(device_, tri_shadow_vert_mod_, nullptr); tri_shadow_vert_mod_ = VK_NULL_HANDLE; }
+    // NOTE: the rt_depth trio is NOT released here anymore. Offscreen ownership
+    // (color + MSAA + depth + pass + framebuffer) belongs to
+    // destroy_offscreen_resources(), which resize() and shutdown() both call —
+    // the old arrangement leaked every replaced depth generation at resize.
 }
 
 bool Engine::create_descriptor_sets() {
@@ -8590,11 +8595,10 @@ void Engine::resize(uint32_t w, uint32_t h) {
 
     // Recreate the offscreen target too, so its extent stays in lockstep with the swapchain
     // (the blit offscreen -> swapchain and the /frame capture both assume matching extents).
-    if (rt_framebuffer_) vkDestroyFramebuffer(device_, rt_framebuffer_, nullptr);
-    if (rt_render_pass_) vkDestroyRenderPass(device_, rt_render_pass_, nullptr);
-    if (rt_view_)        vkDestroyImageView(device_, rt_view_, nullptr);
-    if (rt_mem_)         vkFreeMemory(device_, rt_mem_, nullptr);
-    if (rt_image_)       vkDestroyImage(device_, rt_image_, nullptr);
+    // destroy_offscreen_resources() releases the WHOLE offscreen family — including the
+    // rt_depth trio (whose replaced generations used to leak here) and the rt_msaa trio
+    // — so every resize generation is destroyed exactly once (VUID 05137 law).
+    destroy_offscreen_resources();
     create_offscreen();
 
     // THE STUDIO: the UI's per-image framebuffers die with the swapchain views
@@ -8833,6 +8837,25 @@ void Engine::create_offscreen() {
     fci.height          = extent_.height;
     fci.layers          = 1;
     vkCreateFramebuffer(device_, &fci, nullptr, &rt_framebuffer_);
+}
+
+// The offscreen family has ONE owner: this helper. resize() calls it to release a
+// replaced generation; shutdown() calls it to release the final one — every object
+// created by create_offscreen() is destroyed exactly once, before vkDestroyDevice
+// (VUID-vkDestroyDevice-device-05137). Null-guarded, so a partial generation
+// (early MSAA-fallback exit) is handled and a second call destroys nothing.
+void Engine::destroy_offscreen_resources() {
+    if (rt_framebuffer_)  { vkDestroyFramebuffer(device_, rt_framebuffer_, nullptr);  rt_framebuffer_  = VK_NULL_HANDLE; }
+    if (rt_render_pass_)  { vkDestroyRenderPass(device_, rt_render_pass_, nullptr);   rt_render_pass_  = VK_NULL_HANDLE; }
+    if (rt_msaa_view_)    { vkDestroyImageView(device_, rt_msaa_view_, nullptr);      rt_msaa_view_    = VK_NULL_HANDLE; }
+    if (rt_msaa_image_)   { vkDestroyImage(device_, rt_msaa_image_, nullptr);         rt_msaa_image_   = VK_NULL_HANDLE; }
+    if (rt_msaa_mem_)     { vkFreeMemory(device_, rt_msaa_mem_, nullptr);             rt_msaa_mem_     = VK_NULL_HANDLE; }
+    if (rt_depth_view_)   { vkDestroyImageView(device_, rt_depth_view_, nullptr);     rt_depth_view_   = VK_NULL_HANDLE; }
+    if (rt_depth_image_)  { vkDestroyImage(device_, rt_depth_image_, nullptr);        rt_depth_image_  = VK_NULL_HANDLE; }
+    if (rt_depth_mem_)    { vkFreeMemory(device_, rt_depth_mem_, nullptr);            rt_depth_mem_    = VK_NULL_HANDLE; }
+    if (rt_view_)         { vkDestroyImageView(device_, rt_view_, nullptr);           rt_view_         = VK_NULL_HANDLE; }
+    if (rt_image_)        { vkDestroyImage(device_, rt_image_, nullptr);              rt_image_        = VK_NULL_HANDLE; }
+    if (rt_mem_)          { vkFreeMemory(device_, rt_mem_, nullptr);                  rt_mem_          = VK_NULL_HANDLE; }
 }
 
 bool Engine::create_framebuffers() {

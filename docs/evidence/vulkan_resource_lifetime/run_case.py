@@ -258,14 +258,16 @@ def main(argv=None) -> int:
         status = http_json(args.port, "GET", "/membrane_demo")
         glass_demo = http_bytes(args.port, "/glass")
         (output / "engine_after_demo.png").write_bytes(glass_demo)
+        v3_ok = bool(init_body.get("ok") and reset.get("ok") and step.get("ok") and status.get("ok"))
         result["cases"]["V3_membrane_demo"] = {
+            "passed": v3_ok,
             "upload_bytes": len(demo_bytes),
             "init_ok": bool(init_body.get("ok")), "reset_ok": bool(reset.get("ok")),
             "step_ok": bool(step.get("ok")), "status_ok": bool(status.get("ok")),
             "post_demo_png_bytes": len(glass_demo),
             "post_demo_png_sha256": hashlib.sha256(glass_demo).hexdigest(),
             "window_visible": bool(user.IsWindowVisible(w.HWND(hwnd)))}
-        if not (init_body.get("ok") and reset.get("ok") and step.get("ok") and status.get("ok")):
+        if not v3_ok:
             raise AssertionError(f"membrane demo case failed: {init_body} {reset} {step} {status}")
 
         result["window_before_close"] = bool(user.IsWindow(w.HWND(hwnd)))
