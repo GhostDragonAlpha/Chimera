@@ -2582,3 +2582,49 @@ docs half, engine/GPU lanes (`studio-grid-depth-01`, `engine-vulkan-cleanup-01`,
 re-verification, `window-capture-ownership-01` re-verification. GOV-01 clause 4
 canonical acceptance remains NOT_CLAIMED pending slot-1 review and full
 catalogue import.
+
+### Fleet maintenance — 2026-09-11, second wave (glm53-lead-02, epoch 5)
+
+Dated append; live authority remains the controller snapshot. Dispatch record
+(revs 542-550): `subagent-worker-02` re-qualified +`windows-shell` (host-shell
+access, lead-attested); realization tasks `window-capture-ownership-02` and
+`fleet-controller-upgrade-rehearsal-01` created at base `4604de40`; concurrent
+claims 545-547 and task/generation-bound provisions 548-550 bound slots 2/3/4
+(dashboard: rehearsal-01 slot 2, window-capture-02 slot 3,
+dyad-resident-identity-01 gen 5 slot 4); lead claimed
+`fleet-head-reconcile-01` gen 1 slot 1 with provision from recorded base
+`9022d669` reconciled to tip by merge (never force).
+
+- **fleet-head-reconcile-01 — verified complete on the fresh system.**
+  Instrument + tests + contract + onboarding rule were already delivered by
+  merged work (`fleet-head-reconcile-tool-01`, ancestor of tip). Fresh run at
+  tip: `test_worktree_reconcile.py` 10 tests, 0 failures, 1 documented
+  Windows-symlink skip (count grew from the tool-era 9 by the merged
+  ignored-cache regression); live bounded observation of slot-04 returned
+  `clean`, `stable`, `authority: none` with the worktree byte-identical
+  before/after; the continue rule with the exact inspector command is present
+  in `AGENT_START.md`, `THE_AGENT_FLEET.md`, `THE_WORKTREE_RECONCILIATION.md`
+  (evidence: `docs/evidence/agent_fleet/HEAD_RECONCILE/*20260911*`). The
+  packet's client-instance pending requirement is already registered
+  (`fleet-client-instance-01` OPEN below).
+- **fleet-run-queue-01 — DISPOSITION: superseded by delivered merged work.**
+  All three declared deliverables exist at tip `4604de40`
+  (`tools/agent_fleet/run_queue.py`, `tools/agent_fleet/test_run_queue.py`,
+  `docs/THE_RUN_QUEUE.md`), delivered through the merged run-queue
+  lead/launcher/adapter and execution-proof branches (PR #41-era). The task
+  record stays READY-stale (no controller retire operation exists); do not
+  claim it — this entry is the mapping.
+- **window-capture-ownership-01 → superseded by window-capture-ownership-02**
+  (fresh-system re-verification). The -01 attempt is preserved unmerged at
+  `origin/astra/tasks/window-capture-ownership-01` (`00a556b3`) plus the
+  preservation worktree; the provision no-reuse rule requires the new task id.
+  Its tip `b8d37f1f` carries a misbound dyad-resident fix belonging to the
+  dyad lane — documented, its substance re-derived there, not ported.
+- **fleet-controller-upgrade-01 — rehearsal lane realized as
+  `fleet-controller-upgrade-rehearsal-01`** (isolated transition suite). The
+  live transition is already evidenced once (`87e281e5`-era → `d012b4b1`);
+  after the rehearsal PR integrates and passes independent review, the parent
+  item closes with live-deployment acceptance still NOT_CLAIMED beyond the
+  one evidenced transition.
+- `dyad-resident-identity-01` fresh re-verification in flight (slot 4); PR
+  links appended to the controller review records on submission.

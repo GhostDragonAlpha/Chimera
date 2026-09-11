@@ -1,0 +1,14 @@
+# docs survey — continue rule + exact command at tip 4604de40 — 2026-09-11T05:29:21Z
+$ grep -n 'Benign head changes' docs/AGENT_START.md docs/THE_AGENT_FLEET.md
+docs/THE_AGENT_FLEET.md:170:Benign head changes are reconciled, not escalated (2026-09-10): refresh the
+docs/AGENT_START.md:107:Benign head changes are reconciled, not escalated: refresh the actual controller
+
+$ grep -n 'worktree_reconcile.py' docs/THE_WORKTREE_RECONCILIATION.md | head -3
+41:python tools/agent_fleet/worktree_reconcile.py \
+
+$ sed -n '41,45p' docs/THE_WORKTREE_RECONCILIATION.md
+python tools/agent_fleet/worktree_reconcile.py \
+  --repo CHECKOUT --expected-head FULL_SHA \
+  --scope PATH --scope PATH \
+  --evidence-root PATH
+```
