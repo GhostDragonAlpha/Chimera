@@ -1,0 +1,72 @@
+RESULT - catalogue-determinism-audit-01
+========================================
+
+Owner: subagent-worker-04. Branch: astra/tasks/catalogue-determinism-audit-01.
+Preregistration committed 72af259c BEFORE any builder run of this audit
+(no measured value appears in it). Audit-only lane: builder and tests
+UNTOUCHED. All evidence: docs/evidence/agent_fleet/CATALOGUE_DETERMINISM/*.txt.
+
+VERDICT: statement CONFIRMED as measured; all four predictions hold; no
+falsifier fired.
+
+  P1 (fixed path + fixed HEAD, byte-deterministic)  HOLD
+     5 consecutive runs -> 5 envelopes, one sha256
+     (d61a8c1e26025f8af9fcba0f715ec774a9cc99f10b59915aef6ec5fe35c25c1e),
+     one digest
+     (7c2ab66573938fff9b873e4fb6408267da2a072890c56f0414d70d3389140a7d).
+     RUN_BASELINE_REPEATS.txt
+
+  P2 (path variant moves ONLY path-carrier fields)   HOLD
+     throwaway worktree, same commit, different absolute path: exactly
+     {cards[*].source.path x240, source_manifest.catalog.path x1,
+      source_manifest.master.path x1}. RUN_PATH_VARIANT.txt
+
+  P3 (HEAD variant moves ONLY HEAD-carrier fields)   HOLD
+     one empty commit (sources byte-identical, git diff empty): exactly
+     {source_manifest.master.git_commit, source_manifest.catalog.git_commit}.
+     RUN_HEAD_VARIANT.txt
+
+  P4 (provenance inside the digest preimage)         HOLD
+     all three digests distinct. FIELD_ATTRIBUTION.txt ledger.
+
+  F1 non-determinism at fixed path+HEAD  did not fire
+  F2 unattributed field drift            did not fire (both variant
+     pattern sets matched the prediction EXACTLY; the both-moved
+     comparison found the exact union, no interaction term)
+  F3 any source edit                     did not fire (see diff boundary
+     below)
+
+WHAT WAS MEASURED (root-cause confirmation of the PR #57 review finding)
+  The catalogue builder output is bound to the checkout path through
+  cards[*].source.path + source_manifest.{master,catalog}.path (ROOT is
+  derived from __file__; absolute paths feed json.dumps), and to git HEAD
+  through source_manifest.{master,catalog}.git_commit (best-effort
+  `rev-parse HEAD`); payload_digest() hashes the whole payload, so any
+  provenance move re-rolls the transport digest. At a FIXED path and FIXED
+  HEAD the builder is byte-deterministic - the non-determinism the review
+  flagged is entirely, and only, path/HEAD provenance.
+
+BOUNDARIES / NOTES
+  - Attribution is exhaustive per leaf, not per heuristic: each comparison
+    first asserted equal leaf counts and equal leaf-path sequences, then
+    diffed values position-wise, so "no other field moved" covers the
+    entire payload including the 2692-line verbatim partition.
+  - The 240 in cards[*].source.path equals coverage.cards (240): every
+    card record carries its source path - one provenance copy per card.
+  - Consoles across the 5 baseline runs differ only in the `wrote <file>`
+    echo of the run-local --out argument; the envelope (the deliverable)
+    is what is claimed byte-identical.
+  - Scratch (gitignored .tmp/cda): 7 raw envelopes (hashes pinned in the
+    run records), diffwalk.py driver, console copies. The committed record
+    suffices to re-derive every number above.
+  - Probe cleanup: `git worktree remove E:\ChimeraWork\cda-throwaway-20260911`
+    executed after the runs, exit 0, worktree gone from `git worktree list`
+    and from disk before this evidence commit; the empty probe commit
+    8da4f4dc is unreachable scratch and is NOT pushed anywhere.
+
+DIFF BOUNDARY (audit-only lane)
+  This branch's diff vs 4c31999797a9383ea252019be1f32511709fa280 touches
+  ONLY docs/evidence/agent_fleet/CATALOGUE_DETERMINISM/*.txt - no builder,
+  no test, no tool, no source file (verifiable from the PR file list).
+
+Agent: subagent-worker-04

@@ -1,0 +1,65 @@
+FIELD-ATTRIBUTION TABLE - catalogue-determinism-audit-01
+=========================================================
+
+Which fields of the catalogue builder envelope carry path/HEAD provenance,
+measured by pairwise payload leaf-diff (every leaf compared position-wise;
+list indices aggregated to [*]; leaf-count and leaf-path-sequence equality
+asserted before each walk, so "no other field moved" is exhaustive over the
+whole payload). Builder: tools/agent_fleet/master_catalogue.py sha256
+cc47c240034a940ebb7b1b59a4310d8f8fedc9b99df03ae20f7e723e6d331014 at HEAD
+72af259c6648847d0c4fbc7fd37574589ae70eac.
+
+Inputs matrix (A = E:\ChimeraWork\slot-07, B = E:\ChimeraWork\cda-throwaway-20260911)
+  run          dir  HEAD                                   sources
+  baseline x5  A    72af259c6648847d0c4fbc7fd37574589ae70eac  pinned
+  pathvar  x1  B    72af259c6648847d0c4fbc7fd37574589ae70eac  pinned (same commit)
+  headvar  x1  B    8da4f4dc67a291978929b9c78a3ae559ca2ef40d  byte-identical
+
+Digest ledger
+  baseline  7c2ab66573938fff9b873e4fb6408267da2a072890c56f0414d70d3389140a7d
+  pathvar   92054a265937fafbdadc5a787d8375562c5436cd07ce221b4a853bc378e63504
+  headvar   8f722f8a05aef9237b0d83fe68c92528ca91e6fe19bd2a036fafcea89698ac1d
+  (all three distinct - P4: provenance is inside the digest preimage)
+
+ATTRIBUTION TABLE (differing leaf patterns per comparison)
+-------------------------------------------------------------------------------------------
+comparison                moved field                          moves  old -> new value
+-------------------------------------------------------------------------------------------
+baseline vs pathvar       cards[*].source.path                 240    A\docs\roadmap\holodeck_tasks.json
+  (path moved,             -> PATH carrier                            -> B\docs\roadmap\holodeck_tasks.json
+   HEAD fixed)                                                        (one per card; == coverage.cards)
+baseline vs pathvar       source_manifest.catalog.path           1    A\docs\roadmap\holodeck_tasks.json
+  same                                                                -> B\docs\roadmap\holodeck_tasks.json
+baseline vs pathvar       source_manifest.master.path            1    A\docs\THE_MASTER_LIST.md
+  same                                                                -> B\docs\THE_MASTER_LIST.md
+-------------------------------------------------------------------------------------------
+pathvar vs headvar        source_manifest.master.git_commit      1    72af259c6648847d0c4fbc7fd37574589ae70eac
+  (HEAD moved,             -> HEAD carrier                            -> 8da4f4dc67a291978929b9c78a3ae559ca2ef40d
+   path fixed)
+pathvar vs headvar        source_manifest.catalog.git_commit     1    72af259c6648847d0c4fbc7fd37574589ae70eac
+  same                                                                -> 8da4f4dc67a291978929b9c78a3ae559ca2ef40d
+-------------------------------------------------------------------------------------------
+baseline vs headvar       ALL FIVE patterns above (union),       244   no interaction term,
+  (both moved)             exact union, nothing extra                  no extra field
+-------------------------------------------------------------------------------------------
+
+Fields PROVEN path-bound (move iff the absolute checkout path moves):
+  cards[*].source.path, source_manifest.master.path, source_manifest.catalog.path
+Fields PROVEN HEAD-bound (move iff git HEAD moves, path held fixed):
+  source_manifest.master.git_commit, source_manifest.catalog.git_commit
+Fields PROVEN path/HEAD-independent (never moved in any comparison):
+  everything else - all 240 card records' content (id, domain, title, status,
+  depends_on, card, content_sha256), all 89 master_row records (127
+  observations), the full 2692-line verbatim partition, every sha256/bytes/
+  lines manifest field, coverage counters, version_pin, schema.
+
+Mechanism (from the builder source, agreeing with the measurement):
+  ROOT = Path(__file__).resolve().parents[2] makes the default source paths
+  absolute; str(catalog_path)/str(master_path) feed source_manifest(...).path
+  and every cards[i].source.path; _git_commit(path) shells
+  `git -C <source dir> rev-parse HEAD` into source_manifest(...).git_commit;
+  payload_digest() canonicalizes the WHOLE payload with sort_keys and hashes
+  it, so any provenance move re-rolls the digest.
+
+Raw listings: ATTR_PATHVAR.txt, ATTR_HEADVAR.txt, ATTR_BOTH.txt (verbatim
+driver output, this directory). Raw run consoles: RAW_RUN_*.txt.

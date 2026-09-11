@@ -1,0 +1,58 @@
+RUN RECORD - HEAD variant (same path as path-variant, HEAD +1 empty commit)
+============================================================================
+
+Audit: catalogue-determinism-audit-01 (prediction P3 of PREREGISTRATION.txt).
+
+Construction (in the SAME throwaway worktree as the path-variant run, so
+path is held constant and ONLY HEAD moves)
+------------------------------------------------------------
+  pre-move HEAD      72af259c6648847d0c4fbc7fd37574589ae70eac
+  source hashes BEFORE the move (sha256):
+    848c25a4ff92eb4de1e65288e6187b0dbf8d12aa430044afb8f0762fdaba5b51  docs/THE_MASTER_LIST.md
+    d5c7aa8b9e264e96bb3de6a0f3d48069ee0b88c9f10ae84b52bd8cfce797fcd8  docs/roadmap/holodeck_tasks.json
+  git commit --allow-empty -m "cda HEAD-variant probe: empty commit, no source change"
+  post-move HEAD     8da4f4dc67a291978929b9c78a3ae559ca2ef40d
+  source hashes AFTER the move: BYTE-IDENTICAL (diff of the hash lists empty)
+  git diff --stat 72af259c..8da4f4dc  ->  zero output (no tracked byte changed)
+
+Run
+---
+  command   python tools/agent_fleet/master_catalogue.py --out E:\ChimeraWork\slot-07\.tmp\cda\headvar_1.json
+            (cwd = the throwaway worktree; builder sha256 identical:
+             cc47c240034a940ebb7b1b59a4310d8f8fedc9b99df03ae20f7e723e6d331014)
+  exit      0 (validate_payload inside main() accepted the payload)
+  envelope sha256  dc92cab260152d07dd5ed584f9e55cd43a41d27f2513f7a36b9d1d333e34e1bf
+  payload digest   8f722f8a05aef9237b0d83fe68c92528ca91e6fe19bd2a036fafcea89698ac1d
+  console  sha256  d60a9bb89e409875c7b8e775bdf514c0c784b6f048a481b47d1b1f4ea1e0b783
+
+Delta vs the path-variant run (same path, HEAD the only moved input)
+--------------------------------------------------------------------
+  pathvar digest  92054a265937fafbdadc5a787d8375562c5436cd07ce221b4a853bc378e63504
+  headvar digest  8f722f8a05aef9237b0d83fe68c92528ca91e6fe19bd2a036fafcea89698ac1d
+  differing leaf patterns: EXACTLY 2, both HEAD carriers:
+    source_manifest.master.git_commit   x1
+      72af259c6648847d0c4fbc7fd37574589ae70eac -> 8da4f4dc67a291978929b9c78a3ae559ca2ef40d
+    source_manifest.catalog.git_commit  x1
+      72af259c6648847d0c4fbc7fd37574589ae70eac -> 8da4f4dc67a291978929b9c78a3ae559ca2ef40d
+  every other leaf byte-identical. Full listing: ATTR_HEADVAR.txt in this
+  directory.
+
+Cross-check vs the ORIGINAL baseline (path AND HEAD both moved)
+---------------------------------------------------------------
+  differing leaf patterns: EXACTLY 5 = the union of the path-carrier set
+  {cards[*].source.path x240, source_manifest.catalog.path x1,
+   source_manifest.master.path x1} and the HEAD-carrier set
+  {source_manifest.master.git_commit x1, source_manifest.catalog.git_commit x1}.
+  No interaction term, no extra field. Full listing: ATTR_BOTH.txt.
+
+Verdict
+-------
+P3 HOLDS: the HEAD variant moved only the attributed HEAD-provenance
+fields (plus the derived digest). P4 HOLDS for this variant: the digest
+moved, so HEAD provenance is inside the digest preimage.
+Falsifier F2 (HEAD lane) did not fire.
+
+Full verbatim console: RAW_RUN_HEADVAR_CONSOLE.txt in this directory.
+
+Cleanup note: the throwaway worktree and its empty commit are probe
+machinery, not deliverables; `git worktree remove` record in RESULT.txt.

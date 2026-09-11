@@ -1,0 +1,20 @@
+A=baseline_1.json digest=7c2ab66573938fff9b873e4fb6408267da2a072890c56f0414d70d3389140a7d
+B=headvar_1.json digest=8f722f8a05aef9237b0d83fe68c92528ca91e6fe19bd2a036fafcea89698ac1d
+digest moved: True
+differing leaf-patterns (5 patterns):
+  cards[*].source.path  x240
+      'E:\\ChimeraWork\\slot-07\\docs\\roadmap\\holodeck_tasks.json' -> 'E:\\ChimeraWork\\cda-throwaway-20260911\\docs\\roadmap\\holodeck_tasks.json'
+      'E:\\ChimeraWork\\slot-07\\docs\\roadmap\\holodeck_tasks.json' -> 'E:\\ChimeraWork\\cda-throwaway-20260911\\docs\\roadmap\\holodeck_tasks.json'
+      'E:\\ChimeraWork\\slot-07\\docs\\roadmap\\holodeck_tasks.json' -> 'E:\\ChimeraWork\\cda-throwaway-20260911\\docs\\roadmap\\holodeck_tasks.json'
+      'E:\\ChimeraWork\\slot-07\\docs\\roadmap\\holodeck_tasks.json' -> 'E:\\ChimeraWork\\cda-throwaway-20260911\\docs\\roadmap\\holodeck_tasks.json'
+      ... (236 more)
+  source_manifest.catalog.git_commit  x1
+      '72af259c6648847d0c4fbc7fd37574589ae70eac' -> '8da4f4dc67a291978929b9c78a3ae559ca2ef40d'
+  source_manifest.catalog.path  x1
+      'E:\\ChimeraWork\\slot-07\\docs\\roadmap\\holodeck_tasks.json' -> 'E:\\ChimeraWork\\cda-throwaway-20260911\\docs\\roadmap\\holodeck_tasks.json'
+  source_manifest.master.git_commit  x1
+      '72af259c6648847d0c4fbc7fd37574589ae70eac' -> '8da4f4dc67a291978929b9c78a3ae559ca2ef40d'
+  source_manifest.master.path  x1
+      'E:\\ChimeraWork\\slot-07\\docs\\THE_MASTER_LIST.md' -> 'E:\\ChimeraWork\\cda-throwaway-20260911\\docs\\THE_MASTER_LIST.md'
+PREDICTED SET: ['cards[*].source.path', 'source_manifest.catalog.git_commit', 'source_manifest.catalog.path', 'source_manifest.master.git_commit', 'source_manifest.master.path']
+MATCH: True
