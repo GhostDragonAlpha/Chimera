@@ -1,0 +1,10 @@
+# capture-flake-tolerance-01: module compile + full run (post-fix)
+# worktree E:/ChimeraWork/slot-10 HEAD d780e65ea0822d1dce27a3d9322ba96743af500d
+$ python -m py_compile tools/agent_fleet/test_capture_window.py
+COMPILE_OK rc=0
+
+$ python tools/agent_fleet/test_capture_window.py
+----------------------------------------------------------------------
+Ran 33 tests in 6.503s
+
+OK
