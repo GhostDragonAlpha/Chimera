@@ -116,3 +116,14 @@ and the fleet deployment MANIFEST.json pin - is the LF form
 f32d16ac105eb6fca11e27d466f61352b79174ef0d8780553dcea7052ae05c0e (33070 B).
 Both forms describe the same source; to reproduce the recorded value from a
 fresh clone, convert LF->CRLF before hashing.
+
+------------------------------------------------------------------------
+CORRECTION 2026-09-11 - fleet-followups-batch-03 item C7 (origin PR #78
+LOW). APPEND-ONLY: every byte above is unchanged.
+The MANIFEST citation above ("the fleet deployment MANIFEST.json pin") is
+now grounded: the deployment MANIFEST path is
+E:/ChimeraWork/control/deployments/slot-expansion-e1e0ab98/MANIFEST.json
+and it carries the f32d16ac pin (f32d16ac105eb6fca11e27d466f61352b79174ef0
+d8780553dcea7052ae05c0e), verified by reading that file on 2026-09-11.
+(fleet-followups-batch-03, Agent: subagent-worker-11)
+------------------------------------------------------------------------

@@ -152,3 +152,16 @@ rejected as too broad, and `.doclint.allow` is outside this lane's write
 scope and would wrongly hide these refs from future lint runs. Ownership:
 the quoted pointers are exactly FINDINGS.md's rows, disposition owned by the
 lead, not by any doc that "points" at the files.
+
+---
+CORRECTION 2026-09-11 - fleet-followups-batch-03 item C6 (origin PR #70
+LOW). APPEND-ONLY: every byte above is unchanged.
+The wording at :21-22 ("a re-run at the PR head reproduces it; the
+enumeration is deterministic given the tree") is narrowed to the exact
+reproducibility condition: a re-run at the PR head reproduces the audit
+OVER THE FINAL RESULT.md CORPUS (the run's own RESULT lines are covered
+only after this file is committed); the BYTE-IDENTICAL reproduction of the
+recorded values required the run-time stub state (the retained snapshot),
+not the committed tree alone.
+(fleet-followups-batch-03, Agent: subagent-worker-11)
+---

@@ -132,3 +132,14 @@ EVIDENCE CONTRACT
 - Files in this lane: PREREG.txt (this file) and RESULT.txt, both *.txt.
 
 Agent: subagent-worker-05
+
+------------------------------------------------------------------------
+NOTE ADDED 2026-09-11 - fleet-followups-batch-03 item C4 (origin PR #74
+LOW-2). APPEND-ONLY: every byte above is unchanged.
+The header line "task: instance-plane-live-smoke-01 (generation 1, slot
+13)" annotates the task generation and slot as POST-RUN METADATA (recorded
+after the run for navigation/provenance). They are not preregistered
+fields and carry no prediction weight; the preregistered content of this
+document is the membrane, predictions, and falsifiers below that header.
+(fleet-followups-batch-03, Agent: subagent-worker-11)
+------------------------------------------------------------------------
