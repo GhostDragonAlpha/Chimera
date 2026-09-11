@@ -1,0 +1,13 @@
+[PASS] launch {"pid": 77084, "port": 8131, "exe_sha256": "6c539ae69d673a19d67f0ef9070ff188965f73db72ca516697f28f05663d253a"}
+[PASS] load.mesh {"r": 27.862994463376467, "theta": 3.141592653589793, "phi": -1.3101939350475558}
+[PASS] load.joints_bin {"http": 200, "resp": "{\"ok\":true}"}
+[PASS] load.body_row {"detail": "36424 tris, 18459 verts, r=10.0"}
+[MEASURED] rig.doc {"n_joints": 28, "names": ["neck", "jaw", "spine_upper", "spine_mid", "spine_lower", "tail_base", "tail_mid", "shoulder_L", "shoulder_R", "elbow_L", "elbow_R", "wrist_L", "wrist_R", "hip_L", "hip_R", "knee_L", "knee_R", "ankle_L", "ankle_R", "tail_tip", "ear_L", "ear_R", "lid_L", "lid_R", "brow_L", "brow_R", "mouth_L", "mouth_R"]}
+[PASS] script.joint_selection {"rule": "name-match shoulder/arm_R + elbow_R", "joints": [["spine_upper", -169.73, 119.16], ["elbow_R", -145.0, 125.0]]}
+[PASS] capture.frame {"i": 0, "thetas": {"spine_upper": 0.0, "elbow_R": 0.0}}
+[PASS] capture.frame {"i": 10, "thetas": {"spine_upper": 0.1009119999999996, "elbow_R": 0.4760000000000001}}
+[PASS] capture.frame {"i": 20, "thetas": {"spine_upper": 3.603999999999985, "elbow_R": 17.0}}
+[PASS] capture.frame {"i": 30, "thetas": {"spine_upper": 3.5580823703703555, "elbow_R": 16.78340740740741}}
+[PASS] capture.frame {"i": 40, "thetas": {"spine_upper": 0.6321682962962938, "elbow_R": 2.9819259259259265}}
+[PASS] capture.frames {"n": 45}
+[PASS] encode.movie {"glass": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\product_feel_after.mp4", "frame": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\product_feel_after_frame.mp4", "glass_sha256": "0c86979329431a9815bd0408ed6823438f685a10af2572d1839b409dab08b8ac"}

@@ -1,0 +1,51 @@
+{
+ "attempt": "product-feel-after-orderedframes-v1",
+ "captures": [
+  {
+   "index": 1,
+   "path": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\frames\\g000.png",
+   "sha256": "39995a61c1cfb919b484e8feb22b4d584f2dc33c6bcc8191c7557590d1e19779"
+  },
+  {
+   "index": 2,
+   "path": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\frames\\g012.png",
+   "sha256": "12ee0ebdab909f5459003212e9cb64dfbf631284b757887c6387b4a9f0418c11"
+  },
+  {
+   "index": 3,
+   "path": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\frames\\g020.png",
+   "sha256": "609692265e45617034ca1c35d345aa2c6a05ccc6e99165be86de56c989eaf400"
+  },
+  {
+   "index": 4,
+   "path": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\frames\\g025.png",
+   "sha256": "4345b3ac560439a6a15e78ced8bc1de8dcfa930e986c60cff380af986ff9a131"
+  },
+  {
+   "index": 5,
+   "path": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\frames\\g035.png",
+   "sha256": "d4203509e1d3e47bf0bfc0136e235b117af89965ecccd7a3fd5b989241d3cda4"
+  },
+  {
+   "index": 6,
+   "path": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\PRODUCT_FEEL_PROBE\\frames\\g044.png",
+   "sha256": "1973448c074cce47b50502ee5b64fc46ed99f2444f2305b8b8f6f82e2dccd345"
+  }
+ ],
+ "claim_under_exam": "A viewer reading these frames in order can tell what the creature is doing and what a human would learn from watching it.",
+ "evidence_limits": "six ordered frames from a 4.5 s clip (10 fps); on-screen application text is part of the product surface and may be read; numbers are observations, not measurements",
+ "physical_context": "A desktop engineering application window: a central 3D viewport showing a small brown creature figure standing on a grid floor, with tool panels around the viewport. A short scripted sequence of the creature plays; the six frames are IN ORDER, taken evenly from a 4.5-second clip (10 frames per second).",
+ "questions": [
+  "1. Describe what happens across the frames, in order.",
+  "2. What kind of motion or behavior is being demonstrated \u2014 name it as you would to a friend.",
+  "3. If a non-physicist watched this clip, what ONE sentence would you tell them about what they just learned?",
+  "4. Is anything unclear, ambiguous, or unconvincing about the sequence?"
+ ],
+ "review_type": "ordered_frames",
+ "runtime_metadata": {
+  "camera": "fixed 3/4 orbit (set once before the clip; unchanged during)",
+  "clip_truth_declared_to_nobody": "the judge is told nothing about how the motion was produced",
+  "state": "the creature is the application loaded subject; a short pose clip plays"
+ },
+ "task": "product-feel-probe-01"
+}
