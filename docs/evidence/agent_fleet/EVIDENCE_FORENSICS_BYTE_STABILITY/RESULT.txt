@@ -1,0 +1,41 @@
+RESULT — evidence-forensics-byte-stability-01 (generation 1, slot 6, subagent-worker-08)
+
+Prediction scorecard (PREREGISTRATION.txt, judged against BEFORE_HASHES.txt /
+AFTER_HASHES.txt / RETROSPECTIVE.txt):
+
+| # | prediction | verdict |
+|---|---|---|
+| 1 | fresh core.autocrlf=true clone + re-checkout at the new head: 21/21 sampled files hash exactly their recorded values; all explicit recorded-hash relationships verify from checked-out bytes | CONFIRMED — 21/21 checkout-invariant (AFTER == blob for every file); 11/11 relationships OK |
+| 2 | BEFORE column (pre-rule worktree checkout, same host, core.autocrlf=true) shows text members mismatching their recorded values | CONFIRMED — 12/13 text files MISMATCH (CRLF rewrite); all 8 binaries matched (passthrough even pre-rule via *.png binary) — the root cause demonstrated, then removed |
+| 3 | check-attr `text` reports `unset` for representatives of every enumerated sha-recorded class; no sha-recorded class outside docs/evidence/** | CONFIRMED — unset on all 6 representatives (json sidecar/unblinding, png, raw console txt, run-record json, retained png); non-docs sha-named manifests grep zero 64-hex digests at base |
+| 4 | retrospective: zero sampled TEXT blobs contain CRLF; zero recorded hashes match a CRLF rendering | CONFIRMED for text class (0/13; the 5 CRLF-containing blobs are all PNG binaries — incidental 0x0D0A inside PNG data, passthrough before and after); 11/11 recorded values equal the LF blob form — no recorded hash predates the rule |
+
+Falsifier disposition (named in PREREGISTRATION.txt before any edit):
+
+- ANY recorded hash changing across the fix (fewer than 21/21 matches) .............. NOT FIRED (21/21; 11/11 relationships)
+- The rule failing to cover a sha-recorded class .................................... NOT FIRED (check-attr unset on every representative; enumeration found no evidence class outside docs/evidence/**)
+- Retrospective contradicting prediction 4 without documentation .................... NOT FIRED (the 5 CRLF-containing blobs are binary PNGs, documented in RETROSPECTIVE.txt; text class clean)
+- Any edit outside .gitattributes + docs/evidence/agent_fleet/EVIDENCE_FORENSICS_BYTE_STABILITY/; any engine change, rebuild, new capture ... NOT FIRED (git diff --name-only vs base: exactly the two scoped paths)
+
+What landed (scopes only):
+
+- .gitattributes — `docs/evidence/** -text` appended after `* text=auto` (last match
+  wins), with the enumerated-class comment. THE RULE, quoted:
+      docs/evidence/** -text
+- docs/evidence/agent_fleet/EVIDENCE_FORENSICS_BYTE_STABILITY/ — PREREGISTRATION.txt,
+  BEFORE_HASHES.txt (pre-rule worktree hashes, per-file), AFTER_HASHES.txt (fresh
+  clone method + per-file hashes + 11/11 recorded-hash relationships),
+  RETROSPECTIVE.txt (renormalization: measured, with the re-checkout-not-renormalize
+  discipline), RESULT.txt (this file).
+
+Chain: d59518b9-era base b20e4eaa -> PREREGISTRATION commit -> b6b4de3a THE RULE ->
+evidence commit(s) -> PR. All commits trailer Agent: subagent-worker-08.
+
+NOT CLAIMED:
+
+- No re-run of PR #69's sweep; the 181 flips are cited motivation only.
+- No protection beyond git's own conversion layer (editors/tools can still rewrite
+  bytes; the rule removes the git checkout/add conversion exclusively).
+- Human acceptance (reserved to Alan / the reviewer).
+
+Acceptance: NOT CLAIMED.
