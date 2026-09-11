@@ -1,0 +1,94 @@
+watchdog-fail-closed-01 RESULT (2026-09-11, subagent-worker-11)
+
+Worktree E:\ChimeraWork\slot-03. Record base d59518b9 (= remote tip at
+claim, rev 839/840) FAST-FORWARDED per protocol to tip 4f965d18 before
+any work (git merge --ff-only, verified; the ff carried the integrated
+FINDING doc). Branch astra/tasks/watchdog-fail-closed-01.
+Commits: e5666be7 (preregistration, BEFORE any run, no actuals)
+      -> [fix commit] test + fix together (the retained pre-fix tripwire
+         output is the proof the test bites)
+      -> [evidence commit] this directory, *.txt only.
+Scope kept exactly: tools/agent_fleet/capture_window.py +
+tools/agent_fleet/test_capture_window.py + this evidence dir.
+Source finding: docs/evidence/agent_fleet/FOLLOWUPS_BATCH_02/
+WATCHDOG_FAIL_CLOSED_FINDING.md (PR #62 review F4, integrated at tip).
+
+## WHAT CHANGED (and nothing else)
+
+install_parent_watchdog, tools/agent_fleet/capture_window.py:
+  - the `parent_pid is None` branch's env resolution: OLD
+    `int(raw) if raw else os.getppid()` with `except: parent_pid = 0`
+    (fail-open: malformed spawner pid -> guard silently DISABLED);
+    NEW `int(raw)` with `except: parent_pid = os.getppid()` (fail-closed:
+    malformed spawner pid -> watchdog ACTIVE on the REAL parent).
+  - the docstring sentence the finding names: "Disabled (returns None)
+    when no parent pid resolves" amended to the caller-passes-no-
+    resolvable-parent_pid wording, stating the malformed-env fail-closed
+    fallback.
+  - EVERYTHING ELSE byte-identical, verified by the retained full diff
+    (RUN_DIFF_CONFINEMENT.txt): one hunk, confined to the docstring +
+    the parent_pid is None branch; the `int(parent_pid or 0)` /
+    `parent_pid <= 0` guard below is context-only; the
+    `os.name != 'nt'` guard above is context-only.
+
+tools/agent_fleet/test_capture_window.py: +1 test in
+FixtureChildWatchdogTests, the finding's sketch VERBATIM:
+test_watchdog_fails_closed_on_malformed_env_pid.
+
+## PREDICTION SCORECARD
+
+P1 (tripwire trips on pre-fix code) .. HELD: RUN_TRIPWIRE.txt retains
+   the failing run at the pre-fix head verbatim:
+   AssertionError: unexpectedly None : malformed env pid disabled the
+   orphan watchdog   (assertIsNotNone, exactly as the PR #71 review
+   predicted).
+P2 (fix effect) .. HELD: the same test PASSES post-fix
+   (RUN_POSTFIX_MODULE.txt): thread is not None, daemon, alive through
+   max(2.0, 6 * DEFAULT_WATCHDOG_CADENCE_S) watching the live parent.
+P3 (behavior unchanged everywhere else) .. HELD:
+   (i)   empty/unset env -> ACTIVE on os.getppid(), daemon, alive
+         (RUN_BEHAVIOR_PROBES.txt) = the old conditional-default;
+   (ii)  well-formed env -> the existing orphan drill
+         (sacrificial parent killed mid-run, child self-exits within
+         the guard window) stays green inside the full module run;
+   (iii) explicit parent_pid=0 -> None (RUN_BEHAVIOR_PROBES.txt; the
+         existing opt-out test stays green);
+   (iv)  non-Windows -> unchanged by inspection: the os.name != 'nt'
+         guard sits ABOVE the branch and is context-only in the
+         retained diff (not exercisable on this Windows host).
+P4 (module + suite) .. HELD: capture module 34/34 (33 prior + 1 new);
+   standalone fleet suite 238 tests, OK (skipped=1, the documented
+   Windows-symlink skip), rc=0 (RUN_FLEET_SUITE_STANDALONE.txt; count
+   238 reflects the tip's other merged lanes, recorded with provenance).
+P5 (confinement) .. HELD: RUN_DIFF_CONFINEMENT.txt = the full diff;
+   one hunk in capture_window.py, inside the named branch + docstring
+   sentence only; test file +26 lines = the one test.
+
+## FALSIFIER STATUS
+
+F-A (test does not trip pre-fix) .. NOT FIRED (P1).
+F-B (behavior change outside non-empty malformed env) .. NOT FIRED (P3
+    i-iv; the empty-env result is IDENTICAL because int('') raises
+    ValueError into the same getppid() fallback the old conditional
+    short-circuited to).
+C   (confinement violated) .. NOT FIRED (P5).
+D   (suite failures) .. NOT FIRED (P4).
+
+## OUT OF SCOPE (untouched, recorded for the next batch)
+
+The PR #71 review's third bare assertRaises at
+tools/agent_fleet/test_task_abandon.py:310 is NOT in this task's scopes
+and was NOT touched; it goes to the next followups batch per the lead.
+
+## FILES (all *.txt, raw outputs verbatim)
+
+PREREGISTRATION.txt          statement/predictions/falsifiers (pre-run)
+RUN_TRIPWIRE.txt             P1: pre-fix failing run, verbatim
+RUN_POSTFIX_MODULE.txt       P2/P4: post-fix module 34/34 + tripwire OK
+RUN_BEHAVIOR_PROBES.txt      P3 i/iii direct probes
+RUN_FLEET_SUITE_STANDALONE.txt P4: fleet suite 238 tests rc=0
+RUN_DIFF_CONFINEMENT.txt     P5: full diff, confinement proof
+RESULT.txt                   this scorecard
+
+Acceptance NOT_CLAIMED - awaiting lead review and authorized integration.
+Trailer on every commit: Agent: subagent-worker-11

@@ -1,0 +1,14 @@
+# watchdog-fail-closed-01 P2/P4: post-fix capture module run (34 tests = 33 prior + 1 new)
+# worktree E:/ChimeraWork/slot-03, prereg e5666be7, fix applied in working tree
+
+$ python tools/agent_fleet/test_capture_window.py
+----------------------------------------------------------------------
+Ran 34 tests in 8.684s
+
+OK
+
+# tripwire test alone, post-fix (P2):
+----------------------------------------------------------------------
+Ran 1 test in 2.001s
+
+OK

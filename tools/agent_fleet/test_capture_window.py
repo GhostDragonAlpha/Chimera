@@ -876,6 +876,32 @@ class FixtureChildWatchdogTests(unittest.TestCase):
         # outside the fixture-child path are unaffected.
         self.assertIsNone(install_parent_watchdog(parent_pid=0))
 
+    def test_watchdog_fails_closed_on_malformed_env_pid(self):
+        # PR #62 review F4 (watchdog-fail-closed-01): a malformed
+        # CHIMERA_FIXTURE_PARENT_PID must NOT disable the orphan guard
+        # (the old fail-open returned None); the watchdog stays ACTIVE,
+        # pointed at the real parent (os.getppid()).
+        old = os.environ.pop(WATCHDOG_ENV_VAR, None)
+        os.environ[WATCHDOG_ENV_VAR] = 'not-a-pid'
+        try:
+            thread = install_parent_watchdog()
+            if not IS_WINDOWS:
+                self.assertIsNone(thread)   # non-Windows contract unchanged
+                return
+            self.assertIsNotNone(thread,    # <-- fails on the OLD code
+                'malformed env pid disabled the orphan watchdog')
+            self.assertTrue(thread.daemon)
+            # Watching THIS (live) process: the guard must observe a live
+            # parent and keep polling, not fire.
+            self.assertTrue(thread.is_alive())
+            time.sleep(max(2.0, 6 * DEFAULT_WATCHDOG_CADENCE_S))
+            self.assertTrue(thread.is_alive(),
+                'watchdog fired on a live parent')
+        finally:
+            os.environ.pop(WATCHDOG_ENV_VAR, None)
+            if old is not None:
+                os.environ[WATCHDOG_ENV_VAR] = old
+
 
 # ==== fleet-evidence-hygiene-01 F1: the *.log evidence-trap warning gate =====
 

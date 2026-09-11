@@ -527,17 +527,23 @@ def install_parent_watchdog(parent_pid=None,
     SYNCHRONIZE and waits in a cadence loop; when the handle is signaled the
     parent has exited and this process exits 0. Fail-closed toward hygiene:
     a parent handle that cannot be OPENED counts as orphaned too (no parent,
-    no permission to keep living). Disabled (returns None) when no parent pid
-    resolves, so callers on non-Windows/non-fixture paths are unaffected.
+    no permission to keep living). Disabled (returns None) only when the
+    CALLER passes no resolvable parent_pid (0 or negative); a malformed
+    CHIMERA_FIXTURE_PARENT_PID fails CLOSED to watching the real parent
+    (os.getppid()) - it never disables the guard. Non-Windows callers are
+    unaffected (returns None above).
     """
     if os.name != 'nt':
         return None
     if parent_pid is None:
         raw = os.environ.get(WATCHDOG_ENV_VAR, '')
         try:
-            parent_pid = int(raw) if raw else os.getppid()
+            parent_pid = int(raw)
         except (TypeError, ValueError):
-            parent_pid = 0
+            # fail-closed (PR #62 review F4, watchdog-fail-closed-01): a
+            # malformed spawner pid must never disable the guard; watch the
+            # real parent instead.
+            parent_pid = os.getppid()
     parent_pid = int(parent_pid or 0)
     if parent_pid <= 0:
         return None
