@@ -1,0 +1,7 @@
+{
+ "assembled": true,
+ "verdict": "NOT_CLAIMED",
+ "supports_claim": null,
+ "numeric_mentions": 4,
+ "evidence": "docs\\evidence\\agent_fleet\\DYAD_TEMPLATE_HARDENING\\demo_blind\\dyad_response_hard-demo-blind.json"
+}

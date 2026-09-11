@@ -32,6 +32,15 @@ each lane's content-level acceptance is separately earned.
    `still` = exactly ONE capture (the one-image law). `ordered_frames` = 2+
    captures the reviewer reads in order (declared temporal capability);
    `movie` additionally requires `runtime_metadata.movie_artifact`.
+
+   **Question form (F1 law).** Every question must be determinability-neutral:
+   ask **"Can you determine X? If not, what limits you?"** — never a phrasing
+   that presupposes non-determinability: asking what features stop the reviewer
+   from determining already presumes they cannot (the retained reviews' Q5
+   error; advisory finding 1 of the PR #64 review, controller feedback
+   dce2c813). The canonical form is pinned as `QUESTION_FORM_GUIDANCE` in
+   `tools/dyad_subagent_template.py` and the unit suite pins both the constant
+   and this document to it.
 2. **Plan** (validates the request, records each capture's sha256 and — when
    the spec declares one — VERIFIES the file against that declaration,
    failing closed `capture_hash_mismatch` on any tamper; retains the exact
@@ -52,6 +61,40 @@ each lane's content-level acceptance is separately earned.
        --evidence-root docs/evidence/agent_fleet/DYAD_SUBAGENT_TEMPLATE \
        --served "GLM 5.3 Flash (vision) [harness-declared, operator-asserted 2026-09-11]"
    ```
+
+## OPTIONAL blind frame ordering (F2, `blind` mode)
+
+Retained prompts disclose sidecar state values through `camera/runtime metadata`
+(`frame_1_state` / `frame_2_state` name which frame is "supposed" raised — see the
+DYAD_RETAINED_REVIEWS evidence). A spec MAY opt into blinding by adding:
+
+```json
+"blind": {"seed": 7}
+```
+
+`plan` then lists the frames in SEEDED-randomized order (renumbered to blind
+positions 1..n — the only numbering the prompt shows), redacts every
+`frame_<i>_state` key from the prompt-visible `runtime_metadata`, and refuses
+(`blind_state_leak`) if any retained state value string still appears anywhere
+in the built prompt. The unblinding map — original order (index/path/sha256),
+blind position → original index, the redacted states, the seed, and the prompt
+sha256 — is retained to the evidence root as `unblinding_<attempt>.json` and
+sha-recorded in the plan output (`unblinding_sha256`); `assemble` verifies the
+retained map byte-for-byte and refuses (`unblinding_mismatch`) on any tamper.
+The same seed reproduces byte-identical prompts and maps across `plan` and
+`assemble` runs. Without the `blind` key NOTHING changes: the default mode is
+byte-identical to the pre-hardening driver (preregistered falsifier).
+
+Blind-mode discipline (the builder cannot force these; they are yours):
+
+- **State-neutral filenames.** A capture named `raised_gamma0.png` re-discloses
+  through the prompt's capture list exactly what redaction removed. Name blind
+  captures neutrally (`frame_a.png`, `frame_b.png`).
+- **Blind positions only.** Questions and context must reference blind frame
+  numbers (1..n as listed in the prompt), never original capture indexes.
+- **States live only in the retained record.** Anything that re-introduces a
+  state value into the prompt (metadata, questions, context, filenames) trips
+  the fail-closed scan — by design.
 
 ## The spawn template (copy-paste)
 
@@ -101,7 +144,13 @@ FINISH: <complete | truncated | failed>
   the response. A model's claim about itself is not identity evidence.
 - **Non-leading questions only.** The request builder refuses nothing here
   that prose smuggles in — the DISCIPLINE is yours: ask what it sees, never
-  whether it sees what you expect (r7 contamination lesson, now law).
+  whether it sees what you expect (r7 contamination lesson, now law). The
+  neutral question form is "Can you determine X? If not, what limits you?" —
+  no phrasing that presupposes determinability either way (F1 law above).
+- **Blind by option, never leading by default.** `blind` mode (F2) is opt-in
+  per spec; when states exist, use it. The default mode's bytes are pinned —
+  a blind-less spec must produce exactly the prompts the reviewed contract
+  always produced.
 - **Resource accounting:** the subagent provider consumes no local GPU and no
   local model. The `dyad_eye` → `rtx4090` chained admission governs the LOCAL
   senses class only; using the subagent class neither bypasses nor widens it.

@@ -1,0 +1,13 @@
+===DYAD_REPORT===
+RAW_RESPONSE:
+1. fan of light-edged triangles over grey fill.
+2. same fan; convergence point lower.
+3. similar structure.
+4. I cannot determine which frame was recorded first; the pixels carry no recording-order information.
+OBSERVATIONS:
+- six-triangle fan, light edges, grey fill
+UNCERTAINTY:
+recording order and exact heights are not resolvable from stills alone
+CONCLUSION: unclear
+FINISH: complete
+===END===

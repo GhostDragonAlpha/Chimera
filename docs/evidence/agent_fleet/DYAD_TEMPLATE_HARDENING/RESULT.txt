@@ -1,0 +1,47 @@
+RESULT — dyad-template-hardening-01 (generation 3, slot 6, subagent-worker-08)
+
+Prediction scorecard (all five predictions from PREREGISTRATION.txt, judged against
+actuals in MEASUREMENT.txt / RUN_UNIT_SUITES.txt / RUN_FLEET_DISCOVER.txt / demo_blind/):
+
+| # | prediction | verdict |
+|---|---|---|
+| 1 | guidance form pinned (constant + document carry "Can you determine X? If not, what limits you?"; presupposing phrasing absent from both) | CONFIRMED (F1GuidanceFormTests, 3 tests) |
+| 2 | blind mode: seeded-reproducible randomized frame order; states absent from prompt text, present in retained record | CONFIRMED (BlindOrderingTests; demo: seed 7 lists #1 frame_c #2 frame_a #3 frame_b; state scan [False, False, False] in blind prompt, all three states retained in unblinding map) |
+| 3 | unblinding recoverable: sha-recorded (file byte-exact), blind->original mapping, assemble byte-identical, tamper refused | CONFIRMED (test_unblinding_recoverable_and_sha_recorded, test_assemble_unblinding_bytes_identical_to_plan, test_tampered_unblinding_refused; demo raw-file sha == recorded sha) |
+| 4 | default mode byte-identical (golden literal + independent contract construction + unchanged stdout keys) | CONFIRMED (DefaultByteIdentityTests; demo default prompt lists original order with states present) |
+| 5 | provider suite passes unchanged (no contract weakening) | CONFIRMED (test_dyad_provider.py 14/14; ProviderContractUntouchedTests assert the driver binds the provider classes, never shadows them) |
+
+Falsifier disposition (named before the run in PREREGISTRATION.txt):
+
+- Default-mode prompt bytes changed ............... NOT FIRED (golden literal equal; independent construction equal; stdout keys unchanged)
+- State values leaking into blind prompts ......... NOT FIRED (fail-closed blind_state_leak scan in the driver; scan tests pass; demo scan clean)
+- Unblinding record absent/unrecoverable/not sha-recorded/not reproducible .. NOT FIRED (map retained, byte-exact, sha-recorded, mapping verified, tamper refused)
+- Any provider-contract weakening ................. NOT FIRED (tools/dyad_provider.py untouched — git diff vs base empty; provider suite 14/14)
+- A leading/presupposing phrasing surviving in the guidance or its constant .. NOT FIRED (absence pinned by test; doc and constant carry only the neutral form)
+
+What landed (scopes only):
+
+- tools/dyad_subagent_template.py — QUESTION_FORM_GUIDANCE constant (F1); OPTIONAL
+  blind frame ordering: _apply_blind (seeded shuffle + renumber to blind positions +
+  frame_<i>_state redaction), _require_no_state_leak (fail-closed), _unblinding_record
+  (deterministic, sha-recorded, byte-exact retention), plan/assemble wiring; default
+  path returned untouched when no "blind" key.
+- tools/dyad_subagent_template_tests.py — NEW: 16 unit tests pinning F1 + F2.
+- docs/THE_DYAD_SUBAGENT_TEMPLATE.md — F1 question-form law in the recipe and laws;
+  new "OPTIONAL blind frame ordering" section (recipe, discipline, back-compat).
+- docs/evidence/agent_fleet/DYAD_TEMPLATE_HARDENING/ — this record set + demo_blind/
+  (source specs, exact prompts, plan/assemble stdout, unblinding map, response JSON,
+  dyad log line, synthetic report; builder-path demo only).
+
+NOT CLAIMED:
+
+- Any visual/content acceptance: the demo ran NO vision model — the synthetic report
+  exists to drive the builder/provider path; its verdict (NOT_CLAIMED) is recorded, not
+  earned content. DYAD verdict ceiling untouched: agreement is INCONCLUSIVE, never
+  acceptance.
+- Fleet-suite greenness: full discover carries a PRE-EXISTING load flake in
+  tools/agent_fleet/test_capture_window.py (failing test name varies run-to-run; module
+  28/28 in isolation at tip and branch). Recorded honestly in RUN_FLEET_DISCOVER.txt;
+  the lane's own falsifiers are covered by the three suites that are green.
+
+Acceptance: NOT CLAIMED (reserved to the reviewer/lead per the controller contract).
