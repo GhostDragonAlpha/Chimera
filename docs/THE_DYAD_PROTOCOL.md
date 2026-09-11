@@ -113,3 +113,30 @@ Ask what it sees; never ask whether it sees what you expect.
   board's statuses are stale or "done" downstream of "partial" is legal; an
   operator call, not an editor one
 - Empty-state spacing taste (the ONE OPEN TENSION above, still open)
+
+## PROVIDER INTERFACE (2026-09-11, dyad-provider-interface-01)
+
+A dedicated DYAD reviewer no longer assumes the local vision server is the only
+executor. `tools/dyad_provider.py` declares the review contract separately from
+the provider: a request carries task/attempt identity, physical/programming
+context, the claim under examination, NON-LEADING questions, ordered capture
+references with sha256 hashes, camera/runtime metadata, a review type
+(`still` | `ordered_frames` | `movie`) and explicit evidence limits. Every
+response retains the served provider/model identity where available (missing
+identity is a named uncertainty, never a substitution), input capture
+identities, the EXACT prompt, the raw response, finish status, observations
+with uncertainty, and a structured verdict in which model agreement is
+`INCONCLUSIVE` — never acceptance — and numeric mentions are tagged
+`unverified_numeric_mention`, never manufactured into facts.
+
+Providers declare capability (`no_vision` refuses everything; temporal ladder
+`none` < `frames` < `movie`; a still-only provider refuses temporal claims by
+name). Captures are hash-verified fail-closed (`capture_missing`,
+`capture_hash_mismatch`). Adapter kinds — subagent callback (lead-delegated
+reviewer), remote HTTPS service (auth via environment variable name, token
+never stored), and the LOCAL SENSES/LM STUDIO EYE (retained, lazily imported,
+one image per call remains the law; ordered frames are a call sequence) — are
+selected by configuration with no silent fallback. CPU contract tests:
+`tools/test_dyad_provider.py` (11 synthetic tests). ACTUAL VISUAL ACCEPTANCE
+STAYS NOT_CLAIMED until a live provider run with retained evidence; a protocol
+unit test alone is not visual acceptance.
