@@ -1,0 +1,9 @@
+R2 KILL-MID-TRANSACTION (no corruption, no torn journal) — threshold 5/5
+
+(a) staged state change NOT visible after crash: MISMATCH: {'t1': {'state': 'REVIEW', 'owner': 'alice', 'generation': 1, 'slot': '1', 'head': '3dc76076ff54ba4d9cb8fee953524aa9c692145c', 'checkpoint': 'mutated@5', 'owner_instance': None}, 't2': {'state': 'RUNNING', 'owner': 'bob', 'generation': 1, 'slot': '2', 'head': None, 'checkpoint': None, 'owner_instance': None}} vs {'t1': {'state': 'REVIEW', 'owner': 'alice', 'generation': 1, 'slot': '1', 'head': '3dc76076ff54ba4d9cb8fee953524aa9c692145c', 'checkpoint': None, 'owner_instance': None}, 't2': {'state': 'RUNNING', 'owner': 'bob', 'generation': 1, 'slot': '2', 'head': None, 'checkpoint': None, 'owner_instance': None}}
+(b) journal length unchanged (5): MISMATCH
+(c) revision unchanged (5): MISMATCH
+(d) retry-after-crash state == never-crashed twin: MISMATCH
+(e) 2 crashes + 1 success -> one event seq=7 (rev 7): MISMATCH
+
+R2 verdict: FALSIFIED (0/5)

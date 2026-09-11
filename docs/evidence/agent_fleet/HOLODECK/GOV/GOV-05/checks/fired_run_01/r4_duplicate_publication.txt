@@ -1,0 +1,12 @@
+R4 DUPLICATE PUBLICATION / OVERWRITE PROTECTION (card falsifier
+clause 1: "Duplicate publication ... changes task truth") — model
+must REJECT — threshold 5/5, push_count asserted in every case
+and the remote base ref never moved backwards or sideways
+
+(a) duplicate publish -> already_integrated, push_count 1, base unchanged: OK
+(b) diverged base -> (REFUSED, 'non_fast_forward_refused (base has diverged; rebase instead)'); push_count 0; newer work still at base: MISMATCH
+(c) rewritten base -> (REFUSED, 'base_rewritten_since_task_fork'); push_count 0: OK
+(d) remote task branch tampered -> (REFUSED, 'task_head_mismatch_remote (remote task branch is d121be3103007b41edf96f8262925f8c7d61894a)'); push_count 0: MISMATCH
+(e) forbidden branch -> (REFUSED, 'forbidden_branch'); push_count 0: OK
+
+CARD FALSIFIER CLAUSE 1 in the reference model: NOT reproduced (no duplicate publication; unpublished/newer work never overwritten) -> FALSIFIED

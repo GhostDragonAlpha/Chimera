@@ -1,0 +1,9 @@
+R2 KILL-MID-TRANSACTION (no corruption, no torn journal) — threshold 5/5
+
+(a) staged state change NOT visible after crash: OK
+(b) journal length unchanged (4): OK
+(c) revision unchanged (4): OK
+(d) retry-after-crash state == never-crashed twin: OK
+(e) 2 crashes + 1 success -> one event seq=5 (rev 5): OK
+
+R2 verdict: HOLDS (5/5)
