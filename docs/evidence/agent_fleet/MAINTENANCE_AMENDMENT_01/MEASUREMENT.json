@@ -14,11 +14,30 @@
   ],
   "measured": {
     "amendment_delta": "docs/THE_MASTER_LIST.md +62/-0 (single dated section; append-only)",
-    "pins_old_to_new": {"master_row_ids": "85 -> 89", "master_row_observations": "119 -> 127", "line_partition_total": "2630 -> 2692"},
+    "pins_old_to_new": {
+      "master_row_ids": "85 -> 89",
+      "master_row_observations": "119 -> 127",
+      "line_partition_total": "2630 -> 2692"
+    },
     "catalogue_tests": "23/23 OK at repinned head",
     "perturbation_control": "exit 1, AssertionError 2694 != 2692 and 90 != 89 (the +1 row / +2 lines delta from the appended probe row) - pins demonstrably bind to measurement",
     "full_fleet_suite": "198 tests, 0 failures, 1 Windows-symlink skip (exit 0)"
   },
   "retained_first_attempt": "The first perturbation run was executed at the WRONG base (the operator checkout's detached HEAD via a mis-rooted worktree add) and its failure was confounded (old-tree counts vs old pins); that run is retained here as the correction - the clean control above ran at the amended commit 977e7dcf (pre-repin, showing 2694!=2630/90!=85 vs then-current pins) and at the repinned commit e81585ca (2694!=2692/90!=89 vs the NEW pins). The operator checkout was never written (the perturbed file lived only in throwaway worktrees, both removed).",
-  "not_claimed": ["anything beyond the measured counts at this head"]
+  "not_claimed": [
+    "anything beyond the measured counts at this head"
+  ],
+  "correction_20260911_gen2": {
+    "finding": "LOW x2 from independent review of 02a8f53c",
+    "base_hash_correction": {
+      "recorded_in_original_block": "ecc839abc2e22eb63ed416de8761ad82fb7e16 (38-hex prefix; the \"0a\" after ed was dropped)",
+      "correct_full_sha": "ecc839abc2e22eb63ed0a416de8761ad82fb7e16",
+      "impact": "none on operations - git rev-parse resolves unique prefixes, so provisioning/commits ran at the correct commit; only this provenance string was wrong",
+      "same_typo_also_present_in": "the controller task packet/provision evidence strings for this lane (recorded here for the audit trail)"
+    },
+    "followup_ledger_labels": {
+      "note": "the citations 5cfa938245e23509a82286b6, ec6bcffcd1c4c723ae7c7ef6, 97b871b5efc4d4ce4a6a3470 are CONTROLLER feedback record ids (live authority: controller snapshot events/feedback), not git refs or repo paths",
+      "amendment_wording": "the Master amendment abbreviates them to 8-hex prefixes; resolvable only through the controller plane"
+    }
+  }
 }
