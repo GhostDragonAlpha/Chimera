@@ -1,0 +1,36 @@
+R6 DEPLOYED FALSIFIER HUNT + CURRENT-STATE MEASUREMENTS (findings; never patched, never adopted as the model's truth)
+(a) RAW-CONSTANTS PLANE: tools/materials.py + cad_sample.py
+  materials.py 'PLUSH_STUFFED = ' at lines [31]
+  materials.py 'KNIT = ' at lines [34]
+  materials.py 'ACRYLIC = ' at lines [36]
+  materials.py 'PART_MATERIAL = {' at lines [39]
+  materials.py 'DENSITY = ' at lines [51]
+  cad_sample.py raw-constant consumer at line [172]:
+    172: rho = DENSITY[PART_MATERIAL[name]]
+    advertising, 13: mass_err  = |sum(m_packet) - rho*V_analytic| / (rho*V_analytic)  <= 1%
+    advertising, 168: print(f"{'part':14s} {'N_pk':>7s} {'V_mesh':>9s} {'V_ana':>9s} {'mass_err':>9s} {'iner_err':>9s}  verdict")
+  VERDICT (a): the sampler's preregistered referee tolerances advertise the SAMPLING accuracy (mass_err <= 1%, iner_err <= 2% on packet fields vs analytic), NOT contract admission of the density inputs; the density constants carry documented literature sources in materials.py but are module constants, not runtime-admitted records. This is the raw-data plane the card statement distinguishes records from -- honest about what it claims, and therefore NOT a card-falsifier instance; it is the recorded seam for a future MAT lane.
+(b) HONEST DEFERRAL: gpu_fixtures_recovered/membrane_demo.py
+    42: fixture declaration); no physical calibration is claimed. Admission routing
+    42: fixture declaration); no physical calibration is claimed. Admission routing
+    41: The material is a SYNTHETIC DECLARED interface (GAMMA below, provenance:
+  VERDICT (b): the file explicitly claims NO physical calibration and defers admission routing -- nothing is advertised as validated for the un-admitted parameter, so this is NOT a card-falsifier instance; recorded as the known open seam (BP-A1).
+(c) OWNER_INSTANCE CURRENT STATE at base (PR #80 fixed-and-deployed; measured now, no stale deviation language)
+  review_handoff.py owner_instance occurrences: 1
+    113: owner_instance=p.get("_resolved_instance"))
+    fence, 103: if state.get("instance_fencing") == "enforced":
+  control.py owner_instance occurrences: 8
+    121: owner_instance=t.get('owner_instance')
+    122: if owner_instance is not None:
+    123: require(instance==owner_instance,'instance_not_bound')
+    323: for t in s['tasks'].values(): t.setdefault('owner_instance',None)
+    499: if t.get('owner')==actor and t.get('owner_instance') is not None \
+    501: require(instance_id==t['owner_instance'],'instance_not_bound')
+    554: owner_instance=p.get('_resolved_instance'))
+    697: t.update(state='READY',owner=None,slot=None,owner_instance=None,
+  VERDICT (c): the claim-restored interceptor path BINDS owner_instance (fleet-review-handoff-claim-delegation-01, F2/F3 restored markers in source) and the enforced-fencing gate is present -- the GOV-01-era deviation (rh occurrences == 0 at d59518b9) is FIXED AND DEPLOYED at this base. Measured counts are recorded above; prediction (rh >= 1) HOLDS, so no surprise finding.
+(d) INDEPENDENCE AUDIT of reference/mat01_reference_model.py
+  import roots: ['__future__', 'dataclasses', 'math', 'math01_reference_model', 'pathlib', 'sys', 'types']
+  imports from the AUDITED deployed code (tools/material_contract etc.): none
+  MATH-01 import (the designated units backbone): math01_reference_model (declared, cited, by design).
+  VERDICT (d): independence from the audited code HOLDS
