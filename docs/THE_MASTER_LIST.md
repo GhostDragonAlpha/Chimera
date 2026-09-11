@@ -2690,3 +2690,91 @@ warning when cited evidence files remain untracked-ignored).
 Catalogue pins re-measured to the builder output at this amended head (same
 PR; perturbation control retained in
 `docs/evidence/agent_fleet/MAINTENANCE_AMENDMENT_01/`).
+
+### Fleet maintenance — 2026-09-11, fourth and fifth waves (glm53-lead-02, epoch 5)
+
+Dated append; live authority remains the controller snapshot. Wave-4/5
+integrations into `astra/gait-capture`, each through independent
+adversarial review with pinned-head merge and preserving slot release:
+
+- **PR #61** `fleet-task-abandon-01` — `task_abandon` (ABANDONED state
+  coherent at 26 switch-sites; excluded from `catalogue_next`) and
+  `claim_abandon` (retires an unprovisioned RUNNING claim WITHOUT revoking
+  the owner session — closing controller gap 2 from the third wave). First
+  live use: the orphaned slot-03 handle handoff.
+- **PR #62** `fleet-evidence-hygiene-01` — `evidence_log_guard.py` + the
+  `.githooks/pre-commit` stanza warning when cited evidence remains
+  untracked-ignored (the `*.log` trap, twice-recorded, now mechanically
+  guarded); worker-lane evidence hygiene verified across the live lanes.
+- **PR #63** `fleet-slot-expansion-03` — on-demand slots: claim
+  auto-spawn, supervisor `slot_spawn`/`slot_retire`, persisted
+  `slot_high_water` (retired ids never reused), `SLOT_MAX=64` guard fuse,
+  preserved-provision retire gate, unique immortal integration slot 1.
+  Gen-2 after delta review (kind echo fixed with named refusals;
+  "never reused" made true by persistence; retire preserves slot history;
+  headline figures corrected to retained runs). Landed WITH its transition:
+  see the deployment record below.
+- **PR #64** `dyad-retained-reviews-01` — retained-review discipline for
+  dyad lanes (review verdicts and their inputs retained as evidence,
+  superseded generations kept with manifests).
+- **PR #65** `studio-grid-depth-01` — the Studio reference grid moved
+  inside the scene render pass with depth testing and stencil occlusion
+  (D32FS migration site-by-site incl. a real clear-array read-past-end
+  fix; wire/fill twins share the stencil state; shadow/floor pinned as
+  non-occluders; inversion proof documented with reverted-to-0 code).
+  Verdict APPROVE_WITH_FOLLOWUPS: splat-view contract gap (grid draws
+  through splat bodies — pre-fix-equivalent, undeclared in the doc) and
+  accepted-pair dirs lacking MANIFEST files → followup backlog.
+
+**On-demand-slots transition record** (controlled transitions; each =
+SQLite backup → source fingerprint → quiescence attestation → stop-old →
+start-new → ALL-EQUAL post-comparison): `slot-binding d012b4b1` →
+`review-handoff 2c8fb069` → `transport-limit c1a1ec5a` → `client-instance
+5199d9c3` → `slot-expansion e1e0ab98` (live). Registry: 11 slots,
+high-water 11. Live firsts this wave: supervisor `slot_retire` (slot 11,
+rev 757), supervisor `slot_spawn` (slot 12, rev 770), and the retire
+busy-gate refusing a claimed-but-unprovisioned slot (slot 10) — the gate
+binds on claim, not on provision.
+
+**Dead-code regression (found live, fix in flight):**
+`instance-plane-live-smoke-01` caught `ReviewHandoffControl._dispatch`
+intercepting `claim` unconditionally — `_claim_with_detached_review_capacity`
+predates the expansion and drops three base-claim behaviors: F1 auto-spawn
+(the PR #63 plane is dead code in production; live refusal `no_free_slot`
+at rev 767 with zero free slots), F2 `owner_instance` binding (the instance
+fence never binds; a header-less twin succeeds where it must refuse), F3
+the enforced-mode `instance_binding_required` guard. Fix lane
+`fleet-review-handoff-claim-delegation-01` (rev 772); disposition PENDING
+integration; the live deployment transition follows as its own controlled
+procedure. Feedback `c4212657` carries the full evidence.
+
+**Worker-03 boundary-violation disposition** (feedback `621d39fb`): prep
+written to the operator checkout `E:\PythonChimera\.tmp\` during
+`engine-feature-resource-lifetime-01` — relocated to
+`E:\ChimeraWork\preservations\feature-lifetime-prep-20260911\`, violation
+recorded, remediation confirmed (operator-checkout writes ceased; all work
+under `E:\ChimeraWork\` or `%TEMP%` from the resumed `-02` lane onward).
+
+Dispositions this wave (each retires as a supervisor `task_abandon` with
+this entry as evidence, ONLY after this PR integrates):
+`fleet-run-queue-01` SUPERSEDED (work preserved on the run-queue lanes,
+`E:\ChimeraWork\run-queue-*`; record never claimed, stale base);
+`fleet-orient-continuation-01` CLOSED (authorized yield–recover handoff;
+successor `-02` integrated as PR #59); `engine-vulkan-cleanup-01`
+SUPERSEDED by `-02` (unclaimable by construction; `-02` integrated as
+PR #58); `window-capture-ownership-01` SUPERSEDED (operator-authorized
+reset preserved branch+evidence at
+`preservations/slot-02-window-capture-reset-20260910`; the bounded-contract
++ synthetic-falsifier deliverable integrated, 2/2 passes);
+`fleet-controller-upgrade-01` REALIZED AS PIPELINE (the five controlled
+transitions above are the upgrade; no single code task remains);
+`fleet-slot-expansion-01`/`-02` SUPERSEDED by `-03` (PR #63).
+
+Provision lesson (from `catalogue-packet-batch-01`): a lead provision once
+left a slot with HEAD==base but an empty index and a stale `index.lock`;
+the provisioning procedure now verifies the index is real (`git ls-files`
+non-zero) in addition to HEAD and clean status.
+
+Catalogue pins re-measured to the builder output at this amended head (same
+PR; perturbation control retained in
+`docs/evidence/agent_fleet/MAINTENANCE_AMENDMENT_02/`).
