@@ -8,9 +8,14 @@ geometry, with the CPU providing derivations and reference tests before GPU port
 The engine and its verification workflow are under active development. A passing
 fixture or a completed local term hierarchy is not a completed game engine.
 
-Parallel agent execution is still being integrated. See the
-[run-queue acceptance record](docs/THE_RUN_QUEUE.md) for the tested controller,
-subprocess and isolation behavior and the remaining provider/provisioning gates.
+Parallel agent execution runs on a five-slot control plane; the fleet docs are
+the current reference: the operating model and task/slot lifecycle
+([THE_AGENT_FLEET.md](docs/THE_AGENT_FLEET.md)), the agent entry prompt
+([AGENT_START.md](docs/AGENT_START.md)), the execution-contract record
+([THE_RUN_QUEUE.md](docs/THE_RUN_QUEUE.md)), the review-slot handoff contract
+([THE_REVIEW_SLOT_HANDOFF.md](docs/THE_REVIEW_SLOT_HANDOFF.md)), and
+copy-paste joining prompts per role
+([docs/evidence/agent_fleet/OPERATING_MODEL/PROMPTS.md](docs/evidence/agent_fleet/OPERATING_MODEL/PROMPTS.md)).
 The launcher requires an explicit execution profile; a claim poller by itself
 does not run a coding model.
 
