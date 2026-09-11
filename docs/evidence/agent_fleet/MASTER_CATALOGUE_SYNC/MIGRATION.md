@@ -1,6 +1,24 @@
 # Master catalogue sync — migration instructions for the lead
 
-> **CURRENT ADDENDUM (generation 7, head `c23fd00f`+ gen-7 commit).** The
+> **GEN-11 FRESH-SYSTEM ADDENDUM (2026-09-10, glm53-fresh-01, gen 11, slot 2).** The
+> task was recovered for fresh-system testing (controller rev 434) and re-verified:
+> full isolated suite **110 passed, 1 skipped**; payload content reproduces exactly
+> against the same pinned source hashes (Master `f389f913…`, catalog `d9bb4419…`; 240
+> cards / 40 domains / 65 row IDs / 68 observations / 3 unresolved / 271 unkeyed
+> requirements / exhaustive 2,430-line partition). One fresh-system falsifier FIRED
+> and was corrected: on a stock cp1252 Windows console the old builder crashed with
+> `UnicodeEncodeError` on the canonical document's arrows **before writing `--out`**
+> (MIGRATION step 1 failed verbatim); the builder now writes the artifact first and
+> ASCII-escapes only the console summary (digest unchanged; regression test added).
+> Also made explicit here: the payload digest is **transport-reproducible but per-host
+> by design** — it embeds the builder-host `source.path` and the ADVISORY (never
+> authenticating) `git_commit`; a full structural walk of the gen-7 recorded payload
+> vs this rebuild shows ZERO content differences outside those two fields. Step 1
+> therefore still must run from the lead's own checkout, as instructed below; that
+> is now a stated property, not an accident. Full record:
+> `GEN11_FRESH_SYSTEM_RUN_RECORD_20260910.md` (+ its preregistration file).
+
+> **PRIOR ADDENDUM (generation 7, head `c23fd00f`+ gen-7 commit).** The
 > sections below were written at generation 1 and are preserved as history.
 > The parser has since been generalized (every section, unkeyed requirements,
 > exhaustive line partition) and the validator hardened (recomputed manifests

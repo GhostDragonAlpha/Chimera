@@ -1,6 +1,7 @@
 """Master-catalogue import tests. Isolated temp registries ONLY - this suite
 never touches the live registry (E:/ChimeraWork/control/state.sqlite)."""
 import hashlib
+import io
 import json
 from pathlib import Path
 import sys
@@ -10,8 +11,8 @@ import unittest
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from control import Control, Refusal
-from master_catalogue import (SCHEMA, build_records, parse_master_rows,
-                              payload_digest, source_manifest,
+from master_catalogue import (SCHEMA, build_records, main as master_catalogue_main,
+                              parse_master_rows, payload_digest, source_manifest,
                               validate_payload)
 
 BASE = 'a' * 40
@@ -728,6 +729,48 @@ class CatalogueTests(unittest.TestCase):
         self.assertEqual(len(extra2['unresolved']), 1)
         self.assertEqual(extra2['unresolved'][0]['section'],
                          '### ANOTHER NEW SECTION')
+
+
+    def test_cli_stdout_survives_ascii_console_and_writes_out_first(self):
+        # Fresh-system falsifier 2026-09-10 (gen 11, glm53-fresh-01): on a
+        # cp1252 Windows console, main() crashed with UnicodeEncodeError while
+        # printing the ensure_ascii=False coverage summary (the canonical
+        # Master contains arrows), and the --out import artifact was never
+        # written - MIGRATION.md step 1 failed verbatim. Contract: the
+        # artifact is written FIRST, the console summary never raises, and
+        # stdout stays decodable on a host whose stdout encoding is ASCII.
+        cards = [card_record('A1'), card_record('A2', deps=('A1',))]
+        # Explicit source FILES: main() reads from the given paths (the
+        # defaults resolve to the canonical repo documents). The master text
+        # contains U+2192, the exact character class that killed the original
+        # run on a cp1252 console.
+        catalog_path = self.root / 'catalog.json'
+        catalog_path.write_text(
+            json.dumps({'tasks': [c['card'] for c in cards]},
+                       ensure_ascii=False), encoding='utf-8')
+        master_path = self.root / 'master.md'
+        master_text = ('# T\n\n- arrow \u2192 test line with enough length to be\n'
+                       '  content in the record.\n\n| `A1` | x |\n| `A2` | y |\n')
+        master_path.write_text(master_text, encoding='utf-8')
+        out_path = self.root / 'import_args.json'
+        monkey_stdout = io.StringIO()
+        real_stdout, sys.stdout = sys.stdout, monkey_stdout
+        try:
+            rc = master_catalogue_main(['--catalog', str(catalog_path),
+                                        '--master', str(master_path),
+                                        '--out', str(out_path)])
+        finally:
+            sys.stdout = real_stdout
+        self.assertEqual(rc, 0)
+        text = monkey_stdout.getvalue()
+        # Summary must survive an ASCII-only stream and stay decodable.
+        text.encode(monkey_stdout.encoding or 'ascii')
+        # The deliverable exists, carries a matching digest, and keeps the
+        # verbatim Unicode arrow that a naive console print would have lost.
+        written = json.loads(out_path.read_text(encoding='utf-8'))
+        self.assertIn('digest: ' + payload_digest(written['payload']), text)
+        self.assertEqual(written['payload']['coverage']['cards'], 2)
+        self.assertIn('\u2192', json.dumps(written['payload'], ensure_ascii=False))
 
 
 if __name__ == '__main__':

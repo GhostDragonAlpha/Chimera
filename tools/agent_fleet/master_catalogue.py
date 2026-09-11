@@ -635,14 +635,30 @@ def main(argv=None):
     if errors:
         print('REFUSED: ' + ', '.join(errors[:5]), file=sys.stderr)
         return 2
-    body = json.dumps(built, ensure_ascii=False)
-    print('coverage: ' + json.dumps(built['coverage'], ensure_ascii=False))
-    print('digest: ' + payload_digest(built))
+    digest = payload_digest(built)
     if a.out is not None:
-        a.out.write_text(json.dumps({'payload': built,
-                                     'digest': payload_digest(built)},
+        # The import-arguments artifact is written BEFORE the console summary:
+        # a host console codec must never cost the deliverable.
+        a.out.write_text(json.dumps({'payload': built, 'digest': digest},
                                     ensure_ascii=False), encoding='utf-8')
-        print('wrote ' + str(a.out))
+
+    def _emit(line):
+        # Fresh-system finding 2026-09-10 (glm53-fresh-01, gen 11): on a stock
+        # Windows console (cp1252) the previous ensure_ascii=False summary
+        # crashed with UnicodeEncodeError on the canonical document's arrows
+        # and the --out write never ran. The summary is ASCII-escaped so a
+        # cp1252 console can always render it; the file itself keeps verbatim
+        # Unicode. A residual encode failure degrades the SUMMARY, never the
+        # already-written artifact.
+        try:
+            print(line)
+        except UnicodeEncodeError:
+            print(line.encode('ascii', 'backslashreplace').decode('ascii'))
+
+    _emit('coverage: ' + json.dumps(built['coverage'], ensure_ascii=True))
+    _emit('digest: ' + digest)
+    if a.out is not None:
+        _emit('wrote ' + str(a.out))
     return 0
 
 
