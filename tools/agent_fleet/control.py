@@ -321,6 +321,9 @@ class Control:
             s.setdefault('instance_fencing','compat')
             for a in s['agents'].values(): a.setdefault('instances',{})
             for t in s['tasks'].values(): t.setdefault('owner_instance',None)
+            # fleet-catalogue-realization-matching-01: additive provenance
+            # plane - pre-existing tasks cite no card (id fallback applies).
+            for t in s['tasks'].values(): t.setdefault('realized_from',None)
             s['slot_high_water']=max(int(s.get('slot_high_water') or 0),
                                      max((int(k) for k in s['slots'] if str(k).isdigit()), default=0))
             actor=self._actor(s,token)
@@ -511,11 +514,17 @@ class Control:
             kind=p.get('kind','worker');require(kind in ('integration','worker'),'invalid_task_kind')
             resources=p.get('resources',[])
             resources=self._declare_resources(resources)
+            # fleet-catalogue-realization-matching-01: optional provenance -
+            # a task may CITE the catalogue card it realizes (case-insensitive
+            # matching happens at discovery time; here only well-formedness).
+            rf=p.get('realized_from')
+            require(rf is None or (isinstance(rf,str) and rf.strip()),'invalid_realized_from')
             s['tasks'][tid]={'id':tid,'state':'READY','owner':None,'slot':None,'generation':0,'kind':kind,
                 'base':sha(p.get('base')),'branch':'astra/tasks/'+tid,'pr_base':'astra/gait-capture',
                 'scopes':scopes,'dependencies':deps,'capabilities':req,'resources':resources,
                 'packet':text(p.get('packet'),'packet'),
-                'checkpoint':None,'head':None,'review':None,'integration':None}
+                'checkpoint':None,'head':None,'review':None,'integration':None,
+                'realized_from':rf}
             return s['tasks'][tid]
         if op=='claim':
             require(actor in s['agents'] and s['agents'][actor]['qualified'],'qualified_agent_required')
@@ -815,14 +824,28 @@ class Control:
             # an abandoned realization remain blocked.
             live={tid.casefold() for tid,t in s['tasks'].items() if t['state'] not in ('INTEGRATED','ABANDONED')}
             done={tid.casefold() for tid,t in s['tasks'].items() if t['state']=='INTEGRATED'}
+            # fleet-catalogue-realization-matching-01: PROVENANCE matching.
+            # Raw id equality cannot bind card GOV-0X to the fleet's
+            # realized task holodeck-gov-0X (measured inert on the real
+            # 240-card graph: holodeck-gov-06, PR #84) - so a card is
+            # matched first through the task's realized_from CITATION:
+            # a card is realized-or-active iff a task citing it exists in
+            # any non-ABANDONED state, and certified iff that task is
+            # INTEGRATED. ABANDONED citations satisfy nothing and re-propose
+            # the card. The original id matching above remains as the
+            # fallback for tasks created before this field existed.
+            live_cards={t['realized_from'].casefold() for t in s['tasks'].values()
+                        if t.get('realized_from') and t['state'] not in ('INTEGRATED','ABANDONED')}
+            done_cards={t['realized_from'].casefold() for t in s['tasks'].values()
+                        if t.get('realized_from') and t['state']=='INTEGRATED'}
             candidates=[]
             for c in payload.get('cards',[]):
                 if not isinstance(c,dict) or not isinstance(c.get('id'),str):continue
                 cid=c['id'].casefold()
-                if cid in live or cid in done:continue
+                if cid in live or cid in done or cid in live_cards or cid in done_cards:continue
                 if c.get('status')!='PROPOSED':continue
                 deps=c.get('depends_on') if isinstance(c.get('depends_on'),list) else []
-                if all(str(d).casefold() in done for d in deps):candidates.append(c['id'])
+                if all(str(d).casefold() in done or str(d).casefold() in done_cards for d in deps):candidates.append(c['id'])
             candidates.sort()
             return {'digest':digest_value,'candidates':candidates,'live_tasks':sorted(live),
                     'note':'PLANNING CANDIDATES ONLY: catalogue records are not claims, not READY tasks and grant no authority; admission runs through the normal lead-authorized task lifecycle.'}
