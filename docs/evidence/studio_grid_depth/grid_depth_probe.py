@@ -124,6 +124,31 @@ def edge_band(mask: np.ndarray) -> np.ndarray:
     return d & ~mask
 
 
+def dilate(mask: np.ndarray, r: int) -> np.ndarray:
+    out = mask.copy()
+    for _ in range(r):
+        d = out.copy()
+        d[1:, :] |= out[:-1, :]; d[:-1, :] |= out[1:, :]
+        d[:, 1:] |= out[:, :-1]; d[:, :-1] |= out[:, 1:]
+        out = d
+    return out
+
+
+def boundary_zone(mask: np.ndarray, r: int = 14) -> np.ndarray:
+    """Pixels within r px of the silhouette boundary, either side.
+
+    The lifted sheet's near edge carries a contact-shadow strip ~10px wide and
+    an AA gradient on the fill side; samples there measure the EDGE, not the
+    grid. Both sides of the boundary are excluded from the occluded/visible
+    verdicts (the retained raw classes still record them as 'edge').
+    """
+    return dilate(mask, r) & ~erode(mask, r)
+
+
+def erode(mask: np.ndarray, r: int) -> np.ndarray:
+    return ~dilate(~mask, r)
+
+
 def classify(px, refs: dict, tol: float = 26.0) -> str:
     best, bd = "AMBIGUOUS", 1e9
     for name, ref in refs.items():
@@ -133,8 +158,33 @@ def classify(px, refs: dict, tol: float = 26.0) -> str:
     return best
 
 
+# ── v2 detector (structure, not absolute color) ──────────────────────────────
+# v1 classified each sample by absolute RGB against predicted blends; the
+# membrane's own shading range reaches the ink-blend colors, so dark FILL
+# counted as ink (the before/after numbers barely moved — retained in git).
+# v2 classifies LINE STRUCTURE against the local background: the grid ink is
+# a ~1px line DARKER than the local fill; the floor grid is a line BRIGHTER
+# than the dark floor; the membrane's wire/edges are lines MUCH brighter than
+# the fill. Local contrast is invariant to the shading gradient, so the same
+# detector is honest on both sides of the fix.
+def line_class(patch: np.ndarray) -> str:
+    """patch: (2r+1, 2r+1, 3) centered on the sample. Returns a line class."""
+    flat = patch.reshape(-1, 3)
+    lum = flat.mean(axis=1)
+    p = lum[lum.size // 2]                      # center pixel luminance
+    bg = float(np.percentile(lum, 80))          # local surface (fill or floor)
+    delta = p - bg
+    if delta > 55.0:
+        return "WIRE"                            # the edge-contrast ink (~230 over 157)
+    if delta > 8.0:
+        return "BRIGHT_LINE"                     # grid over the dark floor
+    if delta < -12.0:
+        return "DARK_LINE"                       # grid ink over the fill (the defect)
+    return "FLAT"
+
+
 def run_membrane_probe(img: Image.Image, b2: dict, tag: str) -> dict:
-    """Preregistered partition: occluded vs visible grid samples, pixel classes."""
+    """Preregistered partition: occluded vs visible grid samples, line classes."""
     arr = np.asarray(img.convert("RGB"), dtype=np.float64)
     H, W = arr.shape[:2]
     cam_before = cam_state()
@@ -170,7 +220,7 @@ def run_membrane_probe(img: Image.Image, b2: dict, tag: str) -> dict:
            {"wire_hit_rate": round(hit_rate, 3)})
 
     mask = rasterize_mask(tris, W, H)
-    eb = edge_band(mask)
+    eb = boundary_zone(mask, 14)   # near-boundary strip: edge shadow + AA — excluded
 
     # grid line sampling law (engine.cpp push_grid_overlay, same derivation)
     R = CAMERA["cam_radius"]
@@ -179,14 +229,10 @@ def run_membrane_probe(img: Image.Image, b2: dict, tag: str) -> dict:
     wx0, wx1 = lifted[:, 0].min() - sp, lifted[:, 0].max() + sp
     wz0, wz1 = lifted[:, 2].min() - sp, lifted[:, 2].max() + sp
 
-    refs = {
-        "GRID_INK_ON_FILL": (101, 107, 132),   # 0.7*ink + 0.3*fill157
-        "GRID_INK_ON_FLOOR": (70, 77, 98),     # 0.7*ink + 0.3*floor55
-        "FILL": (157, 157, 167),               # measured demo fill band centre
-        "WIRE": (230, 230, 242),               # edge-contrast ink
-    }
+    refs = {}   # v1 absolute-color refs — kept out of the v2 structure detector
     counts = {"occluded": {}, "visible": {}}
     samples = []
+    RADIUS = 4   # 9x9 local-contrast window
     for i in range(-n, n + 1):
         v = float(sp * i)
         for lo, hi, axis in ((wx0, wx1, "z"), (wz0, wz1, "x")):
@@ -200,35 +246,39 @@ def run_membrane_probe(img: Image.Image, b2: dict, tag: str) -> dict:
                     continue
                 sx, sy = r
                 x, y = int(round(sx)), int(round(sy))
-                if not (1 <= x < W - 1 and 1 <= y < H - 1):
+                if not (RADIUS < x < W - 1 - RADIUS and RADIUS < y < H - 1 - RADIUS):
                     continue
                 occ = bool(mask[y, x])
                 on_edge = bool(eb[y, x])
-                px = arr[y, x]
-                cls = classify(px, refs)
+                cls = line_class(arr[y - RADIUS:y + RADIUS + 1, x - RADIUS:x + RADIUS + 1])
                 bucket = "edge" if on_edge else ("occluded" if occ else "visible")
                 if bucket != "edge":
                     counts[bucket][cls] = counts[bucket].get(cls, 0) + 1
-                if (occ or cls.startswith("GRID")) and len(samples) < 4000:
+                if (occ or cls != "FLAT") and len(samples) < 4000:
                     samples.append({"x": wx, "z": wz, "sx": sx, "sy": sy,
                                     "occluded": occ, "edge": on_edge, "class": cls,
-                                    "rgb": [int(c) for c in px]})
+                                    "rgb": [int(c) for c in arr[y, x]]})
     (OUT / f"{tag}_probe_samples.json").write_text(json.dumps(samples, indent=1))
-    ink_occ = counts["occluded"].get("GRID_INK_ON_FILL", 0) + \
-        counts["occluded"].get("GRID_INK_ON_FLOOR", 0)
+    ink_occ = counts["occluded"].get("DARK_LINE", 0)
     total_occ = sum(counts["occluded"].values())
+    total_vis = sum(counts["visible"].values())
     result = {"ok": True, "spacing": sp, "n_lines": 2 * n + 1, "lift": lift,
+              "detector": "v2 local-contrast line structure",
               "cam_before": cam_before, "cam_after": cam_state(),
-              "counts": counts, "ink_at_occluded": ink_occ,
+              "counts": counts,
+              "darkline_at_occluded": ink_occ,
               "occluded_total": total_occ,
-              "ink_at_occluded_frac": round(ink_occ / max(total_occ, 1), 4),
+              "darkline_at_occluded_frac": round(ink_occ / max(total_occ, 1), 4),
               "fill_at_occluded_frac": round(
-                  counts["occluded"].get("FILL", 0) / max(total_occ, 1), 4)}
+                  counts["occluded"].get("FLAT", 0) / max(total_occ, 1), 4),
+              "brightline_at_visible_frac": round(
+                  counts["visible"].get("BRIGHT_LINE", 0) / max(total_vis, 1), 4)}
     result["cam_stable"] = result["cam_before"] == result["cam_after"]
     (OUT / f"{tag}_probe.json").write_text(json.dumps(result, indent=1))
     record(f"probe.{tag}", "MEASURED", {k: result[k] for k in
-                                        ("ink_at_occluded", "occluded_total",
-                                         "ink_at_occluded_frac", "fill_at_occluded_frac",
+                                        ("darkline_at_occluded", "occluded_total",
+                                         "darkline_at_occluded_frac",
+                                         "brightline_at_visible_frac",
                                          "cam_stable")})
     return result
 
@@ -279,7 +329,12 @@ def capture_and_probe(view_fn, label: str, tag: str, b2: dict, attempts: int = 3
                                         "camera": CAMERA, "cam_echo": cam_at_capture})
         grab("/glass", f"{tag}_glass", {"view": label + " (composited)",
                                         "attempt": attempt, "camera": CAMERA})
-        r = run_membrane_probe(Image.open(OUT / f"{tag}_frame.png"), b2, tag)
+        # THE PROBE READS /GLASS: the composited window is what the operator
+        # and the DYAD see, and the grid lived in the UI overlay pass — the
+        # pixel-clean /frame never contained it pre-fix (measured: both
+        # channels are captured every attempt; the retired /frame-probe
+        # runs are retained in *_retired/).
+        r = run_membrane_probe(Image.open(OUT / f"{tag}_glass.png"), b2, tag)
         stable = bool(r.get("cam_stable")) and r.get("cam_before") == cam_at_capture
         selfcheck_ok = any(rec["name"] == f"probe.{tag}.lift_selfcheck"
                           and rec["verdict"] == "PASS"
@@ -366,8 +421,8 @@ def main() -> int:
             for r in RECORDS) + "\n")
         fails = [r for r in RECORDS if r["verdict"] == "FAIL"]
         print(json.dumps({"phase": PHASE, "fails": len(fails),
-                          "probe_v1_ink_occluded": r1.get("ink_at_occluded"),
-                          "probe_v2_ink_occluded": r2.get("ink_at_occluded")}))
+                          "probe_v1_ink_occluded": r1.get("darkline_at_occluded"),
+                          "probe_v2_ink_occluded": r2.get("darkline_at_occluded")}))
         return 0 if not fails else 1
     finally:
         if old is None:

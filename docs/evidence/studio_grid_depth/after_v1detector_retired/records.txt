@@ -1,0 +1,21 @@
+[PASS] launch {"pid": 71176, "port": 8127, "exe_sha256": "e3059030b25cef3f51c1f3eba7082f28128df49c029db326f0765d1d21682ae7"}
+[PASS] state.ready {"http": 200}
+[PASS] b2.fixture {"n_verts": 7, "n_faces": 6}
+[PASS] b2.gate {"rc": 0, "records": 21, "fails": 0}
+[PASS] capture.v1_frame {"png": "v1_frame.png", "http": 200}
+[PASS] capture.v1_glass {"png": "v1_glass.png", "http": 200}
+[PASS] probe.v1.lift_selfcheck {"wire_hit_rate": 0.714}
+[MEASURED] probe.v1 {"ink_at_occluded": 854, "occluded_total": 4368, "ink_at_occluded_frac": 0.1955, "fill_at_occluded_frac": 0.3906, "cam_stable": true}
+[PASS] probe.v1.accepted {"attempt": 1}
+[PASS] capture.v2_frame {"png": "v2_frame.png", "http": 200}
+[PASS] capture.v2_glass {"png": "v2_glass.png", "http": 200}
+[PASS] probe.v2.lift_selfcheck {"wire_hit_rate": 0.714}
+[MEASURED] probe.v2 {"ink_at_occluded": 854, "occluded_total": 4368, "ink_at_occluded_frac": 0.1955, "fill_at_occluded_frac": 0.3906, "cam_stable": true}
+[PASS] probe.v2.accepted {"attempt": 1}
+[PASS] membrane.instance.drain {"rc": 1}
+[PASS] capture.v4_idle_glass {"png": "v4_idle_glass.png", "http": 200}
+[PASS] capture.v4_idle_frame {"png": "v4_idle_frame.png", "http": 200}
+[PASS] v3.mesh_bin {"http": 200, "resp": "{\"ok\":true}"}
+[PASS] capture.v3_mesh_glass {"png": "v3_mesh_glass.png", "http": 200}
+[PASS] capture.v3_mesh_frame {"png": "v3_mesh_frame.png", "http": 200}
+[PASS] mesh.instance.drain {"rc": 1}

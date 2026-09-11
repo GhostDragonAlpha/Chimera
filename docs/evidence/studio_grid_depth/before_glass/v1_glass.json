@@ -1,0 +1,14 @@
+{
+ "endpoint": "/glass",
+ "http": 200,
+ "png_sha256": "288367d71aaf7373b0fc4667b9f160aa059e0d5c2c7d7a863106ce4313c23999",
+ "png_bytes": 14748233,
+ "utc": "2026-09-11T16:09:16Z",
+ "view": "V1 membrane reset (fixture geometry) (composited)",
+ "attempt": 1,
+ "camera": {
+  "cam_radius": 3.0,
+  "cam_theta": 0.0,
+  "cam_phi": 0.35
+ }
+}

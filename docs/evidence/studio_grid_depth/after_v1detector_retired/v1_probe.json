@@ -1,0 +1,43 @@
+{
+ "ok": true,
+ "spacing": 0.1,
+ "n_lines": 61,
+ "lift": 0.5,
+ "cam_before": [
+  3.0,
+  0.0,
+  0.35,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "cam_after": [
+  3.0,
+  0.0,
+  0.35,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "counts": {
+  "occluded": {
+   "AMBIGUOUS": 1808,
+   "FILL": 1706,
+   "GRID_INK_ON_FILL": 847,
+   "GRID_INK_ON_FLOOR": 7
+  },
+  "visible": {
+   "AMBIGUOUS": 4806,
+   "GRID_INK_ON_FLOOR": 602
+  }
+ },
+ "ink_at_occluded": 854,
+ "occluded_total": 4368,
+ "ink_at_occluded_frac": 0.1955,
+ "fill_at_occluded_frac": 0.3906,
+ "cam_stable": true
+}

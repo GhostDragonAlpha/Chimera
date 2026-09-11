@@ -1,0 +1,14 @@
+{
+ "endpoint": "/glass",
+ "http": 200,
+ "png_sha256": "70c497f9f193e10b068bdaf13ac5718f707b96a4390ab05fa544e47917b79a5d",
+ "png_bytes": 14748233,
+ "utc": "2026-09-11T15:56:45Z",
+ "view": "V2 gamma0 raised stationary (composited)",
+ "attempt": 1,
+ "camera": {
+  "cam_radius": 3.0,
+  "cam_theta": 0.0,
+  "cam_phi": 0.35
+ }
+}

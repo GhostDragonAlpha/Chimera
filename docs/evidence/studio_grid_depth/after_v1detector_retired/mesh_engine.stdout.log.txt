@@ -1,0 +1,19 @@
+studio: session log -> session_20260911_103447.jsonl
+edge-contrast wireframe: created (CHIMERA_TRI_EDGE_CONTRAST)
+floor: building pipeline (modules ok)
+floor: pipeline created
+Compute pipeline created
+THE ENGINE STUDIO: overlay ready (F1)
+Vulkan engine initialized: 2560 x 1440, 2 frames in flight
+Chimera Engine running at http://localhost:8127/state
+  /frame  -> PNG of the current render (membrane if one is loaded)
+  /membrane (POST) -> load a story membrane scene
+Window: 2560x1440, Press Ctrl+C to stop.
+Controls: Left-drag orbit | Scroll zoom | Right-drag pan
+          WASD move | Q/E up-down | Space/Ctrl zoom | R reset | P pose toggle
+          F1 THE ENGINE STUDIO overlay (pipeline board + live status)
+FPS: 18 (frame 37) | ft ms avg 46.12 max 1367.67 | >16.7ms: 2 >33ms: 1
+FPS: 7 (frame 10) | ft ms avg 143.97 max 1359.01 | >16.7ms: 1 >33ms: 1
+snapshot: session_snapshot/mesh_bin.blob (420 B)
+FPS: 90 (frame 191) | ft ms avg 8.05 max 1364.47 | >16.7ms: 1 >33ms: 1
+FPS: 38 (frame 57) | ft ms avg 23.55 max 1309.82 | >16.7ms: 1 >33ms: 1

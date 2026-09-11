@@ -1,0 +1,24 @@
+{
+ "endpoint": "/frame",
+ "http": 200,
+ "png_sha256": "e5a8e295233de6d5b51553286fb623c75753d7f27bd0bd8e755026e076dd7d2f",
+ "png_bytes": 14748233,
+ "utc": "2026-09-11T15:56:44Z",
+ "view": "V2 gamma0 raised stationary",
+ "attempt": 1,
+ "camera": {
+  "cam_radius": 3.0,
+  "cam_theta": 0.0,
+  "cam_phi": 0.35
+ },
+ "cam_echo": [
+  3.0,
+  0.0,
+  0.35,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ]
+}

@@ -1,0 +1,44 @@
+{
+ "ok": true,
+ "spacing": 0.1,
+ "n_lines": 61,
+ "lift": 0.5,
+ "detector": "v2 local-contrast line structure",
+ "cam_before": [
+  3.0,
+  0.0,
+  0.35,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "cam_after": [
+  3.0,
+  0.0,
+  0.35,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "counts": {
+  "occluded": {
+   "FLAT": 4127,
+   "WIRE": 4,
+   "DARK_LINE": 1,
+   "BRIGHT_LINE": 28
+  },
+  "visible": {
+   "FLAT": 5198
+  }
+ },
+ "darkline_at_occluded": 1,
+ "occluded_total": 4160,
+ "darkline_at_occluded_frac": 0.0002,
+ "fill_at_occluded_frac": 0.9921,
+ "brightline_at_visible_frac": 0.0,
+ "cam_stable": true
+}
