@@ -1,0 +1,10 @@
+# watchdog-fail-closed-01 P3: direct behavior probes (post-fix head: test+fix in working tree)
+# (i) empty env + parent_pid=None -> ACTIVE on os.getppid() (old conditional-default)
+empty env -> thread is None? False | daemon? True | alive? True
+still alive after 0.6s: True
+
+# (iii) explicit parent_pid=0 -> None (the tested opt-out, unchanged)
+parent_pid=0 -> None
+
+# (iv) non-Windows path: inspection only on this host (os.name=='nt'); the
+# os.name != 'nt' guard sits ABOVE the branch and is byte-identical (see diff).

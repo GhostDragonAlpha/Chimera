@@ -1,0 +1,24 @@
+# watchdog-fail-closed-01 P1: tripwire run at PRE-FIX head (prereg e5666be7 + tip 4f965d18 ff)
+# the finding's regression test, verbatim sketch, run BEFORE the fix
+# (test file change present in the working tree only, uncommitted at this run)
+
+$ python tools/agent_fleet/test_capture_window.py FixtureChildWatchdogTests.test_watchdog_fails_closed_on_malformed_env_pid -v
+test_watchdog_fails_closed_on_malformed_env_pid (__main__.FixtureChildWatchdogTests.test_watchdog_fails_closed_on_malformed_env_pid) ... FAIL
+
+======================================================================
+FAIL: test_watchdog_fails_closed_on_malformed_env_pid (__main__.FixtureChildWatchdogTests.test_watchdog_fails_closed_on_malformed_env_pid)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-03\tools\agent_fleet\test_capture_window.py", line 891, in test_watchdog_fails_closed_on_malformed_env_pid
+    self.assertIsNotNone(thread,    # <-- fails on the OLD code
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'malformed env pid disabled the orphan watchdog')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: unexpectedly None : malformed env pid disabled the orphan watchdog
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)
+
+exit=$?
