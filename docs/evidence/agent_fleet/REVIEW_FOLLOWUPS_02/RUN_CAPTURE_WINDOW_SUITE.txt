@@ -1,0 +1,24 @@
+test_capture_refuses_wrong_pinned_size (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_capture_refuses_wrong_pinned_size) ... ok
+test_client_rect_excludes_nonclient_chrome (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_client_rect_excludes_nonclient_chrome) ... ok
+test_destroyed_window_refused (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_destroyed_window_refused) ... ok
+test_distinct_solid_content_fixtures_are_unobscured (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_distinct_solid_content_fixtures_are_unobscured) ... ok
+test_evidence_write_refuses_overwrite (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_evidence_write_refuses_overwrite) ... ok
+test_failed_memory_dc_is_named_refusal (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_failed_memory_dc_is_named_refusal) ... ok
+test_foreign_class_refused_without_manipulation (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_foreign_class_refused_without_manipulation) ... ok
+test_foreign_process_pid_refused (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_foreign_process_pid_refused) ... ok
+test_hwnd_level_contract_refuses_raw_stale_handle (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_hwnd_level_contract_refuses_raw_stale_handle) ... ok
+test_module_has_no_screen_dc_fallback (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_module_has_no_screen_dc_fallback) ... ok
+test_overlap_does_not_contaminate_window_specific_capture (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_overlap_does_not_contaminate_window_specific_capture) ... ok
+test_pattern_is_deterministic_and_size_parametric (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_pattern_is_deterministic_and_size_parametric) ... ok
+test_real_cross_window_content_mismatch_refused (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_real_cross_window_content_mismatch_refused) ... ok
+test_real_foreign_process_fixture_refused_on_pid (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_real_foreign_process_fixture_refused_on_pid) ... ok
+test_resize_fails_closed (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_resize_fails_closed) ... ok
+test_stale_handle_after_destroy_is_refused_not_fallen_back (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_stale_handle_after_destroy_is_refused_not_fallen_back) ... ok
+test_unobscured_owned_capture_is_exact (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_unobscured_owned_capture_is_exact) ... ok
+test_verdict_vocabulary_is_exhaustive (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_verdict_vocabulary_is_exhaustive) ... ok
+test_verify_hwnd_capture_none_pin_adopts_measured_size (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_verify_hwnd_capture_none_pin_adopts_measured_size) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 1.463s
+
+OK
