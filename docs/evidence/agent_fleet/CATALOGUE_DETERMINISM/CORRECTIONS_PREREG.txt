@@ -1,0 +1,76 @@
+CORRECTIONS PREREGISTRATION - evidence-corrections-batch-01
+============================================================
+task: evidence-corrections-batch-01 (gen 1, slot 7) | worker: subagent-worker-05
+base: d59518b9 (merge of PR #66). This prereg covers BOTH scopes of the task
+(docs/evidence/agent_fleet/CATALOGUE_DETERMINISM and
+docs/evidence/agent_fleet/CATALOGUE_PACKET_BATCH) and is committed FIRST, before
+any correction is applied. Committed before any of this lane's own measurements
+were written down; the review-derived numbers below are quoted from the task
+packet (they were produced by the PR #66/#67 reviews, not by this lane).
+
+STATEMENT
+---------
+Four review-derived evidence corrections (two from the PR #66 independent
+review, two from the PR #67 independent review) land as ONE smallest-corrections
+change, ALL dated and strictly APPEND-ONLY: zero deletions, zero edits to any
+pre-existing evidence byte. Each correction makes a reviewer-visible fact
+explicit that a reviewer would otherwise have to re-derive or stumble over.
+
+PREDICTIONS
+-----------
+PP1 git numstat for the corrections commit shows +N/-0 for EVERY touched file
+    (N > 0 additions, ZERO deletions).
+PP2 every pre-existing evidence file's prior bytes are byte-identical to the
+    base commit (equivalent to PP1; appends at EOF only).
+PP3 the only new file in this lane is this prereg.
+
+FALSIFIERS
+----------
+FF1 any deletion or byte change in pre-existing evidence (numstat -0 violated).
+FF2 a correction stating anything not verifiable from the record (each appended
+    claim must be checkable by the commands/values it cites).
+FF3 an edit disguised as an append (rewriting existing lines).
+
+THE FOUR CORRECTIONS (spec; final wording applied in the corrections commit)
+---------------------------------------------------------------------------
+C1 (PR #66 review info-1, lands in CATALOGUE_DETERMINISM/RESULT.txt):
+    the run records pin LIVE console hashes/sizes captured in the working tree
+    (packet: live sha256 prefixes 009ee83e / b052ddb5 / d60a9bb8 at 650198 B)
+    while the COMMITTED blobs of RAW_RUN_*.txt are the LF-normalized forms
+    (packet: 634fad48 / 310cda69 / 6443fea8 at 650195 B); the 3-byte delta per
+    file is CRLF normalization (core.autocrlf=true), content verbatim. The
+    correction states this so the next reviewer does not burn an hour on the
+    hash mismatch. This lane measures and publishes the exact per-file table
+    (all six full sha256 values + sizes, both forms) before writing it.
+C2 (PR #66 review info-2, same file): the recorded builder sha256 cc47c240...
+    for tools/agent_fleet/master_catalogue.py is the working-tree CRLF form;
+    the repository blob (what a fresh clone, `git cat-file`, and the fleet
+    deployment MANIFEST.json pin) is the LF form f32d16ac... . The correction
+    states which form each recorded value pins.
+C3 (PR #67 review LOW-1, lands in CATALOGUE_PACKET_BATCH/RESULT.md):
+    make the delivered-file count verifiable: this lane enumerates EVERY file
+    under the scope from git ls-files and publishes the full list with the
+    total (review's figure: 39; the review's premise that RESULT.md states a
+    count of 38 was checked and is NOT in the record - the correction therefore
+    pins the verified enumeration without attributing a claim the record does
+    not contain; deviation reported to the lead).
+C4 (PR #67 review LOW-2, same file): one dated paragraph spelling out the
+    P1-driven batch swap between the retained first p4 run
+    (checks/p4_scope_safety.run1-CORRECTLY-REFUSED-trailing-slash.txt: scanned
+    the PREREG-PREDICTED batch, with the then-current trailing-slash scope
+    forms, all REFUSED bad_part) and the final p4 run
+    (checks/p4_scope_safety.txt: scanned the SHIPPED batch, amended forms,
+    HOLDS), cross-referencing the retained run1 file and the parallel p1
+    replay pair (p1_batch_replay.run1-CHECKER-BUG-casefold.txt -> the checker
+    bug; p1_batch_replay.txt -> the real procedure output).
+
+METHOD
+------
+M1 append a dated CORRECTIONS section at EOF of CATALOGUE_DETERMINISM/RESULT.txt
+   (C1 + C2) and of CATALOGUE_PACKET_BATCH/RESULT.md (C3 + C4); separator
+   lines only; no existing byte touched.
+M2 verify PP1/PP2 with `git diff --numstat <base>..HEAD` on the two scopes
+   (expect only additions) before submit_review; record the numstat in the
+   submit_review evidence.
+
+Agent: subagent-worker-05
