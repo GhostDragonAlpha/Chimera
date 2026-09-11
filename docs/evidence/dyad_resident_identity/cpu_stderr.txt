@@ -1,0 +1,13 @@
+test_case1_no_model_returns_none (tools.test_dyad_resident_identity.ResidentIdentityContract.test_case1_no_model_returns_none) ... ok
+test_case2_on_disk_only_returns_none_never_on_disk_id (tools.test_dyad_resident_identity.ResidentIdentityContract.test_case2_on_disk_only_returns_none_never_on_disk_id)
+THE ORIGINAL COUNTEREXAMPLE: every listed model is on-disk ... ok
+test_case3_single_loaded_returns_that_id (tools.test_dyad_resident_identity.ResidentIdentityContract.test_case3_single_loaded_returns_that_id) ... ok
+test_case4_multiple_loaded_returns_none_not_first (tools.test_dyad_resident_identity.ResidentIdentityContract.test_case4_multiple_loaded_returns_none_not_first)
+Named ambiguity: with several explicitly loaded records the answer is ... ok
+test_case5_malformed_payload_returns_none_no_escape (tools.test_dyad_resident_identity.ResidentIdentityContract.test_case5_malformed_payload_returns_none_no_escape) ... ok
+test_case6_transport_failure_returns_none (tools.test_dyad_resident_identity.ResidentIdentityContract.test_case6_transport_failure_returns_none) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.025s
+
+OK
