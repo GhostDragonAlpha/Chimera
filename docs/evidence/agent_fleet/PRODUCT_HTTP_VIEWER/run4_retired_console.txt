@@ -1,0 +1,19 @@
+[PASS] engine.launch {"pid": 86040, "port": 8105, "exe_sha256": "13677bfb3f60febe837399718380ba9a7d57e39908d03f26d4772b64a15f2b46", "runtime": "E:\\ChimeraWork\\slot-05\\.tmp\\engine_runtime\\product-http-viewer-01-202609
+[PASS] load.mesh {"r": 27.862994463376467, "theta": 3.141592653589793, "phi": -1.3101939350475558}
+[PASS] load.joints_bin {"http": 200}
+[MEASURED] rig.doc {"n_joints": 28, "names": ["ankle_L", "ankle_R", "brow_L", "brow_R", "ear_L", "ear_R", "elbow_L", "elbow_R", "hip_L", "hip_R", "jaw", "knee_L", "knee_R", "lid_L", "lid_R", "mouth_L", "mouth_R", "neck"
+[PASS] viewer.start {"pid": 17532, "port": 8205, "health": {"ok": true, "engine": "http://127.0.0.1:8105", "engine_up": true, "ring": {"count": 0, "first_index": null, "last_index": null, "capacity": 240}, "capture": {"t
+[PASS] camera.panel_get {"presets": ["fit_rom", "reset", "three_quarter"], "bookmarks": [], "live_cam": [27.863, 3.14159, -1.31019, 0.0, 0.0, 0.0, 0.0, 0.0], "fit_R": 45.2736017236556}
+[PASS] camera.panel_post_set {"engine": {"ok": true}}
+[MEASURED] take.progress {"frame": 0, "of": 90}
+[MEASURED] take.progress {"frame": 10, "of": 90}
+[MEASURED] take.progress {"frame": 20, "of": 90}
+[MEASURED] take.progress {"frame": 30, "of": 90}
+[MEASURED] take.progress {"frame": 40, "of": 90}
+[MEASURED] take.progress {"frame": 50, "of": 90}
+[MEASURED] take.progress {"frame": 60, "of": 90}
+[MEASURED] take.progress {"frame": 70, "of": 90}
+[MEASURED] take.progress {"frame": 80, "of": 90}
+[MEASURED] take.driven {"frames": 90, "joint": "tail_tip", "peak_deg": 27.0, "joint_ok_posts": 90, "take_s": 584.5}
+[PASS] T2.capture_yield {"stored_in_window": 135, "required_min": 81, "driven_frames": 90, "max_consecutive_misses": 0, "capture_stats_before": {"ticks": 1, "stored": 1, "misses": 0, "consecutive_misses": 0, "max_consecutive
+[PASS] T2.no_two_consecutive_misses {"max_consecutive_misses": 0, "budget": 1}

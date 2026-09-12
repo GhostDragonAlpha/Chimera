@@ -1,0 +1,8 @@
+T4 movie endpoint — GET /api/movie over the capture ring
+pinned range: ?from=0&to=69 (run-6 lesson: the live ring grows between default calls)
+served1: http=200 bytes=773485 ftyp=True ct=video/mp4 sha256=788cf28adb7826dcf78ddfb9beec03284588dbd7481e59812c5e21184753c10b
+served2: http=200 bytes=773485 sha256=788cf28adb7826dcf78ddfb9beec03284588dbd7481e59812c5e21184753c10b
+decoded frames: served1=70 served2=70 expected=70 equal=True
+byte-deterministic across two encodes: True (x264 default frame threading; investigated per prereg)
+encode path: cpp_bridge.encode_movie (ffmpeg libx264 yuv420p), frames = ring records oldest->newest
+saved artifact: viewer_take.mp4 (in this evidence directory)
