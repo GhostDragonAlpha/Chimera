@@ -261,6 +261,10 @@ def run() -> int:
     P, S = derive_walk_port(), derive_stand_port()
     m, g = load_body(MYOBODY, mujoco)
     d = mujoco.MjData(m)
+    # the forward lever is argv state; lift it BEFORE first use (the 8-24
+    # wiring read it at the bottom -- never-run code's last splinter)
+    forward = (float(sys.argv[sys.argv.index("--forward") + 1]) if "--forward" in sys.argv
+               else 0.0)
     groups = muscle_groups(m, d, mujoco)
     tgt, nu = S["OUT pelvis_target_m"], m.nu
     vt = P["OUT target_speed_ms"]
@@ -303,10 +307,7 @@ def run() -> int:
                 else list(range(nseeds)))
     nseeds = len(seed_ids)
     # THE FORWARD LEVER (THE_LEVERS.md, chain lever -> lean). Only T5's launch metric needs it;
-    # default 0 keeps every historical run bit-identical. Measured from THIS body at reset, never
-    # assumed: theta_step = asin(fore_edge / com_h), the operator's rigid-inverted-pendulum formula.
-    forward = (float(sys.argv[sys.argv.index("--forward") + 1]) if "--forward" in sys.argv
-               else 0.0)
+    # the default judgments run unbiased. (extracted once above, before first use)
 
     # THE SAME SEEDS FOR BOTH ARMS. The ablation is the walk's control, and a control
     # run from a different initial condition than the thing it controls is not a control.

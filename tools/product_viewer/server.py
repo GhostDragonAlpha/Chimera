@@ -598,16 +598,24 @@ fp.addEventListener('touchmove',e=>{if(!drag||!cam0)return; const t=e.touches[0]
 fp.addEventListener('touchend',()=>{drag=null;});
 function state(){
   fetch('/api/health').then(r=>r.json()).then(h=>{TAKE=!!h.take_mode;
-    return fetch('/api/gallery').then(r=>r.json());}).then(d=>{
-    const last=d.records[d.records.length-1];
-    if(!last){document.getElementById('state').textContent='ring empty — no captures yet';return;}
-    const j=last.joints||{}, c=last.chrome||{};
-    document.getElementById('state').textContent=
-      'ring['+d.stats.first_index+'..'+d.stats.last_index+']  engine t='+(j.t??'?')
-      +'  current='+(j.current??'?')
-      +'  fps='+(c.fps??'?')+'  stage="'+(c.stage??'?')+'"'
-      +'  sha256='+String(last.sha256).slice(0,16)+'…  '+last.ts_iso;
-  }).catch(()=>{});
+    const el=document.getElementById('state');
+    if(h.engine_up===false){
+      el.textContent='ENGINE DOWN - the panes are empty because no engine is running on '+h.engine+
+                     ' (start one; the mirror re-finds its window automatically)';
+      el.style.color='#ef476f';
+    } else {
+      el.style.color='#9aa4af';
+      return fetch('/api/gallery').then(r=>r.json()).then(d=>{
+        const last=d.records[d.records.length-1];
+        if(!last){document.getElementById('state').textContent='engine UP - ring empty (capture paused; that is normal between takes)';return;}
+        const j=last.joints||{}, c=last.chrome||{};
+        document.getElementById('state').textContent=
+          'engine UP  ring['+d.stats.first_index+'..'+d.stats.last_index+']  engine t='+(j.t??'?')
+          +'  current='+(j.current??'?')
+          +'  fps='+(c.fps??'?')+'  stage="'+(c.stage??'?')+'"'
+          +'  sha256='+String(last.sha256).slice(0,16)+'…  '+last.ts_iso;
+      });
+    }}).catch(()=>{});
   fetch('/api/camera').then(r=>r.json()).then(d=>{
     const cam=d.state&&d.state.cam?d.state.cam.map(x=>(+x).toFixed(3)).join(', '):'?';
     document.getElementById('cam').textContent='live cam [r,theta,phi,tx,ty,tz,px,py] = '+cam
