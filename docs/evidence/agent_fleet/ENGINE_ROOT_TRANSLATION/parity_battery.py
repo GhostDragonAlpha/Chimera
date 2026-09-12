@@ -36,12 +36,16 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-ROOT = Path(__file__).resolve().parents[3]          # docs/evidence/... -> repo root of the slot
+ROOT = Path(__file__).resolve().parents[4]          # docs/evidence/agent_fleet/<lane>/ -> slot root
 sys.path.insert(0, str(ROOT / "tools"))
 sys.path.insert(0, str(ROOT / "ChimeraEngine"))
 from engine_demo import _launch, _wait_ready, _stop_owned, _port_busy  # noqa: E402
 import cpp_bridge                                    # noqa: E402
-import product_features_walk as v1                   # the integrated v1 lane (hinge/gait blobs)
+import importlib.util                                # noqa: E402
+_v1_spec = importlib.util.spec_from_file_location(   # the integrated v1 lane
+    "pfw_v1", str(ROOT / "tools/product_features_walk/product_features_walk.py"))
+v1 = importlib.util.module_from_spec(_v1_spec)       # (a file inside the bundle
+_v1_spec.loader.exec_module(v1)                      #  dir — load by exact path)
 
 EVIDENCE = ROOT / "docs/evidence/agent_fleet/ENGINE_ROOT_TRANSLATION"
 PORT_CANDIDATES = (8105, 8115, 8125)                 # fleet-range candidates; first free wins
