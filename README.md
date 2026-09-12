@@ -1,89 +1,86 @@
-# Chimera
+# CHIMERA — the membrane game
 
-Chimera is a C++/Vulkan engine and physical-world simulation project with Python
-reference laws, numerical falsifiers, runtime verification, and a creature/game
-layer. The long-term direction is for accepted physical state to supply rendered
-geometry, with the CPU providing derivations and reference tests before GPU ports.
+**A world built from membranes — cosmic down to molecular — where the physics cannot lie.**
 
-The engine and its verification workflow are under active development. A passing
-fixture or a completed local term hierarchy is not a completed game engine.
+Chimera is a real-time physics teaching game built on one idea: every
+material's outer surface — every triangle — carries real physical
+properties. Bones are membranes. Joints are membranes. Water, cloth,
+terrain, heat: membranes. Compose them and you get a creature that cannot
+lie about its own body, in a world built the same way. **Minecraft's
+accessibility, Star Citizen's scope, Space Engineers' material depth —
+and behind it, a real physics engine that never fakes a number.**
 
-Parallel agent execution runs on a five-slot control plane; the fleet docs are
-the current reference: the operating model and task/slot lifecycle
-([THE_AGENT_FLEET.md](docs/THE_AGENT_FLEET.md)), the agent entry prompt
-([AGENT_START.md](docs/AGENT_START.md)), the execution-contract record
-([THE_RUN_QUEUE.md](docs/THE_RUN_QUEUE.md)), the review-slot handoff contract
-([THE_REVIEW_SLOT_HANDOFF.md](docs/THE_REVIEW_SLOT_HANDOFF.md)), and
-copy-paste joining prompts per role
-([docs/evidence/agent_fleet/OPERATING_MODEL/PROMPTS.md](docs/evidence/agent_fleet/OPERATING_MODEL/PROMPTS.md)).
-The launcher requires an explicit execution profile; a claim poller by itself
-does not run a coding model.
+[docs/THE_GAME.md](docs/THE_GAME.md) is the constitution: the vision, the
+build order, and the laws this project runs under.
 
-## Start here
+## What's running today
 
-- **Agents:** [universal entry](docs/AGENT_START.md), then the live controller and
-  [Master task list](docs/THE_MASTER_LIST.md). Follow the repository
-  [operating instructions](AGENTS.md) and your actual task claim.
-- **Project direction and open work:** the [Master task list](docs/THE_MASTER_LIST.md)
-  owns task IDs, dependencies and evidence. It evolves as new requirements emerge.
-- **Runtime demo:** [native membrane demo and evidence](docs/THE_ENGINE_DEMO.md)
-  and [launcher instructions](docs/ENGINE_DEMO_QUICKSTART.md).
-- **Verification:** [the method](docs/THE_LAW.md) and
-  [current DYAD protocol](docs/THE_DYAD_PROTOCOL.md).
+- **The creature** — a 28-joint rigged body you can pose, march, and
+  pour water on; every on-screen readout tracks the real simulation
+  (blind-judged: independent reviewers who don't know what they're
+  looking at confirm what the body does).
+- **The engine** — a C++ Vulkan renderer + physics service speaking 59
+  HTTP paths (83 route rows): membrane/strain, water, gait, frost, stride. Frozen as a
+  service; extended only by named, reviewed exceptions.
+- **The brain** — all product logic is Python driving the engine over
+  its HTTP contract: scripted takes, choreography, and the HTTP viewer
+  with live view, byte-identical snapshots, and on-demand movies.
+- **The fleet** — AI agents build every feature through preregistered
+  falsifiable experiments, independent adversarial review, and blind
+  visual judges. Nothing merges unaudited. Every claim traces to a
+  picture.
 
-## Current renderer and demo
+## Run it
 
-The renderer is the [C++ Vulkan engine](ChimeraEngine/engine/engine.cpp), as recorded
-in the [renderer decision](docs/THE_RENDERER_DECISION.md). Its Windows build uses
-C++17, CMake, a C++ toolchain and the Vulkan SDK/shader compiler; see the actual
-[CMake configuration](ChimeraEngine/engine/CMakeLists.txt). Python numerical lanes
-have their own dependencies; the entire project is not standard-library-only.
+```bash
+# engine (Windows, VS Build Tools + Vulkan SDK)
+cmake -B .tmp/engine_build -S ChimeraEngine/engine
+cmake --build .tmp/engine_build --config Release
+.tmp/engine_build/Release/chimera_engine.exe 8105   # port = first arg
 
-The current membrane demo exercises a frozen constant-gamma surface-energy
-fixture with initialization, stepping, relaxation, reset and parameter controls.
-Optimization iterations are not physical time. The recorded demo does not certify
-water containment, general elastic materials, creature walking, or performance.
-The [runtime record](docs/THE_ENGINE_DEMO.md) distinguishes executed numerical gates,
-visual observations and remaining requirements.
+# viewer (Python 3.10+, stdlib only) — defaults to engine port 8105
+python -m tools.product_viewer
+# → open the printed URL: live view, frame gallery, camera presets
+```
 
-Agents build and launch only from their provisioned slot, using its private build,
-runtime and endpoint with the required resource reservations. Never write the
-protected engine build directory or reuse another worker's runtime.
+## The laws (short form)
 
-## Continuous agent workflow
+1. One feature at a time; a feature is a **visually provable concept**.
+2. Passing the human and the blind judge = **frozen**; polish comes later.
+3. Proofs wait for visuals — never gold-plate what the eye hasn't judged.
+4. The C++ engine is a frozen service; Python does everything else.
+5. **All invisible elements shall be seen when put in motion** — and seen
+   no more once proven (toggleable: making the invisible visible IS the
+   lesson).
 
-Develop, test, debug, refactor and review against a declared requirement and
-falsifier. Workers push task branches and open PRs targeting `astra/gait-capture`;
-slot 1 reviews the queue and handles authorized integration.
+Full laws, protocol, and the feature inventory: [docs/THE_GAME.md](docs/THE_GAME.md)
 
-A verified, preserved PR handoff frees the execution slot and worker capacity
-while the task remains REVIEW. Corrections return to the controller for a new
-claim and provisioning at the submitted head. Do not mark a task integrated just
-to free capacity. The [handoff contract](docs/THE_REVIEW_SLOT_HANDOFF.md) defines the
-client operations and evidence requirements.
+## Repository map
 
-When a local codebook or hierarchy has no remaining terms, return to the live
-Master/controller workflow: continue an owned milestone or claim eligible READY
-work. Do not ask the operator to select the next task merely because that local
-hierarchy is complete. A missing qualification, dependency or admission is a
-specific condition to report to the lead while other authorized work continues.
+| Path | What it is |
+|---|---|
+| `docs/THE_GAME.md` | the product constitution |
+| `ChimeraEngine/engine/` | the frozen Vulkan+physics service |
+| `tools/product_viewer/` | the Python viewer (live view, snapshots, movies) |
+| `tools/product_features*` | product feature drivers (walk, water, …) |
+| `tools/agent_fleet/` | the fleet: controller, gates, catalogue |
+| `docs/evidence/agent_fleet/` | every feature's proof, verbatim |
+| `docs/roadmap/holodeck_tasks.json` | the 240-card physics curriculum |
+| `docs/THE_AGENT_FLEET.md` | fleet operating model (agents start here) |
 
-## Reference work and evidence
+## For contributors and agents
 
-- [Surface-energy CPU reference](tools/surface_energy_reference.py).
-- [Elastic physical fixture contract](docs/THE_ELASTIC_PHYSICAL_HANDOFF.md).
-- [Creature continuity law](docs/THE_CONTINUITY_LAW.md).
-- [Engine shutdown ordering](docs/THE_ENGINE_SHUTDOWN_ORDER.md), including the
-  separately tracked Vulkan lifetime defects.
+Agents: [AGENT_START.md](docs/AGENT_START.md) → live controller →
+[Master task list](docs/THE_MASTER_LIST.md); follow [AGENTS.md](AGENTS.md).
+The method: [docs/THE_LAW.md](docs/THE_LAW.md); the dyad:
+[docs/THE_DYAD_PROTOCOL.md](docs/THE_DYAD_PROTOCOL.md); the fleet:
+[docs/THE_AGENT_FLEET.md](docs/THE_AGENT_FLEET.md).
 
-Historical claims remain tied to their source revision, device and evidence.
-Operator overrides, model observations and actual numerical/runtime tests are
-separate records. A one-image observation is not a movie verification result.
+## Status
 
-## Historical prototype and license
+Tier 0 (the body) frozen and proven; Tier 1 (locomotion — the creature
+learns to walk) in flight; 25 features queued, one at a time, ~1 visible
+feature per day (measured: PR #97 to #109 in under 12 hours). Multiplayer is native: the engine is already a server.
 
-The previous native/WebGPU quickstart is retained as a
-[historical prototype README](docs/archive/README_NATIVE_PROTOTYPE_20260910.md).
-It is not the current Vulkan entry point or a current walking certificate.
-
-Chimera is licensed under [GNU AGPL v3](LICENSE).
+License: [LICENSE](LICENSE). Built in the open, one verified membrane at
+a time.
