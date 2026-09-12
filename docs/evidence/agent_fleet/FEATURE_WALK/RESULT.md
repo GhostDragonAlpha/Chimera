@@ -73,3 +73,16 @@ through no fault of the lane. This host resumed from the preserved scratch
 (E:/ChimeraWork/evidence/w05-scratch/), claimed cleanly once qualified, then
 waited ~1.2 h in the resource queue behind product-http-viewer-01 (holder
 actively running; auto-promoted on their release at rev ~1276).
+
+## DYAD VERDICT (SIMPLE protocol, lead-executed spawn 2026-09-12)
+
+See DYAD_REPORT.txt (verbatim). The judge independently CONFIRMS falsifier
+F1: marching in place, zero travel, feet pinned to one spot — the feature
+is visually verified as stepping, and the root-translation engine-service
+gap stands as the recorded honest partial. Bonus roadmap from the judge's
+fakeness findings (backlog): arm counter-swing, torso bob/weight shift,
+foot planting, reactive contact shadow, balance adjustment. The stride
+phase visually read as a crouch — stride-lane followup finding.
+
+Completion: judge spawn + assembly by glm53-lead-02 per mailbox 8c60f6b66263
+(owner host ended after submit_review at rev 1279). Agent: glm53-lead-02
