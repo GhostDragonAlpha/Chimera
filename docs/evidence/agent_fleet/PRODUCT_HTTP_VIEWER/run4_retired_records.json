@@ -1,0 +1,251 @@
+[
+ {
+  "name": "engine.launch",
+  "verdict": "PASS",
+  "detail": {
+   "pid": 86040,
+   "port": 8105,
+   "exe_sha256": "13677bfb3f60febe837399718380ba9a7d57e39908d03f26d4772b64a15f2b46",
+   "runtime": "E:\\ChimeraWork\\slot-05\\.tmp\\engine_runtime\\product-http-viewer-01-20260912-012627"
+  }
+ },
+ {
+  "name": "load.mesh",
+  "verdict": "PASS",
+  "detail": {
+   "r": 27.862994463376467,
+   "theta": 3.141592653589793,
+   "phi": -1.3101939350475558
+  }
+ },
+ {
+  "name": "load.joints_bin",
+  "verdict": "PASS",
+  "detail": {
+   "http": 200
+  }
+ },
+ {
+  "name": "rig.doc",
+  "verdict": "MEASURED",
+  "detail": {
+   "n_joints": 28,
+   "names": [
+    "ankle_L",
+    "ankle_R",
+    "brow_L",
+    "brow_R",
+    "ear_L",
+    "ear_R",
+    "elbow_L",
+    "elbow_R",
+    "hip_L",
+    "hip_R",
+    "jaw",
+    "knee_L",
+    "knee_R",
+    "lid_L",
+    "lid_R",
+    "mouth_L",
+    "mouth_R",
+    "neck",
+    "shoulder_L",
+    "shoulder_R",
+    "spine_lower",
+    "spine_mid",
+    "spine_upper",
+    "tail_base",
+    "tail_mid",
+    "tail_tip",
+    "wrist_L",
+    "wrist_R"
+   ]
+  }
+ },
+ {
+  "name": "viewer.start",
+  "verdict": "PASS",
+  "detail": {
+   "pid": 17532,
+   "port": 8205,
+   "health": {
+    "ok": true,
+    "engine": "http://127.0.0.1:8105",
+    "engine_up": true,
+    "ring": {
+     "count": 0,
+     "first_index": null,
+     "last_index": null,
+     "capacity": 240
+    },
+    "capture": {
+     "ticks": 0,
+     "stored": 0,
+     "misses": 0,
+     "consecutive_misses": 0,
+     "max_consecutive_misses": 0,
+     "paused_ticks": 0,
+     "last_store_ts": null,
+     "last_error": null,
+     "paused": false
+    },
+    "uptime_s": 1.5
+   }
+  }
+ },
+ {
+  "name": "camera.panel_get",
+  "verdict": "PASS",
+  "detail": {
+   "presets": [
+    "fit_rom",
+    "reset",
+    "three_quarter"
+   ],
+   "bookmarks": [],
+   "live_cam": [
+    27.863,
+    3.14159,
+    -1.31019,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "fit_R": 45.2736017236556
+  }
+ },
+ {
+  "name": "camera.panel_post_set",
+  "verdict": "PASS",
+  "detail": {
+   "engine": {
+    "ok": true
+   }
+  }
+ },
+ {
+  "name": "take.progress",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 0,
+   "of": 90
+  }
+ },
+ {
+  "name": "take.progress",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 10,
+   "of": 90
+  }
+ },
+ {
+  "name": "take.progress",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 20,
+   "of": 90
+  }
+ },
+ {
+  "name": "take.progress",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 30,
+   "of": 90
+  }
+ },
+ {
+  "name": "take.progress",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 40,
+   "of": 90
+  }
+ },
+ {
+  "name": "take.progress",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 50,
+   "of": 90
+  }
+ },
+ {
+  "name": "take.progress",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 60,
+   "of": 90
+  }
+ },
+ {
+  "name": "take.progress",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 70,
+   "of": 90
+  }
+ },
+ {
+  "name": "take.progress",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 80,
+   "of": 90
+  }
+ },
+ {
+  "name": "take.driven",
+  "verdict": "MEASURED",
+  "detail": {
+   "frames": 90,
+   "joint": "tail_tip",
+   "peak_deg": 27.0,
+   "joint_ok_posts": 90,
+   "take_s": 584.5
+  }
+ },
+ {
+  "name": "T2.capture_yield",
+  "verdict": "PASS",
+  "detail": {
+   "stored_in_window": 135,
+   "required_min": 81,
+   "driven_frames": 90,
+   "max_consecutive_misses": 0,
+   "capture_stats_before": {
+    "ticks": 1,
+    "stored": 1,
+    "misses": 0,
+    "consecutive_misses": 0,
+    "max_consecutive_misses": 0,
+    "paused_ticks": 0,
+    "last_store_ts": 1789194390.362166,
+    "last_error": null,
+    "paused": false
+   },
+   "capture_stats_after": {
+    "ticks": 136,
+    "stored": 136,
+    "misses": 0,
+    "consecutive_misses": 0,
+    "max_consecutive_misses": 0,
+    "paused_ticks": 0,
+    "last_store_ts": 1789194974.8257787,
+    "last_error": null,
+    "paused": false
+   }
+  }
+ },
+ {
+  "name": "T2.no_two_consecutive_misses",
+  "verdict": "PASS",
+  "detail": {
+   "max_consecutive_misses": 0,
+   "budget": 1
+  }
+ }
+]

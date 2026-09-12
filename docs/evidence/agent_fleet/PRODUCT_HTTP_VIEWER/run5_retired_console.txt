@@ -1,0 +1,28 @@
+[PASS] engine.launch {"pid": 17532, "port": 8105, "exe_sha256": "13677bfb3f60febe837399718380ba9a7d57e39908d03f26d4772b64a15f2b46", "runtime": "E:\\ChimeraWork\\slot-05\\.tmp\\engine_runtime\\product-http-viewer-01-202609
+[PASS] load.mesh {"r": 27.862994463376467, "theta": 3.141592653589793, "phi": -1.3101939350475558}
+[PASS] load.joints_bin {"http": 200}
+[MEASURED] rig.doc {"n_joints": 28, "names": ["ankle_L", "ankle_R", "brow_L", "brow_R", "ear_L", "ear_R", "elbow_L", "elbow_R", "hip_L", "hip_R", "jaw", "knee_L", "knee_R", "lid_L", "lid_R", "mouth_L", "mouth_R", "neck"
+[PASS] viewer.start {"pid": 86776, "port": 8205, "health": {"ok": true, "engine": "http://127.0.0.1:8105", "engine_up": true, "ring": {"count": 0, "first_index": null, "last_index": null, "capacity": 240}, "capture": {"t
+[PASS] camera.panel_get {"presets": ["fit_rom", "reset", "three_quarter"], "bookmarks": [], "live_cam": [27.863, 3.14159, -1.31019, 0.0, 0.0, 0.0, 0.0, 0.0], "fit_R": 45.2736017236556}
+[PASS] camera.panel_post_set {"engine": {"ok": true}}
+[MEASURED] take.progress {"frame": 0, "of": 90}
+[MEASURED] take.progress {"frame": 10, "of": 90}
+[MEASURED] take.progress {"frame": 20, "of": 90}
+[MEASURED] take.progress {"frame": 30, "of": 90}
+[MEASURED] take.progress {"frame": 40, "of": 90}
+[MEASURED] take.progress {"frame": 50, "of": 90}
+[MEASURED] take.progress {"frame": 60, "of": 90}
+[MEASURED] take.progress {"frame": 70, "of": 90}
+[MEASURED] take.progress {"frame": 80, "of": 90}
+[MEASURED] take.driven {"frames": 90, "joint": "tail_tip", "peak_deg": 27.0, "joint_ok_posts": 90, "take_s": 585.7}
+[PASS] T2.capture_yield {"stored_in_window": 135, "required_min": 81, "driven_frames": 90, "max_consecutive_misses": 0, "capture_stats_before": {"ticks": 1, "stored": 1, "misses": 0, "consecutive_misses": 0, "max_consecutive
+[PASS] T2.no_two_consecutive_misses {"max_consecutive_misses": 0, "budget": 1}
+[MEASURED] T2.original_500ms_budget {"frozen_budget_ms": 500.0, "measured_live_p50_ms": 2842.1, "engine_glass_p50_ms": 1447.0, "note": "500 ms was a pre-measurement guess; the engine serves /glass serialized at ~1.3 s on this window \u2
+[PASS] T2.live_poll {"p50_ms": {"glass": 2842.1, "frame": 2819.5}, "derived_budget_ms": 3394.0, "engine_glass_p50_ms": 1447.0, "two_consecutive_non200": false, "png_content_type": true}
+[FAIL] T1.byte_identity {"stored_records": 136, "matches": 136, "latest_ok": false, "engine_rendered_driver_fetches": 90}
+[MEASURED] T3.extent {"width": 2560, "height": 1440, "source": "/frame IHDR"}
+[MEASURED] T3.capture_paused {"paused": true}
+[MEASURED] T3.control_reset_sweep {"ok": true, "worst_margin_px": 103.5, "worst_pose": "neck:ext", "note": "control only \u2014 recorded, NOT gating (prereg)"}
+[MEASURED] fit.derivation {"R_rig": 35.2736017236556, "r_body": 10.0, "R": 45.2736017236556, "cam_radius": 114.76515046366366, "center": [0.0, 4.54, -1.4125999999999999], "n_joints": 28, "engine_save_recall_ok": true}
+[PASS] T3.fit_rom_full_rom_gate {"worst_margin_px": 642.9, "worst_pose": "neck:ext", "total_violations": 0, "gate_px": 8}
+[FAIL] T4.movie {"http": 200, "bytes": 1113593, "ftyp": true, "content_type": "video/mp4", "two_encodes_identical": false, "sha256": "1d4ab53d2cb9c782677324367bf04fe5d7efd276311ea435a2b1749c65103b69"}
