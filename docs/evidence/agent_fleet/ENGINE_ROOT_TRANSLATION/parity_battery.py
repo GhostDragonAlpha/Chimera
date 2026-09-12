@@ -175,6 +175,12 @@ def run_battery(exe: Path, tag: str, no_root: bool) -> int:
         proj_b = project_knee()
         doc_b = jreq("GET", "/joints")
         record("s1.edit", "PASS", {"frame_sha": sha(png_b), "sx": proj_b["sx"], "sy": proj_b["sy"]})
+        # the body-centroid reference mask (frozen predictor, prereg amendment):
+        # rest vs edit pose at the SAME root offset — a body-region change.
+        m_edit = changed_mask(img_a, img_b)
+        c_edit = centroid_of(m_edit)
+        bb_edit = bbox_of(m_edit)
+        w_edit = (bb_edit[2] - bb_edit[0]) if bb_edit else 0
 
         # s0/s1 artifacts ARE the R2 regression set. /joints docs carry the
         # wall clock ("t") — compare the thetas arrays only.
@@ -199,11 +205,14 @@ def run_battery(exe: Path, tag: str, no_root: bool) -> int:
                                            "readback": root_doc})
 
             # ── P2 PIXEL PARITY (rest vs translated) ─────────────────────
-            # back to rest pose first (owner EDIT with zeroed thetas = rest)
+            # reference frame FIRST: rest pose at root 0 (thetas zeroed, root
+            # back to 0 after P1's post)
+            jreq("POST", "/root", {"x": 0.0, "y": 0.0, "z": 0.0})
+            wait_root_applied([0.0, 0.0, 0.0])
             jreq("POST", "/joint", {"joint": "knee_R", "theta": 0.0})
             jreq("POST", "/joint", {"joint": "elbow_L", "theta": 0.0})
             time.sleep(0.3)
-            png_c, img_c = grab_frame()            # body at root 0 (reference refreshed)
+            png_c, img_c = grab_frame()            # body at root 0 (reference)
             J0 = pivot_of(jreq("GET", "/joints"), "knee_R")
             proj0 = jreq("POST", "/project", {"x": J0[0], "y": J0[1], "z": J0[2]})
             jreq("POST", "/root", {"x": D[0], "y": D[1], "z": D[2]})
@@ -215,23 +224,28 @@ def run_battery(exe: Path, tag: str, no_root: bool) -> int:
             cx = centroid_of(mask)
             dsx = float(proj1["sx"]) - float(proj0["sx"])
             dsy = float(proj1["sy"]) - float(proj0["sy"])
-            h, w = mask.shape
             border = 4  # the outer 4-px band must be untouched (body is centered)
             border_ok = (not mask[:border, :].any() and not mask[-border:, :].any()
                          and not mask[:, :border].any() and not mask[:, -border:].any())
             area_frac = float(mask.mean())
-            # centroid: the changed-pixel mask is the symmetric difference of
-            # body(+shadow) at two positions; its centroid sits near the MIDPOINT
-            # of the two body centroids — compare against proj0 + dsx/2.
-            mid_x, mid_y = float(proj0["sx"]) + dsx / 2.0, float(proj0["sy"]) + dsy / 2.0
-            cen_ok = cx is not None and abs(cx[0] - mid_x) <= 40.0 and abs(cx[1] - mid_y) <= 40.0
-            p2 = "PASS" if (border_ok and cen_ok and mask.any() and area_frac <= 0.25) else "FAIL"
+            # FROZEN PREDICTOR (prereg amendment): M01's centroid sits at the
+            # body-centroid reference (M_edit's centroid) moved by ds/2; its
+            # width is the body width plus the |x| shift (union law).
+            mid_x = (c_edit[0] if c_edit else 0.0) + dsx / 2.0
+            mid_y = (c_edit[1] if c_edit else 0.0) + dsy / 2.0
+            bb = bbox_of(mask)
+            w_mask = (bb[2] - bb[0]) if bb else 0
+            cen_ok = cx is not None and abs(cx[0] - mid_x) <= 15.0 and abs(cx[1] - mid_y) <= 15.0
+            wid_ok = bb is not None and abs(w_mask - (w_edit + abs(dsx))) <= 8.0
+            p2 = "PASS" if (border_ok and cen_ok and wid_ok and mask.any() and area_frac <= 0.25) else "FAIL"
             if p2 == "FAIL":
                 fail += 1
             record("P2.pixel_parity", p2,
-                   {"centroid": cx, "mid_expected": [mid_x, mid_y], "proj_shift": [dsx, dsy],
-                    "border_band_untouched": border_ok, "changed_area_frac": round(area_frac, 5),
-                    "mask_bbox": bbox_of(mask), "pivot_moved": [J0, J1]})
+                   {"centroid": cx, "expected": [mid_x, mid_y], "proj_shift": [dsx, dsy],
+                    "c_edit": c_edit, "border_band_untouched": border_ok,
+                    "width_mask": w_mask, "width_expected": w_edit + abs(dsx),
+                    "changed_area_frac": round(area_frac, 5),
+                    "mask_bbox": bb, "pivot_moved": [J0, J1]})
 
             # ── P4 ROUND TRIP (translate back = the EXACT original bytes) ─
             jreq("POST", "/root", {"x": 0.0, "y": 0.0, "z": 0.0})
@@ -286,7 +300,7 @@ def run_battery(exe: Path, tag: str, no_root: bool) -> int:
             mask3 = changed_mask(img_m0, img_m1)
             cx3 = centroid_of(mask3)
             dsx3 = float(pm1["sx"]) - float(pm0["sx"])
-            mid3 = float(pm0["sx"]) + dsx3 / 2.0
+            mid3 = (c_edit[0] if c_edit else 0.0) + dsx3 / 2.0
             steps_ok = g2 > g1
             comp_ok = cx3 is not None and abs(cx3[0] - mid3) <= 60.0
             p3 = "PASS" if (steps_ok and var_ok and comp_ok) else "FAIL"
@@ -295,7 +309,8 @@ def run_battery(exe: Path, tag: str, no_root: bool) -> int:
             record("P3.gait_composition", p3,
                    {"steps_before": g1, "steps_after": g2, "march_advanced": steps_ok,
                     "body_temporal_std": round(body_var, 3), "still_stepping": var_ok,
-                    "centroid": cx3, "mid_expected_x": mid3, "proj_shift_x": dsx3,
+                    "centroid": cx3, "expected_x": mid3, "proj_shift_x": dsx3,
+                    "c_edit_x": c_edit[0] if c_edit else None,
                     "composed": comp_ok})
             jreq("POST", "/gait", {"on": False})
 

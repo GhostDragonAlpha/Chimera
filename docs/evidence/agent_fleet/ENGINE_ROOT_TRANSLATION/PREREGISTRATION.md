@@ -147,12 +147,35 @@ Two binaries: BASE = build of ecec79af, NEW = build of the lane head.
   inflated by 2 px; the mask centroid shift matches the `/project`-predicted
   screen delta of the rig's center pivot within 3 px. Floor/grid background
   pixels away from both boxes: byte-identical.
+  AMENDMENT (pre-run, before any measurement, committed ab501458->this):
+  the centroid predictor above is under-specified — a single-diff mask's
+  centroid is the body's own centroid moved by half the shift, and the
+  body's screen centroid is not the knee pivot the /project prediction
+  anchors on. FROZEN PREDICTOR (what the driver computes): let M_edit be
+  the changed-pixel mask of the s1 edit pose vs the s0 rest (same root
+  offset 0 — a body-region mask whose centroid approximates the body's
+  screen centroid), and M01 the mask of root d vs root 0 at rest. Then:
+  |cx(M01) - cx(M_edit) - dsx/2| <= 15 px and |cy(M01) - cy(M_edit) - dsy/2|
+  <= 15 px (dsx, dsy = the /project screen shift of the knee_R pivot, which
+  now carries the offset through /joints), and |w(M01) - (w(M_edit)+|dsx|)|
+  <= 8 px (union-of-two-positions width law). Border bands (outer 4 px)
+  byte-untouched; changed area <= 25% of frame. The original "3 px" form is
+  retired by this amendment BEFORE any number was measured; no bound below
+  changes after the first run.
 - P3 COMPOSITION (the walk-realism composition test): march playing, `POST
   /root {dx,0,0}`: steps_total strictly increasing across readbacks (the
   march is NOT preempted — the pose-ownership law is untouched); the
   creature's body region shifts by the predicted projected delta (centroid,
   3 px); knee oscillation continues (temporal variance in the body region
   across 10 consecutive frames is non-zero).
+  AMENDMENT (pre-run, same commit): under a PLAYING march the changed-pixel
+  mask includes the marching legs themselves, so the centroid bound cannot
+  be single-digit pixels. FROZEN: steps advance; per-pixel temporal std
+  across 10 consecutive frames > 0.5 (still stepping); the mask centroid of
+  (before vs after the root post, 1.5 s apart) satisfies
+  |cx(M) - (cx(M_edit) + dsx/2)| <= 60 px with dsx from /project as above
+  (M_edit from the P2 arm is the body-centroid reference; the march adds
+  leg-position noise the 60 px absorbs).
 - P4 ROUND TRIP: `POST /root {0,0,0}` after P2 restores `/frame` BYTE
   -identical to capture A (camera fixed, rest pose).
 - P5 READBACK: `POST /root {0.5, 0.25, -0.125}` → GET returns exactly those
