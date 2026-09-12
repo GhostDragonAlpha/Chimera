@@ -136,11 +136,11 @@ def main() -> int:
         # ── launch the private engine (visible, non-headless, slot-owned) ──
         wr.BASE = ENGINE                      # the substrate module reads MY instance
         os.environ["CHIMERA_ENGINE_URL"] = ENGINE
-        proc, cwd = _launch(EXE, ENGINE_PORT, RUNTIME)
+        proc, manifest = _launch(EXE, ENGINE_PORT, RUNTIME)
         _wait_ready(proc, ENGINE_PORT)
         exe_sha = hashlib.sha256(EXE.read_bytes()).hexdigest()
         record("launch", "PASS", {"pid": proc.pid, "port": ENGINE_PORT,
-                                  "runtime_cwd": str(cwd), "exe_sha256": exe_sha,
+                                  "runtime_cwd": str(manifest.parent), "exe_sha256": exe_sha,
                                   "main_cpp_sha256": src_sha})
         import subprocess
         blob = subprocess.run(["git", "-C", str(ROOT), "rev-parse",
