@@ -110,6 +110,19 @@ class EngineClient:
         except (urllib.error.URLError, OSError, TimeoutError) as e:
             raise EngineError(f"POST {path}: {e}") from e
 
+    def post_raw(self, path: str, body: bytes, ctype: str = "application/octet-stream",
+                 timeout: float | None = None) -> tuple[int, bytes]:
+        """POST raw bytes (binary blobs: hinge/stride packs)."""
+        req = urllib.request.Request(self.base + path, data=body, method="POST",
+                                     headers={"Content-Type": ctype})
+        try:
+            with urllib.request.urlopen(req, timeout=timeout or self.timeout) as r:
+                return r.status, r.read()
+        except urllib.error.HTTPError as e:
+            return e.code, e.read()
+        except (urllib.error.URLError, OSError, TimeoutError) as e:
+            raise EngineError(f"POST {path}: {e}") from e
+
     def up(self) -> bool:
         try:
             st, _, _ = self.get("/state")
@@ -515,6 +528,8 @@ PAGE = """<!doctype html><html><head><meta charset="utf-8"><title>Chimera Produc
   <button onclick="preset('reset')">reset (R)</button>
   <button onclick="preset('three_quarter')">three_quarter</button>
   <button id="posebtn" onclick="pose()">pose clock: off</button>
+  <button id="walkbtn" onclick="walk(!walkOn)">WALK: off</button>
+  <span style="font-size:12px;color:#9aa4af">the game control - every browser sees the same body</span>
  <span style="margin-left:14px">r <input id="r"> theta <input id="t"> phi <input id="p">
  <button onclick="setOrbit()">apply r/theta/phi</button></span>
  <div id="cam" style="font-size:12px;color:#9aa4af;margin-top:4px"></div>
@@ -607,6 +622,11 @@ function pose(){poseOn=!poseOn;
   fetch('/api/pose',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({on:poseOn})}).then(r=>r.json()).then(()=>{
     document.getElementById('posebtn').textContent='pose clock: '+(poseOn?'ON':'off');});}
+let walkOn=false;
+function walk(on){walkOn=on;
+  fetch('/api/walk',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({on:on})}).then(r=>r.json()).then(d=>{
+    document.getElementById('walkbtn').textContent='WALK: '+(d.ok?(on?'ON':'off'):'ERR');});}
 document.addEventListener('keydown',e=>{
   if(e.target.tagName==='INPUT')return;
   const k=e.key.toLowerCase();
@@ -860,6 +880,40 @@ class ViewerHandler(BaseHTTPRequestHandler):
                             "stats": capture.snapshot_stats()})
             except (json.JSONDecodeError, ValueError) as e:
                 self._json({"ok": False, "error": str(e)}, 400)
+            return
+        if path == "/api/walk":
+            # THE GAME CONTROL: walk on/off, driven by ANY browser, seen by ALL.
+            # on=true  -> knee hinge bands + certified stride pack + stride clock ON
+            # on=false -> stride clock OFF (the body returns to its pose)
+            try:
+                import struct as _s
+                length = int(self.headers.get("Content-Length", 0))
+                payload = json.loads(self.rfile.read(length).decode("utf-8") or "{}")
+                on = bool(payload.get("on", False))
+                if on:
+                    pack_path = (Path(__file__).resolve().parents[2]
+                                 / "docs/evidence/agent_fleet/FEATURE_WALK/stride_certified_pack.json")
+                    sd = json.loads(pack_path.read_text(encoding="utf-8"))
+                    n, nj, dt = sd["n_samples"], sd["n_joints"], float(sd["dt"])
+                    loop0 = int(round(sd["loop_t0"] / dt))
+                    sb = _s.pack("<IIIfI", 0x47415431, n, nj, dt, loop0)
+                    sb += _s.pack(f"<{n * nj}f", *[v for row in sd["theta"] for v in row])
+                    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"
+                                           / "product_features_walk"))
+                    from product_features_walk import build_hinge_blob
+                    hb, _facts = build_hinge_blob()
+                    st, resp = self.engine.post_raw("/hinge_bin", hb, timeout=30)
+                    if st != 200:
+                        raise EngineError(f"hinge_bin http {st}")
+                    st, resp = self.engine.post_raw("/stride_bin", sb, timeout=60)
+                    if st != 200:
+                        raise EngineError(f"stride_bin http {st}")
+                st, resp = self.engine.post_json(
+                    "/stride", {"on": on, "playing": on, "t": 0.0} if on
+                    else {"on": False, "playing": False})
+                self._json({"ok": st == 200, "walk": on})
+            except (json.JSONDecodeError, ValueError, EngineError) as e:
+                self._json({"ok": False, "error": str(e)}, 502)
             return
         if path == "/api/pose":
             # proxy: the engine's P-key (show/pose clock toggle) for web clients
