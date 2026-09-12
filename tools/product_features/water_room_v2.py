@@ -347,6 +347,7 @@ def build_substrate_disc(D: dict) -> dict:
         "n": n, "n_edges": len(edges_sorted), "n_colors": n_colors,
         "cube_edge": cube_edge, "center_cube": center_cube,
         "centroid_xz": D["centroid_xz"],
+        "y_floor": D["y_floor"], "centers": centers,
         "areas": areas, "bed": bed, "V0": np.zeros(n, dtype=np.int32),
         "occ": occ_mask.astype(np.uint32), "eij": ei, "k_e": k_e, "l_ij": l_ij,
         "edge_active": edge_active, "color_start": color_start.astype(np.uint32),
