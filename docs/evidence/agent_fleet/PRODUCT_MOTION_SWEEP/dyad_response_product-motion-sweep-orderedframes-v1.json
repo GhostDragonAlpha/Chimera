@@ -1,0 +1,425 @@
+{
+ "attempt": "product-motion-sweep-orderedframes-v1",
+ "capture_identities": [
+  {
+   "index": 1,
+   "path": "E:\\ChimeraWork\\slot-04\\docs\\evidence\\agent_fleet\\PRODUCT_MOTION_SWEEP\\frames\\g000.png",
+   "sha256": "7b1a513230fd254eb057df38269f012aa70ee417090b1b024f0b852110b58061"
+  },
+  {
+   "index": 2,
+   "path": "E:\\ChimeraWork\\slot-04\\docs\\evidence\\agent_fleet\\PRODUCT_MOTION_SWEEP\\frames\\g019.png",
+   "sha256": "08cdc969976fc6dc6171bd852998115adbda8fb4a3aa11102ae1b610e014fcc6"
+  },
+  {
+   "index": 3,
+   "path": "E:\\ChimeraWork\\slot-04\\docs\\evidence\\agent_fleet\\PRODUCT_MOTION_SWEEP\\frames\\g030.png",
+   "sha256": "ce0f665012942a968281e425674531347cf02b10b777850de05df68d47e09b0a"
+  },
+  {
+   "index": 4,
+   "path": "E:\\ChimeraWork\\slot-04\\docs\\evidence\\agent_fleet\\PRODUCT_MOTION_SWEEP\\frames\\g041.png",
+   "sha256": "183520ccf9d9b06f0aee727fd682f3ca8243ee51825490cc6248497b88b36c6a"
+  },
+  {
+   "index": 5,
+   "path": "E:\\ChimeraWork\\slot-04\\docs\\evidence\\agent_fleet\\PRODUCT_MOTION_SWEEP\\frames\\g049.png",
+   "sha256": "c6b2cb8a89c61b8b8624e44c6c9c109b9821ae25d3a73b8a36762f34bb000beb"
+  },
+  {
+   "index": 6,
+   "path": "E:\\ChimeraWork\\slot-04\\docs\\evidence\\agent_fleet\\PRODUCT_MOTION_SWEEP\\frames\\g069.png",
+   "sha256": "8a20b6d0c33285fe68e41b2cbeacbb921eea051f590c41a477d8b886faa7d5a0"
+  }
+ ],
+ "exact_prompt": "DYAD visual review request\ntask: product-motion-sweep-01\nattempt: product-motion-sweep-orderedframes-v1\nphysical/programming context: A desktop engineering application window: a central 3D viewport showing a small brown creature figure standing on a grid floor, with tool panels around the viewport. A short scripted sequence of the creature plays; the six frames are IN ORDER, taken evenly from a 7.0-second clip (10 frames per second).\nclaim under examination: A viewer reading these frames in order can tell what the creature is doing and what a human would learn from watching it.\nreview type: ordered_frames\nordered captures: #1 g000.png (sha256 7b1a513230fd...), #2 g019.png (sha256 08cdc969976f...), #3 g030.png (sha256 ce0f66501294...), #4 g041.png (sha256 183520ccf9d9...), #5 g049.png (sha256 c6b2cb8a89c6...), #6 g069.png (sha256 8a20b6d0c332...)\ncamera/runtime metadata: {\"camera\": \"fixed 3/4 orbit (set once before the clip; unchanged during)\", \"clip_truth_declared_to_nobody\": \"the judge is told nothing about how the motion was produced\", \"state\": \"the creature is the application loaded subject; a short pose clip plays\"}\nevidence limits: six ordered frames from a 7.0 s clip (10 fps); on-screen application text is part of the product surface and may be read; numbers are observations, not measurements\n\nAnswer EVERY question with its number. Report only what you can observe in the supplied images; state uncertainty explicitly. Do not guess. Numbers you mention are observations to verify, not measurements.\n1. 1. Describe what happens across the frames, in order.\n2. 2. What kind of motion or behavior is being demonstrated \u2014 name it as you would to a friend.\n3. 3. If a non-physicist watched this clip, what ONE sentence would you tell them about what they just learned?\n4. 4. Is anything unclear, ambiguous, or unconvincing about the sequence?",
+ "finish_status": "i have finished the blind visual review of the six ordered frames and reported only what the images show.",
+ "observations": [
+  "Frame #1: figure stands upright, all ~28 joint labels read +0; app shows \"FPS 0\", reel \"[0/12] no grabs yet\", timeline t = 0.269 s / 112.0 s (lap 0), state PLAYING.",
+  "Frame #2: arms bent \u2014 elbow_L/elbow_R +75, shoulder_L/shoulder_R +36 in green; legs still +0; reel filled to [12/12]; timeline t = 61.667 s (lap 0).",
+  "Frame #3: knees bent knee_L/knee_R +88, hips flexed, spine slightly bent (~+11); figure visibly lower in a squat; timeline t = 96.781 s.",
+  "Frame #4: deep crouch/bow \u2014 head near knees, torso folded; spine +33/+36, tail_base +52, tail_mid +83, tail_tip +27; timeline shows t = 21.906 s / 112.0 s (lap 1).",
+  "Frame #5: visually nearly identical deep crouch held; timeline t = 47.937 s (lap 1).",
+  "Frame #6: figure upright and neutral again, all joint labels +0; timeline t = 0.237 s / 112.0 s (lap 2).",
+  "Camera framing is constant across all six frames: same fixed 3/4 view, same grid floor, same surrounding panels; only the figure's pose and the UI counters change.",
+  "The on-screen show clock advances from 0.269 s to 224.24 s of cumulative show time (with two lap wraps) across the six frames, which does not match a 7.0 s evenly sampled clip at face value.",
+  "Status panel reports ~35-39 FPS in frames #2-#6 versus FPS 0 in frame #1."
+ ],
+ "provider_id": "subagent-dyad-glm53flash",
+ "raw_response": "1. Across the six frames, in order: the brown creature figure starts standing upright and neutral, with every joint label reading +0 (frame #1). In frame #2 it is still standing but both arms are bent at the elbows \u2014 the labels read shoulder_L +36, shoulder_R +36, elbow_L +75, elbow_R +75 while legs remain at +0. In frame #3 the legs bend: knee_L +88, knee_R +88, hips flexed, and the figure visibly drops lower into the floor grid \u2014 a squat is beginning. In frame #4 the figure is folded into a deep crouch/bow: the torso is pitched down, the head is near the knees, and the labels show spine bent (+33, +36) and the tail curled (tail_base +52, tail_mid +83, tail_tip +27); the on-screen \"SHOW\" line reads tail_base theta 52.28 deg. Frame #5 is visually nearly identical to #4 \u2014 the deep crouch appears held. In frame #6 the figure is back to the upright standing pose of frame #1, with all joint labels returned to +0. So the visible arc is: stand \u2192 bend arms \u2192 squat \u2192 deep crouch/bow \u2192 hold \u2192 stand back up.\n2. To a friend I would call it a scripted squat-and-recover: the character bends its arms, squats down into a tight curled crouch (spine and tail curling in), holds it, and then stands back up to its original pose. It reads as a whole-body pose cycle driven through a joint rig, not locomotion \u2014 the feet stay planted on the grid spot throughout.\n3. \"You just watched a digital puppet prove it can bend many joints at once \u2014 arms, knees, hips, spine, and tail \u2014 fold itself into a deep crouch, and return cleanly to standing, which means the character's pose control works end to end.\"\n4. Yes, several things: (a) The motion between sampled frames is large \u2014 standing to fully crouched happens between single frames \u2014 so the trajectory and speed must be inferred; the stills do not show how the crouch was reached. (b) There is a timing inconsistency I cannot resolve: the request states the frames come evenly from a 7.0-second clip, but the application's own on-screen show clock reads t = 0.269 s, 61.667 s, 96.781 s, then wraps into \"(lap 1)\" at t = 21.906 s and t = 47.937 s, and \"(lap 2)\" at t = 0.237 s \u2014 i.e. the on-screen clock advances tens of seconds and wraps a 112.0 s loop multiple times across the six frames. Either the capture is time-compressed relative to the show clock or the frames are not evenly spaced in show time; I cannot tell which from the images. (c) In frames #4 and #5 the deep-crouch pose is partially obscured by overlapping joint labels and the folded limbs, so the exact limb positions there are hard to read. (d) The top-left \"SHOW <joint> theta\" line does not track the visibly moving joint (e.g., frame #3 shows \"brow_L theta 0.00 deg\" while the knees are at +88), which is confusing unless it tracks a UI selection. (e) The green joint-value readouts corroborate the visible poses, which increases my confidence in the pose reading, but they are part of the product UI, not independent evidence.",
+ "review_type": "ordered_frames",
+ "served_identity_note": "reported: zcode-general-purpose-subagent (spawn agent_e2e21afa, harness-declared 2026-09-11)",
+ "served_model": "zcode-general-purpose-subagent (spawn agent_e2e21afa, harness-declared 2026-09-11)",
+ "task": "product-motion-sweep-01",
+ "uncertainty": "- The exact speed, smoothness, and trajectory of the motion between stills cannot be judged; large pose changes occur between consecutive samples.\n- Whether frames #4 and #5 show a held pose or slow movement within the crouch is indeterminate \u2014 they look nearly identical.\n- The mismatch between the declared 7.0 s clip and the on-screen show clock (tens of seconds advancing, lap 0 to lap 2) is unexplained from the images alone; I flag it without interpreting its cause.\n- In the deep-crouch frames the limbs and joint labels overlap, so precise limb configuration there is approximate.\n- The joint-value labels are the application's own readouts; I treat them as on-screen observations, not independent measurements.",
+ "verdict": {
+  "numeric_mentions": [
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "28"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "12"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0.269"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "112.0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+75"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+36"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "12"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "12"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "61.667"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+88"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+11"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "96.781"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+33"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+36"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+52"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+83"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+27"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "21.906"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "112.0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "5"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "47.937"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "6"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0.237"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "112.0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0.269"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "224.24"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "7.0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "35"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "-39"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "6"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+36"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+36"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+75"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+75"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+88"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+88"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+33"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+36"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+52"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+83"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+27"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "52.28"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "5"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "6"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "7.0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0.269"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "61.667"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "96.781"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "21.906"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "47.937"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0.237"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "112.0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "5"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0.00"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+88"
+   }
+  ],
+  "status": "INCONCLUSIVE",
+  "supports_claim": true
+ }
+}
