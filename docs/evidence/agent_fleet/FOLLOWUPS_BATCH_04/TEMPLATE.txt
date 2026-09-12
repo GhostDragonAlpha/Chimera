@@ -1,0 +1,50 @@
+TRANSITION RECORD TEMPLATE — the lead appends ONE filled copy of this block
+per future controlled controller transition (deliverable 1 of
+fleet-followups-batch-04, from the fleet-maintenance-amendment-03 review
+finding: "commit a small transition-record artifact (name, merge sha,
+post-state digest) per controlled transition so controller-plane claims are
+reviewable from git"). Appends go to the END of this TRANSITIONS.txt file in
+this lane evidence directory (or its named successor), newest last, one block
+per transition, never rewriting an earlier block.
+
+Fill every field from PRIMARY SOURCES at cutover time (git, the deployment
+MANIFEST.json, the live snapshot) -- never from session memory; the
+amendment-03 lane's gen-2 slip is the failure this template exists to close.
+Write `NOT RETAINED` where a field genuinely has no primary source; do not
+guess, and do not leave a field blank.
+
+--------------------------------------------------------------------------------
+TRANSITION: <deployment directory name under E:/ChimeraWork/control/deployments/>
+cutover instant (UTC)      : <YYYY-MM-DDTHH:MM:SSZ, from the service start
+                             record / bootstrap output, not from memory>
+prior deployment           : <name of the deployment directory this one
+                             supersedes>
+source_revision            : <full 40-hex git commit the deployment was cut
+                             from; equals MANIFEST.json source_revision>
+merge sha + PR             : <full 40-hex merge commit and PR number; if the
+                             source_revision is itself the integration merge,
+                             state that; otherwise name the first
+                             integration-branch merge containing it and the
+                             verification command output
+                             (git merge-base --is-ancestor <rev> <merge>^2)>
+post-state digest          : <sha256 of the deployed tools/agent_fleet/
+                             control.py exactly as recorded in the deployment
+                             MANIFEST.json ("files"."control.py"."sha256");
+                             state the byte convention the manifest uses --
+                             the live manifests pin the BLOB form,
+                             `git <rev>:tools/agent_fleet/control.py`>
+post-transition registry   : <revision number immediately after cutover>
+revision + state digest    : <sha256 over the state body JSON at that
+                             revision, captured live from the post-restart
+                             snapshot; the two fields above are the reason
+                             this template must be filled AT cutover -- they
+                             are not retroactively derivable>
+quiescence + drain         : <one line: acknowledged-quiescence and runtime/
+                             eye drainage evidence per
+                             THE_CONTROLLER_TRANSITION.md gates 2-3>
+backup / rollback point    : <control/snapshots/pre-<label>.sqlite path>
+post-restart comparison    : <leader/epoch, claims/generations, slots/
+                             resources, checkpoints, source identity: ALL
+                             EQUAL or the exact delta>
+operator / actor           : <session identity that performed the transition>
+--------------------------------------------------------------------------------

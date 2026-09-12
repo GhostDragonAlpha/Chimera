@@ -1,0 +1,6 @@
+R2 missing_label coverage control (fleet-followups-batch-04 D4/F1) -- pristine model must REFUSE a whitespace-only synthetic_label with reason 'missing_label' (review finding F1 probe: author_preset(label='   ') -> missing_label)
+threshold: 1/1 required; measured: 1/1
+verdict: HOLD
+
+[PASS] MLC-P
+  refused: reason='missing_label', message=a synthetic preset without a nonblank synthetic_label is inadmissible

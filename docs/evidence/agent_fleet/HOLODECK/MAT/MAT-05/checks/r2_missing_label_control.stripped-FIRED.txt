@@ -1,0 +1,6 @@
+R2 missing_label coverage control run against a STRIPPED model copy (fleet-followups-batch-04 D4/F1 flip demonstration) -- expected verdict FIRED: with the label gate removed the blank label is ACCEPTED, so this control's refusal expectation fails. If this file ever shows HOLD, the control has no teeth.
+threshold: 1/1 required; measured: 0/1
+verdict: FIRED
+
+[FAIL] MLC-S
+  ACCEPTED as predicted with the gate stripped: frozen record mlc_probe.density synthetic_label='   ' -- the control FLIPS when the gate is gone
