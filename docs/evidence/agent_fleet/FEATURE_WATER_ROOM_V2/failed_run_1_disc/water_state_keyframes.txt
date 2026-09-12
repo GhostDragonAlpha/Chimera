@@ -1,0 +1,80 @@
+feature-water-room-v2-01 — engine truth at the declared keyframes
+(GET /water_state slot 0 + GET /water_clock + GET /state hud.water
++ GET /water_vis_state rendered-body reads; quanta are integer Q)
+
+keyframe f030  steps_total=0  (bracket 0..0)
+  sum(V)           = 0
+  wet cells        = 0 of 142594
+  max depth quanta = 0
+  max depth law    = 0.0
+  wet centroid r   = None
+  hud.water        = {}
+  body verts       = 0
+  body level       = None
+  body radius      = None
+
+keyframe f040  steps_total=328  (bracket 304..328)
+  sum(V)           = -2271083679005
+  wet cells        = 23470 of 142594
+  max depth quanta = 2147481991
+  max depth law    = 4332.106875568987
+  wet centroid r   = 6.839840252673681
+  hud.water        = {}
+  body verts       = 0
+  body level       = None
+  body radius      = None
+
+keyframe f042  steps_total=760  (bracket 740..760)
+  sum(V)           = -23081165435327
+  wet cells        = 21339 of 142594
+  max depth quanta = 2147483447
+  max depth law    = 4332.113398826435
+  wet centroid r   = 6.223346582324315
+  hud.water        = {}
+  body verts       = 0
+  body level       = None
+  body radius      = None
+
+keyframe f090  steps_total=4672  (bracket 4656..4672)
+  sum(V)           = -82470432671200
+  wet cells        = 3252 of 142594
+  max depth quanta = 2147483516
+  max depth law    = 4332.113398826435
+  wet centroid r   = 4.463462978794385
+  hud.water        = {}
+  body verts       = 0
+  body level       = None
+  body radius      = None
+
+keyframe f150  steps_total=10184  (bracket 10164..10184)
+  sum(V)           = -112142638616586
+  wet cells        = 2283 of 142594
+  max depth quanta = 2147481991
+  max depth law    = 4332.106875568987
+  wet centroid r   = 5.348145169626726
+  hud.water        = {}
+  body verts       = 0
+  body level       = None
+  body radius      = None
+
+keyframe f179  steps_total=13044  (bracket 13036..13044)
+  sum(V)           = -125689660613563
+  wet cells        = 2220 of 142594
+  max depth quanta = 2147483447
+  max depth law    = 4332.113398826435
+  wet centroid r   = 5.323711044976002
+  hud.water        = {}
+  body verts       = 0
+  body level       = None
+  body radius      = None
+
+keyframe f239  steps_total=19216  (bracket 19204..19216)
+  sum(V)           = -126674265696816
+  wet cells        = 2254 of 142594
+  max depth quanta = 2147483516
+  max depth law    = 4332.113398826435
+  wet centroid r   = 5.32849186872064
+  hud.water        = {}
+  body verts       = 0
+  body level       = None
+  body radius      = None

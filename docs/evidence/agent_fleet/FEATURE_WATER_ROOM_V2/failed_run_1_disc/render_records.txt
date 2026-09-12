@@ -1,0 +1,30 @@
+[PASS] derived.basin {"y_floor": -0.019507, "r_body": 4.2878, "r_disc": 10.7194, "cell_size": 0.071153, "n_cells": 142594, "up_frac": 1.0, "tri_base": 36630, "vert_base": 18459, "composite_verts": 110875, "composite_tris": 179224}
+[PASS] derived.substrate {"n_cells": 142594, "n_edges": 213289, "n_colors": 3, "cube_edge": 0.053035, "occ_cells": 0, "center_cube": ["-1", "-1", "-1"], "inj_target": 118497, "pour_point": [2.7631, -0.0195, -4.6843], "pour_dist_from_centroid": 5.7917}
+[PASS] launch {"pid": 50812, "port": 8103, "exe_sha256": "15f1a74ada5e80476b487f195c5b09bdfb188779802919a3de2dc67bc34d2e8f"}
+[PASS] load.mesh_composite {"verts": 110875, "tris": 179224, "resp": "{\"ok\":true}"}
+[PASS] load.water_bin {"resp": "{\"ok\":true}"}
+[PASS] load.water_vis {"tri_base": 36630}
+[PASS] camera.set {"cam_radius": 51.68, "cam_theta": 0.5, "cam_phi": 0.35, "extent": 15.2}
+[PASS] action.arm {"inj_target": 118497, "inj_count": 2000, "steps_per_frame": 4, "running": false}
+[PASS] action.pour_on {"frame": 40}
+[PASS] action.pour_off {"frame": 180, "steps_total_right_after_off": 13092}
+[MEASURED] pacing.measured {"frames": 240, "mean_grab_s": 1.488, "max_grab_s": 3.422, "take_wall_s": 357.1, "note": "phase boundaries are capture-indexed; gates do not depend on wall pacing"}
+[PASS] gate.dry_zero {"sum_at_f030": 0, "steps_at_f030": 0}
+[PASS] gate.armed_idle {"hud_at_f030": {}, "steps_at_f030": 0}
+[FAIL] gate.pour_on_screen {"hud_on_at_f040": null, "steps_before": 304, "steps_after": 328, "sum_at_f040": -2271083679005, "identity_bracket": [608000, 656000]}
+[FAIL] gate.body_renders {"frame": 42, "verts": 0, "level": null, "radius": null}
+[FAIL] gate.body_renders {"frame": 90, "verts": 0, "level": null, "radius": null}
+[FAIL] gate.body_renders {"frame": 150, "verts": 0, "level": null, "radius": null}
+[FAIL] gate.body_renders {"frame": 179, "verts": 0, "level": null, "radius": null}
+[FAIL] gate.body_renders {"frame": 239, "verts": 0, "level": null, "radius": null}
+[FAIL] gate.level_law {"frame": 42, "reason": "missing or dry read", "verts": 0, "sum": -23081165435327}
+[FAIL] gate.level_law {"frame": 90, "reason": "missing or dry read", "verts": 0, "sum": -82470432671200}
+[FAIL] gate.level_law {"frame": 150, "reason": "missing or dry read", "verts": 0, "sum": -112142638616586}
+[FAIL] gate.level_law {"frame": 179, "reason": "missing or dry read", "verts": 0, "sum": -125689660613563}
+[FAIL] gate.level_law {"frame": 239, "reason": "missing or dry read", "verts": 0, "sum": -126674265696816}
+[FAIL] gate.progressive {"pair": [42, 90], "sum": [-23081165435327, -82470432671200], "wet": [21339, 3252], "verts": [0, 0], "level": [null, null]}
+[FAIL] gate.progressive {"pair": [90, 150], "sum": [-82470432671200, -112142638616586], "wet": [3252, 2283], "verts": [0, 0], "level": [null, null]}
+[FAIL] gate.progressive {"pair": [150, 179], "sum": [-112142638616586, -125689660613563], "wet": [2283, 2220], "verts": [0, 0], "level": [null, null]}
+[FAIL] gate.progressive.settled {"pair": [179, 239], "sum_frozen": -126674265696816, "verts": [0, 0], "level": [null, null]}
+[FAIL] gate.pour_footprint {"sum_at_f239": -126674265696816, "expected": 26184000, "steps_total_at_pour_off": 13092}
+[PASS] encode.movie {"mp4": "E:\\ChimeraWork\\slot-03\\docs\\evidence\\agent_fleet\\FEATURE_WATER_ROOM_V2\\water_room_v2_take.mp4", "frames": 240, "sha256": "afd4de272243f61c38e7fcfa4b490bab6e3ea0594c42d636a980939ae04958f9"}

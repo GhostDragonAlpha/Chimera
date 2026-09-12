@@ -1,5 +1,5 @@
-"""WATER ROOM v2 — water as a visible BODY: a pool with a rising level
-(feature-water-room-v2-01).
+"""WATER ROOM v2 — water as a visible BODY with a rising level
+(feature-water-room-v2-01, AMENDMENT 1 delivery arm).
 
 The v1 blind judge CONFIRMED the simulation runs but wrote the v2 spec
 verbatim: "The only visible evidence of water is a small blue patch at the
@@ -7,38 +7,44 @@ neck - there is no water surface, pool, or rising level on the floor or in
 the room"; the pour start happened off-screen; spreading was not obviously
 progressive between keyframes; the injection readout is cryptic.
 
-v2's answer, ALL PYTHON, ZERO C++ (the engine service is frozen):
+v2's delivery (ALL PYTHON, ZERO C++ — the engine service is frozen):
 
-  The water vis plane (water_vis.comp) is NOT a tint — it emits real
-  displaced geometry: every wet cell's triangle, displaced by depth
-  d = V*Q/A along its own normal, fixed water blue. v1 fed that plane the
-  CREATURE's surface and poured at the TOP cell, so only a thin cap ever
-  existed. v2 derives a PLANAR FLOOR BASIN at runtime in Python (a square-
-  grid disc appended to the creature mesh in ONE /mesh_bin composite; the
-  disc block is the water part) and pours just outside the creature's
-  silhouette on the camera side. On a flat disc the CA's bed is constant,
-  so flow is pure surface-height equalization: the water SPREADS radially
-  and the level RISES — a pool with a rising level, rendered as an actual
-  body, measurable through /water_vis_state (the rendered water vertices).
+  v1 poured at the TOP cell (argmax bed), so the water formed a cap at the
+  head/neck — a stain with nowhere to go. v2 pours at the LOWEST cell
+  (argmin bed — the creature's ground-contact point): the pool fills the
+  ground basin and the surface CLIMBS the legs — a rising level on the
+  creature (the spec's "and/or a surface over the creature"). The pour
+  tap opens and closes ON-SCREEN (capture-indexed keyframes straddle both
+  actions), and the judge six keyframes are spaced so every consecutive
+  pair shows unambiguous progression.
+
+Run 1 (the flat-disc floor-basin arm, PREREGISTRATION.txt D1-D11) measured
+the frozen solver's stability envelope honestly: on a wide thin flat pool
+the CFL sub-step dt_ij = c_local*l_ij/c exceeds dt_macro, n_sub floors to
+1, the q_e momentum accumulator pumps the quantum grain and cells wrap
+int32 (sum -1.27e14 vs the exact 26,184,000). That arm is RETIRED as the
+recorded engine-service gap (failed_run_1_disc/); Amendment 1 moved the
+delivery to THIS arm — the v1-proven conserved substrate, verbatim laws.
 
 Public HTTP surface only:
-  POST /mesh_bin, POST /water_bin, POST /water_vis, POST /water_clock,
-  GET /water_clock, GET /water_state, GET /state, GET /water_vis_state,
-  POST /camera, GET /glass, GET /frame
+  POST /mesh_bin (via cpp_bridge.load_mesh_bin), POST /water_bin,
+  POST /water_vis, POST /water_clock, GET /water_clock, GET /water_state,
+  GET /state, GET /water_vis_state, POST /camera, GET /glass, GET /frame
 plus the two harness wrappers (tools/engine_demo.py launch/stop;
-cpp_bridge.encode_movie). The substrate laws are v1's
-(tools/product_features/water_room.py), re-used verbatim where the
-geometry is the same and re-derived where the substrate changed
-(derivation IDs D1-D10 in PREREGISTRATION.txt).
+cpp_bridge.encode_movie). Substrate laws are v1's
+(tools/product_features/water_room.py) VERBATIM — the recorded constants
+were measured with them (provenance asserted at runtime against v1's
+recorded substrate numbers); the ONLY change is the pour cell
+(argmin bed, PREREGISTRATION.txt Amendment 1).
 
 Preregistration: docs/evidence/agent_fleet/FEATURE_WATER_ROOM_V2/
-PREREGISTRATION.txt (RULE 0, committed BEFORE any run, zero actuals).
+PREREGISTRATION.txt (RULE 0 committed before any run; Amendment 1
+disclosed with run 1's failed evidence retained).
 """
 from __future__ import annotations
 
 import hashlib
 import json
-import math
 import os
 import struct
 import sys
@@ -57,6 +63,9 @@ OUT_DEFAULT = ROOT / "docs/evidence/agent_fleet/FEATURE_WATER_ROOM_V2"
 
 # ── declared constants (PREREGISTRATION.txt D4: verbatim v1 recorded values) ─
 MESH_BIN = ROOT / "Saved/meshes/monkey_birth.bin"
+WATER_FACE_BASE = 2092            # glTF part order: SALLY_EYES_0 (2092 tris) first
+WATER_TRI_COUNT = 34538           # SALLY_body_0 triangles = water cells
+WATER_VERT_COUNT = 17409          # contiguous vertex span of the part
 C_LOCAL = 0.07120992734952862     # measured C_sw_global (SALLY_body_0)
 L_PART = 0.012259485812807563     # measured l_scale_med -> pipe height h_pipe
 A_MIN = 4.1654367130014345e-07    # measured area.min
@@ -67,19 +76,20 @@ DT_MACRO = 0.01                   # macro step [s]
 STEPS_PER_FRAME = 4               # engine-clock water steps per rendered frame
 INJ_COUNT = 2000                  # quanta/step while pouring (the proven visible rate)
 FPS = 10                          # capture cadence (wall clock) and movie fps
-N_DRY = 40                        # f000-039  DRY+idle    (4.0 s)
-N_POUR = 140                      # f040-179 POUR        — ACTION 1 at f040
-N_SETTLE = 60                     # f180-239 SETTLE      — ACTION 2 at f180
+N_DRY = 40                        # f000-039  DRY+idle   (4.0 s)
+N_POUR = 140                      # f040-179 POUR       — ACTION 1 at f040
+N_SETTLE = 60                     # f180-239 SETTLE     — ACTION 2 at f180
 N_FRAMES = N_DRY + N_POUR + N_SETTLE          # 240 frames = 24.0 s take
 KEYFRAMES = (30, 40, 42, 90, 150, 179, 239)   # engine-truth keyframes
 JUDGE_KEYFRAMES = (30, 40, 42, 90, 150, 239)  # the ordered judge six (D8)
 CAM_RADIUS_FACTOR = 3.4           # v1 recorded framing (motion-sweep fix)
 CAM_THETA, CAM_PHI = 0.5, 0.35    # v1 recorded camera
-FLOOR_COLOR = (0.22, 0.23, 0.25)  # D10: neutral basin gray (declared pre-run)
-R_DISC_FACTOR = 2.5               # D2: disc radius = 2.5 x R_body
-POUR_DIST_FACTOR = 1.35           # D6: pour point radius = 1.35 x R_body
-LEVEL_REL_TOL = 1e-5              # g4 tolerance (f32 render vs f64 ledger)
+LEVEL_REL_TOL = 1e-5              # (rendered-level tolerance; see vis route cap)
 PORT = 8103                       # slot-03 candidate port (never 8080; checked at run)
+
+# v1's recorded substrate numbers (provenance binding for the verbatim law)
+V1_RECORDED = {"n": 34538, "n_edges": 51711, "n_colors": 63,
+               "cube_edge": 9.904747, "inj_target_argmax": 446}
 
 BASE = f"http://127.0.0.1:{PORT}"
 ST: dict = {}
@@ -106,7 +116,7 @@ def jreq(method: str, path: str, payload=None) -> dict:
     return json.loads(raw.decode("utf-8", "replace"))
 
 
-# ── the creature mesh (v1's loader, verbatim) ───────────────────────────────
+# ── the substrate, derived from the committed mesh (v1 laws, VERBATIM) ──────
 def load_whole_mesh(bin_path: Path) -> tuple[np.ndarray, np.ndarray]:
     raw = bin_path.read_bytes()
     n, m = struct.unpack("<ii", raw[:8])
@@ -115,129 +125,52 @@ def load_whole_mesh(bin_path: Path) -> tuple[np.ndarray, np.ndarray]:
     return verts, tris
 
 
-# ── the derived floor basin (D1-D3, D10) ────────────────────────────────────
-def tri_areas(verts: np.ndarray, tris: np.ndarray) -> np.ndarray:
-    v = verts[tris.astype(np.int64)]
-    return 0.5 * np.linalg.norm(np.cross(v[:, 1] - v[:, 0], v[:, 2] - v[:, 0]),
-                                axis=1).astype(np.float64)
+def water_block(tris: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """The water part of the whole mesh + the runtime align proof (v1 verbatim)."""
+    abs_blk = tris[WATER_FACE_BASE:WATER_FACE_BASE + WATER_TRI_COUNT].astype(np.int64)
+    vert_base = int(abs_blk.min())
+    part_i = abs_blk - vert_base
+    span = sorted(np.unique(abs_blk).tolist())
+    contiguous = span == list(range(vert_base, vert_base + WATER_VERT_COUNT))
+    if not contiguous or int(part_i.max()) != WATER_VERT_COUNT - 1:
+        raise SystemExit(f"align proof FAILED: water face block not contiguous "
+                         f"(vert_base={vert_base}, span={span[0]}..{span[-1]})")
+    return part_i, abs_blk
 
 
-def creature_mean_cell_area(verts: np.ndarray, tris: np.ndarray) -> float:
-    """A_mean over the creature's WATER part (SALLY_body_0, v1's substrate).
-
-    The disc's cells must run at the scale the solver constants were
-    measured at (D3), so A_mean is the mean area of the v1 water cells,
-    not of the whole mesh (the eyes part is finer/differently scaled).
-    """
-    part = tris[2092:2092 + 34538].astype(np.int64)
-    return float(tri_areas(verts, part).mean())
-
-
-def build_floor_disc(verts: np.ndarray, tris: np.ndarray) -> dict:
-    """D1-D3, D10: the square-grid disc basin, derived from the creature.
-
-    Returns the composite (verts, tris) plus the disc's geometry book:
-    tri_base (first disc face in the composite), vert_base, cell grid and
-    the disc cell centers (for the substrate build).
-    """
-    y_floor = float(verts[:, 1].min())                       # D1
-    horiz = np.sqrt(verts[:, 0] ** 2 + verts[:, 2] ** 2)
-    r_body = float(horiz.max())                              # D2
-    centroid_xz = np.array([float(verts[:, 0].mean()), float(verts[:, 2].mean())])
-    r_disc = R_DISC_FACTOR * r_body
-    a_mean = creature_mean_cell_area(verts, tris)
-    # each QUAD splits into 2 triangles (the water cells): quad side
-    # s = sqrt(2*A_mean) makes every disc triangle's area == A_mean, the
-    # measured scale of the solver constants (D3)
-    s = math.sqrt(2.0 * a_mean)
-
-    n_side = int(math.ceil(2.0 * r_disc / s)) + 1
-    axis = (np.arange(n_side) - (n_side - 1) / 2.0) * s
-    gx, gz = np.meshgrid(axis, axis, indexing="ij")
-    keep = (gx ** 2 + gz ** 2) <= r_disc ** 2                # clip to the disc (D2)
-
-    # full-grid vertex block (contiguous by construction; unreferenced
-    # corner verts are never in the index buffer and never render)
-    nv_axis = n_side + 1
-    vx = (np.arange(nv_axis) - (nv_axis - 1) / 2.0) * s
-    vxx, vzz = np.meshgrid(vx, vx, indexing="ij")
-    disc_verts = np.column_stack([
-        vxx.ravel().astype(np.float32),
-        np.full(vxx.size, y_floor, dtype=np.float32),
-        vzz.ravel().astype(np.float32)])
-    v_id = np.arange(nv_axis * nv_axis, dtype=np.int64).reshape(nv_axis, nv_axis)
-
-    cells = np.argwhere(keep)                                # (i, j) kept cells
-    quad = np.stack([v_id[cells[:, 0], cells[:, 1]],
-                     v_id[cells[:, 0] + 1, cells[:, 1]],
-                     v_id[cells[:, 0] + 1, cells[:, 1] + 1],
-                     v_id[cells[:, 0], cells[:, 1] + 1]], axis=1)
-    disc_tris = np.concatenate([
-        quad[:, [0, 2, 1]], quad[:, [0, 3, 2]]], axis=0).astype(np.uint32)
-
-    # winding check is cheap and decisive: normals must be +Y (water
-    # displacement is along the cell normal; the level must rise UP)
-    tv = disc_verts[disc_tris.astype(np.int64)]
-    nrm = np.cross(tv[:, 1] - tv[:, 0], tv[:, 2] - tv[:, 0])
-    up_frac = float((nrm[:, 1] > 0).mean())
-    assert up_frac == 1.0, f"disc winding broken: {up_frac} of normals +Y"
-
-    vert_base = len(verts)
-    tri_base = len(tris)
-    comp_verts = np.concatenate([verts, disc_verts], axis=0)
-    comp_tris = np.concatenate([
-        tris.astype(np.uint32),
-        (disc_tris + vert_base).astype(np.uint32)], axis=0)
-
-    # declared feasibility bounds (named refusal, never a silent retune):
-    # substrate within ~4x the proven v1 scale, composite POST within 64 MB
-    n_cells_bound, post_mb_bound = 200_000, 64.0
-    post_mb = (len(comp_verts) * 36 + len(comp_tris) * 4) / 1e6
-    assert len(disc_tris) <= n_cells_bound, \
-        f"disc cells {len(disc_tris)} > bound {n_cells_bound} (D3 bound)"
-    assert post_mb <= post_mb_bound, \
-        f"composite POST {post_mb:.1f} MB > bound {post_mb_bound} MB"
-
-    centers = disc_verts[disc_tris.astype(np.int64)].mean(axis=1)
-    return {
-        "y_floor": y_floor, "r_body": r_body, "r_disc": r_disc,
-        "a_mean": a_mean, "cell_size": s, "centroid_xz": centroid_xz,
-        "vert_base": vert_base, "tri_base": tri_base,
-        "n_cells": len(disc_tris),
-        "comp_verts": comp_verts, "comp_tris": comp_tris,
-        "disc_tris": disc_tris.astype(np.int64), "centers": centers,
-        "up_frac": up_frac,
-    }
-
-
-# ── the substrate over the disc (v1's build_substrate law, disc part) ───────
-def build_substrate_disc(D: dict) -> dict:
-    """v1's tri_water laws over the disc cells: exactly-2-tri primal edges
-    (the basin rim's 1-tri edges drop out — the disc cannot leak), canonical
-    order, order-consistent coloring (contract-preserving greedy, D11),
-    slope bed (constant on the flat disc), k_e/l_ij verbatim.
-
-    D5 CORRECTION (measured before the run, recorded): v1's verbatim
-    seen-set loop pairs each triangle t with each of its PRIMAL VERTEX ids
-    u and reads centers[u] — a cell center indexed by a VERTEX id. On the
-    creature the vertex and cell id ranges overlap, so cube_edge came out
-    as a near-diameter scale and the "occupied centre cube" disabled
-    whatever fell in it — harmless THERE, but on the disc the same loop
-    disables 25% of cells (measured). The law's PURPOSE (water_setup.py)
-    is to disable cells INSIDE the solid: a planar disc has no interior
-    cells, so occ is NONE on the disc and every pipe is active. cube_addr
-    survives ONLY as the canonical edge-sort key, now computed from the
-    TRUE dual-adjacent pair distances (the comment's 'tight in-ring
-    bound')."""
-    part_v = D["comp_verts"][D["vert_base"]:].astype(np.float64)  # the disc's own block
-    part_i = D["disc_tris"]                                       # disc-local indices
-    centers = D["centers"]
+def build_substrate(bin_path: Path) -> dict:
+    """tri_ca.registry + tri_water.build_substrate + water_setup.py, VERBATIM
+    (v1's tools/product_features/water_room.py, byte-same laws — the recorded
+    constants were measured with exactly this construction; the ONLY change
+    is the pour cell below, declared in Amendment 1)."""
+    verts, tris = load_whole_mesh(bin_path)
+    part_i, abs_blk = water_block(tris)
+    vert_base = int(abs_blk.min())
+    part_v = verts[vert_base:vert_base + WATER_VERT_COUNT].astype(np.float64)
 
     n = len(part_i)
+    centers = part_v[part_i].mean(axis=1)
+
+    # dual adjacency (tri_ca.registry: seen-set over primal keys, insertion order)
+    seen: set[tuple[int, int]] = set()
+    adj: list[list[int]] = [[] for _ in range(n)]
+    max_d = 0.0
+    for t, tri in enumerate(part_i):
+        a, b, c = int(tri[0]), int(tri[1]), int(tri[2])
+        for u, w in ((a, b), (b, c), (c, a)):
+            key = (t, u) if t < u else (u, t)
+            if key in seen:
+                continue
+            seen.add(key)
+            adj[t].append(u)
+            adj[u].append(t)
+            d = float(np.linalg.norm(centers[t] - centers[u]))
+            if d > max_d:
+                max_d = d
+    cube_edge = max_d                 # the tight in-ring bound (registry law)
+    cube_addr = np.floor(centers / cube_edge).astype(np.int64)
 
     # dual edges: exactly-two-triangle primal edges, canonical order
-    # (tri_water.build_substrate: lower cube_addr tuple first, then primal
-    # key; dict insertion order is the tri loop order, the sort is stable)
     prim2tris: dict[tuple[int, int], list[int]] = {}
     for t, tri in enumerate(part_i):
         a, b, c = int(tri[0]), int(tri[1]), int(tri[2])
@@ -253,133 +186,65 @@ def build_substrate_disc(D: dict) -> dict:
         if l_ij == 0.0:
             continue
         edge_len = float(np.linalg.norm(part_v[pv1] - part_v[pv0]))
-        edges.append((t0, t1, l_ij, edge_len, (pv0, pv1)))
-
-    # the tight in-ring bound, from TRUE dual pairs this time
-    max_d = 0.0
-    for e in edges:
-        d = e[2]
-        if d > max_d:
-            max_d = d
-    cube_edge = max_d
-    cube_addr = np.floor(centers / cube_edge).astype(np.int64)
-
-    # canonical orientation + order: lower cube_addr tuple first, then the
-    # primal key (tri_water.build_substrate, verbatim rule)
-    oriented = []
-    for (t0, t1, l_ij, edge_len, pvk) in edges:
         if tuple(cube_addr[t0]) <= tuple(cube_addr[t1]):
             i0, i1 = t0, t1
         else:
             i0, i1 = t1, t0
-        oriented.append((i0, i1, l_ij, edge_len, tuple(cube_addr[i0]), pvk))
-    oriented.sort(key=lambda e: (e[4], e[5]))
-    edges_sorted = oriented
+        edges.append((i0, i1, l_ij, edge_len, tuple(cube_addr[i0]), (pv0, pv1)))
+    edges.sort(key=lambda e: (e[4], e[5]))
 
-    areas = tri_areas(part_v.astype(np.float32), part_i)
+    areas = 0.5 * np.linalg.norm(np.cross(part_v[part_i[:, 1]] - part_v[part_i[:, 0]],
+                                          part_v[part_i[:, 2]] - part_v[part_i[:, 0]]),
+                                 axis=1).astype(np.float64)
 
-    # order-consistent edge coloring. v1's exact rule was c = 1+max(colors at
-    # the two cells); on the creature's irregular duals that stays small
-    # (63), but on a large regular grid the max+1 walk climbs unboundedly
-    # (measured 853 here — a kernel-launch blowup for the color-serial
-    # solver). The law's CONTRACT is: edges sharing a cell get DISTINCT
-    # colors, chosen deterministically in the canonical edge order. That
-    # contract is satisfied by the smallest-excluded-color greedy, which
-    # stays <= degree+1 (<= 6 on the grid). Deviation recorded in
-    # PREREGISTRATION.txt (D11); the assert below pins the bound.
+    # order-consistent edge coloring (water_setup.py, verbatim — v1's exact rule)
     cell_colors: list[set[int]] = [set() for _ in range(n)]
-    colors = np.zeros(len(edges_sorted), dtype=np.int32)
-    for k, e in enumerate(edges_sorted):
-        used = cell_colors[e[0]] | cell_colors[e[1]]   # sets hold COLORS
-        c = 1
-        while c in used:
-            c += 1
+    colors = np.zeros(len(edges), dtype=np.int32)
+    for k, e in enumerate(edges):
+        c = 1 + max([0] + [colors[k2] for k2 in cell_colors[e[0]] | cell_colors[e[1]]])
         colors[k] = c
-        cell_colors[e[0]].add(int(c))
-        cell_colors[e[1]].add(int(c))
+        cell_colors[e[0]].add(k)
+        cell_colors[e[1]].add(k)
     n_colors = int(colors.max())
-    sorted_colors = colors  # edges_sorted IS the canonical order already
+    order = np.lexsort((np.arange(len(edges)), colors))
+    edges_sorted = [edges[k] for k in order]
+    sorted_colors = colors[order]
     color_start = np.zeros(n_colors + 1, dtype=np.int64)
     for c in range(1, n_colors + 1):
         color_start[c] = int(np.searchsorted(sorted_colors, c, side="right"))
 
+    # slope bed + the occupied centre cube (water_setup.py, verbatim)
     downhill = np.array([0.0, 1.0, 0.0])
     bed = ALPHA * (centers @ downhill)
     mesh_center = centers.mean(axis=0)
     center_cube = tuple(np.floor(mesh_center / cube_edge).astype(np.int64))
-    # D5 CORRECTION: no interior cells on a planar disc — every cell is a
-    # surface cell, every pipe active (see the docstring; the verbatim
-    # centre-cube loop would disable 25% of the disc by an index-overlap
-    # accident, measured before the run and recorded in the prereg)
-    occ_mask = np.zeros(n, dtype=bool)
+    occ_mask = np.array([tuple(cube_addr[t]) == center_cube for t in range(n)], dtype=bool)
     ei = np.array([[e[0], e[1]] for e in edges_sorted], dtype=np.int32)
     l_ij = np.array([e[2] for e in edges_sorted], dtype=np.float64)
     k_e = np.array([GRAV * (e[3] * L_PART) / e[2] for e in edges_sorted], dtype=np.float64)
-    edge_active = np.ones(len(edges_sorted), dtype=np.uint32)
+    edge_active = np.array([(not occ_mask[e[0]]) and (not occ_mask[e[1]])
+                            for e in edges_sorted], dtype=np.uint32)
 
-    free = np.flatnonzero(~occ_mask)
+    free = (~occ_mask) & (areas > 0)
+    inj_argmax = int(np.flatnonzero(free)[np.argmax(bed[free])])   # v1's recorded pour
 
-    # declared substrate sanity (a flat grid disc must satisfy these; a
-    # violation means the derivation is corrupted — named refusal, never a
-    # silent push to the engine)
-    assert n_colors <= 32, f"edge coloring exploded: {n_colors} colors (grid must color in a handful)"
-    # the coloring CONTRACT: every cell's edges carry pairwise-distinct
-    # colors (this is what makes the color-serial solver step correct)
-    seen_cell: dict[int, dict] = {}
-    for k, e in enumerate(edges_sorted):
-        for cell in (e[0], e[1]):
-            s = seen_cell.setdefault(cell, {})
-            if colors[k] in s:
-                raise AssertionError(
-                    f"coloring contract violated at cell {cell}: color "
-                    f"{colors[k]} repeats on edges {s[colors[k]]} and "
-                    f"{k} (edge cells {e[0]},{e[1]})")
-            s[colors[k]] = k
-
-    # D6: the pour point — camera-side, just outside the creature footprint.
-    d_hat = np.array([math.sin(CAM_THETA), -math.cos(CAM_THETA)])   # engine camera law
-    P = D["centroid_xz"] + POUR_DIST_FACTOR * D["r_body"] * d_hat
-    cxz = centers[:, [0, 2]]
-    dist_p = np.linalg.norm(cxz - P, axis=1)
-    inj_target = int(free[np.argmin(dist_p[free])])
+    # ── THE v2 CHANGE (Amendment 1): pour at the LOWEST free cell ──────────
+    inj_target = int(np.flatnonzero(free)[np.argmin(bed[free])])
 
     return {
         "n": n, "n_edges": len(edges_sorted), "n_colors": n_colors,
         "cube_edge": cube_edge, "center_cube": center_cube,
-        "centroid_xz": D["centroid_xz"],
-        "y_floor": D["y_floor"], "centers": centers,
         "areas": areas, "bed": bed, "V0": np.zeros(n, dtype=np.int32),
         "occ": occ_mask.astype(np.uint32), "eij": ei, "k_e": k_e, "l_ij": l_ij,
         "edge_active": edge_active, "color_start": color_start.astype(np.uint32),
         "inj": np.zeros((0, 2), dtype=np.uint32),
-        "inj_target": inj_target, "pour_point": P,
+        "inj_target": inj_target, "inj_argmax": inj_argmax,
+        "centers": centers,
     }
 
 
-# ── the composite /mesh_bin POST (cpp_bridge.load_mesh_bin's law, in-memory) ─
-def post_composite_mesh(D: dict) -> None:
-    import cpp_bridge
-    verts = np.ascontiguousarray(D["comp_verts"], dtype=np.float32)
-    tris = np.ascontiguousarray(D["comp_tris"], dtype=np.uint32)
-    normals = cpp_bridge._mesh_normals(verts, tris)
-    colors = np.full((len(verts), 3), (0.8, 0.55, 0.35), dtype=np.float32)  # teddy brown
-    colors[D["vert_base"]:] = np.array(FLOOR_COLOR, dtype=np.float32)
-    verts9 = np.hstack([verts, normals, colors]).astype(np.float32)
-    n, m = len(verts), int(tris.size)
-    header = struct.pack("<II4f", n, m, 12.0, 0.0, 0.3, 0.0)
-    payload = header + verts9.tobytes() + tris.astype(np.uint32).tobytes()
-    st, resp = request("POST", "/mesh_bin", payload, "application/octet-stream",
-                       timeout=180)
-    ok = b'"ok":true' in resp
-    record("load.mesh_composite", "PASS" if ok else "FAIL",
-           {"verts": n, "tris": m // 3, "resp": resp[:80].decode("utf-8", "replace")})
-    if not ok:
-        raise SystemExit("composite mesh rejected — fallback arm required "
-                         "(PREREGISTRATION.txt FALLBACK)")
-
-
 def pack_water_bin(s: dict) -> bytes:
-    """v1's /water_bin binary protocol (main.cpp), verbatim."""
+    """The /water_bin binary protocol (main.cpp; little-endian). v1 verbatim."""
     hdr = struct.pack("<4I3d", s["n"], s["n_edges"], s["n_colors"], s["inj"].shape[0],
                       Q, GRAV, C_LOCAL)
     return (hdr
@@ -396,59 +261,43 @@ def pack_water_bin(s: dict) -> bytes:
 
 
 def water_readback() -> dict:
-    """GET /water_state -> slot 0 (latest V) + the derived truth numbers.
-
-    max_depth is the ledger's own depth law max_i(V_i*Q/A_i) over wet
-    cells — the exact quantity the vis plane renders as the pool level
-    (g4 compares the RENDERED level against THIS, not against an
-    approximation)."""
+    """GET /water_state -> slot 0 (latest V) + the derived truth numbers."""
     try:
         st, raw = request("GET", "/water_state", timeout=120)
         ns, nc = struct.unpack("<2I", raw[:8])
         v = np.frombuffer(raw, dtype=np.int32, count=nc, offset=8)
     except Exception as e:                        # noqa: BLE001 — the failure IS the record
         return {"ok": False, "error": str(e), "sum": None, "wet": None,
-                "max": None, "max_depth": None, "wet_centroid_r": None}
+                "max": None, "wet_centroid_bed": None}
     wet = v > 0
+    bed = ST["bed"]
     total = int(v.sum())
-    # pool radius: wet-centroid distance from the disc centre (spreading metric)
-    cxz = ST["centers"][:, [0, 2]]
-    cent = cxz[wet].mean(axis=0) if wet.any() else None
-    cent_r = float(np.linalg.norm(cent - ST["centroid_xz"])) if cent is not None else None
-    max_depth = float((v[wet] * Q / ST["areas"][wet]).max()) if wet.any() else 0.0
+    cent_bed = float((bed[wet] * v[wet]).sum() / total) if total > 0 else None
     return {"ok": True, "sum": total, "wet": int(wet.sum()),
-            "max": int(v.max()), "max_depth": max_depth,
-            "wet_centroid_r": cent_r}
+            "max": int(v.max()), "wet_centroid_bed": cent_bed}
 
 
-def vis_body_readback() -> dict:
-    """GET /water_vis_state -> [4 u32 indirect][water verts, 9 f32 each].
+def vis_vertex_count() -> dict:
+    """GET /water_vis_state -> the indirect counts ONLY.
 
-    This is the RENDERED BODY, measured: vertex count, level (max Y above
-    the floor), planar radius. g3/g4/g5 read this."""
+    The frozen debug route is CAPPED at 512 floats (water_vis_debug(states,
+    512)) — full vertex positions are unreadable, so the rendered-body
+    identity is carried by indirect[0] (vertexCount; water_vis.comp emits
+    exactly 3 verts per wet cell)."""
     try:
         st, raw = request("GET", "/water_vis_state", timeout=60)
-        indirect = np.frombuffer(raw, dtype=np.uint32, count=4, offset=0)
-        nv = int(indirect[0])
-        if nv <= 0:
-            return {"ok": True, "verts": 0, "level": None, "radius": None, "max_y": None}
-        fl = np.frombuffer(raw, dtype=np.float32, count=9 * nv, offset=16)
-        pos = fl.reshape(nv, 9)[:, 0:3].astype(np.float64)
-        max_y = float(pos[:, 1].max())
-        r = float(np.sqrt((pos[:, 0] - ST["centroid_xz"][0]) ** 2
-                          + (pos[:, 2] - ST["centroid_xz"][1]) ** 2).max())
-        return {"ok": True, "verts": nv, "level": max_y - ST["y_floor"],
-                "radius": r, "max_y": max_y}
+        indirect = struct.unpack("<4I", raw[:16])
+        return {"ok": True, "verts": int(indirect[0]),
+                "instances": int(indirect[1])}
     except Exception as e:                        # noqa: BLE001 — the failure IS the record
-        return {"ok": False, "error": str(e), "verts": 0, "level": None,
-                "radius": None, "max_y": None}
+        return {"ok": False, "error": str(e), "verts": None}
 
 
-def hud_state() -> dict:
+def hud_water_state() -> dict:
     try:
         j = jreq("GET", "/state")
-        return j.get("hud", {}).get("water", {})
-    except Exception:                              # noqa: BLE001
+        return j.get("water", {})          # top-level "water" (main.cpp /state)
+    except Exception:                      # noqa: BLE001
         return {}
 
 
@@ -460,30 +309,31 @@ def main() -> int:
     assert MESH_BIN.is_file(), f"missing committed mesh: {MESH_BIN}"
     assert not _port_busy(PORT), f"port {PORT} busy — collision is a named refusal"
 
-    # ── derive everything BEFORE the engine exists (no live exploration) ──
-    verts, tris = load_whole_mesh(MESH_BIN)
-    D = build_floor_disc(verts, tris)
+    # ── derive the substrate BEFORE the engine exists (no live exploration) ─
     global ST
-    ST = build_substrate_disc(D)
+    ST = build_substrate(MESH_BIN)
+    # provenance binding: the substrate construction must reproduce v1's
+    # recorded numbers (the constants were measured on THIS construction)
+    prov_ok = (ST["n"] == V1_RECORDED["n"] and ST["n_edges"] == V1_RECORDED["n_edges"]
+               and ST["n_colors"] == V1_RECORDED["n_colors"]
+               and abs(ST["cube_edge"] - V1_RECORDED["cube_edge"]) < 1e-3
+               and ST["inj_argmax"] == V1_RECORDED["inj_target_argmax"])
+    lowest_y = float(ST["bed"][ST["inj_target"]]) / ALPHA
     pour = ST["centers"][ST["inj_target"]]
-    record("derived.basin", "PASS", {
-        "y_floor": round(D["y_floor"], 6), "r_body": round(D["r_body"], 4),
-        "r_disc": round(D["r_disc"], 4), "cell_size": round(D["cell_size"], 6),
-        "n_cells": D["n_cells"], "up_frac": D["up_frac"],
-        "tri_base": D["tri_base"], "vert_base": D["vert_base"],
-        "composite_verts": len(D["comp_verts"]),
-        "composite_tris": len(D["comp_tris"])})
-    record("derived.substrate", "PASS", {
+    record("derived.substrate", "PASS" if prov_ok else "FAIL", {
         "n_cells": ST["n"], "n_edges": ST["n_edges"], "n_colors": ST["n_colors"],
-        "cube_edge": round(ST["cube_edge"], 6),
-        "occ_cells": int(ST["occ"].sum()), "center_cube": list(ST["center_cube"]),
-        "inj_target": ST["inj_target"],
+        "cube_edge": round(ST["cube_edge"], 6), "center_cube": list(ST["center_cube"]),
+        "v1_provenance": prov_ok,
+        "v1_argmax_cell": ST["inj_argmax"],
+        "v2_pour_cell_argmin": ST["inj_target"],
         "pour_point": [round(float(pour[0]), 4), round(float(pour[1]), 4),
                        round(float(pour[2]), 4)],
-        "pour_dist_from_centroid": round(
-            float(np.linalg.norm(pour[[0, 2]] - ST["centroid_xz"])), 4)})
+        "pour_height_y": round(lowest_y, 6)})
+    if not prov_ok:
+        raise SystemExit("substrate provenance binding FAILED — not the v1-proven "
+                         "construction; refusing to run (Amendment 1 delivery arm)")
 
-    os.environ["CHIMERA_ENGINE_URL"] = BASE
+    os.environ["CHIMERA_ENGINE_URL"] = BASE   # cpp_bridge targets MY instance
     import cpp_bridge
 
     old = os.environ.get("CHIMERA_MD_EDGE")
@@ -497,19 +347,23 @@ def main() -> int:
         record("launch", "PASS", {"pid": proc.pid, "port": PORT,
                                   "exe_sha256": hashlib.sha256(exe.read_bytes()).hexdigest()})
 
-        post_composite_mesh(D)
+        # the creature (committed mesh; the v1-proven wrapper: teddy colors,
+        # area-weighted normals, camera from extent)
+        ok, r, th, ph = cpp_bridge.load_mesh_bin(str(MESH_BIN), timeout=120)
+        record("load.mesh", "PASS" if ok else "FAIL", {"r": r, "theta": th, "phi": ph})
 
+        # the water substrate (dry) + the vis binding (face base = align proof)
         st, resp = request("POST", "/water_bin", pack_water_bin(ST),
-                           "application/octet-stream", timeout=180)
+                           "application/octet-stream", timeout=120)
         record("load.water_bin", "PASS" if b'"ok":true' in resp else "FAIL",
                {"resp": resp[:80].decode("utf-8", "replace")})
         st, resp = request("POST", "/water_vis",
-                           json.dumps({"on": True, "tri_base": D["tri_base"]}).encode(),
+                           json.dumps({"on": True, "tri_base": WATER_FACE_BASE}).encode(),
                            timeout=30)
         record("load.water_vis", "PASS" if b'"ok":true' in resp else "FAIL",
-               {"tri_base": D["tri_base"]})
+               {"tri_base": WATER_FACE_BASE})
 
-        # camera: v1's recorded framing, verbatim (D9)
+        # fixed camera (the v1 recorded framing; extent read live as v1 did)
         extent = 10.0
         try:
             scene = jreq("GET", "/scene")
@@ -549,8 +403,8 @@ def main() -> int:
                 steps_before = int(jreq("GET", "/water_clock")["steps_total"])
                 truth = water_readback()
                 steps_after = int(jreq("GET", "/water_clock")["steps_total"])
-                hud = hud_state()
-                body = vis_body_readback()
+                hud = hud_water_state()
+                body = vis_vertex_count()
                 steps_total = steps_after
             else:
                 truth, hud, body = None, {}, None
@@ -593,20 +447,18 @@ def main() -> int:
                 "max_grab_s": round(max(dts), 3), "take_wall_s": round(sum(dts), 1),
                 "note": "phase boundaries are capture-indexed; gates do not depend on wall pacing"})
 
-        # ── declared gates (PREREGISTRATION.txt g1-g7) ──────────────────────
+        # ── declared gates (PREREGISTRATION.txt Amendment 1, g1-g7) ─────────
         kf = {k: take[k] for k in KEYFRAMES}
         t30, t40 = kf[30], kf[40]
-        hud30 = t30["hud"]
 
         record("gate.dry_zero", "PASS" if t30["truth"].get("sum") == 0 else "FAIL",
                {"sum_at_f030": t30["truth"].get("sum"),
                 "steps_at_f030": t30["steps_total"]})
-        armed_ok = (hud30.get("on") in (False, None)) and t30["steps_total"] == 0
+        armed_ok = (t30["hud"].get("on") in (False, None)) and t30["steps_total"] == 0
         record("gate.armed_idle", "PASS" if armed_ok else "FAIL",
-               {"hud_at_f030": hud30, "steps_at_f030": t30["steps_total"]})
+               {"hud_at_f030": t30["hud"], "steps_at_f030": t30["steps_total"]})
         # live conservation identity, bracket-read (the engine keeps ticking
-        # between two reads, so sum is bracketed by inj x the two clock reads:
-        # inj*steps_before <= sum(read between) <= inj*steps_after during pour)
+        # between the two clock reads, so sum is bracketed by inj x them)
         s40 = t40["truth"]
         lo = INJ_COUNT * t40["steps_before"]
         hi = INJ_COUNT * t40["steps_after"]
@@ -619,49 +471,49 @@ def main() -> int:
                 "steps_after": t40["steps_after"], "sum_at_f040": s40.get("sum"),
                 "identity_bracket": [lo, hi]})
 
-        for k in KEYFRAMES[2:]:
-            b = kf[k]["body"]
-            ok3 = b.get("ok") and b.get("verts", 0) > 0 and (b.get("level") or 0) > 0
-            record("gate.body_renders", "PASS" if ok3 else "FAIL",
-                   {"frame": k, "verts": b.get("verts"), "level": b.get("level"),
-                    "radius": b.get("radius")})
-
+        # g3 vis_identity: rendered vertexCount == 3 x wet cells (the vis plane
+        # emits exactly 3 verts per wet cell — the body IS the ledger's)
         for k in (42, 90, 150, 179, 239):
             b, t = kf[k]["body"], kf[k]["truth"]
-            if not (b.get("verts") and t.get("sum") is not None and t.get("sum") > 0):
-                record("gate.level_law", "FAIL",
+            if not (b.get("ok") and t.get("sum") is not None and t.get("sum") > 0):
+                record("gate.vis_identity", "FAIL",
                        {"frame": k, "reason": "missing or dry read",
                         "verts": b.get("verts"), "sum": t.get("sum")})
                 continue
-            expected = t["max_depth"]                       # ledger law max(V*Q/A)
-            measured = b.get("level")                       # rendered max Y - y_floor
-            rel = abs(measured - expected) / max(abs(expected), 1e-30)
-            record("gate.level_law", "PASS" if rel < LEVEL_REL_TOL else "FAIL",
-                   {"frame": k, "level_rendered": measured, "level_ledger": expected,
-                    "rel_err": round(rel, 12)})
+            expected = 3 * t["wet"]
+            record("gate.vis_identity",
+                   "PASS" if b.get("verts") == expected else "FAIL",
+                   {"frame": k, "verts": b.get("verts"), "expected_3x_wet": expected})
 
-        prog_frames = (42, 90, 150, 179)
-        for a, b_ in zip(prog_frames, prog_frames[1:]):
-            ta, tb = kf[a], kf[b_]
-            strict = (tb["truth"]["sum"] > ta["truth"]["sum"]
-                      and tb["truth"]["wet"] > ta["truth"]["wet"]
-                      and tb["body"]["verts"] > ta["body"]["verts"]
-                      and tb["body"]["level"] > ta["body"]["level"])
+        # g4 pool_rises: the wet-centroid bed CLIMBS across the pour pairs
+        # (the level rising from the ground-contact point — Amendment 1)
+        prog_pairs = [(42, 90), (90, 150), (150, 179)]
+        for a, b_ in prog_pairs:
+            ca, cb = kf[a]["truth"].get("wet_centroid_bed"), kf[b_]["truth"].get("wet_centroid_bed")
+            record("gate.pool_rises",
+                   "PASS" if (ca is not None and cb is not None and cb > ca) else "FAIL",
+                   {"pair": [a, b_], "centroid_bed": [ca, cb]})
+
+        # g5 progressive: sum, wet, verts strictly increase on pour pairs
+        for a, b_ in prog_pairs:
+            ta, tb = kf[a]["truth"], kf[b_]["truth"]
+            strict = (tb["sum"] > ta["sum"] and tb["wet"] > ta["wet"]
+                      and kf[b_]["body"]["verts"] > kf[a]["body"]["verts"])
             record("gate.progressive", "PASS" if strict else "FAIL",
                    {"pair": [a, b_],
-                    "sum": [ta["truth"]["sum"], tb["truth"]["sum"]],
-                    "wet": [ta["truth"]["wet"], tb["truth"]["wet"]],
-                    "verts": [ta["body"]["verts"], tb["body"]["verts"]],
-                    "level": [ta["body"]["level"], tb["body"]["level"]]})
+                    "sum": [ta["sum"], tb["sum"]],
+                    "wet": [ta["wet"], tb["wet"]],
+                    "verts": [kf[a]["body"]["verts"], kf[b_]["body"]["verts"]]})
         f179, f239 = kf[179], kf[239]
         settled = (f239["truth"]["sum"] == f179["truth"]["sum"]
-                   and f239["body"]["verts"] >= f179["body"]["verts"]
-                   and f239["body"]["level"] >= f179["body"]["level"])
+                   and f239["truth"]["wet"] >= f179["truth"]["wet"]
+                   and f239["body"]["verts"] >= f179["body"]["verts"])
         record("gate.progressive.settled", "PASS" if settled else "FAIL",
                {"pair": [179, 239], "sum_frozen": f239["truth"]["sum"],
-                "verts": [f179["body"]["verts"], f239["body"]["verts"]],
-                "level": [f179["body"]["level"], f239["body"]["level"]]})
+                "wet": [f179["truth"]["wet"], f239["truth"]["wet"]],
+                "verts": [f179["body"]["verts"], f239["body"]["verts"]]})
 
+        # g6 pour footprint (the v1-corrected identity)
         final_sum = f239["truth"]["sum"]
         expected_total = INJ_COUNT * (pour_off_steps or 0)
         record("gate.pour_footprint",
@@ -671,9 +523,10 @@ def main() -> int:
 
         # engine-truth + body table at the keyframes
         with (out / "water_state_keyframes.txt").open("w", encoding="utf-8") as fh:
-            fh.write("feature-water-room-v2-01 — engine truth at the declared keyframes\n"
-                     "(GET /water_state slot 0 + GET /water_clock + GET /state hud.water\n"
-                     "+ GET /water_vis_state rendered-body reads; quanta are integer Q)\n")
+            fh.write("feature-water-room-v2-01 (run 2, creature arm) — engine truth at "
+                     "the declared keyframes\n(GET /water_state slot 0 + GET /water_clock "
+                     "+ GET /state water + GET /water_vis_state indirect;\nquanta are "
+                     "integer Q; pour cell = argmin bed = the ground-contact point)\n")
             for k in KEYFRAMES:
                 t, b, h = kf[k]["truth"], kf[k]["body"], kf[k]["hud"]
                 fh.write(f"\nkeyframe f{k:03d}  steps_total={kf[k]['steps_total']}"
@@ -681,12 +534,9 @@ def main() -> int:
                          f"  sum(V)           = {t.get('sum')}\n"
                          f"  wet cells        = {t.get('wet')} of {ST['n']}\n"
                          f"  max depth quanta = {t.get('max')}\n"
-                         f"  max depth law    = {t.get('max_depth')}\n"
-                         f"  wet centroid r   = {t.get('wet_centroid_r')}\n"
+                         f"  wet centroid bed = {t.get('wet_centroid_bed')}\n"
                          f"  hud.water        = {json.dumps(h)}\n"
-                         f"  body verts       = {b.get('verts')}\n"
-                         f"  body level       = {b.get('level')}\n"
-                         f"  body radius      = {b.get('radius')}\n")
+                         f"  vis vertexCount  = {b.get('verts')}\n")
 
         # the movie (the humanized companion — caption strips composed by
         # Python from engine truth — ships in the proof folder, clearly

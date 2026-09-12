@@ -235,3 +235,84 @@ Blind judge: requested from the lead by mailbox AFTER the PR is open
 (SIMPLE ordered-frames protocol; six clean engine frames, no captions, no
 priming; the verdict derives from the pictures).
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+AMENDMENT 1 (2026-09-12, after run 1, BEFORE any re-run; disclosed, the
+failed evidence is retained unedited in failed_run_1_disc/)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MEASURED (run 1, the disc arm): the take executed end-to-end (composite
+mesh ACCEPTED by /mesh_bin 110875 verts / 179224 tris; pour on-screen at
+f040; pour-off at f180; 240 frames, mean grab 1.488 s) but the FROZEN
+SOLVER did not conserve on the flat disc: sum(V) diverged to -1.27e14
+(expected exactly 2000 x 13092 = 26,184,000), wet cells collapsed
+21339 -> 3252 -> 2283 -> 2220, /water_vis_state reported vertexCount 0,
+and the frames show speckle, no pool (g030 dry, g150 mid-pour speckle,
+g239 settled speckle — retained). Individual cells exceeded int32 and
+wrapped negative.
+
+ROOT CAUSE (read from the frozen kernels, verbatim law): water_color.comp
+advances a per-edge momentum accumulator q_e with CFL sub-stepping
+dt_ij = c_local * l_ij / c, c = sqrt(g * 0.5 * (di + dj)); n_sub =
+floor(dt_macro / dt_ij) floors at 1. In the THIN-FILM regime (pool depth
+~1e-4 units on a wide flat basin) c is tiny, so dt_ij >> dt_macro and
+each macro step over-advances q_e by dt_ij; delta_count =
+roundEven(dt_ij * q_e / Q) amplifies the quantum grain at the thin rim;
+the undamped accumulator resonates on the UNIFORM flat lattice (no bed
+gradients to detune it) until cells wrap int32. v1's creature substrate
+never enters this regime: irregular duals + real bed gradients + deeper
+local pools kept dt_ij at/below dt_macro (v1 conserved EXACTLY:
+47,728,000 == 2000 x 23864).
+
+WHY NO PYTHON KNOB REACHES THE RIM: dt_ij does not depend on dt_macro
+(only c_local, l_ij, and the local depths); as rim depth -> 0, dt_ij ->
+inf for ANY route-settable dt_macro, so the over-advance cannot be
+stepped around from the routes. inj_count sets how FAST the film thins,
+not whether. This is the recorded ENGINE-SERVICE GAP for floor pools:
+a flat wide pool substrate needs either a re-derived slope/absorption
+law or a solver envelope fix (C++) — backlog for the water-room roadmap,
+NOT done in this task (ZERO C++ held).
+
+AMENDED DELIVERY (the prereg's declared FALLBACK arm becomes the
+delivery arm; trigger extended by the measured instability above —
+disclosed here, not silently): the creature substrate (SALLY_body_0,
+v1's EXACT proven-conserved substrate build, verbatim laws including the
+original centre-cube behavior — the recorded constants were measured
+with it) with the pour at argmin(bed) over free cells — the LOWEST cell,
+the creature's ground-contact point. On the creature the CA's bed
+gradients are real: water pools at the feet, fills the ground-contact
+basin, and the surface CLIMBS the legs (overflow fronts) — a rising
+level ON the creature: the spec's "and/or a surface over the creature".
+
+PREDICTION AND FALSIFIER: UNCHANGED (judge names a body unprompted /
+"small blue patch" or any C++ edit fails).
+
+GATES amended (run 2; the level read is re-derived because the
+/water_vis_state debug route is CAPPED at 512 floats by the frozen
+service (water_vis_debug(states, 512)) — the full rendered vertex
+positions are unreadable, so the body identity is carried by the
+indirect count instead):
+  g1 gate.dry_zero:       sum(V) at f030 == 0.           (unchanged)
+  g2 gate.pour_on_screen: f030 idle/armed -> f040 /state water.on true,
+     steps_total > 0, and sum(V) inside the bracket
+     [inj*steps_before, inj*steps_after].                  (unchanged)
+  g3 gate.vis_identity:   /water_vis_state indirect vertexCount == 3 x
+     wet_cells at every post-tap keyframe (water_vis.comp emits exactly
+     3 verts per wet cell — the rendered body IS the ledger's, cell for
+     cell).                                             (re-derived)
+  g4 gate.pool_rises:     wet-centroid bed STRICTLY RISES across the pour
+     keyframe pairs (42,90,150,179): the pool level climbs the creature
+     from the ground-contact point — the rising level, measured. This
+     is the direction REVERSED from v1's pour-at-top finding; the v1
+     lesson (local pooling dominates on this mesh) is the reason the
+     pour sits IN the lowest basin.                      (re-derived)
+  g5 gate.progressive:    sum(V), wet cells, vertexCount strictly
+     increase across every consecutive pour pair; settled pair (179,239)
+     sum frozen, rest non-decreasing.                     (unchanged)
+  g6 gate.pour_footprint: sum(V) at f239 == 2000 x steps_total AT the
+     tap-off boundary.                         (unchanged, v1-corrected)
+  g7 gate.zero_cpp:       diff touches only the two scoped paths. (unchanged)
+
+Everything else (phases 40/140/60, keyframes, judge six, camera, solver
+constants, 10 Hz capture law) unchanged. Run 1's artifacts and records
+are preserved under failed_run_1_disc/ (full frame set on the operator
+desktop, CHIMERA_PROOF/FEATURE_water_room_v2/failed_run_1_disc_frames).
