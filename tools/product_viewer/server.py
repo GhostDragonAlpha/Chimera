@@ -414,19 +414,31 @@ PAGE = """<!doctype html><html><head><meta charset="utf-8"><title>Chimera Produc
  <button onclick="setOrbit()">apply r/theta/phi</button></span>
  <div id="cam" style="font-size:12px;color:#9aa4af;margin-top:4px"></div>
 </fieldset>
-<div>
- <a href="/api/gallery" target="_blank">gallery json</a> ·
- <a href="/api/snapshot/latest" target="_blank">snapshot latest (byte-identical PNG)</a> ·
- <a href="/api/movie" target="_blank">movie (mp4 of the ring)</a> ·
- <a href="/api/health" target="_blank">health</a>
-</div>
+  <div>
+  <button onclick="cap(!capOn)" id="capbtn">ring capture: paused</button>
+  <span style="font-size:12px;color:#9aa4af">(runs ONLY during takes — the observer must not starve the observed)</span>
+  </div>
+  <div>
+  <a href="/api/gallery" target="_blank">gallery json</a> ·
+  <a href="/api/snapshot/latest" target="_blank">snapshot latest (byte-identical PNG)</a> ·
+  <a href="/api/movie" target="_blank">movie (mp4 of the ring)</a> ·
+  <a href="/api/health" target="_blank">health</a>
+  </div>
 <script>
-let misses=0;
+let misses=0, capOn=false;
 function tick(){
   const t=Date.now();
   const g=document.getElementById('g'), f=document.getElementById('f');
-  g.src='/api/live/glass?t='+t; f.src='/api/live/frame?t='+t;
+  f.src='/api/live/frame?t='+t;
 }
+function tickGlass(){
+  const t=Date.now();
+  document.getElementById('g').src='/api/live/glass?t='+t;
+}
+function cap(on){capOn=on;
+  fetch('/api/capture',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({on:on})}).then(r=>r.json()).then(()=>{
+    document.getElementById('capbtn').textContent='ring capture: '+(on?'ON':'paused');});}
 function state(){
   fetch('/api/gallery').then(r=>r.json()).then(d=>{
     const last=d.records[d.records.length-1];
@@ -454,7 +466,7 @@ function setOrbit(){fetch('/api/camera',{method:'POST',
     cam_theta:+document.getElementById('t').value,cam_phi:+document.getElementById('p').value})
   }).then(r=>r.json()).then(d=>{
     document.getElementById('cam').textContent=JSON.stringify(d).slice(0,300);});}
-setInterval(tick,200); tick(); setInterval(state,1000); state();
+setInterval(tick,200); tick(); setInterval(tickGlass,1000); tickGlass(); setInterval(state,1000); state();
 </script></body></html>"""
 
 
@@ -659,6 +671,10 @@ def make_server(engine_url: str, port: int, history: int = 240) -> ThreadingHTTP
 def serve_forever(engine_url: str, port: int, history: int = 240) -> None:
     server = make_server(engine_url, port, history)
     capture = server.capture_thread
+    capture.paused.set()          # PAUSED BY DEFAULT: the ring runs only during
+                                  # takes (POST /api/capture) — a 10 Hz stream of
+                                  # full-size PNGs against a serialized engine
+                                  # queue is the observer starving the observed.
     capture.start()
     print(f"product viewer on http://127.0.0.1:{port}  engine={engine_url} "
           f"history={history}", flush=True)
