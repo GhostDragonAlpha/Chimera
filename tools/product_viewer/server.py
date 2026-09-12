@@ -168,18 +168,24 @@ class CaptureThread(threading.Thread):
             stored = False
             err = None
             try:
-                st, png, ctype = self.engine.get("/glass")
+                # THE OBSERVER IS NOT IN THE PICTURE (THE_ALIGNMENT §4): the
+                # ring captures the CLEAN /frame channel only — snapshots and
+                # movies made from it are product artifacts for judges and the
+                # operator's desktop. Instrument state (/joints, /studio_chrome)
+                # rides as sidecar METADATA, never in pixels. The instrumented
+                # /glass remains available as a live debugging view.
+                st, png, ctype = self.engine.get("/frame")
                 if st == 200 and ctype.startswith("image/png"):
                     import hashlib
                     digest = hashlib.sha256(png).hexdigest()
                     joints_state = self._json("/joints")
                     chrome_state = self._json("/studio_chrome")
-                    self.ring.append(png, digest, "glass", joints_state, chrome_state)
+                    self.ring.append(png, digest, "frame", joints_state, chrome_state)
                     stored = True
                 elif st == 200:
-                    err = "glass non-png body"
+                    err = "frame non-png body"
                 else:
-                    err = f"glass http {st}"
+                    err = f"frame http {st}"
             except EngineError as e:
                 err = str(e)
             with self._stats_lock:
@@ -392,13 +398,13 @@ PAGE = """<!doctype html><html><head><meta charset="utf-8"><title>Chimera Produc
  fieldset{border:1px solid #2a3138;margin:8px 0} legend{font-size:12px;color:#8ab4f8}
  a{color:#8ab4f8;font-size:12px}
 </style></head><body>
-<h1>Chimera product viewer — live engine glass (left) / clean frame (right)</h1>
+<h1>Chimera product viewer — clean frame (product view, left) / instrumented glass (debug, right)</h1>
 <div id="state">connecting…</div>
 <div class="row">
- <div class="pane"><h2>/glass — the composited window the operator sees</h2>
-   <img id="g" alt="glass"></div>
- <div class="pane"><h2>/frame — the pixel-clean viewport</h2>
-   <img id="f" alt="frame"></div>
+  <div class="pane"><h2>/frame — THE PRODUCT VIEW: the world only, no instruments</h2>
+    <img id="f" alt="frame"></div>
+  <div class="pane"><h2>/glass — instruments composited (debugging only; never judged)</h2>
+    <img id="g" alt="glass"></div>
 </div>
 <fieldset><legend>camera</legend>
  <button onclick="preset('fit_rom')">fit_rom (derived full-ROM fit)</button>
@@ -549,7 +555,7 @@ class ViewerHandler(BaseHTTPRequestHandler):
     def _movie(self, query: str):
         H = type(self)
         recs = H.ring.all_records()
-        fps = 24
+        fps = 10  # the ring's capture rate — movies play at TRUE tempo (THE_ALIGNMENT §5 Phase 1)
         frm, to = None, None
         for kv in query.split("&"):
             if kv.startswith("from="):
