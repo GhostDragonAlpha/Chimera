@@ -1,0 +1,69 @@
+{
+ "task": "product-hud-truth-01",
+ "attempt": "product-hud-after-orderedframes-v1",
+ "physical_context": "A desktop engineering application window: a central 3D viewport showing a small brown creature figure standing on a grid floor, with tool panels around the viewport. A short scripted sequence of the creature plays; the six frames are IN ORDER, taken evenly from a 4.5-second clip (10 frames per second).",
+ "claim_under_exam": "A viewer reading these frames in order can tell what the creature is doing and what a human would learn from watching it.",
+ "questions": [
+  "1. Describe what happens across the frames, in order.",
+  "2. What kind of motion or behavior is being demonstrated \u2014 name it as you would to a friend.",
+  "3. If a non-physicist watched this clip, what ONE sentence would you tell them about what they just learned?",
+  "4. Is anything unclear, ambiguous, or unconvincing about the sequence?"
+ ],
+ "captures": [
+  {
+   "index": 1,
+   "path": "E:\\ChimeraWork\\slot-03\\docs\\evidence\\agent_fleet\\PRODUCT_HUD_TRUTH\\frames\\g000.png",
+   "sha256": "390bc06984770b03c2213e29ccfc2b37c95b3b0f3c4492186c15f77e4f746f2a",
+   "metadata": {
+    "phase": "rest (first frame)"
+   }
+  },
+  {
+   "index": 2,
+   "path": "E:\\ChimeraWork\\slot-03\\docs\\evidence\\agent_fleet\\PRODUCT_HUD_TRUTH\\frames\\g012.png",
+   "sha256": "3eba4739f8aecc12f3f738526a1ac21baca16c9efbbf55e6260251cc1cddfe17",
+   "metadata": {
+    "phase": "perturb mid"
+   }
+  },
+  {
+   "index": 3,
+   "path": "E:\\ChimeraWork\\slot-03\\docs\\evidence\\agent_fleet\\PRODUCT_HUD_TRUTH\\frames\\g020.png",
+   "sha256": "3c83bd71995fe8275a8772dfe14d411f79b2127863a10e84309e83d38d0f3b83",
+   "metadata": {
+    "phase": "hold (peak)"
+   }
+  },
+  {
+   "index": 4,
+   "path": "E:\\ChimeraWork\\slot-03\\docs\\evidence\\agent_fleet\\PRODUCT_HUD_TRUTH\\frames\\g025.png",
+   "sha256": "a2e310455fd2f5bef4ae1a5625abe0ebef9ac129facf0eb8f5b831bc441c9963",
+   "metadata": {
+    "phase": "hold late"
+   }
+  },
+  {
+   "index": 5,
+   "path": "E:\\ChimeraWork\\slot-03\\docs\\evidence\\agent_fleet\\PRODUCT_HUD_TRUTH\\frames\\g035.png",
+   "sha256": "f1725266786cdb80557f026a34f510e8be0dd8bfd29e3628f96cfbf645628283",
+   "metadata": {
+    "phase": "response mid"
+   }
+  },
+  {
+   "index": 6,
+   "path": "E:\\ChimeraWork\\slot-03\\docs\\evidence\\agent_fleet\\PRODUCT_HUD_TRUTH\\frames\\g044.png",
+   "sha256": "12ed875f3f4b422881ec458efa1124a7e728bdb794092bd4b528b063d4e18770",
+   "metadata": {
+    "phase": "returned to rest (last frame)"
+   }
+  }
+ ],
+ "runtime_metadata": {
+  "camera": "fixed 3/4 orbit (set once before the clip; unchanged during)",
+  "state": "the creature is the application loaded subject; a short pose clip plays",
+  "clip_truth_declared_to_nobody": "the judge is told nothing about how the motion was produced"
+ },
+ "review_type": "ordered_frames",
+ "evidence_limits": "six ordered frames from a 4.5 s clip (10 fps); on-screen application text is part of the product surface and may be read; numbers are observations, not measurements"
+}

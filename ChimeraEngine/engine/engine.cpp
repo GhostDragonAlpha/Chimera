@@ -7139,14 +7139,36 @@ void Engine::reel_note_grab() {
     e.light[0] = frost_light_x_.load(); e.light[1] = frost_light_y_.load(); e.light[2] = frost_light_z_.load();
     float per = show_period();
     uint32_t nj = show_joint_count();
+    // product-hud-truth-01 (the PR #97 blind judge, finding 4(b) on the reel
+    // captions): while the pose is edit-held the caption named the sweep's
+    // cycling lane ("hip_R +0.0d") beside scripted motion. The caption follows
+    // the same law as the HUD row: name a DRIVEN joint, live theta from st +7.
+    // The driven set is the UI's derivation (set_joints_view); both run on the
+    // render thread — no race.
+    bool edit_held = false;
     if (joints_loaded_ && nj) {
-        uint32_t cur = static_cast<uint32_t>(e.show_t / per) % nj;
-        e.joint = show_joint_name(cur);
-        e.theta = show_current_theta();
+        const uint32_t driven = ui_.joints_edit_mask_ui();
+        if (joints_owner_.load(std::memory_order_relaxed) == 1 && driven != 0) {
+            edit_held = true;
+            uint32_t first = 32, count = 0;
+            for (uint32_t k = 0; k < nj && k < 32; ++k)
+                if (driven & (1u << k)) { if (first == 32) first = k; ++count; }
+            if (first < nj) {
+                const float* stc = static_cast<const float*>(j_state_map_);
+                e.joint = (count > 1) ? j_names_[first] + "+" + std::to_string(count - 1)
+                                      : j_names_[first];
+                e.theta = stc ? stc[first * 8 + 7] * 57.29577951308232 : 0.0;
+            }
+        } else {
+            uint32_t cur = static_cast<uint32_t>(e.show_t / per) % nj;
+            e.joint = show_joint_name(cur);
+            e.theta = show_current_theta();
+        }
     }
 
     char l1[96], l2[96], l3[128];
-    if (!e.joint.empty()) snprintf(l1, sizeof(l1), "t%.2f %s", e.show_t, e.joint.c_str());
+    if (!e.joint.empty()) snprintf(l1, sizeof(l1), "t%.2f %s%s",
+                                   e.show_t, edit_held ? "EDIT " : "", e.joint.c_str());
     else                  snprintf(l1, sizeof(l1), "t%.2f (no show)", e.show_t);
     snprintf(l2, sizeof(l2), "%+.1fd  %s", e.theta, e.wall.c_str() + 11);
     snprintf(l3, sizeof(l3), "r%.1f %.2f/%.2f  L%.2f/%.2f/%.2f",
