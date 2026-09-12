@@ -1,0 +1,237 @@
+PREREGISTRATION — feature-water-room-v2-01
+RULE 0 prereg (committed BEFORE any run; zero measured actuals below)
+Agent: subagent-worker-03 · Base 31c5cfbbcbda4238e879417f65d9c23716093074
+Branch astra/tasks/feature-water-room-v2-01 · claim generation <filled at commit>
+Scopes: tools/product_features + docs/evidence/agent_fleet/FEATURE_WATER_ROOM_V2
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STATEMENT (someone could disagree with it)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+In the frozen engine service (ZERO C++ edits), the water vis plane is not a
+tint: `water_vis.comp` emits REAL DISPLACED GEOMETRY — every wet cell's
+triangle, displaced by depth d = V*Q/A along its own normal, fixed water
+blue. The v1 judge saw "a small blue patch" because the substrate was the
+CREATURE's surface and the pour landed at the TOP cell, so only a thin cap
+ever existed. If the same public routes are fed a PLANAR FLOOR substrate —
+a triangulated disc derived at runtime in Python and appended to the
+creature mesh (one /mesh_bin composite; the disc block is the water part) —
+then the identical vis plane renders a POOL: injected water spreads
+radially (the CA equalizes surface height bed+h; on a flat disc bed is
+constant, so flow is pure spreading) and the level RISES (displacement
+grows with V). Water becomes a visible, measurable BODY with a rising
+level in the room — delivered entirely through Python + public HTTP.
+
+The v1 judge's spec, addressed item by item:
+  (a) visible water body — pool/rising level, not a neck tint:
+      -> floor-disc substrate; pool on the room floor around the creature.
+  (b) the pour START must be on-screen:
+      -> the tap opens mid-capture; consecutive captured keyframes straddle
+         it (dry+armed with steps_total==0, then counting from 0 with the
+         floor still dry, then first water). Nothing happens between
+         keyframes; the HUD truth (/state hud.water) is machine-read at
+         each keyframe.
+  (c) spreading must be progressive between consecutive keyframes:
+      -> keyframes chosen so EVERY consecutive pair strictly increases
+         sum(V), wet cells, rendered water vertices, and pool level.
+  (d) cryptic injection readout:
+      -> the C++ HUD string is frozen; the humanized companion (caption
+         strips composed by Python from engine-truth reads) ships in the
+         proof folder and the result record, clearly marked as
+         Python-composed. The BLIND judge frames stay clean (no captions —
+         captions naming water would prime the judge).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PREDICTION (not yet measured)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+A blind judge (fresh spawn, SIMPLE ordered-frames protocol, six ordered
+frames, four non-leading questions, told NOTHING about water, pours or
+physics) describes the water as a THING — using body words (pool, surface,
+level, rising, spreading, filling, or equivalents) UNPROMPTED — and does
+not describe it as a stain/patch/tint.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FALSIFIER (named before the run)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+The prediction FAILS if the judge still describes the water as "a small
+blue patch" / stain / tint with no body/level/surface words. The DELIVERY
+fails if any C++ edit is needed: the engine service is frozen; if a
+required capability is missing from the public routes, that is the
+recorded engine-service gap and the take ships as the best Python-visible
+version with the gap recorded. (Structural check: `git diff <base>` must
+touch ONLY tools/product_features + docs/evidence/agent_fleet/
+FEATURE_WATER_ROOM_V2.)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DERIVATIONS (RULE 1 — every number traced, none tasted)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+D1  Floor plane y:  y_floor = min(V_y) over creature vertices — the
+    measured ground-contact level of THIS pose at THIS rest pose (the
+    engine's own ground physics reads y_ground = -0.0195; the disc is
+    derived from the loaded mesh, not from that constant).
+D2  Disc radius:  R_disc = 2.5 x R_body, R_body = max horizontal
+    sqrt(x^2+z^2) over creature verts. Derivation: the pool must read as
+    "in the room" (clearly larger than the creature footprint) while
+    remaining inside the recorded camera's framing (v1's judge saw the
+    whole creature with wide margins at cam_radius 3.4x extent; 2.5x R_body
+    stays inside those margins: the pool spans ~2.5x the body in a frame
+    that showed ~3x the body as roughly half the frame width).
+D3  Disc resolution and shape: an axis-aligned SQUARE-GRID disc clipped to
+    R_disc (cells kept whose center lies within R_disc; two triangles per
+    cell, winding CCW seen from +Y so cell normals are +Y up). Quad side
+    s = sqrt(2 x A_mean), A_mean = mean(areas of SALLY_body_0), so each
+    disc TRIANGLE (the actual water cell) has area exactly A_mean — the
+    measured scale of the solver constants (checked at derivation time:
+    the measured ratio is 1.0000). The staircase rim of a clipped grid
+    lies at 2.5 x R_body, far outside the framed action; the rim's
+    exactly-1-triangle edges are excluded from the pipe set by the
+    substrate's own dual-edge law, so the disc is a closed basin — water
+    cannot leak past the rim.
+    Measured inputs (derivation-time, no engine): A_mean 0.0025314102,
+    s 0.0711518, R_body 4.288, R_disc 10.719, y_floor -0.0195070 (=
+    the engine's own y_ground -0.0195), grid 142594 water cells,
+    213289 dual pipes, edge coloring 3 colors, k_e*dt max 0.0036
+    (explicit-CA stability margin), composite /mesh_bin POST 4.71 MB,
+    /water_bin payload 9.39 MB — v1-scale substrate (34.5k cells, 63
+    colors) scaled ~4x.
+D4  Solver constants: VERBATIM v1 recorded values — C_sw_global
+    0.07120992734952862, L_PART 0.012259485812807563, A_MIN
+    4.1654367130014345e-07, Q = A_MIN*L_PART, G 9.81, ALPHA 0.1,
+    dt_macro 0.01, steps/frame 4, inj_count 2000 (the proven visible
+    rate). Nothing retuned.
+D5  occ (centre-cube) law: CORRECTED BEFORE THE RUN, correction recorded.
+    v1's verbatim seen-set loop pairs each triangle t with each of its
+    PRIMAL VERTEX ids u and then reads centers[u] — a cell center indexed
+    by a VERTEX id. On the creature the vertex and cell id ranges overlap,
+    so cube_edge silently came out near mesh-diameter scale (9.90 on a
+    ~10-unit creature — v1's own record) and the centre cube disabled
+    whatever fell in it; harmless THERE, but on the disc the same loop
+    disabled 25% of all cells (measured at derivation time). The law's
+    PURPOSE (water_setup.py) is to disable cells INSIDE the solid body.
+    A planar disc HAS no interior cells, so on the disc occ = NONE and
+    every pipe is active. cube_addr survives only as the canonical edge
+    sort/orientation key, now computed from the TRUE dual-adjacent pair
+    distances (0.0530353 = the 'tight in-ring bound' the v1 comment
+    names). The correction preserves the law's purpose on new geometry;
+    nothing measured post-run was retuned.
+D6  Pour cell: the free disc cell nearest P = creature XZ centroid +
+    1.35 x R_body x d_hat, where d_hat = (sin theta, -cos theta) — the
+    horizontal unit vector from the camera TARGET toward the camera EYE's
+    horizontal offset, read from the engine's own camera law
+    (Engine::update_camera_matrices: eye = target + r*(cosphi sintheta,
+    sinphi, -cosphi costheta); the horizontal part is (sintheta, -costheta),
+    phi-independent; theta = 0.5, the recorded camera). Derivation: the
+    spec demands the pour ON-SCREEN; the point must be outside the
+    creature's silhouette (R_body is the max horizontal radius, so
+    1.35 x R_body clears it at every azimuth) and in the half facing the
+    camera (nearest the eye side, least occlusion by the body at the
+    recorded 0.35 phi elevation). Measured input: pour cell 118497,
+    center (2.775, y_floor, -4.674) — 5.44 units from the centroid on
+    the camera side.
+D7  Phases (capture-indexed; wall-clock pacing is recorded, not load-
+    bearing — the engine's serial /glass queue is the pacemaker, v1
+    lesson): N_DRY 40 (armed: /water_clock POSTed on:false with the real
+    config so the armed state precedes the take), N_POUR 140 (ACTION 1
+    tap-on at the FIRST pour frame — ON-SCREEN), N_SETTLE 60 (ACTION 2
+    tap-off at the FIRST settle frame — also on-screen; then the pool
+    settles). 240 frames at the 10 Hz capture law = 24.0 s take.
+D8  Keyframes (ordered): f030 (dry, idle: sum 0, no water HUD row),
+    f040 (tap frame: HUD row ON, counter running, floor still dry),
+    f042 (first water on the floor), f090 (pool spreading),
+    f150 (level risen), f179 (tap-off frame — engine-truth anchor for
+    the footprint identity), f239 (settled pool). JUDGE SIX (declared
+    now, sent as the ordered frames): f030, f040, f042, f090, f150,
+    f239 — dry -> tap -> first water -> spreading -> risen -> settled
+    body, every consecutive pair showing unambiguous progression. f179
+    stays engine-truth-only (g6 reads steps_total AT it).
+D9  Camera: VERBATIM v1 recorded framing — cam_radius = 3.4 x extent,
+    cam_theta 0.5, cam_phi 0.35 (the motion-sweep measured head-crop fix;
+    extent from /scene body row, fallback 10.0). No new camera number.
+D10 Creature mesh: VERBATIM committed Saved/meshes/monkey_birth.bin; the
+    composite = creature verts/tris UNCHANGED (cpp_bridge.load_mesh_bin
+    laws: area-weighted normals, teddy brown 0.8/0.55/0.35) + the derived
+    disc block appended (verts after the last creature vertex -> the
+    block's vertex span is contiguous; tris appended after the last
+    creature triangle -> tri_base = creature tri count; runtime align
+    proof re-asserts contiguity exactly as v1 did). Floor color: neutral
+    dark gray (0.22,0.23,0.25) — the basin should read as room floor next
+    to the engine's grid; appearance is mesh-bytes (Python-owned), and
+    the choice is recorded here BEFORE the run.
+
+D11 Edge coloring, contract-preserving correction (declared before the
+    run): v1's exact greedy stores EDGE INDICES per cell and picks
+    c = 1 + max(colors of the stored edges) — on the creature's irregular
+    duals that stays small (63), but on a large regular grid the max+1
+    walk climbs unboundedly (853 colors measured at derivation time —
+    a kernel-launch blowup for the color-serial solver: one pass per
+    color per step). The law's CONTRACT is: edges sharing a cell get
+    DISTINCT colors, chosen deterministically in the canonical edge
+    order. That contract is satisfied by the smallest-excluded-color
+    greedy over the same canonical order — measured 3 colors on this
+    disc (<= degree+1 <= 6 on a grid; a per-cell pairwise-distinctness
+    check runs at derivation time and refuses by name on any violation).
+    The solver contract is preserved; the color COUNT is a feasibility
+    fix, not a physics change.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+GATES (declared now; recorded as measured, never retuned)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+g1  gate.dry_zero:      sum(V) at f030 == 0 exactly (GET /water_state).
+g2  gate.pour_on_screen: at f030 sum(V) == 0 AND /state hud.water shows
+    no running row (on == false — nothing has started); at f040 /state
+    hud.water.on == true AND steps_total > 0 AND sum(V) == inj_count x
+    steps_total (the live conservation identity — both sides read at the
+    SAME instant, so engine-tick skew cannot fake it). The idle->pouring
+    transition therefore lies BETWEEN two captured keyframes three
+    frames apart (v1's gap was between f000 and the whole rest of the
+    take; here the judge sees dry floor AND the counter starting).
+g3  gate.body_renders:  GET /water_vis_state at every post-tap keyframe:
+    vertexCount > 0 and max(Y of water verts) - y_floor > 0 — the
+    rendered water is GEOMETRY with a level, not a tint.
+g4  gate.level_law:     at each post-tap keyframe, max water-vert Y -
+    y_floor == max(V)*Q/A within rel err 1e-5 (the rendered body's level
+    IS the ledger's depth law — vis plane and solver agree).
+g5  gate.progressive:   across EVERY consecutive keyframe pair from f042:
+    sum(V), wet cells, water vertexCount, and level all STRICTLY
+    increase (settled-pool pair excepted by declaration: f179 -> f239
+    sum(V) is CONSTANT (frozen at tap-off — the v1-proven conservation)
+    while wet cells/vertices/level stay >= ; the progression the judge
+    sees is f042..f179).
+g6  gate.pour_footprint: sum(V) at final == inj_count x steps_total read
+    AT the tap-off boundary (the v1-corrected identity — steps_total
+    read at pour-off, NOT at settle; v1's FAIL-as-written lesson baked
+    into the prereg).
+g7  gate.zero_cpp:      git diff base..HEAD touches only the two scoped
+    paths; ChimeraEngine untouched; build in slot-private .tmp only.
+
+Oracle independence: g1-g6 read ONLY the engine's public HTTP truth
+(/water_state, /water_clock, /state, /water_vis_state) — the same engine
+that renders the pictures, but different routes/planes than the pixels;
+the judge's reading is the independent oracle for the PREDICTION (the
+judge is a fresh spawned agent that never sees this file, the code, or
+any caption).
+
+Expected failure signals: composite mesh rejected by /mesh_bin (size
+mismatch / ok:false) -> fallback declared BELOW; pool invisible at the
+recorded inj rate -> recorded as measured (the honest-gap arm); level law
+mismatch > 1e-5 -> a genuine finding, recorded, not retuned.
+
+FALLBACK (declared now, not improvised later): if /mesh_bin rejects the
+composite, the take runs on the creature-only substrate with pour at the
+argmin(bed) free cell (lowest = ground contact; the pool then forms at
+the feet and the level climbs the legs — still a body per the spec's
+"and/or a surface over the creature"). The fallback keeps every gate
+except that y_floor/min-cell derivations shift to the creature's lowest
+region. Which arm ran is recorded in RESULT.
+
+Resources: rtx4090 + engine_demo via controller resource_request (queued
+FIFO; released with drain evidence after the run). Port: the slot's
+candidate (never 8080); collision is a named refusal. Build: slot-private
+.tmp/engine_build/waterroom_v2/ (Release); ChimeraEngine/engine/build/
+untouched. Evidence: docs/evidence/agent_fleet/FEATURE_WATER_ROOM_V2/
+(*.txt records; PNG keyframes + sha256 manifest as v1). Proof folder:
+Desktop/CHIMERA_PROOF/FEATURE_water_room_v2/.
+
+Blind judge: requested from the lead by mailbox AFTER the PR is open
+(SIMPLE ordered-frames protocol; six clean engine frames, no captions, no
+priming; the verdict derives from the pictures).
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
