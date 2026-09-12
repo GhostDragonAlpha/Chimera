@@ -214,3 +214,65 @@ re-derived).
   (e.g. deepcopy + relabel + calibrated.admit) and observe the refusal.
 
 Trailer: Agent: subagent-worker-05
+
+================================================================================
+CORRECTIONS (appended by fleet-followups-batch-04, 2026-09-11 -- append-only;
+nothing above this line is rewritten)
+================================================================================
+
+C1 (review finding F2, quoted verbatim from
+E:/ChimeraWork/verdicts/done/holodeck-mat-05.json):
+  "[F2, severity 3, non-blocking] RESULT section 1 claims 'both runs runs'
+  scripts are in controls/run_source_checks.py history at 53e71f47 vs this
+  commit' -- false: run_source_checks.py is byte-identical in both commits;
+  the run-1 instrument (ROOT parents[5] bug + two R5 needle mismatches) was
+  never committed, so the R5 correction narrative has no retained instrument
+  history (unlike R3's retained FIRED run); fix = commit instrument history
+  or correct the sentence."
+
+The sentence in section 1 above that reads "(No fired-run file: these were
+source-trace probe fixes; both runs' scripts are in
+controls/run_source_checks.py history at 53e71f47 vs this commit.)" is
+FALSE and is corrected by this note: controls/run_source_checks.py is
+byte-identical at 53e71f47 and at the MAT-05 pinned head c11bff53 (measured
+2026-09-11 by fleet-followups-batch-04: sha256
+01e710d96a59fec5d2dd5a913330cb7debe8cba610ef86b62c86605bf64f7677 at 53e71f47c21b15d3676f340b549ca75f8909652b,
+01e710d96a59fec5d2dd5a913330cb7debe8cba610ef86b62c86605bf64f7677 at c11bff53221697ad7b2d4b30418492150c5f3ddc, and
+01e710d96a59fec5d2dd5a913330cb7debe8cba610ef86b62c86605bf64f7677 at the integration tip -- all identical). The run-1 R5 instrument
+(the ROOT parents[5] version with the two mismatched needles) was never
+committed, so no instrument history exists to consult; the R5 correction
+narrative in section 1 stands only on this disclosure. Chosen fix: correct
+the sentence (this note) -- committing a reconstructed run-1 instrument now
+would fabricate instrument history after the fact, the worse option.
+Practice adopted for FUTURE source-check lanes: retain instrument history
+for probe fixes the way fired runs are retained.
+
+C2 (review finding F1, same source; the coverage control the review
+demanded): controls/run_missing_label_control.py is committed beside this
+RESULT. Its two phases and the retained evidence:
+  - checks/r2_missing_label_control.txt -- the pristine model refuses
+    author(..., label='   ') with reason EXACTLY 'missing_label' (HOLD);
+  - checks/r2_missing_label_control.stripped-FIRED.txt -- the same probe
+    against a temp copy with the label gate stripped ACCEPTS the blank
+    label (verdict FIRED, retained): the control demonstrably FLIPS when
+    the gate is gone, closing the F1 teeth gap for the literal gate;
+  - checks/missing_label_control_summary.txt -- flip_proven: true.
+The committed R2 suite, run_controls.py, reference model, and every prior
+checks file above are byte-untouched by this addition.
+
+SOURCE IDENTITY CONVENTION (fleet-followups-batch-04 D3; pinned for this
+plane, stated once here and in MAT-02's RESULT):
+
+  SOURCE IDENTITY records in source-check lanes are sha256 over the
+  WORKING-TREE bytes of the file as checked out on the fleet's Windows
+  hosts (core.autocrlf=true, CRLF in the working tree), written with the
+  explicit label working-tree-sha256(CRLF)=<hex> (derivation:
+  sha256sum <path> on the checked-out file). A blob-hash auditor must
+  normalize before comparing: hash the LF blob
+  (git cat-file blob <rev>:<path> | sha256sum) and expect a different
+  value BY CONVENTION, or convert the working-tree file CRLF->LF before
+  hashing. Rationale and the three reviewer findings that named the gap
+  are quoted in
+  docs/evidence/agent_fleet/FOLLOWUPS_BATCH_04/PREREGISTRATION.txt (D3);
+  the convention keeps every retained source-identity record above valid
+  without rewriting integrated evidence.

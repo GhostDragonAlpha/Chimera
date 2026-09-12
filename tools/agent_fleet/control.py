@@ -769,6 +769,31 @@ class Control:
             t.update(state='INTEGRATED',integration={'commit':sha(p.get('commit')),'evidence':text(p.get('evidence'),'published_review_evidence')})
             r['state']='ACKNOWLEDGED'
             return {'state':'INTEGRATED','slot':'held until cleanup attestation'}
+        if op=='ir_retire':
+            # fleet-followups-batch-04 (2026-09-11): retire an ORPHANED
+            # PENDING integration request. With the publication broker still
+            # an activation gate, PENDING_EXTERNAL_BROKER requests can strand
+            # (live case: d614a192236e08fef0160f1f for holodeck-gov-06, whose
+            # PR #84 merged through another path, so its request can never be
+            # acknowledged) and no operation could retire them. Supervisor-
+            # only, audited exactly like task_abandon/task_provenance_set:
+            # reason + evidence + actor + revision stored on the request
+            # record; the call() audit event carries the whitelisted keys
+            # (request, reason, actor) and never the evidence body. Registry-
+            # state only; the filesystem is NEVER touched; no session is
+            # revoked. The request id is retired permanently in the sense
+            # that ack_integration's existing state guard refuses any
+            # non-PENDING request; no un-retire operation is added.
+            require(actor=='SUPERVISOR','supervisor_only')
+            r=s['requests'].get(p.get('request'));require(r is not None,'unknown_integration_request')
+            require(r['state']=='PENDING_EXTERNAL_BROKER','request_not_pending')
+            reason=text(p.get('reason'),'retire_reason')
+            evidence=text(p.get('evidence'),'retire_evidence')
+            r['state']='RETIRED_ORPHANED'
+            r['retire']={'reason':reason,'evidence':evidence,'actor':actor,
+                         'revision':s['revision']+1}
+            return {'request':p.get('request'),'task':r['task'],
+                    'state':'RETIRED_ORPHANED','filesystem_touched':False}
         if op=='review_requeue':
             # Stale-base reconciliation WITHOUT force-push: a REVIEW blocked by
             # a publication refusal (e.g. the base advanced legitimately while

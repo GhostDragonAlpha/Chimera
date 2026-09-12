@@ -102,7 +102,7 @@ stdlib-only (+ the MATH-01 import), <300 lines, at
 reference/mat02_reference_model.py:
 
 - Requirement: (name, MATH-01 Dimension, gate) where gate is
-  positive | nonnegative | fraction | positive_definite_2d_nu_range — the
+  positive | fraction | positive_definite_2d_nu_range — the
   ratified (-1, 1/2) range.
 - ModelSpec (frozen): model_id, response_family (what the claim licenses),
   required (ordered tuple of Requirements), alternatives (optional second

@@ -1,0 +1,189 @@
+TRANSITION RECORDS — the seven completed controlled controller transitions
+Lane: fleet-followups-batch-04 (2026-09-11). Deliverable 1, finding quoted
+verbatim in PREREGISTRATION.txt section 1 (D1) from
+E:/ChimeraWork/verdicts/done/fleet-maintenance-amendment-03.json:
+"commit a small transition-record artifact (name, merge sha, post-state
+digest) per controlled transition so controller-plane claims are reviewable
+from git". For transitions 1-6 of this file the record is RETROSPECTIVE:
+every field is re-derived here from retained primaries (git objects + the
+deployment MANIFEST.json files); no field is recalled from memory. For
+FUTURE transitions the lead appends the TEMPLATE.txt record at cutover time
+(its two extra fields -- post-transition registry revision + state digest --
+are only capturable live and are NOT retro-filled here).
+
+Post-state digest definition (this artifact): sha256 of the deployed
+tools/agent_fleet/control.py as recorded in the deployment MANIFEST.json
+("files"."control.py"."sha256"). All manifests that cite a git source use the
+BLOB byte form (source string "git <rev>:tools/agent_fleet/control.py");
+every such hash below was RE-DERIVED binary-safe and matched (instrument
+note: a text-mode subprocess capture silently mismatches these hashes on
+Windows -- hash raw bytes; the RESULT reproduction commands do exactly that).
+
+Derivation commands (verbatim, run from a checkout containing the objects):
+  git log -1 --format=%s <source_revision>
+  git show <source_revision>:tools/agent_fleet/control.py | sha256sum
+  git log --format='%H %s' --merges --ancestry-path \
+      <source_revision>..origin/astra/gait-capture   # oldest line = first merge
+  git merge-base --is-ancestor <source_revision> <merge>^2   # membership
+  ls -la E:/ChimeraWork/control/deployments/               # dir mtimes
+
+The seven surviving deployment directories ARE the completed transitions
+(listing measured 2026-09-11): catalogue-provenance-bf1a72f6,
+claim-restore-d8e3b5f5, client-instance-5199d9c3, review-handoff-2c8fb069,
+slot-binding-d012b4b1, slot-expansion-e1e0ab98, transport-limit-c1a1ec5a.
+Earlier deployment directories were removed on supersede; their hashes live
+only in the retained manifests of the records below where cited.
+
+================================================================================
+1. review-handoff-2c8fb069
+--------------------------------------------------------------------------------
+deployment dir mtime : 2026-09-10 21:45:20 local (filesystem metadata)
+source_revision      : NOT RECORDED in the retained MANIFEST.json
+merge sha            : 6e240af129bb496e1555a9c6e142deda765f0812 = PR #35
+                       (Merge pull request #35 from
+                       GhostDragonAlpha/astra/tasks/fleet-review-slot-handoff-01);
+                       the deployment's namesake source head 2c8fb069
+                       ("Release preserved PR reviews from execution slots",
+                       single-parent) is verified an ancestor of that merge's
+                       SECOND parent (git merge-base --is-ancestor rc=0), i.e.
+                       the lane's content entered integration through PR #35.
+post-state digest    : control.py sha256
+                       87e6046638cfd552f4a986a2775afc84d6bd2c95d5996c3acc34080d2403dadd
+                       -- NOT-GIT-DERIVABLE: the manifest's own source string
+                       is "current deployed base" (the prior deployment dir it
+                       carried the file from was removed on supersede and no
+                       retained manifest binds that hash to a git revision;
+                       it is neither the blob form nor the CRLF form of
+                       control.py at d8e3b5f5 or at 2c8fb069 -- both checked).
+                       Recorded as retained, not guessed.
+additional pins      : service.py sha256
+                       2ea4a29feb5df43b33510c4d10f9f5784fa5bef3f2f72138d64455d97ae60284
+                       and review_handoff.py sha256
+                       51b975478c44f6fa610c7fba7da2ecd6b43ff2982bbcd22a7a8f7bab6ff0ae77,
+                       manifest source: "reviewed head
+                       2c8fb0694de2a2e2336fb8f53dd5651ad2063e24 working-tree
+                       bytes" (working-tree byte form, per manifest).
+manifest flags       : activated: false, credentials_copied: false -- the
+                       serving evidence for this deployment is the fleet
+                       operations record
+                       (docs/evidence/agent_fleet/FLEET_OPERATIONS_RECORD/
+                       RECORD.md names deployments/review-handoff-2c8fb069 as
+                       the prior deployment serving the same store before the
+                       slot-binding transition).
+superseded by        : slot-binding-d012b4b1 (record 2).
+
+================================================================================
+2. slot-binding-d012b4b1
+--------------------------------------------------------------------------------
+deployment dir mtime : 2026-09-10 22:39:09 local (filesystem metadata)
+source_revision      : d012b4b12ea2224d6b5669974776047238b76755
+merge sha            : d012b4b12ea2224d6b5669974776047238b76755 -- the
+                       source_revision IS the integration merge:
+                       "Merge pull request #43 from GhostDragonAlpha/
+                       astra/tasks/fleet-layer-guard-01" (two parents).
+post-state digest    : control.py sha256
+                       31f52ebd2401059cb97bcb73d779c571046503ec282a784eb34e243d988f33bd
+                       (manifest) RE-DERIVED MATCH via
+                       git show <rev>:tools/agent_fleet/control.py | sha256sum.
+superseded by        : transport-limit-c1a1ec5a (record 3).
+note                 : the one live transition evidenced by the isolated
+                       rehearsal record at its time
+                       (docs/evidence/agent_fleet/CONTROLLER_TRANSITION/ and
+                       FLEET_OPERATIONS_RECORD/RECORD.md: pre-transition
+                       backup, post-restart comparison ALL EQUAL).
+
+================================================================================
+3. transport-limit-c1a1ec5a
+--------------------------------------------------------------------------------
+deployment dir mtime : 2026-09-11 02:18:26 local (filesystem metadata)
+source_revision      : c1a1ec5a5a166d8f32816cdacc9569e03857fa0e
+merge sha            : c1a1ec5a5a166d8f32816cdacc9569e03857fa0e -- the
+                       source_revision IS the integration merge:
+                       "Merge pull request #55 from GhostDragonAlpha/
+                       astra/tasks/fleet-transport-body-limit-01".
+post-state digest    : control.py sha256
+                       31f52ebd2401059cb97bcb73d779c571046503ec282a784eb34e243d988f33bd
+                       (manifest) RE-DERIVED MATCH -- byte-identical to
+                       record 2's control.py: no controller source change
+                       between these transitions (transport work touched
+                       service/client, not control.py).
+superseded by        : client-instance-5199d9c3 (record 4).
+
+================================================================================
+4. client-instance-5199d9c3
+--------------------------------------------------------------------------------
+deployment dir mtime : 2026-09-11 09:01:00 local (filesystem metadata)
+source_revision      : 5199d9c3015f6840b12186f34c3e0c2fd5d7b0a4
+merge sha            : 5199d9c3015f6840b12186f34c3e0c2fd5d7b0a4 -- the
+                       source_revision IS the integration merge:
+                       "Merge pull request #60 from GhostDragonAlpha/
+                       astra/tasks/fleet-maintenance-amendment-01" (the
+                       deployment is NAMED for the client-instance fence
+                       feature it activated; its cut point is the
+                       integration tip then current).
+post-state digest    : control.py sha256
+                       9a5146e969773732caf127ff07273f7a00b46d03d01e474d4876c6193d0fc2fd
+                       (manifest) RE-DERIVED MATCH.
+superseded by        : slot-expansion-e1e0ab98 (record 5).
+
+================================================================================
+5. slot-expansion-e1e0ab98
+--------------------------------------------------------------------------------
+deployment dir mtime : 2026-09-11 11:42:33 local (filesystem metadata)
+source_revision      : e1e0ab981b42ff71906723cade0ec99fb545c7ce
+merge sha            : 4c31999797a9383ea252019be1f32511709fa280 = PR #63
+                       (Merge pull request #63 from GhostDragonAlpha/
+                       astra/tasks/fleet-slot-expansion-03); the
+                       source_revision is that lane's gen-2 task-branch head
+                       ("fleet-slot-expansion-03 gen 2: land review findings
+                       -- unique integration slot, persisted id high-water,
+                       retire-history gate, figure corrections",
+                       single-parent), verified an ancestor of the merge's
+                       SECOND parent (rc=0).
+post-state digest    : control.py sha256
+                       7c7b91cf15917e096530a893db0c2f5e24d54a7e3c1b517fed85fcff3f9f0a1c
+                       (manifest) RE-DERIVED MATCH.
+superseded by        : claim-restore-d8e3b5f5 (record 6).
+
+================================================================================
+6. claim-restore-d8e3b5f5
+--------------------------------------------------------------------------------
+deployment dir mtime : 2026-09-11 13:55:28 local (filesystem metadata)
+source_revision      : d8e3b5f54ce95e0f9690a73c381bc5ef20d76f8b
+merge sha            : d8e3b5f54ce95e0f9690a73c381bc5ef20d76f8b -- the
+                       source_revision IS the integration merge:
+                       "Merge pull request #80 from GhostDragonAlpha/
+                       astra/tasks/fleet-review-handoff-claim-delegation-02"
+                       (merge authored 2026-09-11T13:53:04-05:00).
+post-state digest    : control.py sha256
+                       7c7b91cf15917e096530a893db0c2f5e24d54a7e3c1b517fed85fcff3f9f0a1c
+                       (manifest) RE-DERIVED MATCH -- byte-identical to
+                       record 5's control.py.
+superseded by        : catalogue-provenance-bf1a72f6 (record 7).
+
+================================================================================
+7. catalogue-provenance-bf1a72f6  (the CURRENT live deployment)
+--------------------------------------------------------------------------------
+deployment dir mtime : 2026-09-11 15:44:25 local (filesystem metadata)
+source_revision      : bf1a72f6d3b6c8f84e7c7544fb0f8004d1ba86a5
+merge sha            : bf1a72f6d3b6c8f84e7c7544fb0f8004d1ba86a5 -- the
+                       source_revision IS the integration merge:
+                       "Merge pull request #92 from GhostDragonAlpha/
+                       astra/tasks/fleet-catalogue-realization-matching-01".
+post-state digest    : control.py sha256
+                       b46f17d9f18c7592e1d08473c9a4c7d05d31a0df4c27cff4f922f96b664636f1
+                       (manifest) RE-DERIVED MATCH.
+superseded by        : (none -- serving at the time this record was written;
+                       the NEXT transition appends a TEMPLATE.txt record and
+                       supersedes this one).
+
+================================================================================
+CLOSING NOTE (honesty boundary of this artifact)
+
+Every sha256 above is either (a) re-derived from git during this lane and
+marked RE-DERIVED MATCH, or (b) quoted from the retained manifest with its
+own source string and marked NOT-GIT-DERIVABLE. Exactly one hash is (b).
+The registry's post-transition revision/state digest is NOT retroactively
+derivable for records 1-7 (the live store is current-only); that field
+exists in TEMPLATE.txt for future transitions and is deliberately absent
+here rather than invented.
