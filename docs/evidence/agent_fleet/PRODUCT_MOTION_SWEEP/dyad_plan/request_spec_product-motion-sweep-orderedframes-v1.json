@@ -1,0 +1,51 @@
+{
+ "task": "product-motion-sweep-01",
+ "attempt": "product-motion-sweep-orderedframes-v1",
+ "physical_context": "A desktop engineering application window: a central 3D viewport showing a small brown creature figure standing on a grid floor, with tool panels around the viewport. A short scripted sequence of the creature plays; the six frames are IN ORDER, taken evenly from a 7.0-second clip (10 frames per second).",
+ "claim_under_exam": "A viewer reading these frames in order can tell what the creature is doing and what a human would learn from watching it.",
+ "questions": [
+  "1. Describe what happens across the frames, in order.",
+  "2. What kind of motion or behavior is being demonstrated \u2014 name it as you would to a friend.",
+  "3. If a non-physicist watched this clip, what ONE sentence would you tell them about what they just learned?",
+  "4. Is anything unclear, ambiguous, or unconvincing about the sequence?"
+ ],
+ "captures": [
+  {
+   "index": 1,
+   "path": "E:\\ChimeraWork\\slot-04\\docs\\evidence\\agent_fleet\\PRODUCT_MOTION_SWEEP\\frames\\g000.png",
+   "sha256": "7b1a513230fd254eb057df38269f012aa70ee417090b1b024f0b852110b58061"
+  },
+  {
+   "index": 2,
+   "path": "E:\\ChimeraWork\\slot-04\\docs\\evidence\\agent_fleet\\PRODUCT_MOTION_SWEEP\\frames\\g019.png",
+   "sha256": "08cdc969976fc6dc6171bd852998115adbda8fb4a3aa11102ae1b610e014fcc6"
+  },
+  {
+   "index": 3,
+   "path": "E:\\ChimeraWork\\slot-04\\docs\\evidence\\agent_fleet\\PRODUCT_MOTION_SWEEP\\frames\\g030.png",
+   "sha256": "ce0f665012942a968281e425674531347cf02b10b777850de05df68d47e09b0a"
+  },
+  {
+   "index": 4,
+   "path": "E:\\ChimeraWork\\slot-04\\docs\\evidence\\agent_fleet\\PRODUCT_MOTION_SWEEP\\frames\\g041.png",
+   "sha256": "183520ccf9d9b06f0aee727fd682f3ca8243ee51825490cc6248497b88b36c6a"
+  },
+  {
+   "index": 5,
+   "path": "E:\\ChimeraWork\\slot-04\\docs\\evidence\\agent_fleet\\PRODUCT_MOTION_SWEEP\\frames\\g049.png",
+   "sha256": "c6b2cb8a89c61b8b8624e44c6c9c109b9821ae25d3a73b8a36762f34bb000beb"
+  },
+  {
+   "index": 6,
+   "path": "E:\\ChimeraWork\\slot-04\\docs\\evidence\\agent_fleet\\PRODUCT_MOTION_SWEEP\\frames\\g069.png",
+   "sha256": "8a20b6d0c33285fe68e41b2cbeacbb921eea051f590c41a477d8b886faa7d5a0"
+  }
+ ],
+ "runtime_metadata": {
+  "camera": "fixed 3/4 orbit (set once before the clip; unchanged during)",
+  "state": "the creature is the application loaded subject; a short pose clip plays",
+  "clip_truth_declared_to_nobody": "the judge is told nothing about how the motion was produced"
+ },
+ "review_type": "ordered_frames",
+ "evidence_limits": "six ordered frames from a 7.0 s clip (10 fps); on-screen application text is part of the product surface and may be read; numbers are observations, not measurements"
+}
