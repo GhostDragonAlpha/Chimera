@@ -1,0 +1,181 @@
+product-http-viewer-01 — RULE 0 PREREGISTRATION
+Task:    product-http-viewer-01  (claim generation 1, slot 5)
+Agent:   subagent-worker-09
+Base:    c91518a5107ab77f2a668d10df0a2b83aed77b14
+Branch:  astra/tasks/product-http-viewer-01
+Written: BEFORE any implementation commit, before any engine build, before any
+         measurement. This file contains ZERO measured actuals by design.
+
+ARCHITECTURE DIRECTIVE (operator 2026-09-11, binding): the C++ engine is a
+FROZEN SERVICE consumed over its HTTP contract; ALL product work is
+Python-side; this lane writes ZERO C++. Any viewer feature that appears to
+require an engine edit is recorded as an ENGINE-SERVICE GAP in RESULT.txt,
+never implemented in C++.
+
+---------------------------------------------------------------------------
+STATEMENT (packet, verbatim)
+---------------------------------------------------------------------------
+the engine already serves every needed surface over HTTP; the missing product
+layer is a thin Python service, and building it needs no engine edits.
+
+---------------------------------------------------------------------------
+PREDICTION (packet, verbatim)
+---------------------------------------------------------------------------
+a reviewer can (a) open the live page while a scripted take runs and watch it,
+(b) fetch a specified frame with one HTTP GET whose bytes match the engines
+/glass at that moment, (c) change framing via the camera preset endpoint and
+see the fit hold across the full ROM envelope.
+
+---------------------------------------------------------------------------
+FALSIFIER (packet, verbatim)
+---------------------------------------------------------------------------
+any viewer feature that requires editing C++ to work (record it as an
+engine-service gap instead), a fetched frame whose bytes differ from the
+engines own endpoint, or the live view dropping frames the engine actually
+rendered.
+
+---------------------------------------------------------------------------
+DELIVERABLE (packet, condensed — the five viewer features)
+---------------------------------------------------------------------------
+1. live view page     : poll /glass and /frame side-by-side in a browser
+2. frame gallery      : server-side ring buffer of captures with timestamps +
+                        driven-joint/clock state from /studio_chrome and /joints
+3. snapshot endpoints : GET one frame as PNG by index or latest, byte-identical
+                        pass-through (what dyad judges and reviewers consume)
+4. camera panel       : GET/POST proxy to the camera contract with named
+                        presets, including a fit preset computed in PYTHON from
+                        the rig bounding envelope
+5. movie endpoint     : reuse cpp_bridge.encode_movie to assemble a take on
+                        demand
+
+---------------------------------------------------------------------------
+FROZEN THRESHOLDS, UNITS, AND ORACLES (declared before any run)
+---------------------------------------------------------------------------
+T1 BYTE IDENTITY (prediction b / falsifier clause 2)
+   Units: sha256 hex digests of raw HTTP response bodies.
+   A take of N=90 driven frames at ~10 fps drive cadence: for EVERY frame i,
+   sha256(viewer GET /api/snapshot?index=i bytes) MUST equal
+   sha256(engine GET /glass bytes stored at capture i), AND the gallery
+   metadata for i MUST record that same digest as engine_sha256. Required
+   pass: 90/90 identical. ONE mismatch is falsification.
+   Reviewer single-GET protocol: GET the viewer /api/snapshot/latest (or any
+   index), hash the body, compare to the engine_sha256 recorded in
+   /api/gallery for that index — equality is the whole check. The stored
+   bytes ARE the engine's bytes because the capture thread's store is the
+   engine /glass response body itself, never re-encoded (Content-Type
+   image/png passed through unmodified).
+   Oracle independence: the digests are computed by the verification driver
+   from raw bodies it fetches itself; the viewer server computes its own
+   digests for the gallery; equality of two independently computed digests
+   is the gate.
+
+T2 LIVE VIEW (prediction a / falsifier clause 3)
+   Units: frames, counts, milliseconds.
+   While the SAME 90-frame take runs, the viewer capture thread (fixed
+   cadence, 10 polls/s) MUST store >= 81 of the 90 driven frames
+   (>= 90%), with NO two consecutive missed polls, and every stored frame
+   MUST carry the driven-joint state fetched live from GET /joints and the
+   chrome clock from GET /studio_chrome.
+   The live HTML page's two poll endpoints (/api/live/glass,
+   /api/live/frame) MUST answer HTTP 200 image/png with p50 latency < 500 ms
+   over the take window, and MUST NOT return two consecutive non-200
+   responses.
+   "Frames the engine actually rendered" is operationalized as: the take
+   driver sets a distinct joint pose per frame via POST /joint (the engine
+   answers ok:true with the applied theta), fetches /glass, and the stored
+   ring-buffer digest for that frame equals the digest of the driver's own
+   fetch when both are compared in the same tick window. A stored frame
+   missing for a driven pose that the engine answered ok:true for is a
+   dropped frame the engine rendered -> falsification above the 10% budget.
+
+T3 FULL-ROM FIT PRESET (prediction c)
+   Units: world units, degrees, pixels.
+   Derivation (Python, from live GET /joints + GET /scene only):
+     - envelope: for every joint k, a swept sphere at rest center J_k with
+       radius r_k = sum over ancestors a (inclusive of k, whose own term is
+       zero) of 2*|J_k - J_a|*sin(alpha_a/2), where alpha_a =
+       max(|ext_a|, |flex_a|) in radians (ancestor distance is a rigid-FK
+       invariant; triangle inequality bounds multi-ancestor sweeps).
+     - envelope center c = AABB center of the rest J_k; radius
+       R = max_k(|J_k - c| + r_k) + r_body, where r_body is the mesh extent
+       parsed from GET /scene body row ("r=<extent>").
+     - floor law (mirrors the engine's own fit): if min(J_k.y) > 0 the box
+       extends to y = 0.
+     - camera: target = c (as an exact /cameras bookmark v[8]:
+       [radius, theta, phi, c.x, c.y, c.z, 0, 0]), phi = 0.35 rad,
+       theta = 0.5 rad, radius = R / tan(22.5 deg) * 1.05 (45 deg vertical
+       FOV, tan(45/2) = 0.41421356; the engine's own sphere law floors
+       radius at 1.02x mesh sphere — our radius is derived, not chosen).
+   Gate: after applying the fit preset, drive EVERY joint listed live in
+   GET /joints to BOTH its ext and flex extremes (2 poses per joint + rest;
+   engine clamps to the pack ROM and returns theta_applied), and at EVERY
+   sampled pose project ALL live joint centers through POST /project (the
+   engine's own stashed VP). Render extent (w,h) is parsed from the /frame
+   PNG IHDR. Required pass: 100% of sampled poses x 100% of projected
+   joints satisfy 8 <= sx <= w-8 and 8 <= sy <= h-8. ONE out-of-viewport
+   joint at ANY sampled pose is falsification of prediction (c).
+   Control (recorded, NOT gating): the same sweep is measured once under the
+   engine reset camera (radius max(12, 2.7*mesh_sphere)) and the minimum
+   margin is recorded, so the review can see whether the test could fail at
+   all. The gate above is on the FIT preset only.
+
+T4 MOVIE ENDPOINT
+   GET /api/movie?from=i&to=j (default: whole ring) assembles the ring
+   buffer's stored PNGs, oldest to newest, via cpp_bridge.encode_movie
+   (ffmpeg libx264, yuv420p) and returns video/mp4 bytes. Required pass:
+   HTTP 200, body starts with the ftyp box signature, size > 10,000 bytes,
+   and the served sha256 equals a local re-encode of the same frame files
+   (determinism check recorded; ffmpeg determinism is expected on identical
+   inputs — a mismatch is recorded and investigated, not auto-passed).
+
+T5 ENGINE-SERVICE GAP LEDGER (falsifier clause 1)
+   Expected count: 0 gaps requiring C++ edits. Known contract nuance
+   declared NOW (from reading main.cpp, read-only): the engine serves
+   /camera as POST-only; camera STATE reads are served through POST
+   /project (its cam:[8] echo of camera_state) and GET /cameras (the
+   bookmark store). The viewer panel composes these; no engine edit is
+   needed and this is NOT a gap — it is recorded so the review does not
+   mistake composition for a missing route.
+
+---------------------------------------------------------------------------
+ALGORITHM CHOICES (frozen)
+---------------------------------------------------------------------------
+- stdlib http.server ThreadingHTTPServer only; zero third-party server deps.
+- Ring buffer: collections.deque(maxlen=history), history default 240 frames.
+- Capture thread: one /glass GET + one /joints GET + one /studio_chrome GET
+  per tick at 10 Hz nominal; PNG bytes stored verbatim; JSON state fetched
+  after the PNG in the same tick.
+- Engine client: urllib.request, 5 s timeout per call, one retry on
+  connection error at startup only.
+- Fit preset: derived exactly as T3; applied via POST /cameras
+  {"op":"save","name":"fit_rom","v":[8]} then {"op":"recall","name":"fit_rom"}
+  (the engine's render-thread discipline).
+- Movie: cpp_bridge.encode_movie imported from the worktree's ChimeraEngine/
+  (read-only import; CHIMERA_ENGINE_URL is not needed for encoding).
+
+---------------------------------------------------------------------------
+RESOURCES AND IDENTITY (declared)
+---------------------------------------------------------------------------
+- Engine: PRIVATE fleet build under E:/ChimeraWork/slot-05/.tmp/engine_build/
+  (CMake VS generator, Release; shaders compiled at build time beside the
+  exe). NEVER ChimeraEngine/engine/build/. Runtime under
+  .tmp/engine_runtime/product-http-viewer-01/, evidence artifacts under
+  docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/ plus raw run identity under
+  .tmp/engine_evidence/product-http-viewer-01/.
+- Ports: engine 8105 (slot-05 candidate port); viewer service 8205
+  (slot-derived, availability checked at startup; the operator's 8080 is
+  never touched; a collision is a named refusal, never a process kill).
+- Launch: [staged_exe, port, --no-restore] with cwd = the run's own runtime
+  dir, via tools/engine_demo.py _launch/_wait_ready/_stop_owned (the
+  accepted PR #97 probe path). PID-scoped cleanup of self-created processes
+  only.
+- Reservations: rtx4090 (gpu_functionality) + engine_demo, acquired through
+  the controller BEFORE any engine run; released with drain evidence after.
+- Mesh/rig pair: Saved/meshes/monkey_birth.bin + Saved/meshes/monkey_joints.bin
+  (identical to the integrated PR #97 probe lane).
+- Expected failure signals: engine /glass timeout json (swapchain upset) ->
+  recorded as a missed poll, not a crash; ffmpeg absence -> T4 recorded
+  NOT_TESTED; /joints unloaded -> T3 NOT_TESTED. Missing GPU/runtime access
+  stays NOT_TESTED, never waived.
+
+Agent: subagent-worker-09

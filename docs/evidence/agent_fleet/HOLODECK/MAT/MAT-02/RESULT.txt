@@ -183,3 +183,54 @@ base 4812b55b).
 - Files changed: docs/evidence/agent_fleet/HOLODECK/MAT/MAT-02/** only.
 
 Trailer: Agent: subagent-worker-12
+
+================================================================================
+VOCABULARY CORRECTION + SOURCE IDENTITY CONVENTION (appended by
+fleet-followups-batch-04, 2026-09-11 -- append-only; nothing above this
+line is rewritten)
+================================================================================
+
+V1 (review finding, quoted verbatim from
+E:/ChimeraWork/verdicts/done/holodeck-mat-02.json, findings_for_backlog
+item 2):
+  "2) (Low) Prereg gate vocabulary declares a 'nonnegative' gate kind that
+  the model never implements and no spec uses (only positive/fraction/
+  nu_range exist); trim the vocabulary or implement it in the next lane
+  touching mat02_reference_model.py."
+
+TRIMMED, not implemented: an unused gate kind is an unused variant, and the
+reviewer's own measurement is that nothing consumes it. The prereg's
+gate-vocabulary line has been edited from
+
+  positive | nonnegative | fraction | positive_definite_2d_nu_range
+
+to
+
+  positive | fraction | positive_definite_2d_nu_range
+
+(one deleted token; git history retains the original prereg text, and the
+MAT-02 lane's prereg commit remains the pre-edit artifact of record for
+that lane's run). No model, controls, or checks file is changed by this
+correction; this lane measured that the token 'nonnegative' occurs nowhere
+else in the MAT-02 tree.
+
+SOURCE IDENTITY CONVENTION (fleet-followups-batch-04 D3; identical text
+appended to MAT-05's RESULT):
+
+  SOURCE IDENTITY records in source-check lanes are sha256 over the
+  WORKING-TREE bytes of the file as checked out on the fleet's Windows
+  hosts (core.autocrlf=true, CRLF in the working tree), written with the
+  explicit label working-tree-sha256(CRLF)=<hex> (derivation:
+  sha256sum <path> on the checked-out file). A blob-hash auditor must
+  normalize before comparing: hash the LF blob
+  (git cat-file blob <rev>:<path> | sha256sum) and expect a different
+  value BY CONVENTION, or convert the working-tree file CRLF->LF before
+  hashing. Rationale and the three reviewer findings that named the gap
+  are quoted in
+  docs/evidence/agent_fleet/FOLLOWUPS_BATCH_04/PREREGISTRATION.txt (D3);
+  the convention keeps every retained source-identity record above valid
+  without rewriting integrated evidence.
+
+Under this convention the r5_source_trace records above keep their
+original meaning: they are working-tree byte hashes as checked out with
+core.autocrlf=true.
