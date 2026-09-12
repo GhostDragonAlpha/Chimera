@@ -29,7 +29,7 @@ class EngineError(Exception):
 
 
 class EngineClient:
-    def __init__(self, base_url: str, timeout: float = 5.0):
+    def __init__(self, base_url: str, timeout: float = 15.0):
         self.base = base_url.rstrip("/")
         self.timeout = timeout
 
@@ -431,14 +431,27 @@ PAGE = """<!doctype html><html><head><meta charset="utf-8"><title>Chimera Produc
   </div>
 <script>
 let misses=0, capOn=false;
+// SELF-PACING LIVE VIEW: the engine's PNG readback is the measured bottleneck
+// (~seconds per full-size frame). A fixed-interval poller would stack requests
+// faster than the engine encodes them, back up its serialized queue, and starve
+// EVERYTHING (seen live as camera-read timeouts). So: never more than one
+// pending frame request per pane; the engine sets the tempo.
+function pace(imgEl, path, gap){
+  let busy=false;
+  function next(){
+    if(busy) return; busy=true;
+    const t=Date.now();
+    imgEl.onload=()=>{busy=false; setTimeout(next,gap);};
+    imgEl.onerror=()=>{busy=false; setTimeout(next,Math.max(gap,1000));};
+    imgEl.src=path+'?t='+t;
+  }
+  next();
+}
 function tick(){
-  const t=Date.now();
-  const g=document.getElementById('g'), f=document.getElementById('f');
-  f.src='/api/live/frame?t='+t;
+  pace(document.getElementById('f'), '/api/live/frame', 50);
 }
 function tickGlass(){
-  const t=Date.now();
-  document.getElementById('g').src='/api/live/glass?t='+t;
+  pace(document.getElementById('g'), '/api/live/glass', 400);
 }
 function cap(on){capOn=on;
   fetch('/api/capture',{method:'POST',headers:{'Content-Type':'application/json'},
@@ -504,7 +517,7 @@ function setOrbit(){fetch('/api/camera',{method:'POST',
     cam_theta:+document.getElementById('t').value,cam_phi:+document.getElementById('p').value})
   }).then(r=>r.json()).then(d=>{
     document.getElementById('cam').textContent=JSON.stringify(d).slice(0,300);});}
-setInterval(tick,200); tick(); setInterval(tickGlass,1000); tickGlass(); setInterval(state,1000); state();
+tick(); tickGlass(); setInterval(state,1000); state();
 </script></body></html>"""
 
 
