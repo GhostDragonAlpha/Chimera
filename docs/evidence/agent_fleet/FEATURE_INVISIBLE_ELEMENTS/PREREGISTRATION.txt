@@ -1,0 +1,138 @@
+FEATURE_INVISIBLE_ELEMENTS — RULE 0 PREREGISTRATION
+=====================================================
+Task:      feature-invisible-elements-01  (generation 1, slot 04)
+Worker:    subagent-worker-09
+Base:      f41c8379bf79d8510ae585c551cb22126d80abc2 (astra/gait-capture tip,
+           includes PR #107 product-http-viewer — the viewer this lane extends)
+Branch:    astra/tasks/feature-invisible-elements-01
+Written:   2026-09-12, BEFORE any handler/payload classification work.
+Scope:     tools/product_viewer + docs/evidence/agent_fleet/FEATURE_INVISIBLE_ELEMENTS.
+           ZERO C++ edits. ChimeraEngine/engine/main.cpp is read-only input.
+
+OPERATOR PRODUCT LAWS BEING IMPLEMENTED (packet, verbatim intent)
+-----------------------------------------------------------------
+Law 1: "All invisible elements should be able to be seen when put in motion" —
+       nothing drives motion invisibly.
+Law 2: "render visible but then render invisible again once proven working" —
+       two-phase visibility: visible for VERIFICATION, invisible once PROVEN,
+       user-toggleable. In the teaching product, turning the invisible visible
+       IS the lesson.
+
+SAMPLE FRAME (measured before this prereg — route NAMES only, no payloads)
+--------------------------------------------------------------------------
+`grep -oE 'p == "/[a-z_0-9]+"' ChimeraEngine/engine/main.cpp | sort -u` on the
+base commit yields exactly 58 unique contract route paths:
+/camera /cameras /capture /compare /console /control /debug /eye_bin /frame
+/frost /frost_bin /frost_debug /gait /gait_bin /gait_state /glass /hinge_bin
+/inspect /joint /joints /joints_bin /keys /light /link /log /matter
+/matter_state /membrane /membrane_bin /membrane_demo /membrane_demo_bin
+/mesh_bin /pose_apply /pose_store /project /reel /rig /scene /session /show
+/skin_bin /state /strain /stream /stride /stride_bin /studio /studio_chrome
+/studio_doc /ui_click /volp /volp_bin /volp_state /water_bin /water_clock
+/water_state /water_step /water_vis /water_vis_state
+No handler body, response payload, or render-path analysis has been done at
+this point. Everything below is predicted, not measured.
+
+STATEMENT (disagreeable)
+------------------------
+The frozen engine drives the product's motion through state planes that are
+mostly INVISIBLE in the rendered frame, and this is classifiable from the HTTP
+contract alone into exactly three planes-of-existence: (a) already-visualized
+(the engine itself renders pixels for it), (b) renderable-but-inactive (a
+render path exists in the contract but is not active in the served frame), and
+(c) data-only (JSON state that drives or reports motion, with no rendered
+trace anywhere). Furthermore, a viewer-only Python layer can give the
+motion-driving data-only planes the two-phase visibility lifecycle — visible
+for verification, invisible once proven, user-toggleable — with ZERO C++
+edits, because the engine already serves the state over HTTP and composites
+overlays over /glass.
+
+PREDICTIONS (quantitative, falsifiable, not yet measured)
+---------------------------------------------------------
+P1 INVENTORY: of the 58 route paths in the sample frame, classification by
+   payload evidence lands at least 8 in data-only, at least 2 in
+   already-visualized, and at least 1 in renderable-but-inactive. The
+   classification of every route is recorded with per-route evidence (what
+   the contract actually returns), not judged by name.
+P2 JUDGE: shown the VISIBLE phase of each toggled element (as a short clip or
+   frame pair), a blind judge names the element unprompted — water for the
+   water field/body, "walking rhythm"/"gait" for the CPG state, "step"/
+   "stride" for the stride plane, and the chosen 4th element by its own name;
+   shown the REVERTED (invisible) phase of the same element, the judge says
+   the element is gone/not present.
+P3 TOGGLE: within ONE continuous take, the on-screen toggle flips the same
+   element visible -> invisible -> visible (both directions demonstrated),
+   with zero engine edits and no engine restart.
+P4 LIFECYCLE: each toggle implements the two-phase lifecycle in code that is
+   CPU-testable without an engine: phase VERIFICATION (visible), phase PROVEN
+   (reverts to invisible), the proven flag set only by this lane's own gates,
+   and a user override that can flip any element deliberately in either
+   direction.
+
+FALSIFIER (named before the run)
+--------------------------------
+F1: a blind judge cannot name an element's visible form (P2 fails for that
+    element) — the element is not actually "seen in motion"; record the gap.
+F2: a proven element remains visible after revert (P4 fails) — Law 2 violated.
+F3: any toggle needs an engine edit to work (P3 fails) — record the gap and
+    STOP at the gap; C++ is never edited.
+F4: the classification counts fall outside the predicted bounds (fewer than 8
+    data-only, or 0 already-visualized, or 0 renderable-but-inactive) — the
+    inventory hypothesis loses; record the actual counts; the inventory is
+    still delivered (a description survives any result), but the prediction
+    is marked FALSIFIED in RESULT.txt.
+
+METHOD (frozen before implementation)
+-------------------------------------
+M1 INVENTORY: tools/product_viewer/inventory.py extracts the route table from
+   ChimeraEngine/engine/main.cpp READ-ONLY (route path, method(s), handler
+   line span) and probes the live engine when one is up. Classification rubric:
+   already-visualized  = the engine's own answer carries pixels (PNG/image
+                         content) or is consumed by the composited /glass
+                         overlay path;
+   renderable-but-inactive = a render/visualization path exists in the
+                         contract (image-capable or overlay route) but is not
+                         part of the default served frame (off state, gated,
+                         or demo-only);
+   data-only          = the contract's answer is JSON/structured state (or a
+                         binary blob that is consumed as data, not shown)
+                         with no pixel path of its own.
+   Per-route evidence: quoted handler payload keys / live probe verdict.
+M2 TOGGLES: tools/product_viewer/visibility.py — an overlay composer over the
+   engine's own pixels. Each element draws its data plane ONTO the served
+   /glass or /frame PNG in the viewer (Python PIL/stdlib; pixels stay
+   engine-authored underneath), keyed by element:
+   water   — water field/body (engine water state rendered as a field map)
+   cpg     — gait CPG state: the 8 oscillators + cycle phase from /gait_state
+   stride  — stride plane: footfall/phase markers from /stride
+   +1 more — chosen FROM the finished inventory (the packet delegates the
+             choice to the inventory outcome; recorded in CHOICE.txt).
+   Lifecycle: element.visible == (mode==VERIFY) unless user_overridden;
+   a gate in this lane sets element.proven -> mode reverts to PROVEN
+   (invisible). Toggle UI element on the live page flips either way.
+M3 PROOF TAKE: one element (chosen after inventory; planned: water) filmed
+   through invisible -> visible -> proven -> invisible with the toggle
+   working live in the viewer page, captured as an ordered frame set + mp4,
+   PLUS a SIMPLE blind judge run via the lead mailbox.
+M4 GATES (commands frozen now):
+   T1 inventory-complete:  python tools/product_viewer/inventory.py --source
+      ChimeraEngine/engine/main.cpp --out <evidence>  exits 0, every route in
+      the sample frame classified, zero unclassified.
+   T2 lifecycle-unit:      python -m unittest tests.test_visibility -v
+      (CPU-only; no engine) — all elements verify the two-phase lifecycle
+      incl. revert-on-proven and user override. Expected: all PASS.
+   T3 runtime take:        engine up on the slot endpoint; take frames + mp4
+      recorded to the proof folder; toggle flips verified on-camera.
+   T4 blind judge:         SIMPLE judge answers recorded verbatim in
+      JUDGE.txt; verdicts scored against P2.
+
+RESOURCES
+---------
+CPU work (M1, M2, T1, T2) needs no GPU. Runtime work (M3, T3) needs
+rtx4090 + engine_demo through the controller; requested when the CPU work is
+committed. The engine build happens in this slot's own .tmp/engine_build;
+ChimeraEngine/engine/build/ is never touched.
+
+TRAILER
+-------
+Agent: subagent-worker-09
