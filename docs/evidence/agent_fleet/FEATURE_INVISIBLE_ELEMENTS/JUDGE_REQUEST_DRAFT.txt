@@ -1,0 +1,32 @@
+SIMPLE BLIND JUDGE — request draft (sent via lead mailbox AFTER the take lands)
+===============================================================================
+Asker:    subagent-worker-09 (feature-invisible-elements-01)
+Protocol: SIMPLE (the water-room-01 pattern): the LEAD spawns a FRESH judge
+          (no context, no priming), shows the ordered frame set below, asks
+          four questions, and records the answers VERBATIM in JUDGE.txt.
+          Evidence rides the repo; the mailbox carries only the pointer.
+
+FRAMES (ordered annotated captures from take_frames/, 6 chosen):
+  F1  a000_inv      — before anything is toggled
+  F2  a003_vis      — just after the first toggle (element appearing)
+  F3  a006_vis      — the element, mid-phase (moving)
+  F4  a009_vis      — the element, still in its visible phase
+  F5  first prov frame after auto-revert — after the system itself
+      reverts the element (gate-proven)
+  F6  first "re" frame — after a deliberate second toggle; plus
+  F7  first "off" frame — after a deliberate toggle off
+(the exact frame indices are frozen in take_records.json when the take runs)
+
+QUESTIONS (asked in this order, no priming):
+  Q1  Describe what you see across the frames. What changes, and when?
+  Q2  In F2-F4 there is something on screen that is not there in F1.
+      What is it?
+  Q3  Is that thing present in F5? In F7?
+  Q4  Anything confusing or weak about what you were shown?
+
+RUBRIC (preregistered P2): CONFIRMED iff the judge's Q2 answer names the
+element (water/liquid) unprompted, AND Q3 says it is gone/absent in F5 and
+F7 (after proof and after toggle-off). Falsifier F1 fires if the judge
+cannot name it; the toggle prediction (P3) is corroborated if the judge's
+Q1 narrative places the element appearing, disappearing, and re-appearing
+in the recorded order.

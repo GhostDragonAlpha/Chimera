@@ -150,3 +150,15 @@ parser additionally distinguishes handler branches serving two methods, so
 classified (path, method) rows exceed 59 — the classification is per branch
 method, as the rubric requires (a GET twin and its POST control can sit in
 different classes).
+
+AMENDMENT 2 (2026-09-12, command-location correction, before T3 ran)
+--------------------------------------------------------------------
+M4's frozen T2 command named a path that does not exist in this repo
+layout (there is no top-level tests/ package; PR #107's precedent keeps
+lane tests beside the module or in the lane evidence dir). The test file
+lives at tools/product_viewer/test_visibility.py (inside this lane's write
+scope) and T2 is executed as either of:
+    python tools/product_viewer/test_visibility.py
+    python -m unittest discover -s tools/product_viewer -p "test_*.py" -v
+No threshold, prediction, or falsifier changes. T2 result at commit time:
+15/15 PASS under both forms (recorded in RESULT.txt).
