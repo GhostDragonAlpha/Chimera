@@ -134,7 +134,31 @@ instruments → the dyad describes it (scenario + goal only) → decide from its
 words → the operator sees everything and overrides at will → pass = frozen →
 next membrane.
 
-## 7 · What was abandoned, and may not return
+## 7 · Multiplayer-minded design (operator law, 2026-09-12 ~17:08)
+
+Operator: *"The live stream of what the engine is will be what the viewer
+sees."* The one-to-one engine-window mirror is the viewer's primary view.
+
+Operator: *"Make sure to design a system with multiplayer in mind. That way
+we can work on multiple features at one time. Also — it serves dual
+purposes, like everything in this engine."* Dual purpose is the house style:
+one mechanism, product AND process. Consequences:
+
+- The HTTP contract IS the client-server architecture (THE_GAME Tier 7):
+  every Python surface — viewer, dyad judge, feature session, future player
+  — is a CLIENT of the world, never its owner.
+- Parallel feature work = multiple clients on shared worlds; nothing in the
+  Python layer may assume it is the only client (the observer-starved-the-
+  observed incident is the single-client lesson; multiplayer-minded means
+  readers multiplex, writers serialize, and no client hogs the world).
+- The relative engine is the multiplayer engine: no privileged global frame
+  means each player/membrane carries its own frame — the architecture
+  already is what multiplayer needs.
+- Engine-side changes this eventually forces (read-path multiplexing, world
+  sessions) belong to the named-exception serial queue — recorded here,
+  never improvised.
+
+## 8 · What was abandoned, and may not return
 
 The multi-agent fleet, its controller, daemons, task lanes, agent liveness
 reporting, and every status surface that ever claimed "agents are running."
