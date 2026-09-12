@@ -1,0 +1,15 @@
+{
+ "a_shoulder": 60.0,
+ "a_elbow": 125.0,
+ "l_spine": 4.1248432115079945,
+ "beta_deg": [
+  -3.255626436331796,
+  6.72325610320854
+ ],
+ "kh_peaks": [
+  0.013646556101984633,
+  0.5140202798414212
+ ],
+ "untouched_byte_identical": true,
+ "leg_col_sha256": "ae73e252ed7739da8d0562813ca9d69aec8014f361c302dca31d31c26cb902eb"
+}
