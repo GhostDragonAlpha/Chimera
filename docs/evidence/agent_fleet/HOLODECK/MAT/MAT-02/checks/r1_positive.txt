@@ -1,0 +1,16 @@
+holodeck-mat-02 controls -- run_controls.py (one process)
+python 3.14.3 on Windows-11-10.0.26200-SP0
+thresholds preregistered in ../PREREGISTRATION.txt; verdict rule: each row reaches its full N/N or the row's falsifier FIRED
+
+ROW: R1 positive claims (model must ACCEPT)  (threshold 8/8)
+
+  - mass claim OK; rho x V = 500.0 kg (Dimension M via MATH-01 exact algebra)
+  - uniaxial claim OK; response_family=axial_static_along_grain
+  - isotropic (E,nu) claim OK
+  - isotropic (E,G) declared-alternative claim OK
+  - shear_from_E_nu OK; G = 3846153.846154 Pa, derivation string carried
+  - plane_stress_mu_bar value == E/(2(1+nu)) float64 EXACT (the ratified deployed plane-stress formula, re-derived through MATH-01)
+  - orthotropic 9-constant claim OK
+  - viscoelastic claim OK (params + declared state variables)
+
+VERDICT: HOLDS 8/8

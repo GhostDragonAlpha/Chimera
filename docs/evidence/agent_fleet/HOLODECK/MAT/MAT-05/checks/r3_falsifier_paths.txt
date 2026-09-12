@@ -1,0 +1,16 @@
+R3 CARD FALSIFIER probes -- fictional preset presented as measured wood/metal/water (all paths must refuse)
+threshold: 6/6 required; measured: 6/6
+verdict: HOLD
+
+[PASS] R3a
+  flip raised FrozenInstanceError; record after: provenance=synthetic, value bits unchanged: True
+[PASS] R3b
+  label after: 'SYNTHETIC wood-LIKE preset; declared fiction, not measured wood'
+[PASS] R3c
+  refused: ('synthetic_not_calibrated', "'magic_wood'.density exists only as a SYNTHETIC preset; the calibrated door does not serve it")
+[PASS] R3d
+  refused: ('fictional_claim', "values identical to synthetic preset 'magic_wood'.density re-claimed as 'researched': fabricated citation; fiction cannot be converted to measurement")
+[PASS] R3e
+  refused at serve time: ('not_a_store_member', "('injected', 'density') on the preset plane is not a PresetRecord: boundary re-check refuses at serve time")
+[PASS] R3f
+  refused: ('fictional_claim', "provenance 'synthetic' outside the measured set ['derived', 'parent', 'researched']: fiction is not admitted")

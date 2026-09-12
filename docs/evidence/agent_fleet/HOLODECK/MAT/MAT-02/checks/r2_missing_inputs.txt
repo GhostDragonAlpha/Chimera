@@ -1,0 +1,17 @@
+holodeck-mat-02 controls -- run_controls.py (one process)
+python 3.14.3 on Windows-11-10.0.26200-SP0
+thresholds preregistered in ../PREREGISTRATION.txt; verdict rule: each row reaches its full N/N or the row's falsifier FIRED
+
+ROW: R2 card-prediction negatives (missing inputs prevent the claim)  (threshold 8/8)
+
+  - (a) mass w/o rho -> missing_input: missing required inputs ['rho']; the capability claim is refused, never defaulted
+  - (b) isotropic {E} only -> missing_input: missing required inputs ['nu']; the capability claim is refused, never defaulted
+  - (c) isotropic {rho,E} (the falsifier's exact input set) -> missing_input: missing required inputs ['nu']; the capability claim is refused, never defaulted; density is not a stiffness constant: rho carries the (L^-3 M) dimension and counts toward NO model's independent stiffness constants
+  - (d) orthotropic {rho,E} -> missing_input naming 9 absent required constants: missing required inputs ['E1', 'E2', 'E3', 'G12', 'G13', 'G23', 'nu12', 'nu13', 'nu23']; the capability claim is refused, never defaulted; density is not a stiffness constant: rho carries the (L^-3 M) dimension and counts toward NO model's independent stiffness constants [MEASURED NOTE: the prereg prose predicted 'the 8 absent constants'; the refusal names the required names actually absent -- E is not E1, so all NINE are named. The prose count was a prediction error; the gate behavior is the predicted one; counted honestly here]
+  - (e) plane-stress (E,nu) w/o h -> missing_input: missing required inputs ['h']; the capability claim is refused, never defaulted
+  - (f) viscoelastic params complete, state absent -> missing_state: model 'linear_viscoelastic' requires state variable 'relaxation_spectrum' (nonempty); a claim without the state is unsupported
+  - (g) unregistered model id -> unknown_model: model 'every_response' is not in the supported registry ['isotropic_linear_elastic', 'isotropic_plane_stress_sheet', 'linear_viscoelastic', 'mass', 'orthotropic_3d_elastic', 'uniaxial_along_grain']; there is deliberately no 'any response' wildcard model
+  - (h) E carried as N/m -> dimension_mismatch: E must be a MATH-01 Quantity of Dimension(L=-1, M=1, T=-2), got Dimension(L=0, M=1, T=-2)
+  - post-state: the attempts ledger is unchanged by all 8 refusals (6 claims from R1 only); no response Quantity was produced by any refused attempt
+
+VERDICT: HOLDS 8/8

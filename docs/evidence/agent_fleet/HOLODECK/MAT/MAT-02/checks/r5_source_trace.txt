@@ -1,0 +1,75 @@
+holodeck-mat-02 source checks -- run_source_checks.py
+R5 deployed gate families at base 4812b55b (threshold 4/4, semantics PRESENT with MEASURED line numbers)
+
+[PRESENT] (a) THE MODEL-CLAIM GATE: MaterialContract.model refuses UNSUPPORTED_MODEL when the record's sources do not carry the model (P-8j) -- a claim outside the source-supported set is refused, never invented
+  tools/material_contract.py:375:         if model not in rec.models:
+  tools/material_contract.py:376:             raise ContractRefusal(
+  tools/material_contract.py:377:                 RefusalKind.UNSUPPORTED_MODEL,
+  tools/material_contract.py:378:                 f"'{material}' does not support model '{model}' (supported: "
+  tools/material_contract.py:379:                 f"{sorted(rec.models)}); no isotropic or 3D claim may be "
+  tools/material_contract.py:380:                 f"invented from uniaxial data")
+  tools/material_contract.py:381: 
+  tools/material_contract.py:382:     # -- declared-basis derivations -------------------------------------------
+  tools/material_contract.py:383: 
+  tools/material_contract.py:384:     def density_from_sg(self, material: str, basis_kg_m3: float,
+
+[PRESENT] (b) THE REQUIRED-PARAMETER SIDE: the white_oak record's model set is EXPLICITLY what its sources support; only published properties enter and get() refuses an unpublished property BY NAME (P-8b) -- missing inputs produce no defaulted capability
+  tools/material_contract.py:540:         models=frozenset({"uniaxial_along_grain", "orthotropic_ratios"}),
+  tools/material_contract.py:541:         notes="clear straight-grained wood at 12% moisture content",
+  tools/material_contract.py:542:     )
+  tools/material_contract.py:356:         rec = self.record(material)
+  tools/material_contract.py:357:         p = rec.properties.get(prop)
+  tools/material_contract.py:358:         if p is None:
+  tools/material_contract.py:359:             raise ContractRefusal(
+  tools/material_contract.py:360:                 RefusalKind.MISSING_INPUT,
+  tools/material_contract.py:361:                 f"'{material}' has no published '{prop}' in any ingested "
+  tools/material_contract.py:362:                 f"source; the contract refuses to default it")
+  tools/material_contract.py:363:         if as_unit is not None:
+
+[PRESENT] (c) THE ORTHOTROPIC LAW: the deployed validators check symmetry + positive definiteness + normal-shear DECOUPLING in a declared frame -- a coupled tangent is refused from the orthotropic law (P-8f/P-8g)
+  defs at measured lines 423/456
+  tools/material_contract.py:460:       symmetry        C must equal C^T (orthotropic constitutive law)
+  tools/material_contract.py:461:       positive        all eigenvalues > 0 (stored elastic energy > 0)
+  tools/material_contract.py:462:       orthotropic     THE declared frame must DECOUPLE normal from shear:
+  tools/material_contract.py:463:                       the (rows 0..2)x(cols 3..5) and (3..5)x(0..2) coupling
+  tools/material_contract.py:464:                       blocks vanish within tol (A1-4 -- a general symmetric
+  tools/material_contract.py:465:                       PD tangent with normal-shear coupling, e.g.
+  tools/material_contract.py:466:                       eye(6)+0.1*ones, is NOT orthotropic and is refused
+  tools/material_contract.py:467:                       here; it still passes validate_positive_definite).
+  tools/material_contract.py:468:                       Voigt index convention: (xx, yy, zz, yz, xz, xy), so
+  tools/material_contract.py:469:                       the 3x3 normal block is C[:3,:3] and the 3x3 shear
+  tools/material_contract.py:470:                       block C[3:,3:].
+
+[PRESENT] (d) THE TWO-CONSTANT ISOTROPIC PLANE: ElasticMaterial2D is the (E, nu, h) law with lambda_bar/mu_bar the declared reduction; nu gated to (-1, 1/2); require_isotropic names what a defensible orthotropic port needs (E11, E22, nu12, G12 + frames); material_from_library refuses poisson_ratio_not_measured instead of inventing a constant
+  tools/elastic_foundation/materials.py:48:     def lambda_bar(self) -> float:
+  tools/elastic_foundation/materials.py:49:         return float(self.E * self.nu / (1.0 - self.nu * self.nu))
+  tools/elastic_foundation/materials.py:50: 
+  tools/elastic_foundation/materials.py:51:     @property
+  tools/elastic_foundation/materials.py:52:     def mu_bar(self) -> float:
+  tools/elastic_foundation/materials.py:53:         return float(self.E / (2.0 * (1.0 + self.nu)))
+  tools/elastic_foundation/materials.py:54: 
+  tools/elastic_foundation/materials.py:84:         MaterialReason.ORTHOTROPIC_UNSUPPORTED,
+  tools/elastic_foundation/materials.py:85:         "isotropic law only. An orthotropic extension needs, per face: material axes and their "
+  tools/elastic_foundation/materials.py:86:         "transport rule (the geometric rest basis (t1,t2) is a computational frame, not a "
+  tools/elastic_foundation/materials.py:87:         "material frame); E11, E22, nu12, G12; and a thickness-direction convention. None of "
+  tools/elastic_foundation/materials.py:88:         "these exist in the repo's measured data, so the parameter set would be invented -- "
+  tools/elastic_foundation/materials.py:114:     E = float(ent["mean"]) * 1e9 if str(ent.get("unit", "gpa")).lower() == "gpa" else float(ent["mean"])
+  tools/elastic_foundation/materials.py:115:     raise InvalidMaterial(
+  tools/elastic_foundation/materials.py:116:         MaterialReason.POISSON_RATIO_NOT_MEASURED,
+  tools/elastic_foundation/materials.py:117:         f"material {name!r} measures E={E:.6g} Pa but the library holds no poisson ratio for it; "
+  tools/elastic_foundation/materials.py:118:         f"an isotropic plane-stress sheet needs nu in (-1, 1/2). Refusing by name instead of "
+  tools/elastic_foundation/materials.py:119:         f"inventing a Poisson ratio or an empirical shear relationship.")
+  tools/elastic_foundation/materials.py:120: 
+
+VERDICT: HOLDS 4/4
+
+MEASURED SOURCE IDENTITIES (sha256, lines):
+  Chimera/docs/matter/matter_library.json: 0482cfd71cbe7a9d80c938b4c100a6c84120b4dc546ab756ab7ae3c01c5a5472... (1298 lines)
+  tools/agent_fleet/control.py: 7cee259b35a21ebe689feb5d77c8f2bb10b7125cd1ea9c3ac06e1cb6254bfa30... (839 lines)
+  tools/agent_fleet/review_handoff.py: e8f6a939b81f3525408996e4f43681e6c272bc022e9c053b6f056e0dad8cfd07... (249 lines)
+  tools/cad_sample.py: df092674ddf0b1f5ee3fa1286b0e5356143b5b7124020ecd0bf250c79f428b5f... (235 lines)
+  tools/elastic_foundation/materials.py: 547b1a045bda25a2bce1ea4af722adf905b10ce2b1e8289b867818f31605caf3... (124 lines)
+  tools/gpu_fixtures_recovered/membrane_demo.py: 11b2b5015946ae8ad15a64e0097e1532626b1808b0cfcdb13960fa100299b1e5... (196 lines)
+  tools/material_contract.py: 6af75efe12da4ba81e3c95cddbcffd083fe5dfb926eb698acda2f0145b9e2d19... (559 lines)
+  tools/materials.py: 7c3575fda733f741e0a265bef489bcfef3d2c508fec64095ae185a8035ead57b... (51 lines)
+  tools/matter_data.py: 88cc670017aa3f1e4cc6421367f8d14cb556eb11e4023d57916f280ef0240db8... (446 lines)

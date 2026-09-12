@@ -1,0 +1,208 @@
+RESULT — holodeck-mat-04 (gen 1)
+
+Agent: subagent-worker-11 · slot 8 · worktree E:\ChimeraWork\slot-08 ·
+branch astra/tasks/holodeck-mat-04 · task base
+4812b55b407107a34b708af1700e071a7eecbab4 (HEAD at claim, provision verified
+HEAD==base, clean, 6249 tracked files; claimed at controller rev 1087).
+CPU only; no GPU/model/engine process; no controller resources; the live
+service was NEVER contacted. Source-only MATERIALS lane of the holodeck
+program; realizes catalogue card MAT-04 "Parameter identification".
+
+## SCOREBOARD (all rows at full N/N on their verdict-bearing runs)
+
+  R1 positive identifications : 8/8   (first run)
+  R2 inverse-problem negatives: 7/7   (first run)
+  R3 card-falsifier poses     : 4/4   (first run)
+  R4 immutability/determinism : 4/4   (first run)
+  R5 deployed-source trace    : 4/4   (second run; first run retained)
+  R6 deployed findings        : 4/4   (second run; first run retained)
+
+Card verdict (rule fixed in the PREREGISTRATION before any run):
+- Card STATEMENT "Calibration tools with confidence and
+  parameter-correlation outputs" = SUPPORTED-AS-REFERENCE-REALIZATION
+  (R1-R4 full N/N). The DEPLOYED repo at base is measured ABSENT of the
+  tool (R5a: 0 identification-marker hits across 1175 deployed tracked
+  *.py, 27 material-plane files) — that absence is the card's reason to
+  exist and is recorded as the finding, not adopted as implemented.
+- Card PREDICTION "Held-out experiments agree within declared predictive
+  uncertainty" = SUPPORTED: R1(g) covered 190/200 replications (derived
+  3-sigma binomial band [180, 200]; measured mean is exactly the binomial
+  expectation 190) and R1(h) the seeded held-out fixture AGREES inside
+  its declared 95% band (band is a MATH-01 Quantity of Dimension L;
+  dim(k) x dim(F) == dim(d) composed exactly through MATH-01, cited).
+- Card FALSIFIER "Training-fit success is called predictive material
+  validation" = NOT REPRODUCED: R3 = 4/4 (the only path to a verdict is
+  judge()/validate() on held-out data; empty ledger refuses
+  no_heldout_evidence; a PERFECT training fit — R^2 = 1.0, residuals
+  ~1e-20 — still refuses via no_dof_for_uncertainty; a 10-sigma outlier
+  returns DISAGREES; the verdict vocabulary is closed {AGREES,
+  DISAGREES} with no VALIDATED/OK label) AND R6(b) = 0 hits for the
+  falsifier phrases across all deployed tracked *.py.
+
+## DELIVERABLES (card deliverables 1-4)
+
+1. Calibration tools with confidence and parameter-correlation outputs —
+   reference/mat04_reference_model.py (400 lines, stdlib-only + the
+   MATH-01 units backbone): least-squares identification of the declared
+   tension fixture d = k*F + d0; confidence intervals
+   theta_j +/- t*sqrt(C_jj) (t computed inside the model: Simpson pdf +
+   bisection, no table constants — R1(f) matches the published table to
+   6.1e-15 relative); parameter-covariance and parameter-correlation
+   outputs (design-stage and fit-stage agree to <= 1e-12); D-optimal
+   experimental design by exact-Fraction Gramian determinant.
+2. Independent reference/benchmark + executed negative/positive controls —
+   controls/run_controls.py (R1-R4) and controls/run_source_checks.py
+   (R5-R6); outputs in checks/*.txt; the fired R6 first run is RETAINED.
+3. Reproduction commands, source identity, preserved evidence,
+   limitations — this file.
+4. Integration contract + handoff — see INTEGRATION CONTRACT below.
+
+## PRE-RUN DEFECTS AND AMENDMENTS (disclosed; provenance preserved)
+
+- AMENDMENT 1 (committed 2de90fcd BEFORE any implementation existed): the
+  prereg's R1(c)/(d) closed forms omitted the minus sign — C_01 =
+  -s^2*(sum F)/det < 0 for positive loads, so both predicted correlations
+  are NEGATIVE. Magnitude thresholds unchanged; original prereg text
+  retained verbatim above the amendment.
+- Prereg prose slip (left untouched, disclosed here per the MAT-01
+  precedent): the UNITS BACKBONE paragraph calls the compliance "1/N";
+  compliance is m/N (Dimension L/N = (0,-1,2)), which is what the model
+  actually uses (PARAM_DIM_K = m01.Dimension.M / m01.Dimension.N). The
+  asserted row R1(h) ("dim(k) x dim(F) == dim(d)") was always correct.
+- Model fixes during bring-up, BEFORE any control run (nothing verdict-
+  bearing had executed): the predictive-band leverage term had its
+  quadratic/constant terms swapped ((n*F^2 - 2*sumF*F + sumF^2)/det is
+  correct); the MATH-01 path located the wrong parent directory; a dead
+  dict in validate() removed. The FIRST executed R1-R4 run passed 8/8,
+  7/7, 4/4, 4/4 — no fired R1-R4 run exists.
+- Harness fix after a FIRED run (retained):
+  checks/r6_findings.txt.run1-FIRED-citation-count-regex.txt — R6(c)
+  counted the literal string "Source:" (2 in tools/materials.py); the
+  prereg predicts the three literature source FAMILIES by name (INVISTA
+  Dacron datasheet, Kawabata 1980, Polymer Handbook), all present. The
+  runner now counts distinct families; no threshold moved, no hit on the
+  deployed code. R6(c) substance (0 identified-with-uncertainty
+  parameters) passed in both runs.
+
+## SOURCE IDENTITY
+
+Deployed material plane measured read-only at task base 4812b55b (blob
+shas from git ls-files -s; working tree clean of material-plane edits —
+this lane adds only docs/evidence/agent_fleet/HOLODECK/MAT/MAT-04/**):
+- tools/agent_fleet/control.py            6bbc344da7f2b07165878564161b934370047e76
+- tools/agent_fleet/review_handoff.py     aee2e33a22ce97267795698787b41574c2437d65
+- tools/gpu_fixtures_recovered/membrane_demo.py b8ac90838192fa5aea1a0e86c953d28fae6f408e
+- tools/elastic_foundation/materials.py   610a098203154009b68b3ec6beaf65e4c06da979
+- tools/materials.py                      5a67e50d83011ef770cc4147085958170690bdfe
+- tools/surface_energy_checks.py          815fdedf190d360f9ff92bb53fd9a79734977529
+- Chimera/core/trainer.py                 c3c3d7488eccc6a65a64341892b6450f209fd2c5
+Units backbone (dependency, cited not reimplemented):
+- docs/evidence/agent_fleet/HOLODECK/MATH/MATH-01/reference/
+  math01_reference_model.py               5b04c251fe2b3f09a6efd723df43b149131f2149
+Commit chain on astra/tasks/holodeck-mat-04 (all trailers
+`Agent: subagent-worker-11`):
+  5aa9bd22 PREREG (RULE 0; no runs yet)
+  2de90fcd PREREG amendment 1 (correlation sign; pre-run)
+  308790ab impl: reference model + controls runners (no verdict output
+           existed in the repo before the runs below)
+  HEAD     executed checks + this RESULT (the evidence commit itself)
+
+## MEASURED COMPARISON — INTENDED CONTRACT vs DEPLOYED STATE (summary)
+
+- THE ABSENT TOOL (R5a): 0 hits for curve_fit / least_squares / leastsq /
+  parameter_correlation / "parameter correlation" / confidence_interval /
+  "confidence interval" across 1175 deployed tracked *.py (docs/evidence
+  excluded); material-plane subset (27 files): 0. The repo declares the
+  gap itself: tools/elastic_foundation/materials.py:6 "no measured
+  E11/E22/nu12/G12 (AUDIT.md sections 2,3)" and :87 (orthotropic refused
+  for exactly that reason).
+- THE DECLARED SEAM (R5b): tools/gpu_fixtures_recovered/membrane_demo.py
+  :41-43 — "The material is a SYNTHETIC DECLARED interface (GAMMA below,
+  provenance: fixture declaration); no physical calibration is claimed.
+  Admission routing through material_contract is deferred until BP-A1
+  lands (unit-family table)." — the exact hole MAT-04's intended contract
+  fills.
+- THE HONEST NON-CALIBRATION (R5c): Chimera/core/trainer.py:271 "neither
+  was ever calibrated against a measurement" — the deployed doctrine
+  already distinguishes fit success from calibration.
+- FALSE-POSITIVE CONTROL (R5d): tools/surface_energy_checks.py:241
+  "torque_covariance" is a rigid-transform torque comparison norm, NOT a
+  parameter-estimation covariance (classified, so the absence claim
+  cannot be defeated by a name match).
+- OWNER_INSTANCE CURRENT STATE (R6a; packet instruction: measure current,
+  no stale deviation language): tools/agent_fleet/control.py = 8
+  occurrences at lines [121, 122, 123, 323, 499, 501, 554, 697]
+  (predicted 8); tools/agent_fleet/review_handoff.py = 1 at :113
+  (predicted 1); instance_fencing machinery present (control.py
+  :71,:321,:476,:482,:483,:550; review_handoff.py :103; default mode
+  'compat', fence applies when 'enforced'). The PR #80 claim-path fix IS
+  PRESENT AND DEPLOYED at this base — this task's own claim (controller
+  rev 1087) bound a non-null owner_instance. Contrast baseline: GOV-01's
+  R6 measured review_handoff == 0 at d59518b9.
+- FALSIFIER HUNT (R6b): 0 hits for "predictive material validation" /
+  "material validation" / "validated predictor" in deployed tracked
+  *.py — the card falsifier is not instantiated in the deployed text.
+- CONSTANTS PLANE (R6c): tools/materials.py documents >= 3 distinct
+  literature source families; 0 parameters carry an identified standard
+  error or correlation output.
+
+## REPRODUCTION COMMANDS (from the slot worktree root)
+
+  python docs/evidence/agent_fleet/HOLODECK/MAT/MAT-04/controls/run_controls.py
+  python docs/evidence/agent_fleet/HOLODECK/MAT/MAT-04/controls/run_source_checks.py
+
+Each run rewrites checks/*.txt (exit 0 iff every row reaches full N/N);
+the R5/R6 runner reads the repo read-only and prints source-identity
+blobs. Deterministic: fixed seeds (fixture 20260911; coverage
+20260911..20261110); re-running reproduces every number in checks/
+bit-exact except the recorded HEAD/status lines.
+
+## LIMITATIONS
+
+- Linear forward model (d = k*F + d0): the identification layer is exact
+  and fully derived; nonlinear inverse problems (e.g. viscoelastic
+  laws) are out of scope and would reuse the same gate/judge contract.
+- Gaussian noise assumption behind the 95% bands and the coverage row;
+  the fixture is synthetic-declared (L, A, E chosen, not measured) — the
+  card's threshold policy says derive the fixture-specific bound, which
+  is what the exact algebra in the prereg does.
+- Source-only lane: the deployed repo is measured as TEXT at base; no
+  live service, engine, or GPU was involved, so no runtime behavior of
+  the deployed system is claimed, tested, or changed.
+- The t-quantile is computed numerically (validated against the
+  published table to 6.1e-15 relative at dof 4; cache covers the dofs
+  used); extreme dof values are untested.
+- 200 coverage replications give a 3-sigma band of +-1.5% around the
+  95% nominal; finer calibration of the band's exactness is future work.
+
+## DYAD RECORD
+
+DYAD: NOT_APPLICABLE — source-only scope: this lane produced and altered
+no executed runtime behavior of the deployed system (no engine window,
+no rendered artifact, no visual claim exists to judge). Per the card's
+DYAD policy ("Reference-only or source-only scope records
+NOT_APPLICABLE with reason").
+
+## INTEGRATION CONTRACT + HANDOFF
+
+- Scope honored: all lane files under
+  docs/evidence/agent_fleet/HOLODECK/MAT/MAT-04/** exclusively; zero
+  edits to deployed source; no build files touched.
+- The lane's reusable surfaces for the fleet: (1) judge()/validate() —
+  the closed-vocabulary held-out gate that keeps the card falsifier
+  structurally impossible (BP-A1's calibration tool must consume THIS
+  contract, not re-invent a "validated" label); (2)
+  design_correlation()/choose_design() — the experimental-design
+  outputs for planning future material measurements (the repo's own
+  "no measured E11/E22/nu12/G12" seam); (3) confidence_intervals() +
+  declare_predictive_band() — the declared-uncertainty outputs the card
+  names. MATH-01 remains the units backbone; MAT-01's admission layer
+  is the upstream of any identified parameter (identify -> admit ->
+  store).
+- Handoff: MAT-02, MAT-03, MAT-05 and the BP-A1 calibration lane can
+  cite this lane for the identification-layer contract; the fired-run
+  retention and amendment precedents are on disk in checks/ and git
+  history. Review response will happen on this branch; the controller
+  record is the authority for acceptance, not this file.
+
+Trailer: Agent: subagent-worker-11
