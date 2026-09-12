@@ -1,0 +1,35 @@
+[PASS] inputs.certified_pack {"sha256": "883ed9d87859dfe4e4126631149ca09b250e1be441357f3db4a16c468b01f50a"}
+[PASS] compose.pack {"a_shoulder": 60.0, "a_elbow": 125.0, "l_spine": 4.1248432115079945, "beta_deg": [-3.255626436331796, 6.72325610320854], "kh_peaks": [0.013646556101984633, 0.5140202798414212], "untouched_byte_identical": true, "leg_col_sha256": "ae73e252ed7739da8d0562813ca9d69aec8014f361c302dca31d31c26cb902eb"}
+[PASS] compose.prereg_asserts {"A_sh": 60.0, "A_el": 125.0, "beta_window_deg": [-3.256, 6.723]}
+[PASS] launch {"pid": 88072, "port": 8105, "exe_sha256": "d00a7d953e1bba17c36a20e6a0be0333f252f1b2df0d92018b4b6616106826ff", "source_head": "0f6b1d2d8cfa0c5c03d4cca8b9a1adfaa59bdbfd", "dirty": "?? docs/evidence/agent_fleet/FEATURE_WALK_REALISM/composed_pack_facts.json\n?? docs/evidence/agent_fleet/FEATURE_WALK_REALISM/composed_pack_facts.txt"}
+[PASS] load.mesh {"r": 27.862994463376467, "theta": 3.141592653589793, "phi": -1.3101939350475558}
+[PASS] load.joints_bin {"http": 200, "resp": "{\"ok\":true}"}
+[MEASURED] rig.doc {"n_joints": 28, "names": ["neck", "jaw", "spine_upper", "spine_mid", "spine_lower"], "rom_shoulder_L": 60.0}
+[PASS] camera.set {"cam_radius": 34.0, "cam_theta": 0.5, "cam_phi": 0.35, "extent": 10.0}
+[PASS] march.blobs {"hinge_bands": 842, "flexion_posterior_control": true}
+[PASS] capture.keyframe {"i": 0, "probe": {"sx": 1302.358276, "sy": 623.499146}, "stride_t": 0.0}
+[PASS] engage.hinge_bin {}
+[PASS] engage.gait_bin {}
+[PASS] engage.gait_on {"steps": 3, "omega": 7.853981633974483}
+[PASS] capture.keyframe {"i": 90, "probe": {"sx": 1302.358276, "sy": 623.499146}, "stride_t": 0.0}
+[PASS] capture.keyframe {"i": 164, "probe": {"sx": 1302.358276, "sy": 623.499146}, "stride_t": 0.0}
+[PASS] disengage.hinge {}
+[PASS] engage.stride_bin {"bytes": 37092}
+[PASS] engage.stride_play {}
+[PASS] capture.keyframe {"i": 175, "probe": {"sx": 1302.358276, "sy": 623.499146}, "stride_t": 0.380558}
+[PASS] capture.keyframe {"i": 265, "probe": {"sx": 1302.358276, "sy": 623.499146}, "stride_t": 33.447625}
+[PASS] capture.keyframe {"i": 359, "probe": {"sx": 1302.358276, "sy": 623.499146}, "stride_t": 68.119212}
+[PASS] capture.frames {"n": 360, "wall_s": 1029.56}
+[MEASURED] gate.G1 {"steps_total_series": [1815, 4716, 7656, 10560, 13518, 16491, 19473, 22377, 25776, 28734, 31743, 34686, 37689, 40575, 43461], "ok": true}
+[MEASURED] gate.G2 {"t": 68.537623, "loop0_dt": 1.8333333333333333, "ok": true}
+[MEASURED] gate.G3 {"rows": [{"frame": 175, "best": {"t": 0.3806, "max_err_deg": 0.0, "per_col": {"neck": 0.0, "spine_upper": 0.0, "spine_mid": 0.0, "spine_lower": 0.0, "shoulder_L": 0.0, "shoulder_R": 0.0, "elbow_L": 0.0, "elbow_R": 0.0, "wrist_L": 0.0, "wrist_R": 0.0}}}, {"frame": 265, "best": {"t": 33.7727, "max_err_deg": 0.0004, "per_col": {"neck": 0.0001, "spine_upper": 0.0003, "spine_mid": 0.0003, "spine_lower": 0.0003, "shoulder_L": 0.0002, "shoulder_R": 0.0002, "elbow_L": 0.0004, "elbow_R": 0.0001, "wrist_L": 0.0001, "wrist_R": 0.0001}}}, {"frame": 359, "best": {"t": 68.1192, "max_err_deg": 0.0004, "per_col": {"neck": 0.0003, "spine_upper": 0.0004, "spine_mid": 0.0004, "spine_lower": 0.0004, "shoulder_L": 0.0001, "shoulder_R": 0.0001, "elbow_L": 0.0002, "elbow_R": 0.0001, "wrist_L": 0.0001, "wrist_R": 0.0001}}}], "attempts_recorded": true, "tol_deg": 0.5, "ok": true}
+[MEASURED] gate.G3_antiphase {"rows": [{"frame": 175, "sh_L": 0.0, "sh_R": 0.0}, {"frame": 265, "sh_L": -21.195, "sh_R": -0.534}, {"frame": 359, "sh_L": -2.411, "sh_R": -40.158}], "threshold_deg": 30.0, "ok": false}
+[MEASURED] gate.G4 {"neck_deg": [0.0, 3.127, 3.096], "ok": true}
+[MEASURED] gate.G5 {"rows": [{"frame": 175, "err_deg": 0.0}, {"frame": 265, "err_deg": 0.001}, {"frame": 359, "err_deg": 0.0}], "tol_deg": 0.1, "ok": true}
+[MEASURED] gate.G6 {"rows": [{"frame": 175, "best": {"t": 0.6575, "max_err_deg": 0.0002}}, {"frame": 265, "best": {"t": 33.4476, "max_err_deg": 0.0005}}, {"frame": 359, "best": {"t": 68.1192, "max_err_deg": 0.0003}}], "tol_deg": 0.5, "leg_col_sha256": "ae73e252ed7739da8d0562813ca9d69aec8014f361c302dca31d31c26cb902eb", "untouched_byte_identical": true, "ok": true}
+[MEASURED] gate.G7 {"sx": [1302.358276, 1302.358276, 1302.358276, 1302.358276, 1302.358276, 1302.358276], "sy": [623.499146, 623.499146, 623.499146, 623.499146, 623.499146, 623.499146], "spread_px": 0.0, "tol_px": 0.5, "ok": true}
+[PASS] encode.movie {"glass": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\FEATURE_WALK_REALISM\\feature_walk_realism.mp4", "frame": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\FEATURE_WALK_REALISM\\feature_walk_realism_frame.mp4"}
+[PASS] keyframes.copied {"frames": ["f000", "f090", "f164", "f175", "f265", "f359"], "proof_dir": "C:\\Users\\allen\\Desktop\\CHIMERA_PROOF\\FEATURE_walk_realism"}
+[PASS] probeA.post {"resp": "{\"ok\":true,\"owner\":\"edit\",\"selected\":-1,\"theta_applied\":0.000000}"}
+[MEASURED] probeA.stride_vs_joint {"posted": "elbow_L=37.5", "t_frozen": 97.654814, "theta_before": 7.388, "reads": [34.226, 0.066, 6.398], "expected_if_composing": 37.5, "composed": false}
+[MEASURED] probeB.march_vs_joint {"posted": "neck=15 during march", "steps_before": 450, "steps_after": 3159, "march_continued": true, "neck_before": -5.899, "neck_after": 3.142, "knee_L_before": 114.888, "knee_L_after": 17.502, "owner_preempted_march": false}

@@ -1,0 +1,37 @@
+feature-walk-realism-01 blind judge report (SIMPLE protocol: fresh spawn agent_9558463c by the lead per mailbox request e5d9ce32d508, movie + six frames, three questions, no priming, 2026-09-12)
+
+RUBRIC OUTCOME: F-A FIRED. The lane's falsifier arm A ("judge still says
+stiff") fired: the judge reports arms hanging with barely any swing,
+rigid torso, no weight shift or bob, metronome-like motion. The lane's
+readback data (counter-swing to 0.0004 deg, head level to 0.001 deg) and
+the judge's eyes DISAGREE — a commanded-vs-rendered gap that is itself
+the lane's most important finding (recorded below). The feature is NOT
+visually confirmed; per the constitution (pass = frozen), it stays open.
+
+JUDGE ANSWERS, VERBATIM:
+
+1. The creature is standing in one spot on a dark grid floor doing a "walk in place": its legs swing in an alternating stepping motion while its body stays put. Near the end of the clip the stepping gives way to a deep, lopsided crouch, with one leg folding up under the body while the other stays nearly straight. It never actually travels anywhere — the feet end each cycle on the same spot they started.
+
+2. The arms hang straight down at the sides almost the entire time, stiff like dead pendulums, with barely any swing; only in the final crouch do the elbows visibly bend. The torso stays bolt-upright and rigid through the stepping — no lean, no twist, no counter-rotation with the legs — and only tips forward slightly when the crouch begins. The big head stays essentially fixed, with at most a tiny bob, and tilts down a little at the very end with the crouch.
+
+3. Several things look wrong or fake. The "walk" never goes anywhere, so it reads like walking on a treadmill with no belt, and the feet seem to glide rather than plant and push off. There is no weight shift, no hip drop, and no vertical body bob, so the steps have no force behind them. Mid-clip the figure snaps between a wide mid-stride pose and a neutral stand abruptly instead of flowing through the motion. Worst is the final crouch: one knee bends far past any anatomically possible angle, the leg folding under the body like rubber, and the figure appears to kneel on nothing, sinking toward the floor rather than lowering onto it. Overall the motion is metronome-like and mechanical, missing all the secondary motion (arm counter-swing, shoulder rotation, head stabilization) that makes a walk look alive.
+
+ASSEMBLER FINDINGS (lead, honest record):
+(1) COMMANDED-VS-RENDERED GAP: the lane's engine readbacks show the
+composed stride pack driving counter-swing amplitudes (shoulder -60,
+elbow +125) to sub-millidegree accuracy, yet the judge sees arms hanging
+still. The rendered take does not show what the readbacks say was
+commanded — either the composed pack's arm rotations do not reach the
+render path, or the take exported differs from the composed run. This is
+an OPEN DEFECT, the lane's real discovery, and blocks the realism claim.
+(2) The judge's crouch/rubber-knee and mid-clip snap findings match the
+v1 stride-phase signature — confirming the stride plane still reads as a
+crouch to fresh eyes (the known followup finding).
+(3) The no-travel observation independently reconfirms falsifier F1 of
+the base walk lane — resolved by the root-translation lane now in flight
+(this realism work composes onto travel once it lands).
+
+Disposition per the constitution: this lane delivered a measured
+composition law (route-layer vs data-layer) and a reproducible
+commanded-vs-rendered discrepancy; its visual rubric FAILED honestly.
+The realism feature remains OPEN and re-tries after travel lands.

@@ -1,0 +1,12 @@
+{
+ "sha256s": {
+  "march_m1": "20d7def4643f3df533c2cde24d1e53641f9dcff84a0fcdd010ac8ae5fc7ef12a",
+  "march_m2": "882758a3b07f7f89846f00fbaa5cbd32e100ac5d3ef665d1ec36bd3c00d533fb",
+  "postwrite_p1": "348e8a698f4faac0aaebec951738b909bb0d35e37163ab3a924dd3d2b22dc783",
+  "postwrite_p2": "4134e1d547ad4639a705340b7b74e1e382e91d90611447a2732b16ba2e396108"
+ },
+ "maxdiff_m1_m2": 235,
+ "maxdiff_p1_p2": 235,
+ "maxdiff_m2_p1": 235,
+ "visible_march_froze_on_write": false
+}

@@ -1,0 +1,111 @@
+{
+ "series": [
+  {
+   "tag": "march_solo_before_write",
+   "steps_total": 897,
+   "thetaL": 34.606703,
+   "thetaR": 79.067954,
+   "knee_L": 0.0,
+   "knee_R": 0.0,
+   "neck": 0.0,
+   "shoulder_L": 0.0
+  },
+  {
+   "tag": "march_solo_0",
+   "steps_total": 1275,
+   "thetaL": 68.890493,
+   "thetaR": 59.804217,
+   "knee_L": 0.0,
+   "knee_R": 0.0,
+   "neck": 0.0,
+   "shoulder_L": 0.0
+  },
+  {
+   "tag": "march_solo_1",
+   "steps_total": 1650,
+   "thetaL": 77.554164,
+   "thetaR": 42.448478,
+   "knee_L": 0.0,
+   "knee_R": 0.0,
+   "neck": 0.0,
+   "shoulder_L": 0.0
+  },
+  {
+   "tag": "march_solo_2",
+   "steps_total": 2028,
+   "thetaL": 38.648453,
+   "thetaR": 99.301538,
+   "knee_L": 0.0,
+   "knee_R": 0.0,
+   "neck": 0.0,
+   "shoulder_L": 0.0
+  },
+  {
+   "tag": "posted_neck_15",
+   "http": 200,
+   "resp": "{\"ok\":true,\"owner\":\"edit\",\"selected\":-1,\"theta_applied\":15.000000}"
+  },
+  {
+   "tag": "after_write_0",
+   "steps_total": 2424,
+   "thetaL": 105.882003,
+   "thetaR": 25.771702,
+   "knee_L": 0.0,
+   "knee_R": 0.0,
+   "neck": 15.0,
+   "shoulder_L": 0.0
+  },
+  {
+   "tag": "after_write_1",
+   "steps_total": 2799,
+   "thetaL": 19.516398,
+   "thetaR": 123.623107,
+   "knee_L": 0.0,
+   "knee_R": 0.0,
+   "neck": 15.0,
+   "shoulder_L": 0.0
+  },
+  {
+   "tag": "after_write_2",
+   "steps_total": 3180,
+   "thetaL": 136.306334,
+   "thetaR": 8.458936,
+   "knee_L": 0.0,
+   "knee_R": 0.0,
+   "neck": 15.0,
+   "shoulder_L": 0.0
+  }
+ ],
+ "verdict": {
+  "steps_series": [
+   897,
+   1275,
+   1650,
+   2028,
+   2424,
+   2799,
+   3180
+  ],
+  "march_continued_after_write": true,
+  "neck_series": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   15.0,
+   15.0,
+   15.0
+  ],
+  "neck_landed": true,
+  "knee_L_series": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "owner_preempted_march": false
+ }
+}

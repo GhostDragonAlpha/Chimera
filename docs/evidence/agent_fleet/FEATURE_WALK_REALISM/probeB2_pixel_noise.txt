@@ -1,0 +1,8 @@
+{
+ "noise_floor_rest": 0.01123,
+ "march_stepping": 0.00155,
+ "postwrite_p1_p2": 0.00228,
+ "postwrite_p2_p3": 0.00127,
+ "write_boundary_m2_p1": 0.00714,
+ "verdict": "MARCH CONTINUED (post-write diff well above noise floor)"
+}
