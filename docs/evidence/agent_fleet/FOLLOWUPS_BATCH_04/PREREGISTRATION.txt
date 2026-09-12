@@ -1,0 +1,365 @@
+PREREGISTRATION — fleet-followups-batch-04 (gen 1)
+
+Agent: subagent-worker-05. Slot 2, worktree E:\ChimeraWork\slot-02, branch
+astra/tasks/fleet-followups-batch-04. Task base
+84c3d8dd5d864af2ec94670048eb3acbb3916736 (verified at claim: HEAD==base, tree
+clean, branch correct). This file is committed ALONE in the first authored
+commit, before any implementation or measurement, per RULE 0. It contains
+orientation-derived facts and fixed thresholds only; every measured actual of
+this lane lands in RESULT.txt after the run.
+
+RULE 0 (packet verbatim): STATEMENT: these are measured debts, each named by
+an independent reviewer with severity; clearing them in one lane costs less
+than five. PREDICTION: after the lane, zero open findings_for_backlog items
+from the wave verdicts remain actionable. FALSIFIER: any finding marked done
+whose cited evidence does not exist, or a control added that still passes when
+its gate is stripped.
+
+Scope claim (exact, from the task record): tools/agent_fleet/control.py,
+tools/agent_fleet/test_ir_retire.py,
+docs/evidence/agent_fleet/FOLLOWUPS_BATCH_04,
+docs/evidence/agent_fleet/HOLODECK/MAT/MAT-05,
+docs/evidence/agent_fleet/HOLODECK/MAT/MAT-02.
+
+================================================================================
+0. BASE RECONCILIATION (planned before implementation, disclosed pre-run)
+================================================================================
+
+The five source verdicts and the MAT-02/MAT-05 evidence trees merged into
+astra/gait-capture AFTER this task's recorded base 84c3d8dd was cut (PRs
+#100/#101/#102/#103 and #99; integration tip at claim time observed as
+4b272391). The packet's scopes name docs/evidence/agent_fleet/HOLODECK/MAT/
+MAT-02 and MAT-05, which do not exist at 84c3d8dd. Planned topology,
+disclosed BEFORE any implementation commit:
+
+  commit 1 (this file, parent == 84c3d8dd exactly),
+  commit 2: a pure reconcile MERGE of origin/astra/gait-capture into the task
+            branch (no force-push; brings the wave merges including MAT-02,
+            MAT-05, MAT-03, MAT-04 and the task_provenance_set op),
+  commits 3+: implementation and evidence per the deliverables below.
+
+No measured actual appears before commit 1. The merge is a reconciliation of
+a benign base advance (THE_AGENT_FLEET.md PR workflow), not an authored
+change; any conflict would be resolved toward the integration tip and
+disclosed in RESULT.
+
+================================================================================
+1. FINDINGS ADDRESSED (each quoted VERBATIM from its source verdict file)
+================================================================================
+
+Sources are the packet-named files under E:/ChimeraWork/verdicts/done/.
+Quotes are byte-exact from the "findings_for_backlog" or "FINDINGS" fields.
+
+--- D1 (transition records; packet marks it "MEDIUM x2": raised in gen-1 and
+--- carried/accepted in gen-3 of the same review lane)
+
+Source: E:/ChimeraWork/verdicts/done/fleet-maintenance-amendment-03.json,
+findings_for_backlog item 1, verbatim:
+
+  1) (MEDIUM, carried from gen-1 finding 2, accepted by lead) commit a small
+  transition-record artifact (name, merge sha, post-state digest) per
+  controlled transition so controller-plane claims are reviewable from git;
+  this lane's gen-2 slip is the second instance showing memory-drafted
+  controller facts drift.
+
+Deliverable (packet verbatim): "commit a per-transition record artifact (name,
+merge sha, post-state digest) for the seven completed controlled transitions +
+a template the lead appends per future transition".
+
+Plan — two new artifacts under docs/evidence/agent_fleet/FOLLOWUPS_BATCH_04/:
+  TRANSITIONS.txt   one record per completed controlled transition, in
+                    deployment order;
+  TEMPLATE.txt      the record template the lead appends per future
+                    transition.
+
+Record fields (all derived from verifiable primaries, never from memory):
+  - name: the deployment directory name under
+    E:/ChimeraWork/control/deployments/ (the surviving deployment dirs ARE
+    the completed transitions: seven directories observed; provenance =
+    directory listing, recorded in RESULT with the measurement command);
+  - source_revision: MANIFEST.json "source_revision" field;
+  - merge sha + PR: derived from git. Two shapes exist and the record names
+    which: (a) the source_revision IS itself the integration-branch merge
+    commit (subject "Merge pull request #N") — merge sha = source_revision;
+    (b) the source_revision is a task-branch head — merge sha = the FIRST
+    integration-branch merge commit that contains it (measured by
+    `git log --merges --ancestry-path <rev>..origin/astra/gait-capture`,
+    taking the oldest), with membership in that merge's second parent
+    verified by `git merge-base --is-ancestor <rev> <merge>^2`;
+  - post-state digest: defined for this artifact as the sha256 of the
+    deployed tools/agent_fleet/control.py as recorded in the deployment
+    MANIFEST.json ("files"."control.py"."sha256"), re-derived from git
+    (`git show <source_revision>:tools/agent_fleet/control.py | sha256sum`)
+    wherever the manifest cites a git source; where the manifest does not
+    cite a git source, the retained manifest value is recorded with its own
+    provenance string and marked NOT-GIT-DERIVABLE rather than guessed;
+  - date: the deployment directory's filesystem mtime (provenance-labeled as
+    such; filesystem metadata, not git).
+  The registry's post-transition revision digest is NOT retroactively
+  derivable (the live store is current-only); TEMPLATE.txt therefore adds
+  that field for FUTURE transitions, to be captured live at cutover time.
+
+Fixed acceptance (D1):
+  - TRANSITIONS.txt contains exactly 7 records, one per surviving deployment
+    directory, no invention: every sha in the record re-derives from git or
+    from the retained manifest by the RESULT's reproduction commands;
+  - TEMPLATE.txt exists with the full field list including the two
+    future-only fields (post-transition registry revision + state digest).
+
+--- D2 (supervisor op ir_retire; MEDIUM)
+
+Packet deliverable (verbatim): "supervisor op ir_retire (request, reason,
+evidence) to retire orphaned PENDING integration requests (live: d614a192 for
+holodeck-gov-06) + tests incl. refusal of non-pending".
+
+Orientation (measured before implementation, from the live read-only
+snapshot): request d614a192236e08fef0160f1f for task holodeck-gov-06 has
+state PENDING_EXTERNAL_BROKER (its PR #84 was observed closed/merged at
+review time per the gov-06 verdict's own FINDINGS item 5), so the request can
+never be acknowledged through the normal path and there is no operation that
+retires it. The five named verdicts jointly record why: the broker is not
+deployed (THE_AGENT_FLEET.md activation gates), so PENDING_EXTERNAL_BROKER
+requests accumulate; fleet-task-provenance-backfill-01's review measured the
+live registry holding "7 INTEGRATED + holodeck-gov-06 held at REVIEW".
+
+Plan — control.py gains ONE new dispatch branch `ir_retire`, inserted
+immediately after the `ack_integration` branch, mirroring the audited
+supervisor-op shape of task_abandon / claim_abandon /
+task_provenance_set (PR #99, merged after this base; studied from the
+integration tip):
+  require(actor=='SUPERVISOR','supervisor_only')
+  request lookup by EXACT full id (same lookup expression ack_integration
+  uses) -> 'unknown_integration_request' when absent;
+  state guard -> 'request_not_pending' unless state=='PENDING_EXTERNAL_BROKER'
+  (this is the packet's "refusal of non-pending": it fires for
+  ACKNOWLEDGED and for already-RETIRED requests alike);
+  reason = text(p.get('reason'),'retire_reason'); evidence =
+  text(p.get('evidence'),'retire_evidence') — validated AFTER the state gate
+  so neither can mask the other;
+  r['state']='RETIRED_ORPHANED'; r['retire']={reason, evidence, actor,
+  revision:s['revision']+1};
+  return {request, task, state:'RETIRED_ORPHANED', filesystem_touched:False}.
+Registry-state only; the filesystem is NEVER touched; no session is revoked.
+The call() audit event carries the whitelisted keys (request, reason, actor)
+and never the evidence body — the established convention (payload never
+enters the event stream). Retirement is permanent in the sense that
+ack_integration's existing state guard refuses any non-PENDING request; no
+un-retire operation is added. The op is supervisor-only: retiring a live
+integration request is an integration-plane decision.
+
+Tests — NEW tools/agent_fleet/test_ir_retire.py, isolated temp-registry
+harness exactly on the test_task_abandon.py pattern (no live service, no
+deployed store). Fixed list, N=11:
+  1  test_ir_retire_retires_pending_request_with_audit_record
+  2  test_ir_retire_never_touches_the_filesystem
+  3  test_ir_retire_refuses_non_supervisor_actors
+  4  test_ir_retire_refuses_unknown_request
+  5  test_ir_retire_refuses_acknowledged_request
+  6  test_ir_retire_refuses_already_retired_request
+  7  test_ir_retire_requires_reason_and_evidence (both missing_* arms,
+     each blank variant named)
+  8  test_retired_request_cannot_be_acknowledged (ack_integration refuses)
+  9  test_pending_request_still_acknowledges (the ack path is unchanged)
+  10 test_refusals_leave_revision_and_audit_untouched
+  11 test_audit_event_carries_request_and_reason_not_evidence
+Predicted pass: 11/11. Falsifier arm: deleting the state guard or the
+supervisor guard from control.py must fail the corresponding named tests
+(reviewer-checked by mutation, as in prior lanes).
+
+The LIVE retirement of d614a192 is supervisor work AFTER the next controlled
+transition deploys this op — explicitly OUT of this PR (same boundary the
+backfill lane drew for its lead-side steps). This lane delivers the op, the
+tests, and the named live orphan in the RESULT handoff.
+
+--- D3 (sha-convention pinning; "flagged independently by THREE reviewers")
+
+Quote 1 — E:/ChimeraWork/verdicts/done/holodeck-mat-02.json,
+findings_for_backlog item 3, verbatim:
+
+  3) (Low, reproducibility) r5_source_trace sha256 identities are hashes of
+  checkout bytes (CRLF on Windows), not of the LF git blobs — cross-platform
+  verification by blob hash will false-alarm; future source-check lanes
+  should state the byte convention or hash via git cat-file.
+
+Quote 2 — E:/ChimeraWork/verdicts/done/holodeck-mat-03.json, FINDINGS item 3,
+verbatim:
+
+  3. [S4] SOURCE IDENTITY hashes are CRLF working-tree sha256s (autocrlf=true), not blob hashes; CRLF(blob)==recorded hash so reproduction is
+  exact, but blob-hash readers will mismatch - label explicitly next time.
+
+Quote 3 — E:/ChimeraWork/verdicts/done/holodeck-mat-05.json, reviewer
+independent measurement in summary (verbatim fragment): "Recorded sha256
+identities match checkout bytes exactly (CRLF representation; LF blob content
+identical to base)" — and the same reviewer's GOV-06 review
+(E:/ChimeraWork/verdicts/done/holodeck-gov-06.json, backlog item 2, verbatim):
+
+  (2) Pin the source-identity sha256 convention (CRLF worktree vs LF git
+  blob) for future lanes - all three claimed hashes are CRLF forms under
+  core.autocrlf=true.
+
+PINNED CONVENTION (one, stated here for all future source-check lanes and
+appended to the MAT-02 and MAT-05 RESULT files):
+
+  SOURCE IDENTITY records in source-check lanes are sha256 over the
+  WORKING-TREE bytes of the file as checked out on the fleet's Windows hosts
+  (core.autocrlf=true, CRLF in the working tree), written with the explicit
+  label `working-tree-sha256(CRLF)=<hex>`. Derivation: `sha256sum <path>` on
+  the checked-out file. A blob-hash auditor MUST normalize before comparing:
+  either hash the LF blob (`git cat-file blob <rev>:<path> | sha256sum`) and
+  expect a DIFFERENT value by convention, or convert the working-tree file
+  CRLF->LF before hashing. Rationale for pinning the working-tree form rather
+  than the blob form: every retained source-identity record in the integrated
+  MAT/GOV lanes already records this form (rewriting integrated evidence is
+  forbidden; append-only notes keep them valid), and all three reviewers'
+  named harm was the UNSTATED convention, not the byte choice. Deployment
+  MANIFESTs are a different artifact class: they cite their bytes explicitly
+  (`git <rev>:<path>` blob form) and stay unchanged.
+
+Application (packet verbatim): "applied by appending a convention note to
+MAT-02/MAT-05 RESULT files (append-only) and stated in the prereg for future
+lanes". Both appends are pure appends: the original file bytes remain an
+exact byte prefix of the new file (raw binary append, no normalization, the
+amendment-03 review's own append-only test).
+
+Fixed acceptance (D3): both RESULT files gain a "SOURCE IDENTITY CONVENTION"
+append naming the convention, the derivation command, the blob-hash
+reconciliation rule, and quoting the packet-named sources; byte-prefix
+property verified and recorded in RESULT.
+
+--- D4 (mat-05 F1 + F2)
+
+F1 — E:/ChimeraWork/verdicts/done/holodeck-mat-05.json, FINDINGS item F1,
+verbatim:
+
+  [F1, severity 2, non-blocking] R2 negative suite has no missing_label
+  probe; a model copy with the label gate stripped passes the full suite
+  (teeth-6 expectation not met for the literal gate); fix = add R2 probe
+  author_preset(label='   ') -> missing_label.
+
+Plan: a NEW followup instrument
+docs/evidence/agent_fleet/HOLODECK/MAT/MAT-05/controls/run_missing_label_control.py
+(the committed R2 evidence and run_controls.py of the merged MAT-05 lane stay
+byte-untouched so its pinned-head reproduction property survives) with two
+fixed phases, N=2:
+  phase P (pristine): author(..., label='   ') against the reference model
+    imported from ../reference must refuse with reason EXACTLY
+    'missing_label' -> writes checks/r2_missing_label_control.txt,
+    verdict HOLD iff the refusal matches;
+  phase S (stripped): the same probe against a TEMP COPY of the model whose
+    label gate is stripped by text edit (temp dir inside the lane evidence
+    scope, removed after the run) must ACCEPT (a frozen record returned) ->
+    writes checks/r2_missing_label_control.stripped-FIRED.txt whose verdict
+    line is FIRED — this retained file IS the flip demonstration demanded by
+    the packet falsifier ("a control added that still passes when its gate is
+    stripped" must not be possible).
+  Runner exit 0 iff P==HOLD and S==FIRED-by-acceptance; anything else exits 1.
+  The stripped-copy edit targets ONLY the label-gate raise in the copy (the
+  `missing_label` arm inside author()); the pristine model is never modified.
+Predicted: r2_missing_label_control.txt shows 1/1 HOLD with reason
+'missing_label'; the stripped-FIRED file shows the row FAIL with the record
+accepted. If the pristine model does NOT refuse missing_label, or the
+stripped copy does NOT accept, the control is not the teeth the reviewer
+verified and the lane STOPS with the falsifier FIRED (recorded, not patched).
+
+F2 — E:/ChimeraWork/verdicts/done/holodeck-mat-05.json, FINDINGS item F2,
+verbatim:
+
+  [F2, severity 3, non-blocking] RESULT section 1 claims 'both runs runs'
+  scripts are in controls/run_source_checks.py history at 53e71f47 vs this
+  commit' -- false: run_source_checks.py is byte-identical in both commits;
+  the run-1 instrument (ROOT parents[5] bug + two R5 needle mismatches) was
+  never committed, so the R5 correction narrative has no retained instrument
+  history (unlike R3's retained FIRED run); fix = commit instrument history
+  or correct the sentence.
+
+Plan: APPEND (byte-prefix; no rewrite of section 1) a "CORRECTIONS" section
+to docs/evidence/agent_fleet/HOLODECK/MAT/MAT-05/RESULT.txt that: quotes the
+false sentence from section 1 verbatim; states the measured truth
+(run_source_checks.py is byte-identical at 53e71f47 and at the MAT-05 head —
+to be re-measured at this lane's head and recorded in the append); quotes
+finding F2 and its source file; and records the chosen fix (correct the
+sentence — committing a reconstructed run-1 instrument after the fact would
+fabricate instrument history, the worse option). The review's backlog item 2
+(same file) additionally suggests starting to retain instrument history for
+future source-check probe fixes; the append adopts that as a practice note
+for FUTURE lanes, it does not retrofit history.
+
+--- D5 (mat-02 nonnegative gate vocabulary)
+
+E:/ChimeraWork/verdicts/done/holodeck-mat-02.json, findings_for_backlog item
+2, verbatim:
+
+  2) (Low) Prereg gate vocabulary declares a 'nonnegative' gate kind that the
+  model never implements and no spec uses (only positive/fraction/nu_range
+  exist); trim the vocabulary or implement it in the next lane touching
+  mat02_reference_model.py.
+
+Decision: TRIM, not implement — implementing would add a gate kind no spec
+uses (an unused variant is exactly what RULE 1 forbids; the reviewer's own
+measurement is that nothing consumes the kind). Orientation measurement
+already run (read-only grep of the merged MAT-02 tree): the token
+'nonnegative' appears EXACTLY once in the lane, at PREREGISTRATION.txt line
+105 inside the gate-vocabulary enumeration
+"positive | nonnegative | fraction | positive_definite_2d_nu_range"; the
+model defines GATE_POSITIVE/GATE_FRACTION/GATE_NU_RANGE only.
+Plan: edit that ONE line to "positive | fraction |
+positive_definite_2d_nu_range" (a one-token deletion; the git history
+retains the original prereg text and this edit is itself auditable), and
+append (byte-prefix) a "VOCABULARY CORRECTION" note to MAT-02 RESULT.txt
+quoting the source finding and the before/after line. No model, controls, or
+checks file changes for D5; the merged MAT-02 lane's evidence keeps
+regenerating byte-identical at its pinned head, and at this lane's head the
+prereg reads with the trimmed vocabulary.
+
+================================================================================
+2. PREDICTION (operationalized, fixed before the run)
+================================================================================
+
+P1. tools/agent_fleet/test_ir_retire.py: 11/11 pass at the lane head.
+P2. run_missing_label_control.py exit 0; the two check files land exactly as
+    predicted in D4 (HOLD + FIRED-by-acceptance, both retained).
+P3. TRANSITIONS.txt: 7/7 records whose every git-derived sha re-derives via
+    the RESULT reproduction commands; the single non-git-derivable hash
+    (review-handoff's carried control.py) is labeled NOT-GIT-DERIVABLE with
+    its retained provenance string, never guessed.
+P4. MAT-02/MAT-05 RESULT appends are byte-prefix appends (0 deletions);
+    MAT-02 PREREGISTRATION.txt changes by exactly one deleted token
+    ("nonnegative"); full byte-prefix check recorded in RESULT.
+P5. Full base-plane suite (python -m unittest discover -s tools/agent_fleet
+    -p 'test_*.py') at the lane head: no failure other than the two
+    disclosed known flakes (test_capture_window content flake;
+    test_slot_expansion scale-probe under load), each retried once isolated
+    per the established protocol; the new module contributes 11 passing.
+P6. Every finding marked done by this lane cites committed evidence that
+    exists at the lane head (packet falsifier arm 1).
+
+Scope of PREDICTION honesty: the packet's "zero open findings_for_backlog
+items remain actionable" is satisfied by the five deliverables clearing every
+MEDIUM/severity-2-or-3 defect-class finding named in the wave verdicts; the
+remaining backlog entries are process-practice notes (adopted where this
+prereg can adopt them: no underived size bound in this prereg; team-lead
+prereg pre-check to be requested before submit_review), cosmetic items
+explicitly outside this lane's scopes (MAT-03 RESULT sha, MAT-05 _write
+display, Master 'counts below' reword), and lead-side work after the next
+transition (live ir_retire call, live backfill steps) — each dispositioned
+item-by-item in RESULT.txt so the prediction stays checkable rather than
+rhetorical.
+
+================================================================================
+3. METHOD / ORACLE / EVIDENCE CLASS
+================================================================================
+
+- All controller tests run base-plane in isolated temp registries
+  (`python -m unittest discover -s tools/agent_fleet -p 'test_*.py'`); the
+  live service is never touched (the deployed controller changes only through
+  the next controlled transition).
+- Oracles are independent: the ir_retire contract tests bind the op's guards
+  by named refusals; the missing_label control's flip phase is executed
+  against a genuinely stripped model copy; the transition records are
+  re-derivable from git by a command listed in RESULT.
+- Evidence files are *.txt (plus *.py instruments and the retained *.json
+  manifest where a lane already established that pattern); no *.log files.
+- Every commit carries trailer `Agent: subagent-worker-05`; no force-push;
+  PR targets astra/gait-capture with the exact submitted head.
+- No GPU, no engine runtime, no DYAD: this lane is registry/doc-plane only;
+  the eye gates are NOT_APPLICABLE here as in the source lanes.
