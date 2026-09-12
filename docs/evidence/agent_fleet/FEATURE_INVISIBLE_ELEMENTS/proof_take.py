@@ -35,6 +35,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.resolve().parents[3]             # .../docs/evidence/agent_fleet/<LANE>
 sys.path.insert(0, str(ROOT / "tools"))
+sys.path.insert(0, str(ROOT / "tools" / "product_features"))
 sys.path.insert(0, str(ROOT / "ChimeraEngine"))
 
 from engine_demo import _launch, _wait_ready, _stop_owned, _port_busy  # noqa: E402
