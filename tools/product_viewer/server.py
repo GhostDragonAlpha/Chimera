@@ -389,7 +389,11 @@ PAGE = """<!doctype html><html><head><meta charset="utf-8"><title>Chimera Produc
  body{background:#101418;color:#d8dee6;font-family:Consolas,monospace;margin:16px}
  h1{font-size:15px;margin:0 0 10px} .row{display:flex;gap:12px;flex-wrap:wrap}
  .pane{flex:1;min-width:420px} .pane h2{font-size:12px;margin:0 0 4px;color:#8ab4f8}
- img{width:100%;border:1px solid #2a3138;background:#000}
+  img{width:100%;border:1px solid #2a3138;background:#000}
+  #fpan{cursor:grab} #fpan:active{cursor:grabbing}
+  #fwrap{position:relative}
+  #fhelp{position:absolute;top:6px;left:8px;font-size:11px;color:#7fd18a;
+         background:rgba(0,0,0,.45);padding:2px 6px;border-radius:3px;pointer-events:none}
  #state{font-size:12px;color:#9aa4af;margin:8px 0;white-space:pre-wrap}
  button{background:#1d2733;color:#d8dee6;border:1px solid #3a4654;padding:4px 10px;
         margin:2px;font-family:inherit;font-size:12px;cursor:pointer}
@@ -402,7 +406,8 @@ PAGE = """<!doctype html><html><head><meta charset="utf-8"><title>Chimera Produc
 <div id="state">connecting…</div>
 <div class="row">
   <div class="pane"><h2>/frame — THE PRODUCT VIEW: the world only, no instruments</h2>
-    <img id="f" alt="frame"></div>
+    <div id="fwrap"><span id="fhelp">drag = orbit (the camera is YOURS) · wheel = zoom</span>
+    <img id="f" alt="frame"></div></div>
   <div class="pane"><h2>/glass — instruments composited (debugging only; never judged)</h2>
     <img id="g" alt="glass"></div>
 </div>
@@ -439,6 +444,39 @@ function cap(on){capOn=on;
   fetch('/api/capture',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({on:on})}).then(r=>r.json()).then(()=>{
     document.getElementById('capbtn').textContent='ring capture: '+(on?'ON':'paused');});}
+
+// THE CAMERA BELONGS TO THE OPERATOR (THE_TRIANGLE_GUIDE 5): drag orbits the
+// engine camera (the viewer renders nothing itself — the engine is the only
+// renderer); the wheel zooms. One POST per throttled move; deltas from the
+// cached live camera state.
+let cam0=null, drag=null, lastPost=0;
+function getCam(){return fetch('/api/camera').then(r=>r.json()).then(d=>d.state&&d.state.cam);}
+function orbit(dTheta,dPhi,dR){
+  if(!cam0)return;
+  const now=Date.now(); if(now-lastPost<60)return; lastPost=now;
+  const c=[...cam0];
+  c[0]=Math.max(2.0,c[0]*(dR||1)); c[1]=c[1]+(dTheta||0);
+  c[2]=Math.min(1.5,Math.max(0.02,c[2]+(dPhi||0)));
+  fetch('/api/camera',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({action:'set',cam_radius:c[0],cam_theta:c[1],cam_phi:c[2]})})
+    .then(()=>{cam0=c;});
+}
+const fp=document.getElementById('fpan')||document.getElementById('f');
+fp.addEventListener('mousedown',e=>{drag={x:e.clientX,y:e.clientY};
+  getCam().then(c=>{cam0=c;}); e.preventDefault();});
+window.addEventListener('mouseup',()=>{drag=null;});
+window.addEventListener('mousemove',e=>{if(!drag||!cam0)return;
+  const dx=e.clientX-drag.x, dy=e.clientY-drag.y; drag={x:e.clientX,y:e.clientY};
+  orbit(dx*0.005, dy*0.005, 1);});
+fp.addEventListener('wheel',e=>{e.preventDefault(); getCam().then(c=>{cam0=c;
+  orbit(0,0, e.deltaY>0?1.12:0.89);});},{passive:false});
+// touch: single-finger orbit
+fp.addEventListener('touchstart',e=>{const t=e.touches[0]; drag={x:t.clientX,y:t.clientY};
+  getCam().then(c=>{cam0=c;});},{passive:true});
+fp.addEventListener('touchmove',e=>{if(!drag||!cam0)return; const t=e.touches[0];
+  const dx=t.clientX-drag.x, dy=t.clientY-drag.y; drag={x:t.clientX,y:t.clientY};
+  orbit(dx*0.005, dy*0.005, 1);},{passive:true});
+fp.addEventListener('touchend',()=>{drag=null;});
 function state(){
   fetch('/api/gallery').then(r=>r.json()).then(d=>{
     const last=d.records[d.records.length-1];
