@@ -173,8 +173,10 @@ def main() -> int:
                {"note": "the filmed element is the data-only plane drawn by the "
                         "viewer; the engine's renderable-but-inactive tint stays off"})
 
-        # ── the viewer service ──
+        # ── the viewer service (make_server does NOT start the capture
+        # thread — that is serve_forever()'s job; we own both explicitly) ──
         viewer = viewer_server(ENGINE, VIEWER_PORT)
+        viewer.capture_thread.start()
         threading.Thread(target=viewer.serve_forever, daemon=True).start()
         record("viewer.up", "PASS", {"port": VIEWER_PORT})
         for _ in range(60):                    # wait for the ring to fill
@@ -295,6 +297,7 @@ def main() -> int:
         return 0 if not fails else 3
     finally:
         if viewer is not None:
+            viewer.capture_thread.stop_flag.set()
             viewer.shutdown()
         if proc is not None:
             _stop_owned(proc)
