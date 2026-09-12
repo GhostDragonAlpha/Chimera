@@ -132,8 +132,9 @@ class LifecycleTest(unittest.TestCase):
         b.handle_post({"element": "cpg", "on": True})
         self.assertTrue(b.elements["cpg"].visible)
         b.elements["cpg"].snapshot = {"ok": True, "loaded": True, "on": True,
-                                      "steps_total": 40, "thetaL": 0.1}
-        b.elements["cpg"].history = [{"thetaL": 0.1}, {"thetaL": 0.4}]
+                                      "steps_total": 40, "thetaL": 0.4}
+        b.elements["cpg"].history = [{"thetaL": 0.1}, {"thetaL": 0.2},
+                                     {"thetaL": 0.3}, {"thetaL": 0.4}]
         g = b.handle_post({"element": "cpg", "action": "run_gate"})
         self.assertTrue(g["ok"])
         self.assertFalse(b.elements["cpg"].visible)      # reverted (Law 2)
@@ -194,7 +195,7 @@ class ComposerTest(unittest.TestCase):
         self.assertEqual(drawn1, ["water"])
         el.snapshot = {"ok": True, "nc": 8, "vmax": 4,
                        "vols": (4, 4, 4, 4, 0, 0, 0, 0)}
-        el.history = [{"sum": 5}, {"sum": 7}]
+        el.history = [{"sum": 5}, {"sum": 7}, {"sum": 9}, {"sum": 11}]
         el.run_gate()                            # prove it (motion seen)
         out2, drawn2 = compose(b, base)
         self.assertEqual(drawn2, [])

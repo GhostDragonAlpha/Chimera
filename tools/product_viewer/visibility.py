@@ -144,7 +144,7 @@ class Element:
 def fetch_water(engine) -> dict:
     """GET /water_state -> octet-stream [u32 ns][u32 nc][i32 volumes]."""
     try:
-        st, raw, ctype = engine.get("/water_state")
+        st, raw, ctype = engine.get("/water_state", timeout=20.0)
     except Exception as e:                          # noqa: BLE001
         return {"ok": False, "error": str(e)}
     if st != 200 or ctype.startswith("application/json"):
@@ -213,10 +213,18 @@ def fetch_matter(engine) -> dict:
 
 
 def _motion_seen(el: Element, key: str) -> bool:
-    """True when the keyed scalar CHANGED across the element's history."""
+    """True when the keyed scalar CHANGED across the element's history.
+
+    The bar is MEASURED MOTION, not a flicker: at least MOTION_MIN distinct
+    markers must be on record — "put in motion" (Law 1) is what a gate can
+    actually see, and it paces the visible phase long enough to be named.
+    """
     vals = [h.get(key) for h in el.history if isinstance(h, dict)]
     vals = [v for v in vals if v is not None]
-    return len(vals) >= 2 and any(a != b for a, b in zip(vals, vals[1:]))
+    return len(set(vals)) >= MOTION_MIN
+
+
+MOTION_MIN = 4
 
 
 def gate_water(el: Element) -> bool:

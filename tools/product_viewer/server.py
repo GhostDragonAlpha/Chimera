@@ -39,11 +39,11 @@ class EngineClient:
         self.base = base_url.rstrip("/")
         self.timeout = timeout
 
-    def get(self, path: str) -> tuple[int, bytes, str]:
+    def get(self, path: str, timeout: float | None = None) -> tuple[int, bytes, str]:
         """GET -> (status, body, content_type). Raises EngineError on transport fault."""
         req = urllib.request.Request(self.base + path, method="GET")
         try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as r:
+            with urllib.request.urlopen(req, timeout=timeout or self.timeout) as r:
                 return r.status, r.read(), r.headers.get("Content-Type", "")
         except urllib.error.HTTPError as e:  # engine answered with an error status
             return e.code, e.read(), e.headers.get("Content-Type", "")
