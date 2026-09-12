@@ -1937,6 +1937,39 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         // wrapped time PLUS the lap count, so it agrees with where the
         // playhead sits and no information is lost.
         char tb[192];
+        if (joints_owner_ui_ == 1 && joints_edit_mask_ui_ != 0) {
+            // product-hud-truth-01 (the PR #97 blind judge, finding 4(d)):
+            // beside edit-held motion this plane presented the sweep's idle
+            // 112 s lap — a clock nobody was driving. The readout now shows
+            // the show-clock PARAMETER itself — the exact timeline the driving
+            // interaction pins through /show's scrub (the timeline's HTTP
+            // twin) — labeled with the sweep's state, so no unlabeled lap and
+            // no second clock can disagree with the timeline panel's own bar.
+            // (Correction, run1 F2 retained: an origin subtracted at the pose
+            // claim captured the pre-scrub clock and shifted every reading by
+            // a constant; the parameter itself needs no origin.)
+            // The named thetas are the driven joints' live values, the same
+            // source the HUD row uses.
+            std::string js;
+            int named = 0;
+            for (size_t k = 0; k < joints_.size() && k < 32 && named < 2; ++k) {
+                if (!(joints_edit_mask_ui_ & (1u << k))) continue;
+                char jb[48];
+                snprintf(jb, sizeof(jb), "%s%s %+.2f", named ? " / " : "",
+                         joints_[k].name.c_str(), joints_[k].theta);
+                js += jb;
+                ++named;
+            }
+            snprintf(tb, sizeof(tb),
+                     "EDIT t = %.3f s (show clock; show sweep paused)  |  %s deg",
+                     clk_t_, js.c_str());
+        } else {
+        // the readout: time / loop, joint, theta, state — the engine's own rows
+        // 2026-09-05 (the eye): the readout printed the RAW clock (t = 135.2
+        // / 112) while the PLAYHEAD wrapped — number and marker disagreed.
+        // Same law as the fps pair: one window. The readout now shows the
+        // wrapped time PLUS the lap count, so it agrees with where the
+        // playhead sits and no information is lost.
         const double wrap_t = clk_total_ > 0.0
             ? clk_t_ - floor(clk_t_ / clk_total_) * clk_total_ : clk_t_;
         const long lap_n = clk_total_ > 0.0
@@ -1944,6 +1977,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         snprintf(tb, sizeof(tb), "t = %.3f s / %.1f s (lap %ld)  |  %s theta = %+.2f deg  |  %s",
                  wrap_t, clk_total_, lap_n, clk_name_.c_str(), clk_theta_,
                  clk_playing_ ? "PLAYING" : "PAUSED (scrub/step = exact poses)");
+        }
         // 2026-09-05 (the eye): benign captions (timeline readout, reel strip
         // captions) used amber (1,0.85,0.40) — the warning signal — so a healthy
         // editor stream read as an alarm next to the HOLD/warning color. Benign
@@ -2105,7 +2139,18 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             // owner/selection law the HUD row now follows. Sweep mode keeps
             // the "joint k/N" counter form.
             char jb[96];
-            if (joints_owner_ui_ == 1 && joints_sel_ui_ >= 0
+            if (joints_owner_ui_ == 1 && joints_edit_mask_ui_ != 0) {
+                // product-hud-truth-01: the bar under edit-held motion is the
+                // sweep's parameter (a live clock the PLAY button returns the
+                // pose to) — the footer says so instead of presenting the
+                // sweep's cycling window as the current joint.
+                unsigned driven = 0;
+                for (size_t k = 0; k < joints_.size() && k < 32; ++k)
+                    if (joints_edit_mask_ui_ & (1u << k)) ++driven;
+                snprintf(jb, sizeof(jb),
+                         "show sweep paused - %u joint(s) posed by edit/script  ( PLAY returns the pose )",
+                         driven);
+            } else if (joints_owner_ui_ == 1 && joints_sel_ui_ >= 0
                 && joints_sel_ui_ < static_cast<int>(joints_.size())) {
                 const StudioJoint& s = joints_[static_cast<size_t>(joints_sel_ui_)];
                 snprintf(jb, sizeof(jb), "EDIT %s  theta %+.2f deg  ( posing - PLAY returns the pose )",
@@ -2539,7 +2584,30 @@ void StudioUI::build_chrome() {
         // number on the HUD were different joints. In edit mode the row
         // follows the selection: its name, its live theta from the same state
         // buffer the pose kernel reads (st +7), its ROM from the pack.
-        if (joints_owner_ui_ == 1 && joints_sel_ui_ >= 0
+        // product-hud-truth-01 (the PR #97 blind judge, finding 4(b)): the
+        // demo path drives joints over HTTP (POST /joint) and never "selects"
+        // one, so the row fell back to the sweep's cycling name over its 0.00
+        // lane while the right arm rose. The row now names the DRIVEN joint(s)
+        // — the same law, generalized from the one selected joint to the set
+        // of joints the edit/script path actually moved (see set_joints_view's
+        // derivation), each with its live theta from the same pushed view.
+        if (joints_owner_ui_ == 1 && joints_edit_mask_ui_ != 0) {
+            int named = 0, driven = 0;
+            std::string row;
+            for (size_t k = 0; k < joints_.size() && k < 32; ++k) {
+                if (!(joints_edit_mask_ui_ & (1u << k))) continue;
+                ++driven;
+                if (named == 3) continue;             // the row names up to 3, then counts
+                char jb[80];
+                snprintf(jb, sizeof(jb), "%s%+.2f  ",
+                         joints_[k].name.c_str(), joints_[k].theta);
+                row += jb;
+                ++named;
+            }
+            if (driven > named)
+                row += "(+" + std::to_string(driven - named) + " more)  ";
+            snprintf(b, sizeof(b), "EDIT %sdeg", row.c_str());
+        } else if (joints_owner_ui_ == 1 && joints_sel_ui_ >= 0
             && joints_sel_ui_ < static_cast<int>(joints_.size())) {
             const StudioJoint& s = joints_[static_cast<size_t>(joints_sel_ui_)];
             snprintf(b, sizeof(b), "EDIT %s  theta %+.2f deg  ROM [%.1f .. %.1f]",

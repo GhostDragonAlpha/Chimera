@@ -1,0 +1,32 @@
+R6 findings + current-state measurements at base 4812b55b407107a34b708af1700e071a7eecbab4
+(reported, never patched, never adopted as the model's truth)
+
+(a) OWNER_INSTANCE CURRENT STATE (task packet: PR #80 fix is FIXED AND DEPLOYED -- measure current, no stale deviation language)
+  tools/agent_fleet/control.py owner_instance occurrences: 8 at lines [121, 122, 123, 323, 499, 501, 554, 697] (prereg predicted 8)
+  tools/agent_fleet/review_handoff.py occurrences: 1 at lines [113] (prereg predicted 1, the claim-path bind)
+  tools/agent_fleet/review_handoff.py:113:                     owner_instance=p.get("_resolved_instance"))
+  SURPRISE-FINDING check (0 occurrences would mean the fix is not at this base): not fired
+
+(b) CARD FALSIFIER HUNT -- per-plane verdict advertised-as-measured on a fictional value? (threshold: all NO, else the card falsifier FIRES)
+  preset table PART_MATERIAL keys (measured): ['arm_L', 'arm_R', 'ear_L', 'ear_R', 'eye_L', 'eye_R', 'foot_L', 'foot_R', 'head', 'leg_L', 'leg_R', 'muzzle', 'nose', 'paw_L', 'paw_R', 'sleeve_L', 'sleeve_R', 'sweater_body', 'torso']
+  keys contain wood/metal/water literals? NO
+  tools/materials.py:1: """materials.py -- the composition table. Every constant derives from what the
+  verdict: preset plane advertises derivation-from-literature, not measurement -> NO
+  declared-synthetic label present at tools/membrane_window_demo.py lines [274] -> NO (self-labeled synthetic)
+  label enforced by check at tools/membrane_window_demo_checks.py lines [309]
+  honest seam present at tools/gpu_fixtures_recovered/membrane_demo.py lines [42] -> NO (declared)
+  tools/matter_data.py:79:                       f"'researched'. A design or seed value is a CHOICE and may not be cited "
+  verdict: calibrated plane refuses non-researched provenance by name -> NO
+
+(c) NONDIMENSIONAL CONTROL measured in the deployed plane
+  'sg' unit in the dimensionless family at tools/material_contract.py lines [75, 186, 406]
+  tools/matter_data.py:172:         "SG":       _e(0.68, "1", _WH_T53, "researched", note="specific gravity at 12% MC"),
+  cross-check: SG 0.68 x 1000 kg/m^3 basis = 680 kg/m^3, inside the derived admissible domain (0, 22.59] and inside the fixture band [0.25, 1.18] (matches reference-model R1d)
+
+(d) INDEPENDENCE AUDIT of this lane's artifacts
+  reference-model imports (measured): ['__future__', 'dataclasses', 'math', 'math01_reference_model', 'pathlib', 'sys', 'types']
+  imports of AUDITED deployed modules ('materials', 'material_contract', 'matter_data'): NONE
+  MATH-01 import is the packet-designated units backbone, cited in the model docstring; independence is claimed from the audited deployed code only
+  independence verdict: CLEAN
+
+R6 verdict: HOLD

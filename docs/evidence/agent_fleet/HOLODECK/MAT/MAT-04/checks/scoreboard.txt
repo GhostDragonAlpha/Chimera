@@ -1,0 +1,8 @@
+R1-R4 scoreboard (holodeck-mat-04 gen 1)
+  R1 positive identifications : 8/8
+  R2 inverse-problem negatives: 7/7
+  R3 card-falsifier poses     : 4/4
+  R4 immutability/determinism : 4/4
+
+base: 308790ab33a19d5265036deabf25556af8b83f18
+model: reference/mat04_reference_model.py (400 lines)

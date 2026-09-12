@@ -1,0 +1,22 @@
+R3 -- CARD FALSIFIER probe: provenance membership is NOT proof of authentic measurement (model must not let membership do admission work)
+==============================================================================
+threshold: 6/6: known-source-but-incomplete refused 3 ways; unknown-source-but-complete admitted; no membership gate exists; identity_mismatch fires regardless of membership
+
+[PASS] (a) known source, moisture stripped -> missing_condition
+        refused verbatim: Mat03Refusal('missing_condition', 'record omits the moisture condition -- physical context is incomplete')
+[PASS] (b) known source, uncertainty stripped -> missing_uncertainty
+        refused verbatim: Mat03Refusal('missing_uncertainty', 'modulus carries no stated uncertainty; a measurement without a band is not importable')
+[PASS] (c) known source, negative modulus -> bad_value
+        refused verbatim: Mat03Refusal('bad_value', 'modulus=-5.0 violates its own physics (positive)')
+[PASS] post-state unchanged after a-c
+        listing={'measured_A': [1, 2], 'measured_degc': [1], 'measured_pct': [1], 'measured_strain': [1]}
+[PASS] (d) unknown source, complete context ADMITTED; registry membership neither required nor changed
+        listing={'measured_A': [1, 2], 'measured_degc': [1], 'measured_new': [1], 'measured_pct': [1], 'measured_strain': [1]} knows(NEW-LAB-2026)=False
+[PASS] (e) GATE_ORDER has no membership gate (12 named gates) and admission is identical with None/empty/populated registry
+        gate_list=['missing_source_identity', 'identity_mismatch', 'nonfinite', 'bad_value', 'missing_uncertainty', 'unknown_unit', 'unknown_condition_unit', 'missing_condition', 'condition_outside_envelope', 'duplicate_version', 'version_regression', 'bad_version'] identical_sha=True
+[PASS] (f) declared content_sha256 mismatch -> identity_mismatch (even known source + complete citation)
+        refused verbatim: Mat03Refusal('identity_mismatch', "payload declares content_sha256 '0000000000000000000000000000000000000000000000000000000000000000' but its content hashes to '3d2f517fb8292601ec97ef267160de2832587315a53f0249a60c03b90309ba5b'; a declared identity that disagrees with the content is refused, however complete its citation and however known its source")
+[PASS] post-state: only the (d) admission landed
+        listing={'measured_A': [1, 2], 'measured_degc': [1], 'measured_new': [1], 'measured_pct': [1], 'measured_strain': [1]}
+
+passed 8  failed 0

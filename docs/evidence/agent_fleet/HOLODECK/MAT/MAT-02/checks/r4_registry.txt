@@ -1,0 +1,13 @@
+holodeck-mat-02 controls -- run_controls.py (one process)
+python 3.14.3 on Windows-11-10.0.26200-SP0
+thresholds preregistered in ../PREREGISTRATION.txt; verdict rule: each row reaches its full N/N or the row's falsifier FIRED
+
+ROW: R4 registry consistency / immutability  (threshold 5/5)
+
+  - (a) isotropic independent_constant_count == 2 with nonempty constant_origin
+  - (b) orthotropic independent_constant_count == 9 with nonempty constant_origin
+  - (c) three incomplete specs refused incomplete_spec at REGISTRATION time; all 6 shipped specs complete
+  - (d) frozen surfaces: matrix setattr -> matrix_frozen; specs mapping write -> TypeError; claim attribute write -> FrozenInstanceError
+  - (e) STRUCTURAL falsifier negation: {rho} alone is refused missing_input at all 5 non-mass models ['isotropic_linear_elastic', 'isotropic_plane_stress_sheet', 'linear_viscoelastic', 'orthotropic_3d_elastic', 'uniaxial_along_grain']; only mass accepts it
+
+VERDICT: HOLDS 5/5

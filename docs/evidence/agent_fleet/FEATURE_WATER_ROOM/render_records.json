@@ -1,0 +1,205 @@
+[
+ {
+  "name": "substrate.built",
+  "verdict": "PASS",
+  "detail": {
+   "n_cells": 34538,
+   "n_edges": 51711,
+   "n_colors": 63,
+   "cube_edge": 9.904747,
+   "center_cube": [
+    "0",
+    "0",
+    "0"
+   ],
+   "inj_target": 446,
+   "bed_at_target": 0.996886
+  }
+ },
+ {
+  "name": "launch",
+  "verdict": "PASS",
+  "detail": {
+   "pid": 92740,
+   "port": 8104,
+   "exe_sha256": "6f782146a3c145230d059fd9ad2920caec1087592c11b004020d15b7f002c618"
+  }
+ },
+ {
+  "name": "load.mesh",
+  "verdict": "PASS",
+  "detail": {
+   "r": 27.862994463376467,
+   "theta": 3.141592653589793,
+   "phi": -1.3101939350475558
+  }
+ },
+ {
+  "name": "load.water_bin",
+  "verdict": "PASS",
+  "detail": {
+   "resp": "{\"ok\":true}"
+  }
+ },
+ {
+  "name": "load.water_vis",
+  "verdict": "PASS",
+  "detail": {
+   "tri_base": 2092
+  }
+ },
+ {
+  "name": "camera.set",
+  "verdict": "PASS",
+  "detail": {
+   "cam_radius": 34.0,
+   "cam_theta": 0.5,
+   "cam_phi": 0.35,
+   "extent": 10.0
+  }
+ },
+ {
+  "name": "action.pour_on",
+  "verdict": "PASS",
+  "detail": {
+   "frame": 60,
+   "inj_target": 446,
+   "inj_count": 2000,
+   "steps_per_frame": 4
+  }
+ },
+ {
+  "name": "action.pour_off",
+  "verdict": "PASS",
+  "detail": {
+   "frame": 180,
+   "steps_total_right_after_off": 23864
+  }
+ },
+ {
+  "name": "pacing.settle",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 186,
+   "steps_total_settled": 24920,
+   "expected_poured_quanta": 49840000
+  }
+ },
+ {
+  "name": "pacing.measured",
+  "verdict": "MEASURED",
+  "detail": {
+   "frames": 360,
+   "mean_grab_s": 1.505,
+   "max_grab_s": 3.028,
+   "take_wall_s": 541.8,
+   "note": "phase boundaries are capture-indexed; gates do not depend on wall pacing"
+  }
+ },
+ {
+  "name": "gate.dry_zero",
+  "verdict": "PASS",
+  "detail": {
+   "sum_at_f000": 0
+  }
+ },
+ {
+  "name": "gate.pour_changes_state",
+  "verdict": "FAIL",
+  "detail": {
+   "sum_at_f359": 47728000,
+   "expected": 49840000,
+   "steps_total_settled": 24920,
+   "steps_total_right_after_off": 23864
+  }
+ },
+ {
+  "name": "gate.flow_downhill",
+  "verdict": "FAIL",
+  "detail": {
+   "wet_centroid_bed_f090": 0.7692669609699891,
+   "wet_centroid_bed_f359": 0.7848307255909994
+  }
+ },
+ {
+  "name": "keyframe.truth",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 0,
+   "steps_total": 0,
+   "sum": 0,
+   "wet_cells": 0,
+   "max_depth_quanta": 0,
+   "wet_centroid_bed": null
+  }
+ },
+ {
+  "name": "keyframe.truth",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 90,
+   "steps_total": 6496,
+   "sum": 12984000,
+   "wet_cells": 815,
+   "max_depth_quanta": 807557,
+   "wet_centroid_bed": 0.7692669609699891
+  }
+ },
+ {
+  "name": "keyframe.truth",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 150,
+   "steps_total": 18828,
+   "sum": 37648000,
+   "wet_cells": 1610,
+   "max_depth_quanta": 1643025,
+   "wet_centroid_bed": 0.7780245652599471
+  }
+ },
+ {
+  "name": "keyframe.truth",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 179,
+   "steps_total": 23852,
+   "sum": 47656000,
+   "wet_cells": 1732,
+   "max_depth_quanta": 2205591,
+   "wet_centroid_bed": 0.780243805069477
+  }
+ },
+ {
+  "name": "keyframe.truth",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 240,
+   "steps_total": 34656,
+   "sum": 47728000,
+   "wet_cells": 1616,
+   "max_depth_quanta": 2026314,
+   "wet_centroid_bed": 0.7831273179986944
+  }
+ },
+ {
+  "name": "keyframe.truth",
+  "verdict": "MEASURED",
+  "detail": {
+   "frame": 359,
+   "steps_total": 55436,
+   "sum": 47728000,
+   "wet_cells": 1688,
+   "max_depth_quanta": 2128760,
+   "wet_centroid_bed": 0.7848307255909994
+  }
+ },
+ {
+  "name": "encode.movie",
+  "verdict": "PASS",
+  "detail": {
+   "mp4": "E:\\ChimeraWork\\slot-04\\docs\\evidence\\agent_fleet\\FEATURE_WATER_ROOM\\water_room_take.mp4",
+   "frames": 360,
+   "sha256": "31e365edf103c1637d3f8981385c3f3ff6ee6f1fd5ed09731ad3b28a1e289261"
+  }
+ }
+]

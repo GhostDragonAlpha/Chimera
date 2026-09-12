@@ -1,0 +1,37 @@
+feature-water-room-01 — GET /water_state + /water_clock at the 6 declared keyframes (slot 0 = latest V; quanta are integer Q)
+
+keyframe f000  steps_total=0
+  sum(V)           = 0
+  wet cells        = 0 of 34538
+  max depth quanta = 0
+  wet centroid bed = None
+
+keyframe f090  steps_total=6496
+  sum(V)           = 12984000
+  wet cells        = 815 of 34538
+  max depth quanta = 807557
+  wet centroid bed = 0.7692669609699891
+
+keyframe f150  steps_total=18828
+  sum(V)           = 37648000
+  wet cells        = 1610 of 34538
+  max depth quanta = 1643025
+  wet centroid bed = 0.7780245652599471
+
+keyframe f179  steps_total=23852
+  sum(V)           = 47656000
+  wet cells        = 1732 of 34538
+  max depth quanta = 2205591
+  wet centroid bed = 0.780243805069477
+
+keyframe f240  steps_total=34656
+  sum(V)           = 47728000
+  wet cells        = 1616 of 34538
+  max depth quanta = 2026314
+  wet centroid bed = 0.7831273179986944
+
+keyframe f359  steps_total=55436
+  sum(V)           = 47728000
+  wet cells        = 1688 of 34538
+  max depth quanta = 2128760
+  wet centroid bed = 0.7848307255909994

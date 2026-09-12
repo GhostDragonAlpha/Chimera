@@ -709,6 +709,47 @@ class Control:
             return {'task':t['id'],'state':'READY','generation':t['generation'],
                     'slot_freed':freed,'owner_session_revoked':False,
                     'filesystem_touched':False}
+        if op=='task_provenance_set':
+            # fleet-task-provenance-backfill-01 (2026-09-11): backfill ONE
+            # card citation onto an EXISTING task. The deployed provenance
+            # matching (fleet-catalogue-realization-matching-01) is correct,
+            # but every pre-existing holodeck task was created BEFORE the
+            # realized_from field existed (the additive migration setdefaults
+            # None), so live_cards/done_cards are empty and the id-fallback
+            # never binds GOV-0X to holodeck-gov-0X: catalogue_next keeps
+            # offering [GOV-01]. This op fills the provenance plane the
+            # matching already reads; catalogue_next itself is NOT touched.
+            # Supervisor-only, audited like task_abandon: evidence + actor +
+            # revision stored on the task record, one revision-bumped event
+            # naming task + actor (payload never enters the event stream).
+            # Refusal arms, each named: supervisor_only; unknown_task;
+            # task_not_terminal_or_active (allowed = terminal INTEGRATED/
+            # ABANDONED or active RUNNING/BLOCKED/REVIEW - the established
+            # state families; READY never started and RECOVERY_HOLD awaits
+            # recovery are neither, and holodeck-gov-06's live REVIEW state
+            # is exactly why active states must backfill too);
+            # provenance_already_set (a citation, once present - forward via
+            # create_task or backfilled here - is never silently rewritten);
+            # missing_realized_from / malformed_realized_from (card-id shape
+            # [A-Z][A-Z0-9]*-[0-9]+: every one of the 240 canonical card ids
+            # matches it; matching downstream stays case-insensitive); and
+            # missing_provenance_evidence, validated AFTER the id so neither
+            # gate can mask the other. Registry-state only; the filesystem
+            # is NEVER touched.
+            require(actor=='SUPERVISOR','supervisor_only')
+            t=s['tasks'].get(p.get('task'));require(t is not None,'unknown_task')
+            require(t['state'] in ('RUNNING','BLOCKED','REVIEW','INTEGRATED','ABANDONED'),
+                    'task_not_terminal_or_active')
+            require(not t.get('realized_from'),'provenance_already_set')
+            rf=text(p.get('realized_from'),'realized_from')
+            require(re.fullmatch(r'[A-Z][A-Z0-9]*-[0-9]+',rf) is not None,
+                    'malformed_realized_from')
+            evidence=text(p.get('evidence'),'provenance_evidence')
+            t['realized_from']=rf
+            t['provenance_set']={'realized_from':rf,'evidence':evidence,'actor':actor,
+                                 'revision':s['revision']+1}
+            return {'task':t['id'],'realized_from':rf,'state':t['state'],
+                    'filesystem_touched':False}
         if op=='integration_request':
             self._lead(s,actor,p.get('epoch'))
             t=s['tasks'].get(p.get('task'));require(t and t['state']=='REVIEW','not_in_review')
@@ -728,6 +769,31 @@ class Control:
             t.update(state='INTEGRATED',integration={'commit':sha(p.get('commit')),'evidence':text(p.get('evidence'),'published_review_evidence')})
             r['state']='ACKNOWLEDGED'
             return {'state':'INTEGRATED','slot':'held until cleanup attestation'}
+        if op=='ir_retire':
+            # fleet-followups-batch-04 (2026-09-11): retire an ORPHANED
+            # PENDING integration request. With the publication broker still
+            # an activation gate, PENDING_EXTERNAL_BROKER requests can strand
+            # (live case: d614a192236e08fef0160f1f for holodeck-gov-06, whose
+            # PR #84 merged through another path, so its request can never be
+            # acknowledged) and no operation could retire them. Supervisor-
+            # only, audited exactly like task_abandon/task_provenance_set:
+            # reason + evidence + actor + revision stored on the request
+            # record; the call() audit event carries the whitelisted keys
+            # (request, reason, actor) and never the evidence body. Registry-
+            # state only; the filesystem is NEVER touched; no session is
+            # revoked. The request id is retired permanently in the sense
+            # that ack_integration's existing state guard refuses any
+            # non-PENDING request; no un-retire operation is added.
+            require(actor=='SUPERVISOR','supervisor_only')
+            r=s['requests'].get(p.get('request'));require(r is not None,'unknown_integration_request')
+            require(r['state']=='PENDING_EXTERNAL_BROKER','request_not_pending')
+            reason=text(p.get('reason'),'retire_reason')
+            evidence=text(p.get('evidence'),'retire_evidence')
+            r['state']='RETIRED_ORPHANED'
+            r['retire']={'reason':reason,'evidence':evidence,'actor':actor,
+                         'revision':s['revision']+1}
+            return {'request':p.get('request'),'task':r['task'],
+                    'state':'RETIRED_ORPHANED','filesystem_touched':False}
         if op=='review_requeue':
             # Stale-base reconciliation WITHOUT force-push: a REVIEW blocked by
             # a publication refusal (e.g. the base advanced legitimately while

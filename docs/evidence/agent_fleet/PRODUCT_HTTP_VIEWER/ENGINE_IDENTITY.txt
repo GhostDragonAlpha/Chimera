@@ -1,0 +1,30 @@
+task product-http-viewer-01 run product-http-viewer-01-20260912-020332
+source HEAD: b021fafeaf8e97d9fa081233ea1097d8f9e896d3
+dirty diff (viewer + evidence files expected):
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/ENGINE_IDENTITY.txt
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/byte_identity.txt
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/fit_sweep_control_reset.txt
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/fit_sweep_fit_rom.txt
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/live_view.txt
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/movie_check.txt
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/render_records.json
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/render_records.txt
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/run1_retired_console.txt
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/run3_retired_console.txt
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/run4_retired_console.txt
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/run4_retired_records.json
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/run5_retired_console.txt
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/run5_retired_records.json
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/run6_console.txt
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/run6_retired_console.txt
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/run6_retired_records.json
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/viewer_take.mp4
+?? docs/evidence/agent_fleet/PRODUCT_HTTP_VIEWER/viewer_take_verify.py
+?? tools/product_viewer/
+exe: E:\ChimeraWork\slot-05\.tmp\engine_build\product-http-viewer-01\Release\chimera_engine.exe
+exe sha256: 13677bfb3f60febe837399718380ba9a7d57e39908d03f26d4772b64a15f2b46
+main.cpp sha256: 89f8071ba2cdbea6d6ad9d214291dbb1cc5247e62cab14815e7049a1308402dc
+engine port: 8105  viewer port: 8205
+engine pid: 39604  viewer pid: 77056
+runtime cwd: E:\ChimeraWork\slot-05\.tmp\engine_runtime\product-http-viewer-01-20260912-020332
+driver digests (engine-rendered fetches): 90/90

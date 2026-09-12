@@ -1,0 +1,34 @@
+R6 deployed findings + current-state measurements (never patched, never adopted as the model's truth)
+========================================================================
+task base: 4812b55b407107a34b708af1700e071a7eecbab4
+working HEAD: 2de90fcd0d1defc21038db0f66401f97de4b5336 (evidence-only commits; material plane untouched)
+git status --porcelain: ?? docs/evidence/agent_fleet/HOLODECK/MAT/MAT-04/checks/
+?? docs/evidence/agent_fleet/HOLODECK/MAT/MAT-04/controls/
+?? docs/evidence/agent_fleet/HOLODECK/MAT/MAT-04/reference/
+[PASS] R6(a) owner_instance current state
+       tools/agent_fleet/control.py: 8 occurrences at lines [121, 122, 123, 323, 499, 501, 554, 697] (predicted 8: fence :121-123, setdefault :323, yield guard :499-501, claim bind :554, release clear :697)
+       tools/agent_fleet/review_handoff.py: 1 occurrence(s) at lines [113] (predicted 1: the claim-path bind)
+       instance_fencing sites: control.py [71, 321, 476, 482, 483, 550], review_handoff.py [103] (default mode 'compat'; fence applies when 'enforced')
+       VERDICT: the PR #80 claim-path fix IS PRESENT at this base -- the claim of THIS task (controller rev 1087) bound a non-null owner_instance (subagent-worker-11-709647a37630); no stale deviation language is carried
+       contrast baseline: GOV-01's R6 measured review_handoff == 0 at d59518b9; surprise (rh==0 here): False
+[PASS] R6(b) card-falsifier hunt in deployed source
+       phrases ['predictive material validation', 'material validation', 'validated predictor'] over 1175 deployed tracked *.py (docs/evidence excluded):
+         hits: NONE (0) -- card falsifier NOT reproduced in the deployed text
+         ANY hit would be the falsifier FIRING; it would be reported here with exact file:line and never patched
+[FAIL] R6(c) constants plane
+       tools/materials.py: 2 'Source:' literature citations (predicted >= 3); 0 identified-with-uncertainty parameter outputs (predicted 0)
+       citations quoted: ['plush_stuffed : PET fiberfill + plush shell, mostly trapped air.', 'documented here before any run). Source: polyester fiberfill', 'bulk density range, INVISTA Dacron fiberfill technical data']
+         (parameters ARRIVE from documented sources; none is identified from experiments with a standard error or correlation output -- the exact gap this card's calibration tool targets)
+[PASS] R6(d) independence audit
+       full import list of reference/mat04_reference_model.py:
+         from __future__ import annotations
+         import math
+         import sys
+         from dataclasses import dataclass
+         from fractions import Fraction
+         from pathlib import Path
+         import math01_reference_model as m01  # noqa: E402
+       imports from the audited deployed code (tools/*): NONE (0)
+         dependency: the MATH-01 typed-quantity backbone ONLY (the task packet's designated units backbone), cited at every dimensional touchpoint; independence is claimed from the deployed material plane, not from MATH-01
+
+RESULT r6_findings.txt: 3/4 (failed: ['R6(c) constants plane'])

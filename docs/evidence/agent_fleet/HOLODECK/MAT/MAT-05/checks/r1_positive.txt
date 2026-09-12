@@ -1,0 +1,18 @@
+R1 positive controls (model must ACCEPT) -- card statement side
+threshold: 7/7 required; measured: 7/7
+verdict: HOLD
+
+[PASS] R1a
+  authored frozen PresetRecord synthetic=True label='SYNTHETIC stuffed-plush assembly; declared, not measured'
+[PASS] R1b
+  preset store n=2, calibrated store n=0 (must be 0)
+[PASS] R1c
+  admitted calibrated record white_oak.density provenance=researched
+[PASS] R1d
+  sg_to_density(0.68, 1000) = Quantity(680.0, Dimension(L=-3, M=1, T=0)) via MATH-01 algebra; want value 680.0, dimension (L^-3 M)
+[PASS] R1e
+  plush_stuffed SG 0.25 admitted; knit SG 0.3 admitted; acrylic SG 1.18 admitted
+[PASS] R1f
+  preset snapshot 5 records, calibrated snapshot 1 records; mapping forbids item assignment: True; shared keys: []
+[PASS] R1g
+  preset_get -> synthetic=True, label='SYNTHETIC stuffed-plush assembly; declared, not measured'

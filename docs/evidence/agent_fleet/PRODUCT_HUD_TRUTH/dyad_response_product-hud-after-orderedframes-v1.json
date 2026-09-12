@@ -1,0 +1,521 @@
+{
+ "attempt": "product-hud-after-orderedframes-v1",
+ "capture_identities": [
+  {
+   "index": 1,
+   "path": "E:\\ChimeraWork\\slot-03\\docs\\evidence\\agent_fleet\\PRODUCT_HUD_TRUTH\\frames\\g000.png",
+   "sha256": "390bc06984770b03c2213e29ccfc2b37c95b3b0f3c4492186c15f77e4f746f2a"
+  },
+  {
+   "index": 2,
+   "path": "E:\\ChimeraWork\\slot-03\\docs\\evidence\\agent_fleet\\PRODUCT_HUD_TRUTH\\frames\\g012.png",
+   "sha256": "3eba4739f8aecc12f3f738526a1ac21baca16c9efbbf55e6260251cc1cddfe17"
+  },
+  {
+   "index": 3,
+   "path": "E:\\ChimeraWork\\slot-03\\docs\\evidence\\agent_fleet\\PRODUCT_HUD_TRUTH\\frames\\g020.png",
+   "sha256": "3c83bd71995fe8275a8772dfe14d411f79b2127863a10e84309e83d38d0f3b83"
+  },
+  {
+   "index": 4,
+   "path": "E:\\ChimeraWork\\slot-03\\docs\\evidence\\agent_fleet\\PRODUCT_HUD_TRUTH\\frames\\g025.png",
+   "sha256": "a2e310455fd2f5bef4ae1a5625abe0ebef9ac129facf0eb8f5b831bc441c9963"
+  },
+  {
+   "index": 5,
+   "path": "E:\\ChimeraWork\\slot-03\\docs\\evidence\\agent_fleet\\PRODUCT_HUD_TRUTH\\frames\\g035.png",
+   "sha256": "f1725266786cdb80557f026a34f510e8be0dd8bfd29e3628f96cfbf645628283"
+  },
+  {
+   "index": 6,
+   "path": "E:\\ChimeraWork\\slot-03\\docs\\evidence\\agent_fleet\\PRODUCT_HUD_TRUTH\\frames\\g044.png",
+   "sha256": "12ed875f3f4b422881ec458efa1124a7e728bdb794092bd4b528b063d4e18770"
+  }
+ ],
+ "exact_prompt": "DYAD visual review request\ntask: product-hud-truth-01\nattempt: product-hud-after-orderedframes-v1\nphysical/programming context: A desktop engineering application window: a central 3D viewport showing a small brown creature figure standing on a grid floor, with tool panels around the viewport. A short scripted sequence of the creature plays; the six frames are IN ORDER, taken evenly from a 4.5-second clip (10 frames per second).\nclaim under examination: A viewer reading these frames in order can tell what the creature is doing and what a human would learn from watching it.\nreview type: ordered_frames\nordered captures: #1 g000.png (sha256 390bc0698477...), #2 g012.png (sha256 3eba4739f8ae...), #3 g020.png (sha256 3c83bd71995f...), #4 g025.png (sha256 a2e310455fd2...), #5 g035.png (sha256 f1725266786c...), #6 g044.png (sha256 12ed875f3f4b...)\ncamera/runtime metadata: {\"camera\": \"fixed 3/4 orbit (set once before the clip; unchanged during)\", \"clip_truth_declared_to_nobody\": \"the judge is told nothing about how the motion was produced\", \"state\": \"the creature is the application loaded subject; a short pose clip plays\"}\nevidence limits: six ordered frames from a 4.5 s clip (10 fps); on-screen application text is part of the product surface and may be read; numbers are observations, not measurements\n\nAnswer EVERY question with its number. Report only what you can observe in the supplied images; state uncertainty explicitly. Do not guess. Numbers you mention are observations to verify, not measurements.\n1. 1. Describe what happens across the frames, in order.\n2. 2. What kind of motion or behavior is being demonstrated \u2014 name it as you would to a friend.\n3. 3. If a non-physicist watched this clip, what ONE sentence would you tell them about what they just learned?\n4. 4. Is anything unclear, ambiguous, or unconvincing about the sequence?",
+ "finish_status": "i have finished the review; my findings are recorded above exactly as observed, with uncertainties stated and nothing added beyond the six supplied frames.",
+ "observations": [
+  "Frame 1 (t=0.000s): neutral standing pose, both arms at sides, all joint labels \"+0\", HUD reads \"SHOW neck theta 0.00 deg ROM [-35.8 .. 130.2]\", timeline reads \"PAUSED (scrub/step = exact poses)\", reel strip empty \"[0/12]\".",
+  "Frame 2 (t=1.200s): HUD reads \"EDIT shoulder_R+7.78 elbow_R+16.20 deg\"; the viewer-right arm has begun to lift and bend outward; shoulder_R/elbow_R labels highlighted green (+8 / +8 as I read them, small and low-contrast).",
+  "Frame 3 (t=2.000s): HUD reads \"shoulder_R+36.00 elbow_R+75.00 deg\"; the arm is clearly raised up and out with the forearm bent.",
+  "Frame 4 (t=2.500s): same raised pose and same 36.00/75.00 readout \u2014 a hold.",
+  "Frame 5 (t=3.500s): HUD reads \"shoulder_R+23.33 elbow_R+48.60 deg\"; the arm is partway back down.",
+  "Frame 6 (t=4.400s): HUD reads \"shoulder_R+0.00 elbow_R+0.00 deg\"; arm back at the side, all labels again \"+0\", visually matching frame 1.",
+  "Camera, grid, panels, and figure position do not observably change between frames, consistent with the stated fixed camera.",
+  "The reel strip, once populated ([12/12]), shows thumbnails whose captions trace the same arc (e.g., t=1.10 \"+3.7d\" ... t=1.90 \"+36.0d\" ... t=3.40 \"+26.7d\" ... t=4.30 \"+0.5d\").",
+  "The figure's head is cropped at the top edge of the viewport in every frame.",
+  "Only two joints of one arm move; tail, legs, other arm, and head show no observable motion in any frame.",
+  "The six timestamps advance monotonically (0.000 \u2192 1.200 \u2192 2.000 \u2192 2.500 \u2192 3.500 \u2192 4.400 s of a declared ~4.5 s clip).",
+  "The on-screen degree values, the reel-thumbnail captions, and the visible arm pose all agree with one another at every frame, and the cycle closes cleanly back to the frame-1 pose.",
+  "The motion reads as a one-arm gesture \u2014 lift out and up with elbow bend (like a half-wave or salute), hold about a second, lower back to a resting stand \u2014 i.e., a scripted joint-pose cycle on shoulder and elbow."
+ ],
+ "provider_id": "subagent-dyad-glm53flash",
+ "raw_response": "1. Across the six frames, in order: Frame 1 (on-screen clock t=0.000s) shows a smooth brown humanoid figure with a tail standing on a grid floor in a neutral pose, both arms hanging at its sides; the joint overlay labels all read \"+0\", the HUD reads \"SHOW neck theta 0.00 deg ROM [-35.8 .. 130.2]\", the timeline says \"PAUSED (scrub/step = exact poses)\", and the reel strip is empty \"[0/12]\". Frame 2 (clock t=1.200s) reads \"EDIT shoulder_R+7.78 elbow_R+16.20 deg\"; the figure's arm on the viewer's right has begun to lift and bend outward, and the shoulder_R/elbow_R labels are highlighted green (+8 / +8 as I read them, small and low-contrast). Frame 3 (t=2.000s) reads \"shoulder_R+36.00 elbow_R+75.00 deg\"; that arm is now clearly raised up and out with the forearm bent. Frame 4 (t=2.500s) shows the same raised pose with the same 36.00/75.00 readout \u2014 a hold. Frame 5 (t=3.500s) reads \"shoulder_R+23.33 elbow_R+48.60 deg\"; the arm is partway back down. Frame 6 (t=4.400s) reads \"shoulder_R+0.00 elbow_R+0.00 deg\"; the arm is back at the side, all joint labels again \"+0\", visually matching Frame 1. The camera, grid, panels, and figure position do not observably change between frames (consistent with the stated fixed camera). The reel strip, once populated ([12/12]), shows thumbnails whose own captions trace the same arc (e.g., t=1.10 \"+3.7d\" ... t=1.90 \"+36.0d\" ... t=3.40 \"+26.7d\" ... t=4.30 \"+0.5d\"). The figure's head is cropped at the top edge of the viewport in every frame.\n2. To a friend: a one-arm gesture \u2014 the figure lifts its right-side arm out and up while bending the elbow (like a half-wave or salute), holds it for about a second, then lowers the arm back to a resting stand. In animation terms it reads as a scripted joint-pose cycle (raise-hold-lower-return) on two joints, shoulder and elbow, with the rest of the body held still.\n3. For a non-physicist, one sentence: \"You just watched a character's right arm lift up, hold, and come back down under two joint controls, and the degree numbers shown on screen track exactly the motion you see, ending back at rest.\"\n4. Unclear, ambiguous, or unconvincing points: (a) Only two joints of one arm move; the tail, legs, other arm, and head show no observable motion in any frame, so \"what the creature is doing\" is a single arm gesture and nothing more. (b) With six stills I cannot judge smoothness, speed, or easing \u2014 the between-frame motion is inferred, and frames 3 and 4 are pose-identical (a hold), so the middle of the clip carries no new information. (c) In frame 5 the HUD reads elbow_R+48.60 deg while the small green on-figure elbow label appeared to me to read a higher value (roughly \"+5x\"); either I misread that label or the two displays disagree at that instant \u2014 I cannot resolve this from the images. (d) The timeline text says \"show sweep paused - 2 joint(s) posed by edit/script (PLAY returns the pose)\" and frame 1 says \"PAUSED (scrub/step = exact poses)\", which suggests the poses come from a script/scrub rather than a freely playing animation; I can only observe that text, not verify its mechanism. (e) Frame 1's HUD highlights the neck (\"SHOW neck theta ... ROM [-35.8 .. 130.2]\") while the motion that follows is in shoulder_R/elbow_R \u2014 an initial-readout mismatch worth noting. (f) The figure's head is cut off by the viewport edge in all frames, so facial/jaw behavior cannot be assessed despite jaw/mouth labels being present. (g) The figure has no visible face or distinguishing features, so \"right arm\" rests entirely on the text labels rather than on anatomy I can discern. What IS convincing: the six timestamps advance monotonically (0.000 \u2192 1.200 \u2192 2.000 \u2192 2.500 \u2192 3.500 \u2192 4.400 s of a declared ~4.5 s clip), the on-screen degree values, the reel-thumbnail captions, and the visible arm pose all agree with one another at every frame, and the cycle closes cleanly back to the frame-1 pose.",
+ "review_type": "ordered_frames",
+ "served_identity_note": "reported: zcode-general-purpose-subagent (spawn agent_17cafc25, harness-declared 2026-09-11)",
+ "served_model": "zcode-general-purpose-subagent (spawn agent_17cafc25, harness-declared 2026-09-11)",
+ "task": "product-hud-truth-01",
+ "uncertainty": "- With six stills I cannot judge smoothness, speed, or easing; the between-frame motion is inferred, and frames 3 and 4 are pose-identical (a hold), so the middle of the clip carries no new information.\n- In frame 5 the HUD reads elbow_R+48.60 deg while the small green on-figure elbow label appeared to me to read a higher value (roughly \"+5x\"); either I misread that label or the two displays disagree at that instant \u2014 I cannot resolve this from the images.\n- The frame 2 green joint labels were small and low-contrast, so my \"+8 / +8\" reading of them is uncertain.\n- The timeline text says \"show sweep paused - 2 joint(s) posed by edit/script (PLAY returns the pose)\" and frame 1 says \"PAUSED (scrub/step = exact poses)\", which suggests the poses come from a script/scrub rather than a freely playing animation; I can only observe that text, not verify its mechanism.\n- Frame 1's HUD highlights the neck while the motion that follows is in shoulder_R/elbow_R \u2014 an initial-readout mismatch worth noting.\n- The figure's head is cut off by the viewport edge in all frames, so facial/jaw behavior cannot be assessed despite jaw/mouth labels being present.\n- The figure has no visible face or distinguishing features, so \"right arm\" rests entirely on the text labels rather than on anatomy I can discern.\n- Only two joints of one arm move, so \"what the creature is doing\" is a single arm gesture and nothing more.",
+ "verdict": {
+  "numeric_mentions": [
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0.000"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0.00"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "-35.8"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "130.2"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "12"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1.200"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+7.78"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+16.20"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+8"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+8"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2.000"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+36.00"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+75.00"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2.500"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "36.00"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "75.00"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "5"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3.500"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+23.33"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+48.60"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "6"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4.400"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0.00"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0.00"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "12"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "12"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1.10"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+3.7"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1.90"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+36.0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3.40"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+26.7"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4.30"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0.5"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0.000"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1.200"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2.000"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2.500"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3.500"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4.400"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4.5"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "-1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0.000"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0.00"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "-35.8"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "130.2"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "12"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1.200"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+7.78"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+16.20"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+8"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+8"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2.000"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+36.00"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+75.00"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2.500"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "36.00"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "75.00"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "5"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3.500"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+23.33"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+48.60"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "6"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4.400"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0.00"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0.00"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "12"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "12"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1.10"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+3.7"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1.90"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+36.0"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3.40"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+26.7"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4.30"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+0.5"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "5"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+48.60"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "+5x"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "-35.8"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "130.2"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "0.000"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "1.200"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2.000"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "2.500"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "3.500"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4.400"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "4.5"
+   },
+   {
+    "tag": "unverified_numeric_mention",
+    "text": "-1"
+   }
+  ],
+  "status": "INCONCLUSIVE",
+  "supports_claim": true
+ }
+}

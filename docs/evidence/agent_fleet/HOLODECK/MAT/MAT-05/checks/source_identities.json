@@ -1,0 +1,14 @@
+{
+  "base": "4812b55b407107a34b708af1700e071a7eecbab4",
+  "files": {
+    "tools/materials.py": "7c3575fda733f741e0a265bef489bcfef3d2c508fec64095ae185a8035ead57b",
+    "tools/cad_sample.py": "df092674ddf0b1f5ee3fa1286b0e5356143b5b7124020ecd0bf250c79f428b5f",
+    "tools/membrane_window_demo.py": "df57e867309b2e238d95336c63672f1256d6ee8b6307fe34cd56683a02ebea62",
+    "tools/membrane_window_demo_checks.py": "287af9ff51b1ca868297297c36e8fbd3edecffce772527009ee22534e850aeeb",
+    "tools/gpu_fixtures_recovered/membrane_demo.py": "11b2b5015946ae8ad15a64e0097e1532626b1808b0cfcdb13960fa100299b1e5",
+    "tools/material_contract.py": "6af75efe12da4ba81e3c95cddbcffd083fe5dfb926eb698acda2f0145b9e2d19",
+    "tools/matter_data.py": "88cc670017aa3f1e4cc6421367f8d14cb556eb11e4023d57916f280ef0240db8",
+    "tools/agent_fleet/control.py": "7cee259b35a21ebe689feb5d77c8f2bb10b7125cd1ea9c3ac06e1cb6254bfa30",
+    "tools/agent_fleet/review_handoff.py": "e8f6a939b81f3525408996e4f43681e6c272bc022e9c053b6f056e0dad8cfd07"
+  }
+}

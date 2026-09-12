@@ -1,0 +1,58 @@
+R6 -- measured deltas and current state (base 4812b55b; regexes exactly as preregistered)
+==============================================================================
+threshold: 17/17 predicted counts match; any miss is a DISCLOSED SURPRISE, never reconciled
+
+    control.py:121: owner_instance=t.get('owner_instance')
+    control.py:122: if owner_instance is not None:
+    control.py:123: require(instance==owner_instance,'instance_not_bound')
+    control.py:323: for t in s['tasks'].values(): t.setdefault('owner_instance',None)
+    control.py:499: if t.get('owner')==actor and t.get('owner_instance') is not None \
+    control.py:501: require(instance_id==t['owner_instance'],'instance_not_bound')
+    control.py:554: owner_instance=p.get('_resolved_instance'))
+    control.py:697: t.update(state='READY',owner=None,slot=None,owner_instance=None,
+    review_handoff.py:113: owner_instance=p.get("_resolved_instance"))
+
+[PASS] (a) temperature in material_contract == 0
+        measured 0
+[PASS] (a) temperature in matter_data == 1
+        measured 1
+[PASS] (a) moisture in material_contract == 1
+        measured 1
+[PASS] (a) moisture in matter_data == 3
+        measured 3
+[PASS] (a) strain-rate in material_contract == 0
+        measured 0
+[PASS] (a) strain-rate in matter_data == 0
+        measured 0
+[PASS] (b) interpolation machinery in material_contract == 0
+        measured 0
+[PASS] (b) interpolation machinery in matter_data == 0
+        measured 0
+[PASS] (b) dataset versioning in material_contract == 0
+        measured 0
+[PASS] (b) dataset versioning in matter_data == 0
+        measured 0
+[PASS] (c) \buncertainty\b in material_contract == 0
+        measured 0
+[PASS] (c) \buncertainty\b in matter_data == 3
+        measured 3
+[PASS] (c) \bcitation\b in material_contract == 0
+        measured 0
+[PASS] (c) \bcitation\b in matter_data == 3
+        measured 3
+[FAIL] (d) owner_instance in control.py == 8 (fence :121-123, setdefault :323, yield guard :499-501, claim bind :554, release clear :697)
+        measured 9; sites:
+[PASS] (d) owner_instance in review_handoff.py >= 1 (the claim-path bind; predicted == 1 at :113; GOV-01 measured 0 at d59518b9 pre-fix -- the PR #80 fix is present iff >= 1)
+        measured 1; sites:
+[PASS] (e) model imports stdlib + MATH-01 backbone ONLY; nothing from the audited deployed plane
+        imports: __future__ (:34), hashlib (:36), json (:37), math (:38), sys (:39), dataclasses (:40), pathlib (:41), math01_reference_model (:45)
+
+SOURCE IDENTITY (sha256 at base):
+  tools/matter_data.py  88cc670017aa3f1e4cc6421367f8d14cb556eb11e4023d57916f280ef0240db8  446 lines
+  tools/material_contract.py  6af75efe12da4ba81e3c95cddbcffd083fe5dfb926eb698acda2f0145b9e2d19  559 lines
+  tools/agent_fleet/control.py  7cee259b35a21ebe689feb5d77c8f2bb10b7125cd1ea9c3ac06e1cb6254bfa30  839 lines
+  tools/agent_fleet/review_handoff.py  e8f6a939b81f3525408996e4f43681e6c272bc022e9c053b6f056e0dad8cfd07  249 lines
+  docs/evidence/agent_fleet/HOLODECK/MAT/MAT-03/reference/mat03_reference_model.py  825e9b7b51013a80a681d70545e9f10d3b936fdd498d91f49aa4b8c7dfe854a4  422 lines
+  Chimera/docs/matter/matter_library.json  0482cfd71cbe7a9d80c938b4c100a6c84120b4dc546ab756ab7ae3c01c5a5472  1298 lines
+
+R6 RESULT: 16/17 predicted counts match

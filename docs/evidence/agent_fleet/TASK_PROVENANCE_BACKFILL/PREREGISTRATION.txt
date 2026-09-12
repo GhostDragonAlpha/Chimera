@@ -1,0 +1,136 @@
+PREREGISTRATION - fleet-task-provenance-backfill-01 (gen 1)
+============================================================
+
+- Agent: subagent-worker-04. Slot 2, worktree E:\ChimeraWork\slot-02,
+  branch astra/tasks/fleet-task-provenance-backfill-01, claimed at the
+  task base bf1a72f6d3b6c8f84e7c7544fb0f8004d1ba86a5 (the PR #92 merge;
+  auto-provisioner verified clean tree, 6293-file index, HEAD == base
+  before any write). Scopes: tools/agent_fleet/control.py +
+  tools/agent_fleet/test_task_provenance.py + this evidence directory.
+- DATA GAP measured LIVE post-deployment of catalogue-provenance-bf1a72f6
+  (snapshot through the provisioned controller session, 2026-09-11):
+  every pre-existing holodeck task carries realized_from = None because
+  the field postdates them (PR #92's additive migration setdefaults
+  None), so live_cards/done_cards are EMPTY and the id-fallback never
+  binds GOV-0X to holodeck-gov-0X. catalogue_next still offers [GOV-01]
+  even though holodeck-gov-01..05 are INTEGRATED and holodeck-gov-06 is
+  REVIEW. The deployed matching is correct; the REGISTRY DATA lacks
+  citations those tasks could not have carried at creation.
+- SOURCE-ONLY development; DYAD: NOT_APPLICABLE (no executed visible
+  behavior; controller-source change verified by the local suites).
+- This commit carries the prereg + the instrument only. No fix, no
+  actuals. Fail-pre-fix proof of the instrument is retained verbatim in
+  PRE_FIX_FAILURES.txt (next commit) BEFORE the fix commit.
+
+## STATEMENT (from the packet, sharpened)
+
+The deployed provenance matching (PR #92) is correct; the registry data
+lacks citations it could not have carried. A supervisor-only operation
+`task_provenance_set` (task, realized_from, evidence) that BACKFILLS a
+single card citation onto an existing task - refused for unknown tasks,
+for card ids that do not match the canonical card-id shape, for tasks in
+a state that is neither terminal (INTEGRATED, ABANDONED) nor active
+(RUNNING, BLOCKED, REVIEW), for ids already cited, and audited like
+task_abandon (evidence + actor + revision stored on the task record, one
+revision-bumped event naming task + actor) - restores the frontier
+semantics WITHOUT changing any matching rule: catalogue_next is not
+touched; the op only fills the provenance plane PR #92 already reads.
+
+Card-id shape (derived, not chosen): every one of the 240 card ids in
+docs/roadmap/holodeck_tasks.json matches [A-Z][A-Z0-9]*-[0-9]+ (measured
+240/240 at this base; same shape as the backfill targets GOV-01..06,
+MATH-01, MAT-01). That regex is the malformed-id gate; matching itself
+stays case-insensitive downstream exactly as PR #92 shipped it.
+
+Backfill target set (from the live snapshot, all realized_from None):
+holodeck-gov-01..06 -> GOV-01..06, holodeck-math-01 -> MATH-01,
+holodeck-mat-01 -> MAT-01. Seven are INTEGRATED; holodeck-gov-06 is
+REVIEW (active) - so a terminal-only op would be unfittable for purpose
+by construction; the packet's terminal-OR-active rule is required.
+
+## PREDICTIONS (unmeasured in this task until the runs below)
+
+P1. S1-with-backfill (the retained S1 fixture from
+    fleet-catalogue-realization-matching-01, executed through BACKFILL
+    instead of create-time citation): holodeck-gov-01 created WITHOUT
+    realized_from, driven to INTEGRATED, then cited via
+    task_provenance_set(GOV-01) -> catalogue_next candidates become
+    EXACTLY ['GOV-02','GOV-03','GOV-04','GOV-05','GOV-06','MATH-01'] -
+    byte-identical to the S1 oracle set embedded in
+    test_catalogue_realization.py. Before the backfill, the same legacy
+    registry resolves to exactly ['GOV-01'] (the live gap, miniature).
+P2. Eight-task rehearsal on the faithful GOV+MATH+MAT subgraph
+    (GOV-01..06 roots/dependents, MATH-01 dep GOV-01, MATH-02 dep
+    GOV-01+MATH-01, MAT-01 dep MATH-01+GOV-03): seven tasks driven to
+    INTEGRATED and holodeck-gov-06 held at REVIEW (mirroring the live
+    registry), no citations -> frontier == ['GOV-01']; after eight
+    task_provenance_set calls -> frontier == EXACTLY ['MATH-02']:
+    the realized root GOV-01 is NOT re-proposed (prediction of the
+    packet) and no live REVIEW citation is re-proposed either.
+P3. Forward path unchanged: create_task(realized_from=...) still carries
+    the citation end-to-end (PR #92 behavior) with no provenance_set
+    needed, and a supervisor provenance_set on such a task REFUSES
+    (provenance_already_set) - a citation, once present, is never
+    silently rewritten; the op is a backfill, not an editor.
+P4. Refusal contract, all NAMED (asserted verbatim):
+    supervisor_only (lead/worker/other); unknown_task;
+    task_not_terminal_or_active for READY and for RECOVERY_HOLD
+    (state gate precedes id validation); missing_realized_from /
+    malformed_realized_from ('gov-01', 'GOV1', 'GOV-', 'GOV-01A',
+    'GOV-01 ', 'GOV-01-X', 'GOV_01'); missing_provenance_evidence
+    (validated AFTER the id, so a bad id cannot mask a missing
+    evidence string or vice versa); provenance_already_set (forward-
+    cited or previously backfilled). Every refusal leaves revision,
+    events and the task record untouched.
+P5. Audit parity with task_abandon: exactly one task_provenance_set
+    event per accepted call, actor SUPERVISOR, carrying task and NOT
+    the evidence/realized_from payload (those live on the task record:
+    provenance_set = {realized_from, evidence, actor, revision},
+    visible in snapshot); revision advances by exactly 1 per accepted
+    call; pure reads stay pure (catalogue_next untouched).
+P6. Gates are NOT loosened: test_master_catalogue stays 23/23; the
+    existing test_catalogue_realization.py suite stays green (the op
+    cannot change catalogue_next outputs); the full local agent_fleet
+    suite is green at the fixed head modulo the two known environmental
+    flakes (scale-probe under fleet load; capture occlusion) - any that
+    fire are recorded verbatim with isolation reruns. The new module
+    test_task_provenance.py is green at the fixed head and FAILS at the
+    pre-fix base (task_provenance_set is unknown_operation there) -
+    fail-pre-fix proof retained verbatim.
+
+## FALSIFIERS (named before the run)
+
+F-1. Any backfill executed without the op deployed - i.e. any test that
+     passes pre-fix by mutating realized_from through anything other
+     than task_provenance_set, or any plan step that edits registry
+     state directly - task void. (The op lands first, transitions, THEN
+     the lead backfills; this lane executes NO backfill on the live
+     registry: execution is the lead's post-transition procedure.)
+F-2. The frontier still offering GOV-01 after the eight backfills in
+     P2's rehearsal (or any deviation from the exact predicted sets in
+     P1/P2) - statement false.
+F-3. Any matching-rule change (catalogue_next diff), gate loosened, or
+     test weakened (test_master_catalogue drifting from 23/23;
+     test_catalogue_realization.py regressing) - task void.
+F-4. Any edit outside the two scoped files plus this evidence directory.
+
+## METHOD
+
+1. Prereg + instrument commit (this file +
+   tools/agent_fleet/test_task_provenance.py), zero actuals.
+2. Fail-pre-fix run of the new module at the unfixed base, retained
+   verbatim (PRE_FIX_FAILURES.txt).
+3. Fix control.py: add ONLY the task_provenance_set dispatch branch
+   (supervisor gate -> unknown_task -> terminal-or-active state gate ->
+   already-cited gate -> realized_from text gate -> card-shape gate ->
+   evidence gate -> write realized_from + provenance_set audit record).
+   catalogue_next, create_task and every matching rule stay untouched.
+4. Rerun the new module, test_catalogue_realization, test_master_catalogue,
+   then the full local agent_fleet suite; retain verbatim outputs
+   (RUN_*.txt) and RESULT.txt with the scoreboard and disclosures.
+5. Backfill EXECUTION PLAN (not execution) for the lead, in this
+   directory: the exact op sequence per task with its evidence citation
+   source (the integrated drafts), the post-transition verification
+   (catalogue_next must not offer GOV-01), and the falsifier arms.
+
+Agent: subagent-worker-04

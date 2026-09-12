@@ -1,0 +1,28 @@
+feature-water-room-01 blind judge report (SIMPLE protocol: fresh spawn agent_9d585494 by the lead per mailbox a7112c7344fe, six ordered frames, four questions, no priming, 2026-09-12)
+
+RUBRIC (preregistered): PREDICTION CONFIRMED iff Q1/Q2 unprompted contain
+both water/liquid behavior AND its spreading/movement — CONFIRMED:
+Q1 "a 'water' simulation running around/on it... a blue tint is clearly
+visible on the figure's neck... grows in frames 5 and 6... the blue patch
+on the figure is the water spreading"; Q2 "a real-time water/fluid
+simulation being demonstrated inside a 3D engine editor". Falsifier prong
+2 (judge cannot say what the water did) is REFUTED.
+
+JUDGE ANSWERS, VERBATIM:
+
+1. Across the six frames, the little brown figure stands completely still in the same spot on the grid floor; what changes is a "water" simulation running around/on it. In frame 1 the water system is idle (step counter at 0, no WATER readout over the viewport, render at 0 fps, no blue anywhere on the figure). By frame 2 a "WATER steps..." readout has appeared at the top of the viewport (steps 6104, with an "inj 446/2000" injection counter), the status panel says the water clock is RUNNING, the frame rate is live (~40 fps), and one thumbnail has landed in the reel strip at the bottom. From frame 3 onward a blue tint is clearly visible on the figure's neck; it stays about the same in frame 4, then grows in frames 5 and 6 to cover more of the neck and creep up under the jaw. Meanwhile the step counter climbs steadily (18,524 -> 23,528 -> 34,288 -> 55,112), the injection counter eventually reads "inj -1/0" (injection finished), and the reel fills up one capture at a time (1 through 5 of 12).
+
+2. It's a real-time water/fluid simulation being demonstrated inside a 3D engine editor — like watching a "fill the room with water" test, where the blue stain on the little character shows where the water has reached while a counter ticks off simulation steps.
+
+3. "You just watched a computer simulate water step by step in real time — the rising number is the simulation clock, and the blue patch on the figure is the water spreading."
+
+4. Yes, several things are weak. The only visible evidence of "water" is a small blue patch at the neck — there is no water surface, pool, or rising level on the floor or in the room, so the whole claim rests on tiny HUD text plus a subtle tint. The water appears at the neck rather than rising from the ground, which is counterintuitive (it reads more like dye being injected into the character than a room filling with water). The transition from frame 1 (idle, 0 fps, "no clock loaded") to frame 2 (running and already injecting) happens off-screen, so you never see the water start. The blue patch barely changes between frames 3 and 4, so from stills alone the "spreading" is not obviously progressive, and the injection readout switching formats (446/2000, then -1/0, with the status panel showing the numbers in swapped order) is cryptic. Finally, the figure never reacts at all and the timeline stays at "no clock loaded / theta 0.00" the whole time, which makes it unclear what the PLAYING clock is actually driving.
+
+ASSEMBLER NOTES (lead, honest record): the Q4 findings are the WATER ROOM
+v2 SPEC (product roadmap, backlog): (a) visible water body — pool on the
+floor / rising level, not a neck tint; (b) the pour START must be on-screen
+(frame 1->2 gap hides it); (c) spreading must be progressive across
+consecutive keyframes; (d) injection readout humanized; (e) the creature
+should visibly react (wet weight, drip) — reaction is a future feature;
+(f) the timeline/clock plane confusion recurs (same integration finding as
+the walk take: scripted takes should displace the sweep/idle clock plane).
