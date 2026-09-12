@@ -103,7 +103,7 @@ TIER 8 — CONTROLS (the operator's test bench): 30. Keyboard→motion ·
 through the viewer, arriving as parts freeze.
 
 Cadence (measured 2026-09-12): ~1 visible feature per day at one-at-a-time
-bus mode, 88% dyad first-pass rate; full inventory ≈ 4-5 weeks.
+bus mode, dyad first-pass rate 7-of-8 (PRs #97-#109); full inventory ≈ 4-5 weeks.
 
 ## The commitment
 

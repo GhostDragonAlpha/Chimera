@@ -19,8 +19,8 @@ build order, and the laws this project runs under.
   pour water on; every on-screen readout tracks the real simulation
   (blind-judged: independent reviewers who don't know what they're
   looking at confirm what the body does).
-- **The engine** — a C++ Vulkan renderer + physics service speaking ~45
-  HTTP routes (membrane/strain, water, gait, frost, stride). Frozen as a
+- **The engine** — a C++ Vulkan renderer + physics service speaking 59
+  HTTP paths (83 route rows): membrane/strain, water, gait, frost, stride. Frozen as a
   service; extended only by named, reviewed exceptions.
 - **The brain** — all product logic is Python driving the engine over
   its HTTP contract: scripted takes, choreography, and the HTTP viewer
@@ -34,11 +34,11 @@ build order, and the laws this project runs under.
 
 ```bash
 # engine (Windows, VS Build Tools + Vulkan SDK)
-cmake -B .tmp/engine_build -S ChimeraEngine
+cmake -B .tmp/engine_build -S ChimeraEngine/engine
 cmake --build .tmp/engine_build --config Release
-.tmp/engine_build/Release/chimera_engine.exe 8080
+.tmp/engine_build/Release/chimera_engine.exe 8105   # port = first arg
 
-# viewer (Python 3.10+, stdlib only)
+# viewer (Python 3.10+, stdlib only) — defaults to engine port 8105
 python -m tools.product_viewer
 # → open the printed URL: live view, frame gallery, camera presets
 ```
@@ -79,8 +79,8 @@ The method: [docs/THE_LAW.md](docs/THE_LAW.md); the dyad:
 ## Status
 
 Tier 0 (the body) frozen and proven; Tier 1 (locomotion — the creature
-learns to walk) in flight; 23 features queued, one at a time, ~1 visible
-feature per day. Multiplayer is native: the engine is already a server.
+learns to walk) in flight; 25 features queued, one at a time, ~1 visible
+feature per day (measured: PR #97 to #109 in under 12 hours). Multiplayer is native: the engine is already a server.
 
 License: [LICENSE](LICENSE). Built in the open, one verified membrane at
 a time.
