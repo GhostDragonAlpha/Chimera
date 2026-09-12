@@ -321,6 +321,7 @@ def main() -> int:
                                          N_DRY + N_POUR, N_FRAMES - 1}
 
         def grab(i: int) -> dict:
+            t_grab = time.time()
             stg, png = request("GET", "/glass", timeout=30)
             pg = frames_dir / f"g{i:03d}.png"
             pg.write_bytes(png)
@@ -332,7 +333,8 @@ def main() -> int:
             truth = water_readback() if i in truth_frames else None
             clock = jreq("GET", "/water_clock")
             return {"i": i, "glass": str(pg), "frame": str(pf) if pf else None,
-                    "truth": truth, "steps_total": int(clock.get("steps_total", -1))}
+                    "truth": truth, "steps_total": int(clock.get("steps_total", -1)),
+                    "dt_wall": round(time.time() - t_grab, 3)}
 
         take: list[dict] = []
         next_t = time.time()
@@ -364,6 +366,15 @@ def main() -> int:
             pause = next_t - time.time()
             if pause > 0:
                 time.sleep(pause)
+
+        # pacing truth (the product-http-viewer-01 lesson: the engine's /glass
+        # queue is serial — record what the cadence actually was)
+        dts = [t["dt_wall"] for t in take]
+        record("pacing.measured", "MEASURED",
+               {"frames": len(dts), "mean_grab_s": round(sum(dts) / len(dts), 3),
+                "max_grab_s": round(max(dts), 3),
+                "take_wall_s": round(sum(dts), 1),
+                "note": "phase boundaries are capture-indexed; gates do not depend on wall pacing"})
 
         # ── declared gates (PREREGISTRATION.md) ─────────────────────────────
         kf = {k: take[k] for k in KEYFRAMES}
