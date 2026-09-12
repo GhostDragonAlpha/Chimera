@@ -89,3 +89,15 @@ returns.
 - flow_downhill finding is backlog-bound: the slope law's constant ALPHA=0.1
   and the [0,1,0] downhill are the ledger's CHOSEN-UNVERIFIED constants; a
   future lane may derive the true gravity direction per-pose.
+
+## DYAD VERDICT (SIMPLE protocol, lead-executed spawn 2026-09-12)
+
+See DYAD_REPORT.txt (verbatim). PREDICTION CONFIRMED (Q1/Q2 name water +
+spreading unprompted); falsifier prong 2 refuted. Prong 1 was refuted in
+gen 1 by the exact identity (sum 47,728,000 == 2000 x 23,864 pour-boundary
+steps). The Q4 fakeness findings are recorded as the WATER ROOM v2 spec
+(visible pool/rising level, on-screen pour start, progressive spreading,
+humanized readout, creature reaction) — the honest gap between "the
+simulation runs" and "the room fills". Proof on operator desktop
+CHIMERA_PROOF/FEATURE_water_room/. Assembly by glm53-lead-02 per mailbox
+a7112c7344fe (owner host ended after submit_review rev 1288).
