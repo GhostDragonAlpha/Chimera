@@ -510,10 +510,11 @@ PAGE = """<!doctype html><html><head><meta charset="utf-8"><title>Chimera Produc
   <div class="pane"><h2>/glass — instruments composited (debugging only; never judged)</h2>
     <img id="g" alt="glass"></div>
 </div>
-<fieldset><legend>camera</legend>
- <button onclick="preset('fit_rom')">fit_rom (derived full-ROM fit)</button>
- <button onclick="preset('reset')">reset</button>
- <button onclick="preset('three_quarter')">three_quarter</button>
+<fieldset><legend>camera — drag any pane, wheel zooms, or keys: WASD move · Q/E up/down · R reset · P pose</legend>
+  <button onclick="preset('fit_rom')">fit_rom (derived full-ROM fit)</button>
+  <button onclick="preset('reset')">reset (R)</button>
+  <button onclick="preset('three_quarter')">three_quarter</button>
+  <button id="posebtn" onclick="pose()">pose clock: off</button>
  <span style="margin-left:14px">r <input id="r"> theta <input id="t"> phi <input id="p">
  <button onclick="setOrbit()">apply r/theta/phi</button></span>
  <div id="cam" style="font-size:12px;color:#9aa4af;margin-top:4px"></div>
@@ -581,21 +582,41 @@ function orbit(dTheta,dPhi,dR){
     .then(()=>{cam0=c;});
 }
 const fp=document.getElementById('fpan')||document.getElementById('f');
-fp.addEventListener('mousedown',e=>{drag={x:e.clientX,y:e.clientY};
-  getCam().then(c=>{cam0=c;}); e.preventDefault();});
+const wp=document.getElementById('w');
+function bindOrbit(el){
+  el.addEventListener('mousedown',e=>{drag={x:e.clientX,y:e.clientY};
+    getCam().then(c=>{cam0=c;}); e.preventDefault();});
+  el.addEventListener('wheel',e=>{e.preventDefault(); getCam().then(c=>{cam0=c;
+    orbit(0,0, e.deltaY>0?1.12:0.89);});},{passive:false});
+  el.addEventListener('touchstart',e=>{const t=e.touches[0]; drag={x:t.clientX,y:t.clientY};
+    getCam().then(c=>{cam0=c;});},{passive:true});
+  el.addEventListener('touchmove',e=>{if(!drag||!cam0)return; const t=e.touches[0];
+    const dx=t.clientX-drag.x, dy=t.clientY-drag.y; drag={x:t.clientX,y:t.clientY};
+    orbit(dx*0.005, dy*0.005, 1);},{passive:true});
+  el.addEventListener('touchend',()=>{drag=null;});
+}
+bindOrbit(fp); if(wp) bindOrbit(wp);
 window.addEventListener('mouseup',()=>{drag=null;});
 window.addEventListener('mousemove',e=>{if(!drag||!cam0)return;
   const dx=e.clientX-drag.x, dy=e.clientY-drag.y; drag={x:e.clientX,y:e.clientY};
   orbit(dx*0.005, dy*0.005, 1);});
-fp.addEventListener('wheel',e=>{e.preventDefault(); getCam().then(c=>{cam0=c;
-  orbit(0,0, e.deltaY>0?1.12:0.89);});},{passive:false});
-// touch: single-finger orbit
-fp.addEventListener('touchstart',e=>{const t=e.touches[0]; drag={x:t.clientX,y:t.clientY};
-  getCam().then(c=>{cam0=c;});},{passive:true});
-fp.addEventListener('touchmove',e=>{if(!drag||!cam0)return; const t=e.touches[0];
-  const dx=t.clientX-drag.x, dy=t.clientY-drag.y; drag={x:t.clientX,y:t.clientY};
-  orbit(dx*0.005, dy*0.005, 1);},{passive:true});
-fp.addEventListener('touchend',()=>{drag=null;});
+// THE ENGINE'S OWN KEYBOARD, THROUGH THE WEB: WASD = move (radius/theta),
+// Q/E = up/down (phi), R = engine reset law, P = pose clock toggle.
+let poseOn=false;
+function pose(){poseOn=!poseOn;
+  fetch('/api/pose',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({on:poseOn})}).then(r=>r.json()).then(()=>{
+    document.getElementById('posebtn').textContent='pose clock: '+(poseOn?'ON':'off');});}
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT')return;
+  const k=e.key.toLowerCase();
+  getCam().then(c=>{cam0=c;
+    if(k==='a')orbit(-0.06,0,1); else if(k==='d')orbit(0.06,0,1);
+    else if(k==='w')orbit(0,0,0.92); else if(k==='s')orbit(0,0,1.09);
+    else if(k==='q')orbit(0,-0.05,1); else if(k==='e')orbit(0,0.05,1);
+    else if(k==='r')preset('reset');
+    else if(k==='p')pose();
+  });});
 function state(){
   fetch('/api/health').then(r=>r.json()).then(h=>{TAKE=!!h.take_mode;
     const el=document.getElementById('state');
@@ -839,6 +860,16 @@ class ViewerHandler(BaseHTTPRequestHandler):
                             "stats": capture.snapshot_stats()})
             except (json.JSONDecodeError, ValueError) as e:
                 self._json({"ok": False, "error": str(e)}, 400)
+            return
+        if path == "/api/pose":
+            # proxy: the engine's P-key (show/pose clock toggle) for web clients
+            try:
+                length = int(self.headers.get("Content-Length", 0))
+                payload = json.loads(self.rfile.read(length).decode("utf-8") or "{}")
+                st, body = H.engine.post_json("/joints", {"on": bool(payload.get("on", True))})
+                self._json(json.loads(body.decode("utf-8", "replace")))
+            except (json.JSONDecodeError, ValueError, EngineError) as e:
+                self._json({"ok": False, "error": str(e)}, 502)
             return
         if path == "/api/take":
             try:
