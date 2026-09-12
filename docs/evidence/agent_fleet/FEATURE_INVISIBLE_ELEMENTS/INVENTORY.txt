@@ -1,0 +1,267 @@
+FEATURE_INVISIBLE_ELEMENTS — THE INVENTORY (deliverable A)
+========================================================================
+source : E:\ChimeraWork\slot-04\ChimeraEngine\engine\main.cpp  (READ-ONLY; base f41c8379 lane)
+branches parsed: 83  (unique paths: 59)
+
+CLASS rubric (frozen PREREGISTRATION.txt):
+  already-visualized: the engine turns the plane into pixels itself
+  renderable-but-inactive: a render path exists behind an OFF/unloaded switch
+  data-only: JSON/binary state; drives or reports motion, no pixels
+
+[already-visualized] /capture POST  (main.cpp:2416)
+    evidence: offline render: drives scrub->present->capture->PNG per step and WRITES captures/<name>/f%04d.png (png::encode_rgba)
+
+[already-visualized] /eye_bin POST  (main.cpp:1526)
+    evidence: u32 per-splat eye classes (0 sclera/1 iris/2 pupil) consumed by the body render (eyes are drawn from it)
+
+[already-visualized] /frame GET  (main.cpp:1652)
+    evidence: returns image/png of the current render (pixel-clean viewport by design; glass comment: the twin of /frame)
+
+[already-visualized] /glass GET  (main.cpp:1677)
+    evidence: returns image/png of the COMPOSITED window (viewport + Studio panels/status bar/HUD) — the operator's own glass
+
+[already-visualized] /hinge_bin POST  (main.cpp:712)
+    evidence: hinge knee march: nvert weights + JL/JR/axis/rom/period -> the mesh POSES each frame; visible in motion through the body, no own pixel plane
+
+[already-visualized] /light GET  (main.cpp:1815)
+    evidence: returns {x,y,z} of the scene light; the lit flank AND contact shadow consume this vector through the UBO — visible through the render
+
+[already-visualized] /light POST  (main.cpp:1815)
+    evidence: set_light(x,y,z) (zero vector refused); visible in the same frame by construction (engine comment)
+
+[already-visualized] /membrane POST  (main.cpp:509)
+    evidence: loads a splat scene via engine.load_membrane(term,pos,count) -> rendered into /frame and /glass; returns {"ok":true}
+
+[already-visualized] /membrane_bin POST  (main.cpp:538)
+    evidence: binary splat upload (14 floats/splat) -> engine.load_membrane -> the rendered body (the teddy); returns {"ok":true}
+
+[already-visualized] /mesh_bin POST  (main.cpp:666)
+    evidence: triangle mesh upload (slots main/overlay; modes fill/wire/wire+fill) -> rendered mesh; update_only>=100 streams vertex animation
+
+[already-visualized] /skin_bin POST  (main.cpp:1547)
+    evidence: rest splat (14 floats) + bone weights upload -> the skinned body IS the render surface
+
+[already-visualized] /stream GET  (main.cpp:1652)
+    evidence: same branch as /frame: image/png of the current render
+
+[already-visualized] /studio GET  (main.cpp:1881)
+    evidence: returns {on,left_mode,selected,lh,advance,w,h,link[4],..}: the Studio overlay IS part of /glass (visibility + panel state)
+
+[already-visualized] /studio POST  (main.cpp:1837)
+    evidence: ui_.set_visible / set_left_mode / panel collapse+size — controls the chrome the glass composites
+
+[renderable-but-inactive] /compare GET  (main.cpp:1783)
+    evidence: returns committed A/B compare slots {a_slot,b_slot,a_seq,b_seq}: a render/display MODE (split compare) that is inactive until set
+
+[renderable-but-inactive] /compare POST  (main.cpp:1783)
+    evidence: queue_ui_compare(slot|clear): commits the A/B compare view before prepare() — view-mode switch
+
+[renderable-but-inactive] /frost POST  (main.cpp:1291)
+    evidence: frost_on_ + light vector: a render pass (frost shading) that is OFF until enabled and a frost blob is loaded
+
+[renderable-but-inactive] /matter POST  (main.cpp:1449)
+    evidence: matter_set(on,iters,k): after-LBS surface relaxation pass — changes the body's shape in motion; OFF by default (JNT2 only)
+
+[renderable-but-inactive] /membrane_demo POST  (main.cpp:629)
+    evidence: demo control ops reset|step|run|pause|gamma|reject -> drives that demo surface (inactive until uploaded)
+
+[renderable-but-inactive] /membrane_demo_bin POST  (main.cpp:575)
+    evidence: MD01 membrane-demo upload (magic 0x3130444D) -> a distinct GPU surface (gamma relaxation) that renders only after this explicit upload
+
+[renderable-but-inactive] /rig GET  (main.cpp:1804)
+    evidence: returns {on,segments}: the FK parent-link overlay drawn over the body when on; default off
+
+[renderable-but-inactive] /rig POST  (main.cpp:1804)
+    evidence: set_rig_overlay(on): engine draws authored rig segments (an overlay render) — off by default
+
+[renderable-but-inactive] /strain POST  (main.cpp:1427)
+    evidence: strain_set(on): kernel TINTS the membrane by true area strain (blue compress / red stretch) — an overlay render, off by default
+
+[renderable-but-inactive] /water_vis POST  (main.cpp:914)
+    evidence: sets water_vis_on_/water_vis_tri_base_ atomics: the engine's OWN water tint over the water part of the mesh; default OFF, needs tri_base proof
+
+[data-only] /camera POST  (main.cpp:1634)
+    evidence: cam_radius/theta/phi via the membrane request (render-thread discipline); moves the view — control data
+
+[data-only] /cameras GET  (main.cpp:2301)
+    evidence: returns {"bookmarks":[{name,v[8]}..]} — the bookmark store (the glass chips draw the same names)
+
+[data-only] /cameras POST  (main.cpp:2321)
+    evidence: save/recall/fit/delete — view-state store ops (fit derives from the live mesh)
+
+[data-only] /capture GET  (main.cpp:2394)
+    evidence: capture session twin: state + capture_kv lines (the CAPTURE dock's doc)
+
+[data-only] /console GET  (main.cpp:2064)
+    evidence: console twin: open,input,hist_n,pending,log[50] — what the glass shows, served
+
+[data-only] /console POST  (main.cpp:2097)
+    evidence: line/open — request_console_ui; the same console path as keyboard input
+
+[data-only] /control POST  (main.cpp:495)
+    evidence: sets g_physics params (G,rw,rb,rc,kw,kb,gamma_w,dt); returns {"ok":true}; no GET twin, no pixel path (sim retired)
+
+[data-only] /debug GET  (main.cpp:2537)
+    evidence: returns {"n","active","vp_valid"} — published so "the grid silently isn't there" has a name
+
+[data-only] /frost GET  (main.cpp:1328)
+    evidence: returns {"on","loaded","n_tris","frame","light","view_q","light_q","kernel_path","dp4a","coopvec"} — pass status
+
+[data-only] /frost_bin POST  (main.cpp:1273)
+    evidence: raw frost_engine.bin blob upload (decode tables)
+
+[data-only] /frost_debug POST  (main.cpp:1503)
+    evidence: arms a bit-exactness snapshot -> octet-stream [i32 colors][i32 kernel inputs] — gate data
+
+[data-only] /gait GET  (main.cpp:992)
+    evidence: returns {"loaded","on","steps","omega","steps_total","thetaL","thetaR"} — the CPG's live state as numbers
+
+[data-only] /gait POST  (main.cpp:966)
+    evidence: flags only (gait_on_/steps/omega atomics; CPG steps inside frame()); returns {ok,steps_total} — the motion driver
+
+[data-only] /gait_bin POST  (main.cpp:933)
+    evidence: binary CPG pack (theta0L/R, phi0*8, consts>=37, edges>=16) -> the oscillator bank; motion only (the body moves)
+
+[data-only] /gait_state GET  (main.cpp:1006)
+    evidence: octet-stream [u64 steps_total][u64 cap][f64 ring*cap*8] — the 8-oscillator phase series ring (bit-exactness gate channel, B15 pattern)
+
+[data-only] /inspect GET  (main.cpp:2241)
+    evidence: inspector twin: the SAME inspect_kv document the right dock draws
+
+[data-only] /inspect POST  (main.cpp:2272)
+    evidence: select row/id / deselect — pure view state (no scene change)
+
+[data-only] /joint POST  (main.cpp:1105)
+    evidence: editor HTTP twin: pose claim (joint+theta, clamped) / select; returns {ok,owner,selected,theta_applied}
+
+[data-only] /joints GET  (main.cpp:1166)
+    evidence: joints_editor_json(): full editor document (owner, selected, per-joint ROM/theta/J/axis)
+
+[data-only] /joints POST  (main.cpp:1097)
+    evidence: {"on":bool} — joints_on_: the show owns the pose while on (control flag)
+
+[data-only] /joints_bin POST  (main.cpp:1033)
+    evidence: JNT1 joints pack upload (assignments, weights, table) -> rig + ROM data
+
+[data-only] /keys GET  (main.cpp:1354)
+    evidence: returns {"keys":[{name,t,joint}..]} — timeline key marks
+
+[data-only] /keys POST  (main.cpp:1354)
+    evidence: save/recall/delete/clear key marks (recall scrubs + optionally restores the whole pose)
+
+[data-only] /link POST  (main.cpp:1970)
+    evidence: stage deep link — request_ui_link resolves stage/line/doc (control)
+
+[data-only] /log GET  (main.cpp:2115)
+    evidence: recorder tail: file,n,lines[{seq,t,kind,detail}] — the live edge of the record
+
+[data-only] /log POST  (main.cpp:2151)
+    evidence: external gate verdict lands VERBATIM (kind "gate" by convention)
+
+[data-only] /matter GET  (main.cpp:1477)
+    evidence: returns {"on","iters","k","y_ground"} — pass status as numbers
+
+[data-only] /matter_state GET  (main.cpp:1483)
+    evidence: the matter truth channel: {"ok","stretch_mean_pct","stretch_max_pct","rms_err_pct","below_ground"} read back from the Work half — data measured against rest edge lengths (needs JNT2 + matter on)
+
+[data-only] /membrane_demo GET  (main.cpp:655)
+    evidence: returns membrane_demo_status_json: {"ok","active","iteration","accepted","trials","energy","energy_initial","terminal_state","centre","centre_force","accepted_state_id","render_state_id","last_control","material_snapshot"} — the demo surface's status as data
+
+[data-only] /pose_apply POST  (main.cpp:1615)
+    evidence: binary [u32 slot] — copies the slot into pose_buf_, posed next frame (visible THROUGH the body; control is data)
+
+[data-only] /pose_store POST  (main.cpp:1587)
+    evidence: binary pose slot store [u32 slot][u32 B][f32 B*7 quat+trans]
+
+[data-only] /project POST  (main.cpp:1147)
+    evidence: math channel: world (x,y,z) in -> screen (sx,sy) out through the stashed VP, plus the cam[8] echo — verification numbers
+
+[data-only] /reel GET  (main.cpp:1779)
+    evidence: reel_json(): the grab ledger, newest first — evidence-tray channel
+
+[data-only] /scene GET  (main.cpp:2165)
+    evidence: outliner twin: rows {id,label,detail,state,toggleable} + aim rects — the ONE formatting site the dock draws
+
+[data-only] /scene POST  (main.cpp:2219)
+    evidence: {"id":..,"on":..} — scene_exec: the engine's OWN element toggles routed through the console's one path (returns the queued line)
+
+[data-only] /session GET  (main.cpp:2547)
+    evidence: snapshot status: per-endpoint blob sizes (mesh_bin,hinge_bin,joints_bin,gait_bin,stride_bin,water_bin) — what a restore would replay
+
+[data-only] /session POST  (main.cpp:2559)
+    evidence: restore/clear: replays snapshot blobs through invoke_api — session data operations
+
+[data-only] /show GET  (main.cpp:1745)
+    evidence: returns {"playing","time","speed","n_joints","period","total","clock","current","theta","joints_loaded","hinge_loaded","rom_ext","rom_flex"}
+
+[data-only] /show POST  (main.cpp:1715)
+    evidence: playing/time/speed/step — show_playing_/show_scrub_ atomics; the clock that drives motion (returns {ok,time})
+
+[data-only] /state GET  (main.cpp:479)
+    evidence: returns {"n":N,"particles":[[x,y,z,vx,vy,vz,cr,cg,cb,size]..]} JSON; the N-body compute path is disabled (use_compute=false, main.cpp) so this drives no rendered pixel
+
+[data-only] /strain GET  (main.cpp:1445)
+    evidence: returns {"on","hinge"} — overlay + hinge status as numbers
+
+[data-only] /stride GET  (main.cpp:1085)
+    evidence: returns {"active","playing","n","j","dt","loop0","t"} — stream status
+
+[data-only] /stride POST  (main.cpp:1072)
+    evidence: stride_control(on,playing,speed,t) — {"ok":true} — the motion driver
+
+[data-only] /stride_bin POST  (main.cpp:1046)
+    evidence: GAT1 binary stride (n_samples x n_joints thetas, dt, loop0) -> set_stride_stream; drives the LBS pose — motion through the body
+
+[data-only] /studio_chrome GET  (main.cpp:1987)
+    evidence: the chrome twin: bar_on,fps,ft_*,ring,gpu,stage,hud_rows,gait{on,lamL/lamR/thL/thR,steps,omega},water{on,steps,dt,inj_t,inj_c},show_row — the SAME strings the glass drew, served as data
+
+[data-only] /studio_chrome POST  (main.cpp:2051)
+    evidence: {"on":bool} — set_bar_on: the status bar kill switch (chrome control)
+
+[data-only] /studio_doc GET  (main.cpp:1918)
+    evidence: docs browser twin: doc,path,mtime,fnv,n_lines,n_display,scroll,scroll_max,top_src — the panel's state as data
+
+[data-only] /studio_doc POST  (main.cpp:1950)
+    evidence: doc/scroll navigation — request_ui_doc, acknowledged after the render thread applies
+
+[data-only] /ui_click POST  (main.cpp:1909)
+    evidence: synthetic click (x,y) queued onto the render thread — agents drive panels
+
+[data-only] /volp GET  (main.cpp:1206)
+    evidence: returns {"loaded","mode","manual","M","dV","mu","residual","v_cur","frames","thetaL","thetaR"} — solve stats
+
+[data-only] /volp POST  (main.cpp:1184)
+    evidence: mode volp|blend, manual thetas, M — atomics; a mode change cold-starts the solve (motion driver)
+
+[data-only] /volp_bin POST  (main.cpp:1170)
+    evidence: VOLP v2 kernel blob upload -> loaded on the render thread
+
+[data-only] /volp_state GET  (main.cpp:1225)
+    evidence: octet-stream [u32 n_records][f32 verts*n*9] — the full posed vertex buffer readback (in-engine gate's channel; debug)
+
+[data-only] /water_bin POST  (main.cpp:756)
+    evidence: binary substrate upload (areas/bed/V0/occ/eij/k_e/l_ij/color_start/inj, u32 counts + f64 Q,G,c_local) -> the CA pipe network; the FIELD is data, its engine tint needs /water_vis
+
+[data-only] /water_clock GET  (main.cpp:903)
+    evidence: returns {"on","steps","inj_target","inj_count","steps_total"} — clock status
+
+[data-only] /water_clock POST  (main.cpp:874)
+    evidence: flags only (water_clock_on_/steps/dt/inj atomics; CA runs inside frame()); returns {ok,steps_total} — the motion driver
+
+[data-only] /water_state GET  (main.cpp:848)
+    evidence: returns application/octet-stream [u32 ns][u32 nc][i32 cell volumes] — the field's truth channel (water-room lane readback law)
+
+[data-only] /water_step POST  (main.cpp:812)
+    evidence: {"n_macro":N,"dt_macro":D} -> solver steps on the render thread; returns {"ok","sum","min"} — motion driver, no pixels
+
+[data-only] /water_vis_state GET  (main.cpp:1251)
+    evidence: DEBUG (W4): octet-stream [4 u32 indirect][water vertex buffer floats] — readback of the vis buffer, data for gates
+
+SUMMARY
+--------
+  already-visualized: 14
+  renderable-but-inactive: 10
+  data-only: 59
+  total classified rows: 83
+
+gate T1: every parsed branch classified; no stale rows. PASS

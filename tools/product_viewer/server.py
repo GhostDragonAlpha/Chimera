@@ -19,6 +19,12 @@ from pathlib import Path
 
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+# the two-phase visibility layer (deliverable B) — same package or script run
+try:
+    from product_viewer import visibility as _vis
+except ImportError:                              # direct script execution
+    import visibility as _vis
+
 # ---------------------------------------------------------------------------
 # Engine client (urllib; one retry at startup only, per the frozen prereg)
 # ---------------------------------------------------------------------------
@@ -392,14 +398,23 @@ PAGE = """<!doctype html><html><head><meta charset="utf-8"><title>Chimera Produc
  fieldset{border:1px solid #2a3138;margin:8px 0} legend{font-size:12px;color:#8ab4f8}
  a{color:#8ab4f8;font-size:12px}
 </style></head><body>
-<h1>Chimera product viewer — live engine glass (left) / clean frame (right)</h1>
+<h1>Chimera product viewer — glass (left) / clean frame (mid) / visibility overlays (right)</h1>
 <div id="state">connecting…</div>
 <div class="row">
  <div class="pane"><h2>/glass — the composited window the operator sees</h2>
    <img id="g" alt="glass"></div>
  <div class="pane"><h2>/frame — the pixel-clean viewport</h2>
    <img id="f" alt="frame"></div>
+ <div class="pane"><h2>visibility — the invisible planes, toggled visible</h2>
+   <img id="a" alt="visibility overlays"></div>
 </div>
+<fieldset><legend>visibility — the two-phase lifecycle (visible for verification, invisible once proven)</legend>
+ <span id="visbtns"></span>
+ <button onclick="visPost({action:'run_gates'})">run gates</button>
+ <button onclick="visPost({action:'auto_prove',on:true})">auto-prove on</button>
+ <button onclick="visPost({action:'auto_prove',on:false})">auto-prove off</button>
+ <div id="vis" style="font-size:12px;color:#9aa4af;margin:6px 0;white-space:pre-wrap"></div>
+</fieldset>
 <fieldset><legend>camera</legend>
  <button onclick="preset('fit_rom')">fit_rom (derived full-ROM fit)</button>
  <button onclick="preset('reset')">reset</button>
@@ -420,7 +435,35 @@ function tick(){
   const t=Date.now();
   const g=document.getElementById('g'), f=document.getElementById('f');
   g.src='/api/live/glass?t='+t; f.src='/api/live/frame?t='+t;
+  if(((t/1000)|0)%2==0) document.getElementById('a').src='/api/live/annotated?t='+t;
 }
+function visState(){
+  fetch('/api/visibility').then(r=>r.json()).then(d=>{
+    const btns=document.getElementById('visbtns'); btns.innerHTML='';
+    const lines=[];
+    (d.elements||[]).forEach(e=>{
+      const b=document.createElement('button');
+      b.textContent=(e.visible?'[VISIBLE] ':'[hidden] ')+e.name
+        +'  ('+(e.proven?'proven':e.state)+')';
+      b.onclick=()=>visPost({element:e.name,on:!e.visible});
+      btns.appendChild(b);
+      const x=document.createElement('button');
+      x.textContent='clear pin'; x.title='return '+e.name+' to lifecycle control';
+      x.onclick=()=>visPost({element:e.name,override:'clear'});
+      btns.appendChild(x);
+      const g=e.last_gate||{};
+      lines.push(e.name+': '+(e.visible?'VISIBLE':'hidden')+' state='+e.state
+        +' proven='+e.proven+' override='+e.override
+        +' gate='+(g.ok===undefined?'never run':(g.ok?'PASS':'open'))
+        +(e.data_age_s!=null?' data_age='+e.data_age_s+'s':''));
+    });
+    lines.push('auto_prove='+(d.auto_prove?'on (proven reverts automatically)':'off (pacing control)'));
+    document.getElementById('vis').textContent=lines.join('\n');
+  }).catch(()=>{});
+}
+function visPost(p){fetch('/api/visibility',{method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify(p)}).then(r=>r.json()).then(()=>visState());}
 function state(){
   fetch('/api/gallery').then(r=>r.json()).then(d=>{
     const last=d.records[d.records.length-1];
@@ -449,6 +492,7 @@ function setOrbit(){fetch('/api/camera',{method:'POST',
   }).then(r=>r.json()).then(d=>{
     document.getElementById('cam').textContent=JSON.stringify(d).slice(0,300);});}
 setInterval(tick,200); tick(); setInterval(state,1000); state();
+setInterval(visState,1000); visState();
 </script></body></html>"""
 
 
@@ -458,11 +502,13 @@ setInterval(tick,200); tick(); setInterval(state,1000); state();
 
 
 class ViewerHandler(BaseHTTPRequestHandler):
-    server_version = "ChimeraProductViewer/1.0"
+    server_version = "ChimeraProductViewer/1.1"
     engine: EngineClient = None            # injected via make_server
     ring: RingBuffer = None
     camera: CameraPanel = None
+    board: "_vis.VisibilityBoard" = None   # the two-phase visibility board
     started: float = 0.0
+    _ann_cache: tuple = None               # (png_bytes, drawn_names, mono_ts)
 
     def log_message(self, fmt, *args):     # quiet by default; stats live in /api/health
         pass
@@ -510,6 +556,8 @@ class ViewerHandler(BaseHTTPRequestHandler):
                     self._png_passthrough(png)
                 else:
                     self._json({"ok": False, "error": f"engine frame http {st}"}, 502)
+            elif path == "/api/live/annotated":
+                self._annotated()
             elif path == "/api/snapshot/latest":
                 rec = H.ring.latest()
                 self._png_passthrough(rec)
@@ -541,10 +589,45 @@ class ViewerHandler(BaseHTTPRequestHandler):
                             "engine_up": H.engine.up(), "ring": H.ring.stats(),
                             "capture": capture.snapshot_stats() if capture else {},
                             "uptime_s": round(time.time() - H.started, 1)})
+            elif path == "/api/visibility":
+                self._json(_vis.VisibilityBoard.status(H.board))
             else:
                 self._json({"ok": False, "error": "unknown route"}, 404)
         except EngineError as e:
             self._json({"ok": False, "error": str(e)}, 502)
+
+    def _annotated(self):
+        """THE VISIBILITY PANE: engine glass + the visible planes' overlays.
+
+        The base is the RING's latest /glass record (engine-authored bytes,
+        never mutated); overlays are drawn onto a COPY by the composer. One
+        plane's data refreshes per served frame (rotating, visible planes
+        first); the served PNG is cached for 1.0 s so browser polling cannot
+        monopolize the engine's serialized HTTP queue.
+        """
+        H = type(self)
+        now = time.monotonic()
+        cached = H._ann_cache
+        if cached is not None and now - cached[2] < 1.0:
+            body, drawn = cached[0], cached[1]
+        else:
+            rec = H.ring.latest()
+            if rec is None:
+                self._json({"ok": False, "error": "ring empty — no captures yet"},
+                           503)
+                return
+            try:
+                H.board.refresh_one(H.engine)
+            except Exception as e:                  # noqa: BLE001 — a fault is a state
+                pass                                # the compose still uses last data
+            body, drawn = _vis.compose(H.board, rec.png)
+            H._ann_cache = (body, drawn, now)
+        if drawn:
+            self._send(200, bytes(body), "image/png")
+        else:
+            # Nothing visible: the board is exactly the engine's glass —
+            # serve it with the header that says so (Law 2's end state).
+            self._send(200, bytes(body), "image/png")
 
     def _movie(self, query: str):
         H = type(self)
@@ -604,6 +687,15 @@ class ViewerHandler(BaseHTTPRequestHandler):
             except (json.JSONDecodeError, ValueError) as e:
                 self._json({"ok": False, "error": str(e)}, 400)
             return
+        if path == "/api/visibility":
+            try:
+                length = int(self.headers.get("Content-Length", 0))
+                payload = json.loads(self.rfile.read(length).decode("utf-8") or "{}")
+                self._json(type(self).board.handle_post(
+                    payload, engine=type(self).engine))
+            except (json.JSONDecodeError, ValueError) as e:
+                self._json({"ok": False, "error": str(e)}, 400)
+            return
         if path != "/api/camera":
             self._json({"ok": False, "error": "unknown route"}, 404)
             return
@@ -642,7 +734,9 @@ def make_server(engine_url: str, port: int, history: int = 240) -> ThreadingHTTP
     capture = CaptureThread(engine, ring, period=0.1)
     handler = type("BoundViewerHandler", (ViewerHandler,), {
         "engine": engine, "ring": ring, "camera": CameraPanel(engine),
+        "board": _vis.VisibilityBoard(),
         "started": time.time(), "capture_thread": capture,
+        "_ann_cache": None,
     })
     server = ThreadingHTTPServer(("127.0.0.1", port), handler)
     server.daemon_threads = True

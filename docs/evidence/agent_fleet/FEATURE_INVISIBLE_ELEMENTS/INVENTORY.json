@@ -1,0 +1,592 @@
+{
+ "source": "E:\\ChimeraWork\\slot-04\\ChimeraEngine\\engine\\main.cpp",
+ "rows": [
+  {
+   "path": "/camera",
+   "method": "POST",
+   "line": 1634,
+   "class": "data-only",
+   "evidence": "cam_radius/theta/phi via the membrane request (render-thread discipline); moves the view \u2014 control data"
+  },
+  {
+   "path": "/cameras",
+   "method": "GET",
+   "line": 2301,
+   "class": "data-only",
+   "evidence": "returns {\"bookmarks\":[{name,v[8]}..]} \u2014 the bookmark store (the glass chips draw the same names)"
+  },
+  {
+   "path": "/cameras",
+   "method": "POST",
+   "line": 2321,
+   "class": "data-only",
+   "evidence": "save/recall/fit/delete \u2014 view-state store ops (fit derives from the live mesh)"
+  },
+  {
+   "path": "/capture",
+   "method": "GET",
+   "line": 2394,
+   "class": "data-only",
+   "evidence": "capture session twin: state + capture_kv lines (the CAPTURE dock's doc)"
+  },
+  {
+   "path": "/capture",
+   "method": "POST",
+   "line": 2416,
+   "class": "already-visualized",
+   "evidence": "offline render: drives scrub->present->capture->PNG per step and WRITES captures/<name>/f%04d.png (png::encode_rgba)"
+  },
+  {
+   "path": "/compare",
+   "method": "GET",
+   "line": 1783,
+   "class": "renderable-but-inactive",
+   "evidence": "returns committed A/B compare slots {a_slot,b_slot,a_seq,b_seq}: a render/display MODE (split compare) that is inactive until set"
+  },
+  {
+   "path": "/compare",
+   "method": "POST",
+   "line": 1783,
+   "class": "renderable-but-inactive",
+   "evidence": "queue_ui_compare(slot|clear): commits the A/B compare view before prepare() \u2014 view-mode switch"
+  },
+  {
+   "path": "/console",
+   "method": "GET",
+   "line": 2064,
+   "class": "data-only",
+   "evidence": "console twin: open,input,hist_n,pending,log[50] \u2014 what the glass shows, served"
+  },
+  {
+   "path": "/console",
+   "method": "POST",
+   "line": 2097,
+   "class": "data-only",
+   "evidence": "line/open \u2014 request_console_ui; the same console path as keyboard input"
+  },
+  {
+   "path": "/control",
+   "method": "POST",
+   "line": 495,
+   "class": "data-only",
+   "evidence": "sets g_physics params (G,rw,rb,rc,kw,kb,gamma_w,dt); returns {\"ok\":true}; no GET twin, no pixel path (sim retired)"
+  },
+  {
+   "path": "/debug",
+   "method": "GET",
+   "line": 2537,
+   "class": "data-only",
+   "evidence": "returns {\"n\",\"active\",\"vp_valid\"} \u2014 published so \"the grid silently isn't there\" has a name"
+  },
+  {
+   "path": "/eye_bin",
+   "method": "POST",
+   "line": 1526,
+   "class": "already-visualized",
+   "evidence": "u32 per-splat eye classes (0 sclera/1 iris/2 pupil) consumed by the body render (eyes are drawn from it)"
+  },
+  {
+   "path": "/frame",
+   "method": "GET",
+   "line": 1652,
+   "class": "already-visualized",
+   "evidence": "returns image/png of the current render (pixel-clean viewport by design; glass comment: the twin of /frame)"
+  },
+  {
+   "path": "/frost",
+   "method": "GET",
+   "line": 1328,
+   "class": "data-only",
+   "evidence": "returns {\"on\",\"loaded\",\"n_tris\",\"frame\",\"light\",\"view_q\",\"light_q\",\"kernel_path\",\"dp4a\",\"coopvec\"} \u2014 pass status"
+  },
+  {
+   "path": "/frost",
+   "method": "POST",
+   "line": 1291,
+   "class": "renderable-but-inactive",
+   "evidence": "frost_on_ + light vector: a render pass (frost shading) that is OFF until enabled and a frost blob is loaded"
+  },
+  {
+   "path": "/frost_bin",
+   "method": "POST",
+   "line": 1273,
+   "class": "data-only",
+   "evidence": "raw frost_engine.bin blob upload (decode tables)"
+  },
+  {
+   "path": "/frost_debug",
+   "method": "POST",
+   "line": 1503,
+   "class": "data-only",
+   "evidence": "arms a bit-exactness snapshot -> octet-stream [i32 colors][i32 kernel inputs] \u2014 gate data"
+  },
+  {
+   "path": "/gait",
+   "method": "GET",
+   "line": 992,
+   "class": "data-only",
+   "evidence": "returns {\"loaded\",\"on\",\"steps\",\"omega\",\"steps_total\",\"thetaL\",\"thetaR\"} \u2014 the CPG's live state as numbers"
+  },
+  {
+   "path": "/gait",
+   "method": "POST",
+   "line": 966,
+   "class": "data-only",
+   "evidence": "flags only (gait_on_/steps/omega atomics; CPG steps inside frame()); returns {ok,steps_total} \u2014 the motion driver"
+  },
+  {
+   "path": "/gait_bin",
+   "method": "POST",
+   "line": 933,
+   "class": "data-only",
+   "evidence": "binary CPG pack (theta0L/R, phi0*8, consts>=37, edges>=16) -> the oscillator bank; motion only (the body moves)"
+  },
+  {
+   "path": "/gait_state",
+   "method": "GET",
+   "line": 1006,
+   "class": "data-only",
+   "evidence": "octet-stream [u64 steps_total][u64 cap][f64 ring*cap*8] \u2014 the 8-oscillator phase series ring (bit-exactness gate channel, B15 pattern)"
+  },
+  {
+   "path": "/glass",
+   "method": "GET",
+   "line": 1677,
+   "class": "already-visualized",
+   "evidence": "returns image/png of the COMPOSITED window (viewport + Studio panels/status bar/HUD) \u2014 the operator's own glass"
+  },
+  {
+   "path": "/hinge_bin",
+   "method": "POST",
+   "line": 712,
+   "class": "already-visualized",
+   "evidence": "hinge knee march: nvert weights + JL/JR/axis/rom/period -> the mesh POSES each frame; visible in motion through the body, no own pixel plane"
+  },
+  {
+   "path": "/inspect",
+   "method": "GET",
+   "line": 2241,
+   "class": "data-only",
+   "evidence": "inspector twin: the SAME inspect_kv document the right dock draws"
+  },
+  {
+   "path": "/inspect",
+   "method": "POST",
+   "line": 2272,
+   "class": "data-only",
+   "evidence": "select row/id / deselect \u2014 pure view state (no scene change)"
+  },
+  {
+   "path": "/joint",
+   "method": "POST",
+   "line": 1105,
+   "class": "data-only",
+   "evidence": "editor HTTP twin: pose claim (joint+theta, clamped) / select; returns {ok,owner,selected,theta_applied}"
+  },
+  {
+   "path": "/joints",
+   "method": "GET",
+   "line": 1166,
+   "class": "data-only",
+   "evidence": "joints_editor_json(): full editor document (owner, selected, per-joint ROM/theta/J/axis)"
+  },
+  {
+   "path": "/joints",
+   "method": "POST",
+   "line": 1097,
+   "class": "data-only",
+   "evidence": "{\"on\":bool} \u2014 joints_on_: the show owns the pose while on (control flag)"
+  },
+  {
+   "path": "/joints_bin",
+   "method": "POST",
+   "line": 1033,
+   "class": "data-only",
+   "evidence": "JNT1 joints pack upload (assignments, weights, table) -> rig + ROM data"
+  },
+  {
+   "path": "/keys",
+   "method": "GET",
+   "line": 1354,
+   "class": "data-only",
+   "evidence": "returns {\"keys\":[{name,t,joint}..]} \u2014 timeline key marks"
+  },
+  {
+   "path": "/keys",
+   "method": "POST",
+   "line": 1354,
+   "class": "data-only",
+   "evidence": "save/recall/delete/clear key marks (recall scrubs + optionally restores the whole pose)"
+  },
+  {
+   "path": "/light",
+   "method": "GET",
+   "line": 1815,
+   "class": "already-visualized",
+   "evidence": "returns {x,y,z} of the scene light; the lit flank AND contact shadow consume this vector through the UBO \u2014 visible through the render"
+  },
+  {
+   "path": "/light",
+   "method": "POST",
+   "line": 1815,
+   "class": "already-visualized",
+   "evidence": "set_light(x,y,z) (zero vector refused); visible in the same frame by construction (engine comment)"
+  },
+  {
+   "path": "/link",
+   "method": "POST",
+   "line": 1970,
+   "class": "data-only",
+   "evidence": "stage deep link \u2014 request_ui_link resolves stage/line/doc (control)"
+  },
+  {
+   "path": "/log",
+   "method": "GET",
+   "line": 2115,
+   "class": "data-only",
+   "evidence": "recorder tail: file,n,lines[{seq,t,kind,detail}] \u2014 the live edge of the record"
+  },
+  {
+   "path": "/log",
+   "method": "POST",
+   "line": 2151,
+   "class": "data-only",
+   "evidence": "external gate verdict lands VERBATIM (kind \"gate\" by convention)"
+  },
+  {
+   "path": "/matter",
+   "method": "GET",
+   "line": 1477,
+   "class": "data-only",
+   "evidence": "returns {\"on\",\"iters\",\"k\",\"y_ground\"} \u2014 pass status as numbers"
+  },
+  {
+   "path": "/matter",
+   "method": "POST",
+   "line": 1449,
+   "class": "renderable-but-inactive",
+   "evidence": "matter_set(on,iters,k): after-LBS surface relaxation pass \u2014 changes the body's shape in motion; OFF by default (JNT2 only)"
+  },
+  {
+   "path": "/matter_state",
+   "method": "GET",
+   "line": 1483,
+   "class": "data-only",
+   "evidence": "the matter truth channel: {\"ok\",\"stretch_mean_pct\",\"stretch_max_pct\",\"rms_err_pct\",\"below_ground\"} read back from the Work half \u2014 data measured against rest edge lengths (needs JNT2 + matter on)"
+  },
+  {
+   "path": "/membrane",
+   "method": "POST",
+   "line": 509,
+   "class": "already-visualized",
+   "evidence": "loads a splat scene via engine.load_membrane(term,pos,count) -> rendered into /frame and /glass; returns {\"ok\":true}"
+  },
+  {
+   "path": "/membrane_bin",
+   "method": "POST",
+   "line": 538,
+   "class": "already-visualized",
+   "evidence": "binary splat upload (14 floats/splat) -> engine.load_membrane -> the rendered body (the teddy); returns {\"ok\":true}"
+  },
+  {
+   "path": "/membrane_demo",
+   "method": "GET",
+   "line": 655,
+   "class": "data-only",
+   "evidence": "returns membrane_demo_status_json: {\"ok\",\"active\",\"iteration\",\"accepted\",\"trials\",\"energy\",\"energy_initial\",\"terminal_state\",\"centre\",\"centre_force\",\"accepted_state_id\",\"render_state_id\",\"last_control\",\"material_snapshot\"} \u2014 the demo surface's status as data"
+  },
+  {
+   "path": "/membrane_demo",
+   "method": "POST",
+   "line": 629,
+   "class": "renderable-but-inactive",
+   "evidence": "demo control ops reset|step|run|pause|gamma|reject -> drives that demo surface (inactive until uploaded)"
+  },
+  {
+   "path": "/membrane_demo_bin",
+   "method": "POST",
+   "line": 575,
+   "class": "renderable-but-inactive",
+   "evidence": "MD01 membrane-demo upload (magic 0x3130444D) -> a distinct GPU surface (gamma relaxation) that renders only after this explicit upload"
+  },
+  {
+   "path": "/mesh_bin",
+   "method": "POST",
+   "line": 666,
+   "class": "already-visualized",
+   "evidence": "triangle mesh upload (slots main/overlay; modes fill/wire/wire+fill) -> rendered mesh; update_only>=100 streams vertex animation"
+  },
+  {
+   "path": "/pose_apply",
+   "method": "POST",
+   "line": 1615,
+   "class": "data-only",
+   "evidence": "binary [u32 slot] \u2014 copies the slot into pose_buf_, posed next frame (visible THROUGH the body; control is data)"
+  },
+  {
+   "path": "/pose_store",
+   "method": "POST",
+   "line": 1587,
+   "class": "data-only",
+   "evidence": "binary pose slot store [u32 slot][u32 B][f32 B*7 quat+trans]"
+  },
+  {
+   "path": "/project",
+   "method": "POST",
+   "line": 1147,
+   "class": "data-only",
+   "evidence": "math channel: world (x,y,z) in -> screen (sx,sy) out through the stashed VP, plus the cam[8] echo \u2014 verification numbers"
+  },
+  {
+   "path": "/reel",
+   "method": "GET",
+   "line": 1779,
+   "class": "data-only",
+   "evidence": "reel_json(): the grab ledger, newest first \u2014 evidence-tray channel"
+  },
+  {
+   "path": "/rig",
+   "method": "GET",
+   "line": 1804,
+   "class": "renderable-but-inactive",
+   "evidence": "returns {on,segments}: the FK parent-link overlay drawn over the body when on; default off"
+  },
+  {
+   "path": "/rig",
+   "method": "POST",
+   "line": 1804,
+   "class": "renderable-but-inactive",
+   "evidence": "set_rig_overlay(on): engine draws authored rig segments (an overlay render) \u2014 off by default"
+  },
+  {
+   "path": "/scene",
+   "method": "GET",
+   "line": 2165,
+   "class": "data-only",
+   "evidence": "outliner twin: rows {id,label,detail,state,toggleable} + aim rects \u2014 the ONE formatting site the dock draws"
+  },
+  {
+   "path": "/scene",
+   "method": "POST",
+   "line": 2219,
+   "class": "data-only",
+   "evidence": "{\"id\":..,\"on\":..} \u2014 scene_exec: the engine's OWN element toggles routed through the console's one path (returns the queued line)"
+  },
+  {
+   "path": "/session",
+   "method": "GET",
+   "line": 2547,
+   "class": "data-only",
+   "evidence": "snapshot status: per-endpoint blob sizes (mesh_bin,hinge_bin,joints_bin,gait_bin,stride_bin,water_bin) \u2014 what a restore would replay"
+  },
+  {
+   "path": "/session",
+   "method": "POST",
+   "line": 2559,
+   "class": "data-only",
+   "evidence": "restore/clear: replays snapshot blobs through invoke_api \u2014 session data operations"
+  },
+  {
+   "path": "/show",
+   "method": "GET",
+   "line": 1745,
+   "class": "data-only",
+   "evidence": "returns {\"playing\",\"time\",\"speed\",\"n_joints\",\"period\",\"total\",\"clock\",\"current\",\"theta\",\"joints_loaded\",\"hinge_loaded\",\"rom_ext\",\"rom_flex\"}"
+  },
+  {
+   "path": "/show",
+   "method": "POST",
+   "line": 1715,
+   "class": "data-only",
+   "evidence": "playing/time/speed/step \u2014 show_playing_/show_scrub_ atomics; the clock that drives motion (returns {ok,time})"
+  },
+  {
+   "path": "/skin_bin",
+   "method": "POST",
+   "line": 1547,
+   "class": "already-visualized",
+   "evidence": "rest splat (14 floats) + bone weights upload -> the skinned body IS the render surface"
+  },
+  {
+   "path": "/state",
+   "method": "GET",
+   "line": 479,
+   "class": "data-only",
+   "evidence": "returns {\"n\":N,\"particles\":[[x,y,z,vx,vy,vz,cr,cg,cb,size]..]} JSON; the N-body compute path is disabled (use_compute=false, main.cpp) so this drives no rendered pixel"
+  },
+  {
+   "path": "/strain",
+   "method": "GET",
+   "line": 1445,
+   "class": "data-only",
+   "evidence": "returns {\"on\",\"hinge\"} \u2014 overlay + hinge status as numbers"
+  },
+  {
+   "path": "/strain",
+   "method": "POST",
+   "line": 1427,
+   "class": "renderable-but-inactive",
+   "evidence": "strain_set(on): kernel TINTS the membrane by true area strain (blue compress / red stretch) \u2014 an overlay render, off by default"
+  },
+  {
+   "path": "/stream",
+   "method": "GET",
+   "line": 1652,
+   "class": "already-visualized",
+   "evidence": "same branch as /frame: image/png of the current render"
+  },
+  {
+   "path": "/stride",
+   "method": "GET",
+   "line": 1085,
+   "class": "data-only",
+   "evidence": "returns {\"active\",\"playing\",\"n\",\"j\",\"dt\",\"loop0\",\"t\"} \u2014 stream status"
+  },
+  {
+   "path": "/stride",
+   "method": "POST",
+   "line": 1072,
+   "class": "data-only",
+   "evidence": "stride_control(on,playing,speed,t) \u2014 {\"ok\":true} \u2014 the motion driver"
+  },
+  {
+   "path": "/stride_bin",
+   "method": "POST",
+   "line": 1046,
+   "class": "data-only",
+   "evidence": "GAT1 binary stride (n_samples x n_joints thetas, dt, loop0) -> set_stride_stream; drives the LBS pose \u2014 motion through the body"
+  },
+  {
+   "path": "/studio",
+   "method": "GET",
+   "line": 1881,
+   "class": "already-visualized",
+   "evidence": "returns {on,left_mode,selected,lh,advance,w,h,link[4],..}: the Studio overlay IS part of /glass (visibility + panel state)"
+  },
+  {
+   "path": "/studio",
+   "method": "POST",
+   "line": 1837,
+   "class": "already-visualized",
+   "evidence": "ui_.set_visible / set_left_mode / panel collapse+size \u2014 controls the chrome the glass composites"
+  },
+  {
+   "path": "/studio_chrome",
+   "method": "GET",
+   "line": 1987,
+   "class": "data-only",
+   "evidence": "the chrome twin: bar_on,fps,ft_*,ring,gpu,stage,hud_rows,gait{on,lamL/lamR/thL/thR,steps,omega},water{on,steps,dt,inj_t,inj_c},show_row \u2014 the SAME strings the glass drew, served as data"
+  },
+  {
+   "path": "/studio_chrome",
+   "method": "POST",
+   "line": 2051,
+   "class": "data-only",
+   "evidence": "{\"on\":bool} \u2014 set_bar_on: the status bar kill switch (chrome control)"
+  },
+  {
+   "path": "/studio_doc",
+   "method": "GET",
+   "line": 1918,
+   "class": "data-only",
+   "evidence": "docs browser twin: doc,path,mtime,fnv,n_lines,n_display,scroll,scroll_max,top_src \u2014 the panel's state as data"
+  },
+  {
+   "path": "/studio_doc",
+   "method": "POST",
+   "line": 1950,
+   "class": "data-only",
+   "evidence": "doc/scroll navigation \u2014 request_ui_doc, acknowledged after the render thread applies"
+  },
+  {
+   "path": "/ui_click",
+   "method": "POST",
+   "line": 1909,
+   "class": "data-only",
+   "evidence": "synthetic click (x,y) queued onto the render thread \u2014 agents drive panels"
+  },
+  {
+   "path": "/volp",
+   "method": "GET",
+   "line": 1206,
+   "class": "data-only",
+   "evidence": "returns {\"loaded\",\"mode\",\"manual\",\"M\",\"dV\",\"mu\",\"residual\",\"v_cur\",\"frames\",\"thetaL\",\"thetaR\"} \u2014 solve stats"
+  },
+  {
+   "path": "/volp",
+   "method": "POST",
+   "line": 1184,
+   "class": "data-only",
+   "evidence": "mode volp|blend, manual thetas, M \u2014 atomics; a mode change cold-starts the solve (motion driver)"
+  },
+  {
+   "path": "/volp_bin",
+   "method": "POST",
+   "line": 1170,
+   "class": "data-only",
+   "evidence": "VOLP v2 kernel blob upload -> loaded on the render thread"
+  },
+  {
+   "path": "/volp_state",
+   "method": "GET",
+   "line": 1225,
+   "class": "data-only",
+   "evidence": "octet-stream [u32 n_records][f32 verts*n*9] \u2014 the full posed vertex buffer readback (in-engine gate's channel; debug)"
+  },
+  {
+   "path": "/water_bin",
+   "method": "POST",
+   "line": 756,
+   "class": "data-only",
+   "evidence": "binary substrate upload (areas/bed/V0/occ/eij/k_e/l_ij/color_start/inj, u32 counts + f64 Q,G,c_local) -> the CA pipe network; the FIELD is data, its engine tint needs /water_vis"
+  },
+  {
+   "path": "/water_clock",
+   "method": "GET",
+   "line": 903,
+   "class": "data-only",
+   "evidence": "returns {\"on\",\"steps\",\"inj_target\",\"inj_count\",\"steps_total\"} \u2014 clock status"
+  },
+  {
+   "path": "/water_clock",
+   "method": "POST",
+   "line": 874,
+   "class": "data-only",
+   "evidence": "flags only (water_clock_on_/steps/dt/inj atomics; CA runs inside frame()); returns {ok,steps_total} \u2014 the motion driver"
+  },
+  {
+   "path": "/water_state",
+   "method": "GET",
+   "line": 848,
+   "class": "data-only",
+   "evidence": "returns application/octet-stream [u32 ns][u32 nc][i32 cell volumes] \u2014 the field's truth channel (water-room lane readback law)"
+  },
+  {
+   "path": "/water_step",
+   "method": "POST",
+   "line": 812,
+   "class": "data-only",
+   "evidence": "{\"n_macro\":N,\"dt_macro\":D} -> solver steps on the render thread; returns {\"ok\",\"sum\",\"min\"} \u2014 motion driver, no pixels"
+  },
+  {
+   "path": "/water_vis",
+   "method": "POST",
+   "line": 914,
+   "class": "renderable-but-inactive",
+   "evidence": "sets water_vis_on_/water_vis_tri_base_ atomics: the engine's OWN water tint over the water part of the mesh; default OFF, needs tri_base proof"
+  },
+  {
+   "path": "/water_vis_state",
+   "method": "GET",
+   "line": 1251,
+   "class": "data-only",
+   "evidence": "DEBUG (W4): octet-stream [4 u32 indirect][water vertex buffer floats] \u2014 readback of the vis buffer, data for gates"
+  }
+ ],
+ "counts": {
+  "already-visualized": 14,
+  "renderable-but-inactive": 10,
+  "data-only": 59
+ },
+ "problems": []
+}

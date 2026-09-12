@@ -136,3 +136,17 @@ ChimeraEngine/engine/build/ is never touched.
 TRAILER
 -------
 Agent: subagent-worker-09
+
+AMENDMENT 1 (2026-09-12, BEFORE any classification was recorded)
+----------------------------------------------------------------
+Transcription correction to the SAMPLE FRAME only: the prereg text says
+"exactly 58 unique contract route paths" but the verbatim list printed
+directly below that sentence contains 59 entries (recounted: /camera ..
+/water_vis_state = 59). The LIST is the measurement and is unchanged; the
+prose COUNT was miscounted by one. No prediction bound changes (P1's
+thresholds are inequalities: >=8 data-only, >=2 already-visualized, >=1
+renderable-but-inactive). The gate T1 sample-frame size is 59 paths; the
+parser additionally distinguishes handler branches serving two methods, so
+classified (path, method) rows exceed 59 — the classification is per branch
+method, as the rubric requires (a GET twin and its POST control can sit in
+different classes).
