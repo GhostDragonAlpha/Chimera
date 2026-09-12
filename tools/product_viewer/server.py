@@ -19,6 +19,60 @@ from pathlib import Path
 
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+from . import window_capture
+
+# ---------------------------------------------------------------------------
+# One-to-one engine window mirror (Python-only capture; MJPEG stream)
+# ---------------------------------------------------------------------------
+
+
+class EngineWindowMirror:
+    """Finds the engine's native window by port (once, cached with re-find on
+    loss) and streams JPEG captures. The engine window renders at full frame
+    rate with ALL of its native UI - this mirror is one-to-one at capture
+    pace, with zero engine changes."""
+
+    def __init__(self, engine_url: str, port: int):
+        self.engine_port = port
+        self.hwnd = None
+        self.title = None
+        self.find_attempts = 0
+
+    def find(self):
+        import subprocess as sp
+        try:
+            out = sp.run(
+                ["powershell", "-NoProfile", "-Command",
+                 "(Get-CimInstance Win32_Process -Filter \"Name='chimera_engine.exe'\" "
+                 f"| Where-Object {{$_.CommandLine -match ' {self.engine_port}'}} "
+                 "| Select-Object -First 1).ProcessId"],
+                capture_output=True, text=True, timeout=15).stdout.strip()
+            pid = int(out)
+            hwnd = window_capture.find_window(pid)
+            if hwnd:
+                import ctypes
+                title = ctypes.create_unicode_buffer(256)
+                window_capture.user32.GetWindowTextW(hwnd, title, 256)
+                self.hwnd, self.title = hwnd, title.value
+                return True
+        except (ValueError, subprocess.SubprocessError, OSError):
+            pass
+        self.find_attempts += 1
+        return False
+
+    def ensure(self):
+        return self.hwnd is not None or self.find()
+
+    def frame_jpeg(self):
+        if not self.ensure():
+            return None
+        try:
+            ok, jpg = window_capture.capture_hwnd_jpeg(self.hwnd)
+            return jpg if ok or jpg else None
+        except Exception:
+            self.hwnd = None     # window lost (engine restart) - re-find next tick
+            return None
+
 # ---------------------------------------------------------------------------
 # Engine client (urllib; one retry at startup only, per the frozen prereg)
 # ---------------------------------------------------------------------------
@@ -402,8 +456,11 @@ PAGE = """<!doctype html><html><head><meta charset="utf-8"><title>Chimera Produc
  fieldset{border:1px solid #2a3138;margin:8px 0} legend{font-size:12px;color:#8ab4f8}
  a{color:#8ab4f8;font-size:12px}
 </style></head><body>
-<h1>Chimera product viewer — clean frame (product view, left) / instrumented glass (debug, right)</h1>
+<h1>Chimera product viewer — engine window (one-to-one) · clean frame · instruments</h1>
 <div id="state">connecting…</div>
+<div class="pane" style="margin-bottom:10px"><h2>THE ENGINE WINDOW — one-to-one mirror, everything the engine shows, live</h2>
+  <img id="w" alt="engine window" src="/api/window/stream?fps=8" style="width:100%">
+</div>
 <div class="row">
   <div class="pane"><h2>/frame — THE PRODUCT VIEW: the world only, no instruments</h2>
     <div id="fwrap"><span id="fhelp">drag = orbit (the camera is YOURS) · wheel = zoom</span>
@@ -602,6 +659,14 @@ class ViewerHandler(BaseHTTPRequestHandler):
                                 "fit_derivation": H.camera.derive_fit()})
                 except (EngineError, json.JSONDecodeError, KeyError) as e:
                     self._json({"ok": False, "error": str(e)}, 502)
+            elif path == "/api/window/frame":
+                jpg = H.mirror.frame_jpeg() if getattr(H, "mirror", None) else None
+                if jpg is None:
+                    self._json({"ok": False, "error": "engine window not found"}, 502)
+                else:
+                    self._send(200, jpg, "image/jpeg")
+            elif path == "/api/window/stream":
+                self._window_stream(query)
             elif path == "/api/movie":
                 self._movie(query)
             elif path == "/api/health":
@@ -614,6 +679,35 @@ class ViewerHandler(BaseHTTPRequestHandler):
                 self._json({"ok": False, "error": "unknown route"}, 404)
         except EngineError as e:
             self._json({"ok": False, "error": str(e)}, 502)
+
+    def _window_stream(self, query: str):
+        """MJPEG multipart stream of the engine window - browsers render this
+        natively in an <img>. Pace: ~10 fps, one client request at a time."""
+        import subprocess as _sp
+        H = type(self)
+        fps = 10
+        for kv in query.split("&"):
+            if kv.startswith("fps="):
+                fps = max(1, min(30, int(kv[4:])))
+        self.send_response(200)
+        self.send_header("Content-Type", "multipart/x-mixed-replace; boundary=chframe")
+        self.end_headers()
+        period = 1.0 / fps
+        import time as _time
+        while True:
+            t0 = _time.monotonic()
+            jpg = H.mirror.frame_jpeg() if getattr(H, "mirror", None) else None
+            if jpg is not None:
+                try:
+                    self.wfile.write(b"--chframe\r\nContent-Type: image/jpeg\r\n"
+                                     b"Content-Length: " + str(len(jpg)).encode() +
+                                     b"\r\n\r\n" + jpg + b"\r\n")
+                    self.wfile.flush()
+                except (BrokenPipeError, ConnectionResetError, OSError):
+                    return
+            gap = period - (_time.monotonic() - t0)
+            if gap > 0:
+                _time.sleep(gap)
 
     def _movie(self, query: str):
         H = type(self)
@@ -709,9 +803,11 @@ def make_server(engine_url: str, port: int, history: int = 240) -> ThreadingHTTP
     engine = EngineClient(engine_url)
     ring = RingBuffer(history)
     capture = CaptureThread(engine, ring, period=0.1)
+    engine_port = engine_url.rstrip("/").rsplit(":", 1)[-1]
     handler = type("BoundViewerHandler", (ViewerHandler,), {
         "engine": engine, "ring": ring, "camera": CameraPanel(engine),
         "started": time.time(), "capture_thread": capture,
+        "mirror": EngineWindowMirror(engine_url, int(engine_port)),
     })
     server = ThreadingHTTPServer(("127.0.0.1", port), handler)
     server.daemon_threads = True
