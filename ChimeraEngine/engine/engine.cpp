@@ -1758,6 +1758,7 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     vkDeviceWaitIdle(device_);
     // B3: an empty POST clears the mesh slot (was: 0-byte buffer -> NULL-handle crash).
     if (verts.empty() || indices.empty() || icount == 0) {
+        root_invalidate();   // the rig data is gone: nothing carries an offset now
         upload_buffer(nullptr, 0, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, tri_vbuf_, tri_vmem_);
         upload_buffer(nullptr, 0, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, tri_ibuf_, tri_imem_);
         tri_idx_count_ = 0;
@@ -1881,6 +1882,7 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
         vkMapMemory(device_, tri_staging_mem_, 0, sz, 0, &tri_vmap_);
     }
     mesh_cpu_ = clean;
+    root_invalidate();   // authored rest restored: the next frame re-applies the full target
     tri_vfloats_ = clean.size();
     // THE DEGENERATE EVICTION (2026-09-03, same eye finding — the speckle dots):
     // the birth mesh carries 206 EXACTLY-zero-area triangles (collinear verts).
@@ -2038,6 +2040,7 @@ bool Engine::set_hinge(const std::vector<float>& wL, const std::vector<float>& w
     vkDeviceWaitIdle(device_);
     // rest state = the CPU copy of the last full-loaded mesh (rest pose by contract)
     hinge_rest_ = mesh_cpu_;
+    root_invalidate();   // authored rest + pivots restored (JL/JR right below): re-apply next frame
     hinge_wL_ = wL; hinge_wR_ = wR;
     std::memcpy(hinge_JL_, JL, 12); std::memcpy(hinge_JR_, JR, 12);
     std::memcpy(hinge_axis_, axis, 12);
@@ -5472,6 +5475,7 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
     }
     joints_t0_ = std::chrono::steady_clock::now();
     joints_loaded_ = true;
+    root_invalidate();   // authored joint pivots restored in j_state_map_: re-apply next frame
     printf("JOINTS loaded: %u verts, %u joints (%s pose law; the show sweeps each through its ROM)\n",
            nv, nj, j_lbs_mode_ ? "JNT2 2-bone LBS" : "JNT1 legacy");
     return true;
@@ -5525,6 +5529,104 @@ void Engine::request_joint_edit(int idx, float deg) {
     edit_joint_.store(idx, std::memory_order_relaxed);
     edit_theta_deg_.store(deg, std::memory_order_relaxed);
     edit_pending_.store(true, std::memory_order_relaxed);
+}
+
+// ── THE ROOT OFFSET (engine-root-translation-01) ────────────────────────────
+// THE INDUCTION (prereg, derived before any build): shifting the rest
+// positions AND every pivot by the same d shifts the FK output by exactly d
+// for ANY pose, because each chain level composes a pure rotation about its
+// own fixed rest pivot:
+//   R_k((o_{k-1}+d) - (J_k+d)) + (J_k+d) = R_k(o_{k-1}-J_k) + J_k + d
+//                                        = o_k + d.
+// The hinge band is the single-level form of the same identity. NO theta is
+// read or written here, so every pose owner (march, stride, show, editor)
+// keeps its exact semantics — this is the composition law the walk-realism
+// lane's probes demanded at the data layer. The strain tint needs no edit:
+// triangle areas are translation-invariant, so the overlay's truth follows
+// from the same shift. The skinned-splat lane is deliberately OUT of contract
+// (skin.comp's bone quaternions act on raw rest — a rest shift there would be
+// pose-dependent; see the prereg's rejected-alternatives section).
+void Engine::apply_root_offset_() {
+    const float tx = root_tx_.load(std::memory_order_relaxed);
+    const float ty = root_ty_.load(std::memory_order_relaxed);
+    const float tz = root_tz_.load(std::memory_order_relaxed);
+    const float dx = tx - root_ax_.load(std::memory_order_relaxed);
+    const float dy = ty - root_ay_.load(std::memory_order_relaxed);
+    const float dz = tz - root_az_.load(std::memory_order_relaxed);
+    if (dx == 0.f && dy == 0.f && dz == 0.f) return;
+
+    // 1. rest positions (stride-9 records: pos3 nrm3 col3 — shift pos only;
+    //    normals/colors are direction/appearance data, not positions).
+    for (size_t i = 0; i + 2 < hinge_rest_.size(); i += 9) {
+        hinge_rest_[i + 0] += dx;
+        hinge_rest_[i + 1] += dy;
+        hinge_rest_[i + 2] += dz;
+    }
+    // 2. hinge band pivots — consumed per-dispatch as HingePC push constants.
+    hinge_JL_[0] += dx; hinge_JL_[1] += dy; hinge_JL_[2] += dz;
+    hinge_JR_[0] += dx; hinge_JR_[1] += dy; hinge_JR_[2] += dz;
+    // 3. joint pivots — the live host-mapped state lane the joints kernel
+    //    reads every frame (the same lane stride_tick writes thetas into;
+    //    st[k*8+0..2] = J, +7 = theta — only 0..2 are touched here).
+    if (joints_loaded_ && j_state_map_ != nullptr) {
+        float* st = static_cast<float*>(j_state_map_);
+        for (uint32_t k = 0; k < j_n_joints_; ++k) {
+            st[k * 8 + 0] += dx;
+            st[k * 8 + 1] += dy;
+            st[k * 8 + 2] += dz;
+        }
+    }
+    // 4. GPU-side rest SSBO + the drawn baseline. When no pose lane is live,
+    //    tri_vbuf_ still holds its load-time content; mesh_upload is the
+    //    proven in-frame staging copy (fence-synced, no recreation, no
+    //    descriptor rebind) — the same bytes then go to the kernels' rest
+    //    SSBO with one more staging copy. When a pose lane IS live, its
+    //    dispatch overwrites from these shifted inputs in the same frame —
+    //    correct precedence by command-buffer order.
+    if (!hinge_rest_.empty() && tri_staging_buf_ != VK_NULL_HANDLE
+        && hinge_rest_.size() == tri_vfloats_ && hinge_rest_buf_ != VK_NULL_HANDLE) {
+        mesh_upload(hinge_rest_.data(), hinge_rest_.size());
+        VkCommandBuffer cb = begin_single_time_cmd();
+        VkBufferCopy bc{};
+        bc.size = static_cast<VkDeviceSize>(hinge_rest_.size()) * sizeof(float);
+        vkCmdCopyBuffer(cb, tri_staging_buf_, hinge_rest_buf_, 1, &bc);
+        end_single_time_cmd(cb);
+    }
+    root_ax_.store(tx, std::memory_order_relaxed);
+    root_ay_.store(ty, std::memory_order_relaxed);
+    root_az_.store(tz, std::memory_order_relaxed);
+}
+
+void Engine::request_root_offset(float x, float y, float z) {
+    // HTTP intent (the request_joint_edit discipline: atomics only, the
+    // render thread applies). Absolute set semantics; per-axis merge happens
+    // at the route with the current target, exactly like POST /light.
+    root_tx_.store(x, std::memory_order_relaxed);
+    root_ty_.store(y, std::memory_order_relaxed);
+    root_tz_.store(z, std::memory_order_relaxed);
+    root_pending_.store(true, std::memory_order_relaxed);
+}
+
+void Engine::root_target(float out[3]) const {
+    out[0] = root_tx_.load(std::memory_order_relaxed);
+    out[1] = root_ty_.load(std::memory_order_relaxed);
+    out[2] = root_tz_.load(std::memory_order_relaxed);
+}
+
+void Engine::root_applied_offset(float out[3]) const {
+    out[0] = root_ax_.load(std::memory_order_relaxed);
+    out[1] = root_ay_.load(std::memory_order_relaxed);
+    out[2] = root_az_.load(std::memory_order_relaxed);
+}
+
+void Engine::root_invalidate() {
+    // A rig (re)load restored authored data: it carries no offset until the
+    // render thread re-applies the full target next frame. The offset is a
+    // STATE of the creature — it survives reloads without double-shifting.
+    root_ax_.store(0.f, std::memory_order_relaxed);
+    root_ay_.store(0.f, std::memory_order_relaxed);
+    root_az_.store(0.f, std::memory_order_relaxed);
+    root_pending_.store(true, std::memory_order_relaxed);
 }
 
 std::string Engine::joints_editor_json() {
@@ -7723,6 +7825,12 @@ bool Engine::frame() {
             gait_steps_total_.fetch_add(1, std::memory_order_relaxed);
         }
     }
+
+    // THE ROOT OFFSET (engine-root-translation-01): consume a pending target
+    // BEFORE any pose owner ticks or dispatch is recorded — a pure data-layer
+    // coordinate transform (rest + pivots, never a theta), so every owner
+    // below sees consistently shifted inputs this same frame.
+    if (root_pending_.exchange(false, std::memory_order_relaxed)) apply_root_offset_();
 
     // H15/C1: the joints kernel dispatches whenever EITHER pose owner is live —
     // the SHOW (joints_on_, the D1 studio clock sweeps the ROMs) or the EDITOR

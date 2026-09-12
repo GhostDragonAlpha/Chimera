@@ -1812,6 +1812,36 @@ int main(int argc, char** argv) {
                  + ",\"segments\":" + std::to_string(g_engine ? g_engine->ui_.rig_segment_count() : 0)
                  + "}";
             content_type = "application/json";
+        } else if (p == "/root" && (method == "GET" || method == "POST")) {
+            // engine-root-translation-01 — THE ONE SANCTIONED C++ EXCEPTION.
+            // The creature's root world offset. POST is an ABSOLUTE set with
+            // per-axis merge (missing axes keep their current target — the
+            // /light pattern); GET reads the commanded target AND the applied
+            // offset back. The render thread applies it as a pure data-layer
+            // coordinate transform (rest positions + pivots; never a theta),
+            // so it composes with any pose lane — the march/stride keep
+            // playing while the creature travels. Derivation + parity law:
+            // docs/evidence/agent_fleet/ENGINE_ROOT_TRANSLATION/.
+            if (g_engine && method == "POST") {
+                float cur[3]; g_engine->root_target(cur);
+                float rx = get_float(req_body, "x", cur[0]);
+                float ry = get_float(req_body, "y", cur[1]);
+                float rz = get_float(req_body, "z", cur[2]);
+                g_engine->request_root_offset(rx, ry, rz);
+            }
+            if (g_engine) {
+                float t[3], a[3];
+                g_engine->root_target(t);
+                g_engine->root_applied_offset(a);
+                char rb[256];
+                snprintf(rb, sizeof(rb),
+                         "{\"ok\":true,\"target\":[%.6f,%.6f,%.6f],\"applied\":[%.6f,%.6f,%.6f]}",
+                         t[0], t[1], t[2], a[0], a[1], a[2]);
+                body = rb;
+            } else {
+                body = "{\"ok\":false,\"error\":\"no engine\"}";
+            }
+            content_type = "application/json";
         } else if (p == "/light" && (method == "GET" || method == "POST")) {
             // THE LIGHT (2026-09-03): one scene-level fact. POST steers it
             // ({"x","y","z"} — normalized by the Studio; a zero vector is

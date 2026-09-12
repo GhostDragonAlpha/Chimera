@@ -504,6 +504,26 @@ public:
     void                  set_light(float x, float y, float z) { ui_.set_light_dir(x, y, z); }
     const float*          light_dir() const { return ui_.light_dir(); }
 
+    // ── THE ROOT OFFSET (engine-root-translation-01: the one sanctioned C++
+    // exception). The creature's root world offset — a pure coordinate
+    // transform of the rig data (rest positions + pivots), never a theta, so
+    // it composes with ANY pose lane by construction and the pose-ownership
+    // law keeps its exact semantics. POST /root is the setter's HTTP twin
+    // (absolute set, per-axis merge — the /light pattern); GET /root reads it
+    // back. The HTTP thread writes the target + pending flag; the render
+    // thread applies in frame() by shifting hinge_rest_, the hinge band
+    // pivots, and the j_state_map_ pivots. The induction in
+    // docs/evidence/agent_fleet/ENGINE_ROOT_TRANSLATION/PREREGISTRATION.md
+    // proves the rendered result is fk(thetas) + offset EXACTLY for any pose.
+    void                  request_root_offset(float x, float y, float z);  // HTTP intent
+    void                  root_target(float out[3]) const;                 // commanded offset
+    void                  root_applied_offset(float out[3]) const;         // what the rig data carries
+    std::atomic<float>    root_tx_{0.f}, root_ty_{0.f}, root_tz_{0.f};     // target (HTTP thread)
+    std::atomic<float>    root_ax_{0.f}, root_ay_{0.f}, root_az_{0.f};     // applied (render thread)
+    std::atomic<bool>     root_pending_{false};                            // render thread consumes
+    void                  apply_root_offset_();  // render thread: shift rig data by (target - applied)
+    void                  root_invalidate();     // rig (re)load: authored data carries no offset
+
 
     // ── GPU skinning (LBS over the 3DGS splats, skin.comp) ──────────────────────
     bool load_skinned(const std::vector<float>& rest, const std::vector<float>& weights,
