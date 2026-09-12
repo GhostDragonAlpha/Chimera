@@ -1,0 +1,23 @@
+{
+  "label": "dyad2top_gamma1_flat",
+  "utc": "2026-09-08T17:32:05.937799+00:00",
+  "engine_url": "http://localhost:8091",
+  "png_file": "docs\\evidence\\membrane_window_demo\\20260908T173204.430256Z\\dyad2top_gamma1_flat.png",
+  "png_sha256": "14cf1459179499c3f262caa92376095b48e8309627b54f09c142112ea5e1a303",
+  "camera": {
+    "radius": 6.0,
+    "theta": 0.0,
+    "phi": 0.7
+  },
+  "slotmode": 2.0,
+  "state_id": "d7d7b40d6e05fc6e8b3e49f081ccf896a276070956167143a4d82c0240cbb663",
+  "state": {
+    "fixture": "b2",
+    "gamma_J_per_m2": 1.0,
+    "iteration": 126,
+    "energy_J": 2.5980761647224426,
+    "geometry_sha256_f64le": "1a3d0b427f98c8901f596ec4959930fa01db18aa56eb2c96d35f5f96e5077710",
+    "upload_positions_f32le_sha256": "99c59aef9caee4c3195fc376d7f450954713f12fea10e97f4c3250a30797a465"
+  },
+  "certifiable": true
+}

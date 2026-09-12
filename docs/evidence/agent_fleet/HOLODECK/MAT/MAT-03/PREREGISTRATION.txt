@@ -1,0 +1,301 @@
+PREREGISTRATION — holodeck-mat-03 "Measured-data import" (gen 1)
+
+Agent: subagent-worker-09 (instance subagent-worker-09-a8960d274e14). Slot 6,
+worktree E:\ChimeraWork\slot-06, branch astra/tasks/holodeck-mat-03, base
+4812b55b407107a34b708af1700e071a7eecbab4 (provision verified: HEAD==base,
+working tree clean, 6249 ls-files entries, before any work). Claimed at
+controller rev 1083 (gen 1). Admitted from draft DRAFT-holodeck-mat-03.md
+(PR #67; catalogue card MAT-03, index 26, digest b9d32319..., content_sha256
+2a3f77e7...). Dependencies INTEGRATED: holodeck-math-01 (3889755d, PR #87),
+holodeck-gov-03 (4812b55b, PR #88), holodeck-mat-01 (PR #96, newest MAT
+worked example, studied from the integration branch).
+
+THIS COMMIT CONTAINS THE PREREGISTRATION ONLY. No reference model, no
+controls, no results, no measured actuals.
+
+SOURCE-ONLY LANE: the deployed material plane is studied from source text at
+base (file identities recorded below and in RESULT.txt). The live service at
+127.0.0.1:8099 is NEVER contacted; no engine process, GPU, or controller
+resource is used. DYAD: NOT_APPLICABLE — source-only scope produces and
+alters no executed runtime behavior of the deployed system; reason restated
+in RESULT.txt per the card's DYAD policy ("Reference-only or source-only
+scope records NOT_APPLICABLE with reason").
+
+## RULE 0 MEMBRANE (card fields verbatim + my theory of this lane)
+
+- CARD STATEMENT: Versioned datasets with temperature, moisture and
+  strain-rate conditions.
+- CARD PREDICTION: Imports retain source identity and reject missing
+  physical context.
+- CARD FALSIFIER (named BEFORE the run, both for the reference model and the
+  deployed-source trace): **Provenance membership is represented as proof of
+  authentic measurement.**
+- CARD MATHEMATICS: uncertainty propagation; citations; interpolation.
+- CARD THRESHOLD POLICY: derive the fixture-specific bound before
+  implementation tests; preserve existing frozen gates; a catalogue
+  prediction is not a preregistered numeric certificate. (The concrete
+  thresholds are the R1-R6 rows below, fixed here before any
+  implementation test.)
+- MY STATEMENT: the deployed material plane at base already refuses
+  missing context BY NAME (matter_data.py's Uncited; material_contract.py's
+  ContractRefusal kinds) and retains citations beside the numbers it
+  ingests, but it has NO versioned, condition-indexed dataset store: the
+  card's three axes (temperature, moisture, strain-rate) appear only inside
+  citation-note prose, and there is no interpolation or version machinery
+  anywhere in the plane. MY THEORY: an import contract built ONLY on
+  physical-context completeness (conditions + uncertainty + units + source
+  identity + content identity) rejects every context-free record, while a
+  contract built on provenance membership (a known source id, a
+  'researched' label) would admit fabricated numbers — membership is at
+  best necessary, never sufficient, which is exactly what the card
+  falsifier warns against. A2 (this lane's prediction): an independent
+  MATH-01-backed import model admits complete records verbatim (source
+  identity byte-preserved, content hash stored) and refuses every
+  missing-context path BY NAME, including records whose only credential is
+  membership.
+- MY PREDICTION: every preregistered row below reaches its full N/N.
+- FALSIFIER CONSEQUENCE: if any row misses, the miss is REPORTED (fired run
+  retained, MAT-01/GOV-05 precedent), never patched around; a fired card
+  falsifier in the DEPLOYED trace (an admission path that treats provenance
+  membership as proof of authentic measurement) is a FINDING recorded in
+  RESULT.txt — deployed findings are never edited and never adopted as the
+  model's truth.
+
+## UNITS BACKBONE (MATH-01 citation duty)
+
+The reference model imports MATH-01's integrated typed-quantity algebra
+(docs/evidence/agent_fleet/HOLODECK/MATH/MATH-01/reference/
+math01_reference_model.py: Dimension over exact Fraction (L,M,T) exponents;
+Quantity with named dimension_mismatch refusals; UnitRegistry
+declared-only scale conversions). Independence is claimed from the AUDITED
+deployed code (tools/matter_data.py, tools/material_contract.py), NOT from
+the MATH-01 backbone — the task packet designates MATH-01 the units
+backbone of this lane. Where the material domain touches dimensional
+analysis (measured property values composed/compared as typed quantities,
+e.g. Pa-modulus x dimensionless strain, Pa x m^3 -> J for a derived
+work-of-fracture record), the model defers to MATH-01's algebra and cites
+it. The model adds what MATH-01 deliberately does not have: the DATASET
+layer (versioned, condition-indexed measured records with uncertainty and
+citations) and an AFFINE temperature family (K canonical; degC offset
++273.15), which is outside MATH-01's scale-only registry by construction —
+a scale-only conversion of degC would map 0 degC to 0 K and is refused by
+design (R1(c) pins the offset; R2(g) refuses undeclared families).
+
+## REFERENCE MODEL CONTRACT (fixed before implementation)
+
+stdlib-only (+ the MATH-01 import), <320 lines, at
+reference/mat03_reference_model.py:
+
+- CONDITION AXES (the card's three), each a declared unit family with a
+  canonical unit and (for temperature) a declared affine offset:
+    temperature   {k: scale 1, degc: scale 1 offset +273.15}   canonical K
+    moisture      {fraction: 1, percent: 0.01}                 canonical fraction
+    strain_rate   {1/s: 1}                                     canonical 1/s
+  Condition values convert to canonical at import; an unregistered unit
+  refuses unknown_condition_unit; a value outside the dataset's declared
+  envelope refuses condition_outside_envelope.
+- KNOWN_SOURCES: a citation registry (id -> locator) of sources the fleet
+  has seen before. METADATA ONLY: no admission gate consults it (this is
+  the card falsifier's lesson, enforced structurally; R3(e) audits the
+  gate list).
+- MeasuredRecord (frozen): property name, MATH-01 Quantity (declared unit
+  family -> SI value + exact Dimension), uncertainty (>0, finite, same
+  unit), full condition map (all axes, canonical), citation (source id +
+  locator + note, stored VERBATIM).
+- import_dataset(payload, citation, known_sources) -> MeasuredDataset:
+  the ONLY path from raw data to a stored dataset. Gate order, each
+  refusal NAMED, none silent:
+    missing_source_identity   blank/absent citation locator, id, or note
+    identity_mismatch         payload declares content_sha256 and the
+                              recomputed sha256 over the canonical JSON of
+                              the payload differs (declared identity must
+                              match measured content)
+    nonfinite                 non-numeric/NaN/inf property value or
+                              condition
+    bad_value                 property violates its own physics (e.g.
+                              negative modulus)
+    missing_uncertainty       absent/blank/nonpositive uncertainty
+    unknown_unit              property unit not in the property's declared
+                              family
+    unknown_condition_unit    condition unit not in the axis family
+    missing_condition         a record omits one of the dataset's declared
+                              axes (temperature, moisture, strain_rate —
+                              all three are REQUIRED context for this card)
+    condition_outside_envelope a condition outside the dataset's declared
+                              [lo, hi] per axis
+    duplicate_version         re-import of an existing (id, version)
+    version_regression        a version <= the dataset's current max
+    bad_version               non-integer or < 1
+  Success stores an immutable MeasuredDataset: id, version, the VERBATIM
+  citation, the recomputed content_sha256, declared envelope, and the
+  records; prior versions stay byte-preserved and readable (history is
+  append-only; no in-place mutation, no silent overwrite).
+- propagate_sum(a, b) / propagate_product(a, b): uncertainty propagation
+  over measured records of the same property: sum -> u =
+  sqrt(ua^2 + ub^2); product -> u/c = sqrt((ua/a)^2 + (ub/b)^2); values
+  compose as MATH-01 Quantities (dimension composition cited to MATH-01).
+  The derived record carries BOTH parent citations and the arithmetic
+  string; missing parent citation refuses missing_source_identity.
+- interpolate(dataset, property, query_conditions): requires ALL declared
+  axes present in the query (missing_condition) and every query condition
+  STRICTLY WITHIN the measured grid of the varying axis (outside the
+  [min, max] of measured values refuses outside_measured_envelope — no
+  extrapolation, that is inventing measurement); linear interpolation of
+  value AND uncertainty between the two bracketing records; the result
+  carries BOTH bracketing citations (source identity survives
+  interpolation) and is marked interpolated.
+- ALL refusals are Mat03Refusal(reason, message) — machine-checkable
+  reason, verbatim detail.
+
+## PREREGISTERED NUMBERS / THRESHOLDS (stated before ANY implementation test)
+
+Verdict rule: each row must reach its full N/N; any miss = the row's
+falsifier fired and is REPORTED with the fired run retained. Post-state
+assertions accompany every refusal (nothing admitted, registry unchanged:
+dataset count, version max, byte-identity of stored records).
+
+- R1 positive imports (model must ACCEPT): N=8/8 —
+  (a) a two-record dataset (modulus vs temperature 300 K and 320 K,
+      moisture pinned 0.5 fraction, strain-rate pinned 1e-3 1/s, Pa
+      uncertainties, full citation) imports -> version 1 stored;
+  (b) source identity retained: stored citation id/locator/note
+      byte-identical to the import call; stored content_sha256 equals a
+      freshly recomputed hash of the payload;
+  (c) a temperature condition imported as 26.85 degC stores canonical
+      300.0 K exactly (the affine offset is APPLIED, not a scale);
+  (d) a moisture condition imported as 50 percent stores canonical 0.5
+      fraction;
+  (e) version amendment: v2 of the same id imports; v1 stays readable and
+      byte-identical (hash compare); history exposes [1, 2] in order;
+  (f) propagate_sum of two same-property records -> value a+b, u =
+      sqrt(ua^2+ub^2) (exact float compare), derived record carries both
+      parent citations and the arithmetic string;
+  (g) propagate_product -> u/c = sqrt((ua/a)^2 + (ub/b)^2) (exact float
+      compare), value composes through MATH-01's algebra;
+  (h) interpolation INSIDE the envelope: modulus at 310 K from the 300/320
+      brackets -> value and uncertainty both linear midpoints, result
+      cites BOTH bracketing records and is marked interpolated.
+- R2 card-prediction negatives — "imports ... reject missing physical
+  context" (model must REFUSE, reason verbatim): N=8/8 —
+  (a) blank citation locator -> missing_source_identity;
+  (b) citation note absent -> missing_source_identity;
+  (c) record with no temperature condition -> missing_condition;
+  (d) record with no uncertainty -> missing_uncertainty;
+  (e) NaN property value -> nonfinite;
+  (f) negative modulus with a complete citation -> bad_value;
+  (g) condition unit "degF" (not declared) -> unknown_condition_unit;
+  (h) version 1 re-import after v2 exists -> version_regression.
+  Post-state in every case: dataset registry unchanged (no new dataset, no
+  new version, stored records byte-identical).
+- R3 CARD FALSIFIER probe — "provenance membership is represented as proof
+  of authentic measurement" (model must NOT let membership do any
+  admission work): N=6/6 —
+  (a) a record citing a KNOWN source id but omitting the moisture
+      condition -> refused missing_condition (membership did not admit
+      it);
+  (b) same with uncertainty stripped -> refused missing_uncertainty;
+  (c) same with a negative modulus value -> refused bad_value;
+  (d) the INVERSE probe: a record from a source id UNKNOWN to
+      known_sources with COMPLETE context and citation -> ADMITTED (an
+      import extends the source registry; membership was never the gate);
+  (e) structural audit: the model's gate list contains no
+      membership/known-source gate (asserted against the exported gate
+      name list) — membership appears in metadata, never in admission;
+  (f) authenticity has a content gate, not a membership gate: a payload
+      whose DECLARED content_sha256 does not match its own content ->
+      refused identity_mismatch even though the citation is complete and
+      the source id is KNOWN.
+  Threshold: 6/6 with the calculation/dataset store untouched in the
+  refusal cases.
+- R4 versioned datasets + immutability (card statement): N=6/6 —
+  (a) an admitted dataset is immutable (attribute/item assignment raises;
+      the record is unchanged afterward);
+  (b) v1 content byte-identical (hash) after the v2 import;
+  (c) duplicate import of an EXISTING (id, version) with DIFFERENT content
+      -> duplicate_version, stored v1 unchanged;
+  (d) duplicate import with IDENTICAL content -> duplicate_version (no
+      silent overwrite, no idempotent second row);
+  (e) version 0 -> bad_version;
+  (f) the dataset listing exposes (id, versions...) with history order
+      preserved for two datasets.
+- R5 deployed-source trace at base 4812b55b (the card's semantics judged
+  against the DEPLOYED text; 5/5 semantics present, quoted at the MEASURED
+  line numbers — predictions are about SEMANTICS PRESENT, locations
+  measured and reported even if they moved): —
+  (i) uncertainty published-or-refused: tools/matter_data.py
+      published_spread (:352-361 at derivation time): "A single value with
+      no stated uncertainty cannot set a tolerance";
+  (ii) a choice is not a measurement: tools/matter_data.py :77-80:
+      "A design or seed value is a CHOICE and may not be cited as a
+      measurement" (provenance-class gate);
+  (iii) source identity retained beside the number: tools/matter_data.py
+      :81-82 (source=f"matter_library.json::{material}.{key} -- note")
+      and :87 ("Every entry: value, unit, spread ... source, provenance"),
+      plus the library's note field measured present in
+      Chimera/docs/matter/matter_library.json;
+  (iv) named refusal on missing context, never a default:
+      tools/matter_data.py Uncited class :44-47; tools/material_contract.py
+      refusal-kind table :13-20 and ContractRefusal :47-53;
+  (v) declared-only unit conversion: tools/material_contract.py :60-62
+      ("conversions exist ONLY here") and the UNKNOWN_UNIT / cross-family
+      refusals :96-107.
+- R6 measured deltas and current state (findings, never patched, never
+  adopted as the model's truth): N=17/17 predicted counts match (casefold,
+  regexes stated; reading basis: full-file regex count over the working
+  tree at base; any miss is a DISCLOSED SURPRISE, never reconciled) —
+  (a) condition AXES are prose-only in the deployed plane (6 rows):
+      regex \btemperature\b: tools/material_contract.py == 0,
+      tools/matter_data.py == 1 (inside a citation note);
+      \bmoisture\b: material_contract.py == 1 (wood note),
+      matter_data.py == 3 (citation notes);
+      strain[-_ ]rate: material_contract.py == 0, matter_data.py == 0;
+  (b) the card's contribution gap (4 rows): \binterpolat in BOTH files
+      == 0 (no interpolation machinery); \bversion in BOTH files == 0
+      (no dataset versioning) — the versioned condition-indexed dataset
+      store of the card statement is ABSENT at base;
+  (c) the card's mathematics partially deployed (4 rows): \buncertainty\b:
+      matter_data.py == 3, material_contract.py == 0; \bcitation\b:
+      matter_data.py == 3, material_contract.py == 0;
+  (d) OWNER_INSTANCE CURRENT STATE (task packet: the claim-path fix is
+      FIXED AND DEPLOYED via PR #80 — measure the current state, no stale
+      deviation language; 2 rows): occurrence counts at base —
+      tools/agent_fleet/control.py == 8 (sites :121-123 _task fence,
+      :323 setdefault, :499-501 yield guard, :554 claim bind, :697
+      release clear) and tools/agent_fleet/review_handoff.py == 1 (the
+      claim-path bind, :113 owner_instance=p.get("_resolved_instance")).
+      Contrast baseline: GOV-01 measured review_handoff == 0 at d59518b9
+      (pre-fix) and GOV-03 measured review_handoff == 0 / control == 9 at
+      62b8e357; a review_handoff count of 0 at THIS base would be a
+      SURPRISE FINDING (fix not actually at base) reported as such;
+  (e) independence audit (1 row): this lane's model imports stdlib
+      modules + the MATH-01 backbone ONLY — the audit enumerates the
+      model's import lines and asserts NOTHING is imported from
+      tools/material_contract.py or tools/matter_data.py (the audited
+      code).
+
+## CARD VERDICT RULE (fixed now)
+
+Card prediction "Imports retain source identity and reject missing
+physical context" = SUPPORTED iff R1-R4 reach full N/N AND R5 reaches 5/5.
+Card falsifier "Provenance membership is represented as proof of authentic
+measurement" = NOT reproduced iff R3 = 6/6 AND no R5/R6 measurement shows
+a deployed admission path gating on provenance membership alone; otherwise
+the falsifier FIRES and the instance is reported with its exact file:line.
+
+## METHOD
+
+1. Commit this prereg (alone). 2. Write reference/mat03_reference_model.py.
+3. controls/run_controls.py executes R1-R4 in one process and writes
+   checks/r1_positive_imports.txt, checks/r2_missing_context_negatives.txt,
+   checks/r3_falsifier_membership.txt, checks/r4_versioning_immutability.txt
+   (verbatim refusals, post-state assertions; bytecode writing disabled so
+   no __pycache__ is committed). 4. controls/run_source_checks.py
+   (read-only) writes checks/r5_source_trace.txt (quoted lines at base)
+   and checks/r6_findings.txt (measured counts with the exact regexes).
+   5. RESULT.txt: scoreboard, card verdict, reproduction commands, source
+   identities (git base sha + per-file sha256), limitations, DYAD
+   NOT_APPLICABLE record, integration contract + handoff (MAT-04/MAT-05
+   unlock; the dataset layer is this lane's shared seed).
+6. Commit chain on astra/tasks/holodeck-mat-03 (trailer
+   `Agent: subagent-worker-09`), push no-force, PR into
+   astra/gait-capture, submit_review with exact HEAD.

@@ -1,0 +1,58 @@
+RUN_FLEET_DISCOVER — dyad-template-hardening-01 (generation 3, slot 6, subagent-worker-08)
+command: python -m unittest discover -s tools/agent_fleet -p 'test_*.py'
+when: 2026-09-11, after implementation; branch astra/tasks/dyad-template-hardening-01
+
+RESULT (two consecutive full-suite runs): 231 tests; run A: 2 failures + 1 skipped;
+run B: 1 failure + 1 skipped — BOTH failures inside tools/agent_fleet/test_capture_window.py
+(window-capture fixtures, load-sensitive; the failing test NAME CHANGED between runs:
+  run A: pixel-array diff + 'occluded_or_foreign_content' != 'unobscured';
+  run B: test_verify_hwnd_capture_none_pin_adopts_measured_size)
+
+FLAKE ISOLATION (module run alone, 28 tests):
+  at clean tip 4c319997 (throwaway detached worktree): OK 28/28
+  on this branch (same module): OK 28/28
+=> pre-existing full-suite load flake in the capture fixtures, NOT a regression of
+   this lane: tools/agent_fleet/ imports nothing from tools/dyad_subagent_template.py
+   (grep verified empty) and this lane touches nothing under tools/agent_fleet/.
+
+== tail of full-suite run C (verbose, below) ==
+test_task_abandon_refuses_non_supervisor_actors (test_task_abandon.TaskAbandonTests.test_task_abandon_refuses_non_supervisor_actors) ... ok
+test_task_abandon_refuses_unknown_task (test_task_abandon.TaskAbandonTests.test_task_abandon_refuses_unknown_task) ... ok
+test_task_abandon_requires_reason_and_evidence (test_task_abandon.TaskAbandonTests.test_task_abandon_requires_reason_and_evidence) ... ok
+test_task_abandon_retires_ready_task_with_audit_record (test_task_abandon.TaskAbandonTests.test_task_abandon_retires_ready_task_with_audit_record) ... ok
+test_yield_recover_path_still_works_alongside_claim_abandon (test_task_abandon.TaskAbandonTests.test_yield_recover_path_still_works_alongside_claim_abandon) ... ok
+test_changed_index_during_read_is_unstable (test_worktree_reconcile.WorktreeReconcileTests.test_changed_index_during_read_is_unstable) ... ok
+test_clean_and_evidence_addition_are_read_only (test_worktree_reconcile.WorktreeReconcileTests.test_clean_and_evidence_addition_are_read_only) ... ok
+test_fast_forward_evidence_commit_continues (test_worktree_reconcile.WorktreeReconcileTests.test_fast_forward_evidence_commit_continues) ... ok
+test_filesystem_root_is_rejected_before_git (test_worktree_reconcile.WorktreeReconcileTests.test_filesystem_root_is_rejected_before_git) ... ok
+test_historical_modify_and_delete_are_distinct (test_worktree_reconcile.WorktreeReconcileTests.test_historical_modify_and_delete_are_distinct) ... ok
+test_ignored_cache_is_preserved_without_blocking (test_worktree_reconcile.WorktreeReconcileTests.test_ignored_cache_is_preserved_without_blocking) ... ok
+test_outside_scope_and_divergent_head (test_worktree_reconcile.WorktreeReconcileTests.test_outside_scope_and_divergent_head) ... ok
+test_staged_new_source_requires_revalidation (test_worktree_reconcile.WorktreeReconcileTests.test_staged_new_source_requires_revalidation) ... ok
+test_unreadable_index_fails_closed (test_worktree_reconcile.WorktreeReconcileTests.test_unreadable_index_fails_closed) ... ok
+test_unsafe_arguments_and_symlink_escape_refuse (test_worktree_reconcile.WorktreeReconcileTests.test_unsafe_arguments_and_symlink_escape_refuse) ... skipped 'symlink creation unavailable'
+
+======================================================================
+FAIL: test_verify_hwnd_capture_none_pin_adopts_measured_size (test_capture_window.CaptureWindowTests.test_verify_hwnd_capture_none_pin_adopts_measured_size)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-06\tools\agent_fleet\test_capture_window.py", line 472, in test_verify_hwnd_capture_none_pin_adopts_measured_size
+    self.assertEqual(rec['verdict'], 'unobscured', rec)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'occluded_or_foreign_content' != 'unobscured'
+- occluded_or_foreign_content
++ unobscured
+ : {'contract': 'WINDOW_CAPTURE_OWNERSHIP_V1', 'title': 'chimera-adoption', 'pid': 30632, 'owns_process': True, 'window_class': 'ChimeraFixture_aa37133277', 'class_owned': True, 'is_window': True, 'visible': True, 'client_size': [320, 200], 'pinned_size': [320, 200], 'capture_sha256': '20f3d62fced3ac8938933a1f3aca1dbe92b058808f88bdea2937ce5d788f9df8', 'expected_sha256': '78e4883fa913bcb524bfb45d33aa7f871bef95df99284497fc8ec52f258c7851', 'verdict': 'occluded_or_foreign_content', 'publishable': False}
+
+----------------------------------------------------------------------
+Ran 231 tests in 231.324s
+
+FAILED (failures=1, skipped=1)
+stopped pid 72708 (transition recorded: test teardown controlled transition)
+stopped pid 75408 (transition recorded: test teardown controlled transition)
+stopped pid 59388 (transition recorded: test teardown controlled transition)
+stopped pid 70996 (transition recorded: test teardown controlled transition)
+stopped pid 78648 (transition recorded: test teardown controlled transition)
+stopped pid 78420 (transition recorded: test teardown controlled transition)
+SCALE_PROBE_MIXED {"threads": 8, "duration_s": 20.4, "ops": 1073, "p50_ms": 19.8, "p95_ms": 483.5, "p99_ms": 3187.9, "max_ms": 9994.4, "lock_errors": 0, "other_refusals": 120, "spawn_cost_ms": 6.4}
+SCALE_PROBE_SATURATED {"ops": 510, "lock_or_err": 0, "p50_ms": 10.1, "p95_ms": 152.0, "max_ms": 5307.6}

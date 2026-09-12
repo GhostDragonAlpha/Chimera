@@ -1,0 +1,15 @@
+R4 reversibility of coordinate transforms (card statement; prereg N=5/5, round-trip bound <= 1e-12: 3 chained float64 orthogonal products, Higham gamma_9 ~= 2.0e-15 => ~500x headroom)
+  [OK] (a) pure-rotation round-trip <= 1e-12
+        max abs deviation 0.000e+00
+  [OK] (b) rotation+translation round-trip <= 1e-12
+        max abs deviation 0.000e+00
+  [OK] (c) rigid chain A->B->C then inverse returns p <= 1e-12
+        max abs deviation 4.441e-16
+  [OK] (d) inverse(inverse(T)) == T BIT-EXACT on a pure rotation (R^TT = R exact, t = 0 exact)
+        R identical: True; t identical: True
+  [OK] (e) NEGATIVE tie-in: metre frame -> world-unit frame with no declared scale
+        refused as expected: Math01Refusal('undeclared_frame_scale', "frame 'A' (m) -> 'world' (wu): length unit 'wu' is not declared")
+  [OK]     after declaring world-unit = 1 m, the same transform succeeds (<= 1e-12)
+        moved = (2.0446580104644183, -0.18688231985000248, 3.0), max abs deviation 0.000e+00
+
+R4 HOLDS 5/5

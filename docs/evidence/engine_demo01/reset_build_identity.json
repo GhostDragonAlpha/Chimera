@@ -1,0 +1,12 @@
+{
+  "source_head": "b769636970417369eeb86de76c7071c89d3c6605",
+  "engine_cpp_sha256": "5f43e4bd71a95ef12e6616f42121d1a313466115fde7edc9ac5559ce562beea8",
+  "engine_dirty": true,
+  "exe": "E:\\ChimeraWork\\slot-01\\.tmp\\engine_runtime\\reset_fixed_01\\chimera_engine.exe",
+  "exe_sha256": "5a9c71e0110bff749abcebe8c8978466366d5b3532f29929b7f6cb1481df7c97",
+  "shader_sha256": "71b5f8d37acff921ea249c74ade6d4074d79ea80d39bf03d66488f1c47c3898f",
+  "port": 8101,
+  "protected_build_used": false,
+  "claim": "engine-demo-01 generation1",
+  "performance_certification": "NOT_RUN"
+}

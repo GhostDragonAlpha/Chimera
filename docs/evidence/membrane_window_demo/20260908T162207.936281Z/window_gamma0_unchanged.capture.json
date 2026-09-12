@@ -1,0 +1,22 @@
+{
+  "label": "window_gamma0_unchanged",
+  "utc": "2026-09-08T16:22:09.421105+00:00",
+  "engine_url": "http://localhost:8091",
+  "png_file": "docs\\evidence\\membrane_window_demo\\20260908T162207.936281Z\\window_gamma0_unchanged.png",
+  "png_sha256": "742b936ba0e787811aef1fc278e663095bf11d503009f73c1f2b206fad2cb1f0",
+  "camera": {
+    "radius": 6.0,
+    "theta": 0.0,
+    "phi": 0.3
+  },
+  "state_id": "d5c4a4e1b0db6d58341c6d2389f49d9db69105e7ed211be4a08d2c589d65dbfc",
+  "state": {
+    "fixture": "b2",
+    "gamma_J_per_m2": 0.0,
+    "iteration": 0,
+    "energy_J": 0.0,
+    "geometry_sha256_f64le": "349a9b20311c25b649ef3c123e9c0610658858f93025d71a134688ec46fff831",
+    "upload_positions_f32le_sha256": "7e468491c957480f9a4e60040596b63efc9bad5974ef58d7f8444a2fb6b63ff6"
+  },
+  "certifiable": true
+}

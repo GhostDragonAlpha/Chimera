@@ -1,0 +1,38 @@
+platform_surface_probe ΓÇö P05-R1 harness (Win32 + Unavailable, real loader + controlled injection)
+[A] UnavailableBackend
+  [PASS] extensions: required == false
+  [PASS] extensions: blocked == false
+  [PASS] extensions: count == 0
+  [PASS] extensions: names == nullptr
+  [PASS] create_surface -> kUnavailable
+  [PASS] create_surface: result untouched (VK_SUCCESS)
+  [PASS] create_surface: output handle byte-for-byte untouched
+[B] extension-name lifetime (owned return; reads AFTER the helper returned)
+  [PASS] lifetime: loader reported a non-empty extension list
+  [PASS] lifetime: every owned name still readable AFTER the helper returned (no dangling)
+[C] Win32Backend REAL LOADER success + teardown (no injection active)
+  [PASS] extensions: required == true
+  [PASS] extensions: blocked == false (win32 surface present on this loader)
+  [PASS] extensions: count == 1
+  [PASS] extensions: names != nullptr
+  [PASS] extensions: name == VK_KHR_win32_surface
+  [PASS] extensions: VK_KHR_win32_surface IS present in the loader list
+  [PASS] extensions: blocked agrees with loader presence
+  [PASS] extensions: names pointer-stable across calls (static storage, no cache)
+  [PASS] instance: created with the surface ext set
+  [PASS] window: HWND created
+  [PASS] real-loader: kCreated
+  [PASS] real-loader: non-null surface
+  [PASS] real-loader: result == VK_SUCCESS
+  [PASS] teardown: vkDestroySurfaceKHR executed cleanly
+[D] controlled failure: injected substitute propagates the EXACT VkResult
+  [PASS] D: real instance + window available
+  [PASS] D pre-inject: real loader creates on this instance
+  [PASS] D: substitute was actually invoked (injection engaged)
+  [PASS] D: status == kFailed
+  [PASS] D: EXACT injected VkResult propagated
+  [PASS] D: output handle untouched on failure
+  [PASS] D post-reset: real loader path restored
+[E] zero-arg platform entry point
+  [PASS] entry point agrees with the platform-selected backend
+31 checks, 0 failed -> PASS

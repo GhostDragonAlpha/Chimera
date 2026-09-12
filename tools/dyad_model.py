@@ -1,23 +1,13 @@
-"""dyad_model.py — switch the dyad's eye at runtime (operator decree 2026-09-03).
+"""Inspect the checked-in permanent DYAD model policy.
 
-The dyad's model is whatever LM Studio has loaded — but "loaded" is the
-OPERATOR's choice, not the code's. This tool writes the override file that
-`senses.dyad_model()` reads fresh on every call, so the next ask uses the
-named model. No restart, no code edit.
+The 2026-09-10 operator selection is a project policy, not a Saved runtime pin.
+This tool never writes Saved files, loads/evicts models, or changes context.
+Changing or clearing fixed mode requires an explicit operator-owned code change.
 
 Usage:
-  python tools/dyad_model.py                # list what LM Studio serves now
-  python tools/dyad_model.py <model-id>     # switch (verified against the list)
-  python tools/dyad_model.py auto           # clear the override (fall to env/default)
-
-Rule-0 membrane:
-  STATEMENT:  the eye's identity is an operator-owned runtime value, and a
-              switch takes effect on the NEXT call without process restart.
-  PREDICTION: after `set`, the next senses.watch report logs
-              "dyad model switch: A -> B" and answers come from B (echoed in
-              the response payload's `model` field).
-  FALSIFIER:  a call after `set` still served by the old model, or LM Studio
-              returns NoModelLoaded / a model-miss for the written id.
+  python tools/dyad_model.py
+  python tools/dyad_model.py qwen3.8-27b-nvfp4-mtp   # verify/no-op
+  python tools/dyad_model.py auto                    # refused in fixed mode
 """
 from __future__ import annotations
 
@@ -26,39 +16,87 @@ import sys
 import urllib.request
 from pathlib import Path
 
+
 LMSTUDIO_URL = "http://localhost:1234"
-OVERRIDE = Path(__file__).resolve().parent.parent / "Saved" / "dyad_model.txt"
+POLICY = Path(__file__).resolve().parent.parent / "ChimeraEngine" / "dyad_model_policy.json"
 
 
-def served() -> list[str]:
+class PolicyError(ValueError):
+    pass
+
+
+def read_policy() -> dict:
     try:
-        with urllib.request.urlopen(LMSTUDIO_URL + "/v1/models", timeout=4) as r:
-            return [m.get("id", "") for m in json.load(r).get("data", [])]
+        payload = json.loads(POLICY.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as e:
+        raise PolicyError(f"cannot read permanent DYAD policy {POLICY}: {e}") from e
+    if not isinstance(payload, dict):
+        raise PolicyError("permanent DYAD policy must be a JSON object")
+    if payload.get("schema") != "chimera-dyad-model-policy-v1":
+        raise PolicyError("unsupported permanent DYAD policy schema")
+    if payload.get("mode") != "fixed":
+        raise PolicyError("DYAD policy mode must be 'fixed'")
+    for field in ("model_id", "model_relative_path"):
+        if not isinstance(payload.get(field), str) or not payload[field].strip():
+            raise PolicyError(f"permanent DYAD policy requires non-empty {field}")
+    return payload
+
+
+def loaded_ids() -> list[str]:
+    """Return only model ids explicitly loaded according to the native API."""
+    with urllib.request.urlopen(LMSTUDIO_URL + "/api/v0/models", timeout=4) as r:
+        payload = json.load(r)
+    if not isinstance(payload, dict) or not isinstance(payload.get("data", []), list):
+        raise PolicyError("LM Studio returned a malformed loaded-model list")
+    loaded = []
+    for record in payload.get("data", []):
+        if not isinstance(record, dict):
+            continue
+        if record.get("state") == "loaded" or record.get("status") == "loaded":
+            model_id = record.get("id")
+            if isinstance(model_id, str) and model_id and model_id not in loaded:
+                loaded.append(model_id)
+    return loaded
+
+
+def main(argv=None) -> int:
+    args = list(sys.argv[1:] if argv is None else argv)
+    try:
+        policy = read_policy()
+    except PolicyError as e:
+        print(f"REFUSED [dyad_model_policy_invalid]: {e}")
+        return 2
+
+    intended = policy["model_id"]
+    print("DYAD model policy: fixed")
+    print(f"model id        : {intended}")
+    print(f"LM Studio path  : {policy['model_relative_path']}")
+    print(f"policy file     : {POLICY}")
+
+    if args:
+        requested = args[0].strip()
+        if requested != intended:
+            print(
+                f"REFUSED [dyad_model_policy_permanent]: runtime selection {requested!r} "
+                f"cannot replace permanent model {intended!r}. An operator-owned "
+                "checked-in policy change is required."
+            )
+            return 2
+        print("requested id already equals the permanent policy; no file was written")
+
+    try:
+        loaded = loaded_ids()
     except Exception as e:
-        print(f"(cannot reach LM Studio: {e})")
-        return []
-
-
-def main() -> int:
-    ids = served()
-    print("LM Studio serves:")
-    for i in ids:
-        cur = ""
-        if OVERRIDE.exists():
-            cur = "   <-- dyad override" if i == OVERRIDE.read_text(encoding="utf-8").strip() else ""
-        print(f"  {i}{cur}")
-    if len(sys.argv) < 2:
-        print("\nusage: python tools/dyad_model.py <model-id | auto>")
-        return 0
-    want = sys.argv[1].strip()
-    if want not in ("auto",) and ids and want not in ids:
-        print(f"\nREFUSED: '{want}' is not in the served list — a typo'd id is a silently dark eye.")
-        print("Copy an id exactly from the list above.")
+        print(f"REFUSED [dyad_loaded_model_list_unavailable]: {e}")
         return 1
-    OVERRIDE.parent.mkdir(parents=True, exist_ok=True)
-    OVERRIDE.write_text(want + "\n", encoding="utf-8")
-    print(f"\ndyad override written: {want}" + ("" if want != "auto" else " (fall through to env/default)"))
-    print("Takes effect on the next senses call; every switch is logged by senses.py.")
+    print(f"loaded ids      : {loaded}")
+    if intended not in loaded:
+        print(
+            f"REFUSED [dyad_required_model_not_loaded]: {intended!r} is not "
+            "explicitly loaded"
+        )
+        return 1
+    print("ready            : permanent DYAD model is explicitly loaded")
     return 0
 
 

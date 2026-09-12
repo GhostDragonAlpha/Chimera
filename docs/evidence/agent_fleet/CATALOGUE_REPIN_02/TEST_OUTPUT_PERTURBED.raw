@@ -1,0 +1,23 @@
+....F......F...........
+======================================================================
+FAIL: test_gen5_exhaustive_partition_no_silent_omissions (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_gen5_exhaustive_partition_no_silent_omissions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\allen\AppData\Local\Temp\repin-perturb-02\tools\agent_fleet\test_master_catalogue.py", line 670, in test_gen5_exhaustive_partition_no_silent_omissions
+    self.assertEqual(len(part), 2630)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 2632 != 2630
+
+======================================================================
+FAIL: test_import_real_sources_full_coverage (tools.agent_fleet.test_master_catalogue.CatalogueTests.test_import_real_sources_full_coverage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\allen\AppData\Local\Temp\repin-perturb-02\tools\agent_fleet\test_master_catalogue.py", line 187, in test_import_real_sources_full_coverage
+    self.assertEqual(built['coverage']['master_row_ids'], 85)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 86 != 85
+
+----------------------------------------------------------------------
+Ran 23 tests in 2.033s
+
+FAILED (failures=2)

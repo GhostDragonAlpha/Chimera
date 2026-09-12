@@ -1,0 +1,51 @@
+RUN RECORD - baseline repeats (fixed path, fixed HEAD)
+=======================================================
+
+Audit: catalogue-determinism-audit-01 (prediction P1 of PREREGISTRATION.txt
+in this directory, committed 72af259c BEFORE any run below).
+
+Conditions
+----------
+  worktree          E:\ChimeraWork\slot-07 (task slot-07)
+  HEAD (pinned)     72af259c6648847d0c4fbc7fd37574589ae70eac
+                    (= task base 4c31999797a9383ea252019be1f32511709fa280
+                     + the preregistration commit; moved by NOTHING during
+                     the runs - `git status --porcelain` clean before run 1)
+  builder           tools/agent_fleet/master_catalogue.py
+  builder sha256    cc47c240034a940ebb7b1b59a4310d8f8fedc9b99df03ae20f7e723e6d331014
+  command (each)    python tools/agent_fleet/master_catalogue.py --out .tmp/cda/baseline_<N>.json
+  scratch           .tmp/ is the repo's gitignored scratch dir; the raw
+                    envelopes stay there, hashes pinned below
+
+Per-run results (N = 1..5, consecutive, nothing else ran between them)
+-----------------------------------------------------------------------
+  run  exit  envelope sha256 (raw --out bytes)                       console sha256
+  1    0     d61a8c1e26025f8af9fcba0f715ec774a9cc99f10b59915aef6ec5fe35c25c1e  009ee83e22a358542eff8489dd5caa0d1a64e67ce9ad4c33ff834a4893405773
+  2    0     d61a8c1e26025f8af9fcba0f715ec774a9cc99f10b59915aef6ec5fe35c25c1e  fc03d8a35e9671ef6f39b39bdf1b358bc16b7fe13ed51a5ef723e8cbcdb08d44
+  3    0     d61a8c1e26025f8af9fcba0f715ec774a9cc99f10b59915aef6ec5fe35c25c1e  ff4d65c5612e73763fde5ba3e5d877f6c4476f977696ecd0ed53b80d23bbec92
+  4    0     d61a8c1e26025f8af9fcba0f715ec774a9cc99f10b59915aef6ec5fe35c25c1e  5d5e9cf0a3bcd48c7c00a0610341fff5fa43b2ed852020fc5c187235b231be31
+  5    0     d61a8c1e26025f8af9fcba0f715ec774a9cc99f10b59915aef6ec5fe35c25c1e  9a94cdd22c24526d5a60f6fac32d42e44b0ec3fc7d8700ea8462786dab6c7af2
+
+  envelope size each: 1526855 bytes; console size each: 650198 bytes
+
+Payload digest (from `digest:` console line, identical all 5 runs):
+  7c2ab66573938fff9b873e4fb6408267da2a072890c56f0414d70d3389140a7d
+
+Console byte-difference check
+-----------------------------
+The five consoles differ ONLY in line 3, the echo of the run-local --out
+argument (`wrote .tmp\cda\baseline_<N>.json`); `diff baseline_1.console.txt
+baseline_<N>.console.txt` shows exactly that one `3c3` hunk for every N.
+The coverage line and the digest line are byte-identical across runs. The
+console is not the transported deliverable; the envelope is, and the
+envelopes are byte-identical (same sha256 above).
+
+Verdict
+-------
+P1 HOLDS: 5 >= 3 consecutive runs at fixed path + fixed HEAD produce
+byte-identical envelopes (identical raw-byte sha256 and identical payload
+digest). Falsifier F1 did not fire.
+
+Full verbatim console of run 1: RAW_RUN_BASELINE_CONSOLE.txt in this
+directory (runs 2-5 differ from it only in the `wrote` line, hunks shown
+above and re-derivable from the pinned console hashes).

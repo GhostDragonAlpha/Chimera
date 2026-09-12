@@ -1,0 +1,454 @@
+[
+ {
+  "name": "inputs.stride_pack",
+  "verdict": "PASS",
+  "detail": {
+   "sha256": "883ed9d87859dfe4e4126631149ca09b250e1be441357f3db4a16c468b01f50a"
+  }
+ },
+ {
+  "name": "hinge.derived",
+  "verdict": "PASS",
+  "detail": {
+   "nv": 18459,
+   "band_L": 842,
+   "band_R": 842,
+   "overlap_zeroed": 0,
+   "JL": [
+    0.483325332403183,
+    1.903296947479248,
+    -0.015459035523235798
+   ],
+   "JR": [
+    -0.483325332403183,
+    1.903296947479248,
+    -0.015459035523235798
+   ],
+   "axis": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "flexion_posterior_control": true,
+   "pack_knee_rom": {
+    "knee_L": [
+     -131.0,
+     147.0
+    ],
+    "knee_R": [
+     -131.0,
+     147.0
+    ]
+   }
+  }
+ },
+ {
+  "name": "launch.port",
+  "verdict": "PASS",
+  "detail": {
+   "port": 8105
+  }
+ },
+ {
+  "name": "launch",
+  "verdict": "PASS",
+  "detail": {
+   "pid": 47392,
+   "port": 8105,
+   "exe_sha256": "0fadf8b989d095a1f7b1110f31d1c3963b259958251e5b41fb1c150bc8472ecd"
+  }
+ },
+ {
+  "name": "load.mesh",
+  "verdict": "PASS",
+  "detail": {
+   "r": 27.862994463376467,
+   "theta": 3.141592653589793,
+   "phi": -1.3101939350475558
+  }
+ },
+ {
+  "name": "load.joints_bin",
+  "verdict": "PASS",
+  "detail": {
+   "http": 200,
+   "resp": "{\"ok\":true}"
+  }
+ },
+ {
+  "name": "rig.doc",
+  "verdict": "MEASURED",
+  "detail": {
+   "n_joints": 28,
+   "names": [
+    "neck",
+    "jaw",
+    "spine_upper",
+    "spine_mid",
+    "spine_lower",
+    "tail_base",
+    "tail_mid",
+    "shoulder_L",
+    "shoulder_R",
+    "elbow_L",
+    "elbow_R",
+    "wrist_L",
+    "wrist_R",
+    "hip_L",
+    "hip_R",
+    "knee_L",
+    "knee_R",
+    "ankle_L",
+    "ankle_R",
+    "tail_tip",
+    "ear_L",
+    "ear_R",
+    "lid_L",
+    "lid_R",
+    "brow_L",
+    "brow_R",
+    "mouth_L",
+    "mouth_R"
+   ]
+  }
+ },
+ {
+  "name": "camera.set",
+  "verdict": "PASS",
+  "detail": {
+   "cam_radius": 34.0,
+   "cam_theta": 0.5,
+   "cam_phi": 0.35,
+   "extent": 10.0
+  }
+ },
+ {
+  "name": "capture.keyframe",
+  "verdict": "PASS",
+  "detail": {
+   "i": 0,
+   "probe": {
+    "sx": 1302.358276,
+    "sy": 623.499146
+   },
+   "gait": {
+    "on": false,
+    "steps_total": 0,
+    "thetaL": 0.0,
+    "thetaR": 0.0
+   },
+   "stride": {
+    "active": false,
+    "playing": false,
+    "t": 0.0
+   }
+  }
+ },
+ {
+  "name": "engage.hinge_bin",
+  "verdict": "PASS",
+  "detail": {
+   "resp": "{\"ok\":true}"
+  }
+ },
+ {
+  "name": "engage.gait_bin",
+  "verdict": "PASS",
+  "detail": {
+   "resp": "{\"ok\":true}"
+  }
+ },
+ {
+  "name": "engage.gait_on",
+  "verdict": "PASS",
+  "detail": {
+   "steps": 3,
+   "omega": 7.853981633974483
+  }
+ },
+ {
+  "name": "capture.keyframe",
+  "verdict": "PASS",
+  "detail": {
+   "i": 90,
+   "probe": {
+    "sx": 1302.358276,
+    "sy": 623.499146
+   },
+   "gait": {
+    "on": true,
+    "steps_total": 22779,
+    "thetaL": 41.706594,
+    "thetaR": 87.661259
+   },
+   "stride": {
+    "active": false,
+    "playing": false,
+    "t": 0.0
+   }
+  }
+ },
+ {
+  "name": "capture.keyframe",
+  "verdict": "PASS",
+  "detail": {
+   "i": 164,
+   "probe": {
+    "sx": 1302.358276,
+    "sy": 623.499146
+   },
+   "gait": {
+    "on": true,
+    "steps_total": 46377,
+    "thetaL": 113.980505,
+    "thetaR": 24.443356
+   },
+   "stride": {
+    "active": false,
+    "playing": false,
+    "t": 0.0
+   }
+  }
+ },
+ {
+  "name": "disengage.hinge",
+  "verdict": "PASS",
+  "detail": {}
+ },
+ {
+  "name": "engage.stride_bin",
+  "verdict": "PASS",
+  "detail": {
+   "resp": "{\"ok\":true,\"n\":331}",
+   "n": 331,
+   "nj": 28,
+   "loop0": 110
+  }
+ },
+ {
+  "name": "engage.stride_play",
+  "verdict": "PASS",
+  "detail": {}
+ },
+ {
+  "name": "capture.keyframe",
+  "verdict": "PASS",
+  "detail": {
+   "i": 175,
+   "probe": {
+    "sx": 1302.358276,
+    "sy": 623.499146
+   },
+   "gait": {
+    "on": false,
+    "steps_total": 49635,
+    "thetaL": 137.08355,
+    "thetaR": 9.327202
+   },
+   "stride": {
+    "active": true,
+    "playing": true,
+    "t": 0.400072
+   }
+  }
+ },
+ {
+  "name": "capture.keyframe",
+  "verdict": "PASS",
+  "detail": {
+   "i": 265,
+   "probe": {
+    "sx": 1302.358276,
+    "sy": 623.499146
+   },
+   "gait": {
+    "on": false,
+    "steps_total": 49635,
+    "thetaL": 137.08355,
+    "thetaR": 9.327202
+   },
+   "stride": {
+    "active": true,
+    "playing": true,
+    "t": 35.723574
+   }
+  }
+ },
+ {
+  "name": "capture.keyframe",
+  "verdict": "PASS",
+  "detail": {
+   "i": 359,
+   "probe": {
+    "sx": 1302.358276,
+    "sy": 623.499146
+   },
+   "gait": {
+    "on": false,
+    "steps_total": 49635,
+    "thetaL": 137.08355,
+    "thetaR": 9.327202
+   },
+   "stride": {
+    "active": true,
+    "playing": true,
+    "t": 72.598128
+   }
+  }
+ },
+ {
+  "name": "capture.frames",
+  "verdict": "PASS",
+  "detail": {
+   "n": 360,
+   "wall_s": 1054.25
+  }
+ },
+ {
+  "name": "gate.G1",
+  "verdict": "MEASURED",
+  "detail": {
+   "steps_total_series": [
+    1806,
+    4743,
+    7740,
+    10740,
+    13716,
+    16683,
+    19749,
+    22776,
+    25863,
+    28854,
+    31923,
+    35127,
+    38433,
+    41676,
+    45009
+   ],
+   "ok": true
+  }
+ },
+ {
+  "name": "gate.G2",
+  "verdict": "MEASURED",
+  "detail": {
+   "max_dev_deg": 72.768,
+   "declared_amp_deg": 73.475,
+   "required": 58.78,
+   "ok": true
+  }
+ },
+ {
+  "name": "gate.G3",
+  "verdict": "MEASURED",
+  "detail": {
+   "steps_total": 49635,
+   "cap": 262144,
+   "min_phase_std": 87.99658968321125,
+   "ok": true
+  }
+ },
+ {
+  "name": "gate.G4",
+  "verdict": "MEASURED",
+  "detail": {
+   "t": 72.598128,
+   "loop0_dt": 1.8333333333333333,
+   "active": true,
+   "playing": true,
+   "ok": true
+  }
+ },
+ {
+  "name": "gate.G5",
+  "verdict": "MEASURED",
+  "detail": {
+   "per_keyframe": {
+    "175": {
+     "hip_L": 3.624,
+     "hip_R": 3.963,
+     "knee_L": 9.751,
+     "knee_R": 3.705,
+     "ankle_L": 3.043,
+     "ankle_R": 3.043
+    },
+    "265": {
+     "hip_L": 3.767,
+     "hip_R": 1.363,
+     "knee_L": 10.8,
+     "knee_R": 1.017,
+     "ankle_L": 3.043,
+     "ankle_R": 3.043
+    },
+    "359": {
+     "hip_L": 14.145,
+     "hip_R": 10.579,
+     "knee_L": 1.704,
+     "knee_R": 32.769,
+     "ankle_L": 3.043,
+     "ankle_R": 3.043
+    }
+   },
+   "keyframes_over_10deg": 2,
+   "ok": true
+  }
+ },
+ {
+  "name": "gate.G6",
+  "verdict": "MEASURED",
+  "detail": {
+   "sx": [
+    1302.358276,
+    1302.358276,
+    1302.358276,
+    1302.358276,
+    1302.358276,
+    1302.358276
+   ],
+   "sy": [
+    623.499146,
+    623.499146,
+    623.499146,
+    623.499146,
+    623.499146,
+    623.499146
+   ],
+   "spread_px": 0.0,
+   "tol_px": 0.5,
+   "ok": true
+  }
+ },
+ {
+  "name": "gate.G7",
+  "verdict": "MEASURED",
+  "detail": {
+   "travel": 0.0,
+   "falsifier_F1": "FIRES",
+   "derivation": "prereg items 2-5; no route mutates a root transform",
+   "ok": true
+  }
+ },
+ {
+  "name": "encode.movie",
+  "verdict": "PASS",
+  "detail": {
+   "glass": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\FEATURE_WALK\\feature_walk.mp4",
+   "frame": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\agent_fleet\\FEATURE_WALK\\feature_walk_frame.mp4",
+   "glass_sha256": "d7a9a15fcdcb5da112bdeccaf7397f9c640da4d2290ddc00b81f71b78cc9e8b7"
+  }
+ },
+ {
+  "name": "keyframes.copied",
+  "verdict": "PASS",
+  "detail": {
+   "frames": [
+    "f000",
+    "f090",
+    "f164",
+    "f175",
+    "f265",
+    "f359"
+   ]
+  }
+ }
+]

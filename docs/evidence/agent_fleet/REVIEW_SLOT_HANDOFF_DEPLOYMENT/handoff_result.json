@@ -1,0 +1,16 @@
+{
+  "revision": 397,
+  "handoff": {
+    "state": "REVIEW",
+    "head": "00a556b3444fd02a3f230519fd985f9bb0316707",
+    "generation": 1,
+    "slot_released": "2",
+    "filesystem_deleted": false,
+    "acceptance": "NOT_CLAIMED"
+  },
+  "buffy_execution_tasks": [
+    "master-catalogue-sync-01"
+  ],
+  "catalogue_unchanged": true,
+  "slot2_free": true
+}

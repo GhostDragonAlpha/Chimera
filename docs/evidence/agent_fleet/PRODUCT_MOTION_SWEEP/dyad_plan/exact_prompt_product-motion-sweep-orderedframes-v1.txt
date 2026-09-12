@@ -1,0 +1,15 @@
+DYAD visual review request
+task: product-motion-sweep-01
+attempt: product-motion-sweep-orderedframes-v1
+physical/programming context: A desktop engineering application window: a central 3D viewport showing a small brown creature figure standing on a grid floor, with tool panels around the viewport. A short scripted sequence of the creature plays; the six frames are IN ORDER, taken evenly from a 7.0-second clip (10 frames per second).
+claim under examination: A viewer reading these frames in order can tell what the creature is doing and what a human would learn from watching it.
+review type: ordered_frames
+ordered captures: #1 g000.png (sha256 7b1a513230fd...), #2 g019.png (sha256 08cdc969976f...), #3 g030.png (sha256 ce0f66501294...), #4 g041.png (sha256 183520ccf9d9...), #5 g049.png (sha256 c6b2cb8a89c6...), #6 g069.png (sha256 8a20b6d0c332...)
+camera/runtime metadata: {"camera": "fixed 3/4 orbit (set once before the clip; unchanged during)", "state": "the creature is the application loaded subject; a short pose clip plays", "clip_truth_declared_to_nobody": "the judge is told nothing about how the motion was produced"}
+evidence limits: six ordered frames from a 7.0 s clip (10 fps); on-screen application text is part of the product surface and may be read; numbers are observations, not measurements
+
+Answer EVERY question with its number. Report only what you can observe in the supplied images; state uncertainty explicitly. Do not guess. Numbers you mention are observations to verify, not measurements.
+1. Describe what happens across the frames, in order.
+2. What kind of motion or behavior is being demonstrated — name it as you would to a friend.
+3. If a non-physicist watched this clip, what ONE sentence would you tell them about what they just learned?
+4. Is anything unclear, ambiguous, or unconvincing about the sequence?

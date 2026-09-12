@@ -1,0 +1,21 @@
+== fleet-regression-sweep-01: per-lane decisive command ==
+date: 2026-09-11T17:09:06Z
+worktree: E:/ChimeraWork/slot-04 @ 92a67a4cbab0c51d2596001d87a2ddecc0c803d0
+command: python -m unittest tools.test_orient_continuation -v
+
+test_complete_engine_uses_canonical_owned_first_instruction (tools.test_orient_continuation.ContinuationTests.test_complete_engine_uses_canonical_owned_first_instruction) ... ok
+test_completed_cli_json_and_text_bind_same_store_and_do_not_write (tools.test_orient_continuation.ContinuationTests.test_completed_cli_json_and_text_bind_same_store_and_do_not_write) ... ok
+test_explicit_synthetic_is_labeled_unclaimed_and_does_not_create_store (tools.test_orient_continuation.ContinuationTests.test_explicit_synthetic_is_labeled_unclaimed_and_does_not_create_store) ... ok
+test_imports_are_the_frozen_candidate_sources (tools.test_orient_continuation.ContinuationTests.test_imports_are_the_frozen_candidate_sources) ... ok
+test_missing_and_malformed_default_refuse_without_mutation (tools.test_orient_continuation.ContinuationTests.test_missing_and_malformed_default_refuse_without_mutation) ... ok
+test_onboarding_is_strict_utf8_and_names_canonical_entry (tools.test_orient_continuation.ContinuationTests.test_onboarding_is_strict_utf8_and_names_canonical_entry) ... ok
+test_open_engine_and_json_continue_the_exact_local_term_without_write (tools.test_orient_continuation.ContinuationTests.test_open_engine_and_json_continue_the_exact_local_term_without_write) ... ok
+test_real_mcp_next_completed_does_not_save (tools.test_orient_continuation.ContinuationTests.test_real_mcp_next_completed_does_not_save) ... ok
+test_real_mcp_next_open_sets_current_and_saves_once (tools.test_orient_continuation.ContinuationTests.test_real_mcp_next_open_sets_current_and_saves_once) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 1.002s
+
+OK
+
+exit_code: 0

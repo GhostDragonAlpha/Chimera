@@ -1,0 +1,22 @@
+# golden PAN-P3 — a quick R-click is consumed by the MENU path with no pan
+#   (proposed patch, BP-PAN; menu click/drag split: ui.cpp:304-357 VERBATIM —
+#   travel under 4px = click; the split is preserved, only reachable now by
+#   closing the menu on release instead of panning)
+# PROOF: rdown(down) -> rup(same point) with the StudioUI visible and the menu
+#   consuming on release: capture toggles on/off, the menu consumes (menu_consume
+#   host), and pan_x/pan_y/theta/phi remain untouched (zero move deltas).
+mode ui 1
+mode menu 1                # host's ui_on_rbutton_up returns true (menu opens)
+mode console 0
+> rdown 500 500
+|
+! captured 1
+! calls ui_rdown:500,500 capture:on
+> rup
+|
+! captured 0
+! calls capture:off menu:open
+! cam pan_x 0
+! cam pan_y 0
+! cam theta 0
+! cam phi 0.3

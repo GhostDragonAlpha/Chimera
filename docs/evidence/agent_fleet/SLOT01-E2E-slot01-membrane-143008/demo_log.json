@@ -1,0 +1,286 @@
+[
+  {
+    "step": "primary_sync",
+    "t": "14:30:09",
+    "exit": 0,
+    "detail": "From https://github.com/GhostDragonAlpha/Chimera\n * branch              astra/gait-capture -> FETCH_HEAD"
+  },
+  {
+    "step": "preflight",
+    "t": "14:30:09",
+    "base": "f9a4623e4ee82e6656eb8fd25de0f2ac2d48742d",
+    "shader_blob_ok": true
+  },
+  {
+    "step": "service_started",
+    "t": "14:30:10",
+    "port": 49153,
+    "pid": 41764
+  },
+  {
+    "step": "enrolled",
+    "t": "14:30:10",
+    "agent": "lead01"
+  },
+  {
+    "step": "enrolled",
+    "t": "14:30:10",
+    "agent": "standby01"
+  },
+  {
+    "step": "enrolled",
+    "t": "14:30:10",
+    "agent": "probe01"
+  },
+  {
+    "step": "http:qualify",
+    "t": "14:30:10",
+    "actor": "SUPERVISOR",
+    "revision": 4
+  },
+  {
+    "step": "http:qualify",
+    "t": "14:30:10",
+    "actor": "SUPERVISOR",
+    "revision": 5
+  },
+  {
+    "step": "http:qualify",
+    "t": "14:30:10",
+    "actor": "SUPERVISOR",
+    "revision": 6
+  },
+  {
+    "step": "http:snapshot",
+    "t": "14:30:10",
+    "actor": "lead01",
+    "revision": 6
+  },
+  {
+    "step": "http:offer_lead",
+    "t": "14:30:10",
+    "actor": "lead01",
+    "revision": 7
+  },
+  {
+    "step": "http:elect",
+    "t": "14:30:10",
+    "actor": "SUPERVISOR",
+    "revision": 8
+  },
+  {
+    "step": "http:snapshot",
+    "t": "14:30:10",
+    "actor": "SUPERVISOR",
+    "revision": 8
+  },
+  {
+    "step": "elected",
+    "t": "14:30:10",
+    "leader": "lead01",
+    "epoch": 1
+  },
+  {
+    "step": "http:snapshot",
+    "t": "14:30:10",
+    "actor": "standby01",
+    "revision": 8
+  },
+  {
+    "step": "http:offer_lead",
+    "t": "14:30:10",
+    "actor": "standby01",
+    "revision": 9
+  },
+  {
+    "step": "http:snapshot",
+    "t": "14:30:10",
+    "actor": "lead01",
+    "revision": 9
+  },
+  {
+    "step": "http:create_task",
+    "t": "14:30:10",
+    "actor": "lead01",
+    "revision": 10
+  },
+  {
+    "step": "http:claim",
+    "t": "14:30:10",
+    "actor": "lead01",
+    "revision": 11
+  },
+  {
+    "step": "claimed",
+    "t": "14:30:10",
+    "task": "slot01-membrane-143008",
+    "generation": 1,
+    "worktree": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-slot01-20260909T143008\\state\\slot-01"
+  },
+  {
+    "step": "overlapping_claim_refused",
+    "t": "14:30:10",
+    "error": "{\"error\": \"task_not_ready\"}"
+  },
+  {
+    "step": "http:snapshot",
+    "t": "14:30:16",
+    "actor": "SUPERVISOR",
+    "revision": 11
+  },
+  {
+    "step": "http:provision_slot",
+    "t": "14:30:16",
+    "actor": "SUPERVISOR",
+    "revision": 12
+  },
+  {
+    "step": "slot_engine_built",
+    "t": "14:30:37",
+    "exe_sha256": "26fff49b9ee1038b22e6e4d1b29077c862113bf564909174204c7d7ec9a8e047",
+    "spv_sha256": "71b5f8d37acff921ea249c74ade6d4074d79ea80d39bf03d66488f1c47c3898f"
+  },
+  {
+    "step": "http:checkpoint",
+    "t": "14:30:37",
+    "actor": "lead01",
+    "revision": 13
+  },
+  {
+    "step": "http:resource_acquire",
+    "t": "14:30:37",
+    "actor": "lead01",
+    "revision": 14
+  },
+  {
+    "step": "gpu_reserved",
+    "t": "14:30:41"
+  },
+  {
+    "step": "gate_PASS",
+    "t": "14:30:47",
+    "rc": 0
+  },
+  {
+    "step": "worker_session_started",
+    "t": "14:30:47",
+    "pid": 24784
+  },
+  {
+    "step": "worker_session_terminated",
+    "t": "14:30:49",
+    "pid": 24784,
+    "mode": "taskkill /F (owned worker client only)"
+  },
+  {
+    "step": "http:fail",
+    "t": "14:30:49",
+    "actor": "SUPERVISOR",
+    "revision": 15
+  },
+  {
+    "step": "failover",
+    "t": "14:30:49",
+    "new_leader": "standby01",
+    "epoch": 2
+  },
+  {
+    "step": "http:snapshot",
+    "t": "14:30:49",
+    "actor": "SUPERVISOR",
+    "revision": 15
+  },
+  {
+    "step": "zombie_write_refused",
+    "t": "14:30:49",
+    "error": "{\"error\": \"session_revoked\"}"
+  },
+  {
+    "step": "http:snapshot",
+    "t": "14:30:49",
+    "actor": "SUPERVISOR",
+    "revision": 15
+  },
+  {
+    "step": "gpu_reservation_retained",
+    "t": "14:30:49",
+    "held_by_task": "slot01-membrane-143008"
+  },
+  {
+    "step": "http:resource_clear",
+    "t": "14:30:53",
+    "actor": "SUPERVISOR",
+    "revision": 16
+  },
+  {
+    "step": "gpu_reservation_cleared_after_drain_check",
+    "t": "14:30:53"
+  },
+  {
+    "step": "reconcile",
+    "t": "14:30:53",
+    "worktree": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-slot01-20260909T143008\\state\\slot-01",
+    "head": "f9a4623e4ee82e6656eb8fd25de0f2ac2d48742d",
+    "status": "clean",
+    "preserved": true
+  },
+  {
+    "step": "http:recover",
+    "t": "14:30:53",
+    "actor": "SUPERVISOR",
+    "revision": 17
+  },
+  {
+    "step": "http:snapshot",
+    "t": "14:30:53",
+    "actor": "SUPERVISOR",
+    "revision": 17
+  },
+  {
+    "step": "http:claim",
+    "t": "14:30:53",
+    "actor": "standby01",
+    "revision": 18
+  },
+  {
+    "step": "reassigned",
+    "t": "14:30:53",
+    "owner": "standby01",
+    "generation": 4,
+    "worktree": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-slot01-20260909T143008\\state\\slot-01"
+  },
+  {
+    "step": "provision_create_refused",
+    "t": "14:30:54",
+    "detail": "{\"provisioned\": false, \"refused\": \"branch_already_exists\", \"detail\": \"no task-branch reuse; pick a new task id\"}",
+    "fallback": "verify"
+  },
+  {
+    "step": "http:snapshot",
+    "t": "14:30:54",
+    "actor": "SUPERVISOR",
+    "revision": 18
+  },
+  {
+    "step": "http:resource_acquire",
+    "t": "14:30:54",
+    "actor": "standby01",
+    "revision": 19
+  },
+  {
+    "step": "http:resource_acquire",
+    "t": "14:30:54",
+    "actor": "standby01",
+    "revision": 20
+  },
+  {
+    "step": "dyad_eye_verified",
+    "t": "14:30:55",
+    "served": "qwen3.8-27b-nvfp4-mtp"
+  },
+  {
+    "step": "dyad_executed",
+    "t": "14:34:19",
+    "run_dir": "20260909T193041.370670Z"
+  }
+]

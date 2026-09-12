@@ -1,0 +1,66 @@
+{
+ "what": "GLM-GPU-DEMO-03 dyad review of the GPU-driven membrane demo",
+ "utc": "2026-09-09T21:48:57.812192+00:00",
+ "served_model": "qwen3.8-27b-nvfp4-mtp",
+ "run_facts": {
+  "source": "docs/evidence/membrane_gpu_demo_runtime/20260909T214850.509519Z",
+  "engine": "chimera_engine.exe (slot-built isolated MSVC engine, port 8101, --no-restore; launched by the runtime gate, which terminates only the PID it launched)",
+  "camera": {
+   "cam_radius": 3.0,
+   "cam_theta": 0.0,
+   "cam_phi": 0.35,
+   "note": "camera from THIS run's recorded sidecar (POSTed to /camera before /frame; sidecar is the record, not a guess)"
+  },
+  "render": {
+   "mode": "fill + edge-contrast wire pass (GLM-GPU-DEMO-EDGE-01: the demo instance latched CHIMERA_MD_EDGE at init; demo-scoped, mesh_mode_ untouched; verified against the fill-only run by byte-differing PNGs and identical accepted_state_id values)",
+   "presentation": "rigid B2(z-up)->engine(y-up) rotation plus a 0.5 m presentation lift; the lift is render presentation only"
+  },
+  "states": {
+   "raised": {
+    "gamma_J_m2": 0.0,
+    "terminal": "stationary",
+    "iteration": 0,
+    "energy_J": 0,
+    "centre_xyz_m": [
+     0,
+     0,
+     0.125
+    ],
+    "note": "numerical facts from THIS run's recorded sidecar",
+    "accepted_state_id": 17560123212910228982
+   },
+   "relaxed": {
+    "gamma_J_m2": 1.0,
+    "terminal": "stagnated",
+    "iteration": 126,
+    "energy_J": 2.59807611,
+    "note": "numerical facts from THIS run's recorded sidecar",
+    "centre_xyz_m": [
+     0,
+     0,
+     1.90596523e-07
+    ],
+    "accepted_state_id": 16501489447187382864
+   }
+  }
+ },
+ "physical_briefing": "This object is six triangles joined around one centre vertex. The six outer vertices are fixed in a flat hexagonal rim. The centre can move only perpendicular to the rim plane.\n\nIts energy is U = gamma x total triangle area. Forces are the negative gradient of that energy. For positive gamma, the optimizer seeks less area, so the raised centre approaches the rim plane. At gamma=0 this model produces no force, so the initial bump remains.\n\nThis is an area-minimization experiment. It contains no certified elasticity, bending stiffness, water pressure, gravity or contact dynamics. Optimization iterations are not physical time.\n\nAt identical geometry, doubling gamma doubles calculated energy and force; that alone does not require a visible shape change.",
+ "calls": [
+  {
+   "label": "gpu_demo_raised_gamma0",
+   "image": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub\\docs\\evidence\\membrane_gpu_demo_runtime\\20260909T214850.509519Z\\raised_gamma0.png",
+   "image_sha256": "53e994e08d8ecc5e36fe39b86ede680bb3801c83b8ae734c08855d1034aee1ea",
+   "served_model": "qwen3.8-27b-nvfp4-mtp",
+   "prompt_chars": 3566,
+   "report": "1. **What is visibly distinguishable.** Against a near\u2011black background with a faint radial vignette, the only 3D content is a single light\u2011grey faceted hexagon in the centre of the frame, drawn as a smooth gradient fill (brightest toward its upper\u2011middle) overlaid with thin white wireframe edges. Six white \"spokes\" run from one interior point out to six boundary corners, i.e. the six triangles of the membrane. Behind and below it is a larger, darker hexagonal silhouette that does *not* line up with the light shape's outline (it extends both above and below it) \u2013 most plausibly a flat reference plane / floor at z=0 while the membrane is presentation\u2011lifted above it. There are **no grid lines, no scale ticks, and no other panels/objects** in the scene. Across the very top edge of the frame runs a full\u2011width bright magenta horizontal bar that looks like a UI/status strip or render artifact rather than scene geometry.\n\n2. **Locating centre vs rim.** The centre vertex is the point where all six white radial spokes converge \u2013 it sits in the *upper* third of the light shape, not at its vertical middle. The outer rim is the set of six boundary corners where two edge\u2011wires meet (left, top\u2011left, top\u2011right, right, bottom\u2011right, bottom\u2011left). The dark hexagon behind gives a flat reference but its own corners are offset from the membrane's rim (consistent with the +0.5 m presentation lift), so I treat the light shape's boundary as the true rim and the spoke\u2011convergence point as the centre.\n\n3. **Is the offset resolvable?** *Resolvable, but only marginally.* The silhouette alone looks like a flat squashed hexagon, so a casual glance could read it as flat. However, the spokes converge well above the vertical midline of that silhouette (where a *flat* centroid would project at this low elevation), and the front two facets visibly slope down toward the viewer while the back facets are foreshortened \u2013 the classic shallow\u2011tent signature of a raised apex. So I can see \"not flat / centre up\", but I **cannot** measure 0.125 m from pixels because there is no scale reference; only the qualitative bump is resolvable.\n\n4. **Consistency with the stated state.** *Consistent.* The visible shallow tent (a present, non\u2011relaxed bump) matches an initial\u2011height fixture at iteration 0 / \u03b3=0 where nothing has flattened it. The fill\u2011plus\u2011white\u2011edge appearance matches the recorded \"fill + edge\u2011contrast wire pass\", and the strongly squashed, low\u2011elevation look matches cam_phi\u22480.35. The dark reference hexagon and the magenta top bar are extra content not described in the sidecar but neither contradicts the membrane's state. (I cannot read \u03b3 or iteration off the image itself; consistency here is about geometry + render appearance.)\n\n5. **Could viewpoint/occlusion/lighting explain a discrepancy, and what would settle it?** Yes. The low camera elevation foreshortens vertical offsets, so a 0.125 m raise looks almost flat \u2013 this is exactly why a viewer might (mis)judge the shape as flat when the state says \"raised\". The smooth shading gradient can be misread as a lighting hotspot on a flat face rather than as facet orientation from a peak. Occlusion by the lifted front faces hides part of the back rim, and the +0.5 m presentation lift separates the membrane from the dark reference plane, which can confuse where the \"true\" rim is. To distinguish: an orthographic top\u2011down view (flat vs raised shows as spokes meeting at centroid vs offset), a near edge\u2011on/side view (reads the bump height directly as vertical separation between centre and rim), a metric grid or scale bar on the floor, a normal\u2011shaded or wireframe\u2011only pass, and a side\u2011by\u2011side render of the relaxed state (\u03b3=1, centre\u22480) which should look flat. The recorded `centre_xyz_m` / `accepted_state_id` from the sidecar serve as ground truth for what the pixels ought to depict.\n\n6. **Single worst visual problem.** The combination of a low elevation angle and *no scale reference or grid* means the 0.125 m initial bump is only barely perceptible and cannot be measured \u2013 the image does not clearly communicate \"raised centre\" versus flat, which defeats the purpose of showing this state. (The unexplained full\u2011width magenta bar at the top is a secondary cosmetic defect that looks like a render/UI artifact but does not overlap the geometry.)"
+  },
+  {
+   "label": "gpu_demo_final_relaxed",
+   "image": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub\\docs\\evidence\\membrane_gpu_demo_runtime\\20260909T214850.509519Z\\final_relaxed.png",
+   "image_sha256": "20021e7871f7721762b0c4e870dcb1662c489f4637a37911897173a9b9397807",
+   "served_model": "qwen3.8-27b-nvfp4-mtp",
+   "prompt_chars": 3524,
+   "report": "**1. What is visibly distinguishable**\n- A single light\u2011grey/silver **hexagonal membrane** in the middle of the frame. Its fill is a smooth radial\u2011ish gradient (brightest at the centre, darkening toward the left and right tips), with no hard per\u2011triangle shading boundaries visible in the fill itself. Overlaid on it are thin white wire lines: the hexagon perimeter plus three long diagonals that cross at one central point (the six spokes from centre to rim, opposite pairs merging into straight lines). This is the \"fill + edge\u2011contrast wire pass\" described.\n- A **larger, much darker hexagon** sitting behind/around the bright one. It extends above and below the membrane and its left/right vertices sit slightly *inside* the membrane's left/right tips. I see no grid lines on it, no texture, just a flat dark fill with soft edges. Its role (floor panel, cast shadow, backdrop, or debug shape) is **not determinable** from this image alone \u2014 there are no scale marks, axes, or labels to place it.\n- A solid, full\u2011width **magenta horizontal bar** across the very top of the frame. It has no text, ticks, or gradient; as far as I can tell it is a UI/debug/status strip rather than scene geometry (uncertain \u2014 nothing in the image identifies it).\n- The rest is a near\u2011black background with a subtle vignette (darker corners/edges). **No floor grid lines, no axis triad, no metric scale, no text** are visible anywhere.\n\n**2. Locating centre and rim**\nYes, both are locatable, but only because of the wire pass \u2014 the fill shading alone would not reveal them. The **outer rim** is the bright white hexagonal outline. The **centre vertex** is the single point where the three white diagonals intersect (the middle of the X/star pattern). Nothing in the *fill* marks the centre; it is purely a wire\u2011line intersection.\n\n**3. Is the offset resolvable?**\n**Not resolvable.** Two reasons from the image: (a) the membrane reads as a flat hexagon \u2014 I see no tent, no per\u2011triangle facet shading difference that would indicate a raised centre, and the smooth gradient is consistent with coplanar triangles; (b) the camera is at a low elevation (\u03c6 \u2248 0.35 rad), i.e. nearly edge\u2011on to the rim plane, so any vertical displacement of the centre is strongly foreshortened in screen space \u2014 even a clearly raised centre would project only a small change here. So this view cannot certify \"exactly flat\" vs \"slightly raised\"; it merely *appears* flat, which is consistent with but not proof of z \u2248 0.\n\n**4. Consistent / inconsistent / cannot tell?**\nFor the **membrane shape**, **consistent**: a flat hexagon with the centre in\u2011plane matches the stated relaxed state (centre \u2248 1.9\u00d710\u207b\u2077 m, i.e. on the rim plane). I cannot verify the *numerical* facts (126 iterations, energy 2.598 J, state ID) from pixels \u2014 those live only in the sidecar. The **extra elements** (magenta top bar, dark hexagon) are neither explained nor contradicted by the physics description; they look like UI/floor/shadow artifacts, so for *those* specifically I'd say **cannot tell** what they are. No visible feature contradicts the \"flat relaxed membrane\" claim.\n\n**5. Could viewpoint/occlusion/lighting/rendering explain a discrepancy? What would distinguish it?**\nYes, plausibly:\n- The near\u2011edge\u2011on view foreshortens vertical offsets, so a raised centre could look flat (this is the main reason Q3 is \"not resolvable\").\n- Smooth (Gouraud\u2011like) fill lighting hides facet boundaries; only the wire pass reveals the six triangles, so shading cannot confirm/deny coplanarity.\n- The dark hexagon's apparent orientation/aspect differs from the bright membrane in a way I can't reconcile with a simple \"floor below an elevated flat panel\" model from one frame \u2014 it could be a shadow, a second panel, or a debug shape; low contrast and lack of scale make this ambiguous.\n- The magenta bar is most likely a UI/debug overlay polluting the frame, not geometry.\n\nTo distinguish: an **orthographic top\u2011down view** (\u03c6 \u2192 90\u00b0) would directly show whether the six triangles are coplanar or tented; a **side/profile view with world\u2011unit gridlines or a scale bar** would make any vertical offset measurable; rendering the **raised state side\u2011by\u2011side**; toggling flat per\u2011triangle shading and/or the wire pass off/on; and confirming the frame's `accepted_state_id` equals the relaxed ID (16501489447187382864) in the sidecar.\n\n**6. Single worst visual problem**\nThe **full\u2011width solid magenta bar across the top of the frame**. It is a high\u2011saturation, opaque, unlabeled band that dominates the upper edge and looks like an unrendered/debug UI region or artifact; it carries no information about the membrane and visually reads as an error. (Close second, on the *functional* side: the near\u2011edge\u2011on viewpoint makes the 3D shape change essentially invisible \u2014 the relaxed result is indistinguishable from a flat sticker, which defeats the purpose of showing relaxation.) I cannot judge from this image whether the magenta bar is intentional UI or a bug."
+  }
+ ]
+}

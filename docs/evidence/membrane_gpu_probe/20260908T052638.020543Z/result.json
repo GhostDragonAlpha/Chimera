@@ -1,0 +1,46 @@
+{
+  "schema": "chimera-membrane-verification-v1",
+  "utc": "20260908T052638.020543Z",
+  "repository": "/mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub",
+  "engine_window": "NOT_TESTED",
+  "checks": {
+    "cpu_reference": {
+      "state": "PASS",
+      "exit_code": 0,
+      "raw": "docs/evidence/membrane_gpu_probe/20260908T052638.020543Z/cpu_reference.txt",
+      "reason": null
+    },
+    "build": {
+      "state": "PASS",
+      "exit_code": 0,
+      "reason": null
+    },
+    "gpu_comparison": {
+      "state": "PASS",
+      "exit_code": 0,
+      "raw": "docs/evidence/membrane_gpu_probe/20260908T052638.020543Z/gpu_comparison.txt"
+    }
+  },
+  "source_commit": "11cea4a1f3cbd68d7233de5f9054df038b7b7e1b",
+  "tracked_modifications": "## astra/gait-capture\n?? .venv-linux/\n?? docs/evidence/gpu_fixtures/verify_results_20260908T041832.301907Z.json\n?? docs/evidence/gpu_fixtures/verify_results_20260908T043250.918219Z.json\n?? docs/evidence/gpu_fixtures/verify_results_20260908T044315.572449Z.json\n?? docs/evidence/gpu_fixtures/verify_results_20260908T052321.587817Z.json\n?? docs/evidence/gpu_fixtures/verify_results_20260908T052430.014041Z.json\n?? docs/evidence/membrane_gpu_probe/20260908T041831.362100Z/\n?? docs/evidence/membrane_gpu_probe/20260908T041918.695444Z/\n?? docs/evidence/membrane_gpu_probe/20260908T043035.631954Z/\n?? docs/evidence/membrane_gpu_probe/20260908T043222.932447Z/\n?? docs/evidence/membrane_gpu_probe/20260908T043245.798664Z/\n?? docs/evidence/membrane_gpu_probe/20260908T052316.891102Z/\n",
+  "toolchain": {
+    "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+    "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "cmake": "/usr/bin/cmake",
+    "glslc": "/usr/bin/glslc",
+    "compiler": "/usr/bin/g++",
+    "vulkaninfo": "/usr/bin/vulkaninfo",
+    "vulkan_header": "/usr/include/vulkan/vulkan.h"
+  },
+  "vulkan_device_evidence": "/mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub/docs/evidence/membrane_gpu_probe/20260908T052638.020543Z/vulkaninfo_summary.txt",
+  "vulkan_loader_evidence": "/mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub/docs/evidence/membrane_gpu_probe/20260908T052638.020543Z/vulkan_loader.txt",
+  "vulkan_icd_evidence": "/mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub/docs/evidence/membrane_gpu_probe/20260908T052638.020543Z/vulkan_icd.txt",
+  "files": {
+    "tools/membrane_gpu_probe/probe.cpp": "573f9651f188713c06aeeb26cf9443ada0762b19fc12861e22e740f67a3388b4",
+    "tools/membrane_gpu_probe/membrane.comp": "1cdee1f53a2a9624b3b72b0e9e4ec3ab392e21662bd05fe3fdbb16fc81c7d48d",
+    "tools/membrane_gpu_probe/CMakeLists.txt": "fe3809462b62942f2ac9b849416d8acf0fcb4c9483e24496879827b3c4178feb",
+    "tools/gpu_fixtures_verify.py": "0a840401780edd57697c97792c1ce2c9f9f26017805f59e1800babf124f98abf",
+    ".tmp/membrane_gpu_probe_runner/20260908T052638.020543Z/membrane_gpu_probe": "cfbbead05014f044369ea030b46ee22707500cb5fc8e0c2221cc9d5ebf65b94d",
+    ".tmp/membrane_gpu_probe_runner/20260908T052638.020543Z/membrane.comp.spv": "6726dc4b15e501d6c99e9ad3d7e54da7a2cdbeb62e620b9ab36a14beec4a5217"
+  }
+}

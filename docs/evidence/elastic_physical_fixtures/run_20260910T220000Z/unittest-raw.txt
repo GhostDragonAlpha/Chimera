@@ -1,0 +1,24 @@
+test_both_frozen_fixtures_full_reference (tools.elastic_foundation.test_physical_fixtures.PhysicalFixtureTests.test_both_frozen_fixtures_full_reference) ... ok
+test_mutated_component_is_rejected (tools.elastic_foundation.test_physical_fixtures.PhysicalFixtureTests.test_mutated_component_is_rejected) ... ok
+test_mutated_energy_and_nonfinite_are_rejected (tools.elastic_foundation.test_physical_fixtures.PhysicalFixtureTests.test_mutated_energy_and_nonfinite_are_rejected) ... ok
+test_output_refuses_overwrite_and_records_provenance (tools.elastic_foundation.test_physical_fixtures.PhysicalFixtureTests.test_output_refuses_overwrite_and_records_provenance) ... ok
+test_physical_thickness_scales_full_arrays_once (tools.elastic_foundation.test_physical_fixtures.PhysicalFixtureTests.test_physical_thickness_scales_full_arrays_once) ... ok
+test_reader_rejects_nonfinite_fields (tools.elastic_foundation.test_physical_fixtures.PhysicalFixtureTests.test_reader_rejects_nonfinite_fields) ... ok
+test_actual_dropped_provenance_mutant_is_killed (tools.elastic_foundation.test_units_contract.UnitsContractV1Tests.test_actual_dropped_provenance_mutant_is_killed) ... ok
+test_actual_seam_mutants_omit_and_double_thickness_are_killed (tools.elastic_foundation.test_units_contract.UnitsContractV1Tests.test_actual_seam_mutants_omit_and_double_thickness_are_killed) ... ok
+test_direct_construction_is_refused (tools.elastic_foundation.test_units_contract.UnitsContractV1Tests.test_direct_construction_is_refused) ... ok
+test_frozen_fixture_bytes_and_legacy_numerics_are_unchanged (tools.elastic_foundation.test_units_contract.UnitsContractV1Tests.test_frozen_fixture_bytes_and_legacy_numerics_are_unchanged) ... ok
+test_named_input_and_provenance_refusals (tools.elastic_foundation.test_units_contract.UnitsContractV1Tests.test_named_input_and_provenance_refusals) ... ok
+test_named_product_lame_and_precision_refusals (tools.elastic_foundation.test_units_contract.UnitsContractV1Tests.test_named_product_lame_and_precision_refusals) ... ok
+test_nonunit_thickness_full_closed_form_oracle (tools.elastic_foundation.test_units_contract.UnitsContractV1Tests.test_nonunit_thickness_full_closed_form_oracle) ... ok
+test_output_nonfinite_shape_and_wrong_volume_density_refuse (tools.elastic_foundation.test_units_contract.UnitsContractV1Tests.test_output_nonfinite_shape_and_wrong_volume_density_refuse) ... ok
+test_parent_zero_force_and_wvol_mutant_is_killed (tools.elastic_foundation.test_units_contract.UnitsContractV1Tests.test_parent_zero_force_and_wvol_mutant_is_killed)
+Reproduce the retained mutant that passed the superseded 2/2 gate. ... ok
+test_sourced_provenance_is_structured_and_retained_without_certifying_it (tools.elastic_foundation.test_units_contract.UnitsContractV1Tests.test_sourced_provenance_is_structured_and_retained_without_certifying_it) ... ok
+test_thickness_occurs_once_in_full_outputs (tools.elastic_foundation.test_units_contract.UnitsContractV1Tests.test_thickness_occurs_once_in_full_outputs) ... ok
+test_volumetric_and_explicit_surface_representations_are_identical (tools.elastic_foundation.test_units_contract.UnitsContractV1Tests.test_volumetric_and_explicit_surface_representations_are_identical) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.077s
+
+OK

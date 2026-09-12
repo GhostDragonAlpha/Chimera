@@ -1,0 +1,56 @@
+{
+ "frame": 359,
+ "project_probe": {
+  "sx": 1302.358276,
+  "sy": 623.499146
+ },
+ "gait": {
+  "loaded": true,
+  "on": false,
+  "steps": 3,
+  "omega": 7.853982,
+  "steps_total": 49635,
+  "thetaL": 137.08355,
+  "thetaR": 9.327202
+ },
+ "stride": {
+  "ok": true,
+  "active": true,
+  "playing": true,
+  "n": 331,
+  "j": 28,
+  "dt": 0.016667,
+  "loop0": 110,
+  "t": 72.598128
+ },
+ "thetas": {
+  "neck": 0.0,
+  "jaw": 0.0,
+  "spine_upper": 0.0,
+  "spine_mid": 0.0,
+  "spine_lower": 0.0,
+  "tail_base": 0.0,
+  "tail_mid": 0.0,
+  "shoulder_L": 0.0,
+  "shoulder_R": 0.0,
+  "elbow_L": 0.0,
+  "elbow_R": 0.0,
+  "wrist_L": 0.0,
+  "wrist_R": 0.0,
+  "hip_L": -14.145,
+  "hip_R": -10.579,
+  "knee_L": 1.704,
+  "knee_R": 32.769,
+  "ankle_L": -3.043,
+  "ankle_R": -3.043,
+  "tail_tip": 0.0,
+  "ear_L": 0.0,
+  "ear_R": 0.0,
+  "lid_L": 0.0,
+  "lid_R": 0.0,
+  "brow_L": 0.0,
+  "brow_R": 0.0,
+  "mouth_L": 0.0,
+  "mouth_R": 0.0
+ }
+}

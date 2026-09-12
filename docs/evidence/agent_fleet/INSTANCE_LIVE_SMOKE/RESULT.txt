@@ -1,0 +1,280 @@
+CHIMERA FLEET - INSTANCE-PLANE LIVE SMOKE - RESULTS
+====================================================
+task: instance-plane-live-smoke-01 (gen 1, slot 13) | worker: subagent-worker-05
+(instance subagent-worker-05-f317492bfc32) | lead: glm53-lead-02 epoch 5
+deployment: E:\ChimeraWork\control\deployments\slot-expansion-e1e0ab98
+prereg: PREREG.txt (commit 62972910a46ad62a47984648ba8d65b86dbf24ac, this branch);
+run prereg-of-record: lead packet create_task events seq 736/737.
+All times 2026-09-11. Controller = the live service (HTTP 127.0.0.1:8099).
+
+VERDICT (one line)
+------------------
+The smoke FALSIFIED the packet statement live: the instance and retire planes
+behave per contract, but the claim plane's reviewed auto-spawn (PR #63) is DEAD
+CODE in production and the instance fence NEVER BINDS (owner_instance dropped
+by the deployed claim override), proven by an approved bounded twin mutation.
+Findings F1-F3 below; fix task fleet-review-handoff-claim-delegation-01 created
+by the lead mid-smoke (create_task seq 772) and claimed by subagent-worker-04
+(claim seq 783, slot 12, provisioned seq 784).
+
+RUN RECORD (chronological; "rev" = controller revision == event seq for
+mutating ops; refusals create no event - their rev is the revision observed
+invariant across the attempt)
+--------------------------------------------------------------------------------
+seq 736  create_task instance-plane-live-smoke-01 (lead glm53-lead-02,
+         audited legacy-unfenced) - packet preregisters STATEMENT/P1-P4/FL1-FL4.
+seq 737  create_task instance-smoke-scratch (lead) - SCRATCH task, "exists to be
+         claimed, exercised, and retired (task_abandon) by the smoke lane.
+         No deliverable." scope .../INSTANCE_LIVE_SMOKE/SCRATCH.
+rev 752  qualify subagent-worker-05 += 'fleet' (SUPERVISOR, event seq 752) -
+         R1 executed by the lead BEFORE the lane's request feedback landed
+         (lead anticipated the capability gap; request recorded at 753).
+seq 753  feedback_add 12038accb62b3c6af06c38f3 (worker-05, instance-stamped):
+         R1 exact qualify payload + R2 slot_retire x3 (9,10,11) + R3 heads-up.
+seq 754  enroll instance-smoke-agent-01 (actor ENROLLMENT) - executed by the
+         trusted launcher enroll_agent.py: enrollment token via env
+         CHIMERA_FLEET_ENROLLMENT_TOKEN set programmatically from
+         E:\ChimeraWork\control\.service_secrets.json inside the process,
+         never printed; session file C:\Users\allen\AppData\Local\Temp\
+         instance-smoke-agent-01-session.json; launcher-minted client instance
+         id: instance-smoke-agent-01-3251a89c9075 (secret never printed; only
+         a fingerprint stored server-side; the enroll EVENT correctly carries
+         no instance payload).
+seq 756  feedback_add d09fb0597236e38e4a0dcba3: R3 exact qualify payload for
+         the scratch agent (caps ['cpu'], max_tasks 1, bounded to the scratch).
+seq 757  slot_retire '11' (SUPERVISOR) - RETIRE PLANE live: spare slot 11
+         removed from the registry. (Lead reports slot_retire '10' refused
+         slot_busy moments earlier - worker-11's claim had taken it; slot '9'
+         bound to fleet-followups-batch-02, not attempted: busy-gate live
+         observations recorded, lead-reported.)
+seq 758  qualify instance-smoke-agent-01 (SUPERVISOR) - R3 executed; scratch
+         agent caps ['cpu'], max_tasks 1.
+rev 767  FIRST scratch claim attempt REFUSED (predicted by nobody: this was the
+         AUTO-SPAWN moment - zero free worker-kind slots existed):
+         HTTP 409, body verbatim: {"error": "no_free_slot"}
+         NO-MUTATION PROOF: controller revision 767 before AND after the call
+         (refusals roll back); task instance-smoke-scratch still READY gen 0,
+         owner None, slot None. FINDING F1 (FL2 HIT) - see FINDINGS.
+rev 770  slot_spawn kind=worker (SUPERVISOR) - unblock per lead, exact payload
+         as requested in feedback c4212657f2e6a48268420a21: slot 12 created
+         (slots_total 11). The SUPERVISOR spawn plane works; the CLAIM-triggered
+         spawn does not exist on the deployed path (F1).
+seq 771  claim instance-smoke-scratch (actor instance-smoke-agent-01, event
+         instance "instance-smoke-agent-01-3251a89c9075") - P1 CONFIRMED: the
+         claim event carries the scratch instance id. Landed on slot 12 via
+         the FREE-SLOT path (F1 means the auto-spawn path cannot be reached
+         live). Result: state RUNNING, generation 1, branch
+         astra/tasks/instance-smoke-scratch, worktree pointer E:\ChimeraWork\
+         slot-12, provisioning note "REQUIRED: claim metadata does not create
+         or modify a worktree" (correctly no worktree was created; none needed).
+         POST-CLAIM REGISTRY CHECK: task owner_instance = null WHILE the claim
+         event AND the client both carried the instance id - F2 confirmed at
+         the registry before any probe ran (see FINDINGS).
+seq 772  create_task fleet-review-handoff-claim-delegation-01 (lead) - the fix
+         task, opened mid-smoke on the lane's report (feedback
+         c4212657f2e6a48268420a21, rev 768).
+rev 776  FENCED checkpoint #1 from the scratch session (deployment client sent
+         X-Chimera-Instance automatically): {"saved": true} - event seq 776
+         instance "instance-smoke-agent-01-3251a89c9075". Checkpoint content:
+         "smoke: instance-fenced checkpoint by instance-smoke-agent-01 (instance
+         instance-smoke-agent-01-3251a89c9075) on instance-smoke-scratch gen 1
+         at 2026-09-11Tlive-smoke".
+rev 777  INERT TWIN PROBE (header-less raw urllib POST, bearer-only, NO
+         X-Chimera-Instance header) op resource_queue on the bound task:
+         status 200, body verbatim:
+         {"revision": 777, "result": {"queued": []}}
+         PREDICTED under F2 and preregistered (PREREG.txt M5a): the fence was
+         not consulted. Event seq 777 audited instance "legacy-unfenced".
+rev 778  TWIN CHECKPOINT (header-less, content IDENTICAL to the fenced
+         checkpoint, one shot per lead-approved sequence): status 200,
+         body verbatim:
+         {"revision": 778, "result": {"saved": true}}
+         THE UNFENCED MUTATION - FL1 HIT LIVE (finding F2 converted from
+         code-reading to live proof). Event seq 778 audited instance
+         "legacy-unfenced" on actor instance-smoke-agent-01.
+rev 779  FENCED checkpoint restore (identical content): {"saved": true} - event
+         seq 779 instance-stamped; audit trail ends instance-stamped as
+         preregistered. Net state effect of the twin mutation: nil (identical
+         payload); the mutation is proven by the revision bump 778 + the
+         legacy-unfenced audit event.
+seq 780  submit_review (scratch session, instance-stamped): state REVIEW,
+         head 4c31999797a9383ea252019be1f32511709fa280 (the task base commit -
+         no deliverable exists by packet), generation 1, slot 12. Evidence
+         string declared the full lifecycle and that the SCRATCH scope was
+         never written.
+rev 781  (lead-reported live observation) worker-04's fix-lane claim refused
+         no_free_slot while the scratch still held slot 12 - F1 SYMPTOM #2:
+         the regression fires for every agent, not just the smoke.
+seq 782  release_review_slot (SUPERVISOR) - RETIRE PLANE step 1: receipt
+         appended (head==pushed_head==pr_head==4c319997, pr_identity declared
+         "no PR - scratch task has no deliverable per packet", preservation/
+         writer-stopped/runtime-drained/reprovision-ready attestations filed),
+         slot 12 freed, task stays REVIEW. Payload exactly as submitted in
+         lane feedback 9e4e5bc1df6ff84b0bd61c28.
+         Worker-04's claim then took slot 12 (claim seq 783, provisioned 784).
+rev 785  review_requeue (lead, epoch 5) - RETIRE PLANE step 2, the registry-
+         legal REVIEW->READY bridge (task_abandon requires READY; release
+         leaves REVIEW). SLOTLESS VARIANT applied (release nulls task.slot;
+         wrapper _requeue_slotless_review, not base requeue): returns READY,
+         review artifact preserved in review_correction_history with the
+         handoff receipt. LIVE OBSERVATION (lead-reported): the first attempt
+         WITHOUT the required 'head' parameter refused invalid_commit - the
+         head-identity check holds on the slotless path.
+seq 786  task_abandon (SUPERVISOR) - RETIRE PLANE step 3: result verbatim
+         {"task": "instance-smoke-scratch", "state": "ABANDONED",
+          "filesystem_touched": false}
+         reason "smoke_retired"; abandon record revision 786; task id retired
+         permanently. FL4 NOT hit: the scratch did not stay active. Scratch
+         agent session RETAINED-BUT-IDLE (alive true, qualified true, no ops
+         after seq 780).
+rev 787  slot_spawn kind=worker (SUPERVISOR) - slot 13 for the parent lane.
+seq 788  claim instance-plane-live-smoke-01 (actor subagent-worker-05, event
+         instance "subagent-worker-05-f317492bfc32") - P1 also holds for the
+         parent; landed slot 13 free-path, RUNNING gen 1. owner_instance null
+         again (F2 affects the parent lane identically).
+rev 791  provision_slot (SUPERVISOR) - provision_base == worktree_head ==
+         4c31999797a9383ea252019be1f32511709fa280,
+         provision_task instance-plane-live-smoke-01, generation 1.
+WORKTREE VERIFICATION (worker, deployer's own tool):
+         python provision_slot.py verify --repo E:/PythonChimera --worktree
+         E:/ChimeraWork/slot-13 --task instance-plane-live-smoke-01 --branch
+         astra/tasks/instance-plane-live-smoke-01 --base 4c319997... =>
+         {"provisioned": true, "mode": "verify", ... "head": "4c31999797a9383
+         ea252019be1f32511709fa280"}; git status porcelain: 0 lines; HEAD ==
+         registry worktree_head == task base. VERIFIED.
+
+PREDICTION -> OBSERVATION MAP
+-----------------------------
+P1 (claim event carries the scratch instance id): CONFIRMED - seq 771 (and 788
+   for the parent) carry instance ids.
+P2 (header-less checkpoint refuses instance_not_bound): FALSIFIED LIVE - the
+   twin checkpoint was ACCEPTED (rev 778, 200, saved) because the deployed
+   claim path never binds owner_instance, so the _task fence check is inert.
+   The preregistered inert probe (rev 777, 200) already predicted this.
+P3 (claim->checkpoint->review-handoff with ZERO legacy-unfenced events for the
+   scratch agent): FALSIFIED - events seq 777 and 778 are legacy-unfenced;
+   they are the preregistered twin probes whose unfenced audit IS the FL1
+   evidence; every NON-probe scratch-agent event (771, 776, 779, 780) carries
+   the instance id. So the fenced path is clean; the fence itself is inert.
+P4 (every step recorded with event seq numbers): CONFIRMED - this file.
+
+FALSIFIER VERDICTS
+------------------
+FL1 (unfenced mutation by the twin): HIT LIVE (rev 778; bounded: identical
+     content, declared in advance, lead-approved).
+FL2 (auto-spawn failing): HIT LIVE (rev 767 refusal; symptom #2 lead-reported
+     at rev 781 for worker-04).
+FL3 (events missing instance ids): HIT only by the deliberate twin probes
+     (777/778) - exactly the designed evidence; no unplanned instance-less
+     event occurred for the scratch agent.
+FL4 (scratch task left active): NOT hit - ABANDONED at rev 786.
+
+FINDINGS (for the fix lane fleet-review-handoff-claim-delegation-01; NOT this
+lane's scope to fix)
+--------------------
+F1 (LIVE-CONFIRMED, FL2): the deployed ReviewHandoffControl intercepts claim
+    UNCONDITIONALLY (deployment review_handoff.py line 19: "if operation ==
+    \"claim\": return self._claim_with_detached_review_capacity(...)" inside
+    _dispatch, before super()._dispatch). _claim_with_detached_review_capacity
+    (same file, line 54) re-implements the base claim but omits the
+    fleet-slot-expansion-03 auto-spawn branch (deployed control.py lines
+    536-546: no free slot of the kind -> _spawn_slot), refusing no_free_slot
+    instead (review_handoff.py line 86). PR #63's on-demand slot plane is
+    therefore DEAD CODE in production; at zero free slots the live service
+    refuses claims (observed rev 767 for the scratch agent; rev 781
+    lead-reported for subagent-worker-04) where the reviewed contract says
+    spawn. The docstring "changing only detached REVIEW capacity accounting"
+    understates the override: it also drops the two behaviors below.
+F2 (LIVE-CONFIRMED, FL1): the same override drops the base claim's
+    owner_instance binding (control.py line 553-554 ends
+    "t.update(..., owner_instance=p.get('_resolved_instance'))"; the override's
+    task.update at review_handoff.py line 90 omits it). The instance fence
+    (_task: require(instance == owner_instance, 'instance_not_bound')) keys on
+    task.owner_instance, which is therefore ALWAYS null on the deployed path:
+    the fence is INERT for every claimed task - any bearer can op on any
+    task. Live proof: twin checkpoint accepted rev 778 (legacy-unfenced
+    event); registry owner_instance null after instance-fenced claims (scratch
+    AND parent). Corroborating history: the parent worker's PR-62 task record
+    shows owner_instance null despite an instance-fenced session.
+F3 (LATENT, code-confirmed, not separately exercisable while fencing mode is
+    'compat'): the override also omits the base claim's enforced-mode guard
+    (control.py lines 550-551: instance_binding_required). If the supervisor
+    ever sets instance_fencing=enforced, the deployed claim path will not
+    enforce it.
+FIX OPTIONS DRAFT (for the fix lane to evaluate; the lane owns the choice):
+    (a) DELEGATE: _claim_with_detached_review_capacity should perform only its
+        capacity-accounting delta and delegate the claim itself to
+        super()._dispatch (single source of truth; auto-spawn, binding and
+        enforced guard come back for free). Watch: the base lacks the
+        detached-REVIEW capacity adjustment, so compose, don't duplicate.
+    (b) RE-INCLUDE: re-add the three dropped behaviors to the override
+        (auto-spawn branch, owner_instance in task.update, enforced-mode
+        require). Smaller diff; duplication risk (three copies of claim
+        semantics can drift again - the override already drifted once).
+    Either way the lane must add the missing test: claim at zero free slots
+    must spawn; claim by an instance-bearing session must bind owner_instance;
+    enforced mode must refuse unfenced claims. A controlled-deployment
+    transition is required (deployment is NOT part of the smoke lane).
+
+SUPERVISOR-STEP EXECUTION RECEIPTS (all requested by exact payload in lane
+feedback; all verified from events before the lane proceeded)
+--------------------------
+R1 qualify worker-05 += fleet ............ executed rev 752 (before the request
+   feedback landed - lead anticipated; request recorded seq 753)
+R2 slot_retire 9/10/11 ................... 11 retired seq 757; 10 refused
+   slot_busy (claimed by worker-11 seconds earlier); 9 bound to
+   fleet-followups-batch-02, not attempted. Busy-gate live observations.
+R3 qualify instance-smoke-agent-01 ....... seq 758
+R4 slot_spawn (unblock) .................. rev 770 (slot 12) and rev 787 (slot 13)
+R5 retire plane .......................... 782 (release_review_slot) ->
+   785 (review_requeue; first attempt lead-reported refused invalid_commit -
+   head-identity check holds) -> 786 (task_abandon)
+Provision of slot 13 ..................... rev 791
+Fix task opened by lead .................. create_task seq 772; claimed seq 783
+
+FINAL STATES (at RESULT.txt commit time)
+----------------------------------------
+- instance-smoke-scratch: ABANDONED (rev 786), reason smoke_retired,
+  filesystem_touched false, generation 1, owner/slot/head cleared; abandon
+  record + review_slot_handoffs receipt + review_correction_history retained
+  in the registry (audit preserved, id retired permanently).
+- instance-smoke-agent-01: alive TRUE, qualified TRUE (caps ['cpu']),
+  RETAINED-BUT-IDLE - last op submit_review seq 780; private session file
+  remains under %TEMP% on the worker host; no ops performed after the smoke.
+- instance-plane-live-smoke-01: RUNNING gen 1, slot 13 provisioned at base
+  (rev 791), worktree verified; this lane's deliverable is the evidence set
+  PREREG.txt + RESULT.txt, then PR + submit_review at exact HEAD.
+- Slots: 9,10 provisioned to other tasks; 11 retired permanently (never
+  reused per high-water contract); 12 held by fleet-review-handoff-claim-
+  delegation-01; 13 held by this task.
+
+SAFETY / HYGIENE
+----------------
+- Enrollment token + supervisor token: read programmatically inside one
+  process from E:\ChimeraWork\control\.service_secrets.json; never printed,
+  never written to any file or log; secrets dict deleted after use.
+- Scratch session token: exists only in the %TEMP% session file written by the
+  trusted launcher (chmod'd owner-only); the header-less twin calls built the
+  Authorization header in memory; no secret appears in any command output.
+- The twin mutation was bounded by construction: content identical to the
+  immediately preceding fenced checkpoint; preregistered (PREREG.txt M5b);
+  lead-approved in advance; followed by a fenced restore (rev 779).
+- The scratch task's scope was NEVER written: no file anywhere under
+  docs/evidence/agent_fleet/INSTANCE_LIVE_SMOKE/SCRATCH; the only writes in
+  this lane are PREREG.txt and RESULT.txt under
+  docs/evidence/agent_fleet/INSTANCE_LIVE_SMOKE (the task's declared scope).
+- No force pushes; the scratch agent performed ONLY: claim, 2x fenced
+  checkpoint, 1x restore, the two preregistered probes, submit_review.
+
+Agent: subagent-worker-05
+
+================================================================--------
+CORRECTION 2026-09-11 - fleet-followups-batch-03 item C3 (origin PR #74
+LOW-1). APPEND-ONLY: every byte above is unchanged.
+FL3 RELABELED per the preregistered mapping: this smoke's prereg EXCLUDES
+the deliberate twin probes from the FL3 population, so the FL3 line above
+("HIT only by the deliberate twin probes (777/778)") mislabeled its own
+observation. The observations stand verbatim; the corrected label of the
+substance is: FL3 NOT HIT - no unplanned instance-less event occurred.
+(fleet-followups-batch-03, Agent: subagent-worker-11)
+========================================================================

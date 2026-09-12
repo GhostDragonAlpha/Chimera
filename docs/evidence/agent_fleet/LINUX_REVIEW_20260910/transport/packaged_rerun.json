@@ -1,0 +1,26 @@
+[
+  {
+    "server_exception": "AttributeError"
+  },
+  {
+    "resource": null,
+    "outcome": "RemoteDisconnected: Remote end closed connection without response",
+    "state_unchanged": true,
+    "next_snapshot": "PASS"
+  },
+  {
+    "server_exception": "AttributeError"
+  },
+  {
+    "resource": 42,
+    "outcome": "RemoteDisconnected: Remote end closed connection without response",
+    "state_unchanged": true,
+    "next_snapshot": "PASS"
+  },
+  {
+    "resource": "unknown",
+    "outcome": "ValueError: {\"error\": \"unknown_resource\"}",
+    "state_unchanged": true,
+    "next_snapshot": "PASS"
+  }
+]

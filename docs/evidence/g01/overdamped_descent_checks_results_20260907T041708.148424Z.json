@@ -1,0 +1,112 @@
+{
+ "results": {
+  "r3_flat_patch_stationary": {
+   "pass": true,
+   "max_interior_force": 0.0,
+   "limit_512e": 1.1368683772161603e-13,
+   "n_accepted": 0,
+   "status": "stationary"
+  },
+  "r3_descent_healthy_patch": {
+   "pass": true,
+   "status": "stagnated",
+   "n_accepted": 351,
+   "n_trials": 352,
+   "U0": 16.23475769026278,
+   "U_end": 16.000000000000007,
+   "energy_drop_frac": 0.014460190582553233,
+   "strictly_monotone": true,
+   "A_initial": 16.23475769026278,
+   "A_final": 16.000000000000007,
+   "A_flat_min": 16.0
+  },
+  "r3_zero_gamma_stationary": {
+   "pass": true,
+   "status": "stationary",
+   "n_accepted": 0,
+   "forces_exactly_zero": true,
+   "geometry_bit_identical": true
+  },
+  "r3_fixed_vertices_bitexact": {
+   "pass": false,
+   "error": "ValueError: fixed_vertices contains repeats -- a repeated pin is an ambiguous claim, refused"
+  },
+  "r3_unsafe_trial_rejected_safe_accepted": {
+   "pass": true,
+   "force_on_v3_matches_law": true,
+   "unsafe_rejected": true,
+   "unsafe_reason": "collapsed_triangle",
+   "reference_verdict_on_trial": "collapsed_triangle",
+   "safe_accepted": true,
+   "U_before": 0.2500000000005,
+   "U_after": 0.25,
+   "armijo_satisfied": true,
+   "all_faces_above_floor": true
+  },
+  "r3_no_descent_step_budget": {
+   "pass": true,
+   "status": "no_descent_step",
+   "reason": "no_descent_step",
+   "n_accepted": 0,
+   "geometry_unchanged": true,
+   "landing_residual": 0.0,
+   "floor_for_max_edge_1": 1.4210854715202004e-14
+  },
+  "r3_evidence_preservation": {
+   "pass": true,
+   "stamped_unique": true,
+   "refused_exit2_and_byte_identical": true,
+   "force_out_writes": true,
+   "refusal_reason_named": true,
+   "force_run_tail": "  raw: E:\\Chimera_G01\\agent_logs\\glm_foundation_g01\\r3_evidence_951y8y2y\\sentinel_results.json",
+   "historical_file_intact": true,
+   "historical_present": true
+  },
+  "r4a_two_unit_equivalence": {
+   "pass": true,
+   "status_wu": "stagnated",
+   "status_cm": "stagnated",
+   "shape_dev_wu": 6.661338147750939e-15,
+   "energy_dev_J": 3.552713678800501e-15,
+   "energy_limit": 1.8189894035458573e-12,
+   "tail_scale_note": 1e-07
+  },
+  "r4b_stationary_constrained": {
+   "pass": false,
+   "flat_status": "stationary",
+   "flat_accepted": 0,
+   "flat_residual": 0.0,
+   "relax_status": "stagnated",
+   "relax_residual": 2.0521706461134423e-07,
+   "reaction_balance": 5.1931051524230785e-08,
+   "n_pinned": 16
+  },
+  "r4c_zero_gamma_safe": {
+   "pass": true,
+   "status": "stationary",
+   "n_accepted": 0,
+   "geometry_bit_identical": true
+  },
+  "r4d_tiny_step_not_converged": {
+   "pass": true,
+   "status": "step_limit",
+   "n_accepted": 3,
+   "free_residual": 1.2762286090733557,
+   "residual_tol": 4e-12,
+   "ratio_residual_to_tol": 319057152268.3389
+  },
+  "r4e_backtracking_exhaustion": {
+   "pass": true,
+   "status": "no_descent_step",
+   "geometry_unchanged": true,
+   "n_accepted": 0
+  },
+  "r4f_acceptance_invariant": {
+   "pass": true,
+   "steps_checked": 351,
+   "worst_armijo_violation": 0.0,
+   "limit": 1.8456782629826624e-12
+  }
+ },
+ "failed": 2
+}

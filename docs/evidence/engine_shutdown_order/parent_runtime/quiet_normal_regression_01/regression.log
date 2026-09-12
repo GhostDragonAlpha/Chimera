@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "zero_gamma_then_reset",
+      "verdict": "PASS",
+      "mismatched": []
+    },
+    {
+      "name": "step_then_reset",
+      "verdict": "PASS",
+      "mismatched": []
+    }
+  ],
+  "error": null
+}

@@ -1,0 +1,38 @@
+# golden P06 W1 — keyboard ordering + key-state parity (hand-authored bedside
+#   case; live-captured replacement scheduled Inc 2; source of behavior:
+#   engine.cpp:113-160 @ 902dc80a)
+# STATEMENT: decoded keyDown/keyUp streams reproduce g_keys[] plus the edge
+#   triggers (console toggle / P / F1 / F2-F8) and console forwarding exactly.
+mode console 0
+mode ui 0
+> down W
+> down 'S'
+> down.r 'P'
+|
+! keys 0x57 1
+! keys 0x53 1
+! keys 0x50 1
+! calls <none>
+> down 'P'
+> down F1
+|
+! calls toggle_pose ui_toggle
+> down F2
+|
+! calls <none>
+mode ui 1
+> down F2
+> down.r F3
+> down F8
+|
+! calls workspace:0 workspace:5
+mode console 1
+> down ESC
+> down 'A'
+> up 'A'
+|
+! calls console_key:27
+> char 50
+|
+! calls console_char:50
+! keys 0x41 0

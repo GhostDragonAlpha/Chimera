@@ -1,0 +1,28 @@
+R6 measured deviation (recorded finding, NOT adopted as the model's truth): the live claim path drops owner_instance
+
+base: 62b8e35757c71e31d621c26b32a7c52558905b02
+occurrences of 'owner_instance' in tools/agent_fleet/control.py: 8 (predicted 8: lines 121,122,123,323,499,501,554,697)
+occurrences of 'owner_instance' in tools/agent_fleet/review_handoff.py: 0 (predicted 0)
+
+control.py:553-554 (base claim binds the instance):
+  553:             t.update(owner=actor,slot=n,state='RUNNING',generation=t['generation']+1,
+  554:                      owner_instance=p.get('_resolved_instance'))
+
+control.py:121-123 (_task enforces the binding):
+  121:         owner_instance=t.get('owner_instance')
+  122:         if owner_instance is not None:
+  123:             require(instance==owner_instance,'instance_not_bound')
+
+review_handoff.py:90-92 (interceptor claim binds WITHOUT the instance, no instance_binding_required check):
+  90:         task.update(owner=actor, slot=number, state="RUNNING",
+  91:                     generation=task["generation"] + 1)
+  92:         return {**task, "worktree": slot["path"], "engine": slot["engine"],
+
+control.py:499-501 (yield guard consulting the binding):
+  499:                 if t.get('owner')==actor and t.get('owner_instance') is not None \
+  500:                         and t['state'] in ('RUNNING','BLOCKED','REVIEW'):
+  501:                     require(instance_id==t['owner_instance'],'instance_not_bound')
+
+DEVIATION CONFIRMED as predicted: 0 == 0 and 8 == 8 -> for interceptor-claimed tasks owner_instance stays None and the intended per-instance fencing (control.py:121-123) is inert on the live claim path. Matches feedback c4212657; fix in flight as PR #80 (in review at this base). The reference model keeps the INTENDED binding (R1(h)/R2 post-state include owner_instance).
+
+R6 VERDICT: CONFIRMED

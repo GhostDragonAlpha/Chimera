@@ -1,0 +1,24 @@
+# BP-PAN offline replay run log (2026-09-07) — build + run
+# build: CMake 4.2.1, MSVC (VS 18 2026, x64, Release), no Vulkan/no window
+# targets: window_input_replay (W1-W4, current translator) + pan_routing_replay (the PROPOSED patch)
+
+== build ==
+  pan_routing_replay.vcxproj -> C:\Users\allen\AppData\Local\Temp\opencode\p06_builds\pan\Release\pan_routing_replay.exe
+  window_input_replay.vcxproj -> C:\Users\allen\AppData\Local\Temp\opencode\p06_builds\pan\Release\window_input_replay.exe
+
+== window_input_replay (W1-W4, regression after CMakeLists change) ==
+(translator unchanged since cececb23)
+PASS P06_GOLDEN_TRANSCRIPT_W1.txt - 13 events, 10 expectations
+PASS P06_GOLDEN_TRANSCRIPT_W2.txt - 9 events, 20 expectations
+PASS P06_GOLDEN_TRANSCRIPT_W3.txt - 5 events, 5 expectations
+PASS P06_GOLDEN_TRANSCRIPT_W4.txt - 6 events, 8 expectations
+window_input_replay: ALL PASS
+
+== pan_routing_replay (PAN_P1..P4 - the PROPOSED patch made executable) ==
+PASS PAN_ROUTING_P1.txt - 4 events, 9 expectations
+PASS PAN_ROUTING_P2.txt - 4 events, 9 expectations
+PASS PAN_ROUTING_P3.txt - 2 events, 8 expectations
+PASS PAN_ROUTING_P4.txt - 6 events, 13 expectations
+pan_routing_replay: ALL PASS
+
+exit 0 (both suites)

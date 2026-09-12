@@ -1,0 +1,110 @@
+BACKFILL EXECUTION PLAN - fleet-task-provenance-backfill-01 (gen 1)
+====================================================================
+
+STATUS: PLAN ONLY. This lane executed NO backfill against the live
+registry. The op lands first (merge + the lead's controlled-transition
+deployment), THEN the lead backfills. Any backfill executed against a
+deployment that does not carry task_provenance_set is falsifier F-1 and
+is mechanically impossible anyway: the op refuses as unknown_operation.
+
+WHO: the lead (supervisor session). The op is supervisor-only; lead
+practice from this task forward: NEW tasks cite realized_from at
+create_task and never need this op.
+
+PRECONDITIONS (all must hold, checked in order):
+
+  P0. This PR is integrated and the controlled transition has deployed
+      a control.py carrying task_provenance_set. Verify by name BEFORE
+      any backfill attempt: any op call must answer or refuse in known
+      terms - on a pre-op deployment the call below refuses
+      unknown_operation (that refusal is the STOP signal, not an error
+      to retry through).
+
+  P1. The live states still match the measured snapshot of 2026-09-11
+      (revision ~1073): holodeck-gov-01..05, holodeck-math-01,
+      holodeck-mat-01 INTEGRATED; holodeck-gov-06 REVIEW; all eight
+      with realized_from None. Re-read the snapshot first. If a target
+      has moved to READY or RECOVERY_HOLD since, DO NOT backfill it;
+      the op refuses task_not_terminal_or_active by design - do not
+      work around that refusal, reconcile the state through the normal
+      lifecycle first (or leave the citation unset and record why).
+
+THE EIGHT BACKFILL CALLS (task id -> card id, card ids are canonical
+uppercase [A-Z][A-Z0-9]*-[0-9]+; execute in this order, verifying each
+response before the next):
+
+  1. holodeck-gov-01  -> GOV-01
+  2. holodeck-gov-02  -> GOV-02
+  3. holodeck-gov-03  -> GOV-03
+  4. holodeck-gov-04  -> GOV-04
+  5. holodeck-gov-05  -> GOV-05
+  6. holodeck-gov-06  -> GOV-06   (REVIEW: active-state backfill, the
+                                   exact case that makes the op
+                                   terminal-OR-active rather than
+                                   terminal-only)
+  7. holodeck-math-01 -> MATH-01
+  8. holodeck-mat-01  -> MAT-01
+
+Call shape (one arguments file per call, supervisor session):
+
+  {"task": "holodeck-gov-01", "realized_from": "GOV-01",
+   "evidence": "backfill: card GOV-01 cited per the integrated draft of
+   holodeck-gov-01 (integration commit recorded on this task in this
+   registry; draft lane evidence retained on its task branch)"}
+
+Evidence string contract: name the card, the task, and where the
+citation is derivable from (the task's own integration record in this
+registry). Keep it factual - the string is stored verbatim on the task
+record (provenance_set.evidence) and is audit material.
+
+Named refusals you may hit and what they mean (all leave state
+untouched; none is retryable-by-repetition):
+
+  supervisor_only               - you are not on the supervisor session.
+  unknown_task                  - task id typo'd or retired.
+  task_not_terminal_or_active   - target is READY or RECOVERY_HOLD
+                                  (see P1; reconcile state first).
+  provenance_already_set        - the task already cites a card (forward
+                                  create_task practice or a prior
+                                  backfill). Citations are never
+                                  rewritten by design; if the existing
+                                  citation is WRONG, that is a new
+                                  supervisor decision - stop and record.
+  malformed_realized_from       - card id not in canonical shape.
+  missing_provenance_evidence   - evidence empty/blank.
+
+POST-CONDITION VERIFICATION (the packet's prediction, checked live):
+
+  V1. Snapshot: each of the eight tasks shows realized_from set AND a
+      provenance_set record {realized_from, evidence, actor=SUPERVISOR,
+      revision}. Exactly eight task_provenance_set events in the event
+      log, one per accepted call.
+
+  V2. catalogue_next with the CURRENT imported digest (read it from
+      snapshot: catalogue.import.digest): GOV-01 is NOT among the
+      candidates - the realized root is no longer re-proposed. The
+      frontier now consists only of genuinely uncited PROPOSED cards
+      whose dependencies are certified (with the full 240-card import:
+      GOV-02..06, MATH-01, MAT-01 leave the frontier as their own
+      dependents open; MATH-02's GOV-01+MATH-01 dependencies are both
+      satisfied by backfilled citations).
+
+  V3. Falsifier check: if GOV-01 (or any of the eight cited cards)
+      still appears in candidates after V1 - statement false, STOP,
+      file the discrepancy with the digest, revision and full
+      catalogue_next output; do not attempt second backfills.
+
+ROLLOUT ORDER (the packet's sequence, restated):
+
+  merge -> lead's controlled transition -> P0/P1 checks -> eight calls
+  with per-call verification -> V1/V2 verification -> record results
+  (evidence *.txt) in the lead's lane.
+
+NOT DONE HERE (out of scope for this lane):
+  - No live registry mutation of any kind (no op call, no transition).
+  - No service restart or deployment (the lead's separate procedure).
+  - No correction/overwrite op for a wrong citation (by design the op
+    refuses provenance_already_set; if the fleet ever needs citation
+    correction, that is a new preregistered decision).
+
+Agent: subagent-worker-04

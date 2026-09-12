@@ -1,0 +1,508 @@
+[
+  {
+    "step": "primary_sync",
+    "t": "12:25:37",
+    "exit": 0,
+    "detail": "From https://github.com/GhostDragonAlpha/Chimera\n * branch              astra/gait-capture -> FETCH_HEAD"
+  },
+  {
+    "step": "service_started",
+    "t": "12:25:37",
+    "port": 65066,
+    "pid": 38344
+  },
+  {
+    "step": "enrolled",
+    "t": "12:25:37",
+    "agent": "alpha"
+  },
+  {
+    "step": "enrolled",
+    "t": "12:25:38",
+    "agent": "beta"
+  },
+  {
+    "step": "enrolled",
+    "t": "12:25:38",
+    "agent": "gamma"
+  },
+  {
+    "step": "enrolled",
+    "t": "12:25:38",
+    "agent": "lead"
+  },
+  {
+    "step": "http:qualify",
+    "t": "12:25:38",
+    "actor": "SUPERVISOR",
+    "revision": 5
+  },
+  {
+    "step": "http:qualify",
+    "t": "12:25:38",
+    "actor": "SUPERVISOR",
+    "revision": 6
+  },
+  {
+    "step": "http:qualify",
+    "t": "12:25:38",
+    "actor": "SUPERVISOR",
+    "revision": 7
+  },
+  {
+    "step": "http:qualify",
+    "t": "12:25:38",
+    "actor": "SUPERVISOR",
+    "revision": 8
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:38",
+    "actor": "lead",
+    "revision": 8
+  },
+  {
+    "step": "http:offer_lead",
+    "t": "12:25:38",
+    "actor": "lead",
+    "revision": 9
+  },
+  {
+    "step": "http:elect",
+    "t": "12:25:38",
+    "actor": "SUPERVISOR",
+    "revision": 10
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:38",
+    "actor": "SUPERVISOR",
+    "revision": 10
+  },
+  {
+    "step": "elected",
+    "t": "12:25:38",
+    "leader": "lead",
+    "epoch": 1
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:38",
+    "actor": "lead",
+    "revision": 10
+  },
+  {
+    "step": "http:create_task",
+    "t": "12:25:38",
+    "actor": "lead",
+    "revision": 11
+  },
+  {
+    "step": "http:claim",
+    "t": "12:25:38",
+    "actor": "alpha",
+    "revision": 12
+  },
+  {
+    "step": "claim_race",
+    "t": "12:25:38",
+    "task": "demo-track-shader-122537",
+    "winner": "alpha",
+    "refused": "beta"
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:38",
+    "actor": "SUPERVISOR",
+    "revision": 12
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:38",
+    "actor": "SUPERVISOR",
+    "revision": 12
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:44",
+    "actor": "SUPERVISOR",
+    "revision": 12
+  },
+  {
+    "step": "http:provision_slot",
+    "t": "12:25:44",
+    "actor": "SUPERVISOR",
+    "revision": 13
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:46",
+    "actor": "SUPERVISOR",
+    "revision": 13
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:46",
+    "actor": "SUPERVISOR",
+    "revision": 13
+  },
+  {
+    "step": "http:submit_review",
+    "t": "12:25:46",
+    "actor": "alpha",
+    "revision": 14
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:46",
+    "actor": "lead",
+    "revision": 14
+  },
+  {
+    "step": "http:integration_request",
+    "t": "12:25:46",
+    "actor": "lead",
+    "revision": 15
+  },
+  {
+    "step": "http:ack_integration",
+    "t": "12:25:50",
+    "actor": "SUPERVISOR",
+    "revision": 16
+  },
+  {
+    "step": "http:release_slot",
+    "t": "12:25:50",
+    "actor": "SUPERVISOR",
+    "revision": 17
+  },
+  {
+    "step": "worktree_drained",
+    "t": "12:25:51",
+    "task": "demo-track-shader-122537",
+    "drained": true,
+    "worktree": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-02",
+    "branch_deleted": true,
+    "detail": ""
+  },
+  {
+    "step": "T1_integrated",
+    "t": "12:25:51",
+    "pushed": "0e218161914ec5cded3a491b45b1eb9d3d9b7a67",
+    "verified": "0e218161914ec5cded3a491b45b1eb9d3d9b7a67"
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:51",
+    "actor": "lead",
+    "revision": 17
+  },
+  {
+    "step": "http:create_task",
+    "t": "12:25:51",
+    "actor": "lead",
+    "revision": 18
+  },
+  {
+    "step": "http:claim",
+    "t": "12:25:51",
+    "actor": "beta",
+    "revision": 19
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:51",
+    "actor": "SUPERVISOR",
+    "revision": 19
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:51",
+    "actor": "SUPERVISOR",
+    "revision": 19
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:57",
+    "actor": "SUPERVISOR",
+    "revision": 19
+  },
+  {
+    "step": "http:provision_slot",
+    "t": "12:25:57",
+    "actor": "SUPERVISOR",
+    "revision": 20
+  },
+  {
+    "step": "http:fail",
+    "t": "12:25:57",
+    "actor": "SUPERVISOR",
+    "revision": 21
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:57",
+    "actor": "SUPERVISOR",
+    "revision": 21
+  },
+  {
+    "step": "zombie_write_refused",
+    "t": "12:25:57",
+    "error": "{\"error\": \"session_revoked\"}"
+  },
+  {
+    "step": "reconcile",
+    "t": "12:25:57",
+    "worktree": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-02",
+    "head": "0e218161914ec5cded3a491b45b1eb9d3d9b7a67",
+    "status": "clean",
+    "preserved": true
+  },
+  {
+    "step": "http:recover",
+    "t": "12:25:57",
+    "actor": "SUPERVISOR",
+    "revision": 22
+  },
+  {
+    "step": "http:claim",
+    "t": "12:25:57",
+    "actor": "gamma",
+    "revision": 23
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:57",
+    "actor": "SUPERVISOR",
+    "revision": 23
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:57",
+    "actor": "SUPERVISOR",
+    "revision": 23
+  },
+  {
+    "step": "provision_create_refused",
+    "t": "12:25:57",
+    "detail": "{\"provisioned\": false, \"refused\": \"branch_already_exists\", \"detail\": \"no task-branch reuse; pick a new task id\"}",
+    "fallback": "verify"
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:25:57",
+    "actor": "SUPERVISOR",
+    "revision": 23
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:26:00",
+    "actor": "SUPERVISOR",
+    "revision": 23
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:26:00",
+    "actor": "SUPERVISOR",
+    "revision": 23
+  },
+  {
+    "step": "http:submit_review",
+    "t": "12:26:00",
+    "actor": "gamma",
+    "revision": 24
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:26:00",
+    "actor": "lead",
+    "revision": 24
+  },
+  {
+    "step": "http:integration_request",
+    "t": "12:26:00",
+    "actor": "lead",
+    "revision": 25
+  },
+  {
+    "step": "http:ack_integration",
+    "t": "12:26:04",
+    "actor": "SUPERVISOR",
+    "revision": 26
+  },
+  {
+    "step": "http:release_slot",
+    "t": "12:26:04",
+    "actor": "SUPERVISOR",
+    "revision": 27
+  },
+  {
+    "step": "worktree_drained",
+    "t": "12:26:05",
+    "task": "demo-recovery-drill-122537",
+    "drained": true,
+    "worktree": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-02",
+    "branch_deleted": true,
+    "detail": ""
+  },
+  {
+    "step": "T2_integrated_marker",
+    "t": "12:26:05",
+    "ok": true
+  },
+  {
+    "step": "T2_integrated",
+    "t": "12:26:05",
+    "pushed": "aada23c1430c03cafba1a8003eb9b9f3679ef76c",
+    "verified": "aada23c1430c03cafba1a8003eb9b9f3679ef76c"
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:26:05",
+    "actor": "lead",
+    "revision": 27
+  },
+  {
+    "step": "http:create_task",
+    "t": "12:26:05",
+    "actor": "lead",
+    "revision": 28
+  },
+  {
+    "step": "nonlead_master_list_refused",
+    "t": "12:26:05",
+    "error": "{\"error\": \"master_list_lead_only\"}"
+  },
+  {
+    "step": "http:claim",
+    "t": "12:26:05",
+    "actor": "lead",
+    "revision": 29
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:26:05",
+    "actor": "SUPERVISOR",
+    "revision": 29
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:26:05",
+    "actor": "SUPERVISOR",
+    "revision": 29
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:26:11",
+    "actor": "SUPERVISOR",
+    "revision": 29
+  },
+  {
+    "step": "http:provision_slot",
+    "t": "12:26:11",
+    "actor": "SUPERVISOR",
+    "revision": 30
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:26:14",
+    "actor": "SUPERVISOR",
+    "revision": 30
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:26:14",
+    "actor": "SUPERVISOR",
+    "revision": 30
+  },
+  {
+    "step": "http:submit_review",
+    "t": "12:26:14",
+    "actor": "lead",
+    "revision": 31
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:26:14",
+    "actor": "lead",
+    "revision": 31
+  },
+  {
+    "step": "http:integration_request",
+    "t": "12:26:14",
+    "actor": "lead",
+    "revision": 32
+  },
+  {
+    "step": "http:ack_integration",
+    "t": "12:26:19",
+    "actor": "SUPERVISOR",
+    "revision": 33
+  },
+  {
+    "step": "http:release_slot",
+    "t": "12:26:19",
+    "actor": "SUPERVISOR",
+    "revision": 34
+  },
+  {
+    "step": "worktree_drained",
+    "t": "12:26:20",
+    "task": "demo-master-list-row-122537",
+    "drained": true,
+    "worktree": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\fleet-demo-20260909T122537\\state\\slot-02",
+    "branch_deleted": true,
+    "detail": ""
+  },
+  {
+    "step": "T3_integrated_marker",
+    "t": "12:26:20",
+    "ok": true
+  },
+  {
+    "step": "T3_integrated",
+    "t": "12:26:20",
+    "pushed": "c08873e5e7d6e3a256e610abca43854d4f2a6958",
+    "verified": "c08873e5e7d6e3a256e610abca43854d4f2a6958"
+  },
+  {
+    "step": "http:events",
+    "t": "12:26:20",
+    "actor": "SUPERVISOR",
+    "revision": 34
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:26:20",
+    "actor": "SUPERVISOR",
+    "revision": 34
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:26:20",
+    "actor": "lead",
+    "revision": 34
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:26:20",
+    "actor": "lead",
+    "revision": 34
+  },
+  {
+    "step": "http:snapshot",
+    "t": "12:26:20",
+    "actor": "lead",
+    "revision": 34
+  },
+  {
+    "step": "complete",
+    "t": "12:26:20",
+    "base_after": "c08873e5e7d6e3a256e610abca43854d4f2a6958"
+  },
+  {
+    "step": "service_stopped",
+    "t": "12:26:20",
+    "pid": 38344
+  }
+]

@@ -1,0 +1,171 @@
+[
+ {
+  "name": "launch",
+  "verdict": "PASS",
+  "detail": {
+   "pid": 73128,
+   "port": 8127,
+   "exe_sha256": "80fa4bb01e2f3a84a88614b3dc2b0cb2c6b6bce1ca528054b906102712e770ff"
+  }
+ },
+ {
+  "name": "state.ready",
+  "verdict": "PASS",
+  "detail": {
+   "http": 200
+  }
+ },
+ {
+  "name": "b2.fixture",
+  "verdict": "PASS",
+  "detail": {
+   "n_verts": 7,
+   "n_faces": 6
+  }
+ },
+ {
+  "name": "b2.gate",
+  "verdict": "PASS",
+  "detail": {
+   "rc": 0,
+   "records": 21,
+   "fails": 0
+  }
+ },
+ {
+  "name": "capture.v1_frame",
+  "verdict": "PASS",
+  "detail": {
+   "png": "v1_frame.png",
+   "http": 200
+  }
+ },
+ {
+  "name": "capture.v1_glass",
+  "verdict": "PASS",
+  "detail": {
+   "png": "v1_glass.png",
+   "http": 200
+  }
+ },
+ {
+  "name": "probe.v1.lift_selfcheck",
+  "verdict": "PASS",
+  "detail": {
+   "wire_hit_rate": 0.714
+  }
+ },
+ {
+  "name": "probe.v1",
+  "verdict": "MEASURED",
+  "detail": {
+   "darkline_at_occluded": 2818,
+   "occluded_total": 4160,
+   "darkline_at_occluded_frac": 0.6774,
+   "brightline_at_visible_frac": 0.2147,
+   "cam_stable": true
+  }
+ },
+ {
+  "name": "probe.v1.accepted",
+  "verdict": "PASS",
+  "detail": {
+   "attempt": 1
+  }
+ },
+ {
+  "name": "capture.v2_frame",
+  "verdict": "PASS",
+  "detail": {
+   "png": "v2_frame.png",
+   "http": 200
+  }
+ },
+ {
+  "name": "capture.v2_glass",
+  "verdict": "PASS",
+  "detail": {
+   "png": "v2_glass.png",
+   "http": 200
+  }
+ },
+ {
+  "name": "probe.v2.lift_selfcheck",
+  "verdict": "PASS",
+  "detail": {
+   "wire_hit_rate": 0.714
+  }
+ },
+ {
+  "name": "probe.v2",
+  "verdict": "MEASURED",
+  "detail": {
+   "darkline_at_occluded": 2818,
+   "occluded_total": 4160,
+   "darkline_at_occluded_frac": 0.6774,
+   "brightline_at_visible_frac": 0.2147,
+   "cam_stable": true
+  }
+ },
+ {
+  "name": "probe.v2.accepted",
+  "verdict": "PASS",
+  "detail": {
+   "attempt": 1
+  }
+ },
+ {
+  "name": "membrane.instance.drain",
+  "verdict": "PASS",
+  "detail": {
+   "rc": 1
+  }
+ },
+ {
+  "name": "capture.v4_idle_glass",
+  "verdict": "PASS",
+  "detail": {
+   "png": "v4_idle_glass.png",
+   "http": 200
+  }
+ },
+ {
+  "name": "capture.v4_idle_frame",
+  "verdict": "PASS",
+  "detail": {
+   "png": "v4_idle_frame.png",
+   "http": 200
+  }
+ },
+ {
+  "name": "v3.mesh_bin",
+  "verdict": "PASS",
+  "detail": {
+   "http": 200,
+   "resp": "{\"ok\":true}"
+  }
+ },
+ {
+  "name": "capture.v3_mesh_glass",
+  "verdict": "PASS",
+  "detail": {
+   "png": "v3_mesh_glass.png",
+   "http": 200
+  }
+ },
+ {
+  "name": "capture.v3_mesh_frame",
+  "verdict": "PASS",
+  "detail": {
+   "png": "v3_mesh_frame.png",
+   "http": 200
+  }
+ },
+ {
+  "name": "mesh.instance.drain",
+  "verdict": "PASS",
+  "detail": {
+   "rc": 1
+  }
+ }
+]

@@ -1,0 +1,64 @@
+R6 deployed-source trace at base 62b8e357 (SOURCE ONLY; the live service at 127.0.0.1:8099 is NEVER contacted; prereg 6/6 rows)
+
+SOURCE IDENTITY (read-only reference text)
+  tools\elastic_foundation\units_contract.py: 628 lines, sha256 c9384c0952856175dda07eaead01ffe70651baccd6eaf2e28bd78d8113abd4b1
+  tools\elastic_foundation\law.py: 219 lines, sha256 b8e32ececd4f09b1d5a7af74e7ecffe2b00fa262f50a061d2f6f788e49a41b18
+  docs\THE_ELASTIC_UNITS_CONTRACT.md: 22 lines, sha256 3cedb343ea0f76878c5a0cbf66ee526806ce54a9e1a20cacc560b556fbf5c95b
+
+(i) units EXPLICIT at one boundary (PRESENCE expected)
+  tools\elastic_foundation\units_contract.py:5: view: they admit either E3d [Pa] with h [m], or E2 [N/m] with h [m], and receive
+  tools\elastic_foundation\units_contract.py:6: an evaluation that retains the admitted physical record and provenance.
+  tools\elastic_foundation\units_contract.py:7: """
+  tools\elastic_foundation\units_contract.py:8: from __future__ import annotations
+  tools\elastic_foundation\units_contract.py:9: 
+  tools\elastic_foundation\units_contract.py:317: def admit_volumetric_v1(
+  tools\elastic_foundation\units_contract.py:318:     young_modulus_3d_pa: object,
+  tools\elastic_foundation\units_contract.py:319:     thickness_m: object,
+  tools\elastic_foundation\units_contract.py:320:     poisson_ratio: object,
+  tools\elastic_foundation\units_contract.py:321:     *,
+  tools\elastic_foundation\units_contract.py:322:     provenance: object = _MISSING_PROVENANCE,
+  tools\elastic_foundation\units_contract.py:323: ) -> AdmittedMaterialV1:
+  tools\elastic_foundation\units_contract.py:324:     """Admit E3d [Pa] and h [m], reducing exactly once to E2=E3d*h [N/m]."""
+  tools\elastic_foundation\units_contract.py:357:         input_modulus_unit="Pa",
+  tools\elastic_foundation\units_contract.py:365: def admit_surface_v1(
+  [OK] (i) explicit boundary units present (quoted above: E3d [Pa], h [m] -> E2 [N/m], 'reducing exactly once', input_modulus_unit='Pa')
+
+(ii) NAMED refusals at that boundary (PRESENCE expected)
+  tools\elastic_foundation\units_contract.py:36: class UnitsReason:
+  tools\elastic_foundation\units_contract.py:37:     NUMERIC_MATERIAL_REQUIRED = "numeric_material_required"
+  tools\elastic_foundation\units_contract.py:38:     NONFINITE_MATERIAL = "nonfinite_material"
+  tools\elastic_foundation\units_contract.py:51:     DIRECT_CONSTRUCTION_FORBIDDEN = "direct_construction_forbidden"
+  tools\elastic_foundation\units_contract.py:52:     OUTPUT_MALFORMED = "output_malformed"
+  tools\elastic_foundation\units_contract.py:53:     OUTPUT_NONFINITE = "output_nonfinite"
+  tools\elastic_foundation\units_contract.py:54:     OUTPUT_DIMENSION_MISMATCH = "output_dimension_mismatch"
+  tools\elastic_foundation\units_contract.py:57: class UnitsRefusal(ValueError):
+  tools\elastic_foundation\units_contract.py:58:     """Named refusal at the dimensional boundary."""
+  tools\elastic_foundation\units_contract.py:59: 
+  tools\elastic_foundation\units_contract.py:60:     def __init__(self, reason: str, message: str):
+  tools\elastic_foundation\units_contract.py:61:         super().__init__(message)
+  [OK] (ii) UnitsReason vocabulary incl. OUTPUT_DIMENSION_MISMATCH (54) + UnitsRefusal (57-61) present
+
+(iii) mandatory provenance (PRESENCE expected)
+  tools\elastic_foundation\units_contract.py:76: class SourceReference:
+  tools\elastic_foundation\units_contract.py:77:     """A source and an exact locator within it; both are mandatory."""
+  tools\elastic_foundation\units_contract.py:78: 
+  tools\elastic_foundation\units_contract.py:79:     uri: str
+  tools\elastic_foundation\units_contract.py:80:     locator: str
+  tools\elastic_foundation\units_contract.py:81: 
+  tools\elastic_foundation\units_contract.py:82:     def __post_init__(self) -> None:
+  [OK] (iii) SourceReference/structured provenance classes present (76-107; STRUCTURED_PROVENANCE_REQUIRED at 51 quoted above)
+
+(iv) ABSENCE of typed quantity algebra under tools/ (prereg: measured, expected count 0 for class definitions)
+  HIT tools\elastic_foundation\units_contract.py:54: OUTPUT_DIMENSION_MISMATCH = "output_dimension_mismatch"
+  [OK] (iv) zero typed-algebra class definitions under tools/ (the ONLY preregistered-pattern hit is the boundary's OWN output-shape refusal constant OUTPUT_DIMENSION_MISMATCH at units_contract.py:54, cited as PRESENT semantics in row (ii) -- a named refusal string, not typed algebra)
+        pattern hits: 1; actual class definitions: 0
+
+(v) ABSENCE of frame/transform machinery in the units layer
+  [OK] (v) no Frame/Transform/inverse machinery under tools/elastic_foundation
+        measured count 0
+
+(vi) ABSENCE of nondimensionalization / Buckingham-Pi machinery
+  [OK] (vi) no nondimensionalization/Buckingham-Pi machinery under tools/ (the deployed E2 = E3d*h is a FIXED dimensional reduction, not a Pi engine)
+        measured count 0
+
+R6 HOLDS 6/6

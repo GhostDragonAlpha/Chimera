@@ -1,0 +1,105 @@
+PREREGISTRATION — fleet-mailbox-hardening-01 (generation 1, slot 2)
+
+- agent: subagent-worker-08 (host-delegated CPU/python/docs worker; lead glm53-lead-02, epoch 5)
+- base: 68f4fc44534d552675b9eac17331ff0c16294f4b (current astra/gait-capture tip at claim)
+- branch: astra/tasks/fleet-mailbox-hardening-01
+- written: 2026-09-11, BEFORE any repo edit of this task (no actuals below)
+- scopes: the three scoped paths named in the task record — the mailbox module, its
+  unit suite, and the contract document (pointed at, not duplicated here; two of the
+  three are created by this lane and cannot resolve at prereg time by construction).
+  Plus this evidence directory, home of the lane's rule-0 record set.
+- LIVE SYSTEMS: the fleet-space mailbox at E:\ChimeraWork\mailbox is IN PRODUCTION
+  (cross-agent coordination; a holodeck team lead coordinates through it). No test, no
+  build step, and no agent action of this lane writes to it. Tests run in temp roots
+  exclusively, and the suite snapshots the live listing before/after as a guard.
+
+## What this task lands
+
+(1) Repo copy of the LIVE fleet-space mailbox driver (E:/ChimeraWork/tools/fleet_mailbox.py,
+    read before this preregistration) at the scoped module path named in the task record
+    (created in the implementation commit; this document does not duplicate the task
+    record's scope pointers — the module path cannot resolve at prereg time by
+    construction) —
+    BEHAVIOR-IDENTICAL: post/read/take; posting writes a temp file then os.replace()
+    (atomic same-volume rename); served/ history is append-only (move, never delete);
+    sender is self-declared (audit-by-visibility: the file inside the recipient's inbox
+    IS the audit trail); agent names validated by _safe_name refusals; CLI surface and
+    output JSON identical. The ONLY addition is a root-selection seam (root= parameter /
+    FLEET_MAILBOX_ROOT environment override) so tests and alternate instances never
+    touch the live tree; with no override the behavior is byte-for-byte the live v0's.
+(2) The scoped unit suite beside it (same commit; same naming rule as above) —
+    temp-root tests:
+    - ATOMICITY PROBE: 100 concurrent posts from 4 separate OS processes into one
+      inbox; zero lost messages (all 100 present, parse, unique ids), zero partial
+      files (no ".tmp-*" survives after processes join).
+    - take is idempotent: second take on an empty inbox is a clean no-op (count 0).
+    - served is append-only: successive takes accumulate (2 -> 4 messages), served
+      bytes never change once written, inbox empties.
+    - name-safety refusals: _safe_name rejects path separators, traversal, leading
+      dots, reserved characters — and a refused post writes NOTHING (tree unchanged).
+    - unreadable-message retention: a corrupt file in the inbox is reported
+      ("unreadable") and still moved to served by take, never silently dropped.
+    - live-tree guard: the suite asserts the live root is untouched (listing snapshot
+      equal before/after) and that every test path is under the temp root.
+(3) docs/THE_FLEET_MAILBOX.md — the contract: coordination-ONLY (evidence, verdicts,
+    gates NEVER ride the mailbox; they live in the controller registry and the repo);
+    sender self-declared, audit-by-visibility; polling pattern (read; take only when
+    the consumer has durably handled the message); the fleet-space root as the live
+    instance; PLUS the DESIGN DOC section for the controller-plane successor:
+    mailbox_post / mailbox_take ops in the single-writer store with instance-fenced
+    senders, why it is better (durable, auditable in the controller event log,
+    instance-attested sender identity instead of self-declaration, cross-host ready),
+    and the deployment-transition note: the new ops must not be shadowed by wrapper
+    interception — the PR #80 lesson (a dispatch wrapper intercepted claim
+    unconditionally and silently dropped semantics; any intermediary layer must
+    delegate verbatim or fail visibly, never shadow).
+
+## STATEMENT (theory, per RULE 0)
+
+The filesystem mailbox is safe for cross-agent coordination under single-host,
+single-user assumptions: same-volume os.replace() posting is atomic per message, so
+concurrent posters cannot corrupt or lose each other's messages; take moves (never
+deletes) so history is append-only and audit survives consumption. Its limits are part
+of the contract: sender identity is self-declared (audit-by-visibility, not
+attestation), delivery is poll-based (no push, no delivery guarantee — an agent that
+never polls never receives), and content is coordination-only (nothing load-bearing
+rides it). Declaring these limits is what makes the tool safe to rely on.
+
+## PREDICTION (stated before any edit)
+
+1. The atomicity probe posts N=100 messages from 4 concurrent OS processes into one
+   temp-root inbox; after all processes join: exactly 100 message files exist, all
+   parse as JSON, all ids are unique, zero ".tmp-*" files remain — ZERO LOST.
+2. take is idempotent (second take: count 0, no exception) and served is append-only
+   (2 then 4 messages across successive takes; served content byte-identical to what
+   was posted; no served file ever deleted).
+3. Name-safety refusals fire (SystemExit) for separators, traversal, leading dots, and
+   reserved characters — with zero filesystem writes for the refused post.
+4. The suite's live-tree guard passes: the listing of E:\ChimeraWork\mailbox is
+   identical before and after the entire suite (read-only coordination reads excepted,
+   which change nothing).
+5. The repo copy's CLI is behavior-identical to the live v0 (same subcommands, flags,
+   output JSON keys; default root unchanged).
+
+## FALSIFIER (named before the run)
+
+- Any lost message: fewer than 100 files, any unparseable message, duplicate ids, or a
+  surviving ".tmp-*" partial after the probe joins.
+- Any take deleting history: a served file disappearing, served count decreasing, or
+  served bytes differing from the posted bytes.
+- Any test touching the live tree: the live-root listing changes across the suite, or
+  any test path resolves under E:\ChimeraWork\mailbox.
+- A name-safety refusal that still writes (directory created or file left behind).
+- A repo copy whose default CLI behavior differs from the live v0.
+
+## NOT_CLAIMED
+
+- No claim of authentication: self-declared senders are a declared limit, not identity
+  (the controller-plane successor with instance-fenced senders is a DESIGN here, not
+  delivered).
+- No change to the live production mailbox or its data; the repo copy is promotion, not
+  migration — the fleet-space instance stays authoritative until a successor lane
+  executes the transition.
+- No delivery guarantees beyond what the code does (poll-based; at-least-once visibility
+  by listing; exactly-once handling is the consumer's take discipline).
+- Human acceptance (reserved to Alan / the reviewer).

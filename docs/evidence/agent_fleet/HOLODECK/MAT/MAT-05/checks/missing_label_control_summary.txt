@@ -1,0 +1,11 @@
+{
+  "control": "r2_missing_label_control (fleet-followups-batch-04, mat-05 review F1)",
+  "phases": {
+    "P_pristine": "HOLD",
+    "S_stripped": "FIRED (expected flip)"
+  },
+  "flip_proven": true,
+  "fired_runs_retained": [
+    "r2_missing_label_control.stripped-FIRED.txt"
+  ]
+}

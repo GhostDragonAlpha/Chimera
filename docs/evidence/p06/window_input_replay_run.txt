@@ -1,0 +1,17 @@
+# P06 window/input offline event-replay — build + run transcript (2026-09-07)
+# CMake 4.2.1, MSVC cl (VS 18 2026, x64, Release), no Vulkan, no window
+# source: tools/window_input_replay + ChimeraEngine/engine/platform/window_input.{h,cpp}
+
+MSBuild version 18.9.1+a81b43525 for .NET Framework
+C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Microsoft\VC\v180\Microsoft.CppBuild.targets(561,5): warning MSB8029: The Intermediate directory or Output directory cannot reside under the Temporary directory as it could lead to issues with incremental build. [C:\Users\allen\AppData\Local\Temp\opencode\p06_builds\replay\ZERO_CHECK.vcxproj]
+  1>Checking Build System
+C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Microsoft\VC\v180\Microsoft.CppBuild.targets(561,5): warning MSB8029: The Intermediate directory or Output directory cannot reside under the Temporary directory as it could lead to issues with incremental build. [C:\Users\allen\AppData\Local\Temp\opencode\p06_builds\replay\window_input_replay.vcxproj]
+  window_input_replay.vcxproj -> C:\Users\allen\AppData\Local\Temp\opencode\p06_builds\replay\Release\window_input_replay.exe
+C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Microsoft\VC\v180\Microsoft.CppBuild.targets(561,5): warning MSB8029: The Intermediate directory or Output directory cannot reside under the Temporary directory as it could lead to issues with incremental build. [C:\Users\allen\AppData\Local\Temp\opencode\p06_builds\replay\ALL_BUILD.vcxproj]
+PASS P06_GOLDEN_TRANSCRIPT_W1.txt - 13 events, 10 expectations
+PASS P06_GOLDEN_TRANSCRIPT_W2.txt - 9 events, 20 expectations
+PASS P06_GOLDEN_TRANSCRIPT_W3.txt - 5 events, 5 expectations
+PASS P06_GOLDEN_TRANSCRIPT_W4.txt - 6 events, 8 expectations
+window_input_replay: ALL PASS
+
+exit=0

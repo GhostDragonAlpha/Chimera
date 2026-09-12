@@ -1,0 +1,36 @@
+MEASUREMENT — fleet-mailbox-hardening-01 (generation 1, slot 2, subagent-worker-08)
+
+Branch astra/tasks/fleet-mailbox-hardening-01 at base 68f4fc44534d552675b9eac17331ff0c16294f4b
+(current tip at claim; worktree E:\ChimeraWork\slot-02 provisioned clean at base). CPU only:
+no engine run, no model load, no GPU, no live control-plane ops beyond claim/submit_review.
+The LIVE mailbox (E:\ChimeraWork\mailbox) was never written: all tests ran in temp roots;
+the suite's live-tree guard asserts no test agent name appears in the live tree before or
+after every test (LiveTreeGuardTests + tearDown guard in MailboxTestBase). The lane's only
+live-mailbox interaction was one READ-ONLY poll (read --agent subagent-worker-08, no take).
+
+RUN TABLE (actuals; commands verbatim)
+
+| run | command | result |
+|---|---|---|
+| NEW suite | python -m unittest tools.agent_fleet.test_fleet_mailbox -v | Ran 10 tests — OK (10/10) |
+| atomicity probe (inside suite) | 4 subprocesses x 25 posts into one temp-root inbox | 100/100 files present, all parse, 100 unique ids, 25 per sender process, zero ".tmp-*" survivors — ZERO LOST |
+| full fleet discover (with new suite) | python -m unittest discover -s tools/agent_fleet -p 'test_*.py' | 247 tests; 3 failures + 1 skipped — ALL pre-existing load flakes: test_capture_window x2 (known, failing test names vary run-to-run) + test_slot_expansion scale probe (latency thresholds) |
+| flake isolation (with my changes) | unittest tools.agent_fleet.test_capture_window tools.agent_fleet.test_slot_expansion | OK 38/38 |
+| flake isolation (without my changes, stashed) | same at prereg-commit tree | OK 38/38 |
+| doc lint (staged, per commit) | python tools/doc_lint.py --staged | clean |
+
+Behavior-identity of the repo copy: diff against the live v0
+(E:/ChimeraWork/tools/fleet_mailbox.py) shows ONLY (a) the docstring promotion note and
+(b) the root seam (_root/_dirs helpers; root= parameters; FLEET_MAILBOX_ROOT override).
+All defaults preserved: same ROOT constant (the live instance), same CLI surface
+(post --from/--to/--subject/--body/--correlation; read --agent/--take), same output JSON
+keys (posted,id / agent,messages[,count]), same _safe_name rejection set, same
+os.replace posting and served-move logic.
+
+NOTES
+
+- The atomicity probe exercises REAL separate OS processes (subprocess.Popen of
+  sys.executable), not threads — the same-file contention the contract claims to survive.
+- SLOT_EXPANSION-scale suite failures are recorded, isolated (pass in isolation with and
+  without this lane's changes), and attributed to pre-existing full-suite load
+  sensitivity; this lane's falsifiers are covered by the suites that are green.

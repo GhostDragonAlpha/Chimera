@@ -1,0 +1,38 @@
+R2 -- card-prediction negatives: imports reject missing physical context (model must REFUSE)
+==============================================================================
+threshold: 8/8 named refusals verbatim; registry post-state unchanged in every case
+
+[PASS] (a) blank locator -> missing_source_identity
+        refused verbatim: Mat03Refusal('missing_source_identity', 'citation.locator is missing or blank')
+[PASS] post-state unchanged after a
+        listing={'measured_A': [1, 2], 'measured_degc': [1], 'measured_pct': [1], 'measured_strain': [1]}
+[PASS] (b) note absent -> missing_source_identity
+        refused verbatim: Mat03Refusal('missing_source_identity', 'citation.note is missing or blank')
+[PASS] post-state unchanged after b
+        listing={'measured_A': [1, 2], 'measured_degc': [1], 'measured_pct': [1], 'measured_strain': [1]}
+[PASS] (c) record without temperature -> missing_condition
+        refused verbatim: Mat03Refusal('missing_condition', 'record omits the temperature condition -- physical context is incomplete')
+[PASS] post-state unchanged after c
+        listing={'measured_A': [1, 2], 'measured_degc': [1], 'measured_pct': [1], 'measured_strain': [1]}
+[PASS] (d) record without uncertainty -> missing_uncertainty
+        refused verbatim: Mat03Refusal('missing_uncertainty', 'modulus carries no stated uncertainty; a measurement without a band is not importable')
+[PASS] post-state unchanged after d
+        listing={'measured_A': [1, 2], 'measured_degc': [1], 'measured_pct': [1], 'measured_strain': [1]}
+[PASS] (e) NaN value -> nonfinite
+        refused verbatim: Mat03Refusal('nonfinite', 'modulus value must be finite, got nan')
+[PASS] post-state unchanged after e
+        listing={'measured_A': [1, 2], 'measured_degc': [1], 'measured_pct': [1], 'measured_strain': [1]}
+[PASS] (f) negative modulus -> bad_value
+        refused verbatim: Mat03Refusal('bad_value', 'modulus=-5.0 violates its own physics (positive)')
+[PASS] post-state unchanged after f
+        listing={'measured_A': [1, 2], 'measured_degc': [1], 'measured_pct': [1], 'measured_strain': [1]}
+[PASS] (g) undeclared unit degF -> unknown_condition_unit
+        refused verbatim: Mat03Refusal('unknown_condition_unit', "temperature unit 'degF' is not declared for condition; no conversion is invented")
+[PASS] post-state unchanged after g
+        listing={'measured_A': [1, 2], 'measured_degc': [1], 'measured_pct': [1], 'measured_strain': [1]}
+[PASS] (h) v1 after v2 exists -> version_regression
+        refused verbatim: Mat03Refusal('version_regression', 'measured_A is at v2; importing v1 would replace newer data with older')
+[PASS] post-state unchanged after h
+        listing={'measured_A': [1, 2], 'measured_degc': [1], 'measured_pct': [1], 'measured_strain': [1]}
+
+passed 16  failed 0

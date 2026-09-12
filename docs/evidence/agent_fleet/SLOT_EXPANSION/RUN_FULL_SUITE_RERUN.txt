@@ -1,0 +1,18 @@
+.......warning: You appear to have cloned an empty repository.
+.warning: You appear to have cloned an empty repository.
+.warning: You appear to have cloned an empty repository.
+.C:\Python314\Lib\tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 409: 'Conflict'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+...................................................................................................................................................................................................................s
+----------------------------------------------------------------------
+Ran 222 tests in 218.210s
+
+OK (skipped=1)
+stopped pid 70668 (transition recorded: test teardown controlled transition)
+stopped pid 71132 (transition recorded: test teardown controlled transition)
+stopped pid 74060 (transition recorded: test teardown controlled transition)
+stopped pid 73008 (transition recorded: test teardown controlled transition)
+stopped pid 73508 (transition recorded: test teardown controlled transition)
+stopped pid 69652 (transition recorded: test teardown controlled transition)
+SCALE_PROBE_MIXED {"threads": 8, "duration_s": 20.2, "ops": 1426, "p50_ms": 13.5, "p95_ms": 389.0, "p99_ms": 2576.4, "max_ms": 7990.3, "lock_errors": 0, "other_refusals": 128, "spawn_cost_ms": 5.3}
+SCALE_PROBE_SATURATED {"ops": 642, "lock_or_err": 0, "p50_ms": 7.8, "p95_ms": 188.3, "max_ms": 3958.2}

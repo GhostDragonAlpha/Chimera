@@ -1,0 +1,12 @@
+{
+  "source_head": "7d3601e7d9e04019cc3794ccf0a9738627c9fd71",
+  "worktree": "E:\\ChimeraWork\\slot-01",
+  "exe": "E:\\ChimeraWork\\slot-01\\.tmp\\engine_runtime\\demo01\\chimera_engine.exe",
+  "exe_sha256": "a661fba147b3b7f840fa3505f6ae4e44f4e0f5ab1e4bc401c658aba6b7cfa687",
+  "shader_sha256": "71b5f8d37acff921ea249c74ade6d4074d79ea80d39bf03d66488f1c47c3898f",
+  "shader_source_sha256": "45e7e679c0acbd388c8608b5a443d0297799aa292f10d0510b4073a5b125e72f",
+  "runtime": "E:\\ChimeraWork\\slot-01\\.tmp\\engine_runtime\\demo01",
+  "port": 8101,
+  "protected_build_used": false,
+  "gpu_context": "Functional shared-hardware run; RTX4090 memory used21806 of24564MiB before start, utilization37%; resident eye preserved. Not performance certification."
+}

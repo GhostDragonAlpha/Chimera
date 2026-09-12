@@ -27,6 +27,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <atomic>
 
 static Engine* g_engine = nullptr;
 static Physics g_physics;
@@ -58,6 +59,24 @@ static std::condition_variable g_mem_cv;
 static bool g_mem_pending = false;
 static bool g_mem_applied = false;
 static bool g_membrane_active = true;  // 3DGS-only: the N-body sim (7-float) is retired
+
+// ── Pending GPU membrane-demo request (Vulkan work remains on the render thread)
+// Binary layout, little-endian: MD01 magic, nv, nf, centre, gamma f64, lift f32,
+// reserved u32 (32-byte header), then positions f32[nv*3], indices u32[nf*3],
+// CSR offsets u32[nv+1], CSR corner ids u32[nf*3], gamma f32[nf].
+struct MembraneDemoRequest {
+    int kind = 0;       // 1 init, 2 control, 3 status
+    int ctl_kind = 0;   // 0 reset, 1 step, 2 run, 3 pause, 4 gamma, 5 reject
+    Engine::MembraneDemoUpload upload;
+    uint32_t n_steps = 0;
+    double gamma = 0.0;
+    Engine::MembraneDemoStatus status{};
+    bool ok = false;
+};
+static MembraneDemoRequest g_md_req;
+static std::mutex g_md_mutex;
+static std::condition_variable g_md_cv;
+static bool g_md_pending = false, g_md_applied = false;
 
 // ── Pending triangle mesh request (same handoff: Vulkan work stays on the render thread) ──
 struct MeshReq { std::vector<float> verts; std::vector<uint32_t> indices; uint32_t N=0, idxCount=0; float cam_radius=12.f, cam_theta=0.f, cam_phi=0.3f; uint32_t slot=0, mode=0; bool update_only=false; bool valid=false; };
@@ -142,13 +161,27 @@ static std::string fmt_float(float f) {
 }
 
 static size_t find_colon_after(const std::string& body, const char* key) {
+    // GLM-GPU-DEMO-02 fix: the FIRST textual occurrence of "key" may be a
+    // VALUE, not a name ({"op":"gamma","gamma":2.0} shadowed the real
+    // "gamma": member and get_double silently returned its default 0.0,
+    // which md_admit_gamma legally admitted as a zero material). Scan all
+    // occurrences and accept the first one that is actually followed by
+    // ':'. The closing-quote guard rejects longer names that merely share
+    // the key as a prefix ("n_steps" vs "n_steps_x").
     std::string needle = std::string("\"") + key + "\"";
-    size_t pos = body.find(needle);
-    if (pos == std::string::npos) return std::string::npos;
-    size_t after_key = pos + needle.size();
-    while (after_key < body.size() && (body[after_key] == ' ' || body[after_key] == '\t')) ++after_key;
-    if (after_key >= body.size() || body[after_key] != ':') return std::string::npos;
-    return after_key + 1;
+    size_t pos = 0;
+    while ((pos = body.find(needle, pos)) != std::string::npos) {
+        size_t after_quote = pos + needle.size();
+        if (after_quote < body.size() && body[after_quote] == '"') {
+            pos = after_quote;
+            continue;   // prefix of a longer name; keep scanning
+        }
+        size_t after_key = after_quote;
+        while (after_key < body.size() && (body[after_key] == ' ' || body[after_key] == '\t')) ++after_key;
+        if (after_key < body.size() && body[after_key] == ':') return after_key + 1;
+        pos = after_quote;   // value occurrence; keep scanning
+    }
+    return std::string::npos;
 }
 
 static float get_float(const std::string& body, const char* key, float def) {
@@ -278,11 +311,88 @@ static bool parse_float_array(const std::string& body, const char* key, std::vec
     return !out.empty();
 }
 
+static std::string membrane_demo_status_json(const Engine::MembraneDemoStatus& s, bool ok) {
+    char b[2048];
+    snprintf(b, sizeof(b),
+        "{\"ok\":%s,\"active\":%s,\"iteration\":%u,\"accepted\":%u,\"trials\":%u,\"energy\":%.9g,\"energy_initial\":%.9g,\"terminal_state\":\"%s\",\"centre\":[%.9g,%.9g,%.9g],\"centre_force\":[%.9g,%.9g,%.9g],\"accepted_state_id\":%llu,\"render_state_id\":%llu,\"last_control\":\"%s\",\"material_snapshot\":%s}",
+        ok ? "true" : "false", s.active ? "true" : "false",
+        s.iteration, s.n_accepted, s.n_trials, s.energy, s.energy_initial,
+        s.terminal_state.c_str(), s.centre[0], s.centre[1], s.centre[2],
+        s.centre_force[0], s.centre_force[1], s.centre_force[2],
+        static_cast<unsigned long long>(s.accepted_state_id),
+        static_cast<unsigned long long>(s.render_state_id),
+        s.last_control.c_str(), s.material_snapshot.empty() ? "null" : s.material_snapshot.c_str());
+    return b;
+}
+
 // Signal handler for graceful shutdown
+struct ShutdownCancellation {};
+static std::atomic<bool> g_shutdown_closing{false};
+#ifdef CHIMERA_SHUTDOWN_TEST
+static std::atomic<bool> g_shutdown_test_boot_waiting{false};
+#endif
+
+template <class Condition, class Lock, class Rep, class Period, class Predicate>
+static bool wait_for_shutdown(Condition& cv, Lock& lock,
+                              const std::chrono::duration<Rep, Period>& timeout,
+                              Predicate predicate) {
+#ifdef CHIMERA_SHUTDOWN_TEST
+    printf("shutdown_test: wait_entered\n");
+    fflush(stdout);
+#endif
+    cv.wait_for(lock, timeout, [&] {
+        return predicate() || g_shutdown_closing.load(std::memory_order_acquire);
+    });
+    // The render thread owns the applied flag under this same channel mutex.
+    // Recheck it while still holding the caller's lock so cancellation cannot
+    // turn an already-applied request into a false cancellation.
+    if (g_shutdown_closing.load(std::memory_order_acquire) && !predicate())
+        throw ShutdownCancellation{};
+    return predicate();
+}
+
+template <class Mutex, class Condition>
+static void notify_shutdown(Mutex& mutex, Condition& cv) {
+    std::lock_guard<Mutex> lock(mutex);
+    cv.notify_all();
+}
+
+static bool wait_for_shutdown_delay(std::mutex& mutex, std::condition_variable& cv,
+                                    const std::atomic<bool>& cancel,
+                                    std::chrono::milliseconds delay) {
+    std::unique_lock<std::mutex> lock(mutex);
+#ifdef CHIMERA_SHUTDOWN_TEST
+    g_shutdown_test_boot_waiting.store(true, std::memory_order_release);
+    printf("shutdown_test: boot_wait_entered\n");
+    fflush(stdout);
+#endif
+    return cv.wait_for(lock, delay, [&] {
+        return cancel.load(std::memory_order_acquire)
+            || g_shutdown_closing.load(std::memory_order_acquire);
+    });
+}
+
+static void notify_shutdown_channels() {
+    notify_shutdown(g_mem_mutex, g_mem_cv);
+    notify_shutdown(g_md_mutex, g_md_cv);
+    notify_shutdown(g_mesh_mutex, g_mesh_cv);
+    notify_shutdown(g_hinge_mutex, g_hinge_cv);
+    notify_shutdown(g_water_mutex, g_water_cv);
+    notify_shutdown(g_gait_mutex, g_gait_cv);
+    notify_shutdown(g_volp_mutex, g_volp_cv);
+    notify_shutdown(g_frost_mutex, g_frost_cv);
+    notify_shutdown(g_skin_mutex, g_skin_cv);
+}
+
 #ifdef _WIN32
-BOOL WINAPI handleCtrlC(DWORD) { return TRUE; }
+BOOL WINAPI handleCtrlC(DWORD) {
+    g_shutdown_closing.store(true, std::memory_order_release);
+    return TRUE;
+}
 #else
-void handleSignal(int) { exit(0); }
+void handleSignal(int) {
+    g_shutdown_closing.store(true, std::memory_order_release);
+}
 #endif
 
 int main(int argc, char** argv) {
@@ -359,6 +469,9 @@ int main(int argc, char** argv) {
     HttpServer server;
     Engine::ApiFn api = [&](const std::string& method, const std::string& path,
                             const std::string& req_body, std::string& body, std::string& content_type) {
+        try {
+        if (g_shutdown_closing.load(std::memory_order_acquire))
+            throw ShutdownCancellation{};
         // strip query string
         size_t q = path.find('?');
         std::string p = (q == std::string::npos) ? path : path.substr(0, q);
@@ -418,7 +531,7 @@ int main(int argc, char** argv) {
                     g_mem_applied = false;
                 }
             std::unique_lock<std::mutex> lk(g_mem_mutex);
-            bool ok = g_mem_cv.wait_for(lk, std::chrono::seconds(3), []{ return g_mem_applied; });
+            bool ok = wait_for_shutdown(g_mem_cv, lk, std::chrono::seconds(3), []{ return g_mem_applied; });
             body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
             }
             content_type = "application/json";
@@ -454,10 +567,101 @@ int main(int argc, char** argv) {
                         g_mem_applied = false;
                     }
                     std::unique_lock<std::mutex> lk(g_mem_mutex);
-                    bool ok = g_mem_cv.wait_for(lk, std::chrono::seconds(15), []{ return g_mem_applied; });
+                    bool ok = wait_for_shutdown(g_mem_cv, lk, std::chrono::seconds(15), []{ return g_mem_applied; });
                     body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
                 }
             }
+            content_type = "application/json";
+        } else if (p == "/membrane_demo_bin" && method == "POST") {
+            if (req_body.size() < 32) {
+                body = "{\"ok\":false,\"error\":\"short membrane demo header\"}";
+            } else {
+                const uint8_t* d = reinterpret_cast<const uint8_t*>(req_body.data());
+                uint32_t magic = 0, nv = 0, nf = 0, centre = 0, reserved = 0;
+                double gamma = 0.0; float lift = 0.0f;
+                std::memcpy(&magic, d + 0, 4); std::memcpy(&nv, d + 4, 4);
+                std::memcpy(&nf, d + 8, 4); std::memcpy(&centre, d + 12, 4);
+                std::memcpy(&gamma, d + 16, 8); std::memcpy(&lift, d + 24, 4);
+                std::memcpy(&reserved, d + 28, 4);
+                const size_t pos_bytes = static_cast<size_t>(nv) * 3 * sizeof(float);
+                const size_t idx_bytes = static_cast<size_t>(nf) * 3 * sizeof(uint32_t);
+                const size_t off_bytes = static_cast<size_t>(nv + 1) * sizeof(uint32_t);
+                const size_t csr_bytes = static_cast<size_t>(nf) * 3 * sizeof(uint32_t);
+                const size_t gam_bytes = static_cast<size_t>(nf) * sizeof(float);
+                const size_t expect = 32 + pos_bytes + idx_bytes + off_bytes + csr_bytes + gam_bytes;
+                if (magic != 0x3130444Du || nv == 0 || nf == 0 || centre >= nv ||
+                    !std::isfinite(gamma) || gamma < 0.0 || !std::isfinite(lift) ||
+                    req_body.size() != expect) {
+                    body = "{\"ok\":false,\"error\":\"invalid membrane demo upload\"}";
+                } else {
+                    size_t at = 32;
+                    Engine::MembraneDemoUpload up{};
+                    up.n_verts = nv; up.n_faces = nf; up.centre_index = centre; up.lift_m = lift;
+                    up.gamma_admitted = gamma;
+                    up.positions_f32.resize(static_cast<size_t>(nv) * 3);
+                    up.indices.resize(static_cast<size_t>(nf) * 3);
+                    up.csr_offsets.resize(static_cast<size_t>(nv) + 1);
+                    up.csr_corners.resize(static_cast<size_t>(nf) * 3);
+                    up.gamma_f32.resize(nf);
+                    std::memcpy(up.positions_f32.data(), d + at, pos_bytes); at += pos_bytes;
+                    std::memcpy(up.indices.data(), d + at, idx_bytes); at += idx_bytes;
+                    std::memcpy(up.csr_offsets.data(), d + at, off_bytes); at += off_bytes;
+                    std::memcpy(up.csr_corners.data(), d + at, csr_bytes); at += csr_bytes;
+                    std::memcpy(up.gamma_f32.data(), d + at, gam_bytes);
+                    char snap[256];
+                    snprintf(snap, sizeof(snap),
+                             "{\"gamma_admitted_f64\":%.17g,\"gamma_uploaded_f32\":%.9g,\"unit\":\"J/m^2\",\"wu_to_m\":1.0}",
+                             gamma, static_cast<double>(static_cast<float>(gamma)));
+                    up.material_snapshot_json = snap;
+                    {
+                        std::lock_guard<std::mutex> lk(g_md_mutex);
+                        g_md_req = MembraneDemoRequest{};
+                        g_md_req.kind = 1; g_md_req.upload = std::move(up);
+                        g_md_pending = true; g_md_applied = false;
+                    }
+                    std::unique_lock<std::mutex> lk(g_md_mutex);
+                    bool waited = wait_for_shutdown(g_md_cv, lk, std::chrono::seconds(30), []{ return g_md_applied; });
+                    body = waited && g_md_req.ok ? membrane_demo_status_json(g_md_req.status, true)
+                                                  : "{\"ok\":false,\"error\":\"membrane demo init failed or timed out\"}";
+                }
+            }
+            content_type = "application/json";
+        } else if (p == "/membrane_demo" && method == "POST") {
+            int ctl = -1;
+            std::string op = get_string(req_body, "op");
+            if (op == "reset") ctl = 0;
+            else if (op == "step") ctl = 1;
+            else if (op == "run") ctl = 2;
+            else if (op == "pause") ctl = 3;
+            else if (op == "gamma") ctl = 4;
+            else if (op == "reject") ctl = 5;
+            if (ctl < 0) {
+                body = "{\"ok\":false,\"error\":\"op must be reset|step|run|pause|gamma|reject\"}";
+            } else {
+                {
+                    std::lock_guard<std::mutex> lk(g_md_mutex);
+                    g_md_req = MembraneDemoRequest{};
+                    g_md_req.kind = 2; g_md_req.ctl_kind = ctl;
+                    g_md_req.n_steps = get_uint(req_body, "n_steps", ctl == 1 ? 1u : 126u);
+                    g_md_req.gamma = get_double(req_body, "gamma", 0.0);
+                    g_md_pending = true; g_md_applied = false;
+                }
+                std::unique_lock<std::mutex> lk(g_md_mutex);
+                bool waited = wait_for_shutdown(g_md_cv, lk, std::chrono::seconds(60), []{ return g_md_applied; });
+                body = waited ? membrane_demo_status_json(g_md_req.status, g_md_req.ok)
+                              : "{\"ok\":false,\"error\":\"membrane demo control timeout\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/membrane_demo" && method == "GET") {
+            {
+                std::lock_guard<std::mutex> lk(g_md_mutex);
+                g_md_req = MembraneDemoRequest{};
+                g_md_req.kind = 3; g_md_pending = true; g_md_applied = false;
+            }
+            std::unique_lock<std::mutex> lk(g_md_mutex);
+            bool waited = wait_for_shutdown(g_md_cv, lk, std::chrono::seconds(10), []{ return g_md_applied; });
+            body = waited ? membrane_demo_status_json(g_md_req.status, g_md_req.ok)
+                          : "{\"ok\":false,\"error\":\"membrane demo status timeout\"}";
             content_type = "application/json";
         } else if (p == "/mesh_bin" && method == "POST") {
             // Binary protocol (application/octet-stream), little-endian:
@@ -500,7 +704,7 @@ int main(int argc, char** argv) {
                         g_mesh_pending = true; g_mesh_applied = false;
                     }
                     std::unique_lock<std::mutex> lk(g_mesh_mutex);
-                    bool ok = g_mesh_cv.wait_for(lk, std::chrono::seconds(15), []{ return g_mesh_applied; });
+                    bool ok = wait_for_shutdown(g_mesh_cv, lk, std::chrono::seconds(15), []{ return g_mesh_applied; });
                     body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
                 }
             }
@@ -522,7 +726,7 @@ int main(int argc, char** argv) {
                         g_hinge_pending = true; g_hinge_applied = false;
                     }
                     std::unique_lock<std::mutex> lk(g_hinge_mutex);
-                    bool ok = g_hinge_cv.wait_for(lk, std::chrono::seconds(15), []{ return g_hinge_applied; });
+                    bool ok = wait_for_shutdown(g_hinge_cv, lk, std::chrono::seconds(15), []{ return g_hinge_applied; });
                     body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
                 } else {
                     size_t expect = 4 + 13 * 4 + static_cast<size_t>(n) * 2 * 4;
@@ -543,7 +747,7 @@ int main(int argc, char** argv) {
                             g_hinge_pending = true; g_hinge_applied = false;
                         }
                         std::unique_lock<std::mutex> lk(g_hinge_mutex);
-                        bool ok = g_hinge_cv.wait_for(lk, std::chrono::seconds(15), []{ return g_hinge_applied; });
+                        bool ok = wait_for_shutdown(g_hinge_cv, lk, std::chrono::seconds(15), []{ return g_hinge_applied; });
                         body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
                     }
                 }
@@ -600,7 +804,7 @@ int main(int argc, char** argv) {
                         g_water_pending = true; g_water_applied = false;
                     }
                     std::unique_lock<std::mutex> lk(g_water_mutex);
-                    bool ok = g_water_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_water_applied; });
+                    bool ok = wait_for_shutdown(g_water_cv, lk, std::chrono::seconds(60), []{ return g_water_applied; });
                     body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
                 }
             }
@@ -635,7 +839,7 @@ int main(int argc, char** argv) {
                     int64_t sum, mn;
                     {
                         std::unique_lock<std::mutex> lk(g_water_mutex);
-                        g_water_cv.wait_for(lk, std::chrono::seconds(120), []{ return g_water_applied; });
+                        wait_for_shutdown(g_water_cv, lk, std::chrono::seconds(120), []{ return g_water_applied; });
                         ok = g_water_req.ok; sum = g_water_req.sum; mn = g_water_req.mn;
                     }
             body = std::string("{\"ok\":") + (ok ? "true" : "false")
@@ -652,7 +856,7 @@ int main(int argc, char** argv) {
             std::vector<int32_t> states; uint32_t ns, nc;
             {
                 std::unique_lock<std::mutex> lk(g_water_mutex);
-                g_water_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_water_applied; });
+                wait_for_shutdown(g_water_cv, lk, std::chrono::seconds(60), []{ return g_water_applied; });
                 ok = g_water_req.ok; states = std::move(g_water_req.states);
                 ns = g_water_req.ns; nc = g_water_req.nc;
             }
@@ -754,7 +958,7 @@ int main(int argc, char** argv) {
                         g_gait_pending = true; g_gait_applied = false;
                     }
                     std::unique_lock<std::mutex> lk(g_gait_mutex);
-                    bool ok = g_gait_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_gait_applied; });
+                    bool ok = wait_for_shutdown(g_gait_cv, lk, std::chrono::seconds(60), []{ return g_gait_applied; });
                     body = ok && g_gait_req.ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"load failed\"}";
                 }
             }
@@ -811,7 +1015,7 @@ int main(int argc, char** argv) {
             bool ok; std::vector<double> ring;
             {
                 std::unique_lock<std::mutex> lk(g_gait_mutex);
-                g_gait_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_gait_applied; });
+                wait_for_shutdown(g_gait_cv, lk, std::chrono::seconds(60), []{ return g_gait_applied; });
                 ok = g_gait_req.ok; ring = std::move(g_gait_req.ring);
             }
             if (ok && g_engine) {
@@ -836,7 +1040,7 @@ int main(int argc, char** argv) {
                 g_volp_pending = true; g_volp_applied = false;
             }
             std::unique_lock<std::mutex> lk(g_volp_mutex);
-            bool ok = g_volp_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_volp_applied; });
+            bool ok = wait_for_shutdown(g_volp_cv, lk, std::chrono::seconds(60), []{ return g_volp_applied; });
             body = ok && g_volp_req.ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"load failed\"}";
             content_type = "application/json";
         } else if (p == "/stride_bin" && method == "POST") {
@@ -974,7 +1178,7 @@ int main(int argc, char** argv) {
                 g_volp_pending = true; g_volp_applied = false;
             }
             std::unique_lock<std::mutex> lk(g_volp_mutex);
-            bool ok = g_volp_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_volp_applied; });
+            bool ok = wait_for_shutdown(g_volp_cv, lk, std::chrono::seconds(60), []{ return g_volp_applied; });
             body = ok && g_volp_req.ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"load failed\"}";
             content_type = "application/json";
         } else if (p == "/volp" && method == "POST") {
@@ -1030,7 +1234,7 @@ int main(int argc, char** argv) {
             bool ok; std::vector<float> mesh;
             {
                 std::unique_lock<std::mutex> lk(g_volp_mutex);
-                g_volp_cv.wait_for(lk, std::chrono::seconds(60), []{ return g_volp_applied; });
+                wait_for_shutdown(g_volp_cv, lk, std::chrono::seconds(60), []{ return g_volp_applied; });
                 ok = g_volp_req.ok; mesh = std::move(g_volp_req.mesh);
             }
             if (ok) {
@@ -1056,7 +1260,7 @@ int main(int argc, char** argv) {
             std::vector<int32_t> dbg;
             {
                 std::unique_lock<std::mutex> lk(g_water_mutex);
-                g_water_cv.wait_for(lk, std::chrono::seconds(30), []{ return g_water_applied; });
+                wait_for_shutdown(g_water_cv, lk, std::chrono::seconds(30), []{ return g_water_applied; });
                 ok = g_water_req.ok; dbg = std::move(g_water_req.states);
             }
             if (ok) {
@@ -1080,7 +1284,7 @@ int main(int argc, char** argv) {
                     g_frost_pending = true; g_frost_applied = false;
                 }
                 std::unique_lock<std::mutex> lk(g_frost_mutex);
-                bool ok = g_frost_cv.wait_for(lk, std::chrono::seconds(30), []{ return g_frost_applied; });
+                bool ok = wait_for_shutdown(g_frost_cv, lk, std::chrono::seconds(30), []{ return g_frost_applied; });
                 body = (ok && g_frost_req.ok) ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"apply failed or timeout\"}";
             }
             content_type = "application/json";
@@ -1308,7 +1512,7 @@ int main(int argc, char** argv) {
             bool ok; std::vector<int32_t> snap;
             {
                 std::unique_lock<std::mutex> lk(g_frost_mutex);
-                ok = g_frost_cv.wait_for(lk, std::chrono::seconds(15), []{ return g_frost_applied; });
+                ok = wait_for_shutdown(g_frost_cv, lk, std::chrono::seconds(15), []{ return g_frost_applied; });
                 snap = std::move(g_frost_req.data);
                 ok = ok && g_frost_req.ok;
             }
@@ -1336,7 +1540,7 @@ int main(int argc, char** argv) {
                     g_frost_pending = true; g_frost_applied = false;
                 }
                 std::unique_lock<std::mutex> lk(g_frost_mutex);
-                bool ok = g_frost_cv.wait_for(lk, std::chrono::seconds(30), []{ return g_frost_applied; });
+                bool ok = wait_for_shutdown(g_frost_cv, lk, std::chrono::seconds(30), []{ return g_frost_applied; });
                 body = (ok && g_frost_req.ok) ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"apply failed or timeout\"}";
                 content_type = "application/json";
             }
@@ -1375,7 +1579,7 @@ int main(int argc, char** argv) {
                         g_skin_applied = false;
                     }
                     std::unique_lock<std::mutex> lk(g_skin_mutex);
-                    bool ok = g_skin_cv.wait_for(lk, std::chrono::seconds(15), []{ return g_skin_applied; });
+                    bool ok = wait_for_shutdown(g_skin_cv, lk, std::chrono::seconds(15), []{ return g_skin_applied; });
                     body = (ok && g_skin_req.ok) ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"apply failed or timeout\"}";
                 }
             }
@@ -1403,7 +1607,7 @@ int main(int argc, char** argv) {
                         g_skin_applied = false;
                     }
                     std::unique_lock<std::mutex> lk(g_skin_mutex);
-                    bool ok = g_skin_cv.wait_for(lk, std::chrono::seconds(5), []{ return g_skin_applied; });
+                    bool ok = wait_for_shutdown(g_skin_cv, lk, std::chrono::seconds(5), []{ return g_skin_applied; });
                     body = (ok && g_skin_req.ok) ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"store failed or timeout\"}";
                 }
             }
@@ -1423,7 +1627,7 @@ int main(int argc, char** argv) {
                     g_skin_applied = false;
                 }
                 std::unique_lock<std::mutex> lk(g_skin_mutex);
-                bool ok = g_skin_cv.wait_for(lk, std::chrono::seconds(5), []{ return g_skin_applied; });
+                bool ok = wait_for_shutdown(g_skin_cv, lk, std::chrono::seconds(5), []{ return g_skin_applied; });
                 body = (ok && g_skin_req.ok) ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"apply failed or timeout\"}";
             }
             content_type = "application/json";
@@ -1442,7 +1646,7 @@ int main(int argc, char** argv) {
                 g_mem_applied = false;
             }
             std::unique_lock<std::mutex> lk(g_mem_mutex);
-            bool ok = g_mem_cv.wait_for(lk, std::chrono::seconds(3), []{ return g_mem_applied; });
+            bool ok = wait_for_shutdown(g_mem_cv, lk, std::chrono::seconds(3), []{ return g_mem_applied; });
             body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
             content_type = "application/json";
         } else if ((p == "/frame" || p == "/stream") && method == "GET") {
@@ -2154,7 +2358,7 @@ int main(int argc, char** argv) {
                             g_mem_applied = false;
                         }
                         std::unique_lock<std::mutex> lk(g_mem_mutex);
-                        bool ok = g_mem_cv.wait_for(lk, std::chrono::seconds(3), []{ return g_mem_applied; });
+                        bool ok = wait_for_shutdown(g_mem_cv, lk, std::chrono::seconds(3), []{ return g_mem_applied; });
                         body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
                     }
                 } else if (op == "fit") {
@@ -2174,7 +2378,7 @@ int main(int argc, char** argv) {
                             g_mem_applied = false;
                         }
                         std::unique_lock<std::mutex> lk(g_mem_mutex);
-                        bool ok = g_mem_cv.wait_for(lk, std::chrono::seconds(3), []{ return g_mem_applied; });
+                        bool ok = wait_for_shutdown(g_mem_cv, lk, std::chrono::seconds(3), []{ return g_mem_applied; });
                         body = ok ? "{\"ok\":true,\"fit\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
                     }
                 } else if (op == "delete") {
@@ -2261,7 +2465,7 @@ int main(int argc, char** argv) {
                             g_mem_applied = false;
                         }
                         std::unique_lock<std::mutex> lk(g_mem_mutex);
-                        g_mem_cv.wait_for(lk, std::chrono::seconds(3), []{ return g_mem_applied; });
+                        wait_for_shutdown(g_mem_cv, lk, std::chrono::seconds(3), []{ return g_mem_applied; });
                     }
                 }
                 bool was_playing = g_engine->show_playing_.load();
@@ -2388,6 +2592,10 @@ int main(int argc, char** argv) {
                      + ",\"replayed\":" + std::to_string(done)
                      + ",\"failed\":" + std::to_string(failed)
                      + ",\"detail\":\"" + detail + "\"}";
+#ifdef CHIMERA_SHUTDOWN_TEST
+                printf("shutdown_test: session_result %s\n", body.c_str());
+                fflush(stdout);
+#endif
             } else {
                 body = "{\"ok\":false,\"error\":\"want op=restore|clear\"}";
             }
@@ -2434,6 +2642,16 @@ int main(int argc, char** argv) {
                 g_engine->log_event(kind, d + " -> " + body);
             }
         }
+        } catch (const ShutdownCancellation&) {
+            // Nested /session calls catch independently, so an unapplied child
+            // becomes a failed replay item rather than a false restore success.
+            body = "{\"ok\":false,\"error\":\"shutdown in progress\"}";
+            content_type = "application/json";
+#ifdef CHIMERA_SHUTDOWN_TEST
+            printf("shutdown_test: cancelled %s\n", path.c_str());
+            fflush(stdout);
+#endif
+        }
     };
     bool http_ok = server.start(http_port, api);
     engine.set_api(api);   // F1: the console's worker runs the SAME handler
@@ -2452,19 +2670,30 @@ int main(int argc, char** argv) {
     // MEASURED 2026-09-02: invoking this on the main thread BEFORE the frame
     // loop starts makes the waiting endpoints time out (their fences are
     // consumed by frame()) — the blob still applies, but the ack is a lie.
-    // So: deferred detached thread, after the loop is alive; retry on FAIL.
+    // So: deferred joinable thread, after the loop is alive; retry on FAIL.
+    std::mutex boot_restore_mutex;
+    std::condition_variable boot_restore_cv;
+    std::atomic<bool> boot_restore_cancel{false};
+    std::thread boot_restore_thread;
     {
         bool boot_restore = true;
         for (int i = 1; i < argc; ++i)
             if (std::string(argv[i]) == "--no-restore") boot_restore = false;
         if (boot_restore) {
-            std::thread([&engine] {
-                std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+            boot_restore_thread = std::thread([&engine, &boot_restore_mutex,
+                                               &boot_restore_cv, &boot_restore_cancel] {
+                auto delay_or_cancel = [&](std::chrono::milliseconds delay) {
+                    return wait_for_shutdown_delay(boot_restore_mutex, boot_restore_cv,
+                                                   boot_restore_cancel, delay);
+                };
+                if (delay_or_cancel(std::chrono::milliseconds(1500))) return;
                 for (int attempt = 0; attempt < 3; ++attempt) {
+                    if (g_shutdown_closing.load(std::memory_order_acquire)) return;
                     std::string resp, ct;
                     engine.invoke_api("POST", "/session", "{\"op\":\"restore\"}", resp, ct);
                     printf("session: boot restore -> %s\n", resp.c_str());
                     fflush(stdout);
+                    if (g_shutdown_closing.load(std::memory_order_acquire)) return;
                     bool ok = resp.find("\"failed\":0") != std::string::npos
                            && resp.find("\"replayed\":0") == std::string::npos;
                     if (ok || resp.find("\"replayed\":0,\"failed\":0") != std::string::npos) {
@@ -2473,15 +2702,16 @@ int main(int argc, char** argv) {
                         // re-derive the framing from the mesh that just came back —
                         // the operator never boots into a cropped hero. (A named
                         // bookmark is one POST /cameras {"op":"recall"} away.)
+                        if (g_shutdown_closing.load(std::memory_order_acquire)) return;
                         std::string fresp, fct;
                         engine.invoke_api("POST", "/cameras", "{\"op\":\"fit\"}", fresp, fct);
                         printf("session: boot fit -> %s\n", fresp.c_str());
                         fflush(stdout);
-                        break;
+                        return;
                     }
-                    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+                    if (delay_or_cancel(std::chrono::milliseconds(2000))) return;
                 }
-            }).detach();
+            });
         }
     }
 
@@ -2506,6 +2736,11 @@ int main(int argc, char** argv) {
     double ft_sum = 0.0, ft_max = 0.0;   // frame-stutter instrument (per-second window)
     int ft_over16 = 0, ft_over33 = 0;
     bool use_compute = false;  // compute path disabled: the N-body sim is a placeholder; the membrane/teddy render is the target
+#ifdef CHIMERA_SHUTDOWN_TEST
+    const bool shutdown_test_hold_md = std::getenv("CHIMERA_SHUTDOWN_TEST_HOLD") != nullptr;
+    bool shutdown_test_md_marked = false;
+    bool shutdown_test_mesh_marked = false;
+#endif
 
     while (true) {
         // Process Windows messages (allows window to close gracefully).
@@ -2519,6 +2754,7 @@ int main(int argc, char** argv) {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+        if (g_shutdown_closing.load(std::memory_order_acquire)) quit = true;
         if (quit) break;
 
         // Apply a pending membrane request (Vulkan work must stay on this thread)
@@ -2546,9 +2782,51 @@ int main(int argc, char** argv) {
             }
         }
 
+        // Apply a pending GPU membrane-demo request on the render thread.
+        {
+            std::lock_guard<std::mutex> lk(g_md_mutex);
+#ifdef CHIMERA_SHUTDOWN_TEST
+            if (shutdown_test_hold_md && g_md_pending) {
+                if (!shutdown_test_md_marked) {
+                    printf("shutdown_test: md_pending_held\n");
+                    fflush(stdout);
+                    shutdown_test_md_marked = true;
+                }
+            } else
+#endif
+            if (g_md_pending) {
+                bool ok = false;
+                if (g_md_req.kind == 1) {
+                    ok = engine.membrane_demo_init(g_md_req.upload);
+                    if (ok) {
+                        g_membrane_active = true;
+                        engine.membrane_demo_status(g_md_req.status);
+                    }
+                } else if (g_md_req.kind == 2) {
+                    ok = engine.membrane_demo_ctl(g_md_req.ctl_kind, g_md_req.n_steps,
+                                                  g_md_req.gamma, g_md_req.status);
+                } else {
+                    ok = engine.membrane_demo_status(g_md_req.status);
+                }
+                g_md_req.ok = ok;
+                g_md_pending = false;
+                g_md_applied = true;
+                g_md_cv.notify_all();
+            }
+        }
+
         // Apply a pending mesh request (Vulkan work must stay on this thread)
         {
             std::lock_guard<std::mutex> lk(g_mesh_mutex);
+#ifdef CHIMERA_SHUTDOWN_TEST
+            if (shutdown_test_hold_md && g_mesh_pending) {
+                if (!shutdown_test_mesh_marked) {
+                    printf("shutdown_test: mesh_pending_held\n");
+                    fflush(stdout);
+                    shutdown_test_mesh_marked = true;
+                }
+            } else
+#endif
             if (g_mesh_pending) {
                 if (g_mesh_req.update_only) {
                     engine.update_mesh(g_mesh_req.verts, g_mesh_req.N);
@@ -2835,7 +3113,28 @@ int main(int argc, char** argv) {
         }
     }
 
+    g_shutdown_closing.store(true, std::memory_order_release);
+    printf("shutdown: admission_closed\n");
+    fflush(stdout);
+    notify_shutdown_channels();
+    boot_restore_cancel.store(true, std::memory_order_release);
+    notify_shutdown(boot_restore_mutex, boot_restore_cv);
+    if (boot_restore_thread.joinable()) boot_restore_thread.join();
+    printf("shutdown: boot_joined\n");
+    fflush(stdout);
+    server.stop();
+    printf("shutdown: http_stopped\n");
+    fflush(stdout);
     printf("Shutting down...\n");
     engine.shutdown();
+    printf("shutdown: engine_shutdown\n");
+    fflush(stdout);
+#ifdef CHIMERA_SHUTDOWN_TEST
+    std::string late_body, late_type;
+    api("GET", "/membrane_demo", "", late_body, late_type);
+    printf("shutdown_test: late_api %s\n", late_body.c_str());
+    fflush(stdout);
+    if (late_body != "{\"ok\":false,\"error\":\"shutdown in progress\"}") return 2;
+#endif
     return 0;
 }

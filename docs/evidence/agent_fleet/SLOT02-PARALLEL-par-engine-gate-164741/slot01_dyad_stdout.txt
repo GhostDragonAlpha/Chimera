@@ -1,0 +1,27 @@
+[dyad] gpu_demo_raised_gamma0: calling senses.watch_one ...
+[dyad] gpu_demo_raised_gamma0: OK
+[dyad] gpu_demo_final_relaxed: calling senses.watch_one ...
+[dyad] gpu_demo_final_relaxed: OK
+evidence: C:\Users\allen\AppData\Local\Temp\opencode\chimera_pub\docs\evidence\membrane_gpu_demo_runtime\20260909T214850.509519Z\dyad_gpu_demo_review.json
+
+===== gpu_demo_raised_gamma0 =====
+1. **What is visibly distinguishable.** Against a near‑black background with a faint radial vignette, the only 3D content is a single light‑grey faceted hexagon in the centre of the frame, drawn as a smooth gradient fill (brightest toward its upper‑middle) overlaid with thin white wireframe edges. Six white "spokes" run from one interior point out to six boundary corners, i.e. the six triangles of the membrane. Behind and below it is a larger, darker hexagonal silhouette that does *not* line up with the light shape's outline (it extends both above and below it) – most plausibly a flat reference plane / floor at z=0 while the membrane is presentation‑lifted above it. There are **no grid lines, no scale ticks, and no other panels/objects** in the scene. Across the very top edge of the frame runs a full‑width bright magenta horizontal bar that looks like a UI/status strip or render artifact rather than scene geometry.
+
+2. **Locating centre vs rim.** The centre vertex is the point where all six white radial spokes converge – it sits in the *upper* third of the light shape, not at its vertical middle. The outer rim is the set of six boundary corners where two edge‑wires meet (left, top‑left, top‑right, right, bottom‑right, bottom‑left). The dark hexagon behind gives a flat reference but its own corners are offset from the membrane's rim (consistent with the +0.5 m presentation lift), so I treat the light shape's boundary as the true rim and the spoke‑convergence point as the centre.
+
+3. **Is the offset resolvable?** *Resolvable, but only marginally.* The silhouette alone looks like a flat squashed hexagon, so a casual glance could read it as flat. However, the spokes converge well above the vertical midline of that silhouette (where a *flat* centroid would project at this low elevation), and the front two facets visibly slope down toward the viewer while the back facets are foreshortened – the classic shallow‑tent signature of a raised apex. So I can see "not flat / cent
+
+
+===== gpu_demo_final_relaxed =====
+**1. What is visibly distinguishable**
+- A single light‑grey/silver **hexagonal membrane** in the middle of the frame. Its fill is a smooth radial‑ish gradient (brightest at the centre, darkening toward the left and right tips), with no hard per‑triangle shading boundaries visible in the fill itself. Overlaid on it are thin white wire lines: the hexagon perimeter plus three long diagonals that cross at one central point (the six spokes from centre to rim, opposite pairs merging into straight lines). This is the "fill + edge‑contrast wire pass" described.
+- A **larger, much darker hexagon** sitting behind/around the bright one. It extends above and below the membrane and its left/right vertices sit slightly *inside* the membrane's left/right tips. I see no grid lines on it, no texture, just a flat dark fill with soft edges. Its role (floor panel, cast shadow, backdrop, or debug shape) is **not determinable** from this image alone — there are no scale marks, axes, or labels to place it.
+- A solid, full‑width **magenta horizontal bar** across the very top of the frame. It has no text, ticks, or gradient; as far as I can tell it is a UI/debug/status strip rather than scene geometry (uncertain — nothing in the image identifies it).
+- The rest is a near‑black background with a subtle vignette (darker corners/edges). **No floor grid lines, no axis triad, no metric scale, no text** are visible anywhere.
+
+**2. Locating centre and rim**
+Yes, both are locatable, but only because of the wire pass — the fill shading alone would not reveal them. The **outer rim** is the bright white hexagonal outline. The **centre vertex** is the single point where the three white diagonals intersect (the middle of the X/star pattern). Nothing in the *fill* marks the centre; it is purely a wire‑line intersection.
+
+**3. Is the offset resolvable?**
+**Not resolvable.** Two reasons from the image: (a) the membrane reads as a flat hexagon — I see no tent, no per‑triangle facet shading difference that 
+

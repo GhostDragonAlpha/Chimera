@@ -1,0 +1,10 @@
+## astra/gait-capture
+?? .venv-linux/
+?? docs/evidence/gpu_fixtures/verify_results_20260908T041832.301907Z.json
+?? docs/evidence/gpu_fixtures/verify_results_20260908T043250.918219Z.json
+?? docs/evidence/gpu_fixtures/verify_results_20260908T044315.572449Z.json
+?? docs/evidence/membrane_gpu_probe/20260908T041831.362100Z/
+?? docs/evidence/membrane_gpu_probe/20260908T041918.695444Z/
+?? docs/evidence/membrane_gpu_probe/20260908T043035.631954Z/
+?? docs/evidence/membrane_gpu_probe/20260908T043222.932447Z/
+?? docs/evidence/membrane_gpu_probe/20260908T043245.798664Z/

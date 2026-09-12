@@ -1,0 +1,70 @@
+{
+ "results": {
+  "r3_flat_patch_stationary": {
+   "pass": true,
+   "max_interior_force": 0.0,
+   "limit_512e": 1.1368683772161603e-13,
+   "n_accepted": 0,
+   "status": "converged"
+  },
+  "r3_descent_healthy_patch": {
+   "pass": true,
+   "status": "converged",
+   "n_accepted": 351,
+   "n_trials": 352,
+   "U0": 16.23475769026278,
+   "U_end": 16.000000000000007,
+   "energy_drop_frac": 0.014460190582553233,
+   "strictly_monotone": true,
+   "A_initial": 16.23475769026278,
+   "A_final": 16.000000000000007,
+   "A_flat_min": 16.0
+  },
+  "r3_zero_gamma_stationary": {
+   "pass": true,
+   "status": "converged",
+   "n_accepted": 0,
+   "forces_exactly_zero": true,
+   "geometry_bit_identical": true
+  },
+  "r3_fixed_vertices_bitexact": {
+   "pass": true,
+   "status": "step_limit_reached",
+   "n_accepted": 150,
+   "n_pinned": 5,
+   "pinned_moved": []
+  },
+  "r3_unsafe_trial_rejected_safe_accepted": {
+   "pass": true,
+   "force_on_v3_matches_law": true,
+   "unsafe_rejected": true,
+   "unsafe_reason": "collapsed_triangle",
+   "reference_verdict_on_trial": "collapsed_triangle",
+   "safe_accepted": true,
+   "U_before": 0.2500000000005,
+   "U_after": 0.25,
+   "armijo_satisfied": true,
+   "all_faces_above_floor": true
+  },
+  "r3_no_descent_step_budget": {
+   "pass": true,
+   "status": "no_descent_step",
+   "reason": "no_descent_step",
+   "n_accepted": 0,
+   "geometry_unchanged": true,
+   "landing_residual": 0.0,
+   "floor_for_max_edge_1": 1.4210854715202004e-14
+  },
+  "r3_evidence_preservation": {
+   "pass": true,
+   "stamped_unique": true,
+   "refused_exit2_and_byte_identical": true,
+   "force_out_writes": true,
+   "refusal_reason_named": true,
+   "force_run_tail": "  raw: E:\\Chimera_G01\\agent_logs\\glm_foundation_g01\\r3_evidence_hrzn2s73\\sentinel_results.json",
+   "historical_file_intact": true,
+   "historical_present": true
+  }
+ },
+ "failed": 0
+}

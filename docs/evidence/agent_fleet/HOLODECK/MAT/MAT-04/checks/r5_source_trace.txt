@@ -1,0 +1,26 @@
+R5 deployed-source trace at base -- the card statement judged against the DEPLOYED text (threshold: 4/4 families quoted)
+========================================================================
+task base: 4812b55b407107a34b708af1700e071a7eecbab4
+working HEAD: 308790ab33a19d5265036deabf25556af8b83f18 (evidence-only commits; material plane untouched)
+git status --porcelain: ?? docs/evidence/agent_fleet/HOLODECK/MAT/MAT-04/RESULT.txt
+?? docs/evidence/agent_fleet/HOLODECK/MAT/MAT-04/checks/
+[PASS] R5(a) THE ABSENT TOOL
+       identification-marker scan over 1175 tracked deployed *.py (27 material-plane files):
+         material-plane hits: NONE (0)
+         repo-wide non-plane hits (context, classified): NONE (0)
+       tools/elastic_foundation/materials.py:6 = 'no material-direction transport and no measured E11/E22/nu12/G12 (AUDIT.md sections 2,3).'
+       tools/elastic_foundation/materials.py:87 = '"material frame); E11, E22, nu12, G12; and a thickness-direction convention. None of "'
+         (the repo itself declares the measurement missing; orthotropic is refused by name for exactly that reason)
+[PASS] R5(b) THE DECLARED SEAM
+       tools/gpu_fixtures_recovered/membrane_demo.py:41 = 'The material is a SYNTHETIC DECLARED interface (GAMMA below, provenance:'
+       tools/gpu_fixtures_recovered/membrane_demo.py:42 = 'fixture declaration); no physical calibration is claimed. Admission routing'
+       tools/gpu_fixtures_recovered/membrane_demo.py:43 = 'through material_contract is deferred until BP-A1 lands (unit-family table).'
+         (synthetic declared interface; physical calibration explicitly not claimed; deferred until BP-A1)
+[PASS] R5(c) THE HONEST NON-CALIBRATION
+       Chimera/core/trainer.py:271 = '# neither was ever calibrated against a measurement:'
+         (the project's own doctrine: training/fitting success is not calibration against a measurement)
+[PASS] R5(d) FALSE-POSITIVE CONTROL
+       tools/surface_energy_checks.py:241 = 'res["torque_covariance"] = _norm_err(tau1[None, :], (R @ tau0)[None, :])'
+         CLASSIFICATION: a rigid-transform comparison norm between torque vectors (Linf-style norm of tau1 vs R@tau0), NOT a parameter-estimation covariance -- recorded so the absence claim in R5(a) cannot be defeated by a name match.
+
+RESULT r5_source_trace.txt: 4/4 (failed: none)

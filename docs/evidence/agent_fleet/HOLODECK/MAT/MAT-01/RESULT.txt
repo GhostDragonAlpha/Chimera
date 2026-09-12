@@ -1,0 +1,179 @@
+RESULT — holodeck-mat-01 (gen 1)
+
+Agent: subagent-worker-12 · slot 4 · worktree E:\ChimeraWork\slot-04 · branch
+astra/tasks/holodeck-mat-01 · base 4812b55b407107a34b708af1700e071a7eecbab4
+(HEAD at claim, provision verified HEAD==base, clean). CPU only; no
+GPU/model/engine process; no controller resources; the live service was
+NEVER contacted. First MATERIALS lane of the holodeck program.
+
+## SOURCE IDENTITY (deployed material plane, read-only reference text)
+
+All at git base 4812b55b (working tree of the provisioned slot):
+- tools/material_contract.py            6af75efe12da4ba8... (559 lines)
+- tools/materials.py                    7c3575fda733f741...
+- tools/elastic_foundation/materials.py 547b1a045bda25a2...
+- tools/cad_sample.py                   df092674ddf0b1f5...
+- tools/gpu_fixtures_recovered/membrane_demo.py 11b2b5015946ae8a...
+- tools/membrane_window_demo.py         (real caller; see r5 trace)
+- tools/agent_fleet/control.py          7cee259b35a21ebe...
+- tools/agent_fleet/review_handoff.py   e8f6a939b81f3525...
+Units backbone (dependency, cited not reimplemented):
+docs/evidence/agent_fleet/HOLODECK/MATH/MATH-01/reference/math01_reference_model.py
+
+## DELIVERABLES (card deliverables 1-4)
+
+1. Admitted parameter records distinct from raw data — the reference model
+   `reference/mat01_reference_model.py`: admit() is the ONLY path from raw
+   data to a record; records are frozen; snapshots are immutable mappings;
+   the real caller bulk_mass() consumes ONLY admitted records.
+2. Independent reference/benchmark + executed controls — the model above
+   (independent of the audited tools/material_contract.py; MATH-01 imported
+   as the designated units backbone, cited at every dimensional touchpoint)
+   plus controls/run_controls.py (R1-R4) and controls/run_source_checks.py
+   (R5-R6); outputs in checks/*.txt.
+3. Reproduction commands, source identity, preserved evidence, limitations
+   — this file.
+4. Integration contract + handoff — see INTEGRATION CONTRACT below.
+
+## PRE-RUN DEFECTS (disclosed; all fixed before any verdict was recorded)
+
+Three defects surfaced during bring-up, all runner/model-side, none
+touching the preregistered thresholds; the fired first runs are RETAINED:
+- checks/r1_positive.txt.run1-FIRED-spec-slip-Pa-m3-is-J-L2MT-2.txt — R1(f)
+  asserted the wrong expected dimension: Pa x m^3 composes to J =
+  L^2 M T^-2 (2,1,-2); the PREREGISTRATION parenthetical "(M T^-2)" was an
+  arithmetic slip (that is J/m^2, the energy_area family). The MODEL
+  composed correctly through MATH-01's algebra; the control's constant was
+  corrected. The prereg file itself is left untouched (provenance);
+  this paragraph is the disclosure.
+- checks/r3_falsifier_bypass.txt.run1-FIRED-runner-bare-name.txt — the
+  runner referenced an undefined bare constant name.
+- The MODEL needed one fix pre-verdict: serve()/snapshot() raised with
+  Reason-not-a-snapshot-MEMBER, an undefined constant (the defined name is
+  REASON_NOT_A_SNAPSHOT) -- the model refused correctly in three places
+  and then crashed on the message constant. Fixed (3 sites); the
+  R3 re-run shows the named refusals. This mirrors GOV-01's disclosed
+  pre-run model fix precedent.
+- controls/run_source_checks.py needed two harness fixes before output
+  (repo-root path one level off; a dead loop; docstring false-positive in
+  the import audit) -- no verdict output existed before these.
+
+## PREDICTION SCOREBOARD (preregistered rows)
+
+| row | prediction (fixed in PREREG before any run)               | verdict |
+|-----|------------------------------------------------------------|---------|
+| R1  | model accepts 7/7 legal admissions + MATH-01 composition  | HOLDS 7/7 |
+| R2  | model refuses all 8 invalid-unit/nonfinite/missing-basis paths | HOLDS 8/8 |
+| R3  | model refuses all 6 legacy-bypass attempts at the real caller | HOLDS 6/6 |
+| R4  | snapshots/records immutable (4 checks)                     | HOLDS 4/4 |
+| R5  | 3/3 deployed gate families present with quoted lines       | HOLDS 3/3 |
+| R6  | 4 measurements reported (raw plane, deferral, owner_instance now, independence) | 4/4 REPORTED |
+
+Line-number note (R5): predicted locations (e.g. __post_init__ at :145,
+convert at :83, register at :338, density_from_sg at :384) all measured
+EXACT at base; quoted lines retained in checks/r5_source_trace.txt.
+
+## CARD VERDICT (MAT-01 at catalogue digest b9d32319)
+
+- CARD PREDICTION "Invalid units, nonfinite values and missing basis refuse
+  at the real caller": SUPPORTED. In the reference model, all three classes
+  refuse by name at the admission boundary and the real caller (R2 8/8,
+  R3 6/6). In the DEPLOYED text at base (R5 3/3): validation happens at
+  CONSTRUCTION (material_contract.py __post_init__ "THE DOOR" ->
+  _validate_property), at EVERY execution boundary (register/record ->
+  _validate_record; convert refuses unknown/cross-family units BEFORE the
+  same-unit identity shortcut, G01-R2 P-8n), and declared-basis
+  derivations refuse MISSING_BASIS on blank conditions before arithmetic
+  (density_from_sg); the real callers serve through those gates
+  (membrane_window_demo.py contract_gamma -> admission_path;
+  elastic_foundation/materials.py named refusals at frozen-record
+  construction).
+- CARD FALSIFIER "A legacy bypass reaches a calculation advertised as
+  validated": NOT REPRODUCED. The reference model refuses every legacy
+  path (raw dict, bare float, string, duck-typed impostor -> legacy_input
+  before arithmetic; hostile bag injection refused at serve). The deployed
+  hunt (R6) found two un-admitted-parameter consumers and judged both NOT
+  advertised-as-validated: (a) cad_sample.py reads DENSITY constants
+  directly, but its referee tolerances advertise SAMPLING accuracy, not
+  parameter admission, and the constants carry documented literature
+  sources in materials.py (the raw-data plane the card statement
+  distinguishes records from); (b) membrane_demo.py states "no physical
+  calibration is claimed" and defers admission routing (BP-A1) -- an
+  honest open seam, not a bypass of a validated advertisement. Both are
+  recorded seams for future MAT lanes, with exact file:line in
+  checks/r6_findings.txt.
+- MEASURED CURRENT STATE (task packet: owner_instance claim-path fix is
+  FIXED AND DEPLOYED via PR #80 -- measured now, no stale deviation
+  language): review_handoff.py carries the owner_instance claim-path bind
+  (1 occurrence, at the task.update with the fleet-review-handoff-claim-
+  delegation-01 F2/F3 restored markers and the enforced instance_fencing
+  gate) and control.py carries 8 occurrences (the _task fence, setdefault,
+  yield guard, claim bind, release clear). The GOV-01-era deviation
+  (review_handoff.py occurrences == 0 at d59518b9) is confirmed FIXED at
+  this base; the R6(c) prediction (rh >= 1) HOLDS -- no surprise finding.
+- INDEPENDENCE AUDIT (R6d): the reference model imports ONLY stdlib plus
+  math01_reference_model (the designated units backbone) -- nothing from
+  the audited deployed code.
+
+## DYAD RECORD
+
+NOT_APPLICABLE — source-only scope: no executed runtime behavior of the
+deployed system was produced or altered; the deliverables are a reference
+model, its in-process controls, and static source measurements. Per the
+card's DYAD policy ("Reference-only or source-only scope records
+NOT_APPLICABLE with reason").
+
+## REPRODUCTION
+
+```
+git -C <checkout> rev-parse 4812b55b              # base identity
+cd docs/evidence/agent_fleet/HOLODECK/MAT/MAT-01
+python controls/run_controls.py                   # rewrites checks/r1..r4
+python controls/run_source_checks.py              # rewrites checks/r5, r6
+```
+MATH-01 resolves via the relative path
+../../MATH/MATH-01/reference (integrated at this base). Source quotes
+re-derivable with `sed -n '<line>p'` at the recorded line numbers.
+
+## LIMITATIONS
+
+- The reference model covers the ADMISSION boundary (raw -> typed record,
+  immutability, real-caller typing) for the four preregistered property
+  families; it does not model temperature dependence, anisotropy, or
+  rate effects, and its unit table is the closed family set declared in
+  the prereg.
+- R5/R6 are static textual measurements of one base revision; the live
+  service is never contacted and no runtime behavior of the deployed
+  controller is observed.
+- The verdict "NOT a card-falsifier instance" for the two raw-parameter
+  consumers rests on the consumers' own advertising text (quoted); a
+  future lane that advertises validation for those paths would flip the
+  verdict -- the seam is recorded, not closed.
+- MATH-01 is imported by design (the packet's units backbone); the model's
+  independence claim is therefore scoped to the audited deployed code.
+
+## INTEGRATION CONTRACT + HANDOFF (card deliverable 4)
+
+- Scope delivered exactly inside docs/evidence/agent_fleet/HOLODECK/MAT/
+  MAT-01; zero edits outside; no shared file touched (MATH-01's tree
+  consumed read-only via its integrated path).
+- MAT-02..05 unlock when MAT-01 integrates. Handoff to the MAT lane team:
+  (a) reuse reference/mat01_reference_model.py as the admission layer
+  seed -- admit()/snapshot()/serve()/bulk_mass() are the typed boundary
+  the card statement asks for; (b) the two recorded seams (cad_sample raw
+  constants; membrane_demo BP-A1 deferral) are the natural MAT work
+  items -- a lane that routes them through the admission layer should
+  prereg its own thresholds; (c) unit families/dimensions MUST extend via
+  MATH-01's Dimension algebra (FAMILY_DIM table), never by inventing
+  conversion factors; (d) evidence pattern for this plane: PREREG with
+  concrete N per row, retained fired runs, source trace with measured line
+  numbers, owner_instance measured-current (no stale deviation language).
+- No follow-up task is created by this lane; the lead coordinates MAT-02..05
+  member assignment per the standing structure.
+
+## SHIP RECORD
+
+- Commit chain: c7b2e0f1 (PREREG, alone) -> artifact commit(s) -> pushed
+  HEAD recorded in the controller submit_review event; PR into
+  astra/gait-capture; pushed no-force.
+- Files changed: docs/evidence/agent_fleet/HOLODECK/MAT/MAT-01/** only.

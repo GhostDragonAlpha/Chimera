@@ -1,0 +1,8 @@
+{
+ "endpoint": "/frame",
+ "http": 200,
+ "png_sha256": "896dd181060fe4a018e40089e1dd124d0989e65495dbe3dff4d4c865d285c961",
+ "png_bytes": 14748233,
+ "utc": "2026-09-11T16:08:34Z",
+ "view": "V3 ordinary mesh box"
+}

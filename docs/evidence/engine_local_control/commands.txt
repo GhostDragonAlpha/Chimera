@@ -1,0 +1,6 @@
+C:\ProgramData\mingw64\mingw64\bin\cmake.exe -S E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1 -B E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1\build -G Ninja
+C:\ProgramData\mingw64\mingw64\bin\cmake.exe --build E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1\build --verbose
+C:\ProgramData\mingw64\mingw64\bin\cmake.exe -S E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1 -B E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1\build -G "MinGW Makefiles" -DCMAKE_CXX_COMPILER=C:\ProgramData\mingw64\mingw64\bin\g++.exe
+C:\ProgramData\mingw64\mingw64\bin\cmake.exe --build E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1\build --verbose
+C:\ProgramData\mingw64\mingw64\bin\cmake.exe -S E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1 -B E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1\build_mingw -G "MinGW Makefiles" -DCMAKE_CXX_COMPILER=C:\ProgramData\mingw64\mingw64\bin\g++.exe
+C:\ProgramData\mingw64\mingw64\bin\cmake.exe --build E:\ChimeraWork\slot-01\.tmp\engine_local_control_gen1\build_mingw --verbose

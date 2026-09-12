@@ -1,0 +1,40 @@
+V03 publication packet manifest
+generated 2026-09-06 by Dots-3-note (V03 author)
+zip: E:/PythonChimera/.tmp\v02_20260906_190511\v03_packet.zip
+zip SHA-256: b1d72ac3156c35f629fd33882c4f2d2b29f38f3a9924ae861b1418b47275d677
+
+path                                                                                                        SHA-256      bytes
+------------------------------------------------------------------------------------------------------------------------------
+analysis\_audit_links.py                           5a07c98501ba4ba548835a09b8c0a61078d560f185cb6c544aef7d3eb7763f75       1225
+analysis\_audit_phase.py                           896c73ba9f45141309da0582ab52a1425e74a66df297523e740a70abee875a94       2034
+analysis\_audit_stride.py                          6c0498dda28fa1e9ceeab54a1703352686c9910fe9c17b3b692057d620530a9c       2114
+analysis\_dup.py                                   7cac61dcc5e0ebec45d26f569b7e379457697e75f6461c2817b073105897d165       2015
+analysis\_l1.py                                    52d91d7edcb11972ce2bf006785c57fa13ef328ad56e076d14ee09c19b1d3b3f        773
+analysis\_l2.py                                    08fd21eaf7d2f64b838c5d9cb7dcc6ec20dd4acac0790bd79edac136eb21b6c1        807
+analysis\_links_raw.txt                            e550eb5cce4a79a5c85b69a4420b0c4d01fe218e90befc1b786e8869ca8fce4d       5538
+analysis\v02_burst_reports.txt                     fb8475974c78534e0c4f642e380a0f6ee2066cdbf730f05d745f6f4b35e0cc24      10595
+analysis\v02_dyad_reports.txt                      f148768f64e09e66b3de1f28f8255b2ae719828a9d8957960f9aeab50feccfe6      17277
+images\baseline_view.png                           3d538f1c295c4c1f8a8d808c4b4b9a7e9fa7abf93c74460851b288a1f348eae8   14748233
+images\cam_post_orbit.png                          79918e0efb205bfeca0bf12bcb82c2d5eb57501595280e40c19ae4f5e9ebb2a3   14748233
+images\cam_pre_orbit.png                           2d4a9f93e070c5cbce2217213592357cade70c5ecc9f96470ac403bd3b0da20f   14748233
+images\final_baseline.png                          3d538f1c295c4c1f8a8d808c4b4b9a7e9fa7abf93c74460851b288a1f348eae8   14748233
+images\frame_000.png                               2d4a9f93e070c5cbce2217213592357cade70c5ecc9f96470ac403bd3b0da20f   14748233
+images\frame_004.png                               2d4a9f93e070c5cbce2217213592357cade70c5ecc9f96470ac403bd3b0da20f   14748233
+images\glass_001.png                               538ce59b042452569dce804b8d51d52748569c980fb1707867ccd2e45007da8d   14748233
+images\joint_pose_base.png                         79918e0efb205bfeca0bf12bcb82c2d5eb57501595280e40c19ae4f5e9ebb2a3   14748233
+images\joint_pose_kneeL_100.png                    4275ebdcd5e494252bbe6c7dddf5349057a3c50133492bb67df6bade40f26ebc   14748233
+images\orbitOK_00.png                              1e2379621890065289186ca69c3c55784d3cf4a0875690e3f8d5edbc83fa16dd   14748233
+images\orbitOK_03.png                              2a26b46efaf66ca69902932374602ebedbfb6b0419d920e6c6ce9c9e3a95f4f4   14748233
+images\orbitOK_05.png                              0ffa1c918611856e3b4fff956e3b62777d1cff0fec833e0dd4e1e2522d3d529b   14748233
+images\orbitOK_09.png                              b029e6ac173ee037c57d5af2fdc500c3bbd39f51c10b4a7c9e9f443f0b40acc3   14748233
+images\orbit_00.png                                79918e0efb205bfeca0bf12bcb82c2d5eb57501595280e40c19ae4f5e9ebb2a3   14748233
+images\showfix_glass_00.png                        dbaee57e4cd4a3ad3757f59f1a50ef5e1024385c9e3bbb0fec000e6bb117479a   14748233
+images\showfix_glass_04.png                        cbfbf1db38b1e151cf4244dc289a03df3a83bb429c1cd6d452aa3796b0bc2492   14748233
+reports\README.md                                  b059c7ec985b578c46c89be4b885d7587c0b812e76455641d539801e1b1423d5        339
+reports\V02_REPORT.md                              da271fca164ab7a3365e29232265f827f51514833a4f9e01d9146af0b7952b3c      31906
+reports\V03_LEDGER.md                              7e2be2c1b56e958dc232bf5e17114907466d69eabc984e3b2086d3d369fc8e55      25100
+
+source commit: 51cd7212fd6ef2cfda95c330abcc2ff154cc6141 (master)
+target branch: remotes/origin/astra/gait-capture @ e0ea5a56
+images copied VERBATIM from E:/PythonChimera/.tmp/p02_visual_20260906_122824/
+no bytes recompressed; originals on disk are unchanged.

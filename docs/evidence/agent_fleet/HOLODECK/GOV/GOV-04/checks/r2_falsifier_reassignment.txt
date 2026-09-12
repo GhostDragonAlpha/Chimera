@@ -1,0 +1,11 @@
+R2 card falsifier — 'a blocked or already claimed task is silently reassigned' — model must REJECT each (prereg: 6/6)
+Post-state assertions on EVERY case: owner/generation/state/slot/packet/owner_instance unchanged.
+
+R2(a) blocked task claim -> dependencies_not_integrated; post-state unchanged: PASS
+R2(b) RUNNING re-claim by second agent -> task_not_ready; owner stays w-03: PASS
+R2(c) overlapping active scope claim -> write_scope_conflict: PASS
+R2(d) BLOCKED-state claim -> task_not_ready; owner stays w-03: PASS
+R2(e) duplicate id create -> invalid_or_duplicate_task; original packet survives byte-identical: PASS
+R2(f) REVIEW-state claim -> task_not_ready; owner stays w-03: PASS
+
+R2 VERDICT: 6/6 (prereg threshold 6/6) — card falsifier NOT fired in the model

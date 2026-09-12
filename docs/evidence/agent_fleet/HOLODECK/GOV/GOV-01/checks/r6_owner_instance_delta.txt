@@ -1,0 +1,57 @@
+R6 MEASURED DEVIATION — interceptor claim drops owner_instance binding
+base d59518b9; control.py sha256=7cee259b35a21ebe689feb5d77c8f2bb10b7125cd1ea9c3ac06e1cb6254bfa30; review_handoff.py sha256=ad3674bd2e1f1a60a3762e44cd26578150b2c475b064af042a40bace30b51811
+
+MEASURE 1 - textual occurrence count of owner_instance:
+  control.py       : 9 occurrences (PREREG predicted 4)
+  review_handoff.py: 0 occurrences (PREREG predicted 0)
+
+MEASURE 2 - the two claim bind sites, quoted:
+  base claim, control.py:552-555:
+    552:             n,slot=available[0];slot['task']=t['id']
+    553:             t.update(owner=actor,slot=n,state='RUNNING',generation=t['generation']+1,
+    554:                      owner_instance=p.get('_resolved_instance'))
+    555:             return {**t,'worktree':slot['path'],'engine':slot['engine'],'provisioning':'REQUIRED: claim metadata does not create or modify a worktree'}
+  interceptor claim, review_handoff.py:88-93:
+    88:         number, slot = available[0]
+    89:         slot["task"] = task["id"]
+    90:         task.update(owner=actor, slot=number, state="RUNNING",
+    91:                     generation=task["generation"] + 1)
+    92:         return {**task, "worktree": slot["path"], "engine": slot["engine"],
+    93:                 "provisioning": "REQUIRED: claim metadata does not create or modify a worktree"}
+  field delta: base binds {owner, slot, state, generation, owner_instance};
+  interceptor binds {owner, slot, state, generation} - owner_instance MISSING.
+
+MEASURE 3 - enforced-fencing gate on the two claim paths:
+  base claim, control.py:550-551:
+    550:             if s.get('instance_fencing')=='enforced':
+    551:                 require(p.get('_resolved_instance') is not None,'instance_binding_required')
+  interceptor claim: no instance_fencing check between the slot selection
+  (rh.py:78-88) and the bind (rh.py:90-91) - the gate is ABSENT on this path.
+
+MEASURE 4 - downstream effect on the CAS gate (control.py:121-123):
+    121:         owner_instance=t.get('owner_instance')
+    122:         if owner_instance is not None:
+    123:             require(instance==owner_instance,'instance_not_bound')
+  For a task claimed through the interceptor, owner_instance stays None, so the
+  instance_not_bound requirement is skipped (None is not None is False): the
+  INTENDED per-instance fencing is INERT on the live claim path while
+  instance_fencing=='compat'. Under 'enforced' fencing a NEW claim would still
+  require an instance via control.py:550-551 - but the interceptor performs that
+  check nowhere, so an instance-less claim passes it unfenced.
+
+VERDICT: measured delta MATCHES feedback c4212657 (claim interceptor drops
+owner_instance binding). Recorded as a finding of the DEPLOYED text at base;
+the reference model in reference/gov01_reference_model.py deliberately models
+the INTENDED contract (binding present) and does NOT adopt the deviation.
+Fix in flight as fleet-review-handoff-claim-delegation-01 (slot 12).
+
+PREREG-COUNT DISCLOSURE (appended after measurement): PREREG predicted 4
+owner_instance occurrences in control.py; the exact measured count is 9 across
+5 sites (a prediction miss on the count, disclosed per the prereg rule "exact
+count measured and reported"; the load-bearing prediction - review_handoff.py
+== 0 and the binding absent from the interceptor claim path - held exactly):
+  121-123 : _task CAS check (3 occurrences; refusal instance_not_bound at 123)
+  323     : additive setdefault for pre-instance registries (1)
+  499-501 : explicit-yield instance guard (2)
+  554     : base claim bind (1)
+  697     : release/requeue clears the binding (1)

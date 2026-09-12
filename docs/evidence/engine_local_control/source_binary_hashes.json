@@ -1,0 +1,18 @@
+[
+  {
+    "path": "E:\\ChimeraWork\\slot-01\\ChimeraEngine\\engine\\http_server.cpp",
+    "sha256": "510F2849F70B61656A9D1E93DD33EF59B850A062BD9C4D8E5A88809F542FE493"
+  },
+  {
+    "path": "E:\\ChimeraWork\\slot-01\\ChimeraEngine\\engine\\http_server.hpp",
+    "sha256": "25B96FA2FDB19B5FBC7EEB3C5227D423816FF941EF84A298E26A1B554202933D"
+  },
+  {
+    "path": "E:\\ChimeraWork\\slot-01\\.tmp\\engine_local_control_gen1\\harness.cpp",
+    "sha256": "85281B28CDD6DA30039CE2CC029BD0CAF46742A080D4AF28C6549124C0390B6D"
+  },
+  {
+    "path": "E:\\ChimeraWork\\slot-01\\.tmp\\engine_local_control_gen1\\build_mingw\\engine_local_control_harness.exe",
+    "sha256": "F1A4F753A3C019243F36A2E066222BA314AEAE8CC88536D536A5B0E4D3EAD6AE"
+  }
+]

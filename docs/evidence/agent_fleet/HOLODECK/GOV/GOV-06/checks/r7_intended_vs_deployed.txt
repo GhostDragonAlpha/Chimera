@@ -1,0 +1,8 @@
+S0 no realizations               intended=['GOV-01']                                                   deployed=['GOV-01']           AGREE
+S1 holodeck-gov-01 INTEGRATED    intended=['GOV-02', 'GOV-03', 'GOV-04', 'GOV-05', 'GOV-06', 'MATH-01'] deployed=['GOV-01']           DISAGREE
+S2 +02..05 live, -06 RUNNING     intended=['MATH-01']                                                  deployed=['GOV-01']           DISAGREE
+S3 holodeck-gov-01 ABANDONED     intended=['GOV-01']                                                   deployed=['GOV-01']           AGREE
+
+Agreement: 2/4 scenario sets identical.
+Deployed candidate set in every scenario: ['GOV-01'] (predicted ["GOV-01"] everywhere: HELD)
+Root cause (SOURCE at 62b8e357): the exact-casefold live/done match (control.py:816-822) never binds card GOV-0X to the realization id holodeck-gov-0X, and the deps-in-done check (control.py:824-825) therefore never sees a card-family dependency satisfied - under the fleet realization-id convention the deployed frontier is inert: the realized root is perpetually re-proposed and every dependent is permanently blocked. DISAGREEMENTS ARE THE MEASURED FINDINGS (prereg R7); prereg labeled S3 a disagreement on sets - measured S3 sets AGREE (both ["GOV-01"]); the deployed-everywhere prediction held 4/4. Recorded, never reconciled into the model.

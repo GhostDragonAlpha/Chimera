@@ -1,0 +1,38 @@
+{
+  "schema": "chimera-membrane-verification-v1",
+  "utc": "20260908T025134.362770Z",
+  "repository": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub",
+  "engine_window": "NOT_TESTED",
+  "checks": {
+    "cpu_reference": {
+      "state": "PASS",
+      "exit_code": 0,
+      "raw": "docs\\evidence\\membrane_gpu_probe\\20260908T025134.362770Z\\cpu_reference.txt"
+    },
+    "build": {
+      "state": "FAIL",
+      "exit_code": 2
+    },
+    "gpu_comparison": {
+      "state": "NOT_TESTED",
+      "exit_code": null,
+      "reason": "build did not produce executable"
+    }
+  },
+  "source_commit": "cf2a0ae2c7bd68f1c64db630c4db5de32785580a",
+  "tracked_modifications": "## astra/gait-capture\n M docs/THE_MASTER_LIST.md\n?? docs/evidence/gpu_fixtures/\n?? tools/gpu_fixtures_generate.py\n?? tools/gpu_fixtures_recovered/\n?? tools/gpu_fixtures_verify.py\n?? tools/membrane_gpu_probe/\n?? tools/run_membrane_verification.py\n",
+  "toolchain": {
+    "python": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "cmake": "C:\\Program Files\\CMake\\bin\\cmake.EXE",
+    "glslc": "C:\\VulkanSDK\\1.4.328.1\\Bin\\glslc.EXE",
+    "compiler": "C:\\ProgramData\\mingw64\\mingw64\\bin\\g++.EXE"
+  },
+  "vulkan_device_evidence": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub\\docs\\evidence\\membrane_gpu_probe\\20260908T025134.362770Z\\vulkaninfo_summary.txt",
+  "files": {
+    "tools\\membrane_gpu_probe\\probe.cpp": "1097a1a14f373000c35f9648c022c9a58fd348ce3615f9f8bf3b50fadb3dedbf",
+    "tools\\membrane_gpu_probe\\membrane.comp": "20fd1742b8e4d59b4d0806bfbf6d40850c9c00b7d3e9d7c99021ccaa747b9ac7",
+    "tools\\membrane_gpu_probe\\CMakeLists.txt": "fe3809462b62942f2ac9b849416d8acf0fcb4c9483e24496879827b3c4178feb",
+    "tools\\gpu_fixtures_verify.py": "0a840401780edd57697c97792c1ce2c9f9f26017805f59e1800babf124f98abf"
+  }
+}

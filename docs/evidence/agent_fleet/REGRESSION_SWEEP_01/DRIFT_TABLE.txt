@@ -1,0 +1,43 @@
+# fleet-regression-sweep-01 — DRIFT TABLE
+
+Sweep head: 4c31999797a9383ea252019be1f32511709fa280 (tip), on
+astra/tasks/fleet-regression-sweep-01 with prereg 92a67a4c.
+All runs by subagent-worker-07 on 2026-09-11, host: the shared Windows
+workstation (RTX 4090 box; slot-02 worker studio-grid-depth-01 was ACTIVE on
+another slot of this host during the sweep — recorded because it matters for
+F1).
+
+| # | command | expected (prediction, from packet/dispatch/prior lane) | actual (verbatim source file) | drift | class |
+|---|---------|--------------------------------------------------------|-------------------------------|-------|-------|
+| 1 | full fleet discover suite, run 1 | 222 tests / 0 failures / 1 skip, OK | **231 tests, FAILED (failures=1, skipped=1)** — FAIL: test_verify_hwnd_capture_none_pin_adopts_measured_size (test_capture_window), AssertionError: 'occluded_or_foreign_content' != 'unobscured'; capture_sha256 1f337280037c5cb01243961306bc8c06a325bdd6d9ad4ab18bc7bb15713f9b62 != expected_sha256 d1bdb15caba22e36569339006222fb131022083d37a075232c4bbb65c27a9e73, verdict 'occluded_or_foreign_content', publishable False (RAW_FULL_FLEET_SUITE.txt) | **YES — the finding** | intermittent failure |
+| 2 | full fleet discover suite, rerun (characterization) | (not a prediction; drift characterization of #1) | 231 tests, OK (skipped=1), exit 0 (RAW_FULL_FLEET_SUITE_RERUN.txt) | #1 did not reproduce | characterization |
+| 3 | test_capture_window standalone, 4 runs total (1 decisive + 3 repeats) | 28/28 OK (dispatch figure; packet said 19/19, see row 5) | 28 tests, OK, exit 0 — all four runs (RAW_TEST_CAPTURE_WINDOW.txt, RAW_CAPTURE_WINDOW_REPEATS.txt) | packet count stale; dispatch confirmed | count drift, explained |
+| 4 | full-suite count expectation | 222 (dispatch "expect 222/0/1"; matches SLOT_EXPANSION/RUN_FULL_SUITE_GEN2.txt captured before the capture-window additions landed) | 231 = 222 + 9, and capture_window is +9 tests at tip (19 lane-era → 28 tip), arithmetic exact | explained count drift — the dispatch's own "expect 222" and "28/28" figures were mutually inconsistent; the sweep resolves it: 231 is the correct tip-era count | count drift, explained |
+| 5 | test_capture_window packet count | packet: 19/19 | 28 (tip) | packet line was lane-era (pre-growth), not tip-era; dispatch's 28 is correct | count drift, explained |
+| 6 | test_worktree_reconcile | 10/0/1 (symlink skip) | 10 tests, OK (skipped=1), exit 0 (RAW_TEST_WORKTREE_RECONCILE.txt) | none | match |
+| 7 | test_controller_transition | 4/4 | 4 tests, OK, exit 0 (RAW_TEST_CONTROLLER_TRANSITION.txt) | none | match |
+| 8 | test_client_instance | 9/9 | 9 tests, OK, exit 0 (RAW_TEST_CLIENT_INSTANCE.txt) | none | match |
+| 9 | test_dyad_provider | 14/14 | 14 tests, OK, exit 0 (RAW_TEST_DYAD_PROVIDER.txt) | none | match |
+| 10 | test_slot_expansion (isolated temp registries; live service untouched) | 5/5 | 5 tests, OK, exit 0 (RAW_TEST_SLOT_EXPANSION.txt) | none | match |
+| 11 | test_task_abandon | 19/19 | 19 tests, OK, exit 0 (RAW_TEST_TASK_ABANDON.txt) | none | match |
+| 12 | catalogue pins (test_master_catalogue) | 23/23 | 23 tests, OK, exit 0 (RAW_TEST_MASTER_CATALOGUE.txt) | none | match |
+| 13 | test_orient_continuation | 9/9 | 9 tests, OK, exit 0 (RAW_TEST_ORIENT_CONTINUATION.txt) | none | match |
+| 14 | membrane CPU gate (declared deviation D1: the runner's GPU probe stage is NOT executed — GPU use forbidden for this task; the runner's own cpu_reference command is run verbatim instead) | CPU PASS | `python tools/gpu_fixtures_verify.py` exit 0: V1b–V9 all PASS, corrupt corner-order control DETECTED (control PASS). Result JSON copied to COPY_verify_results_20260911T170922.500955Z.json (RAW stdout not separately captured; the JSON is the tool's own verbatim record) | none for the CPU claim; full-runner run NOT performed (see PREREGISTRATION D1) | partial-by-design, declared |
+| 15 | vulkan ownership suite "CPU-side tests" (packet line) | (packet expected a re-run) | NO CPU-side test exists at tip; docs/evidence/vulkan_resource_lifetime/RESULT.md itself records "CPU ownership unit test NOT_APPLICABLE: engine internals are not CPU-unit-testable" (declared deviation D2 in PREREGISTRATION). Mapped onto row 14's CPU gate. | packet line not executable as written | declared mapping (D2) |
+| 16 | out-of-scope transient (D3) | (procedure) | verify_results_20260911T170922.500955Z.json was written by the CPU verifier to docs/evidence/gpu_fixtures/ (outside this task's scope); copied byte-identical into this dir, then deleted from the out-of-scope path; worktree verified clean except this evidence dir | procedure note | declared (D3) |
+| 17 | run-1 capture harness exit code | (procedure) | RAW_FULL_FLEET_SUITE.txt's trailing "exit_code: 0" is a capture-script artifact ($? consumed by an interleaved echo); correction appended in-file; authoritative exit evidence is the unittest summary "FAILED (failures=1, skipped=1)". The rerun file records exit codes correctly. | harness artifact, corrected append-only | declared |
+
+## Verdict summary
+
+- PREDICTION 1 (suite green 222/0/1): **FALSIFIED as stated** — two independent
+  count/verdict drifts: the tip-era count is 231 (not 222), and run 1 FAILED
+  with one capture-window failure that did not reproduce on rerun or in any of
+  four standalone runs. Per the packet this is a retained finding, not a
+  repair.
+- PREDICTION 2 (per-lane decisive commands clean at tip): **HOLDS** — every
+  decisive command green standalone at tip with exactly the lane-recorded
+  counts (rows 3, 6–14), including the one expected symlink skip.
+- FALSIFIER check: no drift hidden (rows 1–5 recorded with raw files); no
+  tolerance widened (failures reported verbatim; the count expectation is
+  resolved by measurement, not stretched to fit); the failing re-run IS
+  reported verbatim (row 1, RAW_FULL_FLEET_SUITE.txt).

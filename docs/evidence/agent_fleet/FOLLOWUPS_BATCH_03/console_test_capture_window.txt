@@ -1,0 +1,43 @@
+# C9 gate-capture console (fleet-followups-batch-03): test_capture_window.py after C2 narrowing (incl. new size-mismatch falsifier)
+
+$ python tools/agent_fleet/test_capture_window.py -v
+test_capture_refuses_wrong_pinned_size (__main__.CaptureWindowTests.test_capture_refuses_wrong_pinned_size) ... ok
+test_client_rect_excludes_nonclient_chrome (__main__.CaptureWindowTests.test_client_rect_excludes_nonclient_chrome) ... ok
+test_destroyed_window_refused (__main__.CaptureWindowTests.test_destroyed_window_refused) ... ok
+test_distinct_solid_content_fixtures_are_unobscured (__main__.CaptureWindowTests.test_distinct_solid_content_fixtures_are_unobscured) ... ok
+test_evidence_write_refuses_overwrite (__main__.CaptureWindowTests.test_evidence_write_refuses_overwrite) ... ok
+test_failed_memory_dc_is_named_refusal (__main__.CaptureWindowTests.test_failed_memory_dc_is_named_refusal) ... ok
+test_foreign_class_refused_without_manipulation (__main__.CaptureWindowTests.test_foreign_class_refused_without_manipulation) ... ok
+test_foreign_process_pid_refused (__main__.CaptureWindowTests.test_foreign_process_pid_refused) ... ok
+test_hwnd_level_contract_refuses_raw_stale_handle (__main__.CaptureWindowTests.test_hwnd_level_contract_refuses_raw_stale_handle) ... ok
+test_module_has_no_screen_dc_fallback (__main__.CaptureWindowTests.test_module_has_no_screen_dc_fallback) ... ok
+test_overlap_does_not_contaminate_window_specific_capture (__main__.CaptureWindowTests.test_overlap_does_not_contaminate_window_specific_capture) ... ok
+test_pattern_is_deterministic_and_size_parametric (__main__.CaptureWindowTests.test_pattern_is_deterministic_and_size_parametric) ... ok
+test_real_cross_window_content_mismatch_refused (__main__.CaptureWindowTests.test_real_cross_window_content_mismatch_refused) ... ok
+test_real_foreign_process_fixture_refused_on_pid (__main__.CaptureWindowTests.test_real_foreign_process_fixture_refused_on_pid) ... ok
+test_resize_fails_closed (__main__.CaptureWindowTests.test_resize_fails_closed) ... ok
+test_stale_handle_after_destroy_is_refused_not_fallen_back (__main__.CaptureWindowTests.test_stale_handle_after_destroy_is_refused_not_fallen_back) ... ok
+test_unobscured_owned_capture_is_exact (__main__.CaptureWindowTests.test_unobscured_owned_capture_is_exact) ... ok
+test_verdict_vocabulary_is_exhaustive (__main__.CaptureWindowTests.test_verdict_vocabulary_is_exhaustive) ... ok
+test_verify_hwnd_capture_none_pin_adopts_measured_size (__main__.CaptureWindowTests.test_verify_hwnd_capture_none_pin_adopts_measured_size) ... ok
+test_clean_ignored_log_but_nothing_staged_is_silent (__main__.EvidenceLogGuardTests.test_clean_ignored_log_but_nothing_staged_is_silent) ... ok
+test_clean_ignored_log_outside_evidence_is_silent (__main__.EvidenceLogGuardTests.test_clean_ignored_log_outside_evidence_is_silent) ... ok
+test_clean_staged_evidence_without_logs_is_silent (__main__.EvidenceLogGuardTests.test_clean_staged_evidence_without_logs_is_silent) ... ok
+test_force_added_log_is_silent (__main__.EvidenceLogGuardTests.test_force_added_log_is_silent) ... ok
+test_guard_cannot_block_on_internal_error (__main__.EvidenceLogGuardTests.test_guard_cannot_block_on_internal_error) ... ok
+test_hook_wiring_preserves_every_gate_and_is_warn_only (__main__.EvidenceLogGuardTests.test_hook_wiring_preserves_every_gate_and_is_warn_only) ... ok
+test_trap_case_warns_and_exits_zero (__main__.EvidenceLogGuardTests.test_trap_case_warns_and_exits_zero) ... ok
+test_orphaned_fixture_child_exits_within_guard_window (__main__.FixtureChildWatchdogTests.test_orphaned_fixture_child_exits_within_guard_window) ... ok
+test_watchdog_disabled_without_resolvable_parent (__main__.FixtureChildWatchdogTests.test_watchdog_disabled_without_resolvable_parent) ... ok
+test_watchdog_fails_closed_on_malformed_env_pid (__main__.FixtureChildWatchdogTests.test_watchdog_fails_closed_on_malformed_env_pid) ... ok
+test_deadline_exhausted_before_retry_means_no_retry (__main__.TransientToleranceTests.test_deadline_exhausted_before_retry_means_no_retry) ... ok
+test_non_transient_verdicts_return_without_retry (__main__.TransientToleranceTests.test_non_transient_verdicts_return_without_retry) ... ok
+test_real_occlusion_not_masked_single_retry_failure_retained (__main__.TransientToleranceTests.test_real_occlusion_not_masked_single_retry_failure_retained) ... ok
+test_retry_refused_when_fixture_parameters_drift (__main__.TransientToleranceTests.test_retry_refused_when_fixture_parameters_drift) ... ok
+test_single_retry_heals_transient_and_retains_first_failure (__main__.TransientToleranceTests.test_single_retry_heals_transient_and_retains_first_failure) ... ok
+test_size_mismatched_occlusion_not_retried (__main__.TransientToleranceTests.test_size_mismatched_occlusion_not_retried) ... ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 10.592s
+
+OK

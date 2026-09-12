@@ -1,0 +1,19 @@
+LUNA-LINUX-02 installation attempt
+UTC: 2026-09-08T05:01:46Z
+Checkout: /mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub
+Branch/head: astra/gait-capture @ 9472ee331c8be4700ec65b9a05b694b904348b2d
+
+Attempted command:
+
+wsl.exe -d Ubuntu -- bash -lc 'set -o pipefail; sudo -n apt-get update && sudo -n apt-get install -y cmake libvulkan-dev glslc python3-venv && cd /mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub && python3 -m venv .venv-linux && .venv-linux/bin/python -m pip install --disable-pip-version-check --no-input numpy'
+
+Observed result:
+sudo: a password is required
+
+The command stopped at sudo before apt-get update/install. No package, driver,
+display, repository, or engine configuration was changed. No Python virtual
+environment was created.
+
+Required operator action: provide authorized WSL sudo authentication, or install
+the listed packages by an authorized method. Credentials were not requested or
+recorded by this agent.

@@ -1,0 +1,46 @@
+# golden P06 W2 — mouse capture + camera-delta parity (hand-authored bedside
+#   case; source of behavior: engine.cpp:179-231 @ 902dc80a)
+# RECORDED FACTS this golden locks:
+#   1. Any captured drag ORBITS (theta/phi). Left and right both capture.
+#   2. The pan arm engine.cpp:221 is UNREACHABLE (the orbiter at :191 returns
+#      first) — pan_x/pan_y never change at runtime. Proven below: a right
+#      drag yields theta/phi deltas and zero pan.
+#   3. Wheel with the StudioUI hidden changes radius only (+2 per 120-step).
+mode ui 0
+mode console 0
+> ldown 100 100
+|
+! captured 1
+! calls capture:on
+> move 104 102
+> move 104 102
+|
+! cam theta -0.02
+! cam phi 0.294
+! cam pan_x 0
+! cam pan_y 0
+! calls <none>          # a captured MOVE records no host call; capture persists
+> lup
+|
+! captured 0
+! calls capture:off
+> rdown 200 200
+> move 205 202
+|
+! captured 1
+! cam theta -0.045
+! cam phi 0.288
+! cam pan_x 0
+! cam pan_y 0
+! calls capture:on
+> rup
+|
+! captured 0
+! calls capture:off
+> wheel 120 10 20
+|
+! cam radius 14
+! calls <none>
+> wheel -120 10 20
+|
+! cam radius 12

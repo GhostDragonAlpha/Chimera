@@ -1,0 +1,19 @@
+== fleet-regression-sweep-01: per-lane decisive command ==
+date: 2026-09-11T17:08:18Z
+worktree: E:/ChimeraWork/slot-04 @ 92a67a4cbab0c51d2596001d87a2ddecc0c803d0
+command: python -m unittest tools.agent_fleet.test_slot_expansion -v
+
+test_claim_auto_spins_slot_and_preserves_stale_refusal (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_claim_auto_spins_slot_and_preserves_stale_refusal) ... ok
+test_layout_bounds_and_inventory_default (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_layout_bounds_and_inventory_default) ... ok
+test_reopen_existing_registry_changes_nothing (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_reopen_existing_registry_changes_nothing) ... ok
+test_scale_probe_lock_errors_and_latency (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_scale_probe_lock_errors_and_latency) ... ok
+test_slot_spawn_and_retire_roundtrip_with_refusals (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_slot_spawn_and_retire_roundtrip_with_refusals) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 26.198s
+
+OK
+SCALE_PROBE_MIXED {"threads": 8, "duration_s": 20.2, "ops": 1385, "p50_ms": 14.3, "p95_ms": 324.8, "p99_ms": 3089.2, "max_ms": 8716.1, "lock_errors": 0, "other_refusals": 161, "spawn_cost_ms": 8.5}
+SCALE_PROBE_SATURATED {"ops": 627, "lock_or_err": 0, "p50_ms": 7.8, "p95_ms": 178.0, "max_ms": 4984.0}
+
+exit_code: 0

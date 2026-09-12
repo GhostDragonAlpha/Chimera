@@ -1,0 +1,29 @@
+{
+  "label": "raised_gamma0",
+  "utc": "2026-09-08T19:19:02.869719+00:00",
+  "engine_url": "http://localhost:8091",
+  "png_file": "docs\\evidence\\membrane_window_demo\\20260908T191901.379767Z\\raised_gamma0.png",
+  "png_sha256": "e4736daf11c5bf743342f7f073da862cac3017cddff364dde76e6074f062b7ba",
+  "camera": {
+    "radius": 6.0,
+    "theta": 0.0,
+    "phi": 0.7
+  },
+  "slotmode": 2.0,
+  "presentation_lift": {
+    "axis": "y",
+    "metres": 0.5,
+    "kind": "rigid render-presentation translation; physical state of record unchanged"
+  },
+  "state_id": "cc62542f2586f010c7b6ee88b5a370026c42a0101cbf246778abdc2a6aa87cef",
+  "state": {
+    "fixture": "b2",
+    "gamma_J_per_m2": 0.0,
+    "iteration": 0,
+    "energy_J": 0.0,
+    "geometry_sha256_f64le": "349a9b20311c25b649ef3c123e9c0610658858f93025d71a134688ec46fff831",
+    "centre_height_b2_z_m": 0.125,
+    "upload_positions_f32le_sha256": "635d1e26a95bc8e4501e73b7ba9fd922e73b5ce723202abd350e4079b9fcaa82"
+  },
+  "certifiable": true
+}

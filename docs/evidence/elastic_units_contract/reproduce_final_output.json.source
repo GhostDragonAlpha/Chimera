@@ -1,0 +1,15 @@
+{
+  "commands": [
+    "python -m unittest tools.elastic_foundation.test_units_contract",
+    "verify_fixtures.run(version=v1, fix_root=temp_copy)"
+  ],
+  "tests_exit": 0,
+  "tests_stdout": "",
+  "tests_stderr": "............\n----------------------------------------------------------------------\nRan 12 tests in 0.014s\n\nOK\n",
+  "fixture_exit": 0,
+  "fixture_stdout": [
+    "{\n  \"version\": \"v1\",\n  \"fixtures\": {\n    \"run_20260908T231140Z/trisingle_stretch\": {\n      \"sha256_ok\": true,\n      \"energy_rel_err\": 0.0,\n      \"vertex_rel_err\": 0.0,\n      \"energy_f64\": 0.007714174505700615,\n      \"vertex_f32_max\": 0.111939437687397,\n      \"source\": \"from_f32_inputs\"\n    },\n    \"run_20260908T231140Z/patch_8x4_shear\": {\n      \"sha256_ok\": true,\n      \"energy_rel_err\": 0.0,\n      \"vertex_rel_err\": 0.0,\n      \"energy_f64\": 0.08241758241758244,\n      \"vertex_f32_max\": 0.23351648449897766,\n      \"source\": \"from_f32_inputs\"\n    }\n  },\n  \"all_ok\": true\n}\n"
+  ],
+  "source_sha256": "51ab9d0d0567a62ded7979cd5ea0f8fee31ae60506beb23d6a1132db2c30c2f4",
+  "test_sha256": "3eed80aaa1353b0d8afe68c7bb6db89137baa6cd8cc4a2047a23364733240da1"
+}

@@ -1,0 +1,9 @@
+R4 immutable snapshots / records
+threshold: 4/4
+verdict: HOLDS (4/4)
+
+  PASS [1] snapshot item assignment raises TypeError (mappingproxy)
+  FAIL [?] conversion mutated the original or wrong value
+  PASS [2] refused duplicate_admission: double admission of the same property name | detail: 'density' is already admitted in this bag; re-admitting would rewrite admitted history
+  PASS [3] first admission intact after duplicate refusal (value still 250)
+  PASS [4] snapshot -> serve round trip returns the identical record

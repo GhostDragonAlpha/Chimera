@@ -1,0 +1,47 @@
+{
+ "plane": "card",
+ "record": {
+  "plane": "card",
+  "id": "MATH-05",
+  "domain": "MATH",
+  "title": "Discrete geometry and topology",
+  "status": "PROPOSED",
+  "depends_on": [
+   "GOV-01",
+   "MATH-01"
+  ],
+  "source": {
+   "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\import-5199\\docs\\roadmap\\holodeck_tasks.json",
+   "index": 10
+  },
+  "content_sha256": "d5ad3007854cfeb26f7514e4a4cb9ce35dca138900208cfade49cd9de556d64e",
+  "card": {
+   "id": "MATH-05",
+   "title": "Discrete geometry and topology",
+   "domain": "MATH",
+   "kind": "engineering",
+   "status": "PROPOSED",
+   "owner": null,
+   "depends_on": [
+    "GOV-01",
+    "MATH-01"
+   ],
+   "mathematics": "manifolds; differential forms; exterior calculus; cohomology",
+   "statement": "Orientation, boundary and compatible differential-operator contracts",
+   "prediction": "Discrete boundary-of-boundary is zero on valid complexes",
+   "falsifier": "Topology or operator composition invents a source on a closed complex",
+   "deliverables": [
+    "Orientation, boundary and compatible differential-operator contracts",
+    "Independent reference/benchmark and executed negative controls appropriate to this scope",
+    "Reproduction commands, source identity, preserved evidence and limitations",
+    "Integration contract and full autonomous handoff"
+   ],
+   "threshold_policy": "Derive the fixture-specific bound or ratify product target before implementation tests; preserve existing frozen gates; a catalogue prediction is not a preregistered numeric certificate.",
+   "write_scope": "UNRESERVED: coordinator must assign exact exclusive paths before implementation.",
+   "evidence": [],
+   "dyad": "REQUIRED when integrated changes affect visible behavior; GLM operates the documented image/question workflow. Reference-only or source-only scope records NOT_APPLICABLE with reason."
+  }
+ },
+ "digest": "b9d32319b43a03bbb713f1a4e6120f24065839f15383b0729fb587ba04f9000a",
+ "imported_revision": 651
+}

@@ -1,0 +1,12 @@
+command: python -m unittest tools.elastic_foundation.test_physical_fixtures -q
+result: 22 tests passed, exit 0
+command: python -m unittest tools.elastic_foundation.test_units_contract -q
+result: 12 tests passed, exit 0
+command: physical_fixtures.py generate --output packet_v2_corrected_20260910T230000Z --legacy-run run_20260908T231140Z --legacy-manifest-sha256 6ce4116b8bab3b6b2e6820e66dfe457e307a4f2266e2f2497f75d9c0359537bc
+result: exit 0, manifest_sha256=7ef80dcbc16fb80055b341ace4a5cf39ee2ecea6c25472142bae2dcc102d58df
+command: physical_fixtures.py verify --manifest packet_v2_corrected_20260910T230000Z/manifest.json --manifest-sha256 7ef80dcbc16fb80055b341ace4a5cf39ee2ecea6c25472142bae2dcc102d58df --output verify_v2_corrected_20260910T230000Z.json
+result: exit 0, both fixtures ok, GPU acceptance OPEN
+source_sha256_physical_fixtures: a95a63094a80d48d49891bead03327747ca5dc3be20b51041c434e0c436892c0
+source_sha256_tests: 92310e0510f74c3d49675e27eb4175f94d4c010af25b482599dd01bc7e899437
+installed_source_sha256_physical_fixtures=85988796fedee62da392aa7b7c82672f1178d4ac18674efc4f09814112a508ed
+installed_source_sha256_tests=24d398002d74a6336f84fd1de10cda60c98088f0aa877331311a4630fc242334

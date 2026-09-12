@@ -635,11 +635,32 @@ void StudioUI::rect_outline(float x, float y, float w, float h, float t,
 
 // C1: a line as a rotated quad (the draw list has no line primitive — the
 // gizmo's axis needs one). Solid white-UV like rect, thickness in px.
+// Grid-depth contract: the emitter is target-switchable — the overlay draws
+// into verts_, the scene-pass twin into scene_grid_verts_ (same quads, same
+// ink, one builder — they cannot drift).
 void StudioUI::line(float x0, float y0, float x1, float y1, float th,
                     float r, float g, float b, float a) {
+    line_into(verts_, x0, y0, x1, y1, th, r, g, b, a);
+}
+
+void StudioUI::line_into(std::vector<Vert>& out, float x0, float y0, float x1, float y1,
+                         float th, float r, float g, float b, float a) {
     float dx = x1 - x0, dy = y1 - y0;
     float len = sqrtf(dx * dx + dy * dy);
-    if (len < 1e-4f) { rect(x0 - th * 0.5f, y0 - th * 0.5f, th, th, r, g, b, a); return; }
+    if (len < 1e-4f) {
+        // degenerate: a th x th dot, same law as rect (white UV, flags=0)
+        float u0, v0, u1, v1; uv_white(u0, v0, u1, v1);
+        Vert v[6] = {
+            {x0 - th * 0.5f, y0 - th * 0.5f, u0, v0, r, g, b, a, 0.f},
+            {x0 + th * 0.5f, y0 - th * 0.5f, u1, v0, r, g, b, a, 0.f},
+            {x0 + th * 0.5f, y0 + th * 0.5f, u1, v1, r, g, b, a, 0.f},
+            {x0 - th * 0.5f, y0 - th * 0.5f, u0, v0, r, g, b, a, 0.f},
+            {x0 + th * 0.5f, y0 + th * 0.5f, u1, v1, r, g, b, a, 0.f},
+            {x0 - th * 0.5f, y0 + th * 0.5f, u0, v1, r, g, b, a, 0.f},
+        };
+        out.insert(out.end(), v, v + 6);
+        return;
+    }
     float nx = -dy / len * th * 0.5f, ny = dx / len * th * 0.5f;
     float u0, v0, u1, v1; uv_white(u0, v0, u1, v1);
     Vert v[6] = {
@@ -650,7 +671,7 @@ void StudioUI::line(float x0, float y0, float x1, float y1, float th,
         {x1 - nx, y1 - ny, u1, v1, r, g, b, a, 0.f},
         {x0 - nx, y0 - ny, u0, v1, r, g, b, a, 0.f},
     };
-    verts_.insert(verts_.end(), v, v + 6);
+    out.insert(out.end(), v, v + 6);
 }
 
 // C1: the slider law — a linear map from track x to theta over the joint's
@@ -1101,6 +1122,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
     docs_poll();    // E1: unconditional — the HTTP twin stays live in any dock mode
     verts_.clear();
     verts_.reserve(8192);
+    scene_grid_verts_.clear();   // grid depth contract: rebuilt (or left empty) every frame
     hots_.clear();
     hud_rows_.clear();
     // F2/F3: the chrome draws whether the overlay is open or not. With the
@@ -1915,6 +1937,39 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         // wrapped time PLUS the lap count, so it agrees with where the
         // playhead sits and no information is lost.
         char tb[192];
+        if (joints_owner_ui_ == 1 && joints_edit_mask_ui_ != 0) {
+            // product-hud-truth-01 (the PR #97 blind judge, finding 4(d)):
+            // beside edit-held motion this plane presented the sweep's idle
+            // 112 s lap — a clock nobody was driving. The readout now shows
+            // the show-clock PARAMETER itself — the exact timeline the driving
+            // interaction pins through /show's scrub (the timeline's HTTP
+            // twin) — labeled with the sweep's state, so no unlabeled lap and
+            // no second clock can disagree with the timeline panel's own bar.
+            // (Correction, run1 F2 retained: an origin subtracted at the pose
+            // claim captured the pre-scrub clock and shifted every reading by
+            // a constant; the parameter itself needs no origin.)
+            // The named thetas are the driven joints' live values, the same
+            // source the HUD row uses.
+            std::string js;
+            int named = 0;
+            for (size_t k = 0; k < joints_.size() && k < 32 && named < 2; ++k) {
+                if (!(joints_edit_mask_ui_ & (1u << k))) continue;
+                char jb[48];
+                snprintf(jb, sizeof(jb), "%s%s %+.2f", named ? " / " : "",
+                         joints_[k].name.c_str(), joints_[k].theta);
+                js += jb;
+                ++named;
+            }
+            snprintf(tb, sizeof(tb),
+                     "EDIT t = %.3f s (show clock; show sweep paused)  |  %s deg",
+                     clk_t_, js.c_str());
+        } else {
+        // the readout: time / loop, joint, theta, state — the engine's own rows
+        // 2026-09-05 (the eye): the readout printed the RAW clock (t = 135.2
+        // / 112) while the PLAYHEAD wrapped — number and marker disagreed.
+        // Same law as the fps pair: one window. The readout now shows the
+        // wrapped time PLUS the lap count, so it agrees with where the
+        // playhead sits and no information is lost.
         const double wrap_t = clk_total_ > 0.0
             ? clk_t_ - floor(clk_t_ / clk_total_) * clk_total_ : clk_t_;
         const long lap_n = clk_total_ > 0.0
@@ -1922,6 +1977,7 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
         snprintf(tb, sizeof(tb), "t = %.3f s / %.1f s (lap %ld)  |  %s theta = %+.2f deg  |  %s",
                  wrap_t, clk_total_, lap_n, clk_name_.c_str(), clk_theta_,
                  clk_playing_ ? "PLAYING" : "PAUSED (scrub/step = exact poses)");
+        }
         // 2026-09-05 (the eye): benign captions (timeline readout, reel strip
         // captions) used amber (1,0.85,0.40) — the warning signal — so a healthy
         // editor stream read as an alarm next to the HOLD/warning color. Benign
@@ -2083,7 +2139,18 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             // owner/selection law the HUD row now follows. Sweep mode keeps
             // the "joint k/N" counter form.
             char jb[96];
-            if (joints_owner_ui_ == 1 && joints_sel_ui_ >= 0
+            if (joints_owner_ui_ == 1 && joints_edit_mask_ui_ != 0) {
+                // product-hud-truth-01: the bar under edit-held motion is the
+                // sweep's parameter (a live clock the PLAY button returns the
+                // pose to) — the footer says so instead of presenting the
+                // sweep's cycling window as the current joint.
+                unsigned driven = 0;
+                for (size_t k = 0; k < joints_.size() && k < 32; ++k)
+                    if (joints_edit_mask_ui_ & (1u << k)) ++driven;
+                snprintf(jb, sizeof(jb),
+                         "show sweep paused - %u joint(s) posed by edit/script  ( PLAY returns the pose )",
+                         driven);
+            } else if (joints_owner_ui_ == 1 && joints_sel_ui_ >= 0
                 && joints_sel_ui_ < static_cast<int>(joints_.size())) {
                 const StudioJoint& s = joints_[static_cast<size_t>(joints_sel_ui_)];
                 snprintf(jb, sizeof(jb), "EDIT %s  theta %+.2f deg  ( posing - PLAY returns the pose )",
@@ -2219,7 +2286,8 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             return px >= clip_x0 && px <= clip_x1 && py >= clip_y0 && py <= clip_y1;
         };
         auto clipped_line = [&](float ax, float ay, float bx, float by, float th,
-                                float r, float g, float b, float a) {
+                                float r, float g, float b, float a,
+                                std::vector<Vert>* target = nullptr) {
             // Liang-Barsky: retain the portion inside the central viewport.
             float dx = bx - ax, dy = by - ay;
             float t0 = 0.f, t1 = 1.f;
@@ -2232,11 +2300,23 @@ void StudioUI::prepare(uint32_t win_w, uint32_t win_h) {
             };
             if (!cut(-dx, ax - clip_x0) || !cut(dx, clip_x1 - ax) ||
                 !cut(-dy, ay - clip_y0) || !cut(dy, clip_y1 - ay)) return;
-            line(ax + t0 * dx, ay + t0 * dy, ax + t1 * dx, ay + t1 * dy,
-                 th, r, g, b, a);
+            // grid depth contract: the scene-pass twin emits into its own list
+            // (drawn inside the scene pass, stencil-occluded); the overlay path
+            // (idle viewport, fallback) draws into verts_ as always.
+            if (target) line_into(*target, ax + t0 * dx, ay + t0 * dy, ax + t1 * dx, ay + t1 * dy,
+                                  th, r, g, b, a);
+            else line(ax + t0 * dx, ay + t0 * dy, ax + t1 * dx, ay + t1 * dy,
+                      th, r, g, b, a);
         };
+        // THE GRID DEPTH CONTRACT: when the engine's scene pass owns the grid
+        // this frame, the quads go to scene_grid_verts_ (stencil-occluded in
+        // that pass). Otherwise the overlay draws them here — the empty
+        // viewport keeps its reference frame, and a missing twin pipeline
+        // degrades to today's presentation (declared in the contract doc).
+        std::vector<Vert>* grid_target = grid_scene_owned_ ? &scene_grid_verts_ : nullptr;
         for (const auto& gl : grid_)
-            clipped_line(gl.x0, gl.y0, gl.x1, gl.y1, 1.f, gl.r, gl.g, gl.b, gl.a);
+            clipped_line(gl.x0, gl.y0, gl.x1, gl.y1, 1.f, gl.r, gl.g, gl.b, gl.a,
+                         grid_target);
         // D8: the authored FK chain, projected by the engine. This is an
         // editor instrument over the membrane, not a second renderable body.
         if (rig_overlay_ui_) {
@@ -2504,7 +2584,30 @@ void StudioUI::build_chrome() {
         // number on the HUD were different joints. In edit mode the row
         // follows the selection: its name, its live theta from the same state
         // buffer the pose kernel reads (st +7), its ROM from the pack.
-        if (joints_owner_ui_ == 1 && joints_sel_ui_ >= 0
+        // product-hud-truth-01 (the PR #97 blind judge, finding 4(b)): the
+        // demo path drives joints over HTTP (POST /joint) and never "selects"
+        // one, so the row fell back to the sweep's cycling name over its 0.00
+        // lane while the right arm rose. The row now names the DRIVEN joint(s)
+        // — the same law, generalized from the one selected joint to the set
+        // of joints the edit/script path actually moved (see set_joints_view's
+        // derivation), each with its live theta from the same pushed view.
+        if (joints_owner_ui_ == 1 && joints_edit_mask_ui_ != 0) {
+            int named = 0, driven = 0;
+            std::string row;
+            for (size_t k = 0; k < joints_.size() && k < 32; ++k) {
+                if (!(joints_edit_mask_ui_ & (1u << k))) continue;
+                ++driven;
+                if (named == 3) continue;             // the row names up to 3, then counts
+                char jb[80];
+                snprintf(jb, sizeof(jb), "%s%+.2f  ",
+                         joints_[k].name.c_str(), joints_[k].theta);
+                row += jb;
+                ++named;
+            }
+            if (driven > named)
+                row += "(+" + std::to_string(driven - named) + " more)  ";
+            snprintf(b, sizeof(b), "EDIT %sdeg", row.c_str());
+        } else if (joints_owner_ui_ == 1 && joints_sel_ui_ >= 0
             && joints_sel_ui_ < static_cast<int>(joints_.size())) {
             const StudioJoint& s = joints_[static_cast<size_t>(joints_sel_ui_)];
             snprintf(b, sizeof(b), "EDIT %s  theta %+.2f deg  ROM [%.1f .. %.1f]",
@@ -2528,13 +2631,13 @@ void StudioUI::build_chrome() {
                  hud_water_.inj_t, hud_water_.inj_c);
         hud_rows_.emplace_back(b);
     }
-    // THE EYE ROW (2026-09-05): the dyad's liveness, on the glass. age < 0
-    // means no log found (the lane never ran); otherwise the age of the last
+    // THE EYE ROW: local evidence age, not a service liveness probe. age < 0
+    // means no local log found; otherwise the age of the last
     // report — a growing number is a resting eye, not a dead one. Amber past
     // 10 min so a stuck lane is visible at a glance without being an alarm.
     if (hud_eye_.on) {
         if (hud_eye_.age_s < 0)
-            snprintf(b, sizeof(b), "EYE offline (no dyad log)");
+            snprintf(b, sizeof(b), "EYE local log unavailable; service status unknown");
         else if (hud_eye_.age_s < 60.0)
             snprintf(b, sizeof(b), "EYE last report %.0f s ago", hud_eye_.age_s);
         else if (hud_eye_.age_s < 3600.0)
@@ -2547,7 +2650,11 @@ void StudioUI::build_chrome() {
         // a dark chip behind each row keeps it readable over any render
         float rw = static_cast<float>(hud_rows_[i].size()) * advance_ + 16.f;
         rect(hx - 6, hy - 3, rw, lh + 6, 0.05f, 0.06f, 0.09f, 0.75f);
-        text(hx, hy, hud_rows_[i], 0.55f, 0.90f, 0.65f, 1.f);
+        if (hud_eye_.age_s < 0 && hud_rows_[i].rfind("EYE ", 0) == 0)
+            // Unknown service state uses the existing neutral tooltip ink.
+            text(hx, hy, hud_rows_[i], 0.86f, 0.88f, 0.92f, 1.f);
+        else
+            text(hx, hy, hud_rows_[i], 0.55f, 0.90f, 0.65f, 1.f);
         hy += lh + 4;
     }
 
@@ -2855,6 +2962,160 @@ void StudioUI::record(VkCommandBuffer cb) {
     VkDeviceSize off = 0;
     vkCmdBindVertexBuffers(cb, 0, 1, &vbuf_, &off);
     vkCmdDraw(cb, static_cast<uint32_t>(verts_.size()), 1, 0, 0);
+}
+
+// ── THE GRID DEPTH CONTRACT (docs/THE_STUDIO_GRID_DEPTH.md) ───────────────────
+// The scene-pass twin of the overlay pipeline: same shaders, same vertex
+// format, same blend, same font-atlas descriptor (the solid-white cell makes
+// the quad color pass through) — the ONLY differences are the render pass it
+// legalizes against, the sample count of the offscreen canvas, and the
+// stencil state: the grid draws ONLY where the accepted fills did not leave
+// stencil 1 (their depth-passed fragments). Depth write stays off; the grid
+// never enters the depth solution (it is an instrument, not a body).
+
+bool StudioUI::ensure_scene_vbuf(VkDeviceSize bytes) {
+    if (scene_vcap_ >= bytes) return true;
+    if (scene_vbuf_ != VK_NULL_HANDLE) {
+        vkDeviceWaitIdle(dev_);
+        vkDestroyBuffer(dev_, scene_vbuf_, nullptr);
+        vkFreeMemory(dev_, scene_vmem_, nullptr);
+        scene_vbuf_ = VK_NULL_HANDLE; scene_vmap_ = nullptr;
+    }
+    VkDeviceSize cap = bytes * 2;
+    VkBufferCreateInfo bci{};
+    bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bci.size  = cap;
+    bci.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+    if (vkCreateBuffer(dev_, &bci, nullptr, &scene_vbuf_) != VK_SUCCESS) return false;
+    VkMemoryRequirements mr; vkGetBufferMemoryRequirements(dev_, scene_vbuf_, &mr);
+    VkMemoryAllocateInfo ai{};
+    ai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    ai.allocationSize = mr.size;
+    ai.memoryTypeIndex = mem_type_host_;
+    if (vkAllocateMemory(dev_, &ai, nullptr, &scene_vmem_) != VK_SUCCESS) return false;
+    vkBindBufferMemory(dev_, scene_vbuf_, scene_vmem_, 0);
+    vkMapMemory(dev_, scene_vmem_, 0, cap, 0, &scene_vmap_);
+    scene_vcap_ = cap;
+    return true;
+}
+
+bool StudioUI::create_scene_grid_pipeline(VkRenderPass rt_pass, VkSampleCountFlagBits samples) {
+    if (dev_ == VK_NULL_HANDLE || rt_pass == VK_NULL_HANDLE) return false;
+    if (pipe_scene_grid_ != VK_NULL_HANDLE) return true;   // idempotent
+    auto vert_spv = ui_read_file("shaders/ui.vert.spv");
+    auto frag_spv = ui_read_file("shaders/ui.frag.spv");
+    VkShaderModule vm = ui_shader_module(dev_, vert_spv);
+    VkShaderModule fm = ui_shader_module(dev_, frag_spv);
+    if (vm == VK_NULL_HANDLE || fm == VK_NULL_HANDLE) return false;
+
+    VkVertexInputBindingDescription vbd{ 0, sizeof(Vert), VK_VERTEX_INPUT_RATE_VERTEX };
+    VkVertexInputAttributeDescription vad[4]{};
+    vad[0] = { 0, 0, VK_FORMAT_R32G32_SFLOAT,       0  };
+    vad[1] = { 1, 0, VK_FORMAT_R32G32_SFLOAT,       8  };
+    vad[2] = { 2, 0, VK_FORMAT_R32G32B32A32_SFLOAT, 16 };
+    vad[3] = { 3, 0, VK_FORMAT_R32_SFLOAT,          32 };
+    VkPipelineVertexInputStateCreateInfo vin{};
+    vin.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    vin.vertexBindingDescriptionCount = 1; vin.pVertexBindingDescriptions = &vbd;
+    vin.vertexAttributeDescriptionCount = 4; vin.pVertexAttributeDescriptions = vad;
+    VkPipelineInputAssemblyStateCreateInfo ia{};
+    ia.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    ia.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    VkPipelineViewportStateCreateInfo vps{};
+    vps.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    vps.viewportCount = 1; vps.scissorCount = 1;
+    VkDynamicState dyn[2] = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo ds{};
+    ds.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    ds.dynamicStateCount = 2; ds.pDynamicStates = dyn;
+    VkPipelineRasterizationStateCreateInfo rs{};
+    rs.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rs.polygonMode = VK_POLYGON_MODE_FILL;
+    rs.cullMode = VK_CULL_MODE_NONE;
+    rs.lineWidth = 1.f;
+    VkPipelineMultisampleStateCreateInfo ms{};
+    ms.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    ms.rasterizationSamples = samples;   // MUST equal the offscreen pass
+    VkPipelineColorBlendAttachmentState cba{};
+    cba.blendEnable = VK_TRUE;
+    cba.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    cba.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    cba.colorBlendOp = VK_BLEND_OP_ADD;
+    cba.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+    cba.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    cba.alphaBlendOp = VK_BLEND_OP_ADD;
+    cba.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
+                         VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    VkPipelineColorBlendStateCreateInfo cb{};
+    cb.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    cb.attachmentCount = 1; cb.pAttachments = &cba;
+    // THE OCCLUSION CLAUSE: stencil EQUAL 0 — draw only where no accepted
+    // fill left stencil 1. No depth test, no depth write, no stencil write.
+    VkPipelineDepthStencilStateCreateInfo dss{};
+    dss.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    dss.depthTestEnable  = VK_FALSE;
+    dss.depthWriteEnable = VK_FALSE;
+    dss.stencilTestEnable = VK_TRUE;
+    dss.front.failOp = VK_STENCIL_OP_KEEP;
+    dss.front.passOp = VK_STENCIL_OP_KEEP;
+    dss.front.depthFailOp = VK_STENCIL_OP_KEEP;
+    dss.front.compareOp = VK_COMPARE_OP_EQUAL;
+    dss.front.compareMask = 0xFF;
+    dss.front.writeMask = 0x00;
+    dss.front.reference = 0;   // draw only where NO accepted fill left stencil 1
+    dss.back = dss.front;
+
+    VkPipelineShaderStageCreateInfo stages[2]{};
+    stages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    stages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;   stages[0].module = vm; stages[0].pName = "main";
+    stages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    stages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT; stages[1].module = fm; stages[1].pName = "main";
+
+    VkGraphicsPipelineCreateInfo gpi{};
+    gpi.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    gpi.stageCount = 2; gpi.pStages = stages;
+    gpi.pVertexInputState = &vin;
+    gpi.pInputAssemblyState = &ia;
+    gpi.pViewportState = &vps;
+    gpi.pDynamicState = &ds;
+    gpi.pRasterizationState = &rs;
+    gpi.pMultisampleState = &ms;
+    gpi.pColorBlendState = &cb;
+    gpi.pDepthStencilState = &dss;
+    gpi.layout = layout_;          // same layout: same push constants + atlas descriptor
+    gpi.renderPass = rt_pass;      // the OFFSCREEN scene pass (stencil-carrying depth att)
+    VkResult pr = vkCreateGraphicsPipelines(dev_, VK_NULL_HANDLE, 1, &gpi, nullptr,
+                                            &pipe_scene_grid_);
+    vkDestroyShaderModule(dev_, vm, nullptr);
+    vkDestroyShaderModule(dev_, fm, nullptr);
+    if (pr != VK_SUCCESS)
+        fprintf(stderr, "studio: scene grid pipeline FAILED (%d) — UI overlay grid stays\n", (int)pr);
+    return pr == VK_SUCCESS;
+}
+
+void StudioUI::record_grid_scene(VkCommandBuffer cb) {
+    if (pipe_scene_grid_ == VK_NULL_HANDLE || scene_grid_verts_.empty()) return;
+    static bool said = false;
+    if (!said && getenv("CHIMERA_GRID_DIAG")) { fprintf(stderr, "[grid-scene] drawing %zu verts\n", scene_grid_verts_.size());
+                 said = true; }
+    VkDeviceSize bytes = scene_grid_verts_.size() * sizeof(Vert);
+    if (!ensure_scene_vbuf(bytes)) return;
+    std::memcpy(scene_vmap_, scene_grid_verts_.data(), bytes);
+
+    VkViewport vp{};
+    vp.width = static_cast<float>(ext_.width); vp.height = static_cast<float>(ext_.height);
+    vp.minDepth = 0.f; vp.maxDepth = 1.f;
+    vkCmdSetViewport(cb, 0, 1, &vp);
+    VkRect2D sc{}; sc.extent = ext_;
+    vkCmdSetScissor(cb, 0, 1, &sc);
+
+    vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, pipe_scene_grid_);
+    vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, layout_, 0, 1, &dset_, 0, nullptr);
+    float pc[2] = { static_cast<float>(ext_.width), static_cast<float>(ext_.height) };
+    vkCmdPushConstants(cb, layout_, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(pc), pc);
+    VkDeviceSize off = 0;
+    vkCmdBindVertexBuffers(cb, 0, 1, &scene_vbuf_, &off);
+    vkCmdDraw(cb, static_cast<uint32_t>(scene_grid_verts_.size()), 1, 0, 0);
 }
 
 bool StudioUI::create_font_atlas() {
@@ -3255,7 +3516,11 @@ void StudioUI::shutdown() {
     for (VkFramebuffer fb : fbs_) vkDestroyFramebuffer(dev_, fb, nullptr);
     fbs_.clear();
     if (vbuf_ != VK_NULL_HANDLE) { vkDestroyBuffer(dev_, vbuf_, nullptr); vkFreeMemory(dev_, vmem_, nullptr); }
+    if (scene_vbuf_ != VK_NULL_HANDLE) {
+        vkDestroyBuffer(dev_, scene_vbuf_, nullptr); vkFreeMemory(dev_, scene_vmem_, nullptr);
+    }
     if (pipe_ != VK_NULL_HANDLE) vkDestroyPipeline(dev_, pipe_, nullptr);
+    if (pipe_scene_grid_ != VK_NULL_HANDLE) vkDestroyPipeline(dev_, pipe_scene_grid_, nullptr);
     if (layout_ != VK_NULL_HANDLE) vkDestroyPipelineLayout(dev_, layout_, nullptr);
     if (dpool_ != VK_NULL_HANDLE) vkDestroyDescriptorPool(dev_, dpool_, nullptr);
     if (dsl_ != VK_NULL_HANDLE) vkDestroyDescriptorSetLayout(dev_, dsl_, nullptr);

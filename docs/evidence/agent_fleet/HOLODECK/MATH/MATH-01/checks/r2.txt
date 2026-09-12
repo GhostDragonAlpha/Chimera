@@ -1,0 +1,18 @@
+R2 metre-newton negatives (card falsifier clause 1: model must REJECT; prereg N=6/6, reason 'dimension_mismatch')
+  [OK] (a) 1 m + 1 N
+        refused as expected: Math01Refusal('dimension_mismatch', 'cannot add quantities of Dimension(L=1, M=0, T=0) and Dimension(L=1, M=1, T=-2)')
+  [OK] (b) 1 m == 1 N (comparison)
+        refused as expected: Math01Refusal('dimension_mismatch', 'cannot compare (==) quantities of Dimension(L=1, M=0, T=0) and Dimension(L=1, M=1, T=-2)')
+  [OK] (c) 1 m < 1 N (ordering)
+        refused as expected: Math01Refusal('dimension_mismatch', 'cannot order (<) quantities of Dimension(L=1, M=0, T=0) and Dimension(L=1, M=1, T=-2)')
+  [OK] (d) 1 m + 1 s
+        refused as expected: Math01Refusal('dimension_mismatch', 'cannot add quantities of Dimension(L=1, M=0, T=0) and Dimension(L=0, M=0, T=1)')
+  [OK] (e) 1 Pa + 1 N/m (kg m^-1 s^-2 vs kg s^-2)
+        refused as expected: Math01Refusal('dimension_mismatch', 'cannot add quantities of Dimension(L=-1, M=1, T=-2) and Dimension(L=0, M=1, T=-2)')
+  [OK] (f) 1.0 (bare dimensionless literal) + 1 m
+        refused as expected: Math01Refusal('dimension_mismatch', 'cannot add (reflected) quantities of Dimension(L=1, M=0, T=0) and float')
+  post-state: operands unchanged (immutability): True
+
+  CARD FALSIFIER CLAUSE 1 VERDICT: a metre-newton comparison is REFUSED everywhere
+
+R2 HOLDS 6/6

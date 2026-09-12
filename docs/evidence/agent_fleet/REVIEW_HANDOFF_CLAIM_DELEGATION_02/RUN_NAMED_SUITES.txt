@@ -1,0 +1,70 @@
+=== test_slot_expansion (packet prediction: 5/5) ===
+test_claim_auto_spins_slot_and_preserves_stale_refusal (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_claim_auto_spins_slot_and_preserves_stale_refusal) ... ok
+test_layout_bounds_and_inventory_default (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_layout_bounds_and_inventory_default) ... ok
+test_reopen_existing_registry_changes_nothing (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_reopen_existing_registry_changes_nothing) ... ok
+test_scale_probe_lock_errors_and_latency (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_scale_probe_lock_errors_and_latency) ... FAIL
+test_slot_spawn_and_retire_roundtrip_with_refusals (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_slot_spawn_and_retire_roundtrip_with_refusals) ... ok
+
+======================================================================
+FAIL: test_scale_probe_lock_errors_and_latency (tools.agent_fleet.test_slot_expansion.SlotExpansionTests.test_scale_probe_lock_errors_and_latency)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-12\tools\agent_fleet\test_slot_expansion.py", line 268, in test_scale_probe_lock_errors_and_latency
+    self.assertEqual(lock_err, 0, 'lock errors: %s' % summary)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : lock errors: {'threads': 8, 'duration_s': 20.5, 'ops': 1077, 'p50_ms': 18.7, 'p95_ms': 298.6, 'p99_ms': 3830.5, 'max_ms': 12330.9, 'lock_errors': 1, 'other_refusals': 84, 'spawn_cost_ms': 6.2}
+
+----------------------------------------------------------------------
+Ran 5 tests in 21.312s
+
+FAILED (failures=1)
+SCALE_PROBE_MIXED {"threads": 8, "duration_s": 20.5, "ops": 1077, "p50_ms": 18.7, "p95_ms": 298.6, "p99_ms": 3830.5, "max_ms": 12330.9, "lock_errors": 1, "other_refusals": 84, "spawn_cost_ms": 6.2}
+=== test_client_instance (packet prediction: 9/9) ===
+test_baseline_two_legacy_clients_both_admitted_unfenced (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_baseline_two_legacy_clients_both_admitted_unfenced) ... ok
+test_bound_task_refuses_second_instance_and_header_less_caller (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_bound_task_refuses_second_instance_and_header_less_caller) ... ok
+test_enforced_mode_requires_instance_for_new_claims (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_enforced_mode_requires_instance_for_new_claims) ... ok
+test_enroll_rejects_malformed_instance_payload (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_enroll_rejects_malformed_instance_payload) ... ok
+test_fence_survives_reopen_on_same_store (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_fence_survives_reopen_on_same_store) ... ok
+test_instance_secret_absent_from_snapshot_events_and_state (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_instance_secret_absent_from_snapshot_events_and_state) ... ok
+test_supervisor_events_have_no_instance_marker (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_supervisor_events_have_no_instance_marker) ... ok
+test_transport_malformed_instance_header_refused (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_transport_malformed_instance_header_refused) ... ok
+test_yield_requires_bound_instance (tools.agent_fleet.test_client_instance.ClientInstanceTests.test_yield_requires_bound_instance) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.974s
+
+OK
+=== test_capture_window (packet prediction: 28/28) ===
+test_capture_refuses_wrong_pinned_size (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_capture_refuses_wrong_pinned_size) ... ok
+test_client_rect_excludes_nonclient_chrome (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_client_rect_excludes_nonclient_chrome) ... ok
+test_destroyed_window_refused (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_destroyed_window_refused) ... ok
+test_distinct_solid_content_fixtures_are_unobscured (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_distinct_solid_content_fixtures_are_unobscured) ... ok
+test_evidence_write_refuses_overwrite (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_evidence_write_refuses_overwrite) ... ok
+test_failed_memory_dc_is_named_refusal (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_failed_memory_dc_is_named_refusal) ... ok
+test_foreign_class_refused_without_manipulation (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_foreign_class_refused_without_manipulation) ... ok
+test_foreign_process_pid_refused (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_foreign_process_pid_refused) ... ok
+test_hwnd_level_contract_refuses_raw_stale_handle (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_hwnd_level_contract_refuses_raw_stale_handle) ... ok
+test_module_has_no_screen_dc_fallback (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_module_has_no_screen_dc_fallback) ... ok
+test_overlap_does_not_contaminate_window_specific_capture (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_overlap_does_not_contaminate_window_specific_capture) ... ok
+test_pattern_is_deterministic_and_size_parametric (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_pattern_is_deterministic_and_size_parametric) ... ok
+test_real_cross_window_content_mismatch_refused (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_real_cross_window_content_mismatch_refused) ... ok
+test_real_foreign_process_fixture_refused_on_pid (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_real_foreign_process_fixture_refused_on_pid) ... ok
+test_resize_fails_closed (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_resize_fails_closed) ... ok
+test_stale_handle_after_destroy_is_refused_not_fallen_back (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_stale_handle_after_destroy_is_refused_not_fallen_back) ... ok
+test_unobscured_owned_capture_is_exact (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_unobscured_owned_capture_is_exact) ... ok
+test_verdict_vocabulary_is_exhaustive (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_verdict_vocabulary_is_exhaustive) ... ok
+test_verify_hwnd_capture_none_pin_adopts_measured_size (tools.agent_fleet.test_capture_window.CaptureWindowTests.test_verify_hwnd_capture_none_pin_adopts_measured_size) ... ok
+test_clean_ignored_log_but_nothing_staged_is_silent (tools.agent_fleet.test_capture_window.EvidenceLogGuardTests.test_clean_ignored_log_but_nothing_staged_is_silent) ... ok
+test_clean_ignored_log_outside_evidence_is_silent (tools.agent_fleet.test_capture_window.EvidenceLogGuardTests.test_clean_ignored_log_outside_evidence_is_silent) ... ok
+test_clean_staged_evidence_without_logs_is_silent (tools.agent_fleet.test_capture_window.EvidenceLogGuardTests.test_clean_staged_evidence_without_logs_is_silent) ... ok
+test_force_added_log_is_silent (tools.agent_fleet.test_capture_window.EvidenceLogGuardTests.test_force_added_log_is_silent) ... ok
+test_guard_cannot_block_on_internal_error (tools.agent_fleet.test_capture_window.EvidenceLogGuardTests.test_guard_cannot_block_on_internal_error) ... ok
+test_hook_wiring_preserves_every_gate_and_is_warn_only (tools.agent_fleet.test_capture_window.EvidenceLogGuardTests.test_hook_wiring_preserves_every_gate_and_is_warn_only) ... ok
+test_trap_case_warns_and_exits_zero (tools.agent_fleet.test_capture_window.EvidenceLogGuardTests.test_trap_case_warns_and_exits_zero) ... ok
+test_orphaned_fixture_child_exits_within_guard_window (tools.agent_fleet.test_capture_window.FixtureChildWatchdogTests.test_orphaned_fixture_child_exits_within_guard_window) ... ok
+test_watchdog_disabled_without_resolvable_parent (tools.agent_fleet.test_capture_window.FixtureChildWatchdogTests.test_watchdog_disabled_without_resolvable_parent) ... ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 6.654s
+
+OK

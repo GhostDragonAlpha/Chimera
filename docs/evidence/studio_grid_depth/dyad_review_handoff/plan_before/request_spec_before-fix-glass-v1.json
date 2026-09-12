@@ -1,0 +1,26 @@
+{
+ "attempt": "before-fix-glass-v1",
+ "captures": [
+  {
+   "index": 1,
+   "path": "E:\\ChimeraWork\\slot-02\\docs\\evidence\\studio_grid_depth\\before_glass\\v1_glass.png",
+   "sha256": "288367d71aaf7373b0fc4667b9f160aa059e0d5c2c7d7a863106ce4313c23999"
+  }
+ ],
+ "claim_under_exam": "The light sheet and the floor grid are separate: whatever grid or mesh lines are visible, state where each appears relative to the sheet and the floor.",
+ "evidence_limits": "single still; numbers are observations, not measurements",
+ "physical_context": "A native Vulkan engineering demo window (the Engine Studio): a light triangular-fan sheet (the membrane demo) hovering above a dark floor plane that carries a blue reference grid; Studio panels surround the central viewport.",
+ "questions": [
+  "1. Describe the visible object(s) in the central viewport and read the scene/status labels you can see.",
+  "2. Do any grid or mesh lines appear ON the light sheet surface itself, or only on the darker floor around it?",
+  "3. Does the label stating a face count for the membrane demo agree or conflict with what is visibly on the sheet?",
+  "4. What remains ambiguous from a single still?"
+ ],
+ "review_type": "still",
+ "runtime_metadata": {
+  "camera": "radius 3.0 theta 0 phi 0.35 (POST /camera)",
+  "channel": "GET /glass (composited window)",
+  "state": "membrane demo reset, iteration 0, 6 faces"
+ },
+ "task": "studio-grid-depth-01"
+}

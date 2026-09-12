@@ -1,0 +1,81 @@
+{
+  "schema": "chimera-relax-gpu01-gate-v1",
+  "utc": "2026-09-08T22:00:09.838415+00:00",
+  "utc_finished": "2026-09-08T22:00:10.396122+00:00",
+  "task": "GLM-RELAX-GPU-01",
+  "preregistration": "docs/THE_RELAX_GPU01_PREREGISTRATION.md",
+  "device": "NVIDIA GeForce RTX 4090",
+  "gpu_command": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub\\.tmp\\relax_build\\Release\\relax_gpu_probe.exe --fixtures C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub\\docs\\evidence\\gpu_fixtures --fixture b2 --gamma-case gamma1 --shader C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub\\.tmp\\relax_build\\Release\\membrane.comp.spv --max-steps 200",
+  "probe_command": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub\\.tmp\\relax_build\\Release\\membrane_gpu_probe.exe --fixtures C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub\\docs\\evidence\\gpu_fixtures --shader C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub\\.tmp\\relax_build\\Release\\membrane.comp.spv",
+  "starting_state": {
+    "fixture": "b2",
+    "gamma_case": "gamma1",
+    "state": "frozen fixture f32 positions widened to f64",
+    "centre_height_m": 0.125
+  },
+  "cpu_reference": {
+    "law": "tools/overdamped_descent.run_descent (declared law)",
+    "status": "stagnated",
+    "n_accepted": 126,
+    "energy_initial": 2.6249999533666486,
+    "energy_final": 2.5980761647224426,
+    "final_centre": [
+      -4.16770641377936e-18,
+      1.6163528166825399e-18,
+      -4.146212900887751e-09
+    ]
+  },
+  "gpu_loop": {
+    "status": "stagnated",
+    "n_accepted": 126,
+    "n_trials": 126,
+    "energy_initial": 2.625,
+    "energy_final": 2.59807611,
+    "free_residual": 2.67945808e-07,
+    "final_centre": [
+      0.0,
+      -7.24257987e-09,
+      1.90596523e-07
+    ],
+    "state_representation": "f32 buffers (the verified fixture representation)"
+  },
+  "budgets": {
+    "frozen_energy": 1.1e-05,
+    "frozen_complete_force": 2.5e-05,
+    "derived_f32_position_bound": 1.5020370483398438e-05,
+    "derivation": "n_acc * 2^-23 * max|coord| (preregistered)"
+  },
+  "checks": {
+    "R1_frozen_single_shot_pass": true,
+    "R2_energy_within_frozen_budget": {
+      "pass": true,
+      "worst_drift": 3.269201678257616e-07,
+      "worst_pair": 22
+    },
+    "R3_final_position_within_f32_bound": {
+      "pass": true,
+      "gap_m": 1.9487736694998642e-07,
+      "bound_m": 1.5020370483398438e-05
+    },
+    "R4_named_terminal_state": {
+      "pass": true,
+      "status": "stagnated"
+    },
+    "R5_armijo_every_accepted_step": {
+      "pass": true,
+      "worst_margin": 0.0
+    },
+    "R6_no_tolerance_widened": true
+  },
+  "descriptive": {
+    "gpu_vs_ref_final_energy_gap": 5.472244257731518e-08,
+    "total_descent": 0.02692388999999995,
+    "gpu_n_accepted_vs_ref": [
+      126,
+      126
+    ]
+  },
+  "verdict": "PASS",
+  "operator_engine_untouched": true,
+  "gpu_dynamics_claim": "NONE beyond this standalone numerical gate"
+}

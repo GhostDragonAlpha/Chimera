@@ -1,0 +1,22 @@
+# golden PAN-P1 — L-drag ORBITS and leaves pan untouched (proposed patch,
+#   BP-PAN; source of arithmetic: engine.cpp:180-200 @ cececb23)
+# PROOF: with g_drag_button == 1 a captured move applies theta/phi deltas and
+#   pan_x/pan_y stay 0.000000 exactly (the orbit arm consumes the move).
+mode ui 0
+mode console 0
+> ldown 100 100
+|
+! captured 1
+! calls capture:on
+> move 104 102
+> move 104 102
+|
+! cam theta -0.02
+! cam phi 0.294
+! cam pan_x 0
+! cam pan_y 0
+! calls <none>          # a captured rotate move records no host call
+> lup
+|
+! captured 0
+! calls capture:off

@@ -42,12 +42,12 @@ ROOT_DIRS = (
     "Saved", "templates", "external", "models", "ChimeraShim", "ChimeraShim",
 )
 EXTS = ("py", "md", "json", "cmd", "ps1", "bat", "sh", "txt", "cfg", "toml",
-        "yml", "yaml", "cpp", "h", "ini")
+        "yml", "yaml", "cpp", "h", "hpp", "ini")
 
 PATH_RE = re.compile(
     r"(?<![\w./\\-])(?:"
     + "|".join(re.escape(d) for d in ROOT_DIRS)
-    + r")[\\/][\w.\-]+(?:[\\/][\w.\-]+)*\.(?:" + "|".join(EXTS) + r")"
+    + r")[\\/][\w.\-]+(?:[\\/][\w.\-]+)*\.(?:" + "|".join(EXTS) + r")(?![\w])"
 )
 
 MD_LINK_RE = re.compile(r"\]\(([^)\s]+)\)")

@@ -1,0 +1,5 @@
+shaderc 2023.8-1build1
+spirv-tools 2023.6~rc1-2
+glslang 14.0.0-2
+
+Target: SPIR-V 1.0

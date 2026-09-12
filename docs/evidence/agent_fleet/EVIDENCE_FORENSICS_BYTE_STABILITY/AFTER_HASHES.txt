@@ -1,0 +1,47 @@
+AFTER — fresh core.autocrlf=true clone + re-checkout at the rule head b6b4de3a
+
+METHOD (verbatim):
+  git clone --quiet --no-checkout "E:\ChimeraWork\slot-06" %TEMP%orensics_clone
+  git config core.autocrlf true          # the Windows-host failure mode, forced on
+  git checkout HEAD                      # first checkout under the rule
+  git checkout -f HEAD -- .              # re-checkout (the packet-required second pass)
+  git rev-parse HEAD -> b6b4de3a2b6259aa74e3a15d35b6c9bd4e121541 (rule commit)
+
+RESULT: 21/21 sampled files hash exactly their committed blob bytes (checkout-invariant).
+Recorded-hash relationships verified from CHECKED-OUT bytes alone: 11/11.
+
+PER-FILE (path | kind | blob_sha256 | after_sha256 | match):
+docs/evidence/agent_fleet/DYAD_TEMPLATE_HARDENING/demo_blind/unblinding_hard-demo-blind.json | unblinding | 919a3c57ddf6afd14dce9e9341077de5f41c7420720f35fe3dae96787be5e639 | 919a3c57ddf6afd14dce9e9341077de5f41c7420720f35fe3dae96787be5e639 | MATCH
+docs/evidence/agent_fleet/DYAD_TEMPLATE_HARDENING/demo_blind/exact_prompt_hard-demo-blind.txt | prompt | a751df5ef43452537fc166cebff32a115897ed845a6eb61e5674d244c5d80341 | a751df5ef43452537fc166cebff32a115897ed845a6eb61e5674d244c5d80341 | MATCH
+docs/evidence/agent_fleet/DYAD_TEMPLATE_HARDENING/demo_blind/plan_blind_stdout.txt | recorder | de630415c7fbf7e05a78f8a9895e8397d1b52427e575059afb015288e578b809 | de630415c7fbf7e05a78f8a9895e8397d1b52427e575059afb015288e578b809 | MATCH
+docs/evidence/agent_fleet/DYAD_TEMPLATE_HARDENING/demo_blind/request_spec_hard-demo-blind.json | recorder | b49533540d06c32382f9905e3fe52cf46f48f39c7ab3bdf998b0dda2d3bef964 | b49533540d06c32382f9905e3fe52cf46f48f39c7ab3bdf998b0dda2d3bef964 | MATCH
+docs/evidence/agent_fleet/DYAD_TEMPLATE_HARDENING/demo_blind/captures/frame_a.png | capture | bdc46784088bc3ca1e61a1df9ab70182560330a59a2b1d6168f58b711b6a3d87 | bdc46784088bc3ca1e61a1df9ab70182560330a59a2b1d6168f58b711b6a3d87 | MATCH
+docs/evidence/agent_fleet/DYAD_TEMPLATE_HARDENING/demo_blind/captures/frame_b.png | capture | 427cc28c00ce284fac91c14d57a4ee0772af004e5d39d2cdaaccd356d6180ab7 | 427cc28c00ce284fac91c14d57a4ee0772af004e5d39d2cdaaccd356d6180ab7 | MATCH
+docs/evidence/agent_fleet/DYAD_TEMPLATE_HARDENING/demo_blind/captures/frame_c.png | capture | b13105d205c086558be3077c30f2eade347f595771d78d931f6385a113d59295 | b13105d205c086558be3077c30f2eade347f595771d78d931f6385a113d59295 | MATCH
+docs/evidence/agent_fleet/DYAD_RETAINED_REVIEWS/exact_prompt_rr01-edge01-pair.txt | prompt-embedded | e809c2aa1d2051f7f7c8ad3b733daf165a373cf178d04ff66aafef99f370c2ae | e809c2aa1d2051f7f7c8ad3b733daf165a373cf178d04ff66aafef99f370c2ae | MATCH
+docs/evidence/agent_fleet/DYAD_RETAINED_REVIEWS/dyad_response_rr01-edge01-pair.json | recorder | ad384f71a7cf25d5e37ff47e98fc530a1e730db9223381c01b5130c6315af2b7 | ad384f71a7cf25d5e37ff47e98fc530a1e730db9223381c01b5130c6315af2b7 | MATCH
+docs/evidence/studio_grid_depth/after/v1_frame.png | sidecar-png | fe0983583b2bcee9d0fda8e4bf620b71a5d4277203f18610fc93264ce04ecdcc | fe0983583b2bcee9d0fda8e4bf620b71a5d4277203f18610fc93264ce04ecdcc | MATCH
+docs/evidence/studio_grid_depth/after/v2_glass.png | sidecar-png | a666793bcf1cf896d2b0ebef3cb65e8736299662d5fb759a390e6b508bbda457 | a666793bcf1cf896d2b0ebef3cb65e8736299662d5fb759a390e6b508bbda457 | MATCH
+docs/evidence/studio_grid_depth/after/v3_mesh_frame.png | sidecar-png | 896dd181060fe4a018e40089e1dd124d0989e65495dbe3dff4d4c865d285c961 | 896dd181060fe4a018e40089e1dd124d0989e65495dbe3dff4d4c865d285c961 | MATCH
+docs/evidence/studio_grid_depth/after/v1_frame.json | sidecar-recorder | 9dfe12bd5936edbfc26b16fa53019f7d88f16c3081d0f26ebe5875ff0e4105ef | 9dfe12bd5936edbfc26b16fa53019f7d88f16c3081d0f26ebe5875ff0e4105ef | MATCH
+docs/evidence/studio_grid_depth/dyad_review_handoff/plan_after/exact_prompt_after-fix-glass-v1.txt | prompt | 1cba8a15dabd66de20cf087acce671d6283ba4d075e9dd09854da12e03661af5 | 1cba8a15dabd66de20cf087acce671d6283ba4d075e9dd09854da12e03661af5 | MATCH
+docs/evidence/studio_grid_depth/dyad_review_handoff/plan_after/request_spec_after-fix-glass-v1.json | recorder | 841745d161d5e8cede8622070d5d37f1702048af14f661a9f1ca45a2531a91c2 | 841745d161d5e8cede8622070d5d37f1702048af14f661a9f1ca45a2531a91c2 | MATCH
+docs/evidence/agent_fleet/CATALOGUE_DETERMINISM/RAW_RUN_BASELINE_CONSOLE.txt | console | 634fad48098cca36719ef0b91c9fa9a5cfbed06cfbe8519597ebaabfb64c3a88 | 634fad48098cca36719ef0b91c9fa9a5cfbed06cfbe8519597ebaabfb64c3a88 | MATCH
+docs/evidence/agent_fleet/CATALOGUE_DETERMINISM/ATTR_BOTH.txt | console | 11543fcfbc3373ed7dd6b46aa855937a516435710e2977e5882ea1241da02128 | 11543fcfbc3373ed7dd6b46aa855937a516435710e2977e5882ea1241da02128 | MATCH
+docs/evidence/agent_fleet/SLOT_EXPANSION/RUN_FULL_SUITE_GEN2.txt | console | 5795ad0876c0561dd7f57f2dd177a5fbdad40f024ae217f8f0ced9df30e73b46 | 5795ad0876c0561dd7f57f2dd177a5fbdad40f024ae217f8f0ced9df30e73b46 | MATCH
+docs/evidence/agent_fleet/SLOT_EXPANSION/MEASUREMENT.json | record | 487f8b921645bf5016fbd895e87788f6f8a4846e3b886a4738c8740e922751f6 | 487f8b921645bf5016fbd895e87788f6f8a4846e3b886a4738c8740e922751f6 | MATCH
+docs/evidence/membrane_gpu_demo_runtime/20260909T143821.177952Z/raised_gamma0.png | retained-png | 53e994e08d8ecc5e36fe39b86ede680bb3801c83b8ae734c08855d1034aee1ea | 53e994e08d8ecc5e36fe39b86ede680bb3801c83b8ae734c08855d1034aee1ea | MATCH
+docs/evidence/membrane_gpu_demo_runtime/20260909T143821.177952Z/final_relaxed.png | retained-png | 20021e7871f7721762b0c4e870dcb1662c489f4637a37911897173a9b9397807 | 20021e7871f7721762b0c4e870dcb1662c489f4637a37911897173a9b9397807 | MATCH
+
+RECORDED-HASH RELATIONSHIPS (all from checked-out bytes):
+  [OK] unblinding json == recorded unblinding_sha256 in plan stdout
+  [OK] exact_prompt file == unblinding.prompt_sha256
+  [OK] demo capture frame_c.png == request_spec sha256
+  [OK] demo capture frame_a.png == request_spec sha256
+  [OK] demo capture frame_b.png == request_spec sha256
+  [OK] retained exact_prompt file bytes == exact_prompt embedded in response json
+  [OK] retained capture raised_gamma0.png == request_spec sha256
+  [OK] retained capture final_relaxed.png == request_spec sha256
+  [OK] studio after/v1_frame.png == sidecar png_sha256
+  [OK] studio after/v2_glass.png == sidecar png_sha256
+  [OK] studio after/v3_mesh_frame.png == sidecar png_sha256

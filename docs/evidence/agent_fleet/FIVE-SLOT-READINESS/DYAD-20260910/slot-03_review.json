@@ -1,0 +1,66 @@
+{
+ "what": "GLM-GPU-DEMO-03 dyad review of the GPU-driven membrane demo",
+ "utc": "2026-09-10T03:13:19.940879+00:00",
+ "served_model": "qwen3.8-27b-nvfp4-mtp",
+ "run_facts": {
+  "source": "docs/evidence/membrane_gpu_demo_runtime/20260910T015238.101816Z",
+  "engine": "chimera_engine.exe (slot-built isolated MSVC engine, port 8103, --no-restore; launched by the runtime gate, which terminates only the PID it launched)",
+  "camera": {
+   "cam_radius": 3.0,
+   "cam_theta": 0.0,
+   "cam_phi": 0.35,
+   "note": "camera from THIS run's recorded sidecar (POSTed to /camera before /frame; sidecar is the record, not a guess)"
+  },
+  "render": {
+   "mode": "fill + edge-contrast wire pass (GLM-GPU-DEMO-EDGE-01: the demo instance latched CHIMERA_MD_EDGE at init; demo-scoped, mesh_mode_ untouched; verified against the fill-only run by byte-differing PNGs and identical accepted_state_id values)",
+   "presentation": "rigid B2(z-up)->engine(y-up) rotation plus a 0.5 m presentation lift; the lift is render presentation only"
+  },
+  "states": {
+   "raised": {
+    "gamma_J_m2": 0.0,
+    "terminal": "stationary",
+    "iteration": 0,
+    "energy_J": 0,
+    "centre_xyz_m": [
+     0,
+     0,
+     0.125
+    ],
+    "note": "numerical facts from THIS run's recorded sidecar",
+    "accepted_state_id": 17560123212910228982
+   },
+   "relaxed": {
+    "gamma_J_m2": 1.0,
+    "terminal": "stagnated",
+    "iteration": 126,
+    "energy_J": 2.59807611,
+    "note": "numerical facts from THIS run's recorded sidecar",
+    "centre_xyz_m": [
+     0,
+     0,
+     1.90596523e-07
+    ],
+    "accepted_state_id": 16501489447187382864
+   }
+  }
+ },
+ "physical_briefing": "This object is six triangles joined around one centre vertex. The six outer vertices are fixed in a flat hexagonal rim. The centre can move only perpendicular to the rim plane.\n\nIts energy is U = gamma x total triangle area. Forces are the negative gradient of that energy. For positive gamma, the optimizer seeks less area, so the raised centre approaches the rim plane. At gamma=0 this model produces no force, so the initial bump remains.\n\nThis is an area-minimization experiment. It contains no certified elasticity, bending stiffness, water pressure, gravity or contact dynamics. Optimization iterations are not physical time.\n\nAt identical geometry, doubling gamma doubles calculated energy and force; that alone does not require a visible shape change.",
+ "calls": [
+  {
+   "label": "gpu_demo_raised_gamma0",
+   "image": "E:\\PythonChimera\\docs\\evidence\\membrane_gpu_demo_runtime\\20260910T015238.101816Z\\raised_gamma0.png",
+   "image_sha256": "bdb59851db1cea717887e69d0f7604f5352722641f6e6d3be68c81b59380bb44",
+   "served_model": "qwen3.8-27b-nvfp4-mtp",
+   "prompt_chars": 3566,
+   "report": "**1. What is visibly distinguishable**\nA near\u2011black background with a faint vertical gradient and no square grid, axes, text or UI. In the middle there are two concentric hexagons: (a) a large *dark* hexagonal panel lying flat behind/under everything \u2013 this reads as the floor/base plate in the rim plane; its top edge peeks above the membrane and its lower edges below it. (b) On top of that, the membrane itself, rendered light\u2011gray with a white edge\u2011contrast wire pass: six triangular facets whose edges radiate from a single interior point to six outer corners, i.e. a hexagon subdivided into six triangles. There is a bright specular hotspot near the upper\u2011middle of the gray shape. Nothing else (no other objects, no grid lines on the base).\n\n**2. Locating centre vertex and rim**\n*Centre vertex:* the point where all six white radial spokes converge \u2013 coincident with the bright highlight in the upper\u2011middle of the gray fill. *Outer rim:* the hexagonal boundary of the gray fill, with six corners (leftmost, rightmost, two lower/front, two upper/rear). The larger dark base hexagon behind is concentric and roughly coplanar with the rim, so it acts as a visual reference for the rim plane.\n\n**3. Is the centre's offset resolvable?**\n**Uncertain.** The camera elevation is low (phi \u2248 0.35 rad), so the view is nearly edge\u2011on and vertical offsets are strongly foreshortened; the membrane reads as almost planar. There are *hints* of a slight tent \u2013 the central vertex appears to project just above the line joining the two rear rim corners, and the front facets look marginally brighter than the rear ones (which would not happen if all six triangles were coplanar under one light) \u2013 but these cues are weak and could equally be produced by lighting on an almost\u2011flat surface plus the over\u2011bright highlight masking the true vertex position. From pixels alone I cannot confidently confirm or measure a 0.125 m offset, so I call it uncertain rather than resolvable.\n\n**4. Consistency with the stated state**\n**Consistent (no visible contradiction).** The frame shows exactly one raised\u2011centre / near\u2011flat hexagon membrane sitting on a flat base \u2013 i.e. an untouched initial fixture whose centre is above the rim plane, and nothing in the image indicates the centre has been flattened by optimization. Important caveat: because zero optimizer steps were taken, this *same* geometry is what any gamma value would display at iteration 0; so the still confirms the *initial\u2011height geometry* but cannot by itself distinguish gamma = 0 from gamma > 0 (gamma only matters once iterations run).\n\n**5. Could viewpoint/occlusion/lighting explain a discrepancy? What extra evidence?**\nYes. The grazing angle compresses the 0.125 m bump so it looks flat; the central specular hotspot can be misread as (or hide) the vertex and biases height perception; there is no occluder, so the membrane is fully visible and not hidden. To distinguish: an orthographic top\u2011down or true side\u2011on elevation render (the offset would then be obvious), a comparison frame of the relaxed state, an on\u2011screen scale/grid reference for 0.125 m, and \u2013 already available \u2013 the numeric sidecar (centre z = 0.125 m) which confirms what the pixels only hint at.\n\n**6. Single worst visual problem**\nThe over\u2011bright specular hotspot at/around the centre vertex. It both obscures the exact vertex location and distorts the perceived tenting, so that \u2013 combined with the low camera angle \u2013 the very feature this experiment is about (the raised initial centre) looks almost flat and its height cannot be judged reliably from the image."
+  },
+  {
+   "label": "gpu_demo_final_relaxed",
+   "image": "E:\\PythonChimera\\docs\\evidence\\membrane_gpu_demo_runtime\\20260910T015238.101816Z\\final_relaxed.png",
+   "image_sha256": "56e16672eb84e6710f00807a9ee933baa25d57643a6917cc32b79e9c6d0463bc",
+   "served_model": "qwen3.8-27b-nvfp4-mtp",
+   "prompt_chars": 3524,
+   "report": "**1. What geometry is visibly distinguishable?**\nI see one flat, light\u2011gray/silver hexagonal plate centred in the frame, drawn as a filled polygon with a thin white wire outline. Inside that fill there are three straight white lines \u2014 one horizontal line spanning left\u2011to\u2011right and two diagonals crossing to form an \"X\" \u2014 all meeting at a single central point. Behind and slightly below the silver plate is a larger, very dark (near\u2011black) hexagon; it has no texture or grid on it. The rest of the frame is a plain dark gradient with solid black letterbox bars top and bottom. There is **no visible floor grid, no ruler/scale marks, and no other objects**. Uncertainty: I cannot tell from pixels whether that dark rear hexagon is a ground panel, a cast shadow, or a second mesh \u2014 it carries no distinguishing detail.\n\n**2. Locating the centre vertex and outer rim.**\nThe **centre vertex** is at the point where the three internal wire lines intersect (the middle of the plate) \u2014 that convergence is what marks it. The **outer rim** is the bright white hexagonal outline / the six outer corners of the silver fill, which also coincide with the boundary between the silver and the dark background. So: spokes\u2011converge = centre; convex hexagon silhouette = rim.\n\n**3. Is the centre's offset from the rim plane resolvable?**\n**Not resolvable.** The plate reads as perfectly flat: smooth uniform shading, no central peak or depression, and all spokes meeting in what looks like one plane. A residual offset of ~10\u207b\u2077 m (or even a small centimetre\u2011scale bump) is far below what this shallow, low\u2011detail view can show, so the perpendicular height cannot be measured by eye here.\n\n**4. Consistent / inconsistent / can't tell?**\nVisually **consistent** with the stated relaxed state: a flat hexagonal fan whose centre appears coplanar matches \"centre close to the rim plane.\" Caveats: nothing in the pixels confirms \u03b3, iteration count, energy, or state IDs \u2014 those are numerical only. The unexplained dark rear hexagon is ambiguous but not contradictory. So I'd call it consistent with the *shape* of the stated state, while the numeric facts remain invisible.\n\n**5. Could viewpoint/occlusion/lighting explain a discrepancy? What would distinguish it?**\nYes. The shallow camera (\u03c6 \u2248 0.35 rad) heavily foreshortens vertical offsets, so even a raised centre would look nearly flat; the soft bright highlight near the middle of the fill could be misread as a dome or could mask one; and with no reference plane/grid, height is unjudgeable. The dark rear hexagon's identity is also ambiguous. To distinguish: an **edge\u2011on / side silhouette** (any bump would appear as a kink), a **top\u2011down orthographic view with a reference grid**, a **before/after pair at identical camera**, or per\u2011triangle depth shading. (The recorded centre_z already confirms flatness numerically, but that is not visible.)\n\n**6. Single worst visual problem.**\nThe membrane renders as a smooth, featureless flat hexagon with a soft central light spot and **no scale or reference plane**, so at this shallow angle the image gives no reliable cue of the centre vertex's height \u2014 it looks essentially identical to what a slightly raised centre would look like. Consequently the screenshot cannot visually confirm the relaxation result (and the central highlight could even be misread as curvature), which is the most damaging flaw for an \"area\u2011minimization\" evidence frame."
+  }
+ ]
+}

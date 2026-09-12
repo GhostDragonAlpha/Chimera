@@ -5,6 +5,581 @@ vision"). The 32-continuation history is compressed, not erased: every claim
 below names its run record or commit. When docs fight, run records beat prose;
 `python tools/orient.py` prints live state.*
 
+## CURRENT CONTROL — LIVING HOLODECK BLUEPRINT (2026-09-08)
+
+### Current operating direction — 2026-09-10
+
+This dated amendment supersedes historical actor/publication assignments below.
+Live claims and leadership come from the controller. Slot 1 handles the PR
+queue; workers open their own task PRs. With no actionable PR, slot 1 continues
+its own lane. Alan's latest instruction makes **completion of all tasks in this
+Master list** the primary objective. A runnable, inspectable engine demo is one
+milestone within that objective, not the stopping condition. Continue through
+implementation, testing, correction, review and integration of eligible work.
+Completion requires each task's acceptance evidence; catalogue import, review
+submission and a passing demo do not constitute completion of the Master list.
+Slot 1 maintains a dependency-aware supply of executable tasks for available
+workers and resolves missing task contracts when no eligible work is admitted.
+
+The Master list is a living scope, not a frozen checklist. Add requirements
+discovered through implementation, testing, agent review and Alan's game needs,
+with stable IDs, dependencies, acceptance gates and provenance. Preserve the
+history and reasons when splitting, replacing or retiring a task; do not delete
+unfinished requirements or weaken their gates to manufacture completion.
+Workers reread current shared direction during their sessions and between
+milestones; completed evidence remains tied to the revision and scope tested.
+
+Alan also requires the **entire Master list** in the controller catalogue,
+including all 240 linked roadmap cards and the legacy task rows below, with
+source coverage, IDs, dependencies and evidence preserved. Importing the
+catalogue must not silently mark proposed work ready, completed work unfinished,
+or historical owners current. `master-catalogue-sync-01` implements that full
+projection and eligibility path; it is not a new competing task ledger.
+
+Current demo work: `engine-demo-01` owns slot-1 build/runtime/DYAD evidence;
+`demo-launcher-01` supplies the independently scoped control panel;
+`demo-evidence-01` supplies capture-manifest validation. The executable
+assignments/statuses remain the live controller's records. The underlying
+theShape term remains unproven; an engineering demo does not close it.
+
+### Discovered requirements — 2026-09-10
+
+These additions preserve the existing roadmap and history. Live claim state
+and dependency eligibility remain in the controller.
+
+| Task | Requirement and evidence | Next acceptance gate |
+|---|---|---|
+| `engine-demo-01` — reset-state correction | Actual reset tests returned restored geometry/energy with stale center forces. [Preregistration](evidence/engine_demo01/RESET_PREREGISTRATION.md) adds this consistency requirement to the owned milestone. | Both retained counterexamples must fail before repair and pass afterward; existing frozen numerical gates remain unchanged. |
+| `demo-studio-state-01` | The captured native Studio labels a visible active GPU demo as "no mesh loaded" and infers eye-offline from a missing local log. [Window evidence](evidence/engine_demo01/native_window_gen4.png). | After `engine-demo-01` integrates, bind displayed state to the actual active demo and distinguish an unavailable evidence feed from a tested eye failure; verify numerically and through runtime/DYAD. |
+| `gov01-evidence-reconcile-01` — slot binding gap | Slot 5 inherited a historical provisioning record on a new claim. Controller feedback `1e2ea0f99e63d12478804913` preserves the observation. | Safely bind provisioning to the current task/generation before editing that checkout; preserve old work and test stale-binding refusal. |
+| `math-contract-audit-01` — preparation for `MATH-01` | Inventory existing unit/frame contracts and demonstrated conversion gaps before admitting implementation. Controller task created at revision 189. | Source/evidence matrix and minimal implementation envelope; preserve canonical `MATH-01` dependency on `GOV-01`. An audit alone does not accept the card. |
+| `fleet-slot-binding-01` | Source provisioning can retain an earlier task's binding and prevent safe recovery of the current GOV claim. Follow-on to feedback `1e2ea0f99e63d12478804913`; controller task created at revision 218. | After catalogue integration, test current-task/generation binding and supervisor-only preserved/drained recovery in isolated registries. No direct live database edits. |
+| `studio-grid-depth-01` | DYAD interprets the Studio reference grid crossing the membrane as additional physical faces, while the frozen B2 geometry has six. Feedback `ffd13d484e32cd09dad00399`; task created at revision 219. | After the Studio-state repair, derive and test grid/depth/projection ownership with unchanged accepted geometry and numerical gates; retain actual window/DYAD comparisons. |
+| `fleet-controller-upgrade-01` | The existing launcher lacks a coordinated source-transition barrier and complete process-identity/rollback gates. [Inspected requirements](THE_CONTROLLER_TRANSITION.md). | After catalogue and slot-binding repairs, rehearse same-store upgrade/rollback with stale-ack, wrong-process and held-resource refusals before any controlled live deployment. |
+
+Controller source deployment also requires a controlled transition, separately
+from code integration. [Transition requirements](THE_CONTROLLER_TRANSITION.md)
+record the missing quiescence/identity/recovery gates; they are not a claim that
+the running controller has been upgraded. These discoveries add work without
+retiring existing catalogue cards or their acceptance dependencies.
+
+**Proposed operational amendment: adoption does not deploy the fleet.** Preserve all
+historical sections below, including the superseded Luna-only roster. Alan's
+later instructions assign GLM 5.3 the active production milestone and sole
+publication role. This entry updates ownership, not historical run evidence.
+
+| Actor | Current assignment | State |
+|---|---|---|
+| GLM 5.3 | Autonomous GPU material milestone; runtime integration and mandatory GLM-operated DYAD | ACTIVE |
+| Big Pickle | BP-ELASTIC-FOUNDATION; isolated CPU elasticity/reference work | ACTIVE |
+| Muse Spark 1.3 | MUSE-ROBUSTNESS-01; isolated numerical-boundary campaign | ACTIVE |
+| DeepSeek V4 Flash | DS-STATE-INTEGRITY-01; source/trace/capture verifier | ACTIVE |
+| Step 3.7 Flash | STEP-SCALE-01; isolated scaling lab, GPU work only in an available slot | ACTIVE |
+| Local DYAD eye | Service operated by GLM; actual served model recorded | SERVICE |
+| Luna | No current implementation assignment | INACTIVE |
+
+These are assignment claims, not acceptance verdicts. Reconcile each actor's
+latest checkpoint before changing its row. ASTRA supplies architectural and
+physics guidance; Alan supplies product direction and actual human acceptance.
+
+The design annex is [THE_HOLODECK_BLUEPRINT.md](THE_HOLODECK_BLUEPRINT.md):
+240 task cards across 40 domains, coupled-law contracts, the integration ladder,
+frontier limits and autonomous packet rules. Machine-readable definitions:
+[holodeck_tasks.json](roadmap/holodeck_tasks.json). The card appendix is generated
+from that catalogue. This Master list remains the sole operational status and
+ownership entry point; the annex is not a competing live task board.
+
+Use `python tools/roadmap_query.py validate`, `search <term>`, `show <ID>` or
+`packet <ID>` to inspect proposals. The tool is read-only and cannot assign,
+claim, publish or certify. Reserve dependencies, owned scopes and hardware via
+GLM before beginning. Continue current assignments; do not restart them because
+the new catalogue has unreconciled future cards. Preserve branch restrictions,
+protected build paths and the GPU runtime law. No new physical or perceptual
+claim is accepted without its preregistered falsifier and appropriate evidence.
+
+**Next integration spine:** accepted GPU state rendered by the engine → elastic
+object workshop → physical time/contact → rigid cup with water → two-way
+compliant container → embodied creatures and persistent authored worlds.
+Parallel research is permitted where its scopes and resources are independent.
+Advanced chemistry, quantum effects and human cognition remain scoped research,
+not prerequisites for a useful game and not claims of complete physical reality.
+
+### Criticism steers development (2026-09-09)
+
+Alan's input is recorded as DYAD criticism: original words, classification,
+affected claim/task and disposition. Stops, permissions and scope changes
+retain their direct authority. Runtime engine instances must be visible and
+non-headless; each slot owns its build/session/endpoint. The fleet follows
+the existing ORIENT/NEXT/PROVE/CHECK loop and preserves canonical verdicts.
+See THE_AGENT_FLEET.md for the evidence and activation boundaries.
+
+### Five-slot fleet adoption
+
+The universal prompt is [AGENT_START.md](AGENT_START.md); the operating contract
+is [THE_AGENT_FLEET.md](THE_AGENT_FLEET.md). Five sibling worktrees share Git
+objects but each owns its engine build, runtime CWD, session files and endpoint.
+One session may own multiple tasks within its approved capacity. Task branches
+are `astra/tasks/<task-id>`; PRs target `astra/gait-capture`. The current lead
+integrates through the trusted publication path. No master push or force-push.
+
+During migration the roster above remains a checkpoint, not a live readout.
+After activation, live ownership, resource reservations, leadership epochs and
+recovery holds come exclusively from the control-service snapshot/events.
+Do not edit five divergent copies of active state. Catalogue proposals need
+reviewed dependencies, scopes and gates before the controller admits them.
+Silence starts investigation; confirmed failure and qualified readiness govern
+succession. An epoch fences controller actions, not direct shell/Git access;
+real publication fencing is an explicit deployment prerequisite.
+
+The reference has no model launcher, GitHub merge broker or Windows engine
+provisioner. Do not migrate running jobs or claim autonomous deployment from
+offline tests. Every slot's own engine must be built/tested during activation.
+
+## 0 · RECOVERY AMENDMENT — LUNA SOLE PROJECT AGENT (2026-09-07)
+
+Alan explicitly assigns all current project work to **GPT 5.6 Luna**. This
+amendment supersedes the historical multi-agent roster and publication
+ownership statements below; those statements remain historical evidence and
+are not erased. Luna owns architecture, implementation, testing, recovery,
+documentation, review, and publication. No parallel handoff is awaited from
+GLM, North, Big Pickle, Inkling, the local model, or ASTRA; surviving artifacts
+are assessed as evidence in place.
+
+**Recovered state.** The working checkout `E:/PythonChimera` is on `master` at
+`51cd7212` with preserved uncommitted work and is not the integration surface.
+The isolated publication checkout is `C:/Users/allen/AppData/Local/Temp/opencode/chimera_pub`
+on `astra/gait-capture` at `cf2a0ae2c7bd68f1c64db630c4db5de32785580a`. The
+reported BP-A1 commit is therefore verified on the authorized publication
+branch; `master` remains untouched. The frozen fixture recovery checkout is
+`E:/Chimera_GLM_freeze`, whose fixture files were untracked and whose verifier
+has been run locally.
+
+**Rule-0 membrane for the first GPU gate.**
+
+- **STATEMENT** — For exact binary32-uploaded positions, uint32 topology, and
+  fixed-order vertex-to-corner CSR, a compiled Vulkan compute transcription of
+  current-area surface energy will produce per-face area/normal/corner-force
+  outputs, CSR vertex forces, and total energy matching the frozen CPU
+  references within their preregistered numerical budgets, without floating-
+  point atomic scatter.
+- **PREDICTION** — On both frozen meshes (B2: 7 vertices/6 triangles;
+  Fan12: 13 vertices/12 triangles) and gamma 0/1/2, the GPU readback will pass
+  the face, assembly, energy, zero-gamma, gamma-doubling, and corrupted
+  corner-order gates; a higher-degree Fan12 assembly budget will remain
+  distinct from B2's degree-six budget.
+- **FALSIFIER** — Any compiled GPU run with a hash/shape/dtype mismatch,
+  readback outside the frozen per-stage budgets, nonzero gamma-zero force,
+  non-exact gamma doubling where required, incorrect fixed-order CSR assembly,
+  or an undetected corner-order corruption falsifies this gate. CPU fixture
+  verification alone cannot close the GPU claim.
+
+**Concrete recovery queue (Luna-owned, ordered).**
+
+1. Preserve and publish the frozen fixture inputs, references, verifier,
+   recovery provenance, and failed-run history under `docs/evidence/gpu_fixtures/`;
+   rerun the verifier from the publication checkout.
+2. Record actual Linux Vulkan loader, headers/compiler, ICD/device, compute
+   queue, subgroup, storage-buffer, float-arithmetic, and headless capability;
+   do not install or alter system configuration.
+3. Build `tools/membrane_gpu_probe/` in a permitted scratch directory, using
+   real Vulkan SDK types and compiled compute shaders. Bring up face evaluation,
+   isolated CSR assembly, complete force/energy reduction, and readback gates
+   separately against the frozen references.
+4. Keep CPU, GPU, runtime, visual/DYAD, and Alan acceptance as separate fields;
+   no window or visual claim follows from a successful CPU verifier.
+
+**First GPU gate result (Luna, 2026-09-08).** The standalone numerical probe
+is now implemented at `tools/membrane_gpu_probe/` and the reproducible runner
+is `tools/run_membrane_verification.py`. Successful evidence is preserved at
+`docs/evidence/membrane_gpu_probe/20260908T030158.528749Z/`. Exact command:
+`python tools/run_membrane_verification.py`. CPU reference **PASS**; shader and
+host build **PASS** outside `ChimeraEngine/engine/build/`; Vulkan comparison
+**PASS** on the reported NVIDIA GeForce RTX 4090 with the captured
+`vulkaninfo` output. B2 and Fan12 each pass gamma 0/1/2. Maximum observed
+face/normal absolute error is ~3.94e-8, corner-force error ~7.68e-8, and
+complete-force error ~1.79e-7; fixed-order degree-6 and degree-12 CSR gates
+pass. The first failed runs remain preserved and were caused by a GLSL
+portability issue, a Windows DLL launch environment, and an initially wrong
+host comparison of complete force against the assembly-only reference; no
+physics tolerance was widened. **Linux/WSL portability rerun (2026-09-08):**
+`python3 tools/run_membrane_verification.py` reached the runner and recorded
+fresh raw inventory at
+`docs/evidence/membrane_gpu_probe/20260908T044248.110251Z/`. WSL initially
+lacked CMake, GLSL compiler, Vulkan development headers, and NumPy; that
+inventory remains preserved as evidence, not a Linux result. After Alan
+installed the WSL development packages, the checkout-local `.venv-linux` was
+created and NumPy was pinned to the frozen manifest version `2.2.6`. Exact
+command: `.venv-linux/bin/python tools/run_membrane_verification.py`.
+Final evidence: `docs/evidence/membrane_gpu_probe/20260908T052638.020543Z/`.
+CPU reference **PASS**; Linux host/shader build **PASS**; Vulkan comparison
+**PASS** for B2 and Fan12 at gamma 0/1/2. The selected device is software
+`llvmpipe (LLVM 20.1.2, 256 bits)`, Vulkan 1.4.318 / Mesa 25.2.8; this
+certifies Linux software-Vulkan execution only and does not establish RTX
+4090 access, hardware performance, or engine-window support. The first
+post-install run `20260908T052316.891102Z` remains as failed correction
+history because NumPy 2.5.3 violated the fixture's frozen 2.2.6 version
+identity; no fixtures, laws, or numerical tolerances changed. Windows rerun
+`20260908T044310.438669Z` remained CPU/build/GPU **PASS**. Engine-window/
+runtime/DYAD/Alan acceptance is **NOT_TESTED**, and no engine process or HTTP
+endpoint was touched.
+
+**STEP-GPU-02 mutation verification (2026-09-08).** Rule-0 preregistration:
+**STATEMENT** — the standalone probe detects each specified temporary mutation
+through a numerical or validity gate while the clean control passes.
+**PREDICTION** — all six compiled/executed controls are rejected on WSL2
+llvmpipe. **FALSIFIER** — clean failure, compile-only detection, accepted
+mutation, or accepted stale output. Evidence
+`docs/evidence/membrane_gpu_mutations/20260908T062453.860121Z/` records the
+clean control and all six detections as **PASS**: reversed force sign,
+permuted corner ownership, zero force with positive gamma, incorrect normal,
+invalid face with gamma=0 via emitted validity predicate, and true stale-buffer
+reuse after changing mapped geometry. Every control built and executed; source,
+SPIR-V, executable, fixture hashes, commands, exit codes, raw outputs, actual
+llvmpipe device identity, and the uncommitted source diff are preserved.
+Temporary copies only were mutated; physical laws, fixtures, tolerances, and the
+engine boundary were unchanged.
+
+**LUNA-WINDOW-01 membrane window demo (2026-09-08).** Rule-0 preregistration
+in `docs/THE_MEMBRANE_WINDOW_DEMO.md` (before implementation): **STATEMENT** —
+accepted iterations of the declared overdamped update satisfy the existing
+energy/geometry gates and the renderer consumes that accepted geometry (no
+second visual pose). **PREDICTION** — positive gamma reduces the B2 bump, zero
+gamma leaves geometry bit-unchanged, fixed-state gamma doubling doubles energy
+and force within the existing bounds. **FALSIFIER** — accepted-state gate
+breach, separate visual geometry, failed zero/doubling control, or a capture
+without a matching state ID. Implementation: `tools/membrane_window_demo.py`
+(one-shot driver; rim pins exact, centre on the declared vertical rail, ALL
+THREE force components recorded before projection, constants imported from
+`overdamped_descent.py`, gamma only through the validated material contract,
+deterministic state IDs per iteration and per capture) and
+`tools/membrane_window_demo_checks.py` (F1–F5). Numerical result at gamma 1:
+status `stagnated`, 126 accepted steps, energy 2.6245730615178493 →
+2.5980761647224426 J, centre |z| 0.125 → 4.15e-09 m, rail xy deviation exactly
+zero, upload force within the frozen manifest's own componentwise budget.
+All F1–F4 checks **PASS** (`20260908T151444.432622Z`; gamma 0 and gamma 2
+controls recorded). RESOLVED FALSIFIER (kept as correction history): strict
+geometry-byte identity between the rail run and the unconstrained declared
+run is false at f64 noise (f32 hexagon symmetric only to ~1e-17; declared-run
+xy drift 4.17e-18, within the manifest's `force_xy_symmetry_N = 1e-6`);
+energies are bit-identical every iteration; the checks assert energy
+bit-identity + drift-within-budget + rail-exactly-zero instead. No tolerance
+widened. Window/DYAD: **NOT_TESTED** — the demo instance must be built and
+launched by the operator (exact commands in the note); no engine process,
+HTTP endpoint, or protected build path was touched.
+
+**GLM-WINDOW-02 ownership trace + corrections (2026-09-08).** Trace recorded
+in `docs/THE_MEMBRANE_WINDOW_DEMO.md` §1–§6. OWNERSHIP: the window demo's
+forces/accepted positions come from `surface_energy_reference.evaluate_surface`
+(CPU f64) via `projected_descent`; the verified Vulkan kernels live only in
+the standalone probe; `/mesh_bin` uploads a CPU-computed result — labelled a
+**CPU-reference visualization milestone**, no GPU-driven integration claimed.
+DIMENSIONAL CORRECTION (preregistered): the retired F1 instrument compared
+metres against newtons (`force_xy_symmetry_N`); replaced by the derived
+position bound `n_accepted·(1/gamma)·1e-6` m from the actual update
+`p = P·F` — observed drift 4.168e-18 m vs bound 1.260e-4 m, PASS; the
+original failing comparison is preserved as a failed instrument; prior PASS
+verdicts unaffected (independent instruments). CAPTURE LINKAGE: source-verified
+that `/mesh_bin`'s `{"ok":true}` is a real render-thread applied-ack but
+returns NO state identity; `GET /state` is the particle state, `/session` is
+blob sizes; competing writers exist (`--restore` boot replay — demo launches
+`--no-restore` —, Studio, other HTTP clients); capture association marked
+**CONDITIONAL**, certifiable only with a corroborating read of
+`session_snapshot/mesh_bin.blob` (the engine writes every accepted upload
+THROUGH, byte-identical). LAUNCH COMMAND verified against source:
+`chimera_engine.exe` (CMake target), port argv[1] (default 8080),
+`--no-restore` all-argv scan, CWD-relative shaders with EXE-dir fallback,
+session files (snapshots/logs/studio_state) CWD-relative so a demo instance
+launched from its own build dir shares NO persistent files with the
+operator's session; no named kernel objects. BP review reconciliation:
+gamma admission path recorded immutably per run with synthetic labeling
+(F6), J/m² retained with declared 1 wu = 1 m mapping (no J/wu² unit), f32
+upload boundary validates CONVERTED values (overflow refused, positive
+underflow reported, round-trip error recorded — F7). Checks F1–F4, F6, F7
+**PASS** (`20260908T160307.423502Z`). Numerical PASS / upload conditional /
+window NOT_TESTED / DYAD NOT_TESTED — kept separate. No tolerance widened,
+no master push, no protected-path writes, no live session touched.
+
+**GLM-WINDOW-03 isolated window demonstration EXECUTED (2026-09-08).**
+Pre-launch corrections: (1) P units corrected to **m²/J** (1/gamma carries
+the energy denominator's AREA unit; the GLM-WINDOW-02 note's `[m/J]` was a
+unit error) and the cumulative drift bound's assumptions VERIFIED over the
+actual compared trajectory — max recorded alpha 1.0, max recorded |F_xy|
+1.11e-16 N over all 126 steps — bound 1.260e-4 m, observed drift 4.168e-18 m;
+the original metres-vs-newtons check is recorded as SUPERSEDED, NOT VALID
+(failed-instrument history only); energy and rail gates retained
+independently. (2) Position quantization (`positions_only`, overflow
+refused, underflow reported) is SEPARATE from gamma quantization, which is
+**NOT APPLICABLE** in this CPU demo (gamma stays f64 end-to-end; no gamma
+field in the payload) — the future GPU gamma boundary is NOT certified.
+Execution: engine built into `.tmp/engine_demo_build` (outside the
+protected path), port 8091 verified free, demo instance launched
+`--no-restore` with its own CWD (exe sha256 25f9b349…, PID 57124, recorded
+in `launch_20260908T112500Z/process.txt`); only that PID was controlled and
+it was stopped after capture. Two live-found driver defects preserved as
+failed runs (index-count header `"size mismatch"`; sidecar key error) and
+fixed driver-side only — the engine was never modified. Captures with
+fixed camera and sidecars: gamma-1 accepted state
+(`20260908T162114.706091Z`), gamma-0 zero control — upload bytes equal the
+raw fixture f32 (`20260908T162207.936281Z`), gamma-2 matched-state doubling
+— final geometry hash IDENTICAL to gamma-1, energy ratio exactly 2.0
+bit-exact, 126==126 steps (`20260908T162328.481149Z`). Mesh corroboration by
+PARSING the documented blob format and hashing the extracted POSITION bytes
+only (never whole-blob vs position hash): MATCH ×3
+(`launch_20260908T112500Z/blob_corroboration.txt`). Capture association
+remains **CONDITIONAL** (no engine-returned state/frame identity; competing
+writers not excludable from the driver side). Checks F1–F7 including F5
+capture certifiability: **ALL PASS**. Verdicts: numerical PASS / upload
+conditional-with-corroboration / window EXECUTED (visual/DYAD acceptance
+NOT claimed — the local vision agent reviews next). No tolerance widening,
+no master push, no protected-path writes, no control of Alan's engine.
+
+**GLM-DYAD-01 dyad review EXECUTED (2026-09-08).** Per
+`docs/THE_DYAD_PROTOCOL.md` (one image per call, non-leading structured
+questions, no timeouts, full recording; served model read back as
+`qwen3.8-27b-nvfp4-mtp`; human acceptance NOT claimed). Review record:
+`docs/THE_MEMBRANE_DYAD_REVIEW.md`; raw evidence
+`docs/evidence/membrane_window_demo/dyad_*` (rounds 1–3, prompts, context,
+image hashes, raw responses, finish reasons) + the protocol's dyad_log.jsonl.
+ROUND 1 (original phi 0.3 fill captures): dyad judged the membrane NOT
+VISIBLE — pixel measurement confirmed (mesh rendered near-black, edge-on)
+and source inspection found the ROOT CAUSE: B2 is z-up, the engine world
+y-up. CORRECTION (Rule-0 preregistered, falsified by round-2/3
+improvement): explicit axis-convention mapping
+`(x,y,z)_b2 -> (x,z,-y)_engine` at the upload boundary — a rigid rotation
+of the ACCEPTED geometry (presentation transform, NOT a second simulation;
+f64 state of record unchanged, both hashes recorded) — plus recorded
+phi 0.7 and fill+wire mode (the dyad's own request). Two live-found
+defects preserved as failed runs before the fix. ROUND 2 (recaptured):
+dyad judged BOTH captures **consistent** — flat state's spokes converge at
+an in-plane centre and the dyad cross-checked 2.598 J = flat-hexagon area;
+bump sign/magnitude NOT visually certifiable (stated with uncertainty).
+ROUND 3 (dyad-requested near-top-down diagnostic pair, upload↔blob
+corroboration MATCH): both **consistent**; NEW unresolved render defect
+recorded — coplanar mesh/floor depth ambiguity (banding + black lens) for
+the render lane. DYAD VERDICT: rendered results CONSISTENT with the
+declared accepted states at every checked capture after correction;
+membrane visible and suitably framed; no GPU-dynamics claim; Alan's
+acceptance NOT claimed (reserved). Numerical/upload/window verdicts
+unchanged and separate.
+
+**GLM-DYAD-02 EXECUTED (2026-09-08).** Continue point
+`931ce1e596fffbc08212bf07b13e4f294c35bd7a`. Preregistered before the test:
+STATEMENT — removing floor overlap (rigid +0.5 m presentation lift along
+engine y, identical across compared captures) improves surface legibility
+without changing the accepted physical geometry; PREDICTION — rim and
+centre distinguishable, raised-vs-flat comparison resolvable under
+identical presentation/camera/render; FALSIFIER — ambiguity persists,
+physical geometry changes, or centre height remains unresolved
+(INCONCLUSIVE for that comparison). (1) Floor/mesh ambiguity: treated as a
+HYPOTHESIS and tested by controlled comparison in the isolated instance
+(PID 66400, launch_20260908T183000Z): same flat accepted state, same
+exact round-3 camera, only the lift differs — the lift-0.0 capture is
+BYTE-IDENTICAL to the round-3 artifact capture (`c7d83911…`), and shows
+61,138 sub-background pixels where the lifted capture shows 0. VERDICT:
+hypothesis SUPPORTED (coplanar depth conflict with the floor/shadow
+plane); a first bumped-state control showing no artifact is preserved as
+history. (2) The lift is a documented rigid PRESENTATION translation of
+the upload (no floor-visibility control exists in the engine surface);
+accepted f64 geometry, energies, forces and state IDs untouched; gates F8
+enforce geometry-of-record invariance; no bump exaggeration, no contact
+physics, no renderer repair. (3) Raised (γ=0, 0 steps) vs relaxed (γ=1,
+126 steps) pairs captured with identical lift/camera/render, blob
+corroboration MATCH each; checks F1–F8 ALL PASS. (4) DYAD rounds 4–5
+(φ=1.10 pair, then the dyad-requested oblique φ=0.55 pair): relaxed state
+CONSISTENT every round; raised state NOT visually resolvable —
+**centre-height comparison INCONCLUSIVE per the preregistered rule**;
+expectation retired. Remaining cause MEASURED + source-verified: zero
+shading response across the bump (identical fill statistics at every
+camera) and the wireframe pass draws the SAME vertex color as the fill
+(`engine.cpp` ~1439, "identical in every state except polygon mode"), so
+interior contrast is zero by construction — making the height legible is a
+general-renderer improvement, recorded for the operator, out of scope
+here. Task record: `docs/THE_MEMBRANE_DYAD02_RECORD.md`; evidence
+`dyad02_control_20260908T191152.065006Z`, capture dirs
+`20260908T1919…`–`20260908T1927…`, `dyad_r4_*`, `dyad_r5_*`. Verdicts
+separate: numerical PASS / upload CONDITIONAL-with-corroboration / window
+EXECUTED / DYAD artifact-RESOLVED + height-INCONCLUSIVE / human NOT
+CLAIMED — the oblique pair is presented to Alan for review; NO
+GPU-dynamics claim. No master push, no force-push, no protected-path
+writes, no tolerance change, no control of Alan's engine.
+
+**GLM-DEMO-CONTRAST-01 EXECUTED (2026-09-08).** Continue point
+`ae5c5d6ed0a20c88c75ea29fb9055203de1e3c0e`. Preregistered: STATEMENT —
+contrasting edges make the actual centre/rim geometry more
+distinguishable without changing accepted simulation state; PREDICTION —
+DYAD can locate centre and rim and distinguish raised vs relaxed in a
+fixed oblique view; FALSIFIER — geometry changes, ordinary rendering
+regresses, or the height distinction stays unresolved (INCONCLUSIVE).
+Implemented the SMALLEST opt-in rendering change: new
+`render_tri_edge.frag` (constant light edge color (0.90,0.90,0.95),
+derived from the measured fill band 147–167 + the family's +0.05 blue),
+a LINE-mode pipeline twin created ONLY when env
+`CHIMERA_TRI_EDGE_CONTRAST` is latched at engine start (optional-
+instrument law: stale/missing spv costs the feature, not the engine),
+substituted at the existing wire draw; ordinary path untouched when
+unset. REGRESSION PROVEN byte-identical: patched exe (f3714eb9…), gate
+UNSET, lifts 0.0/+0.5 reproduce the pre-patch PNG sha256s c7d83911… /
+83f4b364… exactly (a corroboration FAIL was tooling — build1's stale
+blob path — fixed with the CHIMERA_MESH_BLOB override, re-run green).
+Physics invariance: F1–F8 ALL PASS on the contrast-pair run (state IDs
+shift only because they are commit-scoped; energies and geometry hashes
+bit-identical). Captures with gate ON (PID 25480): raised
+`20260908T203620.679992Z/raised_contrast_oblique.png`, relaxed
+`20260908T203626.782212Z/relaxed_contrast_oblique.png`, identical +0.5 m
+lift + oblique camera, blob corroboration MATCH; measured edge pixels
+408/376 where pre-patch had 0, fill statistics unchanged. DYAD round 6
+(full recording `dyad_r6_20260908T203756.192289Z`): the patch ACHIEVED
+its aim — the dyad LOCATES the centre ("the spoke junction") and rim and
+reads the mesh floating clear of the floor — but the height distinction
+REMAINS NOT RESOLVABLE ("spokes are straight line segments whether or
+not the centre is raised"; perspective confounds the junction offset).
+VERDICT: height distinction INCONCLUSIVE per the preregistered
+falsifier; per the stop rule THIS VISUAL EXPERIMENT STOPS. Now
+two independent mutually-confirming proofs that this rendering approach
+cannot resolve the B2 bump height (zero shading response — GLM-DYAD-02;
+projection invariance of straight spokes — this task); resolving height
+needs a different evidence class (side/elevation ortho view, rim-plane
+reference overlay, or height/normal color ramp), left to the operator.
+Record: `docs/THE_MEMBRANE_CONTRAST01_RECORD.md`. Verdicts separate:
+numerical PASS / upload CONDITIONAL-with-corroboration / window
+EXECUTED / DYAD centre-locatable + height-INCONCLUSIVE (experiment
+stopped) / human NOT CLAIMED (contrast pair presented) / NO GPU-dynamics
+claim. No master push, no force-push, no protected-path writes, no
+tolerance change, no control of Alan's engine.
+
+**GLM-GPU-DEMO-01 runtime bring-up (2026-09-08/09).** The isolated engine source now includes the opt-in GPU membrane controller, separate accepted/trial buffers, certified stage-0/1/2 evaluation, in-kernel trial update, present-stage accepted-state mapping, compute-to-vertex barrier, and `/membrane_demo_bin` plus `/membrane_demo` controls. The source and shaders build with MSVC/Visual Studio 17 2022 outside the protected directory. The first runtime attempt found and fixed the emitted-shader filename mismatch (`membrane_demo.spv` versus the requested `membrane_demo.comp.spv`). With the firewall prompt allowed, an isolated `--no-restore` instance started on free port 8091, initialized the B2 upload, returned the expected initial energy/centre/material snapshot, completed one GPU step, and served a PNG frame. A later post-correction control/upload attempt crashed the isolated process with Windows Application Error 1000 (`VCRUNTIME140.dll`, `0xc0000005`); the exact source fault remains unresolved. A subsequent source correction restores initial gamma/snapshot on reset and re-evaluates energy/force after gamma admission, but those controls have not yet been rerun successfully. Runtime full relaxation, gamma controls, rejection integrity, capture state linkage, visual/DYAD, and human acceptance remain **NOT_TESTED**. Full record: `docs/THE_GPU_DEMO01_RUNTIME_RECORD.md`. No GPU-driven engine milestone PASS is claimed.
+
+**GLM-GPU-DEMO-02 RESOLVED — runtime gate PASS (2026-09-09).** The
+DEMO-01 blocker was resolved by diagnosis, not guesswork. (1) The isolated
+`0xc0000005` crash (9 identical WER records, VCRUNTIME140 offset
+`0x1ddea`, inside `memcpy`) was localized by a stderr marker ladder to a
+valid-sized vector assign in `membrane_demo_init` and root-caused to a
+STALE TRANSLATION UNIT: the MSVC build directory under the user Temp dir
+(CMake MSB8029) retained an object compiled against a pre-layout-change
+`engine.hpp`. A `--clean-first` rebuild of unchanged source eliminated the
+crash; reproducibility falsifier checked (crashed before, never after,
+four later builds). No source change fixes the crash; the clean-build law
+is recorded in the runtime record. (2) The gate then exposed an
+independent real defect: `main.cpp::find_colon_after` matched the FIRST
+textual occurrence of a JSON key, so `{"op":"gamma","gamma":2.0}` shadowed
+the actual member and `get_double` silently returned its default 0.0,
+which `md_admit_gamma` legally admitted as a zero material (energy/force
+exactly 0, validity intact). Fixed to scan all occurrences with a
+closing-quote prefix guard; no tolerance/fixture/shader/physics change.
+(3) Astra's review was answered and the source-publication discrepancy
+closed: `35f97e34` had never been pushed (the crash session died first);
+pushed as a fast-forward — remote head `35f97e346abb7cb3f703d5af0e1d7edf
+e5313680`. (4) New option-b runtime gate `tools/membrane_demo_client.py`
+(separated requests, frozen-fixture upload, own-process launch discipline,
+per-run engine log archival): TWO consecutive clean-build runs, 20 PASS +
+1 INFO each — init vs frozen ref, EXACT fixed-state doubling (E and force),
+gamma restore, step1, full run terminal `stagnated` at iteration 126 with
+E=2.59807611 matching the CPU law 2.5980761647, reset restore, rejection
+integrity (state id unchanged), gamma=0 stationary, state-linked captures.
+CPU regression rerun after the shared-parser change: unchanged PASS. Full
+record appended: `docs/THE_GPU_DEMO01_RUNTIME_RECORD.md` (GLM-GPU-DEMO-02
+section). Remaining: visual/DYAD review of the GPU-driven demo (NOT
+TESTED), render-side capture certification still conditional,
+per-iteration trajectory dump NOT TESTED, human acceptance NOT CLAIMED.
+
+**GLM-GPU-DEMO-03 DYAD EXECUTED (2026-09-09).** Per
+`docs/THE_DYAD_PROTOCOL.md` (`tools/run_dyad_gpu_demo_review.py`, served
+model qwen3.8-27b-nvfp4-mtp, one image per call, physical briefing verbatim,
+non-leading numbered questions, full recording): the dyad reviewed the
+GPU-driven demo's raised (gamma=0) and relaxed (gamma=1, iteration 126)
+captures. Observations: rim clearly visible in both; centre vertex NOT
+visible; the 0.125 m height offset NOT RESOLVABLE (fill-only presentation:
+source-verified — the GPU demo path sets no `mesh_mode_`, so the wire pass
+and edge-contrast pipeline never draw; the runner's earlier wireframe claim
+was imported from the CPU-demo law and was wrong, corrected in the runner
+and the record). No rendering defect beyond the already-recorded
+presentation limitation; no contradiction of the numerical record; the
+dyad correctly left numerical confirmation to the numerical evidence.
+Height resolvability remains INCONCLUSIVE until the demo path enables the
+existing opt-in edge-contrast presentation or profile views. Evidence:
+`docs/evidence/membrane_gpu_demo_runtime/20260909T140408.398190Z/
+dyad_gpu_demo_review.json`. Human acceptance NOT CLAIMED.
+
+**GLM-GPU-DEMO-EDGE-01 VISUAL LOOP CLOSED (2026-09-09).** Opt-in demo-scoped
+edge contrast implemented (`CHIMERA_MD_EDGE` latch + `md_edge_contrast_`;
+wire pass extended only while the demo draws; `mesh_mode_` never touched, so
+ordinary presentation is restored by construction). Falsifier fired TWICE on
+the way to PASS (wire pass without the contrast instrument = invisible
+fill-colored edges; oblique phi 0.7 and near-edge-on phi 0.06 left height
+unresolved), all attempts preserved. Final configuration phi 0.35 / radius
+3.0, uniform for both states: the dyad locates the raised apex ABOVE the
+projected rim centroid with a bulging fan ("resolvable in principle"), and
+the relaxed fan converging AT the centroid ("consistent with ~0"), itself
+affirming the 0.125 m case "WOULD be visible here." accepted_state_id
+BIT-IDENTICAL across all presentation runs (raised
+`17560123212910228982`, relaxed `16501489447187382864`); numerical gate
+green in every configuration (20 PASS + 1 INFO). Raised/relaxed distinction
+ASSESSABLE. Human acceptance NOT CLAIMED — phi-0.35 pair ready for Alan's
+review. Evidence: `docs/evidence/membrane_gpu_demo_runtime/
+20260909T143821.177952Z/` (+ preserved failed attempts 142006, 143120,
+143341, 143341-Z records) and the EDGE-01 section of
+`docs/THE_GPU_DEMO01_RUNTIME_RECORD.md`.
+
+**UNIVERSAL-AGENT WORKFLOW BOOTSTRAP — audit recorded (2026-09-09).** Full
+record: `docs/THE_WORKFLOW_BOOTSTRAP_AUDIT.md` (at `60b77671`). Findings:
+the fleet's pieces EXIST as law and practice — master list (sole claim/record
+surface), `ChimeraEngine/AGENT_PROTOCOL.md` (session contract; its CURRENT
+TASK slot is stale pre-2026-08-23 content), `docs/THE_DYAD_PROTOCOL.md`
+(parallel-operation rules: ports, kill discipline, binary identity),
+`Chimera/core/membrane.py` (the proven isolation primitive), five physical
+review checkouts on E: demonstrating the slot pattern — but the fleet itself
+(the five-slot registry, claim/lease semantics, integration ownership,
+cross-slot evidence pointers, universal prompt) is PROPOSED ONLY, with no
+committed artifact. The EDGE-01 disagreement is recorded there as the
+concrete claimed-setting → observed-contradiction → source-inspection →
+correction → rerun-with-state-identity example. ONE blocking architectural
+choice is named for the operator: per-slot private session stores vs a
+shared namespaced store — it determines claim/lease mechanics, evidence
+placement, and the recovery step, and the universal prompt cannot honestly
+be announced ready until it is decided (the 2026-07-14 shared-live-graph
+incident vs the single-writer success of the master list/dyad log are the
+recorded evidence on each side). Next choice-independent task: write the
+slot registry for the five observed lanes as a RECORD (paths, ports, build
+dirs, owners) and reconcile `tools/orient.py` (verified live in this
+checkout, prints the correct HEAD) with the universal prompt's recovery
+step. Universal prompt is NOT announced ready.
+
+**GLM-RELAX-GPU-01 GATE PASS (2026-09-08).** Continue point `c38ffe84…`.
+Preregistered first (`docs/THE_RELAX_GPU01_PREREGISTRATION.md`):
+STATEMENT — the compiled verified kernels (frozen-certified face-eval,
+CSR-gather, energy-reduce) plus one derived stage-4 trial-update kernel
+can DRIVE the declared overdamped descent on B2 gamma=1 with the GPU
+state of record in f32, matching the CPU f64 law within FROZEN budgets
+at iteration 0 and DERIVED f32-accumulation budgets afterward; FALSIFIER
+— frozen-budget breach, energy drift beyond 1.1e-5, position beyond
+n·2^-23·max|coord|, unnamed terminal state, Armijo violation, or any
+tolerance widening. Implementation: probe.cpp core extracted VERBATIM to
+probe_core.hpp (certified single-shot probe unchanged and re-verified),
+new `relax_gpu_probe` target mirrors run_descent 1:1 (residual test on
+free DOFs, exact-zero pins, GUARD_FRAC first-trial cap, backtracking
+Armijo with the trial built IN-KERNEL, five named terminal states).
+RESULT on the NVIDIA GeForce RTX 4090: R1 frozen single-shot PASS (worst
+1.79e-7); R2 per-iteration energy worst drift 3.269e-7 (budget 1.1e-5);
+R3 final centre gap 1.949e-7 m (derived bound 1.502e-5); R4 named state
+`stagnated` matching the CPU law; R5 Armijo re-checked from the trail,
+margin ≥ 0; R6 frozen/derived budgets only. GPU loop 126 accepted steps
+(= CPU law), energy 2.625 → 2.59807611 J vs CPU 2.5980761647224426 J.
+Corrections preserved: draft harness rewritten before compile; float&
+energy mismatch; main() stripped from the extracted header; quoted
+glslc std::system failure on Windows; RELAX_FINAL_POS printed the
+initial state until fixed; HARNESS parse bug (indices parsed as values)
+caused a preserved false-FAIL run before the fix. Record:
+`docs/THE_RELAX_GPU01_RECORD.md`; evidence
+`docs/evidence/membrane_gpu_relax/relaxgate_20260908T220009.757271Z/`.
+Verdicts separate: CPU PASS / GPU PASS / runtime-window-DYAD NOT TESTED
+/ human NOT CLAIMED / GPU-driven ENGINE integration NOT CLAIMED (next
+bounded task). No master push, no force-push, no protected-path writes,
+no tolerance change, no control of Alan's engine.
+
+
+Historical assignments below are retained as provenance only. They no longer
+assign current ownership.
+
 ## 1 · THE ONE CLAIM (what this is for)
 
 **A holographic engine: the triangle is BOTH the structure of reality AND the
@@ -249,28 +824,22 @@ copy, which is why the human is a terminal of this system, not a user of it.
 | B11 | **L7 GPU port** — per runtime packet 02 (SSBO ping-pong, subcycle seam SOLVED) | unassigned | READY — after B7 lands |
 | B12 | **Chimera packet 02 construction** — static split/graft buildable now (Stage-1 falsifiers need no CA/frost) | unassigned | READY — after teddy qualifies |
 
-**Division of labor (operator decree 2026-08-27, AMENDED 2026-08-28):** Kimi
-holds project context and writes elaborate prompts IN CHAT (never in docs)
-for transfer to Open Code, where local agents run long construction loops.
-~~HARD BOUNDARY: Kimi edits ONLY this file~~ **AMENDED by the operator during
-the leg night (2026-08-28): when the local agents stall, the main agent
-constructs directly** — it fixed the torn leg, the engine (B1/B3/input/
-streaming), and the knee axis itself, by explicit operator instruction
-("I want you to do the work"). The master list remains Kimi's exclusive
-edit surface among docs; everything else now carries a workflow:
+**Division of labor (historical, superseded 2026-09-07):** Kimi
+held project context and wrote elaborate prompts IN CHAT (never in docs)
+for transfer to Open Code, where local agents ran long construction loops.
+~~HARD BOUNDARY: Kimi edits ONLY this file~~ **Historical amendment:** when
+local agents stalled, the main agent constructed directly. The master list was
+Kimi's exclusive edit surface among docs; everything else carried a workflow:
 `docs/THE_OPERATING_MANUAL.md` (boundaries, the loop, the task envelope) +
-`docs/THE_TRIANGLE_GUIDE.md` (the laws). This file is the guide for BOTH
-sides: the prompter writes from it, the builder reads it first and runs
-`python tools/orient.py` second. The operator ratifies, steers, and is the
-human terminal of every dyad.
+`docs/THE_TRIANGLE_GUIDE.md` (the laws). **This historical division is now
+superseded by the Luna sole-agent amendment in §0; Luna owns the current
+construction, documentation, testing, and publication work.**
 
-**ROSTER (2026-08-28, operator report):** the free model supply was cut;
-Big Pickle and hy3 are RETIRED with their service (their packets/audits
-stand — the work is independent of the worker). Active: **CatCoder 2.5**
-(construction lane) and **Ling 3.0 Flash FIN** (bounded verification lane).
-**Addendum (leg night, 2026-08-28):** the local agents stalled on the torn
-leg; the main agent closed it directly and now shares the construction lane
-per the amended division of labor above. Quinn 3.8's fate unconfirmed.
+**ROSTER (historical, superseded 2026-09-07):** the free model supply was cut;
+Big Pickle and hy3 were retired with their service; the packets/audits stand
+as surviving evidence independent of the worker. CatCoder and Ling were the
+then-active bounded lanes. **No parallel agent handoff is awaited now; all
+surviving work is assessed by Luna.**
 
 ## 8 · THE RULES OF THIS PAGE
 
@@ -1600,3 +2169,676 @@ docks' blue container line (the original defect 2's perceptual root); the
 empty REEL tray draws all `REEL_MAX` slots sized to the band — the header's
 count and the tray's shape now agree. Dyad round-4: no region reads as broken
 or placeholder.
+
+## FLEET REGISTRY (WORKFLOW-BOOTSTRAP-01 live)
+
+Live task ownership now flows through the fleet control plane (`tools/agent_fleet/`): authenticated HTTP, transactional SQLite store, generation-fenced claims, five private slots, fetch-verified fast-forward publication into this branch. This section records adoption; the registry is the live authority for fleet task ownership, this list remains the human-readable roadmap.
+
+**Status 2026-09-09 — the loop is implemented and demonstrated end-to-end.**
+
+- **Implemented** (commit `be615277`, then extended through the loop itself):
+  `control.py` (transactional registry; Windows DB-handle fix; `provision_slot`),
+  `publish.py` (the only task-branch→integration-base path: fetch-verified
+  fast-forward, no force, never master; interrupted integrations reconciled
+  against re-read remote state), `provision_slot.py` (worktree create/verify
+  bound to claims), `enroll_agent.py` (credentials stay out of logs),
+  `demo_live.py` (the live loop driver).
+- **Verified offline**: 49/49 protocol tests (`test_control.py` 36 +
+  `test_bootstrap.py` 13), including the operator-required fault-injection
+  scenarios: single-winner claim race over HTTP, dependency blocking,
+  restart preservation, obsolete-generation refusal, one authorized
+  integrator per epoch, publish FF/verify/reconcile, provisioning gates,
+  unique ports. Windows-green.
+- **Verified live** (`docs/evidence/agent_fleet/BOOTSTRAP_LIVE-122537/`):
+  two HTTP clients raced for one task (one winner, one refusal); a worker
+  was marked failed mid-task, its zombie generation-refused write recorded,
+  worktree reconciled and preserved, task recovered and reassigned at a new
+  generation; three real tasks (run record, recovery-drill record, this
+  master-list row) published through fetch-verified fast-forward pushes
+  `eb169df1 → 53b733eb → eb169df1(work) → c08873e5`. The membrane demo shader
+  tracking task (`53b733eb`) was itself delivered through an earlier demo run.
+- **Limits (not claimed)**: slot engines are still unbuilt (no per-slot GPU
+  runtime yet); supervisor-only steps are performed by the trusted launcher,
+  not a separate service; direct-GitHub publication bypass cannot be
+  technically prevented (documented in `publish.py`); universal dispatch
+  beyond current assignments waits on Alan's explicit go
+  (`docs/AGENT_START.md` dispatch status).
+- **Next executable task**: provision slot-01's engine build/runtime from the
+  verified demo engine path, then run one GPU numerical task through a slot
+  runtime with its own port and evidence root.
+- **GLM-WF-01 slot registry + orient.py reconciliation PENDING INTEGRATION
+  (2026-09-09, branch `astra/tasks/glm-wf-01`, base `d7c47446`).** The audit's
+  named follow-up, executed as a RECORD (no code changed): ten lanes
+  inventoried read-only — the live term store (`ChimeraEngine/engine_state.json`)
+  exists ONLY in the operator checkout (gitignored, untracked, 24,869 B,
+  sha256 `2bc21ed7…`); the verdict lane is tracked and commit-reproducible
+  (blob `cfba404b`); the four review checkouts carry neither store; the
+  `E:/ChimeraWork` fleet root did not exist. Preregistered falsifiers fired
+  3×: `tools/orient.py` in a store-less fresh worktree exits 0 with a
+  plausible default term tree (silent default, no marker, nothing written —
+  source + measured); the store is NOT tracked at `cf2a0ae2` or `d7c47446`;
+  the operator checkout moved `51cd7212`→`d7c47446` mid-session (not by this
+  worker; recorded, not owned). Reconciled rules R1–R5 recorded (store-presence
+  + hash in every orientation; orient.py approved read-only; `--strict` fix
+  NAMED NOT BUILT; reads commit-safe, writes stay serialized). The freeze
+  checkout is drained (all four leftovers published) and safe to retire.
+  Session status reported as BOOTSTRAP_NOT_CONFIGURED: no control service, no
+  provisioned session file, universal dispatch on HOLD. Record:
+  `docs/evidence/glm_wf01/SLOT_REGISTRY.md`. No engine runtime, no DYAD, no
+  GPU work (none in scope); verdicts are source-inspection and filesystem
+  measurements, reproducible from the quoted commands.
+
+## SLOT01-E2E (universal dispatch, single slot)
+
+One bounded GPU membrane verification task executed end-to-end through the fleet control plane on slot-01 (task `slot01-membrane-143008`): claim, clean slot build, runtime gate PASS, real interruption + failover recovery at generation 4, DYAD executed, fetch-verified publication. SINGLE-SLOT VERIFIED; not a five-slot deployment.
+
+### SLOT02-PARALLEL-01 — TWO-SLOT VERIFIED (2026-09-09, run 164741)
+
+All behaviors from the assignment executed through the real operating path
+(driver `tools/agent_fleet/slot02_parallel.py`; evidence
+`docs/evidence/agent_fleet/SLOT02-PARALLEL-par-engine-gate-164741/`).
+
+- **Overlapping concurrent work (measured from the legs' own intervals):**
+  slot-01 (build+gate, 26.5 s) overlapped slot-02 (CPU-law + standalone
+  Vulkan probe, 5.3 s); `overlapped: True` in `SUMMARY.json`. An earlier run
+  measured overlap with a post-barrier timestamp that mislabeled full overlap
+  as none — corrected in the driver; both legs' work was real and committed
+  in all runs.
+- **GPU arbitration:** slot-02's `resource_acquire` on `rtx4090` REFUSED
+  (`resource_not_available`) while slot-01 held it; granted after release
+  (handoff). `dyad_eye` reserved explicitly for the DYAD leg; the
+  `release_dyad_first` dependency law fired correctly once and was then
+  obeyed (eye releases before the GPU it requires).
+- **Engine-loss drill:** owned gate engine (PID 42680) killed after a durable
+  checkpoint; failover elected `standby01` (epoch 2); zombie write REFUSED
+  (`session_revoked`); GPU reservation retained until the supervisor verified
+  actual drain (`resource_clear` seq 26); recovery reconciled the worktree;
+  reclaim at generation 4 (1→fail→4). Fresh runtime identity: old exe
+  `dc371d04…` → new exe `b43698d8…` (clean rebuild). Post-recovery gate
+  rerun PASS.
+- **DYAD executed** post-recovery (`qwen3.8-27b-nvfp4-mtp`, rc 0, run
+  `20260909T214850.509519Z`); edge-contrast raised/relaxed pair at matched
+  presentation; INCONCLUSIVE/conditional linkage retained as such.
+- **Serialized integration + stale base:** T2 integrated first (`9a2e3e54`),
+  legitimately advancing the base; T1's stale-base attempt REFUSED
+  (`non_fast_forward_refused` — correct no-force refusal); reconciled via the
+  new lead-only `review_requeue` op (offline suite 50/50), tree re-gated PASS
+  (gate3), integrated (`7d5d7ccd`). Superseded leader (`lead01`, revoked)
+  could NOT issue an integration request (`session_revoked`).
+- **Closure:** final registry snapshot — leader `standby01` epoch 2,
+  resources `{}`, tasks INTEGRATED (T1 gen 5, T2 gen 1), all five slots free;
+  ports 8101/8102 verified free; no orphan engine; no worktree left.
+- **Ancestry:** `af1ea12e → 006c4118 → 9a2e3e54 → 75606af0 → 7d5d7ccd`,
+  every arrow a verified fast-forward; master untouched.
+- **Label earned: TWO-SLOT VERIFIED** for the behaviors actually exercised
+  (one integration-class + one worker-class slot). Five-slot deployment
+  remains unclaimed. Human acceptance NOT CLAIMED.
+
+### Publication-sequence clarification (no remote rewind; 2026-09-09)
+
+The bootstrap report's summary line `eb169df1 → 53b733eb → eb169df1(work) →
+c08873e5` mixed two demo runs and wrongly implies the remote base moved
+backward. It did not. Git evidence (`git merge-base --is-ancestor` on each
+successive pair; command preserved in the run evidence):
+
+- **Remote-visible first-parent chain (each arrow a verified fast-forward):**
+  `be615277 → 53b733eb → eb169df1 → 0e218161 → aada23c1 → c08873e5 →
+  f9a4623e → f96530d2`.
+- `eb169df1`/`0e218161` are run-record commits of demo runs 122443/122537;
+  `53b733eb` is the shader-tracking integration of demo run 121757, which
+  happened **before** those runs and is their ancestor (`53b733eb →
+  eb169df1`: FF-ancestor OK). The `→ eb169df1(work)` in the old line was a
+  *local worktree HEAD* inside run 122537, not a remote branch transition.
+- Every integration was a fetch-verified fast-forward push by `publish.py`
+  (`non_fast_forward_refused` gate never bypassed); `master` untouched at
+  `51cd7212`; no force-push. The original report text is preserved above —
+  this row supersedes its summary line, not its evidence.
+
+### Slot build provenance (added at the SLOT01-E2E gate)
+
+Shader source blob `4f7a356e` verified equal between the tested revision and
+the integration base before build; compiled SPIR-V `71B5F8D3…` and runtime exe
+SHA-256 recorded in the run's `slot01_binary_identity.json`. Runtime exe and
+build-dir exe hash-equal; `ChimeraEngine/engine/build/` untouched.
+
+### Remaining limits after SLOT01-E2E
+
+- The drill terminated the owned worker *client* (session process); it did
+  not kill the slot engine mid-request — engine-loss handling remains a
+  different drill.
+- `agent_id` at `checkpoint` is the launcher-held session, not a separate
+  long-lived agent process. Recovery was exercised against a genuinely
+  terminated client with a real revoked session.
+- Publication bypass (direct GitHub push) still cannot be technically
+  prevented; detected only by remote re-read (documented in `publish.py`).
+- This is SINGLE-SLOT VERIFIED: slots 02–05 remain unprovisioned; universal
+  dispatch beyond current assignments still waits on Alan's explicit go.
+
+## FIVE-SLOT-READINESS-01 (five independent slots via the fleet control plane)
+
+Five slots provisioned on the live controller (deployment E:\ChimeraWork\control, service pidfile-alive, epoch 1 leader big-pickle). Slots 01-05: integration-kind slot-01 (certification record), worker slots 02-05.
+
+- SLOT-01: `five-slot-integration-record` — certification record (this section + THE_AGENT_FLEET.md + certification evidence).
+- SLOT-02: `five-slot-readiness` — INTEGRATED at `bb61993e` (fetch-verified FF from `af71bece`; base astra/gait-capture now at `bb61993e`). Deliverable: five-client coordination driver `tools/agent_fleet/five_slot_coordination.py` + `docs/evidence/agent_fleet/FIVE-CLIENT-COORDINATION/20260909Z-A` — 9/9 preregistered scenarios on an isolated registry (capacity, FIFO contention, benchmark isolation, memory admission, fail-hold+recovery, bootstrap guards, restart durability, evidence gate, deadlock-free progress).
+- SLOT-03: frozen-B2 runtime gate on port 8103 — 21/21 PASS (run `20260910T015238.101816Z`); binary id exe `7fd7225d…` spv `71b5f8d3…` blob `4f7a356e…`.
+- SLOT-04: frozen-B2 runtime gate on port 8104 — 21/21 PASS (run `20260910T015600.626632Z`); binary id exe `87a76649…`; shader provenance identical.
+- SLOT-05: frozen-B2 runtime gate on port 8105 — 21/21 PASS (run `20260910T020453.603679Z`); replacement drill: worker client terminated -> RECOVERY_HOLD gen2, zombie write refused (`session_revoked`), GPU retained until verified drain (port free + no orphan), recover gen3, leader reclaim gen4. All recoveries gate on trusted drain evidence.
+- DYAD: attempted per slot and checkpointed BLOCKED — the eye is dark (no vision model loaded in LM Studio). The chained `rtx4090`+`dyad_eye` acquire path was exercised (slot-05 revs 42/43). DYAD completion awaits a loaded model; it is NOT claimed.
+- Certification gate: FIVE SLOTS PROVISIONED / RESOURCE SCHEDULER VERIFIED / LIVE RESOURCE LIFECYCLE VERIFIED met. FIVE INDEPENDENT AGENTS VERIFIED NOT met — per the readiness sprint, three additional agents start only on Alan's explicit go with the universal prompt.
+
+## Codex recovery and verifier repair — 2026-09-10
+
+Alan transferred ASTRA's engineering lead role and confirmed Codex is the only
+active project agent. The original controller was offline; its existing
+bootstrap restored service over the reconciled durable database. Trusted
+enrollment/qualification and operator-directed session revocation elected
+`codex-lead-20260910` at epoch 2. Live ownership remains the controller's
+snapshot/events, not this dated checkpoint. Old files and evidence are preserved.
+
+- `verifier-repair-02`: claimed slot1, generation1, branch
+  `astra/tasks/verifier-repair-02`, base `cf275281`; core repair plus separate
+  sparse-column increment, **99 Windows tests pass**. Source review and
+  before/after evidence: [record](evidence/verifier-repair-02/RECORD.md).
+  Task PR targets `astra/gait-capture`; INTEGRATED is not claimed here.
+- `elastic-ref-publish`: recovery hold; commit `302da837` and dirty operator
+  checkout preserved. Requires separate source/evidence review before publication.
+- Fleet resource fixes PR11 (`8bf8f643`): independent Windows suite **78/78**,
+  retained with the verifier evidence. External client compatibility and
+  controlled deployment remain open; running controller uses original source.
+- Shape reconciliation/silhouette reports remain unaccepted historical evidence;
+  no geometry, eye prompt or acceptance threshold was changed by this task.
+
+Immediate dependency: review and integrate the verifier task PR before using
+its new input-admission claim on the integration branch. The material/runtime
+product spine above remains the project direction; this task repairs a shared
+evidence instrument, not a water, material or gait certificate.
+
+Verifier review follow-up (2026-09-10): PR12 at fe27095d received independent
+read-only review. Two malformed-verdict false-PASS cases reopened
+`verifier-repair-02` at generation 2. Sixteen new regressions failed before
+correction; **115/115** now pass, with valid fixture output unchanged. See the
+appended task record and review_before/review_after logs. Integration remains
+unclaimed; the earlier 99-test evidence is preserved.
+
+Follow-up prefix regressions and a compatibility correction bring the final
+verifier suite to **119/119**. The overbroad intermediate detector's four
+failures are retained; no compatibility assertion or tolerance was weakened.
+
+## Runtime integration and discovered shutdown requirements — 2026-09-10
+
+This is an evidence checkpoint at integration revision `7616771cdc15ccfb2dd0297b6961bc0bedfea400`
+and controller revision 248, not a substitute for current claims. Historical
+observations above remain intact. The complete evolving Master and linked
+roadmap remain the goal; these bounded repairs do not certify the whole engine.
+
+| Stable task ID | Observed state / dependency | Requirement and acceptance evidence |
+|---|---|---|
+| `demo-studio-state-01` | INTEGRATED, PR21, `cde18631e43ee684bc2851d0e2bcdb09d12d99d6` | Active membrane state drives viewport/idle and an appended scene row; inspector values match the endpoint. Actual native gate: 20 PASS + 1 INFO, plus four state-transition checks. The eye label distinguishes unavailable local logs from unknown service status. [Record](THE_DEMO_STUDIO_STATE.md) preserves DYAD ambiguity; grid depth remains `studio-grid-depth-01`, not accepted material topology. |
+| `engine-local-control-01` | INTEGRATED, PR22, `7616771cdc15ccfb2dd0297b6961bc0bedfea400` | Embedded control binds IPv4 loopback. Two fresh native builds served local GET/POST and had no observed new Security prompt host. OS listener inspection proves the binding; non-loopback timeouts do **not** pass the stricter immediate-refusal predicate. [Record](THE_ENGINE_LOCAL_CONTROL.md) preserves that failure. No firewall policy changed; older binaries are not retroactively repaired. |
+| `engine-http-lifecycle-01` | RUNNING, root owner, slot 3 generation 1; depends on `engine-local-control-01` | Stop must wake quiet accept and partial-request I/O, drain owned threads/sockets, and survive repeated cycles/start failure without new external traffic. Preregister an actual Winsock CPU baseline failure and corrected tests. Reject socket ownership races, leaked threads, loopback regressions or weakened watchdog predicates. Implementation and independent review remain pending at this checkpoint. |
+| `engine-shutdown-order-01` | OPEN / dependency not integrated: `engine-http-lifecycle-01` | At the inspected source, `main.cpp` starts a local HTTP server but calls `engine.shutdown()` without explicitly stopping it; callbacks capture engine state and can wait for engine commands. The detached boot-restore thread also captures the engine. Derive admission stop, command cancellation/drain and resource destruction order, including boot restore and console workers. Reject callback access after teardown, joinable-thread destruction, false success for cancelled work or hangs requiring unrelated traffic. CPU ownership tests precede resource-admitted native window/DYAD verification. No whole-engine shutdown acceptance is claimed. |
+
+The controller stores the last row as READY with a dependency; it is not
+eligible to claim until that dependency integrates. Source integration of fleet
+fixes is still distinct from deploying them to the running controller. Catalogue
+corrections, slot binding recovery, controller transition, and GOV-01 acceptance
+remain open under their existing IDs and owners. No task is removed or marked
+complete merely because this checkpoint makes its state discoverable.
+
+## Concurrent-client reconciliation requirements — 2026-09-10
+
+Alan confirms many agents are active. A changed Git head is a reason to
+reconcile the current claim, ancestry and bytes, not by itself a reason to
+stop and ask the operator. At the inspected slot-02 revisions,
+`fc5711eb` is a direct child of `9877179b` adding a separate evidence run;
+implementation bytes are unchanged and another distinct run remains staged.
+Both runs must be preserved. After refreshing the actual owner/generation and
+checking that state is stable, the owning worker can commit its remaining
+evidence and submit the new exact head through the existing PR workflow.
+This observation does not authorize ignoring source changes, divergent history,
+evidence deletion, a changed claim, or a concurrently changing index.
+
+| Stable task ID | Dependency / state at controller revision 273 | Requirement and falsifier |
+|---|---|---|
+| `fleet-head-reconcile-tool-01` | RUNNING, root slot 1 generation 1 | Read-only Git reconciliation instrument and real temporary-repository tests. Distinguish evidence-only additions from changed source, divergence, evidence modification/deletion and unstable reads. Reject any false continuation claim or modification of staged/untracked bytes. [Contract and results](THE_WORKTREE_RECONCILIATION.md). |
+| `fleet-head-reconcile-01` | OPEN; tool delivery and release of catalogue-owned onboarding/Fleet documentation scopes precede prompt integration | Incorporate the tested reconciliation procedure in canonical onboarding. A benign append must not require operator permission; conflicting ownership must be routed through the controller. The original scope claim was refused with `write_scope_conflict`; this is respected, not bypassed. |
+| `fleet-client-instance-01` | OPEN; depends on `master-catalogue-sync-01` and `fleet-slot-binding-01` | Bind independent client instances through the trusted launcher, fence stale/duplicate writers, and retain instance/request identity without secrets in audit events. Isolated baseline reproduced two clients sharing one fixture bearer both saving the same generation's checkpoint, with actor-only audit. Reject simultaneous admitted writers, guessed process ownership or a permissive compatibility path described as enforcement. Live migration requires coordinated acknowledgements and preserved claims; source integration alone is insufficient. |
+
+Git author configuration is shared in this repository's common `.git/config`;
+the current `buffy-02` setting does not identify which client wrote a commit.
+Agent/process counts likewise do not prove task ownership. Instance enforcement
+remains open: neither the new reconciliation tool nor a claim-generation bump
+alone prevents two clients with the same credential from acting as one agent.
+
+## Reconciliation delivery and next gates — 2026-09-10
+
+PR24 integrated the read-only worktree reconciliation tool at `b8bb5de5`:
+parent tests report nine passes and one unavailable Windows symlink test;
+actual slot-02 inspection preserves ignored caches and both distinct evidence
+runs. This is a bounded Git observation, not client-instance enforcement.
+
+PR14 integrated `elastic-ref-publish` at `d00304e9` (controller acknowledgement
+285). All 85 changed paths satisfy its two declared scopes after the regression
+test was relocated. Seven focused tests pass, the retained 19-check battery
+and shear/release demo satisfy their recorded gates, and both concurrent runs
+are preserved. GPU upload/corner validation and unrestricted STVK material
+certification remain unclaimed.
+
+| Stable task ID | Dependency / observed state | Requirement and falsifier |
+|---|---|---|
+| `elastic-domain-audit-01` | Registered at revision 287; depends on integrated `elastic-ref-publish` | Derive proper rigid-motion covariance, compression/reflection domain limits and modulus/thickness or 2D-stiffness units from the actual CPU law. Preregister analytic cases; report refusals and limitations. Reject invented inputs, invalid material certification, changed frozen fixtures or weakened tolerances. Own CPU runner and evidence, separate from GPU transcription. |
+| `doclint-header-path-01` | Root slot 1 generation 1, provisioned revision 290 | The HTTP commit hook matched a header-extension prefix and reported a nonexistent file. Check complete supported header tokens; existing headers must pass and missing headers must still fail. Preserve genuine broken-pointer detection and historical command evidence; no hook bypass or allowlist suppression. Temporary-path regression controls precede integration. |
+
+
+### Foundation and runtime follow-up — 2026-09-10
+
+Read against integration `0e878758aa5eb4ad8fbd98648d59a8356e41f4fe` and controller revisions 310–316. This append does not supersede older evidence or declare the entire foundation complete.
+
+| Stable task ID | Current disposition | Dependency / acceptance evidence |
+|---|---|---|
+| `doclint-header-path-01` | INTEGRATED | [PR25](https://github.com/GhostDragonAlpha/Chimera/pull/25), merge `24ac7af3`; original scanner failed three of four regressions, corrected scanner passed all four without allowlist or skip changes. |
+| `engine-http-lifecycle-01` | INTEGRATED, bounded CPU certificate | [PR26](https://github.com/GhostDragonAlpha/Chimera/pull/26), merge `0e878758`; ten fresh Windows CPU lifecycle modes passed with retained baseline hangs and rejected weak checks. Requires finite nonthrowing handlers; whole-engine teardown is separate. |
+| `engine-shutdown-order-01` | RUNNING; review draft, DYAD OPEN | [PR27](https://github.com/GhostDragonAlpha/Chimera/pull/27), head `deae5d2e`; corrected CPU helper tests reject three mutants. Native pending, nested restore, boot-delay and quiet close observations passed; ordinary build passed existing membrane reset gates. DYAD probe returned NoModelLoaded; no vision verdict or final acceptance. |
+| `elastic-domain-audit-01` | RUNNING; independent CPU review | Nonzero frozen fixture and explicit oracle checks replace vacuous rest-pose comparisons. The observed Pa/thickness versus implicit-unit-thickness contradiction remains NOT_CERTIFIED; numerical compatibility is not physical unit closure. |
+| `elastic-units-contract-01` | READY record; execution depends on integrated domain audit | Resolve explicit 3D modulus versus 2D stiffness admission, provenance and thickness conversion. Preserve all historical fixture/evidence bytes; preregister dimensional, scaling and negative gates before changing any law. No GPU port before this contract closes. |
+| `window-capture-ownership-01` | READY, independent Windows fixture work | A PID-matched HWND did not establish unobscured screen pixels; nonclient borders included unrelated background. Validate owned client-only captures with deterministic self-created windows and adversarial occlusion/stale-owner cases. No foreign desktop content is eligible for publication. |
+| `master-foundation-followup-01` | This append and linked task registration | Preserve the growing task tree and correct completion boundaries; no requirements removed or tolerances relaxed. |
+
+The first shutdown screen captures were disqualified and preserved privately outside Git publication. Later engine client captures were inspected by the parent; they establish visible window behavior only. The small test window shows overlapping Studio content and a narrow viewport, so neither polished presentation nor physical-state visibility is certified. Runtime records distinguish an internal named API cancellation from the pending HTTP client's transport disconnect.
+
+PR19 catalogue corrections remain with `buffy-02` in slot 4, current generation 5 after exact-head review of `45018287`. Missing source pins, forged domain coverage and an omitted multiline B7b requirement were reproduced and returned to the owner. The integrated reconciliation instrument (PR24) is available; canonical onboarding pointers still need review through their existing owner. Do not treat a stale handoff's “no ready tasks” as live dispatch state: recover current claims, review feedback and eligible dependency-complete tasks through the controller.
+
+
+### Permanent DYAD selection — 2026-09-10 (active integration task)
+
+Alan permanently selects `qwen3.8-27b-nvfp4-mtp` and the exact
+`Qwen3.8-27B-NVFP4-MTP-VERY-LOW.gguf` artifact. Task
+`dyad-permanent-model-01` owns policy enforcement, CPU falsifiers and actual
+served-identity verification; it supersedes historical DYAD auto-follow
+instructions, while preserving text-client routing and resource ownership.
+See `docs/THE_DYAD_PROTOCOL.md` and `docs/evidence/dyad_model_policy/`.
+
+The separately registered `dyad-resident-identity-01` records a reproduced
+on-disk-only model falsely reported resident; the permanent-policy task
+addresses the shared senses path first, so workers must reconcile its
+integrated evidence before claiming a duplicate repair. No completion is
+asserted here. The elastic domain audit is integrated through PR29 at
+`accd15b61d7ac3805edfc36535ef99de121baf65`; `elastic-units-contract-01`
+continues with independent nonzero CPU oracles after the original scaling-only
+test accepted a zero-output mutant. Historical fixtures remain unchanged.
+
+Permanent-policy validation is now executed: 13 mocked CPU tests and actual
+can_see plus one-image watch returned the selected id with finish_reason=stop;
+source/policy hashes were stable. Raw evidence and the failed recording-wrapper
+round remain in `docs/evidence/dyad_model_policy/`. This does not certify
+physics or UI presentation. The units boundary is integrated through PR30 at
+`e398775c4e2cc75aa5c2c566f5c26bc47982f8c1` (12 oracle/refusal/mutation tests,
+19 legacy checks, unchanged frozen fixtures). Its next registered CPU task is
+`elastic-physical-fixtures-01`: explicit physical-input and binary32-upload
+reference fixtures before GPU transcription, with ABI/budgets left open until
+derived.
+
+
+### Shutdown integration and resource-lifetime follow-up — 2026-09-10
+
+Inspected integration `265dad9822f49c38eaba8a336e8e823c13cf96d8` and controller revisions 370–373. Historical observations above remain intact; the following records their successors, not a declaration that all foundation work is finished.
+
+| Stable task ID | Observed disposition | Evidence and next acceptance gate |
+|---|---|---|
+| `engine-shutdown-order-01` | INTEGRATED through [PR27](https://github.com/GhostDragonAlpha/Chimera/pull/27), merge `265dad98` | CPU actual-helper mutation controls and native quiet/pending/nested/boot cancellation evidence retained. Final ordinary close: exit 0, HWND destroyed, ordered markers, no watchdog. Two root-operated DYAD calls returned the selected model with finish `stop`. [Final record](evidence/engine_shutdown_order/parent_runtime/owned_visual/RESULT.md). Images show separately owned surfaces, not desktop exposure or process absence. Pending HTTP transport may disconnect; direct Ctrl+C remains untested. |
+| `dyad-permanent-model-01` | INTEGRATED through [PR31](https://github.com/GhostDragonAlpha/Chimera/pull/31), merge `f72a7a14` | Permanent exact-model policy, 13 CPU regressions and live response identity verified. [Policy evidence](evidence/dyad_model_policy/RESULT.md). Existing clients must consume the updated source; integration alone does not update a running old client. |
+| `engine-vulkan-cleanup-01` | READY, registered revision 370; no worker slot was free when the lead requested it | Actual shutdown stderr reports `VUID-vkDestroyDevice-device-05137` for live images, memory, views and shader modules. Startup/resize/capture/demo resource ownership must close before device destruction. Validate on admitted native runs without suppressing the validation layer or changing physical gates. Source audit may proceed read-only while waiting for a slot. |
+| `window-capture-ownership-01` | RUNNING, `buffy-02`, slot 2 generation 1 at revision 370 | The worker claimed the released slot after PR27. Preserve its current ownership; do not switch or reuse that checkout from an older handoff. The general stale-owner/occlusion capture contract remains separate from the narrow shutdown harness. |
+| `master-catalogue-sync-01` | RUNNING, `buffy-02`, slot 4 generation 7 | Review of `c23fd00f` passed 56 tests but reproduced silent omission of all cards, unchecked catalogue byte/line metadata and wrong/duplicate source indices. [Correction request](https://github.com/GhostDragonAlpha/Chimera/pull/19#issuecomment-5624835242). The earlier controller submission named a stale head; final submission must match the actual pushed revision. Catalogue import and controller deployment remain OPEN. |
+| `elastic-physical-fixtures-01` | RUNNING, `codex-demo-launcher-03`, slot 3 generation 1 | The rejected candidate relabeled legacy coefficients, ignored geometry/CSR fields, and accepted zero volume-energy output. It remains preserved; a separate CPU proposal now derives explicit nonunit-thickness and binary32-upload references. No fixture acceptance or GPU port certification yet. |
+| `gov01-evidence-reconcile-01` | RUNNING claim, slot 5; provisioning mismatch remains unresolved | Preserve the existing branch/evidence. Resolve through the registered fleet slot-binding/controller transition work, not a fabricated completion or timeout takeover. |
+| `master-lifecycle-followup-01` | This canonical append | Preserve stable tasks, links, requirements and bounded completion evidence. No work removed to make the Master list shorter. |
+
+The shutdown resource errors are a concrete open defect, not harmless warnings: the Vulkan contract requires explicitly destroyable device children to be freed before `vkDestroyDevice`. [Khronos reference](https://docs.vulkan.org/refpages/latest/refpages/source/vkDestroyDevice.html). PR27 fixes host admission/cancellation ordering and does not certify leak-free Vulkan teardown. The retained log also reports a duplicate-message limit, so ten reported objects are not a complete allocation census.
+
+The empty Studio image still shows overlapping/clipped text. It does not certify physical state visibility, gameplay, or performance. The eye's claimed black margins on the test backdrop were disproved by exact edge-column pixel values; [the retained pixel check](evidence/engine_shutdown_order/parent_runtime/owned_visual/pixel_check.json) and raw report remain available. Measured contradictions are preserved rather than used to rewrite acceptance thresholds.
+
+
+## Review slot handoff correction — 2026-09-10
+
+Controller revision 390 binds lead task `fleet-review-slot-handoff-01`, generation
+1, to slot 1. Alan requires PR submission to release execution capacity while
+review continues separately. The current service requires INTEGRATED before slot
+release and counts all REVIEW tasks against worker capacity; both prevent useful
+continued work after submission.
+
+| Stable task | Current evidence and remaining gate |
+| --- | --- |
+| `fleet-review-slot-handoff-01` | RUNNING: implement and test preserved REVIEW without slot/capacity occupancy, exact pushed PR identity, correction reclaim, recovery and integration compatibility. [Contract and preregistered falsifiers](THE_REVIEW_SLOT_HANDOFF.md). Live deployment and actual release remain pending. |
+| `fleet-client-instance-01` | Existing identity milestone remains open: concurrent tabs shared `buffy-02`, making model/tab ownership ambiguous. Alan reports the extra Buffy tab stopped. This does not identify which historical task belonged to that tab, and does not authorize revoking the surviving shared session. |
+| `window-capture-ownership-01` | PR34 at `00a556b3444fd02a3f230519fd985f9bb0316707` remains under review. Lead reproduced the exists/open evidence overwrite race in the actual extracted writer; review corrections are recorded on the PR. Preserve the successful fixture run and its honestly falsified screen-occlusion prediction. No engine/GPU certification implied. |
+
+No existing milestone is removed or marked complete by this workflow correction.
+
+
+## Live workflow handoff and documentation — 2026-09-10
+
+PR35 merged as `6e240af129bb496e1555a9c6e142deda765f0812`. Its reviewed handoff
+extension was deployed over the exact prior live controller, separately from the
+resource/catalogue upgrades. The controlled restart preserved revision 396,
+leadership, sessions, assignments, slots, resources and integration requests.
+At revision 397, window-capture REVIEW retained head `00a556b3` while slot 2 and
+Buffy's execution capacity were freed. Catalogue generation 7 was unchanged.
+[Deployment evidence](evidence/agent_fleet/REVIEW_SLOT_HANDOFF_DEPLOYMENT/REPORT.md).
+
+| Stable task | Current state and next gate |
+| --- | --- |
+| `fleet-review-slot-handoff-01` | INTEGRATED and deployed. Actual review-slot release observed; no automatic task acceptance. |
+| `fleet-review-handoff-docs-01` | RUNNING, lead slot 1: current README/entry pointers, historical README preservation, live deployment record and Master reconciliation. |
+| `fleet-orient-continuation-01` | RUNNING, worker slot 3 generation 1: fix CLI/JSON/MCP/onboarding routing when a local hierarchy is complete; Master/controller work remains authoritative. Exact fixture tests and review required. |
+| `elastic-physical-fixtures-01` | PR33 integrated as `386f31c0572ec73a095034fb44317b4ffc73db94`; 22 physical-fixture and 12 units tests passed. Fixed-recipe CPU acceptance only; GPU ABI/order/binary32 budgets and real-material admission remain open. |
+
+A report of 16 proven codebook terms is a report about one local store, not a
+certificate for the entire engine. Earlier operator overrides and later model
+observations must retain separate provenance. The reported multi-frame/movie
+verification limitation remains open until the actual required gate is executed;
+no threshold or proof record is weakened to keep agents busy.
+
+### Fleet operating status — 2026-09-11 (glm53-lead-02, epoch 5)
+
+Dated amendment; live authority remains the controller. Today's integrations
+into `astra/gait-capture`: **PR #42** `fleet-slot-binding-01` (task/generation-
+bound provisioning, supervisor `slot_rebind`, evidence-preserving
+recover/release; 11 regressions), **PR #43** `fleet-layer-guard-01` (deployed
+`ReviewHandoffControl` layer adopts the guard; reason-code refusals; 8
+regressions), **PR #44** `dyad-provider-interface-01` (DYAD review contract
+separated from vision provider — subagent/remote/local adapters, fail-closed
+capability ladder; 14 synthetic tests; visual acceptance NOT_CLAIMED),
+**PR #45** `fleet-docs-operating-model-01` (canonical operating-model docs +
+four role prompts; 25+ claims line-verified by independent review),
+**PR #46** `gov01-evidence-reconcile-01` (GOV-01 acceptance matrix: clauses
+1-3 SUPPORTED, clause 4 OPEN with named milestones; evidence independently
+re-verified). Pending review at amendment time: **PR #47**
+`fleet-catalogue-repin-01` (three stale catalogue pins re-measured; full fleet
+suite 166/0 failures).
+
+The controller service was upgraded through the documented controlled
+transition to reviewed source `d012b4b1` (deployments
+`slot-binding-d012b4b1`, MANIFEST sha256 per file): SQLite-consistent backup,
+quiescence verification, authorized stop/start, epoch/leader/claims preserved
+(snapshot comparison), command-line identity confirmed. Stale slot provisions
+(3/4/5) were recovered via `slot_rebind` with preserved evidence; slot-03's
+foreign uncommitted logs preserved under control/preservations. The review-slot
+handoff (`release_review_slot` -> ack `RELEASED_AT_REVIEW_HANDOFF`) freed
+execution capacity before integration, demonstrated live on gov01.
+
+Live fleet: slot 1 integration (lead `glm53-lead-02`, epoch 5, Alan-appointed
+after the recorded self-yield error and successor recovery); three
+lead-delegated subagent workers (`subagent-worker-01/02/03`) completed one
+bounded task each with overlapping execution, own sessions, own PRs
+(operations record: `docs/evidence/agent_fleet/FLEET_OPERATIONS_RECORD/`).
+
+Remaining OPEN (dependency-ordered, unchanged gates): `fleet-client-instance-01`
+(instance identity binding), `fleet-controller-upgrade-01` rehearsal-lane
+closure (live transition now evidenced once), DYAD provider visual acceptance
+(requires a live vision run with retained evidence), `fleet-head-reconcile-01`
+docs half, engine/GPU lanes (`studio-grid-depth-01`, `engine-vulkan-cleanup-01`,
+`engine-feature-resource-lifetime-01`), `dyad-resident-identity-01` fresh-system
+re-verification, `window-capture-ownership-01` re-verification. GOV-01 clause 4
+canonical acceptance remains NOT_CLAIMED pending slot-1 review and full
+catalogue import.
+
+### Fleet maintenance — 2026-09-11, second wave (glm53-lead-02, epoch 5)
+
+Dated append; live authority remains the controller snapshot. Dispatch record
+(revs 542-550): `subagent-worker-02` re-qualified +`windows-shell` (host-shell
+access, lead-attested); realization tasks `window-capture-ownership-02` and
+`fleet-controller-upgrade-rehearsal-01` created at base `4604de40`; concurrent
+claims 545-547 and task/generation-bound provisions 548-550 bound slots 2/3/4
+(dashboard: rehearsal-01 slot 2, window-capture-02 slot 3,
+dyad-resident-identity-01 gen 5 slot 4); lead claimed
+`fleet-head-reconcile-01` gen 1 slot 1 with provision from recorded base
+`9022d669` reconciled to tip by merge (never force).
+
+- **fleet-head-reconcile-01 — verified complete on the fresh system.**
+  Instrument + tests + contract + onboarding rule were already delivered by
+  merged work (`fleet-head-reconcile-tool-01`, ancestor of tip). Fresh run at
+  tip: `test_worktree_reconcile.py` 10 tests, 0 failures, 1 documented
+  Windows-symlink skip (count grew from the tool-era 9 by the merged
+  ignored-cache regression); live bounded observation of slot-04 returned
+  `clean`, `stable`, `authority: none` with the worktree byte-identical
+  before/after; the continue rule with the exact inspector command is present
+  in `AGENT_START.md`, `THE_AGENT_FLEET.md`, `THE_WORKTREE_RECONCILIATION.md`
+  (evidence: `docs/evidence/agent_fleet/HEAD_RECONCILE/*20260911*`). The
+  packet's client-instance pending requirement is already registered
+  (`fleet-client-instance-01` OPEN below).
+- **fleet-run-queue-01 — DISPOSITION: superseded by delivered merged work.**
+  All three declared deliverables exist at tip `4604de40`
+  (`tools/agent_fleet/run_queue.py`, `tools/agent_fleet/test_run_queue.py`,
+  `docs/THE_RUN_QUEUE.md`), delivered through the merged run-queue
+  lead/launcher/adapter and execution-proof branches (PR #41-era). The task
+  record stays READY-stale (no controller retire operation exists); do not
+  claim it — this entry is the mapping.
+- **window-capture-ownership-01 → superseded by window-capture-ownership-02**
+  (fresh-system re-verification). The -01 attempt is preserved unmerged at
+  `origin/astra/tasks/window-capture-ownership-01` (`00a556b3`) plus the
+  preservation worktree; the provision no-reuse rule requires the new task id.
+  Its tip `b8d37f1f` carries a misbound dyad-resident fix belonging to the
+  dyad lane — documented, its substance re-derived there, not ported.
+- **fleet-controller-upgrade-01 — rehearsal lane realized as
+  `fleet-controller-upgrade-rehearsal-01`** (isolated transition suite). The
+  live transition is already evidenced once (`87e281e5`-era → `d012b4b1`);
+  after the rehearsal PR integrates and passes independent review, the parent
+  item closes with live-deployment acceptance still NOT_CLAIMED beyond the
+  one evidenced transition.
+- `dyad-resident-identity-01` fresh re-verification in flight (slot 4); PR
+  links appended to the controller review records on submission.
+
+### Fleet maintenance — 2026-09-11, third wave (glm53-lead-02, epoch 5)
+
+Dated append; live authority remains the controller snapshot. Wave-3
+integrations into `astra/gait-capture`, each through independent adversarial
+review with pinned-head merge and preserving slot release:
+
+- **PR #56** `fleet-client-instance-01` — task-centric client-instance
+  fence with staged migration (launcher-minted instance identity,
+  fingerprint-only storage, `X-Chimera-Instance` transport, `owner_instance`
+  claim binding, named refusals, explicit `legacy-unfenced` audit marker,
+  supervisor `instance_fencing_set` compat→enforced). Review found the
+  unfenced-`yield` gap; corrections landed on-branch at gen 2 (tests proven
+  to fail pre-fix). The last major open fleet item from the 2026-09-11
+  status amendment is closed. Deployment of the changed controller source
+  rides the next controlled transition.
+- **PR #57** `fleet-review-followups-02` — the four recorded LOW/TRIVIAL
+  followups (memory-dc named refusal; pinned_size semantics documented with
+  contrast control; transport MEASUREMENT reproducing one-liner appended
+  with digests reproduced exactly by the reviewer; warning-free test
+  helper). Reviewer root-caused the path/HEAD-bound reproducibility.
+- **PR #58** `engine-vulkan-cleanup-02` — explicit Vulkan resource
+  ownership: the reviewer traced the full create→destroy map; baseline
+  retained 10× `VUID-vkDestroyDevice-device-05137`, repair shows ZERO
+  validation errors across the preregistered cases V0–V4 (twice), frozen
+  B2 membrane gate 21 PASS fixture-identical. Gen-2 evidence completion
+  (cited empty B2 stderr force-added past the `*.log` ignore).
+  **Engine-lane link owed by agreement:** canonical record
+  `docs/evidence/vulkan_resource_lifetime/`; contract
+  `docs/THE_VULKAN_RESOURCE_LIFETIME.md`. Followups recorded: freeze the
+  runner before the baseline run in future lanes. This integration unblocks
+  `engine-feature-resource-lifetime-01` (its dependency).
+- **PR #59** `fleet-orient-continuation-02` — fresh-system re-verification
+  of the orientation continuation routing (zero source edits; every claim
+  reproduced by the reviewer including the honest-negative provenance
+  re-proven at base; gen-2 completion: the four cited RAW logs force-added
+  past the `*.log` ignore — second occurrence of that ignore trap this
+  wave; see the followup ledger).
+
+Dispositions this wave: `fleet-orient-continuation-01` CLOSED via the
+authorized yield–recover handoff (worker-01's session ended by design;
+full read-only prep preserved in the recovery checkpoint; successor `-02`
+integrated as PR #59). `engine-vulkan-cleanup-01` SUPERSEDED by `-02` —
+unclaimable by construction (its Master-list scope made the claim lead-only
+while the lead holds no engine capabilities); the `-02` realization carries
+identical theory with the Master link appended here by the lead.
+
+**Controller gaps recorded (candidate `fleet-task-abandon-01`):** (1) no op
+retires a stale READY task (dispositions live in these amendments);
+(2) no supervisor op retires an unprovisionable RUNNING claim without
+revoking the owning agent's session (the yield–recover path works but costs
+the session — acceptable for ended host subagents, wrong for persistent
+ones). **Followup ledger:** `5cfa9382` leaked capture-fixture child (job
+object / watchdog candidate), `ec6bcff3` multi-instance yield deadlock
+note, `97b871b5` remnants (path/HEAD-bound reproducibility wording;
+pre-existing invalid-JSON escape in the TRANSPORT MEASUREMENT), the
+`*.log`-ignore force-add trap (twice this wave — candidate: a pre-commit
+warning when cited evidence files remain untracked-ignored).
+
+Catalogue pins re-measured to the builder output at this amended head (same
+PR; perturbation control retained in
+`docs/evidence/agent_fleet/MAINTENANCE_AMENDMENT_01/`).
+
+### Fleet maintenance — 2026-09-11, fourth and fifth waves (glm53-lead-02, epoch 5)
+
+Dated append; live authority remains the controller snapshot. Wave-4/5
+integrations into `astra/gait-capture`, each through independent
+adversarial review with pinned-head merge and preserving slot release:
+
+- **PR #61** `fleet-task-abandon-01` — `task_abandon` (ABANDONED state
+  coherent at 26 switch-sites; excluded from `catalogue_next`) and
+  `claim_abandon` (retires an unprovisioned RUNNING claim WITHOUT revoking
+  the owner session — closing controller gap 2 from the third wave). First
+  live use: the orphaned slot-03 handle handoff.
+- **PR #62** `fleet-evidence-hygiene-01` — `evidence_log_guard.py` + the
+  `.githooks/pre-commit` stanza warning when cited evidence remains
+  untracked-ignored (the `*.log` trap, twice-recorded, now mechanically
+  guarded); worker-lane evidence hygiene verified across the live lanes.
+- **PR #63** `fleet-slot-expansion-03` — on-demand slots: claim
+  auto-spawn, supervisor `slot_spawn`/`slot_retire`, persisted
+  `slot_high_water` (retired ids never reused), `SLOT_MAX=64` guard fuse,
+  preserved-provision retire gate, unique immortal integration slot 1.
+  Gen-2 after delta review (kind echo fixed with named refusals;
+  "never reused" made true by persistence; retire preserves slot history;
+  headline figures corrected to retained runs). Landed WITH its transition:
+  see the deployment record below.
+- **PR #64** `dyad-retained-reviews-01` — retained-review discipline for
+  dyad lanes (review verdicts and their inputs retained as evidence,
+  superseded generations kept with manifests).
+- **PR #65** `studio-grid-depth-01` — the Studio reference grid moved
+  inside the scene render pass with depth testing and stencil occlusion
+  (D32FS migration site-by-site incl. a real clear-array read-past-end
+  fix; wire/fill twins share the stencil state; shadow/floor pinned as
+  non-occluders; inversion proof documented with reverted-to-0 code).
+  Verdict APPROVE_WITH_FOLLOWUPS: splat-view contract gap (grid draws
+  through splat bodies — pre-fix-equivalent, undeclared in the doc) and
+  accepted-pair dirs lacking MANIFEST files → followup backlog.
+
+**On-demand-slots transition record** (controlled transitions; each =
+SQLite backup → source fingerprint → quiescence attestation → stop-old →
+start-new → ALL-EQUAL post-comparison): `slot-binding d012b4b1` →
+`review-handoff 2c8fb069` → `transport-limit c1a1ec5a` → `client-instance
+5199d9c3` → `slot-expansion e1e0ab98` (live). Registry: 11 slots,
+high-water 11. Live firsts this wave: supervisor `slot_retire` (slot 11,
+rev 757), supervisor `slot_spawn` (slot 12, rev 770), and the retire
+busy-gate refusing a claimed-but-unprovisioned slot (slot 10) — the gate
+binds on claim, not on provision.
+
+**Dead-code regression (found live, fix in flight):**
+`instance-plane-live-smoke-01` caught `ReviewHandoffControl._dispatch`
+intercepting `claim` unconditionally — `_claim_with_detached_review_capacity`
+predates the expansion and drops three base-claim behaviors: F1 auto-spawn
+(the PR #63 plane is dead code in production; live refusal `no_free_slot`
+at rev 767 with zero free slots), F2 `owner_instance` binding (the instance
+fence never binds; a header-less twin succeeds where it must refuse), F3
+the enforced-mode `instance_binding_required` guard. Fix lane
+`fleet-review-handoff-claim-delegation-01` (rev 772); disposition PENDING
+integration; the live deployment transition follows as its own controlled
+procedure. Feedback `c4212657` carries the full evidence.
+
+**Worker-03 boundary-violation disposition** (feedback `621d39fb`): prep
+written to the operator checkout `E:\PythonChimera\.tmp\` during
+`engine-feature-resource-lifetime-01` — relocated to
+`E:\ChimeraWork\preservations\feature-lifetime-prep-20260911\`, violation
+recorded, remediation confirmed (operator-checkout writes ceased; all work
+under `E:\ChimeraWork\` or `%TEMP%` from the resumed `-02` lane onward).
+
+Dispositions this wave (each retires as a supervisor `task_abandon` with
+this entry as evidence, ONLY after this PR integrates):
+`fleet-run-queue-01` SUPERSEDED (work preserved on the run-queue lanes,
+`E:\ChimeraWork\run-queue-*`; record never claimed, stale base);
+`fleet-orient-continuation-01` CLOSED (authorized yield–recover handoff;
+successor `-02` integrated as PR #59); `engine-vulkan-cleanup-01`
+SUPERSEDED by `-02` (unclaimable by construction; `-02` integrated as
+PR #58); `window-capture-ownership-01` SUPERSEDED (operator-authorized
+reset preserved branch+evidence at
+`preservations/slot-02-window-capture-reset-20260910`; the bounded-contract
++ synthetic-falsifier deliverable integrated, 2/2 passes);
+`fleet-controller-upgrade-01` REALIZED AS PIPELINE (the five controlled
+transitions above are the upgrade; no single code task remains);
+`fleet-slot-expansion-01`/`-02` SUPERSEDED by `-03` (PR #63).
+
+Provision lesson (from `catalogue-packet-batch-01`): a lead provision once
+left a slot with HEAD==base but an empty index and a stale `index.lock`;
+the provisioning procedure now verifies the index is real (`git ls-files`
+non-zero) in addition to HEAD and clean status.
+
+Catalogue pins re-measured to the builder output at this amended head (same
+PR; perturbation control retained in
+`docs/evidence/agent_fleet/MAINTENANCE_AMENDMENT_02/`).
+
+## 2026-09-11 (late): fourth-wave dispositions — claim-path fix landed, catalogue provenance live, product surface opened
+
+**fleet-review-handoff-claim-delegation CLOSED**: PR #80 (gen 2, head
+2c8fb069) integrated and DEPLOYED via controlled transition
+`claim-restore-d8e3b5f5` (post-transition state ALL-EQUAL). The three
+dropped base-claim behaviors — F1 claim auto-spawn, F2 `owner_instance`
+binding, F3 enforced-mode instance guard — are live again (mutation probes
+4/4). The "disposition PENDING integration" note earlier in this file is
+answered by this entry.
+
+**Catalogue provenance LIVE, with a measured legacy gap**: PR #92
+(`fleet-catalogue-realization-matching-01`, merged bf1a72f6) binds card →
+task via `realized_from` provenance sets + id-fallback; DEPLOYED via
+controlled transition `catalogue-provenance-bf1a72f6` (ALL-EQUAL). Data gap
+recorded at deployment: the eight pre-field holodeck tasks (gov-01..06,
+math-01, mat-01) carry `realized_from=None` by the additive migration, so
+`catalogue_next` still re-proposes realized roots. Lane
+`fleet-task-provenance-backfill-01` (RUNNING, worker-04) lands the
+supervisor op `task_provenance_set` + backfill execution plan + tests; the
+lead's controlled transition #3 follows ITS integration, then the eight
+citations land in that order. Forward admissions carry `realized_from` at
+create_task (lead practice, effective immediately).
+
+**Product surface opened** (PR #97 `product-feel-probe-01`, merged
+cb874a3a): the first blind-judged product-surface measurement — the
+ordered-frames dyad judge PASSED 2/2 ("a puppet with 28 named joints, and
+the program is testing them one at a time"). Five defects measured, findings
+verbatim in the lane's DYAD_REPORT.txt: (a) only the right arm visibly
+moves; (b) the HUD banner reads "theta 0.00 deg" naming joints other than
+the one moving; (c) the head is cropped by the viewport top; (d) the
+on-screen clock advances ~36 s per frame wrapping a 112 s lap while the
+take spans 4.5 s; (e) gait steps=0, no locomotion. Admitted follow-on
+lanes: `product-hud-truth-01` (HUD truth — driven-joint row with live
+theta + interaction-or-labeled clock; engine lane, worker-02) and
+`product-motion-sweep-01` (one authored take, ≥8 joints across ≥3 body
+regions via the public HTTP API; worker-03). Queued behind them: framing
+(head crop), locomotion.
+
+**MAT wave assigned through the team lead**: MAT-02..05 admitted (revs
+987–990) and assigned by team lead subagent-worker-10 (charter rev 902) —
+mat-02 → worker-12 (mat-01 author, seam continuity), mat-03 → worker-09
+(import/validation record), mat-04 → worker-11 (math-01 units backbone),
+mat-05 → worker-05 (authorship/provenance record); worker-07 held reserve.
+Member-assignment authority delegated end-to-end over the fleet mailbox
+(PR #90's plane); the lead executes host spawns.
+
+**engine-feature-resource-lifetime-01 SUPERSEDED BY CONSTRUCTION** by the
+INTEGRATED `engine-feature-resource-lifetime-02` (dependencies corrected to
+`engine-vulkan-cleanup-02`, integrated as PR #58): `-01`'s dependency names
+the ABANDONED `engine-vulkan-cleanup-01`, making it permanently unclaimable
+(`dependencies_not_integrated`). `-01` retires via supervisor task_abandon
+AFTER this PR integrates; this entry is the evidence.
+
+**Correction to this section (post-review, gen 2 of this PR)**: the entry
+above stating PR #80 as "gen 2, head 2c8fb069" is WRONG on the head — the
+merged gen-2 head is **1c565ba0** (second parent of merge commit d8e3b5f5;
+repo head at merge a02ff3bd; verified against the object store and the
+GitHub API by this lane's reviewer and re-verified by the lead). 2c8fb069
+is the SOURCE HEAD of the SUPERSEDED deployment
+`review-handoff-2c8fb069`; the lead's draft conflated the two. Also
+disambiguated per review finding 3: "integrated as PR #58" above names the
+DEPENDENCY's PR (engine-vulkan-cleanup-02); engine-feature-resource-lifetime-02
+itself integrated as PR #79.

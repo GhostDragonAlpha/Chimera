@@ -1,0 +1,47 @@
+{
+  "worker_pid": 4536,
+  "worker_alive_after_start": true,
+  "worker_journal_first": "{\"step\": \"waiting\", \"t\": 1789006120.1102545, \"stop_file\": \"C:\\\\Users\\\\allen\\\\AppData\\\\Local\\\\Temp\\\\opencode\\\\slot05_drill\\\\worker.stop\"}",
+  "worker_terminated": true,
+  "fail": {
+    "leader": "big-pickle",
+    "epoch": 1,
+    "reason": "PROCESS_EXIT"
+  },
+  "task_after_fail": {
+    "state": "RECOVERY_HOLD",
+    "generation": 2
+  },
+  "zombie_write": {
+    "refused": true,
+    "detail": "{\"error\": \"session_revoked\"}"
+  },
+  "gpu_reservation_retained": {
+    "task": "slot05-runtime-probe",
+    "owner": "stage05",
+    "generation": 1
+  },
+  "drain": {
+    "port_bind_free": true,
+    "http_live": false,
+    "engine_pids": ""
+  },
+  "resource_clear": {
+    "cleared": "rtx4090"
+  },
+  "reconcile": {
+    "worktree": "E:/ChimeraWork/slot-05",
+    "head": "3a345d15b5d0",
+    "status": "?? docs/evidence/agent_fleet/FIVE-SLOT-READINESS/slot-05/slot05_drill_evidence.json"
+  },
+  "recover": {
+    "state": "READY",
+    "old_workspace": "must remain preserved until lead explicitly provisions replacement"
+  },
+  "task_after_recover": {
+    "state": "READY",
+    "generation": 3,
+    "slot": null
+  },
+  "drill_error": "ValueError('{\"error\": \"agent_capacity_reached\"}')"
+}

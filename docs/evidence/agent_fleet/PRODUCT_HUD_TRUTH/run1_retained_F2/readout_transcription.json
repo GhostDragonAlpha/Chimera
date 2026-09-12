@@ -1,0 +1,7 @@
+{
+ "source": "hand-transcribed from run-1 retained keyframe PNGs (partial: the two frames that demonstrate the F2 age failure; full strings as visible in run1_retained_F2/frames/g012.png and g020.png)",
+ "transcriptions": {
+  "12": "EDIT t = 0.963 s (pose claim = 0)  |  shoulder_R +7.78 / elbow_R +16.20 deg  |  show sweep paused",
+  "20": "EDIT t = 1.763 s (pose claim = 0)  |  shoulder_R +36.00 / elbow_R +75.00 deg  |  show sweep paused"
+ }
+}

@@ -138,12 +138,22 @@ else()
     message(WARNING "No glslangValidator; copying .spv files if present")
 endif()
 
+# P05: the platform seam is selected per OS. Windows adds the Win32 surface
+# backend; any other target adds the "unavailable" backend (standalone-harness
+# purpose only - the engine has deliberately NO headless surface path).
+if(WIN32)
+    set(CHIMERA_PLATFORM_SRCS platform/vulkan_surface_win32.cpp)
+else()
+    set(CHIMERA_PLATFORM_SRCS platform/vulkan_surface_unavailable.cpp)
+endif()
+
 add_executable(chimera_engine
     main.cpp
     engine.cpp
     physics.cpp
     http_server.cpp
     ui.cpp
+    ${CHIMERA_PLATFORM_SRCS}
 )
 
 target_include_directories(chimera_engine PRIVATE
@@ -154,6 +164,7 @@ target_include_directories(chimera_engine PRIVATE
 target_link_libraries(chimera_engine PRIVATE
     "${VULKAN_SDK}/Lib/vulkan-1.lib"
     ws2_32
+    winmm
     secur32
     crypt32
     ncrypt

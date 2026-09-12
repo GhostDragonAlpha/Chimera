@@ -1,0 +1,42 @@
+test_complete_engine_routes_without_fabricating_owner (tools.test_orient_continuation.ContinuationTests.test_complete_engine_routes_without_fabricating_owner) ... ok
+test_completed_json_binds_store_and_does_not_write (tools.test_orient_continuation.ContinuationTests.test_completed_json_binds_store_and_does_not_write) ... ok
+test_mcp_next_uses_engine_continuation_surface (tools.test_orient_continuation.ContinuationTests.test_mcp_next_uses_engine_continuation_surface) ... ok
+test_open_engine_does_not_claim_controller_eligibility (tools.test_orient_continuation.ContinuationTests.test_open_engine_does_not_claim_controller_eligibility) ... ok
+test_orient_json_storeless_has_explicit_route (tools.test_orient_continuation.ContinuationTests.test_orient_json_storeless_has_explicit_route) ... ok
+test_unreadable_store_refuses_with_routing_record (tools.test_orient_continuation.ContinuationTests.test_unreadable_store_refuses_with_routing_record) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.735s
+
+OK
+test_exit=0
+{
+  "continuation": {
+    "action": "continue the local next term and its gates",
+    "authority": "engine_state",
+    "eligible_tasks": null,
+    "hierarchy_complete": false,
+    "owner": null,
+    "route": "local_engine_hierarchy"
+  },
+  "current": "theSeed",
+  "head": "2a8d356a Route hierarchy completion to controller continuation",
+  "next_term": "theSeed",
+  "open_terms": 15,
+  "oriented": true,
+  "proven_terms": 1,
+  "store": {
+    "exists": true,
+    "path": "E:\\ChimeraWork\\slot-03\\ChimeraEngine\\engine_state.json",
+    "sha256": "bf0253046b3d8d7b187bcabe1137bb60f1d2b4dabc738bb0aac35f9712a6dc8b",
+    "size_bytes": 2173
+  },
+  "synthetic": false,
+  "verdicts": {
+    "closed": 2,
+    "next_number": 63,
+    "open": 0
+  },
+  "verdicts_commit": "cfba404b0b33"
+}
+orient_exit=0

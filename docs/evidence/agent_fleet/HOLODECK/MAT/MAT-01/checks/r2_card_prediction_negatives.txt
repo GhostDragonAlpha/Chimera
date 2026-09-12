@@ -1,0 +1,12 @@
+R2 card-prediction negatives (model must REFUSE, named reason)
+threshold: 8/8
+verdict: HOLDS (8/8)
+
+  PASS [1] refused unknown_unit: unregistered unit 'stones/week' | detail: density: unit 'stones/week' is not registered; no conversion factor may be invented for it
+  PASS [2] refused unit_dimension_mismatch: registered unit of the WRONG family ('Pa' on a density) | detail: density: a density must carry a unit from families ('density',) (dimension Dimension(L=-3, M=1, T=0)); 'Pa' belongs to family 'pressure' (dimension Dimension(L=-1, M=1, T=-2)) -- refused, not converted on faith
+  PASS [3] refused nonfinite: NaN value | detail: density: value is not finite (nan)
+  PASS [4] refused nonfinite: +inf value | detail: density: value is not finite (inf)
+  PASS [5] refused nonfinite: non-numeric value 'heavy' | detail: density: value 'heavy' is not a real number
+  PASS [6] refused missing_basis: derived provenance with blank derivation | detail: density: declared derived but carries no derivation (arithmetic + inputs)
+  PASS [7] refused missing_basis: density_from_sg with blank basis conditions | detail: SG -> density requires the declared reference basis CONDITIONS (e.g. 'water at 4 C'); none were stated -- refused before any arithmetic
+  PASS [8] refused invalid_value: negative basis density | detail: reference basis density must be a positive finite kg/m^3 value

@@ -9,6 +9,7 @@ just the door. That is what makes the workflow force the agent instead of ask it
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import sys
 import time
@@ -97,6 +98,12 @@ GATE_FIX = {
 # ledger survives a story migration and its proofs were verified under the old pointer regime.)
 GRANDFATHERED_TERMS = set()
 
+CONTINUATION_ACTION = (
+    "read docs/AGENT_START.md and the current canonical Master/controller snapshot; "
+    "continue an owned milestone first; only if approved capacity remains, request an "
+    "authenticated claim for an eligible READY task"
+)
+
 
 def _now() -> float:
     return time.time()
@@ -107,6 +114,17 @@ class Engine:
 
     def __init__(self, path: Path = STATE_PATH):
         self.path = Path(path)
+        self.store_present = self.path.exists()
+        self.store_sha256 = None
+        self.store_size_bytes = None
+        if self.store_present:
+            try:
+                raw = self.path.read_bytes()
+                self.store_size_bytes = len(raw)
+                self.store_sha256 = hashlib.sha256(raw).hexdigest()
+            except OSError:
+                self.store_sha256 = None
+                self.store_size_bytes = None
         self.state = self._load()
 
     def _load(self) -> dict:
@@ -333,11 +351,43 @@ class Engine:
 
     def next_action(self, name) -> str:
         if name is None:
-            return "the hierarchy is complete at this resolution."
+            local = self.next_term()
+            if local is not None:
+                return f"continue local term `{local}` and its gates"
+            return self.continuation_message()
         for g, ok, d in self.gates(name):
             if not ok:
                 return f"{GATE_FIX.get(g, g)}   (blocked at {g}: {d})"
         return f"prove({name!r}) -- every gate passes."
+
+    def continuation(self) -> dict:
+        """Describe the next routing authority when this local hierarchy has no open term.
+
+        The engine cannot inspect or claim the fleet controller; it emits a routing instruction
+        whose task/owner facts must come from the canonical Master/controller snapshot.
+        """
+        local = self.next_term()
+        if local is not None:
+            return {
+                "hierarchy_complete": False,
+                "route": "local_engine_hierarchy",
+                "authority": "engine_state",
+                "action": f"continue local term `{local}` and its gates",
+                "owner": None,
+                "eligible_tasks": None,
+            }
+        return {
+            "hierarchy_complete": True,
+            "route": "canonical_master_controller",
+            "authority": "controller_snapshot",
+            "action": CONTINUATION_ACTION,
+            "owner": None,
+            "eligible_tasks": None,
+        }
+
+    def continuation_message(self) -> str:
+        return ("LOCAL HIERARCHY COMPLETE at this resolution. " + CONTINUATION_ACTION + ". "
+                "This local completion does not end the project; no owner or task is claimed here.")
 
     # --- tool verbs (the MCP surface wraps these) --------------------------------
     def frame(self, name: str, claim: str) -> str:
@@ -570,5 +620,5 @@ class Engine:
             L.append(f"NEXT MOVE -> term `{nxt}`  (context: {' > '.join(self.context(nxt))})")
             L.append(f"            {self.next_action(nxt)}")
         else:
-            L.append("NEXT MOVE -> hierarchy complete at this resolution.")
+            L.append(f"NEXT MOVE -> {self.continuation_message()}")
         return "\n".join(L)

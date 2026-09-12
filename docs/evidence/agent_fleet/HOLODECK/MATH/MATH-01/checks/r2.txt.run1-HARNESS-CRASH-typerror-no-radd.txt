@@ -1,0 +1,27 @@
+R2 metre-newton negatives (card falsifier clause 1: model must REJECT; prereg N=6/6, reason 'dimension_mismatch')
+  [OK] (a) 1 m + 1 N
+        refused as expected: Math01Refusal('dimension_mismatch', 'cannot add quantities of Dimension(L=1, M=0, T=0) and Dimension(L=1, M=1, T=-2)')
+  [OK] (b) 1 m == 1 N (comparison)
+        refused as expected: Math01Refusal('dimension_mismatch', 'cannot compare (==) quantities of Dimension(L=1, M=0, T=0) and Dimension(L=1, M=1, T=-2)')
+  [OK] (c) 1 m < 1 N (ordering)
+        refused as expected: Math01Refusal('dimension_mismatch', 'cannot order (<) quantities of Dimension(L=1, M=0, T=0) and Dimension(L=1, M=1, T=-2)')
+  [OK] (d) 1 m + 1 s
+        refused as expected: Math01Refusal('dimension_mismatch', 'cannot add quantities of Dimension(L=1, M=0, T=0) and Dimension(L=0, M=0, T=1)')
+  [OK] (e) 1 Pa + 1 N/m (kg m^-1 s^-2 vs kg s^-2)
+        refused as expected: Math01Refusal('dimension_mismatch', 'cannot add quantities of Dimension(L=-1, M=1, T=-2) and Dimension(L=0, M=1, T=-2)')
+Traceback (most recent call last):
+  File "E:\ChimeraWork\slot-15\docs\evidence\agent_fleet\HOLODECK\MATH\MATH-01\controls\run_controls.py", line 401, in <module>
+    ok = ROWS[row]()
+  File "E:\ChimeraWork\slot-15\docs\evidence\agent_fleet\HOLODECK\MATH\MATH-01\controls\run_controls.py", line 126, in r2
+    cases.append(expect_refusal("(f) 1.0 (bare dimensionless literal) + 1 m",
+                 ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                "dimension_mismatch",
+                                ^^^^^^^^^^^^^^^^^^^^^
+                                lambda: 1.0 + Q(1, D.M)))
+                                ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\slot-15\docs\evidence\agent_fleet\HOLODECK\MATH\MATH-01\controls\run_controls.py", line 28, in expect_refusal
+    result = fn()
+  File "E:\ChimeraWork\slot-15\docs\evidence\agent_fleet\HOLODECK\MATH\MATH-01\controls\run_controls.py", line 128, in <lambda>
+    lambda: 1.0 + Q(1, D.M)))
+            ~~~~^~~~~~~~~~~
+TypeError: unsupported operand type(s) for +: 'float' and 'Quantity'

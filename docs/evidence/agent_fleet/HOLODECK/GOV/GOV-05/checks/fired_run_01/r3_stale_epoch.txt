@@ -1,0 +1,15 @@
+R3 STALE-EPOCH / SERIALIZED-INTEGRATION REFUSALS — threshold 5/5
+
+(a)/(b) exercise the two conjuncts of the ack epoch+leader gate
+(control.py:716 stale_integration_epoch). Under the deployed
+fail->election (control.py:147 _elect) epoch and leader move
+together, so each case isolates one conjunct of the same named
+refusal.
+
+(a) ack with pre-fail epoch (req epoch 1, registry epoch 2): (REFUSED, 'stale_integration_epoch'); request PENDING, task head intact: OK
+(b) ack with leader-mismatched request (req leader 'alice' vs registry 'bob'): (REFUSED, 'stale_integration_epoch'): OK
+(c) second ack: (REFUSED, 'integration_already_acknowledged'); first commit preserved: OK
+(d) integration_request while RUNNING: (REFUSED, 'not_in_review'): OK
+(e) integration_request head mismatch: (REFUSED, 'head_or_branch_mismatch'): OK
+
+SERIALIZED-INTEGRATION verdict in the reference model: stale/foreign publication paths all refused -> HOLDS

@@ -1,0 +1,31 @@
+[dyad] gpu_demo_raised_gamma0: calling senses.watch_one ...
+[dyad] gpu_demo_raised_gamma0: OK
+[dyad] gpu_demo_final_relaxed: calling senses.watch_one ...
+[dyad] gpu_demo_final_relaxed: OK
+evidence: C:\Users\allen\AppData\Local\Temp\opencode\chimera_pub\docs\evidence\membrane_gpu_demo_runtime\20260909T211939.281732Z\dyad_gpu_demo_review.json
+
+===== gpu_demo_raised_gamma0 =====
+**1. What is visibly distinguishable**
+A single light‑gray, filled polygon in the centre of an otherwise empty dark scene (near‑black background with a faint vertical gradient; solid black letterbox bars top and bottom). The polygon reads as a flat‑ish hexagon seen at a low oblique angle: it is much wider than it is tall. Inside it I can see six thin white radial lines ("spokes") that all meet at one interior point and run to the six outer corners – i.e. the fill is divided into six triangles, matching the stated topology. The fill has a smooth shading gradient (brighter toward the back/upper‑middle, darker toward the front edge), consistent with a lit surface plus an edge‑contrast wire pass. Behind and below this light shape there is a second, much darker hexagonal panel that does *not* share the same footprint as the light shape (the light shape's right tip extends well past the dark hexagon's right corner, and the dark hexagon extends far lower in the image). I see no grid lines, no axis gizmo, no scale bar, no text. The dark hexagon is unlabelled – it could be a floor/base panel, a projection/shadow of the rim onto the ground plane, or the rim plane itself rendered dark; from this single frame I cannot tell which.
+
+**2. Locating the centre vertex and the outer rim**
+*Centre vertex:* the interior point where all six white spokes converge (roughly upper‑middle of the light polygon). It is identifiable as the centre because it is the common apex of every triangle edge and lies strictly inside the perimeter, not on it. *Outer rim:* the outer hexagonal boundary of the light shape – the six corner vertices where the fill meets the dark background and where each spoke terminates. (The darker hexagon behind should *not* be mistaken for this rim; the membrane's true rim is the bright outline.)
+
+**3. Is the centre's offset from the rim plane resolvable?**
+**Uncertain** – borderline *not resolvable*. The camera elevation is low (cam_phi ≈ 0.35 rad), which compresses vertic
+
+
+===== gpu_demo_final_relaxed =====
+**1. What is visibly distinguishable**
+- A single flat, light‑grey hexagonal "membrane" in the centre of the frame, rendered with a smooth top‑to‑bottom shading gradient (lighter at the top edge, darker at the bottom) and outlined by thin white wire edges. Inside it I can see thin white lines: a horizontal line through the middle plus an "X", i.e. spokes from a central point to the six corners — consistent with six triangles sharing one centre vertex.
+- Behind/around that bright hexagon there is a *second*, larger, much darker grey hexagonal region of the same orientation (pointed left/right, flat top/bottom edges), shifted downward and bigger than the bright membrane. I cannot tell from the image whether this is a floor plate, a cast shadow, a second mesh, or an artefact.
+- A solid saturated‑blue horizontal band spanning the full width across the very top of the frame. It has no perspective and sits in screen space, so it reads as a UI/progress strip rather than 3D scene content.
+- The rest is a dark near‑black background with a faint vertical gradient. I see **no** grid lines, no text labels, no other panels or objects.
+
+**2. Locating the centre vertex and the rim**
+- *Rim:* the six outer corners / white perimeter of the bright hexagon (the leftmost and rightmost points plus the four top/bottom‑corner vertices). The larger dark hexagon behind is **not** the rim — it is bigger and offset, so I treat it as separate.
+- *Centre vertex:* the point where the internal wire spokes cross (the intersection of the horizontal line and the X) at the middle of the bright hexagon. That crossing is the only cue for the centre; there is no explicit marker or highlight on it.
+
+**3. Is the centre's offset from the rim plane resolvable?**
+**Not resolvable.** The membrane reads as perfectly planar: the wire spokes all lie flat within the hexagon outline, there is no apex popping out of the plane, and the fill gradient is smooth (shading, not geometry). A *macroscopic* offset such as t
+

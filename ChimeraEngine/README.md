@@ -1,5 +1,24 @@
 # ChimeraEngine
 
+## Current project entry
+
+For assignments and continuous work, begin at
+[docs/AGENT_START.md](../docs/AGENT_START.md) and recover your live controller
+claim against the [Master list](../docs/THE_MASTER_LIST.md). Completion of this
+folder's local term hierarchy does not complete the project or end the session.
+
+The current renderer is the [C++ Vulkan engine](engine/engine.cpp).
+[Native demo instructions and evidence](../docs/THE_ENGINE_DEMO.md) describe its
+bounded executed behavior. Read the [current DYAD protocol](../docs/THE_DYAD_PROTOCOL.md)
+for model identity, image handling and evidence requirements; older movie/Ollama
+instructions below are historical where they conflict with that protocol.
+An operator override does not substitute for an unexecuted visual gate.
+
+Submitted PRs can release their execution slot and capacity while remaining
+under review; use the [handoff contract](../docs/THE_REVIEW_SLOT_HANDOFF.md).
+The remainder of this README records the older module organization and workflow
+design; it does not establish current assignments or runtime certification.
+
 <!-- CHIMERA-LAW -->
 > **RULE 0 — EVERY MEMBRANE IS A THEORY. STATE IT BEFORE YOU BUILD IT.** Three parts, all three
 > required: a **STATEMENT** someone could disagree with · a **PREDICTION** you have not measured

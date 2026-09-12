@@ -1,0 +1,26 @@
+STEP-GPU-02 source provenance
+
+Base commit: 53cf15b534fccad19e9adb0afae8b419586decd5
+Repository: tools/membrane_gpu_probe/probe.cpp
+
+The mutation run built the working-tree probe source recorded by result.json,
+then built four temporary shader mutations and one temporary invalid-fixture
+copy. The tracked probe changes were limited to:
+
+1. Add an optional stale-buffer test path that submits face evaluation, waits
+   for completion, mutates the mapped position buffer, skips face evaluation,
+   then submits assembly and reduction.
+2. Compare stale output against a fresh changed-geometry dispatch.
+3. Emit and enforce a face-validity predicate in the host numerical gate.
+4. Add the --stale-reuse command-line mode.
+
+The four shader controls and invalid-face fixture were mutated only in copied
+run directories. No committed fixture, production shader, physical law,
+fixture tolerance, or engine source was mutated.
+
+The exact source, fixture, SPIR-V, and executable SHA-256 values are recorded
+in result.json under each control's source_to_executable and fixture_hashes.
+The exact build and run commands and raw stdout/stderr are recorded beside
+each control. Reproduce the source comparison with:
+
+git -C <checkout> diff 53cf15b534fccad19e9adb0afae8b419586decd5 -- tools/membrane_gpu_probe/probe.cpp

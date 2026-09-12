@@ -1,0 +1,14 @@
+# capture-flake-tolerance-01 P3: assertion-set proof (AST, exact unparse)
+# base: 4c31999797a9383ea252019be1f32511709fa280
+# head: d780e65ea0822d1dce27a3d9322ba96743af500d
+# method: for every (class, method) pair, the exact list of assert*/fail
+# call ASTs (ast.unparse) must be IDENTICAL between base and head for all
+# methods that exist at base; additions are allowed only in new methods.
+methods base: 40 | methods head: 49
+REMOVED methods: []
+CHANGED assertion sets: []
+ADDED methods: ['_ToleranceScriptedWindow.__init__', '_ToleranceScriptedWindow.client_rect', '_ToleranceScriptedWindow.repaint', 'TransientToleranceTests._tolerance', 'TransientToleranceTests.test_single_retry_heals_transient_and_retains_first_failure', 'TransientToleranceTests.test_real_occlusion_not_masked_single_retry_failure_retained', 'TransientToleranceTests.test_retry_refused_when_fixture_parameters_drift', 'TransientToleranceTests.test_non_transient_verdicts_return_without_retry', 'TransientToleranceTests.test_deadline_exhausted_before_retry_means_no_retry']
+assert-call count base: 117 | head: 140 | delta: 23
+delta locations (all must be inside ADDED methods):
+ assert calls in added methods by class: {'_ToleranceScriptedWindow': 0, 'TransientToleranceTests': 23}
+P3 VERDICT: HELD - zero removed methods, zero changed assertion sets

@@ -1,0 +1,1 @@
+Before first runtime: corrected SetBkMode/SetTextColor calls to gdi32 (prototypes were already declared there); save RGB because GDI bitmap alpha is reserved, not valid transparency. No engine code/binary, numeric gate, or watchdog changed. Private proposal remains preserved at E:/ChimeraWork/evidence/shutdown_owned_backdrop_20260910.

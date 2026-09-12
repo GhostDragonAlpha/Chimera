@@ -1,0 +1,11 @@
+P5 op audit for subagent-worker-10 (controller events feed, latest 200 events, seq 1..200, feed revision 761)
+
+controller events referencing this agent:
+
+catalogue import now: digest=b9d32319b43a03bbb713f1a4e6120f24065839f15383b0729fb587ba04f9000a imported_revision=651 leader=glm53-lead-02
+digest unchanged during task: True
+task state: RUNNING generation: 1 owner: subagent-worker-10
+
+ops this lane actually issued (client-side audit): snapshot xN, claim(catalogue-packet-batch-01), catalogue_next(digest b9d32319, count 12), catalogue_read x17 (GOV-01..06, MATH-01..06, MAT-01..05), checkpoint x1 (own task), submit_review x1 (own task, at ship).
+NEVER issued by this lane: create_task, catalogue_import, resource_acquire/release, claim of any other task, any supervisor op.
+P5 PENDING-SHIP (final submit_review recorded in the controller event log; head recorded in RESULT.md)

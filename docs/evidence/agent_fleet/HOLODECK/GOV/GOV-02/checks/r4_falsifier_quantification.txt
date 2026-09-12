@@ -1,0 +1,9 @@
+R4 FALSIFIER QUANTIFICATION (prereg: advertised-as-executed violations over the sweep must be 0; the three PREREGISTERED unknown-kept scenarios must hold exactly — R2a runtime, R2a dyad, R2c dyad)
+
+  probe: runtime UNKNOWN despite unit-test pass       -> MISSING (OK)
+  probe: dyad UNKNOWN despite unit-test pass          -> MISSING (OK)
+  probe: dyad UNKNOWN despite unit+runtime pass       -> MISSING (OK)
+advertised-as-executed violations over the sweep: 0 (threshold 0)
+preregistered unknown-kept scenarios holding: 3 of 3 (threshold exactly 3)
+
+R4 verdict: HOLDS

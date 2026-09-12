@@ -1,0 +1,24 @@
+BEFORE — provisioned worktree at base b20e4eaa (pre-rule checkout, core.autocrlf=true on this host)
+sample: 21 files, 7 evidence dirs; kind = sha-recorded class
+
+agent_fleet/DYAD_TEMPLATE_HARDENING/demo_blind/unblinding_hard-demo-blind.json unblinding       before=919a3c57ddf6 blob=919a3c57ddf6 MATCH
+agent_fleet/DYAD_TEMPLATE_HARDENING/demo_blind/exact_prompt_hard-demo-blind.txt prompt           before=2aad7bf14c41 blob=a751df5ef434 MISMATCH(checkout-rewritten)
+agent_fleet/DYAD_TEMPLATE_HARDENING/demo_blind/plan_blind_stdout.txt     recorder         before=b2779500a09c blob=de630415c7fb MISMATCH(checkout-rewritten)
+agent_fleet/DYAD_TEMPLATE_HARDENING/demo_blind/request_spec_hard-demo-blind.json recorder         before=7920e64ab08e blob=b49533540d06 MISMATCH(checkout-rewritten)
+agent_fleet/DYAD_TEMPLATE_HARDENING/demo_blind/captures/frame_a.png      capture          before=bdc46784088b blob=bdc46784088b MATCH
+agent_fleet/DYAD_TEMPLATE_HARDENING/demo_blind/captures/frame_b.png      capture          before=427cc28c00ce blob=427cc28c00ce MATCH
+agent_fleet/DYAD_TEMPLATE_HARDENING/demo_blind/captures/frame_c.png      capture          before=b13105d205c0 blob=b13105d205c0 MATCH
+agent_fleet/DYAD_RETAINED_REVIEWS/exact_prompt_rr01-edge01-pair.txt      prompt-embedded  before=6c6555b66efb blob=e809c2aa1d20 MISMATCH(checkout-rewritten)
+agent_fleet/DYAD_RETAINED_REVIEWS/dyad_response_rr01-edge01-pair.json    recorder         before=a9e6ce1467ff blob=ad384f71a7cf MISMATCH(checkout-rewritten)
+studio_grid_depth/after/v1_frame.png                                     sidecar-png      before=fe0983583b2b blob=fe0983583b2b MATCH
+studio_grid_depth/after/v2_glass.png                                     sidecar-png      before=a666793bcf1c blob=a666793bcf1c MATCH
+studio_grid_depth/after/v3_mesh_frame.png                                sidecar-png      before=896dd181060f blob=896dd181060f MATCH
+studio_grid_depth/after/v1_frame.json                                    sidecar-recorder before=ff780f0fa89e blob=9dfe12bd5936 MISMATCH(checkout-rewritten)
+studio_grid_depth/dyad_review_handoff/plan_after/exact_prompt_after-fix-glass-v1.txt prompt           before=860fdb0bcb81 blob=1cba8a15dabd MISMATCH(checkout-rewritten)
+studio_grid_depth/dyad_review_handoff/plan_after/request_spec_after-fix-glass-v1.json recorder         before=0df4c745b815 blob=841745d161d5 MISMATCH(checkout-rewritten)
+agent_fleet/CATALOGUE_DETERMINISM/RAW_RUN_BASELINE_CONSOLE.txt           console          before=009ee83e22a3 blob=634fad48098c MISMATCH(checkout-rewritten)
+agent_fleet/CATALOGUE_DETERMINISM/ATTR_BOTH.txt                          console          before=a17d0340ba7b blob=11543fcfbc33 MISMATCH(checkout-rewritten)
+agent_fleet/SLOT_EXPANSION/RUN_FULL_SUITE_GEN2.txt                       console          before=247c18fca25c blob=5795ad0876c0 MISMATCH(checkout-rewritten)
+agent_fleet/SLOT_EXPANSION/MEASUREMENT.json                              record           before=6a7a14a71522 blob=487f8b921645 MISMATCH(checkout-rewritten)
+membrane_gpu_demo_runtime/20260909T143821.177952Z/raised_gamma0.png      retained-png     before=53e994e08d8e blob=53e994e08d8e MATCH
+membrane_gpu_demo_runtime/20260909T143821.177952Z/final_relaxed.png      retained-png     before=20021e7871f7 blob=20021e7871f7 MATCH

@@ -1,0 +1,35 @@
+test_current_identity_stable_and_boot_bound (test_linux_process.LinuxProcessTests.test_current_identity_stable_and_boot_bound) ... ok
+test_mismatched_identity_never_signals (test_linux_process.LinuxProcessTests.test_mismatched_identity_never_signals) ... ok
+test_missing_listener_never_signals (test_linux_process.LinuxProcessTests.test_missing_listener_never_signals) ... ERROR
+test_socket_ownership_tracks_actual_listening_fd (test_linux_process.LinuxProcessTests.test_socket_ownership_tracks_actual_listening_fd) ... ERROR
+
+======================================================================
+ERROR: test_missing_listener_never_signals (test_linux_process.LinuxProcessTests.test_missing_listener_never_signals)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/972c485a50c0/fleet_linux_git/tools/agent_fleet/test_linux_process.py", line 40, in test_missing_listener_never_signals
+    linux_process.stop_owned(os.getpid(), linux_process.identity(os.getpid()), port)
+  File "/workspace/scratch/972c485a50c0/fleet_linux_git/tools/agent_fleet/linux_process.py", line 49, in stop_owned
+    if not owns_listener(pid, port):
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/972c485a50c0/fleet_linux_git/tools/agent_fleet/linux_process.py", line 35, in owns_listener
+    if os.readlink(entry) in inodes:
+       ^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/proc/6/fd/0'
+
+======================================================================
+ERROR: test_socket_ownership_tracks_actual_listening_fd (test_linux_process.LinuxProcessTests.test_socket_ownership_tracks_actual_listening_fd)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/972c485a50c0/fleet_linux_git/tools/agent_fleet/test_linux_process.py", line 23, in test_socket_ownership_tracks_actual_listening_fd
+    self.assertTrue(linux_process.owns_listener(os.getpid(), port))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/972c485a50c0/fleet_linux_git/tools/agent_fleet/linux_process.py", line 35, in owns_listener
+    if os.readlink(entry) in inodes:
+       ^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/proc/6/fd/0'
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.008s
+
+FAILED (errors=2)

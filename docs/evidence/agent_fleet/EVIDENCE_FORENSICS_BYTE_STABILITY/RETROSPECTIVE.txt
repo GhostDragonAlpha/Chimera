@@ -1,0 +1,61 @@
+RETROSPECTIVE — renormalization implications of `docs/evidence/** -text`
+(evidence-forensics-byte-stability-01, measured at base b20e4eaa / rule head b6b4de3a)
+
+## The one-time renormalization question
+
+Files committed BEFORE the rule were added under `* text=auto` + `core.autocrlf=true`:
+git normalized them to LF in the blob. The question this lane was asked to MEASURE (not
+guess): does any RECORDED hash describe the pre-rule CRLF checkout rendering rather than
+the LF blob — i.e. would the first touch of such a file (or the rule itself) change what
+its recorded hash verifies against?
+
+## Measurement 1 — do evidence blobs contain CRLF?
+
+Census over the 21-file sample (BEFORE_HASHES.txt):
+
+  text-class blobs (13): 0 contain CRLF — every evidence text file was LF-normalized
+  at `git add` time under `* text=auto`. Nothing to renormalize.
+  binary PNG blobs (8): 5 contain incidental 0x0D0A byte pairs inside the PNG data
+  (after/v1_frame.png, after/v2_glass.png, after/v3_mesh_frame.png,
+  membrane_gpu_demo_runtime/20260909T143821.177952Z/raised_gamma0.png and
+  .../final_relaxed.png). Binary passthrough applied before the rule (via
+  `*.png binary`) and after (via `*.png binary` AND `docs/evidence/** -text`) — no
+  conversion semantics ever applied, no renormalization possible or needed.
+
+## Measurement 2 — does any recorded hash predate the rule?
+
+"Predates" = a recorded hash matching the CRLF rendering of the file while the blob is
+LF (the recorded value would describe a pre-rule checkout artifact instead of the
+committed bytes). Result across every explicit recorded-hash relationship in the sample:
+
+  11/11 recorded values equal the LF BLOB hash; 0 match a CRLF rendering.
+  (unblinding_sha256 in plan_blind_stdout.txt; prompt_sha256 in the unblinding map;
+  3 demo capture sha256s in request_spec_hard-demo-blind.json; the retained
+  exact_prompt embedded verbatim in dyad_response_rr01-edge01-pair.json; 2 retained
+  capture sha256s in request_spec_rr01-edge01-pair.json; 3 studio after/ sidecar
+  png_sha256 values.)
+
+This is the PR #73 review LOW-1 mechanism inverted: the RECORDED side was always the
+LF blob; only the CHECKOUT was unstable. Conclusion: no recorded hash predates the
+rule; no re-record is required; the rule alone restores verification.
+
+## The forward implication (what future lanes must know)
+
+After the rule, `git add` on evidence paths is passthrough — whatever bytes are on disk
+are committed. A working tree checked out BEFORE the rule holds CRLF renderings of
+evidence text files; re-adding one of those (after editing) would commit CRLF bytes and
+FLIP the blob LF->CRLF, breaking every downstream recorded hash. Therefore:
+
+  1. Touch evidence files only after a fresh checkout under the rule (byte-exact LF on
+     disk), or re-checkout the file first: `git checkout -- <path>` at a post-rule head.
+  2. `git add --renormalize` is a NO-OP for `-text` paths (renormalize applies the
+     text conversion the attributes define; `-text` defines none). The discipline is
+     re-checkout, not renormalize — this is the correction to the usual reflex.
+  3. Writers that emit evidence (plan/assemble drivers, run records) should keep
+     emitting LF (write with byte-exact or newline='\n' semantics), which every
+     existing producer already does (Measurement 1).
+
+No pre-rule evidence file was touched, re-added, or renormalized by this lane; the rule
+commit changes .gitattributes only, so every existing blob is byte-identical across the
+fix (verified: BEFORE/AFTER per-file hashes — the AFTER clone hashes equal the base
+blobs for all 21 files).

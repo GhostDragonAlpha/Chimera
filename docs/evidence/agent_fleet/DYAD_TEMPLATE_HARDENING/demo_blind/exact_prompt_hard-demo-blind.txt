@@ -1,0 +1,15 @@
+DYAD visual review request
+task: dyad-template-hardening-01
+attempt: hard-demo-blind
+physical/programming context: three window frames of one triangulated membrane object at one fixed camera (synthetic builder-demo captures, no engine run)
+claim under examination: the recorded states are visually distinguishable
+review type: ordered_frames
+ordered captures: #1 frame_c.png (sha256 b13105d205c0...), #2 frame_a.png (sha256 bdc46784088b...), #3 frame_b.png (sha256 427cc28c00ce...)
+camera/runtime metadata: {"camera": "fixed demo camera phi 0.35 / radius 3.0"}
+evidence limits: builder demo only: no vision model ran; numbers would be observations, not measurements
+
+Answer EVERY question with its number. Report only what you can observe in the supplied images; state uncertainty explicitly. Do not guess. Numbers you mention are observations to verify, not measurements.
+1. Describe what frame 1 shows.
+2. Describe what frame 2 shows.
+3. Describe what frame 3 shows.
+4. Can you determine which frame was recorded first? If not, what limits you?

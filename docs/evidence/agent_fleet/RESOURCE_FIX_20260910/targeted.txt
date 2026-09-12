@@ -1,0 +1,28 @@
+test_available_child_acquisition_still_works (test_resource_lifecycle.ResourceLifecycleTests.test_available_child_acquisition_still_works) ... ok
+test_gpu_release_preserves_engine_owner_until_drained (test_resource_lifecycle.ResourceLifecycleTests.test_gpu_release_preserves_engine_owner_until_drained) ... ok
+test_legacy_engine_requires_parent (test_resource_lifecycle.ResourceLifecycleTests.test_legacy_engine_requires_parent) ... ok
+test_legacy_memory_has_named_refusal (test_resource_lifecycle.ResourceLifecycleTests.test_legacy_memory_has_named_refusal) ... ok
+test_malformed_resource_returns_json_and_preserves_state (test_resource_lifecycle.ResourceLifecycleTests.test_malformed_resource_returns_json_and_preserves_state) ... ok
+test_memory_total_release_and_clear (test_resource_lifecycle.ResourceLifecycleTests.test_memory_total_release_and_clear) ... ok
+test_nonholder_stays_queued_and_auto_promotes (test_resource_lifecycle.ResourceLifecycleTests.test_nonholder_stays_queued_and_auto_promotes) ... ok
+test_same_owner_benchmark_class_requires_release (test_resource_lifecycle.ResourceLifecycleTests.test_same_owner_benchmark_class_requires_release) ... ok
+test_split_acquisition_is_terminal_not_pending (test_resource_lifecycle.ResourceLifecycleTests.test_split_acquisition_is_terminal_not_pending) ... ok
+test_stale_registry_hold_cannot_be_overwritten (test_resource_lifecycle.ResourceLifecycleTests.test_stale_registry_hold_cannot_be_overwritten) ... ok
+test_supervisor_clear_requires_engine_drain (test_resource_lifecycle.ResourceLifecycleTests.test_supervisor_clear_requires_engine_drain) ... ok
+test_benchmark_class_excludes_all_gpu_use (test_resources.ResourceSchedulerTests.test_benchmark_class_excludes_all_gpu_use) ... ok
+test_benchmark_requires_empty_gpu_even_from_same_task (test_resources.ResourceSchedulerTests.test_benchmark_requires_empty_gpu_even_from_same_task) ... ok
+test_different_resources_can_progress_independently (test_resources.ResourceSchedulerTests.test_different_resources_can_progress_independently) ... ok
+test_grouped_grant_is_atomic (test_resources.ResourceSchedulerTests.test_grouped_grant_is_atomic) ... ok
+test_grouped_grant_never_partial_on_conflict (test_resources.ResourceSchedulerTests.test_grouped_grant_never_partial_on_conflict) ... ok
+test_invalid_wants_refused (test_resources.ResourceSchedulerTests.test_invalid_wants_refused) ... ok
+test_legacy_acquire_release_unchanged (test_resources.ResourceSchedulerTests.test_legacy_acquire_release_unchanged) ... ok
+test_memory_admission_refuses_over_budget (test_resources.ResourceSchedulerTests.test_memory_admission_refuses_over_budget) ... ok
+test_pending_requests_vanish_on_fail_and_recover (test_resources.ResourceSchedulerTests.test_pending_requests_vanish_on_fail_and_recover) ... ok
+test_revoke_pending (test_resources.ResourceSchedulerTests.test_revoke_pending) ... ok
+test_same_resource_fifo_priority_is_a_stamp (test_resources.ResourceSchedulerTests.test_same_resource_fifo_priority_is_a_stamp) ... ok
+test_unknown_memory_is_explicit_state (test_resources.ResourceSchedulerTests.test_unknown_memory_is_explicit_state) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.623s
+
+OK

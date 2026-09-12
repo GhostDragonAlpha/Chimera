@@ -1,0 +1,23 @@
+{
+  "label": "dyad2top_gamma1_flat_topdown",
+  "kind": "DIAGNOSTIC extra view (dyad-requested near-top-down); explicitly-labelled camera, not the demo's fixed camera",
+  "camera": {
+    "radius": 3.5,
+    "theta": 0.0,
+    "phi": 1.45
+  },
+  "engine_url": "http://localhost:8091",
+  "png_file": "docs\\evidence\\membrane_window_demo\\20260908T173204.430256Z\\dyad2top_gamma1_flat_topdown.png",
+  "png_sha256": "c7d839114a8cc4970e4167a364e511c6ff583e3deeac55d6ada1afc73f521930",
+  "upload_positions_f32le_sha256": "99c59aef9caee4c3195fc376d7f450954713f12fea10e97f4c3250a30797a465",
+  "blob_position_hash_at_capture": "99c59aef9caee4c3195fc376d7f450954713f12fea10e97f4c3250a30797a465",
+  "state_id": "d7d7b40d6e05fc6e8b3e49f081ccf896a276070956167143a4d82c0240cbb663",
+  "state": {
+    "fixture": "b2",
+    "gamma_J_per_m2": 1.0,
+    "iteration": 126,
+    "energy_J": 2.5980761647224426,
+    "geometry_sha256_f64le": "1a3d0b427f98c8901f596ec4959930fa01db18aa56eb2c96d35f5f96e5077710",
+    "upload_positions_f32le_sha256": "99c59aef9caee4c3195fc376d7f450954713f12fea10e97f4c3250a30797a465"
+  }
+}

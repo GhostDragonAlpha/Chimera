@@ -1,0 +1,233 @@
+PREREGISTRATION — holodeck-mat-01 (gen 1)
+
+Agent: subagent-worker-12. Slot 4, worktree E:\ChimeraWork\slot-04, branch
+astra/tasks/holodeck-mat-01, base 4812b55b407107a34b708af1700e071a7eecbab4
+(provision verified: HEAD==base, working tree clean, before any work).
+Admitted from draft DRAFT-holodeck-mat-01 (PR #67; catalogue card MAT-01,
+digest b9d32319..., content_sha256 cf7919a4...). Dependencies INTEGRATED:
+holodeck-math-01 (3889755d, PR #87), holodeck-gov-03 (4812b55b, PR #88).
+
+This commit contains the PREREGISTRATION ONLY. No reference model, no
+controls, no results, no measured counts.
+
+SOURCE-ONLY LANE: the deployed material plane is studied from source text
+at base (file identities recorded below and in RESULT.txt). The live
+service is NEVER contacted; no engine process, GPU, or controller resource
+is used. DYAD: NOT_APPLICABLE — source-only scope produces and alters no
+executed runtime behavior of the deployed system; reason restated in
+RESULT.txt per the card's DYAD policy ("Reference-only or source-only
+scope records NOT_APPLICABLE with reason").
+
+## RULE 0 MEMBRANE (card fields verbatim + my theory of this lane)
+
+- CARD STATEMENT: Admitted parameter records distinct from raw data.
+- CARD PREDICTION: Invalid units, nonfinite values and missing basis refuse
+  at the real caller.
+- CARD FALSIFIER (named BEFORE the run, both for the reference model and
+  the deployed-source trace): A legacy bypass reaches a calculation
+  advertised as validated.
+- CARD MATHEMATICS: dimensions; reference conditions; immutable snapshots.
+- MY STATEMENT: the deployed material plane already keeps TWO distinct
+  stores — governed parameter records (tools/material_contract.py, where a
+  property cannot exist unvalidated) and a documented raw-constants plane
+  (tools/materials.py) — and the real callers that advertise validation
+  refuse invalid units, nonfinite values, and missing bases by name, while
+  the raw-constants consumers (cad_sample) are honest about not claiming
+  contract admission. A2 (this lane's prediction): an independent
+  MATH-01-backed admission model reproduces the intended typed contract and
+  refuses every legacy path to the validated calculation.
+- MY PREDICTION: every preregistered row below reaches its full N/N.
+- FALSIFIER CONSEQUENCE: if any row misses, the miss is REPORTED (fired-run
+  retained, like GOV-05's precedent), never patched around; a fired card
+  falsifier in the DEPLOYED trace (a bypass into a calculation advertised
+  as validated) is a FINDING recorded in RESULT.txt — deployed findings are
+  never edited and never adopted as the model's truth.
+
+## UNITS BACKBONE (MATH-01 citation duty)
+
+The reference model imports MATH-01's integrated typed-quantity algebra
+(docs/evidence/agent_fleet/HOLODECK/MATH/MATH-01/reference/
+math01_reference_model.py: Dimension over exact Fraction (L,M,T) exponents,
+Quantity with named `dimension_mismatch` refusals, UnitRegistry
+declared-only conversions). Independence is claimed from the AUDITED
+deployed code (tools/material_contract.py), NOT from the MATH-01 backbone —
+the task packet designates MATH-01 the units backbone of this lane. Where
+material properties touch dimensional analysis (unit family -> dimension
+mapping, Pa x m^3 = J composition, cross-family refusal), the model defers
+to MATH-01's algebra and cites it; the model adds the ADMISSION layer
+(raw data -> typed immutable parameter record) that MATH-01 deliberately
+does not have.
+
+## REFERENCE MODEL CONTRACT (fixed before implementation)
+
+stdlib-only (+ the MATH-01 import), <300 lines, at
+reference/mat01_reference_model.py:
+
+- PROPERTY_SCHEMA: closed table mapping property type -> allowed unit
+  family (each family: {unit -> scale to canonical SI}), sign gate, and the
+  MATH-01 Dimension the family denotes:
+    density        {kg/m^3:1, g/cm^3:1e3}              dim (L^-3 M),  positive
+    modulus        {pa:1, kpa:1e3, mpa:1e6, gpa:1e9}   dim Pa,        positive
+    surface_energy {j/m^2:1}                           dim (M T^-2),  nonnegative
+    dimensionless  {1:1, ratio:1, sg:1}                dim 1          (fraction: [0,1])
+- admit(raw: dict) -> MaterialParameter: the ONLY path from raw data to a
+  record. Gate order: finite real value (NONFINITE) -> unit registered
+  (INVALID_UNIT: unknown_unit) -> unit family matches the property type's
+  MATH-01 Dimension (INVALID_UNIT: unit_dimension_mismatch) -> provenance
+  in {researched, parent, derived} -> derived requires nonblank derivation
+  (MISSING_BASIS) -> nonblank source AND conditions (MISSING_BASIS: a
+  parameter without stated reference conditions is not admissible) ->
+  sign/fraction gates (INVALID_VALUE). Success returns a frozen
+  MaterialParameter carrying a MATH-01 Quantity (SI-scale value + exact
+  Dimension), the original unit, provenance, source, conditions, and
+  derivation.
+- snapshot(params) -> immutable mapping view (types.MappingProxyType over
+  name -> record). Mutation attempts raise; serving re-checks membership
+  and type at the boundary (the MATH-01 model's A1-3 analog: a hostile
+  dict injection into the bag is refused at serve time, not trusted).
+- THE REAL CALLER (the card prediction's surface):
+  bulk_mass(density_parameter, volume_quantity) -> MATH-01 Quantity of
+  Dimension M — accepts ONLY an admitted MaterialParameter and a MATH-01
+  Quantity of Dimension L^3; anything else (raw dict, bare float, string,
+  duck-typed impostor) is refused `legacy_input` BEFORE any arithmetic;
+  dimension mismatches refuse via MATH-01's `dimension_mismatch`.
+- density_from_sg(sg_parameter, basis_value, basis_conditions): declared
+  -basis derivation; missing/blank conditions refuse MISSING_BASIS before
+  any arithmetic; nonpositive/nonfinite basis refuses INVALID_VALUE; the
+  derived record carries its arithmetic (a derivation string with the
+  inputs), per the card's "reference conditions" mathematics.
+
+## PREREGISTERED NUMBERS / THRESHOLDS (stated before ANY implementation test)
+
+Verdict rule: each row must reach its full N/N; any miss = the row's
+falsifier fired and is REPORTED with the fired run retained. Post-state
+assertions accompany every refusal (nothing admitted, calculation not
+executed).
+
+- R1 positive admissions (model must ACCEPT): N=7/7 —
+  (a) researched density "250 kg/m^3" admitted -> Quantity dimension (L^-3 M);
+  (b) modulus admitted as "120 kPa" -> SI value 1.2e5 with Pa dimension;
+  (c) derived density_from_sg WITH declared basis conditions -> admitted,
+      derivation string carries the arithmetic and inputs;
+  (d) dimensionless fraction 0.4 admitted in [0,1];
+  (e) snapshot() of an admitted set is an immutable mapping with identical
+      content;
+  (f) MATH-01 composition: admitted Pa modulus x dimensionless strain x
+      admitted m^3 volume -> dimension (M T^-2) energy... i.e. Pa*m^3
+      composes to the J dimension through MATH-01's exact algebra (cited,
+      not reimplemented);
+  (g) bulk_mass(admitted_density, volume_quantity) -> Quantity of
+      Dimension M with the arithmetic value rho*V.
+- R2 card-prediction negatives (model must REFUSE, reason verbatim): N=8/8 —
+  (a) unregistered unit "stones/week" -> INVALID_UNIT(unknown_unit);
+  (b) registered unit of the WRONG family for the type ("Pa" on a density)
+      -> INVALID_UNIT(unit_dimension_mismatch);
+  (c) NaN value -> NONFINITE; (d) +inf value -> NONFINITE;
+  (e) non-numeric value "heavy" -> NONFINITE;
+  (f) derived provenance with blank derivation -> MISSING_BASIS;
+  (g) density_from_sg with blank basis conditions -> MISSING_BASIS (before
+      arithmetic);
+  (h) negative basis density -> INVALID_VALUE.
+  Post-state in every case: the bag contains no new record; no Quantity
+  was produced.
+- R3 CARD FALSIFIER probe — legacy bypass attempts at the real caller
+  (model must REFUSE all): N=6/6 —
+  (a) raw dict {"value":250,"unit":"kg/m^3",...} handed to bulk_mass ->
+      legacy_input;
+  (b) bare float 250.0 -> legacy_input;
+  (c) string "250 kg/m^3" -> legacy_input;
+  (d) duck-typed impostor object (not an admitted MaterialParameter) ->
+      legacy_input;
+  (e) mutation attempt on an admitted record (attribute set) -> raises
+      (frozen) and the record's value is unchanged afterward;
+  (f) hostile injection: a plain dict slipped into the snapshot bag, then
+      served -> boundary re-check refuses at serve time.
+  Threshold: 6/6 refusals with the calculation never executed.
+- R4 immutable snapshots / records: N=4/4 —
+  (a) snapshot mapping type forbids item assignment (raises);
+  (b) converted copy (kPa -> Pa) is a NEW record; the original is
+      byte-identical before/after;
+  (c) double admission of the same property name into one snapshot refused
+      (DUPLICATE) with the first admission intact;
+  (d) admitted record survives snapshot->serve round trip with identical
+      Quantity (value, dimension).
+- R5 deployed-source trace at base 4812b55b (the card prediction judged
+  against the DEPLOYED text): 3/3 real-caller gate families present with
+  exact quoted file:line at base —
+  (a) THE CONSTRUCTION DOOR: tools/material_contract.py:145-151
+      (MaterialProperty.__post_init__ -> _validate_property at :209;
+      "validation happens at CONSTRUCTION");
+  (b) THE BOUNDARY + FAMILY GATE: register/:338 and record/:345
+      re-validating via _validate_record; convert/:83 with
+      validate-before-identity (G01-R2, P-8n at :85-106); get/:355
+      as_unit conversion returning a NEW record;
+  (c) THE DECLARED BASIS: density_from_sg/:384 refusing MISSING_BASIS on
+      blank conditions before arithmetic, plus the real caller
+      tools/membrane_window_demo.py:240-285 (contract_gamma: admission
+      path "MaterialProperty.__post_init__ gate -> MaterialRecord.add ->
+      MaterialContract.register", read-back as_unit="J/m^2") and the
+      elastic-plane gate tools/elastic_foundation/materials.py
+      (ElasticMaterial2D frozen record; named MaterialReason refusals:
+      nonpositive_young_modulus, poisson_out_of_range, nonfinite_material).
+  Threshold: 3/3 quoted at the recorded line numbers (if the lines moved
+  from my predicted numbers, the measured numbers are reported — prediction
+  is about SEMANTICS PRESENT, with exact locations measured).
+- R6 deployed falsifier hunt + current-state measurements (findings, never
+  patched, never adopted as the model's truth): N=4 measurements reported —
+  (a) RAW-CONSTANTS PLANE: tools/materials.py (module constants with
+      documented literature sources; DENSITY/PART_MATERIAL tables) and its
+      real consumer tools/cad_sample.py:172
+      ("rho = DENSITY[PART_MATERIAL[name]]") — measured and reported with
+      the caller's own advertising (cad_sample docstring: referee
+      tolerances mass_err <= 1%, iner_err <= 2% on the SAMPLING, with
+      constants documented in materials.py; the docstring does NOT claim
+      contract admission). Verdict per consumer: advertised-as-validated
+      about the PARAMETERS? (yes/no + quoted basis).
+  (b) HONEST DEFERRAL: tools/gpu_fixtures_recovered/membrane_demo.py:41-45
+      ("synthetic DECLARED interface ... no physical calibration is
+      claimed. Admission routing through material_contract is deferred
+      until BP-A1 lands") — measured verbatim; verdict: NOT a falsifier
+      instance (no validated-calculation advertisement for the
+      un-admitted parameter), recorded as the known open seam.
+  (c) OWNER_INSTANCE CURRENT STATE (task packet: PR #80 fix is FIXED AND
+      DEPLOYED — measure the current state, no stale deviation language):
+      owner_instance occurrence counts at base — review_handoff.py
+      (predicted >= 1, the claim-path bind, with the instance_fencing
+      gate) and control.py (predicted 8, sites quoted: _task fence
+      :121-123, setdefault :323, yield guard :499-501, claim bind :554,
+      release clear :697). Exact counts measured and reported; a count of
+      0 at review_handoff.py or a missing fence would be a SURPRISE
+      FINDING (the fix not actually deployed at this base), reported as
+      such. Contrast baseline: GOV-01's R6 measured rh==0 at d59518b9.
+  (d) INDEPENDENCE AUDIT of this lane's own artifacts: the reference model
+      imports MATH-01's algebra (by design, cited) and NOTHING from
+      tools/material_contract.py (the audited code) — import list
+      measured and reported.
+
+## CARD VERDICT RULE (fixed now)
+
+Card prediction "Invalid units, nonfinite values and missing basis refuse
+at the real caller" = SUPPORTED iff R1-R4 reach full N/N AND R5 reaches
+3/3. Card falsifier "A legacy bypass reaches a calculation advertised as
+validated" = NOT reproduced iff R3 = 6/6 AND no R6 consumer is both
+(advertised-as-validated on its parameters) and (un-admitted inputs);
+otherwise the falsifier FIRES and the instance is reported with its exact
+file:line.
+
+## METHOD
+
+1. Commit this prereg (alone). 2. Write reference/mat01_reference_model.py.
+3. controls/run_controls.py executes R1-R4 in one process and writes
+   checks/r1_positive.txt, r2_card_prediction_negatives.txt,
+   r3_falsifier_bypass.txt, r4_immutability.txt (verbatim refusals,
+   post-state assertions). 4. A read-only source script writes
+   checks/r5_source_trace.txt (quoted lines at base) and
+   checks/r6_findings.txt (R6 measurements). 5. RESULT.txt: scoreboard,
+   card verdict, reproduction commands, source identities, limitations,
+   DYAD NOT_APPLICABLE record, integration contract + handoff (MAT-02..05
+   unlock; the admission layer is the MAT plane's shared seed).
+6. Commit chain on astra/tasks/holodeck-mat-01 (trailer
+   `Agent: subagent-worker-12`), push no-force, PR into astra/gait-capture,
+   submit_review with exact HEAD.
+
+Trailer: Agent: subagent-worker-12

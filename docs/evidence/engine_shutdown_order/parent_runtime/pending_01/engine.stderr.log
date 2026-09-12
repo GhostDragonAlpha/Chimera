@@ -1,0 +1,18 @@
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x2111e4600d0, VkImage 0x160000000016 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x2111e4600d0, VkImage 0x660000000066 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x2111e4600d0, VkDeviceMemory 0x170000000017 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x2111e4600d0, VkDeviceMemory 0x670000000067 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x2111e4600d0, VkImageView 0x680000000068 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x2111e4600d0, VkImageView 0x180000000018 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x2111e4600d0, VkShaderModule 0x200000000020 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x2111e4600d0, VkShaderModule 0x210000000021 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[VK ERROR] vkDestroyDevice(): Object Tracking - For VkDevice 0x2111e4600d0, VkPipeline 0x310000000031 has not been destroyed.
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://vulkan.lunarg.com/doc/view/1.4.328.1/windows/antora/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)

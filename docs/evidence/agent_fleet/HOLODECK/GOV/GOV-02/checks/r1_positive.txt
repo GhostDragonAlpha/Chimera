@@ -1,0 +1,8 @@
+R1 POSITIVE CONTROLS (model must ACCEPT) — threshold 4/4
+
+(a) unit-test pass: OK | unit_test=EXECUTED runtime=MISSING dyad=MISSING
+(b) full chain unit->reserve->dyad: chain=True advertise={'key': 'dyad_eye', 'cls': 'dyad', 'stored': 'EXECUTED', 'advertised': 'EXECUTED'}
+(c) supervisor qualify + subset claim: qualify=OK claim=OK
+(d) save/load: 9 class statuses identical across restart -> True
+
+R1 verdict: HOLDS (4/4)

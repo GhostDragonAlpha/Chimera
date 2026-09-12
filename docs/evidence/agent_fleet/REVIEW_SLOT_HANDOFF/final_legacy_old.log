@@ -1,0 +1,71 @@
+test_agent_cannot_accuse_to_take_over (test_control.ControlTests.test_agent_cannot_accuse_to_take_over) ... ok
+test_claim_capacity (test_control.ControlTests.test_claim_capacity) ... ok
+test_concurrent_claim_one_winner (test_control.ControlTests.test_concurrent_claim_one_winner) ... ok
+test_confirmed_failure_elects_qualified_standby (test_control.ControlTests.test_confirmed_failure_elects_qualified_standby) ... ok
+test_dependency_waits_for_integration (test_control.ControlTests.test_dependency_waits_for_integration) ... ok
+test_dyad_reserves_gpu_and_release_order (test_control.ControlTests.test_dyad_reserves_gpu_and_release_order) ... ok
+test_each_slot_has_its_own_engine_plan (test_control.ControlTests.test_each_slot_has_its_own_engine_plan) ... ok
+test_explicit_yield_uses_same_recovery_rules (test_control.ControlTests.test_explicit_yield_uses_same_recovery_rules) ... ok
+test_failure_holds_task_and_resources (test_control.ControlTests.test_failure_holds_task_and_resources) ... ok
+test_feedback_does_not_accept_task (test_control.ControlTests.test_feedback_does_not_accept_task) ... ok
+test_feedback_retains_original_and_appends_dispositions (test_control.ControlTests.test_feedback_retains_original_and_appends_dispositions) ... ok
+test_feedback_unknown_category_and_task_refused (test_control.ControlTests.test_feedback_unknown_category_and_task_refused) ... ok
+test_five_slots_and_sixth_refusal (test_control.ControlTests.test_five_slots_and_sixth_refusal) ... ok
+test_foreign_and_stale_claim_refused_without_revision (test_control.ControlTests.test_foreign_and_stale_claim_refused_without_revision) ... ok
+test_gpu_exclusive_even_same_agent_two_tasks (test_control.ControlTests.test_gpu_exclusive_even_same_agent_two_tasks) ... ok
+test_human_feedback_cannot_be_forged_by_worker (test_control.ControlTests.test_human_feedback_cannot_be_forged_by_worker) ... ok
+test_integration_ack_and_explicit_slot_release (test_control.ControlTests.test_integration_ack_and_explicit_slot_release) ... ok
+test_integration_request_stale_after_failover (test_control.ControlTests.test_integration_request_stale_after_failover) ... ok
+test_inventory_is_read_only_and_bounded (test_control.ControlTests.test_inventory_is_read_only_and_bounded) ... ok
+test_master_base_refused (test_control.ControlTests.test_master_base_refused) ... ok
+test_master_list_claim_lead_only (test_control.ControlTests.test_master_list_claim_lead_only) ... ok
+test_no_ready_successor_leaves_vacancy (test_control.ControlTests.test_no_ready_successor_leaves_vacancy) ... ok
+test_old_lead_cannot_disposition_feedback (test_control.ControlTests.test_old_lead_cannot_disposition_feedback) ... ok
+test_protected_and_traversal_scope (test_control.ControlTests.test_protected_and_traversal_scope) ... ok
+test_real_http_roundtrip_and_refusal (test_control.ControlTests.test_real_http_roundtrip_and_refusal) ... ok
+test_recovery_requires_attestation_and_new_generation (test_control.ControlTests.test_recovery_requires_attestation_and_new_generation) ... ok
+test_restart_retains_identity_and_claims (test_control.ControlTests.test_restart_retains_identity_and_claims) ... ok
+test_review_not_acceptance_or_free_slot (test_control.ControlTests.test_review_not_acceptance_or_free_slot) ... ok
+test_same_agent_multiple_tasks_distinct_slots (test_control.ControlTests.test_same_agent_multiple_tasks_distinct_slots) ... ok
+test_scope_conflict_casefold (test_control.ControlTests.test_scope_conflict_casefold) ... ok
+test_silence_suspicion_does_not_elect (test_control.ControlTests.test_silence_suspicion_does_not_elect) ... ok
+test_snapshot_and_events_do_not_expose_tokens (test_control.ControlTests.test_snapshot_and_events_do_not_expose_tokens) ... ok
+test_stop_feedback_preserves_authority_requirement (test_control.ControlTests.test_stop_feedback_preserves_authority_requirement) ... ok
+test_task_branch_wrong_refused (test_control.ControlTests.test_task_branch_wrong_refused) ... ok
+test_unqualified_agent_cannot_offer_or_claim (test_control.ControlTests.test_unqualified_agent_cannot_offer_or_claim) ... ok
+test_wrong_epoch_current_lead_refused (test_control.ControlTests.test_wrong_epoch_current_lead_refused) ... ok
+test_dependency_blocks_premature_claim (test_bootstrap.BootstrapTests.test_dependency_blocks_premature_claim) ... ok
+test_failed_leader_own_tasks_go_to_recovery_hold (test_bootstrap.BootstrapTests.test_failed_leader_own_tasks_go_to_recovery_hold) ... ok
+test_leader_replacement_leaves_one_authorized_integrator (test_bootstrap.BootstrapTests.test_leader_replacement_leaves_one_authorized_integrator) ... ok
+test_obsolete_generation_write_refused (test_bootstrap.BootstrapTests.test_obsolete_generation_write_refused) ... ok
+test_partial_evidence_cannot_integrate (test_bootstrap.BootstrapTests.test_partial_evidence_cannot_integrate) ... ok
+test_port_conflicts_refused_and_ports_unique (test_bootstrap.BootstrapTests.test_port_conflicts_refused_and_ports_unique) ... ok
+test_provision_slot_lifecycle_and_gates (test_bootstrap.BootstrapTests.test_provision_slot_lifecycle_and_gates) ... ok
+test_provision_slot_tool_real_worktree (test_bootstrap.BootstrapTests.test_provision_slot_tool_real_worktree) ... warning: You appear to have cloned an empty repository.
+ok
+test_publish_reconciles_interrupted_integration (test_bootstrap.BootstrapTests.test_publish_reconciles_interrupted_integration) ... warning: You appear to have cloned an empty repository.
+ok
+test_publish_refuses_head_mismatch_nonff_and_master (test_bootstrap.BootstrapTests.test_publish_refuses_head_mismatch_nonff_and_master) ... warning: You appear to have cloned an empty repository.
+ok
+test_race_for_one_task_exactly_one_claim_via_http (test_bootstrap.BootstrapTests.test_race_for_one_task_exactly_one_claim_via_http) ... ok
+test_restart_preserves_claims_checkpoints_and_evidence_refs (test_bootstrap.BootstrapTests.test_restart_preserves_claims_checkpoints_and_evidence_refs) ... ok
+test_review_requeue_reconciles_stale_base_without_force (test_bootstrap.BootstrapTests.test_review_requeue_reconciles_stale_base_without_force) ... ok
+test_untracked_demo_shader_recorded (test_bootstrap.BootstrapTests.test_untracked_demo_shader_recorded)
+Closed by task demo-track-shader: the shader is tracked. ... ok
+test_benchmark_class_excludes_all_gpu_use (test_resources.ResourceSchedulerTests.test_benchmark_class_excludes_all_gpu_use) ... ok
+test_benchmark_requires_empty_gpu_even_from_same_task (test_resources.ResourceSchedulerTests.test_benchmark_requires_empty_gpu_even_from_same_task) ... ok
+test_different_resources_can_progress_independently (test_resources.ResourceSchedulerTests.test_different_resources_can_progress_independently) ... ok
+test_grouped_grant_is_atomic (test_resources.ResourceSchedulerTests.test_grouped_grant_is_atomic) ... ok
+test_grouped_grant_never_partial_on_conflict (test_resources.ResourceSchedulerTests.test_grouped_grant_never_partial_on_conflict) ... ok
+test_invalid_wants_refused (test_resources.ResourceSchedulerTests.test_invalid_wants_refused) ... ok
+test_legacy_acquire_release_unchanged (test_resources.ResourceSchedulerTests.test_legacy_acquire_release_unchanged) ... ok
+test_memory_admission_refuses_over_budget (test_resources.ResourceSchedulerTests.test_memory_admission_refuses_over_budget) ... ok
+test_pending_requests_vanish_on_fail_and_recover (test_resources.ResourceSchedulerTests.test_pending_requests_vanish_on_fail_and_recover) ... ok
+test_revoke_pending (test_resources.ResourceSchedulerTests.test_revoke_pending) ... ok
+test_same_resource_fifo_priority_is_a_stamp (test_resources.ResourceSchedulerTests.test_same_resource_fifo_priority_is_a_stamp) ... ok
+test_unknown_memory_is_explicit_state (test_resources.ResourceSchedulerTests.test_unknown_memory_is_explicit_state) ... ok
+
+----------------------------------------------------------------------
+Ran 62 tests in 16.397s
+
+OK

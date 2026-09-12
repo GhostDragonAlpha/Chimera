@@ -1,0 +1,170 @@
+{
+ "results": {
+  "r3_flat_patch_stationary": {
+   "pass": true,
+   "max_interior_force": 0.0,
+   "limit_512e": 1.1368683772161603e-13,
+   "n_accepted": 0,
+   "status": "stationary"
+  },
+  "r3_descent_healthy_patch": {
+   "pass": true,
+   "status": "stagnated",
+   "n_accepted": 351,
+   "n_trials": 352,
+   "U0": 16.23475769026278,
+   "U_end": 16.000000000000007,
+   "energy_drop_frac": 0.014460190582553233,
+   "strictly_monotone": true,
+   "A_initial": 16.23475769026278,
+   "A_final": 16.000000000000007,
+   "A_flat_min": 16.0
+  },
+  "r3_zero_gamma_stationary": {
+   "pass": true,
+   "status": "stationary",
+   "n_accepted": 0,
+   "forces_exactly_zero": true,
+   "geometry_bit_identical": true
+  },
+  "r3_fixed_vertices_bitexact": {
+   "pass": true,
+   "status": "step_limit",
+   "n_accepted": 150,
+   "n_pinned": 5,
+   "pinned_moved": []
+  },
+  "r3_unsafe_trial_rejected_safe_accepted": {
+   "pass": true,
+   "force_on_v3_matches_law": true,
+   "unsafe_rejected": true,
+   "unsafe_reason": "collapsed_triangle",
+   "reference_verdict_on_trial": "collapsed_triangle",
+   "safe_accepted": true,
+   "U_before": 0.2500000000005,
+   "U_after": 0.25,
+   "armijo_satisfied": true,
+   "all_faces_above_floor": true
+  },
+  "r3_no_descent_step_budget": {
+   "pass": true,
+   "status": "no_descent_step",
+   "reason": "no_descent_step",
+   "n_accepted": 0,
+   "geometry_unchanged": true,
+   "landing_residual": 0.0,
+   "floor_for_max_edge_1": 1.4210854715202004e-14
+  },
+  "r3_evidence_preservation": {
+   "pass": true,
+   "stamped_unique": true,
+   "refused_exit2_and_byte_identical": true,
+   "force_out_writes": true,
+   "refusal_reason_named": true,
+   "force_run_tail": "  s = (x.conj() * x).real",
+   "historical_file_intact": true,
+   "historical_present": false
+  },
+  "r4a_two_unit_equivalence": {
+   "pass": true,
+   "status_wu": "stagnated",
+   "status_cm": "stagnated",
+   "shape_dev_wu": 6.661338147750939e-15,
+   "energy_dev_J": 3.552713678800501e-15,
+   "energy_limit": 1.8189894035458573e-12,
+   "tail_scale_note": 1e-07
+  },
+  "r4b_stationary_constrained": {
+   "pass": true,
+   "flat_status": "stationary",
+   "flat_accepted": 0,
+   "flat_residual": 0.0,
+   "relax_status": "stagnated",
+   "relax_residual": 2.0521706461134423e-07,
+   "invariance_sumF": 3.3306690738754696e-16,
+   "reaction_sum_abs": 5.1931051524230785e-08,
+   "n_pinned": 16
+  },
+  "r4c_zero_gamma_safe": {
+   "pass": true,
+   "status": "stationary",
+   "n_accepted": 0,
+   "geometry_bit_identical": true
+  },
+  "r4d_tiny_step_not_converged": {
+   "pass": true,
+   "status": "step_limit",
+   "n_accepted": 3,
+   "free_residual": 1.2762286090733557,
+   "residual_tol": 1.144673040298862e-12,
+   "ratio_residual_to_tol": 1114928511586.283
+  },
+  "r4e_backtracking_exhaustion": {
+   "pass": true,
+   "status": "no_descent_step",
+   "geometry_unchanged": true,
+   "n_accepted": 0
+  },
+  "r4f_acceptance_invariant": {
+   "pass": true,
+   "steps_checked": 351,
+   "worst_armijo_violation": 0.0,
+   "limit": 1.8456782629826624e-12
+  },
+  "A1_6a_translation_invariance": {
+   "pass": true,
+   "origin_status": "stagnated",
+   "offset_status": "stagnated",
+   "origin_residual": 2.0521706461134423e-07,
+   "offset_residual": 0.0002441406231810106
+  },
+  "A1_6b_stationarity_scale_covariant": {
+   "pass": true,
+   "status_k1": "stagnated",
+   "status_k1000": "stagnated",
+   "ratio_k1": 180319.8001178734,
+   "ratio_k1000": 180319.80028283017,
+   "relative_dev": 9.148011276404718e-10,
+   "allowance": 1e-06
+  },
+  "A1_7a_fractional_pin_refused": {
+   "pass": true,
+   "fractional_refused": true,
+   "named": true,
+   "int_control_pins_exact": true
+  },
+  "A1_7b_nonpositive_preconditioner_refused": {
+   "pass": true,
+   "cases": [
+    [
+     "preconditioner_zero",
+     true,
+     "preconditioner_value must be positive an"
+    ],
+    [
+     "alpha_negative",
+     true,
+     "alpha must be positive and finite, got -"
+    ],
+    [
+     "preconditioner_nan",
+     true,
+     "preconditioner_value must be positive an"
+    ],
+    [
+     "alpha_inf",
+     true,
+     "alpha must be positive and finite, got i"
+    ]
+   ],
+   "healthy_control": true
+  },
+  "A1_7c_fractional_repeat_newton": {
+   "pass": true,
+   "repeat_refused": true,
+   "fractional_refused": true,
+   "legal_pin_run_status": "stationary"
+  }
+ },
+ "failed": 0
+}

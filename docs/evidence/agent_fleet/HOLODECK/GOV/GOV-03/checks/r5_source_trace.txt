@@ -1,0 +1,90 @@
+R5 -- DEPLOYED-SOURCE TRACE (card semantics in the deployed text at base 62b8e357)
+==============================================================================
+threshold: 5/5 semantics present with exact quoted lines
+
+[PASS] (i) statement+falsifier required at admission (port_registry.py port_test 32-39, primitive 61-62, action 97-101)
+  32: def port_test(name, statement, falsifier):
+  33:     """Register a port test. All three parts required -- no falsifier, no test (Rule 0)."""
+  34:     if not statement or not falsifier:
+  35:         raise ValueError(f"port test {name!r} needs a STATEMENT and a FALSIFIER. A claim without "
+  36:                          f"a named refutation is a description, and a description cannot be wrong.")
+  37:     if name in TESTS:
+  38:         raise ValueError(f"port test {name!r} registered twice -- two instructions cannot share "
+  39:                          f"a name, and a silent overwrite would hide one of them")
+  ...
+  61:     if not statement or not falsifier:
+  62:         raise ValueError(f"primitive {name!r} needs a STATEMENT and a FALSIFIER (Rule 0).")
+  ...
+  97:     if not statement or not prediction or not falsifier:
+  98:         missing = [n for n, v in (("STATEMENT", statement), ("PREDICTION", prediction),
+  99:                                   ("FALSIFIER", falsifier)) if not v]
+  100:         raise ValueError(f"action {name!r} is missing {' and '.join(missing)}. Rule 0 has three "
+  101:                          f"parts and all three are required before the test may exist.")
+
+[PASS] (ii) verdict close requires a nonempty evidence pointer (verdict.py:104-115)
+  104:     def close(self, number: int, result: str, evidence: str, note: str = "") -> dict:
+  105:         key = str(number)
+  106:         if key not in self.data["verdicts"]:
+  107:             return {"ok": False, "error": f"no VERDICT {number} in the ledger -- open it with `new` first"}
+  108:         if result not in VALID_RESULTS:
+  109:             return {"ok": False, "error": f"REFUSED: result must be one of {VALID_RESULTS}, got {result!r}"}
+  110:         if not evidence:
+  111:             return {"ok": False, "error": "REFUSED: a verdict needs an EVIDENCE pointer (a file, "
+  112:                                           "an npz, a report) -- otherwise the result is prose"}
+  113:         ev = (ROOT / evidence)
+  114:         if ev.exists():
+  115:             evidence = ev.resolve().relative_to(ROOT).as_posix()
+
+[PASS] (iii) fixed result vocabulary (verdict.py:34, refusal :107-109)
+  34: VALID_RESULTS = ("PASS", "FALSIFIED", "MARGINAL")
+  107:             return {"ok": False, "error": f"no VERDICT {number} in the ledger -- open it with `new` first"}
+  108:         if result not in VALID_RESULTS:
+  109:             return {"ok": False, "error": f"REFUSED: result must be one of {VALID_RESULTS}, got {result!r}"}
+
+[PASS] (iv) a missing record is a REFUSAL, not a smaller number (port_registry.py:140-151 expect)
+  140: def expect(n: int) -> None:
+  141:     """Refuse to run a partial instruction set.
+  142: 
+  143:     The count is an assertion because the alternative already happened: 8 of 12 tests failed to
+  144:     register and the harness reported total success on the 4 that had.
+  145:     """
+  146:     if len(TESTS) != n:
+  147:         raise SystemExit(
+  148:             f"REFUSING TO RUN: {len(TESTS)} port tests registered, expected {n}.\n"
+  149:             f"  registered: {sorted(TESTS)}\n"
+  150:             f"  A missing test is not a smaller test suite -- it is an untested instruction that "
+  151:             f"a composition will later be blamed for.")
+
+[PASS] (v) a composition may only name already-registered parts (port_registry.py:50-78 primitive_test)
+  50: def primitive_test(name, ports, statement, falsifier):
+  51:     """Register a PRIMITIVE -- a composition of validated ports that does something none of them
+  52:     does alone.
+  53: 
+  54:     TWO GUARDS BEYOND THE PORT'S. A primitive must NAME the ports it composes, and every named one
+  55:     must already be registered: you cannot declare a composition over an instruction that does not
+  56:     exist. And it must ABLATE -- the test has to show the primitive FAILING when one port's
+  57:     contribution is removed. Without an ablation a primitive is a port wearing a longer name, and
+  58:     the whole layer would be relabelling rather than composing. Port 12 already worked this way
+  59:     (coupled converges, uncoupled does not); this makes it the rule instead of one test's trick.
+  60:     """
+  61:     if not statement or not falsifier:
+  62:         raise ValueError(f"primitive {name!r} needs a STATEMENT and a FALSIFIER (Rule 0).")
+  63:     if not ports:
+  64:         raise ValueError(f"primitive {name!r} names no ports. A composition of nothing is a port; "
+  65:                          f"register it as one or name what it is built from.")
+  66:     missing = [p for p in ports if p not in TESTS]
+  67:     if missing:
+  68:         raise ValueError(f"primitive {name!r} composes {missing}, which are not registered ports. "
+  69:                          f"Import the port tests first -- a primitive over an unvalidated "
+  70:                          f"instruction is exactly the thing this layer exists to prevent.")
+  71:     if name in PRIMITIVES:
+  72:         raise ValueError(f"primitive {name!r} registered twice -- a silent overwrite hides one.")
+  73: 
+  74:     def deco(fn):
+  75:         PRIMITIVES[name] = dict(fn=fn, statement=statement, falsifier=falsifier, name=name,
+  76:                                 ports=list(ports))
+  77:         return fn
+  78:     return deco
+
+RESULT: 5 passed, 0 failed (threshold HOLDS)
+falsifier status: NOT TRIGGERED for this row

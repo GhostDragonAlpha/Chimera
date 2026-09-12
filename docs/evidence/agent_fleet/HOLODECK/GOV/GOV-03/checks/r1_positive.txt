@@ -1,0 +1,20 @@
+R1 -- POSITIVE CONTROLS (model must ACCEPT)
+==============================================================================
+threshold: threshold 8/8 core (six admissions + two decisions) + 2 post-state rows = 10/10
+
+R1 -- positive controls: six legal admissions (one per card kind) + two legal decisions; the model must ACCEPT all.
+[PASS] admit energy    'kinetic-energy'
+[PASS] admit force     'damped-contact-force'
+[PASS] admit flux      'radiant-flux-area'
+[PASS] admit boundary  'wall-pressure-balance'
+[PASS] admit domain    'segment-domain-scale'
+[PASS] admit parameter 'restitution-ratio'
+[PASS] decide 'kinetic-energy' -> ADOPT
+[PASS] decide 'restitution-ratio' -> REVISE
+[PASS] registry holds exactly the 6 admitted laws
+        count=6
+[PASS] decision ledger holds exactly 2 records
+        count=2
+
+RESULT: 10 passed, 0 failed (threshold HOLDS)
+falsifier status: NOT TRIGGERED for this row

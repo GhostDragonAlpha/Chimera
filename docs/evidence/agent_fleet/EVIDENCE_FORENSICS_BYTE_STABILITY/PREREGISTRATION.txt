@@ -1,0 +1,133 @@
+PREREGISTRATION — evidence-forensics-byte-stability-01 (generation 1, slot 6)
+
+- agent: subagent-worker-08 (host-delegated CPU/docs/python worker; lead glm53-lead-02, epoch 5)
+- base: b20e4eaa8ef7412761567745e5b3e3db9c3ce1d0 (current astra/gait-capture tip at claim;
+  integrates PR #73 — the lane whose review LOW-1 recorded this forensics class)
+- branch: astra/tasks/evidence-forensics-byte-stability-01
+- written: 2026-09-11, BEFORE any edit of this task (no actuals below)
+- scopes: .gitattributes + docs/evidence/agent_fleet/EVIDENCE_FORENSICS_BYTE_STABILITY ONLY.
+  No engine source changes, no rebuilds, no new captures, no GPU.
+
+## The forensics class being fixed
+
+`.gitattributes` at base carries `* text=auto`; with `core.autocrlf=true` (this fleet's
+Windows default) every text file under docs/evidence/** is LF-normalized into the blob
+but REWRITTEN to CRLF on checkout. Any sha256 recorded for such a file therefore stops
+verifying on any fresh Windows checkout (PR #73 review LOW-1; same root as PR #69's
+gen-2 HIGH where 181 verdict flips were checkout artifacts, not measurements).
+
+## Deliverable 1 — the rule (enumeration first)
+
+Sha-recorded evidence classes enumerated from the repo at base (content scan for
+64-hex digests + filename scan for manifests/sidecars/unblinding/exact prompts):
+
+  1. per-capture sidecars (*.json with png_sha256)          — docs/evidence/** (studio_grid_depth, membrane_*_runtime)
+  2. capture manifests (MANIFEST_sha256.txt)                — docs/evidence/** (studio_grid_depth retired gens + accepted pairs)
+  3. DYAD request specs / responses (capture_identities,
+     embedded exact prompts, capture sha256)                — docs/evidence/** (DYAD_RETAINED_REVIEWS, DYAD_SUBAGENT_TEMPLATE, DYAD_TEMPLATE_HARDENING)
+  4. unblinding maps (prompt_sha256; unblinding_sha256
+     recorded in retained plan stdout)                      — docs/evidence/** (DYAD_TEMPLATE_HARDENING/demo_blind, studio_grid_depth/dyad_review_handoff)
+  5. raw consoles recording payload/exe sha256s             — docs/evidence/** (CATALOGUE_DETERMINISM, SLOT_EXPANSION, CATALOGUE_PACKET_BATCH, REGRESSION_SWEEP_01)
+  6. run records quoting source manifests                   — docs/evidence/** (catalogue lanes)
+
+Non-docs sha-named files (Chimera*/ChimeraEngine* bake/demo/sonify manifests) contain
+NO 64-hex digests (grep at base: zero) — no sha-recorded evidence class exists outside
+docs/evidence/**. The rule is therefore exactly:
+
+  docs/evidence/** -text
+
+appended AFTER `* text=auto` (last match wins), so every evidence path is binary
+passthrough: checkout writes blob bytes verbatim, add hashes file bytes verbatim —
+recorded hashes become checkout-invariant. Verification: `git check-attr text` must
+report `unset` on representatives of every enumerated class.
+
+## Deliverable 2 — the fresh-clone verification sample (21 files, 7 dirs)
+
+All sampled files tracked at base; each carries an explicit recorded-hash relationship
+or is a retained raw console of the recorder class:
+
+  DIR A docs/evidence/agent_fleet/DYAD_TEMPLATE_HARDENING/demo_blind (7):
+    unblinding_hard-demo-blind.json (recorded in plan_blind_stdout.txt unblinding_sha256);
+    exact_prompt_hard-demo-blind.txt (recorded in the unblinding json prompt_sha256);
+    plan_blind_stdout.txt; request_spec_hard-demo-blind.json (recorders);
+    captures/frame_a.png, frame_b.png, frame_c.png (recorded in request_spec captures[]
+    and unblinding original_order)
+  DIR B docs/evidence/agent_fleet/DYAD_RETAINED_REVIEWS (2):
+    exact_prompt_rr01-edge01-pair.txt (embedded verbatim in
+    dyad_response_rr01-edge01-pair.json exact_prompt — deep-equality check);
+    dyad_response_rr01-edge01-pair.json (records capture sha256s)
+  DIR C docs/evidence/studio_grid_depth/after (4):
+    v1_frame.png, v2_glass.png, v3_mesh_frame.png (sidecar png_sha256);
+    v1_frame.json (sidecar recorder)
+  DIR D docs/evidence/studio_grid_depth/dyad_review_handoff/plan_after (2):
+    exact_prompt_after-fix-glass-v1.txt; request_spec_after-fix-glass-v1.json
+  DIR E docs/evidence/agent_fleet/CATALOGUE_DETERMINISM (2):
+    RAW_RUN_BASELINE_CONSOLE.txt; ATTR_BOTH.txt (raw consoles, recorder class)
+  DIR F docs/evidence/agent_fleet/SLOT_EXPANSION (2):
+    RUN_FULL_SUITE_GEN2.txt; MEASUREMENT.json (raw consoles/run records, recorder class)
+  DIR G docs/evidence/membrane_gpu_demo_runtime/20260909T143821.177952Z (2):
+    raised_gamma0.png (53e994e0...), final_relaxed.png (20021e78...) — recorded in
+    DYAD_RETAINED_REVIEWS request_spec/response
+
+Method: fresh clone of the task head with `--no-checkout`, `core.autocrlf=true` set in
+the clone, `git checkout HEAD` + `git checkout -f HEAD -- .` (re-checkout); sha256 all
+21 files; every explicit recorded-hash relationship re-verified from the checked-out
+bytes. BEFORE column: sha256 at the provisioned worktree (pre-rule checkout on this
+host, core.autocrlf=true) — text evidence files are EXPECTED to mismatch their recorded
+values there (the root cause, demonstrated, not fixed). AFTER column: must match the
+recorded values 21/21.
+
+## Deliverable 3 — the renormalization retrospective (measured, not guessed)
+
+For every sampled text file: (a) does the BLOB contain CRLF bytes? (b) does the
+recorded hash equal the blob hash (LF form) or the CRLF rendering of the checkout?
+"Predates the rule" = a recorded hash matching a CRLF rendering while the blob is LF
+(that file's recorded hash describes a pre-rule checkout artifact and needs a one-time
+renormalization + re-record). The one-time implication is documented for future lanes:
+after the rule, re-adding a pre-rule working file still holding CRLF bytes would commit
+those bytes verbatim (blob flips LF->CRLF) — pre-rule evidence files must be
+re-checked-out under the rule (byte-exact) before any touch; `git add --renormalize`
+is a no-op for -text paths (no conversion either way), so the discipline is
+re-checkout, not renormalize.
+
+## STATEMENT (theory, per RULE 0)
+
+`docs/evidence/** -text` makes every recorded evidence hash checkout-invariant: the
+bytes a reviewer hashes are the bytes every author committed, on every platform,
+forever — evidence stops depending on the reader's git config.
+
+## PREDICTION (stated before any edit)
+
+1. After the rule, the fresh core.autocrlf=true clone + re-checkout at the new head
+   yields 21/21 sampled files hashing exactly their recorded values (and the explicit
+   recorded-hash relationships — unblinding/prompt/capture/sidecar — all verify from
+   checked-out bytes).
+2. The BEFORE column (pre-rule worktree checkout, same host, same core.autocrlf=true)
+   shows the text members of the sample MISMATCHING their recorded values (CRLF
+   rewrite), demonstrating the root cause the rule removes.
+3. `git check-attr text` reports `unset` for representatives of every enumerated
+   sha-recorded class (the rule covers them all; no class outside docs/evidence/**
+   exists — non-docs manifests grep zero 64-hex digests at base).
+4. Retrospective measurement: zero sampled blobs contain CRLF (evidence was
+   LF-normalized at add time under text=auto), and zero recorded hashes match a CRLF
+   rendering — no recorded hash predates the rule.
+
+## FALSIFIER (named before the run)
+
+- ANY recorded hash changing across the fix (a sampled file whose recorded value does
+  not verify from the fresh clone), i.e. fewer than 21/21 matches.
+- The rule failing to cover a sha-recorded class: any check-attr representative
+  reporting text other than `unset`, or any sha-recorded evidence file found outside
+  docs/evidence/** (enumeration missed it).
+- The retrospective contradicting the prediction (a blob with CRLF, or a recorded hash
+  matching the CRLF rendering — a predating hash) without being documented as such.
+- Any edit outside .gitattributes and docs/evidence/agent_fleet/
+  EVIDENCE_FORENSICS_BYTE_STABILITY/; any engine change, rebuild, or new capture.
+
+## NOT_CLAIMED
+
+- No historical sweep re-classification: PR #69's 181 flips are cited as the recorded
+  motivation; re-running that sweep is that lane's work, not claimed here.
+- No claim that editors/tools can no longer corrupt evidence — the rule removes the
+  GIT checkout/add conversion only; tool discipline stays with the writer.
+- Human acceptance (reserved to Alan / the reviewer).

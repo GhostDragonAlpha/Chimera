@@ -1,5 +1,14 @@
 # Chimera — agent onboarding (the ONE onboarding; paste-in)
 
+## START HERE — continuation after any local milestone
+
+Read `docs/AGENT_START.md` and the current canonical Master/controller snapshot. Continue this
+worker's owned milestones first. Only if approved capacity remains, request an authenticated claim
+for an eligible `READY` task. A local hierarchy completion is a resolution-level milestone; it
+never ends the project. The `continuation` record from `python tools/orient.py --json` provides
+this route without fabricating an owner, task, eligibility, or capacity. See
+`docs/THE_HIERARCHY_CONTINUATION.md`.
+
 <!-- CHIMERA-LAW -->
 > **RULE 0 — EVERY MEMBRANE IS A THEORY. STATE IT BEFORE YOU BUILD IT.** Three parts, all three
 > required: a **STATEMENT** someone could disagree with · a **PREDICTION** you have not measured
@@ -214,3 +223,12 @@ which is the move this very rule forbids.
 The gate refuses a run whose speeds are not scaled by sqrt(g/g_E), whose strides are not scaled by
 sqrt(g_E/g), or which disagrees with what the body publishes about itself. Full account: rule 1 of
 `Chimera/docs/EXPERIMENTAL_METHOD.md`.
+
+## Continuing after a local hierarchy completes
+
+A completed hierarchy is a resolution-level milestone. Follow the `continuation` record from
+`python tools/orient.py --json`: read `docs/AGENT_START.md` and the current canonical
+Master/controller snapshot, continue an owned milestone first, and only if approved capacity
+remains request an authenticated claim for an eligible `READY` task. The engine does not claim an
+owner, task, eligibility, capacity, or the end of the project. See
+`docs/THE_HIERARCHY_CONTINUATION.md`.

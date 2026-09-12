@@ -1,0 +1,2 @@
+cwd: /mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub
+command: cmake -S /mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub/tools/membrane_gpu_probe -B /mnt/c/Users/allen/AppData/Local/Temp/opencode/chimera_pub/docs/evidence/membrane_gpu_mutations/20260908T062453.860121Z/clean/build

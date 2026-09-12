@@ -1,0 +1,102 @@
+watchdog-fail-closed-01 preregistration (2026-09-11, subagent-worker-11)
+
+Task watchdog-fail-closed-01 generation 1, slot 3, worktree
+E:\ChimeraWork\slot-03. Record base d59518b9 (= remote tip at claim);
+FAST-FORWARDED per protocol to tip 4f965d18 before any work (ff-only,
+verified). Branch astra/tasks/watchdog-fail-closed-01. This file is
+committed BEFORE any fix, measurement, or test run and names no measured
+actuals. All evidence under this directory is *.txt.
+
+## SOURCE
+
+Fleet-followups-batch-02 F4, integrated verbatim at tip 4f965d18 as
+docs/evidence/agent_fleet/FOLLOWUPS_BATCH_02/WATCHDOG_FAIL_CLOSED_FINDING.md
+(PR #62 review finding F4). The fail-open edge:
+install_parent_watchdog (tools/agent_fleet/capture_window.py) disables
+the fixture-child orphan guard when the SPAWNER-set env
+CHIMERA_FIXTURE_PARENT_PID is malformed (non-numeric): int(raw) raises
+ValueError -> parent_pid = 0 -> return None. That is the one input that
+turns the whole guard OFF, violating the module's own "fail-closed
+toward hygiene" principle; every other failure path in the function
+already fails closed (unobservable parent -> ExitProcess).
+
+## SCOPE (exact)
+
+tools/agent_fleet/capture_window.py        (the two-line fail-closed fix
+                                            + docstring amendment only)
+tools/agent_fleet/test_capture_window.py   (the documented regression test)
+docs/evidence/agent_fleet/WATCHDOG_FAIL_CLOSED/  (evidence, *.txt only)
+
+Nothing else. The review's cross-check is binding: the fix is confined
+to the `parent_pid is None` branch; the `int(parent_pid or 0)` /
+`parent_pid <= 0` guard below it stays byte-identical.
+
+## STATEMENT
+
+The orphan watchdog's env-resolution path must obey the module's
+fail-closed principle: a malformed spawner pid degrades to watching the
+REAL parent (os.getppid()), never to silently disabling the guard.
+
+## PREDICTIONS (numbered, each falsifiable)
+
+P1 (tripwire, run BEFORE the fix): the finding's documented regression
+test (test_watchdog_fails_closed_on_malformed_env_pid, verbatim sketch
+from the finding) FAILS on the pre-fix code with exactly the
+assertIsNotNone failure ('malformed env pid disabled the orphan
+watchdog'); its full failing output is retained as RUN_TRIPWIRE.txt.
+The PR #71 review already verified the sketch's assertIsNotNone
+genuinely trips at base; this run reproduces that in this worktree.
+P2 (fix effect): after the two-line fix (malformed -> os.getppid()),
+the same test PASSES: the returned watchdog thread is not None, is a
+daemon, and stays alive through max(2.0, 6 * DEFAULT_WATCHDOG_CADENCE_S)
+(watching the live parent, it must keep polling, never fire).
+P3 (behavior unchanged everywhere else):
+  (i)   empty/unset env + parent_pid=None -> watchdog ACTIVE on
+        os.getppid() (identical to the old conditional-default), so the
+        normal fixture-child path is untouched;
+  (ii)  well-formed env -> int(raw) wins (unchanged); the existing
+        FixtureChildWatchdogTests orphan drill (real sacrificial-parent
+        orphaning) stays green, proving the resolved-pid path still
+        orphan-exits;
+  (iii) explicit parent_pid=0 -> still returns None (the tested opt-out
+        test_watchdog_disabled_without_resolvable_parent stays green),
+        because the fix only touches the parent_pid is None branch;
+  (iv)  non-Windows -> still returns None (os.name != 'nt' guard is
+        above and untouched).
+P4 (module + suite): the capture module is green (34 tests: 33 prior +
+1 new) and the standalone fleet suite from the repo root is green
+(observed count recorded with provenance whatever it is).
+P5 (confinement): `git diff` of capture_window.py shows the ONLY hunk
+inside the parent_pid is None branch (plus the docstring sentence the
+finding names: "Disabled (returns None) when no parent pid resolves"
+amended to the caller-passes-no-resolvable-parent_pid wording); no other
+line of the function (or module) changes.
+
+## FALSIFIERS (what would kill this deliverable)
+
+F-A: the regression test does NOT trip on the pre-fix code (no
+     tripwire, no proof of regression coverage).
+F-B: any behavior change outside non-empty malformed env values:
+     empty/unset, well-formed, parent_pid=0, or non-Windows paths
+     differing from the documented old behavior.
+C:   any hunk of capture_window.py outside the parent_pid is None
+     branch or the named docstring sentence (confinement violated).
+D:   suite failures anywhere.
+
+## Method notes (binding on the run)
+
+- Sequencing: prereg commit -> P1 tripwire run at pre-fix head (test
+  added in the working tree, output retained, NOT committed yet) -> fix
+  applied -> P2/P3/P4 runs -> one commit carrying test + fix together
+  (the retained tripwire output is the proof the test bites) -> evidence
+  commit -> push no-force -> PR -> submit_review at exact HEAD.
+- No new process is spawned by the new test (the watchdog watches the
+  live parent of the test process); cost equals the existing
+  parent_pid=0 test plus one 2 s poll window.
+- Evidence rule: raw outputs verbatim under this directory as *.txt;
+  failures retained, never tolerated away. Commit trailer
+  `Agent: subagent-worker-11` on every commit; acceptance NOT_CLAIMED
+  until lead review and authorized integration.
+- The PR #71 review's recorded third bare assertRaises at
+  test_task_abandon.py:310 is OUT of this task's scopes and is NOT
+  touched here; it belongs to the next followups batch.

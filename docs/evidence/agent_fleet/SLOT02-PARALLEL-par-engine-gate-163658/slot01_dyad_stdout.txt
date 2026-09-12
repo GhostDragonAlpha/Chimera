@@ -1,0 +1,36 @@
+[dyad] gpu_demo_raised_gamma0: calling senses.watch_one ...
+[dyad] gpu_demo_raised_gamma0: OK
+[dyad] gpu_demo_final_relaxed: calling senses.watch_one ...
+[dyad] gpu_demo_final_relaxed: OK
+evidence: C:\Users\allen\AppData\Local\Temp\opencode\chimera_pub\docs\evidence\membrane_gpu_demo_runtime\20260909T213807.733239Z\dyad_gpu_demo_review.json
+
+===== gpu_demo_raised_gamma0 =====
+**1. What is visibly distinguishable**
+- A uniform near‑black background with **no grid, no axis gizmo, and no text labels**.
+- A flat, dark‑gray **hexagon** sitting in the mid‑background (slightly lighter than the backdrop). It reads as a floor / reference panel or possibly a cast shadow; it has no internal markings. Its orientation is "flat‑top" (horizontal top and bottom edges, pointed left/right) seen in perspective.
+- In front of / above that dark hexagon, a **light‑gray filled six‑triangle membrane** with a thin white edge‑wire pass. The fill carries a radial brightness gradient — brightest near the middle, darker toward the rim. Its projected outline is also a flat‑top hexagon, but it sits *lower and slightly wider* than the dark hexagon behind it (its left/right tips stick out beyond the dark shape's side corners, and its bottom edge is well above the dark shape's bottom edge).
+- A solid **magenta horizontal bar spanning the entire top edge** of the frame. It looks like a UI/status strip or capture artifact, not part of the 3D scene.
+
+**2. Locating centre vertex vs outer rim**
+- **Outer rim:** the closed white six‑edge loop at the boundary of the gray fill — i.e., the leftmost tip, rightmost tip, and the top/bottom vertices where the radial lines terminate. The wire pass is what marks it (the fill alone has no hard edge).
+- **Centre vertex:** the single interior point where all six white spokes converge (a degree‑6 node), located in the upper‑middle of the fill, roughly under the brightest part of the highlight. It is identifiable purely as "the one point every radial edge meets."
+
+**3. Is the 0.125 m offset resolvable? — *Uncertain***
+The membrane's silhouette reads as essentially **flat**: the top boundary looks like a straight horizontal far‑rim edge with no central peak poking above it, and there is no side view or scale bar to compare heights against. The wire spokes do appear to converge in the *upper* half of the projected rim rather than its vertical
+
+
+===== gpu_demo_final_relaxed =====
+**1. What is visibly distinguishable**
+- A uniform near‑black background filling most of the frame; no horizon line, no grid lines, no other objects.
+- In the centre, a single light‑grey/silver flat hexagonal plate with a smooth radial shading (brightest at its middle, darkening toward the edges). It is strongly foreshortened vertically, i.e. it reads as a horizontal plane seen from a low elevation angle.
+- Over that grey plate are thin pale wire lines: an "asterisk" of three long diagonals crossing at one central point (six spokes to the six corners) plus a brighter outline around the perimeter — consistent with the documented fill + edge‑contrast wire pass.
+- Behind and below the bright plate is a *larger, darker* hexagonal silhouette (top edge higher than the bright plate's top, bottom edge much lower). It appears as an almost un‑foreshortened regular hexagon, i.e. its plane looks more parallel to the view than the membrane's plane.
+- A solid magenta horizontal bar spans the entire top edge of the image; a thin black strip runs along the very bottom edge. Neither is part of the membrane model as documented.
+
+**2. Locating centre vertex and rim**
+- *Centre vertex:* the single point where all six wire spokes converge, at the visual middle of the grey hexagon. The wire pass makes it unambiguous.
+- *Outer rim:* the boundary polygon of the grey fill — six corner vertices (leftmost, rightmost, two upper, two lower) joined by the brighter edge‑contrast outline. So both are locatable purely from the wire overlay; the centre is the spoke intersection, the rim is the perimeter.
+
+**3. Is the centre's offset resolvable?**
+*Not resolvable.* The image shows a flat hexagon: all six spokes meet at one point that lies in the apparent plane of the rim, and the shading is smooth and symmetric with no central "tent", poke, or local highlight that would betray an out‑of‑plane vertex. The recorded offset (≈1.9×10⁻⁷ m) is many orders below pixel resolution, so its magnitude cannot be m
+

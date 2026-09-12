@@ -1,0 +1,12 @@
+real card graph at base: 240 cards (docs/roadmap/holodeck_tasks.json @ 62b8e357, sha256 d5c7aa8b...fcd8)
+S0 no realizations -> ['GOV-01'] (expected [GOV-01]) PASS=True
+S1 holodeck-gov-01 INTEGRATED -> ['GOV-02', 'GOV-03', 'GOV-04', 'GOV-05', 'GOV-06', 'MATH-01'] PASS=True
+   expected exactly ['GOV-02', 'GOV-03', 'GOV-04', 'GOV-05', 'GOV-06', 'MATH-01']
+S2 + holodeck-gov-02..05 live + holodeck-gov-06 RUNNING -> ['MATH-01'] (expected [MATH-01]) PASS=True
+S3 holodeck-gov-01 ABANDONED -> ['GOV-01'] (expected [GOV-01]: card re-enters, dependents blocked - ABANDONED satisfies nothing) PASS=True
+R3 SCORE PASS (4/4 exact-list equality)
+R4a unknown digest -> unknown_catalogue_digest
+R4c partial deps (A-01 INTEGRATED, A-02 RUNNING): frontier []; B-01 blocked=True
+R4b SUPERSEDED card C-01 never offered: True
+R4d catalogue_next pure read (state byte-identical): True
+R4 SCORE PASS (4/4)

@@ -1,0 +1,13 @@
+{
+  "utc": "2026-09-08T20:31:00Z",
+  "task": "GLM-DEMO-CONTRAST-01 regression (env gate UNSET)",
+  "executable": ".tmp/engine_demo_build2/Release/chimera_engine.exe",
+  "executable_sha256": "f3714eb911365d709a21b8a977a89aecbe7e2a2d2bcdd43ef35501899bdffd1b",
+  "pid": "filled-after-launch",
+  "arguments": ["8091", "--no-restore"],
+  "environment": {"CHIMERA_TRI_EDGE_CONTRAST": "UNSET (ordinary path under regression)"},
+  "working_directory": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub\\.tmp\\engine_demo_build2\\Release",
+  "endpoint": "http://localhost:8091",
+  "purpose": "prove the patch leaves ordinary rendering byte-identical when the opt-in is disabled",
+  "operator_engine_untouched": true
+}

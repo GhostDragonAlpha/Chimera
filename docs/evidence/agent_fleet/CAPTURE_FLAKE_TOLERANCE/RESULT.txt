@@ -1,0 +1,134 @@
+capture-flake-tolerance-01 RESULT (2026-09-11, subagent-worker-11)
+
+Worktree E:\ChimeraWork\slot-10, base 4c31999797a9383ea252019be1f32511709fa280
+(= remote tip of astra/gait-capture at claim, rev 755; no reconcile needed).
+Branch astra/tasks/capture-flake-tolerance-01.
+Commits: 3354d5a1 (preregistration, committed BEFORE any run, no actuals)
+      -> d780e65e (bounded single-retry transient tolerance + synthetic
+                   falsifiers; capture_window.py untouched).
+Scope kept exactly: tools/agent_fleet/test_capture_window.py +
+docs/evidence/agent_fleet/CAPTURE_FLAKE_TOLERANCE/ (*.txt only).
+
+## MECHANISM CONFIRMED BY REPRODUCTION (base, pre-fix)
+
+RUN_LOAD_BASELINE_SUITE.txt retains the verbatim reproduction: with the
+fleet suite running (in-process) while the capture module was looped in a
+separate process (RUN_LOAD_BASELINE_LOOP.txt, 34 iterations, all OK), the
+suite's own run of test_verify_hwnd_capture_none_pin_adopts_measured_size
+FAILED exactly as recorded:
+
+    line 490: assertEqual(rec2['verdict'], 'unobscured', rec2)
+    AssertionError: 'occluded_or_foreign_content' != 'unobscured'
+    record: client_size [400,240] == pinned_size [400,240] (both size
+    gates passed; adoption worked), capture_sha256 != expected_sha256
+    (the CONTENT gate failed closed on a mid-erase surface).
+
+This is the transient window-state race the preregistration named:
+resize_client() queues CS_HREDRAW|CS_VREDRAW erase work (GRAY_BRUSH
+class background); under suite load the queued erase landed after the
+test's deterministic repaint() blit, so PrintWindow read a half-erased
+surface. The GATE BEHAVED CORRECTLY (fail-closed on content deviation);
+the flake is transient, not a contract defect. P1 is a HIT on its
+first clause (first-attempt failure reproduced under the suite-load
+context). The 34 standalone loop iterations never hit it: the recorded
+context is the suite's own in-process load (scale probes, transition
+tests), which is why the reproduction protocol drove BOTH.
+
+## PREDICTION SCORECARD
+
+P1 (baseline reproduction) .. HIT (with a documented partial): the
+   first-attempt failure reproduced in the suite-load context with the
+   exact recorded signature. "Pass-on-retry with the SAME fixture
+   semantics" could not be shown at base by construction (the base has
+   no retry); it is shown deterministically by the synthetic falsifier
+   P4(i) on the real code path, and post-fix the same test passes in the
+   same context (below). The pre-fix failure output is retained
+   verbatim, never tolerated away.
+P2 (>=10 consecutive green module runs in suite-load context) .. HELD:
+   14 consecutive module runs, all OK, while the fleet suite ran
+   concurrently (RUN_LOAD_VERIFY_LOOP.txt). The concurrent suite's
+   in-process capture module run - including the formerly-flaky test -
+   passed (RUN_LOAD_VERIFY_SUITE.txt line 43: ok).
+P3 (assertion set unchanged) .. HELD, mechanically: AST proof in
+   RUN_ASSERTION_SET_PROOF.txt - zero removed methods, zero changed
+   assertion sets across all 40 pre-existing test methods; the +23
+   assert calls are all inside the new TransientToleranceTests. The
+   three verify_hwnd_capture calls of the adoption test are wrapped
+   with IDENTICAL arguments; the retry wraps, never skips.
+P4 (tolerance's own synthetic falsifiers) .. HELD, 5/5 new tests green
+   in every module run (33/33 total):
+   (i)   heal + retention: first attempt occluded -> second unobscured,
+         verify called EXACTLY twice, repaint exactly once, arguments
+         identical, 'first_attempt' retained (also visible in
+         transient_tolerance_events.txt: {"healed": true, "retries": 1,
+         "first_attempt_verdict": "occluded_or_foreign_content",
+         "second_verdict": "unobscured", "deadline_respected": true}).
+   (ii)  REAL occlusion: exactly one retry, still failed, original
+         assertion shape still raises AssertionError on the record,
+         first attempt retained -> NOT MASKED.
+   (iii) parameter drift between attempts: retry REFUSED, AssertionError
+         raised, exactly one verify call.
+   (iv)  non-transient verdicts (window_destroyed): returned untouched,
+         no retry, transient_tolerance.fired=False.
+   (v)   deadline exhausted: no second attempt (time-bounded), failure
+         retained as the returned first-attempt record itself.
+
+## FALSIFIER STATUS
+
+F-A (retry masks a real occlusion) .. NOT FIRED: single retry
+    (TRANSIENT_TOLERANCE_MAX_RETRIES=1, structural), wall-clock-bounded
+    (TRANSIENT_TOLERANCE_DEADLINE_S=5.0, checked before the retry and
+    reported as deadline_respected), identical fixture parameters
+    ASSERTED between attempts (hwnd / projected client size / pattern
+    digest / title; drift raises instead of retrying), persistent
+    occlusion proven to still fail the original assertion with both
+    records attached (P4(ii)).
+F-B (assertion removed/weakened) .. NOT FIRED (P3 AST proof).
+F-C (failures not retained) .. NOT FIRED: every fired tolerance attaches
+    the full first-attempt record ('first_attempt') and appends a JSON
+    line to transient_tolerance_events.txt when
+    CHIMERA_TRANSIENT_TOLERANCE_EVIDENCE is set (that file's
+    'tolerance-test' lines are the synthetic falsifiers; no
+    'chimera-adoption' event occurred post-fix - zero natural transients
+    in the post-fix battery, while the pre-fix natural occurrence is
+    retained verbatim in RUN_LOAD_BASELINE_SUITE.txt).
+D  (suite failures) .. the standalone fleet suite is GREEN:
+    RUN_FLEET_SUITE_STANDALONE.txt, 236 tests, rc=0, 1 documented
+    Windows-symlink skip.
+
+## DISCLOSED LOAD-HARNESS ARTIFACT (not hidden, not ours to fix)
+
+RUN_LOAD_VERIFY_SUITE.txt ends rc=1: test_scale_probe_lock_errors_and_latency
+(tools/agent_fleet/test_slot_expansion.py - ANOTHER lane's file, outside
+this task's scope) recorded 1 lock error during its own 8-thread 20s
+stress probe while this harness added a full suite + a module-loop on
+top (p99 6310 ms). The same probe passes in the standalone run and
+passed in the baseline dual-load run (p99 2964 ms, lock_errors 0): it is
+itself load-sensitive, and the dual-load protocol is deliberately
+heavier than any normal context. test_slot_expansion.py was NOT touched;
+this is recorded for the lane that owns it.
+
+## WATCHDOG NOTE ("installed parent watchdog may already help - measure first")
+
+The fleet-evidence-hygiene-01 F2 parent watchdog addresses orphaned
+fixture-CHILD processes, not paint/occlusion timing; the baseline
+measurement above was taken at the tip that already contains it, and the
+flake reproduced anyway - so the measurement answers the dispatch
+question directly: the watchdog does not touch this race.
+
+## FILES (all *.txt, raw outputs verbatim)
+
+PREREGISTRATION.txt            statement/predictions/falsifiers (pre-run)
+RUN_LOAD_BASELINE_SUITE.txt    pre-fix suite under load: REPRODUCTION verbatim
+RUN_LOAD_BASELINE_LOOP.txt     pre-fix 34-iteration loop harness log
+RUN_LOAD_VERIFY_LOOP.txt       post-fix 14/14 consecutive green in load context
+RUN_LOAD_VERIFY_SUITE.txt      post-fix concurrent suite (capture tests ok;
+                               unrelated scale-probe artifact disclosed above)
+RUN_FLEET_SUITE_STANDALONE.txt post-fix standalone fleet suite: GREEN rc=0
+RUN_PY_COMPILE_AND_MODULE.txt  compile proof + full module run 33/33 OK
+RUN_ASSERTION_SET_PROOF.txt    AST proof: assertion set unchanged (P3)
+transient_tolerance_events.txt retention surface from the verify battery
+RESULT.txt                     this scorecard
+
+Acceptance NOT_CLAIMED - awaiting lead review and authorized integration.
+Trailer on every commit: Agent: subagent-worker-11

@@ -1,0 +1,45 @@
+=== RUN 1 start 19:02:18Z ===
+run 1 exit=1
+LOCK_PROBE_MUTATED {"writers": 3, "duration_s": 5.0, "ops": 771, "lock_errors": 33, "other_refusals": 542, "p50_ms": 10.6, "p95_ms": 64.8, "p99_ms": 148.7, "max_ms": 279.7}
+SCALE_PROBE_MIXED {"writers": 8, "duration_s": 20.4, "ops": 880, "lock_errors": 0, "other_refusals": 47, "p50_ms": 20.8, "p95_ms": 762.9, "p99_ms": 3927.4, "max_ms": 8086.4, "threads": 8, "spawn_cost_ms": 8.3}
+LOCK_PROBE_GUARD {"writers": 3, "duration_s": 5.0, "ops": 295, "lock_errors": 0, "other_refusals": 55, "p50_ms": 16.7, "p95_ms": 204.0, "p99_ms": 808.1, "max_ms": 1444.5}
+SCALE_PROBE_SATURATED {"ops": 376, "lock_or_err": 0, "p50_ms": 12.5, "p95_ms": 494.6, "max_ms": 4136.3}
+Ran 238 tests in 261.834s
+
+FAILED (failures=1, skipped=1)
+=== RUN 2 start 19:06:41Z ===
+run 2 exit=1
+LOCK_PROBE_MUTATED {"writers": 3, "duration_s": 5.0, "ops": 897, "lock_errors": 9, "other_refusals": 704, "p50_ms": 5.1, "p95_ms": 45.0, "p99_ms": 131.9, "max_ms": 218.6}
+SCALE_PROBE_MIXED {"writers": 8, "duration_s": 20.2, "ops": 946, "lock_errors": 0, "other_refusals": 87, "p50_ms": 21.4, "p95_ms": 609.0, "p99_ms": 3678.5, "max_ms": 10658.1, "threads": 8, "spawn_cost_ms": 11.9}
+LOCK_PROBE_GUARD {"writers": 3, "duration_s": 5.0, "ops": 268, "lock_errors": 0, "other_refusals": 34, "p50_ms": 17.1, "p95_ms": 164.1, "p99_ms": 855.0, "max_ms": 2431.6}
+SCALE_PROBE_SATURATED {"ops": 443, "lock_or_err": 0, "p50_ms": 11.9, "p95_ms": 269.0, "max_ms": 5216.9}
+Ran 238 tests in 264.727s
+
+FAILED (failures=1, skipped=1)
+=== RUN 3 start 19:11:06Z ===
+run 3 exit=0
+LOCK_PROBE_MUTATED {"writers": 3, "duration_s": 5.0, "ops": 932, "lock_errors": 25, "other_refusals": 718, "p50_ms": 5.3, "p95_ms": 56.1, "p99_ms": 138.5, "max_ms": 181.6}
+SCALE_PROBE_MIXED {"writers": 8, "duration_s": 20.3, "ops": 978, "lock_errors": 0, "other_refusals": 86, "p50_ms": 20.5, "p95_ms": 546.3, "p99_ms": 3226.9, "max_ms": 10531.4, "threads": 8, "spawn_cost_ms": 7.3}
+LOCK_PROBE_GUARD {"writers": 3, "duration_s": 5.1, "ops": 391, "lock_errors": 0, "other_refusals": 78, "p50_ms": 13.2, "p95_ms": 139.3, "p99_ms": 715.0, "max_ms": 1669.4}
+SCALE_PROBE_SATURATED {"ops": 471, "lock_or_err": 0, "p50_ms": 10.9, "p95_ms": 150.6, "max_ms": 5254.7}
+Ran 238 tests in 239.024s
+
+OK (skipped=1)
+=== RUN 4 start 19:15:05Z ===
+run 4 exit=0
+LOCK_PROBE_MUTATED {"writers": 3, "duration_s": 5.0, "ops": 549, "lock_errors": 59, "other_refusals": 198, "p50_ms": 11.8, "p95_ms": 119.3, "p99_ms": 141.1, "max_ms": 173.0}
+SCALE_PROBE_MIXED {"writers": 8, "duration_s": 20.5, "ops": 1141, "lock_errors": 0, "other_refusals": 72, "p50_ms": 18.0, "p95_ms": 452.9, "p99_ms": 2897.8, "max_ms": 10164.0, "threads": 8, "spawn_cost_ms": 5.7}
+LOCK_PROBE_GUARD {"writers": 3, "duration_s": 5.1, "ops": 311, "lock_errors": 0, "other_refusals": 89, "p50_ms": 11.9, "p95_ms": 144.5, "p99_ms": 1005.3, "max_ms": 1883.2}
+SCALE_PROBE_SATURATED {"ops": 194, "lock_or_err": 0, "p50_ms": 30.0, "p95_ms": 1229.2, "max_ms": 5449.0}
+Ran 238 tests in 245.092s
+
+OK (skipped=1)
+=== RUN 5 start 19:19:11Z ===
+run 5 exit=0
+LOCK_PROBE_MUTATED {"writers": 3, "duration_s": 5.0, "ops": 889, "lock_errors": 21, "other_refusals": 654, "p50_ms": 4.7, "p95_ms": 62.1, "p99_ms": 123.4, "max_ms": 186.5}
+SCALE_PROBE_MIXED {"writers": 8, "duration_s": 20.6, "ops": 1155, "lock_errors": 0, "other_refusals": 80, "p50_ms": 17.5, "p95_ms": 690.1, "p99_ms": 2902.1, "max_ms": 5689.2, "threads": 8, "spawn_cost_ms": 7.4}
+LOCK_PROBE_GUARD {"writers": 3, "duration_s": 5.0, "ops": 378, "lock_errors": 0, "other_refusals": 57, "p50_ms": 13.9, "p95_ms": 152.9, "p99_ms": 815.8, "max_ms": 1031.7}
+SCALE_PROBE_SATURATED {"ops": 604, "lock_or_err": 0, "p50_ms": 9.0, "p95_ms": 193.3, "max_ms": 5244.5}
+Ran 238 tests in 247.484s
+
+OK (skipped=1)

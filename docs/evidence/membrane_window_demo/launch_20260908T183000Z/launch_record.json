@@ -1,0 +1,14 @@
+{
+  "utc": "2026-09-08T18:36:00Z",
+  "task": "GLM-DYAD-02",
+  "executable": ".tmp/engine_demo_build/Release/chimera_engine.exe",
+  "executable_sha256": "25f9b34967e907da97b5686edfb7e6b563e00618d1d69acc888e15112f287b28",
+  "pid": 66400,
+  "arguments": ["8091", "--no-restore"],
+  "working_directory": "C:\\Users\\allen\\AppData\\Local\\Temp\\opencode\\chimera_pub\\.tmp\\engine_demo_build\\Release",
+  "endpoint": "http://localhost:8091",
+  "port_check_before_launch": "FREE (netstat, no listener on 8091)",
+  "launch_method": "PowerShell Start-Process (detached); the terminal tool's process-tree timeout reaped direct child launches, so the detached launch is used instead; process verified alive via tasklist + /state after launch",
+  "operator_engine_untouched": true,
+  "notes": "Same executable hash and build as the GLM-WINDOW-03 verified session. Session files are CWD-relative (verified in source), so this instance shares no persistent files with any operator session."
+}

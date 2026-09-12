@@ -1,0 +1,97 @@
+RESULT -- fleet-evidence-hygiene-01 (wave 4)
+============================================
+
+Worker: subagent-worker-05 (instance id subagent-worker-05-f317492bfc32,
+first instance-fenced enrollment; claim event seq 670 carries the id).
+Branch astra/tasks/fleet-evidence-hygiene-01; base 5199d9c3; slot 4.
+Preregistration: PREREGISTRATION.txt, own commit ec766e43 (before code).
+
+F1 -- the *.log evidence trap: CLOSED (warn-only guard)
+-------------------------------------------------------
+Deliverable, per the repo's inspected hook conventions (repo-committed
+.githooks/pre-commit, enabled by core.hooksPath; host-level .git/hooks is
+shazam-owned and never runs on astra/* branches):
+  * tools/agent_fleet/evidence_log_guard.py -- `--staged` mode per house
+    convention. Warns (exit 0, never blocks; internal error also degrades
+    to a non-blocking warning) when a staged add under docs/evidence/
+    coexists with ignored-and-untracked *.log files in the same directory,
+    naming the files and both remedies.
+  * .githooks/pre-commit -- one appended warn-only stanza, existence-guarded
+    like every optional gate, delegating with `|| true` so it cannot set the
+    hook's fail flag. NOTHING else in the hook changed: every pre-existing
+    stanza (bind_guard, objective_lint, library_guard, saturation,
+    perf-guard, doc-guard, doc_lint, shazam delegation) is byte-identical
+    (asserted by test_hook_wiring_preserves_every_gate_and_is_warn_only).
+
+Prediction (F1)(i)  TRAP warns, exit 0 .......... VERIFIED
+  test_trap_case_warns_and_exits_zero (real script, throwaway git repo)
+  plus RAW_HOOK_E2E.txt CASE A (real `git commit` through the real hook)
+Prediction (F1)(ii) clean cases silent, exit 0 .. VERIFIED
+  4 deterministic clean cases pass silent: no logs; log outside
+  docs/evidence/; log but nothing staged; force-added (tracked) .log.
+  RAW_HOOK_E2E.txt CASE B: clean commit through the live hook is silent.
+Prediction (F1)(iii) no gate weakened, warn-only wiring . VERIFIED
+  hook-wiring test asserts every pre-existing gate invocation still present
+  and the new stanza contains `|| true` and no `fail=1`.
+Falsifier status F1: NOT TRIGGERED (no silent trap, no clean-case warning
+in the bounded semantics, no blocking, no weakened gate).
+
+F2 -- the leaked fixture child: CLOSED (child-side watchdog)
+------------------------------------------------------------
+Deliverable in tools/agent_fleet/capture_window.py:
+  * install_parent_watchdog(parent_pid=None, cadence_s=0.25): daemon thread
+    in the CHILD; OpenProcess(SYNCHRONIZE) + WaitForSingleObject poll at the
+    message-pump cadence; ExitProcess(0) when the parent handle is signaled
+    or cannot be opened (fail-closed toward hygiene). Parent pid resolved
+    from CHIMERA_FIXTURE_PARENT_PID (set by the spawner) else os.getppid().
+    Disabled cleanly on non-Windows / unresolvable pid.
+  * The suite's child fixture (CHILD_FIXTURE_CODE in test_capture_window.py)
+    installs the watchdog before pumping; _spawn_child_fixture points it at
+    the test process by default. Existing capture contract untouched: same
+    windows, same verdict vocabulary, same decision order.
+
+Prediction (F2)(i)  live parent -> child keeps pumping .. VERIFIED
+  test_orphaned_fixture_child_exits_within_guard_window part (i)
+Prediction (F2)(ii) orphan -> child exits 0 in window .. VERIFIED
+  part (ii): sacrificial parent killed; child exited rc=0 within the 30 s
+  bound (observed ~0.05 s in the standalone probe).
+Prediction (F2)(iii) suites green, behavior unchanged .. VERIFIED
+  capture contract suite 28/28 OK (all inherited a-g/a2-f2 predictions);
+  full fleet suite RAW_FLEET_SUITE.txt: "Ran 207 tests ... OK (skipped=1)"
+  (the standard non-Windows skip), 0 failures. The fleet suite's own
+  teardown recorded controlled transitions for its spawned services
+  (no fixture orphans -- the F2 lesson applied fleet-wide).
+Falsifier status F2: NOT TRIGGERED (no surviving orphan, no live-parent
+firing, no behavior change, no regression).
+
+Session incident record (reviewer attention invited, both already
+reported to lead glm53-lead-02 in-session):
+  1. 10:23 over-broad `taskkill //F //IM python.exe` while cleaning a hung
+     probe killed the fleet controller service (pid from
+     E:\ChimeraWork\control\service.pid.json). Durable state.sqlite was
+     intact; service restarted from state by the supervisor; claim/provision
+     survived (verified at rev 683). Root cause: my cleanup violated the
+     "self-created fixture processes only" boundary; the PID filter did not
+     survive bash quoting. Lesson recorded: kill by exact pid only.
+  2. First draft of the F2 test used
+     `assertTrue(line, '...' + child.stderr.read())`; the message argument
+     evaluates EAGERLY even on success, blocking on the live child's stderr
+     pipe until the watchdog eventually fired (300 s). Root-caused, fixed to
+     read stderr only on the failure path, every wait now bounded.
+
+Evidence files (this directory, all *.txt):
+  PREREGISTRATION.txt   statement/prediction/falsifier, pre-code commit
+  RAW_GUARD_TEST.txt    F1 deterministic suite (7 tests, OK)
+  RAW_CAPTURE_SUITE.txt capture contract + watchdog suite (28 tests, OK)
+  RAW_FLEET_SUITE.txt   full fleet suite (207 tests, OK, skipped=1)
+  RAW_HOOK_E2E.txt      F1 end-to-end through real git commit (A: warn,
+                        B: silent), throwaway worktree, removed after run
+  RESULT.txt            this file
+
+Scope discipline: changed files are exactly tools/agent_fleet/
+capture_window.py, tools/agent_fleet/test_capture_window.py,
+tools/agent_fleet/evidence_log_guard.py (the hook script location per the
+inspected repo convention), .githooks/pre-commit (the conventional wiring
+point; warn-only stanza), and this evidence directory. All test processes
+are self-created and reaped in teardown; CPU/GDI only; no GPU/DYAD/
+controller resources were acquired.

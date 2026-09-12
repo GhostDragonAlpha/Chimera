@@ -1,0 +1,184 @@
+#version 450
+
+// membrane_demo.comp -- GLM-GPU-DEMO-01.
+//
+// Stage 0/1/2 are the CERTIFIED kernels from
+// tools/membrane_gpu_probe/membrane.comp, transported VERBATIM (the frozen
+// fixtures verify this text; edits here would need a new gate). The two
+// derived stages are the preregistered additions:
+//   stage 4: trial update x+ = x + alpha*p (GLM-RELAX-GPU-01's kernel, verbatim)
+//   stage 5: present -- map accepted f32 positions to render vertices
+//            (geometry mapping only: the recorded rigid B2(z-up)->engine(y-up)
+//            rotation, presentation lift, normals, rim/centre colors; NO physics)
+//
+// One dispatch mode owns one stage. No floating-point atomic scatter.
+
+layout(local_size_x = 64) in;
+
+struct FaceRecord {
+    vec4 normal_area; // xyz = current unit normal, w = current area
+    vec4 corner0;     // force at face corner 0
+    vec4 corner1;     // force at face corner 1
+    vec4 corner2;     // force at face corner 2
+};
+
+layout(std430, set = 0, binding = 0) buffer Positions {
+    vec4 positions[];
+};
+layout(std430, set = 0, binding = 1) readonly buffer Indices {
+    uvec4 indices[];
+};
+layout(std430, set = 0, binding = 2) readonly buffer Gamma {
+    float gamma[];
+};
+layout(std430, set = 0, binding = 3) readonly buffer CsrOffsets {
+    uint offsets[];
+};
+layout(std430, set = 0, binding = 4) readonly buffer CsrCorners {
+    uint corner_indices[];
+};
+layout(std430, set = 0, binding = 5) buffer FaceRecords {
+    FaceRecord faces[];
+};
+layout(std430, set = 0, binding = 6) writeonly buffer VertexForces {
+    vec4 vertex_forces[];
+};
+layout(std430, binding = 7) buffer Energy {
+    float energy[];
+};
+layout(std430, set = 0, binding = 8) writeonly buffer Validity {
+    uint valid[];
+};
+
+// stage 4 (trial): positions buffer is read-write in-place.
+// stage 5 (present): writes the 9-float render vertices to PresentBuf.
+layout(std430, set = 0, binding = 9) buffer PresentBuf {
+    float present[];
+};
+// stage 4: direction p (xyz per vertex, pins already exactly zero).
+layout(std430, set = 0, binding = 10) readonly buffer Direction {
+    vec4 direction[];
+};
+
+layout(push_constant) uniform Params {
+    uint stage;
+    uint vertex_count;
+    uint face_count;
+    uint corner_count;
+    float alpha;      // stage 4
+    float lift_m;     // stage 5 (engine y presentation lift)
+    float scale;      // reserved 1.0
+    uint present_vcount; // stage 5 vertices written
+} params;
+
+void eval_face(uint f) {
+    uvec3 tri = indices[f].xyz;
+    vec3 a = positions[tri.x].xyz;
+    vec3 b = positions[tri.y].xyz;
+    vec3 c = positions[tri.z].xyz;
+    vec3 cross_bc = cross(b - a, c - a);
+    float cross2 = dot(cross_bc, cross_bc);
+    float eab2 = dot(b - a, b - a);
+    float ebc2 = dot(c - b, c - b);
+    float eca2 = dot(a - c, a - c);
+    float max_edge2 = max(eab2, max(ebc2, eca2));
+    FaceRecord out_face;
+    bool finite_geometry = all(equal(a, a)) && all(equal(b, b)) && all(equal(c, c));
+    bool valid_geometry = finite_geometry && (cross2 > 0.0);
+    if (!valid_geometry) {
+        out_face.normal_area = vec4(0.0);
+        out_face.corner0 = vec4(0.0);
+        out_face.corner1 = vec4(0.0);
+        out_face.corner2 = vec4(0.0);
+        faces[f] = out_face;
+        valid[f] = 0u;
+        return;
+    }
+    float twice_area = sqrt(cross2);
+    float area = 0.5 * twice_area;
+    vec3 n = cross_bc / twice_area;
+    float g = gamma[f];
+    vec3 ga = cross(b - c, n) * 0.5;
+    vec3 gb = cross(c - a, n) * 0.5;
+    vec3 gc = cross(a - b, n) * 0.5;
+
+    out_face.normal_area = vec4(n, area);
+    out_face.corner0 = vec4(-g * ga, 0.0);
+    out_face.corner1 = vec4(-g * gb, 0.0);
+    out_face.corner2 = vec4(-g * gc, 0.0);
+    faces[f] = out_face;
+    valid[f] = 1u;
+}
+
+vec3 face_corner(uint flat_corner) {
+    FaceRecord f = faces[flat_corner / 3u];
+    uint slot = flat_corner % 3u;
+    if (slot == 0u) return f.corner0.xyz;
+    if (slot == 1u) return f.corner1.xyz;
+    return f.corner2.xyz;
+}
+
+void assemble_vertex(uint v) {
+    vec3 sum = vec3(0.0);
+    for (uint p = offsets[v]; p < offsets[v + 1u]; ++p)
+        sum += face_corner(corner_indices[p]);
+    vertex_forces[v] = vec4(sum, 0.0);
+}
+
+void reduce_energy(uint f) {
+    if (f != 0u) return;
+    float total = 0.0;
+    for (uint i = 0u; i < params.face_count; ++i)
+        total += faces[i].normal_area.w * gamma[i];
+    energy[0] = total;
+}
+
+// stage 4: trial update, GLM-RELAX-GPU-01's kernel verbatim (in-place x+ =
+// x + alpha*p; pins are exactly zero inside p host-side).
+void trial_update(uint v) {
+    if (v >= params.vertex_count) return;
+    positions[v] = vec4(positions[v].xyz + params.alpha * direction[v].xyz, 0.0);
+}
+
+// stage 5: present. Reads the ACCEPTED positions; writes 9 floats per
+// vertex: pos3 (mapped), normal3, color3. Geometry mapping only -- the
+// recorded rigid rotation (x, y, z)_b2 -> (x, z, -y)_engine plus the
+// presentation lift along engine y. No physics, no exaggeration.
+void present_vertex(uint v) {
+    if (v >= params.present_vcount) return;
+    vec3 p = positions[v].xyz;
+    vec3 mapped = vec3(p.x, p.z + params.lift_m, -p.y);
+    // per-vertex render normal comes from the face record of the FIRST
+    // adjacent face (B2 hexagonal fan -- adequate for this demo; a general
+    // mesh would average by CSR range). First-touch search over the CSR
+    // corner list (B2 scale: trivial cost).
+    uint first_face = 0u;
+    for (uint i = 0u; i < params.corner_count; ++i) {
+        if (corner_indices[i] == v) { first_face = i / 3u; break; }
+    }
+    vec3 n = faces[first_face].normal_area.xyz;
+    vec3 n_mapped = vec3(n.x, n.z, -n.y);
+    float is_centre = (v + 1u == params.vertex_count) ? 1.0f : 0.0f; // centre is the LAST vertex (B2 law)
+    float base = is_centre > 0.5f ? 0.95f : 0.60f;
+    vec3 col = vec3(base * (n_mapped.z * 0.25f + 0.75f), base * (n_mapped.z * 0.25f + 0.75f),
+                    base * (n_mapped.z * 0.25f + 0.75f) + (is_centre > 0.5f ? 0.0f : 0.05f));
+    uint o = v * 9u;
+    present[o + 0u] = mapped.x;  present[o + 1u] = mapped.y;  present[o + 2u] = mapped.z;
+    present[o + 3u] = n_mapped.x; present[o + 4u] = n_mapped.y; present[o + 5u] = n_mapped.z;
+    present[o + 6u] = col.x;      present[o + 7u] = col.y;      present[o + 8u] = col.z;
+}
+
+void main() {
+    uint id = gl_GlobalInvocationID.x;
+    if (params.stage == 0u) {
+        if (id < params.face_count) eval_face(id);
+    } else if (params.stage == 1u) {
+        if (id < params.vertex_count) assemble_vertex(id);
+    } else if (params.stage == 2u) {
+        if (id == 0u) reduce_energy(id);
+    } else if (params.stage == 4u) {
+        trial_update(id);
+    } else if (params.stage == 5u) {
+        present_vertex(id);
+    }
+}

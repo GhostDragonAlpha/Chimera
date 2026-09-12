@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>GLM-DEMO-CONTRAST-01 — edge-contrast pair for human review (Alan)</title>
+<style>
+  body { background:#141414; color:#ddd; font-family:Segoe UI,system-ui,sans-serif; margin:24px; }
+  h1 { font-size:20px; color:#fff; } h2 { font-size:15px; color:#9cf; }
+  .pair { display:flex; gap:16px; flex-wrap:wrap; }
+  figure { margin:0; flex:1 1 600px; }
+  img { width:100%; border:1px solid #333; border-radius:4px; }
+  figcaption { font-size:13px; margin-top:6px; line-height:1.5; }
+  .verdict { background:#1d1d1d; border-left:3px solid #e8b339; padding:10px 14px; font-size:13px; line-height:1.6; max-width:1100px; }
+  code { color:#9cf; }
+</style>
+</head>
+<body>
+<h1>GLM-DEMO-CONTRAST-01 — edge-contrast pair (for your review)</h1>
+<p class="verdict">
+New in these captures: the opt-in edge-contrast feature (<code>CHIMERA_TRI_EDGE_CONTRAST</code>,
+constant light edges ~RGB(230,230,242) against the grey fill ~157). Ordinary rendering is
+byte-identical when the gate is unset (regression-proven). Both images: identical +0.5 m
+presentation lift, identical oblique camera (r=3.0, φ=0.55), fill+wire mode; they differ only
+in the accepted physical state. Numerical gates F1–F8: ALL PASS. DYAD now <b>locates the
+centre</b> (the spoke junction) and rim — but still <b>cannot distinguish raised from flat</b>
+(straight spokes project identically; perspective confounds the junction offset), so the height
+comparison is recorded INCONCLUSIVE and the visual experiment is stopped. Two independent proofs
+now show this rendering approach cannot resolve the 0.125 m bump: zero shading response, and
+projection invariance of straight spokes. Resolving it needs a different evidence class
+(side/elevation view, rim-plane reference, or height color ramp). <b>Your acceptance is not
+claimed — this pair is presented for that review.</b>
+</p>
+<div class="pair">
+<figure>
+<img src="raised_contrast_oblique.png" alt="raised state, edge contrast">
+<figcaption><h2>Image 1 — RAISED (γ = 0 J/m², stationary at 0 steps)</h2>
+Declared physical centre height: <b>+0.125 m</b>. State ID <code>639d4ff3…b02f682</code>;
+PNG sha256 <code>a1c24291…</code>.
+<br><small><code>docs/evidence/membrane_window_demo/20260908T203620.679992Z/raised_contrast_oblique.png</code></small>
+</figcaption>
+</figure>
+<figure>
+<img src="../20260908T203626.782212Z/relaxed_contrast_oblique.png" alt="relaxed state, edge contrast">
+<figcaption><h2>Image 2 — RELAXED (γ = 1 J/m², 126 steps, energy 2.6245731 → 2.5980762 J)</h2>
+Declared physical centre height: <b>≈ 0 m</b> (4.1×10⁻⁹ m). State ID <code>b5d4bfa6…0917722</code>;
+PNG sha256 <code>8da47c82…</code>.
+<br><small><code>docs/evidence/membrane_window_demo/20260908T203626.782212Z/relaxed_contrast_oblique.png</code></small>
+</figcaption>
+</figure>
+</div>
+<p class="verdict">
+Verdict classes separate — numerical: PASS · upload: CONDITIONAL with corroboration MATCH ·
+window: EXECUTED · DYAD: centre/rim locatable, height INCONCLUSIVE (experiment stopped) ·
+human: NOT CLAIMED (this page) · GPU-driven dynamics: NO CLAIM.
+Task record: <code>docs/THE_MEMBRANE_CONTRAST01_RECORD.md</code>.
+</p>
+</body>
+</html>

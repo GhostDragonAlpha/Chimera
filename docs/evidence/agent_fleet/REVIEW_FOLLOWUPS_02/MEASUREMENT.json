@@ -1,0 +1,38 @@
+{
+  "task": "fleet-review-followups-02",
+  "generation": 1,
+  "slot": 2,
+  "worker": "subagent-worker-02",
+  "worktree": "E:/ChimeraWork/slot-02",
+  "base": "c1a1ec5a5a166d8f32816cdacc9569e03857fa0e",
+  "preregistration_commit": "c4fdb9d7",
+  "implementation_commits": {
+    "F1_F2": "163df151",
+    "F4": "95cbb2bd",
+    "F3": "14013a0f"
+  },
+  "producing_commands": [
+    "python -m py_compile tools/agent_fleet/capture_window.py tools/agent_fleet/test_capture_window.py tools/agent_fleet/test_controller_transition.py",
+    "PYTHONIOENCODING=utf-8 python -m unittest tools.agent_fleet.test_capture_window -v",
+    "PYTHONIOENCODING=utf-8 python -W always::ResourceWarning -m unittest tools.agent_fleet.test_controller_transition -v",
+    "PYTHONIOENCODING=utf-8 python -m unittest discover -s tools/agent_fleet -p 'test_*.py' -v",
+    "python tools/agent_fleet/master_catalogue.py --out .tmp/measure/import_args.json"
+  ],
+  "run_provenance": "All suite runs executed from the REPO ROOT at worktree content byte-identical to the final branch head for every in-scope source and evidence file; the only later commit adds this evidence directory itself. Raw outputs are verbatim (tee), unedited.",
+  "measured": {
+    "capture_window_suite": "19 tests, OK (17 inherited from window-capture-ownership-01/02 + 2 new: test_failed_memory_dc_is_named_refusal, test_verify_hwnd_capture_none_pin_adopts_measured_size); no assertion removed or weakened",
+    "transition_suite": "4 tests, OK, 0 occurrences of ResourceWarning with -W always::ResourceWarning (96.581 s)",
+    "full_fleet_suite": "189 tests, 0 failures, 1 expected Windows-symlink skip (test_worktree_reconcile.test_unsafe_arguments_and_symlink_escape_refuse: 'symlink creation unavailable'); 187 tests at base tip + 2 new",
+    "payload_transport_envelope_bytes": 1519534,
+    "payload_transport_envelope_digest": "67c89fd5dca137093344d4c1486035b9d3e4a0bab412a184477df25e1c0298d9",
+    "payload_out_artifact_bytes": 1511333,
+    "payload_out_artifact_sha256": "0223f5b4d4f9723ff79e3635a2f15c18ccd40ee6eca9e495d9a5110232cbe11f",
+    "discovery_context_note": "The 1,518,593 B recorded in TRANSPORT_BODY_LIMIT/MEASUREMENT.json is discovery-context (first live refusal at tip 95f25b33); the reproducible envelope measured here (1,519,534 B) sits inside the recorded rebuild-variant span 1,518,018-1,526,171 B recorded in feedback 97b871b5"
+  },
+  "py_compile": "clean (all three source files compile)",
+  "not_claimed": [
+    "any behavior change to pinned_size semantics (F2 is documentation + test only)",
+    "re-measurement of the live catalogue import through the deployed transport (post-transition op, still NOT_CLAIMED by fleet-transport-body-limit-01)",
+    "lead review / integration acceptance"
+  ]
+}

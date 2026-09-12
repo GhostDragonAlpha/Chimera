@@ -1,0 +1,49 @@
+{
+ "plane": "card",
+ "record": {
+  "plane": "card",
+  "id": "MAT-02",
+  "domain": "MAT",
+  "title": "Constitutive capability matrix",
+  "status": "PROPOSED",
+  "depends_on": [
+   "MATH-01",
+   "GOV-03",
+   "MAT-01"
+  ],
+  "source": {
+   "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\import-5199\\docs\\roadmap\\holodeck_tasks.json",
+   "index": 25
+  },
+  "content_sha256": "c81cdfb8e4964198fad5a49872b1d28b8f63e1089081a2a01ee5f69181d564c8",
+  "card": {
+   "id": "MAT-02",
+   "title": "Constitutive capability matrix",
+   "domain": "MAT",
+   "kind": "engineering",
+   "status": "PROPOSED",
+   "owner": null,
+   "depends_on": [
+    "MATH-01",
+    "GOV-03",
+    "MAT-01"
+   ],
+   "mathematics": "isotropy; orthotropy; state variables; model domains",
+   "statement": "Explicit supported model and required-parameter registry",
+   "prediction": "Missing inputs prevent unsupported capability claims",
+   "falsifier": "Density and one modulus are assumed sufficient for every response",
+   "deliverables": [
+    "Explicit supported model and required-parameter registry",
+    "Independent reference/benchmark and executed negative controls appropriate to this scope",
+    "Reproduction commands, source identity, preserved evidence and limitations",
+    "Integration contract and full autonomous handoff"
+   ],
+   "threshold_policy": "Derive the fixture-specific bound or ratify product target before implementation tests; preserve existing frozen gates; a catalogue prediction is not a preregistered numeric certificate.",
+   "write_scope": "UNRESERVED: coordinator must assign exact exclusive paths before implementation.",
+   "evidence": [],
+   "dyad": "REQUIRED when integrated changes affect visible behavior; GLM operates the documented image/question workflow. Reference-only or source-only scope records NOT_APPLICABLE with reason."
+  }
+ },
+ "digest": "b9d32319b43a03bbb713f1a4e6120f24065839f15383b0729fb587ba04f9000a",
+ "imported_revision": 651
+}

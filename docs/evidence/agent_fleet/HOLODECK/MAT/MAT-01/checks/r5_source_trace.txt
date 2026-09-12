@@ -1,0 +1,43 @@
+R5 DEPLOYED-SOURCE TRACE (base 4812b55b) -- card prediction judged against the deployed text
+(a) THE CONSTRUCTION DOOR: validation at construction
+  MaterialProperty.__post_init__ at line 145; 'THE DOOR' comment at line 146; _validate_property def at line 209
+    145: def __post_init__(self) -> None:
+    146: # THE DOOR (2026-09-06, found by P-8c/d/e): validation happens at
+    147: # CONSTRUCTION, not only at add() -- the 2026-09-06 run showed a bare
+    148: # MaterialProperty(psi / negative / NaN) bypassed the record gate.
+    149: # A property cannot exist unvalidated in this contract.
+    150: _validate_property(self)
+    151: 
+(b) THE BOUNDARY + FAMILY-GATED CONVERSION (validate before identity)
+  'def convert' at lines [83]
+  'VALIDATE BEFORE IDENTITY' at lines [85]
+  'def register' at lines [338]
+  'def record' at lines [345]
+  'def get' at lines [355, 517]
+  'def _validate_record' at lines [293]
+    83: def convert(value: float, unit_from: str, unit_to: str) -> float:
+    84: u, v = _norm_unit(unit_from), _norm_unit(unit_to)
+    85: # VALIDATE BEFORE IDENTITY (G01-R2, P-8n): the registry lookup gates every
+    86: # call. The old code returned on `u == v` FIRST, so convert(1, "bogus",
+    87: # "bogus") silently "converted". Same-unit identities inside a registered
+    88: # family still convert (checked after the gates below).
+    89: fam_from = fam_to = None
+    90: for fam, table in _UNIT_FAMILIES.items():
+    91: if u in table:
+    92: fam_from = fam
+    93: if v in table:
+    94: fam_to = fam
+    95: if fam_from is None:
+(c) THE DECLARED BASIS + REAL CALLERS
+  density_from_sg at line 384
+    384: def density_from_sg(self, material: str, basis_kg_m3: float,
+    387: basis. Without it: MISSING_BASIS (P-8i). With it: a DERIVED value
+    392: # a number -- SG->density without stated conditions is a MISSING_BASIS
+    398: RefusalKind.MISSING_BASIS,
+    399: "SG -> density derivation requires the declared reference "
+  membrane_window_demo.py contract_gamma at line 240; admission_path record at line 284
+    284: "admission_path": "MaterialProperty.__post_init__ gate -> "
+    285: "MaterialRecord.add -> MaterialContract.register "
+    286: "-> bind -> Binding.get(as_unit='J/m^2')",
+  elastic_foundation/materials.py: MaterialReason at 26, ElasticMaterial2D (frozen) at 38, named refusal example POISSON_RATIO_NOT_MEASURED at 32
+R5 VERDICT: 3/3 real-caller gate families present at base (threshold 3/3)

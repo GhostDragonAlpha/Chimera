@@ -1,0 +1,85 @@
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  1>Checking Build System
+  Compiling compute.glsl -> compute.glsl.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/compute.glsl
+  Compiling floor.frag -> floor.frag.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/floor.frag
+  Compiling floor.vert -> floor.vert.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/floor.vert
+  Compiling frost_decode.comp -> frost_decode.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/frost_decode.comp
+  Compiling gait.comp -> gait.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/gait.comp
+  Compiling hinge.comp -> hinge.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/hinge.comp
+  Compiling joints.comp -> joints.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/joints.comp
+  Compiling membrane_demo.comp -> membrane_demo.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/membrane_demo.comp
+  Compiling render.frag -> render.frag.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render.frag
+  Compiling render.vert -> render.vert.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render.vert
+  Compiling render_tri.frag -> render_tri.frag.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render_tri.frag
+  Compiling render_tri.vert -> render_tri.vert.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render_tri.vert
+  Compiling render_tri_edge.frag -> render_tri_edge.frag.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render_tri_edge.frag
+  Compiling render_tri_frost.frag -> render_tri_frost.frag.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render_tri_frost.frag
+  Compiling render_tri_shadow.frag -> render_tri_shadow.frag.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render_tri_shadow.frag
+  Compiling render_tri_shadow.vert -> render_tri_shadow.vert.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/render_tri_shadow.vert
+  Compiling skin.comp -> skin.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/skin.comp
+  Compiling sort.comp -> sort.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/sort.comp
+  Compiling ui.frag -> ui.frag.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/ui.frag
+  Compiling ui.vert -> ui.vert.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/ui.vert
+  Compiling volp.comp -> volp.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/volp.comp
+  Compiling water_color.comp -> water_color.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/water_color.comp
+  Compiling water_depth.comp -> water_depth.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/water_depth.comp
+  Compiling water_occ.comp -> water_occ.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/water_occ.comp
+  Compiling water_vis.comp -> water_vis.comp.spv
+  E:/ChimeraWork/slot-02/ChimeraEngine/engine/shaders/water_vis.comp
+  Building Custom Rule E:/ChimeraWork/slot-02/ChimeraEngine/engine/CMakeLists.txt
+  Building Custom Rule E:/ChimeraWork/slot-02/ChimeraEngine/engine/CMakeLists.txt
+  main.cpp
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\main.cpp(191,5): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+  engine.cpp
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\istream(700,13): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+  (compiling source file '../../ChimeraEngine/engine/engine.cpp')
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\istream(700,13):
+      the template instantiation context (the oldest one first) is
+          C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\istream(736,75):
+          see reference to class template instantiation 'std::basic_istream<char,std::char_traits<char>>' being compiled
+          C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\istream(696,33):
+          while compiling class template member function 'std::fpos<_Mbstatet> std::basic_istream<char,std::char_traits<char>>::tellg(void)'
+              E:\ChimeraWork\slot-02\ChimeraEngine\engine\engine.cpp(310,19):
+              see the first reference to 'std::basic_istream<char,std::char_traits<char>>::tellg' in 'read_file'
+  
+  physics.cpp
+  http_server.cpp
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\http_server.cpp(74,5): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+  ui.cpp
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xstring(3410,9): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+  (compiling source file '../../ChimeraEngine/engine/ui.cpp')
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xstring(3410,9):
+      the template instantiation context (the oldest one first) is
+          E:\ChimeraWork\slot-02\ChimeraEngine\engine\ui.cpp(107,19):
+          see reference to function template instantiation 'std::basic_istream<char,std::char_traits<char>> &std::operator >><char,std::char_traits<char>,std::allocator<char>>(std::basic_istream<char,std::char_traits<char>> &,std::basic_string<char,std::char_traits<char>,std::allocator<char>> &)' being compiled
+  
+  vulkan_surface_win32.cpp
+E:\ChimeraWork\slot-02\ChimeraEngine\engine\platform\vulkan_surface_win32.cpp(58,5): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc [E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\chimera_engine.vcxproj]
+  Generating Code...
+  chimera_engine.vcxproj -> E:\ChimeraWork\slot-02\.tmp\engine_build_shutdown_test\Release\chimera_engine.exe
+  Building Custom Rule E:/ChimeraWork/slot-02/ChimeraEngine/engine/CMakeLists.txt

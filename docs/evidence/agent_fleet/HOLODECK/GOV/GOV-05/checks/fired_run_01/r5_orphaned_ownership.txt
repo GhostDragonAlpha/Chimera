@@ -1,0 +1,11 @@
+R5 ORPHANED OWNERSHIP (card falsifier clause 2: "orphaned
+ownership changes task truth") — model must REJECT — threshold
+4/4
+
+(a) fail -> RECOVERY_HOLD gen 2; orphan mutate at gen 1: (REFUSED, 'stale_or_foreign_claim'): OK
+(b) recover with held resource: (REFUSED, 'resources_still_held'); state unchanged: OK
+(c) recover on RUNNING task: (REFUSED, 'not_recovery_hold'); unchanged: OK
+(d) orphan gen-1 mutate after recover+re-claim: (REFUSED, 'stale_or_foreign_claim'); new owner 'bob' at gen 4 (deployed chain: fail +1 [control.py:140], recover +1 [control.py:646], claim +1 [control.py:554] from the claim-time gen 1); preserved provision 't1': OK
+  NOTE: PREREG text predicted "old+2" for the new claimant generation; the deployed monotone chain gives old+3 (= 4 from claim-time gen 1). The model implements the deployed chain; the prereg expectation text is corrected here and disclosed in RESULT.md (a prereg arithmetic slip, not a model or deployed-contract defect; the card falsifier is unaffected — the orphan cannot write at ANY stale generation).
+
+CARD FALSIFIER CLAUSE 2 in the reference model: NOT reproduced (orphaned ownership cannot change task truth) -> HOLDS

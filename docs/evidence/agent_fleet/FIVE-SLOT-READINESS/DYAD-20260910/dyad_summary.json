@@ -1,0 +1,38 @@
+{
+ "what": "FIVE-SLOT-READINESS-01 deferred DYAD review (GLM-GPU-DEMO-03 procedure), run after the operator loaded a vision model in LM Studio",
+ "utc": "2026-09-10",
+ "served_model": "qwen3.8-27b-nvfp4-mtp (resident in LM Studio)",
+ "method": "ONE image per senses.watch_one call; NON-LEADING questions; physical briefing + recorded run facts supplied; observations kept separate from numerical facts",
+ "runs": {
+  "slot-03": {
+   "run_dir": "20260910T015238.101816Z",
+   "evidence": "DYAD-20260910/slot-03_review.json"
+  },
+  "slot-04": {
+   "run_dir": "20260910T015600.626632Z",
+   "evidence": "DYAD-20260910/slot-04_review.json"
+  },
+  "slot-05": {
+   "run_dir": "20260910T020453.603679Z",
+   "evidence": "DYAD-20260910/slot-05_review.json"
+  }
+ },
+ "image_sha256_sets": {
+  "gpu_demo_raised_gamma0": [
+   "bdb59851db1cea717887e69d0f7604f5352722641f6e6d3be68c81b59380bb44"
+  ],
+  "gpu_demo_final_relaxed": [
+   "56e16672eb84e6710f00807a9ee933baa25d57643a6917cc32b79e9c6d0463bc"
+  ]
+ },
+ "note": "raised_gamma0.png and final_relaxed.png are each BYTE-IDENTICAL across the three runs (same B2 fixture, same camera phi 0.35 / radius 3.0, deterministic render) -> image hash equality is the cross-check that the three slots rendered the same two states",
+ "dyad_findings": {
+  "gpu_demo_final_relaxed": "all three reports: one flat hexagonal membrane, wire spokes converge at centre, centre appears coplanar with rim -> CONSISTENT with terminal state (E=2.59807611 J, centre near rim); residual offset explicitly NOT resolvable by eye (~10^-7 m << pixel) at phi 0.35",
+  "gpu_demo_raised_gamma0": "reports: a peaked tent read (apex over the rim line), so the raised initial state (centre +0.125 m) is qualitatively supported; magnitude readings spread across runs (resolvable-qualitatively / uncertain / uncertain-with-positive-evidence) because the near-edge-on camera strongly foreshortens vertical offsets; no report contradicted the recorded state"
+ },
+ "not_claimed": {
+  "human_acceptance": true,
+  "quantitative_offset_by_eye": true
+ },
+ "operator_action_complete": "vision model loaded; DYAD phase executed; this is the deferred phase closure of the slot 03/04/05 BLOCKED checkpoints"
+}

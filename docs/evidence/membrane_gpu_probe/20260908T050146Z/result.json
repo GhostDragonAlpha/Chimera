@@ -1,0 +1,36 @@
+{
+  "schema": "chimera-membrane-linux-install-v1",
+  "utc": "20260908T050146Z",
+  "source_commit": "9472ee331c8be4700ec65b9a05b694b904348b2d",
+  "branch": "astra/gait-capture",
+  "platform": "WSL2 Ubuntu",
+  "preregistered": {
+    "statement": "The same membrane verification pipeline runs on Linux.",
+    "prediction": "CPU, build, and Vulkan comparison pass with unchanged fixtures and numerical tolerances.",
+    "falsifier": "Any failed comparison, invalid output, build failure, or unavailable execution stage prevents a Linux PASS."
+  },
+  "install": {
+    "state": "BLOCKED",
+    "command": "sudo -n apt-get update && sudo -n apt-get install -y cmake libvulkan-dev glslc python3-venv && python3 -m venv .venv-linux && .venv-linux/bin/python -m pip install --disable-pip-version-check --no-input numpy",
+    "raw": "install_attempt.txt",
+    "reason": "sudo: a password is required"
+  },
+  "inventory": {
+    "cmake": "MISSING",
+    "glslc": "MISSING",
+    "vulkan_headers": "MISSING",
+    "python_numpy": "MISSING",
+    "vulkan_loader": "PRESENT",
+    "vulkaninfo": "PRESENT",
+    "device": "llvmpipe (LLVM 20.1.2, 256 bits)",
+    "device_type": "CPU/software Vulkan",
+    "vulkan_api": "1.4.318"
+  },
+  "verification": {
+    "cpu_reference": "NOT_TESTED",
+    "build": "NOT_TESTED",
+    "gpu_comparison": "NOT_TESTED",
+    "engine_window": "NOT_TESTED"
+  },
+  "system_changes": "NONE"
+}

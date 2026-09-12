@@ -1,0 +1,33 @@
+MEASUREMENT — dyad-template-hardening-01 (generation 3, slot 6, subagent-worker-08)
+
+Branch astra/tasks/dyad-template-hardening-01: record base bf9d532b reconciled to
+astra/gait-capture tip 4c319997 (fast-forward merge, no conflicts) -> PREREGISTRATION
+(edc8786a) -> implementation -> evidence. CPU only throughout: no engine run, no model
+load, no GPU resource, no live control-plane ops beyond this task's own claim/checkpoint.
+
+RUN TABLE (actuals; commands verbatim)
+
+| run | command | result |
+|---|---|---|
+| unit: reviewed provider contract | python tools/test_dyad_provider.py | Ran 14 tests — OK (14/14, unchanged) |
+| unit: NEW hardening suite | python tools/dyad_subagent_template_tests.py | Ran 16 tests — OK (16/16) |
+| full fleet discover (runs A, B, C) | python -m unittest discover -s tools/agent_fleet -p 'test_*.py' | 231 tests; A: 2 failures + 1 skipped; B: 1 failure; C: 1 failure — all in tools/agent_fleet/test_capture_window.py (see RUN_FLEET_DISCOVER.txt) |
+| flake isolation, clean tip | unittest tools.agent_fleet.test_capture_window at 4c319997 (throwaway detached worktree) | OK 28/28 |
+| flake isolation, this branch | python -m unittest tools.agent_fleet.test_capture_window | OK 28/28 |
+| doc lint (staged, per commit) | python tools/doc_lint.py --staged | clean |
+| live demo, blind plan | plan --spec request_spec_source.json (blind seed 7) | prompt sha a751df5e..., unblinding sha-recorded, frames listed #1 frame_c #2 frame_a #3 frame_b, states absent from prompt |
+| live demo, default plan | plan --spec request_spec_source_default.json (no blind key) | frames #1 frame_a #2 frame_b #3 frame_c, states PRESENT (pre-hardening behavior intact) |
+| live demo, blind assemble | assemble through the same spec | verdict NOT_CLAIMED (conclusion unclear), numeric mentions tagged, response exact_prompt == blind prompt bytes, unblinding map verified byte-exact |
+
+Full-suite flake disposition: the capture-window failures are load-sensitive window
+fixtures whose failing test NAME varies between runs of the SAME code; the module passes
+28/28 in isolation at BOTH the tip and this branch; tools/agent_fleet/ imports nothing
+from tools/dyad_subagent_template.py (grep empty). Pre-existing, not a regression of this
+lane; the preregistered falsifier "provider-contract weakening" is measured by
+test_dyad_provider.py, which passed 14/14.
+
+BYTE-IDENTITY NOTE: retained exact_prompt / request_spec artifacts keep the pre-hardening
+text-mode transport (platform newline translation is not part of the prompt contract; the
+PROMPT STRING is pinned byte-exact by the golden literal + independent-construction
+tests). The unblinding map is written BYTE-EXACT (write_bytes) so the recorded
+unblinding_sha256 equals a plain sha256 of the retained file on every platform.

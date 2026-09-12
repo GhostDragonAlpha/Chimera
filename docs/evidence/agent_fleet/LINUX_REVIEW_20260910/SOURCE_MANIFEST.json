@@ -1,0 +1,26 @@
+{
+  "source_commit": "cf27528166b7df1e20ddf474396624c8bf7f63a3",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.39",
+  "source_sha256": {
+    "tools/agent_fleet/inventory.py": "4f56ddbb72c96f6f6a2057eb9d59cdf69dfb6f85ee00f1c636ee8236d375919b",
+    "tools/agent_fleet/slot02_parallel.py": "19197570f4440374883373d510059c0d4a68f34caf3c2e90b02278c0f499a8c8",
+    "tools/agent_fleet/provision_slot.py": "26c06035c6557d663e5a5cbe64f823d2a13eba0b50a42602730b1e20537897c1",
+    "tools/agent_fleet/worker_step.py": "6b25fc7be40a8c3ada88dc4086c9514fd0a5431f4df3a2c23cec3890522b6917",
+    "tools/agent_fleet/test_bootstrap.py": "c9a9802ff81ae1be9054822d643f6806306e7595fcaec2319b56fc8e8f7696a1",
+    "tools/agent_fleet/publish.py": "62e1e6fd5b02a360238b43313646aa4c20d4e4d4fc923dbc536e86093d390a21",
+    "tools/agent_fleet/test_bootstrap_fleet.py": "36750e3274ffea802c1be0f3ea884eaf01203217f74b202ca0c0481fda0b94b4",
+    "tools/agent_fleet/bootstrap_fleet.py": "c695c6b487a014c5a9b78b9677bbc2cddd9f29b1ca3450a41b29773b0cdc33b3",
+    "tools/agent_fleet/control.py": "0f60cc58b845ea0b9b857c9322edc54704b75f665904b2aae62406367a23416d",
+    "tools/agent_fleet/layout.py": "d3ad8ce6596c621577bfd2070a945098abfbd5d919f738238fb1d3b85c369f74",
+    "tools/agent_fleet/slot01_e2e.py": "ec64089ba0ba21d308cff4dcc882993c024a8ca9d1c8919e72dcb3791b7eaa5c",
+    "tools/agent_fleet/demo_live.py": "8853b56234ff98a3084b9d808ab53086751b82babebec600f2a44971ea4073b5",
+    "tools/agent_fleet/enroll_agent.py": "7f447b15fe5ac3c7a6cb624cf969970c0e08b10e0993a23d85ca17befdcbc056",
+    "tools/agent_fleet/client.py": "7c860afcfd8c5d45564439d9647756b1b9ea4117150817d5d2e6645105fe394d",
+    "tools/agent_fleet/service.py": "dec9f9dd4c3c8888f5bef1c6d7befe42a3a9410e6a8dd8f39ed808da86730e54",
+    "tools/agent_fleet/test_control.py": "c37c0fa828fa9ecaf17cf74a0fefb6d439d0d232b013e78d0839b780a5b08a69",
+    "tools/agent_fleet/test_resources.py": "ec8a5017d8731d0a0ebfa1745f0c4749cbb7ec12d76e5fc8185a7f91606eabfa",
+    "tools/agent_fleet/five_slot_coordination.py": "7b39b36f90625bda0254d1fe9eff444d4af6616519d47102742801cd87fbfdd9"
+  },
+  "scope": "Offline Linux review. All service/DB/Git experiments are isolated synthetic fixtures; no user Windows endpoint or production registry contacted."
+}

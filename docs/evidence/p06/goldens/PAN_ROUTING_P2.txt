@@ -1,0 +1,23 @@
+# golden PAN-P2 — R-drag PANS and leaves theta/phi untouched (proposed patch,
+#   BP-PAN; source of arithmetic: engine.cpp:205-231 @ cececb23, pan math at
+#   :226-227 verbatim)
+# PROOF: with g_drag_button == 2 a captured move reaches the (previously dead)
+#   pan arm: pan_x/pan_y change, theta/phi stay at defaults exactly.
+mode ui 0
+mode console 0
+> rdown 200 200
+|
+! captured 1
+! calls capture:on
+> move 205 202
+> move 210 204
+|
+! cam pan_x -0.2
+! cam pan_y 0.08
+! cam theta 0
+! cam phi 0.3
+! calls <none>          # a captured pan move records no host call
+> rup
+|
+! captured 0
+! calls capture:off

@@ -1,0 +1,7 @@
+R3 CHAIN + AUTHORITY GATES (deployed-mirroring) — threshold 3/3
+
+(a) dyad without same-holder GPU: (REFUSED, 'dyad_requires_gpu_reservation'); dyad stays MISSING (record absent)
+(b) self-qualification: (REFUSED, 'supervisor_only'); qualified still False
+(c) qualify without evidence text: (REFUSED, 'missing_qualification_evidence'); qualified still False
+
+R3 verdict: HOLDS (3/3)

@@ -1,0 +1,196 @@
+{
+  "what": "GLM-FREEZE verification results",
+  "utc": "2026-09-08T02:58:10.508054+00:00",
+  "numpy": "2.2.6",
+  "fixtures": [
+    {
+      "fixture": "b2",
+      "checks": {
+        "V1_artifact_hashes_shapes_dtypes": true,
+        "V1b_numpy_version_matches_generation": true,
+        "V2_csr_coverage_and_order": true,
+        "V2b_manifest_analytic_bitwise_reproducible": true,
+        "V3_bitwise_reload_reproducibility": true,
+        "V4_independent_scatter_within_eps64_bound": true,
+        "V5_asmref_bitwise_and_f32_rounding_bound": true,
+        "V6_zero_gamma_numerically_zero": true,
+        "V7_gamma2_bitwise_double_of_gamma1": true,
+        "V8_analytic_within_preregistered_allowances": true,
+        "V9_budgets_bitwise_recompute_and_eta5_contract": true
+      },
+      "details": {
+        "V1_artifact_hashes_shapes_dtypes": {
+          "files_checked": 29,
+          "mismatches": 0
+        },
+        "V1b_numpy_version_matches_generation": {
+          "generated_with": "2.2.6",
+          "verifying_with": "2.2.6"
+        },
+        "V2_csr_coverage_and_order": {
+          "nV": 7,
+          "nF": 6,
+          "segments_ascending": true
+        },
+        "V2b_manifest_analytic_bitwise_reproducible": {
+          "A_manifest": 2.625,
+          "A_recomputed": 2.625,
+          "F_manifest": -0.42857142857142844,
+          "F_recomputed": -0.42857142857142844
+        },
+        "V3_bitwise_reload_reproducibility": {
+          "gamma0": true,
+          "gamma1": true,
+          "gamma2": true
+        },
+        "V4_independent_scatter_within_eps64_bound": {
+          "max_excess_over_bound": {
+            "gamma0": 0.0,
+            "gamma1": -3.1720656704868876e-17,
+            "gamma2": -6.344131340973775e-17
+          }
+        },
+        "V5_asmref_bitwise_and_f32_rounding_bound": {
+          "gamma0": true,
+          "gamma1": true,
+          "gamma2": true
+        },
+        "V6_zero_gamma_numerically_zero": {
+          "energy": 0.0,
+          "max_abs_force": 0.0
+        },
+        "V7_gamma2_bitwise_double_of_gamma1": {
+          "energy1": 2.6249999533666486,
+          "energy2": 5.249999906733297,
+          "ratio": 2.0
+        },
+        "V8_analytic_within_preregistered_allowances": {
+          "per_case": {
+            "gamma0": true,
+            "gamma1": true,
+            "gamma2": true
+          },
+          "dev_centre_z_gamma1": 7.849060290610055e-11,
+          "allow_z_gamma1": 1e-06,
+          "area_dev_gamma1": 4.663335140264735e-08,
+          "allow_area_gamma1": 9.36375259151094e-07
+        },
+        "V9_budgets_bitwise_recompute_and_eta5_contract": {
+          "eta5": 2.9802331269482156e-07,
+          "eta11": 6.556515224079339e-07,
+          "budget_centre_gamma1_N": [
+            5.108971125521438e-07,
+            5.899331493963422e-07,
+            1.2772427369714252e-07
+          ],
+          "budget_max_rim_gamma1_N": [
+            5.1621881404427424e-08,
+            4.470586034713575e-08,
+            4.257475070902852e-09
+          ]
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "fixture": "fan12",
+      "checks": {
+        "V1_artifact_hashes_shapes_dtypes": true,
+        "V1b_numpy_version_matches_generation": true,
+        "V2_csr_coverage_and_order": true,
+        "V2b_manifest_analytic_bitwise_reproducible": true,
+        "V3_bitwise_reload_reproducibility": true,
+        "V4_independent_scatter_within_eps64_bound": true,
+        "V5_asmref_bitwise_and_f32_rounding_bound": true,
+        "V6_zero_gamma_numerically_zero": true,
+        "V7_gamma2_bitwise_double_of_gamma1": true,
+        "V8_analytic_within_preregistered_allowances": true,
+        "V9_budgets_bitwise_recompute_and_eta5_contract": true
+      },
+      "details": {
+        "V1_artifact_hashes_shapes_dtypes": {
+          "files_checked": 29,
+          "mismatches": 0
+        },
+        "V1b_numpy_version_matches_generation": {
+          "generated_with": "2.2.6",
+          "verifying_with": "2.2.6"
+        },
+        "V2_csr_coverage_and_order": {
+          "nV": 13,
+          "nF": 12,
+          "segments_ascending": true
+        },
+        "V2b_manifest_analytic_bitwise_reproducible": {
+          "A_manifest": 3.025015937270828,
+          "A_recomputed": 3.025015937270828,
+          "F_manifest": -0.3986000044111834,
+          "F_recomputed": -0.3986000044111834
+        },
+        "V3_bitwise_reload_reproducibility": {
+          "gamma0": true,
+          "gamma1": true,
+          "gamma2": true
+        },
+        "V4_independent_scatter_within_eps64_bound": {
+          "max_excess_over_bound": {
+            "gamma0": 0.0,
+            "gamma1": -1.4751162162366253e-17,
+            "gamma2": -2.9502324324732507e-17
+          }
+        },
+        "V5_asmref_bitwise_and_f32_rounding_bound": {
+          "gamma0": true,
+          "gamma1": true,
+          "gamma2": true
+        },
+        "V6_zero_gamma_numerically_zero": {
+          "energy": 0.0,
+          "max_abs_force": 0.0
+        },
+        "V7_gamma2_bitwise_double_of_gamma1": {
+          "energy1": 3.0250158834242775,
+          "energy2": 6.050031766848555,
+          "ratio": 2.0
+        },
+        "V8_analytic_within_preregistered_allowances": {
+          "per_case": {
+            "gamma0": true,
+            "gamma1": true,
+            "gamma2": true
+          },
+          "dev_centre_z_gamma1": 5.891775956001766e-11,
+          "allow_z_gamma1": 2e-06,
+          "area_dev_gamma1": 5.3846550329694765e-08,
+          "allow_area_gamma1": 1.8727505183021885e-06
+        },
+        "V9_budgets_bitwise_recompute_and_eta5_contract": {
+          "eta5": 2.9802331269482156e-07,
+          "eta11": 6.556515224079339e-07,
+          "budget_centre_gamma1_N": [
+            1.3004590044790298e-06,
+            1.3004590044790298e-06,
+            2.6134269497160033e-07
+          ],
+          "budget_max_rim_gamma1_N": [
+            5.2115886270909616e-08,
+            5.2115886270909616e-08,
+            1.9798678322284156e-09
+          ]
+        }
+      },
+      "all_pass": true
+    }
+  ],
+  "corrupt_control": {
+    "control": "corner_order_corruption_b2_gamma1",
+    "detected": true,
+    "failed_checks": [
+      "V3_bitwise_reload_reproducibility",
+      "V4_independent_scatter_within_eps64_bound",
+      "V5_asmref_bitwise_and_f32_rounding_bound",
+      "V7_gamma2_bitwise_double_of_gamma1",
+      "V9_budgets_bitwise_recompute_and_eta5_contract"
+    ]
+  }
+}

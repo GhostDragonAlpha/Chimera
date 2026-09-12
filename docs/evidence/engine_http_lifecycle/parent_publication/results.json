@@ -1,0 +1,62 @@
+[
+  {
+    "mode": "quiet",
+    "pid": 34216,
+    "exit_code": 0,
+    "watchdog": false
+  },
+  {
+    "mode": "partial_header",
+    "pid": 26312,
+    "exit_code": 0,
+    "watchdog": false
+  },
+  {
+    "mode": "partial_body",
+    "pid": 43256,
+    "exit_code": 0,
+    "watchdog": false
+  },
+  {
+    "mode": "local",
+    "pid": 39544,
+    "exit_code": 0,
+    "watchdog": false
+  },
+  {
+    "mode": "blocked_send",
+    "pid": 37852,
+    "exit_code": 0,
+    "watchdog": false
+  },
+  {
+    "mode": "finite_callback",
+    "pid": 24432,
+    "exit_code": 0,
+    "watchdog": false
+  },
+  {
+    "mode": "cycles",
+    "pid": 42204,
+    "exit_code": 0,
+    "watchdog": false
+  },
+  {
+    "mode": "mutation_gate",
+    "pid": 42800,
+    "exit_code": 0,
+    "watchdog": false
+  },
+  {
+    "mode": "start_failure",
+    "pid": 35812,
+    "exit_code": 0,
+    "watchdog": false
+  },
+  {
+    "mode": "destructor",
+    "pid": 4952,
+    "exit_code": 0,
+    "watchdog": false
+  }
+]

@@ -1,0 +1,1 @@
+FINITE_CALLBACK entered=yes released=yes joined=yes before_release_joinable=yes

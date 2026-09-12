@@ -1,0 +1,55 @@
+{
+  "base_commit": "0b4e7dd019be585d30714b32231ac820d84f3ec9",
+  "files": {
+    "ChimeraEngine/ONBOARDING.md": {
+      "sha256_crlf_normalized_to_lf": "bba02e8273c36b3fc4cee1dd57a2f4c85d965bf22889506fb4bc9ed7ab53e7dc",
+      "sha256_raw": "297f93ef48d05c7608c0586ab8db1c1327677cab673a74611dc5f4941c8fe3af",
+      "size_bytes": 15206
+    },
+    "ChimeraEngine/engine_state.py": {
+      "sha256_crlf_normalized_to_lf": "c1a5f5781489b91488bcbf5777e822868f4d2c673da917d0af026c385596c01d",
+      "sha256_raw": "1dffea21d1888dbeb00fa5a8d3f8d2e3dd70326e01aa778d5fd2a0e56e00231a",
+      "size_bytes": 34356
+    },
+    "ChimeraEngine/mcp_server.py": {
+      "sha256_crlf_normalized_to_lf": "d9944a0275ebea4687f665dc1b10d96d9ca13a9789c3645d56b5f6cb3483303c",
+      "sha256_raw": "3a505601753b21853437cbada39f2301249501fdd7803655d711fb401d89cc59",
+      "size_bytes": 14413
+    },
+    "PREREGISTRATION.md": {
+      "sha256_crlf_normalized_to_lf": "9e654daffc25695d6e3c4c77c0d3abf2aac0046f739a79f296e4e9c88e165564",
+      "sha256_raw": "14a29d15234c35aa74396326d54f6e7677e91b51dff4532080e8593b0e030565",
+      "size_bytes": 2123
+    },
+    "docs/THE_HIERARCHY_CONTINUATION.md": {
+      "sha256_crlf_normalized_to_lf": "bcca35e32fb60a33362f0bafd4bc7d75ebe476efc62bc61355433549840fda13",
+      "sha256_raw": "d1a5be581c1fd86b5fa1145bc35fbefb2c0acfaa470a7f50918ac0fdbc892062",
+      "size_bytes": 834
+    },
+    "docs/evidence/agent_fleet/HIERARCHY_CONTINUATION/CURRENT_RESULT.md": {
+      "sha256_crlf_normalized_to_lf": "e8b5b9f0d8c275f0125d56b5bf58ee39d441192830a6c9b0146ef2463dfdbe93",
+      "sha256_raw": "4aee9aa1350910eea0337f6f5618190901033261fbb1f1f6ffa16455a37c7092",
+      "size_bytes": 1627
+    },
+    "docs/evidence/agent_fleet/HIERARCHY_CONTINUATION/SUPERSEDED_NOTICE.md": {
+      "sha256_crlf_normalized_to_lf": "1ddcdbe92ae25f38f3af58755aca7be91cc06751a20746123887df1eca6e42cd",
+      "sha256_raw": "8d50cb3e830ba321ba248f681b6dfdaf83393d295a79c9107dd4794cb3e9c412",
+      "size_bytes": 868
+    },
+    "final_tests.log": {
+      "sha256_crlf_normalized_to_lf": "a5b75955ff668f8a2dd7c80cedf397b4c9064fb14df43c32d2f7a4d1f78362e6",
+      "sha256_raw": "02b245d2a20eeb024400ae681239a79e07358171939c17b38acac252251e5e51",
+      "size_bytes": 1682
+    },
+    "tools/orient.py": {
+      "sha256_crlf_normalized_to_lf": "3d899219c8cb277a8bc7be11bf53c9d10e2b31f569f0bca57a3368c127a01345",
+      "sha256_raw": "8a5fe4219bb34f536639d7546c798a9e460e993f3c66efceab53b8153a9a7b66",
+      "size_bytes": 8716
+    },
+    "tools/test_orient_continuation.py": {
+      "sha256_crlf_normalized_to_lf": "8a5bbe1449dad5526df995008940e471fc4e14023154aece0796a1cf9b57d794",
+      "sha256_raw": "8a5bbe1449dad5526df995008940e471fc4e14023154aece0796a1cf9b57d794",
+      "size_bytes": 11312
+    }
+  }
+}

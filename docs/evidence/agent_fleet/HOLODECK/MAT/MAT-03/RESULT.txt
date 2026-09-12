@@ -1,0 +1,211 @@
+RESULT — holodeck-mat-03 "Measured-data import" (gen 1)
+
+Agent: subagent-worker-09 (instance subagent-worker-09-a8960d274e14) ·
+slot 6 · worktree E:\ChimeraWork\slot-06 · branch
+astra/tasks/holodeck-mat-03 · base 4812b55b407107a34b708af1700e071a7eecbab4
+(HEAD at claim, provision verified HEAD==base, clean, 6249 ls-files
+entries). Claimed at controller rev 1083. CPU only; no GPU/model/engine
+process; no controller resources; the live service at 127.0.0.1:8099 was
+NEVER contacted — every deployed measurement below reads source text of the
+working tree at base. Prereg committed ALONE first at 42f605b2 (no model,
+no controls, no results in that commit).
+
+## SOURCE IDENTITY (deployed material plane, read-only reference text)
+
+All at git base 4812b55b (working tree of the provisioned slot); full
+sha256 table printed at the end of checks/r6_findings.txt:
+- tools/matter_data.py            88cc670017aa3f1e... (446 lines)
+- tools/material_contract.py      6af75efe12da4ba8... (559 lines)
+- tools/agent_fleet/control.py    7cee259b35a21ebe... (839 lines)
+- tools/agent_fleet/review_handoff.py e8f6a939b81f3525... (249 lines)
+- Chimera/docs/matter/matter_library.json (27 physical entries carry a note)
+Units backbone (dependency, cited not reimplemented, task-packet mandate):
+docs/evidence/agent_fleet/HOLODECK/MATH/MATH-01/reference/
+math01_reference_model.py de5748443e47796e...
+
+## DELIVERABLES (card deliverables 1-4)
+
+1. Versioned datasets with temperature, moisture and strain-rate
+   conditions — the reference model `reference/mat03_reference_model.py`:
+   DatasetStore.import_dataset is the ONLY path from raw data to a stored
+   dataset; all three card axes are REQUIRED context (missing_condition);
+   datasets are frozen, versions append-only (duplicate_version /
+   version_regression / bad_version gates; history order preserved).
+2. Independent reference/benchmark + executed controls — the model above
+   (independent of the audited tools/matter_data.py and
+   tools/material_contract.py; MATH-01 imported as the designated units
+   backbone and cited at every dimensional touchpoint: property values are
+   MATH-01 Quantities, conversions through its declared-only UnitRegistry,
+   sum/product composition through its exact Dimension algebra) plus
+   controls/run_controls.py (R1-R4) and controls/run_source_checks.py
+   (R5-R6); outputs in checks/*.txt; fired/crashed runs RETAINED.
+3. Reproduction commands, source identity, preserved evidence, limitations
+   — this file (commands below; identities above; limitations below).
+4. Integration contract + full autonomous handoff — see INTEGRATION
+   CONTRACT below.
+
+## PRE-RUN DEFECTS (disclosed; fired/crashed runs RETAINED; none touched a
+## preregistered threshold)
+
+- RUN 1 (harness crash, retained):
+  checks/r1_positive_imports.txt.run1-HARNESS-CRASH-record-a300-arg.txt and
+  checks/r2_missing_context_negatives.txt.run1-HARNESS-CRASH-record-a300-arg.txt
+  — the runner's R3 helper called record_a300() positionally (TypeError);
+  R1/R2 had already completed and were written. Runner fixed; R1/R2 results
+  unchanged on re-run.
+- RUN 2 (FIRED rows, retained):
+  checks/r3_falsifier_membership.txt.run2-FIRED-known-substring.txt — the
+  R3(e) structural audit used the substring "known", which matches inside
+  the gate NAMES unknown_unit/unknown_condition_unit; probe corrected to
+  "membership"/"known_source"/"provenance".
+  checks/r4_versioning_immutability.txt.run2-FIRED-wrong-target-version.txt
+  — R4(c)/(d) re-imported v1 of measured_A while its current max was v2;
+  the model correctly refused version_regression (that is R2(h)'s
+  semantics); duplicate_version needs the CURRENT-max version, so the
+  control was re-targeted at measured_new (current max v1). MODEL CORRECT
+  both times; both defects were control-side.
+- SOURCE-CHECKS RUN 1 (runner granularity, retained):
+  checks/r6_findings.txt.run1-granularity-rows.txt — the R6 runner emitted
+  10 aggregate rows instead of the preregistered 17 per-count rows (the
+  prereg registered one threshold per predicted COUNT). The single fired
+  count (control.py owner_instance: predicted == 8, measured == 9) was
+  already visible and is unchanged at preregistered granularity. Runner
+  corrected to one row per predicted count; the terminal R6 measurement is
+  16/17 with the same single fired count, disclosed below.
+- MODEL bring-up fixes BEFORE any verdict run (three retained-refusal
+  sites exercised only after the fixes): (a) the uncertainty band now
+  converts WITH the value to the canonical unit (a MPa band on a Pa value
+  would have corrupted every propagation); (b) records store the canonical
+  unit label matching the Quantity they carry; (c) the version gates order
+  version_regression (version < max) BEFORE duplicate_version (version ==
+  stored max) so that R2(h) and R4(c)/(d) are both exactly satisfied; (d)
+  the MATH-01 backbone path was off by one parent level (parents[2] ->
+  parents[3]). The PREREGISTRATION is untouched (provenance); this section
+  is the disclosure.
+
+## PREDICTION SCOREBOARD (preregistered rows)
+
+| row | prediction (fixed in PREREG before any run)                     | verdict |
+|-----|------------------------------------------------------------------|---------|
+| R1  | 8/8 legal imports: verbatim citation + content hash; affine      | HOLDS   |
+|     | 26.85 degC -> 300.0 K exact; 50 percent -> 0.5; v2 amendment     | 8/8     |
+|     | with v1 byte-identical; sum/product propagation exact;           |         |
+|     | in-envelope interpolation carrying both bracket citations        |         |
+| R2  | 8/8 missing-context refusals verbatim (blank locator; absent     | HOLDS   |
+|     | note; no temperature; no uncertainty; NaN; negative modulus;     | 8/8     |
+|     | undeclared degF; v1-after-v2), each with post-state unchanged    |         |
+| R3  | 6/6 falsifier probes: known-source-but-incomplete refused        | HOLDS   |
+|     | 3 ways; unknown-source-but-complete ADMITTED; no membership      | 6/6     |
+|     | gate exists (12 named gates); identity_mismatch fires on a       |         |
+|     | known source with a complete citation                            |         |
+| R4  | 6/6 versioning/immutability: frozen records; v1 hash stable      | HOLDS   |
+|     | after v2; duplicate re-imports refused (different AND            | 6/6     |
+|     | identical content); version 0 refused; history order preserved   |         |
+| R5  | 5/5 deployed semantics present, quoted at MEASURED lines:        | HOLDS   |
+|     | uncertainty published-or-refused (:361); a choice is not         | 5/5     |
+|     | a measurement (:79); source identity retained (:82,:87,          |         |
+|     | 27 library notes); named refusals (Uncited :44; refusal table    |         |
+|     | :14 + ContractRefusal :50); declared-only conversion (:60,:107)  |         |
+| R6  | 17/17 predicted textual counts match                             | 16/17   |
+|     |                                                                  | 1 DIS-  |
+|     |                                                                  | CLOSED  |
+|     |                                                                  | SURPRISE|
+
+## DISCLOSED SURPRISE (R6(d); prediction left unreconciled, per prereg)
+
+R6(d) row 1 FIRED: owner_instance occurrence count in
+tools/agent_fleet/control.py predicted == 8, MEASURED == 9. Cause, measured
+verbatim in checks/r6_findings.txt: control.py:121 reads
+`owner_instance=t.get('owner_instance')` — TWO occurrences on ONE line
+(the read and the fence lookup in a single statement). My prediction was
+derived from a line-count (`grep -c`) basis; the preregistered regex
+measures OCCURRENCES. All five predicted SITES are present at the exact
+predicted lines (:121-123, :323, :499-501, :554, :697) — the semantics
+prediction was correct; the counting basis was wrong. Per the prereg's own
+rule ("any miss is a DISCLOSED SURPRISE, never reconciled") the prediction
+in PREREGISTRATION.txt is left at == 8 and this paragraph is the
+disclosure.
+
+R6(d) row 2 HOLDS and is the packet's known-regression check: the PR #80
+claim-path fix IS at this base — review_handoff.py:113 binds
+`owner_instance=p.get("_resolved_instance")` (measured count 1; GOV-01
+measured 0 at d59518b9 pre-fix). No stale deviation language is carried:
+the owner_instance claim path is measured INTACT at 4812b55b.
+
+## CARD VERDICT (rule fixed in the prereg)
+
+- Card prediction "Imports retain source identity and reject missing
+  physical context" = SUPPORTED: R1-R4 reached full N/N and R5 reached
+  5/5.
+- Card falsifier "Provenance membership is represented as proof of
+  authentic measurement" = NOT REPRODUCED: R3 = 6/6 (membership does no
+  admission work in the model — structurally: GATE_ORDER carries no
+  membership gate; behaviorally: known+incomplete refused,
+  unknown+complete admitted, identity_mismatch overrides membership) AND
+  no R5/R6 measurement shows a deployed admission path gating on
+  provenance membership alone — the deployed plane's provenance gate
+  (matter_data.py:77-80) refuses NON-measured classes outright and always
+  demands the citation and spread beside the number, which is the
+  opposite of membership-as-proof.
+
+## DYAD RECORD
+
+DYAD: NOT_APPLICABLE — source-only scope. Per the card's DYAD policy
+("Reference-only or source-only scope records NOT_APPLICABLE with
+reason"): this lane produced and altered no executed runtime behavior of
+the deployed system; no image exists for the eye to judge; the engine was
+not built or run. No runtime/vision resource was reserved or consumed.
+
+## REPRODUCTION
+
+From the repository root at base 4812b55b (or any descendant that does not
+touch the files below):
+
+    cd docs/evidence/agent_fleet/HOLODECK/MAT/MAT-03
+    python controls/run_controls.py .          # R1-R4, exit 0 expected
+    python controls/run_source_checks.py .     # R5 5/5; R6 16/17 as measured
+
+Python 3.x, stdlib only (+ the integrated MATH-01 reference module by
+relative path). No network, no service contact, no GPU. Bytecode writing
+is disabled in both runners (no __pycache__ in the evidence tree).
+
+## LIMITATIONS
+
+- The reference model is the INTENDED contract, not the deployed one: the
+  deployed material plane at base has NO dataset import surface to compare
+  against (R6(b) measured \binterpolat and \bversion at 0 in both deployed
+  files) — the comparison target for the card's dataset layer is the gap
+  itself, quoted and measured, not another implementation.
+- Property families in the model are a preregistered minimal set (modulus,
+  density, surface_energy, strain); the axes are exactly the card's three.
+  Extending families is a schema declaration, not a code change, but the
+  controls exercised only the declared set.
+- Uncertainty propagation covers independent errors through + and x only
+  (the card's "uncertainty propagation" at the granularity a stdlib-only
+  model supports exactly); correlated errors are out of scope and refused
+  nowhere (they simply cannot arise from the two recorded propagators).
+- Interpolation is linear along ONE varying axis with all other axes
+  pinned; gridded multi-axis interpolation is not modeled.
+- R6 measures ONE textual base; line numbers move on any edit of the
+  audited files (the semantics rows quote measured positions).
+
+## INTEGRATION CONTRACT + HANDOFF
+
+- Scope held to docs/evidence/agent_fleet/HOLODECK/MAT/MAT-03; no deployed
+  file touched; no gate weakened; no shared file written.
+- This lane is the MAT plane's DATASET-layer seed, as MAT-01 was the
+  admission-layer seed: MAT-04/MAT-05 (and any measured-calibration lane)
+  can import DatasetStore/MeasuredDataset/interpolate/propagate_* the way
+  this lane imports MATH-01 (units backbone) — by explicit citation, never
+  by copying numbers or re-typing schemas.
+- The falsifier lesson is structural and reusable: provenance membership
+  is a METADATA registry (SourceRegistry); admission gates key on content
+  identity (identity_mismatch) + complete physical context. Any lane that
+  imports measured data should keep membership out of its gate list and
+  audit that with the GATE_ORDER pattern.
+- Dependency chain: holodeck-math-01 (units) <- this lane <- MAT-04/05.
+- Remaining gates: independent review on this branch; integration by the
+  lead's gated pipeline; DYAD remains NOT_APPLICABLE unless a future lane
+  binds the dataset layer into executed runtime behavior.
+
+Agent: subagent-worker-09

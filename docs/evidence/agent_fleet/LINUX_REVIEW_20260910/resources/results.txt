@@ -1,0 +1,17 @@
+test_benchmark_class_downgrade_without_drain (__main__.Reproductions.test_benchmark_class_downgrade_without_drain) ... ok
+test_chained_holder_overwritten (__main__.Reproductions.test_chained_holder_overwritten) ... ok
+test_fifo_bypass_on_memory_blocked_group (__main__.Reproductions.test_fifo_bypass_on_memory_blocked_group) ... ok
+test_memory_total_stale_after_release (__main__.Reproductions.test_memory_total_stale_after_release) ... ok
+test_positive_memory_capacity_and_auto_promotion (__main__.Reproductions.test_positive_memory_capacity_and_auto_promotion) ... ok
+test_split_acquisition_cycle (__main__.Reproductions.test_split_acquisition_cycle) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.034s
+
+OK
+{"case": "test_benchmark_class_downgrade_without_drain", "class_after": "gpu_functionality", "drain_calls": 0, "granted": true}
+{"after": {"class": "engine_demo", "generation": 1, "memory_mb": null, "owner": "b", "request": "baead2d6e1dfb22f", "since_revision": 18, "task": "b"}, "before": {"class": "engine_demo", "generation": 1, "memory_mb": null, "owner": "a", "since_revision": 17, "task": "a"}, "case": "test_chained_holder_overwritten", "granted": true}
+{"case": "test_fifo_bypass_on_memory_blocked_group", "gpu_owner": "c", "later_granted": true, "older_stalled": "memory_allocation_refused"}
+{"actual": 0, "case": "test_memory_total_stale_after_release", "reported": 1024}
+{"admitted_mb": 1, "auto_promoted": true, "case": "test_positive_memory_capacity_and_auto_promotion"}
+{"case": "test_split_acquisition_cycle", "pending": [{"stalled": "memory_allocation_refused", "task": "a"}, {"stalled": "contended:rtx4090", "task": "b"}]}

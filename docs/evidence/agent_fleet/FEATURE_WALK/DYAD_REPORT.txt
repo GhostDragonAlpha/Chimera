@@ -1,0 +1,30 @@
+feature-walk-01 blind judge report (SIMPLE protocol: fresh spawn, movie + six frames, three questions, no priming — spawn agent_e3689f7c by the lead per mailbox request 8c60f6b66263, 2026-09-12)
+
+VERDICT MAPPING (per the lane's request): the falsifier F1 arm — stepping
+without travel — is INDEPENDENTLY CONFIRMED by the judge ("Total distance:
+essentially zero"; "feet return to the exact same spot"; "the shadow stays
+put"). The feature is visually verified as marching-in-place; the
+root-translation engine-service gap stands.
+
+JUDGE ANSWERS, VERBATIM:
+
+1. The creature (a slender, big-headed humanoid shown in a 3D editor viewport) stands on a dark grid floor. For roughly the first half of the clip it "walks" in place — its legs alternately lift and swing like marching steps. Then, around the 12-second mark, it bends both knees and smoothly lowers itself into a deep crouch/squat, which it holds (with small pose adjustments) for the rest of the clip. Its arms hang limp at its sides throughout.
+
+2. No, it does not travel. Its position on the ground never changes — the feet return to the exact same spot on the grid with every step, and the shadow beneath it stays put from the first frame to the last. Total distance: essentially zero.
+
+3. Several things look fake:
+- The stepping produces no locomotion — legs cycle through a walking motion while the body stays anchored to one point, so it reads as marching in place on an invisible treadmill rather than actually walking.
+- The upper body is unnaturally stiff: no weight shift, no pelvic rotation, no torso bob, and the arms never counter-swing the way they do in a real walk.
+- The feet don't convincingly plant; they hover and slide over the same spot, and the contact shadow is a fixed dark blob (with spiky artifacts) that barely reacts to the changing pose.
+- The transition from stepping into the squat is perfectly smooth and symmetric, with the creature descending evenly and never adjusting for balance — it looks driven/scripted rather than physically motivated.
+
+ASSEMBLER NOTES (lead, honest record): (a) the judge read the SECOND gait
+phase (certified stride, 19.7 numeric cycles) as a "deep crouch/squat" —
+the stride plane's LBS rotations did not visually read as stepping to a
+fresh observer; recorded as a product-feel finding for the stride lane's
+followup. (b) The four fakeness findings are PRODUCT-DEFECT ROADMAP items
+(recorded to backlog): arm counter-swing, torso bob/weight shift, foot
+planting (hover-slide), and reactive contact shadow. (c) The "looks
+driven/scripted, never adjusts for balance" observation is the physics
+honesty the product aspires to FIX — gait balance is a physics-spine
+feature, not a bug to hide.

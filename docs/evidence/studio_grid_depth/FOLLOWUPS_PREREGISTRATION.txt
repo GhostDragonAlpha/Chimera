@@ -1,0 +1,76 @@
+PREREGISTRATION — studio-grid-followups-01 (generation 1, slot 5)
+
+- agent: subagent-worker-08 (host-delegated CPU/docs/python worker; lead glm53-lead-02, epoch 5)
+- base: d59518b9d9dc002cba43d071495576a236b9d498 (current astra/gait-capture tip at claim;
+  contains the integrated studio-grid-depth-01 work of PR #65 and its APPROVE_WITH_FOLLOWUPS
+  review, agent_ebcd7aa4)
+- branch: astra/tasks/studio-grid-followups-01
+- written: 2026-09-11, BEFORE any edit of this task (no actuals below)
+- scopes: docs/THE_STUDIO_GRID_DEPTH.md + docs/evidence/studio_grid_depth ONLY.
+  NO engine source changes, NO rebuilds, NO new captures, NO GPU.
+
+## What this task lands
+
+The two MINOR followups from the PR #65 review:
+
+F1 — declare the splat-view behavior in docs/THE_STUDIO_GRID_DEPTH.md. At base the 3DGS
+    splat pipeline (Engine::create_pipeline) runs with depth AND stencil OFF while
+    rendering into the same stencil-carrying offscreen scene pass (rt_render_pass_) that
+    the grid-depth contract uses; splat fragments therefore leave stencil 0 and the grid
+    twin (stencil EQUAL 0) draws through splat-covered pixels — the pre-fix
+    draw-through degradation, bounded to the splat presentation. Currently undeclared;
+    a dated section will declare it as degradation-or-out-of-scope with the exact
+    observable condition.
+
+F2 — add MANIFEST_sha256.txt to the accepted-pair dirs docs/evidence/studio_grid_depth/
+    before_glass and after (the ten tracked PNG captures each). Per-capture sidecar
+    sha256s already exist and were reviewer-verified; manifests currently exist only for
+    the retired generations (as records of removed captures). Manifests list each capture
+    and its sha256 in the retired format ("<64-hex> *<filename>"), values computed from
+    the GIT BLOBS at base d59518b9 — never recomputed from a rebuild or a new capture.
+
+## STATEMENT (theory, per RULE 0)
+
+The studio-grid-depth contract already governs exactly the behavior its implementation
+has; this lane adds no behavior and changes no engine file — it declares one bounded,
+pre-existing exception (splat view) in the contract document itself, and brings the
+accepted-pair evidence to the same integrity standard (per-dir sha256 manifests) the
+retired generations already meet. A contract that declares its own known limits is a
+theory that can lose; an undeclared gap is a description that survives anything.
+
+## PREDICTION (stated before any edit)
+
+1. The dated F1 section quotes, verbatim and with line numbers, the splat pipeline's
+   depth/stencil state at base d59518b9 — engine.cpp lines 1330 (depthTestEnable
+   VK_FALSE, 3DGS comment), 1331 (depthWriteEnable VK_FALSE), 1334 (stencilTestEnable
+   VK_FALSE), rendering into rt_render_pass_ (line 1348) — and states the observable:
+   in any view whose accepted body is drawn by this pipeline, grid lines remain visible
+   across splat-covered pixels (stencil there is 0), i.e. the pre-fix draw-through
+   degradation bounded to the splat presentation; the mesh/membrane fill views measured
+   in studio-grid-depth-01 are unaffected (their fills mark stencil 1, engine.cpp
+   1481/1485; the twin draws only at stencil EQUAL 0, ui.cpp 2988-2997).
+2. The F2 manifests for before_glass and after each list exactly the ten tracked PNG
+   captures; every sha256 equals BOTH the git blob hash at base d59518b9 AND the
+   working-tree file hash (clean tree), and agrees with the retained sidecar records
+   (records.json / records.txt / *_probe*.json) wherever those state a capture hash.
+3. Doc lint passes on every commit; no file outside the two scoped paths changes.
+
+## FALSIFIER (named before the run)
+
+- The F1 declaration CONTRADICTS the engine.cpp condition at base: any quoted line that
+  does not byte-match `git show d59518b9:ChimeraEngine/engine/engine.cpp` at the cited
+  line number, any wrong pipeline/pass attribution (e.g. claiming splats mark stencil,
+  or that the splat pipeline renders into a different pass than rt_render_pass_), or a
+  stated observable that the quoted state cannot produce.
+- A manifest sha256 that differs from the git blob at base or from the tracked file.
+- Any edit outside docs/THE_STUDIO_GRID_DEPTH.md and docs/evidence/studio_grid_depth/
+  (in particular ANY file under ChimeraEngine/), any rebuild, any new capture.
+
+## NOT_CLAIMED
+
+- No new measurement of the grid-depth contract is performed here; the F1 section
+  declares already-shipped behavior from the PR #65 state, it does not re-prove it.
+- No claim that the splat-view degradation is fixed, mitigated, or acceptable-as-good;
+  it is DECLARED (visible, bounded, named) — extending the clause to splats remains a
+  future lane's decision.
+- Human acceptance (reserved to Alan / the reviewer).

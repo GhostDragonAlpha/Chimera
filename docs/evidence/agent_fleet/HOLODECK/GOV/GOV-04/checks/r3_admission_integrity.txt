@@ -1,0 +1,10 @@
+R3 create_task validation — model must REJECT (prereg: 6/6)
+
+R3(a) non-existent dependency -> dependencies_must_exist: PASS
+R3(b) absolute scope -> invalid_scope: PASS
+R3(c) parent-escape scope -> invalid_scope: PASS
+R3(d) protected build scope (child) -> protected_build_scope: PASS
+R3(e) protected build scope (parent direction) -> protected_build_scope: PASS
+R3(f) .git metadata scope -> git_metadata_scope: PASS
+
+R3 VERDICT: 6/6 (prereg threshold 6/6)

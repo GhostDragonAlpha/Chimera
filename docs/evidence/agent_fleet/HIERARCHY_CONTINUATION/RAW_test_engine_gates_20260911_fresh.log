@@ -1,0 +1,14 @@
+command: python ChimeraEngine/tests/test_engine_gates.py
+cwd: /e/ChimeraWork/slot-03 (fresh worktree, repo root)
+  FAIL  test_prove_refuses_until_both_messengers_agree: 
+  PASS  test_render_refuses_a_term_with_no_light_view
+  PASS  test_dyad_refuses_a_render_the_human_rejects
+  PASS  test_prove_refuses_a_premature_saturation
+  PASS  test_frame_refuses_compound_claim
+  PASS  test_classify_refuses_illegal_terminal
+  PASS  test_next_starts_at_the_seed_in_story_order
+  FAIL  test_next_descends_the_started_branch_first: 
+  FAIL  test_measured_compression_beats_declared_order: 
+
+  6/9 passed
+exit_code=1

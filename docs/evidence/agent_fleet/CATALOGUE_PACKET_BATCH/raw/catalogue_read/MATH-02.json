@@ -1,0 +1,47 @@
+{
+ "plane": "card",
+ "record": {
+  "plane": "card",
+  "id": "MATH-02",
+  "domain": "MATH",
+  "title": "Linear and tensor algebra",
+  "status": "PROPOSED",
+  "depends_on": [
+   "GOV-01",
+   "MATH-01"
+  ],
+  "source": {
+   "path": "C:\\Users\\allen\\AppData\\Local\\Temp\\import-5199\\docs\\roadmap\\holodeck_tasks.json",
+   "index": 7
+  },
+  "content_sha256": "0c8211066e57b00cc3a34a61f7ebb5198f0d4a3adaae3aa11aba54d31e7c0e36",
+  "card": {
+   "id": "MATH-02",
+   "title": "Linear and tensor algebra",
+   "domain": "MATH",
+   "kind": "engineering",
+   "status": "PROPOSED",
+   "owner": null,
+   "depends_on": [
+    "GOV-01",
+    "MATH-01"
+   ],
+   "mathematics": "eigensystems; SVD; polar decomposition; Voigt conventions",
+   "statement": "Robust small-matrix primitives with conditioning diagnostics",
+   "prediction": "Reconstruction and symmetry identities hold over the declared domain",
+   "falsifier": "Silent singular inversion or inconsistent shear convention",
+   "deliverables": [
+    "Robust small-matrix primitives with conditioning diagnostics",
+    "Independent reference/benchmark and executed negative controls appropriate to this scope",
+    "Reproduction commands, source identity, preserved evidence and limitations",
+    "Integration contract and full autonomous handoff"
+   ],
+   "threshold_policy": "Derive the fixture-specific bound or ratify product target before implementation tests; preserve existing frozen gates; a catalogue prediction is not a preregistered numeric certificate.",
+   "write_scope": "UNRESERVED: coordinator must assign exact exclusive paths before implementation.",
+   "evidence": [],
+   "dyad": "REQUIRED when integrated changes affect visible behavior; GLM operates the documented image/question workflow. Reference-only or source-only scope records NOT_APPLICABLE with reason."
+  }
+ },
+ "digest": "b9d32319b43a03bbb713f1a4e6120f24065839f15383b0729fb587ba04f9000a",
+ "imported_revision": 651
+}

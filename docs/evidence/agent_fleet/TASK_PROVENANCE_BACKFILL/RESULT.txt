@@ -1,0 +1,110 @@
+RESULT - fleet-task-provenance-backfill-01 (gen 1)
+====================================================
+
+- Agent: subagent-worker-04. Slot 2, branch
+  astra/tasks/fleet-task-provenance-backfill-01, based on
+  bf1a72f6d3b6c8f84e7c7544fb0f8004d1ba86a5 (the PR #92 merge).
+- Diff surface: tools/agent_fleet/control.py (ONE new dispatch branch,
+  task_provenance_set; catalogue_next/create_task and every matching
+  rule untouched) + tools/agent_fleet/test_task_provenance.py (new, 16
+  tests) + this evidence directory. Nothing else.
+- The lane executed NO live backfill and NO deployment (falsifier F-1
+  respected by construction; execution is the lead's post-transition
+  procedure - BACKFILL_EXECUTION_PLAN.txt here).
+
+SCOREBOARD (prereg P1-P6; zero deviations):
+
+  P1  S1-with-backfill byte-exact: legacy holodeck-gov-01 INTEGRATED
+      resolves to ['GOV-01'] (the live gap, miniature), after
+      task_provenance_set(GOV-01) resolves to EXACTLY
+      ['GOV-02','GOV-03','GOV-04','GOV-05','GOV-06','MATH-01'] - the
+      retained PR #92 S1 oracle set. PASS
+      (test_s1_fixture_passes_with_backfilled_provenance).
+  P2  Eight-task rehearsal, faithful GOV+MATH+MAT graph, seven
+      INTEGRATED + holodeck-gov-06 at REVIEW (mirroring the live
+      snapshot): pre-backfill ['GOV-01'] -> post-backfill EXACTLY
+      ['MATH-02']; GOV-01 NOT re-proposed. PASS
+      (test_eight_task_backfill_offers_true_frontier).
+  P3  Forward path unchanged: create_task(realized_from=...) resolves
+      the S1 frontier with NO op (pinned green at BOTH heads -
+      it is the only green test in PRE_FIX_FAILURES.txt); the op
+      refuses provenance_already_set on forward-cited (RUNNING) and
+      previously backfilled (INTEGRATED) tasks; citation never
+      rewritten. PASS.
+  P4  All named refusals fire and leave revision/events/task record
+      untouched: supervisor_only (lead/standby/worker/other),
+      unknown_task, task_not_terminal_or_active (READY, RECOVERY_HOLD;
+      state gate precedes id validation - pinned),
+      missing_realized_from (None/''/blank/non-str),
+      malformed_realized_from (7 shapes incl. task-id-shaped
+      'holodeck-gov-01' and lowercase 'gov-01'),
+      missing_provenance_evidence (validated after the id),
+      provenance_already_set. PASS.
+  P5  Audit parity with task_abandon: exactly one task_provenance_set
+      event per accepted call (task + actor SUPERVISOR; evidence and
+      realized_from stay on the task record, provenance_set =
+      {realized_from, evidence, actor, revision}); revision +1 per
+      accepted call. PASS (test_audit_event_and_task_record,
+      test_refusals_leave_revision_and_audit_untouched).
+  P6  Gates: test_master_catalogue 24/24 green (see D4 - the prereg's
+      "23/23" quoted PR #92's commit message and is stale by one
+      later-merged test; measured 24/24 at the BASE before my change,
+      24/24 after);
+      test_catalogue_realization green (7/7; 31/31 combined gate run,
+      RUN_GATES.txt);
+      full suite 286 tests, 1 environmental capture flake
+      (test_verify_hwnd_capture_none_pin_adopts_measured_size) that
+      passes in isolation (0.289s) - the flake PR #92's prereg already
+      disclosed; skipped=1 is the known symlink skip. New module 16/16
+      green at the fix, 15/16 failing (7F+8E, op calls refuse
+      unknown_operation) at the pre-fix base with the IDENTICAL final
+      instrument (PRE_FIX_FAILURES.txt, three retained captures:
+      fa1bd8e5, ece2fe58, this head). PASS.
+
+FALSIFIERS:
+
+  F-1  No backfill without the op: mechanically armed - every
+       op-dependent test fails pre-fix; the lane never touched the live
+       registry; the plan's P0 check makes unknown_operation a STOP.
+       NOT TRIGGERED.
+  F-2  GOV-01 still offered post-backfill: NOT TRIGGERED (P2 exact).
+  F-3  No matching rule changed (catalogue_next diff: zero), no gate
+       loosened, test_master_catalogue at 24/24 (unchanged from base). NOT TRIGGERED.
+  F-4  Diff confined to the three scoped paths. NOT TRIGGERED.
+
+DISCLOSURES (all retained in history, none silent):
+
+  D1. Instrument corrections x2 (fa1bd8e5: setprov ignored _actor;
+      ccc64c6b: two refusal tests targeted READY where the state gate
+      fires by design). Pre-fix verdict identical across all three
+      captures; the failing set is test-for-test identical (diff empty,
+      verified) between the final two.
+  D2. Full-suite run 1 (from tools/agent_fleet, wrong cwd) produced 3
+      loader ERRORs (ModuleNotFoundError: No module named 'tools') -
+      invocation artifact, not a code failure; rerun with PR #92's
+      invocation from the repo root: 286 tests, the single capture
+      flake above. The wrong-cwd run is NOT retained as evidence (it
+      tested nothing about this change); the invocation difference is
+      stated here.
+  D3. test_provenance_set_on_review_task_mirrors_live_registry drives
+      holodeck-gov-06 to REVIEW (not INTEGRATED) to mirror the live
+      registry exactly; a REVIEW citation lands in live_cards, so
+      GOV-06 is excluded from candidates while its INTEGRATED siblings'
+      citations satisfy dependencies.
+
+STATEMENT VERDICT: the deployed provenance matching (PR #92) is
+correct; the registry data lacked citations the pre-field tasks could
+not have carried. With the op landed, transitioned, and the eight
+tasks backfilled per BACKFILL_EXECUTION_PLAN.txt, catalogue_next
+offers the true frontier and never re-proposes a realized root
+(measured in rehearsal; live confirmation is the lead's V2 step).
+
+D4. Prereg correction (append-only): the prereg pinned
+      "test_master_catalogue stays 23/23", sourcing PR #92's commit
+      message. Measured at THIS base bf1a72f6 before any change:
+      test_master_catalogue runs 24 tests (a later merged PR added one).
+      The gate invariant intended by the prereg - the suite must not
+      regress from its base count - holds: 24/24 at base, 24/24 with the
+      op. 7/7 + 24/24 = the 31-test combined gate run in RUN_GATES.txt.
+
+Agent: subagent-worker-04

@@ -1,0 +1,11 @@
+R1 POSITIVE CONTROLS (model must ACCEPT) — threshold 6/6 cases,
+every case asserting all its post-conditions
+
+(a) legal chain to one PENDING request 'req-000003': OK
+(b) publish pushed: outcome='pushed' remote_base==head:True push_count=1: OK
+(c) ack -> INTEGRATED, integration.commit content-addressed: OK
+(d) crash-mid-transaction then retry: state == never-crashed control (full 9-field registry snapshot equality): MISMATCH
+(e) fail->recover: READY gen 3 (after fail gen 2), ownerless, slot freed, preserved provision record (task 't1', gen 1), active fields cleared: OK
+(f) idempotence: first='pushed' lost-ack retry='already_integrated' push_count=1; post-ack publish=(REFUSED, 'integration_already_acknowledged') push_count=1 -> OK
+
+R1 verdict: FALSIFIED (5/6 cases)

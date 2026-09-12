@@ -1,0 +1,20 @@
+# fleet-followups-batch-03: AST assertion-set proof vs batch base
+# base: d8e3b5f54ce95e0f9690a73c381bc5ef20d76f8b  head: e1e2c3dda6227f88abfc62e35fc64c1f13f7404c (working tree = C1+C2 applied)
+
+== tools/agent_fleet/test_task_abandon.py
+ methods base: 29 | head: 29
+ REMOVED: []
+ CHANGED assertion sets: ['TaskAbandonTests.test_refusals_leave_revision_and_audit_untouched']
+ ADDED methods: []
+ C1 tightened assertion (same method, STRICTER matcher):
+   base: ['self.assertRaises(Refusal)']
+   head: ["self.assertRaisesRegex(Refusal, 'missing_abandon_reason')"]
+   strictly-tighten check (regex implies bare, not vice versa): True
+
+== tools/agent_fleet/test_capture_window.py
+ methods base: 50 | head: 51
+ REMOVED: []
+ CHANGED assertion sets: []
+ ADDED methods: ['TransientToleranceTests.test_size_mismatched_occlusion_not_retried']
+
+VERDICT: capture_window zero removed/zero changed = True

@@ -1,0 +1,41 @@
+{
+  "task": "fleet-maintenance-amendment-02",
+  "generation": 1,
+  "slot": 1,
+  "base": "4c31999797a9383ea252019be1f32511709fa280",
+  "preregistration_commit": "a9da8b8f",
+  "amendment_commit": "750b1beb",
+  "repin_commit": "f920ad79",
+  "producing_commands": [
+    "python tools/agent_fleet/master_catalogue.py --out %TEMP%/amend02_measure (measured at amended head 750b1beb; console retained RUN_BUILDER_AMENDED_HEAD.txt)",
+    "python -m unittest tools.agent_fleet.test_master_catalogue (at repinned head f920ad79)",
+    "perturbation: throwaway detached worktree at f920ad79 + one appended dated pipe-row in docs/THE_MASTER_LIST.md + same unittest run (worktree removed after)",
+    "python -m unittest discover -s tools/agent_fleet -p 'test_*.py' (console retained RUN_FULL_FLEET_SUITE.txt)"
+  ],
+  "measured": {
+    "amendment_delta": "docs/THE_MASTER_LIST.md +88/-0 (single dated section; append-only verified against HEAD before commit)",
+    "pins_old_to_new": {
+      "master_row_ids": "89 -> 97",
+      "master_row_observations": "127 -> 142",
+      "line_partition_total": "2692 -> 2780"
+    },
+    "envelope_sha256_at_amended_head": "82f95803523dad5c5c885472c181be0a8987842ea8a4c119241692f21bba28a8",
+    "catalogue_tests": "23/23 OK at repinned head",
+    "perturbation_control": "exit FAILED (failures=2): AssertionError 2782 != 2780 and 98 != 97 — the +1 row / +2 lines delta from the appended probe row; pins demonstrably bind to measurement",
+    "full_fleet_suite": "Ran 231 tests, OK (skipped=1), exit 0 — matches the PR #68 regression sweep's measured 231-era count; the known intermittent capture-content flake did NOT fire in this run"
+  },
+  "retirements_gated": [
+    "fleet-run-queue-01",
+    "fleet-orient-continuation-01",
+    "engine-vulkan-cleanup-01",
+    "window-capture-ownership-01",
+    "fleet-controller-upgrade-01",
+    "fleet-slot-expansion-01",
+    "fleet-slot-expansion-02"
+  ],
+  "retirement_gate": "supervisor task_abandon executes for each listed task ONLY after this PR integrates (pinned-head merge + ack); dispositions are the Master amendment entries dated 2026-09-11 fourth-and-fifth waves",
+  "not_claimed": [
+    "anything beyond the measured counts at this head",
+    "any disposition authority beyond what the Master amendment records"
+  ]
+}

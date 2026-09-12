@@ -1,0 +1,26 @@
+{
+  "base": "cf27528166b7df1e20ddf474396624c8bf7f63a3",
+  "python": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+  "fixtures": {
+    "print_leg_v2_log.txt": {
+      "stdout_sha256": "06688e64d9e0cb7691ccb05dbb8ff85c77dc0f5f4633c3d2787988f60a59da43",
+      "fixture_sha256": "c3f8cd6215eea3dcbdfb230d88c908487e4a602a5caa36cc850147e01d1a8846"
+    },
+    "print_lever_v6_log.txt": {
+      "stdout_sha256": "add0bdf4fc0a402515889d1c418a041ed76d34b589a82fe133a6e8d8914b6888",
+      "fixture_sha256": "9da67d09188b81483c2da31ec90f26127db23c44eb2948565fcde719523ab685"
+    },
+    "print_leg_v1_log.txt": {
+      "stdout_sha256": "378d7374883ced803f5065ca12821194625629bee16030e3b37593e94665b6a7",
+      "fixture_sha256": "0599c9b7e286942b449fa986b74a4c474b187f22e69c4bf6f7d938ae409d3460"
+    },
+    "print_leg_v3_log.txt": {
+      "stdout_sha256": "d88b5698c8e298799db4d59ae653309d563c3541effdad95c2d829e76bc13565",
+      "fixture_sha256": "cf158a0e36ca619406ae818a1c52a72856e3d4ae4b1fb7ff753b23779c4cbcda"
+    },
+    "print_leg_v3_control_log.txt": {
+      "stdout_sha256": "a3ffa4bfac59faef0474670887c6debeb77ea979a3c54937c507c25a391365a6",
+      "fixture_sha256": "1348162ad0304cddadd2d580a218ad55adc3a42f82ca1dc4e474c1803825f5ce"
+    }
+  }
+}

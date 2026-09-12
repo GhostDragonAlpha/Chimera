@@ -1,0 +1,325 @@
+PREREGISTRATION — holodeck-mat-02 (gen 1)
+
+Agent: subagent-worker-12. Slot 5, worktree E:\ChimeraWork\slot-05, branch
+astra/tasks/holodeck-mat-02, base 4812b55b407107a34b708af1700e071a7eecbab4
+(provision verified before any work: HEAD==base, working tree clean,
+git ls-files non-empty). Admitted from draft DRAFT-holodeck-mat-02 (PR #67;
+catalogue card MAT-02 "Constitutive capability matrix", digest b9d32319...,
+content_sha256 c81cdfb8...).
+
+Dependencies declared INTEGRATED by the controller: holodeck-math-01
+(3889755d, PR #87), holodeck-gov-03 (4812b55b, PR #88), holodeck-mat-01
+(PR #96, head a26ef5e82178). BASE NOTE (stated now, honestly): my recorded
+base 4812b55b predates PR #96's merge, so MAT-01's evidence TREE is not in
+my checked-out base. Consequence for this lane: the reference model imports
+ONLY MATH-01 (present at base, ../../MATH/MATH-01/reference) so every
+reproduction command works at the recorded base; MAT-01's RESULT is consumed
+read-only from the git object store (2352fc1b) and its recorded seams are
+RE-measured at my base in R6, never copied. GOV-03 is cited for the
+constant-origin discipline (a count without a stated derivation is not a
+constant).
+
+This commit contains the PREREGISTRATION ONLY. No reference model, no
+controls, no results, no measured counts.
+
+SOURCE-ONLY LANE: the deployed material plane is studied from source text
+at base (file identities recorded below and in RESULT.txt). The live
+service is NEVER contacted; no engine process, GPU, or controller resource
+is used. DYAD: NOT_APPLICABLE — source-only scope produces and alters no
+executed runtime behavior of the deployed system; reason restated in
+RESULT.txt per the card's DYAD policy ("Reference-only or source-only
+scope records NOT_APPLICABLE with reason").
+
+## RULE 0 MEMBRANE (card fields verbatim + my theory of this lane)
+
+- CARD STATEMENT: Explicit supported model and required-parameter registry.
+- CARD PREDICTION: Missing inputs prevent unsupported capability claims.
+- CARD FALSIFIER (named BEFORE the run, both for the reference model and
+  the deployed-source hunt): Density and one modulus are assumed sufficient
+  for every response.
+- CARD MATHEMATICS: isotropy; orthotropy; state variables; model domains.
+- MY STATEMENT: the deployed repo at base already ENFORCES the card's
+  prediction distributively — two gate families refuse unsupported
+  capability claims by name (material_contract.py's UNSUPPORTED_MODEL model
+  claims over per-record source-derived model sets, P-8j; the
+  elastic_foundation plane's poisson_ratio_not_measured /
+  orthotropic_unsupported refusals) — but the capability knowledge lives in
+  scattered refusal strings and per-module validators, NOT in one explicit
+  required-parameter registry. The card's statement (an EXPLICIT supported
+  model + required-parameter registry) is therefore the INTENDED contract
+  this lane models: a closed CapabilityMatrix declaring, per supported
+  constitutive model, the REQUIRED typed parameters, the required STATE
+  variables, the declared validity DOMAIN, and the DERIVED independent
+  constant count of its symmetry class — where a claim is granted only when
+  the required set is complete, and density is admitted as a stiffness
+  constant by NO model (the falsifier's negation, structurally encoded).
+- MY PREDICTION: every preregistered row below reaches its full N/N.
+- FALSIFIER CONSEQUENCE: if any row misses, the miss is REPORTED (fired run
+  retained, GOV-05/MAT-01 precedent), never patched around; a fired card
+  falsifier in the DEPLOYED trace (a code path that claims a response from
+  density + one modulus) is a FINDING recorded in RESULT.txt with its exact
+  file:line — deployed findings are never edited and never adopted as the
+  model's truth.
+
+## UNITS BACKBONE (MATH-01 citation duty)
+
+The reference model imports MATH-01's integrated typed-quantity algebra
+(docs/evidence/agent_fleet/HOLODECK/MATH/MATH-01/reference/
+math01_reference_model.py: Dimension over exact Fraction (L,M,T) exponents,
+Quantity with named dimension_mismatch refusals). Where the material domain
+touches dimensional analysis (density = (L^-3 M), Pa moduli, dimensionless
+fractions, thickness m, mass = rho x V composition) the model defers to
+MATH-01's algebra and cites it; the model adds the CAPABILITY layer
+(model -> required-parameter registry -> claim gate) that MATH-01
+deliberately does not have. Independence is claimed from the AUDITED
+deployed code (tools/material_contract.py,
+tools/elastic_foundation/materials.py), NOT from the MATH-01 backbone.
+
+## DERIVED COUNTS (constant origin declared BEFORE implementation — no
+chosen numbers; GOV-03 discipline)
+
+- ISOTROPY = 2: an isotropic fourth-order stiffness tensor has the form
+  lambda*delta_ij*delta_kl + mu*(delta_ik*delta_jl + delta_il*delta_jk) —
+  exactly the two constants (lambda, mu); equivalently any complete PAIR of
+  the standard constants, e.g. (E, nu) or (E, G). One modulus + density is
+  NOT a complete pair: density is (L^-3 M), carries no stiffness
+  information. This count is the classical Voigt-symmetry reduction, cited
+  as the spec's constant_origin, not a tuned number.
+- ORTHOTROPY = 9: E1,E2,E3, G12,G13,G23, nu12,nu13,nu23 written with the
+  three reciprocity relations nu_ij/E_i = nu_ji/E_j — 12 written symbols,
+  9 independent. Declared per spec with this origin string.
+- RATIFIED GATES (card threshold policy: "preserve existing frozen gates"):
+  the deployed nu-in-(-1, 1/2) positive-definiteness gate
+  (tools/elastic_foundation/materials.py, predicted ~:72-75) and the
+  positive sign gates of the deployed _PROPERTY_TYPES table are RATIFIED
+  into my spec domains, not re-derived. No new physical fixture bound is
+  introduced: this is a registry/admission card; its numeric content is the
+  derived counts above plus the N/N row thresholds below.
+
+## REFERENCE MODEL CONTRACT (fixed before implementation)
+
+stdlib-only (+ the MATH-01 import), <300 lines, at
+reference/mat02_reference_model.py:
+
+- Requirement: (name, MATH-01 Dimension, gate) where gate is
+  positive | fraction | positive_definite_2d_nu_range — the
+  ratified (-1, 1/2) range.
+- ModelSpec (frozen): model_id, response_family (what the claim licenses),
+  required (ordered tuple of Requirements), alternatives (optional second
+  complete set for the isotropic model, e.g. (E, G)), required_state
+  (tuple of state-variable names, each with a declared acceptance check),
+  domain (nonempty declared validity-domain string — the "model domains"
+  mathematics), symmetry_class + constant_origin (nonempty derivation
+  string) + independent_constant_count (2 / 9 — declared from the derived
+  table above).
+- CapabilityMatrix: closed registry. The CONSTRUCTOR refuses an incomplete
+  spec with `incomplete_spec` (missing domain / missing response_family /
+  untyped parameter / missing constant_origin) — the GOV-03
+  missing-domain/missing-constant-origin analog at registration time.
+  Frozen after build; model ids are the closed vocabulary (a claim on an
+  unregistered id is `unknown_model`; there is deliberately NO "any
+  response" wildcard model — that absence IS the falsifier's negation).
+- claim(matrix, model_id, params, state=None) — the card prediction's
+  surface. Gate order, each a named refusal, first hit returns:
+    1. unknown_model                (id not in the closed registry)
+    2. missing_input                (names EVERY absent required parameter;
+                                     when rho is present but the stiffness
+                                     pair is incomplete, the detail states
+                                     that density is not a stiffness
+                                     constant — the falsifier probe text)
+    3. dimension_mismatch           (present param's Quantity does not
+                                     carry the declared MATH-01 Dimension)
+    4. physically_invalid           (gate violation: nonpositive modulus,
+                                     fraction outside [0,1], nu outside
+                                     (-1, 1/2) where the gate applies)
+    5. missing_state                (a required state variable absent)
+    6. state_out_of_domain          (present but outside its declared
+                                     acceptance check)
+    success -> frozen CapabilityClaim (model_id, response_family,
+    satisfied requirement names, claim basis). NO claim token, NO response
+    Quantity exists after any refusal (post-state asserted in controls).
+- Derived responses, legal ONLY as declared derivations inside a successful
+  claim's basis (each carries its arithmetic string — no silent relation):
+    mass(rho_param, V Quantity of L^3) -> Quantity of M (rho x V via
+      MATH-01 composition; dimension_mismatch refused via the algebra);
+    shear_from_E_nu(E, nu) -> Quantity of Pa with derivation
+      "G = E / (2(1+nu))";
+    plane_stress_mu_bar(E, nu) -> Quantity of Pa with the deployed
+      thin-plate plane-stress formula E/(2(1+nu)) (quoted from
+      tools/elastic_foundation/materials.py, predicted ~:52-53) — used as
+      an independent value cross-check in R1(f).
+  An attempt to invoke a derivation whose required inputs are absent is
+  refused `missing_input` BEFORE arithmetic; no pseudo-derivation
+  ("nu from density") exists in the registry, so such attempts are refused
+  `unsupported_derivation`.
+
+## PREREGISTERED NUMBERS / THRESHOLDS (stated before ANY implementation test)
+
+Verdict rule: each row must reach its full N/N; any miss = the row's
+falsifier fired and is REPORTED with the fired run retained. Post-state
+assertions accompany every refusal (no claim token, no Quantity produced).
+
+Closed registry (6 specs): mass; uniaxial_along_grain;
+isotropic_linear_elastic (alternatives (E,nu) | (E,G));
+isotropic_plane_stress_sheet (E, nu, h); orthotropic_3d_elastic (9
+constants); linear_viscoelastic (E, nu + state: relaxation_spectrum,
+temperature_k).
+
+- R1 positive claims (model must ACCEPT): N=8/8 —
+  (a) mass claim with admitted rho -> claim; mass(rho, V) -> Quantity of
+      Dimension M, value rho*V (MATH-01 composition cited);
+  (b) uniaxial_along_grain claim with E_L -> claim licensing ONLY
+      axial_static_along_grain;
+  (c) isotropic claim with (E, nu) -> claim;
+  (d) isotropic claim with the declared ALTERNATIVE (E, G) -> claim
+      (both pairs are the same 2-constant law; the registry declares the
+      alternative explicitly, it is not invented at claim time);
+  (e) shear_from_E_nu inside a successful (E,nu) claim -> Pa Quantity,
+      derivation string carried;
+  (f) plane_stress_mu_bar(E, nu) value EQUALS the deployed formula computed
+      independently (E/(2(1+nu))) to float64 exactness — the model's
+      algebra agrees with the ratified deployed gate;
+  (g) orthotropic claim with all 9 constants (typed, in range) -> claim;
+  (h) viscoelastic claim with (E,nu) + declared state
+      (relaxation_spectrum nonempty, temperature_k in band) -> claim.
+- R2 card-prediction negatives — MISSING INPUTS PREVENT THE CLAIM (model
+  must REFUSE, reason verbatim): N=8/8 —
+  (a) mass claim with no rho -> missing_input(rho);
+  (b) isotropic claim with {E} only -> missing_input(nu);
+  (c) isotropic claim with {rho, E} -> missing_input(nu) and the detail
+      STATES density is not a stiffness constant (the falsifier's exact
+      input set refused at the claim surface);
+  (d) orthotropic claim with {rho, E} -> missing_input naming the 8
+      absent constants;
+  (e) plane-stress claim (E, nu) without h -> missing_input(h);
+  (f) viscoelastic (E,nu) complete but no state -> missing_state;
+  (g) unregistered model id -> unknown_model;
+  (h) E presented as an N/m Quantity -> dimension_mismatch.
+  Post-state in every case: no CapabilityClaim exists; no response
+  Quantity was produced.
+- R3 CARD FALSIFIER probes — "density and one modulus assumed sufficient
+  for every response" (model must REFUSE all): N=6/6 —
+  (a) every-response claim attempt on {rho, E} at the isotropic model ->
+      refused (R2c's probe, asserted again as the falsifier row);
+  (b) shear_from_E_nu invoked with E alone -> missing_input BEFORE
+      arithmetic (nu never assumed);
+  (c) isotropic inputs {rho, E, nu} offered to orthotropic_3d_elastic ->
+      missing_input (an isotropic claim does not stand in for orthotropy;
+      8+ constants are absent);
+  (d) 3D response requested FROM the uniaxial model -> unsupported_response
+      (the model licenses axial_static_along_grain only — the deployed
+      P-8j shape "no isotropic or 3D claim may be invented from uniaxial
+      data", modeled);
+  (e) wildcard model id ("any"/"every_response") -> unknown_model (no
+      universal model exists in the closed registry);
+  (f) nu-from-density pseudo-derivation attempt -> unsupported_derivation.
+  Threshold: 6/6 refusals, verbatim, calculation never executed.
+- R4 registry consistency / immutability: N=5/5 —
+  (a) isotropic spec independent_constant_count == 2 with nonempty
+      constant_origin;
+  (b) orthotropic spec count == 9 with nonempty constant_origin;
+  (c) constructor refuses an incomplete spec (`incomplete_spec`) — tested
+      with a spec missing its domain, one missing its constant_origin, one
+      with an untyped parameter; all 6 shipped specs complete;
+  (d) matrix frozen after build: registry mutation attempt raises / is
+      refused; CapabilityClaim is frozen;
+  (e) STRUCTURAL falsifier negation: for every spec in the registry except
+      mass, the singleton {rho} is an insufficient claim set (refused) —
+      no registered model lets density stand as a stiffness constant.
+- R5 deployed-source trace at base 4812b55b (the card statement judged
+  against the DEPLOYED text): 4/4 gate families PRESENT with exact quoted
+  file:line at base —
+  (a) THE MODEL-CLAIM GATE: tools/material_contract.py
+      MaterialContract.model -> RefusalKind.UNSUPPORTED_MODEL, detail
+      "...no isotropic or 3D claim may be invented from uniaxial data"
+      (P-8j; predicted ~:366-379);
+  (b) THE REQUIRED-PARAMETER SIDE: tools/material_contract.py
+      build_white_oak_record — models=frozenset({"uniaxial_along_grain",
+      "orthotropic_ratios"}) (predicted ~:540); ONLY properties the source
+      tables publish enter the record and get() refuses an unpublished
+      property by name (P-8b; predicted ~:355-362 "the contract refuses to
+      default it");
+  (c) THE ORTHOTROPIC LAW VALIDATORS: validate_positive_definite +
+      validate_orthotropic normal-shear decoupling + orthonormal frame
+      (P-8f/P-8g; predicted ~:421-520);
+  (d) THE TWO-CONSTANT ISOTROPIC PLANE: tools/elastic_foundation/
+      materials.py — ElasticMaterial2D (E, nu, h) with lambda_bar/mu_bar
+      the declared (E,nu) reduction (predicted ~:47-53); nu-in-(-1,1/2)
+      gate (predicted ~:72-75); require_isotropic naming what a defensible
+      orthotropic port needs — E11, E22, nu12, G12 + frames (predicted
+      ~:81-89); material_from_library refusing
+      poisson_ratio_not_measured "instead of inventing a Poisson ratio or
+      an empirical shear relationship" (predicted ~:115-119).
+  Threshold: semantics PRESENT 4/4 with the measured line numbers reported
+  (if lines moved from my predicted numbers, the measured numbers are
+  reported — the prediction is about semantics present at base).
+- R6 deployed falsifier hunt + current-state measurements (findings, never
+  patched, never adopted as the model's truth): N=5 measurements reported —
+  (a) THE LIBRARY SHAPE: Chimera/docs/matter/matter_library.json — count
+      of materials (predicted 18), with density_kg_m3 (predicted 10), with
+      youngs_modulus_gpa (predicted 4), with ANY poisson key (predicted 0).
+      The library's per-material shape is the falsifier's exact INPUT SET
+      (density + at most one modulus, no poisson anywhere); the question
+      measured is whether any CONSUMER claims responses beyond it — the
+      E-consuming port's refusal (poisson_ratio_not_measured) is quoted
+      from R5(d). Verdict: falsifier instance? (expected NO — the refusal
+      gate stands between the input set and any stiffness claim).
+  (b) CONSUMER ADVERTISING: tools/cad_sample.py consumes DENSITY for
+      mass/inertia ONLY (predicted ~:172 "rho = DENSITY[PART_MATERIAL[...]]
+      "; its referee tolerances are mass_err/inerrer — a MASS-CLASS claim,
+      the one response density alone does support, with the composition
+      table's declared domain in tools/materials.py: "Stiffness/friction
+      join the table when the force laws that read them are built").
+      tools/matter_data.py reads density/E from the library as CITED
+      constants (never deriving nu from them). Verdict per consumer:
+      claims-beyond-inputs? (expected NO + quoted basis).
+  (c) MAT-01 SEAMS at this base: the cad_sample raw-constants consumer and
+      tools/gpu_fixtures_recovered/membrane_demo.py's BP-A1 admission
+      deferral ("no physical calibration is claimed... deferred until
+      BP-A1 lands", predicted ~:41-45) re-measured verbatim at MY base —
+      the same base MAT-01 measured, so unchanged is the EXPECTED outcome;
+      any drift is a surprise finding.
+  (d) OWNER_INSTANCE CURRENT STATE (task packet: the PR #80 claim-path fix
+      is FIXED AND DEPLOYED — measured now, NO stale deviation language):
+      occurrence counts at base predicted — review_handoff.py >= 1 (the
+      claim-path bind with the enforced instance_fencing gate) and
+      control.py == 8 (the _task fence, setdefault, yield guard, claim
+      bind, release clear). A count of 0 at review_handoff.py would be a
+      SURPRISE FINDING (the fix not actually deployed at this base),
+      reported as such. Contrast baseline: GOV-01's rh==0 at d59518b9,
+      fixed by PR #80.
+  (e) INDEPENDENCE AUDIT of this lane's own artifacts: the reference model
+      imports stdlib plus math01_reference_model (the designated units
+      backbone) and NOTHING from tools/material_contract.py,
+      tools/elastic_foundation/*, or tools/matter_data.py (the audited
+      code) — import list measured and reported.
+
+## CARD VERDICT RULE (fixed now)
+
+Card prediction "Missing inputs prevent unsupported capability claims" =
+SUPPORTED iff R1-R4 reach full N/N AND R5 reaches 4/4. Card falsifier
+"Density and one modulus are assumed sufficient for every response" = NOT
+reproduced iff R3 = 6/6 AND no R6 consumer both claims a response its
+inputs do not support and bypasses an available named-refusal gate;
+otherwise the falsifier FIRES and the instance is reported with its exact
+file:line.
+
+## METHOD
+
+1. Commit this prereg (alone). 2. Write reference/mat02_reference_model.py.
+3. controls/run_controls.py executes R1-R4 in one process (bytecode writing
+   disabled; no __pycache__ in the evidence tree) and writes
+   checks/r1_positive.txt, checks/r2_missing_inputs.txt,
+   checks/r3_falsifier_probes.txt, checks/r4_registry.txt (verbatim
+   refusals, post-state assertions). 4. A read-only source script writes
+   checks/r5_source_trace.txt (quoted lines at base, measured line numbers)
+   and checks/r6_findings.txt (R6 measurements). 5. RESULT.txt: scoreboard,
+   card verdict, reproduction commands, source identities, limitations,
+   DYAD NOT_APPLICABLE record, integration contract + handoff (the
+   capability matrix as the MAT plane's model-registry seed; the BP-A1 /
+   cad_sample seams restated as the routing work items).
+6. Commit chain on astra/tasks/holodeck-mat-02 (trailer
+   `Agent: subagent-worker-12`), push no-force, PR into astra/gait-capture,
+   submit_review with exact HEAD.
+
+Trailer: Agent: subagent-worker-12

@@ -20,6 +20,7 @@
 #include <cstdint>
 #include <functional>
 #include <mutex>
+#include <cmath>
 
 struct StudioStage {
     std::string id;       // "B0" .. "B10"
@@ -151,6 +152,29 @@ public:
     VkFramebuffer fb(uint32_t i) const { return (i < fbs_.size()) ? fbs_[i] : VK_NULL_HANDLE; }
     bool ok() const { return pipe_ != VK_NULL_HANDLE && font_view_ != VK_NULL_HANDLE; }
 
+    // ── THE GRID DEPTH CONTRACT (docs/THE_STUDIO_GRID_DEPTH.md, studio-grid-
+    // depth-01) ── the grid must not draw through occluding accepted geometry.
+    // When the engine's scene pass runs, the grid quads are emitted SEPARATELY
+    // (scene_grid_verts_) and drawn INSIDE that pass by a stencil-tested twin
+    // of the UI pipeline: the accepted fill draws write stencil 1 on
+    // depth-passed fragments and the grid draws only where the stencil is 0.
+    // The grid lies on the floor plane and the floor is opaque + depth-writing,
+    // so "an accepted fragment passed depth at this pixel" is exactly "the
+    // accepted body is in front of the grid at this pixel" — the GPU's own
+    // depth test decides; no second renderer, no bias tuning.
+    void set_grid_scene_owned(bool owned) { grid_scene_owned_ = owned; }
+    bool scene_grid_ok() const { return pipe_scene_grid_ != VK_NULL_HANDLE; }
+    // Build the stencil-tested grid twin against the OFFSCREEN scene pass (the
+    // pass that owns the depth attachment). `samples` must match that pass
+    // (pass compatibility). Same ui shaders, vertex format, blend and font
+    // atlas descriptor as the overlay pipeline; the ONLY differences are the
+    // render pass, the sample count and the stencil state.
+    bool create_scene_grid_pipeline(VkRenderPass rt_pass, VkSampleCountFlagBits samples);
+    // Record the grid draw INSIDE the scene pass (after the scene geometry,
+    // before EndRenderPass — the accepted fills' stencil is then complete).
+    // No-op when the twin pipeline is absent or the grid is empty.
+    void record_grid_scene(VkCommandBuffer cb);
+
 private:
     // ── draw list (immediate mode: rebuilt every frame) ──
     struct Vert { float x, y, u, v, r, g, b, a, flags; };  // flags: 0 font, 1 reel thumb (D3)
@@ -164,6 +188,10 @@ private:
     void text(float x, float y, const std::string& s, float r, float g, float b, float a);
     void line(float x0, float y0, float x1, float y1, float th,
               float r, float g, float b, float a);   // C1: the gizmo's axis (rotated quad)
+    // grid depth contract: the same quad builder, target-switchable — the
+    // overlay draws into verts_, the scene-pass twin into scene_grid_verts_.
+    void line_into(std::vector<Vert>& out, float x0, float y0, float x1, float y1,
+                   float th, float r, float g, float b, float a);
     void thumb(float x, float y, float w, float h, int slot);   // D3: a reel tile's image
     // B3: greedy word-wrap at maxc columns (monospace: arithmetic); splits on
     // newlines first. Lines whose top is past y_max are NOT drawn, but the walk
@@ -216,6 +244,12 @@ private:
     std::vector<StudioJoint> joints_;           // the engine's per-frame push
     int   joints_owner_ui_ = 0;                 // 0 show, 1 edit (display only)
     int   joints_sel_ui_ = -1;                  // the engine's selected (gizmo+paint) joint
+    // product-hud-truth-01: WHICH joints the edit/script path actually drove.
+    // Derived (never pushed): while owner==1 the show sweep cannot write thetas
+    // (engine.cpp's edit branch is exclusive of the show branch), so any theta
+    // change in the pushed view comes from a programmatic pose driver. Bit k =
+    // joint k. Cleared when the show reclaims the pose.
+    uint32_t joints_edit_mask_ui_ = 0;
     std::vector<std::array<float, 4>> slider_tracks_;   // row i's track rect (prepare-owned)
     int   drag_joint_ = -1;                     // drag_kind_ 7: which slider is grabbed
     float slider_theta_at(int row, int x) const;        // linear map track-x -> theta (ROM-clamped)
@@ -228,6 +262,16 @@ private:
     std::vector<StudioRigSegment> rig_segments_;      // D8: projected FK links
     bool        rig_overlay_ui_ = true;              // engine-pushed toggle state
     bool        viewport_empty_ = false;        // nothing loaded — say so
+
+    // ── grid depth contract state (see the public block above) ──
+    std::vector<Vert> scene_grid_verts_;              // grid quads for the scene pass
+    VkPipeline pipe_scene_grid_ = VK_NULL_HANDLE;     // stencil-tested twin (scene pass)
+    VkBuffer       scene_vbuf_ = VK_NULL_HANDLE;
+    VkDeviceMemory scene_vmem_ = VK_NULL_HANDLE;
+    void*          scene_vmap_ = nullptr;
+    VkDeviceSize   scene_vcap_ = 0;
+    bool ensure_scene_vbuf(VkDeviceSize bytes);
+    bool grid_scene_owned_ = false;   // engine: the scene pass owns the grid this frame
 
     // ── E1: THE DOCS BROWSER (the DOCS workspace's left-dock mode, left_mode_ 2) ──
     // Read-only, verbatim, current with git: the file is re-read when its
@@ -295,9 +339,28 @@ public:
     std::function<void(int, float)>  cb_joint_theta_;
 
     // C1: the engine's per-frame pushes (render thread; the UI draws, never owns)
+    // product-hud-truth-01: this push is also where the edit-driven set is
+    // derived — the same view that feeds the row (thetas ARE st+7, the buffer
+    // the pose kernel read this frame). While owner==1 any theta change is a
+    // programmatic drive (the sweep branch cannot run); a joint whose theta
+    // moved IS a joint the demo/script is driving. The readouts follow it.
+    // (Correction, run1 F2 retained: the clock plane shows the show-clock
+    // PARAMETER itself — the timeline the script drives through /show's scrub
+    // — so no origin event is recorded here; an origin taken at the owner
+    // transition captured the pre-scrub clock and shifted every reading.)
     void set_joints_view(const std::vector<StudioJoint>& j, int owner, int selected) {
+        if (owner == 1) {
+            for (size_t k = 0; k < j.size() && k < 32; ++k) {
+                const float prev = (k < joints_.size()) ? joints_[k].theta : j[k].theta;
+                if (std::fabs(j[k].theta - prev) > 1e-4f)
+                    joints_edit_mask_ui_ |= (1u << k);
+            }
+        } else {
+            joints_edit_mask_ui_ = 0;               // the show owns the pose again
+        }
         joints_ = j; joints_owner_ui_ = owner; joints_sel_ui_ = selected;
     }
+    uint32_t joints_edit_mask_ui() const { return joints_edit_mask_ui_; }
     void set_gizmo(bool vis, float x0, float y0, float x1, float y1, const std::string& label) {
         gizmo_vis_ = vis; gizmo_[0] = x0; gizmo_[1] = y0; gizmo_[2] = x1; gizmo_[3] = y1;
         gizmo_label_ = label;

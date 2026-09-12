@@ -1,0 +1,11 @@
+R3 CARD FALSIFIER probe: legacy bypass attempts at the real caller (model must REFUSE all)
+threshold: 6/6
+verdict: HOLDS (6/6)
+
+  PASS [1] refused legacy_input: raw dict handed to bulk_mass | detail: bulk_mass takes an admitted MaterialParameter, got dict -- a legacy bypass into a validated calculation is refused
+  PASS [2] refused legacy_input: bare float 250.0 handed to bulk_mass | detail: bulk_mass takes an admitted MaterialParameter, got float -- a legacy bypass into a validated calculation is refused
+  PASS [3] refused legacy_input: string '250 kg/m^3' handed to bulk_mass | detail: bulk_mass takes an admitted MaterialParameter, got str -- a legacy bypass into a validated calculation is refused
+  PASS [4] refused legacy_input: duck-typed impostor (not an admitted record) | detail: bulk_mass takes an admitted MaterialParameter, got _Impostor -- a legacy bypass into a validated calculation is refused
+  PASS [5] mutation refused (immutable_record) and the record is unchanged afterward
+  PASS [6] refused not_a_snapshot_member: hostile dict in the bag, caught at serve time | detail: 'density' is dict, not an admitted MaterialParameter
+  post-state: no arithmetic ran on any refused input (each refusal raised before the product)

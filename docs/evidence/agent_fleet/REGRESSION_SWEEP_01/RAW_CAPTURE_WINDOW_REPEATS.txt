@@ -1,0 +1,23 @@
+== fleet-regression-sweep-01: capture_window standalone repeats (flakiness bound) ==
+date: 2026-09-11T17:09:51Z
+worktree: E:/ChimeraWork/slot-04 @ 92a67a4cbab0c51d2596001d87a2ddecc0c803d0
+command: 3x python -m unittest tools.agent_fleet.test_capture_window -v
+
+--- repeat 1 ---
+----------------------------------------------------------------------
+Ran 28 tests in 6.249s
+
+OK
+repeat_exit: 0
+--- repeat 2 ---
+----------------------------------------------------------------------
+Ran 28 tests in 6.358s
+
+OK
+repeat_exit: 0
+--- repeat 3 ---
+----------------------------------------------------------------------
+Ran 28 tests in 6.000s
+
+OK
+repeat_exit: 0

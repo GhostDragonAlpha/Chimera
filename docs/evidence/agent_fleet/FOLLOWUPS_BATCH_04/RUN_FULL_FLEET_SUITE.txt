@@ -1,0 +1,21 @@
+.......warning: You appear to have cloned an empty repository.
+.warning: You appear to have cloned an empty repository.
+.warning: You appear to have cloned an empty repository.
+.C:\Python314\Lib\tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 409: 'Conflict'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+..............................................................................................................................................................................................................................................................................................s
+----------------------------------------------------------------------
+Ran 297 tests in 237.582s
+
+OK (skipped=1)
+stopped pid 64180 (transition recorded: test teardown controlled transition)
+stopped pid 62532 (transition recorded: test teardown controlled transition)
+stopped pid 60840 (transition recorded: test teardown controlled transition)
+stopped pid 92616 (transition recorded: test teardown controlled transition)
+stopped pid 31260 (transition recorded: test teardown controlled transition)
+stopped pid 72280 (transition recorded: test teardown controlled transition)
+LOCK_PROBE_MUTATED {"writers": 3, "duration_s": 5.0, "ops": 674, "lock_errors": 26, "other_refusals": 408, "p50_ms": 10.1, "p95_ms": 106.0, "p99_ms": 155.7, "max_ms": 209.3}
+SCALE_PROBE_MIXED {"writers": 8, "duration_s": 20.5, "ops": 1548, "lock_errors": 0, "other_refusals": 110, "p50_ms": 12.1, "p95_ms": 388.7, "p99_ms": 2518.7, "max_ms": 5196.5, "threads": 8, "spawn_cost_ms": 4.7}
+LOCK_PROBE_GUARD {"writers": 3, "duration_s": 5.1, "ops": 508, "lock_errors": 0, "other_refusals": 90, "p50_ms": 10.2, "p95_ms": 105.3, "p99_ms": 291.0, "max_ms": 1905.6}
+SCALE_PROBE_SATURATED {"ops": 751, "lock_or_err": 0, "p50_ms": 6.6, "p95_ms": 86.3, "max_ms": 5158.7}
+suite_exit=0

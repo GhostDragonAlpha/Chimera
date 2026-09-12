@@ -1,0 +1,60 @@
+R5 -- DEPLOYED-SOURCE TRACE (card semantics in the deployed text at base 4812b55b)
+==============================================================================
+threshold: 5/5 semantics present, quoted at their MEASURED line numbers
+
+[PASS] (i) published-or-refused uncertainty (matter_data.py measured :361)
+  tools/matter_data.py:359:     if s is None:
+  tools/matter_data.py:360:         raise Uncited(f"{table}.{key} publishes no spread. A single value with no stated "
+  tools/matter_data.py:361:                       f"uncertainty cannot set a tolerance; either find the band or say in the "
+  tools/matter_data.py:362:                       f"falsifier that the tolerance is chosen and therefore weak.")
+  tools/matter_data.py:363:     return float(s)
+
+[PASS] (ii) a choice is not a measurement (matter_data.py measured :79)
+  tools/matter_data.py:77:     if ent.get("provenance") != "researched":
+  tools/matter_data.py:78:         raise Uncited(f"library {material}.{key} is provenance {ent.get('provenance')!r}, not "
+  tools/matter_data.py:79:                       f"'researched'. A design or seed value is a CHOICE and may not be cited "
+  tools/matter_data.py:80:                       f"as a measurement.")
+  tools/matter_data.py:81:     return dict(value=ent["mean"], spread=ent.get("spread"), unit=key.rsplit("_", 1)[-1],
+
+[PASS] (iii) source identity retained beside the number (matter_data.py measured :82, :87; 27 library entries carry a note)
+  tools/matter_data.py:80:                       f"as a measurement.")
+  tools/matter_data.py:81:     return dict(value=ent["mean"], spread=ent.get("spread"), unit=key.rsplit("_", 1)[-1],
+  tools/matter_data.py:82:                 source=f"matter_library.json::{material}.{key} -- {ent.get('note', '')}",
+  tools/matter_data.py:83:                 provenance="parent")
+  tools/matter_data.py:84: 
+  tools/matter_data.py:85: 
+  tools/matter_data.py:86: # ── THE TABLE ─────────────────────────────────────────────────────────────────────────────────
+  tools/matter_data.py:87: # Every entry: value, unit, spread (the published uncertainty, NOT a guess), source, provenance.
+  tools/matter_data.py:88: # `spread` is load-bearing and not decoration -- it is where the TOLERANCE comes from. THE_COMPILER
+  tools/matter_data.py:89: # warns that "within 5%" is a round number with no source and that a tolerance chosen to be
+
+[PASS] (iv) named refusal kinds (Uncited at matter_data.py:44; refusal table material_contract.py:14; ContractRefusal :50)
+  tools/matter_data.py:42: 
+  tools/matter_data.py:43: 
+  tools/matter_data.py:44: class Uncited(RuntimeError):
+  tools/matter_data.py:45:     """Raised when a port asks for a constant no source in this file supplies.
+  tools/matter_data.py:46: 
+  tools/material_contract.py:12: 
+  tools/material_contract.py:13: Refusal kinds (each check asserts the exact kind):
+  tools/material_contract.py:14:   MISSING_INPUT       the property is not published in any ingested source
+  tools/material_contract.py:15:   MISSING_BASIS       a derivation is possible but its required basis was
+  tools/material_contract.py:16:                       not declared (e.g. SG -> kg/m^3 needs the reference
+  tools/material_contract.py:48: 
+  tools/material_contract.py:49: 
+  tools/material_contract.py:50: class ContractRefusal(Exception):
+  tools/material_contract.py:51:     """A NAMED refusal. kind is machine-checkable; detail names the exact
+  tools/material_contract.py:52:     missing/invalid thing (a property name, a unit, a basis requirement)."""
+
+[PASS] (v) declared-only unit conversion (material_contract.py measured :60, :107)
+  tools/material_contract.py:58: 
+  tools/material_contract.py:59: 
+  tools/material_contract.py:60: # ── the unit registry: conversions exist ONLY here ───────────────────────────
+  tools/material_contract.py:61: 
+  tools/material_contract.py:62: # family -> {unit -> scale to the family's canonical unit}. A conversion is
+  tools/material_contract.py:105:                               f"'{unit_from}' and '{unit_to}' are in different "
+  tools/material_contract.py:106:                               f"unit families ({fam_from} vs {fam_to}); "
+  tools/material_contract.py:107:                               f"cross-family conversion is not registered")
+  tools/material_contract.py:108:     # A1-2: convert requires a finite INPUT and yields a finite OUTPUT or a
+  tools/material_contract.py:109:     # refusal. 1e308 GPa -> Pa overflows to inf in the arithmetic; refusing
+
+R5 RESULT: 5/5 semantics present

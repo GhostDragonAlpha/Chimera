@@ -1,0 +1,54 @@
+RUN RECORD - path variant (different absolute path, same HEAD)
+===============================================================
+
+Audit: catalogue-determinism-audit-01 (prediction P2 of PREREGISTRATION.txt).
+
+Construction
+------------
+  git worktree add --detach E:\ChimeraWork\cda-throwaway-20260911 72af259c6648847d0c4fbc7fd37574589ae70eac
+  -> "HEAD is now at 72af259c catalogue-determinism-audit-01: preregister
+      determinism audit (statement/prediction/falsifier)"
+  git -C E:\ChimeraWork\cda-throwaway-20260911 rev-parse HEAD
+  -> 72af259c6648847d0c4fbc7fd37574589ae70eac   (SAME commit as baseline)
+  worktree status: clean (git status --porcelain empty)
+
+So the ONLY moved input is the absolute path of the checkout:
+  E:\ChimeraWork\slot-07  ->  E:\ChimeraWork\cda-throwaway-20260911
+(source bytes identical by construction - same commit, clean checkout;
+ HEAD sha identical - the packet's requirement "same checkout copied/linked
+ to a different absolute path", realized as a throwaway worktree).
+
+Run
+---
+  command   python tools/agent_fleet/master_catalogue.py --out E:\ChimeraWork\slot-07\.tmp\cda\pathvar_1.json
+            (cwd = the throwaway worktree; builder sha256 identical:
+             cc47c240034a940ebb7b1b59a4310d8f8fedc9b99df03ae20f7e723e6d331014)
+  exit      0 (validate_payload inside main() accepted the payload)
+  envelope sha256  ffde04e6b7a58dface7ae150c045eacac2fda5896d5e3e76f809cef40c669177
+  payload digest   92054a265937fafbdadc5a787d8375562c5436cd07ce221b4a853bc378e63504
+  console  sha256  b052ddb5dba7c20f922e8fa777e78b7ce50d41bb53b1868f5162e794184ebb2b
+
+Delta vs baseline (payload leaf-diff, indices aggregated to [*])
+----------------------------------------------------------------
+  baseline digest  7c2ab66573938fff9b873e4fb6408267da2a072890c56f0414d70d3389140a7d
+  variant  digest  92054a265937fafbdadc5a787d8375562c5436cd07ce221b4a853bc378e63504
+  differing leaf patterns: EXACTLY 3, all path carriers:
+    cards[*].source.path        x240   (= coverage.cards, one per card;
+      old E:\ChimeraWork\slot-07\docs\roadmap\holodeck_tasks.json
+      new E:\ChimeraWork\cda-throwaway-20260911\docs\roadmap\holodeck_tasks.json)
+    source_manifest.catalog.path  x1   (same old/new pair as above)
+    source_manifest.master.path   x1
+      old E:\ChimeraWork\slot-07\docs\THE_MASTER_LIST.md
+      new E:\ChimeraWork\cda-throwaway-20260911\docs\THE_MASTER_LIST.md
+  every other leaf byte-identical (leaf-count and leaf-path-sequence
+  equality asserted before the walk). The git_commit fields did NOT move
+  (identical HEAD). Full listing: ATTR_PATHVAR.txt in this directory.
+
+Verdict
+-------
+P2 HOLDS: the path variant moved only the attributed path-provenance
+fields (plus the derived digest). P4 HOLDS for this variant: the digest
+moved, so path provenance is inside the digest preimage.
+Falsifier F2 (path lane) did not fire.
+
+Full verbatim console: RAW_RUN_PATHVAR_CONSOLE.txt in this directory.

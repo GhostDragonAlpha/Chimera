@@ -1,0 +1,32 @@
+{
+  "task": "fleet-client-instance-01",
+  "generation": 1,
+  "slot": 1,
+  "worktree": "E:\ChimeraWork\slot-01",
+  "base_recorded": "9022d66995df33d50ea07f308788c398eb9ab894",
+  "base_reconciled_to": "c1a1ec5a5a166d8f32816cdacc9569e03857fa0e",
+  "preregistration_commit": "573ea042",
+  "producing_commands": [
+    "python -m unittest tools.agent_fleet.test_client_instance -v",
+    "python -m unittest tools.agent_fleet.test_control -v",
+    "python -m unittest discover -s tools/agent_fleet -p 'test_*.py'"
+  ],
+  "measured": {
+    "instance_suite": "7/7 OK (baseline before-picture retained; fence matrix; secret-absence scan incl. SQLite state+events tables; reopen persistence; enforced-mode gating both directions + no-instance-bearing guard; malformed-header transport refusal; supervisor marker absence)",
+    "control_regression": "36/36 OK (legacy compatibility preserved)",
+    "full_fleet_suite": "194 tests, 0 failures, 1 Windows-symlink skip"
+  },
+  "files_changed": [
+    "tools/agent_fleet/control.py (instance plane: enroll binding, claim owner_instance, _task fence, events marker, snapshot hash strip, instance_fencing_set)",
+    "tools/agent_fleet/service.py (header parse -> _instance)",
+    "tools/agent_fleet/client.py (header from session instance)",
+    "tools/agent_fleet/enroll_agent.py (mint instance into session file)",
+    "tools/agent_fleet/test_client_instance.py (new)",
+    "docs/THE_AGENT_FLEET.md (dated section)"
+  ],
+  "not_claimed": [
+    "enforced-mode live flip (staged migration: re-enroll clients first, then a reviewed controlled transition)",
+    "sandboxing of same-OS-account shell access (cooperative capability boundary stays explicit)",
+    "multiple simultaneous legitimate instances per enrollment (one enrollment = one instance; additional clients enroll separately)"
+  ]
+}
