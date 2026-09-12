@@ -111,3 +111,26 @@ Operator, 2026-09-12: "I am not going to stop until I'm dead or it's
 created. My autistic mind will not let this one go ever."
 The fleet's answer: one membrane at a time, every one visible, every one
 true.
+
+## Amendments (append-only)
+
+### Amendment 1 (2026-09-12) — the aligned operating system
+
+Recorded from the operator's direct instruction; canonical text:
+[THE_ALIGNMENT.md](THE_ALIGNMENT.md). Laws sharpened this session:
+(a) the dyad receives ONLY the scenario and the goal — never what to look
+for; its unprompted generalized report is the decision instrument, and
+feedback translates into feedback until the bones of truth stand exposed;
+(b) the human is the override — pass = dyad approves AND the operator
+agrees; operator observations arrive on the same channel at higher priority
+and supersede all; (c) rendering-engine (C++) changes are made in STRICT
+SERIES, never in parallel — the standing work is Python correctness over the
+frozen engine; (d) the multi-agent fleet is retired and its liveness
+reporting may not return — the only truth is a dyad report describing an
+image actually rendered by the engine; (e) the near plan (tempo → footstep
+equation → unfold joints → train the in-between → material inventory) lives
+in THE_ALIGNMENT.md §5; (f) the project is programmable matter: the outside
+membrane programmed with the mathematical characteristics of the material it
+simulates, all math figured out on the triangles.
+
+— Agent: glm53-lead-02
