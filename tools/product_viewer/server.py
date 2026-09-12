@@ -421,6 +421,48 @@ class CameraPanel:
 # ---------------------------------------------------------------------------
 
 
+GRAPH_PAGE = """<!doctype html><html><head><meta charset="utf-8"><title>Chimera Ledger</title>
+<style>body{background:#0b0f14;color:#d8dee6;font-family:Consolas,monospace;margin:0;overflow:hidden}
+canvas{display:block;cursor:grab}canvas:active{cursor:grabbing}
+#hud{position:fixed;top:10px;left:12px;font-size:12px;color:#8ab4f8;pointer-events:none}
+#note{position:fixed;bottom:10px;left:12px;font-size:12px;color:#9aa4af;max-width:60em;pointer-events:none}
+a{color:#8ab4f8}</style></head><body>
+<canvas id="c"></canvas>
+<div id="hud">CHIMERA LEDGER - drag to orbit / wheel to zoom - <a href="/">viewer</a></div>
+<div id="note"></div>
+<script>
+const G=__DATA__;
+const cv=document.getElementById('c'),cx=cv.getContext('2d');
+let W,H;function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;}rs();onresize=rs;
+let ry=0.5,rz=0.35,zoom=42,drag=null;
+cv.onmousedown=e=>{drag={x:e.clientX,y:e.clientY}};
+onmouseup=()=>drag=null;
+onmousemove=e=>{if(!drag)return;ry+=(e.clientX-drag.x)*0.006;rz+=(e.clientY-drag.y)*0.006;drag={x:e.clientX,y:e.clientY};};
+cv.onwheel=e=>{e.preventDefault();zoom*=(e.deltaY>0?1.1:0.9);};let tp=null;
+cv.ontouchstart=e=>{const t=e.touches[0];tp={x:t.clientX,y:t.clientY};};
+cv.ontouchmove=e=>{if(!tp)return;const t=e.touches[0];ry+=(t.clientX-tp.x)*0.006;rz+=(t.clientY-tp.y)*0.006;tp={x:t.clientX,y:t.clientY};};
+const KIND={pillar:'#ffd166',law:'#ef476f',feature:'#06d6a0',lane:'#8ab4f8',evidence:'#b58cff'};
+function P(p){const[x,y,z]=p;
+  const x1=x*Math.cos(ry)-z*Math.sin(ry),z1=x*Math.sin(ry)+z*Math.cos(ry);
+  const y1=y*Math.cos(rz)-z1*Math.sin(rz),z2=y*Math.sin(rz)+z1*Math.cos(rz);
+  const f=zoom/(6+z2);return[W/2+x1*f,H/2-y1*f,z2,f];}
+const pts=G.nodes.map(n=>({n,p:P(n.pos)}));
+function draw(){cx.clearRect(0,0,W,H);
+  cx.lineWidth=1;
+  for(const e of G.edges){const a=pts.find(q=>q.n.id===e.from),b=pts.find(q=>q.n.id===e.to);
+    if(!a||!b)continue;cx.strokeStyle=e.kind==='violated'?'rgba(239,71,111,.8)':'rgba(140,160,180,.28)';
+    cx.beginPath();cx.moveTo(a.p[0],a.p[1]);cx.lineTo(b.p[0],b.p[1]);cx.stroke();}
+  for(const q of pts){const[n,p]= [q.n,q.p];
+    const r=Math.max(3,520/Math.max(6,p[3]));
+    cx.beginPath();cx.arc(p[0],p[1],r,0,7);cx.fillStyle=KIND[n.kind]||'#888';cx.fill();
+    cx.font='11px Consolas';cx.fillStyle='#c9d4e0';cx.fillText(n.label,p[0]+r+3,p[1]+3);}}
+cv.onmousemove=e=>{if(drag)return;let best=null,bd=18;
+  for(const q of pts){const d=Math.hypot(q.p[0]-e.clientX,q.p[1]-e.clientY);if(d<bd){bd=d;best=q;}}
+  document.getElementById('note').textContent=best?(best.n.label+' ['+best.n.kind+(best.n.status?','+best.n.status:'')+'] '+(best.n.note||'')+(best.n.refs.length?' | '+best.n.refs.join(' , '):'')):'';};
+(function loop(){pts.forEach(q=>q.p=P(q.n.pos));draw();requestAnimationFrame(loop);})();
+</script></body></html>"""
+
+
 def encode_ring(engine_root: Path, records: list[FrameRecord], out_path: Path,
                 fps: int) -> Path:
     sys.path.insert(0, str(engine_root / "ChimeraEngine"))
@@ -487,21 +529,28 @@ PAGE = """<!doctype html><html><head><meta charset="utf-8"><title>Chimera Produc
   <a href="/api/health" target="_blank">health</a>
   </div>
 <script>
-let misses=0, capOn=false;
+let misses=0, capOn=false, TAKE=false;
 // SELF-PACING LIVE VIEW: the engine's PNG readback is the measured bottleneck
 // (~seconds per full-size frame). A fixed-interval poller would stack requests
 // faster than the engine encodes them, back up its serialized queue, and starve
 // EVERYTHING (seen live as camera-read timeouts). So: never more than one
 // pending frame request per pane; the engine sets the tempo.
+// MULTIPLAYER LAW: when take_mode is on, observers YIELD (a take died at the
+// hands of three simultaneous heavy clients - the observer starved the observed).
 function pace(imgEl, path, gap){
   let busy=false;
   function next(){
-    if(busy) return; busy=true;
+    if(busy) return;
+    if(TAKE){ imgEl.title='take in progress - observer yields';
+              setTimeout(next, 1000); return; }
+    busy=true;
     const t=Date.now();
     imgEl.onload=()=>{busy=false; setTimeout(next,gap);};
     imgEl.onerror=()=>{busy=false; setTimeout(next,Math.max(gap,1000));};
     imgEl.src=path+'?t='+t;
   }
+  next();
+}
   next();
 }
 function tick(){
@@ -548,7 +597,8 @@ fp.addEventListener('touchmove',e=>{if(!drag||!cam0)return; const t=e.touches[0]
   orbit(dx*0.005, dy*0.005, 1);},{passive:true});
 fp.addEventListener('touchend',()=>{drag=null;});
 function state(){
-  fetch('/api/gallery').then(r=>r.json()).then(d=>{
+  fetch('/api/health').then(r=>r.json()).then(h=>{TAKE=!!h.take_mode;
+    return fetch('/api/gallery').then(r=>r.json());}).then(d=>{
     const last=d.records[d.records.length-1];
     if(!last){document.getElementById('state').textContent='ring empty — no captures yet';return;}
     const j=last.joints||{}, c=last.chrome||{};
@@ -584,11 +634,12 @@ tick(); tickGlass(); setInterval(state,1000); state();
 
 
 class ViewerHandler(BaseHTTPRequestHandler):
-    server_version = "ChimeraProductViewer/1.0"
+    server_version = "ChimeraProductViewer/1.1"
     engine: EngineClient = None            # injected via make_server
     ring: RingBuffer = None
     camera: CameraPanel = None
     started: float = 0.0
+    take_mode = {"on": False}              # multiplayer law: observers yield during takes
 
     def log_message(self, fmt, *args):     # quiet by default; stats live in /api/health
         pass
@@ -659,6 +710,19 @@ class ViewerHandler(BaseHTTPRequestHandler):
                                 "fit_derivation": H.camera.derive_fit()})
                 except (EngineError, json.JSONDecodeError, KeyError) as e:
                     self._json({"ok": False, "error": str(e)}, 502)
+            if path == "/graph" or path == "/graph/":
+                g = (Path(__file__).resolve().parents[2] / "docs" / "LEDGER_GRAPH.json")
+                if g.is_file():
+                    payload = GRAPH_PAGE.replace("__DATA__", g.read_text(encoding="utf-8"))
+                    self._send(200, payload.encode("utf-8"), "text/html; charset=utf-8")
+                else:
+                    self._json({"ok": False, "error": "LEDGER_GRAPH.json missing"}, 404)
+            elif path == "/api/graph":
+                g = (Path(__file__).resolve().parents[2] / "docs" / "LEDGER_GRAPH.json")
+                if g.is_file():
+                    self._send(200, g.read_bytes(), "application/json; charset=utf-8")
+                else:
+                    self._json({"ok": False, "error": "LEDGER_GRAPH.json missing"}, 404)
             elif path == "/api/window/frame":
                 jpg = H.mirror.frame_jpeg() if getattr(H, "mirror", None) else None
                 if jpg is None:
@@ -673,6 +737,7 @@ class ViewerHandler(BaseHTTPRequestHandler):
                 capture = getattr(H, "capture_thread", None)
                 self._json({"ok": True, "engine": H.engine.base,
                             "engine_up": H.engine.up(), "ring": H.ring.stats(),
+                            "take_mode": H.take_mode["on"],
                             "capture": capture.snapshot_stats() if capture else {},
                             "uptime_s": round(time.time() - H.started, 1)})
             else:
@@ -764,6 +829,15 @@ class ViewerHandler(BaseHTTPRequestHandler):
                 (capture.paused.clear() if on else capture.paused.set())
                 self._json({"ok": True, "capture_on": on,
                             "stats": capture.snapshot_stats()})
+            except (json.JSONDecodeError, ValueError) as e:
+                self._json({"ok": False, "error": str(e)}, 400)
+            return
+        if path == "/api/take":
+            try:
+                length = int(self.headers.get("Content-Length", 0))
+                payload = json.loads(self.rfile.read(length).decode("utf-8") or "{}")
+                H.take_mode["on"] = bool(payload.get("on", False))
+                self._json({"ok": True, "take_mode": H.take_mode["on"]})
             except (json.JSONDecodeError, ValueError) as e:
                 self._json({"ok": False, "error": str(e)}, 400)
             return

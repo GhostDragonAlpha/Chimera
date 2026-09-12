@@ -1,0 +1,568 @@
+{
+ "name": "CHIMERA - the development ledger",
+ "law": "THE_ALIGNMENT.md; THE_GAME.md; THE_LAW.md",
+ "geometry": "pillars anchor a simplex; laws fence; tiers ring outward; the front rises",
+ "nodes": [
+  {
+   "id": "P1",
+   "kind": "pillar",
+   "label": "SCENARIO",
+   "status": "law",
+   "refs": [],
+   "pos": [
+    5.0,
+    2.2,
+    0.0
+   ],
+   "note": "the episode each material/body must survive, falsifier named first"
+  },
+  {
+   "id": "P2",
+   "kind": "pillar",
+   "label": "MEASURED-TRUTH",
+   "status": "law",
+   "refs": [],
+   "pos": [
+    1.545,
+    2.2,
+    4.755
+   ],
+   "note": "recorded reality to imitate - never taste (download data FIRST)"
+  },
+  {
+   "id": "P3",
+   "kind": "pillar",
+   "label": "FAST-FIELD",
+   "status": "law",
+   "refs": [],
+   "pos": [
+    -4.045,
+    2.2,
+    2.939
+   ],
+   "note": "the differentiable GPU triangle lattice - the training ground"
+  },
+  {
+   "id": "P4",
+   "kind": "pillar",
+   "label": "LOSS-IN-LAWS",
+   "status": "law",
+   "refs": [],
+   "pos": [
+    -4.045,
+    2.2,
+    -2.939
+   ],
+   "note": "behavior match inside the fences: energy<1%, welds never split"
+  },
+  {
+   "id": "P5",
+   "kind": "pillar",
+   "label": "JUDGE",
+   "status": "law",
+   "refs": [],
+   "pos": [
+    1.545,
+    2.2,
+    -4.755
+   ],
+   "note": "the dyad eye first, math second, the human override always"
+  },
+  {
+   "id": "L0",
+   "kind": "law",
+   "label": "RULE 0",
+   "status": "fence",
+   "refs": [],
+   "pos": [
+    3.0,
+    -2.0,
+    0.0
+   ],
+   "note": "every membrane is a theory: statement/prediction/falsifier before build"
+  },
+  {
+   "id": "L1",
+   "kind": "law",
+   "label": "RULE 1",
+   "status": "fence",
+   "refs": [],
+   "pos": [
+    1.87,
+    -2.0,
+    2.345
+   ],
+   "note": "derive before train; a sweep is the confession"
+  },
+  {
+   "id": "LK",
+   "kind": "law",
+   "label": "KITCHEN",
+   "status": "fence",
+   "refs": [],
+   "pos": [
+    -0.668,
+    -2.0,
+    2.925
+   ],
+   "note": "C++ frozen; one named appliance in series; Python is the language of ideas"
+  },
+  {
+   "id": "LD",
+   "kind": "law",
+   "label": "BLIND DYAD",
+   "status": "fence",
+   "refs": [],
+   "pos": [
+    -2.703,
+    -2.0,
+    1.302
+   ],
+   "note": "scenario+goal only; unprompted words decide; one picture per call"
+  },
+  {
+   "id": "LM",
+   "kind": "law",
+   "label": "MULTIPLAYER-MINDED",
+   "status": "fence",
+   "refs": [],
+   "pos": [
+    -2.703,
+    -2.0,
+    -1.302
+   ],
+   "note": "every client serves the world; no client owns it; dual purpose"
+  },
+  {
+   "id": "LT",
+   "kind": "law",
+   "label": "TRANSLATION",
+   "status": "fence",
+   "refs": [],
+   "pos": [
+    -0.668,
+    -2.0,
+    -2.925
+   ],
+   "note": "meshes author; the sampled field is truth; mass conserved exactly"
+  },
+  {
+   "id": "LR",
+   "kind": "law",
+   "label": "RELATIVE FRAME",
+   "status": "fence",
+   "refs": [],
+   "pos": [
+    1.87,
+    -2.0,
+    -2.345
+   ],
+   "note": "no global frame; origin = CoG; force is the only mover"
+  },
+  {
+   "id": "T0.0",
+   "kind": "feature",
+   "label": "1 creature renders",
+   "status": "proven",
+   "refs": [],
+   "pos": [
+    7.5,
+    0.9,
+    0.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "T0.1",
+   "kind": "feature",
+   "label": "2 truthful HUD",
+   "status": "proven",
+   "refs": [],
+   "pos": [
+    2.318,
+    0.9,
+    7.133
+   ],
+   "note": ""
+  },
+  {
+   "id": "T0.2",
+   "kind": "feature",
+   "label": "3 choreography",
+   "status": "proven",
+   "refs": [],
+   "pos": [
+    -6.068,
+    0.9,
+    4.408
+   ],
+   "note": ""
+  },
+  {
+   "id": "T0.3",
+   "kind": "feature",
+   "label": "4 camera fit",
+   "status": "proven",
+   "refs": [],
+   "pos": [
+    -6.068,
+    0.9,
+    -4.408
+   ],
+   "note": ""
+  },
+  {
+   "id": "T0.4",
+   "kind": "feature",
+   "label": "5 HTTP viewer",
+   "status": "proven",
+   "refs": [],
+   "pos": [
+    2.318,
+    0.9,
+    -7.133
+   ],
+   "note": ""
+  },
+  {
+   "id": "T1.0",
+   "kind": "feature",
+   "label": "6 walks and travels",
+   "status": "current",
+   "refs": [],
+   "pos": [
+    8.924,
+    0.0,
+    3.258
+   ],
+   "note": ""
+  },
+  {
+   "id": "T1.1",
+   "kind": "feature",
+   "label": "7 feet plant no slide",
+   "status": "current",
+   "refs": [],
+   "pos": [
+    -7.283,
+    0.0,
+    6.1
+   ],
+   "note": ""
+  },
+  {
+   "id": "T1.2",
+   "kind": "feature",
+   "label": "8 arms counter-swing + bob",
+   "status": "current",
+   "refs": [],
+   "pos": [
+    -1.641,
+    0.0,
+    -9.357
+   ],
+   "note": ""
+  },
+  {
+   "id": "T2.0",
+   "kind": "feature",
+   "label": "9 water as a body",
+   "status": "queued",
+   "refs": [],
+   "pos": [
+    8.796,
+    -0.9,
+    7.409
+   ],
+   "note": ""
+  },
+  {
+   "id": "T2.1",
+   "kind": "feature",
+   "label": "10 downhill flow",
+   "status": "queued",
+   "refs": [],
+   "pos": [
+    -10.814,
+    -0.9,
+    3.913
+   ],
+   "note": ""
+  },
+  {
+   "id": "T2.2",
+   "kind": "feature",
+   "label": "11 buoyancy",
+   "status": "queued",
+   "refs": [],
+   "pos": [
+    2.018,
+    -0.9,
+    -11.322
+   ],
+   "note": ""
+  },
+  {
+   "id": "T3.0",
+   "kind": "feature",
+   "label": "12 squash/spring",
+   "status": "queued",
+   "refs": [],
+   "pos": [
+    6.717,
+    -1.8,
+    11.71
+   ],
+   "note": ""
+  },
+  {
+   "id": "T3.1",
+   "kind": "feature",
+   "label": "13 cloth bend",
+   "status": "queued",
+   "refs": [],
+   "pos": [
+    -6.783,
+    -1.8,
+    11.672
+   ],
+   "note": ""
+  },
+  {
+   "id": "T3.2",
+   "kind": "feature",
+   "label": "14 fracture",
+   "status": "queued",
+   "refs": [],
+   "pos": [
+    -13.5,
+    -1.8,
+    -0.038
+   ],
+   "note": ""
+  },
+  {
+   "id": "T3.3",
+   "kind": "feature",
+   "label": "15 freeze",
+   "status": "queued",
+   "refs": [],
+   "pos": [
+    -6.717,
+    -1.8,
+    -11.71
+   ],
+   "note": ""
+  },
+  {
+   "id": "T3.4",
+   "kind": "feature",
+   "label": "16 melt",
+   "status": "queued",
+   "refs": [],
+   "pos": [
+    6.783,
+    -1.8,
+    -11.672
+   ],
+   "note": ""
+  },
+  {
+   "id": "T3.5",
+   "kind": "feature",
+   "label": "17 burn",
+   "status": "queued",
+   "refs": [],
+   "pos": [
+    13.5,
+    -1.8,
+    0.038
+   ],
+   "note": ""
+  },
+  {
+   "id": "WALK-TRAIN",
+   "kind": "lane",
+   "label": "the body learns to walk by its own force",
+   "status": "current",
+   "refs": [
+    "external/myo_sim",
+    "walker.py",
+    "ppo_policy.pt",
+    "tools/training_gate.py",
+    "docs/THE_WALK_PROGRAM.md"
+   ],
+   "pos": [
+    0,
+    3.4,
+    0
+   ],
+   "note": "begin=standing end=across the room; targets derived (Froude+pendulum); learned gait renders through the engine for the dyad"
+  },
+  {
+   "id": "E-battery",
+   "kind": "evidence",
+   "label": "battery",
+   "status": "recorded",
+   "refs": [
+    "docs/evidence/agent_fleet/ENGINE_ROOT_TRANSLATION"
+   ],
+   "pos": [
+    2.2,
+    4.6,
+    0.0
+   ],
+   "note": "root parity battery: P1/P4 PASS (thetas untouched; pixel-exact round-trip); P2/P3 FAIL recorded"
+  },
+  {
+   "id": "E-v3c",
+   "kind": "evidence",
+   "label": "v3c",
+   "status": "recorded",
+   "refs": [
+    "E:/ChimeraWork/concept_proof/walk3c"
+   ],
+   "pos": [
+    0.0,
+    4.6,
+    2.2
+   ],
+   "note": "full-frame take: commanded-vs-rendered gap closed on the joint path (dyad-verified motion)"
+  },
+  {
+   "id": "E-crash",
+   "kind": "evidence",
+   "label": "crash",
+   "status": "recorded",
+   "refs": [
+    "E:/ChimeraWork/concept_proof/bisect_crash.py"
+   ],
+   "pos": [
+    -2.2,
+    4.6,
+    0.0
+   ],
+   "note": "take-4 crash bisect: engine innocent; three heavy clients starved it - observer yields law born"
+  },
+  {
+   "id": "E-puppet",
+   "kind": "evidence",
+   "label": "puppet",
+   "status": "recorded",
+   "refs": [],
+   "pos": [
+    -0.0,
+    4.6,
+    -2.2
+   ],
+   "note": "the linear root velocity was AUTHORED, not trained - operator caught it; the law it broke is LR"
+  }
+ ],
+ "edges": [
+  {
+   "from": "L0",
+   "to": "P1",
+   "kind": "fences"
+  },
+  {
+   "from": "L0",
+   "to": "P4",
+   "kind": "fences"
+  },
+  {
+   "from": "L1",
+   "to": "P2",
+   "kind": "fences"
+  },
+  {
+   "from": "L1",
+   "to": "P4",
+   "kind": "fences"
+  },
+  {
+   "from": "LK",
+   "to": "P3",
+   "kind": "fences"
+  },
+  {
+   "from": "LD",
+   "to": "P5",
+   "kind": "fences"
+  },
+  {
+   "from": "LT",
+   "to": "P3",
+   "kind": "fences"
+  },
+  {
+   "from": "LR",
+   "to": "P3",
+   "kind": "fences"
+  },
+  {
+   "from": "T1.0",
+   "to": "T1.1",
+   "kind": "requires"
+  },
+  {
+   "from": "T1.1",
+   "to": "T1.2",
+   "kind": "requires"
+  },
+  {
+   "from": "T1.0",
+   "to": "T2.0",
+   "kind": "requires"
+  },
+  {
+   "from": "WALK-TRAIN",
+   "to": "P1",
+   "kind": "trains-under"
+  },
+  {
+   "from": "WALK-TRAIN",
+   "to": "P2",
+   "kind": "trains-under"
+  },
+  {
+   "from": "WALK-TRAIN",
+   "to": "P3",
+   "kind": "trains-under"
+  },
+  {
+   "from": "WALK-TRAIN",
+   "to": "P4",
+   "kind": "trains-under"
+  },
+  {
+   "from": "WALK-TRAIN",
+   "to": "P5",
+   "kind": "trains-under"
+  },
+  {
+   "from": "WALK-TRAIN",
+   "to": "T1.0",
+   "kind": "unfolds"
+  },
+  {
+   "from": "E-battery",
+   "to": "WALK-TRAIN",
+   "kind": "proves"
+  },
+  {
+   "from": "E-v3c",
+   "to": "WALK-TRAIN",
+   "kind": "proves"
+  },
+  {
+   "from": "E-crash",
+   "to": "WALK-TRAIN",
+   "kind": "proves"
+  },
+  {
+   "from": "E-puppet",
+   "to": "LR",
+   "kind": "violated"
+  }
+ ]
+}
