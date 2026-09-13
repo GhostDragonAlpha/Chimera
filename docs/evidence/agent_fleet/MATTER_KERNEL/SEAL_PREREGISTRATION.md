@@ -245,3 +245,76 @@ FALSIFIER: DID NOT FIRE. v2 stands.
   the next hydraulic appliance (Laplace).
 - Rendering the internal wall on demand (it is deliberately invisible
   internal membrane; a debug view would show the cut line).
+
+---
+
+# THE MITOSIS PREREGISTRATION — the growth law (recursive cut-and-weld)
+
+Rule 0 again, before the code. THE REFERENCE (operator, 2026-09-13):
+"everything's been described in nature" — the compartments follow the
+measured joint bands (hip 3.415, knee 1.903, ankle 0.338 — the pins),
+the way fascial compartments divide a limb.
+
+## THE WINDING-LAW CORRECTION (defect in the shipped v2, found while
+## deriving this appliance — disclosed before the fix)
+
+Preparing the hip cut exposed it: at y=3.415 the below closure signed
+NEGATIVE (-1.19), impossible for a consistent mesh. Cause: the v2 cap
+windings were SWAPPED. Topology law: every edge of a closed oriented
+surface appears exactly twice, once per direction — the below pieces
+walk each cut edge in the chained direction, so the LOWER cap must
+traverse the ring REVERSED and the UPPER cap as chained. v2 did the
+opposite. At y=2.6 BOTH closures stay positive (computed 0.159 vs true
+0.779), so every v2 SUM bar passed while the daughter SPLIT was wrong.
+Ground truth by ray parity: occupancy area at 2.6 = 0.376 m^2 → the
+true below-cap divergence is +0.326 (chained gave -0.310). Corrected
+v2 split at rest: V_lower = 0.779, V_upper = 13.046 (sum unchanged).
+The v2 run record's S2'/S3' bars measured sums and returns — those
+stand; the per-daughter values recorded there are corrected here.
+
+## STATEMENT
+
+The cut-and-weld generalizes from the creature to ANY sealed cell:
+POST /tick_seal {"y": Y, "cell": k} cuts cell k into two sealed cells.
+Repeated cuts grow the body-part tree — the growth law. Inserted points
+become convex blends over original vertices (merged, <= 8 entries), so
+every point rides the posed surface at fixed weights: the weld argument
+is depth-independent algebra.
+
+## DERIVATION (offline, corrected winding, plane at the measured bands)
+
+- hip y=3.415 (whole creature): 392 straddlers, 392 cuts, 6 loops
+  [56, 84, 56] mirrored — two hip lobes and hollow-arm annuli at
+  |x| ~ 2.6-2.8; 380 caps. V_below = 1.315499, V_above = 12.509037
+  (err -1.13e-06 %).
+- knee y=1.903 on the leg cell: 108 straddlers, 2 loops, 104 caps.
+  shin+foot = 0.622492 | thigh = 0.693007 (err -1.23e-06 %).
+- ankle y=0.338 on the shin+foot cell: 130 straddlers, 2 loops, 126
+  caps. foot = 0.287914 | shin = 0.334577 (err -1.12e-07 %).
+- Four cells sum to 13.824536 (-1.25e-06 %); under a smooth warp the
+  sum tracks the whole to -1.19e-05 %; each cell's P = -dV/(kappa*V0)
+  responds to its own dV.
+
+## PREDICTIONS (live engine, mitosis build)
+
+M1. First cut (hip): cell volumes match the derivation within 1%;
+    sum = 13.8245 within 1%; P = 0 exactly at rest (v0 on the tick's
+    rest blend, as fixed in v2).
+M2. Recursion: knee then ankle cuts via the "cell" selector; each cut
+    conserves (V_A + V_B = V_parent within 1e-3 %); the four-cell sum
+    equals the posed whole within 1% at rest AND under a knee pose.
+M3. Hydraulics per cell: a knee_L 25-deg pose changes the shin+foot
+    and thigh cells' volumes by their own real dV (pressures respond
+    by the kappa law); pose return brings every P back to 0 exactly.
+M4. Refusals, by name: cell index out of range; plane outside the
+    named cell's y-range; a cut graph that fails to close. Re-cutting
+    a cell is LEGAL recursion now — cutting IS the operation
+    (supersedes v2's one-seal-per-creature guard).
+
+## FALSIFIER
+
+Any live cell volume off its derivation by > 1%, or the cells' sum off
+the posed whole by > 1% at rest or under pose, or any P != 0 at rest,
+or a real-mesh cut refusing (graph fails to close = the blend-slot
+port broke the weld). Successor if fired: audit the blend merge and
+the per-cell piece lists against the offline prototype, cell by cell.
