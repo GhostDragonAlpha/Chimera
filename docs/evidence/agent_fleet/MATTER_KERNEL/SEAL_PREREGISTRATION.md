@@ -179,3 +179,69 @@ OR any cut point lands in fewer than two daughter boundaries. If it
 fires, the successor is named: audit per-edge weld topology (which
 edge, which two triangles) and the plane classification epsilon —
 do NOT patch by nudging volumes.
+
+## RUN RECORD (2026-09-13, live engine v2 cut-and-weld, final binary)
+
+One clean instance: restart -> classify_run.py payloads -> bars in
+prereg order. Full log: .tmp/seal2_run.log (driver: tools/seal2_run.py;
+offline derivation: tools/seal2_derivation.py).
+
+- S5'a refusals: PASS — y=99.9 and y=-5 both refused by name, BEFORE
+  the seal (cause unambiguous: plane outside the body y-range
+  -0.0195..9.9712).
+- S4' mitosis intent: PASS — POST /tick_seal {"y":2.6} -> ok.
+- S1' partition: PASS — seal_split=336, seal_cuts=336, seal_loops=14,
+  seal_caps=308; 7,306 pure lower + 28,988 pure upper + 336 split =
+  36,630 accounted. Every cut point welded into both daughters
+  (336/336 each in the offline derivation; the live weld is proven by
+  conservation below).
+- S2' conservation at rest: PASS — V_lower 0.158736 + V_upper 13.6658
+  = 13.824536 m^3 vs the 13.8245 target (2.6e-4 %); conserve_pct = 0.
+- S3' rest pressure: PASS — P_lower = P_upper = 0 EXACTLY.
+- S5'b re-seal: PASS — refused by name.
+- S2' conservation under pose: PASS — hip_L (joint 13) 30 deg:
+  V_whole moved 13.8246 -> 13.8241 m^3 (blended travel is not
+  volume-preserving — that is the hydraulic signal); conserve_pct =
+  -1.38e-05 %. The daughters traded volume: dV_lower +0.0218,
+  dV_upper -0.0223 m^3.
+- S3' hydraulics: PASS — dV_lower +0.021788 m^3 -> P_lower
+  -298.39 MPa (expansion lowers P); kappa-law recompute from the
+  reported V and v0 agrees to ~1e-3 relative (the state prints V at 7
+  significant digits; the law lives in the tick, the check only
+  re-reads the print). P_upper +3.54 MPa for its own dV.
+- S3' return: PASS — pose back to 0: volumes restored to v0 exactly,
+  P_lower = P_upper = 0 exactly, conserve 0.
+- Frames (CHIMERA_PROOF\FEET\): seal2_before_rest.png,
+  seal2_posed_hipL30.png (6,096 px changed, bbox x[1101,1334]
+  y[385,712] of 2560x1369 — the left hip/thigh region),
+  seal2_returned_rest.png (0 px changed vs before — pixel-exact
+  restore). Vision check on the crops: the brown sculpted monkey on
+  the engine grid; the posed crop shows the hip/leg asymmetry, the
+  rest crops show the legs symmetric; long spread fingers at the
+  sides — the anatomy the 12 small cross-section loops decode to.
+
+### The mid-run fix (disclosed, not hidden)
+
+The first live seal (same cut-and-weld, v0 evaluated on base_pos_)
+measured P at rest = -3265 / +2731 Pa: v0 was computed on the authored
+base while the live volume ran on the tick's blended rest verts, and
+float32 blend rounding (1.3e-6 relative volume) amplified by water's
+kappa is ~3 kPa of phantom pressure. Fixed by extracting apply_travel()
+(the classified blend) and evaluating the cut AND v0 on the tick's own
+zero-angle rest blend — the same arithmetic path per frame, so the
+rest dV is exactly 0, not float-noise. The preregistered 1 kPa bar
+then passed exactly (0 Pa) on the final binary. The fix changed the
+REFERENCE evaluation, not the bar; both runs are recorded here.
+
+FALSIFIER: DID NOT FIRE. v2 stands.
+
+## OPEN (v2)
+
+- Recursive mitosis (the growth law): re-cut a daughter by the same
+  plane op at a finer scale — leg -> shin -> foot. The partition code
+  is already per-plane; the intent needs a daughter selector.
+- Wall dynamics: the wall is currently rigid (cut slots ride edges at
+  fixed t); a tensioned wall that deforms under the pressure delta is
+  the next hydraulic appliance (Laplace).
+- Rendering the internal wall on demand (it is deliberately invisible
+  internal membrane; a debug view would show the cut line).

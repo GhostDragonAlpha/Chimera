@@ -46,8 +46,12 @@ public:
     bool intent_joint(int idx, float force_n);
 
     // THE SEAL (Appliance 4): mitosis — one intent divides the creature
-    // into two sealed hydraulic cells at plane y. Volume by divergence,
-    // pressure by dP = -dV/(kappa*V0), kappa = water at 25 C.
+    // into two sealed hydraulic cells at plane y. v2 is the CUT-AND-WELD:
+    // straddling triangles split at the plane, the cross-section loops
+    // chain from the cut segments, and each loop is capped twice (both
+    // windings) so both daughters' boundaries are closed surfaces.
+    // Volume by divergence, pressure by dP = -dV/(kappa*V0),
+    // kappa = water at 25 C.
     bool seal(float y);
 
     bool   enabled_ = true;
@@ -81,18 +85,33 @@ private:
     std::vector<std::array<float, 3>> joint_pins_;  // the 28 measured pins
     std::vector<float>  joint_deg_;            // pose per pin (radians)
     std::vector<float>  joint_force_;          // standing press per pin, N
-    // THE SEAL (mitosis): two sealed hydraulic daughters
+    // THE SEAL v2 (cut-and-weld): the wall is the welded cross-section
+    // itself. Cut slots ride surface edges at fixed t, so the weld holds
+    // while poses move the surface — the daughters' boundaries stay
+    // closed and their divergence sums stay true volumes.
+    struct SealSlot { uint32_t a, b; float t; };   // cut point on edge (a,b)
     bool  sealed_ = false;
     float seal_y_ = 0.f, kappa_ = 4.6e-10f;
-    float d_lower_ = 0.f;                      // disc divergence constant, m^3
     float v0_lower_ = 0.f, v0_upper_ = 0.f;    // rest volumes at seal time
-    float seal_area_ = 0.f;
+    float vol_whole0_ = 0.f;                   // whole divergence vol at seal
     float vol_lower_ = 0.f, vol_upper_ = 0.f;  // live daughter volumes
+    float vol_whole_ = 0.f;                    // live posed whole volume
+    float conserve_pct_ = 0.f;                 // (Vl+Vu-Vw)/Vw * 100
     float p_lower_ = 0.f, p_upper_ = 0.f;      // hydraulic gauge pressure
+    uint32_t seal_nv_ = 0;                     // original vertex count
+    int seal_split_ = 0, seal_cuts_ = 0, seal_loops_ = 0, seal_caps_ = 0;
+    std::vector<SealSlot> cut_src_;            // slot nv+k -> edge (a,b,t)
+    std::vector<uint32_t> seal_lower_, seal_upper_;  // 3 slots per piece
+    std::vector<float>  cut_pos_;              // per-frame posed cut positions
     bool  has_scene_ = false;
     float dirty_ = 0.f;                        // tint changed -> needs upload
     std::atomic<bool> ready_{false};           // committed only after init
     uint32_t verts_expected() const { return (uint32_t)(base_pos_.size() / 9); }
     void  apply_flex(std::vector<float>& verts9);
     void  apply_chain(std::vector<float>& verts9);
+    // classified smooth travel; deg == nullptr poses all angles at 0
+    // (used by seal() so v0 is measured on the SAME rest-blend floats
+    // the per-frame volume uses — rest dV is exactly 0, not float-noise)
+    void  apply_travel(std::vector<float>& verts9,
+                       const std::vector<float>* deg) const;
 };

@@ -70,3 +70,18 @@ foot from the leg — mitosis IS the body-part boundary, made hydraulic.
   closed hydraulic vessel. The editor window must stay FOREGROUND:
   backgrounded, the present path stalls and every downstream client
   starves (measured twice, 2026-09-13).
+
+## RUN RECORD (2026-09-13, THE SEAL WALL live — the cut-and-weld)
+
+Build-order appliance 2 is live: POST /tick_seal cuts the creature at
+plane y and welds the cap to the TRUE cross-section (336 straddling
+triangles split exactly, 14 cross-section loops chained, 308 cap
+triangles per daughter, both windings). The daughters are TRUE sealed
+cells: V_lower + V_upper = 13.8245 m^3 at rest (2.6e-4 % of the
+divergence-theorem whole), conserved under pose to 1.4e-05 %, and the
+pressures P = -dV/(kappa*V0) respond to real dV (hip 30 deg:
+-298 MPa on the leg cell) and return to 0 EXACTLY when the pose
+returns. Evidence and bars: docs/evidence/agent_fleet/MATTER_KERNEL/
+SEAL_PREREGISTRATION.md (v2 prereg + run record; falsifier did not
+fire). The growth law ahead is recursive mitosis — the same cut op on
+a daughter, per scale.

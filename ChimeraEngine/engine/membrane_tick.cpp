@@ -6,7 +6,9 @@
 #include <cmath>
 #include <cstdlib>
 #include <map>
+#include <set>
 #include <sstream>
+#include <utility>
 
 namespace {
 
@@ -26,6 +28,20 @@ float tri_area(const std::vector<float>& v9,
     float wx = v9[c*9+0] - v9[a*9+0], wy = v9[c*9+1] - v9[a*9+1], wz = v9[c*9+2] - v9[a*9+2];
     float cx = uy * wz - uz * wy, cy = uz * wx - ux * wz, cz = ux * wy - uy * wx;
     return 0.5f * std::sqrt(cx * cx + cy * cy + cz * cz);
+}
+
+// THE SEAL v2 slot read: slots below nv are original vertices (pos9,
+// 9 floats each); slots nv+k are inserted cut points riding edge
+// (a,b) at fixed t — their CURRENT positions live in cutpos (3 each).
+void slot_read(const std::vector<float>& pos9, uint32_t nv,
+               const std::vector<float>& cutpos, uint32_t s,
+               float* x, float* y, float* z) {
+    if (s < nv) {
+        *x = pos9[s * 9 + 0]; *y = pos9[s * 9 + 1]; *z = pos9[s * 9 + 2];
+    } else {
+        size_t i = (size_t)(s - nv) * 3;
+        *x = cutpos[i]; *y = cutpos[i + 1]; *z = cutpos[i + 2];
+    }
 }
 
 }  // namespace
@@ -141,6 +157,34 @@ void MembraneTick::apply_flex(std::vector<float>& verts9) {
     }
 }
 
+void MembraneTick::apply_travel(std::vector<float>& verts9,
+                                const std::vector<float>* deg) const {
+    // classified smooth travel, verbatim: each vertex mixes the poses of
+    // its 3 nearest pins by its stored weights; deg == nullptr -> all
+    // angles 0 (the exact rest blend). Shared by step() and seal() so
+    // v0 and the live volume run the SAME arithmetic path.
+    const size_t nv = verts9.size() / 9;
+    for (size_t v = 0; v < nv; ++v) {
+        float px = 0.f, py = 0.f, pz = 0.f;
+        // blend source is the AUTHORED BASE: deterministic per tick
+        float ox = base_pos_[v * 9 + 0], oy = base_pos_[v * 9 + 1], oz = base_pos_[v * 9 + 2];
+        for (int k = 0; k < 3; ++k) {
+            uint8_t j = vert_bind_idx_[v * 3 + (size_t)k];
+            float w = vert_bind_w_[v * 3 + (size_t)k];
+            float th = deg ? (*deg)[j] : 0.f;
+            const auto& pv = joint_pins_[j];
+            float bx = ox - pv[0], by = oy - pv[1], bz = oz - pv[2];
+            float cth = std::cos(th), sth = std::sin(th);
+            px += w * (bx + pv[0]);
+            py += w * (by * cth - bz * sth + pv[1]);
+            pz += w * (by * sth + bz * cth + pv[2]);
+        }
+        verts9[v * 9 + 0] = px;
+        verts9[v * 9 + 1] = py;
+        verts9[v * 9 + 2] = pz;
+    }
+}
+
 void MembraneTick::step(std::vector<float>& verts9) {
     if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return;
     if (tri_verts_.size() != cells_.size() * 3) return;   // hardened
@@ -155,26 +199,7 @@ void MembraneTick::step(std::vector<float>& verts9) {
     // its 3 nearest pins by its stored weights. The surface BENDS; it
     // never tears (that was the rigid-pin method, rejected by the operator).
     if (classified) {
-        const size_t nv = verts9.size() / 9;
-        for (size_t v = 0; v < nv; ++v) {
-            float px = 0.f, py = 0.f, pz = 0.f;
-            // blend source is the AUTHORED BASE: deterministic per tick
-            float ox = base_pos_[v * 9 + 0], oy = base_pos_[v * 9 + 1], oz = base_pos_[v * 9 + 2];
-            for (int k = 0; k < 3; ++k) {
-                uint8_t j = vert_bind_idx_[v * 3 + (size_t)k];
-                float w = vert_bind_w_[v * 3 + (size_t)k];
-                float th = joint_deg_[j];
-                const auto& pv = joint_pins_[j];
-                float bx = ox - pv[0], by = oy - pv[1], bz = oz - pv[2];
-                float cth = std::cos(th), sth = std::sin(th);
-                px += w * (bx + pv[0]);
-                py += w * (by * cth - bz * sth + pv[1]);
-                pz += w * (by * sth + bz * cth + pv[2]);
-            }
-            verts9[v * 9 + 0] = px;
-            verts9[v * 9 + 1] = py;
-            verts9[v * 9 + 2] = pz;
-        }
+        apply_travel(verts9, &joint_deg_);
     } else if (!rig_.empty()) {
         apply_chain(verts9);
     } else {
@@ -227,24 +252,42 @@ void MembraneTick::step(std::vector<float>& verts9) {
             verts9[v * 9 + 6 + (size_t)k] = std::min(out, 1.f);
         }
     }
-    // THE SEAL: per-daughter divergence volumes + hydraulic pressure.
-    // Each daughter's boundary = its surface triangles + the seal disc
-    // (constant while the plane holds), so the daughters' volumes sum to
-    // the whole and respond only to true surface deformation.
+    // THE SEAL v2 (cut-and-weld): cut slots ride their edges at fixed t,
+    // so the daughters' boundaries stay closed while the surface moves.
+    // Each daughter's divergence sum is a true volume, and their sum must
+    // equal the posed whole-mesh volume — conservation is the weld's bar.
     if (sealed_) {
-        float al = 0.f, au = 0.f;
+        cut_pos_.resize(cut_src_.size() * 3);
+        for (size_t i = 0; i < cut_src_.size(); ++i) {
+            const SealSlot& c = cut_src_[i];
+            for (int k = 0; k < 3; ++k)
+                cut_pos_[i * 3 + k] = verts9[c.a * 9 + k] * (1.f - c.t)
+                                    + verts9[c.b * 9 + k] * c.t;
+        }
+        auto div6 = [&](uint32_t s0, uint32_t s1, uint32_t s2) -> float {
+            float ax, ay, az, bx, by, bz, cx, cy, cz;
+            slot_read(verts9, seal_nv_, cut_pos_, s0, &ax, &ay, &az);
+            slot_read(verts9, seal_nv_, cut_pos_, s1, &bx, &by, &bz);
+            slot_read(verts9, seal_nv_, cut_pos_, s2, &cx, &cy, &cz);
+            return (ax * (by * cz - bz * cy) + ay * (bz * cx - bx * cz)
+                  + az * (bx * cy - by * cx)) / 6.f;
+        };
+        float vl = 0.f, vu = 0.f;
+        for (size_t i = 0; i + 2 < seal_lower_.size(); i += 3)
+            vl += div6(seal_lower_[i], seal_lower_[i + 1], seal_lower_[i + 2]);
+        for (size_t i = 0; i + 2 < seal_upper_.size(); i += 3)
+            vu += div6(seal_upper_[i], seal_upper_[i + 1], seal_upper_[i + 2]);
+        float vw = 0.f;
         for (size_t i = 0; i + 2 < tri_verts_.size(); i += 3) {
             uint32_t a = tri_verts_[i], b = tri_verts_[i + 1], cc2 = tri_verts_[i + 2];
-            float det = verts9[a*9+0] * (verts9[b*9+1] * verts9[cc2*9+2] - verts9[b*9+2] * verts9[cc2*9+1])
-                      + verts9[a*9+1] * (verts9[b*9+2] * verts9[cc2*9+0] - verts9[b*9+0] * verts9[cc2*9+2])
-                      + verts9[a*9+2] * (verts9[b*9+0] * verts9[cc2*9+1] - verts9[b*9+1] * verts9[cc2*9+0]);
-            float cy = (verts9[a*9+1] + verts9[b*9+1] + verts9[cc2*9+1]) / 3.f;
-            if (cy < seal_y_) al += det / 6.f; else au += det / 6.f;
+            vw += (verts9[a*9+0] * (verts9[b*9+1] * verts9[cc2*9+2] - verts9[b*9+2] * verts9[cc2*9+1])
+                 + verts9[a*9+1] * (verts9[b*9+2] * verts9[cc2*9+0] - verts9[b*9+0] * verts9[cc2*9+2])
+                 + verts9[a*9+2] * (verts9[b*9+0] * verts9[cc2*9+1] - verts9[b*9+1] * verts9[cc2*9+0])) / 6.f;
         }
-        vol_lower_ = std::fabs(al + d_lower_);
-        vol_upper_ = std::fabs(au - d_lower_);
-        p_lower_ = (v0_lower_ - vol_lower_) / (kappa_ * v0_lower_);
-        p_upper_ = (v0_upper_ - vol_upper_) / (kappa_ * v0_upper_);
+        vol_lower_ = vl; vol_upper_ = vu; vol_whole_ = vw;
+        conserve_pct_ = vw != 0.f ? (vl + vu - vw) / vw * 100.f : 0.f;
+        p_lower_ = (v0_lower_ - vl) / (kappa_ * v0_lower_);
+        p_upper_ = (v0_upper_ - vu) / (kappa_ * v0_upper_);
     }
 }
 
@@ -397,86 +440,188 @@ void MembraneTick::apply_chain(std::vector<float>& verts9) {
 }
 
 bool MembraneTick::seal(float y) {
+    // THE SEAL v2 — the cut-and-weld (prereg 4eb9480c). The v1 floating
+    // disc is REPLACED: straddling triangles split at the plane, the cut
+    // segments chain into the cross-section loops, and each loop is
+    // capped twice (both windings) so both daughters are closed surfaces.
     if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return false;
     if (!std::isfinite(y)) return false;
-    if (sealed_) return false;   // one seal per creature in v1
-    // the plane must cross the body
+    if (sealed_) return false;   // one seal per creature
+    if (tri_verts_.size() != cells_.size() * 3) return false;
+    const uint32_t nv = (uint32_t)(base_pos_.size() / 9);
+    if (nv == 0) return false;
+
+    // rest9: the verts the tick ITSELF produces at rest — the classified
+    // blend with all angles 0, the same arithmetic path step() runs per
+    // frame. v0 measured on these floats makes the rest dV exactly 0
+    // (base_pos_ differs from the blended rest by float32 rounding,
+    // which kappa amplifies into ~kPa of phantom pressure).
+    std::vector<float> rest9(base_pos_);
+    {
+        const bool classified = cell_joint_.size() == cells_.size()
+                             && joint_pins_.size() == joint_deg_.size()
+                             && vert_bind_idx_.size() == (size_t)nv * 3
+                             && vert_bind_w_.size() == (size_t)nv * 3;
+        if (classified) apply_travel(rest9, nullptr);
+    }
+
+    // the plane must cross the body (authored rest pose)
     float ymin = 1e30f, ymax = -1e30f;
-    for (size_t v = 0; v + 2 < base_pos_.size(); v += 9) {
-        float y = base_pos_[v + 1];
-        ymin = std::min(ymin, y); ymax = std::max(ymax, y);
+    for (uint32_t v = 0; v < nv; ++v) {
+        float yy = rest9[v * 9 + 1];
+        ymin = std::min(ymin, yy);
+        ymax = std::max(ymax, yy);
     }
     if (y <= ymin || y >= ymax) return false;   // seal outside the body
 
-    // cross-section disc: center and radius from the verts near the plane
-    float sx = 0, sz = 0; int cn = 0; float rmax = 0.f;
-    for (size_t v = 0; v + 2 < base_pos_.size(); v += 9) {
-        float vx = base_pos_[v + 0], vy = base_pos_[v + 1], vz = base_pos_[v + 2];
-        if (std::fabs(vy - y) < 0.35f) {
-            sx += vx; sz += vz; ++cn;
+    // CUT: split every straddling triangle; cut slots ride their edges at
+    // fixed t. Segment direction follows the BELOW-piece boundary walk, so
+    // chained loops inherit the surface winding (both daughters sign+).
+    std::map<std::pair<uint32_t, uint32_t>, uint32_t> cut_id;
+    std::vector<SealSlot> cut_src;
+    std::vector<uint32_t> lower, upper;         // 3 slots per piece
+    std::vector<std::pair<uint32_t, uint32_t>> segs;
+    int split = 0;
+    auto edge_cut = [&](uint32_t va, uint32_t vb, uint32_t* out) -> bool {
+        float ya = rest9[va * 9 + 1], yb = rest9[vb * 9 + 1];
+        if (ya >= yb) { std::swap(va, vb); std::swap(ya, yb); }
+        if (!(ya < y && y <= yb)) return false; // not a crossing edge
+        auto key = std::make_pair(std::min(va, vb), std::max(va, vb));
+        auto it = cut_id.find(key);
+        if (it != cut_id.end()) { *out = it->second; return true; }
+        float t = (y - ya) / (yb - ya);
+        uint32_t id = nv + (uint32_t)cut_src.size();
+        cut_id[key] = id;
+        cut_src.push_back({va, vb, t});
+        *out = id;
+        return true;
+    };
+    for (size_t i = 0; i < cells_.size(); ++i) {
+        uint32_t vs[3] = {tri_verts_[i * 3 + 0], tri_verts_[i * 3 + 1],
+                          tri_verts_[i * 3 + 2]};
+        bool bl[3] = {rest9[vs[0] * 9 + 1] < y,
+                      rest9[vs[1] * 9 + 1] < y,
+                      rest9[vs[2] * 9 + 1] < y};
+        int nb = (bl[0] ? 1 : 0) + (bl[1] ? 1 : 0) + (bl[2] ? 1 : 0);
+        if (nb == 3) {
+            lower.push_back(vs[0]); lower.push_back(vs[1]); lower.push_back(vs[2]);
+            continue;
+        }
+        if (nb == 0) {
+            upper.push_back(vs[0]); upper.push_back(vs[1]); upper.push_back(vs[2]);
+            continue;
+        }
+        ++split;
+        if (nb == 1) {
+            // one below (A); the below piece is (A, Pab, Pca)
+            int iA = bl[0] ? 0 : (bl[1] ? 1 : 2);
+            uint32_t A = vs[iA], B = vs[(iA + 1) % 3], C = vs[(iA + 2) % 3];
+            uint32_t pab = 0, pca = 0;
+            if (!edge_cut(A, B, &pab) || !edge_cut(C, A, &pca)) return false;
+            lower.push_back(A); lower.push_back(pab); lower.push_back(pca);
+            upper.push_back(pab); upper.push_back(B); upper.push_back(C);
+            upper.push_back(pab); upper.push_back(C); upper.push_back(pca);
+            segs.push_back({pab, pca});
+        } else {
+            // two below (A,B); the below piece is (A, B, Pbc, Pca)
+            int iC = !bl[0] ? 0 : (!bl[1] ? 1 : 2);
+            uint32_t C = vs[iC], A = vs[(iC + 1) % 3], B = vs[(iC + 2) % 3];
+            uint32_t pbc = 0, pca = 0;
+            if (!edge_cut(B, C, &pbc) || !edge_cut(C, A, &pca)) return false;
+            lower.push_back(A); lower.push_back(B); lower.push_back(pbc);
+            lower.push_back(A); lower.push_back(pbc); lower.push_back(pca);
+            upper.push_back(pbc); upper.push_back(C); upper.push_back(pca);
+            segs.push_back({pbc, pca});
         }
     }
-    if (cn == 0) return false;   // no crossing: seal plane misses the body
-    float cx = sx / cn, cz = sz / cn;
-    for (size_t v = 0; v + 2 < base_pos_.size(); v += 9) {
-        float vx = base_pos_[v + 0], vy = base_pos_[v + 1], vz = base_pos_[v + 2];
-        if (std::fabs(vy - y) < 0.35f)
-            rmax = std::max(rmax, std::sqrt((vx-cx)*(vx-cx) + (vz-cz)*(vz-cz)));
-    }
-    float R = rmax * 1.05f + 0.02f;
-    seal_area_ = 3.14159265358979f * R * R;
 
-    // the disc divergence constant (lower daughter orientation), rest pose:
-    // a 32-gon at height y; its det sum / 6 is CONSTANT while the plane
-    // holds, so the daughters' volumes below stay exact under poses.
-    const int SIDES = 32;
-    float dsum = 0.f;
-    float px = 0.f, py = 0.f, pz = 0.f;
-    for (int i = 0; i <= SIDES; ++i) {
-        float a = 2.f * 3.14159265358979f * i / SIDES;
-        px = cx + R * std::cos(a); py = y; pz = cz + R * std::sin(a);
-        if (i > 0) {
-            // fan triangle (center, prev, cur) -- lower orientation
-            float fx = cx, fy = y, fz = cz;
-            dsum += fx * (py * pz - pz * py)   // degenerate-safe fan
-                  + fy * (pz * px - px * pz)
-                  + fz * (px * py - py * px);
+    // WELD: chain the segments into closed loops. Every cut node must have
+    // exactly one out-edge and every walk must return to its start — any
+    // anomaly (non-manifold plane crossing) refuses the seal BY NAME
+    // rather than guessing around it.
+    std::map<uint32_t, uint32_t> next;
+    for (const auto& s : segs) {
+        if (next.count(s.first)) return false;   // out-degree > 1
+        next[s.first] = s.second;
+    }
+    std::set<uint32_t> visited;
+    int loops = 0, caps = 0;
+    for (const auto& start : next) {
+        if (visited.count(start.first)) continue;
+        std::vector<uint32_t> ring;
+        uint32_t cur = start.first;
+        while (true) {
+            ring.push_back(cur);
+            visited.insert(cur);
+            auto it = next.find(cur);
+            if (it == next.end()) return false;             // open chain
+            cur = it->second;
+            if (ring.size() > cut_src.size() + 1u) return false;  // runaway
+            if (cur == start.first) break;
+            if (visited.count(cur)) return false;           // cross-linked
         }
-        px = cx + R * std::cos(a); py = y; pz = cz + R * std::sin(a);
+        ++loops;
+        // fan from ring[0], both windings — one cap per daughter. The
+        // divergence integral is triangulation-independent, so the fan is
+        // exact for volume; caps are internal membrane (not rendered).
+        for (size_t k = 1; k + 1 < ring.size(); ++k) {
+            lower.push_back(ring[0]); lower.push_back(ring[k]); lower.push_back(ring[k + 1]);
+            upper.push_back(ring[0]); upper.push_back(ring[k + 1]); upper.push_back(ring[k]);
+            ++caps;
+        }
     }
-    // the fan above collapses (center == ring plane center): use ring-only
-    dsum = 0.f;
-    for (int i = 0; i < SIDES; ++i) {
-        float a0 = 2.f * 3.14159265358979f * i / SIDES;
-        float a1 = 2.f * 3.14159265358979f * (i + 1) / SIDES;
-        float x0 = cx + R * std::cos(a0), z0 = cz + R * std::sin(a0);
-        float x1 = cx + R * std::cos(a1), z1 = cz + R * std::sin(a1);
-        // planar disc triangle (center, r0, r1) at height y
-        float fx = cx, fy = y, fz = cz;
-        float v0x = x0, v0y = y, v0z = z0;
-        float v1x = x1, v1y = y, v1z = z1;
-        dsum += fx * (v0y * v1z - v0z * v1y)
-              + fy * (v0z * v1x - v0x * v1z)
-              + fz * (v0x * v1y - v0y * v1x);
-    }
-    d_lower_ = dsum / 6.0f;
-    seal_y_ = y;
-    sealed_ = true;
+    if (caps == 0) return false;   // empty cross-section (guarded above)
 
-    // rest daughter volumes at seal time (base pose = authored rest)
-    float al = 0.f, au = 0.f;
+    // rest volumes at seal time (the tick's own rest blend). Cut slots
+    // resolve by lerping the rest edge endpoints at their fixed t — the
+    // same lerp step() performs per frame.
+    std::vector<float> cutpos(cut_src.size() * 3);
+    for (size_t i = 0; i < cut_src.size(); ++i) {
+        const SealSlot& c = cut_src[i];
+        for (int k = 0; k < 3; ++k)
+            cutpos[i * 3 + k] = rest9[c.a * 9 + k] * (1.f - c.t)
+                              + rest9[c.b * 9 + k] * c.t;
+    }
+    auto div6 = [&](uint32_t s0, uint32_t s1, uint32_t s2) -> float {
+        float ax, ay, az, bx, by, bz, cx, cy, cz;
+        slot_read(rest9, nv, cutpos, s0, &ax, &ay, &az);
+        slot_read(rest9, nv, cutpos, s1, &bx, &by, &bz);
+        slot_read(rest9, nv, cutpos, s2, &cx, &cy, &cz);
+        return (ax * (by * cz - bz * cy) + ay * (bz * cx - bx * cz)
+              + az * (bx * cy - by * cx)) / 6.f;
+    };
+    float vl = 0.f, vu = 0.f, vw = 0.f;
+    for (size_t i = 0; i + 2 < lower.size(); i += 3)
+        vl += div6(lower[i], lower[i + 1], lower[i + 2]);
+    for (size_t i = 0; i + 2 < upper.size(); i += 3)
+        vu += div6(upper[i], upper[i + 1], upper[i + 2]);
     for (size_t i = 0; i + 2 < tri_verts_.size(); i += 3) {
         uint32_t a = tri_verts_[i], b = tri_verts_[i + 1], cc = tri_verts_[i + 2];
-        float det = base_pos_[a*9+0] * (base_pos_[b*9+1] * base_pos_[cc*9+2] - base_pos_[b*9+2] * base_pos_[cc*9+1])
-                  + base_pos_[a*9+1] * (base_pos_[b*9+2] * base_pos_[cc*9+0] - base_pos_[b*9+0] * base_pos_[cc*9+2])
-                  + base_pos_[a*9+2] * (base_pos_[b*9+0] * base_pos_[cc*9+1] - base_pos_[b*9+1] * base_pos_[cc*9+0]);
-        float reg_y = (base_pos_[a*9+1] + base_pos_[b*9+1] + base_pos_[cc*9+1]) / 3.f;
-        if (reg_y < y) al += det / 6.f; else au += det / 6.f;
+        vw += (rest9[a*9+0] * (rest9[b*9+1] * rest9[cc*9+2] - rest9[b*9+2] * rest9[cc*9+1])
+             + rest9[a*9+1] * (rest9[b*9+2] * rest9[cc*9+0] - rest9[b*9+0] * rest9[cc*9+2])
+             + rest9[a*9+2] * (rest9[b*9+0] * rest9[cc*9+1] - rest9[b*9+1] * rest9[cc*9+0])) / 6.f;
     }
-    // include the two disc orientations
-    float dl = std::fabs(d_lower_) - std::fabs(d_lower_);  // handled below
-    v0_lower_ = std::fabs(al + d_lower_);
-    v0_upper_ = std::fabs(au - d_lower_);
+    // a daughter signing negative = inconsistent orientation through the
+    // cut — refuse honestly instead of taking an absolute value.
+    if (!(vl > 0.f) || !(vu > 0.f)) return false;
+
+    // publish last: step() reads sealed_ before touching these members
+    seal_nv_ = nv;
+    cut_src_ = std::move(cut_src);
+    cut_pos_ = std::move(cutpos);
+    seal_lower_ = std::move(lower);
+    seal_upper_ = std::move(upper);
+    seal_split_ = split;
+    seal_cuts_ = (int)cut_src_.size();
+    seal_loops_ = loops;
+    seal_caps_ = caps;
+    v0_lower_ = vl; v0_upper_ = vu;
+    vol_whole0_ = vw;
+    vol_lower_ = vl; vol_upper_ = vu; vol_whole_ = vw;
+    conserve_pct_ = vw != 0.f ? (vl + vu - vw) / vw * 100.f : 0.f;
+    p_lower_ = p_upper_ = 0.f;
+    seal_y_ = y;
+    sealed_ = true;
     return true;
 }
 
@@ -503,6 +648,13 @@ std::string MembraneTick::state_json() const {
       << ",\"sealed\":" << (sealed_ ? "true" : "false")
       << ",\"V_lower\":" << vol_lower_ << ",\"V_upper\":" << vol_upper_
       << ",\"P_lower\":" << p_lower_ << ",\"P_upper\":" << p_upper_
+      << ",\"v0_lower\":" << v0_lower_ << ",\"v0_upper\":" << v0_upper_
+      << ",\"V_whole\":" << vol_whole_
+      << ",\"conserve_pct\":" << conserve_pct_
+      << ",\"seal_split\":" << seal_split_
+      << ",\"seal_cuts\":" << seal_cuts_
+      << ",\"seal_loops\":" << seal_loops_
+      << ",\"seal_caps\":" << seal_caps_
       << ",\"has_scene\":" << (has_scene_ ? "true" : "false") << "}";
     return o.str();
 }
