@@ -478,3 +478,56 @@ One clean instance on the final binary (driver: the HP sequence, log
 FALSIFIER: DID NOT FIRE. The surface now answers load like tissue:
 press and it dimples by the membrane law, the sealed cells answer by
 kappa, release and it is pixel-exact again.
+
+---
+
+# THE HYDRAULIC RETURN PREREGISTRATION — appliance 3 completed (tension response)
+
+THE_CELL_MODEL appliance 3: "dP = surface-tension + compressibility
+response — pressure drives the surface back." The compressibility half
+is live (kappa answers dV). The tension half is NOT: recovery today is
+INSTANT (release -> dimple zeroed same tick). Nature recovers over
+TIME — soft-tissue stress relaxation. This completes the appliance.
+
+## STATEMENT
+
+A released dimple decays exponentially with tissue relaxation time
+tau instead of vanishing instantly: offset_i(t) = offset_i(0) * 
+exp(-t/tau). The press holds its forced value while active (force
+balances tension — steady state); on release the same offsets decay.
+Below a 0.1 mm cutoff the field clears fully (deterministic rest is
+preserved; frames taken after 3*tau are pixel-exact).
+
+## DERIVATION
+
+- Soft-tissue stress relaxation is exponential in time (standard
+  viscoelastic first-order decay); tau = 0.5 s is the named choice at
+  Yamada's cited skin-creep scale — falsifiable by the decay bar.
+- dt: the tick now takes the MEASURED frame time (clamped 0..0.1 s);
+  decay factor per tick = exp(-dt/tau). No fixed-step assumption.
+- The cutoff 1e-4 m is 0.5% of the 2 cm working dimple — sub-pixel,
+  and the deterministic-rest law survives.
+
+## PREDICTIONS
+
+HR1. Press ankle_L 10 kN, release: dimple_m(0) = 0.1989; dimple_m at
+     ~0.5 s = 0.1989*e^-1 = 0.0732 within 25% (frame-timing jitter);
+     dimple_m at ~2 s < 0.0036; shortly after 3*tau (1.5 s) EXACTLY 0.
+HR2. During decay the foot cell's P decays on the same exponential
+     (P is driven by the offset volume): P(t)/P(0) = dimple_m(t)/
+     dimple_m(0) within 10%.
+HR3. Conservation holds through the decay (sum conserved < 1e-3%);
+     the frame at rest AFTER the decay is pixel-exact vs pre-press.
+
+## FALSIFIER
+
+The decay is not exponential in MEASURED time (fixed-step smuggled
+in), OR rest never returns exactly (the cutoff leaks), OR conservation
+breaks during decay. Successor if fired: audit the dt plumbing from
+the frame loop and the offset clear condition.
+
+## SUPERSEDES
+
+HP3 (instant release) is superseded by HR1/HR3: "release" now means
+"exponential recovery with tau = 0.5 s, exact rest after 3*tau". The
+HP3 pixel-exactness bar moves to post-decay frames.
