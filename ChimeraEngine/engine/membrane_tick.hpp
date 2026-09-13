@@ -83,6 +83,8 @@ private:
     std::vector<RigPart> rig_;                 // the chain (Appliance 3)
     std::vector<float>  rig_angle_;            // radians per part
     std::vector<uint8_t> cell_joint_;          // per-triangle CA type (pin idx)
+    std::vector<std::vector<uint32_t>> joint_verts_;  // per-pin pressed region
+    std::vector<std::array<float, 3>> joint_cent_;    // per-pin region centroid
     std::vector<uint8_t> vert_bind_idx_;       // 3 pin indices per vertex
     std::vector<float>   vert_bind_w_;         // 3 normalized weights per vertex
     std::vector<uint8_t> vert_joint_;          // dominant pin per vertex
@@ -123,6 +125,15 @@ private:
     mutable std::mutex seal_mtx_;
     void  load_lock_() { seal_mtx_.lock(); }        // RAII at call sites
     void  load_unlock_() { seal_mtx_.unlock(); }
+    // THE HYDRAULIC PRESS (appliance 3): pressed cells dimple by the
+    // linear-membrane law delta = F/(4 pi sigma), Gaussian falloff r0;
+    // the divergence sums read the dimpled geometry, so the kappa law
+    // answers. Release restores the surface exactly.
+    float sigma_n_ = 4000.f;    // skin working tension, N/m (Yamada ULS
+                                // 8 MPa x 1.5 mm / safety 3)
+    float press_r0_ = 0.03f;    // falloff radius, m
+    float dimple_m_ = 0.f;      // deepest active dimple (state report)
+    bool  normals_displaced_ = false;  // dimpled normals need restore
     bool  has_scene_ = false;
     float dirty_ = 0.f;                        // tint changed -> needs upload
     std::atomic<bool> ready_{false};           // committed only after init

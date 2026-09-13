@@ -434,3 +434,47 @@ offset is applied relative to the travel/pose write and the seal read
   wrong under a pose; composition needs posed normals).
 - Press POINT selection (today the press region = the joint's whole
   cell group; a ray-hit press point is the game-facing op).
+
+## RUN RECORD (2026-09-13, live engine HYDRAULIC PRESS — the physics pushes back)
+
+One clean instance on the final binary (driver: the HP sequence, log
+.tmp/press_run.log; cells re-seeded foot/body/thigh/shin first).
+
+- HP1: PASS — knee_L 1000 N -> dimple_m = 0.019894 (predicted
+  0.019894); failed = 0.
+- HP2: PASS — 500 N -> dimple_m 0.009947, ratio 1.999964.
+- HP4: PASS — ankle_L 10 kN -> foot cell dV -0.000678 m^3,
+  P +5.118 MPa (independent kappa recompute +5.119); conservation
+  -7.59e-05 %.
+- HP3: PASS — release -> dimple_m = 0, worst |P| = 0, frame
+  pixel-exact (press2_released.png vs press0_before.png, 0 px).
+- HP5: PASS — force <= 0 refused.
+- VISIBILITY (the features law): the first lit pair moved only 756 px
+  (max 109) — the dimple displaced vertices but kept AUTHORED normals,
+  so the shading stayed flat. Fixed in-appliance: normals recomputed
+  from the DEFORMED pressed cells (face-normal accumulation,
+  normalized; restored from authored base on release). Final pair:
+  2,450 px (max 168), the pressed wrist crease visibly pinched
+  (press9/pressA/pressB in CHIMERA_PROOF\FEET\).
+
+### Defects found on the road here (all fixed in this appliance, disclosed)
+
+1. SLIVER CELLS FIRE THE DAMAGE LAW: the sculpt has 206 triangles with
+   capacity < 2 N (min area exactly 0). Equal-share load spread handed
+   them force; damage += load/~0 -> inf, 20 cells died on the first
+   1 kN press. Fix: a capacity floor (0.1 N) — a degenerate patch is
+   not a membrane and carries no share. Presses now fail nothing.
+2. RELEASE DID NOT EXIST: clear_intent() only cleared the FOOT forces;
+   per-joint presses had no release. Fix: /tick_intent_clear releases
+   ALL standing intents.
+3. THE RACE WAS STILL OPEN — my mitosis lock guarded only the SEAL
+   block of step(), while apply_travel at the TOP of step() read the
+   bindings that init() clears (crash at /cameras recall right after a
+   fresh boot + payload re-post; offset symbolized via the map:
+   apply_travel+0x104, the third AV of this class). Fix: ONE try_lock
+   at step() entry covers the whole tick body — the render loop still
+   never blocks (a cut or mesh upload in flight skips that frame).
+
+FALSIFIER: DID NOT FIRE. The surface now answers load like tissue:
+press and it dimples by the membrane law, the sealed cells answer by
+kappa, release and it is pixel-exact again.

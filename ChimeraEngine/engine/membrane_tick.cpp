@@ -111,6 +111,7 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
     pivot_[0] = pivots[0];
     pivot_[1] = pivots[1];
     has_scene_ = tris > 0;
+    joint_verts_.clear();   // mesh changed: pressed regions rebuild
     ticks_ = 0;
     force_l_ = force_r_ = 0.f;
     flex_l_ = flex_r_ = 0.f;
@@ -124,7 +125,12 @@ bool MembraneTick::intent(float force_n, const std::string& foot) {
     return false;
 }
 
-void MembraneTick::clear_intent() { force_l_ = force_r_ = 0.f; }
+void MembraneTick::clear_intent() {
+    // release ALL standing presses: feet + per-joint (the hydraulic
+    // press needs a release op; force <= 0 is refused on /tick_intent)
+    force_l_ = force_r_ = 0.f;
+    std::fill(joint_force_.begin(), joint_force_.end(), 0.f);
+}
 
 bool MembraneTick::flex(float deg_l, float deg_r) {
     if (!std::isfinite(deg_l) || !std::isfinite(deg_r)) return false;
@@ -189,6 +195,12 @@ void MembraneTick::apply_travel(std::vector<float>& verts9,
 void MembraneTick::step(std::vector<float>& verts9) {
     if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return;
     if (tri_verts_.size() != cells_.size() * 3) return;   // hardened
+    // ONE lock for the whole tick body: travel reads the bindings that
+    // init()/loaders rewrite, and the seal block reads the cell state a
+    // cut republishes. try_lock: the render loop never blocks — a cut or
+    // mesh upload in flight just skips this frame.
+    std::unique_lock<std::mutex> lk(seal_mtx_, std::try_to_lock);
+    if (!lk.owns_lock()) return;
     ++ticks_;
 
     const bool classified = cell_joint_.size() == cells_.size()
@@ -207,15 +219,121 @@ void MembraneTick::step(std::vector<float>& verts9) {
         apply_flex(verts9);
     }
 
-    // PRESS (force known): spread over the cells of the pressed group
+    // THE HYDRAULIC PRESS (appliance 3, prereg ff9033a0): pressed cells
+    // dimple inward by the linear-membrane law delta = F/(4 pi sigma)
+    // with a Gaussian falloff (authored positions + normals). The travel
+    // write above is deterministic per tick, so offsets never accumulate;
+    // the divergence sums below read the dimpled geometry and the kappa
+    // law answers. Release (F = 0) restores the surface exactly.
+    dimple_m_ = 0.f;
+    bool any_press = false;
     if (classified && !joint_force_.empty()) {
+        if (joint_verts_.size() != joint_force_.size()) {
+            // lazy region build once classification is live: each pin's
+            // cell-group vertices + centroid (authored rest)
+            joint_verts_.assign(joint_force_.size(), {});
+            joint_cent_.assign(joint_force_.size(), {0.f, 0.f, 0.f});
+            std::vector<std::array<double, 3>> acc(joint_force_.size(), {0., 0., 0.});
+            for (size_t i = 0; i < cells_.size(); ++i) {
+                uint8_t j = cell_joint_[i];
+                if (j >= joint_verts_.size()) continue;
+                for (int k = 0; k < 3; ++k) {
+                    uint32_t v = tri_verts_[i * 3 + (size_t)k];
+                    joint_verts_[j].push_back(v);
+                    acc[j][0] += base_pos_[v * 9 + 0];
+                    acc[j][1] += base_pos_[v * 9 + 1];
+                    acc[j][2] += base_pos_[v * 9 + 2];
+                }
+            }
+            for (size_t j = 0; j < joint_verts_.size(); ++j) {
+                float n = (float)std::max<size_t>(1, joint_verts_[j].size());
+                joint_cent_[j] = {(float)(acc[j][0] / n),
+                                  (float)(acc[j][1] / n),
+                                  (float)(acc[j][2] / n)};
+            }
+        }
+        for (size_t j = 0; j < joint_force_.size(); ++j) {
+            float F = joint_force_[j];
+            if (F <= 0.f) continue;
+            any_press = true;
+            float delta = F / (4.f * 3.14159265358979f * sigma_n_);
+            dimple_m_ = std::max(dimple_m_, delta);
+            const auto& C = joint_cent_[j];
+            float r02 = press_r0_ * press_r0_;
+            for (uint32_t v : joint_verts_[j]) {
+                float dx = base_pos_[v * 9 + 0] - C[0];
+                float dy = base_pos_[v * 9 + 1] - C[1];
+                float dz = base_pos_[v * 9 + 2] - C[2];
+                float q = (dx * dx + dy * dy + dz * dz) / r02;
+                float off = delta * std::exp(-q);
+                verts9[v * 9 + 0] -= base_pos_[v * 9 + 3] * off;  // authored
+                verts9[v * 9 + 1] -= base_pos_[v * 9 + 4] * off;  // normal
+                verts9[v * 9 + 2] -= base_pos_[v * 9 + 5] * off;
+            }
+        }
+        if (any_press) {
+            // normals from the DEFORMED surface: without this the shading
+            // stays flat and the dimple is invisible (measured: 10-30 kN
+            // pairs differed < 130/255 on ~1.7k px). Face normals of the
+            // pressed cells accumulate to their verts, then normalize.
+            std::vector<float> acc((size_t)verts9.size() / 9 * 3, 0.f);
+            std::vector<uint8_t> touched((size_t)verts9.size() / 9, 0);
+            for (size_t j = 0; j < joint_force_.size(); ++j) {
+                if (joint_force_[j] <= 0.f) continue;
+                for (size_t i = 0; i < cells_.size(); ++i) {
+                    if (cell_joint_[i] != (uint8_t)j) continue;
+                    uint32_t a = tri_verts_[i * 3 + 0], b = tri_verts_[i * 3 + 1],
+                             c = tri_verts_[i * 3 + 2];
+                    float ux = verts9[b*9+0] - verts9[a*9+0];
+                    float uy = verts9[b*9+1] - verts9[a*9+1];
+                    float uz = verts9[b*9+2] - verts9[a*9+2];
+                    float wx = verts9[c*9+0] - verts9[a*9+0];
+                    float wy = verts9[c*9+1] - verts9[a*9+1];
+                    float wz = verts9[c*9+2] - verts9[a*9+2];
+                    float nx = uy * wz - uz * wy;
+                    float ny = uz * wx - ux * wz;
+                    float nz = ux * wy - uy * wx;
+                    for (uint32_t v : {a, b, c}) {
+                        acc[(size_t)v * 3 + 0] += nx;
+                        acc[(size_t)v * 3 + 1] += ny;
+                        acc[(size_t)v * 3 + 2] += nz;
+                        touched[v] = 1;
+                    }
+                }
+            }
+            for (size_t v = 0; v < touched.size(); ++v) {
+                if (!touched[v]) continue;
+                float nx = acc[v * 3 + 0], ny = acc[v * 3 + 1], nz = acc[v * 3 + 2];
+                float len = std::sqrt(nx * nx + ny * ny + nz * nz);
+                if (len < 1e-12f) continue;
+                verts9[v * 9 + 3] = nx / len;
+                verts9[v * 9 + 4] = ny / len;
+                verts9[v * 9 + 5] = nz / len;
+            }
+            normals_displaced_ = true;
+        } else if (normals_displaced_) {
+            // release: restore the authored normals
+            for (size_t v = 0; v < verts9.size() / 9; ++v)
+                for (int k = 0; k < 3; ++k)
+                    verts9[v * 9 + 3 + (size_t)k] = base_pos_[v * 9 + 3 + (size_t)k];
+            normals_displaced_ = false;
+        }
+    }
+
+    // PRESS (force known): spread over the cells of the pressed group.
+    // Cells below the capacity floor are DEGENERATE membrane (the sculpt
+    // has 206 slivers incl. exact zero-area — measured 2026-09-13): they
+    // carry no share, or the damage law divides by ~zero and fires inf.
+    if (classified && !joint_force_.empty()) {
+        const float cap_floor = 0.1f;   // N; below this a patch is not a membrane
         std::vector<float> cnt(joint_pins_.size(), 0.f);
         for (size_t i = 0; i < cells_.size(); ++i)
-            if (!cells_[i].failed) cnt[cell_joint_[i]] += 1.f;
+            if (!cells_[i].failed && capacity_[i] > cap_floor) cnt[cell_joint_[i]] += 1.f;
         for (size_t i = 0; i < cells_.size(); ++i) {
             Cell& c = cells_[i];
             uint8_t jg = cell_joint_[i];
-            c.load = (cnt[jg] > 0.f && !c.failed) ? joint_force_[jg] / cnt[jg] : 0.f;
+            c.load = (cnt[jg] > 0.f && !c.failed && capacity_[i] > cap_floor)
+                         ? joint_force_[jg] / cnt[jg] : 0.f;
         }
         // tensile (B3): overloaded cells shed the excess, half per neighbor
         for (size_t i = 0; i < cells_.size(); ++i) {
@@ -257,11 +375,8 @@ void MembraneTick::step(std::vector<float>& verts9) {
     // posed surface at fixed weights, so every cell's boundary stays
     // closed while the surface moves — each cell's divergence sum is a
     // true volume, and the cells' sum must equal the posed whole volume.
-    // try_lock: a cut publishing on the HTTP thread reallocates the seal
-    // state; skip this frame's update instead of blocking the render loop.
+    // (Covered by the step-entry lock; no separate try_lock here.)
     if (sealed_ && !seal_cells_.empty()) {
-        std::unique_lock<std::mutex> lk(seal_mtx_, std::try_to_lock);
-        if (!lk.owns_lock()) return;
         const size_t ncut = cut_src_.size();
         cut_pos_.assign(ncut * 3, 0.f);
         for (size_t k = 0; k < ncut; ++k) {
@@ -320,6 +435,7 @@ bool MembraneTick::load_classify(const std::string& body) {
     if (body.size() != 4 + n) return false;
     if (n != cells_.size()) return false;   // one type per triangle cell
     cell_joint_.assign(body.begin() + 4, body.end());
+    joint_verts_.clear();   // pressed regions rebuild from the new types
     return true;
 }
 
@@ -757,6 +873,7 @@ std::string MembraneTick::state_json() const {
       << ",\"seal_cuts\":" << seal_cuts_
       << ",\"seal_loops\":" << seal_loops_
       << ",\"seal_caps\":" << seal_caps_
+      << ",\"dimple_m\":" << dimple_m_
       << ",\"cells\":[";
     for (size_t i = 0; i < seal_cells_.size(); ++i) {
         const SealCell& c = seal_cells_[i];
