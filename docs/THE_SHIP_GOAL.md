@@ -41,19 +41,31 @@ window tricks, no excuses.
 - R8. THE STRANGER TEST — PASS/OPEN: **OPEN.** A blind dyad judge
   (your law) looks at the demo the way a buyer would and answers:
   does this look worth paying for? The judge's verdict is the gate.
+- R9. OUR OWN WEBSITE — PASS/OPEN: **OPEN** (operator directive,
+  2026-09-13: "we don't have to use Steam"). A landing page that
+  hosts the free demo, lets a stranger play first, and asks them to
+  sign up afterwards — our page, our player list, no store gate.
+  Selling later needs the operator's payment account (Stripe or
+  PayPal, his identity); everything else on this page is buildable
+  without him. The engine already speaks web (the browser viewer),
+  so a browser-playable demo is in reach.
 
 ## THE REVENUE POSITION (why this can reach $100,000+)
 
 - The hook is novel and provable in ten seconds of video — novelty is
-  the rarest thing on Steam.
-- The teaching angle carries school/home-school licences later (a
-  second lifetime channel).
-- Early Access with content drops extends the tail: each new lesson
-  pack is a reason to return and a store refresh.
-- Price target at launch: $15-20. $100,000 to the developer needs
-  roughly 7,000-10,000 copies — reachable only with the demo funnel:
-  free demo -> Steam festival -> streamers. The demo is R7's first
-  deliverable.
+  the rarest thing on any store.
+- OUR OWN CHANNEL FIRST (operator, 2026-09-13): the demo lives on our
+  website, players sign up after playing. A store takes 30%; our own
+  page with a payment processor keeps ~95% — $100,000 needs ~7,000
+  copies at $15, not 10,000. The sign-up list is ours: every demo
+  player is a launch-day customer we can reach directly, and each
+  lesson pack after launch is a reason to return.
+- Steam remains OPEN as a second shelf later (not required): the same
+  package serves both.
+- The teaching angle carries school/home-school licences (a second
+  lifetime channel).
+- Price target: $15-20. With the demo funnel — play free, sign up,
+  buy — the copy count is reachable without a festival slot.
 
 ## THE ORDER OF WORK (one feature at a time, your law)
 
@@ -71,3 +83,4 @@ window tricks, no excuses.
 | Date       | Event                                   |
 |------------|-----------------------------------------|
 | 2026-09-13 | Goal set by the operator; 8/8 R-items OPEN |
+| 2026-09-13 | R9 our-own-website channel added (demo first, sign-up after); revenue position re-framed — our page keeps ~95%, sign-up list is ours, Steam demoted to optional second shelf |
