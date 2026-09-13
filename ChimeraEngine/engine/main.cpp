@@ -716,13 +716,23 @@ int main(int argc, char** argv) {
         } else if (p == "/tick_intent" && method == "POST") {
             // THE MEMBRANE TICK intents (Appliance 1): a standing press.
             // Force in newtons is a required input, never defaulted.
+            // Two forms: {"force_n", "foot"} (feet scene) or
+            // {"force_n", "joint_index"} (classified creature).
             float force = get_double(req_body, "force_n", NAN);
-            std::string foot = get_string(req_body, "foot");
-            if (g_tick.intent(force, foot)) {
-                body = "{\"ok\":true}";
+            int jidx = (int)get_double(req_body, "joint_index", -1.0);
+            if (jidx >= 0) {
+                body = g_tick.intent_joint(jidx, force)
+                     ? "{\"ok\":true}"
+                     : "{\"ok\":false,\"error\":\"refused: joint_index out of "
+                       "range or force must be positive\"}";
             } else {
-                body = "{\"ok\":false,\"error\":\"refused: force_n must be a "
-                       "positive number and foot L or R\"}";
+                std::string foot = get_string(req_body, "foot");
+                if (g_tick.intent(force, foot)) {
+                    body = "{\"ok\":true}";
+                } else {
+                    body = "{\"ok\":false,\"error\":\"refused: force_n must be a "
+                           "positive number and foot L or R\"}";
+                }
             }
             content_type = "application/json";
         } else if (p == "/tick_intent_clear" && method == "POST") {
@@ -748,12 +758,27 @@ int main(int argc, char** argv) {
             else body = "{\"ok\":false,\"error\":\"empty rig\"}";
             content_type = "application/json";
         } else if (p == "/tick_pose" && method == "POST") {
-            // A pose intent: {"joint": "knee_L", "deg": -40}
+            // A pose intent: {"joint": "knee_L", "deg": -40} or
+            // {"joint_index": 12, "deg": 30}
             std::string joint = get_string(req_body, "joint");
             float deg = (float)get_double(req_body, "deg", 0.0);
-            if (g_tick.pose(joint, deg)) body = "{\"ok\":true}";
+            int jidx = (int)get_double(req_body, "joint_index", -1.0);
+            bool ok = jidx >= 0 ? g_tick.pose_index(jidx, deg)
+                                : g_tick.pose(joint, deg);
+            if (ok) body = "{\"ok\":true}";
             else body = "{\"ok\":false,\"error\":\"refused: unknown joint or "
                         "angle outside +/-90\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_classify" && method == "POST") {
+            // CA CLASSIFICATION (Appliance 4): per-triangle joint type.
+            body = g_tick.load_classify(req_body) ? "{\"ok\":true}"
+                 : "{\"ok\":false,\"error\":\"classification size mismatch "
+                   "(post after the mesh)\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_joints" && method == "POST") {
+            // The measured pins: [u32 n][f32 x,y,z * n]
+            body = g_tick.load_joint_pins(req_body) ? "{\"ok\":true}"
+                 : "{\"ok\":false,\"error\":\"joint pins rejected\"}";
             content_type = "application/json";
         } else if (p == "/hinge_bin" && method == "POST") {
             // Binary protocol (little-endian):

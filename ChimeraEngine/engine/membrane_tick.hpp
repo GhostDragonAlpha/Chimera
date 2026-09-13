@@ -37,6 +37,14 @@ public:
     bool pose(const std::string& joint, float deg);
     size_t rig_parts() const { return rig_.size(); }
 
+    // CA CLASSIFICATION (Appliance 4): the existing object's triangles
+    // are typed by joint and bound to the 28 measured pins.
+    bool load_classify(const std::string& body);    // [u32 n][u8 * n]
+    bool load_joint_pins(const std::string& body);  // [u32 n][f32 x3 * n]
+    bool load_vertbind(const std::string& body);    // [u32 n][u8 * n]
+    bool pose_index(int idx, float deg);
+    bool intent_joint(int idx, float force_n);
+
     bool   enabled_ = true;
     uint64_t ticks_ = 0;
     float  force_l_ = 0.0f, force_r_ = 0.0f;   // active presses, newtons
@@ -61,9 +69,15 @@ private:
     std::array<std::array<float, 3>, 2> pivot_ = {};   // ankle pivots [L, R]
     std::vector<RigPart> rig_;                 // the chain (Appliance 3)
     std::vector<float>  rig_angle_;            // radians per part
+    std::vector<uint8_t> cell_joint_;          // per-triangle CA type (pin idx)
+    std::vector<uint8_t> vert_joint_;          // per-vertex binding (travel)
+    std::vector<std::array<float, 3>> joint_pins_;  // the 28 measured pins
+    std::vector<float>  joint_deg_;            // pose per pin (radians)
+    std::vector<float>  joint_force_;          // standing press per pin, N
     bool  has_scene_ = false;
     float dirty_ = 0.f;                        // tint changed -> needs upload
     std::atomic<bool> ready_{false};           // committed only after init
+    uint32_t verts_expected() const { return (uint32_t)(base_pos_.size() / 3); }
     void  apply_flex(std::vector<float>& verts9);
     void  apply_chain(std::vector<float>& verts9);
 };
