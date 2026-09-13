@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CHIMERA — touch the living physics</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; margin: 0; }
+  body { background:#0b0d10; color:#e8e4da; font-family: Georgia, 'Times New Roman', serif;
+         min-height:100vh; display:flex; flex-direction:column; align-items:center; }
+  h1 { font-size: 64px; letter-spacing: 12px; margin-top: 12vh; font-weight: normal; }
+  h2 { font-size: 22px; font-weight: normal; color:#9a938a; margin: 12px 0 40px; }
+  .screen { display:none; flex-direction:column; align-items:center; width:100%; }
+  .screen.on { display:flex; }
+  button { background:#1a1e24; color:#e8e4da; border:1px solid #3a414b; border-radius:8px;
+           font: inherit; font-size: 22px; padding: 14px 46px; cursor:pointer; margin: 8px; }
+  button:hover { background:#242a33; border-color:#5a6470; }
+  input { background:#12151a; color:#e8e4da; border:1px solid #3a414b; border-radius:8px;
+          font: inherit; font-size: 22px; padding: 12px 18px; text-align:center; width: 320px; }
+  #playwrap { display:flex; gap: 24px; width: min(1500px, 96vw); margin-top: 8px; }
+  #view { position: relative; flex: 1; }
+  #frame { width: 100%; border-radius: 10px; border: 1px solid #2a3038; display:block; cursor: crosshair; }
+  #side { width: 360px; display:flex; flex-direction:column; gap:14px; }
+  .card { background:#12151a; border:1px solid #2a3038; border-radius:10px; padding:18px; }
+  .card h3 { font-weight: normal; font-size: 18px; color:#c8b98a; margin-bottom: 10px; }
+  .read { font-family: Consolas, monospace; font-size: 15px; color:#8fd08f; white-space: pre-wrap; }
+  #verdict { font-size: 26px; text-align:center; min-height: 36px; color:#c8b98a; }
+  .badge { color:#8fd08f; }
+  #force { width: 100%; }
+  .small { font-size: 14px; color:#6a6460; }
+</style>
+</head>
+<body>
+
+<!-- THE START SCREEN -->
+<div class="screen on" id="s-start">
+  <h1>C H I M E R A</h1>
+  <h2>a creature of water and skin. touch it, and it answers.</h2>
+  <input id="name" placeholder="your name (your camera's name)" maxlength="32">
+  <button id="b-play">P L A Y</button>
+  <p class="small">your progress is kept under your name — the world remembers you.</p>
+</div>
+
+<!-- THE PLAY SCREEN -->
+<div class="screen" id="s-play">
+  <div id="playwrap">
+    <div id="view">
+      <img id="frame" alt="the creature" draggable="false">
+    </div>
+    <div id="side">
+      <div class="card">
+        <h3>THE LESSON — <span id="l-title"></span></h3>
+        <div id="l-body"></div>
+        <div id="verdict"></div>
+      </div>
+      <div class="card">
+        <h3>YOUR HAND</h3>
+        <div>force <span id="fval"></span></div>
+        <input type="range" id="force" min="500" max="50000" step="500" value="20000">
+        <p class="small">press on the creature and hold. let go to let it heal.</p>
+        <button id="b-release" style="width:100%">let go</button>
+      </div>
+      <div class="card">
+        <h3>THE CREATURE'S BLOOD</h3>
+        <div class="read" id="state">…</div>
+      </div>
+      <button id="b-save">save progress</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+let name = "", passed = false, holding = false;
+
+// -- the world channels ---------------------------------------------------
+async function api(path, body) {
+  const r = await fetch(path, body ? {method:"POST", body: JSON.stringify(body)} : {});
+  return r.json();
+}
+async function refreshFrame() {
+  // the frame is a fresh picture of THE world; the click maps onto it 1:1
+  const img = $("frame");
+  img.src = "/api/frame?" + Date.now();
+}
+$("frame").addEventListener("mousedown", async e => {
+  const r = e.target.getBoundingClientRect();
+  const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+  const res = await api("/api/touch", {px, py, force_n: +$("force").value});
+  if (res.ok) { holding = true; $("verdict").textContent = ""; }
+  else $("verdict").textContent = res.error || "the touch found nothing";
+});
+window.addEventListener("mouseup", release);
+async function release() {
+  if (!holding) return;
+  holding = false;
+  await api("/api/touch_clear", {});
+}
+$("force").oninput = () => $("fval").textContent = (+$("force").value).toLocaleString() + " N";
+
+// -- the lesson: WAKE THE CELL -------------------------------------------
+// make a cell's pressure cross 0.2 MPa (it resists — the water is real),
+// then let go and let it heal back to zero (the tissue law is real).
+const LESSON = {
+  title: "WAKE THE CELL",
+  body: "The creature is sealed — water under its skin. " +
+        "Press on its belly and HOLD: feel the cell resist. " +
+        "Wake it: push any cell's pressure past 0.2 MPa. " +
+        "Then LET GO, and watch the body heal itself back to zero.",
+};
+let woke = false, healed = false;
+
+function poll() {
+  if (!$("s-play").classList.contains("on")) return;
+  fetch("/api/state").then(r => r.json()).then(s => {
+    if (!s.cells) return;
+    let lines = [];
+    let mx = 0, mi = 0;
+    s.cells.forEach((c, i) => {
+      if (Math.abs(c.P) > mx) { mx = Math.abs(c.P); mi = i; }
+      lines.push(`cell ${i}: V=${c.V.toFixed(3)} m3  P=${(c.P/1e6).toFixed(3)} MPa`);
+    });
+    $("state").textContent = `cells: ${s.n_cells}\n` + lines.join("\n");
+    if (mx >= 2e5) woke = true;
+    const anyP = s.cells.some(c => Math.abs(c.P) >= 1000);
+    if (woke && !anyP) healed = true;
+    if (woke && !passed) $("verdict").textContent = "the cell is awake — now let go and let it heal";
+    if (woke && healed && !passed) {
+      passed = true;
+      $("verdict").innerHTML = '<span class="badge">PASSED — you felt the water. it was always there.</span>';
+    }
+  }).catch(() => {});
+  refreshFrame();
+}
+setInterval(poll, 1200);
+
+// -- the loop: start -> play -> save -------------------------------------
+$("b-play").onclick = async () => {
+  name = $("name").value.trim();
+  if (!name) { $("name").placeholder = "the world needs your name first"; return; }
+  const prog = await fetch("/api/progress?name=" + encodeURIComponent(name)).then(r => r.json());
+  passed = !!(prog.lessons && prog.lessons.wake_the_cell && prog.lessons.wake_the_cell.passed);
+  if (passed) $("verdict").innerHTML = '<span class="badge">you have passed this lesson before. touch it again anyway.</span>';
+  $("l-title").textContent = LESSON.title;
+  $("l-body").textContent = LESSON.body;
+  $("fval").textContent = (+$("force").value).toLocaleString() + " N";
+  $("s-start").classList.remove("on");
+  $("s-play").classList.add("on");
+  refreshFrame();
+};
+$("b-release").onclick = release;
+$("b-save").onclick = async () => {
+  const prog = await fetch("/api/progress?name=" + encodeURIComponent(name)).then(r => r.json());
+  prog.lessons = prog.lessons || {};
+  prog.lessons.wake_the_cell = { passed, at: new Date().toISOString() };
+  await api("/api/progress", prog);
+  $("verdict").innerHTML = '<span class="badge">saved. the world remembers you, ' + name + '.</span>';
+};
+</script>
+</body>
+</html>

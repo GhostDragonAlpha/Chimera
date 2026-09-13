@@ -183,3 +183,34 @@ op needs on top:
 
 R1 DOUBLE-CLICK LAUNCH: **PASS** (R1a foreground independence +
 R1b package; the ONLY remaining caveat is the cosmetic bat flash).
+
+## RUN RECORD (2026-09-13, R2 — the game loop, played end to end in a browser)
+
+The shell: tools/game_shell/server.py (stdlib, port 8206) + index.html.
+The world stays the frozen engine on 8107; the shell is the front door —
+it proxies the world's channels (frame/state/touch/touch_clear/pose)
+and keeps each player's progress in progress/<name>.json.
+
+Played LIVE in Chrome, every step evidence:
+- Start screen: CHIMERA title, name entry, PLAY (the sign-up law: a
+  name tied to a camera).
+- PLAY -> the lesson view: the live creature (the world's own frame),
+  the lesson card, the force hand (500 N..50 kN), and THE CREATURE'S
+  BLOOD — the four cells' volumes and pressures, live.
+- THE PLAYER PRESSED: a browser mouse-hold became a /tick_touch —
+  dimple 0.1176 m, torso cell +0.255 MPa (past the 0.2 MPa wake bar).
+- LET GO: the body healed (dimple 0, all P 0) -> the verdict
+  "PASSED — you felt the water. it was always there."
+- save progress -> progress/Alan.json written and fetched back by a
+  returning player (persistence proven over HTTP).
+- Crash-recovery proof on the way in: the engine was dead from the
+  system restart; launch_chimera.bat resurrected the sealed 4-cell
+  creature before any of this ran — R1 carrying R2.
+
+The lesson WAKE THE CELL (R4's first) is designed and proven INSIDE
+the loop: wake a cell past 0.2 MPa, then let it heal — the player
+touches the compressibility law AND the recovery law in one gesture.
+R4 scales this rail to five lessons (data, not code).
+
+R2 THE GAME LOOP: **PASS** (start -> play -> lesson -> save; progress
+persists; the loop survived a real crash-restart cycle during build).
