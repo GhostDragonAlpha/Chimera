@@ -50,6 +50,7 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
                         const std::vector<float>& verts9) {
     // build into locals, commit atomically: the frame loop may call step()
     // while this runs (boot restore thread vs render thread)
+    std::lock_guard<std::mutex> lk(seal_mtx_);
     ready_.store(false, std::memory_order_release);
 
     std::vector<Cell> cells(tris, Cell{});
@@ -252,17 +253,28 @@ void MembraneTick::step(std::vector<float>& verts9) {
             verts9[v * 9 + 6 + (size_t)k] = std::min(out, 1.f);
         }
     }
-    // THE SEAL v2 (cut-and-weld): cut slots ride their edges at fixed t,
-    // so the daughters' boundaries stay closed while the surface moves.
-    // Each daughter's divergence sum is a true volume, and their sum must
-    // equal the posed whole-mesh volume — conservation is the weld's bar.
-    if (sealed_) {
-        cut_pos_.resize(cut_src_.size() * 3);
-        for (size_t i = 0; i < cut_src_.size(); ++i) {
-            const SealSlot& c = cut_src_[i];
-            for (int k = 0; k < 3; ++k)
-                cut_pos_[i * 3 + k] = verts9[c.a * 9 + k] * (1.f - c.t)
-                                    + verts9[c.b * 9 + k] * c.t;
+    // THE SEAL / MITOSIS (recursive cut-and-weld): blend points ride the
+    // posed surface at fixed weights, so every cell's boundary stays
+    // closed while the surface moves — each cell's divergence sum is a
+    // true volume, and the cells' sum must equal the posed whole volume.
+    // try_lock: a cut publishing on the HTTP thread reallocates the seal
+    // state; skip this frame's update instead of blocking the render loop.
+    if (sealed_ && !seal_cells_.empty()) {
+        std::unique_lock<std::mutex> lk(seal_mtx_, std::try_to_lock);
+        if (!lk.owns_lock()) return;
+        const size_t ncut = cut_src_.size();
+        cut_pos_.assign(ncut * 3, 0.f);
+        for (size_t k = 0; k < ncut; ++k) {
+            const CutBlend& b = cut_src_[k];
+            float sx = 0.f, sy = 0.f, sz = 0.f;
+            for (int i = 0; i < b.n; ++i) {
+                sx += b.w[i] * verts9[b.v[i] * 9 + 0];
+                sy += b.w[i] * verts9[b.v[i] * 9 + 1];
+                sz += b.w[i] * verts9[b.v[i] * 9 + 2];
+            }
+            cut_pos_[k * 3 + 0] = sx;
+            cut_pos_[k * 3 + 1] = sy;
+            cut_pos_[k * 3 + 2] = sz;
         }
         auto div6 = [&](uint32_t s0, uint32_t s1, uint32_t s2) -> float {
             float ax, ay, az, bx, by, bz, cx, cy, cz;
@@ -272,11 +284,15 @@ void MembraneTick::step(std::vector<float>& verts9) {
             return (ax * (by * cz - bz * cy) + ay * (bz * cx - bx * cz)
                   + az * (bx * cy - by * cx)) / 6.f;
         };
-        float vl = 0.f, vu = 0.f;
-        for (size_t i = 0; i + 2 < seal_lower_.size(); i += 3)
-            vl += div6(seal_lower_[i], seal_lower_[i + 1], seal_lower_[i + 2]);
-        for (size_t i = 0; i + 2 < seal_upper_.size(); i += 3)
-            vu += div6(seal_upper_[i], seal_upper_[i + 1], seal_upper_[i + 2]);
+        float total = 0.f;
+        for (SealCell& c : seal_cells_) {
+            float v = 0.f;
+            for (size_t i = 0; i + 2 < c.pieces.size(); i += 3)
+                v += div6(c.pieces[i], c.pieces[i + 1], c.pieces[i + 2]);
+            c.vol = v;
+            c.p = (c.v0 - v) / (kappa_ * c.v0);
+            total += v;
+        }
         float vw = 0.f;
         for (size_t i = 0; i + 2 < tri_verts_.size(); i += 3) {
             uint32_t a = tri_verts_[i], b = tri_verts_[i + 1], cc2 = tri_verts_[i + 2];
@@ -284,10 +300,8 @@ void MembraneTick::step(std::vector<float>& verts9) {
                  + verts9[a*9+1] * (verts9[b*9+2] * verts9[cc2*9+0] - verts9[b*9+0] * verts9[cc2*9+2])
                  + verts9[a*9+2] * (verts9[b*9+0] * verts9[cc2*9+1] - verts9[b*9+1] * verts9[cc2*9+0])) / 6.f;
         }
-        vol_lower_ = vl; vol_upper_ = vu; vol_whole_ = vw;
-        conserve_pct_ = vw != 0.f ? (vl + vu - vw) / vw * 100.f : 0.f;
-        p_lower_ = (v0_lower_ - vl) / (kappa_ * v0_lower_);
-        p_upper_ = (v0_upper_ - vu) / (kappa_ * v0_upper_);
+        vol_whole_ = vw;
+        conserve_pct_ = vw != 0.f ? (total - vw) / vw * 100.f : 0.f;
     }
 }
 
@@ -299,6 +313,7 @@ bool MembraneTick::intent_joint(int idx, float force_n) {
 }
 
 bool MembraneTick::load_classify(const std::string& body) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
     if (body.size() < 4) return false;
     uint32_t n = 0;
     std::memcpy(&n, body.data(), 4);
@@ -309,6 +324,7 @@ bool MembraneTick::load_classify(const std::string& body) {
 }
 
 bool MembraneTick::load_vertbind(const std::string& body) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
     // smooth-travel binding: per vertex, 3 pin indices (u8) and 3
     // normalized weights (f32) -- 15 bytes per vertex. The membrane
     // BENDS by blending the pins' rotations; it never tears.
@@ -329,6 +345,7 @@ bool MembraneTick::load_vertbind(const std::string& body) {
 }
 
 bool MembraneTick::load_joint_pins(const std::string& body) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
     if (body.size() < 4) return false;
     uint32_t n = 0;
     std::memcpy(&n, body.data(), 4);
@@ -439,23 +456,28 @@ void MembraneTick::apply_chain(std::vector<float>& verts9) {
     }
 }
 
-bool MembraneTick::seal(float y) {
-    // THE SEAL v2 — the cut-and-weld (prereg 4eb9480c). The v1 floating
-    // disc is REPLACED: straddling triangles split at the plane, the cut
-    // segments chain into the cross-section loops, and each loop is
-    // capped twice (both windings) so both daughters are closed surfaces.
+bool MembraneTick::seal(float y, int cell_idx) {
+    // MITOSIS — the recursive cut-and-weld (preregs 4eb9480c, be971e7c).
+    // Cuts sealed cell `cell_idx` (0 = the whole creature before any
+    // cut) into two sealed cells. Inserted points are convex blends over
+    // original vertices, so they ride the posed surface at fixed weights.
     if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return false;
     if (!std::isfinite(y)) return false;
-    if (sealed_) return false;   // one seal per creature
     if (tri_verts_.size() != cells_.size() * 3) return false;
     const uint32_t nv = (uint32_t)(base_pos_.size() / 9);
     if (nv == 0) return false;
+    {
+        std::lock_guard<std::mutex> lk(seal_mtx_);   // entry reads vs publish
+        if (seal_cells_.empty()) {
+            if (cell_idx != 0) return false;        // only cell 0 exists
+        } else if (cell_idx < 0 || cell_idx >= (int)seal_cells_.size()) {
+            return false;                           // cell index out of range
+        }
+    }
 
     // rest9: the verts the tick ITSELF produces at rest — the classified
     // blend with all angles 0, the same arithmetic path step() runs per
-    // frame. v0 measured on these floats makes the rest dV exactly 0
-    // (base_pos_ differs from the blended rest by float32 rounding,
-    // which kappa amplifies into ~kPa of phantom pressure).
+    // frame. v0 measured on these floats makes the rest dV exactly 0.
     std::vector<float> rest9(base_pos_);
     {
         const bool classified = cell_joint_.size() == cells_.size()
@@ -465,43 +487,84 @@ bool MembraneTick::seal(float y) {
         if (classified) apply_travel(rest9, nullptr);
     }
 
-    // the plane must cross the body (authored rest pose)
-    float ymin = 1e30f, ymax = -1e30f;
+    // global point space: [0, nv) originals, then existing cuts, then the
+    // new cuts this seal appends (ids stay dense and global).
+    const size_t ncut0 = cut_src_.size();
+    std::vector<CutBlend> pts(nv + ncut0);
     for (uint32_t v = 0; v < nv; ++v) {
-        float yy = rest9[v * 9 + 1];
-        ymin = std::min(ymin, yy);
-        ymax = std::max(ymax, yy);
+        pts[v].n = 1; pts[v].v[0] = v; pts[v].w[0] = 1.f;
     }
-    if (y <= ymin || y >= ymax) return false;   // seal outside the body
+    for (size_t k = 0; k < ncut0; ++k) pts[nv + k] = cut_src_[k];
+    std::vector<float> py(nv + ncut0);          // rest y per point
+    for (size_t s = 0; s < pts.size(); ++s) {
+        const CutBlend& b = pts[s];
+        float sy = 0.f;
+        for (int i = 0; i < b.n; ++i) sy += b.w[i] * rest9[b.v[i] * 9 + 1];
+        py[s] = sy;
+    }
 
-    // CUT: split every straddling triangle; cut slots ride their edges at
-    // fixed t. Segment direction follows the BELOW-piece boundary walk, so
-    // chained loops inherit the surface winding (both daughters sign+).
+    // the boundary being cut: the named cell's pieces (or the whole creature)
+    std::vector<uint32_t> src;
+    {
+        std::lock_guard<std::mutex> lk(seal_mtx_);   // src copy vs publish
+        if (seal_cells_.empty()) src.assign(tri_verts_.begin(), tri_verts_.end());
+        else src = seal_cells_[cell_idx].pieces;
+    }
+
+    // the plane must cross the cell
+    float ymin = 1e30f, ymax = -1e30f;
+    for (uint32_t s : src) {
+        ymin = std::min(ymin, py[s]);
+        ymax = std::max(ymax, py[s]);
+    }
+    if (y <= ymin || y >= ymax) return false;   // plane outside the cell
+
+    // CUT: split every straddling piece; new cut points are merged convex
+    // blends of the endpoints. Segment direction follows the BELOW-piece
+    // boundary walk (the winding law below consumes that direction).
     std::map<std::pair<uint32_t, uint32_t>, uint32_t> cut_id;
-    std::vector<SealSlot> cut_src;
     std::vector<uint32_t> lower, upper;         // 3 slots per piece
     std::vector<std::pair<uint32_t, uint32_t>> segs;
     int split = 0;
-    auto edge_cut = [&](uint32_t va, uint32_t vb, uint32_t* out) -> bool {
-        float ya = rest9[va * 9 + 1], yb = rest9[vb * 9 + 1];
-        if (ya >= yb) { std::swap(va, vb); std::swap(ya, yb); }
-        if (!(ya < y && y <= yb)) return false; // not a crossing edge
-        auto key = std::make_pair(std::min(va, vb), std::max(va, vb));
+    // rc: 0 = ok, 1 = not a crossing edge, 2 = blend overflow
+    auto edge_cut = [&](uint32_t sA, uint32_t sB, uint32_t* out) -> int {
+        if (py[sA] >= py[sB]) std::swap(sA, sB);
+        if (!(py[sA] < y && y <= py[sB])) return 1;
+        auto key = std::make_pair(std::min(sA, sB), std::max(sA, sB));
         auto it = cut_id.find(key);
-        if (it != cut_id.end()) { *out = it->second; return true; }
-        float t = (y - ya) / (yb - ya);
-        uint32_t id = nv + (uint32_t)cut_src.size();
+        if (it != cut_id.end()) { *out = it->second; return 0; }
+        float t = (y - py[sA]) / (py[sB] - py[sA]);
+        CutBlend b;
+        for (int i = 0; i < pts[sA].n; ++i) {
+            float w = (1.f - t) * pts[sA].w[i];
+            bool merged = false;
+            for (int j = 0; j < b.n; ++j)
+                if (b.v[j] == pts[sA].v[i]) { b.w[j] += w; merged = true; break; }
+            if (!merged) {
+                if (b.n >= 8) return 2;
+                b.v[b.n] = pts[sA].v[i]; b.w[b.n] = w; ++b.n;
+            }
+        }
+        for (int i = 0; i < pts[sB].n; ++i) {
+            float w = t * pts[sB].w[i];
+            bool merged = false;
+            for (int j = 0; j < b.n; ++j)
+                if (b.v[j] == pts[sB].v[i]) { b.w[j] += w; merged = true; break; }
+            if (!merged) {
+                if (b.n >= 8) return 2;
+                b.v[b.n] = pts[sB].v[i]; b.w[b.n] = w; ++b.n;
+            }
+        }
+        uint32_t id = (uint32_t)pts.size();
         cut_id[key] = id;
-        cut_src.push_back({va, vb, t});
+        pts.push_back(b);
+        py.push_back(y);
         *out = id;
-        return true;
+        return 0;
     };
-    for (size_t i = 0; i < cells_.size(); ++i) {
-        uint32_t vs[3] = {tri_verts_[i * 3 + 0], tri_verts_[i * 3 + 1],
-                          tri_verts_[i * 3 + 2]};
-        bool bl[3] = {rest9[vs[0] * 9 + 1] < y,
-                      rest9[vs[1] * 9 + 1] < y,
-                      rest9[vs[2] * 9 + 1] < y};
+    for (size_t i = 0; i + 2 < src.size(); i += 3) {
+        uint32_t vs[3] = {src[i], src[i + 1], src[i + 2]};
+        bool bl[3] = {py[vs[0]] < y, py[vs[1]] < y, py[vs[2]] < y};
         int nb = (bl[0] ? 1 : 0) + (bl[1] ? 1 : 0) + (bl[2] ? 1 : 0);
         if (nb == 3) {
             lower.push_back(vs[0]); lower.push_back(vs[1]); lower.push_back(vs[2]);
@@ -512,33 +575,35 @@ bool MembraneTick::seal(float y) {
             continue;
         }
         ++split;
+        uint32_t p0 = 0, p1 = 0;
         if (nb == 1) {
             // one below (A); the below piece is (A, Pab, Pca)
             int iA = bl[0] ? 0 : (bl[1] ? 1 : 2);
             uint32_t A = vs[iA], B = vs[(iA + 1) % 3], C = vs[(iA + 2) % 3];
-            uint32_t pab = 0, pca = 0;
-            if (!edge_cut(A, B, &pab) || !edge_cut(C, A, &pca)) return false;
-            lower.push_back(A); lower.push_back(pab); lower.push_back(pca);
-            upper.push_back(pab); upper.push_back(B); upper.push_back(C);
-            upper.push_back(pab); upper.push_back(C); upper.push_back(pca);
-            segs.push_back({pab, pca});
+            int ra = edge_cut(A, B, &p0), rb = edge_cut(C, A, &p1);
+            if (ra == 2 || rb == 2) return false;   // blend overflow
+            if (ra != 0 || rb != 0) return false;   // degenerate
+            lower.push_back(A); lower.push_back(p0); lower.push_back(p1);
+            upper.push_back(p0); upper.push_back(B); upper.push_back(C);
+            upper.push_back(p0); upper.push_back(C); upper.push_back(p1);
+            segs.push_back({p0, p1});
         } else {
             // two below (A,B); the below piece is (A, B, Pbc, Pca)
             int iC = !bl[0] ? 0 : (!bl[1] ? 1 : 2);
             uint32_t C = vs[iC], A = vs[(iC + 1) % 3], B = vs[(iC + 2) % 3];
-            uint32_t pbc = 0, pca = 0;
-            if (!edge_cut(B, C, &pbc) || !edge_cut(C, A, &pca)) return false;
-            lower.push_back(A); lower.push_back(B); lower.push_back(pbc);
-            lower.push_back(A); lower.push_back(pbc); lower.push_back(pca);
-            upper.push_back(pbc); upper.push_back(C); upper.push_back(pca);
-            segs.push_back({pbc, pca});
+            int ra = edge_cut(B, C, &p0), rb = edge_cut(C, A, &p1);
+            if (ra == 2 || rb == 2) return false;   // blend overflow
+            if (ra != 0 || rb != 0) return false;   // degenerate
+            lower.push_back(A); lower.push_back(B); lower.push_back(p0);
+            lower.push_back(A); lower.push_back(p0); lower.push_back(p1);
+            upper.push_back(p0); upper.push_back(C); upper.push_back(p1);
+            segs.push_back({p0, p1});
         }
     }
 
     // WELD: chain the segments into closed loops. Every cut node must have
     // exactly one out-edge and every walk must return to its start — any
-    // anomaly (non-manifold plane crossing) refuses the seal BY NAME
-    // rather than guessing around it.
+    // anomaly refuses the cut BY NAME rather than guessing around it.
     std::map<uint32_t, uint32_t> next;
     for (const auto& s : segs) {
         if (next.count(s.first)) return false;   // out-degree > 1
@@ -556,72 +621,105 @@ bool MembraneTick::seal(float y) {
             auto it = next.find(cur);
             if (it == next.end()) return false;             // open chain
             cur = it->second;
-            if (ring.size() > cut_src.size() + 1u) return false;  // runaway
+            if (ring.size() > pts.size()) return false;     // runaway
             if (cur == start.first) break;
             if (visited.count(cur)) return false;           // cross-linked
         }
         ++loops;
-        // fan from ring[0], both windings — one cap per daughter. The
-        // divergence integral is triangulation-independent, so the fan is
-        // exact for volume; caps are internal membrane (not rendered).
+        // WINDING LAW: every edge of a closed oriented surface appears
+        // exactly twice, once per direction. The below pieces walk each
+        // cut edge in the chained direction, so the LOWER cap traverses
+        // the ring REVERSED and the UPPER cap as chained. (v2 had this
+        // swapped — silent at y=2.6, loud at the hip band; corrected per
+        // prereg be971e7c with ray-parity ground truth.)
         for (size_t k = 1; k + 1 < ring.size(); ++k) {
-            lower.push_back(ring[0]); lower.push_back(ring[k]); lower.push_back(ring[k + 1]);
-            upper.push_back(ring[0]); upper.push_back(ring[k + 1]); upper.push_back(ring[k]);
+            lower.push_back(ring[0]); lower.push_back(ring[k + 1]); lower.push_back(ring[k]);
+            upper.push_back(ring[0]); upper.push_back(ring[k]); upper.push_back(ring[k + 1]);
             ++caps;
         }
     }
     if (caps == 0) return false;   // empty cross-section (guarded above)
 
-    // rest volumes at seal time (the tick's own rest blend). Cut slots
-    // resolve by lerping the rest edge endpoints at their fixed t — the
-    // same lerp step() performs per frame.
-    std::vector<float> cutpos(cut_src.size() * 3);
-    for (size_t i = 0; i < cut_src.size(); ++i) {
-        const SealSlot& c = cut_src[i];
-        for (int k = 0; k < 3; ++k)
-            cutpos[i * 3 + k] = rest9[c.a * 9 + k] * (1.f - c.t)
-                              + rest9[c.b * 9 + k] * c.t;
-    }
+    // rest volumes on the tick's own rest blend; blend positions resolve
+    // with the same weighted sum step() performs per frame.
+    auto slot3 = [&](uint32_t s, float* x, float* yy, float* z) {
+        if (s < nv) {
+            *x = rest9[s * 9 + 0]; *yy = rest9[s * 9 + 1]; *z = rest9[s * 9 + 2];
+        } else {
+            const CutBlend& b = pts[s];
+            float sx = 0.f, sy = 0.f, sz = 0.f;
+            for (int i = 0; i < b.n; ++i) {
+                sx += b.w[i] * rest9[b.v[i] * 9 + 0];
+                sy += b.w[i] * rest9[b.v[i] * 9 + 1];
+                sz += b.w[i] * rest9[b.v[i] * 9 + 2];
+            }
+            *x = sx; *yy = sy; *z = sz;
+        }
+    };
     auto div6 = [&](uint32_t s0, uint32_t s1, uint32_t s2) -> float {
         float ax, ay, az, bx, by, bz, cx, cy, cz;
-        slot_read(rest9, nv, cutpos, s0, &ax, &ay, &az);
-        slot_read(rest9, nv, cutpos, s1, &bx, &by, &bz);
-        slot_read(rest9, nv, cutpos, s2, &cx, &cy, &cz);
+        slot3(s0, &ax, &ay, &az);
+        slot3(s1, &bx, &by, &bz);
+        slot3(s2, &cx, &cy, &cz);
         return (ax * (by * cz - bz * cy) + ay * (bz * cx - bx * cz)
               + az * (bx * cy - by * cx)) / 6.f;
     };
-    float vl = 0.f, vu = 0.f, vw = 0.f;
+    float vl = 0.f, vu = 0.f;
     for (size_t i = 0; i + 2 < lower.size(); i += 3)
         vl += div6(lower[i], lower[i + 1], lower[i + 2]);
     for (size_t i = 0; i + 2 < upper.size(); i += 3)
         vu += div6(upper[i], upper[i + 1], upper[i + 2]);
-    for (size_t i = 0; i + 2 < tri_verts_.size(); i += 3) {
-        uint32_t a = tri_verts_[i], b = tri_verts_[i + 1], cc = tri_verts_[i + 2];
-        vw += (rest9[a*9+0] * (rest9[b*9+1] * rest9[cc*9+2] - rest9[b*9+2] * rest9[cc*9+1])
-             + rest9[a*9+1] * (rest9[b*9+2] * rest9[cc*9+0] - rest9[b*9+0] * rest9[cc*9+2])
-             + rest9[a*9+2] * (rest9[b*9+0] * rest9[cc*9+1] - rest9[b*9+1] * rest9[cc*9+0])) / 6.f;
-    }
     // a daughter signing negative = inconsistent orientation through the
     // cut — refuse honestly instead of taking an absolute value.
     if (!(vl > 0.f) || !(vu > 0.f)) return false;
 
-    // publish last: step() reads sealed_ before touching these members
-    seal_nv_ = nv;
-    cut_src_ = std::move(cut_src);
-    cut_pos_ = std::move(cutpos);
-    seal_lower_ = std::move(lower);
-    seal_upper_ = std::move(upper);
-    seal_split_ = split;
-    seal_cuts_ = (int)cut_src_.size();
-    seal_loops_ = loops;
-    seal_caps_ = caps;
-    v0_lower_ = vl; v0_upper_ = vu;
-    vol_whole0_ = vw;
-    vol_lower_ = vl; vol_upper_ = vu; vol_whole_ = vw;
-    conserve_pct_ = vw != 0.f ? (vl + vu - vw) / vw * 100.f : 0.f;
-    p_lower_ = p_upper_ = 0.f;
-    seal_y_ = y;
-    sealed_ = true;
+    // per-cell rest y-ranges (for future refusal checks)
+    auto range_of = [&](const std::vector<uint32_t>& pieces, float* lo, float* hi) {
+        float l = 1e30f, h = -1e30f;
+        for (uint32_t s : pieces) { l = std::min(l, py[s]); h = std::max(h, py[s]); }
+        *lo = l; *hi = h;
+    };
+    SealCell below, above;
+    below.pieces = std::move(lower); below.v0 = vl; below.caps = caps;
+    above.pieces = std::move(upper); above.v0 = vu; above.caps = caps;
+    below.vol = vl; below.p = 0.f;
+    above.vol = vu; above.p = 0.f;
+    range_of(below.pieces, &below.ylo, &below.yhi);
+    range_of(above.pieces, &above.ylo, &above.yhi);
+
+    // publish: new cuts append to the global blend table (slot ids match);
+    // cell k is REPLACED by its below daughter, the above daughter appends.
+    // Locked: the render thread reads these members per frame (try_lock
+    // in step), and recursion reallocates them — v2 was write-once.
+    {
+        std::lock_guard<std::mutex> lk(seal_mtx_);
+        seal_nv_ = nv;               // slot-space base (NaN bug: was unset)
+        cut_src_.insert(cut_src_.end(), pts.begin() + (nv + ncut0), pts.end());
+        cut_pos_.assign(cut_src_.size() * 3, 0.f);
+        if (seal_cells_.empty()) {
+            seal_cells_.push_back(std::move(below));
+            seal_cells_.push_back(std::move(above));
+            // whole-creature divergence volume at first seal (reference)
+            float vw = 0.f;
+            for (size_t i = 0; i + 2 < tri_verts_.size(); i += 3) {
+                uint32_t a = tri_verts_[i], b = tri_verts_[i + 1], cc = tri_verts_[i + 2];
+                vw += (rest9[a*9+0] * (rest9[b*9+1] * rest9[cc*9+2] - rest9[b*9+2] * rest9[cc*9+1])
+                     + rest9[a*9+1] * (rest9[b*9+2] * rest9[cc*9+0] - rest9[b*9+0] * rest9[cc*9+2])
+                     + rest9[a*9+2] * (rest9[b*9+0] * rest9[cc*9+1] - rest9[b*9+1] * rest9[cc*9+0])) / 6.f;
+            }
+            vol_whole0_ = vw;
+            vol_whole_ = vw;
+        } else {
+            seal_cells_[cell_idx] = std::move(below);
+            seal_cells_.push_back(std::move(above));
+        }
+        seal_split_ = split;
+        seal_cuts_ = (int)cut_id.size();
+        seal_loops_ = loops;
+        seal_caps_ = caps;
+        seal_y_ = y;
+        sealed_ = true;   // published under the lock; step() checks first
+    }
     return true;
 }
 
@@ -646,15 +744,29 @@ std::string MembraneTick::state_json() const {
       << ",\"flex_l_deg\":" << flex_l_ * 57.29577951308232
       << ",\"flex_r_deg\":" << flex_r_ * 57.29577951308232
       << ",\"sealed\":" << (sealed_ ? "true" : "false")
-      << ",\"V_lower\":" << vol_lower_ << ",\"V_upper\":" << vol_upper_
-      << ",\"P_lower\":" << p_lower_ << ",\"P_upper\":" << p_upper_
-      << ",\"v0_lower\":" << v0_lower_ << ",\"v0_upper\":" << v0_upper_
+      << ",\"n_cells\":" << seal_cells_.size()
+      << ",\"V_lower\":" << (seal_cells_.size() > 0 ? seal_cells_[0].vol : 0.f)
+      << ",\"V_upper\":" << (seal_cells_.size() > 1 ? seal_cells_[1].vol : 0.f)
+      << ",\"P_lower\":" << (seal_cells_.size() > 0 ? seal_cells_[0].p : 0.f)
+      << ",\"P_upper\":" << (seal_cells_.size() > 1 ? seal_cells_[1].p : 0.f)
+      << ",\"v0_lower\":" << (seal_cells_.size() > 0 ? seal_cells_[0].v0 : 0.f)
+      << ",\"v0_upper\":" << (seal_cells_.size() > 1 ? seal_cells_[1].v0 : 0.f)
       << ",\"V_whole\":" << vol_whole_
       << ",\"conserve_pct\":" << conserve_pct_
       << ",\"seal_split\":" << seal_split_
       << ",\"seal_cuts\":" << seal_cuts_
       << ",\"seal_loops\":" << seal_loops_
       << ",\"seal_caps\":" << seal_caps_
+      << ",\"cells\":[";
+    for (size_t i = 0; i < seal_cells_.size(); ++i) {
+        const SealCell& c = seal_cells_[i];
+        if (i) o << ",";
+        o << "{\"v0\":" << c.v0 << ",\"V\":" << c.vol << ",\"P\":" << c.p
+          << ",\"pieces\":" << (c.pieces.size() / 3)
+          << ",\"caps\":" << c.caps
+          << ",\"ylo\":" << c.ylo << ",\"yhi\":" << c.yhi << "}";
+    }
+    o << "]"
       << ",\"has_scene\":" << (has_scene_ ? "true" : "false") << "}";
     return o.str();
 }

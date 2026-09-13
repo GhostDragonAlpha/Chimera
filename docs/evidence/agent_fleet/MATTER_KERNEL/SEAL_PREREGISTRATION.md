@@ -318,3 +318,54 @@ the posed whole by > 1% at rest or under pose, or any P != 0 at rest,
 or a real-mesh cut refusing (graph fails to close = the blend-slot
 port broke the weld). Successor if fired: audit the blend merge and
 the per-cell piece lists against the offline prototype, cell by cell.
+
+## RUN RECORD (2026-09-13, live engine MITOSIS — the growth law, 4 cells)
+
+One clean instance on the final binary (driver: tools/mitosis_run.py;
+full log: .tmp/mitosis_run.log; offline derivation:
+.tmp/proto_mitosis.py). Cell order in state = [foot, body, thigh, shin]
+(0 replaced at each cut of cell 0, the above-daughter appends).
+
+- M4 refusals (before any cut): PASS — cell=7 (no such cell), y=99.9,
+  and later y=2.0 on the foot cell (y-range tops at 0.338) all refused
+  by name.
+- M1 hip cut: PASS — split=392, cuts=392, loops=6, caps=380; v0
+  1.315500/12.509000 vs derived 1.315499/12.509037 (7.6e-05 % /
+  2.96e-04 %); P = 0 EXACTLY at rest; conserve -8.28e-05 %.
+- M2 knee cut on cell 0: PASS — shin+foot 0.622491 | thigh 0.693010
+  (1.6e-04 % / 4.3e-04 % vs derived). Ankle cut on cell 0: PASS —
+  foot 0.287914 | shin 0.334578 (0.0e+00 % / 3.0e-04 %). Four cells
+  sum 13.824502 vs whole 13.824536 (conserve -6.9e-05 %).
+- M3 per-cell hydraulics: PASS — knee_L 25 deg: foot dV -0.007396 ->
+  P +55.843 MPa; thigh dV +0.007284 -> P -22.849 MPa; shin dV
+  -0.001971 -> P +12.807 MPa; body dV +0.000000 -> P 0.000000. An
+  independent kappa-law recompute from the reported (v0, V) matches
+  every pressure to 3 decimals. Pose return: worst |P| = 0.0 Pa.
+- Frames (CHIMERA_PROOF\FEET\): mitosis0_before.png,
+  mitosis1_rest4cells.png, mitosis2_posed_kneeL25.png (8,604 px
+  changed, bbox x[1095,1332] y[463,700] — the bent knee; vision check:
+  the left calf visibly kicked back), mitosis3_returned.png (0 px
+  changed — pixel-exact restore).
+
+### The two crashes on the road here (both found, both fixed — disclosed)
+
+1. seal_nv_ never set at publish (stayed 0): step()'s slot_read treated
+   every original vertex as a cut slot and read far out of bounds ->
+   NaN volumes (first live seal), then the AV class. Fixed: publish
+   sets seal_nv_ under the lock.
+2. THE BOOT-RESTORE RACE (the 06:36 crash under the OLD binary too,
+   and the two refusals-then-frame kills): boot-restore replays
+   mesh_bin on its own thread 1.5 s after launch while the render
+   thread travels; classify_run.py's mesh re-POST re-ran init() and
+   CLEARED vert_bind_idx_ mid-travel — apply_travel crashed indexing
+   the cleared bindings. Symbolized both offsets against a freshly
+   enabled linker map (crash instrumentation now ships in the build:
+   /Zi + /DEBUG:fastlink + /MAP). Fix: one mutex shared by init(), the
+   /tick_* loaders, and seal()'s entry/publish; step() try_locks and
+   skips a frame's volume update instead of blocking the render loop.
+   The exact kill sequence (refused cuts -> /frame) then ran clean,
+   and the full bar sequence passed on one instance.
+
+FALSIFIER: DID NOT FIRE. The growth law stands: the creature divides
+on intent, one sealed cell per body compartment, volumes conserved
+under the growth, pressures honest per cell.

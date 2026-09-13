@@ -4,6 +4,7 @@
 #include <array>
 #include <atomic>
 #include <cstdint>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -45,14 +46,17 @@ public:
     bool pose_index(int idx, float deg);
     bool intent_joint(int idx, float force_n);
 
-    // THE SEAL (Appliance 4): mitosis — one intent divides the creature
-    // into two sealed hydraulic cells at plane y. v2 is the CUT-AND-WELD:
-    // straddling triangles split at the plane, the cross-section loops
-    // chain from the cut segments, and each loop is capped twice (both
-    // windings) so both daughters' boundaries are closed surfaces.
-    // Volume by divergence, pressure by dP = -dV/(kappa*V0),
-    // kappa = water at 25 C.
-    bool seal(float y);
+    // THE SEAL / MITOSIS (Appliance 4, recursive): POST /tick_seal
+    // {"y": Y, "cell": k} cuts sealed cell k with plane Y into two sealed
+    // cells (cell 0 = the whole creature before any cut). v2 is the
+    // CUT-AND-WELD: straddling pieces split at the plane, cross-section
+    // loops chain from the cut segments, each loop is capped twice (both
+    // windings, lower reversed per the edge-orientation law). Inserted
+    // points are convex blends over original vertices, so every point
+    // rides the posed surface at fixed weights — repeated cuts grow the
+    // body-part tree (the growth law). Volume by divergence, pressure by
+    // dP = -dV/(kappa*V0), kappa = water at 25 C.
+    bool seal(float y, int cell);
 
     bool   enabled_ = true;
     uint64_t ticks_ = 0;
@@ -85,24 +89,40 @@ private:
     std::vector<std::array<float, 3>> joint_pins_;  // the 28 measured pins
     std::vector<float>  joint_deg_;            // pose per pin (radians)
     std::vector<float>  joint_force_;          // standing press per pin, N
-    // THE SEAL v2 (cut-and-weld): the wall is the welded cross-section
-    // itself. Cut slots ride surface edges at fixed t, so the weld holds
-    // while poses move the surface — the daughters' boundaries stay
-    // closed and their divergence sums stay true volumes.
-    struct SealSlot { uint32_t a, b; float t; };   // cut point on edge (a,b)
-    bool  sealed_ = false;
+    // THE SEAL v2 / MITOSIS (cut-and-weld, recursive). The wall is the
+    // welded cross-section itself; cut points are convex blends over
+    // original vertices (merged, <= 8 entries), so the weld holds at any
+    // recursion depth while poses move the surface.
+    struct CutBlend {
+        uint8_t n = 0;
+        std::array<uint32_t, 8> v = {};
+        std::array<float, 8> w = {};
+    };
+    struct SealCell {
+        std::vector<uint32_t> pieces;   // 3 global slot ids per piece
+        float v0 = 0.f, vol = 0.f, p = 0.f;
+        int caps = 0;
+        float ylo = 0.f, yhi = 0.f;     // rest y-range (refusal checks)
+    };
+    bool  sealed_ = false;              // any cell exists
     float seal_y_ = 0.f, kappa_ = 4.6e-10f;
-    float v0_lower_ = 0.f, v0_upper_ = 0.f;    // rest volumes at seal time
     float vol_whole0_ = 0.f;                   // whole divergence vol at seal
-    float vol_lower_ = 0.f, vol_upper_ = 0.f;  // live daughter volumes
     float vol_whole_ = 0.f;                    // live posed whole volume
-    float conserve_pct_ = 0.f;                 // (Vl+Vu-Vw)/Vw * 100
-    float p_lower_ = 0.f, p_upper_ = 0.f;      // hydraulic gauge pressure
+    float conserve_pct_ = 0.f;                 // (sum cells - Vw)/Vw * 100
     uint32_t seal_nv_ = 0;                     // original vertex count
-    int seal_split_ = 0, seal_cuts_ = 0, seal_loops_ = 0, seal_caps_ = 0;
-    std::vector<SealSlot> cut_src_;            // slot nv+k -> edge (a,b,t)
-    std::vector<uint32_t> seal_lower_, seal_upper_;  // 3 slots per piece
-    std::vector<float>  cut_pos_;              // per-frame posed cut positions
+    int seal_split_ = 0, seal_cuts_ = 0, seal_loops_ = 0, seal_caps_ = 0;  // last cut
+    std::vector<CutBlend> cut_src_;     // global slot nv+k -> blend
+    std::vector<SealCell> seal_cells_;
+    std::vector<float>  cut_pos_;       // per-frame posed cut positions
+    // recursion mutates the seal state while the render thread reads it
+    // (v2 was write-once and safe; mitosis is not). seal() swaps members
+    // under this lock; step() try_locks and skips a frame's volume
+    // update rather than blocking the render loop. init() and the tick
+    // loaders take the SAME lock: the boot-restore thread can re-init
+    // while the render thread travels the old bindings (the AV race).
+    mutable std::mutex seal_mtx_;
+    void  load_lock_() { seal_mtx_.lock(); }        // RAII at call sites
+    void  load_unlock_() { seal_mtx_.unlock(); }
     bool  has_scene_ = false;
     float dirty_ = 0.f;                        // tint changed -> needs upload
     std::atomic<bool> ready_{false};           // committed only after init

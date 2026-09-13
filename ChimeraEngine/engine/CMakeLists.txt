@@ -162,6 +162,16 @@ target_include_directories(chimera_engine PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
+# Crash offsets must be symbolizable: /Zi does not change codegen, so
+# Release offsets map 1:1 to the map file + PDB (two unsymbolizable
+# access violations on 2026-09-13 taught this).
+if(MSVC)
+    target_compile_options(chimera_engine PRIVATE /Zi)
+    target_link_options(chimera_engine PRIVATE
+        /DEBUG:fastlink
+        /MAP:${CMAKE_CURRENT_BINARY_DIR}/chimera_engine.map)
+endif()
+
 target_link_libraries(chimera_engine PRIVATE
     "${VULKAN_SDK}/Lib/vulkan-1.lib"
     ws2_32

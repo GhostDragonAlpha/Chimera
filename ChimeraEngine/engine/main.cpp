@@ -787,14 +787,15 @@ int main(int argc, char** argv) {
                  : "{\"ok\":false,\"error\":\"joint pins rejected\"}";
             content_type = "application/json";
         } else if (p == "/tick_seal" && method == "POST") {
-            // THE SEAL v2 (cut-and-weld mitosis): divide the creature into
-            // two sealed hydraulic cells at plane y — split straddlers,
-            // chain the cross-section loops, cap both windings.
+            // THE MITOSIS OP (recursive cut-and-weld): cut sealed cell k
+            // ("cell", default 0 = whole creature) with plane y into two
+            // sealed cells — the growth law.
             float y = (float)get_double(req_body, "y", 0.0);
-            if (g_tick.seal(y)) body = "{\"ok\":true}";
-            else body = "{\"ok\":false,\"error\":\"refused: the seal plane "
-                        "must cross the body, the cut graph must close into "
-                        "loops, and one seal is allowed\"}";
+            int cell = (int)get_double(req_body, "cell", 0.0);
+            if (g_tick.seal(y, cell)) body = "{\"ok\":true}";
+            else body = "{\"ok\":false,\"error\":\"refused: the cell index "
+                        "must exist, the plane must cross that cell's "
+                        "y-range, and the cut graph must close into loops\"}";
             content_type = "application/json";
         } else if (p == "/hinge_bin" && method == "POST") {
             // Binary protocol (little-endian):
