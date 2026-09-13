@@ -70,6 +70,17 @@ MATERIALS: dict[str, dict] = {
         "hardness_note": "bond line strength depends on cure conditions; "
                          "definitions override per-bond via cure_strength",
     },
+    "mat.skin": {
+        "density": 1100.0,   # wet biological tissue ~1050-1150 kg/m^3
+        "young_modulus": 15e6,   # 15-28 MPa range across sites/age
+        "yield": 15e6,   # tensile failure, conservative end of the range
+        "hardness_vickers": 0.4,   # below the Vickers floor, ordered soft
+        "source": "YAMADA 1970: 'Strength of Biological Materials' (Williams "
+                  "& Wilkins): human skin tensile failure ~15-24 MPa; "
+                  "Young's modulus the same order (15-28 MPa)",
+        "hardness_note": "soft tissue: ordered below rubber in the scratch "
+                         "table by modulus; the foot membrane material",
+    },
 }
 
 
