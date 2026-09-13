@@ -1,45 +1,70 @@
 {
-  "_format": "R4 lesson pack for the game shell (tools/game_shell). Top level: an object holding this '_format' note and 'lessons', an array of EXACTLY 5 lesson objects, played in array order. A lesson object: { 'id': snake_case and stable — the page saves progress under lessons.<id> in progress/<name>.json, so ids must never be renamed; 'title': short player-facing header; 'body': 2-4 warm plain sentences shown on the lesson card; 'goal': one of the shapes below; 'then_release': true means after the goal latches the player must ALSO let the body heal — pass only on a later poll where every cell is calm (all |P| < 1000 Pa), false means pass the moment the goal latches; 'hint': one sentence shown when the player stalls }. Goal shapes: { 'type': 'pressure_above', 'cell': 0..3 or 'any', 'threshold_pa': number } latches at the first poll where that cell's gauge pressure P >= threshold_pa — 'any' latches if ANY ONE cell crosses at that poll (used only by the_healing); { 'type': 'pressure_below', 'cell': ..., 'threshold_pa': ... } latches when P <= threshold_pa (reserved; unused by these five); { 'type': 'pose_reach', 'joint': name, 'deg': number } latches when the page POSTs /api/pose with that joint's index and deg within +/-2 degrees and the engine accepted (ok:true). Optional extension, used only by the_whole_body: a pressure goal may carry 'also': { 'cell': 0..3, 'threshold_pa': number } — a second pressure_above condition that latches independently; the GOAL phase completes when the main condition AND the also condition have each latched, at any moments, not necessarily the same poll. Latches are sticky: once true they stay true for the whole lesson. Units: pressure in Pa gauge (0 means healed), volumes in m3. Cell index map: 0 feet (V0=0.288), 1 torso (V0=12.509), 2 thighs (V0=0.693), 3 shins (V0=0.335). Joint name map for pose_reach: hip_L=13, hip_R=14, knee_L=15, knee_R=16, ankle_L=17, ankle_R=18 (all joints accept -90..90 degrees). Measured physics behind the numbers: sealed-cell pressure P=(V0-V)/(kappa*V0) with kappa=4.6e-10; dent depth = F/(4*pi*sigma) with sigma=4000 N/m (touch force 500..50000 N); on release P decays exponentially with tau=0.5 s, reaching zero exactly. Judge loop pseudocode: see LESSON_JUDGE_SPEC.md next to this file.",
-  "lessons": [
-    {
-      "id": "wake_the_cell",
-      "title": "WAKE THE CELL",
-      "body": "The creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.2 MPa. Then let go, and watch the body heal itself back to zero.",
-      "goal": { "type": "pressure_above", "cell": 1, "threshold_pa": 200000 },
-      "then_release": true,
-      "hint": "Slide the force up, press and hold on the round belly until the readout shows the torso cell over 0.200 MPa, then press 'let go' and give it a few seconds."
-    },
-    {
-      "id": "the_gentle_hand",
-      "title": "THE GENTLE HAND",
-      "body": "Small parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.",
-      "goal": { "type": "pressure_above", "cell": 0, "threshold_pa": 50000 },
-      "then_release": true,
-      "hint": "Drag the force slider down near its bottom (under 8,000 N) and touch low on the creature, at a foot — watch the cell 0 line in the readout."
-    },
-    {
-      "id": "the_healing",
-      "title": "THE HEALING",
-      "body": "The creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.4 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.",
-      "goal": { "type": "pressure_above", "cell": "any", "threshold_pa": 400000 },
-      "then_release": true,
-      "hint": "Press 'let go', then wait about three or four seconds — the pressure fades to zero all by itself."
-    },
-    {
-      "id": "bend_the_knee",
-      "title": "BEND THE KNEE",
-      "body": "The creature listens to more than touches — it listens to intents. A pose is a wish you post: bend the left knee to 40 degrees and the body rearranges its water to match, cells shifting as the joint turns. Set the left knee to 40 and watch the pressures answer.",
-      "goal": { "type": "pose_reach", "joint": "knee_L", "deg": 40 },
-      "then_release": false,
-      "hint": "Post the pose knee_L at 40 degrees — this lesson is judged on the intent you post, not on the pressures that follow."
-    },
-    {
-      "id": "the_whole_body",
-      "title": "THE WHOLE BODY",
-      "body": "One creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.",
-      "goal": { "type": "pressure_above", "cell": 1, "threshold_pa": 200000, "also": { "cell": 3, "threshold_pa": 100000 } },
-      "then_release": true,
-      "hint": "Press the big body first and let go, then touch low on the legs — the readout shows you which compartments you have already woken."
+ "_format": "R4 lesson pack for the game shell (tools/game_shell). Top level: an object holding this '_format' note and 'lessons', an array of EXACTLY 5 lesson objects, played in array order. A lesson object: { 'id': snake_case and stable \u2014 the page saves progress under lessons.<id> in progress/<name>.json, so ids must never be renamed; 'title': short player-facing header; 'body': 2-4 warm plain sentences shown on the lesson card; 'goal': one of the shapes below; 'then_release': true means after the goal latches the player must ALSO let the body heal \u2014 pass only on a later poll where every cell is calm (all |P| < 1000 Pa), false means pass the moment the goal latches; 'hint': one sentence shown when the player stalls }. Goal shapes: { 'type': 'pressure_above', 'cell': 0..3 or 'any', 'threshold_pa': number } latches at the first poll where that cell's gauge pressure P >= threshold_pa \u2014 'any' latches if ANY ONE cell crosses at that poll (used only by the_healing); { 'type': 'pressure_below', 'cell': ..., 'threshold_pa': ... } latches when P <= threshold_pa (reserved; unused by these five); { 'type': 'pose_reach', 'joint': name, 'deg': number } latches when the page POSTs /api/pose with that joint's index and deg within +/-2 degrees and the engine accepted (ok:true). Optional extension, used only by the_whole_body: a pressure goal may carry 'also': { 'cell': 0..3, 'threshold_pa': number } \u2014 a second pressure_above condition that latches independently; the GOAL phase completes when the main condition AND the also condition have each latched, at any moments, not necessarily the same poll. Latches are sticky: once true they stay true for the whole lesson. Units: pressure in Pa gauge (0 means healed), volumes in m3. Cell index map: 0 feet (V0=0.288), 1 torso (V0=12.509), 2 thighs (V0=0.693), 3 shins (V0=0.335). Joint name map for pose_reach: hip_L=13, hip_R=14, knee_L=15, knee_R=16, ankle_L=17, ankle_R=18 (all joints accept -90..90 degrees). Measured physics behind the numbers: sealed-cell pressure P=(V0-V)/(kappa*V0) with kappa=4.6e-10; dent depth = F/(4*pi*sigma) with sigma=4000 N/m (touch force 500..50000 N); on release P decays exponentially with tau=0.5 s, reaching zero exactly. Judge loop pseudocode: see LESSON_JUDGE_SPEC.md next to this file. THRESHOLDS RE-TUNED 2026-09-13 to the measured local-touch response (browser Gaussian press at the 50 kN slider max: torso ~100 kPa, small parts less).",
+ "lessons": [
+  {
+   "id": "wake_the_cell",
+   "title": "WAKE THE CELL",
+   "body": "The creature is sealed \u2014 water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.",
+   "goal": {
+    "type": "pressure_above",
+    "cell": 1,
+    "threshold_pa": 20000
+   },
+   "then_release": true,
+   "hint": "Slide the force up, press and hold on the round belly until the readout shows the torso cell over 0.200 MPa, then press 'let go' and give it a few seconds."
+  },
+  {
+   "id": "the_gentle_hand",
+   "title": "THE GENTLE HAND",
+   "body": "Small parts hold small water. The same push that barely stirs the body can spike a foot \u2014 so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.",
+   "goal": {
+    "type": "pressure_above",
+    "cell": 0,
+    "threshold_pa": 200,
+    "max_force_n": 8000
+   },
+   "then_release": true,
+   "hint": "slide the force down under 8000 N \u2014 small parts wake with small touches."
+  },
+  {
+   "id": "the_healing",
+   "title": "THE HEALING",
+   "body": "The creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.",
+   "goal": {
+    "type": "pressure_above",
+    "cell": "any",
+    "threshold_pa": 20000
+   },
+   "then_release": true,
+   "hint": "Press 'let go', then wait about three or four seconds \u2014 the pressure fades to zero all by itself."
+  },
+  {
+   "id": "bend_the_knee",
+   "title": "BEND THE KNEE",
+   "body": "The creature listens to more than touches \u2014 it listens to intents. A pose is a wish you post: bend the left knee to 40 degrees and the body rearranges its water to match, cells shifting as the joint turns. Set the left knee to 40 and watch the pressures answer.",
+   "goal": {
+    "type": "pose_reach",
+    "joint": "knee_L",
+    "deg": 40
+   },
+   "then_release": false,
+   "hint": "Post the pose knee_L at 40 degrees \u2014 this lesson is judged on the intent you post, not on the pressures that follow."
+  },
+  {
+   "id": "the_whole_body",
+   "title": "THE WHOLE BODY",
+   "body": "One creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa \u2014 in any order, at any moments. Then let everything go, and feel the whole body go quiet together.",
+   "goal": {
+    "type": "pressure_above",
+    "cell": 1,
+    "threshold_pa": 15000,
+    "also": {
+     "cell": 3,
+     "threshold_pa": 5000
     }
-  ]
+   },
+   "then_release": true,
+   "hint": "Press the big body first and let go, then touch low on the legs \u2014 the readout shows you which compartments you have already woken."
+  }
+ ]
 }

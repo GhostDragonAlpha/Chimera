@@ -258,3 +258,23 @@ Five subagent lanes, disjoint files, lead integrated:
 - R6 BENCH: tools/game_shell/bench.py — the measurement harness
   (IDLE / game-page-load / touch-storm scenarios, 1% lows, 60-fps
   bar). Full bench run rides the integration milestone.
+
+## LEDGER (2026-09-13, late — web kernel walk-through + threshold honesty)
+
+The reloaded web-kernel page walked live: name -> PLAY -> the WebGL
+creature renders locally -> orbit drag rotates the view with zero
+engine work -> a browser click pressed the creature (worst cell
+34 kPa mid-hold) -> the 5-lesson judge rail runs (‹ 1/5 › navigation,
+WAKE THE CELL from lessons.json). Two honesty fixes on the way:
+- The lesson thresholds from the R4 lane were tuned for the OLD
+  joint-group press and were UNREACHABLE through the browser's local
+  Gaussian touch (wake 0.2 MPa vs measured 0.016 MPa at 20 kN).
+  Re-tuned to measurement: wake 20 kPa, gentle 200 Pa (with an
+  8000 N force cap — small parts, small touches), healing 20 kPa,
+  whole-body 15 kPa + 5 kPa. The data now says what the physics does.
+- /topology now declares the TRIANGLE count with the full index
+  payload (the count/payload mismatch blacked the canvas and, with
+  the tab's retry storm, preceded a renderer crash — Aw, Snap,
+  STATUS_STACK_BUFFER_OVERRUN; not reproduced after the fix).
+- The tab-crash class: one more crash occurred before the topology
+  fix landed; none since. Watched through R8.

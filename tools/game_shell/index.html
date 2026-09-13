@@ -82,6 +82,7 @@
   .cam b{color:var(--muted);font-weight:600}
   .card{background:var(--panel);border:1px solid var(--line-soft);border-radius:10px;padding:15px 15px 13px}
   .card h2{font-size:10.5px;font-weight:600;letter-spacing:.24em;color:var(--faint);margin-bottom:10px}
+  .lesson-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
   .lesson-title{
     font-family:Georgia,serif;font-weight:400;font-size:19px;color:var(--accent);
     letter-spacing:.06em;margin-bottom:8px;
@@ -146,10 +147,16 @@
 
       <section class="card">
         <h2>THE LESSON</h2>
-        <h3 class="lesson-title">WAKE THE CELL</h3>
-        <p class="lesson-body">The creature is sealed — water under its skin. Press on its
-          body and HOLD: feel the cell resist. Wake it: push any cell's pressure past
-          0.2&nbsp;MPa. Then LET GO, and watch the body heal itself back to zero.</p>
+        <div class="lesson-nav">
+          <button id="lesson-prev" class="btn" type="button" style="padding:4px 12px;font-size:14px">&lsaquo;</button>
+          <span id="lesson-index" class="mono" style="font-size:13px;color:var(--muted)">1 / 5</span>
+          <button id="lesson-next" class="btn" type="button" style="padding:4px 12px;font-size:14px">&rsaquo;</button>
+        </div>
+        <h3 class="lesson-title" id="lesson-title">…</h3>
+        <p class="lesson-body" id="lesson-body">…</p>
+        <div id="pose-btn-wrap" style="display:none">
+          <button id="pose-btn" class="btn" type="button" style="width:100%">bend the knee</button>
+        </div>
         <div id="verdict" class="verdict">the creature waits.</div>
       </section>
 
@@ -196,6 +203,56 @@
   var holding = false;        // true while the engine is holding a press
   var lessonsKnown = {};      // progress already saved under this name
   var judge = { woke: false, passed: false };
+  var lastTouchForce = 0;
+
+  /* R4: the five lessons, data-driven (tools/game_shell/lessons.json) */
+  var LESSONS = [];
+  var lessonIdx = 0;
+  var lessonState = {};        // id -> {goalMet, passed, phase}
+  var JOINT_INDEX = { hip_L: 13, hip_R: 14, knee_L: 15, knee_R: 16,
+                      ankle_L: 17, ankle_R: 18 };
+  function curLesson() { return LESSONS[lessonIdx] || null; }
+  function curState() {
+    var l = curLesson();
+    if (!l) return { goalMet: false, passed: false, phase: 'goal' };
+    if (!lessonState[l.id]) lessonState[l.id] = { goalMet: false, passed: false, phase: 'goal' };
+    return lessonState[l.id];
+  }
+  async function loadLessons() {
+    try {
+      var d = await fetch('/lessons.json').then(function (r) { return r.json(); });
+      LESSONS = d.lessons || [];
+      showLesson(0);
+    } catch (err) { setVerdict('the lesson scroll would not open.', 'warn'); }
+  }
+  function showLesson(i) {
+    if (!LESSONS.length) return;
+    lessonIdx = (i + LESSONS.length) % LESSONS.length;
+    var l = LESSONS[lessonIdx];
+    $('lesson-index').textContent = (lessonIdx + 1) + ' / ' + LESSONS.length;
+    $('lesson-title').textContent = l.title;
+    $('lesson-body').textContent = l.body;
+    $('pose-btn-wrap').style.display = l.goal.type === 'pose_reach' ? 'block' : 'none';
+    if (l.goal.type === 'pose_reach')
+      $('pose-btn').textContent = (l.goal.joint || 'joint') + ' → ' + l.goal.deg + '°';
+    var st = curState();
+    if (st.passed) setVerdict('PASSED — this one is yours already.', 'good');
+    else if (st.goalMet) setVerdict('the goal is met — finish the release.', 'accent');
+    else setVerdict('the creature waits.', '');
+  }
+  $('lesson-prev').addEventListener('click', function () { showLesson(lessonIdx - 1); });
+  $('lesson-next').addEventListener('click', function () { showLesson(lessonIdx + 1); });
+  $('pose-btn').addEventListener('click', async function () {
+    var l = curLesson(); if (!l) return;
+    var idx = JOINT_INDEX[l.goal.joint];
+    if (idx === undefined) { setVerdict('unknown joint — refused.', 'warn'); return; }
+    var res = await postJSON('/api/pose', { joint_index: idx, deg: l.goal.deg });
+    if (res && res.ok) {
+      curState().goalMet = true; curState().passed = true;
+      if (window.ChimeraSound) ChimeraSound.passed();
+      setVerdict('PASSED — the joint obeys the muscle.', 'good');
+    } else setVerdict('the pose was refused.', 'warn');
+  });
 
   var verdictEl = $('verdict');
   var handEl = $('hand-state');
@@ -558,21 +615,53 @@
   }
 
   function judgeState(s) {
-    if (judge.passed) return;
+    var l = curLesson();
+    if (!l || l.goal.type === 'pose_reach') return;   // pose lessons judge on the POST
+    var st = curState();
+    if (st.passed) return;
     var cells = (s && s.cells) || [];
     if (!cells.length) return;
-    var peak = 0, allCalm = true;
-    for (var i = 0; i < cells.length; i++) {
-      var a = Math.abs(Number(cells[i].P) || 0);
-      if (a > peak) peak = a;
-      if (a >= 1000) allCalm = false;
-    }
-    if (!judge.woke && peak >= 2e5) {
-      judge.woke = true;
-      setVerdict('the cell is awake — now LET GO, and watch it heal.', 'accent');
-    } else if (judge.woke && allCalm) {
-      judge.passed = true;
-      setVerdict('PASSED — you felt the water. it was always there.', 'good');
+
+    var pa = Number(l.goal.threshold_pa) || 0;
+    var cellWanted = l.goal.cell;
+    var peakHere = function (c) { return Math.abs(Number(c.P) || 0); };
+
+    if (st.phase === 'goal' && !st.goalMet) {
+      var cap = Number(l.goal.max_force_n) || 0;
+      var forceOk = !cap || !lastTouchForce || lastTouchForce <= cap;
+      var woke = function (idx) {
+        if (idx === 'any') return cells.some(function (c) { return peakHere(c) >= pa; });
+        var c = cells[idx];
+        return !!c && peakHere(c) >= pa;
+      };
+      if (!forceOk) return;          // an over-force press can never latch a capped lesson
+      if (l.goal.also) {             // two compartments, each latched over time
+        if (woke(l.goal.cell)) st.primaryMet = true;
+        if (woke(l.goal.also.cell)) st.alsoMet = true;
+        if (st.primaryMet && st.alsoMet) st.goalMet = true;
+        if (st.goalMet && !st.halfNote) { st.halfNote = true; setVerdict('one compartment is awake — the other waits.', 'accent'); }
+      } else if (woke(cellWanted)) {
+        st.goalMet = true;
+      }
+      if (st.goalMet) {
+        if (window.ChimeraSound) ChimeraSound.cellWake();
+        if (l.then_release) {
+          st.phase = 'release';
+          setVerdict('the goal is met — now LET GO, and let the body heal.', 'accent');
+        } else {
+          st.passed = true;
+          if (window.ChimeraSound) ChimeraSound.passed();
+          setVerdict('PASSED.', 'good');
+        }
+      }
+    } else if (st.phase === 'release' && st.goalMet && !st.passed) {
+    } else if (st.phase === 'release' && st.goalMet && !st.passed) {
+      var calm = cells.every(function (c) { return peakHere(c) < 1000; });
+      if (calm) {
+        st.passed = true;
+        if (window.ChimeraSound) ChimeraSound.passed();
+        setVerdict('PASSED — you felt the water. it was always there.', 'good');
+      }
     }
   }
 
@@ -638,6 +727,7 @@
   async function tryTouch(cx, cy) {
     var hit = pickWorld(cx, cy);
     if (!hit) { setHand('you touched only water.'); return; }
+    lastTouchForce = Number(forceEl.value);
     holding = true;
     $('letgo-btn').classList.add('hot');
     setHand('pressing — ' + forceEl.value + ' N');
@@ -716,7 +806,9 @@
     try {
       var lessons = {}, k;
       for (k in lessonsKnown) lessons[k] = lessonsKnown[k];
-      lessons.wake_the_cell = { passed: judge.passed, at: new Date().toISOString() };
+      for (var id in lessonState)
+        if (lessonState[id].passed)
+          lessons[id] = { passed: true, at: new Date().toISOString() };
       var res = await postJSON(API.progress, { name: playerName, lessons: lessons });
       if (!res.ok) throw new Error('http ' + res.status);
       lessonsKnown = lessons;
@@ -729,12 +821,13 @@
     }
   });
 
-  function enterPlay() {
+  async function enterPlay() {
     playerName = $('name-input').value.trim() || 'wanderer';
     $('cam-name').textContent = playerName;
     $('screen-start').classList.remove('on');
     $('screen-play').classList.add('on');
-    loadKnownProgress();
+    await loadKnownProgress();
+    await loadLessons();
   }
   $('play-btn').addEventListener('click', enterPlay);
   $('name-input').addEventListener('keydown', function (e) {
