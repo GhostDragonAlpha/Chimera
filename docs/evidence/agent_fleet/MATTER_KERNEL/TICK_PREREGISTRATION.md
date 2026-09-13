@@ -76,3 +76,36 @@ path (find where the frame loop drops it), fix, re-run.
 - GPU compute migration: v1 ticks engine-side C++ per frame (18.9k
   cells is trivial); the compute-shader migration is its own appliance
   once the semantics are proven.
+
+## RUN RECORD (2026-09-13, live engine, tick binary serving on 8107)
+
+- P1 idle heartbeat: PASS — ticks advanced 901 -> 7681 -> 65007 across
+  silent windows; zero intents, load 0, damage 0.
+- P2 press: PASS — intent 1000 N on L: force_l=1000, load_l=1000
+  (20 cells x 50 N), right foot 0, damage 0.
+- P3 sustain: PASS — load held at the intent across reads (no leak,
+  no growth).
+- P4 overload: PASS, with a derivation correction the run forced —
+  the tick computes EXACT per-cell capacities (yield x true triangle
+  area); the foot's real capacity_sum = 32.25e6 N (not the prereg's
+  even-split 4.56e6 N). At 1.4x capacity: damage_sum 18.99, 10 cells
+  FAILED, failed cells carry 0 and stop accruing — computed, never
+  scripted. The state now reports capacity_sum so bars target the
+  engine's own threshold.
+- P5 shedding: PASS — under overload the cells' carried load pins at
+  capacity while the excess sheds to neighbors (state shows load_r at
+  capacity-level while force_r = 1.4x).
+- P6 intents only: PASS — the tick advanced thousands of frames with
+  ZERO HTTP from Python during the windows.
+- P7 refusals: PASS — missing force, negative force, unknown foot all
+  refused by name (recorded before the route relocation fix; see note).
+- Visible proof: tick_overload_red.png / tick_failed_cells.png — the
+  overloaded foot tints red per cell, the healthy foot stays skin.
+
+NOTE (route fix): the tick POST routes were initially inserted into the
+GET region of the chain and answered 'Not found'; relocated into the
+POST chain before /hinge_bin. The IWR-vs-urllib difference seen mid-run
+was the stale binary serving before the swap completed.
+
+- OPEN (unchanged): P4 travel (joint force term), scratch-between-
+  membranes, GPU compute migration, full-monkey membrane authoring.

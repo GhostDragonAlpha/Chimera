@@ -12,6 +12,7 @@
 #include "shared_mem.hpp"
 #include "http_server.hpp"
 #include "png_encoder.hpp"
+#include "membrane_tick.hpp"
 
 #include <cstdio>
 #include <cstdlib>
@@ -81,6 +82,9 @@ static bool g_md_pending = false, g_md_applied = false;
 // ── Pending triangle mesh request (same handoff: Vulkan work stays on the render thread) ──
 struct MeshReq { std::vector<float> verts; std::vector<uint32_t> indices; uint32_t N=0, idxCount=0; float cam_radius=12.f, cam_theta=0.f, cam_phi=0.3f; uint32_t slot=0, mode=0; bool update_only=false; bool valid=false; };
 static MeshReq g_mesh_req;
+static MembraneTick g_tick;                    // THE MEMBRANE TICK (Appliance 1)
+static std::vector<float> g_tick_verts;        // host mirror the tick tints
+static uint32_t g_tick_vcount = 0;
 static std::mutex g_mesh_mutex;
 static std::condition_variable g_mesh_cv;
 static bool g_mesh_pending = false, g_mesh_applied = false;
@@ -708,6 +712,22 @@ int main(int argc, char** argv) {
                     body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
                 }
             }
+            content_type = "application/json";
+        } else if (p == "/tick_intent" && method == "POST") {
+            // THE MEMBRANE TICK intents (Appliance 1): a standing press.
+            // Force in newtons is a required input, never defaulted.
+            float force = get_double(req_body, "force_n", NAN);
+            std::string foot = get_string(req_body, "foot");
+            if (g_tick.intent(force, foot)) {
+                body = "{\"ok\":true}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"refused: force_n must be a "
+                       "positive number and foot L or R\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/tick_intent_clear" && method == "POST") {
+            g_tick.clear_intent();
+            body = "{\"ok\":true}";
             content_type = "application/json";
         } else if (p == "/hinge_bin" && method == "POST") {
             // Binary protocol (little-endian):
@@ -2061,6 +2081,10 @@ int main(int argc, char** argv) {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }
             content_type = "application/json";
+        } else if (p == "/tick_state" && method == "GET") {
+            // THE MEMBRANE TICK readback (Appliance 1)
+            body = g_tick.state_json();
+            content_type = "application/json";
         } else if (p == "/console" && method == "GET") {
             // F1: the console's HTTP twin — what the glass shows, served
             if (g_engine) {
@@ -2836,6 +2860,14 @@ int main(int argc, char** argv) {
                     engine.load_mesh(g_mesh_req.verts, g_mesh_req.indices, g_mesh_req.N, g_mesh_req.idxCount);
                     engine.set_mesh_mode(g_mesh_req.mode);
                 }
+                // THE MEMBRANE TICK: a slot-0 mesh is the cell field. Cells =
+                // triangles; capacity = mat.skin yield x cell area (prereg).
+                if (g_mesh_req.slot == 0 && g_mesh_req.idxCount >= 3) {
+                    g_tick.init(g_mesh_req.idxCount / 3, g_mesh_req.indices,
+                                g_mesh_req.verts);
+                    g_tick_verts = g_mesh_req.verts;
+                    g_tick_vcount = g_mesh_req.N;
+                }
                 // cam_radius <= 0 = "keep the current camera": animation drivers stream
                 // meshes every frame and must NOT steal the operator's orbit/zoom/pan.
                 if (!g_mesh_req.update_only && g_mesh_req.cam_radius > 0.0f)
@@ -3038,6 +3070,14 @@ int main(int argc, char** argv) {
         if (ft_ms > 33.3) ft_over33++;
         // F2: every frame's time lands on the status bar's histogram ring
         engine.ui_.push_frame_time(static_cast<float>(ft_ms));
+
+        // THE MEMBRANE TICK (Appliance 1): per-frame cell update on the
+        // render thread; the tint streams to the GPU through update_mesh
+        // (in-place vertex upload, no reload, no camera).
+        if (g_tick.enabled_ && g_tick_vcount > 0) {
+            g_tick.step(g_tick_verts);
+            engine.update_mesh(g_tick_verts, g_tick_vcount);
+        }
 
         // Frame cap (frame-stutter fix): uncapped, the engine free-ran at 300-1800 FPS
         // and fought llama-server (65%% GPU) for every slice — each inference burst
