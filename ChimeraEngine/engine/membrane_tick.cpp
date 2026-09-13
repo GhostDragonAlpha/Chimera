@@ -116,7 +116,8 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
     joint_verts_.clear();   // mesh changed: pressed regions rebuild
     press_off_.clear();     // and any dimple field dies with it
     press_field_ = false;
-    normals_displaced_ = false;
+    touch_active_ = false;
+    touch_f_ = 0.f;
     ticks_ = 0;
     force_l_ = force_r_ = 0.f;
     flex_l_ = flex_r_ = 0.f;
@@ -260,12 +261,29 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
         }
         const size_t nverts = verts9.size() / 9;
         if (press_off_.size() != nverts) press_off_.assign(nverts, 0.f);
+        // THE TOUCH: offsets around the WORLD hit point, measured on the
+        // POSED positions (the press follows the body)
+        if (touch_active_) {
+            any_press = true;
+            float delta = touch_f_ / (4.f * 3.14159265358979f * sigma_n_);
+            float r02 = press_r0_ * press_r0_;
+            float mr02 = 9.f * r02;
+            for (size_t v = 0; v < nverts; ++v) {
+                float dx = verts9[v * 9 + 0] - touch_pt_[0];
+                float dy = verts9[v * 9 + 1] - touch_pt_[1];
+                float dz = verts9[v * 9 + 2] - touch_pt_[2];
+                float d2 = dx * dx + dy * dy + dz * dz;
+                if (d2 > mr02) continue;                 // outside the falloff
+                float off = delta * std::exp(-d2 / r02);
+                if (off > press_off_[v]) press_off_[v] = off;  // dominant wins
+            }
+        }
         for (size_t j = 0; j < joint_force_.size(); ++j) {
             float F = joint_force_[j];
             if (F <= 0.f) continue;
             any_press = true;
             float delta = F / (4.f * 3.14159265358979f * sigma_n_);
-            dimple_m_ = std::max(dimple_m_, delta);
+            (void)delta;
             const auto& C = joint_cent_[j];
             float r02 = press_r0_ * press_r0_;
             for (uint32_t v : joint_verts_[j]) {
@@ -273,7 +291,8 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
                 float dy = base_pos_[v * 9 + 1] - C[1];
                 float dz = base_pos_[v * 9 + 2] - C[2];
                 float q = (dx * dx + dy * dy + dz * dz) / r02;
-                press_off_[v] = delta * std::exp(-q);   // SET: steady state
+                float off = delta * std::exp(-q);
+                if (off > press_off_[v]) press_off_[v] = off;  // dominant wins
             }
         }
         if (!any_press && press_field_) {
@@ -292,6 +311,38 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
                 press_field_ = false;               // deterministic rest
             }
         }
+        // POSED NORMALS: the travel writes positions; recompute normals
+        // from the posed surface every tick so touch directions and the
+        // lighting ride the true skin (the stale-normal bug class).
+        {
+            std::vector<float> acc(nverts * 3, 0.f);
+            for (size_t i = 0; i + 2 < tri_verts_.size(); i += 3) {
+                uint32_t a = tri_verts_[i], b = tri_verts_[i + 1], c2 = tri_verts_[i + 2];
+                float ux = verts9[b*9+0] - verts9[a*9+0];
+                float uy = verts9[b*9+1] - verts9[a*9+1];
+                float uz = verts9[b*9+2] - verts9[a*9+2];
+                float wx = verts9[c2*9+0] - verts9[a*9+0];
+                float wy = verts9[c2*9+1] - verts9[a*9+1];
+                float wz = verts9[c2*9+2] - verts9[a*9+2];
+                float nx = uy * wz - uz * wy;
+                float ny = uz * wx - ux * wz;
+                float nz = ux * wy - uy * wx;
+                for (uint32_t v : {a, b, c2}) {
+                    acc[(size_t)v * 3 + 0] += nx;
+                    acc[(size_t)v * 3 + 1] += ny;
+                    acc[(size_t)v * 3 + 2] += nz;
+                }
+            }
+            for (size_t v = 0; v < nverts; ++v) {
+                float nx = acc[v * 3 + 0], ny = acc[v * 3 + 1], nz = acc[v * 3 + 2];
+                float len = std::sqrt(nx * nx + ny * ny + nz * nz);
+                if (len < 1e-12f) continue;
+                verts9[v * 9 + 3] = nx / len;
+                verts9[v * 9 + 4] = ny / len;
+                verts9[v * 9 + 5] = nz / len;
+            }
+        }
+
         // apply whatever offsets survive this tick
         if (any_press || press_field_) {
             press_field_ = true;
@@ -605,6 +656,32 @@ void MembraneTick::apply_chain(std::vector<float>& verts9) {
             verts9[v * 9 + 2] = by * sth + bz * cth + pv[2];
         }
     }
+}
+
+bool MembraneTick::touch_press(float u, float v, float force_n,
+                               const std::function<bool(float[3])>& pick_fn,
+                               std::string& err, float hit_out[3]) {
+    if (!std::isfinite(force_n) || force_n <= 0.f) {
+        err = "force_n must be positive";
+        return false;
+    }
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    float hit[3];
+    if (!pick_fn(hit)) {
+        err = "the ray misses the body";
+        return false;
+    }
+    touch_pt_[0] = hit[0]; touch_pt_[1] = hit[1]; touch_pt_[2] = hit[2];
+    if (hit_out) { hit_out[0] = hit[0]; hit_out[1] = hit[1]; hit_out[2] = hit[2]; }
+    touch_f_ = force_n;
+    touch_active_ = true;
+    return true;
+}
+
+bool MembraneTick::touch_clear() {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    touch_active_ = false;
+    return true;
 }
 
 bool MembraneTick::split(int cell_idx) {

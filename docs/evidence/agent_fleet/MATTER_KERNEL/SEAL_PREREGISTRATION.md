@@ -650,3 +650,40 @@ handedness, do not nudge pixels), OR a posed touch lands at the
 AUTHORED location (the stale-normal bug), OR release leaves residue.
 Successor if fired: audit the ray handedness against project_world
 and the normal-recompute placement in the tick order.
+
+## RUN RECORD (2026-09-13, live engine R3 TOUCH — press where you point)
+
+- T1 closed loop: PASS — pick -> hit -> re-project = the requested
+  pixel, 0.0 px error on three probes (belly, belly+right, belly+up).
+  The live camera targets the origin (the boot fit), so the belly
+  sits at screen (0.500, 0.295) — the probe casts where the body IS,
+  not where a center-framing assumption puts it.
+- T2: PASS — a ray at empty space refused by name.
+- T3: PASS — belly 30 kN: dimple 0.2415 m, torso cell dV -0.003 m^3,
+  P +0.534 MPa (independent kappa recompute +0.521); conservation
+  -4.1e-05 %; release recovers to dimple 0, all P 0.
+- T4: PASS — THE POSED TOUCH: knee_L 40 deg, the pin re-projected and
+  touched through the camera — the hit returned at (0.4827, 1.9032,
+  -0.0154) against the pin (0.483, 1.903, -0.015): SUB-MILLIMETER on
+  the moved limb. The dimple follows the body. (posed normals now
+  recompute from the posed surface EVERY tick — the stale-normal bug
+  class is dead by construction, and lighting under pose is true.)
+- T5: PASS — combined release (touch + pose): exact rest (dimple 0,
+  all P 0, conserve -6.9e-05 %). First sample at 4 s read mid-decay
+  (0.000128 m — the honest tau tail on a compound deformation); the
+  true rest verified 3 s later. Evidence: CHIMERA_PROOF\TOUCH\
+  (t0_rest / t1_dimpled: 954 px changed at the belly silhouette;
+  t2_recovered / t3_posed_touch / t4_rest).
+
+### Disclosure: the falsifier fired on an INSTRUMENT, not the physics
+
+The first T1 run FAILED — every /project query returned the screen
+center. Cause, found by the prereg's own audit: my verification calls
+used the wrong JSON key ("p" array instead of x/y/z), so the instrument
+projected the ORIGIN every time and answered the center. The pick was
+re-audited against the corrected instrument and passes at 0.0 px. The
+engine's /project contract is x/y/z floats; nothing in the engine
+changed for T1 to pass.
+
+R3 THE HOOK IN MOTION: **PASS** — touch lands where you point, on the
+posed body, with the hydraulic answer and the honest recovery.

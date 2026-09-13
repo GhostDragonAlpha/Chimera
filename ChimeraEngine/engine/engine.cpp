@@ -6662,6 +6662,80 @@ void Engine::update_camera_matrices(float proj[16], float view[16]) {
     last_vp_valid_ = true;
 }
 
+// R3 TOUCH (prereg 0935695e): the camera ray through pixel fractions.
+// Same spherical law as update_camera_matrices — one camera source of
+// truth. Handedness is verified by the closed loop, not by eye: the hit
+// must re-project onto the requested pixel (project_world).
+bool Engine::pick(float u, float v,
+                  const std::vector<float>& verts9,
+                  const std::vector<uint32_t>& tris,
+                  float out_point[3]) const {
+    if (!last_vp_valid_ || verts9.size() < 9 || tris.size() < 3) return false;
+    float c = cosf(g_cam.phi), s = sinf(g_cam.phi);
+    float cx = cosf(g_cam.theta), sx = sinf(g_cam.theta);
+    float eye[3] = { g_cam.target[0] + g_cam.radius * c * sx + g_cam.pan_x,
+                     g_cam.target[1] + g_cam.radius * s + g_cam.pan_y,
+                     g_cam.target[2] - g_cam.radius * c * cx };
+    float up[3] = { -s * sx, c, s * cx };
+    float fwd[3] = { g_cam.target[0] - eye[0],
+                     g_cam.target[1] - eye[1],
+                     g_cam.target[2] - eye[2] };
+    float fl = sqrtf(fwd[0]*fwd[0] + fwd[1]*fwd[1] + fwd[2]*fwd[2]);
+    if (fl < 1e-9f) return false;
+    fwd[0] /= fl; fwd[1] /= fl; fwd[2] /= fl;
+    float right[3] = { fwd[1]*up[2] - fwd[2]*up[1],
+                       fwd[2]*up[0] - fwd[0]*up[2],
+                       fwd[0]*up[1] - fwd[1]*up[0] };
+    float rl = sqrtf(right[0]*right[0] + right[1]*right[1] + right[2]*right[2]);
+    if (rl < 1e-9f) return false;
+    right[0] /= rl; right[1] /= rl; right[2] /= rl;
+
+    const float aspect = static_cast<float>(extent_.width) / static_cast<float>(extent_.height);
+    const float th = tanf(45.0f * 3.14159265f / 180.0f * 0.5f);
+    const float ndx = 2.f * u - 1.f, ndy = 1.f - 2.f * v;
+    float dir[3] = { fwd[0] + right[0] * (ndx * aspect * th) + up[0] * (ndy * th),
+                     fwd[1] + right[1] * (ndx * aspect * th) + up[1] * (ndy * th),
+                     fwd[2] + right[2] * (ndx * aspect * th) + up[2] * (ndy * th) };
+    float dl = sqrtf(dir[0]*dir[0] + dir[1]*dir[1] + dir[2]*dir[2]);
+    dir[0] /= dl; dir[1] /= dl; dir[2] /= dl;
+
+    // Moller-Trumbore, nearest hit; verts9 = 9 floats per vertex
+    const size_t nt = tris.size() / 3;
+    float best_t = 1e30f;
+    bool hit = false;
+    for (size_t i = 0; i < nt; ++i) {
+        const uint32_t ia = tris[i*3+0], ib = tris[i*3+1], ic = tris[i*3+2];
+        const float* a = &verts9[(size_t)ia * 9];
+        const float* b = &verts9[(size_t)ib * 9];
+        const float* cc = &verts9[(size_t)ic * 9];
+        float e1[3] = { b[0]-a[0], b[1]-a[1], b[2]-a[2] };
+        float e2[3] = { cc[0]-a[0], cc[1]-a[1], cc[2]-a[2] };
+        float pv[3] = { dir[1]*e2[2] - dir[2]*e2[1],
+                        dir[2]*e2[0] - dir[0]*e2[2],
+                        dir[0]*e2[1] - dir[1]*e2[0] };
+        float det = e1[0]*pv[0] + e1[1]*pv[1] + e1[2]*pv[2];
+        if (det > -1e-10f && det < 1e-10f) continue;
+        float inv = 1.f / det;
+        float tv[3] = { eye[0]-a[0], eye[1]-a[1], eye[2]-a[2] };
+        float uu = (tv[0]*pv[0] + tv[1]*pv[1] + tv[2]*pv[2]) * inv;
+        if (uu < -1e-6f || uu > 1.f + 1e-6f) continue;
+        float qv[3] = { tv[1]*e1[2] - tv[2]*e1[1],
+                        tv[2]*e1[0] - tv[0]*e1[2],
+                        tv[0]*e1[1] - tv[1]*e1[0] };
+        float vv = (dir[0]*qv[0] + dir[1]*qv[1] + dir[2]*qv[2]) * inv;
+        if (vv < -1e-6f || uu + vv > 1.f + 1e-6f) continue;
+        float t = (e2[0]*qv[0] + e2[1]*qv[1] + e2[2]*qv[2]) * inv;
+        if (t > 1e-4f && t < best_t) {
+            best_t = t;
+            out_point[0] = eye[0] + dir[0]*t;
+            out_point[1] = eye[1] + dir[1]*t;
+            out_point[2] = eye[2] + dir[2]*t;
+            hit = true;
+        }
+    }
+    return hit;
+}
+
 // ── GPU bitonic sort (back-to-front splat ordering — no CPU in the per-frame path) ─────────
 
 static uint32_t next_pow2(uint32_t v) {

@@ -4,7 +4,9 @@
 #include <array>
 #include <atomic>
 #include <cstdint>
+#include <functional>
 #include <mutex>
+#include <string>
 #include <string>
 #include <vector>
 
@@ -63,6 +65,16 @@ public:
     // divides into one cell per connected component — flood-fill the
     // pieces through shared slots. Refused by name for a connected cell.
     bool split(int cell);
+
+    // R3 TOUCH (prereg 0935695e): press AT a world point (the camera-ray
+    // hit), Gaussian falloff around it, along the POSED skin normals.
+    // The pick callback runs under the tick lock so the geometry it reads
+    // is exactly the geometry the next tick deforms.
+    bool touch_press(float u, float v, float force_n,
+                     const std::function<bool(float[3])>& pick_fn,
+                     std::string& err, float hit_out[3] = nullptr);
+    bool touch_clear();
+    const std::vector<uint32_t>& tri_verts() const { return tri_verts_; }
 
     bool   enabled_ = true;
     uint64_t ticks_ = 0;
@@ -147,7 +159,12 @@ private:
     // exp(-dt/tau) until the 0.1 mm cutoff clears them (deterministic
     // rest preserved).
     std::vector<float> press_off_;             // nv offsets, aligned to verts
-    bool  press_field_ = false;                // press_off_ has entries
+    bool  press_field_ = false;
+    // THE TOUCH: a world-space press point + force (set via touch_press
+    // under the tick lock; consumed by step)
+    bool  touch_active_ = false;
+    float touch_pt_[3] = {0.f, 0.f, 0.f};
+    float touch_f_ = 0.f;                // press_off_ has entries
     bool  has_scene_ = false;
     float dirty_ = 0.f;                        // tint changed -> needs upload
     std::atomic<bool> ready_{false};           // committed only after init

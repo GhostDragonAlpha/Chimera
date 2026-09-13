@@ -813,6 +813,33 @@ int main(int argc, char** argv) {
                         "must exist, the plane must cross that cell's "
                         "y-range, and the cut graph must close into loops\"}";
             content_type = "application/json";
+        } else if (p == "/tick_touch" && method == "POST") {
+            // R3 TOUCH: a pixel and a force. The ray is cast under the
+            // tick lock so the pick reads exactly the geometry the next
+            // tick deforms.
+            float px = (float)get_double(req_body, "px", 0.5);
+            float py = (float)get_double(req_body, "py", 0.5);
+            float force = (float)get_double(req_body, "force_n", 0.0);
+            std::string err;
+            float hit[3];
+            if (g_tick.touch_press(px, py, force,
+                    [&](float out[3]) -> bool {
+                        return g_engine && g_engine->pick(px, py, g_tick_verts,
+                            g_tick.tri_verts(), out);
+                    }, err, hit)) {
+                // the hit point rides the response: the caller can verify
+                // the closed loop (re-project it) and see where it landed
+                body = std::string("{\"ok\":true,\"hit\":[")
+                     + std::to_string(hit[0]) + "," + std::to_string(hit[1])
+                     + "," + std::to_string(hit[2]) + "]}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"" + err + "\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/tick_touch_clear" && method == "POST") {
+            g_tick.touch_clear();
+            body = "{\"ok\":true}";
+            content_type = "application/json";
         } else if (p == "/tick_seal_split" && method == "POST") {
             // THE COMPONENT SPLIT: a cell of disjoint closed surfaces
             // (left+right after a band cut) divides per component.

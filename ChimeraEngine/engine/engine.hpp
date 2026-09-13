@@ -476,6 +476,13 @@ public:
     int                   joint_index(const std::string& name) const;  // -1 unknown
     void                  request_joint_edit(int idx, float deg);      // HTTP/UI intent
     bool                  project_world(const float p[3], float& sx, float& sy) const;
+    // R3 TOUCH: cast the camera ray through pixel fractions (u,v) into the
+    // posed surface; nearest hit wins. The closed-loop bar (prereg): the
+    // hit re-projects onto the same pixel.
+    bool                  pick(float u, float v,
+                               const std::vector<float>& verts9,
+                               const std::vector<uint32_t>& tris,
+                               float out_point[3]) const;
     bool                  vp_valid() const { return last_vp_valid_; }
     // ONE camera law, two loops (2026-08-31). frame() stashed the view/proj for
     // the C1 gizmo and /project; frame_idle_ui() never did, so with nothing

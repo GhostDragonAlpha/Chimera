@@ -22,7 +22,7 @@ window tricks, no excuses.
   game must behave like a product, not a lab instrument.
 - R2. THE GAME LOOP — PASS/OPEN: **OPEN.** Start screen -> play ->
   lessons -> progress saved. Something to do, a reason to continue.
-- R3. THE HOOK IN MOTION — PASS/OPEN: **OPEN.** The water-physics
+- R3. THE HOOK IN MOTION — PASS/OPEN: **PASS.** The water-physics
   answer works while the creature moves: press it anywhere and the
   sealed cells answer (dimple, pressure, recovery). Verified physics
   exists; the player-facing touch is OPEN (press where you point,
