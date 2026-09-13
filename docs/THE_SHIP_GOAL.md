@@ -83,4 +83,16 @@ window tricks, no excuses.
 | Date       | Event                                   |
 |------------|-----------------------------------------|
 | 2026-09-13 | Goal set by the operator; 8/8 R-items OPEN |
+| 2026-09-13 | R1a foreground independence PASS (law retired, operator-verified); R1b double-click package OPEN, in build |
 | 2026-09-13 | R9 our-own-website channel added (demo first, sign-up after); revenue position re-framed — our page keeps ~95%, sign-up list is ours, Steam demoted to optional second shelf |
+
+## LEDGER UPDATE (2026-09-13, R1)
+
+- R1a FOREGROUND INDEPENDENCE: **PASS** — the recorded stall does not
+  reproduce (frames 1.09 s minimized AND occluded, ticks advancing,
+  picture answers poses; the operator independently interacted with
+  the restored window with time advancing). The law of record was
+  retired in THE_CELL_MODEL.md.
+- R1b DOUBLE-CLICK PACKAGE: **OPEN** — the launch still needs its
+  special working directory, hidden developer console, and manual
+  payload re-posts. In build now.
