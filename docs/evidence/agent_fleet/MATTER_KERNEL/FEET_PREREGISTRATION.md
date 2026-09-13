@@ -77,3 +77,27 @@ and the rebind is measured before any other work resumes.
   vs 7-float vertex layout — resolved at implementation, measured by P1).
 - Press intent (P5) lands when the named engine press appliance exists;
   until then P1-P4 gate the geometry and binding work.
+
+## RUN RECORD (2026-09-13, first build pass)
+
+- P1 VISIBLE: PASS — the feet render as membranes through the certified
+  /membrane_bin path: 360 splats, both feet, symmetric at the measured
+  ankles, COEXISTING with the mesh creature (single-slot feared, not
+  real: mesh and membrane render together). Pictures:
+  CHIMERA_PROOF/FEET/ (feet_close*.png, feet_final.png).
+- P2 GROUNDED: PASS by construction and printed from the posted buffer:
+  sole min y = 0.000000.
+- P3 MATERIAL: PASS — mat.skin added (Yamada 1970, conservative 15 MPa;
+  46/46 still green) and the row integrates with the scratch law
+  (rubber tip on skin at 10 N: 81 um groove, source propagates).
+- Toe direction: MEASURED from the skin mesh (foot verts near each
+  ankle span z -0.478..+0.949, mean +0.236) — the skin foot's forward
+  extent matches the derived toe line (-0.478) exactly; one wrong flip
+  was caught and reverted by this measurement.
+- P4 TRAVEL: OPEN — splats are a static cloud; the engine animates the
+  MESH via the hinge, and has no splat-animation path yet. The named
+  appliance (next session, with its own prereg): membrane travel —
+  hinge-driven splat subclouds (feet bind at the ankle pin).
+- P5 PRESS: OPEN — needs the named press appliance (as preregistered).
+- PARKED ELSEWHERE: editor polish (dyad verdict saved with before
+  pictures); joint-tag legibility appliance queued behind P4.
