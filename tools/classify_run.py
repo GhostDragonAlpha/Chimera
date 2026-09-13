@@ -20,11 +20,11 @@ import numpy as np
 
 def parse_full(path: Path):
     raw = path.read_bytes()
-    n, m = struct.unpack_from("<II", raw, 0)
+    n, ic = struct.unpack_from("<II", raw, 0)   # ic = INDEX count (3/tri)
     verts = np.frombuffer(raw, dtype=np.float32, count=n * 9,
                           offset=24).reshape(n, 9)
-    idx = np.frombuffer(raw, dtype=np.uint32, count=m * 3,
-                        offset=24 + n * 36)
+    idx = np.frombuffer(raw, dtype=np.uint32, count=ic,
+                        offset=24 + n * 36).reshape(-1, 3)
     return verts, idx
 
 
@@ -38,10 +38,16 @@ def main() -> int:
     pos = verts[:, 0:3]
     centroids = pos[idx].mean(axis=1)
 
-    # per-triangle and per-vertex nearest measured joint (the CA typing)
+    # per-triangle CA type: nearest measured joint to the centroid
     d2t = ((centroids[:, None, :] - pins[None, :, :]) ** 2).sum(axis=2)
     tri_joint = d2t.argmin(axis=1).astype(np.uint8)
+    # per-vertex travel binding: the 3 nearest joints, inverse-distance^2
+    # weights normalized — the membrane BENDS smoothly, never tears
     d2v = ((pos[:, None, :] - pins[None, :, :]) ** 2).sum(axis=2)
+    order = np.argsort(d2v, axis=1)[:, :3]                     # 3 nearest
+    d3 = np.take_along_axis(d2v, order, axis=1)
+    w = 1.0 / (d3 + 1e-6) ** 2
+    w /= w.sum(axis=1, keepdims=True)
     vert_joint = d2v.argmin(axis=1).astype(np.uint8)
 
     print("triangle types:", np.bincount(tri_joint, minlength=28).tolist())
@@ -58,9 +64,21 @@ def main() -> int:
     print("classify:", post("/tick_classify",
                             struct.pack("<I", len(tri_joint))
                             + tri_joint.tobytes()))
+    # travel binding: 3 pin indices (u8) + 3 weights (f32) per vertex
+    bind = np.empty((len(vert_joint), 15), dtype=np.float32)
+    bind[:, 0] = vert_joint.astype(np.float32)
+    idx3 = np.empty((len(vert_joint), 3), dtype=np.uint8)
+    for k in range(3):
+        idx3[:, k] = order[:, k]
+    vb = np.empty(len(vert_joint) * 15, dtype=np.uint8)
+    for v in range(len(vert_joint)):
+        row = np.empty(15, dtype=np.uint8)
+        row[0:3] = idx3[v]
+        row[3:15] = np.frombuffer(w[v].tobytes(), dtype=np.uint8)
+        vb[v * 15:(v + 1) * 15] = row
     print("vertbind:", post("/tick_vertbind",
-                            struct.pack("<I", len(vert_joint))
-                            + vert_joint.tobytes()))
+                            struct.pack("<I", len(vert_joint)) + vb.tobytes(),
+                            timeout=120))
     pins_body = struct.pack("<I", len(pins)) + np.ascontiguousarray(pins).tobytes()
     print("joints:", post("/tick_joints", pins_body))
     return 0

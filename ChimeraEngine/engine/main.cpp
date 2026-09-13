@@ -775,6 +775,12 @@ int main(int argc, char** argv) {
                  : "{\"ok\":false,\"error\":\"classification size mismatch "
                    "(post after the mesh)\"}";
             content_type = "application/json";
+        } else if (p == "/tick_vertbind" && method == "POST") {
+            // TRAVEL binding: 15 bytes per vertex (3 pin indices + 3 weights)
+            body = g_tick.load_vertbind(req_body) ? "{\"ok\":true}"
+                 : "{\"ok\":false,\"error\":\"vertbind rejected (size or "
+                   "vertex count mismatch)\"}";
+            content_type = "application/json";
         } else if (p == "/tick_joints" && method == "POST") {
             // The measured pins: [u32 n][f32 x,y,z * n]
             body = g_tick.load_joint_pins(req_body) ? "{\"ok\":true}"

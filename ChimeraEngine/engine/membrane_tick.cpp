@@ -148,26 +148,35 @@ void MembraneTick::step(std::vector<float>& verts9) {
 
     const bool classified = cell_joint_.size() == cells_.size()
                          && joint_pins_.size() == joint_deg_.size()
-                         && vert_joint_.size() == verts9.size() / 9;
+                         && vert_bind_idx_.size() == verts9.size() / 9 * 3
+                         && vert_bind_w_.size() == verts9.size() / 9 * 3;
 
-    // TRAVEL
-    if (!rig_.empty()) {
-        apply_chain(verts9);
-    } else if (classified) {
-        // per-vertex rigid travel with the bound pin's pose
-        for (size_t v = 0; v < verts9.size() / 9; ++v) {
-            uint8_t j = vert_joint_[v];
-            float th = joint_deg_[j];
-            if (th == 0.f) continue;
-            const auto& pv = joint_pins_[j];
-            float bx = verts9[v * 9 + 0] - pv[0];
-            float by = verts9[v * 9 + 1] - pv[1];
-            float bz = verts9[v * 9 + 2] - pv[2];
-            float cth = std::cos(th), sth = std::sin(th);
-            verts9[v * 9 + 0] = bx + pv[0];
-            verts9[v * 9 + 1] = by * cth - bz * sth + pv[1];
-            verts9[v * 9 + 2] = by * sth + bz * cth + pv[2];
+    // TRAVEL: blended per-vertex travel -- each vertex mixes the poses of
+    // its 3 nearest pins by its stored weights. The surface BENDS; it
+    // never tears (that was the rigid-pin method, rejected by the operator).
+    if (classified) {
+        const size_t nv = verts9.size() / 9;
+        for (size_t v = 0; v < nv; ++v) {
+            float px = 0.f, py = 0.f, pz = 0.f;
+            // blend source is the AUTHORED BASE: deterministic per tick
+            float ox = base_pos_[v * 9 + 0], oy = base_pos_[v * 9 + 1], oz = base_pos_[v * 9 + 2];
+            for (int k = 0; k < 3; ++k) {
+                uint8_t j = vert_bind_idx_[v * 3 + (size_t)k];
+                float w = vert_bind_w_[v * 3 + (size_t)k];
+                float th = joint_deg_[j];
+                const auto& pv = joint_pins_[j];
+                float bx = ox - pv[0], by = oy - pv[1], bz = oz - pv[2];
+                float cth = std::cos(th), sth = std::sin(th);
+                px += w * (bx + pv[0]);
+                py += w * (by * cth - bz * sth + pv[1]);
+                pz += w * (by * sth + bz * cth + pv[2]);
+            }
+            verts9[v * 9 + 0] = px;
+            verts9[v * 9 + 1] = py;
+            verts9[v * 9 + 2] = pz;
         }
+    } else if (!rig_.empty()) {
+        apply_chain(verts9);
     } else {
         apply_flex(verts9);
     }
@@ -237,11 +246,22 @@ bool MembraneTick::load_classify(const std::string& body) {
 }
 
 bool MembraneTick::load_vertbind(const std::string& body) {
+    // smooth-travel binding: per vertex, 3 pin indices (u8) and 3
+    // normalized weights (f32) -- 15 bytes per vertex. The membrane
+    // BENDS by blending the pins' rotations; it never tears.
     if (body.size() < 4) return false;
     uint32_t n = 0;
     std::memcpy(&n, body.data(), 4);
+    if (body.size() != 4 + n * 15) return false;
     if (n != verts_expected()) return false;
-    vert_joint_.assign(body.begin() + 4, body.end());
+    vert_bind_idx_.assign(n * 3, 0);
+    vert_bind_w_.resize(n * 3);
+    const uint8_t* src = reinterpret_cast<const uint8_t*>(body.data()) + 4;
+    for (uint32_t v = 0; v < n; ++v) {
+        const uint8_t* row = src + v * 15;
+        for (int k = 0; k < 3; ++k) vert_bind_idx_[v * 3 + (size_t)k] = row[k];
+        std::memcpy(&vert_bind_w_[v * 3], src + v * 15 + 3, 12);
+    }
     return true;
 }
 

@@ -70,14 +70,16 @@ private:
     std::vector<RigPart> rig_;                 // the chain (Appliance 3)
     std::vector<float>  rig_angle_;            // radians per part
     std::vector<uint8_t> cell_joint_;          // per-triangle CA type (pin idx)
-    std::vector<uint8_t> vert_joint_;          // per-vertex binding (travel)
+    std::vector<uint8_t> vert_bind_idx_;       // 3 pin indices per vertex
+    std::vector<float>   vert_bind_w_;         // 3 normalized weights per vertex
+    std::vector<uint8_t> vert_joint_;          // dominant pin per vertex
     std::vector<std::array<float, 3>> joint_pins_;  // the 28 measured pins
     std::vector<float>  joint_deg_;            // pose per pin (radians)
     std::vector<float>  joint_force_;          // standing press per pin, N
     bool  has_scene_ = false;
     float dirty_ = 0.f;                        // tint changed -> needs upload
     std::atomic<bool> ready_{false};           // committed only after init
-    uint32_t verts_expected() const { return (uint32_t)(base_pos_.size() / 3); }
+    uint32_t verts_expected() const { return (uint32_t)(base_pos_.size() / 9); }
     void  apply_flex(std::vector<float>& verts9);
     void  apply_chain(std::vector<float>& verts9);
 };
