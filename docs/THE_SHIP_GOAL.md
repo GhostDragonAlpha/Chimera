@@ -20,7 +20,7 @@ window tricks, no excuses.
   clean ordinary Windows machine from one double-click. Today the
   engine needs a maximised window or it stalls (measured law); the
   game must behave like a product, not a lab instrument.
-- R2. THE GAME LOOP — PASS/OPEN: **OPEN.** Start screen -> play ->
+- R2. THE GAME LOOP — PASS/OPEN: **PASS.** Start screen -> play ->
   lessons -> progress saved. Something to do, a reason to continue.
 - R3. THE HOOK IN MOTION — PASS/OPEN: **PASS.** The water-physics
   answer works while the creature moves: press it anywhere and the
@@ -145,6 +145,8 @@ op needs on top:
 | Date       | Event                                   |
 |------------|-----------------------------------------|
 | 2026-09-13 | Goal set by the operator; 8/8 R-items OPEN |
+| 2026-09-13 | **R3 THE HOOK IN MOTION: PASS** — /tick_touch {px,py,force_n}: camera-ray pick (closed loop 0.0 px), posed normals every tick, dimple at the posed hit with the kappa answer (belly 30 kN -> torso +0.534 MPa), tau recovery exact; posed touch sub-millimeter on the moved knee |
+| 2026-09-13 | **R2 THE GAME LOOP: PASS** — game shell (tools/game_shell, port 8206): start screen -> name -> lesson WAKE THE CELL -> played live in Chrome (hold pressed the creature: +0.255 MPa, release healed, PASSED) -> progress/Alan.json persists |
 | 2026-09-13 | **R1 DOUBLE-CLICK LAUNCH: PASS** — R1a foreground independence (law retired, operator-verified) + R1b launcher (hidden console, payload auto-restore incl. the seal history, one double-click -> live creature, no console) |
 | 2026-09-13 | R1a foreground independence PASS (law retired, operator-verified); R1b double-click package OPEN, in build |
 | 2026-09-13 | R9 our-own-website channel added (demo first, sign-up after); revenue position re-framed — our page keeps ~95%, sign-up list is ours, Steam demoted to optional second shelf |
