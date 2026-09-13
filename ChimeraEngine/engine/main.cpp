@@ -813,27 +813,57 @@ int main(int argc, char** argv) {
                         "must exist, the plane must cross that cell's "
                         "y-range, and the cut graph must close into loops\"}";
             content_type = "application/json";
+        } else if (p == "/topology" && method == "GET") {
+            // THE WEB KERNEL: one-time triangle topology for the browser's
+            // own renderer.
+            std::vector<uint8_t> out;
+            g_tick.export_topology(out);
+            body.assign(reinterpret_cast<const char*>(out.data()), out.size());
+            content_type = "application/octet-stream";
+        } else if (p == "/verts" && method == "GET") {
+            // THE WEB KERNEL: the posed surface as state (pos+normal+color,
+            // 9 f32 per vertex), serialized under the tick lock.
+            std::vector<uint8_t> out;
+            g_tick.export_verts(g_tick_verts, out);
+            body.assign(reinterpret_cast<const char*>(out.data()), out.size());
+            content_type = "application/octet-stream";
         } else if (p == "/tick_touch" && method == "POST") {
-            // R3 TOUCH: a pixel and a force. The ray is cast under the
-            // tick lock so the pick reads exactly the geometry the next
-            // tick deforms.
-            float px = (float)get_double(req_body, "px", 0.5);
-            float py = (float)get_double(req_body, "py", 0.5);
-            float force = (float)get_double(req_body, "force_n", 0.0);
-            std::string err;
-            float hit[3];
-            if (g_tick.touch_press(px, py, force,
+            // Two forms: {"hit":[x,y,z], force_n} — a WORLD point the
+            // BROWSER found by its own ray-cast (the web kernel); or
+            // {"px","py",force_n} — an engine-camera pixel.
+            if (req_body.find("\"hit\"") != std::string::npos) {
+                size_t hb = req_body.find('[', req_body.find("\"hit\""));
+                float hx = 0, hy = 0, hz = 0;
+                if (hb != std::string::npos)
+                    sscanf(req_body.c_str() + hb + 1, "%f,%f,%f", &hx, &hy, &hz);
+                float hit[3] = {hx, hy, hz};
+                if (g_tick.touch_press_at(hit,
+                        (float)get_double(req_body, "force_n", 0.0)))
+                    body = "{\"ok\":true}";
+                else
+                    body = "{\"ok\":false,\"error\":\"force_n must be positive\"}";
+            } else {
+                // R3 TOUCH: a pixel and a force. The ray is cast under the
+                // tick lock so the pick reads exactly the geometry the next
+                // tick deforms.
+                float px = (float)get_double(req_body, "px", 0.5);
+                float py = (float)get_double(req_body, "py", 0.5);
+                float force = (float)get_double(req_body, "force_n", 0.0);
+                std::string err;
+                float hit[3];
+                if (g_tick.touch_press(px, py, force,
                     [&](float out[3]) -> bool {
                         return g_engine && g_engine->pick(px, py, g_tick_verts,
                             g_tick.tri_verts(), out);
                     }, err, hit)) {
-                // the hit point rides the response: the caller can verify
-                // the closed loop (re-project it) and see where it landed
-                body = std::string("{\"ok\":true,\"hit\":[")
-                     + std::to_string(hit[0]) + "," + std::to_string(hit[1])
-                     + "," + std::to_string(hit[2]) + "]}";
-            } else {
-                body = "{\"ok\":false,\"error\":\"" + err + "\"}";
+                    // the hit point rides the response: the caller can verify
+                    // the closed loop (re-project it) and see where it landed
+                    body = std::string("{\"ok\":true,\"hit\":[")
+                         + std::to_string(hit[0]) + "," + std::to_string(hit[1])
+                         + "," + std::to_string(hit[2]) + "]}";
+                } else {
+                    body = "{\"ok\":false,\"error\":\"" + err + "\"}";
+                }
             }
             content_type = "application/json";
         } else if (p == "/tick_touch_clear" && method == "POST") {
@@ -1799,6 +1829,31 @@ int main(int argc, char** argv) {
                 if (g_engine->capture_ready()) {
                     std::vector<uint8_t> rgba; uint32_t w = 0, h = 0;
                     if (g_engine->capture_frame(rgba, w, h)) {
+                        // ?w=NNN downscales before encode: a 14 MB full-size
+                        // readback+PNG per poll hitched the render loop (the
+                        // operator measured 1% lows at 28 fps while the game
+                        // page polled). The world's picture must be cheap for
+                        // its cameras.
+                        uint32_t want_w = 0;
+                        { size_t q = path.find('?');
+                          if (q != std::string::npos) {
+                              size_t wq = path.find("w=", q);
+                              if (wq != std::string::npos)
+                                  want_w = (uint32_t)atoi(path.c_str() + wq + 2);
+                          } }
+                        if (want_w && want_w < w) {
+                            uint32_t step = w / want_w;
+                            if (step < 1) step = 1;
+                            uint32_t nw = w / step, nh = h / step;
+                            std::vector<uint8_t> down((size_t)nw * nh * 4);
+                            for (uint32_t y = 0; y < nh; ++y)
+                                for (uint32_t x = 0; x < nw; ++x) {
+                                    const uint8_t* src = &rgba[((size_t)(y*step)*w + (size_t)(x*step)) * 4];
+                                    uint8_t* dst = &down[((size_t)y*nw + x) * 4];
+                                    dst[0]=src[0]; dst[1]=src[1]; dst[2]=src[2]; dst[3]=src[3];
+                                }
+                            rgba.swap(down); w = nw; h = nh;
+                        }
                         std::vector<uint8_t> encoded = png::encode_rgba(rgba.data(), w, h);
                         body.assign(reinterpret_cast<const char*>(encoded.data()), encoded.size());
                         content_type = "image/png";

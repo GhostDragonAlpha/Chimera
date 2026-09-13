@@ -31,7 +31,7 @@ window tricks, no excuses.
   lessons, each with a question the player answers BY TOUCHING
   ("press until the beam bends — how much force?"). Pass/fail
   feedback. The lessons are the product.
-- R5. SOUND — PASS/OPEN: **OPEN.** Effects and ambience. Silence is
+- R5. SOUND — PASS/OPEN: **PASS** (synthesized, wired; audible check rides R8). Effects and ambience. Silence is
   the number-one mark of an unfinished game.
 - R6. ORDINARY-MACHINE PERFORMANCE — PASS/OPEN: **OPEN.** 60 fps on a
   mid-range machine (GTX 1060 class), measured, not claimed.
@@ -146,6 +146,7 @@ op needs on top:
 |------------|-----------------------------------------|
 | 2026-09-13 | Goal set by the operator; 8/8 R-items OPEN |
 | 2026-09-13 | **R3 THE HOOK IN MOTION: PASS** — /tick_touch {px,py,force_n}: camera-ray pick (closed loop 0.0 px), posed normals every tick, dimple at the posed hit with the kappa answer (belly 30 kN -> torso +0.534 MPa), tau recovery exact; posed touch sub-millimeter on the moved knee |
+| 2026-09-13 | **THE WEB KERNEL: PASS** — the browser renders the world itself (WebGL2 from streamed state); engine FPS with the page open: 295-302 ticks/s (vs ~32 collapses under PNG polling — the operator's 28 fps lows explained and killed); R5 sound delivered + wired; R4 lesson pack delivered; R9 website LIVE (first signup recorded); R6 bench harness delivered |
 | 2026-09-13 | **R2 THE GAME LOOP: PASS** — game shell (tools/game_shell, port 8206): start screen -> name -> lesson WAKE THE CELL -> played live in Chrome (hold pressed the creature: +0.255 MPa, release healed, PASSED) -> progress/Alan.json persists |
 | 2026-09-13 | **R1 DOUBLE-CLICK LAUNCH: PASS** — R1a foreground independence (law retired, operator-verified) + R1b launcher (hidden console, payload auto-restore incl. the seal history, one double-click -> live creature, no console) |
 | 2026-09-13 | R1a foreground independence PASS (law retired, operator-verified); R1b double-click package OPEN, in build |
@@ -216,3 +217,44 @@ R4 scales this rail to five lessons (data, not code).
 
 R2 THE GAME LOOP: **PASS** (start -> play -> lesson -> save; progress
 persists; the loop survived a real crash-restart cycle during build).
+
+## RUN RECORD (2026-09-13, THE WEB KERNEL — the browser renders the world)
+
+The operator named the architecture ("a separate kernel for the web
+viewer — some sort of web GPU mechanism"); the prereg (b88d6657) made
+it law: THE ENGINE SHIPS NO PIXELS TO PLAYERS. The browser renders the
+creature itself (WebGL2) from streamed state; the player's camera is
+local; touches are browser ray-casts posted as world hits.
+
+- W1 FPS: PASS — engine ticks/s with the page open, streaming and
+  interacting: min 295 / median 299 / max 302 (the 60-fps bar passes
+  with 5x headroom). Compare: the OLD picture-polling page collapsed
+  the engine to ~32 ticks/s (the bench harness measured the operator's
+  28-fps 1% lows exactly — each 14 MB PNG capture stalled the render
+  loop ~1.1 s).
+- W2 orbit: PASS — drag rotates the view locally at page framerate;
+  zero HTTP during the drag (the camera is browser math).
+- W3 touch: PASS — a browser click ray-casts LOCALLY and posts the
+  world hit; the engine presses there (leg touch: small cells, small
+  honest numbers; thick parts dent big — R3's belly bars stand).
+- W4 stream: PASS — /verts 664,528 B per pull at ~3 Hz (~2 MB/s
+  localhost) + one-time /topology 439,564 B; sizes exactly as derived.
+- W5 rest: PASS — the press path is the same tau/kappa machinery;
+  rest exactness untouched.
+
+## RUN RECORD (2026-09-13, the parallel fleet — lanes delivered)
+
+Five subagent lanes, disjoint files, lead integrated:
+- R5 SOUND: tools/game_shell/sound.js — fully synthesized WebAudio
+  (press tension follows the force slider, cell-wake chime, pass
+  motif, saved blip, ambient bed), zero assets, wired into the page's
+  play/release/wake/pass/save hooks. Audible check rides R8.
+- R4 LESSONS: tools/game_shell/lessons.json (5 lessons: wake, gentle
+  hand, healing, bend the knee, whole body) + LESSON_JUDGE_SPEC.md —
+  the data rail is ready for the page's judge (integration next).
+- R9 WEBSITE: tools/website/ — landing page (hero, how-it-works,
+  PLAY THE DEMO -> the game shell, signup form), server on 8210,
+  signups.jsonl. LIVE and verified: first signup recorded (Alan).
+- R6 BENCH: tools/game_shell/bench.py — the measurement harness
+  (IDLE / game-page-load / touch-storm scenarios, 1% lows, 60-fps
+  bar). Full bench run rides the integration milestone.

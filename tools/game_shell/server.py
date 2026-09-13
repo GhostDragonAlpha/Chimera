@@ -58,8 +58,39 @@ class Handler(BaseHTTPRequestHandler):
             self._send((HERE / "index.html").read_bytes(), "text/html")
         elif p == "/api/state":
             self._proxy("/tick_state", "GET", None)
+        elif p in ("/api/topology", "/api/verts"):
+            # THE WEB KERNEL: state for the browser's own renderer
+            self._proxy({"/api/topology": "/topology",
+                         "/api/verts": "/verts"}[p], "GET", None)
         elif p == "/api/frame":
-            self._proxy("/frame", "GET", None)
+            q = self.path.split("?", 1)[1] if "?" in self.path else ""
+            self._proxy("/frame" + (("?" + q) if q else ""), "GET", None)
+        elif p == "/api/cam":
+            # the live camera, read through /project's cam echo; set through
+            # the bookmark save/recall pair (the engine's own discipline)
+            if method(self) == "GET":
+                req = urllib.request.Request(
+                    self.engine_url + "/project",
+                    data=json.dumps({"x": 0, "y": 0, "z": 0}).encode(),
+                    method="POST", headers={"Content-Type": "application/json"})
+                with urllib.request.urlopen(req, timeout=15) as r:
+                    self._send(r.read(), "application/json")
+            else:
+                n = int(self.headers.get("Content-Length", 0) or 0)
+                data = json.loads(self.rfile.read(n) if n else b"{}")
+                v = data.get("v", [])
+                if len(v) != 8:
+                    self._json({"ok": False, "error": "need v[8]"}, 400)
+                    return
+                save = json.dumps({"op": "save", "name": "__game__", "v": v}).encode()
+                urllib.request.urlopen(urllib.request.Request(
+                    self.engine_url + "/cameras", data=save, method="POST",
+                    headers={"Content-Type": "application/json"}), timeout=15)
+                rec = json.dumps({"op": "recall", "name": "__game__"}).encode()
+                with urllib.request.urlopen(urllib.request.Request(
+                        self.engine_url + "/cameras", data=rec, method="POST",
+                        headers={"Content-Type": "application/json"}), timeout=15) as r:
+                    self._send(r.read(), "application/json")
         elif p == "/api/progress":
             name = NAME_RE.sub("", self.path.split("?", 1)[1].replace("name=", "")
                                if "?" in self.path else "")[:32]
@@ -70,15 +101,24 @@ class Handler(BaseHTTPRequestHandler):
                 self._json({"name": name, "lessons": {}})
         elif p == "/api/health":
             self._json({"ok": True, "t": time.time()})
+        elif p in ("/sound.js", "/lessons.json"):
+            # static game assets (containment: exact names only)
+            f = HERE / p.lstrip("/")
+            if f.exists():
+                ctype = "application/javascript" if f.suffix == ".js" else "application/json"
+                self._send(f.read_bytes(), ctype)
+            else:
+                self._json({"ok": False, "error": "not found"}, 404)
 
     def do_POST(self):
         p = self.path.split("?", 1)[0]
         n = int(self.headers.get("Content-Length", 0) or 0)
         body = self.rfile.read(n) if n else None
-        if p in ("/api/touch", "/api/touch_clear", "/api/pose"):
+        if p in ("/api/touch", "/api/touch_clear", "/api/pose", "/api/touch_hit"):
             self._proxy({"/api/touch": "/tick_touch",
                          "/api/touch_clear": "/tick_touch_clear",
-                         "/api/pose": "/tick_pose"}[p], "POST", body)
+                         "/api/pose": "/tick_pose",
+                         "/api/touch_hit": "/tick_touch"}[p], "POST", body)
         elif p == "/api/progress":
             try:
                 data = json.loads(body or b"{}")
@@ -92,6 +132,10 @@ class Handler(BaseHTTPRequestHandler):
                 self._json({"ok": True})
             except Exception as e:
                 self._json({"ok": False, "error": str(e)}, 400)
+
+
+def method(h) -> str:
+    return h.command
 
 
 def main() -> None:

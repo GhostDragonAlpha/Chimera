@@ -76,6 +76,15 @@ public:
     bool touch_clear();
     const std::vector<uint32_t>& tri_verts() const { return tri_verts_; }
 
+    // THE WEB KERNEL (prereg b88d6657): the browser renders the world
+    // from streamed STATE. Topology is one-time; the posed buffer is the
+    // per-pull payload. Both serialize UNDER the tick lock so a player's
+    // pull can never tear a mid-step surface. touch_press_at presses a
+    // WORLD point the browser found by its own ray-cast.
+    void export_topology(std::vector<uint8_t>& out);
+    void export_verts(const std::vector<float>& verts9, std::vector<uint8_t>& out);
+    bool touch_press_at(const float hit[3], float force_n);
+
     bool   enabled_ = true;
     uint64_t ticks_ = 0;
     float  force_l_ = 0.0f, force_r_ = 0.0f;   // active presses, newtons

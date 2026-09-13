@@ -658,6 +658,33 @@ void MembraneTick::apply_chain(std::vector<float>& verts9) {
     }
 }
 
+void MembraneTick::export_topology(std::vector<uint8_t>& out) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    uint32_t n = (uint32_t)(tri_verts_.size() / 3);   // header: TRIANGLE count
+    out.resize(4 + tri_verts_.size() * 4);            // payload: ALL indices
+    std::memcpy(out.data(), &n, 4);
+    if (!tri_verts_.empty())
+        std::memcpy(out.data() + 4, tri_verts_.data(), tri_verts_.size() * 4);
+}
+
+void MembraneTick::export_verts(const std::vector<float>& verts9,
+                                std::vector<uint8_t>& out) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    uint32_t n = (uint32_t)(verts9.size() / 9);
+    out.resize(4 + verts9.size() * 4);
+    std::memcpy(out.data(), &n, 4);
+    if (n) std::memcpy(out.data() + 4, verts9.data(), verts9.size() * 4);
+}
+
+bool MembraneTick::touch_press_at(const float hit[3], float force_n) {
+    if (!std::isfinite(force_n) || force_n <= 0.f) return false;
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    touch_pt_[0] = hit[0]; touch_pt_[1] = hit[1]; touch_pt_[2] = hit[2];
+    touch_f_ = force_n;
+    touch_active_ = true;
+    return true;
+}
+
 bool MembraneTick::touch_press(float u, float v, float force_n,
                                const std::function<bool(float[3])>& pick_fn,
                                std::string& err, float hit_out[3]) {

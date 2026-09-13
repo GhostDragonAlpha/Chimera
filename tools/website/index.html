@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CHIMERA — a creature of water and skin</title>
+<style>
+  :root {
+    --bg: #0e131b;
+    --bg-deep: #0a0e15;
+    --panel: #141b26;
+    --line: #24303f;
+    --ink: #dde4ee;
+    --dim: #8d99ab;
+    --gold: #c9a227;
+    --gold-bright: #e7c766;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    background-image: radial-gradient(ellipse 90% 60% at 50% -10%, #16202e 0%, var(--bg) 60%);
+    color: var(--ink);
+    font-family: Georgia, "Palatino Linotype", "Times New Roman", serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+  .kicker {
+    color: var(--gold);
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+  }
+  a { color: var(--gold-bright); }
+
+  /* -- hero ---------------------------------------------------------- */
+  header {
+    text-align: center;
+    padding: 110px 24px 90px;
+  }
+  header .kicker { display: block; margin-bottom: 26px; }
+  h1 {
+    font-size: clamp(52px, 10vw, 96px);
+    font-weight: normal;
+    letter-spacing: 0.22em;
+    text-indent: 0.22em; /* balance the tracking */
+    color: var(--ink);
+  }
+  .rule {
+    width: 72px; height: 1px;
+    background: var(--gold);
+    margin: 34px auto;
+  }
+  .tagline {
+    font-style: italic;
+    color: var(--dim);
+    font-size: 20px;
+    max-width: 34em;
+    margin: 0 auto 46px;
+  }
+  .btn {
+    display: inline-block;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--gold-bright);
+    border: 1px solid var(--gold);
+    background: transparent;
+    padding: 18px 44px;
+    cursor: pointer;
+    transition: background 0.25s, color 0.25s;
+  }
+  .btn:hover { background: var(--gold); color: var(--bg-deep); }
+
+  /* -- how it works --------------------------------------------------- */
+  section { padding: 70px 0; border-top: 1px solid var(--line); }
+  h2 {
+    font-weight: normal;
+    font-size: 26px;
+    letter-spacing: 0.08em;
+    margin: 10px 0 36px;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-top: 1px solid var(--gold);
+    padding: 26px 22px;
+  }
+  .card h3 {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--gold-bright);
+    margin-bottom: 12px;
+  }
+  .card p { color: var(--dim); font-size: 16px; }
+
+  /* -- signup ---------------------------------------------------------- */
+  .signup-inner { max-width: 460px; margin: 0 auto; text-align: center; }
+  .signup-inner p.lead { color: var(--dim); margin: 0 0 30px; }
+  form { display: grid; gap: 14px; }
+  input {
+    font: inherit;
+    color: var(--ink);
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    padding: 14px 16px;
+  }
+  input:focus { outline: none; border-color: var(--gold); }
+  input::placeholder { color: #5b6678; }
+  #join { width: 100%; margin-top: 6px; }
+  #note { min-height: 1.6em; font-style: italic; color: var(--dim); }
+  #note.good { color: var(--gold-bright); }
+
+  /* -- footer ---------------------------------------------------------- */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 36px 0 44px;
+    text-align: center;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 13px;
+    color: var(--dim);
+    letter-spacing: 0.06em;
+  }
+  footer .count { color: var(--gold); display: block; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <span class="kicker">a serious indie physics game</span>
+  <h1>CHIMERA</h1>
+  <div class="rule"></div>
+  <p class="tagline">a creature of water and skin. press it, and the physics answers.</p>
+  <button class="btn" id="play">Play the demo</button>
+</header>
+
+<section class="wrap">
+  <span class="kicker">how it works</span>
+  <h2>one creature, shared by everyone</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>One world</h3>
+      <p>every player is another camera on the same living creature.</p>
+    </div>
+    <div class="card">
+      <h3>Real water</h3>
+      <p>the body is sealed cells; press it and the pressure rises by the same law as real tissue.</p>
+    </div>
+    <div class="card">
+      <h3>Real healing</h3>
+      <p>let go and the skin recovers on its own clock.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="signup-inner">
+    <span class="kicker">keep in touch</span>
+    <h2>join the list</h2>
+    <p class="lead">leave your name and email and we shall write when there is news worth reading. no noise, no fuss.</p>
+    <form id="signup">
+      <input id="name" type="text" name="name" placeholder="your name" autocomplete="name" maxlength="32" required>
+      <input id="email" type="email" name="email" placeholder="your email" autocomplete="email" required>
+      <button class="btn" id="join" type="submit">Join</button>
+    </form>
+    <p id="note"></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    built by hand, measured, and alive.
+    <span class="count">join <span id="n">…</span> explorers</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // the free demo lives on the game shell, 8206
+  document.getElementById("play").addEventListener("click", function () {
+    window.open("http://127.0.0.1:8206", "_blank", "noopener");
+  });
+
+  function showCount() {
+    fetch("/api/signups/count").then(function (r) { return r.json(); }).then(function (d) {
+      document.getElementById("n").textContent = String(d.count);
+    }).catch(function () {
+      document.getElementById("n").textContent = "many";
+    });
+  }
+  showCount();
+
+  document.getElementById("signup").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var note = document.getElementById("note");
+    note.className = "";
+    note.textContent = "";
+    var body = {
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value
+    };
+    fetch("/api/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d.ok) {
+        note.className = "good";
+        note.textContent = "you're on the list. the creature will be waiting.";
+        document.getElementById("signup").reset();
+        showCount();
+      } else {
+        note.textContent = d.error || "that did not go through — do try again.";
+      }
+    }).catch(function () {
+      note.textContent = "the door seems stuck — do try again in a moment.";
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

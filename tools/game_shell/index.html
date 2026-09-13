@@ -2,161 +2,782 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:,">
 <title>CHIMERA — touch the living physics</title>
 <style>
-  :root { color-scheme: dark; }
-  * { box-sizing: border-box; margin: 0; }
-  body { background:#0b0d10; color:#e8e4da; font-family: Georgia, 'Times New Roman', serif;
-         min-height:100vh; display:flex; flex-direction:column; align-items:center; }
-  h1 { font-size: 64px; letter-spacing: 12px; margin-top: 12vh; font-weight: normal; }
-  h2 { font-size: 22px; font-weight: normal; color:#9a938a; margin: 12px 0 40px; }
-  .screen { display:none; flex-direction:column; align-items:center; width:100%; }
-  .screen.on { display:flex; }
-  button { background:#1a1e24; color:#e8e4da; border:1px solid #3a414b; border-radius:8px;
-           font: inherit; font-size: 22px; padding: 14px 46px; cursor:pointer; margin: 8px; }
-  button:hover { background:#242a33; border-color:#5a6470; }
-  input { background:#12151a; color:#e8e4da; border:1px solid #3a414b; border-radius:8px;
-          font: inherit; font-size: 22px; padding: 12px 18px; text-align:center; width: 320px; }
-  #playwrap { display:flex; gap: 24px; width: min(1500px, 96vw); margin-top: 8px; }
-  #view { position: relative; flex: 1; }
-  #frame { width: 100%; border-radius: 10px; border: 1px solid #2a3038; display:block; cursor: crosshair; }
-  #side { width: 360px; display:flex; flex-direction:column; gap:14px; }
-  .card { background:#12151a; border:1px solid #2a3038; border-radius:10px; padding:18px; }
-  .card h3 { font-weight: normal; font-size: 18px; color:#c8b98a; margin-bottom: 10px; }
-  .read { font-family: Consolas, monospace; font-size: 15px; color:#8fd08f; white-space: pre-wrap; }
-  #verdict { font-size: 26px; text-align:center; min-height: 36px; color:#c8b98a; }
-  .badge { color:#8fd08f; }
-  #force { width: 100%; }
-  .small { font-size: 14px; color:#6a6460; }
+  :root{
+    --bg:#0b0d10; --panel:#12151a; --deep:#0e1116; --line:#1d232b; --line-soft:#161b21;
+    --text:#c9d3db; --muted:#7b8792; --faint:#5a6570;
+    --accent:#7fd4c1; --accent-dim:#2b4a43; --good:#7ddba3; --warn:#dfb26a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--bg); color:var(--text); overflow:hidden;
+    font:15px/1.55 "Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;
+  }
+  .mono{font-family:ui-monospace,"Cascadia Mono",Consolas,Menlo,monospace}
+  .hidden{display:none !important}
+
+  /* ---- screens ---- */
+  .screen{position:fixed;inset:0;display:none}
+  .screen.on{display:flex}
+
+  /* ---- start screen ---- */
+  #screen-start{
+    flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    padding:32px;
+    background:radial-gradient(1100px 560px at 50% 18%, #10161c 0%, var(--bg) 62%);
+  }
+  #screen-start::before{
+    content:"";position:absolute;left:50%;top:38%;width:560px;height:560px;z-index:-1;
+    transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle, rgba(96,158,146,.10) 0%, rgba(96,158,146,0) 62%);
+    animation:breathe 7s ease-in-out infinite;
+  }
+  @keyframes breathe{
+    0%,100%{opacity:.65;transform:translate(-50%,-50%) scale(1)}
+    50%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}
+  }
+  .title{
+    font-family:Georgia,"Times New Roman",serif;font-weight:400;color:#e9eff5;
+    font-size:clamp(46px,7.5vw,88px);letter-spacing:.16em;text-indent:.16em;line-height:1.1;
+  }
+  .subtitle{
+    margin-top:16px;font-family:Georgia,serif;font-style:italic;color:var(--muted);font-size:17px;
+  }
+  #name-input{
+    margin-top:52px;width:min(380px,84vw);padding:12px 16px;text-align:center;
+    background:var(--deep);border:1px solid var(--line);border-radius:8px;color:var(--text);
+    font-size:15px;outline:none;transition:border-color .15s ease, background .15s ease;
+  }
+  #name-input::placeholder{color:var(--faint)}
+  #name-input:focus{border-color:var(--accent-dim);background:#101319}
+  #play-btn{
+    margin-top:18px;padding:13px 70px;font-size:14px;letter-spacing:.38em;text-indent:.38em;
+    color:var(--accent);background:transparent;border:1px solid var(--accent-dim);border-radius:8px;
+    cursor:pointer;transition:background .15s ease,border-color .15s ease;
+  }
+  #play-btn:hover{background:rgba(127,212,193,.07);border-color:var(--accent)}
+  .fineprint{margin-top:40px;font-size:12.5px;color:var(--faint)}
+
+  /* ---- play screen ---- */
+  #screen-play{flex-direction:row}
+  #stage{flex:1;position:relative;min-width:0;user-select:none;-webkit-user-select:none}
+  #gl{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+  #gl.dragging{cursor:grabbing}
+  #gl-error{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    text-align:center;padding:40px;color:var(--muted);font-size:15px;line-height:1.7;
+  }
+  #sidebar{
+    width:360px;flex:0 0 360px;border-left:1px solid var(--line);background:var(--deep);
+    padding:18px 16px 16px;display:flex;flex-direction:column;gap:13px;overflow-y:auto;
+  }
+  .side-head{display:flex;justify-content:space-between;align-items:baseline;padding:0 2px 2px}
+  .wordmark{font-family:Georgia,serif;font-size:13px;letter-spacing:.28em;color:var(--faint)}
+  .cam{font-size:12px;color:var(--faint)}
+  .cam b{color:var(--muted);font-weight:600}
+  .card{background:var(--panel);border:1px solid var(--line-soft);border-radius:10px;padding:15px 15px 13px}
+  .card h2{font-size:10.5px;font-weight:600;letter-spacing:.24em;color:var(--faint);margin-bottom:10px}
+  .lesson-title{
+    font-family:Georgia,serif;font-weight:400;font-size:19px;color:var(--accent);
+    letter-spacing:.06em;margin-bottom:8px;
+  }
+  .lesson-body{font-size:13.5px;line-height:1.6;color:var(--muted)}
+  .verdict{
+    margin-top:12px;padding:10px 12px;border-radius:8px;font-size:13.5px;line-height:1.5;
+    color:var(--faint);background:var(--deep);border:1px solid var(--line-soft);
+    transition:color .2s,border-color .2s,background .2s;
+  }
+  .verdict.accent{color:var(--accent);border-color:#23413b}
+  .verdict.good{color:var(--good);border-color:#22402f;background:#0d1411}
+  .verdict.warn{color:var(--warn);border-color:#4a3a22}
+  .force-row{display:flex;align-items:center;gap:12px}
+  #force{flex:1;accent-color:var(--accent);height:22px;cursor:pointer}
+  #force-label{width:86px;text-align:right;font-size:13px;color:var(--text)}
+  .hand-row{display:flex;align-items:center;gap:12px;margin-top:12px}
+  .hand-row .hint{flex:1}
+  .btn{
+    padding:9px 18px;font-size:13px;color:var(--text);background:var(--deep);
+    border:1px solid var(--line);border-radius:8px;cursor:pointer;
+    transition:border-color .15s,color .15s;
+  }
+  .btn:hover{border-color:var(--accent-dim);color:var(--accent)}
+  #letgo-btn.hot{border-color:#5a4526;color:var(--warn)}
+  .hint{font-size:12px;color:var(--faint);line-height:1.6}
+  .blood{
+    font-size:12.5px;line-height:1.95;color:#9fb2be;white-space:pre;overflow-x:auto;padding:2px 0;
+  }
+  .blood .awake{color:var(--accent)}
+  #save-btn{width:100%;padding:11px;font-size:13px;margin-top:2px}
+  #save-btn:disabled{opacity:.5;cursor:default}
 </style>
 </head>
 <body>
 
-<!-- THE START SCREEN -->
-<div class="screen on" id="s-start">
-  <h1>C H I M E R A</h1>
-  <h2>a creature of water and skin. touch it, and it answers.</h2>
-  <input id="name" placeholder="your name (your camera's name)" maxlength="32">
-  <button id="b-play">P L A Y</button>
-  <p class="small">your progress is kept under your name — the world remembers you.</p>
-</div>
+  <!-- ================= START SCREEN ================= -->
+  <section id="screen-start" class="screen on">
+    <h1 class="title">C H I M E R A</h1>
+    <p class="subtitle">a creature of water and skin. touch it, and it answers.</p>
+    <input id="name-input" type="text" placeholder="your name (your camera's name)"
+           autocomplete="off" spellcheck="false" maxlength="40">
+    <button id="play-btn" type="button">PLAY</button>
+    <p class="fineprint">your progress is kept under your name — the world remembers you.</p>
+  </section>
 
-<!-- THE PLAY SCREEN -->
-<div class="screen" id="s-play">
-  <div id="playwrap">
-    <div id="view">
-      <img id="frame" alt="the creature" draggable="false">
+  <!-- ================= PLAY SCREEN ================= -->
+  <section id="screen-play" class="screen">
+    <div id="stage">
+      <canvas id="gl"></canvas>
+      <div id="gl-error" class="hidden">
+        this page needs WebGL2 to show the creature, and this browser refused to build a
+        WebGL2 context. try a current Chrome, Edge, or Firefox.
+      </div>
     </div>
-    <div id="side">
-      <div class="card">
-        <h3>THE LESSON — <span id="l-title"></span></h3>
-        <div id="l-body"></div>
-        <div id="verdict"></div>
-      </div>
-      <div class="card">
-        <h3>YOUR HAND</h3>
-        <div>force <span id="fval"></span></div>
-        <input type="range" id="force" min="500" max="50000" step="500" value="20000">
-        <p class="small">press on the creature and hold. let go to let it heal.</p>
-        <button id="b-release" style="width:100%">let go</button>
-      </div>
-      <div class="card">
-        <h3>THE CREATURE'S BLOOD</h3>
-        <div class="read" id="state">…</div>
-      </div>
-      <button id="b-save">save progress</button>
-    </div>
-  </div>
-</div>
+
+    <aside id="sidebar">
+      <header class="side-head">
+        <span class="wordmark">C H I M E R A</span>
+        <span class="cam">camera · <b id="cam-name">—</b></span>
+      </header>
+
+      <section class="card">
+        <h2>THE LESSON</h2>
+        <h3 class="lesson-title">WAKE THE CELL</h3>
+        <p class="lesson-body">The creature is sealed — water under its skin. Press on its
+          body and HOLD: feel the cell resist. Wake it: push any cell's pressure past
+          0.2&nbsp;MPa. Then LET GO, and watch the body heal itself back to zero.</p>
+        <div id="verdict" class="verdict">the creature waits.</div>
+      </section>
+
+      <section class="card">
+        <h2>YOUR HAND</h2>
+        <div class="force-row">
+          <input id="force" type="range" min="500" max="50000" step="100" value="20000">
+          <span id="force-label" class="mono">20000 N</span>
+        </div>
+        <div class="hand-row">
+          <button id="letgo-btn" class="btn" type="button">let go</button>
+          <span id="hand-state" class="hint">hand open</span>
+        </div>
+        <p class="hint">drag = look around · click = touch · wheel = zoom</p>
+      </section>
+
+      <section class="card">
+        <h2>THE CREATURE'S BLOOD</h2>
+        <div id="blood" class="mono blood">listening to the water…</div>
+        <div id="link-state" class="hint"></div>
+      </section>
+
+      <button id="save-btn" class="btn" type="button">save progress</button>
+    </aside>
+  </section>
 
 <script>
-"use strict";
-const $ = id => document.getElementById(id);
-let name = "", passed = false, holding = false;
+(function () {
+  'use strict';
 
-// -- the world channels ---------------------------------------------------
-async function api(path, body) {
-  const r = await fetch(path, body ? {method:"POST", body: JSON.stringify(body)} : {});
-  return r.json();
-}
-async function refreshFrame() {
-  // the frame is a fresh picture of THE world; the click maps onto it 1:1
-  const img = $("frame");
-  img.src = "/api/frame?" + Date.now();
-}
-$("frame").addEventListener("mousedown", async e => {
-  const r = e.target.getBoundingClientRect();
-  const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
-  const res = await api("/api/touch", {px, py, force_n: +$("force").value});
-  if (res.ok) { holding = true; $("verdict").textContent = ""; }
-  else $("verdict").textContent = res.error || "the touch found nothing";
-});
-window.addEventListener("mouseup", release);
-async function release() {
-  if (!holding) return;
-  holding = false;
-  await api("/api/touch_clear", {});
-}
-$("force").oninput = () => $("fval").textContent = (+$("force").value).toLocaleString() + " N";
+  var $ = function (id) { return document.getElementById(id); };
 
-// -- the lesson: WAKE THE CELL -------------------------------------------
-// make a cell's pressure cross 0.2 MPa (it resists — the water is real),
-// then let go and let it heal back to zero (the tissue law is real).
-const LESSON = {
-  title: "WAKE THE CELL",
-  body: "The creature is sealed — water under its skin. " +
-        "Press on its belly and HOLD: feel the cell resist. " +
-        "Wake it: push any cell's pressure past 0.2 MPa. " +
-        "Then LET GO, and watch the body heal itself back to zero.",
-};
-let woke = false, healed = false;
+  /* ================= world channels ================= */
+  var API = {
+    topology:   '/api/topology',
+    verts:      '/api/verts',
+    state:      '/api/state',
+    touchHit:   '/api/touch_hit',
+    touchClear: '/api/touch_clear',
+    progress:   '/api/progress'
+  };
 
-function poll() {
-  if (!$("s-play").classList.contains("on")) return;
-  fetch("/api/state").then(r => r.json()).then(s => {
-    if (!s.cells) return;
-    let lines = [];
-    let mx = 0, mi = 0;
-    s.cells.forEach((c, i) => {
-      if (Math.abs(c.P) > mx) { mx = Math.abs(c.P); mi = i; }
-      lines.push(`cell ${i}: V=${c.V.toFixed(3)} m3  P=${(c.P/1e6).toFixed(3)} MPa`);
+  var playerName = 'wanderer';
+  var holding = false;        // true while the engine is holding a press
+  var lessonsKnown = {};      // progress already saved under this name
+  var judge = { woke: false, passed: false };
+
+  var verdictEl = $('verdict');
+  var handEl = $('hand-state');
+  var bloodEl = $('blood');
+  var linkEl = $('link-state');
+  var forceEl = $('force');
+  var forceLabel = $('force-label');
+
+  function setVerdict(text, tone) {
+    verdictEl.textContent = text;
+    verdictEl.className = 'verdict' + (tone ? ' ' + tone : '');
+  }
+  function setHand(text) { handEl.textContent = text; }
+  var lastLink = null;
+  function setLink(text) {
+    if (text === lastLink) return;
+    lastLink = text;
+    linkEl.textContent = text;
+  }
+
+  function postJSON(url, body) {
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
     });
-    $("state").textContent = `cells: ${s.n_cells}\n` + lines.join("\n");
-    if (mx >= 2e5) woke = true;
-    const anyP = s.cells.some(c => Math.abs(c.P) >= 1000);
-    if (woke && !anyP) healed = true;
-    if (woke && !passed) $("verdict").textContent = "the cell is awake — now let go and let it heal";
-    if (woke && healed && !passed) {
-      passed = true;
-      $("verdict").innerHTML = '<span class="badge">PASSED — you felt the water. it was always there.</span>';
-    }
-  }).catch(() => {});
-  refreshFrame();
-}
-setInterval(poll, 1200);
+  }
 
-// -- the loop: start -> play -> save -------------------------------------
-$("b-play").onclick = async () => {
-  name = $("name").value.trim();
-  if (!name) { $("name").placeholder = "the world needs your name first"; return; }
-  const prog = await fetch("/api/progress?name=" + encodeURIComponent(name)).then(r => r.json());
-  passed = !!(prog.lessons && prog.lessons.wake_the_cell && prog.lessons.wake_the_cell.passed);
-  if (passed) $("verdict").innerHTML = '<span class="badge">you have passed this lesson before. touch it again anyway.</span>';
-  $("l-title").textContent = LESSON.title;
-  $("l-body").textContent = LESSON.body;
-  $("fval").textContent = (+$("force").value).toLocaleString() + " N";
-  $("s-start").classList.remove("on");
-  $("s-play").classList.add("on");
-  refreshFrame();
-};
-$("b-release").onclick = release;
-$("b-save").onclick = async () => {
-  const prog = await fetch("/api/progress?name=" + encodeURIComponent(name)).then(r => r.json());
-  prog.lessons = prog.lessons || {};
-  prog.lessons.wake_the_cell = { passed, at: new Date().toISOString() };
-  await api("/api/progress", prog);
-  $("verdict").innerHTML = '<span class="badge">saved. the world remembers you, ' + name + '.</span>';
-};
+  /* ================= shaders ================= */
+  /* Creature: one directional light + a faint rim. uCam feeds the rim's view dir. */
+  var VSH = [
+    '#version 300 es',
+    'in vec3 aPos;',
+    'in vec3 aNormal;',
+    'in vec3 aColor;',
+    'uniform mat4 uVP;',
+    'out vec3 vNormal;',
+    'out vec3 vColor;',
+    'out vec3 vWorld;',
+    'void main() {',
+    '  vNormal = aNormal;',
+    '  vColor = aColor;',
+    '  vWorld = aPos;',
+    '  gl_Position = uVP * vec4(aPos, 1.0);',
+    '}'
+  ].join('\n');
+
+  var FSH = [
+    '#version 300 es',
+    'precision highp float;',
+    'in vec3 vNormal;',
+    'in vec3 vColor;',
+    'in vec3 vWorld;',
+    'uniform vec3 uCam;',
+    'out vec4 outColor;',
+    'void main() {',
+    '  vec3 n = normalize(vNormal);',
+    '  vec3 l = normalize(vec3(0.4, 0.8, 0.3));',
+    '  vec3 col = vColor * (0.35 + 0.65 * max(dot(n, l), 0.0));',
+    '  vec3 v = normalize(uCam - vWorld);',
+    '  float rim = pow(1.0 - max(dot(n, v), 0.0), 3.0) * 0.15;',
+    '  outColor = vec4(col + rim, 1.0);',
+    '}'
+  ].join('\n');
+
+  /* Grid: unlit, one flat color, position only. */
+  var GRID_VSH = [
+    '#version 300 es',
+    'in vec3 aPos;',
+    'uniform mat4 uVP;',
+    'void main() { gl_Position = uVP * vec4(aPos, 1.0); }'
+  ].join('\n');
+
+  var GRID_FSH = [
+    '#version 300 es',
+    'precision mediump float;',
+    'uniform vec3 uColor;',
+    'out vec4 outColor;',
+    'void main() { outColor = vec4(uColor, 1.0); }'
+  ].join('\n');
+
+  /* ================= renderer ================= */
+  var canvas = $('gl');
+  var gl = null;
+  try { gl = canvas.getContext('webgl2', { antialias: true }); } catch (e) { gl = null; }
+
+  var RG = null;   // renderer state, null when WebGL2 is unavailable
+  var UP = [0, 1, 0];
+
+  function initRenderer() {
+    function sh(type, src) {
+      var s = gl.createShader(type);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+        throw new Error(gl.getShaderInfoLog(s) || 'shader compile failed');
+      }
+      return s;
+    }
+    function prog(vsSrc, fsSrc) {
+      var p = gl.createProgram();
+      gl.attachShader(p, sh(gl.VERTEX_SHADER, vsSrc));
+      gl.attachShader(p, sh(gl.FRAGMENT_SHADER, fsSrc));
+      gl.linkProgram(p);
+      if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
+        throw new Error(gl.getProgramInfoLog(p) || 'program link failed');
+      }
+      return p;
+    }
+
+    var r = {
+      prog: prog(VSH, FSH),
+      gridProg: prog(GRID_VSH, GRID_FSH),
+      vbo: gl.createBuffer(),
+      ibo: gl.createBuffer(),
+      vao: gl.createVertexArray(),
+      gridVbo: gl.createBuffer(),
+      gridVao: gl.createVertexArray(),
+      gridCount: 0,
+      triCount: 0,
+      vertCount: 0,
+      vboSized: false,
+      idx: null,     // local Uint32Array copy of the triangle indices
+      verts: null    // interleaved Float32Array: [pos3, normal3, color3] per vertex
+    };
+    r.uVP = gl.getUniformLocation(r.prog, 'uVP');
+    r.uCam = gl.getUniformLocation(r.prog, 'uCam');
+    r.aPos = gl.getAttribLocation(r.prog, 'aPos');
+    r.aNormal = gl.getAttribLocation(r.prog, 'aNormal');
+    r.aColor = gl.getAttribLocation(r.prog, 'aColor');
+    r.gVP = gl.getUniformLocation(r.gridProg, 'uVP');
+    r.gColor = gl.getUniformLocation(r.gridProg, 'uColor');
+    r.gPos = gl.getAttribLocation(r.gridProg, 'aPos');
+
+    /* creature VAO: one interleaved VBO, stride 36 bytes (offsets 0 / 12 / 24) */
+    gl.bindVertexArray(r.vao);
+    gl.bindBuffer(gl.ARRAY_BUFFER, r.vbo);
+    gl.enableVertexAttribArray(r.aPos);
+    gl.vertexAttribPointer(r.aPos, 3, gl.FLOAT, false, 36, 0);
+    gl.enableVertexAttribArray(r.aNormal);
+    gl.vertexAttribPointer(r.aNormal, 3, gl.FLOAT, false, 36, 12);
+    gl.enableVertexAttribArray(r.aColor);
+    gl.vertexAttribPointer(r.aColor, 3, gl.FLOAT, false, 36, 24);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, r.ibo);
+    gl.bindVertexArray(null);
+
+    /* ground grid: 41 lines each way = a 40x40 grid on [-20, 20] at y = 0 */
+    var g = [];
+    for (var i = -20; i <= 20; i++) {
+      g.push(i, 0, -20, i, 0, 20);   // line running along z
+      g.push(-20, 0, i, 20, 0, i);   // line running along x
+    }
+    var gridVerts = new Float32Array(g);
+    r.gridCount = gridVerts.length / 3;
+    gl.bindVertexArray(r.gridVao);
+    gl.bindBuffer(gl.ARRAY_BUFFER, r.gridVbo);
+    gl.bufferData(gl.ARRAY_BUFFER, gridVerts, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(r.gPos);
+    gl.vertexAttribPointer(r.gPos, 3, gl.FLOAT, false, 0, 0);
+    gl.bindVertexArray(null);
+
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LEQUAL);
+    gl.clearColor(0x0b / 255, 0x0d / 255, 0x10 / 255, 1);
+    return r;
+  }
+
+  /* ================= camera ================= */
+  var cam = {
+    r: 26, theta: -0.55, phi: 0.42,
+    target: [0, 4.5, 0],
+    fov: 45 * Math.PI / 180, near: 0.1, far: 1000
+  };
+
+  function camEye(out) {
+    var ch = Math.cos(cam.phi);
+    out[0] = cam.target[0] + cam.r * ch * Math.sin(cam.theta);
+    out[1] = cam.target[1] + cam.r * Math.sin(cam.phi);
+    out[2] = cam.target[2] + cam.r * ch * Math.cos(cam.theta);
+    return out;
+  }
+
+  /* column-major mat4 helpers */
+  function perspective(out, fovy, aspect, near, far) {
+    var f = 1 / Math.tan(fovy / 2), nf = 1 / (near - far);
+    out[0] = f / aspect; out[1] = 0; out[2] = 0; out[3] = 0;
+    out[4] = 0; out[5] = f; out[6] = 0; out[7] = 0;
+    out[8] = 0; out[9] = 0; out[10] = (far + near) * nf; out[11] = -1;
+    out[12] = 0; out[13] = 0; out[14] = 2 * far * near * nf; out[15] = 0;
+  }
+  function lookAt(out, eye, center, up) {
+    var zx = eye[0] - center[0], zy = eye[1] - center[1], zz = eye[2] - center[2];
+    var len = 1 / (Math.hypot(zx, zy, zz) || 1);
+    zx *= len; zy *= len; zz *= len;
+    var xx = up[1] * zz - up[2] * zy, xy = up[2] * zx - up[0] * zz, xz = up[0] * zy - up[1] * zx;
+    len = 1 / (Math.hypot(xx, xy, xz) || 1);
+    xx *= len; xy *= len; xz *= len;
+    var yx = zy * xz - zz * xy, yy = zz * xx - zx * xz, yz = zx * xy - zy * xx;
+    out[0] = xx; out[1] = yx; out[2] = zx; out[3] = 0;
+    out[4] = xy; out[5] = yy; out[6] = zy; out[7] = 0;
+    out[8] = xz; out[9] = yz; out[10] = zz; out[11] = 0;
+    out[12] = -(xx * eye[0] + xy * eye[1] + xz * eye[2]);
+    out[13] = -(yx * eye[0] + yy * eye[1] + yz * eye[2]);
+    out[14] = -(zx * eye[0] + zy * eye[1] + zz * eye[2]);
+    out[15] = 1;
+  }
+  function mul(out, a, b) {
+    for (var c = 0; c < 4; c++) {
+      var b0 = b[c * 4], b1 = b[c * 4 + 1], b2 = b[c * 4 + 2], b3 = b[c * 4 + 3];
+      out[c * 4 + 0] = a[0] * b0 + a[4] * b1 + a[8] * b2 + a[12] * b3;
+      out[c * 4 + 1] = a[1] * b0 + a[5] * b1 + a[9] * b2 + a[13] * b3;
+      out[c * 4 + 2] = a[2] * b0 + a[6] * b1 + a[10] * b2 + a[14] * b3;
+      out[c * 4 + 3] = a[3] * b0 + a[7] * b1 + a[11] * b2 + a[15] * b3;
+    }
+  }
+
+  var mProj = new Float32Array(16);
+  var mView = new Float32Array(16);
+  var mVP = new Float32Array(16);
+  var eyeScratch = [0, 0, 0];
+
+  /* ================= frame loop (pure local math, 60 fps) ================= */
+  function frame() {
+    requestAnimationFrame(frame);
+    if (!RG) return;
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return;   // still hidden behind the start screen
+
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var pw = Math.max(1, Math.round(w * dpr)), ph = Math.max(1, Math.round(h * dpr));
+    if (canvas.width !== pw || canvas.height !== ph) {
+      canvas.width = pw; canvas.height = ph;
+      gl.viewport(0, 0, pw, ph);
+    }
+
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    camEye(eyeScratch);
+    perspective(mProj, cam.fov, pw / ph, cam.near, cam.far);
+    lookAt(mView, eyeScratch, cam.target, UP);
+    mul(mVP, mProj, mView);
+
+    /* grid first, depth write on, so motion reads against the floor */
+    gl.useProgram(RG.gridProg);
+    gl.uniformMatrix4fv(RG.gVP, false, mVP);
+    gl.uniform3f(RG.gColor, 0x22 / 255, 0x30 / 255, 0x3a / 255);
+    gl.depthMask(true);
+    gl.bindVertexArray(RG.gridVao);
+    gl.drawArrays(gl.LINES, 0, RG.gridCount);
+
+    /* the creature, streamed as positions+normals+colors — never pictures */
+    if (RG.triCount > 0 && RG.verts) {
+      gl.useProgram(RG.prog);
+      gl.uniformMatrix4fv(RG.uVP, false, mVP);
+      gl.uniform3f(RG.uCam, eyeScratch[0], eyeScratch[1], eyeScratch[2]);
+      gl.bindVertexArray(RG.vao);
+      gl.drawElements(gl.TRIANGLES, RG.triCount * 3, gl.UNSIGNED_INT, 0);
+    }
+    gl.bindVertexArray(null);
+  }
+
+  /* ================= streaming ================= */
+  async function loadTopology() {
+    if (!RG) return;
+    try {
+      var res = await fetch(API.topology);
+      if (!res.ok) throw new Error('http ' + res.status);
+      var buf = await res.arrayBuffer();
+      if (!RG) return;
+      if (buf.byteLength < 4) throw new Error('short topology payload');
+      var dv = new DataView(buf);                       // little-endian u32 count
+      var n = dv.getUint32(0, true);
+      if (buf.byteLength < 4 + n * 12) throw new Error('truncated topology payload');
+      RG.triCount = n;
+      RG.idx = new Uint32Array(buf, 4, n * 3).slice();  // local copy of the indices
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, RG.ibo);
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, n * 3 * 4, gl.STATIC_DRAW);
+      gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, RG.idx);
+      pollVerts();
+    } catch (err) {
+      setLink('the world is silent — retrying…');
+      setTimeout(loadTopology, 2000);
+    }
+  }
+
+  var vertsBusy = false;
+  async function pollVerts() {
+    if (!RG || vertsBusy) return;
+    vertsBusy = true;
+    try {
+      var res = await fetch(API.verts);
+      if (!res.ok) throw new Error('http ' + res.status);
+      var buf = await res.arrayBuffer();
+      if (!RG) return;
+      if (buf.byteLength < 4) throw new Error('short verts payload');
+      var dv = new DataView(buf);                       // little-endian u32 count
+      var n = dv.getUint32(0, true);
+      if (buf.byteLength < 4 + n * 36) throw new Error('truncated verts payload');
+      var f = new Float32Array(buf, 4, n * 9);          // little-endian f32 view
+      if (RG.vertCount !== n || !RG.verts) {
+        RG.vertCount = n;
+        RG.verts = new Float32Array(n * 9);
+        RG.vboSized = false;
+      }
+      RG.verts.set(f);
+      gl.bindBuffer(gl.ARRAY_BUFFER, RG.vbo);
+      if (!RG.vboSized) {
+        gl.bufferData(gl.ARRAY_BUFFER, RG.verts.byteLength, gl.DYNAMIC_DRAW);
+        RG.vboSized = true;
+      }
+      gl.bufferSubData(gl.ARRAY_BUFFER, 0, RG.verts);
+      setLink('');
+    } catch (err) {
+      setLink('the world is silent — retrying…');
+    } finally {
+      vertsBusy = false;
+    }
+  }
+
+  /* ================= state: the creature's blood + the lesson judge ================= */
+  var stateBusy = false;
+  async function pollState() {
+    if (stateBusy) return;
+    stateBusy = true;
+    try {
+      var res = await fetch(API.state);
+      if (!res.ok) throw new Error('http ' + res.status);
+      var s = await res.json();
+      renderBlood(s);
+      judgeState(s);
+    } catch (err) {
+      /* keep the last readout; the link line reports silence */
+    } finally {
+      stateBusy = false;
+    }
+  }
+
+  function fmt(x) {
+    x = Number(x);
+    if (!isFinite(x)) x = 0;
+    return x.toFixed(3);
+  }
+
+  function renderBlood(s) {
+    var cells = (s && s.cells) || [];
+    if (!cells.length) { bloodEl.textContent = 'no cells reported.'; return; }
+    var html = '';
+    for (var i = 0; i < cells.length; i++) {
+      var c = cells[i];
+      var p = Number(c.P) || 0;
+      var awake = Math.abs(p) >= 2e5;
+      html += 'cell ' + i + ': V=' + fmt(c.V) + ' m3  P=' +
+        (awake ? '<span class="awake">' : '') + fmt(p / 1e6) + (awake ? '</span>' : '') +
+        ' MPa\n';
+    }
+    if (s.conserve_pct != null) {
+      html += '\nconserve: ' + Number(s.conserve_pct).toFixed(2) + ' %';
+    }
+    /* only numbers and our own span go in here — no external text */
+    bloodEl.innerHTML = html;
+  }
+
+  function judgeState(s) {
+    if (judge.passed) return;
+    var cells = (s && s.cells) || [];
+    if (!cells.length) return;
+    var peak = 0, allCalm = true;
+    for (var i = 0; i < cells.length; i++) {
+      var a = Math.abs(Number(cells[i].P) || 0);
+      if (a > peak) peak = a;
+      if (a >= 1000) allCalm = false;
+    }
+    if (!judge.woke && peak >= 2e5) {
+      judge.woke = true;
+      setVerdict('the cell is awake — now LET GO, and watch it heal.', 'accent');
+    } else if (judge.woke && allCalm) {
+      judge.passed = true;
+      setVerdict('PASSED — you felt the water. it was always there.', 'good');
+    }
+  }
+
+  /* ================= picking: browser-side ray-cast -> world-space hit ================= */
+  function sub3(a, b) { return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]; }
+  function cross3(a, b) {
+    return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  }
+  function norm3(a) {
+    var l = Math.hypot(a[0], a[1], a[2]) || 1;
+    return [a[0] / l, a[1] / l, a[2] / l];
+  }
+
+  /* Moller-Trumbore; P is the interleaved array, b* are per-vertex float offsets */
+  function rayTri(ox, oy, oz, dx, dy, dz, P, b0, b1, b2) {
+    var ax = P[b0], ay = P[b0 + 1], az = P[b0 + 2];
+    var e1x = P[b1] - ax, e1y = P[b1 + 1] - ay, e1z = P[b1 + 2] - az;
+    var e2x = P[b2] - ax, e2y = P[b2 + 1] - ay, e2z = P[b2 + 2] - az;
+    var px = dy * e2z - dz * e2y, py = dz * e2x - dx * e2z, pz = dx * e2y - dy * e2x;
+    var det = e1x * px + e1y * py + e1z * pz;
+    if (det > -1e-8 && det < 1e-8) return -1;
+    var inv = 1 / det;
+    var sx = ox - ax, sy = oy - ay, sz = oz - az;
+    var u = (sx * px + sy * py + sz * pz) * inv;
+    if (u < 0 || u > 1) return -1;
+    var qx = sy * e1z - sz * e1y, qy = sz * e1x - sx * e1z, qz = sx * e1y - sy * e1x;
+    var v = (dx * qx + dy * qy + dz * qz) * inv;
+    if (v < 0 || u + v > 1) return -1;
+    var t = (e2x * qx + e2y * qy + e2z * qz) * inv;
+    return t > 1e-6 ? t : -1;
+  }
+
+  /* unproject the click through the same orbit camera: basis rays, no matrix inverse */
+  function pickWorld(clientX, clientY) {
+    if (!RG || !RG.verts || !RG.idx || RG.triCount <= 0) return null;
+    var rect = canvas.getBoundingClientRect();
+    if (rect.width < 1 || rect.height < 1) return null;
+    var ndcX = ((clientX - rect.left) / rect.width) * 2 - 1;
+    var ndcY = 1 - ((clientY - rect.top) / rect.height) * 2;
+    var eye = camEye([0, 0, 0]);
+    var fwd = norm3(sub3(cam.target, eye));
+    var right = norm3(cross3(fwd, UP));
+    var upv = cross3(right, fwd);
+    var tanF = Math.tan(cam.fov / 2);
+    var aspect = rect.width / rect.height;
+    var kx = ndcX * tanF * aspect, ky = ndcY * tanF;
+    var dir = norm3([
+      fwd[0] + right[0] * kx + upv[0] * ky,
+      fwd[1] + right[1] * kx + upv[1] * ky,
+      fwd[2] + right[2] * kx + upv[2] * ky
+    ]);
+    var P = RG.verts, idx = RG.idx;
+    var best = -1;
+    for (var i = 0; i < RG.triCount; i++) {
+      var b0 = idx[i * 3] * 9, b1 = idx[i * 3 + 1] * 9, b2 = idx[i * 3 + 2] * 9;
+      var t = rayTri(eye[0], eye[1], eye[2], dir[0], dir[1], dir[2], P, b0, b1, b2);
+      if (t > 0 && (best < 0 || t < best)) best = t;
+    }
+    if (best < 0) return null;
+    return [eye[0] + dir[0] * best, eye[1] + dir[1] * best, eye[2] + dir[2] * best];
+  }
+
+  async function tryTouch(cx, cy) {
+    var hit = pickWorld(cx, cy);
+    if (!hit) { setHand('you touched only water.'); return; }
+    holding = true;
+    $('letgo-btn').classList.add('hot');
+    setHand('pressing — ' + forceEl.value + ' N');
+    try {
+      await postJSON(API.touchHit, { hit: hit, force_n: Number(forceEl.value) });
+    } catch (err) {
+      /* the press stands; the next state poll shows whether the world felt it */
+    }
+  }
+
+  function clearTouch() {
+    if (!holding) return;
+    holding = false;
+    $('letgo-btn').classList.remove('hot');
+    setHand('hand open');
+    postJSON(API.touchClear, {}).catch(function () {});
+  }
+
+  /* ================= input: click vs orbit vs zoom ================= */
+  var pressed = false, orbiting = false, downX = 0, downY = 0, lastX = 0, lastY = 0;
+
+  canvas.addEventListener('pointerdown', function (e) {
+    if (e.button !== 0) return;
+    pressed = true;
+    orbiting = false;
+    downX = lastX = e.clientX;
+    downY = lastY = e.clientY;
+    try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+
+  window.addEventListener('pointermove', function (e) {
+    if (!pressed) return;
+    var dx = e.clientX - lastX, dy = e.clientY - lastY;
+    lastX = e.clientX; lastY = e.clientY;
+    if (!orbiting) {
+      if (Math.hypot(e.clientX - downX, e.clientY - downY) <= 6) return;
+      orbiting = true;                       // past 6 px this gesture is an orbit
+      canvas.classList.add('dragging');
+    }
+    cam.theta -= dx * 0.005;
+    cam.phi = Math.max(-1.45, Math.min(1.45, cam.phi - dy * 0.003));
+  });
+
+  function endPress(cx, cy) {
+    if (!pressed) return;
+    pressed = false;
+    canvas.classList.remove('dragging');
+    if (holding) { clearTouch(); return; }   // mouseup anywhere releases the press
+    if (!orbiting) { tryTouch(cx, cy); }     // a still click presses the body
+  }
+  window.addEventListener('pointerup', function (e) { endPress(e.clientX, e.clientY); });
+  window.addEventListener('pointercancel', function () {
+    pressed = false;
+    canvas.classList.remove('dragging');
+    if (holding) clearTouch();
+  });
+
+  /* wheel: pure local zoom, zero network */
+  canvas.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    cam.r *= Math.exp(e.deltaY * 0.001);
+    cam.r = Math.max(3, Math.min(60, cam.r));
+  }, { passive: false });
+
+  /* ================= hand, save, screens ================= */
+  forceEl.addEventListener('input', function () {
+    forceLabel.textContent = forceEl.value + ' N';
+    if (holding) setHand('pressing — ' + forceEl.value + ' N');
+  });
+
+  $('letgo-btn').addEventListener('click', clearTouch);
+
+  $('save-btn').addEventListener('click', async function () {
+    var btn = $('save-btn');
+    btn.disabled = true;
+    try {
+      var lessons = {}, k;
+      for (k in lessonsKnown) lessons[k] = lessonsKnown[k];
+      lessons.wake_the_cell = { passed: judge.passed, at: new Date().toISOString() };
+      var res = await postJSON(API.progress, { name: playerName, lessons: lessons });
+      if (!res.ok) throw new Error('http ' + res.status);
+      lessonsKnown = lessons;
+      if (window.ChimeraSound) ChimeraSound.saved();
+      setVerdict('saved. the world remembers you, ' + playerName + '.', 'good');
+    } catch (err) {
+      setVerdict('the world did not answer — nothing was saved.', 'warn');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  function enterPlay() {
+    playerName = $('name-input').value.trim() || 'wanderer';
+    $('cam-name').textContent = playerName;
+    $('screen-start').classList.remove('on');
+    $('screen-play').classList.add('on');
+    loadKnownProgress();
+  }
+  $('play-btn').addEventListener('click', enterPlay);
+  $('name-input').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') enterPlay();
+  });
+
+  async function loadKnownProgress() {
+    try {
+      var res = await fetch(API.progress + '?name=' + encodeURIComponent(playerName));
+      if (!res.ok) return;
+      var d = await res.json();
+      lessonsKnown = (d && d.lessons) || {};
+      var w = lessonsKnown.wake_the_cell;
+      if (w && w.passed && !judge.passed) {
+        judge.woke = true;
+        judge.passed = true;
+        setVerdict('PASSED — you felt the water. it was always there.', 'good');
+      }
+    } catch (err) {
+      /* a silent world is not an error worth surfacing here */
+    }
+  }
+
+  /* ================= boot ================= */
+  forceLabel.textContent = forceEl.value + ' N';
+  $('name-input').focus();
+
+  if (gl) {
+    try {
+      RG = initRenderer();
+      requestAnimationFrame(frame);
+      loadTopology();
+    } catch (err) {
+      RG = null;
+      $('gl-error').classList.remove('hidden');
+    }
+  } else {
+    $('gl-error').classList.remove('hidden');
+  }
+
+  setInterval(pollVerts, 333);   // colors and skin animate; re-pull at 3 Hz
+  setInterval(pollState, 700);   // the blood readout + the lesson judge
+})();
 </script>
 </body>
 </html>
