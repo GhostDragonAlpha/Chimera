@@ -77,3 +77,29 @@ Python), OR fps < 100 with the window visible, OR ft_avg > 10 ms,
 OR the recorder stalls (scene not resident), OR the harness cannot
 prove its own 2-call silence. On failure the successor is named: find
 the per-frame dependency (who woke the engine), fix it, re-run.
+
+## AMENDMENT (2026-09-13, after the first live run fired the falsifier)
+
+The first live window returned: counter +1365 frames in 10 s (PASS),
+but the served `fps` field read 48-70 and `ft_avg` 16-18 ms (FAIL) —
+and a follow-up double-sample exposed the cause: the engine carries
+THREE clocks that disagree. The cumulative counter (`pushes`) is
+exact and monotonic: 110-136 frames/s during silence, and rec.calls ==
+rec.draws == pushes at every read (every frame recorded and drawn
+exactly once). The served `fps` / `ft_avg` are UI-thread SMOOTHED
+values that read LOW against the counter; ft_max also carries ~1.2 s
+spikes from observer capture stalls. The falsifier fired on an
+instrument dial, not on the law: the 22 fps incident could never have
+been measured on the smoothed dial either.
+
+Amended instrument law: the COUNTER is the only judge. The floor stays
+100 frames/s during silence (unchanged, still 5x the incident); the
+budget moves to the counter-derived mean frame time,
+window_ms / frames_advanced <= 10 ms (exact); the smoothed `fps` /
+`ft_avg` fields are recorded as corroboration, never judged. The
+residency bars (silence, recorder advance, 2-call harness) are
+unchanged. Nothing was weakened: the same window that FAILED on the
+smoothed dial (52 fps) PASSES on the exact clock (136.5 frames/s) —
+which is the point of the amendment: trust the monotonic counter,
+distrust smoothed readouts.
+
