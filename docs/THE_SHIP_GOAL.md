@@ -67,6 +67,20 @@ window tricks, no excuses.
 - Price target: $15-20. With the demo funnel — play free, sign up,
   buy — the copy count is reachable without a festival slot.
 
+## THE WORLD LAW (operator vision, 2026-09-13: "every user will just
+## be another camera in that game world")
+
+There is ONE game world — the engine's living simulation — and every
+player attaches to it as a CAMERA with a voice. Nobody owns a copy of
+the world; a player is a viewpoint plus the intents they speak into it
+(press, poke, pose). What one player touches, every camera sees, because
+there is only one creature. This is why the architecture is already
+honest: the engine ticks itself and serves state over HTTP; the browser
+viewer was always a camera; a second player is a second connection, not
+a second simulation. The sign-up (R9) ties a NAME to a camera. The
+world's memory is the session snapshot — it persists between visits,
+which is what makes it a world instead of a screensaver.
+
 ## THE ORDER OF WORK (one feature at a time, your law)
 
 1. R1 double-click launch (the window law is the blocker — kill it
