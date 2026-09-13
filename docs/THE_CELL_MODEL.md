@@ -85,3 +85,14 @@ returns. Evidence and bars: docs/evidence/agent_fleet/MATTER_KERNEL/
 SEAL_PREREGISTRATION.md (v2 prereg + run record; falsifier did not
 fire). The growth law ahead is recursive mitosis — the same cut op on
 a daughter, per scale.
+
+## THE REFERENCE (operator directive, 2026-09-13, after THE SEAL v2)
+
+The operator's standing hint for the road ahead: "everything's been
+described in nature." Defects along the way are expected and
+acceptable — progress is the measure. Read as law: where a design
+question has no derivation in these docs, NATURE is the spec. Real
+compressibilities (water for tissue), real vessel mechanics (Laplace's
+law, capillary vs aorta wall tension), real division (mitosis at the
+membrane), constants cited from measurement, never invented. The
+successor appliances derive from physiology first, build second.
