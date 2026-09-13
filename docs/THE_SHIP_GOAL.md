@@ -16,7 +16,7 @@ window tricks, no excuses.
 
 ## THE REQUIREMENTS (R-items, plain words)
 
-- R1. DOUBLE-CLICK LAUNCH — PASS/OPEN: **OPEN.** The game runs on a
+- R1. DOUBLE-CLICK LAUNCH — PASS/OPEN: **PASS.** The game runs on a
   clean ordinary Windows machine from one double-click. Today the
   engine needs a maximised window or it stalls (measured law); the
   game must behave like a product, not a lab instrument.
@@ -83,6 +83,7 @@ window tricks, no excuses.
 | Date       | Event                                   |
 |------------|-----------------------------------------|
 | 2026-09-13 | Goal set by the operator; 8/8 R-items OPEN |
+| 2026-09-13 | **R1 DOUBLE-CLICK LAUNCH: PASS** — R1a foreground independence (law retired, operator-verified) + R1b launcher (hidden console, payload auto-restore incl. the seal history, one double-click -> live creature, no console) |
 | 2026-09-13 | R1a foreground independence PASS (law retired, operator-verified); R1b double-click package OPEN, in build |
 | 2026-09-13 | R9 our-own-website channel added (demo first, sign-up after); revenue position re-framed — our page keeps ~95%, sign-up list is ours, Steam demoted to optional second shelf |
 
@@ -96,3 +97,27 @@ window tricks, no excuses.
 - R1b DOUBLE-CLICK PACKAGE: **OPEN** — the launch still needs its
   special working directory, hidden developer console, and manual
   payload re-posts. In build now.
+
+## RUN RECORD (2026-09-13, R1 — the double-click launch)
+
+- R1b PASS: the launcher `launch_chimera.bat` (deployed next to the
+  exe by the build) starts the game in its own working directory with
+  `--hidden` (the developer console retires; the studio overlay and
+  HTTP remain). One double-click on a fresh kill: window up at
+  299 fps, NO console, and the creature restored AS ITSELF — mesh,
+  classification, travel bindings, measured pins, and the whole
+  mitosis tree (4 cells, exact volumes) from the session snapshot.
+  Zero hand-run scripts. Verified behaviorally: a knee pose changes
+  the picture with no payload posted after boot.
+- The mechanism: /tick_classify, /tick_vertbind, /tick_joints now
+  write THROUGH to session_snapshot/<endpoint>.blob on success;
+  /tick_seal APPENDS to tick_seal_history.log (the cell tree is a
+  history, replayed in order); boot restore replays the shared list
+  in dependency order (mesh -> pins -> classify -> bindings -> other
+  uploads -> seals). /session clear wipes the history too.
+- Honesty note: the .bat launcher may flash a console frame for
+  ~100 ms before the engine hides it; the polished no-flash launcher
+  belongs to R7 packaging.
+
+R1 DOUBLE-CLICK LAUNCH: **PASS** (R1a foreground independence +
+R1b package; the ONLY remaining caveat is the cosmetic bat flash).

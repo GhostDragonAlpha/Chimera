@@ -67,9 +67,13 @@ foot from the leg — mitosis IS the body-part boundary, made hydraulic.
   advancing with zero intents (the heartbeat law).
 - HYDRAULIC BASE STATE (the seal): surface area 89.8 m^2, sealed
   volume 13.82 m^3 by the divergence theorem — the creature is a
-  closed hydraulic vessel. The editor window must stay FOREGROUND:
-  backgrounded, the present path stalls and every downstream client
-  starves (measured twice, 2026-09-13).
+  closed hydraulic vessel. [LAW RETIRED 2026-09-13 evening: the
+  foreground stall does NOT reproduce on the current binary —
+  measured minimized and occluded with live pose answers (frames
+  1.09 s, ticks advancing), and the OPERATOR interacted with the
+  restored window (rotation) with time advancing. The original
+  measurements predate the render-loop rebuilds. The window is free
+  to be minimized, occluded, or backgrounded.]
 
 ## RUN RECORD (2026-09-13, THE SEAL WALL live — the cut-and-weld)
 

@@ -83,6 +83,16 @@ static bool g_md_pending = false, g_md_applied = false;
 struct MeshReq { std::vector<float> verts; std::vector<uint32_t> indices; uint32_t N=0, idxCount=0; float cam_radius=12.f, cam_theta=0.f, cam_phi=0.3f; uint32_t slot=0, mode=0; bool update_only=false; bool valid=false; };
 static MeshReq g_mesh_req;
 static MembraneTick g_tick;                    // THE MEMBRANE TICK (Appliance 1)
+
+// THE SESSION SNAPSHOT list, shared by status/restore/clear: order matters
+// (mesh first, then the tick payloads their sizes verify against, then the
+// other uploads). /tick_seal has no single blob — its INTENTS append to
+// session_snapshot/tick_seal_history.log and replay in order, so the whole
+// cell tree comes back exactly as authored.
+static const char* const k_snapshot_endpoints[] = {
+    "mesh_bin", "tick_joints", "tick_classify", "tick_vertbind",
+    "hinge_bin", "joints_bin", "gait_bin", "stride_bin", "water_bin",
+};
 static std::vector<float> g_tick_verts;        // host mirror the tick tints
 static uint32_t g_tick_vcount = 0;
 static std::mutex g_mesh_mutex;
@@ -446,6 +456,12 @@ int main(int argc, char** argv) {
     // HTTP port: argv[1] overrides the default 8080 (e.g. NVIDIA SDK Manager squats 8080).
     int http_port = 8080;
     if (argc > 1) { http_port = atoi(argv[1]); if (http_port <= 0) http_port = 8080; }
+    // R1 DOUBLE-CLICK LAUNCH: --hidden retires the developer console (the
+    // studio overlay F1 and the HTTP contract remain the surfaces). The
+    // game must not open a terminal.
+    bool console_hidden = false;
+    for (int i = 1; i < argc; ++i)
+        if (std::string(argv[i]) == "--hidden") console_hidden = true;
 
     // Physics init (passes cfg so it can set physical params)
     g_physics.init(cfg.n_particles, cfg);
@@ -2648,7 +2664,7 @@ int main(int argc, char** argv) {
             // SESSION SNAPSHOT status — what a restore would replay.
             body = "{";
             bool first = true;
-            for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "stride_bin", "water_bin"}) {
+            for (const char* ep : k_snapshot_endpoints) {
                 std::ifstream f(std::string("session_snapshot/") + ep + ".blob", std::ios::binary | std::ios::ate);
                 if (!first) body += ",";
                 first = false;
@@ -2669,15 +2685,16 @@ int main(int argc, char** argv) {
                 // (Without this, default-on boot restore would resurrect a
                 // subject the operator deliberately removed.)
                 int cleared = 0;
-                for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "stride_bin", "water_bin"}) {
+                for (const char* ep : k_snapshot_endpoints) {
                     std::string fp = std::string("session_snapshot/") + ep + ".blob";
                     if (DeleteFileA(fp.c_str())) ++cleared;
                 }
+                if (DeleteFileA("session_snapshot/tick_seal_history.log")) ++cleared;
                 body = "{\"ok\":true,\"cleared\":" + std::to_string(cleared) + "}";
             } else if (op == "restore") {
                 int done = 0, failed = 0;
                 std::string detail;
-                for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "stride_bin", "water_bin"}) {
+                for (const char* ep : k_snapshot_endpoints) {
                     std::string fp = std::string("session_snapshot/") + ep + ".blob";
                     std::ifstream f(fp, std::ios::binary);
                     if (!f) continue;
@@ -2687,6 +2704,21 @@ int main(int argc, char** argv) {
                     bool okr = resp2.find("\"ok\":true") != std::string::npos;
                     done += okr ? 1 : 0; failed += okr ? 0 : 1;
                     detail += std::string(ep) + (okr ? ":ok " : ":FAIL ");
+                }
+                // THE MITOSIS TREE comes back through its intent history:
+                // every successful /tick_seal body was appended verbatim, so
+                // replaying the file in order rebuilds the same cells.
+                {
+                    std::ifstream hf("session_snapshot/tick_seal_history.log");
+                    std::string line;
+                    while (std::getline(hf, line)) {
+                        if (line.empty()) continue;
+                        std::string resp2, ct2;
+                        g_engine->invoke_api("POST", "/tick_seal", line, resp2, ct2);
+                        bool okr = resp2.find("\"ok\":true") != std::string::npos;
+                        done += okr ? 1 : 0; failed += okr ? 0 : 1;
+                        detail += std::string("seal") + (okr ? ":ok " : ":FAIL ");
+                    }
                 }
                 body = std::string("{\"ok\":") + (failed == 0 && done > 0 ? "true" : "false")
                      + ",\"replayed\":" + std::to_string(done)
@@ -2719,6 +2751,24 @@ int main(int argc, char** argv) {
             std::ofstream f(fn, std::ios::binary);
             if (f) { f.write(req_body.data(), (std::streamsize)req_body.size()); printf("snapshot: %s (%zu B)\n", fn.c_str(), req_body.size()); }
             else fprintf(stderr, "snapshot: cannot write %s\n", fn.c_str());
+        }
+        // THE TICK PAYLOADS join the snapshot: classification, travel
+        // bindings, measured pins and the mitosis intents are the authored
+        // creature — a restart must not need a hand-run script to be the
+        // same animal. /tick_seal APPENDS (the tree is a history).
+        if (g_engine && method == "POST" &&
+            (p == "/tick_classify" || p == "/tick_vertbind" || p == "/tick_joints") &&
+            body.find("\"ok\":true") != std::string::npos) {
+            CreateDirectoryA("session_snapshot", nullptr);
+            std::string fn = "session_snapshot/" + p.substr(1) + ".blob";
+            std::ofstream f(fn, std::ios::binary);
+            if (f) { f.write(req_body.data(), (std::streamsize)req_body.size()); printf("snapshot: %s (%zu B)\n", fn.c_str(), req_body.size()); }
+        }
+        if (g_engine && method == "POST" && p == "/tick_seal" &&
+            body.find("\"ok\":true") != std::string::npos) {
+            CreateDirectoryA("session_snapshot", nullptr);
+            std::ofstream f("session_snapshot/tick_seal_history.log", std::ios::app);
+            if (f) { f << req_body << "\n"; printf("snapshot: tick_seal_history +1\n"); }
         }
 
         // F4: the recorder — every covered state change lands at the moment it
@@ -2815,6 +2865,12 @@ int main(int argc, char** argv) {
         }
     }
 
+#ifdef _WIN32
+    if (console_hidden) {
+        HWND cw = GetConsoleWindow();
+        if (cw) ShowWindow(cw, SW_HIDE);   // logs continue; the window retires
+    }
+#endif
     printf("Chimera Engine running at http://localhost:%d/state\n", http_port);
     printf("  /frame  -> PNG of the current render (membrane if one is loaded)\n");
     printf("  /membrane (POST) -> load a story membrane scene\n");
