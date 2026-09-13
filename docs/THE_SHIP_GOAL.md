@@ -106,6 +106,29 @@ WALK. If the body does not drop when the limbs go slack, the gravity
 or contact model is wrong. The first bar of the ground appliance is
 the FALL, not the step.
 
+## THE ALIVENESS LAW (operator directive, 2026-09-13: pre-rigged
+## characters welcome; "drop a skeleton and superimpose them over static
+## objects and make them come alive")
+
+The physics system is CHARACTER-AGNOSTIC. Any mesh + any skeleton =
+a living sealed-cell creature. Pre-rigged characters found in the wild
+are welcome; making our own rig is the fallback skill we also hold.
+The pipeline already proves the shape of this: classification (nearest
+measured joint per triangle), travel binding (3 nearest pins,
+inverse-distance^2 weights), the cut-and-weld seal (any closed mesh),
+and the hydraulic tick — all mesh-agnostic machinery. What the aliveness
+op needs on top:
+- IMPORT: mesh + skeleton in common formats (glTF/OBJ first) into the
+  engine's full format;
+- THE ONE-INTENT OP: "bring alive" = classify + bind + seal in one
+  POST — drop a skeleton on a static object, POST, and it breathes;
+- HONESTY GATE: the volume math needs a CLOSED surface — a leaky
+  import is REFUSED BY NAME (or sealed by an explicit op), never
+  silently faked;
+- THE FALSIFIER THAT KEEPS IT HONEST: the brought-alive creature must
+  pass the same bars as the sculpted monkey — volumes conserved,
+  pressures honest, poses travel, touch answers — or it is not alive.
+
 ## THE ORDER OF WORK (one feature at a time, your law)
 
 1. R1 double-click launch (the window law is the blocker — kill it
