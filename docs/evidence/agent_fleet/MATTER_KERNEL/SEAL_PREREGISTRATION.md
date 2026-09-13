@@ -531,3 +531,63 @@ the frame loop and the offset clear condition.
 HP3 (instant release) is superseded by HR1/HR3: "release" now means
 "exponential recovery with tau = 0.5 s, exact rest after 3*tau". The
 HP3 pixel-exactness bar moves to post-decay frames.
+
+## RUN RECORD (2026-09-13, live engine HYDRAULIC RETURN + COMPONENT SPLIT)
+
+One clean instance on the final binary (log .tmp/roadmap_run.log;
+frames return*/split* in CHIMERA_PROOF\FEET\).
+
+- HR1: PASS — released dimple decays exponentially in MEASURED time;
+  tau per interval 0.499 / 0.498 / 0.501 / 0.501 / 0.500 s against the
+  declared 0.5; dimple reaches EXACT 0 at the cutoff (~4 s).
+- HR2: PASS — foot-cell P decays on the same exponential (ratios
+  0.50/0.52, 0.26/0.28, 0.11/0.13, 0.04/0.04).
+- HR3: PASS — conservation through decay -6.9e-05 %; rest after decay
+  worst |P| = 0; the post-decay frame is the deterministic rest state.
+- SS refusals: PASS — the body cell (one closed surface) refused by
+  name.
+- SS splits: PASS — feet, thigh, shin cells each split into their
+  components; n_cells = 15; the sum holds 13.824502 vs 13.824536
+  (2.5e-04 %). The cells come in L/R mirror pairs with identical
+  volumes — including the feet's separated digits (0.0111 m^3 pairs).
+- SS3 per-side hydraulics: PASS — knee_L 25 deg moves exactly 9 cells
+  while their 6 L/R mirrors sit at dV = 0.000000; conservation
+  6.9e-05 %; pose return worst |P| = 0.
+
+### Defect found + fixed here (disclosed)
+
+dimple_m_ reported the THEORETICAL delta while the true max applied
+offset was smaller (the Gaussian peak can fall between mesh vertices —
+for the ankle, 0.052 vs 0.199). That lie made the first HR run's decay
+head look wrong (the physics tail was already exact tau). Fixed:
+dimple_m_ = the true max APPLIED offset, measured during application.
+
+### The lock completed (third race class, disclosed)
+
+seal()/split()/state_json() ran on HTTP threads reading bindings, the
+cell state, and the blend table with no lock while loaders/init
+rewrote them (the map kept attributing the AVs to inlined
+apply_travel). Now every entry point — step (try_lock), seal, split,
+state_json, the loaders, init — holds the SAME mutex; the render loop
+still never blocks.
+
+## THE BUILD ORDER IS COMPLETE
+
+THE_CELL_MODEL's four appliances are now all live: 1 volume base
+state, 2 the seal wall (cut-and-weld), 3 the hydraulic tick (BOTH
+halves: compressibility answers dV, tension recovers the surface in
+declared time), 4 the mitosis op (recursive cuts + component
+separation). The creature is 15 sealed hydraulic compartments —
+per-side feet (with digits), thighs, shins, plus the torso — that
+pose, dimple under load, relax like tissue, and divide on intent.
+
+## OPEN (beyond the recorded roadmap; named for successors)
+
+- Press POINT selection (ray-hit) and press+pose composition (posed
+  normals).
+- Laplace curvature flow (the wall deforms under its pressure delta —
+  today walls are rigid and the surface recovers by relaxation).
+- Rendering the internal walls on demand (the invisibles law: see the
+  seal).
+- Gait: the per-side hydraulic states are the signal a walk cycle can
+  read (stance cell pressurizes, swing cell relaxes).

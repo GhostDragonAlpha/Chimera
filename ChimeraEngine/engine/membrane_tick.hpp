@@ -21,7 +21,7 @@ public:
 
     // One tick: advance state, tint the vertex colors in place.
     // verts9 is the host mirror posted via update_mesh.
-    void step(std::vector<float>& verts9);
+    void step(std::vector<float>& verts9, float dt);
 
     std::string state_json() const;
 
@@ -57,6 +57,12 @@ public:
     // body-part tree (the growth law). Volume by divergence, pressure by
     // dP = -dV/(kappa*V0), kappa = water at 25 C.
     bool seal(float y, int cell);
+
+    // THE COMPONENT SPLIT (the L/R separation): a cell made of several
+    // disjoint closed surfaces (left+right feet after the ankle band cut)
+    // divides into one cell per connected component — flood-fill the
+    // pieces through shared slots. Refused by name for a connected cell.
+    bool split(int cell);
 
     bool   enabled_ = true;
     uint64_t ticks_ = 0;
@@ -132,8 +138,16 @@ private:
     float sigma_n_ = 4000.f;    // skin working tension, N/m (Yamada ULS
                                 // 8 MPa x 1.5 mm / safety 3)
     float press_r0_ = 0.03f;    // falloff radius, m
+    float tau_relax_ = 0.5f;    // soft-tissue stress relaxation, s (named
+                                // at Yamada skin-creep scale; HR bar tests it)
     float dimple_m_ = 0.f;      // deepest active dimple (state report)
     bool  normals_displaced_ = false;  // dimpled normals need restore
+    // THE HYDRAULIC RETURN: persistent offset per vertex. Active presses
+    // set offsets to the forced Gaussian; released offsets decay
+    // exp(-dt/tau) until the 0.1 mm cutoff clears them (deterministic
+    // rest preserved).
+    std::vector<float> press_off_;             // nv offsets, aligned to verts
+    bool  press_field_ = false;                // press_off_ has entries
     bool  has_scene_ = false;
     float dirty_ = 0.f;                        // tint changed -> needs upload
     std::atomic<bool> ready_{false};           // committed only after init

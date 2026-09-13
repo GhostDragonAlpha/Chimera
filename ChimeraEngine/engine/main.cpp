@@ -797,6 +797,14 @@ int main(int argc, char** argv) {
                         "must exist, the plane must cross that cell's "
                         "y-range, and the cut graph must close into loops\"}";
             content_type = "application/json";
+        } else if (p == "/tick_seal_split" && method == "POST") {
+            // THE COMPONENT SPLIT: a cell of disjoint closed surfaces
+            // (left+right after a band cut) divides per component.
+            int cell = (int)get_double(req_body, "cell", 0.0);
+            if (g_tick.split(cell)) body = "{\"ok\":true}";
+            else body = "{\"ok\":false,\"error\":\"refused: the cell index "
+                        "must exist and hold more than one closed surface\"}";
+            content_type = "application/json";
         } else if (p == "/hinge_bin" && method == "POST") {
             // Binary protocol (little-endian):
             //   [u32 nvert][f32 JL(3)][f32 JR(3)][f32 axis(3)][f32 romL,romR,period,phaseR]
@@ -3145,7 +3153,16 @@ int main(int argc, char** argv) {
         // render thread; the tint streams to the GPU through update_mesh
         // (in-place vertex upload, no reload, no camera).
         if (g_tick.enabled_ && g_tick_vcount > 0) {
-            g_tick.step(g_tick_verts);
+            // measured frame dt for the tick's time-dependent physics
+            // (the hydraulic return decays in real seconds, HR prereg)
+            static auto tick_last = std::chrono::high_resolution_clock::now();
+            auto tick_now = std::chrono::high_resolution_clock::now();
+            float tick_dt = std::chrono::duration_cast<std::chrono::microseconds>(
+                tick_now - tick_last).count() / 1e6f;
+            tick_last = tick_now;
+            if (tick_dt < 0.f) tick_dt = 0.f;
+            if (tick_dt > 0.1f) tick_dt = 0.1f;
+            g_tick.step(g_tick_verts, tick_dt);
             engine.update_mesh(g_tick_verts, g_tick_vcount);
         }
 

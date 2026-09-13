@@ -5,9 +5,11 @@
 #include <array>
 #include <cmath>
 #include <cstdlib>
+#include <functional>
 #include <map>
 #include <set>
 #include <sstream>
+#include <unordered_map>
 #include <utility>
 
 namespace {
@@ -112,6 +114,9 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
     pivot_[1] = pivots[1];
     has_scene_ = tris > 0;
     joint_verts_.clear();   // mesh changed: pressed regions rebuild
+    press_off_.clear();     // and any dimple field dies with it
+    press_field_ = false;
+    normals_displaced_ = false;
     ticks_ = 0;
     force_l_ = force_r_ = 0.f;
     flex_l_ = flex_r_ = 0.f;
@@ -192,7 +197,7 @@ void MembraneTick::apply_travel(std::vector<float>& verts9,
     }
 }
 
-void MembraneTick::step(std::vector<float>& verts9) {
+void MembraneTick::step(std::vector<float>& verts9, float dt) {
     if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return;
     if (tri_verts_.size() != cells_.size() * 3) return;   // hardened
     // ONE lock for the whole tick body: travel reads the bindings that
@@ -219,12 +224,13 @@ void MembraneTick::step(std::vector<float>& verts9) {
         apply_flex(verts9);
     }
 
-    // THE HYDRAULIC PRESS (appliance 3, prereg ff9033a0): pressed cells
-    // dimple inward by the linear-membrane law delta = F/(4 pi sigma)
-    // with a Gaussian falloff (authored positions + normals). The travel
-    // write above is deterministic per tick, so offsets never accumulate;
-    // the divergence sums below read the dimpled geometry and the kappa
-    // law answers. Release (F = 0) restores the surface exactly.
+    // THE HYDRAULIC PRESS + RETURN (appliance 3, preregs ff9033a0 /
+    // 3716fecf): pressed cells dimple inward by the linear-membrane law
+    // delta = F/(4 pi sigma), Gaussian falloff. Active presses SET their
+    // offsets (force balances tension — steady state); on release the
+    // offsets DECAY exp(-dt/tau) (soft-tissue stress relaxation) until
+    // the 0.1 mm cutoff clears them. The divergence sums read the dimpled
+    // geometry and the kappa law answers throughout.
     dimple_m_ = 0.f;
     bool any_press = false;
     if (classified && !joint_force_.empty()) {
@@ -252,6 +258,8 @@ void MembraneTick::step(std::vector<float>& verts9) {
                                   (float)(acc[j][2] / n)};
             }
         }
+        const size_t nverts = verts9.size() / 9;
+        if (press_off_.size() != nverts) press_off_.assign(nverts, 0.f);
         for (size_t j = 0; j < joint_force_.size(); ++j) {
             float F = joint_force_[j];
             if (F <= 0.f) continue;
@@ -265,43 +273,70 @@ void MembraneTick::step(std::vector<float>& verts9) {
                 float dy = base_pos_[v * 9 + 1] - C[1];
                 float dz = base_pos_[v * 9 + 2] - C[2];
                 float q = (dx * dx + dy * dy + dz * dz) / r02;
-                float off = delta * std::exp(-q);
+                press_off_[v] = delta * std::exp(-q);   // SET: steady state
+            }
+        }
+        if (!any_press && press_field_) {
+            // THE HYDRAULIC RETURN: released offsets decay exp(-dt/tau)
+            const float decay = std::exp(-(dt > 0.f ? dt : 0.f) / tau_relax_);
+            float mx = 0.f;
+            for (float& o : press_off_) {
+                if (o == 0.f) continue;
+                o *= decay;
+                if (o < 1e-4f) o = 0.f;             // 0.1 mm cutoff
+                mx = std::max(mx, o);
+            }
+            dimple_m_ = mx;
+            if (mx == 0.f) {
+                std::fill(press_off_.begin(), press_off_.end(), 0.f);
+                press_field_ = false;               // deterministic rest
+            }
+        }
+        // apply whatever offsets survive this tick
+        if (any_press || press_field_) {
+            press_field_ = true;
+            float applied_max = 0.f;
+            for (size_t v = 0; v < nverts; ++v) {
+                float off = press_off_[v];
+                if (off == 0.f) continue;
+                applied_max = std::max(applied_max, off);
                 verts9[v * 9 + 0] -= base_pos_[v * 9 + 3] * off;  // authored
                 verts9[v * 9 + 1] -= base_pos_[v * 9 + 4] * off;  // normal
                 verts9[v * 9 + 2] -= base_pos_[v * 9 + 5] * off;
             }
+            // report the TRUE max applied offset, not the theoretical
+            // delta — the Gaussian peak can fall between mesh vertices
+            dimple_m_ = applied_max;
         }
-        if (any_press) {
+        if (any_press || press_field_) {
             // normals from the DEFORMED surface: without this the shading
-            // stays flat and the dimple is invisible (measured: 10-30 kN
-            // pairs differed < 130/255 on ~1.7k px). Face normals of the
-            // pressed cells accumulate to their verts, then normalize.
-            std::vector<float> acc((size_t)verts9.size() / 9 * 3, 0.f);
-            std::vector<uint8_t> touched((size_t)verts9.size() / 9, 0);
-            for (size_t j = 0; j < joint_force_.size(); ++j) {
-                if (joint_force_[j] <= 0.f) continue;
-                for (size_t i = 0; i < cells_.size(); ++i) {
-                    if (cell_joint_[i] != (uint8_t)j) continue;
-                    uint32_t a = tri_verts_[i * 3 + 0], b = tri_verts_[i * 3 + 1],
-                             c = tri_verts_[i * 3 + 2];
-                    float ux = verts9[b*9+0] - verts9[a*9+0];
-                    float uy = verts9[b*9+1] - verts9[a*9+1];
-                    float uz = verts9[b*9+2] - verts9[a*9+2];
-                    float wx = verts9[c*9+0] - verts9[a*9+0];
-                    float wy = verts9[c*9+1] - verts9[a*9+1];
-                    float wz = verts9[c*9+2] - verts9[a*9+2];
-                    float nx = uy * wz - uz * wy;
-                    float ny = uz * wx - ux * wz;
-                    float nz = ux * wy - uy * wx;
-                    for (uint32_t v : {a, b, c}) {
-                        acc[(size_t)v * 3 + 0] += nx;
-                        acc[(size_t)v * 3 + 1] += ny;
-                        acc[(size_t)v * 3 + 2] += nz;
-                        touched[v] = 1;
-                    }
+            // stays flat and the dimple is invisible. Face normals of the
+            // offset-carrying cells accumulate to their verts, normalize.
+            std::vector<float> acc(nverts * 3, 0.f);
+            std::vector<uint8_t> touched(nverts, 0);
+            for (size_t i = 0; i < cells_.size(); ++i) {
+                uint32_t a = tri_verts_[i * 3 + 0], b = tri_verts_[i * 3 + 1],
+                         c = tri_verts_[i * 3 + 2];
+                if (press_off_[a] == 0.f && press_off_[b] == 0.f &&
+                    press_off_[c] == 0.f)
+                    continue;
+                float ux = verts9[b*9+0] - verts9[a*9+0];
+                float uy = verts9[b*9+1] - verts9[a*9+1];
+                float uz = verts9[b*9+2] - verts9[a*9+2];
+                float wx = verts9[c*9+0] - verts9[a*9+0];
+                float wy = verts9[c*9+1] - verts9[a*9+1];
+                float wz = verts9[c*9+2] - verts9[a*9+2];
+                float nx = uy * wz - uz * wy;
+                float ny = uz * wx - ux * wz;
+                float nz = ux * wy - uy * wx;
+                for (uint32_t v : {a, b, c}) {
+                    acc[(size_t)v * 3 + 0] += nx;
+                    acc[(size_t)v * 3 + 1] += ny;
+                    acc[(size_t)v * 3 + 2] += nz;
+                    touched[v] = 1;
                 }
             }
-            for (size_t v = 0; v < touched.size(); ++v) {
+            for (size_t v = 0; v < nverts; ++v) {
                 if (!touched[v]) continue;
                 float nx = acc[v * 3 + 0], ny = acc[v * 3 + 1], nz = acc[v * 3 + 2];
                 float len = std::sqrt(nx * nx + ny * ny + nz * nz);
@@ -312,8 +347,8 @@ void MembraneTick::step(std::vector<float>& verts9) {
             }
             normals_displaced_ = true;
         } else if (normals_displaced_) {
-            // release: restore the authored normals
-            for (size_t v = 0; v < verts9.size() / 9; ++v)
+            // field fully cleared: restore the authored normals
+            for (size_t v = 0; v < nverts; ++v)
                 for (int k = 0; k < 3; ++k)
                     verts9[v * 9 + 3 + (size_t)k] = base_pos_[v * 9 + 3 + (size_t)k];
             normals_displaced_ = false;
@@ -572,6 +607,109 @@ void MembraneTick::apply_chain(std::vector<float>& verts9) {
     }
 }
 
+bool MembraneTick::split(int cell_idx) {
+    // THE COMPONENT SPLIT: flood-fill the named cell's pieces through
+    // shared slots; each closed component becomes its own sealed cell.
+    if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return false;
+    // body-wide lock: same contract as seal() (HTTP readers vs writers)
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (seal_cells_.empty()) return false;              // nothing sealed yet
+    if (cell_idx < 0 || cell_idx >= (int)seal_cells_.size()) return false;
+    const uint32_t nv = (uint32_t)(base_pos_.size() / 9);
+
+    const std::vector<uint32_t>& pieces = seal_cells_[cell_idx].pieces;
+    const size_t np = pieces.size() / 3;
+    if (np == 0) return false;
+
+    // union-find over pieces via shared slots (originals + cut blends)
+    std::unordered_map<uint32_t, size_t> first;
+    std::vector<size_t> parent(np);
+    for (size_t i = 0; i < np; ++i) parent[i] = i;
+    std::function<size_t(size_t)> find = [&](size_t x) -> size_t {
+        while (parent[x] != x) { parent[x] = parent[parent[x]]; x = parent[x]; }
+        return x;
+    };
+    for (size_t p = 0; p < np; ++p) {
+        for (int k = 0; k < 3; ++k) {
+            uint32_t s = pieces[p * 3 + (size_t)k];
+            auto it = first.find(s);
+            if (it == first.end()) first[s] = p;
+            else {
+                size_t ra = find(it->second), rb = find(p);
+                if (ra != rb) parent[ra] = rb;
+            }
+        }
+    }
+    std::map<size_t, std::vector<uint32_t>> comps;   // root -> flat pieces
+    for (size_t p = 0; p < np; ++p)
+        for (int k = 0; k < 3; ++k)
+            comps[find(p)].push_back(pieces[p * 3 + (size_t)k]);
+    if (comps.size() < 2) return false;   // one closed surface: nothing to split
+
+    // rest volumes per component on the tick's rest blend (same path as
+    // seal(): blended rest verts, weighted cut slots)
+    std::vector<float> rest9(base_pos_);
+    {
+        const bool classified = cell_joint_.size() == cells_.size()
+                             && joint_pins_.size() == joint_deg_.size()
+                             && vert_bind_idx_.size() == (size_t)nv * 3
+                             && vert_bind_w_.size() == (size_t)nv * 3;
+        if (classified) apply_travel(rest9, nullptr);
+    }
+    std::vector<float> rest_cut(cut_src_.size() * 3, 0.f);
+    for (size_t k = 0; k < cut_src_.size(); ++k) {
+        const CutBlend& b = cut_src_[k];
+        for (int i = 0; i < b.n; ++i)
+            for (int d = 0; d < 3; ++d)
+                rest_cut[k * 3 + d] += b.w[i] * rest9[b.v[i] * 9 + d];
+    }
+    std::vector<SealCell> out;
+    for (auto& [root, flat] : comps) {
+        SealCell c;
+        c.pieces = std::move(flat);
+        float v = 0.f, lo = 1e30f, hi = -1e30f;
+        for (size_t i = 0; i + 2 < c.pieces.size(); i += 3) {
+            float s[3][3];
+            for (int t = 0; t < 3; ++t) {
+                uint32_t sl = c.pieces[i + (size_t)t];
+                if (sl < nv) {
+                    s[t][0] = rest9[sl * 9 + 0];
+                    s[t][1] = rest9[sl * 9 + 1];
+                    s[t][2] = rest9[sl * 9 + 2];
+                } else {
+                    s[t][0] = rest_cut[(sl - nv) * 3 + 0];
+                    s[t][1] = rest_cut[(sl - nv) * 3 + 1];
+                    s[t][2] = rest_cut[(sl - nv) * 3 + 2];
+                }
+            }
+            v += (s[0][0] * (s[1][1] * s[2][2] - s[1][2] * s[2][1])
+                + s[0][1] * (s[1][2] * s[2][0] - s[1][0] * s[2][2])
+                + s[0][2] * (s[1][0] * s[2][1] - s[1][1] * s[2][0])) / 6.f;
+        }
+        for (uint32_t sl : c.pieces) {
+            float yy = sl < nv ? rest9[sl * 9 + 1]
+                               : rest_cut[(sl - nv) * 3 + 1];
+            lo = std::min(lo, yy);
+            hi = std::max(hi, yy);
+        }
+        if (!(v > 0.f)) return false;   // orientation broke: refuse honestly
+        c.v0 = v;
+        c.vol = v;
+        c.p = 0.f;
+        c.caps = seal_cells_[cell_idx].caps;   // cap count carries over
+        c.ylo = lo;
+        c.yhi = hi;
+        out.push_back(std::move(c));
+    }
+
+    // publish: component 0 replaces the cell, the rest append (under the
+    // body-wide lock taken at entry)
+    seal_cells_[cell_idx] = std::move(out[0]);
+    for (size_t i = 1; i < out.size(); ++i)
+        seal_cells_.push_back(std::move(out[i]));
+    return true;
+}
+
 bool MembraneTick::seal(float y, int cell_idx) {
     // MITOSIS — the recursive cut-and-weld (preregs 4eb9480c, be971e7c).
     // Cuts sealed cell `cell_idx` (0 = the whole creature before any
@@ -582,13 +720,15 @@ bool MembraneTick::seal(float y, int cell_idx) {
     if (tri_verts_.size() != cells_.size() * 3) return false;
     const uint32_t nv = (uint32_t)(base_pos_.size() / 9);
     if (nv == 0) return false;
-    {
-        std::lock_guard<std::mutex> lk(seal_mtx_);   // entry reads vs publish
-        if (seal_cells_.empty()) {
-            if (cell_idx != 0) return false;        // only cell 0 exists
-        } else if (cell_idx < 0 || cell_idx >= (int)seal_cells_.size()) {
-            return false;                           // cell index out of range
-        }
+    // ONE lock for the whole seal body: this HTTP thread reads bindings,
+    // cells, and the blend table that other HTTP threads (loaders) and
+    // the render thread (init) rewrite under the same mutex. Blocking
+    // here is bounded by one tick; the render loop never waits on us.
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (seal_cells_.empty()) {
+        if (cell_idx != 0) return false;        // only cell 0 exists
+    } else if (cell_idx < 0 || cell_idx >= (int)seal_cells_.size()) {
+        return false;                           // cell index out of range
     }
 
     // rest9: the verts the tick ITSELF produces at rest — the classified
@@ -621,11 +761,8 @@ bool MembraneTick::seal(float y, int cell_idx) {
 
     // the boundary being cut: the named cell's pieces (or the whole creature)
     std::vector<uint32_t> src;
-    {
-        std::lock_guard<std::mutex> lk(seal_mtx_);   // src copy vs publish
-        if (seal_cells_.empty()) src.assign(tri_verts_.begin(), tri_verts_.end());
-        else src = seal_cells_[cell_idx].pieces;
-    }
+    if (seal_cells_.empty()) src.assign(tri_verts_.begin(), tri_verts_.end());
+    else src = seal_cells_[cell_idx].pieces;
 
     // the plane must cross the cell
     float ymin = 1e30f, ymax = -1e30f;
@@ -805,10 +942,8 @@ bool MembraneTick::seal(float y, int cell_idx) {
 
     // publish: new cuts append to the global blend table (slot ids match);
     // cell k is REPLACED by its below daughter, the above daughter appends.
-    // Locked: the render thread reads these members per frame (try_lock
-    // in step), and recursion reallocates them — v2 was write-once.
+    // (Under the body-wide lock taken at entry.)
     {
-        std::lock_guard<std::mutex> lk(seal_mtx_);
         seal_nv_ = nv;               // slot-space base (NaN bug: was unset)
         cut_src_.insert(cut_src_.end(), pts.begin() + (nv + ncut0), pts.end());
         cut_pos_.assign(cut_src_.size() * 3, 0.f);
@@ -840,6 +975,9 @@ bool MembraneTick::seal(float y, int cell_idx) {
 }
 
 std::string MembraneTick::state_json() const {
+    // reads the cell state other threads rewrite — hold the same mutex
+    // (bounded by one tick; state reads are not on the render path)
+    std::lock_guard<std::mutex> lk(seal_mtx_);
     float load_l = 0.f, load_r = 0.f, dmg = 0.f, cap_sum = 0.f;
     uint32_t failed = 0;
     for (size_t i = 0; i < cells_.size(); ++i) {
