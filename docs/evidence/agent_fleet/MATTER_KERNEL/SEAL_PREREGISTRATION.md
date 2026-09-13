@@ -591,3 +591,62 @@ pose, dimple under load, relax like tissue, and divide on intent.
   seal).
 - Gait: the per-side hydraulic states are the signal a walk cycle can
   read (stance cell pressurizes, swing cell relaxes).
+
+---
+
+# THE TOUCH PREREGISTRATION — R3 (press where you point, in motion)
+
+Rule 0 before the code. THE REFERENCE: you touch a creature WHERE your
+hand lands, not "its left foot group"; and your touch deforms the skin
+along the skin's CURRENT direction, wherever the body has moved.
+
+## STATEMENT
+
+A touch intent carries a screen pixel and a force. The engine casts the
+camera ray through that pixel (eye from the spherical camera law in
+update_camera_matrices, 45-degree vertical fov), intersects the POSED
+surface, and presses AT THE HIT POINT: a Gaussian dimple around the
+posed location, along the posed skin's normals, with the hydraulic
+answer in whatever cells the dent lands in. Release recovers by the
+tau law (already live).
+
+## DERIVATION
+
+- Ray: eye = target + r*(cos(phi)sin(theta), sin(phi),
+  -cos(phi)cos(theta)) + pan; forward = normalize(target - eye);
+  up = (-sin(phi)sin(theta), cos(phi), sin(phi)cos(theta)) (the
+  no-pole up already in the camera); right = normalize(cross(forward,
+  up)); dir = normalize(forward + right*(2u-1)*aspect*tan(22.5deg)
+  + up*(1-2v)*tan(22.5deg)) for pixel fractions u (left->right),
+  v (top->bottom).
+- Intersection: Moller-Trumbore over the POSED vertex buffer (36,630
+  triangles — sub-millisecond on the HTTP thread), nearest hit wins.
+- THE CLOSED-LOOP CORRECTNESS BAR (no visual judgement needed for the
+  math): the hit point, re-projected through the same camera
+  (project_world, already live), MUST land back on the requested
+  pixel within one pixel.
+- Posed normals: the travel pass writes positions; normals are now
+  recomputed from the POSED surface every tick (also the general
+  lighting fix under pose). Touch direction then rides the true skin.
+
+## PREDICTIONS
+
+T1. Closed loop: pick(px,py) -> project_world(hit) = (px,py) within
+    1 pixel of 2560x1440, for at least 5 spread pixels.
+T2. A ray at empty space (miss) is REFUSED by name; no press happens.
+T3. Touch at the belly (posed creature): dimple visible in the frame
+    at the touched spot; the torso cell's V drops and its P answers
+    by kappa; release -> tau recovery, rest exact.
+T4. Touch while POSED (knee 40): the dimple lands on the POSED limb
+    (frame evidence), direction along the posed skin; the closed-loop
+    bar still passes in the posed state.
+T5. Touch + joint press coexist without corrupting each other's
+    offsets (release both -> pixel-exact rest).
+
+## FALSIFIER
+
+The closed loop misses (ray/camera convention wrong — fix the
+handedness, do not nudge pixels), OR a posed touch lands at the
+AUTHORED location (the stale-normal bug), OR release leaves residue.
+Successor if fired: audit the ray handedness against project_world
+and the normal-recompute placement in the tick order.
