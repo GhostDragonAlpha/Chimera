@@ -305,3 +305,13 @@ WAKE THE CELL from lessons.json). Two honesty fixes on the way:
   passing, and a standing "stand at rest" button.
 - Evidence frozen: docs/evidence/agent_fleet/SHIP/R4_DYAD/
   (screen_lesson4_passed.png, state_stuck.json, lessons_as_shipped.json).
+
+## LEDGER (2026-09-13, R1 refinement — maximized on load)
+
+The operator: "the editor is not loading full screen — it's kind of a
+little bit offset. We need to have maximized when loading." FIXED in
+the engine: the game window opens SW_MAXIMIZE (filling the work area by
+construction — rect verified -8,-8 -> 2568x1400 on the 2560x1440
+display), and the launcher keeps its --hidden console retirement.
+Verified after a full relaunch: creature restored, studio live at
+299 fps, window edge to edge.

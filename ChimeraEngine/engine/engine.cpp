@@ -296,7 +296,11 @@ static HWND create_window(uint32_t w, uint32_t h) {
             }
         }
     }
-    ShowWindow(hwnd, SW_SHOW);
+    // THE SHIP GOAL (R1, the operator: "maximized when loading"): the game
+    // opens filling the screen — never a small offset window. SW_MAXIMIZE
+    // sizes to the work area by construction (the bar-off-screen clamp above
+    // remains for any later restore).
+    ShowWindow(hwnd, SW_MAXIMIZE);
     UpdateWindow(hwnd);
     g_hwnd = hwnd;
     return hwnd;
