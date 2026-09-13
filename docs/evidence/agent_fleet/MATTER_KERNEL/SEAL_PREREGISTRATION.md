@@ -94,3 +94,88 @@ crossing triangles, chain the segments into the cross-section
 polygon), weld the cap to that polygon, then the daughter divergence
 sums are true volumes. The cap boundary must equal the cut edges
 exactly. Split-straddling-triangle fraction measured at that point.
+
+---
+
+# THE SEAL v2 PREREGISTRATION — the cut-and-weld wall (the named successor)
+
+Rule 0 again, before the code: statement, derivation, predictions,
+falsifier. The v1 falsifier FIRED (floating disc, daughters were not
+volumes). v2 replaces the v1 mechanism entirely — no disc, no centroid
+smearing: the wall is the welded cross-section itself.
+
+## STATEMENT
+
+Cutting the closed surface with the plane y = 2.6 and welding a cap onto
+the EXACT cross-section boundary divides the creature into two SEALED
+daughters whose divergence sums are TRUE volumes: V_lower + V_upper =
+V_whole to floating-point noise, at rest and under any pose. The weld
+holds because inserted cut points ride their surface edges (fixed
+parameter t on edge (a,b)) — they cannot drift off the surface, so the
+daughters' boundaries stay closed while the surface moves.
+
+## DERIVATION (offline, monkey_full.bin, double precision — before any C++)
+
+Cut rule: strict y < 2.6 is below. A straddling triangle (one or two
+vertices below) splits at the plane into a below-piece and an
+above-piece; the cut points live on the crossing edges, one per edge,
+shared by the adjacent straddling triangles. Segment direction = the
+below-piece's boundary walk, so chained loops inherit a consistent
+orientation from the surface winding.
+
+Measured on the real mesh (18,459 verts / 36,630 tris, orientation
+signed +13.824536 m^3 whole):
+
+- Straddling triangles: 336 of 36,630 (0.92%) — the smearing v1
+  tolerated, v2 removes. 336 cut points, 336 segments.
+- Loops: 14 closed cross-section rings — two thigh rings (52 edges
+  each, x = ±0.48) and twelve small finger tubes of the hanging hands
+  (|x| ≈ 3, 11–28 edges). All out-degrees exactly 1: the cut graph is
+  a union of disjoint cycles (manifold at the plane).
+- Caps: fan from each ring's first vertex, built in both windings:
+  308 triangles per daughter (616 total). Fan is exact for volume —
+  the divergence integral is triangulation-independent; the caps are
+  internal membrane (not rendered), per THE_CELL_MODEL.
+- Rest volumes: V_lower = 0.158736 m^3 (the leg cell), V_upper =
+  13.665830 m^3 (the body cell); sum 13.824566 vs whole 13.824536 —
+  error 2.1e-4 % (double). Both daughters sign-positive: winding
+  consistent through the cut.
+- Conservation under deformation (smooth warp stand-in for a pose,
+  cut slots lerped at fixed t): sum error 2.6e-4 %. The partition
+  identity is pose-independent algebra: the daughters' boundaries
+  always tile the posed closed surface.
+- Pressure law check: dV = +0.008234 m^3 on the lower daughter gives
+  P = -dV/(kappa*V0) = -112.76 MPa (kappa = 4.6e-10 Pa^-1, water
+  25 C). Expansion lowers P, compression raises it.
+
+## PREDICTIONS (live engine, v2)
+
+S1'. Partition: 36,630 original triangles accounted exactly — 7,306
+     pure lower + 28,988 pure upper + 336 split (each into a below-
+     and an above-piece); 336 cut points each welded into BOTH
+     daughters' boundaries; 14 loops; 308 cap triangles per daughter.
+S2'. Conservation: V_lower + V_upper = 13.8245 m^3 within 1% at rest,
+     and under a 30-deg hip pose the sum equals the POSED whole-mesh
+     divergence volume within 1% (the whole volume itself may move —
+     conservation means the daughters tile it exactly).
+S3'. Hydraulics: P_lower and P_upper follow P = -dV/(kappa*V0) with
+     their own dV; returning the pose to 0 returns both P to ~0
+     (|P| < 1 kPa after return; step() recomputes from base, so the
+     return is exact up to float32).
+S4'. The intent POST /tick_seal {"y":2.6} performs the cut-and-weld
+     and /tick_state reports V_lower, V_upper, P_lower, P_upper, the
+     split count, loop count, cut-point count, and the conservation
+     error.
+S5'. Refusals: a plane outside the body's y-range (-0.0195..9.9712)
+     is refused; re-sealing a sealed creature is refused; a cut graph
+     that fails to close (non-manifold plane crossing) is refused BY
+     NAME rather than guessed around.
+
+## FALSIFIER
+
+V_lower + V_upper deviates from the posed whole volume by > 1% at
+rest or under pose (the weld leaks), OR P moves without a matching dV,
+OR any cut point lands in fewer than two daughter boundaries. If it
+fires, the successor is named: audit per-edge weld topology (which
+edge, which two triangles) and the plane classification epsilon —
+do NOT patch by nudging volumes.
