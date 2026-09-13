@@ -9,6 +9,9 @@
 
 namespace {
 
+constexpr float ANKLE_X_L = 0.4609f;   // measured ankle x (FEET prereg)
+constexpr float ANKLE_X_R = -0.4609f;
+
 std::array<float, 3> centroid(const std::vector<float>& v9,
                               uint32_t a, uint32_t b, uint32_t c) {
     return {(v9[a * 9 + 0] + v9[b * 9 + 0] + v9[c * 9 + 0]) / 3.f,
@@ -51,14 +54,34 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
                 neighbors_[ts[j]].push_back(ts[i]);
             }
 
+    base_pos_.assign(verts9.begin(), verts9.end());   // authored rest
     base_color_.assign(verts9.size() / 9 * 3, 0.f);
     for (size_t v = 0; v < verts9.size() / 9; ++v)
         for (int k = 0; k < 3; ++k)
             base_color_[v * 3 + (size_t)k] = verts9[v * 9 + 6 + (size_t)k];
 
+    // ankle pivots: the collar-ring center of each foot (top region)
+    for (int f = 0; f < 2; ++f) {
+        float sx = 0, sy = 0, sz = 0; int n = 0;
+        for (size_t v = 0; v < verts9.size() / 9; ++v) {
+            float vx = verts9[v * 9 + 0], vy = verts9[v * 9 + 1], vz = verts9[v * 9 + 2];
+            bool left = f == 0;
+            if ((left && vx >= 0.f) || (!left && vx < 0.f)) {
+                if (vy >= 0.25f) { sx += vx; sy += vy; sz += vz; ++n; }
+            }
+        }
+        if (n > 0) {
+            pivot_[f][0] = sx / n; pivot_[f][1] = sy / n; pivot_[f][2] = sz / n;
+        } else {
+            pivot_[f][0] = f == 0 ? ANKLE_X_L : ANKLE_X_R;
+            pivot_[f][1] = 0.30f; pivot_[f][2] = 0.0f;
+        }
+    }
+
     has_scene_ = tris > 0;
     ticks_ = 0;
     force_l_ = force_r_ = 0.f;
+    flex_l_ = flex_r_ = 0.f;
 }
 
 bool MembraneTick::intent(float force_n, const std::string& foot) {
@@ -70,9 +93,42 @@ bool MembraneTick::intent(float force_n, const std::string& foot) {
 
 void MembraneTick::clear_intent() { force_l_ = force_r_ = 0.f; }
 
+bool MembraneTick::flex(float deg_l, float deg_r) {
+    if (!std::isfinite(deg_l) || !std::isfinite(deg_r)) return false;
+    if (std::fabs(deg_l) > 90.f || std::fabs(deg_r) > 90.f) return false;
+    flex_l_ = deg_l * 3.14159265358979f / 180.f;
+    flex_r_ = deg_r * 3.14159265358979f / 180.f;
+    return true;
+}
+
+void MembraneTick::apply_flex(std::vector<float>& verts9) {
+    if (flex_l_ == 0.f && flex_r_ == 0.f) {
+        if (!std::equal(base_pos_.begin(), base_pos_.end(), verts9.begin()))
+            verts9 = base_pos_;
+        return;
+    }
+    const uint32_t nv = (uint32_t)(verts9.size() / 9);
+    for (uint32_t v = 0; v < nv; ++v) {
+        bool left = verts9[v * 9 + 0] >= 0.f;
+        float ang = left ? flex_l_ : flex_r_;
+        const auto& pv = pivot_[left ? 0 : 1];
+        // authored rest position, rotated rigidly about the pivot (X axis)
+        float bx = base_pos_[v * 9 + 0] - pv[0];
+        float by = base_pos_[v * 9 + 1] - pv[1];
+        float bz = base_pos_[v * 9 + 2] - pv[2];
+        float cy = std::cos(ang), sy = std::sin(ang);   // rotate in the YZ plane
+        float ry = by * cy - bz * sy;
+        float rz = by * sy + bz * cy;
+        verts9[v * 9 + 0] = bx + pv[0];
+        verts9[v * 9 + 1] = ry + pv[1];
+        verts9[v * 9 + 2] = rz + pv[2];
+    }
+}
+
 void MembraneTick::step(std::vector<float>& verts9) {
     if (!has_scene_) return;
     ++ticks_;
+    apply_flex(verts9);
 
     // press: spread each foot's standing force over its carrying cells
     float n_side[2] = {0.f, 0.f};
@@ -141,6 +197,8 @@ std::string MembraneTick::state_json() const {
       << ",\"damage_sum\":" << dmg
       << ",\"failed\":" << failed
       << ",\"capacity_sum\":" << cap_sum
+      << ",\"flex_l_deg\":" << flex_l_ * 57.29577951308232
+      << ",\"flex_r_deg\":" << flex_r_ * 57.29577951308232
       << ",\"has_scene\":" << (has_scene_ ? "true" : "false") << "}";
     return o.str();
 }

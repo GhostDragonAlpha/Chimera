@@ -729,6 +729,18 @@ int main(int argc, char** argv) {
             g_tick.clear_intent();
             body = "{\"ok\":true}";
             content_type = "application/json";
+        } else if (p == "/tick_flex" && method == "POST") {
+            // TRAVEL (Appliance 2): pose intent -- flex the feet at the
+            // ankle pins, degrees. Poses are intents; flex 0 = authored rest.
+            float dl = get_double(req_body, "deg_L", 0.0);
+            float dr = get_double(req_body, "deg_R", 0.0);
+            if (g_tick.flex(dl, dr)) {
+                body = "{\"ok\":true}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"refused: flex angles must "
+                       "be finite and within +/-90 degrees\"}";
+            }
+            content_type = "application/json";
         } else if (p == "/hinge_bin" && method == "POST") {
             // Binary protocol (little-endian):
             //   [u32 nvert][f32 JL(3)][f32 JR(3)][f32 axis(3)][f32 romL,romR,period,phaseR]

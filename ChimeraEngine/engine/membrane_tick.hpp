@@ -1,6 +1,7 @@
 // membrane_tick.hpp -- THE MEMBRANE TICK (Appliance 1, prereg 4c111341).
 #pragma once
 
+#include <array>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -22,10 +23,15 @@ public:
 
     std::string state_json() const;
 
+    // TRAVEL (Appliance 2): flex the feet about their ankle pivots.
+    // Poses are intents; flex 0 restores the authored base exactly.
+    bool flex(float deg_l, float deg_r);
+
     bool   enabled_ = true;
     uint64_t ticks_ = 0;
     float  force_l_ = 0.0f, force_r_ = 0.0f;   // active presses, newtons
     float  yield_pa_ = 15.0e6f;                // mat.skin, Yamada 1970
+    float  flex_l_ = 0.0f, flex_r_ = 0.0f;     // radians
 
 private:
     struct Cell { float load = 0.f, damage = 0.f; bool failed = false; };
@@ -34,8 +40,10 @@ private:
     std::vector<float>  capacity_;             // newtons per cell
     std::vector<uint8_t> foot_;                // 0 = left cluster, 1 = right
     std::vector<float>  base_color_;           // 3 per vertex
-    std::vector<float>  base_pos_;             // 3 per vertex (areas)
+    std::vector<float>  base_pos_;             // 3 per vertex (authored rest)
     std::vector<uint32_t> tri_verts_;          // 3 indices per cell
+    std::array<float, 2> pivot_[2] = {};       // ankle pivots [L, R][x,y,z]
     bool  has_scene_ = false;
     float dirty_ = 0.f;                        // tint changed -> needs upload
+    void  apply_flex(std::vector<float>& verts9);
 };
