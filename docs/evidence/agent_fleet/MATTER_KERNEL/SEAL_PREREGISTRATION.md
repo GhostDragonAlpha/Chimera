@@ -369,3 +369,68 @@ full log: .tmp/mitosis_run.log; offline derivation:
 FALSIFIER: DID NOT FIRE. The growth law stands: the creature divides
 on intent, one sealed cell per body compartment, volumes conserved
 under the growth, pressures honest per cell.
+
+---
+
+# THE HYDRAULIC PRESS PREREGISTRATION — appliance 3 (the physics pushes back)
+
+Rule 0 before the code. THE REFERENCE: nature — press skin, it dimples
+by its tension; release, it recovers. Until now poses moved the surface
+and pressures only REPORTED; nothing deformed under load. This
+appliance makes the press intents physical: the pressed surface
+DIMPLES, the divergence sums see the dimple, and the cell pressure
+answers — control on a natural level.
+
+## STATEMENT
+
+A press intent F on a joint's cells displaces those surface vertices
+inward (along their authored normals) by the linear-membrane law, with
+a smooth falloff; releasing the force restores the surface exactly.
+The dimple is real geometry: the per-cell divergence sums (already
+live) see its volume change and the kappa law answers with pressure.
+
+## DERIVATION (cited, before implementation)
+
+- Linear membrane under uniform tension, central point load
+  (Timoshenko, Plates & Shells): delta = F / (4*pi*sigma).
+- sigma (N/m) from the repo's own material law (mat.skin, Yamada 1970):
+  skin ULS ~8 MPa x 1.5 mm thickness = 12000 N/m failure tension;
+  working tension at safety factor 3: sigma = 4000 N/m.
+- Predicted depths: 500 N -> 9.9 mm; 1000 N -> 19.9 mm;
+  10000 N -> 198.9 mm (the last is the VISIBLE bar — 2 cm on a 10 m
+  creature is sub-pixel at 2560).
+- Falloff: Gaussian, r0 = 30 mm (a named choice: the skin distress
+  radius; it shapes the dimple, not its depth — falsifiable by
+  geometry, not by volume).
+- Volume coupling: a 10 kN dimple ~ pi*r0^2*delta/3 = 1.9e-4 m^3 ->
+  foot cell (V0 0.288): P +1.4 MPa (measurable); body cell
+  (V0 12.5): +33 kPa (water truth: big cells barely notice).
+- Recovery: force -> 0 restores offsets to 0 (deterministic, same
+  arithmetic as the pose return; bar is pixel-exact).
+
+## PREDICTIONS (live engine)
+
+HP1. /tick_intent-joint knee_L 1000 N -> state dimple_m = 0.0199 m
+     within 20%; a frame diff shows the dimple region changed.
+HP2. Linearity: 500 N -> dimple_m exactly half of the 1000 N value.
+HP3. Release -> dimple_m = 0 and the frame pixel-exact vs pre-press.
+HP4. Hydraulic coupling (10 kN on ankle_L): the foot cell's V drops,
+     its P rises ~ +1.4 MPa by the kappa law; the cells' sum stays
+     conserved to < 1e-3 %.
+HP5. Refusals stand: force <= 0 refused (existing law).
+
+## FALSIFIER
+
+dimple_m not force-linear (bug in the offset application), OR the
+dimple fails to move the cell volumes (the offset is not in the
+geometry the divergence sums read), OR release leaves a residual
+(the surface did not restore). Successor if fired: audit where the
+offset is applied relative to the travel/pose write and the seal read
+— it must land between them, on the same verts9 buffer.
+
+## OPEN (named)
+
+- Press + pose composition (dimple directions use AUTHORED normals —
+  wrong under a pose; composition needs posed normals).
+- Press POINT selection (today the press region = the joint's whole
+  cell group; a ray-hit press point is the game-facing op).
