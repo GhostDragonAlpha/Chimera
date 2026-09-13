@@ -2,6 +2,7 @@
 #pragma once
 
 #include <array>
+#include <atomic>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -27,6 +28,15 @@ public:
     // Poses are intents; flex 0 restores the authored base exactly.
     bool flex(float deg_l, float deg_r);
 
+    // THE LEG (Appliance 3): a hinged membrane chain. The rig is posted
+    // by the authoring script, one line per part:
+    //   name|start|count|pivot_x|pivot_y|pivot_z|parent_index
+    // parents come before children; parent -1 = root. Angles per joint
+    // are set by pose(joint, deg); FK composes parents down the chain.
+    bool load_rig(const std::string& config);
+    bool pose(const std::string& joint, float deg);
+    size_t rig_parts() const { return rig_.size(); }
+
     bool   enabled_ = true;
     uint64_t ticks_ = 0;
     float  force_l_ = 0.0f, force_r_ = 0.0f;   // active presses, newtons
@@ -35,6 +45,12 @@ public:
 
 private:
     struct Cell { float load = 0.f, damage = 0.f; bool failed = false; };
+    struct RigPart {
+        std::string joint;
+        uint32_t start = 0, count = 0;
+        std::array<float, 3> pivot = {0.f, 0.f, 0.f};
+        int parent = -1;
+    };
     std::vector<Cell>   cells_;
     std::vector<std::vector<uint32_t>> neighbors_;
     std::vector<float>  capacity_;             // newtons per cell
@@ -42,8 +58,12 @@ private:
     std::vector<float>  base_color_;           // 3 per vertex
     std::vector<float>  base_pos_;             // 3 per vertex (authored rest)
     std::vector<uint32_t> tri_verts_;          // 3 indices per cell
-    std::array<float, 2> pivot_[2] = {};       // ankle pivots [L, R][x,y,z]
+    std::array<std::array<float, 3>, 2> pivot_ = {};   // ankle pivots [L, R]
+    std::vector<RigPart> rig_;                 // the chain (Appliance 3)
+    std::vector<float>  rig_angle_;            // radians per part
     bool  has_scene_ = false;
     float dirty_ = 0.f;                        // tint changed -> needs upload
+    std::atomic<bool> ready_{false};           // committed only after init
     void  apply_flex(std::vector<float>& verts9);
+    void  apply_chain(std::vector<float>& verts9);
 };

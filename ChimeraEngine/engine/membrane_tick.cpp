@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstdlib>
 #include <map>
 #include <sstream>
 
@@ -31,57 +32,72 @@ float tri_area(const std::vector<float>& v9,
 
 void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
                         const std::vector<float>& verts9) {
-    cells_.assign(tris, Cell{});
-    tri_verts_.assign(indices.begin(), indices.end());
-    capacity_.resize(tris);
-    foot_.assign(tris, 0);
-    neighbors_.assign(tris, {});
+    // build into locals, commit atomically: the frame loop may call step()
+    // while this runs (boot restore thread vs render thread)
+    ready_.store(false, std::memory_order_release);
+
+    std::vector<Cell> cells(tris, Cell{});
+    std::vector<uint32_t> tri_verts(indices.begin(), indices.end());
+    std::vector<float> capacity(tris);
+    std::vector<uint8_t> foot(tris, 0);
+    std::vector<std::vector<uint32_t>> neighbors(tris);
 
     std::map<std::pair<uint32_t, uint32_t>, std::vector<uint32_t>> edges;
     for (uint32_t t = 0; t < tris; ++t) {
-        uint32_t a = indices[t * 3 + 0], b = indices[t * 3 + 1], c = indices[t * 3 + 2];
-        std::pair<uint32_t, uint32_t> e[3] = {{std::min(a,b), std::max(a,b)},
-                                              {std::min(b,c), std::max(b,c)},
-                                              {std::min(c,a), std::max(c,a)}};
+        uint32_t a = indices[t * 3 + 0], b = indices[t * 3 + 1], cc = indices[t * 3 + 2];
+        std::pair<uint32_t, uint32_t> e[3] = {{std::min(a,b), std::max(a,b)},{std::min(b,cc), std::max(b,cc)},{std::min(cc,a), std::max(cc,a)}};
         for (auto& k : e) edges[k].push_back(t);
-        capacity_[t] = yield_pa_ * tri_area(verts9, a, b, c);
-        foot_[t] = (centroid(verts9, a, b, c)[0] >= 0.f) ? 0u : 1u;
+        capacity[t] = yield_pa_ * tri_area(verts9, a, b, cc);
+        foot[t] = (centroid(verts9, a, b, cc)[0] >= 0.f) ? 0u : 1u;
     }
     for (auto& [e, ts] : edges)
         for (size_t i = 0; i + 1 < ts.size(); ++i)
             for (size_t j = i + 1; j < ts.size(); ++j) {
-                neighbors_[ts[i]].push_back(ts[j]);
-                neighbors_[ts[j]].push_back(ts[i]);
+                neighbors[ts[i]].push_back(ts[j]);
+                neighbors[ts[j]].push_back(ts[i]);
             }
 
-    base_pos_.assign(verts9.begin(), verts9.end());   // authored rest
-    base_color_.assign(verts9.size() / 9 * 3, 0.f);
+        // colors + authored rest into locals as well
+    std::vector<float> base_color(verts9.size() / 9 * 3, 0.f);
     for (size_t v = 0; v < verts9.size() / 9; ++v)
-        for (int k = 0; k < 3; ++k)
-            base_color_[v * 3 + (size_t)k] = verts9[v * 9 + 6 + (size_t)k];
+        for (int kk = 0; kk < 3; ++kk)
+            base_color[v * 3 + (size_t)kk] = verts9[v * 9 + 6 + (size_t)kk];
+    std::vector<float> base_pos(verts9);   // authored rest (full copy)
 
     // ankle pivots: the collar-ring center of each foot (top region)
+    std::array<std::array<float, 3>, 2> pivots = {};
     for (int f = 0; f < 2; ++f) {
-        float sx = 0, sy = 0, sz = 0; int n = 0;
+        float sx = 0, sy = 0, sz = 0; int cnt = 0;
         for (size_t v = 0; v < verts9.size() / 9; ++v) {
             float vx = verts9[v * 9 + 0], vy = verts9[v * 9 + 1], vz = verts9[v * 9 + 2];
             bool left = f == 0;
             if ((left && vx >= 0.f) || (!left && vx < 0.f)) {
-                if (vy >= 0.25f) { sx += vx; sy += vy; sz += vz; ++n; }
+                if (vy >= 0.25f) { sx += vx; sy += vy; sz += vz; ++cnt; }
             }
         }
-        if (n > 0) {
-            pivot_[f][0] = sx / n; pivot_[f][1] = sy / n; pivot_[f][2] = sz / n;
+        if (cnt > 0) {
+            pivots[f][0] = sx / cnt; pivots[f][1] = sy / cnt; pivots[f][2] = sz / cnt;
         } else {
-            pivot_[f][0] = f == 0 ? ANKLE_X_L : ANKLE_X_R;
-            pivot_[f][1] = 0.30f; pivot_[f][2] = 0.0f;
+            pivots[f][0] = f == 0 ? ANKLE_X_L : ANKLE_X_R;
+            pivots[f][1] = 0.30f; pivots[f][2] = 0.0f;
         }
     }
 
+    // commit atomically
+    cells_ = std::move(cells);
+    tri_verts_ = std::move(tri_verts);
+    capacity_ = std::move(capacity);
+    foot_ = std::move(foot);
+    neighbors_ = std::move(neighbors);
+    base_pos_ = base_pos;
+    base_color_ = std::move(base_color);
+    pivot_[0] = pivots[0];
+    pivot_[1] = pivots[1];
     has_scene_ = tris > 0;
     ticks_ = 0;
     force_l_ = force_r_ = 0.f;
     flex_l_ = flex_r_ = 0.f;
+    ready_.store(true, std::memory_order_release);
 }
 
 bool MembraneTick::intent(float force_n, const std::string& foot) {
@@ -126,9 +142,11 @@ void MembraneTick::apply_flex(std::vector<float>& verts9) {
 }
 
 void MembraneTick::step(std::vector<float>& verts9) {
-    if (!has_scene_) return;
+    if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return;
+    if (tri_verts_.size() != cells_.size() * 3) return;   // hardened
     ++ticks_;
-    apply_flex(verts9);
+    if (!rig_.empty()) apply_chain(verts9);
+    else apply_flex(verts9);
 
     // press: spread each foot's standing force over its carrying cells
     float n_side[2] = {0.f, 0.f};
@@ -179,8 +197,100 @@ void MembraneTick::step(std::vector<float>& verts9) {
     }
 }
 
-std::string MembraneTick::state_json() const {
-    float load_l = 0.f, load_r = 0.f, dmg = 0.f, cap_sum = 0.f;
+bool MembraneTick::load_rig(const std::string& config) {
+    // line format: name|start|count|px|py|pz|parent   (parents first)
+    std::vector<RigPart> parts;
+    std::vector<float> angles;
+    size_t pos = 0;
+    while (pos <= config.size()) {
+        size_t eol = config.find('\n', pos);
+        if (eol == std::string::npos) eol = config.size();
+        std::string line = config.substr(pos, eol - pos);
+        pos = eol + 1;
+        if (line.empty()) continue;
+        // fields split by |
+        std::vector<std::string> f;
+        size_t p2 = 0;
+        while (true) {
+            size_t bar = line.find('|', p2);
+            if (bar == std::string::npos) { f.push_back(line.substr(p2)); break; }
+            f.push_back(line.substr(p2, bar - p2));
+            p2 = bar + 1;
+        }
+        if (f.size() < 7) continue;
+        RigPart part;
+        part.joint = f[0];
+        part.start = (uint32_t)std::strtoul(f[1].c_str(), nullptr, 10);
+        part.count = (uint32_t)std::strtoul(f[2].c_str(), nullptr, 10);
+        part.pivot[0] = std::strtof(f[3].c_str(), nullptr);
+        part.pivot[1] = std::strtof(f[4].c_str(), nullptr);
+        part.pivot[2] = std::strtof(f[5].c_str(), nullptr);
+        part.parent = (int)std::strtol(f[6].c_str(), nullptr, 10);
+        parts.push_back(part);
+        angles.push_back(0.f);
+    }
+    if (parts.empty()) return false;
+    rig_ = parts;
+    rig_angle_ = angles;
+    return true;
+}
+
+bool MembraneTick::pose(const std::string& joint, float deg) {
+    if (!std::isfinite(deg) || std::fabs(deg) > 90.f) return false;
+    for (size_t i = 0; i < rig_.size(); ++i) {
+        if (rig_[i].joint == joint) {
+            rig_angle_[i] = deg * 3.14159265358979f / 180.f;
+            return true;
+        }
+    }
+    return false;   // unknown joint: refused by name
+}
+
+void MembraneTick::apply_chain(std::vector<float>& verts9) {
+    // all angles zero -> the authored rest, restored EXACTLY (the TRAVEL
+    // reversibility bar is a pixel bar, not an approximation bar)
+    bool all_zero = true;
+    for (float a : rig_angle_)
+        if (a != 0.f) { all_zero = false; break; }
+    if (all_zero) {
+        if (verts9 != base_pos_) verts9 = base_pos_;
+        return;
+    }
+    // compose the chain: each part rotates by (own + ancestors' angles)
+    // about a pivot carried through the ancestors' rotations. Rigid per
+    // part; the shared rings keep the boundaries sealed.
+    struct Xf { float th; std::array<float, 3> piv; };
+    std::vector<Xf> xf(rig_.size());
+    for (size_t i = 0; i < rig_.size(); ++i) {
+        float th = rig_angle_[i];
+        std::array<float, 3> piv = rig_[i].pivot;
+        int parent = rig_[i].parent;
+        if (parent >= 0 && parent < (int)i) {
+            th += xf[parent].th;
+            float by = piv[1] - xf[parent].piv[1];
+            float bz = piv[2] - xf[parent].piv[2];
+            float cth = std::cos(xf[parent].th), sth = std::sin(xf[parent].th);
+            piv[1] = xf[parent].piv[1] + by * cth - bz * sth;
+            piv[2] = xf[parent].piv[2] + by * sth + bz * cth;
+        }
+        xf[i] = {th, piv};
+    }
+    const uint32_t nv = (uint32_t)(verts9.size() / 9);
+    for (size_t i = 0; i < rig_.size(); ++i) {
+        float th = xf[i].th, cth = std::cos(th), sth = std::sin(th);
+        const auto& pv = xf[i].piv;
+        for (uint32_t v = rig_[i].start; v < rig_[i].start + rig_[i].count && v < nv; ++v) {
+            float bx = verts9[v * 9 + 0] - pv[0];
+            float by = verts9[v * 9 + 1] - pv[1];
+            float bz = verts9[v * 9 + 2] - pv[2];
+            verts9[v * 9 + 0] = bx + pv[0];
+            verts9[v * 9 + 1] = by * cth - bz * sth + pv[1];
+            verts9[v * 9 + 2] = by * sth + bz * cth + pv[2];
+        }
+    }
+}
+
+std::string MembraneTick::state_json() const {    float load_l = 0.f, load_r = 0.f, dmg = 0.f, cap_sum = 0.f;
     uint32_t failed = 0;
     for (size_t i = 0; i < cells_.size(); ++i) {
         if (foot_[i] == 0) load_l += cells_[i].load; else load_r += cells_[i].load;
@@ -202,4 +312,7 @@ std::string MembraneTick::state_json() const {
       << ",\"has_scene\":" << (has_scene_ ? "true" : "false") << "}";
     return o.str();
 }
+
+
+
 

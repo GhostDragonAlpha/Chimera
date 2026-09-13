@@ -741,6 +741,20 @@ int main(int argc, char** argv) {
                        "be finite and within +/-90 degrees\"}";
             }
             content_type = "application/json";
+        } else if (p == "/tick_rig" && method == "POST") {
+            // THE LEG (Appliance 3): the hinged chain config, posted by the
+            // authoring script. Lines: name|start|count|px|py|pz|parent
+            if (g_tick.load_rig(req_body)) body = "{\"ok\":true}";
+            else body = "{\"ok\":false,\"error\":\"empty rig\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_pose" && method == "POST") {
+            // A pose intent: {"joint": "knee_L", "deg": -40}
+            std::string joint = get_string(req_body, "joint");
+            float deg = (float)get_double(req_body, "deg", 0.0);
+            if (g_tick.pose(joint, deg)) body = "{\"ok\":true}";
+            else body = "{\"ok\":false,\"error\":\"refused: unknown joint or "
+                        "angle outside +/-90\"}";
+            content_type = "application/json";
         } else if (p == "/hinge_bin" && method == "POST") {
             // Binary protocol (little-endian):
             //   [u32 nvert][f32 JL(3)][f32 JR(3)][f32 axis(3)][f32 romL,romR,period,phaseR]
@@ -2874,13 +2888,15 @@ int main(int argc, char** argv) {
                 }
                 // THE MEMBRANE TICK: a slot-0 mesh is the cell field. Cells =
                 // triangles; capacity = mat.skin yield x cell area (prereg).
+                // The count drops to 0 first so the frame loop skips while
+                // the cell field rebuilds (the restore thread may be here).
                 if (g_mesh_req.slot == 0 && g_mesh_req.idxCount >= 3) {
+                    g_tick_vcount = 0;
                     g_tick.init(g_mesh_req.idxCount / 3, g_mesh_req.indices,
                                 g_mesh_req.verts);
                     g_tick_verts = g_mesh_req.verts;
                     g_tick_vcount = g_mesh_req.N;
-                }
-                // cam_radius <= 0 = "keep the current camera": animation drivers stream
+                }                // cam_radius <= 0 = "keep the current camera": animation drivers stream
                 // meshes every frame and must NOT steal the operator's orbit/zoom/pan.
                 if (!g_mesh_req.update_only && g_mesh_req.cam_radius > 0.0f)
                     engine.set_camera(g_mesh_req.cam_radius, g_mesh_req.cam_theta, g_mesh_req.cam_phi);
