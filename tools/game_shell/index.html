@@ -170,6 +170,7 @@
           <button id="letgo-btn" class="btn" type="button">let go</button>
           <span id="hand-state" class="hint">hand open</span>
         </div>
+        <button id="rest-btn" class="btn" type="button" style="width:100%;margin-top:8px">stand at rest</button>
         <p class="hint">drag = look around · click = touch · wheel = zoom</p>
       </section>
 
@@ -233,15 +234,25 @@
     $('lesson-title').textContent = l.title;
     $('lesson-body').textContent = l.body;
     $('pose-btn-wrap').style.display = l.goal.type === 'pose_reach' ? 'block' : 'none';
+    // a pressure lesson must start with the body AT REST: a held pose
+    // shifts the volumes off v0 and every calm check would dead-end
+    if (l.goal.type !== 'pose_reach') resetPose();
     if (l.goal.type === 'pose_reach')
       $('pose-btn').textContent = (l.goal.joint || 'joint') + ' → ' + l.goal.deg + '°';
     var st = curState();
     if (st.passed) setVerdict('PASSED — this one is yours already.', 'good');
     else if (st.goalMet) setVerdict('the goal is met — finish the release.', 'accent');
     else setVerdict('the creature waits.', '');
+    syncTouchTarget();
   }
   $('lesson-prev').addEventListener('click', function () { showLesson(lessonIdx - 1); });
   $('lesson-next').addEventListener('click', function () { showLesson(lessonIdx + 1); });
+  async function resetPose() {
+    // return EVERY joint to rest: the volumes follow exactly (measured
+    // pixel-exact) and the pressure lessons' calm bar becomes reachable
+    for (var j in JOINT_INDEX)
+      await postJSON('/api/pose', { joint_index: JOINT_INDEX[j], deg: 0 });
+  }
   $('pose-btn').addEventListener('click', async function () {
     var l = curLesson(); if (!l) return;
     var idx = JOINT_INDEX[l.goal.joint];
@@ -251,6 +262,11 @@
       curState().goalMet = true; curState().passed = true;
       if (window.ChimeraSound) ChimeraSound.passed();
       setVerdict('PASSED — the joint obeys the muscle.', 'good');
+      // the lesson passed; the body returns to rest for the next one
+      setTimeout(async function () {
+        await resetPose();
+        setVerdict('PASSED — and the body stands at rest again.', 'good');
+      }, 1800);
     } else setVerdict('the pose was refused.', 'warn');
   });
 
@@ -363,12 +379,34 @@
       return p;
     }
 
+    // THE SHADOW (same planar projection as the engine's fix): the creature
+    // projected straight down onto the floor, alpha falling with height.
+    var SHADOW_VSH = [
+      '#version 300 es',
+      'layout(location=0) in vec3 aPos;',
+      'uniform mat4 uVP;',
+      'uniform float uFloorY;',
+      'uniform float uH0;',
+      'out float vA;',
+      'void main(){',
+      '  float h = max(aPos.y - uFloorY, 0.0);',
+      '  vA = 0.38 / (1.0 + h / max(uH0, 0.001));',
+      '  gl_Position = uVP * vec4(aPos.x, uFloorY, aPos.z, 1.0);',
+      '}'].join('\n');
+    var SHADOW_FSH = [
+      '#version 300 es',
+      'precision highp float;',
+      'in float vA;',
+      'out vec4 o;',
+      'void main(){ o = vec4(0.02, 0.03, 0.05, vA); }'].join('\n');
     var r = {
       prog: prog(VSH, FSH),
       gridProg: prog(GRID_VSH, GRID_FSH),
+      shadowProg: prog(SHADOW_VSH, SHADOW_FSH),
       vbo: gl.createBuffer(),
       ibo: gl.createBuffer(),
       vao: gl.createVertexArray(),
+      shadowVao: gl.createVertexArray(),
       gridVbo: gl.createBuffer(),
       gridVao: gl.createVertexArray(),
       gridCount: 0,
@@ -383,9 +421,19 @@
     r.aPos = gl.getAttribLocation(r.prog, 'aPos');
     r.aNormal = gl.getAttribLocation(r.prog, 'aNormal');
     r.aColor = gl.getAttribLocation(r.prog, 'aColor');
+    r.sVP = gl.getUniformLocation(r.shadowProg, 'uVP');
+    r.sFloor = gl.getUniformLocation(r.shadowProg, 'uFloorY');
+    r.sH0 = gl.getUniformLocation(r.shadowProg, 'uH0');
     r.gVP = gl.getUniformLocation(r.gridProg, 'uVP');
     r.gColor = gl.getUniformLocation(r.gridProg, 'uColor');
     r.gPos = gl.getAttribLocation(r.gridProg, 'aPos');
+
+    /* shadow VAO: same buffers, positions only */
+    gl.bindVertexArray(r.shadowVao);
+    gl.bindBuffer(gl.ARRAY_BUFFER, r.vbo);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, r.ibo);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 36, 0);
 
     /* creature VAO: one interleaved VBO, stride 36 bytes (offsets 0 / 12 / 24) */
     gl.bindVertexArray(r.vao);
@@ -477,6 +525,7 @@
   /* ================= frame loop (pure local math, 60 fps) ================= */
   function frame() {
     requestAnimationFrame(frame);
+    pollGamepad(1/60);
     if (!RG) return;
     var w = canvas.clientWidth, h = canvas.clientHeight;
     if (!w || !h) return;   // still hidden behind the start screen
@@ -501,6 +550,22 @@
     gl.depthMask(true);
     gl.bindVertexArray(RG.gridVao);
     gl.drawArrays(gl.LINES, 0, RG.gridCount);
+
+    /* THE SHADOW: the creature flattened onto the floor (same planar
+       projection the engine now uses), drawn under the body */
+    if (RG.triCount > 0 && RG.verts) {
+      gl.useProgram(RG.shadowProg);
+      gl.uniformMatrix4fv(RG.sVP, false, mVP);
+      gl.uniform1f(RG.sFloor, 0.0);
+      gl.uniform1f(RG.sH0, 5.0);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      gl.depthMask(false);
+      gl.bindVertexArray(RG.shadowVao);
+      gl.drawElements(gl.TRIANGLES, RG.triCount * 3, gl.UNSIGNED_INT, 0);
+      gl.depthMask(true);
+      gl.disable(gl.BLEND);
+    }
 
     /* the creature, streamed as positions+normals+colors — never pictures */
     if (RG.triCount > 0 && RG.verts) {
@@ -624,15 +689,19 @@
 
     var pa = Number(l.goal.threshold_pa) || 0;
     var cellWanted = l.goal.cell;
-    var peakHere = function (c) { return Math.abs(Number(c.P) || 0); };
+    // SIGNED (dyad fix 3): pressure_above means SQUEEZED — expansion
+    // (negative P) must never pre-latch a goal, or stuck residuals
+    // (e.g. -31.9 MPa held by a pose) count as "the player did it".
+    var signedP = function (c) { return Number(c.P) || 0; };
+    var peakHere = function (c) { return Math.abs(signedP(c)); };
 
     if (st.phase === 'goal' && !st.goalMet) {
       var cap = Number(l.goal.max_force_n) || 0;
       var forceOk = !cap || !lastTouchForce || lastTouchForce <= cap;
       var woke = function (idx) {
-        if (idx === 'any') return cells.some(function (c) { return peakHere(c) >= pa; });
+        if (idx === 'any') return cells.some(function (c) { return signedP(c) >= pa; });
         var c = cells[idx];
-        return !!c && peakHere(c) >= pa;
+        return !!c && signedP(c) >= pa;
       };
       if (!forceOk) return;          // an over-force press can never latch a capped lesson
       if (l.goal.also) {             // two compartments, each latched over time
@@ -663,6 +732,93 @@
         setVerdict('PASSED — you felt the water. it was always there.', 'good');
       }
     }
+  }
+
+  /* ================= KEYBOARD + GAMEPAD (AI + accessibility) =================
+     Keyboard (play screen): 1-5 lessons · [ ] prev/next · SPACE hold = press
+     the lesson's target · - / = force down/up · P pose (pose lessons) ·
+     R stand at rest · S save · ESC let go.
+     Gamepad: left stick = orbit · A (held) = press the lesson target ·
+     B = release · LB/RB = lesson prev/next · RT analog = force while A. */
+  var touchTarget = null;       // world point the keyboard/gamepad presses
+  var touchTargetList = [];     // lessons may cycle several targets
+  var touchTargetIdx = 0;
+  function syncTouchTarget() {
+    var l = curLesson();
+    touchTargetList = (l && l.touch_targets && l.touch_targets.length)
+      ? l.touch_targets : ((l && l.touch_target) ? [l.touch_target] : []);
+    touchTargetIdx = 0;
+    touchTarget = touchTargetList[0] || null;
+  }
+  function cycleTouchTarget() {
+    if (touchTargetList.length > 1) {
+      touchTargetIdx = (touchTargetIdx + 1) % touchTargetList.length;
+      touchTarget = touchTargetList[touchTargetIdx];
+    }
+  }
+  window.addEventListener('keydown', function (e) {
+    if (!$('screen-play').classList.contains('on')) return;
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+    var k = e.key;
+    if (k >= '1' && k <= '5') { showLesson(+k - 1); e.preventDefault(); return; }
+    if (k === '[') { showLesson(lessonIdx - 1); e.preventDefault(); return; }
+    if (k === ']') { showLesson(lessonIdx + 1); e.preventDefault(); return; }
+    if (k === ' ') {
+      e.preventDefault();
+      if (e.repeat) return;              // hold = one press, not a machine gun
+      if (holding) { clearTouch(); cycleTouchTarget(); return; }
+      if (!touchTarget) return;
+      cycleTouchTarget();
+      postJSON(API.touchHit, { hit: touchTarget, force_n: Number(forceEl.value) })
+        .then(function (res) {
+          if (res && res.ok) { holding = true; $('letgo-btn').classList.add('hot');
+            setHand('pressing — ' + forceEl.value + ' N (space)');
+            if (window.ChimeraSound) ChimeraSound.press(Number(forceEl.value)); }
+        });
+      return;
+    }
+    if (k === 'Escape') { clearTouch(); return; }
+    if (k === 'p') { var b = $('pose-btn'); if (b.style.display !== 'none') b.click(); return; }
+    if (k === 'r') { (async function () { clearTouch(); await resetPose(); setHand('standing at rest'); })(); return; }
+    if (k === 's') { $('save-btn').click(); return; }
+    if (k === '-') { forceEl.value = Math.max(500, +forceEl.value - 2000); forceEl.dispatchEvent(new Event('input')); return; }
+    if (k === '=' || k === '+') { forceEl.value = Math.min(50000, +forceEl.value + 2000); forceEl.dispatchEvent(new Event('input')); return; }
+  });
+
+  var gamepadWasA = false, gamepadRB = false, gamepadLB = false;
+  function pollGamepad(dtSec) {
+    if (!navigator.getGamepads) return;
+    var pads = navigator.getGamepads();
+    var gp = null;
+    for (var i = 0; i < pads.length; i++) if (pads[i]) { gp = pads[i]; break; }
+    if (!gp) return;
+    var ax = gp.axes || [];
+    var dead = function (v) { return Math.abs(v) < 0.15 ? 0 : v; };
+    var lx = dead(ax[0] || 0), ly = dead(ax[1] || 0);
+    if (lx || ly) {                       // left stick = orbit (local, free)
+      cam.theta -= lx * 2.2 * dtSec;
+      cam.phi = Math.max(-1.45, Math.min(1.45, cam.phi - ly * 1.6 * dtSec));
+    }
+    var rt = gp.buttons[7] ? gp.buttons[7].value : 0;   // right trigger = force
+    var aHeld = gp.buttons[0] && gp.buttons[0].pressed;
+    if (aHeld && touchTarget) {           // A held: press the lesson target
+      var f = 500 + rt * 49500;
+      if (!holding || Math.abs(f - lastTouchForce) > 800) {
+        postJSON(API.touchHit, { hit: touchTarget, force_n: f });
+        holding = true; $('letgo-btn').classList.add('hot');
+        setHand('pressing — ' + Math.round(f) + ' N (gamepad)');
+        if (window.ChimeraSound) ChimeraSound.press(f);
+      }
+    } else if (holding && !aHeld && gamepadWasA) {
+      clearTouch();
+    }
+    gamepadWasA = aHeld;
+    var rb = gp.buttons[5] && gp.buttons[5].pressed;
+    if (rb && !gamepadRB) showLesson(lessonIdx + 1);
+    gamepadRB = rb;
+    var lb2 = gp.buttons[4] && gp.buttons[4].pressed;
+    if (lb2 && !gamepadLB) showLesson(lessonIdx - 1);
+    gamepadLB = lb2;
   }
 
   /* ================= picking: browser-side ray-cast -> world-space hit ================= */
@@ -724,17 +880,25 @@
     return [eye[0] + dir[0] * best, eye[1] + dir[1] * best, eye[2] + dir[2] * best];
   }
 
-  async function tryTouch(cx, cy) {
-    var hit = pickWorld(cx, cy);
-    if (!hit) { setHand('you touched only water.'); return; }
-    lastTouchForce = Number(forceEl.value);
-    holding = true;
-    $('letgo-btn').classList.add('hot');
-    setHand('pressing — ' + forceEl.value + ' N');
-    try {
-      await postJSON(API.touchHit, { hit: hit, force_n: Number(forceEl.value) });
-    } catch (err) {
-      /* the press stands; the next state poll shows whether the world felt it */
+    async function tryTouch(cx, cy) {
+    var rect = canvas.getBoundingClientRect();
+    var px = (cx - rect.left) / rect.width;
+    var py = (cy - rect.top) / rect.height;
+    // THE WEB KERNEL TOUCH: the browser posts its LOCAL camera + click
+    // pixel; the ENGINE resolves the hit with the proven picker and
+    // presses there. No local ray-cast to drift out of alignment.
+    var res = await postJSON(API.touchHit, {
+      cam: [cam.r, cam.theta, cam.phi, cam.target[0], cam.target[1],
+            cam.target[2], cam.panX || 0, cam.panY || 0],
+      aspect: canvas.width / canvas.height,
+      px: px, py: py, force_n: Number(forceEl.value)
+    });
+    if (res && res.ok) {
+      holding = true;
+      $('letgo-btn').classList.add('hot');
+      setHand('pressing — ' + forceEl.value + ' N');
+    } else {
+      setHand((res && res.error) || 'you touched only water.');
     }
   }
 
@@ -799,6 +963,11 @@
   });
 
   $('letgo-btn').addEventListener('click', clearTouch);
+  $('rest-btn').addEventListener('click', async function () {
+    clearTouch();
+    await resetPose();
+    setHand('standing at rest');
+  });
 
   $('save-btn').addEventListener('click', async function () {
     var btn = $('save-btn');
@@ -840,12 +1009,11 @@
       if (!res.ok) return;
       var d = await res.json();
       lessonsKnown = (d && d.lessons) || {};
-      var w = lessonsKnown.wake_the_cell;
-      if (w && w.passed && !judge.passed) {
-        judge.woke = true;
-        judge.passed = true;
-        setVerdict('PASSED — you felt the water. it was always there.', 'good');
-      }
+      for (var id in lessonsKnown)
+        if (lessonsKnown[id] && lessonsKnown[id].passed) {
+          if (!lessonState[id]) lessonState[id] = { goalMet: true, passed: true, phase: 'done' };
+          lessonState[id].passed = true;
+        }
     } catch (err) {
       /* a silent world is not an error worth surfacing here */
     }

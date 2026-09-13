@@ -828,10 +828,40 @@ int main(int argc, char** argv) {
             body.assign(reinterpret_cast<const char*>(out.data()), out.size());
             content_type = "application/octet-stream";
         } else if (p == "/tick_touch" && method == "POST") {
-            // Two forms: {"hit":[x,y,z], force_n} — a WORLD point the
-            // BROWSER found by its own ray-cast (the web kernel); or
-            // {"px","py",force_n} — an engine-camera pixel.
-            if (req_body.find("\"hit\"") != std::string::npos) {
+            // THE TOUCH, three forms:
+            //  {"cam":[8],"px","py",force_n} — the WEB KERNEL: the browser
+            //    posts its own local camera + click pixel; the engine picks
+            //    with the player's view (the proven closed-loop picker).
+            //  {"hit":[x,y,z],force_n}          — a ready world point.
+            //  {"px","py",force_n}             — the engine's own camera.
+            content_type = "application/json";
+            size_t cp = req_body.find("\"cam\"");
+            if (cp != std::string::npos) {
+                float cam8[8];
+                size_t lb = req_body.find('[', cp);
+                float px2 = (float)get_double(req_body, "px", 0.5);
+                float py2 = (float)get_double(req_body, "py", 0.5);
+                float F = (float)get_double(req_body, "force_n", 0.0);
+                std::string err2;
+                float hit2[3];
+                float aspect = (float)get_double(req_body, "aspect", 2560.0 / 1440.0);
+                if (lb == std::string::npos ||
+                    sscanf(req_body.c_str() + lb + 1, "%f,%f,%f,%f,%f,%f,%f,%f",
+                           &cam8[0], &cam8[1], &cam8[2], &cam8[3], &cam8[4],
+                           &cam8[5], &cam8[6], &cam8[7]) != 8) {
+                    body = "{\"ok\":false,\"error\":\"cam must be 8 floats\"}";
+                } else if (g_tick.touch_press(px2, py2, F,
+                        [&](float out[3]) -> bool {
+                            return g_engine && g_engine->pick_cam(cam8, aspect, px2, py2,
+                                g_tick_verts, g_tick.tri_verts(), out);
+                        }, err2, hit2)) {
+                    body = std::string("{\"ok\":true,\"hit\":[")
+                         + std::to_string(hit2[0]) + "," + std::to_string(hit2[1])
+                         + "," + std::to_string(hit2[2]) + "]}";
+                } else {
+                    body = "{\"ok\":false,\"error\":\"the ray misses the body\"}";
+                }
+            } else if (req_body.find("\"hit\"") != std::string::npos) {
                 size_t hb = req_body.find('[', req_body.find("\"hit\""));
                 float hx = 0, hy = 0, hz = 0;
                 if (hb != std::string::npos)
@@ -843,9 +873,6 @@ int main(int argc, char** argv) {
                 else
                     body = "{\"ok\":false,\"error\":\"force_n must be positive\"}";
             } else {
-                // R3 TOUCH: a pixel and a force. The ray is cast under the
-                // tick lock so the pick reads exactly the geometry the next
-                // tick deforms.
                 float px = (float)get_double(req_body, "px", 0.5);
                 float py = (float)get_double(req_body, "py", 0.5);
                 float force = (float)get_double(req_body, "force_n", 0.0);
@@ -856,8 +883,6 @@ int main(int argc, char** argv) {
                         return g_engine && g_engine->pick(px, py, g_tick_verts,
                             g_tick.tri_verts(), out);
                     }, err, hit)) {
-                    // the hit point rides the response: the caller can verify
-                    // the closed loop (re-project it) and see where it landed
                     body = std::string("{\"ok\":true,\"hit\":[")
                          + std::to_string(hit[0]) + "," + std::to_string(hit[1])
                          + "," + std::to_string(hit[2]) + "]}";
@@ -865,7 +890,6 @@ int main(int argc, char** argv) {
                     body = "{\"ok\":false,\"error\":\"" + err + "\"}";
                 }
             }
-            content_type = "application/json";
         } else if (p == "/tick_touch_clear" && method == "POST") {
             g_tick.touch_clear();
             body = "{\"ok\":true}";

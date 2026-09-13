@@ -483,6 +483,12 @@ public:
                                const std::vector<float>& verts9,
                                const std::vector<uint32_t>& tris,
                                float out_point[3]) const;
+    // same, but the camera comes from the CALLER (the web kernel: the
+    // browser posts its own local camera with each touch)
+    bool                  pick_cam(const float cam8[8], float aspect, float u, float v,
+                                   const std::vector<float>& verts9,
+                                   const std::vector<uint32_t>& tris,
+                                   float out_point[3]) const;
     bool                  vp_valid() const { return last_vp_valid_; }
     // ONE camera law, two loops (2026-08-31). frame() stashed the view/proj for
     // the C1 gizmo and /project; frame_idle_ui() never did, so with nothing

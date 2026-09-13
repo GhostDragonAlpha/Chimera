@@ -278,3 +278,30 @@ WAKE THE CELL from lessons.json). Two honesty fixes on the way:
   STATUS_STACK_BUFFER_OVERRUN; not reproduced after the fix).
 - The tab-crash class: one more crash occurred before the topology
   fix landed; none since. Watched through R8.
+
+## LEDGER (2026-09-13, night — post-crash recovery + the R4 rail live)
+
+- Crash-restart recovery (the second one): launcher + shell + website
+  back in one chain. ROOT CAUSE found by the operator: the 128 GB RAM
+  at 5600 MT/s XMP was unstable — lowered to 5000 MT/s. The evening's
+  intermittent Chrome renderer crashes (STATUS_STACK_BUFFER_OVERRUN),
+  unexplained engine AVs and restarts now have a hardware suspect.
+- R4 five lessons LIVE on the rail: lessons.json drives the page
+  (nav ‹1/5›, titles, bodies, goals); the judge evaluates each goal
+  type from live state. wake_the_cell + bend_the_knee PASSED and
+  SAVED under Alan (progress/Alan.json). The gentle/healing/whole-body
+  lessons are playable; their formal pass-walk is pending a clean
+  input driver session (SendKeys focus flakiness on this desktop —
+  the touches, judges and save all verified working individually).
+- DYAD ANALYSIS (the operator directed it for the "only lesson 4
+  activates" report): the blind judge's diagnosis from the frozen
+  evidence — CONFIRMED the pressure lessons' release phase requires
+  all |P| < 1000 Pa while the leg cells sat pinned at ±30-90 MPa by
+  the STILL-HELD knee pose (no reset UI existed), and caught a second
+  bug: the judge latched goals on |P| so stuck residuals pre-latched
+  lessons 2/3/5 with zero player input. Both fixed: signed latching
+  (positive pressure only), showLesson resets any held pose on
+  pressure-lesson entry, pose lessons auto-return to rest 1.8 s after
+  passing, and a standing "stand at rest" button.
+- Evidence frozen: docs/evidence/agent_fleet/SHIP/R4_DYAD/
+  (screen_lesson4_passed.png, state_stuck.json, lessons_as_shipped.json).

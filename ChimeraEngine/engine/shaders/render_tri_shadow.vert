@@ -41,7 +41,11 @@ void main() {
     // centered at (0,0) on the floor, under the subject's (0, 1.4, 0) center of mass.
     // The penumbra is preserved: alpha = A0/(1+h/H0) where h = max(aPos.y - uFloorY, 0)
     // still falls with vertex height above the floor (the contact (h=0) is darkest).
-    vec3 sp = vec3(aPos.xz, ubo.uFloorY);        // keep xz, pin y to floor (project along +Y)
+    // 2026-09-13 (the operator: "the shadow is tilted 90 degrees"): the old
+    // vec3(aPos.xz, uFloorY) SWAPPED y and z — the shadow stood up out of the
+    // floor a quarter-turn sideways. The +Y projection keeps the footprint
+    // (x, z) and pins the HEIGHT to the floor plane:
+    vec3 sp = vec3(aPos.x, ubo.uFloorY, aPos.z);
     gl_Position = ubo.uProj * ubo.uView * vec4(sp, 1.0);
 
     float h = max(aPos.y - ubo.uFloorY, 0.0);
