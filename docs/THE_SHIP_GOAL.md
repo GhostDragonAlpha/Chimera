@@ -81,6 +81,31 @@ a second simulation. The sign-up (R9) ties a NAME to a camera. The
 world's memory is the session snapshot — it persists between visits,
 which is what makes it a world instead of a screensaver.
 
+## THE MOVEMENT LAW (operator directive, 2026-09-13: the character
+## "can't simply just move forward — it sits in a gravity environment;
+## the only way to operate is to move your limbs and adjust your body
+## relative to the surface of gravitational resistance")
+
+There is NO move-forward. The creature lives under gravity, stands on
+a surface, and moves ONLY by limb forces against that surface: push
+the ground backward and the ground pushes the body forward; adjust the
+limbs to keep the mass over its support or it FALLS. Walking is not an
+animation and not a script — it is the discovered consequence of
+gravity + ground contact + limb actuation. The honest build order this
+implies, each derivable:
+- MASS from geometry (the matter-kernel definition already derives it);
+- GRAVITY, one constant, acting on that mass;
+- GROUND CONTACT at the feet cells (normal force + friction at the
+  floor plane);
+- MUSCLES: joint intents become torques with a target angle and
+  damping (torque = k*(target-angle) - c*rate) — a servo muscle, the
+  honest stand-in for real actuation;
+- BALANCE: nothing holds the creature up except its limbs.
+THE FALSIFIER THAT KEEPS IT HONEST: a creature that cannot FALL cannot
+WALK. If the body does not drop when the limbs go slack, the gravity
+or contact model is wrong. The first bar of the ground appliance is
+the FALL, not the step.
+
 ## THE ORDER OF WORK (one feature at a time, your law)
 
 1. R1 double-click launch (the window law is the blocker — kill it
