@@ -687,3 +687,49 @@ changed for T1 to pass.
 
 R3 THE HOOK IN MOTION: **PASS** — touch lands where you point, on the
 posed body, with the hydraulic answer and the honest recovery.
+
+---
+
+# THE WEB KERNEL PREREGISTRATION — the browser renders the world itself
+
+Operator directive: "we need some sort of separate kernel system for the
+user's web viewer — some sort of web GPU mechanism." Agreed and made
+law here: THE BROWSER SHIPS NO PIXELS FROM THE ENGINE. The engine
+streams STATE (posed vertices + cell colors, one-time topology); the
+browser renders the creature locally (WebGL2, its own camera, its own
+orbit/zoom at its own framerate); touches become browser-side ray-casts
+sent as world-space hits. The engine's render loop never encodes a PNG
+for a player — the 28 fps 1% lows die at the root.
+
+## STATEMENT
+
+/world = engine simulation. /viewer = a local WebGL2 renderer fed by
+/state. The player's camera is LOCAL: dragging orbits the browser's own
+scene at 60 fps with zero engine work. A click ray-casts LOCALLY against
+the streamed mesh and posts the world-space hit; the engine presses
+there (its own hydraulics answer). The engine's camera is no longer a
+player's dependency.
+
+## PREDICTIONS
+
+W1. With the game page open, the engine's own FPS readout is
+    UNCHANGED from no-page-open (no /frame polls: the page never
+    requests a PNG). The 1% lows recover to the engine's normal.
+W2. Orbiting in the browser is smooth at the page's framerate with
+    zero HTTP during the drag (camera is local math).
+W3. A browser click posts a world hit; the engine's dimple forms AT
+    that point (state P responds in the cell that owns it).
+W4. /verts stream = 18,459 verts x 9 f32 = 664 KB per pull at ~3 Hz
+    (~2 MB/s, localhost); the topology pull is one-time 440 KB.
+W5. The press path is the SAME tau/kappa machinery — rest exactness
+    untouched (dimple 0, P 0 after release+decay).
+
+## FALSIFIER
+
+The engine FPS still dips while the page streams (state route reading
+the buffer unlocked — it must share the tick mutex), OR the browser
+renders a STALE creature (stream too slow to follow a pose — stream
+rate must rise, not the engine polling), OR a browser-side touch lands
+off the creature. Successor if fired: delta compression for the stream
+(only changed verts) — named now as the internet-scale successor.
+
