@@ -45,6 +45,11 @@ public:
     bool pose_index(int idx, float deg);
     bool intent_joint(int idx, float force_n);
 
+    // THE SEAL (Appliance 4): mitosis — one intent divides the creature
+    // into two sealed hydraulic cells at plane y. Volume by divergence,
+    // pressure by dP = -dV/(kappa*V0), kappa = water at 25 C.
+    bool seal(float y);
+
     bool   enabled_ = true;
     uint64_t ticks_ = 0;
     float  force_l_ = 0.0f, force_r_ = 0.0f;   // active presses, newtons
@@ -76,6 +81,14 @@ private:
     std::vector<std::array<float, 3>> joint_pins_;  // the 28 measured pins
     std::vector<float>  joint_deg_;            // pose per pin (radians)
     std::vector<float>  joint_force_;          // standing press per pin, N
+    // THE SEAL (mitosis): two sealed hydraulic daughters
+    bool  sealed_ = false;
+    float seal_y_ = 0.f, kappa_ = 4.6e-10f;
+    float d_lower_ = 0.f;                      // disc divergence constant, m^3
+    float v0_lower_ = 0.f, v0_upper_ = 0.f;    // rest volumes at seal time
+    float seal_area_ = 0.f;
+    float vol_lower_ = 0.f, vol_upper_ = 0.f;  // live daughter volumes
+    float p_lower_ = 0.f, p_upper_ = 0.f;      // hydraulic gauge pressure
     bool  has_scene_ = false;
     float dirty_ = 0.f;                        // tint changed -> needs upload
     std::atomic<bool> ready_{false};           // committed only after init

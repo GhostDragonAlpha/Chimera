@@ -786,6 +786,14 @@ int main(int argc, char** argv) {
             body = g_tick.load_joint_pins(req_body) ? "{\"ok\":true}"
                  : "{\"ok\":false,\"error\":\"joint pins rejected\"}";
             content_type = "application/json";
+        } else if (p == "/tick_seal" && method == "POST") {
+            // THE SEAL (mitosis): divide the creature into two sealed
+            // hydraulic cells at plane y.
+            float y = (float)get_double(req_body, "y", 0.0);
+            if (g_tick.seal(y)) body = "{\"ok\":true}";
+            else body = "{\"ok\":false,\"error\":\"refused: the seal plane "
+                        "must cross the body, and v1 allows one seal\"}";
+            content_type = "application/json";
         } else if (p == "/hinge_bin" && method == "POST") {
             // Binary protocol (little-endian):
             //   [u32 nvert][f32 JL(3)][f32 JR(3)][f32 axis(3)][f32 romL,romR,period,phaseR]

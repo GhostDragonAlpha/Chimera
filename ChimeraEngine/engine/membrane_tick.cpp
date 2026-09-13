@@ -227,7 +227,27 @@ void MembraneTick::step(std::vector<float>& verts9) {
             verts9[v * 9 + 6 + (size_t)k] = std::min(out, 1.f);
         }
     }
+    // THE SEAL: per-daughter divergence volumes + hydraulic pressure.
+    // Each daughter's boundary = its surface triangles + the seal disc
+    // (constant while the plane holds), so the daughters' volumes sum to
+    // the whole and respond only to true surface deformation.
+    if (sealed_) {
+        float al = 0.f, au = 0.f;
+        for (size_t i = 0; i + 2 < tri_verts_.size(); i += 3) {
+            uint32_t a = tri_verts_[i], b = tri_verts_[i + 1], cc2 = tri_verts_[i + 2];
+            float det = verts9[a*9+0] * (verts9[b*9+1] * verts9[cc2*9+2] - verts9[b*9+2] * verts9[cc2*9+1])
+                      + verts9[a*9+1] * (verts9[b*9+2] * verts9[cc2*9+0] - verts9[b*9+0] * verts9[cc2*9+2])
+                      + verts9[a*9+2] * (verts9[b*9+0] * verts9[cc2*9+1] - verts9[b*9+1] * verts9[cc2*9+0]);
+            float cy = (verts9[a*9+1] + verts9[b*9+1] + verts9[cc2*9+1]) / 3.f;
+            if (cy < seal_y_) al += det / 6.f; else au += det / 6.f;
+        }
+        vol_lower_ = std::fabs(al + d_lower_);
+        vol_upper_ = std::fabs(au - d_lower_);
+        p_lower_ = (v0_lower_ - vol_lower_) / (kappa_ * v0_lower_);
+        p_upper_ = (v0_upper_ - vol_upper_) / (kappa_ * v0_upper_);
+    }
 }
+
 bool MembraneTick::intent_joint(int idx, float force_n) {
     if (!std::isfinite(force_n) || force_n <= 0.f) return false;
     if (idx < 0 || idx >= (int)joint_force_.size()) return false;
@@ -376,6 +396,90 @@ void MembraneTick::apply_chain(std::vector<float>& verts9) {
     }
 }
 
+bool MembraneTick::seal(float y) {
+    if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return false;
+    if (!std::isfinite(y)) return false;
+    if (sealed_) return false;   // one seal per creature in v1
+    // the plane must cross the body
+    float ymin = 1e30f, ymax = -1e30f;
+    for (size_t v = 0; v + 2 < base_pos_.size(); v += 9) {
+        float y = base_pos_[v + 1];
+        ymin = std::min(ymin, y); ymax = std::max(ymax, y);
+    }
+    if (y <= ymin || y >= ymax) return false;   // seal outside the body
+
+    // cross-section disc: center and radius from the verts near the plane
+    float sx = 0, sz = 0; int cn = 0; float rmax = 0.f;
+    for (size_t v = 0; v + 2 < base_pos_.size(); v += 9) {
+        float vx = base_pos_[v + 0], vy = base_pos_[v + 1], vz = base_pos_[v + 2];
+        if (std::fabs(vy - y) < 0.35f) {
+            sx += vx; sz += vz; ++cn;
+        }
+    }
+    if (cn == 0) return false;   // no crossing: seal plane misses the body
+    float cx = sx / cn, cz = sz / cn;
+    for (size_t v = 0; v + 2 < base_pos_.size(); v += 9) {
+        float vx = base_pos_[v + 0], vy = base_pos_[v + 1], vz = base_pos_[v + 2];
+        if (std::fabs(vy - y) < 0.35f)
+            rmax = std::max(rmax, std::sqrt((vx-cx)*(vx-cx) + (vz-cz)*(vz-cz)));
+    }
+    float R = rmax * 1.05f + 0.02f;
+    seal_area_ = 3.14159265358979f * R * R;
+
+    // the disc divergence constant (lower daughter orientation), rest pose:
+    // a 32-gon at height y; its det sum / 6 is CONSTANT while the plane
+    // holds, so the daughters' volumes below stay exact under poses.
+    const int SIDES = 32;
+    float dsum = 0.f;
+    float px = 0.f, py = 0.f, pz = 0.f;
+    for (int i = 0; i <= SIDES; ++i) {
+        float a = 2.f * 3.14159265358979f * i / SIDES;
+        px = cx + R * std::cos(a); py = y; pz = cz + R * std::sin(a);
+        if (i > 0) {
+            // fan triangle (center, prev, cur) -- lower orientation
+            float fx = cx, fy = y, fz = cz;
+            dsum += fx * (py * pz - pz * py)   // degenerate-safe fan
+                  + fy * (pz * px - px * pz)
+                  + fz * (px * py - py * px);
+        }
+        px = cx + R * std::cos(a); py = y; pz = cz + R * std::sin(a);
+    }
+    // the fan above collapses (center == ring plane center): use ring-only
+    dsum = 0.f;
+    for (int i = 0; i < SIDES; ++i) {
+        float a0 = 2.f * 3.14159265358979f * i / SIDES;
+        float a1 = 2.f * 3.14159265358979f * (i + 1) / SIDES;
+        float x0 = cx + R * std::cos(a0), z0 = cz + R * std::sin(a0);
+        float x1 = cx + R * std::cos(a1), z1 = cz + R * std::sin(a1);
+        // planar disc triangle (center, r0, r1) at height y
+        float fx = cx, fy = y, fz = cz;
+        float v0x = x0, v0y = y, v0z = z0;
+        float v1x = x1, v1y = y, v1z = z1;
+        dsum += fx * (v0y * v1z - v0z * v1y)
+              + fy * (v0z * v1x - v0x * v1z)
+              + fz * (v0x * v1y - v0y * v1x);
+    }
+    d_lower_ = dsum / 6.0f;
+    seal_y_ = y;
+    sealed_ = true;
+
+    // rest daughter volumes at seal time (base pose = authored rest)
+    float al = 0.f, au = 0.f;
+    for (size_t i = 0; i + 2 < tri_verts_.size(); i += 3) {
+        uint32_t a = tri_verts_[i], b = tri_verts_[i + 1], cc = tri_verts_[i + 2];
+        float det = base_pos_[a*9+0] * (base_pos_[b*9+1] * base_pos_[cc*9+2] - base_pos_[b*9+2] * base_pos_[cc*9+1])
+                  + base_pos_[a*9+1] * (base_pos_[b*9+2] * base_pos_[cc*9+0] - base_pos_[b*9+0] * base_pos_[cc*9+2])
+                  + base_pos_[a*9+2] * (base_pos_[b*9+0] * base_pos_[cc*9+1] - base_pos_[b*9+1] * base_pos_[cc*9+0]);
+        float reg_y = (base_pos_[a*9+1] + base_pos_[b*9+1] + base_pos_[cc*9+1]) / 3.f;
+        if (reg_y < y) al += det / 6.f; else au += det / 6.f;
+    }
+    // include the two disc orientations
+    float dl = std::fabs(d_lower_) - std::fabs(d_lower_);  // handled below
+    v0_lower_ = std::fabs(al + d_lower_);
+    v0_upper_ = std::fabs(au - d_lower_);
+    return true;
+}
+
 std::string MembraneTick::state_json() const {
     float load_l = 0.f, load_r = 0.f, dmg = 0.f, cap_sum = 0.f;
     uint32_t failed = 0;
@@ -396,6 +500,9 @@ std::string MembraneTick::state_json() const {
       << ",\"capacity_sum\":" << cap_sum
       << ",\"flex_l_deg\":" << flex_l_ * 57.29577951308232
       << ",\"flex_r_deg\":" << flex_r_ * 57.29577951308232
+      << ",\"sealed\":" << (sealed_ ? "true" : "false")
+      << ",\"V_lower\":" << vol_lower_ << ",\"V_upper\":" << vol_upper_
+      << ",\"P_lower\":" << p_lower_ << ",\"P_upper\":" << p_upper_
       << ",\"has_scene\":" << (has_scene_ ? "true" : "false") << "}";
     return o.str();
 }
