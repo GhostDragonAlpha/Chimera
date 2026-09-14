@@ -13,6 +13,7 @@
 #include "http_server.hpp"
 #include "png_encoder.hpp"
 #include "membrane_tick.hpp"
+#include "importer.hpp"    // C1: /mesh_import (the aliveness law ingestion)
 
 #include <cstdio>
 #include <cstdlib>
@@ -729,6 +730,56 @@ int main(int argc, char** argv) {
                 }
             }
             content_type = "application/json";
+        // ═══ C1 BEGIN: /mesh_import — THE ALIVENESS LAW, one POST ═════════
+        } else if (p == "/mesh_import" && method == "POST") {
+            // Body = 1-byte source kind ('O' OBJ subset, 'G' glTF 2.0/GLB)
+            // + raw source bytes. The importer converts to the engine's
+            // full mesh format (or refuses BY NAME — a leaky/open surface
+            // never gets admitted) and the converted payload is REPLAYED
+            // through the real /mesh_bin handler (invoke_api — the boot-
+            // restore path's nested-call discipline), so a slot-0 upload
+            // feeds the SAME g_mesh_req -> g_tick.init internal path as a
+            // hand-authored mesh. Joints, classification, binding and the
+            // seal stay the client's moves: tools/bring_alive.py
+            // orchestrates them.
+            content_type = "application/json";
+            if (req_body.empty()) {
+                body = "{\"ok\":false,\"error\":\"empty body: expected a "
+                       "1-byte kind ('O' OBJ, 'G' glTF) + source bytes\"}";
+            } else if (req_body[0] != 'O' && req_body[0] != 'G') {
+                body = "{\"ok\":false,\"error\":\"unknown source kind: the "
+                       "first byte must be 'O' (OBJ) or 'G' (glTF)\"}";
+            } else if (!g_engine) {
+                body = "{\"ok\":false,\"error\":\"engine not wired\"}";
+            } else {
+                importer::Stats st;
+                std::string bin, err;
+                if (!importer::import_mesh(req_body[0],
+                                           req_body.substr(1), bin, st, err)) {
+                    std::string esc;               // err is quote-free by
+                    for (size_t i = 0; i < err.size(); ++i)   // contract; belt
+                        esc += err[i] == '"' ? '\'' : err[i]; // and braces
+                    body = "{\"ok\":false,\"error\":\"refused: " + esc + "\"}";
+                } else {
+                    std::string resp2, ct2;
+                    g_engine->invoke_api("POST", "/mesh_bin", bin, resp2, ct2);
+                    bool nested_ok =
+                        resp2.find("\"ok\":true") != std::string::npos;
+                    char buf[256];
+                    snprintf(buf, sizeof(buf),
+                             ",\"verts\":%u,\"tris\":%u,\"volume\":%.9g,"
+                             "\"ymin\":%.9g,\"ymax\":%.9g,"
+                             "\"winding_flipped\":%s}",
+                             st.verts, st.tris, st.volume, st.ymin, st.ymax,
+                             st.winding_flipped ? "true" : "false");
+                    body = std::string("{\"ok\":") +
+                           (nested_ok ? "true" : "false") +
+                           (nested_ok ? "" :
+                            ",\"error\":\"mesh_bin replay failed\"") +
+                           buf;
+                }
+            }
+        // ═══ C1 END ═══════════════════════════════════════════════════════
         } else if (p == "/tick_intent" && method == "POST") {
             // THE MEMBRANE TICK intents (Appliance 1): a standing press.
             // Force in newtons is a required input, never defaulted.
@@ -893,6 +944,16 @@ int main(int argc, char** argv) {
         } else if (p == "/tick_touch_clear" && method == "POST") {
             g_tick.touch_clear();
             body = "{\"ok\":true}";
+            content_type = "application/json";
+        } else if (p == "/tick_gravity" && method == "POST") {
+            // THE MOVEMENT LAW (fleet C2, lead-wired at the build window):
+            // gravity + ground contact on the root — "a creature that cannot
+            // FALL cannot WALK". Default off until the F-bars pass.
+            size_t onk = req_body.find("\"on\"");
+            bool on = onk != std::string::npos &&
+                      req_body.find("true", onk) != std::string::npos;
+            if (g_tick.set_gravity(on)) body = "{\"ok\":true,\"gravity_on\":" + std::string(on ? "true" : "false") + "}";
+            else body = "{\"ok\":false,\"error\":\"refused: no scene\"}";
             content_type = "application/json";
         } else if (p == "/tick_seal_split" && method == "POST") {
             // THE COMPONENT SPLIT: a cell of disjoint closed surfaces

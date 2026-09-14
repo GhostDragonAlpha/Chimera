@@ -215,6 +215,7 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
     ++ticks_;
 
     const bool classified = cell_joint_.size() == cells_.size()
+                         && !joint_pins_.empty()          // bindings without pins = OOB reads
                          && joint_pins_.size() == joint_deg_.size()
                          && vert_bind_idx_.size() == verts9.size() / 9 * 3
                          && vert_bind_w_.size() == verts9.size() / 9 * 3;
@@ -792,6 +793,7 @@ bool MembraneTick::split(int cell_idx) {
     std::vector<float> rest9(base_pos_);
     {
         const bool classified = cell_joint_.size() == cells_.size()
+                             && !joint_pins_.empty()          // bindings without pins = OOB reads
                              && joint_pins_.size() == joint_deg_.size()
                              && vert_bind_idx_.size() == (size_t)nv * 3
                              && vert_bind_w_.size() == (size_t)nv * 3;
@@ -878,6 +880,7 @@ bool MembraneTick::seal(float y, int cell_idx) {
     std::vector<float> rest9(base_pos_);
     {
         const bool classified = cell_joint_.size() == cells_.size()
+                             && !joint_pins_.empty()          // bindings without pins = OOB reads
                              && joint_pins_.size() == joint_deg_.size()
                              && vert_bind_idx_.size() == (size_t)nv * 3
                              && vert_bind_w_.size() == (size_t)nv * 3;

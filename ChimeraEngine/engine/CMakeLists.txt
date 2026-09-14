@@ -153,6 +153,7 @@ add_executable(chimera_engine
     physics.cpp
     http_server.cpp
     membrane_tick.cpp
+    importer.cpp
     ui.cpp
     ${CHIMERA_PLATFORM_SRCS}
 )

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="data:,">
+<script src="sound.js"></script>
 <title>CHIMERA — touch the living physics</title>
 <style>
   :root{
@@ -552,15 +553,6 @@
     gl.bindVertexArray(RG.gridVao);
     gl.drawArrays(gl.LINES, 0, RG.gridCount);
 
-    var dbg = $('judge-debug');
-    if (dbg) {
-      var l = curLesson();
-      dbg.textContent = l ? ('judge: ' + l.id + ' phase=' + curState().phase +
-        ' goalMet=' + curState().goalMet + ' passed=' + curState().passed +
-        ' touchTarget=' + (touchTarget ? 'set' : 'null') +
-        ' lastTouchForce=' + lastTouchForce) : 'no lesson';
-    }
-
     /* THE SHADOW: the creature flattened onto the floor (same planar
        projection the engine now uses), drawn under the body */
     if (RG.triCount > 0 && RG.verts) {
@@ -626,6 +618,18 @@
       if (buf.byteLength < 4 + n * 36) throw new Error('truncated verts payload');
       var f = new Float32Array(buf, 4, n * 9);          // little-endian f32 view
       RG.vertCount = n;
+      // the page's own copy of the skin (kept even when WebGL2 is refused):
+      // the touch-target snap presses against it
+      var pos = new Float32Array(n * 3);
+      for (var vi = 0; vi < n; vi++) {
+        pos[vi * 3] = f[vi * 9]; pos[vi * 3 + 1] = f[vi * 9 + 1];
+        pos[vi * 3 + 2] = f[vi * 9 + 2];
+      }
+      meshPos = pos;
+      if (!meshReady) {
+        meshReady = true;
+        if (curLesson()) syncTouchTarget();   // re-snap the standing lesson
+      }
       if (RG) {
         if (!RG.verts || RG.verts.length !== n * 9) RG.verts = new Float32Array(n * 9);
         RG.verts.set(f);
@@ -655,6 +659,9 @@
       var s = await res.json();
       renderBlood(s);
       judgeState(s);
+      renderJudgeDebug();     // runs on the setInterval poll, so the judge
+                              // line stays live even with no WebGL frame
+                              // loop (headless walkers depend on this)
     } catch (err) {
       /* keep the last readout; the link line reports silence */
     } finally {
@@ -732,7 +739,10 @@
         }
       }
     } else if (st.phase === 'release' && st.goalMet && !st.passed) {
-    } else if (st.phase === 'release' && st.goalMet && !st.passed) {
+      // THE RELEASE (LESSON_JUDGE_SPEC §4): pass on the first poll where
+      // every cell is calm. A duplicated empty branch used to swallow this
+      // one, so the calm check was dead code and no release lesson could
+      // ever pass — the phases latched, then sat in release forever.
       var calm = cells.every(function (c) { return peakHere(c) < 1000; });
       if (calm) {
         st.passed = true;
@@ -740,6 +750,20 @@
         setVerdict('PASSED — you felt the water. it was always there.', 'good');
       }
     }
+  }
+
+  /* the judge's own line: one honest string a headless walker can read.
+     Lives on pollState's timer (never inside the WebGL frame loop —
+     headless Chrome does not run that loop, and the line went dead). */
+  function renderJudgeDebug() {
+    var dbg = $('judge-debug');
+    if (!dbg) return;
+    var l = curLesson();
+    dbg.textContent = l ? ('judge: ' + l.id + ' phase=' + curState().phase +
+      ' goalMet=' + curState().goalMet + ' passed=' + curState().passed +
+      ' touchTarget=' + (touchTarget ? 'set' : 'null') +
+      ' lastTouchForce=' + lastTouchForce +
+      ' holding=' + holding) : 'no lesson';
   }
 
   /* ================= KEYBOARD + GAMEPAD (AI + accessibility) =================
@@ -751,10 +775,34 @@
   var touchTarget = null;       // world point the keyboard/gamepad presses
   var touchTargetList = [];     // lessons may cycle several targets
   var touchTargetIdx = 0;
+  /* THE TOUCH KERNEL TRUTH (measured 2026-09-13, engine membrane_tick):
+     the press is a 3 cm Gaussian around the world point (delta = F/(4*pi*
+     sigma), falloff press_r0 = 0.03 m). A target between mesh vertices
+     presses NOTHING — the pack's belly point's nearest skin vertex is
+     0.355 m away and the POST answers ok:true with zero pressure in every
+     cell (a silent lie). The same spot pressed AT its nearest vertex reads
+     2.14 MPa on the torso at 50 kN. So every touch target is snapped to
+     the nearest mesh vertex: the kernel's response is maximal exactly
+     there, the compartment is unchanged, and no threshold moves. */
+  var meshPos = null;           // skin vertex positions, independent of WebGL
+  var meshReady = false;
+  function snapToVertex(pt) {
+    if (!meshPos || !pt) return pt;
+    var best = -1, bd = Infinity;
+    for (var i = 0, n = meshPos.length / 3; i < n; i++) {
+      var dx = meshPos[i * 3] - pt[0], dy = meshPos[i * 3 + 1] - pt[1],
+          dz = meshPos[i * 3 + 2] - pt[2];
+      var d2 = dx * dx + dy * dy + dz * dz;
+      if (d2 < bd) { bd = d2; best = i; }
+    }
+    if (best < 0) return pt;
+    return [meshPos[best * 3], meshPos[best * 3 + 1], meshPos[best * 3 + 2]];
+  }
   function syncTouchTarget() {
     var l = curLesson();
     touchTargetList = (l && l.touch_targets && l.touch_targets.length)
       ? l.touch_targets : ((l && l.touch_target) ? [l.touch_target] : []);
+    touchTargetList = touchTargetList.map(snapToVertex);
     touchTargetIdx = 0;
     touchTarget = touchTargetList[0] || null;
   }
@@ -774,10 +822,16 @@
     if (k === ' ') {
       e.preventDefault();
       if (e.repeat) return;              // hold = one press, not a machine gun
-      if (holding) { clearTouch(); cycleTouchTarget(); return; }
+      if (holding) cycleTouchTarget();   // SPACE again = press the NEXT target
+                                         // (the whole_body's belly/shin cycle).
+                                         // The old code released + cycled here
+                                         // without pressing, so the second
+                                         // compartment was unreachable; and it
+                                         // cycled BEFORE the first fresh press,
+                                         // skipping touch_targets[0] entirely.
       if (!touchTarget) return;
-      cycleTouchTarget();
-      postJSON(API.touchHit, { hit: touchTarget, force_n: Number(forceEl.value) })
+      lastTouchForce = Number(forceEl.value);   // the judge's force cap sees it
+      postJSON(API.touchHit, { hit: touchTarget, force_n: lastTouchForce })
         .then(function (res) {
           if (res && res.ok) { holding = true; $('letgo-btn').classList.add('hot');
             setHand('pressing — ' + forceEl.value + ' N (space)');
