@@ -1021,8 +1021,10 @@ void Engine::shutdown() {
         }
     }
     if (comp_params_buf_) { vkDestroyBuffer(device_, comp_params_buf_, nullptr); vkFreeMemory(device_, comp_params_mem_, nullptr); }
-    if (capture_staging_) { vkDestroyBuffer(device_, capture_staging_, nullptr); vkFreeMemory(device_, capture_staging_mem_, nullptr); }
-    if (glass_staging_)   { vkDestroyBuffer(device_, glass_staging_, nullptr);   vkFreeMemory(device_, glass_staging_mem_, nullptr); }
+    for (int k = 0; k < RB_SLOTS; ++k) {   // G8: both readback rings die with the device
+        rb_destroy_slot(capture_rb_[k]);
+        rb_destroy_slot(glass_rb_[k]);
+    }
     destroy_sort_resources();
     destroy_skin_resources();
     destroy_triangle_resources();
@@ -6199,59 +6201,42 @@ bool Engine::dispatch_compute(std::vector<float>& out_velocities) {
 
 // ── Membrane streaming + frame capture (the C++ engine is the emission target) ──────────
 
-void Engine::ensure_capture_staging() {
+// G8: allocate/resize ONE readback ring slot to the current extent (host-visible
+// + coherent, sized w*h*4). Called at arm time only, on the render thread, so a
+// slot being in flight is never destroyed under the GPU (a resize between arm
+// and collect leaves the in-flight slot at its armed geometry — the slot
+// records its own w/h — and the realloc happens on a LATER arm).
+void Engine::rb_ensure_slot(ReadbackSlot& s) {
     VkDeviceSize size = static_cast<VkDeviceSize>(extent_.width) * extent_.height * 4;
-    if (capture_staging_ != VK_NULL_HANDLE && size == capture_staging_size_) return;
-    if (capture_staging_ != VK_NULL_HANDLE) {
-        vkDestroyBuffer(device_, capture_staging_, nullptr);
-        vkFreeMemory(device_, capture_staging_mem_, nullptr);
-        capture_staging_ = VK_NULL_HANDLE;
-    }
+    if (s.buf != VK_NULL_HANDLE && size == s.size) return;
+    rb_destroy_slot(s);
     VkBufferCreateInfo bci{};
     bci.sType       = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     bci.size        = size;
     bci.usage       = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
     bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    vkCreateBuffer(device_, &bci, nullptr, &capture_staging_);
-    VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, capture_staging_, &mr);
+    vkCreateBuffer(device_, &bci, nullptr, &s.buf);
+    VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, s.buf, &mr);
     VkMemoryAllocateInfo ai{};
     ai.sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     ai.allocationSize  = mr.size;
     ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-    vkAllocateMemory(device_, &ai, nullptr, &capture_staging_mem_);
-    vkBindBufferMemory(device_, capture_staging_, capture_staging_mem_, 0);
-    capture_staging_size_ = size;
+    vkAllocateMemory(device_, &ai, nullptr, &s.mem);
+    vkBindBufferMemory(device_, s.buf, s.mem, 0);
+    s.size = size;
 }
 
-// The glass channel's staging, allocated by the SAME law as the pixel-clean one
-// (host-visible + coherent, sized to the swapchain extent). It is a SEPARATE
-// buffer on purpose: the two channels must never share a destination, or a glass
-// grab silently overwrites the frame /frame and the reel just handed out.
-void Engine::ensure_glass_staging() {
-    VkDeviceSize size = static_cast<VkDeviceSize>(extent_.width) * extent_.height * 4;
-    if (glass_staging_ != VK_NULL_HANDLE && size == glass_staging_size_) return;
-    if (glass_staging_ != VK_NULL_HANDLE) {
-        vkDestroyBuffer(device_, glass_staging_, nullptr);
-        vkFreeMemory(device_, glass_staging_mem_, nullptr);
-        glass_staging_ = VK_NULL_HANDLE;
-    }
-    VkBufferCreateInfo bci{};
-    bci.sType       = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    bci.size        = size;
-    bci.usage       = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
-    bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    vkCreateBuffer(device_, &bci, nullptr, &glass_staging_);
-    VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, glass_staging_, &mr);
-    VkMemoryAllocateInfo ai{};
-    ai.sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    ai.allocationSize  = mr.size;
-    ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-    vkAllocateMemory(device_, &ai, nullptr, &glass_staging_mem_);
-    vkBindBufferMemory(device_, glass_staging_, glass_staging_mem_, 0);
-    glass_staging_size_ = size;
+void Engine::rb_destroy_slot(ReadbackSlot& s) {
+    if (s.buf != VK_NULL_HANDLE) vkDestroyBuffer(device_, s.buf, nullptr);
+    if (s.mem != VK_NULL_HANDLE) vkFreeMemory(device_, s.mem, nullptr);
+    s.buf = VK_NULL_HANDLE; s.mem = VK_NULL_HANDLE; s.size = 0;
 }
+
+// The glass channel's staging follows the SAME law as the pixel-clean one
+// (host-visible + coherent, sized to the extent). It is a SEPARATE ring on
+// purpose: the two channels must never share a destination, or a glass grab
+// silently overwrites the frame /frame and the reel just handed out.
 
 // ── THE GLASS CHANNEL — one law, two loops ─────────────────────────────────────
 // Both frame() and frame_idle_ui() draw the Studio into the swapchain, and both
@@ -7717,6 +7702,11 @@ bool Engine::frame() {
     // NOTE: the fence is NOT reset here — an early return (OUT_OF_DATE) would leave
     // it reset-but-never-submitted and the next wait on this slot would hang.
     // Reset happens at the submit site, immediately before vkQueueSubmit.
+    // G8: snapshot the arm counter BEFORE this frame can arm anything — slots
+    // with seq > it are THIS frame's arms, whose copies ride the submit below;
+    // the backstop must never collect them against the PREVIOUS submit's
+    // still-signalled fence.
+    const uint64_t g8_armed_before = capture_armed_gen_.load();
     // THE STRAIN OVERLAY: the CPU computes true area strain from the SAME
     // analytic FK law (works for both the CPU fallback and the GPU kernel),
     // then the kernel tints when the overlay flag is set. One call, both paths.
@@ -8469,24 +8459,15 @@ bool Engine::frame() {
 
     vkCmdEndRenderPass(cmd_bufs_[img_idx]);
 
-    // Capture the rendered frame (copy offscreen image -> host staging) when requested.
-    // The offscreen render pass leaves the image in TRANSFER_SRC, so no layout transition needed.
+    // Capture the rendered frame (copy offscreen image -> host staging ring)
+    // when requested. G8 ARM: the copy is only RECORDED here — the readback is
+    // collected off the tick path by collect_readbacks() at the end of a later
+    // frame (the old path vkQueueWaitIdle'd + swizzled HERE, ~910 ms per grab).
+    // The offscreen render pass leaves the image in TRANSFER_SRC, so no layout
+    // transition needed.
     bool do_capture = capture_requested_.exchange(false);
-    if (do_capture) {
-        ensure_capture_staging();
-        VkBufferImageCopy region{};
-        region.bufferOffset      = 0;
-        region.bufferRowLength   = 0;
-        region.bufferImageHeight = 0;
-        region.imageSubresource.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT;
-        region.imageSubresource.mipLevel       = 0;
-        region.imageSubresource.baseArrayLayer = 0;
-        region.imageSubresource.layerCount     = 1;
-        region.imageOffset = {0, 0, 0};
-        region.imageExtent = {extent_.width, extent_.height, 1};
-        vkCmdCopyImageToBuffer(cmd_bufs_[img_idx], rt_image_, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                               capture_staging_, 1, &region);
-    }
+    if (do_capture && !arm_capture_readback(cmd_bufs_[img_idx], img_idx))
+        capture_requested_.store(true);   // ring full: arm again next frame
 
     // Blit the offscreen result into the swapchain image and present it, so the WINDOW shows the
     // render instead of a blank screen. Skipped when the window is minimized / out-of-date.
@@ -8556,10 +8537,15 @@ bool Engine::frame() {
             glass_err_.store(GLASS_ERR_NO_PRESENT);
             glass_ready_.store(true);        // ready, so HTTP can report the failure
         } else {
-            ensure_glass_staging();
-            // both branches above leave the swapchain in PRESENT_SRC
-            record_glass_copy(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
-                              VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, glass_staging_, extent_);
+            // G8 ARM: same staging-ring law as the pixel-clean capture above.
+            ReadbackSlot* gs = arm_glass_readback(img_idx);
+            if (gs) {
+                // both branches above leave the swapchain in PRESENT_SRC
+                record_glass_copy(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
+                                  VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, gs->buf, extent_);
+            } else {
+                glass_requested_.store(true);   // ring full: arm again next frame
+            }
         }
     }
     vkEndCommandBuffer(cmd_bufs_[img_idx]);
@@ -8577,6 +8563,14 @@ bool Engine::frame() {
         si.signalSemaphoreCount = 1;
         si.pSignalSemaphores    = &flush_sem_[img_idx];
     }
+    // G8 backstop: a readback riding THIS slot's fence must be drained before
+    // the reset reuses the fence — a zero-timeout collect that has missed for a
+    // whole MAX_FRAMES_IN_FLIGHT cycle means the device is deeply backlogged,
+    // and the (capped) wait here keeps the reset from destroying the only
+    // proof the copy finished. Normal path: collect_readbacks() below already
+    // drained it, so this is a scan of 4 slot flags, ~ns. g8_armed_before
+    // excludes THIS frame's arms — see collect_for_frame_slot().
+    collect_for_frame_slot(img_idx, 100, g8_armed_before);
     vkResetFences(device_, 1, &fences_[img_idx]);
     VkResult submit_res = vkQueueSubmit(queue_, 1, &si, fences_[img_idx]);
     if (submit_res == VK_ERROR_DEVICE_LOST) {
@@ -8605,9 +8599,12 @@ bool Engine::frame() {
             recreate_after_frame = true;
     }
 
-    // the one readback law, shared with frame_idle_ui()
-    readback_captures(do_capture, do_glass);
-    if (do_capture) reel_note_grab();   // D3: every grab lands in the reel
+    // G8: the one readback law, shared with frame_idle_ui() — drain every
+    // ALREADY-finished readback slot, ZERO timeout, oldest first. The render
+    // thread never waits on a readback; a not-yet-finished slot is collected
+    // on a later frame (worst case one frame of added latency, ~3.3 ms at the
+    // 300 fps cap, instead of the old ~910 ms freeze).
+    collect_readbacks();
 
     // B1: deferred swapchain rebuild (suboptimal acquire, or present reported
     // OUT_OF_DATE/SUBOPTIMAL) — done at frame end, outside the render pass.
@@ -8621,52 +8618,204 @@ bool Engine::frame() {
     return true;  // a present failure (minimized window) is not fatal — skip, retry next frame
 }
 
-void Engine::readback_captures(bool do_capture, bool do_glass) {
-    if (do_capture) {
-        vkQueueWaitIdle(queue_);
-        void* mapped = nullptr;
-        vkMapMemory(device_, capture_staging_mem_, 0, capture_staging_size_, 0, &mapped);
-        {
-            std::lock_guard<std::mutex> lk(capture_mutex_);
-            size_t px = static_cast<size_t>(extent_.width) * extent_.height;
-            capture_rgba_.resize(px * 4);
-            const uint8_t* src = static_cast<const uint8_t*>(mapped);
-            for (size_t i = 0; i < px; ++i) {
-                capture_rgba_[i * 4 + 0] = src[i * 4 + 2];  // R
-                capture_rgba_[i * 4 + 1] = src[i * 4 + 1];  // G
-                capture_rgba_[i * 4 + 2] = src[i * 4 + 0];  // B
-                capture_rgba_[i * 4 + 3] = src[i * 4 + 3];  // A
-            }
-            capture_w_ = extent_.width;
-            capture_h_ = extent_.height;
+// ══ G8 TWO-PHASE ARM/COLLECT READBACK (2026-09-13, the tick-counter fix) ════
+// THE OLD LAW: after submit, readback_captures() did vkQueueWaitIdle(queue_) +
+// map + full-res BGRA->RGBA swizzle ON THE RENDER THREAD — ~910 ms per grab
+// (payload-independent: docs/evidence/agent_fleet/SHIP/R6_BENCH/
+// tick_counter_audit.md), freezing the tick loop that runs on this thread
+// after frame() returns. THE NEW LAW, in the same two beats the old one used:
+//
+//   ARM  (mid-recording, arm_*_readback): pick a free ring slot, ensure its
+//        staging buffer, record the copy into the frame's cmdbuf, stamp it
+//        {frame_slot, extent, seq}, return. NO WAIT — the submit carries the
+//        copy to the GPU exactly like any other draw.
+//   COLLECT (end of frame, collect_readbacks): for each in-flight slot, a
+//        ZERO-timeout fence check; only a slot whose fence is ALREADY
+//        signalled gets mapped + swizzled (oldest seq first). A slot the GPU
+//        has not finished stays pending — worst case it is served one frame
+//        later (~3.3 ms at the 300 fps cap) instead of stalling the loop
+//        ~910 ms now.
+//
+// The render thread never waits on a readback. The one bounded exception is
+// collect_for_frame_slot(), the backstop before a fences_ slot is RESET: a
+// capture riding that fence must be collected (or waited, capped) first, or
+// the reset destroys the only proof the copy finished. It is reachable only
+// when the device is >= MAX_FRAMES_IN_FLIGHT frames backlogged — the old path
+// paid its ~910 ms on EVERY grab; the backstop pays a capped 100 ms on a
+// pathological schedule only.
+//
+// THE FENCE-GENERATION LAW (desk-check fix, 2026-09-13): between a frame's
+// fence WAIT (frame start) and its vkResetFences, fences_[img_idx] still
+// carries the PREVIOUS submit's signal. Any collect in that window must
+// ignore slots armed in THIS frame (seq > the frame-entry snapshot of
+// capture_armed_gen_) — their copy has not been submitted, and a fence pass
+// there would publish the staging buffer's PREVIOUS contents as a fresh
+// grab and falsely advance the watermark. The backstop passes the snapshot
+// down; the end-of-frame collects run after reset+submit, where the signal
+// they see is the copy's own generation, and need no guard.
+bool Engine::arm_capture_readback(VkCommandBuffer cb, uint32_t frame_slot) {
+    ReadbackSlot* s = nullptr;
+    for (int k = 0; k < RB_SLOTS; ++k) {
+        ReadbackSlot& c = capture_rb_[(capture_rb_next_ + k) % RB_SLOTS];
+        if (!c.in_flight) {
+            s = &c;
+            capture_rb_next_ = (capture_rb_next_ + k + 1) % RB_SLOTS;
+            break;
         }
-        vkUnmapMemory(device_, capture_staging_mem_);
-        capture_ready_.store(true);
     }
-    // the glass readback: same BGRA->RGBA swizzle (the swapchain is B8G8R8A8,
-    // same as rt_image_), the same vkQueueWaitIdle the pixel-clean path already
-    // paid -- but into glass_rgba_, never capture_rgba_, and it never touches the
-    // reel: the reel is the pixel-clean capture ledger the dyad reads.
-    if (do_glass && glass_err_.load() == GLASS_OK) {
-        if (!do_capture) vkQueueWaitIdle(queue_);
-        void* gmap = nullptr;
-        vkMapMemory(device_, glass_staging_mem_, 0, glass_staging_size_, 0, &gmap);
-        {
-            std::lock_guard<std::mutex> lk(glass_mutex_);
-            size_t px = static_cast<size_t>(extent_.width) * extent_.height;
-            glass_rgba_.resize(px * 4);
-            const uint8_t* src = static_cast<const uint8_t*>(gmap);
-            for (size_t i = 0; i < px; ++i) {
-                glass_rgba_[i * 4 + 0] = src[i * 4 + 2];  // R
-                glass_rgba_[i * 4 + 1] = src[i * 4 + 1];  // G
-                glass_rgba_[i * 4 + 2] = src[i * 4 + 0];  // B
-                glass_rgba_[i * 4 + 3] = src[i * 4 + 3];  // A
-            }
-            glass_w_ = extent_.width;
-            glass_h_ = extent_.height;
+    if (!s) return false;   // ring full: caller re-stores the request flag
+    rb_ensure_slot(*s);
+    VkBufferImageCopy region{};
+    region.bufferOffset      = 0;
+    region.bufferRowLength   = 0;
+    region.bufferImageHeight = 0;
+    region.imageSubresource.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT;
+    region.imageSubresource.mipLevel       = 0;
+    region.imageSubresource.baseArrayLayer = 0;
+    region.imageSubresource.layerCount     = 1;
+    region.imageOffset = {0, 0, 0};
+    region.imageExtent = {extent_.width, extent_.height, 1};
+    // The offscreen render pass leaves rt_image_ in TRANSFER_SRC, so no layout
+    // transition needed (unchanged from the synchronous path).
+    vkCmdCopyImageToBuffer(cb, rt_image_, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                           s->buf, 1, &region);
+    s->frame_slot = frame_slot;
+    s->w = extent_.width;
+    s->h = extent_.height;
+    s->seq = ++capture_armed_gen_;     // the strict-fresh watermark advances at arm
+    s->in_flight = true;
+    return true;
+}
+
+Engine::ReadbackSlot* Engine::arm_glass_readback(uint32_t frame_slot) {
+    ReadbackSlot* s = nullptr;
+    for (int k = 0; k < RB_SLOTS; ++k) {
+        ReadbackSlot& c = glass_rb_[(glass_rb_next_ + k) % RB_SLOTS];
+        if (!c.in_flight) {
+            s = &c;
+            glass_rb_next_ = (glass_rb_next_ + k + 1) % RB_SLOTS;
+            break;
         }
-        vkUnmapMemory(device_, glass_staging_mem_);
+    }
+    if (!s) return nullptr;   // ring full: caller re-stores the request flag
+    rb_ensure_slot(*s);
+    // The caller records record_glass_copy(..., s->buf, ...) into its own
+    // cmdbuf: only the call site knows the swapchain image and the layout it
+    // carries at that point (PRESENT_SRC after the UI pass, TRANSFER_DST when
+    // only the clear/blit ran). The copy takes the image back to PRESENT_SRC.
+    s->frame_slot = frame_slot;
+    s->w = extent_.width;
+    s->h = extent_.height;
+    s->seq = ++capture_armed_gen_;   // shares the arm counter; glass collects
+                                     // never store it into capture_collected_gen_
+    s->in_flight = true;
+    return s;
+}
+
+// One collect pass: drain every ALREADY-FINISHED slot, both channels, oldest
+// first. Called from frame() and frame_idle_ui() at the exact site the old
+// blocking readback occupied — same law, two loops, zero waits.
+// armed_before (default: collect everything) — the fence-generation guard for
+// calls made between a frame's fence WAIT and its vkResetFences (i.e. the
+// backstop): there fences_[img_idx] still carries the PREVIOUS submit's
+// signal, so a slot armed THIS frame (seq > armed_before) must be skipped —
+// its copy was never submitted and its buffer holds the previous grab's
+// bytes. After reset+submit the signal is the copy's own generation and the
+// default collects it normally.
+void Engine::collect_readbacks(uint64_t armed_before) {
+    for (;;) {
+        ReadbackSlot* best = nullptr;
+        // FIFO: the oldest finished capture slot collects before a newer one,
+        // so capture_rgba_ always ends holding the NEWEST finished frame.
+        for (int k = 0; k < RB_SLOTS; ++k) {
+            ReadbackSlot& c = capture_rb_[k];
+            if (c.in_flight && c.seq <= armed_before &&
+                vkGetFenceStatus(device_, fences_[c.frame_slot]) == VK_SUCCESS &&
+                (!best || c.seq < best->seq))
+                best = &c;
+        }
+        if (!best) break;
+        void* mapped = nullptr;
+        if (vkMapMemory(device_, best->mem, 0, best->size, 0, &mapped) == VK_SUCCESS) {
+            {
+                std::lock_guard<std::mutex> lk(capture_mutex_);
+                size_t px = static_cast<size_t>(best->w) * best->h;
+                capture_rgba_.resize(px * 4);
+                const uint8_t* src = static_cast<const uint8_t*>(mapped);
+                for (size_t i = 0; i < px; ++i) {
+                    capture_rgba_[i * 4 + 0] = src[i * 4 + 2];  // R
+                    capture_rgba_[i * 4 + 1] = src[i * 4 + 1];  // G
+                    capture_rgba_[i * 4 + 2] = src[i * 4 + 0];  // B
+                    capture_rgba_[i * 4 + 3] = src[i * 4 + 3];  // A
+                }
+                capture_w_ = best->w;
+                capture_h_ = best->h;
+            }
+            vkUnmapMemory(device_, best->mem);
+        }
+        capture_collected_gen_.store(best->seq);   // strict-fresh watermark
+        capture_ready_.store(true);
+        best->in_flight = false;
+        reel_note_grab();   // D3: every grab lands in the reel, at collect time
+    }
+    for (;;) {
+        ReadbackSlot* best = nullptr;
+        for (int k = 0; k < RB_SLOTS; ++k) {
+            ReadbackSlot& g = glass_rb_[k];
+            if (g.in_flight && g.seq <= armed_before &&
+                vkGetFenceStatus(device_, fences_[g.frame_slot]) == VK_SUCCESS &&
+                (!best || g.seq < best->seq))
+                best = &g;
+        }
+        if (!best) break;
+        void* gmap = nullptr;
+        if (vkMapMemory(device_, best->mem, 0, best->size, 0, &gmap) == VK_SUCCESS) {
+            {
+                std::lock_guard<std::mutex> lk(glass_mutex_);
+                size_t px = static_cast<size_t>(best->w) * best->h;
+                glass_rgba_.resize(px * 4);
+                const uint8_t* src = static_cast<const uint8_t*>(gmap);
+                for (size_t i = 0; i < px; ++i) {
+                    glass_rgba_[i * 4 + 0] = src[i * 4 + 2];  // R
+                    glass_rgba_[i * 4 + 1] = src[i * 4 + 1];  // G
+                    glass_rgba_[i * 4 + 2] = src[i * 4 + 0];  // B
+                    glass_rgba_[i * 4 + 3] = src[i * 4 + 3];  // A
+                }
+                glass_w_ = best->w;
+                glass_h_ = best->h;
+            }
+            vkUnmapMemory(device_, best->mem);
+        }
         glass_ready_.store(true);
+        best->in_flight = false;
+    }
+}
+
+// The backstop: a slot riding THIS frame's fence must be drained before the
+// reset below reuses the fence. Waits are capped; reached only on a deeply
+// backlogged device (see the block comment above).
+// armed_before: slots armed THIS frame (seq > it) are excluded — their proof
+// rides the submit that follows the reset; collecting one here would publish
+// never-submitted staging bytes against the PREVIOUS submit's fence signal
+// (the desk-check bug this guard exists for).
+void Engine::collect_for_frame_slot(uint32_t frame_slot, uint64_t timeout_ms,
+                                    uint64_t armed_before) {
+    if (frame_slot >= fences_.size()) return;
+    for (int k = 0; k < RB_SLOTS; ++k) {
+        if (capture_rb_[k].in_flight && capture_rb_[k].frame_slot == frame_slot &&
+            capture_rb_[k].seq <= armed_before) {
+            vkWaitForFences(device_, 1, &fences_[frame_slot], VK_TRUE,
+                            timeout_ms * 1000000ull);
+            collect_readbacks(armed_before);   // the fence is now signalled: drain everything ARMED BEFORE this frame
+            return;
+        }
+        if (glass_rb_[k].in_flight && glass_rb_[k].frame_slot == frame_slot &&
+            glass_rb_[k].seq <= armed_before) {
+            vkWaitForFences(device_, 1, &fences_[frame_slot], VK_TRUE,
+                            timeout_ms * 1000000ull);
+            collect_readbacks(armed_before);
+            return;
+        }
     }
 }
 
@@ -8812,6 +8961,10 @@ bool Engine::frame_idle_ui() {
     }
     bool can_present = (acquire_res == VK_SUCCESS || acquire_res == VK_SUBOPTIMAL_KHR);
     bool recreate_after_frame = (acquire_res == VK_SUBOPTIMAL_KHR);
+    // G8: same law as frame() — snapshot BEFORE this loop can arm anything, so
+    // the backstop can tell THIS frame's arms (seq > it, copies riding the
+    // submit below) from older slots the fence signal still covers.
+    const uint64_t g8_armed_before = capture_armed_gen_.load();
 
     bool do_capture = capture_requested_.exchange(false);
     bool do_glass   = glass_requested_.exchange(false);
@@ -8846,7 +8999,6 @@ bool Engine::frame_idle_ui() {
         // happened to hold. UNDEFINED as the old layout discards the contents,
         // which is exactly right before a clear.
         if (do_capture) {
-            ensure_capture_staging();
             transition_image_layout(cmd_bufs_[img_idx], rt_image_,
                                     VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                     0, VK_ACCESS_TRANSFER_WRITE_BIT,
@@ -8857,18 +9009,10 @@ bool Engine::frame_idle_ui() {
                                     VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
                                     VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT,
                                     VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
-            VkBufferImageCopy region{};
-            region.bufferOffset      = 0;
-            region.bufferRowLength   = 0;
-            region.bufferImageHeight = 0;
-            region.imageSubresource.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT;
-            region.imageSubresource.mipLevel       = 0;
-            region.imageSubresource.baseArrayLayer = 0;
-            region.imageSubresource.layerCount     = 1;
-            region.imageOffset = {0, 0, 0};
-            region.imageExtent = {extent_.width, extent_.height, 1};
-            vkCmdCopyImageToBuffer(cmd_bufs_[img_idx], rt_image_, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                                   capture_staging_, 1, &region);
+            // G8 ARM: record the copy into a free staging-ring slot — never
+            // wait (collect_readbacks() drains it off this path).
+            if (!arm_capture_readback(cmd_bufs_[img_idx], img_idx))
+                capture_requested_.store(true);   // ring full: arm again next frame
         }
 
         VkRenderPassBeginInfo urp{};
@@ -8886,13 +9030,18 @@ bool Engine::frame_idle_ui() {
             glass_err_.store(GLASS_ERR_NO_PRESENT);
             glass_ready_.store(true);
         } else {
-            ensure_glass_staging();
-            // the UI render pass leaves the swapchain in PRESENT_SRC; with no UI
-            // it is still TRANSFER_DST from the clear above.
-            record_glass_copy(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
-                              ui_drawn ? VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
-                                       : VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                              glass_staging_, extent_);
+            // G8 ARM: same staging-ring law as the pixel-clean capture above.
+            ReadbackSlot* gs = arm_glass_readback(img_idx);
+            if (gs) {
+                // the UI render pass leaves the swapchain in PRESENT_SRC; with no UI
+                // it is still TRANSFER_DST from the clear above.
+                record_glass_copy(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
+                                  ui_drawn ? VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
+                                           : VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                  gs->buf, extent_);
+            } else {
+                glass_requested_.store(true);   // ring full: arm again next frame
+            }
         }
     }
     vkEndCommandBuffer(cmd_bufs_[img_idx]);
@@ -8909,6 +9058,11 @@ bool Engine::frame_idle_ui() {
         si.signalSemaphoreCount = 1;
         si.pSignalSemaphores = &flush_sem_[img_idx];
     }
+    // G8 backstop (same law as frame()): drain — with a capped wait — any
+    // readback riding THIS slot's fence before the reset reuses it. This
+    // frame's arms (seq > g8_armed_before) are excluded: their copies ride the
+    // submit below.
+    collect_for_frame_slot(img_idx, 100, g8_armed_before);
     vkResetFences(device_, 1, &fences_[img_idx]);
     VkResult submit_res = vkQueueSubmit(queue_, 1, &si, fences_[img_idx]);
     if (submit_res == VK_ERROR_DEVICE_LOST) {
@@ -8934,7 +9088,7 @@ bool Engine::frame_idle_ui() {
             recreate_after_frame = true;
     }
     // the SAME readback law as frame() — one implementation, two loops
-    readback_captures(do_capture, do_glass);
+    collect_readbacks();
     if (recreate_after_frame) {
         VkSurfaceCapabilitiesKHR caps{};
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(phys_dev_, surface_, &caps);

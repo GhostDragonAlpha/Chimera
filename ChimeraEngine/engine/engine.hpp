@@ -47,6 +47,31 @@ public:
     void request_capture() { capture_ready_.store(false); capture_requested_.store(true); }
     bool capture_ready() const { return capture_ready_.load(); }
     bool capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h);
+    // ── G8 TWO-PHASE ARM/COLLECT READBACK (2026-09-13, the tick-counter fix) ──
+    // The capture servicing used to run synchronously ON THE RENDER THREAD
+    // (~910 ms vkQueueWaitIdle + full-res swizzle per grab —
+    // docs/evidence/agent_fleet/SHIP/R6_BENCH/tick_counter_audit.md), freezing
+    // the tick loop, which runs on this thread after frame(). Now an arm only
+    // RECORDS the copy; collect_readbacks() drains finished slots at the end of
+    // each frame with a ZERO-timeout fence check.
+    //
+    // request_capture_async(): arm for the two-phase /frame?async=1 contract —
+    // arms only when nothing is already requested, and deliberately leaves
+    // capture_ready_ alone (an async pull serves the last COLLECTED frame; it
+    // does not invalidate anything).
+    void request_capture_async() {
+        bool expected = false;
+        capture_requested_.compare_exchange_strong(expected, true);
+    }
+    // Strict-fresh waits (/frame default, /capture_render) arm, then spin on
+    // the WATERMARK: capture_arm_watermark() is the sequence number of the last
+    // capture-channel arm, so watermark+1 can only be reached by a collect of a
+    // slot armed AFTER the request — a stale slot armed by an earlier pull can
+    // never satisfy it (a bare capture_ready() could be).
+    uint64_t capture_arm_watermark() const { return capture_armed_gen_.load(); }
+    bool capture_collected_since(uint64_t watermark) const {
+        return capture_collected_gen_.load() >= watermark;
+    }
 
     // ── THE GLASS CHANNEL (2026-08-31) ───────────────────────────────────────
     // /frame reads rt_image_: PIXEL-CLEAN, because the Studio overlay is drawn
@@ -70,10 +95,21 @@ public:
     bool glass_ready() const { return glass_ready_.load(); }
     int  glass_err()   const { return glass_err_.load(); }
     bool glass_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h);
-    // shared by frame() and frame_idle_ui(): map + BGRA->RGBA swizzle into the
-    // two destinations. One implementation, so an idle grab cannot drift from a
-    // rendered one.
-    void readback_captures(bool do_capture, bool do_glass);
+    // G8: shared by frame() and frame_idle_ui() — drain every finished readback
+    // slot (zero-timeout fence check, then map + BGRA->RGBA swizzle into the two
+    // destinations, oldest first). One implementation, so an idle grab cannot
+    // drift from a rendered one. Never waits: a slot whose fence is not yet
+    // signalled stays pending for a later frame.
+    //
+    // armed_before — the fence-generation guard (G8, desk-check fix): between a
+    // frame's fence WAIT and its vkResetFences, fences_[img_idx] still carries
+    // the PREVIOUS submit's signal, so a zero-timeout check would "pass" for a
+    // slot armed in THIS frame whose copy was never submitted. Callers in that
+    // window (the collect_for_frame_slot backstop) pass the capture_armed_gen_
+    // snapshot taken at frame entry; slots with seq > it are skipped. The
+    // end-of-frame collects run AFTER reset+submit — the fence signal they see
+    // is the copy's own generation — so they take the default (collect all).
+    void collect_readbacks(uint64_t armed_before = UINT64_MAX);
 
     // ── D3: THE REEL — the engine owns the grab ledger (the UI owns the pixels) ──
     struct ReelEntry {
@@ -639,8 +675,38 @@ private:
 
     void record_command_buffer(VkCommandBuffer cb);
     void resize(uint32_t w, uint32_t h);
-    void ensure_capture_staging();
-    void ensure_glass_staging();
+    // G8: one staging ring slot — the host-visible buffer a capture copy is
+    // recorded into, the render fence that guards it, and the extent at arm
+    // time (a resize between arm and collect cannot change the slot's geometry).
+    struct ReadbackSlot {
+        VkBuffer       buf  = VK_NULL_HANDLE;
+        VkDeviceMemory mem  = VK_NULL_HANDLE;
+        VkDeviceSize   size = 0;
+        uint32_t       frame_slot = 0;   // fences_[frame_slot] guards this copy
+        uint32_t       w = 0, h = 0;     // extent at arm time
+        uint64_t       seq = 0;          // arm order (FIFO collect + watermark)
+        bool           in_flight = false;
+    };
+    // G8: one staging ring slot — allocate/resize to the current extent, or die.
+    void rb_ensure_slot(ReadbackSlot& s);
+    void rb_destroy_slot(ReadbackSlot& s);
+    // G8: arm = pick a free ring slot and have the caller RECORD the copy into
+    // its cmdbuf. Render thread only, called mid-recording. Returns nullptr
+    // (and reserves nothing) when every slot is still in flight — the caller
+    // re-arms next frame by re-storing the request flag. Never waits.
+    bool arm_capture_readback(VkCommandBuffer cb, uint32_t frame_slot);
+    ReadbackSlot* arm_glass_readback(uint32_t frame_slot);
+    // G8 backstop: bounded wait ONLY for slots riding this frame's fence —
+    // reached when the zero-timeout collects have missed for a whole
+    // MAX_FRAMES_IN_FLIGHT cycle (device deeply backlogged) and the fence is
+    // about to be reset. Capped at timeout_ms; keeps a reset from ever
+    // destroying the only proof an in-flight copy finished.
+    // armed_before = the capture_armed_gen_ snapshot the frame took at entry:
+    // slots armed in THIS frame (seq > it) ride the submit that FOLLOWS the
+    // reset — the reset cannot destroy their proof — and collecting one here
+    // would publish never-submitted staging bytes, so they are excluded.
+    void collect_for_frame_slot(uint32_t frame_slot, uint64_t timeout_ms,
+                                uint64_t armed_before);
     bool create_sort_pipeline();
     void ensure_sort_buffers(uint32_t count);
     void destroy_sort_resources();
@@ -755,9 +821,17 @@ private:
     std::mutex capture_mutex_;
     std::vector<uint8_t> capture_rgba_;
     uint32_t capture_w_ = 0, capture_h_ = 0;
-    VkBuffer capture_staging_ = VK_NULL_HANDLE;
-    VkDeviceMemory capture_staging_mem_ = VK_NULL_HANDLE;
-    VkDeviceSize capture_staging_size_ = 0;
+    // G8: the staging ring — 2 slots per channel (capture AND glass can be in
+    // flight concurrently; the HTTP handler cannot re-arm faster than the ring
+    // drains, and a full ring just defers the arm one frame). Render thread
+    // only: rb_next_ is the cursor, seq stamps arm order, and the watermark
+    // pair below is the strict-fresh contract for the HTTP spins.
+    enum { RB_SLOTS = 2 };
+    ReadbackSlot capture_rb_[RB_SLOTS];
+    ReadbackSlot glass_rb_[RB_SLOTS];
+    int capture_rb_next_ = 0, glass_rb_next_ = 0;
+    std::atomic<uint64_t> capture_armed_gen_{0};     // seq of the last capture arm
+    std::atomic<uint64_t> capture_collected_gen_{0}; // seq of the last capture collect
 
     // the glass channel's OWN staging + destination (see the GLASS CHANNEL note)
     std::atomic<bool> glass_requested_{false};
@@ -766,9 +840,6 @@ private:
     std::mutex glass_mutex_;
     std::vector<uint8_t> glass_rgba_;
     uint32_t glass_w_ = 0, glass_h_ = 0;
-    VkBuffer glass_staging_ = VK_NULL_HANDLE;
-    VkDeviceMemory glass_staging_mem_ = VK_NULL_HANDLE;
-    VkDeviceSize glass_staging_size_ = 0;
     // D3: the reel ledger (render thread writes, HTTP thread reads via reel_json)
     mutable std::mutex reel_mutex_;
     std::vector<ReelEntry> reel_entries_;   // newest last, capped at StudioUI::REEL_MAX

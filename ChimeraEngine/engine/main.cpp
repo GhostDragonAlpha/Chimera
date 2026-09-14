@@ -2252,33 +2252,93 @@ int main(int argc, char** argv) {
             body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
             content_type = "application/json";
         } else if ((p == "/frame" || p == "/stream") && method == "GET") {
+            // ══ G8 CONTRACT (2026-09-13, agent H3 "capture-readback") ══════════
+            // The capture is TWO-PHASE on the render thread: a request ARMS a
+            // copy into a staging-ring slot (recorded into the frame's cmdbuf);
+            // the GPU finishes it OFF the tick path; collect_readbacks() drains
+            // finished slots at the end of each rendered frame. The tick loop
+            // (same thread as Engine::frame()) NEVER waits on a readback now —
+            // the old synchronous servicing froze it ~910 ms per pull
+            // (docs/evidence/agent_fleet/SHIP/G8_CAPTURE/).
+            //
+            //  /frame   (default; "?sync=1" is the same thing spelled out)
+            //      STRICTLY FRESH — byte-identical contract to the pre-G8
+            //      route: THIS request's own capture is armed, then collected
+            //      before the answer (watermark wait, 3 s deadline). The wait
+            //      runs on the HTTP WORKER, not the render thread, so the tick
+            //      loop does not feel it; only other HTTP polls still queue
+            //      behind it on the single worker (unchanged). Every existing
+            //      caller (cpp_bridge.fetch_frame and its movie renderers, the
+            //      native labelers, the bench tools) keeps its exact
+            //      guarantee: the bytes POSTDATE the request.
+            //
+            //  /frame?async=1 — TWO-PHASE for burst/trailer/bench callers:
+            //      arms a capture (when a ring slot is free) and returns
+            //      IMMEDIATELY. The contract for an armed-not-collected call
+            //      is PRIOR FRAME BYTES: the last COLLECTED capture is encoded
+            //      and served as usual (image/png|jpeg) — chosen over an empty
+            //      202-style body or a Retry-After header because it keeps
+            //      every response an IMAGE for naive .read() callers. Only
+            //      when NO capture has ever completed does it answer the
+            //      legacy {"ok":false,"error":"no frame"} JSON body. Freshness
+            //      sits one arm-collect cycle (~2 frames) behind the default;
+            //      use the default when bytes must postdate a /membrane or
+            //      /camera POST (cpp_bridge.wait_for_frame_change also
+            //      self-heals: it refetches until the frame differs).
             if (g_engine) {
-                g_engine->request_capture();
-                auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(3);
-                while (!g_engine->capture_ready()) {
-                    if (std::chrono::steady_clock::now() > deadline) { body = "{\"ok\":false,\"error\":\"capture timeout\"}"; break; }
-                    Sleep(5);
+                const bool want_async = f2::query_has(path, "async=1") &&
+                                        !f2::query_has(path, "sync=1");   // sync wins if both
+                std::vector<uint8_t> rgba; uint32_t w = 0, h = 0;
+                bool have_frame = false;
+                if (want_async) {
+                    // arm (if a slot is free) and serve whatever is already
+                    // collected — the two-phase answer, never a wait
+                    g_engine->request_capture_async();
+                    have_frame = g_engine->capture_frame(rgba, w, h);
+                    if (!have_frame) {
+                        body = "{\"ok\":false,\"error\":\"no frame\"}";
+                        content_type = "application/json";
+                    }
+                } else {
+                    // Strictly fresh: wait until a capture ARMED AT OR AFTER
+                    // this request is COLLECTED. The watermark (arm-sequence)
+                    // guard is load-bearing: a bare capture_ready() could be
+                    // satisfied by a stale slot an earlier ?async=1 pull left
+                    // in flight, silently serving pre-request pixels.
+                    const uint64_t want = g_engine->capture_arm_watermark() + 1;
+                    g_engine->request_capture();
+                    auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(3);
+                    while (!g_engine->capture_collected_since(want)) {
+                        if (std::chrono::steady_clock::now() > deadline) break;
+                        Sleep(5);
+                    }
+                    if (g_engine->capture_collected_since(want))
+                        have_frame = g_engine->capture_frame(rgba, w, h);
+                    if (!have_frame) {
+                        body = "{\"ok\":false,\"error\":\"capture timeout\"}";
+                        content_type = "application/json";
+                    }
                 }
-                if (g_engine->capture_ready()) {
-                    std::vector<uint8_t> rgba; uint32_t w = 0, h = 0;
+                if (have_frame) {
                     // ══ F2 BEGIN: /frame fast path (prereg: docs/evidence/agent_fleet/ ══
                     // ══ MATTER_KERNEL/SEAL_PREREGISTRATION.md — "F2: /FRAME FAST PATH") ══
                     // The ~1.1 s floor lived in the ENCODE (stored-deflate PNG over the
-                    // full 14.7 MB buffer), not the capture: the fence wait above and
-                    // the capture/copy discipline are UNTOUCHED — render-thread safety
-                    // is load-bearing. Wins, derived in the prereg: ?w= downscales
-                    // BEFORE encode (box average, was a nearest skip); ?fmt=jpg
-                    // encodes JPEG through in-box WIC at ?q= (default 85; WIC failure
-                    // falls back to the PNG path — an image, never an error body).
-                    // No params -> byte-identical full-res PNG, exactly the route
-                    // that stood here.
+                    // full 14.7 MB buffer), not the capture: the encode path below is
+                    // UNTOUCHED (the capture fetch moved into the contract branches
+                    // above, and the capture servicing itself went two-phase async in
+                    // G8 — see the contract comment above this block). Wins, derived in
+                    // the prereg: ?w= downscales BEFORE encode (box average, was a
+                    // nearest skip); ?fmt=jpg encodes JPEG through in-box WIC at ?q=
+                    // (default 85; WIC failure falls back to the PNG path — an image,
+                    // never an error body). No params -> byte-identical full-res PNG,
+                    // exactly the route that stood here.
                     static const bool f2_bench = []{
                         char buf[8];
                         return GetEnvironmentVariableA("CHIMERA_FRAME_BENCH", buf, sizeof(buf)) > 0;
                     }();
                     LARGE_INTEGER f2_qpf{}, f2_t0{}, f2_t1{}, f2_t2{}, f2_t3{};
                     if (f2_bench) { QueryPerformanceFrequency(&f2_qpf); QueryPerformanceCounter(&f2_t0); }
-                    if (g_engine->capture_frame(rgba, w, h)) {
+                    {
                         if (f2_bench) QueryPerformanceCounter(&f2_t1);
                         f2_t2 = f2_t1;
                         uint32_t want_w = f2::query_uint(path, "w=");
@@ -2321,12 +2381,7 @@ int main(int argc, char** argv) {
                         }
                         body.assign(reinterpret_cast<const char*>(encoded.data()), encoded.size());
                         // ══ F2 END (route) ══════════════════════════════════════════════
-                    } else {
-                        body = "{\"ok\":false,\"error\":\"no frame\"}";
-                        content_type = "application/json";
                     }
-                } else {
-                    content_type = "application/json";
                 }
             } else {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
@@ -3146,14 +3201,18 @@ int main(int argc, char** argv) {
                         if (std::chrono::steady_clock::now() > dl) break;
                         Sleep(2);
                     }
+                    // G8: wait on the watermark, not capture_ready() — the served
+                    // frame must be one armed at/after THIS scrub landed, never a
+                    // stale slot an earlier /frame?async=1 pull left in flight.
+                    const uint64_t want = g_engine->capture_arm_watermark() + 1;
                     g_engine->request_capture();
                     auto dl2 = std::chrono::steady_clock::now() + std::chrono::seconds(3);
-                    while (!g_engine->capture_ready()) {
+                    while (!g_engine->capture_collected_since(want)) {
                         if (std::chrono::steady_clock::now() > dl2) break;
                         Sleep(2);
                     }
                     std::vector<uint8_t> rgba; uint32_t w = 0, h = 0;
-                    if (!g_engine->capture_ready() || !g_engine->capture_frame(rgba, w, h)) {
+                    if (!g_engine->capture_collected_since(want) || !g_engine->capture_frame(rgba, w, h)) {
                         std::lock_guard<std::mutex> lk(g_engine->cap_m_);
                         g_engine->cap_error_ = "capture timeout at frame " + std::to_string(i);
                         break;

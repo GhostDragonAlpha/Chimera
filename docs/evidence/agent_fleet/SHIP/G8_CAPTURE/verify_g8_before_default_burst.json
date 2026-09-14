@@ -1,0 +1,33 @@
+{
+ "engine": "http://127.0.0.1:8107",
+ "date_utc": "2026-09-14T12:36:42.245844+00:00",
+ "pull_path": "/frame",
+ "bars": {
+  "burst_within_2x_quiet": true,
+  "max_stall_ms_le_200": false
+ },
+ "quiet": {
+  "samples": 751,
+  "ticks_per_min": 17865.300678893327,
+  "max_zero_stall_ms": 3.742133328826943
+ },
+ "burst": {
+  "samples": 1051,
+  "ticks_per_min": 9653.802058802394,
+  "max_zero_stall_ms": 1028.0168999978923,
+  "pulls": 10,
+  "pulls_ok": 10,
+  "pull_durs_ms": [
+   1126,
+   1143,
+   1136,
+   1106,
+   1133,
+   1157,
+   1117,
+   1107,
+   1136,
+   1121
+  ]
+ }
+}
