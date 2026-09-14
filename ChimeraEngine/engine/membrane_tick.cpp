@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstring>
 #include <cstdlib>
 #include <functional>
 #include <map>
@@ -16,6 +17,7 @@ namespace {
 
 constexpr float ANKLE_X_L = 0.4609f;   // measured ankle x (FEET prereg)
 constexpr float ANKLE_X_R = -0.4609f;
+constexpr float G_EARTH = 9.81f;       // m/s^2 -- THE FALL (movement law)
 
 std::array<float, 3> centroid(const std::vector<float>& v9,
                               uint32_t a, uint32_t b, uint32_t c) {
@@ -121,6 +123,9 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
     ticks_ = 0;
     force_l_ = force_r_ = 0.f;
     flex_l_ = flex_r_ = 0.f;
+    root_y_ = root_vy_ = 0.f;    // a new body starts at its authored rest
+    g_contact_n_ = 0.f;          // (gravity_on_ itself survives re-init:
+                                 //  the law applies to whatever body loads)
     ready_.store(true, std::memory_order_release);
 }
 
@@ -503,6 +508,38 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
         }
         vol_whole_ = vw;
         conserve_pct_ = vw != 0.f ? (total - vw) / vw * 100.f : 0.f;
+    }
+
+    // THE MOVEMENT LAW -- THE FALL (prereg appended to
+    // SEAL_PREREGISTRATION.md). One rigid DOF along Y:
+    //   y'' = -g + F_contact/m,
+    // F_contact a penalty spring read ONLY at the body's lowest vertex
+    // against the floor y=0: F = k*depth + c*max(0,-vy), depth = how far
+    // the lowest point sits below the floor. At rest the spring carries
+    // exactly the weight: k*sink = m*g (sink = 1 cm, derived). Placed
+    // LAST: every other pass (travel, press, seal volumes) reads the
+    // un-offset verts, so a uniform translation cannot leak into any
+    // volume, normal or pressure -- dV = 0 by construction.
+    if (gravity_on_) {
+        const size_t nvg = verts9.size() / 9;
+        float lo = nvg ? verts9[0 * 9 + 1] : 0.f;
+        for (size_t v = 1; v < nvg; ++v)
+            lo = std::min(lo, verts9[v * 9 + 1]);
+        lo += root_y_;                       // world lowest point this tick
+        const float depth = std::max(0.f, -lo);
+        float F = k_ground_ * depth + c_ground_ * std::max(0.f, -root_vy_);
+        const float F_cap = 50.f * mass_kg_ * G_EARTH;   // floor, not launcher
+        g_contact_n_ = std::min(F, F_cap);
+        float dts = std::min(std::max(dt, 0.f), 0.05f);  // stall guard
+        if (dts > 0.f) {
+            root_vy_ += (g_contact_n_ / mass_kg_ - G_EARTH) * dts;
+            root_vy_ = std::min(std::max(root_vy_, -30.f), 30.f);
+            root_y_ += root_vy_ * dts;
+            if (root_y_ > 3.f)  { root_y_ = 3.f;  if (root_vy_ > 0.f) root_vy_ = 0.f; }
+            if (root_y_ < -3.f) { root_y_ = -3.f; if (root_vy_ < 0.f) root_vy_ = 0.f; }
+        }
+        for (size_t v = 0; v < nvg; ++v)
+            verts9[v * 9 + 1] += root_y_;
     }
 }
 
@@ -1078,6 +1115,20 @@ bool MembraneTick::seal(float y, int cell_idx) {
     return true;
 }
 
+bool MembraneTick::set_gravity(bool on) {
+    // THE FALL's switch (the lead wires POST /tick_gravity to this).
+    // Turning gravity OFF returns the body to its authored rest exactly
+    // -- no hidden decay, deterministic state (the flex-0 precedent).
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    gravity_on_ = on;
+    if (!on) {
+        root_y_ = 0.f;
+        root_vy_ = 0.f;
+        g_contact_n_ = 0.f;
+    }
+    return true;
+}
+
 std::string MembraneTick::state_json() const {
     // reads the cell state other threads rewrite — hold the same mutex
     // (bounded by one tick; state reads are not on the render path)
@@ -1116,6 +1167,10 @@ std::string MembraneTick::state_json() const {
       << ",\"seal_loops\":" << seal_loops_
       << ",\"seal_caps\":" << seal_caps_
       << ",\"dimple_m\":" << dimple_m_
+      << ",\"gravity_on\":" << (gravity_on_ ? "true" : "false")
+      << ",\"root_y\":" << root_y_
+      << ",\"root_vy\":" << root_vy_
+      << ",\"g_contact_n\":" << g_contact_n_
       << ",\"cells\":[";
     for (size_t i = 0; i < seal_cells_.size(); ++i) {
         const SealCell& c = seal_cells_[i];

@@ -66,6 +66,15 @@ public:
     // pieces through shared slots. Refused by name for a connected cell.
     bool split(int cell);
 
+    // THE MOVEMENT LAW, first bar -- THE FALL (prereg appended to
+    // SEAL_PREREGISTRATION.md): the body has mass; gravity pulls it;
+    // the floor y=0 holds what presses it through a penalty spring at
+    // the body's lowest vertex. One rigid root DOF -- volumes, normals,
+    // poses, touches and seals are translation-invariant, so none of
+    // that arithmetic changes. Off = authored rest, exactly. The lead
+    // wires POST /tick_gravity -> set_gravity at the build window.
+    bool set_gravity(bool on);
+
     // R3 TOUCH (prereg 0935695e): press AT a world point (the camera-ray
     // hit), Gaussian falloff around it, along the POSED skin normals.
     // The pick callback runs under the tick lock so the geometry it reads
@@ -86,6 +95,8 @@ public:
     bool touch_press_at(const float hit[3], float force_n);
 
     bool   enabled_ = true;
+    bool   gravity_on_ = false;   // THE FALL: initialized false; the lead
+                                  // flips true after the fall bar passes
     uint64_t ticks_ = 0;
     float  force_l_ = 0.0f, force_r_ = 0.0f;   // active presses, newtons
     float  yield_pa_ = 15.0e6f;                // mat.skin, Yamada 1970
@@ -169,6 +180,16 @@ private:
     // rest preserved).
     std::vector<float> press_off_;             // nv offsets, aligned to verts
     bool  press_field_ = false;
+    // THE FALL (one rigid DOF along Y). Derived, not tuned: mass from
+    // the sealed cells (13.8245 m^3 x water = 13,824.5 kg); rest sink
+    // s* = m g/k <= 1 cm -> k = 1.3562e7 N/m; zeta = 0.7 -> c =
+    // 2 zeta sqrt(k m) = 6.062e5 N s/m; omega_n = sqrt(k/m) = 31.3
+    // rad/s (settle ~0.18 s). Clamps: |root_y| <= 3 m, |vy| <= 30 m/s.
+    float mass_kg_  = 13824.5f;
+    float k_ground_ = 1.3562e7f;               // N/m  (= m g / 0.01)
+    float c_ground_ = 6.062e5f;                // N s/m
+    float root_y_ = 0.f, root_vy_ = 0.f;       // the state; 0 = authored rest
+    float g_contact_n_ = 0.f;                  // last contact force (report)
     // THE TOUCH: a world-space press point + force (set via touch_press
     // under the tick lock; consumed by step)
     bool  touch_active_ = false;

@@ -733,3 +733,162 @@ rate must rise, not the engine polling), OR a browser-side touch lands
 off the creature. Successor if fired: delta compression for the stream
 (only changed verts) — named now as the internet-scale successor.
 
+---
+
+# THE MESH IMPORT PREREGISTRATION — the aliveness law, one POST (fleet C1)
+
+Operator directive (docs/THE_SHIP_GOAL.md, THE ALIVENESS LAW): any mesh +
+skeleton comes alive. C1 delivers the front door: `POST /mesh_import` takes
+a static OBJ or glTF 2.0 body and walks it through the SAME four moves the
+hand-authored creature uses — import -> classify -> bind -> seal — with
+`tools/bring_alive.py` as the orchestrating client.
+
+## STATEMENT
+
+One POST brings a static mesh alive: import (OBJ subset or glTF 2.0 ->
+the engine's full mesh format) -> classify (nearest joint pin per triangle
+centroid) -> bind (3 nearest pins, inverse-distance^2 weights) -> seal
+(the cut-and-weld at a chosen plane). No step is new physics — each
+replays a law the engine already certifies; the new claim is that the
+CHAIN holds for arbitrary closed input surfaces, not just the authored
+creature.
+
+## DERIVATION
+
+- The mesh format (the only one the engine admits):
+  [u32 N][u32 idxCount][f32 cam_radius][f32 cam_theta][f32 cam_phi]
+  [f32 slotmode][9 f32/vertex: pos3, normal3, color3][u32 indices * idxCount].
+- Normals are recomputed area-weighted (the cross-product sum over a
+  vertex's triangle fan — each term's magnitude IS the triangle area, so
+  the vector sum is the area-weighted average); colors are uniform warm
+  tan (0.80, 0.55, 0.35) — the aliveness law needs no authored palette.
+- Classification = nearest joint pin per triangle centroid
+  (tools/classify_run.py's exact law); binding = 3 nearest pins,
+  w = 1/(d^2 + 1e-6)^2 normalized — the same math, any mesh.
+- Seal = the cut-and-weld at a plane (mitosis v2, machinery unchanged).
+- THE FALSIFIER MECHANISM, named before the run: a leaky/open mesh is
+  REFUSED BY NAME. The importer computes the divergence closure — every
+  directed edge (a->b) must be matched by exactly one (b->a); boundary
+  edges are counted and named ("mesh not closed: K boundary edges"). The
+  divergence volume V = sum(dot(a, cross(b, c)))/6 must clear a
+  scale-relative epsilon (1e-6 x bounding-box volume) — zero/flat volumes
+  refused ("zero enclosed volume"). Winding is normalized so V > 0
+  (outward) and the body is centered at the origin, so the seal plane at
+  mid-height cuts a standing body. Degenerate limits refused by name:
+  > 500000 triangles, faces that cannot fan-triangulate (< 3 vertices),
+  repeated-index triangles.
+
+## PREDICTIONS
+
+A1. VOLUME: the imported creature's cells conserve volume — after
+    /tick_seal at mid-height, /tick_state reports |conserve_pct| <= 1
+    (sum of cell volumes vs the whole divergence volume).
+A2. POSES TRAVEL: posing a spine pin 25 deg moves the bound region and
+    conservation HOLDS under the pose (|conserve_pct| <= 1); pose 0
+    restores the rest volumes exactly.
+A3. TOUCH ANSWERS: the sealed creature answers a /tick_touch press
+    (dimple forms, P moves in the owning cell) — the press path needs
+    no mesh-specific code.
+
+## FALSIFIER
+
+A mesh that fails the closure check must be refused BY NAME — if the
+import instead admits an open surface, the falsifier fired. Conversely,
+if a mesh that PASSES the closure check then cannot seal (the cut graph
+does not close into loops), the closure test is insufficient — the named
+successor: per-component edge-walk validation inside the importer before
+it answers ok. If A1 fails on a CLOSED mesh, the divergence bookkeeping
+(inventory: seal caps vs the wall disc) is the suspect, not the import.
+
+
+
+---
+
+# THE MOVEMENT LAW PREREGISTRATION — THE FALL (fleet C2)
+
+Operator directive (docs/THE_SHIP_GOAL.md): "no move-forward — the
+creature sits in a gravity environment; the only way to operate is to
+move your limbs and adjust your body relative to the surface of
+gravitational resistance." The falsifier that keeps it honest: A
+CREATURE THAT CANNOT FALL CANNOT WALK. The first bar is the FALL.
+
+## STATEMENT
+
+The body has mass; gravity pulls it; the ground holds what presses it;
+nothing else holds the creature up. One rigid root DOF along Y carries
+the whole body: y'' = -g + F_contact/m, F_contact a penalty spring read
+ONLY at the body's lowest vertex against the floor y=0. Uniform
+translation changes no volume, no normal, no pose, no sealed cell —
+the seal/press/touch arithmetic is untouched BY CONSTRUCTION (the
+offset applies after every other pass in the tick).
+
+## DERIVATION
+
+- MASS (from the sealed cells, not chosen): the sealed whole is
+  13.824536 m^3 (this file, the 2-cell and 15-cell run records; the
+  cells sum to 13.824502). Water at 25 C: rho = 1000 kg/m^3 ->
+  m = 1000 x 13.8245 = 13,824.5 kg.
+  Weight W = m g = 13,824.5 x 9.81 = 135,618 N.
+- GROUND (penalty spring, derived from the 1-cm bar): at rest the
+  spring carries exactly the weight, k x sink = W. Target sink
+  s* = 0.01 m (the bar: <= 1 cm at rest) ->
+  k = 135,618 / 0.01 = 1.3562e7 N/m.
+  omega_n = sqrt(k/m) = sqrt(1.3562e7 / 13824.5) = sqrt(981.0)
+          = 31.32 rad/s   (= sqrt(g/s*), mass-independent).
+  Damping ratio zeta = 0.7 (settle without ringing):
+  c = 2 zeta sqrt(k m) = 1.4 x sqrt(1.3562e7 x 13824.5)
+    = 1.4 x 4.330e5 = 6.062e5 N s/m.
+  Settle time ts = 4/(zeta omega_n) = 4/21.92 = 0.18 s.
+  Force cap 50 W = 6.78e6 N (a floor, not a launcher: the worst
+  clamp-escape deceleration stays <= 49 g). Clamps: |root_y| <= 3 m,
+  |root_vy| <= 30 m/s.
+- THE MEASURED INITIAL CONDITION (2026-09-13,
+  session_snapshot/mesh_bin.blob — the exact blob the boot restore
+  replays; 18,459 verts, 36,630 tris): authored rest lowest vertex
+  y = -0.019507 m, 50 verts below the floor — the sculpt already
+  presses 1.95 cm into a floor at y=0 (the matter pass's
+  y_ground = -0.0195 corroborates). Consequence, derived: at enable,
+  depth 0.0195 m gives contact 1.95 W = 2.65e5 N against W = 1.36e5 N
+  — net UP 0.95 W. From THIS rest the root RISES 9.5 mm to the
+  equilibrium; from any state with the lowest vertex at/above the
+  floor it FALLS (free fall at g until contact), settling at the same
+  W/k = 1.0 cm penetration. One law, two branches, pinned by one
+  measured number.
+
+## PREDICTIONS
+
+F1. THE FALL: with gravity enabled and muscles slack the root moves
+    along Y measurably (>= 3 mm) within 1 s (derived: the motion is
+    complete in ~0.2 s) from ANY start. A body whose lowest vertex is
+    at/above the floor DROPS — the directive's fall, testable the
+    moment a pose, step or lift law raises the body clear of y=0. The
+    measured authored rest (2 cm pressed in) RISES to equilibrium.
+    If the root does neither — or sinks through the floor — the law
+    failed, not the sculpt.
+F2. REST: settled penetration = W/k = 1.0 cm (bar: <= 1 cm + float
+    tolerance), root velocity -> 0, and every sealed-cell pressure
+    stays EXACTLY 0 (uniform translation: dV = 0 so dP = 0 — volumes
+    are computed on the un-offset verts each tick by construction).
+F3. NOTHING ELSE CHANGES: pose, touch, lessons and the seal sums are
+    untouched — |conserve_pct| holds its pre-gravity value (bar:
+    <= 0.01%) and the 13.8245 sum stands.
+
+## FALSIFIER
+
+The body neither drops (from a floor-clear start) nor rises to the
+1-cm equilibrium (from the measured start), OR rest penetration
+exceeds 1 cm, OR rest pressures go non-zero, OR conservation breaks:
+the movement law failed. Named successor audit, in order: (1) the
+contact sign/depth convention in the step() gravity block,
+(2) the translation-invariance assumption in the seal divergence
+sums, (3) the boot-restore mesh placement — a sculpt whose feet live
+2 cm under the floor is a modeling artifact the WALK law must own,
+and the walk (the next bar) needs a root that can leave the floor
+entirely.
+
+## RUN RECORD
+
+(open — the lead wires POST /tick_gravity {"on":true|false} ->
+MembraneTick::set_gravity at the build window, flips the
+gravity_on_ initializer to true after the bar passes, runs
+tools/gravity_test.py, and appends the measured curve here.)
