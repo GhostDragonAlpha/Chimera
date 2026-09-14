@@ -56,7 +56,7 @@ RATE_LIMITS = {  # class -> (per minute, burst)
 }
 STREAM_PATHS = {"/api/verts", "/api/state", "/api/frame", "/api/topology",
                 "/api/touch", "/api/touch_clear", "/api/touch_hit",
-                "/api/pose"}
+                "/api/pose", "/api/gravity"}
 MAX_BODY = 5 * 1024 * 1024   # no honest request body here is bigger
 
 _BUCKETS: dict = {}          # (ip, class) -> (tokens left, last seen)
@@ -216,11 +216,15 @@ class Handler(BaseHTTPRequestHandler):
             self._deny(429, "too many requests -- slow down")
             return
         body = self.rfile.read(n) if n else None
-        if p in ("/api/touch", "/api/touch_clear", "/api/pose", "/api/touch_hit"):
+        # W1 (R4): /api/gravity joins the pose pattern -- the page's own
+        # gravity verb for the_stand, proxied to the engine's /tick_gravity.
+        if p in ("/api/touch", "/api/touch_clear", "/api/pose", "/api/touch_hit",
+                 "/api/gravity"):
             self._proxy({"/api/touch": "/tick_touch",
                          "/api/touch_clear": "/tick_touch_clear",
                          "/api/pose": "/tick_pose",
-                         "/api/touch_hit": "/tick_touch"}[p], "POST", body)
+                         "/api/touch_hit": "/tick_touch",
+                         "/api/gravity": "/tick_gravity"}[p], "POST", body)
         elif p == "/api/progress":
             try:
                 data = json.loads(body or b"{}")

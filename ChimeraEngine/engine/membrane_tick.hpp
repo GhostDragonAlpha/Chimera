@@ -75,6 +75,22 @@ public:
     // wires POST /tick_gravity -> set_gravity at the build window.
     bool set_gravity(bool on);
 
+    // F1 STANCE (the balance rung; prereg appended to
+    // SEAL_PREREGISTRATION.md): the body counters its own lean by
+    // posing BOTH ankles (pins 17/18). set_stance(true) derives
+    // everything from THIS engine's own travel arithmetic: the support
+    // set (the rest blend's min-y band, FROZEN -- a per-frame
+    // re-selected band chases the ankle pitch and self-cancels the
+    // channel: measured |S| 0.056 m/rad re-selected vs 0.283 frozen),
+    // the rest lean reference (the tail makes absolute rest lean
+    // nonzero: lean_ref = (-0.0002, -0.8366) m), and the gain
+    // k_p = 1/(|S| * tau), tau = 1 s (the 1 s nulling bar). The servo
+    // runs in step() only while gravity is on (balance exists only in
+    // a gravity field); OFF zeroes the ankles -- authored rest,
+    // exactly (the flex-0 precedent). Refused honestly without
+    // classification. The lead wires POST /tick_stance at the window.
+    bool set_stance(bool on);
+
     // R3 TOUCH (prereg 0935695e): press AT a world point (the camera-ray
     // hit), Gaussian falloff around it, along the POSED skin normals.
     // The pick callback runs under the tick lock so the geometry it reads
@@ -197,6 +213,16 @@ private:
     float c_ground_ = 6.062e5f;                // N s/m
     float root_y_ = 0.f, root_vy_ = 0.f;       // the state; 0 = authored rest
     float g_contact_n_ = 0.f;                  // last contact force (report)
+    // F1 STANCE state (see set_stance above). Default OFF; the lead owns
+    // the policy flip after the bars pass (the gravity precedent).
+    static constexpr uint8_t ANKLE_PIN_L = 17, ANKLE_PIN_R = 18;
+    bool  stance_on_ = false;                  // the balance servo switch
+    float stance_th_ = 0.f;                    // symmetric ankle angle, rad
+    float stance_kp_ = 0.f;                    // rad/(m s), derived at enable
+    float lean_ref_x_ = 0.f, lean_ref_z_ = 0.f;   // authored-rest lean, m
+    float stance_lean_x_ = 0.f, stance_lean_z_ = 0.f;  // live lean, m (report)
+    std::vector<uint32_t> stance_sup_;         // frozen support vert indices
+    void  stance_off_locked_();                // assumes seal_mtx_ held
     // THE TOUCH: a world-space press point + force (set via touch_press
     // under the tick lock; consumed by step)
     bool  touch_active_ = false;

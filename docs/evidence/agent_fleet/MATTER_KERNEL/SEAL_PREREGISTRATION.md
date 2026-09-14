@@ -1092,3 +1092,163 @@ in png_encoder.hpp; (3) the operator's taste on q.
 
 (open — the lead runs the bench commands at the window and appends the
 measured numbers here.)
+
+---
+
+# THE STANCE PREREGISTRATION — THE BALANCE RUNG (fleet 2, F1)
+
+Operator directive (the movement law, next rung): the body keeps itself
+balanced by adjusting ankle/hip poses; the falsifier that keeps it
+honest: CUT THE BALANCE AND IT FALLS. Gravity is live (the movement-law
+rung above): the body has mass, the floor holds what presses it, and
+nothing else holds the creature up. This rung adds the second law:
+THE BODY RIGHTS ITSELF.
+
+## STATEMENT
+
+A stance controller reads the body's LEAN — the horizontal (xz) offset
+of the whole-body posed centroid from its support — and drives BOTH
+ankles (pins 17/18, joints28 order: 17 = ankle_L, 18 = ankle_R) as ONE
+servo:
+
+  dtheta/dt = -k_p * lean_z,   |theta| <= 5 deg,   only while gravity is on.
+
+Poses only: no root teleporting, no invented forces (the movement law:
+locomotion comes later, by limb forces against the ground; stance is
+the keep-your-feet-under-you law that precedes it). The loop is an
+INTEGRAL servo: the plant theta->lean is a static gain and the
+controller integrates lean into theta, so a PERSISTENT disturbance — a
+held touch, a held pose — nulls exactly: lean_ss -> 0 with
+theta_ss = D/|S|. Poses the servo does not own (every pin except
+17/18) are the disturbance channel; the touch is the force channel.
+
+## DERIVATION (measured on the mesh BEFORE implementation —
+monkey_full.bin, the 18,459-vert / 36,630-tri body the boot restore
+replays; the vertbind replicated exactly as classify_run.py posts it)
+
+- THE SUPPORT SET IS FROZEN AT STANCE-ENGAGE, and that is a measured
+  necessity, not a convenience. The support is the rest blend's min-y
+  band (y <= lowest + 5 cm): 186 verts. A per-frame re-selected band
+  CHASES the ankle pitch — the toe dives into the band while the heel
+  rises out — and self-cancels the very channel the servo drives:
+  measured d(lean_z)/d(theta) = 0.056 m/rad re-selected vs 0.283 m/rad
+  frozen (a 5x collapse). The contact patch is identified ONCE, at
+  engage; its membership is then fixed while its positions keep riding
+  the posed surface every tick.
+- THE ACTUATED SUBSPACE IS SAGITTAL ONLY (disclosed): apply_travel
+  rotates EVERY pin about the X axis (a YZ-plane rotation; the pin
+  axis field is inert). Ankle flex moves the support centroid along z
+  only. The coronal (x) lean is measured and reported but UNACTUATED —
+  the hips are no reserve for it (they are X-axis too); coronal stance
+  needs a twist axis in the travel law and is named OPEN. The touch is
+  delivered sagittally (+z at the hip) so its lean lands in the
+  actuated subspace.
+- SENSITIVITY AND GAIN (no magic numbers): with the support frozen,
+  symmetric ankle flex measures d(lean_z)/d(theta) = -0.283 m/rad at
+  1 deg and -0.316 m/rad at 5 deg (12% superlinear). The engine probes
+  its OWN arithmetic at enable — a +1 deg symmetric ankle pose on the
+  rest blend, the same travel path step() runs — and derives
+  k_p = 1/(|S| * tau) with tau = 1 s (the nulling bar: a disturbance
+  nulls to 1/e in one tau, so a 2 cm step is under 0.5 cm at 2 s),
+  k_p ~= 3.5 rad/(m s). Discrete stability at the tick:
+  k_p*|S|*dt = 3.5*0.283*0.016 = 0.017 << 2 — a monotone first-order
+  lag. Timescale separation: contact settle 0.18 s << tau_lean 1 s —
+  the root spring tracks the ankle rock (sole lever ~+-theta*0.1 m,
+  about +-9 mm at 5 deg) without fighting it.
+- AUTHORITY (the honest budget): A = |S| * 5 deg = 2.5-2.8 cm of lean.
+  THE BRIEF'S "A 5 CM LEAN CORRECTS WITHIN +-5 DEG" DOES NOT CLOSE AND
+  IS NOT FAKED: 5 cm needs 9-10 deg of ankle. The within-authority
+  disturbance class is |D| <= 2.8 cm; S2b below MEASURES the authority
+  itself. The hips-as-reserve extension is quoted, not built: the leg
+  lever is ~3.1 m (hip pin y 3.415, sole y ~0), so hip flex carries
+  ~5.4 cm/deg — 1.8 deg per cm — the next rung's actuator.
+- THE FLAT BLEND BOUNDS THE DISTURBANCE CHANNELS (measured per pin,
+  cm of lean_z per +1 deg, frozen support): ankle 0.247 each (the
+  servo); knee 0.177 (EXCLUDED — knees bind the same foot verts as the
+  support, so a knee disturber moves both sides of the ledger); wrist
+  0.080, elbow 0.016, neck 0.008, the spine trio ~0.002 EACH.
+  apply_travel is a FLAT blend (no FK chaining): posing spine_lower
+  tilts its own ~1 m belly patch and the head never follows — the
+  torso trio at 5 deg each measures 0.05 cm of lean, worthless as the
+  brief's spine-lean disturber. The measured mass-shift channel is THE
+  ARM SWING: symmetric wrists -0.16 cm/deg, symmetric wrists+elbows
+  -0.19 cm/deg (wrist ROM -30/+60, elbow -145/+125) — the physical
+  "shift your own weight" disturbance, ~50-60 deg of ramp to cross
+  10 cm.
+- THE TOUCH CHANNEL IS SMALL (measured, and said plainly): a 20 kN
+  press at the hip dimples the 50 verts inside its 9 cm Gaussian reach
+  by up to delta = F/(4 pi sigma) = 0.398 m, which shifts the
+  whole-body centroid by D = 0.11 mm. The touch bar is therefore
+  NULLING of a persistent force-channel disturbance (residual <= 25%
+  of the excursion at 2 s — the integral action is what passes it),
+  not a centimeter excursion; the centimeter scale belongs to the pose
+  channel. The brief's "lean returns under 2 cm within ~2 s" is
+  contained by the measured bars at every scale.
+- THE REST REFERENCE: at authored rest the body centroid is NOT over
+  the support — rest lean = (-0.0002, -0.8366) m (x, z): the tail
+  (tail_tip z = -4.21) puts 0.84 m of rest "lean" into the metric.
+  The controller nulls the ERROR FROM AUTHORED REST: lean_ref is
+  measured at enable on the rest blend (the same arithmetic path
+  seal() uses for v0), not assumed zero.
+
+## PREDICTIONS
+
+S1. TOUCH NULLING (gravity on, stance on): a 20 kN sagittal hip touch
+    (hit = the +z-most vert of the hip band 2.0 <= y <= 4.5 — measured
+    vert 16140 at (-2.68, 3.32, 0.83), authored normal (0.12, 0.25,
+    0.96)), held 3 s, excites lean by ~0.1 mm and the servo nulls it:
+    residual <= max(25% of the excursion, 0.02 mm) within 2 s, ankles
+    within +-5 deg. On touch_clear the dimple decays (tau 0.5 s, the
+    0.1 mm cutoff at ~4.2 s) and lean returns to baseline.
+S1b. POSE-LEAN NULLING (the within-authority bar): a symmetric wrist
+    step sized to ~2 cm of lean (~12 deg at -0.16 cm/deg) with stance
+    on: lean nulls to <= 0.5 cm within 2 s (tau = 1 s predicts 27%
+    remaining), ankles settle at theta_ss = D/|S| ~ 3.8 deg <= 5 deg —
+    no saturation; on release the servo unwinds to ~0.
+S2. THE FALL DIRECTION (stance OFF): the arm-swing channel ramped
+    (wrists+elbows, +5 deg steps) crosses |lean| = 10 cm within the
+    ROM (predicted ~50-60 deg of ramp) and HOLDS >= 90% of its
+    end-of-ramp value through a 2 s hold: the un-righted body keeps
+    its lean. Disclosed: the kernel root is ONE DOF along Y, so the
+    uncontrolled body cannot topple yet — the fall analogue is
+    UN-RIGHTED LEAN; the divergent toppling bar (lean growing without
+    a growing push) becomes testable when the kernel gains root xz
+    and is named for that rung.
+S2b. THE AUTHORITY LAW (stance ON, the same ramp): the servo nulls the
+    early ramp, then the ankles PIN at 5.0 +- 0.2 deg and lean holds
+    at (disturbance - authority). Because the travel blend is an exact
+    per-vertex weighted sum, the channels superpose exactly, so the
+    measured |lean_off - lean_on| at the final hold IS the ankle
+    authority: predicted 2.76 cm (|S| at 5 deg = 0.316 m/rad), bar
+    [2.3, 3.3] cm, with no oscillation across the hold (the
+    state-clamped integrator degrades gracefully — no windup, no
+    ringing).
+S3. NOTHING ELSE LIES: |conserve_pct| <= 0.01 at every phase; sealed
+    pressures EXACTLY 0 at rest before and after (while the servo runs
+    the ankles bend the surface and the water law answers dP there BY
+    DESIGN — rest is rest); teardown returns the ankles to exactly 0
+    and lean to baseline; the root rest state (root_y, root_vy) is
+    unchanged by stance having run.
+
+## FALSIFIER
+
+Stance-on fails to null a within-authority disturbance (S1b), or
+stance-on is indistinguishable from stance-off (S1b/S2 — the
+controller is theatre), or the ankles saturate on a disturbance inside
+the derived authority (2.8 cm), or S2b's measured authority falls
+outside [2.3, 3.3] cm, or conservation breaks while the servo runs.
+Named gain audit, in order: (1) the SIGN of S in step() — a positive
+sign fights the lean and diverges monotonically, unmistakable within
+one second; (2) the support set — frozen membership vs a re-selected
+band (the measured 5x self-cancel is the known failure); (3) the |S|
+probe — the engine's own +1 deg ankle probe at enable vs this file's
+0.283 m/rad; (4) the dt clamp / tick rate (the servo integrates at
+most k_p*lean*0.05 per tick); (5) the rest reference (lean_ref
+measured on the rest blend, not assumed zero).
+
+## RUN RECORD
+
+(open — the lead wires POST /tick_stance {"on":true|false} ->
+MembraneTick::set_stance next to POST /tick_gravity at the build
+window, runs tools/walk_test.py, and appends the measured curves here.
+The script is HTTP-only and does not build or run the engine.)

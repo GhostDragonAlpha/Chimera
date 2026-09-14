@@ -19,6 +19,35 @@ constexpr float ANKLE_X_L = 0.4609f;   // measured ankle x (FEET prereg)
 constexpr float ANKLE_X_R = -0.4609f;
 constexpr float G_EARTH = 9.81f;       // m/s^2 -- THE FALL (movement law)
 
+// F1 STANCE constants -- the bars, not tunings (prereg derivation,
+// SEAL_PREREGISTRATION.md "THE STANCE PREREGISTRATION"):
+constexpr float STANCE_TAU_S          = 1.0f;  // the 1 s nulling bar
+constexpr float STANCE_THETA_MAX_DEG  = 5.0f;  // the ankle ROM bar
+constexpr float STANCE_BAND_M         = 0.05f; // support band: sole + 5 cm
+
+// F1: whole-body centroid + centroid over a FIXED index set (the frozen
+// support). The support set is frozen at stance-engage because a
+// per-frame re-selected min-y band CHASES the ankle pitch (the toe
+// dives into the band, the heel rises out) and self-cancels the very
+// channel the servo drives -- measured on this sculpt:
+// |S| 0.056 m/rad re-selected vs 0.283 m/rad frozen (prereg DERIVATION).
+void lean_centroids(const std::vector<float>& v9,
+                    const std::vector<uint32_t>& sup,
+                    float* cx, float* cz, float* sx, float* sz) {
+    const size_t n = v9.size() / 9;
+    float cxa = 0.f, cza = 0.f;
+    for (size_t v = 0; v < n; ++v) { cxa += v9[v * 9 + 0]; cza += v9[v * 9 + 2]; }
+    float sxa = 0.f, sza = 0.f;
+    for (uint32_t v : sup) {
+        sxa += v9[(size_t)v * 9 + 0];
+        sza += v9[(size_t)v * 9 + 2];
+    }
+    const float inv_n = n ? 1.f / (float)n : 0.f;
+    const float inv_s = sup.size() ? 1.f / (float)sup.size() : 0.f;
+    *cx = cxa * inv_n; *cz = cza * inv_n;
+    *sx = sxa * inv_s; *sz = sza * inv_s;
+}
+
 std::array<float, 3> centroid(const std::vector<float>& v9,
                               uint32_t a, uint32_t b, uint32_t c) {
     return {(v9[a * 9 + 0] + v9[b * 9 + 0] + v9[c * 9 + 0]) / 3.f,
@@ -134,6 +163,12 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
     root_y_ = root_vy_ = 0.f;    // a new body starts at its authored rest
     g_contact_n_ = 0.f;          // (gravity_on_ itself survives re-init:
                                  //  the law applies to whatever body loads)
+    // F1: a new body starts UN-STANCED -- its frozen support set and
+    // derived gain described the OLD geometry and must not survive a
+    // mesh swap (the C1 crash class: stale indices into a new body).
+    stance_on_ = false;
+    stance_th_ = 0.f;
+    stance_sup_.clear();
     ready_.store(true, std::memory_order_release);
 }
 
@@ -541,6 +576,44 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
         }
         vol_whole_ = vw;
         conserve_pct_ = vw != 0.f ? (total - vw) / vw * 100.f : 0.f;
+    }
+
+    // ═══ F1: THE STANCE (the balance rung; prereg appended to
+    // SEAL_PREREGISTRATION.md) ═══════════════════════════════════════
+    // The body keeps itself balanced: lean -- the horizontal (xz) offset
+    // of the whole-body posed centroid from its FROZEN support set (the
+    // contact patch identified at stance engage) -- drives BOTH ankles
+    // as one integral servo:
+    //   dtheta/dt = -k_p * lean_z,   |theta| <= 5 deg,
+    // with k_p = 1/(|S|*tau) derived at set_stance(true) from this
+    // engine's own travel arithmetic (a +1 deg ankle probe on the rest
+    // blend), tau = 1 s (the nulling bar). A static-gain plant
+    // integrated by the controller nulls any PERSISTENT disturbance
+    // exactly (a held touch, a held pose): lean_ss -> 0, and the
+    // state-clamped integrator saturates gracefully beyond the
+    // authority A = |S|*5 deg ~= 2.8 cm -- no windup, no ringing.
+    // Poses only: no root teleporting, no invented forces. Only while
+    // gravity is on (balance exists only in a gravity field). Placed
+    // AFTER travel/press (reads the posed surface) and BEFORE the root
+    // offset (a uniform translation leaves xz unchanged). Disclosed in
+    // the prereg: every pin rotates about X, so the actuated subspace
+    // is the SAGITTAL (z) lean; the coronal (x) lean is measured and
+    // reported but unactuated (no twist axis in the travel law).
+    if (stance_on_ && gravity_on_ && classified
+        && !stance_sup_.empty()
+        && joint_deg_.size() > (size_t)std::max(ANKLE_PIN_L, ANKLE_PIN_R)) {
+        float cx, cz, sx, sz;
+        lean_centroids(verts9, stance_sup_, &cx, &cz, &sx, &sz);
+        const float lean_x = (cx - sx) - lean_ref_x_;
+        const float lean_z = (cz - sz) - lean_ref_z_;
+        const float dts = std::min(std::max(dt, 0.f), 0.05f);  // stall guard
+        stance_th_ -= stance_kp_ * lean_z * dts;
+        const float th_max = STANCE_THETA_MAX_DEG * 3.14159265358979f / 180.f;
+        stance_th_ = std::min(std::max(stance_th_, -th_max), th_max);
+        joint_deg_[ANKLE_PIN_L] = stance_th_;
+        joint_deg_[ANKLE_PIN_R] = stance_th_;
+        stance_lean_x_ = lean_x;
+        stance_lean_z_ = lean_z;
     }
 
     // THE MOVEMENT LAW -- THE FALL (prereg appended to
@@ -1173,8 +1246,85 @@ bool MembraneTick::set_gravity(bool on) {
         root_y_ = 0.f;
         root_vy_ = 0.f;
         g_contact_n_ = 0.f;
+        stance_off_locked_();   // F1: the rest contract is exact -- the
+                                // servo may not keep holding ankle poses
+                                // the law no longer balances
     }
     return true;
+}
+
+// F1: the stance switch (the lead wires POST /tick_stance to this,
+// next to POST /tick_gravity). Everything measurable is derived here,
+// under the lock, from this engine's own arithmetic -- no tuned gains.
+bool MembraneTick::set_stance(bool on) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (!on) { stance_off_locked_(); return true; }
+
+    if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return false;
+    const size_t nv = base_pos_.size() / 9;
+    const bool classified = cell_joint_.size() == cells_.size()
+                         && !joint_pins_.empty()   // bindings without pins = OOB
+                         && joint_pins_.size() == joint_deg_.size()
+                         && vert_bind_idx_.size() == nv * 3
+                         && vert_bind_w_.size() == nv * 3;
+    if (!classified
+        || joint_deg_.size() <= (size_t)std::max(ANKLE_PIN_L, ANKLE_PIN_R))
+        return false;   // no travel bindings / no ankle pins: refuse honestly
+
+    // The support set: the rest blend's min-y band, FROZEN (why frozen:
+    // a re-selected band chases the ankle pitch and self-cancels the
+    // channel -- measured 0.056 vs 0.283 m/rad, prereg DERIVATION).
+    // rest9 is the exact surface the tick itself produces at rest --
+    // seal()'s rest-blend path, so the reference is deterministic.
+    std::vector<float> rest9(base_pos_);
+    apply_travel(rest9, nullptr);
+    float lo = nv ? rest9[1] : 0.f;
+    for (size_t v = 1; v < nv; ++v)
+        lo = std::min(lo, rest9[v * 9 + 1]);
+    const float band_hi = lo + STANCE_BAND_M;
+    std::vector<uint32_t> sup;
+    sup.reserve(256);
+    for (size_t v = 0; v < nv; ++v)
+        if (rest9[v * 9 + 1] <= band_hi) sup.push_back((uint32_t)v);
+    if (sup.empty()) return false;   // nothing on the ground: refuse
+
+    // Rest lean reference (the tail puts -0.84 m of "lean" into the
+    // metric at authored rest): the servo nulls the ERROR from rest.
+    float cx, cz, sx, sz;
+    lean_centroids(rest9, sup, &cx, &cz, &sx, &sz);
+
+    // |S| measured on this engine's own travel arithmetic: pose the
+    // rest blend +1 deg on BOTH ankles and read d(lean_z).
+    std::vector<float> probe9(rest9);
+    std::vector<float> degs(joint_deg_.size(), 0.f);
+    degs[ANKLE_PIN_L] = degs[ANKLE_PIN_R] =
+        1.f * 3.14159265358979f / 180.f;
+    apply_travel(probe9, &degs);
+    float pcx, pcz, psx, psz;
+    lean_centroids(probe9, sup, &pcx, &pcz, &psx, &psz);
+    const float S = ((pcz - psz) - (cz - sz)) / degs[ANKLE_PIN_L];
+    if (std::fabs(S) < 1e-3f) return false;   // no measurable channel
+
+    stance_kp_ = 1.f / (std::fabs(S) * STANCE_TAU_S);
+    lean_ref_x_ = cx - sx;
+    lean_ref_z_ = cz - sz;
+    stance_sup_ = std::move(sup);
+    stance_th_ = 0.f;
+    joint_deg_[ANKLE_PIN_L] = 0.f;
+    joint_deg_[ANKLE_PIN_R] = 0.f;
+    stance_on_ = true;
+    return true;
+}
+
+void MembraneTick::stance_off_locked_() {
+    // Deterministic off: ankles to authored 0 (the flex-0 precedent) --
+    // no hidden pose decay, no stale integrator.
+    stance_on_ = false;
+    stance_th_ = 0.f;
+    if (joint_deg_.size() > (size_t)std::max(ANKLE_PIN_L, ANKLE_PIN_R)) {
+        joint_deg_[ANKLE_PIN_L] = 0.f;
+        joint_deg_[ANKLE_PIN_R] = 0.f;
+    }
 }
 
 std::string MembraneTick::state_json() const {
@@ -1219,6 +1369,11 @@ std::string MembraneTick::state_json() const {
       << ",\"root_y\":" << root_y_
       << ",\"root_vy\":" << root_vy_
       << ",\"g_contact_n\":" << g_contact_n_
+      << ",\"stance_on\":" << (stance_on_ ? "true" : "false")
+      << ",\"stance_ankle_deg\":" << stance_th_ * 57.29577951308232
+      << ",\"stance_kp\":" << stance_kp_
+      << ",\"stance_lean_x\":" << stance_lean_x_
+      << ",\"stance_lean_z\":" << stance_lean_z_
       << ",\"cells\":[";
     for (size_t i = 0; i < seal_cells_.size(); ++i) {
         const SealCell& c = seal_cells_[i];

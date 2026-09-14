@@ -364,11 +364,23 @@
   var lessonState = {};        // id -> {goalMet, passed, phase}
   var JOINT_INDEX = { hip_L: 13, hip_R: 14, knee_L: 15, knee_R: 16,
                       ankle_L: 17, ankle_R: 18 };
+  /* W1 (R4, LESSON_JUDGE_SPEC §2/§9): the goal types this page implements.
+     A lesson whose goal.type is not on this list HOLDS -- it can neither
+     crash the judge nor pass by accident. */
+  var KNOWN_GOAL_TYPES = ['pressure_above', 'pressure_below', 'pose_reach',
+                          'pose_pair', 'gravity_on', 'cells_woken'];
+  var POSE_TOL_DEG   = 2;     // pose intent tolerance around the goal deg
+  var ROOT_VY_SETTLE = 0.05;  // m/s -- gravity_on "settled means settled"
+  var ROOT_SETTLE_M  = 0.002; // m  -- the root left its authored rest
+  var WOKEN_PA       = 20000; // Pa -- cells_woken wake bar (squeeze only)
   function curLesson() { return LESSONS[lessonIdx] || null; }
   function curState() {
     var l = curLesson();
     if (!l) return { goalMet: false, passed: false, phase: 'goal' };
-    if (!lessonState[l.id]) lessonState[l.id] = { goalMet: false, passed: false, phase: 'goal' };
+    // W1: per-lesson latches -- pairOk (pose_pair, per joint), wokenSet
+    // (cells_woken, distinct cell indices), gravityArmed (gravity_on).
+    if (!lessonState[l.id]) lessonState[l.id] = { goalMet: false, passed: false,
+      phase: 'goal', pairOk: {}, wokenSet: {}, gravityArmed: false };
     return lessonState[l.id];
   }
   async function loadLessons() {
@@ -385,12 +397,31 @@
     $('lesson-index').textContent = (lessonIdx + 1) + ' / ' + LESSONS.length;
     $('lesson-title').textContent = l.title;
     $('lesson-body').textContent = l.body;
-    $('pose-btn-wrap').style.display = l.goal.type === 'pose_reach' ? 'block' : 'none';
+    // W1 (SPEC §6): pose_pair gets the pose button too -- each press posts
+    // the wishes not yet latched, and the label names the pending one.
+    var isPose = l.goal.type === 'pose_reach' || l.goal.type === 'pose_pair';
+    $('pose-btn-wrap').style.display = isPose ? 'block' : 'none';
     // a pressure lesson must start with the body AT REST: a held pose
     // shifts the volumes off v0 and every calm check would dead-end
-    if (l.goal.type !== 'pose_reach') resetPose();
+    if (!isPose) resetPose();
     if (l.goal.type === 'pose_reach')
       $('pose-btn').textContent = (l.goal.joint || 'joint') + ' → ' + l.goal.deg + '°';
+    if (l.goal.type === 'pose_pair') {
+      var pend = W1pendingWish(l);
+      $('pose-btn').textContent = pend
+        ? (pend.joint + ' → ' + pend.deg + '°') : 'hold the balance';
+    }
+    // W1 (SPEC §10): the gravity lesson turns the world on ITSELF -- the
+    // page POSTs /api/gravity {on:true} once at lesson start and arms the
+    // judge when the enable resolves. Idempotent in the engine; a replay of
+    // an already-settled world simply re-latches on its first poll.
+    if (l.goal.type === 'gravity_on') {
+      var stg = curState();
+      stg.gravityArmed = false;
+      postJSON('/api/gravity', { on: true })
+        .then(function () { stg.gravityArmed = true; })
+        .catch(function () { stg.gravityArmed = false; });
+    }
     var st = curState();
     if (st.passed) setVerdict('PASSED — this one is yours already.', 'good');
     else if (st.goalMet) setVerdict('the goal is met — finish the release.', 'accent');
@@ -399,27 +430,95 @@
   }
   $('lesson-prev').addEventListener('click', function () { showLesson(lessonIdx - 1); });
   $('lesson-next').addEventListener('click', function () { showLesson(lessonIdx + 1); });
+  /* W1 (SPEC §6): EVERY pose the page sends rides this one sender, and the
+     judge observes it here. The latch fires only when the ENGINE accepted
+     (body ok:true) -- a refused post comes back HTTP 200 with ok:false and
+     never latches. */
+  async function postPose(joint_index, deg) {
+    var body = null;
+    try {
+      var res = await postJSON('/api/pose', { joint_index: joint_index, deg: deg });
+      body = await res.json();
+    } catch (err) { body = null; }
+    observePose(joint_index, deg, !!(body && body.ok === true));
+    return body;
+  }
+  function observePose(joint_index, deg, accepted) {
+    var l = curLesson();
+    if (!l) return;
+    var g = l.goal;
+    if (g.type !== 'pose_reach' && g.type !== 'pose_pair') return;  // pose goals only
+    var st = curState();
+    if (st.passed || !accepted) return;      // done, or refused: do not latch
+    if (g.type === 'pose_reach') {
+      if (joint_index === JOINT_INDEX[g.joint] && Math.abs(deg - g.deg) <= POSE_TOL_DEG) {
+        st.goalMet = true; st.passed = true;
+        if (window.ChimeraSound) ChimeraSound.passed();
+        setVerdict('PASSED — the joint obeys the muscle.', 'good');
+        // the lesson passed; the body returns to rest for the next one
+        setTimeout(async function () {
+          await resetPose();
+          setVerdict('PASSED — and the body stands at rest again.', 'good');
+        }, 1800);
+      }
+    } else {
+      // W1 pose_pair: per-joint sticky latches, any order, any moments
+      for (var i = 0; i < g.joints.length; i++) {
+        var j = g.joints[i];
+        if (joint_index === JOINT_INDEX[j.joint] &&
+            Math.abs(deg - j.deg) <= POSE_TOL_DEG) st.pairOk[j.joint] = true;
+      }
+      var all = true, k;
+      for (k = 0; k < g.joints.length; k++)
+        if (!st.pairOk[g.joints[k].joint]) all = false;
+      if (all) {
+        st.goalMet = true; st.passed = true;
+        if (window.ChimeraSound) ChimeraSound.passed();
+        setVerdict('PASSED — two wishes, one balance.', 'good');
+        setTimeout(async function () {
+          await resetPose();
+          setVerdict('PASSED — and the body stands at rest again.', 'good');
+        }, 1800);
+      } else {
+        setVerdict('one wish is held — the other waits.', 'accent');
+        var pend = W1pendingWish(l);           // name the wish still open
+        if (pend) $('pose-btn').textContent = pend.joint + ' → ' + pend.deg + '°';
+      }
+    }
+  }
+  /* W1: the first wish of a pose_pair lesson not yet latched (button label) */
+  function W1pendingWish(l) {
+    var st = curState();
+    for (var i = 0; i < l.goal.joints.length; i++)
+      if (!st.pairOk[l.goal.joints[i].joint]) return l.goal.joints[i];
+    return null;
+  }
   async function resetPose() {
     // return EVERY joint to rest: the volumes follow exactly (measured
     // pixel-exact) and the pressure lessons' calm bar becomes reachable
+    // (W1: rides postPose, so the judge observes the page's only pose path)
     for (var j in JOINT_INDEX)
-      await postJSON('/api/pose', { joint_index: JOINT_INDEX[j], deg: 0 });
+      await postPose(JOINT_INDEX[j], 0);
   }
   $('pose-btn').addEventListener('click', async function () {
     var l = curLesson(); if (!l) return;
-    var idx = JOINT_INDEX[l.goal.joint];
-    if (idx === undefined) { setVerdict('unknown joint — refused.', 'warn'); return; }
-    var res = await postJSON('/api/pose', { joint_index: idx, deg: l.goal.deg });
-    if (res && res.ok) {
-      curState().goalMet = true; curState().passed = true;
-      if (window.ChimeraSound) ChimeraSound.passed();
-      setVerdict('PASSED — the joint obeys the muscle.', 'good');
-      // the lesson passed; the body returns to rest for the next one
-      setTimeout(async function () {
-        await resetPose();
-        setVerdict('PASSED — and the body stands at rest again.', 'good');
-      }, 1800);
-    } else setVerdict('the pose was refused.', 'warn');
+    var st = curState();
+    if (st.passed) return;
+    if (l.goal.type === 'pose_reach') {
+      var idx = JOINT_INDEX[l.goal.joint];
+      if (idx === undefined) { setVerdict('unknown joint — refused.', 'warn'); return; }
+      var body = await postPose(idx, l.goal.deg);
+      if (!(body && body.ok === true)) setVerdict('the pose was refused.', 'warn');
+    } else if (l.goal.type === 'pose_pair') {   // W1: post every wish not yet
+      for (var i = 0; i < l.goal.joints.length; i++) {  // latched, in list order
+        var j = l.goal.joints[i];
+        if (st.pairOk[j.joint]) continue;
+        var jidx = JOINT_INDEX[j.joint];
+        if (jidx === undefined) { setVerdict('unknown joint — refused.', 'warn'); return; }
+        var b2 = await postPose(jidx, j.deg);
+        if (!(b2 && b2.ok === true)) { setVerdict('the pose was refused.', 'warn'); return; }
+      }
+    }
   });
 
   var verdictEl = $('verdict');
@@ -974,11 +1073,18 @@
 
   function judgeState(s) {
     var l = curLesson();
-    if (!l || l.goal.type === 'pose_reach') return;   // pose lessons judge on the POST
+    if (!l) return;
+    /* W1 hold guard (SPEC §9): a lesson whose goal.type this page has not
+       implemented HOLDS -- it can neither crash the judge nor pass. */
+    if (KNOWN_GOAL_TYPES.indexOf(l.goal.type) < 0) return;
+    /* pose lessons (pose_reach AND pose_pair) judge on the POSTED intent
+       (observePose), never on the poll */
+    if (l.goal.type === 'pose_reach' || l.goal.type === 'pose_pair') return;
     var st = curState();
     if (st.passed) return;
     var cells = (s && s.cells) || [];
     if (!cells.length) return;
+    if (s.n_cells && cells.length < s.n_cells) return;   // W1: partial read -- hold
 
     var pa = Number(l.goal.threshold_pa) || 0;
     var cellWanted = l.goal.cell;
@@ -989,21 +1095,38 @@
     var peakHere = function (c) { return Math.abs(signedP(c)); };
 
     if (st.phase === 'goal' && !st.goalMet) {
-      var cap = Number(l.goal.max_force_n) || 0;
-      var forceOk = !cap || !lastTouchForce || lastTouchForce <= cap;
-      var woke = function (idx) {
-        if (idx === 'any') return cells.some(function (c) { return signedP(c) >= pa; });
-        var c = cells[idx];
-        return !!c && signedP(c) >= pa;
-      };
-      if (!forceOk) return;          // an over-force press can never latch a capped lesson
-      if (l.goal.also) {             // two compartments, each latched over time
-        if (woke(l.goal.cell)) st.primaryMet = true;
-        if (woke(l.goal.also.cell)) st.alsoMet = true;
-        if (st.primaryMet && st.alsoMet) st.goalMet = true;
-        if (st.goalMet && !st.halfNote) { st.halfNote = true; setVerdict('one compartment is awake — the other waits.', 'accent'); }
-      } else if (woke(cellWanted)) {
-        st.goalMet = true;
+      if (l.goal.type === 'pressure_above' || l.goal.type === 'pressure_below') {
+        var cap = Number(l.goal.max_force_n) || 0;
+        var forceOk = !cap || !lastTouchForce || lastTouchForce <= cap;
+        var woke = function (idx) {
+          if (idx === 'any') return cells.some(function (c) { return signedP(c) >= pa; });
+          var c = cells[idx];
+          return !!c && signedP(c) >= pa;
+        };
+        if (!forceOk) return;          // an over-force press can never latch a capped lesson
+        if (l.goal.also) {             // two compartments, each latched over time
+          if (woke(l.goal.cell)) st.primaryMet = true;
+          if (woke(l.goal.also.cell)) st.alsoMet = true;
+          if (st.primaryMet && st.alsoMet) st.goalMet = true;
+          if (st.goalMet && !st.halfNote) { st.halfNote = true; setVerdict('one compartment is awake — the other waits.', 'accent'); }
+        } else if (woke(cellWanted)) {
+          st.goalMet = true;
+        }
+      } else if (l.goal.type === 'gravity_on') {
+        /* W1 (SPEC §10): settled = the page's own enable resolved AND the
+           root has left its authored rest AND is no longer moving. root_y
+           is exactly 0 at the authored rest, so neither condition can fire
+           before the fall; measured settle ~9.5 mm (tools/gravity_test.py). */
+        if (st.gravityArmed &&
+            Math.abs(Number(s.root_vy) || 0) <= ROOT_VY_SETTLE &&
+            Math.abs(Number(s.root_y) || 0) > ROOT_SETTLE_M) st.goalMet = true;
+      } else if (l.goal.type === 'cells_woken') {
+        /* W1 (SPEC §11): squeeze only (negative P never wakes), a sticky
+           cumulative set of DISTINCT cell indices; completes at g.count. */
+        for (var wi = 0; wi < cells.length; wi++)
+          if (signedP(cells[wi]) >= WOKEN_PA) st.wokenSet[wi] = true;
+        if (Object.keys(st.wokenSet).length >= (Number(l.goal.count) || 0))
+          st.goalMet = true;
       }
       if (st.goalMet) {
         if (window.ChimeraSound) ChimeraSound.cellWake();
@@ -1037,11 +1160,27 @@
     var dbg = $('judge-debug');
     if (!dbg) return;
     var l = curLesson();
-    dbg.textContent = l ? ('judge: ' + l.id + ' phase=' + curState().phase +
-      ' goalMet=' + curState().goalMet + ' passed=' + curState().passed +
+    if (!l) { dbg.textContent = 'no lesson'; return; }
+    var st = curState();
+    var extra = '';
+    // W1: the new latches, visible (the walker regex reads the first four
+    // fields, so the prefix format never changes)
+    if (l.goal.type === 'cells_woken')
+      extra += ' woken=' + Object.keys(st.wokenSet || {}).length + '/' +
+               (Number(l.goal.count) || 0);
+    if (l.goal.type === 'gravity_on') extra += ' armed=' + !!(st.gravityArmed);
+    if (l.goal.type === 'pose_pair') {
+      var names = [], i;
+      for (i = 0; l.goal.joints && i < l.goal.joints.length; i++)
+        names.push(l.goal.joints[i].joint + '=' +
+                   !!(st.pairOk || {})[l.goal.joints[i].joint]);
+      extra += ' pair[' + names.join(' ') + ']';
+    }
+    dbg.textContent = 'judge: ' + l.id + ' phase=' + st.phase +
+      ' goalMet=' + st.goalMet + ' passed=' + st.passed +
       ' touchTarget=' + (touchTarget ? 'set' : 'null') +
       ' lastTouchForce=' + lastTouchForce +
-      ' holding=' + holding) : 'no lesson';
+      ' holding=' + holding + extra;
   }
 
   /* ================= KEYBOARD + GAMEPAD (AI + accessibility) =================
