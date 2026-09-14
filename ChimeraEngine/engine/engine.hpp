@@ -47,6 +47,13 @@ public:
     void request_capture() { capture_ready_.store(false); capture_requested_.store(true); }
     bool capture_ready() const { return capture_ready_.load(); }
     bool capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h);
+    // G8 r3: last frame's phase timings in µs (render-thread written,
+    // /studio_chrome read) — fence wait, collect, present. The instrument that
+    // settles WHERE a slow grab spends its time, without another guess.
+    std::atomic<uint64_t> ph_fence_us_{0}, ph_coll_us_{0}, ph_pres_us_{0};
+    // G8 r3: the readback staging memory type actually chosen by the selection
+    // law (index + raw propertyFlags) — settles "is it still BAR?" in one GET.
+    std::atomic<uint32_t> rb_mem_type_{0xFFFFFFFFu}, rb_mem_flags_{0};
     // ── G8 TWO-PHASE ARM/COLLECT READBACK (2026-09-13, the tick-counter fix) ──
     // The capture servicing used to run synchronously ON THE RENDER THREAD
     // (~910 ms vkQueueWaitIdle + full-res swizzle per grab —
@@ -95,11 +102,11 @@ public:
     bool glass_ready() const { return glass_ready_.load(); }
     int  glass_err()   const { return glass_err_.load(); }
     bool glass_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h);
-    // G8: shared by frame() and frame_idle_ui() — drain every finished readback
-    // slot (zero-timeout fence check, then map + BGRA->RGBA swizzle into the two
-    // destinations, oldest first). One implementation, so an idle grab cannot
-    // drift from a rendered one. Never waits: a slot whose fence is not yet
-    // signalled stays pending for a later frame.
+    // G8: shared by frame() and frame_idle_ui() — hand every fence-finished
+    // readback slot to the reader thread (oldest first, both channels). One
+    // implementation, so an idle grab cannot drift from a rendered one. The
+    // render thread does no map, no read, and no wait here: the slow ops live
+    // on rb_reader_ (see the reader-thread note at the staging ring).
     //
     // armed_before — the fence-generation guard (G8, desk-check fix): between a
     // frame's fence WAIT and its vkResetFences, fences_[img_idx] still carries
@@ -685,9 +692,10 @@ private:
         uint32_t       frame_slot = 0;   // fences_[frame_slot] guards this copy
         uint32_t       w = 0, h = 0;     // extent at arm time
         uint64_t       seq = 0;          // arm order (FIFO collect + watermark)
-        bool           in_flight = false;
         bool           noncoherent = false; // staging type lacks HOST_COHERENT:
                                             // CPU read needs vkInvalidate first
+        bool           glass = false;    // channel: false = capture, true = glass
+        std::atomic<bool> in_flight{false}; // render thread arms/queues, reader clears
     };
     // G8: one staging ring slot — allocate/resize to the current extent, or die.
     void rb_ensure_slot(ReadbackSlot& s);
@@ -834,6 +842,19 @@ private:
     int capture_rb_next_ = 0, glass_rb_next_ = 0;
     std::atomic<uint64_t> capture_armed_gen_{0};     // seq of the last capture arm
     std::atomic<uint64_t> capture_collected_gen_{0}; // seq of the last capture collect
+    // G8 r3: THE READER THREAD. The collect's map+read+unmap measured ~940 ms
+    // per grab on the render thread (twice misattributed: queue-wait, then BAR
+    // bandwidth), stalling the tick loop. The render thread now only fence-
+    // checks and ENQUEUES finished slots; this thread does every slow op and
+    // publishes the bytes. The render thread never waits on a readback.
+    std::thread              rb_reader_;
+    std::mutex               rb_q_m_;
+    std::condition_variable  rb_q_cv_;
+    std::queue<ReadbackSlot*> rb_q_;
+    std::atomic<bool>        rb_quit_{false};
+    std::atomic<bool>        reel_pending_{false}; // a swizzled grab awaits the ledger (render thread)
+    void                   rb_reader_loop();
+    void                   rb_enqueue(ReadbackSlot& s);
 
     // the glass channel's OWN staging + destination (see the GLASS CHANNEL note)
     std::atomic<bool> glass_requested_{false};

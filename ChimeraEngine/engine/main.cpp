@@ -89,13 +89,32 @@ static MembraneTick g_tick;                    // THE MEMBRANE TICK (Appliance 1
 // (mesh first, then the tick payloads their sizes verify against, then the
 // other uploads). /tick_seal has no single blob — its INTENTS append to
 // session_snapshot/tick_seal_history.log and replay in order, so the whole
-// cell tree comes back exactly as authored.
+// cell tree comes back exactly as authored. tick_seal_state is the tree's
+// own STATE blob (R-restore-doctor): it loads before the history replay so
+// a boot whose tree already round-trips executes ZERO seals — every
+// history entry then answers "already satisfied" — and it sits LAST in the
+// replay order because load_seal_state validates against the loaded mesh.
 static const char* const k_snapshot_endpoints[] = {
     "mesh_bin", "tick_joints", "tick_classify", "tick_vertbind",
     "hinge_bin", "joints_bin", "gait_bin", "stride_bin", "water_bin",
+    "tick_seal_state",
 };
 static std::vector<float> g_tick_verts;        // host mirror the tick tints
 static uint32_t g_tick_vcount = 0;
+// THE REPLAY JOURNAL GATE (R-restore-doctor): the snapshot write-through
+// at the bottom of the api lambda fires for EVERY successful POST it
+// sees — including the NESTED invoke_api calls the restore replay makes —
+// so every boot over the same snapshot re-appended its successfully
+// replayed seals to tick_seal_history.log (measured 60 -> 63 -> 66 -> 69
+// lines across R-after's single boot). The replay runs on ONE thread and
+// invoke_api is a nested call on that same thread, so a thread-local flag
+// suppresses journaling for exactly the replayed calls while the
+// operator's live POSTs (HTTP worker threads) still journal.
+static thread_local bool g_replay_in_flight = false;
+struct ReplayJournalGuard {
+    ReplayJournalGuard()  { g_replay_in_flight = true; }
+    ~ReplayJournalGuard() { g_replay_in_flight = false; }
+};
 static std::mutex g_mesh_mutex;
 static std::condition_variable g_mesh_cv;
 static bool g_mesh_pending = false, g_mesh_applied = false;
@@ -1069,13 +1088,44 @@ int main(int argc, char** argv) {
         } else if (p == "/tick_seal" && method == "POST") {
             // THE MITOSIS OP (recursive cut-and-weld): cut sealed cell k
             // ("cell", default 0 = whole creature) with plane y into two
-            // sealed cells — the growth law.
+            // sealed cells — the growth law. An intent whose state ALREADY
+            // exists (a replayed repeat: the plane already bounds the named
+            // cell, or the tree already partitions at this plane) answers
+            // ok:true with "seal":"already" — the idempotent skip (nothing
+            // published, nothing refused, nothing re-journaled below).
             float y = (float)get_double(req_body, "y", 0.0);
             int cell = (int)get_double(req_body, "cell", 0.0);
-            if (g_tick.seal(y, cell)) body = "{\"ok\":true}";
-            else body = "{\"ok\":false,\"error\":\"refused: the cell index "
+            int outcome = MembraneTick::SEAL_CUT;
+            if (g_tick.seal(y, cell, &outcome)) {
+                body = outcome == MembraneTick::SEAL_ALREADY
+                     ? "{\"ok\":true,\"seal\":\"already\"}"
+                     : "{\"ok\":true}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"refused: the cell index "
                         "must exist, the plane must cross that cell's "
                         "y-range, and the cut graph must close into loops\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/tick_seal_state" && method == "POST") {
+            // THE SEAL-TREE SNAPSHOT LOAD (R-restore-doctor): restore the
+            // mitosis tree directly from its state blob — zero cuts
+            // executed. The loader self-validates (vertex count + every
+            // cell's recomputed rest volume), so a stale blob (any mesh
+            // change since it was written) is REFUSED HERE WITHOUT
+            // MUTATION — and this endpoint answers ok:true with
+            // "seal_state":"skipped", NEVER a restore failure: the history
+            // replay right after us rebuilds the tree the honest way
+            // (executed cuts + already-skips) and re-snapshots it.
+            if (g_tick.load_seal_state(req_body)) {
+                body = "{\"ok\":true,\"seal_state\":\"loaded\"}";
+                printf("snapshot: seal-tree loaded (%zu B, zero cuts "
+                       "executed)\n", req_body.size());
+            } else {
+                body = "{\"ok\":true,\"seal_state\":\"skipped\"}";
+                printf("snapshot: seal-tree blob refused (stale or absent "
+                       "tree) -- falling back to the intent history\n");
+            }
+            fflush(stdout);
             content_type = "application/json";
         } else if (p == "/topology" && method == "GET") {
             // THE WEB KERNEL: one-time triangle topology for the browser's
@@ -2737,6 +2787,11 @@ int main(int argc, char** argv) {
                      + ",\"bail_vbuf\":" + std::to_string(static_cast<unsigned long long>(u.rec_bail_vbuf_)) + "}"
                      + ",\"ring_n\":" + std::to_string(u.ft_ring_n_)
                      + ",\"ring\":[" + ring + "]"
+                     + ",\"ph_fence_us\":" + std::to_string(static_cast<unsigned long long>(g_engine->ph_fence_us_.load()))
+                     + ",\"ph_coll_us\":" + std::to_string(static_cast<unsigned long long>(g_engine->ph_coll_us_.load()))
+                     + ",\"ph_pres_us\":" + std::to_string(static_cast<unsigned long long>(g_engine->ph_pres_us_.load()))
+                     + ",\"rb_mem_type\":" + std::to_string(static_cast<unsigned long long>(g_engine->rb_mem_type_.load()))
+                     + ",\"rb_mem_flags\":" + std::to_string(static_cast<unsigned long long>(g_engine->rb_mem_flags_.load()))
                      + ",\"gpu\":\"" + u.gpu_name_ + "\""
                      + ",\"stage\":\"" + u.chrome_stage_ + "\""
                      + ",\"board\":{\"stages\":" + std::to_string(u.board().stages.size())
@@ -3297,8 +3352,12 @@ int main(int argc, char** argv) {
                 if (DeleteFileA("session_snapshot/tick_seal_history.log")) ++cleared;
                 body = "{\"ok\":true,\"cleared\":" + std::to_string(cleared) + "}";
             } else if (op == "restore") {
-                int done = 0, failed = 0;
+                int done = 0, failed = 0, seal_already = 0, seal_executed = 0;
                 std::string detail;
+                // THE REPLAY JOURNAL GATE: nothing the replay re-posts may
+                // re-journal itself (the amplification law: measured +3
+                // history lines per restore attempt before this guard).
+                ReplayJournalGuard replay_guard;
                 for (const char* ep : k_snapshot_endpoints) {
                     std::string fp = std::string("session_snapshot/") + ep + ".blob";
                     std::ifstream f(fp, std::ios::binary);
@@ -3312,7 +3371,13 @@ int main(int argc, char** argv) {
                 }
                 // THE MITOSIS TREE comes back through its intent history:
                 // every successful /tick_seal body was appended verbatim, so
-                // replaying the file in order rebuilds the same cells.
+                // replaying the file in order rebuilds the same cells —
+                // EXCEPT that an intent whose state already exists now
+                // answers "seal":"already" (the idempotent skip) instead of
+                // executing-and-refusing, and SKIPPED entries are counted
+                // honestly instead of poisoning the restore with failures
+                // (measured before the fix: ok:false, failed 60-66, boot
+                // retry loop re-initializing the body three times per boot).
                 {
                     std::ifstream hf("session_snapshot/tick_seal_history.log");
                     std::string line;
@@ -3320,14 +3385,47 @@ int main(int argc, char** argv) {
                         if (line.empty()) continue;
                         std::string resp2, ct2;
                         g_engine->invoke_api("POST", "/tick_seal", line, resp2, ct2);
+                        bool already =
+                            resp2.find("\"seal\":\"already\"") != std::string::npos;
                         bool okr = resp2.find("\"ok\":true") != std::string::npos;
-                        done += okr ? 1 : 0; failed += okr ? 0 : 1;
-                        detail += std::string("seal") + (okr ? ":ok " : ":FAIL ");
+                        if (already) {
+                            ++seal_already;
+                            detail += "seal:already ";
+                        } else if (okr) {
+                            ++done; ++seal_executed;
+                            detail += "seal:ok ";
+                        } else {
+                            ++failed;
+                            detail += "seal:FAIL ";
+                        }
+                    }
+                }
+                // THE TREE RE-SNAPSHOT: if the replay EXECUTED cuts (the
+                // state blob was absent or stale and history rebuilt the
+                // tree), snapshot the fresh tree so the NEXT boot executes
+                // zero seals. Replayed-but-skipped trees are byte-identical
+                // and are NOT rewritten (byte-stable snapshot dir).
+                if (seal_executed > 0) {
+                    std::vector<uint8_t> sb;
+                    g_tick.export_seal_state(sb);
+                    if (!sb.empty()) {
+                        CreateDirectoryA("session_snapshot", nullptr);
+                        std::ofstream sf("session_snapshot/tick_seal_state.blob",
+                                         std::ios::binary);
+                        if (sf) {
+                            sf.write(reinterpret_cast<const char*>(sb.data()),
+                                     (std::streamsize)sb.size());
+                            printf("snapshot: tick_seal_state written (%zu B, "
+                                   "%d seals executed)\n", sb.size(),
+                                   seal_executed);
+                        }
                     }
                 }
                 body = std::string("{\"ok\":") + (failed == 0 && done > 0 ? "true" : "false")
                      + ",\"replayed\":" + std::to_string(done)
                      + ",\"failed\":" + std::to_string(failed)
+                     + ",\"seal_already\":" + std::to_string(seal_already)
+                     + ",\"seal_executed\":" + std::to_string(seal_executed)
                      + ",\"detail\":\"" + detail + "\"}";
 #ifdef CHIMERA_SHUTDOWN_TEST
                 printf("shutdown_test: session_result %s\n", body.c_str());
@@ -3369,11 +3467,34 @@ int main(int argc, char** argv) {
             std::ofstream f(fn, std::ios::binary);
             if (f) { f.write(req_body.data(), (std::streamsize)req_body.size()); printf("snapshot: %s (%zu B)\n", fn.c_str(), req_body.size()); }
         }
+        // THE SEAL JOURNAL + THE TREE SNAPSHOT (R-restore-doctor's two
+        // laws): (1) only a seal that EXECUTED journals its intent, and
+        // never one the replay re-posted — the replay's thread-local gate
+        // stops the nested calls here, which is what grew the history
+        // +3 lines per restore attempt (measured 60->63->66->69 across
+        // R-after's single boot); an "already satisfied" skip produced no
+        // state change and journals nothing either. (2) An executed cut
+        // re-snapshots the TREE (tick_seal_state.blob) so the next boot
+        // restores by state and replays the history as pure no-ops.
         if (g_engine && method == "POST" && p == "/tick_seal" &&
-            body.find("\"ok\":true") != std::string::npos) {
+            !g_replay_in_flight &&
+            body.find("\"ok\":true") != std::string::npos &&
+            body.find("\"seal\":\"already\"") == std::string::npos) {
             CreateDirectoryA("session_snapshot", nullptr);
             std::ofstream f("session_snapshot/tick_seal_history.log", std::ios::app);
             if (f) { f << req_body << "\n"; printf("snapshot: tick_seal_history +1\n"); }
+            std::vector<uint8_t> sb;
+            g_tick.export_seal_state(sb);
+            if (!sb.empty()) {
+                std::ofstream sf("session_snapshot/tick_seal_state.blob",
+                                 std::ios::binary);
+                if (sf) {
+                    sf.write(reinterpret_cast<const char*>(sb.data()),
+                             (std::streamsize)sb.size());
+                    printf("snapshot: tick_seal_state written (%zu B)\n",
+                           sb.size());
+                }
+            }
         }
 
         // F4: the recorder — every covered state change lands at the moment it

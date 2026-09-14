@@ -260,3 +260,83 @@ not touched.
 
 Same verify commands as §6. If a bar still fails, the ring + TTFB probes above
 localize any residual in minutes.
+
+## 8. ROUND 3 — THE BAR1 LAW WAS ALSO NOT THE STALL: THE COLLECT LEFT THE RENDER THREAD (2026-09-14, H3f)
+
+AFTER2 (round-2 binary, cached-sysmem staging verified in-tree): async pulls
+1068-1087 ms, worst tick gap 932 ms — identical signature. Memory bandwidth was
+the second misattribution.
+
+### Round-3 probes (live 8107, independent observer PROCESS + ring + TTFB)
+
+- **Tick truth**: the membrane tick counter is stepped on the render loop
+  (main.cpp, `g_tick.step` after `engine.frame()`) — an independent-process
+  /tick_state observer showed the loop genuinely frozen ~900 ms per pull
+  (+10 ticks across a 941 ms bracket), then full rate again. The verifier's
+  deficit metric is engine-side real (not an observer artifact).
+- **The freeze is one `frame()` call**: the ring (brackets ONLY
+  `engine.frame()`) carried a single ~914-965 ms entry per pull; every other
+  frame 0.5 ms.
+- **The worker is blocked the whole window**: raw-socket TTFB = total =
+  ~930-950 ms (observer rows starved exactly across the pull). The async
+  handler's only engine-side block is `capture_mutex_`, held by the render
+  thread across the collect's map+swizzle scope ⇒ the collect itself costs
+  ~900 ms EVEN WITH cached-sysmem staging. `reel_note_grab` runs after the
+  watermark store the sync spin waits on — exonerated. `reel_push`'s
+  `vkQueueWaitIdle` likewise downstream of the sync spin — exonerated.
+- Note on observer discipline: during a pull the single-worker HTTP server
+  starves ALL observers; their in-flight rows carry start-of-request
+  timestamps with post-stall content. Post-hoc ring reads (the spike persists
+  ~400 ms in the 120-frame ring) and bracket tick deltas are the reliable
+  views; the probes above used both.
+
+### What round 3 ships
+
+1. **THE COLLECT LEFT THE RENDER THREAD (the fix that cannot miss the bar)**:
+   `collect_readbacks` now only fence-checks and ENQUEUES finished slots
+   (µs, render thread); a dedicated **reader thread** (`rb_reader_loop`,
+   spawned at end of init, joined first in shutdown) owns every slow op —
+   `vkMapMemory` → optional `vkInvalidateMappedMemoryRanges` → BGRA→RGBA
+   swizzle into a reused scratch → `vkUnmapMemory` → publish under the channel
+   mutex (pointer **swap**, so the async handler's `capture_frame` never waits
+   behind a slow read) → watermark/ready stores → `in_flight=false` (now
+   atomic). The reel moved with it: the reader sets `reel_pending_`; the
+   render thread consumes it next frame and runs `reel_note_grab` from the
+   already-published bytes (snapshot under `capture_mutex_` — the old
+   unlocked read became cross-thread). The render thread's entire readback
+   cost is now fence checks + enqueue + a pointer exchange: the tick bar is
+   met BY CONSTRUCTION, whatever the mystery call is.
+2. **PHASE TIMERS**: `/studio_chrome` gained `ph_fence_us`, `ph_coll_us`,
+   `ph_pres_us` (last frame's fence-wait / collect / present, µs) — the split
+   the R6 audit said was unresolvable. If any stall survives window #3, these
+   three numbers name the phase immediately.
+3. **`rb_mem_type` / `rb_mem_flags` on `/studio_chrome`**: the memory type the
+   selection law actually picked — settles "is it still BAR?" in one GET
+   (round 2's open question).
+4. **RIDER `pick_cam` Z-flip (engine.cpp, `/tick_touch` cam-form)**: the web
+   kernel's eye was reconstructed with `target.z - r*c*cos(phi)` (the engine's
+   render-side law) while the page renders `target.z + r*ch*cos(theta)` — the
+   pick ray started mirrored through the target (click front → dent far
+   side, operator-measured). Fixed to `+ r*c*cos(phi)`, matching the page
+   (source of truth). The engine-camera `{px,py}` form uses `pick()` —
+   untouched; the `{"hit"}` form bypasses picking — untouched.
+5. **RIDER `host_mt` (engine.cpp:716, UI stage memory): NOT applied.** The
+   round-2→round-3 evidence exonerates memory selection for the stall (the
+   collect stayed ~900 ms after staging moved to sysmem), and the UI's stage
+   buffer is write-only in its hot path (BAR writes are write-combined fast).
+   Revisit only if the new `ph_*`/`rb_mem_*` instruments ever indict it.
+
+### Build window #3 — expected numbers
+
+Same commands as §6 (`--tag after3_async` / `--pull /frame --tag after3_default`).
+- `/studio_chrome` quiet: `ph_fence_us` ≤ ~3500 (the pacing wait), `ph_coll_us`
+  ≤ ~100 (enqueue only), `ph_pres_us` ≤ ~1000; `rb_mem_type` = the sysmem
+  index, `rb_mem_flags` has HOST_VISIBLE (+COHERENT or CACHED), **no
+  DEVICE_LOCAL**.
+- Burst: ticks/min ≈ quiet (the render loop's per-pull cost is now fence
+  checks + enqueue + an occasional ~20 ms reel ledger), max tick gap ≤ ~50 ms
+  — **both bars PASS by construction of the render-thread path**.
+- Pull durations: async ~30-80 ms (truly immediate); sync ~1.0 s the first
+  time the reader's read is slow (its wait is client-side, contract preserved)
+  or ~100 ms if the round-2 memory law did fix the read and the residual stall
+  was elsewhere — `ph_coll_us` decides which world we are in.

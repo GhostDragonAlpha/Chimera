@@ -841,6 +841,9 @@ bool Engine::init(const EngineConfig& cfg) {
 
     printf("Vulkan engine initialized: %u x %u, %u frames in flight\n",
            cfg.width, cfg.height, MAX_FRAMES_IN_FLIGHT);
+
+    // G8 r3: the readback reader — every slow grab op lives on this thread
+    rb_reader_ = std::thread(&Engine::rb_reader_loop, this);
     return true;
 }
 
@@ -963,6 +966,16 @@ void Engine::shutdown() {
         std::lock_guard<std::mutex> lk(log_m_);
         if (log_fp_) { fflush(log_fp_); fclose(log_fp_); log_fp_ = nullptr; }
     }
+
+    // G8 r3: stop the readback reader before any device resource dies — it may
+    // be inside a map+swizzle of a ring slot; drain the queue first so a queued
+    // grab is never dropped mid-shutdown, then join.
+    {
+        std::unique_lock<std::mutex> lk(rb_q_m_);
+        rb_quit_.store(true);
+    }
+    rb_q_cv_.notify_all();
+    if (rb_reader_.joinable()) rb_reader_.join();
 
     vkDeviceWaitIdle(device_);
 
@@ -6207,15 +6220,15 @@ bool Engine::dispatch_compute(std::vector<float>& out_velocities) {
 // records its own w/h — and the realloc happens on a LATER arm).
 //
 // THE READBACK MEMORY LAW (G8 round 2, the ~940 ms fix): the CPU READS this
-// memory every grab (map + BGRA->RGBA swizzle on the render thread), so the
-// staging MUST be CPU-cached sysmem — NEVER a DEVICE_LOCAL BAR allocation.
+// memory every grab (map + BGRA->RGBA swizzle), so the staging MUST be
+// CPU-cached sysmem — NEVER a DEVICE_LOCAL BAR allocation.
 // find_mem_type(VISIBLE|COHERENT) returns the FIRST matching type, and on a
 // ReBAR card that is the DEVICE_LOCAL BAR1 type: uncached, so the swizzle's
 // 4-byte-strided read of 8.3 MB costs ~940 ms of PCIe reads (measured, live
 // 4090; the pre-G8 "~910 ms" freeze was the same read, misattributed to the
 // queue wait — the audit never split the block). Selection order: non-local +
 // coherent, non-local + cached, any non-local, coherent (the old law), any
-// host-visible. When the picked type lacks HOST_COHERENT the collect issues
+// host-visible. When the picked type lacks HOST_COHERENT the reader issues
 // vkInvalidateMappedMemoryRanges before reading (slot.noncoherent).
 void Engine::rb_ensure_slot(ReadbackSlot& s) {
     VkDeviceSize size = static_cast<VkDeviceSize>(extent_.width) * extent_.height * 4;
@@ -6264,6 +6277,8 @@ void Engine::rb_ensure_slot(ReadbackSlot& s) {
     vkBindBufferMemory(device_, s.buf, s.mem, 0);
     s.size = size;
     s.noncoherent = noncoherent;
+    rb_mem_type_.store(static_cast<uint32_t>(pick));                 // G8 r3: expose the pick
+    rb_mem_flags_.store(mp.memoryTypes[pick].propertyFlags);         // for /studio_chrome
 }
 
 void Engine::rb_destroy_slot(ReadbackSlot& s) {
@@ -6735,12 +6750,18 @@ bool Engine::pick_cam(const float cam8[8], float aspect, float u, float v,
                       const std::vector<float>& verts9,
                       const std::vector<uint32_t>& tris,
                       float out_point[3]) const {
-    // identical math to pick(), with the camera supplied by the caller
+    // identical math to pick(), with the camera supplied by the caller.
+    // Z SIGN (2026-09-14, operator-measured): the caller is the WEB KERNEL's
+    // camera (page camEye = target.z + r*ch*cos(theta)) — the page IS the view
+    // the click came from, so the eye reconstruction must match ITS orbit law,
+    // not the engine's render-side law (update_camera_matrices uses -r*c*cx —
+    // mirrored). The old minus-Z picked through the target from BEHIND the
+    // body: click the front, the dent landed on the far side.
     float c = cosf(cam8[2]), s = sinf(cam8[2]);
     float cx = cosf(cam8[1]), sx = sinf(cam8[1]);
     float eye[3] = { cam8[3] + cam8[0] * c * sx + cam8[6],
                      cam8[4] + cam8[0] * s + cam8[7],
-                     cam8[5] - cam8[0] * c * cx };
+                     cam8[5] + cam8[0] * c * cx };
     float up[3] = { -s * sx, c, s * cx };
     float fwd[3] = { cam8[3] - eye[0], cam8[4] - eye[1], cam8[5] - eye[2] };
     float fl = sqrtf(fwd[0]*fwd[0] + fwd[1]*fwd[1] + fwd[2]*fwd[2]);
@@ -7300,13 +7321,23 @@ bool Engine::glass_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& 
     return true;
 }
 
-// D3: THE REEL — every grab lands. Render thread, called from frame()'s capture
-// readback, so the metadata IS the state at grab time (t, joint, theta, camera,
-// light). The UI gets the pixels; the ledger (reel_json) is the dyad's channel.
+// D3: THE REEL — every grab lands. Render thread, called after the reader
+// thread published a fresh grab (reel_pending_), so the metadata IS the state
+// at grab time (t, joint, theta, camera, light). The UI gets the pixels; the
+// ledger (reel_json) is the dyad's channel.
 void Engine::reel_note_grab() {
-    if (capture_rgba_.empty() || capture_w_ == 0 || capture_h_ == 0) return;
+    // G8 r3: the reader thread swaps capture_rgba_ from its own thread now —
+    // snapshot under the mutex so the ledger can never read a mid-swap buffer
+    std::vector<uint8_t> rgba;
+    uint32_t sw = 0, sh = 0;
+    {
+        std::lock_guard<std::mutex> lk(capture_mutex_);
+        rgba = capture_rgba_;
+        sw = capture_w_;
+        sh = capture_h_;
+    }
+    if (rgba.empty() || sw == 0 || sh == 0) return;
     const int TW = StudioUI::THUMB_W, TH = StudioUI::THUMB_H;
-    const uint32_t sw = capture_w_, sh = capture_h_;
     static std::vector<uint8_t> tb;
     tb.assign(static_cast<size_t>(TW) * TH * 4, 0);
     for (int ty = 0; ty < TH; ++ty) {
@@ -7320,7 +7351,7 @@ void Engine::reel_note_grab() {
             uint32_t r = 0, g = 0, b = 0, a = 0, n = 0;
             for (uint32_t y = y0; y < y1 && y < sh; ++y)
                 for (uint32_t x = x0; x < x1 && x < sw; ++x) {
-                    const uint8_t* p = &capture_rgba_[(static_cast<size_t>(y) * sw + x) * 4];
+                    const uint8_t* p = &rgba[(static_cast<size_t>(y) * sw + x) * 4];
                     r += p[0]; g += p[1]; b += p[2]; a += p[3]; ++n;
                 }
             uint8_t* d = &tb[(static_cast<size_t>(ty) * TW + tx) * 4];
@@ -7732,7 +7763,13 @@ bool Engine::frame() {
     // Frames-in-flight: slot cycles 0..1 — the CPU records this frame while the GPU
     // may still be drawing the previous slot. Per-slot fence/cmdbuf/descriptors/UBO.
     uint32_t img_idx = image_idx_;
+    // G8 r3 phase timers: the instrument that settles where a slow grab spends
+    // its time (fence wait / collect / present), exposed on /studio_chrome.
+    const auto ph_t0 = std::chrono::steady_clock::now();
     VkResult fence_res = vkWaitForFences(device_, 1, &fences_[img_idx], VK_TRUE, UINT64_MAX);
+    ph_fence_us_.store(static_cast<uint64_t>(
+        std::chrono::duration_cast<std::chrono::microseconds>(
+            std::chrono::steady_clock::now() - ph_t0).count()));
     if (fence_res == VK_ERROR_DEVICE_LOST) {
         fprintf(stderr, "FATAL: VK_ERROR_DEVICE_LOST at frame fence wait (slot %u)\n", img_idx);
         fflush(stderr);
@@ -8619,6 +8656,7 @@ bool Engine::frame() {
     }
 
     if (can_present) {
+        const auto ph_p0 = std::chrono::steady_clock::now();
         VkPresentInfoKHR pi{};
         pi.sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
         pi.waitSemaphoreCount = 1;
@@ -8636,14 +8674,25 @@ bool Engine::frame() {
         }
         if (pres_res == VK_ERROR_OUT_OF_DATE_KHR || pres_res == VK_SUBOPTIMAL_KHR)
             recreate_after_frame = true;
+        ph_pres_us_.store(static_cast<uint64_t>(
+            std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::steady_clock::now() - ph_p0).count()));
     }
 
-    // G8: the one readback law, shared with frame_idle_ui() — drain every
-    // ALREADY-finished readback slot, ZERO timeout, oldest first. The render
-    // thread never waits on a readback; a not-yet-finished slot is collected
-    // on a later frame (worst case one frame of added latency, ~3.3 ms at the
-    // 300 fps cap, instead of the old ~910 ms freeze).
+    // G8: the one readback law, shared with frame_idle_ui() — hand every
+    // ALREADY-finished readback slot to the reader thread, ZERO timeout, oldest
+    // first. The render thread never maps, reads, or waits on a readback; a
+    // not-yet-finished slot is handed over on a later frame (worst case one
+    // frame of added latency instead of the old ~910 ms freeze).
+    const auto ph_c0 = std::chrono::steady_clock::now();
     collect_readbacks();
+    ph_coll_us_.store(static_cast<uint64_t>(
+        std::chrono::duration_cast<std::chrono::microseconds>(
+            std::chrono::steady_clock::now() - ph_c0).count()));
+    // D3: the reader swizzled a fresh grab — the ledger lands on this thread
+    // (ui_ is render-thread-only) from the already-published bytes.
+    if (reel_pending_.exchange(false, std::memory_order_acquire))
+        reel_note_grab();
 
     // B1: deferred swapchain rebuild (suboptimal acquire, or present reported
     // OUT_OF_DATE/SUBOPTIMAL) — done at frame end, outside the render pass.
@@ -8705,6 +8754,15 @@ bool Engine::frame() {
 // grab and falsely advance the watermark. The backstop passes the snapshot
 // down; the end-of-frame collects run after reset+submit, where the signal
 // they see is the copy's own generation, and need no guard.
+//
+// G8 ROUND 3 CORRECTION (2026-09-14): the memory-law fix did NOT shrink the
+// stall — the AFTER2 run repeated ~940 ms per grab with cached-sysmem staging,
+// so the slow op inside the collect was never memory bandwidth either. The
+// collect itself has left the render thread: fence-check + ENQUEUE here, and
+// a dedicated reader thread owns every map / invalidate / swizzle / unmap /
+// publish (rb_reader_loop). The render thread never waits on a readback — not
+// even accidentally — and the ph_* timers on /studio_chrome (fence wait /
+// collect / present, µs) make the next window decisive if any stall survives.
 bool Engine::arm_capture_readback(VkCommandBuffer cb, uint32_t frame_slot) {
     ReadbackSlot* s = nullptr;
     for (int k = 0; k < RB_SLOTS; ++k) {
@@ -8735,7 +8793,8 @@ bool Engine::arm_capture_readback(VkCommandBuffer cb, uint32_t frame_slot) {
     s->w = extent_.width;
     s->h = extent_.height;
     s->seq = ++capture_armed_gen_;     // the strict-fresh watermark advances at arm
-    s->in_flight = true;
+    s->glass = false;
+    s->in_flight.store(true, std::memory_order_release);
     return true;
 }
 
@@ -8760,104 +8819,116 @@ Engine::ReadbackSlot* Engine::arm_glass_readback(uint32_t frame_slot) {
     s->h = extent_.height;
     s->seq = ++capture_armed_gen_;   // shares the arm counter; glass collects
                                      // never store it into capture_collected_gen_
-    s->in_flight = true;
+    s->glass = true;
+    s->in_flight.store(true, std::memory_order_release);
     return s;
 }
 
-// One collect pass: drain every ALREADY-FINISHED slot, both channels, oldest
-// first. Called from frame() and frame_idle_ui() at the exact site the old
-// blocking readback occupied — same law, two loops, zero waits.
-// armed_before (default: collect everything) — the fence-generation guard for
-// calls made between a frame's fence WAIT and its vkResetFences (i.e. the
-// backstop): there fences_[img_idx] still carries the PREVIOUS submit's
-// signal, so a slot armed THIS frame (seq > armed_before) must be skipped —
-// its copy was never submitted and its buffer holds the previous grab's
-// bytes. After reset+submit the signal is the copy's own generation and the
-// default collects it normally.
+// One collect pass: for every in-flight slot whose fence is ALREADY signalled,
+// hand the slot to the reader thread (G8 r3) — oldest seq first, both channels.
+// Called from frame() and frame_idle_ui() at the exact site the old blocking
+// readback occupied. The render thread does NO map, NO read, NO wait here: the
+// reader thread owns every slow op (map, invalidate, swizzle, unmap, publish).
+// armed_before (default: everything) — the fence-generation guard for calls
+// made between a frame's fence WAIT and its vkResetFences (i.e. the backstop):
+// there fences_[img_idx] still carries the PREVIOUS submit's signal, so a slot
+// armed THIS frame (seq > armed_before) must be skipped — its copy was never
+// submitted. After reset+submit the signal is the copy's own generation and
+// the default collects it normally.
 void Engine::collect_readbacks(uint64_t armed_before) {
     for (;;) {
         ReadbackSlot* best = nullptr;
-        // FIFO: the oldest finished capture slot collects before a newer one,
+        // FIFO: the oldest finished capture slot is handed to the reader first,
         // so capture_rgba_ always ends holding the NEWEST finished frame.
         for (int k = 0; k < RB_SLOTS; ++k) {
             ReadbackSlot& c = capture_rb_[k];
-            if (c.in_flight && c.seq <= armed_before &&
+            if (c.in_flight.load(std::memory_order_acquire) && c.seq <= armed_before &&
                 vkGetFenceStatus(device_, fences_[c.frame_slot]) == VK_SUCCESS &&
                 (!best || c.seq < best->seq))
                 best = &c;
         }
         if (!best) break;
-        void* mapped = nullptr;
-        if (vkMapMemory(device_, best->mem, 0, best->size, 0, &mapped) == VK_SUCCESS) {
-            if (best->noncoherent) {   // G8: non-coherent staging — make the GPU's copy visible before the CPU read
-                VkMappedMemoryRange rng{};
-                rng.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-                rng.memory = best->mem;
-                rng.offset = 0;
-                rng.size   = VK_WHOLE_SIZE;   // whole alloc mapped from 0; keeps the
-                                              // nonCoherentAtomSize-multiple VUID moot
-                vkInvalidateMappedMemoryRanges(device_, 1, &rng);
-            }
-            {
-                std::lock_guard<std::mutex> lk(capture_mutex_);
-                size_t px = static_cast<size_t>(best->w) * best->h;
-                capture_rgba_.resize(px * 4);
-                const uint8_t* src = static_cast<const uint8_t*>(mapped);
-                for (size_t i = 0; i < px; ++i) {
-                    capture_rgba_[i * 4 + 0] = src[i * 4 + 2];  // R
-                    capture_rgba_[i * 4 + 1] = src[i * 4 + 1];  // G
-                    capture_rgba_[i * 4 + 2] = src[i * 4 + 0];  // B
-                    capture_rgba_[i * 4 + 3] = src[i * 4 + 3];  // A
-                }
-                capture_w_ = best->w;
-                capture_h_ = best->h;
-            }
-            vkUnmapMemory(device_, best->mem);
-        }
-        capture_collected_gen_.store(best->seq);   // strict-fresh watermark
-        capture_ready_.store(true);
-        best->in_flight = false;
-        reel_note_grab();   // D3: every grab lands in the reel, at collect time
+        rb_enqueue(*best);
     }
     for (;;) {
         ReadbackSlot* best = nullptr;
         for (int k = 0; k < RB_SLOTS; ++k) {
             ReadbackSlot& g = glass_rb_[k];
-            if (g.in_flight && g.seq <= armed_before &&
+            if (g.in_flight.load(std::memory_order_acquire) && g.seq <= armed_before &&
                 vkGetFenceStatus(device_, fences_[g.frame_slot]) == VK_SUCCESS &&
                 (!best || g.seq < best->seq))
                 best = &g;
         }
         if (!best) break;
-        void* gmap = nullptr;
-        if (vkMapMemory(device_, best->mem, 0, best->size, 0, &gmap) == VK_SUCCESS) {
-            if (best->noncoherent) {   // G8: same invalidate law as the capture loop
+        rb_enqueue(*best);
+    }
+}
+
+// G8 r3: transfer a fence-finished slot to the reader thread. The render
+// thread never touches the slot again until the reader clears in_flight.
+void Engine::rb_enqueue(ReadbackSlot& s) {
+    {
+        std::lock_guard<std::mutex> lk(rb_q_m_);
+        rb_q_.push(&s);
+    }
+    rb_q_cv_.notify_one();
+}
+
+// The reader thread (G8 r3): owns EVERY slow readback op — map, invalidate,
+// swizzle, unmap, publish — so the render/tick thread can never pay for them.
+// Whatever the ~940 ms stall on this box turns out to be inside these calls
+// (twice misattributed: queue-wait, then BAR bandwidth), it happens HERE.
+void Engine::rb_reader_loop() {
+    std::vector<uint8_t> scratch;   // reused across grabs
+    for (;;) {
+        ReadbackSlot* s = nullptr;
+        {
+            std::unique_lock<std::mutex> lk(rb_q_m_);
+            rb_q_cv_.wait(lk, [&] { return rb_quit_.load() || !rb_q_.empty(); });
+            if (rb_quit_.load() && rb_q_.empty()) return;
+            s = rb_q_.front();
+            rb_q_.pop();
+        }
+        void* mapped = nullptr;
+        if (vkMapMemory(device_, s->mem, 0, s->size, 0, &mapped) == VK_SUCCESS) {
+            if (s->noncoherent) {   // non-coherent staging: make the GPU's copy visible before the CPU read
                 VkMappedMemoryRange rng{};
                 rng.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-                rng.memory = best->mem;
+                rng.memory = s->mem;
                 rng.offset = 0;
                 rng.size   = VK_WHOLE_SIZE;   // whole alloc mapped from 0; keeps the
                                               // nonCoherentAtomSize-multiple VUID moot
                 vkInvalidateMappedMemoryRanges(device_, 1, &rng);
             }
-            {
-                std::lock_guard<std::mutex> lk(glass_mutex_);
-                size_t px = static_cast<size_t>(best->w) * best->h;
-                glass_rgba_.resize(px * 4);
-                const uint8_t* src = static_cast<const uint8_t*>(gmap);
-                for (size_t i = 0; i < px; ++i) {
-                    glass_rgba_[i * 4 + 0] = src[i * 4 + 2];  // R
-                    glass_rgba_[i * 4 + 1] = src[i * 4 + 1];  // G
-                    glass_rgba_[i * 4 + 2] = src[i * 4 + 0];  // B
-                    glass_rgba_[i * 4 + 3] = src[i * 4 + 3];  // A
-                }
-                glass_w_ = best->w;
-                glass_h_ = best->h;
+            const size_t px = static_cast<size_t>(s->w) * s->h;
+            scratch.resize(px * 4);
+            const uint8_t* src = static_cast<const uint8_t*>(mapped);
+            for (size_t i = 0; i < px; ++i) {
+                scratch[i * 4 + 0] = src[i * 4 + 2];  // R
+                scratch[i * 4 + 1] = src[i * 4 + 1];  // G
+                scratch[i * 4 + 2] = src[i * 4 + 0];  // B
+                scratch[i * 4 + 3] = src[i * 4 + 3];  // A
             }
-            vkUnmapMemory(device_, best->mem);
+            vkUnmapMemory(device_, s->mem);
+            if (s->glass) {
+                std::lock_guard<std::mutex> lk(glass_mutex_);
+                glass_rgba_.swap(scratch);
+                glass_w_ = s->w;
+                glass_h_ = s->h;
+                glass_ready_.store(true);
+            } else {
+                std::lock_guard<std::mutex> lk(capture_mutex_);
+                capture_rgba_.swap(scratch);
+                capture_w_ = s->w;
+                capture_h_ = s->h;
+                capture_collected_gen_.store(s->seq);   // strict-fresh watermark
+                capture_ready_.store(true);
+                reel_pending_.store(true, std::memory_order_release);
+            }
         }
-        glass_ready_.store(true);
-        best->in_flight = false;
+        // published (or failed map — drop the slot's bytes either way): the arm
+        // path may reuse the slot on a later frame
+        s->in_flight.store(false, std::memory_order_release);
     }
 }
 
@@ -9159,6 +9230,9 @@ bool Engine::frame_idle_ui() {
     }
     // the SAME readback law as frame() — one implementation, two loops
     collect_readbacks();
+    // D3: the reader swizzled a fresh grab — the ledger lands on this thread
+    if (reel_pending_.exchange(false, std::memory_order_acquire))
+        reel_note_grab();
     if (recreate_after_frame) {
         VkSurfaceCapabilitiesKHR caps{};
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(phys_dev_, surface_, &caps);
