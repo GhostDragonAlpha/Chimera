@@ -1,0 +1,37 @@
+# cloudflared_config.yml -- ingress for the "chimera" Cloudflare Tunnel.
+#
+# This file is the in-repo master. Copy it to the live location and fill in
+# the placeholders (GO-LIVE SEQUENCE steps 8, docs/DEPLOY_RUNBOOK.md):
+#
+#     copy tools\deploy\cloudflared_config.yml %USERPROFILE%\.cloudflared\config.yml
+#
+# <TUNNEL-UUID> is printed by:  cloudflared tunnel create chimera
+# The credentials file it names is written to the same folder at that moment.
+# <YOU> is your Windows username. After editing, verify with:
+#     cloudflared tunnel ingress validate
+#
+# ROUTING CONTRACT (docs/DEPLOY_RUNBOOK.md, THE ONE RULE):
+#   play.chimera.game             -> game shell  http://localhost:8206
+#   chimera.game / www.chimera.game -> website   http://localhost:8210
+#   everything else               -> 404
+#
+# The engine on 127.0.0.1:8107 has NO ingress rule and must NEVER get one.
+# It has no auth; the game shell on 8206 is the world's only door to it.
+
+tunnel: <TUNNEL-UUID>
+credentials-file: C:\Users\<YOU>\.cloudflared\<TUNNEL-UUID>.json
+
+ingress:
+  # The game (the free demo). It proxies to the engine over loopback only.
+  - hostname: play.chimera.game
+    service: http://localhost:8206
+
+  # The website: apex and www both serve the front door + sign-ups.
+  - hostname: chimera.game
+    service: http://localhost:8210
+  - hostname: www.chimera.game
+    service: http://localhost:8210
+
+  # Catch-all: every hostname not listed above gets a bare 404. This is the
+  # last rule and must stay last -- cloudflared matches top to bottom.
+  - service: http_status:404
