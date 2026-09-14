@@ -7,13 +7,60 @@
  * Integration:
  *   <script src="sound.js"></script>
  *   PLAY button click : ChimeraSound.init(); ChimeraSound.ambient(true);
- *   touch begins      : ChimeraSound.press(forceN);      (re-call while held to follow the slider)
+ *   touch begins      : ChimeraSound.press(forceN [, region]);  (re-call while held: the tone follows force AND region, live)
  *   touch released    : ChimeraSound.pressEnd();
+ *   cell first crosses its wake bar : ChimeraSound.wakeWhoosh();   (pass 2 — a ~300 ms noise swell)
+ *   release-phase heal completes    : ChimeraSound.healShimmer();  (pass 2 — a very quiet high shimmer)
  *   cell wakes        : ChimeraSound.cellWake();
  *   lesson passed     : ChimeraSound.passed();
  *   progress saved    : ChimeraSound.saved();
  *
+ * The region hint (pass 2): the creature has 4 sealed cells, each with its
+ * own voice. Accepts a region NAME ('foot' | 'body' | 'thigh' | 'shin' —
+ * plurals and 'torso' alias; default 'body'), a CELL INDEX (0 feet, 1 torso,
+ * 2 thighs, 3 shins — lessons.json's cell map), or a WORLD POINT [x,y,z]
+ * (its Y is matched against the live per-cell ylo/yhi bands from /api/state).
+ * Omitted while a press is held = keep the held press's region.
+ *
  * If WebAudio is unavailable, every call feature-detects and no-ops silently.
+ *
+ * ---------------------------------------------------------------------------
+ * PASS-2 WIRING — exact index.html call sites (the html lane owns that file;
+ * this block is the contract; line numbers refer to index.html 2026-09-13):
+ *
+ *   1. SPACE press — key handler, inside the postJSON(API.touchHit).then,
+ *      where the existing press call sits (~line 1268). Add the region hint;
+ *      the page already holds the world target:
+ *          ChimeraSound.press(Number(forceEl.value), touchTarget);
+ *
+ *   2. Gamepad A press — pollGamepad, the existing press call (~line 1302):
+ *          ChimeraSound.press(f, touchTarget);
+ *
+ *   3. Canvas touch — tryTouch, inside `if (res && res.ok)` (~line 1389).
+ *      This path is currently SILENT; give it the same voice, using the
+ *      engine's own resolved hit from the /tick_touch response:
+ *          ChimeraSound.press(Number(forceEl.value), res.hit);
+ *
+ *   4. Force-follow mid-hold — the #force 'input' listener (~line 1452).
+ *      The gamepad path already re-calls press on force change; the
+ *      keyboard/slider path does not, so '-'/'=' and slider drags during a
+ *      SPACE hold never retarget the tone. Add:
+ *          if (holding && window.ChimeraSound) ChimeraSound.press(Number(forceEl.value));
+ *      press() retargets the held voice live (80 ms glide), never stacks.
+ *
+ *   5. wakeWhoosh — judgeState. Fire ONCE per false-to-true crossing of a
+ *      cell's wake bar: memo per (cell, threshold) across polls (a plain
+ *      object on curState(), e.g. st.wokeMemo) and call when `woke()`
+ *      (~line 1141) flips a memo from false to true:
+ *          ChimeraSound.wakeWhoosh();
+ *      The existing ChimeraSound.cellWake() keeps its goal-met role — the
+ *      whoosh marks the CROSSING, the chime marks the LATCH.
+ *
+ *   6. healShimmer — judgeState, the release-phase heal branch
+ *      (`st.phase === 'release'` && calm, ~line 1160), just before
+ *      ChimeraSound.passed():
+ *          ChimeraSound.healShimmer();
+ * --------------------------------------------------------------------------- 
  */
 (function () {
 "use strict";
@@ -86,6 +133,74 @@ function forceCurve(force_n) {
   var t = (f - FORCE_MIN) / (FORCE_MAX - FORCE_MIN);
   t = Math.max(0, Math.min(1, t));
   return Math.sqrt(t);
+}
+
+// -- region map (pass 2) ----------------------------------------------------
+// Each sealed cell is its own instrument: the press band lives inside the
+// region's band, sweeping lo->hi as force grows (foot: dull thud, thigh:
+// rounder, shin: brighter, body: full low). s0/s1 are the low sine hum's
+// endpoints for the region; q0/q1 the bandpass Q (foot is tighter = thuddier).
+
+var REGIONS = {
+  foot:  { name: "foot",  lo:  80, hi: 150, q0: 1.2, q1: 2.2, s0: 42, s1:  58 },
+  body:  { name: "body",  lo:  60, hi: 200, q0: 0.8, q1: 1.6, s0: 52, s1:  98 },
+  thigh: { name: "thigh", lo: 200, hi: 400, q0: 0.7, q1: 1.4, s0: 48, s1:  72 },
+  shin:  { name: "shin",  lo: 500, hi: 900, q0: 0.7, q1: 1.4, s0: 60, s1: 105 }
+};
+var CELL_REGION   = ["foot", "body", "thigh", "shin"];   // lessons.json cell map: 0 feet, 1 torso, 2 thighs, 3 shins
+var FALLBACK_BANDS = [[-0.020, 0.338], [3.415, 9.9712], [1.903, 3.415], [0.338, 1.903]]; // by CELL index; measured 2026-09-13
+var cellBands = null;      // live [[ylo,yhi] x4] from /api/state, once a fetch lands
+var bandsAt = 0;           // when the last bands fetch was attempted (10 s throttle)
+
+// fetchBands: pull the live per-cell ylo/yhi bands so a world point can be
+// named. Fire-and-forget, relative URL (same server serves the page), stale
+// bands keep sounding while a refresh is in flight.
+function fetchBands() {
+  if (!window.fetch) return;
+  var t = Date.now();
+  if (bandsAt && t - bandsAt < 10000) return;
+  bandsAt = t;
+  window.fetch("/api/state").then(function (r) { return r.json(); }).then(function (s) {
+    var cells = (s && s.cells) || [];
+    if (cells.length >= 2) {
+      cellBands = cells.map(function (c) { return [Number(c.ylo) || 0, Number(c.yhi) || 0]; });
+    }
+  }).catch(function () { /* keep fallback bands */ });
+}
+
+// regionFromY: which cell owns this height? Exact band hit wins; otherwise the
+// nearest band midpoint (so a point a hair off the surface still names a part).
+function regionFromY(y) {
+  var bands = cellBands || FALLBACK_BANDS;
+  var best = 0, bestD = Infinity;
+  for (var i = 0; i < bands.length && i < CELL_REGION.length; i++) {
+    if (y >= bands[i][0] && y <= bands[i][1]) { fetchBands(); return CELL_REGION[i]; }
+    var d = Math.abs(y - (bands[i][0] + bands[i][1]) / 2);
+    if (d < bestD) { bestD = d; best = i; }
+  }
+  fetchBands();
+  return CELL_REGION[best];
+}
+
+// resolveRegion: normalize any region hint (name / cell index / world point /
+// absent) into a REGIONS entry. Absent keeps the current one (default body).
+function resolveRegion(region, cur) {
+  if (region === undefined || region === null) return cur || REGIONS.body;
+  var k = null;
+  if (typeof region === "string") {
+    k = region.toLowerCase();
+    if (k === "torso") k = "body";
+    if (k === "feet") k = "foot";
+    if (k === "thighs") k = "thigh";
+    if (k === "shins") k = "shin";
+    if (!REGIONS[k]) k = null;
+  } else if (typeof region === "number" && isFinite(region)) {
+    k = CELL_REGION[region] || null;                 // 0..3; anything else falls back
+  } else if (region && typeof region.length === "number" && region.length >= 1) {
+    var y = Number(region[1]);
+    if (isFinite(y)) k = regionFromY(y);
+  }
+  return (k && REGIONS[k]) || cur || REGIONS.body;
 }
 
 // -- ambient voice ----------------------------------------------------------
@@ -190,18 +305,21 @@ function ambient(on) {
 }
 
 // press: begin (or re-target, idempotently) the sustained skin-tension tone — band-passed noise + a low sine whose brightness and volume follow the force in newtons, subtle to firm, never harsh.
-function press(force_n) {
+// Region hint (pass 2): press(force_n, region) where region is 'foot'|'body'|'thigh'|'shin' (or a cell index 0..3, or a world point [x,y,z]) —
+// no hint = 'body' (backward compatible); omitted on a mid-hold re-call = keep the held press's region. Force AND region retarget live (80 ms glide).
+function press(force_n, region) {
   if (!ready()) return;
   var c = forceCurve(force_n);
+  var r = resolveRegion(region, pressV ? pressV.region : REGIONS.body);
   var p = {
-    bandHz: 120 + 680 * c,      // brighter skin as force grows, capped low enough to stay soft
-    bandQ:  0.8 + 0.8 * c,
+    bandHz: r.lo + (r.hi - r.lo) * c,   // the region's band, sweeping lo->hi as force grows
+    bandQ:  r.q0 + (r.q1 - r.q0) * c,
     noiseG: 0.015 + 0.075 * c,
-    sineHz: 52 + 46 * c,        // the body hum rises slightly under load
+    sineHz: r.s0 + (r.s1 - r.s0) * c,   // the body hum rises slightly under load
     sineG:  0.04 + 0.10 * c,
     busG:   0.5 + 0.5 * c
   };
-  if (pressV) {                 // already held: just follow the new force, never stack voices
+  if (pressV) {                 // already held: just follow the new force/region, never stack voices
     var t2 = now(), k = 0.08;
     pressV.band.frequency.setTargetAtTime(p.bandHz, t2, k);
     pressV.band.Q.setTargetAtTime(p.bandQ, t2, k);
@@ -209,6 +327,7 @@ function press(force_n) {
     pressV.osc.frequency.setTargetAtTime(p.sineHz, t2, k);
     pressV.og.gain.setTargetAtTime(p.sineG, t2, k);
     pressV.bus.gain.setTargetAtTime(p.busG, t2, k);
+    pressV.region = r;
     return;
   }
   var bus = ctx.createGain();
@@ -238,7 +357,7 @@ function press(force_n) {
   var t = now();
   bus.gain.setValueAtTime(0, t);
   bus.gain.linearRampToValueAtTime(p.busG, t + 0.12);   // swell in, no click
-  pressV = { bus: bus, ns: ns, band: band, ng: ng, osc: osc, og: og };
+  pressV = { bus: bus, ns: ns, band: band, ng: ng, osc: osc, og: og, region: r };
 }
 
 // pressEnd: release the skin-tension tone with a short (~150 ms) natural decay.
@@ -253,6 +372,47 @@ function pressEnd() {
   try { v.ns.stop(t + 0.3); } catch (e) {}
   try { v.osc.stop(t + 0.3); } catch (e) {}
   setTimeout(function () { try { v.bus.disconnect(); } catch (e) {} }, 400);
+}
+
+// wakeWhoosh (pass 2): a ~300 ms filtered-noise swell — one cell just crossed its wake bar.
+// A rising bandpass over white noise (no pitch, no chime) so a crossing reads as "something
+// woke THERE" and several near-simultaneous crossings stack without phase-locking.
+function wakeWhoosh() {
+  if (!ready()) return;
+  var t = now() + 0.01;
+  var ns = ctx.createBufferSource();
+  ns.buffer = whiteBuf;
+  ns.loop = true;
+  var band = ctx.createBiquadFilter();
+  band.type = "bandpass";
+  band.Q.value = 0.9;
+  var v = 0.8 + Math.random() * 0.4;                     // per-call variance: swells never phase-lock
+  band.frequency.setValueAtTime(350 * v, t);
+  band.frequency.exponentialRampToValueAtTime(900 * v, t + 0.30);   // the rise is the whoosh
+  var g = ctx.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.linearRampToValueAtTime(0.11, t + 0.13);        // swell up, no click
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.30); // gone by ~300 ms
+  ns.connect(band);
+  band.connect(g);
+  g.connect(master);
+  ns.start(t);
+  ns.stop(t + 0.35);
+  setTimeout(function () { try { g.disconnect(); } catch (e) {} }, 500);
+}
+
+// healShimmer (pass 2): a very quiet high shimmer (C7/E7/G7 pairs, 2093-3136 Hz, ±3.5 cents
+// so each pair beats slowly) with a 600 ms fade — the release-phase heal just completed and
+// every cell is calm. Deliberately quieter than everything else: a reward, not an event.
+function healShimmer() {
+  if (!ready()) return;
+  var t = now() + 0.02;
+  [[2093.00, 0.030], [2637.02, 0.024], [3135.96, 0.016]].forEach(function (s, i) {
+    var at = t + i * 0.07;                               // a gentle cascade, not a chord stab
+    var up = Math.pow(2, 3.5 / 1200), dn = 1 / up;       // ±3.5 cents — the shimmer's slow beat
+    tone("sine", s[0] * up, at, s[1] * 0.5, 0.08, 0.60); // soft rise, 600 ms fade
+    tone("sine", s[0] * dn, at, s[1] * 0.5, 0.08, 0.60);
+  });
 }
 
 // cellWake: one-shot warm chime — two sines a fifth apart (F4/C5), ~0.4 s, gentle attack.
@@ -288,6 +448,8 @@ window.ChimeraSound = {
   ambient: ambient,
   press: press,
   pressEnd: pressEnd,
+  wakeWhoosh: wakeWhoosh,
+  healShimmer: healShimmer,
   cellWake: cellWake,
   passed: passed,
   saved: saved

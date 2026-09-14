@@ -155,6 +155,8 @@
   <h1>CHIMERA</h1>
   <div class="rule"></div>
   <p class="tagline">a creature of sealed water cells. touch it anywhere, and it answers.</p>
+  <!-- W7: the play-door region -- button, note, and the demoUrl derivation
+       + unit harness in the script below. -->
   <button class="btn" id="play">Play the demo</button>
   <p class="play-note" id="play-note" hidden>the demo opens on its own door: <span id="play-host"></span></p>
 </header>
@@ -203,21 +205,32 @@
 (function () {
   "use strict";
 
-  // THE PLAY DOOR. Locally the demo is the game shell on port 8206 of
-  // this very host; publicly, docs/DEPLOY_RUNBOOK.md Option A routes
-  // play.<domain> to the same 8206, so derive that door from wherever
-  // this page is served -- never a hardcoded 127.0.0.1 for a stranger.
-  function demoUrl() {
-    var h = window.location.hostname || "";
+  // THE PLAY DOOR. A membrane in three parts: STATEMENT -- the demo door is
+  // a pure function of where this page was served from, never a constant;
+  // PREDICTION -- one file yields a different door for localhost, 127.0.0.1,
+  // www.chimera.game, chimera.game and a bare intranet host, resolved before
+  // any click; FALSIFIER -- selfTestDemoUrl() below warns on any mismatch.
+  // Locally the demo is the game shell on port 8206 of this very host;
+  // publicly, docs/DEPLOY_RUNBOOK.md Option A routes play.<domain> to the
+  // same 8206 beside www.<domain> (swap the www alias for "play", prepend
+  // "play." to any other multi-label host); a single-label host has no
+  // domain to rewrite, so the only honest door is same-origin /play.
+  function demoUrl(hostname) {
+    var h = hostname !== undefined ? hostname : (window.location.hostname || "");
     if (h === "" || h === "localhost" || h === "::1" || h === "[::1]" ||
         /^127\./.test(h)) {
+      if (h === "::1") { h = "[::1]"; } // a bare v6 literal needs brackets
       return "http://" + (h || "127.0.0.1") + ":8206";
     }
     var labels = h.split(".");
     if (labels.length < 2) {
-      return "play"; // single-label host: same-origin /play is all we can say
+      return "/play"; // single-label host: same-origin /play is all we can say
     }
-    labels[0] = "play";
+    // The runbook ingress is play.<domain> beside www.<domain>: swap the
+    // leftmost label ONLY when it is the www alias, prepend otherwise --
+    // naive leftmost-swap would send chimera.game to the FOREIGN play.game.
+    if (labels[0] === "www") { labels[0] = "play"; }
+    else { labels.unshift("play"); }
     return "https://" + labels.join(".");
   }
 
@@ -225,11 +238,37 @@
   document.getElementById("play").addEventListener("click", function () {
     window.open(playTarget, "_blank", "noopener");
   });
+  // the dim note names the resolved door, PUBLIC CASE ONLY: a local visitor
+  // already knows their door (and a single-label intranet host has none to
+  // name), while a stranger on www.<domain> is told where the demo lives
+  // before they click.
   if (playTarget.indexOf("https://play.") === 0) {
-    document.getElementById("play-host").textContent =
-      playTarget.slice("https://".length);
+    document.getElementById("play-host").textContent = playTarget;
     document.getElementById("play-note").hidden = false;
   }
+
+  // THE UNIT HARNESS (fleet G6). The door law is pure, so its five mission
+  // cases are asserted on every load: quiet when all pass, one console line
+  // naming host, got and want for each failure. No DOM footprint.
+  function selfTestDemoUrl() {
+    var cases = [
+      ["localhost",        "http://localhost:8206"],
+      ["127.0.0.1",        "http://127.0.0.1:8206"],
+      ["www.chimera.game", "https://play.chimera.game"],
+      ["chimera.game",     "https://play.chimera.game"],
+      ["intranet-host",    "/play"]
+    ];
+    var bad = [];
+    cases.forEach(function (c) {
+      var got = demoUrl(c[0]);
+      if (got !== c[1]) { bad.push(c[0] + " -> " + got + " (want " + c[1] + ")"); }
+    });
+    if (bad.length) {
+      console.warn("demoUrl self-test FAILED:", bad.join(" | "));
+    }
+    return bad.length === 0;
+  }
+  selfTestDemoUrl();
 
   function showCount() {
     var line = document.querySelector(".count");

@@ -1279,6 +1279,13 @@ int main(int argc, char** argv) {
             g_tick.touch_clear();
             body = "{\"ok\":true}";
             content_type = "application/json";
+        } else if (p == "/tick_stance" && method == "POST") {
+            // THE STANCE SERVO (fleet 2/F1): ankles counter the body's lean
+            // while gravity holds — the balance rung of the movement law.
+            bool on = req_body.find("\"on\":true") != std::string::npos;
+            if (g_tick.set_stance(on)) body = "{\"ok\":true,\"stance_on\":" + std::string(on ? "true" : "false") + "}";
+            else body = "{\"ok\":false,\"error\":\"refused: the body must be classified and a support band must exist\"}";
+            content_type = "application/json";
         } else if (p == "/tick_gravity" && method == "POST") {
             // THE MOVEMENT LAW (fleet C2, lead-wired at the build window):
             // gravity + ground contact on the root — "a creature that cannot

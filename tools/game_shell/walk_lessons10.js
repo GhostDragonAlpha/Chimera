@@ -1,28 +1,86 @@
-/* walk_lessons.js -- THE R4 COMPLETION WALK, headless, ALL TEN LESSONS.
+/* walk_lessons10.js -- THE W6 TEN-LESSON WALK, headless (base: walk_lessons.js).
    A private Chrome drives the game page the way a player would:
-   enters a name, walks all ten lessons (touch/pose/gravity by the page's
-   own keyboard rail and buttons -- the page's SPACE handler posts
-   /api/touch_hit {hit, force_n} at each lesson's (vertex-snapped) touch
-   target, the pose button posts /api/pose, the gravity lesson's start
-   hook posts /api/gravity), saves, and reports the progress file.
-   Zero windows, zero interference with the operator's desktop.
-   While walking it polls /api/state itself and logs each lesson's peak
-   cell pressures next to the lesson's threshold, so a refusal to pass
-   is a NUMBER, not a shrug. (W1 lane: progress under the fresh name
-   "walker" -- Alan's file is never touched.)
-   Run: node tools/game_shell/walk_lessons.js [url] */
+   enters the name "walker", walks ALL TEN lessons by the page's own
+   keyboard rail (SPACE = the page's lesson touch targets, '=' / '-' force,
+   'p'/pose button, 'r' rest, ESC let go, ']' next lesson), then reads the
+   progress file. Evidence -> C:/Users/allen/Desktop/CHIMERA_PROOF/R4_WALK_TEN.
+
+   W6 additions over the base:
+   1. GATE: the walk does not start until the SERVED page carries the
+      lessons 6-10 judge ('pose_pair' in the served index.html -- W1 landed
+      it in parallel). Polled every 60 s, up to 40 min, then the wait is
+      reported honestly and the walk aborts (a five-lesson walk would be
+      a false verdict).
+   2. PAGE-ERROR LEDGER: every pageerror / console error is counted; the
+      exit code demands ten passes AND zero page errors.
+   3. MID-WALK PAYOFF: the name "walker" already holds 9/10 passes on disk
+      (the_cascade is the missing one), so E4's payoff overlay fires the
+      moment the set completes -- MID-walk -- and an overlay owns the
+      keyboard. After every lesson the walk checks the overlay and dismisses
+      it through #payoff-save (the real save flow).
+
+   Run: node tools/game_shell/walk_lessons10.js [url] */
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
 const { chromium } = require(path.join('E:/PythonChimera/node_modules/playwright-core'));
 
 const URL_ = process.argv[2] || 'http://127.0.0.1:8206';
 const NAME = 'walker';
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+// -- the W1 gate: the served page must carry the lessons 6-10 judge --------
+function servedPage() {
+  return new Promise((resolve, reject) => {
+    http.get(URL_ + '/?t=' + Date.now(), res => {
+      let b = '';
+      res.on('data', c => { b += c; });
+      res.on('end', () => resolve(b));
+    }).on('error', reject);
+  });
+}
+const GATE_CAP_MS = 40 * 60 * 1000;
+async function waitForPosePairJudge() {
+  const t0 = Date.now();
+  let n = 0;
+  while (Date.now() - t0 < GATE_CAP_MS) {
+    n++;
+    try {
+      const html = await servedPage();
+      if (html.includes('pose_pair')) {
+        console.log('GATE: served page carries pose_pair (poll ' + n +
+          ', waited ' + ((Date.now() - t0) / 1000).toFixed(0) + ' s) -- walking.');
+        return true;
+      }
+      console.log('GATE poll ' + n + ': served page has NO pose_pair yet -- waiting 60 s');
+    } catch (e) {
+      console.log('GATE poll ' + n + ': fetch failed (' + e.message + ') -- waiting 60 s');
+    }
+    await sleep(60000);
+  }
+  return false;
+}
+
 (async () => {
+  if (!await waitForPosePairJudge()) {
+    console.log('GATE TIMEOUT after 40 min: the served page never gained pose_pair.' +
+      ' No walk was attempted -- reporting the wait honestly.');
+    process.exit(2);
+  }
+
   const browser = await chromium.launch({ channel: 'chrome', headless: true });
   const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
-  page.on('pageerror', e => console.log('PAGE ERROR:', e.message));
+  const pageErrors = [];
+  page.on('pageerror', e => {
+    pageErrors.push('pageerror: ' + e.message);
+    console.log('PAGE ERROR:', e.message);
+  });
+  page.on('console', m => {
+    if (m.type() === 'error') {
+      pageErrors.push('console: ' + m.text());
+      console.log('CONSOLE ERROR:', m.text());
+    }
+  });
   const shots = 'C:/Users/allen/Desktop/CHIMERA_PROOF/R4_WALK_TEN';
   fs.mkdirSync(shots, { recursive: true });
 
@@ -78,6 +136,18 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   const resetPeaks = () => { peaks = []; };
   const peaksLine = () =>
     peaks.map((p, i) => 'cell' + i + '=' + Math.round(p) + ' Pa').join(' ') || 'no cells seen';
+  const dismissPayoffIfUp = async (tag) => {
+    // E4's payoff fires the moment the LAST missing pass completes the set
+    // -- with walker at 9/10 on disk that is MID-walk -- and an overlay owns
+    // the keyboard. Dismiss through the real save flow.
+    try {
+      await page.click('#payoff-save', { timeout: 2500 });
+      console.log(tag + ' payoff overlay: dismissed through #payoff-save (real save flow)');
+      await sleep(1500);
+      return true;
+    } catch (e) { return false; }
+  };
+  const verdicts = [];
   const report = async (tag, extraGoalCheck) => {
     const l = await lesson();
     const g = goalOf(l.id);
@@ -87,6 +157,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     console.log(tag + ' goal  : ' + JSON.stringify(g) +
       (extraGoalCheck || ''));
     console.log(tag + ' peaks : ' + peaksLine());
+    verdicts.push({ tag, id: l.id, phase: l.phase, goalMet: l.goalMet,
+                    passed: l.passed, peaks: peaksLine() });
+    await dismissPayoffIfUp(tag);
     return l;
   };
 
@@ -225,7 +298,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   resetPeaks();
   await key(']');
   await press(2200);                 // belly target
-  await press(2200);                 // cycles to the shin target
+  await press(2200);                 // SPACE while holding cycles + reposts the shin target
   await page.keyboard.press('Escape');
   await waitCalm(5500, 25000);
   await report('L5');
@@ -319,9 +392,15 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     fetch('/api/progress?name=' + encodeURIComponent(n)).then(r => r.json()), NAME);
   console.log('SAVED PROGRESS:', JSON.stringify(prog.lessons ? Object.keys(prog.lessons) : prog));
   fs.writeFileSync(shots + '/progress_' + NAME + '.json', JSON.stringify(prog, null, 1));
+  fs.writeFileSync(shots + '/verdicts_' + NAME + '.json',
+                   JSON.stringify({ url: URL_, name: NAME,
+                                    pageErrors: pageErrors,
+                                    lessons: verdicts }, null, 1));
 
   const passed = Object.keys(prog.lessons || {}).filter(k => prog.lessons[k].passed);
   console.log('PASSED LESSONS:', passed.length, 'of 10 ->', passed.join(', '));
+  console.log('PAGE ERRORS:', pageErrors.length,
+              pageErrors.length ? JSON.stringify(pageErrors) : '(zero)');
   await browser.close();
-  process.exit(passed.length === 10 ? 0 : 1);
+  process.exit(passed.length === 10 && pageErrors.length === 0 ? 0 : 1);
 })().catch(e => { console.error('WALK FAILED:', e.message); process.exit(1); });
