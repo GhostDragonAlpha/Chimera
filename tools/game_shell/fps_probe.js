@@ -28,6 +28,16 @@
  *      node tools/game_shell/fps_probe.js                 # headless + headed
  *      node tools/game_shell/fps_probe.js --mode headless
  *      node tools/game_shell/fps_probe.js --windows 2
+ *      node tools/game_shell/fps_probe.js --game http://127.0.0.1:8241 \
+ *                                          --engine http://127.0.0.1:8141
+ *                                                        # scratch stack
+ *
+ * Fleet note (H14, 2026-09-14): this probe is MUTATING -- it animates a
+ * pose mid-window, which the fleet rules forbid against the shared live
+ * stack. Point --game/--engine at a scratch pair (see
+ * docs/evidence/agent_fleet/SHIP/H14_BENCH/PROTOCOL.md) for anything that
+ * is not operator-authorized live measurement.
+ *
  * Exit code: 0 = at least one mode measured, 1 = nothing measured.
  */
 
@@ -36,10 +46,26 @@
 const fs = require('fs');
 const http = require('http');
 const path = require('path');
-const { chromium } = require(path.join('E:/PythonChimera/node_modules/playwright-core'));
 
-const GAME = 'http://127.0.0.1:8206';
-const ENGINE = 'http://127.0.0.1:8107';
+/* argv FIRST: --game/--engine must be known before anything dials out. */
+const ARGV = process.argv.slice(2);
+const flag = (name, dflt) => {
+  const i = ARGV.indexOf('--' + name);
+  return i >= 0 && ARGV[i + 1] ? ARGV[i + 1] : dflt;
+};
+
+const GAME = flag('game', 'http://127.0.0.1:8206');
+const ENGINE = flag('engine', 'http://127.0.0.1:8107');
+
+/* Playwright lives where the ship's node_modules are; try the local clone
+ * first, then the canonical ship root, so the probe runs from any checkout. */
+let chromium;
+try {
+  ({ chromium } = require('playwright-core'));
+} catch (_) {
+  ({ chromium } = require(path.join('E:/PythonChimera/node_modules/playwright-core')));
+}
+
 const WINDOW_MS = 10000;
 const KNEE_L = 15;                       // index.html JOINT_INDEX.knee_L
 const VIEWPORT = { width: 1600, height: 900 };
@@ -180,6 +206,15 @@ async function measureMode(mode, windows) {
 
     await page.click('#play-btn');           // enter play
     out.enteredPlay = true;
+    // The E4 first-run intro overlay shows once per name; a player presses
+    // Enter through it. Dismiss it if present so the page sits in the same
+    // state a mid-session player's does (overlay-open blocks nothing the
+    // probe measures -- polls and rAF run regardless -- this is fidelity).
+    try {
+      const introOpen = await page.evaluate(() =>
+        !document.getElementById('intro-overlay').classList.contains('hidden'));
+      if (introOpen) await page.keyboard.press('Enter');
+    } catch (_) { /* no overlay element: older page, nothing to dismiss */ }
     await sleep(2000);                       // let lessons/verts settle
 
     for (let w = 0; w < windows; w++) {
@@ -228,13 +263,9 @@ async function measureMode(mode, windows) {
 /* ---------------- main ---------------- */
 
 async function main() {
-  const argv = process.argv.slice(2);
-  const flag = (name, dflt) => {
-    const i = argv.indexOf('--' + name);
-    return i >= 0 && argv[i + 1] ? argv[i + 1] : dflt;
-  };
-  const modeArg = flag('mode', 'both');
+  const argv = ARGV;
   const windows = Math.max(1, parseInt(flag('windows', '3'), 10) || 3);
+  const modeArg = flag('mode', 'both');
   const modes = modeArg === 'both' ? ['headless', 'headed'] : [modeArg];
 
   const result = {

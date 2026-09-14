@@ -11,18 +11,31 @@ reports ticks-per-second under four scenarios, run back to back:
                          (index.html: setInterval(pollVerts, 333) and
                          setInterval(pollState, 700); the shell proxies
                          /api/verts -> /verts and /api/state -> /tick_state;
-                         the page NEVER calls /frame -- it renders client-side
-                         from /verts). Two load threads:
-                         GET /verts every 333 ms + GET /tick_state every 700 ms.
+                         the page NEVER calls /frame -- it renders client-side).
+                         Since C3 landed, the page polls /api/verts?delta=1
+                         (the kernel delta stream), NOT the full frame -- so
+                         this scenario pulls /verts?delta=1 every 333 ms and
+                         /tick_state every 700 ms, and reports the framing mix
+                         (keyframe / runs / legacy) and bytes actually pulled.
+                         NOTE: the delta chain is defined for ONE client; the
+                         scenario's verts thread must be the only ?delta=1
+                         poller against that engine while it runs.
   3. FRAME_THUMBNAIL  -- GET /frame?w=1024 every 2 s, alone. HONEST NOTE: this
                          is the THUMBNAIL channel (the reel / dyad grab path),
                          NOT the game page -- no player load pulls /frame. It is
                          kept as its own scenario because R6 measured a real
                          engine-side render stall under it (p1 0.00, 105 MB/60s)
                          and hiding it would be the drift this harness exists to
-                         prevent.
+                         prevent. (The build window lands G8's async capture
+                         readback; this scenario is where that shows.)
   4. TOUCH_STORM      -- POST /tick_touch {"px":0.5,"py":0.295,"force_n":30000},
                          then POST /tick_touch_clear 1 s later, cycling every 2 s.
+
+LIVE SAFETY (fleet rule): the shared live stack must never be pressed and
+never get a /frame flood -- both are mutating or tick-stalling loads. Running
+TOUCH_STORM or FRAME_THUMBNAIL against the default live engine (8107) is
+REFUSED unless --allow-live-mutating is passed. Run the full bench against a
+scratch engine instead (--scratch launches one for you).
 
 Bar: 60 ticks/s minimum (60 fps on a mid-range machine).
 
@@ -45,9 +58,16 @@ PASS, 1 = overall FAIL, 2 = harness error (report still written).
 
 Usage:
     python bench.py                          # full bench, 60 s per scenario
+    python bench.py --scratch                # same, against a throwaway engine
+                                             # (private port, isolated cwd,
+                                             # killed after -- the R6 form)
     python bench.py --duration 10            # shorter scenarios
     python bench.py --scenarios idle         # IDLE probe only
     python bench.py --scenarios frame_thumbnail   # thumbnail channel only
+
+TOUCH_STORM and FRAME_THUMBNAIL are refused against the default live engine
+(8107) unless --allow-live-mutating: they press the shared world / stall its
+tick loop. --scratch is the honest default for a full R6 run.
 """
 
 from __future__ import annotations
@@ -80,6 +100,14 @@ TOUCH_CYCLE_S = 2.0
 TOUCH_BODY = {"px": 0.5, "py": 0.295, "force_n": 30000}
 
 _ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# -- scratch engine (the throwaway pattern: tools/gallery/run_gallery.py,
+#    tools/vertbind_softmax.py -- private port, isolated cwd, killed after) --
+DEFAULT_SCRATCH_PORT = 8141                 # PRIVATE: never 8107
+DEFAULT_ENGINE_EXE = os.path.join(_ROOT, ".tmp", "build_tick", "Release",
+                                  "chimera_engine.exe")
+SCRATCH_DIR = os.path.join(_ROOT, ".tmp", "bench_scratch")
+
 DEFAULT_REPORT = os.path.join(_ROOT, ".tmp", "bench_report.md")
 
 SCENARIO_KEYS = ("idle", "game_page_load", "frame_thumbnail", "touch_storm")
@@ -252,18 +280,37 @@ def bucket_rates(pairs: List[Tuple[float, int]], bucket_s: float = BUCKET_S,
 
 def _zero_load_stats() -> Dict[str, int]:
     return {"verts_ok": 0, "verts_err": 0, "verts_bytes": 0,
+            "verts_keyframes": 0, "verts_runs": 0, "verts_legacy": 0,
             "state_ok": 0, "state_err": 0, "state_bytes": 0,
             "frame_ok": 0, "frame_err": 0, "frame_bytes": 0,
             "touch_ok": 0, "touch_err": 0, "clear_ok": 0, "clear_err": 0}
 
 
 def _verts_thread(base: str, stop: threading.Event, st: Dict[str, int]) -> None:
+    """The REAL page's 3 Hz ask: GET /verts?delta=1 (the C3 kernel stream).
+
+    Drift fix (H14 audit, 2026-09-14): the page has polled
+    /api/verts?delta=1 since C3 landed -- never the full frame at steady
+    state. The shell (tools/game_shell/server.py) rides the query through to
+    the engine /verts. Byte counts here are the honest page footprint and
+    feed C3 verification (the >10x byte-drop bar). The framing of each
+    answer is classified from the first bytes only -- the payload is never
+    parsed. The delta chain is defined for ONE client: while this thread
+    runs, nothing else may poll ?delta=1 against that engine.
+    """
     while not stop.is_set():
         t0 = time.monotonic()
         try:
-            _status, raw = http_req(base, "GET", "/verts", timeout=15.0)
+            _status, raw = http_req(base, "GET", "/verts?delta=1", timeout=15.0)
             st["verts_ok"] += 1
             st["verts_bytes"] += len(raw)
+            if len(raw) >= 2 and raw[0] == 0xD1:
+                if raw[1] == 0:
+                    st["verts_keyframes"] += 1
+                else:
+                    st["verts_runs"] += 1
+            else:
+                st["verts_legacy"] += 1
         except Exception:
             st["verts_err"] += 1
         stop.wait(max(0.0, VERTS_PERIOD_S - (time.monotonic() - t0)))
@@ -335,12 +382,16 @@ def load_idle(base: str, stop: threading.Event):
 
 
 def load_game_page(base: str, stop: threading.Event):
-    """The REAL page model: /verts 3 Hz + /tick_state ~1.4 Hz, /frame NEVER.
+    """The REAL page model: /verts?delta=1 at 3 Hz + /tick_state ~1.4 Hz,
+    /frame NEVER.
 
-    index.html renders client-side from /api/verts (-> /verts) and polls
-    /api/state (-> /tick_state) for the blood readout + lesson judge. R6
-    measured the old /frame-based model as drift: it imposed 105 MB/60s of
-    engine-side PNG renders the player never triggers.
+    index.html renders client-side from /api/verts (-> engine /verts, pulled
+    as ?delta=1 kernel frames since C3) and polls /api/state (-> /tick_state)
+    for the blood readout + lesson judge. The W4 sound rail and the E4
+    lesson-rail work are page-local (no new engine channels): the page's
+    engine footprint is still exactly these two GET streams. R6 measured the
+    old /frame-based model as drift; the H14 audit measured the old FULL
+    /verts model as drift (the page has asked ?delta=1 since C3).
     """
     return _start_threads(base, stop, [_verts_thread, _state_thread])
 
@@ -406,8 +457,10 @@ def human_bytes(n: int) -> str:
 def load_summary(st: Dict[str, int]) -> str:
     parts = []
     if st["verts_ok"] or st["verts_err"]:
-        parts.append("/verts ok=%d err=%d (%s pulled)"
-                     % (st["verts_ok"], st["verts_err"], human_bytes(st["verts_bytes"])))
+        parts.append("/verts?delta=1 (the page's C3 ask) ok=%d err=%d (%s pulled;"
+                     " kernel keyframes=%d, runs=%d, legacy=%d)"
+                     % (st["verts_ok"], st["verts_err"], human_bytes(st["verts_bytes"]),
+                        st["verts_keyframes"], st["verts_runs"], st["verts_legacy"]))
     if st["state_ok"] or st["state_err"]:
         parts.append("/tick_state (the page's /api/state) ok=%d err=%d (%s pulled)"
                      % (st["state_ok"], st["state_err"], human_bytes(st["state_bytes"])))
@@ -533,10 +586,12 @@ def build_report(args: argparse.Namespace, results: List[Dict[str, object]]) -> 
        " reset or if the engine is unreachable past the %.0f s retry window."
        % RETRY_WAIT_S)
     ap("- GAME_PAGE_LOAD models the REAL page: index.html polls /api/verts at"
-       " 3 Hz (-> engine /verts) and /api/state at ~1.4 Hz (-> engine"
-       " /tick_state) and NEVER calls /frame. FRAME_THUMBNAIL is the"
-       " /frame?w=1024 thumbnail channel (reel / dyad grabs), NOT the game"
-       " page -- kept visible because its engine-side render stall is real.")
+       " 3 Hz (-> engine /verts?delta=1, the C3 kernel stream -- the page has"
+       " never pulled the full frame at steady state since C3) and /api/state"
+       " at ~1.4 Hz (-> engine /tick_state) and NEVER calls /frame."
+       " FRAME_THUMBNAIL is the /frame?w=1024 thumbnail channel (reel / dyad"
+       " grabs), NOT the game page -- kept visible because its engine-side"
+       " render stall is real.")
     ap("")
 
     for r in results:
@@ -582,6 +637,113 @@ def build_report(args: argparse.Namespace, results: List[Dict[str, object]]) -> 
 
 
 # --------------------------------------------------------------------------
+# Scratch engine (throwaway pattern: private port, isolated cwd, kill after)
+# --------------------------------------------------------------------------
+
+def sha256_of(path: str) -> str:
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def launch_scratch_engine(exe_path: str, port: int,
+                          wait_s: float = 90.0) -> Dict[str, object]:
+    """Boot a throwaway engine on a PRIVATE port in an ISOLATED cwd.
+
+    The gallery/vertbind measured pattern: the cwd gets its own `shaders/`
+    copy and, when the build dir has one, the `session_snapshot/` blobs --
+    boot restore (default-on) then replays the real sealed world, so the
+    bench measures a representative scene instead of an empty tick. The
+    process handle is returned and nothing else ever kills by image name:
+    the LIVE engine shares the exe's image name, so kill is BY PID ONLY.
+    """
+    import shutil
+    import subprocess
+    if not os.path.isfile(exe_path):
+        raise FileNotFoundError("engine exe not found: %s" % exe_path)
+    exe_dir = os.path.dirname(os.path.abspath(exe_path))
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    run_dir = os.path.join(SCRATCH_DIR, "run_%s_p%d" % (stamp, port))
+    os.makedirs(run_dir, exist_ok=True)
+    shaders = os.path.join(exe_dir, "shaders")
+    snap = os.path.join(exe_dir, "session_snapshot")
+    if os.path.isdir(shaders):
+        shutil.copytree(shaders, os.path.join(run_dir, "shaders"))
+    snapshot_used = False
+    if os.path.isdir(snap):
+        shutil.copytree(snap, os.path.join(run_dir, "session_snapshot"))
+        snapshot_used = True
+    logf = open(os.path.join(run_dir, "engine_%d.log" % port), "ab")
+    creationflags = 0x00000200 if os.name == "nt" else 0  # CREATE_NEW_PROCESS_GROUP
+    proc = subprocess.Popen([exe_path, str(port), "--hidden"], cwd=run_dir,
+                            stdout=logf, stderr=subprocess.STDOUT,
+                            creationflags=creationflags)
+    base = "http://127.0.0.1:%d" % port
+    deadline = time.monotonic() + wait_s
+    while time.monotonic() < deadline:
+        if proc.poll() is not None:
+            raise RuntimeError("scratch engine exited at boot (code %s)"
+                               % proc.returncode)
+        try:
+            get_ticks(base)
+            break
+        except Exception:
+            time.sleep(0.5)
+    else:
+        kill_scratch_engine(proc)
+        raise RuntimeError("scratch engine did not answer within %.0fs" % wait_s)
+
+    # BOOT SETTLE (measured, H14): the async snapshot restore re-bases the
+    # tick counter mid-boot (observed 599 -> 53 and 586 -> 47 in the first
+    # ~6 s), which the reset rule would read as an engine restart. Hold
+    # until the counter has been monotonic and advancing for SETTLE_S.
+    settle_s = 20.0
+    settled_since = None
+    prev = get_ticks(base)
+    deadline = time.monotonic() + settle_s * 6
+    while time.monotonic() < deadline:
+        time.sleep(0.25)
+        try:
+            cur = get_ticks(base)
+        except Exception:
+            settled_since = None
+            continue
+        if cur < prev or cur == prev:
+            settled_since = None     # re-based again: restart the settle clock
+        else:
+            if settled_since is None:
+                settled_since = time.monotonic()
+            elif time.monotonic() - settled_since >= settle_s:
+                break
+        prev = cur
+
+    return {"proc": proc, "base": base, "run_dir": run_dir,
+            "exe": exe_path, "exe_sha256": sha256_of(exe_path),
+            "snapshot_used": snapshot_used, "log": logf}
+
+
+def kill_scratch_engine(scratch: Dict[str, object]) -> None:
+    """Kill ONLY the process this bench launched (by PID, never by name)."""
+    import subprocess
+    proc = scratch.get("proc")
+    if proc is None or proc.poll() is not None:
+        return
+    try:
+        if os.name == "nt":
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)],
+                           capture_output=True)
+        else:
+            proc.terminate()
+        proc.wait(timeout=15)
+    except Exception as exc:
+        log("[bench] WARNING: scratch engine kill failed: %s: %s"
+            % (type(exc).__name__, exc))
+
+
+# --------------------------------------------------------------------------
 # Entry point
 # --------------------------------------------------------------------------
 
@@ -605,6 +767,22 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     ap.add_argument("--scenarios",
                     default=",".join(SCENARIO_KEYS),
                     help="comma list from: %s (default all)" % ", ".join(SCENARIO_KEYS))
+    ap.add_argument("--scratch", action="store_true",
+                    help="run against a THROWAWAY engine: boot the exe "
+                         "(--engine-exe) on a private port (--scratch-port) "
+                         "in an isolated cwd, bench it, kill it. The live "
+                         "stack is never touched.")
+    ap.add_argument("--engine-exe", default=DEFAULT_ENGINE_EXE,
+                    help="engine binary for --scratch (default %s)"
+                         % DEFAULT_ENGINE_EXE)
+    ap.add_argument("--scratch-port", type=int, default=DEFAULT_SCRATCH_PORT,
+                    help="private port for --scratch (default %d)"
+                         % DEFAULT_SCRATCH_PORT)
+    ap.add_argument("--allow-live-mutating", action="store_true",
+                    help="explicitly authorize TOUCH_STORM / FRAME_THUMBNAIL "
+                         "against the default live engine. Fleet rule: the "
+                         "shared live stack must never be pressed or frame-"
+                         "flooded -- you almost certainly mean --scratch.")
     args = ap.parse_args(argv)
     keys = [k.strip().lower() for k in args.scenarios.split(",") if k.strip()]
     bad = [k for k in keys if k not in SCENARIO_KEYS]
@@ -617,29 +795,66 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
 
 def main(argv: Optional[List[str]] = None) -> int:
     args = parse_args(argv)
-    by_key = dict(zip(SCENARIO_KEYS, SCENARIOS))
-    results: List[Dict[str, object]] = []
-    for key in args.keys:
-        name, loader = by_key[key]
-        try:
-            results.append(run_scenario(name, loader, args.base,
-                                        args.duration, args.interval, args.bar))
-        except Exception as exc:  # one scenario must never kill the others
-            log("[bench] scenario %s: FAIL -- harness error: %s: %s"
-                % (name, type(exc).__name__, exc))
-            results.append({"name": name, "verdict": "FAIL",
-                            "status": "harness_error", "summary": None,
-                            "resets": 0, "failed_polls": 0, "load": "unknown",
-                            "error": "%s: %s" % (type(exc).__name__, exc)})
+    base = args.base
 
-    report = build_report(args, results)
-    report_dir = os.path.dirname(os.path.abspath(args.report))
-    os.makedirs(report_dir, exist_ok=True)
-    with open(args.report, "w", encoding="utf-8", newline="\n") as f:
-        f.write(report)
-    log(report)
-    log("[bench] report written to %s" % os.path.abspath(args.report))
-    return 0 if all(r["verdict"] == "PASS" for r in results) else 1
+    # LIVE SAFETY: TOUCH_STORM presses the world; FRAME_THUMBNAIL stalls its
+    # tick ~1 s per pull (~30 pulls per scenario). Against the shared live
+    # engine both need the explicit flag; the honest default is --scratch.
+    live_mutating = ("touch_storm" in args.keys or
+                     "frame_thumbnail" in args.keys) and not args.scratch
+    if live_mutating and base == DEFAULT_BASE and not args.allow_live_mutating:
+        log("[bench] REFUSED: %s against the LIVE engine (%s) would press the "
+            "shared world / stall its tick loop. Use --scratch (preferred), a "
+            "private --base, or --allow-live-mutating if you truly mean live."
+            % ("/".join(k for k in ("touch_storm", "frame_thumbnail")
+                        if k in args.keys), base))
+        return 2
+
+    scratch = None
+    try:
+        if args.scratch:
+            log("[bench] --scratch: booting throwaway engine %s on private "
+                "port %d ..." % (args.engine_exe, args.scratch_port))
+            scratch = launch_scratch_engine(args.engine_exe, args.scratch_port)
+            args.base = base = scratch["base"]
+            log("[bench] --scratch: engine up at %s (cwd %s, snapshot=%s)"
+                % (base, scratch["run_dir"], scratch["snapshot_used"]))
+
+        by_key = dict(zip(SCENARIO_KEYS, SCENARIOS))
+        results: List[Dict[str, object]] = []
+        for key in args.keys:
+            name, loader = by_key[key]
+            try:
+                results.append(run_scenario(name, loader, args.base,
+                                            args.duration, args.interval, args.bar))
+            except Exception as exc:  # one scenario must never kill the others
+                log("[bench] scenario %s: FAIL -- harness error: %s: %s"
+                    % (name, type(exc).__name__, exc))
+                results.append({"name": name, "verdict": "FAIL",
+                                "status": "harness_error", "summary": None,
+                                "resets": 0, "failed_polls": 0, "load": "unknown",
+                                "error": "%s: %s" % (type(exc).__name__, exc)})
+
+        report = build_report(args, results)
+        if scratch is not None:
+            report = report.replace(
+                "- engine: %s" % args.base,
+                "- engine: %s (SCRATCH, throwaway; exe %s sha256 %s; "
+                "scene snapshot replayed: %s; engine log %s)"
+                % (args.base, scratch["exe"], scratch["exe_sha256"],
+                   scratch["snapshot_used"], scratch["run_dir"]),
+                1)
+        report_dir = os.path.dirname(os.path.abspath(args.report))
+        os.makedirs(report_dir, exist_ok=True)
+        with open(args.report, "w", encoding="utf-8", newline="\n") as f:
+            f.write(report)
+        log(report)
+        log("[bench] report written to %s" % os.path.abspath(args.report))
+        return 0 if all(r["verdict"] == "PASS" for r in results) else 1
+    finally:
+        if scratch is not None:
+            log("[bench] --scratch: killing the throwaway engine (by PID) ...")
+            kill_scratch_engine(scratch)
 
 
 if __name__ == "__main__":
