@@ -3421,7 +3421,13 @@ int main(int argc, char** argv) {
                         }
                     }
                 }
-                body = std::string("{\"ok\":") + (failed == 0 && done > 0 ? "true" : "false")
+                // THE OK RULE (R-restore-doctor): a boot whose seal tree
+                // came back through the STATE blob answers with done == 0
+                // and every history entry an already-skip — a full restore,
+                // not a failure. failed == 0 plus SOMETHING satisfied
+                // (executed or already) is the honest ok. A truly empty
+                // snapshot stays ok:false (nothing to restore).
+                body = std::string("{\"ok\":") + (failed == 0 && (done > 0 || seal_already > 0) ? "true" : "false")
                      + ",\"replayed\":" + std::to_string(done)
                      + ",\"failed\":" + std::to_string(failed)
                      + ",\"seal_already\":" + std::to_string(seal_already)
@@ -3570,8 +3576,16 @@ int main(int argc, char** argv) {
                     printf("session: boot restore -> %s\n", resp.c_str());
                     fflush(stdout);
                     if (g_shutdown_closing.load(std::memory_order_acquire)) return;
-                    bool ok = resp.find("\"failed\":0") != std::string::npos
-                           && resp.find("\"replayed\":0") == std::string::npos;
+                    // THE SUCCESS SIGNAL (R-restore-doctor): the body's own
+                    // "ok" is now authoritative — it is true whenever
+                    // failed == 0 AND something was actually satisfied
+                    // (executed seals OR already-skips), which covers the
+                    // state-blob boot (replayed:0, seal_already:N) that the
+                    // old replayed-count heuristic misread as failure and
+                    // retried. The "replayed":0,"failed":0 case stays a
+                    // success: an empty snapshot has nothing to restore.
+                    bool ok = resp.find("\"ok\":true") != std::string::npos
+                           && resp.find("\"failed\":0") != std::string::npos;
                     if (ok || resp.find("\"replayed\":0,\"failed\":0") != std::string::npos) {
                         // C6 (the eye, 2026-09-02): the boot camera targets the origin
                         // and crops the subject's feet. After a successful restore,

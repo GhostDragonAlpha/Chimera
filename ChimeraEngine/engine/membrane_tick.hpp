@@ -58,7 +58,23 @@ public:
     // rides the posed surface at fixed weights — repeated cuts grow the
     // body-part tree (the growth law). Volume by divergence, pressure by
     // dP = -dV/(kappa*V0), kappa = water at 25 C.
-    bool seal(float y, int cell);
+    // outcome (optional): 0 = executed, 1 = already satisfied (the
+    // idempotent skip; nothing published, nothing refused). Refusal is
+    // still `false` (the H8 degenerate-split guard keeps its category).
+    static constexpr int SEAL_CUT = 0, SEAL_ALREADY = 1;
+    bool seal(float y, int cell, int* outcome = nullptr);
+
+    // THE SEAL-TREE SNAPSHOT (restore idempotency, R-restore-doctor):
+    // the mitosis tree is fully determined by the mesh + the cut blends +
+    // the per-cell piece lists, so it round-trips as bytes. Loading is
+    // ALL-OR-NOTHING and self-validating: the vertex count must match the
+    // loaded mesh and every cell's rest volume is RECOMPUTED from its
+    // pieces and compared against the stored v0 -- a stale blob (any mesh
+    // change) refuses without mutating anything, and the caller falls
+    // back to the intent history (every entry then re-executes or skips
+    // as already-satisfied, exactly as before this blob existed).
+    bool load_seal_state(const std::string& body);
+    void export_seal_state(std::vector<uint8_t>& out);
 
     // THE COMPONENT SPLIT (the L/R separation): a cell made of several
     // disjoint closed surfaces (left+right feet after the ankle band cut)
@@ -206,6 +222,15 @@ private:
     std::string seal_refusal_;          // last refused seal/split, BY NAME
                                         // ("degenerate_split"); empty = none.
                                         // Exported in state_json.
+    // THE ALREADY-SATISFIED TOLERANCE (restore idempotency): a replayed
+    // cut counts as already satisfied when the requested plane sits on a
+    // stored cell bound. The stored bounds are exact (seal() forces new
+    // cap slots to py == y), and the per-replay re-evaluation drift H8
+    // measured is ~1 ulp (~1e-7 m at y = 0.338); authored cut planes on
+    // this creature are >= 0.3 m apart. 1e-4 m is the repo's named 0.1 mm
+    // scale (the press-decay cutoff): 1000x above the drift, 3000x below
+    // the smallest authored separation.
+    static constexpr float SEAL_ALREADY_TOL_M = 1e-4f;
     float vol_whole0_ = 0.f;                   // whole divergence vol at seal
     float vol_whole_ = 0.f;                    // live posed whole volume
     float conserve_pct_ = 0.f;                 // (sum cells - Vw)/Vw * 100
@@ -311,6 +336,13 @@ private:
     uint32_t gait_stride_count_ = 0;
     uint64_t gait_last_done_[2] = {0, 0};       // ticks_ at last LOAD exit
     std::vector<std::string> gait_log_;         // bounded transition log
+    std::string gait_enable_block_;             // the set_gait(true) refusal,
+                                                // BY NAME (the seal_refusal_
+                                                // law: an enable that refuses
+                                                // without naming its blocker
+                                                // is undiagnosable). Empty =
+                                                // armed. Exported in
+                                                // state_json.
     void  gait_off_locked_();                   // assumes seal_mtx_ held
     void  gait_step_locked_(std::vector<float>& verts9, float dt);
     void  gait_log_locked_(int leg, const char* from, const char* to,

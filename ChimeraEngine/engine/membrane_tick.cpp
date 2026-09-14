@@ -227,6 +227,7 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
     gait_feet_cell_ = -1;
     gait_stride_count_ = 0;
     gait_log_.clear();
+    gait_enable_block_.clear();   // the new body has answered nothing yet
     ready_.store(true, std::memory_order_release);
 }
 
@@ -1063,11 +1064,12 @@ bool MembraneTick::split(int cell_idx) {
     return true;
 }
 
-bool MembraneTick::seal(float y, int cell_idx) {
+bool MembraneTick::seal(float y, int cell_idx, int* outcome) {
     // MITOSIS — the recursive cut-and-weld (preregs 4eb9480c, be971e7c).
     // Cuts sealed cell `cell_idx` (0 = the whole creature before any
     // cut) into two sealed cells. Inserted points are convex blends over
     // original vertices, so they ride the posed surface at fixed weights.
+    if (outcome) *outcome = SEAL_CUT;
     if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return false;
     if (!std::isfinite(y)) return false;
     if (tri_verts_.size() != cells_.size() * 3) return false;
@@ -1123,6 +1125,54 @@ bool MembraneTick::seal(float y, int cell_idx) {
     for (uint32_t s : src) {
         ymin = std::min(ymin, py[s]);
         ymax = std::max(ymax, py[s]);
+    }
+    // ═══ THE ALREADY-SATISFIED SEAL (restore idempotency, R-restore-
+    // ═══ doctor 2026-09-14) ══════════════════════════════════════════
+    // The session snapshot journals INTENTS, and boot restore replays
+    // them in order — but the accumulated history holds ~60 repeats of
+    // the three foundation cuts, and every boot re-refused them (measured:
+    // replayed:7, failed:60-66, seal_refusal "degenerate_split", history
+    // +3 lines per restore attempt). A cut whose STATE ALREADY EXISTS is
+    // not a failure and not a degenerate singularity: it is a no-op.
+    // Two admission tests, both float-honest:
+    //   (a) the named cell's own stored bounds sit on the plane — the
+    //       bound was recorded when the cell (or an ancestor of this
+    //       request's below-daughter) was cut at exactly y;
+    //   (b) the plane does not cross the named cell AND some sealed cell
+    //       carries the plane as a bound — the cut's partition already
+    //       exists elsewhere in the tree (a repeat of an ancestor cut,
+    //       e.g. {"y":3.415} against the feet cell it no longer spans).
+    // A plane at a bound that CROSSES only because the recomputed blend
+    // drifted a fraction of an ulp (H8's named mechanism) is caught by
+    // (a) before the cut arithmetic can build a sliver daughter. The
+    // refusal path keeps every genuinely degenerate/invalid cut: a plane
+    // that crosses nothing and touches no bound (e.g. {"y":99}) still
+    // falls through to the guard below.
+    {
+        auto on_bound = [&](float lo, float hi) {
+            return std::fabs(y - lo) <= SEAL_ALREADY_TOL_M
+                || std::fabs(y - hi) <= SEAL_ALREADY_TOL_M;
+        };
+        bool already = false;
+        if (!seal_cells_.empty()) {
+            const SealCell& named = seal_cells_[cell_idx];
+            if (on_bound(named.ylo, named.yhi)) {
+                already = true;                          // (a)
+            } else if (y <= ymin || y >= ymax) {         // plane does not cross
+                for (const SealCell& c : seal_cells_) {
+                    if (on_bound(c.ylo, c.yhi)) {        // (b)
+                        already = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (already) {
+            // skipped, not executed: nothing published, nothing refused,
+            // nothing re-journaled (the caller answers "seal":"already").
+            if (outcome) *outcome = SEAL_ALREADY;
+            return true;
+        }
     }
     if (y <= ymin || y >= ymax) return false;   // plane outside the cell
 
@@ -1351,6 +1401,225 @@ bool MembraneTick::seal(float y, int cell_idx) {
     return true;
 }
 
+// ═══ THE SEAL-TREE SNAPSHOT (restore idempotency, R-restore-doctor) ═══
+// Wire format (little-endian), versioned by magic:
+//   u32 magic 'SEL1' = 0x31534553
+//   u32 nv                        -- the vertex count the tree was cut on
+//   u32 n_cuts, n_cuts x {u32 n, u32 v[8], f32 w[8]}          (68 B each)
+//   u32 n_cells, per cell: u32 piece_n, piece_n x u32,
+//                          f32 v0, f32 vol, f32 p,
+//                          i32 caps, f32 ylo, f32 yhi, u8 degenerate
+// Loading validates before it mutates: nv must equal the loaded mesh's
+// vertex count, every blend/cell index must be in range, and EVERY cell's
+// rest volume is recomputed from its own pieces over this mesh's rest
+// blend and compared with the stored v0 (1e-4 relative -- 50x under the
+// degenerate guard's 0.5% band). Any mismatch refuses with NOTHING
+// changed, and the caller falls back to the intent history, which
+// rebuilds the tree the slow, honest way (executed cuts + already-skips).
+static const uint32_t SEAL_STATE_MAGIC = 0x31534553u;  // 'SEL1'
+
+bool MembraneTick::load_seal_state(const std::string& body) {
+    if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return false;
+    const uint32_t nv = (uint32_t)(base_pos_.size() / 9);
+    if (nv == 0) return false;
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+
+    auto rd32 = [&](size_t off, uint32_t* v) {
+        if (off + 4 > body.size()) return false;
+        std::memcpy(v, body.data() + off, 4);
+        return true;
+    };
+    auto rdf32 = [&](size_t off, float* v) {
+        return rd32(off, reinterpret_cast<uint32_t*>(v));
+    };
+    uint32_t magic = 0, hdr_nv = 0, n_cuts = 0, n_cells = 0;
+    if (!rd32(0, &magic) || magic != SEAL_STATE_MAGIC) return false;
+    if (!rd32(4, &hdr_nv) || hdr_nv != nv) return false;   // stale blob
+    if (!rd32(8, &n_cuts) || n_cuts > (1u << 20)) return false;
+    // cut blends: validate every index against the MESH vertices and
+    // every weight sum against 1 (convex blends; seal() guarantees it)
+    std::vector<CutBlend> cuts(n_cuts);
+    {
+        size_t off = 12;
+        for (uint32_t k = 0; k < n_cuts; ++k, off += 4 + 32 + 32) {
+            uint32_t n = 0;
+            if (!rd32(off, &n) || n == 0 || n > 8) return false;
+            cuts[k].n = (uint8_t)n;
+            float wsum = 0.f;
+            for (int i = 0; i < (int)n; ++i) {
+                uint32_t vi = 0;
+                float wv = 0.f;
+                if (!rd32(off + 4 + (size_t)i * 4, &vi)) return false;
+                if (vi >= nv) return false;                    // stale mesh
+                if (!rdf32(off + 36 + (size_t)i * 4, &wv)) return false;
+                cuts[k].v[i] = vi;
+                cuts[k].w[i] = wv;
+                wsum += wv;
+            }
+            if (!(wsum > 0.999f && wsum < 1.001f)) return false;
+        }
+        if (!rd32(off, &n_cells) || n_cells < 2 || n_cells > (1u << 16))
+            return false;
+    }
+    // cells: parse into locals, then recompute each rest volume
+    struct CellRec {
+        std::vector<uint32_t> pieces;
+        float v0 = 0.f, vol = 0.f, p = 0.f;
+        int caps = 0;
+        float ylo = 0.f, yhi = 0.f;
+        bool degenerate = false;
+    };
+    std::vector<CellRec> cells(n_cells);
+    {
+        // (+4, R-restore-doctor): the u32 n_cells the cut block above just
+        // consumed sits between the cut table and cell 0. Without it pn
+        // reads n_cells itself (4 -> 4 % 3 != 0) and EVERY blob -- the
+        // loader's own exports included -- refused in microseconds, so
+        // every boot silently fell back to the intent-history replay
+        // (measured: "seal-tree blob refused" on every boot, 3 seals
+        // re-executed each boot, blob rewritten byte-identically).
+        size_t off = 12 + n_cuts * (4 + 32 + 32) + 4;
+        for (uint32_t ci = 0; ci < n_cells; ++ci) {
+            uint32_t pn = 0;
+            if (!rd32(off, &pn) || pn == 0 || pn > (1u << 24)
+                || pn % 3 != 0)
+                return false;
+            off += 4;
+            cells[ci].pieces.resize(pn);
+            for (uint32_t p3 = 0; p3 < pn; ++p3, off += 4) {
+                uint32_t s = 0;
+                if (!rd32(off, &s) || s >= nv + n_cuts) return false;
+                cells[ci].pieces[p3] = s;
+            }
+            if (!rdf32(off, &cells[ci].v0)) return false;      off += 4;
+            if (!rdf32(off, &cells[ci].vol)) return false;     off += 4;
+            if (!rdf32(off, &cells[ci].p)) return false;       off += 4;
+            {
+                int32_t caps32 = 0;
+                if (off + 4 > body.size()) return false;
+                std::memcpy(&caps32, body.data() + off, 4);
+                cells[ci].caps = (int)caps32;
+                if (caps32 < 0) return false;
+            }                                                  off += 4;
+            if (!rdf32(off, &cells[ci].ylo)) return false;     off += 4;
+            if (!rdf32(off, &cells[ci].yhi)) return false;     off += 4;
+            {
+                uint8_t dg = 0;
+                if (off + 1 > body.size()) return false;
+                dg = (uint8_t)body[off];
+                cells[ci].degenerate = dg != 0;
+            }                                                  off += 1;
+            if (!(cells[ci].v0 > 0.f)) return false;
+        }
+        if (off != body.size()) return false;   // trailing bytes = wrong gen
+    }
+
+    // THE VOLUME WITNESS: recompute every cell's rest volume on THIS
+    // mesh's rest blend (the exact arithmetic seal() publishes with --
+    // classified blend at zero angles, cut slots as weighted sums) and
+    // demand it matches the stored v0.
+    std::vector<float> rest9(base_pos_);
+    {
+        const bool classified = cell_joint_.size() == cells_.size()
+                             && !joint_pins_.empty()
+                             && joint_pins_.size() == joint_deg_.size()
+                             && vert_bind_idx_.size() == (size_t)nv * 3
+                             && vert_bind_w_.size() == (size_t)nv * 3;
+        if (classified) apply_travel(rest9, nullptr);
+    }
+    auto slot3 = [&](uint32_t s, float* x, float* yy, float* z) {
+        if (s < nv) {
+            *x = rest9[s * 9 + 0]; *yy = rest9[s * 9 + 1];
+            *z = rest9[s * 9 + 2];
+        } else {
+            const CutBlend& b = cuts[s - nv];
+            float sx = 0.f, sy = 0.f, sz = 0.f;
+            for (int i = 0; i < b.n; ++i) {
+                sx += b.w[i] * rest9[b.v[i] * 9 + 0];
+                sy += b.w[i] * rest9[b.v[i] * 9 + 1];
+                sz += b.w[i] * rest9[b.v[i] * 9 + 2];
+            }
+            *x = sx; *yy = sy; *z = sz;
+        }
+    };
+    const float vol_tol = 1e-4f;   // relative; 50x under the 0.5% guard
+    for (const CellRec& c : cells) {
+        float v = 0.f;
+        for (size_t i = 0; i + 2 < c.pieces.size(); i += 3) {
+            float ax, ay, az, bx, by, bz, cx, cy, cz;
+            slot3(c.pieces[i], &ax, &ay, &az);
+            slot3(c.pieces[i + 1], &bx, &by, &bz);
+            slot3(c.pieces[i + 2], &cx, &cy, &cz);
+            v += (ax * (by * cz - bz * cy) + ay * (bz * cx - bx * cz)
+                + az * (bx * cy - by * cx)) / 6.f;
+        }
+        if (std::fabs(v - c.v0) > vol_tol * c.v0) return false;  // stale
+    }
+
+    // commit (under the lock taken at entry): the exact live tree
+    std::vector<SealCell> publish(n_cells);
+    for (uint32_t ci = 0; ci < n_cells; ++ci) {
+        publish[ci].pieces = std::move(cells[ci].pieces);
+        publish[ci].v0 = cells[ci].v0;
+        publish[ci].vol = cells[ci].v0;   // rest pose: live vol == v0 until
+                                          // the next tick re-measures
+        publish[ci].p = 0.f;
+        publish[ci].caps = cells[ci].caps;
+        publish[ci].ylo = cells[ci].ylo;
+        publish[ci].yhi = cells[ci].yhi;
+        publish[ci].degenerate = cells[ci].degenerate;
+    }
+    seal_cells_ = std::move(publish);
+    cut_src_ = std::move(cuts);
+    cut_pos_.assign(cut_src_.size() * 3, 0.f);
+    seal_nv_ = nv;
+    sealed_ = true;
+    seal_cuts_ = (int)n_cuts;      // report: the tree's cut count
+    seal_refusal_.clear();         // a cleanly restored tree owes nothing
+    return true;
+}
+
+void MembraneTick::export_seal_state(std::vector<uint8_t>& out) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (seal_cells_.empty()) { out.clear(); return; }
+    const uint32_t nv = seal_nv_;
+    const uint32_t n_cuts = (uint32_t)cut_src_.size();
+    const uint32_t n_cells = (uint32_t)seal_cells_.size();
+    size_t need = 12 + n_cuts * (4 + 32 + 32) + 4;
+    for (const SealCell& c : seal_cells_)
+        need += 4 + c.pieces.size() * 4 + 4 * 6 + 1;
+    out.resize(need);
+    uint8_t* w = out.data();
+    auto wr = [&](const void* p, size_t n) {
+        std::memcpy(w, p, n);
+        w += n;
+    };
+    wr(&SEAL_STATE_MAGIC, 4);
+    wr(&nv, 4);
+    wr(&n_cuts, 4);
+    for (const CutBlend& b : cut_src_) {
+        uint32_t n = b.n;
+        wr(&n, 4);
+        wr(b.v.data(), 32);
+        wr(b.w.data(), 32);
+    }
+    wr(&n_cells, 4);
+    for (const SealCell& c : seal_cells_) {
+        uint32_t pn = (uint32_t)c.pieces.size();
+        wr(&pn, 4);
+        if (pn) wr(c.pieces.data(), pn * 4);
+        wr(&c.v0, 4);
+        wr(&c.vol, 4);
+        wr(&c.p, 4);
+        int32_t caps32 = (int32_t)c.caps;
+        wr(&caps32, 4);
+        wr(&c.ylo, 4);
+        wr(&c.yhi, 4);
+        uint8_t dg = c.degenerate ? 1 : 0;
+        wr(&dg, 1);
+    }
+}
+
 bool MembraneTick::set_gravity(bool on) {
     // THE FALL's switch (the lead wires POST /tick_gravity to this).
     // Turning gravity OFF returns the body to its authored rest exactly
@@ -1502,20 +1771,30 @@ void MembraneTick::gait_off_locked_() {
 // (Rule 1: if a number needed choosing, the derivation broke).
 bool MembraneTick::set_gait(bool on) {
     std::lock_guard<std::mutex> lk(seal_mtx_);
-    if (!on) { gait_off_locked_(); return true; }
+    if (!on) { gait_off_locked_(); gait_enable_block_.clear(); return true; }
 
-    // the rung stack, checked in order, each refusal honest by omission:
+    // the rung stack, checked in order, each refusal HONEST BY NAME
+    // (gait_enable_block_ -- the seal_refusal_ law: a bare ok:false made
+    // the restored-body gait refusal undiagnosable for a full ship-day).
+    gait_enable_block_ = "no_scene";
     if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return false;
-    if (!gravity_on_) return false;   // balance exists only in a gravity field
-    if (!stance_on_)  return false;   // the balance rung runs underneath
+    if (!gravity_on_) { gait_enable_block_ = "gravity_off"; return false; }
+    if (!stance_on_)  { gait_enable_block_ = "stance_off";  return false; }
     const size_t nv = base_pos_.size() / 9;
     const bool classified = cell_joint_.size() == cells_.size()
                          && !joint_pins_.empty()   // bindings without pins = OOB
                          && joint_pins_.size() == joint_deg_.size()
                          && vert_bind_idx_.size() == nv * 3
                          && vert_bind_w_.size() == nv * 3;
-    if (!classified || joint_deg_.size() <= (size_t)KNEE_PIN_R) return false;
-    if (!sealed_ || seal_cells_.size() < 2) return false;  // need the feet cell
+    if (!classified) { gait_enable_block_ = "unclassified"; return false; }
+    if (joint_deg_.size() <= (size_t)KNEE_PIN_R) {
+        gait_enable_block_ = "no_leg_pins";
+        return false;
+    }
+    if (!sealed_ || seal_cells_.size() < 2) {
+        gait_enable_block_ = "unsealed";   // need the feet cell
+        return false;
+    }
 
     // the feet cell: the sealed cell with the LOWEST yhi (the cell tree's
     // index order is cut HISTORY, not anatomy -- measured live: the feet
@@ -1527,7 +1806,10 @@ bool MembraneTick::set_gait(bool on) {
             feet_yhi = seal_cells_[i].yhi;
             feet = (int)i;
         }
-    if (feet < 0 || !(feet_yhi < 1e29f)) return false;
+    if (feet < 0 || !(feet_yhi < 1e29f)) {
+        gait_enable_block_ = "no_feet_cell";
+        return false;
+    }
 
     // rest blend: the exact surface the tick itself produces at rest
     // (the seal()/set_stance path), so every reference is deterministic.
@@ -1541,7 +1823,11 @@ bool MembraneTick::set_gait(bool on) {
         if (rest9[v * 9 + 1] > feet_yhi) continue;
         fset[rest9[v * 9 + 0] >= 0.f ? 0 : 1].push_back((uint32_t)v);
     }
-    if (fset[0].empty() || fset[1].empty()) return false;
+    if (fset[0].empty() || fset[1].empty()) {
+        gait_enable_block_ = std::string("foot_set_empty_")
+            + (fset[0].empty() ? "L" : "R");
+        return false;
+    }
 
     // frozen patch geometry: centroid + radius (xz) per side. The radius
     // is the STRIDE bar (a footfall must land outside the old support
@@ -1556,7 +1842,11 @@ bool MembraneTick::set_gait(bool on) {
             acc += dx * dx + dz * dz;
         }
         prad[s] = std::sqrt(acc / (float)fset[s].size());
-        if (!(prad[s] > 1e-3f)) return false;   // degenerate patch: refuse
+        if (!(prad[s] > 1e-3f)) {
+            gait_enable_block_ = std::string("patch_degenerate_")
+                + (s == 0 ? "L" : "R");
+            return false;   // degenerate patch: refuse
+        }
     }
 
     // rest lean reference (whole-body centroid vs the both-feet support):
@@ -1602,8 +1892,18 @@ bool MembraneTick::set_gait(bool on) {
                                  + dcz_knee[s] * dcz_knee[s]);
         const float mh = std::sqrt(dminy_hip[s] * dminy_hip[s]
                                  + dcz_hip[s] * dcz_hip[s]);
-        if (mk < GAIT_MIN_CHANNEL || mh < GAIT_MIN_CHANNEL)
-            return false;   // no measurable channel (the F1 refusal)
+        if (mk < GAIT_MIN_CHANNEL || mh < GAIT_MIN_CHANNEL) {
+            // no measurable channel (the F1 refusal) -- NAME it: which
+            // side, which pin class, and the measured magnitude against
+            // the bar, so the next auditor reads the anatomy, not a bare
+            // ok:false.
+            std::ostringstream b;
+            b << "no_channel_" << (mk < GAIT_MIN_CHANNEL ? "knee_" : "hip_")
+              << (s == 0 ? "L" : "R")
+              << (mk < GAIT_MIN_CHANNEL ? mk : mh);
+            gait_enable_block_ = b.str();
+            return false;
+        }
         rate_knee[s] = (prad[s] / STANCE_TAU_S) / mk;
         rate_hip[s]  = (prad[s] / STANCE_TAU_S) / mh;
     }
@@ -1618,7 +1918,13 @@ bool MembraneTick::set_gait(bool on) {
         lift_ah[s] = dcz_knee[s];
         lift_ak[s] = -dcz_hip[s];
         lift_ch[s] = lift_ah[s] * dminy_hip[s] + lift_ak[s] * dminy_knee[s];
-        if (std::fabs(lift_ch[s]) < GAIT_MIN_CHANNEL) return false;
+        if (std::fabs(lift_ch[s]) < GAIT_MIN_CHANNEL) {
+            std::ostringstream b;
+            b << "no_lift_channel_" << (s == 0 ? "L" : "R")
+              << lift_ch[s];
+            gait_enable_block_ = b.str();
+            return false;
+        }
     }
 
     // commit (all under the lock taken at entry)
@@ -1647,6 +1953,7 @@ bool MembraneTick::set_gait(bool on) {
     gait_feet_cell_ = feet;
     gait_stride_count_ = 0;
     gait_log_.clear();
+    gait_enable_block_.clear();   // armed: nothing blocks this body
     joint_deg_[HIP_PIN_L] = joint_deg_[HIP_PIN_R] = 0.f;
     joint_deg_[KNEE_PIN_L] = joint_deg_[KNEE_PIN_R] = 0.f;
     gait_on_ = true;
@@ -2027,6 +2334,7 @@ std::string MembraneTick::state_json() const {
       << ",\"gait_knee_l_deg\":" << gait_knee_rad_[0] * 57.29577951308232
       << ",\"gait_knee_r_deg\":" << gait_knee_rad_[1] * 57.29577951308232
       << ",\"gait_feet_cell\":" << gait_feet_cell_
+      << ",\"gait_enable_block\":\"" << gait_enable_block_ << "\""
       << ",\"gait_block_l\":\"" << gait_block_[0] << "\""
       << ",\"gait_block_r\":\"" << gait_block_[1] << "\""
       << ",\"gait_log\":[";
