@@ -1,0 +1,639 @@
+{
+ "summary": {
+  "phase": "before",
+  "base": "http://127.0.0.1:8206",
+  "playerName": "h16fals_before",
+  "falsifier": "the press lands where the player LOOKS: pressPoint visible from the page eye (seen surface) AND the dent (shift-corrected, >2 mm) is at the pressPoint",
+  "expectation": "DEFECT LIVE: all 7 press rows FAR (the cam+pixel press lands on the blind side, in the air, or on the wrong limb)",
+  "rows": 8,
+  "scored": 7,
+  "near": 0,
+  "far": 7,
+  "defaultRows": 6,
+  "nearDefault": 0,
+  "expectationMet": true,
+  "pageErrors": []
+ },
+ "rows": [
+  {
+   "tag": "control-no-press",
+   "expect": "noise floor",
+   "localDentAtFarPoint": 0,
+   "globalDent": {
+    "v": [
+     -0.5054426193237305,
+     9.251715660095215,
+     0.8995397090911865
+    ],
+    "disp": 0
+   },
+   "shiftM": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "tag": "torso-default-1",
+   "camKind": "default",
+   "force": 20000,
+   "camProbe": {
+    "r": 26,
+    "theta": -0.55,
+    "phi": 0.42,
+    "target": [
+     0,
+     4.5,
+     0
+    ]
+   },
+   "eye": [
+    -12.41,
+    15.1,
+    20.24
+   ],
+   "pixel": {
+    "x": 629.1,
+    "y": 413
+   },
+   "reqForm": "cam+pixel",
+   "request": {
+    "cam": [
+     26,
+     -0.55,
+     0.42,
+     0,
+     4.5,
+     0,
+     0,
+     0
+    ],
+    "aspect": 1.3777777777777778,
+    "px": 0.5073559176537299,
+    "py": 0.4588765123155382,
+    "force_n": 20000
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "ok": true,
+     "hit": [
+      -0.494353,
+      5.700955,
+      -0.405396
+     ]
+    },
+    "ms": 5
+   },
+   "pressPoint": [
+    -0.494,
+    5.701,
+    -0.405
+   ],
+   "onAimDist": 1.502,
+   "pressVisibility": {
+    "verdict": "blind",
+    "offMesh": 0.0494,
+    "castT": 24.677,
+    "distToEye": 25.623
+   },
+   "pickProbe": {
+    "myRawPick": null,
+    "bufferMatch": false
+   },
+   "localDentAtPress": 0.0265,
+   "globalDent": {
+    "v": [
+     -0.4646250009536743,
+     5.659954071044922,
+     -0.3817284107208252
+    ],
+    "disp": 0.0265
+   },
+   "shiftM": [
+    0,
+    0,
+    0
+   ],
+   "dimpleMwhileHeld": 0.0265251,
+   "frameKB": 21,
+   "VERDICT": "FAR (blind side)"
+  },
+  {
+   "tag": "torso-default-2",
+   "camKind": "default",
+   "force": 20000,
+   "camProbe": {
+    "r": 26,
+    "theta": -0.55,
+    "phi": 0.42,
+    "target": [
+     0,
+     4.5,
+     0
+    ]
+   },
+   "eye": [
+    -12.41,
+    15.1,
+    20.24
+   ],
+   "pixel": {
+    "x": 629.1,
+    "y": 413
+   },
+   "reqForm": "cam+pixel",
+   "request": {
+    "cam": [
+     26,
+     -0.55,
+     0.42,
+     0,
+     4.5,
+     0,
+     0,
+     0
+    ],
+    "aspect": 1.3777777777777778,
+    "px": 0.5073559176537299,
+    "py": 0.4588765123155382,
+    "force_n": 20000
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "ok": true,
+     "hit": [
+      -0.494353,
+      5.700955,
+      -0.405396
+     ]
+    },
+    "ms": 3
+   },
+   "pressPoint": [
+    -0.494,
+    5.701,
+    -0.405
+   ],
+   "onAimDist": 1.502,
+   "pressVisibility": {
+    "verdict": "blind",
+    "offMesh": 0.0494,
+    "castT": 24.677,
+    "distToEye": 25.623
+   },
+   "pickProbe": {
+    "myRawPick": null,
+    "bufferMatch": false
+   },
+   "localDentAtPress": 0.0265,
+   "globalDent": {
+    "v": [
+     -0.4646250009536743,
+     5.659954071044922,
+     -0.3817284107208252
+    ],
+    "disp": 0.0265
+   },
+   "shiftM": [
+    0,
+    0,
+    0
+   ],
+   "dimpleMwhileHeld": 0.0265251,
+   "frameKB": null,
+   "VERDICT": "FAR (blind side)"
+  },
+  {
+   "tag": "torso-default-3",
+   "camKind": "default",
+   "force": 20000,
+   "camProbe": {
+    "r": 26,
+    "theta": -0.55,
+    "phi": 0.42,
+    "target": [
+     0,
+     4.5,
+     0
+    ]
+   },
+   "eye": [
+    -12.41,
+    15.1,
+    20.24
+   ],
+   "pixel": {
+    "x": 629.1,
+    "y": 413
+   },
+   "reqForm": "cam+pixel",
+   "request": {
+    "cam": [
+     26,
+     -0.55,
+     0.42,
+     0,
+     4.5,
+     0,
+     0,
+     0
+    ],
+    "aspect": 1.3777777777777778,
+    "px": 0.5073559176537299,
+    "py": 0.4588765123155382,
+    "force_n": 20000
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "ok": true,
+     "hit": [
+      -0.494353,
+      5.700955,
+      -0.405396
+     ]
+    },
+    "ms": 5
+   },
+   "pressPoint": [
+    -0.494,
+    5.701,
+    -0.405
+   ],
+   "onAimDist": 1.502,
+   "pressVisibility": {
+    "verdict": "blind",
+    "offMesh": 0.0494,
+    "castT": 24.677,
+    "distToEye": 25.623
+   },
+   "pickProbe": {
+    "myRawPick": null,
+    "bufferMatch": false
+   },
+   "localDentAtPress": 0.0265,
+   "globalDent": {
+    "v": [
+     -0.4646250009536743,
+     5.659954071044922,
+     -0.3817284107208252
+    ],
+    "disp": 0.0265
+   },
+   "shiftM": [
+    0,
+    0,
+    0
+   ],
+   "dimpleMwhileHeld": 0.0265251,
+   "frameKB": null,
+   "VERDICT": "FAR (blind side)"
+  },
+  {
+   "tag": "torso-default-4",
+   "camKind": "default",
+   "force": 20000,
+   "camProbe": {
+    "r": 26,
+    "theta": -0.55,
+    "phi": 0.42,
+    "target": [
+     0,
+     4.5,
+     0
+    ]
+   },
+   "eye": [
+    -12.41,
+    15.1,
+    20.24
+   ],
+   "pixel": {
+    "x": 629.1,
+    "y": 413
+   },
+   "reqForm": "cam+pixel",
+   "request": {
+    "cam": [
+     26,
+     -0.55,
+     0.42,
+     0,
+     4.5,
+     0,
+     0,
+     0
+    ],
+    "aspect": 1.3777777777777778,
+    "px": 0.5073559176537299,
+    "py": 0.4588765123155382,
+    "force_n": 20000
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "ok": true,
+     "hit": [
+      -0.494353,
+      5.700955,
+      -0.405396
+     ]
+    },
+    "ms": 3
+   },
+   "pressPoint": [
+    -0.494,
+    5.701,
+    -0.405
+   ],
+   "onAimDist": 1.502,
+   "pressVisibility": {
+    "verdict": "blind",
+    "offMesh": 0.0494,
+    "castT": 24.677,
+    "distToEye": 25.623
+   },
+   "pickProbe": {
+    "myRawPick": null,
+    "bufferMatch": false
+   },
+   "localDentAtPress": 0.0265,
+   "globalDent": {
+    "v": [
+     -0.4646250009536743,
+     5.659954071044922,
+     -0.3817284107208252
+    ],
+    "disp": 0.0265
+   },
+   "shiftM": [
+    0,
+    0,
+    0
+   ],
+   "dimpleMwhileHeld": 0.0265251,
+   "frameKB": null,
+   "VERDICT": "FAR (blind side)"
+  },
+  {
+   "tag": "torso-default-5",
+   "camKind": "default",
+   "force": 20000,
+   "camProbe": {
+    "r": 26,
+    "theta": -0.55,
+    "phi": 0.42,
+    "target": [
+     0,
+     4.5,
+     0
+    ]
+   },
+   "eye": [
+    -12.41,
+    15.1,
+    20.24
+   ],
+   "pixel": {
+    "x": 629.1,
+    "y": 413
+   },
+   "reqForm": "cam+pixel",
+   "request": {
+    "cam": [
+     26,
+     -0.55,
+     0.42,
+     0,
+     4.5,
+     0,
+     0,
+     0
+    ],
+    "aspect": 1.3777777777777778,
+    "px": 0.5073559176537299,
+    "py": 0.4588765123155382,
+    "force_n": 20000
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "ok": true,
+     "hit": [
+      -0.494353,
+      5.700955,
+      -0.405396
+     ]
+    },
+    "ms": 3
+   },
+   "pressPoint": [
+    -0.494,
+    5.701,
+    -0.405
+   ],
+   "onAimDist": 1.502,
+   "pressVisibility": {
+    "verdict": "blind",
+    "offMesh": 0.0494,
+    "castT": 24.677,
+    "distToEye": 25.623
+   },
+   "pickProbe": {
+    "myRawPick": null,
+    "bufferMatch": false
+   },
+   "localDentAtPress": 0.0265,
+   "globalDent": {
+    "v": [
+     -0.4646250009536743,
+     5.659954071044922,
+     -0.3817284107208252
+    ],
+    "disp": 0.0265
+   },
+   "shiftM": [
+    0,
+    0,
+    0
+   ],
+   "dimpleMwhileHeld": 0.0265251,
+   "frameKB": null,
+   "VERDICT": "FAR (blind side)"
+  },
+  {
+   "tag": "torso-opposite-orbit",
+   "camKind": "opposite",
+   "force": 20000,
+   "camProbe": {
+    "r": 26,
+    "theta": 2.5916,
+    "phi": 0.42,
+    "target": [
+     0,
+     4.5,
+     0
+    ]
+   },
+   "eye": [
+    12.41,
+    15.1,
+    -20.24
+   ],
+   "pixel": {
+    "x": 611.1,
+    "y": 402
+   },
+   "reqForm": "cam+pixel",
+   "request": {
+    "cam": [
+     26,
+     2.591592655181885,
+     0.42,
+     0,
+     4.5,
+     0,
+     0,
+     0
+    ],
+    "aspect": 1.3777777777777778,
+    "px": 0.49282374228200604,
+    "py": 0.4467134602864583,
+    "force_n": 20000
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "ok": true,
+     "hit": [
+      0.13236,
+      5.963743,
+      0.605593
+     ]
+    },
+    "ms": 3
+   },
+   "pressPoint": [
+    0.132,
+    5.964,
+    0.606
+   ],
+   "onAimDist": 1.492,
+   "pressVisibility": {
+    "verdict": "blind",
+    "offMesh": 0.0196,
+    "castT": 24.581,
+    "distToEye": 25.86
+   },
+   "pickProbe": {
+    "myRawPick": null,
+    "bufferMatch": false
+   },
+   "localDentAtPress": 0.2602,
+   "globalDent": {
+    "v": [
+     0.10334207862615585,
+     5.871030330657959,
+     0.36360079050064087
+    ],
+    "disp": 0.2602
+   },
+   "shiftM": [
+    0,
+    0,
+    0
+   ],
+   "dimpleMwhileHeld": 0.260199,
+   "frameKB": null,
+   "VERDICT": "FAR (blind side)"
+  },
+  {
+   "tag": "foot-default",
+   "camKind": "default",
+   "force": 2000,
+   "camProbe": {
+    "r": 26,
+    "theta": -0.55,
+    "phi": 0.42,
+    "target": [
+     0,
+     4.5,
+     0
+    ]
+   },
+   "eye": [
+    -12.41,
+    15.1,
+    20.24
+   ],
+   "pixel": {
+    "x": 654.4,
+    "y": 614.4
+   },
+   "reqForm": "cam+pixel",
+   "request": {
+    "cam": [
+     26,
+     -0.5499997520446773,
+     0.42,
+     0,
+     4.5,
+     0,
+     0,
+     0
+    ],
+    "aspect": 1.3777777777777778,
+    "px": 0.5277686334425403,
+    "py": 0.6826267496744791,
+    "force_n": 2000
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "ok": true,
+     "hit": [
+      -1.005998,
+      0.209657,
+      0.013365
+     ]
+    },
+    "ms": 4
+   },
+   "pressPoint": [
+    -1.006,
+    0.21,
+    0.013
+   ],
+   "onAimDist": 1.494,
+   "pressVisibility": {
+    "verdict": "blind",
+    "offMesh": 0.0293,
+    "castT": 27.57,
+    "distToEye": 27.584
+   },
+   "pickProbe": {
+    "myRawPick": null,
+    "bufferMatch": false
+   },
+   "localDentAtPress": 0.0153,
+   "globalDent": {
+    "v": [
+     -1.0194270610809326,
+     0.1900666505098343,
+     0.03039010800421238
+    ],
+    "disp": 0.0153
+   },
+   "shiftM": [
+    0,
+    0,
+    0
+   ],
+   "dimpleMwhileHeld": 0.01532,
+   "frameKB": 21,
+   "VERDICT": "FAR (blind side)"
+  }
+ ]
+}

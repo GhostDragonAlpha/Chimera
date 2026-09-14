@@ -1679,26 +1679,40 @@
 
   async function tryTouch(cx, cy) {
     if (holding) return false;            // one press at a time
-    var rect = canvas.getBoundingClientRect();
-    var px = (cx - rect.left) / rect.width;
-    var py = (cy - rect.top) / rect.height;
-    // THE WEB KERNEL TOUCH: the browser posts its LOCAL camera + click
-    // pixel; the ENGINE resolves the hit with the proven picker and
-    // presses there. No local ray-cast to drift out of alignment.
     var force = Number(forceEl.value);
+    // H16 TOUCH-SIDE FIX: the click's contact enters through the surface
+    // the player SEES. The old path posted this page's orbit camera +
+    // click pixel and let the engine's pick_cam resolve the hit -- but
+    // the engine rebuilds the eye with a Z-sign flip vs this page's
+    // camEye (engine.cpp pick_cam: target.z - r*c*cos(theta) vs the
+    // page's target.z + r*cos(phi)*cos(theta)), so its ray cast from
+    // BEHIND the body: measured live, a click on the seen torso dented
+    // the BLIND half 2.65 cm and the engine's resolved hit sat ~9 m down
+    // the mirrored ray (H16_TOUCH_SIDE/falsifier_before.json, 0/7 rows on
+    // the seen side). The page already owns a correct first-hit raycast:
+    // pickWorld over RG.verts -- the same Float32Array the renderer
+    // uploads on every stream poll (the delta path writes it in place;
+    // there is no stale copy). So the press now goes out in the engine's
+    // ready-world-point form {"hit":[x,y,z],force_n} (touch_press_at),
+    // snapped to the nearest mesh vertex like every touch target (the
+    // kernel's 3 cm Gaussian responds maximally exactly at a vertex).
+    // ONE path, posted once; the camera convention is this page's own,
+    // end to end. A ray that misses the skin (sky) touches only water,
+    // exactly as the engine's miss answer used to say.
+    var hit = pickWorld(cx, cy);
+    if (!hit) {
+      setHand('you touched only water.');
+      return false;
+    }
+    hit = snapToVertex(hit);
     mousePressInFlight = true;
-    var body = await postTouchRetry({
-      cam: [cam.r, cam.theta, cam.phi, cam.target[0], cam.target[1],
-            cam.target[2], cam.panX || 0, cam.panY || 0],
-      aspect: canvas.width / canvas.height,
-      px: px, py: py, force_n: force
-    });
+    var body = await postTouchRetry({ hit: hit, force_n: force });
     mousePressInFlight = false;
     if (body === null) {
       setHand('the world is busy — the press did not land. try again.');
       return false;
     }
-    var landed = applyTouch(body, force, body.hit);   // W4: the engine's resolved hit names the region
+    var landed = applyTouch(body, force, hit);   // the page's own hit names the region
     if (landed && mouseClearOnLand) clearTouch();     // the pointer ended mid-POST: end at once
     return landed;
   }
@@ -2226,6 +2240,48 @@
   pollLoop(pollState, 700, 10000, function (ok) {
     stateFailStreak = ok ? 0 : stateFailStreak + 1; syncUnreachable();
   });
+
+  /* H16 TOUCH-SIDE: a ?debug=1 pick probe -- the EXACT functions the press
+     uses (camEye, pickWorld) plus a checksum of RG.verts, so a headless
+     probe can prove the pick reads the same buffer the renderer draws and
+     compare the page's raw pick against its own replicated math, without
+     reaching into this IIFE. Exports NOTHING without the flag (same gate
+     as the judge telemetry line). */
+  if (/[?&]debug=1/.test(location.search)) {
+    window.__h16pickProbe = function (x, y) {
+      var rect = canvas.getBoundingClientRect();
+      var eye = camEye([0, 0, 0]);
+      var fwd = norm3(sub3(cam.target, eye));
+      var right = norm3(cross3(fwd, UP));
+      var upv = cross3(right, fwd);
+      var tanF = Math.tan(cam.fov / 2);
+      var aspect = rect.width / rect.height;
+      var ndcX = ((x - rect.left) / rect.width) * 2 - 1;
+      var ndcY = 1 - ((y - rect.top) / rect.height) * 2;
+      var kx = ndcX * tanF * aspect, ky = ndcY * tanF;
+      var dir = norm3([
+        fwd[0] + right[0] * kx + upv[0] * ky,
+        fwd[1] + right[1] * kx + upv[1] * ky,
+        fwd[2] + right[2] * kx + upv[2] * ky
+      ]);
+      var raw = pickWorld(x, y);
+      var s1 = 0, s2 = 0, n = 0;
+      if (RG && RG.verts) {
+        for (var i = 0; i < RG.verts.length; i += 3) {
+          s1 += RG.verts[i] + RG.verts[i + 1] + RG.verts[i + 2];
+          s2 += RG.verts[i] * RG.verts[i] + RG.verts[i + 1] * RG.verts[i + 1] +
+                RG.verts[i + 2] * RG.verts[i + 2];
+          n++;
+        }
+      }
+      return { raw: raw, eye: [eye[0], eye[1], eye[2]],
+               fwd: fwd, right: right, upv: upv, dir: dir,
+               ndcX: ndcX, ndcY: ndcY, kx: kx, ky: ky,
+               rectW: rect.width, rectH: rect.height, tanF: tanF,
+               triCount: RG ? RG.triCount : 0,
+               vertCount: n, sum1: s1, sum2: s2 };
+    };
+  }
 })();
 </script>
 </body>
