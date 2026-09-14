@@ -275,6 +275,14 @@ private:
     float c_ground_ = 6.062e5f;                // N s/m
     float root_y_ = 0.f, root_vy_ = 0.f;       // the state; 0 = authored rest
     float g_contact_n_ = 0.f;                  // last contact force (report)
+    // THE ARM-ON-READINESS COUNTER (the intermittent inert start, V1b):
+    // bumped by the gravity block every tick it evaluates the ground
+    // force. set_gravity(true) returns only AFTER the first evaluation
+    // under the flag -- arming is the first computed contact force, not
+    // the flag flip (a settle probe reading between the flip and the
+    // first integrating tick sees the init-reset 0/0 and calls a live
+    // body inert -- the measured window-4 race).
+    std::atomic<uint64_t> ground_evals_{0};
     // F1 STANCE state (see set_stance above). Default OFF; the lead owns
     // the policy flip after the bars pass (the gravity precedent).
     static constexpr uint8_t ANKLE_PIN_L = 17, ANKLE_PIN_R = 18;
@@ -339,6 +347,56 @@ private:
     float gait_lift_ah_[2] = {0.f, 0.f};
     float gait_lift_ak_[2] = {0.f, 0.f};
     float gait_lift_ch_[2] = {0.f, 0.f};
+    // ─── THE STRIDE-SCALE BRANCH LAW (R4-stride-finisher; measured on the
+    // ─── live binding, window-4 binary) ────────────────────────────────
+    // The 1-deg probes above linearize the swing pins at bearing, but the
+    // strut's z-channel is NONMONOTONIC in theta on this binding (measured
+    // live ladder: +10.0 mm/deg posed at +1 deg -- membership-shifted; the
+    // clean curve: +5 mm total near -4.6 deg, back through 0 near -10 deg,
+    // then -35 mm/deg: an ORBIT about the pin pivot, not a linear rail).
+    // A 1-deg probe cannot see the reversal, so REACH derives its law from
+    // a +20 deg probe on the same rest blend (inside the 89-deg ROM):
+    // lift_sign = the theta sign that RAISES the foot set (sign of
+    // dminy20); reach_dir = the z direction that branch actually swings
+    // (sign of lift_sign*dcz20; measured -1 here -- the usable swing is
+    // backward). The opposite branch is measured unusable for a stride:
+    // it presses the foot DOWN (dminy20 < 0 at +20 deg), faster than the
+    // clear pin's measured rise (2.5-3.2 mm/deg to -43 deg) can pay.
+    float gait_lift_sign_[2] = {0.f, 0.f};      // +/-1, the raising theta sign
+    float gait_reach_dir_[2] = {0.f, 0.f};      // +/-1, the branch's z swing
+    float gait_dminy20_hip_[2] = {0.f, 0.f};    // m/rad at the +20 deg probe
+    float gait_dcz20_hip_[2] = {0.f, 0.f};      // m/rad at the +20 deg probe
+    // THE WHAT-IF, re-derived for the MEASURED plant (the Y-only root):
+    // a lifted foot cannot TIP this body -- the root has no horizontal or
+    // rotational DOF (the prereg's own SCOPE), so the rigid-body premise of
+    // the old absolute-centroid gate is unexpressable, and its demand (0.42
+    // m of body travel toward the stance foot) has no actuator: measured
+    // 0.9867 vs bar 0.5711 at rest, still 0.69 at full strut ROM -- F-STALL.
+    // What CAN fail is GROUNDING: the lift's cross-coupled sink drops the
+    // body until non-foot anatomy touches the floor. Measured at enable:
+    // sink_ch = d(min-y of the OTHER foot set) per rad of the lift combo on
+    // the rest blend (the root follows the support down by exactly this,
+    // damping aside), headroom = the grounding distance from the feet's
+    // rest min-y to the lowest NON-foot rest vertex, minus the derived sink
+    // (the rest equilibrium sits one sink above authored rest). Gate: the
+    // predicted sink for THIS lift must fit inside headroom minus the
+    // bearing margin. Measured here: sink_ch ~12 mm/rad, a full lift sinks
+    // ~14 mm against a 348 mm headroom -- passes with 25x margin, and a
+    // body that would sit down mid-stride is refused BY NUMBER.
+    float gait_sink_ch_[2] = {0.f, 0.f};        // m/rad of other-foot rise
+    float gait_headroom_ = 0.f;                 // m of grounding headroom
+    // The swing foot's OWN support-patch center, frozen at the STANCE->LIFT
+    // transition. The stride bar is the prereg's geometric necessity --
+    // "the new footfall lands outside the old support patch" -- measured
+    // as the RADIUS condition |fcz[s] - z0| >= patch_r[s] on the foot's
+    // own patch. The stance-relative reading is measured-unreachable on
+    // this binding past one stride: the strut's whole z-reach is 0.677 m
+    // (live ladder, -61 deg) while the stance-relative bar demands
+    // 2x patch = 1.142 m once the feet are patch-separated -- F-STALL at
+    // ROM. Feet start together here (homeL 0.7212 ~ homeR 0.7212), so the
+    // first stride satisfies both readings; only the own-patch reading
+    // keeps every later one reachable.
+    float gait_swing_z0_[2] = {0.f, 0.f};       // m, centroid z at LIFT entry
     // The commanded leg angles (rad) -- the machine's own state; 0 =
     // authored bearing. Written to joint_deg_ pins 13-16 each tick.
     float gait_knee_rad_[2] = {0.f, 0.f};

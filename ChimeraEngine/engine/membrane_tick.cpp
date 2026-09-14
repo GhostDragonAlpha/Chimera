@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cmath>
 #include <cstring>
 #include <cstdlib>
@@ -10,6 +11,7 @@
 #include <map>
 #include <set>
 #include <sstream>
+#include <thread>
 #include <unordered_map>
 #include <utility>
 
@@ -723,6 +725,9 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
         float F = k_ground_ * depth + c_ground_ * std::max(0.f, -root_vy_);
         const float F_cap = 50.f * mass_kg_ * G_EARTH;   // floor, not launcher
         g_contact_n_ = std::min(F, F_cap);
+        // one completed ground-force evaluation under the flag: the
+        // arm-on-readiness witness set_gravity(true) waits for
+        ground_evals_.fetch_add(1, std::memory_order_release);
         float dts = std::min(std::max(dt, 0.f), 0.05f);  // stall guard
         if (dts > 0.f) {
             root_vy_ += (g_contact_n_ / mass_kg_ - G_EARTH) * dts;
@@ -1626,15 +1631,35 @@ bool MembraneTick::set_gravity(bool on) {
     // THE FALL's switch (the lead wires POST /tick_gravity to this).
     // Turning gravity OFF returns the body to its authored rest exactly
     // -- no hidden decay, deterministic state (the flex-0 precedent).
-    std::lock_guard<std::mutex> lk(seal_mtx_);
-    gravity_on_ = on;
-    if (!on) {
-        root_y_ = 0.f;
-        root_vy_ = 0.f;
-        g_contact_n_ = 0.f;
-        stance_off_locked_();   // F1: the rest contract is exact -- the
-                                // servo may not keep holding ankle poses
-                                // the law no longer balances
+    uint64_t evals0 = 0;
+    {
+        std::lock_guard<std::mutex> lk(seal_mtx_);
+        gravity_on_ = on;
+        if (!on) {
+            root_y_ = 0.f;
+            root_vy_ = 0.f;
+            g_contact_n_ = 0.f;
+            stance_off_locked_();   // F1: the rest contract is exact -- the
+                                    // servo may not keep holding ankle poses
+                                    // the law no longer balances
+            return true;
+        }
+        // snapshot BEFORE the flag is visible as armed: any ground-force
+        // evaluation from here on is one of ours
+        evals0 = ground_evals_.load(std::memory_order_relaxed);
+    }
+    // THE ARM-ON-READINESS GATE (V1b's intermittent inert start, measured
+    // window-4): arming used to be a flag flip; a settle probe that read
+    // between the flip and the first integrating tick saw the init-reset
+    // 0/0 (root_vy exactly 0, contact exactly 0) and called a live body
+    // inert -- gravity "engaged MID-RUN" when the tick caught up. The arm
+    // now RETURNS on the first completed ground-force evaluation under
+    // the flag (bounded: a dead tick loop must not hang the route -- 500 ms
+    // degrades to the old flag-only arm). The lock is NOT held here: the
+    // tick try_locks and must be free to run.
+    for (int i = 0; i < 2500; ++i) {
+        if (ground_evals_.load(std::memory_order_acquire) != evals0) break;
+        std::this_thread::sleep_for(std::chrono::microseconds(200));
     }
     return true;
 }
@@ -1929,6 +1954,15 @@ bool MembraneTick::set_gait(bool on) {
         {(uint8_t)cand[0][0], (uint8_t)cand[0][1]},
         {(uint8_t)cand[1][0], (uint8_t)cand[1][1]}};
     float dminy_cand[2][2], dcz_cand[2][2];   // probes per candidate
+    // THE SERVO FRAME IS RADIANS (the 57.3x probe-unit gain, measured):
+    // joint_deg_ and apply_travel take radians, but the probe posed
+    // exactly 1 deg, so every delta below was PER-DEG while every consumer
+    // (servo err/(ch*tau), rate caps, ROM clamp) treats it as PER-RAD. The
+    // commanded rotations came out 57.3x over the derived rate caps (the
+    // cap clamp itself computed in the deg frame and its product landed in
+    // a radian field). Divide by the probed angle ONCE here: every channel
+    // below is honestly m/rad and the caps bound the real rad/s.
+    const float kProbeRad = 1.f * 3.14159265358979f / 180.f;
     for (int s = 0; s < 2; ++s) {
         const float miny0 = gait_set_miny(rest9, fset[s]);
         float cx0, cy0, cz0;
@@ -1937,12 +1971,12 @@ bool MembraneTick::set_gait(bool on) {
             std::vector<float> degs(npins, 0.f);
             std::vector<float> p9;
             float cx, cy, cz;
-            degs[(size_t)drive_pin[s][c]] = 1.f * 3.14159265358979f / 180.f;
+            degs[(size_t)drive_pin[s][c]] = kProbeRad;
             p9 = rest9;
             apply_travel(p9, &degs);
-            dminy_cand[s][c] = gait_set_miny(p9, fset[s]) - miny0;
+            dminy_cand[s][c] = (gait_set_miny(p9, fset[s]) - miny0) / kProbeRad;
             gait_set_centroid(p9, fset[s], &cx, &cy, &cz);
-            dcz_cand[s][c] = cz - cz0;
+            dcz_cand[s][c] = (cz - cz0) / kProbeRad;
             const float m = std::sqrt(dminy_cand[s][c] * dminy_cand[s][c]
                                     + dcz_cand[s][c] * dcz_cand[s][c]);
             if (m < GAIT_MIN_CHANNEL) {
@@ -1997,9 +2031,11 @@ bool MembraneTick::set_gait(bool on) {
     // no_lift_channel gate is REMOVED by the V3a audit): the prereg's own
     // law for this number is "the linear-channel estimate only sizes the
     // step, and the measured error closes the rest" -- on the shipped
-    // binding the null-z rise channel is 1.66e-5 m/deg (the two drive
-    // channels are nearly collinear), while the REAL lift is 4.6 deg of
-    // ankle within the 89-deg ROM, rate-capped by mx. An enable refusal
+    // binding the null-z rise channel is 9.5e-2 m/rad in the radian servo
+    // frame (the two drive channels are nearly collinear), while the REAL
+    // lift is ~5.5 deg of strut for the full 60 mm band (measured live:
+    // the 1-deg linearization overshoots the world rise by the root's
+    // 10-20 mm follow), rate-capped by mx. An enable refusal
     // here would refuse a body its own gates can walk; the falsifier for
     // that claim is F-STALL (a phase not reaching its gate within 10 tau
     // -> the derivation is wrong). The servo stays well-defined as
@@ -2010,6 +2046,61 @@ bool MembraneTick::set_gait(bool on) {
         lift_ak[s] = -dcz_hip[s];
         lift_ch[s] = lift_ah[s] * dminy_hip[s] + lift_ak[s] * dminy_knee[s];
     }
+
+    // THE STRIDE-SCALE BRANCH LAW (the strut's z-channel is nonmonotonic
+    // in theta on this binding: the 1-deg probe reads +2.6 mm/deg while
+    // the measured live ladder peaks near -4.6 deg and swings BACKWARD
+    // -35 mm/deg by -20 deg -- an orbit about the pivot, not a rail). A
+    // 1-deg probe cannot see the reversal, so the REACH law probes at
+    // +20 deg (inside the 89-deg ROM, same rest blend, same travel
+    // arithmetic) and derives, per side: lift_sign = the theta sign that
+    // RAISES the foot set; reach_dir = the z direction that branch
+    // actually swings (sign of lift_sign*dcz20; -1 on the shipped
+    // creature -- the usable swing is backward). The opposite branch is
+    // measured unusable: it presses the foot DOWN (dminy at +20 deg is
+    // about -0.30 m), more than the clear pin's measured rise (2.5-3.2
+    // mm/deg, live ladder) can pay while also holding the band.
+    // THE WHAT-IF channels (same rest blend): sink_ch = d(min-y of the
+    // OTHER foot set) under the lift combo at dparam = 1 rad -- the
+    // cross-coupled rise the root follows the support down by; headroom =
+    // the grounding distance from the feet's rest min-y to the lowest
+    // NON-foot rest vertex minus the derived sink (the rest equilibrium
+    // sits one sink above authored rest).
+    float dminy20[2], dcz20[2], lift_sign[2], reach_dir[2], sink_ch[2];
+    for (int s = 0; s < 2; ++s) {
+        const float kBranchRad = 20.f * 3.14159265358979f / 180.f;
+        const float miny0 = gait_set_miny(rest9, fset[s]);
+        float cx0, cy0, cz0;
+        gait_set_centroid(rest9, fset[s], &cx0, &cy0, &cz0);
+        std::vector<float> degs(npins, 0.f);
+        std::vector<float> p9;
+        float cx, cy, cz;
+        degs[(size_t)strut_pin[s]] = kBranchRad;
+        p9 = rest9;
+        apply_travel(p9, &degs);
+        dminy20[s] = (gait_set_miny(p9, fset[s]) - miny0) / kBranchRad;
+        gait_set_centroid(p9, fset[s], &cx, &cy, &cz);
+        dcz20[s] = (cz - cz0) / kBranchRad;
+        lift_sign[s] = dminy20[s] > 0.f ? 1.f : -1.f;
+        reach_dir[s] = (lift_sign[s] * dcz20[s]) > 0.f ? 1.f : -1.f;
+        // the combo at dparam = 1 rad, measured on the OTHER foot set:
+        // its min-y RISE is the body sink the root follows
+        for (size_t j = 0; j < npins; ++j) degs[j] = 0.f;
+        degs[(size_t)strut_pin[s]] = lift_ah[s];
+        degs[(size_t)clear_pin[s]] = lift_ak[s];
+        p9 = rest9;
+        apply_travel(p9, &degs);
+        sink_ch[s] = gait_set_miny(p9, fset[1 - s])
+                   - gait_set_miny(rest9, fset[1 - s]);
+    }
+    float nonfoot_miny = 1e30f;
+    for (size_t v = 0; v < nv; ++v)
+        if (rest9[v * 9 + 1] > feet_yhi)
+            nonfoot_miny = std::min(nonfoot_miny, rest9[v * 9 + 1]);
+    const float feet_miny = std::min(gait_set_miny(rest9, fset[0]),
+                                     gait_set_miny(rest9, fset[1]));
+    const float headroom = (nonfoot_miny < 1e29f && feet_miny > -1e29f)
+        ? (nonfoot_miny - feet_miny) - GAIT_SINK_M : 0.f;
 
     // commit (all under the lock taken at entry)
     gait_foot_verts_[0] = std::move(fset[0]);
@@ -2026,11 +2117,17 @@ bool MembraneTick::set_gait(bool on) {
         gait_lift_ah_[s] = lift_ah[s];
         gait_lift_ak_[s] = lift_ak[s];
         gait_lift_ch_[s] = lift_ch[s];
+        gait_lift_sign_[s] = lift_sign[s];
+        gait_reach_dir_[s] = reach_dir[s];
+        gait_dminy20_hip_[s] = dminy20[s];
+        gait_dcz20_hip_[s] = dcz20[s];
+        gait_sink_ch_[s] = sink_ch[s];
         gait_phase_[s] = GaitPhase::STANCE;
         gait_knee_rad_[s] = gait_hip_rad_[s] = 0.f;
         gait_block_[s].clear();
         gait_last_done_[s] = 0;
     }
+    gait_headroom_ = headroom;
     gait_lean_ref_x_ = bx - ((pcx[0] * (float)gait_foot_verts_[0].size()
                             + pcx[1] * (float)gait_foot_verts_[1].size()) / snr);
     gait_lean_ref_z_ = bz - sczr;
@@ -2080,6 +2177,17 @@ bool MembraneTick::set_gait(bool on) {
           << ",\"strutPinR\":" << gait_strut_pin_[1]
           << ",\"clearPinL\":" << gait_clear_pin_[0]
           << ",\"clearPinR\":" << gait_clear_pin_[1]
+          << ",\"dminyH20L\":" << gait_dminy20_hip_[0]
+          << ",\"dminyH20R\":" << gait_dminy20_hip_[1]
+          << ",\"dczH20L\":" << gait_dcz20_hip_[0]
+          << ",\"dczH20R\":" << gait_dcz20_hip_[1]
+          << ",\"liftSignL\":" << gait_lift_sign_[0]
+          << ",\"liftSignR\":" << gait_lift_sign_[1]
+          << ",\"reachDirL\":" << gait_reach_dir_[0]
+          << ",\"reachDirR\":" << gait_reach_dir_[1]
+          << ",\"sinkChL\":" << gait_sink_ch_[0]
+          << ",\"sinkChR\":" << gait_sink_ch_[1]
+          << ",\"headroom\":" << gait_headroom_
           << ",\"feetCell\":" << feet << "}";
         gait_log_locked_(0, "OFF", "STANCE", g.str());
     }
@@ -2209,14 +2317,27 @@ void MembraneTick::gait_step_locked_(std::vector<float>& verts9, float dt) {
         else if (lean > gait_patch_r_[o])
             b << "lean:" << lean << ">" << gait_patch_r_[o];
         else {
-            // THE WHAT-IF (rung 4, answered from live numbers): if I lift
-            // this foot, does the support hold my weight? After the lift
-            // the support is the other foot alone; the body centroid must
-            // already lie inside that foot's measured patch.
-            const float wdx = bx - fcx[o], wdz = bz - fcz[o];
-            const float wx = std::sqrt(wdx * wdx + wdz * wdz);
-            if (wx > gait_patch_r_[o])
-                b << "whatif:" << wx << ">" << gait_patch_r_[o];
+            // THE WHAT-IF (rung 4), RE-DERIVED FOR THE MEASURED PLANT
+            // (window-4 audit): the old form demanded the whole-body
+            // centroid to lie inside the would-be stance foot's patch --
+            // a rigid-body tipping premise. This root is 1-DOF Y (the
+            // prereg's own SCOPE): it cannot tip, the demand has no
+            // actuator (measured 0.9867 m vs bar 0.5711 m at rest, still
+            // 0.69 m at full strut ROM -- the feet splay 1.87 m and the
+            // strut's x-authority is ~1.1 mm/deg: F-STALL by construction).
+            // What CAN fail here is GROUNDING: the lift's cross-coupled
+            // sink drops the body until non-foot anatomy touches the
+            // floor. The gate predicts this lift's sink (the measured
+            // cross channel times the lift's full drive) and demands it
+            // fit inside the measured headroom with the bearing margin.
+            const float err_full = STANCE_BAND_M - wminy[s];
+            const float dp_full = std::fabs(gait_lift_ch_[s]) > 1e-12f
+                ? err_full / gait_lift_ch_[s] : 0.f;
+            const float sink = std::fabs(gait_sink_ch_[s] * dp_full);
+            const float sink_bar = gait_headroom_
+                                 - GAIT_BEARING_FRAC * GAIT_SINK_M;
+            if (sink > sink_bar)
+                b << "whatif:sink" << sink << ">" << sink_bar;
         }
         gait_block_[s] = b.str();
     }
@@ -2234,9 +2355,18 @@ void MembraneTick::gait_step_locked_(std::vector<float>& verts9, float dt) {
         }
     if (pick >= 0) {
         gait_phase_[pick] = GaitPhase::LIFT;
+        // the swing foot's OWN support-patch center, frozen at entry: the
+        // stride bar is the prereg's necessity ("land outside the old
+        // support patch") measured on this foot's own patch -- the
+        // stance-relative reading is measured-unreachable past one stride
+        // (the strut's whole z-reach is 0.677 m; the stance-relative bar
+        // demands 2x patch once the feet separate: F-STALL at ROM)
+        gait_swing_z0_[pick] = fcz[pick];
         std::ostringstream g;
         g << gates0()
-          << ",\"whatif\":true,\"patch\":" << gait_patch_r_[1 - pick] << "}";
+          << ",\"whatif\":true,\"patch\":" << gait_patch_r_[1 - pick]
+          << ",\"z0\":" << gait_swing_z0_[pick]
+          << ",\"reachDir\":" << gait_reach_dir_[pick] << "}";
         gait_log_locked_(pick, "STANCE", "LIFT", g.str());
     }
 
@@ -2310,17 +2440,38 @@ void MembraneTick::gait_step_locked_(std::vector<float>& verts9, float dt) {
             gait_knee_rad_[s] += servo_dth(kerr, gait_dminy_knee_[s],
                                            gait_rate_knee_[s]);
             clamp_rom(&gait_knee_rad_[s]);
-            // the hip reaches: z target = stance centroid + own patch
-            // (the new footfall must land outside the old support patch)
-            const float zerr = (fcz[o] + gait_patch_r_[s]) - fcz[s];
-            gait_hip_rad_[s] += servo_dth(zerr, gait_dcz_hip_[s],
-                                          gait_rate_hip_[s]);
-            clamp_rom(&gait_hip_rad_[s]);
-            if (fcz[s] - fcz[o] >= gait_patch_r_[s]) {
+            // THE STRIDE ALONG THE MEASURED BRANCH: the strut's z-channel
+            // is nonmonotonic in theta (the 1-deg probe reads +2.6 mm/deg;
+            // the +20 deg stride-scale probe and the live ladder show the
+            // raising branch swings the foot BACKWARD -- reach_dir, signed
+            // from the probes at enable), and the +z branch is unusable
+            // (it presses the foot down 15 mm/deg -- more than the clear
+            // pin's measured rise can pay). So the strut drives FURTHER
+            // INTO ITS LIFTING BRANCH (the direction LIFT established,
+            // lift_sign) with the branch-scale gain dcz20, toward the
+            // radius bar: the new footfall must land outside the foot's
+            // OWN old support patch (|fcz[s] - z0| >= own patch -- the
+            // prereg's geometric necessity; the stance-relative reading
+            // demands 2x patch of travel once the feet separate, beyond
+            // the measured 0.677 m strut reach: F-STALL at ROM).
+            const float zrad = fcz[s] - gait_swing_z0_[s];
+            const float zrem = gait_patch_r_[s] - std::fabs(zrad);
+            if (zrem > 0.f) {
+                const float gain = std::fabs(gait_dcz20_hip_[s]);
+                const float step = gain > 1e-9f
+                    ? std::min(zrem / (gain * STANCE_TAU_S),
+                               gait_rate_hip_[s] * dts)
+                    : gait_rate_hip_[s] * dts;
+                gait_hip_rad_[s] += gait_lift_sign_[s] * step;
+                clamp_rom(&gait_hip_rad_[s]);
+            }
+            if (std::fabs(zrad) >= gait_patch_r_[s]) {
                 gait_phase_[s] = GaitPhase::LOAD;
                 std::ostringstream g;
-                g << gates0() << ",\"z\":" << (fcz[s] - fcz[o])
-                  << ",\"bar\":" << gait_patch_r_[s] << "}";
+                g << gates0()
+                  << ",\"z\":" << std::fabs(zrad)
+                  << ",\"bar\":" << gait_patch_r_[s]
+                  << ",\"z0\":" << gait_swing_z0_[s] << "}";
                 gait_log_locked_(s, "REACH", "LOAD", g.str());
             } else if (wminy[s] < 0.f) {
                 // the swing foot touched down mid-reach: the reach FAILED

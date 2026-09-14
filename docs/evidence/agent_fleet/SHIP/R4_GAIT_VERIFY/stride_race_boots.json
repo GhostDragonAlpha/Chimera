@@ -1,0 +1,200 @@
+[
+ {
+  "idx": 0,
+  "port": 8148,
+  "mode": "http",
+  "pid": 52812,
+  "t_http_up_s": 0.535,
+  "scene_at_http": false,
+  "t_arm_s": 0.0,
+  "inert_read": true,
+  "first3": [
+   [
+    0.001,
+    0,
+    0,
+    0
+   ],
+   [
+    0.001,
+    0,
+    0,
+    0
+   ],
+   [
+    0.002,
+    0,
+    0,
+    0
+   ]
+  ],
+  "settled_contact": 135618,
+  "settled_root_y": 0.00950712,
+  "settled_ticks": 766
+ },
+ {
+  "idx": 1,
+  "port": 8149,
+  "mode": "has_scene",
+  "pid": 52020,
+  "t_http_up_s": 0.516,
+  "scene_at_http": false,
+  "t_arm_s": 0.001,
+  "inert_read": false,
+  "first3": [
+   [
+    0.018,
+    0.149109,
+    250743,
+    6
+   ],
+   [
+    0.044,
+    0.149109,
+    250743,
+    6
+   ],
+   [
+    0.044,
+    0.149109,
+    250743,
+    6
+   ]
+  ],
+  "settled_contact": 135618,
+  "settled_root_y": 0.00950712,
+  "settled_ticks": 1264
+ },
+ {
+  "idx": 2,
+  "port": 8150,
+  "mode": "v0",
+  "pid": 44296,
+  "t_http_up_s": 0.508,
+  "scene_at_http": false,
+  "t_arm_s": 0.023,
+  "inert_read": true,
+  "first3": [
+   [
+    0.024,
+    0,
+    0,
+    13
+   ],
+   [
+    0.024,
+    0,
+    0,
+    13
+   ],
+   [
+    0.025,
+    0,
+    0,
+    13
+   ]
+  ],
+  "settled_contact": 135618,
+  "settled_root_y": 0.00950712,
+  "settled_ticks": 1363
+ },
+ {
+  "idx": 3,
+  "port": 8151,
+  "mode": "v0+5s",
+  "pid": 55984,
+  "t_http_up_s": 0.513,
+  "scene_at_http": false,
+  "t_arm_s": 0.012,
+  "inert_read": true,
+  "first3": [
+   [
+    0.012,
+    0,
+    0,
+    1499
+   ],
+   [
+    0.027,
+    0.120869,
+    256245,
+    1503
+   ],
+   [
+    0.028,
+    0.148811,
+    250755,
+    1504
+   ]
+  ],
+  "settled_contact": 135618,
+  "settled_root_y": 0.00950712,
+  "settled_ticks": 2797
+ },
+ {
+  "idx": 4,
+  "port": 8152,
+  "mode": "has_scene",
+  "pid": 54348,
+  "t_http_up_s": 0.503,
+  "scene_at_http": false,
+  "t_arm_s": 0.001,
+  "inert_read": false,
+  "first3": [
+   [
+    0.016,
+    0.0919835,
+    260346,
+    6
+   ],
+   [
+    0.032,
+    0.0919835,
+    260346,
+    6
+   ],
+   [
+    0.04,
+    0.0919835,
+    260346,
+    6
+   ]
+  ],
+  "settled_contact": 135618,
+  "settled_root_y": 0.00950712,
+  "settled_ticks": 1159
+ },
+ {
+  "idx": 5,
+  "port": 8153,
+  "mode": "v0",
+  "pid": 54556,
+  "t_http_up_s": 0.51,
+  "scene_at_http": false,
+  "t_arm_s": 0.026,
+  "inert_read": false,
+  "first3": [
+   [
+    0.048,
+    0.198739,
+    236123,
+    14
+   ],
+   [
+    0.063,
+    0.271925,
+    194557,
+    18
+   ],
+   [
+    0.064,
+    0.28337,
+    182347,
+    19
+   ]
+  ],
+  "settled_contact": 135618,
+  "settled_root_y": 0.00950712,
+  "settled_ticks": 1209
+ }
+]
