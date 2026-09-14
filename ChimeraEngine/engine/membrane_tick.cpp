@@ -123,6 +123,14 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
     ticks_ = 0;
     force_l_ = force_r_ = 0.f;
     flex_l_ = flex_r_ = 0.f;
+    // THE MESH-SWAP SEAL CLEAR (C1's crash root cause, landed by the lead):
+    // init() rebuilds the cell field for the NEW mesh but the seal tree
+    // held the OLD creature's slot ids — verts9 reads through them ran
+    // ~600 KB past the buffer on any swap onto a sealed tick (the import
+    // crash, detonating in a map alloc). A new body is born unsealed.
+    seal_cells_.clear(); sealed_ = false; cut_src_.clear(); cut_pos_.clear();
+    seal_nv_ = 0; vol_whole0_ = vol_whole_ = 0.f; conserve_pct_ = 0.f;
+    seal_split_ = seal_cuts_ = seal_loops_ = seal_caps_ = 0;
     root_y_ = root_vy_ = 0.f;    // a new body starts at its authored rest
     g_contact_n_ = 0.f;          // (gravity_on_ itself survives re-init:
                                  //  the law applies to whatever body loads)
