@@ -399,7 +399,7 @@
      A lesson whose goal.type is not on this list HOLDS -- it can neither
      crash the judge nor pass by accident. */
   var KNOWN_GOAL_TYPES = ['pressure_above', 'pressure_below', 'pose_reach',
-                          'pose_pair', 'gravity_on', 'cells_woken'];
+                          'pose_pair', 'gravity_on', 'cells_woken', 'pressure_isolation'];
   var POSE_TOL_DEG   = 2;     // pose intent tolerance around the goal deg
   var ROOT_VY_SETTLE = 0.05;  // m/s -- gravity_on "settled means settled"
   var ROOT_SETTLE_M  = 0.002; // m  -- the root left its authored rest
@@ -1132,6 +1132,20 @@
     var peakHere = function (c) { return Math.abs(signedP(c)); };
 
     if (st.phase === 'goal' && !st.goalMet) {
+      if (l.goal.type === 'pressure_isolation') {
+        var tgt = Number(l.goal.threshold_pa) || 0;
+        var quiet = (l.goal.quiet_cells || []).every(function (qc) {
+          var c = cells[qc];
+          return c && Math.abs(Number(c.P) || 0) < (Number(l.goal.quiet_max_pa) || 100);
+        });
+        var pc = cells[cellWanted];
+        if (pc && (Number(pc.P) || 0) >= tgt && quiet) st.goalMet = true;
+      } else if (l.goal.type === 'cells_woken') {
+        var woken = 0;
+        for (var ci = 0; ci < cells.length; ci++)
+          if ((Number(cells[ci].P) || 0) >= 20000) woken++;
+        if (woken >= (Number(l.goal.count) || 3)) st.goalMet = true;
+      }
       if (l.goal.type === 'pressure_above' || l.goal.type === 'pressure_below') {
         var cap = Number(l.goal.max_force_n) || 0;
         var forceOk = !cap || !lastTouchForce || lastTouchForce <= cap;
