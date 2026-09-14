@@ -1,5 +1,5 @@
 {
- "_format": "R4 lesson pack for the game shell (tools/game_shell). Top level: an object holding this '_format' note and 'lessons', an array of EXACTLY 5 lesson objects, played in array order. A lesson object: { 'id': snake_case and stable \u2014 the page saves progress under lessons.<id> in progress/<name>.json, so ids must never be renamed; 'title': short player-facing header; 'body': 2-4 warm plain sentences shown on the lesson card; 'goal': one of the shapes below; 'then_release': true means after the goal latches the player must ALSO let the body heal \u2014 pass only on a later poll where every cell is calm (all |P| < 1000 Pa), false means pass the moment the goal latches; 'hint': one sentence shown when the player stalls }. Goal shapes: { 'type': 'pressure_above', 'cell': 0..3 or 'any', 'threshold_pa': number } latches at the first poll where that cell's gauge pressure P >= threshold_pa \u2014 'any' latches if ANY ONE cell crosses at that poll (used only by the_healing); { 'type': 'pressure_below', 'cell': ..., 'threshold_pa': ... } latches when P <= threshold_pa (reserved; unused by these five); { 'type': 'pose_reach', 'joint': name, 'deg': number } latches when the page POSTs /api/pose with that joint's index and deg within +/-2 degrees and the engine accepted (ok:true). Optional extension, used only by the_whole_body: a pressure goal may carry 'also': { 'cell': 0..3, 'threshold_pa': number } \u2014 a second pressure_above condition that latches independently; the GOAL phase completes when the main condition AND the also condition have each latched, at any moments, not necessarily the same poll. Latches are sticky: once true they stay true for the whole lesson. Units: pressure in Pa gauge (0 means healed), volumes in m3. Cell index map: 0 feet (V0=0.288), 1 torso (V0=12.509), 2 thighs (V0=0.693), 3 shins (V0=0.335). Joint name map for pose_reach: hip_L=13, hip_R=14, knee_L=15, knee_R=16, ankle_L=17, ankle_R=18 (all joints accept -90..90 degrees). Measured physics behind the numbers: sealed-cell pressure P=(V0-V)/(kappa*V0) with kappa=4.6e-10; dent depth = F/(4*pi*sigma) with sigma=4000 N/m (touch force 500..50000 N); on release P decays exponentially with tau=0.5 s, reaching zero exactly. Judge loop pseudocode: see LESSON_JUDGE_SPEC.md next to this file. THRESHOLDS RE-TUNED 2026-09-13 to the measured local-touch response (browser Gaussian press at the 50 kN slider max: torso ~100 kPa, small parts less). touch_target: [x,y,z] world point the keyboard (SPACE) presses for this lesson. the_whole_body: touch_targets cycles belly/shin on each SPACE press (wake both compartments).",
+ "_format": "R4 lesson pack for the game shell (tools/game_shell). Top level: an object holding this '_format' note and 'lessons', an array of EXACTLY 10 lesson objects, played in array order. A lesson object: { 'id': snake_case and stable \u2014 the page saves progress under lessons.<id> in progress/<name>.json, so ids must never be renamed; 'title': short player-facing header; 'body': 2-4 warm plain sentences shown on the lesson card; 'goal': one of the shapes below; 'then_release': true means after the goal latches the player must ALSO let the body heal \u2014 pass only on a later poll where every cell is calm (all |P| < 1000 Pa), false means pass the moment the goal latches; 'hint': one sentence shown when the player stalls }. Goal shapes: { 'type': 'pressure_above', 'cell': 0..3 or 'any', 'threshold_pa': number } latches at the first poll where that cell's gauge pressure P >= threshold_pa \u2014 'any' latches if ANY ONE cell crosses at that poll (used only by the_healing); { 'type': 'pressure_below', 'cell': ..., 'threshold_pa': ... } latches when P <= threshold_pa (reserved; unused by these five); { 'type': 'pose_reach', 'joint': name, 'deg': number } latches when the page POSTs /api/pose with that joint's index and deg within +/-2 degrees and the engine accepted (ok:true). Optional extension, used only by the_whole_body: a pressure goal may carry 'also': { 'cell': 0..3, 'threshold_pa': number } \u2014 a second pressure_above condition that latches independently; the GOAL phase completes when the main condition AND the also condition have each latched, at any moments, not necessarily the same poll. Three shapes added 2026-09-13 for lessons 6-10: { 'type': 'pose_pair', 'joints': [ { 'joint': name, 'deg': number }, ... ] } latches each joint like pose_reach (an accepted post within +/-2 degrees of that joint's goal); each joint's latch is sticky and order is free, and the GOAL phase completes when every joint has latched. { 'type': 'gravity_on' } takes no fields: the page POSTs /api/gravity {'on':true} (server proxies to the engine's POST /tick_gravity) once when the lesson starts, and the goal latches on the first poll after the enable where the body has settled: |root_vy| <= 0.05 m/s AND |root_y| > 0.002 m on /tick_state (root_y is exactly 0 at the authored rest so it cannot fire early; measured settle ~9.5 mm, tools/gravity_test.py). { 'type': 'cells_woken', 'count': N } latches a cumulative set of distinct cells whose gauge P ever reaches 20000 Pa (WOKEN_PA; squeeze only, negative P never counts), completing when N cells have latched, any order, any moments. Latches are sticky: once true they stay true for the whole lesson. Units: pressure in Pa gauge (0 means healed), volumes in m3. Cell index map: 0 feet (V0=0.288), 1 torso (V0=12.509), 2 thighs (V0=0.693), 3 shins (V0=0.335). Joint name map for pose_reach: hip_L=13, hip_R=14, knee_L=15, knee_R=16, ankle_L=17, ankle_R=18 (all joints accept -90..90 degrees). Measured physics behind the numbers: sealed-cell pressure P=(V0-V)/(kappa*V0) with kappa=4.6e-10; dent depth = F/(4*pi*sigma) with sigma=4000 N/m (touch force 500..50000 N); on release P decays exponentially with tau=0.5 s, reaching zero exactly. Judge loop pseudocode: see LESSON_JUDGE_SPEC.md next to this file. THRESHOLDS RE-TUNED 2026-09-13 to the measured local-touch response (browser Gaussian press at the 50 kN slider max: torso ~100 kPa, small parts less). touch_target: [x,y,z] world point the keyboard (SPACE) presses for this lesson. the_whole_body: touch_targets cycles belly/shin on each SPACE press (wake both compartments). LESSONS 6-10 added 2026-09-13 (the_balance, the_heavy_hand, the_cascade, the_stand, the_graduation): thresholds calibrated to the measured press response (30 kN gives the torso ~2.1 MPa and a foot ~6.8 MPa; P is linear in F, so the_heavy_hand's 3.0 MPa needs ~43 kN of the 50 kN slider max). the_gentle_hand threshold restored to 50000 Pa on 2026-09-13: the 200 Pa retune dated from when the lesson's target was kernel-dead (zero response); A1's vertex-snap fix restored the measured response (~6.77 MPa at the gentle 6 kN cap), so 50 kPa - the value this lesson's own body copy states - is reachable with gentle force and sits far above the 1000 Pa calm bar.",
  "lessons": [
   {
    "id": "wake_the_cell",
@@ -25,7 +25,7 @@
    "goal": {
     "type": "pressure_above",
     "cell": 0,
-    "threshold_pa": 200,
+    "threshold_pa": 50000,
     "max_force_n": 8000
    },
    "then_release": true,
@@ -93,6 +93,108 @@
     ],
     [
      0.48,
+     1.2,
+     -0.15
+    ]
+   ]
+  },
+  {
+   "id": "the_balance",
+   "title": "THE BALANCE",
+   "body": "The creature listens to two wishes at once. Post the left ankle to 5 degrees and the right to -5 \u2014 two small, opposing turns \u2014 and feel the water lean: one foot pressurises whilst the other eases off. Balance is not a place; it is two wishes held against each other.",
+   "goal": {
+    "type": "pose_pair",
+    "joints": [
+     {
+      "joint": "ankle_L",
+      "deg": 5
+     },
+     {
+      "joint": "ankle_R",
+      "deg": -5
+     }
+    ]
+   },
+   "then_release": false,
+   "hint": "Post both wishes \u2014 ankle_L at 5 and ankle_R at -5 \u2014 and the lesson latches when both are in, in any order."
+  },
+  {
+   "id": "the_heavy_hand",
+   "title": "THE HEAVY HAND",
+   "body": "Pressure follows force, not just place. The same gentle belly, pushed with your whole strength, climbs far higher \u2014 the water only knows how hard you press. Slide the force to the very top and HOLD: take the torso cell past 3 MPa, then let go and let it heal.",
+   "goal": {
+    "type": "pressure_above",
+    "cell": 1,
+    "threshold_pa": 3000000
+   },
+   "then_release": true,
+   "hint": "Slide the force all the way to 50,000 N, press the belly and keep holding \u2014 3 MPa wants nearly everything you have.",
+   "touch_target": [
+    0.0,
+    4.5,
+    0.32
+   ]
+  },
+  {
+   "id": "the_cascade",
+   "title": "THE CASCADE",
+   "body": "One creature, one connected body: what you squeeze in the belly is felt all the way down the legs. Press the belly and hold \u2014 no touch of yours will ever land on the legs \u2014 and watch the shins answer on the readout. Wake the shins past 5 kPa from the belly alone.",
+   "goal": {
+    "type": "pressure_above",
+    "cell": 3,
+    "threshold_pa": 5000
+   },
+   "then_release": true,
+   "hint": "Hold the belly press and keep an eye on the shins cell \u2014 the body carries your push down through the hips all by itself.",
+   "touch_target": [
+    0.0,
+    4.5,
+    0.32
+   ]
+  },
+  {
+   "id": "the_stand",
+   "title": "THE STAND",
+   "body": "Now for the weight of the world. As this lesson begins, the page switches gravity on, and the creature settles onto the floor under its own weight \u2014 no hand required. Watch it sink and go still: that stillness is what 'at rest' really means.",
+   "goal": {
+    "type": "gravity_on"
+   },
+   "then_release": false,
+   "hint": "There is nothing to press \u2014 gravity switches on as the lesson starts, so just wait for the body to finish settling and let it be still."
+  },
+  {
+   "id": "the_graduation",
+   "title": "THE GRADUATION",
+   "body": "You know the creature now: how it wakes, how it poses, how it heals. This one is yours. Wake any three different compartments \u2014 as gently or as hard as you like, in any order \u2014 then take your hand off and let the whole body go quiet. There is no right way in; that is the point.",
+   "goal": {
+    "type": "cells_woken",
+    "count": 3
+   },
+   "then_release": true,
+   "hint": "Touch three different places \u2014 belly, foot, shin \u2014 until three different cells have each crossed 0.02 MPa, then press 'let go' and wait for the calm.",
+   "touch_targets": [
+    [
+     0.0,
+     4.5,
+     0.32
+    ],
+    [
+     0.46,
+     0.18,
+     0.3
+    ],
+    [
+     -0.46,
+     0.18,
+     0.3
+    ],
+    [
+     0.48,
+     1.2,
+     -0.15
+    ],
+    [
+     -0.48,
      1.2,
      -0.15
     ]
