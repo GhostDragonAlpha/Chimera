@@ -1,0 +1,146 @@
+{
+ "D3": {
+  "cycles": [
+   {
+    "hand": "hand open",
+    "holding": false,
+    "pressed": false
+   },
+   {
+    "hand": "hand open",
+    "holding": false,
+    "pressed": false
+   },
+   {
+    "hand": "hand open",
+    "holding": false,
+    "pressed": false
+   },
+   {
+    "hand": "hand open",
+    "holding": false,
+    "pressed": false
+   },
+   {
+    "hand": "hand open",
+    "holding": false,
+    "pressed": false
+   }
+  ],
+  "outside": {
+   "hand": "hand open",
+   "holding": false
+  },
+  "blurClear": {
+   "hand": "hand open",
+   "holding": false
+  },
+  "CLEAN": true
+ },
+ "D2": {
+  "mouseAns": [
+   true,
+   true,
+   true,
+   true,
+   true
+  ],
+  "spaceAns": [
+   true,
+   true,
+   true,
+   true,
+   true
+  ],
+  "tapAns": [
+   true,
+   true,
+   true
+  ],
+  "CLEAN": true
+ },
+ "D4": {
+  "dragVal": 5600,
+  "trackVal": 5600,
+  "arrowVal": 6000,
+  "label": "6000 N",
+  "meter": "11.1111%",
+  "sentForce": 6000,
+  "CLEAN": true
+ },
+ "D1": {
+  "l1mid": {
+   "id": "wake_the_cell",
+   "phase": "release",
+   "goalMet": true,
+   "passed": true
+  },
+  "l2": {
+   "id": "the_gentle_hand",
+   "phase": "goal",
+   "goalMet": false,
+   "passed": false
+  },
+  "l2hand": "hand open",
+  "l2cells": [
+   0,
+   122645,
+   0,
+   0,
+   0
+  ],
+  "l1back": {
+   "id": "wake_the_cell",
+   "phase": "goal",
+   "goalMet": false,
+   "passed": true
+  },
+  "CLEAN": true
+ },
+ "D5": {
+  "noPress": {
+   "verdict": "the creature waits.",
+   "judge": {
+    "id": "the_gentle_hand",
+    "phase": "goal",
+    "goalMet": false,
+    "passed": false
+   }
+  },
+  "realInput": {
+   "verdict": "PASSED — a gentle hand: the small water answered a small touch.",
+   "judge": {
+    "id": "the_gentle_hand",
+    "phase": "release",
+    "goalMet": true,
+    "passed": true
+   },
+   "recordedPress": 6000,
+   "midLine": "judge: the_gentle_hand phase=release goalMet=true passed=false touchTarget=set lastTouchForce=6000 holding=true"
+  },
+  "CLEAN": true
+ },
+ "D6": {
+  "requestsIn10s": 7,
+  "perMin": 42,
+  "CLEAN": true,
+  "unreachableLine": "the world is unreachable — the lesson holds for the world, not for you. nothing is being asked; this line clears on its own."
+ },
+ "D7": {
+  "hasSealed": true,
+  "noGarbage": true,
+  "lineNoDebug": "",
+  "lineDebug": "judge: wake_the_cell phase=goal goalMet=false passed=false t",
+  "CLEAN": true
+ },
+ "consoleErrors": [
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+ ],
+ "consoleErrorCount": 7
+}

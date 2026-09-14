@@ -76,6 +76,9 @@
   #sidebar{
     width:360px;flex:0 0 360px;border-left:1px solid var(--line);background:var(--deep);
     padding:18px 16px 16px;display:flex;flex-direction:column;gap:13px;overflow-y:auto;
+    /* H7: a drag that starts on a label must never turn into text selection
+       (the H5 dry-run's visible selection artifact) */
+    user-select:none;-webkit-user-select:none;
   }
   .side-head{display:flex;justify-content:space-between;align-items:baseline;padding:0 2px 2px}
   .wordmark{font-family:Georgia,serif;font-size:13px;letter-spacing:.28em;color:var(--faint)}
@@ -98,7 +101,7 @@
   .verdict.good{color:var(--good);border-color:#22402f;background:#0d1411}
   .verdict.warn{color:var(--warn);border-color:#4a3a22}
   .force-row{display:flex;align-items:center;gap:12px}
-  #force{flex:1;accent-color:var(--accent);height:22px;cursor:pointer}
+  #force{flex:1;accent-color:var(--accent);height:28px;cursor:pointer}
   #force-label{width:86px;text-align:right;font-size:13px;color:var(--text)}
   .hand-row{display:flex;align-items:center;gap:12px;margin-top:12px}
   .hand-row .hint{flex:1}
@@ -138,6 +141,12 @@
   }
 
   /* the hand-strength meter: the slider's current value, drawn */
+  /* H7 FIX (D4): the meter and its note are pure decoration and used to
+     INTERCEPT pointer events aimed at the slider's lower half -- measured,
+     elementFromPoint(1190,453) hit #force-meter-fill, so track clicks and
+     thumb drags landed on a div, the input never got focus, and even the
+     arrow keys died. pointer-events:none gives every click to the slider. */
+  #force-meter, #force-meter-note{pointer-events:none}
   #force-meter{
     position:relative;height:5px;border-radius:3px;margin-top:7px;
     background:var(--deep);border:1px solid var(--line-soft);
@@ -388,19 +397,54 @@
   var lessonsKnown = {};      // progress already saved under this name
   var judge = { woke: false, passed: false };
   var lastTouchForce = 0;
+  /* H7 (D5 judge integrity): WHEN the hand last landed a press that the
+     engine accepted. The judge refuses to latch a pressure goal unless the
+     crossing happened inside this window -- "the qualifying input occurred
+     under your hand". Without it a lesson could pass on residual or
+     injected cell pressure that no press ever caused. */
+  var lastTouchAt = 0;
+  function pressFresh() { return Date.now() - lastTouchAt < 2500; }
+  /* H7 (D7): the engine's broken zero-volume cells (measured: cell4
+     V=4.66e-9 m3 -- nominally zero, five orders below the smallest real
+     compartment's 0.288 m3 -- reporting P up to 1.62 GPa; an engine-side
+     defect another agent owns). A cell with no water has no pressure to
+     judge or heal; the page skips it in every check and shows "sealed
+     solid". Threshold 1e-6 m3 = 1 cm3: a real cell never gets near it. */
+  var BROKEN_V_M3 = 1e-6;
+  function brokenCell(c) {
+    if (!c) return false;
+    var v = Number(c.V);
+    /* a MISSING V (pre-V engines) is not proof of brokenness -- judge on
+       P as before; only a measured effectively-zero V is "sealed solid" */
+    return isFinite(v) && v <= BROKEN_V_M3;
+  }
+  /* H9 AUDIO FIX: the wake-whoosh memo is WORLD-scoped (one whoosh per
+     crossing across lesson switches); see the loop in judgeState. */
+  var worldWokeMemo = {};
 
   /* W4 SOUND RAIL: every sound the page makes goes through snd() -- a
      window guard AND a try/catch, so a missing sound.js (failed load,
      no WebAudio) or a throwing synth can never break a game path: the
      failure mode is silence, never a dead page. Region hints pass the
      world points the page already holds (sound.js matches their Y
-     against the live per-cell bands). */
+     against the live per-cell bands).
+     H9 AUDIO FIX (failure visibility): silence is now DIAGNOSABLE. A
+     missing synth or a throwing method used to vanish without a trace
+     (measured live: an injected thrower, zero console output, no state
+     anywhere). Failures count per method into window.__sndFailures, and
+     with ?debug=1 the judge line carries a snd-fail tally. Still ZERO
+     console output, ever -- only the visibility changed. */
+  var sndFailures = {};
+  window.__sndFailures = sndFailures;
   function snd(method) {
     try {
       var S = window.ChimeraSound;
       if (S && typeof S[method] === 'function')
-        S[method].apply(S, Array.prototype.slice.call(arguments, 1));
-    } catch (err) { /* silent */ }
+        return S[method].apply(S, Array.prototype.slice.call(arguments, 1));
+      sndFailures[method] = (sndFailures[method] || 0) + 1;
+    } catch (err) {
+      sndFailures[method] = (sndFailures[method] || 0) + 1;
+    }
   }
 
   /* R4: the five lessons, data-driven (tools/game_shell/lessons.json) */
@@ -425,8 +469,7 @@
     // W1: per-lesson latches -- pairOk (pose_pair, per joint), wokenSet
     // (cells_woken, distinct cell indices), gravityArmed (gravity_on).
     if (!lessonState[l.id]) lessonState[l.id] = { goalMet: false, passed: false,
-      phase: 'goal', pairOk: {}, wokenSet: {}, gravityArmed: false,
-      wokeMemo: {} };
+      phase: 'goal', pairOk: {}, wokenSet: {}, gravityArmed: false };
     return lessonState[l.id];
   }
   async function loadLessons() {
@@ -436,10 +479,28 @@
       showLesson(0);
     } catch (err) { setVerdict('the lesson scroll would not open.', 'warn'); }
   }
-  function showLesson(i) {
+  async function showLesson(i) {
     if (!LESSONS.length) return;
     lessonIdx = (i + LESSONS.length) % LESSONS.length;
     var l = LESSONS[lessonIdx];
+    /* H7 FIX (D1): a lesson STARTS fresh. The judge state used to persist
+       per id for the whole session (goalMet / phase / per-cell memos rode
+       over from any earlier visit), and the engine touch + lastTouchForce
+       rode over from the PREVIOUS lesson -- the walker's the_heavy_hand and
+       the_graduation sat in phase=release with a garbage cell blocking the
+       calm check, and a press held in lesson N leaked its pressures into
+       lesson N+1's judge. Only the PASSED latch survives (progress). */
+    clearTouch();
+    if (touchPulseTimer) { clearTimeout(touchPulseTimer); touchPulseTimer = null; }
+    lastTouchForce = 0;
+    lastTouchAt = 0;
+    var st0 = lessonState[l.id];
+    if (st0) {
+      st0.goalMet = false; st0.phase = 'goal';
+      st0.pairOk = {}; st0.wokenSet = {};
+      st0.gravityArmed = false;
+      st0.primaryMet = false; st0.alsoMet = false; st0.halfNote = false;
+    }
     $('lesson-index').textContent = (lessonIdx + 1) + ' / ' + LESSONS.length;
     $('lesson-title').textContent = l.title;
     $('lesson-body').textContent = l.body;
@@ -448,8 +509,16 @@
     var isPose = l.goal.type === 'pose_reach' || l.goal.type === 'pose_pair';
     $('pose-btn-wrap').style.display = isPose ? 'block' : 'none';
     // a pressure lesson must start with the body AT REST: a held pose
-    // shifts the volumes off v0 and every calm check would dead-end
-    if (!isPose) resetPose();
+    // shifts the volumes off v0 and every calm check would dead-end.
+    // H10-WALKER FIX: the reset is now AWAITED (and each joint post
+    // retried -- see resetPose). It used to be fire-and-forget: under a
+    // storm its six posts could all 429 silently and the next lesson's
+    // judge window opened ON the previous lesson's held pose -- measured
+    // live, the verdict flipped 8 ms after ']' while the cells still
+    // carried the ankle pose's 6 MPa signature. Callers that do not
+    // await showLesson simply move on; the window still opens only
+    // after the world is verifiably back at rest.
+    if (!isPose) await resetPose();
     if (l.goal.type === 'pose_reach')
       $('pose-btn').textContent = (l.goal.joint || 'joint') + ' → ' + l.goal.deg + '°';
     if (l.goal.type === 'pose_pair') {
@@ -464,9 +533,7 @@
     if (l.goal.type === 'gravity_on') {
       var stg = curState();
       stg.gravityArmed = false;
-      postJSON('/api/gravity', { on: true })
-        .then(function () { stg.gravityArmed = true; })
-        .catch(function () { stg.gravityArmed = false; });
+      enableGravity(stg);
     }
     var st = curState();
     // G2 (SPEC §9, KNOWN_GOAL_TYPES hold guard): a lesson whose goal.type
@@ -482,6 +549,28 @@
   }
   $('lesson-prev').addEventListener('click', function () { showLesson(lessonIdx - 1); });
   $('lesson-next').addEventListener('click', function () { showLesson(lessonIdx + 1); });
+  /* H10-WALKER FIX (the false arm): the enable used to be
+     postJSON(...).then(armed = true) -- and fetch RESOLVES on any http
+     answer, so a 429'd enable armed the judge over a world whose gravity
+     was never turned on (measured live: 1x429 -> armed=true, root_y still
+     exactly 0 -- the stand could never latch and the walker's diagnostic
+     fallback was silenced by the lie). Arm ONLY on the engine's own
+     ok:true body; retry the enable gently; if the world will not take it,
+     the link line says so and the judge stays honestly unarmed. */
+  async function enableGravity(stg) {
+    for (var attempt = 0; attempt < 3; attempt++) {
+      if (attempt) await sleepTouch(400 * attempt * (0.7 + 0.6 * Math.random()));
+      try {
+        var res = await postJSON('/api/gravity', { on: true });
+        var body = null;
+        try { body = await res.json(); } catch (e) { body = null; }
+        if (res.ok && body && body.ok === true) { stg.gravityArmed = true; return; }
+        if (res.status !== 429 && res.status < 500) break;   // refused: do not spin
+      } catch (err) { /* network: retry */ }
+    }
+    stg.gravityArmed = false;
+    setLink('the world did not take the gravity wish — the judge stays unarmed.');
+  }
   /* W1 (SPEC §6): EVERY pose the page sends rides this one sender, and the
      judge observes it here. The latch fires only when the ENGINE accepted
      (body ok:true) -- a refused post comes back HTTP 200 with ok:false and
@@ -506,7 +595,7 @@
       if (joint_index === JOINT_INDEX[g.joint] && Math.abs(deg - g.deg) <= POSE_TOL_DEG) {
         st.goalMet = true; st.passed = true;
         snd('passed');
-        setVerdict('PASSED — the joint obeys the muscle.', 'good');
+        setVerdict(passLine(l, 'the joint obeys the muscle.'), 'good');
         // the lesson passed; the body returns to rest for the next one
         setTimeout(async function () {
           await resetPose();
@@ -526,7 +615,7 @@
       if (all) {
         st.goalMet = true; st.passed = true;
         snd('passed');
-        setVerdict('PASSED — two wishes, one balance.', 'good');
+        setVerdict(passLine(l, 'two wishes, one balance.'), 'good');
         setTimeout(async function () {
           await resetPose();
           setVerdict('PASSED — and the body stands at rest again.', 'good');
@@ -549,8 +638,23 @@
     // return EVERY joint to rest: the volumes follow exactly (measured
     // pixel-exact) and the pressure lessons' calm bar becomes reachable
     // (W1: rides postPose, so the judge observes the page's only pose path)
-    for (var j in JOINT_INDEX)
-      await postPose(JOINT_INDEX[j], 0);
+    // H10-WALKER FIX: each joint post is RETRIED until the engine takes
+    // it -- a silently-dropped post used to leave that joint held and
+    // the calm bar unreachable for the whole lesson.
+    for (var j in JOINT_INDEX) {
+      for (var attempt = 0; attempt < 3; attempt++) {
+        var body = await postPose(JOINT_INDEX[j], 0);
+        if (body && body.ok === true) break;
+        if (attempt < 2)
+          await sleepTouch(400 * (attempt + 1) * (0.7 + 0.6 * Math.random()));
+      }
+    }
+  }
+  /* H7 (D7): a refused pose now says WHY -- the engine's own error text
+     ("the pose was refused." with no reason was the H5 dry-run's S7). */
+  function poseRefused(body) {
+    var why = (body && body.error) ? String(body.error) : 'the world gave no reason.';
+    setVerdict('the pose was refused — ' + why, 'warn');
   }
   $('pose-btn').addEventListener('click', async function () {
     var l = curLesson(); if (!l) return;
@@ -560,7 +664,7 @@
       var idx = JOINT_INDEX[l.goal.joint];
       if (idx === undefined) { setVerdict('unknown joint — refused.', 'warn'); return; }
       var body = await postPose(idx, l.goal.deg);
-      if (!(body && body.ok === true)) setVerdict('the pose was refused.', 'warn');
+      if (!(body && body.ok === true)) poseRefused(body);
     } else if (l.goal.type === 'pose_pair') {   // W1: post every wish not yet
       for (var i = 0; i < l.goal.joints.length; i++) {  // latched, in list order
         var j = l.goal.joints[i];
@@ -568,7 +672,7 @@
         var jidx = JOINT_INDEX[j.joint];
         if (jidx === undefined) { setVerdict('unknown joint — refused.', 'warn'); return; }
         var b2 = await postPose(jidx, j.deg);
-        if (!(b2 && b2.ok === true)) { setVerdict('the pose was refused.', 'warn'); return; }
+        if (!(b2 && b2.ok === true)) { poseRefused(b2); return; }
       }
     }
   });
@@ -583,6 +687,20 @@
   function setVerdict(text, tone) {
     verdictEl.textContent = text;
     verdictEl.className = 'verdict' + (tone ? ' ' + tone : '');
+    /* H7 (D6): while the unreachable note holds the verdict line, the save
+       follows the live verdict -- a judge that speaks through a partial
+       starvation is never clobbered by the restore. */
+    if (savedVerdict !== null && savedVerdict !== undefined) {
+      savedVerdict.text = text;
+      savedVerdict.cls = verdictEl.className;
+    }
+  }
+  /* H7 FIX (D5): every lesson passes in its own words. The pack carries a
+     per-lesson pass_line now (lessons.json); the page used to speak ONE
+     shared release sentence for every then_release lesson, so an unearned
+     pass was indistinguishable from an earned one. */
+  function passLine(l, fallback) {
+    return 'PASSED — ' + (l && l.pass_line ? l.pass_line : fallback);
   }
   function setHand(text) { handEl.textContent = text; }
   var lastLink = null;
@@ -1063,15 +1181,17 @@
         pollVerts.kernelSeq = plan.seq;
       }
       setLink('');
+      return true;
     } catch (err) {
-      /* torn or unreachable: the last full state stays on screen
-         (never a partial frame), then one honest resync attempt */
-      try {
-        await pullKey();
-        setLink('');
-      } catch (err2) {
-        setLink('the world is silent — retrying…');
-      }
+      /* H7 FIX (D6): torn or unreachable -- the last full state stays on
+         screen (never a partial frame) and the poll FAILS this beat. The
+         old catch fired an IMMEDIATE ?delta=key resync here: under 429s
+         that doubled the request rate with zero backoff and the page
+         DDoSed its own shell (1362 errors / 17 min in the H5 dry-run).
+         Now the failure just propagates to the poll loop, which backs
+         off; the next successful delta that arrives unchained resyncs
+         through the normal pullKey path above. */
+      return false;
     } finally {
       vertsBusy = false;
     }
@@ -1080,7 +1200,7 @@
   /* ================= state: the creature's blood + the lesson judge ================= */
   var stateBusy = false;
   async function pollState() {
-    if (stateBusy) return;
+    if (stateBusy) return;               // skipped, not failed
     stateBusy = true;
     try {
       var res = await fetch(API.state);
@@ -1091,8 +1211,10 @@
       renderJudgeDebug();     // runs on the setInterval poll, so the judge
                               // line stays live even with no WebGL frame
                               // loop (headless walkers depend on this)
+      return true;
     } catch (err) {
-      /* keep the last readout; the link line reports silence */
+      /* keep the last readout; the poll loop backs off (H7 D6) */
+      return false;
     } finally {
       stateBusy = false;
     }
@@ -1110,7 +1232,21 @@
     var html = '';
     for (var i = 0; i < cells.length; i++) {
       var c = cells[i];
-      var p = Number(c.P) || 0;
+      /* H7 FIX (D7): a zero-volume cell is the engine's garbage -- measured,
+         cell4 read V=0.000000 with P=1622.780 MPa (and -0.009 MPa negatives
+         elsewhere). The page used to print that number as if it were blood
+         pressure; a buyer steering by it was being lied to. A cell with no
+         water is shown as sealed solid, pressure dashes. */
+      if (brokenCell(c)) {
+        html += 'cell ' + i + ': V=' + fmt(Number(c.V) || 0) + ' m3  P=---  sealed solid (no water)\n';
+        continue;
+      }
+      var rawP = Number(c.P);
+      if (!isFinite(rawP)) {
+        html += 'cell ' + i + ': V=' + fmt(Number(c.V)) + ' m3  P=---\n';
+        continue;
+      }
+      var p = rawP;
       var awake = Math.abs(p) >= 2e5;
       html += 'cell ' + i + ': V=' + fmt(c.V) + ' m3  P=' +
         (awake ? '<span class="awake">' : '') + fmt(p / 1e6) + (awake ? '</span>' : '') +
@@ -1147,13 +1283,19 @@
     var peakHere = function (c) { return Math.abs(signedP(c)); };
 
     /* W4: the wake WHOOSH -- one per false->true crossing of a cell's wake
-       bar (WOKEN_PA, squeeze only), memo'd per cell on the lesson state so
-       a held press cannot re-trigger it on every poll; the memo resets when
-       the cell falls back asleep, so a later wake whooshes again. The whoosh
-       marks the CROSSING; cellWake keeps the goal-met LATCH. */
-    var memo = st.wokeMemo || (st.wokeMemo = {});
+       bar (WOKEN_PA, squeeze only), memo'd per cell so a held press cannot
+       re-trigger it on every poll; the memo resets when the cell falls
+       back asleep, so a later wake whooshes again. The whoosh marks the
+       CROSSING; cellWake keeps the goal-met LATCH.
+       H9 AUDIO FIX (lesson-switch double-fire): the memo used to live on
+       the LESSON state, and showLesson resets lesson state -- so switching
+       lessons re-whooshed a cell the player's hand woke long before
+       (live-measured 1 -> 2). The memo is WORLD-scoped now: one crossing,
+       one whoosh, for the whole world, across every lesson switch. */
+    var memo = worldWokeMemo;
     for (var wv = 0; wv < cells.length; wv++) {
-      var wk = 'cell' + wv, wokeNow = signedP(cells[wv]) >= WOKEN_PA;
+      var wk = 'cell' + wv, wokeNow = !brokenCell(cells[wv]) &&
+        signedP(cells[wv]) >= WOKEN_PA;
       if (wokeNow && !memo[wk]) { memo[wk] = true; snd('wakeWhoosh'); }
       else if (!wokeNow && memo[wk]) memo[wk] = false;
     }
@@ -1163,30 +1305,46 @@
         var tgt = Number(l.goal.threshold_pa) || 0;
         var quiet = (l.goal.quiet_cells || []).every(function (qc) {
           var c = cells[qc];
-          return c && Math.abs(Number(c.P) || 0) < (Number(l.goal.quiet_max_pa) || 100);
+          // H7 (D7): a zero-volume cell is engine garbage, not a leak
+          if (!c || brokenCell(c)) return true;
+          return Math.abs(Number(c.P) || 0) < (Number(l.goal.quiet_max_pa) || 100);
         });
         var pc = cells[cellWanted];
-        if (pc && (Number(pc.P) || 0) >= tgt && quiet) st.goalMet = true;
+        // H7 (D5): the target cell may only latch while the player's hand
+        // is actually on the body (pressFresh) -- never on residual or
+        // phantom pressure the lesson's input never caused.
+        if (pc && !brokenCell(pc) && pressFresh() &&
+            (Number(pc.P) || 0) >= tgt && quiet) st.goalMet = true;
       } else if (l.goal.type === 'cells_woken') {
         var woken = 0;
         for (var ci = 0; ci < cells.length; ci++)
-          if ((Number(cells[ci].P) || 0) >= 20000) woken++;
+          if (!brokenCell(cells[ci]) && pressFresh() &&
+              (Number(cells[ci].P) || 0) >= 20000) woken++;
         if (woken >= (Number(l.goal.count) || 3)) st.goalMet = true;
       }
       if (l.goal.type === 'pressure_above' || l.goal.type === 'pressure_below') {
         var cap = Number(l.goal.max_force_n) || 0;
-        var forceOk = !cap || !lastTouchForce || lastTouchForce <= cap;
+        // H7 FIX (D5): the force cap now demands a REAL recorded press.
+        // It used to read `!lastTouchForce` as force-ok -- and the mouse
+        // path never set lastTouchForce at all, so a lesson whose
+        // qualifying press never happened passed on any cell spike.
+        var forceOk = !cap || (lastTouchForce > 0 && lastTouchForce <= cap);
         // G2 (SPEC §5 cellCondition): each condition is judged at ITS OWN
         // threshold_pa. `woke` used to close over the MAIN threshold, so
         // the_whole_body's 'also' bar (shins 5000 Pa) was judged at the
         // torso's 15000 Pa -- a silently tripled goal.
         var woke = function (idx, thr) {
           var t = (thr === undefined) ? pa : thr;
-          if (idx === 'any') return cells.some(function (c) { return signedP(c) >= t; });
+          if (idx === 'any') return cells.some(function (c) {
+            return !brokenCell(c) && signedP(c) >= t; });
           var c = cells[idx];
-          return !!c && signedP(c) >= t;
+          return !!c && !brokenCell(c) && signedP(c) >= t;
         };
         if (!forceOk) return;          // an over-force press can never latch a capped lesson
+        // H7 (D5): the crossing must happen under the hand (pressFresh) --
+        // a goal earned by decay timing, injection, or a leftover phantom
+        // press is not the lesson's input.
+        if (!pressFresh()) return;
         if (l.goal.also) {             // two compartments, each latched over time
           if (woke(l.goal.cell)) st.primaryMet = true;
           var alsoThr = Number(l.goal.also.threshold_pa);   // G2: its own bar,
@@ -1221,7 +1379,7 @@
         } else {
           st.passed = true;
           snd('passed');
-          setVerdict('PASSED.', 'good');
+          setVerdict(passLine(l, 'the lesson is yours.'), 'good');
         }
       }
     } else if (st.phase === 'release' && st.goalMet && !st.passed) {
@@ -1229,22 +1387,34 @@
       // every cell is calm. A duplicated empty branch used to swallow this
       // one, so the calm check was dead code and no release lesson could
       // ever pass — the phases latched, then sat in release forever.
-      var calm = cells.every(function (c) { return peakHere(c) < 1000; });
+      // H7 (D1/D7): a zero-volume cell is the engine's garbage, not water
+      // waiting to heal -- measured, cell4 sat at V=0 with P=1.62 GPa and
+      // blocked the calm check forever (the walker's the_heavy_hand and
+      // the_graduation FAILed as phase=release goalMet=true). Broken
+      // cells are skipped; the display calls them "sealed solid".
+      var calm = cells.every(function (c) {
+        return brokenCell(c) || peakHere(c) < 1000; });
       if (calm) {
         st.passed = true;
         snd('healShimmer');   // W4: the release-phase heal completed -- the quiet reward
         snd('passed');
-        setVerdict('PASSED — you felt the water. it was always there.', 'good');
+        setVerdict(passLine(l, 'you felt the water. it was always there.'), 'good');
       }
     }
   }
 
   /* the judge's own line: one honest string a headless walker can read.
      Lives on pollState's timer (never inside the WebGL frame loop —
-     headless Chrome does not run that loop, and the line went dead). */
+     headless Chrome does not run that loop, and the line went dead).
+     H7 FIX (D7, H5 dry-run S8): internal telemetry ("judge: phase=
+     ... touchTarget=...") is dev jargon in a buyer's face -- it renders
+     ONLY with ?debug=1 in the URL now; walkers and probes pass it,
+     players never see it. The format itself never changes. */
+  function debugOn() { return window.location.search.indexOf('debug=1') >= 0; }
   function renderJudgeDebug() {
     var dbg = $('judge-debug');
     if (!dbg) return;
+    if (!debugOn()) { dbg.textContent = ''; return; }
     var l = curLesson();
     if (!l) { dbg.textContent = 'no lesson'; return; }
     var st = curState();
@@ -1267,6 +1437,12 @@
       ' touchTarget=' + (touchTarget ? 'set' : 'null') +
       ' lastTouchForce=' + lastTouchForce +
       ' holding=' + holding + extra;
+    /* H9 AUDIO FIX: the sound lane's failures ride the same debug line
+       (snd() itself never console-spits -- see snd). Only with ?debug=1,
+       which this whole line already is behind. */
+    var fails = window.__sndFailures || {}, fk = [], fk2;
+    for (fk2 in fails) if (fails[fk2] > 0) fk.push(fk2 + 'x' + fails[fk2]);
+    if (fk.length) dbg.textContent += '\nsnd-fail: ' + fk.join(' ');
   }
 
   /* ================= KEYBOARD + GAMEPAD (AI + accessibility) =================
@@ -1309,7 +1485,12 @@
     touchTargetIdx = 0;
     touchTarget = touchTargetList[0] || null;
   }
-  function cycleTouchTarget() {
+  /* H7: each fresh SPACE press takes the NEXT target in the lesson's
+     rotation (whole_body: belly -> shin; graduation: five spots). The
+     advance happens AFTER the press is initiated, so the first press is
+     always touch_targets[0]; the old cycle ran while HOLDING and then
+     re-posted the moved target on the same keydown. */
+  function cycleTouchTargetAfter() {
     if (touchTargetList.length > 1) {
       touchTargetIdx = (touchTargetIdx + 1) % touchTargetList.length;
       touchTarget = touchTargetList[touchTargetIdx];
@@ -1317,29 +1498,24 @@
   }
   window.addEventListener('keydown', function (e) {
     if (!$('screen-play').classList.contains('on') || E4overlayOpen()) return;   // E4: an overlay owns the keyboard while up
-    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+    /* H7 (D4): only TEXT typing owns the keyboard. The old guard skipped
+       every INPUT, so once the force slider had focus, SPACE / - / = died
+       and the creature went untouched; the slider keeps its native arrows
+       because none of the page's handlers want them. */
+    var tgt = e.target;
+    if (tgt && (tgt.tagName === 'TEXTAREA' ||
+        (tgt.tagName === 'INPUT' && tgt.type !== 'range'))) return;
     var k = e.key;
     if (k >= '1' && k <= '5') { showLesson(+k - 1); e.preventDefault(); return; }
     if (k === '[') { showLesson(lessonIdx - 1); e.preventDefault(); return; }
     if (k === ']') { showLesson(lessonIdx + 1); e.preventDefault(); return; }
     if (k === ' ') {
-      e.preventDefault();
+      e.preventDefault();                // also stops a focused button firing
       if (e.repeat) return;              // hold = one press, not a machine gun
-      if (holding) cycleTouchTarget();   // SPACE again = press the NEXT target
-                                         // (the whole_body's belly/shin cycle).
-                                         // The old code released + cycled here
-                                         // without pressing, so the second
-                                         // compartment was unreachable; and it
-                                         // cycled BEFORE the first fresh press,
-                                         // skipping touch_targets[0] entirely.
       if (!touchTarget) return;
-      lastTouchForce = Number(forceEl.value);   // the judge's force cap sees it
-      postJSON(API.touchHit, { hit: touchTarget, force_n: lastTouchForce })
-        .then(function (res) {
-          if (res && res.ok) { holding = true; $('letgo-btn').classList.add('hot');
-            setHand('pressing — ' + forceEl.value + ' N (space)');
-            snd('press', Number(forceEl.value), touchTarget); }
-        });
+      spaceClearOnLand = false;          // a fresh press may outlive its keyup: end then
+      pressSpaceTarget();                // the hand presses the rotation's CURRENT target
+      cycleTouchTargetAfter();           // and the NEXT press takes the next one
       return;
     }
     if (k === 'Escape') { clearTouch(); return; }
@@ -1348,6 +1524,15 @@
     if (k === 's') { $('save-btn').click(); return; }
     if (k === '-') { forceEl.value = Math.max(500, +forceEl.value - 2000); forceEl.dispatchEvent(new Event('input')); return; }
     if (k === '=' || k === '+') { forceEl.value = Math.min(50000, +forceEl.value + 2000); forceEl.dispatchEvent(new Event('input')); return; }
+  });
+  /* H7 FIX (D3): SPACE keyup ENDS the press. The old page had no keyup
+     handler at all -- a scripted keydown held the world's hand forever
+     (the walker's presses only ever ended through Escape), and a held
+     press leaked its pressures into the next lesson. */
+  window.addEventListener('keyup', function (e) {
+    if (e.key !== ' ' || pressSource !== 'space') return;
+    if (spacePressInFlight) spaceClearOnLand = true;   // end the moment it lands
+    else if (holding) clearTouch();
   });
 
   var gamepadWasA = false, gamepadRB = false, gamepadLB = false;
@@ -1371,6 +1556,8 @@
       if (!holding || Math.abs(f - lastTouchForce) > 800) {
         postJSON(API.touchHit, { hit: touchTarget, force_n: f });
         holding = true; $('letgo-btn').classList.add('hot');
+        pressSource = 'gamepad';          // H7: whose press is this (keyup/up fairness)
+        lastTouchForce = Math.round(f); lastTouchAt = Date.now();
         setHand('pressing — ' + Math.round(f) + ' N (gamepad)');
         snd('press', f, touchTarget);
       }
@@ -1445,47 +1632,189 @@
     return [eye[0] + dir[0] * best, eye[1] + dir[1] * best, eye[2] + dir[2] * best];
   }
 
-    async function tryTouch(cx, cy) {
+  /* H7 (D2): a touch post must ANSWER. The old code read only the HTTP
+     ok flag -- a rate-limit 429 or a network blip silently dropped the
+     press (the H5 dry-run's "presses die after the first": 52x429 burst,
+     holding stayed false, no retry, no report), and an engine refusal
+     came back 200 {ok:false} and was still treated as a press (the
+     phantom). postTouchRetry rides the answer through backoff + jitter
+     and resolves to the response BODY; null means the retries are spent. */
+  function sleepTouch(ms) {
+    return new Promise(function (r) { setTimeout(r, ms); });
+  }
+  async function postTouchRetry(payload) {
+    for (var attempt = 0; attempt < 3; attempt++) {
+      if (attempt) await sleepTouch(400 * attempt * (0.7 + 0.6 * Math.random()));
+      try {
+        var res = await fetch(API.touchHit, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.status === 429 || res.status >= 500) continue;   // retryable
+        var j = null;
+        try { j = await res.json(); } catch (err2) { j = null; }
+        return res.ok ? j : { ok: false, error: (j && j.error) || ('http ' + res.status) };
+      } catch (err) { /* network silence: retry */ }
+    }
+    return null;
+  }
+  /* H7: whose press is live -- 'mouse' | 'space' | 'gamepad' | null -- so
+     each modality's OWN release ends it (D3). */
+  var pressSource = null;
+
+  function applyTouch(body, force, hitHint) {
+    if (body && body.ok === true) {
+      holding = true;
+      lastTouchForce = force;             // the judge's force cap sees every path now
+      lastTouchAt = Date.now();           // the judge's "under the hand" window
+      $('letgo-btn').classList.add('hot');
+      setHand('pressing — ' + force + ' N');
+      snd('press', force, hitHint);
+      return true;
+    }
+    setHand((body && body.error) || 'you touched only water.');
+    return false;
+  }
+
+  async function tryTouch(cx, cy) {
+    if (holding) return false;            // one press at a time
     var rect = canvas.getBoundingClientRect();
     var px = (cx - rect.left) / rect.width;
     var py = (cy - rect.top) / rect.height;
     // THE WEB KERNEL TOUCH: the browser posts its LOCAL camera + click
     // pixel; the ENGINE resolves the hit with the proven picker and
     // presses there. No local ray-cast to drift out of alignment.
-    var res = await postJSON(API.touchHit, {
+    var force = Number(forceEl.value);
+    mousePressInFlight = true;
+    var body = await postTouchRetry({
       cam: [cam.r, cam.theta, cam.phi, cam.target[0], cam.target[1],
             cam.target[2], cam.panX || 0, cam.panY || 0],
       aspect: canvas.width / canvas.height,
-      px: px, py: py, force_n: Number(forceEl.value)
+      px: px, py: py, force_n: force
     });
-    if (res && res.ok) {
-      holding = true;
-      $('letgo-btn').classList.add('hot');
-      setHand('pressing — ' + forceEl.value + ' N');
-      snd('press', Number(forceEl.value), res.hit);   // W4: the engine's own resolved hit names the region
-    } else {
-      setHand((res && res.error) || 'you touched only water.');
+    mousePressInFlight = false;
+    if (body === null) {
+      setHand('the world is busy — the press did not land. try again.');
+      return false;
+    }
+    var landed = applyTouch(body, force, body.hit);   // W4: the engine's resolved hit names the region
+    if (landed && mouseClearOnLand) clearTouch();     // the pointer ended mid-POST: end at once
+    return landed;
+  }
+
+  /* H7: in-flight races. A press POST can still be in the air when its
+     pointer or SPACE key ends (retry backoff makes seconds-long posts
+     possible). Without these flags the press would land AFTER the
+     release and phantom-stick -- exactly the H5 S1 class. */
+  var mousePressInFlight = false, mouseClearOnLand = false;
+  var spacePressInFlight = false, spaceClearOnLand = false;
+
+  async function pressSpaceTarget() {
+    if (holding || !touchTarget) return;
+    var force = Number(forceEl.value);
+    spacePressInFlight = true;
+    var body = await postTouchRetry({ hit: touchTarget, force_n: force });
+    spacePressInFlight = false;
+    if (body === null) {
+      setHand('the world is busy — the press did not land. try again.');
+      return;
+    }
+    if (applyTouch(body, force, touchTarget)) {
+      setHand('pressing — ' + force + ' N (space)');
+      pressSource = 'space';
+      if (spaceClearOnLand) { clearTouch(); return; }
     }
   }
 
-  function clearTouch() {
-    if (!holding) return;
-    holding = false;
-    $('letgo-btn').classList.remove('hot');
-    setHand('hand open');
-    postJSON(API.touchClear, {}).catch(function () {});
+  /* H7 (D3): the tap pulse. A quick tap's press outlives the pointer by
+     ~900 ms -- long enough for the engine to apply the dent and the judge
+     to see it -- then the hand opens by itself. A held press ends the
+     moment its pointer ends. touchPulseTimer is cancelled by any new
+     press, clearTouch, or a lesson switch. */
+  var touchPulseTimer = null;
+  function armTapPulse() {
+    if (touchPulseTimer) clearTimeout(touchPulseTimer);
+    setHand(handEl.textContent + ' (tap)');
+    touchPulseTimer = setTimeout(function () {
+      touchPulseTimer = null;
+      clearTouch();
+    }, 900);
   }
 
-  /* ================= input: click vs orbit vs zoom ================= */
-  var pressed = false, orbiting = false, downX = 0, downY = 0, lastX = 0, lastY = 0;
+  function clearTouch() {
+    if (touchPulseTimer) { clearTimeout(touchPulseTimer); touchPulseTimer = null; }
+    if (!holding) return;
+    holding = false;
+    pressSource = null;
+    $('letgo-btn').classList.remove('hot');
+    setHand('hand open');
+    /* H9 AUDIO FIX (ship-blocker 1): the press voice ENDS when the hand
+       opens. pressEnd had ZERO call sites since W4 shipped (grep 0) --
+       the first press started a tone that never stopped for the whole
+       session and every release was mute (H9's live run: pressVActive
+       still true after ESC). clearTouch is the single release funnel --
+       ESC, let-go, rest, pointerup, pointercancel, blur, tab-hide, the
+       tap pulse, the lesson switch -- so one call here covers them all.
+       Fires only past the !holding guard: no press, no voice, no end. */
+    snd('pressEnd');
+    clearTouchSend();
+  }
+  /* H10-WALKER FIX (the sticky phantom): the release used to be ONE
+     fire-and-forget POST -- a 429'd touch_clear was dropped without
+     retry and the engine kept pressing a press the page believed over
+     (measured live: exactly 1 clear call during release under a 429, no
+     retry, no report). The clear now rides the same backoff as the
+     press; the engine's clear is idempotent, so a retried release is
+     free. Retries spent -> the link line says the release did not land. */
+  async function clearTouchSend() {
+    for (var attempt = 0; attempt < 3; attempt++) {
+      if (attempt) await sleepTouch(400 * attempt * (0.7 + 0.6 * Math.random()));
+      try {
+        var res = await fetch(API.touchClear, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: '{}' });
+        if (res.status === 429 || res.status >= 500) continue;
+        return;                       // the world took the release
+      } catch (err) { /* network: retry */ }
+    }
+    setLink('the world is busy — the release did not land; touch again to re-send.');
+  }
+
+  /* ================= input: click vs orbit vs zoom =================
+     H7 MODEL (D2/D3): the hand is DOWN while the pointer is down.
+     pointerdown (still 130 ms) starts the press; moving past 6 px turns
+     the gesture into an orbit and ends the press; pointerup ends a HELD
+     press immediately and lets a TAP's press pulse (~900 ms); pointer
+     cancel, window blur, and tab hide all end the press. The old model
+     started the press at pointerUP and had no keyup/blur handling at
+     all, so every release left the HUD "pressing" (the phantom press,
+     3/3 in the H5 dry-run) and half of a player's clicks did nothing. */
+  var pressed = false, orbiting = false, downX = 0, downY = 0, lastX = 0, lastY = 0,
+      downT = 0, touchArmTimer = null;
 
   canvas.addEventListener('pointerdown', function (e) {
-    if (e.button !== 0) return;
+    if (e.button !== 0 || pressed) return;
     pressed = true;
     orbiting = false;
     downX = lastX = e.clientX;
     downY = lastY = e.clientY;
+    downT = Date.now();
+    mousePressInFlight = false;          // a fresh gesture owns the race flags
+    mouseClearOnLand = false;
+    if (touchPulseTimer) { clearTimeout(touchPulseTimer); touchPulseTimer = null; }  // the hand stays on
     try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
+    // the stillness guard: a press only ARMOS after 130 ms in one place,
+    // so an orbit drag never dents the body on its way past
+    if (touchArmTimer) clearTimeout(touchArmTimer);
+    touchArmTimer = setTimeout(function () {
+      touchArmTimer = null;
+      if (pressed && !orbiting && !holding) {
+        pressSource = 'mouse';
+        tryTouch(downX, downY);
+      }
+    }, 130);
   });
 
   window.addEventListener('pointermove', function (e) {
@@ -1496,23 +1825,61 @@
       if (Math.hypot(e.clientX - downX, e.clientY - downY) <= 6) return;
       orbiting = true;                       // past 6 px this gesture is an orbit
       canvas.classList.add('dragging');
+      if (touchArmTimer) { clearTimeout(touchArmTimer); touchArmTimer = null; }
+      if (holding && pressSource === 'mouse') clearTouch();   // a drag opens the hand
     }
     cam.theta -= dx * 0.005;
     cam.phi = Math.max(-1.45, Math.min(1.45, cam.phi - dy * 0.003));
   });
 
-  function endPress(cx, cy) {
+  function endPress() {
     if (!pressed) return;
     pressed = false;
     canvas.classList.remove('dragging');
-    if (holding) { clearTouch(); return; }   // mouseup anywhere releases the press
-    if (!orbiting) { tryTouch(cx, cy); }     // a still click presses the body
+    var pending = !!touchArmTimer;
+    if (touchArmTimer) { clearTimeout(touchArmTimer); touchArmTimer = null; }
+    // the press POST is still in the air: end the press the moment it lands
+    if (mousePressInFlight) { mouseClearOnLand = true; return; }
+    // a faster-than-the-arm-guard still click is still a touch: fire it now
+    if (pending && !orbiting && !holding) {
+      pressSource = 'mouse';
+      tryTouch(downX, downY).then(function (landed) {
+        if (landed && Date.now() - downT < 250) armTapPulse();
+      });
+      return;
+    }
+    if (!holding || pressSource !== 'mouse') return;
+    if (Date.now() - downT < 250) {
+      armTapPulse();                         // a tap's press pulses, then opens
+    } else {
+      clearTouch();                          // mouseup ENDS a held press
+    }
   }
-  window.addEventListener('pointerup', function (e) { endPress(e.clientX, e.clientY); });
+  window.addEventListener('pointerup', function () { endPress(); });
   window.addEventListener('pointercancel', function () {
     pressed = false;
     canvas.classList.remove('dragging');
-    if (holding) clearTouch();
+    if (touchArmTimer) { clearTimeout(touchArmTimer); touchArmTimer = null; }
+    if (mousePressInFlight) mouseClearOnLand = true;
+    else if (holding && pressSource === 'mouse') clearTouch();
+  });
+  /* H7 (D3): losing the window ends the press -- alt-tab mid-hold must
+     never leave a phantom hand on the body (H5's S1). */
+  window.addEventListener('blur', function () {
+    pressed = false;
+    canvas.classList.remove('dragging');
+    if (touchArmTimer) { clearTimeout(touchArmTimer); touchArmTimer = null; }
+    if (mousePressInFlight) mouseClearOnLand = true;
+    else clearTouch();
+  });
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      pressed = false;
+      canvas.classList.remove('dragging');
+      if (touchArmTimer) { clearTimeout(touchArmTimer); touchArmTimer = null; }
+      if (mousePressInFlight) mouseClearOnLand = true;
+      else clearTouch();
+    }
   });
 
   /* wheel: pure local zoom, zero network */
@@ -1801,8 +2168,64 @@
     $('gl-error').classList.remove('hidden');
   }
 
-  setInterval(pollVerts, 333);   // colors and skin animate; re-pull at 3 Hz
-  setInterval(pollState, 700);   // the blood readout + the lesson judge
+  /* H7 FIX (D6 -- the 429 storm). The old fixed timers (333 ms verts /
+     700 ms state) retried at full speed forever, and pollVerts added an
+     IMMEDIATE ?delta=key pull on every failure -- measured on a starved
+     page: 443 req/min until the shell's own budget 429s it (1362 console
+     errors in 17 min in the H5 dry-run). Now: every FAILED poll backs off
+     exponentially (2^n beats, capped) with +/-20% jitter; any success
+     restores the base pace. And a starved world reads as an honest HOLD:
+     the verdict line says the world is unreachable and asks nothing of
+     the player; it restores itself when the water answers again. */
+  var vertFailStreak = 0, stateFailStreak = 0, savedVerdict = null;
+  var UNREACHABLE_MSG = 'the world is unreachable — the lesson holds for the ' +
+    'world, not for you. nothing is being asked; this line clears on its own.';
+  function pollLoop(fn, baseMs, maxMs, onResult) {
+    (async function run() {
+      for (;;) {
+        var r;
+        try { r = await fn(); } catch (e) { r = false; }
+        var ok = (r !== false);
+        onResult(ok);
+        var jitter = 0.8 + 0.4 * Math.random();          // +/- 20 %
+        var beat = ok ? baseMs
+          : Math.min(maxMs, baseMs * Math.pow(2, worldStreakMax())) * jitter;
+        await sleepShell(beat);
+      }
+    })();
+  }
+  function worldStreakMax() {
+    return Math.min(Math.max(vertFailStreak, stateFailStreak), 6);
+  }
+  function sleepShell(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function syncUnreachable() {
+    var any = worldStreakMax() >= 3;
+    var both = vertFailStreak >= 3 && stateFailStreak >= 3;
+    if (both) {
+      if (savedVerdict === null)
+        savedVerdict = { text: verdictEl.textContent, cls: verdictEl.className };
+      setLink('the world is unreachable — retrying gently (backoff).');
+      /* direct DOM write: setVerdict() follows the save (below), so the
+         unreachable note must not go through it */
+      verdictEl.textContent = UNREACHABLE_MSG;
+      verdictEl.className = 'verdict warn';
+    } else if (any) {
+      setLink('part of the world is unreachable — retrying gently (backoff).');
+    } else if (savedVerdict !== null) {
+      setLink('');
+      verdictEl.textContent = savedVerdict.text;
+      verdictEl.className = savedVerdict.cls;
+      savedVerdict = null;
+    } else if (lastLink) {
+      setLink('');
+    }
+  }
+  pollLoop(pollVerts, 333, 15000, function (ok) {
+    vertFailStreak = ok ? 0 : vertFailStreak + 1; syncUnreachable();
+  });
+  pollLoop(pollState, 700, 10000, function (ok) {
+    stateFailStreak = ok ? 0 : stateFailStreak + 1; syncUnreachable();
+  });
 })();
 </script>
 </body>

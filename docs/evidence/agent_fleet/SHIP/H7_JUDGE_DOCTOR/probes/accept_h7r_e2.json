@@ -1,0 +1,39 @@
+{
+ "cam": {
+  "r": 26,
+  "theta": -0.55,
+  "phi": 0.42,
+  "target": [
+   0,
+   0,
+   0
+  ],
+  "panX": 0,
+  "panY": 0
+ },
+ "foot": [
+  {
+   "force": 20000,
+   "region": [
+    -0.385216,
+    4.7893,
+    -0.381638
+   ]
+  }
+ ],
+ "torso": [
+  {
+   "force": 20000,
+   "region": [
+    -0.604954,
+    9.169659,
+    -0.695047
+   ]
+  }
+ ],
+ "footRegion": "body",
+ "torsoRegion": "body",
+ "hitsDiffer": true,
+ "CLEAN": false,
+ "pageErrors": []
+}

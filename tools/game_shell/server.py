@@ -5,18 +5,30 @@ channels (frame/state/touch/pose) to the engine, and keeps each
 player's progress in progress/<name>.json. The engine stays the frozen
 world; this file is the doorplate, the doormat, and the sign-up sheet.
 
-Run:  python tools/game_shell/server.py [port] [--host H]
+Run:  python tools/game_shell/server.py [port] [--host H] [--engine URL]
       (default port 8206; default host 127.0.0.1 -- pass --host 0.0.0.0
       ONLY when you mean to serve the public; see docs/DEPLOY_RUNBOOK.md)
-Requires the engine on 127.0.0.1:8107 (launch_chimera.bat).
+The world's URL is CHIMERA_ENGINE_URL (or --engine), default
+http://127.0.0.1:8107 -- scratch shells for other agents point the env
+var at their own private engine and never touch the live one.
 
 Hardening (public deployment):
   --host    binds 127.0.0.1 unless 0.0.0.0 is passed explicitly.
   limits    one token bucket per (player IP, class). The game page polls
             /api/verts at 3 Hz and /api/state at ~1.4 Hz -- 264 req/min
-            for ONE player -- so the stream class is generous (600/min)
-            and a real player never sees a 429; other api routes get
-            30 req/min, static files 120 req/min.
+            for ONE player -- and the page now backs off exponentially on
+            any failed poll (H7), so a starving client slows itself down
+            instead of hammering.
+            THE SHARED-NAT TRADEOFF (H7, chosen deliberately): the bucket
+            stays keyed per IP -- NOT per session -- so a stranger cannot
+            mint unlimited sessions to bypass the budget; the price is
+            that one home IP is one bucket. Stream class raised
+            600 -> 1200 req/min (burst 480), which serves ~4 honest
+            players behind one router (4 x 264 = 1056 < 1200) 429-free.
+            The cost of raising it: a single hammering client may pull
+            1200 req/min INTO THIS PROXY -- it never reaches the engine
+            at more than that rate, and backoff makes the hammering
+            self-defeating. 429 answers carry Retry-After.
   bodies    request bodies are capped at 5 MB (413, connection closed,
             body never read).
   paths     exact-name dispatch only; the progress name is stripped to
@@ -26,6 +38,7 @@ Hardening (public deployment):
 from __future__ import annotations
 
 import json
+import os
 import re
 import threading
 import time
@@ -35,22 +48,23 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-ENGINE = "http://127.0.0.1:8107"
+ENGINE = os.environ.get("CHIMERA_ENGINE_URL", "http://127.0.0.1:8107").rstrip("/")
 PROGRESS = HERE / "progress"
 PROGRESS.mkdir(exist_ok=True)
 NAME_RE = re.compile(r"[^A-Za-z0-9_\- ]+")
 
 # -- hardening: numbers with reasons --------------------------------------
-# stream  600 req/min: the measured gameplay poll is verts 3 Hz + state
-#         1.4 Hz = 264 req/min per player. 600/min keeps a real player
-#         (even two behind one home router) 429-free while still shedding
-#         a hammering client before it reaches the engine proxy.
+# stream 1200 req/min: the measured gameplay poll is verts 3 Hz + state
+#         1.4 Hz = 264 req/min per player. 1200/min keeps FOUR real
+#         players behind one home NAT (shared IP bucket) 429-free while
+#         still shedding a hammering client before it reaches the engine
+#         proxy; the page's own backoff (H7) is the first line of defense.
 # api      30 req/min: health/topology/cam/progress -- a handful per
 #         session; 30/min is many times that, and a for-loop is not a
 #         session.
 # static  120 req/min: page + sound.js + lessons.json per load.
 RATE_LIMITS = {  # class -> (per minute, burst)
-    "stream": (600, 240),
+    "stream": (1200, 480),
     "api": (30, 15),
     "static": (120, 60),
 }
@@ -125,8 +139,16 @@ class Handler(BaseHTTPRequestHandler):
         self._send(json.dumps(obj).encode(), "application/json", code)
 
     def _deny(self, code: int, msg: str):
-        self._json({"ok": False, "error": msg}, code)
+        """H7: rejections carry Retry-After so a backoff-capable client
+        (the game page is, since the D6 fix) waits instead of hammering."""
+        self.send_response(code)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(json.dumps({"ok": False, "error": msg}).encode())))
+        self.send_header("Retry-After", "1")
+        self.send_header("Connection", "close")
         self.close_connection = True
+        self.end_headers()
+        self.wfile.write(json.dumps({"ok": False, "error": msg}).encode())
 
     def _proxy(self, path: str, method: str, body: bytes | None):
         req = urllib.request.Request(ENGINE + path, data=body, method=method,
@@ -252,10 +274,17 @@ def main() -> None:
     ap.add_argument("port", nargs="?", type=int, default=8206)
     ap.add_argument("--host", default="127.0.0.1",
                     help="bind address (default 127.0.0.1; 0.0.0.0 serves the public)")
+    ap.add_argument("--engine", default=None,
+                    help="world URL (default: env CHIMERA_ENGINE_URL, else "
+                         "http://127.0.0.1:8107) -- scratch shells point at "
+                         "their own private engine")
     a = ap.parse_args()
+    if a.engine:
+        Handler.engine_url = a.engine.rstrip("/")
     server = ThreadingHTTPServer((a.host, a.port), Handler)
     server.daemon_threads = True
-    print(f"THE GAME -- http://{a.host}:{a.port}  (world: {ENGINE})", flush=True)
+    print(f"THE GAME -- http://{a.host}:{a.port}  (world: {Handler.engine_url})",
+          flush=True)
     server.serve_forever()
 
 

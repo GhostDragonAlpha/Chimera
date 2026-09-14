@@ -1,10 +1,10 @@
 {
- "_format": "R4 lesson pack for the game shell (tools/game_shell). Top level: an object holding this '_format' note and 'lessons', an array of EXACTLY 10 lesson objects, played in array order. A lesson object: { 'id': snake_case and stable \u2014 the page saves progress under lessons.<id> in progress/<name>.json, so ids must never be renamed; 'title': short player-facing header; 'body': 2-4 warm plain sentences shown on the lesson card; 'goal': one of the shapes below; 'then_release': true means after the goal latches the player must ALSO let the body heal \u2014 pass only on a later poll where every cell is calm (all |P| < 1000 Pa), false means pass the moment the goal latches; 'hint': one sentence shown when the player stalls }. Goal shapes: { 'type': 'pressure_above', 'cell': 0..3 or 'any', 'threshold_pa': number } latches at the first poll where that cell's gauge pressure P >= threshold_pa \u2014 'any' latches if ANY ONE cell crosses at that poll (used only by the_healing); { 'type': 'pressure_below', 'cell': ..., 'threshold_pa': ... } latches when P <= threshold_pa (reserved; unused by these five); { 'type': 'pose_reach', 'joint': name, 'deg': number } latches when the page POSTs /api/pose with that joint's index and deg within +/-2 degrees and the engine accepted (ok:true). Optional extension, used only by the_whole_body: a pressure goal may carry 'also': { 'cell': 0..3, 'threshold_pa': number } \u2014 a second pressure_above condition that latches independently; the GOAL phase completes when the main condition AND the also condition have each latched, at any moments, not necessarily the same poll. Three shapes added 2026-09-13 for lessons 6-10: { 'type': 'pose_pair', 'joints': [ { 'joint': name, 'deg': number }, ... ] } latches each joint like pose_reach (an accepted post within +/-2 degrees of that joint's goal); each joint's latch is sticky and order is free, and the GOAL phase completes when every joint has latched. { 'type': 'gravity_on' } takes no fields: the page POSTs /api/gravity {'on':true} (server proxies to the engine's POST /tick_gravity) once when the lesson starts, and the goal latches on the first poll after the enable where the body has settled: |root_vy| <= 0.05 m/s AND |root_y| > 0.002 m on /tick_state (root_y is exactly 0 at the authored rest so it cannot fire early; measured settle ~9.5 mm, tools/gravity_test.py). { 'type': 'cells_woken', 'count': N } latches a cumulative set of distinct cells whose gauge P ever reaches 20000 Pa (WOKEN_PA; squeeze only, negative P never counts), completing when N cells have latched, any order, any moments. Latches are sticky: once true they stay true for the whole lesson. Units: pressure in Pa gauge (0 means healed), volumes in m3. Cell index map: 0 feet (V0=0.288), 1 torso (V0=12.509), 2 thighs (V0=0.693), 3 shins (V0=0.335). Joint name map for pose_reach: hip_L=13, hip_R=14, knee_L=15, knee_R=16, ankle_L=17, ankle_R=18 (all joints accept -90..90 degrees). Measured physics behind the numbers: sealed-cell pressure P=(V0-V)/(kappa*V0) with kappa=4.6e-10; dent depth = F/(4*pi*sigma) with sigma=4000 N/m (touch force 500..50000 N); on release P decays exponentially with tau=0.5 s, reaching zero exactly. Judge loop pseudocode: see LESSON_JUDGE_SPEC.md next to this file. THRESHOLDS RE-TUNED 2026-09-13 to the measured local-touch response (browser Gaussian press at the 50 kN slider max: torso ~100 kPa, small parts less). touch_target: [x,y,z] world point the keyboard (SPACE) presses for this lesson. the_whole_body: touch_targets cycles belly/shin on each SPACE press (wake both compartments). LESSONS 6-10 added 2026-09-13 (the_balance, the_heavy_hand, the_cascade, the_stand, the_graduation): thresholds calibrated to the measured press response (30 kN gives the torso ~2.1 MPa and a foot ~6.8 MPa; P is linear in F, so the_heavy_hand's 3.0 MPa needs ~43 kN of the 50 kN slider max). the_gentle_hand threshold restored to 50000 Pa on 2026-09-13: the 200 Pa retune dated from when the lesson's target was kernel-dead (zero response); A1's vertex-snap fix restored the measured response (~6.77 MPa at the gentle 6 kN cap), so 50 kPa - the value this lesson's own body copy states - is reachable with gentle force and sits far above the 1000 Pa calm bar. pressure_isolation: {cell, threshold_pa, quiet_cells[], quiet_max_pa} \u2014 the target cell must wake past threshold_pa while the quiet_cells stay under quiet_max_pa. Teaches compartmentalization.",
+ "_format": "R4 lesson pack for the game shell (tools/game_shell). Top level: an object holding this '_format' note and 'lessons', an array of EXACTLY 10 lesson objects, played in array order. A lesson object: { 'id': snake_case and stable — the page saves progress under lessons.<id> in progress/<name>.json, so ids must never be renamed; 'title': short player-facing header; 'body': 2-4 warm plain sentences shown on the lesson card; 'goal': one of the shapes below; 'then_release': true means after the goal latches the player must ALSO let the body heal — pass only on a later poll where every cell is calm (all |P| < 1000 Pa), false means pass the moment the goal latches; 'hint': one sentence shown when the player stalls; 'pass_line': the lesson's OWN pass sentence -- the page speaks it as 'PASSED -- <pass_line>' so every lesson's pass is distinguishable (H7 judge integrity: L1-L3 used to share one sentence) }. Goal shapes: { 'type': 'pressure_above', 'cell': 0..3 or 'any', 'threshold_pa': number } latches at the first poll where that cell's gauge pressure P >= threshold_pa — 'any' latches if ANY ONE cell crosses at that poll (used only by the_healing); { 'type': 'pressure_below', 'cell': ..., 'threshold_pa': ... } latches when P <= threshold_pa (reserved; unused by these five); { 'type': 'pose_reach', 'joint': name, 'deg': number } latches when the page POSTs /api/pose with that joint's index and deg within +/-2 degrees and the engine accepted (ok:true). Optional extension, used only by the_whole_body: a pressure goal may carry 'also': { 'cell': 0..3, 'threshold_pa': number } — a second pressure_above condition that latches independently; the GOAL phase completes when the main condition AND the also condition have each latched, at any moments, not necessarily the same poll. Three shapes added 2026-09-13 for lessons 6-10: { 'type': 'pose_pair', 'joints': [ { 'joint': name, 'deg': number }, ... ] } latches each joint like pose_reach (an accepted post within +/-2 degrees of that joint's goal); each joint's latch is sticky and order is free, and the GOAL phase completes when every joint has latched. { 'type': 'gravity_on' } takes no fields: the page POSTs /api/gravity {'on':true} (server proxies to the engine's POST /tick_gravity) once when the lesson starts, and the goal latches on the first poll after the enable where the body has settled: |root_vy| <= 0.05 m/s AND |root_y| > 0.002 m on /tick_state (root_y is exactly 0 at the authored rest so it cannot fire early; measured settle ~9.5 mm, tools/gravity_test.py). { 'type': 'cells_woken', 'count': N } latches a cumulative set of distinct cells whose gauge P ever reaches 20000 Pa (WOKEN_PA; squeeze only, negative P never counts), completing when N cells have latched, any order, any moments. Latches are sticky: once true they stay true for the whole lesson. Units: pressure in Pa gauge (0 means healed), volumes in m3. Cell index map: 0 feet (V0=0.288), 1 torso (V0=12.509), 2 thighs (V0=0.693), 3 shins (V0=0.335). Joint name map for pose_reach: hip_L=13, hip_R=14, knee_L=15, knee_R=16, ankle_L=17, ankle_R=18 (all joints accept -90..90 degrees). Measured physics behind the numbers: sealed-cell pressure P=(V0-V)/(kappa*V0) with kappa=4.6e-10; dent depth = F/(4*pi*sigma) with sigma=4000 N/m (touch force 500..50000 N); on release P decays exponentially with tau=0.5 s, reaching zero exactly. Judge loop pseudocode: see LESSON_JUDGE_SPEC.md next to this file. THRESHOLDS RE-TUNED 2026-09-13 to the measured local-touch response (browser Gaussian press at the 50 kN slider max: torso ~100 kPa, small parts less). touch_target: [x,y,z] world point the keyboard (SPACE) presses for this lesson. the_whole_body: touch_targets cycles belly/shin on each SPACE press (wake both compartments). LESSONS 6-10 added 2026-09-13 (the_balance, the_heavy_hand, the_cascade, the_stand, the_graduation): thresholds calibrated to the measured press response (30 kN gives the torso ~2.1 MPa and a foot ~6.8 MPa; P is linear in F, so the_heavy_hand's 3.0 MPa needs ~43 kN of the 50 kN slider max). the_gentle_hand threshold restored to 50000 Pa on 2026-09-13: the 200 Pa retune dated from when the lesson's target was kernel-dead (zero response); A1's vertex-snap fix restored the measured response (~6.77 MPa at the gentle 6 kN cap), so 50 kPa - the value this lesson's own body copy states - is reachable with gentle force and sits far above the 1000 Pa calm bar. pressure_isolation: {cell, threshold_pa, quiet_cells[], quiet_max_pa} — the target cell must wake past threshold_pa while the quiet_cells stay under quiet_max_pa. Teaches compartmentalization.",
  "lessons": [
   {
    "id": "wake_the_cell",
    "title": "WAKE THE CELL",
-   "body": "The creature is sealed \u2014 water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.",
+   "body": "The creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.",
    "goal": {
     "type": "pressure_above",
     "cell": 1,
@@ -16,12 +16,13 @@
     0.0,
     4.5,
     0.35
-   ]
+   ],
+   "pass_line": "you pressed, the cell woke, and the water healed itself. the world is real."
   },
   {
    "id": "the_gentle_hand",
    "title": "THE GENTLE HAND",
-   "body": "Small parts hold small water. The same push that barely stirs the body can spike a foot \u2014 so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.",
+   "body": "Small parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.",
    "goal": {
     "type": "pressure_above",
     "cell": 0,
@@ -29,12 +30,13 @@
     "max_force_n": 8000
    },
    "then_release": true,
-   "hint": "slide the force down under 8000 N \u2014 small parts wake with small touches.",
+   "hint": "slide the force down under 8000 N — small parts wake with small touches.",
    "touch_target": [
     0.46,
     0.18,
     0.3
-   ]
+   ],
+   "pass_line": "a gentle hand: the small water answered a small touch."
   },
   {
    "id": "the_healing",
@@ -46,29 +48,31 @@
     "threshold_pa": 20000
    },
    "then_release": true,
-   "hint": "Press 'let go', then wait about three or four seconds \u2014 the pressure fades to zero all by itself.",
+   "hint": "Press 'let go', then wait about three or four seconds — the pressure fades to zero all by itself.",
    "touch_target": [
     0.0,
     4.5,
     0.35
-   ]
+   ],
+   "pass_line": "you let go, and the body healed itself. it never needed you."
   },
   {
    "id": "bend_the_knee",
    "title": "BEND THE KNEE",
-   "body": "The creature listens to more than touches \u2014 it listens to intents. A pose is a wish you post: bend the left knee to 40 degrees and the body rearranges its water to match, cells shifting as the joint turns. Set the left knee to 40 and watch the pressures answer.",
+   "body": "The creature listens to more than touches — it listens to intents. A pose is a wish you post: bend the left knee to 40 degrees and the body rearranges its water to match, cells shifting as the joint turns. Set the left knee to 40 and watch the pressures answer.",
    "goal": {
     "type": "pose_reach",
     "joint": "knee_L",
     "deg": 40
    },
    "then_release": false,
-   "hint": "Post the pose knee_L at 40 degrees \u2014 this lesson is judged on the intent you post, not on the pressures that follow."
+   "hint": "Post the pose knee_L at 40 degrees — this lesson is judged on the intent you post, not on the pressures that follow.",
+   "pass_line": "the creature obeyed a wish, not a touch."
   },
   {
    "id": "the_whole_body",
    "title": "THE WHOLE BODY",
-   "body": "One creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa \u2014 in any order, at any moments. Then let everything go, and feel the whole body go quiet together.",
+   "body": "One creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.",
    "goal": {
     "type": "pressure_above",
     "cell": 1,
@@ -79,7 +83,7 @@
     }
    },
    "then_release": true,
-   "hint": "Press the big body first and let go, then touch low on the legs \u2014 the readout shows you which compartments you have already woken.",
+   "hint": "Press the big body first and let go, then touch low on the legs — the readout shows you which compartments you have already woken.",
    "touch_target": [
     0.0,
     4.5,
@@ -96,12 +100,13 @@
      1.2,
      -0.15
     ]
-   ]
+   ],
+   "pass_line": "two rooms woke under one hand, and the whole body went quiet together."
   },
   {
    "id": "the_balance",
    "title": "THE BALANCE",
-   "body": "The creature listens to two wishes at once. Post the left ankle to 5 degrees and the right to -5 \u2014 two small, opposing turns \u2014 and feel the water lean: one foot pressurises whilst the other eases off. Balance is not a place; it is two wishes held against each other.",
+   "body": "The creature listens to two wishes at once. Post the left ankle to 5 degrees and the right to -5 — two small, opposing turns — and feel the water lean: one foot pressurises whilst the other eases off. Balance is not a place; it is two wishes held against each other.",
    "goal": {
     "type": "pose_pair",
     "joints": [
@@ -116,29 +121,31 @@
     ]
    },
    "then_release": false,
-   "hint": "Post both wishes \u2014 ankle_L at 5 and ankle_R at -5 \u2014 and the lesson latches when both are in, in any order."
+   "hint": "Post both wishes — ankle_L at 5 and ankle_R at -5 — and the lesson latches when both are in, in any order.",
+   "pass_line": "two opposite wishes held at once. that balance is yours."
   },
   {
    "id": "the_heavy_hand",
    "title": "THE HEAVY HAND",
-   "body": "Pressure follows force, not just place. The same gentle belly, pushed with your whole strength, climbs far higher \u2014 the water only knows how hard you press. Slide the force to the very top and HOLD: take the torso cell past 3 MPa, then let go and let it heal.",
+   "body": "Pressure follows force, not just place. The same gentle belly, pushed with your whole strength, climbs far higher — the water only knows how hard you press. Slide the force to the very top and HOLD: take the torso cell past 3 MPa, then let go and let it heal.",
    "goal": {
     "type": "pressure_above",
     "cell": 1,
     "threshold_pa": 3000000
    },
    "then_release": true,
-   "hint": "Slide the force all the way to 50,000 N, press the belly and keep holding \u2014 3 MPa wants nearly everything you have.",
+   "hint": "Slide the force all the way to 50,000 N, press the belly and keep holding — 3 MPa wants nearly everything you have.",
    "touch_target": [
     0.0,
     4.5,
     0.32
-   ]
+   ],
+   "pass_line": "the same body, your whole strength: pressure follows force."
   },
   {
    "id": "the_cascade",
    "title": "THE CASCADE",
-   "body": "The creature is sealed \u2014 and sealed means ISOLATED. Press the belly hard: the torso wakes, but the shins and feet stay quiet, because no water flows between sealed compartments. That IS the lesson: the seal works. Confirm: press the belly hard, verify the shins stay at zero, then release.",
+   "body": "The creature is sealed — and sealed means ISOLATED. Press the belly hard: the torso wakes, but the shins and feet stay quiet, because no water flows between sealed compartments. That IS the lesson: the seal works. Confirm: press the belly hard, verify the shins stay at zero, then release.",
    "goal": {
     "type": "pressure_isolation",
     "cell": 1,
@@ -150,33 +157,35 @@
     "quiet_max_pa": 100
    },
    "then_release": true,
-   "hint": "Press the belly hard and hold. Watch the torso wake while the legs stay asleep \u2014 sealed means sealed.",
+   "hint": "Press the belly hard and hold. Watch the torso wake while the legs stay asleep — sealed means sealed.",
    "touch_target": [
     0.0,
     4.5,
     0.32
-   ]
+   ],
+   "pass_line": "the belly woke and the legs slept through it. sealed means sealed."
   },
   {
    "id": "the_stand",
    "title": "THE STAND",
-   "body": "Now for the weight of the world. As this lesson begins, the page switches gravity on, and the creature settles onto the floor under its own weight \u2014 no hand required. Watch it sink and go still: that stillness is what 'at rest' really means.",
+   "body": "Now for the weight of the world. As this lesson begins, the page switches gravity on, and the creature settles onto the floor under its own weight — no hand required. Watch it sink and go still: that stillness is what 'at rest' really means.",
    "goal": {
     "type": "gravity_on"
    },
    "then_release": false,
-   "hint": "There is nothing to press \u2014 gravity switches on as the lesson starts, so just wait for the body to finish settling and let it be still."
+   "hint": "There is nothing to press — gravity switches on as the lesson starts, so just wait for the body to finish settling and let it be still.",
+   "pass_line": "the world turned on its own weight, and the creature stood still in it."
   },
   {
    "id": "the_graduation",
    "title": "THE GRADUATION",
-   "body": "You know the creature now: how it wakes, how it poses, how it heals. This one is yours. Wake any three different compartments \u2014 as gently or as hard as you like, in any order \u2014 then take your hand off and let the whole body go quiet. There is no right way in; that is the point.",
+   "body": "You know the creature now: how it wakes, how it poses, how it heals. This one is yours. Wake any three different compartments — as gently or as hard as you like, in any order — then take your hand off and let the whole body go quiet. There is no right way in; that is the point.",
    "goal": {
     "type": "cells_woken",
     "count": 3
    },
    "then_release": true,
-   "hint": "Touch three different places \u2014 belly, foot, shin \u2014 until three different cells have each crossed 0.02 MPa, then press 'let go' and wait for the calm.",
+   "hint": "Touch three different places — belly, foot, shin — until three different cells have each crossed 0.02 MPa, then press 'let go' and wait for the calm.",
    "touch_targets": [
     [
      0.0,
@@ -203,7 +212,8 @@
      1.2,
      -0.15
     ]
-   ]
+   ],
+   "pass_line": "three rooms woke for your hand, and you let them all go quiet."
   }
  ]
 }

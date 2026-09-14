@@ -36,7 +36,12 @@ const fs = require('fs');
 const http = require('http');
 const { chromium } = require(path.join('E:/PythonChimera/node_modules/playwright-core'));
 
-const URL_ = process.argv[2] || 'http://127.0.0.1:8206';
+const URL_ = (() => {
+  // H7: the page's judge telemetry line renders only with ?debug=1 now;
+  // this walker reads that line, so make sure the flag rides along.
+  const u = process.argv[2] || 'http://127.0.0.1:8206';
+  return /debug=/.test(u) ? u : (u + (u.includes('?') ? '&' : '?') + 'debug=1');
+})();
 const NAME = 'walker';
 const REPO_PROGRESS = 'E:/ChimeraWork/slot-01/tools/game_shell/progress';
 const SHOTS = 'C:/Users/allen/Desktop/CHIMERA_PROOF/R4_WALK_TEN';
@@ -235,7 +240,15 @@ async function gate() {
       if (Date.now() - t0 >= minMs) {
         try {
           const s = await state();
-          const ps = (s.cells || []).map(c => Math.abs(Number(c.P) || 0));
+          // H7 (D1/D7): the engine's zero-volume cells (V <= 1e-6 m3 --
+          // measured: cell4 pinned at 4.66e-9 m3 with P up to 1.62 GPa)
+          // are engine garbage, not water waiting to heal; the PAGE's
+          // judge skips them, and this honesty gate skips them too --
+          // otherwise no release lesson could ever read calm and every
+          // the_*_release row would FAIL at phase=release.
+          const live = (s.cells || []).filter(c =>
+            !(Number.isFinite(Number(c.V)) && Number(c.V) <= 1e-6));
+          const ps = live.map(c => Math.abs(Number(c.P) || 0));
           last = ps;
           if (ps.length && ps.every(p => p < 1000)) { calm = true; break; }
         } catch (e) { /* a silent beat is not a verdict */ }

@@ -1,0 +1,156 @@
+{
+ "url": "http://127.0.0.1:8206?debug=1",
+ "name": "walker",
+ "mode": "full",
+ "gateWaitedS": 0,
+ "freshPasses": 10,
+ "progressPasses": 10,
+ "pageErrors": [],
+ "lessons": [
+  {
+   "tag": "L1",
+   "id": "wake_the_cell",
+   "phase": "release",
+   "goalMet": true,
+   "passed": true,
+   "peaks": "cell0=0 Pa cell1=2135680 Pa cell2=0 Pa cell3=0 Pa",
+   "goal": {
+    "type": "pressure_above",
+    "cell": 1,
+    "threshold_pa": 20000
+   }
+  },
+  {
+   "tag": "L2",
+   "id": "the_gentle_hand",
+   "phase": "release",
+   "goalMet": true,
+   "passed": true,
+   "peaks": "cell0=6772550 Pa cell1=0 Pa cell2=0 Pa cell3=0 Pa",
+   "goal": {
+    "type": "pressure_above",
+    "cell": 0,
+    "threshold_pa": 50000,
+    "max_force_n": 8000
+   }
+  },
+  {
+   "tag": "L3",
+   "id": "the_healing",
+   "phase": "release",
+   "goalMet": true,
+   "passed": true,
+   "peaks": "cell0=0 Pa cell1=2135680 Pa cell2=0 Pa cell3=0 Pa",
+   "goal": {
+    "type": "pressure_above",
+    "cell": "any",
+    "threshold_pa": 20000
+   }
+  },
+  {
+   "tag": "L4",
+   "id": "bend_the_knee",
+   "phase": "goal",
+   "goalMet": true,
+   "passed": true,
+   "peaks": "cell0=89701800 Pa cell1=0 Pa cell2=37426900 Pa cell3=23929500 Pa",
+   "goal": {
+    "type": "pose_reach",
+    "joint": "knee_L",
+    "deg": 40
+   }
+  },
+  {
+   "tag": "L5",
+   "id": "the_whole_body",
+   "phase": "release",
+   "goalMet": true,
+   "passed": true,
+   "peaks": "cell0=0 Pa cell1=2135680 Pa cell2=0 Pa cell3=87496300 Pa",
+   "goal": {
+    "type": "pressure_above",
+    "cell": 1,
+    "threshold_pa": 15000,
+    "also": {
+     "cell": 3,
+     "threshold_pa": 5000
+    }
+   }
+  },
+  {
+   "tag": "L6",
+   "id": "the_balance",
+   "phase": "goal",
+   "goalMet": true,
+   "passed": true,
+   "peaks": "cell0=6009940 Pa cell1=0 Pa cell2=8788 Pa cell3=715501 Pa",
+   "goal": {
+    "type": "pose_pair",
+    "joints": [
+     {
+      "joint": "ankle_L",
+      "deg": 5
+     },
+     {
+      "joint": "ankle_R",
+      "deg": -5
+     }
+    ]
+   }
+  },
+  {
+   "tag": "L7",
+   "id": "the_heavy_hand",
+   "phase": "release",
+   "goalMet": true,
+   "passed": true,
+   "peaks": "cell0=0 Pa cell1=11837600 Pa cell2=0 Pa cell3=0 Pa",
+   "goal": {
+    "type": "pressure_above",
+    "cell": 1,
+    "threshold_pa": 3000000
+   }
+  },
+  {
+   "tag": "L8",
+   "id": "the_cascade",
+   "phase": "release",
+   "goalMet": true,
+   "passed": true,
+   "peaks": "cell0=0 Pa cell1=2135680 Pa cell2=0 Pa cell3=0 Pa",
+   "goal": {
+    "type": "pressure_isolation",
+    "cell": 1,
+    "threshold_pa": 15000,
+    "quiet_cells": [
+     0,
+     3
+    ],
+    "quiet_max_pa": 100
+   }
+  },
+  {
+   "tag": "L9",
+   "id": "the_stand",
+   "phase": "goal",
+   "goalMet": true,
+   "passed": true,
+   "peaks": "cell0=0 Pa cell1=0 Pa cell2=0 Pa cell3=0 Pa",
+   "goal": {
+    "type": "gravity_on"
+   }
+  },
+  {
+   "tag": "L10",
+   "id": "the_graduation",
+   "phase": "release",
+   "goalMet": true,
+   "passed": true,
+   "peaks": "cell0=51632700 Pa cell1=1929170 Pa cell2=0 Pa cell3=79194400 Pa",
+   "goal": {
+    "type": "cells_woken",
+    "count": 3
+   }
+  }
+ ]
+}

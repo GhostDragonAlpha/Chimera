@@ -1,0 +1,181 @@
+{
+ "D3": {
+  "afterUp": {
+   "hand": "pressing — 20000 N",
+   "judge": {
+    "id": "wake_the_cell",
+    "phase": "goal",
+    "goalMet": false,
+    "passed": false
+   }
+  },
+  "cellAfterUp": 0,
+  "afterLetgo": {
+   "hand": "hand open",
+   "judge": {
+    "id": "wake_the_cell",
+    "phase": "goal",
+    "goalMet": false,
+    "passed": false
+   },
+   "cell": 0
+  }
+ },
+ "D4": {
+  "geo": {
+   "rect": {
+    "x": 1113,
+    "y": 421.78125,
+    "w": 197,
+    "h": 22
+   },
+   "h5probe": {
+    "at1190_453": "force-meter-fill",
+    "at1190_431": "force"
+   },
+   "value": "20000",
+   "disabled": false,
+   "readonly": false
+  },
+  "afterDrag": "500",
+  "afterTrack": "11800",
+  "afterArrows": "11500",
+  "focusAfterH5": "BODY",
+  "afterH5": "11500"
+ },
+ "D2": {
+  "engineDoubleTouch": {
+   "r1": {
+    "ok": false,
+    "error": "the point is not on the body"
+   },
+   "p1": 0,
+   "r2": {
+    "ok": false,
+    "error": "the point is not on the body"
+   },
+   "p2": 0
+  },
+  "spaceAnswers": [
+   {
+    "before": 0,
+    "during": 482624,
+    "answered": true
+   },
+   {
+    "before": 12264.5,
+    "during": 482624,
+    "answered": true
+   },
+   {
+    "before": 12927.4,
+    "during": 482624,
+    "answered": true
+   },
+   {
+    "before": 12596,
+    "during": 482624,
+    "answered": true
+   },
+   {
+    "before": 13258.9,
+    "during": 482624,
+    "answered": true
+   }
+  ],
+  "mouseAnswers": [
+   {
+    "before": 13258.9,
+    "during": 662.945,
+    "answered": false
+   },
+   {
+    "before": 0,
+    "during": 0,
+    "answered": false
+   },
+   {
+    "before": 0,
+    "during": 0,
+    "answered": false
+   },
+   {
+    "before": 0,
+    "during": 0,
+    "answered": false
+   },
+   {
+    "before": 0,
+    "during": 0,
+    "answered": false
+   }
+  ]
+ },
+ "D1": {
+  "holdingDuring": {
+   "id": "wake_the_cell",
+   "phase": "release",
+   "goalMet": true,
+   "passed": true
+  },
+  "l2Start": {
+   "judge": {
+    "id": "the_gentle_hand",
+    "phase": "goal",
+    "goalMet": false,
+    "passed": false
+   },
+   "cells": [
+    0,
+    482624,
+    0,
+    0,
+    0
+   ],
+   "hand": "pressing — 11500 N (space)"
+  },
+  "l1Revisit": {
+   "id": "wake_the_cell",
+   "phase": "release",
+   "goalMet": true,
+   "passed": true
+  }
+ },
+ "D5": {
+  "injectedNoPress": {
+   "verdict": "the creature waits.",
+   "judge": {
+    "id": "the_gentle_hand",
+    "phase": "goal",
+    "goalMet": false,
+    "passed": false
+   }
+  },
+  "passLinesInSource": [
+   "PASSED (CSS only) */\r\n  @keyframes verdict-pass{\r\n    0%{opacity:.2;transform:scale(.96)}\r\n    100%{opacity:1;transform:scale(1)}\r\n  }\r\n  .verdict.good{animation:verdict-pass .5s ease-out}\r\n\r\n  /* the slim progression strip: one dot per lesson under the lesson nav */\r\n  .progress-strip{display:flex;justify-content:center;gap:9px;margin:2px 0 12px}\r\n  .progress-strip .dot{\r\n    width:9px;height:9px;border-radius:50%;\r\n    background:var(--deep);border:1px solid var(--line);\r\n    transition:background .3s,border-color .3s,box-shadow .3s;\r\n  }\r\n  .progress-strip .dot.passed{\r\n    background:var(--accent);border-color:var(--accent);\r\n    box-shadow:0 0 6px rgba(127,212,193,.45);\r\n  }\r\n\r\n  /* the hand-strength meter: the slider",
+   "PASSED — this one is yours already.",
+   "PASSED — the joint obeys the muscle.",
+   "PASSED — and the body stands at rest again.",
+   "PASSED — two wishes, one balance.",
+   "PASSED — and the body stands at rest again.",
+   "PASSED.",
+   "PASSED — you felt the water. it was always there."
+  ]
+ },
+ "D6": {
+  "requestsIn8s": 59,
+  "ratePerMin": 443
+ },
+ "consoleErrors": [
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+ ]
+}

@@ -1,0 +1,74 @@
+{
+ "b": {
+  "L1": {
+   "verdict": "PASSED — you pressed, the cell woke, and the water healed itself. the world is real.",
+   "judge": {
+    "id": "wake_the_cell",
+    "phase": "release",
+    "goalMet": true,
+    "passed": true
+   }
+  },
+  "L2force": "6000 N",
+  "L2": {
+   "verdict": "PASSED — a gentle hand: the small water answered a small touch.",
+   "judge": {
+    "id": "the_gentle_hand",
+    "phase": "release",
+    "goalMet": true,
+    "passed": true
+   }
+  },
+  "L3": {
+   "verdict": "PASSED — you let go, and the body healed itself. it never needed you.",
+   "judge": {
+    "id": "the_healing",
+    "phase": "release",
+    "goalMet": true,
+    "passed": true
+   }
+  },
+  "allPassed": true,
+  "distinct": true,
+  "CLEAN": true
+ },
+ "e": {
+  "footClickArgs": [
+   {
+    "force": 6000,
+    "region": [
+     -0.701697,
+     0.462211,
+     -0.11408
+    ]
+   }
+  ],
+  "torsoClickArgs": [
+   {
+    "force": 6000,
+    "region": [
+     -0.701697,
+     0.462211,
+     -0.11408
+    ]
+   },
+   {
+    "force": 6000,
+    "region": [
+     -0.407853,
+     4.622676,
+     -0.368698
+    ]
+   }
+  ],
+  "footHintIsPoint": true,
+  "torsoHintIsPoint": true,
+  "footHitY": 0.462211,
+  "torsoHitY": 0.462211,
+  "footRegion": "shin",
+  "torsoRegion": "shin",
+  "consoleErrors": 0,
+  "CLEAN": false
+ },
+ "consoleErrors": []
+}

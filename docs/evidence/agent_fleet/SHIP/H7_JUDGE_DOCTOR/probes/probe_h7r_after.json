@@ -1,0 +1,62 @@
+{
+ "A2": {
+  "clearCalls": 2,
+  "retriesHappened": true,
+  "manualNeeded": false,
+  "CLEAN": true
+ },
+ "A3": {
+  "presses": 2,
+  "afterKeyup": 1,
+  "afterEsc": 2,
+  "CLEAN": true
+ },
+ "A1": {
+  "gravity429s": 3,
+  "unarmedUnder429": true,
+  "armedHonest": true,
+  "settled": {
+   "root_y": 0.00950712,
+   "root_vy": -3.71206e-8
+  },
+  "CLEAN": true
+ },
+ "A4": {
+  "arrivedAt": "the_balance",
+  "heldCellsBeforeNav": [
+   6009940,
+   0,
+   -8787.86,
+   715501
+  ],
+  "flipMs": 4315,
+  "cellsAtFlip": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "calmAtFlip": true,
+  "CLEAN": true
+ },
+ "A5": {
+  "whooshOnL1": 1,
+  "whooshAfterSwitch": 0,
+  "CLEAN": true
+ },
+ "A6": {
+  "synthThrew": true,
+  "counterExists": true,
+  "counted": true,
+  "sndFailShown": true,
+  "newConsoleErrors": 0,
+  "CLEAN": true
+ },
+ "consoleErrors": [
+  "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+  "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+  "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+  "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+ ],
+ "consoleErrorCount": 4
+}

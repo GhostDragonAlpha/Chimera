@@ -1,0 +1,15 @@
+{
+ "footHint": null,
+ "torsoHint": [
+  -0.395078,
+  4.478693,
+  -0.367743
+ ],
+ "footHitY": null,
+ "torsoHitY": 4.478693,
+ "footRegion": "null",
+ "torsoRegion": "body",
+ "hitsDiffer": true,
+ "CLEAN": false,
+ "pageErrors": []
+}
