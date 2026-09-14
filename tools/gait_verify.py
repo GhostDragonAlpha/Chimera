@@ -58,9 +58,14 @@ THE BARS (each cited; full derivations in R4_GAIT_VERIFY/PROTOCOL.md):
   V5  WEIGHT     single support: swing depth < 0.2 x sink = 2 mm;
                  LOAD-exit depth of the loaded leg in [0.8,1.2] x sink
                  [prereg P1]
-  V7  TELEPORT   per poll, commanded hip/knee deg rate <= measured rate
-                 cap (from the enable entry) x poll dt + 10% slack
-                 [F-TELEPORT, coarse poll-grain version]
+  V7  TELEPORT   while on, per poll against the SERVER stamp: commanded
+                 hip/knee deg rate <= measured rate cap (from the enable
+                 entry) x 1.10. Stamp ladder: ts_us (exact integers,
+                 window-7+) > ts_ms (float, refused when its 6-sig-digit
+                 ulp swallows >5% of a poll window) > gross travel over
+                 the whole run / wall time. Pairs spanning a disarm are
+                 P3's jurisdiction (V9a), not a servo rate.
+                 [F-TELEPORT "while on"]
   V8  NO LEAK    |conserve_pct| <= 0.01 at every poll [P4; F1 S3 bar]
   V9  THE CUT    POST /tick_gait {"on":false} MID-SWING -> gait_on false,
                  hip/knee deg EXACTLY 0, both legs STANCE within one
@@ -545,6 +550,12 @@ def main() -> int:
     prev_pose = None
     prev_t = None
     prev_ts = None
+    prev_stamp_kind = None
+    prev_gait_on = None
+    v7_mode = None
+    v7_ms_ulp_s = None
+    v7_ms_quantized = False
+    v7_disarm_pairs = 0
     gross_sum = [0.0, 0.0, 0.0, 0.0]
     t_pose0 = None
     recover_seen = 0
@@ -583,39 +594,104 @@ def main() -> int:
         pose_now = tuple(st.get(k, 0.0) for k in
                          ("gait_hip_l_deg", "gait_hip_r_deg",
                           "gait_knee_l_deg", "gait_knee_r_deg"))
-        ts_now = st.get("ts_ms")
+        gait_on_now = bool(st.get("gait_on"))
+        # the server stamp, best-form first: ts_us (window-7+; INTEGER
+        # microseconds -- exact at any clock magnitude) then ts_ms
+        # (window-5/6 float; 6 significant digits -- its ulp grows with
+        # the clock, e.g. 100 ms at a day's boot-epoch magnitude, which
+        # is the whole poll interval: the measured window-6 1.24x). The
+        # ladder refuses a ts_ms whose ulp swallows > 5% of a poll
+        # window and falls back to gross/whole-run with the reason
+        # named, instead of auditing against a quantized denominator.
+        if st.get("ts_us") is not None:
+            stamp, stamp_kind = st["ts_us"] / 1e6, "us"
+        elif st.get("ts_ms") is not None:
+            stamp, stamp_kind = st["ts_ms"] / 1000.0, "ms"
+        else:
+            stamp, stamp_kind = None, None
+        if stamp_kind == "ms" and v7_ms_ulp_s is None:
+            v = abs(float(st.get("ts_ms")))
+            # 6-significant-digit float formatting: the stamp's ulp in ms
+            # (10^(floor(log10 v)-5)), converted to seconds. If it
+            # swallows more than 5% of a poll window the per-poll
+            # denominator is quantization, not measurement.
+            v7_ms_ulp_s = 10.0 ** (math.floor(math.log10(max(v, 1.0))) - 5) \
+                / 1000.0
+            v7_ms_quantized = v7_ms_ulp_s > 0.05 / args.hz
         if prev_pose is not None and prev_t is not None:
-            # the denominator: the SERVER window between snapshots when
-            # the engine stamps ts_ms (exact -- the stamp is read under
-            # the same lock pass as the pose fields, so wake jitter on
-            # the poll side cannot inflate the rate). Without the stamp
-            # (a pre-ts_ms binary) the audit runs GROSS-AND-WHOLE-RUN:
-            # sum |dpose| over all pairs / total wall time. The per-tick
-            # servo clamps bound pose travel by cap*dt every tick, so
-            # gross travel <= cap * wall window is a theorem; wall-clock
-            # wake jitter (~15-20 ms Windows grain, main.cpp:583) breaks
-            # a single 100 ms pair but cancels against a multi-second
-            # window (boundary terms only) -- while a real teleport (the
-            # 57x frame-unit bug F-TELEPORT was named for) blows gross
-            # travel far past cap*W. Both modes keep the 1.10 bar.
-            if ts_now is not None and prev_ts is not None:
-                dtp = max((ts_now - prev_ts) / 1000.0, 1e-3)
+            # scope: F-TELEPORT's own words audit the pose channel WHILE
+            # ON. A poll pair spanning a disarm measures P3's designed
+            # one-tick stop, not a servo rate -- and V9a already owns
+            # that jump by a stronger check (pins at EXACTLY 0 one poll
+            # later). Pairs are measured only when the machine is on at
+            # BOTH ends.
+            if not (prev_gait_on and gait_on_now):
+                v7_disarm_pairs += 1
+            elif (stamp is not None and prev_ts is not None
+                  and stamp_kind == "us" and prev_stamp_kind == "us"):
+                dtp = max(stamp - prev_ts, 1e-3)
+                if v7_mode is None:
+                    v7_mode = "engine ts_us, per-poll"
                 for key, (a, b) in zip(("HL", "HR", "KL", "KR"),
                                        zip(pose_now, prev_pose)):
                     cap = rate_caps.get(key, 0.0)
                     if cap > 0:
                         overshoot = ((abs(a - b) / dtp)
                                      / (cap * 57.29577951308))
-                        teleport_worst = max(teleport_worst, overshoot)
-                results["v7_clock"] = "engine ts_ms, per-poll"
+                        if overshoot > teleport_worst:
+                            teleport_worst = overshoot
+                            results["v7_worst"] = {
+                                "pin": key, "window_s": dtp,
+                                "pose_prev_deg": b, "pose_now_deg": a,
+                                "rate_deg_s": abs(a - b) / dtp,
+                                "cap_deg_s": cap * 57.29577951308,
+                                "stamp_prev": prev_ts, "stamp_now": stamp,
+                                "phases": list(phases)}
+            elif (stamp is not None and prev_ts is not None
+                  and stamp_kind == "ms" and prev_stamp_kind == "ms"
+                  and not v7_ms_quantized):
+                dtp = max(stamp - prev_ts, 1e-3)
+                if v7_mode is None:
+                    v7_mode = "engine ts_ms, per-poll"
+                for key, (a, b) in zip(("HL", "HR", "KL", "KR"),
+                                       zip(pose_now, prev_pose)):
+                    cap = rate_caps.get(key, 0.0)
+                    if cap > 0:
+                        overshoot = ((abs(a - b) / dtp)
+                                     / (cap * 57.29577951308))
+                        if overshoot > teleport_worst:
+                            teleport_worst = overshoot
+                            results["v7_worst"] = {
+                                "pin": key, "window_s": dtp,
+                                "pose_prev_deg": b, "pose_now_deg": a,
+                                "rate_deg_s": abs(a - b) / dtp,
+                                "cap_deg_s": cap * 57.29577951308,
+                                "stamp_prev": prev_ts, "stamp_now": stamp,
+                                "phases": list(phases)}
             else:
+                # no usable server stamp (pre-ts binary, or a ts_ms so
+                # quantized it would audit against rounding): GROSS AND
+                # WHOLE-RUN. The per-tick servo clamps bound pose travel
+                # by cap*dt every tick, so gross travel <= cap * wall
+                # window is a theorem; wake jitter (~15-20 ms Windows
+                # grain, main.cpp:583) breaks a single 100 ms pair but
+                # cancels against a multi-second window (boundary terms
+                # only) -- while a real teleport (the 57x frame-unit bug
+                # F-TELEPORT was named for) blows gross travel far past
+                # cap*W. Both modes keep the 1.10 bar.
                 gross_sum = [g + abs(a - b) for g, (a, b)
                              in zip(gross_sum, zip(pose_now, prev_pose))]
-                results["v7_clock"] = "client wall clock, gross/whole-run"
+                if v7_mode is None or "gross" not in v7_mode:
+                    v7_mode = "client wall clock, gross/whole-run"
+                    if v7_ms_quantized:
+                        v7_mode += (f" (ts_ms ulp {v7_ms_ulp_s * 1000:g} ms"
+                                    " at this clock magnitude -- pre-ts_us"
+                                    " binary)")
         prev_pose, prev_t = pose_now, now
         if t_pose0 is None:
             t_pose0 = now
-        prev_ts = ts_now
+        prev_ts, prev_stamp_kind = stamp, stamp_kind
+        prev_gait_on = gait_on_now
         contact = st.get("g_contact_n", 0.0)
         contact_min, contact_max = min(contact_min, contact), \
             max(contact_max, contact)
@@ -645,18 +721,27 @@ def main() -> int:
                    f" mm in [{BEARING_FRAC * SINK_M * 1000:.0f},"
                    f"{1.2 * SINK_M * 1000:.0f}] mm -> {in_band}",
              swing_depth_worst < SWING_DEPTH_FRAC * SINK_M and bool(in_band))
-    if results.get("v7_clock", "client wall clock, gross/whole-run").startswith(
-            "client") and t_pose0 is not None:
+    if (v7_mode is None or "gross" in v7_mode) and t_pose0 is not None:
         wall = max(prev_t - t_pose0, 1e-3)
         for key, g in zip(("HL", "HR", "KL", "KR"), gross_sum):
             cap = rate_caps.get(key, 0.0)
             if cap > 0:
                 overshoot = (g / wall) / (cap * 57.29577951308)
                 teleport_worst = max(teleport_worst, overshoot)
-    bars.add("V7", f"teleport audit ({results.get('v7_clock', 'client '
-                   'wall clock, gross/whole-run')}): worst commanded-rate "
+    if v7_mode is None:
+        v7_mode = "no measurable poll pairs"
+    results["v7_clock"] = v7_mode
+    results["v7_disarm_pairs_skipped"] = v7_disarm_pairs
+    worst_txt = ""
+    if results.get("v7_worst"):
+        w7 = results["v7_worst"]
+        worst_txt = (f"; worst = pin {w7['pin']} "
+                     f"({w7['pose_prev_deg']:.2f}->{w7['pose_now_deg']:.2f} deg "
+                     f"in {w7['window_s'] * 1000:.1f} ms, phases "
+                     f"{'/'.join(w7['phases'])})")
+    bars.add("V7", f"teleport audit ({v7_mode}): worst commanded-rate "
                    f"overshoot vs the MEASURED caps = "
-                   f"{teleport_worst:.2f}x (bar <= 1.10)",
+                   f"{teleport_worst:.2f}x (bar <= 1.10){worst_txt}",
              teleport_worst <= 1.10)
     bars.add("V8", f"|conserve_pct| worst {conserve_worst:.2e} <= "
                    f"{CONSERVE_BAR} through every phase",

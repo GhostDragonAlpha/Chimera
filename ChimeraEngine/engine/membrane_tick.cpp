@@ -2563,14 +2563,22 @@ std::string MembraneTick::state_json() const {
         cap_sum += capacity_[i];
     }
     std::ostringstream o;
-    // ts_ms: the engine's OWN monotonic clock, read under the SAME lock
-    // pass as every field below -- a poller can therefore divide a pose
-    // delta by the exact server window the machine had to move in (the
-    // gait harness's F-TELEPORT audit), instead of the client's wake
-    // jitter. Differences are meaningful; the epoch base is not.
-    o << "{\"ts_ms\":"
-      << std::chrono::duration<double, std::milli>(
-             std::chrono::steady_clock::now().time_since_epoch()).count()
+    // ts_us / ts_ms: the engine's OWN monotonic clock (steady; on Windows
+    // its epoch is machine boot), read ONCE under the SAME lock pass as
+    // every field below, printed as INTEGERS. Integers, not a float: a
+    // double through ostringstream's default 6 significant digits
+    // quantizes to 100 ms at a day's clock magnitude -- the whole poll
+    // interval -- which false-fired the gait harness's per-poll
+    // F-TELEPORT audit at 1.24x on an up-88485-s host (window-6
+    // evidence: both stamps exact multiples of 100; the true window was
+    // ~123.8 ms). A poller divides a pose delta by the exact server
+    // window the machine had to move in; differences are meaningful,
+    // the epoch base is not.
+    const auto ts_now = std::chrono::steady_clock::now().time_since_epoch();
+    o << "{\"ts_us\":"
+      << std::chrono::duration_cast<std::chrono::microseconds>(ts_now).count()
+      << ",\"ts_ms\":"
+      << std::chrono::duration_cast<std::chrono::milliseconds>(ts_now).count()
       << ",\"ticks\":" << ticks_
       << ",\"enabled\":" << (enabled_ ? "true" : "false")
       << ",\"cells\":" << cells_.size()

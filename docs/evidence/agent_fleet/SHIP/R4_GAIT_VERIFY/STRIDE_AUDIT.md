@@ -319,3 +319,53 @@ arms gravity/stance/gait itself and disarms them again at teardown), then:
 ts_ms binary expect V7's text "(engine ts_ms, per-poll)" and abort entries
 carrying minyL/minyR with the support_lost claims audited by number.
 
+
+### 4.6 THE WINDOW-6 V7 ADJUDICATION (R5-teardown-finisher, 2026-09-14) -- the stamp lied, not the servo
+
+Window #6's exact-clock V7 read 1.24x. With a server-exact window the per-tick
+clamp theorem (gross pose travel <= cap * wall window -- every writer in
+gait_step_locked_ is clamped: return_zero min(|th|, rate*dts), the LIFT combo
+min(bh, bk), the REACH servos min(err/(ch*tau), rate*dts)) makes a true
+overshoot impossible while the machine is on, so the denominator itself was
+indicted -- and convicted. THE EVIDENCE, from the lead's committed JSON:
+`state0.ts_ms = 88485000.0`, `final_state.ts_ms = 88494800.0` -- both EXACT
+multiples of 100. My window-5 stamp printed a double through ostringstream's
+DEFAULT 6 SIGNIFICANT DIGITS; steady_clock on Windows epochs at MACHINE BOOT,
+the lead's host had been up 88,485 s, so the stamp's ulp was 100 ms -- the
+whole poll interval. Adjudication by arithmetic: 1.2384x = a cap-pinned servo
+pair (LIFT/REACH, where the servos run AT their derived caps) whose TRUE
+window was ~123.8 ms read as 100 ms -- poll jitter re-imported through the
+quantized denominator. NOT the RECOVER-reaction hypothesis (RECOVER exits
+through return_zero, clamped by the same per-pin caps -- a RECOVER-internal
+overshoot is impossible by construction); NOT the enable boundary (poses arm
+at 0); NOT the V9 cut (posted after the run loop closes; its jump is P3's,
+owned by V9a's exactly-zero check, which passed).
+
+THE FIX, both sides mine:
+- ENGINE (membrane_tick.cpp, needs window #7): the stamp is now INTEGER --
+  `ts_us` (steady microseconds) + `ts_ms` (steady milliseconds), both from
+  ONE now() read under the same lock pass as the state. Integers do not
+  decay with clock magnitude; int64 microseconds is exact to year 292k.
+- HARNESS (gait_verify.py): the stamp LADDER. ts_us pairs -> exact per-poll.
+  ts_ms pairs -> per-poll ONLY after measuring the stamp's own ulp
+  (10^(floor(log10|v|)-5) ms) and refusing it when that ulp swallows > 5% of
+  a poll window (the cliff is exactly 1e6 ms = 16.7 min of boot time). Else
+  gross/whole-run with the reason NAMED in the bar text. Pairs are scoped to
+  gait_on at BOTH ends (F-TELEPORT's own "while on"; the disarm jump is P3's
+  jurisdiction). New instrument: the worst pair is RECORDED
+  (results["v7_worst"]: pin, window, pose pair, phases) -- the next
+  adjudication reads numbers, not priors.
+
+MEASURED, window-6 binary, scratch 8159 (PID 41228, killed by PID; box uptime
+~24.8 h): the detector fired -- "client wall clock, gross/whole-run (ts_ms ulp
+100 ms at this clock magnitude -- pre-ts_us binary)" -- V7 0.29x PASS, and the
+full run PASS 15/15 (`verify_after_ts_us_ladder.json`, this directory). At
+window #7 expect V7's text "(engine ts_us, per-poll)" with a worst-pair record
+in the evidence JSON; on any fresh boot the ts_ms legacy path also runs
+per-poll safely (ulp 1 ms under the 5% bar).
+
+One harness unit bug caught on the road here (disclosed): the detector's first
+draft compared its ulp in ms against a seconds threshold -- inverting the safe
+band (a fresh 1 ms stamp would have been refused) and printing "100000 ms".
+Fixed to seconds consistently; unit-tested across the cliff (999999 ms safe /
+1000000 ms refused).
