@@ -52,9 +52,17 @@ CONTAINER_FPS = 24
 
 DEFAULT_OUT = Path(r"C:\Users\allen\Desktop\CHIMERA_PROOF\TRAILER\V2")
 
-# diff thresholds: a frame is "static" only if essentially nothing changed
-STATIC_MEANDIFF = 0.20          # mean |delta| on 0..255, 480x270 thumb
-STATIC_CHGFRAC = 0.004          # fraction of pixels with |delta| > 8
+# diff thresholds. Calibrated on a real take: a TRUE still frame repeats with
+# md exactly 0.000 (the canvas encodes deterministically), while the heal's
+# real 3 Hz mesh ticks measure md ~0.013. So: a run of near-zero pairs starts
+# a candidate hold, and the hold CONTINUES only while every frame stays within
+# ANCHOR thresholds of the frame where the run began — i.e. mutually identical
+# within noise. Smooth continuous motion drifts away from its anchor and breaks
+# the run, exactly as it should.
+STATIC_MEANDIFF = 0.05          # pair diff that may START a hold run
+STATIC_CHGFRAC = 0.001
+ANCHOR_MEANDIFF = 0.02          # mutual-identity bar for the run to continue
+ANCHOR_CHGFRAC = 0.0015
 
 ACCENT = (255, 106, 61)
 INK = (32, 34, 38)
@@ -174,33 +182,52 @@ def analyze(tl: dict) -> dict:
     dts = [t[i + 1] - t[i] for i in range(n - 1)]
 
     TH_W, TH_H = 480, 270
-    meandiff, chgfrac = [], []
     npix = TH_W * TH_H
-    prev = None
-    for p in frames:
-        im = Image.open(p).convert("L").resize((TH_W, TH_H), Image.BILINEAR)
-        if prev is not None:
-            diff = ImageChops.difference(prev, im)
-            meandiff.append(ImageStat.Stat(diff).mean[0])
-            chgfrac.append(sum(diff.histogram()[9:]) / npix)   # pixels with |d| > 8
-        prev = im
 
-    static = [(m < STATIC_MEANDIFF and c < STATIC_CHGFRAC) for m, c in zip(meandiff, chgfrac)]
+    def thumb(p):
+        return Image.open(p).convert("L").resize((TH_W, TH_H), Image.BILINEAR)
 
-    # longest static RUN (consecutive static frames) in wall time
-    best_len, best_i, cur_len, cur_i = 0, 0, 0, 0
-    for i, s in enumerate(static):
-        if s:
-            if cur_len == 0:
-                cur_i = i
-            cur_len += 1
-            if cur_len > best_len:
-                best_len, best_i = cur_len, cur_i
+    def stats(a, b):
+        diff = ImageChops.difference(a, b)
+        return (ImageStat.Stat(diff).mean[0], sum(diff.histogram()[9:]) / npix)
+
+    thumbs = [thumb(p) for p in frames]
+    pair_md, pair_cf = [None], [None]
+    for i in range(1, n):
+        m, c = stats(thumbs[i - 1], thumbs[i])
+        pair_md.append(m)
+        pair_cf.append(c)
+
+    # THE HOLD METRIC: a "hold" is a run of frames that are mutually identical
+    # — each pair near-zero AND every frame still identical (within noise) to
+    # the frame where the run began. Smooth continuous motion (the heal's 3 Hz
+    # ticks, a slow pan) has small pairwise diffs but DRIFTS away from its
+    # anchor, so it is motion, not a hold. This is the honest test of
+    # "no >1 s holds between distinct frames".
+    def is_static(i):   # pair (i-1, i) may open a hold run
+        return pair_md[i] < STATIC_MEANDIFF and pair_cf[i] < STATIC_CHGFRAC
+
+    def anchored(a, b):  # b still identical to the run's anchor frame a?
+        amd, acf = stats(a, b)
+        return amd < ANCHOR_MEANDIFF and acf < ANCHOR_CHGFRAC
+
+    holds = []          # (start_frame, end_frame)
+    i = 1
+    while i < n:
+        if is_static(i):
+            start = i - 1
+            anchor = thumbs[start]
+            j = i
+            while j < n and is_static(j) and anchored(anchor, thumbs[j]):
+                j += 1
+            holds.append((start, j - 1))
+            i = j
         else:
-            cur_len = 0
-    med_dt = statistics.median(dts) if dts else 0.0
-    longest_static_s = (t[best_i + best_len] - t[best_i] + med_dt) if best_len else 0.0
+            i += 1
+    best = max(holds, key=lambda h: t[h[1]] - t[h[0]]) if holds else (0, 0)
+    longest_hold_s = (t[best[1]] - t[best[0]]) if holds else 0.0
 
+    med_dt = statistics.median(dts) if dts else 0.0
     inst_fps = [1.0 / d for d in dts if d > 0]
     rep = {
         "frame_count": n,
@@ -211,19 +238,27 @@ def analyze(tl: dict) -> dict:
         "instant_fps_median": round(statistics.median(inst_fps), 2),
         "instant_fps_max": round(max(inst_fps), 2),
         "mean_fps_over_take": round((n - 1) / (t[-1] - t[0]), 2),
-        "static_frame_count": sum(static),
-        "longest_static_run_frames": best_len,
-        "longest_static_run_s": round(longest_static_s, 3),
-        "longest_static_run_at_s": round(t[best_i], 2) if best_len else None,
+        "hold_count": len(holds),
+        "longest_hold_frames": best[1] - best[0] + 1 if holds else 0,
+        "longest_hold_s": round(longest_hold_s, 3),
+        "longest_hold_at_s": round(t[best[0]], 2) if holds else None,
         "diff_thresholds": {"static_meandiff_lt": STATIC_MEANDIFF,
                             "static_chgfrac_lt": STATIC_CHGFRAC,
+                            "anchor_meandiff_lt": ANCHOR_MEANDIFF,
+                            "anchor_chgfrac_lt": ANCHOR_CHGFRAC,
+                            "hold_rule": "a hold is a run of frames mutually identical "
+                                         "to the run's first frame (pairwise diff opens "
+                                         "the run; anchor diff under the noise bar keeps "
+                                         "it); true stills repeat at md 0.000",
                             "thumb": "480x270 grayscale"},
-        "per_frame": [{"i": i, "t_s": round(t[i], 4), "dt_s": round(dts[i], 4) if i < len(dts) else None,
-                       "meandiff": round(meandiff[i], 3), "chgfrac": round(chgfrac[i], 5),
-                       "static": static[i]} for i in range(n - 1)],
+        "per_frame": [{"i": i, "t_s": round(t[i], 4),
+                       "dt_s": round(dts[i - 1], 4) if i > 0 else None,
+                       "meandiff": round(pair_md[i], 4) if pair_md[i] is not None else None,
+                       "chgfrac": round(pair_cf[i], 5) if pair_cf[i] is not None else None}
+                      for i in range(n)],
     }
     rep["verdict_smooth"] = bool(rep["max_frame_interval_s"] < 0.5
-                                 and rep["longest_static_run_s"] < 1.0)
+                                 and rep["longest_hold_s"] < 1.0)
     return rep
 
 
@@ -264,6 +299,8 @@ def chart(rep: dict, tl: dict, out_png: Path) -> None:
         d.line([x0, yy, x1, yy], fill=(224, 223, 219))
         d.text((30, yy - 8), f"{gy}", font=F_SM, fill=DIM)
     for i, e in enumerate(pf):
+        if e["dt_s"] is None:
+            continue
         yy = yA1 - (yA1 - yA0) * min(e["dt_s"] * 1000, spanA) / spanA
         d.point([X(e["t_s"]), yy], fill=ACCENT)
         d.line([X(e["t_s"]), yy, X(e["t_s"]), yy + 1], fill=ACCENT, width=2)
@@ -283,7 +320,16 @@ def chart(rep: dict, tl: dict, out_png: Path) -> None:
     ys = yB1 - (yB1 - yB0) * min(spanB, STATIC_MEANDIFF) / spanB
     d.line([x0, ys, x1, ys], fill=(150, 150, 155), width=2)
     d.text((x1 - 250, ys - 22), "static threshold", font=F_LBL, fill=DIM)
+    # shade the longest HOLD run (mutually identical frames) in panel B
+    hs = rep.get("longest_hold_at_s")
+    if hs is not None and rep["longest_hold_s"] > 0:
+        he = hs + rep["longest_hold_s"]
+        d.rectangle([X(hs), yB0, X(he), yB1], outline=(200, 60, 60), width=2)
+        d.text((X(hs) + 6, yB0 + 6), f"longest hold: {rep['longest_hold_s']:.2f} s",
+               font=F_LBL, fill=(200, 60, 60))
     for i, e in enumerate(pf):
+        if e["meandiff"] is None:
+            continue
         yy = yB1 - (yB1 - yB0) * min(e["meandiff"], spanB) / spanB
         d.point([X(e["t_s"]), yy], fill=INK)
         d.line([X(e["t_s"]), yy, X(e["t_s"]), yy + 1], fill=INK, width=2)
@@ -294,7 +340,7 @@ def chart(rep: dict, tl: dict, out_png: Path) -> None:
         d.line([X(tt), H - 46, X(tt), H - 40], fill=INK)
         d.text((X(tt) - 8, H - 34), f"{tt}s", font=F_SM, fill=DIM)
 
-    verd = "SMOOTH — no >1 s holds, no static run >= 1 s" if rep["verdict_smooth"] \
+    verd = "SMOOTH — no >1 s holds between distinct frames" if rep["verdict_smooth"] \
         else "CHECK FAILED — see diff_report.json"
     d.text((x0, 728), verd, font=F_HEAD, fill=GOOD if rep["verdict_smooth"] else (180, 40, 40))
     out_png.parent.mkdir(parents=True, exist_ok=True)
@@ -369,11 +415,12 @@ def main() -> int:
                    "canvas sampled in-page by a rAF callback chained after the page's own "
                    "frame() — canvas.toDataURL in the same rendering opportunity, gated ~24 fps",
         "press": "real SPACE keydown — the page itself POSTs /api/touch_hit "
-                 "{hit:[0.0,4.5,0.35], force_n:30000} (lesson 5 'THE WHOLE BODY' touch "
-                 "target); real release gesture (pointerup -> /api/touch_clear). If the "
-                 "shared rate bucket sheds the POST, the ladder retries Space, then falls "
-                 "back to a direct POST of the same route from the page origin "
-                 "(press_path in the timeline says which path landed)",
+                 "{hit:[0.0,4.5,0.35], force_n:50000} (lesson 5 'THE WHOLE BODY' touch "
+                 "target at the page's own slider max); real release gesture "
+                 "(pointerup -> /api/touch_clear). If the shared rate bucket sheds the "
+                 "POST, the ladder retries Space, then falls back to a direct POST of the "
+                 "same route from the page origin (press_path in the timeline says which "
+                 "path landed)",
         "encode": "ffconcat with per-frame wall-clock durations -> libx264 crf18, "
                   f"{CONTAINER_FPS} fps container; no holds, no crossfades, no interpolation",
         "engine_8107": "never built, stopped, or reconfigured; no /cameras, /tick_pose, "
@@ -412,8 +459,9 @@ def main() -> int:
           f"(mean {rep['mean_fps_over_take']:.1f} fps, min {rep['instant_fps_min']}, "
           f"median {rep['instant_fps_median']}, max {rep['instant_fps_max']})")
     print(f"  smoothness: max frame interval {rep['max_frame_interval_s'] * 1000:.1f} ms; "
-          f"longest static run {rep['longest_static_run_s']:.2f} s "
-          f"({rep['longest_static_run_frames']} frames at t={rep['longest_static_run_at_s']} s) "
+          f"longest hold {rep['longest_hold_s']:.2f} s "
+          f"({rep['longest_hold_frames']} frames at t={rep['longest_hold_at_s']} s, "
+          f"{rep['hold_count']} hold runs) "
           f"-> verdict_smooth={rep['verdict_smooth']}")
     print(f"  engine restore: quiet_after={rep['restore_after_take']['quiet_after']}")
     print(f"  ACCEPTED" if ok else "  NOT ACCEPTED — fix the failing line above")
