@@ -1,6 +1,39 @@
 {
  "name": "walker",
- "lessons": {},
+ "lessons": {
+  "wake_the_cell": {
+   "passed": true,
+   "at": "2026-09-14T04:10:10.828Z"
+  },
+  "the_gentle_hand": {
+   "passed": true,
+   "at": "2026-09-14T04:10:10.828Z"
+  },
+  "the_healing": {
+   "passed": true,
+   "at": "2026-09-14T04:10:10.828Z"
+  },
+  "bend_the_knee": {
+   "passed": true,
+   "at": "2026-09-14T04:10:10.828Z"
+  },
+  "the_whole_body": {
+   "passed": true,
+   "at": "2026-09-14T04:10:10.828Z"
+  },
+  "the_balance": {
+   "passed": true,
+   "at": "2026-09-14T04:10:10.828Z"
+  },
+  "the_stand": {
+   "passed": true,
+   "at": "2026-09-14T04:10:10.828Z"
+  },
+  "the_graduation": {
+   "passed": true,
+   "at": "2026-09-14T04:10:10.828Z"
+  }
+ },
  "seen_intro": true,
- "saved_at": "2026-09-13 23:07:34"
+ "saved_at": "2026-09-13 23:10:10"
 }

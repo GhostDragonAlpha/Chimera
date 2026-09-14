@@ -66,7 +66,7 @@ def main():
         return
 
     before = lean(verts())
-    print(f"rest lean: {before:.4f} m")
+    print(f"rest lean: {before:.4f} m (baseline — deltas measured from here)")
 
     # disturb: a held 20 kN lateral touch at the hip height
     post("/tick_touch", {"hit": [0.48, 1.6, 0.2], "force_n": 20000})
