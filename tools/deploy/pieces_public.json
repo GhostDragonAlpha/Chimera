@@ -1,0 +1,32 @@
+{
+  "_readme": [
+    "THE PUBLIC STACK CONFIG -- same shape as tools/supervisor/start_chimera.py's DEFAULT_CONFIG,",
+    "but game_shell and website bind 0.0.0.0 so the internet can reach them (through the tunnel",
+    "described in docs/DEPLOY_RUNBOOK.md). The engine has NO AUTH and stays on 127.0.0.1:8107 --",
+    "never route, forward, or expose 8107. Health checks stay on 127.0.0.1 (run from this machine).",
+    "Used by: python tools/supervisor/watchdog.py --config tools/deploy/pieces_public.json"
+  ],
+  "pieces": [
+    {
+      "name": "engine",
+      "argv": ["cmd", "/c", "launch_chimera.bat"],
+      "cwd": ".tmp/build_tick/Release",
+      "check": {"url": "http://127.0.0.1:8107/tick_state", "mode": "ticks"},
+      "boot_seconds": 40
+    },
+    {
+      "name": "game_shell",
+      "argv": ["python", "tools/game_shell/server.py", "--host", "0.0.0.0", "8206"],
+      "cwd": ".",
+      "check": {"url": "http://127.0.0.1:8206/api/health", "mode": "ok_json"},
+      "boot_seconds": 10
+    },
+    {
+      "name": "website",
+      "argv": ["python", "tools/website/server.py", "--host", "0.0.0.0", "8210"],
+      "cwd": ".",
+      "check": {"url": "http://127.0.0.1:8210/", "mode": "status200"},
+      "boot_seconds": 10
+    }
+  ]
+}

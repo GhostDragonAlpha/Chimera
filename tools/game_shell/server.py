@@ -5,14 +5,31 @@ channels (frame/state/touch/pose) to the engine, and keeps each
 player's progress in progress/<name>.json. The engine stays the frozen
 world; this file is the doorplate, the doormat, and the sign-up sheet.
 
-Run:  python tools/game_shell/server.py [port]   (default 8206)
+Run:  python tools/game_shell/server.py [port] [--host H]
+      (default port 8206; default host 127.0.0.1 -- pass --host 0.0.0.0
+      ONLY when you mean to serve the public; see docs/DEPLOY_RUNBOOK.md)
 Requires the engine on 127.0.0.1:8107 (launch_chimera.bat).
+
+Hardening (public deployment):
+  --host    binds 127.0.0.1 unless 0.0.0.0 is passed explicitly.
+  limits    one token bucket per (player IP, class). The game page polls
+            /api/verts at 3 Hz and /api/state at ~1.4 Hz -- 264 req/min
+            for ONE player -- so the stream class is generous (600/min)
+            and a real player never sees a 429; other api routes get
+            30 req/min, static files 120 req/min.
+  bodies    request bodies are capped at 5 MB (413, connection closed,
+            body never read).
+  paths     exact-name dispatch only; the progress name is stripped to
+            [A-Za-z0-9_- ] so it cannot walk out of progress/; unknown
+            paths get a real 404 (they used to get silence).
 """
 from __future__ import annotations
 
 import json
 import re
+import threading
 import time
+import urllib.parse
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -23,24 +40,93 @@ PROGRESS = HERE / "progress"
 PROGRESS.mkdir(exist_ok=True)
 NAME_RE = re.compile(r"[^A-Za-z0-9_\- ]+")
 
+# -- hardening: numbers with reasons --------------------------------------
+# stream  600 req/min: the measured gameplay poll is verts 3 Hz + state
+#         1.4 Hz = 264 req/min per player. 600/min keeps a real player
+#         (even two behind one home router) 429-free while still shedding
+#         a hammering client before it reaches the engine proxy.
+# api      30 req/min: health/topology/cam/progress -- a handful per
+#         session; 30/min is many times that, and a for-loop is not a
+#         session.
+# static  120 req/min: page + sound.js + lessons.json per load.
+RATE_LIMITS = {  # class -> (per minute, burst)
+    "stream": (600, 240),
+    "api": (30, 15),
+    "static": (120, 60),
+}
+STREAM_PATHS = {"/api/verts", "/api/state", "/api/frame", "/api/topology",
+                "/api/touch", "/api/touch_clear", "/api/touch_hit",
+                "/api/pose"}
+MAX_BODY = 5 * 1024 * 1024   # no honest request body here is bigger
+
+_BUCKETS: dict = {}          # (ip, class) -> (tokens left, last seen)
+_BUCKET_LOCK = threading.Lock()
+
+
+def _rate_class(path: str) -> str:
+    if path.startswith("/api/"):
+        return "stream" if path in STREAM_PATHS else "api"
+    return "static"
+
+
+def _allow(ip: str, path: str) -> bool:
+    """Consume one token from this IP's bucket. False = over the limit."""
+    cls = _rate_class(path)
+    rate, burst = RATE_LIMITS[cls]
+    now = time.monotonic()
+    with _BUCKET_LOCK:
+        if len(_BUCKETS) > 4096:  # memory cap: drop buckets idle 10 min
+            for k in [k for k, v in _BUCKETS.items() if now - v[1] > 600]:
+                del _BUCKETS[k]
+        tokens, last = _BUCKETS.get((ip, cls), (float(burst), now))
+        tokens = min(float(burst), tokens + (now - last) * rate / 60.0)
+        ok = tokens >= 1.0
+        _BUCKETS[(ip, cls)] = (tokens - 1.0 if ok else tokens, now)
+        return ok
+
 
 class Handler(BaseHTTPRequestHandler):
     engine_url = ENGINE
+    # do not advertise the interpreter to every stranger
+    server_version = "ChimeraR2"
+    sys_version = ""
 
     def log_message(self, *a):  # quiet: the game page polls fast
         pass
 
     # -- helpers ----------------------------------------------------------
-    def _send(self, body: bytes, ctype: str, code: int = 200):
+    def _client_ip(self) -> str:
+        """The IP the buckets key on. Behind a LOCAL tunnel (cloudflared,
+        ngrok, ssh -R) every visitor's socket peer is 127.0.0.1, so only
+        for loopback peers do we read the forwarded header the tunnel
+        itself wrote (Cloudflare overwrites CF-Connecting-IP; a direct
+        remote client can never be loopback, so it cannot spoof this)."""
+        peer = self.client_address[0]
+        if peer in ("127.0.0.1", "::1"):
+            real = (self.headers.get("CF-Connecting-IP")
+                    or self.headers.get("X-Forwarded-For", ""))
+            if real:
+                return real.split(",")[0].strip()
+        return peer
+
+    def _send(self, body: bytes, ctype: str, code: int = 200,
+              close: bool = False):
         self.send_response(code)
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
+        if close:  # a rejected request's unread body would poison the pipe
+            self.send_header("Connection", "close")
+            self.close_connection = True
         self.end_headers()
         self.wfile.write(body)
 
     def _json(self, obj, code: int = 200):
         self._send(json.dumps(obj).encode(), "application/json", code)
+
+    def _deny(self, code: int, msg: str):
+        self._json({"ok": False, "error": msg}, code)
+        self.close_connection = True
 
     def _proxy(self, path: str, method: str, body: bytes | None):
         req = urllib.request.Request(ENGINE + path, data=body, method=method,
@@ -54,14 +140,19 @@ class Handler(BaseHTTPRequestHandler):
     # -- verbs ------------------------------------------------------------
     def do_GET(self):
         p = self.path.split("?", 1)[0]
+        if not _allow(self._client_ip(), p):
+            self._deny(429, "too many requests -- slow down")
+            return
         if p == "/" or p == "/index.html":
             self._send((HERE / "index.html").read_bytes(), "text/html")
         elif p == "/api/state":
             self._proxy("/tick_state", "GET", None)
         elif p in ("/api/topology", "/api/verts"):
-            # THE WEB KERNEL: state for the browser's own renderer
-            self._proxy({"/api/topology": "/topology",
-                         "/api/verts": "/verts"}[p], "GET", None)
+            # THE WEB KERNEL: state for the browser's own renderer. The
+            # query rides through (C3's ?delta=1 / ?delta=key stream).
+            tgt = {"/api/topology": "/topology", "/api/verts": "/verts"}[p]
+            q = self.path.split("?", 1)[1] if "?" in self.path else ""
+            self._proxy(tgt + (("?" + q) if q else ""), "GET", None)
         elif p == "/api/frame":
             q = self.path.split("?", 1)[1] if "?" in self.path else ""
             self._proxy("/frame" + (("?" + q) if q else ""), "GET", None)
@@ -84,8 +175,8 @@ class Handler(BaseHTTPRequestHandler):
                     return
                 save = json.dumps({"op": "save", "name": "__game__", "v": v}).encode()
                 urllib.request.urlopen(urllib.request.Request(
-                    self.engine_url + "/cameras", data=save, method="POST",
-                    headers={"Content-Type": "application/json"}), timeout=15)
+                        self.engine_url + "/cameras", data=save, method="POST",
+                        headers={"Content-Type": "application/json"}), timeout=15)
                 rec = json.dumps({"op": "recall", "name": "__game__"}).encode()
                 with urllib.request.urlopen(urllib.request.Request(
                         self.engine_url + "/cameras", data=rec, method="POST",
@@ -109,10 +200,21 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(f.read_bytes(), ctype)
             else:
                 self._json({"ok": False, "error": "not found"}, 404)
+        else:
+            self._json({"ok": False, "error": "not found"}, 404)
 
     def do_POST(self):
         p = self.path.split("?", 1)[0]
-        n = int(self.headers.get("Content-Length", 0) or 0)
+        try:
+            n = int(self.headers.get("Content-Length", 0) or 0)
+        except ValueError:
+            n = -1
+        if n < 0 or n > MAX_BODY:
+            self._deny(413, "body too large")
+            return
+        if not _allow(self._client_ip(), p):
+            self._deny(429, "too many requests -- slow down")
+            return
         body = self.rfile.read(n) if n else None
         if p in ("/api/touch", "/api/touch_clear", "/api/pose", "/api/touch_hit"):
             self._proxy({"/api/touch": "/tick_touch",
@@ -132,6 +234,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._json({"ok": True})
             except Exception as e:
                 self._json({"ok": False, "error": str(e)}, 400)
+        else:
+            self._json({"ok": False, "error": "no such door"}, 404)
 
 
 def method(h) -> str:
@@ -139,11 +243,15 @@ def method(h) -> str:
 
 
 def main() -> None:
-    import sys
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8206
-    server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    import argparse
+    ap = argparse.ArgumentParser(description="Chimera game front door (R2)")
+    ap.add_argument("port", nargs="?", type=int, default=8206)
+    ap.add_argument("--host", default="127.0.0.1",
+                    help="bind address (default 127.0.0.1; 0.0.0.0 serves the public)")
+    a = ap.parse_args()
+    server = ThreadingHTTPServer((a.host, a.port), Handler)
     server.daemon_threads = True
-    print(f"THE GAME -- http://127.0.0.1:{port}  (world: {ENGINE})", flush=True)
+    print(f"THE GAME -- http://{a.host}:{a.port}  (world: {ENGINE})", flush=True)
     server.serve_forever()
 
 
