@@ -800,6 +800,33 @@ successor: per-component edge-walk validation inside the importer before
 it answers ok. If A1 fails on a CLOSED mesh, the divergence bookkeeping
 (inventory: seal caps vs the wall disc) is the suspect, not the import.
 
+## RUN RECORD (2026-09-13, accepted-import crash — closed by C1)
+
+- The closure falsifier HELD live: a leaky mesh was refused by name
+  ("mesh not closed: K boundary edges"). The ACCEPTED path crashed the
+  engine (AV in a _Tree op, blob wrote through first).
+- OFFLINE REPRO: the exact sphere class (2946 verts, pole caps, quad
+  rings, plain + slashed faces) through import_mesh under
+  _GLIBCXX_DEBUG bounds checking — ALL PASS, payload size equation and
+  index bounds verified. The importer does not corrupt the heap.
+- ROOT CAUSE (engine-side, not the importer): MembraneTick::init()
+  rebuilds the cell field but does NOT clear the seal tree
+  (seal_cells_/sealed_/seal_nv_/cut_src_/cut_pos_), so step()'s seal
+  block keeps reading verts9 through the RESIDENT creature's slot ids on
+  the first tick after a mesh swap — far out of bounds when the old body
+  had more vertices than the import (18459 -> 2946 is a ~600 KB
+  over-read). The boot restore replays the seal history, so a fresh boot
+  of a sealed session is armed for it.
+- FIXES: (1) /mesh_import no longer replays /mesh_bin via nested
+  invoke_api — it applies g_mesh_req directly under g_mesh_mutex with
+  the wait_for_shutdown ack (/mesh_bin's own discipline), and writes NO
+  snapshot blob (an import is reproducible from its source file; a
+  poisoned blob must not boot-loop the engine). (2) Importing onto a
+  SEALED tick is refused BY NAME until init() clears seal state — the
+  one-stanza engine-side fix that retires the guard is init()'s to make
+  (membrane_tick.cpp is not C1's file).
+
+
 
 
 ---

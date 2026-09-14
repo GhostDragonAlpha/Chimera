@@ -735,13 +735,15 @@ int main(int argc, char** argv) {
             // Body = 1-byte source kind ('O' OBJ subset, 'G' glTF 2.0/GLB)
             // + raw source bytes. The importer converts to the engine's
             // full mesh format (or refuses BY NAME — a leaky/open surface
-            // never gets admitted) and the converted payload is REPLAYED
-            // through the real /mesh_bin handler (invoke_api — the boot-
-            // restore path's nested-call discipline), so a slot-0 upload
-            // feeds the SAME g_mesh_req -> g_tick.init internal path as a
-            // hand-authored mesh. Joints, classification, binding and the
-            // seal stay the client's moves: tools/bring_alive.py
-            // orchestrates them.
+            // never gets admitted) and the converted payload is applied
+            // through the SAME handoff /mesh_bin uses: g_mesh_req under
+            // g_mesh_mutex, acked by wait_for_shutdown. NOT a nested
+            // invoke_api replay — the accepted-import AV (2026-09-13,
+            // offline-clean importer) put the nested HTTP-thread handler
+            // call in the dock, and the direct handoff is the proven
+            // discipline. Deliberately NOT session-snapshotted: an import
+            // is reproducible from its source file, and a poisoned blob
+            // must never boot-loop the engine again.
             content_type = "application/json";
             if (req_body.empty()) {
                 body = "{\"ok\":false,\"error\":\"empty body: expected a "
@@ -751,6 +753,20 @@ int main(int argc, char** argv) {
                        "first byte must be 'O' (OBJ) or 'G' (glTF)\"}";
             } else if (!g_engine) {
                 body = "{\"ok\":false,\"error\":\"engine not wired\"}";
+            } else if (g_tick.state_json().find("\"sealed\":true") !=
+                       std::string::npos) {
+                // THE STALE-SEAL GUARD (the accepted-import AV, root
+                // cause): MembraneTick::init() rebuilds the cell field but
+                // does NOT clear the seal tree, so step()'s seal block
+                // keeps reading verts9 through the RESIDENT creature's
+                // slot ids on the first tick after any mesh swap — far
+                // out of bounds when the old body had more vertices than
+                // the import. Until init() clears seal state, importing
+                // onto a sealed tick is refused BY NAME, never admitted.
+                body = "{\"ok\":false,\"error\":\"refused: the tick still "
+                       "holds sealed cells from the resident creature; "
+                       "restart the engine with --no-restore (or clear "
+                       "its session) before importing\"}";
             } else {
                 importer::Stats st;
                 std::string bin, err;
@@ -760,23 +776,70 @@ int main(int argc, char** argv) {
                     for (size_t i = 0; i < err.size(); ++i)   // contract; belt
                         esc += err[i] == '"' ? '\'' : err[i]; // and braces
                     body = "{\"ok\":false,\"error\":\"refused: " + esc + "\"}";
+                } else if (bin.size() < 24) {
+                    body = "{\"ok\":false,\"error\":\"importer payload "
+                           "shorter than its own header\"}";
                 } else {
-                    std::string resp2, ct2;
-                    g_engine->invoke_api("POST", "/mesh_bin", bin, resp2, ct2);
-                    bool nested_ok =
-                        resp2.find("\"ok\":true") != std::string::npos;
-                    char buf[256];
-                    snprintf(buf, sizeof(buf),
-                             ",\"verts\":%u,\"tris\":%u,\"volume\":%.9g,"
-                             "\"ymin\":%.9g,\"ymax\":%.9g,"
-                             "\"winding_flipped\":%s}",
-                             st.verts, st.tris, st.volume, st.ymin, st.ymax,
-                             st.winding_flipped ? "true" : "false");
-                    body = std::string("{\"ok\":") +
-                           (nested_ok ? "true" : "false") +
-                           (nested_ok ? "" :
-                            ",\"error\":\"mesh_bin replay failed\"") +
-                           buf;
+                    // decode the payload with /mesh_bin's exact arithmetic
+                    uint32_t N = 0, IC = 0;
+                    float cr = 12.f, ct = 0.f, cp = 0.3f, slotmode = 0.f;
+                    std::memcpy(&N, bin.data() + 0, 4);
+                    std::memcpy(&IC, bin.data() + 4, 4);
+                    std::memcpy(&cr, bin.data() + 8, 4);
+                    std::memcpy(&ct, bin.data() + 12, 4);
+                    std::memcpy(&cp, bin.data() + 16, 4);
+                    std::memcpy(&slotmode, bin.data() + 20, 4);
+                    size_t expect = 24 + static_cast<size_t>(N) * 9 * 4 +
+                                    static_cast<size_t>(IC) * 4;
+                    if (bin.size() != expect || N == 0 || IC < 3 ||
+                        IC % 3 != 0) {
+                        body = "{\"ok\":false,\"error\":\"importer payload "
+                               "fails the mesh_bin size equation\"}";
+                    } else {
+                        std::vector<float> verts(static_cast<size_t>(N) * 9);
+                        std::vector<uint32_t> indices(IC);
+                        std::memcpy(verts.data(), bin.data() + 24,
+                                    static_cast<size_t>(N) * 9 * 4);
+                        std::memcpy(indices.data(),
+                                    bin.data() + 24 + static_cast<size_t>(N) * 9 * 4,
+                                    static_cast<size_t>(IC) * 4);
+                        {
+                            std::lock_guard<std::mutex> lk(g_mesh_mutex);
+                            g_mesh_req.verts = std::move(verts);
+                            g_mesh_req.indices = std::move(indices);
+                            g_mesh_req.N = N;
+                            g_mesh_req.idxCount = IC;
+                            g_mesh_req.cam_radius = cr;
+                            g_mesh_req.cam_theta = ct;
+                            g_mesh_req.cam_phi = cp;
+                            uint32_t sm = static_cast<uint32_t>(
+                                slotmode < 0 ? 0 : slotmode + 0.5f);
+                            // slotmode >= 100 = animation delta: never
+                            // produced by the importer, kept for shape
+                            g_mesh_req.update_only = (sm >= 100);
+                            if (g_mesh_req.update_only) sm -= 100;
+                            g_mesh_req.slot = sm / 10;
+                            g_mesh_req.mode = sm % 10;
+                            g_mesh_pending = true; g_mesh_applied = false;
+                        }
+                        std::unique_lock<std::mutex> lk(g_mesh_mutex);
+                        bool ok = wait_for_shutdown(g_mesh_cv, lk,
+                                                    std::chrono::seconds(15),
+                                                    []{ return g_mesh_applied; });
+                        if (ok) {
+                            char buf[256];
+                            snprintf(buf, sizeof(buf),
+                                     "{\"ok\":true,\"verts\":%u,\"tris\":%u,"
+                                     "\"volume\":%.9g,\"ymin\":%.9g,"
+                                     "\"ymax\":%.9g,\"winding_flipped\":%s}",
+                                     st.verts, st.tris, st.volume, st.ymin,
+                                     st.ymax,
+                                     st.winding_flipped ? "true" : "false");
+                            body = buf;
+                        } else {
+                            body = "{\"ok\":false,\"error\":\"timeout\"}";
+                        }
+                    }
                 }
             }
         // ═══ C1 END ═══════════════════════════════════════════════════════
@@ -918,11 +981,18 @@ int main(int argc, char** argv) {
                 if (hb != std::string::npos)
                     sscanf(req_body.c_str() + hb + 1, "%f,%f,%f", &hx, &hy, &hz);
                 float hit[3] = {hx, hy, hz};
-                if (g_tick.touch_press_at(hit,
-                        (float)get_double(req_body, "force_n", 0.0)))
+                // truthfulness (A1's finding): a press lands on skin or is
+                // refused — never ok:true with zero effect. The honest reach
+                // is a few Gaussians (r0 = 3 cm): beyond 15 cm it is theatre.
+                float d2 = g_tick.point_skin_dist2(hit);
+                if (d2 > 0.15f * 0.15f) {
+                    body = "{\"ok\":false,\"error\":\"the point is not on the body\"}";
+                } else if (g_tick.touch_press_at(hit,
+                        (float)get_double(req_body, "force_n", 0.0))) {
                     body = "{\"ok\":true}";
-                else
+                } else {
                     body = "{\"ok\":false,\"error\":\"force_n must be positive\"}";
+                }
             } else {
                 float px = (float)get_double(req_body, "px", 0.5);
                 float py = (float)get_double(req_body, "py", 0.5);

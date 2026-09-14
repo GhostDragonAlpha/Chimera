@@ -94,6 +94,13 @@ public:
     void export_verts(const std::vector<float>& verts9, std::vector<uint8_t>& out);
     bool touch_press_at(const float hit[3], float force_n);
 
+    // A1's finding (R4 run): a hit 0.355 m from the skin answered
+    // ok:true with ZERO effect — a silent lie. Truthfulness helper:
+    // squared distance from a world point to the nearest authored
+    // vertex (posed approximated by base; the caller refuses beyond
+    // the press Gaussian's reach).
+    float point_skin_dist2(const float p[3]) const;
+
     bool   enabled_ = true;
     bool   gravity_on_ = false;   // THE FALL: initialized false; the lead
                                   // flips true after the fall bar passes

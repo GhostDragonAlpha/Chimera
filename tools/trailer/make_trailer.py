@@ -63,7 +63,9 @@ BELLY_HIT = [-0.707, 3.806, -0.054]
 
 CAM_ORBIT_A = [15.5, -3.40, 0.30, 0.0, 4.3, 0.0, 0, 0]   # sweep start (back 3/4)
 CAM_ORBIT_B = [15.5, -1.45, 0.30, 0.0, 4.3, 0.0, 0, 0]   # sweep end   (front 3/4)
-CAM_PRESS   = [7.0, -2.05, 0.22, -0.7, 4.0, 0.0, 0, 0]   # belly closeup
+# the press hit sits on the creature's LEFT flank (hit x=-0.707): the dent faces
+# left-front, measured to read best from theta ~ -3.3 (probe frames .tmp/flank_*)
+CAM_PRESS   = [5.0, -3.30, 0.22, -0.707, 3.806, -0.054, 0, 0]   # dead on the hit
 CAM_LEGS    = [6.0, -1.95, 0.12, 0.0, 1.35, 0.0, 0, 0]   # knee closeup
 
 RAMP_FORCES = [3000, 6000, 10000, 14000, 18000, 22000, 26000, 30000]

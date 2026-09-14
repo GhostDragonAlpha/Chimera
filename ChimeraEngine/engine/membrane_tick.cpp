@@ -714,6 +714,19 @@ void MembraneTick::export_verts(const std::vector<float>& verts9,
     if (n) std::memcpy(out.data() + 4, verts9.data(), verts9.size() * 4);
 }
 
+float MembraneTick::point_skin_dist2(const float p[3]) const {
+    float best = 1e30f;
+    const size_t nv = base_pos_.size() / 9;
+    for (size_t v = 0; v < nv; ++v) {
+        float dx = base_pos_[v * 9 + 0] - p[0];
+        float dy = base_pos_[v * 9 + 1] - p[1];
+        float dz = base_pos_[v * 9 + 2] - p[2];
+        float d2 = dx * dx + dy * dy + dz * dz;
+        if (d2 < best) best = d2;
+    }
+    return best;
+}
+
 bool MembraneTick::touch_press_at(const float hit[3], float force_n) {
     if (!std::isfinite(force_n) || force_n <= 0.f) return false;
     std::lock_guard<std::mutex> lk(seal_mtx_);
