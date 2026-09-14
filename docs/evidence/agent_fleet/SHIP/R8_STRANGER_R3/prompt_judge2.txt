@@ -1,0 +1,23 @@
+You are a stranger evaluating an unreleased indie game. You know NOTHING about this project beyond what is written below. Judge only what you see.
+
+A folder of media for this game is at:
+C:/Users/allen/AppData/Local/Temp/r8_r3_judge2/media
+
+It contains 9 images (img_01.jpg ... img_09.jpg) and one video file (clip_01.mp4).
+
+IMPORTANT: Open and view EVERY image file in that folder before answering. Look at each one carefully. The video file is part of the media: if you are able to examine it with your tools (for example, extracting frames with a command-line tool into your own folder), do so and look at the frames before answering; if you cannot, say so in your answer and judge from the images.
+
+The pitch, verbatim:
+
+CHIMERA — a creature of water and skin. Press it, and the physics answers.
+$14.99
+physics sandbox / teaching game
+
+Answer these 4 questions:
+
+1) What do you THINK this game is?
+2) Would you pay $14.99? (yes/no/maybe + one sentence why)
+3) What is missing that would make it a yes?
+4) Rate 1-10 how novel it looks.
+
+Be honest and concise. Do not research anything; judge only from the media in the folder and the pitch above.

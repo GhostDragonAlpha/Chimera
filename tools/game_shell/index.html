@@ -167,12 +167,19 @@
     position:fixed;inset:0;z-index:40;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     text-align:center;padding:32px;
+    /* E4V2: lighter scrim — the live WebGL creature must read through the
+       greeting, not sit behind a wall (.42/.88 -> .24/.68) */
     background:radial-gradient(1100px 620px at 50% 42%,
-      rgba(11,13,16,.42) 0%, rgba(11,13,16,.88) 78%);
+      rgba(11,13,16,.24) 0%, rgba(11,13,16,.68) 78%);
   }
   .overlay-card{
     max-width:560px;padding:32px 36px 28px;text-align:left;
-    background:rgba(14,17,22,.93);border:1px solid var(--line);border-radius:14px;
+    /* E4V2: glass, not a slab — alpha .93 -> .62 + blur lets the creature
+       show through the card while the text stays readable */
+    background:rgba(14,17,22,.62);
+    -webkit-backdrop-filter:blur(9px) saturate(1.15);
+    backdrop-filter:blur(9px) saturate(1.15);
+    border:1px solid var(--line);border-radius:14px;
     box-shadow:0 18px 60px rgba(0,0,0,.5);
   }
   .overlay-card h2{
@@ -200,6 +207,12 @@
   }
   .overlay .btn{padding:10px 44px;font-size:13px;letter-spacing:.28em;text-indent:.28em}
   .overlay-hint{margin-top:12px;font-size:11.5px;color:var(--faint)}
+  /* E4V2: the current lesson's SPACE hint — one line under the key diagram */
+  .intro-key-hint{
+    margin:16px 0 20px;font-size:13px;color:var(--accent);
+    display:flex;align-items:center;
+  }
+  .intro-key-hint .kbd{margin-right:9px;border-color:#33443e;color:var(--accent)}
 
   /* the payoff flourish */
   @keyframes payoff-line{
@@ -212,7 +225,19 @@
     text-shadow:0 2px 24px rgba(0,0,0,.85);
     opacity:0;animation:payoff-line 1.1s ease-out forwards;
   }
-  .payoff-line.l2{animation-delay:.55s}
+  /* E4V2: the pass count — small gold caps between the two lines; the gold
+     is the verdict's accent (the page's own warm --warn gold) */
+  .payoff-line.l1b{
+    color:var(--warn);font-size:clamp(15px,2vw,22px);
+    letter-spacing:.42em;text-indent:.42em;text-transform:uppercase;
+    margin:18px 0 2px;
+    text-shadow:0 0 26px rgba(223,178,106,.35);
+    animation-delay:.55s;
+  }
+  /* E4V2: the verdict line now waits for the count, and carries a faint
+     gold breath of its own */
+  .payoff-line.l2{animation-delay:1.05s;
+    text-shadow:0 2px 24px rgba(0,0,0,.85),0 0 36px rgba(223,178,106,.20)}
   #payoff-actions{margin-top:44px;opacity:0;transition:opacity .6s ease}
   #payoff-actions.show{opacity:1}
   #payoff-actions .payoff-prompt{font-size:13.5px;color:var(--muted);margin-bottom:14px}
@@ -313,6 +338,9 @@
         <span><span class="kbd">click</span><span class="kbd">SPACE</span>touch · hold = press</span>
         <span><span class="kbd">1</span>–<span class="kbd">5</span>lessons</span>
       </div>
+      <!-- E4V2: the current lesson's SPACE hint (phrase filled by E4setIntroKeyHint) -->
+      <p class="intro-key-hint" id="intro-key-hint" aria-label="Keyboard touch hint"><span
+           class="kbd">SPACE</span><span id="intro-key-hint-text">to touch</span></p>
       <div style="text-align:center">
         <button id="intro-begin" class="btn" type="button">begin</button>
         <p class="overlay-hint">Enter also begins.</p>
@@ -321,9 +349,12 @@
   </section>
 
   <!-- E4: the payoff — all five lessons passed in one session -->
+  <!-- E4V2: the flourish now names the camera and counts the passes (gold);
+       the aria-label no longer hardcodes "five" -->
   <section id="payoff-overlay" class="overlay hidden" role="dialog" aria-modal="true"
-           aria-label="All five lessons passed">
-    <p class="payoff-line l1">You have felt the water.</p>
+           aria-label="Every lesson passed">
+    <p class="payoff-line l1"><b id="payoff-addressee">friend</b> — you have felt the water.</p>
+    <p class="payoff-line l1b" id="payoff-count">Five lessons.</p>
     <p class="payoff-line l2">The creature is real.</p>
     <div id="payoff-actions">
       <p class="payoff-prompt">the world forgets the unfelt — save this memory under
@@ -1599,9 +1630,20 @@
     }
   }
 
+  /* E4V2: the pass count spoken, not digits — "Ten lessons." */
+  var E4NUMWORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six',
+    'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen',
+    'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen',
+    'twenty'];
+  function E4countPhrase(n) {
+    var w = E4NUMWORDS[n] || String(n);
+    return w.charAt(0).toUpperCase() + w.slice(1) + (n === 1 ? ' lesson.' : ' lessons.');
+  }
   function E4showPayoff() {
     clearTouch();                          // the ceremony asks for an open hand
     $('payoff-name').textContent = playerName;
+    $('payoff-addressee').textContent = playerName;                  // E4V2: name the camera in the flourish
+    $('payoff-count').textContent = E4countPhrase(LESSONS.length);   // E4V2: count the passes
     $('payoff-overlay').classList.remove('hidden');
     $('payoff-actions').classList.remove('show');
     setTimeout(function () {               // the flourish holds three seconds,
@@ -1620,7 +1662,28 @@
   $('payoff-continue').addEventListener('click', E4dismissPayoff);
 
   /* ---- the intro ---- */
+  /* E4V2: the intro card's one-line key hint for the CURRENT lesson — the
+     phrase is pulled from the lesson's body when it names SPACE, else the
+     generic "to touch". enterPlay loads the lessons before greeting, so
+     curLesson() is real here. */
+  function E4setIntroKeyHint() {
+    var el = $('intro-key-hint-text');
+    if (!el) return;
+    var phrase = 'to touch';
+    var l = curLesson();
+    if (l && typeof l.body === 'string' && /SPACE/i.test(l.body)) {
+      var m = l.body.match(/[^.!?]*SPACE[^.!?]*/i);
+      if (m) {
+        var said = m[0].replace(/\s+/g, ' ').trim();
+        var at = said.toUpperCase().indexOf('SPACE');
+        var tail = said.slice(at + 5).replace(/^[\s,:;\u2014\u2013-]+/, '').trim();
+        if (tail) phrase = tail.charAt(0).toLowerCase() + tail.slice(1);
+      }
+    }
+    el.textContent = phrase;
+  }
   function E4showIntro() {
+    E4setIntroKeyHint();                   // E4V2: the lesson's SPACE hint
     $('intro-overlay').classList.remove('hidden');
     $('intro-begin').focus();
   }

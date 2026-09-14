@@ -7,19 +7,33 @@
 Then pose/press intents drive the REAL object through the membrane tick.
 
 // W8 (seam route 1, 2026-09-13): the vertbind generation now restricts
-each vertex's pin candidates to pins of the vertex's OWN limb -- the limb
-is inherited from the per-triangle classification -- and bounds the weight
-of any out-of-limb fill pins. `--report` prints the before/after diagnosis
-offline (no posts; run WITHOUT --report to ship the binding to a live
-engine).
+each vertex's pin candidates to its OWN LIMB, derived from the
+per-triangle classification (no authored limb table): the vertex INHERITS
+its triangles' joint, its limb is that joint's cell group plus the cell
+groups that TOUCH it (edge-adjacent, sane faces only -- the sculpt's
+sliver faces span the body and would wire every group to every other).
+Fewer than 3 in-limb pins (chain ends: wrist, ankle, tail tip): fill from
+the next-nearest pins, capped so the fill pins' COMBINED weight stays
+<= 0.25 -- a far pin can never dominate a near one. Weights keep the
+inverse-distance^2 law and the exact 15-byte vertbind row that
+MembraneTick::load_vertbind parses (the engine consumes them RAW, so they
+ship normalized to sum 1). The per-triangle classification keeps the
+original float32 arithmetic, so /tick_classify bytes are unchanged.
+
+`--report` runs OFFLINE (no posts) and prints: per-pin vert counts
+before/after, the flip-band count before/after, fill/cap stats, the
+duplicate-position binding-split check (duplicates must move together,
+E2), and the E2 posed-surface crease metric before/after so the route's
+effect is reproducible with one command. Run WITHOUT --report to ship the
+binding to a live engine.
 """
 from __future__ import annotations
 
 import json
 import struct
 import sys
-import time
 import urllib.request
+from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
@@ -33,6 +47,41 @@ def parse_full(path: Path):
     idx = np.frombuffer(raw, dtype=np.uint32, count=ic,
                         offset=24 + n * 36).reshape(-1, 3)
     return verts, idx
+
+
+def vert_normal_acc(pos: np.ndarray, idx: np.ndarray) -> np.ndarray:
+    """area-weighted accumulation of face normals at each vertex."""
+    f = np.cross(pos[idx][:, 1] - pos[idx][:, 0],
+                 pos[idx][:, 2] - pos[idx][:, 0])
+    acc = np.zeros((len(pos), 3))
+    for k in range(3):
+        for d in range(3):
+            acc[:, d] += np.bincount(idx[:, k], weights=f[:, d],
+                                     minlength=len(pos))
+    return acc
+
+
+def unit(v: np.ndarray) -> np.ndarray:
+    n = np.linalg.norm(v, axis=1, keepdims=True)
+    n[n < 1e-12] = 1.0
+    return v / n
+
+
+def ang(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    return np.degrees(np.arccos(np.clip((a * b).sum(1), -1, 1)))
+
+
+def posed(pos: np.ndarray, pins: np.ndarray, order: np.ndarray,
+          w: np.ndarray, deg: np.ndarray) -> np.ndarray:
+    """MembraneTick::apply_travel in numpy (same arithmetic path)."""
+    pv = pins[order]                                   # n x 3 pins x xyz
+    b = pos[:, None, :] - pv
+    th = deg[order]
+    c, s = np.cos(th), np.sin(th)
+    return np.stack([
+        (w * (b[:, :, 0] + pv[:, :, 0])).sum(1),
+        (w * (b[:, :, 1] * c - b[:, :, 2] * s + pv[:, :, 1])).sum(1),
+        (w * (b[:, :, 1] * s + b[:, :, 2] * c + pv[:, :, 2])).sum(1)], 1)
 
 
 def pin_key(order3: np.ndarray, npins: int) -> np.ndarray:
@@ -59,66 +108,88 @@ def main() -> int:
     names = [j["name"] for j in joints]
     pins = np.asarray([j["J"] for j in joints], dtype=np.float32)
     npins = len(pins)
+    KNEE = names.index("knee_L")
+    HIP = names.index("hip_L")
 
     verts, idx = parse_full(root / "monkey_full.bin")
-    pos = verts[:, 0:3]
-    centroids = pos[idx].mean(axis=1)
+    pos = verts[:, 0:3]                       # float32: original arithmetic
+    idx = idx.astype(np.int64)
     nv = len(pos)
+    centroids = pos[idx].mean(axis=1)
 
     # per-triangle CA type: nearest measured joint to the centroid
+    # (float32, byte-identical to the pre-W8 classification)
     d2t = ((centroids[:, None, :] - pins[None, :, :]) ** 2).sum(axis=2)
     tri_joint = d2t.argmin(axis=1).astype(np.uint8)
+    sane = 0.5 * np.linalg.norm(np.cross(pos[idx][:, 1] - pos[idx][:, 0],
+                                         pos[idx][:, 2] - pos[idx][:, 0]),
+                                axis=1) > 1e-8   # E2: slivers span the body
 
+    # cell-group TOUCH graph: joints whose sane cells share a mesh edge
+    edge_faces = defaultdict(list)
+    for t in range(len(idx)):
+        a, b, c = idx[t]
+        for e in ((a, b), (b, c), (c, a)):
+            edge_faces[(min(e), max(e))].append(t)
+    touches = defaultdict(set)
+    for e, ts in edge_faces.items():
+        if len(ts) == 2 and sane[ts[0]] and sane[ts[1]]:
+            x, y = int(tri_joint[ts[0]]), int(tri_joint[ts[1]])
+            if x != y:
+                touches[x].add(y)
+                touches[y].add(x)
+
+    # the vertex INHERITS its triangles' joint (majority vote; ties broken
+    # by the nearer pin). Its limb = that joint's cell group + touchers.
+    votes = np.zeros((nv, npins), np.int32)
+    votes[idx.ravel(), np.repeat(tri_joint, 3)] = 1
+    tied = votes == votes.max(axis=1, keepdims=True)
     d2v = ((pos[:, None, :] - pins[None, :, :]) ** 2).sum(axis=2)
-    order_all = np.argsort(d2v, axis=1)               # all pins, nearest first
+    vjoint = np.where(tied, d2v, np.inf).argmin(axis=1)
+    limb_of = [{j} | touches[j] for j in range(npins)]
+
+    order_all = np.argsort(d2v, axis=1)          # all pins, nearest first
 
     # BEFORE (pre-W8) binding: the 3 global nearest pins. Kept ONLY as the
     # --report baseline; the shipped binding is the // W8 one below.
     order_old = order_all[:, :3]
+    d3o = np.take_along_axis(d2v, order_old, axis=1)
+    w_old = 1.0 / (d3o + 1e-6) ** 2
+    w_old /= w_old.sum(axis=1, keepdims=True)
 
     # // W8: SAME-LIMB PIN RESTRICTION + BOUNDED FALLOFF -------------------
-    # E2 measured the seam cause: the 3-NEAREST-PINS rule flips pin sets
-    # across shear bands (thigh verts bind [spine_lower, hip_L, hip_R] while
-    # one ring away binds [spine_lower, hip_L, knee_L], knee weight
-    # 0.17-0.26 -> a band of creases 0.5-1.0 m above the knee). Fix at the
-    # source, derived from data this script already computes: a vertex's
-    # candidate pins are restricted to pins whose cell group TOUCHES the
-    # vertex's own limb, the limb being INHERITED from the per-triangle
-    # classification above (a vertex owns its incident triangles' joints).
-    # If fewer than 3 pins remain in-limb, fill from the next-nearest pins,
-    # but the fill pins' COMBINED weight is capped at 0.25 -- a far pin can
-    # never dominate a near one. Inverse-distance^2 shape is kept inside
-    # each group (the cap rescales groups, never reorders within them).
-    in_limb = np.zeros((nv, npins), dtype=bool)
-    in_limb[idx.ravel(), np.repeat(tri_joint, 3)] = True
-
+    # E2 measured the seam cause at the joints: the 3-NEAREST-PINS rule
+    # races wrong-limb pins into the sets (thigh verts bound hip_R while
+    # one ring away binds knee_L at 0.17-0.26 -> shear/crease rings).
+    # Candidates are now restricted to the vertex's own limb; the idw2 law
+    # is unchanged inside the limb; out-of-limb FILL pins (only at chain
+    # ends) carry at most 0.25 COMBINED weight, split by idw2 proportion.
     order_new = np.empty((nv, 3), dtype=np.int64)
     w_new = np.empty((nv, 3), dtype=np.float64)
     n_fill = 0        # verts that needed out-of-limb fill pins
     n_capped = 0      # verts whose fill pins hit the 0.25 combined cap
     for v in range(nv):
+        limb = limb_of[vjoint[v]]
         rank = order_all[v]
-        limb = in_limb[v]
-        chosen = [int(p) for p in rank if limb[p]][:3]
+        chosen = [int(p) for p in rank if p in limb][:3]
         if len(chosen) < 3:
             n_fill += 1
             for p in rank:
-                if not limb[p]:
+                if p not in limb:
                     chosen.append(int(p))
                     if len(chosen) == 3:
                         break
-        # (a vertex with no incident triangles falls through with 3 pure
-        # fill pins and s_in == 0 -> plain idw2 below = the old behavior)
-        d3 = d2v[v, chosen].astype(np.float64)
+        d3 = d2v[v, chosen]
         raw = 1.0 / (d3 + 1e-6) ** 2
-        is_in = np.fromiter((limb[p] for p in chosen), dtype=bool, count=3)
-        s_in = raw[is_in].sum()
-        s_out = raw[~is_in].sum()
+        is_in = np.fromiter((p in limb for p in chosen), dtype=bool, count=3)
+        raw64 = raw.astype(np.float64)
+        s_in = raw64[is_in].sum()
+        s_out = raw64[~is_in].sum()
         if s_in > 0 and s_out / (s_in + s_out) > 0.25:
             n_capped += 1
-            w = np.where(is_in, raw * (0.75 / s_in), raw * (0.25 / s_out))
+            w = np.where(is_in, raw64 * (0.75 / s_in), raw64 * (0.25 / s_out))
         else:
-            w = raw / raw.sum()
+            w = raw64 / raw64.sum()
         order_new[v] = chosen
         w_new[v] = w
     w_new = w_new.astype(np.float32)
@@ -130,14 +201,14 @@ def main() -> int:
     edges = np.unique(np.sort(e, axis=1), axis=0)
     key_old = pin_key(order_old, npins)
     key_new = pin_key(order_new, npins)
-    band_old = flip_band(key_old, edges, nv)
-    band_new = flip_band(key_new, edges, nv)
 
     print("triangle types:", np.bincount(tri_joint, minlength=npins).tolist())
 
     if report:
         cnt_old = np.bincount(order_old[:, 0], minlength=npins)
         cnt_new = np.bincount(order_new[:, 0], minlength=npins)
+        band_old = flip_band(key_old, edges, nv)
+        band_new = flip_band(key_new, edges, nv)
         print("== W8 vertbind report (offline, no posts) ==")
         print(f"verts {nv}  tris {len(idx)}  pins {npins}  edges {len(edges)}")
         print("per-pin vert counts (primary pin = weight-max slot 0):")
@@ -146,7 +217,7 @@ def main() -> int:
             print(f"  {p:3d}  {names[p]:<14} {cnt_old[p]:6d}  {cnt_new[p]:6d}")
         print(f"fill verts (needed out-of-limb pins): {n_fill} "
               f"(of those, combined weight hit the 0.25 cap: {n_capped})")
-        print(f"flip-band verts (3-pin set differs from a ring neighbor):")
+        print("flip-band verts (3-pin set differs from a ring neighbor):")
         print(f"  before: {int(band_old.sum())} / {nv}")
         print(f"  after : {int(band_new.sum())} / {nv}")
         # duplicates must keep identical bindings (E2: they move together)
@@ -159,6 +230,38 @@ def main() -> int:
             return int((c > 1).sum())
         print(f"duplicate-position groups with split bindings: "
               f"before {split_groups(key_old)}, after {split_groups(key_new)}")
+
+        # E2 posed-surface metric, before vs after (method of
+        # .tmp/e2_seam_analysis4.py: interior sane edges with midpoint
+        # within 1.5 m of knee_L; introduced vertex-normal delta at
+        # knee45 and hip20+knee45; count > 10 deg).
+        interior = {e_: fs for e_, fs in edge_faces.items() if len(fs) == 2}
+        ef = np.array(list(interior.keys()))
+        ft = np.array([interior[(a, b)] for a, b in ef])
+        edge_sane = sane[ft[:, 0]] & sane[ft[:, 1]]
+        mid = (pos[ef[:, 0]].astype(np.float64)
+               + pos[ef[:, 1]].astype(np.float64)) / 2
+        region = (np.linalg.norm(mid - pins.astype(np.float64)[KNEE],
+                                 axis=1) < 1.5) & edge_sane
+        pos64 = pos.astype(np.float64)
+        pins64 = pins.astype(np.float64)
+        nd0 = ang(unit(vert_normal_acc(pos64, idx))[ef[:, 0]],
+                  unit(vert_normal_acc(pos64, idx))[ef[:, 1]])
+        print("posed-surface crease check (E2 knee region, >10 deg edges):")
+        for label, order, w in (("before", order_old, w_old.astype(np.float64)),
+                                ("after ", order_new, w_new.astype(np.float64))):
+            line = []
+            for pose, degv in (("knee45", {KNEE: 45.0}),
+                               ("hip20+knee45", {KNEE: 45.0, HIP: 20.0})):
+                deg = np.zeros(npins)
+                for j, d in degv.items():
+                    deg[j] = np.radians(d)
+                acc = unit(vert_normal_acc(posed(pos64, pins64, order, w, deg),
+                                           idx))
+                intro = np.maximum(0, ang(acc[ef[:, 0]], acc[ef[:, 1]]) - nd0)
+                line.append(f"{pose}: {int((region & (intro > 10)).sum())} "
+                            f"(max {intro[region].max():.1f} deg)")
+            print(f"  {label}: " + " | ".join(line))
         return 0
 
     def post(path: str, body: bytes, timeout: int = 60) -> str:
