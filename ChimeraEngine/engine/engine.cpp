@@ -62,6 +62,43 @@ static float shadow_radius() { return fmaxf(2.0f, 0.65f * (0.5f * g_mesh_sphere 
 static float      g_mesh_ymin = 0.0f;
 static float      g_mesh_ymax = 1.0f;
 
+// ── E1 STAGE BLOCK (fleet-2/E1, 2026-09-13) — light rig + stage constants ────
+// RULE 0 membrane: STATEMENT — the same creature reads as a staged product
+// (not "one model on a grid", the blind judges' words) under a cool 4:1 fill
+// and a gold rim over a warm cyclorama. PREDICTION — at the dark-side camera
+// the unlit flank clears the ~40/255 perception floor and the rim stays an
+// edge (p95 <= 240); the composed contact shadow stays >= ~25/255 below its
+// surround. FALSIFIER — flank still merges, rim reads as a second outline, or
+// a seam appears where the floor sweep meets the background. Verified at the
+// build window with /frame at three cameras (hero / dark-side / high-wide).
+//
+// ENGINE-OWNED:
+static constexpr float E1_CLEAR_COLOR[4] = { 0.015f, 0.02f, 0.06f, 1.0f };
+// Consumed by the swapchain + /frame clears (search E1_CLEAR_COLOR). THE
+// background the floor's far sweep lands on — floor.frag's stage_far mirrors
+// this exact value; change them together or the horizon seams.
+//
+// SHADER-OWNED (rig map — the values live in the .frag files because fragment
+// UBO reads are measured-untrustworthy on this lane and the UBO is size-locked
+// at 176 B by static_assert; mirrored here so the rig reads from one place.
+// Change a value in BOTH places or the map lies):
+//   render_tri.frag  FILL 0.21 = 25% of key 0.85 -> 4:1 key:fill (was 0.18, 4.7:1)
+//                    FILL_TINT (0.89,1.00,1.28) cool, luminance-normalized
+//                    (0.299/0.587/0.114 -> 1.00 — 0.21 stays the measured irradiance)
+//                    RIM 0.35, pow(1-N.V,3), RIM_TINT (1.00,0.84,0.55) gold —
+//                    2-3x the dark flank's ~0.15 amb: clears the 40/255 floor,
+//                    stays under the per-channel albedo clamp
+//   floor.frag       OUTER (34,31,27)/255 — warmer at equal luminance (luma 31.4 ~ 32)
+//                    stage_far = E1_CLEAR_COLOR (above)
+//                    GLOW ring 9/255 peak at 1.5*Rc, sigma 0.9*Rc, where
+//                    Rc = max(2, 0.65*uMeshR) mirrors g_shadow_contact_radius;
+//                    ring center = e^-(1.5/0.9)^2 ~ 0.06 of peak = +0.6/255 at
+//                    contact — the ink law (contact EXACTLY 55) holds within
+//                    quantization
+// OUT OF SCOPE (handed to a bench lane): grid-line distance fade + warmer line
+// color — push_grid_overlay (GR/GG/GB 0.30/0.34/0.46, GA 0.70) and ui.cpp own those.
+// ─────────────────────────────────────────────────────────────────────────────
+
 // Keyboard helper: wasd + qe + space/ctrl + r reset
 static void update_camera_input(CameraState& cam, float dt) {
     // F1: the console captures the ENTIRE keyboard while open — typing a
@@ -8798,7 +8835,8 @@ bool Engine::frame_idle_ui() {
                                 VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                 0, VK_ACCESS_TRANSFER_WRITE_BIT,
                                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
-        VkClearColorValue cc = {{0.015f, 0.02f, 0.06f, 1.0f}};
+        VkClearColorValue cc = {{E1_CLEAR_COLOR[0], E1_CLEAR_COLOR[1],
+                                 E1_CLEAR_COLOR[2], E1_CLEAR_COLOR[3]}};   // E1 STAGE BLOCK owns the value
         VkImageSubresourceRange sr{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
         vkCmdClearColorImage(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
                              VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, &cc, 1, &sr);

@@ -23,6 +23,11 @@ layout(set = 0, binding = 0) uniform Ubo {
 layout(location = 0) out vec3 vNormal;
 layout(location = 1) out vec3 vColor;
 layout(location = 2) out vec3 vLightDir;
+layout(location = 3) out vec3 vViewNormal;   // E1 (2026-09-13): the rim term needs the
+                                             // view axis; computed here because VERTEX
+                                             // UBO reads are the measured-trustworthy
+                                             // ones (the frost/edge frags declare fewer
+                                             // inputs — an unconsumed output is legal)
 void main() {
     vec4 viewPos = ubo.uView * vec4(aPos, 1.0);
     gl_Position = ubo.uProj * viewPos;
@@ -31,4 +36,8 @@ void main() {
                          // which made brightness change as the camera orbits)
     vColor = aColor;
     vLightDir = ubo.uLightDir.xyz;
+    vViewNormal = mat3(ubo.uView) * aNormal;   // E1: VIEW-space normal, rim-only —
+                                               // directions take the rotation, never
+                                               // the translation; view-dependence is
+                                               // correct for a rim term
 }
