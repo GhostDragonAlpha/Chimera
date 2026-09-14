@@ -1,0 +1,930 @@
+{
+ "base": "http://127.0.0.1:8155",
+ "mode": "armed",
+ "routes": {
+  "/tick_state": "200 4696B",
+  "/state": "200 104950B",
+  "/verts": "200 664528B",
+  "/topology": "200 439564B",
+  "/health": "200 9B BUT BODY 'Not found' -> NO ROUTE"
+ },
+ "log_replay": [
+  {
+   "t": "L OFF->STANCE@t197941",
+   "ok": true,
+   "why": "enable carries the frozen geometry + channels"
+  },
+  {
+   "t": "L STANCE->LIFT@t197942",
+   "ok": true,
+   "why": "LIFT inside the what-if envelope (patch 0.5711 m)"
+  },
+  {
+   "t": "L LIFT->REACH@t198050",
+   "ok": true,
+   "why": "measured clearance miny 0.0500 >= 0.05"
+  },
+  {
+   "t": "R STANCE->RECOVER@t198075",
+   "ok": true,
+   "why": "the measured abort: support_lost"
+  },
+  {
+   "t": "L REACH->LOAD@t198075",
+   "ok": true,
+   "why": "the measured abort: support_lost"
+  },
+  {
+   "t": "L LOAD->STANCE@t198330",
+   "ok": true,
+   "why": "bearing depth 0.0099 m >= 0.008, |vy| 9.25e-04 settled"
+  },
+  {
+   "t": "R RECOVER->STANCE@t198330",
+   "ok": true,
+   "why": "bearing depth 0.0099 m >= 0.008, |vy| 9.25e-04 settled"
+  },
+  {
+   "t": "R STANCE->LIFT@t198331",
+   "ok": true,
+   "why": "LIFT inside the what-if envelope (patch 0.5711 m)"
+  },
+  {
+   "t": "L STANCE->RECOVER@t198633",
+   "ok": true,
+   "why": "the measured abort: support_lost"
+  },
+  {
+   "t": "R LIFT->LOAD@t198633",
+   "ok": true,
+   "why": "the measured abort: support_lost"
+  },
+  {
+   "t": "L RECOVER->STANCE@t198836",
+   "ok": true,
+   "why": "bearing depth 0.0091 m >= 0.008, |vy| 9.25e-04 settled"
+  },
+  {
+   "t": "R LOAD->STANCE@t198836",
+   "ok": true,
+   "why": "bearing depth 0.0091 m >= 0.008, |vy| 9.25e-04 settled"
+  },
+  {
+   "t": "L STANCE->LIFT@t198837",
+   "ok": true,
+   "why": "LIFT inside the what-if envelope (patch 0.5711 m)"
+  },
+  {
+   "t": "R STANCE->RECOVER@t199060",
+   "ok": true,
+   "why": "the measured abort: support_lost"
+  },
+  {
+   "t": "L LIFT->LOAD@t199060",
+   "ok": true,
+   "why": "the measured abort: support_lost"
+  },
+  {
+   "t": "R RECOVER->STANCE@t199081",
+   "ok": true,
+   "why": "bearing depth 0.0137 m >= 0.008, |vy| 8.38e-04 settled"
+  }
+ ],
+ "ts": "2026-09-14 15:35:36",
+ "state0": {
+  "ticks": 197936,
+  "enabled": true,
+  "cells": [
+   {
+    "v0": 0.287914,
+    "V": 0.287914,
+    "P": 0,
+    "pieces": 5396,
+    "caps": 126,
+    "ylo": -0.019507,
+    "yhi": 0.338,
+    "degenerate": false
+   },
+   {
+    "v0": 12.5091,
+    "V": 12.5091,
+    "P": 0,
+    "pieces": 26442,
+    "caps": 380,
+    "ylo": 3.415,
+    "yhi": 9.97118,
+    "degenerate": false
+   },
+   {
+    "v0": 0.693006,
+    "V": 0.693006,
+    "P": 0,
+    "pieces": 5604,
+    "caps": 104,
+    "ylo": 1.903,
+    "yhi": 3.415,
+    "degenerate": false
+   },
+   {
+    "v0": 0.334578,
+    "V": 0.334578,
+    "P": 0,
+    "pieces": 1668,
+    "caps": 126,
+    "ylo": 0.338,
+    "yhi": 1.903,
+    "degenerate": false
+   }
+  ],
+  "force_l": 0,
+  "force_r": 0,
+  "load_l": 0,
+  "load_r": 0,
+  "damage_sum": 0,
+  "failed": 0,
+  "capacity_sum": 1346990000.0,
+  "flex_l_deg": 0,
+  "flex_r_deg": 0,
+  "sealed": true,
+  "n_cells": 4,
+  "V_lower": 0.287914,
+  "V_upper": 12.5091,
+  "P_lower": 0,
+  "P_upper": 0,
+  "v0_lower": 0.287914,
+  "v0_upper": 12.5091,
+  "V_whole": 13.8246,
+  "conserve_pct": -0.000117273,
+  "seal_split": 0,
+  "seal_cuts": 630,
+  "seal_loops": 0,
+  "seal_caps": 0,
+  "seal_refusal": "",
+  "dimple_m": 0,
+  "gravity_on": true,
+  "root_y": 0.00950712,
+  "root_vy": -8.97374e-08,
+  "g_contact_n": 135618,
+  "stance_on": false,
+  "stance_ankle_deg": 0,
+  "stance_kp": 3.53082,
+  "stance_lean_x": 0,
+  "stance_lean_z": -0.000697255,
+  "gait_on": false,
+  "gait_l": "STANCE",
+  "gait_r": "STANCE",
+  "gait_stride": 3,
+  "gait_depth_l": 0.00559173,
+  "gait_depth_r": 0,
+  "gait_clear_l": -0.0141012,
+  "gait_clear_r": 0.0141012,
+  "gait_lean_x": 0,
+  "gait_lean_z": -0.00246063,
+  "gait_p_max": 9512220.0,
+  "gait_hip_l_deg": 0,
+  "gait_hip_r_deg": 0,
+  "gait_knee_l_deg": 0,
+  "gait_knee_r_deg": 0,
+  "gait_feet_cell": 0,
+  "gait_strut_pin_l": 17,
+  "gait_strut_pin_r": 18,
+  "gait_clear_pin_l": 15,
+  "gait_clear_pin_r": 16,
+  "gait_enable_block": "",
+  "gait_block_l": "",
+  "gait_block_r": "",
+  "gait_log": [
+   {
+    "tick": 139710,
+    "leg": "R",
+    "from": "STANCE",
+    "to": "RECOVER",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "cL": 0.0555044,
+     "cR": -0.0555044,
+     "lean": 0.0101732,
+     "vy": -0.181112,
+     "pmax": 76267200.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 139710,
+    "leg": "L",
+    "from": "REACH",
+    "to": "LOAD",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "cL": 0.0555044,
+     "cR": -0.0555044,
+     "lean": 0.0101732,
+     "vy": -0.181112,
+     "pmax": 76267200.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 139966,
+    "leg": "L",
+    "from": "LOAD",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.00987892,
+     "dR": 0.00987892,
+     "cL": 0,
+     "cR": 0,
+     "lean": 0.0012072,
+     "vy": 0.000770378,
+     "pmax": 515980,
+     "prelax": false,
+     "stride": 1
+    }
+   },
+   {
+    "tick": 139966,
+    "leg": "R",
+    "from": "RECOVER",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.00987892,
+     "dR": 0.00987892,
+     "cL": 0,
+     "cR": 0,
+     "lean": 0.0012072,
+     "vy": 0.000770378,
+     "pmax": 515980,
+     "prelax": false
+    }
+   },
+   {
+    "tick": 139967,
+    "leg": "R",
+    "from": "STANCE",
+    "to": "LIFT",
+    "gates": {
+     "dL": 0.00990591,
+     "dR": 0.00990591,
+     "cL": -9.31323e-10,
+     "cR": 9.31323e-10,
+     "lean": 0.00120336,
+     "vy": 0.000368704,
+     "pmax": 518906,
+     "whatif": true,
+     "patch": 0.571148,
+     "z0": 0.722593,
+     "reachDir": 1
+    }
+   },
+   {
+    "tick": 140269,
+    "leg": "L",
+    "from": "STANCE",
+    "to": "RECOVER",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "cL": -0.00561807,
+     "cR": 0.00561807,
+     "lean": 0.0064514,
+     "vy": -0.214726,
+     "pmax": 85655400.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 140269,
+    "leg": "R",
+    "from": "LIFT",
+    "to": "LOAD",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "cL": -0.00561807,
+     "cR": 0.00561807,
+     "lean": 0.0064514,
+     "vy": -0.214726,
+     "pmax": 85655400.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 140432,
+    "leg": "L",
+    "from": "RECOVER",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.0109585,
+     "dR": 0.0109585,
+     "cL": -9.31323e-10,
+     "cR": 9.31323e-10,
+     "lean": 0.00267884,
+     "vy": 0.000447367,
+     "pmax": 1184530.0,
+     "prelax": false
+    }
+   },
+   {
+    "tick": 140432,
+    "leg": "R",
+    "from": "LOAD",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.0109585,
+     "dR": 0.0109585,
+     "cL": -9.31323e-10,
+     "cR": 9.31323e-10,
+     "lean": 0.00267884,
+     "vy": 0.000447367,
+     "pmax": 1184530.0,
+     "prelax": false,
+     "stride": 2
+    }
+   },
+   {
+    "tick": 140433,
+    "leg": "L",
+    "from": "STANCE",
+    "to": "LIFT",
+    "gates": {
+     "dL": 0.0110088,
+     "dR": 0.0110088,
+     "cL": -9.31323e-10,
+     "cR": 9.31323e-10,
+     "lean": 0.00267026,
+     "vy": 0.00360628,
+     "pmax": 1180930.0,
+     "whatif": true,
+     "patch": 0.571148,
+     "z0": 0.724226,
+     "reachDir": 1
+    }
+   },
+   {
+    "tick": 140631,
+    "leg": "R",
+    "from": "STANCE",
+    "to": "RECOVER",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "cL": 0.00560605,
+     "cR": -0.00560605,
+     "lean": 0.0064559,
+     "vy": -0.214772,
+     "pmax": 85670300.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 140631,
+    "leg": "L",
+    "from": "LIFT",
+    "to": "LOAD",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "cL": 0.00560605,
+     "cR": -0.00560605,
+     "lean": 0.0064559,
+     "vy": -0.214772,
+     "pmax": 85670300.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 140794,
+    "leg": "L",
+    "from": "LOAD",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.0109622,
+     "dR": 0.0109622,
+     "cL": -9.31323e-10,
+     "cR": 9.31323e-10,
+     "lean": 0.00267726,
+     "vy": 0.000731604,
+     "pmax": 1185880.0,
+     "prelax": false,
+     "stride": 3
+    }
+   },
+   {
+    "tick": 140794,
+    "leg": "R",
+    "from": "RECOVER",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.0109622,
+     "dR": 0.0109622,
+     "cL": -9.31323e-10,
+     "cR": 9.31323e-10,
+     "lean": 0.00267726,
+     "vy": 0.000731604,
+     "pmax": 1185880.0,
+     "prelax": false
+    }
+   },
+   {
+    "tick": 140795,
+    "leg": "R",
+    "from": "STANCE",
+    "to": "LIFT",
+    "gates": {
+     "dL": 0.0110114,
+     "dR": 0.0110114,
+     "cL": -9.31323e-10,
+     "cR": 9.31323e-10,
+     "lean": 0.00266916,
+     "vy": 0.00390269,
+     "pmax": 1179580.0,
+     "whatif": true,
+     "patch": 0.571148,
+     "z0": 0.724225,
+     "reachDir": 1
+    }
+   },
+   {
+    "tick": 140810,
+    "leg": "R",
+    "from": "LIFT",
+    "to": "STANCE",
+    "gates": {
+     "why": "cut",
+     "vy": -0.0618221,
+     "dL": 0.00559173,
+     "dR": 0,
+     "knee": 3.46453,
+     "hip": -2.00985
+    }
+   }
+  ],
+  "has_scene": true
+ },
+ "v7_clock": "client wall clock, gross/whole-run",
+ "run": {
+  "strides": 3,
+  "run_s": 4.501482399995439,
+  "swing_depth_worst": 0.0,
+  "load_exit_depths": [
+   0.00985697,
+   0.00905462
+  ],
+  "contact_min": 77720.4,
+  "contact_max": 208335,
+  "conserve_worst": 0.000310433,
+  "teleport_overshoot": 0.26426047359897215,
+  "recover_entries": 3
+ },
+ "final_state": {
+  "ticks": 200928,
+  "enabled": true,
+  "cells": [
+   {
+    "v0": 0.287914,
+    "V": 0.287914,
+    "P": 0,
+    "pieces": 5396,
+    "caps": 126,
+    "ylo": -0.019507,
+    "yhi": 0.338,
+    "degenerate": false
+   },
+   {
+    "v0": 12.5091,
+    "V": 12.5091,
+    "P": 0,
+    "pieces": 26442,
+    "caps": 380,
+    "ylo": 3.415,
+    "yhi": 9.97118,
+    "degenerate": false
+   },
+   {
+    "v0": 0.693006,
+    "V": 0.693006,
+    "P": 0,
+    "pieces": 5604,
+    "caps": 104,
+    "ylo": 1.903,
+    "yhi": 3.415,
+    "degenerate": false
+   },
+   {
+    "v0": 0.334578,
+    "V": 0.334578,
+    "P": 0,
+    "pieces": 1668,
+    "caps": 126,
+    "ylo": 0.338,
+    "yhi": 1.903,
+    "degenerate": false
+   }
+  ],
+  "force_l": 0,
+  "force_r": 0,
+  "load_l": 0,
+  "load_r": 0,
+  "damage_sum": 0,
+  "failed": 0,
+  "capacity_sum": 1346990000.0,
+  "flex_l_deg": 0,
+  "flex_r_deg": 0,
+  "sealed": true,
+  "n_cells": 4,
+  "V_lower": 0.287914,
+  "V_upper": 12.5091,
+  "P_lower": 0,
+  "P_upper": 0,
+  "v0_lower": 0.287914,
+  "v0_upper": 12.5091,
+  "V_whole": 13.8246,
+  "conserve_pct": -0.000117273,
+  "seal_split": 0,
+  "seal_cuts": 630,
+  "seal_loops": 0,
+  "seal_caps": 0,
+  "seal_refusal": "",
+  "dimple_m": 0,
+  "gravity_on": true,
+  "root_y": 0.00950712,
+  "root_vy": -6.43359e-08,
+  "g_contact_n": 135618,
+  "stance_on": false,
+  "stance_ankle_deg": 0,
+  "stance_kp": 3.53082,
+  "stance_lean_x": 0,
+  "stance_lean_z": -0.000582516,
+  "gait_on": false,
+  "gait_l": "STANCE",
+  "gait_r": "STANCE",
+  "gait_stride": 3,
+  "gait_depth_l": 0.00879031,
+  "gait_depth_r": 0.00516237,
+  "gait_clear_l": -0.00362793,
+  "gait_clear_r": 0.00362793,
+  "gait_lean_x": 0,
+  "gait_lean_z": -0.00223237,
+  "gait_p_max": 3102630.0,
+  "gait_hip_l_deg": 0,
+  "gait_hip_r_deg": 0,
+  "gait_knee_l_deg": 0,
+  "gait_knee_r_deg": 0,
+  "gait_feet_cell": 0,
+  "gait_strut_pin_l": 17,
+  "gait_strut_pin_r": 18,
+  "gait_clear_pin_l": 15,
+  "gait_clear_pin_r": 16,
+  "gait_enable_block": "",
+  "gait_block_l": "",
+  "gait_block_r": "",
+  "gait_log": [
+   {
+    "tick": 198075,
+    "leg": "R",
+    "from": "STANCE",
+    "to": "RECOVER",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "cL": 0.0555625,
+     "cR": -0.0555625,
+     "lean": 0.0101588,
+     "vy": -0.18096,
+     "pmax": 76207300.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 198075,
+    "leg": "L",
+    "from": "REACH",
+    "to": "LOAD",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "cL": 0.0555625,
+     "cR": -0.0555625,
+     "lean": 0.0101588,
+     "vy": -0.18096,
+     "pmax": 76207300.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 198330,
+    "leg": "L",
+    "from": "LOAD",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.00985697,
+     "dR": 0.00985697,
+     "cL": 0,
+     "cR": 0,
+     "lean": 0.00120562,
+     "vy": 0.000924527,
+     "pmax": 511930,
+     "prelax": false,
+     "stride": 1
+    }
+   },
+   {
+    "tick": 198330,
+    "leg": "R",
+    "from": "RECOVER",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.00985697,
+     "dR": 0.00985697,
+     "cL": 0,
+     "cR": 0,
+     "lean": 0.00120562,
+     "vy": 0.000924527,
+     "pmax": 511930,
+     "prelax": false
+    }
+   },
+   {
+    "tick": 198331,
+    "leg": "R",
+    "from": "STANCE",
+    "to": "LIFT",
+    "gates": {
+     "dL": 0.00988308,
+     "dR": 0.00988308,
+     "cL": 1.86265e-09,
+     "cR": -1.86265e-09,
+     "lean": 0.0012022,
+     "vy": 0.000460629,
+     "pmax": 520256,
+     "whatif": true,
+     "patch": 0.571148,
+     "z0": 0.722592,
+     "reachDir": 1
+    }
+   },
+   {
+    "tick": 198633,
+    "leg": "L",
+    "from": "STANCE",
+    "to": "RECOVER",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "cL": -0.00566728,
+     "cR": 0.00566728,
+     "lean": 0.00644416,
+     "vy": -0.214665,
+     "pmax": 85612700.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 198633,
+    "leg": "R",
+    "from": "LIFT",
+    "to": "LOAD",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "cL": -0.00566728,
+     "cR": 0.00566728,
+     "lean": 0.00644416,
+     "vy": -0.214665,
+     "pmax": 85612700.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 198836,
+    "leg": "L",
+    "from": "RECOVER",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.00905462,
+     "dR": 0.00905462,
+     "cL": 0,
+     "cR": 0,
+     "lean": 0.00236624,
+     "vy": -0.000925465,
+     "pmax": 1039160.0,
+     "prelax": false
+    }
+   },
+   {
+    "tick": 198836,
+    "leg": "R",
+    "from": "LOAD",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.00905462,
+     "dR": 0.00905462,
+     "cL": 0,
+     "cR": 0,
+     "lean": 0.00236624,
+     "vy": -0.000925465,
+     "pmax": 1039160.0,
+     "prelax": false,
+     "stride": 2
+    }
+   },
+   {
+    "tick": 198837,
+    "leg": "L",
+    "from": "STANCE",
+    "to": "LIFT",
+    "gates": {
+     "dL": 0.00912304,
+     "dR": 0.00912304,
+     "cL": 0,
+     "cR": 0,
+     "lean": 0.00236005,
+     "vy": -0.00391375,
+     "pmax": 1036460.0,
+     "whatif": true,
+     "patch": 0.571148,
+     "z0": 0.723881,
+     "reachDir": 1
+    }
+   },
+   {
+    "tick": 199060,
+    "leg": "R",
+    "from": "STANCE",
+    "to": "RECOVER",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "cL": 0.00520252,
+     "cR": -0.00520252,
+     "lean": 0.00651801,
+     "vy": -0.215302,
+     "pmax": 85991800.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 199060,
+    "leg": "L",
+    "from": "LIFT",
+    "to": "LOAD",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "cL": 0.00520252,
+     "cR": -0.00520252,
+     "lean": 0.00651801,
+     "vy": -0.215302,
+     "pmax": 85991800.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 199081,
+    "leg": "R",
+    "from": "RECOVER",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.000388592,
+     "dR": 0.0136673,
+     "cL": 0.0132787,
+     "cR": -0.0132787,
+     "lean": 0.00382861,
+     "vy": 0.000837875,
+     "pmax": 50737100.0,
+     "prelax": false
+    }
+   },
+   {
+    "tick": 199280,
+    "leg": "L",
+    "from": "LOAD",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.0103631,
+     "dR": 0.0103631,
+     "cL": 0,
+     "cR": 0,
+     "lean": 0.00225464,
+     "vy": -0.000487566,
+     "pmax": 992581,
+     "prelax": false,
+     "stride": 3
+    }
+   },
+   {
+    "tick": 199281,
+    "leg": "R",
+    "from": "STANCE",
+    "to": "LIFT",
+    "gates": {
+     "dL": 0.0104125,
+     "dR": 0.0104125,
+     "cL": -9.31323e-10,
+     "cR": 9.31323e-10,
+     "lean": 0.0022479,
+     "vy": 0.000769841,
+     "pmax": 992356,
+     "whatif": true,
+     "patch": 0.571148,
+     "z0": 0.723757,
+     "reachDir": 1
+    }
+   },
+   {
+    "tick": 199285,
+    "leg": "R",
+    "from": "LIFT",
+    "to": "STANCE",
+    "gates": {
+     "why": "cut",
+     "vy": -0.0054903,
+     "dL": 0.00879031,
+     "dR": 0.00516237,
+     "knee": 1.06723,
+     "hip": -0.619121
+    }
+   }
+  ],
+  "has_scene": true
+ },
+ "bars": [
+  [
+   "V0",
+   "body live: has_scene=True sealed=True feetCell=0 (yhi=0.338) n_cells=4",
+   true
+  ],
+  [
+   "V1a",
+   "/tick_gravity arms (gravity_on=True)",
+   true
+  ],
+  [
+   "V1b",
+   "settled=True (worst |root_vy| 8.97e-08); g_contact_n 135618 N vs m*g 135618 N (dev 0.000% <= 0.5%)",
+   true
+  ],
+  [
+   "V1c",
+   "rest pressures exactly 0 (max 0.00e+00 Pa), root_y +0.00951 m (the derived +9.5 mm rise branch)",
+   true
+  ],
+  [
+   "V2",
+   "/tick_stance arms (stance_on=True); kp=3.531 rad/(m s) -> |S| ~ 0.283 m/rad (prereg 0.283)",
+   true
+  ],
+  [
+   "V3a",
+   "/tick_gait arms (gait_on=True, feetCell=0)",
+   true
+  ],
+  [
+   "V3b",
+   "INDEPENDENT /verts patch audit: harness L/R 0.5703/0.5703 m vs engine 0.5711/0.5711 m (worst 0.1% <= 20%)",
+   true
+  ],
+  [
+   "V4",
+   "3 strides in 4.5 s; 16 logged transitions, 16 replay OK (3 measured RECOVER aborts seen)",
+   true
+  ],
+  [
+   "V5",
+   "single support: worst swing depth 0.00 mm < 2 mm; LOAD-exit depths [9.86, 9.05] mm in [8,12] mm -> True",
+   true
+  ],
+  [
+   "V7",
+   "teleport audit (client wall clock, gross/whole-run): worst commanded-rate overshoot vs the MEASURED caps = 0.26x (bar <= 1.10)",
+   true
+  ],
+  [
+   "V8",
+   "|conserve_pct| worst 3.10e-04 <= 0.01 through every phase",
+   true
+  ],
+  [
+   "V9a",
+   "cut mid-swing (L/R = ('STANCE', 'LIFT'), held pose [0, -0.62, 0, 1.07] deg): one poll later gait_on=false, both legs STANCE, pins 13-16 at EXACTLY 0",
+   true
+  ],
+  [
+   "V9b",
+   "the measured abort entry: {\"why\": \"cut\", \"vy\": -0.0054903, \"dL\": 0.00879031, \"dR\": 0.00516237, \"knee\": 1.06723, \"hip\": -0.619121}",
+   true
+  ],
+  [
+   "V9c",
+   "after the cut: stride count frozen at 3; |root_vy| transient peak 4.26e-02 > 0.001 (the stumble number, measured)",
+   true
+  ],
+  [
+   "V10",
+   "teardown (both rungs disarmed=True): settled=True, g_contact_n 135618 N (dev 0.000%), max|P| 0.00e+00 Pa == 0, ankles0=True, root back at +0.00951: True",
+   true
+  ]
+ ]
+}

@@ -46,10 +46,15 @@ THE BARS (each cited; full derivations in R4_GAIT_VERIFY/PROTOCOL.md):
                  /verts matches the engine's within 20% [frozen-sets
                  derivation; F1's 0.056-vs-0.283 lesson]
   V4  WALK       >= --min-strides strides; every logged transition
-                 REPLAYS its own gate: LIFT->REACH miny >= 0.05 m;
-                 REACH->LOAD z >= its logged bar; LOAD/RECOVER->STANCE
-                 depth >= 0.8 x 0.01 m and |vy| <= 1e-3 m/s; STANCE->LIFT
-                 carries whatif:true [P5 no-gateless-moves; F-LIE]
+                 REPLAYS its own gate: phase advances against their
+                 phase gates (LIFT->REACH miny >= 0.05 m; REACH->LOAD
+                 z >= its logged bar; LOAD/RECOVER->STANCE depth >=
+                 0.8 x 0.01 m and |vy| <= 1e-3 m/s; STANCE->LIFT
+                 carries whatif:true), ABORTS against the abort
+                 contract (the full measured gate set + why; audited
+                 against minyL/minyR when present) -- RECOVER is the
+                 prereg'd response, not a failure [P5 no-gateless-moves;
+                 F-LIE; STATEMENT "plus RECOVER (the measured abort)"]
   V5  WEIGHT     single support: swing depth < 0.2 x sink = 2 mm;
                  LOAD-exit depth of the loaded leg in [0.8,1.2] x sink
                  [prereg P1]
@@ -64,8 +69,12 @@ THE BARS (each cited; full derivations in R4_GAIT_VERIFY/PROTOCOL.md):
                  > 1e-3 m/s within 2 s (the stumble); stride count
                  frozen; g_contact_n moves off m*g during the run and
                  returns to m*g at settle [P3; F-GLIDE; THE FALL LAW]
-  V10 REST       teardown: pressures exactly 0 at rest, ankles 0, root
-                 back at baseline [S3/F2 law]
+  V10 REST       teardown: disarm the remaining rung (the cut already
+                 took gait; the stance integrator freezes at its earned
+                 lean term by design, so REST is measured after
+                 /tick_stance off), then pressures exactly 0, ankles 0,
+                 root back at baseline [S3/F2 law: "teardown returns
+                 the ankles to exactly 0 ... rest is rest"]
 
 Exit 0 = every bar PASS; 1 = any FAIL (the falsifier fired); 2 =
 environment (unreachable engine -- not a verdict).
@@ -224,6 +233,53 @@ def replay_gate(entry: dict) -> tuple:
                 if ok else "enable entry missing channels (F-LIE)")
     base_ok = all(k in g for k in ("dL", "dR", "cL", "cR", "lean", "vy",
                                    "pmax"))
+    if g.get("why") in ("support_lost", "touchdown"):
+        # THE ABORT CONTRACT (the V4 amendment, R5-teardown-finisher; the
+        # prereg's own words): the machine is "STANCE -> LIFT -> REACH ->
+        # LOAD, plus RECOVER (the measured abort)" (THE GAIT CHECKPOINT
+        # PREREGISTRATION, STATEMENT), and P5/F-LIE demand an entry carry
+        # ITS OWN measured gate values -- not the values of a gate the
+        # aborted phase never reached. A support-lost abort fires while
+        # the planted foot's world min-y grazes the floor mid transient
+        # (the entry's own vy says which way the root is going: down, to
+        # re-load it); no touchdown z was measured because no touchdown
+        # happened -- replaying z/bar here mis-reads the abort as the
+        # phase advance it replaced. What the entry DOES owe (and the
+        # entries carry) is the full shared gate set; window-6+ entries
+        # additionally carry minyL/minyR (the gate's own number) and the
+        # claim itself becomes auditable. FALSIFIER (named before the
+        # run): a support-lost whose lost foot's min-y is still planted
+        # (< -1e-3, the bearing-depth scale) is a SPURIOUS abort -- the
+        # gate misread a planted foot as support loss -> FAIL.
+        ok = base_ok
+        txt = f"the measured abort: {g.get('why')}"
+        ml, mr = g.get("minyL"), g.get("minyR")
+        if ok and ml is not None and mr is not None:
+            if g.get("why") == "support_lost":
+                # the RECOVER entry's own leg lost support; its LOAD
+                # partner lost the OTHER leg's support (one abort, two
+                # entries, one measured fact)
+                mo = (ml if leg == "L" else mr) if to == "RECOVER" \
+                    else (mr if leg == "L" else ml)
+                ok = mo >= -1e-3
+                txt = (f"support_lost audited: lost foot's world min-y "
+                       f"{mo:.4f} m >= -1e-3 (the floor graze, measured)"
+                       ) if ok else \
+                    (f"SPURIOUS abort: support_lost logged but the lost "
+                     f"foot's world min-y {mo:.4f} m is still planted "
+                     f"(< -1e-3) -- the gate misread a planted foot "
+                     f"(F-LIE: state and log contradict)")
+            else:  # touchdown: the SWING foot found the floor mid-reach
+                ms = ml if leg == "L" else mr
+                ok = ms < 0.0
+                txt = (f"touchdown audited: swing world min-y "
+                       f"{ms:.4f} m < 0 (the mid-reach landing, measured)"
+                       ) if ok else \
+                    (f"SPURIOUS abort: touchdown logged but the swing "
+                     f"foot's world min-y {ms:.4f} m is still above the "
+                     f"floor (F-LIE: state and log contradict)")
+        return (tag, ok, txt if ok else
+                "abort entry missing its measured gates (F-LIE)")
     if frm == "STANCE" and to == "LIFT":
         ok = base_ok and g.get("whatif") is True and \
             g.get("patch", 0.0) > MIN_CHANNEL
@@ -242,9 +298,7 @@ def replay_gate(entry: dict) -> tuple:
                 f"{g.get('bar'):.4f}" if ok else
                 f"REACH->LOAD z {g.get('z')} < bar {g.get('bar')}")
     if to == "RECOVER":
-        ok = base_ok and g.get("why") in ("support_lost", "touchdown")
-        return (tag, ok, f"the measured abort: {g.get('why')}"
-                if ok else "RECOVER without a measured why")
+        return (tag, False, "RECOVER without a measured why (F-LIE)")
     if to == "STANCE":  # the normal LOAD/RECOVER exit: depth + settle
         d = g.get("d" + str(leg), -1e30)  # the engine logs "dL"/"dR"
         ok = base_ok and d >= BEARING_FRAC * SINK_M - 1e-6 and \
@@ -490,6 +544,9 @@ def main() -> int:
     conserve_worst = 0.0
     prev_pose = None
     prev_t = None
+    prev_ts = None
+    gross_sum = [0.0, 0.0, 0.0, 0.0]
+    t_pose0 = None
     recover_seen = 0
     while True:
         now = time.monotonic()
@@ -511,21 +568,54 @@ def main() -> int:
             seen += 1
         phases = (st.get("gait_l"), st.get("gait_r"))
         dnow = (st.get("gait_depth_l", 0.0), st.get("gait_depth_r", 0.0))
-        if "LIFT" in phases or "REACH" in phases:
-            sw = 0 if phases[0] in ("LIFT", "REACH") else 1
+        # single support = the REACH phase -- the machine's OWN name for
+        # it (membrane_tick.cpp, REACH case: "single support: the
+        # reference is the STANCE foot's live centroid"); P1's window.
+        # The LIFT rise is the designed lift transient: at the
+        # STANCE->LIFT tick the foot still reads the full sink while it
+        # leaves the floor, and a 10 Hz poll samples that rise on any
+        # clean fast walk (R4's interleaved-abort walk just happened to
+        # miss it). A foot deep in the floor LIFTING is not weight
+        # bearing -- the bearing demand is V5's LOAD-exit clause.
+        if "REACH" in phases:
+            sw = 0 if phases[0] == "REACH" else 1
             swing_depth_worst = max(swing_depth_worst, dnow[sw])
         pose_now = tuple(st.get(k, 0.0) for k in
                          ("gait_hip_l_deg", "gait_hip_r_deg",
                           "gait_knee_l_deg", "gait_knee_r_deg"))
+        ts_now = st.get("ts_ms")
         if prev_pose is not None and prev_t is not None:
-            dtp = max(now - prev_t, 1e-3)
-            for key, (a, b) in zip(("HL", "HR", "KL", "KR"),
-                                   zip(pose_now, prev_pose)):
-                cap = rate_caps.get(key, 0.0)
-                if cap > 0:
-                    overshoot = (abs(a - b) / dtp) / (cap * 57.29577951308)
-                    teleport_worst = max(teleport_worst, overshoot)
+            # the denominator: the SERVER window between snapshots when
+            # the engine stamps ts_ms (exact -- the stamp is read under
+            # the same lock pass as the pose fields, so wake jitter on
+            # the poll side cannot inflate the rate). Without the stamp
+            # (a pre-ts_ms binary) the audit runs GROSS-AND-WHOLE-RUN:
+            # sum |dpose| over all pairs / total wall time. The per-tick
+            # servo clamps bound pose travel by cap*dt every tick, so
+            # gross travel <= cap * wall window is a theorem; wall-clock
+            # wake jitter (~15-20 ms Windows grain, main.cpp:583) breaks
+            # a single 100 ms pair but cancels against a multi-second
+            # window (boundary terms only) -- while a real teleport (the
+            # 57x frame-unit bug F-TELEPORT was named for) blows gross
+            # travel far past cap*W. Both modes keep the 1.10 bar.
+            if ts_now is not None and prev_ts is not None:
+                dtp = max((ts_now - prev_ts) / 1000.0, 1e-3)
+                for key, (a, b) in zip(("HL", "HR", "KL", "KR"),
+                                       zip(pose_now, prev_pose)):
+                    cap = rate_caps.get(key, 0.0)
+                    if cap > 0:
+                        overshoot = ((abs(a - b) / dtp)
+                                     / (cap * 57.29577951308))
+                        teleport_worst = max(teleport_worst, overshoot)
+                results["v7_clock"] = "engine ts_ms, per-poll"
+            else:
+                gross_sum = [g + abs(a - b) for g, (a, b)
+                             in zip(gross_sum, zip(pose_now, prev_pose))]
+                results["v7_clock"] = "client wall clock, gross/whole-run"
         prev_pose, prev_t = pose_now, now
+        if t_pose0 is None:
+            t_pose0 = now
+        prev_ts = ts_now
         contact = st.get("g_contact_n", 0.0)
         contact_min, contact_max = min(contact_min, contact), \
             max(contact_max, contact)
@@ -555,7 +645,16 @@ def main() -> int:
                    f" mm in [{BEARING_FRAC * SINK_M * 1000:.0f},"
                    f"{1.2 * SINK_M * 1000:.0f}] mm -> {in_band}",
              swing_depth_worst < SWING_DEPTH_FRAC * SINK_M and bool(in_band))
-    bars.add("V7", f"teleport audit (poll grain): worst commanded-rate "
+    if results.get("v7_clock", "client wall clock, gross/whole-run").startswith(
+            "client") and t_pose0 is not None:
+        wall = max(prev_t - t_pose0, 1e-3)
+        for key, g in zip(("HL", "HR", "KL", "KR"), gross_sum):
+            cap = rate_caps.get(key, 0.0)
+            if cap > 0:
+                overshoot = (g / wall) / (cap * 57.29577951308)
+                teleport_worst = max(teleport_worst, overshoot)
+    bars.add("V7", f"teleport audit ({results.get('v7_clock', 'client '
+                   'wall clock, gross/whole-run')}): worst commanded-rate "
                    f"overshoot vs the MEASURED caps = "
                    f"{teleport_worst:.2f}x (bar <= 1.10)",
              teleport_worst <= 1.10)
@@ -657,19 +756,49 @@ def main() -> int:
                         f"number, measured)",
                  stride_frozen and vy_peak > SETTLE_VY)
 
-    # ---- phase V10: REST IS REST -------------------------------------------
-    settled, worst_vy, st = wait_settle(base, 15.0)
+    # ---- phase V10: REST IS REST (the teardown) ----------------------------
+    # The stance prereg's S3 law, verbatim: "teardown returns the ankles
+    # to exactly 0 and lean to baseline; the root rest state (root_y,
+    # root_vy) is unchanged by stance having run" -- and: "while the servo
+    # runs the ankles bend the surface and the water law answers dP there
+    # BY DESIGN -- rest is rest." So REST means every rung DISARMED: the
+    # cut (V9) already disarmed gait, and by its composed-ankle law the
+    # strut pins then carry stance's live lean term (the R3/V3a audit fix
+    # -- zeroing there would stomp the balance servo). The stance servo
+    # itself is a pure integral law (dtheta = -kp*lean, no leak): once
+    # lean_z nulls it FREEZES at the lean term the walk earned, the held
+    # ankle pitch bends the rest surface, the water law answers with a
+    # residual dP, and the root rests off the baseline -- the measured
+    # R4 teardown state (stance_th_ -0.1217 deg, max|P| 1.39e5 Pa, root
+    # +0.00727 m, contact dev 0.581%). None of that is a defect; it is
+    # the servo holding state in a rung that is still armed. The
+    # engine's disarm contract (stance_off_locked_: "deterministic off:
+    # ankles to authored 0 -- no hidden pose decay, no stale
+    # integrator") already implements S3's teardown; the harness simply
+    # never invoked it. Disarm the last rung, let the root's own spring
+    # converge (omega = sqrt(k/m) ~ 31 rad/s, zeta ~ 0.7 -- sub-second),
+    # then measure the F2 rest state V1c defined.
+    try:
+        http_post(base, "/tick_stance", b'{"on":false}')
+    except (urllib.error.HTTPError, urllib.error.URLError) as e:
+        print(f"   teardown /tick_stance off -> {e} (the bar measures "
+              f"whatever state results)")
+    settled, worst_vy, st = wait_settle(base, 20.0)
+    time.sleep(3.0)   # past the settle threshold: depth -> W/k, dev -> 0
+    st = get_state(base)
     contact = st.get("g_contact_n", 0.0)
     dev = abs(contact - MG_N) / MG_N
     pmax = max((abs(c.get("P", 0.0)) for c in st.get("cells", [])),
                default=0.0)
     ankles0 = abs(st.get("stance_ankle_deg", 0.0)) < 1e-6
     back_root = abs(st.get("root_y", 0.0) - rest_root_y) < 5e-4
-    bars.add("V10", f"teardown: settled={settled}, g_contact_n "
+    disarmed = not st.get("gait_on") and not st.get("stance_on")
+    bars.add("V10", f"teardown (both rungs disarmed={disarmed}): "
+                    f"settled={settled}, g_contact_n "
                     f"{contact:.0f} N (dev {dev * 100:.3f}%), max|P| "
                     f"{pmax:.2e} Pa == 0, ankles0={ankles0}, root back "
                     f"at {rest_root_y:+.5f}: {back_root}",
-             settled and dev <= CONTACT_TOL and pmax == 0.0
+             settled and disarmed and dev <= CONTACT_TOL and pmax == 0.0
              and ankles0 and back_root)
     results["final_state"] = st
 

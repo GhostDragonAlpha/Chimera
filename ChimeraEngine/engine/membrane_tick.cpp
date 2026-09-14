@@ -2271,10 +2271,18 @@ void MembraneTick::gait_step_locked_(std::vector<float>& verts9, float dt) {
     const bool settled = std::fabs(root_vy_) <= GAIT_SETTLE_VY;
 
     // shared gate numbers on EVERY transition log (P5: no gateless moves)
+    // minyL/minyR are the per-side world min-y the support-lost and
+    // touchdown gates themselves read (wminy above, pre-root pose +
+    // root_y_): logged so an abort entry's CLAIM is auditable against
+    // the entry's OWN numbers, not just its why-string (the gait
+    // harness replays it: support_lost demands the lost foot's min-y
+    // >= -1e-3, touchdown the swing foot's min-y < 0).
     auto gates0 = [&]() -> std::string {
         std::ostringstream g;
         g << "{\"dL\":" << gait_depth_[0]
           << ",\"dR\":" << gait_depth_[1]
+          << ",\"minyL\":" << wminy[0]
+          << ",\"minyR\":" << wminy[1]
           << ",\"cL\":" << gait_clear_[0]
           << ",\"cR\":" << gait_clear_[1]
           << ",\"lean\":" << lean
@@ -2555,7 +2563,15 @@ std::string MembraneTick::state_json() const {
         cap_sum += capacity_[i];
     }
     std::ostringstream o;
-    o << "{\"ticks\":" << ticks_
+    // ts_ms: the engine's OWN monotonic clock, read under the SAME lock
+    // pass as every field below -- a poller can therefore divide a pose
+    // delta by the exact server window the machine had to move in (the
+    // gait harness's F-TELEPORT audit), instead of the client's wake
+    // jitter. Differences are meaningful; the epoch base is not.
+    o << "{\"ts_ms\":"
+      << std::chrono::duration<double, std::milli>(
+             std::chrono::steady_clock::now().time_since_epoch()).count()
+      << ",\"ticks\":" << ticks_
       << ",\"enabled\":" << (enabled_ ? "true" : "false")
       << ",\"cells\":" << cells_.size()
       << ",\"force_l\":" << force_l_ << ",\"force_r\":" << force_r_

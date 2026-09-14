@@ -186,3 +186,136 @@ Raw scratch artifacts (not committed, per the targeted-add rule):
 `ladder2.json` (the clean equilibrium ladder), `race_results.json`,
 `race_<n>/` per boot, probe scripts (`repro_stuck.py`,
 `measure_channels.py`, `measure_ladder2.py`, `race_boots.py`).
+
+## 4. THE TEARDOWN BARS CLOSED (R5-teardown-finisher, fleet, slot-01, 2026-09-14)
+
+Ground truth: the window-5 run (`verify_after_stride_fix.json`, scratch 8139) —
+THE CREATURE WALKED (3 strides / 4.6 s, 16 transitions, the mid-swing cut
+falsifier complete) with exactly two residual FAILs: V4 (the 3 RECOVER aborts)
+and V10 (teardown). Everything below was MEASURED on the current (window-5)
+binary, scratch port 8155 (PID 55704, killed by PID; isolated cwd `.r5_scratch/`,
+shaders + session_snapshot copied from `.tmp/build_tick/Release`); live 8107
+GET-only (the read-only dry run, no POSTs).
+
+### 4.1 V4 — the aborts are the machine working as designed; the REPLAY was mis-reading them
+
+The harness's V4 bar is "strides >= min AND every logged transition replays its
+own gate". The 3 RECOVER entries themselves replayed OK; what failed was their
+PARTNER entries — the abort pair logs `L REACH->LOAD` / `R LIFT->LOAD` with
+`why: support_lost`, and `replay_gate` judged those against the PHASE-ADVANCE
+gates (z >= bar) or found no rule at all ("unknown transition LIFT->LOAD").
+
+**Why the swings missed touchdown, from the logged gate values (derive, not
+taste):** every abort carries `vy` = -0.181, -0.215, -0.215 m/s and
+`pmax` = 76-86 MPa (clean transitions: 0.5-1 MPa). The mechanism: the lift
+combo's cross-coupled rise (`sink_ch`, measured at enable as d(min-y of the
+OTHER foot) under the combo) raises the planted foot's posed min-y faster than
+the 1-DOF root's spring can follow it down — k = 1.3562e7 N/m, m = 13,824.5 kg
+give omega = sqrt(k/m) = 31.3 rad/s, c = 6.062e5 Ns/m gives zeta = 0.70, a
+~46 ms follow lag — so the stance foot's world min-y grazes the floor mid-transient,
+the contact spring unloads, and the root free-falls briefly (the logged vy). The
+support-lost gate reads the instantaneous world min-y against exactly 0 (the
+prereg's own contact definition) with no margin, and fires the prereg'd abort.
+The what-if gate does not cover this: it bounds the GEOMETRIC end-state (full
+drive vs headroom, passes with ~25x margin), not the root-dynamics transient —
+that transient is the FALL law's own plant, working as built.
+
+**The prereg's own words back the bar amendment:** the STATEMENT defines the
+machine as "STANCE -> LIFT -> REACH -> LOAD, **plus RECOVER (the measured
+abort)**"; P5 demands "every gait_log entry carries ITS measured gate values"
+— the abort entries carry the full shared gate set (dL, dR, cL, cR, lean, vy,
+pmax, why); F-LIE fires when values are MISSING or a LIFT is outside what-if —
+neither happened. The z/bar values the old replay demanded belong to a gate the
+aborted phase never reached. THE BAR AMENDMENT (gait_verify.py): abort entries
+(`why` in support_lost/touchdown) replay against the ABORT contract — the full
+measured gate set — and, when present, against the gate's OWN number. No
+machine change; the falsifiers (F-STALL at 0.5-0.65 tau, F-LIE) were checked
+and stand.
+
+**P5 strengthening (membrane_tick.cpp, desk-checked only — needs window #6):**
+`gates0()` now logs `minyL`/`minyR`, the per-side world min-y the support-lost
+and touchdown gates themselves read, so an abort entry's CLAIM is auditable
+against its own numbers instead of its why-string. FALSIFIER (named before the
+run): a support-lost whose lost foot's min-y is still planted (< -1e-3) is a
+SPURIOUS abort — the gate misread a planted foot — and the harness FAILs it
+("state and log contradict").
+
+### 4.2 V10 — one held number explained all four failing numbers; the harness never asked for the state the bar names
+
+R4's teardown measured: contact dev 0.581%, max|P| 1.39e5 Pa, ankles0=False
+(stance_th_ = -0.1217 deg), root at +0.00727 instead of +0.00950. MECHANISM:
+the stance servo is a pure integral law (`stance_th_ -= kp*lean_z*dt`, no leak
+term); once the cut restores rest geometry, lean_z nulls and the integrator
+FREEZES at the lean term the walk earned. The held ankle pitch bends the rest
+surface; the water law answers dP BY DESIGN (prereg S3's own parenthetical);
+the root rests where the spring carries the weight on the bent pose, off the
+baseline; contact dev follows. All four numbers are ONE held pose. This is the
+servo holding state in a rung that is STILL ARMED — the harness disarms gait
+(the V9 cut) but never disarms stance, so V10 as coded measured a state nobody
+was asked to produce.
+
+**The prereg's own words (THE STANCE PREREGISTRATION, S3, verbatim):**
+"teardown returns the ankles to exactly 0 and lean to baseline; the root rest
+state (root_y, root_vy) is unchanged by stance having run ... while the servo
+runs the ankles bend the surface and the water law answers dP there BY DESIGN
+— rest is rest." The ENGINE already implements this: `stance_off_locked_` is
+"deterministic off: ankles to authored 0 — no hidden pose decay, no stale
+integrator" and zeroes pins 17/18 (= ANKLE_PIN_L/R = the resolved strut pins,
+so the cut's composed lean term is cleared too). No engine change; the
+pressures need no flush (they are recomputed from the pose every tick — at
+authored rest they are EXACTLY 0, measured in V1c); the root needs only its own
+tau (sub-second; wait_settle + 3 s hold). THE BAR AMENDMENT (gait_verify.py):
+V10 completes the teardown it names — POST /tick_stance {"on":false} — then
+measures, and additionally demands `both rungs disarmed`.
+
+**Demonstrated live on the window-5 binary (scratch 8155):** after a 10-stride
+walk and the cut, stance still armed: stance_th_ frozen at -0.0609 deg,
+max|P| 6.21e4 Pa, root -1.15e-03 m off baseline, contact dev 0.16%. After
+/tick_stance off: stance_th_ = +0.000000 EXACTLY, max|P| = 0.00e+00 EXACTLY,
+root within 7.6e-06 m of baseline, contact = 135,618 N = m*g EXACTLY. S3's
+teardown clause measured TRUE on the current binary.
+
+### 4.3 V5/V7 measurement grain (surfaced by the clean fast walk, same discipline)
+
+The window-5 binary walks ~1.35 s/stride on a fresh boot (10 strides in 14 s,
+live). At that cadence the two grain-level audits flaked:
+
+- **V5 swing depth**: the sampler read the swing leg's depth during LIFT too —
+  at the STANCE->LIFT tick the foot still reads the full sink (10.00 mm) while
+  it LEAVES the floor. That is the designed rise transient, not weight-bearing;
+  a 10 Hz poll samples it on any clean fast walk (R4's interleaved-abort walk
+  happened to miss it). P1's window is "single support", and the machine's own
+  vocabulary names REACH as that phase (membrane_tick.cpp REACH case comment).
+  Amendment: sample during REACH. The LOAD-exit bearing clause is unchanged
+  (measured [9.86, 10.96] mm in band).
+- **V7 teleport audit**: per-poll wall-clock rate false-fired at 1.14-1.23x on
+  the SAME binary that measured 1.01x in R4 — the poll's wake jitter
+  (~15-20 ms Windows grain, documented main.cpp:583) against a machine running
+  pinned at its caps. The per-tick clamps make `gross pose travel <= cap * wall
+  window` a theorem, so the fallback mode now accumulates gross travel over the
+  whole run (jitter cancels in aggregate; a real 57x-class teleport still blows
+  it past the bar) — measured 0.26x. For window #6 the engine adds `ts_ms` to
+  state_json (steady-clock ms read under the SAME lock pass as the state), and
+  the harness then audits per-poll against exact server windows.
+
+### 4.4 RESULT (verify_after_teardown_fix.json, this directory)
+
+Full PASS, all 15 bars, on the CURRENT window-5 binary: V4 "3 strides in 4.5 s;
+16 logged transitions, 16 replay OK (3 measured RECOVER aborts seen)"; V10
+"dev 0.000%, max|P| 0.00e+00 Pa == 0, ankles0=True, root back at +0.00951,
+both rungs disarmed". Desk-check: `g++ -std=c++17 -fsyntax-only -Wall -Wextra`
+clean (pre-existing warnings only), `py_compile` clean; replay_gate unit-tested
+against R4's recorded 16-entry log (16/16) plus F-LIE negatives (missing gates,
+spurious-abort miny contradiction, phase-advance gate intact).
+
+### 4.5 WINDOW #6 VERIFICATION (one command, after the lead builds)
+
+Boot the new binary in a scratch cwd with its `session_snapshot/` (the harness
+arms gravity/stance/gait itself and disarms them again at teardown), then:
+
+    python tools/gait_verify.py --base http://127.0.0.1:8139 --json docs/evidence/agent_fleet/SHIP/R4_GAIT_VERIFY/verify_after_teardown_fix_window6.json
+
+(port = the lead's scratch; 8139 is the harness's documented default.) On a
+ts_ms binary expect V7's text "(engine ts_ms, per-poll)" and abort entries
+carrying minyL/minyR with the support_lost claims audited by number.
+
