@@ -1,0 +1,36 @@
+studio: session log -> session_20260914_082412.jsonl
+floor: building pipeline (modules ok)
+floor: pipeline created
+Compute pipeline created
+THE ENGINE STUDIO: overlay ready (F1)
+Vulkan engine initialized: 2560 x 1440, 2 frames in flight
+Chimera Engine running at http://localhost:8140/state
+  /frame  -> PNG of the current render (membrane if one is loaded)
+  /membrane (POST) -> load a story membrane scene
+Window: 2560x1440, Press Ctrl+C to stop.
+Controls: Left-drag orbit | Scroll zoom | Right-drag pan
+          WASD move | Q/E up-down | Space/Ctrl zoom | R reset | P pose toggle
+          F1 THE ENGINE STUDIO overlay (pipeline board + live status)
+FPS: 54 (frame 55) | ft ms avg 9.23 max 22.34 | >16.7ms: 1 >33ms: 0
+snapshot: session_snapshot/tick_joints.blob (112 B)
+snapshot: session_snapshot/tick_classify.blob (4100 B)
+snapshot: session_snapshot/tick_vertbind.blob (30724 B)
+snapshot: tick_seal_history +1
+snapshot: session_snapshot/tick_joints.blob (112 B)
+snapshot: session_snapshot/tick_classify.blob (4100 B)
+snapshot: session_snapshot/tick_vertbind.blob (30724 B)
+session: boot restore -> {"ok":false,"replayed":3,"failed":1,"detail":"tick_joints:ok tick_classify:ok tick_vertbind:ok seal:FAIL "}
+FPS: 233 (frame 233) | ft ms avg 0.97 max 9.03 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.42 max 0.78 | >16.7ms: 0 >33ms: 0
+snapshot: session_snapshot/tick_joints.blob (112 B)
+snapshot: session_snapshot/tick_classify.blob (4100 B)
+snapshot: session_snapshot/tick_vertbind.blob (30724 B)
+session: boot restore -> {"ok":false,"replayed":3,"failed":1,"detail":"tick_joints:ok tick_classify:ok tick_vertbind:ok seal:FAIL "}
+FPS: 299 (frame 300) | ft ms avg 0.39 max 0.67 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.38 max 0.59 | >16.7ms: 0 >33ms: 0
+snapshot: session_snapshot/tick_joints.blob (112 B)
+snapshot: session_snapshot/tick_classify.blob (4100 B)
+snapshot: session_snapshot/tick_vertbind.blob (30724 B)
+session: boot restore -> {"ok":false,"replayed":3,"failed":1,"detail":"tick_joints:ok tick_classify:ok tick_vertbind:ok seal:FAIL "}
+FPS: 299 (frame 300) | ft ms avg 0.44 max 0.74 | >16.7ms: 0 >33ms: 0
+FPS: 149 (frame 284) | ft ms avg 3.81 max 960.77 | >16.7ms: 1 >33ms: 1
