@@ -1,0 +1,129 @@
+{
+ "verdict": "PASS",
+ "stages": {
+  "landing": {
+   "url": "http://127.0.0.1:8210",
+   "httpStatus": 200,
+   "wallClockLoadMs": 31,
+   "nav": {
+    "ttfbMs": 2,
+    "domContentLoadedMs": 8,
+    "loadMs": 28
+   },
+   "firstScreen": {
+    "kicker": "a serious indie physics game",
+    "h1": "CHIMERA",
+    "tagline": "a creature of sealed water cells. touch it anywhere, and it answers.",
+    "ctaText": "Play the demo",
+    "ctaVisible": true,
+    "footerCount": "4",
+    "links": []
+   },
+   "signupCountBefore": 4,
+   "fiveSecondRead": "a serious indie physics game / CHIMERA / a creature of sealed water cells. touch it anywhere, and it answers. / CTA: \"Play the demo\""
+  },
+  "door": {
+   "mode": "new tab (window.open _blank)",
+   "openerStillOnSite": true,
+   "url": "http://127.0.0.1:8206/",
+   "gameNav": {
+    "ttfbMs": 8,
+    "domContentLoadedMs": 51
+   },
+   "gameArrivalWallMs": 0,
+   "title": "CHIMERA — touch the living physics"
+  },
+  "play": {
+   "cameraName": "FunnelVisitor",
+   "gameOpenAtS": 4.143,
+   "introOverlayShown": true,
+   "lesson1": {
+    "title": "WAKE THE CELL",
+    "clickProbe": {
+     "atPx": [
+      620,
+      495
+     ],
+     "bloodAfter": "cell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\ncell 4: V=0.000 m3  P=0.000 MPa\n\nconserve: -0.00 %",
+     "verdictAfter": "the creature waits."
+    },
+    "forceN": 50000,
+    "bloodMidPress": "cell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.497 m3  P=2.136 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\ncell 4: V=0.000 m3  P=0.000 MPa\n\nconserve: -0.00 %",
+    "judgeMidPress": "judge: wake_the_cell phase=release goalMet=true passed=false touchTarget=set lastTouchForce=50000 holding=true",
+    "pass": {
+     "passed": true,
+     "ms": 4095,
+     "judge": {
+      "id": "wake_the_cell",
+      "phase": "release",
+      "goalMet": true,
+      "passed": true
+     }
+    },
+    "verdictAfter": "PASSED — you felt the water. it was always there."
+   },
+   "lesson2": {
+    "title": "THE GENTLE HAND",
+    "forceN": 6000,
+    "bloodMidPress": "cell 0: V=0.287 m3  P=6.773 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\ncell 4: V=0.000 m3  P=0.000 MPa\n\nconserve: -0.00 %",
+    "judgeMidPress": "judge: the_gentle_hand phase=release goalMet=true passed=false touchTarget=set lastTouchForce=6000 holding=true",
+    "pass": {
+     "passed": true,
+     "ms": 4083,
+     "judge": {
+      "id": "the_gentle_hand",
+      "phase": "release",
+      "goalMet": true,
+      "passed": true
+     }
+    },
+    "verdictAfter": "PASSED — you felt the water. it was always there."
+   },
+   "saved": {
+    "lessons": [
+     "wake_the_cell",
+     "the_gentle_hand"
+    ]
+   }
+  },
+  "signup": {
+   "name": "H6 Funnel Test",
+   "email": "funnel-test@example.com",
+   "noteGood": true,
+   "noteText": "you're on the list. the creature will be waiting.",
+   "countAfter": "5"
+  }
+ },
+ "sessionWallS": 32.21,
+ "urlCounts": {
+  "site": {
+   "/": 1,
+   "/api/signups/count?": 3,
+   "/api/signup?": 1
+  },
+  "game": {
+   "/sound.js": 1,
+   "/api/topology?": 1,
+   "/api/verts?1": 92,
+   "/api/verts?key": 92,
+   "/api/state?": 45,
+   "/api/progress?": 4,
+   "/lessons.json": 1,
+   "/api/pose?": 12,
+   "/api/touch_hit?": 3,
+   "/api/touch_clear?": 3
+  }
+ },
+ "health": {
+  "consoleErrors": [],
+  "pageErrors": [],
+  "badResponses": [],
+  "failedRequests": [],
+  "httpRequestsTotal": {
+   "site": 5,
+   "game": 254
+  },
+  "rateLimit429s": 0,
+  "notes": []
+ }
+}
