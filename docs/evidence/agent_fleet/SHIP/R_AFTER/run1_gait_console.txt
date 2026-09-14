@@ -1,0 +1,11 @@
+== route inventory: {'/tick_state': '200 1377B', '/state': '200 104950B', '/verts': '200 664528B', '/topology': '200 439564B', '/health': "200 9B BUT BODY 'Not found' -> NO ROUTE"}
+   [PASS] V0 body live: has_scene=True sealed=True feetCell=0 (yhi=0.338) n_cells=4
+   gravity_on=False stance_on=False gait_on=False
+   [PASS] V1a /tick_gravity arms (gravity_on=True)
+   [FAIL] V1b settled=True (worst |root_vy| 0.00e+00); g_contact_n 0 N vs m*g 135618 N (dev 100.000% <= 0.5%)
+   [PASS] V1c rest pressures exactly 0 (max 0.00e+00 Pa), root_y +0.00000 m (the derived +9.5 mm rise branch)
+   [PASS] V2 /tick_stance arms (stance_on=True); kp=3.531 rad/(m s) -> |S| ~ 0.283 m/rad (prereg 0.283)
+   [FAIL] V3a /tick_gait arms (gait_on=False, feetCell=-1)
+FAIL V3: set_gait refused (needs gravity + stance + classification + pins 13-18 + a sealed feet cell)
+   evidence written: docs/evidence/agent_fleet/SHIP/R_AFTER/gait_verify_result.json
+VERDICT: FAIL -- the falsifier fired; audit order per prereg: (1) the logged gate values, (2) the enable channels vs the /verts audit, (3) the rate caps, (4) the what-if envelope, (5) the cut entry

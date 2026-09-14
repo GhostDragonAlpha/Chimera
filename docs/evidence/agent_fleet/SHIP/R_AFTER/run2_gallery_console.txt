@@ -1,0 +1,56 @@
+
+=== blob ===
+  import: 1,986 verts 3,968 tris V=8.33382
+  seal y=0: {'ok': True}
+  A1 conserve: cells=2 V_whole=8.33391 conserve=0.0000% loops=1 -> PASS
+  A2 pose joint 1 +25 deg: conserve_posed=-0.0014% conserve_rest=-0.0014% maxdisp=0.1562 m -> PASS
+  A3 touch 10 kN at (0.000,2.000,0.000): ok=True dP=+0.0/+13136100.0 dimple=0.198944 -> PASS
+  frame: blob_alive.png (3,503,097 B)
+  VERDICT: blob -> ALIVE
+
+=== torus ===
+  import: 2,048 verts 4,096 tris V=7.34292
+  seal y=0: {'ok': True}
+  A1 conserve: cells=2 V_whole=7.34284 conserve=0.0000% loops=2 -> PASS
+  A2 pose joint 2 +25 deg: conserve_posed=0.0003% conserve_rest=0.0009% maxdisp=0.0958 m -> PASS
+  A3 touch 10 kN at (0.000,2.000,0.000): ok=True dP=+0.0/+2249130.0 dimple=0.198944 -> PASS
+  frame: torus_alive.png (3,503,097 B)
+  VERDICT: torus -> ALIVE
+
+=== capsule ===
+  import: 1,346 verts 2,688 tris V=1.69174
+  seal y=0: {'ok': True}
+  A1 conserve: cells=2 V_whole=1.69175 conserve=0.0000% loops=1 -> PASS
+  A2 pose joint 0 +25 deg: conserve_posed=-0.0003% conserve_rest=-0.0003% maxdisp=0.1031 m -> PASS
+  A3 touch 10 kN at (0.000,1.250,0.000): ok=True dP=+0.0/+2371300.0 dimple=0.198944 -> PASS
+  frame: capsule_alive.png (3,503,097 B)
+  VERDICT: capsule -> ALIVE
+
+=== peanut ===
+  import: 1,986 verts 3,968 tris V=0.906166
+  seal y=0: {'ok': True}
+  A1 conserve: cells=2 V_whole=0.90617 conserve=0.0000% loops=1 -> PASS
+  A2 pose joint 1 +25 deg: conserve_posed=0.0001% conserve_rest=-0.0000% maxdisp=0.0860 m -> PASS
+  A3 touch 10 kN at (0.000,1.200,0.000): ok=True dP=+0.0/+30212600.0 dimple=0.198944 -> PASS
+  frame: peanut_alive.png (3,503,097 B)
+  VERDICT: peanut -> ALIVE
+
+=== rbox ===
+  import: 1,986 verts 3,968 tris V=8.4735
+  seal y=0: {'ok': True}
+  A1 conserve: cells=2 V_whole=8.47347 conserve=0.0000% loops=1 -> PASS
+  A2 pose joint 0 +25 deg: conserve_posed=0.0004% conserve_rest=0.0004% maxdisp=0.1632 m -> PASS
+  A3 touch 10 kN at (0.000,1.050,0.000): ok=True dP=+0.0/+36092500.0 dimple=0.198944 -> PASS
+  frame: rbox_alive.png (3,503,097 B)
+  VERDICT: rbox -> ALIVE
+
+=== GALLERY TABLE ===
+creature   verts   tris cells   V_whole    cons% loops   dimple  maxdisp  verdict
+blob        1986   3968     2    8.3339  0.00000     1   0.1989   0.1562  ALIVE
+torus       2048   4096     2    7.3428  0.00000     2   0.1989   0.0958  ALIVE
+capsule     1346   2688     2    1.6918  0.00000     1   0.1989   0.1031  ALIVE
+peanut      1986   3968     2    0.9062  0.00000     1   0.1989   0.0860  ALIVE
+rbox        1986   3968     2    8.4735  0.00000     1   0.1989   0.1632  ALIVE
+
+results: E:\ChimeraWork\slot-01\docs\evidence\agent_fleet\SHIP\H15_GALLERY\gallery_results_20260914_092945.json
+ONE-COMMAND VERDICT: PASS 5/5 ALIVE
