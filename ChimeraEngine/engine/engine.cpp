@@ -842,8 +842,11 @@ bool Engine::init(const EngineConfig& cfg) {
     printf("Vulkan engine initialized: %u x %u, %u frames in flight\n",
            cfg.width, cfg.height, MAX_FRAMES_IN_FLIGHT);
 
-    // G8 r3: the readback reader — every slow grab op lives on this thread
-    rb_reader_ = std::thread(&Engine::rb_reader_loop, this);
+    // G8 r4: the experimental reader thread is OFF by default — the inline
+    // blocking collect is the verified liveness trade (world alive, ~1 s per
+    // grab). CHIMERA_RB_READER=1 re-enables it for a measured attempt.
+    rb_use_reader_ = std::getenv("CHIMERA_RB_READER") != nullptr;
+    if (rb_use_reader_) rb_reader_ = std::thread(&Engine::rb_reader_loop, this);
     return true;
 }
 
@@ -8824,11 +8827,14 @@ Engine::ReadbackSlot* Engine::arm_glass_readback(uint32_t frame_slot) {
     return s;
 }
 
-// One collect pass: for every in-flight slot whose fence is ALREADY signalled,
-// hand the slot to the reader thread (G8 r3) — oldest seq first, both channels.
-// Called from frame() and frame_idle_ui() at the exact site the old blocking
-// readback occupied. The render thread does NO map, NO read, NO wait here: the
-// reader thread owns every slow op (map, invalidate, swizzle, unmap, publish).
+// One collect pass over finished slots, oldest seq first, both channels.
+// G8 r4 DEFAULT (inline blocking law — the pre-G8 liveness trade): fence-check
+// FIRST (never map an unsignalled slot), then map + optional invalidate +
+// swizzle + unmap + publish INLINE ON THE RENDER THREAD. This costs ~1 s per
+// grab on this box (the readback read serializes the device under WDDM — see
+// the round-3 note) but the world always recovers: verified live, rounds 1-2.
+// CHIMERA_RB_READER=1 (experimental, OFF): hand the slot to the reader thread
+// instead — the render thread only enqueues and never blocks on the read.
 // armed_before (default: everything) — the fence-generation guard for calls
 // made between a frame's fence WAIT and its vkResetFences (i.e. the backstop):
 // there fences_[img_idx] still carries the PREVIOUS submit's signal, so a slot
@@ -8838,35 +8844,95 @@ Engine::ReadbackSlot* Engine::arm_glass_readback(uint32_t frame_slot) {
 void Engine::collect_readbacks(uint64_t armed_before) {
     for (;;) {
         ReadbackSlot* best = nullptr;
-        // FIFO: the oldest finished capture slot is handed to the reader first,
-        // so capture_rgba_ always ends holding the NEWEST finished frame.
+        // FIFO: the oldest finished capture slot is read first, so
+        // capture_rgba_ always ends holding the NEWEST finished frame.
         for (int k = 0; k < RB_SLOTS; ++k) {
             ReadbackSlot& c = capture_rb_[k];
-            if (c.in_flight.load(std::memory_order_acquire) && c.seq <= armed_before &&
+            if (c.in_flight.load(std::memory_order_acquire) &&
+                (!rb_use_reader_ || !c.queued.load(std::memory_order_acquire)) &&
+                c.seq <= armed_before &&
                 vkGetFenceStatus(device_, fences_[c.frame_slot]) == VK_SUCCESS &&
                 (!best || c.seq < best->seq))
                 best = &c;
         }
         if (!best) break;
-        rb_enqueue(*best);
+        if (rb_use_reader_) rb_enqueue(*best);
+        else                rb_read_slot(*best);   // inline: map + read + publish (render thread)
     }
     for (;;) {
         ReadbackSlot* best = nullptr;
         for (int k = 0; k < RB_SLOTS; ++k) {
             ReadbackSlot& g = glass_rb_[k];
-            if (g.in_flight.load(std::memory_order_acquire) && g.seq <= armed_before &&
+            if (g.in_flight.load(std::memory_order_acquire) &&
+                (!rb_use_reader_ || !g.queued.load(std::memory_order_acquire)) &&
+                g.seq <= armed_before &&
                 vkGetFenceStatus(device_, fences_[g.frame_slot]) == VK_SUCCESS &&
                 (!best || g.seq < best->seq))
                 best = &g;
         }
         if (!best) break;
-        rb_enqueue(*best);
+        if (rb_use_reader_) rb_enqueue(*best);
+        else                rb_read_slot(*best);
     }
 }
 
-// G8 r3: transfer a fence-finished slot to the reader thread. The render
-// thread never touches the slot again until the reader clears in_flight.
+// The per-slot read: map + optional invalidate + BGRA->RGBA swizzle + unmap +
+// publish. Runs ON THE CALLER'S THREAD: the render thread in the default
+// inline law (~1 s per grab on this box — the readback read serializes the
+// device under WDDM, whatever the memory type), the reader thread in the
+// experimental mode. Fence-check happens BEFORE any map, in the collect's
+// filter — a slot whose fence is not signalled is never mapped.
+void Engine::rb_read_slot(ReadbackSlot& s) {
+    void* mapped = nullptr;
+    if (vkMapMemory(device_, s.mem, 0, s.size, 0, &mapped) == VK_SUCCESS) {
+        if (s.noncoherent) {   // non-coherent staging: make the GPU's copy visible before the CPU read
+            VkMappedMemoryRange rng{};
+            rng.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+            rng.memory = s.mem;
+            rng.offset = 0;
+            rng.size   = VK_WHOLE_SIZE;   // whole alloc mapped from 0; keeps the
+                                          // nonCoherentAtomSize-multiple VUID moot
+            vkInvalidateMappedMemoryRanges(device_, 1, &rng);
+        }
+        const size_t px = static_cast<size_t>(s.w) * s.h;
+        std::vector<uint8_t> scratch(px * 4);
+        const uint8_t* src = static_cast<const uint8_t*>(mapped);
+        for (size_t i = 0; i < px; ++i) {
+            scratch[i * 4 + 0] = src[i * 4 + 2];  // R
+            scratch[i * 4 + 1] = src[i * 4 + 1];  // G
+            scratch[i * 4 + 2] = src[i * 4 + 0];  // B
+            scratch[i * 4 + 3] = src[i * 4 + 3];  // A
+        }
+        vkUnmapMemory(device_, s.mem);
+        if (s.glass) {
+            std::lock_guard<std::mutex> lk(glass_mutex_);
+            glass_rgba_.swap(scratch);
+            glass_w_ = s.w;
+            glass_h_ = s.h;
+            glass_ready_.store(true);
+        } else {
+            std::lock_guard<std::mutex> lk(capture_mutex_);
+            capture_rgba_.swap(scratch);
+            capture_w_ = s.w;
+            capture_h_ = s.h;
+            capture_collected_gen_.store(s.seq);   // strict-fresh watermark
+            capture_ready_.store(true);
+            reel_pending_.store(true, std::memory_order_release);
+        }
+    }
+    // published (or failed map — drop the slot's bytes either way): the arm
+    // path may reuse the slot on a later frame
+    s.in_flight.store(false, std::memory_order_release);
+    s.queued.store(false, std::memory_order_release);
+}
+
+// G8 r3/r4: transfer a fence-finished slot to the reader thread (experimental
+// mode only). `queued` is set HERE, on the render thread, so the collect loop
+// can never re-enqueue the slot while the reader is still draining the queue
+// (the round-3 freeze: the loop re-enqueued a finished slot forever because
+// in_flight only clears after the reader's slow read).
 void Engine::rb_enqueue(ReadbackSlot& s) {
+    s.queued.store(true, std::memory_order_release);
     {
         std::lock_guard<std::mutex> lk(rb_q_m_);
         rb_q_.push(&s);
@@ -8874,12 +8940,10 @@ void Engine::rb_enqueue(ReadbackSlot& s) {
     rb_q_cv_.notify_one();
 }
 
-// The reader thread (G8 r3): owns EVERY slow readback op — map, invalidate,
-// swizzle, unmap, publish — so the render/tick thread can never pay for them.
-// Whatever the ~940 ms stall on this box turns out to be inside these calls
-// (twice misattributed: queue-wait, then BAR bandwidth), it happens HERE.
+// The reader thread (experimental, CHIMERA_RB_READER=1): pops queued slots and
+// runs the same per-slot read as the inline law, on this thread instead of the
+// render thread. Exits when rb_quit_ is set and the queue is drained.
 void Engine::rb_reader_loop() {
-    std::vector<uint8_t> scratch;   // reused across grabs
     for (;;) {
         ReadbackSlot* s = nullptr;
         {
@@ -8889,46 +8953,7 @@ void Engine::rb_reader_loop() {
             s = rb_q_.front();
             rb_q_.pop();
         }
-        void* mapped = nullptr;
-        if (vkMapMemory(device_, s->mem, 0, s->size, 0, &mapped) == VK_SUCCESS) {
-            if (s->noncoherent) {   // non-coherent staging: make the GPU's copy visible before the CPU read
-                VkMappedMemoryRange rng{};
-                rng.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-                rng.memory = s->mem;
-                rng.offset = 0;
-                rng.size   = VK_WHOLE_SIZE;   // whole alloc mapped from 0; keeps the
-                                              // nonCoherentAtomSize-multiple VUID moot
-                vkInvalidateMappedMemoryRanges(device_, 1, &rng);
-            }
-            const size_t px = static_cast<size_t>(s->w) * s->h;
-            scratch.resize(px * 4);
-            const uint8_t* src = static_cast<const uint8_t*>(mapped);
-            for (size_t i = 0; i < px; ++i) {
-                scratch[i * 4 + 0] = src[i * 4 + 2];  // R
-                scratch[i * 4 + 1] = src[i * 4 + 1];  // G
-                scratch[i * 4 + 2] = src[i * 4 + 0];  // B
-                scratch[i * 4 + 3] = src[i * 4 + 3];  // A
-            }
-            vkUnmapMemory(device_, s->mem);
-            if (s->glass) {
-                std::lock_guard<std::mutex> lk(glass_mutex_);
-                glass_rgba_.swap(scratch);
-                glass_w_ = s->w;
-                glass_h_ = s->h;
-                glass_ready_.store(true);
-            } else {
-                std::lock_guard<std::mutex> lk(capture_mutex_);
-                capture_rgba_.swap(scratch);
-                capture_w_ = s->w;
-                capture_h_ = s->h;
-                capture_collected_gen_.store(s->seq);   // strict-fresh watermark
-                capture_ready_.store(true);
-                reel_pending_.store(true, std::memory_order_release);
-            }
-        }
-        // published (or failed map — drop the slot's bytes either way): the arm
-        // path may reuse the slot on a later frame
-        s->in_flight.store(false, std::memory_order_release);
+        rb_read_slot(*s);
     }
 }
 

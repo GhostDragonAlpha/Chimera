@@ -340,3 +340,65 @@ Same commands as §6 (`--tag after3_async` / `--pull /frame --tag after3_default
   time the reader's read is slow (its wait is client-side, contract preserved)
   or ~100 ms if the round-2 memory law did fix the read and the residual stall
   was elsewhere — `ph_coll_us` decides which world we are in.
+
+## 9. ROUND 4 — THE READER-THREAD REGRESSION, THE REPRO, AND THE FALLBACK (2026-09-14, H3f)
+
+AFTER3 (round-3 binary): pull #1 = 1071 ms (the original stall, still present),
+pulls #2-10 ≈ 3005 ms each = the sync deadline exactly, with "capture timeout"
+bodies; burst ticks/min 714; the tick loop died permanently (0 ticks over 3 s;
+relaunch required). Fresh boot: clean restore, ~312 t/s.
+
+### The repro (falsifier before-arm) — scratch 8091, isolated cwd, window-#3 exe
+
+- Fresh boot, first-ever request `GET /frame?async=1`: **1107 ms, a full-res
+  2560×1365 PNG** — the SYNC branch's exact output. The ASYNC branch would
+  have answered "no frame" instantly (capture_rgba_ empty on a fresh boot).
+  ⇒ **`want_async` evaluated FALSE: the async branch never ran — in this
+  binary or (given identical signatures across rounds 1-3) in any earlier
+  one. Every "async" measurement to date was the sync path.**
+- Second pull: 3027 ms, `{"ok":false,"error":"capture timeout"}` — the render
+  loop was already dead (fps frozen at exactly 55.483, ring frozen at 944.6).
+- Round-3 bug #1 (certain, code-level): `collect_readbacks`' for(;;) loop
+  re-enqueued a finished slot forever — enqueue does not clear `in_flight`
+  (the reader clears it after its slow read), so the loop immediately
+  re-matched the same slot. The render thread hung inside `collect_readbacks`
+  permanently: ticks dead ✓, `armed_gen` frozen ⇒ every later sync pull spun
+  to its 3 s deadline ✓, the ring/fps froze ✓.
+- Round-3 bug #2 (the mystery op, now NAMED with the shipped instruments):
+  with the reader design the render-side phases all measured µs
+  (ph_fence=3, ph_coll=2, ph_pres=109) while `frame()` still spiked ~944 ms —
+  the stall lives in the UN-INSTRUMENTED middle: the render thread's own
+  driver calls (submit/present) serialize behind the reader thread's
+  map+read. **The readback's CPU read serializes the Vulkan device ~900 ms on
+  this WDDM/driver stack regardless of which thread performs it or which
+  memory type backs it** (BAR in rounds 1-2, cached sysmem in round 3 — same
+  stall). No thread architecture removes it; it is a property of the box.
+
+### What round 4 ships (the fallback — invoked per §6's authority: world liveness outranks the latency bar)
+
+1. **DEFAULT = the round-2 inline blocking law** (the last verified-live
+   state): fence-check FIRST (never map an unsignalled slot), then map +
+   optional invalidate + swizzle + unmap + publish inline on the render
+   thread. Cost: ~1 s per grab, ticks pause and RECOVER — measured live in
+   the after/after2 runs; the world never froze there.
+2. **The ring + reader thread move behind `CHIMERA_RB_READER=1` (default
+   OFF)**, with round-3 bug #1 fixed for the flag path: a `queued` flag is set
+   at enqueue (render thread) and cleared by the reader when done; the collect
+   filter skips queued slots, so re-enqueueing is impossible.
+3. The phase timers (`ph_*`) and memory-type exposure (`rb_mem_type/flags`)
+   stay on `/studio_chrome` — they are what named the mechanism this round.
+4. Watermark chain verified end-to-end on the default path: arm
+   (`seq=++capture_armed_gen_`) → inline read → `capture_collected_gen_.store`
+   → `capture_collected_since(want)`; the fence-generation guard keeps the
+   pre-reset window from publishing un-submitted slots.
+
+### Window #4 expectations (honest)
+
+`--tag after4_async` / `--pull /frame --tag after4_default`: pulls ~1.0-1.2 s
+(the accepted physical cost), burst ticks/min dips during pulls and RECOVERS
+(no permanent freeze — the liveness bar), worst tick gap ~1 s during a pull.
+The ≤200 ms latency bar is consciously sacrificed until a mechanism that does
+not readback on this box exists (e.g., a separate process/device owning the
+readback). If `rb_mem_type` reports a non-device-local type AND `ph_coll_us`
+is large in the default mode, that measures the mystery op directly for a
+future driver-level report to NVIDIA.

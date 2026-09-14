@@ -696,6 +696,8 @@ private:
                                             // CPU read needs vkInvalidate first
         bool           glass = false;    // channel: false = capture, true = glass
         std::atomic<bool> in_flight{false}; // render thread arms/queues, reader clears
+        std::atomic<bool> queued{false};    // reader mode: handed to the reader thread,
+                                            // not yet read (terminates the collect loop)
     };
     // G8: one staging ring slot — allocate/resize to the current extent, or die.
     void rb_ensure_slot(ReadbackSlot& s);
@@ -842,19 +844,24 @@ private:
     int capture_rb_next_ = 0, glass_rb_next_ = 0;
     std::atomic<uint64_t> capture_armed_gen_{0};     // seq of the last capture arm
     std::atomic<uint64_t> capture_collected_gen_{0}; // seq of the last capture collect
-    // G8 r3: THE READER THREAD. The collect's map+read+unmap measured ~940 ms
-    // per grab on the render thread (twice misattributed: queue-wait, then BAR
-    // bandwidth), stalling the tick loop. The render thread now only fence-
-    // checks and ENQUEUES finished slots; this thread does every slow op and
-    // publishes the bytes. The render thread never waits on a readback.
+    // G8 r4: THE READER THREAD IS FLAG-GATED AND OFF BY DEFAULT. Round 3 moved
+    // the map+read to this thread and the world froze (the collect loop re-
+    // enqueued a finished slot forever — fixed with `queued` — and the reader's
+    // own read still serialized the device ~900 ms: the phase timers proved the
+    // render thread's driver calls stall while ANY thread reads the staging).
+    // Default = the inline blocking law (world-alive, ~1 s per grab, the
+    // pre-G8 liveness trade). CHIMERA_RB_READER=1 re-enables the experimental
+    // path for a future measured attempt.
     std::thread              rb_reader_;
     std::mutex               rb_q_m_;
     std::condition_variable  rb_q_cv_;
     std::queue<ReadbackSlot*> rb_q_;
     std::atomic<bool>        rb_quit_{false};
     std::atomic<bool>        reel_pending_{false}; // a swizzled grab awaits the ledger (render thread)
+    bool                     rb_use_reader_ = false;
     void                   rb_reader_loop();
     void                   rb_enqueue(ReadbackSlot& s);
+    void                   rb_read_slot(ReadbackSlot& s);
 
     // the glass channel's OWN staging + destination (see the GLASS CHANNEL note)
     std::atomic<bool> glass_requested_{false};
