@@ -1,0 +1,534 @@
+[
+  {
+    "name": "blob",
+    "obj_bytes": 121284,
+    "import": {
+      "ok": true,
+      "verts": 1986,
+      "tris": 3968,
+      "volume": 8.33381578,
+      "ymin": -2,
+      "ymax": 2,
+      "winding_flipped": false
+    },
+    "joints": {
+      "ok": true
+    },
+    "classify": {
+      "ok": true
+    },
+    "vertbind": {
+      "ok": true
+    },
+    "seal": {
+      "ok": true
+    },
+    "a1": {
+      "sealed": true,
+      "n_cells": 2,
+      "V_whole": 8.33391,
+      "V_cells": [
+        4.16691,
+        4.16688
+      ],
+      "conserve_pct": 0,
+      "seal_loops": 1,
+      "seal_cuts": 128,
+      "seal_caps": 126,
+      "pass": true
+    },
+    "a2": {
+      "pose_ok": true,
+      "conserve_posed": -0.00135784,
+      "conserve_rest": -0.00140753,
+      "displacement": {
+        "joint": 1,
+        "max_m": 0.15618379414081573,
+        "rms_m": 0.05196722596883774,
+        "moved_verts_gt_1mm": 641,
+        "rest_return_max_m": 0.0,
+        "fallback": {
+          "joint": 1,
+          "armed_verts": 256
+        }
+      },
+      "pass": true
+    },
+    "a3": {
+      "hit": [
+        0.0,
+        2.0,
+        0.0
+      ],
+      "force_n": 10000.0,
+      "touch_ok": true,
+      "P_rest": [
+        0,
+        0
+      ],
+      "P_pressed": [
+        0,
+        13136100.0
+      ],
+      "dP": [
+        0,
+        13136100.0
+      ],
+      "dimple_m": 0.198944,
+      "P_after_release": [
+        0,
+        2655640.0
+      ],
+      "pass": true
+    },
+    "frame": {
+      "path": "E:\\ChimeraWork\\slot-01\\docs\\evidence\\agent_fleet\\SHIP\\H15_GALLERY\\blob_alive.png",
+      "bytes": 3503097,
+      "fit": true
+    },
+    "alive": true,
+    "judge": {
+      "name": "blob",
+      "import_ok": true,
+      "cells": 2,
+      "cells_ok": true,
+      "conserve_pct": 0,
+      "conserve_ok": true,
+      "dimple_m": 0.198944,
+      "dimple_ok": true,
+      "pose_disp_m": 0.15618379414081573,
+      "pose_ok": true,
+      "touch_ok": true,
+      "portrait_ok": true,
+      "guard_watch": [],
+      "alive": true,
+      "verdict": "ALIVE"
+    }
+  },
+  {
+    "name": "torus",
+    "obj_bytes": 125358,
+    "import": {
+      "ok": true,
+      "verts": 2048,
+      "tris": 4096,
+      "volume": 7.3429236,
+      "ymin": -2,
+      "ymax": 2,
+      "winding_flipped": false
+    },
+    "joints": {
+      "ok": true
+    },
+    "classify": {
+      "ok": true
+    },
+    "vertbind": {
+      "ok": true
+    },
+    "seal": {
+      "ok": true
+    },
+    "a1": {
+      "sealed": true,
+      "n_cells": 2,
+      "V_whole": 7.34284,
+      "V_cells": [
+        3.67145,
+        3.67145
+      ],
+      "conserve_pct": 0,
+      "seal_loops": 2,
+      "seal_cuts": 128,
+      "seal_caps": 124,
+      "pass": true
+    },
+    "a2": {
+      "pose_ok": true,
+      "conserve_posed": 0.000328245,
+      "conserve_rest": 0.000876677,
+      "displacement": {
+        "joint": 2,
+        "max_m": 0.09580221772193909,
+        "rms_m": 0.04429478943347931,
+        "moved_verts_gt_1mm": 911,
+        "rest_return_max_m": 0.0,
+        "fallback": {
+          "joint": 2,
+          "armed_verts": 315
+        }
+      },
+      "pass": true
+    },
+    "a3": {
+      "hit": [
+        0.0,
+        2.0,
+        0.0
+      ],
+      "force_n": 10000.0,
+      "touch_ok": true,
+      "P_rest": [
+        0,
+        0
+      ],
+      "P_pressed": [
+        0,
+        2249130.0
+      ],
+      "dP": [
+        0,
+        2249130.0
+      ],
+      "dimple_m": 0.198944,
+      "P_after_release": [
+        0,
+        442852
+      ],
+      "pass": true
+    },
+    "frame": {
+      "path": "E:\\ChimeraWork\\slot-01\\docs\\evidence\\agent_fleet\\SHIP\\H15_GALLERY\\torus_alive.png",
+      "bytes": 3503097,
+      "fit": true
+    },
+    "alive": true,
+    "judge": {
+      "name": "torus",
+      "import_ok": true,
+      "cells": 2,
+      "cells_ok": true,
+      "conserve_pct": 0,
+      "conserve_ok": true,
+      "dimple_m": 0.198944,
+      "dimple_ok": true,
+      "pose_disp_m": 0.09580221772193909,
+      "pose_ok": true,
+      "touch_ok": true,
+      "portrait_ok": true,
+      "torus_loops": 2,
+      "torus_loops_ok": true,
+      "guard_watch": [],
+      "alive": true,
+      "verdict": "ALIVE"
+    }
+  },
+  {
+    "name": "capsule",
+    "obj_bytes": 80055,
+    "import": {
+      "ok": true,
+      "verts": 1346,
+      "tris": 2688,
+      "volume": 1.69174433,
+      "ymin": -1.25,
+      "ymax": 1.25,
+      "winding_flipped": false
+    },
+    "joints": {
+      "ok": true
+    },
+    "classify": {
+      "ok": true
+    },
+    "vertbind": {
+      "ok": true
+    },
+    "seal": {
+      "ok": true
+    },
+    "a1": {
+      "sealed": true,
+      "n_cells": 2,
+      "V_whole": 1.69175,
+      "V_cells": [
+        0.845869,
+        0.845874
+      ],
+      "conserve_pct": 0,
+      "seal_loops": 1,
+      "seal_cuts": 96,
+      "seal_caps": 94,
+      "pass": true
+    },
+    "a2": {
+      "pose_ok": true,
+      "conserve_posed": -0.000346517,
+      "conserve_rest": -0.000345279,
+      "displacement": {
+        "joint": 0,
+        "max_m": 0.1030631810426712,
+        "rms_m": 0.04087153449654579,
+        "moved_verts_gt_1mm": 529,
+        "rest_return_max_m": 0.0,
+        "fallback": {
+          "joint": 0,
+          "armed_verts": 385
+        }
+      },
+      "pass": true
+    },
+    "a3": {
+      "hit": [
+        0.0,
+        1.25,
+        0.0
+      ],
+      "force_n": 10000.0,
+      "touch_ok": true,
+      "P_rest": [
+        0,
+        0
+      ],
+      "P_pressed": [
+        0,
+        2371300.0
+      ],
+      "dP": [
+        0,
+        2371300.0
+      ],
+      "dimple_m": 0.198944,
+      "P_after_release": [
+        0,
+        479163
+      ],
+      "pass": true
+    },
+    "frame": {
+      "path": "E:\\ChimeraWork\\slot-01\\docs\\evidence\\agent_fleet\\SHIP\\H15_GALLERY\\capsule_alive.png",
+      "bytes": 3503097,
+      "fit": true
+    },
+    "alive": true,
+    "judge": {
+      "name": "capsule",
+      "import_ok": true,
+      "cells": 2,
+      "cells_ok": true,
+      "conserve_pct": 0,
+      "conserve_ok": true,
+      "dimple_m": 0.198944,
+      "dimple_ok": true,
+      "pose_disp_m": 0.1030631810426712,
+      "pose_ok": true,
+      "touch_ok": true,
+      "portrait_ok": true,
+      "guard_watch": [],
+      "alive": true,
+      "verdict": "ALIVE"
+    }
+  },
+  {
+    "name": "peanut",
+    "obj_bytes": 121284,
+    "import": {
+      "ok": true,
+      "verts": 1986,
+      "tris": 3968,
+      "volume": 0.906166156,
+      "ymin": -1.20000005,
+      "ymax": 1.20000005,
+      "winding_flipped": false
+    },
+    "joints": {
+      "ok": true
+    },
+    "classify": {
+      "ok": true
+    },
+    "vertbind": {
+      "ok": true
+    },
+    "seal": {
+      "ok": true
+    },
+    "a1": {
+      "sealed": true,
+      "n_cells": 2,
+      "V_whole": 0.90617,
+      "V_cells": [
+        0.453086,
+        0.453084
+      ],
+      "conserve_pct": -6.57765e-06,
+      "seal_loops": 1,
+      "seal_cuts": 128,
+      "seal_caps": 126,
+      "pass": true
+    },
+    "a2": {
+      "pose_ok": true,
+      "conserve_posed": 5.96579e-05,
+      "conserve_rest": -6.57765e-06,
+      "displacement": {
+        "joint": 1,
+        "max_m": 0.08603227883577347,
+        "rms_m": 0.027100665494799614,
+        "moved_verts_gt_1mm": 641,
+        "rest_return_max_m": 0.0,
+        "fallback": {
+          "joint": 1,
+          "armed_verts": 256
+        }
+      },
+      "pass": true
+    },
+    "a3": {
+      "hit": [
+        0.0,
+        1.2000000476837158,
+        0.0
+      ],
+      "force_n": 10000.0,
+      "touch_ok": true,
+      "P_rest": [
+        0,
+        0
+      ],
+      "P_pressed": [
+        0,
+        30212600.0
+      ],
+      "dP": [
+        0,
+        30212600.0
+      ],
+      "dimple_m": 0.198944,
+      "P_after_release": [
+        0,
+        6104070.0
+      ],
+      "pass": true
+    },
+    "frame": {
+      "path": "E:\\ChimeraWork\\slot-01\\docs\\evidence\\agent_fleet\\SHIP\\H15_GALLERY\\peanut_alive.png",
+      "bytes": 3503097,
+      "fit": true
+    },
+    "alive": true,
+    "judge": {
+      "name": "peanut",
+      "import_ok": true,
+      "cells": 2,
+      "cells_ok": true,
+      "conserve_pct": -6.57765e-06,
+      "conserve_ok": true,
+      "dimple_m": 0.198944,
+      "dimple_ok": true,
+      "pose_disp_m": 0.08603227883577347,
+      "pose_ok": true,
+      "touch_ok": true,
+      "portrait_ok": true,
+      "guard_watch": [],
+      "alive": true,
+      "verdict": "ALIVE"
+    }
+  },
+  {
+    "name": "rbox",
+    "obj_bytes": 121284,
+    "import": {
+      "ok": true,
+      "verts": 1986,
+      "tris": 3968,
+      "volume": 8.47349634,
+      "ymin": -1.04999995,
+      "ymax": 1.04999995,
+      "winding_flipped": false
+    },
+    "joints": {
+      "ok": true
+    },
+    "classify": {
+      "ok": true
+    },
+    "vertbind": {
+      "ok": true
+    },
+    "seal": {
+      "ok": true
+    },
+    "a1": {
+      "sealed": true,
+      "n_cells": 2,
+      "V_whole": 8.47347,
+      "V_cells": [
+        4.23674,
+        4.23676
+      ],
+      "conserve_pct": 0.000438938,
+      "seal_loops": 1,
+      "seal_cuts": 128,
+      "seal_caps": 126,
+      "pass": true
+    },
+    "a2": {
+      "pose_ok": true,
+      "conserve_posed": 0.000441313,
+      "conserve_rest": 0.000438938,
+      "displacement": {
+        "joint": 0,
+        "max_m": 0.16317404806613922,
+        "rms_m": 0.08497398346662521,
+        "moved_verts_gt_1mm": 897,
+        "rest_return_max_m": 0.0,
+        "fallback": {
+          "joint": 0,
+          "armed_verts": 705
+        }
+      },
+      "pass": true
+    },
+    "a3": {
+      "hit": [
+        0.0,
+        1.0499999523162842,
+        0.0
+      ],
+      "force_n": 10000.0,
+      "touch_ok": true,
+      "P_rest": [
+        0,
+        0
+      ],
+      "P_pressed": [
+        0,
+        36092500.0
+      ],
+      "dP": [
+        0,
+        36092500.0
+      ],
+      "dimple_m": 0.198944,
+      "P_after_release": [
+        0,
+        7278650.0
+      ],
+      "pass": true
+    },
+    "frame": {
+      "path": "E:\\ChimeraWork\\slot-01\\docs\\evidence\\agent_fleet\\SHIP\\H15_GALLERY\\rbox_alive.png",
+      "bytes": 3503097,
+      "fit": true
+    },
+    "alive": true,
+    "judge": {
+      "name": "rbox",
+      "import_ok": true,
+      "cells": 2,
+      "cells_ok": true,
+      "conserve_pct": 0.000438938,
+      "conserve_ok": true,
+      "dimple_m": 0.198944,
+      "dimple_ok": true,
+      "pose_disp_m": 0.16317404806613922,
+      "pose_ok": true,
+      "touch_ok": true,
+      "portrait_ok": true,
+      "guard_watch": [],
+      "alive": true,
+      "verdict": "ALIVE"
+    }
+  }
+]
