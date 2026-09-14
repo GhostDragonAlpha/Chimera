@@ -1,0 +1,6 @@
+{"do":"move","x":1190,"y":453}
+{"do":"down"}
+{"do":"move","x":1140,"y":453,"steps":8}
+{"do":"up"}
+{"do":"wait","ms":600}
+{"do":"text","max":330}

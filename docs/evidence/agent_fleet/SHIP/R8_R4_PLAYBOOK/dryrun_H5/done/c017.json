@@ -1,0 +1,11 @@
+{"do":"move","x":510,"y":855}
+{"do":"down"}
+{"do":"wait","ms":1500}
+{"do":"shot","name":"21_foot_press"}
+{"do":"up"}
+{"do":"wait","ms":1000}
+{"do":"text","max":1500}
+{"do":"clickText","text":"stand at rest"}
+{"do":"wait","ms":1500}
+{"do":"shot","name":"22_stand_at_rest"}
+{"do":"text","max":1500}

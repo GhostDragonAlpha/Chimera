@@ -1,0 +1,12 @@
+{"do":"move","x":520,"y":300}
+{"do":"down"}
+{"do":"wait","ms":1200}
+{"do":"up"}
+{"do":"wait","ms":800}
+{"do":"text","max":500}
+{"do":"move","x":480,"y":700}
+{"do":"down"}
+{"do":"wait","ms":1500}
+{"do":"up"}
+{"do":"wait","ms":800}
+{"do":"text","max":500}

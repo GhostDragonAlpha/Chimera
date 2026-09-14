@@ -1,0 +1,5 @@
+{"do":"move","x":550,"y":450}
+{"do":"wheel","dy":-500}
+{"do":"wheel","dy":-500}
+{"do":"wait","ms":800}
+{"do":"shot","name":"14_zoomed"}

@@ -1,0 +1,9 @@
+{"do":"clickText","text":"let go"}
+{"do":"wait","ms":800}
+{"do":"text","max":600}
+{"do":"move","x":1190,"y":431}
+{"do":"down"}
+{"do":"move","x":1130,"y":431,"steps":6}
+{"do":"up"}
+{"do":"wait","ms":800}
+{"do":"text","max":600}

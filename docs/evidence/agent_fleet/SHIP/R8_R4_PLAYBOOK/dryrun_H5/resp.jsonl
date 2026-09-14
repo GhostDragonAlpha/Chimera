@@ -1,0 +1,139 @@
+{"ok":true,"did":"goto","url":"http://127.0.0.1:8206","ms":416}
+{"ok":true,"did":"ready","cmdDir":"cmd"}
+{"ok":true,"did":"shot","file":"shots\\01_landing.png"}
+{"ok":true,"did":"wait","ms":5000}
+{"ok":true,"did":"shot","file":"shots\\02_landing_settled.png"}
+{"ok":true,"did":"text","text":"C H I M E R A\n\na creature of water and skin. touch it, and it answers.\n\nPLAY\n\nyour progress is kept under your name — the world remembers you."}
+{"ok":true,"did":"click","x":720,"y":485}
+{"ok":true,"did":"type"}
+{"ok":true,"did":"shot","file":"shots\\03_name_typed.png"}
+{"ok":true,"did":"clickText","text":"PLAY","box":null}
+{"ok":true,"did":"wait","ms":4000}
+{"ok":true,"did":"shot","file":"shots\\04_after_play.png"}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n1 / 10\n›\nWAKE THE CELL\n\nThe creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.\n\nthe creature waits.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: wake_the_cell phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=0 holding=false\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\ncell 4: V=0.000 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress\nYou are a camera in one living world.\nDrag to look. Click (or SPACE) to touch — hold to press.\nThe body answers: watch its blood.\ndraglook\nclickSPACEtouch · hold = press\n1–5lessons\n\nSPACE\nto touch\n\nbegin\n\nEnter also begins."}
+{"ok":true,"did":"clickText","text":"Begin","box":null}
+{"ok":true,"did":"wait","ms":1500}
+{"ok":true,"did":"shot","file":"shots\\05_world_started.png"}
+{"ok":true,"did":"move","x":545,"y":390}
+{"ok":true,"did":"down"}
+{"ok":true,"did":"wait","ms":3000}
+{"ok":true,"did":"shot","file":"shots\\06_press_hold_3s.png"}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n1 / 10\n›\nWAKE THE CELL\n\nThe creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.\n\nPASSED — you felt the water. it was always there.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: wake_the_cell phase=release goalMet=true passed=true touchTarget=set lastTouchForce=0 holding=false\ncell 0: V=0.287 m3  P=4.893 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\ncell 4: V=0.000 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+{"ok":true,"did":"wait","ms":3000}
+{"ok":true,"did":"shot","file":"shots\\07_press_hold_6s.png"}
+{"ok":true,"did":"up"}
+{"ok":true,"did":"wait","ms":800}
+{"ok":true,"did":"shot","file":"shots\\08_released.png"}
+{"ok":true,"did":"wait","ms":4000}
+{"ok":true,"did":"shot","file":"shots\\09_recovery.png"}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n1 / 10\n›\nWAKE THE CELL\n\nThe creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.\n\nPASSED — you felt the water. it was always there.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\npressing — 20000 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: wake_the_cell phase=release goalMet=true passed=true touchTarget=set lastTouchForce=0 holding=true\ncell 0: V=0.288 m3  P=0.009 MPa\ncell 1: V=12.507 m3  P=0.327 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\ncell 4: V=0.000 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n1 / 10\n›\nWAKE THE CELL\n\nThe creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.\n\nPASSED — you felt the water. it was always there.\nYOUR HAND\n20000 N\ngentle ≤\nhand"}
+{"ok":true,"did":"click","x":1390,"y":109}
+{"ok":true,"did":"wait","ms":1200}
+{"ok":true,"did":"shot","file":"shots\\10_lesson2.png"}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nthe creature waits.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\npressing — 20000 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: the_gentle_hand phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=0 holding=true\ncell 0: V=0.288 m3  P=0.009 MPa\ncell 1: V=12.507 m3  P=0.327 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\ncell 4: V=0.000 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+{"ok":true,"did":"clickText","text":"let go","box":{"x":1113,"y":190.296875,"width":295,"height":129.5625}}
+{"ok":true,"did":"wait","ms":800}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nthe creature waits.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\npressing — 20000 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: the_gentle_hand phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=0 holding=tru"}
+{"ok":true,"did":"move","x":1190,"y":431}
+{"ok":true,"did":"down"}
+{"ok":true,"did":"move","x":1130,"y":431}
+{"ok":true,"did":"up"}
+{"ok":true,"did":"wait","ms":800}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nthe creature waits.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\npressing — 20000 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: the_gentle_hand phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=0 holding=tru"}
+{"ok":true,"did":"shot","file":"shots\\11_lesson2_panel.png"}
+{"ok":true,"did":"move","x":1190,"y":453}
+{"ok":true,"did":"down"}
+{"ok":true,"did":"move","x":1140,"y":453}
+{"ok":true,"did":"up"}
+{"ok":true,"did":"wait","ms":600}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nthe goal "}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nthe goal is met — now LET GO, and let the body heal.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: the_gentle_hand phase=release goalMet=true passed=false touchTarget=set lastTouchForce=0 holding=false\ncell 0: V=0.288 m3  P=0.025 MPa\ncell 1: V=12.509 m3  P=0.008 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\ncell 4: V=0.000 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+{"ok":true,"did":"click","x":1140,"y":453}
+{"ok":true,"did":"wait","ms":500}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nPASSED — you felt the water. it was always there.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: the_gentle_hand phase=release goalMet=true passed=true touchTarget=set lastTouchForce=0 holding=false\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.497 m3  P=2.136 MPa\ncell 2: V="}
+{"ok":true,"did":"click","x":1125,"y":453}
+{"ok":true,"did":"wait","ms":500}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nPASSED — you felt the water. it was always there.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: the_gentle_hand phase=release goalMet=true passed=true touchTarget=set lastTouchForce=0 holding=false\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.497 m3  P=2.136 MPa\ncell 2: V="}
+{"ok":true,"did":"shot","file":"shots\\12_slider_try.png"}
+{"ok":true,"did":"click","x":1190,"y":453}
+{"ok":true,"did":"key","key":"ArrowLeft"}
+{"ok":true,"did":"key","key":"ArrowLeft"}
+{"ok":true,"did":"key","key":"ArrowLeft"}
+{"ok":true,"did":"wait","ms":400}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nPASSED — you felt the water. it was always there.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: the_gentle_hand phase=release goalMet=true passed=true touchTarget=set lastTouchForce=0 holding=false\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.497 m3  P=2.136 MPa\ncell 2: V="}
+{"ok":true,"did":"click","x":1390,"y":109}
+{"ok":true,"did":"wait","ms":1200}
+{"ok":true,"did":"shot","file":"shots\\13_lesson3.png"}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nthe creature waits.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: the_healing phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=0 holding=false\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\ncell 4: V=0.000 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+{"ok":true,"did":"move","x":550,"y":450}
+{"ok":true,"did":"wheel"}
+{"ok":true,"did":"wheel"}
+{"ok":true,"did":"wait","ms":800}
+{"ok":true,"did":"shot","file":"shots\\14_zoomed.png"}
+{"ok":true,"did":"move","x":500,"y":400}
+{"ok":true,"did":"down"}
+{"ok":true,"did":"wait","ms":2500}
+{"ok":true,"did":"shot","file":"shots\\15_heal_press_hold.png"}
+{"ok":true,"did":"up"}
+{"ok":true,"did":"wait","ms":600}
+{"ok":true,"did":"shot","file":"shots\\16_heal_06s.png"}
+{"ok":true,"did":"wait","ms":1200}
+{"ok":true,"did":"shot","file":"shots\\17_heal_18s.png"}
+{"ok":true,"did":"wait","ms":2000}
+{"ok":true,"did":"shot","file":"shots\\18_heal_38s.png"}
+{"ok":true,"did":"wait","ms":3000}
+{"ok":true,"did":"shot","file":"shots\\19_heal_68s.png"}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nthe creature waits.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\npressing — 20000 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: the_healing phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=0 holding=true\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.003 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\ncell 4: V=0.000 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+{"ok":true,"did":"move","x":520,"y":300}
+{"ok":true,"did":"down"}
+{"ok":true,"did":"wait","ms":1200}
+{"ok":true,"did":"up"}
+{"ok":true,"did":"wait","ms":800}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you felt the water. it was always there.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around ·"}
+{"ok":true,"did":"move","x":480,"y":700}
+{"ok":true,"did":"down"}
+{"ok":true,"did":"wait","ms":1500}
+{"ok":true,"did":"up"}
+{"ok":true,"did":"wait","ms":800}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you felt the water. it was always there.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\npressing — 20000 N\nstand at rest\n\ndrag = look"}
+{"ok":true,"did":"shot","file":"shots\\20_after_pokes.png"}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you felt the water. it was always there.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\npressing — 20000 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: the_healing phase=release goalMet=true passed=true touchTarget=set lastTouchForce=0 holding=true\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\ncell 4: V=0.000 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+{"ok":true,"did":"move","x":510,"y":855}
+{"ok":true,"did":"down"}
+{"ok":true,"did":"wait","ms":1500}
+{"ok":true,"did":"shot","file":"shots\\21_foot_press.png"}
+{"ok":true,"did":"up"}
+{"ok":true,"did":"wait","ms":1000}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you felt the water. it was always there.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: the_healing phase=release goalMet=true passed=true touchTarget=set lastTouchForce=0 holding=false\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\ncell 4: V=0.000 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+{"ok":true,"did":"clickText","text":"stand at rest","box":{"x":1113,"y":593.21875,"width":295,"height":36}}
+{"ok":true,"did":"wait","ms":1500}
+{"ok":true,"did":"shot","file":"shots\\22_stand_at_rest.png"}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you felt the water. it was always there.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nstanding at rest\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: the_healing phase=release goalMet=true passed=true touchTarget=set lastTouchForce=0 holding=false\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\ncell 4: V=0.000 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+{"ok":true,"did":"move","x":500,"y":400}
+{"ok":true,"did":"down"}
+{"ok":true,"did":"wait","ms":1500}
+{"ok":true,"did":"shot","file":"shots\\23_press_after_rest.png"}
+{"ok":true,"did":"up"}
+{"ok":true,"did":"wait","ms":600}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you felt the water. it was always there.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\npressing — 20000 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: the_healing phase=release goalMet=true passed=true touchTarget=set lastTouchForce=0 holding=false\ncell 0: V=0.287 m3  P=6.010 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=-0.009 MPa\ncell 3: V=0.334 m3  P=0.716 MPa\ncell 4: V=0.000 m3  P=1622.780 MPa\n\nconserve: -0.00 %\nthe world is silent — retrying…\nsave progress"}
+{"ok":true,"did":"move","x":300,"y":300}
+{"ok":true,"did":"down"}
+{"ok":true,"did":"move","x":450,"y":350}
+{"ok":true,"did":"up"}
+{"ok":true,"did":"wait","ms":800}
+{"ok":true,"did":"shot","file":"shots\\24_after_orbit.png"}
+{"ok":true,"did":"click","x":1390,"y":109}
+{"ok":true,"did":"wait","ms":1000}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n4 / 10\n›\nBEND THE KNEE\n\nThe creature listens to more than touches — it listens to intents. A pose is a wish you post: bend the left knee to 40 degrees and the body rearranges its water to match, cells shifting as the joint turns. Set the left knee to 40 and watch the pressures answer.\n\nknee_L → 40°\nthe creature waits.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: bend_the_knee phase=goal goalMet=false passed=false touchTarget=null lastTouchForce=0 holding=false\ncell 0: V=0.287 m3  P=6.010 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=-0.009 MPa\ncell 3: V=0.334 m3  P=0.716 MPa\ncell 4: V=0.000 m3  P=1622.780 MPa\n\nconserve: -0"}
+{"ok":true,"did":"clickText","text":"knee_L","box":{"x":1113,"y":319.859375,"width":295,"height":36}}
+{"ok":true,"did":"wait","ms":1500}
+{"ok":true,"did":"shot","file":"shots\\25_knee_chip.png"}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n4 / 10\n›\nBEND THE KNEE\n\nThe creature listens to more than touches — it listens to intents. A pose is a wish you post: bend the left knee to 40 degrees and the body rearranges its water to match, cells shifting as the joint turns. Set the left knee to 40 and watch the pressures answer.\n\nknee_L → 40°\nthe pose was refused.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: bend_the_knee phase=goal goalMet=false passed=false touchTarget=null lastTouchForce=0 holding=false\ncell 0: V=0.287 m3  P=6.010 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=-0.009 MPa\ncell 3: V=0.334 m3  P=0.716 MPa\ncell 4: V=0.000 m3  P=1622.780 MPa\n\nconserve: -0.00 %\nthe world is silent — retrying…\nsave progress"}
+{"ok":true,"did":"clickText","text":"stand at rest","box":{"x":1113,"y":587.375,"width":295,"height":36}}
+{"ok":true,"did":"wait","ms":1500}
+{"ok":true,"did":"clickText","text":"knee_L","box":{"x":1113,"y":319.859375,"width":295,"height":36}}
+{"ok":true,"did":"wait","ms":2000}
+{"ok":true,"did":"shot","file":"shots\\26_knee_retry.png"}
+{"ok":true,"did":"text","text":"C H I M E R A\ncamera · judgeH5dryrun\nTHE LESSON\n‹\n4 / 10\n›\nBEND THE KNEE\n\nThe creature listens to more than touches — it listens to intents. A pose is a wish you post: bend the left knee to 40 degrees and the body rearranges its water to match, cells shifting as the joint turns. Set the left knee to 40 and watch the pressures answer.\n\nknee_L → 40°\nPASSED — and the body stands at rest again.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nstanding at rest\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\njudge: bend_the_knee phase=goal goalMet=false passed=false touchTarget=null lastTouchForce=0 holding=false\ncell 0: V=0.287 m3  P=6.010 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=-0.009 MPa\ncell 3: V=0.334 m3  P=0.716 MPa\ncell 4: V=0.000 m3  P=1622.780 MPa\n\nconserve: -0.00 %\nthe world is silent — retrying…\nsave progress"}
+{"ok":true,"did":"quit"}
