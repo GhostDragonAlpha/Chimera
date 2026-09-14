@@ -315,3 +315,24 @@ construction — rect verified -8,-8 -> 2568x1400 on the 2560x1440
 display), and the launcher keeps its --hidden console retirement.
 Verified after a full relaunch: creature restored, studio live at
 299 fps, window edge to edge.
+
+## LEDGER (2026-09-13, night II — the headless probe findings)
+
+- The headless-Chrome R4 walk could not complete: the world attach in
+  the headless page failed (WebGL2 context now works via channel
+  chrome, but the boot's data path still stalls) and the judge-debug
+  div reads the literal "[]" — an unknown writer (no JSON.stringify in
+  the page writes it; exactly one judgeState exists). FIRST LEAD for
+  the next session: dump the div's parent chain + find the "[]"
+  writer; suspicion: an overwriting patch left a second poll-state
+  writer, or loadLessons never runs pre-PLAY and something else
+  initialises the div.
+- CONFIRMED WORKING (visible Chrome, the operator's own play + keys):
+  the game renders, orbits, touches (worst P 34 kPa mid-hold), the
+  lesson rail navigates 1/5..5/5, lesson 4 passes and auto-resets,
+  progress persists per player. The ENGINE-level touch for every
+  lesson target verified (foot target 6 kN -> 3760 kPa).
+- The input driver flakiness (SendKeys focus races on this desktop —
+  Typeless overlay + launcher windows) remains the verification
+  bottleneck; the headless walk is the right long-term instrument
+  once the "[]" writer is found.

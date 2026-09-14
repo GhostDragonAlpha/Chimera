@@ -176,6 +176,7 @@
 
       <section class="card">
         <h2>THE CREATURE'S BLOOD</h2>
+        <div id="judge-debug" class="mono" style="font-size:11px;color:#7a8a9a"></div>
         <div id="blood" class="mono blood">listening to the water…</div>
         <div id="link-state" class="hint"></div>
       </section>
@@ -551,6 +552,15 @@
     gl.bindVertexArray(RG.gridVao);
     gl.drawArrays(gl.LINES, 0, RG.gridCount);
 
+    var dbg = $('judge-debug');
+    if (dbg) {
+      var l = curLesson();
+      dbg.textContent = l ? ('judge: ' + l.id + ' phase=' + curState().phase +
+        ' goalMet=' + curState().goalMet + ' passed=' + curState().passed +
+        ' touchTarget=' + (touchTarget ? 'set' : 'null') +
+        ' lastTouchForce=' + lastTouchForce) : 'no lesson';
+    }
+
     /* THE SHADOW: the creature flattened onto the floor (same planar
        projection the engine now uses), drawn under the body */
     if (RG.triCount > 0 && RG.verts) {
@@ -580,21 +590,21 @@
 
   /* ================= streaming ================= */
   async function loadTopology() {
-    if (!RG) return;
     try {
       var res = await fetch(API.topology);
       if (!res.ok) throw new Error('http ' + res.status);
       var buf = await res.arrayBuffer();
-      if (!RG) return;
       if (buf.byteLength < 4) throw new Error('short topology payload');
       var dv = new DataView(buf);                       // little-endian u32 count
       var n = dv.getUint32(0, true);
       if (buf.byteLength < 4 + n * 12) throw new Error('truncated topology payload');
       RG.triCount = n;
       RG.idx = new Uint32Array(buf, 4, n * 3).slice();  // local copy of the indices
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, RG.ibo);
-      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, n * 3 * 4, gl.STATIC_DRAW);
-      gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, RG.idx);
+      if (RG) {                                         // GL buffers when GL exists
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, RG.ibo);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, n * 3 * 4, gl.STATIC_DRAW);
+        gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, RG.idx);
+      }
       pollVerts();
     } catch (err) {
       setLink('the world is silent — retrying…');
@@ -604,30 +614,28 @@
 
   var vertsBusy = false;
   async function pollVerts() {
-    if (!RG || vertsBusy) return;
+    if (vertsBusy) return;
     vertsBusy = true;
     try {
       var res = await fetch(API.verts);
       if (!res.ok) throw new Error('http ' + res.status);
       var buf = await res.arrayBuffer();
-      if (!RG) return;
       if (buf.byteLength < 4) throw new Error('short verts payload');
       var dv = new DataView(buf);                       // little-endian u32 count
       var n = dv.getUint32(0, true);
       if (buf.byteLength < 4 + n * 36) throw new Error('truncated verts payload');
       var f = new Float32Array(buf, 4, n * 9);          // little-endian f32 view
-      if (RG.vertCount !== n || !RG.verts) {
-        RG.vertCount = n;
-        RG.verts = new Float32Array(n * 9);
-        RG.vboSized = false;
+      RG.vertCount = n;
+      if (RG) {
+        if (!RG.verts || RG.verts.length !== n * 9) RG.verts = new Float32Array(n * 9);
+        RG.verts.set(f);
+        gl.bindBuffer(gl.ARRAY_BUFFER, RG.vbo);
+        if (!RG.vboSized) {
+          gl.bufferData(gl.ARRAY_BUFFER, RG.verts.byteLength, gl.DYNAMIC_DRAW);
+          RG.vboSized = true;
+        }
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, RG.verts);
       }
-      RG.verts.set(f);
-      gl.bindBuffer(gl.ARRAY_BUFFER, RG.vbo);
-      if (!RG.vboSized) {
-        gl.bufferData(gl.ARRAY_BUFFER, RG.verts.byteLength, gl.DYNAMIC_DRAW);
-        RG.vboSized = true;
-      }
-      gl.bufferSubData(gl.ARRAY_BUFFER, 0, RG.verts);
       setLink('');
     } catch (err) {
       setLink('the world is silent — retrying…');
@@ -1023,11 +1031,12 @@
   forceLabel.textContent = forceEl.value + ' N';
   $('name-input').focus();
 
+  loadTopology();                       // THE WORLD attaches on any machine —
+                                        // only the DRAWING needs WebGL2
   if (gl) {
     try {
       RG = initRenderer();
       requestAnimationFrame(frame);
-      loadTopology();
     } catch (err) {
       RG = null;
       $('gl-error').classList.remove('hidden');
