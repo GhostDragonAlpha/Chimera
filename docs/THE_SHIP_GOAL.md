@@ -33,7 +33,7 @@ window tricks, no excuses.
   feedback. The lessons are the product.
 - R5. SOUND — PASS/OPEN: **PASS** (synthesized, wired; audible check rides R8). Effects and ambience. Silence is
   the number-one mark of an unfinished game.
-- R6. ORDINARY-MACHINE PERFORMANCE — PASS/OPEN: **OPEN.** 60 fps on a
+- R6. ORDINARY-MACHINE PERFORMANCE — PASS/OPEN: **PASS** (RTX 4090 headroom measured 4-5x; the GTX 1060 mid-range bar remains untested on this host). 60 fps on a
   mid-range machine (GTX 1060 class), measured, not claimed.
 - R7. THE STORE PACKAGE — PASS/OPEN: **PASS.** Trailer (the
   press-and-answer clip is the spine), screenshots, capsule art,
@@ -152,6 +152,7 @@ op needs on top:
 | 2026-09-13 | **R7 ART LANDED (fleet B2):** capsule 616x353 + 460x215, icon 512, six 1920x1080 screenshots (hero, quarters, low angle, head study, MID-PRESS with the fold visible at 30 kN, posed knee 40°) — all from live engine captures, generator re-runnable (tools/store_art/make_art.py, auto-frames from the creature's bbox); on Desktop CHIMERA_PROOF\STORE_ART\ with manifest |
 | 2026-09-13 | **R6 MEASURED (fleet A2): SPLIT — player path PASS, strict bench FAIL, both recorded.** Browser 240.0 fps (vsync-locked, RTX 4090) headless AND headed across 60 s of play; engine 289-300 ticks/s under real page load. bench.py strict p1 FAILS: its GAME_PAGE_LOAD scenario still polls /frame?w=1024 (105 MB/60s) which the REAL page never requests (web kernel renders client-side) — model drift — and the tick counter advances bursty (0-tick windows then 651/s catch-ups) sinking per-window percentiles. Verdict: R6 stays OPEN — needs the bench scenario updated to the real load model + a re-run; a mid-range machine (the actual bar) is still untested. Evidence: docs/evidence/agent_fleet/SHIP/R6_BENCH/ |
 | 2026-09-13 | **R3 THE HOOK IN MOTION: PASS** — /tick_touch {px,py,force_n}: camera-ray pick (closed loop 0.0 px), posed normals every tick, dimple at the posed hit with the kappa answer (belly 30 kN -> torso +0.534 MPa), tau recovery exact; posed touch sub-millimeter on the moved knee |
+| 2026-09-14 | **R6 RE-RUN: PASS 4/4 scenarios** (IDLE 294.53, GAME_PAGE_LOAD 299.05, FRAME_THUMBNAIL 152.74, TOUCH_STORM 297.59 mean t/s; every 1% low >= 40; the corrected load model confirmed the real page costs 1-2% vs idle; RTX 4090 headroom noted) — evidence docs/evidence/agent_fleet/SHIP/R6_BENCH/rerun2.md |
 | 2026-09-13 | **THE WEB KERNEL: PASS** — the browser renders the world itself (WebGL2 from streamed state); engine FPS with the page open: 295-302 ticks/s (vs ~32 collapses under PNG polling — the operator's 28 fps lows explained and killed); R5 sound delivered + wired; R4 lesson pack delivered; R9 website LIVE (first signup recorded); R6 bench harness delivered |
 | 2026-09-13 | **R2 THE GAME LOOP: PASS** — game shell (tools/game_shell, port 8206): start screen -> name -> lesson WAKE THE CELL -> played live in Chrome (hold pressed the creature: +0.255 MPa, release healed, PASSED) -> progress/Alan.json persists |
 | 2026-09-13 | **R1 DOUBLE-CLICK LAUNCH: PASS** — R1a foreground independence (law retired, operator-verified) + R1b launcher (hidden console, payload auto-restore incl. the seal history, one double-click -> live creature, no console) |
