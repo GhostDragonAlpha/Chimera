@@ -74,13 +74,27 @@ F_LBL = font("consola.ttf", 19)
 F_SM = font("consola.ttf", 15)
 
 # ----------------------------------------------------------------- 1 capture
-def run_capture() -> None:
+def run_capture(attempts: int = 4) -> None:
     CAPDIR.mkdir(parents=True, exist_ok=True)
-    shutil.rmtree(CAPDIR / "frames", ignore_errors=True)
-    print("== 1. CAPTURE — headed Chrome, real-time canvas samples ==", flush=True)
-    r = subprocess.run(["node", str(CAP_JS), str(CAPDIR), GAME])
-    if r.returncode != 0:
+    for attempt in range(1, attempts + 1):
+        shutil.rmtree(CAPDIR / "frames", ignore_errors=True)
+        print(f"== 1. CAPTURE — headed Chrome, real-time canvas samples "
+              f"(attempt {attempt}/{attempts}) ==", flush=True)
+        r = subprocess.run(["node", str(CAP_JS), str(CAPDIR), GAME])
+        if r.returncode == 0:
+            return
+        if r.returncode == 5:
+            print("  shared slot busy (no quiet window) — waiting 75 s before the "
+                  "next attempt so the other driver's press can settle", flush=True)
+            time.sleep(75)
+            continue
+        if r.returncode == 6:
+            print("  press never landed (shared rate bucket / world refused) — "
+                  "waiting 60 s before the next attempt", flush=True)
+            time.sleep(60)
+            continue
         raise RuntimeError(f"capture_v2.js exited {r.returncode} — see log above")
+    raise RuntimeError("capture aborted: the shared creature never went quiet")
 
 
 def load_timeline() -> dict:
@@ -288,10 +302,13 @@ def chart(rep: dict, tl: dict, out_png: Path) -> None:
 
 
 # ------------------------------------------------------------------ restore
-def restore_calm() -> dict:
-    """Leave the creature exactly as found: clear any lingering touch, wait for
-    calm. v2 never sends camera or pose commands (the SPACE rail posts hit only)."""
-    out = {"touch_clear_sent": False, "calm_after": None}
+def restore_quiet() -> dict:
+    """Leave the creature with no dent of ours: clear any lingering touch, then
+    wait until dimple_m < 0.02. This is a SHARED slot (gravity may be on from
+    another agent's lesson walk — a settled stand holds real pressure, so the
+    old all-cells-<1000 Pa gate never fires; absolute calm is not ours to
+    demand). v2 never sends camera, pose, or gravity commands."""
+    out = {"touch_clear_sent": False, "quiet_after": None}
     try:
         req = urllib.request.Request(GAME + "/api/touch_clear",
                                      data=json.dumps({}).encode(),
@@ -301,18 +318,25 @@ def restore_calm() -> dict:
     except Exception as e:
         out["touch_clear_error"] = str(e)
     t0 = time.time()
-    while time.time() - t0 < 20:
+    quiet_since = None
+    while time.time() - t0 < 25:
         try:
             with urllib.request.urlopen(GAME + "/api/state", timeout=10) as r:
-                ps = [abs(float(c.get("P")) or 0.0) for c in json.loads(r.read().decode())["cells"]]
-            if ps and all(p < 1000 for p in ps):
-                out["calm_after"] = True
-                break
+                s = json.loads(r.read().decode())
+            if float(s.get("dimple_m") or 0) < 0.02:
+                if quiet_since is None:
+                    quiet_since = time.time()
+                elif time.time() - quiet_since >= 3:
+                    out["quiet_after"] = True
+                    break
+            else:
+                quiet_since = None
         except Exception:
             pass
         time.sleep(0.4)
     else:
-        out["calm_after"] = False
+        if out["quiet_after"] is None:
+            out["quiet_after"] = False
     return out
 
 
@@ -345,21 +369,30 @@ def main() -> int:
                    "canvas sampled in-page by a rAF callback chained after the page's own "
                    "frame() — canvas.toDataURL in the same rendering opportunity, gated ~24 fps",
         "press": "real SPACE keydown — the page itself POSTs /api/touch_hit "
-                 "{hit:[0.0,4.5,0.35], force_n:30000} (lesson 5 'THE WHOLE BODY' touch target); "
-                 "real ESCAPE keydown POSTs /api/touch_clear",
+                 "{hit:[0.0,4.5,0.35], force_n:30000} (lesson 5 'THE WHOLE BODY' touch "
+                 "target); real release gesture (pointerup -> /api/touch_clear). If the "
+                 "shared rate bucket sheds the POST, the ladder retries Space, then falls "
+                 "back to a direct POST of the same route from the page origin "
+                 "(press_path in the timeline says which path landed)",
         "encode": "ffconcat with per-frame wall-clock durations -> libx264 crf18, "
                   f"{CONTAINER_FPS} fps container; no holds, no crossfades, no interpolation",
-        "engine_8107": "never built, stopped, or reconfigured; no /cameras or /tick_pose calls",
+        "engine_8107": "never built, stopped, or reconfigured; no /cameras, /tick_pose, "
+                       "or /tick_gravity calls — the shared world (gravity etc.) is left as found",
+        "shared_slot": "other fleet agents press the same creature; the take only starts in "
+                       "a quiet window (no dent, no pressure spikes) and waits/retries otherwise",
         "captured_at": tl.get("captured_at"),
         "lesson": tl.get("lesson"), "force": tl.get("force"),
         "player_name": tl.get("player_name"),
-        "calm_before_take": tl.get("calm_before_take"),
+        "quiet_before_take": tl.get("quiet_before_take"),
+        "world_gravity_on": tl.get("world_gravity_on"),
+        "world_baseline_pa": tl.get("world_baseline_pa"),
         "press_registered": tl.get("pressed"),
+        "press_path": tl.get("press_path"),
         "healed": tl.get("healed"),
         "hold_dimple_m": tl.get("hold_dimple_m"),
         "capture_notes": tl.get("notes", []),
     }
-    rep["restore_after_take"] = restore_calm()
+    rep["restore_after_take"] = restore_quiet()
 
     (outdir / "diff_report.json").write_text(json.dumps(rep, indent=1))
     chart(rep, tl, outdir / "v2_frame_diff.png")
@@ -382,7 +415,7 @@ def main() -> int:
           f"longest static run {rep['longest_static_run_s']:.2f} s "
           f"({rep['longest_static_run_frames']} frames at t={rep['longest_static_run_at_s']} s) "
           f"-> verdict_smooth={rep['verdict_smooth']}")
-    print(f"  engine restore: calm_after={rep['restore_after_take']['calm_after']}")
+    print(f"  engine restore: quiet_after={rep['restore_after_take']['quiet_after']}")
     print(f"  ACCEPTED" if ok else "  NOT ACCEPTED — fix the failing line above")
     return 0 if ok else 1
 

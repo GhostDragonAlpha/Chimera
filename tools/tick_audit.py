@@ -88,8 +88,21 @@ def frame_puller(engine: str, path: str, every: float, stop: threading.Event,
         stop.wait(every)
 
 
-def analyze(samples: list[dict], burst_thresh: float) -> dict:
-    """samples: [{t, ticks}] chronological, ticks not None."""
+def analyze(samples: list[dict], burst_thresh: float, interval: float = 0.25,
+            nominal_rate: float = 300.0) -> dict:
+    """samples: [{t, ticks}] chronological, ticks not None.
+
+    Intervals are split by dt:
+      clean   -- dt within [0.5, 2.0] x interval: an honest sample-to-sample
+                 span; its rate and zero-advance status are engine truth.
+      delayed -- dt > 2.0 x interval: the poll itself queued (single-worker
+                 HTTP server serializing behind a capture); the ticks missed
+                 relative to nominal are REAL lost ticks, but the interval
+                 says nothing about burstiness.
+      crumb   -- dt < 0.5 x interval: schedule catch-up after a delayed poll;
+                 its rate is a division artifact, never an engine catch-up
+                 (the loop is frame-capped). Excluded from rate stats.
+    """
     ivals = []          # per-interval rates
     events = []         # resets
     for prev, cur in zip(samples, samples[1:]):
@@ -98,46 +111,72 @@ def analyze(samples: list[dict], burst_thresh: float) -> dict:
         if dticks < 0:
             events.append({"t": cur["t"], "from": prev["ticks"], "to": cur["ticks"]})
             continue
+        kind = ("clean" if 0.5 * interval <= dt <= 2.0 * interval else
+                "delayed" if dt > 2.0 * interval else "crumb")
         ivals.append({"t0": prev["t"], "t1": cur["t"], "dt": dt,
-                      "dticks": dticks, "rate": dticks / dt if dt > 0 else 0.0})
+                      "dticks": dticks, "rate": dticks / dt if dt > 0 else 0.0,
+                      "kind": kind})
     used = ivals[1:]    # discard warm-up
-    rates = [i["rate"] for i in used]
+    rates = [i["rate"] for i in used if i["kind"] == "clean"]
     if not rates:
-        return {"used": 0}
+        return {"used": len(used)}
 
-    # merge consecutive zero-advance intervals into stalls; duration from
-    # the last sample inside to the first sample after (exact timestamps)
+    # stalls: merged clean zero-advance intervals; duration from exact
+    # sample timestamps. Delayed intervals contribute lost_ticks instead
+    # (nominal ticks for the span minus ticks actually gained) -- a delayed
+    # interval is itself evidence of a stall the poll sat through.
     stalls = []
     i = 0
     while i < len(used):
-        if used[i]["dticks"] == 0:
+        if used[i]["kind"] == "clean" and used[i]["dticks"] == 0:
             j = i
-            while j + 1 < len(used) and used[j + 1]["dticks"] == 0:
+            while j + 1 < len(used) and used[j + 1]["kind"] == "clean" \
+                    and used[j + 1]["dticks"] == 0:
                 j += 1
-            # interval i starts at sample[i]'s t0 and the tick that ends the
-            # stall lands at used[j+1].t1... conservatively t1 of interval j
             stalls.append({"start": used[i]["t0"], "end": used[j]["t1"],
                            "dur_s": used[j]["t1"] - used[i]["t0"],
                            "windows": j - i + 1})
             i = j + 1
         else:
             i += 1
-    bursts = [i for i in used if i["rate"] > burst_thresh]
+    for iv in used:
+        if iv["kind"] == "delayed":
+            expected = nominal_rate * iv["dt"]
+            iv["lost_ticks"] = max(0, int(round(expected - iv["dticks"])))
+    delayed_lost = sum(iv.get("lost_ticks", 0) for iv in used)
+    # the stall a delayed interval sat through = ticks that should have
+    # happened at nominal but did not: lost/nominal (dt - dk/nominal == lost/nominal)
+    delayed_total_s = delayed_lost / nominal_rate
     rates_sorted = sorted(rates)
     p1 = rates_sorted[max(0, int(round(0.01 * len(rates_sorted))) - 1)]
+    # true overall mean: total ticks gained / total wall time (first to last
+    # sample) -- includes every stall, immune to interval classification
+    wall = samples[-1]["t"] - samples[0]["t"]
+    gained = samples[-1]["ticks"] - samples[0]["ticks"]
+    overall_mean = gained / wall if wall > 0 else 0.0
     return {
         "used": len(used),
+        "clean": sum(1 for i in used if i["kind"] == "clean"),
+        "delayed": sum(1 for i in used if i["kind"] == "delayed"),
+        "crumbs": sum(1 for i in used if i["kind"] == "crumb"),
         "mean": statistics.mean(rates),
+        "overall_mean": overall_mean,
         "median": statistics.median(rates),
         "p1": p1,
         "min": min(rates),
         "max": max(rates),
-        "zero_windows": sum(1 for r in rates if r == 0.0),
-        "zero_frac": sum(1 for r in rates if r == 0.0) / len(rates),
+        "zero_windows": sum(1 for i in used
+                            if i["kind"] == "clean" and i["dticks"] == 0),
+        "zero_frac": sum(1 for i in used
+                         if i["kind"] == "clean" and i["dticks"] == 0)
+                    / max(1, sum(1 for i in used if i["kind"] == "clean")),
         "stalls": stalls,
         "stall_total_s": sum(s["dur_s"] for s in stalls),
-        "bursts": bursts,
-        "burst_windows": len(bursts),
+        "delayed_intervals": sum(1 for i in used if i["kind"] == "delayed"),
+        "delayed_lost_ticks": delayed_lost,
+        "delayed_stall_s": delayed_total_s,
+        "burst_windows": sum(1 for i in used
+                             if i["kind"] == "clean" and i["rate"] > burst_thresh),
         "resets": events,
     }
 
@@ -186,7 +225,7 @@ def main(argv: list[str] | None = None) -> int:
     if worker:
         worker.join(timeout=15)
 
-    res = analyze(samples, args.burst_thresh)
+    res = analyze(samples, args.burst_thresh, args.interval)
     out = {
         "scenario": args.scenario,
         "engine": args.engine,
@@ -207,26 +246,28 @@ def main(argv: list[str] | None = None) -> int:
     print(f"== {args.scenario} == ({args.duration:.0f}s, {args.interval*1000:.0f} ms"
           f" polling, load={load_path or 'none'})")
     print(f"raw: {fp}")
-    if res.get("used", 0) == 0:
+    if not rates_exist(res):
         print("no usable intervals")
         return 1
+    print(f"clean {res['clean']}/{res['used']} intervals"
+          f" (delayed {res['delayed']}, crumb {res['crumbs']})")
     print(f"mean {res['mean']:.2f} t/s | median {res['median']:.2f} | p1 {res['p1']:.2f}"
           f" | min {res['min']:.2f} | max {res['max']:.2f}")
-    print(f"zero-tick windows: {res['zero_windows']}/{res['used']}"
-          f" ({res['zero_frac']*100:.1f}%) | burst(>{args.burst_thresh:.0f}) windows:"
-          f" {res['burst_windows']} | resets: {len(res['resets'])}"
-          f" | poll errors: {n_err}")
-    print(f"stalls (merged 0-advance spans): {len(res['stalls'])}"
-          f", total {res['stall_total_s']:.2f} s")
+    print(f"zero-tick clean windows: {res['zero_windows']} ({res['zero_frac']*100:.1f}% of clean)"
+          f" | real bursts(>{args.burst_thresh:.0f}) in clean: {res['burst_windows']}"
+          f" | resets: {len(res['resets'])} | poll errors: {n_err}")
+    print(f"stalls (merged clean 0-advance): {len(res['stalls'])}"
+          f", total {res['stall_total_s']:.3f} s")
     for s in res["stalls"]:
         print(f"  stall {s['dur_s']*1000:.0f} ms ({s['windows']} windows) at +{s['start']-t_start:.1f}s")
+    print(f"delayed polls: {res['delayed_intervals']} spanning {res['delayed_stall_s']:.2f} s"
+          f" of stall (lost {res['delayed_lost_ticks']} ticks vs nominal 300/s)")
     if pulls:
         ok = [p for p in pulls if p["status"] == 200]
         durs = sorted(p["dur_s"] for p in ok)
         print(f"/frame pulls: {len(ok)}/{len(pulls)} ok"
               + (f" | dur min {durs[0]*1000:.0f} ms, median {durs[len(durs)//2]*1000:.0f} ms,"
                  f" max {durs[-1]*1000:.0f} ms, total {sum(durs):.2f} s" if durs else ""))
-        # overlap: stall spans containing a pull
         for s in res["stalls"]:
             inside = [p for p in pulls
                       if p["t"] >= s["start"] - 0.3 and p["t"] <= s["end"] + 0.3]
@@ -235,6 +276,10 @@ def main(argv: list[str] | None = None) -> int:
                       f" {len(inside)} pull(s):"
                       + ", ".join(f"{p['dur_s']*1000:.0f} ms/{p['status']}" for p in inside))
     return 0
+
+
+def rates_exist(res: dict) -> bool:
+    return res.get("clean", 0) > 0
 
 
 if __name__ == "__main__":

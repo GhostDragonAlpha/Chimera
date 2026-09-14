@@ -1279,6 +1279,13 @@ int main(int argc, char** argv) {
             g_tick.touch_clear();
             body = "{\"ok\":true}";
             content_type = "application/json";
+        } else if (p == "/tick_gait" && method == "POST") {
+            // THE GAIT CHECKPOINT MACHINE (fleet G1, lead-wired at the window):
+            // per-leg STANCE/LIFT/REACH/LOAD, every gate a measured number.
+            bool on = req_body.find("\"on\":true") != std::string::npos;
+            if (g_tick.set_gait(on)) body = "{\"ok\":true,\"gait_on\":" + std::string(on ? "true" : "false") + "}";
+            else body = "{\"ok\":false,\"error\":\"refused: needs gravity, stance, classification, pins 13-18, and a sealed feet cell\"}";
+            content_type = "application/json";
         } else if (p == "/tick_stance" && method == "POST") {
             // THE STANCE SERVO (fleet 2/F1): ankles counter the body's lean
             // while gravity holds — the balance rung of the movement law.

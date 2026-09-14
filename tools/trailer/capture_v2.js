@@ -185,25 +185,54 @@ const log = (...a) => console.log('[capture]', ...a);
   const baselineP = (world.cells || []).map(c => Math.abs(Number(c.P) || 0));
 
   // 03 PRESS — the page's own SPACE rail POSTs /api/touch_hit {hit, force_n}
-  //    at the lesson's belly target [0.0, 4.5, 0.35]. Verify the page LATCHED
-  //    holding (letgo button goes hot); one retry if it did not.
+  //    at the lesson's belly target [0.0, 4.5, 0.35]. THE SHARED BUCKET: all
+  //    local clients share one 600 req/min rate bucket at the front door, so
+  //    a touch POST can be 429-shed when other agents are polling. Ladder:
+  //    (a) Space up to 6x — a player pressing again; (b) direct POST of the
+  //    same route/verb from the page's own origin; (c) give up this take.
+  let pressPath = null, latched = false;
   ph.press_key = await page.evaluate(() => performance.now());
-  await page.keyboard.press('Space');
-  await sleep(400);
-  let latched = await page.evaluate(
-    () => document.getElementById('letgo-btn').classList.contains('hot'));
-  if (!latched) {
-    log('page did not latch holding — one Space retry');
+  for (let k = 0; k < 6 && !latched; k++) {
     await page.keyboard.press('Space');
-    await sleep(400);
+    await sleep(1200);
     latched = await page.evaluate(
       () => document.getElementById('letgo-btn').classList.contains('hot'));
+    if (latched) pressPath = 'page-space-rail';
+    else log(`Space attempt ${k + 1}/6 did not latch (shared bucket may have shed it)`);
   }
-  const pressed = latched && (await waitDimpleAbove(page, 0.02, 4000));
+  if (!latched) {
+    log('falling back to direct POST /api/touch_hit from the page origin');
+    for (let k = 0; k < 3 && !latched; k++) {
+      const res = await page.evaluate(async () => {
+        const r = await fetch('/api/touch_hit', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ hit: [0.0, 4.5, 0.35], force_n: 30000 }),
+        });
+        let body = null;
+        try { body = await r.json(); } catch { }
+        return { status: r.status, body };
+      });
+      latched = !!(res.body && res.body.ok);
+      if (latched) pressPath = 'direct-post-fallback';
+      else log(`direct POST attempt ${k + 1}/3: HTTP ${res.status} ${JSON.stringify(res.body)}`);
+      await sleep(1500);
+    }
+  }
+  ph.press_landed = await page.evaluate(() => performance.now());
+  const pressed = latched && (await waitDimpleAbove(page, 0.02, 5000));
   ph.dimple_visible = await page.evaluate(() => performance.now());
-  log('press registered (latched + dimple_m > 0.02 m):', pressed,
+  log(`press registered via ${pressPath} (dimple_m > 0.02 m):`, pressed,
       'at +', ((ph.dimple_visible - ph.press_key) / 1000).toFixed(2), 's');
-  if (!pressed) notes.push('press not verified (latch or dimple missing)');
+  if (!pressed) {
+    notes.push('press did not land after full ladder — ABORT (rate/bucket or world refused)');
+    await page.keyboard.press('Escape');                       // harmless if not holding
+    await page.evaluate(() => fetch('/api/touch_clear', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    }));
+    await browser.close();
+    process.exit(6);
+  }
 
   // 04 HOLD-AS-A-LIVE-DRAG: one continuous gesture — pointerdown 0.4 s after
   //    the press, slow orbit around the dent for ~4 s, pointerup. The page
@@ -221,8 +250,16 @@ const log = (...a) => console.log('[capture]', ...a);
   //    holding had somehow been lost, that same pointerup fires tryTouch —
   //    a stray press. One ESCAPE covers both branches: clearTouch releases
   //    the real press (or no-ops) / clears the stray one (it sets holding).
+  //    On the direct-POST fallback path the page never held, so clear on the
+  //    same ladder.
   await sleep(300);
   await page.keyboard.press('Escape');
+  if (pressPath === 'direct-post-fallback') {
+    await page.evaluate(() => fetch('/api/touch_clear', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    }));
+  }
   const healed = await waitDimpleBelow(page, 0.02, 10000);
   ph.healed = await page.evaluate(() => performance.now());
   log('healed (dimple_m < 0.02 m):', healed,
@@ -265,7 +302,7 @@ const log = (...a) => console.log('[capture]', ...a);
     url: URL_, headed: true, channel: 'chrome',
     viewport: '2280x1080', deviceScaleFactor: 1,
     canvas: cinfo, lesson: lessonTitle, force: forceLabel,
-    player_name: NAME, pressed, healed, latched,
+    player_name: NAME, pressed, healed, latched, press_path: pressPath,
     hold_dimple_m: holdDimple, quiet_before_take: quiet,
     world_gravity_on: worldGravity, world_baseline_pa: baselineP,
     gate_ms: GATE_MS, dataurl_probe: probe, todataurl_errors: errs,
@@ -279,6 +316,16 @@ const log = (...a) => console.log('[capture]', ...a);
   fs.writeFileSync(path.join(OUT, 'timeline.json'), JSON.stringify(timeline, null, 1));
   log(`saved ${n} frames (${errs} sampler errors) -> ${framesDir}`);
   log('timeline.json written; wall footage ' + ((lastT - t0) / 1000).toFixed(2) + ' s');
+
+  // belt and braces before leaving: make sure no press of ours survives the
+  // closed browser (the engine holds touch force until an explicit clear)
+  try {
+    await page.evaluate(() => fetch('/api/touch_clear', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    }));
+    log('final /api/touch_clear sent');
+  } catch (e) { log('final clear failed (non-fatal):', String(e)); }
 
   await browser.close();
   process.exit(n >= 240 ? 0 : 3);
@@ -316,7 +363,7 @@ async function waitQuiet(page, capMs) {
         else if (Date.now() - quietSince >= 4000) return true;
       } else quietSince = null;
     } catch { /* a silent beat is not a verdict */ }
-    await sleep(400);
+    await sleep(800);
   }
   return false;
 }
@@ -324,7 +371,7 @@ async function waitDimpleAbove(page, min, capMs) {
   const t0 = Date.now();
   while (Date.now() - t0 < capMs) {
     if ((await readDimple(page)) > min) return true;
-    await sleep(150);
+    await sleep(700);
   }
   return false;
 }
@@ -333,7 +380,7 @@ async function waitDimpleBelow(page, max, capMs) {
   while (Date.now() - t0 < capMs) {
     const d = await readDimple(page);
     if (d !== null && d < max) return true;
-    await sleep(150);
+    await sleep(700);
   }
   return false;
 }
