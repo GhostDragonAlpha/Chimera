@@ -1,0 +1,20 @@
+{
+ "at": "2026-09-14T13:26:19.531Z",
+ "clickPressFired": true,
+ "pressEntries": [
+  {
+   "m": "press",
+   "t": 1789392377272,
+   "ctx": "running",
+   "args": [
+    20000,
+    "undefined"
+   ],
+   "voiceActiveAfter": true,
+   "heldRegion": "body"
+  }
+ ],
+ "judge": "judge: wake_the_cell phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=0 holding=true",
+ "acCreated": 1,
+ "consoleErrors": []
+}

@@ -1,0 +1,208 @@
+{
+ "at": "2026-09-14T13:23:36.851Z",
+ "url": "http://127.0.0.1:8206",
+ "main": {
+  "acAtLoad": 0,
+  "booted": true,
+  "acAfterGesture": 1,
+  "playScreenOn": true,
+  "gestureLog": [
+   {
+    "m": "init",
+    "t": 1789392219737,
+    "ctx": "running",
+    "args": []
+   },
+   {
+    "m": "ambient",
+    "t": 1789392219738,
+    "ctx": "running",
+    "args": [
+     "true"
+    ]
+   }
+  ],
+  "worldCellsAtStart": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "judgeAtStart": "judge: wake_the_cell phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=0 holding=false",
+  "stateDuringHold": [
+   0,
+   842272,
+   0,
+   0,
+   0
+  ],
+  "whooshDuringHold": 1,
+  "cellWakeDuringHold": 1,
+  "lessonSwitch": {
+   "whooshBefore": 1,
+   "whooshAfter": 2,
+   "spuriousRefire": true
+  },
+  "judgeAfterSwitch": "judge: the_healing phase=release goalMet=true passed=false touchTarget=set lastTouchForce=20000 holding=true",
+  "stateAfterRelease1": {
+   "pressVActive": true,
+   "region": "body"
+  },
+  "pressEndEverCalled": false,
+  "shimmerFired": true,
+  "judgeAtEnd": "judge: the_healing phase=release goalMet=true passed=true touchTarget=set lastTouchForce=20000 holding=false",
+  "cellsAtEnd": [
+   0,
+   663,
+   0,
+   0,
+   0
+  ],
+  "judgeDuringCycle2": "judge: the_healing phase=release goalMet=true passed=true touchTarget=set lastTouchForce=34000 holding=true",
+  "pressCycle2": {
+   "audioFired": true,
+   "judge": "judge: the_healing phase=release goalMet=true passed=true touchTarget=set lastTouchForce=34000 holding=false"
+  },
+  "log": [
+   {
+    "m": "init",
+    "t": 1789392219737,
+    "ctx": "running",
+    "args": []
+   },
+   {
+    "m": "ambient",
+    "t": 1789392219738,
+    "ctx": "running",
+    "args": [
+     "true"
+    ]
+   },
+   {
+    "m": "press",
+    "t": 1789392229840,
+    "ctx": "running",
+    "args": [
+     20000,
+     [
+      0,
+      4.444,
+      0.7
+     ]
+    ],
+    "voiceActiveAfter": true,
+    "heldRegion": "body"
+   },
+   {
+    "m": "wakeWhoosh",
+    "t": 1789392230413,
+    "ctx": "running",
+    "args": []
+   },
+   {
+    "m": "cellWake",
+    "t": 1789392230413,
+    "ctx": "running",
+    "args": []
+   },
+   {
+    "m": "press",
+    "t": 1789392230539,
+    "ctx": "running",
+    "args": [
+     34000
+    ],
+    "voiceActiveAfter": true,
+    "heldRegion": "body"
+   },
+   {
+    "m": "wakeWhoosh",
+    "t": 1789392231813,
+    "ctx": "running",
+    "args": []
+   },
+   {
+    "m": "cellWake",
+    "t": 1789392231813,
+    "ctx": "running",
+    "args": []
+   },
+   {
+    "m": "healShimmer",
+    "t": 1789392238129,
+    "ctx": "running",
+    "args": []
+   },
+   {
+    "m": "passed",
+    "t": 1789392238130,
+    "ctx": "running",
+    "args": []
+   },
+   {
+    "m": "press",
+    "t": 1789392238313,
+    "ctx": "running",
+    "args": [
+     34000,
+     [
+      0,
+      4.516,
+      0.309
+     ]
+    ],
+    "voiceActiveAfter": true,
+    "heldRegion": "body"
+   }
+  ],
+  "acFinal": 1,
+  "timeline": [
+   {
+    "t": 0,
+    "lbl": "before-space",
+    "judge": "judge: wake_the_cell phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=0 holding=false"
+   },
+   {
+    "t": 706,
+    "lbl": "space+700ms",
+    "judge": "judge: wake_the_cell phase=release goalMet=true passed=false touchTarget=set lastTouchForce=20000 holding=true"
+   },
+   {
+    "t": 1814,
+    "lbl": "hold+1.8s",
+    "judge": "judge: wake_the_cell phase=release goalMet=true passed=false touchTarget=set lastTouchForce=20000 holding=true"
+   },
+   {
+    "t": 5586,
+    "lbl": "after-escape",
+    "judge": "judge: the_healing phase=release goalMet=true passed=false touchTarget=set lastTouchForce=20000 holding=false"
+   }
+  ],
+  "consoleErrors": [],
+  "consoleTail": [],
+  "servedMatchesWorktree": true,
+  "harnessAttached": true
+ },
+ "broken": {
+  "judgeLine": "judge: wake_the_cell phase=release goalMet=true passed=false touchTarget=set lastTouchForce=20000 holding=true",
+  "pressCalledAndThrew": true,
+  "pressHoldsAnyway": true,
+  "consoleOrPageErrors": [],
+  "failureInvisible": true
+ },
+ "verdict": {
+  "acZeroAtLoad": true,
+  "acExactlyOneAfterGesture": true,
+  "acStillOneAtEnd": true,
+  "pressFiredOnSpace": true,
+  "pressCarriedWorldPoint": true,
+  "forceFollowFired": true,
+  "heldRegionResolved": true,
+  "whooshOncePerCrossing": true,
+  "pressEndNeverWired": true,
+  "pressVoiceStillActiveAfterRelease": true,
+  "zeroConsoleErrors": true,
+  "servedMatchesWorktree": true
+ }
+}
