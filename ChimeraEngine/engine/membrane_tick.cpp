@@ -225,6 +225,8 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
     gait_lean_x_ = gait_lean_z_ = 0.f;
     gait_p_max_ = 0.f;
     gait_feet_cell_ = -1;
+    gait_strut_pin_[0] = gait_strut_pin_[1] = -1;   // drives unresolved
+    gait_clear_pin_[0] = gait_clear_pin_[1] = -1;   // until the next enable
     gait_stride_count_ = 0;
     gait_log_.clear();
     gait_enable_block_.clear();   // the new body has answered nothing yet
@@ -1763,6 +1765,17 @@ void MembraneTick::gait_off_locked_() {
         joint_deg_[HIP_PIN_L] = joint_deg_[HIP_PIN_R] = 0.f;
         joint_deg_[KNEE_PIN_L] = joint_deg_[KNEE_PIN_R] = 0.f;
     }
+    // THE COMPOSED ANKLES (the V3a audit fix): while armed, the machine
+    // writes joint_deg_[strut_pin] = stance_th_ + its own strut component
+    // (the prereg's "composes over" law). Disarming stops the write; the
+    // pin must return to stance's OWN component exactly, not to 0 -- a
+    // zero here would stomp the balance servo's live lean term.
+    for (int s = 0; s < 2; ++s) {
+        if (gait_strut_pin_[s] >= 0
+            && (size_t)gait_strut_pin_[s] < joint_deg_.size())
+            joint_deg_[(size_t)gait_strut_pin_[s]]
+                = stance_on_ ? stance_th_ : 0.f;
+    }
 }
 
 // G1: the gait switch (the lead wires POST /tick_gait to this, next to
@@ -1860,71 +1873,142 @@ bool MembraneTick::set_gait(bool on) {
 
     // probes: +1 deg per pin on the rest blend (the F1 probe precedent).
     // MEASURED per pin: d(foot-set min y) and d(foot centroid z), SIGNED.
-    const uint8_t hip_pin[2]  = {HIP_PIN_L, HIP_PIN_R};
-    const uint8_t knee_pin[2] = {KNEE_PIN_L, KNEE_PIN_R};
-    float dminy_hip[2], dminy_knee[2], dcz_hip[2], dcz_knee[2];
-    float rate_hip[2], rate_knee[2];
+    //
+    // THE DRIVE PINS ARE MEASURED, NOT ASSUMED (the V3a audit): the
+    // shipped vertbind gives the foot sets EXACTLY ZERO hip-pin weight
+    // (measured on the live blob: the L foot set's 1289-vert blend mass
+    // sits 1095.96 on ankle_L, 63.20 on knee_L, 130.85 on the
+    // contralateral FILL ankle, 0.000 on hip_L -- pure skinning has no
+    // hip-to-foot chain, so a +1 deg hip probe moves no foot vertex and
+    // the shipped hardcoded-hip probe read 0.0 -> no_channel_hip_L0 on
+    // EVERY world this authoring line builds, fresh or restored).
+    // THE LAW (derived, no taste): a pin's authority for a side is its
+    // NET blend weight on that side's foot set (own minus opposite -- a
+    // pin belongs to the side it moves more; this rejects the fill
+    // ankle, whose net is negative). Each side's drive pair = its two
+    // highest-net pins; the STRUT role (REACH z-servo) goes to whichever
+    // has the larger |dcz| probe, the CLEAR role (LIFT/REACH clearance)
+    // to the other. Refusal names carry the resolved pin ids.
+    const size_t npins = joint_deg_.size();
+    std::vector<float> wnet[2];   // per-side net blend weight per pin
+    for (int s = 0; s < 2; ++s) wnet[s].assign(npins, 0.f);
+    for (size_t v = 0; v < nv; ++v) {
+        const int own = rest9[v * 9 + 1] > feet_yhi
+            ? -1 : (rest9[v * 9 + 0] >= 0.f ? 0 : 1);
+        if (own < 0) continue;   // not in either foot set
+        for (int k = 0; k < 3; ++k) {
+            const uint8_t j = vert_bind_idx_[v * 3 + (size_t)k];
+            if ((size_t)j < npins)
+                wnet[own][(size_t)j] += vert_bind_w_[v * 3 + (size_t)k];
+        }
+    }
+    int cand[2][2] = {{-1, -1}, {-1, -1}};   // top-2 net pins per side
+    float cand_net[2][2] = {{0.f, 0.f}, {0.f, 0.f}};
+    for (size_t j = 0; j < npins; ++j) {
+        const float dl = wnet[0][j] - wnet[1][j];   // net for the L side
+        for (int s = 0; s < 2; ++s) {
+            const float d = s == 0 ? dl : -dl;
+            if (d <= 0.f) continue;   // the other side owns this pin
+            float* cn = cand_net[s];
+            int*    cc = cand[s];
+            if (d > cn[0]) {
+                cn[1] = cn[0]; cc[1] = cc[0]; cn[0] = d; cc[0] = (int)j;
+            } else if (d > cn[1]) {
+                cn[1] = d; cc[1] = (int)j;
+            }
+        }
+    }
+    for (int s = 0; s < 2; ++s) {
+        if (cand[s][0] < 0 || cand[s][1] < 0) {
+            gait_enable_block_ = std::string("no_drive_pins_")
+                + (s == 0 ? "L" : "R");
+            return false;   // the binding gives this side no leg to drive
+        }
+    }
+    const uint8_t drive_pin[2][2] = {   // [side] [0=strut-cand, 1=clear-cand]
+        {(uint8_t)cand[0][0], (uint8_t)cand[0][1]},
+        {(uint8_t)cand[1][0], (uint8_t)cand[1][1]}};
+    float dminy_cand[2][2], dcz_cand[2][2];   // probes per candidate
     for (int s = 0; s < 2; ++s) {
         const float miny0 = gait_set_miny(rest9, fset[s]);
         float cx0, cy0, cz0;
         gait_set_centroid(rest9, fset[s], &cx0, &cy0, &cz0);
-        std::vector<float> degs(joint_deg_.size(), 0.f);
-        std::vector<float> p9;
-        float cx, cy, cz;
-        // knee probe
-        degs[knee_pin[s]] = 1.f * 3.14159265358979f / 180.f;
-        p9 = rest9;
-        apply_travel(p9, &degs);
-        dminy_knee[s] = gait_set_miny(p9, fset[s]) - miny0;
-        gait_set_centroid(p9, fset[s], &cx, &cy, &cz);
-        dcz_knee[s] = cz - cz0;
-        // hip probe
-        degs[knee_pin[s]] = 0.f;
-        degs[hip_pin[s]] = 1.f * 3.14159265358979f / 180.f;
-        p9 = rest9;
-        apply_travel(p9, &degs);
-        dminy_hip[s] = gait_set_miny(p9, fset[s]) - miny0;
-        gait_set_centroid(p9, fset[s], &cx, &cy, &cz);
-        dcz_hip[s] = cz - cz0;
-        // measured arc channels -> derived rate caps: the foot's linear
-        // speed never exceeds its own patch radius per tau (the bar)
-        const float mk = std::sqrt(dminy_knee[s] * dminy_knee[s]
-                                 + dcz_knee[s] * dcz_knee[s]);
-        const float mh = std::sqrt(dminy_hip[s] * dminy_hip[s]
-                                 + dcz_hip[s] * dcz_hip[s]);
-        if (mk < GAIT_MIN_CHANNEL || mh < GAIT_MIN_CHANNEL) {
-            // no measurable channel (the F1 refusal) -- NAME it: which
-            // side, which pin class, and the measured magnitude against
-            // the bar, so the next auditor reads the anatomy, not a bare
-            // ok:false.
-            std::ostringstream b;
-            b << "no_channel_" << (mk < GAIT_MIN_CHANNEL ? "knee_" : "hip_")
-              << (s == 0 ? "L" : "R")
-              << (mk < GAIT_MIN_CHANNEL ? mk : mh);
-            gait_enable_block_ = b.str();
-            return false;
+        for (int c = 0; c < 2; ++c) {
+            std::vector<float> degs(npins, 0.f);
+            std::vector<float> p9;
+            float cx, cy, cz;
+            degs[(size_t)drive_pin[s][c]] = 1.f * 3.14159265358979f / 180.f;
+            p9 = rest9;
+            apply_travel(p9, &degs);
+            dminy_cand[s][c] = gait_set_miny(p9, fset[s]) - miny0;
+            gait_set_centroid(p9, fset[s], &cx, &cy, &cz);
+            dcz_cand[s][c] = cz - cz0;
+            const float m = std::sqrt(dminy_cand[s][c] * dminy_cand[s][c]
+                                    + dcz_cand[s][c] * dcz_cand[s][c]);
+            if (m < GAIT_MIN_CHANNEL) {
+                // no measurable channel (the F1 refusal) -- NAME it:
+                // which side, which resolved pin, the measured magnitude
+                // against the bar, so the next auditor reads the
+                // anatomy, not a bare ok:false.
+                std::ostringstream b;
+                b << "no_channel_pin" << (int)drive_pin[s][c]
+                  << (s == 0 ? "_L_" : "_R_") << m;
+                gait_enable_block_ = b.str();
+                return false;
+            }
         }
-        rate_knee[s] = (prad[s] / STANCE_TAU_S) / mk;
-        rate_hip[s]  = (prad[s] / STANCE_TAU_S) / mh;
+    }
+    // slot the roles by the MEASURED z authority (never by anatomy)
+    float dminy_strut[2], dcz_strut[2], dminy_clear[2], dcz_clear[2];
+    int strut_pin[2], clear_pin[2];
+    for (int s = 0; s < 2; ++s) {
+        const bool first_is_strut =
+            std::fabs(dcz_cand[s][0]) >= std::fabs(dcz_cand[s][1]);
+        const int si = first_is_strut ? 0 : 1, ci = first_is_strut ? 1 : 0;
+        strut_pin[s] = drive_pin[s][si];
+        clear_pin[s] = drive_pin[s][ci];
+        dminy_strut[s] = dminy_cand[s][si];
+        dcz_strut[s]   = dcz_cand[s][si];
+        dminy_clear[s] = dminy_cand[s][ci];
+        dcz_clear[s]   = dcz_cand[s][ci];
     }
 
-    // the LIFT combo: the hip:knee ratio that nulls the centroid z drift
-    // (a_h = dcz_knee, a_k = -dcz_hip: a_h*dcz_h + a_k*dcz_k == 0), with
-    // its measured rise channel ch = a_h*dminy_hip + a_k*dminy_knee. If
-    // the legs cannot rise, the enable refuses -- the body honestly
-    // cannot step (an anatomical fact, not a tuning failure).
+    // measured arc channels -> derived rate caps: the foot's linear speed
+    // never exceeds its own patch radius per tau (the bar). The slot
+    // aliases keep the commit/log field names stable (gait_dminy_hip_ now
+    // carries the STRUT pin's channel -- resolved above, named below).
+    float dminy_hip[2], dminy_knee[2], dcz_hip[2], dcz_knee[2];
+    float rate_hip[2], rate_knee[2];
+    for (int s = 0; s < 2; ++s) {
+        const float ms = std::sqrt(dminy_strut[s] * dminy_strut[s]
+                                 + dcz_strut[s] * dcz_strut[s]);
+        const float mc = std::sqrt(dminy_clear[s] * dminy_clear[s]
+                                 + dcz_clear[s] * dcz_clear[s]);
+        dminy_hip[s] = dminy_strut[s];   dcz_hip[s] = dcz_strut[s];
+        dminy_knee[s] = dminy_clear[s];  dcz_knee[s] = dcz_clear[s];
+        rate_hip[s]  = (prad[s] / STANCE_TAU_S) / ms;
+        rate_knee[s] = (prad[s] / STANCE_TAU_S) / mc;
+    }
+
+    // the LIFT combo: the strut:clear ratio that nulls the centroid z
+    // drift (a_h = dcz_clear, a_k = -dcz_strut: a_h*dcz_s + a_k*dcz_c
+    // == 0), with its measured rise channel ch = a_h*dminy_strut
+    // + a_k*dminy_clear. NO enable refusal on |ch| here (the shipped
+    // no_lift_channel gate is REMOVED by the V3a audit): the prereg's own
+    // law for this number is "the linear-channel estimate only sizes the
+    // step, and the measured error closes the rest" -- on the shipped
+    // binding the null-z rise channel is 1.66e-5 m/deg (the two drive
+    // channels are nearly collinear), while the REAL lift is 4.6 deg of
+    // ankle within the 89-deg ROM, rate-capped by mx. An enable refusal
+    // here would refuse a body its own gates can walk; the falsifier for
+    // that claim is F-STALL (a phase not reaching its gate within 10 tau
+    // -> the derivation is wrong). The servo stays well-defined as
+    // ch -> 0: dparam is clamped by mx (the rate caps) before use.
     float lift_ah[2], lift_ak[2], lift_ch[2];
     for (int s = 0; s < 2; ++s) {
         lift_ah[s] = dcz_knee[s];
         lift_ak[s] = -dcz_hip[s];
         lift_ch[s] = lift_ah[s] * dminy_hip[s] + lift_ak[s] * dminy_knee[s];
-        if (std::fabs(lift_ch[s]) < GAIT_MIN_CHANNEL) {
-            std::ostringstream b;
-            b << "no_lift_channel_" << (s == 0 ? "L" : "R")
-              << lift_ch[s];
-            gait_enable_block_ = b.str();
-            return false;
-        }
     }
 
     // commit (all under the lock taken at entry)
@@ -1951,11 +2035,25 @@ bool MembraneTick::set_gait(bool on) {
                             + pcx[1] * (float)gait_foot_verts_[1].size()) / snr);
     gait_lean_ref_z_ = bz - sczr;
     gait_feet_cell_ = feet;
+    for (int s = 0; s < 2; ++s) {
+        gait_strut_pin_[s] = strut_pin[s];
+        gait_clear_pin_[s] = clear_pin[s];
+    }
     gait_stride_count_ = 0;
     gait_log_.clear();
     gait_enable_block_.clear();   // armed: nothing blocks this body
+    // bearing enforcement at arm (the shipped law): the legacy leg pins
+    // to authored 0; the drive pins take their composed arm values (the
+    // strut component is 0 at arm, so the ankle pin carries exactly
+    // stance's own lean term -- the machine composes over it, never
+    // clobbers it).
     joint_deg_[HIP_PIN_L] = joint_deg_[HIP_PIN_R] = 0.f;
-    joint_deg_[KNEE_PIN_L] = joint_deg_[KNEE_PIN_R] = 0.f;
+    for (int s = 0; s < 2; ++s) {
+        if ((size_t)clear_pin[s] < npins)
+            joint_deg_[(size_t)clear_pin[s]] = 0.f;
+        if ((size_t)strut_pin[s] < npins)
+            joint_deg_[(size_t)strut_pin[s]] = stance_th_;
+    }
     gait_on_ = true;
     {
         std::ostringstream g;
@@ -1978,6 +2076,10 @@ bool MembraneTick::set_gait(bool on) {
           << ",\"rateKR\":" << gait_rate_knee_[1]
           << ",\"rateHL\":" << gait_rate_hip_[0]
           << ",\"rateHR\":" << gait_rate_hip_[1]
+          << ",\"strutPinL\":" << gait_strut_pin_[0]
+          << ",\"strutPinR\":" << gait_strut_pin_[1]
+          << ",\"clearPinL\":" << gait_clear_pin_[0]
+          << ",\"clearPinR\":" << gait_clear_pin_[1]
           << ",\"feetCell\":" << feet << "}";
         gait_log_locked_(0, "OFF", "STANCE", g.str());
     }
@@ -2007,6 +2109,15 @@ void MembraneTick::gait_step_locked_(std::vector<float>& verts9, float dt) {
             if (joint_deg_.size() > (size_t)KNEE_PIN_R) {
                 joint_deg_[HIP_PIN_L] = joint_deg_[HIP_PIN_R] = 0.f;
                 joint_deg_[KNEE_PIN_L] = joint_deg_[KNEE_PIN_R] = 0.f;
+            }
+            // the composed ankles return to stance's own component (the
+            // same law as gait_off_locked_; in the gravity-off/stance-on
+            // corner the balance servo keeps its lean term)
+            for (int s = 0; s < 2; ++s) {
+                if (gait_strut_pin_[s] >= 0
+                    && (size_t)gait_strut_pin_[s] < joint_deg_.size())
+                    joint_deg_[(size_t)gait_strut_pin_[s]]
+                        = stance_on_ ? stance_th_ : 0.f;
             }
         }
         return;
@@ -2258,12 +2369,26 @@ void MembraneTick::gait_step_locked_(std::vector<float>& verts9, float dt) {
         }
     }
 
-    // -- ACT: the commanded angles land on the hip/knee pins ONLY
-    // (13-16). The ankles above are F1's writes, untouched.
-    joint_deg_[HIP_PIN_L]  = gait_hip_rad_[0];
-    joint_deg_[HIP_PIN_R]  = gait_hip_rad_[1];
-    joint_deg_[KNEE_PIN_L] = gait_knee_rad_[0];
-    joint_deg_[KNEE_PIN_R] = gait_knee_rad_[1];
+    // -- ACT: the commanded angles land on the RESOLVED drive pins (the
+    // V3a audit: measured from the binding at enable, ankle/knee on the
+    // shipped creature). The strut pin's angle is COMPOSED over stance's
+    // own lean term (the prereg: "the G1 block runs AFTER the stance
+    // block and composes over it" -- the ankle pin carries
+    // stance_th_ + the machine's strut component, so the balance servo
+    // keeps its channel while the machine strides). The legacy hip pins
+    // 13/14 are left at authored bearing: the shipped binding gives them
+    // ZERO foot weight (the measured no_channel_hip_L0 fact), so writing
+    // them would be motion with no channel -- animation, not control.
+    if ((size_t)gait_strut_pin_[0] < joint_deg_.size())
+        joint_deg_[(size_t)gait_strut_pin_[0]] =
+            stance_th_ + gait_hip_rad_[0];
+    if ((size_t)gait_strut_pin_[1] < joint_deg_.size())
+        joint_deg_[(size_t)gait_strut_pin_[1]] =
+            stance_th_ + gait_hip_rad_[1];
+    if ((size_t)gait_clear_pin_[0] < joint_deg_.size())
+        joint_deg_[(size_t)gait_clear_pin_[0]] = gait_knee_rad_[0];
+    if ((size_t)gait_clear_pin_[1] < joint_deg_.size())
+        joint_deg_[(size_t)gait_clear_pin_[1]] = gait_knee_rad_[1];
 }
 
 std::string MembraneTick::state_json() const {
@@ -2334,6 +2459,10 @@ std::string MembraneTick::state_json() const {
       << ",\"gait_knee_l_deg\":" << gait_knee_rad_[0] * 57.29577951308232
       << ",\"gait_knee_r_deg\":" << gait_knee_rad_[1] * 57.29577951308232
       << ",\"gait_feet_cell\":" << gait_feet_cell_
+      << ",\"gait_strut_pin_l\":" << gait_strut_pin_[0]
+      << ",\"gait_strut_pin_r\":" << gait_strut_pin_[1]
+      << ",\"gait_clear_pin_l\":" << gait_clear_pin_[0]
+      << ",\"gait_clear_pin_r\":" << gait_clear_pin_[1]
       << ",\"gait_enable_block\":\"" << gait_enable_block_ << "\""
       << ",\"gait_block_l\":\"" << gait_block_[0] << "\""
       << ",\"gait_block_r\":\"" << gait_block_[1] << "\""

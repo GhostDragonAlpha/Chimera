@@ -312,6 +312,23 @@ private:
     float gait_dminy_knee_[2] = {0.f, 0.f};     // m/rad
     float gait_dcz_hip_[2] = {0.f, 0.f};        // m/rad
     float gait_dcz_knee_[2] = {0.f, 0.f};       // m/rad
+    // The DRIVE PINS, RESOLVED FROM THE BINDING at set_gait(true) (the
+    // V3a audit, R4_GAIT_VERIFY/ENABLE_AUDIT.md): the shipped W8 vertbind
+    // gives the FOOT SETS zero weight on the hip pins 13/14 (measured:
+    // 1095.96 of 1289 average blend weight sits on the ankle, 63.2 on the
+    // knee, 0.000 on the hip -- pure skinning has no hip-to-foot chain),
+    // so the machine's per-side "hip slot" and "knee slot" are ROLES, and
+    // the pin that fills each role is measured, not assumed: per side,
+    // the two pins with the largest NET blend weight on that side's foot
+    // set (own-side minus opposite-side -- a pin belongs to the side it
+    // moves more; this rejects the contralateral fill pin, whose net
+    // coupling is negative). The role goes to the measured channel: the
+    // STRUT (z-servo in REACH) is whichever resolved pin has the larger
+    // |dcz|; the CLEAR pin holds the LIFT/REACH clearance. On the shipped
+    // creature this resolves to ankle/knee 17/15 and 18/16; hips 13/14
+    // stay at authored bearing (zero footprint -- measured).
+    int gait_strut_pin_[2] = {-1, -1};          // resolved drive pin, z role
+    int gait_clear_pin_[2] = {-1, -1};          // resolved drive pin, clearance
     // Derived rate caps: the foot's arc speed never exceeds its own
     // patch radius per STANCE_TAU_S (the named speed bar).
     float gait_rate_hip_[2] = {0.f, 0.f};       // rad/s

@@ -1,0 +1,12 @@
+{
+ "n_cells": 4,
+ "sealed": true,
+ "gravity_on": true,
+ "g_contact_n": 135618,
+ "root_y": 0.00950712,
+ "stance_on": true,
+ "stance_kp": 3.53082,
+ "gait_on": false,
+ "gait_feet_cell": -1,
+ "gait_enable_block": "no_channel_hip_L0"
+}

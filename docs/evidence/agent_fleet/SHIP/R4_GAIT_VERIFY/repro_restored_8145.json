@@ -1,0 +1,45 @@
+{
+ "base": "http://127.0.0.1:8145",
+ "world": "restored session_snapshot (boot restore, seal-tree blob)",
+ "binary": ".tmp/build_tick/Release/chimera_engine.exe (deployed, 2026-09-14 13:00)",
+ "V1": {
+  "gravity_on": true,
+  "g_contact_n": 135618,
+  "root_y": 0.00950712,
+  "root_vy": -3.98685e-08
+ },
+ "V2": {
+  "stance_on": true,
+  "stance_kp": 3.53082
+ },
+ "V3_post_body": "{\"ok\":false,\"error\":\"refused: needs gravity, stance, classification, pins 13-18, and a sealed feet cell\"}",
+ "V3_state": {
+  "gait_on": false,
+  "gait_feet_cell": -1,
+  "gait_enable_block": "no_channel_hip_L0",
+  "n_cells": 4,
+  "sealed": true,
+  "cells": [
+   {
+    "ylo": -0.019507,
+    "yhi": 0.338,
+    "V": 0.287914
+   },
+   {
+    "ylo": 3.415,
+    "yhi": 9.97118,
+    "V": 12.5091
+   },
+   {
+    "ylo": 1.903,
+    "yhi": 3.415,
+    "V": 0.693006
+   },
+   {
+    "ylo": 0.338,
+    "yhi": 1.903,
+    "V": 0.334578
+   }
+  ]
+ }
+}
