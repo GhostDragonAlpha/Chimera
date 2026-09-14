@@ -26,6 +26,23 @@ duplicate-position binding-split check (duplicates must move together,
 E2), and the E2 posed-surface crease metric before/after so the route's
 effect is reproducible with one command. Run WITHOUT --report to ship the
 binding to a live engine.
+
+// G7 (seam route 1 verification, 2026-09-14): the W8 generation above
+// was re-run independently (python tools/classify_run.py --report,
+// hash-pinned 47368352d8c960eb51e4a3bf6c08c06d) and every printed
+// number reproduced: flip bands 4243 -> 4117 of 18459; fill 5880, 88
+// capped; creases 193 -> 180 (knee45) and 237 -> 212 (compound);
+// duplicate-position splits 0 -> 0; all 28 per-pin PRIMARY counts
+// identical before/after. Hard constraints re-proven against the same
+// binding math: weights sum to 1 in float32 (max |sum-1| 4.5e-8), the
+// deg=0 blend returns the authored rest to 4.4e-7 (E2's recorded
+// bound), and the 15-byte row round-trips MembraneTick::load_vertbind
+// (body 4+n*15 = 276889 bytes). Mechanism audit: the left-thigh
+// population still binding hip_R fell 370 -> 165, and every survivor
+// is spine_lower-INHERITED with hip_R in-limb via the touch graph
+// (spine_lower touches hip_R across the centerline; hip_L does NOT
+// touch hip_R -- 0 sane bridge edges), never a capped fill. No code
+// changed in this pass; the W8 generation is verified as shipped.
 """
 from __future__ import annotations
 

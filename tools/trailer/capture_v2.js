@@ -128,13 +128,15 @@ const log = (...a) => console.log('[capture]', ...a);
     window.__g10cap.stop = () => { window.__g10cap.on = false; };
   }, [GATE_MS, MAX_FRAMES]);
 
-  // probe: does the dataURL path deliver real pixels? (else fail fast —
-  // a CDP-screenshot loop would not reach 24 fps and this take is about rate)
+  // probe: does the dataURL path deliver a real JPEG? (the scene is mostly
+  // flat dark background — 1920x1080 legitimately compresses to ~15-20 KB,
+  // so the size gate is low; the real blank-check happens in Python via PIL)
   const probe = await page.evaluate(() => {
     const c = document.getElementById('gl');
     try {
       const u = c.toDataURL('image/jpeg', 0.82);
-      return { ok: u.length > 20000, len: u.length, err: null };
+      return { ok: u.length > 8000 && u.startsWith('data:image/jpeg;base64,/9j/'),
+               len: u.length, err: null };
     } catch (e) { return { ok: false, len: 0, err: String(e) }; }
   });
   log('dataURL probe:', JSON.stringify(probe));
@@ -223,7 +225,9 @@ const log = (...a) => console.log('[capture]', ...a);
     player_name: NAME, pressed, healed,
     hold_dimple_m: holdDimple, calm_before_take: calm,
     gate_ms: GATE_MS, dataurl_probe: probe, todataurl_errors: errs,
+    t0_page_ms: t0,
     phases_wall_ms: ph,
+    phases_s: Object.fromEntries(Object.entries(ph).map(([k, v]) => [k, +(((v - t0) / 1000).toFixed(4))])),
     captured_at: new Date().toISOString(),
     frames: savedMeta.map(f => ({ i: f.i, t_s: +(((f.t - t0) / 1000).toFixed(4)) })),
     notes,

@@ -91,7 +91,10 @@ PART_REGIONS = [
     ("foot_R", -1.0, 0.35, -1),
 ]
 
-CELL_NAMES = ["feet", "thighs", "shins", "torso"]  # sorted by ylo
+# sorted by ylo; bands are the live /tick_state cuts at the ankle (0.338),
+# knee (1.903) and hip (3.415) rest heights -> ankle..knee = shins,
+# knee..hip = thighs.
+CELL_NAMES = ["feet", "shins", "thighs", "torso"]
 
 
 def http_get(base: str, path: str, timeout: int = 30) -> bytes:

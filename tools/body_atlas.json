@@ -2,8 +2,8 @@
  "meta": {
   "what": "camera-awareness atlas: named skin aim points for /tick_touch -- built by tools/body_atlas.py",
   "base": "http://127.0.0.1:8107",
-  "fetched_utc": "2026-09-14T05:23:50+00:00",
-  "engine_ticks": 137313,
+  "fetched_utc": "2026-09-14T05:28:03+00:00",
+  "engine_ticks": 208588,
   "n_verts": 18459,
   "skin_density_per_m2": 205.6,
   "mean_vert_spacing_m": 0.0697,
@@ -61,7 +61,7 @@
     0.71522
    ]
   },
-  "thighs": {
+  "shins": {
    "y_band": [
     0.338,
     1.903
@@ -75,7 +75,7 @@
    ],
    "verts": 684
   },
-  "shins": {
+  "thighs": {
    "y_band": [
     1.903,
     3.415

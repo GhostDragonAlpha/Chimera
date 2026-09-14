@@ -456,3 +456,28 @@ route 1's "keep the inverse-distance^2 weights" mandate — the lead's call,
 not a free edit. Wrong-limb restriction and the 0.25 fill cap are still
 correct and kept: they remove the wrong-side rotations (hip_R out of
 left-thigh sets) that any falloff would otherwise have to fight.
+
+**G7 independent verification (2026-09-14).** A second session, dispatched
+on the same route, re-ran `python tools/classify_run.py --report` against
+`monkey_full.bin` + `joints28.json` (script hash-pinned before and after:
+47368352d8c960eb51e4a3bf6c08c06d) and EVERY number in the ledger above
+reproduced exactly — flip bands 4243 -> 4117 of 18459; fill 5880 with 88
+at the cap; creases 193 -> 180 (knee45) and 237 -> 212 (compound);
+duplicate-position split groups 0 -> 0; all 28 per-pin PRIMARY counts
+identical before/after (neck 1519, jaw 260, spine_upper 286, spine_mid
+299, spine_lower 165, tail_base 289, tail_mid 192, shoulders 290/290,
+elbows 296/296, wrists 1377/1377, hips 243/243, knees 256/256, ankles
+1477/1477, tail_tip 172, ears 1064/1048, lids 332/349, brows 1257/1243,
+mouths 1013/1093). The hard constraints were re-proven from the binding
+math, not taken from the script: weights sum to 1 in float32 (max
+|sum-1| 4.5e-8), the deg=0 blend returns the authored rest to 4.4e-7
+(E2's recorded bound), and the 15-byte row round-trips
+`MembraneTick::load_vertbind` (body 4+n*15 = 276889 bytes). One mechanism
+audit for the record: the left-thigh population still binding hip_R fell
+370 -> 165, and every survivor is spine_lower-INHERITED with hip_R
+in-limb through the touch graph — `spine_lower` touches `hip_R` across
+the centerline (the lower-spine cell band legitimately spans both hips),
+while `hip_L` does NOT touch `hip_R` (0 sane bridge edges), so the two
+hips are fully separated and none of the survivors is a capped fill.
+Route 1 as shipped is verified; the residual-crease routing decision
+(bounded falloff for ALL pins) remains where W8 left it, with the lead.
