@@ -1,6 +1,8 @@
 Chimera stack supervisor: the game never stays dead.
 Run it:  python tools/supervisor/watchdog.py  (every 5s, forever; Ctrl+C stops cleanly)
-Watches three pieces: engine (launch_chimera.bat, 127.0.0.1:8107 /tick_state has "ticks"),
+Watches three pieces: engine (chimera_engine.exe 8107 --hidden spawned DIRECTLY from
+.tmp/build_tick/Release -- needs shaders/ next to the exe; NOT launch_chimera.bat, whose
+`start ""` detaches the engine so shutdown could never stop it),
 game shell (tools/game_shell/server.py 8206, /api/health ok:true), website
 (tools/website/server.py 8210, GET / -> 200). Any dead piece is restarted through the
 same starters as tools/supervisor/start_chimera.py, which brings the whole stack up

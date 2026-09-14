@@ -3,8 +3,9 @@ REM ============================================================
 REM start_all.bat -- ONE double-click brings up the PUBLIC stack.
 REM
 REM What it starts (the watchdog is BOTH the starter and the keeper):
-REM   engine       127.0.0.1:8107   via the existing launcher
-REM                                 (.tmp\build_tick\Release\launch_chimera.bat)
+REM   engine       127.0.0.1:8107   the exe spawned DIRECTLY
+REM                                 (.tmp\build_tick\Release\chimera_engine.exe,
+REM                                 needs shaders/ next to it -- both live there)
 REM   game shell   0.0.0.0:8206     public: the free demo
 REM   website      0.0.0.0:8210     public: the front door + sign-ups
 REM
@@ -19,7 +20,9 @@ REM for the three ways to put 8206 + 8210 on the internet.
 REM
 REM Keep this window open: it IS the watchdog. It health-checks all
 REM three pieces every 5 seconds and restarts any dead one. Ctrl+C
-REM stops cleanly and terminates only the pieces THIS watchdog started.
+REM stops cleanly and terminates the pieces THIS watchdog started --
+REM including the engine now that it is spawned directly (a Ctrl+C is
+REM a hard stop for the engine; the world keeps its last saved state).
 REM
 REM NOTE: if a dev (127.0.0.1) stack is already running on 8206/8210,
 REM the watchdog will see those ports healthy and leave them alone.

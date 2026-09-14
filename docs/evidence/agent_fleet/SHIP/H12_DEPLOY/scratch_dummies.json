@@ -1,0 +1,26 @@
+{
+  "_readme": "H12 supervisor coverage test: three dummy processes on private ports (8245-8247), same health-check modes as the real pieces. Isolated cwd .h12_scratch. Killed after the test; never touches the live stack on 8107/8206/8210.",
+  "pieces": [
+    {
+      "name": "scratch-engine",
+      "argv": ["python", ".h12_scratch/dummy_server.py", "8247", "--body", "ticks 12345"],
+      "cwd": ".",
+      "check": {"url": "http://127.0.0.1:8247/tick_state", "mode": "ticks"},
+      "boot_seconds": 4
+    },
+    {
+      "name": "scratch-shell",
+      "argv": ["python", ".h12_scratch/dummy_server.py", "8246", "--body", "{\"ok\": true}"],
+      "cwd": ".",
+      "check": {"url": "http://127.0.0.1:8246/api/health", "mode": "ok_json"},
+      "boot_seconds": 4
+    },
+    {
+      "name": "scratch-site",
+      "argv": ["python", ".h12_scratch/dummy_server.py", "8245", "--body", "landing"],
+      "cwd": ".",
+      "check": {"url": "http://127.0.0.1:8245/", "mode": "status200"},
+      "boot_seconds": 4
+    }
+  ]
+}

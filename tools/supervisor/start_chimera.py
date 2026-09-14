@@ -9,7 +9,9 @@ per piece before giving up.
 Run:  python tools/supervisor/start_chimera.py [--config pieces.json]
 
 Pieces (default config):
-  engine      .tmp/build_tick/Release/launch_chimera.bat  (127.0.0.1:8107)
+  engine      .tmp/build_tick/Release/chimera_engine.exe 8107 --hidden
+              (spawned directly -- NOT via launch_chimera.bat, which detaches;
+              127.0.0.1:8107; needs shaders/ next to the exe)
   game_shell  python tools/game_shell/server.py 8206      (127.0.0.1:8206)
   website     python tools/website/server.py 8210         (127.0.0.1:8210)
 
@@ -42,8 +44,14 @@ CREATE_FLAGS = (
 DEFAULT_CONFIG = {
     "pieces": [
         {
+            # Spawn the exe DIRECTLY (not via launch_chimera.bat): the bat
+            # detaches the engine with `start ""`, so the watchdog's child
+            # handle is a cmd wrapper that exits at once -- the engine could
+            # never be terminated on shutdown. Direct spawn = the handle IS
+            # the engine. The exe needs shaders/ next to it (same dir as the
+            # bat provides); world state/session logs still land in cwd.
             "name": "engine",
-            "argv": ["cmd", "/c", "launch_chimera.bat"],
+            "argv": ["chimera_engine.exe", "8107", "--hidden"],
             "cwd": ".tmp/build_tick/Release",
             "check": {"url": "http://127.0.0.1:8107/tick_state", "mode": "ticks"},
             "boot_seconds": 40,
@@ -104,7 +112,20 @@ def healthy(check: dict) -> bool:
 def spawn(piece: dict, spawned: list | None = None):
     """Start one piece detached; remember the handle for clean shutdown."""
     argv = [str(a) for a in piece["argv"]]
-    cwd = str(ROOT / piece.get("cwd", "."))
+    cwd = ROOT / piece.get("cwd", ".")
+    # A bare executable name ("chimera_engine.exe") must resolve against the
+    # PIECE's cwd, not the caller's -- Windows CreateProcess does not use the
+    # child cwd for the executable lookup (WinError 2). Resolving it here also
+    # keeps the spawned handle on the engine process ITSELF, so shutdown can
+    # actually stop it (the old launch_chimera.bat route detached the engine
+    # via `start ""` and the watchdog's child was a cmd wrapper that exits
+    # instantly -- Ctrl+C could never stop the engine it started).
+    exe = Path(argv[0])
+    if exe.suffix.lower() in (".exe", ".bat", ".cmd") and not exe.is_absolute():
+        cand = cwd / exe
+        if cand.exists():
+            argv[0] = str(cand)
+    cwd = str(cwd)
     p = subprocess.Popen(
         argv, cwd=cwd, creationflags=CREATE_FLAGS,
         stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,

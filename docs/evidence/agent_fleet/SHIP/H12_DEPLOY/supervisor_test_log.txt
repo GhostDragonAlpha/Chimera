@@ -1,0 +1,80 @@
+2026-09-13T21:20:18 watchdog_stopped children_terminated=1
+2026-09-14T08:18:07 watchdog_started pieces=scratch-engine,scratch-shell,scratch-site interval=5s
+2026-09-14T08:18:08 piece=scratch-engine action=down
+2026-09-14T08:18:09 piece=scratch-engine action=starting attempt=1
+2026-09-14T08:18:10 piece=scratch-engine action=up
+2026-09-14T08:18:10 piece=scratch-engine action=restarted
+2026-09-14T08:18:11 piece=scratch-shell action=down
+2026-09-14T08:18:12 piece=scratch-shell action=starting attempt=1
+2026-09-14T08:18:13 piece=scratch-shell action=up
+2026-09-14T08:18:13 piece=scratch-shell action=restarted
+2026-09-14T08:18:14 piece=scratch-site action=down
+2026-09-14T08:18:15 piece=scratch-site action=starting attempt=1
+2026-09-14T08:18:16 piece=scratch-site action=up
+2026-09-14T08:18:16 piece=scratch-site action=restarted
+2026-09-14T08:19:07 piece=scratch-shell action=down
+2026-09-14T08:19:08 piece=scratch-shell action=starting attempt=1
+2026-09-14T08:19:09 piece=scratch-shell action=up
+2026-09-14T08:19:09 piece=scratch-shell action=restarted
+2026-09-14T08:19:30 piece=scratch-engine action=down
+2026-09-14T08:19:31 piece=scratch-engine action=starting attempt=1
+2026-09-14T08:19:32 piece=scratch-engine action=up
+2026-09-14T08:19:32 piece=scratch-engine action=restarted
+2026-09-14T08:19:48 watchdog_stopping
+2026-09-14T08:19:48 watchdog_stopped children_terminated=3
+2026-09-14T08:20:17 watchdog_started pieces=scratch-engine,scratch-shell,scratch-site interval=5s
+2026-09-14T08:20:18 piece=scratch-engine action=down
+2026-09-14T08:20:19 piece=scratch-engine action=starting attempt=1
+2026-09-14T08:20:20 piece=scratch-engine action=up
+2026-09-14T08:20:20 piece=scratch-engine action=restarted
+2026-09-14T08:20:21 piece=scratch-shell action=down
+2026-09-14T08:20:22 piece=scratch-shell action=starting attempt=1
+2026-09-14T08:20:23 piece=scratch-shell action=up
+2026-09-14T08:20:23 piece=scratch-shell action=restarted
+2026-09-14T08:20:24 piece=scratch-site action=down
+2026-09-14T08:20:25 piece=scratch-site action=starting attempt=1
+2026-09-14T08:20:26 piece=scratch-site action=up
+2026-09-14T08:20:26 piece=scratch-site action=restarted
+2026-09-14T08:20:37 piece=scratch-shell action=down
+2026-09-14T08:20:38 piece=scratch-shell action=starting attempt=1
+2026-09-14T08:20:39 piece=scratch-shell action=up
+2026-09-14T08:20:39 piece=scratch-shell action=restarted
+2026-09-14T08:20:40 piece=scratch-site action=down
+2026-09-14T08:20:41 piece=scratch-site action=starting attempt=1
+2026-09-14T08:20:42 piece=scratch-site action=up
+2026-09-14T08:20:42 piece=scratch-site action=restarted
+2026-09-14T08:21:12 watchdog_stopping
+2026-09-14T08:21:12 watchdog_stopped children_terminated=3
+2026-09-14T08:21:56 watchdog_started pieces=real-engine-8137,real-shell-8246,real-site-8245 interval=5s
+2026-09-14T08:21:57 piece=real-engine-8137 action=down
+2026-09-14T08:21:58 piece=real-engine-8137 action=starting attempt=1
+2026-09-14T08:22:39 piece=real-engine-8137 action=start_failed attempt=1
+2026-09-14T08:22:40 piece=real-engine-8137 action=starting attempt=2
+2026-09-14T08:23:20 piece=real-engine-8137 action=start_failed attempt=2
+2026-09-14T08:23:20 piece=real-engine-8137 action=restart_failed
+2026-09-14T08:23:21 piece=real-shell-8246 action=down
+2026-09-14T08:23:22 piece=real-shell-8246 action=starting attempt=1
+2026-09-14T08:23:23 piece=real-shell-8246 action=up
+2026-09-14T08:23:23 piece=real-shell-8246 action=restarted
+2026-09-14T08:23:24 piece=real-site-8245 action=down
+2026-09-14T08:23:25 piece=real-site-8245 action=starting attempt=1
+2026-09-14T08:23:26 piece=real-site-8245 action=up
+2026-09-14T08:23:26 piece=real-site-8245 action=restarted
+2026-09-14T08:23:32 piece=real-engine-8137 action=down
+2026-09-14T08:23:33 piece=real-engine-8137 action=starting attempt=1
+2026-09-14T08:24:13 piece=real-engine-8137 action=start_failed attempt=1
+2026-09-14T08:24:14 piece=real-engine-8137 action=starting attempt=2
+2026-09-14T08:24:15 piece=real-engine-8137 action=up
+2026-09-14T08:24:15 piece=real-engine-8137 action=restarted
+2026-09-14T08:24:28 watchdog_started pieces=real-engine-8137,real-shell-8246,real-site-8245 interval=5s
+2026-09-14T08:24:29 piece=real-engine-8137 action=down
+2026-09-14T08:24:30 piece=real-engine-8137 action=starting attempt=1
+2026-09-14T08:24:31 piece=real-engine-8137 action=up
+2026-09-14T08:24:31 piece=real-engine-8137 action=restarted
+2026-09-14T08:24:32 piece=real-shell-8246 action=down
+2026-09-14T08:24:33 piece=real-shell-8246 action=starting attempt=1
+2026-09-14T08:24:34 piece=real-shell-8246 action=up
+2026-09-14T08:24:34 piece=real-shell-8246 action=restarted
+2026-09-14T08:24:35 piece=real-site-8245 action=down
+2026-09-14T08:24:36 piece=real-site-8245 action=starting attempt=1
+2026-09-14T08:24:38 piece=real-site-8245 action=up
