@@ -400,3 +400,59 @@ them on each SPACE press, exactly as `the_whole_body` cycles two.
 `then_release: true` — after the third cell latches, the player must let the
 whole body heal (`allCalm`, §8); with gravity on this still passes, because
 resting cells read exactly 0 (§10).
+
+---
+
+## 12. Successor note — the vertbind seam route (W8, 2026-09-13)
+
+E2's diagnosis (`.tmp/E2_SEAM_NOTE.md`) routed the posed-surface creases to
+the BINDING; route 1 ("same-limb pin restriction + bounded falloff") landed
+in `tools/classify_run.py` (marked `// W8`). This section is the measured
+record; `python tools/classify_run.py --report` reproduces every number
+below offline (no posts; run WITHOUT `--report` to ship to a live engine).
+
+**What the restriction is (derived, no authored limb table).** The vertex
+inherits its triangles' joint (majority vote, ties by nearer pin). Its limb
+is that joint's cell group PLUS the cell groups that touch it — groups
+sharing a mesh edge on sane faces (area > 1e-8; the sculpt's sliver faces
+span the body and would wire every group to every other). Candidates are
+the 3 nearest pins of that limb set; the idw2 law is unchanged inside it.
+Fewer than 3 in-limb pins (chain ends: wrist, ankle, tail tip, jaw): fill
+from the next-nearest pins, capped so the fill pins' COMBINED weight stays
+<= 0.25 (5880 of 18459 verts fill; 88 hit the cap). Wire format unchanged:
+`[u32 n]` + 15 bytes/vertex = 3x u8 pin + 3x f32 LE weight, sums 1 to
+float32 (`MembraneTick::apply_travel` consumes them raw). The per-triangle
+classification keeps the original float32 arithmetic, so `/tick_classify`
+bytes are unchanged.
+
+**Route-1 ledger (posed knee45 / hip20+knee45, E2 knee-region metric).**
+
+- STATEMENT: the creases come from wrong-limb pins racing into the 3-pin
+  sets; restricting candidates to the vertex's own limb kills them.
+  PREDICTION: the introduced crease population collapses at the source.
+  FALSIFIER: `--report`'s crease check. **PARTIAL LOSS** — the >10 deg
+  count moved 193 -> 180 (knee45) and 237 -> 212 (compound); no collapse.
+- The named mechanism IS gone: under the old binding 10 of 193 crease
+  edges were knee-membership flips; under the new binding 2 of 180. The
+  flip-band count (verts whose 3-pin set differs from a ring neighbor)
+  moved 4243 -> 4117 of 18459. Per-pin PRIMARY-pin counts are identical
+  before/after (restriction rebuilds the support pins, not the dominant
+  pin). Duplicate-position groups with split bindings: 0 (duplicates keep
+  moving together, per E2's recorded fact).
+- WHAT CARRIES THE RESIDUAL (dissection of the 180): 163 of 180 crease
+  edges have IDENTICAL pin sets on both sides — pure inverse-distance^2
+  weight-gradient shear (median |w_knee| jump 0.150 across one ring, max
+  0.488 near the pin; the old binding's numbers were 147 of 193, median
+  0.173). E2 said it in their note: the crease is pivot-heterogeneous LBS
+  shear, flips are only ~22% of it. The falloff law itself is the
+  carrier, and route 1's cap bounds only FILL pins (out-of-limb), which
+  are not where the crease lives.
+
+**For the next routing decision.** The remaining lever is E2's remedy (b)
+in full: a bounded falloff for ALL pins (softmax temperature or blend
+radius instead of raw 1/d^2), which spreads each rotating pin's fade over
+many rings and bounds the per-ring weight gradient. That REQUIRES waiving
+route 1's "keep the inverse-distance^2 weights" mandate — the lead's call,
+not a free edit. Wrong-limb restriction and the 0.25 fill cap are still
+correct and kept: they remove the wrong-side rotations (hip_R out of
+left-thigh sets) that any falloff would otherwise have to fight.
