@@ -216,7 +216,10 @@ def replay_gate(entry: dict) -> tuple:
         need = ("patchL", "patchR", "homeL", "homeR", "chLiftL", "chLiftR",
                 "rateKL", "rateKR", "rateHL", "rateHR", "feetCell")
         ok = all(k in g for k in need) and all(
-            abs(g[k]) >= MIN_CHANNEL for k in ("chLiftL", "chLiftR"))
+            # R3's amendment (ENABLE_AUDIT.md §5): the lift channel only
+            # sizes the step (prereg law); a measured null-z channel of
+            # 1.663e-5 is legal, so require presence, not magnitude.
+            g[k] != 0.0 for k in ("chLiftL", "chLiftR"))
         return (tag, ok, "enable carries the frozen geometry + channels"
                 if ok else "enable entry missing channels (F-LIE)")
     base_ok = all(k in g for k in ("dL", "dR", "cL", "cR", "lean", "vy",
