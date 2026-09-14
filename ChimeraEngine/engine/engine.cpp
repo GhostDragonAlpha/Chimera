@@ -6201,11 +6201,22 @@ bool Engine::dispatch_compute(std::vector<float>& out_velocities) {
 
 // ── Membrane streaming + frame capture (the C++ engine is the emission target) ──────────
 
-// G8: allocate/resize ONE readback ring slot to the current extent (host-visible
-// + coherent, sized w*h*4). Called at arm time only, on the render thread, so a
+// G8: allocate/resize ONE readback ring slot to the current extent. Called at arm time only, on the render thread, so a
 // slot being in flight is never destroyed under the GPU (a resize between arm
 // and collect leaves the in-flight slot at its armed geometry — the slot
 // records its own w/h — and the realloc happens on a LATER arm).
+//
+// THE READBACK MEMORY LAW (G8 round 2, the ~940 ms fix): the CPU READS this
+// memory every grab (map + BGRA->RGBA swizzle on the render thread), so the
+// staging MUST be CPU-cached sysmem — NEVER a DEVICE_LOCAL BAR allocation.
+// find_mem_type(VISIBLE|COHERENT) returns the FIRST matching type, and on a
+// ReBAR card that is the DEVICE_LOCAL BAR1 type: uncached, so the swizzle's
+// 4-byte-strided read of 8.3 MB costs ~940 ms of PCIe reads (measured, live
+// 4090; the pre-G8 "~910 ms" freeze was the same read, misattributed to the
+// queue wait — the audit never split the block). Selection order: non-local +
+// coherent, non-local + cached, any non-local, coherent (the old law), any
+// host-visible. When the picked type lacks HOST_COHERENT the collect issues
+// vkInvalidateMappedMemoryRanges before reading (slot.noncoherent).
 void Engine::rb_ensure_slot(ReadbackSlot& s) {
     VkDeviceSize size = static_cast<VkDeviceSize>(extent_.width) * extent_.height * 4;
     if (s.buf != VK_NULL_HANDLE && size == s.size) return;
@@ -6217,14 +6228,42 @@ void Engine::rb_ensure_slot(ReadbackSlot& s) {
     bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     vkCreateBuffer(device_, &bci, nullptr, &s.buf);
     VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, s.buf, &mr);
+
+    VkPhysicalDeviceMemoryProperties mp;
+    vkGetPhysicalDeviceMemoryProperties(phys_dev_, &mp);
+    int pick = -1;
+    bool noncoherent = false;
+    for (int pass = 0; pass < 4 && pick < 0; ++pass) {
+        for (uint32_t i = 0; i < mp.memoryTypeCount; ++i) {
+            if (!(mr.memoryTypeBits & (1u << i))) continue;
+            const VkMemoryPropertyFlags p = mp.memoryTypes[i].propertyFlags;
+            if (!(p & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)) continue;
+            const bool dl  = (p & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)  != 0;
+            const bool coh = (p & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) != 0;
+            const bool cch = (p & VK_MEMORY_PROPERTY_HOST_CACHED_BIT)   != 0;
+            const bool ok = (pass == 0 && !dl && coh) ||
+                            (pass == 1 && !dl && cch) ||
+                            (pass == 2 && !dl)          ||
+                            (pass == 3 && coh);
+            if (ok) {
+                pick = static_cast<int>(i);
+                noncoherent = !coh;
+                break;
+            }
+        }
+    }
+    if (pick < 0)   // no host-visible type at all: the old last resort (dies loudly below)
+        pick = static_cast<int>(find_mem_type(mr.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT));
+
     VkMemoryAllocateInfo ai{};
     ai.sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     ai.allocationSize  = mr.size;
-    ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+    ai.memoryTypeIndex = static_cast<uint32_t>(pick);
     vkAllocateMemory(device_, &ai, nullptr, &s.mem);
     vkBindBufferMemory(device_, s.buf, s.mem, 0);
     s.size = size;
+    s.noncoherent = noncoherent;
 }
 
 void Engine::rb_destroy_slot(ReadbackSlot& s) {
@@ -8636,6 +8675,19 @@ bool Engine::frame() {
 //        later (~3.3 ms at the 300 fps cap) instead of stalling the loop
 //        ~910 ms now.
 //
+// G8 ROUND 2 CORRECTION (2026-09-14, live AFTER-run evidence): removing the
+// queue wait was NOT enough — every grab still stalled ~940 ms, async and
+// sync alike, and the stall sat in THIS collect's map+swizzle (worker TTFB
+// and sync watermark both pinned it inside capture_mutex_). Root cause: the
+// staging allocation law picked the FIRST host-visible|coherent type, which
+// on a ReBAR card is DEVICE_LOCAL BAR1 — uncached — so the swizzle's
+// 4-byte-strided CPU read of 8.3 MB cost ~940 ms of PCIe reads. The old
+// path's "~910 ms vkQueueWaitIdle" attribution (R6 audit) was the same read;
+// the audit's own footnote says the split was never measured. The fix lives
+// in rb_ensure_slot (THE READBACK MEMORY LAW): staging is CPU-cached sysmem,
+// never device-local BAR, with vkInvalidateMappedMemoryRanges before reading
+// a non-coherent type.
+//
 // The render thread never waits on a readback. The one bounded exception is
 // collect_for_frame_slot(), the backstop before a fences_ slot is RESET: a
 // capture riding that fence must be collected (or waited, capped) first, or
@@ -8737,6 +8789,15 @@ void Engine::collect_readbacks(uint64_t armed_before) {
         if (!best) break;
         void* mapped = nullptr;
         if (vkMapMemory(device_, best->mem, 0, best->size, 0, &mapped) == VK_SUCCESS) {
+            if (best->noncoherent) {   // G8: non-coherent staging — make the GPU's copy visible before the CPU read
+                VkMappedMemoryRange rng{};
+                rng.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+                rng.memory = best->mem;
+                rng.offset = 0;
+                rng.size   = VK_WHOLE_SIZE;   // whole alloc mapped from 0; keeps the
+                                              // nonCoherentAtomSize-multiple VUID moot
+                vkInvalidateMappedMemoryRanges(device_, 1, &rng);
+            }
             {
                 std::lock_guard<std::mutex> lk(capture_mutex_);
                 size_t px = static_cast<size_t>(best->w) * best->h;
@@ -8770,6 +8831,15 @@ void Engine::collect_readbacks(uint64_t armed_before) {
         if (!best) break;
         void* gmap = nullptr;
         if (vkMapMemory(device_, best->mem, 0, best->size, 0, &gmap) == VK_SUCCESS) {
+            if (best->noncoherent) {   // G8: same invalidate law as the capture loop
+                VkMappedMemoryRange rng{};
+                rng.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+                rng.memory = best->mem;
+                rng.offset = 0;
+                rng.size   = VK_WHOLE_SIZE;   // whole alloc mapped from 0; keeps the
+                                              // nonCoherentAtomSize-multiple VUID moot
+                vkInvalidateMappedMemoryRanges(device_, 1, &rng);
+            }
             {
                 std::lock_guard<std::mutex> lk(glass_mutex_);
                 size_t px = static_cast<size_t>(best->w) * best->h;

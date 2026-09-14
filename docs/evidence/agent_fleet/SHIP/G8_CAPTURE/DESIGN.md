@@ -188,3 +188,75 @@ ms, amortized one slot per frame; the backstop cannot block on current-frame
 arms per §1/§5). Sanity checks in the same window: one plain `/frame` returns a
 fresh full-res PNG; one `/frame?async=1` returns an image immediately; a
 `/capture_render` short scrub produces frames without "capture timeout".
+
+## 7. ROUND 2 — THE AFTER BAR FAILED: THE REAL ROOT CAUSE (2026-09-14, H3f)
+
+The lead's build window ran (fresh exe, engine.obj mtime 09:11 > the G8 commit;
+PID 43248 started 09:12:44) and the AFTER bar FAILED identically to BEFORE:
+async ≈ sync ≈ ~950 ms per pull regardless of size/format, tick deficit ≈ pull
+duration, quiet clean (17.9k ticks/min, ~4 ms gaps).
+
+### The measurements that pinned it (light GET probes against the live 8107)
+
+1. **The freeze is inside `Engine::frame()`**: the `/studio_chrome` frame-time
+   ring (brackets ONLY `engine.frame()`) showed exactly one ~940-965 ms frame
+   per pull, all others 0.5 ms — the tick loop stalls once per pull.
+2. **The HTTP worker is blocked the SAME window**: a 30 ms-cadence
+   `/studio_chrome` poller got zero responses during each pull's window
+   (TTFB = total = ~950 ms on a raw socket). The async handler blocks on
+   `capture_mutex_`, which the render thread holds across the collect's
+   map+swizzle scope.
+3. **The collect (map+swizzle) is the cost, not the arm**: the SYNC pull's
+   spin exits at `capture_collected_gen_.store` — which sits AFTER the
+   swizzle, BEFORE `reel_note_grab` — and sync TTFB is ~950 ms, pinning the
+   stall inside the swizzle scope, not the reel path.
+4. `/glass` (same collect machinery, its own mutex) totalled 1125-1174 ms =
+   glass swizzle+spin (~950) + the full-res PNG encode (~80 ms: png_encoder.hpp
+   is STORED-deflate — pure copy + CRC32, never the 1.1 s F2-era folklore).
+   BOTH channels' collects are slow.
+
+### Root cause
+
+`rb_ensure_slot` allocated staging with `find_mem_type(VISIBLE|COHERENT)`,
+which returns the FIRST matching type. **The box is an RTX 4090 with Resizable
+BAR ON** (`nvidia-smi`: BAR1 Total = 32768 MiB), so NVIDIA's type list is
+`[0] DEVICE_LOCAL (VRAM), [1] DEVICE_LOCAL|HOST_VISIBLE|HOST_COHERENT (BAR1 —
+UNCACHED), [2] HOST_VISIBLE|HOST_COHERENT (cached sysmem)` — and type 1 (BAR)
+matches first. Every staging byte the swizzle reads is a PCIe transaction:
+8.3 MB of 4-byte-strided reads ≈ **~940 ms ON THE RENDER THREAD**, holding
+`capture_mutex_`. Payload/format-independent ✓ (full-res swizzle regardless of
+`?w=`), async ≈ sync ✓, quiet clean ✓ (no grabs, no reads).
+
+**The pre-G8 "~910 ms vkQueueWaitIdle" (R6 audit) was THE SAME READ all
+along** — the audit's own footnote: "the exact split between fence-wait and
+swizzle inside those ~910 ms is not resolvable live". F2's "the ~1.1 s floor
+lived in the ENCODE" was also misattributed (the encode is ~80 ms; the floor
+was capture servicing + encode on one worker).
+
+### The fix (engine.hpp + engine.cpp only)
+
+**THE READBACK MEMORY LAW**: capture/glass staging must be CPU-cached sysmem —
+never a DEVICE_LOCAL BAR allocation. `rb_ensure_slot` now picks the memory type
+by property passes: (0) host-visible & non-local & coherent → (1) non-local &
+cached → (2) any non-local → (3) coherent (the old law, kept as fallback) →
+(4) the old `find_mem_type` last resort. On this 4090 pass 0 lands on type 2
+(cached sysmem, coherent): the swizzle drops from ~940 ms to single-digit ms.
+When the picked type lacks HOST_COHERENT (some AMD/Intel stacks), the slot is
+flagged (`ReadbackSlot.noncoherent`) and the collect issues
+`vkInvalidateMappedMemoryRanges` (VK_WHOLE_SIZE: the whole allocation is mapped
+from 0, which also keeps the nonCoherentAtomSize-multiple VUID moot) before the
+CPU read. `dispatch_compute`'s staging (engine.cpp:716 `host_mt`) shares the
+same first-match hazard but is not pull-correlated — flagged for its owner,
+not touched.
+
+### Expected AFTER-round-2 numbers
+
+- `/frame?async=1`: TTFB/total ~30-80 ms (arm + fast collect + encode) — the
+  prior-frame contract finally measurable as "immediate".
+- `/frame` (sync): ~50-150 ms (2-frame fresh collect + encode).
+- burst ticks/min ≈ quiet (worst collect frame ~10-30 ms on the ring),
+  max_stall ≤ ~50 ms — both bars PASS with margin.
+- `/glass`: ~100-200 ms (fast swizzle + full-res PNG encode).
+
+Same verify commands as §6. If a bar still fails, the ring + TTFB probes above
+localize any residual in minutes.

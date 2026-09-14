@@ -686,6 +686,8 @@ private:
         uint32_t       w = 0, h = 0;     // extent at arm time
         uint64_t       seq = 0;          // arm order (FIFO collect + watermark)
         bool           in_flight = false;
+        bool           noncoherent = false; // staging type lacks HOST_COHERENT:
+                                            // CPU read needs vkInvalidate first
     };
     // G8: one staging ring slot — allocate/resize to the current extent, or die.
     void rb_ensure_slot(ReadbackSlot& s);
