@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CHIMERA — a creature of water and skin</title>
+<meta name="description" content="CHIMERA is a hand-built physics creature of sealed water cells — touch it anywhere and it answers. Play the free demo in your browser, or join the list and we shall write when there is news worth reading.">
+<meta property="og:title" content="CHIMERA — a creature of water and skin">
+<!-- og:image is a RELATIVE placeholder: the deploy copies the store capsule
+     into store_art/ beside this file (runbook, static path). Relative keeps
+     it honest wherever the page is served; until the art lands, scrapers
+     just find no image. -->
+<meta property="og:image" content="store_art/capsule_616x353.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 3C16 3 7 14.5 7 21a9 9 0 0 0 18 0C25 14.5 16 3 16 3Z' fill='%23c9a227'/><circle cx='12.5' cy='20' r='2' fill='%230a0e15'/></svg>">
 <style>
   :root {
     --bg: #0e131b;
@@ -74,6 +82,12 @@
     transition: background 0.25s, color 0.25s;
   }
   .btn:hover { background: var(--gold); color: var(--bg-deep); }
+  .play-note {
+    margin-top: 20px;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--dim);
+  }
 
   /* -- how it works --------------------------------------------------- */
   section { padding: 70px 0; border-top: 1px solid var(--line); }
@@ -142,6 +156,7 @@
   <div class="rule"></div>
   <p class="tagline">a creature of sealed water cells. touch it anywhere, and it answers.</p>
   <button class="btn" id="play">Play the demo</button>
+  <p class="play-note" id="play-note" hidden>the demo opens on its own door: <span id="play-host"></span></p>
 </header>
 
 <section class="wrap">
@@ -188,16 +203,43 @@
 (function () {
   "use strict";
 
-  // the free demo lives on the game shell, 8206
+  // THE PLAY DOOR. Locally the demo is the game shell on port 8206 of
+  // this very host; publicly, docs/DEPLOY_RUNBOOK.md Option A routes
+  // play.<domain> to the same 8206, so derive that door from wherever
+  // this page is served -- never a hardcoded 127.0.0.1 for a stranger.
+  function demoUrl() {
+    var h = window.location.hostname || "";
+    if (h === "" || h === "localhost" || h === "::1" || h === "[::1]" ||
+        /^127\./.test(h)) {
+      return "http://" + (h || "127.0.0.1") + ":8206";
+    }
+    var labels = h.split(".");
+    if (labels.length < 2) {
+      return "play"; // single-label host: same-origin /play is all we can say
+    }
+    labels[0] = "play";
+    return "https://" + labels.join(".");
+  }
+
+  var playTarget = demoUrl();
   document.getElementById("play").addEventListener("click", function () {
-    window.open("http://127.0.0.1:8206", "_blank", "noopener");
+    window.open(playTarget, "_blank", "noopener");
   });
+  if (playTarget.indexOf("https://play.") === 0) {
+    document.getElementById("play-host").textContent =
+      playTarget.slice("https://".length);
+    document.getElementById("play-note").hidden = false;
+  }
 
   function showCount() {
+    var line = document.querySelector(".count");
     fetch("/api/signups/count").then(function (r) { return r.json(); }).then(function (d) {
-      document.getElementById("n").textContent = String(d.count);
+      var n = d && typeof d.count === "number" && isFinite(d.count) ? d.count : null;
+      if (n === null) { line.hidden = true; return; } // no number, no line
+      document.getElementById("n").textContent = String(n);
+      line.hidden = false;
     }).catch(function () {
-      document.getElementById("n").textContent = "many";
+      line.hidden = true; // the count is decoration; never fake it
     });
   }
   showCount();

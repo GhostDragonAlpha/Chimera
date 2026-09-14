@@ -457,18 +457,42 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
     }
 
     // visibility: load tints toward red; failed cells go dark
-    for (size_t i = 0; i < cells_.size(); ++i) {
-        const Cell& c = cells_[i];
-        float t = c.failed ? 0.f
-                : std::min(1.f, c.load / std::max(capacity_[i], 1.f));
-        for (int k = 0; k < 3; ++k) {
-            uint32_t v = tri_verts_[i * 3 + (size_t)k];
-            float base = base_color_[v * 3 + (size_t)k];
-            float out;
-            if (c.failed)    out = 0.08f;
-            else if (k == 0) out = base + (1.f - base) * t;
-            else             out = base * (1.f - t * 0.85f);
-            verts9[v * 9 + 6 + (size_t)k] = std::min(out, 1.f);
+    // E2: per-vertex AVERAGED load through a saturating ramp t/(1+t). The
+    // per-cell write let the LAST cell touching a vertex win, painting a
+    // full-contrast ring at every joint-group boundary (measured 0.47
+    // channel jump, .tmp/E2_SEAM_NOTE.md); the vertex's own average is
+    // shared by both flanking cells and the saturating curve (slope <= 1,
+    // -> 0 past capacity) turns that ring into a one-ring gradient
+    // (0.47 -> 0.15 measured). A failed cell darkens every vertex it
+    // touches, deterministically (was last-writer-wins).
+    {
+        const size_t nvt = verts9.size() / 9;
+        std::vector<float> tsum(nvt, 0.f);
+        std::vector<uint32_t> tcnt(nvt, 0u);
+        std::vector<uint8_t> vfail(nvt, 0u);
+        for (size_t i = 0; i < cells_.size(); ++i) {
+            const Cell& c = cells_[i];
+            float t = std::min(1.f, c.load / std::max(capacity_[i], 1.f));
+            for (int k = 0; k < 3; ++k) {
+                uint32_t v = tri_verts_[i * 3 + (size_t)k];
+                if (c.failed) vfail[v] = 1u;
+                else { tsum[v] += t; tcnt[v] += 1u; }
+            }
+        }
+        for (size_t v = 0; v < nvt; ++v) {
+            float out[3];
+            if (vfail[v]) {
+                out[0] = out[1] = out[2] = 0.08f;
+            } else {
+                float t = tsum[v] / (tcnt[v] ? (float)tcnt[v] : 1.f);
+                t = t / (1.f + t);   // saturating: softens group boundaries
+                out[0] = base_color_[v * 3 + 0]
+                       + (1.f - base_color_[v * 3 + 0]) * t;
+                out[1] = base_color_[v * 3 + 1] * (1.f - t * 0.85f);
+                out[2] = base_color_[v * 3 + 2] * (1.f - t * 0.85f);
+            }
+            for (int k = 0; k < 3; ++k)
+                verts9[v * 9 + 6 + (size_t)k] = std::min(out[k], 1.f);
         }
     }
     // THE SEAL / MITOSIS (recursive cut-and-weld): blend points ride the

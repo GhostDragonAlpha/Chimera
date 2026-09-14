@@ -491,7 +491,8 @@ inline bool jpeg_encode_wic(const uint8_t* rgba, uint32_t w, uint32_t h,
     const bool must_uninit = SUCCEEDED(hr);
     bool ok = false;
     IWICImagingFactory* fac = nullptr;
-    IWICStream* stream = nullptr;
+    IStream* stream = nullptr; // CreateStreamOnHGlobal hands back an IStream*;
+                               // enc->Initialize(stream, ...) takes IStream* too.
     IWICBitmapEncoder* enc = nullptr;
     IWICBitmapFrameEncode* frame = nullptr;
     IPropertyBag2* bag = nullptr;
@@ -517,9 +518,13 @@ inline bool jpeg_encode_wic(const uint8_t* rgba, uint32_t w, uint32_t h,
         }
         if (FAILED(frame->Initialize(bag))) break;
         const size_t bytes = static_cast<size_t>(w) * h * 4;
+        // WIC's CreateBitmapFromMemory takes a non-const BYTE* (it predates
+        // const-correct COM); rgba is read-only input here, so the const is
+        // cast, never written through.
         if (FAILED(fac->CreateBitmapFromMemory(w, h, GUID_WICPixelFormat32bppRGBA,
                                                w * 4, static_cast<UINT>(bytes),
-                                               rgba, &bmp))) break;
+                                               reinterpret_cast<BYTE*>(const_cast<uint8_t*>(rgba)),
+                                               &bmp))) break;
         if (FAILED(fac->CreateFormatConverter(&conv))) break;
         if (FAILED(conv->Initialize(bmp, GUID_WICPixelFormat32bppBGR,
                                     WICBitmapDitherTypeNone, nullptr, 0.0,
@@ -2289,11 +2294,10 @@ int main(int argc, char** argv) {
                         }
                         if (f2_bench) {
                             QueryPerformanceCounter(&f2_t3);
-                            const double (*f2_ms)(LARGE_INTEGER, LARGE_INTEGER, LARGE_INTEGER) =
-                                [](LARGE_INTEGER a, LARGE_INTEGER b, LARGE_INTEGER f) {
-                                    return (double)(b.QuadPart - a.QuadPart) * 1000.0 /
-                                           (double)f.QuadPart;
-                                };
+                            auto f2_ms = [](LARGE_INTEGER a, LARGE_INTEGER b, LARGE_INTEGER f) {
+                                return (double)(b.QuadPart - a.QuadPart) * 1000.0 /
+                                       (double)f.QuadPart;
+                            };
                             fprintf(stderr,
                                     "F2 /frame: copy %.1f ms | downscale %.1f ms | encode %.1f ms "
                                     "-> %zu B (%s w=%u h=%u q=%u)\n",
