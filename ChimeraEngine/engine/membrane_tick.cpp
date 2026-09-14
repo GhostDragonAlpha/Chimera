@@ -193,6 +193,7 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
     seal_cells_.clear(); sealed_ = false; cut_src_.clear(); cut_pos_.clear();
     seal_nv_ = 0; vol_whole0_ = vol_whole_ = 0.f; conserve_pct_ = 0.f;
     seal_split_ = seal_cuts_ = seal_loops_ = seal_caps_ = 0;
+    seal_refusal_.clear();   // a new body carries no refusals
     root_y_ = root_vy_ = 0.f;    // a new body starts at its authored rest
     g_contact_n_ = 0.f;          // (gravity_on_ itself survives re-init:
                                  //  the law applies to whatever body loads)
@@ -621,7 +622,16 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
             for (size_t i = 0; i + 2 < c.pieces.size(); i += 3)
                 v += div6(c.pieces[i], c.pieces[i + 1], c.pieces[i + 2]);
             c.vol = v;
-            c.p = (c.v0 - v) / (kappa_ * c.v0);
+            // THE LIVE FLOOR (H8 world-doctor): a real pose or press
+            // shifts a real cell by tens of percent; a cell reading
+            // under 0.5% of its OWN rest volume has collapsed to its
+            // surface-sampling noise, and the kappa law below would
+            // answer p -> 1/kappa = 2.17 GPa (145x the skin yield) --
+            // the live cell-4 lesson poison (1.6228 GPa on V=0.000).
+            // Withhold the pressure BY NAME: p reads 0 and the
+            // exported flag tells the truth instead.
+            c.degenerate = v < SEAL_DEGENERATE_FRAC * c.v0;
+            c.p = c.degenerate ? 0.f : (c.v0 - v) / (kappa_ * c.v0);
             total += v;
         }
         float vw = 0.f;
@@ -1028,6 +1038,14 @@ bool MembraneTick::split(int cell_idx) {
             hi = std::max(hi, yy);
         }
         if (!(v > 0.f)) return false;   // orientation broke: refuse honestly
+        // THE DEGENERATE-SPLIT REFUSAL (H8 world-doctor): a component
+        // under 0.5% of the parent's rest volume is surface noise, not
+        // anatomy. Refusing here publishes NOTHING -- the parent stays
+        // intact -- and names itself in state_json (seal_refusal).
+        if (v < SEAL_DEGENERATE_FRAC * seal_cells_[cell_idx].v0) {
+            seal_refusal_ = "degenerate_split";
+            return false;
+        }
         c.v0 = v;
         c.vol = v;
         c.p = 0.f;
@@ -1261,6 +1279,28 @@ bool MembraneTick::seal(float y, int cell_idx) {
     // a daughter signing negative = inconsistent orientation through the
     // cut — refuse honestly instead of taking an absolute value.
     if (!(vl > 0.f) || !(vu > 0.f)) return false;
+    // THE DEGENERATE-SPLIT REFUSAL (H8 world-doctor): either daughter
+    // under 0.5% of the cut parent's rest volume is a flat/noise
+    // artifact, not a water cell. The live poison entered exactly here:
+    // re-cutting cell 0 at its own cap plane (y=0.338) passed the
+    // plane-crossing guard above because seal() forces NEW cut slots to
+    // py == y exactly (py.push_back(y)), while every LATER seal
+    // re-evaluates those blends over rest9 (py[s] = sum w*rest9), which
+    // drifts ~1 ulp below the plane — so the "plane outside the cell"
+    // refusal never fired and the cut produced a closed double-layer
+    // pancake (ylo == yhi == 0.338) with v0 = 4.655e-9 m^3 = 1.6e-8 of
+    // its parent. Refuse BY NAME; nothing was published, the parent
+    // stays intact (the replay/refusal is idempotent).
+    {
+        const float parent_v0 = seal_cells_.empty()
+            ? vl + vu                       // first cut: daughters tile it
+            : seal_cells_[cell_idx].v0;
+        if (vl < SEAL_DEGENERATE_FRAC * parent_v0
+            || vu < SEAL_DEGENERATE_FRAC * parent_v0) {
+            seal_refusal_ = "degenerate_split";
+            return false;
+        }
+    }
 
     // per-cell rest y-ranges (for future refusal checks)
     auto range_of = [&](const std::vector<uint32_t>& pieces, float* lo, float* hi) {
@@ -1305,6 +1345,7 @@ bool MembraneTick::seal(float y, int cell_idx) {
         seal_loops_ = loops;
         seal_caps_ = caps;
         seal_y_ = y;
+        seal_refusal_.clear();   // this cut is clean: the name clears
         sealed_ = true;   // published under the lock; step() checks first
     }
     return true;
@@ -1955,6 +1996,7 @@ std::string MembraneTick::state_json() const {
       << ",\"seal_cuts\":" << seal_cuts_
       << ",\"seal_loops\":" << seal_loops_
       << ",\"seal_caps\":" << seal_caps_
+      << ",\"seal_refusal\":\"" << seal_refusal_ << "\""
       << ",\"dimple_m\":" << dimple_m_
       << ",\"gravity_on\":" << (gravity_on_ ? "true" : "false")
       << ",\"root_y\":" << root_y_
@@ -2000,7 +2042,8 @@ std::string MembraneTick::state_json() const {
         o << "{\"v0\":" << c.v0 << ",\"V\":" << c.vol << ",\"P\":" << c.p
           << ",\"pieces\":" << (c.pieces.size() / 3)
           << ",\"caps\":" << c.caps
-          << ",\"ylo\":" << c.ylo << ",\"yhi\":" << c.yhi << "}";
+          << ",\"ylo\":" << c.ylo << ",\"yhi\":" << c.yhi
+          << ",\"degenerate\":" << (c.degenerate ? "true" : "false") << "}";
     }
     o << "]"
       << ",\"has_scene\":" << (has_scene_ ? "true" : "false") << "}";

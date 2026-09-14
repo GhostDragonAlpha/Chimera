@@ -182,9 +182,30 @@ private:
         float v0 = 0.f, vol = 0.f, p = 0.f;
         int caps = 0;
         float ylo = 0.f, yhi = 0.f;     // rest y-range (refusal checks)
+        bool degenerate = false;        // live volume under the sampling
+                                        // floor (H8): p is withheld, the
+                                        // flag is the truth instead
     };
     bool  sealed_ = false;              // any cell exists
     float seal_y_ = 0.f, kappa_ = 4.6e-10f;
+    // THE DEGENERATE-CELL GUARD (H8 world-doctor): the live creature's
+    // cell 4 was a flat "pancake" (v0 = 4.655e-9 m^3, ylo == yhi == the
+    // cut plane y=0.338) created by a same-plane re-cut; the kappa law
+    // then answered (v0-v)/(kappa*v0) ~ 1/4.6e-10-scale GPa pressures on
+    // any pose and poisoned every judge/gait reader (live: 1.6228 GPa).
+    // One law at both admission and per-tick: a cell whose volume is
+    // under 0.5% of its parent's rest volume is NOT anatomy. Measured
+    // separation on this creature (bisect 2026-09-14): real daughters
+    // 9.51% / 47.3% / 52.7% / 46.3% / 53.8% of their parents; the
+    // degenerate daughter 1.62e-8 of its parent (4.655e-9 / 0.2879 m^3)
+    // -- nine orders of magnitude between the classes; the bar sits 19x
+    // below the smallest real daughter and ~3e5 above the noise. In
+    // pressure terms the singularity the guard prevents is v->0 ==>
+    // p->1/kappa = 2.17 GPa, 145x the skin yield (yield_pa_, Yamada).
+    static constexpr float SEAL_DEGENERATE_FRAC = 0.005f;
+    std::string seal_refusal_;          // last refused seal/split, BY NAME
+                                        // ("degenerate_split"); empty = none.
+                                        // Exported in state_json.
     float vol_whole0_ = 0.f;                   // whole divergence vol at seal
     float vol_whole_ = 0.f;                    // live posed whole volume
     float conserve_pct_ = 0.f;                 // (sum cells - Vw)/Vw * 100
