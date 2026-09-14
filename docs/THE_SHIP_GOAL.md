@@ -383,3 +383,18 @@ the creature takes measured steps — support pressure transfers foot to
 foot, the body advances, and cutting the controller mid-stride makes
 it stumble (never glide). Every transition logged with its measured
 gate values.
+
+## THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13: every
+## single bone is a sealed compartment — "you can't just have four sections")
+
+The 4-cell body (feet/torso/thighs/shins by height band) was the MINIMUM
+proof that the seal works. It is NOT the product. The creature's
+compartment tree must match its skeleton: every named bone gets its own
+sealed cell, divided by the same cut-and-weld at anatomical planes. The
+bone list comes from the skeleton (28 measured pins -> expand to the full
+bone tree), not from three horizontal cuts. The verification: the
+compartment count matches the bone count, every cell conserves, and the
+press on any bone answers in THAT bone's cell — not in a neighbour's.
+
+SCALE: the sculpt carries ~200+ nameable bones. The 4-cell tree was the
+proof-of-mechanism. The product tree is the skeleton.
