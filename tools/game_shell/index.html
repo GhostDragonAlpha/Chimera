@@ -389,6 +389,20 @@
   var judge = { woke: false, passed: false };
   var lastTouchForce = 0;
 
+  /* W4 SOUND RAIL: every sound the page makes goes through snd() -- a
+     window guard AND a try/catch, so a missing sound.js (failed load,
+     no WebAudio) or a throwing synth can never break a game path: the
+     failure mode is silence, never a dead page. Region hints pass the
+     world points the page already holds (sound.js matches their Y
+     against the live per-cell bands). */
+  function snd(method) {
+    try {
+      var S = window.ChimeraSound;
+      if (S && typeof S[method] === 'function')
+        S[method].apply(S, Array.prototype.slice.call(arguments, 1));
+    } catch (err) { /* silent */ }
+  }
+
   /* R4: the five lessons, data-driven (tools/game_shell/lessons.json) */
   var LESSONS = [];
   var lessonIdx = 0;
@@ -411,7 +425,8 @@
     // W1: per-lesson latches -- pairOk (pose_pair, per joint), wokenSet
     // (cells_woken, distinct cell indices), gravityArmed (gravity_on).
     if (!lessonState[l.id]) lessonState[l.id] = { goalMet: false, passed: false,
-      phase: 'goal', pairOk: {}, wokenSet: {}, gravityArmed: false };
+      phase: 'goal', pairOk: {}, wokenSet: {}, gravityArmed: false,
+      wokeMemo: {} };
     return lessonState[l.id];
   }
   async function loadLessons() {
@@ -490,7 +505,7 @@
     if (g.type === 'pose_reach') {
       if (joint_index === JOINT_INDEX[g.joint] && Math.abs(deg - g.deg) <= POSE_TOL_DEG) {
         st.goalMet = true; st.passed = true;
-        if (window.ChimeraSound) ChimeraSound.passed();
+        snd('passed');
         setVerdict('PASSED — the joint obeys the muscle.', 'good');
         // the lesson passed; the body returns to rest for the next one
         setTimeout(async function () {
@@ -510,7 +525,7 @@
         if (!st.pairOk[g.joints[k].joint]) all = false;
       if (all) {
         st.goalMet = true; st.passed = true;
-        if (window.ChimeraSound) ChimeraSound.passed();
+        snd('passed');
         setVerdict('PASSED — two wishes, one balance.', 'good');
         setTimeout(async function () {
           await resetPose();
@@ -1131,6 +1146,18 @@
     var signedP = function (c) { return Number(c.P) || 0; };
     var peakHere = function (c) { return Math.abs(signedP(c)); };
 
+    /* W4: the wake WHOOSH -- one per false->true crossing of a cell's wake
+       bar (WOKEN_PA, squeeze only), memo'd per cell on the lesson state so
+       a held press cannot re-trigger it on every poll; the memo resets when
+       the cell falls back asleep, so a later wake whooshes again. The whoosh
+       marks the CROSSING; cellWake keeps the goal-met LATCH. */
+    var memo = st.wokeMemo || (st.wokeMemo = {});
+    for (var wv = 0; wv < cells.length; wv++) {
+      var wk = 'cell' + wv, wokeNow = signedP(cells[wv]) >= WOKEN_PA;
+      if (wokeNow && !memo[wk]) { memo[wk] = true; snd('wakeWhoosh'); }
+      else if (!wokeNow && memo[wk]) memo[wk] = false;
+    }
+
     if (st.phase === 'goal' && !st.goalMet) {
       if (l.goal.type === 'pressure_isolation') {
         var tgt = Number(l.goal.threshold_pa) || 0;
@@ -1187,13 +1214,13 @@
           st.goalMet = true;
       }
       if (st.goalMet) {
-        if (window.ChimeraSound) ChimeraSound.cellWake();
+        snd('cellWake');
         if (l.then_release) {
           st.phase = 'release';
           setVerdict('the goal is met — now LET GO, and let the body heal.', 'accent');
         } else {
           st.passed = true;
-          if (window.ChimeraSound) ChimeraSound.passed();
+          snd('passed');
           setVerdict('PASSED.', 'good');
         }
       }
@@ -1205,7 +1232,8 @@
       var calm = cells.every(function (c) { return peakHere(c) < 1000; });
       if (calm) {
         st.passed = true;
-        if (window.ChimeraSound) ChimeraSound.passed();
+        snd('healShimmer');   // W4: the release-phase heal completed -- the quiet reward
+        snd('passed');
         setVerdict('PASSED — you felt the water. it was always there.', 'good');
       }
     }
@@ -1310,7 +1338,7 @@
         .then(function (res) {
           if (res && res.ok) { holding = true; $('letgo-btn').classList.add('hot');
             setHand('pressing — ' + forceEl.value + ' N (space)');
-            if (window.ChimeraSound) ChimeraSound.press(Number(forceEl.value)); }
+            snd('press', Number(forceEl.value), touchTarget); }
         });
       return;
     }
@@ -1344,7 +1372,7 @@
         postJSON(API.touchHit, { hit: touchTarget, force_n: f });
         holding = true; $('letgo-btn').classList.add('hot');
         setHand('pressing — ' + Math.round(f) + ' N (gamepad)');
-        if (window.ChimeraSound) ChimeraSound.press(f);
+        snd('press', f, touchTarget);
       }
     } else if (holding && !aHeld && gamepadWasA) {
       clearTouch();
@@ -1434,6 +1462,7 @@
       holding = true;
       $('letgo-btn').classList.add('hot');
       setHand('pressing — ' + forceEl.value + ' N');
+      snd('press', Number(forceEl.value), res.hit);   // W4: the engine's own resolved hit names the region
     } else {
       setHand((res && res.error) || 'you touched only water.');
     }
@@ -1496,7 +1525,10 @@
   /* ================= hand, save, screens ================= */
   forceEl.addEventListener('input', function () {
     forceLabel.textContent = forceEl.value + ' N';
-    if (holding) setHand('pressing — ' + forceEl.value + ' N');
+    if (holding) {
+      setHand('pressing — ' + forceEl.value + ' N');
+      snd('press', Number(forceEl.value));   // W4: the held voice follows the force live (press() never stacks)
+    }
   });
 
   $('letgo-btn').addEventListener('click', clearTouch);
@@ -1519,7 +1551,7 @@
         seen_intro: !!seenIntro });   // E4: a manual save must never wipe the greeting flag
       if (!res.ok) throw new Error('http ' + res.status);
       lessonsKnown = lessons;
-      if (window.ChimeraSound) ChimeraSound.saved();
+      snd('saved');
       setVerdict('saved. the world remembers you, ' + playerName + '.', 'good');
     } catch (err) {
       setVerdict('the world did not answer — nothing was saved.', 'warn');
@@ -1533,6 +1565,12 @@
     $('cam-name').textContent = playerName;
     $('screen-start').classList.remove('on');
     $('screen-play').classList.add('on');
+    /* W4: the AudioContext must be created (or resumed) INSIDE a user
+       gesture or the browser keeps it suspended -- the PLAY click (or its
+       Enter key) is the page's first. snd() is a silent no-op when
+       sound.js never loaded. */
+    snd('init');
+    snd('ambient', true);   // the session-start swell: the bed fades in under the greeting
     await loadKnownProgress();
     await loadLessons();
     if (!seenIntro) E4showIntro();   // E4: the first-run greeting, once per name
