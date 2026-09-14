@@ -95,11 +95,14 @@ const log = (...a) => console.log('[capture]', ...a);
     () => (document.getElementById('force-label') || {}).textContent || '?');
   log('force:', forceLabel);
 
-  // wait for the creature to be calm BEFORE the take (leftover decay would
-  // make "rest" a lie). All |P| < 1000 Pa, or note it and proceed honestly.
-  const calm = await waitCalm(page, 20000);
-  log('calm before take:', calm);
-  if (!calm) notes.push('engine not fully calm at take start (see report)');
+  // wait for a QUIET window before the take. This is a SHARED slot: other
+  // fleet agents press the same creature, and gravity may be on (a settled
+  // stand holds real pressure, so |P| < 1000 Pa is not the rest signal here).
+  // Quiet = no active dent AND no >100 kPa jumps between polls, sustained 4 s.
+  const quiet = await waitQuiet(page, 120000);
+  log('quiet window before take:', quiet);
+  if (!quiet) { notes.push('no quiet window before take (shared slot busy) — ABORT');
+    await browser.close(); process.exit(5); }
 
   // ---- the in-page sampler -----------------------------------------------
   // chained rAF: runs right after the page's frame() within the same
@@ -152,46 +155,86 @@ const log = (...a) => console.log('[capture]', ...a);
   });
 
   // ---- THE TAKE (every timestamp is the page's own performance.now) -------
+  // Camera work is REAL user input on the page's local camera: drags orbit
+  // (theta/phi), wheel zooms (cam.r, clamped 3..60) — all pure local math at
+  // the page's rAF rate, so captured motion is the browser's own render rate.
+  // Drags step at ~55 Hz (> capture rate) so no two consecutive captures see
+  // the same camera unless the scene is genuinely still.
   const ph = {};
   ph.sampler_start = await page.evaluate(() => {
     window.__g10cap.start(); return performance.now();
   });
 
-  // 01 REST + slow real orbit (proves smooth local rendering at rAF rate)
+  // 01 REST at the wide shot, then a slow real orbit (establishing sweep that
+  // also swings theta to -0.55 -> ~0.0 so the belly faces the camera)
   await sleep(800);
   ph.orbit1_start = await page.evaluate(() => performance.now());
-  await drag(page, box, { dx: 140, dy: 0, steps: 70, ms: 3200 });
+  await drag(page, box, { dx: -110, dy: -40, steps: 130, sleepMs: 14 });
   ph.orbit1_end = await page.evaluate(() => performance.now());
-  await sleep(600);
+  await sleep(300);
 
-  // 02 PRESS — the page's own SPACE rail POSTs /api/touch_hit {hit, force_n}
+  // 02 ZOOM IN to the belly with real wheel ticks (r 26 -> ~7.5)
+  ph.zoom_start = await page.evaluate(() => performance.now());
+  await page.mouse.move(box.x + box.w * 0.5, box.y + box.h * 0.55);
+  for (let i = 0; i < 20; i++) { await page.mouse.wheel(0, -62); await sleep(100); }
+  ph.zoom_end = await page.evaluate(() => performance.now());
+  await sleep(500);
+  // remember the shared world we are filming (for the honest report)
+  const world = await state(page);
+  const worldGravity = !!world.gravity_on;
+  const baselineP = (world.cells || []).map(c => Math.abs(Number(c.P) || 0));
+
+  // 03 PRESS — the page's own SPACE rail POSTs /api/touch_hit {hit, force_n}
+  //    at the lesson's belly target [0.0, 4.5, 0.35]. Verify the page LATCHED
+  //    holding (letgo button goes hot); one retry if it did not.
   ph.press_key = await page.evaluate(() => performance.now());
   await page.keyboard.press('Space');
-  const pressed = await waitDimpleAbove(page, 0.02, 4000);
-  ph.dimple_visible = await page.evaluate(() => performance.now());
-  log('press registered (dimple_m > 0.02 m):', pressed,
-      'at +', ((ph.dimple_visible - ph.press_key) / 1000).toFixed(2), 's');
-  if (!pressed) notes.push('dimple did not cross 0.02 m within 4 s of SPACE');
-
-  // 03 HOLD — force stays on; the dent breathes with the idle animation
-  await sleep(4000);
-  const holdDimple = await readDimple(page);
-  ph.release_key = await page.evaluate(() => performance.now());
-
-  // 04 RELEASE — ESCAPE -> the page POSTs /api/touch_clear; tau = 0.5 s healing
-  await page.keyboard.press('Escape');
-  const healed = await waitDimpleBelow(page, 0.01, 8000);
-  ph.healed = await page.evaluate(() => performance.now());
-  log('healed (dimple_m < 0.01 m):', healed,
-      'at +', ((ph.healed - ph.release_key) / 1000).toFixed(2), 's after ESCAPE');
-  if (!healed) notes.push('dimple did not fall below 0.01 m within 8 s of ESCAPE');
-
-  // 05 TAIL — a slow orbit back: smooth local motion over the settled body
   await sleep(400);
+  let latched = await page.evaluate(
+    () => document.getElementById('letgo-btn').classList.contains('hot'));
+  if (!latched) {
+    log('page did not latch holding — one Space retry');
+    await page.keyboard.press('Space');
+    await sleep(400);
+    latched = await page.evaluate(
+      () => document.getElementById('letgo-btn').classList.contains('hot'));
+  }
+  const pressed = latched && (await waitDimpleAbove(page, 0.02, 4000));
+  ph.dimple_visible = await page.evaluate(() => performance.now());
+  log('press registered (latched + dimple_m > 0.02 m):', pressed,
+      'at +', ((ph.dimple_visible - ph.press_key) / 1000).toFixed(2), 's');
+  if (!pressed) notes.push('press not verified (latch or dimple missing)');
+
+  // 04 HOLD-AS-A-LIVE-DRAG: one continuous gesture — pointerdown 0.4 s after
+  //    the press, slow orbit around the dent for ~4 s, pointerup. The page
+  //    releases the press exactly on that pointerup (endPress -> clearTouch),
+  //    so the hold shows MOTION (real-time camera work around the held dent)
+  //    and the release is a genuine player gesture, not a synthetic key.
+  await sleep(400);
+  const holdDimple = await readDimple(page);          // the dent, on camera, held
+  ph.hold_drag_start = await page.evaluate(() => performance.now());
+  await drag(page, box, { dx: 70, dy: 10, steps: 200, sleepMs: 14 });
+  ph.release_key = await page.evaluate(() => performance.now());   // pointerup = release
+
+  // 05 HEAL — tau = 0.5 s decay, streamed at the page's 3 Hz mesh rate.
+  //    The pointerup above releases the press when the page was holding; if
+  //    holding had somehow been lost, that same pointerup fires tryTouch —
+  //    a stray press. One ESCAPE covers both branches: clearTouch releases
+  //    the real press (or no-ops) / clears the stray one (it sets holding).
+  await sleep(300);
+  await page.keyboard.press('Escape');
+  const healed = await waitDimpleBelow(page, 0.02, 10000);
+  ph.healed = await page.evaluate(() => performance.now());
+  log('healed (dimple_m < 0.02 m):', healed,
+      'at +', ((ph.healed - ph.release_key) / 1000).toFixed(2), 's after release');
+  if (!healed) notes.push('dimple did not return under 0.02 m within 10 s of release');
+  await sleep(Math.max(0, 2600 - (ph.healed - ph.release_key)));
+
+  // 06 TAIL — a slow orbit back at the close shot, then stop
   ph.orbit2_start = await page.evaluate(() => performance.now());
-  await drag(page, box, { dx: -110, dy: 0, steps: 55, ms: 2200 });
+  await drag(page, box, { dx: -70, dy: 0, steps: 80, sleepMs: 14 });
   ph.orbit2_end = await page.evaluate(() => performance.now());
-  await sleep(800);
+  await sleep(400);
 
   ph.sampler_stop = await page.evaluate(() => {
     window.__g10cap.stop(); return performance.now();
@@ -222,8 +265,9 @@ const log = (...a) => console.log('[capture]', ...a);
     url: URL_, headed: true, channel: 'chrome',
     viewport: '2280x1080', deviceScaleFactor: 1,
     canvas: cinfo, lesson: lessonTitle, force: forceLabel,
-    player_name: NAME, pressed, healed,
-    hold_dimple_m: holdDimple, calm_before_take: calm,
+    player_name: NAME, pressed, healed, latched,
+    hold_dimple_m: holdDimple, quiet_before_take: quiet,
+    world_gravity_on: worldGravity, world_baseline_pa: baselineP,
     gate_ms: GATE_MS, dataurl_probe: probe, todataurl_errors: errs,
     t0_page_ms: t0,
     phases_wall_ms: ph,
@@ -248,14 +292,31 @@ async function readDimple(page) {
   try { return Number((await state(page)).dimple_m || 0); } catch { return null; }
 }
 async function waitCalm(page, capMs) {
+  // kept for compatibility; the take gate is waitQuiet (below)
+  return waitQuiet(page, capMs);
+}
+/* Quiet window: dimple under 0.02 m AND no >100 kPa jump in any cell between
+   consecutive polls, sustained for 4 s. Under gravity (shared slot) a settled
+   stand holds real pressure, so an absolute |P| threshold never fires. */
+async function waitQuiet(page, capMs) {
   const t0 = Date.now();
+  let lastP = null, quietSince = null;
   while (Date.now() - t0 < capMs) {
     try {
       const s = await state(page);
+      const d = Number(s.dimple_m || 0);
       const ps = (s.cells || []).map(c => Math.abs(Number(c.P) || 0));
-      if (ps.length && ps.every(p => p < 1000)) return true;
+      let spikes = false;
+      if (lastP && lastP.length === ps.length)
+        for (let i = 0; i < ps.length; i++)
+          if (Math.abs(ps[i] - lastP[i]) > 100000) spikes = true;   // someone pressing
+      lastP = ps;
+      if (d < 0.02 && !spikes) {
+        if (!quietSince) quietSince = Date.now();
+        else if (Date.now() - quietSince >= 4000) return true;
+      } else quietSince = null;
     } catch { /* a silent beat is not a verdict */ }
-    await sleep(300);
+    await sleep(400);
   }
   return false;
 }
@@ -278,15 +339,16 @@ async function waitDimpleBelow(page, max, capMs) {
 }
 
 /* A real drag: pointerdown, many small pointermoves (an orbit gesture —
-   past 6 px the page orbits and never touches), pointerup. */
-async function drag(page, box, { dx, dy, steps, ms }) {
-  const x0 = box.x + box.w * 0.5, y0 = box.y + box.h * 0.55;
+   past 6 px the page orbits and never touches), pointerup. Steps sleep
+   `sleepMs` between moves; with CDP overhead this lands ~50-60 Hz, above
+   the capture rate, so consecutive captures never see a repeated camera. */
+async function drag(page, box, { dx, dy, steps, sleepMs }) {
+  const x0 = box.x + box.w * 0.5 - dx / 2, y0 = box.y + box.h * 0.55 - dy / 2;
   await page.mouse.move(x0, y0);
   await page.mouse.down();
-  const per = ms / steps;
   for (let i = 1; i <= steps; i++) {
     await page.mouse.move(x0 + dx * i / steps, y0 + dy * i / steps);
-    await sleep(per);
+    await sleep(sleepMs);
   }
   await page.mouse.up();
 }

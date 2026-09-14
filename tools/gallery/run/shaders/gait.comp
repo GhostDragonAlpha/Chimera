@@ -1,0 +1,198 @@
+// gait.comp — H7 stage 2: the measured gait CPG as a CA-field kernel.
+// Bit-exact port of .tmp/gait_ref.py (the golden CPU reference, B15-style):
+// 8 oscillators, Owaki load term (stage-1 shared-weight surrogate, G3 real
+// contact load still blocked) + Sakaguchi graph coupling on the packet's G_c,
+// fixed-order RK4 at dt = 1e-3, float64 pinned schedule.
+//
+// THE TRANSCENDENTAL LAW: gait_ref.py's np.sin/np.cos/math.sin are all
+// ucrtbase.dll's sin/cos on this machine (measured, 200k samples). ucrt's
+// FMA-path implementation (the code that actually executes — the DLL's
+// ISA-flag branch) is transcribed here OP-FOR-OP from its disassembly
+// (.tmp/ucrt_trig.py is the Python twin, validated 0 mismatches over 2,000,010
+// values across every code path). Valid for |x| < 2e7 rad (~30 days of
+// continuous gait at omega = 2.5pi); the [2e7, inf) Payne-Hanek path is not
+// ported (named boundary).
+//
+// One workgroup of 8 invocations = one RK4 step (barrier-synced stages).
+// Per dispatch: phases SSBO read-modify-write, ring record, theta out.
+// All arithmetic is `precise` (no contraction); fma() calls are explicit.
+#version 460
+layout(local_size_x = 8) in;
+
+layout(push_constant) uniform PC {
+    double omega;        // current drive (rad/s) — POST /gait can move it
+    uint   rec_index;    // ring slot = steps_total % cap (CPU-side counter)
+    uint   pad;
+} pc;
+
+// consts layout (all f64, uploaded bit-exact from Python):
+//  0..5   A1..A6   sin poly
+//  6..11  C1..C6   cos poly
+// 12 TWO_OVER_PI   13 MAGIC   14 PC0   15 PC1   16 PC3   17 SIXTH
+// 18 SIGMA  19 W  20 N0  21 DT  22 HDT(0.5*DT)  23 DT6(DT/6)  24 EPS
+// 25 THM_L  26 THA_L  27 THM_R  28 THA_R   (deg; G1 map, measured knees only)
+// 29..36 alphas[8] (per-edge target lag)
+layout(std430, binding = 0) readonly  buffer Consts  { double cst[]; };
+layout(std430, binding = 1) readonly  buffer Edges   { int    edg[]; };   // ei[0..7], ej[0..7]
+layout(std430, binding = 2)           buffer Phases  { double phs[]; };   // 8
+layout(std430, binding = 3) writeonly buffer Ring    { double ring[]; };  // cap*8
+layout(std430, binding = 4) writeonly buffer Theta   { double th[];  };   // [0]=L [1]=R (deg)
+
+shared double pa[8];
+shared double pb[8];
+
+// ---- ucrtbase.dll sin/cos (FMA path), op-for-op -----------------------------
+double ucrt_sin_poly_reduced(double r, double y) {
+    precise double z = r * r;
+    precise double p = cst[0];
+    p = fma(z, p, cst[1]);
+    p = fma(z, p, cst[2]);
+    p = fma(z, p, cst[3]);
+    p = fma(z, p, cst[4]);
+    precise double r3 = r * z;
+    precise double t = y * 0.5 - r3 * p;
+    t = z * t;
+    t = t - y;
+    t = fma(-r3, cst[5], t);
+    return r - t;
+}
+
+double ucrt_cos_poly_reduced(double r, double y) {
+    precise double z = r * r;
+    precise double hz = z * 0.5;
+    precise double omh = 1.0 - hz;
+    precise double ccomp = (1.0 - omh) - hz;
+    ccomp = fma(-r, y, ccomp);
+    precise double z2 = z * z;
+    precise double p = fma(z, cst[6], cst[7]);
+    p = fma(z, p, cst[8]);
+    p = fma(z, p, cst[9]);
+    p = fma(z, p, cst[10]);
+    p = fma(z, p, cst[11]);
+    return fma(z2, p, ccomp) + omh;
+}
+
+void ucrt_reduce(double a, out int k, out double r, out double y) {
+    precise double kf = fma(a, cst[12], cst[13]) - cst[13];   // magic round-to-nearest
+    precise double t0 = fma(-kf, cst[14], a);
+    precise double kc1 = kf * cst[15];
+    precise double err1 = fma(kf, cst[15], -kc1);
+    precise double r1 = t0 - kc1;
+    precise double err2 = (t0 - r1) - kc1;
+    precise double r2 = fma(-kf, cst[15], t0);                // == r1, kept for fidelity
+    precise double yt = ((r1 - r2) + err2) - err1;
+    y  = fma(-kf, cst[16], yt);
+    r  = r2;
+    k  = int(kf) & 3;
+}
+
+double ucrt_sin(double x) {
+    double ax = abs(x);
+    if (ax >= 0.7853981633974483) {                 // pi/4 (jae)
+        int k; precise double r, y;
+        ucrt_reduce(ax, k, r, y);
+        precise double res = (k & 1) != 0 ? ucrt_cos_poly_reduced(r, y)
+                                          : ucrt_sin_poly_reduced(r, y);
+        // sign: negate if (k&2) XOR sign(x) — bit-level XOR on the double
+        uvec2 b = unpackDouble2x32(res);
+        bool neg = ((k & 2) != 0) != (x < 0.0);
+        if (neg) b.y ^= 0x80000000u;
+        return packDouble2x32(b);
+    }
+    if (ax >= 0.0001220703125) {                    // 2^-13: MED
+        precise double z = x * x;
+        precise double p = fma(z, cst[0], cst[1]);
+        p = fma(z, p, cst[2]);
+        p = fma(z, p, cst[3]);
+        p = fma(z, p, cst[4]);
+        precise double x3 = x * z;
+        p = fma(z, p, cst[5]);
+        return fma(x3, p, x);
+    }
+    if (ax >= 7.450580596923828e-09) {              // 2^-27: SMALL
+        precise double x3 = (x * x) * x;
+        return fma(-x3, cst[17], x);
+    }
+    return x;                                       // tiny
+}
+
+double ucrt_cos(double x) {
+    double ax = abs(x);
+    if (ax > 0.7853981633974483) {                  // pi/4 (jg — STRICT, differs from sin)
+        int k; precise double r, y;
+        ucrt_reduce(ax, k, r, y);
+        precise double res = (k & 1) != 0 ? ucrt_sin_poly_reduced(r, y)
+                                          : ucrt_cos_poly_reduced(r, y);
+        return ((k + 1) & 2) != 0 ? -res : res;
+    }
+    if (ax >= 0.0001220703125) {                    // 2^-13: MED
+        precise double z = x * x;
+        precise double p = fma(z, cst[6], cst[7]);
+        p = fma(z, p, cst[8]);
+        p = fma(z, p, cst[9]);
+        p = fma(z, p, cst[10]);
+        p = fma(z, p, cst[11]);
+        p = fma(z, p, -0.5);
+        return fma(z, p, 1.0);
+    }
+    if (ax >= 7.450580596923828e-09) {              // 2^-27: SMALL
+        return fma(-(x * 0.5), x, 1.0);
+    }
+    return 1.0;                                     // tiny
+}
+
+// ---- the CPG right-hand side (gait_ref.py::rhs, fixed order) -----------------
+// src: 0 -> read pa, 1 -> read pb. Each invocation computes component i.
+double rhs(int i, int src) {
+    precise double p[8];
+    for (int k = 0; k < 8; ++k) p[k] = (src == 0) ? pa[k] : pb[k];   // bit copies
+
+    // Owaki load surrogate: s_i = max(0, -sin(phi_i)); shared-weight N_i
+    precise double s[8];
+    for (int k = 0; k < 8; ++k) s[k] = max(0.0, -ucrt_sin(p[k]));
+    // np.sum pairwise tree for 8 elements (measured: ((0+1)+(2+3))+((4+5)+(6+7)))
+    precise double tot = ((s[0] + s[1]) + (s[2] + s[3])) + ((s[4] + s[5]) + (s[6] + s[7]));
+    precise double n_i = 0.0;
+    if (tot > cst[24]) n_i = (cst[20] * s[i]) / tot;
+    precise double f = pc.omega - (cst[18] * n_i) * ucrt_cos(p[i]);
+    // Sakaguchi coupling, fixed edge order; this thread accumulates only its own
+    for (int e = 0; e < 8; ++e) {
+        int ei = edg[e], ej = edg[8 + e];
+        precise double a = cst[29 + e];
+        if (i == ei) f = f + cst[19] * ucrt_sin((p[ej] - p[ei]) + a);
+        if (i == ej) f = f + cst[19] * ucrt_sin((p[ei] - p[ej]) - a);
+    }
+    return f;
+}
+
+void main() {
+    int i = int(gl_LocalInvocationID.x);
+
+    pa[i] = phs[i];
+    barrier();
+
+    precise double k1 = rhs(i, 0);
+    pb[i] = pa[i] + cst[22] * k1;                   // HDT * k1
+    barrier();
+
+    precise double k2 = rhs(i, 1);
+    pb[i] = pa[i] + cst[22] * k2;
+    barrier();
+
+    precise double k3 = rhs(i, 1);
+    pb[i] = pa[i] + cst[21] * k3;                   // DT * k3
+    barrier();
+
+    precise double k4 = rhs(i, 1);
+    // numpy order: ((k1 + 2.0*k2) + 2.0*k3) + k4, then * DT6, then + phi
+    precise double ssum = (k1 + 2.0 * k2) + 2.0 * k3;
+    ssum = ssum + k4;
+    precise double nphi = pa[i] + cst[23] * ssum;
+
+    phs[i] = nphi;
+    ring[pc.rec_index * 8 + i] = nphi;
+
+    // G1 phase map, measured hind knees only (LHK = 5, RHK = 7)
+    if (i == 5) th[0] = cst[25] + cst[26] * ucrt_sin(nphi);
+    if (i == 7) th[1] = cst[27] + cst[28] * ucrt_sin(nphi);
+}

@@ -1,0 +1,26 @@
+// water_depth.comp — macro-step pre-pass: optional source injection (data from
+// the recorded injection table — no RNG in the runtime), then float depths
+// from integer volumes. Each invocation touches only its own cell, so the
+// target cell's V update is race-free.
+#version 460
+#extension GL_EXT_shader_explicit_arithmetic_types_float64 : require
+layout(local_size_x = 256) in;
+
+layout(push_constant) uniform PC {
+    double Q;
+    uint   n;
+    int    inj_target;   // -1 = no injection this step
+    int    inj_count;
+    uint   pad0;
+} pc;
+
+layout(std430, binding = 0) buffer VBuf { int V[]; };
+layout(std430, binding = 1) readonly buffer Areas { double areas[]; };
+layout(std430, binding = 2) writeonly buffer Depth { double depth[]; };
+
+void main() {
+    uint i = gl_GlobalInvocationID.x;
+    if (i >= pc.n) return;
+    if (pc.inj_target == int(i)) V[i] += pc.inj_count;
+    depth[i] = (areas[i] > 0.0) ? (double(V[i]) * pc.Q / areas[i]) : 0.0;
+}

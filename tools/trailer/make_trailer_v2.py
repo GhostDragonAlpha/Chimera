@@ -231,8 +231,10 @@ def chart(rep: dict, tl: dict, out_png: Path) -> None:
     bands = []
     ph = tl.get("phases_s", {})
     if "press_key" in ph:
-        bands.append((0.0, ph["press_key"], "REST + ORBIT", (226, 236, 232)))
-        bands.append((ph["press_key"], ph["release_key"], "PRESS + HOLD", (247, 231, 219)))
+        zs = ph.get("zoom_start", ph["press_key"])
+        bands.append((0.0, zs, "REST + ORBIT (wide)", (226, 236, 232)))
+        bands.append((zs, ph["press_key"], "ZOOM TO BELLY", (243, 238, 222)))
+        bands.append((ph["press_key"], ph["release_key"], "PRESS + HOLD-DRAG", (247, 231, 219)))
         bands.append((ph["release_key"], ph.get("orbit2_start", ph["healed"]), "RELEASE + HEAL", (224, 236, 247)))
         bands.append((ph.get("orbit2_start", ph["healed"]), t_end, "TAIL ORBIT", (236, 232, 244)))
     for a, b, lbl, col in bands:

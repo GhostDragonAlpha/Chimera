@@ -1,0 +1,46 @@
+#version 450
+// GPU sort for 3DGS back-to-front splat ordering. Two modes via push constant:
+//   mode 0 = compute a sortable uint key from view-space depth (monotonic: uint order == depth order)
+//   mode 1 = one bitonic compare-swap step (sorts indices ascending by key)
+// Bitonic sort is a comparison sort — it produces a CORRECT total order (ties may swap, which is
+// fine for alpha blending). Runs entirely on the GPU so the CPU never touches per-splat data.
+layout(local_size_x = 256) in;
+
+layout(std430, binding = 0) buffer PosB { float pos[]; };    // N*14 floats (engine vertex layout)
+layout(std430, binding = 1) buffer KeyB { uint  keys[]; };   // N (padded) sortable keys
+layout(std430, binding = 2) buffer IdxB { uint  indices[]; };// N (padded) permutation
+
+layout(push_constant) uniform PC {
+    uint  mode;    // 0 = keys, 1 = bitonic step
+    uint  j;       // bitonic sub-stage
+    uint  k;       // bitonic stage
+    uint  count;   // real splat count N (unpadded)
+    float zx, zy, zz, tz;  // view-space depth: depth = zx*x + zy*y + zz*z + tz
+};
+
+void main() {
+    uint i = gl_GlobalInvocationID.x;
+
+    if (mode == 0u) {
+        if (i >= count) return;
+        float x = pos[i * 14u + 0u];
+        float y = pos[i * 14u + 1u];
+        float z = pos[i * 14u + 2u];
+        float d = zx * x + zy * y + zz * z + tz;
+        uint  b = floatBitsToUint(d);
+        keys[i] = (b & 0x80000000u) != 0u ? ~b : (b | 0x80000000u);
+    } else {
+        if (i >= count) return;
+        uint ixj = i ^ j;
+        if (ixj > i) {
+            uint a = indices[i];
+            uint b = indices[ixj];
+            bool asc  = (i & k) == 0u;
+            bool swap = asc ? (keys[a] > keys[b]) : (keys[a] < keys[b]);
+            if (swap) {
+                indices[i]   = b;
+                indices[ixj] = a;
+            }
+        }
+    }
+}

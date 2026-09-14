@@ -1,0 +1,70 @@
+// water_vis.comp — W4 surface displacement: the water surface IS the substrate
+// triangulation, displaced. One invocation per cell. For every wet triangle
+// (V_i > 0): read the mesh triangle (same array the hinge driver uploads —
+// cell t == whole-mesh face tri_base + t, PROVEN by .tmp/water_align_check.py),
+// displace its 3 posed verts by d = V*Q/A along the triangle normal (never
+// fitted), emit them into the water vertex buffer. GEOMETRY ONLY — fixed water
+// blue; the frost packet owns appearance. Slot allocation: atomicAdd on the
+// indirect-draw vertexCount (compact, no gaps, no CPU in the loop).
+#version 460
+#extension GL_EXT_shader_explicit_arithmetic_types_float64 : require
+layout(local_size_x = 256) in;
+
+layout(push_constant) uniform PC {
+    double Q;
+    uint   n_cells;
+    uint   tri_base;    // face offset of the water part inside the whole-mesh index buffer
+    uint   cap_verts;   // water vertex buffer capacity in verts (3 * n_cells)
+    float  tint;        // wet-tint factor (reserved; W4 is geometry-only, fixed color)
+} pc;
+
+layout(std430, binding = 0) readonly buffer VBuf   { int  V[];     };
+layout(std430, binding = 1) readonly buffer Areas  { double areas[]; };
+layout(std430, binding = 2) readonly buffer MeshV  { float mv[];   };  // 9 floats/vert (posed)
+layout(std430, binding = 3) readonly buffer MeshI  { uint  mi[];   };
+layout(std430, binding = 4) buffer Indirect {
+    uint vertexCount;
+    uint instanceCount;
+    uint firstVertex;
+    uint firstInstance;
+};
+layout(std430, binding = 5) writeonly buffer WaterV { float wv[]; };
+
+const vec3 WATER_COLOR = vec3(0.15, 0.35, 0.75);  // fixed water blue (W4: appearance out of scope)
+
+vec3 mesh_pos(uint vi) {
+    return vec3(mv[9 * vi + 0], mv[9 * vi + 1], mv[9 * vi + 2]);
+}
+
+void write_vert(uint slot3, uint k, vec3 p, vec3 n) {
+    uint o = (slot3 + k) * 9;
+    wv[o + 0] = p.x; wv[o + 1] = p.y; wv[o + 2] = p.z;
+    wv[o + 3] = n.x; wv[o + 4] = n.y; wv[o + 5] = n.z;
+    wv[o + 6] = WATER_COLOR.r; wv[o + 7] = WATER_COLOR.g; wv[o + 8] = WATER_COLOR.b;
+}
+
+void main() {
+    uint i = gl_GlobalInvocationID.x;
+    if (i >= pc.n_cells) return;
+    int v = V[i];
+    if (v <= 0) return;
+    uint slot = atomicAdd(vertexCount, 3u) / 3u;
+    if (slot * 3u + 3u > pc.cap_verts) return;  // overrun guard (same doctrine as the solver port)
+
+    uint f = 3u * (pc.tri_base + i);
+    vec3 a = mesh_pos(mi[f + 0]);
+    vec3 b = mesh_pos(mi[f + 1]);
+    vec3 c = mesh_pos(mi[f + 2]);
+
+    // 'precise': the solver's float law — no FMA contraction on the depth math.
+    precise double d = double(v) * pc.Q / areas[i];
+
+    vec3 n = cross(b - a, c - a);
+    float nl = length(n);
+    n = (nl > 0.0) ? n / nl : vec3(0.0, 1.0, 0.0);   // triangle normal, never fitted
+    vec3 disp = float(d) * n;
+
+    write_vert(slot * 3u, 0u, a + disp, n);
+    write_vert(slot * 3u, 1u, b + disp, n);
+    write_vert(slot * 3u, 2u, c + disp, n);
+}

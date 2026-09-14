@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import struct
 import subprocess
 import sys
@@ -33,7 +34,9 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]          # E:\ChimeraWork\slot-01
 ENGINE = ROOT / ".tmp" / "build_tick" / "Release" / "chimera_engine.exe"
-OBJ_DIR = Path(__file__).resolve().parent / "obj"
+SHADERS = ENGINE.parent / "shaders"
+RUN_DIR = Path(__file__).resolve().parent / "run"   # ISOLATED cwd: the
+OBJ_DIR = Path(__file__).resolve().parent / "obj"   # throwaway's session
 GALLERY = Path(r"C:\Users\allen\Desktop\CHIMERA_PROOF\ALIVE_GALLERY")
 LOG_DIR = Path(__file__).resolve().parent / "logs"
 
@@ -71,10 +74,22 @@ class Engine:
     def start(self, wait_s: float = 90.0) -> None:
         LOG_DIR.mkdir(parents=True, exist_ok=True)
         assert ENGINE.is_file(), f"engine binary missing: {ENGINE}"
+        # ISOLATED CWD: the engine reads shaders CWD-relative and keeps the
+        # CWD when shaders\\render.vert.spv is found there -- so a run dir
+        # with a shaders copy holds the throwaway's session_snapshot/,
+        # session_*.jsonl and camera_bookmarks.txt away from the LIVE
+        # engine's Release cwd. Boot restore (default-on) then finds no
+        # blobs and the tick is born EMPTY -- the --no-restore semantics
+        # without --no-restore itself, which on this build (measured,
+        # 2/2) fails fast at boot (0xC0000409) when combined with
+        # --hidden. /session clear was NOT an option: it deletes the
+        # SHARED snapshot blobs the live stack's next boot depends on.
+        RUN_DIR.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(SHADERS, RUN_DIR / "shaders", dirs_exist_ok=True)
         logf = open(self.log_path, "ab")
         self.proc = subprocess.Popen(
-            [str(ENGINE), str(self.port), "--no-restore", "--hidden"],
-            cwd=str(ENGINE.parent), stdout=logf, stderr=logf,
+            [str(ENGINE), str(self.port), "--hidden"],
+            cwd=str(RUN_DIR), stdout=logf, stderr=logf,
             creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
         deadline = time.time() + wait_s
         while time.time() < deadline:
@@ -83,6 +98,9 @@ class Engine:
                     f"engine exited at boot (code {self.proc.returncode}); "
                     f"log {self.log_path}")
             try:
+                st = get_json(self.base, "/tick_state", timeout=2)
+                assert st.get("sealed") is not True, \
+                    "throwaway booted SEALED -- the isolated cwd failed"
                 get_json(self.base, "/state", timeout=2)
                 time.sleep(1.0)                  # settle: first frames render
                 return
@@ -225,7 +243,7 @@ def bring_alive(eng: Engine, obj: Path, k_joints: int, pose_deg: float) -> dict:
         {"hit": hit, "force_n": TOUCH_FORCE_N}))
     time.sleep(1.5)                      # the engine ticks at 60 Hz
     pressed = get_json(base, "/tick_state")
-    post(base, "/tick_touch_clear")
+    post(base, "/tick_touch_clear", "{}")
     time.sleep(0.8)
     after = get_json(base, "/tick_state")
     dP = [pressed.get("P_lower", 0) - (p_rest[0] or 0),
