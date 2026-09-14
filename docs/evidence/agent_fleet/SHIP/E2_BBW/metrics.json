@@ -1,0 +1,404 @@
+{
+  "astra_source": "Astra answer to fleet Q2 (skin-binding), 2026-09-13: no universal distance-to-pin law; bounded biharmonic weights = the surrogate; finite patches; resolution-normalized metric",
+  "patch_law": "nearest quartile of the pin's classified cell",
+  "patches": [
+    {
+      "pin": 0,
+      "name": "neck",
+      "cell": 1521,
+      "patch": 380,
+      "r_quartile_m": 0.3203145469041877
+    },
+    {
+      "pin": 1,
+      "name": "jaw",
+      "cell": 258,
+      "patch": 64,
+      "r_quartile_m": 0.2757481357912631
+    },
+    {
+      "pin": 2,
+      "name": "spine_upper",
+      "cell": 286,
+      "patch": 71,
+      "r_quartile_m": 0.5948093400546391
+    },
+    {
+      "pin": 3,
+      "name": "spine_mid",
+      "cell": 297,
+      "patch": 74,
+      "r_quartile_m": 0.6557229059681505
+    },
+    {
+      "pin": 4,
+      "name": "spine_lower",
+      "cell": 165,
+      "patch": 41,
+      "r_quartile_m": 0.2269626077059569
+    },
+    {
+      "pin": 5,
+      "name": "tail_base",
+      "cell": 289,
+      "patch": 72,
+      "r_quartile_m": 0.22641779948460006
+    },
+    {
+      "pin": 6,
+      "name": "tail_mid",
+      "cell": 192,
+      "patch": 48,
+      "r_quartile_m": 0.295419260940854
+    },
+    {
+      "pin": 7,
+      "name": "shoulder_L",
+      "cell": 290,
+      "patch": 72,
+      "r_quartile_m": 0.35249094753613336
+    },
+    {
+      "pin": 8,
+      "name": "shoulder_R",
+      "cell": 290,
+      "patch": 72,
+      "r_quartile_m": 0.35249094753613336
+    },
+    {
+      "pin": 9,
+      "name": "elbow_L",
+      "cell": 296,
+      "patch": 74,
+      "r_quartile_m": 0.20796014123090137
+    },
+    {
+      "pin": 10,
+      "name": "elbow_R",
+      "cell": 296,
+      "patch": 74,
+      "r_quartile_m": 0.20796013227416005
+    },
+    {
+      "pin": 11,
+      "name": "wrist_L",
+      "cell": 1377,
+      "patch": 344,
+      "r_quartile_m": 0.6794101324534159
+    },
+    {
+      "pin": 12,
+      "name": "wrist_R",
+      "cell": 1377,
+      "patch": 344,
+      "r_quartile_m": 0.6794103737108481
+    },
+    {
+      "pin": 13,
+      "name": "hip_L",
+      "cell": 244,
+      "patch": 61,
+      "r_quartile_m": 0.2731017094508685
+    },
+    {
+      "pin": 14,
+      "name": "hip_R",
+      "cell": 244,
+      "patch": 61,
+      "r_quartile_m": 0.2731017094508685
+    },
+    {
+      "pin": 15,
+      "name": "knee_L",
+      "cell": 256,
+      "patch": 64,
+      "r_quartile_m": 0.3330662471927672
+    },
+    {
+      "pin": 16,
+      "name": "knee_R",
+      "cell": 256,
+      "patch": 64,
+      "r_quartile_m": 0.3330662471927672
+    },
+    {
+      "pin": 17,
+      "name": "ankle_L",
+      "cell": 1477,
+      "patch": 369,
+      "r_quartile_m": 0.4497392872726741
+    },
+    {
+      "pin": 18,
+      "name": "ankle_R",
+      "cell": 1477,
+      "patch": 369,
+      "r_quartile_m": 0.4497392872726741
+    },
+    {
+      "pin": 19,
+      "name": "tail_tip",
+      "cell": 172,
+      "patch": 43,
+      "r_quartile_m": 0.09728634873957265
+    },
+    {
+      "pin": 20,
+      "name": "ear_L",
+      "cell": 1064,
+      "patch": 266,
+      "r_quartile_m": 0.34150699857337685
+    },
+    {
+      "pin": 21,
+      "name": "ear_R",
+      "cell": 1048,
+      "patch": 262,
+      "r_quartile_m": 0.33917217107042813
+    },
+    {
+      "pin": 22,
+      "name": "lid_L",
+      "cell": 349,
+      "patch": 87,
+      "r_quartile_m": 0.37338251722652704
+    },
+    {
+      "pin": 23,
+      "name": "lid_R",
+      "cell": 332,
+      "patch": 83,
+      "r_quartile_m": 0.36675256983578913
+    },
+    {
+      "pin": 24,
+      "name": "brow_L",
+      "cell": 1257,
+      "patch": 314,
+      "r_quartile_m": 0.27359090316659496
+    },
+    {
+      "pin": 25,
+      "name": "brow_R",
+      "cell": 1243,
+      "patch": 310,
+      "r_quartile_m": 0.26794457229221497
+    },
+    {
+      "pin": 26,
+      "name": "mouth_L",
+      "cell": 1089,
+      "patch": 272,
+      "r_quartile_m": 0.33166841990320595
+    },
+    {
+      "pin": 27,
+      "name": "mouth_R",
+      "cell": 1017,
+      "patch": 254,
+      "r_quartile_m": 0.31623074880062996
+    }
+  ],
+  "metric_ball_dead": [
+    "spine_upper",
+    "spine_mid",
+    "spine_lower"
+  ],
+  "h_med_knee": 0.13330528200484715,
+  "D_w8": 0.26019373451927763,
+  "D_bbw": 0.2612908148046799,
+  "swap_bar_worstcase": 0.044979227275891535,
+  "solver": {
+    "class": "box-constrained active set (clamp-in + KKT release), sparse LU",
+    "lu_facs": 950,
+    "rounds_max": 87,
+    "clamp_events": 21830,
+    "release_events": 13595,
+    "pou_max_err_prenorm": 1.0,
+    "pou_max_err_prenorm_nondeg": 0.4433816716289982,
+    "zero_rows": 178,
+    "fallback_hist": {
+      "lid_L": 89,
+      "lid_R": 89
+    },
+    "degenerate_mass_verts": 0
+  },
+  "sum_err": 4.470348358154297e-08,
+  "rest_err": 4.0974379089675494e-07,
+  "dense_top3_mass": {
+    "median": 1.0,
+    "p5": 0.916831661540813,
+    "min": 0.723088429601686
+  },
+  "fill": 6571,
+  "capped": 0,
+  "metric": {
+    "pre-W8 (reference)": {
+      "knee45": {
+        "crease": 193,
+        "max_deg": 161.90088492276837,
+        "winding_flips": 8,
+        "norm_p95_deg_per_m": 100.69601090441998,
+        "norm_max_deg_per_m": 4777.521471902784
+      },
+      "hip20+knee45": {
+        "crease": 237,
+        "max_deg": 161.3861389302157,
+        "winding_flips": 14,
+        "norm_p95_deg_per_m": 117.4231995556926,
+        "norm_max_deg_per_m": 4664.0127973166045
+      }
+    },
+    "W8 (shipped OLD)": {
+      "knee45": {
+        "crease": 180,
+        "max_deg": 165.744598752985,
+        "winding_flips": 2,
+        "norm_p95_deg_per_m": 95.01403741021069,
+        "norm_max_deg_per_m": 4926.844850157775
+      },
+      "hip20+knee45": {
+        "crease": 212,
+        "max_deg": 164.6475040127395,
+        "winding_flips": 2,
+        "norm_p95_deg_per_m": 110.19162690302818,
+        "norm_max_deg_per_m": 4784.42566732574
+      }
+    },
+    "BBW (NEW)": {
+      "knee45": {
+        "crease": 127,
+        "max_deg": 165.49372122979753,
+        "winding_flips": 2,
+        "norm_p95_deg_per_m": 74.20505188932748,
+        "norm_max_deg_per_m": 4956.024211993048
+      },
+      "hip20+knee45": {
+        "crease": 153,
+        "max_deg": 165.80453979853615,
+        "winding_flips": 4,
+        "norm_p95_deg_per_m": 91.64320542248825,
+        "norm_max_deg_per_m": 4923.897098706153
+      }
+    }
+  },
+  "swap": {
+    "W8": {
+      "swap_edges": 4485,
+      "flip_band_verts": 4117,
+      "dup_splits": 0,
+      "leave_w_p50": 0.050460707396268845,
+      "leave_w_p95": 0.28678983449935913,
+      "leave_w_max": 0.7620964050292969,
+      "leave_w_below_bar_frac": 0.4802675585284281,
+      "knee45": {
+        "benign_frac": 0.947603121516165,
+        "step_p95": 0.02358231969148735,
+        "step_max": 0.3447886951418956,
+        "region_swap_edges": 261,
+        "region_leave_w_p95": 0.3349672853946686,
+        "region_benign_frac": 0.5287356321839081
+      },
+      "hip20+knee45": {
+        "benign_frac": 0.9253065774804905,
+        "step_p95": 0.030008964905499726,
+        "step_max": 0.4341911432237617,
+        "region_swap_edges": 261,
+        "region_leave_w_p95": 0.3349672853946686,
+        "region_benign_frac": 0.5287356321839081
+      }
+    },
+    "BBW": {
+      "swap_edges": 4100,
+      "flip_band_verts": 3601,
+      "dup_splits": 278,
+      "leave_w_p50": 0.00863003684207797,
+      "leave_w_p95": 0.8669277459382985,
+      "leave_w_max": 1.0,
+      "leave_w_below_bar_frac": 0.6590243902439025,
+      "knee45": {
+        "benign_frac": 0.9709756097560975,
+        "step_p95": 5.075859777641947e-07,
+        "step_max": 0.24042219776866677,
+        "region_swap_edges": 221,
+        "region_leave_w_p95": 0.10578543692827225,
+        "region_benign_frac": 0.5113122171945701
+      },
+      "hip20+knee45": {
+        "benign_frac": 0.9314634146341464,
+        "step_p95": 0.04399243180007456,
+        "step_max": 0.3273518801794292,
+        "region_swap_edges": 221,
+        "region_leave_w_p95": 0.10578543692827225,
+        "region_benign_frac": 0.5113122171945701
+      }
+    }
+  },
+  "diagnostic": {
+    "dense_bounded": {
+      "knee45": {
+        "crease": 127,
+        "max_deg": 165.49375138566776,
+        "winding_flips": 2
+      },
+      "hip20+knee45": {
+        "crease": 153,
+        "max_deg": 165.80456511799753,
+        "winding_flips": 4
+      }
+    },
+    "unbounded": {
+      "pou_max_err": 1.0,
+      "out_of_bound_rows": 8903,
+      "shipped_negative_rows": 992,
+      "knee45": {
+        "crease": 128,
+        "max_deg": 165.444791812627,
+        "winding_flips": 2,
+        "norm_p95_deg_per_m": 74.16976445078078,
+        "norm_max_deg_per_m": 4954.606811266251
+      },
+      "hip20+knee45": {
+        "crease": 153,
+        "max_deg": 165.78539841410083,
+        "winding_flips": 4,
+        "norm_p95_deg_per_m": 91.5850480731255,
+        "norm_max_deg_per_m": 4923.443469405753
+      }
+    }
+  },
+  "drop_knee45": 0.2944444444444444,
+  "drop_compound": 0.2783018867924528,
+  "prongs": {
+    "a_creases": false,
+    "b_flips": false,
+    "c_benign": false
+  },
+  "offline_verdict": "REFUTED",
+  "ab": {
+    "knee45_old": {
+      "pred_disp": 0.26019373451927763,
+      "observed_disp": 0.26019375435958186,
+      "rest_disp": 2.407356265396403e-07,
+      "png_bytes": 3503097
+    },
+    "knee45_new": {
+      "pred_disp": 0.2612908148046799,
+      "observed_disp": 0.261290751957506,
+      "rest_disp": 2.384185791015625e-07,
+      "png_bytes": 3503097
+    },
+    "compound_old": {
+      "pred_disp": 0.26062661167113493,
+      "observed_disp": 0.260626676239743,
+      "rest_disp": 2.407356265396403e-07,
+      "png_bytes": 3503097
+    },
+    "compound_new": {
+      "pred_disp": 0.2613896011831155,
+      "observed_disp": 0.26138955021219573,
+      "rest_disp": 2.384185791015625e-07,
+      "png_bytes": 3503097
+    }
+  }
+}

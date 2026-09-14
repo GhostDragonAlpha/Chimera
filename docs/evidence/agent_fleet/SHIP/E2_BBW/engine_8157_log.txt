@@ -1,0 +1,39 @@
+studio: session log -> session_20260914_175950.jsonl
+floor: building pipeline (modules ok)
+floor: pipeline created
+Compute pipeline created
+THE ENGINE STUDIO: overlay ready (F1)
+Vulkan engine initialized: 2560 x 1440, 2 frames in flight
+Chimera Engine running at http://localhost:8157/state
+  /frame  -> PNG of the current render (membrane if one is loaded)
+  /membrane (POST) -> load a story membrane scene
+Window: 2560x1440, Press Ctrl+C to stop.
+Controls: Left-drag orbit | Scroll zoom | Right-drag pan
+          WASD move | Q/E up-down | Space/Ctrl zoom | R reset | P pose toggle
+          F1 THE ENGINE STUDIO overlay (pipeline board + live status)
+FPS: 55 (frame 56) | ft ms avg 9.14 max 21.86 | >16.7ms: 1 >33ms: 0
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+snapshot: session_snapshot/mesh_bin.blob (1104108 B)
+snapshot: session_snapshot/tick_joints.blob (340 B)
+snapshot: session_snapshot/tick_classify.blob (36634 B)
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+snapshot: session_snapshot/mesh_bin.blob (1104108 B)
+snapshot: session_snapshot/tick_joints.blob (340 B)
+snapshot: session_snapshot/tick_classify.blob (36634 B)
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+session: boot restore -> {"ok":true,"replayed":4,"failed":0,"seal_already":0,"seal_executed":0,"detail":"mesh_bin:ok tick_joints:ok tick_classify:ok tick_vertbind:ok "}
+session: boot fit -> {"ok":true,"fit":true}
+FPS: 254 (frame 254) | ft ms avg 0.67 max 9.01 | >16.7ms: 0 >33ms: 0
+FPS: 147 (frame 270) | ft ms avg 3.82 max 934.45 | >16.7ms: 1 >33ms: 1
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+FPS: 300 (frame 300) | ft ms avg 0.42 max 0.89 | >16.7ms: 0 >33ms: 0
+FPS: 135 (frame 228) | ft ms avg 4.45 max 933.67 | >16.7ms: 1 >33ms: 1
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+FPS: 300 (frame 300) | ft ms avg 0.37 max 0.67 | >16.7ms: 0 >33ms: 0
+FPS: 139 (frame 246) | ft ms avg 4.23 max 952.40 | >16.7ms: 1 >33ms: 1
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+FPS: 300 (frame 300) | ft ms avg 0.39 max 0.80 | >16.7ms: 0 >33ms: 0
+FPS: 139 (frame 241) | ft ms avg 4.24 max 935.86 | >16.7ms: 1 >33ms: 1
