@@ -1,0 +1,131 @@
+{
+ "what": "Chimera game-page browser fps probe (R6, measured)",
+ "game": "http://127.0.0.1:8206",
+ "engine": "http://127.0.0.1:8107",
+ "window_ms": 10000,
+ "windows_per_mode": 3,
+ "date_utc": "2026-09-14T02:19:27.766Z",
+ "pose": "POST /api/pose {joint_index: 15 (knee_L), deg: 25 then 0} mid-window",
+ "modes": {
+  "headless": {
+   "mode": "headless",
+   "ok": true,
+   "error": null,
+   "rafLoopStarted": true,
+   "enteredPlay": true,
+   "windows": [
+    {
+     "window": 1,
+     "fps": 240.02,
+     "frames": 2401,
+     "ms": 10003,
+     "knee25": "ok",
+     "knee0": "ok",
+     "ticks_mean": 299.17,
+     "ticks_min": 293.23,
+     "ticks_n": 39,
+     "tick_resets": 0,
+     "tick_failed_polls": 0
+    },
+    {
+     "window": 2,
+     "fps": 240.05,
+     "frames": 2401,
+     "ms": 10002,
+     "knee25": "ok",
+     "knee0": "ok",
+     "ticks_mean": 299.58,
+     "ticks_min": 296.58,
+     "ticks_n": 39,
+     "tick_resets": 0,
+     "tick_failed_polls": 0
+    },
+    {
+     "window": 3,
+     "fps": 240.05,
+     "frames": 2401,
+     "ms": 10002,
+     "knee25": "ok",
+     "knee0": "ok",
+     "ticks_mean": 298.91,
+     "ticks_min": 294.34,
+     "ticks_n": 39,
+     "tick_resets": 0,
+     "tick_failed_polls": 0
+    }
+   ],
+   "fps": {
+    "mean": 240.04000000000005,
+    "min": 240.02,
+    "max": 240.05,
+    "n": 3
+   },
+   "ticksUnderLoad": {
+    "mean": 299.22,
+    "min": 298.91,
+    "max": 299.58,
+    "n": 3
+   }
+  },
+  "headed": {
+   "mode": "headed",
+   "ok": true,
+   "error": null,
+   "rafLoopStarted": true,
+   "enteredPlay": true,
+   "windows": [
+    {
+     "window": 1,
+     "fps": 239.93,
+     "frames": 2400,
+     "ms": 10003,
+     "knee25": "ok",
+     "knee0": "ok",
+     "ticks_mean": 298.5,
+     "ticks_min": 289.47,
+     "ticks_n": 39,
+     "tick_resets": 0,
+     "tick_failed_polls": 0
+    },
+    {
+     "window": 2,
+     "fps": 239.58,
+     "frames": 2397,
+     "ms": 10005,
+     "knee25": "ok",
+     "knee0": "ok",
+     "ticks_mean": 298.66,
+     "ticks_min": 293.89,
+     "ticks_n": 39,
+     "tick_resets": 0,
+     "tick_failed_polls": 0
+    },
+    {
+     "window": 3,
+     "fps": 240,
+     "frames": 2400,
+     "ms": 10000,
+     "knee25": "ok",
+     "knee0": "ok",
+     "ticks_mean": 299.3,
+     "ticks_min": 295.45,
+     "ticks_n": 39,
+     "tick_resets": 0,
+     "tick_failed_polls": 0
+    }
+   ],
+   "fps": {
+    "mean": 239.83666666666667,
+    "min": 239.58,
+    "max": 240,
+    "n": 3
+   },
+   "ticksUnderLoad": {
+    "mean": 298.82,
+    "min": 298.5,
+    "max": 299.3,
+    "n": 3
+   }
+  }
+ }
+}
