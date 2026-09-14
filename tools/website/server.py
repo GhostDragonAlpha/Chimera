@@ -10,6 +10,10 @@ Run:  python tools/website/server.py [port] [--host H]
       (default port 8210; default host 127.0.0.1 -- pass --host 0.0.0.0
       ONLY when you mean to serve the public; see docs/DEPLOY_RUNBOOK.md)
 The PLAY THE DEMO button expects the game shell on 127.0.0.1:8206.
+IPv6 note (D4): both servers bind IPv4 only -- http://[::1]:8210 is
+refused; visitors on localhost are served over IPv4 by the browser's
+fallback, and the page's door derivation sends every loopback host
+(including ::1) to the shell's IPv4 door 127.0.0.1:8206.
 
 Hardening (public deployment):
   --host    binds 127.0.0.1 unless 0.0.0.0 is passed explicitly.

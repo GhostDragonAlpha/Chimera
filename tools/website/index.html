@@ -3,14 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CHIMERA — a creature of water and skin</title>
-<meta name="description" content="CHIMERA is a hand-built physics creature of sealed water cells — touch it anywhere and it answers. Play the free demo in your browser, or join the list and we shall write when there is news worth reading.">
-<meta property="og:title" content="CHIMERA — a creature of water and skin">
-<!-- og:image is a RELATIVE placeholder: the deploy copies the store capsule
-     into store_art/ beside this file (runbook, static path). Relative keeps
-     it honest wherever the page is served; until the art lands, scrapers
-     just find no image. -->
+<title>CHIMERA — press it and the water answers</title>
+<meta name="description" content="CHIMERA is a living creature of sealed water cells: press it anywhere and the pressure answers; let go and watch it heal. Ten short lessons, free in your browser.">
+<meta property="og:title" content="CHIMERA — press it and the water answers">
+<meta property="og:description" content="A living creature of sealed water cells. Press it anywhere and the pressure answers; let go and watch it heal. Ten short lessons, free in your browser.">
+<meta property="og:type" content="website">
+<!-- og:image is the REAL store capsule (R7, B2 art) served beside this file --
+     the URL is relative so the page stays honest wherever it is deployed. -->
 <meta property="og:image" content="store_art/capsule_616x353.png">
+<meta property="og:image:width" content="616">
+<meta property="og:image:height" content="353">
+<meta property="og:image:alt" content="CHIMERA — touch the living physics">
+<meta property="og:image" content="store_art/capsule_460x215.png">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 3C16 3 7 14.5 7 21a9 9 0 0 0 18 0C25 14.5 16 3 16 3Z' fill='%23c9a227'/><circle cx='12.5' cy='20' r='2' fill='%230a0e15'/></svg>">
 <style>
   :root {
@@ -43,7 +47,9 @@
   a { color: var(--gold-bright); }
 
   /* -- hero ---------------------------------------------------------- */
-  header {
+  /* .wrap's padding shorthand (0,1,0) would beat a bare `header` rule
+     (0,0,1) and flatten the hero -- match the class to win. */
+  header.wrap {
     text-align: center;
     padding: 110px 24px 90px;
   }
@@ -82,8 +88,13 @@
     transition: background 0.25s, color 0.25s;
   }
   .btn:hover { background: var(--gold); color: var(--bg-deep); }
-  .play-note {
+  .play-sub {
     margin-top: 20px;
+    font-size: 15px;
+    color: var(--dim);
+  }
+  .play-note {
+    margin-top: 12px;
     font-size: 13px;
     font-style: italic;
     color: var(--dim);
@@ -154,10 +165,11 @@
   <span class="kicker">a serious indie physics game</span>
   <h1>CHIMERA</h1>
   <div class="rule"></div>
-  <p class="tagline">a creature of sealed water cells. touch it anywhere, and it answers.</p>
+  <p class="tagline">a creature of sealed water cells. press it anywhere and the pressure answers — let go, and watch it heal.</p>
   <!-- W7: the play-door region -- button, note, and the demoUrl derivation
        + unit harness in the script below. -->
   <button class="btn" id="play">Play the demo</button>
+  <p class="play-sub">free in your browser, nothing to install — ten short lessons, every answer given by touch. sound on.</p>
   <p class="play-note" id="play-note" hidden>the demo opens on its own door: <span id="play-host"></span></p>
 </header>
 
@@ -176,6 +188,10 @@
     <div class="card">
       <h3>Real healing</h3>
       <p>let go and the body returns to rest on the relaxation clock of real tissue — exactly.</p>
+    </div>
+    <div class="card">
+      <h3>Ten lessons</h3>
+      <p>ten short lessons, each one question you answer by touching — and the physics, not a quiz, decides when you have passed.</p>
     </div>
   </div>
 </section>
@@ -217,10 +233,12 @@
   // domain to rewrite, so the only honest door is same-origin /play.
   function demoUrl(hostname) {
     var h = hostname !== undefined ? hostname : (window.location.hostname || "");
-    if (h === "" || h === "localhost" || h === "::1" || h === "[::1]" ||
-        /^127\./.test(h)) {
-      if (h === "::1") { h = "[::1]"; } // a bare v6 literal needs brackets
-      return "http://" + (h || "127.0.0.1") + ":8206";
+    if (h === "" || h === "localhost" || /^127\./.test(h) ||
+        h === "::1" || h === "[::1]") {
+      // D4 (H6 funnel audit): the game shell binds IPv4 only -- a [::1]:8206
+      // door is REFUSED. A v6-served page therefore names the shell's real
+      // IPv4 door; loopback is one machine, so 127.0.0.1 reaches it.
+      return "http://127.0.0.1:8206";
     }
     var labels = h.split(".");
     if (labels.length < 2) {
@@ -254,6 +272,8 @@
     var cases = [
       ["localhost",        "http://localhost:8206"],
       ["127.0.0.1",        "http://127.0.0.1:8206"],
+      ["::1",              "http://127.0.0.1:8206"],
+      ["[::1]",            "http://127.0.0.1:8206"],
       ["www.chimera.game", "https://play.chimera.game"],
       ["chimera.game",     "https://play.chimera.game"],
       ["intranet-host",    "/play"]

@@ -8,7 +8,7 @@ or the ledger). No superlative appears that the goal book does not earn; the wor
 
 ## SHORT DESCRIPTION (89 characters, limit 100)
 
-> Touch a living creature of sealed water cells. Real pressure, real healing, five lessons.
+> Touch a living creature of sealed water cells. Real pressure, real healing, ten lessons.
 
 ---
 
@@ -22,10 +22,14 @@ that is what water does. The pressure follows the compressibility law of water,
 the same law that governs every drop, including yours. Let go and the creature
 heals on the relaxation clock of real tissue, returning exactly to rest.
 
-There is nothing to read and nothing to memorise. Five short lessons each ask one
+There is nothing to read and nothing to memorise. Ten short lessons each ask one
 question, and you answer it by touching: wake a cell past its sleeping pressure,
-learn a gentle hand, bend a knee and feel the force travel. Passing is decided by
-the physics, not a quiz, and your progress is saved.
+learn a gentle hand, bend a knee and feel the force travel, find your balance,
+hold a heavy hand. Passing is decided by the physics, not a quiz, and your
+progress is saved.
+
+The body has a voice, too: the sound is synthesized and wired to what you do —
+a held press hums with the force of your hand, and a waking cell chimes.
 
 One world runs, and every player joins it as another camera. There is only one
 creature; what one player touches, every camera sees. And the world keeps its
@@ -53,16 +57,28 @@ No manual, no menus to learn. Just reach out and press it.
    Trace: R3 PASS — "tau recovery exact"; R2 run record — "release healed
    (dimple 0, all P 0)"; W5 PASS — "rest exactness untouched".
 
-4. **Five teaching lessons you pass by touching.**
-   Trace: R4 — five lessons live on the rail (wake the cell, gentle hand,
-   healing, bend the knee, whole body), each judged from the live physics;
-   wake_the_cell and bend_the_knee PASSED and SAVED; thresholds re-tuned to
-   measurement (wake 20 kPa, gentle 200 Pa).
+4. **Ten teaching lessons you pass by touching.**
+   Trace: R4 — the ten-lesson arc (wake the cell, gentle hand, healing, bend the
+   knee, whole body, balance, heavy hand, cascade, stand, graduation — the served
+   pack, tools/game_shell/lessons.json, carries all ten), each judged from the
+   live physics; 9/10 passed headless in the completion walk
+   (docs/evidence/agent_fleet/SHIP/R4_TEN_WALK/), thresholds traced to
+   measurement (wake 20 kPa, gentle 50 kPa).
 
 5. **One living world — every player another camera.**
    Trace: THE WORLD LAW — one world, one creature; a player is a viewpoint plus
    the intents they speak into it; "what one player touches, every camera sees";
    the session snapshot persists between visits (R1 PASS restore).
+
+---
+
+## TRAILER (the store page's motion evidence)
+
+The trailer is a real-time capture of the real demo: 19.92 seconds, every visible
+frame a genuine browser-rendered WebGL frame at wall-clock pace — rest and orbit,
+wheel-zoom to the belly, a 50 kN press, a hold with the camera dragged around the
+held dent, release, and the tau = 0.5 s heal — no time-remap, no interpolated
+frames. Trace: trailer v2, commit `7994c208` (467 frames at ~24 fps, 1080p H.264).
 
 ---
 
@@ -72,7 +88,7 @@ No manual, no menus to learn. Just reach out and press it.
 Yes. The creature is sealed cells of water. Squeeze one and its pressure rises
 the way the compressibility law of water requires, and its neighbours feel it.
 The lessons are tuned to what the physics actually measures — a cell wakes at
-20 kilopascals, a gentle hand is 200 pascals — and letting go returns the body
+20 kilopascals, a gentle hand is 50 kilopascals — and letting go returns the body
 to rest exactly.
 
 **What do I do?**
@@ -100,9 +116,10 @@ use. No developer knowledge is needed: download it, double-click it, play.
 
 ## HONESTY LEDGER (claims deliberately NOT made)
 
-- No "60 fps on mid-range machines" — R6 is OPEN (the bench run rides the
-  integration milestone). The only performance sentence is the measured
-  295-302 ticks/s.
+- No "60 fps on mid-range machines" — R6's re-run passed 4/4 scenarios on this
+  host (RTX 4090, headroom noted), but the GTX 1060-class machine is still
+  untested, so the mid-range claim stays unmade. The only performance sentence
+  is the measured ~300 ticks/s.
 - No multiplayer-concurrency promise — THE WORLD LAW is the architecture and
   the camera model; the copy quotes the law, no more.
 - No launch-date, price, or store-availability claims — those are the
