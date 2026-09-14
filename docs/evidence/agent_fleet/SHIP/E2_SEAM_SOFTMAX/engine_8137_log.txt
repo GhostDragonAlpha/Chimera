@@ -1,0 +1,181 @@
+studio: session log -> session_20260914_073051.jsonl
+floor: building pipeline (modules ok)
+floor: pipeline created
+Compute pipeline created
+THE ENGINE STUDIO: overlay ready (F1)
+Vulkan engine initialized: 2560 x 1440, 2 frames in flight
+Chimera Engine running at http://localhost:8137/state
+  /frame  -> PNG of the current render (membrane if one is loaded)
+  /membrane (POST) -> load a story membrane scene
+Window: 2560x1440, Press Ctrl+C to stop.
+Controls: Left-drag orbit | Scroll zoom | Right-drag pan
+          WASD move | Q/E up-down | Space/Ctrl zoom | R reset | P pose toggle
+          F1 THE ENGINE STUDIO overlay (pipeline board + live status)
+FPS: 55 (frame 55) | ft ms avg 9.49 max 23.39 | >16.7ms: 1 >33ms: 0
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+snapshot: session_snapshot/mesh_bin.blob (1104108 B)
+snapshot: session_snapshot/tick_joints.blob (340 B)
+snapshot: session_snapshot/tick_classify.blob (36634 B)
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+snapshot: session_snapshot/mesh_bin.blob (1104108 B)
+snapshot: session_snapshot/tick_joints.blob (340 B)
+snapshot: session_snapshot/tick_classify.blob (36634 B)
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+session: boot restore -> {"ok":true,"replayed":4,"failed":0,"detail":"mesh_bin:ok tick_joints:ok tick_classify:ok tick_vertbind:ok "}
+session: boot fit -> {"ok":true,"fit":true}
+FPS: 217 (frame 217) | ft ms avg 1.09 max 9.47 | >16.7ms: 0 >33ms: 0
+FPS: 145 (frame 266) | ft ms avg 3.97 max 944.85 | >16.7ms: 1 >33ms: 1
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+FPS: 299 (frame 299) | ft ms avg 0.41 max 0.94 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.42 max 0.77 | >16.7ms: 0 >33ms: 0
+FPS: 21 (frame 22) | ft ms avg 43.72 max 953.04 | >16.7ms: 1 >33ms: 1
+studio: session log -> session_20260914_073347.jsonl
+floor: building pipeline (modules ok)
+floor: pipeline created
+Compute pipeline created
+THE ENGINE STUDIO: overlay ready (F1)
+Vulkan engine initialized: 2560 x 1440, 2 frames in flight
+Chimera Engine running at http://localhost:8137/state
+  /frame  -> PNG of the current render (membrane if one is loaded)
+  /membrane (POST) -> load a story membrane scene
+Window: 2560x1440, Press Ctrl+C to stop.
+Controls: Left-drag orbit | Scroll zoom | Right-drag pan
+          WASD move | Q/E up-down | Space/Ctrl zoom | R reset | P pose toggle
+          F1 THE ENGINE STUDIO overlay (pipeline board + live status)
+FPS: 55 (frame 56) | ft ms avg 9.09 max 23.21 | >16.7ms: 1 >33ms: 0
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+snapshot: session_snapshot/mesh_bin.blob (1104108 B)
+snapshot: session_snapshot/tick_joints.blob (340 B)
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+snapshot: session_snapshot/mesh_bin.blob (1104108 B)
+snapshot: session_snapshot/tick_joints.blob (340 B)
+snapshot: session_snapshot/tick_classify.blob (36634 B)
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+session: boot restore -> {"ok":true,"replayed":4,"failed":0,"detail":"mesh_bin:ok tick_joints:ok tick_classify:ok tick_vertbind:ok "}
+session: boot fit -> {"ok":true,"fit":true}
+FPS: 209 (frame 209) | ft ms avg 1.15 max 9.46 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.40 max 0.72 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.41 max 0.74 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.39 max 0.66 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.37 max 0.65 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.38 max 1.04 | >16.7ms: 0 >33ms: 0
+FPS: 89 (frame 119) | ft ms avg 8.27 max 938.45 | >16.7ms: 1 >33ms: 1
+FPS: 299 (frame 300) | ft ms avg 0.39 max 0.82 | >16.7ms: 0 >33ms: 0
+studio: session log -> session_20260914_073528.jsonl
+floor: building pipeline (modules ok)
+floor: pipeline created
+Compute pipeline created
+THE ENGINE STUDIO: overlay ready (F1)
+Vulkan engine initialized: 2560 x 1440, 2 frames in flight
+Chimera Engine running at http://localhost:8137/state
+  /frame  -> PNG of the current render (membrane if one is loaded)
+  /membrane (POST) -> load a story membrane scene
+Window: 2560x1440, Press Ctrl+C to stop.
+Controls: Left-drag orbit | Scroll zoom | Right-drag pan
+          WASD move | Q/E up-down | Space/Ctrl zoom | R reset | P pose toggle
+          F1 THE ENGINE STUDIO overlay (pipeline board + live status)
+FPS: 54 (frame 55) | ft ms avg 9.24 max 24.75 | >16.7ms: 1 >33ms: 0
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+snapshot: session_snapshot/mesh_bin.blob (1104108 B)
+snapshot: session_snapshot/tick_joints.blob (340 B)
+snapshot: session_snapshot/tick_classify.blob (36634 B)
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+snapshot: session_snapshot/mesh_bin.blob (1104108 B)
+snapshot: session_snapshot/tick_joints.blob (340 B)
+snapshot: session_snapshot/tick_classify.blob (36634 B)
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+session: boot restore -> {"ok":true,"replayed":4,"failed":0,"detail":"mesh_bin:ok tick_joints:ok tick_classify:ok tick_vertbind:ok "}
+session: boot fit -> {"ok":true,"fit":true}
+FPS: 220 (frame 221) | ft ms avg 1.01 max 9.68 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 299) | ft ms avg 0.47 max 0.87 | >16.7ms: 0 >33ms: 0
+FPS: 298 (frame 298) | ft ms avg 0.46 max 1.20 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.41 max 0.72 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.43 max 0.73 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.47 max 0.94 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.47 max 0.88 | >16.7ms: 0 >33ms: 0
+studio: session log -> session_20260914_073820.jsonl
+floor: building pipeline (modules ok)
+floor: pipeline created
+Compute pipeline created
+THE ENGINE STUDIO: overlay ready (F1)
+Vulkan engine initialized: 2560 x 1440, 2 frames in flight
+Chimera Engine running at http://localhost:8137/state
+  /frame  -> PNG of the current render (membrane if one is loaded)
+  /membrane (POST) -> load a story membrane scene
+Window: 2560x1440, Press Ctrl+C to stop.
+Controls: Left-drag orbit | Scroll zoom | Right-drag pan
+          WASD move | Q/E up-down | Space/Ctrl zoom | R reset | P pose toggle
+          F1 THE ENGINE STUDIO overlay (pipeline board + live status)
+FPS: 56 (frame 57) | ft ms avg 9.08 max 25.52 | >16.7ms: 1 >33ms: 0
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+snapshot: session_snapshot/mesh_bin.blob (1104108 B)
+snapshot: session_snapshot/tick_joints.blob (340 B)
+snapshot: session_snapshot/tick_classify.blob (36634 B)
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+snapshot: session_snapshot/mesh_bin.blob (1104108 B)
+snapshot: session_snapshot/tick_joints.blob (340 B)
+snapshot: session_snapshot/tick_classify.blob (36634 B)
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+session: boot restore -> {"ok":true,"replayed":4,"failed":0,"detail":"mesh_bin:ok tick_joints:ok tick_classify:ok tick_vertbind:ok "}
+session: boot fit -> {"ok":true,"fit":true}
+FPS: 210 (frame 210) | ft ms avg 1.16 max 9.47 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.41 max 0.74 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.43 max 0.85 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.41 max 0.79 | >16.7ms: 0 >33ms: 0
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+FPS: 299 (frame 300) | ft ms avg 0.40 max 0.74 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.41 max 0.74 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.40 max 0.82 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.39 max 0.88 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.40 max 0.64 | >16.7ms: 0 >33ms: 0
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+FPS: 299 (frame 300) | ft ms avg 0.42 max 0.97 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 299) | ft ms avg 0.42 max 0.75 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 299) | ft ms avg 0.41 max 0.76 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 299) | ft ms avg 0.44 max 0.89 | >16.7ms: 0 >33ms: 0
+studio: session log -> session_20260914_073956.jsonl
+floor: building pipeline (modules ok)
+floor: pipeline created
+Compute pipeline created
+THE ENGINE STUDIO: overlay ready (F1)
+Vulkan engine initialized: 2560 x 1440, 2 frames in flight
+Chimera Engine running at http://localhost:8137/state
+  /frame  -> PNG of the current render (membrane if one is loaded)
+  /membrane (POST) -> load a story membrane scene
+Window: 2560x1440, Press Ctrl+C to stop.
+Controls: Left-drag orbit | Scroll zoom | Right-drag pan
+          WASD move | Q/E up-down | Space/Ctrl zoom | R reset | P pose toggle
+          F1 THE ENGINE STUDIO overlay (pipeline board + live status)
+FPS: 56 (frame 57) | ft ms avg 9.03 max 23.77 | >16.7ms: 1 >33ms: 0
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+snapshot: session_snapshot/mesh_bin.blob (1104108 B)
+snapshot: session_snapshot/tick_joints.blob (340 B)
+snapshot: session_snapshot/tick_classify.blob (36634 B)
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+snapshot: session_snapshot/mesh_bin.blob (1104108 B)
+snapshot: session_snapshot/tick_joints.blob (340 B)
+snapshot: session_snapshot/tick_classify.blob (36634 B)
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+session: boot restore -> {"ok":true,"replayed":4,"failed":0,"detail":"mesh_bin:ok tick_joints:ok tick_classify:ok tick_vertbind:ok "}
+session: boot fit -> {"ok":true,"fit":true}
+FPS: 215 (frame 215) | ft ms avg 1.14 max 9.96 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.49 max 0.90 | >16.7ms: 0 >33ms: 0
+FPS: 14 (frame 14) | ft ms avg 70.30 max 977.54 | >16.7ms: 1 >33ms: 1
+snapshot: session_snapshot/tick_vertbind.blob (276889 B)
+FPS: 299 (frame 299) | ft ms avg 0.46 max 1.11 | >16.7ms: 0 >33ms: 0
+FPS: 137 (frame 244) | ft ms avg 4.41 max 971.74 | >16.7ms: 1 >33ms: 1
