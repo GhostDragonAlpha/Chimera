@@ -423,7 +423,13 @@
         .catch(function () { stg.gravityArmed = false; });
     }
     var st = curState();
-    if (st.passed) setVerdict('PASSED — this one is yours already.', 'good');
+    // G2 (SPEC §9, KNOWN_GOAL_TYPES hold guard): a lesson whose goal.type
+    // the page has not implemented HOLDs AND SAYS SO -- judgeState already
+    // refuses to latch or pass it; the verdict names the hold instead of
+    // leaving the player waiting on a lesson that will never judge.
+    if (KNOWN_GOAL_TYPES.indexOf(l.goal.type) < 0)
+      setVerdict('the teachers have not built this lesson yet.', '');
+    else if (st.passed) setVerdict('PASSED — this one is yours already.', 'good');
     else if (st.goalMet) setVerdict('the goal is met — finish the release.', 'accent');
     else setVerdict('the creature waits.', '');
     syncTouchTarget();
@@ -1098,15 +1104,22 @@
       if (l.goal.type === 'pressure_above' || l.goal.type === 'pressure_below') {
         var cap = Number(l.goal.max_force_n) || 0;
         var forceOk = !cap || !lastTouchForce || lastTouchForce <= cap;
-        var woke = function (idx) {
-          if (idx === 'any') return cells.some(function (c) { return signedP(c) >= pa; });
+        // G2 (SPEC §5 cellCondition): each condition is judged at ITS OWN
+        // threshold_pa. `woke` used to close over the MAIN threshold, so
+        // the_whole_body's 'also' bar (shins 5000 Pa) was judged at the
+        // torso's 15000 Pa -- a silently tripled goal.
+        var woke = function (idx, thr) {
+          var t = (thr === undefined) ? pa : thr;
+          if (idx === 'any') return cells.some(function (c) { return signedP(c) >= t; });
           var c = cells[idx];
-          return !!c && signedP(c) >= pa;
+          return !!c && signedP(c) >= t;
         };
         if (!forceOk) return;          // an over-force press can never latch a capped lesson
         if (l.goal.also) {             // two compartments, each latched over time
           if (woke(l.goal.cell)) st.primaryMet = true;
-          if (woke(l.goal.also.cell)) st.alsoMet = true;
+          var alsoThr = Number(l.goal.also.threshold_pa);   // G2: its own bar,
+          if (!isFinite(alsoThr)) alsoThr = pa;             // G2: malformed falls to the main bar
+          if (woke(l.goal.also.cell, alsoThr)) st.alsoMet = true;
           if (st.primaryMet && st.alsoMet) st.goalMet = true;
           if (st.goalMet && !st.halfNote) { st.halfNote = true; setVerdict('one compartment is awake — the other waits.', 'accent'); }
         } else if (woke(cellWanted)) {
