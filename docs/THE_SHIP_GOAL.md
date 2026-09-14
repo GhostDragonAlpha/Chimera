@@ -342,3 +342,44 @@ Verified after a full relaunch: creature restored, studio live at
   Typeless overlay + launcher windows) remains the verification
   bottleneck; the headless walk is the right long-term instrument
   once the "[]" writer is found.
+
+## THE ROBOT STACK LAW (operator directive, 2026-09-13 late: the character
+## must have "the same concepts that people that build and train robots —
+## checkpoint systems, all the logic of a robot... sense its environment,
+## knows where to put its foot, what-if questions it asks itself")
+
+The creature is trained-robot architecture wearing our skin. The stack,
+each rung verified before the next:
+
+1. SENSE (live): the body reads itself and the world every tick —
+   /verts (posed surface), /tick_state (cell pressures, root, contact
+   force), lean and support centroids measured from the streamed state.
+2. CHECKPOINT (the gait state machine): locomotion is a sequence of
+   named checkpoints with MEASURED entry/exit conditions — per leg:
+   STANCE (foot cell in contact, pressure carrying weight) -> LIFT
+   (foot cell pressure released, knee bends) -> REACH (foot placed
+   ahead of the support centroid) -> LOAD (pressure rises past the
+   bar). No phase advances on a timer; every transition is gated by a
+   number the body reports.
+3. ACT (live, force-capped): poses are muscle intents through
+   /tick_pose — ankles, knees, hips — never teleporting.
+4. WHAT-IF (the robot's self-questioning): before acting, the
+   controller predicts — "if I lift this foot, does the support hold
+   my weight?" — answered from the live cell pressures and lean, the
+   same numbers the lessons teach.
+
+THE INTERFACE IS THE CHECKPOINT BOUNDARY: sense -> decide -> act stays
+fixed, so a trained policy (the checkpoint file a robot lab would
+ship) can replace the hand-written state machine later without
+touching the body. THE FALL LAW still governs: cut the controller and
+the creature falls — that is the proof the walking is real.
+
+## FIRST BUILDABLE RUNG (next window)
+
+THE GAIT CHECKPOINT MACHINE: per-leg STANCE/LIFT/REACH/LOAD states
+driven by measured cell pressures and lean, actuating through
+/tick_pose with force-capped intents. The bar: with the machine on,
+the creature takes measured steps — support pressure transfers foot to
+foot, the body advances, and cutting the controller mid-stride makes
+it stumble (never glide). Every transition logged with its measured
+gate values.
