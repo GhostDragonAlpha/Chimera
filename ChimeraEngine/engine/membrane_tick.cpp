@@ -25,6 +25,16 @@ constexpr float STANCE_TAU_S          = 1.0f;  // the 1 s nulling bar
 constexpr float STANCE_THETA_MAX_DEG  = 5.0f;  // the ankle ROM bar
 constexpr float STANCE_BAND_M         = 0.05f; // support band: sole + 5 cm
 
+// G1 GAIT bars -- every one named against an in-file law, none tuned
+// (prereg: SEAL_PREREGISTRATION.md, "THE GAIT CHECKPOINT PREREGISTRATION").
+constexpr float GAIT_SINK_M       = 0.01f;   // the derived rest sink (header: k*s = m*g)
+constexpr float GAIT_BEARING_FRAC = 0.8f;    // bearing = depth >= 80% of the sink
+constexpr float GAIT_SETTLE_VY    = 1e-3f;   // m/s (the 0.1 mm press-cutoff scale)
+constexpr float GAIT_P_RELAX_PA   = 5.0e4f;  // 50 kPa, the repo's named gentle-hand bar
+constexpr float GAIT_MIN_CHANNEL  = 1e-3f;   // m/rad -- the F1 no-channel refusal
+constexpr float GAIT_MAX_ANG      = 89.f * 3.14159265358979f / 180.f; // pose_index's ROM law
+constexpr size_t GAIT_LOG_N       = 16;      // bounded transition log
+
 // F1: whole-body centroid + centroid over a FIXED index set (the frozen
 // support). The support set is frozen at stance-engage because a
 // per-frame re-selected min-y band CHASES the ankle pitch (the toe
@@ -61,6 +71,29 @@ float tri_area(const std::vector<float>& v9,
     float wx = v9[c*9+0] - v9[a*9+0], wy = v9[c*9+1] - v9[a*9+1], wz = v9[c*9+2] - v9[a*9+2];
     float cx = uy * wz - uz * wy, cy = uz * wx - ux * wz, cz = ux * wy - uy * wx;
     return 0.5f * std::sqrt(cx * cx + cy * cy + cz * cz);
+}
+
+// G1: min y of a frozen vertex set on a posed buffer (shared by the
+// enable probes and the per-tick measurement).
+float gait_set_miny(const std::vector<float>& v9,
+                    const std::vector<uint32_t>& set) {
+    float lo = 1e30f;
+    for (uint32_t v : set) lo = std::min(lo, v9[(size_t)v * 9 + 1]);
+    return lo;
+}
+
+// G1: centroid of a frozen vertex set on a posed buffer.
+void gait_set_centroid(const std::vector<float>& v9,
+                       const std::vector<uint32_t>& set,
+                       float* cx, float* cy, float* cz) {
+    float sx = 0.f, sy = 0.f, sz = 0.f;
+    for (uint32_t v : set) {
+        sx += v9[(size_t)v * 9 + 0];
+        sy += v9[(size_t)v * 9 + 1];
+        sz += v9[(size_t)v * 9 + 2];
+    }
+    const float inv = set.empty() ? 0.f : 1.f / (float)set.size();
+    *cx = sx * inv; *cy = sy * inv; *cz = sz * inv;
 }
 
 // THE SEAL v2 slot read: slots below nv are original vertices (pos9,
@@ -169,6 +202,30 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
     stance_on_ = false;
     stance_th_ = 0.f;
     stance_sup_.clear();
+    // G1: gait state dies with the body -- the frozen vertex sets
+    // describe the OLD geometry (the C1 stale-index crash class).
+    gait_on_ = false;
+    gait_phase_[0] = gait_phase_[1] = MembraneTick::GaitPhase::STANCE;
+    gait_foot_verts_[0].clear();
+    gait_foot_verts_[1].clear();
+    for (int s = 0; s < 2; ++s) {
+        gait_patch_r_[s] = 0.f;   gait_foot_rest_z_[s] = 0.f;
+        gait_dminy_hip_[s] = 0.f; gait_dminy_knee_[s] = 0.f;
+        gait_dcz_hip_[s] = 0.f;   gait_dcz_knee_[s] = 0.f;
+        gait_rate_hip_[s] = 0.f;  gait_rate_knee_[s] = 0.f;
+        gait_lift_ah_[s] = 0.f;   gait_lift_ak_[s] = 0.f;
+        gait_lift_ch_[s] = 0.f;
+        gait_knee_rad_[s] = 0.f;  gait_hip_rad_[s] = 0.f;
+        gait_depth_[s] = 0.f;     gait_clear_[s] = 0.f;
+        gait_block_[s].clear();
+        gait_last_done_[s] = 0;
+    }
+    gait_lean_ref_x_ = gait_lean_ref_z_ = 0.f;
+    gait_lean_x_ = gait_lean_z_ = 0.f;
+    gait_p_max_ = 0.f;
+    gait_feet_cell_ = -1;
+    gait_stride_count_ = 0;
+    gait_log_.clear();
     ready_.store(true, std::memory_order_release);
 }
 
@@ -615,6 +672,23 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
         stance_lean_x_ = lean_x;
         stance_lean_z_ = lean_z;
     }
+
+    // ═══ G1: THE GAIT CHECKPOINT MACHINE (the robot-stack rung 2;
+    // prereg appended to SEAL_PREREGISTRATION.md) ══════════════════════
+    // Per-leg STANCE -> LIFT -> REACH -> LOAD (+ RECOVER, the measured
+    // abort), every transition gated by a number the body reports --
+    // per-side foot contact depth against the floor plane, sealed-cell
+    // pressures, lean and support geometry -- and NO phase advances on a
+    // timer: dt enters only through the rate caps and the servo
+    // integration. Actuates hip/knee pins 13-16 ONLY, rate-capped (no
+    // teleporting); placed AFTER the F1 stance block so the ankles stay
+    // F1-owned (composition, not clobbering), and BEFORE the root offset
+    // so the measurements read the un-translated posed surface (world y
+    // adds root_y_ explicitly). The falsifier: cutting the machine
+    // mid-stride stops every controller-driven motion within one tick --
+    // it must NEVER glide. Every transition logs its measured gate
+    // values (gait_log in state_json).
+    if (gait_on_) gait_step_locked_(verts9, dt);
 
     // THE MOVEMENT LAW -- THE FALL (prereg appended to
     // SEAL_PREREGISTRATION.md). One rigid DOF along Y:
@@ -1327,6 +1401,523 @@ void MembraneTick::stance_off_locked_() {
     }
 }
 
+// ═══ G1: THE GAIT CHECKPOINT MACHINE ══════════════════════════════════
+
+const char* MembraneTick::gait_phase_name(GaitPhase p) {
+    switch (p) {
+        case GaitPhase::LIFT:    return "LIFT";
+        case GaitPhase::REACH:   return "REACH";
+        case GaitPhase::LOAD:    return "LOAD";
+        case GaitPhase::RECOVER: return "RECOVER";
+        default:                 return "STANCE";
+    }
+}
+
+void MembraneTick::gait_log_locked_(int leg, const char* from,
+                                    const char* to,
+                                    const std::string& gates) {
+    std::ostringstream e;
+    e << "{\"tick\":" << ticks_
+      << ",\"leg\":\"" << (leg == 0 ? "L" : "R")
+      << "\",\"from\":\"" << from << "\",\"to\":\"" << to
+      << "\",\"gates\":" << gates << "}";
+    gait_log_.push_back(e.str());
+    if (gait_log_.size() > GAIT_LOG_N)
+        gait_log_.erase(gait_log_.begin(),
+                        gait_log_.begin() + (gait_log_.size() - GAIT_LOG_N));
+}
+
+void MembraneTick::gait_off_locked_() {
+    // Deterministic off (the flex-0 precedent): hips/knees to authored 0,
+    // all legs to STANCE -- no hidden decay, no stale integrator. A cut
+    // MID-STRIDE logs the abort with the measured state: that entry is
+    // the F-GLIDE falsifier's evidence (P3 in the prereg).
+    for (int s = 0; s < 2; ++s) {
+        if (gait_phase_[s] != GaitPhase::STANCE || gait_knee_rad_[s] != 0.f
+            || gait_hip_rad_[s] != 0.f) {
+            std::ostringstream g;
+            g << "{\"why\":\"cut\",\"vy\":" << root_vy_
+              << ",\"dL\":" << gait_depth_[0]
+              << ",\"dR\":" << gait_depth_[1]
+              << ",\"knee\":" << gait_knee_rad_[s] * 57.29577951308232
+              << ",\"hip\":" << gait_hip_rad_[s] * 57.29577951308232 << "}";
+            gait_log_locked_(s, gait_phase_name(gait_phase_[s]), "STANCE",
+                             g.str());
+        }
+        gait_phase_[s] = GaitPhase::STANCE;
+        gait_knee_rad_[s] = gait_hip_rad_[s] = 0.f;
+        gait_block_[s].clear();
+    }
+    gait_on_ = false;
+    if (joint_deg_.size() > (size_t)KNEE_PIN_R) {
+        joint_deg_[HIP_PIN_L] = joint_deg_[HIP_PIN_R] = 0.f;
+        joint_deg_[KNEE_PIN_L] = joint_deg_[KNEE_PIN_R] = 0.f;
+    }
+}
+
+// G1: the gait switch (the lead wires POST /tick_gait to this, next to
+// POST /tick_stance). Everything measurable is derived here, under the
+// lock, from this engine's own arithmetic -- probes, never tunings
+// (Rule 1: if a number needed choosing, the derivation broke).
+bool MembraneTick::set_gait(bool on) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (!on) { gait_off_locked_(); return true; }
+
+    // the rung stack, checked in order, each refusal honest by omission:
+    if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return false;
+    if (!gravity_on_) return false;   // balance exists only in a gravity field
+    if (!stance_on_)  return false;   // the balance rung runs underneath
+    const size_t nv = base_pos_.size() / 9;
+    const bool classified = cell_joint_.size() == cells_.size()
+                         && !joint_pins_.empty()   // bindings without pins = OOB
+                         && joint_pins_.size() == joint_deg_.size()
+                         && vert_bind_idx_.size() == nv * 3
+                         && vert_bind_w_.size() == nv * 3;
+    if (!classified || joint_deg_.size() <= (size_t)KNEE_PIN_R) return false;
+    if (!sealed_ || seal_cells_.size() < 2) return false;  // need the feet cell
+
+    // the feet cell: the sealed cell with the LOWEST yhi (the cell tree's
+    // index order is cut HISTORY, not anatomy -- measured live: the feet
+    // are cell 0 of 4, but only the y-band names them).
+    int feet = -1;
+    float feet_yhi = 1e30f;
+    for (size_t i = 0; i < seal_cells_.size(); ++i)
+        if (seal_cells_[i].yhi < feet_yhi) {
+            feet_yhi = seal_cells_[i].yhi;
+            feet = (int)i;
+        }
+    if (feet < 0 || !(feet_yhi < 1e29f)) return false;
+
+    // rest blend: the exact surface the tick itself produces at rest
+    // (the seal()/set_stance path), so every reference is deterministic.
+    std::vector<float> rest9(base_pos_);
+    apply_travel(rest9, nullptr);
+
+    // frozen per-side foot vertex sets: the feet cell's rest band, split
+    // by the body's own L/R convention (x >= 0 = L, as in init()/flex()).
+    std::vector<uint32_t> fset[2];
+    for (size_t v = 0; v < nv; ++v) {
+        if (rest9[v * 9 + 1] > feet_yhi) continue;
+        fset[rest9[v * 9 + 0] >= 0.f ? 0 : 1].push_back((uint32_t)v);
+    }
+    if (fset[0].empty() || fset[1].empty()) return false;
+
+    // frozen patch geometry: centroid + radius (xz) per side. The radius
+    // is the STRIDE bar (a footfall must land outside the old support
+    // patch -- geometric necessity) and the speed bar (below).
+    float pcx[2], pcy[2], pcz[2], prad[2];
+    for (int s = 0; s < 2; ++s) {
+        gait_set_centroid(rest9, fset[s], &pcx[s], &pcy[s], &pcz[s]);
+        float acc = 0.f;
+        for (uint32_t v : fset[s]) {
+            float dx = rest9[v * 9 + 0] - pcx[s];
+            float dz = rest9[v * 9 + 2] - pcz[s];
+            acc += dx * dx + dz * dz;
+        }
+        prad[s] = std::sqrt(acc / (float)fset[s].size());
+        if (!(prad[s] > 1e-3f)) return false;   // degenerate patch: refuse
+    }
+
+    // rest lean reference (whole-body centroid vs the both-feet support):
+    // the servo/gates null the ERROR from rest (the tail is not "lean").
+    float bx = 0.f, bz = 0.f;
+    for (size_t v = 0; v < nv; ++v) { bx += rest9[v * 9 + 0]; bz += rest9[v * 9 + 2]; }
+    bx /= (float)nv; bz /= (float)nv;
+    const float snr = (float)(fset[0].size() + fset[1].size());
+    const float sczr = (pcz[0] * (float)fset[0].size()
+                      + pcz[1] * (float)fset[1].size()) / snr;
+
+    // probes: +1 deg per pin on the rest blend (the F1 probe precedent).
+    // MEASURED per pin: d(foot-set min y) and d(foot centroid z), SIGNED.
+    const uint8_t hip_pin[2]  = {HIP_PIN_L, HIP_PIN_R};
+    const uint8_t knee_pin[2] = {KNEE_PIN_L, KNEE_PIN_R};
+    float dminy_hip[2], dminy_knee[2], dcz_hip[2], dcz_knee[2];
+    float rate_hip[2], rate_knee[2];
+    for (int s = 0; s < 2; ++s) {
+        const float miny0 = gait_set_miny(rest9, fset[s]);
+        float cx0, cy0, cz0;
+        gait_set_centroid(rest9, fset[s], &cx0, &cy0, &cz0);
+        std::vector<float> degs(joint_deg_.size(), 0.f);
+        std::vector<float> p9;
+        float cx, cy, cz;
+        // knee probe
+        degs[knee_pin[s]] = 1.f * 3.14159265358979f / 180.f;
+        p9 = rest9;
+        apply_travel(p9, &degs);
+        dminy_knee[s] = gait_set_miny(p9, fset[s]) - miny0;
+        gait_set_centroid(p9, fset[s], &cx, &cy, &cz);
+        dcz_knee[s] = cz - cz0;
+        // hip probe
+        degs[knee_pin[s]] = 0.f;
+        degs[hip_pin[s]] = 1.f * 3.14159265358979f / 180.f;
+        p9 = rest9;
+        apply_travel(p9, &degs);
+        dminy_hip[s] = gait_set_miny(p9, fset[s]) - miny0;
+        gait_set_centroid(p9, fset[s], &cx, &cy, &cz);
+        dcz_hip[s] = cz - cz0;
+        // measured arc channels -> derived rate caps: the foot's linear
+        // speed never exceeds its own patch radius per tau (the bar)
+        const float mk = std::sqrt(dminy_knee[s] * dminy_knee[s]
+                                 + dcz_knee[s] * dcz_knee[s]);
+        const float mh = std::sqrt(dminy_hip[s] * dminy_hip[s]
+                                 + dcz_hip[s] * dcz_hip[s]);
+        if (mk < GAIT_MIN_CHANNEL || mh < GAIT_MIN_CHANNEL)
+            return false;   // no measurable channel (the F1 refusal)
+        rate_knee[s] = (prad[s] / STANCE_TAU_S) / mk;
+        rate_hip[s]  = (prad[s] / STANCE_TAU_S) / mh;
+    }
+
+    // the LIFT combo: the hip:knee ratio that nulls the centroid z drift
+    // (a_h = dcz_knee, a_k = -dcz_hip: a_h*dcz_h + a_k*dcz_k == 0), with
+    // its measured rise channel ch = a_h*dminy_hip + a_k*dminy_knee. If
+    // the legs cannot rise, the enable refuses -- the body honestly
+    // cannot step (an anatomical fact, not a tuning failure).
+    float lift_ah[2], lift_ak[2], lift_ch[2];
+    for (int s = 0; s < 2; ++s) {
+        lift_ah[s] = dcz_knee[s];
+        lift_ak[s] = -dcz_hip[s];
+        lift_ch[s] = lift_ah[s] * dminy_hip[s] + lift_ak[s] * dminy_knee[s];
+        if (std::fabs(lift_ch[s]) < GAIT_MIN_CHANNEL) return false;
+    }
+
+    // commit (all under the lock taken at entry)
+    gait_foot_verts_[0] = std::move(fset[0]);
+    gait_foot_verts_[1] = std::move(fset[1]);
+    for (int s = 0; s < 2; ++s) {
+        gait_patch_r_[s] = prad[s];
+        gait_foot_rest_z_[s] = pcz[s];
+        gait_dminy_hip_[s] = dminy_hip[s];
+        gait_dminy_knee_[s] = dminy_knee[s];
+        gait_dcz_hip_[s] = dcz_hip[s];
+        gait_dcz_knee_[s] = dcz_knee[s];
+        gait_rate_hip_[s] = rate_hip[s];
+        gait_rate_knee_[s] = rate_knee[s];
+        gait_lift_ah_[s] = lift_ah[s];
+        gait_lift_ak_[s] = lift_ak[s];
+        gait_lift_ch_[s] = lift_ch[s];
+        gait_phase_[s] = GaitPhase::STANCE;
+        gait_knee_rad_[s] = gait_hip_rad_[s] = 0.f;
+        gait_block_[s].clear();
+        gait_last_done_[s] = 0;
+    }
+    gait_lean_ref_x_ = bx - ((pcx[0] * (float)gait_foot_verts_[0].size()
+                            + pcx[1] * (float)gait_foot_verts_[1].size()) / snr);
+    gait_lean_ref_z_ = bz - sczr;
+    gait_feet_cell_ = feet;
+    gait_stride_count_ = 0;
+    gait_log_.clear();
+    joint_deg_[HIP_PIN_L] = joint_deg_[HIP_PIN_R] = 0.f;
+    joint_deg_[KNEE_PIN_L] = joint_deg_[KNEE_PIN_R] = 0.f;
+    gait_on_ = true;
+    {
+        std::ostringstream g;
+        g << "{\"why\":\"enable\""
+          << ",\"patchL\":" << gait_patch_r_[0]
+          << ",\"patchR\":" << gait_patch_r_[1]
+          << ",\"homeL\":" << gait_foot_rest_z_[0]
+          << ",\"homeR\":" << gait_foot_rest_z_[1]
+          << ",\"chLiftL\":" << gait_lift_ch_[0]
+          << ",\"chLiftR\":" << gait_lift_ch_[1]
+          << ",\"dminyHL\":" << gait_dminy_hip_[0]
+          << ",\"dminyHR\":" << gait_dminy_hip_[1]
+          << ",\"dminyKL\":" << gait_dminy_knee_[0]
+          << ",\"dminyKR\":" << gait_dminy_knee_[1]
+          << ",\"dczHL\":" << gait_dcz_hip_[0]
+          << ",\"dczHR\":" << gait_dcz_hip_[1]
+          << ",\"dczKL\":" << gait_dcz_knee_[0]
+          << ",\"dczKR\":" << gait_dcz_knee_[1]
+          << ",\"rateKL\":" << gait_rate_knee_[0]
+          << ",\"rateKR\":" << gait_rate_knee_[1]
+          << ",\"rateHL\":" << gait_rate_hip_[0]
+          << ",\"rateHR\":" << gait_rate_hip_[1]
+          << ",\"feetCell\":" << feet << "}";
+        gait_log_locked_(0, "OFF", "STANCE", g.str());
+    }
+    return true;
+}
+
+void MembraneTick::gait_step_locked_(std::vector<float>& verts9, float dt) {
+    // Disarmed-hold: if the balance rung or gravity left, the machine
+    // falls to the off-contract -- pins 13-16 to authored 0, all legs to
+    // STANCE -- deterministic and idempotent, logged once from a real
+    // hold (not every tick).
+    if (!gravity_on_ || !stance_on_) {
+        bool holding = false;
+        for (int s = 0; s < 2; ++s)
+            if (gait_phase_[s] != GaitPhase::STANCE || gait_knee_rad_[s] != 0.f
+                || gait_hip_rad_[s] != 0.f) { holding = true; break; }
+        if (holding) {
+            for (int s = 0; s < 2; ++s) {
+                if (gait_phase_[s] != GaitPhase::STANCE)
+                    gait_log_locked_(s, gait_phase_name(gait_phase_[s]),
+                                     "STANCE",
+                                     "{\"why\":\"balance or gravity left the rung\"}");
+                gait_phase_[s] = GaitPhase::STANCE;
+                gait_knee_rad_[s] = gait_hip_rad_[s] = 0.f;
+                gait_block_[s] = "superseded";
+            }
+            if (joint_deg_.size() > (size_t)KNEE_PIN_R) {
+                joint_deg_[HIP_PIN_L] = joint_deg_[HIP_PIN_R] = 0.f;
+                joint_deg_[KNEE_PIN_L] = joint_deg_[KNEE_PIN_R] = 0.f;
+            }
+        }
+        return;
+    }
+    if (joint_deg_.size() <= (size_t)KNEE_PIN_R) return;   // pins vanished
+    const size_t nverts = verts9.size() / 9;
+    if (nverts == 0 || gait_foot_verts_[0].empty() || gait_foot_verts_[1].empty())
+        return;
+    const float dts = std::min(std::max(dt, 0.f), 0.05f);  // the stall guard
+
+    // -- SENSE: everything below is measured from the live posed surface
+    // (pre-root-offset; world y adds root_y_). Per side: the foot set's
+    // lowest world y (contact depth) and its centroid (support geometry).
+    float wminy[2], fcx[2], fcz[2];
+    for (int s = 0; s < 2; ++s) {
+        wminy[s] = gait_set_miny(verts9, gait_foot_verts_[s]) + root_y_;
+        float cy;
+        gait_set_centroid(verts9, gait_foot_verts_[s], &fcx[s], &cy, &fcz[s]);
+        gait_depth_[s] = std::max(0.f, -wminy[s]);
+    }
+    gait_clear_[0] = wminy[0] - wminy[1];
+    gait_clear_[1] = wminy[1] - wminy[0];
+    float bx = 0.f, bz = 0.f;
+    for (size_t v = 0; v < nverts; ++v) {
+        bx += verts9[v * 9 + 0];
+        bz += verts9[v * 9 + 2];
+    }
+    bx /= (float)nverts; bz /= (float)nverts;
+    const float sn = (float)(gait_foot_verts_[0].size()
+                           + gait_foot_verts_[1].size());
+    const float scx = (fcx[0] * (float)gait_foot_verts_[0].size()
+                     + fcx[1] * (float)gait_foot_verts_[1].size()) / sn;
+    const float scz = (fcz[0] * (float)gait_foot_verts_[0].size()
+                     + fcz[1] * (float)gait_foot_verts_[1].size()) / sn;
+    gait_lean_x_ = (bx - scx) - gait_lean_ref_x_;
+    gait_lean_z_ = (bz - scz) - gait_lean_ref_z_;
+    const float lean = std::sqrt(gait_lean_x_ * gait_lean_x_
+                               + gait_lean_z_ * gait_lean_z_);
+    // the sealed-pressure witness: the water law answering the poses
+    gait_p_max_ = 0.f;
+    for (const SealCell& c : seal_cells_)
+        gait_p_max_ = std::max(gait_p_max_, std::fabs(c.p));
+    const bool settled = std::fabs(root_vy_) <= GAIT_SETTLE_VY;
+
+    // shared gate numbers on EVERY transition log (P5: no gateless moves)
+    auto gates0 = [&]() -> std::string {
+        std::ostringstream g;
+        g << "{\"dL\":" << gait_depth_[0]
+          << ",\"dR\":" << gait_depth_[1]
+          << ",\"cL\":" << gait_clear_[0]
+          << ",\"cR\":" << gait_clear_[1]
+          << ",\"lean\":" << lean
+          << ",\"vy\":" << root_vy_
+          << ",\"pmax\":" << gait_p_max_;
+        return g.str();
+    };
+    // G1 servo law (the F1 structure): dtheta = err/(channel*TAU), rate
+    // capped by the MEASURED arc rate, ROM-clamped under pose_index's
+    // 90-deg law -- the pose channel can never teleport.
+    auto servo_dth = [&](float err, float channel, float rate_cap) -> float {
+        float dth = err / (channel * STANCE_TAU_S);
+        const float mx = rate_cap * dts;
+        return std::min(std::max(dth, -mx), mx);
+    };
+    auto clamp_rom = [&](float* th) {
+        *th = std::min(std::max(*th, -GAIT_MAX_ANG), GAIT_MAX_ANG);
+    };
+    // LOAD/RECOVER/STANCE housekeeping: walk the pose back to authored
+    // bearing (0) at the measured rate cap -- the rest pose IS the
+    // bearing pose (home + ground), so the exit gates are the body's.
+    auto return_zero = [&](float rate, float* th) {
+        if (*th == 0.f) return;
+        const float step = std::min(std::fabs(*th), rate * dts);
+        *th += (*th > 0.f) ? -step : step;
+        if (std::fabs(*th) < 1e-7f) *th = 0.f;
+    };
+
+    // -- PASS A: the STANCE gates, evaluated on measured numbers, in
+    // order; the FIRST failing gate is the reported blocker.
+    for (int s = 0; s < 2; ++s) {
+        if (gait_phase_[s] != GaitPhase::STANCE) { gait_block_[s].clear(); continue; }
+        const int o = 1 - s;
+        std::ostringstream b;
+        if (gait_phase_[o] != GaitPhase::STANCE)
+            b << "other:" << gait_phase_name(gait_phase_[o]);
+        else if (gait_depth_[o] < GAIT_BEARING_FRAC * GAIT_SINK_M)
+            b << "other_depth:" << gait_depth_[o]
+              << "<" << GAIT_BEARING_FRAC * GAIT_SINK_M;
+        else if (lean > gait_patch_r_[o])
+            b << "lean:" << lean << ">" << gait_patch_r_[o];
+        else {
+            // THE WHAT-IF (rung 4, answered from live numbers): if I lift
+            // this foot, does the support hold my weight? After the lift
+            // the support is the other foot alone; the body centroid must
+            // already lie inside that foot's measured patch.
+            const float wdx = bx - fcx[o], wdz = bz - fcz[o];
+            const float wx = std::sqrt(wdx * wdx + wdz * wdz);
+            if (wx > gait_patch_r_[o])
+                b << "whatif:" << wx << ">" << gait_patch_r_[o];
+        }
+        gait_block_[s] = b.str();
+    }
+    // -- PASS B: the schedule. When BOTH legs qualify, the leg that
+    // stepped LONGER AGO swings (deterministic alternation -- a decision
+    // the controller makes, not a gate; the gates stay measured).
+    int pick = -1;
+    for (int s = 0; s < 2; ++s)
+        if (gait_phase_[s] == GaitPhase::STANCE && gait_block_[s].empty()) {
+            if (pick < 0) { pick = s; continue; }
+            const int keep = gait_last_done_[s] < gait_last_done_[pick] ? s : pick;
+            const int drop = (keep == s) ? pick : s;
+            gait_block_[drop] = "schedule:turn";
+            pick = keep;
+        }
+    if (pick >= 0) {
+        gait_phase_[pick] = GaitPhase::LIFT;
+        std::ostringstream g;
+        g << gates0()
+          << ",\"whatif\":true,\"patch\":" << gait_patch_r_[1 - pick] << "}";
+        gait_log_locked_(pick, "STANCE", "LIFT", g.str());
+    }
+
+    // -- PASS C: actuate + gate
+    for (int s = 0; s < 2; ++s) {
+        const int o = 1 - s;
+        switch (gait_phase_[s]) {
+        case GaitPhase::STANCE: {
+            return_zero(gait_rate_knee_[s], &gait_knee_rad_[s]);
+            return_zero(gait_rate_hip_[s],  &gait_hip_rad_[s]);
+            break;
+        }
+        case GaitPhase::LIFT: {
+            // THE FALL RESPONSE: the planted foot left the floor -- the
+            // swing leg lands (LOAD's guarded target) while the failed
+            // support leg drives straight back down (RECOVER).
+            if (wminy[o] >= 0.f) {
+                const char* ofrom = gait_phase_name(gait_phase_[o]);
+                gait_phase_[o] = GaitPhase::RECOVER;
+                gait_phase_[s] = GaitPhase::LOAD;
+                std::ostringstream g;
+                g << gates0() << ",\"why\":\"support_lost\"}";
+                gait_log_locked_(o, ofrom, "RECOVER", g.str());
+                gait_log_locked_(s, "LIFT", "LOAD", g.str());
+                break;
+            }
+            // the derived null-z combo, driven by the MEASURED rise
+            // error: the target is one support band above the floor
+            // (STANCE_BAND_M -- the named bar; from the rest sink the
+            // total rise is sink + band = 0.06 m). The per-pin rate caps
+            // bound the combo step.
+            const float err = STANCE_BAND_M - wminy[s];
+            float dparam = err / (gait_lift_ch_[s] * STANCE_TAU_S);
+            const float bh = std::fabs(gait_lift_ah_[s]) > 1e-6f
+                ? gait_rate_hip_[s] * dts / std::fabs(gait_lift_ah_[s])
+                : 1e30f;
+            const float bk = std::fabs(gait_lift_ak_[s]) > 1e-6f
+                ? gait_rate_knee_[s] * dts / std::fabs(gait_lift_ak_[s])
+                : 1e30f;
+            const float mx = std::min(bh, bk);
+            dparam = std::min(std::max(dparam, -mx), mx);
+            gait_hip_rad_[s]  += dparam * gait_lift_ah_[s];
+            gait_knee_rad_[s] += dparam * gait_lift_ak_[s];
+            clamp_rom(&gait_hip_rad_[s]);
+            clamp_rom(&gait_knee_rad_[s]);
+            if (wminy[s] >= STANCE_BAND_M) {
+                gait_phase_[s] = GaitPhase::REACH;
+                std::ostringstream g;
+                g << gates0() << ",\"miny\":" << wminy[s] << "}";
+                gait_log_locked_(s, "LIFT", "REACH", g.str());
+            }
+            break;
+        }
+        case GaitPhase::REACH: {
+            // single support: the reference is the STANCE foot's live
+            // centroid -- including the swing foot in the reference set
+            // would chase the actuated limb (the measured F1 self-cancel
+            // failure mode, avoided by construction here).
+            if (wminy[o] >= 0.f) {   // support lost mid-reach: the abort
+                const char* ofrom = gait_phase_name(gait_phase_[o]);
+                gait_phase_[o] = GaitPhase::RECOVER;
+                gait_phase_[s] = GaitPhase::LOAD;
+                std::ostringstream g;
+                g << gates0() << ",\"why\":\"support_lost\"}";
+                gait_log_locked_(o, ofrom, "RECOVER", g.str());
+                gait_log_locked_(s, "REACH", "LOAD", g.str());
+                break;
+            }
+            // hold the clearance on the knee while the hip reaches
+            const float kerr = STANCE_BAND_M - wminy[s];
+            gait_knee_rad_[s] += servo_dth(kerr, gait_dminy_knee_[s],
+                                           gait_rate_knee_[s]);
+            clamp_rom(&gait_knee_rad_[s]);
+            // the hip reaches: z target = stance centroid + own patch
+            // (the new footfall must land outside the old support patch)
+            const float zerr = (fcz[o] + gait_patch_r_[s]) - fcz[s];
+            gait_hip_rad_[s] += servo_dth(zerr, gait_dcz_hip_[s],
+                                          gait_rate_hip_[s]);
+            clamp_rom(&gait_hip_rad_[s]);
+            if (fcz[s] - fcz[o] >= gait_patch_r_[s]) {
+                gait_phase_[s] = GaitPhase::LOAD;
+                std::ostringstream g;
+                g << gates0() << ",\"z\":" << (fcz[s] - fcz[o])
+                  << ",\"bar\":" << gait_patch_r_[s] << "}";
+                gait_log_locked_(s, "REACH", "LOAD", g.str());
+            } else if (wminy[s] < 0.f) {
+                // the swing foot touched down mid-reach: the reach FAILED
+                // (a measured fact) -- recover and re-arm, log the abort.
+                gait_phase_[s] = GaitPhase::RECOVER;
+                std::ostringstream g;
+                g << gates0() << ",\"why\":\"touchdown\"}";
+                gait_log_locked_(s, "REACH", "RECOVER", g.str());
+            }
+            break;
+        }
+        case GaitPhase::LOAD: {
+            // return both pins toward authored bearing at the measured
+            // caps; the foot lands wherever bearing puts it. The EXIT is
+            // the body's number: penetration past the bearing bar AND
+            // vertical settle (weight accepted), never an elapsed time.
+            return_zero(gait_rate_knee_[s], &gait_knee_rad_[s]);
+            return_zero(gait_rate_hip_[s],  &gait_hip_rad_[s]);
+            if (gait_depth_[s] >= GAIT_BEARING_FRAC * GAIT_SINK_M && settled) {
+                gait_phase_[s] = GaitPhase::STANCE;
+                ++gait_stride_count_;
+                gait_last_done_[s] = ticks_;
+                std::ostringstream g;
+                g << gates0()
+                  << ",\"prelax\":"
+                  << (gait_p_max_ <= GAIT_P_RELAX_PA ? "true" : "false")
+                  << ",\"stride\":" << gait_stride_count_ << "}";
+                gait_log_locked_(s, "LOAD", "STANCE", g.str());
+            }
+            break;
+        }
+        case GaitPhase::RECOVER: {
+            return_zero(gait_rate_knee_[s], &gait_knee_rad_[s]);
+            return_zero(gait_rate_hip_[s],  &gait_hip_rad_[s]);
+            if (gait_depth_[s] >= GAIT_BEARING_FRAC * GAIT_SINK_M && settled) {
+                gait_phase_[s] = GaitPhase::STANCE;
+                std::ostringstream g;
+                g << gates0()
+                  << ",\"prelax\":"
+                  << (gait_p_max_ <= GAIT_P_RELAX_PA ? "true" : "false")
+                  << "}";
+                gait_log_locked_(s, "RECOVER", "STANCE", g.str());
+            }
+            break;
+        }
+        }
+    }
+
+    // -- ACT: the commanded angles land on the hip/knee pins ONLY
+    // (13-16). The ankles above are F1's writes, untouched.
+    joint_deg_[HIP_PIN_L]  = gait_hip_rad_[0];
+    joint_deg_[HIP_PIN_R]  = gait_hip_rad_[1];
+    joint_deg_[KNEE_PIN_L] = gait_knee_rad_[0];
+    joint_deg_[KNEE_PIN_R] = gait_knee_rad_[1];
+}
+
 std::string MembraneTick::state_json() const {
     // reads the cell state other threads rewrite — hold the same mutex
     // (bounded by one tick; state reads are not on the render path)
@@ -1374,6 +1965,34 @@ std::string MembraneTick::state_json() const {
       << ",\"stance_kp\":" << stance_kp_
       << ",\"stance_lean_x\":" << stance_lean_x_
       << ",\"stance_lean_z\":" << stance_lean_z_
+      // G1: the gait checkpoint fields -- per-leg phase, measured
+      // depths/clearances, commanded poses, the gate currently blocking
+      // each leg, and the bounded transition log (every entry carries
+      // its measured gate values -- P5: no gateless moves).
+      << ",\"gait_on\":" << (gait_on_ ? "true" : "false")
+      << ",\"gait_l\":\"" << gait_phase_name(gait_phase_[0]) << "\""
+      << ",\"gait_r\":\"" << gait_phase_name(gait_phase_[1]) << "\""
+      << ",\"gait_stride\":" << gait_stride_count_
+      << ",\"gait_depth_l\":" << gait_depth_[0]
+      << ",\"gait_depth_r\":" << gait_depth_[1]
+      << ",\"gait_clear_l\":" << gait_clear_[0]
+      << ",\"gait_clear_r\":" << gait_clear_[1]
+      << ",\"gait_lean_x\":" << gait_lean_x_
+      << ",\"gait_lean_z\":" << gait_lean_z_
+      << ",\"gait_p_max\":" << gait_p_max_
+      << ",\"gait_hip_l_deg\":" << gait_hip_rad_[0] * 57.29577951308232
+      << ",\"gait_hip_r_deg\":" << gait_hip_rad_[1] * 57.29577951308232
+      << ",\"gait_knee_l_deg\":" << gait_knee_rad_[0] * 57.29577951308232
+      << ",\"gait_knee_r_deg\":" << gait_knee_rad_[1] * 57.29577951308232
+      << ",\"gait_feet_cell\":" << gait_feet_cell_
+      << ",\"gait_block_l\":\"" << gait_block_[0] << "\""
+      << ",\"gait_block_r\":\"" << gait_block_[1] << "\""
+      << ",\"gait_log\":[";
+    for (size_t i = 0; i < gait_log_.size(); ++i) {
+        if (i) o << ",";
+        o << gait_log_[i];
+    }
+    o << "]"
       << ",\"cells\":[";
     for (size_t i = 0; i < seal_cells_.size(); ++i) {
         const SealCell& c = seal_cells_[i];

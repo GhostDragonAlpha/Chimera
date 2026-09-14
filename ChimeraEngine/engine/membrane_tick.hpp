@@ -91,6 +91,22 @@ public:
     // classification. The lead wires POST /tick_stance at the window.
     bool set_stance(bool on);
 
+    // G1 GAIT CHECKPOINT MACHINE (the robot-stack rung 2; prereg appended
+    // to SEAL_PREREGISTRATION.md): per-leg STANCE -> LIFT -> REACH -> LOAD
+    // (+ RECOVER), every transition gated by a MEASURED number -- per-side
+    // foot contact depth against the floor plane, sealed-cell pressures,
+    // lean and support geometry read from the posed surface -- NEVER a
+    // timer; dt enters only through the rate caps and the servo
+    // integration. Actuates ONLY the hip/knee pins 13-16 through
+    // joint_deg_, rate-capped (no teleporting); the ankles stay F1-owned:
+    // the G1 block runs AFTER the stance block in step() and composes
+    // over it. Requires gravity + stance ON (rung stacking),
+    // classification, leg pins, and a sealed feet cell; refuses honestly
+    // otherwise. THE FALSIFIER: cut the machine mid-stride and every
+    // controller-driven motion stops within one tick -- it must NEVER
+    // glide. The lead wires POST /tick_gait -> set_gait at the window.
+    bool set_gait(bool on);
+
     // R3 TOUCH (prereg 0935695e): press AT a world point (the camera-ray
     // hit), Gaussian falloff around it, along the POSED skin normals.
     // The pick callback runs under the tick lock so the geometry it reads
@@ -223,6 +239,62 @@ private:
     float stance_lean_x_ = 0.f, stance_lean_z_ = 0.f;  // live lean, m (report)
     std::vector<uint32_t> stance_sup_;         // frozen support vert indices
     void  stance_off_locked_();                // assumes seal_mtx_ held
+    // ─── G1: THE GAIT CHECKPOINT MACHINE (the robot-stack rung 2; prereg
+    // ─── appended to SEAL_PREREGISTRATION.md) ──────────────────────────
+    // The leg chain pins (the joint atlas: hip_L/R = 13/14, knee_L/R =
+    // 15/16; the ankles are F1's ANKLE_PIN_L/R above and stay F1-owned).
+    static constexpr uint8_t HIP_PIN_L = 13, HIP_PIN_R = 14;
+    static constexpr uint8_t KNEE_PIN_L = 15, KNEE_PIN_R = 16;
+    // The checkpoint phases. RECOVER is the MEASURED abort (support lost
+    // or the swing foot touched down mid-reach): return the leg to
+    // bearing and re-arm. No phase advances on a timer.
+    enum class GaitPhase : uint8_t { STANCE = 0, LIFT = 1, REACH = 2,
+                                     LOAD = 3, RECOVER = 4 };
+    bool      gait_on_ = false;
+    GaitPhase gait_phase_[2] = {GaitPhase::STANCE, GaitPhase::STANCE};
+    // Frozen at set_gait(true) from the rest blend (the F1 frozen-support
+    // lesson: a per-frame re-selected set chases its own actuation and
+    // self-cancels the channel).
+    std::vector<uint32_t> gait_foot_verts_[2];  // per-side foot vertex sets
+    float gait_patch_r_[2] = {0.f, 0.f};        // support-patch radius, m
+    float gait_foot_rest_z_[2] = {0.f, 0.f};    // rest z of each foot centroid
+    float gait_lean_ref_x_ = 0.f, gait_lean_ref_z_ = 0.f;  // rest lean, m
+    // Probe channels, MEASURED at +1 deg per pin on the rest blend (the
+    // F1 probe precedent): d(foot-set min y)/dtheta and d(foot centroid
+    // z)/dtheta, SIGNED -- the sign is measured, never assumed. [side].
+    float gait_dminy_hip_[2] = {0.f, 0.f};      // m/rad
+    float gait_dminy_knee_[2] = {0.f, 0.f};     // m/rad
+    float gait_dcz_hip_[2] = {0.f, 0.f};        // m/rad
+    float gait_dcz_knee_[2] = {0.f, 0.f};       // m/rad
+    // Derived rate caps: the foot's arc speed never exceeds its own
+    // patch radius per STANCE_TAU_S (the named speed bar).
+    float gait_rate_hip_[2] = {0.f, 0.f};       // rad/s
+    float gait_rate_knee_[2] = {0.f, 0.f};      // rad/s
+    // The LIFT combo: the hip:knee ratio that nulls the centroid z drift
+    // (a_h = dcz_knee, a_k = -dcz_hip) with its measured rise channel
+    // ch = a_h*dminy_hip + a_k*dminy_knee. Derived from the probes.
+    float gait_lift_ah_[2] = {0.f, 0.f};
+    float gait_lift_ak_[2] = {0.f, 0.f};
+    float gait_lift_ch_[2] = {0.f, 0.f};
+    // The commanded leg angles (rad) -- the machine's own state; 0 =
+    // authored bearing. Written to joint_deg_ pins 13-16 each tick.
+    float gait_knee_rad_[2] = {0.f, 0.f};
+    float gait_hip_rad_[2] = {0.f, 0.f};
+    // Measured reports (state_json), fresh every tick.
+    float gait_depth_[2] = {0.f, 0.f};          // world depth below y=0, m
+    float gait_clear_[2] = {0.f, 0.f};          // above the other foot, m
+    float gait_lean_x_ = 0.f, gait_lean_z_ = 0.f;  // live lean, m (report)
+    float gait_p_max_ = 0.f;                    // max |P| over sealed cells
+    std::string gait_block_[2];                 // the gate blocking this leg
+    int gait_feet_cell_ = -1;                   // feet sealed cell (min yhi)
+    uint32_t gait_stride_count_ = 0;
+    uint64_t gait_last_done_[2] = {0, 0};       // ticks_ at last LOAD exit
+    std::vector<std::string> gait_log_;         // bounded transition log
+    void  gait_off_locked_();                   // assumes seal_mtx_ held
+    void  gait_step_locked_(std::vector<float>& verts9, float dt);
+    void  gait_log_locked_(int leg, const char* from, const char* to,
+                           const std::string& gates);
+    static const char* gait_phase_name(GaitPhase p);
     // THE TOUCH: a world-space press point + force (set via touch_press
     // under the tick lock; consumed by step)
     bool  touch_active_ = false;

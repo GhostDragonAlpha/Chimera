@@ -1252,3 +1252,121 @@ measured on the rest blend, not assumed zero).
 MembraneTick::set_stance next to POST /tick_gravity at the build
 window, runs tools/walk_test.py, and appends the measured curves here.
 The script is HTTP-only and does not build or run the engine.)
+
+---
+
+# THE GAIT CHECKPOINT PREREGISTRATION — THE ROBOT STACK'S RUNG 2
+## (agent G1, fleet, slot-01, branch astra/tasks/matter-kernel-format-01, 2026-09-13)
+
+Per docs/THE_SHIP_GOAL.md "THE ROBOT STACK LAW": the character must carry the
+concepts of people who build and train robots — checkpoint systems, sensing,
+knowing where to put its foot, what-if questions asked before acting.
+
+## STATEMENT
+
+Stepping on this body is produced by a per-leg checkpoint machine — STANCE ->
+LIFT -> REACH -> LOAD, plus RECOVER (the measured abort) — in which EVERY
+transition is gated by a number the body reports (per-side foot contact depth
+against the floor plane, sealed-cell pressures, lean and support geometry
+measured from the posed surface) and NO phase advances on a timer; dt enters
+only through the rate caps and the servo integration. The machine actuates
+ONLY through joint_deg_ poses on hip/knee pins 13-16, rate-capped so the
+foot's arc speed never exceeds its own support-patch radius per second — no
+teleporting. The ankles (pins 17/18) stay F1-owned: the G1 block runs AFTER
+the stance block in step() and composes over it. SCOPE (lead-approved): the
+root DOF is Y-only, so this rung delivers the checkpoint machine and MEASURED
+weight transfer in the planted frame; horizontal advance belongs to the rung
+that owns a horizontal root. No z-root snapping from G1 — a root snap would
+slide the feet, which is the glide the falsifier forbids.
+
+## DERIVATION (no sweeps — every number traced to a named law)
+
+- NO new tunings. Bars reused: clearance = STANCE_BAND_M (F1's 0.05 m band)
+  above the floor, i.e. a total rise of sink + band = 0.06 m from rest;
+  contact = world min-y < 0; bearing = depth >= 0.8 x the derived rest sink
+  (0.01 m, header); settle = |root_vy| <= 1e-3 m/s (the 0.1 mm press-cutoff
+  scale); stride = the swing foot's centroid must pass the STANCE foot's live
+  centroid by the swing foot's own measured patch radius (the new footfall
+  lands outside the old support patch — geometric necessity); pose-relax
+  witness = the repo's named 50 kPa gentle-hand threshold, LOGGED at every
+  transition, NOT gating (reason: F1's held ankle pitch keeps real pressure
+  in the leg cells between strides — a hard p-gate would stall honestly but
+  forever; the depth+settle gates carry the transition).
+- CHANNELS PROBED, NOT GUESSED (the F1 +1 deg probe precedent): at enable,
+  on the exact rest blend (the seal()/set_stance path), each hip/knee is
+  probed at +1 deg and the SIGNED d(foot-set min y) and d(foot centroid z)
+  are measured per pin. Servo law is F1's own structure: dtheta =
+  err/(channel*TAU) with STANCE_TAU_S — angle signs come from the measured
+  channel, never from anatomy assumptions. Enable REFUSES if any pin's arc
+  channel < 1e-3 m/rad (the F1 no-channel refusal) — a body whose legs
+  cannot rise is honestly refused, not tuned around.
+- THE LIFT COMBO: hip and knee are driven together by the ratio that nulls
+  the centroid z drift (a_h = dcz_knee, a_k = -dcz_hip), with rise channel
+  ch = a_h*dminy_hip + a_k*dminy_knee — derived from the probes, not chosen.
+  Rationale: this sculpt's sagittal rotations about X give a first-order
+  rise of -(z_foot - z_pin)*theta, which can be near zero for a planar leg;
+  the LIFT gate is measured (min-y >= STANCE_BAND_M), so the linear-channel
+  estimate only sizes the step, and the measured error closes the rest.
+- RATE CAPS: per pin, rate = (patch_radius / STANCE_TAU_S) / |arc channel|
+  — the foot's linear speed never exceeds its own footprint per second.
+- FROZEN SETS (the F1 lesson, measured 0.056 vs 0.283 m/rad): per-side foot
+  vertex sets, patch radii, rest foot z and lean references are frozen at
+  enable from the rest blend. The REACH reference is the STANCE foot's live
+  centroid only — including the swing foot in the reference set would chase
+  the actuated limb (the exact self-cancel failure F1 measured).
+- THE WHAT-IF GATE (rung 4, answered from live numbers before acting):
+  LIFT entry requires the body centroid to already lie inside the would-be
+  stance foot's measured patch — "if I lift this foot, does the support hold
+  my weight?" Refusal to lift is logged with the blocking number.
+- THE SCHEDULE: when both legs qualify, the leg that stepped LONGER AGO
+  swings — a deterministic controller decision, never a gate; the gates
+  stay measured. init() clears all gait state (the C1 stale-index class).
+- LOAD/RECOVER actuation is return-to-zero at the measured rate caps (the
+  authored rest pose IS bearing: home + ground), with the EXIT gated on the
+  body's numbers (depth >= bearing bar AND |root_vy| settled). DEVIATION
+  from the plan as posted to the lead: the posted LOAD design servoed foot
+  z and y independently; implementation returns the pose to bearing and
+  lets the measured gates decide — fewer channels, same gates, documented
+  here per docs-last.
+
+## PREDICTIONS (unmeasured at prereg time)
+
+- P1 (weight transfer): during single support, d_swing < 0.2*sink while
+  d_stance converges to the same 1 cm sink within [0.8, 1.2]x — the mass
+  rides one foot, measured; leg-cell pressures exceed the noise floor
+  mid-swing and the transition log's pmax returns under 50 kPa at LOAD exit.
+- P2 (cadence): each phase converges in ~tau per the 1/(channel*TAU) law;
+  a full stride completes within ~8 tau, readable from the gait_log ticks.
+- P3 (THE CUT): POST /tick_gait {"on":false} mid-swing -> within one tick
+  every controller-driven foot motion stops (pins 13-16 at authored 0) and
+  a root transient |root_vy| > 1e-3 appears — the stumble number. The cut
+  is logged with the measured depth/vy/pose (the "cut" gate entry).
+- P4: |conserve_pct| stays < 0.01 (F1's S3 bar) through every phase — the
+  machine adds no volume leak.
+- P5: no gateless moves — every gait_log entry carries its measured gate
+  values; state and log cannot contradict.
+
+## FALSIFIER (named before the run)
+
+- F-GLIDE: any controller-driven foot motion beyond one tick after the cut,
+  or stepping that continues with the machine off -> it is animation, not
+  control -> FAIL.
+- F-STALL: any phase not reaching its measured gate within 10 tau without
+  ROM (89 deg, under pose_index's law) or rate saturation -> the derivation
+  is wrong -> FAIL; amend with the logged channel and deficit.
+- F-TELEPORT: foot centroid jump > rate_cap*|channel|*dt between ticks while
+  on -> the pose channel teleported -> FAIL.
+- F-LIE: a transition logged without its measured gate values, or a LIFT
+  entered outside the what-if envelope -> the gates are decorative -> FAIL.
+
+## RUN RECORD
+
+(open — the code is landed, marked // G1 in membrane_tick.{hpp,cpp},
+syntax-checked (g++ -std=c++17 -fsyntax-only -Wall -Wextra: clean; the only
+warnings are pre-existing in touch_press). The lead wires POST /tick_gait
+{"on":true|false} -> MembraneTick::set_gait next to POST /tick_stance at the
+build window. Arm order: gravity on (live) -> /tick_stance on -> /tick_gait
+on; watch /tick_state (gait_* fields). The falsifier run: cut /tick_gait
+mid-swing and read P3 off gait_log. Not persisted across boots (the same
+switch class as gravity/stance): after a restart the lead re-arms. The
+harness is HTTP-only and does not build or run the engine.)
