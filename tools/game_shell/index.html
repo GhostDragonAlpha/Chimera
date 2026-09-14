@@ -116,6 +116,107 @@
   .blood .awake{color:var(--accent)}
   #save-btn{width:100%;padding:11px;font-size:13px;margin-top:2px}
   #save-btn:disabled{opacity:.5;cursor:default}
+
+  /* ==== E4: verdict animation, progression dots, hand meter, overlays ==== */
+  /* the verdict line breathes once when a lesson turns PASSED (CSS only) */
+  @keyframes verdict-pass{
+    0%{opacity:.2;transform:scale(.96)}
+    100%{opacity:1;transform:scale(1)}
+  }
+  .verdict.good{animation:verdict-pass .5s ease-out}
+
+  /* the slim progression strip: one dot per lesson under the lesson nav */
+  .progress-strip{display:flex;justify-content:center;gap:9px;margin:2px 0 12px}
+  .progress-strip .dot{
+    width:9px;height:9px;border-radius:50%;
+    background:var(--deep);border:1px solid var(--line);
+    transition:background .3s,border-color .3s,box-shadow .3s;
+  }
+  .progress-strip .dot.passed{
+    background:var(--accent);border-color:var(--accent);
+    box-shadow:0 0 6px rgba(127,212,193,.45);
+  }
+
+  /* the hand-strength meter: the slider's current value, drawn */
+  #force-meter{
+    position:relative;height:5px;border-radius:3px;margin-top:7px;
+    background:var(--deep);border:1px solid var(--line-soft);
+  }
+  #force-meter-fill{
+    position:absolute;left:0;top:0;bottom:0;width:40%;border-radius:3px;
+    background:linear-gradient(90deg,#3d6b60,var(--accent));
+    transition:width .12s ease-out;
+  }
+  #force-meter .gentle{
+    position:absolute;top:-4px;bottom:-4px;left:15.15%;width:1px;
+    background:var(--warn);opacity:.7;
+  }
+  #force-meter-note{
+    position:relative;height:14px;margin-top:4px;
+    font-size:10px;letter-spacing:.06em;color:var(--faint);
+  }
+  #force-meter-note .gentle-note{
+    position:absolute;left:15.15%;transform:translateX(-50%);
+    color:var(--warn);opacity:.75;
+  }
+  #force-meter-note .strength-note{position:absolute;right:0}
+
+  /* full-screen overlays (intro + payoff): mostly transparent —
+     the creature keeps rendering behind them */
+  .overlay{
+    position:fixed;inset:0;z-index:40;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:32px;
+    background:radial-gradient(1100px 620px at 50% 42%,
+      rgba(11,13,16,.42) 0%, rgba(11,13,16,.88) 78%);
+  }
+  .overlay-card{
+    max-width:560px;padding:32px 36px 28px;text-align:left;
+    background:rgba(14,17,22,.93);border:1px solid var(--line);border-radius:14px;
+    box-shadow:0 18px 60px rgba(0,0,0,.5);
+  }
+  .overlay-card h2{
+    font-family:Georgia,serif;font-weight:400;font-size:21px;color:#e9eff5;
+    letter-spacing:.05em;line-height:1.4;margin-bottom:14px;
+  }
+  .intro-lines{list-style:none;margin:0 0 18px}
+  .intro-lines li{
+    font-size:14.5px;line-height:1.6;color:var(--text);
+    padding:8px 0;border-top:1px solid var(--line-soft);
+  }
+  .intro-lines li:first-child{border-top:none}
+  .intro-lines li em{color:var(--accent);font-style:normal}
+  .key-diagram{
+    display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;
+    padding:12px 14px;margin-bottom:22px;border-radius:10px;
+    background:var(--deep);border:1px solid var(--line-soft);
+    font-size:12px;color:var(--muted);
+  }
+  .kbd{
+    display:inline-block;min-width:26px;padding:3px 8px;margin-right:6px;
+    border:1px solid #2c3540;border-bottom-width:2px;border-radius:6px;
+    background:#151a20;color:var(--text);text-align:center;
+    font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:11px;
+  }
+  .overlay .btn{padding:10px 44px;font-size:13px;letter-spacing:.28em;text-indent:.28em}
+  .overlay-hint{margin-top:12px;font-size:11.5px;color:var(--faint)}
+
+  /* the payoff flourish */
+  @keyframes payoff-line{
+    0%{opacity:0;transform:scale(.94)}
+    100%{opacity:1;transform:scale(1)}
+  }
+  .payoff-line{
+    font-family:Georgia,serif;font-weight:400;color:#eef4f8;
+    font-size:clamp(30px,4.6vw,52px);line-height:1.45;letter-spacing:.04em;
+    text-shadow:0 2px 24px rgba(0,0,0,.85);
+    opacity:0;animation:payoff-line 1.1s ease-out forwards;
+  }
+  .payoff-line.l2{animation-delay:.55s}
+  #payoff-actions{margin-top:44px;opacity:0;transition:opacity .6s ease}
+  #payoff-actions.show{opacity:1}
+  #payoff-actions .payoff-prompt{font-size:13.5px;color:var(--muted);margin-bottom:14px}
+  #payoff-actions .row{display:flex;gap:12px;justify-content:center}
 </style>
 </head>
 <body>
@@ -153,6 +254,9 @@
           <span id="lesson-index" class="mono" style="font-size:13px;color:var(--muted)">1 / 5</span>
           <button id="lesson-next" class="btn" type="button" style="padding:4px 12px;font-size:14px">&rsaquo;</button>
         </div>
+        <!-- E4: progression strip — one dot per lesson, filled when passed -->
+        <div id="progress-strip" class="progress-strip" role="list"
+             aria-label="lesson progress"></div>
         <h3 class="lesson-title" id="lesson-title">…</h3>
         <p class="lesson-body" id="lesson-body">…</p>
         <div id="pose-btn-wrap" style="display:none">
@@ -166,6 +270,15 @@
         <div class="force-row">
           <input id="force" type="range" min="500" max="50000" step="100" value="20000">
           <span id="force-label" class="mono">20000 N</span>
+        </div>
+        <!-- E4: hand-strength meter (the slider's value, drawn) -->
+        <div id="force-meter" aria-hidden="true">
+          <div id="force-meter-fill"></div>
+          <span class="gentle"></span>
+        </div>
+        <div id="force-meter-note" aria-hidden="true">
+          <span class="gentle-note">gentle ≤</span>
+          <span class="strength-note">hand strength</span>
         </div>
         <div class="hand-row">
           <button id="letgo-btn" class="btn" type="button">let go</button>
@@ -184,6 +297,43 @@
 
       <button id="save-btn" class="btn" type="button">save progress</button>
     </aside>
+  </section>
+
+  <!-- E4: first-run intro overlay — once per name; dismissing stores seen_intro -->
+  <section id="intro-overlay" class="overlay hidden" role="dialog" aria-modal="true"
+           aria-label="How to touch the creature">
+    <div class="overlay-card">
+      <h2>You are a camera in one living world.</h2>
+      <ul class="intro-lines">
+        <li><em>Drag</em> to look. <em>Click</em> (or <em>SPACE</em>) to touch — hold to press.</li>
+        <li>The body answers: <em>watch its blood</em>.</li>
+      </ul>
+      <div class="key-diagram" aria-hidden="true">
+        <span><span class="kbd">drag</span>look</span>
+        <span><span class="kbd">click</span><span class="kbd">SPACE</span>touch · hold = press</span>
+        <span><span class="kbd">1</span>–<span class="kbd">5</span>lessons</span>
+      </div>
+      <div style="text-align:center">
+        <button id="intro-begin" class="btn" type="button">begin</button>
+        <p class="overlay-hint">Enter also begins.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- E4: the payoff — all five lessons passed in one session -->
+  <section id="payoff-overlay" class="overlay hidden" role="dialog" aria-modal="true"
+           aria-label="All five lessons passed">
+    <p class="payoff-line l1">You have felt the water.</p>
+    <p class="payoff-line l2">The creature is real.</p>
+    <div id="payoff-actions">
+      <p class="payoff-prompt">the world forgets the unfelt — save this memory under
+        <b id="payoff-name">your name</b>?</p>
+      <div class="row">
+        <button id="payoff-save" class="btn" type="button">save this memory</button>
+        <button id="payoff-continue" class="btn" type="button">keep playing</button>
+      </div>
+      <p class="overlay-hint">S saves · Enter keeps playing</p>
+    </div>
   </section>
 
 <script>
@@ -608,19 +758,25 @@
   async function pollVerts() {
     if (vertsBusy) return;
     vertsBusy = true;
-    try {
-      var res = await fetch(API.verts);
-      if (!res.ok) throw new Error('http ' + res.status);
-      var buf = await res.arrayBuffer();
-      if (buf.byteLength < 4) throw new Error('short verts payload');
-      var dv = new DataView(buf);                       // little-endian u32 count
-      var n = dv.getUint32(0, true);
-      if (buf.byteLength < 4 + n * 36) throw new Error('truncated verts payload');
-      var f = new Float32Array(buf, 4, n * 9);          // little-endian f32 view
+
+    /* C3 — THE KERNEL STREAM. pollVerts asks for ?delta=1 (changed runs,
+       [u32 start][u32 count][f32*9*count] under a 16-byte header) and
+       applies them into the persistent Float32Array. Constraints: the
+       page must NEVER freeze and NEVER show a torn frame — every frame
+       is validated by an exact-length walk BEFORE one byte of state is
+       touched, and any failed or suspicious frame costs one ?delta=key
+       pull (a forced keyframe that also re-heads the seq chain), never
+       a broken screen. The GL upload below is the pre-C3 path, byte
+       for byte. This function is the ONLY page change; the chain seq
+       lives on the function object because it must outlive one call. */
+    if (pollVerts.kernelSeq === undefined) pollVerts.kernelSeq = null;
+
+    /* the pre-C3 full-frame apply + GL upload, unchanged in behavior
+       (meshPos is reused when the vertex count is unchanged — the delta
+       path needs a persistent target anyway) */
+    function uploadFrame(f, n) {
       RG.vertCount = n;
-      // the page's own copy of the skin (kept even when WebGL2 is refused):
-      // the touch-target snap presses against it
-      var pos = new Float32Array(n * 3);
+      var pos = (meshPos && meshPos.length === n * 3) ? meshPos : new Float32Array(n * 3);
       for (var vi = 0; vi < n; vi++) {
         pos[vi * 3] = f[vi * 9]; pos[vi * 3 + 1] = f[vi * 9 + 1];
         pos[vi * 3 + 2] = f[vi * 9 + 2];
@@ -640,9 +796,131 @@
         }
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, RG.verts);
       }
+    }
+
+    /* legacy framing [u32 n][f32*9n] — the answer of a pre-C3 engine or
+       of the front door with the query stripped */
+    function decodeLegacy(buf) {
+      if (buf.byteLength < 4) throw new Error('short verts payload');
+      var n = new DataView(buf).getUint32(0, true);
+      if (buf.byteLength < 4 + n * 36) throw new Error('truncated verts payload');
+      return { f: new Float32Array(buf, 4, n * 9), n: n };
+    }
+
+    /* kernel framing: [u8 magic 0xD1][u8 flags][u16 rsvd]
+                      [u32 n][u32 seq][u32 runs]
+       flags 0 = keyframe (f32*9n payload at 16); flags 1 = runs.
+       Returns null for a legacy frame; THROWS on any torn or
+       out-of-range frame — validation completes before any state is
+       touched (the C3 falsifier: a torn frame must keep the last
+       full state on screen). */
+    function decodeKernel(buf) {
+      if (buf.byteLength < 4) throw new Error('short verts payload');
+      var dv = new DataView(buf);
+      if (dv.getUint8(0) !== 0xD1) return null;
+      if (buf.byteLength < 16) throw new Error('short kernel frame');
+      var flags = dv.getUint8(1);
+      if (dv.getUint16(2, true) !== 0) throw new Error('bad kernel header');
+      var n = dv.getUint32(4, true), seq = dv.getUint32(8, true);
+      var runs = dv.getUint32(12, true);
+      if (flags > 1) throw new Error('bad kernel flags');
+      var plan = { flags: flags, n: n, seq: seq, runs: [] };
+      if (flags === 0) {
+        if (runs !== 0) throw new Error('keyframe with runs');
+        if (buf.byteLength !== 16 + n * 36) throw new Error('truncated keyframe');
+        return plan;
+      }
+      var off = 16;
+      for (var r = 0; r < runs; r++) {
+        if (off + 8 > buf.byteLength) throw new Error('truncated run header');
+        var start = dv.getUint32(off, true), count = dv.getUint32(off + 4, true);
+        off += 8;
+        if (count === 0 || start + count > n) throw new Error('run out of range');
+        if (off + count * 36 > buf.byteLength) throw new Error('truncated run body');
+        plan.runs.push({ start: start, count: count, off: off });
+        off += count * 36;
+      }
+      if (off !== buf.byteLength) throw new Error('trailing kernel bytes');
+      return plan;
+    }
+
+    /* apply VALIDATED runs into the persistent arrays — no payload
+       allocation; requires RG.verts already sized to plan.n (guaranteed:
+       runs are only applied when plan.n === RG.vertCount) */
+    function applyRuns(plan, buf) {
+      var dv = new DataView(buf);
+      for (var r = 0; r < plan.runs.length; r++) {
+        var run = plan.runs[r];
+        for (var vi = 0; vi < run.count; vi++) {
+          var v = run.start + vi, s = run.off + vi * 36;
+          for (var k = 0; k < 9; k++)
+            RG.verts[v * 9 + k] = dv.getFloat32(s + k * 4, true);
+          if (meshPos && meshPos.length === plan.n * 3) {
+            meshPos[v * 3] = RG.verts[v * 9];
+            meshPos[v * 3 + 1] = RG.verts[v * 9 + 1];
+            meshPos[v * 3 + 2] = RG.verts[v * 9 + 2];
+          }
+        }
+      }
+      if (!meshPos || meshPos.length !== plan.n * 3) {
+        meshPos = new Float32Array(plan.n * 3);
+        for (var v2 = 0; v2 < plan.n; v2++) {
+          meshPos[v2 * 3] = RG.verts[v2 * 9];
+          meshPos[v2 * 3 + 1] = RG.verts[v2 * 9 + 1];
+          meshPos[v2 * 3 + 2] = RG.verts[v2 * 9 + 2];
+        }
+      }
+      gl.bindBuffer(gl.ARRAY_BUFFER, RG.vbo);
+      gl.bufferSubData(gl.ARRAY_BUFFER, 0, RG.verts);
+    }
+
+    /* the resync: one forced keyframe (?delta=key), applied whole or
+       not at all; re-heads the seq chain */
+    async function pullKey() {
+      var res = await fetch(API.verts + '?delta=key');
+      if (!res.ok) throw new Error('http ' + res.status);
+      var buf = await res.arrayBuffer();
+      var plan = decodeKernel(buf);
+      if (plan === null || plan.flags !== 0) throw new Error('keyframe refused');
+      uploadFrame(new Float32Array(buf, 16, plan.n * 9), plan.n);
+      pollVerts.kernelSeq = plan.seq;
+    }
+
+    try {
+      var res = await fetch(API.verts + '?delta=1');
+      if (!res.ok) throw new Error('http ' + res.status);
+      var buf = await res.arrayBuffer();
+      var plan = decodeKernel(buf);              // throws when torn
+      if (plan === null) {
+        // legacy answer: old engine build, or the front door stripped
+        // the query — decode as the pre-C3 page did
+        var dec = decodeLegacy(buf);
+        uploadFrame(dec.f, dec.n);
+        pollVerts.kernelSeq = null;
+      } else if (plan.flags === 0) {
+        // keyframe in kernel framing: adopt whole
+        uploadFrame(new Float32Array(buf, 16, plan.n * 9), plan.n);
+        pollVerts.kernelSeq = plan.seq;
+      } else if (pollVerts.kernelSeq === null ||
+                 plan.seq !== ((pollVerts.kernelSeq + 1) >>> 0) ||
+                 plan.n !== RG.vertCount) {
+        // unchained, dropped poll (seq gap), or topology change:
+        // NEVER apply runs onto unknown state — one resync pull
+        await pullKey();
+      } else {
+        applyRuns(plan, buf);
+        pollVerts.kernelSeq = plan.seq;
+      }
       setLink('');
     } catch (err) {
-      setLink('the world is silent — retrying…');
+      /* torn or unreachable: the last full state stays on screen
+         (never a partial frame), then one honest resync attempt */
+      try {
+        await pullKey();
+        setLink('');
+      } catch (err2) {
+        setLink('the world is silent — retrying…');
+      }
     } finally {
       vertsBusy = false;
     }
@@ -813,7 +1091,7 @@
     }
   }
   window.addEventListener('keydown', function (e) {
-    if (!$('screen-play').classList.contains('on')) return;
+    if (!$('screen-play').classList.contains('on') || E4overlayOpen()) return;   // E4: an overlay owns the keyboard while up
     if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
     var k = e.key;
     if (k >= '1' && k <= '5') { showLesson(+k - 1); e.preventDefault(); return; }
@@ -1040,7 +1318,8 @@
       for (var id in lessonState)
         if (lessonState[id].passed)
           lessons[id] = { passed: true, at: new Date().toISOString() };
-      var res = await postJSON(API.progress, { name: playerName, lessons: lessons });
+      var res = await postJSON(API.progress, { name: playerName, lessons: lessons,
+        seen_intro: !!seenIntro });   // E4: a manual save must never wipe the greeting flag
       if (!res.ok) throw new Error('http ' + res.status);
       lessonsKnown = lessons;
       if (window.ChimeraSound) ChimeraSound.saved();
@@ -1059,6 +1338,7 @@
     $('screen-play').classList.add('on');
     await loadKnownProgress();
     await loadLessons();
+    if (!seenIntro) E4showIntro();   // E4: the first-run greeting, once per name
   }
   $('play-btn').addEventListener('click', enterPlay);
   $('name-input').addEventListener('keydown', function (e) {
@@ -1071,6 +1351,7 @@
       if (!res.ok) return;
       var d = await res.json();
       lessonsKnown = (d && d.lessons) || {};
+      seenIntro = !!(d && d.seen_intro);   // E4: the greeting shows once per name
       for (var id in lessonsKnown)
         if (lessonsKnown[id] && lessonsKnown[id].passed) {
           if (!lessonState[id]) lessonState[id] = { goalMet: true, passed: true, phase: 'done' };
@@ -1080,6 +1361,160 @@
       /* a silent world is not an error worth surfacing here */
     }
   }
+
+  /* ================= E4: first-run intro + progression + payoff =================
+     Intro: shows once per name (seen_intro in progress/<name>.json), Enter
+     begins. Progression: 5 dots under the lesson nav, filled per passed
+     lesson; when ALL 5 pass with at least one pass made THIS session, the
+     payoff flourish plays once. A 400 ms watcher owns all of it so it stays
+     independent of the judge and of any other agent's functions. */
+  var seenIntro = false;       // persisted in the progress file as seen_intro
+  var payoffShown = false;     // the flourish fires once per session, never on load
+  var dotsBuilt = false;
+  var E4armed = false;         // first sight of the pack seeds, never fires
+  var E4knownPassed = {};      // lesson ids already passed as of the last tick
+  var E4sessionPassed = {};    // lesson ids that flipped to passed THIS session
+
+  function E4overlayOpen() {
+    return !$('intro-overlay').classList.contains('hidden') ||
+           !$('payoff-overlay').classList.contains('hidden');
+  }
+
+  /* the merged lesson map the progress POST carries (same shape as the
+     save button's) — used when the intro dismissal stores seen_intro */
+  function E4mergedLessons() {
+    var lessons = {}, k;
+    for (k in lessonsKnown) lessons[k] = lessonsKnown[k];
+    for (var id in lessonState)
+      if (lessonState[id].passed)
+        lessons[id] = { passed: true, at: new Date().toISOString() };
+    return lessons;
+  }
+
+  /* ---- the progression strip ---- */
+  function E4buildDots() {
+    if (dotsBuilt || !LESSONS.length) return;
+    dotsBuilt = true;
+    var strip = $('progress-strip');
+    LESSONS.forEach(function (l) {
+      var d = document.createElement('span');
+      d.className = 'dot';
+      d.setAttribute('role', 'listitem');
+      d.id = 'dot-' + l.id;
+      strip.appendChild(d);
+    });
+  }
+  function E4syncDots() {
+    E4buildDots();
+    for (var i = 0; i < LESSONS.length; i++) {
+      var l = LESSONS[i], d = $('dot-' + l.id);
+      if (!d) continue;
+      var passed = !!(lessonState[l.id] && lessonState[l.id].passed);
+      d.classList.toggle('passed', passed);
+      d.setAttribute('aria-label', 'Lesson ' + (i + 1) + ' — ' + l.title +
+        (passed ? ': passed' : ': not passed yet'));
+    }
+  }
+
+  /* ---- the payoff trigger: dots, fresh passes, the fifth pass ---- */
+  function E4checkProgression() {
+    E4syncDots();
+    if (!LESSONS.length || payoffShown) return;
+    if (!E4armed) {
+      /* seed from disk-progressed lessons without firing: a returning
+         player who already passed everything must not be congratulated
+         for merely loading the page */
+      E4armed = true;
+      for (var j = 0; j < LESSONS.length; j++) {
+        var id0 = LESSONS[j].id;
+        E4knownPassed[id0] = !!(lessonState[id0] && lessonState[id0].passed);
+      }
+      return;
+    }
+    var passedCount = 0, fresh = false;
+    for (var i = 0; i < LESSONS.length; i++) {
+      var id = LESSONS[i].id, st = lessonState[id];
+      if (st && st.passed) {
+        passedCount++;
+        if (!E4knownPassed[id]) { E4sessionPassed[id] = true; fresh = true; }
+      }
+      E4knownPassed[id] = !!(st && st.passed);
+    }
+    if (fresh && passedCount === LESSONS.length &&
+        $('screen-play').classList.contains('on')) {
+      payoffShown = true;
+      E4showPayoff();
+    }
+  }
+
+  function E4showPayoff() {
+    clearTouch();                          // the ceremony asks for an open hand
+    $('payoff-name').textContent = playerName;
+    $('payoff-overlay').classList.remove('hidden');
+    $('payoff-actions').classList.remove('show');
+    setTimeout(function () {               // the flourish holds three seconds,
+      if ($('payoff-overlay').classList.contains('hidden')) return;
+      $('payoff-actions').classList.add('show');
+      $('payoff-continue').focus();
+    }, 3000);
+  }
+  function E4dismissPayoff() {
+    $('payoff-overlay').classList.add('hidden');
+  }
+  $('payoff-save').addEventListener('click', function () {
+    E4dismissPayoff();
+    $('save-btn').click();                 // the one real save flow reports itself
+  });
+  $('payoff-continue').addEventListener('click', E4dismissPayoff);
+
+  /* ---- the intro ---- */
+  function E4showIntro() {
+    $('intro-overlay').classList.remove('hidden');
+    $('intro-begin').focus();
+  }
+  function E4dismissIntro() {
+    if ($('intro-overlay').classList.contains('hidden')) return;   // re-entrancy guard
+    $('intro-overlay').classList.add('hidden');
+    seenIntro = true;
+    // store the flag at once: the world remembers this camera was greeted
+    postJSON(API.progress, { name: playerName, lessons: E4mergedLessons(),
+                             seen_intro: true }).catch(function () {});
+  }
+  $('intro-begin').addEventListener('click', E4dismissIntro);
+
+  /* ---- overlays own the keyboard while up ---- */
+  window.addEventListener('keydown', function (e) {
+    if (!E4overlayOpen()) return;
+    var k = e.key;
+    if (!$('intro-overlay').classList.contains('hidden')) {
+      if (k === 'Enter' || k === ' ' || k === 'Escape') {
+        e.preventDefault();
+        E4dismissIntro();
+      }
+      return;
+    }
+    if (k === 's' || k === 'S') {          // save the memory, then free play
+      e.preventDefault();
+      E4dismissPayoff();
+      $('save-btn').click();
+      return;
+    }
+    if (k === 'Enter' || k === ' ' || k === 'Escape') {
+      e.preventDefault();
+      E4dismissPayoff();
+    }
+  });
+
+  /* ---- the hand-strength meter (the - / = keys dispatch 'input') ---- */
+  function E4syncForceMeter() {
+    var lo = Number(forceEl.min), hi = Number(forceEl.max);
+    var pct = (Number(forceEl.value) - lo) / ((hi - lo) || 1) * 100;
+    $('force-meter-fill').style.width = pct + '%';
+  }
+  forceEl.addEventListener('input', E4syncForceMeter);
+  E4syncForceMeter();
+
+  setInterval(E4checkProgression, 400);    // E4: dots + the payoff trigger
 
   /* ================= boot ================= */
   forceLabel.textContent = forceEl.value + ' N';

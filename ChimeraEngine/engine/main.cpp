@@ -410,6 +410,151 @@ void handleSignal(int) {
 }
 #endif
 
+// ═══ F2 BEGIN: /frame fast path helpers — WIC JPEG + box downscale ═════════════════
+// Prereg (Rule 0, written BEFORE this code): docs/evidence/agent_fleet/
+// MATTER_KERNEL/SEAL_PREREGISTRATION.md, section "F2: /FRAME FAST PATH".
+// STATEMENT — a preview-quality fast path serves /frame in <= 200 ms.
+// DERIVATION — the floor is the stored-deflate PNG encoder (a second 14.7 MB
+// copy + bitwise CRC32 + Adler-32 over the full 2560x1440 buffer), so the
+// honest wins are JPEG (in-box WIC, no new libs) at ?q=, and the downscale
+// BEFORE encode so the encoder never sees the full buffer.
+// FALSIFIER — the fast path > 400 ms, or q85 artifacts the eye can see, or
+// the default PNG route's bytes change. Named successor: render-thread-side
+// staged downscale (engine.cpp surgery — not this file's to make).
+#include <wincodec.h>
+#include <objbase.h>
+#include <ocidl.h>
+#include <oleauto.h>
+#pragma comment(lib, "windowscodecs.lib")
+#pragma comment(lib, "ole32.lib")
+
+namespace f2 {
+
+// Unsigned int query param ("w=", "q=") — find-after-'?', exactly the
+// hand-rolled parse this replaces. 0 when absent.
+inline uint32_t query_uint(const std::string& path, const char* key) {
+    size_t q = path.find('?');
+    if (q == std::string::npos) return 0;
+    size_t k = path.find(key, q);
+    if (k == std::string::npos) return 0;
+    return static_cast<uint32_t>(strtoul(path.c_str() + k + strlen(key), nullptr, 10));
+}
+
+inline bool query_has(const std::string& path, const char* needle) {
+    size_t q = path.find('?');
+    return q != std::string::npos && path.find(needle, q) != std::string::npos;
+}
+
+// Box (area-average) downscale — same integer geometry as the nearest-skip
+// this replaces (step = w/want_w, nw = w/step, nh = h/step), so ?w= serves
+// the same SIZE it always did, just averaged instead of point-sampled.
+// Reads the full buffer, writes only nw*nh*4 (~2.4 MB at w=1024): a few ms.
+inline void box_downscale(const std::vector<uint8_t>& src, uint32_t w, uint32_t h,
+                          std::vector<uint8_t>& dst, uint32_t& nw, uint32_t& nh,
+                          uint32_t want_w) {
+    uint32_t step = w / want_w;
+    if (step < 1) step = 1;
+    nw = w / step;
+    nh = h / step;
+    dst.assign(static_cast<size_t>(nw) * nh * 4, 0);
+    const float inv = 1.0f / static_cast<float>(step * step);
+    for (uint32_t y = 0; y < nh; ++y) {
+        for (uint32_t x = 0; x < nw; ++x) {
+            float acc[4] = {0.f, 0.f, 0.f, 0.f};
+            for (uint32_t sy = 0; sy < step; ++sy) {
+                const uint8_t* row = src.data() + static_cast<size_t>(y * step + sy) * w * 4;
+                for (uint32_t sx = 0; sx < step; ++sx) {
+                    const uint8_t* p = row + static_cast<size_t>(x * step + sx) * 4;
+                    acc[0] += p[0]; acc[1] += p[1]; acc[2] += p[2]; acc[3] += p[3];
+                }
+            }
+            uint8_t* d = &dst[(static_cast<size_t>(y) * nw + x) * 4];
+            d[0] = static_cast<uint8_t>(acc[0] * inv + 0.5f);
+            d[1] = static_cast<uint8_t>(acc[1] * inv + 0.5f);
+            d[2] = static_cast<uint8_t>(acc[2] * inv + 0.5f);
+            d[3] = static_cast<uint8_t>(acc[3] * inv + 0.5f);
+        }
+    }
+}
+
+// Baseline JPEG through Windows Imaging Component (in-box, no new libs).
+// Alpha is dropped (JPEG has none). Returns false if COM/WIC refuses — the
+// caller falls back to the PNG path, so the route serves an IMAGE, never an
+// error body, even on WIC failure. COM init is per-thread and the HTTP
+// server serves every request on ONE accept thread, so the first fmt=jpg
+// request pays the init once and it holds for the process lifetime.
+inline bool jpeg_encode_wic(const uint8_t* rgba, uint32_t w, uint32_t h,
+                            uint32_t quality /*1..100*/, std::vector<uint8_t>& out) {
+    out.clear();
+    HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    if (FAILED(hr) && hr != RPC_E_CHANGED_MODE) return false;
+    const bool must_uninit = SUCCEEDED(hr);
+    bool ok = false;
+    IWICImagingFactory* fac = nullptr;
+    IWICStream* stream = nullptr;
+    IWICBitmapEncoder* enc = nullptr;
+    IWICBitmapFrameEncode* frame = nullptr;
+    IPropertyBag2* bag = nullptr;
+    IWICBitmap* bmp = nullptr;
+    IWICFormatConverter* conv = nullptr;
+    do {
+        if (FAILED(CoCreateInstance(CLSID_WICImagingFactory, nullptr,
+                                    CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&fac)))) break;
+        if (FAILED(CreateStreamOnHGlobal(nullptr, TRUE, &stream))) break;
+        if (FAILED(fac->CreateEncoder(GUID_ContainerFormatJpeg, nullptr, &enc))) break;
+        if (FAILED(enc->Initialize(stream, WICBitmapEncoderNoCache))) break;
+        if (FAILED(enc->CreateNewFrame(&frame, &bag))) break;
+        if (bag) {
+            // the JPEG encoder option "ImageQuality" is a VT_R4 in [0,1]
+            PROPBAG2 opt{};
+            opt.pstrName = const_cast<LPOLESTR>(L"ImageQuality");
+            VARIANT v;
+            VariantInit(&v);
+            v.vt = VT_R4;
+            v.fltVal = static_cast<float>(quality) / 100.0f;
+            bag->Write(1, &opt, &v);
+            VariantClear(&v);
+        }
+        if (FAILED(frame->Initialize(bag))) break;
+        const size_t bytes = static_cast<size_t>(w) * h * 4;
+        if (FAILED(fac->CreateBitmapFromMemory(w, h, GUID_WICPixelFormat32bppRGBA,
+                                               w * 4, static_cast<UINT>(bytes),
+                                               rgba, &bmp))) break;
+        if (FAILED(fac->CreateFormatConverter(&conv))) break;
+        if (FAILED(conv->Initialize(bmp, GUID_WICPixelFormat32bppBGR,
+                                    WICBitmapDitherTypeNone, nullptr, 0.0,
+                                    WICBitmapPaletteTypeCustom))) break;
+        if (FAILED(frame->SetSize(w, h))) break;
+        if (FAILED(frame->WriteSource(conv, nullptr))) break;
+        if (FAILED(frame->Commit())) break;
+        if (FAILED(enc->Commit())) break;
+        STATSTG st{};
+        if (FAILED(stream->Stat(&st, STATFLAG_NONAME))) break;
+        const ULONGLONG n64 = st.cbSize.QuadPart;
+        HGLOBAL hg = nullptr;
+        if (n64 == 0 || FAILED(GetHGlobalFromStream(stream, &hg))) break;
+        if (n64 > GlobalSize(hg)) break;
+        void* p = GlobalLock(hg);
+        if (!p) break;
+        out.assign(static_cast<uint8_t*>(p),
+                   static_cast<uint8_t*>(p) + static_cast<size_t>(n64));
+        GlobalUnlock(hg);
+        ok = true;
+    } while (false);
+    if (conv) conv->Release();
+    if (bmp) bmp->Release();
+    if (frame) frame->Release();
+    if (bag) bag->Release();
+    if (enc) enc->Release();
+    if (stream) stream->Release();
+    if (fac) fac->Release();
+    if (must_uninit) CoUninitialize();
+    return ok;
+}
+
+} // namespace f2
+// ═══ F2 END (file-scope helpers) ══════════════════════════════════════════════════
+
 int main(int argc, char** argv) {
     // 1 ms timer granularity for the frame-cap sleeps (Windows default is 15.6 ms).
     timeBeginPeriod(1);
@@ -940,6 +1085,120 @@ int main(int argc, char** argv) {
             std::vector<uint8_t> out;
             g_tick.export_verts(g_tick_verts, out);
             body.assign(reinterpret_cast<const char*>(out.data()), out.size());
+// C3 BEGIN — THE KERNEL STREAM: delta compression for /verts (the
+// internet-scale successor the web-kernel prereg named,
+// docs/evidence/agent_fleet/MATTER_KERNEL/SEAL_PREREGISTRATION.md).
+// Constraints stated before the mechanism: (1) the legacy framing
+// [u32 n][f32*9n] is untouched — every request without ?delta=1 is
+// answered exactly as before, so no existing consumer can regress;
+// (2) the delta chains against this route's previous DELTA-SERVED
+// export only (legacy pulls never advance the chain), which makes the
+// stream defined for ONE delta client — a u32 seq on every emission
+// lets a client detect a broken chain (dropped poll, interleaved
+// second viewer) and resync with one ?delta=key pull; (3) "unchanged"
+// is BIT-identical (memcmp), because idle exports are provably
+// byte-identical (apply_chain copies base_pos_ at rest; tint and
+// normals are pure functions of stable inputs); (4) a delta that
+// would not beat the full frame is never sent — the route falls back
+// to a keyframe; (5) the falsifier is a torn frame, so any size
+// inconsistency aborts to the legacy frame server-side and the CLIENT
+// refuses partial runs — nothing partial ever reaches a renderer.
+            {
+                bool want_delta = false, want_key = false;
+                size_t q3 = path.find('?');
+                if (q3 != std::string::npos) {
+                    size_t d3 = path.find("delta=", q3);
+                    if (d3 != std::string::npos) {
+                        size_t v3 = d3 + 6, e3 = v3;
+                        while (e3 < path.size() && path[e3] != '&') ++e3;
+                        std::string val = path.substr(v3, e3 - v3);
+                        want_key = (val == "key");     // forced keyframe: the resync pull
+                        want_delta = !want_key && (val == "1");
+                    }
+                }
+                if ((want_delta || want_key) && out.size() >= 4) {
+                    // Route-local cache under its own small mutex — NEVER
+                    // the tick lock: export_verts has already released
+                    // seal_mtx_, and the delta math runs on this request's
+                    // private copy, so the render loop is never blocked.
+                    static std::mutex c3_mtx;
+                    static std::vector<uint8_t> c3_prev;   // last delta-served export (legacy framing)
+                    static uint32_t c3_seq = 0;            // advances on every delta-framed emission
+                    static uint32_t c3_since_key = 0;      // runs-frames since the last keyframe
+                    static bool c3_has_prev = false;
+                    std::lock_guard<std::mutex> lk(c3_mtx);
+
+                    uint32_t n = 0;
+                    std::memcpy(&n, out.data(), 4);
+                    const size_t payload = static_cast<size_t>(n) * 36;
+                    bool chain_ok = c3_has_prev && c3_prev.size() == out.size();
+                    if (chain_ok)
+                        chain_ok = 0 == std::memcmp(out.data(), c3_prev.data(), 4);
+
+                    // one pass: runs of CHANGED vertices (36-byte stride,
+                    // bitwise compare — a pose recomputes values, but at
+                    // rest the recomputation is bit-identical)
+                    bool emit_key = want_key || !chain_ok || c3_since_key >= 60;
+                    std::vector<uint32_t> run_start, run_len;
+                    size_t changed = 0;
+                    if (!emit_key) {
+                        bool in_run = false;
+                        for (uint32_t v = 0; v < n; ++v) {
+                            bool ch = 0 != std::memcmp(out.data() + 4 + static_cast<size_t>(v) * 36,
+                                                       c3_prev.data() + 4 + static_cast<size_t>(v) * 36, 36);
+                            if (ch) {
+                                if (!in_run) { run_start.push_back(v); run_len.push_back(1); in_run = true; }
+                                else ++run_len.back();
+                                ++changed;
+                            } else {
+                                in_run = false;
+                            }
+                        }
+                        // the delta must never cost more than the full frame
+                        if (16 + run_start.size() * 8 + changed * 36 >= 4 + payload)
+                            emit_key = true;
+                    }
+
+                    std::vector<uint8_t> frame;
+                    if (emit_key) {
+                        // kernel framing: [u8 magic 0xD1][u8 flags][u16 rsvd]
+                        //                 [u32 n][u32 seq][u32 runs]
+                        frame.resize(16 + payload);        // resize zero-fills: rsvd=0, runs=0
+                        frame[0] = static_cast<char>(0xD1);
+                        frame[1] = 0;                      // flags 0 = keyframe
+                        std::memcpy(&frame[4], &n, 4);
+                        std::memcpy(&frame[8], &c3_seq, 4);
+                        if (n) std::memcpy(&frame[16], out.data() + 4, payload);
+                        c3_since_key = 0;
+                    } else {
+                        frame.resize(16 + run_start.size() * 8 + changed * 36);
+                        frame[0] = static_cast<char>(0xD1);
+                        frame[1] = 1;                      // flags 1 = runs
+                        std::memcpy(&frame[4], &n, 4);
+                        std::memcpy(&frame[8], &c3_seq, 4);
+                        uint32_t rc = static_cast<uint32_t>(run_start.size());
+                        std::memcpy(&frame[12], &rc, 4);
+                        size_t w = 16;
+                        for (size_t r = 0; r < run_start.size(); ++r) {
+                            uint32_t s = run_start[r], c = run_len[r];
+                            std::memcpy(&frame[w], &s, 4);
+                            std::memcpy(&frame[w + 4], &c, 4);
+                            std::memcpy(&frame[w + 8],
+                                        out.data() + 4 + static_cast<size_t>(s) * 36,
+                                        static_cast<size_t>(c) * 36);
+                            w += 8 + static_cast<size_t>(c) * 36;
+                        }
+                        ++c3_since_key;
+                    }
+                    ++c3_seq;
+                    c3_prev = out;       // the chain base is the EXPORTED state
+                    c3_has_prev = true;
+                    body.assign(reinterpret_cast<const char*>(frame.data()), frame.size());
+                }
+                // no ?delta=1|key (or an empty export): body already holds
+                // the legacy full frame — bit-for-bit the pre-C3 answer.
+            }
+// C3 END
             content_type = "application/octet-stream";
         } else if (p == "/tick_touch" && method == "POST") {
             // THE TOUCH, three forms:
@@ -1983,35 +2242,67 @@ int main(int argc, char** argv) {
                 }
                 if (g_engine->capture_ready()) {
                     std::vector<uint8_t> rgba; uint32_t w = 0, h = 0;
+                    // ══ F2 BEGIN: /frame fast path (prereg: docs/evidence/agent_fleet/ ══
+                    // ══ MATTER_KERNEL/SEAL_PREREGISTRATION.md — "F2: /FRAME FAST PATH") ══
+                    // The ~1.1 s floor lived in the ENCODE (stored-deflate PNG over the
+                    // full 14.7 MB buffer), not the capture: the fence wait above and
+                    // the capture/copy discipline are UNTOUCHED — render-thread safety
+                    // is load-bearing. Wins, derived in the prereg: ?w= downscales
+                    // BEFORE encode (box average, was a nearest skip); ?fmt=jpg
+                    // encodes JPEG through in-box WIC at ?q= (default 85; WIC failure
+                    // falls back to the PNG path — an image, never an error body).
+                    // No params -> byte-identical full-res PNG, exactly the route
+                    // that stood here.
+                    static const bool f2_bench = []{
+                        char buf[8];
+                        return GetEnvironmentVariableA("CHIMERA_FRAME_BENCH", buf, sizeof(buf)) > 0;
+                    }();
+                    LARGE_INTEGER f2_qpf{}, f2_t0{}, f2_t1{}, f2_t2{}, f2_t3{};
+                    if (f2_bench) { QueryPerformanceFrequency(&f2_qpf); QueryPerformanceCounter(&f2_t0); }
                     if (g_engine->capture_frame(rgba, w, h)) {
-                        // ?w=NNN downscales before encode: a 14 MB full-size
-                        // readback+PNG per poll hitched the render loop (the
-                        // operator measured 1% lows at 28 fps while the game
-                        // page polled). The world's picture must be cheap for
-                        // its cameras.
-                        uint32_t want_w = 0;
-                        { size_t q = path.find('?');
-                          if (q != std::string::npos) {
-                              size_t wq = path.find("w=", q);
-                              if (wq != std::string::npos)
-                                  want_w = (uint32_t)atoi(path.c_str() + wq + 2);
-                          } }
+                        if (f2_bench) QueryPerformanceCounter(&f2_t1);
+                        f2_t2 = f2_t1;
+                        uint32_t want_w = f2::query_uint(path, "w=");
+                        const bool want_jpg = f2::query_has(path, "fmt=jpg") ||
+                                              f2::query_has(path, "fmt=jpeg");
+                        uint32_t jpg_q = f2::query_uint(path, "q=");
+                        if (jpg_q < 1 || jpg_q > 100) jpg_q = 85;
                         if (want_w && want_w < w) {
-                            uint32_t step = w / want_w;
-                            if (step < 1) step = 1;
-                            uint32_t nw = w / step, nh = h / step;
-                            std::vector<uint8_t> down((size_t)nw * nh * 4);
-                            for (uint32_t y = 0; y < nh; ++y)
-                                for (uint32_t x = 0; x < nw; ++x) {
-                                    const uint8_t* src = &rgba[((size_t)(y*step)*w + (size_t)(x*step)) * 4];
-                                    uint8_t* dst = &down[((size_t)y*nw + x) * 4];
-                                    dst[0]=src[0]; dst[1]=src[1]; dst[2]=src[2]; dst[3]=src[3];
-                                }
+                            std::vector<uint8_t> down;
+                            uint32_t nw = 0, nh = 0;
+                            f2::box_downscale(rgba, w, h, down, nw, nh, want_w);
                             rgba.swap(down); w = nw; h = nh;
+                            if (f2_bench) QueryPerformanceCounter(&f2_t2);
                         }
-                        std::vector<uint8_t> encoded = png::encode_rgba(rgba.data(), w, h);
+                        std::vector<uint8_t> encoded;
+                        bool f2_jpeg_ok = false;
+                        if (want_jpg)
+                            f2_jpeg_ok = f2::jpeg_encode_wic(rgba.data(), w, h, jpg_q, encoded);
+                        if (f2_jpeg_ok) {
+                            content_type = "image/jpeg";
+                        } else {
+                            if (want_jpg)
+                                fprintf(stderr, "F2: WIC JPEG refused (w=%u h=%u q=%u) -- PNG fallback\n",
+                                        w, h, jpg_q);
+                            encoded = png::encode_rgba(rgba.data(), w, h);
+                            content_type = "image/png";
+                        }
+                        if (f2_bench) {
+                            QueryPerformanceCounter(&f2_t3);
+                            const double (*f2_ms)(LARGE_INTEGER, LARGE_INTEGER, LARGE_INTEGER) =
+                                [](LARGE_INTEGER a, LARGE_INTEGER b, LARGE_INTEGER f) {
+                                    return (double)(b.QuadPart - a.QuadPart) * 1000.0 /
+                                           (double)f.QuadPart;
+                                };
+                            fprintf(stderr,
+                                    "F2 /frame: copy %.1f ms | downscale %.1f ms | encode %.1f ms "
+                                    "-> %zu B (%s w=%u h=%u q=%u)\n",
+                                    f2_ms(f2_t0, f2_t1, f2_qpf), f2_ms(f2_t1, f2_t2, f2_qpf),
+                                    f2_ms(f2_t2, f2_t3, f2_qpf), encoded.size(),
+                                    f2_jpeg_ok ? "jpeg" : "png", w, h, f2_jpeg_ok ? jpg_q : 0u);
+                        }
                         body.assign(reinterpret_cast<const char*>(encoded.data()), encoded.size());
-                        content_type = "image/png";
+                        // ══ F2 END (route) ══════════════════════════════════════════════
                     } else {
                         body = "{\"ok\":false,\"error\":\"no frame\"}";
                         content_type = "application/json";

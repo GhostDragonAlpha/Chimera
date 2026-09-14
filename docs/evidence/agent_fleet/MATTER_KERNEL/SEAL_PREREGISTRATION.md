@@ -919,3 +919,176 @@ entirely.
 MembraneTick::set_gravity at the build window, flips the
 gravity_on_ initializer to true after the bar passes, runs
 tools/gravity_test.py, and appends the measured curve here.)
+
+---
+
+# THE KERNEL STREAM PREREGISTRATION — delta compression for /verts (fleet C3)
+
+The named successor of the web-kernel prereg above (its falsifier: "delta
+compression for the stream (only changed verts) — named now as the
+internet-scale successor"). W4 measured the cost: 18,459 verts x 9 f32 =
+664 KB per pull at ~3 Hz — ~2 MB/s of state per viewer, localhost-free
+only because localhost forgives. The internet does not.
+
+## STATEMENT
+
+The stream shrinks >10x on a resting/posed body with no visible
+stutter: /verts?delta=1 answers with a kernel-stream frame — a version
+byte + changed-run encoding ([u32 start][u32 count][f32*9*count] per
+run, bitwise "unchanged" = bit-identical) chained against the route's
+previous delta-served export, with a full keyframe every 60 delta
+polls (resync bound) and a u32 seq on every delta-framed emission
+(a dropped or interleaved poll is DETECTED, and one keyframe pull
+heals the chain immediately). The legacy framing [u32 n][f32*9n] is
+untouched for every request without ?delta=1.
+
+## DERIVATION (why the honest delta is "changed verts", before any code)
+
+- The payload is already f32 — quantization is spent; nothing is left
+  to squeeze there. The only honest redundancy left is TEMPORAL: the
+  same vertices re-sent unchanged.
+- IDLE IS BIT-STABLE, not approximately stable (membrane_tick.cpp,
+  read before writing this): apply_chain with all rig angles 0 assigns
+  verts9 = base_pos_ — a copy, bit-identical every tick; the tint
+  rewrite is a pure function of load (load = 0 at rest -> base color);
+  the posed-normal pass is a pure function of the positions. Pure
+  functions of identical inputs give identical outputs, so consecutive
+  exports of a resting body are byte-identical and the idle delta is
+  the frame header alone.
+- POSE (rig path): a pose rotates one part's vertex RANGE
+  (start..start+count) — the moved set is a fraction of the body.
+  Press: a 3 cm Gaussian with a 9*r0^2 cutoff — the moved set is a
+  local patch, and a HELD press is steady state (bit-stable again);
+  only the press/release transients stream.
+- WORST CASE IS BOUNDED BY CONSTRUCTION: if every vertex changed, the
+  run encoding would cost payload + 8 bytes/run, so the route emits a
+  keyframe whenever the runs would not beat the full frame — a delta
+  must never cost more than the thing it compresses.
+- THE CHAIN IS EXPLICIT BECAUSE IT MUST BE: a delta is defined against
+  the previous DELTA-SERVED export, so a dropped poll (or a second
+  interleaved delta client) would silently corrupt any client that
+  kept applying. Hence the seq on every emission: gap -> one keyframe
+  pull -> healed. The periodic keyframe bounds whatever the seq cannot
+  see. 60 polls was named in the directive; at the page's 3 Hz that is
+  a ~20 s bound, and the seq gap makes it a backstop, not the healer.
+
+## PREDICTIONS
+
+K1. IDLE: mean delta pull < 60 KB over a 30 s idle phase (>10x vs the
+    664 KB legacy pull) — the derivation says the header alone
+    (16 bytes) unless the bit-stability premise is wrong.
+K2. POSE: mean delta pull < 200 KB over a knee cycle (25 deg <-> 0
+    every 5 s) — the posed part's range, not the body.
+K3. BIT-EXACT RECONSTRUCTION: the stream is a transport encoding, not
+    an approximation — a client that applies every frame reconstructs
+    the exported state byte-for-byte (the bench applies each delta to
+    a reference copy and demands equality with the next keyframe's
+    payload).
+K4. THE PAGE NEVER STUTTERS: delta frames apply into the persistent
+    Float32Array with zero per-poll payload allocation (validation is
+    a header walk; runs copy in place); the GL upload path is
+    unchanged; a malformed delta costs one extra full pull, never a
+    freeze.
+K5. TORN FRAMES ARE REFUSED, NOT SHOWN: a truncated run body, a run
+    past the vertex count, trailing bytes, a bad header — every one
+    throws BEFORE any state is touched (the page keeps its last full
+    state until a keyframe lands); a dropped poll (transport loss
+    simulated in the bench) is caught by the seq gap and healed by one
+    keyframe pull, and the state then verifies bit-exact again.
+
+## FALSIFIER
+
+A torn frame visible in the browser: any state written by a failed
+decode, any partial run applied, OR the bars missed (idle mean >= 60 KB
+or pose mean >= 200 KB), OR a reconstruction mismatch the seq did not
+explain. On failure the successor is named, in order: (1) per-vertex
+quantization inside the runs (f32 -> 16-bit fixed point — the values
+came from authored sculpts, not instruments), (2) a real wire codec
+(LZ4 class) under the same framing, (3) a per-client chain (session
+state server-side) if interleaved viewers prove common.
+
+## OPEN (named)
+
+- Multi-client concurrency: v1 keeps ONE chain (single-viewer law).
+  A second delta client survives by seq gap -> keyframe resync every
+  interleaved poll (correct, degraded to full pulls), never corrupts.
+- The game_shell front door (tools/game_shell/server.py) strips query
+  strings on /api/verts — until the lead passes the query through,
+  page deltas degrade to full frames (safe: the decoder accepts both
+  framings). The bench hits the engine directly, so the measurement
+  does not depend on the door.
+- Tint-only churn (the visibility pass rewrites colors every tick):
+  at rest it is provably constant; under load it rides in the runs
+  with everything else. If K1 fails with position-stable colors, the
+  successor splits color channels from position runs.
+- GET with a body-less 502 from the front door during engine restarts
+  is unchanged behavior — the stream adds no new failure mode there.
+
+---
+
+# F2: /FRAME FAST PATH — PREREGISTRATION (agent F2, fleet 2, slot-01, 2026-09-13)
+
+Rule 0: statement, derivation, prediction, falsifier — BEFORE the code.
+The target: GET /frame's ~1.1 s floor (the trailer had to be time-remapped
+because of it; the website's thumbnail channel pays it too).
+
+## STATEMENT
+
+A preview-quality fast path serves /frame frames in <= 200 ms: JPEG
+(Windows Imaging Component — in-box, no new libs) when the request asks
+`?fmt=jpg`, encoder quality `?q=` (default 85), and the box-filter
+downscale applied BEFORE encode so the encoder sees the small buffer,
+never the full 14.7 MB one. The default route (no params) stays
+byte-identical: full-resolution PNG. The capture/fence discipline
+(request_capture -> capture_ready -> capture_frame) is untouched.
+
+## DERIVATION (where the 1.1 s goes, from the code as it stands)
+
+1. Fence: the route waits capture_ready — paced by the render thread,
+   one frame + vkQueueWaitIdle inside readback_captures (engine.cpp).
+   Milliseconds at a healthy frame pace. NOT this task's file.
+2. Copy: capture_frame() copies capture_rgba_ — 2560x1440x4 = 14.7 MB,
+   ~2-5 ms. Unavoidable at the route; the staged-downscale successor
+   would have to live on the render thread.
+3. Encode: png::encode_rgba is an UNCOMPRESSED stored-deflate PNG — a
+   second 14.7 MB scanline copy + a bitwise CRC32 (8 iterations per
+   byte, ~118M ops) + Adler-32 over the whole buffer: the measured
+   0.5-0.8 s single-threaded, the DOMINANT term. The honest wins:
+   (a) JPEG at q85 through WIC — ~5-10x over the stored-PNG encode;
+   (b) downscale BEFORE encode (the existing ?w= nearest-skip upgraded
+       to a box average): every encoder-side term shrinks from 14.7 MB
+       to ~2.4 MB at w=1024;
+   (c) ?q= clamps 1-100, default 85 — a taste number that belongs to
+       the HUMAN; the machine does not pick it.
+
+## PREDICTION
+
+/frame?w=1024&fmt=jpg serves in <= 200 ms at ~60-400 KB; /frame?fmt=jpg
+(full res) also beats the PNG floor. The lead benches at the build
+window (port 8107), two runs each with the first discarded (one-time
+COM init on the server thread), and appends the RUN RECORD below:
+
+```
+curl -s -o /dev/null -w 'png full      %{time_total}s  %{size_download}B\n' 'http://localhost:8107/frame'
+curl -s -o /dev/null -w 'png w=1024    %{time_total}s  %{size_download}B\n' 'http://localhost:8107/frame?w=1024'
+curl -s -o /dev/null -w 'jpg q85 w1024 %{time_total}s  %{size_download}B\n' 'http://localhost:8107/frame?w=1024&fmt=jpg'
+curl -s -o /dev/null -w 'jpg q60 w1024 %{time_total}s  %{size_download}B\n' 'http://localhost:8107/frame?w=1024&fmt=jpg&q=60'
+curl -s -o /dev/null -w 'jpg q85 full  %{time_total}s  %{size_download}B\n' 'http://localhost:8107/frame?fmt=jpg'
+```
+
+(One engine launch with CHIMERA_FRAME_BENCH=1 gives the stderr
+copy/downscale/encode decomposition; fence = curl total minus those.)
+
+## FALSIFIER
+
+The fast path serves slower than 400 ms, OR q85 artifacts are visible
+to the eye on the thumbnail channel, OR the default PNG route's bytes
+change. Named successor, in order: (1) render-thread-side staged
+downscale (blit to a small target before readback) — engine.cpp
+surgery, explicitly NOT agent F2's file; (2) a real compression stage
+in png_encoder.hpp; (3) the operator's taste on q.
+
+## RUN RECORD
+
+(open — the lead runs the bench commands at the window and appends the
+measured numbers here.)
