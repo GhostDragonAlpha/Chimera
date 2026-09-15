@@ -1,0 +1,223 @@
+{
+ "name": "byhand-after3",
+ "started": "2026-09-15T05:29:59.162Z",
+ "url": "http://127.0.0.1:8206/?debug=1",
+ "lessons": [
+  {
+   "id": "wake_the_cell",
+   "control": "force slider drag + click-hold the belly + let go",
+   "actions": [
+    "drag slider to 50000 N",
+    "press belly 2200 ms",
+    "click \"let go\""
+   ],
+   "passed": true,
+   "sentence": "PASSED — you pressed, the cell woke, and the water healed itself. the world is real.",
+   "judgeLine": "judge: wake_the_cell phase=release goalMet=true passed=true touchTarget=set lastTouchForce=50000 holding=false",
+   "midHoldCells": [
+    0,
+    2734980,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "the_gentle_hand",
+   "control": "force slider drag + click-hold a foot + let go",
+   "actions": [
+    "WRONG: press foot at 50000 N",
+    "drag slider to 6000 N",
+    "press foot 2200 ms",
+    "click \"let go\""
+   ],
+   "passed": true,
+   "sentence": "PASSED — a gentle hand: the small water answered a small touch.",
+   "judgeLine": "judge: the_gentle_hand phase=release goalMet=true passed=true touchTarget=set lastTouchForce=6100 holding=false",
+   "overForceHint": "the feet woke — but the hand pressed at 50000 N. this lesson wants under 8000 N.",
+   "overForceCells": [
+    16752400,
+    0,
+    0,
+    0
+   ],
+   "gentleCells": [
+    3648770,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "the_healing",
+   "control": "click-hold any part + let go + wait",
+   "actions": [
+    "press belly 2200 ms",
+    "click \"let go\"",
+    "waited for the heal: true"
+   ],
+   "passed": true,
+   "sentence": "PASSED — you let go, and the body healed itself. it never needed you.",
+   "judgeLine": "judge: the_healing phase=release goalMet=true passed=true touchTarget=set lastTouchForce=50000 holding=false"
+  },
+  {
+   "id": "bend_the_knee",
+   "control": "knee angle slider + \"post the wish\" button",
+   "actions": [
+    "drag knee slider to 60 (a wrong wish first)",
+    "wrong-wish verdict: \"the wish held knee_L at 60° — this lesson waits for knee_L at 40°.\"",
+    "drag knee slider to 40 and post",
+    "slider read 40 deg"
+   ],
+   "passed": true,
+   "sentence": "PASSED — the creature obeyed a wish, not a touch.",
+   "judgeLine": "judge: bend_the_knee phase=goal goalMet=true passed=true touchTarget=null lastTouchForce=0 holding=false",
+   "note": null,
+   "controlsSeen": {
+    "slider": true,
+    "oldChip": false
+   }
+  },
+  {
+   "id": "the_whole_body",
+   "control": "click-hold belly, then click-hold the shins, let go",
+   "actions": [
+    "press belly 2200 ms",
+    "press shin 5000 ms (a human stare)",
+    "click \"let go\""
+   ],
+   "passed": true,
+   "sentence": "PASSED — two rooms woke under one hand, and the whole body went quiet together.",
+   "judgeLine": "judge: the_whole_body phase=release goalMet=true passed=true touchTarget=set lastTouchForce=20200 holding=false",
+   "shinHoldCells": [
+    0,
+    61653.9,
+    0,
+    13567200
+   ],
+   "afterBelly": {
+    "goalMet": false,
+    "note": "touchTarget=set lastTouchForce=20200 holding=false"
+   },
+   "afterShin": {
+    "goalMet": true,
+    "note": "touchTarget=set lastTouchForce=20200 holding=true"
+   },
+   "note": "shin goal latched={\"goalMet\":true,\"note\":\"touchTarget=set lastTouchForce=20200 holding=true\"}"
+  },
+  {
+   "id": "the_balance",
+   "control": "one wish chip per ankle, each with its own angle slider",
+   "actions": [
+    "drag ankle_L slider to 5, post it",
+    "drag ankle_R slider to -5, post it",
+    "passed after first wish: false"
+   ],
+   "passed": true,
+   "sentence": "PASSED — two opposite wishes held at once. that balance is yours.",
+   "judgeLine": "judge: the_balance phase=goal goalMet=true passed=true touchTarget=null lastTouchForce=0 holding=false pair[ankle_L=true ankle_R=true]",
+   "note": null
+  },
+  {
+   "id": "the_heavy_hand",
+   "control": "force slider to max + click-hold the belly + let go",
+   "actions": [
+    "drag slider to 50000 N",
+    "press belly 5000 ms",
+    "click \"let go\""
+   ],
+   "passed": true,
+   "sentence": "PASSED — the same body, your whole strength: pressure follows force.",
+   "judgeLine": "judge: the_heavy_hand phase=release goalMet=true passed=true touchTarget=set lastTouchForce=50000 holding=false",
+   "torsoPeakPa": 2734980,
+   "lessonWantsPa": 1500000,
+   "note": "reachable"
+  },
+  {
+   "id": "the_cascade",
+   "control": "force slider to max + click-hold the belly + let go",
+   "actions": [
+    "press belly 3000 ms",
+    "click \"let go\""
+   ],
+   "passed": true,
+   "sentence": "PASSED — the belly woke and the legs slept through it. sealed means sealed.",
+   "judgeLine": "judge: the_cascade phase=release goalMet=true passed=true touchTarget=set lastTouchForce=50000 holding=false",
+   "midHoldCells": [
+    0,
+    2734980,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "the_stand",
+   "control": "\"wake the world's weight\" button on the lesson card",
+   "actions": [
+    "clicked \"wake the world's weight\"",
+    "world: gravity_on=true root_y=0.0095"
+   ],
+   "passed": true,
+   "sentence": "PASSED — the world turned on its own weight, and the creature stood still in it.",
+   "judgeLine": "judge: the_stand phase=goal goalMet=true passed=true touchTarget=null lastTouchForce=0 holding=false armed=true",
+   "note": null,
+   "passedOverride": true,
+   "world": "gravity_on=true root_y=0.0095"
+  },
+  {
+   "id": "the_graduation",
+   "control": "click-hold three different parts + let go",
+   "actions": [
+    "belly, left foot, left shin -- 2000 ms each",
+    "click \"let go\""
+   ],
+   "passed": true,
+   "sentence": "PASSED — three rooms woke for your hand, and you let them all go quiet.",
+   "judgeLine": "judge: the_graduation phase=release goalMet=true passed=true touchTarget=set lastTouchForce=20200 holding=false woken=3/3",
+   "cellsPerPress": [
+    [
+     0,
+     1031210,
+     0,
+     0
+    ],
+    [
+     9243320,
+     124634,
+     0,
+     0
+    ],
+    [
+     1246860,
+     12927.4,
+     0,
+     12912100
+    ]
+   ],
+   "judgeRest": " touchTarget=set lastTouchForce=20200 holding=false woken=3/3"
+  }
+ ],
+ "checks": {
+  "arrows": {
+   "from": "1 / 10",
+   "afterNext": "2 / 10",
+   "afterPrev": "1 / 10",
+   "nextWorks": true,
+   "prevWorks": true
+  },
+  "keyboardBeyond5": {
+   "pressed7": "7 / 10",
+   "changed": true
+  },
+  "waterMissMessage": "your hand touched only water — nothing of the creature. aim for the torso, then hold.",
+  "bloodLabels": [
+   "feet (cell 0): V=0.288 m3  P=0.000 MPa",
+   "torso (cell 1): V=12.509 m3  P=0.000 MPa",
+   "thighs (cell 2): V=0.693 m3  P=0.000 MPa",
+   "shins (cell 3): V=0.335 m3  P=0.000 MPa"
+  ]
+ },
+ "pageErrors": [],
+ "finished": "2026-09-15T05:32:36.007Z",
+ "distinctSentences": true,
+ "passedCount": 10
+}

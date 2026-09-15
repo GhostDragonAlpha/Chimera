@@ -188,6 +188,32 @@
   }
   #force-meter-note .strength-note{position:absolute;right:0}
 
+  /* ==== L1 BY-HAND FIX: the pose-wish control (one row per wish) ====
+     Same W2 doctrine as the force slider: the input's OWN track draws the
+     fill, so what is drawn is what hits. A latched wish turns green. */
+  .pose-row{display:flex;align-items:center;gap:8px;margin:7px 0 2px}
+  .pose-row .pose-joint{font-size:12px;color:var(--muted);width:58px;flex:0 0 58px}
+  .pose-row input[type=range]{
+    flex:1;height:22px;cursor:pointer;min-width:0;
+    -webkit-appearance:none;appearance:none;background:transparent;
+  }
+  .pose-row input[type=range]::-webkit-slider-runnable-track{
+    height:5px;border-radius:3px;
+    background:linear-gradient(90deg,#3d6b60,var(--accent)) 0 0/var(--fill,50%) 100% no-repeat,
+               var(--deep);
+    border:1px solid var(--line-soft);
+  }
+  .pose-row input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+    background:var(--accent);border:2px solid #0e1116;
+    box-shadow:0 0 5px rgba(127,212,193,.4);
+    margin-top:-5px;
+  }
+  .pose-row .pose-val{font-size:12px;color:var(--text);width:84px;flex:0 0 84px;text-align:right}
+  .pose-row .btn{padding:5px 10px;font-size:12px;flex:0 0 auto}
+  .pose-row.latched .pose-val{color:var(--good)}
+  .pose-row.latched input[type=range]{opacity:.45}
+
   /* full-screen overlays (intro + payoff): mostly transparent —
      the creature keeps rendering behind them */
   .overlay{
@@ -311,8 +337,17 @@
              aria-label="lesson progress"></div>
         <h3 class="lesson-title" id="lesson-title">…</h3>
         <p class="lesson-body" id="lesson-body">…</p>
-        <div id="pose-btn-wrap" style="display:none">
-          <button id="pose-btn" class="btn" type="button" style="width:100%">bend the knee</button>
+        <!-- L1 BY-HAND FIX: the pose wish is now a CONTROL, not a chip. The
+             old single button posted the lesson's goal verbatim -- one click
+             passed L4 ("it passes itself") and one click posted BOTH of L6's
+             wishes, then stayed on screen inert. Now each wish is a row:
+             the player sets the angle and posts it themselves. -->
+        <div id="pose-btn-wrap" style="display:none"></div>
+        <!-- L1 BY-HAND FIX (the_stand): the world's weight used to switch on
+             by itself at lesson start -- the lesson passed with zero player
+             action. The page now WAITS for the player to press this. -->
+        <div id="gravity-btn-wrap" style="display:none">
+          <button id="gravity-btn" class="btn" type="button" style="width:100%">wake the world's weight</button>
         </div>
         <div id="verdict" class="verdict">the creature waits.</div>
       </section>
@@ -361,7 +396,7 @@
       <div class="key-diagram" aria-hidden="true">
         <span><span class="kbd">drag</span>look</span>
         <span><span class="kbd">click</span><span class="kbd">SPACE</span>touch · hold = press</span>
-        <span><span class="kbd">1</span>–<span class="kbd">5</span>lessons</span>
+        <span><span class="kbd">1</span>–<span class="kbd">0</span>lessons</span>
       </div>
       <!-- E4V2: the current lesson's SPACE hint (phrase filled by E4setIntroKeyHint) -->
       <p class="intro-key-hint" id="intro-key-hint" aria-label="Keyboard touch hint"><span
@@ -417,9 +452,18 @@
      engine accepted. The judge refuses to latch a pressure goal unless the
      crossing happened inside this window -- "the qualifying input occurred
      under your hand". Without it a lesson could pass on residual or
-     injected cell pressure that no press ever caused. */
+     injected cell pressure that no press ever caused.
+     L1 BY-HAND FIX: the window used to be a bare 2.5 s clock from the press
+     START, so it expired while the player was still holding -- the walker's
+     scripted 2.0-2.2 s presses fit inside it, but a human holding a press
+     and watching the gauge climb (measured holds of 4-5 s in the by-hand
+     audit) had the latch silently refuse mid-hold. While `holding` is true
+     the press IS under the hand -- the engine holds it and every release
+     funnel (pointerup, keyup, ESC, blur, tab-hide, let-go) clears it -- so
+     the window stays open for the whole live press and keeps the 2.5 s
+     tail for a crossing seen just after release. */
   var lastTouchAt = 0;
-  function pressFresh() { return Date.now() - lastTouchAt < 2500; }
+  function pressFresh() { return holding || (Date.now() - lastTouchAt < 2500); }
   /* H7 (D7): the engine's broken zero-volume cells (measured: cell4
      V=4.66e-9 m3 -- nominally zero, five orders below the smallest real
      compartment's 0.288 m3 -- reporting P up to 1.62 GPa; an engine-side
@@ -466,9 +510,19 @@
   /* R4: the five lessons, data-driven (tools/game_shell/lessons.json) */
   var LESSONS = [];
   var lessonIdx = 0;
+  var lessonShownAt = 0;       // L1: when the current lesson card was shown
+                               // (the 25 s stall hint keys off this)
   var lessonState = {};        // id -> {goalMet, passed, phase}
   var JOINT_INDEX = { hip_L: 13, hip_R: 14, knee_L: 15, knee_R: 16,
                       ankle_L: 17, ankle_R: 18 };
+  /* L1 BY-HAND FIX (judge 2: "the four blood cells are never labeled -- I
+     poked the whole body to guess which is which"): the four compartments
+     have NAMES -- the pack's own cell map -- and the page now speaks them:
+     the blood panel, the pressed-part readout, and every lesson hint use
+     the body part, not a bare index. */
+  var CELL_PARTS = ['feet', 'torso', 'thighs', 'shins'];
+  function cellPart(i) { return CELL_PARTS[i] || ('cell ' + i); }
+  function cellIs(i) { return cellPart(i) + (i === 1 ? ' is' : ' are'); }
   /* W1 (R4, LESSON_JUDGE_SPEC §2/§9): the goal types this page implements.
      A lesson whose goal.type is not on this list HOLDS -- it can neither
      crash the judge nor pass by accident. */
@@ -516,14 +570,30 @@
       st0.pairOk = {}; st0.wokenSet = {};
       st0.gravityArmed = false;
       st0.primaryMet = false; st0.alsoMet = false; st0.halfNote = false;
+      st0.pairNote = false; st0.forceNote = false; st0.hintShown = false;
     }
+    lessonShownAt = Date.now();
     $('lesson-index').textContent = (lessonIdx + 1) + ' / ' + LESSONS.length;
     $('lesson-title').textContent = l.title;
     $('lesson-body').textContent = l.body;
-    // W1 (SPEC §6): pose_pair gets the pose button too -- each press posts
-    // the wishes not yet latched, and the label names the pending one.
+    // W1 (SPEC §6): pose lessons get the pose-wish CONTROL -- one row per
+    // wish (joint, angle slider the player sets, a post button per row).
+    // L1 BY-HAND FIX: the old single button posted the goal verbatim (one
+    // click passed; L6's single click posted BOTH wishes and then sat
+    // inert). The lesson now demands its action.
     var isPose = l.goal.type === 'pose_reach' || l.goal.type === 'pose_pair';
     $('pose-btn-wrap').style.display = isPose ? 'block' : 'none';
+    if (isPose) buildPoseCtrl(l);
+    // L1 BY-HAND FIX: the gravity lesson's control is the player's -- the
+    // page used to enable the world's weight itself at lesson start, so the
+    // lesson passed with no action at all. Now the player presses it.
+    var isGravity = l.goal.type === 'gravity_on';
+    $('gravity-btn-wrap').style.display = isGravity ? 'block' : 'none';
+    if (isGravity) {
+      var gb = $('gravity-btn');
+      gb.disabled = false;
+      gb.textContent = "wake the world's weight";
+    }
     // a pressure lesson must start with the body AT REST: a held pose
     // shifts the volumes off v0 and every calm check would dead-end.
     // H10-WALKER FIX: the reset is now AWAITED (and each joint post
@@ -534,23 +604,11 @@
     // carried the ankle pose's 6 MPa signature. Callers that do not
     // await showLesson simply move on; the window still opens only
     // after the world is verifiably back at rest.
+    // L1 BY-HAND FIX: a POSE lesson no longer auto-resets 1.8 s after its
+    // pass (the old timeout reset the body so fast that judge 1 "never saw
+    // the knee bend"); the bend now STAYS until the player leaves -- and
+    // entering any pressure lesson still resets, right here.
     if (!isPose) await resetPose();
-    if (l.goal.type === 'pose_reach')
-      $('pose-btn').textContent = (l.goal.joint || 'joint') + ' → ' + l.goal.deg + '°';
-    if (l.goal.type === 'pose_pair') {
-      var pend = W1pendingWish(l);
-      $('pose-btn').textContent = pend
-        ? (pend.joint + ' → ' + pend.deg + '°') : 'hold the balance';
-    }
-    // W1 (SPEC §10): the gravity lesson turns the world on ITSELF -- the
-    // page POSTs /api/gravity {on:true} once at lesson start and arms the
-    // judge when the enable resolves. Idempotent in the engine; a replay of
-    // an already-settled world simply re-latches on its first poll.
-    if (l.goal.type === 'gravity_on') {
-      var stg = curState();
-      stg.gravityArmed = false;
-      enableGravity(stg);
-    }
     var st = curState();
     // G2 (SPEC §9, KNOWN_GOAL_TYPES hold guard): a lesson whose goal.type
     // the page has not implemented HOLDs AND SAYS SO -- judgeState already
@@ -558,10 +616,70 @@
     // leaving the player waiting on a lesson that will never judge.
     if (KNOWN_GOAL_TYPES.indexOf(l.goal.type) < 0)
       setVerdict('the teachers have not built this lesson yet.', '');
-    else if (st.passed) setVerdict('PASSED — this one is yours already.', 'good');
+    else if (st.passed) setVerdict('PASSED — this one is yours already. the controls below still answer — play it again.', 'good');
     else if (st.goalMet) setVerdict('the goal is met — finish the release.', 'accent');
+    else if (isGravity) setVerdict("the creature waits at rest — wake the world's weight when you are ready.", '');
     else setVerdict('the creature waits.', '');
     syncTouchTarget();
+  }
+
+  /* L1 BY-HAND FIX: the pose-wish control. One row per wish: the joint's
+     name, an angle slider the player sets by hand, and a post button that
+     sends ONLY that wish. The judge (observePose) still latches on the
+     engine's accepted post within +-2 degrees of the lesson's goal -- but
+     now the player, not the button, chooses the angle. */
+  function buildPoseCtrl(l) {
+    var wrap = $('pose-btn-wrap');
+    wrap.innerHTML = '';
+    var wishes = (l.goal.type === 'pose_reach')
+      ? [{ joint: l.goal.joint, deg: l.goal.deg }]
+      : (l.goal.joints || []);
+    for (var i = 0; i < wishes.length; i++) {
+      var w = wishes[i];
+      var suffix = (l.goal.type === 'pose_pair') ? '-' + i : '';
+      var row = document.createElement('div');
+      row.className = 'pose-row';
+      row.id = 'pose-row' + suffix;
+      row.innerHTML =
+        '<span class="pose-joint">' + w.joint + '</span>' +
+        '<input type="range" id="pose-angle' + suffix + '" min="-90" max="90" step="1" value="0"' +
+        ' aria-label="' + w.joint + ' angle">' +
+        '<span class="pose-val" id="pose-val' + suffix + '">' + w.joint + ' → 0°</span>' +
+        '<button class="btn pose-post" id="pose-post' + suffix + '" type="button">post</button>';
+      wrap.appendChild(row);
+      (function (joint, sfx) {
+        var angle = $('pose-angle' + sfx), val = $('pose-val' + sfx);
+        angle.addEventListener('input', function () {
+          val.textContent = joint + ' → ' + angle.value + '°';
+          angle.style.setProperty('--fill', ((Number(angle.value) + 90) / 180 * 100) + '%');
+        });
+        angle.style.setProperty('--fill', ((Number(angle.value) + 90) / 180 * 100) + '%');
+        $('pose-post' + sfx).addEventListener('click', async function () {
+          var l2 = curLesson();
+          if (!l2) return;
+          var want = (l2.goal.type === 'pose_reach') ? l2.goal : (l2.goal.joints || []).filter(function (q) { return q.joint === joint; })[0];
+          if (!want) return;
+          var deg = Number(angle.value);
+          var body = await postPose(JOINT_INDEX[joint], deg);
+          if (!(body && body.ok === true)) { poseRefused(body); return; }
+          if (Math.abs(deg - want.deg) <= POSE_TOL_DEG) {
+            markPoseRow(sfx, true);                     // the wish is held
+          } else {
+            // HONEST REFUSAL (by-hand audit (d)): an accepted wish that is
+            // not the lesson's wish says so, with both numbers.
+            setVerdict('the wish held ' + joint + ' at ' + deg + '° — this lesson waits for ' +
+              joint + ' at ' + want.deg + '°.', 'warn');
+          }
+        });
+      })(w.joint, suffix);
+    }
+  }
+  function markPoseRow(sfx, held) {
+    var row = $('pose-row' + sfx);
+    if (!row) return;
+    row.classList.toggle('latched', !!held);
+    var btn = $('pose-post' + sfx);
+    if (btn && held) btn.textContent = 'held';
   }
   $('lesson-prev').addEventListener('click', function () { showLesson(lessonIdx - 1); });
   $('lesson-next').addEventListener('click', function () { showLesson(lessonIdx + 1); });
@@ -600,30 +718,60 @@
     observePose(joint_index, deg, !!(body && body.ok === true));
     return body;
   }
+  /* L1 BY-HAND FIX: which pose row carries this joint (for the held mark) */
+  function poseRowSuffix(joint) {
+    var l = curLesson();
+    if (!l) return '';
+    if (l.goal.type === 'pose_reach') return (l.goal.joint === joint) ? '' : null;
+    var js = l.goal.joints || [];
+    for (var i = 0; i < js.length; i++)
+      if (js[i].joint === joint) return '-' + i;
+    return null;
+  }
   function observePose(joint_index, deg, accepted) {
     var l = curLesson();
     if (!l) return;
     var g = l.goal;
     if (g.type !== 'pose_reach' && g.type !== 'pose_pair') return;  // pose goals only
     var st = curState();
-    if (st.passed || !accepted) return;      // done, or refused: do not latch
+    /* L1 BY-HAND FIX (judge 2's L4: the chip "stayed on screen and my click
+       on it did nothing"): a PASSED lesson's pose control stays LIVE. A
+       replayed wish that matches the goal re-speaks the lesson's own pass
+       line instead of being swallowed. */
+    if (st.passed) {
+      if (!accepted) return;
+      var wishes = (g.type === 'pose_reach') ? [g] : (g.joints || []);
+      for (var rp = 0; rp < wishes.length; rp++) {
+        var wr = wishes[rp];
+        if (joint_index === JOINT_INDEX[wr.joint] &&
+            Math.abs(deg - wr.deg) <= POSE_TOL_DEG) {
+          snd('passed');
+          setVerdict(passLine(l, 'the lesson is yours.'), 'good');
+          var sfx0 = poseRowSuffix(wr.joint);
+          if (sfx0 !== null) markPoseRow(sfx0, true);
+        }
+      }
+      return;
+    }
+    if (!accepted) return;      // refused: do not latch
     if (g.type === 'pose_reach') {
       if (joint_index === JOINT_INDEX[g.joint] && Math.abs(deg - g.deg) <= POSE_TOL_DEG) {
         st.goalMet = true; st.passed = true;
         snd('passed');
+        // the lesson's OWN pass line, and it STAYS: the knee keeps its bend
+        // until the player leaves (entering any pressure lesson resets).
         setVerdict(passLine(l, 'the joint obeys the muscle.'), 'good');
-        // the lesson passed; the body returns to rest for the next one
-        setTimeout(async function () {
-          await resetPose();
-          setVerdict('PASSED — and the body stands at rest again.', 'good');
-        }, 1800);
       }
     } else {
       // W1 pose_pair: per-joint sticky latches, any order, any moments
       for (var i = 0; i < g.joints.length; i++) {
         var j = g.joints[i];
         if (joint_index === JOINT_INDEX[j.joint] &&
-            Math.abs(deg - j.deg) <= POSE_TOL_DEG) st.pairOk[j.joint] = true;
+            Math.abs(deg - j.deg) <= POSE_TOL_DEG) {
+          st.pairOk[j.joint] = true;
+          var sfx = poseRowSuffix(j.joint);
+          if (sfx !== null) markPoseRow(sfx, true);
+        }
       }
       var all = true, k;
       for (k = 0; k < g.joints.length; k++)
@@ -632,23 +780,10 @@
         st.goalMet = true; st.passed = true;
         snd('passed');
         setVerdict(passLine(l, 'two wishes, one balance.'), 'good');
-        setTimeout(async function () {
-          await resetPose();
-          setVerdict('PASSED — and the body stands at rest again.', 'good');
-        }, 1800);
       } else {
         setVerdict('one wish is held — the other waits.', 'accent');
-        var pend = W1pendingWish(l);           // name the wish still open
-        if (pend) $('pose-btn').textContent = pend.joint + ' → ' + pend.deg + '°';
       }
     }
-  }
-  /* W1: the first wish of a pose_pair lesson not yet latched (button label) */
-  function W1pendingWish(l) {
-    var st = curState();
-    for (var i = 0; i < l.goal.joints.length; i++)
-      if (!st.pairOk[l.goal.joints[i].joint]) return l.goal.joints[i];
-    return null;
   }
   async function resetPose() {
     // return EVERY joint to rest: the volumes follow exactly (measured
@@ -672,24 +807,27 @@
     var why = (body && body.error) ? String(body.error) : 'the world gave no reason.';
     setVerdict('the pose was refused — ' + why, 'warn');
   }
-  $('pose-btn').addEventListener('click', async function () {
-    var l = curLesson(); if (!l) return;
-    var st = curState();
-    if (st.passed) return;
-    if (l.goal.type === 'pose_reach') {
-      var idx = JOINT_INDEX[l.goal.joint];
-      if (idx === undefined) { setVerdict('unknown joint — refused.', 'warn'); return; }
-      var body = await postPose(idx, l.goal.deg);
-      if (!(body && body.ok === true)) poseRefused(body);
-    } else if (l.goal.type === 'pose_pair') {   // W1: post every wish not yet
-      for (var i = 0; i < l.goal.joints.length; i++) {  // latched, in list order
-        var j = l.goal.joints[i];
-        if (st.pairOk[j.joint]) continue;
-        var jidx = JOINT_INDEX[j.joint];
-        if (jidx === undefined) { setVerdict('unknown joint — refused.', 'warn'); return; }
-        var b2 = await postPose(jidx, j.deg);
-        if (!(b2 && b2.ok === true)) { poseRefused(b2); return; }
-      }
+
+  /* L1 BY-HAND FIX (the_stand): the world's weight is the PLAYER'S verb
+     now. The judge arms only when this click's enable resolves ok:true
+     (H10's false-arm fix carries over), so the pass always sits downstream
+     of a real press. */
+  $('gravity-btn').addEventListener('click', async function () {
+    var l = curLesson();
+    if (!l || l.goal.type !== 'gravity_on') return;
+    var stg = curState();
+    if (stg.gravityArmed) return;
+    var gb = $('gravity-btn');
+    gb.disabled = true;
+    gb.textContent = 'the world is taking the weight…';
+    stg.gravityArmed = false;
+    await enableGravity(stg);
+    if (stg.gravityArmed) {
+      gb.textContent = "the world's weight is on";
+      setVerdict("the world's weight is on — watch the body settle into stillness.", 'accent');
+    } else {
+      gb.disabled = false;
+      gb.textContent = "wake the world's weight";
     }
   });
 
@@ -1420,29 +1558,45 @@
     return x.toFixed(3);
   }
 
+  /* L1 BY-HAND FIX: the hand NAMES the part it is pressing. The page keeps
+     the per-cell pressures it last rendered; when a held press lifts one
+     cell clearly above where the press started, the hand line says the
+     BODY PART (judge 2: "the four blood cells are never labeled"). */
+  var lastCellsP = null;      // the P vector as of the last renderBlood
+  var pressedCell = -1;       // the cell the live press has visibly woken
+  var pressBaseP = null;      // the P vector when the live press landed
+  var pressedNoteShown = false;  // the wrong-part hint fires once per press
+  function pressingText(force, tail) {
+    return 'pressing' + (pressedCell >= 0 ? ' the ' + cellPart(pressedCell) : '') +
+      ' — ' + force + ' N' + (tail || '');
+  }
+
   function renderBlood(s) {
     var cells = (s && s.cells) || [];
     if (!cells.length) { bloodEl.textContent = 'no cells reported.'; return; }
+    var psNow = [];
     var html = '';
     for (var i = 0; i < cells.length; i++) {
       var c = cells[i];
+      psNow.push(isFinite(Number(c.P)) ? Number(c.P) : 0);
       /* H7 FIX (D7): a zero-volume cell is the engine's garbage -- measured,
          cell4 read V=0.000000 with P=1622.780 MPa (and -0.009 MPa negatives
          elsewhere). The page used to print that number as if it were blood
          pressure; a buyer steering by it was being lied to. A cell with no
          water is shown as sealed solid, pressure dashes. */
       if (brokenCell(c)) {
-        html += 'cell ' + i + ': V=' + fmt(Number(c.V) || 0) + ' m3  P=---  sealed solid (no water)\n';
+        html += cellPart(i) + ' (cell ' + i + '): V=' + fmt(Number(c.V) || 0) +
+          ' m3  P=---  sealed solid (no water)\n';
         continue;
       }
       var rawP = Number(c.P);
       if (!isFinite(rawP)) {
-        html += 'cell ' + i + ': V=' + fmt(Number(c.V)) + ' m3  P=---\n';
+        html += cellPart(i) + ' (cell ' + i + '): V=' + fmt(Number(c.V)) + ' m3  P=---\n';
         continue;
       }
       var p = rawP;
       var awake = Math.abs(p) >= 2e5;
-      html += 'cell ' + i + ': V=' + fmt(c.V) + ' m3  P=' +
+      html += cellPart(i) + ' (cell ' + i + '): V=' + fmt(c.V) + ' m3  P=' +
         (awake ? '<span class="awake">' : '') + fmt(p / 1e6) + (awake ? '</span>' : '') +
         ' MPa\n';
     }
@@ -1451,6 +1605,22 @@
     }
     /* only numbers and our own span go in here — no external text */
     bloodEl.innerHTML = html;
+    lastCellsP = psNow;
+    /* the pressed-part readout: the first cell the live press lifts >= 20 kPa
+       above where the press found it owns the hand line */
+    if (holding && pressBaseP && psNow.length === pressBaseP.length) {
+      var bestC = -1, bestD = 20000;
+      for (var pi = 0; pi < psNow.length; pi++) {
+        var d = psNow[pi] - pressBaseP[pi];
+        if (d > bestD) { bestD = d; bestC = pi; }
+      }
+      if (bestC >= 0 && bestC !== pressedCell) {
+        pressedCell = bestC;
+        if (pressSource === 'space') setHand(pressingText(lastTouchForce, ' (space)'));
+        else if (pressSource === 'gamepad') setHand(pressingText(lastTouchForce, ' (gamepad)'));
+        else if (holding) setHand(pressingText(lastTouchForce));
+      }
+    }
   }
 
   function judgeState(s) {
@@ -1459,11 +1629,19 @@
     /* W1 hold guard (SPEC §9): a lesson whose goal.type this page has not
        implemented HOLDS -- it can neither crash the judge nor pass. */
     if (KNOWN_GOAL_TYPES.indexOf(l.goal.type) < 0) return;
+    var st = curState();
+    if (st.passed) return;
+    /* L1 BY-HAND FIX (SPEC §4's HINT_AFTER_MS, now real): when the GOAL
+       phase stalls 25 s, the lesson's own hint speaks once. Both judges sat
+       on "the creature waits." with the pack's hints never shown. */
+    if (!st.goalMet && st.phase === 'goal' && !st.hintShown && l.hint &&
+        Date.now() - lessonShownAt > 25000) {
+      st.hintShown = true;
+      setVerdict(l.hint, 'warn');
+    }
     /* pose lessons (pose_reach AND pose_pair) judge on the POSTED intent
        (observePose), never on the poll */
     if (l.goal.type === 'pose_reach' || l.goal.type === 'pose_pair') return;
-    var st = curState();
-    if (st.passed) return;
     var cells = (s && s.cells) || [];
     if (!cells.length) return;
     if (s.n_cells && cells.length < s.n_cells) return;   // W1: partial read -- hold
@@ -1495,6 +1673,29 @@
     }
 
     if (st.phase === 'goal' && !st.goalMet) {
+      /* L1 BY-HAND FIX: the wrong-part coaching. A held press that visibly
+         woke a cell the lesson did not ask for now SAYS so -- judge 2
+         pressed a leg to 14.8 MPa and the page kept saying "the creature
+         waits." with no hint that the shins were the wish. Once per press. */
+      if (holding && pressedCell >= 0 && !pressedNoteShown &&
+          (l.goal.type === 'pressure_above' || l.goal.type === 'pressure_isolation') &&
+          l.goal.cell !== 'any') {
+        var wanted = l.goal.cell;
+        var quietCells = (l.goal.quiet_cells || []);
+        if (pressedCell !== wanted) {
+          pressedNoteShown = true;
+          if (l.goal.type === 'pressure_isolation' && quietCells.indexOf(pressedCell) >= 0) {
+            setVerdict('you are pressing the ' + cellPart(pressedCell) + ' — this lesson reads the ' +
+              cellPart(wanted) + ' alone. let go and let the ' + cellPart(pressedCell) + ' heal first.', 'warn');
+          } else if (l.goal.also &&
+                     (pressedCell === l.goal.also.cell)) {
+            /* a room the lesson DOES want: the pair note below owns this */
+          } else {
+            setVerdict('you are pressing the ' + cellPart(pressedCell) + ' — this lesson waits for the ' +
+              cellPart(wanted) + '.', 'warn');
+          }
+        }
+      }
       if (l.goal.type === 'pressure_isolation') {
         var tgt = Number(l.goal.threshold_pa) || 0;
         var quiet = (l.goal.quiet_cells || []).every(function (qc) {
@@ -1534,7 +1735,17 @@
           var c = cells[idx];
           return !!c && !brokenCell(c) && signedP(c) >= t;
         };
-        if (!forceOk) return;          // an over-force press can never latch a capped lesson
+        if (!forceOk) {
+          // L1 BY-HAND FIX (honest refusal, by-hand audit (d)): an
+          // over-force press that DID wake the cell used to be refused in
+          // silence -- the player never learned the hand was too strong.
+          if (!st.forceNote && lastTouchForce > cap && woke(cellWanted, pa)) {
+            st.forceNote = true;
+            setVerdict('the ' + cellPart(cellWanted) + ' woke — but the hand pressed at ' +
+              lastTouchForce + ' N. this lesson wants under ' + cap + ' N.', 'warn');
+          }
+          return;          // an over-force press can never latch a capped lesson
+        }
         // H7 (D5): the crossing must happen under the hand (pressFresh) --
         // a goal earned by decay timing, injection, or a leftover phantom
         // press is not the lesson's input.
@@ -1545,7 +1756,21 @@
           if (!isFinite(alsoThr)) alsoThr = pa;             // G2: malformed falls to the main bar
           if (woke(l.goal.also.cell, alsoThr)) st.alsoMet = true;
           if (st.primaryMet && st.alsoMet) st.goalMet = true;
-          if (st.goalMet && !st.halfNote) { st.halfNote = true; setVerdict('one compartment is awake — the other waits.', 'accent'); }
+          /* L1 BY-HAND FIX: the old "one compartment is awake" note sat
+             behind the goalMet flag, so it fired on the SAME poll the
+             release verdict replaced it (dead code), and with ONE room
+             awake the verdict kept saying "the creature waits." -- judge 2
+             sat on that line with a leg at 14.8 MPa. Now each room, when
+             it latches alone, names what is awake and what still waits. */
+          else if (st.primaryMet && !st.pairNote) {
+            st.pairNote = true;
+            setVerdict(cellIs(l.goal.cell) + ' awake — the lesson still waits for the ' +
+              cellPart(l.goal.also.cell) + '.', 'accent');
+          } else if (st.alsoMet && !st.pairNote) {
+            st.pairNote = true;
+            setVerdict(cellIs(l.goal.also.cell) + ' awake — the lesson still waits for the ' +
+              cellPart(l.goal.cell) + '.', 'accent');
+          }
         } else if (woke(cellWanted)) {
           st.goalMet = true;
         }
@@ -1640,9 +1865,9 @@
   }
 
   /* ================= KEYBOARD + GAMEPAD (AI + accessibility) =================
-     Keyboard (play screen): 1-5 lessons · [ ] prev/next · SPACE hold = press
-     the lesson's target · - / = force down/up · P pose (pose lessons) ·
-     R stand at rest · S save · ESC let go.
+     Keyboard (play screen): 1-9,0 lessons · [ ] prev/next · SPACE hold = press
+     the lesson's target · - / = force down/up · P post pose wishes (pose
+     lessons) · R stand at rest · S save · ESC let go.
      Gamepad: left stick = orbit · A (held) = press the lesson target ·
      B = release · LB/RB = lesson prev/next · RT analog = force while A. */
   var touchTarget = null;       // world point the keyboard/gamepad presses
@@ -1700,7 +1925,12 @@
     if (tgt && (tgt.tagName === 'TEXTAREA' ||
         (tgt.tagName === 'INPUT' && tgt.type !== 'range'))) return;
     var k = e.key;
-    if (k >= '1' && k <= '5') { showLesson(+k - 1); e.preventDefault(); return; }
+    /* L1 BY-HAND FIX: the pack has TEN lessons and the keyboard mapped
+       only 1-5 (judge 2: "only the keyboard 1-5 works"). 1-9 and 0 (the
+       tenth) reach every lesson; [ ] and the arrows cover the rest. */
+    if ((k >= '1' && k <= '9') || k === '0') {
+      showLesson(k === '0' ? 9 : (+k - 1)); e.preventDefault(); return;
+    }
     if (k === '[') { showLesson(lessonIdx - 1); e.preventDefault(); return; }
     if (k === ']') { showLesson(lessonIdx + 1); e.preventDefault(); return; }
     if (k === ' ') {
@@ -1713,8 +1943,16 @@
       return;
     }
     if (k === 'Escape') { clearTouch(); return; }
-    if (k === 'p') { var b = $('pose-btn'); if (b.style.display !== 'none') b.click(); return; }
-    if (k === 'r') { (async function () { clearTouch(); await resetPose(); setHand('standing at rest'); })(); return; }
+    if (k === 'p') {                     // post every pending wish at its slider value
+      var posts = document.querySelectorAll('#pose-btn-wrap .pose-post');
+      for (var pk = 0; pk < posts.length; pk++) {
+        var prow = posts[pk].closest('.pose-row');
+        if (prow && prow.classList.contains('latched')) continue;
+        posts[pk].click();
+      }
+      return;
+    }
+    if (k === 'r') { (function () { $('rest-btn').click(); })(); return; }
     if (k === 's') { $('save-btn').click(); return; }
     if (k === '-') { forceEl.value = Math.max(500, +forceEl.value - 2000); forceEl.dispatchEvent(new Event('input')); return; }
     if (k === '=' || k === '+') { forceEl.value = Math.min(50000, +forceEl.value + 2000); forceEl.dispatchEvent(new Event('input')); return; }
@@ -1753,7 +1991,7 @@
         pressSource = 'gamepad';          // H7: whose press is this (keyup/up fairness)
         lastTouchForce = Math.round(f); lastTouchAt = Date.now();
         pressKernelStart(touchTarget, f); // W2: the gamepad hand shows the dent too
-        setHand('pressing — ' + Math.round(f) + ' N (gamepad)');
+        setHand(pressingText(Math.round(f), ' (gamepad)'));
         snd('press', f, touchTarget);
       }
     } else if (holding && !aHeld && gamepadWasA) {
@@ -1827,6 +2065,56 @@
     return [eye[0] + dir[0] * best, eye[1] + dir[1] * best, eye[2] + dir[2] * best];
   }
 
+  /* L1 BY-HAND FIX: the ~14 px grace around a missed click. Projects every
+     skin vertex with the same camera the pick used; candidates within
+     PICK_NEAR_PX of the cursor are taken nearest-to-camera (the visible
+     surface), and only when the cursor is within PICK_NEAR_M of the
+     surface at all -- a click on open water stays water. */
+  var PICK_NEAR_PX = 14;
+  var PICK_NEAR_M = 0.75;
+  function pickNearMiss(cx, cy) {
+    if (!meshPos || !RG || !RG.idx || RG.triCount <= 0) return null;
+    var rect = canvas.getBoundingClientRect();
+    if (rect.width < 1 || rect.height < 1) return null;
+    var eye = camEye([0, 0, 0]);
+    var fwd = norm3(sub3(cam.target, eye));
+    var right = norm3(cross3(fwd, UP));
+    var upv = cross3(right, fwd);
+    var tanF = Math.tan(cam.fov / 2);
+    var aspect = rect.width / rect.height;
+    var bestV = -1, bestPx = Infinity, bestDepth = Infinity;
+    for (var i = 0, n = meshPos.length / 3; i < n; i++) {
+      var dx = meshPos[i * 3] - eye[0], dy = meshPos[i * 3 + 1] - eye[1],
+          dz = meshPos[i * 3 + 2] - eye[2];
+      var depth = dx * fwd[0] + dy * fwd[1] + dz * fwd[2];
+      if (depth <= 0.1) continue;
+      var px = (dx * right[0] + dy * right[1] + dz * right[2]) / (depth * tanF * aspect);
+      var py = (dx * upv[0] + dy * upv[1] + dz * upv[2]) / (depth * tanF);
+      var sx = rect.left + (px + 1) / 2 * rect.width;
+      var sy = rect.top + (1 - py) / 2 * rect.height;
+      var dd = Math.hypot(sx - cx, sy - cy);
+      if (dd > PICK_NEAR_PX) continue;
+      // lexicographic pick: clearly-closer pixel wins; inside a 1 px band
+      // the vertex nearest the camera wins (the surface the player sees)
+      if (bestV < 0 || dd < bestPx - 0.5 ||
+          (dd <= bestPx + 0.5 && depth < bestDepth)) {
+        bestPx = bestV < 0 ? dd : Math.min(bestPx, dd);
+        bestDepth = depth;
+        bestV = i;
+      }
+    }
+    if (bestV < 0) return null;
+    // the world distance from the RAY decides "water or flesh": reject a
+    // candidate whose perpendicular distance from the cursor ray is huge
+    var ox = eye[0], oy = eye[1], oz = eye[2];
+    var wx = meshPos[bestV * 3], wy = meshPos[bestV * 3 + 1], wz = meshPos[bestV * 3 + 2];
+    var rx = wx - ox, ry = wy - oy, rz = wz - oz;
+    var t = rx * fwd[0] + ry * fwd[1] + rz * fwd[2];
+    var px2 = rx - fwd[0] * t, py2 = ry - fwd[1] * t, pz2 = rz - fwd[2] * t;
+    if (Math.hypot(px2, py2, pz2) > PICK_NEAR_M) return null;
+    return [wx, wy, wz];
+  }
+
   /* H7 (D2): a touch post must ANSWER. The old code read only the HTTP
      ok flag -- a rate-limit 429 or a network blip silently dropped the
      press (the H5 dry-run's "presses die after the first": 52x429 burst,
@@ -1863,14 +2151,33 @@
       holding = true;
       lastTouchForce = force;             // the judge's force cap sees every path now
       lastTouchAt = Date.now();           // the judge's "under the hand" window
+      pressedCell = -1;                   // a new press: name the part afresh
+      pressedNoteShown = false;
+      pressBaseP = lastCellsP ? lastCellsP.slice() : null;
       if (hitHint) pressKernelStart(hitHint, force);   // W2: the hand shows the dent
       $('letgo-btn').classList.add('hot');
-      setHand('pressing — ' + force + ' N');
+      setHand(pressingText(force));
       snd('press', force, hitHint);
       return true;
     }
-    setHand((body && body.error) || 'you touched only water.');
+    setHand((body && body.error) || waterMissText());
     return false;
+  }
+
+  /* L1 BY-HAND FIX (judge 2's stall 6: "'you touched only water.' shown
+     while visibly touching a limb, cryptic"): a miss now says WHY and what
+     to aim for -- the current lesson's own target part. */
+  function waterMissText() {
+    var l = curLesson();
+    var aim = null;
+    if (l && (l.goal.type === 'pressure_above' || l.goal.type === 'pressure_isolation')) {
+      if (l.goal.cell === 'any') aim = 'any part of the creature';
+      else if (!l.goal.also) aim = 'the ' + cellPart(l.goal.cell);
+      else aim = (touchTargetIdx === 0) ? 'the ' + cellPart(l.goal.cell)
+                                        : 'the ' + cellPart(l.goal.also.cell);
+    }
+    return 'your hand touched only water — nothing of the creature. aim for ' +
+      (aim || "the creature's body") + ', then hold.';
   }
 
   async function tryTouch(cx, cy) {
@@ -1896,8 +2203,18 @@
     // end to end. A ray that misses the skin (sky) touches only water,
     // exactly as the engine's miss answer used to say.
     var hit = pickWorld(cx, cy);
+    // L1 BY-HAND FIX (the click rail's ZERO tolerance): the engine's touch
+    // is a 3 cm Gaussian in the world, but the page's pick demanded the
+    // pixel-exact first hit -- measured in the by-hand audit, a foot is
+    // ~12 px wide at the default camera and a human's leg/foot clicks
+    // missed the skin entirely ("you touched only water." while touching a
+    // leg; judge 2 found one leg hot-zone "by luck -- 10 px mattered").
+    // A miss now looks ~14 px around the cursor for the nearest mesh
+    // vertex (nearest to the camera wins -- the surface the player SEES),
+    // with a hard world cap so open sky far from the body still misses.
+    if (!hit) hit = pickNearMiss(cx, cy);
     if (!hit) {
-      setHand('you touched only water.');
+      setHand(waterMissText());
       return false;
     }
     hit = snapToVertex(hit);
@@ -1931,7 +2248,7 @@
       return;
     }
     if (applyTouch(body, force, touchTarget)) {
-      setHand('pressing — ' + force + ' N (space)');
+      setHand(pressingText(force, ' (space)'));
       pressSource = 'space';
       if (spaceClearOnLand) { clearTouch(); return; }
     }
@@ -2104,7 +2421,7 @@
   forceEl.addEventListener('input', function () {
     forceLabel.textContent = forceEl.value + ' N';
     if (holding) {
-      setHand('pressing — ' + forceEl.value + ' N');
+      setHand(pressingText(forceEl.value));
       snd('press', Number(forceEl.value));   // W4: the held voice follows the force live (press() never stacks)
     }
   });
@@ -2112,8 +2429,14 @@
   $('letgo-btn').addEventListener('click', clearTouch);
   $('rest-btn').addEventListener('click', async function () {
     clearTouch();
+    /* L1 BY-HAND FIX: "stand at rest" now means the AUTHORED rest -- the
+       page also lays the world's weight back down. The old button left
+       gravity on, so after the_stand a player (and the by-hand audit) had
+       no page-surfaced way back to the state every pressure lesson's calm
+       bar assumes. The engine's off is exact: root_y = root_vy = 0. */
+    try { await postJSON('/api/gravity', { on: false }); } catch (err) { /* the world keeps its weight */ }
     await resetPose();
-    setHand('standing at rest');
+    setHand('standing at rest — the world back at its authored rest');
   });
 
   $('save-btn').addEventListener('click', async function () {

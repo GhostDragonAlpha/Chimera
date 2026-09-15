@@ -284,10 +284,22 @@ async function gate() {
   };
   const key = async (k) => { await page.keyboard.press(k); await sleep(300); };
   const forceTo = async (keyK, n) => { for (let i = 0; i < n; i++) await key(keyK); };
-  const poseClick = async (tag) => {                  // the page's ONLY pose path
-    await page.click('#pose-btn');
-    await sleep(3000);
-    console.log('   ' + tag + ' pose: ' + await judgeLine());
+  // L1 BY-HAND era: the page's pose wish is a CONTROL -- the player sets the
+  // angle slider and posts that one wish. The walker does the same through
+  // the page's own inputs (no /api/pose POSTs of its own, as always).
+  const poseWish = async (tag, sfx, deg) => {
+    const sel = '#pose-angle' + sfx;
+    try {
+      await page.fill(sel, String(deg));
+    } catch (e) {                                   // fill refused: nudge by arrows
+      await page.focus(sel);
+      const cur = Number(await page.$eval(sel, i => i.value));
+      const kk = deg > cur ? 'ArrowRight' : 'ArrowLeft';
+      for (let i = 0; i < Math.abs(deg - cur); i++) await page.keyboard.press(kk);
+    }
+    await page.click('#pose-post' + sfx);
+    await sleep(2500);
+    console.log('   ' + tag + ' pose[' + sfx + '] -> ' + deg + ' deg: ' + await judgeLine());
   };
 
   // -- the page's OTHER real touch verb: a still CLICK. tryTouch posts the
@@ -303,7 +315,7 @@ async function gate() {
                             a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
   const vnorm = a => { const l = Math.hypot(a[0], a[1], a[2]) || 1;
                        return [a[0] / l, a[1] / l, a[2] / l]; };
-  const clickWorld = async (wx, wy, wz, tag) => {
+  const clickWorld = async (wx, wy, wz, tag, needPa) => {
     const ch = Math.cos(cam0.phi);
     const eye = [cam0.target[0] + cam0.r * ch * Math.sin(cam0.theta),
                  cam0.target[1] + cam0.r * Math.sin(cam0.phi),
@@ -343,7 +355,7 @@ async function gate() {
       const p1 = await readP1();
       console.log('   ' + tag + ' click (' + (bx + dx).toFixed(0) + ',' +
         (by + dy).toFixed(0) + ') -> torso ' + Math.round(p1) + ' Pa');
-      if (p1 >= 3000000) {
+      if (p1 >= (needPa || 3000000)) {
         // a second tap of the same strong spot: the spike window (~0.7 s at
         // tau=0.5) now straddles two judge polls instead of gambling on one
         await page.mouse.down(); await sleep(400); await page.mouse.up();
@@ -380,10 +392,11 @@ async function gate() {
   await waitCalm(6000, 20000);
   await report('L3');
 
-  // L4 BEND THE KNEE: the pose button (the page posts /api/pose knee_L 40)
+  // L4 BEND THE KNEE: set the knee slider to 40 and post the wish (the
+  // page posts /api/pose knee_L 40; the judge latches on the accepted post)
   resetPeaks();
   await key(']');
-  await poseClick('L4');
+  await poseWish('L4', '', 40);
   await report('L4');
 
   // L5 THE WHOLE BODY: two compartments (cycled targets), then release
@@ -395,24 +408,35 @@ async function gate() {
   await waitCalm(5500, 25000);
   await report('L5');
 
-  // L6 THE BALANCE (pose_pair): the pose button posts BOTH wishes through
-  // the page's one sender -- /api/pose ankle_L(17) +5, then ankle_R(18) -5.
-  // The judge latches each accepted post separately, any order.
+  // L6 THE BALANCE (pose_pair): TWO wishes, TWO posts -- ankle_L(17) +5
+  // then ankle_R(18) -5, each through its own slider + post button. The
+  // judge latches each accepted post separately, any order.
   resetPeaks();
   await key(']');
-  await poseClick('L6');
+  await poseWish('L6', '-0', 5);
+  await poseWish('L6', '-1', -5);
   await report('L6');
 
-  // L7 THE HEAVY HAND: 3 MPa on the torso, force maxed. MEASURED: the
-  // pack's SPACE target's nearest vertex tops at ~1.93 MPa at 50 kN, so
-  // the walker plays the lesson the way a player would -- CLICK a strong
-  // spot (the page's real click verb; the engine resolves the hit). The
-  // measured per-vertex response peaks at 29.8 MPa near (0.87, 8.54, 0.28).
+  // L7 THE HEAVY HAND: 1.5 MPa on the torso (re-tuned 2026-09-14 to the
+  // by-hand audit's measurement: the old 3 MPa bar was unreachable where
+  // the lesson points -- belly peaks 2.735 MPa at the 50 kN slider max).
+  // The pack's touch_target now points at the measured strong camera-facing
+  // belly vertex [-0.23, 4.71, 0.74], so the SPACE rail reaches the bar.
+  // Fallback if the SPACE press somehow misses the bar: the click spiral.
   resetPeaks();
   await key(']');
   await forceTo('=', 15);                              // ensure 50000 N
-  await clickWorld(0.872, 8.542, 0.276, 'L7');
+  await press(2500);                                   // the pack's own target
   await page.keyboard.press('Escape');
+  {
+    const l7pre = await lesson();
+    if (!l7pre.passed) {
+      console.log('L7 SPACE press did not latch -- click-spiral fallback');
+      await clickWorld(0.872, 8.542, 0.276, 'L7',
+                       goalOf('the_heavy_hand').threshold_pa || 1500000);
+      await page.keyboard.press('Escape');
+    }
+  }
   await waitCalm(8000, 30000);
   await report('L7');
 
@@ -448,12 +472,16 @@ async function gate() {
     if (diag) verdicts[verdicts.length - 1].note = diag;
   }
 
-  // L9 THE STAND (gravity_on): advancing to the lesson fires the page's own
-  // start hook (/api/gravity {on:true}; the judge latches only when the
-  // PAGE's enable resolved -- `armed`). Gravity was reset OFF before the
-  // walk, so this is the real fall: root 0 -> ~9.5 mm settle in < 1 s.
+  // L9 THE STAND (gravity_on): the world's weight is the PLAYER'S verb now
+  // (L1 BY-HAND fix: the page used to enable gravity itself at lesson start
+  // and the lesson passed with zero action). The walker presses the page's
+  // own button; the judge arms only when that enable resolved ok:true.
+  // Gravity was reset OFF before the walk, so this is the real fall:
+  // root 0 -> ~9.5 mm settle in < 1 s.
   resetPeaks();
   await key(']');
+  await page.click('#gravity-btn');
+  console.log('L9 gravity button clicked');
   let armed = false;
   for (let i = 0; i < 10; i++) {
     if (/armed=true/.test(await judgeLine())) { armed = true; break; }

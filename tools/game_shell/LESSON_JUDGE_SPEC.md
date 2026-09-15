@@ -187,9 +187,9 @@ Per lesson, concretely:
 | the_gentle_hand | `cells[0].P >= 50000`, force <= 8000 N (capped — see below) | all `\|P\| < 1000` |
 | the_healing | any one `cells[i].P >= 20000` | all `\|P\| < 1000` |
 | bend_the_knee | accepted `POST /api/pose` `joint_index===15 && \|deg-40\| <= 2` | none (`then_release: false`) |
-| the_whole_body | `cells[1].P >= 15000` AND, at any moment, `cells[3].P >= 5000` | all `\|P\| < 1000` |
+| the_whole_body | `cells[1].P >= 50000` AND, at any moment, `cells[3].P >= 20000` (re-tuned 2026-09-14, below) | all `\|P\| < 1000` |
 | the_balance | accepted posts: `ankle_L`(17) at `5 ± 2` AND `ankle_R`(18) at `-5 ± 2`, any order | none (`then_release: false`) |
-| the_heavy_hand | `cells[1].P >= 3000000` | all `\|P\| < 1000` |
+| the_heavy_hand | `cells[1].P >= 1500000` (re-tuned 2026-09-14, below) | all `\|P\| < 1000` |
 | the_cascade | `cells[3].P >= 5000` — the belly is the lesson's ONLY touch target | all `\|P\| < 1000` |
 | the_stand | gravity enabled AND `\|root_vy\| <= 0.05` AND `\|root_y\| > 0.002` (§10) | none (`then_release: false`) |
 | the_graduation | 3 distinct cells each reached `P >= 20000` at some poll (§11) | all `\|P\| < 1000` |
@@ -198,6 +198,12 @@ Rows 1–5 transcribed 2026-09-13 from the re-tuned `lessons.json` (the
 200 kPa-era numbers that used to stand here predated the re-tune; the pack is
 the single source of truth, and the_gentle_hand's 50000 Pa restores the value
 its own body copy states — reachable gently since the vertex-snap fix).
+**Re-tuned 2026-09-14 (by-hand audit, `SHIP/L1_LESSONS_BYHAND/`):**
+the_heavy_hand 3.0 → 1.5 MPa (the 3.0 bar was measured unreachable where the
+lesson points: the camera-facing belly peaks 2.735 MPa at the 50 kN slider
+max; 1.5 MPa clears the weakest measured belly answer with ~25 % headroom),
+and the_whole_body 15k/5k → 50k/20k Pa so the body copy states the judge's
+real numbers. The pack's `_format` field carries the full derivation.
 `max_force_n`: the live page gates the latch on the touch force — while
 `lastTouchForce > max_force_n` the judge tick returns early
 (`index.html::judgeState`), so an over-force press can never latch a capped

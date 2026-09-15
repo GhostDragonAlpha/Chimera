@@ -13,7 +13,7 @@
    "then_release": true,
    "hint": "Slide the force up, press and hold on the round belly until the readout shows the torso cell over 0.02 MPa, then press 'let go' and give it a few seconds.",
    "touch_target": [
-    0.0,
+    0,
     4.5,
     0.35
    ],
@@ -50,7 +50,7 @@
    "then_release": true,
    "hint": "Press 'let go', then wait about three or four seconds — the pressure fades to zero all by itself.",
    "touch_target": [
-    0.0,
+    0,
     4.5,
     0.35
    ],
@@ -85,13 +85,13 @@
    "then_release": true,
    "hint": "Press the big body first and let go, then touch low on the legs — below the knee is the shins. The readout names each compartment as it wakes.",
    "touch_target": [
-    0.0,
+    0,
     4.5,
     0.35
    ],
    "touch_targets": [
     [
-     0.0,
+     0,
      4.5,
      0.35
     ],
@@ -159,7 +159,7 @@
    "then_release": true,
    "hint": "Press the belly hard and hold. Watch the torso wake while the legs stay asleep — sealed means sealed.",
    "touch_target": [
-    0.0,
+    0,
     4.5,
     0.32
    ],
@@ -188,7 +188,7 @@
    "hint": "Touch three different places — belly, foot, shin — until three different cells have each crossed 0.02 MPa, then press 'let go' and wait for the calm.",
    "touch_targets": [
     [
-     0.0,
+     0,
      4.5,
      0.32
     ],
