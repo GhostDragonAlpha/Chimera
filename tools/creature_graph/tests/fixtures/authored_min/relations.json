@@ -1,0 +1,4 @@
+[
+  {"src": "sensor.scalar_cell_pressure", "rel": "carries_signal_to",
+   "dst": "pathway.pressure_to_intent", "note": "fixture: the measured signal path"}
+]
