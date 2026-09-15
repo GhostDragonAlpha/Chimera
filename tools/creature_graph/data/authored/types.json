@@ -1,0 +1,1304 @@
+[
+ {
+  "id": "type.A1",
+  "kind": "type",
+  "name": "Bone-associated sealed compartments",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A1",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "U_i = C_i^2/(2*kappa*V_0i); P_i = -dU_i/dV_i -- the existing water law derived independently per region",
+   "player_moment": "Press a calf: local pressure changes; neighbors respond through actual walls. Puncture it: the torso does not automatically drain."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item A1 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.A2",
+  "kind": "type",
+  "name": "Load-bearing outer skin",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 2,
+  "inventory_anchor": "A2",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "U_s = int_S W_stretch dA + int_S W_bend dA; stretching stiffness ~ Et, bending ~ Et^3/[12(1-nu^2)]",
+   "player_moment": "Pressing, pinching, folding, and stretching produce consistent material responses."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A skin that cannot resist stretching cannot contain pressure.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item A2 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.A3",
+  "kind": "type",
+  "name": "Septa, fascia, and sliding attachment layers",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 2,
+  "inventory_anchor": "A3",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Bonded attachments transmit traction; sliding interfaces resist interpenetration; compliant attachment U = 1/2 k ||dx||^2",
+   "player_moment": "Skin slides over a bending joint; pulling one patch loads a surrounding area."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "An attachment that cannot slip or detach cannot demonstrate attachment strength.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item A3 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.A4",
+  "kind": "type",
+  "name": "Structural bone walls",
+  "classification": null,
+  "status": "specified",
+  "priority": "P1",
+  "build_rank": null,
+  "inventory_anchor": "A4",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Reduced beam: U = 1/2 int (EA eps^2 + EI chi^2) ds; distinct from the bone-associated water region",
+   "player_moment": "A limb resists bending; an overloaded structural member fractures."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A bone that cannot bend or break cannot teach bone strength.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item A4 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.A5",
+  "kind": "type",
+  "name": "Joint capsules",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 2,
+  "inventory_anchor": "A5",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Capsule enclosing the articulation, attachment rims, fluid cavity; tau = -dU_capsule/dtheta",
+   "player_moment": "Bending stretches the capsule; excessive loading can destabilize the articulation."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A joint whose restraints cannot fail cannot demonstrate dislocation.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item A5 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.A6",
+  "kind": "type",
+  "name": "Cartilage and lubricated bearing surfaces",
+  "classification": null,
+  "status": "specified",
+  "priority": "P1",
+  "build_rank": null,
+  "inventory_anchor": "A6",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Darcy flow q = -(k_perm/mu) grad p; contact and lubrication set tangential resistance",
+   "player_moment": "A loaded joint cushions, creeps, and moves differently when lubrication is impaired."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A bearing whose motion never changes with load or lubrication cannot teach lubrication.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item A6 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.A7",
+  "kind": "type",
+  "name": "Active contractile tissue",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 2,
+  "inventory_anchor": "A7",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "F = a Fmax f_l(l) f_v(ldot) + F_passive; adot = (u-a)/tau_a; work from an explicit energy source",
+   "player_moment": "An obstructed muscle develops tension; faster shortening reduces force; opposing muscles stiffen a joint."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A muscle that cannot stall under load cannot demonstrate contraction.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item A7 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.A8",
+  "kind": "type",
+  "name": "Tendons, ligaments, and their insertions",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 2,
+  "inventory_anchor": "A8",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "F = (EA/L_0) max(0, L - L_0) -- tension-dominant with slack length",
+   "player_moment": "Pulling a tendon moves its attached segment; cutting it removes that particular force path."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A tendon that can be cut without interrupting force transmission is not a tendon.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item A8 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.A9",
+  "kind": "type",
+  "name": "Vessels, pump chambers, and valves",
+  "classification": null,
+  "status": "specified",
+  "priority": "P1",
+  "build_rank": null,
+  "inventory_anchor": "A9",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Lumped: C_v = dV/dp; dV/dt = Q_in - Q_out; Q = dp/R; directional valves",
+   "player_moment": "Squeeze a vessel, obstruct flow, feel a pulse, or observe downstream supply loss."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A circulation that cannot be interrupted cannot demonstrate circulation.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item A9 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.A10",
+  "kind": "type",
+  "name": "Respiratory sacs, diaphragm, and airways",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 3,
+  "inventory_anchor": "A10",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Gas volume obeys pV = nRT coupled to airflow resistance and an actively moved wall; water stays on its own law",
+   "player_moment": "A torso expands; restraint reduces excursion; airway obstruction changes the cycle."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A breath that cannot be obstructed cannot demonstrate breathing.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item A10 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.A11",
+  "kind": "type",
+  "name": "Gut, mouth, and absorptive lining",
+  "classification": null,
+  "status": "specified",
+  "priority": "P1",
+  "build_rank": null,
+  "inventory_anchor": "A11",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "dM_s/dt = inflow - outflow + reaction; digestion needs kinetics, absorption needs permeability",
+   "player_moment": "Feed the creature, watch material move, connect intake to usable resources."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A gut that produces nourishment without consuming anything cannot demonstrate digestion.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item A11 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.A12",
+  "kind": "type",
+  "name": "Filtration and excretory barriers",
+  "classification": null,
+  "status": "specified",
+  "priority": "P2",
+  "build_rank": null,
+  "inventory_anchor": "A12",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Selective filters separate fluid and solutes by permeability, pressure, chemical potential",
+   "player_moment": "Accumulated waste or salt changes function; a selective filter restores balance."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A filter that cannot retain one substance while passing another cannot demonstrate filtration.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item A12 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.B13",
+  "kind": "type",
+  "name": "Material-bearing surface and interior",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "B13",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "m = int_Omega rho dV + int_S rho_s dA; F = -dU/dq; density, elasticity, hardness, strength, toughness are different properties",
+   "player_moment": "Equal-sized objects from different materials weigh and deform differently."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A material that changes weight when retessellated cannot teach mass.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item B13 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.B14",
+  "kind": "type",
+  "name": "Adhesive films, welds, and cured bonds",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "B14",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Interface traction t = t(delta, c); cure kinetic cdot = f(c, T, ...); separation work = area under traction-separation",
+   "player_moment": "Glue two objects, wait, then load the joint; an uncured joint fails sooner."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A glue joint that cannot fail at its interface cannot demonstrate adhesion.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item B14 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.B15",
+  "kind": "type",
+  "name": "Distributed tensile web and reinforcement",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "B15",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Fibers share load through node force balance; failure changes the graph and loads redistribute",
+   "player_moment": "Pulling a net tightens several paths; one break can trigger another."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A web that cannot redistribute load after a break cannot demonstrate a web.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item B15 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.B16",
+  "kind": "type",
+  "name": "Yielding, scratches, and wear",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "B16",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Fully plastic indentation: F ~ H A, A ~ 2 pi R d, so d ~ F/(2 pi R H); wear needs distance + frictional work",
+   "player_moment": "A hard tool leaves a persistent groove in softer material."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A scratch that disappears on unloading cannot demonstrate plastic damage.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item B16 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.B17",
+  "kind": "type",
+  "name": "Cracks, rupture, puncture, and delamination",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 4,
+  "inventory_anchor": "B17",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Cohesive zone: G_c = int_0^deltaf t(delta) d(delta); strength initiates, fracture energy separates",
+   "player_moment": "A puncture leaks; a tear spreads; a peeled layer loses attachment."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A rupture that leaves every physical connection intact is only a damage counter.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item B17 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.B18",
+  "kind": "type",
+  "name": "Pores, holes, selective permeability, and leakage",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 4,
+  "inventory_anchor": "B18",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Inertial orifice Q = C_d A_h sgn(dp) sqrt(2|dp|/rho); semipermeable J_v = L_p (dp - s dpi)",
+   "player_moment": "Hole size and pressure affect leakage; later, water passes a barrier that retains solute."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A hole through which nothing can pass cannot demonstrate permeability.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item B18 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.B19",
+  "kind": "type",
+  "name": "Patches, repair, scars, and regeneration",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 4,
+  "inventory_anchor": "B19",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "A patch adds material and interfaces; cure restores strength and reduces permeability",
+   "player_moment": "Seal a leak and reload the repair; a weak patch can peel off."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A repair that cannot leak or fail under renewed load cannot demonstrate repair quality.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item B19 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.B20",
+  "kind": "type",
+  "name": "Thermal boundaries, dissipation, and phase change",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "B20",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "q = -k_T grad T; energy ledger: mechanical work, stored elastic energy, heat, chemical, losses; phase change consumes latent heat",
+   "player_moment": "Repeated work warms tissue; heated glue cures differently; ice melts."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "An actuator that delivers unlimited work without an energy source cannot teach energy.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item B20 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.B21",
+  "kind": "type",
+  "name": "Growth, fission, and actual mitosis",
+  "classification": null,
+  "status": "specified",
+  "priority": "P1",
+  "build_rank": null,
+  "inventory_anchor": "B21",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Mdot = intake - loss; A_0dot = membrane production rate; division needs neck, supply, separation work",
+   "player_moment": "Feed material to a compartment; it grows, deforms, and eventually divides."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A split that creates membrane and contents for free cannot demonstrate growth.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item B21 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.B22",
+  "kind": "type",
+  "name": "Molecular membranes and chemical machinery",
+  "classification": null,
+  "status": "specified",
+  "priority": "P2",
+  "build_rank": null,
+  "inventory_anchor": "B22",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Bending energy U = int_S [k_b/2 (2H - C_0)^2 + kbar K_G] dA; selective channels and active pumps",
+   "player_moment": "Osmotic swelling, ion gradients, selective transport, photosynthetic conversion."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A selective membrane with no selectivity cannot demonstrate a cell membrane.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item B22 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.C23",
+  "kind": "type",
+  "name": "Ground contact and supporting substrate",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "C23",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Normal nonpenetration + friction ||F_t|| <= mu F_n; substrate deformation sets contact compliance",
+   "player_moment": "Standing, slipping, pushing off, falling, leaving an indentation."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A ground that cannot let a foot slip cannot teach traction.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item C23 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.C24",
+  "kind": "type",
+  "name": "Water surfaces and liquid bodies",
+  "classification": null,
+  "status": "specified",
+  "priority": "P1",
+  "build_rank": null,
+  "inventory_anchor": "C24",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Free surface: U = gamma A, Young-Laplace dp = gamma(1/R1 + 1/R2); buoyancy F_b = rho g V_displaced",
+   "player_moment": "Water spills, pools, sloshes, displaces around a limb, supports floating objects."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A liquid surface that cannot rearrange when displaced cannot demonstrate liquid.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item C24 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.C25",
+  "kind": "type",
+  "name": "Soil, sand, and porous ground",
+  "classification": null,
+  "status": "specified",
+  "priority": "P1",
+  "build_rank": null,
+  "inventory_anchor": "C25",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Granular yield tau = c + sigma_n tan(phi); pore fluid pressure and drainage",
+   "player_moment": "Heavy feet sink; wet and dry ground behave differently."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A soil that always springs back perfectly cannot demonstrate compaction.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item C25 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.C26",
+  "kind": "type",
+  "name": "Atmosphere, wind, and acoustic pressure",
+  "classification": null,
+  "status": "specified",
+  "priority": "P1",
+  "build_rank": null,
+  "inventory_anchor": "C26",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Bulk gas equation of state; drag F_D = 1/2 rho C_D A v^2 within its regime; compressibility makes sound",
+   "player_moment": "A gust pushes the creature; a pressure wave reaches it after a delay."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A wind that moves the creature without exchanging momentum cannot teach wind.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item C26 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.C27",
+  "kind": "type",
+  "name": "Containers, cloth, ropes, tools, and constructed objects",
+  "classification": null,
+  "status": "specified",
+  "priority": "P1",
+  "build_rank": null,
+  "inventory_anchor": "C27",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Instantiations of existing shell/bulk/tensile/contact/bond laws; a tool's geometry sets contact loading",
+   "player_moment": "Catch leaked water, tie a support, press with different tips, patch a wound."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A container that cannot spill cannot demonstrate containment.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item C27 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.C28",
+  "kind": "type",
+  "name": "Planetary and cosmic interfaces",
+  "classification": null,
+  "status": "specified",
+  "priority": "P2",
+  "build_rank": null,
+  "inventory_anchor": "C28",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Crusts as elastic/plastic shells; Newtonian gravity laplacian(Phi) = 4 pi G rho; an event horizon is a causal boundary",
+   "player_moment": "Eventually connect shell mechanics to planetary structure and gravity to larger scales."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A change of scale that changes the conservation laws without disclosure cannot teach scale.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item C28 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.D29",
+  "kind": "type",
+  "name": "Local tactile receptor surfaces",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 3,
+  "inventory_anchor": "D29",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "s = (1/A) int_A t_n dA followed by specified filtering, saturation, thresholding",
+   "player_moment": "The creature answers a calf press differently from a torso press or a broad squeeze."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A touch response that survives disconnecting its touch sensor cannot demonstrate sensing.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item D29 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.D30",
+  "kind": "type",
+  "name": "Proprioception, load sensing, and balance sensing",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 3,
+  "inventory_anchor": "D30",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Sensors measure joint configuration, tissue extension, tendon force, angular motion, specific force -- separate observables",
+   "player_moment": "A loaded limb braces, an unsupported foot searches, a leaning body attempts recovery."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A balance controller that knows an unmeasured state perfectly cannot demonstrate embodied feedback.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item D30 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.D31",
+  "kind": "type",
+  "name": "Axonal membranes and propagation",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 3,
+  "inventory_anchor": "D31",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Cable model C_j Vdot_j = sum_k (V_k - V_j)/R_jk - I_ion + I_input; cheap abstraction: event travel time L/v + refractory state",
+   "player_moment": "A distal stimulus produces a delayed response; interrupting the path removes it."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A nerve that transmits across a cut cannot demonstrate a nerve.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item D31 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.D32",
+  "kind": "type",
+  "name": "Synapses, reflex integration, and adaptation",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 3,
+  "inventory_anchor": "D32",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "tau sdot = -s + sum w_i input_i -- chosen reduced circuit dynamics with threshold, decay, adaptation",
+   "player_moment": "A rapid tap startles, sustained load braces, repeated harmless taps habituate."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A reflex whose response is unchanged by severing its sensory path cannot demonstrate a reflex.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item D32 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.D33",
+  "kind": "type",
+  "name": "Eyes: optical boundary, sensor, eyelid, and gaze actuator",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 3,
+  "inventory_anchor": "D33",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Aperture + photosensitive surface; honest minimum: eye-local visibility sensor with FOV, occlusion, delay, bounded gaze",
+   "player_moment": "The creature notices the in-world hand, looks toward it, loses new evidence when hidden."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "An eye that acquires new information through an opaque cover cannot demonstrate sight.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item D33 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.D34",
+  "kind": "type",
+  "name": "Eardrums and vibration sensors",
+  "classification": null,
+  "status": "specified",
+  "priority": "P1",
+  "build_rank": null,
+  "inventory_anchor": "D34",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "m_e xddot + c_e xdot + k_e x = A_e dp -- force balance",
+   "player_moment": "A sound or ground vibration causes a response with direction- and distance-dependent timing."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "An ear that hears equally well when acoustically isolated cannot demonstrate hearing.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item D34 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.D35",
+  "kind": "type",
+  "name": "Chemical and thermal receptor interfaces",
+  "classification": null,
+  "status": "specified",
+  "priority": "P2",
+  "build_rank": null,
+  "inventory_anchor": "D35",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Binding kinetics bdot = k_on c (1-b) - k_off b; thermal sensing follows heat exchange, not instant access",
+   "player_moment": "The creature detects a nearby chemical source or reacts after touching something warm."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A receptor that responds without its stimulus reaching it cannot demonstrate reception.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item D35 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.E36",
+  "kind": "type",
+  "name": "Player-to-world mechanical interface",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "E36",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Finite force over finite footprint; F = k_h(x_t - x) + c_h(v_t - v) with declared caps; W = int F.dx",
+   "player_moment": "Press, hold, release, pull, and compare tools."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A press that deforms geometry without applying the corresponding load cannot teach force.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item E36 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.E37",
+  "kind": "type",
+  "name": "Simulation-to-browser state boundary",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "E37",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Displayed deformation/pressure/response refer to consistent authoritative states; timestamps + topology versions; interpolation invents nothing",
+   "player_moment": "The dimple, pressure rise, and flinch visibly agree."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A displayed response that precedes its authoritative cause cannot teach causality.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item E37 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.E38",
+  "kind": "type",
+  "name": "Measurement and explanation interface",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "E38",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Every shown quantity has units, provenance, model assumptions, appropriate precision; damping/aliasing disclosed",
+   "player_moment": "Open a cross-section, select one compartment, explain why its pressure changed."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A measurement that cannot be checked against an independent calculation cannot teach measurement.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item E38 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.E39",
+  "kind": "type",
+  "name": "Import, sealing, and resolution boundary",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "E39",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Imported geometry acquires valid regions, materials, attachments, sensor locations; refinement preserves mass",
+   "player_moment": "A new creature works for understandable geometric reasons."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "An importer that passes only before the first joint bends has not imported a physical creature.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item E39 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.E40",
+  "kind": "type",
+  "name": "Persistence, replay, and topology history",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "E40",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Saving preserves fluid inventories, rest geometry, wounds, cure, activation, delayed signals, stable region identities",
+   "player_moment": "Return to the same wounded creature and continue the experiment."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A wound that disappears on reload is not persistent damage.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item E40 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.E41",
+  "kind": "type",
+  "name": "Lesson and counterfactual boundary",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "E41",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Success depends on the taught mechanism; ablations and transfer tests; confounders controlled",
+   "player_moment": "Predict which chamber leaks, which tendon moves the limb, whether a patch holds."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A lesson passed equally well after disabling its claimed law does not teach that law.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item E41 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ },
+ {
+  "id": "type.E42",
+  "kind": "type",
+  "name": "Creature-care loop and value gate",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "E42",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "Discovery, consequence, recovery, renewed interaction; understandable without the engineering HUD",
+   "player_moment": "Notice, press, receive an answer, investigate, change something, see a lasting consequence."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A creature whose \"aliveness\" survives replacing feedback with disconnected replay has not yet proved responsive aliveness.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "membrane TYPE from docs/THE_MEMBRANE_INVENTORY.md item E42 (Astra, 2026-09-15); reusable concept, not a creature part",
+  "provenance": {
+   "source": "docs/THE_MEMBRANE_INVENTORY.md",
+   "credited_to": "Astra",
+   "date": "2026-09-15"
+  }
+ }
+]

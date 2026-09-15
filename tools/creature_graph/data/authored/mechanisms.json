@@ -1,0 +1,653 @@
+[
+ {
+  "id": "material.water",
+  "kind": "material",
+  "name": "Sealed water (creature fluid)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "B13",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "P = -(V - V0)/(kappa * V0), kappa = 4.6e-10 Pa^-1 (alpha = kappa*V0 in the coupled XPBD form C = V - V0)",
+   "carries": [
+    "pressure",
+    "mass"
+   ]
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.band_seal_conservation"
+  ],
+  "falsifier": {},
+  "unknowns": [
+   "temperature/viscosity conditions unspecified"
+  ],
+  "notes": "V_whole = 13.8246 m^3 live => 13,824.6 kg at 1000 kg/m^3, matching the reported 13,824.5 kg material inventory (preserved on repartition)",
+  "provenance": {
+   "source": "GET http://127.0.0.1:8107/tick_state (light poll, no /frame)",
+   "fetched_utc": "2026-09-15T13:47:00Z",
+   "engine_ticks": 731615,
+   "note": "live state belongs to the ENGINE; the graph stores this snapshot read-only"
+  }
+ },
+ {
+  "id": "material.skin_membrane",
+  "kind": "material",
+  "name": "Skin membrane material",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": 2,
+  "inventory_anchor": "A2",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "qualified reduced: tension sigma = 4000 N/m; NOT a universal indentation law",
+   "carries": [
+    "tension"
+   ]
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "E, thickness, nu UNKNOWN (no shell model yet)"
+  ],
+  "notes": "the 4000 N/m tension is NOT water's surface tension (C24 warning)",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "material.glue",
+  "kind": "material",
+  "name": "Glue (third material)",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "B14",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "cure strength + traction-separation (approved model, scratch prototype exists)"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "cure kinetics parameters",
+   "separation work"
+  ],
+  "notes": "approved third-material glue model; cure strength recorded as work-in-progress",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "model.water_compressibility",
+  "kind": "model",
+  "name": "Water compressibility law",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "P = -(V - V0)/(kappa * V0), kappa = 4.6e-10 Pa^-1 (alpha = kappa*V0 in the coupled XPBD form C = V - V0)"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.band_seal_conservation"
+  ],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "couples volume constraint C = V - V0 with alpha = kappa*V0 into the XPBD stack",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "model.xpbd_coupled",
+  "kind": "model",
+  "name": "Coupled XPBD stack (volume+joint+servo+contact)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "outer tick 300 Hz, 2 Gauss-Seidel iterations per substep, n=4 substeps for cost; reportedly bounded across tested substep counts"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.xpbd_fidelity_gap"
+  ],
+  "falsifier": {},
+  "unknowns": [
+   "frequency, amplitude, damping, and output sampling need separate evidence"
+  ],
+  "notes": "the verified current solver is the BASELINE; integrator replacement is a separate experiment",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "model.press_indentation",
+  "kind": "model",
+  "name": "Press indentation (qualified reduced)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "delta = F/(4 pi sigma), sigma = 4000 N/m"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "assumed support/contact geometry UNKNOWN"
+  ],
+  "notes": "existing press approximation; the coefficient DEPENDS ON ASSUMPTIONS that are undocumented (e.g. annular membrane gives delta = F ln(R/a)/(2 pi T))",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "model.exponential_recovery",
+  "kind": "model",
+  "name": "Exponential recovery (NOT healing)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "shape recovery exp decay, tau = 0.5 s"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "recovery is viscoelastic relaxation; it is NOT material healing -- returning shape does not restore broken material, lost water, or consumed energy",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "model.contact_spring",
+  "kind": "model",
+  "name": "Ground contact spring",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "contact spring k = 1.3562e7 N/m"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "transient contact behavior unvalidated"
+  ],
+  "notes": "stated contact spring; material/geometry interpretation needs qualification (matching mg at equilibrium does not validate transient contact behavior)",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "model.breath_allometry",
+  "kind": "model",
+  "name": "Autonomic breath (volume-target oscillation)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "torso cell volume TARGET oscillates: rate from Stahl respiratory allometry f = 53.5 * M^-0.26 => 4.485/min (period 13.38 s); tidal volume 6.2 mL/kg * M^1.01 => 0.0940 m^3 => 1.45 mm mean swell"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "a model choice requiring a biological reference; does NOT validate a water-volume oscillator; a real gas compartment remains an explicit future requirement (type.A10)"
+  ],
+  "notes": "applied as the LAST surface pass; the pressure law/conservation/gait measurements are structurally blind to it (the honest derivation shows a water-stiff sealed cell CANNOT breathe: the tidal swell, if the kappa law saw it, answers 14.9 MPa = 99% of skin yield)",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "param.kappa",
+  "kind": "parameter",
+  "name": "kappa (water compressibility)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "value": 4.6e-10,
+   "selection_status": "in_use"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "units": "Pa^-1",
+  "value": 4.6e-10,
+  "source": "operator brief 2026-09-15 / engine water law; specimen: the creature's water inventory; temperature/strain-rate conditions UNKNOWN",
+  "applicability": "sealed liquid water cells of this creature",
+  "validation": "unchecked against independent reference",
+  "unknowns": [],
+  "notes": "SELECTED parameter (not a reference assertion): selecting it for the creature was an explicit adaptation decision; the reference side (Uberon/RO/QUDT/OpenSim) never auto-becomes a creature parameter",
+  "provenance": {
+   "source": "operator brief 2026-09-15 / engine water law; specimen: the creature's water inventory; temperature/strain-rate conditions UNKNOWN"
+  }
+ },
+ {
+  "id": "param.sigma_skin",
+  "kind": "parameter",
+  "name": "sigma (skin tension coefficient)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "value": 4000.0,
+   "selection_status": "in_use"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "units": "N/m",
+  "value": 4000.0,
+  "source": "engine constant (brief 2026-09-15); assumed contact/support geometry UNKNOWN -- qualified reduced model",
+  "applicability": "the press approximation delta = F/(4 pi sigma) on this creature's skin",
+  "validation": "unchecked against independent reference",
+  "unknowns": [],
+  "notes": "SELECTED parameter (not a reference assertion): selecting it for the creature was an explicit adaptation decision; the reference side (Uberon/RO/QUDT/OpenSim) never auto-becomes a creature parameter",
+  "provenance": {
+   "source": "engine constant (brief 2026-09-15); assumed contact/support geometry UNKNOWN -- qualified reduced model"
+  }
+ },
+ {
+  "id": "param.tau_recovery",
+  "kind": "parameter",
+  "name": "tau (skin recovery)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "value": 0.5,
+   "selection_status": "in_use"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "units": "s",
+  "value": 0.5,
+  "source": "engine constant; NOT a healing timescale",
+  "applicability": "exponential shape recovery after unload",
+  "validation": "unchecked against independent reference",
+  "unknowns": [],
+  "notes": "SELECTED parameter (not a reference assertion): selecting it for the creature was an explicit adaptation decision; the reference side (Uberon/RO/QUDT/OpenSim) never auto-becomes a creature parameter",
+  "provenance": {
+   "source": "engine constant; NOT a healing timescale"
+  }
+ },
+ {
+  "id": "param.contact_spring_k",
+  "kind": "parameter",
+  "name": "ground contact spring",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "value": 13562000.0,
+   "selection_status": "in_use"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "units": "N/m",
+  "value": 13562000.0,
+  "source": "engine constant; interpretation of material/geometry needs qualification",
+  "applicability": "ground contact under the creature's feet",
+  "validation": "unchecked against independent reference",
+  "unknowns": [],
+  "notes": "SELECTED parameter (not a reference assertion): selecting it for the creature was an explicit adaptation decision; the reference side (Uberon/RO/QUDT/OpenSim) never auto-becomes a creature parameter",
+  "provenance": {
+   "source": "engine constant; interpretation of material/geometry needs qualification"
+  }
+ },
+ {
+  "id": "param.mass_inventory",
+  "kind": "parameter",
+  "name": "creature mass from material inventory",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "value": 13824.5,
+   "selection_status": "in_use"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "units": "kg",
+  "value": 13824.5,
+  "source": "derived from the material inventory (brief); live V_whole 13.8246 m^3 x 1000 kg/m^3 agrees to 13,824.6 kg",
+  "applicability": "whole creature; MUST be preserved when repartitioning",
+  "validation": "unchecked against independent reference",
+  "unknowns": [],
+  "notes": "SELECTED parameter (not a reference assertion): selecting it for the creature was an explicit adaptation decision; the reference side (Uberon/RO/QUDT/OpenSim) never auto-becomes a creature parameter",
+  "provenance": {
+   "source": "derived from the material inventory (brief); live V_whole 13.8246 m^3 x 1000 kg/m^3 agrees to 13,824.6 kg"
+  }
+ },
+ {
+  "id": "param.breath_period",
+  "kind": "parameter",
+  "name": "autonomic breath period",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "value": 13.38,
+   "selection_status": "in_use"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "units": "s",
+  "value": 13.38,
+  "source": "Stahl respiratory allometry at the engine's own mass (C1r derivation); MODEL CHOICE requiring a biological reference -- it does NOT validate a water-volume oscillator (the 1% volume strain at kappa implies ~21.7 MPa)",
+  "applicability": "torso volume-target oscillation (reflex breathing)",
+  "validation": "unchecked against independent reference",
+  "unknowns": [],
+  "notes": "SELECTED parameter (not a reference assertion): selecting it for the creature was an explicit adaptation decision; the reference side (Uberon/RO/QUDT/OpenSim) never auto-becomes a creature parameter",
+  "provenance": {
+   "source": "Stahl respiratory allometry at the engine's own mass (C1r derivation); MODEL CHOICE requiring a biological reference -- it does NOT validate a water-volume oscillator (the 1% volume strain at kappa implies ~21.7 MPa)"
+  }
+ },
+ {
+  "id": "actuator.joint_servos",
+  "kind": "actuator",
+  "name": "Joint actuators (force/torque-limited servos)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": 2,
+  "inventory_anchor": "A7",
+  "spatial": {
+   "anchored_to": "the 28 measured joint pins",
+   "frame": "engine world frame"
+  },
+  "geometry": {
+   "shape": "servo constraints at pins",
+   "is_placeholder": false
+  },
+  "physical": {
+   "law": "force/torque-limited servo intents through /tick_pose; NOT implemented contractile tissue (labeled accurately per the brief)"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A muscle that cannot stall under load cannot demonstrate contraction.",
+   "acceptance_test": "obstruct motion; respect the force/torque cap; measure the reaction load (acceptance 5)",
+   "status": "untested"
+  },
+  "unknowns": [
+   "no activation/contractile state",
+   "no explicit energy reservoir yet"
+  ],
+  "notes": "REUSE for the first causal demonstration (brief: reuse them for the first causal demonstration).",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "sensor.scalar_cell_pressure",
+  "kind": "sensor",
+  "name": "Per-cell scalar pressure telemetry",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "D29",
+  "spatial": {
+   "anchored_to": "one sensor per sealed cell (no sub-cell location)",
+   "frame": "engine world frame"
+  },
+  "geometry": {
+   "shape": "scalar per cell",
+   "is_placeholder": false
+  },
+  "physical": {
+   "law": "reports cell pressure P each tick (300 Hz outer tick; tick period 3.33 ms); /tick_state exposes it"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A touch response that survives disconnecting its touch sensor cannot demonstrate sensing.",
+   "acceptance_test": "disconnect pathway.pressure_to_intent; the active response must vanish while passive mechanical response remains (acceptance 4)",
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "LIMITATION: one uniform cell pressure cannot identify WHERE on the cell the touch occurred (brief). Local receptor patches are the type.D29 fix and remain SPECIFIED.",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "pathway.pressure_to_intent",
+  "kind": "pathway",
+  "name": "Pressure-to-intent pathway (the reflex 'nerve')",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": 3,
+  "inventory_anchor": "D31",
+  "spatial": {
+   "anchored_to": "cell -> controller -> same-limb drive pins",
+   "frame": "engine world frame"
+  },
+  "geometry": {
+   "shape": "disconnectable connection",
+   "is_placeholder": false
+  },
+  "physical": {
+   "law": "per-cell pressure crossing -> binding-derived strut pin intent; FINITE delay: one outer tick (3.33 ms); DISCONNECTABLE via the pressure_coupling route flag (the battery's built-in negative control)"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.reflex_controls_fail"
+  ],
+  "falsifier": {
+   "statement": "A nerve that transmits across a cut cannot demonstrate a nerve.",
+   "acceptance_test": "cut the pathway; signal contribution gone, passive mechanics remain (C1r: prev_p tracks truth through a cut so reconnect never synthesizes a spike)",
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "exists (C1r plumbing) but the REFLEX CONTROLS fail (see ev.reflex_controls_fail): their existence is not verification.",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "ev.band_seal_conservation",
+  "kind": "evidence",
+  "name": "4-band seal conservation (live session)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": null,
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "validation": "passing",
+  "last_result": null,
+  "deps": [
+   "inst.band.feet",
+   "inst.band.shins",
+   "inst.band.thighs",
+   "inst.band.torso",
+   "memb.skin",
+   "memb.septum.feet_shins",
+   "memb.septum.shins_thighs",
+   "memb.septum.thighs_torso",
+   "material.water"
+  ],
+  "captured": {},
+  "captured_utc": "2026-09-15T13:47:00Z",
+  "engine": {
+   "ticks": 731615,
+   "sealed": true,
+   "n_cells": 4,
+   "conserve_pct": -0.000117273,
+   "V_whole_m3": 13.8246,
+   "url": "GET 127.0.0.1:8107/tick_state"
+  },
+  "acceptance": "sealed=true, no seal refusal, |conserve_pct| < 0.01, sum of per-cell v0 == V_whole, all cells non-degenerate",
+  "unknowns": [],
+  "notes": "VALIDATION state (passing) is independent of implementation state; a physics-relevant change to any dep stales this conservatively (the result stays visible in last_result).",
+  "provenance": {
+   "source": "GET http://127.0.0.1:8107/tick_state (light poll, no /frame)",
+   "fetched_utc": "2026-09-15T13:47:00Z",
+   "engine_ticks": 731615,
+   "note": "live state belongs to the ENGINE; the graph stores this snapshot read-only"
+  }
+ },
+ {
+  "id": "ev.reflex_controls_fail",
+  "kind": "evidence",
+  "name": "Reflex plumbing fails its controls (current)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": null,
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "validation": "failing",
+  "last_result": null,
+  "deps": [
+   "pathway.pressure_to_intent",
+   "sensor.scalar_cell_pressure",
+   "actuator.joint_servos"
+  ],
+  "captured": {},
+  "captured_utc": "2026-09-15T13:47:00Z",
+  "engine": {
+   "note": "brief: 'Reflex plumbing exists but fails its controls: volume-target breathing, pressure-triggered flinch, and pressure-rate startle. Their existence is not verification.'"
+  },
+  "acceptance": "each reflex must pass its own negative control (severed path => no active response, passive mechanics remain)",
+  "unknowns": [],
+  "notes": "A FAILED CURRENT TEST STAYS VISIBLE. This is exactly the record that must not silently vanish when the pathway is edited.",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "ev.xpbd_fidelity_gap",
+  "kind": "evidence",
+  "name": "XPBD convergence does not establish modal fidelity",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": null,
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "validation": "failing",
+  "last_result": null,
+  "deps": [
+   "model.xpbd_coupled"
+  ],
+  "captured": {},
+  "captured_utc": "2026-09-15T13:47:00Z",
+  "engine": {
+   "measured": "converged n=4 XPBD: 1222.7 rad/s; true ring mode: 1949 rad/s (synthetic prototype, not the creature's identified model)"
+  },
+  "acceptance": "frequency, amplitude, damping, and output sampling each carry separate evidence",
+  "unknowns": [],
+  "notes": "Reported context from the brief; a synthetic comparison lives at Tools/modal_fidelity_ring.py when present. Failing stays visible.",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ }
+]

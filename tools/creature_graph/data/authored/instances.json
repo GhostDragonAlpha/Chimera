@@ -1,0 +1,1175 @@
+[
+ {
+  "id": "region.environment",
+  "kind": "region",
+  "name": "The environment",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "everything outside the body interior; may be one side of any membrane",
+  "provenance": {
+   "source": "brief 2026-09-15: the environment can be one side"
+  }
+ },
+ {
+  "id": "region.body_interior",
+  "kind": "region",
+  "name": "Body interior",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "B13",
+  "spatial": {
+   "note": "interior of the sealed skin; no own coordinates (union of compartment regions)"
+  },
+  "geometry": {
+   "shape": "union-of-compartments",
+   "is_placeholder": false,
+   "known_dimensions": "from the sealed 4-cell partition"
+  },
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "full per-bone subdivision pending"
+  ],
+  "notes": "material mass lives here; nested regions (fluid inside structural) must never double-count mass",
+  "provenance": {
+   "source": "brief 2026-09-15 (material occupying nested regions)"
+  }
+ },
+ {
+  "id": "region.band.feet",
+  "kind": "region",
+  "name": "feet band region",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": {
+   "band_y": [
+    -0.019507,
+    0.338
+   ],
+   "frame": "engine world frame, y-up",
+   "note": "height-band cut planes at MEASURED joint heights (0.338 ankle, 1.903 knee, 3.415 hip)"
+  },
+  "geometry": {
+   "shape": "slab of the sealed body between y-planes",
+   "is_placeholder": false
+  },
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "the 4-band partition is the MINIMUM seal proof, not the product (THE ANATOMICAL COMPARTMENT LAW)",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)",
+   "fetched_utc": "2026-09-15T13:47:00Z",
+   "engine_ticks": 731615,
+   "note": "live state belongs to the ENGINE; the graph stores this snapshot read-only"
+  }
+ },
+ {
+  "id": "region.band.shins",
+  "kind": "region",
+  "name": "shins band region",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": {
+   "band_y": [
+    0.338,
+    1.903
+   ],
+   "frame": "engine world frame, y-up",
+   "note": "height-band cut planes at MEASURED joint heights (0.338 ankle, 1.903 knee, 3.415 hip)"
+  },
+  "geometry": {
+   "shape": "slab of the sealed body between y-planes",
+   "is_placeholder": false
+  },
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "the 4-band partition is the MINIMUM seal proof, not the product (THE ANATOMICAL COMPARTMENT LAW)",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)",
+   "fetched_utc": "2026-09-15T13:47:00Z",
+   "engine_ticks": 731615,
+   "note": "live state belongs to the ENGINE; the graph stores this snapshot read-only"
+  }
+ },
+ {
+  "id": "region.band.thighs",
+  "kind": "region",
+  "name": "thighs band region",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": {
+   "band_y": [
+    1.903,
+    3.415
+   ],
+   "frame": "engine world frame, y-up",
+   "note": "height-band cut planes at MEASURED joint heights (0.338 ankle, 1.903 knee, 3.415 hip)"
+  },
+  "geometry": {
+   "shape": "slab of the sealed body between y-planes",
+   "is_placeholder": false
+  },
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "the 4-band partition is the MINIMUM seal proof, not the product (THE ANATOMICAL COMPARTMENT LAW)",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)",
+   "fetched_utc": "2026-09-15T13:47:00Z",
+   "engine_ticks": 731615,
+   "note": "live state belongs to the ENGINE; the graph stores this snapshot read-only"
+  }
+ },
+ {
+  "id": "region.band.torso",
+  "kind": "region",
+  "name": "torso band region",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": {
+   "band_y": [
+    3.415,
+    9.97118
+   ],
+   "frame": "engine world frame, y-up",
+   "note": "height-band cut planes at MEASURED joint heights (0.338 ankle, 1.903 knee, 3.415 hip)"
+  },
+  "geometry": {
+   "shape": "slab of the sealed body between y-planes",
+   "is_placeholder": false
+  },
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "the 4-band partition is the MINIMUM seal proof, not the product (THE ANATOMICAL COMPARTMENT LAW)",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)",
+   "fetched_utc": "2026-09-15T13:47:00Z",
+   "engine_ticks": 731615,
+   "note": "live state belongs to the ENGINE; the graph stores this snapshot read-only"
+  }
+ },
+ {
+  "id": "region.leg_l",
+  "kind": "region",
+  "name": "Left leg (selected limb)",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A1",
+  "spatial": {
+   "anchored_to": "chain frame.hip_l -> frame.knee_l -> frame.ankle_l",
+   "frame": "engine world frame, y-up",
+   "note": "the limb is DEFINED by skeleton connectivity in the reference configuration, not by a horizontal band"
+  },
+  "geometry": {
+   "shape": "limb volume (unpartitioned)",
+   "is_placeholder": true
+  },
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "volumetric extent pending the labeled-volume partition"
+  ],
+  "notes": "THE SELECTED LIMB for the one-honest-limb demonstration; connected bone path hip_L->knee_L->ankle_L->terminal foot",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)",
+   "fetched_utc": "2026-09-14T05:28:03+00:00",
+   "engine_ticks_at_fetch": 208588
+  }
+ },
+ {
+  "id": "frame.hip_l",
+  "kind": "frame",
+  "name": "measured pin HIP_L",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": {
+   "origin": [
+    0.1689,
+    3.44397,
+    0.12355
+   ],
+   "frame": "engine world frame, y-up",
+   "axis_convention": "engine convention (y = height); handedness recorded in the engine docs",
+   "length_units": "m"
+  },
+  "geometry": {
+   "shape": "point (measured joint anchor)",
+   "is_placeholder": false
+  },
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "co-located with spine_lower pin",
+  "provenance": {
+   "source": "tools/body_atlas.json (camera-awareness atlas, built by tools/body_atlas.py)",
+   "fetched_utc": "2026-09-14T05:28:03+00:00",
+   "engine_ticks_at_fetch": 208588
+  }
+ },
+ {
+  "id": "frame.knee_l",
+  "kind": "frame",
+  "name": "measured pin KNEE_L",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": {
+   "origin": [
+    0.4745,
+    1.8988,
+    -0.0057
+   ],
+   "frame": "engine world frame, y-up",
+   "axis_convention": "engine convention (y = height); handedness recorded in the engine docs",
+   "length_units": "m"
+  },
+  "geometry": {
+   "shape": "point (measured joint anchor)",
+   "is_placeholder": false
+  },
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "the demo joint",
+  "provenance": {
+   "source": "tools/body_atlas.json (camera-awareness atlas, built by tools/body_atlas.py)",
+   "fetched_utc": "2026-09-14T05:28:03+00:00",
+   "engine_ticks_at_fetch": 208588
+  }
+ },
+ {
+  "id": "frame.ankle_l",
+  "kind": "frame",
+  "name": "measured pin ANKLE_L",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": {
+   "origin": [
+    0.4562,
+    0.3313,
+    0.0711
+   ],
+   "frame": "engine world frame, y-up",
+   "axis_convention": "engine convention (y = height); handedness recorded in the engine docs",
+   "length_units": "m"
+  },
+  "geometry": {
+   "shape": "point (measured joint anchor)",
+   "is_placeholder": false
+  },
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "measured joint pin from the body atlas (28 pins total; 28 pins != 28 bones -- segments derive from connectivity)",
+  "provenance": {
+   "source": "tools/body_atlas.json (camera-awareness atlas, built by tools/body_atlas.py)",
+   "fetched_utc": "2026-09-14T05:28:03+00:00",
+   "engine_ticks_at_fetch": 208588
+  }
+ },
+ {
+  "id": "seg.thigh_l",
+  "kind": "curve",
+  "name": "Left thigh segment (femur-analogue)",
+  "classification": "creature.bone_segment",
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A1",
+  "spatial": {
+   "endpoints": [
+    "frame.hip_l",
+    "frame.knee_l"
+   ],
+   "frame": "engine world frame, y-up",
+   "length_units": "m"
+  },
+  "geometry": {
+   "shape": "bone centerline (placement authority: the MEASURED skeleton)",
+   "is_placeholder": false
+  },
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "cross-section dimensions UNKNOWN"
+  ],
+  "notes": "proximal end co-located with spine_lower/hip_L. Segment ownership derives from skeleton CONNECTIVITY, not from horizontal bands or nearest-pin labels alone.",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)",
+   "fetched_utc": "2026-09-14T05:28:03+00:00",
+   "engine_ticks_at_fetch": 208588
+  }
+ },
+ {
+  "id": "seg.shin_l",
+  "kind": "curve",
+  "name": "Left shin segment (tibia-fibula analogue)",
+  "classification": "creature.bone_segment",
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A1",
+  "spatial": {
+   "endpoints": [
+    "frame.knee_l",
+    "frame.ankle_l"
+   ],
+   "frame": "engine world frame, y-up",
+   "length_units": "m"
+  },
+  "geometry": {
+   "shape": "bone centerline (placement authority: the MEASURED skeleton)",
+   "is_placeholder": false
+  },
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "cross-section dimensions UNKNOWN"
+  ],
+  "notes": "the sculpt carries one shin pin; fibula not separately pinned -- UNKNOWN. Segment ownership derives from skeleton CONNECTIVITY, not from horizontal bands or nearest-pin labels alone.",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)",
+   "fetched_utc": "2026-09-14T05:28:03+00:00",
+   "engine_ticks_at_fetch": 208588
+  }
+ },
+ {
+  "id": "seg.foot_l",
+  "kind": "curve",
+  "name": "Left foot segment (terminal)",
+  "classification": "creature.bone_segment",
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A1",
+  "spatial": {
+   "endpoints": [
+    "frame.ankle_l",
+    [
+     0.93209,
+     0.15954,
+     0.71522
+    ]
+   ],
+   "frame": "engine world frame, y-up",
+   "length_units": "m"
+  },
+  "geometry": {
+   "shape": "bone centerline (placement authority: the MEASURED skeleton)",
+   "is_placeholder": false
+  },
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "cross-section dimensions UNKNOWN"
+  ],
+  "notes": "terminal segment, EXPLICITLY DEFINED (A1 note): distal endpoint is the measured feet-cell left center, provisional until a toe pin is measured. Segment ownership derives from skeleton CONNECTIVITY, not from horizontal bands or nearest-pin labels alone.",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)",
+   "fetched_utc": "2026-09-14T05:28:03+00:00",
+   "engine_ticks_at_fetch": 208588
+  }
+ },
+ {
+  "id": "memb.skin",
+  "kind": "surface",
+  "name": "Load-bearing outer skin (whole body)",
+  "classification": "type.A2",
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": 2,
+  "inventory_anchor": "A2",
+  "spatial": {
+   "anchored_to": "the creature surface mesh (rest configuration)",
+   "frame": "engine world frame",
+   "length_units": "m"
+  },
+  "geometry": {
+   "shape": "closed triangle surface (the seal's exterior)",
+   "is_placeholder": false,
+   "known_dimensions": "skin area 64.69 m^2 (measured, C1r derivation)"
+  },
+  "physical": {
+   "law": "existing: pressure coupling + press approximation delta = F/(4 pi sigma), sigma = 4000 N/m (QUALIFIED REDUCED model; assumed geometry undocumented)",
+   "carries": [
+    "tension",
+    "pressure"
+   ],
+   "region_a": "region.body_interior",
+   "region_b": "region.environment"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.band_seal_conservation"
+  ],
+  "falsifier": {
+   "statement": "A skin that cannot resist stretching cannot contain pressure.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [
+   "shell constitutive model (stretch/bend) not yet explicit",
+   "fold artifacts in the 3-nearest-pin IDW skinning",
+   "weight-based skinning does not prove physical attachment"
+  ],
+  "notes": "the seal's exterior wall; one physical surface, no double wall",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "memb.septum.feet_shins",
+  "kind": "surface",
+  "name": "Shared septum feet | shins",
+  "classification": "type.A3",
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "A3",
+  "spatial": {
+   "band_y": [
+    0.338,
+    0.338
+   ],
+   "frame": "engine world frame, y-up",
+   "note": "ONE physical wall shared by both region owners (opposite orientation in each region's volume calc; no double stiffness, no double mass, no gap)"
+  },
+  "geometry": {
+   "shape": "sealed cut interface (welded cap pair)",
+   "is_placeholder": false
+  },
+  "physical": {
+   "law": "shared sealed interface; transmits mechanical coupling (neighbor pressure may change through it)",
+   "carries": [
+    "pressure",
+    "traction"
+   ],
+   "region_a": "region.band.feet",
+   "region_b": "region.band.shins"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.band_seal_conservation"
+  ],
+  "falsifier": {
+   "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
+   "acceptance_test": "puncture one band; the OTHER band's inventory must not drain (acceptance 3)",
+   "status": "untested"
+  },
+  "unknowns": [
+   "permeability/failure not implemented: an opening surface does not yet exist (type.B17/B18 gap)"
+  ],
+  "notes": "cut plane at the measured ankle height. A geometric closing face IS the load-bearing wall here because both sides seal against the same welded cut; this must be RE-PROVEN for per-bone oblique septa.",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)",
+   "fetched_utc": "2026-09-15T13:47:00Z",
+   "engine_ticks": 731615,
+   "note": "live state belongs to the ENGINE; the graph stores this snapshot read-only"
+  }
+ },
+ {
+  "id": "memb.septum.shins_thighs",
+  "kind": "surface",
+  "name": "Shared septum shins | thighs",
+  "classification": "type.A3",
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "A3",
+  "spatial": {
+   "band_y": [
+    1.903,
+    1.903
+   ],
+   "frame": "engine world frame, y-up",
+   "note": "ONE physical wall shared by both region owners (opposite orientation in each region's volume calc; no double stiffness, no double mass, no gap)"
+  },
+  "geometry": {
+   "shape": "sealed cut interface (welded cap pair)",
+   "is_placeholder": false
+  },
+  "physical": {
+   "law": "shared sealed interface; transmits mechanical coupling (neighbor pressure may change through it)",
+   "carries": [
+    "pressure",
+    "traction"
+   ],
+   "region_a": "region.band.shins",
+   "region_b": "region.band.thighs"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.band_seal_conservation"
+  ],
+  "falsifier": {
+   "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
+   "acceptance_test": "puncture one band; the OTHER band's inventory must not drain (acceptance 3)",
+   "status": "untested"
+  },
+  "unknowns": [
+   "permeability/failure not implemented: an opening surface does not yet exist (type.B17/B18 gap)"
+  ],
+  "notes": "cut plane at the measured knee height. A geometric closing face IS the load-bearing wall here because both sides seal against the same welded cut; this must be RE-PROVEN for per-bone oblique septa.",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)",
+   "fetched_utc": "2026-09-15T13:47:00Z",
+   "engine_ticks": 731615,
+   "note": "live state belongs to the ENGINE; the graph stores this snapshot read-only"
+  }
+ },
+ {
+  "id": "memb.septum.thighs_torso",
+  "kind": "surface",
+  "name": "Shared septum thighs | torso",
+  "classification": "type.A3",
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "A3",
+  "spatial": {
+   "band_y": [
+    3.415,
+    3.415
+   ],
+   "frame": "engine world frame, y-up",
+   "note": "ONE physical wall shared by both region owners (opposite orientation in each region's volume calc; no double stiffness, no double mass, no gap)"
+  },
+  "geometry": {
+   "shape": "sealed cut interface (welded cap pair)",
+   "is_placeholder": false
+  },
+  "physical": {
+   "law": "shared sealed interface; transmits mechanical coupling (neighbor pressure may change through it)",
+   "carries": [
+    "pressure",
+    "traction"
+   ],
+   "region_a": "region.band.thighs",
+   "region_b": "region.band.torso"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.band_seal_conservation"
+  ],
+  "falsifier": {
+   "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
+   "acceptance_test": "puncture one band; the OTHER band's inventory must not drain (acceptance 3)",
+   "status": "untested"
+  },
+  "unknowns": [
+   "permeability/failure not implemented: an opening surface does not yet exist (type.B17/B18 gap)"
+  ],
+  "notes": "cut plane at the measured hip height. A geometric closing face IS the load-bearing wall here because both sides seal against the same welded cut; this must be RE-PROVEN for per-bone oblique septa.",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)",
+   "fetched_utc": "2026-09-15T13:47:00Z",
+   "engine_ticks": 731615,
+   "note": "live state belongs to the ENGINE; the graph stores this snapshot read-only"
+  }
+ },
+ {
+  "id": "inst.band.feet",
+  "kind": "volume",
+  "name": "Feet compartment (verified band instance)",
+  "classification": "type.A1",
+  "status": "verified",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A1",
+  "spatial": {
+   "band_y": [
+    -0.019507,
+    0.338
+   ],
+   "frame": "engine world frame, y-up",
+   "length_units": "m",
+   "v0_m3": 0.287914
+  },
+  "geometry": {
+   "shape": "sealed hydraulic cell (cut-and-weld partition)",
+   "is_placeholder": false,
+   "known_dimensions": "v0 from the live engine's per-cell state"
+  },
+  "physical": {
+   "law": "P = -(V - V0)/(kappa * V0), kappa = 4.6e-10 Pa^-1 (alpha = kappa*V0 in the coupled XPBD form C = V - V0)",
+   "carries": [
+    "pressure"
+   ],
+   "region_a": "region.band.feet",
+   "region_b": null,
+   "state_note": "live pressure/volume live in the ENGINE; this object carries rest (V0) values only"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.band_seal_conservation"
+  ],
+  "falsifier": {
+   "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
+   "acceptance_test": "puncture a neighbor band; this cell keeps its inventory (acceptance 3)",
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "VERIFIED instance of type.A1 at the 4-band granularity. NOT the product: the ANATOMICAL COMPARTMENT LAW requires one sealed compartment per intended bone segment.",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)",
+   "fetched_utc": "2026-09-15T13:47:00Z",
+   "engine_ticks": 731615,
+   "note": "live state belongs to the ENGINE; the graph stores this snapshot read-only"
+  }
+ },
+ {
+  "id": "inst.band.shins",
+  "kind": "volume",
+  "name": "Shins compartment (verified band instance)",
+  "classification": "type.A1",
+  "status": "verified",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A1",
+  "spatial": {
+   "band_y": [
+    0.338,
+    1.903
+   ],
+   "frame": "engine world frame, y-up",
+   "length_units": "m",
+   "v0_m3": 0.334578
+  },
+  "geometry": {
+   "shape": "sealed hydraulic cell (cut-and-weld partition)",
+   "is_placeholder": false,
+   "known_dimensions": "v0 from the live engine's per-cell state"
+  },
+  "physical": {
+   "law": "P = -(V - V0)/(kappa * V0), kappa = 4.6e-10 Pa^-1 (alpha = kappa*V0 in the coupled XPBD form C = V - V0)",
+   "carries": [
+    "pressure"
+   ],
+   "region_a": "region.band.shins",
+   "region_b": null,
+   "state_note": "live pressure/volume live in the ENGINE; this object carries rest (V0) values only"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.band_seal_conservation"
+  ],
+  "falsifier": {
+   "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
+   "acceptance_test": "puncture a neighbor band; this cell keeps its inventory (acceptance 3)",
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "VERIFIED instance of type.A1 at the 4-band granularity. NOT the product: the ANATOMICAL COMPARTMENT LAW requires one sealed compartment per intended bone segment.",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)",
+   "fetched_utc": "2026-09-15T13:47:00Z",
+   "engine_ticks": 731615,
+   "note": "live state belongs to the ENGINE; the graph stores this snapshot read-only"
+  }
+ },
+ {
+  "id": "inst.band.thighs",
+  "kind": "volume",
+  "name": "Thighs compartment (verified band instance)",
+  "classification": "type.A1",
+  "status": "verified",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A1",
+  "spatial": {
+   "band_y": [
+    1.903,
+    3.415
+   ],
+   "frame": "engine world frame, y-up",
+   "length_units": "m",
+   "v0_m3": 0.693006
+  },
+  "geometry": {
+   "shape": "sealed hydraulic cell (cut-and-weld partition)",
+   "is_placeholder": false,
+   "known_dimensions": "v0 from the live engine's per-cell state"
+  },
+  "physical": {
+   "law": "P = -(V - V0)/(kappa * V0), kappa = 4.6e-10 Pa^-1 (alpha = kappa*V0 in the coupled XPBD form C = V - V0)",
+   "carries": [
+    "pressure"
+   ],
+   "region_a": "region.band.thighs",
+   "region_b": null,
+   "state_note": "live pressure/volume live in the ENGINE; this object carries rest (V0) values only"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.band_seal_conservation"
+  ],
+  "falsifier": {
+   "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
+   "acceptance_test": "puncture a neighbor band; this cell keeps its inventory (acceptance 3)",
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "VERIFIED instance of type.A1 at the 4-band granularity. NOT the product: the ANATOMICAL COMPARTMENT LAW requires one sealed compartment per intended bone segment.",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)",
+   "fetched_utc": "2026-09-15T13:47:00Z",
+   "engine_ticks": 731615,
+   "note": "live state belongs to the ENGINE; the graph stores this snapshot read-only"
+  }
+ },
+ {
+  "id": "inst.band.torso",
+  "kind": "volume",
+  "name": "Torso compartment (verified band instance)",
+  "classification": "type.A1",
+  "status": "verified",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A1",
+  "spatial": {
+   "band_y": [
+    3.415,
+    9.97118
+   ],
+   "frame": "engine world frame, y-up",
+   "length_units": "m",
+   "v0_m3": 12.5091
+  },
+  "geometry": {
+   "shape": "sealed hydraulic cell (cut-and-weld partition)",
+   "is_placeholder": false,
+   "known_dimensions": "v0 from the live engine's per-cell state"
+  },
+  "physical": {
+   "law": "P = -(V - V0)/(kappa * V0), kappa = 4.6e-10 Pa^-1 (alpha = kappa*V0 in the coupled XPBD form C = V - V0)",
+   "carries": [
+    "pressure"
+   ],
+   "region_a": "region.band.torso",
+   "region_b": null,
+   "state_note": "live pressure/volume live in the ENGINE; this object carries rest (V0) values only"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.band_seal_conservation"
+  ],
+  "falsifier": {
+   "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
+   "acceptance_test": "puncture a neighbor band; this cell keeps its inventory (acceptance 3)",
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "VERIFIED instance of type.A1 at the 4-band granularity. NOT the product: the ANATOMICAL COMPARTMENT LAW requires one sealed compartment per intended bone segment.",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)",
+   "fetched_utc": "2026-09-15T13:47:00Z",
+   "engine_ticks": 731615,
+   "note": "live state belongs to the ENGINE; the graph stores this snapshot read-only"
+  }
+ },
+ {
+  "id": "inst.comp.thigh_l",
+  "kind": "volume",
+  "name": "thigh_l compartment (specified placeholder)",
+  "classification": "type.A1",
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A1",
+  "spatial": {
+   "anchored_to": "seg.thigh_l",
+   "frame": "engine world frame, y-up",
+   "note": "provisional placement along the measured bone segment; NOT known geometry"
+  },
+  "geometry": {
+   "shape": "volumetric region around the bone segment (labeled-volume partition, pending)",
+   "is_placeholder": true
+  },
+  "physical": {
+   "law": "P = -(V - V0)/(kappa * V0), kappa = 4.6e-10 Pa^-1 (alpha = kappa*V0 in the coupled XPBD form C = V - V0) (per-region form; V0i UNKNOWN until the partition exists)",
+   "carries": [
+    "pressure"
+   ],
+   "region_a": "region.seg.thigh_l",
+   "region_b": null
+  },
+  "attachments": [],
+  "dependencies": [
+   "work.partition_leg_l",
+   "work.septa_leg_l"
+  ],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
+   "acceptance_test": "THE ANATOMICAL COMPARTMENT LAW verification: compartment count == bone count, every cell conserves, a press on the bone answers in THAT bone's cell",
+   "status": "untested"
+  },
+  "unknowns": [
+   "V0i unknown until partition",
+   "boundary geometry unknown (oblique planes/branch junctions)",
+   "mass share of the 13,824.5 kg inventory unknown"
+  ],
+  "notes": "femur-analogue compartment. SPECIFIED placeholder per docs/THE_SHIP_GOAL.md ANATOMICAL COMPARTMENT LAW (2026-09-13). Parallel physics lane AN2 ('one honest limb') owns the volumetric partition implementation; watch git log for '(Agent: AN2-one-honest-limb)' -- linked by stable IDs (this object id), not by name.",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)"
+  }
+ },
+ {
+  "id": "inst.comp.shin_l",
+  "kind": "volume",
+  "name": "shin_l compartment (specified placeholder)",
+  "classification": "type.A1",
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A1",
+  "spatial": {
+   "anchored_to": "seg.shin_l",
+   "frame": "engine world frame, y-up",
+   "note": "provisional placement along the measured bone segment; NOT known geometry"
+  },
+  "geometry": {
+   "shape": "volumetric region around the bone segment (labeled-volume partition, pending)",
+   "is_placeholder": true
+  },
+  "physical": {
+   "law": "P = -(V - V0)/(kappa * V0), kappa = 4.6e-10 Pa^-1 (alpha = kappa*V0 in the coupled XPBD form C = V - V0) (per-region form; V0i UNKNOWN until the partition exists)",
+   "carries": [
+    "pressure"
+   ],
+   "region_a": "region.seg.shin_l",
+   "region_b": null
+  },
+  "attachments": [],
+  "dependencies": [
+   "work.partition_leg_l",
+   "work.septa_leg_l"
+  ],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
+   "acceptance_test": "THE ANATOMICAL COMPARTMENT LAW verification: compartment count == bone count, every cell conserves, a press on the bone answers in THAT bone's cell",
+   "status": "untested"
+  },
+  "unknowns": [
+   "V0i unknown until partition",
+   "boundary geometry unknown (oblique planes/branch junctions)",
+   "mass share of the 13,824.5 kg inventory unknown"
+  ],
+  "notes": "tibia-fibula-analogue compartment. SPECIFIED placeholder per docs/THE_SHIP_GOAL.md ANATOMICAL COMPARTMENT LAW (2026-09-13). Parallel physics lane AN2 ('one honest limb') owns the volumetric partition implementation; watch git log for '(Agent: AN2-one-honest-limb)' -- linked by stable IDs (this object id), not by name.",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)"
+  }
+ },
+ {
+  "id": "inst.comp.foot_l",
+  "kind": "volume",
+  "name": "foot_l compartment (specified placeholder)",
+  "classification": "type.A1",
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A1",
+  "spatial": {
+   "anchored_to": "seg.foot_l",
+   "frame": "engine world frame, y-up",
+   "note": "provisional placement along the measured bone segment; NOT known geometry"
+  },
+  "geometry": {
+   "shape": "volumetric region around the bone segment (labeled-volume partition, pending)",
+   "is_placeholder": true
+  },
+  "physical": {
+   "law": "P = -(V - V0)/(kappa * V0), kappa = 4.6e-10 Pa^-1 (alpha = kappa*V0 in the coupled XPBD form C = V - V0) (per-region form; V0i UNKNOWN until the partition exists)",
+   "carries": [
+    "pressure"
+   ],
+   "region_a": "region.seg.foot_l",
+   "region_b": null
+  },
+  "attachments": [],
+  "dependencies": [
+   "work.partition_leg_l",
+   "work.septa_leg_l"
+  ],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
+   "acceptance_test": "THE ANATOMICAL COMPARTMENT LAW verification: compartment count == bone count, every cell conserves, a press on the bone answers in THAT bone's cell",
+   "status": "untested"
+  },
+  "unknowns": [
+   "V0i unknown until partition",
+   "boundary geometry unknown (oblique planes/branch junctions)",
+   "mass share of the 13,824.5 kg inventory unknown"
+  ],
+  "notes": "terminal foot compartment. SPECIFIED placeholder per docs/THE_SHIP_GOAL.md ANATOMICAL COMPARTMENT LAW (2026-09-13). Parallel physics lane AN2 ('one honest limb') owns the volumetric partition implementation; watch git log for '(Agent: AN2-one-honest-limb)' -- linked by stable IDs (this object id), not by name.",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)"
+  }
+ },
+ {
+  "id": "region.seg.thigh_l",
+  "kind": "region",
+  "name": "thigh_l region",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A1",
+  "spatial": {
+   "anchored_to": "seg.thigh_l",
+   "note": "provisional placement; no owned coordinates yet"
+  },
+  "geometry": {
+   "shape": "pending labeled-volume region",
+   "is_placeholder": true
+  },
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "extent, volume, mass share"
+  ],
+  "notes": "named region for the per-bone compartment; created so the septa can name both sides before the partition exists",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)"
+  }
+ },
+ {
+  "id": "region.seg.shin_l",
+  "kind": "region",
+  "name": "shin_l region",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A1",
+  "spatial": {
+   "anchored_to": "seg.shin_l",
+   "note": "provisional placement; no owned coordinates yet"
+  },
+  "geometry": {
+   "shape": "pending labeled-volume region",
+   "is_placeholder": true
+  },
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "extent, volume, mass share"
+  ],
+  "notes": "named region for the per-bone compartment; created so the septa can name both sides before the partition exists",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)"
+  }
+ },
+ {
+  "id": "region.seg.foot_l",
+  "kind": "region",
+  "name": "foot_l region",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A1",
+  "spatial": {
+   "anchored_to": "seg.foot_l",
+   "note": "provisional placement; no owned coordinates yet"
+  },
+  "geometry": {
+   "shape": "pending labeled-volume region",
+   "is_placeholder": true
+  },
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "extent, volume, mass share"
+  ],
+  "notes": "named region for the per-bone compartment; created so the septa can name both sides before the partition exists",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)"
+  }
+ },
+ {
+  "id": "memb.septum.thigh_l_shin_l",
+  "kind": "surface",
+  "name": "Septum thigh_l | shin_l (specified)",
+  "classification": "type.A3",
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A3",
+  "spatial": {
+   "anchored_to": "joint plane between the two segments (oblique plane, normal UNKNOWN)",
+   "frame": "engine world frame, y-up"
+  },
+  "geometry": {
+   "shape": "conforming internal interface (pending)",
+   "is_placeholder": true
+  },
+  "physical": {
+   "law": "shared sealed interface (planned); a visual cap alone CANNOT establish independent compartments",
+   "carries": [
+    "pressure",
+    "traction"
+   ],
+   "region_a": "region.seg.thigh_l",
+   "region_b": "region.seg.shin_l"
+  },
+  "attachments": [],
+  "dependencies": [
+   "work.septa_leg_l"
+  ],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
+   "acceptance_test": "puncture thigh_l; shin_l keeps its inventory; total mass conserved",
+   "status": "untested"
+  },
+  "unknowns": [
+   "orientation/normal",
+   "area",
+   "conforming geometry at the branch junction"
+  ],
+  "notes": "DISTINGUISH: geometric closing face vs implemented load-bearing septum -- this object is SPECIFIED, i.e. neither yet.",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)"
+  }
+ },
+ {
+  "id": "memb.septum.shin_l_foot_l",
+  "kind": "surface",
+  "name": "Septum shin_l | foot_l (specified)",
+  "classification": "type.A3",
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": 1,
+  "inventory_anchor": "A3",
+  "spatial": {
+   "anchored_to": "joint plane between the two segments (oblique plane, normal UNKNOWN)",
+   "frame": "engine world frame, y-up"
+  },
+  "geometry": {
+   "shape": "conforming internal interface (pending)",
+   "is_placeholder": true
+  },
+  "physical": {
+   "law": "shared sealed interface (planned); a visual cap alone CANNOT establish independent compartments",
+   "carries": [
+    "pressure",
+    "traction"
+   ],
+   "region_a": "region.seg.shin_l",
+   "region_b": "region.seg.foot_l"
+  },
+  "attachments": [],
+  "dependencies": [
+   "work.septa_leg_l"
+  ],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
+   "acceptance_test": "puncture thigh_l; shin_l keeps its inventory; total mass conserved",
+   "status": "untested"
+  },
+  "unknowns": [
+   "orientation/normal",
+   "area",
+   "conforming geometry at the branch junction"
+  ],
+  "notes": "DISTINGUISH: geometric closing face vs implemented load-bearing septum -- this object is SPECIFIED, i.e. neither yet.",
+  "provenance": {
+   "source": "docs/THE_SHIP_GOAL.md, THE ANATOMICAL COMPARTMENT LAW (operator correction, 2026-09-13)"
+  }
+ }
+]

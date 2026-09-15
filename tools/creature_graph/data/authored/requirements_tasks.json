@@ -1,0 +1,549 @@
+[
+ {
+  "id": "req.every_bone_sealed",
+  "kind": "requirement",
+  "name": "THE ANATOMICAL COMPARTMENT LAW",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "statement": "Every intended skeletal bone/segment owns one sealed hydraulic compartment (operator correction 2026-09-13: \"you can't just have four sections\"). Treat this as Chimera's ENGINEERED anatomy, not a claim that biological bones are hermetic water bags.",
+   "verification": "verification: compartment count matches the bone count, every cell conserves, and a press on any bone answers in THAT bone's cell -- not a neighbor's"
+  },
+  "attachments": [],
+  "dependencies": [
+   "inst.comp.thigh_l",
+   "inst.comp.shin_l",
+   "inst.comp.foot_l"
+  ],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "AUTHORED requirement -- tasks may follow only these, never imported anatomical facts",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "req.mass_preserved",
+  "kind": "requirement",
+  "name": "Material inventory preservation",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "statement": "Preserve the 13,824.5 kg material inventory when repartitioning; any exchange is accounted between named regions.",
+   "verification": "verification: sum of region masses unchanged by a partition; exchanges carry named-region accounting"
+  },
+  "attachments": [],
+  "dependencies": [
+   "material.water",
+   "inst.band.feet",
+   "inst.band.shins",
+   "inst.band.thighs",
+   "inst.band.torso"
+  ],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "AUTHORED requirement -- tasks may follow only these, never imported anatomical facts",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "req.sealed_design_is_chimera",
+  "kind": "requirement",
+  "name": "The sealed-compartment design is a Chimera requirement",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "statement": "Imported reference data (Uberon/RO/QUDT/OpenSim/BodyParts3D) is REFERENCE; selecting a creature parameter is an explicit adaptation decision with applicability and validation. The custom sealed-compartment design remains a Chimera requirement regardless of what biology says.",
+   "verification": "verification: no imported fact auto-becomes a creature parameter or task; join records are explicit mappings"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "AUTHORED requirement -- tasks may follow only these, never imported anatomical facts",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "req.press_answer_chain",
+  "kind": "requirement",
+  "name": "The press-answer chain",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "statement": "The near product needs a convincing, falsifiable chain: press -> local deformation -> sensing -> physical response -> changed consequence after damage.",
+   "verification": "verification: the player/developer can select a bone-associated compartment, inspect its intended and implemented boundaries, press it, observe its local response, interrupt a relevant physical or sensory path, and see the resulting evidence attached to the same stable graph identities"
+  },
+  "attachments": [],
+  "dependencies": [
+   "experience.press_and_response",
+   "experience.local_withdrawal"
+  ],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "AUTHORED requirement -- tasks may follow only these, never imported anatomical facts",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "req.honest_measurement",
+  "kind": "requirement",
+  "name": "Honest measurement (E38)",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "statement": "Every shown quantity has units, provenance, model assumptions, and appropriate precision; virtual simulator measurements are distinguished from real-world ones (the former do not independently validate the simulator's material model).",
+   "verification": "verification: cross-section inspection shows units + provenance; virtual vs real labels present"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "AUTHORED requirement -- tasks may follow only these, never imported anatomical facts",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "req.value_gate_distinct",
+  "kind": "requirement",
+  "name": "The $25 gate is machine-checkable, distinct from willingness-to-pay",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "statement": "Preserve the $25 gate's actual definition and distinguish it from human willingness-to-pay evidence (E42: a machine-checkable gate validates conditions; WTP still requires evidence from people).",
+   "verification": "verification: the gate's definition is preserved verbatim; human WTP records are a different evidence kind"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "AUTHORED requirement -- tasks may follow only these, never imported anatomical facts",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "experience.press_and_response",
+  "kind": "experience",
+  "name": "Press and receive an honest answer",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "statement": "The approved first-proof question: which unfinished structures enable press-and-response, have prerequisites available, and lack passing falsifiers?"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A press deforms locally, the cell answers in its pressure, and the answer survives independent calculation.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "player experience (product-side target)",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "experience.local_withdrawal",
+  "kind": "experience",
+  "name": "Local withdrawal (select -> inspect -> intervene -> observe)",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "statement": "The central falsifier demo: if the graph says a structure exists and works, we must be able to SELECT it, INSPECT its physical connections, INTERVENE on it (obstruct an actuator, disconnect a sensor path, disable a finite attachment), and OBSERVE the predicted change."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "An intervention on one compartment/limb changes exactly the predicted local things and nothing hidden.",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "player experience (product-side target)",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "work.partition_leg_l",
+  "kind": "work",
+  "name": "Partition the left leg into per-bone volumetric regions",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": {
+   "shape": null,
+   "is_placeholder": true,
+   "note": "a roadmap task has NO physical extent; it associates with physical objects without acquiring fabricated geometry"
+  },
+  "physical": {
+   "plan": "Derive segments from skeleton connectivity in the reference configuration; labeled-volume/interface partition (oblique planes allowed; branch junctions and conforming caps are the hard part); validate closure, orientation, positive volumes, disjoint interiors, parent coverage, mass conservation; recheck under joint motion; never reclassify per frame."
+  },
+  "attachments": [],
+  "dependencies": [
+   "cap.classify_bind_seal",
+   "cap.cut_split"
+  ],
+  "evidence": [],
+  "falsifier": {
+   "statement": "Derive segments from skeleton connectivity in the reference configuration",
+   "acceptance_test": "Acceptance = req.every_bone_sealed verification on the leg: count matches, cells conserve, press answers in the right bone's cell.",
+   "status": "untested"
+  },
+  "authored_priority": 1,
+  "enables": [
+   "experience.local_withdrawal",
+   "experience.press_and_response"
+  ],
+  "unknowns": [],
+  "notes": "AUTHORED task following req.every_bone_sealed / req.press_answer_chain; never derived from imported facts",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "work.septa_leg_l",
+  "kind": "work",
+  "name": "Build the leg's shared septa as load-bearing walls",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": {
+   "shape": null,
+   "is_placeholder": true,
+   "note": "a roadmap task has NO physical extent; it associates with physical objects without acquiring fabricated geometry"
+  },
+  "physical": {
+   "plan": "Matching internal interfaces wherever neighboring volume elements differ; a shared septum is ONE physical wall (opposite orientation per region); no double stiffness/mass, no gaps; distinguish geometric closing face from implemented load-bearing septum."
+  },
+  "attachments": [],
+  "dependencies": [
+   "cap.cut_split"
+  ],
+  "evidence": [],
+  "falsifier": {
+   "statement": "Matching internal interfaces wherever neighboring volume elements differ",
+   "acceptance_test": "Puncture thigh_l: shin_l keeps its inventory; total system mass conserved.",
+   "status": "untested"
+  },
+  "authored_priority": 2,
+  "enables": [
+   "experience.local_withdrawal"
+  ],
+  "unknowns": [],
+  "notes": "AUTHORED task following req.every_bone_sealed / req.press_answer_chain; never derived from imported facts",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "work.causal_demo_leg_l",
+  "kind": "work",
+  "name": "One honest causal intervention on the existing machinery",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": {
+   "shape": null,
+   "is_placeholder": true,
+   "note": "a roadmap task has NO physical extent; it associates with physical objects without acquiring fabricated geometry"
+  },
+  "physical": {
+   "plan": "Smallest supported intervention: obstruct an actuator, disconnect a sensor path, or disable a finite attachment -- connected to EXISTING measured inputs and the EXISTING bounded actuator/intent system. No anatomical tendon-cut claim while a hidden actuator supplies the same force."
+  },
+  "attachments": [],
+  "dependencies": [
+   "cap.reflex_plumbing"
+  ],
+  "evidence": [],
+  "falsifier": {
+   "statement": "Smallest supported intervention: obstruct an actuator, disconnect a sensor path, or disable a finite attachment -- connected to EXISTING measured inputs and the EXISTING bounded actuator/intent system. No anatomical tendon-cut claim while a hidden actuator supplies the same force.",
+   "acceptance_test": "Disconnecting the sensory path removes its active contribution while passive mechanical response remains (acceptance 4); obstructing motion respects the force cap and yields reaction loads (acceptance 5).",
+   "status": "untested"
+  },
+  "authored_priority": 3,
+  "enables": [
+   "experience.local_withdrawal"
+  ],
+  "unknowns": [],
+  "notes": "AUTHORED task following req.every_bone_sealed / req.press_answer_chain; never derived from imported facts",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "work.reference_adaptation_osim",
+  "kind": "work",
+  "name": "Adapt the OpenSim leg reference explicitly",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": {
+   "shape": null,
+   "is_placeholder": true,
+   "note": "a roadmap task has NO physical extent; it associates with physical objects without acquiring fabricated geometry"
+  },
+  "physical": {
+   "plan": "Join the imported OpenSim leg model (leg6dof9musc) to creature segments ONLY through explicit mapping records; name similarity yields CANDIDATES, never equivalences; any parameter selection becomes an adaptation decision with applicability + validation (req.sealed_design_is_chimera)."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "Join the imported OpenSim leg model (leg6dof9musc) to creature segments ONLY through explicit mapping records",
+   "acceptance_test": "Each selected parameter carries source, units, applicability, and a validation plan; virtual vs real measurement distinguished.",
+   "status": "untested"
+  },
+  "authored_priority": 4,
+  "enables": [
+   "experience.press_and_response"
+  ],
+  "unknowns": [],
+  "notes": "AUTHORED task following req.every_bone_sealed / req.press_answer_chain; never derived from imported facts",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "work.inspect_consistent_ids",
+  "kind": "work",
+  "name": "Inspection with consistent IDs and timestamps",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": {
+   "shape": null,
+   "is_placeholder": true,
+   "note": "a roadmap task has NO physical extent; it associates with physical objects without acquiring fabricated geometry"
+  },
+  "physical": {
+   "plan": "The selected structure, pressure trace, sensor event, and actuator response carry consistent IDs and timestamps; report latency and sampling limits (300 Hz outer tick = 3.33 ms; REST GET snapshot, no in-tick roundtrip). Graph-layout coordinates can never modify engine coordinates."
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "The selected structure, pressure trace, sensor event, and actuator response carry consistent IDs and timestamps",
+   "acceptance_test": "Acceptance 9 graph side: one inspection record joins structure + pressure + intervention by stable ids + engine ticks/UTC.",
+   "status": "untested"
+  },
+  "authored_priority": 5,
+  "enables": [
+   "experience.press_and_response"
+  ],
+  "unknowns": [],
+  "notes": "AUTHORED task following req.every_bone_sealed / req.press_answer_chain; never derived from imported facts",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "cap.classify_bind_seal",
+  "kind": "capability",
+  "name": "classify -> bind -> seal pipeline",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "mesh import, 9/28 auto-pins, classification, IDW binding, cut-and-weld seal with degenerate-split guard (0.5% parent volume)"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "an importer that passes only before the first joint bends has not imported a physical creature",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "existing engine machinery (reuse, don't replace)",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "cap.cut_split",
+  "kind": "capability",
+  "name": "Cut/split machinery with degenerate-split guard",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "0.5% parent-volume guard; a geometrical split that caps both daughters is NOT equivalent to an open wound"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "a rupture that leaves every physical connection intact is only a damage counter",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "existing engine machinery (reuse, don't replace)",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "cap.reflex_plumbing",
+  "kind": "capability",
+  "name": "Reflex plumbing (breath/flinch/startle)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "volume-target breathing, pressure-triggered flinch, pressure-rate startle; pressure_coupling route flag severs pressure->intent (negative control)"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "a reflex whose response is unchanged by severing its sensory path cannot demonstrate a reflex",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "existing engine machinery (reuse, don't replace)",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "cap.gait",
+  "kind": "capability",
+  "name": "Gait machine (stance/lift/reach/load)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "contact/pressure/lean transitions measured; controller interruption produced abort/stumble; 28 measured joint pins; stance servos"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "cutting the controller mid-stride must stumble, never glide",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "existing engine machinery (reuse, don't replace)",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "cap.xpbd_solver",
+  "kind": "capability",
+  "name": "The verified XPBD solver",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "volume/joint/servo/contact constraints, 300 Hz, bounded across tested substep counts; the BASELINE -- integrator replacement is a separate experiment"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "stability is not fidelity",
+   "acceptance_test": null,
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "existing engine machinery (reuse, don't replace)",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ }
+]
