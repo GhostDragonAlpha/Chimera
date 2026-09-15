@@ -1,0 +1,20 @@
+master-arm law (compact-JSON hazard):
+  [PASS] {"on":true} arms: got true want true
+  [PASS] {"on":true} has_on: got true want true
+  [PASS] {"on": false} (space) DISARMS: got false want false
+  [PASS] {"on": false} has_on: got true want true
+  [PASS] {"on":false} disarms: got false want false
+  [PASS] {} no master: got false want false
+  [PASS] {} has_on false: got false want false
+get_bool (stod-on-booleans trap):
+  [PASS] pressure_coupling:false: got false want false
+  [PASS] breathing:true: got true want true
+  [PASS] flinch:true spaced: got true want true
+  [PASS] missing key -> default true: got true want true
+  [PASS] malformed value -> default: got true want true
+  [PASS] value-shadow: note first: got true want true
+  [PASS] prefix key rejected (flinchy): got true want true
+nerve-cut battery body:
+  [PASS] cut: on+cut body master: got true want true
+  [PASS] cut: pressure_coupling false: got false want false
+DESK-CHECK: all parse cases pass

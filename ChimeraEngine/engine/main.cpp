@@ -239,6 +239,21 @@ static double get_double(const std::string& body, const char* key, double def) {
     try { return std::stod(body.substr(p)); } catch (...) { return def; }
 }
 
+// C1r: boolean body fields WITHOUT stod. std::stod("true") THROWS (the
+// documented stod-on-booleans trap) and the catch silently returns the
+// default -- a cut-nerve request that flips itself back on. The value's
+// own first character is the truth: 't' -> true, 'f' -> false, anything
+// else -> the default.
+static bool get_bool(const std::string& body, const char* key, bool def) {
+    size_t p = find_colon_after(body, key);
+    if (p == std::string::npos) return def;
+    while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
+    if (p >= body.size()) return def;
+    if (body[p] == 't') return true;
+    if (body[p] == 'f') return false;
+    return def;
+}
+
 static std::string get_string(const std::string& body, const char* key) {
     std::string needle = std::string("\"") + key + "\"";
     size_t pos = body.find(needle);
@@ -1360,6 +1375,47 @@ int main(int argc, char** argv) {
             if (g_tick.split(cell)) body = "{\"ok\":true}";
             else body = "{\"ok\":false,\"error\":\"refused: the cell index "
                         "must exist and hold more than one closed surface\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_reflex" && method == "POST") {
+            // THE CREATURE ANSWERS (fleet C1r; lead-wired at window #8).
+            // DEFAULT OFF ON BOOT -- this route is the only arming path.
+            // Three PHYSICS reflexes: breathing (the torso cell's volume
+            // target oscillates; the pressure law and every gait
+            // measurement are structurally blind to it), flinch (a sealed
+            // cell's pressure crossing on a RISING edge flexes the touched
+            // side's binding-derived strut pin), startle (a pressure
+            // TRANSIENT biases the stance servo inside its existing cap).
+            // COMPACT-JSON HAZARD (R4_GAIT_VERIFY/PROTOCOL.md): the master
+            // "on" arms on the LITERAL substring "on":true -- a space
+            // ({"on": true}) parses as FALSE and silently disarms, the
+            // same law as /tick_gait and /tick_stance. Channel switches
+            // use get_bool, never stod (the stod-on-booleans trap).
+            //   {"on":true}                        arm all three
+            //   {"on":false}                       deterministic full off
+            //   {"breathing":false}                suspend the oscillator
+            //   {"pressure_coupling":false}        THE NERVE CUT (negative
+            //                                      control: the flinch and
+            //                                      startle detectors see
+            //                                      nothing; breathing is
+            //                                      not pressure-driven)
+            // Refusals name themselves (reflex_block in /tick_state); a
+            // partial arm is ok:true with the failed channels named.
+            bool has_on = req_body.find("\"on\"") != std::string::npos;
+            bool ok = true;
+            if (has_on) {
+                const bool on =
+                    req_body.find("\"on\":true") != std::string::npos;
+                ok = g_tick.set_reflex(on);
+            }
+            static const char* kReflexChannels[] = {
+                "breathing", "flinch", "startle", "pressure_coupling"};
+            for (const char* ch : kReflexChannels) {
+                if (find_colon_after(req_body, ch) == std::string::npos)
+                    continue;
+                g_tick.set_reflex_channel(ch, get_bool(req_body, ch, true));
+            }
+            body = std::string("{\"ok\":") + (ok ? "true," : "false,")
+                 + "\"reflex\":" + g_tick.reflex_summary_json() + "}";
             content_type = "application/json";
         } else if (p == "/hinge_bin" && method == "POST") {
             // Binary protocol (little-endian):

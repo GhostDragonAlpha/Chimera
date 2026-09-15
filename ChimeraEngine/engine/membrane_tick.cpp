@@ -37,6 +37,40 @@ constexpr float GAIT_MIN_CHANNEL  = 1e-3f;   // m/rad -- the F1 no-channel refus
 constexpr float GAIT_MAX_ANG      = 89.f * 3.14159265358979f / 180.f; // pose_index's ROM law
 constexpr size_t GAIT_LOG_N       = 16;      // bounded transition log
 
+// ─── C1r REFLEX constants (PREREG.md + DERIVATIONS.md; every interim
+// ─── VALUE below is AWAITING ASTRA -- the mechanisms and their measured
+// ─── anchors are not) ────────────────────────────────────────────────
+constexpr float REFLEX_BREATH_F_COEF = 53.5f;  // Stahl 1967 respiratory
+constexpr float REFLEX_BREATH_F_EXP  = -0.26f; // allometry: f=53.5 M^-.26
+                                               // breaths/min -> 4.485/min,
+                                               // 13.38 s at 13,824.5 kg
+constexpr float REFLEX_BREATH_VT_ML  = 6.2f;   // tidal volume = 6.2 mL/kg
+constexpr float REFLEX_BREATH_VT_EXP = 1.01f;  // x M^1.01 -> 0.0940 m^3,
+                                               // 0.752% of torso v0
+constexpr float REFLEX_FLINCH_PA     = 1.0e5f; // 2x GAIT_P_RELAX_PA (gentle
+                                               // handling tolerated), 0.67%
+                                               // of yield_pa_, 150x below
+                                               // damage; ladder-measured
+                                               // between the 10 kN (51 kPa)
+                                               // and 20 kN (432 kPa) rungs
+constexpr float REFLEX_STARTLE_DPDPT = 1.0e6f; // Pa/s ~ 3.3 kPa/tick at the
+                                               // measured 3.34 ms tick;
+                                               // measured floors are EXACTLY
+                                               // 0 Pa/s; a 500 N touch steps
+                                               // 3.6 kPa in one tick
+constexpr float REFLEX_QUIET_S       = 1.0f;   // post-gait refractory = 2x
+                                               // tau_relax_: the walk's
+                                               // measured pressure collapse
+                                               // (583 MPa/s peaks) must not
+                                               // ring a crossing
+constexpr float REFLEX_S_PREREG      = 0.283f; // m/rad, stance prereg |S|
+                                               // (fallback when stance has
+                                               // never run: read live as
+                                               // 1/stance_kp_ when it has)
+constexpr float REFLEX_ENV_CUT       = 1e-3f;  // envelope cutoff (the 0.1 mm
+                                               // press-cutoff analog, rad)
+constexpr float DEG2RAD_F            = 3.14159265358979f / 180.f;
+
 // F1: whole-body centroid + centroid over a FIXED index set (the frozen
 // support). The support set is frozen at stance-engage because a
 // per-frame re-selected min-y band CHASES the ankle pitch (the toe
@@ -232,6 +266,11 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
     gait_stride_count_ = 0;
     gait_log_.clear();
     gait_enable_block_.clear();   // the new body has answered nothing yet
+    // C1r: reflex state dies with the body -- the breath vert list, the
+    // resolved pins and the detector membrane describe the OLD geometry
+    // (the C1 stale-index crash class; a new body is born UN-ARMED: the
+    // route is the operator's).
+    reflex_ = ReflexState{};
     ready_.store(true, std::memory_order_release);
 }
 
@@ -650,6 +689,14 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
         conserve_pct_ = vw != 0.f ? (total - vw) / vw * 100.f : 0.f;
     }
 
+    // ═══ C1r: THE CREATURE ANSWERS — DETECT (flinch + startle) ══════════
+    // Runs on THIS tick's fresh per-cell sealed pressures (computed just
+    // above), BEFORE the stance/gait blocks so its pin writes land in the
+    // same actuation-latency class as theirs (manifest next tick's
+    // travel). Internally gated by reflex_.armed; the interaction gates
+    // (gait suppression, quiet window, nerve cut) live inside.
+    if (reflex_.armed) reflex_detect_locked_(dt);
+
     // ═══ F1: THE STANCE (the balance rung; prereg appended to
     // SEAL_PREREGISTRATION.md) ═══════════════════════════════════════
     // The body keeps itself balanced: lean -- the horizontal (xz) offset
@@ -688,6 +735,13 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
         stance_lean_z_ = lean_z;
     }
 
+    // ═══ C1r: STARTLE COMPOSE (the whole-body reflex's only channel) ════
+    // After the stance block (composes OVER stance_th_, the same law the
+    // gait machine's strut composer uses) and before the gait block (a
+    // gait-armed tick overwrites the strut pins; the startle is gated off
+    // under gait anyway).
+    if (reflex_.armed) reflex_compose_locked_();
+
     // ═══ G1: THE GAIT CHECKPOINT MACHINE (the robot-stack rung 2;
     // prereg appended to SEAL_PREREGISTRATION.md) ══════════════════════
     // Per-leg STANCE -> LIFT -> REACH -> LOAD (+ RECOVER, the measured
@@ -704,6 +758,14 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
     // it must NEVER glide. Every transition logs its measured gate
     // values (gait_log in state_json).
     if (gait_on_) gait_step_locked_(verts9, dt);
+
+    // ═══ C1r: AUTONOMIC BREATHING (the last surface pass) ═══════════════
+    // AFTER the seal-volume/stance/gait passes: every measurement pass in
+    // this engine reads the pre-breath surface, so the breath is blind to
+    // the pressure law, the conservation export, and every gait gate --
+    // by construction, and MEASURED at window #8 (PREREG R1 prediction).
+    // BEFORE the root offset, which composes as a uniform translation.
+    if (reflex_.armed) reflex_breath_locked_(verts9, dt);
 
     // THE MOVEMENT LAW -- THE FALL (prereg appended to
     // SEAL_PREREGISTRATION.md). One rigid DOF along Y:
@@ -2550,6 +2612,417 @@ void MembraneTick::gait_step_locked_(std::vector<float>& verts9, float dt) {
         joint_deg_[(size_t)gait_clear_pin_[1]] = gait_knee_rad_[1];
 }
 
+// ═══ C1r: THE CREATURE ANSWERS — implementation (PREREG.md) ════════════
+
+bool MembraneTick::set_reflex(bool on) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (!on) { reflex_off_locked_(); return true; }
+    if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return false;
+    const size_t nv = base_pos_.size() / 9;
+    const bool classified = cell_joint_.size() == cells_.size()
+                         && !joint_pins_.empty()   // bindings without pins = OOB
+                         && joint_pins_.size() == joint_deg_.size()
+                         && vert_bind_idx_.size() == nv * 3
+                         && vert_bind_w_.size() == nv * 3;
+    reflex_.block.clear();
+    std::string blocks;
+    // -- BREATHING: a sealed torso cell (argmax v0 -- taste-free: 90.5% of
+    //    THIS body) on a classified body (the travel law rebuilds the
+    //    surface from base every tick, so the breath is a pure function of
+    //    phase and can never accumulate) --
+    if (reflex_.breathing) {
+        std::string b;
+        if (!classified) b = "unclassified";
+        else if (!sealed_ || seal_cells_.empty()) b = "unsealed";
+        int tor = -1;
+        float v0max = 0.f;
+        if (b.empty()) {
+            for (size_t i = 0; i < seal_cells_.size(); ++i)
+                if (seal_cells_[i].v0 > v0max) {
+                    v0max = seal_cells_[i].v0;
+                    tor = (int)i;
+                }
+            if (tor < 0) b = "no_torso_cell";
+        }
+        if (b.empty()) {
+            const SealCell& tc = seal_cells_[(size_t)tor];
+            // the allometric numbers at THIS body's mass (DERIVATIONS §3-4;
+            // both interim values AWAITING ASTRA)
+            const double M = (double)mass_kg_;
+            const double f_bpm = (double)REFLEX_BREATH_F_COEF
+                               * std::pow(M, (double)REFLEX_BREATH_F_EXP);
+            reflex_.breath_omega =
+                (float)(2.0 * 3.14159265358979 * f_bpm / 60.0);
+            reflex_.breath_period_s = (float)(60.0 / f_bpm);
+            const double vt_m3 = ((double)REFLEX_BREATH_VT_ML * 1e-6)
+                               * std::pow(M, (double)REFLEX_BREATH_VT_EXP);
+            reflex_.breath_amp_frac = (float)(vt_m3 / (double)tc.v0);
+            // torso skin area on the rest blend (the frozen arm-time
+            // reference; external surface only -- cap triangles ride cut
+            // blends and are internal walls)
+            std::vector<float> rest9(base_pos_);
+            apply_travel(rest9, nullptr);
+            double area = 0.0;
+            const std::vector<uint32_t>& pc = tc.pieces;
+            for (size_t k = 0; k + 2 < pc.size(); k += 3) {
+                const uint32_t va = pc[k], vb = pc[k + 1], vc = pc[k + 2];
+                if (va >= nv || vb >= nv || vc >= nv) continue;
+                area += (double)tri_area(rest9, va, vb, vc);
+            }
+            if (!(area > 1e-6)) b = "torso_area_degenerate";
+            else {
+                reflex_.breath_mean_disp = (float)(vt_m3 / area);
+                // the vert list + raised-cosine y-band profile: zero at
+                // both band ends (no seam at the cell boundary), peak at
+                // mid-band. Originals only: cut blends ride originals at
+                // fixed weights, so moving originals carries the welds.
+                reflex_.breath_verts.clear();
+                reflex_.breath_w.clear();
+                const float inv_h =
+                    tc.yhi > tc.ylo ? 1.f / (tc.yhi - tc.ylo) : 0.f;
+                for (size_t k = 0; k < pc.size(); ++k) {
+                    const uint32_t sl = pc[k];
+                    if (sl >= nv) continue;
+                    const float u = (rest9[(size_t)sl * 9 + 1] - tc.ylo) * inv_h;
+                    float w = 0.f;
+                    if (u > 0.f && u < 1.f)
+                        w = 0.5f * (1.f - std::cos(2.f * 3.14159265358979f * u));
+                    if (w <= 0.f) continue;   // the band ends stay pinned
+                    reflex_.breath_verts.push_back(sl);
+                    reflex_.breath_w.push_back(w);
+                }
+                if (reflex_.breath_verts.empty()) b = "breath_verts_empty";
+            }
+        }
+        if (b.empty()) reflex_.breath_cell = tor;
+        else {
+            reflex_.breath_cell = -1;
+            blocks += (blocks.empty() ? "" : "; ")
+                    + std::string("breathing:") + b;
+        }
+    }
+    // -- FLINCH: the same-limb drive pins (the gait machine's resolution;
+    //    no silent re-derivation: if this body was never gait-resolved,
+    //    the refusal NAMES it -- arm gait once (it may disarm immediately;
+    //    the resolution persists) to measure the drive pins) --
+    if (reflex_.flinch) {
+        std::string b;
+        if (!classified) b = "unclassified";
+        else if (!reflex_resolve_locked_(b)) { /* b named inside */ }
+        if (b.empty())
+            reflex_.flinch_theta = STANCE_THETA_MAX_DEG * DEG2RAD_F;
+        else
+            blocks += (blocks.empty() ? "" : "; ")
+                    + std::string("flinch:") + b;
+    }
+    // -- STARTLE: needs the ankle pins on a classified body; the stance
+    //    rung is its channel (it stays latent without stance) --
+    if (reflex_.startle) {
+        std::string b;
+        if (!classified) b = "unclassified";
+        else if (joint_deg_.size() <= (size_t)std::max(ANKLE_PIN_L, ANKLE_PIN_R))
+            b = "no_ankle_pins";
+        if (b.empty()) {
+            // one rest-sink lean quantum through the stance channel
+            // (DERIVATIONS §6), clamped inside the existing ankle cap
+            const float S = stance_kp_ > 0.f ? 1.f / stance_kp_
+                                             : REFLEX_S_PREREG;
+            if (!(S > 1e-4f)) b = "no_stance_channel";
+            else reflex_.startle_bias = std::min(
+                GAIT_SINK_M / S, STANCE_THETA_MAX_DEG * DEG2RAD_F);
+        }
+        if (!b.empty())
+            blocks += (blocks.empty() ? "" : "; ")
+                    + std::string("startle:") + b;
+    }
+    const bool breath_ok = reflex_.breathing && reflex_.breath_cell >= 0;
+    const bool flinch_ok = reflex_.flinch
+                        && reflex_.strut_pin[0] >= 0
+                        && reflex_.strut_pin[1] >= 0;
+    const bool startle_ok = reflex_.startle && reflex_.startle_bias > 0.f;
+    if (!breath_ok && !flinch_ok && !startle_ok) {
+        reflex_.block = blocks.empty() ? std::string("no_channel") : blocks;
+        reflex_.armed = false;
+        return false;
+    }
+    reflex_.block = blocks;   // a partial arm names the channels that refused
+    reflex_.armed = true;
+    reflex_.prev_p_valid = false;   // the detector seeds on its next tick
+    return true;
+}
+
+bool MembraneTick::set_reflex_channel(const std::string& name, bool v) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (name == "breathing") {
+        reflex_.breathing = v;   // suspend freezes the phase; the pass
+        return true;             // stops displacing -> exact rest (M5)
+    }
+    if (name == "flinch") {
+        reflex_.flinch = v;
+        if (!v) {
+            // let go of any pin WE hold (an armed rung's pin is already
+            // being written by its owner -- never stomp it)
+            const bool owned = gait_on_ || (stance_on_ && gravity_on_);
+            for (int s = 0; s < 2; ++s) {
+                const int pin = reflex_.strut_pin[s];
+                if (reflex_.pin_held[s] && pin >= 0
+                    && (size_t)pin < joint_deg_.size() && !owned)
+                    joint_deg_[(size_t)pin] = 0.f;
+                reflex_.pin_held[s] = false;
+            }
+            reflex_.env_l = reflex_.env_r = 0.f;
+        }
+        return true;
+    }
+    if (name == "startle") {
+        reflex_.startle = v;
+        if (!v) reflex_.startle_env = 0.f;
+        return true;
+    }
+    if (name == "pressure_coupling") {
+        reflex_.pressure_coupling = v;   // THE NERVE (the negative control)
+        return true;
+    }
+    return false;
+}
+
+std::string MembraneTick::reflex_summary_json() const {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    std::ostringstream o;
+    o << "{\"reflex_on\":" << (reflex_.armed ? "true" : "false")
+      << ",\"breathing\":" << (reflex_.breathing ? "true" : "false")
+      << ",\"flinch\":" << (reflex_.flinch ? "true" : "false")
+      << ",\"startle\":" << (reflex_.startle ? "true" : "false")
+      << ",\"pressure_coupling\":"
+      << (reflex_.pressure_coupling ? "true" : "false")
+      << ",\"breath_cell\":" << reflex_.breath_cell
+      << ",\"breath_period_s\":" << reflex_.breath_period_s
+      << ",\"breath_disp_m\":" << reflex_.breath_disp
+      << ",\"flinch_pin_l\":" << reflex_.strut_pin[0]
+      << ",\"flinch_pin_r\":" << reflex_.strut_pin[1]
+      << ",\"block\":\"" << reflex_.block << "\"}";
+    return o.str();
+}
+
+// THE SAME-LIMB LAW: the flinch drives the gait machine's binding-derived
+// strut pins. The resolution is measured, never assumed (the V3a audit):
+// when THIS body has one it persists after disarm (gait_off_locked_ keeps
+// the pins), so the reflex reuses it -- one source of truth. A body that
+// was never gait-resolved refuses BY NAME: no silent re-derivation, no
+// duplicated probe code -- arm gait once (it may disarm immediately) to
+// measure the drive pins.
+bool MembraneTick::reflex_resolve_locked_(std::string& block) {
+    if (gait_strut_pin_[0] >= 0 && gait_strut_pin_[1] >= 0
+        && (size_t)std::max(gait_strut_pin_[0], gait_strut_pin_[1])
+               < joint_deg_.size()) {
+        for (int s = 0; s < 2; ++s) {
+            reflex_.strut_pin[s] = gait_strut_pin_[s];
+            reflex_.lift_sign[s] =
+                (gait_lift_sign_[s] >= 0.f) ? 1.f : -1.f;
+        }
+        return true;
+    }
+    block = "no_drive_resolution (arm gait once to measure this body's "
+            "drive pins; the resolution persists after disarming)";
+    return false;
+}
+
+void MembraneTick::reflex_detect_locked_(float dt) {
+    const float dts = std::min(std::max(dt, 0.f), 0.05f);   // stall guard
+    // THE QUIET WINDOW (PREREG gate 1): time since the walker last ran.
+    // The walk's own pressures measured 24 MPa median / 583 MPa/s collapse
+    // peaks -- a level or rate detector CANNOT separate touch from stride,
+    // so suppression is the design, and the 1 s (= 2 tissue taus) window
+    // after disarm defers the post-cut collapse.
+    if (gait_on_) reflex_.quiet_s = 0.f;
+    else if (reflex_.quiet_s < 1e29f) reflex_.quiet_s += dts;
+    const bool quiet = reflex_.quiet_s >= REFLEX_QUIET_S;
+    // Envelopes decay with the named tissue tau whether or not the servo
+    // may answer: the tissue relaxes regardless of gating (the state
+    // fields still show that the stimulus was felt -- suppression is not
+    // deafness).
+    const float decay = std::exp(-(dts > 0.f ? dts : 0.f) / tau_relax_);
+    if (reflex_.env_l > 0.f) {
+        reflex_.env_l *= decay;
+        if (reflex_.env_l < REFLEX_ENV_CUT) reflex_.env_l = 0.f;
+    }
+    if (reflex_.env_r > 0.f) {
+        reflex_.env_r *= decay;
+        if (reflex_.env_r < REFLEX_ENV_CUT) reflex_.env_r = 0.f;
+    }
+    if (reflex_.startle_env > 0.f) {
+        reflex_.startle_env *= decay;
+        if (reflex_.startle_env < REFLEX_ENV_CUT) reflex_.startle_env = 0.f;
+    }
+    // -- the flinch's motor: UNOWNED strut pins only. Ownership: gait
+    //    writes the drive pins while armed; stance writes the ankles (the
+    //    strut pins on this body) while armed under gravity. A flinch
+    //    writing an owned pin would be stomped same-tick -- a lying
+    //    reflex -- so the gate is absolute (PREREG gate 2).
+    const bool owned = gait_on_ || (stance_on_ && gravity_on_);
+    for (int s = 0; s < 2; ++s) {
+        const float env = (s == 0) ? reflex_.env_l : reflex_.env_r;
+        const int pin = reflex_.strut_pin[s];
+        if (pin < 0 || (size_t)pin >= joint_deg_.size()) continue;
+        if (env > 0.f && !owned) {
+            joint_deg_[(size_t)pin] =
+                reflex_.lift_sign[s] * reflex_.flinch_theta * env;
+            reflex_.pin_held[s] = true;
+        } else if (reflex_.pin_held[s]) {
+            // the envelope died or a rung took the pin: return OUR write
+            // to authored bearing once if still unowned (the flex-0
+            // precedent); if owned, the owner writes it -- just let go.
+            if (!owned) joint_deg_[(size_t)pin] = 0.f;
+            reflex_.pin_held[s] = false;
+        }
+    }
+    // -- the detector membrane: per sealed cell --
+    if (seal_cells_.empty()) return;
+    if ((int)reflex_.prev_p.size() != (int)seal_cells_.size()
+        || (int)reflex_.cell_cx.size() != (int)seal_cells_.size()) {
+        // a cut changed the tree: rebuild centroids and SEED prev_p with
+        // the current pressures -- a new cell must never read as a spike
+        const size_t nc2 = seal_cells_.size();
+        reflex_.prev_p.assign(nc2, 0.f);
+        reflex_.cell_cx.assign(nc2, 0.f);
+        reflex_.cell_cz.assign(nc2, 0.f);
+        const uint32_t nv = (uint32_t)(base_pos_.size() / 9);
+        double bsz = 0.;
+        for (size_t v = 0; v < base_pos_.size() / 9; ++v)
+            bsz += base_pos_[v * 9 + 2];
+        reflex_.body_cz = (float)(bsz / (double)std::max<size_t>(1, base_pos_.size() / 9));
+        for (size_t i = 0; i < nc2; ++i) {
+            reflex_.prev_p[i] = seal_cells_[i].p;
+            double sx = 0., sz = 0.;
+            size_t sw = 0;
+            const std::vector<uint32_t>& pc = seal_cells_[i].pieces;
+            for (size_t k = 0; k < pc.size(); ++k) {
+                const uint32_t sl = pc[k];
+                if (sl >= nv) continue;
+                sx += base_pos_[(size_t)sl * 9 + 0];
+                sz += base_pos_[(size_t)sl * 9 + 2];
+                ++sw;
+            }
+            if (sw) {
+                reflex_.cell_cx[i] = (float)(sx / (double)sw);
+                reflex_.cell_cz[i] = (float)(sz / (double)sw);
+            }
+        }
+        reflex_.prev_p_valid = true;
+        return;   // seeded this tick: no detection
+    }
+    if (!reflex_.prev_p_valid) return;
+    const bool flinch_armed = reflex_.flinch && reflex_.pressure_coupling
+        && quiet && reflex_.strut_pin[0] >= 0 && reflex_.strut_pin[1] >= 0;
+    const bool startle_armed = reflex_.startle && reflex_.pressure_coupling
+        && quiet && reflex_.startle_bias > 0.f;
+    for (size_t i = 0; i < seal_cells_.size(); ++i) {
+        const SealCell& c = seal_cells_[i];
+        const float p = c.p;
+        const float pp = reflex_.prev_p[i];
+        if (!c.degenerate && dts > 0.f
+            && (flinch_armed || startle_armed)) {
+            // RISING level crossing only: a hit LOADS the cell; a release
+            // (the post-walk collapse, a lifted touch) never fires
+            if (flinch_armed && pp < REFLEX_FLINCH_PA && p >= REFLEX_FLINCH_PA) {
+                // two-neuron arc: stimulus cell -> touched side's limb.
+                // The side is the stimulus's LOCALITY: the live touch
+                // point's x when a press is held, else the cell's rest
+                // centroid (the house L/R convention: x >= 0 = L).
+                const float sx = touch_active_ ? touch_pt_[0]
+                                               : reflex_.cell_cx[i];
+                if (sx >= 0.f) reflex_.env_l = 1.f;   // the attack is a
+                else           reflex_.env_r = 1.f;   // reflex: instant
+                reflex_.last_cell = (int)i;
+                reflex_.last_tick = ticks_;
+            }
+            // TRANSIENT: the INCREASE rate only (a release does not startle);
+            // envelope-gated refractory (re-trigger below 10% envelope)
+            if (startle_armed && reflex_.startle_env < 0.1f) {
+                const float dpdt = (p - pp) / dts;
+                if (dpdt > REFLEX_STARTLE_DPDPT) {
+                    const float sz = touch_active_ ? touch_pt_[2]
+                                                   : reflex_.cell_cz[i];
+                    reflex_.startle_dir =
+                        (sz >= reflex_.body_cz) ? -1.f : 1.f;
+                    reflex_.startle_env = 1.f;
+                    reflex_.startle_last_tick = ticks_;
+                }
+            }
+        }
+        reflex_.prev_p[i] = p;   // track the truth even through a cut:
+                                 // reconnecting the nerve must never see
+                                 // a stale rising edge
+    }
+}
+
+void MembraneTick::reflex_compose_locked_() {
+    // THE STARTLE rides the stance servo (PREREG R3): a decaying lean bias
+    // composed over stance_th_ exactly the way the gait machine composes
+    // its strut component. Active ONLY while the stance rung is armed and
+    // the walker is not; the TOTAL stays inside the existing ankle cap.
+    if (!reflex_.startle || !reflex_.pressure_coupling) return;
+    if (!stance_on_ || !gravity_on_ || gait_on_) return;
+    if (reflex_.startle_env <= 0.f || reflex_.startle_bias <= 0.f) return;
+    if (joint_deg_.size() <= (size_t)std::max(ANKLE_PIN_L, ANKLE_PIN_R))
+        return;
+    const float th_max = STANCE_THETA_MAX_DEG * DEG2RAD_F;
+    const float a = reflex_.startle_dir * reflex_.startle_bias
+                  * reflex_.startle_env;
+    const float total = std::min(std::max(stance_th_ + a, -th_max), th_max);
+    joint_deg_[ANKLE_PIN_L] = total;
+    joint_deg_[ANKLE_PIN_R] = total;
+}
+
+void MembraneTick::reflex_breath_locked_(std::vector<float>& verts9,
+                                         float dt) {
+    // AUTONOMIC BREATHING (PREREG R1): the torso cell's volume TARGET
+    // oscillates; the surface follows along authored normals through the
+    // raised-cosine band profile. The displacement is a PURE function of
+    // (phase, vertex) -- the travel law rebuilds the surface from base
+    // every tick, so suspending the oscillator restores the measured
+    // zero-motion reference EXACTLY (the negative control).
+    if (!reflex_.breathing || reflex_.breath_cell < 0
+        || reflex_.breath_verts.empty()) return;
+    const float dts = std::min(std::max(dt, 0.f), 0.05f);   // stall guard
+    reflex_.breath_phase += reflex_.breath_omega * dts;
+    // wrap at 2pi: a multi-day phase would eat float precision (sin is
+    // periodic; the wrap keeps the oscillator exact at any uptime)
+    if (reflex_.breath_phase > 2.f * 3.14159265358979f)
+        reflex_.breath_phase =
+            std::fmod(reflex_.breath_phase, 2.f * 3.14159265358979f);
+    const float s = std::sin(reflex_.breath_phase);
+    reflex_.breath_disp = reflex_.breath_mean_disp * s;   // live report
+    if (s == 0.f) return;   // the zero-crossing is exact rest
+    for (size_t i = 0; i < reflex_.breath_verts.size(); ++i) {
+        const size_t v = (size_t)reflex_.breath_verts[i];
+        const float d = reflex_.breath_mean_disp * reflex_.breath_w[i] * s;
+        verts9[v * 9 + 0] += base_pos_[v * 9 + 3] * d;
+        verts9[v * 9 + 1] += base_pos_[v * 9 + 4] * d;
+        verts9[v * 9 + 2] += base_pos_[v * 9 + 5] * d;
+    }
+}
+
+void MembraneTick::reflex_off_locked_() {
+    // Deterministic off (the flex-0 precedent): envelopes to zero, phase
+    // to zero, any pin WE hold back to authored bearing -- no hidden
+    // decay, no stale integrator.
+    const bool owned = gait_on_ || (stance_on_ && gravity_on_);
+    for (int s = 0; s < 2; ++s) {
+        const int pin = reflex_.strut_pin[s];
+        if (reflex_.pin_held[s] && pin >= 0
+            && (size_t)pin < joint_deg_.size() && !owned)
+            joint_deg_[(size_t)pin] = 0.f;
+        reflex_.pin_held[s] = false;
+    }
+    reflex_.armed = false;
+    reflex_.env_l = reflex_.env_r = 0.f;
+    reflex_.startle_env = 0.f;
+    reflex_.breath_phase = 0.f;
+    reflex_.breath_disp = 0.f;
+    reflex_.prev_p_valid = false;
+}
+
 std::string MembraneTick::state_json() const {
     // reads the cell state other threads rewrite — hold the same mutex
     // (bounded by one tick; state reads are not on the render path)
@@ -2641,6 +3114,33 @@ std::string MembraneTick::state_json() const {
       << ",\"gait_enable_block\":\"" << gait_enable_block_ << "\""
       << ",\"gait_block_l\":\"" << gait_block_[0] << "\""
       << ",\"gait_block_r\":\"" << gait_block_[1] << "\""
+      // C1r: the reflex fields -- the state the page could read (default
+      // OFF on boot; every reaction's envelope/phase is here so the HUD
+      // can show WHAT the creature felt, not just that it moved).
+      << ",\"reflex_on\":" << (reflex_.armed ? "true" : "false")
+      << ",\"reflex_breathing\":" << (reflex_.breathing ? "true" : "false")
+      << ",\"reflex_breath_cell\":" << reflex_.breath_cell
+      << ",\"reflex_breath_period_s\":" << reflex_.breath_period_s
+      << ",\"reflex_breath_amp_frac\":" << reflex_.breath_amp_frac
+      << ",\"reflex_breath_disp_m\":" << reflex_.breath_disp
+      << ",\"reflex_breath_phase_deg\":"
+      << reflex_.breath_phase * 57.29577951308232
+      << ",\"reflex_flinch\":" << (reflex_.flinch ? "true" : "false")
+      << ",\"reflex_flinch_pin_l\":" << reflex_.strut_pin[0]
+      << ",\"reflex_flinch_pin_r\":" << reflex_.strut_pin[1]
+      << ",\"reflex_flinch_env_l\":" << reflex_.env_l
+      << ",\"reflex_flinch_env_r\":" << reflex_.env_r
+      << ",\"reflex_flinch_last_cell\":" << reflex_.last_cell
+      << ",\"reflex_flinch_last_tick\":" << reflex_.last_tick
+      << ",\"reflex_startle\":" << (reflex_.startle ? "true" : "false")
+      << ",\"reflex_startle_env\":" << reflex_.startle_env
+      << ",\"reflex_startle_bias_deg\":"
+      << reflex_.startle_bias * 57.29577951308232
+      << ",\"reflex_startle_last_tick\":" << reflex_.startle_last_tick
+      << ",\"reflex_p_coupling\":"
+      << (reflex_.pressure_coupling ? "true" : "false")
+      << ",\"reflex_quiet_s\":" << reflex_.quiet_s
+      << ",\"reflex_block\":\"" << reflex_.block << "\""
       << ",\"gait_log\":[";
     for (size_t i = 0; i < gait_log_.size(); ++i) {
         if (i) o << ",";

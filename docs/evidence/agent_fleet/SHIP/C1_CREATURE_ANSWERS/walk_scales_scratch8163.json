@@ -1,0 +1,14 @@
+{
+ "tick_period_s": 0.0033425399777233158,
+ "walk": {
+  "strides": 3,
+  "polls": 128,
+  "pmax_max": 86367800.0,
+  "pmax_med": 24125100.0,
+  "dPdt_poll_p50": 3456666.666666667,
+  "dPdt_poll_p95": 280785000.0,
+  "dPdt_poll_max": 582700000.0,
+  "conserve_worst": 0.000331059,
+  "note": "dP/dt per 30 ms wall poll (ts_ms quantized on this R5 binary; wall-window polls)"
+ }
+}

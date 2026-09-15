@@ -123,6 +123,59 @@ public:
     // glide. The lead wires POST /tick_gait -> set_gait at the window.
     bool set_gait(bool on);
 
+    // ─── C1r: THE CREATURE ANSWERS (three reflexes; prereg in
+    // ─── docs/evidence/agent_fleet/SHIP/C1_CREATURE_ANSWERS/PREREG.md,
+    // ─── derivations in the same directory). DEFAULT OFF ON BOOT; armed
+    // ─── ONLY by route (POST /tick_reflex, lead-wired at window #8).
+    // ─── Every reaction is PHYSICS through the existing machinery -- a
+    // ─── flinch IS a servo pose, breathing IS a volume change -- never a
+    // ─── keyframed animation:
+    //   BREATHING  the torso cell's volume TARGET oscillates (Stahl
+    //              respiratory allometry at mass_kg_: 4.485 breaths/min,
+    //              tidal volume 0.752% of the measured torso v0), applied
+    //              as the LAST surface pass so the kappa pressure law, the
+    //              conservation export and every gait/stance measurement
+    //              are structurally blind to it. A water-stiff sealed cell
+    //              cannot breathe: the honest tidal swell, if the kappa
+    //              law saw it, would answer 14.9 MPa = 99% of the skin
+    //              yield every breath (DERIVATIONS.md §4) -- so the breath
+    //              lives in the compliant thorax (volume target), not the
+    //              coelom (pressure).
+    //   FLINCH     a sealed cell's pressure crossing 1e5 Pa on a RISING
+    //              edge flexes the touched side's binding-derived strut
+    //              pin (the gait machine's own V3a net-weight pins, same-
+    //              limb law) by <= STANCE_THETA_MAX_DEG toward its
+    //              measured raising branch, decaying with tau_relax_.
+    //              Two-neuron shape: stimulus cell -> response limb.
+    //   STARTLE    a pressure TRANSIENT (max(0, dP/dt) > 1e6 Pa/s) biases
+    //              the stance servo by one rest-sink lean quantum
+    //              (GAIT_SINK_M / S, ~2.03 deg against the 5 deg cap),
+    //              composed over stance_th_ exactly the way gait composes
+    //              its strut component. The whole-body reflex.
+    // INTERACTION LAWS (PREREG, measured-mandatory): gait_on suppresses
+    //   flinch/startle + a 1 s quiet window after disarm (the walk's own
+    //   pressures measured 24 MPa median -- 240x the flinch threshold;
+    //   a level/rate detector CANNOT separate touch from stride, so the
+    //   gate IS the design); stance-under-load suppresses the flinch (its
+    //   response limb IS an ankle pin on this body) and is the startle's
+    //   only channel; "pressure_coupling" is the NERVE -- route-cuttable,
+    //   the battery's negative control (a reflex that fires without its
+    //   stimulus is an animation); a mesh swap clears everything (the C1
+    //   stale-index crash class); deterministic off (the flex-0
+    //   precedent). Interim constants AWAITING ASTRA (see PREREG).
+    bool set_reflex(bool on);
+
+    // Channel switch for an armed reflex set (or a preference for the
+    // next arm): "breathing", "flinch", "startle", "pressure_coupling".
+    // Unknown name -> false. "pressure_coupling":false is THE NERVE CUT:
+    // the flinch/startle detectors see nothing; breathing (not
+    // pressure-driven) continues.
+    bool set_reflex_channel(const std::string& name, bool v);
+
+    // Compact reflex summary for the route response (state_json carries
+    // the full reflex_* field set the page could read).
+    std::string reflex_summary_json() const;
+
     // R3 TOUCH (prereg 0935695e): press AT a world point (the camera-ray
     // hit), Gaussian falloff around it, along the POSED skin normals.
     // The pick callback runs under the tick lock so the geometry it reads
@@ -423,6 +476,55 @@ private:
     void  gait_log_locked_(int leg, const char* from, const char* to,
                            const std::string& gates);
     static const char* gait_phase_name(GaitPhase p);
+    // ─── C1r: THE CREATURE ANSWERS — reflex state (default OFF; see the
+    // ─── set_reflex comment above and PREREG.md) ────────────────────────
+    struct ReflexState {
+        bool armed = false;
+        bool breathing = true, flinch = true, startle = true;
+        bool pressure_coupling = true;   // THE NERVE: false = cut
+        std::string block;               // arm refusal BY NAME (the
+                                         // gait_enable_block_ law: a bare
+                                         // ok:false is undiagnosable)
+        // -- breathing --
+        int   breath_cell = -1;          // the torso cell (argmax v0)
+        float breath_omega = 0.f;        // rad/s, Stahl allometry at arm
+        float breath_period_s = 0.f;     // report
+        float breath_amp_frac = 0.f;     // V_T / torso v0 (report)
+        float breath_mean_disp = 0.f;    // m, V_T / torso skin area
+        float breath_disp = 0.f;         // m, live peak displacement (report)
+        float breath_phase = 0.f;        // rad (frozen when suspended)
+        std::vector<uint32_t> breath_verts;  // torso-cell original slots
+        std::vector<float>    breath_w;      // raised-cosine y-band profile
+        // -- flinch --
+        float flinch_theta = 0.f;        // rad (the 5 deg authority bound)
+        float env_l = 0.f, env_r = 0.f;  // per-side envelopes (0..1)
+        bool  pin_held[2] = {false, false};  // the flinch owns this write
+        int   strut_pin[2] = {-1, -1};   // same-limb law (reuse-or-resolve)
+        float lift_sign[2] = {0.f, 0.f}; // the raising branch, per side
+        int   last_cell = -1;            // last trigger (report)
+        uint64_t last_tick = 0;
+        // -- startle --
+        float startle_bias = 0.f;        // rad (one rest-sink lean quantum)
+        float startle_env = 0.f;
+        float startle_dir = 0.f;         // +/-1, away from the stimulus
+        uint64_t startle_last_tick = 0;
+        // -- stimulus geometry (rebuilt when the cell count changes) --
+        std::vector<float> prev_p;       // per sealed cell (the detector's
+                                         // own membrane: tracks the TRUE
+                                         // pressure even through a nerve
+                                         // cut, so reconnecting never sees
+                                         // a stale rising edge)
+        std::vector<float> cell_cx, cell_cz;  // rest centroids (report/dir)
+        float body_cz = 0.f;             // rest whole-body centroid z
+        bool  prev_p_valid = false;
+        float quiet_s = 1e30f;           // time since the walker last ran
+    };
+    ReflexState reflex_;
+    void  reflex_detect_locked_(float dt);      // fresh per-cell pressures
+    void  reflex_compose_locked_();             // startle over stance
+    void  reflex_breath_locked_(std::vector<float>& verts9, float dt);
+    bool  reflex_resolve_locked_(std::string& block);  // same-limb pins
+    void  reflex_off_locked_();                 // assumes seal_mtx_ held
     // THE TOUCH: a world-space press point + force (set via touch_press
     // under the tick lock; consumed by step)
     bool  touch_active_ = false;
