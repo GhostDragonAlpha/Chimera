@@ -237,7 +237,13 @@ public:
     bool patch_connect(const std::string& name, bool connected,
                        std::string& err);
     std::string patch_json() const;   // compact route echo
-    // patch state persistence (arm + per-path connection + cut stamps)
+    // PAT2 exports/restores the sensor subsystem's filter/edge state, clocks
+    // and in-flight samples, bound to the exact current receptor descriptors.
+    // This is NOT a whole-engine continuation checkpoint: caller restores the
+    // matching mesh/seal/LMB1 registry first, and owns mechanical/controller
+    // state and the global tick. Historical cut/fire stamps retain provenance.
+    // Legacy PAT1 is accepted as a recipe: reset sensors, apply connections.
+    // Both formats validate fully before mutation; unknown versions refuse.
     bool patch_restore(const std::string& body);
     void export_patch_state(std::vector<uint8_t>& out);
     bool patches_armed() const { return patches_armed_; }

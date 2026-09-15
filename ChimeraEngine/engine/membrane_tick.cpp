@@ -13,10 +13,58 @@
 #include <set>
 #include <sstream>
 #include <thread>
+#include <tuple>
+#include <type_traits>
 #include <unordered_map>
 #include <utility>
 
 namespace {
+
+// Strong exception/refusal guarantee for compound anatomy operations. Capture
+// before the first mutation; restore with non-allocating swaps while the caller
+// still holds seal_mtx_. Commit only after every dependent registry validates.
+template<class... T> class StateRollback {
+    std::tuple<T&...> live_;
+    std::tuple<T...> saved_;
+    bool committed_ = false;
+    template<size_t... I> void restore(std::index_sequence<I...>) noexcept {
+        (std::swap(std::get<I>(live_), std::get<I>(saved_)), ...);
+    }
+public:
+    explicit StateRollback(T&... state) : live_(state...), saved_(state...) {
+        static_assert((std::is_nothrow_swappable_v<T> && ...));
+    }
+    StateRollback(const StateRollback&) = delete;
+    StateRollback& operator=(const StateRollback&) = delete;
+    ~StateRollback() { if (!committed_) restore(std::index_sequence_for<T...>{}); }
+    void commit() noexcept { committed_ = true; }
+};
+
+// All count checks use remaining bytes (no offset+length overflow). Native
+// snapshot formats are little-endian, as are the supported engine targets.
+class StateReader {
+    const std::string& body_;
+    size_t offset_ = 0;
+public:
+    explicit StateReader(const std::string& body) : body_(body) {}
+    size_t remaining() const { return body_.size() - offset_; }
+    template<class T> bool take(T& value) {
+        static_assert(std::is_trivially_copyable_v<T>);
+        if (sizeof(T) > remaining()) return false;
+        std::memcpy(&value, body_.data() + offset_, sizeof(T));
+        offset_ += sizeof(T);
+        return true;
+    }
+    bool name(std::string& value) {
+        if (remaining() < 32) return false;
+        const char* start = body_.data() + offset_;
+        const size_t n = strnlen(start, 32);
+        if (n == 0 || n == 32) return false;
+        value.assign(start, n);
+        offset_ += 32;
+        return true;
+    }
+};
 
 constexpr float ANKLE_X_L = 0.4609f;   // measured ankle x (FEET prereg)
 constexpr float ANKLE_X_R = -0.4609f;
@@ -1563,6 +1611,7 @@ constexpr float LIMB_MASS_TARGET_KG = 13824.5f;
 constexpr size_t PATCH_LOG_N        = 64;     // bounded event log
 constexpr uint32_t LIMB_STATE_MAGIC = 0x31424D4Cu;  // 'LMB1'
 constexpr uint32_t PATCH_STATE_MAGIC = 0x31544150u; // 'PAT1'
+constexpr uint32_t PATCH_CHECKPOINT_MAGIC = 0x32544150u; // 'PAT2', sensor continuation
 
 // THE WINDOW-10 JSON LAW (the lead's standing rule, encoded): no float
 // reaches JSON unguarded. NaN/Inf serialize as null -- valid JSON with
@@ -1692,6 +1741,11 @@ bool MembraneTick::limb_partition(const std::string& side,
                  "only in this delivery)";
         return false;
     }
+    StateRollback transaction(sealed_, seal_y_, seal_nv_, seal_split_,
+        seal_cuts_, seal_loops_, seal_caps_, seal_refusal_, vol_whole0_,
+        vol_whole_, conserve_pct_, cut_src_, seal_cells_, cut_pos_,
+        limb_segs_, limb_done_, limb_side_, limb_report_, patches_,
+        patches_armed_, patch_clock_s_, patch_event_log_);
     const int PIN_HIP   = (side == "L") ? 13 : 14;
     const int PIN_KNEE  = (side == "L") ? 15 : 16;
     const int PIN_ANKLE = (side == "L") ? 17 : 18;
@@ -2265,10 +2319,10 @@ bool MembraneTick::limb_partition(const std::string& side,
     limb_report_ = report;
     std::string perr;
     if (!patch_build_locked_(perr)) {
-        // the partition stands; the patches name why they are absent
-        limb_report_ = report.substr(0, report.size() - 1)
-                     + ",\"patches\":\"failed: " + perr + "\"}";
+        report = "refused: sensor region construction failed: " + perr;
+        return false;
     }
+    transaction.commit();
     return true;
 }
 
@@ -2339,6 +2393,7 @@ bool MembraneTick::limb_restore(const std::string& body) {
     std::vector<float> rest9, cutrest;
     rest_geometry_locked_(rest9, cutrest);
     std::vector<LimbSeg> cands;
+    std::set<int> cells_seen;
     size_t off = 12;
     for (uint32_t i = 0; i < n_segs; ++i) {
         const char* name = body.data() + off; off += 32;
@@ -2355,6 +2410,19 @@ bool MembraneTick::limb_restore(const std::string& body) {
         std::memcpy(&pieces, body.data() + off, 4); off += 4;
         s.v0 = v0; s.pieces = pieces;
         if (cell < 0 || (size_t)cell >= seal_cells_.size()) return false;
+        if (!cells_seen.insert(cell).second || !std::isfinite(v0) || v0 <= 0.f)
+            return false;
+        const bool right = s.name.size() >= 2 && s.name.back() == 'R';
+        const char* names[3] = {"thigh_", "shin_", "foot_"};
+        const int hip = right ? 14 : 13;
+        if (s.name != std::string(names[i]) + (right ? "R" : "L")
+            || (i && right != (cands.front().name.back() == 'R'))
+            || pp != hip + (int)i * 2
+            || pd != (i == 2 ? -1 : pp + 2)
+            || (size_t)pp >= joint_pins_.size()) return false;
+        for (int k = 0; k < 3; ++k)
+            if (!std::isfinite(s.plane_n[k]) || !std::isfinite(s.plane_p[k]))
+                return false;
         const SealCell& c = seal_cells_[(size_t)cell];
         if ((uint32_t)(c.pieces.size() / 3) != pieces) return false;
         float live = div_pieces_(c.pieces, rest9, cutrest);
@@ -2364,11 +2432,17 @@ bool MembraneTick::limb_restore(const std::string& body) {
     }
     uint32_t n_pat = 0;
     std::memcpy(&n_pat, body.data() + off, 4); off += 4;
+    // LMB1 has ALWAYS written 56 bytes per patch (32 + six 4-byte fields).
+    // Do not add padding to compensate for the old reader's 60-byte typo.
+    constexpr size_t patch_record_bytes = 32 + 6 * 4;
+    if (n_pat != cands.size() || n_pat > (body.size() - off) / patch_record_bytes
+        || body.size() - off != (size_t)n_pat * patch_record_bytes) return false;
     struct PatCand { std::string name; int cell; int side;
                      float tau, sat, delay, thresh; };
     std::vector<PatCand> pats;
+    std::set<std::string> patch_names;
     for (uint32_t i = 0; i < n_pat; ++i) {
-        if (off + 60 > body.size()) return false;
+        if (body.size() - off < patch_record_bytes) return false;
         const char* name = body.data() + off; off += 32;
         PatCand p;
         p.name = std::string(name, strnlen(name, 32));
@@ -2378,8 +2452,18 @@ bool MembraneTick::limb_restore(const std::string& body) {
         std::memcpy(&p.sat, body.data() + off, 4); off += 4;
         std::memcpy(&p.delay, body.data() + off, 4); off += 4;
         std::memcpy(&p.thresh, body.data() + off, 4); off += 4;
+        const auto seg = std::find_if(cands.begin(), cands.end(),
+            [&](const LimbSeg& s) { return s.name == p.name; });
+        if (seg == cands.end() || !patch_names.insert(p.name).second
+            || p.cell != seg->cell || p.side != (p.name.back() == 'R' ? 1 : 0)
+            || !std::isfinite(p.tau) || p.tau <= 0.f
+            || !std::isfinite(p.sat) || p.sat <= 0.f
+            || !std::isfinite(p.delay) || p.delay < 0.f
+            || !std::isfinite(p.thresh) || p.thresh <= 0.f) return false;
         pats.push_back(p);
     }
+    StateRollback transaction(limb_segs_, limb_report_, limb_done_, limb_side_,
+        patches_, patches_armed_, patch_clock_s_, patch_event_log_);
     // commit: registry in, patch regions REBUILT by the deterministic
     // radius rule (vertex lists are derived state, not authored state),
     // then the stored receptor constants applied on top. The report is
@@ -2412,6 +2496,11 @@ bool MembraneTick::limb_restore(const std::string& body) {
         sp->connected = true;          // connection state lives in the
                                        // patch-state blob (applied after)
     }
+    // LMB1 is a construction recipe. Its new receptors are disarmed until
+    // the explicit arm command or subsequent PAT1/PAT2 restoration.
+    patches_armed_ = false;
+    patch_clock_s_ = 0.f;
+    transaction.commit();
     return true;
 }
 
@@ -2420,7 +2509,7 @@ bool MembraneTick::limb_restore(const std::string& body) {
 // ── measured conduction delay). Called by /tick_limb (fresh build) and
 // ── limb_restore (deterministic rebuild). Assumes seal_mtx_ held.
 bool MembraneTick::patch_build_locked_(std::string& err) {
-    patches_.clear();
+    std::vector<SensorPatch> built;
     err.clear();
     if (!limb_done_ || limb_segs_.empty()) {
         err = "no limb registry"; return false;
@@ -2505,8 +2594,9 @@ bool MembraneTick::patch_build_locked_(std::string& err) {
         p.tau_f = LIMB_TAU_S;
         p.sat_m = press_r0_;
         p.thresh_m = LIMB_THRESH_M;
-        patches_.push_back(p);
+        built.push_back(std::move(p));
     }
+    patches_.swap(built);
     return true;
 }
 
@@ -2671,53 +2761,120 @@ void MembraneTick::export_patch_state(std::vector<uint8_t>& out) {
         const uint8_t* b = reinterpret_cast<const uint8_t*>(p);
         out.insert(out.end(), b, b + n);
     };
-    uint32_t magic = PATCH_STATE_MAGIC;
+    // PAT2: sensor-subsystem checkpoint. The descriptor preceding each state
+    // record must match the already-restored receptor registry exactly.
+    uint32_t magic = PATCH_CHECKPOINT_MAGIC;
     uint8_t armed = patches_armed_ ? 1 : 0;
     uint32_t n = (uint32_t)patches_.size();
     put(&magic, 4); put(&armed, 1); put(&n, 4);
+    put(&patch_clock_s_, 4);
     for (const SensorPatch& p : patches_) {
         char name[32] = {};
         std::memcpy(name, p.name.c_str(),
                     std::min<size_t>(p.name.size(), 31));
         put(name, 32);
+        int32_t cell = p.cell, side = p.side;
+        put(&cell, 4); put(&side, 4); put(p.c.data(), 12);
+        put(&p.tau_f, 4); put(&p.sat_m, 4);
+        put(&p.delay_s, 4); put(&p.thresh_m, 4);
+        uint32_t nv = (uint32_t)p.verts.size();
+        put(&nv, 4);
+        for (uint32_t v : p.verts) put(&v, 4);
         uint8_t conn = p.connected ? 1 : 0;
         put(&conn, 1);
         uint64_t ct = p.cut_tick;
         put(&ct, 8);
+        put(&p.cut_us, 8);
+        put(&p.filt, 4); put(&p.out, 4); put(&p.prev_out, 4); put(&p.clock_s, 4);
+        put(&p.last_fire_tick, 8);
+        int32_t fires = p.fires;
+        put(&fires, 4); put(&p.last_raw, 4);
+        uint32_t nq = (uint32_t)p.line.size();
+        put(&nq, 4);
+        for (const auto& sample : p.line) {
+            put(&sample.first, 4); put(&sample.second, 4);
+        }
     }
 }
 
 bool MembraneTick::patch_restore(const std::string& body) {
     std::lock_guard<std::mutex> lk(seal_mtx_);
-    if (body.size() < 9) return false;
+    StateReader reader(body);
     uint32_t magic = 0; uint8_t armed = 0; uint32_t n = 0;
-    std::memcpy(&magic, body.data() + 0, 4);
-    std::memcpy(&armed, body.data() + 4, 1);
-    std::memcpy(&n, body.data() + 5, 4);
-    if (magic != PATCH_STATE_MAGIC) return false;
-    if (n != patches_.size()) return false;   // must match the registry
-    size_t off = 9;
+    if (!reader.take(magic) || !reader.take(armed) || !reader.take(n)
+        || armed > 1 || n != patches_.size()) return false;
+    const bool checkpoint = magic == PATCH_CHECKPOINT_MAGIC;
+    if (!checkpoint && magic != PATCH_STATE_MAGIC) return false;
+    float clock = 0.f;
+    if (checkpoint) {
+        if (!reader.take(clock) || !std::isfinite(clock) || clock < 0.f) return false;
+    } else if (n > reader.remaining() / 41 || reader.remaining() != (size_t)n * 41) {
+        return false;  // PAT1 is an exact, fixed-width recipe, never a checkpoint.
+    }
+    auto candidate = patches_;
+    std::set<std::string> seen;
     for (uint32_t i = 0; i < n; ++i) {
-        if (off + 41 > body.size()) return false;
-        const char* name = body.data() + off; off += 32;
+        std::string name;
+        if (!reader.name(name) || !seen.insert(name).second) return false;
+        auto it = std::find_if(candidate.begin(), candidate.end(),
+            [&](const SensorPatch& p) { return p.name == name; });
+        if (it == candidate.end()) return false;
+        SensorPatch& p = *it;
+        if (checkpoint) {
+            int32_t cell = -1, side = -1;
+            std::array<float, 3> center;
+            std::array<float, 4> params;
+            uint32_t nv = 0;
+            if (!reader.take(cell) || !reader.take(side) || !reader.take(center)
+                || !reader.take(params) || !reader.take(nv)
+                || cell != p.cell || side != p.side || center != p.c
+                || params != std::array<float, 4>{p.tau_f,p.sat_m,p.delay_s,p.thresh_m}
+                || nv != p.verts.size() || nv > reader.remaining() / 4) return false;
+            for (uint32_t v : p.verts) {
+                uint32_t saved = 0;
+                if (!reader.take(saved) || saved != v) return false;
+            }
+        }
         uint8_t conn = 0; uint64_t ct = 0;
-        std::memcpy(&conn, body.data() + off, 1); off += 1;
-        std::memcpy(&ct, body.data() + off, 8); off += 8;
-        std::string nm(name, strnlen(name, 32));
-        for (SensorPatch& p : patches_) {
-            if (p.name != nm) continue;
-            p.connected = conn != 0;
+        if (!reader.take(conn) || !reader.take(ct) || conn > 1) return false;
+        p.connected = conn != 0;
+        p.cut_tick = ct;
+        p.line.clear();
+        if (checkpoint) {
+            int32_t fires = 0; uint32_t nq = 0;
+            if (!reader.take(p.cut_us) || !reader.take(p.filt) || !reader.take(p.out)
+                || !reader.take(p.prev_out) || !reader.take(p.clock_s)
+                || !reader.take(p.last_fire_tick) || !reader.take(fires)
+                || !reader.take(p.last_raw) || !reader.take(nq)
+                || fires < 0 || nq > reader.remaining() / 8) return false;
+            for (float v : {p.filt,p.out,p.prev_out,p.clock_s,p.last_raw})
+                if (!std::isfinite(v)) return false;
+            if (p.clock_s < 0.f) return false;
+            p.fires = fires;
+            float previous = 0.f;
+            for (uint32_t j = 0; j < nq; ++j) {
+                float time = 0.f, value = 0.f;
+                if (!reader.take(time) || !reader.take(value)
+                    || !std::isfinite(time) || !std::isfinite(value)
+                    || time < previous || time > p.clock_s) return false;
+                p.line.emplace_back(time, value);
+                previous = time;
+            }
+            if (!p.connected && (!p.line.empty() || p.out != 0.f || p.prev_out != 0.f))
+                return false;
+        } else {
+            // Legacy recipe has no time/filter/queue state to resume. Reset
+            // explicitly only after its complete payload has been validated.
             p.cut_tick = p.connected ? 0 : ct;
-            if (!p.connected) p.out = 0.f;
+            p.cut_us = 0;
+            p.filt = p.out = p.prev_out = p.clock_s = p.last_raw = 0.f;
+            p.fires = 0; p.last_fire_tick = 0;
         }
     }
+    if (reader.remaining() != 0) return false;
+    patches_.swap(candidate);
     patches_armed_ = armed != 0;
-    if (patches_armed_) {
-        patch_clock_s_ = 0.f;
-        for (SensorPatch& p : patches_) {
-            p.filt = 0.f; p.out = 0.f; p.prev_out = 0.f; p.line.clear();
-        }
-    }
+    patch_clock_s_ = clock;
     return true;
 }
 
@@ -4373,7 +4530,7 @@ std::string MembraneTick::state_json() const {
       << std::chrono::duration_cast<std::chrono::milliseconds>(ts_now).count()
       << ",\"ticks\":" << ticks_
       << ",\"enabled\":" << (enabled_ ? "true" : "false")
-      << ",\"cells\":" << cells_.size()
+      << ",\"reflex_cell_count\":" << cells_.size()
       << ",\"force_l\":" << force_l_ << ",\"force_r\":" << force_r_
       << ",\"load_l\":" << load_l << ",\"load_r\":" << load_r
       << ",\"damage_sum\":" << dmg

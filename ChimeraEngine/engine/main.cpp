@@ -3491,6 +3491,11 @@ int main(int argc, char** argv) {
                 // history lines per restore attempt before this guard).
                 ReplayJournalGuard replay_guard;
                 for (const char* ep : k_snapshot_endpoints) {
+                    // Registries index the FINAL seal tree; legacy snapshots
+                    // may need history replay to construct it first. Sensor
+                    // continuation must follow that registry construction.
+                    if (std::string(ep) == "tick_limb_state" ||
+                        std::string(ep) == "tick_patch_state") continue;
                     std::string fp = std::string("session_snapshot/") + ep + ".blob";
                     std::ifstream f(fp, std::ios::binary);
                     if (!f) continue;
@@ -3532,6 +3537,18 @@ int main(int argc, char** argv) {
                         }
                     }
                 }
+                auto restore_limb_blob = [&]() -> int {
+                    std::ifstream lf("session_snapshot/tick_limb_state.blob",
+                                     std::ios::binary);
+                    if (!lf) return -1;  // absent is distinct from refused
+                    std::string blob((std::istreambuf_iterator<char>(lf)),
+                                     std::istreambuf_iterator<char>());
+                    std::string response, ct;
+                    g_engine->invoke_api("POST", "/tick_limb_state", blob,
+                                         response, ct);
+                    return response.find("\"ok\":true") != std::string::npos ? 1 : 0;
+                };
+                int limb_state_result = restore_limb_blob();
                 // AN2: THE LIMB PARTITION HISTORY (same two laws as the
                 // seal journal): replayed only when the registry blob
                 // could not do the job (a restored registry answers
@@ -3561,12 +3578,37 @@ int main(int argc, char** argv) {
                         }
                     }
                 }
+                // A pre-partition tree can be rebuilt by its limb history.
+                // Reapply the saved registry's exact sensor parameters only
+                // after that construction, then restore sensor dynamics once.
+                if (limb_state_result == 0 && limb_executed > 0)
+                    limb_state_result = restore_limb_blob();
+                if (limb_state_result >= 0) {
+                    done += limb_state_result == 1 ? 1 : 0;
+                    failed += limb_state_result == 0 ? 1 : 0;
+                    detail += limb_state_result == 1
+                        ? "tick_limb_state:ok " : "tick_limb_state:FAIL ";
+                }
+                {
+                    std::ifstream pf("session_snapshot/tick_patch_state.blob",
+                                     std::ios::binary);
+                    if (pf) {
+                        std::string blob((std::istreambuf_iterator<char>(pf)),
+                                         std::istreambuf_iterator<char>());
+                        std::string response, ct;
+                        g_engine->invoke_api("POST", "/tick_patch_state", blob,
+                                             response, ct);
+                        const bool okr = response.find("\"ok\":true") != std::string::npos;
+                        done += okr ? 1 : 0; failed += okr ? 0 : 1;
+                        detail += okr ? "tick_patch_state:ok " : "tick_patch_state:FAIL ";
+                    }
+                }
                 // THE TREE RE-SNAPSHOT: if the replay EXECUTED cuts (the
                 // state blob was absent or stale and history rebuilt the
                 // tree), snapshot the fresh tree so the NEXT boot executes
                 // zero seals. Replayed-but-skipped trees are byte-identical
                 // and are NOT rewritten (byte-stable snapshot dir).
-                if (seal_executed > 0 || limb_executed > 0) {
+                if (failed == 0 && (seal_executed > 0 || limb_executed > 0)) {
                     std::vector<uint8_t> sb;
                     g_tick.export_seal_state(sb);
                     if (!sb.empty()) {
@@ -3693,6 +3735,17 @@ int main(int argc, char** argv) {
             std::ofstream f("session_snapshot/tick_limb_history.log",
                             std::ios::app);
             if (f) { f << req_body << "\n"; printf("snapshot: tick_limb_history +1\n"); }
+            // LMB1 indexes the post-partition tree. Saving only the registry
+            // leaves a restart with old cells and an unrestorable registry.
+            std::vector<uint8_t> sb;
+            g_tick.export_seal_state(sb);
+            if (!sb.empty()) {
+                std::ofstream sf("session_snapshot/tick_seal_state.blob",
+                                 std::ios::binary);
+                if (sf)
+                    sf.write(reinterpret_cast<const char*>(sb.data()),
+                             (std::streamsize)sb.size());
+            }
             std::vector<uint8_t> lb;
             g_tick.export_limb_state(lb);
             if (!lb.empty()) {
@@ -3702,6 +3755,15 @@ int main(int argc, char** argv) {
                     lf.write(reinterpret_cast<const char*>(lb.data()),
                              (std::streamsize)lb.size());
                 printf("snapshot: tick_limb_state written (%zu B)\n", lb.size());
+            }
+            std::vector<uint8_t> pb;
+            g_tick.export_patch_state(pb);
+            if (!pb.empty()) {
+                std::ofstream pf("session_snapshot/tick_patch_state.blob",
+                                 std::ios::binary);
+                if (pf)
+                    pf.write(reinterpret_cast<const char*>(pb.data()),
+                             (std::streamsize)pb.size());
             }
         }
         if (g_engine && method == "POST" && p == "/tick_patch" &&
