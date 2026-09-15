@@ -101,7 +101,45 @@
   .verdict.good{color:var(--good);border-color:#22402f;background:#0d1411}
   .verdict.warn{color:var(--warn);border-color:#4a3a22}
   .force-row{display:flex;align-items:center;gap:12px}
-  #force{flex:1;accent-color:var(--accent);height:28px;cursor:pointer}
+  /* THE HAND-STRENGTH CONTROL (W2): ONE element now draws what it hits.
+     The page used to carry TWO slider-looking bars: the native track inside
+     the input AND a separate #force-meter div drawn below it (measured: the
+     drawn meter sat ~9-20 px from the real hit box; the buyer session's
+     4/5 failed drags and the "slider wouldn't move" stalls aimed at the
+     drawing that cannot hit). The H7 D4 patch could only make the impostor
+     pass clicks through. The impostor is GONE: the fill, the gentle
+     threshold tick, and the thumb are drawn by the input's OWN track, so
+     the drawn position is the hit box by construction. */
+  #force{
+    flex:1;height:28px;cursor:pointer;
+    -webkit-appearance:none;appearance:none;background:transparent;
+  }
+  #force::-webkit-slider-runnable-track{
+    height:6px;border-radius:3px;
+    background:
+      linear-gradient(var(--warn),var(--warn)) var(--tick-x,22px) 0/1px 100% no-repeat,
+      linear-gradient(90deg,#3d6b60,var(--accent)) 0 0/var(--fill,31%) 100% no-repeat,
+      var(--deep);
+    border:1px solid var(--line-soft);
+  }
+  #force::-webkit-slider-thumb{
+    -webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+    background:var(--accent);border:2px solid #0e1116;
+    box-shadow:0 0 6px rgba(127,212,193,.45);
+    margin-top:-6px;
+  }
+  #force::-moz-range-track{
+    height:6px;border-radius:3px;background:var(--deep);
+    border:1px solid var(--line-soft);
+  }
+  #force::-moz-range-progress{
+    height:6px;border-radius:3px;
+    background:linear-gradient(90deg,#3d6b60,var(--accent));
+  }
+  #force::-moz-range-thumb{
+    width:14px;height:14px;border-radius:50%;
+    background:var(--accent);border:2px solid #0e1116;
+  }
   #force-label{width:86px;text-align:right;font-size:13px;color:var(--text)}
   .hand-row{display:flex;align-items:center;gap:12px;margin-top:12px}
   .hand-row .hint{flex:1}
@@ -140,32 +178,12 @@
     box-shadow:0 0 6px rgba(127,212,193,.45);
   }
 
-  /* the hand-strength meter: the slider's current value, drawn */
-  /* H7 FIX (D4): the meter and its note are pure decoration and used to
-     INTERCEPT pointer events aimed at the slider's lower half -- measured,
-     elementFromPoint(1190,453) hit #force-meter-fill, so track clicks and
-     thumb drags landed on a div, the input never got focus, and even the
-     arrow keys died. pointer-events:none gives every click to the slider. */
-  #force-meter, #force-meter-note{pointer-events:none}
-  #force-meter{
-    position:relative;height:5px;border-radius:3px;margin-top:7px;
-    background:var(--deep);border:1px solid var(--line-soft);
-  }
-  #force-meter-fill{
-    position:absolute;left:0;top:0;bottom:0;width:40%;border-radius:3px;
-    background:linear-gradient(90deg,#3d6b60,var(--accent));
-    transition:width .12s ease-out;
-  }
-  #force-meter .gentle{
-    position:absolute;top:-4px;bottom:-4px;left:15.15%;width:1px;
-    background:var(--warn);opacity:.7;
-  }
   #force-meter-note{
     position:relative;height:14px;margin-top:4px;
     font-size:10px;letter-spacing:.06em;color:var(--faint);
   }
   #force-meter-note .gentle-note{
-    position:absolute;left:15.15%;transform:translateX(-50%);
+    position:absolute;left:22px;transform:translateX(-50%);
     color:var(--warn);opacity:.75;
   }
   #force-meter-note .strength-note{position:absolute;right:0}
@@ -305,11 +323,9 @@
           <input id="force" type="range" min="500" max="50000" step="100" value="20000">
           <span id="force-label" class="mono">20000 N</span>
         </div>
-        <!-- E4: hand-strength meter (the slider's value, drawn) -->
-        <div id="force-meter" aria-hidden="true">
-          <div id="force-meter-fill"></div>
-          <span class="gentle"></span>
-        </div>
+        <!-- W2: the impostor meter div is gone; the input's own track draws
+             the fill + gentle tick (see THE HAND-STRENGTH CONTROL in the CSS).
+             The note keeps the threshold labels, aligned to the input's tick. -->
         <div id="force-meter-note" aria-hidden="true">
           <span class="gentle-note">gentle ≤</span>
           <span class="strength-note">hand strength</span>
@@ -720,20 +736,75 @@
 
   /* ================= shaders ================= */
   /* Creature: one directional light + a faint rim. uCam feeds the rim's view dir. */
+  /* W2 THE VISIBLE DENT: the vertex shader renders the page's own press
+     kernel — the engine's exact linear-membrane law (delta = F/(4 pi sigma),
+     Gaussian falloff) — as a REPLACEMENT, not an addition: per vertex the
+     pre-press rest position is displaced once by the law at a display-
+     sized regularization radius. Diagnosis
+     (docs/evidence/agent_fleet/SHIP/W2_DIMPLE_VISIBLE/): the streamed
+     /verts ALREADY carries the engine's dent (measured 0.3979 m at 20 kN —
+     the law, exactly) and the page uploads it faithfully — but the
+     engine's kernel radius (3 cm) is below this mesh's own vertex spacing
+     (~3.7 cm near the belly), so the answer renders as a 7x27 px hairline
+     slit: technically present, invisible to every buyer (the engine's own
+     /frame of the same press renders it as ONE pixel). Adding a second
+     kernel on top DOUBLES the center displacement (measured at 50 kN:
+     server 1 m + page 1 m = 2 m — the cup floor pierced the body), so the
+     page displaces the REST surface by the law ONCE: the rendered dent is
+     exactly the law's amplitude — the same number the HUD reports.
+     The streamed buffer is untouched (RG.verts stays a faithful mirror of
+     /api/verts — the H16 bit-parity still holds and the pick still
+     raycasts the true streamed surface); the kernel lives in this shader
+     plus the rest snapshot only.
+     THE PATCH GATE: a wide kernel on a body with limbs also reaches
+     vertices on OTHER parts (the far side of a hip, the thigh beside the
+     belly) — measured, an ungated 0.4 m kernel sucked the whole groin
+     region inward. The gate restricts the kernel to the same-facing
+     surface patch: full weight while the vertex normal stays within 60
+     degrees of the press-point normal, zero past perpendicular — the
+     same surface a finger deforms, no more. */
   var VSH = [
     '#version 300 es',
     'in vec3 aPos;',
     'in vec3 aNormal;',
     'in vec3 aColor;',
+    'in vec3 aRestPos;',
+    'in vec3 aRestN;',
     'uniform mat4 uVP;',
+    'uniform vec3 uHit;',
+    'uniform vec3 uHitN;',
+    'uniform float uAmp;',
+    'uniform float uRad;',
+    'uniform float uReplace;',
     'out vec3 vNormal;',
     'out vec3 vColor;',
     'out vec3 vWorld;',
     'void main() {',
-    '  vNormal = aNormal;',
+    '  vec3 p = aPos;',
+    '  vec3 n = aNormal;',
+    '  if (uAmp > 0.0) {',
+    '    vec3 p0 = mix(aPos, aRestPos, uReplace);',
+    '    vec3 n0 = normalize(mix(aNormal, aRestN, uReplace));',
+    '    float gate = dot(uHitN, uHitN) < 0.5 ? 1.0',
+    '                                        : smoothstep(0.0, 0.5, dot(n0, uHitN));',
+    '    vec3 dv = p0 - uHit;',
+    '    float d = length(dv);',
+    '    float q = d / uRad;',
+    '    float off = uAmp * exp(-q * q) * gate;',
+    '    p = p0 - n0 * off;',
+    '    vec3 tang = dv - n0 * dot(dv, n0);',
+    '    float ut = length(tang);',
+    '    if (d > 1e-5 && ut > 1e-5) {',
+    '      float slope = 2.0 * off * d / (uRad * uRad);',  // |d(off)/dd|, exp included
+    '      n = normalize(n0 - (tang / ut) * slope);',  // normals lean into the cup
+    '    } else {',
+    '      n = n0;',
+    '    }',
+    '  }',
+    '  vNormal = n;',
     '  vColor = aColor;',
-    '  vWorld = aPos;',
-    '  gl_Position = uVP * vec4(aPos, 1.0);',
+    '  vWorld = p;',
+    '  gl_Position = uVP * vec4(p, 1.0);',
     '}'
   ].join('\n');
 
@@ -826,6 +897,7 @@
       shadowProg: prog(SHADOW_VSH, SHADOW_FSH),
       vbo: gl.createBuffer(),
       ibo: gl.createBuffer(),
+      restVbo: gl.createBuffer(),   // W2: the pre-press rest surface (pos+nrm)
       vao: gl.createVertexArray(),
       shadowVao: gl.createVertexArray(),
       gridVbo: gl.createBuffer(),
@@ -834,11 +906,20 @@
       triCount: 0,
       vertCount: 0,
       vboSized: false,
+      restSized: false,
+      restDirty: false,
       idx: null,     // local Uint32Array copy of the triangle indices
       verts: null    // interleaved Float32Array: [pos3, normal3, color3] per vertex
     };
     r.uVP = gl.getUniformLocation(r.prog, 'uVP');
     r.uCam = gl.getUniformLocation(r.prog, 'uCam');
+    r.uHit = gl.getUniformLocation(r.prog, 'uHit');   // W2: the press kernel
+    r.uHitN = gl.getUniformLocation(r.prog, 'uHitN');
+    r.uAmp = gl.getUniformLocation(r.prog, 'uAmp');
+    r.uRad = gl.getUniformLocation(r.prog, 'uRad');
+    r.uReplace = gl.getUniformLocation(r.prog, 'uReplace');
+    r.aRestPos = gl.getAttribLocation(r.prog, 'aRestPos');
+    r.aRestN = gl.getAttribLocation(r.prog, 'aRestN');
     r.aPos = gl.getAttribLocation(r.prog, 'aPos');
     r.aNormal = gl.getAttribLocation(r.prog, 'aNormal');
     r.aColor = gl.getAttribLocation(r.prog, 'aColor');
@@ -865,6 +946,12 @@
     gl.vertexAttribPointer(r.aNormal, 3, gl.FLOAT, false, 36, 12);
     gl.enableVertexAttribArray(r.aColor);
     gl.vertexAttribPointer(r.aColor, 3, gl.FLOAT, false, 36, 24);
+    /* W2: the rest surface rides its own VBO, [pos3, normal3] per vertex */
+    gl.bindBuffer(gl.ARRAY_BUFFER, r.restVbo);
+    gl.enableVertexAttribArray(r.aRestPos);
+    gl.vertexAttribPointer(r.aRestPos, 3, gl.FLOAT, false, 24, 0);
+    gl.enableVertexAttribArray(r.aRestN);
+    gl.vertexAttribPointer(r.aRestN, 3, gl.FLOAT, false, 24, 12);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, r.ibo);
     gl.bindVertexArray(null);
 
@@ -943,6 +1030,111 @@
   var mVP = new Float32Array(16);
   var eyeScratch = [0, 0, 0];
 
+  /* W2 THE VISIBLE DENT — the press kernel's state. One press at a time,
+     exactly the engine's model (touch_press_at replaces the point). The
+     constants are the ENGINE'S OWN named law, not page taste: sigma_n =
+     4000 N/m (skin working tension, membrane_tick.hpp) sets the amplitude,
+     tau_relax = 0.5 s sets the release decay, and the 0.1 mm cutoff clears
+     the kernel — the same deterministic rest the engine reaches. The
+     regularization radius rides the amplitude (rad = amp), which is a
+     shape law, not a tuned size: cup depth equals cup radius, so the
+     response always reads as a dimple at any force the slider can send. */
+  var pressKernel = { hit: null, n: null, delta: 0, radMax: 0,
+                      holding: false, tClear: 0 };
+  var W2_SIGMA = 4000;          // N/m  — engine sigma_n_
+  var W2_TAU = 0.5;             // s    — engine tau_relax_
+  var W2_CUTOFF = 1e-4;         // m    — engine's 0.1 mm deterministic rest
+  var meshRest = null;          // W2: pre-press rest surface [pos3, nrm3] per vertex
+  /* The rest snapshot mirrors the stream ONLY outside the live kernel's
+     reach: inside it, the streamed surface is dented and must never leak
+     into the rest reference. Outside it the mirror tracks poses and idle
+     motion exactly. The GL upload (restVbo) happens only while NO kernel
+     lives, so during a press the shader sees the pre-press surface. */
+  function w2UpdateRest() {
+    if (!RG || !RG.verts || !RG.vertCount) return;
+    var n = RG.vertCount;
+    if (!meshRest || meshRest.length !== n * 6) meshRest = new Float32Array(n * 6);
+    var hit = pressKernel.hit;
+    var freeze2 = 0;
+    if (hit) { var rr = 3 * (pressKernel.radMax || pressKernel.delta); freeze2 = rr * rr; }
+    for (var v = 0; v < n; v++) {
+      if (freeze2 > 0) {
+        var dx = meshRest[v * 6] - hit[0], dy = meshRest[v * 6 + 1] - hit[1],
+            dz = meshRest[v * 6 + 2] - hit[2];
+        if (dx * dx + dy * dy + dz * dz < freeze2) continue;   // frozen: pre-press
+      }
+      meshRest[v * 6]     = RG.verts[v * 9];
+      meshRest[v * 6 + 1] = RG.verts[v * 9 + 1];
+      meshRest[v * 6 + 2] = RG.verts[v * 9 + 2];
+      meshRest[v * 6 + 3] = RG.verts[v * 9 + 3];
+      meshRest[v * 6 + 4] = RG.verts[v * 9 + 4];
+      meshRest[v * 6 + 5] = RG.verts[v * 9 + 5];
+    }
+    RG.restDirty = true;
+  }
+  function pressKernelStart(hit, force) {
+    pressKernel.hit = [hit[0], hit[1], hit[2]];
+    pressKernel.delta = force / (4 * Math.PI * W2_SIGMA);
+    pressKernel.radMax = pressKernel.delta;   // the rest snapshot's freeze reach
+    /* the patch gate's reference normal: the streamed normal of the vertex
+       nearest the hit (the same snap the POST used) */
+    pressKernel.n = null;
+    if (meshPos && RG && RG.verts) {
+      var best = -1, bd = Infinity;
+      for (var i = 0, n = meshPos.length / 3; i < n; i++) {
+        var dx = meshPos[i * 3] - hit[0], dy = meshPos[i * 3 + 1] - hit[1],
+            dz = meshPos[i * 3 + 2] - hit[2];
+        var d2 = dx * dx + dy * dy + dz * dz;
+        if (d2 < bd) { bd = d2; best = i; }
+      }
+      if (best >= 0)
+        pressKernel.n = [RG.verts[best * 9 + 3], RG.verts[best * 9 + 4],
+                         RG.verts[best * 9 + 5]];
+    }
+    pressKernel.holding = true;
+  }
+  function pressKernelRelease() {
+    if (!pressKernel.holding) return;
+    pressKernel.holding = false;
+    pressKernel.tClear = performance.now();
+  }
+  function pressKernelTick() {
+    if (!RG) return;
+    /* the rest surface reaches the GPU only while NO kernel lives — during
+       a press (and its tau decay) the shader displaces the frozen
+       pre-press snapshot, so the law is applied ONCE, not doubled */
+    if (RG.restDirty && !pressKernel.hit && meshRest) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, RG.restVbo);
+      if (!RG.restSized) {
+        gl.bufferData(gl.ARRAY_BUFFER, meshRest.byteLength, gl.DYNAMIC_DRAW);
+        RG.restSized = true;
+      }
+      gl.bufferSubData(gl.ARRAY_BUFFER, 0, meshRest);
+      RG.restDirty = false;
+    }
+    var amp = 0, hit = pressKernel.hit;
+    if (hit) {
+      amp = pressKernel.delta;
+      if (!pressKernel.holding) {
+        amp *= Math.exp(-(performance.now() - pressKernel.tClear) / 1000 / W2_TAU);
+        if (amp < W2_CUTOFF) { pressKernel.hit = null; amp = 0; }   // deterministic rest
+      }
+    }
+    gl.useProgram(RG.prog);
+    if (hit && amp > 0) {
+      gl.uniform3f(RG.uHit, hit[0], hit[1], hit[2]);
+      var kn = pressKernel.n;
+      if (kn) gl.uniform3f(RG.uHitN, kn[0], kn[1], kn[2]);
+      else gl.uniform3f(RG.uHitN, 0, 0, 0);       // no reference: gate disabled
+      gl.uniform1f(RG.uAmp, amp);
+      gl.uniform1f(RG.uRad, amp);       // the cup law: falloff radius = depth
+      gl.uniform1f(RG.uReplace, 1.0);   // displace the REST surface, not the dented stream
+    } else {
+      gl.uniform1f(RG.uAmp, 0.0);
+      gl.uniform1f(RG.uRad, 1.0);
+    }
+  }
+
   /* ================= frame loop (pure local math, 60 fps) ================= */
   function frame() {
     requestAnimationFrame(frame);
@@ -993,6 +1185,7 @@
       gl.useProgram(RG.prog);
       gl.uniformMatrix4fv(RG.uVP, false, mVP);
       gl.uniform3f(RG.uCam, eyeScratch[0], eyeScratch[1], eyeScratch[2]);
+      pressKernelTick();               // W2: the visible dent rides the same draw
       gl.bindVertexArray(RG.vao);
       gl.drawElements(gl.TRIANGLES, RG.triCount * 3, gl.UNSIGNED_INT, 0);
     }
@@ -1180,6 +1373,7 @@
         applyRuns(plan, buf);
         pollVerts.kernelSeq = plan.seq;
       }
+      w2UpdateRest();               // W2: mirror the idle surface for the kernel
       setLink('');
       return true;
     } catch (err) {
@@ -1558,6 +1752,7 @@
         holding = true; $('letgo-btn').classList.add('hot');
         pressSource = 'gamepad';          // H7: whose press is this (keyup/up fairness)
         lastTouchForce = Math.round(f); lastTouchAt = Date.now();
+        pressKernelStart(touchTarget, f); // W2: the gamepad hand shows the dent too
         setHand('pressing — ' + Math.round(f) + ' N (gamepad)');
         snd('press', f, touchTarget);
       }
@@ -1668,6 +1863,7 @@
       holding = true;
       lastTouchForce = force;             // the judge's force cap sees every path now
       lastTouchAt = Date.now();           // the judge's "under the hand" window
+      if (hitHint) pressKernelStart(hitHint, force);   // W2: the hand shows the dent
       $('letgo-btn').classList.add('hot');
       setHand('pressing — ' + force + ' N');
       snd('press', force, hitHint);
@@ -1761,6 +1957,7 @@
     if (!holding) return;
     holding = false;
     pressSource = null;
+    pressKernelRelease();               // W2: the dent decays with tau, not with a snap
     $('letgo-btn').classList.remove('hot');
     setHand('hand open');
     /* H9 AUDIO FIX (ship-blocker 1): the press voice ENDS when the hand
@@ -1946,6 +2143,7 @@
     $('cam-name').textContent = playerName;
     $('screen-start').classList.remove('on');
     $('screen-play').classList.add('on');
+    W2alignForceNote();   // W2: the tick needs the VISIBLE layout (0 while hidden)
     /* W4: the AudioContext must be created (or resumed) INSIDE a user
        gesture or the browser keeps it suspended -- the PLAY click (or its
        Enter key) is the page's first. snd() is a silent no-op when
@@ -2153,14 +2351,32 @@
     }
   });
 
-  /* ---- the hand-strength meter (the - / = keys dispatch 'input') ---- */
+  /* ---- the hand-strength control (the - / = keys dispatch 'input') ---- */
+  /* W2: the fill + tick now live on the input's own track (--fill /
+     --tick-x); the impostor meter is gone, so what is drawn is what hits. */
+  var W2_TICK_FRAC = 0.1515;               // the gentle threshold, as drawn
   function E4syncForceMeter() {
     var lo = Number(forceEl.min), hi = Number(forceEl.max);
     var pct = (Number(forceEl.value) - lo) / ((hi - lo) || 1) * 100;
-    $('force-meter-fill').style.width = pct + '%';
+    forceEl.style.setProperty('--fill', pct + '%');
+  }
+  /* the note's "gentle ≤" label rides the input's OWN tick x -- the note
+     spans the whole card, the input does not, so a bare % would lie about
+     where the threshold sits (the old 15.15%-of-295px vs 15.15%-of-197px
+     mismatch was half of the impostor's trick) */
+  function W2alignForceNote() {
+    var note = $('force-meter-note');
+    var gn = note && note.querySelector('.gentle-note');
+    if (!gn) return;
+    var ir = forceEl.getBoundingClientRect(), nr = note.getBoundingClientRect();
+    if (ir.width < 1) return;   // hidden screen: layout not real yet (retry on show)
+    gn.style.left = (ir.left - nr.left + W2_TICK_FRAC * ir.width) + 'px';
+    forceEl.style.setProperty('--tick-x', (W2_TICK_FRAC * ir.width) + 'px');
   }
   forceEl.addEventListener('input', E4syncForceMeter);
+  window.addEventListener('resize', W2alignForceNote);
   E4syncForceMeter();
+  W2alignForceNote();
 
   setInterval(E4checkProgression, 400);    // E4: dots + the payoff trigger
 
