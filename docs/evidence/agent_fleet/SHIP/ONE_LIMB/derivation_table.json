@@ -1,0 +1,90 @@
+{
+ "source": "session_snapshot blobs (mesh_bin, tick_vertbind, tick_joints)",
+ "mesh": {
+  "N": 18459,
+  "tris": 36630
+ },
+ "pin_populations": {
+  "neck": 1519,
+  "jaw": 260,
+  "spine_upper": 286,
+  "spine_mid": 299,
+  "spine_lower": 165,
+  "tail_base": 289,
+  "tail_mid": 192,
+  "shoulder_L": 290,
+  "shoulder_R": 290,
+  "elbow_L": 296,
+  "elbow_R": 296,
+  "wrist_L": 1377,
+  "wrist_R": 1377,
+  "hip_L": 243,
+  "hip_R": 243,
+  "knee_L": 256,
+  "knee_R": 256,
+  "ankle_L": 1477,
+  "ankle_R": 1477,
+  "tail_tip": 172,
+  "ear_L": 1064,
+  "ear_R": 1048,
+  "lid_L": 332,
+  "lid_R": 349,
+  "brow_L": 1257,
+  "brow_R": 1243,
+  "mouth_L": 1013,
+  "mouth_R": 1093
+ },
+ "chain": {
+  "derived": [
+   13,
+   15,
+   17
+  ],
+  "pinned": [
+   13,
+   15,
+   17
+  ],
+  "matches": true,
+  "adj_hip_knee": 112,
+  "adj_knee_ankle": 100,
+  "adj_hip_ankle": 0,
+  "floor_rule": "adjacent iff crossing_edges >= 1% of min(pop)"
+ },
+ "leg_adjacency_detail": {
+  "spine_mid-hip_L": 78,
+  "spine_lower-hip_L": 72,
+  "tail_base-hip_L": 60,
+  "hip_L-hip_R": 12,
+  "hip_L-knee_L": 112,
+  "knee_L-ankle_L": 100
+ },
+ "seed_vs_wall": {
+  "thigh(hip-dominant)": {
+   "n": 243,
+   "ok": 243
+  },
+  "shin(knee-dominant)": {
+   "n": 256,
+   "ok": 108
+  },
+  "foot(ankle-dominant)": {
+   "n": 1477,
+   "ok": 1287
+  },
+  "all": {
+   "n": 1976,
+   "ok": 1638,
+   "frac": 0.8289473684210527
+  }
+ },
+ "wall_sided_verts": {
+  "thigh": 391,
+  "shin": 298,
+  "foot": 1287
+ },
+ "verdict": {
+  "P1_chain": "PASS",
+  "P2_P3_agreement_bar_90pct": "FALSIFIED"
+ }
+}

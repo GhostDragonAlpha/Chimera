@@ -5,6 +5,7 @@
 #include <array>
 #include <chrono>
 #include <cmath>
+#include <cstdio>
 #include <cstring>
 #include <cstdlib>
 #include <functional>
@@ -271,6 +272,17 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
     // (the C1 stale-index crash class; a new body is born UN-ARMED: the
     // route is the operator's).
     reflex_ = ReflexState{};
+    // AN2: the limb registry and the patches describe the OLD body's
+    // cells -- the same stale-index crash class. A new body is born
+    // un-partitioned and unpatched; the blobs revalidate or refuse.
+    limb_segs_.clear();
+    limb_done_ = false;
+    limb_side_.clear();
+    limb_report_.clear();
+    patches_.clear();
+    patches_armed_ = false;
+    patch_clock_s_ = 0.f;
+    patch_event_log_.clear();
     ready_.store(true, std::memory_order_release);
 }
 
@@ -689,6 +701,13 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
         conserve_pct_ = vw != 0.f ? (total - vw) / vw * 100.f : 0.f;
     }
 
+    // ═══ AN2: SENSOR PATCHES (filter → saturate → finite delay →
+    // ═══ deliver). Runs AFTER the press/volume passes (the patch feels
+    // THIS tick's indentation field) and BEFORE the reflex detect (the
+    // detector consumes THIS tick's deliveries). Internally gated by
+    // patches_armed_; disarmed the executable path is unchanged.
+    if (patches_armed_) patch_step_locked_(dt);
+
     // ═══ C1r: THE CREATURE ANSWERS — DETECT (flinch + startle) ══════════
     // Runs on THIS tick's fresh per-cell sealed pressures (computed just
     // above), BEFORE the stance/gait blocks so its pin writes land in the
@@ -1032,6 +1051,11 @@ bool MembraneTick::split(int cell_idx) {
     if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return false;
     // body-wide lock: same contract as seal() (HTTP readers vs writers)
     std::lock_guard<std::mutex> lk(seal_mtx_);
+    return split_locked_(cell_idx);
+}
+
+bool MembraneTick::split_locked_(int cell_idx) {
+    // caller holds seal_mtx_ (split() or limb_partition)
     if (seal_cells_.empty()) return false;              // nothing sealed yet
     if (cell_idx < 0 || cell_idx >= (int)seal_cells_.size()) return false;
     const uint32_t nv = (uint32_t)(base_pos_.size() / 9);
@@ -1188,6 +1212,12 @@ bool MembraneTick::seal(float y, int cell_idx, int* outcome) {
         for (int i = 0; i < b.n; ++i) sy += b.w[i] * rest9[b.v[i] * 9 + 1];
         py[s] = sy;
     }
+    // THE CUT COORDINATE (AN2): signed plane distance per point — the
+    // general form of which the Y plane is the special case pd = py - y.
+    // Rides parallel to pts/py; new cut points push pd == 0 exactly (the
+    // same statement the H8 lesson pinned as py.push_back(y)).
+    std::vector<float> pd(pts.size(), 0.f);
+    for (size_t s = 0; s < pts.size(); ++s) pd[s] = py[s] - y;
 
     // the boundary being cut: the named cell's pieces (or the whole creature)
     std::vector<uint32_t> src;
@@ -1250,6 +1280,34 @@ bool MembraneTick::seal(float y, int cell_idx, int* outcome) {
     }
     if (y <= ymin || y >= ymax) return false;   // plane outside the cell
 
+    // CUT + WELD + VOLUME + GUARDS + PUBLISH — the shared core (AN2):
+    // the horizontal plane here and the oblique limb walls run ONE
+    // winding law, ONE weld law, ONE guard set (seal_cut_core_ below).
+    if (!seal_cut_core_(cell_idx, pts, pd, py, rest9, ncut0)) return false;
+    seal_y_ = y;   // last-cut report (Y cuts only; an oblique wall
+                   // leaves the last Y in place)
+    return true;
+}
+
+// ═══ THE SHARED CUT CORE (AN2, prereg ONE_LIMB/PREREG.md M1/M2) ═══
+// Extracted VERBATIM from seal() so the horizontal seal and the oblique
+// limb partition cannot drift: straddle-split → weld-chain → the winding
+// law → divergence volumes → positivity + degenerate guards → publish.
+// pd is the cut coordinate (signed plane distance, negative = below);
+// py rides parallel (rest y per point) for the stored ylo/yhi bounds the
+// already-satisfied checks of later Y cuts compare against.
+bool MembraneTick::seal_cut_core_(int cell_idx,
+                                  std::vector<CutBlend>& pts,
+                                  std::vector<float>& pd,
+                                  std::vector<float>& py,
+                                  const std::vector<float>& rest9,
+                                  size_t ncut0) {
+    const uint32_t nv = (uint32_t)(base_pos_.size() / 9);
+    // the boundary being cut: the named cell's pieces (or the whole creature)
+    std::vector<uint32_t> src;
+    if (seal_cells_.empty()) src.assign(tri_verts_.begin(), tri_verts_.end());
+    else src = seal_cells_[cell_idx].pieces;
+
     // CUT: split every straddling piece; new cut points are merged convex
     // blends of the endpoints. Segment direction follows the BELOW-piece
     // boundary walk (the winding law below consumes that direction).
@@ -1259,12 +1317,12 @@ bool MembraneTick::seal(float y, int cell_idx, int* outcome) {
     int split = 0;
     // rc: 0 = ok, 1 = not a crossing edge, 2 = blend overflow
     auto edge_cut = [&](uint32_t sA, uint32_t sB, uint32_t* out) -> int {
-        if (py[sA] >= py[sB]) std::swap(sA, sB);
-        if (!(py[sA] < y && y <= py[sB])) return 1;
+        if (pd[sA] >= pd[sB]) std::swap(sA, sB);
+        if (!(pd[sA] < 0.f && pd[sB] >= 0.f)) return 1;
         auto key = std::make_pair(std::min(sA, sB), std::max(sA, sB));
         auto it = cut_id.find(key);
         if (it != cut_id.end()) { *out = it->second; return 0; }
-        float t = (y - py[sA]) / (py[sB] - py[sA]);
+        float t = pd[sA] / (pd[sA] - pd[sB]);
         CutBlend b;
         for (int i = 0; i < pts[sA].n; ++i) {
             float w = (1.f - t) * pts[sA].w[i];
@@ -1289,13 +1347,14 @@ bool MembraneTick::seal(float y, int cell_idx, int* outcome) {
         uint32_t id = (uint32_t)pts.size();
         cut_id[key] = id;
         pts.push_back(b);
-        py.push_back(y);
+        py.push_back(py[sA] + t * (py[sB] - py[sA]));
+        pd.push_back(0.f);
         *out = id;
         return 0;
     };
     for (size_t i = 0; i + 2 < src.size(); i += 3) {
         uint32_t vs[3] = {src[i], src[i + 1], src[i + 2]};
-        bool bl[3] = {py[vs[0]] < y, py[vs[1]] < y, py[vs[2]] < y};
+        bool bl[3] = {pd[vs[0]] < 0.f, pd[vs[1]] < 0.f, pd[vs[2]] < 0.f};
         int nb = (bl[0] ? 1 : 0) + (bl[1] ? 1 : 0) + (bl[2] ? 1 : 0);
         if (nb == 3) {
             lower.push_back(vs[0]); lower.push_back(vs[1]); lower.push_back(vs[2]);
@@ -1414,7 +1473,9 @@ bool MembraneTick::seal(float y, int cell_idx, int* outcome) {
     // refusal never fired and the cut produced a closed double-layer
     // pancake (ylo == yhi == 0.338) with v0 = 4.655e-9 m^3 = 1.6e-8 of
     // its parent. Refuse BY NAME; nothing was published, the parent
-    // stays intact (the replay/refusal is idempotent).
+    // stays intact (the replay/refusal is idempotent). THE GUARD STAYS
+    // ARMED for the limb walls: a legitimate-segment refusal is a
+    // finding with re-derived arithmetic, never a loosened threshold.
     {
         const float parent_v0 = seal_cells_.empty()
             ? vl + vu                       // first cut: daughters tile it
@@ -1468,12 +1529,1080 @@ bool MembraneTick::seal(float y, int cell_idx, int* outcome) {
         seal_cuts_ = (int)cut_id.size();
         seal_loops_ = loops;
         seal_caps_ = caps;
-        seal_y_ = y;
         seal_refusal_.clear();   // this cut is clean: the name clears
         sealed_ = true;   // published under the lock; step() checks first
     }
     return true;
 }
+
+// ═══ AN2: THE ONE-LIMB PARTITION + SENSOR PATCHES (prereg M1-M4) ═══
+namespace {
+
+constexpr float LIMB_BAND_TOL_M     = 2e-3f;  // band-boundary match vs pin y
+                                              // (authored cuts sit 2-3e-4 from
+                                              // the pins; 1000x under the 0.1 mm
+                                              // scale is 1e-7 drift)
+constexpr float LIMB_SEED_ADJ_FRAC  = 0.01f;  // pins p,q ADJACENT iff their
+                                              // crossing-edge count >= 1% of
+                                              // min(pop(p),pop(q)) -- the
+                                              // connectivity floor (P1)
+constexpr float LIMB_PATCH_FRAC     = 0.05f;  // a patch covers ~5% of its
+                                              // segment's skin (the finite-
+                                              // receptor coverage assertion)
+constexpr float LIMB_CONDUCTION_V   = 70.f;   // m/s, A-beta afferent (Kandel,
+                                              // Principles of Neural Science --
+                                              // reference assertion, PREREG M3)
+constexpr float LIMB_TAU_S          = 0.010f; // receptor filter: 3 ticks at
+                                              // the 300 Hz tick (PREREG M3)
+constexpr float LIMB_THRESH_M       = 1e-3f;  // delivered-signal trigger: 10x
+                                              // the repo's 0.1 mm cutoff scale
+constexpr int   LIMB_PIN_SPINE_LOW  = 4;      // the central terminus (the
+                                              // lumbosacral analogue)
+constexpr float LIMB_MASS_RHO       = 1000.f; // kg/m^3, water (the inventory)
+constexpr float LIMB_MASS_TARGET_KG = 13824.5f;
+constexpr size_t PATCH_LOG_N        = 64;     // bounded event log
+constexpr uint32_t LIMB_STATE_MAGIC = 0x31424D4Cu;  // 'LMB1'
+constexpr uint32_t PATCH_STATE_MAGIC = 0x31544150u; // 'PAT1'
+
+}  // namespace
+
+// rest geometry on the tick's own blend (the seal() law: v0 measured on
+// the SAME floats the per-frame volume uses -- rest dV exactly 0).
+void MembraneTick::rest_geometry_locked_(std::vector<float>& rest9,
+                                         std::vector<float>& cutrest) const {
+    const uint32_t nv = (uint32_t)(base_pos_.size() / 9);
+    rest9 = base_pos_;
+    const bool classified = cell_joint_.size() == cells_.size()
+                         && !joint_pins_.empty()
+                         && joint_pins_.size() == joint_deg_.size()
+                         && vert_bind_idx_.size() == (size_t)nv * 3
+                         && vert_bind_w_.size() == (size_t)nv * 3;
+    if (classified) apply_travel(rest9, nullptr);
+    cutrest.assign(cut_src_.size() * 3, 0.f);
+    for (size_t k = 0; k < cut_src_.size(); ++k) {
+        const CutBlend& b = cut_src_[k];
+        for (int i = 0; i < b.n; ++i)
+            for (int d = 0; d < 3; ++d)
+                cutrest[k * 3 + d] += b.w[i] * rest9[b.v[i] * 9 + d];
+    }
+}
+
+float MembraneTick::div_pieces_(const std::vector<uint32_t>& pieces,
+                                const std::vector<float>& rest9,
+                                const std::vector<float>& cutrest) const {
+    const uint32_t nv = (uint32_t)(base_pos_.size() / 9);
+    auto slot3 = [&](uint32_t s, float* x, float* y, float* z) {
+        if (s < nv) {
+            *x = rest9[s * 9 + 0]; *y = rest9[s * 9 + 1]; *z = rest9[s * 9 + 2];
+        } else {
+            size_t i = (size_t)(s - nv) * 3;
+            *x = cutrest[i]; *y = cutrest[i + 1]; *z = cutrest[i + 2];
+        }
+    };
+    float v = 0.f;
+    for (size_t i = 0; i + 2 < pieces.size(); i += 3) {
+        float a[3], b[3], c[3];
+        slot3(pieces[i], &a[0], &a[1], &a[2]);
+        slot3(pieces[i + 1], &b[0], &b[1], &b[2]);
+        slot3(pieces[i + 2], &c[0], &c[1], &c[2]);
+        v += (a[0] * (b[1] * c[2] - b[2] * c[1])
+            + a[1] * (b[2] * c[0] - b[0] * c[2])
+            + a[2] * (b[0] * c[1] - b[1] * c[0])) / 6.f;
+    }
+    return v;
+}
+
+// closed-manifold test + Euler characteristic (V - E + F). Closure: every
+// undirected edge of the piece set used EXACTLY twice.
+bool MembraneTick::cell_topology_(const std::vector<uint32_t>& pieces,
+                                  int* chi_out) const {
+    std::map<std::pair<uint32_t, uint32_t>, int> edge;
+    std::set<uint32_t> verts;
+    for (size_t i = 0; i + 2 < pieces.size(); i += 3) {
+        uint32_t t[3] = {pieces[i], pieces[i + 1], pieces[i + 2]};
+        for (int k = 0; k < 3; ++k) verts.insert(t[k]);
+        for (int k = 0; k < 3; ++k) {
+            uint32_t a = t[k], b = t[(k + 1) % 3];
+            edge[{std::min(a, b), std::max(a, b)}] += 1;
+        }
+    }
+    for (const auto& [e, n] : edge)
+        if (n != 2) return false;              // open or non-manifold
+    if (chi_out)
+        *chi_out = (int)verts.size() - (int)edge.size()
+                 + (int)(pieces.size() / 3);   // chi = V - E + F
+    return true;
+}
+
+bool MembraneTick::limb_partition(const std::string& side,
+                                  std::string& report, bool* already) {
+    if (already) *already = false;
+    report.clear();
+    if (!has_scene_ || !ready_.load(std::memory_order_acquire)) {
+        report = "refused: no scene"; return false;
+    }
+    if (side != "L" && side != "R") {
+        report = "refused: side must be \"L\" or \"R\""; return false;
+    }
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (limb_done_ && limb_side_ == side) {
+        report = limb_report_;
+        if (already) *already = true;
+        return true;                    // the executed partition is a state,
+    }                                   // not an action to repeat
+    if (!sealed_ || seal_cells_.empty()) {
+        report = "refused: the body is not sealed"; return false;
+    }
+    const uint32_t nv = (uint32_t)(base_pos_.size() / 9);
+    const bool classified = cell_joint_.size() == cells_.size()
+                         && !joint_pins_.empty()
+                         && joint_pins_.size() == joint_deg_.size()
+                         && vert_bind_idx_.size() == (size_t)nv * 3
+                         && vert_bind_w_.size() == (size_t)nv * 3;
+    if (!classified) {
+        report = "refused: the body is not classified"; return false;
+    }
+    if (joint_pins_.size() < 19) {
+        report = "refused: need the leg pins (0-18)"; return false;
+    }
+    if (reflex_.armed || gait_on_ || stance_on_ || gravity_on_
+        || patches_armed_ || touch_active_ || !patches_.empty()) {
+        // !patches_.empty() (not the armed flag): the patch REGISTRY
+        // indexes cells by index -- any later repartition would stale
+        // it. One limb surgery per body in this delivery; the event log
+        // is a record, not live state, and does not block.
+        report = "refused: anatomy surgery runs at authored rest "
+                 "(reflex/gait/stance/gravity/patches/touch all off, and "
+                 "no prior limb registry may exist -- one-sided surgery "
+                 "only in this delivery)";
+        return false;
+    }
+    const int PIN_HIP   = (side == "L") ? 13 : 14;
+    const int PIN_KNEE  = (side == "L") ? 15 : 16;
+    const int PIN_ANKLE = (side == "L") ? 17 : 18;
+    const float hip_y = joint_pins_[(size_t)PIN_HIP][1];
+    const float knee_y = joint_pins_[(size_t)PIN_KNEE][1];
+    const float ankle_y = joint_pins_[(size_t)PIN_ANKLE][1];
+
+    std::vector<float> rest9, cutrest;
+    rest_geometry_locked_(rest9, cutrest);
+
+    // THE GENUS LEDGER (prereg P6): total genus over the closed cells,
+    // captured BEFORE any surgery. A repartition must move boundaries,
+    // not topology: the after-sum must equal this.
+    long genus_before = 0;
+    int closed_before = 0;
+    {
+        int chi = 0;
+        for (const SealCell& c : seal_cells_)
+            if (cell_topology_(c.pieces, &chi)) {
+                genus_before += 2 - chi;
+                ++closed_before;
+            }
+    }
+
+    // ── 1. THE CONNECTIVITY DERIVATION (prereg P1) ──────────────────
+    // dominance: each vertex's heaviest binding pin; populations; then
+    // the pin graph: pins p,q are adjacent iff enough mesh edges cross
+    // their dominant regions. The chain is DERIVED from that graph and
+    // must come out hip→knee→ankle, or P1 is falsified and the route
+    // refuses by name (a silent nearest-pin fallback is forbidden).
+    std::vector<int> dom(nv, 0);
+    std::vector<uint32_t> pop(joint_pins_.size(), 0);
+    for (uint32_t v = 0; v < nv; ++v) {
+        int best = 0; float bw = vert_bind_w_[(size_t)v * 3 + 0];
+        for (int k = 1; k < 3; ++k)
+            if (vert_bind_w_[(size_t)v * 3 + (size_t)k] > bw) {
+                bw = vert_bind_w_[(size_t)v * 3 + (size_t)k];
+                best = k;
+            }
+        dom[v] = vert_bind_idx_[(size_t)v * 3 + (size_t)best];
+        if (dom[v] < (int)pop.size()) ++pop[(size_t)dom[v]];
+    }
+    std::map<std::pair<int, int>, uint32_t> adj;
+    for (size_t i = 0; i + 2 < tri_verts_.size(); i += 3)
+        for (int k = 0; k < 3; ++k) {
+            uint32_t a = tri_verts_[i + (size_t)k],
+                     b = tri_verts_[i + (size_t)((k + 1) % 3)];
+            if (dom[a] != dom[b]) {
+                auto key = std::make_pair(std::min(dom[a], dom[b]),
+                                          std::max(dom[a], dom[b]));
+                adj[key] += 1;
+            }
+        }
+    auto adj_count = [&](int p, int q) -> uint32_t {
+        auto it = adj.find({std::min(p, q), std::max(p, q)});
+        return it == adj.end() ? 0u : it->second;
+    };
+    auto adjacent = [&](int p, int q) -> bool {
+        uint32_t c = adj_count(p, q);
+        uint32_t m = std::min(pop[(size_t)p], pop[(size_t)q]);
+        return m > 0 && c >= (uint32_t)(LIMB_SEED_ADJ_FRAC * (float)m);
+    };
+    // derive: knee = hip's strongest adjacent pin; ankle = knee's
+    // strongest adjacent pin that is not the hip.
+    int d_knee = -1, d_ankle = -1;
+    {
+        uint32_t best = 0;
+        for (size_t q = 0; q < pop.size(); ++q) {
+            if ((int)q == PIN_HIP || pop[q] == 0) continue;
+            if (!adjacent(PIN_HIP, (int)q)) continue;
+            uint32_t c = adj_count(PIN_HIP, (int)q);
+            if (c > best) { best = c; d_knee = (int)q; }
+        }
+        if (d_knee >= 0) {
+            best = 0;
+            for (size_t q = 0; q < pop.size(); ++q) {
+                if ((int)q == PIN_HIP || (int)q == d_knee || pop[q] == 0)
+                    continue;
+                if (!adjacent(d_knee, (int)q)) continue;
+                uint32_t c = adj_count(d_knee, (int)q);
+                if (c > best) { best = c; d_ankle = (int)q; }
+            }
+        }
+    }
+    char chainbuf[160];
+    if (d_knee != PIN_KNEE || d_ankle != PIN_ANKLE || !adjacent(PIN_HIP, PIN_KNEE)
+        || !adjacent(PIN_KNEE, PIN_ANKLE) || adjacent(PIN_HIP, PIN_ANKLE)) {
+        std::snprintf(chainbuf, sizeof(chainbuf),
+            "refused: DERIVED chain hip=%d knee=%d ankle=%d does not match the "
+            "pinned chain hip=%d knee=%d ankle=%d -- connectivity falsifies "
+            "the segment assumption (prereg P1)",
+            PIN_HIP, d_knee, d_ankle, PIN_HIP, PIN_KNEE, PIN_ANKLE);
+        report = chainbuf;
+        return false;
+    }
+
+    // ── 2. IDENTIFY THE BAND CELLS (the authored history: the cuts sat
+    // at the joint pins' heights; tolerance 2e-3 m) ────────────────────
+    auto cells_in_band = [&](float ylo_m, float yhi_m) {
+        std::vector<int> out;
+        for (size_t i = 0; i < seal_cells_.size(); ++i) {
+            const SealCell& c = seal_cells_[i];
+            if (std::fabs(c.ylo - ylo_m) <= LIMB_BAND_TOL_M
+                && std::fabs(c.yhi - yhi_m) <= LIMB_BAND_TOL_M)
+                out.push_back((int)i);
+        }
+        return out;
+    };
+    auto cell_cx = [&](int idx) -> float {
+        const uint32_t nvv = nv;
+        double sx = 0.; size_t sw = 0;
+        for (uint32_t s : seal_cells_[(size_t)idx].pieces) {
+            if (s < nvv) { sx += rest9[(size_t)s * 9 + 0]; ++sw; }
+            else { sx += cutrest[((size_t)s - nvv) * 3 + 0]; ++sw; }
+        }
+        return sw ? (float)(sx / (double)sw) : 0.f;
+    };
+    // thigh band: [knee_cut, hip_cut]; calf: [ankle_cut, knee_cut];
+    // feet: below the ankle cut (yhi only -- the soles dip under 0).
+    std::vector<int> thigh_cells = cells_in_band(knee_y, hip_y);
+    std::vector<int> calf_cells = cells_in_band(ankle_y, knee_y);
+    std::vector<int> feet_cells;
+    for (size_t i = 0; i < seal_cells_.size(); ++i)
+        if (std::fabs(seal_cells_[i].yhi - ankle_y) <= LIMB_BAND_TOL_M)
+            feet_cells.push_back((int)i);
+    // side selection: split a 1-cell band, then take the component whose
+    // rest centroid carries the side's sign (x >= 0 = L, the house law).
+    auto pick_side = [&](std::vector<int>& cells, int sign) -> int {
+        if (cells.empty()) return -1;
+        if (cells.size() == 1) {
+            if (!split_locked_(cells[0])) return -2;   // split refused (by
+                                               // name in seal_refusal_)
+            // re-enumerate the band: the split replaced the cell and
+            // appended the other component(s)
+            float ylo_m = seal_cells_[(size_t)cells[0]].ylo;
+            float yhi_m = seal_cells_[(size_t)cells[0]].yhi;
+            cells = cells_in_band(ylo_m, yhi_m);
+        }
+        for (int idx : cells) {
+            float cx = cell_cx(idx);
+            if (sign > 0 ? cx >= 0.f : cx < 0.f) return idx;
+        }
+        return -1;
+    };
+    const int sgn = (side == "L") ? 1 : -1;
+    int TL = pick_side(thigh_cells, sgn);
+    const int CL = pick_side(calf_cells, sgn);
+    const int FL = pick_side(feet_cells, sgn);
+    if (TL < 0 || CL < 0 || FL < 0) {
+        std::ostringstream er;
+        er << "refused: band identification failed (thigh=" << TL
+           << " calf=" << CL << " foot=" << FL
+           << "); refusal=" << seal_refusal_
+           << " -- the expected 4-band tree (cuts at the pin heights) is "
+              "not what this body carries";
+        report = er.str();
+        return false;
+    }
+
+    // ── 3. MERGE THE LEG (the limb as ONE cell) ─────────────────────
+    // The two interior band walls exist TWICE in the merged piece set
+    // (both windings -- one per daughter). Remove BOTH copies: the wall
+    // is internal geometry, its two windings cancel in the divergence
+    // sum anyway, and leaving it would let the oblique cuts slice an
+    // invisible interior sheet. The hip wall appears ONCE (its mate
+    // lives in the torso cell) and STAYS: it is the ONE septum between
+    // thigh and torso.
+    std::vector<uint32_t> merged;
+    merged.insert(merged.end(), seal_cells_[(size_t)TL].pieces.begin(),
+                  seal_cells_[(size_t)TL].pieces.end());
+    merged.insert(merged.end(), seal_cells_[(size_t)CL].pieces.begin(),
+                  seal_cells_[(size_t)CL].pieces.end());
+    merged.insert(merged.end(), seal_cells_[(size_t)FL].pieces.begin(),
+                  seal_cells_[(size_t)FL].pieces.end());
+    std::map<std::array<uint32_t, 3>, int> wall_count;
+    auto canon = [](uint32_t a, uint32_t b, uint32_t c) {
+        std::array<uint32_t, 3> t = {a, b, c};
+        std::sort(t.begin(), t.end());
+        return t;
+    };
+    for (size_t i = 0; i + 2 < merged.size(); i += 3)
+        if (merged[i] >= nv && merged[i + 1] >= nv && merged[i + 2] >= nv)
+            wall_count[canon(merged[i], merged[i + 1], merged[i + 2])] += 1;
+    std::vector<uint32_t> leg;
+    int walls_removed = 0;
+    bool wall_anomaly = false;
+    for (size_t i = 0; i + 2 < merged.size(); i += 3) {
+        bool interior = merged[i] >= nv && merged[i + 1] >= nv
+                     && merged[i + 2] >= nv;
+        if (!interior) { leg.push_back(merged[i]); leg.push_back(merged[i + 1]);
+                         leg.push_back(merged[i + 2]); continue; }
+        int n = wall_count[canon(merged[i], merged[i + 1], merged[i + 2])];
+        if (n == 2) { ++walls_removed; continue; }       // drop both copies
+        if (n != 1) { wall_anomaly = true; break; }      // >2: not a clean
+        leg.push_back(merged[i]); leg.push_back(merged[i + 1]);
+        leg.push_back(merged[i + 2]);                    // double wall
+    }
+    if (wall_anomaly || walls_removed % 2 != 0 || leg.empty()) {
+        report = "refused: interior wall structure is not a clean "
+                 "double-winding set -- merge aborted";
+        return false;
+    }
+    float v0_leg = div_pieces_(leg, rest9, cutrest);
+    if (!(v0_leg > 0.f)) {
+        report = "refused: merged leg volume signed non-positive";
+        return false;
+    }
+    if ((float)walls_removed / 2.f < 1.f) {
+        report = "refused: no interior band walls found to merge across";
+        return false;
+    }
+    // publish the merged cell into TL, compact the two dead slots.
+    {
+        float lo = 1e30f, hi = -1e30f;
+        for (uint32_t s : leg) {
+            float yy = s < nv ? rest9[s * 9 + 1]
+                              : cutrest[((size_t)s - nv) * 3 + 1];
+            lo = std::min(lo, yy); hi = std::max(hi, yy);
+        }
+        seal_cells_[(size_t)TL].pieces = leg;
+        seal_cells_[(size_t)TL].v0 = v0_leg;
+        seal_cells_[(size_t)TL].vol = v0_leg;
+        seal_cells_[(size_t)TL].p = 0.f;
+        seal_cells_[(size_t)TL].ylo = lo;
+        seal_cells_[(size_t)TL].yhi = hi;
+    }
+    {
+        std::vector<int> dead = {CL, FL};
+        std::sort(dead.begin(), dead.end());
+        for (size_t k = dead.size(); k-- > 0;)
+            seal_cells_.erase(seal_cells_.begin() + dead[k]);
+        int shifted = 0;
+        for (int d : dead) if (d < TL) ++shifted;
+        TL -= shifted;
+    }
+
+    // ── 4. THE OBLIQUE CUTS (the two walls; prereg P2/P3 geometry) ──
+    // Each wall: plane through the JOINT PIN (the skeleton is the
+    // placement authority), normal along the proximal bone axis,
+    // pointing distal. pd < 0 = proximal. Below daughter = proximal
+    // segment (thigh, then shin); above daughter appends.
+    auto oblique_cut = [&](int cell_idx, const std::array<float,3>& nrm,
+                           const std::array<float,3>& pt,
+                           std::string& why) -> bool {
+        const size_t ncut0 = cut_src_.size();
+        std::vector<CutBlend> pts(nv + ncut0);
+        for (uint32_t v = 0; v < nv; ++v) {
+            pts[v].n = 1; pts[v].v[0] = v; pts[v].w[0] = 1.f;
+        }
+        for (size_t k = 0; k < ncut0; ++k) pts[nv + k] = cut_src_[k];
+        std::vector<float> py(pts.size(), 0.f), pd(pts.size(), 0.f);
+        float dmin = 1e30f, dmax = -1e30f;
+        for (size_t s = 0; s < pts.size(); ++s) {
+            const CutBlend& b = pts[s];
+            float px = 0.f, pyy = 0.f, pz = 0.f;
+            for (int i = 0; i < b.n; ++i) {
+                px += b.w[i] * rest9[b.v[i] * 9 + 0];
+                pyy += b.w[i] * rest9[b.v[i] * 9 + 1];
+                pz += b.w[i] * rest9[b.v[i] * 9 + 2];
+            }
+            py[s] = pyy;
+            pd[s] = nrm[0] * (px - pt[0]) + nrm[1] * (pyy - pt[1])
+                  + nrm[2] * (pz - pt[2]);
+            dmin = std::min(dmin, pd[s]); dmax = std::max(dmax, pd[s]);
+        }
+        if (!(dmin < 0.f) || !(dmax > 0.f)) {
+            why = "refused: the plane does not cross the leg cell";
+            return false;
+        }
+        return seal_cut_core_(cell_idx, pts, pd, py, rest9, ncut0);
+    };
+    auto norm3 = [](const std::array<float,3>& d) {
+        float L = std::sqrt(d[0]*d[0] + d[1]*d[1] + d[2]*d[2]);
+        std::array<float,3> o = {0.f, 0.f, 0.f};
+        if (L > 1e-12f) { o = {d[0]/L, d[1]/L, d[2]/L}; }
+        return o;
+    };
+    const std::array<float,3> knee_p = joint_pins_[(size_t)PIN_KNEE];
+    const std::array<float,3> ankle_p = joint_pins_[(size_t)PIN_ANKLE];
+    const std::array<float,3> hip_p = joint_pins_[(size_t)PIN_HIP];
+    std::array<float,3> n_knee = norm3({knee_p[0]-hip_p[0], knee_p[1]-hip_p[1],
+                                        knee_p[2]-hip_p[2]});
+    std::array<float,3> n_ankle = norm3({ankle_p[0]-knee_p[0],
+                                         ankle_p[1]-knee_p[1],
+                                         ankle_p[2]-knee_p[2]});
+    std::string why;
+    if (!oblique_cut(TL, n_knee, knee_p, why)) {
+        report = why + " [knee wall]"; return false;
+    }
+    const int SF = (int)seal_cells_.size() - 1;   // shin+foot daughter
+    if (!oblique_cut(SF, n_ankle, ankle_p, why)) {
+        report = why + " [ankle wall]"; return false;
+    }
+    const int SL = SF;                            // shin (proximal daughter)
+    const int FT = (int)seal_cells_.size() - 1;   // foot (appended)
+
+    // ── 5. NAME + VALIDATE (prereg P4-P7 numbers) ───────────────────
+    // seed agreement: binding seeds vs the wall sides (prereg P2/P3).
+    // Seed labels from the BINDING ONLY: hip->thigh, knee->shin,
+    // ankle->foot. Wall truth from the plane sides at rest.
+    auto pd_at = [&](const std::array<float,3>& nrm,
+                     const std::array<float,3>& pt, uint32_t v) -> float {
+        return nrm[0] * (rest9[(size_t)v * 9 + 0] - pt[0])
+             + nrm[1] * (rest9[(size_t)v * 9 + 1] - pt[1])
+             + nrm[2] * (rest9[(size_t)v * 9 + 2] - pt[2]);
+    };
+    int seed_tot[3] = {0, 0, 0}, seed_ok[3] = {0, 0, 0};
+    for (uint32_t v = 0; v < nv; ++v) {
+        int d = dom[v];
+        if (d != PIN_HIP && d != PIN_KNEE && d != PIN_ANKLE) continue;
+        int pop_i = d == PIN_HIP ? 0 : (d == PIN_KNEE ? 1 : 2);
+        ++seed_tot[pop_i];
+        bool thigh_side = pd_at(n_knee, knee_p, v) < 0.f;
+        bool foot_side = !thigh_side && pd_at(n_ankle, ankle_p, v) >= 0.f;
+        int wall_label = thigh_side ? 0 : (foot_side ? 2 : 1);
+        if (wall_label == pop_i) ++seed_ok[pop_i];
+    }
+    int seed_all_tot = seed_tot[0] + seed_tot[1] + seed_tot[2];
+    int seed_all_ok = seed_ok[0] + seed_ok[1] + seed_ok[2];
+
+    // per-segment validation: closure/chi, volumes, pieces
+    struct SegRep { int cell; float v0; int chi; bool closed; uint32_t pieces; };
+    auto validate_cell = [&](int idx, SegRep* out) -> bool {
+        SegRep r;
+        r.cell = idx;
+        r.v0 = div_pieces_(seal_cells_[(size_t)idx].pieces, rest9, cutrest);
+        r.pieces = (uint32_t)(seal_cells_[(size_t)idx].pieces.size() / 3);
+        r.closed = cell_topology_(seal_cells_[(size_t)idx].pieces, &r.chi);
+        *out = r;
+        return r.closed && r.v0 > 0.f
+            && r.v0 >= SEAL_DEGENERATE_FRAC * v0_leg;
+    };
+    SegRep rt, rs, rf;
+    bool okt = validate_cell(TL, &rt), oks = validate_cell(SL, &rs),
+         okf = validate_cell(FT, &rf);
+    // every OTHER cell must also still close (the torso holds the other
+    // winding of the hip wall; the R components are untouched, but the
+    // books must balance).
+    bool others_ok = true;
+    float sum_v0 = 0.f;
+    long genus_after = 0;
+    int closed_after = 0;
+    std::set<uint32_t> piece_book;
+    for (size_t i = 0; i < seal_cells_.size(); ++i) {
+        const auto& pc = seal_cells_[i].pieces;
+        for (uint32_t s : pc) {
+            if (!piece_book.insert(s).second) others_ok = false;  // double book
+        }
+        int chi = 0;
+        if (cell_topology_(pc, &chi)) {
+            genus_after += 2 - chi;
+            ++closed_after;
+        }
+        sum_v0 += div_pieces_(pc, rest9, cutrest);
+    }
+    // THE WHOLE-VOLUME REFERENCE, RECOMPUTED (not assumed): vol_whole0_
+    // is only set by the first EXECUTED seal and is not in the restore
+    // blob -- reading it after a blob restore would silently trivialize
+    // the coverage check. The reference is the whole-creature divergence
+    // over THIS mesh's rest blend (the same arithmetic the first seal
+    // used to set it), so the check is honest on any boot path.
+    float vw_ref = 0.f;
+    for (size_t i = 0; i + 2 < tri_verts_.size(); i += 3) {
+        uint32_t a = tri_verts_[i], b = tri_verts_[i + 1], cc = tri_verts_[i + 2];
+        vw_ref += (rest9[a*9+0] * (rest9[b*9+1] * rest9[cc*9+2] - rest9[b*9+2] * rest9[cc*9+1])
+                 + rest9[a*9+1] * (rest9[b*9+2] * rest9[cc*9+0] - rest9[b*9+0] * rest9[cc*9+2])
+                 + rest9[a*9+2] * (rest9[b*9+0] * rest9[cc*9+1] - rest9[b*9+1] * rest9[cc*9+0])) / 6.f;
+    }
+    float cover_pct = vw_ref != 0.f
+        ? (sum_v0 - vw_ref) / vw_ref * 100.f : 0.f;
+    float mass_total = sum_v0 * LIMB_MASS_RHO;
+
+    // (genus_before captured at entry -- see below; kept next to the
+    //  publication so the numbers live together in the report.)
+    bool pass = okt && oks && okf && others_ok
+        && std::fabs(cover_pct) < 0.01f
+        && std::fabs(mass_total - LIMB_MASS_TARGET_KG) <= 0.0001f * LIMB_MASS_TARGET_KG
+        && genus_after == genus_before;
+
+    // ── 6. THE REPORT ───────────────────────────────────────────────
+    std::ostringstream o;
+    o << "{\"side\":\"" << side << "\""
+      << ",\"chain\":{\"hip\":" << PIN_HIP << ",\"knee\":" << PIN_KNEE
+      << ",\"ankle\":" << PIN_ANKLE
+      << ",\"adj_hip_knee\":" << adj_count(PIN_HIP, PIN_KNEE)
+      << ",\"adj_knee_ankle\":" << adj_count(PIN_KNEE, PIN_ANKLE)
+      << ",\"adj_hip_ankle\":" << adj_count(PIN_HIP, PIN_ANKLE)
+      << ",\"pop_hip\":" << pop[(size_t)PIN_HIP]
+      << ",\"pop_knee\":" << pop[(size_t)PIN_KNEE]
+      << ",\"pop_ankle\":" << pop[(size_t)PIN_ANKLE] << "}"
+      << ",\"walls_removed\":" << (walls_removed / 2)
+      << ",\"segments\":["
+      // thigh
+      << "{\"name\":\"thigh_" << side << "\",\"cell\":" << TL
+      << ",\"pins\":[" << PIN_HIP << "," << PIN_KNEE << "]"
+      << ",\"v0\":" << rt.v0 << ",\"pieces\":" << rt.pieces
+      << ",\"closed\":" << (rt.closed ? "true" : "false")
+      << ",\"chi\":" << rt.chi
+      << ",\"plane_n\":[" << n_knee[0] << "," << n_knee[1] << "," << n_knee[2] << "]"
+      << ",\"plane_p\":[" << knee_p[0] << "," << knee_p[1] << "," << knee_p[2] << "]"
+      << ",\"mass_kg\":" << rt.v0 * LIMB_MASS_RHO << "},"
+      // shin
+      << "{\"name\":\"shin_" << side << "\",\"cell\":" << SL
+      << ",\"pins\":[" << PIN_KNEE << "," << PIN_ANKLE << "]"
+      << ",\"v0\":" << rs.v0 << ",\"pieces\":" << rs.pieces
+      << ",\"closed\":" << (rs.closed ? "true" : "false")
+      << ",\"chi\":" << rs.chi
+      << ",\"plane_n\":[" << n_ankle[0] << "," << n_ankle[1] << "," << n_ankle[2] << "]"
+      << ",\"plane_p\":[" << ankle_p[0] << "," << ankle_p[1] << "," << ankle_p[2] << "]"
+      << ",\"mass_kg\":" << rs.v0 * LIMB_MASS_RHO << "},"
+      // foot
+      << "{\"name\":\"foot_" << side << "\",\"cell\":" << FT
+      << ",\"pins\":[" << PIN_ANKLE << "]"
+      << ",\"v0\":" << rf.v0 << ",\"pieces\":" << rf.pieces
+      << ",\"closed\":" << (rf.closed ? "true" : "false")
+      << ",\"chi\":" << rf.chi
+      << ",\"plane_n\":null,\"plane_p\":null"
+      << ",\"mass_kg\":" << rf.v0 * LIMB_MASS_RHO << "}]"
+      << ",\"seed_agreement\":{\"all\":{\"n\":" << seed_all_tot
+      << ",\"ok\":" << seed_all_ok
+      << ",\"frac\":" << (seed_all_tot ? (float)seed_all_ok / (float)seed_all_tot : 0.f)
+      << "},\"hip\":{\"n\":" << seed_tot[0] << ",\"ok\":" << seed_ok[0] << "}"
+      << ",\"knee\":{\"n\":" << seed_tot[1] << ",\"ok\":" << seed_ok[1] << "}"
+      << ",\"ankle\":{\"n\":" << seed_tot[2] << ",\"ok\":" << seed_ok[2] << "}}"
+      << ",\"validation\":{\"n_cells\":" << seal_cells_.size()
+      << ",\"sum_v0\":" << sum_v0
+      << ",\"vol_whole_ref\":" << vw_ref
+      << ",\"coverage_pct\":" << cover_pct
+      << ",\"mass_total_kg\":" << mass_total
+      << ",\"mass_target_kg\":" << LIMB_MASS_TARGET_KG
+      << ",\"genus_sum_2_minus_chi_before\":" << genus_before
+      << ",\"genus_sum_2_minus_chi_after\":" << genus_after
+      << ",\"closed_cells_before\":" << closed_before
+      << ",\"closed_cells_after\":" << closed_after
+      << ",\"piece_book_unique\":" << (others_ok ? "true" : "false")
+      << ",\"pass\":" << (pass ? "true" : "false") << "}}";
+    report = o.str();
+
+    if (!pass) {
+        // publish NOTHING as done: the validation numbers are the refusal.
+        report = "{\"pass\":false,\"detail\":" + report + "}";
+        return false;
+    }
+
+    // ── 7. THE REGISTRY + PATCH REGIONS ─────────────────────────────
+    limb_segs_.clear();
+    LimbSeg sg;
+    sg.name = std::string("thigh_") + side;
+    sg.cell = TL; sg.pin_prox = PIN_HIP; sg.pin_dist = PIN_KNEE;
+    sg.plane_n = n_knee; sg.plane_p = knee_p; sg.v0 = rt.v0;
+    sg.pieces = rt.pieces;
+    sg.seed_total = seed_tot[0]; sg.seed_agree = seed_ok[0];
+    limb_segs_.push_back(sg);
+    sg.name = std::string("shin_") + side;
+    sg.cell = SL; sg.pin_prox = PIN_KNEE; sg.pin_dist = PIN_ANKLE;
+    sg.plane_n = n_ankle; sg.plane_p = ankle_p; sg.v0 = rs.v0;
+    sg.pieces = rs.pieces;
+    sg.seed_total = seed_tot[1]; sg.seed_agree = seed_ok[1];
+    limb_segs_.push_back(sg);
+    sg.name = std::string("foot_") + side;
+    sg.cell = FT; sg.pin_prox = PIN_ANKLE; sg.pin_dist = -1;
+    sg.plane_n = {0.f, 0.f, 0.f}; sg.plane_p = {0.f, 0.f, 0.f};
+    sg.v0 = rf.v0; sg.pieces = rf.pieces;
+    sg.seed_total = seed_tot[2]; sg.seed_agree = seed_ok[2];
+    limb_segs_.push_back(sg);
+    limb_done_ = true;
+    limb_side_ = side;
+    limb_report_ = report;
+    std::string perr;
+    if (!patch_build_locked_(perr)) {
+        // the partition stands; the patches name why they are absent
+        limb_report_ = report.substr(0, report.size() - 1)
+                     + ",\"patches\":\"failed: " + perr + "\"}";
+    }
+    return true;
+}
+
+std::string MembraneTick::limb_report_json() const {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    return limb_report_;
+}
+
+// ── THE LIMB REGISTRY BLOB (acceptance 10: the partition survives a
+// ── restart, or its staleness is VISIBLE). Self-validating: every
+// ── segment's cell must exist with the stored piece count and a rest
+// ── volume matching to 1e-3 relative (the seal-blob law). A stale blob
+// ── refuses with NOTHING changed.
+void MembraneTick::export_limb_state(std::vector<uint8_t>& out) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    out.clear();
+    if (!limb_done_) return;
+    auto put = [&out](const void* p, size_t n) {
+        const uint8_t* b = reinterpret_cast<const uint8_t*>(p);
+        out.insert(out.end(), b, b + n);
+    };
+    uint32_t magic = LIMB_STATE_MAGIC;
+    uint32_t nv = (uint32_t)(base_pos_.size() / 9);
+    uint32_t n_segs = (uint32_t)limb_segs_.size();
+    put(&magic, 4); put(&nv, 4); put(&n_segs, 4);
+    for (const LimbSeg& s : limb_segs_) {
+        char name[32] = {};
+        std::memcpy(name, s.name.c_str(),
+                    std::min<size_t>(s.name.size(), 31));
+        put(name, 32);
+        int32_t cell = s.cell, pp = s.pin_prox, pd = s.pin_dist;
+        put(&cell, 4); put(&pp, 4); put(&pd, 4);
+        put(s.plane_n.data(), 12);
+        put(s.plane_p.data(), 12);
+        put(&s.v0, 4);
+        uint32_t pieces = s.pieces;
+        put(&pieces, 4);
+    }
+    uint32_t n_pat = (uint32_t)patches_.size();
+    put(&n_pat, 4);
+    for (const SensorPatch& p : patches_) {
+        char name[32] = {};
+        std::memcpy(name, p.name.c_str(),
+                    std::min<size_t>(p.name.size(), 31));
+        put(name, 32);
+        int32_t cell = p.cell, sd = p.side;
+        put(&cell, 4); put(&sd, 4);
+        put(&p.tau_f, 4); put(&p.sat_m, 4);
+        put(&p.delay_s, 4); put(&p.thresh_m, 4);
+    }
+}
+
+bool MembraneTick::limb_restore(const std::string& body) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (body.size() < 12) return false;
+    uint32_t magic = 0, nv = 0, n_segs = 0;
+    std::memcpy(&magic, body.data() + 0, 4);
+    std::memcpy(&nv, body.data() + 4, 4);
+    std::memcpy(&n_segs, body.data() + 8, 4);
+    if (magic != LIMB_STATE_MAGIC) return false;
+    if (nv != (uint32_t)(base_pos_.size() / 9)) return false;
+    if (n_segs != 3) return false;
+    // per-segment record: name[32] + cell/prox/dist (12) + plane_n (12)
+    // + plane_p (12) + v0 (4) + pieces (4) = 76 B
+    size_t need = 12 + (size_t)n_segs * 76 + 4;
+    if (body.size() < need) return false;
+    // validate EVERY segment against the live tree before mutating
+    std::vector<float> rest9, cutrest;
+    rest_geometry_locked_(rest9, cutrest);
+    std::vector<LimbSeg> cands;
+    size_t off = 12;
+    for (uint32_t i = 0; i < n_segs; ++i) {
+        const char* name = body.data() + off; off += 32;
+        int32_t cell, pp, pd; float v0; uint32_t pieces;
+        std::memcpy(&cell, body.data() + off, 4); off += 4;
+        std::memcpy(&pp, body.data() + off, 4); off += 4;
+        std::memcpy(&pd, body.data() + off, 4); off += 4;
+        LimbSeg s;
+        s.name = std::string(name, strnlen(name, 32));
+        s.cell = cell; s.pin_prox = pp; s.pin_dist = pd;
+        std::memcpy(s.plane_n.data(), body.data() + off, 12); off += 12;
+        std::memcpy(s.plane_p.data(), body.data() + off, 12); off += 12;
+        std::memcpy(&v0, body.data() + off, 4); off += 4;
+        std::memcpy(&pieces, body.data() + off, 4); off += 4;
+        s.v0 = v0; s.pieces = pieces;
+        if (cell < 0 || (size_t)cell >= seal_cells_.size()) return false;
+        const SealCell& c = seal_cells_[(size_t)cell];
+        if ((uint32_t)(c.pieces.size() / 3) != pieces) return false;
+        float live = div_pieces_(c.pieces, rest9, cutrest);
+        if (!(std::fabs(live - v0) <= 1e-3f * std::max(1e-12f, std::fabs(live))))
+            return false;              // a stale blob refuses, unchanged
+        cands.push_back(s);
+    }
+    uint32_t n_pat = 0;
+    std::memcpy(&n_pat, body.data() + off, 4); off += 4;
+    struct PatCand { std::string name; int cell; int side;
+                     float tau, sat, delay, thresh; };
+    std::vector<PatCand> pats;
+    for (uint32_t i = 0; i < n_pat; ++i) {
+        if (off + 60 > body.size()) return false;
+        const char* name = body.data() + off; off += 32;
+        PatCand p;
+        p.name = std::string(name, strnlen(name, 32));
+        std::memcpy(&p.cell, body.data() + off, 4); off += 4;
+        std::memcpy(&p.side, body.data() + off, 4); off += 4;
+        std::memcpy(&p.tau, body.data() + off, 4); off += 4;
+        std::memcpy(&p.sat, body.data() + off, 4); off += 4;
+        std::memcpy(&p.delay, body.data() + off, 4); off += 4;
+        std::memcpy(&p.thresh, body.data() + off, 4); off += 4;
+        pats.push_back(p);
+    }
+    // commit: registry in, patch regions REBUILT by the deterministic
+    // radius rule (vertex lists are derived state, not authored state),
+    // then the stored receptor constants applied on top. The report is
+    // an honest stub: the LIVE report is what /tick_limb answered with;
+    // this says the registry came back from the blob, which is the truth.
+    limb_segs_ = cands;
+    limb_report_ = "{\"restored\":true}";
+    limb_done_ = true;
+    limb_side_ = "L";
+    if (!limb_segs_.empty() && limb_segs_[0].name.size() >= 2
+        && limb_segs_[0].name[limb_segs_[0].name.size() - 1] == 'R')
+        limb_side_ = "R";
+    patches_.clear();
+    {
+        // ONE radius-rule implementation (patch_build_locked_): the
+        // receptor regions are DERIVED state, rebuilt from the validated
+        // cells; the stored constants are then applied on top.
+        std::string perr;
+        if (!patch_build_locked_(perr)) return false;
+    }
+    if (patches_.size() != pats.size()) return false;
+    for (const PatCand& p : pats) {
+        SensorPatch* sp = nullptr;
+        for (SensorPatch& q : patches_)
+            if (q.name == p.name) { sp = &q; break; }
+        if (!sp) return false;         // the blob's patches must be the
+                                       // registry's patches, by name
+        sp->tau_f = p.tau; sp->sat_m = p.sat;
+        sp->delay_s = p.delay; sp->thresh_m = p.thresh;
+        sp->connected = true;          // connection state lives in the
+                                       // patch-state blob (applied after)
+    }
+    return true;
+}
+
+// ── THE PATCH RECIPE (single implementation of the finite receptor
+// ── region: distal-half anchor, the 5%-coverage radius rule, the
+// ── measured conduction delay). Called by /tick_limb (fresh build) and
+// ── limb_restore (deterministic rebuild). Assumes seal_mtx_ held.
+bool MembraneTick::patch_build_locked_(std::string& err) {
+    patches_.clear();
+    err.clear();
+    if (!limb_done_ || limb_segs_.empty()) {
+        err = "no limb registry"; return false;
+    }
+    if (joint_pins_.size() <= (size_t)LIMB_PIN_SPINE_LOW) {
+        err = "no spine-lower pin for the delay path"; return false;
+    }
+    const uint32_t nv = (uint32_t)(base_pos_.size() / 9);
+    std::vector<float> rest9, cutrest;
+    rest_geometry_locked_(rest9, cutrest);
+    const std::array<float,3> term = joint_pins_[(size_t)LIMB_PIN_SPINE_LOW];
+    for (const LimbSeg& seg : limb_segs_) {
+        if (seg.cell < 0 || (size_t)seg.cell >= seal_cells_.size()) {
+            err = "segment cell out of range"; return false;
+        }
+        std::vector<uint32_t> verts;
+        for (uint32_t s : seal_cells_[(size_t)seg.cell].pieces)
+            if (s < nv) verts.push_back(s);
+        std::sort(verts.begin(), verts.end());
+        verts.erase(std::unique(verts.begin(), verts.end()), verts.end());
+        if (verts.size() < 32) {
+            err = "segment too small for a receptor region"; return false;
+        }
+        std::array<float,3> cseg = {0.f, 0.f, 0.f};
+        for (uint32_t v : verts) {
+            cseg[0] += rest9[(size_t)v * 9 + 0];
+            cseg[1] += rest9[(size_t)v * 9 + 1];
+            cseg[2] += rest9[(size_t)v * 9 + 2];
+        }
+        float inv = 1.f / (float)verts.size();
+        cseg = {cseg[0] * inv, cseg[1] * inv, cseg[2] * inv};
+        std::array<float,3> axis = seg.plane_n;
+        float al = std::sqrt(axis[0]*axis[0] + axis[1]*axis[1]
+                           + axis[2]*axis[2]);
+        if (al < 1e-12f) axis = {0.f, -1.f, 0.f};   // the foot: distal = down
+        else axis = {axis[0]/al, axis[1]/al, axis[2]/al};
+        std::vector<float> tproj(verts.size());
+        for (size_t i = 0; i < verts.size(); ++i) {
+            uint32_t v = verts[i];
+            tproj[i] = axis[0] * (rest9[(size_t)v * 9 + 0] - cseg[0])
+                     + axis[1] * (rest9[(size_t)v * 9 + 1] - cseg[1])
+                     + axis[2] * (rest9[(size_t)v * 9 + 2] - cseg[2]);
+        }
+        std::vector<float> st = tproj;
+        std::sort(st.begin(), st.end());
+        float med = st[st.size() / 2];
+        std::array<float,3> anchor = {0.f, 0.f, 0.f};
+        size_t na = 0;
+        for (size_t i = 0; i < verts.size(); ++i)
+            if (tproj[i] >= med) {
+                anchor[0] += rest9[(size_t)verts[i] * 9 + 0];
+                anchor[1] += rest9[(size_t)verts[i] * 9 + 1];
+                anchor[2] += rest9[(size_t)verts[i] * 9 + 2];
+                ++na;
+            }
+        if (!na) { err = "no distal half"; return false; }
+        anchor = {anchor[0] / (float)na, anchor[1] / (float)na,
+                  anchor[2] / (float)na};
+        std::vector<float> dists(verts.size());
+        for (size_t i = 0; i < verts.size(); ++i) {
+            uint32_t v = verts[i];
+            float dx = rest9[(size_t)v * 9 + 0] - anchor[0];
+            float dy = rest9[(size_t)v * 9 + 1] - anchor[1];
+            float dz = rest9[(size_t)v * 9 + 2] - anchor[2];
+            dists[i] = std::sqrt(dx*dx + dy*dy + dz*dz);
+        }
+        std::vector<float> sd = dists;
+        std::sort(sd.begin(), sd.end());
+        size_t k = std::min(verts.size() - 1,
+            (size_t)std::ceil(LIMB_PATCH_FRAC * (float)verts.size()) - 1);
+        float R = sd[k];
+        SensorPatch p;
+        p.name = seg.name;
+        for (size_t i = 0; i < verts.size(); ++i)
+            if (dists[i] <= R) p.verts.push_back(verts[i]);
+        p.c = anchor;
+        p.cell = seg.cell;
+        p.side = (!seg.name.empty() && seg.name.back() == 'R') ? 1 : 0;
+        float dx = anchor[0] - term[0], dy = anchor[1] - term[1],
+              dz = anchor[2] - term[2];
+        p.delay_s = std::sqrt(dx*dx + dy*dy + dz*dz) / LIMB_CONDUCTION_V;
+        p.tau_f = LIMB_TAU_S;
+        p.sat_m = press_r0_;
+        p.thresh_m = LIMB_THRESH_M;
+        patches_.push_back(p);
+    }
+    return true;
+}
+
+bool MembraneTick::patch_arm(bool on, std::string& err) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    err.clear();
+    if (on) {
+        if (!limb_done_ || patches_.empty()) {
+            err = "refused: no limb registry (run /tick_limb first)";
+            return false;
+        }
+        if (!patches_armed_) {
+            patches_armed_ = true;
+            patch_clock_s_ = 0.f;
+            for (SensorPatch& p : patches_) {
+                p.filt = 0.f; p.out = 0.f; p.prev_out = 0.f;
+                p.line.clear();
+            }
+        }
+        return true;
+    }
+    patch_off_locked_();
+    return true;
+}
+
+bool MembraneTick::patch_connect(const std::string& name, bool connected,
+                                 std::string& err) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    err.clear();
+    for (SensorPatch& p : patches_) {
+        if (p.name != name) continue;
+        if (p.connected == connected) return true;   // already the state
+        p.connected = connected;
+        if (!connected) {
+            // A CUT IS A REAL STATE: the line drains, nothing delivers,
+            // the cut carries its tick and the engine's own timestamp.
+            p.line.clear();
+            p.out = 0.f; p.prev_out = 0.f;
+            p.cut_tick = ticks_;
+            p.cut_us = std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::steady_clock::now().time_since_epoch()).count();
+            patch_log_locked_(std::string("{\"ev\":\"path_cut\",\"patch\":\"")
+                + p.name + "\",\"tick\":" + std::to_string(ticks_)
+                + ",\"t_us\":" + std::to_string(p.cut_us) + "}");
+        } else {
+            // reconnection delivers only NEWLY filtered samples: the line
+            // is empty, so no stale spike can synthesize (prereg P10)
+            int64_t us = std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::steady_clock::now().time_since_epoch()).count();
+            patch_log_locked_(std::string("{\"ev\":\"path_connect\",\"patch\":\"")
+                + p.name + "\",\"tick\":" + std::to_string(ticks_)
+                + ",\"t_us\":" + std::to_string(us) + "}");
+        }
+        return true;
+    }
+    err = "refused: unknown patch \"" + name + "\"";
+    return false;
+}
+
+// bounded event log (the acceptance-9 surface: consistent IDs + the
+// engine's own timestamps, one line per sensor/cut event)
+void MembraneTick::patch_log_locked_(const std::string& row) {
+    patch_event_log_.push_back(row);
+    if (patch_event_log_.size() > PATCH_LOG_N)
+        patch_event_log_.erase(patch_event_log_.begin(),
+                               patch_event_log_.begin() + (long)
+                                   (patch_event_log_.size() - PATCH_LOG_N));
+}
+
+bool MembraneTick::patch_step_locked_(float dt) {
+    if (!patches_armed_ || patches_.empty()) return true;
+    const float dts = std::min(std::max(dt, 0.f), 0.05f);   // stall guard
+    const size_t nverts = press_off_.size();
+    for (SensorPatch& p : patches_) {
+        p.clock_s += dts;
+        // raw = the skin's OWN local indentation over the patch's
+        // vertices -- the only quantity the controller may feel
+        float raw = 0.f;
+        for (uint32_t v : p.verts)
+            if ((size_t)v < nverts) raw = std::max(raw, press_off_[v]);
+        p.last_raw = raw;
+        if (dts > 0.f)
+            p.filt += (raw - p.filt)
+                    * (1.f - std::exp(-dts / std::max(1e-6f, p.tau_f)));
+        const float satv = p.sat_m > 0.f
+            ? p.sat_m * std::tanh(p.filt / p.sat_m) : p.filt;
+        if (p.connected) {
+            p.line.emplace_back(p.clock_s, satv);
+            // deliver everything old enough: the FINITE transport delay
+            while (!p.line.empty()
+                   && p.line.front().first <= p.clock_s - p.delay_s) {
+                p.out = p.line.front().second;
+                p.line.pop_front();
+            }
+        }
+        // rising edge on the DELIVERED signal only
+        if (p.connected && p.out >= p.thresh_m && p.prev_out < p.thresh_m) {
+            ++p.fires;
+            p.last_fire_tick = ticks_;
+            int64_t us = std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::steady_clock::now().time_since_epoch()).count();
+            patch_log_locked_(std::string("{\"ev\":\"sensor\",\"patch\":\"")
+                + p.name + "\",\"cell\":" + std::to_string(p.cell)
+                + ",\"tick\":" + std::to_string(ticks_)
+                + ",\"t_us\":" + std::to_string(us)
+                + ",\"out_m\":" + std::to_string(p.out) + "}");
+        }
+        p.prev_out = p.out;
+    }
+    return true;
+}
+
+void MembraneTick::patch_off_locked_() {
+    // deterministic off (the flex-0 precedent): the receptor state
+    // empties, the paths return CONNECTED (a disarm is not a cut history),
+    // the event log keeps its history (it is the record).
+    patches_armed_ = false;
+    for (SensorPatch& p : patches_) {
+        p.filt = 0.f; p.out = 0.f; p.prev_out = 0.f;
+        p.line.clear();
+        p.connected = true;
+    }
+    patch_clock_s_ = 0.f;
+}
+
+std::string MembraneTick::patch_json() const {
+    // route callers: lock (the vector is mutated under seal_mtx_)
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    return patch_json_locked();
+}
+
+std::string MembraneTick::patch_json_locked() const {
+    // caller holds seal_mtx_ (state_json / patch_json)
+    std::ostringstream o;
+    o << "{\"armed\":" << (patches_armed_ ? "true" : "false")
+      << ",\"n\":" << patches_.size() << ",\"patches\":[";
+    for (size_t i = 0; i < patches_.size(); ++i) {
+        const SensorPatch& p = patches_[i];
+        if (i) o << ",";
+        o << "{\"name\":\"" << p.name << "\",\"cell\":" << p.cell
+          << ",\"side\":" << (p.side == 0 ? "\"L\"" : "\"R\"")
+          << ",\"nv\":" << p.verts.size()
+          << ",\"connected\":" << (p.connected ? "true" : "false")
+          << ",\"cut_tick\":" << p.cut_tick
+          << ",\"delay_s\":" << p.delay_s
+          << ",\"tau_s\":" << p.tau_f
+          << ",\"sat_m\":" << p.sat_m
+          << ",\"thresh_m\":" << p.thresh_m
+          << ",\"filt_m\":" << p.filt
+          << ",\"out_m\":" << p.out
+          << ",\"fires\":" << p.fires
+          << ",\"last_fire_tick\":" << p.last_fire_tick << "}";
+    }
+    o << "]}";
+    return o.str();
+}
+
+void MembraneTick::export_patch_state(std::vector<uint8_t>& out) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    out.clear();
+    auto put = [&out](const void* p, size_t n) {
+        const uint8_t* b = reinterpret_cast<const uint8_t*>(p);
+        out.insert(out.end(), b, b + n);
+    };
+    uint32_t magic = PATCH_STATE_MAGIC;
+    uint8_t armed = patches_armed_ ? 1 : 0;
+    uint32_t n = (uint32_t)patches_.size();
+    put(&magic, 4); put(&armed, 1); put(&n, 4);
+    for (const SensorPatch& p : patches_) {
+        char name[32] = {};
+        std::memcpy(name, p.name.c_str(),
+                    std::min<size_t>(p.name.size(), 31));
+        put(name, 32);
+        uint8_t conn = p.connected ? 1 : 0;
+        put(&conn, 1);
+        uint64_t ct = p.cut_tick;
+        put(&ct, 8);
+    }
+}
+
+bool MembraneTick::patch_restore(const std::string& body) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (body.size() < 9) return false;
+    uint32_t magic = 0; uint8_t armed = 0; uint32_t n = 0;
+    std::memcpy(&magic, body.data() + 0, 4);
+    std::memcpy(&armed, body.data() + 4, 1);
+    std::memcpy(&n, body.data() + 5, 4);
+    if (magic != PATCH_STATE_MAGIC) return false;
+    if (n != patches_.size()) return false;   // must match the registry
+    size_t off = 9;
+    for (uint32_t i = 0; i < n; ++i) {
+        if (off + 41 > body.size()) return false;
+        const char* name = body.data() + off; off += 32;
+        uint8_t conn = 0; uint64_t ct = 0;
+        std::memcpy(&conn, body.data() + off, 1); off += 1;
+        std::memcpy(&ct, body.data() + off, 8); off += 8;
+        std::string nm(name, strnlen(name, 32));
+        for (SensorPatch& p : patches_) {
+            if (p.name != nm) continue;
+            p.connected = conn != 0;
+            p.cut_tick = p.connected ? 0 : ct;
+            if (!p.connected) p.out = 0.f;
+        }
+    }
+    patches_armed_ = armed != 0;
+    if (patches_armed_) {
+        patch_clock_s_ = 0.f;
+        for (SensorPatch& p : patches_) {
+            p.filt = 0.f; p.out = 0.f; p.prev_out = 0.f; p.line.clear();
+        }
+    }
+    return true;
+}
+
 
 // ═══ THE SEAL-TREE SNAPSHOT (restore idempotency, R-restore-doctor) ═══
 // Wire format (little-endian), versioned by magic:
@@ -2964,7 +4093,26 @@ void MembraneTick::reflex_detect_locked_(float dt) {
     // for one quiet window.
     if (stance_on_ && gravity_on_) reflex_.stance_s += dts;
     else reflex_.stance_s = 0.f;
-    const bool flinch_armed = reflex_.flinch && reflex_.pressure_coupling
+    // ─── AN2: THE PATCH TRIGGER (the LOCAL sensory layer) ───────────
+    // When the patch layer is armed it SUPERSEDES the scalar cell-pressure
+    // trigger (M3: a scalar cannot locate a touch inside a cell). The
+    // nerve gate (pressure_coupling) belongs to the SCALAR path only;
+    // each patch path is gated by its OWN connected flag (a cut path
+    // delivers nothing -- prereg P9). The startle stays scalar: it is
+    // the whole-body transient detector by design.
+    if (patches_armed_ && reflex_.flinch && quiet
+        && reflex_.strut_pin[0] >= 0 && reflex_.strut_pin[1] >= 0) {
+        for (const SensorPatch& p : patches_) {
+            if (!p.connected || p.last_fire_tick != ticks_) continue;
+            // two-neuron arc, local: stimulus PATCH -> that side's limb
+            if (p.side == 0) reflex_.env_l = 1.f;
+            else             reflex_.env_r = 1.f;
+            reflex_.last_cell = p.cell;   // the locality: the patch's
+            reflex_.last_tick = ticks_;   // owning segment cell
+        }
+    }
+    const bool flinch_armed = !patches_armed_ && reflex_.flinch
+        && reflex_.pressure_coupling
         && quiet && reflex_.strut_pin[0] >= 0 && reflex_.strut_pin[1] >= 0;
     const bool startle_armed = reflex_.startle && reflex_.pressure_coupling
         && quiet && reflex_.stance_s >= REFLEX_QUIET_S
@@ -3194,6 +4342,31 @@ std::string MembraneTick::state_json() const {
       << (reflex_.pressure_coupling ? "true" : "false")
       << ",\"reflex_quiet_s\":" << reflex_.quiet_s
       << ",\"reflex_block\":\"" << reflex_.block << "\""
+      // AN2: the one-limb partition + the sensor patches. IDs: segment
+      // names -> cell indices (the same indices the cells[] array
+      // reports), patch names -> owning cell -> response pins. Every
+      // event row carries ticks_ and ts_us from the engine's own clock
+      // (acceptance 9: one ID space, one clock).
+      << ",\"limb_done\":" << (limb_done_ ? "true" : "false")
+      << ",\"limb_side\":\"" << limb_side_ << "\""
+      << ",\"limb_segs\":[";
+      for (size_t i = 0; i < limb_segs_.size(); ++i) {
+          const LimbSeg& s = limb_segs_[i];
+          if (i) o << ",";
+          o << "{\"name\":\"" << s.name << "\",\"cell\":" << s.cell
+            << ",\"v0\":" << s.v0
+            << ",\"pieces\":" << s.pieces
+            << ",\"seed_agree\":" << s.seed_agree
+            << ",\"seed_n\":" << s.seed_total << "}";
+      }
+      o << "]"
+      << "," << patch_json_locked()
+      << ",\"patch_events\":[";
+      for (size_t i = 0; i < patch_event_log_.size(); ++i) {
+          if (i) o << ",";
+          o << patch_event_log_[i];
+      }
+      o << "]"
       << ",\"gait_log\":[";
     for (size_t i = 0; i < gait_log_.size(); ++i) {
         if (i) o << ",";

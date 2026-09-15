@@ -1,0 +1,226 @@
+{
+ "base": "http://127.0.0.1:8170",
+ "shin_hit": [
+  0.7523937821388245,
+  1.4666244983673096,
+  0.0418538823723793
+ ],
+ "foot_hit": [
+  1.6702699661254883,
+  0.03777008876204491,
+  1.1210788488388062
+ ],
+ "force_n": 20000.0,
+ "baseline": {
+  "ts_us": 29380774628,
+  "ticks": 60922,
+  "n_cells": 4,
+  "P": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "v0": [
+   0.287914,
+   12.5091,
+   0.693006,
+   0.334578
+  ],
+  "reflex_on": true,
+  "conserve_pct": -0.000117273
+ },
+ "A_rung_arm": {
+  "gravity": {
+   "ok": true,
+   "gravity_on": true
+  },
+  "stance": {
+   "ok": true,
+   "stance_on": true
+  },
+  "gait": {
+   "ok": true,
+   "gait_on": true
+  }
+ },
+ "A_rung_off": {
+  "gait": {
+   "ok": true,
+   "gait_on": false
+  },
+  "stance": {
+   "ok": true,
+   "stance_on": false
+  },
+  "gravity": {
+   "ok": true,
+   "gravity_on": false
+  }
+ },
+ "A_arm": {
+  "ok": true,
+  "reflex": {
+   "reflex_on": true,
+   "breathing": true,
+   "flinch": true,
+   "startle": true,
+   "pressure_coupling": true,
+   "breath_cell": 1,
+   "breath_period_s": 13.3772,
+   "breath_disp_m": 0.00110777,
+   "flinch_pin_l": 17,
+   "flinch_pin_r": 18,
+   "flinch_env_l": 0,
+   "flinch_env_r": 0,
+   "startle_env": 0,
+   "quiet_s": 0.527057,
+   "block": ""
+  }
+ },
+ "A_pins_resolved": {
+  "flinch_pin_l": 17,
+  "flinch_pin_r": 18
+ },
+ "A_connected": {
+  "n": 192,
+  "env_l_max": 0,
+  "env_r_max": 0,
+  "dimple_max_m": 0.397887,
+  "P_max_per_cell": [
+   0,
+   0,
+   0,
+   34773300.0
+  ],
+  "P_max_any": 34773300.0
+ },
+ "A_connected_latency": null,
+ "A_latency_measured_s": null,
+ "A_latency_poll_dt_s": 0.012,
+ "A_decay_to_zero": true,
+ "A_nerve_cut_response": {
+  "ok": true,
+  "reflex": {
+   "reflex_on": true,
+   "breathing": true,
+   "flinch": true,
+   "startle": true,
+   "pressure_coupling": false,
+   "breath_cell": 1,
+   "breath_period_s": 13.3772,
+   "breath_disp_m": -4.96005e-05,
+   "flinch_pin_l": 17,
+   "flinch_pin_r": 18,
+   "flinch_env_l": 0,
+   "flinch_env_r": 0,
+   "startle_env": 0,
+   "quiet_s": 5.4498,
+   "block": ""
+  }
+ },
+ "A_cut": {
+  "n": 208,
+  "env_l_max": 0,
+  "env_r_max": 0,
+  "dimple_max_m": 0.397887,
+  "P_max_per_cell": [
+   0,
+   0,
+   0,
+   34773300.0
+  ],
+  "P_max_any": 34773300.0
+ },
+ "A_decay_after_cut_touch": true,
+ "A_reconnect_response": {
+  "ok": true,
+  "reflex": {
+   "reflex_on": true,
+   "breathing": true,
+   "flinch": true,
+   "startle": true,
+   "pressure_coupling": true,
+   "breath_cell": 1,
+   "breath_period_s": 13.3772,
+   "breath_disp_m": -0.00131976,
+   "flinch_pin_l": 17,
+   "flinch_pin_r": 18,
+   "flinch_env_l": 0,
+   "flinch_env_r": 0,
+   "startle_env": 0,
+   "quiet_s": 9.65442,
+   "block": ""
+  }
+ },
+ "A_reconnect_no_touch": {
+  "n": 139,
+  "env_l_max": 0,
+  "env_r_max": 0,
+  "dimple_max_m": 0.395189,
+  "P_max_per_cell": [
+   0,
+   0,
+   0,
+   34549300.0
+  ],
+  "P_max_any": 34549300.0
+ },
+ "A_off": {
+  "ok": true,
+  "reflex": {
+   "reflex_on": false,
+   "breathing": true,
+   "flinch": true,
+   "startle": true,
+   "pressure_coupling": true,
+   "breath_cell": 1,
+   "breath_period_s": 13.3772,
+   "breath_disp_m": 0,
+   "flinch_pin_l": 17,
+   "flinch_pin_r": 18,
+   "flinch_env_l": 0,
+   "flinch_env_r": 0,
+   "startle_env": 0,
+   "quiet_s": 11.6782,
+   "block": ""
+  }
+ },
+ "B_baseline_P": [
+  0,
+  0,
+  0,
+  81328.9
+ ],
+ "B_foot_press": {
+  "n": 204,
+  "env_l_max": 0,
+  "env_r_max": 0,
+  "dimple_max_m": 0.397887,
+  "P_max_per_cell": [
+   0,
+   0,
+   0,
+   81328.9
+  ],
+  "P_max_any": 81328.9
+ },
+ "B_isolation": {
+  "foot_cell_P_max": 0,
+  "other_cells_P_max": [
+   0,
+   0,
+   81328.9
+  ],
+  "conserve_pct_final": -0.00013107
+ },
+ "B_final_state": {
+  "P": [
+   872868,
+   0,
+   0,
+   10650.2
+  ],
+  "dimple_m": 0.0522609
+ }
+}

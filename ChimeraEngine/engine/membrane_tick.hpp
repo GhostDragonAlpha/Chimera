@@ -4,6 +4,7 @@
 #include <array>
 #include <atomic>
 #include <cstdint>
+#include <deque>
 #include <functional>
 #include <mutex>
 #include <string>
@@ -177,6 +178,69 @@ public:
     // Compact reflex summary for the route response (state_json carries
     // the full reflex_* field set the page could read).
     std::string reflex_summary_json() const;
+
+    // ─── AN2: THE ONE-LIMB PARTITION (prereg:
+    // ─── docs/evidence/agent_fleet/SHIP/ONE_LIMB/PREREG.md, membranes
+    // ─── M1/M2) ─────────────────────────────────────────────────────────
+    // Repartitions ONE articulated limb (side "L" or "R") from skeleton
+    // CONNECTIVITY, not horizontal bands and not Euclidean nearest-pin
+    // labels: the pin chain (hip→knee→ankle) is DERIVED from mesh-edge
+    // adjacency of dominant-pin vertex labels and must come out exactly
+    // as the chain, or the route refuses BY NAME (prereg P1). The band
+    // components of that leg are split, merged into one leg cell (the
+    // interior band walls removed: both windings present in the merged
+    // set), then sealed with TWO OBLIQUE plane cuts through the knee and
+    // ankle pins, normals along the bone axes — the existing cut-and-weld
+    // machinery generalized from the horizontal plane to an oriented one
+    // (seal_cut_core_). Each new wall is ONE physical septum (shared
+    // welded slots, opposite winding per neighbor's divergence sum); the
+    // pre-existing hip wall stays the ONE septum to the torso. Ownership
+    // is FIXED AT BUILD (piece lists are immutable afterwards; nothing
+    // reclassifies per frame). Refuses while any rung is armed (anatomy
+    // surgery at authored rest) and on any replay of an executed
+    // partition ("already"). The full derivation + validation report
+    // (closure, orientation, positive volumes, disjoint interiors,
+    // whole-coverage, mass table, genus, seed-vs-wall agreement) is
+    // returned and re-exported by limb_report_json().
+    bool limb_partition(const std::string& side, std::string& report,
+                        bool* already = nullptr);
+    std::string limb_report_json() const;
+
+    // THE LIMB REGISTRY SNAPSHOT (persistence, acceptance 10): the
+    // segment registry + patch parameters round-trip as a versioned,
+    // self-validating binary blob (magic 'LMB1'): on load every segment's
+    // cell must exist with the stored piece count and a matching rest
+    // volume (1e-3 relative); patch vertex sets are REBUILT by the same
+    // deterministic radius rule. A stale blob refuses with NOTHING
+    // changed (the seal-state law: a mesh change makes the registry
+    // stale, and the staleness is visible, not silent).
+    bool limb_restore(const std::string& body);
+    void export_limb_state(std::vector<uint8_t>& out);
+    bool limb_done() const { return limb_done_; }
+
+    // ─── AN2: SENSOR PATCHES (prereg membrane M3) ───────────────────────
+    // Scalar cell pressure cannot locate a touch inside a cell. A patch
+    // is a FINITE receptor region of skin: raw = the skin's own local
+    // indentation field (press_off_) over the patch's vertices — the
+    // controller never sees the touch point, the force, or any object
+    // identity — 1st-order filtered (tau 10 ms = 3 ticks), saturating
+    // (sat*tanh at sat = press_r0_), carried over a path with an explicit
+    // FINITE transport delay (|centroid − spine_lower| / 70 m/s, the
+    // A-beta afferent assertion), delivered by a timestamped line. A path
+    // CUT is a real state: nothing delivers, the cut carries a tick and
+    // engine timestamp, reconnection cannot synthesize a stale spike
+    // (the line drains on cut). Patch events trigger the EXISTING flinch
+    // arc (same pins, same gates) as the LOCAL sensory layer; the scalar
+    // cell-pressure trigger stays for the un-patched configuration.
+    // DEFAULT OFF ON BOOT; armed only by route.
+    bool patch_arm(bool on, std::string& err);
+    bool patch_connect(const std::string& name, bool connected,
+                       std::string& err);
+    std::string patch_json() const;   // compact route echo
+    // patch state persistence (arm + per-path connection + cut stamps)
+    bool patch_restore(const std::string& body);
+    void export_patch_state(std::vector<uint8_t>& out);
+    bool patches_armed() const { return patches_armed_; }
 
     // R3 TOUCH (prereg 0935695e): press AT a world point (the camera-ray
     // hit), Gaussian falloff around it, along the POSED skin normals.
@@ -533,6 +597,81 @@ private:
     void  reflex_breath_locked_(std::vector<float>& verts9, float dt);
     bool  reflex_resolve_locked_(std::string& block);  // same-limb pins
     void  reflex_off_locked_();                 // assumes seal_mtx_ held
+    // ─── AN2: THE ONE-LIMB PARTITION + SENSOR PATCHES (prereg M1-M4) ────
+    // ONE generalized cut core shared by the horizontal seal() and the
+    // oblique limb walls: straddle-split, weld-chain, the winding law,
+    // divergence volumes, positivity + degenerate guards, publish. pd is
+    // the SIGNED PLANE DISTANCE per point (the only Y-specific part of
+    // the old code); new cut points push pd == 0 exactly (the H8 law).
+    // py rides parallel (rest y per point) for the ylo/yhi bounds the
+    // already-satisfied checks of later Y cuts compare against.
+    bool  seal_cut_core_(int cell_idx,
+                         std::vector<CutBlend>& pts,
+                         std::vector<float>& pd,
+                         std::vector<float>& py,
+                         const std::vector<float>& rest9,
+                         size_t ncut0);
+    // split()'s body WITHOUT the lock (limb_partition runs the component
+    // split inside its own seal_mtx_ critical section; std::mutex is not
+    // recursive -- the public wrapper adds the lock).
+    bool  split_locked_(int cell_idx);
+    struct LimbSeg {
+        std::string name;            // "thigh_L" | "shin_L" | "foot_L" (| _R)
+        int cell = -1;               // sealed cell index (fixed at build)
+        int pin_prox = -1, pin_dist = -1;   // chain pins (foot dist = -1)
+        std::array<float,3> plane_n = {0.f, 0.f, 0.f};  // distal normal
+        std::array<float,3> plane_p = {0.f, 0.f, 0.f};  // through-point
+        float v0 = 0.f;
+        uint32_t pieces = 0;         // piece-triangle count (blob validation)
+        int seed_total = 0, seed_agree = 0;   // seed-vs-wall agreement
+    };
+    struct SensorPatch {
+        std::string name;            // segment name (patch id)
+        std::vector<uint32_t> verts; // the finite receptor region (frozen)
+        std::array<float,3> c = {0.f, 0.f, 0.f};   // rest centroid
+        int cell = -1;               // owning cell (fixed at build)
+        int side = 0;                // 0 = L, 1 = R
+        float tau_f = 0.010f;        // filter tau, s (= 3 ticks @ 300 Hz)
+        float sat_m = 0.030f;        // saturation = press_r0_
+        float delay_s = 0.f;         // finite transport delay, s
+        float thresh_m = 1e-3f;      // rising-edge trigger, m
+        // -- path state (a cut is a real state) --
+        bool connected = true;
+        uint64_t cut_tick = 0;
+        int64_t  cut_us = 0;         // engine steady-clock at the cut
+        // -- live signal --
+        float filt = 0.f;            // filtered (pre-saturation, pre-delay)
+        float out = 0.f;             // delivered (post-delay)
+        float prev_out = 0.f;        // the delivered-edge membrane
+        float clock_s = 0.f;         // the patch line's own time base
+        std::deque<std::pair<float,float>> line;   // (t, saturated) in transit
+        uint64_t last_fire_tick = 0;
+        int fires = 0;
+        float last_raw = 0.f;
+    };
+    std::vector<LimbSeg> limb_segs_;
+    bool limb_done_ = false;
+    std::string limb_side_;                      // "L" | "R" partitioned
+    std::string limb_report_;                    // the full JSON report
+    std::vector<SensorPatch> patches_;
+    bool patches_armed_ = false;
+    float patch_clock_s_ = 0.f;                  // armed-time accumulator
+    std::vector<std::string> patch_event_log_;   // bounded JSON rows (64)
+    bool  patch_step_locked_(float dt);          // filter/delay/deliver
+    void  patch_off_locked_();                   // deterministic disarm
+    bool  patch_build_locked_(std::string& err); // regions from the segments
+    void  patch_log_locked_(const std::string& row);  // bounded event log
+    std::string patch_json_locked() const;       // caller holds seal_mtx_
+    // -- shared geometry helpers (partition / patches / blob validation) --
+    void  rest_geometry_locked_(std::vector<float>& rest9,
+                                std::vector<float>& cutrest) const;
+    float div_pieces_(const std::vector<uint32_t>& pieces,
+                      const std::vector<float>& rest9,
+                      const std::vector<float>& cutrest) const;
+    // closed-manifold test + Euler characteristic: every undirected edge
+    // of the piece set must be used exactly twice (closure); chi = V-E+F.
+    bool  cell_topology_(const std::vector<uint32_t>& pieces,
+                         int* chi_out) const;
     // THE TOUCH: a world-space press point + force (set via touch_press
     // under the tick lock; consumed by step)
     bool  touch_active_ = false;

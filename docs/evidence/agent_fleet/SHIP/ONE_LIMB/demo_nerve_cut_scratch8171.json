@@ -1,0 +1,268 @@
+{
+ "base": "http://127.0.0.1:8171",
+ "shin_hit": [
+  0.7523937821388245,
+  1.4666244983673096,
+  0.0418538823723793
+ ],
+ "foot_hit": [
+  1.6702699661254883,
+  0.03777008876204491,
+  1.1210788488388062
+ ],
+ "force_n": 20000.0,
+ "decay_wait_s": 5.0,
+ "baseline": {
+  "ts_us": 29834126741,
+  "ticks": 21762,
+  "n_cells": 4,
+  "P": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "v0": [
+   0.287914,
+   12.5091,
+   0.693006,
+   0.334578
+  ],
+  "reflex_on": false,
+  "dimple_m": 0,
+  "conserve_pct": -0.000117273
+ },
+ "A_rung_arm": {
+  "gravity": {
+   "ok": true,
+   "gravity_on": true
+  },
+  "stance": {
+   "ok": true,
+   "stance_on": true
+  },
+  "gait": {
+   "ok": true,
+   "gait_on": true
+  }
+ },
+ "A_rung_off": {
+  "gait": {
+   "ok": true,
+   "gait_on": false
+  },
+  "stance": {
+   "ok": true,
+   "stance_on": false
+  },
+  "gravity": {
+   "ok": true,
+   "gravity_on": false
+  }
+ },
+ "A_arm": {
+  "ok": true,
+  "reflex": {
+   "reflex_on": true,
+   "breathing": false,
+   "flinch": true,
+   "startle": true,
+   "pressure_coupling": true,
+   "breath_cell": 1,
+   "breath_period_s": 13.3772,
+   "breath_disp_m": 0,
+   "flinch_pin_l": 17,
+   "flinch_pin_r": 18,
+   "flinch_env_l": 0,
+   "flinch_env_r": 0,
+   "startle_env": 0,
+   "quiet_s": 1e+30,
+   "block": ""
+  }
+ },
+ "A_pins_resolved": {
+  "flinch_pin_l": 17,
+  "flinch_pin_r": 18,
+  "quiet_s": 1e+30,
+  "p_coupling": true
+ },
+ "A_connected_touch_response": {
+  "ok": true
+ },
+ "A_connected": {
+  "n": 157,
+  "env_l_max": 0.993396,
+  "env_r_max": 0,
+  "dimple_max_m": 0.397887,
+  "P_max_per_cell": [
+   4355570.0,
+   0,
+   424622,
+   35937700.0
+  ]
+ },
+ "A_connected_latency": {
+  "touch_to_first_env_s": 0.0234,
+  "poll_dt_s": 0.012,
+  "first_env_ts_us": 29838165266,
+  "first_env_ticks": 22970,
+  "P_at_fire_Pa": [
+   4324290.0,
+   0,
+   422004,
+   35927000.0
+  ]
+ },
+ "A_decay_1": {
+  "dimple_m": 0,
+  "P": [
+   897396,
+   0,
+   123778,
+   271677
+  ],
+  "env_l": 0.268471
+ },
+ "A_nerve_cut_response": {
+  "ok": true,
+  "reflex": {
+   "reflex_on": true,
+   "breathing": false,
+   "flinch": true,
+   "startle": true,
+   "pressure_coupling": false,
+   "breath_cell": 1,
+   "breath_period_s": 13.3772,
+   "breath_disp_m": 0,
+   "flinch_pin_l": 17,
+   "flinch_pin_r": 18,
+   "flinch_env_l": 0.268471,
+   "flinch_env_r": 0.0144848,
+   "startle_env": 0,
+   "quiet_s": 1e+30,
+   "block": ""
+  }
+ },
+ "A_cut_state": {
+  "p_coupling": false
+ },
+ "A_cut_touch_response": {
+  "ok": true
+ },
+ "A_cut": {
+  "n": 167,
+  "env_l_max": 0.0983504,
+  "env_r_max": 0.00530631,
+  "dimple_max_m": 0.397887,
+  "P_max_per_cell": [
+   303107,
+   0,
+   46183,
+   34860100.0
+  ]
+ },
+ "A_decay_2": {
+  "dimple_m": 0,
+  "P": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "env_l": 0
+ },
+ "A_reconnect_response": {
+  "ok": true,
+  "reflex": {
+   "reflex_on": true,
+   "breathing": false,
+   "flinch": true,
+   "startle": true,
+   "pressure_coupling": true,
+   "breath_cell": 1,
+   "breath_period_s": 13.3772,
+   "breath_disp_m": 0,
+   "flinch_pin_l": 17,
+   "flinch_pin_r": 18,
+   "flinch_env_l": 0,
+   "flinch_env_r": 0,
+   "startle_env": 0,
+   "quiet_s": 1e+30,
+   "block": ""
+  }
+ },
+ "A_reconnect_no_touch": {
+  "n": 108,
+  "env_l_max": 0,
+  "env_r_max": 0,
+  "dimple_max_m": 0,
+  "P_max_per_cell": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ "A_off": {
+  "ok": true,
+  "reflex": {
+   "reflex_on": false,
+   "breathing": false,
+   "flinch": true,
+   "startle": true,
+   "pressure_coupling": true,
+   "breath_cell": 1,
+   "breath_period_s": 13.3772,
+   "breath_disp_m": 0,
+   "flinch_pin_l": 17,
+   "flinch_pin_r": 18,
+   "flinch_env_l": 0,
+   "flinch_env_r": 0,
+   "startle_env": 0,
+   "quiet_s": 1e+30,
+   "block": ""
+  }
+ },
+ "B_touch_response": {
+  "ok": true
+ },
+ "B_foot_press": {
+  "n": 171,
+  "env_l_max": 0,
+  "env_r_max": 0,
+  "dimple_max_m": 0.397887,
+  "P_max_per_cell": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ "B_isolation": {
+  "foot_cell_P_max_Pa": 0,
+  "other_cells_P_max_Pa": [
+   0,
+   0,
+   0
+  ],
+  "conserve_pct_during": -9.65777e-05
+ },
+ "B_final_state": {
+  "P": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "dimple_m": 0,
+  "conserve_pct": -0.000117273
+ },
+ "verdict": {
+  "A_fires_connected": true,
+  "A_silent_cut": false,
+  "A_passive_P_matches": false,
+  "A_passive_dimple_matches": true,
+  "B_no_exchange": true,
+  "latency_connected_s": 0.0234
+ }
+}

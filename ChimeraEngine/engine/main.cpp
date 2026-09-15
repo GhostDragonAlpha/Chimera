@@ -98,6 +98,11 @@ static const char* const k_snapshot_endpoints[] = {
     "mesh_bin", "tick_joints", "tick_classify", "tick_vertbind",
     "hinge_bin", "joints_bin", "gait_bin", "stride_bin", "water_bin",
     "tick_seal_state",
+    // AN2: the limb registry (segments + patch regions/constants) and the
+    // patch states (arm + per-path connection + cut stamps) restore after
+    // the seal tree they index into. A stale limb blob (any mesh change)
+    // refuses -- the staleness is visible, never silent.
+    "tick_limb_state", "tick_patch_state",
 };
 static std::vector<float> g_tick_verts;        // host mirror the tick tints
 static uint32_t g_tick_vcount = 0;
@@ -1407,6 +1412,83 @@ int main(int argc, char** argv) {
             }
             body = std::string("{\"ok\":") + (ok ? "true," : "false,")
                  + "\"reflex\":" + g_tick.reflex_summary_json() + "}";
+            content_type = "application/json";
+        } else if (p == "/tick_limb" && method == "POST") {
+            // AN2: THE ONE-LIMB PARTITION (prereg
+            // docs/evidence/agent_fleet/SHIP/ONE_LIMB/PREREG.md M1/M2).
+            // Derives the leg's segments from skeleton CONNECTIVITY (the
+            // pin graph over dominant-binding labels; a chain that does
+            // not match refuses BY NAME), splits the band components,
+            // merges the limb, seals it with TWO OBLIQUE walls through
+            // the knee/ankle pins (one generalized cut core with the
+            // horizontal seal), validates closure/orientation/volumes/
+            // coverage/mass/genus, and builds the sensor patch regions.
+            //   {"side":"L"}   |   {"side":"R"}
+            // Refuses while any rung is armed (surgery at authored rest).
+            // IDEMPOTENT: a replay of an executed partition answers
+            // "limb":"already" (the R-restore-doctor law).
+            std::string side = get_string(req_body, "side");
+            std::string report;
+            bool already = false;
+            if (g_tick.limb_partition(side, report, &already)) {
+                body = std::string("{\"ok\":true,\"limb\":\"")
+                     + (already ? "already" : "executed")
+                     + "\",\"report\":" + report + "}";
+            } else {
+                std::string esc;
+                for (char ch : report) {
+                    if (ch == '"' || ch == '\\') esc += '\\';
+                    esc += ch;
+                }
+                body = "{\"ok\":false,\"error\":\"" + esc + "\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/tick_limb_state" && method == "POST") {
+            // AN2: the limb REGISTRY blob replay (the restore path; the
+            // blob is self-validating: every segment's cell must exist
+            // with the stored piece count and a matching rest volume).
+            if (g_tick.limb_restore(req_body))
+                body = "{\"ok\":true,\"limb_state\":\"restored\"}";
+            else
+                body = "{\"ok\":false,\"error\":\"refused: the limb "
+                       "registry blob does not match this body (stale "
+                       "or the tree is not restored yet)\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_patch" && method == "POST") {
+            // AN2: SENSOR PATCHES (prereg M3): finite receptor regions
+            // with their own filtered/saturated signal and an explicit
+            // finite transport delay; a path CUT is a real state.
+            //   {"on":true}                            arm the layer
+            //   {"on":false}                           deterministic off
+            //   {"path":"shin_L","connected":false}    THE PATH CUT
+            //   {"path":"shin_L","connected":true}     reconnect
+            // Compact-JSON hazard: "on" arms on the literal substring
+            // "on":true (the /tick_gait law); "connected" uses get_bool
+            // (never stod -- the stod-on-booleans trap).
+            std::string err;
+            bool ok = true;
+            if (find_colon_after(req_body, "path") != std::string::npos) {
+                std::string nm = get_string(req_body, "path");
+                bool conn = get_bool(req_body, "connected", true);
+                ok = g_tick.patch_connect(nm, conn, err);
+            }
+            if (ok && find_colon_after(req_body, "on") != std::string::npos) {
+                bool on = req_body.find("\"on\":true") != std::string::npos;
+                ok = g_tick.patch_arm(on, err);
+            }
+            body = std::string("{\"ok\":") + (ok ? "true" : "false")
+                 + (err.empty() ? "" : ",\"error\":\"" + err + "\"")
+                 + ",\"patches\":" + g_tick.patch_json() + "}";
+            content_type = "application/json";
+        } else if (p == "/tick_patch_state" && method == "POST") {
+            // AN2: the patch-state blob replay (arm + per-path connection
+            // + cut stamps; must match the restored limb registry).
+            if (g_tick.patch_restore(req_body))
+                body = "{\"ok\":true,\"patch_state\":\"restored\"}";
+            else
+                body = "{\"ok\":false,\"error\":\"refused: the "
+                       "patch-state blob does not match the limb "
+                       "registry\"}";
             content_type = "application/json";
         } else if (p == "/hinge_bin" && method == "POST") {
             // Binary protocol (little-endian):
@@ -3397,6 +3479,9 @@ int main(int argc, char** argv) {
                     if (DeleteFileA(fp.c_str())) ++cleared;
                 }
                 if (DeleteFileA("session_snapshot/tick_seal_history.log")) ++cleared;
+                if (DeleteFileA("session_snapshot/tick_limb_history.log")) ++cleared;
+                if (DeleteFileA("session_snapshot/tick_limb_state.blob")) ++cleared;
+                if (DeleteFileA("session_snapshot/tick_patch_state.blob")) ++cleared;
                 body = "{\"ok\":true,\"cleared\":" + std::to_string(cleared) + "}";
             } else if (op == "restore") {
                 int done = 0, failed = 0, seal_already = 0, seal_executed = 0;
@@ -3447,12 +3532,41 @@ int main(int argc, char** argv) {
                         }
                     }
                 }
+                // AN2: THE LIMB PARTITION HISTORY (same two laws as the
+                // seal journal): replayed only when the registry blob
+                // could not do the job (a restored registry answers
+                // "limb":"already" -- the executed partition is a STATE,
+                // not an action to repeat). Sits AFTER the seal replay:
+                // the partition needs the band tree the seals build.
+                int limb_executed = 0;
+                {
+                    std::ifstream hf2("session_snapshot/tick_limb_history.log");
+                    std::string line2;
+                    while (std::getline(hf2, line2)) {
+                        if (line2.empty()) continue;
+                        std::string resp3, ct3;
+                        g_engine->invoke_api("POST", "/tick_limb", line2,
+                                             resp3, ct3);
+                        bool alr =
+                            resp3.find("\"limb\":\"already\"") != std::string::npos;
+                        bool okr3 = resp3.find("\"ok\":true") != std::string::npos;
+                        if (alr) {
+                            detail += "limb:already ";
+                        } else if (okr3) {
+                            ++limb_executed;
+                            detail += "limb:ok ";
+                        } else {
+                            ++failed;
+                            detail += "limb:FAIL ";
+                        }
+                    }
+                }
                 // THE TREE RE-SNAPSHOT: if the replay EXECUTED cuts (the
                 // state blob was absent or stale and history rebuilt the
                 // tree), snapshot the fresh tree so the NEXT boot executes
                 // zero seals. Replayed-but-skipped trees are byte-identical
                 // and are NOT rewritten (byte-stable snapshot dir).
-                if (seal_executed > 0) {
+                if (seal_executed > 0 || limb_executed > 0) {
                     std::vector<uint8_t> sb;
                     g_tick.export_seal_state(sb);
                     if (!sb.empty()) {
@@ -3466,6 +3580,25 @@ int main(int argc, char** argv) {
                                    "%d seals executed)\n", sb.size(),
                                    seal_executed);
                         }
+                    }
+                    // AN2: the limb registry + patch state follow the tree
+                    std::vector<uint8_t> lb;
+                    g_tick.export_limb_state(lb);
+                    if (!lb.empty()) {
+                        std::ofstream lf("session_snapshot/tick_limb_state.blob",
+                                         std::ios::binary);
+                        if (lf)
+                            lf.write(reinterpret_cast<const char*>(lb.data()),
+                                     (std::streamsize)lb.size());
+                    }
+                    std::vector<uint8_t> pb;
+                    g_tick.export_patch_state(pb);
+                    if (!pb.empty()) {
+                        std::ofstream pf("session_snapshot/tick_patch_state.blob",
+                                         std::ios::binary);
+                        if (pf)
+                            pf.write(reinterpret_cast<const char*>(pb.data()),
+                                     (std::streamsize)pb.size());
                     }
                 }
                 // THE OK RULE (R-restore-doctor): a boot whose seal tree
@@ -3547,6 +3680,42 @@ int main(int argc, char** argv) {
                     printf("snapshot: tick_seal_state written (%zu B)\n",
                            sb.size());
                 }
+            }
+        }
+        // AN2 (same two laws): an EXECUTED limb partition journals its
+        // intent and re-snapshots the registry + patch state; an
+        // already-skip journals nothing. Every successful /tick_patch
+        // re-snapshots the patch state (arm + connections are state).
+        if (g_engine && method == "POST" && p == "/tick_limb" &&
+            !g_replay_in_flight &&
+            body.find("\"limb\":\"executed\"") != std::string::npos) {
+            CreateDirectoryA("session_snapshot", nullptr);
+            std::ofstream f("session_snapshot/tick_limb_history.log",
+                            std::ios::app);
+            if (f) { f << req_body << "\n"; printf("snapshot: tick_limb_history +1\n"); }
+            std::vector<uint8_t> lb;
+            g_tick.export_limb_state(lb);
+            if (!lb.empty()) {
+                std::ofstream lf("session_snapshot/tick_limb_state.blob",
+                                 std::ios::binary);
+                if (lf)
+                    lf.write(reinterpret_cast<const char*>(lb.data()),
+                             (std::streamsize)lb.size());
+                printf("snapshot: tick_limb_state written (%zu B)\n", lb.size());
+            }
+        }
+        if (g_engine && method == "POST" && p == "/tick_patch" &&
+            !g_replay_in_flight && body.find("\"ok\":true") != std::string::npos) {
+            CreateDirectoryA("session_snapshot", nullptr);
+            std::vector<uint8_t> pb;
+            g_tick.export_patch_state(pb);
+            if (!pb.empty()) {
+                std::ofstream pf("session_snapshot/tick_patch_state.blob",
+                                 std::ios::binary);
+                if (pf)
+                    pf.write(reinterpret_cast<const char*>(pb.data()),
+                             (std::streamsize)pb.size());
+                printf("snapshot: tick_patch_state written (%zu B)\n", pb.size());
             }
         }
 
