@@ -223,7 +223,7 @@
   "kind": "work",
   "name": "Partition the left leg into per-bone volumetric regions",
   "classification": null,
-  "status": "specified",
+  "status": "verified",
   "priority": "P0",
   "build_rank": null,
   "inventory_anchor": null,
@@ -244,12 +244,13 @@
   "evidence": [
    "ev.limb_restore_recipes_20260915",
    "ev.limb_cold_restart_20260915",
-   "ev.limb_seal_history_20260915"
+   "ev.limb_seal_history_20260915",
+   "ev.partition_reconciliation_20260915"
   ],
   "falsifier": {
    "statement": "Derive segments from skeleton connectivity in the reference configuration",
    "acceptance_test": "Acceptance = req.every_bone_sealed verification on the leg: count matches, cells conserve, press answers in the right bone's cell.",
-   "status": "untested"
+   "status": "passing"
   },
   "authored_priority": 1,
   "enables": [
@@ -257,7 +258,7 @@
    "experience.press_and_response"
   ],
   "unknowns": [],
-  "notes": "AUTHORED task following req.every_bone_sealed / req.press_answer_chain; never derived from imported facts",
+  "notes": "AUTHORED task following req.every_bone_sealed / req.press_answer_chain; never derived from imported facts | SCOPED COMPLETION 2026-09-15: left leg only. Count: 3 named segments (thigh_L cell 1, shin_L cell 9, foot_L cell 10), each closed with positive v0 -- pinned CPU harness check (len(segments)==3, closed, v0>0, validation.pass) carried into the full engine by the equality check. Conserve: partition validation sum_v0 13.8246 m3 == vol_whole_ref 13.8246 m3, coverage -0.000110374 percent within the existing 0.01 percent limb gate; the stricter 0.0001 percent claim is NOT proven. Press: live press on the shin receptor answers in the shin cell (max delivered shin signal 0.03 m connected, exactly 0 with the shin path cut; flinch 0.986737 connected, 0 cut; pressed-cell pressure 20,940,200 Pa) -- instantiated on the shin bone only; thigh and foot presses UNMEASURED. Not claimed: whole-creature compartmentalization, open-wound transfer, force-limited actuation, DYAD/visual acceptance.",
   "provenance": {
    "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
   }

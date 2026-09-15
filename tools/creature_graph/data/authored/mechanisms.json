@@ -906,5 +906,107 @@
   ],
   "captured_relations": {},
   "last_result": "passing"
+ },
+ {
+  "id": "ev.partition_reconciliation_20260915",
+  "kind": "evidence",
+  "name": "Partition acceptance reconciliation: delivered native limb bundle verified against today's checkout",
+  "status": "specified",
+  "validation": "passing",
+  "deps": [
+   "work.partition_leg_l",
+   "req.every_bone_sealed",
+   "inst.comp.thigh_l",
+   "inst.comp.shin_l",
+   "inst.comp.foot_l"
+  ],
+  "captured_utc": "2026-09-15T22:32:45.606738+00:00",
+  "physical": {
+   "source_hash_policy": "SHA256 of UTF-8 source bytes with CRLF normalized to LF",
+   "source_hashes": {
+    "ChimeraEngine/engine/main.cpp": "433b5887cabc472bc7634cfc9e6bf6022531e019e8694a61eaafe04722ad1004",
+    "ChimeraEngine/engine/membrane_tick.cpp": "ceca5cfde318744426c2d44c12cb76b6fcc718842635eb8d9774e5ddc56013e4",
+    "ChimeraEngine/engine/membrane_tick.hpp": "82624f82cb612ab844a252b84ba64abd7a7cd1e52bdd56508b19c9920908d16d"
+   }
+  },
+  "provenance": {
+   "evidence_directory": "agent_logs/codex/limb_runtime_20260915 (+ limb_state_fix_20260915 CPU fixture)",
+   "artifact_sha256": {
+    "REPORT.md": "86e3d2ff9f98146374bf3e76f7efea992f810a0010c054b6389b1781379559cc",
+    "source_identity.json": "e64bd75d3821aa64b97a730ab9039c3c199a76245c2172acb841f5600ee01579",
+    "graph_attachment_proposal.json": "bb4e1c00820f49459fbd0792e51c99fa0fab7bb4c3a870f15b9b1c0baf0b3502",
+    "corrected_run/checks.jsonl": "51cd1863f46df69376389483281219ba5ff1ee6cee8b03e0b4074a0d7dd1a72e",
+    "causal_run/checks.jsonl": "46b2cf0372ab9801c507182677e5da92d87c493bde91fddf5a8bf8bb41a5defd",
+    "causal_run/summary.json": "0356efbe81e49c2dc9fd4066cf6a0913221c97b47a974741dfacffe5e8a1df81",
+    "cold_run/checks.json": "d944a8bd353118dae0248fb45f7d6ad3bfd1622a426b34f8de47b9171a77236e",
+    "history_run/checks.json": "1d844199dee0732f83c3cf3bfad590da079b0d9ae74103c387fd1fabbd86f232",
+    "limb_state_fix_20260915/results/patched/partition.json": "8867911fd16171f245c3ed3a0fdf76dbfe9bbf10a60450842cb6b81b244912f6",
+    "limb_state_fix_20260915/results/patched/state.json": "d2c04272382b6c4dbe2a77509d6efc3b825569aebc3dc9cee7d5fe29bce68c95",
+    "limb_state_fix_20260915/results/patched/summary.json": "855c7be669ae4bd3b53d6b744b3c3a105e21a457b2694b742258766541613808",
+    "limb_state_fix_20260915/results/regression_comparison.json": "f7ecc234461ad7fd67cedaa3026138001ee894a3af66a17fe966406f18ba32c4",
+    "limb_state_fix_20260915/tests/run_tests.py": "3a489daa978e7eff262e9a7fe50c85e2b4a2031d5d3d448cd02465bc160d342e"
+   }
+  },
+  "notes": "Artifact-verification measurement made 2026-09-15 against checkout 75a938e2 (clean, a12bfbcc ancestor): all three tested engine sources hash-match after CRLF-to-LF normalization; delivered check files re-verified in place (34/34, 19/19, 4/4, 7/7; FAILURES 0). The physical experiment was NOT re-run; partition numbers are historical delivered results. Attachments: press-answer clause measured on the shin bone only; 0.0001 percent conservation, whole-creature sealing, open-wound transfer, force-limited actuation, DYAD acceptance not claimed.",
+  "capture_contract": 1,
+  "captured": {
+   "work.partition_leg_l": "b85c477aa99d28dc",
+   "req.every_bone_sealed": "fefea63b5ce39f38",
+   "inst.comp.thigh_l": "8d27d9f6f0267e47",
+   "inst.comp.shin_l": "6f5ba5a0270968c2",
+   "inst.comp.foot_l": "ab03b7775428a778"
+  },
+  "captured_dependencies": [
+   "inst.comp.foot_l",
+   "inst.comp.shin_l",
+   "inst.comp.thigh_l",
+   "req.every_bone_sealed",
+   "work.partition_leg_l"
+  ],
+  "captured_relations": {
+   "r_aa98c3e2831ee0e22f126f36e606a25a1a5ab56cbcfdbe0e61217df84758fa67_0": {
+    "rid": "r_aa98c3e2831ee0e22f126f36e606a25a1a5ab56cbcfdbe0e61217df84758fa67_0",
+    "src": "inst.comp.thigh_l",
+    "rel": "uses_material",
+    "dst": "material.water",
+    "note": "planned fluid inventory"
+   },
+   "r_16142d7bd488c48e5ddd51be182554421a1f87bc23ffa4db13301ff583858f16_0": {
+    "rid": "r_16142d7bd488c48e5ddd51be182554421a1f87bc23ffa4db13301ff583858f16_0",
+    "src": "inst.comp.thigh_l",
+    "rel": "uses_model",
+    "dst": "model.water_compressibility",
+    "note": "per-region pressure law"
+   },
+   "r_6efdc36dad53a27f0348a5aa0a5e2f7ef0742bc6ba1f680d6bd412cae8e826fe_0": {
+    "rid": "r_6efdc36dad53a27f0348a5aa0a5e2f7ef0742bc6ba1f680d6bd412cae8e826fe_0",
+    "src": "inst.comp.shin_l",
+    "rel": "uses_material",
+    "dst": "material.water",
+    "note": "planned fluid inventory"
+   },
+   "r_3283dbc7d278afe6557364a595c756e8a881c9b8eba4289319b56c5f167f5cb1_0": {
+    "rid": "r_3283dbc7d278afe6557364a595c756e8a881c9b8eba4289319b56c5f167f5cb1_0",
+    "src": "inst.comp.shin_l",
+    "rel": "uses_model",
+    "dst": "model.water_compressibility",
+    "note": "per-region pressure law"
+   },
+   "r_32095a66452c2bccd01564a28ef4d690ce13cbd423ee51e69b66caca711c5add_0": {
+    "rid": "r_32095a66452c2bccd01564a28ef4d690ce13cbd423ee51e69b66caca711c5add_0",
+    "src": "inst.comp.foot_l",
+    "rel": "uses_material",
+    "dst": "material.water",
+    "note": "planned fluid inventory"
+   },
+   "r_aa4345d7882da7a12e37933cba391ea5e32b3216242146f85c99255bc35cf4b3_0": {
+    "rid": "r_aa4345d7882da7a12e37933cba391ea5e32b3216242146f85c99255bc35cf4b3_0",
+    "src": "inst.comp.foot_l",
+    "rel": "uses_model",
+    "dst": "model.water_compressibility",
+    "note": "per-region pressure law"
+   }
+  },
+  "last_result": "passing"
  }
 ]
