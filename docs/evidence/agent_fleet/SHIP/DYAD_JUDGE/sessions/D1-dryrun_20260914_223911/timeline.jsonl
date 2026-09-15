@@ -1,0 +1,267 @@
+{"wall_ms": 1789443551332, "wall": "2026-09-15T03:39:11+00:00", "phase": "prepare", "note": "session dir E:\\ChimeraWork\\slot-01\\docs\\evidence\\agent_fleet\\SHIP\\DYAD_JUDGE\\sessions\\D1-dryrun_20260914_223911"}
+{"wall_ms": 1789443551379, "wall": "2026-09-15T03:39:11+00:00", "phase": "prepare", "note": "env probed ok (demo reachable, ffmpeg+node present)"}
+{"wall_ms": 1789443551445, "wall": "2026-09-15T03:39:11+00:00", "phase": "prepare", "note": "copying local playwright install", "src": "E:\\ChimeraWork\\slot-01\\docs\\evidence\\agent_fleet\\SHIP\\R8_R4_PLAYBOOK\\dryrun_H5\\node_modules"}
+{"wall_ms": 1789443552410, "wall": "2026-09-15T03:39:12+00:00", "phase": "prepare", "note": "registry backed up (first-write guard)"}
+{"wall_ms": 1789443552423, "wall": "2026-09-15T03:39:12+00:00", "phase": "prepare", "note": "membrane OPEN as V64 (Rule 0: all three parts)"}
+{"wall_ms": 1789443553242, "wall": "2026-09-15T03:39:13+00:00", "phase": "session", "note": "driver ready"}
+{"wall_ms": 1789443553250, "wall": "2026-09-15T03:39:13+00:00", "phase": "pipeline", "note": "T_capture + T_watch + P_encode running OVERLAPPED with T_session"}
+{"wall_ms": 1789443553346, "wall": "2026-09-15T03:39:13+00:00", "phase": "watch", "note": "eye lane: ollama-fallback (qwen3.8)", "lane": "ollama-fallback", "model": "qwen3.8", "reason": "senses eye dark (dyad_required_model_not_loaded: [dyad_required_model_not_loaded] permanent DYAD model 'qwen3.8-27b-nvfp4-mtp' is not explicitly loaded; loaded=[]); ollama fallback serving"}
+{"wall_ms": 1789443553700, "wall": "2026-09-15T03:39:13+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 458}
+{"wall_ms": 1789443553700, "wall": "2026-09-15T03:39:13+00:00", "phase": "capture", "note": "cap_0001", "frame": "cap_0001"}
+{"wall_ms": 1789443553703, "wall": "2026-09-15T03:39:13+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 452}
+{"wall_ms": 1789443556264, "wall": "2026-09-15T03:39:16+00:00", "phase": "watch", "note": "read cap_0001.png lane=ollama-fallback dent_yes=False", "frame": "cap_0001.png", "lane": "ollama-fallback"}
+{"wall_ms": 1789443559127, "wall": "2026-09-15T03:39:19+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 5423}
+{"wall_ms": 1789443559586, "wall": "2026-09-15T03:39:19+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 4671}
+{"wall_ms": 1789443559586, "wall": "2026-09-15T03:39:19+00:00", "phase": "capture", "note": "cap_0002", "frame": "cap_0002"}
+{"wall_ms": 1789443559743, "wall": "2026-09-15T03:39:19+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 616}
+{"wall_ms": 1789443560051, "wall": "2026-09-15T03:39:20+00:00", "phase": "session", "note": "text -> ok=True", "cmd": "text", "resp_ms": 308}
+{"wall_ms": 1789443560510, "wall": "2026-09-15T03:39:20+00:00", "phase": "session", "note": "click -> ok=True", "cmd": "click", "resp_ms": 458}
+{"wall_ms": 1789443560957, "wall": "2026-09-15T03:39:20+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 157}
+{"wall_ms": 1789443560958, "wall": "2026-09-15T03:39:20+00:00", "phase": "capture", "note": "cap_0003", "frame": "cap_0003"}
+{"wall_ms": 1789443560962, "wall": "2026-09-15T03:39:20+00:00", "phase": "session", "note": "type -> ok=True", "cmd": "type", "resp_ms": 452}
+{"wall_ms": 1789443561423, "wall": "2026-09-15T03:39:21+00:00", "phase": "session", "note": "click -> ok=True", "cmd": "click", "resp_ms": 460}
+{"wall_ms": 1789443561898, "wall": "2026-09-15T03:39:21+00:00", "phase": "watch", "note": "read cap_0002.png lane=ollama-fallback dent_yes=False", "frame": "cap_0002.png", "lane": "ollama-fallback"}
+{"wall_ms": 1789443564040, "wall": "2026-09-15T03:39:24+00:00", "phase": "watch", "note": "read cap_0003.png lane=ollama-fallback dent_yes=False", "frame": "cap_0003.png", "lane": "ollama-fallback"}
+{"wall_ms": 1789443564433, "wall": "2026-09-15T03:39:24+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 3010}
+{"wall_ms": 1789443564882, "wall": "2026-09-15T03:39:24+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 2721}
+{"wall_ms": 1789443564882, "wall": "2026-09-15T03:39:24+00:00", "phase": "capture", "note": "cap_0004", "frame": "cap_0004"}
+{"wall_ms": 1789443564885, "wall": "2026-09-15T03:39:24+00:00", "phase": "session", "note": "text -> ok=True", "cmd": "text", "resp_ms": 452}
+{"wall_ms": 1789443565343, "wall": "2026-09-15T03:39:25+00:00", "phase": "session", "note": "clickText -> ok=True", "cmd": "clickText", "resp_ms": 459}
+{"wall_ms": 1789443567000, "wall": "2026-09-15T03:39:26+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 1656}
+{"wall_ms": 1789443567457, "wall": "2026-09-15T03:39:27+00:00", "phase": "session", "note": "text -> ok=True", "cmd": "text", "resp_ms": 457}
+{"wall_ms": 1789443567457, "wall": "2026-09-15T03:39:27+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 1370}
+{"wall_ms": 1789443567457, "wall": "2026-09-15T03:39:27+00:00", "phase": "capture", "note": "cap_0005", "frame": "cap_0005"}
+{"wall_ms": 1789443567916, "wall": "2026-09-15T03:39:27+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 459}
+{"wall_ms": 1789443568226, "wall": "2026-09-15T03:39:28+00:00", "phase": "session", "note": "text -> ok=True", "cmd": "text", "resp_ms": 309}
+{"wall_ms": 1789443569430, "wall": "2026-09-15T03:39:29+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 1205}
+{"wall_ms": 1789443569886, "wall": "2026-09-15T03:39:29+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 1220}
+{"wall_ms": 1789443569886, "wall": "2026-09-15T03:39:29+00:00", "phase": "session", "note": "keydown -> ok=True", "cmd": "keydown", "resp_ms": 455}
+{"wall_ms": 1789443569886, "wall": "2026-09-15T03:39:29+00:00", "phase": "capture", "note": "cap_0006", "frame": "cap_0006"}
+{"wall_ms": 1789443574409, "wall": "2026-09-15T03:39:34+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 4522}
+{"wall_ms": 1789443574866, "wall": "2026-09-15T03:39:34+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 3770}
+{"wall_ms": 1789443574867, "wall": "2026-09-15T03:39:34+00:00", "phase": "capture", "note": "cap_0007", "frame": "cap_0007"}
+{"wall_ms": 1789443574867, "wall": "2026-09-15T03:39:34+00:00", "phase": "session", "note": "keyup -> ok=True", "cmd": "keyup", "resp_ms": 458}
+{"wall_ms": 1789443575325, "wall": "2026-09-15T03:39:35+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 458}
+{"wall_ms": 1789443575634, "wall": "2026-09-15T03:39:35+00:00", "phase": "session", "note": "clickText -> ok=True", "cmd": "clickText", "resp_ms": 309}
+{"wall_ms": 1789443579096, "wall": "2026-09-15T03:39:39+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 3462}
+{"wall_ms": 1789443579180, "wall": "2026-09-15T03:39:39+00:00", "phase": "watch", "note": "read cap_0005.png lane=ollama-fallback dent_yes=False", "frame": "cap_0005.png", "lane": "ollama-fallback"}
+{"wall_ms": 1789443579554, "wall": "2026-09-15T03:39:39+00:00", "phase": "session", "note": "clickText -> ok=True", "cmd": "clickText", "resp_ms": 458}
+{"wall_ms": 1789443579554, "wall": "2026-09-15T03:39:39+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 3479}
+{"wall_ms": 1789443579554, "wall": "2026-09-15T03:39:39+00:00", "phase": "capture", "note": "cap_0008", "frame": "cap_0008"}
+{"wall_ms": 1789443582891, "wall": "2026-09-15T03:39:42+00:00", "phase": "watch", "note": "read cap_0006.png lane=ollama-fallback dent_yes=False", "frame": "cap_0006.png", "lane": "ollama-fallback"}
+{"wall_ms": 1789443584075, "wall": "2026-09-15T03:39:44+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 4521}
+{"wall_ms": 1789443584383, "wall": "2026-09-15T03:39:44+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 3626}
+{"wall_ms": 1789443584383, "wall": "2026-09-15T03:39:44+00:00", "phase": "capture", "note": "cap_0009", "frame": "cap_0009"}
+{"wall_ms": 1789443584540, "wall": "2026-09-15T03:39:44+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 465}
+{"wall_ms": 1789443584849, "wall": "2026-09-15T03:39:44+00:00", "phase": "session", "note": "text -> ok=True", "cmd": "text", "resp_ms": 309}
+{"wall_ms": 1789443585308, "wall": "2026-09-15T03:39:45+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 459}
+{"wall_ms": 1789443585754, "wall": "2026-09-15T03:39:45+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 158}
+{"wall_ms": 1789443585755, "wall": "2026-09-15T03:39:45+00:00", "phase": "capture", "note": "cap_0010", "frame": "cap_0010"}
+{"wall_ms": 1789443585760, "wall": "2026-09-15T03:39:45+00:00", "phase": "session", "note": "text -> ok=True", "cmd": "text", "resp_ms": 452}
+{"wall_ms": 1789443586220, "wall": "2026-09-15T03:39:46+00:00", "phase": "session", "note": "clickText -> ok=True", "cmd": "clickText", "resp_ms": 459}
+{"wall_ms": 1789443587385, "wall": "2026-09-15T03:39:47+00:00", "phase": "watch", "note": "read cap_0007.png lane=ollama-fallback dent_yes=False", "frame": "cap_0007.png", "lane": "ollama-fallback"}
+{"wall_ms": 1789443587725, "wall": "2026-09-15T03:39:47+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 1505}
+{"wall_ms": 1789443588177, "wall": "2026-09-15T03:39:48+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 1218}
+{"wall_ms": 1789443588178, "wall": "2026-09-15T03:39:48+00:00", "phase": "capture", "note": "cap_0011", "frame": "cap_0011"}
+{"wall_ms": 1789443590905, "wall": "2026-09-15T03:39:50+00:00", "phase": "watch", "note": "read cap_0008.png lane=ollama-fallback dent_yes=False", "frame": "cap_0008.png", "lane": "ollama-fallback"}
+{"wall_ms": 1789443591655, "wall": "2026-09-15T03:39:51+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 2269}
+{"wall_ms": 1789443591655, "wall": "2026-09-15T03:39:51+00:00", "phase": "capture", "note": "cap_0012", "frame": "cap_0012"}
+{"wall_ms": 1789443593319, "wall": "2026-09-15T03:39:53+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 452}
+{"wall_ms": 1789443593319, "wall": "2026-09-15T03:39:53+00:00", "phase": "capture", "note": "cap_0013", "frame": "cap_0013"}
+{"wall_ms": 1789443593650, "wall": "2026-09-15T03:39:53+00:00", "phase": "watch", "note": "read cap_0009.png lane=ollama-fallback dent_yes=False", "frame": "cap_0009.png", "lane": "ollama-fallback"}
+{"wall_ms": 1789443594981, "wall": "2026-09-15T03:39:54+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 454}
+{"wall_ms": 1789443594981, "wall": "2026-09-15T03:39:54+00:00", "phase": "capture", "note": "cap_0014", "frame": "cap_0014"}
+{"wall_ms": 1789443596643, "wall": "2026-09-15T03:39:56+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 454}
+{"wall_ms": 1789443596643, "wall": "2026-09-15T03:39:56+00:00", "phase": "capture", "note": "cap_0015", "frame": "cap_0015"}
+{"wall_ms": 1789443597145, "wall": "2026-09-15T03:39:57+00:00", "phase": "watch", "note": "read cap_0010.png lane=ollama-fallback dent_yes=False", "frame": "cap_0010.png", "lane": "ollama-fallback"}
+{"wall_ms": 1789443598309, "wall": "2026-09-15T03:39:58+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 453}
+{"wall_ms": 1789443598309, "wall": "2026-09-15T03:39:58+00:00", "phase": "capture", "note": "cap_0016", "frame": "cap_0016"}
+{"wall_ms": 1789443599974, "wall": "2026-09-15T03:39:59+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 452}
+{"wall_ms": 1789443599975, "wall": "2026-09-15T03:39:59+00:00", "phase": "capture", "note": "cap_0017", "frame": "cap_0017"}
+{"wall_ms": 1789443601638, "wall": "2026-09-15T03:40:01+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 452}
+{"wall_ms": 1789443601639, "wall": "2026-09-15T03:40:01+00:00", "phase": "capture", "note": "cap_0018", "frame": "cap_0018"}
+{"wall_ms": 1789443603303, "wall": "2026-09-15T03:40:03+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 453}
+{"wall_ms": 1789443603304, "wall": "2026-09-15T03:40:03+00:00", "phase": "capture", "note": "cap_0019", "frame": "cap_0019"}
+{"wall_ms": 1789443604971, "wall": "2026-09-15T03:40:04+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 452}
+{"wall_ms": 1789443604971, "wall": "2026-09-15T03:40:04+00:00", "phase": "capture", "note": "cap_0020", "frame": "cap_0020"}
+{"wall_ms": 1789443606639, "wall": "2026-09-15T03:40:06+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 452}
+{"wall_ms": 1789443606639, "wall": "2026-09-15T03:40:06+00:00", "phase": "capture", "note": "cap_0021", "frame": "cap_0021"}
+{"wall_ms": 1789443608302, "wall": "2026-09-15T03:40:08+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 453}
+{"wall_ms": 1789443608302, "wall": "2026-09-15T03:40:08+00:00", "phase": "capture", "note": "cap_0022", "frame": "cap_0022"}
+{"wall_ms": 1789443609969, "wall": "2026-09-15T03:40:09+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 452}
+{"wall_ms": 1789443609969, "wall": "2026-09-15T03:40:09+00:00", "phase": "capture", "note": "cap_0023", "frame": "cap_0023"}
+{"wall_ms": 1789443611634, "wall": "2026-09-15T03:40:11+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 452}
+{"wall_ms": 1789443611634, "wall": "2026-09-15T03:40:11+00:00", "phase": "capture", "note": "cap_0024", "frame": "cap_0024"}
+{"wall_ms": 1789443613287, "wall": "2026-09-15T03:40:13+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 453}
+{"wall_ms": 1789443613287, "wall": "2026-09-15T03:40:13+00:00", "phase": "capture", "note": "cap_0025", "frame": "cap_0025"}
+{"wall_ms": 1789443614941, "wall": "2026-09-15T03:40:14+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 453}
+{"wall_ms": 1789443614941, "wall": "2026-09-15T03:40:14+00:00", "phase": "capture", "note": "cap_0026", "frame": "cap_0026"}
+{"wall_ms": 1789443616606, "wall": "2026-09-15T03:40:16+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 454}
+{"wall_ms": 1789443616606, "wall": "2026-09-15T03:40:16+00:00", "phase": "capture", "note": "cap_0027", "frame": "cap_0027"}
+{"wall_ms": 1789443618273, "wall": "2026-09-15T03:40:18+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 461}
+{"wall_ms": 1789443618274, "wall": "2026-09-15T03:40:18+00:00", "phase": "capture", "note": "cap_0028", "frame": "cap_0028"}
+{"wall_ms": 1789443619940, "wall": "2026-09-15T03:40:19+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 460}
+{"wall_ms": 1789443619940, "wall": "2026-09-15T03:40:19+00:00", "phase": "capture", "note": "cap_0029", "frame": "cap_0029"}
+{"wall_ms": 1789443621607, "wall": "2026-09-15T03:40:21+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 458}
+{"wall_ms": 1789443621608, "wall": "2026-09-15T03:40:21+00:00", "phase": "capture", "note": "cap_0030", "frame": "cap_0030"}
+{"wall_ms": 1789443623275, "wall": "2026-09-15T03:40:23+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 464}
+{"wall_ms": 1789443623276, "wall": "2026-09-15T03:40:23+00:00", "phase": "capture", "note": "cap_0031", "frame": "cap_0031"}
+{"wall_ms": 1789443624943, "wall": "2026-09-15T03:40:24+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 465}
+{"wall_ms": 1789443624943, "wall": "2026-09-15T03:40:24+00:00", "phase": "capture", "note": "cap_0032", "frame": "cap_0032"}
+{"wall_ms": 1789443626610, "wall": "2026-09-15T03:40:26+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 453}
+{"wall_ms": 1789443626610, "wall": "2026-09-15T03:40:26+00:00", "phase": "capture", "note": "cap_0033", "frame": "cap_0033"}
+{"wall_ms": 1789443628276, "wall": "2026-09-15T03:40:28+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 456}
+{"wall_ms": 1789443628276, "wall": "2026-09-15T03:40:28+00:00", "phase": "capture", "note": "cap_0034", "frame": "cap_0034"}
+{"wall_ms": 1789443629942, "wall": "2026-09-15T03:40:29+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 455}
+{"wall_ms": 1789443629942, "wall": "2026-09-15T03:40:29+00:00", "phase": "capture", "note": "cap_0035", "frame": "cap_0035"}
+{"wall_ms": 1789443631609, "wall": "2026-09-15T03:40:31+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 456}
+{"wall_ms": 1789443631610, "wall": "2026-09-15T03:40:31+00:00", "phase": "capture", "note": "cap_0036", "frame": "cap_0036"}
+{"wall_ms": 1789443632813, "wall": "2026-09-15T03:40:32+00:00", "phase": "session", "note": "clickText TIMEOUT", "cmd": "clickText"}
+{"wall_ms": 1789443634030, "wall": "2026-09-15T03:40:34+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 1211}
+{"wall_ms": 1789443634030, "wall": "2026-09-15T03:40:34+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 1216}
+{"wall_ms": 1789443634030, "wall": "2026-09-15T03:40:34+00:00", "phase": "capture", "note": "cap_0037", "frame": "cap_0037"}
+{"wall_ms": 1789443634494, "wall": "2026-09-15T03:40:34+00:00", "phase": "session", "note": "keydown -> ok=True", "cmd": "keydown", "resp_ms": 464}
+{"wall_ms": 1789443638858, "wall": "2026-09-15T03:40:38+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 4364}
+{"wall_ms": 1789443639320, "wall": "2026-09-15T03:40:39+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 4088}
+{"wall_ms": 1789443639320, "wall": "2026-09-15T03:40:39+00:00", "phase": "session", "note": "keyup -> ok=True", "cmd": "keyup", "resp_ms": 462}
+{"wall_ms": 1789443639320, "wall": "2026-09-15T03:40:39+00:00", "phase": "capture", "note": "cap_0038", "frame": "cap_0038"}
+{"wall_ms": 1789443639783, "wall": "2026-09-15T03:40:39+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 463}
+{"wall_ms": 1789443640243, "wall": "2026-09-15T03:40:40+00:00", "phase": "session", "note": "clickText -> ok=True", "cmd": "clickText", "resp_ms": 459}
+{"wall_ms": 1789443643554, "wall": "2026-09-15T03:40:43+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 3311}
+{"wall_ms": 1789443644002, "wall": "2026-09-15T03:40:44+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 3476}
+{"wall_ms": 1789443644003, "wall": "2026-09-15T03:40:44+00:00", "phase": "capture", "note": "cap_0039", "frame": "cap_0039"}
+{"wall_ms": 1789443644015, "wall": "2026-09-15T03:40:44+00:00", "phase": "session", "note": "clickText -> ok=True", "cmd": "clickText", "resp_ms": 461}
+{"wall_ms": 1789443644771, "wall": "2026-09-15T03:40:44+00:00", "phase": "watch", "note": "read cap_0036.png lane=ollama-fallback dent_yes=False", "frame": "cap_0036.png", "lane": "ollama-fallback"}
+{"wall_ms": 1789443647939, "wall": "2026-09-15T03:40:47+00:00", "phase": "watch", "note": "read cap_0037.png lane=ollama-fallback dent_yes=False", "frame": "cap_0037.png", "lane": "ollama-fallback"}
+{"wall_ms": 1789443648532, "wall": "2026-09-15T03:40:48+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 4517}
+{"wall_ms": 1789443648987, "wall": "2026-09-15T03:40:48+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 3779}
+{"wall_ms": 1789443648987, "wall": "2026-09-15T03:40:48+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 455}
+{"wall_ms": 1789443648987, "wall": "2026-09-15T03:40:48+00:00", "phase": "capture", "note": "cap_0040", "frame": "cap_0040"}
+{"wall_ms": 1789443649446, "wall": "2026-09-15T03:40:49+00:00", "phase": "session", "note": "text -> ok=True", "cmd": "text", "resp_ms": 459}
+{"wall_ms": 1789443649907, "wall": "2026-09-15T03:40:49+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 461}
+{"wall_ms": 1789443650215, "wall": "2026-09-15T03:40:50+00:00", "phase": "session", "note": "text -> ok=True", "cmd": "text", "resp_ms": 308}
+{"wall_ms": 1789443650648, "wall": "2026-09-15T03:40:50+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 460}
+{"wall_ms": 1789443650649, "wall": "2026-09-15T03:40:50+00:00", "phase": "capture", "note": "cap_0041", "frame": "cap_0041"}
+{"wall_ms": 1789443650676, "wall": "2026-09-15T03:40:50+00:00", "phase": "session", "note": "clickText -> ok=True", "cmd": "clickText", "resp_ms": 461}
+{"wall_ms": 1789443652181, "wall": "2026-09-15T03:40:52+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 1505}
+{"wall_ms": 1789443652621, "wall": "2026-09-15T03:40:52+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 768}
+{"wall_ms": 1789443652622, "wall": "2026-09-15T03:40:52+00:00", "phase": "capture", "note": "cap_0042", "frame": "cap_0042"}
+{"wall_ms": 1789443652633, "wall": "2026-09-15T03:40:52+00:00", "phase": "session", "note": "clickText -> ok=True", "cmd": "clickText", "resp_ms": 452}
+{"wall_ms": 1789443653845, "wall": "2026-09-15T03:40:53+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 1212}
+{"wall_ms": 1789443654285, "wall": "2026-09-15T03:40:54+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 459}
+{"wall_ms": 1789443654285, "wall": "2026-09-15T03:40:54+00:00", "phase": "capture", "note": "cap_0043", "frame": "cap_0043"}
+{"wall_ms": 1789443654297, "wall": "2026-09-15T03:40:54+00:00", "phase": "session", "note": "keydown -> ok=True", "cmd": "keydown", "resp_ms": 452}
+{"wall_ms": 1789443658662, "wall": "2026-09-15T03:40:58+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 4364}
+{"wall_ms": 1789443659120, "wall": "2026-09-15T03:40:59+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 3626}
+{"wall_ms": 1789443659120, "wall": "2026-09-15T03:40:59+00:00", "phase": "session", "note": "keyup -> ok=True", "cmd": "keyup", "resp_ms": 458}
+{"wall_ms": 1789443659121, "wall": "2026-09-15T03:40:59+00:00", "phase": "capture", "note": "cap_0044", "frame": "cap_0044"}
+{"wall_ms": 1789443659580, "wall": "2026-09-15T03:40:59+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 460}
+{"wall_ms": 1789443660041, "wall": "2026-09-15T03:41:00+00:00", "phase": "session", "note": "clickText -> ok=True", "cmd": "clickText", "resp_ms": 460}
+{"wall_ms": 1789443663502, "wall": "2026-09-15T03:41:03+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 3168}
+{"wall_ms": 1789443663502, "wall": "2026-09-15T03:41:03+00:00", "phase": "capture", "note": "cap_0045", "frame": "cap_0045"}
+{"wall_ms": 1789443663503, "wall": "2026-09-15T03:41:03+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 3462}
+{"wall_ms": 1789443663963, "wall": "2026-09-15T03:41:03+00:00", "phase": "session", "note": "clickText -> ok=True", "cmd": "clickText", "resp_ms": 460}
+{"wall_ms": 1789443668334, "wall": "2026-09-15T03:41:08+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 4371}
+{"wall_ms": 1789443668795, "wall": "2026-09-15T03:41:08+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 4082}
+{"wall_ms": 1789443668795, "wall": "2026-09-15T03:41:08+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 460}
+{"wall_ms": 1789443668795, "wall": "2026-09-15T03:41:08+00:00", "phase": "capture", "note": "cap_0046", "frame": "cap_0046"}
+{"wall_ms": 1789443669254, "wall": "2026-09-15T03:41:09+00:00", "phase": "session", "note": "text -> ok=True", "cmd": "text", "resp_ms": 460}
+{"wall_ms": 1789443669715, "wall": "2026-09-15T03:41:09+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 460}
+{"wall_ms": 1789443670025, "wall": "2026-09-15T03:41:10+00:00", "phase": "session", "note": "keydown -> ok=True", "cmd": "keydown", "resp_ms": 310}
+{"wall_ms": 1789443670155, "wall": "2026-09-15T03:41:10+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 160}
+{"wall_ms": 1789443670156, "wall": "2026-09-15T03:41:10+00:00", "phase": "capture", "note": "cap_0047", "frame": "cap_0047"}
+{"wall_ms": 1789443675595, "wall": "2026-09-15T03:41:15+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 5570}
+{"wall_ms": 1789443676042, "wall": "2026-09-15T03:41:16+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 4682}
+{"wall_ms": 1789443676042, "wall": "2026-09-15T03:41:16+00:00", "phase": "capture", "note": "cap_0048", "frame": "cap_0048"}
+{"wall_ms": 1789443676048, "wall": "2026-09-15T03:41:16+00:00", "phase": "session", "note": "keyup -> ok=True", "cmd": "keyup", "resp_ms": 452}
+{"wall_ms": 1789443676507, "wall": "2026-09-15T03:41:16+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 459}
+{"wall_ms": 1789443678916, "wall": "2026-09-15T03:41:18+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 2409}
+{"wall_ms": 1789443679371, "wall": "2026-09-15T03:41:19+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 455}
+{"wall_ms": 1789443679371, "wall": "2026-09-15T03:41:19+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 2125}
+{"wall_ms": 1789443679372, "wall": "2026-09-15T03:41:19+00:00", "phase": "capture", "note": "cap_0049", "frame": "cap_0049"}
+{"wall_ms": 1789443679832, "wall": "2026-09-15T03:41:19+00:00", "phase": "session", "note": "clickText -> ok=True", "cmd": "clickText", "resp_ms": 461}
+{"wall_ms": 1789443684203, "wall": "2026-09-15T03:41:24+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 4370}
+{"wall_ms": 1789443684661, "wall": "2026-09-15T03:41:24+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 459}
+{"wall_ms": 1789443684662, "wall": "2026-09-15T03:41:24+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 4079}
+{"wall_ms": 1789443684662, "wall": "2026-09-15T03:41:24+00:00", "phase": "capture", "note": "cap_0050", "frame": "cap_0050"}
+{"wall_ms": 1789443689185, "wall": "2026-09-15T03:41:29+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 4523}
+{"wall_ms": 1789443689645, "wall": "2026-09-15T03:41:29+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 460}
+{"wall_ms": 1789443689645, "wall": "2026-09-15T03:41:29+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 3773}
+{"wall_ms": 1789443689645, "wall": "2026-09-15T03:41:29+00:00", "phase": "capture", "note": "cap_0051", "frame": "cap_0051"}
+{"wall_ms": 1789443690106, "wall": "2026-09-15T03:41:30+00:00", "phase": "session", "note": "text -> ok=True", "cmd": "text", "resp_ms": 460}
+{"wall_ms": 1789443690416, "wall": "2026-09-15T03:41:30+00:00", "phase": "session", "note": "wheel -> ok=True", "cmd": "wheel", "resp_ms": 310}
+{"wall_ms": 1789443691620, "wall": "2026-09-15T03:41:31+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 1204}
+{"wall_ms": 1789443692079, "wall": "2026-09-15T03:41:32+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 1219}
+{"wall_ms": 1789443692079, "wall": "2026-09-15T03:41:32+00:00", "phase": "capture", "note": "cap_0052", "frame": "cap_0052"}
+{"wall_ms": 1789443692086, "wall": "2026-09-15T03:41:32+00:00", "phase": "session", "note": "move -> ok=True", "cmd": "move", "resp_ms": 465}
+{"wall_ms": 1789443692546, "wall": "2026-09-15T03:41:32+00:00", "phase": "session", "note": "down -> ok=True", "cmd": "down", "resp_ms": 460}
+{"wall_ms": 1789443693005, "wall": "2026-09-15T03:41:33+00:00", "phase": "session", "note": "move -> ok=True", "cmd": "move", "resp_ms": 459}
+{"wall_ms": 1789443693449, "wall": "2026-09-15T03:41:33+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 160}
+{"wall_ms": 1789443693449, "wall": "2026-09-15T03:41:33+00:00", "phase": "capture", "note": "cap_0053", "frame": "cap_0053"}
+{"wall_ms": 1789443693466, "wall": "2026-09-15T03:41:33+00:00", "phase": "session", "note": "up -> ok=True", "cmd": "up", "resp_ms": 460}
+{"wall_ms": 1789443694678, "wall": "2026-09-15T03:41:34+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 1212}
+{"wall_ms": 1789443695264, "wall": "2026-09-15T03:41:35+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 612}
+{"wall_ms": 1789443695265, "wall": "2026-09-15T03:41:35+00:00", "phase": "capture", "note": "cap_0054", "frame": "cap_0054"}
+{"wall_ms": 1789443695290, "wall": "2026-09-15T03:41:35+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 611}
+{"wall_ms": 1789443695598, "wall": "2026-09-15T03:41:35+00:00", "phase": "session", "note": "keydown -> ok=True", "cmd": "keydown", "resp_ms": 308}
+{"wall_ms": 1789443698610, "wall": "2026-09-15T03:41:38+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 3011}
+{"wall_ms": 1789443699050, "wall": "2026-09-15T03:41:39+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 2576}
+{"wall_ms": 1789443699050, "wall": "2026-09-15T03:41:39+00:00", "phase": "capture", "note": "cap_0055", "frame": "cap_0055"}
+{"wall_ms": 1789443699061, "wall": "2026-09-15T03:41:39+00:00", "phase": "session", "note": "keyup -> ok=True", "cmd": "keyup", "resp_ms": 451}
+{"wall_ms": 1789443699522, "wall": "2026-09-15T03:41:39+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 460}
+{"wall_ms": 1789443702833, "wall": "2026-09-15T03:41:42+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 3311}
+{"wall_ms": 1789443703282, "wall": "2026-09-15T03:41:43+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 3025}
+{"wall_ms": 1789443703282, "wall": "2026-09-15T03:41:43+00:00", "phase": "capture", "note": "cap_0056", "frame": "cap_0056"}
+{"wall_ms": 1789443703444, "wall": "2026-09-15T03:41:43+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 611}
+{"wall_ms": 1789443703755, "wall": "2026-09-15T03:41:43+00:00", "phase": "session", "note": "text -> ok=True", "cmd": "text", "resp_ms": 310}
+{"wall_ms": 1789443704213, "wall": "2026-09-15T03:41:44+00:00", "phase": "session", "note": "quit -> ok=True", "cmd": "quit", "resp_ms": 458}
+{"wall_ms": 1789443704213, "wall": "2026-09-15T03:41:44+00:00", "phase": "session", "note": "play script complete"}
+{"wall_ms": 1789443704246, "wall": "2026-09-15T03:41:44+00:00", "phase": "session", "note": "driver exited rc=0"}
+{"wall_ms": 1789443724232, "wall": "2026-09-15T03:42:04+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443724233, "wall": "2026-09-15T03:42:04+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0057'} within 20.0s"}
+{"wall_ms": 1789443744254, "wall": "2026-09-15T03:42:24+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443744254, "wall": "2026-09-15T03:42:24+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0058'} within 20.0s"}
+{"wall_ms": 1789443764276, "wall": "2026-09-15T03:42:44+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443764276, "wall": "2026-09-15T03:42:44+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0059'} within 20.0s"}
+{"wall_ms": 1789443784295, "wall": "2026-09-15T03:43:04+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443784295, "wall": "2026-09-15T03:43:04+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0060'} within 20.0s"}
+{"wall_ms": 1789443804313, "wall": "2026-09-15T03:43:24+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443804313, "wall": "2026-09-15T03:43:24+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0061'} within 20.0s"}
+{"wall_ms": 1789443824334, "wall": "2026-09-15T03:43:44+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443824335, "wall": "2026-09-15T03:43:44+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0062'} within 20.0s"}
+{"wall_ms": 1789443844352, "wall": "2026-09-15T03:44:04+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443844352, "wall": "2026-09-15T03:44:04+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0063'} within 20.0s"}
+{"wall_ms": 1789443854006, "wall": "2026-09-15T03:44:14+00:00", "phase": "pipeline", "note": "T_encode + T_watch joined"}
+{"wall_ms": 1789443854006, "wall": "2026-09-15T03:44:14+00:00", "phase": "verdict", "note": "judge_task.md written; waiting for verdict.json"}
+{"wall_ms": 1789443864373, "wall": "2026-09-15T03:44:24+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443864374, "wall": "2026-09-15T03:44:24+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0064'} within 20.0s"}
+{"wall_ms": 1789443884391, "wall": "2026-09-15T03:44:44+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443884392, "wall": "2026-09-15T03:44:44+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0065'} within 20.0s"}
+{"wall_ms": 1789443904412, "wall": "2026-09-15T03:45:04+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443904412, "wall": "2026-09-15T03:45:04+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0066'} within 20.0s"}
+{"wall_ms": 1789443924432, "wall": "2026-09-15T03:45:24+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443924433, "wall": "2026-09-15T03:45:24+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0067'} within 20.0s"}
+{"wall_ms": 1789443944452, "wall": "2026-09-15T03:45:44+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443944452, "wall": "2026-09-15T03:45:44+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0068'} within 20.0s"}
+{"wall_ms": 1789443964474, "wall": "2026-09-15T03:46:04+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443964474, "wall": "2026-09-15T03:46:04+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0069'} within 20.0s"}
+{"wall_ms": 1789443984493, "wall": "2026-09-15T03:46:24+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443984494, "wall": "2026-09-15T03:46:24+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0070'} within 20.0s"}
+{"wall_ms": 1789444004510, "wall": "2026-09-15T03:46:44+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789444004510, "wall": "2026-09-15T03:46:44+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0071'} within 20.0s"}
+{"wall_ms": 1789444024529, "wall": "2026-09-15T03:47:04+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789444024529, "wall": "2026-09-15T03:47:04+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0072'} within 20.0s"}
+{"wall_ms": 1789444044545, "wall": "2026-09-15T03:47:24+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789444044546, "wall": "2026-09-15T03:47:24+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0073'} within 20.0s"}
+{"wall_ms": 1789444064564, "wall": "2026-09-15T03:47:44+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789444064564, "wall": "2026-09-15T03:47:44+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0074'} within 20.0s"}
+{"wall_ms": 1789444084583, "wall": "2026-09-15T03:48:04+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789444084583, "wall": "2026-09-15T03:48:04+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0075'} within 20.0s"}
+{"wall_ms": 1789444104602, "wall": "2026-09-15T03:48:24+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789444104602, "wall": "2026-09-15T03:48:24+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0076'} within 20.0s"}
+{"wall_ms": 1789444124621, "wall": "2026-09-15T03:48:44+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789444124622, "wall": "2026-09-15T03:48:44+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0077'} within 20.0s"}
+{"wall_ms": 1789444144637, "wall": "2026-09-15T03:49:04+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789444144637, "wall": "2026-09-15T03:49:04+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0078'} within 20.0s"}
+{"wall_ms": 1789444164656, "wall": "2026-09-15T03:49:24+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789444164656, "wall": "2026-09-15T03:49:24+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0079'} within 20.0s"}

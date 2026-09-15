@@ -1,0 +1,17 @@
+{"ok":true,"did":"goto","url":"http://127.0.0.1:8206","ms":407}
+{"ok":true,"did":"ready","cmdDir":"cmd"}
+{"ok":true,"did":"shot","file":"shots\\cap_0001.png"}
+{"ok":true,"did":"shot","file":"shots\\01_landing.png"}
+{"ok":true,"did":"wait","ms":5000}
+{"ok":true,"did":"shot","file":"shots\\cap_0002.png"}
+{"ok":true,"did":"shot","file":"shots\\02_landing_settled.png"}
+{"ok":true,"did":"text","text":"C H I M E R A\n\na creature of water and skin. touch it, and it answers.\n\nPLAY\n\nyour progress is kept under your name — the world remembers you."}
+{"ok":true,"did":"click","x":720,"y":484}
+{"ok":true,"did":"shot","file":"shots\\cap_0003.png"}
+{"ok":true,"did":"shot","file":"shots\\cap_0004.png"}
+{"ok":true,"did":"shot","file":"shots\\cap_0005.png"}
+{"ok":true,"did":"shot","file":"shots\\cap_0006.png"}
+{"ok":true,"did":"shot","file":"shots\\cap_0007.png"}
+{"ok":true,"did":"shot","file":"shots\\cap_0008.png"}
+{"ok":true,"did":"shot","file":"shots\\cap_0009.png"}
+{"ok":true,"did":"shot","file":"shots\\cap_0010.png"}

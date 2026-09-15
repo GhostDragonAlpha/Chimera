@@ -1,5 +1,5 @@
 {
-  "next": 63,
+  "next": 66,
   "verdicts": {
     "61": {
       "closed_at": "2026-08-10T22:05:45+00:00",
@@ -28,6 +28,171 @@
       "statement": "a dirty-set grain sweep makes the settled world hold at ~0 cost: a frame touches only the wake mask's columns, so the settled field renders O(change) not O(W)",
       "status": "CLOSED",
       "term": "theSeed"
+    },
+    "63": {
+      "closed_at": "2026-09-15T03:38:38+00:00",
+      "created_at": "2026-09-15T03:35:16+00:00",
+      "date": "2026-09-14",
+      "dyad_analysis": {
+        "alignment": null,
+        "number": {},
+        "term": ""
+      },
+      "evidence": "docs/evidence/agent_fleet/SHIP/DYAD_JUDGE/sessions/D1-dryrun_20260914_223515",
+      "eye": "ollama-fallback",
+      "eye_reason": "senses eye dark (permanent DYAD model not loaded); ollama fallback serving",
+      "falsifier": "novelty < 8 OR zero press-dented held frames OR no calm recovery within 10000 ms OR pay25 != True",
+      "judge": "D1-dryrun",
+      "judge_kind": "pipeline-defect",
+      "lane": "blind-judge",
+      "metrics": {
+        "dent_visible_frames": null,
+        "eye_reports": 2,
+        "hold_frames": null,
+        "novelty": null,
+        "pay": null,
+        "pay25": null,
+        "recovery_ms": null
+      },
+      "note": "prediction UNTESTED: the pipeline tool itself aborted the session before play began (Session.send matched response lines with byte offsets sliced from decoded text -- the landing text line carries an em-dash, so byte size > char length and the reader went blind). Recording/watch/encode phases ran overlapped and healthy; the defect is fixed in tools/dyad_judge/session_script.py. The membrane is re-opened as V64 for the retry.",
+      "number": 63,
+      "prediction": "novelty >= 8/10 AND dent_visible_frames >= 2 AND recovery-to-calm <= 10000 ms AND pay25 == True",
+      "probe": "tools/dyad_judge/run_judge.py",
+      "quotes": [],
+      "recording": "",
+      "result": "MARGINAL",
+      "session_dir": "docs/evidence/agent_fleet/SHIP/DYAD_JUDGE/sessions/D1-dryrun_20260914_223515",
+      "statement": "blind-judge dyad [D1-dryrun]: a buyer-judge playing the live demo blind (R8 playbook, recorded) witnesses an answered press -- a visible dent on held frames and calm recovery after release -- and delivers buyer pay-intent",
+      "status": "CLOSED",
+      "term": ""
+    },
+    "64": {
+      "closed_at": "2026-09-15T03:51:07+00:00",
+      "created_at": "2026-09-15T03:39:12+00:00",
+      "date": "2026-09-14",
+      "dyad_analysis": {
+        "alignment": null,
+        "number": {},
+        "term": ""
+      },
+      "evidence": "docs/evidence/agent_fleet/SHIP/DYAD_JUDGE/sessions/D1-dryrun_20260914_223911",
+      "eye": "ollama-fallback",
+      "eye_reason": "senses eye dark (permanent DYAD model not loaded); ollama fallback serving",
+      "falsifier": "novelty < 8 OR zero press-dented held frames OR no calm recovery within 10000 ms OR pay25 != True",
+      "judge": "D1-dryrun",
+      "judge_kind": "pipeline-defect",
+      "lane": "blind-judge",
+      "metrics": {
+        "dent_visible_frames": null,
+        "eye_reports": 11,
+        "hold_frames": null,
+        "novelty": null,
+        "pay": null,
+        "pay25": null,
+        "recovery_ms": null
+      },
+      "note": "prediction UNTESTED: the session itself played clean (3 lessons, press test, free play, 56 capture frames, 11 eye reads, recording encoded) but two pipeline defects voided the measurement -- (1) press_window was clobbered by lesson/free-play presses so the dyad measured the wrong press; (2) T_capture spammed the closed driver for 6 min because its stop latch matched the literal word TIMEOUT. Both fixed. Re-opened as the next number.",
+      "number": 64,
+      "prediction": "novelty >= 8/10 AND dent_visible_frames >= 2 AND recovery-to-calm <= 10000 ms AND pay25 == True",
+      "probe": "tools/dyad_judge/run_judge.py",
+      "quotes": [],
+      "recording": "docs/evidence/agent_fleet/SHIP/DYAD_JUDGE/sessions/D1-dryrun_20260914_223911/recording.mp4",
+      "result": "MARGINAL",
+      "session_dir": "docs/evidence/agent_fleet/SHIP/DYAD_JUDGE/sessions/D1-dryrun_20260914_223911",
+      "statement": "blind-judge dyad [D1-dryrun]: a buyer-judge playing the live demo blind (R8 playbook, recorded) witnesses an answered press -- a visible dent on held frames and calm recovery after release -- and delivers buyer pay-intent",
+      "status": "CLOSED",
+      "term": ""
+    },
+    "65": {
+      "closed_at": "2026-09-15T03:56:23+00:00",
+      "created_at": "2026-09-15T03:51:18+00:00",
+      "date": "2026-09-14",
+      "dyad_analysis": {
+        "alignment": 0.375,
+        "number": {
+          "dent_visible_frames": 2,
+          "eye_dent_yes": 1,
+          "eye_reports": 8,
+          "hold_frames": 2,
+          "novelty": 8,
+          "recovery_ms": 4370
+        },
+        "term": "honest hydraulic touch"
+      },
+      "evidence": "docs/evidence/agent_fleet/SHIP/DYAD_JUDGE/sessions/D1-dryrun_20260914_225117",
+      "eye": "ollama-fallback",
+      "eye_reason": null,
+      "falsifier": "novelty < 8 OR zero press-dented held frames OR no calm recovery within 10000 ms OR pay25 != True",
+      "judge": "D1-dryrun",
+      "judge_kind": "agent",
+      "lane": "blind-judge",
+      "metrics": {
+        "best_press": "press_3",
+        "dent_visible_frames": 2,
+        "eye_dent_yes": 1,
+        "eye_lane": "ollama-fallback",
+        "eye_reports": 8,
+        "hold_frames": 2,
+        "hold_peak_score": 0.01056,
+        "lessons_completed": 2,
+        "novelty": 8,
+        "pay": false,
+        "pay25": false,
+        "per_press": [
+          {
+            "dent_visible_frames": 0,
+            "hold_frames": 2,
+            "hold_peak_score": 0.007,
+            "label": "witnessed_S4",
+            "recovery_ms": 3332
+          },
+          {
+            "dent_visible_frames": 0,
+            "hold_frames": 1,
+            "hold_peak_score": 0.01616,
+            "label": "press_1",
+            "recovery_ms": 4379
+          },
+          {
+            "dent_visible_frames": 1,
+            "hold_frames": 1,
+            "hold_peak_score": 0.00727,
+            "label": "press_2",
+            "recovery_ms": null
+          },
+          {
+            "dent_visible_frames": 2,
+            "hold_frames": 2,
+            "hold_peak_score": 0.01056,
+            "label": "press_3",
+            "recovery_ms": 4370
+          },
+          {
+            "dent_visible_frames": 0,
+            "hold_frames": 0,
+            "hold_peak_score": null,
+            "label": "press_4",
+            "recovery_ms": 115
+          }
+        ],
+        "recovery_ms": 4370,
+        "stalls": 2
+      },
+      "note": "clauses: novelty_ok=True dent_ok=True recovery_ok=True pay_ok=False. metrics={\"novelty\": 8, \"pay\": false, \"pay25\": false, \"dent_visible_frames\": 2, \"hold_frames\": 2, \"recovery_ms\": 4370, \"hold_peak_score\": 0.01056, \"best_press\": \"press_3\", \"per_press\": [{\"label\": \"witnessed_S4\", \"hold_frames\": 2, \"dent_visible_frames\": 0, \"recovery_ms\": 3332, \"hold_peak_score\": 0.007}, {\"label\": \"press_1\", \"hold_frames\": 1, \"dent_visible_frames\": 0, \"recovery_ms\": 4379, \"hold_peak_score\": 0.01616}, {\"label\": \"press_2\", \"hold_frames\": 1, \"dent_visible_frames\": 1, \"recovery_ms\": null, \"hold_peak_score\": 0.00727}, {\"label\": \"press_3\", \"hold_frames\": 2, \"dent_visible_frames\": 2, \"recovery_ms\": 4370, \"hold_peak_score\": 0.01056}, {\"label\": \"press_4\", \"hold_frames\": 0, \"dent_visible_frames\": 0, \"recovery_ms\": 115, \"hold_peak_score\": null}], \"eye_reports\": 8, \"eye_dent_yes\": 1, \"eye_lane\": \"ollama-fallback\", \"lessons_completed\": 2, \"stalls\": 2}",
+      "number": 65,
+      "prediction": "novelty >= 8/10 AND dent_visible_frames >= 2 AND recovery-to-calm <= 10000 ms AND pay25 == True",
+      "probe": "tools/dyad_judge/run_judge.py",
+      "quotes": [
+        "I pressed it and the gauge told the truth: 0.479 MPa under my hand, then zero when I let go \u2014 the water is real.",
+        "Lesson 2 asked for a gentle hand and then locked the gentleness behind a slider that would not move \u2014 the lesson is unplayable as taught.",
+        "It healed itself and never needed me; after the third squish I had felt everything the toy has."
+      ],
+      "recording": "E:\\ChimeraWork\\slot-01\\docs\\evidence\\agent_fleet\\SHIP\\DYAD_JUDGE\\sessions\\D1-dryrun_20260914_225117\\recording.mp4",
+      "result": "FALSIFIED",
+      "session_dir": "E:\\ChimeraWork\\slot-01\\docs\\evidence\\agent_fleet\\SHIP\\DYAD_JUDGE\\sessions\\D1-dryrun_20260914_225117",
+      "statement": "blind-judge dyad [D1-dryrun]: a buyer-judge playing the live demo blind (R8 playbook, recorded) witnesses an answered press -- a visible dent on held frames and calm recovery after release -- and delivers buyer pay-intent",
+      "status": "CLOSED",
+      "term": "honest hydraulic touch"
     }
   }
 }

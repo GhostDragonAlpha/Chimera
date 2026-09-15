@@ -1,0 +1,13 @@
+{
+  "judge": "D1-dryrun",
+  "base": "http://127.0.0.1:8206",
+  "predictions": {
+    "novelty": 8,
+    "dent_frames": 2,
+    "recovery_ms": 10000,
+    "pay25": true
+  },
+  "session_dir": "E:\\ChimeraWork\\slot-01\\docs\\evidence\\agent_fleet\\SHIP\\DYAD_JUDGE\\sessions\\D1-dryrun_20260914_225117",
+  "started_ts": 1789444278.5464332,
+  "verdict_number": 65
+}

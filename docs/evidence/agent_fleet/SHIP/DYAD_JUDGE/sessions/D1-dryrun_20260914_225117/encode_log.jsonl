@@ -1,0 +1,7 @@
+{"wall_ms": 1789444279518, "rel_ms": 0, "t0_ms": 1789444279384, "ev": "start", "pid": 7196}
+{"wall_ms": 1789444324865, "rel_ms": 45347, "t0_ms": 1789444279384, "ev": "segment", "seg": "seg_0000.mp4", "frames": 16, "ms": 327, "ok": true, "start_ms": 1789444324538}
+{"wall_ms": 1789444352109, "rel_ms": 72591, "t0_ms": 1789444279384, "ev": "segment", "seg": "seg_0001.mp4", "frames": 16, "ms": 231, "ok": true, "start_ms": 1789444351878}
+{"wall_ms": 1789444403352, "rel_ms": 123834, "t0_ms": 1789444279384, "ev": "segment", "seg": "seg_0002.mp4", "frames": 16, "ms": 217, "ok": true, "start_ms": 1789444403135}
+{"wall_ms": 1789444430527, "rel_ms": 151009, "t0_ms": 1789444279384, "ev": "segment", "seg": "seg_0003.mp4", "frames": 8, "ms": 160, "ok": true, "start_ms": 1789444430367}
+{"wall_ms": 1789444430616, "rel_ms": 151098, "t0_ms": 1789444279384, "ev": "concat", "segments": 4, "ok": true, "out": "recording.mp4", "ms": 88, "error": null}
+{"wall_ms": 1789444430616, "rel_ms": 151098, "t0_ms": 1789444279384, "ev": "end"}
