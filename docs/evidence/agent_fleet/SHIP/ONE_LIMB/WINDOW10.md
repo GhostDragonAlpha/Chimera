@@ -42,6 +42,14 @@ Confirm: GET /tick_state — 4 sealed cells, reflex_on:false, P all 0.
 POST /tick_limb {"side":"L"}
 ```
 
+POST **ONCE** per fresh scratch. The idempotency check (a second POST)
+is only valid AFTER a passing first POST ("limb":"already"): if the
+first POST failed validation, the tree is ALREADY partitioned and a
+second POST refuses at identification with the NOTE naming that state —
+that refusal is not a grouping bug; re-boot the scratch to retry.
+(The window-11 lesson: the second POST's refusal masked POST 1's real
+validation failure for a full round.)
+
 Expect `{"ok":true,"limb":"executed","report":{...}}` with:
 - `chain`: hip 13, knee 15, ankle 17; adj_hip_knee 112, adj_knee_ankle
   100, adj_hip_ankle 0 (must match derivation_table.json — P1)

@@ -157,3 +157,46 @@ membrane_tick.cpp; every float emitter this lane added (patch fields,
 event rows, limb_segs, the partition report's volumes/masses/validation
 numbers) goes through it. The state_json patches key itself was the
 lead's one-line fix (`,"patches":`), folded into this commit.
+
+---
+
+# WINDOW-11 ADDENDUM — the two-post artifact, and the two laws the exact replay caught
+
+Window #11's refusal ("band identification failed, thigh components=3
+left:0, calf components=1 left:0, foot components=6 left:3") was
+reproduced on scratch 8173 and DECODED cell by cell: on the post-surgery
+tree, the containment grouping + centroid-sign law produce EXACTLY those
+numbers (thigh window = {right far-outer, right far-inner, right leg},
+calf window = {right calf}, feet = 6 with 3 left) — the grouping law is
+CORRECT. The refusal was POST 2's (the idempotency check), running on a
+tree POST 1 had already partitioned. POST 1's response was lost (this
+lane's own curl -o path bug) — POST 1 failed at VALIDATION, on two
+broken bars, both found by the exact offline replay
+(surgery_replay.py: the blob's own piece lists, the engine's own slot
+arithmetic):
+
+1. **The piece book counted SLOT occurrences** — welded seams share
+   slots between neighboring cells BY DESIGN (one physical wall = shared
+   slots), so piece_book_unique could never pass on any multi-cell tree.
+   FIX: the book counts SLOT-TRIPLES (triangles — the same identity the
+   wall-strip uses). The law: a triangle appears once (skin) or twice
+   (ONE septum's two windings); three or more = a real defect. Measured
+   on the correct surgery: 645 twice-owned triangles = the walls.
+2. **The genus ledger was cell-wise** — Σ(2−χ) is a genus measure only
+   for a CONNECTED closed surface; a band cell is a multi-sheet book (χ
+   = the sum over sheets), so merging k balls into one cell multiplies χ
+   and flagged correct surgeries (measured genus_after −8 on a correct
+   merge). FIX: the ledger floods each cell into CONNECTED components
+   (split_locked_'s own flood) and sums (2−χ) per closed component —
+   merge/split-invariant by construction. Measured: 0 before, 0 after,
+   34 closed components on both sides.
+
+Also fixed: the identification refusal now NAMES the
+already-partitioned state (a previous /tick_limb failed validation →
+re-boot from the snapshot to retry).
+
+VERIFIED OFFLINE (the corrected laws, exact replay of the whole
+surgery): **pass:true — all seven bars** — thigh_L 2894 pieces /
+0.347 m³ (χ=6, three sheets), shin_L 1052 / 0.167 (χ=2), foot_L 2766 /
+0.143 (χ=6, three sheets); coverage −2.5e-7 %; mass 13,824.54 kg;
+septa 645; genus 0/0; 34 closed components before and after.

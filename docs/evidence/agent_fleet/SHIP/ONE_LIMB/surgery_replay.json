@@ -1,0 +1,93 @@
+{
+ "genus_before": 0,
+ "closed_before": 34,
+ "thigh_members": 3,
+ "calf_members": 1,
+ "foot_members": 3,
+ "walls_removed_pieces": 230,
+ "wall_anomaly": false,
+ "v0_leg": 0.6577486023539791,
+ "segments": {
+  "thigh_L": {
+   "pieces": 2894,
+   "v0": 0.3470671592871661,
+   "closed": true,
+   "chi": 6,
+   "degenerate_vs_leg": false
+  },
+  "shin_L": {
+   "pieces": 1052,
+   "v0": 0.167422565312532,
+   "closed": true,
+   "chi": 2,
+   "degenerate_vs_leg": false
+  },
+  "foot_L": {
+   "pieces": 2766,
+   "v0": 0.1432588777542797,
+   "closed": true,
+   "chi": 6,
+   "degenerate_vs_leg": false
+  }
+ },
+ "others": [
+  {
+   "cell": 1,
+   "pieces": 26442,
+   "v0": 12.509040912445663
+  },
+  {
+   "cell": 5,
+   "pieces": 1338,
+   "v0": 0.0665504739272254
+  },
+  {
+   "cell": 6,
+   "pieces": 750,
+   "v0": 0.008023871950924268
+  },
+  {
+   "cell": 8,
+   "pieces": 714,
+   "v0": 0.27192837919823143
+  },
+  {
+   "cell": 9,
+   "pieces": 834,
+   "v0": 0.1672886544863598
+  },
+  {
+   "cell": 11,
+   "pieces": 1686,
+   "v0": 0.10710889077150199
+  },
+  {
+   "cell": 12,
+   "pieces": 710,
+   "v0": 0.02575302473691382
+  },
+  {
+   "cell": 14,
+   "pieces": 302,
+   "v0": 0.011095290313482376
+  }
+ ],
+ "sum_v0": 13.824538100184277,
+ "vol_whole_ref": 13.824538135248956,
+ "coverage_pct": -2.5364086618324664e-07,
+ "mass_total_kg": 13824.538100184278,
+ "genus_after": 0,
+ "closed_after": 34,
+ "septa": 645,
+ "piece_book_unique": true,
+ "bars": {
+  "closure_all": true,
+  "positive_all": true,
+  "degenerate_guard": true,
+  "coverage_lt_0.01": true,
+  "mass_13824.5": true,
+  "genus_preserved": true,
+  "piece_book_unique": true
+ },
+ "pass": true
+}

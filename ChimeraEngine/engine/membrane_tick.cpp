@@ -1702,18 +1702,64 @@ bool MembraneTick::limb_partition(const std::string& side,
     std::vector<float> rest9, cutrest;
     rest_geometry_locked_(rest9, cutrest);
 
-    // THE GENUS LEDGER (prereg P6): total genus over the closed cells,
-    // captured BEFORE any surgery. A repartition must move boundaries,
-    // not topology: the after-sum must equal this.
+    // THE GENUS LEDGER (prereg P6) — PER COMPONENT (the window-11
+    // lesson, measured on the scratch): 2−χ is a genus measure only for
+    // a CONNECTED closed surface. A band's cell is a multi-sheet book
+    // (χ = the SUM over its sheets), so the old cell-wise Σ(2−χ) breaks
+    // under ANY merge — merging k balls into one cell multiplies χ and
+    // the ledger flagged honest partitions (window-11: genus_after −8
+    // on a correct surgery). The invariant that actually holds: the
+    // sum of (2−χ) over all CONNECTED CLOSED COMPONENTS. Flooded by
+    // shared slots (split_locked_'s own law); merging sheets and
+    // stripping the interior walls changes no component's topology.
+    auto genus_of = [&](const std::vector<uint32_t>& pieces,
+                        int* closed_out) -> long {
+        const size_t npieces = pieces.size() / 3;
+        std::vector<size_t> parent(npieces);
+        for (size_t x = 0; x < npieces; ++x) parent[x] = x;
+        std::function<size_t(size_t)> find =
+            [&](size_t x) -> size_t {
+            while (parent[x] != x) {
+                parent[x] = parent[parent[x]];
+                x = parent[x];
+            }
+            return x;
+        };
+        std::unordered_map<uint32_t, size_t> first;
+        for (size_t p = 0; p < npieces; ++p)
+            for (int k = 0; k < 3; ++k) {
+                uint32_t s = pieces[p * 3 + (size_t)k];
+                auto it = first.find(s);
+                if (it == first.end()) first[s] = p;
+                else {
+                    size_t ra = find(it->second), rb = find(p);
+                    if (ra != rb) parent[ra] = rb;
+                }
+            }
+        std::map<size_t, std::vector<uint32_t>> comps;
+        for (size_t p = 0; p < npieces; ++p)
+            for (int k = 0; k < 3; ++k)
+                comps[find(p)].push_back(pieces[p * 3 + (size_t)k]);
+        long g = 0;
+        int closed_n = 0;
+        for (auto& kv : comps) {
+            int chi = 0;
+            if (cell_topology_(kv.second, &chi)) {
+                g += 2 - chi;
+                ++closed_n;
+            }
+        }
+        if (closed_out) *closed_out = closed_n;
+        return g;
+    };
     long genus_before = 0;
     int closed_before = 0;
     {
-        int chi = 0;
-        for (const SealCell& c : seal_cells_)
-            if (cell_topology_(c.pieces, &chi)) {
-                genus_before += 2 - chi;
-                ++closed_before;
-            }
+        int closed_n = 0;
+        for (const SealCell& c : seal_cells_) {
+            genus_before += genus_of(c.pieces, &closed_n);
+            closed_before += closed_n;
+        }
     }
 
     // ── 1. THE CONNECTIVITY DERIVATION (prereg P1) ──────────────────
@@ -1866,7 +1912,11 @@ bool MembraneTick::limb_partition(const std::string& side,
            << " left:" << foot_L.size()
            << "); refusal=" << seal_refusal_
            << " -- the expected 4-band tree (cuts at the pin heights) is "
-              "not what this body carries";
+              "not what this body carries. NOTE: if a previous /tick_limb "
+              "ran and failed validation, the tree is ALREADY partitioned "
+              "(the left components are merged and the walls cut) and this "
+              "refusal is that state seen through the band windows -- "
+              "re-boot from the snapshot to retry the partition";
         report = er.str();
         return false;
     }
@@ -2073,18 +2123,31 @@ bool MembraneTick::limb_partition(const std::string& side,
     float sum_v0 = 0.f;
     long genus_after = 0;
     int closed_after = 0;
-    std::set<uint32_t> piece_book;
+    // THE TRIANGLE BOOK (the window-11 fix; the old law counted SLOT
+    // occurrences and could never pass: welded seams share SLOTS between
+    // neighboring cells BY DESIGN — one physical wall = shared slots).
+    // The honest invariant is per TRIANGLE (a slot-triple, the same
+    // identity the wall-strip uses): a triangle appears ONCE (skin) or
+    // TWICE (ONE septum's two windings, one per owning neighbor). Three
+    // or more = a real triple-booking defect. septa = the count of
+    // twice-owned triangles (the walls this body carries).
+    std::map<std::array<uint32_t, 3>, int> triple_book;
     for (size_t i = 0; i < seal_cells_.size(); ++i) {
         const auto& pc = seal_cells_[i].pieces;
-        for (uint32_t s : pc) {
-            if (!piece_book.insert(s).second) others_ok = false;  // double book
+        for (size_t j = 0; j + 2 < pc.size(); j += 3) {
+            std::array<uint32_t, 3> t = {pc[j], pc[j + 1], pc[j + 2]};
+            std::sort(t.begin(), t.end());
+            triple_book[t] += 1;
         }
-        int chi = 0;
-        if (cell_topology_(pc, &chi)) {
-            genus_after += 2 - chi;
-            ++closed_after;
-        }
+        int closed_n = 0;
+        genus_after += genus_of(pc, &closed_n);
+        closed_after += closed_n;
         sum_v0 += div_pieces_(pc, rest9, cutrest);
+    }
+    int septa = 0;
+    for (const auto& kv : triple_book) {
+        if (kv.second > 2) others_ok = false;   // 3+ owners: a defect
+        if (kv.second == 2) ++septa;
     }
     // THE WHOLE-VOLUME REFERENCE, RECOMPUTED (not assumed): vol_whole0_
     // is only set by the first EXECUTED seal and is not in the restore
@@ -2163,8 +2226,9 @@ bool MembraneTick::limb_partition(const std::string& side,
       << ",\"mass_target_kg\":" << LIMB_MASS_TARGET_KG
       << ",\"genus_sum_2_minus_chi_before\":" << genus_before
       << ",\"genus_sum_2_minus_chi_after\":" << genus_after
-      << ",\"closed_cells_before\":" << closed_before
-      << ",\"closed_cells_after\":" << closed_after
+      << ",\"closed_components_before\":" << closed_before
+      << ",\"closed_components_after\":" << closed_after
+      << ",\"septa_twice_owned_triangles\":" << septa
       << ",\"piece_book_unique\":" << (others_ok ? "true" : "false")
       << ",\"pass\":" << (pass ? "true" : "false") << "}}";
     report = o.str();
