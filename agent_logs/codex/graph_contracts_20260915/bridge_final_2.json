@@ -1,0 +1,164 @@
+{
+ "origin": "creature_graph_projection",
+ "bridge": "tools/creature_graph/graphify_consumer.py",
+ "native_store": {
+  "objects": 1486,
+  "relations": 141,
+  "schema_version": "2.0.0"
+ },
+ "export": {
+  "path": "E:\\ChimeraWork\\codex-graph-contracts-20260915\\.tmp\\creature_graph_projection_demo\\creature_graph_projection.json",
+  "n_nodes": 1486,
+  "n_edges": 141,
+  "sha256": "f36c2ee79d8bbc18"
+ },
+ "schema_gate": {
+  "accepted": true,
+  "schema_version": "2.0.0"
+ },
+ "sanitizer_precheck": {
+  "n_originals": 1486,
+  "n_distinct_sanitized": 1486,
+  "collisions": {},
+  "collision_count": 0
+ },
+ "ingest": {
+  "nodes_before": 1486,
+  "edges_before": 141,
+  "nodes_added": 1486,
+  "edges_added": 141,
+  "nodes_replaced": 1486,
+  "edges_replaced": 141
+ },
+ "round_trip_checks": [
+  {
+   "check": "node_identity_round_trip",
+   "expected": "all 1486 objects reversible + label/kind/status equal",
+   "observed": "1486/1486 ok",
+   "pass": true,
+   "evidence": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "edge_identity_round_trip",
+   "expected": "all 141 relations with direction+note intact",
+   "observed": "missing=0 extra=0",
+   "pass": true,
+   "evidence": {
+    "missing_sample": [],
+    "extra_sample": []
+   }
+  },
+  {
+   "check": "multiplicity_preserved",
+   "expected": "no parallel groups in store (all pairs single-edged)",
+   "observed": "no parallel groups in store",
+   "pass": true
+  },
+  {
+   "check": "traversal_parity_2hop",
+   "expected": [
+    "frame.ankle_l",
+    "frame.knee_l",
+    "ref.osim.leg6dof9musc.body.calcn_r",
+    "ref.osim.leg6dof9musc.body.talus_r",
+    "ref.osim.leg6dof9musc.body.tibia_r",
+    "ref.osim.leg6dof9musc.body.toes_r",
+    "ref.uberon.UBERON_0000313",
+    "ref.uberon.UBERON_0000979",
+    "ref.uberon.UBERON_0001436",
+    "ref.uberon.UBERON_0001446",
+    "ref.uberon.UBERON_0001447",
+    "ref.uberon.UBERON_0001448",
+    "ref.uberon.UBERON_0001449",
+    "ref.uberon.UBERON_0001450",
+    "ref.uberon.UBERON_0001452",
+    "ref.uberon.UBERON_0002395",
+    "ref.uberon.UBERON_0003650",
+    "ref.uberon.UBERON_0004388",
+    "ref.uberon.UBERON_0015180",
+    "ref.uberon.UBERON_1200015",
+    "ref.uberon.UBERON_1200018",
+    "ref.uberon.UBERON_1200020",
+    "region.leg_l",
+    "region.seg.foot_l",
+    "region.seg.shin_l",
+    "region.seg.thigh_l",
+    "seg.shin_l",
+    "seg.thigh_l"
+   ],
+   "observed": [
+    "frame.ankle_l",
+    "frame.knee_l",
+    "ref.osim.leg6dof9musc.body.calcn_r",
+    "ref.osim.leg6dof9musc.body.talus_r",
+    "ref.osim.leg6dof9musc.body.tibia_r",
+    "ref.osim.leg6dof9musc.body.toes_r",
+    "ref.uberon.UBERON_0000313",
+    "ref.uberon.UBERON_0000979",
+    "ref.uberon.UBERON_0001436",
+    "ref.uberon.UBERON_0001446",
+    "ref.uberon.UBERON_0001447",
+    "ref.uberon.UBERON_0001448",
+    "ref.uberon.UBERON_0001449",
+    "ref.uberon.UBERON_0001450",
+    "ref.uberon.UBERON_0001452",
+    "ref.uberon.UBERON_0002395",
+    "ref.uberon.UBERON_0003650",
+    "ref.uberon.UBERON_0004388",
+    "ref.uberon.UBERON_0015180",
+    "ref.uberon.UBERON_1200015",
+    "ref.uberon.UBERON_1200018",
+    "ref.uberon.UBERON_1200020",
+    "region.leg_l",
+    "region.seg.foot_l",
+    "region.seg.shin_l",
+    "region.seg.thigh_l",
+    "seg.shin_l",
+    "seg.thigh_l"
+   ],
+   "pass": true,
+   "evidence": {
+    "start": "seg.foot_l",
+    "out_degree": 18
+   }
+  },
+  {
+   "check": "graphify_query_health",
+   "expected": 1486,
+   "observed": 1486,
+   "pass": true,
+   "evidence": {
+    "mutations": 0,
+    "pathways": 0,
+    "features": 0,
+    "note": "creature objects must not pollute the DNA families"
+   }
+  },
+  {
+   "check": "because_of_honest_empty",
+   "expected": [],
+   "observed": [],
+   "pass": true
+  },
+  {
+   "check": "fts_search_finds_ingested",
+   "expected": "seg_foot_l",
+   "observed": [
+    "ref_uberon_uberon_0008256",
+    "ref_uberon_uberon_0011091",
+    "region_leg_l",
+    "seg_foot_l",
+    "seg_shin_l"
+   ],
+   "pass": true,
+   "evidence": {
+    "query": "Left",
+    "n_hits": 7
+   }
+  }
+ ],
+ "honest": true,
+ "verdict": "HONEST -- the consumer round-trips the projection"
+}

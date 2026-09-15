@@ -7,6 +7,7 @@ the engine actually serves right now?
 """
 
 import json
+import math
 import os
 import sys
 import urllib.request
@@ -25,9 +26,9 @@ def fetch_tick_state(url: str = ENGINE_URL, timeout: float = 5.0) -> dict:
 
 def _close(a, b) -> bool:
     try:
-        return abs(float(a) - float(b)) <= TOL * max(1.0, abs(float(a)), abs(float(b)))
+        return math.isfinite(float(a)) and math.isfinite(float(b)) and abs(float(a) - float(b)) <= TOL * max(1.0, abs(float(a)), abs(float(b)))
     except (TypeError, ValueError):
-        return a == b
+        return False
 
 
 def cross_check(g, tick: dict) -> dict:
@@ -58,29 +59,38 @@ def cross_check(g, tick: dict) -> dict:
           f"engine n_cells={tick.get('n_cells')} engine cells={len(cells)} graph verified={len(verified)}")
     check("sealed", tick.get("sealed") is True, f"sealed={tick.get('sealed')}")
     check("no seal refusal", not tick.get("seal_refusal"), f"seal_refusal={tick.get('seal_refusal')!r}")
-    check("conservation ~0", abs(tick.get("conserve_pct") or 1.0) < 0.01,
-          f"conserve_pct={tick.get('conserve_pct')}")
+    conservation = tick.get("conserve_pct")
+    try:
+        valid = conservation is not None and not isinstance(conservation, bool) and math.isfinite(float(conservation))
+        conservation_ok = valid and abs(float(conservation)) < 0.01
+    except (TypeError, ValueError):
+        conservation_ok = False
+    check("conservation ~0", conservation_ok,
+          "missing conserve_pct" if conservation is None else f"conserve_pct={conservation!r}")
 
     sum_v0 = 0.0
-    used = set()
+    matched = {r["graph_id"]: r for r in map_cells_to_instances(g, tick)}
     for obj in verified:
         band = (obj.get("spatial") or {}).get("band_y")
-        matches = [c for c in cells if _band_match(c, band) and id(c) not in used]
-        if not matches:
+        row = matched[obj["id"]]
+        index = row["engine_cell_index"]
+        if index is None:
             check(f"{obj['id']} has a live cell at its band", False,
-                  f"no live cell matches band {band}")
+                  row["match"])
             continue
-        cell = matches[0]
-        used.add(id(cell))
+        cell = cells[index]
         sp = obj.get("spatial") or {}
         ok_v0 = _close(cell.get("v0"), sp.get("v0_m3"))
-        check(f"{obj['id']} band matches live cell {cells.index(cell)}", True,
+        check(f"{obj['id']} band matches live cell {index}", True,
               f"graph {band} = live [{cell.get('ylo')}, {cell.get('yhi')}]")
-        check(f"{obj['id']} v0 matches live cell {cells.index(cell)}", ok_v0,
+        check(f"{obj['id']} v0 matches live cell {index}", ok_v0,
               f"graph {sp.get('v0_m3')} vs live {cell.get('v0')}")
         check(f"{obj['id']} live cell not degenerate", cell.get("degenerate") is False,
               f"degenerate={cell.get('degenerate')}")
-        sum_v0 += float(cell.get("v0") or 0.0)
+        try:
+            sum_v0 += float(cell.get("v0"))
+        except (TypeError, ValueError):
+            sum_v0 = float("nan")
     check("sum v0 == V_whole", _close(sum_v0, tick.get("V_whole")),
           f"sum={sum_v0} vs V_whole={tick.get('V_whole')}")
     return report
@@ -123,32 +133,32 @@ def map_cells_to_instances(g, tick: dict) -> list:
                 and o["status"] == "verified"]
     verified.sort(key=lambda o: (o.get("spatial") or {}).get("band_y", [0, 0])[0])
     cells = tick.get("cells") or []
+    candidates = {obj["id"]: [i for i,c in enumerate(cells)
+                  if _band_match(c, (obj.get("spatial") or {}).get("band_y"))]
+                  for obj in verified}
+    owners = {}
+    for oid, indices in candidates.items():
+        for i in indices:
+            owners.setdefault(i, []).append(oid)
     rows = []
     for obj in verified:
-        band = (obj.get("spatial") or {}).get("band_y")
-        matches = [c for c in cells if _band_match(c, band)]
-        if not matches:
-            rows.append({"graph_id": obj["id"], "engine_cell_index": None,
-                         "band_y": band,
-                         "v0_m3": (obj.get("spatial") or {}).get("v0_m3"),
-                         "live_V_m3": None, "live_P_pa": None,
-                         "degenerate": None, "match": "NO LIVE CELL",
-                         "ts_us": tick.get("ts_us"), "ticks": tick.get("ticks"),
-                         "sampling_hz": 300.0})
-            continue
-        cell = matches[0]
+        indices = candidates[obj["id"]]
+        contested = any(len(owners[i]) > 1 for i in indices)
+        unique = len(indices) == 1 and not contested
+        index = indices[0] if unique else None
+        cell = cells[index] if unique else {}
+        match = ("by band geometry" if unique else
+                 f"ambiguous: {len(indices)} candidates; shared assignment={contested}"
+                 if indices else "NO LIVE CELL")
         rows.append({
-            "graph_id": obj["id"],             # stable authored id
-            "engine_cell_index": cells.index(cell),
-            "band_y": band,
+            "graph_id": obj["id"], "engine_cell_index": index,
+            "band_y": (obj.get("spatial") or {}).get("band_y"),
             "v0_m3": (obj.get("spatial") or {}).get("v0_m3"),
-            "live_V_m3": cell.get("V"),
-            "live_P_pa": cell.get("P"),
-            "degenerate": cell.get("degenerate"),
-            "match": "by band geometry",
-            "ts_us": tick.get("ts_us"),         # engine microsecond clock
-            "ticks": tick.get("ticks"),         # engine tick counter
-            "sampling_hz": 300.0,               # outer tick (3.33 ms period)
+            "live_V_m3": cell.get("V"), "live_P_pa": cell.get("P"),
+            "degenerate": cell.get("degenerate"), "match": match,
+            "candidate_count": len(indices), "candidate_indices": indices,
+            "ts_us": tick.get("ts_us"), "ticks": tick.get("ticks"),
+            "sampling_hz": tick.get("sampling_hz"),
         })
     return rows
 
@@ -174,7 +184,7 @@ def write_inspection(g, tick: dict, latency_ms: float,
         "engine": {"url": ENGINE_URL, "ticks": tick.get("ticks"),
                    "ts_us": tick.get("ts_us"),
                    "get_latency_ms": round(latency_ms, 3),
-                   "sampling_hz": 300.0,
+                   "sampling_hz": tick.get("sampling_hz"),
                    "limits": "one light GET per call; REST snapshot latency is "
                              "not the tick path; no /frame, no LLM roundtrip"},
         "selected": selected_id,

@@ -1,0 +1,16 @@
+[join] reference objects added: 1349; candidate mappings: 23
+[1] native store: 1486 objects / 141 relations (schema 2.0.0)
+[2] exported projection: 1486 nodes / 141 edges -> tools\creature_graph\data\graphify_demo\creature_graph_projection.json
+[3] schema gate: ACCEPTED (schema_version 2.0.0, directed multidigraph)
+[4] sanitizer pre-check: 1486 originals -> 1486 distinct ids, 0 collisions
+[5] ingested via save_dna_graph: +1486 nodes / +141 edges (store was 0/0)
+[6] round-trip verification (against the native store):
+    PASS  node_identity_round_trip
+    PASS  edge_identity_round_trip
+    PASS  multiplicity_preserved
+    PASS  traversal_parity_2hop
+    PASS  graphify_query_health
+    PASS  because_of_honest_empty
+    PASS  fts_search_finds_ingested
+VERDICT: HONEST -- the consumer round-trips the projection
+report: tools\creature_graph\data\graphify_demo\consumer_demo_report.json

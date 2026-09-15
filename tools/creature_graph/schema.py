@@ -139,7 +139,7 @@ SCHEMA_VERSION_LEGACY = "1.0.0-unversioned"
 # the PHYSICS-RELEVANT fields: a change to any of these stales dependent
 # validation evidence. Cosmetic fields (name, notes) do NOT.
 PHYSICS_FIELDS = ("physical", "spatial", "geometry", "status", "attachments",
-                  "unknowns")
+                  "unknowns", "value", "units", "source", "applicability")
 
 OBJECT_FIELDS = (
     "id", "kind", "name", "classification", "status", "priority",

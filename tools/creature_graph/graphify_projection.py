@@ -34,19 +34,24 @@ PROJ_PATH = os.path.join(PROJ_DIR, "creature_graph_projection.json")
 
 
 def _sanitize(oid: str) -> str:
-    """Graphify-compatible node id: lowercase, [a-z0-9_] only, collision-safe.
+    """Graphify-compatible candidate ID; export refuses collisions.
     The mapping original->sanitized is exported alongside (identity of objects
     is preserved across the projection boundary)."""
     s = re.sub(r"[^a-z0-9_]", "_", oid.lower())
     return s
 
 
-def export(g, extracted_snapshot: dict = None) -> dict:
-    """Build + write the projection. Returns the export report."""
+def make_projection(g, extracted_snapshot: dict = None) -> dict:
+    """Build an inspectable projection without writing any destination."""
     nodes = []
     id_map = {}
+    g.refresh_validation(stamp=False)
+    inverse = {}
     for oid, obj in sorted(g.objects.items()):
         sid = _sanitize(oid)
+        if sid in inverse:
+            raise ValueError(f"projection ID collision: {oid!r} and {inverse[sid]!r} -> {sid!r}")
+        inverse[sid] = oid
         id_map[oid] = sid
         node = {
             "id": sid,
@@ -81,7 +86,8 @@ def export(g, extracted_snapshot: dict = None) -> dict:
             "target": id_map[r["dst"]],
             "relation": r["rel"],       # typed, DIRECTION PRESERVED
             "note": r.get("note", ""),
-            "key": i,                   # MULTIPPLICITY preserved (multiDiGraph)
+            "key": r["rid"],          # preserve native relationship identity
+            "rid": r["rid"],
         })
     projection = {
         "directed": True,
@@ -90,6 +96,7 @@ def export(g, extracted_snapshot: dict = None) -> dict:
             "origin": "tools/creature_graph (ChimeraWork slot-01)",
             "canonical_store": "tools/creature_graph/data/creature_graph.json",
             "schema_version": g.meta.get("schema_version"),
+            "graph_hash": g.graph_hash(),
             "generated_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "note": "PROJECTION ONLY -- the authored store is canonical; "
                     "extracting/refreshing this projection never rewrites "
@@ -107,13 +114,19 @@ def export(g, extracted_snapshot: dict = None) -> dict:
             "ts_us": extracted_snapshot.get("ts_us"),
             "note": "read-only live-state reference; the engine owns live state",
         }
+    return projection
+
+
+def export(g, extracted_snapshot: dict = None) -> dict:
+    """Validate identity, then publish the projection atomically."""
+    projection = make_projection(g, extracted_snapshot)
     os.makedirs(PROJ_DIR, exist_ok=True)
     tmp = PROJ_PATH + ".tmp"
     with open(tmp, "w", encoding="utf-8", newline="\n") as f:
         json.dump(projection, f, indent=1, ensure_ascii=False)
     os.replace(tmp, PROJ_PATH)
     return {"path": os.path.normpath(PROJ_PATH),
-            "n_nodes": len(nodes), "n_edges": len(edges),
+            "n_nodes": len(projection["nodes"]), "n_edges": len(projection["edges"]),
             "sha256": hashlib.sha256(
                 json.dumps(projection, sort_keys=True).encode()).hexdigest()[:16]}
 

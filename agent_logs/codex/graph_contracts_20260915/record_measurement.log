@@ -1,0 +1,19 @@
+[join] reference objects added: 1349; candidate mappings: 23
+[join] reference objects added: 1349; candidate mappings: 23
+[join] reference objects added: 1349; candidate mappings: 23
+[1] native store: 1488 objects / 144 relations (schema 2.0.0)
+[2] exported projection: 1488 nodes / 144 edges -> .tmp\creature_graph_projection_demo\creature_graph_projection.json
+[3] schema gate: ACCEPTED (schema_version 2.0.0, directed multidigraph)
+[4] sanitizer pre-check: 1488 originals -> 1488 distinct ids, 0 collisions
+[5] ingested via save_dna_graph: +1488 nodes / +144 edges (store was 1486/141)
+[6] round-trip verification (against the native store):
+    PASS  node_identity_round_trip
+    PASS  edge_identity_round_trip
+    PASS  multiplicity_preserved
+    PASS  traversal_parity_2hop
+    PASS  graphify_query_health
+    PASS  because_of_honest_empty
+    PASS  fts_search_finds_ingested
+VERDICT: HONEST -- the consumer round-trips the projection
+report: .tmp\creature_graph_projection_demo\consumer_demo_report.json
+RECORDED_NEW_MEASUREMENT work.graph_contract_repairs_20260915 ev.graph_contracts_20260915 1488 144 work.partition_leg_l

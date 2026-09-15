@@ -35,17 +35,17 @@ def _is_available(status: str) -> bool:
 # ---------------------------------------------------------------------------
 
 def q_unsupported_boundaries(g, classification="type.A1"):
-    """A compartment is 'closed' when bounding membranes cover it and those
-    membranes are BUILT (status >= geometry_built, not a placeholder). A
-    specified septum is an intended boundary, NOT physical support; a visual
-    cap alone would not count even if built (support comes from the membrane
-    objects' own built status + the seal, not from geometry alone)."""
+    """Inventory distinct registered boundary support, not geometric closure.
+    Even built membranes and a verified object label cannot prove enclosure
+    from a graph count alone. Topology and load transfer need measured evidence.
+    """
     results = []
     for obj in g.objects.values():
         if obj["kind"] != "volume" or obj.get("classification") != classification:
             continue
         region = (obj.get("physical") or {}).get("region_a")
         walls = []
+        seen_walls = set()
         for r in g.relations:
             if r["rel"] != "bounds_region":
                 continue
@@ -53,7 +53,10 @@ def q_unsupported_boundaries(g, classification="type.A1"):
             if wall is None or wall["kind"] != "surface":
                 continue
             phys = wall.get("physical") or {}
-            if region in (phys.get("region_a"), phys.get("region_b")):
+            if (region is not None and r["dst"] == region
+                    and wall["id"] not in seen_walls
+                    and region in (phys.get("region_a"), phys.get("region_b"))):
+                seen_walls.add(wall["id"])
                 geo = wall.get("geometry") or {}
                 supported = _is_available(wall["status"]) and not geo.get("is_placeholder")
                 walls.append({"membrane": wall["id"],
@@ -69,12 +72,14 @@ def q_unsupported_boundaries(g, classification="type.A1"):
             "status": obj["status"],
             "region": region,
             "bounding_membranes": walls,
-            "closed_by_built_walls": n_support > 0 and obj["status"] != "specified",
-            "verdict": ("physically bounded" if n_support >= 2 and obj["status"] == "verified"
+            "distinct_supported_membranes": n_support,
+            "closed_by_built_walls": None,  # graph registrations do not prove topology
+            "closure_verification": "not established by this inventory query",
+            "verdict": ("boundary support registered; closure unverified" if n_support > 0
                         else "boundary pending build" if walls
                         else "NO boundary in the graph"),
-            "note": "one shared septum appears once per side (same physical wall, "
-                    "two owners); support requires BUILT walls, not a visual cap",
+            "note": "each membrane appears once per region. Wall count does not "
+                    "establish closure or load-bearing behavior; separate measured proof is required",
         })
     return results
 
@@ -192,8 +197,13 @@ def q_evidence_at_risk(g, oid):
     """Evidence that would go stale if `oid` changed physically: records that
     captured `oid`'s content version directly, plus (for materials/models)
     records that captured any compartment USING that material/model."""
+    g.get(oid)
     at_risk = []
+    unknown = []
     for ev in g.evidence_records():
+        reasons = g.stale_evidence(ev["id"])
+        if reasons:
+            unknown.append({"evidence": ev["id"], "reasons": reasons})
         deps = ev.get("deps") or []
         why = []
         if oid in deps:
@@ -214,7 +224,10 @@ def q_evidence_at_risk(g, oid):
             at_risk.append({"evidence": ev["id"],
                             "validation": ev.get("validation", "untested"),
                             "why": why[0]})
-    return at_risk
+    return {"if_changed": oid, "evidence_records_considered": len(g.evidence_records()),
+            "at_risk": at_risk, "unverifiable_captures": unknown,
+            "coverage": "no evidence" if not g.evidence_records() else
+                        "incomplete" if unknown else "captured declared scope only"}
 
 
 # ---------------------------------------------------------------------------

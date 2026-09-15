@@ -29,15 +29,11 @@ Contract enforced here (the bridge's own falsifiers):
       0 collisions -- the defect is latent; the fix routes to the packet,
       not here.)
 
-WHERE IT WRITES: a SCRATCH Graphify store under
-  tools/creature_graph/data/graphify_demo/   (CHIMERA_DNA_DB +
-  CHIMERA_DNA_SNAPSHOT pinned to sqlite scratch BEFORE core is imported, so
-  neither the worktree's real DNA store nor the read-only canonical root is
-  ever touched). Set CHIMERA_DNA_DB yourself to aim the bridge at a store of
-  your choosing (import this module BEFORE core.graphify_interface then).
-  Ingestion is IDEMPOTENT: previously-ingested projection nodes/edges
-  (marker: origin == "creature_graph_projection") are replaced, never
-  duplicated.
+WHERE IT WRITES: only .tmp/creature_graph_projection_demo in this checkout.
+Inherited database/snapshot environment values outside that store are refused.
+The schema-checked ingest_projection entry point compares the full projection
+against its authoritative graph before any consumer write. Shared production
+DNA ingestion remains outside this bridge's contract.
 
 SEMANTICS KEPT HONEST: creature relations are ingested as plain dual-keyed
 edges (src/dst/rel + source/target/type, exactly because_edge's convention)
@@ -61,7 +57,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, HERE)
 
-DEMO_DIR = os.path.join(HERE, "data", "graphify_demo")
+DEMO_DIR = os.path.join(ROOT, ".tmp", "creature_graph_projection_demo")
 DEMO_DB = os.path.join(DEMO_DIR, "dna_consumer_demo.db")
 DEMO_SNAPSHOT = os.path.join(DEMO_DIR, "dna_consumer_demo_snapshot.json")
 DEMO_PROJECTION = os.path.join(DEMO_DIR, "creature_graph_projection.json")
@@ -78,14 +74,18 @@ class ProjectionRejected(ValueError):
 
 # ---------------------------------------------------------------- store pin
 def pin_scratch_store():
-    """Pin the Graphify store env to the scratch demo store BEFORE core is
-    imported (dna_sqlite_backend reads CHIMERA_DNA_DB at import time). An
-    operator-set CHIMERA_DNA_DB is respected; the JSON backend is refused
-    because its path is the worktree's real tracked snapshot."""
+    """Pin the private SQLite store before importing the real consumer.
+    Environment overrides cannot silently turn a demo into a production write.
+    """
+    for key, expected in (("CHIMERA_DNA_DB", DEMO_DB),
+                          ("CHIMERA_DNA_SNAPSHOT", DEMO_SNAPSHOT)):
+        configured = os.environ.get(key, expected)
+        if os.path.normcase(os.path.realpath(configured)) != os.path.normcase(os.path.realpath(expected)):
+            raise RuntimeError(f"scratch-only bridge refuses inherited {key}: {configured}")
     os.makedirs(DEMO_DIR, exist_ok=True)
     os.environ["CHIMERA_DNA_BACKEND"] = "sqlite"
-    os.environ.setdefault("CHIMERA_DNA_DB", DEMO_DB)
-    os.environ.setdefault("CHIMERA_DNA_SNAPSHOT", DEMO_SNAPSHOT)
+    os.environ["CHIMERA_DNA_DB"] = DEMO_DB
+    os.environ["CHIMERA_DNA_SNAPSHOT"] = DEMO_SNAPSHOT
 
 
 def load_graphify():
@@ -102,84 +102,71 @@ def load_graphify():
     if gi.DNA_BACKEND != "sqlite":
         raise RuntimeError("consumer requires the sqlite DNA backend; got "
                            f"{gi.DNA_BACKEND!r}")
-    if os.environ.get("CHIMERA_DNA_DB") == DEMO_DB and \
-            str(dna_db.DNA_DB_PATH) != DEMO_DB:
-        raise RuntimeError("store pin failed: backend resolved "
-                           f"{dna_db.DNA_DB_PATH}, expected {DEMO_DB}")
+    for actual, expected in ((dna_db.DNA_DB_PATH, DEMO_DB),
+                             (dna_db.JSON_SNAPSHOT, DEMO_SNAPSHOT)):
+        if os.path.normcase(os.path.realpath(actual)) != os.path.normcase(os.path.realpath(expected)):
+            raise RuntimeError(f"store pin failed: backend resolved {actual}, expected {expected}")
     return gi, dna_db
 
 
 # ------------------------------------------------------------- falsifier (a)
-def load_projection(path=DEMO_PROJECTION):
-    """Validate BEFORE load. Returns the projection dict or raises
-    ProjectionRejected with EVERY violation found."""
-    import schema  # sibling module: the store's own schema law
+def validate_projection(proj, authoritative_graph=None):
+    """Reject malformed, ambiguous or stale projections before any ingestion."""
+    import schema
+    if not isinstance(proj, dict):
+        raise ProjectionRejected("projection must be an object")
+    meta = proj.get("graph")
+    if (proj.get("directed") is not True or proj.get("multigraph") is not True
+            or not isinstance(meta, dict) or meta.get("schema_version") != schema.SCHEMA_VERSION):
+        raise ProjectionRejected("unsupported schema or directed-multigraph contract")
+    nodes, edges, mapping = proj.get("nodes"), proj.get("edges"), proj.get("id_map")
+    if not isinstance(nodes, list) or not nodes or not isinstance(edges, list) or not isinstance(mapping, dict):
+        raise ProjectionRejected("nodes, edges or id_map missing/malformed")
+    if any(not isinstance(k,str) or not isinstance(v,str) for k,v in mapping.items()):
+        raise ProjectionRejected("id_map requires string identities")
+    if len(set(mapping.values())) != len(mapping):
+        raise ProjectionRejected("noninjective id_map")
+    inverse = {v:k for k,v in mapping.items()}
+    seen = set()
+    for node in nodes:
+        if not isinstance(node, dict) or not isinstance(node.get("id"), str):
+            raise ProjectionRejected("malformed node")
+        nid = node["id"]
+        if nid in seen or inverse.get(nid) != node.get("_authored_id"):
+            raise ProjectionRejected("duplicate or mismatched node identity")
+        if not all(node.get(k) for k in ("label", "kind", "status")):
+            raise ProjectionRejected("incomplete node")
+        seen.add(nid)
+    if seen != set(inverse):
+        raise ProjectionRejected("id_map/node disagreement")
+    rids = set()
+    for edge in edges:
+        if not isinstance(edge, dict):
+            raise ProjectionRejected("malformed edge")
+        rid = edge.get("rid")
+        if not isinstance(rid, str) or not rid or edge.get("key") != rid or rid in rids:
+            raise ProjectionRejected("missing/duplicate relation ID or key mismatch")
+        if edge.get("relation") not in schema.RELATIONS:
+            raise ProjectionRejected("unsupported relation type")
+        if edge.get("source") not in seen or edge.get("target") not in seen:
+            raise ProjectionRejected("dangling edge")
+        rids.add(rid)
+    if authoritative_graph is not None:
+        from graphify_projection import make_projection
+        expected = make_projection(authoritative_graph)
+        if (meta.get("graph_hash") != expected["graph"]["graph_hash"]
+                or any(proj.get(k) != expected[k] for k in ("id_map", "nodes", "edges"))):
+            raise ProjectionRejected("stale or tampered projection differs from authoritative graph")
+    return proj
 
-    errs = []
-    proj = None
-    if not os.path.exists(path):
-        raise ProjectionRejected([f"projection file missing: {path}"])
+
+def load_projection(path=DEMO_PROJECTION, authoritative_graph=None):
     try:
         with open(path, encoding="utf-8") as f:
             proj = json.load(f)
-    except (json.JSONDecodeError, OSError) as ex:
-        raise ProjectionRejected([f"projection unreadable: {ex}"]) from ex
-
-    if proj.get("directed") is not True:
-        errs.append(f"directed must be true, got {proj.get('directed')!r}")
-    if proj.get("multigraph") is not True:
-        errs.append(f"multigraph must be true, got {proj.get('multigraph')!r}")
-    graph_meta = proj.get("graph") or {}
-    version = graph_meta.get("schema_version")
-    if version != schema.SCHEMA_VERSION:
-        errs.append("schema_version must be "
-                    f"{schema.SCHEMA_VERSION!r}, got {version!r} "
-                    f"(legacy {schema.SCHEMA_VERSION_LEGACY!r} is refused)")
-    id_map = proj.get("id_map")
-    if not isinstance(id_map, dict) or not id_map:
-        errs.append("id_map missing or empty")
-    nodes = proj.get("nodes")
-    edges = proj.get("edges")
-    if not isinstance(nodes, list) or not nodes:
-        errs.append("nodes missing or empty")
-    if not isinstance(edges, list):
-        errs.append("edges missing or not a list")
-
-    node_ids = set()
-    if isinstance(nodes, list):
-        for n in nodes:
-            nid = n.get("id")
-            if not nid:
-                errs.append(f"node without id: {n!r:.120}")
-                continue
-            if nid in node_ids:
-                errs.append(f"duplicate node id: {nid}")
-            node_ids.add(nid)
-            for field in ("label", "kind", "status", "_authored_id"):
-                if not n.get(field):
-                    errs.append(f"node {nid}: missing {field}")
-    if isinstance(id_map, dict) and node_ids:
-        if set(id_map.values()) != node_ids:
-            only_map = set(id_map.values()) - node_ids
-            only_nodes = node_ids - set(id_map.values())
-            errs.append(f"id_map/node disagreement: map-only={sorted(only_map)[:5]} "
-                        f"node-only={sorted(only_nodes)[:5]}")
-
-    if isinstance(edges, list):
-        for e in edges:
-            for field in ("source", "target", "relation", "key"):
-                if e.get(field) is None and field != "key":
-                    errs.append(f"edge missing {field}: {e!r:.120}")
-            if e.get("relation") in RESERVED_RELS:
-                errs.append(f"edge uses reserved rel 'because': {e!r:.120}")
-            if node_ids:
-                for end in ("source", "target"):
-                    if e.get(end) not in node_ids:
-                        errs.append(f"edge endpoint {end}={e.get(end)!r} "
-                                    "names no node")
-    if errs:
-        raise ProjectionRejected(errs)
-    return proj
+    except (OSError, ValueError) as ex:
+        raise ProjectionRejected(f"projection unreadable: {ex}") from ex
+    return validate_projection(proj, authoritative_graph)
 
 
 # ------------------------------------------------------------- falsifier (c)
@@ -221,14 +208,21 @@ def projection_to_dna(proj):
     edges = []
     for e in proj["edges"]:
         d = {"src": e["source"], "dst": e["target"], "rel": e["relation"],
-             "note": e.get("note", ""), "key": e.get("key"),
+             "note": e.get("note", ""), "key": e["key"], "rid": e["rid"],
              "source": e["source"], "target": e["target"],
              "type": e["relation"], "origin": ORIGIN}
         edges.append(d)
     return nodes, edges
 
 
-def ingest(gi, nodes, edges):
+def ingest_projection(gi, proj, authoritative_graph):
+    """Compare to the authoritative graph BEFORE any consumer write."""
+    validate_projection(proj, authoritative_graph)
+    nodes, edges = projection_to_dna(proj)
+    return _ingest(gi, nodes, edges)
+
+
+def _ingest(gi, nodes, edges):
     """Ingest through the REAL write path: load -> extend -> save_dna_graph
     (provenance stamping + atomic sqlite replace-all + JSON snapshot).
     Idempotent: previous projection nodes/edges are replaced, not stacked."""
@@ -243,6 +237,13 @@ def ingest(gi, nodes, edges):
                          if e.get("origin") == ORIGIN)
     kept_nodes = [n for n in graph.get("nodes", []) if n.get("origin") != ORIGIN]
     kept_edges = [e for e in graph.get("edges", []) if e.get("origin") != ORIGIN]
+    foreign_ids = {n["id"] for n in kept_nodes}
+    incoming_ids = {n["id"] for n in nodes}
+    if foreign_ids & incoming_ids:
+        raise ProjectionRejected("incoming node ID collides with a foreign consumer node")
+    removed_ids = {n["id"] for n in graph.get("nodes", []) if n.get("origin") == ORIGIN} - incoming_ids
+    if any(e.get("src", e.get("source")) in removed_ids or e.get("dst", e.get("target")) in removed_ids for e in kept_edges):
+        raise ProjectionRejected("refresh would orphan a foreign edge")
     kept_nodes.extend(nodes)
     kept_edges.extend(edges)
     gi.save_dna_graph({"nodes": kept_nodes, "edges": kept_edges})
@@ -253,7 +254,7 @@ def ingest(gi, nodes, edges):
 
 # ------------------------------------------------------------- falsifier (b)
 def _native_edge_multiset(g):
-    return Counter((r["src"], r["rel"], r["dst"], r.get("note", ""))
+    return Counter((r["src"], r["rel"], r["dst"], r.get("note", ""), r["rid"])
                    for r in g.relations)
 
 
@@ -264,7 +265,7 @@ def _consumer_edge_multiset(back, inv_map):
             continue
         src_oid = inv_map.get(e.get("src"))
         dst_oid = inv_map.get(e.get("dst"))
-        out[(src_oid, e.get("rel"), dst_oid, e.get("note", ""))] += 1
+        out[(src_oid, e.get("rel"), dst_oid, e.get("note", ""), e.get("rid"))] += 1
     return out
 
 
@@ -334,8 +335,8 @@ def verify(g, proj, gi, dna_db, ingest_report):
 
     # -- multiplicity: per-(src,rel,dst) totals must match exactly; a
     #    consumer that collapsed parallel edges would show smaller totals
-    nat_tot = Counter((s, r, d) for (s, r, d, _n) in native_ms.elements())
-    con_tot = Counter((s, r, d) for (s, r, d, _n) in consumer_ms.elements())
+    nat_tot = Counter((s, r, d) for (s, r, d, _n, _rid) in native_ms.elements())
+    con_tot = Counter((s, r, d) for (s, r, d, _n, _rid) in consumer_ms.elements())
     add("multiplicity_preserved",
         {str(k): v for k, v in sorted(nat_tot.items()) if v > 1} or
         "no parallel groups in store (all pairs single-edged)",
@@ -424,7 +425,7 @@ def run_demo():
 
     # 3. falsifier (a): validate BEFORE load
     try:
-        proj = load_projection(DEMO_PROJECTION)
+        proj = load_projection(DEMO_PROJECTION, g)
         gate = {"accepted": True, "schema_version":
                 proj["graph"]["schema_version"]}
     except ProjectionRejected as ex:
@@ -455,8 +456,7 @@ def run_demo():
 
     # 5. ingest through the REAL write path
     gi, dna_db = load_graphify()
-    nodes, edges = projection_to_dna(proj)
-    ingest_report = ingest(gi, nodes, edges)
+    ingest_report = ingest_projection(gi, proj, g)
     report["ingest"] = ingest_report
     print(f"[5] ingested via save_dna_graph: +{ingest_report['nodes_added']} "
           f"nodes / +{ingest_report['edges_added']} edges "

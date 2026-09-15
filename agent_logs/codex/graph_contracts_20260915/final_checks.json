@@ -1,0 +1,9 @@
+{
+  "historical_authored_records_unchanged": true,
+  "current_source_matches_new_capture": true,
+  "committed_projection_matches_graph": true,
+  "graph_hash": "f001b29c0463bbaa3dd6c67a6a43a3cf96b24ab3b4e9f5678f4017b6e19ddc7d",
+  "objects": 1488,
+  "relations": 144,
+  "native_source_diff_since_a12bfbcc": ""
+}

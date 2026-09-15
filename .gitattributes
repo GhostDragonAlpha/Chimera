@@ -14,3 +14,6 @@
 # capture sidecars, MANIFEST_sha256.txt manifests, DYAD request specs/responses,
 # unblinding maps, raw consoles recording payload hashes, run records.
 docs/evidence/** -text
+
+# Immutable graph-contract measurement bytes across Windows checkouts.
+agent_logs/codex/graph_contracts_20260915/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

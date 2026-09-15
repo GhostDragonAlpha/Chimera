@@ -8,6 +8,7 @@ planned anatomy. Layout positions (roadmap graph drawing) live in
 """
 
 import hashlib
+import copy
 import json
 import os
 import sys
@@ -16,7 +17,7 @@ from datetime import datetime, timezone
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from schema import (  # noqa: E402
-    DAG_RELS, REL_REQUIRES, REL_VERIFIED_BY, SCHEMA_VERSION,
+    DAG_RELS, PHYSICAL_RELS, REL_DERIVED_FROM, REL_REQUIRES, REL_VERIFIED_BY, SCHEMA_VERSION,
     SCHEMA_VERSION_LEGACY, STATUS_RANK, content_projection, validate_object,
 )
 
@@ -66,7 +67,13 @@ class CreatureGraph:
         for oid in (src, dst):
             if oid not in self.objects:
                 raise ValueError(f"relation endpoint missing: {oid} ({src} -{rel}-> {dst})")
-        edge = {"rid": f"r{len(self.relations)}", "src": src, "rel": rel,
+        identity = json.dumps([src, rel, dst, note], ensure_ascii=False)
+        stem = "r_" + hashlib.sha256(identity.encode("utf-8")).hexdigest()
+        used = {r["rid"] for r in self.relations}
+        ordinal = 0
+        while f"{stem}_{ordinal}" in used:
+            ordinal += 1
+        edge = {"rid": f"{stem}_{ordinal}", "src": src, "rel": rel,
                 "dst": dst, "note": note}
         self.relations.append(edge)
         return edge
@@ -133,6 +140,9 @@ class CreatureGraph:
         for r in self.relations:
             if r["src"] not in seen_ids or r["dst"] not in seen_ids:
                 errs.append(f"dangling relation {r}")
+        rids = [r.get("rid") for r in self.relations]
+        if any(not isinstance(rid, str) or not rid for rid in rids) or len(set(rids)) != len(rids):
+            errs.append("missing or duplicate relation identity")
         # the DAG relations must each be acyclic
         for dag_rel in DAG_RELS:
             adj = {}
@@ -173,12 +183,57 @@ class CreatureGraph:
         """
         return [o for o in self.objects.values() if o["kind"] == "evidence"]
 
+    def relation_capture(self, deps) -> dict:
+        """Incident physical/provenance edges, including direction and multiplicity.
+        Unrelated graph edits and bookkeeping edges do not invalidate a measure.
+        """
+        scope = set(deps)
+        return {r["rid"]: copy.deepcopy(r) for r in self.relations
+                if r["rel"] in (*PHYSICAL_RELS, REL_DERIVED_FROM)
+                and (r["src"] in scope or r["dst"] in scope)}
+
+    def record_evidence(self, record: dict) -> dict:
+        """Record a NEW measurement. Never recapture or overwrite an old ID.
+        Caller supplies the measured result/time and its declared input scope.
+        """
+        ev = copy.deepcopy(record)
+        deps = ev.get("deps")
+        if ev.get("kind") != "evidence" or ev.get("validation") not in ("passing", "failing"):
+            raise ValueError("a measured evidence record requires a passing/failing result")
+        if not isinstance(deps, list) or not deps or len(set(deps)) != len(deps):
+            raise ValueError("evidence requires nonempty unique dependencies")
+        for dep in deps:
+            self.get(dep)
+        when = ev.get("captured_utc")
+        if not isinstance(when, str) or datetime.fromisoformat(when.replace("Z", "+00:00")).tzinfo is None:
+            raise ValueError("captured_utc must be an explicit timezone-aware measurement time")
+        ev["capture_contract"] = 1
+        ev["captured"] = {dep: content_version(self.get(dep)) for dep in deps}
+        ev["captured_dependencies"] = sorted(deps)
+        ev["captured_relations"] = self.relation_capture(deps)
+        ev["last_result"] = ev["validation"]
+        return self.add(ev)
+
     def stale_evidence(self, evidence_oid: str) -> list:
         """Deps whose physics-relevant content changed since the evidence was
         captured (conservative: ANY mismatch stales, none un-stales)."""
         ev = self.get(evidence_oid)
-        captured = ev.get("captured") or {}
+        captured = ev.get("captured")
         mismatches = []
+        if not isinstance(captured, dict) or not captured:
+            return [{"dep": evidence_oid, "reason": "capture empty/missing"}]
+        deps = ev.get("deps") or []
+        if not deps or set(captured) != set(deps):
+            mismatches.append({"dep": evidence_oid, "reason": "capture does not cover declared dependencies"})
+        if ev.get("capture_contract") != 1 or ev.get("captured_dependencies") != sorted(deps):
+            mismatches.append({"dep": evidence_oid, "reason": "capture contract or scope missing/changed"})
+        if not ev.get("captured_utc"):
+            mismatches.append({"dep": evidence_oid, "reason": "measurement time missing"})
+        old_relations = ev.get("captured_relations")
+        if not isinstance(old_relations, dict):
+            mismatches.append({"dep": evidence_oid, "reason": "relation capture missing"})
+        elif old_relations != self.relation_capture(deps):
+            mismatches.append({"dep": evidence_oid, "reason": "measured relationships changed"})
         for dep_oid, ver in captured.items():
             if dep_oid not in self.objects:
                 mismatches.append({"dep": dep_oid, "reason": "dep removed from store"})
@@ -188,7 +243,7 @@ class CreatureGraph:
                                    "current": content_version(self.get(dep_oid))})
         return mismatches
 
-    def refresh_validation(self) -> list:
+    def refresh_validation(self, stamp=True) -> list:
         """Recompute validation state of every evidence record. Returns the list
         of records that flipped to stale. A FAILED current test stays failing
         (visible); a relevant change stales passing AND failing alike; source
@@ -203,7 +258,8 @@ class CreatureGraph:
                 ev["last_result"] = val
                 ev["validation"] = "stale"
                 ev["stale_reasons"] = bad
-                ev["staled_utc"] = _utcnow()
+                if stamp:
+                    ev["staled_utc"] = _utcnow()
                 flipped.append(ev["id"])
         return flipped
 
@@ -239,6 +295,9 @@ class CreatureGraph:
     def load(cls, path: str = STORE_PATH) -> "CreatureGraph":
         with open(path, encoding="utf-8") as f:
             payload = json.load(f)
+        version = payload.get("schema_version", SCHEMA_VERSION_LEGACY)
+        if version not in (SCHEMA_VERSION, SCHEMA_VERSION_LEGACY):
+            raise ValueError(f"unsupported creature graph schema_version: {version!r}")
         g = cls()
         g.objects = payload["objects"]
         g.relations = payload["relations"]

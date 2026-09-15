@@ -551,5 +551,42 @@
   "provenance": {
    "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
   }
+ },
+ {
+  "id": "work.graph_contract_repairs_20260915",
+  "kind": "work",
+  "name": "Repair graph evidence and projection contracts",
+  "status": "verified",
+  "priority": "P0",
+  "authored_priority": 0,
+  "physical": {
+   "plan": "Repair D1-D9, preserve historical measurements, fail closed on identity ambiguity; qualify private Graphify consumer only.",
+   "source_hash_policy": "SHA256 of UTF-8 source bytes with CRLF normalized to LF",
+   "source_hashes": {
+    "schema.py": "3d710d1d3dd31ca7ecd5ff6429eff497bf75705686a4ae8e54dbd8ab8fe397c7",
+    "store.py": "0dedc8e579c33ee94287491a2269d7fdb4f262e9f2f34eed8b2330867f39b4bd",
+    "build_graph.py": "5612a8a3af72f101d4ed0a38745fbba77aae779920c2f7ad340d218dd7880b96",
+    "engine_live.py": "913c32fe850ef0d798ceecea6d6518afa7b362cf450a34e81dfeb0ad54099ada",
+    "gaps.py": "5022007a28a4f6f4d5de268ae7e179686fb555b46fce8ffdebecb7e5230ef4da",
+    "graphify_projection.py": "234ed6194e1b375f4ccec34857c6b41a21cd00f7fa7bdefd8d8746440d54a820",
+    "graphify_consumer.py": "fb122da8426d44d87e3cf2da01e3e95d98885569d2cc5733ee91b8fc4aefa5fe",
+    "acceptance.py": "d4fc41802a1fb17910fc43ba4aa194cf7b2d566559bc6078a7593f8ea4cdd6f8",
+    "tests/test_contracts.py": "e87875b704aeb83c0f5b9197a7d91532280c38fa14fb3cc485331208458376d0"
+   }
+  },
+  "dependencies": [],
+  "enables": [
+   "experience.press_and_response",
+   "experience.local_withdrawal"
+  ],
+  "evidence": [
+   "ev.graph_contracts_20260915"
+  ],
+  "falsifier": {
+   "statement": "A roadmap whose stale or ambiguous inputs pass as verified cannot reliably direct work.",
+   "acceptance_test": "tests/test_contracts.py plus offline acceptance and private consumer round trips; D9 does not infer closure from wall count.",
+   "status": "passing"
+  },
+  "notes": "Only this graph-contract repair task is completed. No native/player/production Graphify qualification is implied."
  }
 ]

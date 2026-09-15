@@ -863,5 +863,48 @@
    "attached_utc": "2026-09-15T20:30:00Z",
    "scope": "scoped measurement records only; does NOT verify req.every_bone_sealed, any experience, work.septa_leg_l load-bearing walls, or pay25; no object implementation status changed by this attachment"
   }
+ },
+ {
+  "id": "ev.graph_contracts_20260915",
+  "kind": "evidence",
+  "name": "Graph contract repair checks, isolated worktree",
+  "status": "specified",
+  "validation": "passing",
+  "deps": [
+   "work.graph_contract_repairs_20260915"
+  ],
+  "captured_utc": "2026-09-15T21:26:57.199423+00:00",
+  "physical": {
+   "source_hashes": {
+    "schema.py": "3d710d1d3dd31ca7ecd5ff6429eff497bf75705686a4ae8e54dbd8ab8fe397c7",
+    "store.py": "0dedc8e579c33ee94287491a2269d7fdb4f262e9f2f34eed8b2330867f39b4bd",
+    "build_graph.py": "5612a8a3af72f101d4ed0a38745fbba77aae779920c2f7ad340d218dd7880b96",
+    "engine_live.py": "913c32fe850ef0d798ceecea6d6518afa7b362cf450a34e81dfeb0ad54099ada",
+    "gaps.py": "5022007a28a4f6f4d5de268ae7e179686fb555b46fce8ffdebecb7e5230ef4da",
+    "graphify_projection.py": "234ed6194e1b375f4ccec34857c6b41a21cd00f7fa7bdefd8d8746440d54a820",
+    "graphify_consumer.py": "fb122da8426d44d87e3cf2da01e3e95d98885569d2cc5733ee91b8fc4aefa5fe",
+    "acceptance.py": "d4fc41802a1fb17910fc43ba4aa194cf7b2d566559bc6078a7593f8ea4cdd6f8",
+    "tests/test_contracts.py": "e87875b704aeb83c0f5b9197a7d91532280c38fa14fb3cc485331208458376d0"
+   }
+  },
+  "provenance": {
+   "evidence_directory": "agent_logs/codex/graph_contracts_20260915",
+   "artifact_sha256": {
+    "contracts_recorded_measurement.log": "e0029ea055f776e8ddc053f07b3b65af5602bf0994857672ebfef505bc39cc7b",
+    "acceptance_results.json": "a4a43edc1f0f98d606e8858c82b8500aaf51cf8af023b97b8105e9baddbdf27f",
+    "bridge_final_1.json": "044b9bc532be7df9cc8a50c829bcee79e50207d96d8984adc2d1e915fd6a1057",
+    "bridge_final_2.json": "4d2fa04eaeece6166878c679ac87b119f027ee53bf241976da911985adeea2f5"
+   }
+  },
+  "notes": "19 positive contract tests; 25 offline acceptance checks with live block NOT_TESTED; two private Graphify seven-check round trips. Historical captures were not repaired retroactively.",
+  "capture_contract": 1,
+  "captured": {
+   "work.graph_contract_repairs_20260915": "af1b4d5034c9c00d"
+  },
+  "captured_dependencies": [
+   "work.graph_contract_repairs_20260915"
+  ],
+  "captured_relations": {},
+  "last_result": "passing"
  }
 ]

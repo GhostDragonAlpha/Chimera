@@ -1,7 +1,7 @@
 """Build the canonical authored creature-graph store.
 
-Loads the authored seed files (data/authored/*.json), captures each evidence
-record's dependency content-versions, syncs dependency/evidence mirrors, runs
+Loads the authored seed files (data/authored/*.json), preserves each evidence
+record's measurement capture, syncs dependency/evidence mirrors, runs
 the integrity check, and saves data/creature_graph.json.
 
 Deterministic and idempotent: same authored inputs -> identical store bytes
@@ -54,20 +54,14 @@ def build(with_reference: bool = False) -> CreatureGraph:
         else:
             for obj in payload:
                 g.add(obj)
-    # captured dependency versions for every evidence record (AFTER objects load,
-    # BEFORE relations sync -- content of objects is what evidence measured)
-    for ev in g.evidence_records():
-        deps = ev.get("deps") or []
-        for dep in deps:
-            if dep not in g.objects:
-                raise ValueError(f"{ev['id']}: evidence dep missing: {dep}")
-        ev["captured"] = {dep: content_version(g.get(dep)) for dep in deps}
+    # Captures are historical measurement inputs, never build products.
     g.sync_dependencies()
     g.meta["schema_version"] = SCHEMA_VERSION
     g.meta["built_from"] = input_hashes
     g.meta["built_utc"] = None  # determinism: stamped by save(), not by build
     if with_reference:
         join_reference(g)
+    g.refresh_validation(stamp=False)
     errs = g.check()
     if errs:
         raise SystemExit("store check FAILED:\n  " + "\n  ".join(errs))
