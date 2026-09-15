@@ -79,3 +79,41 @@ beyond what the file already uses. If the build fails, the first suspects
 in order: (1) the route lambda's static array, (2) the
 `std::string + const char*` chains in `set_reflex`'s block accumulation,
 (3) an implicit wide-char/`L` mismatch — none expected.
+
+---
+
+## WINDOW-9 ADDENDUM — the two misses the window-8 run caught, and the standing rules they wrote
+
+**Miss 1: the get_bool duplicate.** My window-8 collision grep piped through
+`grep -v ...main.cpp` — it EXCLUDED the very file where the collision lived
+(a pre-existing `get_bool` at main.cpp ~331, mine added at ~247). The lead
+deleted theirs and kept the first-char version. Standing rule: **collision
+greps run with NO exclusion filters, on every helper added, against every
+file in the build.** Verified now: exactly one definition each of
+`get_bool` (main.cpp:247), `find_colon_after`, and every
+`MembraneTick::reflex_*` / `REFLEX_*` / `DEG2RAD_F` symbol (definition-count
+grep, all engine sources, no exclusions).
+
+**Miss 2: the detector deadlock (the real Bug-1 depth).** Reproducing on the
+window-8 binary exposed a second, worse bug behind the pin-refusal: after
+ANY re-arm, BOTH triggers went permanently dead (a 0 → 431 kPa step,
+dP/dt 1.3e8 Pa/s, fired nothing). Cause: `set_reflex` sets
+`prev_p_valid = false` expecting the reseed, but the reseed branch was
+gated by the SIZE check only; sizes already matched after the first seed,
+so `reflex_detect_locked_` returned early EVERY tick with the flag never
+re-armed. Fix: the reseed condition now includes `!reflex_.prev_p_valid`.
+Standing rule: **for every early-return gated by a flag, verify a reachable
+setter-path exists from EVERY state the flag can be left in** — a flag that
+one branch clears and only a different branch's guard can re-enter is a
+deadlock shape (this one was reachable only after a size change, i.e. a
+seal, masking it in short tests).
+
+**Also fixed in this pass** (repro record: `repro_window8_bugs.json`):
+- the drive pins are ADOPTED LIVE in the detect pass (arming before gait's
+  first enable no longer freezes the flinch at its refusal);
+- the startle gained its corollary-discharge gate (the stance rung must be
+  settled ≥ 1 s — the window-8 binary's one startle fire, tick 3273, was
+  the stance-arm transient with no stimulus);
+- the breath pass moved AFTER the FALL law's root read (the root home is
+  breath-blind by construction — the lead's option B, taken as hardening);
+- the route echo now carries `flinch_env_l/r`, `startle_env`, `quiet_s`.

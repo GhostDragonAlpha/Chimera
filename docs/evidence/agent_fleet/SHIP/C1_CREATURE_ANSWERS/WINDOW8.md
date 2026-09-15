@@ -81,3 +81,42 @@ maps each divergence to its cause).
   code is entirely additive (`if (reflex_.armed)`) — reverting the three
   step() hooks restores the pre-window behavior without touching the rest.
 - Kill the scratch by PID. Commit evidence. No push.
+
+---
+
+# WINDOW #9 ADDENDUM (post window-8: two bugs + one interaction, all closed)
+
+Window-8 verdict was 80% alive: compile (after the lead's get_bool-duplicate
+fix — folded into the window-9 commit), B0/B1 clean, B2 breathing VISIBLE
+(pressures blind), B10's V0–V9 all PASS. Three defects, all now fixed in
+code with the reproductions on the window-8 binary
+(`repro_window8_bugs.json`):
+
+1. **Flinch pins never resolved** — two layers: (a) the reader resolved only
+   at arm time (arming before gait's first enable froze the refusal) — the
+   pins are now ADOPTED LIVE every tick; (b) worse, any re-arm killed BOTH
+   triggers permanently (the `prev_p_valid` reseed deadlock — the reseed
+   was gated by the size check alone). Fixed; the trigger loop now survives
+   arm/disarm cycles and adopts the gait machine's persisted resolution
+   (measured: re-arm after gait adopts 17/18).
+2. **V10 root-home failure** — NOT the breath and NOT the reflexes: the
+   armed run's own state0 shows B7–B9 left the world LIVE (gait on, stance
+   holding, root_vy −0.175) and the harness read the stance transient as
+   its reference; the run's final_state is the exact home
+   (+0.00950712, contact m·g, P 0, ankles 0). Proven by
+   `gait_verify_armed_fresh_scratch8167.json`: fresh boot, reflexes armed,
+   gait_verify first — **15/15 PASS**. My B10 sequencing doc was the bug;
+   BATTERY.md now demands the quiet-rest prelude. The lead's hardening
+   option B is ALSO taken: the breath pass moved after the FALL law's root
+   read (the root home is breath-blind by construction).
+3. **A bonus catch while reproducing**: the startle had fired once (tick
+   3273) on the stance-arm transient — self-generated motion. The startle
+   now requires the stance rung settled ≥ 1 s (corollary-discharge gate).
+
+**WINDOW #9 runs**: the full BATTERY.md B0–B10 as amended (canonical field
+names listed there; B1's pins may arrive late-by-design; B7 waits > 1 s
+after arming stance; B10 needs the quiet-rest prelude or a fresh scratch)
++ `gait_verify.py` ARMED expecting **15/15** (the fresh-boot armed control
+already passed on the window-8 binary). Same constraints: engine files
+only, no build by the fleet agent, scratch-only verification, live 8107
+GET-only and running this code DARK (default OFF).

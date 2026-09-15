@@ -759,14 +759,6 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
     // values (gait_log in state_json).
     if (gait_on_) gait_step_locked_(verts9, dt);
 
-    // ═══ C1r: AUTONOMIC BREATHING (the last surface pass) ═══════════════
-    // AFTER the seal-volume/stance/gait passes: every measurement pass in
-    // this engine reads the pre-breath surface, so the breath is blind to
-    // the pressure law, the conservation export, and every gait gate --
-    // by construction, and MEASURED at window #8 (PREREG R1 prediction).
-    // BEFORE the root offset, which composes as a uniform translation.
-    if (reflex_.armed) reflex_breath_locked_(verts9, dt);
-
     // THE MOVEMENT LAW -- THE FALL (prereg appended to
     // SEAL_PREREGISTRATION.md). One rigid DOF along Y:
     //   y'' = -g + F_contact/m,
@@ -801,6 +793,19 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
         for (size_t v = 0; v < nvg; ++v)
             verts9[v * 9 + 1] += root_y_;
     }
+
+    // ═══ C1r: AUTONOMIC BREATHING (THE ABSOLUTE LAST surface pass) ══════
+    // AFTER the seal-volume/stance/gait passes AND AFTER the FALL law's
+    // root read (the window-9 hardening: the movement law's min-y read is
+    // breath-blind too, so the root home cannot depend on the breath
+    // phase -- the window-8 V10 suspicion, closed by construction; the
+    // measured V10 failure was the pre-B10 leftover rung state, fresh-boot
+    // armed 15/15, gait_verify_armed_fresh_scratch8167.json). Every
+    // engine-internal measurement now reads the pre-breath surface; only
+    // the /verts export (what the page renders) sees the breath. The root
+    // offset composes as a uniform translation and commutes with the
+    // displacement.
+    if (reflex_.armed) reflex_breath_locked_(verts9, dt);
 }
 
 bool MembraneTick::intent_joint(int idx, float force_n) {
@@ -2800,6 +2805,10 @@ std::string MembraneTick::reflex_summary_json() const {
       << ",\"breath_disp_m\":" << reflex_.breath_disp
       << ",\"flinch_pin_l\":" << reflex_.strut_pin[0]
       << ",\"flinch_pin_r\":" << reflex_.strut_pin[1]
+      << ",\"flinch_env_l\":" << reflex_.env_l
+      << ",\"flinch_env_r\":" << reflex_.env_r
+      << ",\"startle_env\":" << reflex_.startle_env
+      << ",\"quiet_s\":" << reflex_.quiet_s
       << ",\"block\":\"" << reflex_.block << "\"}";
     return o.str();
 }
@@ -2878,10 +2887,20 @@ void MembraneTick::reflex_detect_locked_(float dt) {
     }
     // -- the detector membrane: per sealed cell --
     if (seal_cells_.empty()) return;
-    if ((int)reflex_.prev_p.size() != (int)seal_cells_.size()
+    // THE WINDOW-9 FIX (deadlock, reproduced on the window-8 binary): the
+    // reseed used to be gated by the SIZE check alone, but set_reflex
+    // invalidates prev_p_valid at every arm. First arm on a fresh boot:
+    // sizes 0 != 4 -> the reseed ran and the detector lived. Any LATER
+    // re-arm: sizes already match -> prev_p_valid stayed false -> THIS
+    // FUNCTION RETURNED HERE EVERY TICK FOREVER -- prev_p frozen, both
+    // triggers dead (measured: a 0 -> 431 kPa step, dP/dt 1.3e8 Pa/s,
+    // fired nothing after a re-arm). Seed when the FLAG says so too.
+    if (!reflex_.prev_p_valid
+        || (int)reflex_.prev_p.size() != (int)seal_cells_.size()
         || (int)reflex_.cell_cx.size() != (int)seal_cells_.size()) {
-        // a cut changed the tree: rebuild centroids and SEED prev_p with
-        // the current pressures -- a new cell must never read as a spike
+        // an arm or a cut changed the tree: rebuild centroids and SEED
+        // prev_p with the current pressures -- a new cell must never read
+        // as a spike
         const size_t nc2 = seal_cells_.size();
         reflex_.prev_p.assign(nc2, 0.f);
         reflex_.cell_cx.assign(nc2, 0.f);
@@ -2911,11 +2930,45 @@ void MembraneTick::reflex_detect_locked_(float dt) {
         reflex_.prev_p_valid = true;
         return;   // seeded this tick: no detection
     }
-    if (!reflex_.prev_p_valid) return;
+    // BUG-1 FIX (window-8): the same-limb drive pins are ADOPTED LIVE.
+    // Arming before the gait machine's first enable used to freeze the
+    // flinch at its named refusal until a manual re-arm, even after gait
+    // had resolved (the resolution persists after disarm -- measured:
+    // gait on->off left the reflex reader at -1/-1 until a re-arm, which
+    // then adopted 17/18). When the resolution appears, take it and clear
+    // the flinch component of the block (the gait_enable_block_ law: the
+    // refusal must vanish when its cause does).
+    if (reflex_.flinch
+        && (reflex_.strut_pin[0] < 0 || reflex_.strut_pin[1] < 0)) {
+        std::string b;
+        if (reflex_resolve_locked_(b)) {
+            reflex_.flinch_theta = STANCE_THETA_MAX_DEG * DEG2RAD_F;
+            const std::string key = "flinch:";
+            const size_t at = reflex_.block.find(key);
+            if (at != std::string::npos) {
+                const size_t end = reflex_.block.find("; ", at);
+                reflex_.block.erase(at,
+                    (end == std::string::npos)
+                        ? reflex_.block.size() - at
+                        : end - at + 2);
+                if (reflex_.block.rfind("; ", 0) == 0)
+                    reflex_.block.erase(0, 2);
+            }
+        }
+    }
+    // THE STARTLE'S COROLLARY-DISCHARGE GATE: the startle's channel IS the
+    // stance servo, so a rung still converging after its own arm is the
+    // creature's OWN motion -- measured on window-8's binary: the stance
+    // arm transient fired the startle once (tick 3273) with no stimulus.
+    // Self-generated transients do not startle; require the rung settled
+    // for one quiet window.
+    if (stance_on_ && gravity_on_) reflex_.stance_s += dts;
+    else reflex_.stance_s = 0.f;
     const bool flinch_armed = reflex_.flinch && reflex_.pressure_coupling
         && quiet && reflex_.strut_pin[0] >= 0 && reflex_.strut_pin[1] >= 0;
     const bool startle_armed = reflex_.startle && reflex_.pressure_coupling
-        && quiet && reflex_.startle_bias > 0.f;
+        && quiet && reflex_.stance_s >= REFLEX_QUIET_S
+        && reflex_.startle_bias > 0.f;
     for (size_t i = 0; i < seal_cells_.size(); ++i) {
         const SealCell& c = seal_cells_[i];
         const float p = c.p;

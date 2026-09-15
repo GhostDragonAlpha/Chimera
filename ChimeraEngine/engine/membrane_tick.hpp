@@ -133,14 +133,16 @@ public:
     //   BREATHING  the torso cell's volume TARGET oscillates (Stahl
     //              respiratory allometry at mass_kg_: 4.485 breaths/min,
     //              tidal volume 0.752% of the measured torso v0), applied
-    //              as the LAST surface pass so the kappa pressure law, the
-    //              conservation export and every gait/stance measurement
-    //              are structurally blind to it. A water-stiff sealed cell
-    //              cannot breathe: the honest tidal swell, if the kappa
-    //              law saw it, would answer 14.9 MPa = 99% of the skin
-    //              yield every breath (DERIVATIONS.md §4) -- so the breath
-    //              lives in the compliant thorax (volume target), not the
-    //              coelom (pressure).
+    //              as THE ABSOLUTE LAST surface pass (after the FALL
+    //              law's root read) so the kappa pressure law, the
+    //              conservation export, every gait/stance measurement AND
+    //              the root home are structurally blind to it. A
+    //              water-stiff sealed cell cannot breathe: the honest
+    //              tidal swell, if the kappa law saw it, would answer
+    //              14.9 MPa = 99% of the skin yield every breath
+    //              (DERIVATIONS.md §4) -- so the breath lives in the
+    //              compliant thorax (volume target), not the coelom
+    //              (pressure).
     //   FLINCH     a sealed cell's pressure crossing 1e5 Pa on a RISING
     //              edge flexes the touched side's binding-derived strut
     //              pin (the gait machine's own V3a net-weight pins, same-
@@ -518,6 +520,12 @@ private:
         float body_cz = 0.f;             // rest whole-body centroid z
         bool  prev_p_valid = false;
         float quiet_s = 1e30f;           // time since the walker last ran
+        float stance_s = 0.f;            // time the stance rung has been
+                                         // armed under gravity (the
+                                         // startle's corollary-discharge
+                                         // gate: a rung still converging
+                                         // after its own arm is the
+                                         // creature's own motion)
     };
     ReflexState reflex_;
     void  reflex_detect_locked_(float dt);      // fresh per-cell pressures

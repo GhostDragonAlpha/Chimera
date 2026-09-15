@@ -328,15 +328,6 @@ static std::string get_string(const std::string& body, const char* key) {
     return out;
 }
 
-static bool get_bool(const std::string& body, const char* key, bool def) {
-    size_t p = find_colon_after(body, key);
-    if (p == std::string::npos) return def;
-    while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
-    if (body.compare(p, 4, "true") == 0) return true;
-    if (body.compare(p, 5, "false") == 0) return false;
-    return def;
-}
-
 static bool parse_float_array(const std::string& body, const char* key, std::vector<float>& out) {
     std::string needle = std::string("\"") + key + "\"";
     size_t pos = body.find(needle);
