@@ -104,3 +104,56 @@ The current binary's behavior is the control: the causal demo
 default-off paths (patches disarmed, no partition) add exactly three
 step()-entry checks (`patches_armed_`, one `if` in detect) — the same
 additive law as the reflex landing.
+
+---
+
+# WINDOW-10 ADDENDUM — what the build caught, and the two fixes
+
+The build compiled clean and the gate did its job: the partition's own
+validation REFUSED (pass:false) on v0 = -nan for all three segments —
+the honest-failure path working. Reproduced on scratch 8172 (the
+window binary): chain 13/15/17, adjacency 112/100/0, pops 243/256/1477,
+115 wall triangles removed, all segments closed:true χ=2, v0 -nan.
+
+## Bug A (the reported NaN) — the exact operation
+
+`validate_cell` → `div_pieces_(pieces, rest9, cutrest)` read the
+geometry cache `cutrest` built by `rest_geometry_locked_` at ROUTE
+ENTRY — before the two oblique cuts. `seal_cut_core_` APPENDS the new
+wall slots to `cut_src_`; every wall slot id (>= old cut count) indexed
+PAST the end of the stale `cutrest` vector (`std::vector::operator[]`
+does not bound-check) — heap garbage interpreted as floats = -nan in
+the divergence sum. Proof: the LIVE per-tick volumes for the same cells
+were finite (0.2725 / 0.1674 / 0.0104 m³, conserve −0.00011%) because
+step() recomputes `cut_pos_` from the resized `cut_src_` every tick.
+**Fix**: `rest_geometry_locked_(rest9, cutrest)` re-run after the cuts,
+before validation. Law: a geometry cache is valid only until the next
+cut mutates `cut_src_`.
+
+## Bug B (the deeper one the reproduction exposed) — multi-component bands
+
+The post-refusal tree showed the bands are NOT two-component (L/R): the
+thigh band is FOUR closed components (outer + inner bilayer shells per
+side: 0.0666 + 0.008 per side), the feet SIX (three sheets per side).
+The old `pick_side` grabbed ONE component per band — and re-grouped
+using the SPLIT CELL'S post-split y-bounds (a component's range, not
+the band's) — so the "leg" was assembled from mismatched pieces and
+stray sibling shells stayed behind as separate sealed cells (cells 3,
+5, 12 in the repro tree). **Fix**: `resolve_band` groups ALL cells by
+CONTAINMENT in the band's y-window (y-disjoint windows keep bands from
+mixing), splits any multi-surface member (a connected member refusing
+with an EMPTY seal_refusal_ is a normal "nothing to split"), and the
+segment merges ALL side components (centroid-x sign per component).
+The offline twin `predict_partition.py` predicts the component census
+and the daughter volumes for window #11 to check against.
+
+## Standing rule added (the lead's, now encoded)
+
+**No float ever reaches JSON unguarded.** NaN/Inf serialize as null
+(valid JSON, honest absence) — never nan/-inf (invalid JSON that
+poisons every consumer; the window-10 unkeyed-patches defect took the
+live world's telemetry down until rebuild). Encoded as `jf()` in
+membrane_tick.cpp; every float emitter this lane added (patch fields,
+event rows, limb_segs, the partition report's volumes/masses/validation
+numbers) goes through it. The state_json patches key itself was the
+lead's one-line fix (`,"patches":`), folded into this commit.

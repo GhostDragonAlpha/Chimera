@@ -1564,6 +1564,21 @@ constexpr size_t PATCH_LOG_N        = 64;     // bounded event log
 constexpr uint32_t LIMB_STATE_MAGIC = 0x31424D4Cu;  // 'LMB1'
 constexpr uint32_t PATCH_STATE_MAGIC = 0x31544150u; // 'PAT1'
 
+// THE WINDOW-10 JSON LAW (the lead's standing rule, encoded): no float
+// reaches JSON unguarded. NaN/Inf serialize as null -- valid JSON with
+// the absence stated honestly -- never as nan/-inf, which is INVALID
+// JSON and poisons every consumer of the channel (the window-10 defect
+// class: one unguarded float took the live world's telemetry down).
+// Every float emitter THIS lane added goes through jf().
+std::string jf(float v) {
+    if (std::isfinite(v)) {
+        std::ostringstream o;
+        o << v;
+        return o.str();
+    }
+    return "null";
+}
+
 }  // namespace
 
 // rest geometry on the tick's own blend (the seal() law: v0 measured on
@@ -1773,17 +1788,43 @@ bool MembraneTick::limb_partition(const std::string& side,
         return false;
     }
 
-    // ── 2. IDENTIFY THE BAND CELLS (the authored history: the cuts sat
-    // at the joint pins' heights; tolerance 2e-3 m) ────────────────────
-    auto cells_in_band = [&](float ylo_m, float yhi_m) {
-        std::vector<int> out;
-        for (size_t i = 0; i < seal_cells_.size(); ++i) {
-            const SealCell& c = seal_cells_[i];
-            if (std::fabs(c.ylo - ylo_m) <= LIMB_BAND_TOL_M
-                && std::fabs(c.yhi - yhi_m) <= LIMB_BAND_TOL_M)
-                out.push_back((int)i);
+    // ── 2. IDENTIFY THE BAND CELLS ──────────────────────────────────
+    // THE WINDOW-10 LESSON (measured on the scratch): the sculpt's bands
+    // are NOT two-component (L/R) -- the thigh band is FOUR closed
+    // components (outer + inner shells per side), the feet SIX. A
+    // segment must own ALL of its band's side-components: they tile the
+    // band's volume disjointly (the pre-surgery band v0 equals their
+    // sum -- measured: 0.693 thigh band = 2x(0.0666 outer + 0.008
+    // inner) + the wall/window residue in the old run). Grouping is by
+    // CONTAINMENT in the band's y-window (a split component carries its
+    // own narrower y-range; the unsplit band carries the full one --
+    // both are contained, and the y-disjoint windows keep the bands
+    // from mixing). Any member that still holds several closed surfaces
+    // is split (a connected member refusing with an EMPTY seal_refusal_
+    // is a normal "nothing to split"); the loop regroups after every
+    // successful split because the split reindexes the cell vector.
+    auto resolve_band = [&](bool has_lo, float lo, float hi)
+                            -> std::vector<int> {
+        for (int guard = 0; guard < 8; ++guard) {
+            std::vector<int> m;
+            for (size_t i = 0; i < seal_cells_.size(); ++i) {
+                const SealCell& c = seal_cells_[i];
+                if (has_lo && c.ylo < lo - LIMB_BAND_TOL_M) continue;
+                if (c.yhi > hi + LIMB_BAND_TOL_M) continue;
+                m.push_back((int)i);
+            }
+            bool grew = false;
+            for (int idx : m) {
+                seal_refusal_.clear();
+                if (split_locked_(idx)) { grew = true; break; }
+                if (!seal_refusal_.empty()) return {};   // a REAL refusal
+                                                         // (degenerate etc.)
+                // empty refusal = "one closed surface": a fully
+                // componentized member, kept as-is
+            }
+            if (!grew) return m;
         }
-        return out;
+        return {};   // split/regroup did not converge: refuse
     };
     auto cell_cx = [&](int idx) -> float {
         const uint32_t nvv = nv;
@@ -1794,41 +1835,35 @@ bool MembraneTick::limb_partition(const std::string& side,
         }
         return sw ? (float)(sx / (double)sw) : 0.f;
     };
-    // thigh band: [knee_cut, hip_cut]; calf: [ankle_cut, knee_cut];
-    // feet: below the ankle cut (yhi only -- the soles dip under 0).
-    std::vector<int> thigh_cells = cells_in_band(knee_y, hip_y);
-    std::vector<int> calf_cells = cells_in_band(ankle_y, knee_y);
-    std::vector<int> feet_cells;
-    for (size_t i = 0; i < seal_cells_.size(); ++i)
-        if (std::fabs(seal_cells_[i].yhi - ankle_y) <= LIMB_BAND_TOL_M)
-            feet_cells.push_back((int)i);
-    // side selection: split a 1-cell band, then take the component whose
-    // rest centroid carries the side's sign (x >= 0 = L, the house law).
-    auto pick_side = [&](std::vector<int>& cells, int sign) -> int {
-        if (cells.empty()) return -1;
-        if (cells.size() == 1) {
-            if (!split_locked_(cells[0])) return -2;   // split refused (by
-                                               // name in seal_refusal_)
-            // re-enumerate the band: the split replaced the cell and
-            // appended the other component(s)
-            float ylo_m = seal_cells_[(size_t)cells[0]].ylo;
-            float yhi_m = seal_cells_[(size_t)cells[0]].yhi;
-            cells = cells_in_band(ylo_m, yhi_m);
-        }
+    // thigh band: [knee, hip]; calf: [ankle, knee]; feet: below the
+    // ankle plane (no lower bound -- the soles dip under 0).
+    std::vector<int> thigh_cells = resolve_band(true, knee_y, hip_y);
+    std::vector<int> calf_cells = resolve_band(true, ankle_y, knee_y);
+    std::vector<int> feet_cells = resolve_band(false, 0.f, ankle_y);
+    // side selection per COMPONENT (x >= 0 = L, the house law measured
+    // from the pins): the segment takes ALL of the band's side
+    // components, not one -- taking one left stray shells behind (the
+    // window-10 frankenstein-leg lesson).
+    const int sgn = (side == "L") ? 1 : -1;
+    auto side_of = [&](const std::vector<int>& cells) {
+        std::vector<int> out;
         for (int idx : cells) {
             float cx = cell_cx(idx);
-            if (sign > 0 ? cx >= 0.f : cx < 0.f) return idx;
+            if (sgn > 0 ? cx >= 0.f : cx < 0.f) out.push_back(idx);
         }
-        return -1;
+        return out;
     };
-    const int sgn = (side == "L") ? 1 : -1;
-    int TL = pick_side(thigh_cells, sgn);
-    const int CL = pick_side(calf_cells, sgn);
-    const int FL = pick_side(feet_cells, sgn);
-    if (TL < 0 || CL < 0 || FL < 0) {
+    std::vector<int> thigh_L = side_of(thigh_cells);
+    std::vector<int> calf_L = side_of(calf_cells);
+    std::vector<int> foot_L = side_of(feet_cells);
+    if (thigh_L.empty() || calf_L.empty() || foot_L.empty()) {
         std::ostringstream er;
-        er << "refused: band identification failed (thigh=" << TL
-           << " calf=" << CL << " foot=" << FL
+        er << "refused: band identification failed (thigh components="
+           << thigh_cells.size() << " left:" << thigh_L.size()
+           << ", calf components=" << calf_cells.size()
+           << " left:" << calf_L.size()
+           << ", foot components=" << feet_cells.size()
+           << " left:" << foot_L.size()
            << "); refusal=" << seal_refusal_
            << " -- the expected 4-band tree (cuts at the pin heights) is "
               "not what this body carries";
@@ -1837,20 +1872,27 @@ bool MembraneTick::limb_partition(const std::string& side,
     }
 
     // ── 3. MERGE THE LEG (the limb as ONE cell) ─────────────────────
-    // The two interior band walls exist TWICE in the merged piece set
-    // (both windings -- one per daughter). Remove BOTH copies: the wall
-    // is internal geometry, its two windings cancel in the divergence
-    // sum anyway, and leaving it would let the oblique cuts slice an
-    // invisible interior sheet. The hip wall appears ONCE (its mate
-    // lives in the torso cell) and STAYS: it is the ONE septum between
-    // thigh and torso.
+    // EVERY side component of the three bands merges (the window-10
+    // lesson: the bands are bilayer shells — thigh outer+inner per side,
+    // multi-sheet feet; a segment owning one shell left stray sealed
+    // cells behind). The interior band walls exist TWICE in the merged
+    // piece set (both windings — one per daughter; one pair per sheet
+    // boundary the bands cut). Remove BOTH copies of every twice-present
+    // zero-original triangle: the wall is internal geometry, its two
+    // windings cancel in the divergence sum anyway, and leaving it would
+    // let the oblique cuts slice an invisible interior sheet. The hip
+    // wall appears ONCE (its mate lives in the torso cell) and STAYS:
+    // it is the ONE septum between thigh and torso.
+    std::vector<int> side_cells;
+    side_cells.insert(side_cells.end(), thigh_L.begin(), thigh_L.end());
+    side_cells.insert(side_cells.end(), calf_L.begin(), calf_L.end());
+    side_cells.insert(side_cells.end(), foot_L.begin(), foot_L.end());
+    int TL = side_cells[0];          // the merged leg publishes here
     std::vector<uint32_t> merged;
-    merged.insert(merged.end(), seal_cells_[(size_t)TL].pieces.begin(),
-                  seal_cells_[(size_t)TL].pieces.end());
-    merged.insert(merged.end(), seal_cells_[(size_t)CL].pieces.begin(),
-                  seal_cells_[(size_t)CL].pieces.end());
-    merged.insert(merged.end(), seal_cells_[(size_t)FL].pieces.begin(),
-                  seal_cells_[(size_t)FL].pieces.end());
+    for (int idx : side_cells) {
+        merged.insert(merged.end(), seal_cells_[(size_t)idx].pieces.begin(),
+                      seal_cells_[(size_t)idx].pieces.end());
+    }
     std::map<std::array<uint32_t, 3>, int> wall_count;
     auto canon = [](uint32_t a, uint32_t b, uint32_t c) {
         std::array<uint32_t, 3> t = {a, b, c};
@@ -1888,7 +1930,8 @@ bool MembraneTick::limb_partition(const std::string& side,
         report = "refused: no interior band walls found to merge across";
         return false;
     }
-    // publish the merged cell into TL, compact the two dead slots.
+    // publish the merged cell into side_cells[0], compact every other
+    // side slot (they are dead: their pieces live in the merged cell).
     {
         float lo = 1e30f, hi = -1e30f;
         for (uint32_t s : leg) {
@@ -1904,7 +1947,8 @@ bool MembraneTick::limb_partition(const std::string& side,
         seal_cells_[(size_t)TL].yhi = hi;
     }
     {
-        std::vector<int> dead = {CL, FL};
+        std::vector<int> dead = side_cells;
+        dead.erase(dead.begin());
         std::sort(dead.begin(), dead.end());
         for (size_t k = dead.size(); k-- > 0;)
             seal_cells_.erase(seal_cells_.begin() + dead[k]);
@@ -1972,6 +2016,16 @@ bool MembraneTick::limb_partition(const std::string& side,
     }
     const int SL = SF;                            // shin (proximal daughter)
     const int FT = (int)seal_cells_.size() - 1;   // foot (appended)
+
+    // THE WINDOW-10 NaN, FIXED AT THE MECHANISM: the oblique cuts appended
+    // wall slots to cut_src_; the geometry caches built at route entry do
+    // not cover them, and any div_pieces_ over a new cell read PAST the
+    // end of the stale cutrest vector (operator[] does not bound-check --
+    // heap garbage as floats = -nan in all three segment volumes, while
+    // the LIVE per-tick path stayed finite because step() recomputes
+    // cut_pos_ from the resized cut_src_ every tick). Every cache is only
+    // valid until the next cut mutates cut_src_: rebuild, then validate.
+    rest_geometry_locked_(rest9, cutrest);
 
     // ── 5. NAME + VALIDATE (prereg P4-P7 numbers) ───────────────────
     // seed agreement: binding seeds vs the wall sides (prereg P2/P3).
@@ -2072,32 +2126,32 @@ bool MembraneTick::limb_partition(const std::string& side,
       // thigh
       << "{\"name\":\"thigh_" << side << "\",\"cell\":" << TL
       << ",\"pins\":[" << PIN_HIP << "," << PIN_KNEE << "]"
-      << ",\"v0\":" << rt.v0 << ",\"pieces\":" << rt.pieces
+      << ",\"v0\":" << jf(rt.v0) << ",\"pieces\":" << rt.pieces
       << ",\"closed\":" << (rt.closed ? "true" : "false")
       << ",\"chi\":" << rt.chi
       << ",\"plane_n\":[" << n_knee[0] << "," << n_knee[1] << "," << n_knee[2] << "]"
       << ",\"plane_p\":[" << knee_p[0] << "," << knee_p[1] << "," << knee_p[2] << "]"
-      << ",\"mass_kg\":" << rt.v0 * LIMB_MASS_RHO << "},"
+      << ",\"mass_kg\":" << jf(rt.v0 * LIMB_MASS_RHO) << "},"
       // shin
       << "{\"name\":\"shin_" << side << "\",\"cell\":" << SL
       << ",\"pins\":[" << PIN_KNEE << "," << PIN_ANKLE << "]"
-      << ",\"v0\":" << rs.v0 << ",\"pieces\":" << rs.pieces
+      << ",\"v0\":" << jf(rs.v0) << ",\"pieces\":" << rs.pieces
       << ",\"closed\":" << (rs.closed ? "true" : "false")
       << ",\"chi\":" << rs.chi
       << ",\"plane_n\":[" << n_ankle[0] << "," << n_ankle[1] << "," << n_ankle[2] << "]"
       << ",\"plane_p\":[" << ankle_p[0] << "," << ankle_p[1] << "," << ankle_p[2] << "]"
-      << ",\"mass_kg\":" << rs.v0 * LIMB_MASS_RHO << "},"
+      << ",\"mass_kg\":" << jf(rs.v0 * LIMB_MASS_RHO) << "},"
       // foot
       << "{\"name\":\"foot_" << side << "\",\"cell\":" << FT
       << ",\"pins\":[" << PIN_ANKLE << "]"
-      << ",\"v0\":" << rf.v0 << ",\"pieces\":" << rf.pieces
+      << ",\"v0\":" << jf(rf.v0) << ",\"pieces\":" << rf.pieces
       << ",\"closed\":" << (rf.closed ? "true" : "false")
       << ",\"chi\":" << rf.chi
       << ",\"plane_n\":null,\"plane_p\":null"
-      << ",\"mass_kg\":" << rf.v0 * LIMB_MASS_RHO << "}]"
+      << ",\"mass_kg\":" << jf(rf.v0 * LIMB_MASS_RHO) << "}]"
       << ",\"seed_agreement\":{\"all\":{\"n\":" << seed_all_tot
       << ",\"ok\":" << seed_all_ok
-      << ",\"frac\":" << (seed_all_tot ? (float)seed_all_ok / (float)seed_all_tot : 0.f)
+      << ",\"frac\":" << jf(seed_all_tot ? (float)seed_all_ok / (float)seed_all_tot : 0.f)
       << "},\"hip\":{\"n\":" << seed_tot[0] << ",\"ok\":" << seed_ok[0] << "}"
       << ",\"knee\":{\"n\":" << seed_tot[1] << ",\"ok\":" << seed_ok[1] << "}"
       << ",\"ankle\":{\"n\":" << seed_tot[2] << ",\"ok\":" << seed_ok[2] << "}}"
@@ -2494,7 +2548,7 @@ bool MembraneTick::patch_step_locked_(float dt) {
                 + p.name + "\",\"cell\":" + std::to_string(p.cell)
                 + ",\"tick\":" + std::to_string(ticks_)
                 + ",\"t_us\":" + std::to_string(us)
-                + ",\"out_m\":" + std::to_string(p.out) + "}");
+                + ",\"out_m\":" + jf(p.out) + "}");
         }
         p.prev_out = p.out;
     }
@@ -2533,12 +2587,12 @@ std::string MembraneTick::patch_json_locked() const {
           << ",\"nv\":" << p.verts.size()
           << ",\"connected\":" << (p.connected ? "true" : "false")
           << ",\"cut_tick\":" << p.cut_tick
-          << ",\"delay_s\":" << p.delay_s
-          << ",\"tau_s\":" << p.tau_f
-          << ",\"sat_m\":" << p.sat_m
-          << ",\"thresh_m\":" << p.thresh_m
-          << ",\"filt_m\":" << p.filt
-          << ",\"out_m\":" << p.out
+          << ",\"delay_s\":" << jf(p.delay_s)
+          << ",\"tau_s\":" << jf(p.tau_f)
+          << ",\"sat_m\":" << jf(p.sat_m)
+          << ",\"thresh_m\":" << jf(p.thresh_m)
+          << ",\"filt_m\":" << jf(p.filt)
+          << ",\"out_m\":" << jf(p.out)
           << ",\"fires\":" << p.fires
           << ",\"last_fire_tick\":" << p.last_fire_tick << "}";
     }
@@ -4354,13 +4408,13 @@ std::string MembraneTick::state_json() const {
           const LimbSeg& s = limb_segs_[i];
           if (i) o << ",";
           o << "{\"name\":\"" << s.name << "\",\"cell\":" << s.cell
-            << ",\"v0\":" << s.v0
+            << ",\"v0\":" << jf(s.v0)
             << ",\"pieces\":" << s.pieces
             << ",\"seed_agree\":" << s.seed_agree
             << ",\"seed_n\":" << s.seed_total << "}";
       }
       o << "]"
-      << "," << patch_json_locked()
+      << ",\"patches\":" << patch_json_locked()
       << ",\"patch_events\":[";
       for (size_t i = 0; i < patch_event_log_.size(); ++i) {
           if (i) o << ",";
