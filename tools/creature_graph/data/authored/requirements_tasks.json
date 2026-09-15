@@ -241,7 +241,11 @@
    "cap.classify_bind_seal",
    "cap.cut_split"
   ],
-  "evidence": [],
+  "evidence": [
+   "ev.limb_restore_recipes_20260915",
+   "ev.limb_cold_restart_20260915",
+   "ev.limb_seal_history_20260915"
+  ],
   "falsifier": {
    "statement": "Derive segments from skeleton connectivity in the reference configuration",
    "acceptance_test": "Acceptance = req.every_bone_sealed verification on the leg: count matches, cells conserve, press answers in the right bone's cell.",
@@ -318,7 +322,9 @@
   "dependencies": [
    "cap.reflex_plumbing"
   ],
-  "evidence": [],
+  "evidence": [
+   "ev.limb_live_control_20260915"
+  ],
   "falsifier": {
    "statement": "Smallest supported intervention: obstruct an actuator, disconnect a sensor path, or disable a finite attachment -- connected to EXISTING measured inputs and the EXISTING bounded actuator/intent system. No anatomical tendon-cut claim while a hidden actuator supplies the same force.",
    "acceptance_test": "Disconnecting the sensory path removes its active contribution while passive mechanical response remains (acceptance 4); obstructing motion respects the force cap and yields reaction loads (acceptance 5).",

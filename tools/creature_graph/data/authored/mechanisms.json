@@ -649,5 +649,219 @@
   "provenance": {
    "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
   }
+ },
+ {
+  "id": "ev.limb_restore_recipes_20260915",
+  "kind": "evidence",
+  "name": "Limb recipe/state restore contracts hold in the full engine (34 checks)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": null,
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "validation": "passing",
+  "last_result": null,
+  "deps": [
+   "work.partition_leg_l",
+   "inst.comp.thigh_l",
+   "inst.comp.shin_l",
+   "inst.comp.foot_l"
+  ],
+  "captured": {},
+  "captured_utc": "2026-09-15T19:01:23Z",
+  "engine": {
+   "window": "isolated full Vulkan engine, port 8093, pid 40572 (round2)",
+   "n_cells": 11,
+   "volumes_m3": {
+    "thigh_l": 0.347067,
+    "shin_l": 0.167423,
+    "foot_l": 0.143259
+   },
+   "piece_counts": {
+    "thigh_l": 2894,
+    "shin_l": 1052,
+    "foot_l": 2766
+   },
+   "coverage_pct": -0.000110374,
+   "coverage_gate_abs_pct": 0.01,
+   "euler_characteristics": "6/2/6 component-wise ledger (multi-sheet cells legitimate)",
+   "checks_file": "corrected_run/checks.jsonl (34/34 pass, sha256 51cd1863)"
+  },
+  "acceptance": "all 34 corrected_run checks pass: partition report exactly unchanged on repeat; late limb/registry failures transactional (prior state preserved); LMB1 56-byte sensor records round-trip; PAT2 continues the sensor subsystem; strict state JSON (no duplicate cells key)",
+  "unknowns": [],
+  "notes": "Ordered recipe replay, not a crash-atomic multi-file snapshot. NOT proven here: whole-engine continuation, force-limited actuation, landed XPBD, every-bone compartmentalization (req.every_bone_sealed context only). work.septa_leg_l (load-bearing septa) is context, not measured by this record. Full partition report equals the previously CPU-tested native report.",
+  "provenance": {
+   "source": "codex isolated full-engine qualification window (branch codex/limb-state-fixes), bundle E:\\PythonChimera\\agent_logs\\codex\\limb_runtime_20260915",
+   "source_revision": "a12bfbcc494a273b4739f86a83e19001343ee70c",
+   "source_base": "63805f4174cfdb666552dfdac9b5d290789b73e0",
+   "commit_tree": "8259c29fa27291656dda4316b3c276b7211a0f5e",
+   "exe_sha256": "e907e46423df5d028cb3d29ff29e0caae1410f6b41fec74824f7a54e16808170",
+   "bundle_manifest": "MANIFEST.json: 148 files, every sha256 re-verified by F1 2026-09-15 (0 mismatches, 0 missing, 0 extra)",
+   "attachment_proposal": "graph_attachment_proposal.json sha256 bb4e1c00820f49459fbd0792e51c99fa0fab7bb4c3a870f15b9b1c0baf0b3502",
+   "identity_verified_by": "F1-identity-evidence 2026-09-15: worktree clean at a12bfbcc, 3 changed sources match source_identity.json (raw+LF), on-disk exe hash matches both runtime windows",
+   "attached_by": "F1-identity-evidence (authorized graph writer)",
+   "attached_utc": "2026-09-15T20:30:00Z",
+   "scope": "scoped measurement records only; does NOT verify req.every_bone_sealed, any experience, work.septa_leg_l load-bearing walls, or pay25; no object implementation status changed by this attachment"
+  }
+ },
+ {
+  "id": "ev.limb_live_control_20260915",
+  "kind": "evidence",
+  "name": "Live sensory-path control passes its severed-path negative control (19 checks)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": null,
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "validation": "passing",
+  "last_result": null,
+  "deps": [
+   "inst.comp.shin_l",
+   "work.causal_demo_leg_l"
+  ],
+  "captured": {},
+  "captured_utc": "2026-09-15T19:01:23Z",
+  "engine": {
+   "window": "isolated full Vulkan engine, port 8093, pid 40572 (round2)",
+   "stimulus": "20,000 N press at an actual shin receptor vertex (persisted region, nearest to derived anchor); no stimulus tuning",
+   "transport_delay_s": 0.042257461696863174,
+   "connected": {
+    "max_flinch_env_l": 0.986737,
+    "max_delivered_shin_signal_m": 0.03,
+    "max_dimple_m": 0.397887,
+    "max_pressed_cell_Pa": 20940200.0
+   },
+   "cut": {
+    "max_flinch_env_l": 0,
+    "max_delivered_shin_signal_m": 0,
+    "max_dimple_m": 0.397887,
+    "max_pressed_cell_Pa": 17915000.0
+   },
+   "checks_file": "causal_run/checks.jsonl (19/19 pass, sha256 46b2cf03)"
+  },
+  "acceptance": "connected path delivers through the shin receptor at the configured transport delay; severed path delivers 0 signal and 0 flinch envelope while passive dimple/pressure remain; reconnection at rest causes no stale flinch",
+  "unknowns": [],
+  "notes": "This is the pressure TRANSPORT path's negative control, NOT the reflex controls: ev.reflex_controls_fail (volume-target breathing / pressure-triggered flinch / pressure-rate startle) remains validation=failing and was neither fixed nor re-stamped by this patch or this attachment. Delivery-timing continuity remains scoped to the controlled native CPU test: HTTP sampling did not establish deterministic delivery timing. Passive pressure trajectories are not identical across connected/cut because the active pose response also loads the cells.",
+  "provenance": {
+   "source": "codex isolated full-engine qualification window (branch codex/limb-state-fixes), bundle E:\\PythonChimera\\agent_logs\\codex\\limb_runtime_20260915",
+   "source_revision": "a12bfbcc494a273b4739f86a83e19001343ee70c",
+   "source_base": "63805f4174cfdb666552dfdac9b5d290789b73e0",
+   "commit_tree": "8259c29fa27291656dda4316b3c276b7211a0f5e",
+   "exe_sha256": "e907e46423df5d028cb3d29ff29e0caae1410f6b41fec74824f7a54e16808170",
+   "bundle_manifest": "MANIFEST.json: 148 files, every sha256 re-verified by F1 2026-09-15 (0 mismatches, 0 missing, 0 extra)",
+   "attachment_proposal": "graph_attachment_proposal.json sha256 bb4e1c00820f49459fbd0792e51c99fa0fab7bb4c3a870f15b9b1c0baf0b3502",
+   "identity_verified_by": "F1-identity-evidence 2026-09-15: worktree clean at a12bfbcc, 3 changed sources match source_identity.json (raw+LF), on-disk exe hash matches both runtime windows",
+   "attached_by": "F1-identity-evidence (authorized graph writer)",
+   "attached_utc": "2026-09-15T20:30:00Z",
+   "scope": "scoped measurement records only; does NOT verify req.every_bone_sealed, any experience, work.septa_leg_l load-bearing walls, or pay25; no object implementation status changed by this attachment"
+  }
+ },
+ {
+  "id": "ev.limb_cold_restart_20260915",
+  "kind": "evidence",
+  "name": "Cold process restart retains limb/sensor state (4 checks)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": null,
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "validation": "passing",
+  "last_result": null,
+  "deps": [
+   "work.partition_leg_l",
+   "inst.comp.thigh_l",
+   "inst.comp.shin_l",
+   "inst.comp.foot_l"
+  ],
+  "captured": {},
+  "captured_utc": "2026-09-15T19:04:00Z",
+  "engine": {
+   "window": "isolated full Vulkan engine, port 8093, pid 25156 (cold, --restore)",
+   "n_cells": 11,
+   "snapshot_check": "cold_run/snapshot_hashes.json: saved snapshots byte-identical after restore",
+   "checks_file": "cold_run/checks.json (4/4 pass, sha256 d944a8bd)"
+  },
+  "acceptance": "cold boot restores 11 cells, preserves the saved cut and disarmed state, and does not rewrite saved snapshots (byte-identical hashes)",
+  "unknowns": [],
+  "notes": "PAT2 sensor-subsystem continuation only. Mechanical/global-clock/gait/reflex/input continuation and crash-safe coordinated checkpoint publication remain open (Stage 4). Cut/fire stamps are retained as historical values, not rebased to a different run's global clock.",
+  "provenance": {
+   "source": "codex isolated full-engine qualification window (branch codex/limb-state-fixes), bundle E:\\PythonChimera\\agent_logs\\codex\\limb_runtime_20260915",
+   "source_revision": "a12bfbcc494a273b4739f86a83e19001343ee70c",
+   "source_base": "63805f4174cfdb666552dfdac9b5d290789b73e0",
+   "commit_tree": "8259c29fa27291656dda4316b3c276b7211a0f5e",
+   "exe_sha256": "e907e46423df5d028cb3d29ff29e0caae1410f6b41fec74824f7a54e16808170",
+   "bundle_manifest": "MANIFEST.json: 148 files, every sha256 re-verified by F1 2026-09-15 (0 mismatches, 0 missing, 0 extra)",
+   "attachment_proposal": "graph_attachment_proposal.json sha256 bb4e1c00820f49459fbd0792e51c99fa0fab7bb4c3a870f15b9b1c0baf0b3502",
+   "identity_verified_by": "F1-identity-evidence 2026-09-15: worktree clean at a12bfbcc, 3 changed sources match source_identity.json (raw+LF), on-disk exe hash matches both runtime windows",
+   "attached_by": "F1-identity-evidence (authorized graph writer)",
+   "attached_utc": "2026-09-15T20:30:00Z",
+   "scope": "scoped measurement records only; does NOT verify req.every_bone_sealed, any experience, work.septa_leg_l load-bearing walls, or pay25; no object implementation status changed by this attachment"
+  }
+ },
+ {
+  "id": "ev.limb_seal_history_20260915",
+  "kind": "evidence",
+  "name": "Seal history journal restores under current and legacy trees (7 checks)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": null,
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "validation": "passing",
+  "last_result": null,
+  "deps": [
+   "work.partition_leg_l"
+  ],
+  "captured": {},
+  "captured_utc": "2026-09-15T19:04:00Z",
+  "engine": {
+   "window": "isolated full Vulkan engine, port 8093, pid 25156 (cold window)",
+   "fixture": "original lane's 60-line seal history read read-only from slot-01 .an2_scratch; legacy tree from the limb_state_fix fixtures",
+   "checks_file": "history_run/checks.json (7/7 pass, sha256 1d844199)"
+  },
+  "acceptance": "current and legacy seal trees both restore ok, the cut is retained, the journal is byte-unchanged, and a no-op restore leaves snapshot bytes unchanged; 11 cells + disconnected shin patch after each restore",
+  "unknowns": [],
+  "notes": "The original 60-line seal journal was read from the slot-01 lane's .an2_scratch as a READ-ONLY fixture source; the lane's files and its engine (pid 40976) were not touched (window_closed.json).",
+  "provenance": {
+   "source": "codex isolated full-engine qualification window (branch codex/limb-state-fixes), bundle E:\\PythonChimera\\agent_logs\\codex\\limb_runtime_20260915",
+   "source_revision": "a12bfbcc494a273b4739f86a83e19001343ee70c",
+   "source_base": "63805f4174cfdb666552dfdac9b5d290789b73e0",
+   "commit_tree": "8259c29fa27291656dda4316b3c276b7211a0f5e",
+   "exe_sha256": "e907e46423df5d028cb3d29ff29e0caae1410f6b41fec74824f7a54e16808170",
+   "bundle_manifest": "MANIFEST.json: 148 files, every sha256 re-verified by F1 2026-09-15 (0 mismatches, 0 missing, 0 extra)",
+   "attachment_proposal": "graph_attachment_proposal.json sha256 bb4e1c00820f49459fbd0792e51c99fa0fab7bb4c3a870f15b9b1c0baf0b3502",
+   "identity_verified_by": "F1-identity-evidence 2026-09-15: worktree clean at a12bfbcc, 3 changed sources match source_identity.json (raw+LF), on-disk exe hash matches both runtime windows",
+   "attached_by": "F1-identity-evidence (authorized graph writer)",
+   "attached_utc": "2026-09-15T20:30:00Z",
+   "scope": "scoped measurement records only; does NOT verify req.every_bone_sealed, any experience, work.septa_leg_l load-bearing walls, or pay25; no object implementation status changed by this attachment"
+  }
  }
 ]

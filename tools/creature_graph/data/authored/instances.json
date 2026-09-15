@@ -880,7 +880,10 @@
    "work.partition_leg_l",
    "work.septa_leg_l"
   ],
-  "evidence": [],
+  "evidence": [
+   "ev.limb_restore_recipes_20260915",
+   "ev.limb_cold_restart_20260915"
+  ],
   "falsifier": {
    "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
    "acceptance_test": "THE ANATOMICAL COMPARTMENT LAW verification: compartment count == bone count, every cell conserves, a press on the bone answers in THAT bone's cell",
@@ -927,7 +930,11 @@
    "work.partition_leg_l",
    "work.septa_leg_l"
   ],
-  "evidence": [],
+  "evidence": [
+   "ev.limb_restore_recipes_20260915",
+   "ev.limb_live_control_20260915",
+   "ev.limb_cold_restart_20260915"
+  ],
   "falsifier": {
    "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
    "acceptance_test": "THE ANATOMICAL COMPARTMENT LAW verification: compartment count == bone count, every cell conserves, a press on the bone answers in THAT bone's cell",
@@ -974,7 +981,10 @@
    "work.partition_leg_l",
    "work.septa_leg_l"
   ],
-  "evidence": [],
+  "evidence": [
+   "ev.limb_restore_recipes_20260915",
+   "ev.limb_cold_restart_20260915"
+  ],
   "falsifier": {
    "statement": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment.",
    "acceptance_test": "THE ANATOMICAL COMPARTMENT LAW verification: compartment count == bone count, every cell conserves, a press on the bone answers in THAT bone's cell",
