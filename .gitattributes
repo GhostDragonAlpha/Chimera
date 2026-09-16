@@ -17,3 +17,6 @@ docs/evidence/** -text
 
 # Immutable graph-contract measurement bytes across Windows checkouts.
 agent_logs/codex/graph_contracts_20260915/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Preserve graph-workflow proof bytes across checkouts.
+tools/agent_fleet/graph_workflow/validation/*.log -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
