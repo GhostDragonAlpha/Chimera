@@ -1196,6 +1196,12 @@ bool MembraneTick::split_locked_(int cell_idx) {
         c.v0 = v;
         c.vol = v;
         c.p = 0.f;
+        // PHASE-1 INVENTORY (septa packet v3) -- CANONICAL INIT SITE: a
+        // fresh cell is full at rest, w := its own v0, so p(0) = 0 and
+        // the measured baseline is unchanged. Phase 2 owns the ONLY
+        // paths that will ever change w (transfer/ingest); Phase 1
+        // leaves w invariant after initialization/restore.
+        c.w = v;
         c.caps = seal_cells_[cell_idx].caps;   // cap count carries over
         c.ylo = lo;
         c.yhi = hi;
@@ -1546,6 +1552,13 @@ bool MembraneTick::seal_cut_core_(int cell_idx,
     above.pieces = std::move(upper); above.v0 = vu; above.caps = caps;
     below.vol = vl; below.p = 0.f;
     above.vol = vu; above.p = 0.f;
+    // PHASE-1 INVENTORY: a daughter is a NEW full-at-rest cell, w := its
+    // own v0 (the split_locked_ canonical-init law; Phase 2 owns any
+    // inventory change). This covers the first cut too -- the very first
+    // seal() finds seal_cells_ empty and lands HERE, creating the first
+    // two cells of the tree; there is no separate whole-cell site.
+    below.w = vl;
+    above.w = vu;
     range_of(below.pieces, &below.ylo, &below.yhi);
     range_of(above.pieces, &above.ylo, &above.yhi);
 
@@ -2045,6 +2058,10 @@ bool MembraneTick::limb_partition(const std::string& side,
         }
         seal_cells_[(size_t)TL].pieces = leg;
         seal_cells_[(size_t)TL].v0 = v0_leg;
+        seal_cells_[(size_t)TL].w = v0_leg;   // Phase-1 full-at-rest init:
+                                              // the merged cell is fresh
+                                              // (Σ of its full-at-rest
+                                              // parts), never w != v0
         seal_cells_[(size_t)TL].vol = v0_leg;
         seal_cells_[(size_t)TL].p = 0.f;
         seal_cells_[(size_t)TL].ylo = lo;
@@ -2887,14 +2904,21 @@ bool MembraneTick::patch_restore(const std::string& body) {
 //   u32 n_cells, per cell: u32 piece_n, piece_n x u32,
 //                          f32 v0, f32 vol, f32 p,
 //                          i32 caps, f32 ylo, f32 yhi, u8 degenerate
+// SEL2 (septa packet v3, phase 1) -- SAME layout, ONE addition per cell:
+//                          ... u8 degenerate, f32 w
+// (w = the cell's fluid inventory as volume at reference density; the
+// legacy SEL1 blob carries no inventory, so its restore initializes
+// w := v0 -- full at rest -- and names the migration "legacy_no_w").
 // Loading validates before it mutates: nv must equal the loaded mesh's
-// vertex count, every blend/cell index must be in range, and EVERY cell's
+// vertex count, every blend/cell index must be in range, EVERY cell's
 // rest volume is recomputed from its own pieces over this mesh's rest
 // blend and compared with the stored v0 (1e-4 relative -- 50x under the
-// degenerate guard's 0.5% band). Any mismatch refuses with NOTHING
-// changed, and the caller falls back to the intent history, which
-// rebuilds the tree the slow, honest way (executed cuts + already-skips).
-static const uint32_t SEAL_STATE_MAGIC = 0x31534553u;  // 'SEL1'
+// degenerate guard's 0.5% band), and every SEL2 w must be finite and
+// >= 0. Any mismatch refuses with NOTHING changed, and the caller falls
+// back to the intent history, which rebuilds the tree the slow, honest
+// way (executed cuts + already-skips).
+static const uint32_t SEAL_STATE_MAGIC = 0x31534553u;      // 'SEL1'
+static const uint32_t SEAL_STATE_MAGIC_V2 = 0x32534553u;   // 'SEL2'
 
 bool MembraneTick::load_seal_state(const std::string& body) {
     if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return false;
@@ -2911,7 +2935,9 @@ bool MembraneTick::load_seal_state(const std::string& body) {
         return rd32(off, reinterpret_cast<uint32_t*>(v));
     };
     uint32_t magic = 0, hdr_nv = 0, n_cuts = 0, n_cells = 0;
-    if (!rd32(0, &magic) || magic != SEAL_STATE_MAGIC) return false;
+    if (!rd32(0, &magic)) return false;
+    const bool legacy_sel1 = (magic == SEAL_STATE_MAGIC);
+    if (!legacy_sel1 && magic != SEAL_STATE_MAGIC_V2) return false;
     if (!rd32(4, &hdr_nv) || hdr_nv != nv) return false;   // stale blob
     if (!rd32(8, &n_cuts) || n_cuts > (1u << 20)) return false;
     // cut blends: validate every index against the MESH vertices and
@@ -2943,6 +2969,7 @@ bool MembraneTick::load_seal_state(const std::string& body) {
     struct CellRec {
         std::vector<uint32_t> pieces;
         float v0 = 0.f, vol = 0.f, p = 0.f;
+        float w = 0.f;                     // SEL2 only (SEL1 has no w)
         int caps = 0;
         float ylo = 0.f, yhi = 0.f;
         bool degenerate = false;
@@ -2987,7 +3014,24 @@ bool MembraneTick::load_seal_state(const std::string& body) {
                 dg = (uint8_t)body[off];
                 cells[ci].degenerate = dg != 0;
             }                                                  off += 1;
-            if (!(cells[ci].v0 > 0.f)) return false;
+            if (!legacy_sel1) {          // SEL2: inventory follows the flag
+                if (!rdf32(off, &cells[ci].w)) return false;
+                off += 4;
+                // THE INVENTORY WITNESS (all-or-nothing): a w that is not
+                // a finite, non-negative volume is a corrupt blob -- the
+                // whole load refuses BY NAME with the tree UNCHANGED (the
+                // seal_refusal_ precedent), never a partial restore.
+                if (!(std::isfinite(cells[ci].w) && cells[ci].w >= 0.f)) {
+                    seal_refusal_ = "seal_state_invalid_w";
+                    printf("seal_state: refused, w invalid (cell %u)\n",
+                           (unsigned)ci);
+                    return false;
+                }
+            }
+            if (!(std::isfinite(cells[ci].v0) && cells[ci].v0 > 0.f))
+                return false;   // corrupt geometry: the pre-existing
+                                // unnamed refusal (both magics) -- +inf
+                                // would otherwise migrate into w
         }
         if (off != body.size()) return false;   // trailing bytes = wrong gen
     }
@@ -3042,6 +3086,10 @@ bool MembraneTick::load_seal_state(const std::string& body) {
         publish[ci].vol = cells[ci].v0;   // rest pose: live vol == v0 until
                                           // the next tick re-measures
         publish[ci].p = 0.f;
+        // PHASE-1 INVENTORY: SEL2 restores the stored w; legacy SEL1 has
+        // none, so the physical full-at-rest default applies, w := v0 --
+        // a NAMED migration ("legacy_no_w"), never a silent one.
+        publish[ci].w = legacy_sel1 ? cells[ci].v0 : cells[ci].w;
         publish[ci].caps = cells[ci].caps;
         publish[ci].ylo = cells[ci].ylo;
         publish[ci].yhi = cells[ci].yhi;
@@ -3054,6 +3102,13 @@ bool MembraneTick::load_seal_state(const std::string& body) {
     sealed_ = true;
     seal_cuts_ = (int)n_cuts;      // report: the tree's cut count
     seal_refusal_.clear();         // a cleanly restored tree owes nothing
+    if (legacy_sel1) {
+        seal_w_init_ = "legacy_no_w";
+        printf("seal_state: legacy SEL1 (no inventory) -> w := v0 for %u cells\n",
+               n_cells);
+    } else {
+        seal_w_init_.clear();      // clean SEL2 commit: w came from the blob
+    }
     return true;
 }
 
@@ -3065,14 +3120,15 @@ void MembraneTick::export_seal_state(std::vector<uint8_t>& out) {
     const uint32_t n_cells = (uint32_t)seal_cells_.size();
     size_t need = 12 + n_cuts * (4 + 32 + 32) + 4;
     for (const SealCell& c : seal_cells_)
-        need += 4 + c.pieces.size() * 4 + 4 * 6 + 1;
+        need += 4 + c.pieces.size() * 4 + 4 * 6 + 1 + 4;   // +4: SEL2 w
     out.resize(need);
     uint8_t* w = out.data();
     auto wr = [&](const void* p, size_t n) {
         std::memcpy(w, p, n);
         w += n;
     };
-    wr(&SEAL_STATE_MAGIC, 4);
+    wr(&SEAL_STATE_MAGIC_V2, 4);   // ALWAYS SEL2: new sessions round-trip
+                                   // w exactly; SEL1 exists only as input
     wr(&nv, 4);
     wr(&n_cuts, 4);
     for (const CutBlend& b : cut_src_) {
@@ -3095,6 +3151,7 @@ void MembraneTick::export_seal_state(std::vector<uint8_t>& out) {
         wr(&c.yhi, 4);
         uint8_t dg = c.degenerate ? 1 : 0;
         wr(&dg, 1);
+        wr(&c.w, 4);               // SEL2: inventory after the flag byte
     }
 }
 
@@ -4511,6 +4568,12 @@ std::string MembraneTick::state_json() const {
         failed += cells_[i].failed ? 1u : 0u;
         cap_sum += capacity_[i];
     }
+    // PHASE-1 INVENTORY (septa packet v3): the w sum over ALL seal cells;
+    // mass follows m = LIMB_MASS_RHO * w (1000 kg/m^3, water -- the
+    // conversion stated once at the constant's definition, beside the
+    // other LIMB_* constants).
+    float w_sum = 0.f;
+    for (const SealCell& c : seal_cells_) w_sum += c.w;
     std::ostringstream o;
     // ts_us / ts_ms: the engine's OWN monotonic clock (steady; on Windows
     // its epoch is machine boot), read ONCE under the SAME lock pass as
@@ -4548,6 +4611,14 @@ std::string MembraneTick::state_json() const {
       << ",\"v0_upper\":" << (seal_cells_.size() > 1 ? seal_cells_[1].v0 : 0.f)
       << ",\"V_whole\":" << vol_whole_
       << ",\"conserve_pct\":" << conserve_pct_
+      // PHASE-1 INVENTORY TELEMETRY (septa packet v3): inventory sum and
+      // its mass (kg), the named migration marker, and the per-cell
+      // inventory array below. New emitters go through jf() -- the
+      // Window-10 JSON law -- byte-identical to this chain's ostringstream
+      // style for finite values, null instead of invalid JSON otherwise.
+      << ",\"w_sum\":" << jf(w_sum)
+      << ",\"seal_mass_kg\":" << jf(w_sum * LIMB_MASS_RHO)
+      << ",\"seal_w_init\":\"" << seal_w_init_ << "\""
       << ",\"seal_split\":" << seal_split_
       << ",\"seal_cuts\":" << seal_cuts_
       << ",\"seal_loops\":" << seal_loops_
@@ -4656,6 +4727,27 @@ std::string MembraneTick::state_json() const {
           << ",\"pieces\":" << (c.pieces.size() / 3)
           << ",\"caps\":" << c.caps
           << ",\"ylo\":" << c.ylo << ",\"yhi\":" << c.yhi
+          << ",\"degenerate\":" << (c.degenerate ? "true" : "false") << "}";
+    }
+    o << "]"
+    // PHASE-1 INVENTORY ARRAY (septa packet v3 P1.2): EVERY seal cell,
+    // all cells, not just the first two -- including e.g. shin_L = cell 9
+    // that no other export carries. Named "seal_cells" because "cells" is
+    // TAKEN by the legacy array above, which stays byte-identical (a
+    // second "cells" key would shadow it for every consumer). Empty when
+    // no seal exists.
+      << ",\"seal_cells\":[";
+    for (size_t i = 0; i < seal_cells_.size(); ++i) {
+        const SealCell& c = seal_cells_[i];
+        if (i) o << ",";
+        o << "{\"i\":" << i
+          << ",\"v0\":" << jf(c.v0)
+          << ",\"vol\":" << jf(c.vol)
+          << ",\"w\":" << jf(c.w)
+          << ",\"p\":" << jf(c.p)
+          << ",\"caps\":" << c.caps
+          << ",\"ylo\":" << jf(c.ylo)
+          << ",\"yhi\":" << jf(c.yhi)
           << ",\"degenerate\":" << (c.degenerate ? "true" : "false") << "}";
     }
     o << "]"

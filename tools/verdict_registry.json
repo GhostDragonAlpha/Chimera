@@ -1,5 +1,5 @@
 {
-  "next": 66,
+  "next": 67,
   "verdicts": {
     "61": {
       "closed_at": "2026-08-10T22:05:45+00:00",
@@ -193,6 +193,19 @@
       "statement": "blind-judge dyad [D1-dryrun]: a buyer-judge playing the live demo blind (R8 playbook, recorded) witnesses an answered press -- a visible dent on held frames and calm recovery after release -- and delivers buyer pay-intent",
       "status": "CLOSED",
       "term": "honest hydraulic touch"
+    },
+    "66": {
+      "closed_at": null,
+      "created_at": "2026-09-16T02:54:47+00:00",
+      "evidence": null,
+      "falsifier": "P1.1 any existing physical output changes under identical inputs vs the delivered baselines (34 state/recipe, 19 live-control, 4 cold-restart, 7 history; partition numbers) | P1.2 any sealed cell missing v0/vol/w/p/flags in telemetry, or w != v0 or p != 0 exactly at authored rest | P1.3 a legacy snapshot fails to restore, is mutated on disk, a new snapshot fails to round-trip w exactly, or invalid supplied w is silently replaced | P1.4 any route or state can create an opening/connection or move inventory between cells in Phase 1",
+      "number": 66,
+      "prediction": "CPU tests pass: fresh cells w == v0 exactly, p == 0 exactly at authored rest, all cells (incl. shin_L, cell 9) exported with {v0, vol, w, p, flags}, w invariant across ticks and deformation, kappa pressure law unchanged; SEL2 snapshots round-trip w exactly; legacy SEL1 snapshots restore via a named logged migration (legacy_no_w) without mutating source files; invalid w refused by name (seal_state_invalid_w); and the delivered 34/19/4/7 baseline checks reproduce identically on the patched engine (excluding added telemetry fields and nondeterministic timestamps).",
+      "probe": "",
+      "result": null,
+      "statement": "Sealed-cell state can carry an explicit per-cell fluid inventory w (initialized w := v0 at every cell creation; mass = 1000 kg/m^3 * w) with all-cell telemetry and a versioned backward-compatible seal-state snapshot, while every existing measured physical output stays identical under identical inputs.",
+      "status": "OPEN",
+      "term": ""
     }
   }
 }

@@ -321,6 +321,18 @@ private:
     struct SealCell {
         std::vector<uint32_t> pieces;   // 3 global slot ids per piece
         float v0 = 0.f, vol = 0.f, p = 0.f;
+        // PHASE-1 EXPLICIT INVENTORY (septa packet v3): w is the cell's
+        // fluid inventory as volume at reference density; mass follows
+        // m = LIMB_MASS_RHO * w (1000 kg/m^3, water — conversion stated
+        // once beside the constant in membrane_tick.cpp). v0 stays
+        // IMMUTABLE REFERENCE GEOMETRY and p stays DERIVED-ONLY (the
+        // kappa law is unchanged). Initial condition: w = v0 for every
+        // fresh cell (full at rest, so p(0) = 0 matches the measured
+        // baseline). Phase 1 has NO transfer path: w is invariant after
+        // initialization/restore; a cut daughter is a new full-at-rest
+        // cell (w := its own v0), consistent with the packet's
+        // initial-condition law.
+        float w = 0.f;
         int caps = 0;
         float ylo = 0.f, yhi = 0.f;     // rest y-range (refusal checks)
         bool degenerate = false;        // live volume under the sampling
@@ -347,6 +359,13 @@ private:
     std::string seal_refusal_;          // last refused seal/split, BY NAME
                                         // ("degenerate_split"); empty = none.
                                         // Exported in state_json.
+    // PHASE-1 inventory migration marker: set to "legacy_no_w" when a
+    // legacy SEL1 seal-state snapshot (no per-cell w) was restored and
+    // every cell's w was initialized w := v0 (the physical full-at-rest
+    // default) — a NAMED, logged initialization, never a silent one.
+    // Empty when w came from a SEL2 blob or no restore happened.
+    // Exported by state_json() as "seal_w_init".
+    std::string seal_w_init_;
     // THE ALREADY-SATISFIED TOLERANCE (restore idempotency): a replayed
     // cut counts as already satisfied when the requested plane sits on a
     // stored cell bound. The stored bounds are exact (seal() forces new
