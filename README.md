@@ -58,6 +58,7 @@ python -B -m tools.creature_graph.project_spec --show req.fundamental_force_scop
 python -B -m tools.creature_graph.project_spec --show work.science.force_data_runtime
 python -B -m tools.creature_graph.project_spec --show doc.force_source_catalog
 python -B -m tools.creature_graph.project_spec --show doc.force_model_library
+python -B -m tools.creature_graph.project_spec --show doc.space_mechanism_catalog
 python -B -m tools.creature_graph.project_spec --show work.encapsulation.demo_game_loop
 ```
 
