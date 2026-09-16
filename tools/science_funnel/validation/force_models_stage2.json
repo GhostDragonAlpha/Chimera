@@ -80,7 +80,7 @@
   "scope": "Numerical implementation qualification; not experimental fit accuracy or dynamic gameplay acceptance.",
   "status": "pass",
   "schema": "chimera.force_models_validation.v1",
-  "phase": "working_candidate",
+  "phase": "committed_candidate",
   "preregistration_commit": "b4785536eb9dd728124aaedab8a76734cc03452e",
   "regression_tests": {
     "passed": 74,
@@ -97,5 +97,8 @@
     "tools/science_funnel/tests/test_force_compiler.py": "012f9c76f6320f5316dd5bdc1bc17573eb1cc882dd174c02dba3d324fe39e298",
     "tools/science_funnel/tests/validate_force_models.py": "6095579184bd285cf34ac6de01226646487b358877185d9c4a716b0671b8448e",
     "tools/science_funnel/tests/native/CMakeLists.txt": "dc782dd9f2bb1f43cc1326dfd88b0727e6ce1be51dad09411bc0efb7552586c3"
-  }
+  },
+  "candidate_commit": "a49ca78349c80558299c7e704366c58a846faa16",
+  "candidate_tree": "99d19f7fc76c74144265934786c969f48a09a9d9",
+  "postcommit_native_checks": 2686
 }
