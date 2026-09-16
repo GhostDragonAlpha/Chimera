@@ -13071,6 +13071,106 @@
     "statement": "An agent reports work as online without verifying the remote ref, or leaves completed work unpublished solely to await redundant approval.",
     "status": "untested"
    }
+  },
+  {
+   "id": "source.operator_science_expansion.56e6b4546c69ea6643a6ceb3df84351c87d0c509814be0447647fdce732b4117",
+   "kind": "source",
+   "name": "Operator scope summary: database-driven space RPG physics",
+   "status": "extracted",
+   "document": {
+    "original_path": "conversation:20260916/science-expansion-scope-summary",
+    "sha256": "56e6b4546c69ea6643a6ceb3df84351c87d0c509814be0447647fdce732b4117",
+    "byte_count": 234,
+    "bytes_base64": "T3BlcmF0b3ItYXV0aG9yaXplZCB0ZWNobmljYWwgc2NvcGU6IGF1dG9ub21vdXNseSBzb2x2ZSB0aGUgZGlmZmljdWx0IGRhdGFiYXNlLXRvLXBoeXNpY3MgY29ubmVjdGlvbnMsIHByaW9yaXRpemluZyBhIHNwYWNlIFJQRyBhbmQgcmV1c2FibGUgZW5naW5lLCB3aXRoIHF1YWxpdHkgb3ZlciB0b2tlbiBzYXZpbmdzIGFuZCBwcm9tcHQgcmVtb3RlIHB1YmxpY2F0aW9uIG9mIGNvaGVyZW50IG1pbGVzdG9uZXMu",
+    "text": "Operator-authorized technical scope: autonomously solve the difficult database-to-physics connections, prioritizing a space RPG and reusable engine, with quality over token savings and prompt remote publication of coherent milestones.",
+    "authority": "imported_untrusted"
+   }
+  },
+  {
+   "id": "work.science.force_data_runtime",
+   "kind": "work",
+   "name": "Connect force-origin databases to energy-accounted runtime laws",
+   "status": "specified",
+   "priority": "P0",
+   "dependencies": [],
+   "project_spec": {
+    "schema": "chimera.project_spec.v1",
+    "admission": "active_specification",
+    "category": "work",
+    "origin_id": "source.operator_science_expansion.56e6b4546c69ea6643a6ceb3df84351c87d0c509814be0447647fdce732b4117",
+    "admitted_utc": "2026-09-16T20:23:16.361655+00:00",
+    "authorization": "operator directed autonomous repository implementation in this conversation",
+    "authority_scope": "isolated repository work; no deployed-controller admission claimed"
+   },
+   "physical": {
+    "statement": "Pinned scientific data is transformed through typed, condition-aware adapters into bounded effective models and observable game behavior.",
+    "prediction": "Changing a source-selected physical input changes the predicted response; missing inputs or invalid regimes cause an explicit refusal rather than fabricated realism.",
+    "contract": {
+     "milestones": [
+      "Acquire source bytes, receipts and attribution; parse constants, body/system GM, gas thermodynamics, solid property curves and nuclide data through existing intake machinery.",
+      "Implement bounded model evaluations and conservative energy/inventory transitions with independent reference and adversarial checks.",
+      "Compile a native physical experiment with a concrete space-salvage objective, observable failure and recovery; browser sends intent and displays native state. Publish scoped results without declaring the full game complete."
+     ],
+     "candidate_sources": [
+      "NIST CODATA 2022",
+      "JPL DE440 astrodynamic parameters",
+      "Cantera pinned NASA7 species thermo",
+      "NIST 6061-T6 cryogenic property fits",
+      "IAEA LiveChart evaluated nuclide data"
+     ],
+     "premeasurement_contract": [
+      {
+       "id": "D1",
+       "claim": "Source identity and deterministic offline replay",
+       "falsifier": "One changed source byte, duplicate identity or changed parser is silently accepted as the original import."
+      },
+      {
+       "id": "D2",
+       "claim": "Quantity semantics and boundaries",
+       "falsifier": "Body GM becomes a planet-system mass, atomic mass becomes nuclear mass, or a blank/qualified decay value becomes an exact scalar."
+      },
+      {
+       "id": "D3",
+       "claim": "Condition-aware thermal and mechanical models",
+       "falsifier": "An evaluator extrapolates beyond selected source bounds, assumes a heat capacity is constant over a phase change, or interprets fit error as statistical uncertainty."
+      },
+      {
+       "id": "D4",
+       "claim": "Thermodynamic consistency",
+       "falsifier": "For fixed composition, dU/dT differs from Cv or dH/dT differs from Cp beyond a preregistered finite-difference check; a transfer creates unaccounted energy."
+      },
+      {
+       "id": "D5",
+       "claim": "Gravitational response",
+       "falsifier": "Circular orbit or force-gradient checks disagree with the imported GM and the chosen point-mass potential."
+      },
+      {
+       "id": "D6",
+       "claim": "Selected decay evolution",
+       "falsifier": "One half-life fails to halve the selected parent within 1e-12 relative arithmetic error; stable/unknown/bounded half-lives silently decay; all decay Q is treated as deposited heat."
+      },
+      {
+       "id": "D7",
+       "claim": "Owned state and conservative transactions",
+       "falsifier": "Rejected input partially mutates state, equal-state cells exchange finite net quantity, or an inventory becomes negative without a named boundary event."
+      },
+      {
+       "id": "D8",
+       "claim": "Runtime is visibly causal",
+       "falsifier": "The renderer substitutes animation for native dynamics, paused native state keeps evolving visually, or the player wins with the required physical interaction disabled."
+      }
+     ],
+     "staging": "Derive scenario-specific numerical tolerances before its measurements. Source/licensing uncertainty remains explicit. Native runtime acceptance follows source/model checks.",
+     "ownership": "One source writer in the isolated PythonChimera worktree; separate scratch builds and ports. No shared engine restart.",
+     "execution_readiness": "This repository assignment is explicitly authorized. No controller dispatch/checklist verification or production qualification is implied.",
+     "publication": "Publish each coherent commit to the existing remote branch; integrate through authorized master history without force-push."
+    }
+   },
+   "falsifier": {
+    "statement": "A database catalog with no validated model or observable behavior is called a completed data-to-game system.",
+    "status": "untested"
+   },
+   "build_rank": 1
   }
  ],
  "relations": [
@@ -16661,6 +16761,30 @@
    "rel": "derived_from",
    "dst": "req.agent_operation",
    "note": "Supplies authorization for the existing commit and integration workflow"
+  },
+  {
+   "src": "work.science.force_data_runtime",
+   "rel": "derived_from",
+   "dst": "source.operator_science_expansion.56e6b4546c69ea6643a6ceb3df84351c87d0c509814be0447647fdce732b4117",
+   "note": "Operator-authorized implementation scope"
+  },
+  {
+   "src": "work.science.force_data_runtime",
+   "rel": "derived_from",
+   "dst": "req.fundamental_force_scope",
+   "note": "Physical scope and effective laws"
+  },
+  {
+   "src": "work.science.force_data_runtime",
+   "rel": "derived_from",
+   "dst": "req.matter_variables_lod",
+   "note": "State ownership and numerical fidelity"
+  },
+  {
+   "src": "work.science.force_data_runtime",
+   "rel": "derived_from",
+   "dst": "req.publication_workflow",
+   "note": "Prompt milestone preservation"
   }
  ],
  "migration_receipt": [

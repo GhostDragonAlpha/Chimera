@@ -8,14 +8,14 @@
    "authored/mechanisms.json": "b9cd34db97334f12142ba89d19c6679f4d74587a0cddcde7389fa6d0f31acec4",
    "authored/requirements_tasks.json": "7f8e607439e43c92cac5796ad573b8a0d5b3ec026bd70a84f6258a3bd44052be",
    "authored/relations.json": "26727a96ecb88354318fc6a9c419cf0ce75719db99e4b2fc1cf31ebbd66859f2",
-   "authored/project_program.json": "28a72a0bb5bc375f10ab158a911e1d2c92d8f3602325a40531ea3d39a419b3ee"
+   "authored/project_program.json": "a318a2650480daecd2e74125cd3211bd11293e8375a2256e93097ea67257922f"
   },
   "built_utc": null,
   "reference_join": {
    "source": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\tools\\reference_data\\data\\reference_store.json",
    "sha256": "12e9824123cac48fff41b8281a0b62efb2a643deefef6201512fbb3e34d8618f"
   },
-  "saved_utc": "2026-09-16T20:13:03+00:00",
+  "saved_utc": "2026-09-16T20:23:16+00:00",
   "loaded_schema_version": "2.0.0"
  },
  "objects": {
@@ -61609,6 +61609,106 @@
     "statement": "An agent reports work as online without verifying the remote ref, or leaves completed work unpublished solely to await redundant approval.",
     "status": "untested"
    }
+  },
+  "source.operator_science_expansion.56e6b4546c69ea6643a6ceb3df84351c87d0c509814be0447647fdce732b4117": {
+   "id": "source.operator_science_expansion.56e6b4546c69ea6643a6ceb3df84351c87d0c509814be0447647fdce732b4117",
+   "kind": "source",
+   "name": "Operator scope summary: database-driven space RPG physics",
+   "status": "extracted",
+   "document": {
+    "original_path": "conversation:20260916/science-expansion-scope-summary",
+    "sha256": "56e6b4546c69ea6643a6ceb3df84351c87d0c509814be0447647fdce732b4117",
+    "byte_count": 234,
+    "bytes_base64": "T3BlcmF0b3ItYXV0aG9yaXplZCB0ZWNobmljYWwgc2NvcGU6IGF1dG9ub21vdXNseSBzb2x2ZSB0aGUgZGlmZmljdWx0IGRhdGFiYXNlLXRvLXBoeXNpY3MgY29ubmVjdGlvbnMsIHByaW9yaXRpemluZyBhIHNwYWNlIFJQRyBhbmQgcmV1c2FibGUgZW5naW5lLCB3aXRoIHF1YWxpdHkgb3ZlciB0b2tlbiBzYXZpbmdzIGFuZCBwcm9tcHQgcmVtb3RlIHB1YmxpY2F0aW9uIG9mIGNvaGVyZW50IG1pbGVzdG9uZXMu",
+    "text": "Operator-authorized technical scope: autonomously solve the difficult database-to-physics connections, prioritizing a space RPG and reusable engine, with quality over token savings and prompt remote publication of coherent milestones.",
+    "authority": "imported_untrusted"
+   }
+  },
+  "work.science.force_data_runtime": {
+   "id": "work.science.force_data_runtime",
+   "kind": "work",
+   "name": "Connect force-origin databases to energy-accounted runtime laws",
+   "status": "specified",
+   "priority": "P0",
+   "dependencies": [],
+   "project_spec": {
+    "schema": "chimera.project_spec.v1",
+    "admission": "active_specification",
+    "category": "work",
+    "origin_id": "source.operator_science_expansion.56e6b4546c69ea6643a6ceb3df84351c87d0c509814be0447647fdce732b4117",
+    "admitted_utc": "2026-09-16T20:23:16.361655+00:00",
+    "authorization": "operator directed autonomous repository implementation in this conversation",
+    "authority_scope": "isolated repository work; no deployed-controller admission claimed"
+   },
+   "physical": {
+    "statement": "Pinned scientific data is transformed through typed, condition-aware adapters into bounded effective models and observable game behavior.",
+    "prediction": "Changing a source-selected physical input changes the predicted response; missing inputs or invalid regimes cause an explicit refusal rather than fabricated realism.",
+    "contract": {
+     "milestones": [
+      "Acquire source bytes, receipts and attribution; parse constants, body/system GM, gas thermodynamics, solid property curves and nuclide data through existing intake machinery.",
+      "Implement bounded model evaluations and conservative energy/inventory transitions with independent reference and adversarial checks.",
+      "Compile a native physical experiment with a concrete space-salvage objective, observable failure and recovery; browser sends intent and displays native state. Publish scoped results without declaring the full game complete."
+     ],
+     "candidate_sources": [
+      "NIST CODATA 2022",
+      "JPL DE440 astrodynamic parameters",
+      "Cantera pinned NASA7 species thermo",
+      "NIST 6061-T6 cryogenic property fits",
+      "IAEA LiveChart evaluated nuclide data"
+     ],
+     "premeasurement_contract": [
+      {
+       "id": "D1",
+       "claim": "Source identity and deterministic offline replay",
+       "falsifier": "One changed source byte, duplicate identity or changed parser is silently accepted as the original import."
+      },
+      {
+       "id": "D2",
+       "claim": "Quantity semantics and boundaries",
+       "falsifier": "Body GM becomes a planet-system mass, atomic mass becomes nuclear mass, or a blank/qualified decay value becomes an exact scalar."
+      },
+      {
+       "id": "D3",
+       "claim": "Condition-aware thermal and mechanical models",
+       "falsifier": "An evaluator extrapolates beyond selected source bounds, assumes a heat capacity is constant over a phase change, or interprets fit error as statistical uncertainty."
+      },
+      {
+       "id": "D4",
+       "claim": "Thermodynamic consistency",
+       "falsifier": "For fixed composition, dU/dT differs from Cv or dH/dT differs from Cp beyond a preregistered finite-difference check; a transfer creates unaccounted energy."
+      },
+      {
+       "id": "D5",
+       "claim": "Gravitational response",
+       "falsifier": "Circular orbit or force-gradient checks disagree with the imported GM and the chosen point-mass potential."
+      },
+      {
+       "id": "D6",
+       "claim": "Selected decay evolution",
+       "falsifier": "One half-life fails to halve the selected parent within 1e-12 relative arithmetic error; stable/unknown/bounded half-lives silently decay; all decay Q is treated as deposited heat."
+      },
+      {
+       "id": "D7",
+       "claim": "Owned state and conservative transactions",
+       "falsifier": "Rejected input partially mutates state, equal-state cells exchange finite net quantity, or an inventory becomes negative without a named boundary event."
+      },
+      {
+       "id": "D8",
+       "claim": "Runtime is visibly causal",
+       "falsifier": "The renderer substitutes animation for native dynamics, paused native state keeps evolving visually, or the player wins with the required physical interaction disabled."
+      }
+     ],
+     "staging": "Derive scenario-specific numerical tolerances before its measurements. Source/licensing uncertainty remains explicit. Native runtime acceptance follows source/model checks.",
+     "ownership": "One source writer in the isolated PythonChimera worktree; separate scratch builds and ports. No shared engine restart.",
+     "execution_readiness": "This repository assignment is explicitly authorized. No controller dispatch/checklist verification or production qualification is implied.",
+     "publication": "Publish each coherent commit to the existing remote branch; integrate through authorized master history without force-push."
+    }
+   },
+   "falsifier": {
+    "statement": "A database catalog with no validated model or observable behavior is called a completed data-to-game system.",
+    "status": "untested"
+   },
+   "build_rank": 1
   }
  },
  "relations": [
@@ -67162,6 +67262,34 @@
    "rel": "derived_from",
    "dst": "req.agent_operation",
    "note": "Supplies authorization for the existing commit and integration workflow"
+  },
+  {
+   "rid": "r_8dee42caa5f71f856a87b8655a7f8e4877049a94d639213a0965f48dfcffed62_0",
+   "src": "work.science.force_data_runtime",
+   "rel": "derived_from",
+   "dst": "source.operator_science_expansion.56e6b4546c69ea6643a6ceb3df84351c87d0c509814be0447647fdce732b4117",
+   "note": "Operator-authorized implementation scope"
+  },
+  {
+   "rid": "r_6589a7e98f007fdeebd6f40e0bce18f023bbd522daa8a9e419be5ac0a5442dcc_0",
+   "src": "work.science.force_data_runtime",
+   "rel": "derived_from",
+   "dst": "req.fundamental_force_scope",
+   "note": "Physical scope and effective laws"
+  },
+  {
+   "rid": "r_645a46bb92c81275cc30fdfbf4c1df05e9899f82592915b771c74c9789932ecc_0",
+   "src": "work.science.force_data_runtime",
+   "rel": "derived_from",
+   "dst": "req.matter_variables_lod",
+   "note": "State ownership and numerical fidelity"
+  },
+  {
+   "rid": "r_3d2cf82cfc197fd5d5928a107ebc4846cea2f34ffbc772c7e8ee5f624577d9d9_0",
+   "src": "work.science.force_data_runtime",
+   "rel": "derived_from",
+   "dst": "req.publication_workflow",
+   "note": "Prompt milestone preservation"
   }
  ],
  "layout": {
@@ -67248,6 +67376,10 @@
   "work.encapsulation.energy_state": {
    "roadmap_tier": 1,
    "roadmap_x": 14
+  },
+  "work.science.force_data_runtime": {
+   "roadmap_tier": 1,
+   "roadmap_x": 15
   },
   "actuator.joint_servos": {
    "roadmap_tier": 2,
@@ -74233,229 +74365,233 @@
    "roadmap_tier": 9,
    "roadmap_x": 1718
   },
-  "src.bodyparts3d": {
+  "source.operator_science_expansion.56e6b4546c69ea6643a6ceb3df84351c87d0c509814be0447647fdce732b4117": {
    "roadmap_tier": 9,
    "roadmap_x": 1719
   },
-  "src.opensim.leg6dof9musc": {
+  "src.bodyparts3d": {
    "roadmap_tier": 9,
    "roadmap_x": 1720
   },
-  "src.qudt.units": {
+  "src.opensim.leg6dof9musc": {
    "roadmap_tier": 9,
    "roadmap_x": 1721
   },
-  "src.ro.base": {
+  "src.qudt.units": {
    "roadmap_tier": 9,
    "roadmap_x": 1722
   },
-  "src.uberon.appendicular-minimal": {
+  "src.ro.base": {
    "roadmap_tier": 9,
    "roadmap_x": 1723
   },
-  "type.A11": {
+  "src.uberon.appendicular-minimal": {
    "roadmap_tier": 9,
    "roadmap_x": 1724
   },
-  "type.A12": {
+  "type.A11": {
    "roadmap_tier": 9,
    "roadmap_x": 1725
   },
-  "type.A4": {
+  "type.A12": {
    "roadmap_tier": 9,
    "roadmap_x": 1726
   },
-  "type.A6": {
+  "type.A4": {
    "roadmap_tier": 9,
    "roadmap_x": 1727
   },
-  "type.A9": {
+  "type.A6": {
    "roadmap_tier": 9,
    "roadmap_x": 1728
   },
-  "type.B13": {
+  "type.A9": {
    "roadmap_tier": 9,
    "roadmap_x": 1729
   },
-  "type.B14": {
+  "type.B13": {
    "roadmap_tier": 9,
    "roadmap_x": 1730
   },
-  "type.B15": {
+  "type.B14": {
    "roadmap_tier": 9,
    "roadmap_x": 1731
   },
-  "type.B16": {
+  "type.B15": {
    "roadmap_tier": 9,
    "roadmap_x": 1732
   },
-  "type.B20": {
+  "type.B16": {
    "roadmap_tier": 9,
    "roadmap_x": 1733
   },
-  "type.B21": {
+  "type.B20": {
    "roadmap_tier": 9,
    "roadmap_x": 1734
   },
-  "type.B22": {
+  "type.B21": {
    "roadmap_tier": 9,
    "roadmap_x": 1735
   },
-  "type.C23": {
+  "type.B22": {
    "roadmap_tier": 9,
    "roadmap_x": 1736
   },
-  "type.C24": {
+  "type.C23": {
    "roadmap_tier": 9,
    "roadmap_x": 1737
   },
-  "type.C25": {
+  "type.C24": {
    "roadmap_tier": 9,
    "roadmap_x": 1738
   },
-  "type.C26": {
+  "type.C25": {
    "roadmap_tier": 9,
    "roadmap_x": 1739
   },
-  "type.C27": {
+  "type.C26": {
    "roadmap_tier": 9,
    "roadmap_x": 1740
   },
-  "type.C28": {
+  "type.C27": {
    "roadmap_tier": 9,
    "roadmap_x": 1741
   },
-  "type.D34": {
+  "type.C28": {
    "roadmap_tier": 9,
    "roadmap_x": 1742
   },
-  "type.D35": {
+  "type.D34": {
    "roadmap_tier": 9,
    "roadmap_x": 1743
   },
-  "type.E36": {
+  "type.D35": {
    "roadmap_tier": 9,
    "roadmap_x": 1744
   },
-  "type.E37": {
+  "type.E36": {
    "roadmap_tier": 9,
    "roadmap_x": 1745
   },
-  "type.E38": {
+  "type.E37": {
    "roadmap_tier": 9,
    "roadmap_x": 1746
   },
-  "type.E39": {
+  "type.E38": {
    "roadmap_tier": 9,
    "roadmap_x": 1747
   },
-  "type.E40": {
+  "type.E39": {
    "roadmap_tier": 9,
    "roadmap_x": 1748
   },
-  "type.E41": {
+  "type.E40": {
    "roadmap_tier": 9,
    "roadmap_x": 1749
   },
-  "type.E42": {
+  "type.E41": {
    "roadmap_tier": 9,
    "roadmap_x": 1750
   },
-  "work.causal_demo_leg_l": {
+  "type.E42": {
    "roadmap_tier": 9,
    "roadmap_x": 1751
   },
-  "work.encapsulation.demo_game_loop": {
+  "work.causal_demo_leg_l": {
    "roadmap_tier": 9,
    "roadmap_x": 1752
   },
-  "work.funnel.appearance": {
+  "work.encapsulation.demo_game_loop": {
    "roadmap_tier": 9,
    "roadmap_x": 1753
   },
-  "work.funnel.chemistry": {
+  "work.funnel.appearance": {
    "roadmap_tier": 9,
    "roadmap_x": 1754
   },
-  "work.funnel.identity": {
+  "work.funnel.chemistry": {
    "roadmap_tier": 9,
    "roadmap_x": 1755
   },
-  "work.funnel.materials": {
+  "work.funnel.identity": {
    "roadmap_tier": 9,
    "roadmap_x": 1756
   },
-  "work.funnel.motion": {
+  "work.funnel.materials": {
    "roadmap_tier": 9,
    "roadmap_x": 1757
   },
-  "work.funnel.observations": {
+  "work.funnel.motion": {
    "roadmap_tier": 9,
    "roadmap_x": 1758
   },
-  "work.funnel.physiology": {
+  "work.funnel.observations": {
    "roadmap_tier": 9,
    "roadmap_x": 1759
   },
-  "work.funnel.project_memory": {
+  "work.funnel.physiology": {
    "roadmap_tier": 9,
    "roadmap_x": 1760
   },
-  "work.funnel.shape": {
+  "work.funnel.project_memory": {
    "roadmap_tier": 9,
    "roadmap_x": 1761
   },
-  "work.funnel.transport": {
+  "work.funnel.shape": {
    "roadmap_tier": 9,
    "roadmap_x": 1762
   },
-  "work.funnel.units": {
+  "work.funnel.transport": {
    "roadmap_tier": 9,
    "roadmap_x": 1763
   },
-  "work.funnel.world": {
+  "work.funnel.units": {
    "roadmap_tier": 9,
    "roadmap_x": 1764
   },
-  "work.gaussian_graph_view": {
+  "work.funnel.world": {
    "roadmap_tier": 9,
    "roadmap_x": 1765
   },
-  "work.graph_dsl_compiler": {
+  "work.gaussian_graph_view": {
    "roadmap_tier": 9,
    "roadmap_x": 1766
   },
-  "work.graph_runtime_qualification": {
+  "work.graph_dsl_compiler": {
    "roadmap_tier": 9,
    "roadmap_x": 1767
   },
-  "work.inspect_consistent_ids": {
+  "work.graph_runtime_qualification": {
    "roadmap_tier": 9,
    "roadmap_x": 1768
   },
-  "work.physics_rule_ports": {
+  "work.inspect_consistent_ids": {
    "roadmap_tier": 9,
    "roadmap_x": 1769
   },
-  "work.project_memory_migration": {
+  "work.physics_rule_ports": {
    "roadmap_tier": 9,
    "roadmap_x": 1770
   },
-  "work.reference_adaptation_osim": {
+  "work.project_memory_migration": {
    "roadmap_tier": 9,
    "roadmap_x": 1771
   },
-  "work.scientific_adapters": {
+  "work.reference_adaptation_osim": {
    "roadmap_tier": 9,
    "roadmap_x": 1772
   },
-  "work.septa_leg_l": {
+  "work.scientific_adapters": {
    "roadmap_tier": 9,
    "roadmap_x": 1773
   },
-  "work.serial_graph_gateway": {
+  "work.septa_leg_l": {
    "roadmap_tier": 9,
    "roadmap_x": 1774
+  },
+  "work.serial_graph_gateway": {
+   "roadmap_tier": 9,
+   "roadmap_x": 1775
   },
   "work.encapsulation.engine_lock": {
    "roadmap_tier": 10,
