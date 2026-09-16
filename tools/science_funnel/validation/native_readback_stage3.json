@@ -1,0 +1,694 @@
+{
+  "schema": "chimera.native_readback_controls.v1",
+  "status": "pass",
+  "method": "Exploratory controlled comparison; elapsed times reported, not portable pass thresholds.",
+  "exe_sha256": "87ebb36a175772544fa06d2adda5a2e1eae57ebfbb1a60a4ba6aa639bd1a3396",
+  "scene_file_sha256": "7677068e7686c8a1420b9e4f66fac098b603d964f4fb92de3e47943519e1b3d2",
+  "pixel_identity": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+  "cases": {
+    "uncached_direct": {
+      "captures": [
+        {
+          "capture_sequence": 1,
+          "height": 684,
+          "mime": "image/jpeg",
+          "ok": true,
+          "read_phase_names": [
+            "map",
+            "invalidate",
+            "bulk_copy",
+            "conversion_or_direct_read",
+            "unmap"
+          ],
+          "read_phases_us": [
+            2,
+            0,
+            0,
+            924541,
+            11
+          ],
+          "timing_ms": {
+            "copy": 2.4863,
+            "downscale": 5.9715,
+            "encode": 3.5992,
+            "state_lookup": 0.0093,
+            "wait_collect": 935.4536
+          },
+          "width": 1280,
+          "client_ms": 948.7952000054065,
+          "image_sha256": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+          "camera": [
+            11.5,
+            0.15000000596046448,
+            0.3499999940395355,
+            -2.700000047683716,
+            2.200000047683716,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_m": 0.0
+        },
+        {
+          "capture_sequence": 2,
+          "height": 684,
+          "mime": "image/jpeg",
+          "ok": true,
+          "read_phase_names": [
+            "map",
+            "invalidate",
+            "bulk_copy",
+            "conversion_or_direct_read",
+            "unmap"
+          ],
+          "read_phases_us": [
+            3,
+            0,
+            0,
+            928324,
+            7
+          ],
+          "timing_ms": {
+            "copy": 2.8109,
+            "downscale": 6.1658,
+            "encode": 2.0202,
+            "state_lookup": 0.0105,
+            "wait_collect": 938.1063
+          },
+          "width": 1280,
+          "client_ms": 950.7101000053808,
+          "image_sha256": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+          "camera": [
+            11.5,
+            0.15000000596046448,
+            0.3499999940395355,
+            -2.700000047683716,
+            2.200000047683716,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_m": 0.0
+        },
+        {
+          "capture_sequence": 3,
+          "height": 684,
+          "mime": "image/jpeg",
+          "ok": true,
+          "read_phase_names": [
+            "map",
+            "invalidate",
+            "bulk_copy",
+            "conversion_or_direct_read",
+            "unmap"
+          ],
+          "read_phases_us": [
+            2,
+            0,
+            0,
+            926133,
+            7
+          ],
+          "timing_ms": {
+            "copy": 1.8114,
+            "downscale": 5.9845,
+            "encode": 1.9577,
+            "state_lookup": 0.0099,
+            "wait_collect": 938.0588
+          },
+          "width": 1280,
+          "client_ms": 949.2103999946266,
+          "image_sha256": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+          "camera": [
+            11.5,
+            0.15000000596046448,
+            0.3499999940395355,
+            -2.700000047683716,
+            2.200000047683716,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_m": 0.0
+        },
+        {
+          "capture_sequence": 4,
+          "height": 684,
+          "mime": "image/jpeg",
+          "ok": true,
+          "read_phase_names": [
+            "map",
+            "invalidate",
+            "bulk_copy",
+            "conversion_or_direct_read",
+            "unmap"
+          ],
+          "read_phases_us": [
+            2,
+            0,
+            0,
+            926567,
+            7
+          ],
+          "timing_ms": {
+            "copy": 2.7022,
+            "downscale": 6.0191,
+            "encode": 1.9803,
+            "state_lookup": 0.0103,
+            "wait_collect": 934.5838
+          },
+          "width": 1280,
+          "client_ms": 946.8838000029791,
+          "image_sha256": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+          "camera": [
+            11.5,
+            0.15000000596046448,
+            0.3499999940395355,
+            -2.700000047683716,
+            2.200000047683716,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_m": 0.0
+        },
+        {
+          "capture_sequence": 5,
+          "height": 684,
+          "mime": "image/jpeg",
+          "ok": true,
+          "read_phase_names": [
+            "map",
+            "invalidate",
+            "bulk_copy",
+            "conversion_or_direct_read",
+            "unmap"
+          ],
+          "read_phases_us": [
+            2,
+            0,
+            0,
+            934161,
+            8
+          ],
+          "timing_ms": {
+            "copy": 3.0987,
+            "downscale": 5.9692,
+            "encode": 2.0442,
+            "state_lookup": 0.0107,
+            "wait_collect": 942.6979
+          },
+          "width": 1280,
+          "client_ms": 955.787099985173,
+          "image_sha256": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+          "camera": [
+            11.5,
+            0.15000000596046448,
+            0.3499999940395355,
+            -2.700000047683716,
+            2.200000047683716,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_m": 0.0
+        }
+      ],
+      "environment": {
+        "CHIMERA_RB_UNCACHED_CONTROL": "1",
+        "CHIMERA_RB_DIRECT_CONTROL": "1"
+      },
+      "memory": {
+        "rb_mem_type": 2,
+        "rb_mem_flags": 6,
+        "gpu": "NVIDIA GeForce RTX 4090"
+      },
+      "warm_median_client_ms": 949.9602500000037,
+      "warm_median_read_phases_us": [
+        2.0,
+        0.0,
+        0.0,
+        927445.5,
+        7.0
+      ]
+    },
+    "uncached_bulk": {
+      "captures": [
+        {
+          "capture_sequence": 1,
+          "height": 684,
+          "mime": "image/jpeg",
+          "ok": true,
+          "read_phase_names": [
+            "map",
+            "invalidate",
+            "bulk_copy",
+            "conversion_or_direct_read",
+            "unmap"
+          ],
+          "read_phases_us": [
+            2,
+            0,
+            34375,
+            1019,
+            7
+          ],
+          "timing_ms": {
+            "copy": 2.9457,
+            "downscale": 6.1255,
+            "encode": 3.686,
+            "state_lookup": 0.009,
+            "wait_collect": 44.9399
+          },
+          "width": 1280,
+          "client_ms": 58.82149998797104,
+          "image_sha256": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+          "camera": [
+            11.5,
+            0.15000000596046448,
+            0.3499999940395355,
+            -2.700000047683716,
+            2.200000047683716,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_m": 0.0
+        },
+        {
+          "capture_sequence": 2,
+          "height": 684,
+          "mime": "image/jpeg",
+          "ok": true,
+          "read_phase_names": [
+            "map",
+            "invalidate",
+            "bulk_copy",
+            "conversion_or_direct_read",
+            "unmap"
+          ],
+          "read_phases_us": [
+            2,
+            0,
+            35343,
+            984,
+            10
+          ],
+          "timing_ms": {
+            "copy": 2.5754,
+            "downscale": 5.9631,
+            "encode": 1.944,
+            "state_lookup": 0.0095,
+            "wait_collect": 44.4306
+          },
+          "width": 1280,
+          "client_ms": 56.57549999887124,
+          "image_sha256": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+          "camera": [
+            11.5,
+            0.15000000596046448,
+            0.3499999940395355,
+            -2.700000047683716,
+            2.200000047683716,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_m": 0.0
+        },
+        {
+          "capture_sequence": 3,
+          "height": 684,
+          "mime": "image/jpeg",
+          "ok": true,
+          "read_phase_names": [
+            "map",
+            "invalidate",
+            "bulk_copy",
+            "conversion_or_direct_read",
+            "unmap"
+          ],
+          "read_phases_us": [
+            3,
+            0,
+            34621,
+            951,
+            7
+          ],
+          "timing_ms": {
+            "copy": 2.2542,
+            "downscale": 5.9199,
+            "encode": 1.9974,
+            "state_lookup": 0.0088,
+            "wait_collect": 42.877
+          },
+          "width": 1280,
+          "client_ms": 54.57819998264313,
+          "image_sha256": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+          "camera": [
+            11.5,
+            0.15000000596046448,
+            0.3499999940395355,
+            -2.700000047683716,
+            2.200000047683716,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_m": 0.0
+        },
+        {
+          "capture_sequence": 4,
+          "height": 684,
+          "mime": "image/jpeg",
+          "ok": true,
+          "read_phase_names": [
+            "map",
+            "invalidate",
+            "bulk_copy",
+            "conversion_or_direct_read",
+            "unmap"
+          ],
+          "read_phases_us": [
+            2,
+            0,
+            35003,
+            955,
+            10
+          ],
+          "timing_ms": {
+            "copy": 1.7106,
+            "downscale": 5.9708,
+            "encode": 1.9675,
+            "state_lookup": 0.01,
+            "wait_collect": 43.8899
+          },
+          "width": 1280,
+          "client_ms": 55.14039998524822,
+          "image_sha256": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+          "camera": [
+            11.5,
+            0.15000000596046448,
+            0.3499999940395355,
+            -2.700000047683716,
+            2.200000047683716,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_m": 0.0
+        },
+        {
+          "capture_sequence": 5,
+          "height": 684,
+          "mime": "image/jpeg",
+          "ok": true,
+          "read_phase_names": [
+            "map",
+            "invalidate",
+            "bulk_copy",
+            "conversion_or_direct_read",
+            "unmap"
+          ],
+          "read_phases_us": [
+            3,
+            0,
+            34456,
+            963,
+            8
+          ],
+          "timing_ms": {
+            "copy": 2.9408,
+            "downscale": 6.284,
+            "encode": 2.0069,
+            "state_lookup": 0.009,
+            "wait_collect": 42.5248
+          },
+          "width": 1280,
+          "client_ms": 54.97669999022037,
+          "image_sha256": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+          "camera": [
+            11.5,
+            0.15000000596046448,
+            0.3499999940395355,
+            -2.700000047683716,
+            2.200000047683716,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_m": 0.0
+        }
+      ],
+      "environment": {
+        "CHIMERA_RB_UNCACHED_CONTROL": "1"
+      },
+      "memory": {
+        "rb_mem_type": 2,
+        "rb_mem_flags": 6,
+        "gpu": "NVIDIA GeForce RTX 4090"
+      },
+      "warm_median_client_ms": 55.058549987734295,
+      "warm_median_read_phases_us": [
+        2.5,
+        0.0,
+        34812.0,
+        959.0,
+        9.0
+      ]
+    },
+    "cached_default": {
+      "captures": [
+        {
+          "capture_sequence": 1,
+          "height": 684,
+          "mime": "image/jpeg",
+          "ok": true,
+          "read_phase_names": [
+            "map",
+            "invalidate",
+            "bulk_copy",
+            "conversion_or_direct_read",
+            "unmap"
+          ],
+          "read_phases_us": [
+            2,
+            0,
+            0,
+            1755,
+            4
+          ],
+          "timing_ms": {
+            "copy": 2.0316,
+            "downscale": 6.0692,
+            "encode": 3.5871,
+            "state_lookup": 0.0089,
+            "wait_collect": 11.4095
+          },
+          "width": 1280,
+          "client_ms": 24.989500001538545,
+          "image_sha256": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+          "camera": [
+            11.5,
+            0.15000000596046448,
+            0.3499999940395355,
+            -2.700000047683716,
+            2.200000047683716,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_m": 0.0
+        },
+        {
+          "capture_sequence": 2,
+          "height": 684,
+          "mime": "image/jpeg",
+          "ok": true,
+          "read_phase_names": [
+            "map",
+            "invalidate",
+            "bulk_copy",
+            "conversion_or_direct_read",
+            "unmap"
+          ],
+          "read_phases_us": [
+            2,
+            0,
+            0,
+            1778,
+            7
+          ],
+          "timing_ms": {
+            "copy": 3.1826,
+            "downscale": 6.032,
+            "encode": 2.2022,
+            "state_lookup": 0.0105,
+            "wait_collect": 11.0311
+          },
+          "width": 1280,
+          "client_ms": 23.918499995488673,
+          "image_sha256": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+          "camera": [
+            11.5,
+            0.15000000596046448,
+            0.3499999940395355,
+            -2.700000047683716,
+            2.200000047683716,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_m": 0.0
+        },
+        {
+          "capture_sequence": 3,
+          "height": 684,
+          "mime": "image/jpeg",
+          "ok": true,
+          "read_phase_names": [
+            "map",
+            "invalidate",
+            "bulk_copy",
+            "conversion_or_direct_read",
+            "unmap"
+          ],
+          "read_phases_us": [
+            2,
+            0,
+            0,
+            1791,
+            5
+          ],
+          "timing_ms": {
+            "copy": 1.8985,
+            "downscale": 6.0087,
+            "encode": 2.0479,
+            "state_lookup": 0.0177,
+            "wait_collect": 13.6359
+          },
+          "width": 1280,
+          "client_ms": 25.236700021196157,
+          "image_sha256": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+          "camera": [
+            11.5,
+            0.15000000596046448,
+            0.3499999940395355,
+            -2.700000047683716,
+            2.200000047683716,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_m": 0.0
+        },
+        {
+          "capture_sequence": 4,
+          "height": 684,
+          "mime": "image/jpeg",
+          "ok": true,
+          "read_phase_names": [
+            "map",
+            "invalidate",
+            "bulk_copy",
+            "conversion_or_direct_read",
+            "unmap"
+          ],
+          "read_phases_us": [
+            3,
+            0,
+            0,
+            1757,
+            7
+          ],
+          "timing_ms": {
+            "copy": 1.6699,
+            "downscale": 6.0938,
+            "encode": 2.0919,
+            "state_lookup": 0.0184,
+            "wait_collect": 10.9542
+          },
+          "width": 1280,
+          "client_ms": 23.091299983207136,
+          "image_sha256": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+          "camera": [
+            11.5,
+            0.15000000596046448,
+            0.3499999940395355,
+            -2.700000047683716,
+            2.200000047683716,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_m": 0.0
+        },
+        {
+          "capture_sequence": 5,
+          "height": 684,
+          "mime": "image/jpeg",
+          "ok": true,
+          "read_phase_names": [
+            "map",
+            "invalidate",
+            "bulk_copy",
+            "conversion_or_direct_read",
+            "unmap"
+          ],
+          "read_phases_us": [
+            3,
+            0,
+            0,
+            1784,
+            5
+          ],
+          "timing_ms": {
+            "copy": 1.8956,
+            "downscale": 5.9999,
+            "encode": 1.989,
+            "state_lookup": 0.0091,
+            "wait_collect": 11.3186
+          },
+          "width": 1280,
+          "client_ms": 32.8913000121247,
+          "image_sha256": "7f1e7f2f12e007db7cdf36daabb0d8f890b0b2b1f992c38ceddc5b351fae9e8d",
+          "camera": [
+            11.5,
+            0.15000000596046448,
+            0.3499999940395355,
+            -2.700000047683716,
+            2.200000047683716,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_m": 0.0
+        }
+      ],
+      "environment": {},
+      "memory": {
+        "rb_mem_type": 3,
+        "rb_mem_flags": 14,
+        "gpu": "NVIDIA GeForce RTX 4090"
+      },
+      "warm_median_client_ms": 24.577600008342415,
+      "warm_median_read_phases_us": [
+        2.5,
+        0.0,
+        0.0,
+        1781.0,
+        6.0
+      ]
+    }
+  },
+  "candidate_commit": "646bed409ce6ecf9cf78287d8bb3ba8b2adce446",
+  "candidate_tree": "d8c0fe0b6a61e58340085d54751517edc2a560c2",
+  "measured_utc": "2026-09-16T22:14:22.509448+00:00",
+  "source_manifest": "tools/science_funnel/validation/thermal_salvage_manifest.json",
+  "source_manifest_sha256": "523275b97d40a09e5e3ce0bc6c0d5a8f04d30a2c6e1f404a9a56d4de1a5a1137",
+  "engine_exe_sha256": "87ebb36a175772544fa06d2adda5a2e1eae57ebfbb1a60a4ba6aa639bd1a3396",
+  "graph_hash": "e18ddb85026ef274e731501a8ac7cd9f14b62b81bc28afc66971894d0c96f443",
+  "scene_sha256": "e54cc7e0daf6ab908543e4c30561ad56dad34437853dd6d147d709072c27ed4e",
+  "scope": "Controlled cache/access comparison on this executable, scene, RTX4090 and Windows host; not a general WDDM scheduling result.",
+  "preregistration": "Exploratory diagnostic controls; not presented as preregistered."
+}
