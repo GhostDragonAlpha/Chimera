@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.20)
+project(chimera_force_reference LANGUAGES CXX)
+add_executable(force_native ../force_native.cpp)
+target_compile_features(force_native PRIVATE cxx_std_17)
+if(MSVC)
+  target_compile_options(force_native PRIVATE /W4 /fp:precise)
+endif()
