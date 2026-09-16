@@ -36,6 +36,7 @@ python -B -m tools.creature_graph.project_spec --show req.documentation_admissio
 python -B -m tools.creature_graph.project_spec --show req.agent_operation
 python -B -m tools.creature_graph.project_spec --show req.publication_workflow
 python -B -m tools.creature_graph.project_spec --show req.engine_game_release
+python -B -m tools.creature_graph.project_spec --show req.current_product_focus
 python -B -m tools.creature_graph.project_spec --show req.encapsulation_inventory
 ```
 
