@@ -100,7 +100,49 @@ def _check_candidate(candidate: str, allow: list[str], broken: list[dict], src: 
         })
 
 
+def _current_pointer_text(text: str) -> str:
+    """Keep current references; validated immutable archives describe past files."""
+    try:
+        payload = json.loads(text)
+    except ValueError:
+        return text
+    if __package__:
+        from .creature_graph.project_documents import verify
+    else:
+        from creature_graph.project_documents import verify
+
+    def current(value):
+        if isinstance(value, list):
+            return [current(item) for item in value]
+        if not isinstance(value, dict):
+            return value
+        document = value.get("document")
+        if (value.get("kind") == "source" and "project_spec" not in value
+                and isinstance(document, dict)
+                and document.get("authority") == "imported_untrusted"):
+            try:
+                raw = verify(value)
+                try:
+                    decoded = raw.decode("utf-8-sig")
+                except UnicodeDecodeError:
+                    decoded = None
+                if document.get("text") == decoded:
+                    # Preserve other current metadata and references on the node.
+                    value = dict(value)
+                    historical = {"original_path", "sha256", "byte_count",
+                                  "bytes_base64", "text", "authority"}
+                    value["document"] = {k: v for k, v in document.items()
+                                         if k not in historical}
+            except (ValueError, KeyError, TypeError):
+                pass  # Invalid/untyped archives still undergo ordinary scanning.
+        return {key: current(item) for key, item in value.items()}
+
+    return json.dumps(current(payload), ensure_ascii=False)
+
+
 def scan_text(text: str, src: Path, allow: list[str], broken: list[dict]) -> None:
+    if src.suffix.lower() == ".json":
+        text = _current_pointer_text(text)
     for m in PATH_RE.finditer(text):
         _check_candidate(m.group(0), allow, broken, src)
     if src.suffix.lower() == ".md":

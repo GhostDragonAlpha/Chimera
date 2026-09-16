@@ -1,0 +1,34 @@
+{
+  "schema": "chimera.project_spec.lint_validation.v1",
+  "captured_utc": "2026-09-16T19:21:39.902658+00:00",
+  "scope": "Live pointers remain checked; only hash-valid immutable archival text is excluded. No hook bypass.",
+  "tests_passed": 9,
+  "results": {
+    "tests": {
+      "chunk_id": "5b493b",
+      "wall_time_seconds": 0.2156828,
+      "exit_code": 0,
+      "original_token_count": 315,
+      "output": "test_active_or_untyped_prose_is_not_exempt (__main__.HeaderPathTests.test_active_or_untyped_prose_is_not_exempt) ... ok\r\ntest_existing_hpp_and_supported_files_pass (__main__.HeaderPathTests.test_existing_hpp_and_supported_files_pass) ... ok\r\ntest_extension_prefix_is_not_truncated (__main__.HeaderPathTests.test_extension_prefix_is_not_truncated) ... ok\r\ntest_invalid_archival_bytes_or_text_do_not_hide_references (__main__.HeaderPathTests.test_invalid_archival_bytes_or_text_do_not_hide_references) ... ok\r\ntest_live_reference_next_to_archive_still_fails (__main__.HeaderPathTests.test_live_reference_next_to_archive_still_fails) ... ok\r\ntest_missing_headers_and_full_path_prefix_fail (__main__.HeaderPathTests.test_missing_headers_and_full_path_prefix_fail) ... ok\r\ntest_ordinary_json_references_remain_checked (__main__.HeaderPathTests.test_ordinary_json_references_remain_checked) ... ok\r\ntest_relative_markdown_links_still_apply (__main__.HeaderPathTests.test_relative_markdown_links_still_apply) ... ok\r\ntest_valid_archive_is_history_and_input_stays_unchanged (__main__.HeaderPathTests.test_valid_archive_is_history_and_input_stays_unchanged) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 9 tests in 0.034s\r\n\r\nOK\r\n"
+    },
+    "staged_lint": {
+      "chunk_id": "5f16fc",
+      "wall_time_seconds": 0.2879196,
+      "exit_code": 0,
+      "original_token_count": 11,
+      "output": "{\r\n  \"broken\": [],\r\n  \"mode_issues\": []\r\n}\r\n"
+    },
+    "commands": [
+      "python -B tools/test_doc_lint.py -v",
+      "python -B tools/doc_lint.py --staged --json"
+    ]
+  },
+  "retained_failures": [
+    "Initial normal commit refused three historical pointers inside newly archived source text.",
+    "Broad unittest discovery imported an unrelated XPBD package without NumPy; all nine linter tests passed but discovery exited with that import error. Re-ran the exact standalone linter suite successfully."
+  ],
+  "source_file_sha256": {
+    "tools/doc_lint.py": "25ba3676e4d6062601d35cc85a5d3fbe410738dd8319fe957a6e5ef76129b244",
+    "tools/test_doc_lint.py": "e5263e8915466b4d30c555807b240a13eb33f9a7284140ea3ce973c65f8ca324"
+  }
+}

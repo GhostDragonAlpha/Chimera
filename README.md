@@ -1,102 +1,162 @@
-# CHIMERA — the membrane game
+# Chimera
 
-**A world built from membranes — cosmic down to molecular — where the physics cannot lie.**
+A physics-teaching engine and creature game built from a versioned scientific graph.
 
-Chimera is a real-time physics teaching game built on one idea: every
-material's outer surface — every triangle — carries real physical
-properties. Bones are membranes. Joints are membranes. Water, cloth,
-terrain, heat: membranes. Compose them and you get a creature that cannot
-lie about its own body, in a world built the same way. **Minecraft's
-accessibility, Star Citizen's scope, Space Engineers' material depth —
-and behind it, a real physics engine that never fakes a number.**
+**Start here. This is the only onboarding file an operator needs to give an agent.**
+The selected graph revision holds project requirements, concepts, work, dependencies,
+sources, and evidence. This README is its bootstrap and command reference.
 
-[docs/THE_GAME.md](docs/THE_GAME.md) is the constitution: the vision, the
-build order, and the laws this project runs under.
+## 1. Confirm the checkout
 
-## Run the scientific surface
+The project home is `E:\PythonChimera`. Work may run in an assigned isolated
+worktree under `E:\ChimeraWork`. `E:\Chimera` is an older, different project.
 
-From this checkout:
+Run these commands in your assigned checkout before editing:
 
-    powershell -File tools/science_funnel/run_surface.ps1
-
-Then open **http://127.0.0.1:8107/science**. Requires Python, CMake, the C++ build
-toolchain and Vulkan SDK used by the engine. The launcher refuses occupied ports.
-
-The [graph recipe](tools/science_funnel/data/surface_recipe.json) binds pinned
-CoolProp Water/Ethanol data to 800 native triangles. Press, switch material, and
-release: the image is captured from the actual Vulkan engine. This is a
-quasistatic fixed-rim interface experiment, not biological skin or full fluid dynamics.
-The project graph indexes it as doc.science_surface_native; measured scope and
-artifact identities live in its linked qualification graph.
-
-## What's running today
-
-- **The creature** — a 28-joint rigged body you can pose, march, and
-  pour water on; every on-screen readout tracks the real simulation
-  (blind-judged: independent reviewers who don't know what they're
-  looking at confirm what the body does).
-- **The engine** — a C++ Vulkan renderer + physics service speaking 59
-  HTTP paths (83 route rows): membrane/strain, water, gait, frost, stride. Frozen as a
-  service; extended only by named, reviewed exceptions.
-- **The brain** — all product logic is Python driving the engine over
-  its HTTP contract: scripted takes, choreography, and the HTTP viewer
-  with live view, byte-identical snapshots, and on-demand movies.
-- **The fleet** — AI agents build every feature through preregistered
-  falsifiable experiments, independent adversarial review, and blind
-  visual judges. Nothing merges unaudited. Every claim traces to a
-  picture.
-
-## Run it
-
-```bash
-# engine (Windows, VS Build Tools + Vulkan SDK)
-cmake -B .tmp/engine_build -S ChimeraEngine/engine
-cmake --build .tmp/engine_build --config Release
-.tmp/engine_build/Release/chimera_engine.exe 8105   # port = first arg
-
-# viewer (Python 3.10+, stdlib only) — defaults to engine port 8105
-python -m tools.product_viewer
-# → open the printed URL: live view, frame gallery, camera presets
+```powershell
+git rev-parse --show-toplevel
+git rev-parse --git-common-dir
+git branch --show-current
+git rev-parse HEAD
+git status --short
 ```
 
-## The laws (short form)
+Confirm the common repository is the PythonChimera repository. Preserve existing
+dirty work. Use the assigned worktree, branch, scope, and build directory; never
+reset or clean another lane. Record the checkout and revision in your work result.
 
-1. One feature at a time; a feature is a **visually provable concept**.
-2. Passing the human and the blind judge = **frozen**; polish comes later.
-3. Proofs wait for visuals — never gold-plate what the eye hasn't judged.
-4. The C++ engine is a frozen service; Python does everything else.
-5. **All invisible elements shall be seen when put in motion** — and seen
-   no more once proven (toggleable: making the invisible visible IS the
-   lesson).
+## 2. Read the graph
 
-Full laws, protocol, and the feature inventory: [docs/THE_GAME.md](docs/THE_GAME.md)
+From the checkout root, with Python 3.11 or later:
 
-## Repository map
+```powershell
+python -B -m tools.creature_graph.project_spec
+python -B -m tools.creature_graph.project_spec --check
+python -B -m tools.creature_graph.project_spec --show req.documentation_admission
+python -B -m tools.creature_graph.project_spec --show req.agent_operation
+python -B -m tools.creature_graph.project_spec --show req.engine_game_release
+python -B -m tools.creature_graph.project_spec --show req.encapsulation_inventory
+```
 
-| Path | What it is |
-|---|---|
-| `docs/THE_GAME.md` | the product constitution |
-| `ChimeraEngine/engine/` | the frozen Vulkan+physics service |
-| `tools/product_viewer/` | the Python viewer (live view, snapshots, movies) |
-| `tools/product_features*` | product feature drivers (walk, water, …) |
-| `tools/agent_fleet/` | the fleet: controller, gates, catalogue |
-| `docs/evidence/agent_fleet/` | every feature's proof, verbatim |
-| `docs/roadmap/holodeck_tasks.json` | the 240-card physics curriculum |
-| `docs/THE_AGENT_FLEET.md` | fleet operating model (agents start here) |
+These read-only commands print the selected store and graph hash. The default
+repository snapshot is `tools/creature_graph/data/creature_graph.json`.
+Use `--store PATH` to inspect another snapshot and `--json` for machine output.
 
-## For contributors and agents
+Find the concept or work you need:
 
-Agents: [AGENT_START.md](docs/AGENT_START.md) → live controller →
-[Master task list](docs/THE_MASTER_LIST.md); follow [AGENTS.md](AGENTS.md).
-The method: [docs/THE_LAW.md](docs/THE_LAW.md); the dyad:
-[docs/THE_DYAD_PROTOCOL.md](docs/THE_DYAD_PROTOCOL.md); the fleet:
-[docs/THE_AGENT_FLEET.md](docs/THE_AGENT_FLEET.md).
+```powershell
+python -B -m tools.creature_graph.project_spec --concepts
+python -B -m tools.creature_graph.project_spec --next
+python -B -m tools.creature_graph.project_spec --search energy
+python -B -m tools.creature_graph.project_spec --show concept.energy
+python -B -m tools.creature_graph.project_spec --show work.encapsulation.demo_game_loop
+```
 
-## Status
+`--show` returns the full contract, dependencies, falsifier, and evidence freshness.
+`--next` is a planning view: missing checklists are explicitly nondispatchable.
+A structurally valid checklist still requires the controller's current ownership,
+admission, and resource checks.
 
-Tier 0 (the body) frozen and proven; Tier 1 (locomotion — the creature
-learns to walk) in flight; 25 features queued, one at a time, ~1 visible
-feature per day (measured: PR #97 to #109 in under 12 hours). Multiplayer is native: the engine is already a server.
+### Which graph is authoritative?
 
-License: [LICENSE](LICENSE). Built in the open, one verified membrane at
-a time.
+For a provisioned fleet, the controller's transactional `project_graph` is the
+authority. Retrieve it using your own assigned session:
+
+```powershell
+python tools/agent_fleet/client.py --session OWN_SESSION.json graph_snapshot
+```
+
+The repository JSON is a versioned bootstrap or proposal for that service; edits
+do not hot-update its database. Graphify is a checked projection of the selected
+authority. It is not an independently editable source of project policy.
+
+If no controller session is provisioned, report that fact. Explicitly authorized,
+isolated repository work may proceed as repository work; do not claim a live
+workflow admission, invent credentials, reuse another agent's session, or restart
+a shared service to manufacture ownership.
+
+## 3. Follow the graph workflow
+
+Read `req.agent_operation` for the full operation map and responsibilities.
+
+1. Select the assigned graph work item; read its dependencies and scoped contract.
+2. Confirm ownership and resource reservations. Preregister a prediction and a
+   falsifier before the implementation or measurement.
+3. Implement one coherent change in the assigned scope. Keep declarations,
+   definitions, and callers compatible together. Parallel workers use isolated
+   scopes and builds; shared integration and graph changes have one serial writer.
+4. Commit the candidate, then run the approved checks against that exact revision.
+   Capture failures as well as passes, with inputs and artifact identities.
+5. Submit scoped evidence and the candidate through the assigned review and
+   integration path. Only the authorized verifier/integrator advances its gates.
+
+Commit messages include an `Agent: NAME` trailer. No unsolicited pushes, shared
+engine restarts, worktree resets, or changes to another lane's state.
+
+A task without an approved executable checklist needs its checklist prepared and
+reviewed before controller dispatch. Do not substitute a prose assurance for it.
+Worker self-reports cannot authorize their own verification. The control plane
+enforces workflow within its interfaces; it is not an operating-system sandbox.
+
+## 4. Documentation and proof
+
+The graph separates **admission**, **implementation**, **measurement**, **freshness**,
+and **deployment**. An active specification is an adopted requirement; it is not
+a claim that the engine implements it or that a test passed.
+
+New prose begins as experimental material. Preserve its original bytes and source,
+extract typed proposals, validate them, and admit them through the authority for
+the current lane. A source import alone never turns arbitrary text into policy.
+Historical evidence retains its original inputs, failures, and limited scope.
+
+Authoring inputs live in `tools/creature_graph/data/authored/`; the active
+encapsulation program is `project_program.json`. Inspect a rebuild without
+overwriting the selected store:
+
+```powershell
+python -B tools/creature_graph/build_graph.py --with-reference --check-only
+```
+
+Existing Markdown files are historical or reference material unless an active
+graph contract explicitly adopts their content. Prior versions of the root
+onboarding files and core graph contracts are preserved losslessly as graph
+source records; find them with `--search` and retrieve with `--show`.
+Root `AGENTS.md` and `CLAUDE.md` only redirect here.
+
+## 5. Run the current scientific workbench
+
+Windows with CMake, a native C++ compiler, Vulkan support, and Python is required.
+
+```powershell
+powershell -File tools/science_funnel/run_surface.ps1
+```
+
+Open [the local scientific workbench](http://127.0.0.1:8107/science).
+The launcher builds and runs the native surface experiment. Its measured scope
+is a quasistatic constant-tension surface using pinned scientific inputs.
+It does not yet qualify a dynamic two-body interaction or a complete creature
+game loop. Read `doc.science_surface_native` in the graph for the recipe and evidence.
+
+Relevant checks, run from the checkout root:
+
+```powershell
+python -B -m unittest tools.creature_graph.tests.test_project_spec -v
+python -B tools/creature_graph/tests/test_contracts.py
+python -B -m unittest discover -s tools/science_funnel/tests -p "test_*.py"
+```
+
+## 6. Release sequence
+
+The active contract is `req.engine_game_release`:
+
+**Functioning demo game loop → qualify and lock the open-source engine →
+create the separate game repository → focus on the game.**
+
+The loop must include a concrete objective, player action, physical consequence,
+feedback, success/failure, and recovery. The graph names its prerequisites and
+falsifiers. Later concepts do not block engine release unless the selected demo
+requires them. The separate game will depend on a versioned engine interface.
+Creating that repository is a later gated task, not part of onboarding.
+
+The engine's existing license is in [LICENSE](LICENSE). The future game's
+visibility and license have not been selected.

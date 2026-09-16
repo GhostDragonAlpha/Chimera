@@ -1,4 +1,7 @@
 import tempfile
+import base64
+import hashlib
+import json
 import unittest
 from pathlib import Path
 
@@ -57,6 +60,54 @@ class HeaderPathTests(unittest.TestCase):
         self.assertEqual(self.scan("](linked.md)"), [])
         self.assertEqual(self.scan("](missing.md)"),
                          [{"file": "doc.md", "ref": "missing.md", "kind": "md-link"}])
+
+
+    def archive(self):
+        raw = fixture_ref("retired.md").encode()
+        return {"kind": "source", "document": {
+            "original_path": fixture_ref("removed.md"),
+            "authority": "imported_untrusted", "byte_count": len(raw),
+            "sha256": hashlib.sha256(raw).hexdigest(),
+            "bytes_base64": base64.b64encode(raw).decode(), "text": raw.decode()}}
+
+    def scan_json(self, value):
+        self.src = self.root / "graph.json"
+        return self.scan(json.dumps(value))
+
+    def test_valid_archive_is_history_and_input_stays_unchanged(self):
+        node = self.archive()
+        before = json.dumps(node)
+        self.assertEqual(self.scan_json({"objects": [node]}), [])
+        self.assertEqual(json.dumps(node), before)
+
+    def test_live_reference_next_to_archive_still_fails(self):
+        node = self.archive()
+        node["document"]["current_tool"] = fixture_ref("missing.py")
+        result = self.scan_json({"objects": {"source.archive": node}})
+        self.assertEqual([r["ref"] for r in result], [fixture_ref("missing.py")])
+
+    def test_invalid_archival_bytes_or_text_do_not_hide_references(self):
+        for key, value in (("byte_count", 0), ("bytes_base64", "!invalid"),
+                           ("text", fixture_ref("forged.md"))):
+            with self.subTest(field=key):
+                node = self.archive()
+                node["document"][key] = value
+                self.assertTrue(self.scan_json(node))
+
+    def test_active_or_untyped_prose_is_not_exempt(self):
+        for mutation in ("active", "kind", "authority"):
+            node = self.archive()
+            if mutation == "active":
+                node["project_spec"] = {"admission": "active_specification"}
+            elif mutation == "kind":
+                node["kind"] = "work"
+            else:
+                node["document"].pop("authority")
+            self.assertTrue(self.scan_json(node))
+
+    def test_ordinary_json_references_remain_checked(self):
+        result = self.scan_json({"current": fixture_ref("absent.py")})
+        self.assertEqual([r["ref"] for r in result], [fixture_ref("absent.py")])
 
 
 if __name__ == "__main__":
