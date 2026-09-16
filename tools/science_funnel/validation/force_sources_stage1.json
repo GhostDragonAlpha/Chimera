@@ -1,6 +1,6 @@
 {
   "schema": "chimera.force_sources.stage1.v1",
-  "stage": "preflight",
+  "stage": "committed_candidate",
   "catalog": {
     "assertions": 3821,
     "base_graph_hash": "9451d02299620fc144b141a4dfd27aa7efabc5689e0d8e28fee08a414188910b",
@@ -370,5 +370,22 @@
     "Exploratory source printing hit Windows console encoding; fixed console encoding only.",
     "Initial ground-state-only assertion refused 45 shifted/unknown evaluated levels. Corrected to retain their qualifications and prohibit treating them as resolved ground states."
   ],
-  "runtime_qualification": false
+  "runtime_qualification": false,
+  "candidate_commit": "318ad1fd907fa7cc97062e498d7ce744c6918a29",
+  "candidate_tree": "58b9c36a953a45742a790e1825eadf351edd911f",
+  "checked_utc": "2026-09-16T20:45:34.172777+00:00",
+  "post_commit_checks": {
+    "science_funnel_tests": 65,
+    "pass": true,
+    "seconds": 21.55,
+    "project_spec_check": true,
+    "graph_hash": "ee7d5bbe0c78024f5a86a9d32b4986eb4d645b9d3baba94866e26a67bcf96a77"
+  },
+  "candidate_blobs": {
+    "tools/science_funnel/force_adapters.py": "bf93cfe20e2e951ba9faed24977de4a58530b8c4",
+    "tools/science_funnel/force_catalog.py": "fe9e47efe18bb0188cd8169f2b26356283676a50",
+    "tools/science_funnel/units.py": "e39e705ff5960dca4a99b7d7f7777f921eade1bc",
+    "tools/science_funnel/tests/test_force_sources.py": "8daf8501947c4bf0bdf9701b2f022dea4861caba",
+    "tools/science_funnel/data/force_sources/sources.lock.json": "b189895795d000710d631fdeb4aed1a6549ede47"
+  }
 }
