@@ -1,10 +1,10 @@
 {
   "schema": "chimera.material_catalog_validation.v1",
   "scope": "Repository specification/data identity checks; no new runtime physics qualification.",
-  "phase": "preflight",
-  "checked_utc": "2026-09-16T20:04:40.585498+00:00",
+  "phase": "committed_candidate",
+  "checked_utc": "2026-09-16T20:05:53.326026+00:00",
   "base_commit": "7621ad33224ead6094856b96877ada9873ac5074",
-  "candidate_commit": null,
+  "candidate_commit": "303866bfb1000e3ab596bb835a403a669aa4c7e2",
   "graph_hash": "fe0b491678d14a78b2b4bcdfaf4801b4153ce800ab2ba962967689fdcc51db30",
   "effective_graph_hash": "fe0b491678d14a78b2b4bcdfaf4801b4153ce800ab2ba962967689fdcc51db30",
   "objects": 1823,
@@ -188,7 +188,7 @@
       "pass": true,
       "detail": {
         "run": 14,
-        "output": "..............\n----------------------------------------------------------------------\nRan 14 tests in 0.055s\n\nOK\n"
+        "output": "..............\n----------------------------------------------------------------------\nRan 14 tests in 0.054s\n\nOK\n"
       }
     },
     {
@@ -519,7 +519,17 @@
     }
   ],
   "all_pass": true,
-  "consumer_store": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\material-catalog-consumer-20260916T200440100087\\graph.db",
+  "consumer_store": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\material-catalog-consumer-20260916T200552840789\\graph.db",
   "deployment": "Local repository only; no controller admission, engine restart or push.",
-  "earlier_attempt": "The initial material builder rejected a missing hypothesis priority before writing graph files; the corrected builder passed admission."
+  "earlier_attempt": "The initial material builder rejected a missing hypothesis priority before writing graph files; the corrected builder passed admission.",
+  "candidate_tree": "2acc332e15a72cd19eb21a73ae9cbe8150efcb83",
+  "git_blob_ids": {
+    ".gitattributes": "aa024670e237b1e5a25a4ee4a0960cf5e2fdc335",
+    "README.md": "1c0fa92d1b42d792689eccae8da7aadd4f2484c4",
+    "tools/creature_graph/data/creature_graph.json": "e6c03adf62491f43553486cf6e1f67c1b82754fb",
+    "tools/creature_graph/data/authored/project_program.json": "c545a6bb67e95d7e5fb5b9754288f713a2c8bdd3",
+    "tools/science_funnel/data/pubchem/periodic_table.json": "7d20a1db3a3b5321785eeb7d867bf29f18f13d6c",
+    "tools/science_funnel/data/pubchem/download_receipt.json": "2360432a5329c45e69160d5925fd25dd9a1e53f5",
+    "tools/creature_graph/validation/verify_material_catalog_20260916.py": "d6e26795c8d4c2bad2eb7e2e0f60b65a2b8f8c8f"
+  }
 }
