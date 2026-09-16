@@ -102616,6 +102616,24 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_216895278a96"
+    },
+    {
+      "id": "bb9a6af91417261f",
+      "type": "Evidence",
+      "name": "phase1 sealed-cell inventory membrane (verdict 66) evidence",
+      "label": "phase1 sealed-cell inventory membrane (verdict 66) evidence",
+      "timestamp": "2026-09-16T05:26:30+00:00",
+      "statement": "Sealed-cell state can carry an explicit per-cell fluid inventory w (initialized w := v0 at every cell creation; mass = 1000 kg/m^3 * w) with all-cell telemetry and a versioned backward-compatible seal-state snapshot, while every existing measured physical output stays identical under identical inputs.",
+      "verdict_number": 66,
+      "verdict_registry": "tools/verdict_registry.json",
+      "verdict_repo": "E:\\ChimeraWork\\codex-graph-contracts-20260915",
+      "verdict_branch": "codex/graph-contract-repairs",
+      "evidence_record": "E:\\PythonChimera\\agent_logs\\glm53\\partition_reconciliation_20260915\\phase1_evidence\\EVIDENCE_RECORD.md",
+      "commit_sha": "8d18ddf05e00b7955566e84e5788e338cbcf4b3a",
+      "scope": "Phase 1 asserts per-cell fluid inventory, all-cell telemetry, and seal-state snapshot persistence ONLY. This node makes no claim about fluid moving between cells, paths between cells, or any mechanical effect; later-phase claims are excluded.",
+      "falsifiers_ref": "P1.1-P1.4 recorded in verdict 66",
+      "proves_hint": "MEASURED",
+      "recorded_by": "legacy_pre_provenance"
     }
   ],
   "edges": [
