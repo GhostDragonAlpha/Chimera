@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark">
+<title>Thermal salvage — Chimera</title>
+<style>
+:root{--bg:#0b1017;--panel:#121a23;--line:#303d49;--text:#f1eee6;--muted:#b1bbc3;--amber:#f5c57a;--ice:#a4deeb;--red:#f0a89b;--mono:Consolas,"SFMono-Regular",monospace}*{box-sizing:border-box}body{margin:0;color:var(--text);background:var(--bg);font:14px/1.55 "Segoe UI",system-ui,sans-serif}button{font:inherit;cursor:pointer}button:disabled{cursor:not-allowed;opacity:.42}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--ice);outline-offset:5px}a{color:var(--ice);text-underline-offset:4px}a:hover{color:white}[hidden]{display:none!important}.shell{max-width:1640px;margin:auto;padding:28px 38px 24px}.masthead{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:24px;border-bottom:1px solid var(--line)}.brand{font-size:12px;font-weight:650;letter-spacing:.15em;display:flex;align-items:center;gap:12px}.brand-mark{width:28px;height:28px;display:grid;place-items:center;border:1px solid var(--amber);color:var(--amber);font:17px var(--mono);letter-spacing:0}.brand small{font-size:11px;font-weight:400;color:var(--muted);padding-left:15px;border-left:1px solid var(--line);letter-spacing:.08em}.connection{display:flex;align-items:center;gap:9px;font:11px var(--mono);color:var(--muted)}.connection::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--amber);flex-shrink:0}.connection[data-online="true"]::before{background:var(--ice)}.intro{display:flex;justify-content:space-between;gap:30px;align-items:flex-end;padding:34px 0 29px}.eyebrow,.section-label{font:11px var(--mono);letter-spacing:.1em;color:var(--muted);text-transform:uppercase}h1{font-size:clamp(34px,4vw,57px);line-height:1.1;letter-spacing:-.047em;font-weight:450;margin:13px 0}h1 span{color:var(--amber)}.instructions{font-size:15px;max-width:680px;color:var(--muted);margin:0}.mission-number{flex-shrink:0;text-align:right;font:11px/1.9 var(--mono);color:var(--muted)}.objective{display:flex;align-items:center;justify-content:space-between;gap:25px;padding:18px 22px;border:1px solid var(--line);border-bottom:0;background:#151e28}.objective-main{display:flex;align-items:center;gap:20px}.target-icon{font:22px var(--mono);color:var(--ice);border:1px solid #466574;width:34px;height:34px;display:grid;place-items:center}.target-copy strong{font-size:14px;font-weight:550}.target-copy p{margin:3px 0 0;font-size:12px;color:var(--muted)}.hold-progress{width:205px;flex-shrink:0}.hold-label{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:11px;margin-bottom:7px}.hold-label output{font-family:var(--mono);color:var(--ice)}.track{height:4px;background:#35414a;overflow:hidden}.fill{height:100%;width:0;background:var(--ice)}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 322px;border:1px solid var(--line)}.scene{min-width:0;display:flex;flex-direction:column}.scene-header{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:15px 20px;font:11px var(--mono);color:var(--muted)}.scene-header span:first-child{color:var(--text)}.viewport{position:relative;flex:1;min-height:390px;aspect-ratio:1.64;background:#06090e;overflow:hidden;display:grid;place-items:center}.viewport img{position:absolute;inset:0;object-fit:contain;width:100%;height:100%}.viewport[data-stale="true"] img{opacity:.32}.view-label{position:absolute;left:18px;top:17px;padding:5px 8px;background:#0a111be8;border:1px solid var(--line);font:11px var(--mono);color:var(--muted)}.view-note{position:absolute;bottom:16px;right:15px;background:#0a111be8;color:var(--muted);padding:4px 7px;font-size:11px}.view-notice{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:26px;background:#080e1555;pointer-events:none}.view-notice strong{font-size:18px;font-weight:500}.view-notice p{max-width:340px;font-size:12px;color:var(--muted);margin:8px auto 0}.readouts{margin:0;display:grid;grid-template-columns:1.12fr 1fr 1fr 1fr;border-top:1px solid var(--line)}.readout{padding:20px 17px;border-right:1px solid var(--line);min-width:0}.readout:last-child{border-right:0}.readout dt{font-size:12px;color:var(--muted)}.readout dd{font:27px/1.25 var(--mono);letter-spacing:-.06em;margin:9px 0 0}.readout dd small{font:11px "Segoe UI",sans-serif;color:var(--muted);letter-spacing:0;margin-left:3px}.readout:first-child dd{color:var(--ice)}.readout p{font-size:11px;color:var(--muted);margin:8px 0 0}.control-panel{padding:25px;border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column}.state-badge{font:23px/1.2 var(--mono);letter-spacing:-.025em;margin:10px 0;color:var(--ice)}.state-badge[data-tone="heat"],.state-badge[data-tone="loss"]{color:var(--amber)}.state-badge[data-tone="error"]{color:var(--red)}.mission-message{font-size:13px;color:var(--muted);margin:0;min-height:62px}.cartridge{border-top:1px solid var(--line);margin-top:20px;padding-top:22px}.energy-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:14px 0 12px}.energy-value{font:37px/1 var(--mono);letter-spacing:-.06em;color:var(--amber)}.energy-value small{font:13px "Segoe UI",sans-serif;letter-spacing:0}.energy-top>span{font-size:11px;color:var(--muted)}.charge-track{height:14px;background:#2b3036;border:1px solid #46505a;overflow:hidden;position:relative}.charge-fill{height:100%;width:0;background:var(--amber)}.charge-track::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(to right,transparent,transparent calc(10% - 2px),#10171e calc(10% - 2px),#10171e 10%);pointer-events:none}.charge-labels{display:flex;justify-content:space-between;color:var(--muted);font:11px var(--mono);margin-top:9px}.heat-button{margin-top:27px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:84px;border:1px solid var(--amber);border-radius:2px;background:var(--amber);color:#241a0a;font-size:18px;font-weight:650;touch-action:none;user-select:none;-webkit-user-select:none}.heat-button small{font-size:11px;font-weight:500}.heat-button:hover:not(:disabled){background:#ffe0ad}.heat-button[data-held="true"]{background:#31271b;color:var(--amber);box-shadow:inset 0 0 0 2px var(--amber)}.heat-button[data-held="true"]:hover:not(:disabled){background:#31271b;color:var(--amber)}.input-help{margin:11px 0 0;font-size:11px;line-height:1.65;color:var(--muted);text-align:center}.control-message{font-size:12px;color:var(--muted);min-height:52px;margin:20px 0 0}.control-message[data-error="true"]{color:var(--red)}.reset{margin-top:auto;width:100%;padding:11px 5px;border:1px solid var(--line);border-radius:2px;background:transparent;color:var(--text);font-size:12px}.reset:hover:not(:disabled){background:#25313e}.scope-strip{display:flex;justify-content:space-between;gap:25px;border:1px solid var(--line);border-top:0;padding:14px 20px;font-size:11px;line-height:1.65;color:var(--muted)}.scope-strip strong{color:var(--text);font-weight:450}.scope-strip span:last-child{text-align:right;flex-shrink:0}.science{margin-top:25px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:18px 0;font-size:13px}summary::-webkit-details-marker{display:none}.summary-title{display:flex;align-items:center;gap:11px}.summary-title::before{content:"+";color:var(--ice);font:18px var(--mono);width:15px}.science[open] .summary-title::before{content:"−"}.summary-note{color:var(--muted);font:11px var(--mono)}.science-body{display:grid;grid-template-columns:1fr 1fr;gap:38px;padding:8px 0 26px}.science h2{font-size:14px;font-weight:550;margin:0 0 10px}.science p{font-size:12px;color:var(--muted);margin:0 0 13px;max-width:660px}.equation{font:14px var(--mono);color:var(--ice);margin-bottom:14px}.science dl{font-size:12px;margin:0}.science dl>div{display:grid;grid-template-columns:130px minmax(0,1fr);gap:10px;padding:5px 0}.science dt{color:var(--muted)}.science dd{margin:0;font:11px/1.65 var(--mono);overflow-wrap:anywhere}.sources{display:flex;flex-wrap:wrap;gap:10px 19px;font-size:12px;margin-top:17px}.footer{display:flex;justify-content:space-between;gap:18px;font:11px var(--mono);color:var(--muted);padding-top:18px}.footer span:last-child{text-align:right}
+@media(min-width:1450px){.workspace{grid-template-columns:minmax(0,1fr) 350px}.viewport{min-height:485px}.control-panel{padding:28px}.readout{padding:22px}.readout dd{font-size:32px}}
+@media(max-width:1050px){.shell{padding:23px}.workspace{grid-template-columns:minmax(0,1fr) 290px}.control-panel{padding:20px}.viewport{min-height:370px}.readouts{grid-template-columns:1fr 1fr}.readout{padding:16px}.readout:nth-child(2){border-right:0}.readout:nth-child(-n+2){border-bottom:1px solid var(--line)}.readout p{display:none}.readout dd{font-size:25px}.energy-value{font-size:33px}}
+@media(max-width:740px){.shell{padding:19px 15px}.brand small{display:none}.masthead{padding-bottom:20px}.intro{padding:28px 0 23px}.mission-number{display:none}h1{font-size:42px;max-width:320px}.instructions{font-size:14px}.objective{padding:16px;display:block}.objective-main{gap:12px}.hold-progress{width:100%;margin-top:17px}.workspace{grid-template-columns:1fr}.viewport{aspect-ratio:1.2;min-height:285px}.scene-header{padding:14px;font-size:11px}.readout{padding:17px}.readout dd{font-size:28px}.control-panel{border-left:0;border-top:1px solid var(--line);padding:23px}.mission-message{min-height:0}.heat-button{min-height:88px}.control-message{min-height:35px}.reset{margin-top:15px}.scope-strip{display:block;padding:15px 17px}.scope-strip span{display:block}.scope-strip span:last-child{text-align:left;margin-top:8px}.science-body{grid-template-columns:1fr;gap:24px}.summary-note{display:none}.footer{font-size:11px;align-items:flex-start}.footer span{max-width:48%}.view-label{left:12px;top:12px}.view-note{font-size:11px;left:12px;right:auto}}
+
+.mobile-hold{display:none}
+@media(max-width:740px){
+  html{scroll-padding-bottom:220px}.shell{padding:12px 15px 220px}.masthead{padding-bottom:13px}.brand-mark{width:25px;height:25px}.intro{padding:17px 0 15px}h1{font-size:32px;line-height:1.1;max-width:none;margin:8px 0 10px}.instructions{font-size:12px;line-height:1.5}.objective{padding:12px 15px}.target-copy strong{font-size:13px}.target-copy p{font-size:11px;line-height:1.45}.objective>.hold-progress{display:none}.scene-header{padding:12px;font-size:11px}.viewport{aspect-ratio:1.45;min-height:225px}.readout{padding:14px 16px}.readout dd{font-size:26px}
+  .control-panel{position:fixed;z-index:20;bottom:0;left:0;right:0;display:grid;grid-template-columns:minmax(105px,.78fr) minmax(0,1.22fr);grid-template-rows:auto auto auto;gap:9px 13px;padding:12px 16px calc(11px + env(safe-area-inset-bottom));border:0;border-top:1px solid #6a737a;background:#131c27;box-shadow:0 -8px 24px #05080c66}
+  .control-panel>.section-label,.control-panel>.mission-message,.input-help{display:none}.state-badge{grid-column:1;grid-row:1;align-self:center;font-size:13px;margin:0}.mobile-hold{display:block;grid-column:2;grid-row:1;text-align:right;font:11px var(--mono);color:var(--ice)}.mobile-hold .track{margin-top:5px;height:3px}.cartridge{grid-column:1;grid-row:2;align-self:center;border:0;padding:0;margin:0}.cartridge .section-label{font-size:11px;letter-spacing:0;text-transform:none}.energy-top{margin:5px 0 7px;display:block}.energy-top>span,.charge-labels{display:none}.energy-value{font-size:25px}.energy-value small{font-size:12px}.charge-track{height:7px}.heat-button{grid-column:2;grid-row:2;min-height:70px;margin:0;font-size:15px;gap:6px;padding:9px 6px}.heat-button small{font-size:11px}.reset{grid-column:1;grid-row:3;margin:0;padding:7px 5px;font-size:11px;align-self:stretch;min-height:34px}.control-message{grid-column:2;grid-row:3;margin:0;min-height:0;align-self:center;font-size:11px;line-height:1.45}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">C</span> CHIMERA <small>FIELD OPERATIONS</small></div><div class="connection" id="connection" data-online="false" role="status">Connecting to native engine</div></header>
+<main>
+<section class="intro" aria-labelledby="missionTitle"><div><div class="eyebrow">Thermal salvage / Field trial 01</div><h1 id="missionTitle">Recover <span>the mechanism.</span></h1><p class="instructions">Apply heat, release before the charge runs out, and let the load settle in the target band.</p></div><div class="mission-number">ONE CARTRIDGE · 4 J<br>HEATER RATING · 2 W</div></section>
+<section class="objective" aria-label="Mission objective"><div class="objective-main"><span class="target-icon" aria-hidden="true">↥</span><div class="target-copy"><strong id="targetBand">Settle at 10–14 mm</strong><p id="targetConditions">Speed ≤ 3 mm/s · Hold for one continuous second</p></div></div><div class="hold-progress"><div class="hold-label"><span>Target hold · live</span><output id="dwellTime">— / 1.00 s</output></div><div class="track" id="dwellMeter" role="progressbar" aria-label="Continuous time in the target band" aria-valuemin="0" aria-valuemax="1"><div class="fill" id="dwellFill"></div></div></div></section>
+<section class="workspace" aria-label="Thermal salvage mechanism and controls">
+<div class="scene"><div class="scene-header"><span>Native mechanism view</span><span id="captureInfo">Awaiting captured state</span></div><div class="viewport" id="viewport" data-stale="true"><img id="nativeFrame" alt="Native engine view of the gas bellows raising the loaded beam mechanism" hidden><div class="view-label" id="frameLabel">AWAITING ENGINE</div><div class="view-notice" id="viewNotice" role="status"><strong id="viewNoticeTitle">Waiting for the mechanism</strong><p id="viewNoticeText">The native engine image will appear when the session connects.</p></div><div class="view-note">Diagnostic colors · not measured optics</div></div><dl class="readouts" aria-label="Readings aligned to the displayed native frame"><div class="readout"><dt>Load displacement</dt><dd><span id="position">—</span><small>mm</small></dd><p>Displayed frame</p></div><div class="readout"><dt>Load speed</dt><dd><span id="speed">—</span><small>mm/s</small></dd><p>Displayed frame</p></div><div class="readout"><dt>Gas temperature</dt><dd><span id="temperature">—</span><small>K</small></dd><p>Displayed frame</p></div><div class="readout"><dt>Absolute pressure</dt><dd><span id="pressure">—</span><small>kPa</small></dd><p>Displayed frame</p></div></dl></div>
+<aside class="control-panel" aria-label="Live mission controls"><div class="section-label">Mission state · live</div><div class="state-badge" id="missionState" data-tone="neutral" role="status">CONNECTING</div><div class="mobile-hold"><span id="mobileTarget">10–14 mm</span> · <span id="mobileDwell">hold — / 1.0 s</span><div class="track" aria-hidden="true"><div class="fill" id="mobileDwellFill"></div></div></div><p class="mission-message" id="missionMessage">Waiting for the native session. Your charge is controlled by the engine.</p><div class="cartridge"><div class="section-label">Charge remaining</div><div class="energy-top"><div class="energy-value"><span id="batteryRemaining">—</span> <small>J</small></div><span>remaining · live</span></div><div class="charge-track" id="batteryMeter" role="progressbar" aria-label="Energy remaining in cartridge" aria-valuemin="0" aria-valuemax="4"><div class="charge-fill" id="batteryFill"></div></div><div class="charge-labels"><span id="heatSpent">used — J</span><span>capacity 4 J</span></div></div><button type="button" class="heat-button" id="heatButton" aria-label="Press and hold to apply heat. Release to stop." aria-pressed="false" data-held="false" disabled><span id="heatButtonText">Hold to apply heat</span><small id="heatPower">2 W heater</small></button><p class="input-help">Hold with touch or mouse.<br>Keyboard: focus here, then hold Space or Enter.</p><p class="control-message" id="controlMessage" role="status">Heat lifts the load. Release to let it settle.</p><button class="reset" type="button" id="resetButton" disabled>Reset with a fresh charge ↻</button></aside>
+</section>
+<div class="scope-strip"><span><strong>Read the motion, then release.</strong> The view and its four readings share one captured native state. Mission and charge readings update live.</span><span>4 J / 2 W teaching scale<br>Native physics · 300 Hz</span></div>
+<details class="science" id="scienceDetails"><summary><span class="summary-title">How the mechanism works</span><span class="summary-note">HEAT → GAS → MOTION</span></summary><div class="science-body"><div><h2>A sealed gas does work on a loaded beam.</h2><p>Heating nitrogen raises its pressure. The bellows expands against gravity and an elastic beam; damping turns motion into heat. Release the heater to let the mechanism settle.</p><div class="equation">p = nRT / V<br>nCᵥ dT = δQ − p dV</div><p>Ideal sealed bellows and ideal elastic beam. No leakage, plasticity, or heat-loss model. Nitrogen starts at 320 K. The beam uses the NIST 6061 aluminum curve at 290 K; gravity derives from JPL GM. The model library is tested against Cantera.</p><div class="sources"><a href="https://www.nist.gov/mml/acmd/aluminum-6061-t6-uns-aa96061" target="_blank" rel="noopener noreferrer">NIST aluminum data ↗</a><a href="https://ssd.jpl.nasa.gov/astro_par.html" target="_blank" rel="noopener noreferrer">JPL constants ↗</a><a href="https://www.cantera.org/3.1/reference/thermo/species-thermo.html" target="_blank" rel="noopener noreferrer">Cantera reference ↗</a></div></div><div><h2>Live native record</h2><dl><div><dt>Simulation time</dt><dd id="simulationTime">—</dd></div><div><dt>Energy balance</dt><dd id="energyBalance">—</dd></div><div><dt>Heat in damper</dt><dd id="damperHeat">—</dd></div><div><dt>Native clock lag</dt><dd id="clockLag">—</dd></div><div><dt>Scene / render</dt><dd id="revisions">—</dd></div><div><dt>Graph hash</dt><dd id="graphHash">—</dd></div><div><dt>Packet SHA-256</dt><dd id="packetHash">—</dd></div></dl><div class="sources"><a href="/thermal_graph" target="_blank" rel="noopener noreferrer">Open full graph JSON ↗</a></div><p style="margin-top:12px">The graph can be large. It opens only when you follow the link.</p></div></div></details>
+</main><footer class="footer"><span>THERMAL SALVAGE / CHIMERA</span><span id="freshness">No native state received</span></footer>
+</div>
+<script>
+'use strict';
+// Heater intent is the only player input. Native physics owns time and outcomes.
+// Each image and its four readings use the exact state returned by that capture.
+const byId = id => document.getElementById(id);
+const heatButton = byId('heatButton');
+let started = false, stopped = false, online = false, connectionKind = 'waiting';
+let liveState = null, frameState = null, liveEpoch = -1, frameEpoch = -1, epoch = 0;
+let intentVersion = 0, minimumFrameRevision = 0;
+let stateAt = 0, frameAt = 0, frameFailures = 0, frameInFlight = false;
+let statusTimer, frameTimer, renewalTimer, freshnessTimer;
+let heatIntent = false, controlInFlight = false, pendingControl = null, resetPending = false;
+let stopAttemptedAfterFailure = false, lastError = '', captureSequence = null;
+let pointerHeld = false, keyboardHeld = false, suppressClickUntil = 0;
+window.lastState = null; window.lastFrameState = null;
+const text = (id, value) => { byId(id).textContent = value; };
+const fmt = (value, places = 2) => Number(value).toLocaleString('en-US', {minimumFractionDigits:places, maximumFractionDigits:places});
+const limit = (value, min, max) => Math.min(max, Math.max(min, value));
+function errorText(error) { return error.name === 'AbortError' ? 'The native engine did not respond in time.' : error.message; }
+function message(value, error = false) { text('controlMessage', value); byId('controlMessage').dataset.error = String(error); }
+async function readJSON(path, options = {}, timeout = 4000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+  try {
+    const response = await fetch(path, {...options, cache:'no-store', signal:controller.signal});
+    if (!response.ok) throw new Error(`Native request returned HTTP ${response.status}.`);
+    const value = await response.json();
+    if (value?.ok === false) { const error = new Error(value.error || 'The native engine refused the request.'); error.refused = true; throw error; }
+    return value;
+  } finally { clearTimeout(timer); }
+}
+function validState(state) {
+  const numbers = ['tick','sim_time_s','position_m','velocity_m_s','heat_supplied_J','battery_remaining_J','dwell_s','heater_fraction','scene_revision','render_revision','energy_balance_J','damper_heat_J','clock_lag_s'];
+  const goalNumbers = ['position_min_m','position_max_m','max_speed_m_s','hold_seconds'];
+  if (!state || state.ok !== true || numbers.some(key => !Number.isFinite(state[key])) ||
+      !state.gas || ['temperature_K','pressure_Pa'].some(key => !Number.isFinite(state.gas[key])) ||
+      !state.goal || goalNumbers.some(key => !Number.isFinite(state.goal[key])) || state.goal.hold_seconds <= 0 ||
+      !['ready','operating','recovered','charge_spent'].includes(state.phase) ||
+      ['won','battery_exhausted','paused'].some(key => typeof state[key] !== 'boolean') ||
+      (state.phase === 'recovered') !== state.won) {
+    const error = new Error('The native engine returned an incomplete mission state.'); error.refused = true; throw error;
+  }
+  return state;
+}
+function isTerminal(state) { return state && (state.won || state.battery_exhausted || state.phase === 'charge_spent'); }
+function cameraFresh() {
+  const simulatedAge = liveState && frameState && liveEpoch === frameEpoch ? Math.max(0, liveState.sim_time_s - frameState.sim_time_s) : Infinity;
+  return Boolean(frameAt && frameEpoch === epoch && !frameFailures && Date.now() - frameAt < 4500 && simulatedAge < 4.5);
+}
+function canHeat() { return started && online && liveState && cameraFresh() && !liveState.paused && !isTerminal(liveState) && !resetPending; }
+function updateUI() {
+  const age = stateAt ? Date.now() - stateAt : Infinity;
+  if (online && age > 2500) failConnection(new Error('Live telemetry is stale.'), false);
+  const connected = online && !frameFailures;
+  byId('connection').dataset.online = String(connected);
+  text('connection', connected ? 'Native engine connected' : connectionKind === 'waiting' ? 'Connecting to native engine' : connectionKind === 'refused' ? 'Native request refused' : 'Native connection interrupted');
+  let label = 'CONNECTING', detail = 'Waiting for the native session. Your charge is controlled by the engine.', tone = 'neutral';
+  if (connectionKind === 'refused') { label = 'REFUSED'; detail = lastError; tone = 'error'; }
+  else if (connectionKind === 'offline' || frameFailures) { label = 'DISCONNECTED'; detail = 'Heating stopped. Reconnect to the native session before continuing.'; tone = 'error'; }
+  else if (liveState && online) {
+    if (resetPending) { label = 'RESETTING'; detail = 'Waiting for the engine to restore a fresh charge.'; }
+    else if (liveState.phase === 'recovered' && liveState.won) { label = 'RECOVERED'; detail = 'The load held steady in the target band. Mechanism recovered.'; }
+    else if (liveState.phase === 'charge_spent' || liveState.battery_exhausted) { label = 'CHARGE SPENT'; detail = 'The cartridge is empty. Reset, then release the heat earlier.'; tone = 'loss'; }
+    else if (liveState.paused) { label = 'READY · PAUSED'; detail = 'The native simulation is paused. Reset to start a fresh run.'; }
+    else if (liveState.heater_fraction > 0) { label = 'HEATING'; detail = 'Heat is entering the gas. Release before the charge runs out.'; tone = 'heat'; }
+    else if (liveState.dwell_s > 0) { label = 'HOLDING'; detail = 'The load is inside the target band. Let it hold steady.'; }
+    else if (liveState.phase === 'operating') { label = 'OPERATING'; detail = 'Watch the load settle. Add heat only if it needs more lift.'; }
+    else { label = 'READY'; detail = 'One charge. Hold to heat the gas, then release and read the motion.'; }
+  }
+  text('missionState', label); text('missionMessage', detail); byId('missionState').dataset.tone = tone;
+  heatButton.disabled = !canHeat(); heatButton.dataset.held = String(heatIntent);
+  heatButton.setAttribute('aria-pressed', String(heatIntent));
+  text('heatButtonText', heatIntent ? 'Release to stop heating' : 'Hold to apply heat');
+  text('heatPower', liveState && online ? `${fmt(liveState.heater_fraction * 2, 1)} W applied / 2 W rated` : '2 W heater');
+  byId('resetButton').disabled = !online || resetPending;
+  const stale = !online || !cameraFresh();
+  byId('viewport').dataset.stale = String(stale); byId('viewNotice').hidden = !stale;
+  text('frameLabel', frameState ? `CAPTURE ${captureSequence} · t ${fmt(frameState.sim_time_s, 2)} s${stale ? ' · STALE' : ''}` : 'AWAITING ENGINE');
+  if (stale) { text('viewNoticeTitle', frameState ? 'Last native image · stale' : 'Waiting for the mechanism'); text('viewNoticeText', lastError || 'Waiting for the native renderer and its captured state.'); }
+  if (stateAt) text('freshness', `${online ? 'Live state' : 'Last state'} ${fmt(Math.max(0, age / 1000), 1)} s ago`);
+}
+function applyLiveState(state, requestEpoch) {
+  // Scene revision survives native resets; tick and simulation time do not.
+  if (requestEpoch !== epoch || (liveState && state.scene_revision < liveState.scene_revision)) return;
+  const externalReset = liveState && liveEpoch === epoch && state.scene_revision > liveState.scene_revision && state.sim_time_s < liveState.sim_time_s;
+  if (externalReset) {
+    const wasHeating = clearHeatIntent();
+    epoch++; intentVersion++;
+    minimumFrameRevision = state.scene_revision;
+    frameEpoch = -1; frameAt = 0; frameFailures = 0;
+    resetPending = false; lastError = '';
+    if (wasHeating) queueControl({heater_fraction:0});
+    message('Native session reset. Fresh charge ready.');
+  }
+  liveState = state; liveEpoch = epoch; window.lastState = state;
+  stateAt = Date.now(); online = true; connectionKind = 'online';
+  if (isTerminal(state) || state.paused) stopHeat('Heat stopped by the native mission state.');
+  text('batteryRemaining', fmt(state.battery_remaining_J)); text('heatSpent', `used ${fmt(state.heat_supplied_J)} J`);
+  byId('batteryFill').style.width = `${limit(state.battery_remaining_J / 4, 0, 1) * 100}%`;
+  byId('batteryMeter').setAttribute('aria-valuenow', String(limit(state.battery_remaining_J, 0, 4)));
+  const dwell = limit(state.dwell_s, 0, state.goal.hold_seconds);
+  text('dwellTime', `${fmt(dwell)} / ${fmt(state.goal.hold_seconds)} s`);
+  text('mobileDwell', `hold ${fmt(dwell, 1)} / ${fmt(state.goal.hold_seconds, 1)} s`);
+  text('mobileTarget', `${fmt(state.goal.position_min_m * 1000, 0)}–${fmt(state.goal.position_max_m * 1000, 0)} mm`);
+  byId('mobileDwellFill').style.width = `${dwell / state.goal.hold_seconds * 100}%`;
+  byId('dwellFill').style.width = `${dwell / state.goal.hold_seconds * 100}%`;
+  byId('dwellMeter').setAttribute('aria-valuemax', String(state.goal.hold_seconds));
+  byId('dwellMeter').setAttribute('aria-valuenow', String(dwell));
+  text('targetBand', `Settle at ${fmt(state.goal.position_min_m * 1000, 0)}–${fmt(state.goal.position_max_m * 1000, 0)} mm`);
+  text('targetConditions', `Speed ≤ ${fmt(state.goal.max_speed_m_s * 1000, 0)} mm/s · Hold for ${fmt(state.goal.hold_seconds, 1)} continuous second${state.goal.hold_seconds === 1 ? '' : 's'}`);
+  text('simulationTime', `${fmt(state.sim_time_s, 3)} s / tick ${state.tick}`);
+  text('energyBalance', `${state.energy_balance_J.toExponential(3)} J`);
+  text('damperHeat', `${fmt(state.damper_heat_J, 5)} J`); text('clockLag', `${fmt(state.clock_lag_s, 4)} s`);
+  text('revisions', `${state.scene_revision} / ${state.render_revision}`);
+  text('graphHash', state.graph_hash || 'Unavailable'); text('packetHash', state.packet_sha256 || 'Unavailable');
+  updateUI();
+}
+function clearHeatIntent() {
+  const wasHeating = heatIntent;
+  if (wasHeating) intentVersion++;
+  heatIntent = false; pointerHeld = false; keyboardHeld = false; clearInterval(renewalTimer);
+  if (pendingControl?.payload.heater_fraction === 1) pendingControl = null;
+  return wasHeating;
+}
+function stopHeat(reason, force = false) {
+  const wasHeating = clearHeatIntent();
+  if (force && !wasHeating) intentVersion++;
+  if ((wasHeating || force) && started && !stopped) queueControl({heater_fraction:0});
+  if (wasHeating && reason) message(reason);
+}
+function failConnection(error, fromStopCommand = false) {
+  online = false; connectionKind = error.refused ? 'refused' : 'offline'; lastError = errorText(error);
+  const hadIntent = clearHeatIntent(); message(`Heating stopped. ${lastError}`, true);
+  if (!fromStopCommand && !stopAttemptedAfterFailure && started && (hadIntent || liveState)) {
+    stopAttemptedAfterFailure = true; queueControl({heater_fraction:0});
+  }
+}
+function queueControl(payload) {
+  if (!started || stopped) return;
+  if (payload.heater_fraction === 1 && (!heatIntent || !canHeat())) return;
+  // Coalesce renewals. Release replaces queued heat; reset has highest priority.
+  if (pendingControl?.payload.reset && !payload.reset) return;
+  pendingControl = {payload, epoch, version:intentVersion}; pumpControls();
+}
+async function pumpControls() {
+  if (controlInFlight || !pendingControl || stopped) return;
+  const command = pendingControl; pendingControl = null;
+  if (command.payload.heater_fraction === 1 && (!heatIntent || !canHeat())) return;
+  controlInFlight = true;
+  try {
+    const state = validState(await readJSON('/thermal_state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(command.payload), keepalive:true}, 1200));
+    if (command.payload.reset && command.epoch === epoch) { resetPending = false; minimumFrameRevision = state.scene_revision; }
+    if (command.version === intentVersion) applyLiveState(state, command.epoch);
+    if (command.payload.reset && command.epoch === epoch) message('Fresh charge ready. Hold to heat, then release to settle.');
+    if (command.payload.heater_fraction === 0) stopAttemptedAfterFailure = false;
+  } catch (error) {
+    if (command.payload.reset && command.epoch === epoch) resetPending = false;
+    failConnection(error, command.payload.heater_fraction === 0);
+  } finally { controlInFlight = false; updateUI(); if (pendingControl) pumpControls(); }
+}
+function beginHeat() {
+  if (heatIntent || !canHeat()) return;
+  heatIntent = true; intentVersion++; stopAttemptedAfterFailure = false;
+  message('Heating while held. Release to let the load settle.'); queueControl({heater_fraction:1});
+  renewalTimer = setInterval(() => {
+    if (heatIntent && canHeat() && !document.hidden) queueControl({heater_fraction:1});
+    else { stopHeat('Heat released. Watch the load settle.'); updateUI(); }
+  }, 150);
+  updateUI();
+}
+function resetRun() {
+  if (!online || resetPending) return;
+  clearHeatIntent(); epoch++; intentVersion++; resetPending = true; pendingControl = null;
+  message('Resetting the native mechanism…'); queueControl({reset:true}); updateUI();
+}
+async function pollState() {
+  if (stopped) return;
+  if (!document.hidden && !controlInFlight && !pendingControl) {
+    const requestEpoch = epoch, version = intentVersion;
+    try { const state = validState(await readJSON('/thermal_state')); if (version === intentVersion) applyLiveState(state, requestEpoch); }
+    catch (error) { if (requestEpoch === epoch && version === intentVersion) { failConnection(error); updateUI(); } }
+  }
+  if (!stopped) statusTimer = setTimeout(pollState, online ? 250 : 1000);
+}
+function frameCanDisplay(state, requestEpoch) {
+  return requestEpoch === epoch && !stopped && !resetPending && state.scene_revision >= minimumFrameRevision &&
+    (!frameState || state.scene_revision >= frameState.scene_revision);
+}
+async function pollFrame() {
+  if (stopped) return;
+  // A native control update is always allowed ahead of the next frame request.
+  if (document.hidden || controlInFlight || pendingControl || resetPending || frameInFlight) { frameTimer = setTimeout(pollFrame, 80); return; }
+  frameInFlight = true;
+  const requestEpoch = epoch;
+  try {
+    const frame = await readJSON('/thermal_frame?w=960', {}, 4000);
+    if (frame?.ok !== true || !['image/jpeg','image/png'].includes(frame.mime) || typeof frame.image_base64 !== 'string' || !frame.image_base64 || !Number.isFinite(frame.capture_sequence)) throw new Error('The renderer returned an incomplete native capture.');
+    const state = validState(frame.state);
+    if (!frameCanDisplay(state, requestEpoch)) return;
+    // Repeated cached captures keep their original label and freshness time.
+    if (frame.capture_sequence === captureSequence) return;
+    const source = `data:${frame.mime};base64,${frame.image_base64}`;
+    const image = new Image(); image.src = source; await image.decode();
+    if (!frameCanDisplay(state, requestEpoch)) return;
+    byId('nativeFrame').src = source; byId('nativeFrame').hidden = false;
+    frameState = state; frameEpoch = epoch; window.lastFrameState = state; captureSequence = frame.capture_sequence;
+    frameAt = Date.now(); frameFailures = 0;
+    text('captureInfo', `Frame-aligned readings · tick ${state.tick}`);
+    text('position', fmt(state.position_m * 1000)); text('speed', fmt(Math.abs(state.velocity_m_s) * 1000));
+    text('temperature', fmt(state.gas.temperature_K, 1)); text('pressure', fmt(state.gas.pressure_Pa / 1000, 1));
+    // Captured state never overwrites live mission/charge telemetry.
+  } catch (error) { if (requestEpoch === epoch) { frameFailures++; failConnection(error); } }
+  finally {
+    frameInFlight = false; updateUI();
+    if (!stopped) frameTimer = setTimeout(pollFrame, frameFailures ? Math.min(5000, 500 * 2 ** Math.min(frameFailures, 4)) : 160);
+  }
+}
+heatButton.addEventListener('pointerdown', event => {
+  if (event.button !== 0 || !canHeat()) return;
+  event.preventDefault(); heatButton.focus(); pointerHeld = true; suppressClickUntil = Date.now() + 300;
+  try { heatButton.setPointerCapture(event.pointerId); } catch {}
+  beginHeat();
+});
+function pointerRelease() { if (pointerHeld) { suppressClickUntil = Date.now() + 300; stopHeat('Heat released. Let the load settle.'); updateUI(); } }
+window.addEventListener('pointerup', pointerRelease); window.addEventListener('pointercancel', pointerRelease);
+heatButton.addEventListener('lostpointercapture', pointerRelease);
+heatButton.addEventListener('keydown', event => {
+  if (![' ','Enter'].includes(event.key)) return;
+  event.preventDefault(); if (event.repeat) return;
+  keyboardHeld = true; suppressClickUntil = Date.now() + 300; beginHeat();
+});
+window.addEventListener('keyup', event => {
+  if (keyboardHeld && [' ','Enter'].includes(event.key)) { event.preventDefault(); suppressClickUntil = Date.now() + 300; stopHeat('Heat released. Let the load settle.'); updateUI(); }
+});
+// Assistive activation may emit click alone; it toggles intent with the same lease.
+heatButton.addEventListener('click', event => {
+  if (event.detail !== 0 || Date.now() < suppressClickUntil) return;
+  if (heatIntent) { stopHeat('Heat released. Let the load settle.'); updateUI(); } else beginHeat();
+});
+heatButton.addEventListener('blur', () => { if (heatIntent) { stopHeat('Heat stopped when the control lost focus.'); updateUI(); } });
+byId('resetButton').addEventListener('click', resetRun);
+window.addEventListener('blur', () => { if (started) { stopHeat('Heat stopped when the window lost focus.', Boolean(liveState)); updateUI(); } });
+document.addEventListener('visibilitychange', () => { if (document.hidden && started) { stopHeat('Heat stopped while this page is hidden.', Boolean(liveState)); updateUI(); } });
+window.addEventListener('pagehide', () => { if (started) stopHeat('', Boolean(liveState)); });
+function start() {
+  if (started) return; started = true; pollState(); pollFrame();
+  freshnessTimer = setInterval(() => { if (heatIntent && !cameraFresh()) stopHeat('Heat stopped while the native view catches up.'); updateUI(); }, 250);
+}
+if (document.readyState === 'complete') setTimeout(start, 0); else window.addEventListener('load', start, {once:true});
+</script>
+</body>
+</html>

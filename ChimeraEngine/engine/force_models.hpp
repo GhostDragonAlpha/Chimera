@@ -107,7 +107,7 @@ class Library {
         std::set<double> knots;
         for (const auto& part : items) {
             const auto& r=part.def->at("temperature_ranges_K");
-            low=std::max(low,number(r[0])); high=std::min(high,number(r[2]));
+            low=(std::max)(low,number(r[0])); high=(std::min)(high,number(r[2]));
             knots.insert(number(r[1])); n += part.n;
         }
         require(low < high,"gas_range_intersection_empty");
@@ -121,7 +121,7 @@ class Library {
         for(double t:knots) if(t>low && t<high) edges.push_back(t);
         edges.push_back(high);
         std::vector<double> candidates;
-        const double tol=8*std::numeric_limits<double>::epsilon()*std::max(1.0,std::abs(goal));
+        const double tol=8*std::numeric_limits<double>::epsilon()*(std::max)(1.0,std::abs(goal));
         for(size_t i=1;i<edges.size();++i) {
             double a=edges[i-1], b=edges[i];
             // A knot belongs to the lower polynomial; its right limit is distinct.
@@ -130,7 +130,7 @@ class Library {
             require(vb>va,"gas_energy_not_monotone");
             if(goal < va-tol || goal > vb+tol) continue;
             double best=std::abs(va-goal)<std::abs(vb-goal)?a:b;
-            double err=std::min(std::abs(va-goal),std::abs(vb-goal));
+            double err=(std::min)(std::abs(va-goal),std::abs(vb-goal));
             for(int j=0;j<90;++j) {
                 const double mid=a+(b-a)*0.5;
                 if(mid==a || mid==b) break;
@@ -138,7 +138,7 @@ class Library {
                 if(e<err) {best=mid;err=e;}
                 if(v<goal) a=mid; else b=mid;
             }
-            if(err<=std::max(tol,1e-10)) candidates.push_back(best);
+            if(err<=(std::max)(tol,1e-10)) candidates.push_back(best);
         }
         require(!candidates.empty(),"gas_energy_out_of_range_or_fit_gap");
         require(candidates.size()==1,"gas_fit_inverse_ambiguous");

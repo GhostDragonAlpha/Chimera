@@ -14,6 +14,7 @@
 #include "png_encoder.hpp"
 #include "membrane_tick.hpp"
 #include "graph_surface.hpp"
+#include "graph_thermal.hpp"
 #include "importer.hpp"    // C1: /mesh_import (the aliveness law ingestion)
 
 #include <cstdio>
@@ -36,6 +37,9 @@ static Engine* g_engine = nullptr;
 static Physics g_physics;
 static GraphSurface g_science_surface;
 static std::mutex g_science_mutex;
+static GraphThermal g_thermal;
+static std::mutex g_thermal_frame_mutex;
+static std::map<uint64_t,GraphThermal::J> g_thermal_frames;
 static SharedRing g_ring("ChimeraPhysicsRing");
 
 // ── Pending membrane request (Vulkan work must stay on the main/render thread) ───────
@@ -672,6 +676,20 @@ int main(int argc, char** argv) {
     }
 
 
+    for(int i=1;i+1<argc;++i) if(std::string(argv[i])=="--thermal-salvage") {
+        try {
+            chimera::forces::require(!g_science_surface.active,"exclusive_science_scene");
+            g_thermal.load(argv[i+1]);
+            auto view=g_thermal.render();
+            if(!engine.load_mesh(view.mesh,view.indices,uint32_t(view.mesh.size()/9),uint32_t(view.indices.size())))
+                throw std::runtime_error("thermal_mesh_upload_failed");
+            engine.set_mesh_mode(2);engine.ui_.set_visible(false);
+            auto camera=g_thermal.bundle.at("camera").get<std::array<float,8>>();
+            engine.set_camera_full(camera.data());
+            g_thermal.start();
+        }catch(const std::exception& ex){fprintf(stderr,"thermal salvage: %s\n",ex.what());return 2;}
+    }
+
     // THE STUDIO: optional board file path (argv[2]); default is studio_board.json
     // in the CWD — tools/studio_board.py writes it next to the exe.
     // 2026-09-02: flags are not paths — `chimera_engine.exe 8090 --restore`
@@ -694,7 +712,80 @@ int main(int argc, char** argv) {
         size_t q = path.find('?');
         std::string p = (q == std::string::npos) ? path : path.substr(0, q);
 
-        if (p == "/science_surface" && (method == "GET" || method == "POST")) {
+        if(g_thermal.active() && method=="POST" && p!="/thermal_state")
+            throw chimera::forces::Refusal("thermal_scene_accepts_intent_controls_only");
+        if(p=="/thermal_state" && (method=="GET" || method=="POST")) {
+            content_type="application/json";
+            try {
+                if(method=="POST") {
+                    std::vector<std::set<std::string>> keys;
+                    auto cb=[&](int,GraphThermal::J::parse_event_t event,GraphThermal::J& v) {
+                        if(event==GraphThermal::J::parse_event_t::object_start)keys.emplace_back();
+                        if(event==GraphThermal::J::parse_event_t::key)
+                            chimera::forces::require(keys.back().insert(v.get<std::string>()).second,"duplicate_json_key");
+                        if(event==GraphThermal::J::parse_event_t::object_end)keys.pop_back();
+                        return true;
+                    };
+                    chimera::forces::require(req_body.size()<=4096,"thermal_control_size");
+                    body=g_thermal.control(GraphThermal::J::parse(req_body,cb)).dump();
+                }else body=g_thermal.status().dump();
+            }catch(const std::exception& e){body=GraphThermal::J{{"ok",false},{"error",e.what()}}.dump();}
+        } else if(p=="/thermal_frame" && method=="GET") {
+            content_type="application/json";
+            try {
+                chimera::forces::require(g_thermal.active(),"thermal_scene_missing");
+                using PhaseClock=std::chrono::steady_clock;
+                auto elapsed=[](PhaseClock::time_point a,PhaseClock::time_point b){return std::chrono::duration<double,std::milli>(b-a).count();};
+                const auto t0=PhaseClock::now();
+                const uint64_t want=engine.capture_arm_watermark()+1;
+                engine.request_capture();
+                const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(3);
+                while(!engine.capture_collected_since(want) && std::chrono::steady_clock::now()<deadline)
+                    Sleep(2);
+                chimera::forces::require(engine.capture_collected_since(want),"thermal_capture_timeout");
+                const auto t1=PhaseClock::now();
+                std::array<uint64_t,5> read_phases{};
+                std::vector<uint8_t> rgba;uint32_t width=0,height=0;uint64_t seq=0;
+                chimera::forces::require(engine.capture_frame(rgba,width,height,&seq,&read_phases) && seq>=want,
+                                         "thermal_capture_identity");
+                const auto t2=PhaseClock::now();
+                GraphThermal::J snapshot;
+                while(std::chrono::steady_clock::now()<deadline) {
+                    {std::lock_guard<std::mutex> lk(g_thermal_frame_mutex);
+                     auto it=g_thermal_frames.find(seq);if(it!=g_thermal_frames.end())snapshot=it->second;}
+                    if(!snapshot.is_null())break;
+                    Sleep(1);
+                }
+                chimera::forces::require(!snapshot.is_null(),"thermal_capture_state_missing");
+                const auto t3=PhaseClock::now();
+                const uint32_t target=(std::max)(320u,(std::min)(1600u,f2::query_uint(path,"w=")));
+                if(target<width) {
+                    std::vector<uint8_t> down;uint32_t nw=0,nh=0;
+                    f2::box_downscale(rgba,width,height,down,nw,nh,target);
+                    rgba.swap(down);width=nw;height=nh;
+                }
+                const auto t4=PhaseClock::now();
+                std::vector<uint8_t> encoded;
+                const bool jpg=f2::jpeg_encode_wic(rgba.data(),width,height,88,encoded);
+                if(!jpg)encoded=png::encode_rgba(rgba.data(),width,height);
+                const auto t5=PhaseClock::now();
+                body=GraphThermal::J{{"ok",true},{"mime",jpg?"image/jpeg":"image/png"},
+                    {"image_base64",GraphThermal::base64(encoded)},{"state",snapshot},
+                    {"capture_sequence",seq},{"width",width},{"height",height},
+                    {"timing_ms",{{"wait_collect",elapsed(t0,t1)},{"copy",elapsed(t1,t2)},{"state_lookup",elapsed(t2,t3)},
+                                  {"downscale",elapsed(t3,t4)},{"encode",elapsed(t4,t5)}}},
+                    {"read_phases_us",read_phases},
+                    {"read_phase_names",{"map","invalidate","bulk_copy","conversion_or_direct_read","unmap"}}}.dump();
+            }catch(const std::exception& e){body=GraphThermal::J{{"ok",false},{"error",e.what()}}.dump();}
+        } else if((p=="/thermal" || p=="/thermal_graph") && method=="GET") {
+            content_type=p=="/thermal"?"text/html; charset=utf-8":"application/json";
+            if(g_thermal.active()) {
+                auto key=p=="/thermal"?"page_file":"graph_file";
+                std::ifstream f(g_thermal.bundle.at(key).get<std::string>(),std::ios::binary);
+                if(f)body.assign(std::istreambuf_iterator<char>(f),{});
+                else{body="{\"ok\":false,\"error\":\"thermal_scene_asset_missing\"}";content_type="application/json";}
+            }else{body="{\"ok\":false,\"error\":\"thermal_scene_missing\"}";content_type="application/json";}
+        } else         if (p == "/science_surface" && (method == "GET" || method == "POST")) {
             std::lock_guard<std::mutex> lk(g_science_mutex);
             content_type="application/json";
             try {
@@ -4154,6 +4245,19 @@ int main(int argc, char** argv) {
             }
         }
 
+        GraphThermal::J thermal_frame_state;
+        if(g_thermal.active()) {
+            try {
+                auto view=g_thermal.render();
+                if(!engine.update_mesh(view.mesh,uint32_t(view.mesh.size()/9)))
+                    throw std::runtime_error("thermal_render_update_failed");
+                thermal_frame_state=std::move(view.state);
+                // This graph fixture declares a fixed observation frame. Reapply
+                // it so unrelated native view input cannot drift between trials.
+                const auto camera=g_thermal.bundle.at("camera").get<std::array<float,8>>();
+                engine.set_camera_full(camera.data());
+            }catch(const std::exception& e){fprintf(stderr,"thermal render: %s\n",e.what());}
+        }
         unsigned surface_frame_revision=0;
         if (g_science_surface.active) {
             std::lock_guard<std::mutex> lk(g_science_mutex);
@@ -4239,12 +4343,26 @@ int main(int argc, char** argv) {
         }
 
         // Render one frame (timed — the frame-stutter instrument)
+        const uint64_t thermal_capture_before=engine.capture_arm_watermark();
         auto ft0 = std::chrono::high_resolution_clock::now();
         if (!engine.frame()) {
             fprintf(stderr, "Frame failed\n");
             break;
         }
         auto ft1 = std::chrono::high_resolution_clock::now();
+        if(!thermal_frame_state.is_null()) {
+            const uint64_t revision=thermal_frame_state.at("scene_revision").get<uint64_t>();
+            g_thermal.rendered(revision);
+            thermal_frame_state["render_revision"]=revision;
+            std::array<float,8> frame_camera{};engine.camera_state(frame_camera.data());
+            thermal_frame_state["render_camera"]=frame_camera;
+            const uint64_t armed=engine.capture_arm_watermark();
+            std::lock_guard<std::mutex> lk(g_thermal_frame_mutex);
+            for(uint64_t seq=thermal_capture_before+1;seq<=armed;++seq)
+                g_thermal_frames[seq]=thermal_frame_state;
+            while(g_thermal_frames.size()>128)g_thermal_frames.erase(g_thermal_frames.begin());
+        }
+
         if (surface_frame_revision) {
             std::lock_guard<std::mutex> lk(g_science_mutex);
             // This revision passed through frame submission. /frame separately
@@ -4379,6 +4497,7 @@ int main(int argc, char** argv) {
     printf("shutdown: http_stopped\n");
     fflush(stdout);
     printf("Shutting down...\n");
+    g_thermal.stop();
     engine.shutdown();
     printf("shutdown: engine_shutdown\n");
     fflush(stdout);

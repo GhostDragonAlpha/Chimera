@@ -46,7 +46,7 @@ public:
     void set_camera(float radius, float theta, float phi);
     void request_capture() { capture_ready_.store(false); capture_requested_.store(true); }
     bool capture_ready() const { return capture_ready_.load(); }
-    bool capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h);
+    bool capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h, uint64_t* sequence = nullptr, std::array<uint64_t,5>* phases_us = nullptr);
     // G8 r3: last frame's phase timings in µs (render-thread written,
     // /studio_chrome read) — fence wait, collect, present. The instrument that
     // settles WHERE a slow grab spends its time, without another guess.
@@ -692,6 +692,7 @@ private:
         uint32_t       frame_slot = 0;   // fences_[frame_slot] guards this copy
         uint32_t       w = 0, h = 0;     // extent at arm time
         uint64_t       seq = 0;          // arm order (FIFO collect + watermark)
+        bool           host_cached = false; // CPU-read policy, distinct from coherence
         bool           noncoherent = false; // staging type lacks HOST_COHERENT:
                                             // CPU read needs vkInvalidate first
         bool           glass = false;    // channel: false = capture, true = glass
@@ -843,6 +844,7 @@ private:
     ReadbackSlot glass_rb_[RB_SLOTS];
     int capture_rb_next_ = 0, glass_rb_next_ = 0;
     std::atomic<uint64_t> capture_armed_gen_{0};     // seq of the last capture arm
+    std::array<uint64_t,5> capture_read_phases_us_{}; // guarded by capture_mutex_
     std::atomic<uint64_t> capture_collected_gen_{0}; // seq of the last capture collect
     // G8 r4: THE READER THREAD IS FLAG-GATED AND OFF BY DEFAULT. Round 3 moved
     // the map+read to this thread and the world froze (the collect loop re-

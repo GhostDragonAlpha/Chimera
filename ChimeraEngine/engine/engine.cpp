@@ -842,9 +842,9 @@ bool Engine::init(const EngineConfig& cfg) {
     printf("Vulkan engine initialized: %u x %u, %u frames in flight\n",
            cfg.width, cfg.height, MAX_FRAMES_IN_FLIGHT);
 
-    // G8 r4: the experimental reader thread is OFF by default — the inline
-    // blocking collect is the verified liveness trade (world alive, ~1 s per
-    // grab). CHIMERA_RB_READER=1 re-enables it for a measured attempt.
+    // Inline collection uses the cached-read policy below. The separate reader
+    // remains opt-in; moving an uncached scalar read to another thread does not
+    // cure its access cost. CHIMERA_RB_READER=1 is a diagnostic option.
     rb_use_reader_ = std::getenv("CHIMERA_RB_READER") != nullptr;
     if (rb_use_reader_) rb_reader_ = std::thread(&Engine::rb_reader_loop, this);
     return true;
@@ -6222,17 +6222,12 @@ bool Engine::dispatch_compute(std::vector<float>& out_velocities) {
 // and collect leaves the in-flight slot at its armed geometry — the slot
 // records its own w/h — and the realloc happens on a LATER arm).
 //
-// THE READBACK MEMORY LAW (G8 round 2, the ~940 ms fix): the CPU READS this
-// memory every grab (map + BGRA->RGBA swizzle), so the staging MUST be
-// CPU-cached sysmem — NEVER a DEVICE_LOCAL BAR allocation.
-// find_mem_type(VISIBLE|COHERENT) returns the FIRST matching type, and on a
-// ReBAR card that is the DEVICE_LOCAL BAR1 type: uncached, so the swizzle's
-// 4-byte-strided read of 8.3 MB costs ~940 ms of PCIe reads (measured, live
-// 4090; the pre-G8 "~910 ms" freeze was the same read, misattributed to the
-// queue wait — the audit never split the block). Selection order: non-local +
-// coherent, non-local + cached, any non-local, coherent (the old law), any
-// host-visible. When the picked type lacks HOST_COHERENT the reader issues
-// vkInvalidateMappedMemoryRanges before reading (slot.noncoherent).
+// Readback is a CPU-read workload. Prefer HOST_CACHED, independently of
+// HOST_COHERENT. On this host the old nonlocal+coherent-first rule chose
+// uncached type 2 (flags 6): direct conversion took ~917 ms. Cached type 3
+// (flags 14) took ~1.8 ms with identical pixels in the 2026-09-16 A/B test.
+// See graph record doc.native_readback_diagnosis for scope and receipts.
+// Noncoherent selections map/invalidate the whole allocation before reading.
 void Engine::rb_ensure_slot(ReadbackSlot& s) {
     VkDeviceSize size = static_cast<VkDeviceSize>(extent_.width) * extent_.height * 4;
     if (s.buf != VK_NULL_HANDLE && size == s.size) return;
@@ -6249,28 +6244,28 @@ void Engine::rb_ensure_slot(ReadbackSlot& s) {
     vkGetPhysicalDeviceMemoryProperties(phys_dev_, &mp);
     int pick = -1;
     bool noncoherent = false;
-    for (int pass = 0; pass < 4 && pick < 0; ++pass) {
-        for (uint32_t i = 0; i < mp.memoryTypeCount; ++i) {
-            if (!(mr.memoryTypeBits & (1u << i))) continue;
-            const VkMemoryPropertyFlags p = mp.memoryTypes[i].propertyFlags;
-            if (!(p & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)) continue;
-            const bool dl  = (p & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)  != 0;
-            const bool coh = (p & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) != 0;
-            const bool cch = (p & VK_MEMORY_PROPERTY_HOST_CACHED_BIT)   != 0;
-            const bool ok = (pass == 0 && !dl && coh) ||
-                            (pass == 1 && !dl && cch) ||
-                            (pass == 2 && !dl)          ||
-                            (pass == 3 && coh);
-            if (ok) {
-                pick = static_cast<int>(i);
-                noncoherent = !coh;
-                break;
-            }
+    // CPU READBACK: HOST_COHERENT is a visibility guarantee, not a cache.
+    // Prefer HOST_CACHED; retain explicit invalidation for noncoherent memory.
+    // This control switch exists only for the controlled latency A/B check.
+    const bool uncached_control=std::getenv("CHIMERA_RB_UNCACHED_CONTROL")!=nullptr;
+    for(int pass=0;pass<7 && pick<0;++pass) {
+        for(uint32_t i=0;i<mp.memoryTypeCount;++i) {
+            if(!(mr.memoryTypeBits&(1u<<i)))continue;
+            const auto flags=mp.memoryTypes[i].propertyFlags;
+            if(!(flags&VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT))continue;
+            const bool local=(flags&VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)!=0;
+            const bool coherent=(flags&VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)!=0;
+            const bool cached=(flags&VK_MEMORY_PROPERTY_HOST_CACHED_BIT)!=0;
+            const bool accept=uncached_control ?
+                ((pass==0 && !local && coherent) || (pass==1 && !local && cached) ||
+                 (pass==2 && !local) || (pass==3 && coherent) || pass==6) :
+                ((pass==0 && !local && cached && coherent) || (pass==1 && !local && cached) ||
+                 (pass==2 && cached) || (pass==3 && !local && coherent) ||
+                 (pass==4 && !local) || (pass==5 && coherent) || pass==6);
+            if(accept){pick=int(i);noncoherent=!coherent;break;}
         }
     }
-    if (pick < 0)   // no host-visible type at all: the old last resort (dies loudly below)
-        pick = static_cast<int>(find_mem_type(mr.memoryTypeBits,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT));
+    if(pick<0)throw std::runtime_error("readback_host_visible_memory_missing");
 
     VkMemoryAllocateInfo ai{};
     ai.sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -6280,6 +6275,7 @@ void Engine::rb_ensure_slot(ReadbackSlot& s) {
     vkBindBufferMemory(device_, s.buf, s.mem, 0);
     s.size = size;
     s.noncoherent = noncoherent;
+    s.host_cached = (mp.memoryTypes[pick].propertyFlags & VK_MEMORY_PROPERTY_HOST_CACHED_BIT) != 0;
     rb_mem_type_.store(static_cast<uint32_t>(pick));                 // G8 r3: expose the pick
     rb_mem_flags_.store(mp.memoryTypes[pick].propertyFlags);         // for /studio_chrome
 }
@@ -7306,12 +7302,14 @@ void Engine::set_camera(float radius, float theta, float phi) {
     g_cam.pan_x = g_cam.pan_y = 0.0f;
 }
 
-bool Engine::capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h) {
+bool Engine::capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h, uint64_t* sequence, std::array<uint64_t,5>* phases_us) {
     std::lock_guard<std::mutex> lk(capture_mutex_);
     if (capture_rgba_.empty()) return false;
     out_rgba = capture_rgba_;
     w = capture_w_;
     h = capture_h_;
+    if(phases_us)*phases_us=capture_read_phases_us_;
+    if(sequence)*sequence=capture_collected_gen_.load(); // Same lock as the copied pixels.
     return true;
 }
 
@@ -8731,14 +8729,10 @@ bool Engine::frame() {
 // queue wait was NOT enough — every grab still stalled ~940 ms, async and
 // sync alike, and the stall sat in THIS collect's map+swizzle (worker TTFB
 // and sync watermark both pinned it inside capture_mutex_). Root cause: the
-// staging allocation law picked the FIRST host-visible|coherent type, which
-// on a ReBAR card is DEVICE_LOCAL BAR1 — uncached — so the swizzle's
-// 4-byte-strided CPU read of 8.3 MB cost ~940 ms of PCIe reads. The old
-// path's "~910 ms vkQueueWaitIdle" attribution (R6 audit) was the same read;
-// the audit's own footnote says the split was never measured. The fix lives
-// in rb_ensure_slot (THE READBACK MEMORY LAW): staging is CPU-cached sysmem,
-// never device-local BAR, with vkInvalidateMappedMemoryRanges before reading
-// a non-coherent type.
+// Historical attempts changed residency or thread placement without reliably
+// selecting HOST_CACHED. The current policy separates CPU caching from coherence;
+// see rb_ensure_slot and the captured phase timings. Uncached fallback uses bulk
+// copy before conversion, avoiding scalar reads directly from uncached memory.
 //
 // The render thread never waits on a readback. The one bounded exception is
 // collect_for_frame_slot(), the backstop before a fences_ slot is RESET: a
@@ -8876,15 +8870,18 @@ void Engine::collect_readbacks(uint64_t armed_before) {
     }
 }
 
-// The per-slot read: map + optional invalidate + BGRA->RGBA swizzle + unmap +
-// publish. Runs ON THE CALLER'S THREAD: the render thread in the default
-// inline law (~1 s per grab on this box — the readback read serializes the
-// device under WDDM, whatever the memory type), the reader thread in the
-// experimental mode. Fence-check happens BEFORE any map, in the collect's
-// filter — a slot whose fence is not signalled is never mapped.
+// Map, invalidate if required, read/convert, unmap, and publish. Per-capture
+// phase timings travel under the same lock as the pixels and capture sequence.
+// The slot is mapped only after its submission fence generation is complete.
 void Engine::rb_read_slot(ReadbackSlot& s) {
+    using ReadClock=std::chrono::steady_clock;
+    auto micros=[](ReadClock::time_point a,ReadClock::time_point b) {
+        return uint64_t(std::chrono::duration_cast<std::chrono::microseconds>(b-a).count());
+    };
+    const auto t0=ReadClock::now();
     void* mapped = nullptr;
-    if (vkMapMemory(device_, s.mem, 0, s.size, 0, &mapped) == VK_SUCCESS) {
+    if (vkMapMemory(device_, s.mem, 0, VK_WHOLE_SIZE, 0, &mapped) == VK_SUCCESS) {
+        const auto t1=ReadClock::now();
         if (s.noncoherent) {   // non-coherent staging: make the GPU's copy visible before the CPU read
             VkMappedMemoryRange rng{};
             rng.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
@@ -8894,16 +8891,29 @@ void Engine::rb_read_slot(ReadbackSlot& s) {
                                           // nonCoherentAtomSize-multiple VUID moot
             vkInvalidateMappedMemoryRanges(device_, 1, &rng);
         }
+        const auto t2=ReadClock::now();
         const size_t px = static_cast<size_t>(s.w) * s.h;
         std::vector<uint8_t> scratch(px * 4);
         const uint8_t* src = static_cast<const uint8_t*>(mapped);
-        for (size_t i = 0; i < px; ++i) {
-            scratch[i * 4 + 0] = src[i * 4 + 2];  // R
-            scratch[i * 4 + 1] = src[i * 4 + 1];  // G
-            scratch[i * 4 + 2] = src[i * 4 + 0];  // B
-            scratch[i * 4 + 3] = src[i * 4 + 3];  // A
+        static const bool force_bulk=std::getenv("CHIMERA_RB_MEMCPY_SWIZZLE")!=nullptr;
+        static const bool direct_control=std::getenv("CHIMERA_RB_DIRECT_CONTROL")!=nullptr;
+        const bool bulk_read=force_bulk || (!s.host_cached && !direct_control);
+        const auto copy_start=ReadClock::now();
+        if(bulk_read)std::memcpy(scratch.data(),src,px*4);
+        const auto copy_end=ReadClock::now();
+        if(bulk_read) {
+            for(size_t i=0;i<px;++i)std::swap(scratch[i*4],scratch[i*4+2]);
+        }else{
+            for(size_t i=0;i<px;++i) {
+                scratch[i*4+0]=src[i*4+2];scratch[i*4+1]=src[i*4+1];
+                scratch[i*4+2]=src[i*4+0];scratch[i*4+3]=src[i*4+3];
+            }
         }
+        const auto convert_end=ReadClock::now();
         vkUnmapMemory(device_, s.mem);
+        const auto unmap_end=ReadClock::now();
+        const std::array<uint64_t,5> phases{micros(t0,t1),micros(t1,t2),
+            micros(copy_start,copy_end),micros(copy_end,convert_end),micros(convert_end,unmap_end)};
         if (s.glass) {
             std::lock_guard<std::mutex> lk(glass_mutex_);
             glass_rgba_.swap(scratch);
@@ -8915,6 +8925,7 @@ void Engine::rb_read_slot(ReadbackSlot& s) {
             capture_rgba_.swap(scratch);
             capture_w_ = s.w;
             capture_h_ = s.h;
+            capture_read_phases_us_=phases;
             capture_collected_gen_.store(s.seq);   // strict-fresh watermark
             capture_ready_.store(true);
             reel_pending_.store(true, std::memory_order_release);

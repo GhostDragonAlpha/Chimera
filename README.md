@@ -171,6 +171,22 @@ python -B -m tools.science_funnel.force_catalog --output .tmp/force-catalog
 The build is offline. It creates a checked graph snapshot and preserves source
 qualifiers; importing a model definition does not qualify its runtime behavior.
 
+### Play the native thermal-salvage demo
+
+Hold the heater to lift a load, release inside the target window, and recover it
+before spending the finite charge. Gas energy, pressure, motion and beam reaction
+are calculated by the native engine.
+
+```powershell
+powershell -File tools/science_funnel/run_thermal.ps1
+python -B -m tools.creature_graph.project_spec --show doc.thermal_salvage
+python -B -m tools.creature_graph.project_spec --show doc.native_readback_diagnosis
+```
+
+Open [thermal salvage](http://127.0.0.1:8108/thermal). The launcher uses its own
+build and refuses occupied ports. The graph holds source mappings, derivations,
+reference-test commands, evidence identities and the model's limits.
+
 ## 6. Release sequence
 
 The active contract is `req.engine_game_release`:
