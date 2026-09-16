@@ -20,6 +20,25 @@ DIMENSIONS = {
     'volume_flow': (0, 3, -1, 0, 0, 0, 0),
     'hydraulic_compliance': (-1, 4, 2, 0, 0, 0, 0),
 }
+# Effective-model quantities used by the versioned force-origin sources.
+DIMENSIONS.update({
+    'acceleration': (0, 1, -2, 0, 0, 0, 0),
+    'gravitational_parameter': (0, 3, -2, 0, 0, 0, 0),
+    'gravitational_constant': (-1, 3, -2, 0, 0, 0, 0),
+    'amount': (0, 0, 0, 0, 0, 1, 0), 'inverse_amount': (0, 0, 0, 0, 0, -1, 0),
+    'heat_capacity': (1, 2, -2, 0, -1, 0, 0),
+    'molar_heat_capacity': (1, 2, -2, 0, -1, -1, 0),
+    'specific_heat': (0, 2, -2, 0, -1, 0, 0),
+    'molar_energy': (1, 2, -2, 0, 0, -1, 0),
+    'specific_energy': (0, 2, -2, 0, 0, 0, 0),
+    'thermal_conductivity': (1, 1, -3, 0, -1, 0, 0),
+    'power': (1, 2, -3, 0, 0, 0, 0),
+    'charge': (0, 0, 1, 1, 0, 0, 0),
+    'action': (1, 2, -1, 0, 0, 0, 0),
+    'permittivity': (-1, -3, 4, 2, 0, 0, 0),
+    'permeability': (1, 1, -2, -2, 0, 0, 0),
+})
+
 # Quantity semantics retained even for identical dimensions (angle vs strain,
 # pressure vs modulus, force vs maximum isometric force, torque vs energy).
 QUANTITIES = {k: k for k in DIMENSIONS}
@@ -51,6 +70,19 @@ for _dim, _unit in [('force', 'N'), ('stiffness', 'N/m'), ('compressibility', '1
                     ('frequency', '1/s'), ('speed', 'm/s'), ('density', 'kg/m3'),
                     ('viscosity', 'Pa*s'), ('volume_flow', 'm3/s'),
                     ('hydraulic_compliance', 'm3/Pa')]:
+    _add(_dim, _unit, [(_unit, 1, 0)])
+
+
+_add('gravitational_parameter', 'm3/s2', [('m3/s2', 1, 0), ('km3/s2', 1e9, 0)])
+for _dim, _unit in [
+    ('gravitational_constant', 'm3/(kg*s2)'), ('acceleration', 'm/s2'),
+    ('amount', 'mol'), ('inverse_amount', '1/mol'),
+    ('heat_capacity', 'J/K'), ('molar_heat_capacity', 'J/(mol*K)'),
+    ('specific_heat', 'J/(kg*K)'), ('molar_energy', 'J/mol'),
+    ('specific_energy', 'J/kg'), ('thermal_conductivity', 'W/(m*K)'),
+    ('power', 'W'), ('charge', 'C'), ('action', 'J*s'),
+    ('permittivity', 'F/m'), ('permeability', 'N/A2'),
+]:
     _add(_dim, _unit, [(_unit, 1, 0)])
 
 

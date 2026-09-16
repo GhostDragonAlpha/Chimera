@@ -239,3 +239,6 @@ def coolprop_surface(raw, manifest, path):
               unknowns=['source_fit_uncertainty','bulk_flow','optical_appearance'])]
 
 ADAPTERS['coolprop_surface'] = coolprop_surface
+
+from .force_adapters import FORCE_ADAPTERS
+ADAPTERS.update(FORCE_ADAPTERS)

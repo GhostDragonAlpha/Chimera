@@ -1,0 +1,153 @@
+{
+  "schema": "chimera.force_sources.v1",
+  "artifacts": [
+    {
+      "path": "nist_constants.txt",
+      "url": "https://physics.nist.gov/cuu/Constants/Table/allascii.txt",
+      "resolved_url": "https://physics.nist.gov/cuu/Constants/Table/allascii.txt",
+      "sha256": "77fb90e66c40db3e6eb16630bc9c88e4c7c8beddbe5e71be406f2f26e3f67e67",
+      "bytes": 40801,
+      "content_type": "text/plain",
+      "retrieved_utc": "2026-09-16T20:24:09.676701+00:00"
+    },
+    {
+      "path": "jpl_astrodynamics.html",
+      "url": "https://ssd.jpl.nasa.gov/astro_par.html",
+      "resolved_url": "https://ssd.jpl.nasa.gov/astro_par.html",
+      "sha256": "168f48b94ae3a65f31c96f081d08e7ca91ecc9e65678fdc57353821b492b313e",
+      "bytes": 22489,
+      "content_type": "text/html",
+      "retrieved_utc": "2026-09-16T20:24:09.379572+00:00"
+    },
+    {
+      "path": "nist_al6061.html",
+      "url": "https://www.nist.gov/mml/acmd/aluminum-6061-t6-uns-aa96061",
+      "resolved_url": "https://www.nist.gov/mml/acmd/aluminum-6061-t6-uns-aa96061",
+      "sha256": "bf00d82f4d4c1f409cc695b87c939403cb6adce3a19f09b484206e5286942b1d",
+      "bytes": 83012,
+      "content_type": "text/html; charset=UTF-8",
+      "retrieved_utc": "2026-09-16T20:24:10.002002+00:00"
+    },
+    {
+      "path": "nist_terms.html",
+      "url": "https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications",
+      "resolved_url": "https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications",
+      "sha256": "72e9e3f688916e98c09252f5f589dec1abe8290e10ead23c4edf3535341b7c67",
+      "bytes": 93926,
+      "content_type": "text/html; charset=UTF-8",
+      "retrieved_utc": "2026-09-16T20:24:09.339587+00:00"
+    },
+    {
+      "path": "iaea_ground_states.csv",
+      "url": "https://www-nds.iaea.org/relnsd/v1/data?fields=ground_states&nuclides=all",
+      "resolved_url": "https://www-nds.iaea.org/relnsd/v1/data?fields=ground_states&nuclides=all",
+      "sha256": "8aee5dc431af1e35fcb49746387b83e927b3c300e7787defbda621a08212c795",
+      "bytes": 900613,
+      "content_type": "text/csv;charset=ISO-8859-1",
+      "retrieved_utc": "2026-09-16T20:24:09.926649+00:00"
+    },
+    {
+      "path": "iaea_api.html",
+      "url": "https://www-nds.iaea.org/relnsd/vcharthtml/api_v0_guide.html",
+      "resolved_url": "https://www-nds.iaea.org/relnsd/vcharthtml/api_v0_guide.html",
+      "sha256": "8322980d3268670ef4b7ddcb0a83c47e1f9f009e34bd99dc5829c2855a992353",
+      "bytes": 46420,
+      "content_type": "text/html",
+      "retrieved_utc": "2026-09-16T20:24:10.120444+00:00"
+    },
+    {
+      "path": "iaea_terms.html",
+      "url": "https://nucleus.iaea.org/Pages/Others/Terms-Of-Use.aspx",
+      "resolved_url": "https://nucleus.iaea.org/Pages/Others/Terms-Of-Use.aspx",
+      "sha256": "aac11a8242bdd12396387dedddcdd37c818500ca422aacd28d35500196558015",
+      "bytes": 79693,
+      "content_type": "text/html; charset=utf-8",
+      "retrieved_utc": "2026-09-16T20:24:10.566411+00:00"
+    },
+    {
+      "path": "cantera_gri30.yaml",
+      "url": "https://raw.githubusercontent.com/Cantera/cantera/6e0027548cf295bd478b8acfe34816f2db6dd58b/data/gri30.yaml",
+      "resolved_url": "https://raw.githubusercontent.com/Cantera/cantera/6e0027548cf295bd478b8acfe34816f2db6dd58b/data/gri30.yaml",
+      "sha256": "06650b1e0ee0012f6903d5328b1bb218cb6007d07f8ebe375d18f24811039345",
+      "bytes": 67813,
+      "content_type": "text/plain; charset=utf-8",
+      "retrieved_utc": "2026-09-16T20:24:09.968644+00:00"
+    },
+    {
+      "path": "cantera_LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/Cantera/cantera/6e0027548cf295bd478b8acfe34816f2db6dd58b/License.txt",
+      "resolved_url": "https://raw.githubusercontent.com/Cantera/cantera/6e0027548cf295bd478b8acfe34816f2db6dd58b/License.txt",
+      "sha256": "469fa95f76e0c652b4f204c2e5d3ffd184dbbb85b2a7fbc75355bee3a16e48e2",
+      "bytes": 1796,
+      "content_type": "text/plain; charset=utf-8",
+      "retrieved_utc": "2026-09-16T20:24:10.162868+00:00"
+    }
+  ],
+  "sources": [
+    {
+      "id": "nist.codata2022",
+      "adapter": "nist_codata",
+      "data": "nist_constants.txt",
+      "attachments": [
+        "nist_terms.html"
+      ],
+      "release": "CODATA2022",
+      "license": "NIST factual constants; source terms and attribution retained",
+      "url": "https://physics.nist.gov/cuu/Constants/Table/allascii.txt",
+      "attribution": "NIST Fundamental Physical Constants, 2022 CODATA adjustment. Retrieval snapshot 2026-09-16. Source numeric values and their exact/uncertain/truncated distinctions are preserved.",
+      "scope": "355 constants retained as source records; 12 untruncated SI constants mapped. Printed ellipses never become exact runtime numbers."
+    },
+    {
+      "id": "jpl.de440",
+      "adapter": "jpl_gravity",
+      "data": "jpl_astrodynamics.html",
+      "attachments": [],
+      "release": "DE440 / pinned astrodynamic table snapshot",
+      "license": "JPL SSD numerical data with source acknowledgment",
+      "url": "https://ssd.jpl.nasa.gov/astro_par.html",
+      "attribution": "Solar System Dynamics. (2026, September, 16). Astrodynamic Parameters. https://ssd.jpl.nasa.gov/astro_par.html ; Park et al., The JPL Planetary and Lunar Ephemerides DE440 and DE441, Astronomical Journal 161:105 (2021).",
+      "scope": "Selected GM values; planet systems retain satellite-inclusive identity. No ephemeris trajectories or realistic planetary surface model included."
+    },
+    {
+      "id": "cantera.gri30.thermo",
+      "adapter": "cantera_nasa7",
+      "data": "cantera_gri30.yaml",
+      "attachments": [
+        "cantera_LICENSE.txt"
+      ],
+      "release": "6e0027548cf295bd478b8acfe34816f2db6dd58b",
+      "license": "Cantera BSD-3-Clause distribution; original GRI-Mech and species references retained",
+      "url": "https://raw.githubusercontent.com/Cantera/cantera/6e0027548cf295bd478b8acfe34816f2db6dd58b/data/gri30.yaml",
+      "attribution": "Cantera v3.1.0 distribution, GRI-Mech 3.0 (1999) species thermodynamics. License.txt and original source notes retained. This import projects NASA7 thermo only.",
+      "scope": "53 ideal-gas species models for bounded teaching/illustration. Reaction and transport data remain raw source context; not an admitted combustion or real-fluid model."
+    },
+    {
+      "id": "nist.al6061t6",
+      "adapter": "nist_al6061",
+      "data": "nist_al6061.html",
+      "attachments": [
+        "nist_terms.html"
+      ],
+      "release": "NIST 6061-T6 source snapshot 2026-09-16",
+      "license": "NIST source-specific data terms; SRD/commercial-distribution status not asserted by this import",
+      "url": "https://www.nist.gov/mml/acmd/aluminum-6061-t6-uns-aa96061",
+      "attribution": "NIST, Aluminum 6061-T6 (UNS AA96061), cryogenic property correlations; original references retained in the pinned source. Retrieved 2026-09-16.",
+      "scope": "Four property correlations within intersection of data and equation ranges. Source fit error is not statistical uncertainty. No fracture/yield law supplied; commercial packaging requires source-specific distribution review."
+    },
+    {
+      "id": "iaea.livechart",
+      "adapter": "iaea_ground_states",
+      "data": "iaea_ground_states.csv",
+      "attachments": [
+        "iaea_api.html",
+        "iaea_terms.html"
+      ],
+      "release": "LiveChart v1 served snapshot; per-row extraction/evaluation dates retained",
+      "license": "IAEA terms with acknowledgment; original ENSDF/AME/RIPL provenance retained",
+      "url": "https://www-nds.iaea.org/relnsd/v1/data?fields=ground_states&nuclides=all",
+      "attribution": "IAEA Nuclear Data Section LiveChart. Data include ENSDF, AME2020, NUBASE2020 and other sources identified in the pinned API guide. Original evaluator names, publication cutoff and extraction dates remain attached to every row. IAEA endorsement is not implied.",
+      "scope": "3386 source-selected nuclide entries, including qualified level assignments. Mass, binding and decay metadata are not a reaction network, dose model or heat-deposition model."
+    }
+  ],
+  "policy": "Raw downloads are pinned research/source artifacts. Source assertion admission is separate from model qualification and commercial packaging. Preserve attribution and original terms."
+}

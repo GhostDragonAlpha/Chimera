@@ -55,6 +55,8 @@ python -B -m tools.creature_graph.project_spec --show concept.reduced_cell_state
 python -B -m tools.creature_graph.project_spec --show req.matter_variables_lod
 python -B -m tools.creature_graph.project_spec --show req.element_identity_spine
 python -B -m tools.creature_graph.project_spec --show req.fundamental_force_scope
+python -B -m tools.creature_graph.project_spec --show work.science.force_data_runtime
+python -B -m tools.creature_graph.project_spec --show doc.force_source_catalog
 python -B -m tools.creature_graph.project_spec --show work.encapsulation.demo_game_loop
 ```
 
@@ -154,12 +156,26 @@ python -B tools/creature_graph/tests/test_contracts.py
 python -B -m unittest discover -s tools/science_funnel/tests -p "test_*.py"
 ```
 
+### Rebuild the force-origin scientific catalog
+
+The pinned source files cover constants, gravitational parameters, gas species,
+solid property curves and nuclide metadata. Read `doc.force_source_catalog` in
+the graph for source limitations and the admission recipe.
+
+```powershell
+python -m pip install -r tools/science_funnel/requirements.txt
+python -B -m tools.science_funnel.force_catalog --output .tmp/force-catalog
+```
+
+The build is offline. It creates a checked graph snapshot and preserves source
+qualifiers; importing a model definition does not qualify its runtime behavior.
+
 ## 6. Release sequence
 
 The active contract is `req.engine_game_release`:
 
-**Functioning demo game loop → qualify and lock the open-source engine →
-create the separate game repository → focus on the game.**
+**Functioning demo game loop â†’ qualify and lock the open-source engine â†’
+create the separate game repository â†’ focus on the game.**
 
 The loop must include a concrete objective, player action, physical consequence,
 feedback, success/failure, and recovery. The graph names its prerequisites and
