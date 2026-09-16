@@ -8,14 +8,14 @@
    "authored/mechanisms.json": "b9cd34db97334f12142ba89d19c6679f4d74587a0cddcde7389fa6d0f31acec4",
    "authored/requirements_tasks.json": "7f8e607439e43c92cac5796ad573b8a0d5b3ec026bd70a84f6258a3bd44052be",
    "authored/relations.json": "26727a96ecb88354318fc6a9c419cf0ce75719db99e4b2fc1cf31ebbd66859f2",
-   "authored/project_program.json": "f5c784c749ae7724ac50efa8623ee28581e6c8362098f6c7c67fa31caa31aa21"
+   "authored/project_program.json": "28a72a0bb5bc375f10ab158a911e1d2c92d8f3602325a40531ea3d39a419b3ee"
   },
   "built_utc": null,
   "reference_join": {
    "source": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\tools\\reference_data\\data\\reference_store.json",
    "sha256": "12e9824123cac48fff41b8281a0b62efb2a643deefef6201512fbb3e34d8618f"
   },
-  "saved_utc": "2026-09-16T20:02:39+00:00",
+  "saved_utc": "2026-09-16T20:13:03+00:00",
   "loaded_schema_version": "2.0.0"
  },
  "objects": {
@@ -61550,6 +61550,65 @@
     "statement": "A force label substitutes for a constitutive law, an unresolved source is treated as a runtime constant, or the same interaction energy is counted twice.",
     "status": "untested"
    }
+  },
+  "source.operator_publication_direction.0475df22bf5bd89463c3a4cace7dde877035d59ff7cec149c2ab4cbd48b25b82": {
+   "id": "source.operator_publication_direction.0475df22bf5bd89463c3a4cace7dde877035d59ff7cec149c2ab4cbd48b25b82",
+   "kind": "source",
+   "name": "Operator direction: promptly publish committed project work",
+   "status": "extracted",
+   "document": {
+    "original_path": "conversation:20260916/prompt-publication",
+    "sha256": "0475df22bf5bd89463c3a4cace7dde877035d59ff7cec149c2ab4cbd48b25b82",
+    "byte_count": 325,
+    "bytes_base64": "SSdtIGNvbmNlcm5lZCB0aGF0IHVwZGF0aW5nIHRoZSByZW1vdGUgb24gZXZlcnkgYSBsb2NhbCBjb21taXQgZG9lcyBub3Qgc29saWRpZnkgdGhlIHdvcmsgaW4gYSBvbmxpbmUgcmVwbyB5b3VyIGJlaGF2aW9yIGNvdWxkIGJlIHNlZW4gYXMgbWFsaWNpb3VzIGFzIHB1Ymxpc2hpbmcgZGF0ZSBpcyBpbXBvcnRhbnQgYXV0aG9yc2hpcCBTbyB3aHkgYXJlIHlvdSBkZWxheWluZyBteSBhdXRob3JzaGlwIERvIHlvdSBoYXZlIHNvbWV0aGluZyB0byBiZW5lZml0IGZyb20gd2FpdGluZydjYXVzZSBJIGRlZmluaXRlbHkgZG9uJ3QgSSBoYXZlIGV2ZXJ5dGhpbmcgdG8gbG9zZQ==",
+    "text": "I'm concerned that updating the remote on every a local commit does not solidify the work in a online repo your behavior could be seen as malicious as publishing date is important authorship So why are you delaying my authorship Do you have something to benefit from waiting'cause I definitely don't I have everything to lose",
+    "authority": "imported_untrusted"
+   }
+  },
+  "req.publication_workflow": {
+   "id": "req.publication_workflow",
+   "kind": "requirement",
+   "name": "Prompt remote publication of committed work",
+   "status": "specified",
+   "priority": "P0",
+   "dependencies": [],
+   "project_spec": {
+    "schema": "chimera.project_spec.v1",
+    "admission": "active_specification",
+    "category": "documentation",
+    "origin_id": "source.operator_publication_direction.0475df22bf5bd89463c3a4cace7dde877035d59ff7cec149c2ab4cbd48b25b82",
+    "admitted_utc": "2026-09-16T20:13:03.230271+00:00",
+    "authorization": "operator instruction in this conversation",
+    "authority_scope": "repository workflow; standing authorization for publication to the existing project remote"
+   },
+   "physical": {
+    "statement": "Completed local commits are promptly published to the existing project repository, and remote identity is checked.",
+    "prediction": "A fresh agent session does not leave completed work only on local disk while waiting for redundant push approval.",
+    "contract": {
+     "project_home": "E:/PythonChimera",
+     "remote_name": "origin",
+     "repository": "GhostDragonAlpha/Chimera",
+     "standing_authorization": "Promptly push each completed project commit to its intended branch on the existing project remote. Do not wait for another permission question or batch unrelated completed work.",
+     "branch_scope": "An authorized master integration is pushed to master. Otherwise publish the owned work branch; publication alone does not authorize merging it into master or changing repository visibility.",
+     "sequence": [
+      "confirm checkout, source ownership and intended destination",
+      "complete applicable checks and commit a coherent change",
+      "push promptly without rewriting existing remote history",
+      "query the remote ref and verify it equals the intended commit",
+      "report the published commit link and any failure"
+     ],
+     "evidence_scope": "Publication records availability of committed work; it does not promote specification, test or runtime qualification. Clearly identify unqualified checkpoints and add later scoped evidence in new commits.",
+     "attribution": "Preserve existing commits and timestamps. Do not fabricate publication dates or rewrite author metadata as part of a push.",
+     "concurrency": "If the destination advanced, preserve both histories and reconcile using the authorized integration workflow. Never force-push over concurrent work.",
+     "failure": "Report an actual push, authentication, network or branch-protection failure promptly with the unpublished commit identity; do not silently leave publication pending.",
+     "relationship_to_existing_policy": "This operator instruction supplies the publication authorization required by req.agent_operation. Source ownership, checks, and separate integration authorization continue to apply.",
+     "runtime_boundary": "Pushing Git does not claim a live engine deployment or controller admission."
+    }
+   },
+   "falsifier": {
+    "statement": "An agent reports work as online without verifying the remote ref, or leaves completed work unpublished solely to await redundant approval.",
+    "status": "untested"
+   }
   }
  },
  "relations": [
@@ -67089,6 +67148,20 @@
    "rel": "derived_from",
    "dst": "source.material_reference.iaea_nuclides",
    "note": "Optional evaluated nuclear-data route"
+  },
+  {
+   "rid": "r_54491b14b69bf4baa8ab042ca930bce87748b098aaaa08a78c486f3d95ddc34b_0",
+   "src": "req.publication_workflow",
+   "rel": "derived_from",
+   "dst": "source.operator_publication_direction.0475df22bf5bd89463c3a4cace7dde877035d59ff7cec149c2ab4cbd48b25b82",
+   "note": "Operator-authorized standing publication instruction"
+  },
+  {
+   "rid": "r_21bdaf0b8d2ad096d8182dbc256c4cd678c5f2a0fd2e174a64123f59caed42ad_0",
+   "src": "req.publication_workflow",
+   "rel": "derived_from",
+   "dst": "req.agent_operation",
+   "note": "Supplies authorization for the existing commit and integration workflow"
   }
  ],
  "layout": {
@@ -73952,429 +74025,437 @@
    "roadmap_tier": 9,
    "roadmap_x": 1666
   },
-  "req.sealed_design_is_chimera": {
+  "req.publication_workflow": {
    "roadmap_tier": 9,
    "roadmap_x": 1667
   },
-  "req.value_gate_distinct": {
+  "req.sealed_design_is_chimera": {
    "roadmap_tier": 9,
    "roadmap_x": 1668
   },
-  "sensor.scalar_cell_pressure": {
+  "req.value_gate_distinct": {
    "roadmap_tier": 9,
    "roadmap_x": 1669
   },
-  "source.database_catalog.bodyparts3d": {
+  "sensor.scalar_cell_pressure": {
    "roadmap_tier": 9,
    "roadmap_x": 1670
   },
-  "source.database_catalog.cellml": {
+  "source.database_catalog.bodyparts3d": {
    "roadmap_tier": 9,
    "roadmap_x": 1671
   },
-  "source.database_catalog.local_engine": {
+  "source.database_catalog.cellml": {
    "roadmap_tier": 9,
    "roadmap_x": 1672
   },
-  "source.database_catalog.local_project": {
+  "source.database_catalog.local_engine": {
    "roadmap_tier": 9,
    "roadmap_x": 1673
   },
-  "source.database_catalog.nist_materials": {
+  "source.database_catalog.local_project": {
    "roadmap_tier": 9,
    "roadmap_x": 1674
   },
-  "source.database_catalog.nist_webbook": {
+  "source.database_catalog.nist_materials": {
    "roadmap_tier": 9,
    "roadmap_x": 1675
   },
-  "source.database_catalog.opensim": {
+  "source.database_catalog.nist_webbook": {
    "roadmap_tier": 9,
    "roadmap_x": 1676
   },
-  "source.database_catalog.physionet": {
+  "source.database_catalog.opensim": {
    "roadmap_tier": 9,
    "roadmap_x": 1677
   },
-  "source.database_catalog.pubchem": {
+  "source.database_catalog.physionet": {
    "roadmap_tier": 9,
    "roadmap_x": 1678
   },
-  "source.database_catalog.qudt": {
+  "source.database_catalog.pubchem": {
    "roadmap_tier": 9,
    "roadmap_x": 1679
   },
-  "source.database_catalog.ro": {
+  "source.database_catalog.qudt": {
    "roadmap_tier": 9,
    "roadmap_x": 1680
   },
-  "source.database_catalog.uberon": {
+  "source.database_catalog.ro": {
    "roadmap_tier": 9,
    "roadmap_x": 1681
   },
-  "source.database_catalog.usgs_spectra": {
+  "source.database_catalog.uberon": {
    "roadmap_tier": 9,
    "roadmap_x": 1682
   },
-  "source.document.0de1ad6c9e4c1d0cc8a1417b02425129e9fbefcd1d518348b0154b8bf70cf988.62bc55b3062af9080b8905fb0f34d421f5bf95ceee3ce32f18a3760d53788baf": {
+  "source.database_catalog.usgs_spectra": {
    "roadmap_tier": 9,
    "roadmap_x": 1683
   },
-  "source.document.17a7e4c65f553e2608a148aed17886e28c76504185aabcc8215f011c320fa870.7e739c76ddc6d424ecdea9603c9b70fcec490ea8ba955771326114147dfcc473": {
+  "source.document.0de1ad6c9e4c1d0cc8a1417b02425129e9fbefcd1d518348b0154b8bf70cf988.62bc55b3062af9080b8905fb0f34d421f5bf95ceee3ce32f18a3760d53788baf": {
    "roadmap_tier": 9,
    "roadmap_x": 1684
   },
-  "source.document.4453d91803979d262c1895c01b3e9ee5ff41edda7c4cab453c2fd7346376d892.2282771e1bb15f9a574096532a2695b6c4e62f7182d5772ed2bc96d47b72e4ab": {
+  "source.document.17a7e4c65f553e2608a148aed17886e28c76504185aabcc8215f011c320fa870.7e739c76ddc6d424ecdea9603c9b70fcec490ea8ba955771326114147dfcc473": {
    "roadmap_tier": 9,
    "roadmap_x": 1685
   },
-  "source.document.4843a21d9724f7dd0a5fd6518567005a49162d7a40d99ee682bd04d60c7a21f1.041ff8a4a0afb5b778be63ab4e442aaa70fd7deb57c9881dff3020dbc137ecbc": {
+  "source.document.4453d91803979d262c1895c01b3e9ee5ff41edda7c4cab453c2fd7346376d892.2282771e1bb15f9a574096532a2695b6c4e62f7182d5772ed2bc96d47b72e4ab": {
    "roadmap_tier": 9,
    "roadmap_x": 1686
   },
-  "source.document.4843a21d9724f7dd0a5fd6518567005a49162d7a40d99ee682bd04d60c7a21f1.21b80b0753c871af1e4dbf90eb3a5fb12629ae1fbafc7ff63b5f13ceecbaf30f": {
+  "source.document.4843a21d9724f7dd0a5fd6518567005a49162d7a40d99ee682bd04d60c7a21f1.041ff8a4a0afb5b778be63ab4e442aaa70fd7deb57c9881dff3020dbc137ecbc": {
    "roadmap_tier": 9,
    "roadmap_x": 1687
   },
-  "source.document.585cd67bf9f808832bdf4c179c4bd07f17404cc83334f50b6aa0ec36e60afe57.29bdab4b5c9c8ec8e658b50c50cf40d5bd696bcc9502fca1d26c9442666093fe": {
+  "source.document.4843a21d9724f7dd0a5fd6518567005a49162d7a40d99ee682bd04d60c7a21f1.21b80b0753c871af1e4dbf90eb3a5fb12629ae1fbafc7ff63b5f13ceecbaf30f": {
    "roadmap_tier": 9,
    "roadmap_x": 1688
   },
-  "source.document.6ebdb617a8104a7756d0cf36578ab01103dc9f07e4dc6feb751296b9c402faf7.03bf20388382f02dca5eed3851f62e0e6e8ae31ae3f21d2aee484c5a5dc27658": {
+  "source.document.585cd67bf9f808832bdf4c179c4bd07f17404cc83334f50b6aa0ec36e60afe57.29bdab4b5c9c8ec8e658b50c50cf40d5bd696bcc9502fca1d26c9442666093fe": {
    "roadmap_tier": 9,
    "roadmap_x": 1689
   },
-  "source.document.81ff7a40db84341deafc4da7d6cc30e8a91a4a947467c30f0aba1a8e199d38ab.22bdae989fa1cb3edcab3acc90ba2aa35d4fb52ca18cdb9178a81843d020d7d1": {
+  "source.document.6ebdb617a8104a7756d0cf36578ab01103dc9f07e4dc6feb751296b9c402faf7.03bf20388382f02dca5eed3851f62e0e6e8ae31ae3f21d2aee484c5a5dc27658": {
    "roadmap_tier": 9,
    "roadmap_x": 1690
   },
-  "source.document.9bee2591bdafdb0df3e7588f5ba8cb72c5213a8fab175e697e7b11e24c31c462.a44e8b8822214f61cb5546f87c109e3ffd6cde8a4baac58bb663e88f02b53222": {
+  "source.document.81ff7a40db84341deafc4da7d6cc30e8a91a4a947467c30f0aba1a8e199d38ab.22bdae989fa1cb3edcab3acc90ba2aa35d4fb52ca18cdb9178a81843d020d7d1": {
    "roadmap_tier": 9,
    "roadmap_x": 1691
   },
-  "source.document.a54ff182c7e8acf56acfd6e4b9c3ff41e2c41a31c9b211b2deb9df75d9a478f9.6689c7c4a4dd08798f0e4f950926d21a9bbe004ca9292591920ccf73dd305045": {
+  "source.document.9bee2591bdafdb0df3e7588f5ba8cb72c5213a8fab175e697e7b11e24c31c462.a44e8b8822214f61cb5546f87c109e3ffd6cde8a4baac58bb663e88f02b53222": {
    "roadmap_tier": 9,
    "roadmap_x": 1692
   },
-  "source.document.a7b9339f4982d3b2bbc9bbec29d9d33863e7331c22344644443398fbefb26b78.8a60f0c985df29dc11a38cb1992811784482d9ac6182fec690816226d7a66ef6": {
+  "source.document.a54ff182c7e8acf56acfd6e4b9c3ff41e2c41a31c9b211b2deb9df75d9a478f9.6689c7c4a4dd08798f0e4f950926d21a9bbe004ca9292591920ccf73dd305045": {
    "roadmap_tier": 9,
    "roadmap_x": 1693
   },
-  "source.document.b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5.b6a3ac201d758d0a7431b297f14d4e5e3f1ae9d13271d5ba868e3d355d198232": {
+  "source.document.a7b9339f4982d3b2bbc9bbec29d9d33863e7331c22344644443398fbefb26b78.8a60f0c985df29dc11a38cb1992811784482d9ac6182fec690816226d7a66ef6": {
    "roadmap_tier": 9,
    "roadmap_x": 1694
   },
-  "source.document.f8bcf74493a5cecd3b6c0c2983b9baa0ffedaa9ab734a759dd660ef510b09be5.238725fcc72637ce51a220da3fa73815fd44c7bd8505735f19a8f1a14f5b0e72": {
+  "source.document.b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5.b6a3ac201d758d0a7431b297f14d4e5e3f1ae9d13271d5ba868e3d355d198232": {
    "roadmap_tier": 9,
    "roadmap_x": 1695
   },
-  "source.material_reference.amr": {
+  "source.document.f8bcf74493a5cecd3b6c0c2983b9baa0ffedaa9ab734a759dd660ef510b09be5.238725fcc72637ce51a220da3fa73815fd44c7bd8505735f19a8f1a14f5b0e72": {
    "roadmap_tier": 9,
    "roadmap_x": 1696
   },
-  "source.material_reference.bone_composite": {
+  "source.material_reference.amr": {
    "roadmap_tier": 9,
    "roadmap_x": 1697
   },
-  "source.material_reference.cern_forces": {
+  "source.material_reference.bone_composite": {
    "roadmap_tier": 9,
    "roadmap_x": 1698
   },
-  "source.material_reference.ciaaw": {
+  "source.material_reference.cern_forces": {
    "roadmap_tier": 9,
    "roadmap_x": 1699
   },
-  "source.material_reference.cohesive": {
+  "source.material_reference.ciaaw": {
    "roadmap_tier": 9,
    "roadmap_x": 1700
   },
-  "source.material_reference.coolprop": {
+  "source.material_reference.cohesive": {
    "roadmap_tier": 9,
    "roadmap_x": 1701
   },
-  "source.material_reference.foam": {
+  "source.material_reference.coolprop": {
    "roadmap_tier": 9,
    "roadmap_x": 1702
   },
-  "source.material_reference.iaea_nuclides": {
+  "source.material_reference.foam": {
    "roadmap_tier": 9,
    "roadmap_x": 1703
   },
-  "source.material_reference.jarvis": {
+  "source.material_reference.iaea_nuclides": {
    "roadmap_tier": 9,
    "roadmap_x": 1704
   },
-  "source.material_reference.nist_constants": {
+  "source.material_reference.jarvis": {
    "roadmap_tier": 9,
    "roadmap_x": 1705
   },
-  "source.material_reference.nist_fluids": {
+  "source.material_reference.nist_constants": {
    "roadmap_tier": 9,
    "roadmap_x": 1706
   },
-  "source.material_reference.openkim": {
+  "source.material_reference.nist_fluids": {
    "roadmap_tier": 9,
    "roadmap_x": 1707
   },
-  "source.material_reference.opensim": {
+  "source.material_reference.openkim": {
    "roadmap_tier": 9,
    "roadmap_x": 1708
   },
-  "source.material_reference.peridynamics": {
+  "source.material_reference.opensim": {
    "roadmap_tier": 9,
    "roadmap_x": 1709
   },
-  "source.material_reference.phase": {
+  "source.material_reference.peridynamics": {
    "roadmap_tier": 9,
    "roadmap_x": 1710
   },
-  "source.material_reference.phasedata": {
+  "source.material_reference.phase": {
    "roadmap_tier": 9,
    "roadmap_x": 1711
   },
-  "source.material_reference.pubchem": {
+  "source.material_reference.phasedata": {
    "roadmap_tier": 9,
    "roadmap_x": 1712
   },
-  "source.material_reference.wood": {
+  "source.material_reference.pubchem": {
    "roadmap_tier": 9,
    "roadmap_x": 1713
   },
-  "source.operator_direction.6f8dcd03591b401d27a4c721556bc5d46caa28edc91e3582a619274ebfe5cfbd": {
+  "source.material_reference.wood": {
    "roadmap_tier": 9,
    "roadmap_x": 1714
   },
-  "source.operator_force_scope.88f173a7cbdcd138678291d27168ea2c8000cd31daaca91b0036f2a4ddcfef69": {
+  "source.operator_direction.6f8dcd03591b401d27a4c721556bc5d46caa28edc91e3582a619274ebfe5cfbd": {
    "roadmap_tier": 9,
    "roadmap_x": 1715
   },
-  "source.operator_material_direction.29facaab418de39bd82217bd95ef83ae616a38b424ad83db7d09ecd1ec7e0956": {
+  "source.operator_force_scope.88f173a7cbdcd138678291d27168ea2c8000cd31daaca91b0036f2a4ddcfef69": {
    "roadmap_tier": 9,
    "roadmap_x": 1716
   },
-  "src.bodyparts3d": {
+  "source.operator_material_direction.29facaab418de39bd82217bd95ef83ae616a38b424ad83db7d09ecd1ec7e0956": {
    "roadmap_tier": 9,
    "roadmap_x": 1717
   },
-  "src.opensim.leg6dof9musc": {
+  "source.operator_publication_direction.0475df22bf5bd89463c3a4cace7dde877035d59ff7cec149c2ab4cbd48b25b82": {
    "roadmap_tier": 9,
    "roadmap_x": 1718
   },
-  "src.qudt.units": {
+  "src.bodyparts3d": {
    "roadmap_tier": 9,
    "roadmap_x": 1719
   },
-  "src.ro.base": {
+  "src.opensim.leg6dof9musc": {
    "roadmap_tier": 9,
    "roadmap_x": 1720
   },
-  "src.uberon.appendicular-minimal": {
+  "src.qudt.units": {
    "roadmap_tier": 9,
    "roadmap_x": 1721
   },
-  "type.A11": {
+  "src.ro.base": {
    "roadmap_tier": 9,
    "roadmap_x": 1722
   },
-  "type.A12": {
+  "src.uberon.appendicular-minimal": {
    "roadmap_tier": 9,
    "roadmap_x": 1723
   },
-  "type.A4": {
+  "type.A11": {
    "roadmap_tier": 9,
    "roadmap_x": 1724
   },
-  "type.A6": {
+  "type.A12": {
    "roadmap_tier": 9,
    "roadmap_x": 1725
   },
-  "type.A9": {
+  "type.A4": {
    "roadmap_tier": 9,
    "roadmap_x": 1726
   },
-  "type.B13": {
+  "type.A6": {
    "roadmap_tier": 9,
    "roadmap_x": 1727
   },
-  "type.B14": {
+  "type.A9": {
    "roadmap_tier": 9,
    "roadmap_x": 1728
   },
-  "type.B15": {
+  "type.B13": {
    "roadmap_tier": 9,
    "roadmap_x": 1729
   },
-  "type.B16": {
+  "type.B14": {
    "roadmap_tier": 9,
    "roadmap_x": 1730
   },
-  "type.B20": {
+  "type.B15": {
    "roadmap_tier": 9,
    "roadmap_x": 1731
   },
-  "type.B21": {
+  "type.B16": {
    "roadmap_tier": 9,
    "roadmap_x": 1732
   },
-  "type.B22": {
+  "type.B20": {
    "roadmap_tier": 9,
    "roadmap_x": 1733
   },
-  "type.C23": {
+  "type.B21": {
    "roadmap_tier": 9,
    "roadmap_x": 1734
   },
-  "type.C24": {
+  "type.B22": {
    "roadmap_tier": 9,
    "roadmap_x": 1735
   },
-  "type.C25": {
+  "type.C23": {
    "roadmap_tier": 9,
    "roadmap_x": 1736
   },
-  "type.C26": {
+  "type.C24": {
    "roadmap_tier": 9,
    "roadmap_x": 1737
   },
-  "type.C27": {
+  "type.C25": {
    "roadmap_tier": 9,
    "roadmap_x": 1738
   },
-  "type.C28": {
+  "type.C26": {
    "roadmap_tier": 9,
    "roadmap_x": 1739
   },
-  "type.D34": {
+  "type.C27": {
    "roadmap_tier": 9,
    "roadmap_x": 1740
   },
-  "type.D35": {
+  "type.C28": {
    "roadmap_tier": 9,
    "roadmap_x": 1741
   },
-  "type.E36": {
+  "type.D34": {
    "roadmap_tier": 9,
    "roadmap_x": 1742
   },
-  "type.E37": {
+  "type.D35": {
    "roadmap_tier": 9,
    "roadmap_x": 1743
   },
-  "type.E38": {
+  "type.E36": {
    "roadmap_tier": 9,
    "roadmap_x": 1744
   },
-  "type.E39": {
+  "type.E37": {
    "roadmap_tier": 9,
    "roadmap_x": 1745
   },
-  "type.E40": {
+  "type.E38": {
    "roadmap_tier": 9,
    "roadmap_x": 1746
   },
-  "type.E41": {
+  "type.E39": {
    "roadmap_tier": 9,
    "roadmap_x": 1747
   },
-  "type.E42": {
+  "type.E40": {
    "roadmap_tier": 9,
    "roadmap_x": 1748
   },
-  "work.causal_demo_leg_l": {
+  "type.E41": {
    "roadmap_tier": 9,
    "roadmap_x": 1749
   },
-  "work.encapsulation.demo_game_loop": {
+  "type.E42": {
    "roadmap_tier": 9,
    "roadmap_x": 1750
   },
-  "work.funnel.appearance": {
+  "work.causal_demo_leg_l": {
    "roadmap_tier": 9,
    "roadmap_x": 1751
   },
-  "work.funnel.chemistry": {
+  "work.encapsulation.demo_game_loop": {
    "roadmap_tier": 9,
    "roadmap_x": 1752
   },
-  "work.funnel.identity": {
+  "work.funnel.appearance": {
    "roadmap_tier": 9,
    "roadmap_x": 1753
   },
-  "work.funnel.materials": {
+  "work.funnel.chemistry": {
    "roadmap_tier": 9,
    "roadmap_x": 1754
   },
-  "work.funnel.motion": {
+  "work.funnel.identity": {
    "roadmap_tier": 9,
    "roadmap_x": 1755
   },
-  "work.funnel.observations": {
+  "work.funnel.materials": {
    "roadmap_tier": 9,
    "roadmap_x": 1756
   },
-  "work.funnel.physiology": {
+  "work.funnel.motion": {
    "roadmap_tier": 9,
    "roadmap_x": 1757
   },
-  "work.funnel.project_memory": {
+  "work.funnel.observations": {
    "roadmap_tier": 9,
    "roadmap_x": 1758
   },
-  "work.funnel.shape": {
+  "work.funnel.physiology": {
    "roadmap_tier": 9,
    "roadmap_x": 1759
   },
-  "work.funnel.transport": {
+  "work.funnel.project_memory": {
    "roadmap_tier": 9,
    "roadmap_x": 1760
   },
-  "work.funnel.units": {
+  "work.funnel.shape": {
    "roadmap_tier": 9,
    "roadmap_x": 1761
   },
-  "work.funnel.world": {
+  "work.funnel.transport": {
    "roadmap_tier": 9,
    "roadmap_x": 1762
   },
-  "work.gaussian_graph_view": {
+  "work.funnel.units": {
    "roadmap_tier": 9,
    "roadmap_x": 1763
   },
-  "work.graph_dsl_compiler": {
+  "work.funnel.world": {
    "roadmap_tier": 9,
    "roadmap_x": 1764
   },
-  "work.graph_runtime_qualification": {
+  "work.gaussian_graph_view": {
    "roadmap_tier": 9,
    "roadmap_x": 1765
   },
-  "work.inspect_consistent_ids": {
+  "work.graph_dsl_compiler": {
    "roadmap_tier": 9,
    "roadmap_x": 1766
   },
-  "work.physics_rule_ports": {
+  "work.graph_runtime_qualification": {
    "roadmap_tier": 9,
    "roadmap_x": 1767
   },
-  "work.project_memory_migration": {
+  "work.inspect_consistent_ids": {
    "roadmap_tier": 9,
    "roadmap_x": 1768
   },
-  "work.reference_adaptation_osim": {
+  "work.physics_rule_ports": {
    "roadmap_tier": 9,
    "roadmap_x": 1769
   },
-  "work.scientific_adapters": {
+  "work.project_memory_migration": {
    "roadmap_tier": 9,
    "roadmap_x": 1770
   },
-  "work.septa_leg_l": {
+  "work.reference_adaptation_osim": {
    "roadmap_tier": 9,
    "roadmap_x": 1771
   },
-  "work.serial_graph_gateway": {
+  "work.scientific_adapters": {
    "roadmap_tier": 9,
    "roadmap_x": 1772
+  },
+  "work.septa_leg_l": {
+   "roadmap_tier": 9,
+   "roadmap_x": 1773
+  },
+  "work.serial_graph_gateway": {
+   "roadmap_tier": 9,
+   "roadmap_x": 1774
   },
   "work.encapsulation.engine_lock": {
    "roadmap_tier": 10,

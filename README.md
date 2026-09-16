@@ -34,6 +34,7 @@ python -B -m tools.creature_graph.project_spec
 python -B -m tools.creature_graph.project_spec --check
 python -B -m tools.creature_graph.project_spec --show req.documentation_admission
 python -B -m tools.creature_graph.project_spec --show req.agent_operation
+python -B -m tools.creature_graph.project_spec --show req.publication_workflow
 python -B -m tools.creature_graph.project_spec --show req.engine_game_release
 python -B -m tools.creature_graph.project_spec --show req.encapsulation_inventory
 ```
@@ -95,8 +96,11 @@ Read `req.agent_operation` for the full operation map and responsibilities.
 5. Submit scoped evidence and the candidate through the assigned review and
    integration path. Only the authorized verifier/integrator advances its gates.
 
-Commit messages include an `Agent: NAME` trailer. No unsolicited pushes, shared
-engine restarts, worktree resets, or changes to another lane's state.
+Commit messages include an `Agent: NAME` trailer. The operator has authorized prompt
+publication of completed commits to the existing project remote; read
+`req.publication_workflow`, push to the intended branch, and verify the remote ref.
+Master integration follows its assigned authorization. No shared engine restarts,
+worktree resets, or changes to another lane's state.
 
 A task without an approved executable checklist needs its checklist prepared and
 reviewed before controller dispatch. Do not substitute a prose assurance for it.

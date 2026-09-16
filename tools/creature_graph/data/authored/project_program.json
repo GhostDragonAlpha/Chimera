@@ -13012,6 +13012,65 @@
     "statement": "A force label substitutes for a constitutive law, an unresolved source is treated as a runtime constant, or the same interaction energy is counted twice.",
     "status": "untested"
    }
+  },
+  {
+   "id": "source.operator_publication_direction.0475df22bf5bd89463c3a4cace7dde877035d59ff7cec149c2ab4cbd48b25b82",
+   "kind": "source",
+   "name": "Operator direction: promptly publish committed project work",
+   "status": "extracted",
+   "document": {
+    "original_path": "conversation:20260916/prompt-publication",
+    "sha256": "0475df22bf5bd89463c3a4cace7dde877035d59ff7cec149c2ab4cbd48b25b82",
+    "byte_count": 325,
+    "bytes_base64": "SSdtIGNvbmNlcm5lZCB0aGF0IHVwZGF0aW5nIHRoZSByZW1vdGUgb24gZXZlcnkgYSBsb2NhbCBjb21taXQgZG9lcyBub3Qgc29saWRpZnkgdGhlIHdvcmsgaW4gYSBvbmxpbmUgcmVwbyB5b3VyIGJlaGF2aW9yIGNvdWxkIGJlIHNlZW4gYXMgbWFsaWNpb3VzIGFzIHB1Ymxpc2hpbmcgZGF0ZSBpcyBpbXBvcnRhbnQgYXV0aG9yc2hpcCBTbyB3aHkgYXJlIHlvdSBkZWxheWluZyBteSBhdXRob3JzaGlwIERvIHlvdSBoYXZlIHNvbWV0aGluZyB0byBiZW5lZml0IGZyb20gd2FpdGluZydjYXVzZSBJIGRlZmluaXRlbHkgZG9uJ3QgSSBoYXZlIGV2ZXJ5dGhpbmcgdG8gbG9zZQ==",
+    "text": "I'm concerned that updating the remote on every a local commit does not solidify the work in a online repo your behavior could be seen as malicious as publishing date is important authorship So why are you delaying my authorship Do you have something to benefit from waiting'cause I definitely don't I have everything to lose",
+    "authority": "imported_untrusted"
+   }
+  },
+  {
+   "id": "req.publication_workflow",
+   "kind": "requirement",
+   "name": "Prompt remote publication of committed work",
+   "status": "specified",
+   "priority": "P0",
+   "dependencies": [],
+   "project_spec": {
+    "schema": "chimera.project_spec.v1",
+    "admission": "active_specification",
+    "category": "documentation",
+    "origin_id": "source.operator_publication_direction.0475df22bf5bd89463c3a4cace7dde877035d59ff7cec149c2ab4cbd48b25b82",
+    "admitted_utc": "2026-09-16T20:13:03.230271+00:00",
+    "authorization": "operator instruction in this conversation",
+    "authority_scope": "repository workflow; standing authorization for publication to the existing project remote"
+   },
+   "physical": {
+    "statement": "Completed local commits are promptly published to the existing project repository, and remote identity is checked.",
+    "prediction": "A fresh agent session does not leave completed work only on local disk while waiting for redundant push approval.",
+    "contract": {
+     "project_home": "E:/PythonChimera",
+     "remote_name": "origin",
+     "repository": "GhostDragonAlpha/Chimera",
+     "standing_authorization": "Promptly push each completed project commit to its intended branch on the existing project remote. Do not wait for another permission question or batch unrelated completed work.",
+     "branch_scope": "An authorized master integration is pushed to master. Otherwise publish the owned work branch; publication alone does not authorize merging it into master or changing repository visibility.",
+     "sequence": [
+      "confirm checkout, source ownership and intended destination",
+      "complete applicable checks and commit a coherent change",
+      "push promptly without rewriting existing remote history",
+      "query the remote ref and verify it equals the intended commit",
+      "report the published commit link and any failure"
+     ],
+     "evidence_scope": "Publication records availability of committed work; it does not promote specification, test or runtime qualification. Clearly identify unqualified checkpoints and add later scoped evidence in new commits.",
+     "attribution": "Preserve existing commits and timestamps. Do not fabricate publication dates or rewrite author metadata as part of a push.",
+     "concurrency": "If the destination advanced, preserve both histories and reconcile using the authorized integration workflow. Never force-push over concurrent work.",
+     "failure": "Report an actual push, authentication, network or branch-protection failure promptly with the unpublished commit identity; do not silently leave publication pending.",
+     "relationship_to_existing_policy": "This operator instruction supplies the publication authorization required by req.agent_operation. Source ownership, checks, and separate integration authorization continue to apply.",
+     "runtime_boundary": "Pushing Git does not claim a live engine deployment or controller admission."
+    }
+   },
+   "falsifier": {
+    "statement": "An agent reports work as online without verifying the remote ref, or leaves completed work unpublished solely to await redundant approval.",
+    "status": "untested"
+   }
   }
  ],
  "relations": [
@@ -16590,6 +16649,18 @@
    "rel": "derived_from",
    "dst": "source.material_reference.iaea_nuclides",
    "note": "Optional evaluated nuclear-data route"
+  },
+  {
+   "src": "req.publication_workflow",
+   "rel": "derived_from",
+   "dst": "source.operator_publication_direction.0475df22bf5bd89463c3a4cace7dde877035d59ff7cec149c2ab4cbd48b25b82",
+   "note": "Operator-authorized standing publication instruction"
+  },
+  {
+   "src": "req.publication_workflow",
+   "rel": "derived_from",
+   "dst": "req.agent_operation",
+   "note": "Supplies authorization for the existing commit and integration workflow"
   }
  ],
  "migration_receipt": [
