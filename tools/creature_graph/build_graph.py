@@ -54,6 +54,17 @@ def build(with_reference: bool = False) -> CreatureGraph:
         else:
             for obj in payload:
                 g.add(obj)
+    # Optional project program: versioned documentation, workflow and typed
+    # scientific interfaces share the same authored graph, never a second board.
+    program_path = os.path.join(AUTHORED_DIR, "project_program.json")
+    if os.path.exists(program_path):
+        input_hashes["authored/project_program.json"] = _sha256_file(program_path)
+        with open(program_path, encoding="utf-8") as stream:
+            program = json.load(stream)
+        for obj in program["objects"]:
+            g.add(obj)
+        for edge in program.get("relations", []):
+            g.relate(edge["src"], edge["rel"], edge["dst"], edge.get("note", ""))
     # Captures are historical measurement inputs, never build products.
     g.sync_dependencies()
     g.meta["schema_version"] = SCHEMA_VERSION

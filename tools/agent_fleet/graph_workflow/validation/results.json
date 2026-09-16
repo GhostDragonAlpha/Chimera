@@ -1,0 +1,35 @@
+{
+  "workflow": {
+    "exit_code": 0,
+    "argv": [
+      "C:\\Users\\allen\\AppData\\Roaming\\uv\\python\\cpython-3.11.15-windows-x86_64-none\\python.exe",
+      "-B",
+      "tools/agent_fleet/test_graph_workflow.py"
+    ],
+    "log": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\tools\\agent_fleet\\graph_workflow\\validation\\workflow.log"
+  },
+  "graph": {
+    "exit_code": 0,
+    "argv": [
+      "C:\\Users\\allen\\AppData\\Roaming\\uv\\python\\cpython-3.11.15-windows-x86_64-none\\python.exe",
+      "-B",
+      "tools/creature_graph/tests/test_contracts.py"
+    ],
+    "log": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\tools\\agent_fleet\\graph_workflow\\validation\\graph.log"
+  },
+  "fleet": {
+    "exit_code": 0,
+    "argv": [
+      "C:\\Users\\allen\\AppData\\Roaming\\uv\\python\\cpython-3.11.15-windows-x86_64-none\\python.exe",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tools/agent_fleet",
+      "-p",
+      "test_*.py"
+    ],
+    "log": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\tools\\agent_fleet\\graph_workflow\\validation\\fleet.log"
+  }
+}

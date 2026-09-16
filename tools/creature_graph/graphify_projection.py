@@ -20,6 +20,7 @@ Format-compatible with the main repo's Chimera/core/graphify-out/graph.json:
 """
 
 import hashlib
+import copy
 import json
 import os
 import re
@@ -69,6 +70,8 @@ def make_projection(g, extracted_snapshot: dict = None) -> dict:
             "validation": obj.get("validation"),
             "unknowns": obj.get("unknowns"),
             "falsifier_statement": (obj.get("falsifier") or {}).get("statement"),
+            "record": copy.deepcopy(obj),  # complete canonical content, including documents/workflow
+            "spatial": copy.deepcopy(obj.get("spatial")),
             "_authored_id": oid,   # reversible join to the canonical store
         }
         # layout positions ride ONLY as graph-drawing attributes

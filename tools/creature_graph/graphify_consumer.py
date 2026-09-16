@@ -311,13 +311,15 @@ def verify(g, proj, gi, dna_db, ingest_report):
         if bn.get("_authored_id") != oid:
             mismatches.append(f"{sid}: _authored_id {bn.get('_authored_id')!r} "
                               f"!= {oid!r}")
+        if bn.get("record") != native or bn.get("spatial") != native.get("spatial"):
+            mismatches.append(f"{oid}: full record or spatial payload changed")
         for field, key in (("label", "name"), ("kind", "kind"),
                            ("status", "status")):
             if bn.get(field) != native.get(key):
                 mismatches.append(f"{oid}: {field} {bn.get(field)!r} != "
                                   f"{native.get(key)!r}")
     add("node_identity_round_trip", f"all {len(proj['id_map'])} objects "
-        "reversible + label/kind/status equal", 
+        "reversible + full record/spatial payload equal",
         f"{len(proj['id_map']) - len(mismatches)}/{len(proj['id_map'])} ok",
         not mismatches, {"mismatches": mismatches[:10]})
 
@@ -383,7 +385,9 @@ def verify(g, proj, gi, dna_db, ingest_report):
 
     # -- consumer surface: FTS search finds an ingested node by name
     probe_oid = start
-    probe_word = (g.objects[probe_oid].get("name") or probe_oid).split()[0]
+    # Full names test findability; a common first word such as Left can
+    # legitimately return 25 unrelated hits before this object in a larger graph.
+    probe_word = g.objects[probe_oid].get("name") or probe_oid
     hits = dna_db.search(probe_word)
     hit_ids = {h["id"] for h in hits}
     add("fts_search_finds_ingested", proj["id_map"][probe_oid],
