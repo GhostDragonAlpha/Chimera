@@ -1,0 +1,10 @@
+{
+  "source_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/periodictable/JSON",
+  "retrieved_utc": "2026-09-16T19:47:05.519760+00:00",
+  "sha256": "ff0f75976583b8a6493b18d0b42e83e1b68bd6e112b45d33578d98494ed5d321",
+  "bytes": 44488,
+  "rows": 118,
+  "scope": "Element identity and source labels only. Numeric property columns remain raw unqualified source data, not runtime parameters.",
+  "terms_reference": "https://pubchem.ncbi.nlm.nih.gov/docs/downloads",
+  "source_release": "retrieval snapshot pinned by SHA256; endpoint is mutable"
+}

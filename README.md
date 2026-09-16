@@ -49,6 +49,11 @@ python -B -m tools.creature_graph.project_spec --concepts
 python -B -m tools.creature_graph.project_spec --next
 python -B -m tools.creature_graph.project_spec --search energy
 python -B -m tools.creature_graph.project_spec --show concept.energy
+python -B -m tools.creature_graph.project_spec --show req.material_catalog
+python -B -m tools.creature_graph.project_spec --show concept.reduced_cell_state
+python -B -m tools.creature_graph.project_spec --show req.matter_variables_lod
+python -B -m tools.creature_graph.project_spec --show req.element_identity_spine
+python -B -m tools.creature_graph.project_spec --show req.fundamental_force_scope
 python -B -m tools.creature_graph.project_spec --show work.encapsulation.demo_game_loop
 ```
 

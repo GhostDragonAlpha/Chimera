@@ -1,0 +1,525 @@
+{
+  "schema": "chimera.material_catalog_validation.v1",
+  "scope": "Repository specification/data identity checks; no new runtime physics qualification.",
+  "phase": "preflight",
+  "checked_utc": "2026-09-16T20:04:40.585498+00:00",
+  "base_commit": "7621ad33224ead6094856b96877ada9873ac5074",
+  "candidate_commit": null,
+  "graph_hash": "fe0b491678d14a78b2b4bcdfaf4801b4153ce800ab2ba962967689fdcc51db30",
+  "effective_graph_hash": "fe0b491678d14a78b2b4bcdfaf4801b4153ce800ab2ba962967689fdcc51db30",
+  "objects": 1823,
+  "relations": 791,
+  "active_specifications": 97,
+  "candidate_materials": 23,
+  "element_identities": 118,
+  "file_sha256": {
+    ".gitattributes": "9ef2d390f4ec9009f382a050b2d41e15e974422ee42056a1710a82f94131b1d6",
+    "README.md": "a6262b1d7e56a4448e052aeafe6d79140fedd1d4bb57e47ba65419de9eecee26",
+    "tools/creature_graph/data/creature_graph.json": "6df0fc378824c0dc1b2e9c697778b5bc95e40c5ae4f2981aedc125757f7ce32c",
+    "tools/creature_graph/data/authored/project_program.json": "f5c784c749ae7724ac50efa8623ee28581e6c8362098f6c7c67fa31caa31aa21",
+    "tools/science_funnel/data/pubchem/periodic_table.json": "ff0f75976583b8a6493b18d0b42e83e1b68bd6e112b45d33578d98494ed5d321",
+    "tools/science_funnel/data/pubchem/download_receipt.json": "5d15a07a0db3b3285dd6b56ec2469f4ebb8686265c19f1e96dbd81aea7f2eb05",
+    "tools/creature_graph/validation/verify_material_catalog_20260916.py": "205594904863a5414492d3d83bfd8c5d7f42c0584278b03d2353adda3745e15b"
+  },
+  "checks": [
+    {
+      "check": "schema_and_admission",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "check": "all_prior_objects_preserved",
+      "pass": true,
+      "detail": {
+        "prior_count": 1653,
+        "changed": []
+      }
+    },
+    {
+      "check": "all_prior_relations_preserved",
+      "pass": true,
+      "detail": {
+        "prior_count": 461
+      }
+    },
+    {
+      "check": "historical_evidence_unchanged",
+      "pass": true,
+      "detail": {
+        "count": 11,
+        "scope": "No old captures, statuses or results rewritten."
+      }
+    },
+    {
+      "check": "new_specs_are_requirements_not_proof",
+      "pass": true,
+      "detail": [
+        "concept.reduced_cell_state",
+        "req.material_catalog",
+        "work.encapsulation.material_profiles",
+        "work.encapsulation.cell_response_reduction",
+        "req.element_identity_spine",
+        "req.matter_variables_lod",
+        "req.fundamental_force_scope"
+      ]
+    },
+    {
+      "check": "23_candidate_material_profiles",
+      "pass": true,
+      "detail": [
+        "material.catalog.water",
+        "material.catalog.ethanol",
+        "material.catalog.air",
+        "material.catalog.skin",
+        "material.catalog.soft_tissue",
+        "material.catalog.muscle",
+        "material.catalog.tendon",
+        "material.catalog.bone",
+        "material.catalog.cartilage",
+        "material.catalog.silicone",
+        "material.catalog.steel",
+        "material.catalog.glass",
+        "material.catalog.stone",
+        "material.catalog.wood",
+        "material.catalog.polymer",
+        "material.catalog.cloth",
+        "material.catalog.oil",
+        "material.catalog.surfactant",
+        "material.catalog.foam",
+        "material.catalog.sand",
+        "material.catalog.clay",
+        "material.catalog.adhesive",
+        "material.catalog.wax"
+      ]
+    },
+    {
+      "check": "pinned_upstream_bytes",
+      "pass": true,
+      "detail": {
+        "sha256": "ff0f75976583b8a6493b18d0b42e83e1b68bd6e112b45d33578d98494ed5d321",
+        "bytes": 44488
+      }
+    },
+    {
+      "check": "periodic_table_shape",
+      "pass": true,
+      "detail": {
+        "columns": 17,
+        "rows": 118
+      }
+    },
+    {
+      "check": "118_unique_element_identities",
+      "pass": true,
+      "detail": {
+        "elements": 118
+      }
+    },
+    {
+      "check": "element_provenance_and_unqualified_numeric_boundary",
+      "pass": true,
+      "detail": {
+        "elements": 118
+      }
+    },
+    {
+      "check": "pure_compound_composition",
+      "pass": true,
+      "detail": [
+        "H2O",
+        "C2H6O"
+      ]
+    },
+    {
+      "check": "deterministic_rebuild",
+      "pass": true,
+      "detail": {
+        "hash": "fe0b491678d14a78b2b4bcdfaf4801b4153ce800ab2ba962967689fdcc51db30"
+      }
+    },
+    {
+      "check": "rebuild_retains_all_records_and_edges",
+      "pass": true,
+      "detail": {
+        "objects": 1823,
+        "relations": 791,
+        "note": "Compare effective freshness; stored historical captures stay unchanged."
+      }
+    },
+    {
+      "check": "readme_reader_commands",
+      "pass": true,
+      "detail": [
+        [
+          "--check"
+        ],
+        [
+          "--next"
+        ],
+        [
+          "--show",
+          "req.material_catalog"
+        ],
+        [
+          "--show",
+          "concept.reduced_cell_state"
+        ],
+        [
+          "--show",
+          "req.matter_variables_lod"
+        ],
+        [
+          "--show",
+          "req.element_identity_spine"
+        ],
+        [
+          "--show",
+          "req.fundamental_force_scope"
+        ]
+      ]
+    },
+    {
+      "check": "no_invented_workflow_readiness",
+      "pass": true,
+      "detail": "New work remains nondispatchable without its checklist."
+    },
+    {
+      "check": "reader_contract_tests",
+      "pass": true,
+      "detail": {
+        "run": 14,
+        "output": "..............\n----------------------------------------------------------------------\nRan 14 tests in 0.055s\n\nOK\n"
+      }
+    },
+    {
+      "check": "real_graphify_round_trip",
+      "pass": true,
+      "detail": [
+        {
+          "check": "node_identity_round_trip",
+          "expected": "all 1823 objects reversible + full record/spatial payload equal",
+          "observed": "1823/1823 ok",
+          "pass": true,
+          "evidence": {
+            "mismatches": []
+          }
+        },
+        {
+          "check": "edge_identity_round_trip",
+          "expected": "all 791 relations with direction+note intact",
+          "observed": "missing=0 extra=0",
+          "pass": true,
+          "evidence": {
+            "missing_sample": [],
+            "extra_sample": []
+          }
+        },
+        {
+          "check": "multiplicity_preserved",
+          "expected": "no parallel groups in store (all pairs single-edged)",
+          "observed": "no parallel groups in store",
+          "pass": true
+        },
+        {
+          "check": "traversal_parity_2hop",
+          "expected": [
+            "ref.element.atomic_number.1",
+            "ref.element.atomic_number.10",
+            "ref.element.atomic_number.100",
+            "ref.element.atomic_number.101",
+            "ref.element.atomic_number.102",
+            "ref.element.atomic_number.103",
+            "ref.element.atomic_number.104",
+            "ref.element.atomic_number.105",
+            "ref.element.atomic_number.106",
+            "ref.element.atomic_number.107",
+            "ref.element.atomic_number.108",
+            "ref.element.atomic_number.109",
+            "ref.element.atomic_number.11",
+            "ref.element.atomic_number.110",
+            "ref.element.atomic_number.111",
+            "ref.element.atomic_number.112",
+            "ref.element.atomic_number.113",
+            "ref.element.atomic_number.114",
+            "ref.element.atomic_number.115",
+            "ref.element.atomic_number.116",
+            "ref.element.atomic_number.117",
+            "ref.element.atomic_number.118",
+            "ref.element.atomic_number.12",
+            "ref.element.atomic_number.13",
+            "ref.element.atomic_number.14",
+            "ref.element.atomic_number.15",
+            "ref.element.atomic_number.16",
+            "ref.element.atomic_number.17",
+            "ref.element.atomic_number.18",
+            "ref.element.atomic_number.19",
+            "ref.element.atomic_number.2",
+            "ref.element.atomic_number.20",
+            "ref.element.atomic_number.21",
+            "ref.element.atomic_number.22",
+            "ref.element.atomic_number.23",
+            "ref.element.atomic_number.24",
+            "ref.element.atomic_number.25",
+            "ref.element.atomic_number.26",
+            "ref.element.atomic_number.27",
+            "ref.element.atomic_number.28",
+            "ref.element.atomic_number.29",
+            "ref.element.atomic_number.3",
+            "ref.element.atomic_number.30",
+            "ref.element.atomic_number.31",
+            "ref.element.atomic_number.32",
+            "ref.element.atomic_number.33",
+            "ref.element.atomic_number.34",
+            "ref.element.atomic_number.35",
+            "ref.element.atomic_number.36",
+            "ref.element.atomic_number.37",
+            "ref.element.atomic_number.38",
+            "ref.element.atomic_number.39",
+            "ref.element.atomic_number.4",
+            "ref.element.atomic_number.40",
+            "ref.element.atomic_number.41",
+            "ref.element.atomic_number.42",
+            "ref.element.atomic_number.43",
+            "ref.element.atomic_number.44",
+            "ref.element.atomic_number.45",
+            "ref.element.atomic_number.46",
+            "ref.element.atomic_number.47",
+            "ref.element.atomic_number.48",
+            "ref.element.atomic_number.49",
+            "ref.element.atomic_number.5",
+            "ref.element.atomic_number.50",
+            "ref.element.atomic_number.51",
+            "ref.element.atomic_number.52",
+            "ref.element.atomic_number.53",
+            "ref.element.atomic_number.54",
+            "ref.element.atomic_number.55",
+            "ref.element.atomic_number.56",
+            "ref.element.atomic_number.57",
+            "ref.element.atomic_number.58",
+            "ref.element.atomic_number.59",
+            "ref.element.atomic_number.6",
+            "ref.element.atomic_number.60",
+            "ref.element.atomic_number.61",
+            "ref.element.atomic_number.62",
+            "ref.element.atomic_number.63",
+            "ref.element.atomic_number.64",
+            "ref.element.atomic_number.65",
+            "ref.element.atomic_number.66",
+            "ref.element.atomic_number.67",
+            "ref.element.atomic_number.68",
+            "ref.element.atomic_number.69",
+            "ref.element.atomic_number.7",
+            "ref.element.atomic_number.70",
+            "ref.element.atomic_number.71",
+            "ref.element.atomic_number.72",
+            "ref.element.atomic_number.73",
+            "ref.element.atomic_number.74",
+            "ref.element.atomic_number.75",
+            "ref.element.atomic_number.76",
+            "ref.element.atomic_number.77",
+            "ref.element.atomic_number.78",
+            "ref.element.atomic_number.79",
+            "ref.element.atomic_number.8",
+            "ref.element.atomic_number.80",
+            "ref.element.atomic_number.81",
+            "ref.element.atomic_number.82",
+            "ref.element.atomic_number.83",
+            "ref.element.atomic_number.84",
+            "ref.element.atomic_number.85",
+            "ref.element.atomic_number.86",
+            "ref.element.atomic_number.87",
+            "ref.element.atomic_number.88",
+            "ref.element.atomic_number.89",
+            "ref.element.atomic_number.9",
+            "ref.element.atomic_number.90",
+            "ref.element.atomic_number.91",
+            "ref.element.atomic_number.92",
+            "ref.element.atomic_number.93",
+            "ref.element.atomic_number.94",
+            "ref.element.atomic_number.95",
+            "ref.element.atomic_number.96",
+            "ref.element.atomic_number.97",
+            "ref.element.atomic_number.98",
+            "ref.element.atomic_number.99",
+            "source.material_reference.pubchem",
+            "source.operator_material_direction.29facaab418de39bd82217bd95ef83ae616a38b424ad83db7d09ecd1ec7e0956"
+          ],
+          "observed": [
+            "ref.element.atomic_number.1",
+            "ref.element.atomic_number.10",
+            "ref.element.atomic_number.100",
+            "ref.element.atomic_number.101",
+            "ref.element.atomic_number.102",
+            "ref.element.atomic_number.103",
+            "ref.element.atomic_number.104",
+            "ref.element.atomic_number.105",
+            "ref.element.atomic_number.106",
+            "ref.element.atomic_number.107",
+            "ref.element.atomic_number.108",
+            "ref.element.atomic_number.109",
+            "ref.element.atomic_number.11",
+            "ref.element.atomic_number.110",
+            "ref.element.atomic_number.111",
+            "ref.element.atomic_number.112",
+            "ref.element.atomic_number.113",
+            "ref.element.atomic_number.114",
+            "ref.element.atomic_number.115",
+            "ref.element.atomic_number.116",
+            "ref.element.atomic_number.117",
+            "ref.element.atomic_number.118",
+            "ref.element.atomic_number.12",
+            "ref.element.atomic_number.13",
+            "ref.element.atomic_number.14",
+            "ref.element.atomic_number.15",
+            "ref.element.atomic_number.16",
+            "ref.element.atomic_number.17",
+            "ref.element.atomic_number.18",
+            "ref.element.atomic_number.19",
+            "ref.element.atomic_number.2",
+            "ref.element.atomic_number.20",
+            "ref.element.atomic_number.21",
+            "ref.element.atomic_number.22",
+            "ref.element.atomic_number.23",
+            "ref.element.atomic_number.24",
+            "ref.element.atomic_number.25",
+            "ref.element.atomic_number.26",
+            "ref.element.atomic_number.27",
+            "ref.element.atomic_number.28",
+            "ref.element.atomic_number.29",
+            "ref.element.atomic_number.3",
+            "ref.element.atomic_number.30",
+            "ref.element.atomic_number.31",
+            "ref.element.atomic_number.32",
+            "ref.element.atomic_number.33",
+            "ref.element.atomic_number.34",
+            "ref.element.atomic_number.35",
+            "ref.element.atomic_number.36",
+            "ref.element.atomic_number.37",
+            "ref.element.atomic_number.38",
+            "ref.element.atomic_number.39",
+            "ref.element.atomic_number.4",
+            "ref.element.atomic_number.40",
+            "ref.element.atomic_number.41",
+            "ref.element.atomic_number.42",
+            "ref.element.atomic_number.43",
+            "ref.element.atomic_number.44",
+            "ref.element.atomic_number.45",
+            "ref.element.atomic_number.46",
+            "ref.element.atomic_number.47",
+            "ref.element.atomic_number.48",
+            "ref.element.atomic_number.49",
+            "ref.element.atomic_number.5",
+            "ref.element.atomic_number.50",
+            "ref.element.atomic_number.51",
+            "ref.element.atomic_number.52",
+            "ref.element.atomic_number.53",
+            "ref.element.atomic_number.54",
+            "ref.element.atomic_number.55",
+            "ref.element.atomic_number.56",
+            "ref.element.atomic_number.57",
+            "ref.element.atomic_number.58",
+            "ref.element.atomic_number.59",
+            "ref.element.atomic_number.6",
+            "ref.element.atomic_number.60",
+            "ref.element.atomic_number.61",
+            "ref.element.atomic_number.62",
+            "ref.element.atomic_number.63",
+            "ref.element.atomic_number.64",
+            "ref.element.atomic_number.65",
+            "ref.element.atomic_number.66",
+            "ref.element.atomic_number.67",
+            "ref.element.atomic_number.68",
+            "ref.element.atomic_number.69",
+            "ref.element.atomic_number.7",
+            "ref.element.atomic_number.70",
+            "ref.element.atomic_number.71",
+            "ref.element.atomic_number.72",
+            "ref.element.atomic_number.73",
+            "ref.element.atomic_number.74",
+            "ref.element.atomic_number.75",
+            "ref.element.atomic_number.76",
+            "ref.element.atomic_number.77",
+            "ref.element.atomic_number.78",
+            "ref.element.atomic_number.79",
+            "ref.element.atomic_number.8",
+            "ref.element.atomic_number.80",
+            "ref.element.atomic_number.81",
+            "ref.element.atomic_number.82",
+            "ref.element.atomic_number.83",
+            "ref.element.atomic_number.84",
+            "ref.element.atomic_number.85",
+            "ref.element.atomic_number.86",
+            "ref.element.atomic_number.87",
+            "ref.element.atomic_number.88",
+            "ref.element.atomic_number.89",
+            "ref.element.atomic_number.9",
+            "ref.element.atomic_number.90",
+            "ref.element.atomic_number.91",
+            "ref.element.atomic_number.92",
+            "ref.element.atomic_number.93",
+            "ref.element.atomic_number.94",
+            "ref.element.atomic_number.95",
+            "ref.element.atomic_number.96",
+            "ref.element.atomic_number.97",
+            "ref.element.atomic_number.98",
+            "ref.element.atomic_number.99",
+            "source.material_reference.pubchem",
+            "source.operator_material_direction.29facaab418de39bd82217bd95ef83ae616a38b424ad83db7d09ecd1ec7e0956"
+          ],
+          "pass": true,
+          "evidence": {
+            "start": "req.element_identity_spine",
+            "out_degree": 119
+          }
+        },
+        {
+          "check": "graphify_query_health",
+          "expected": 1823,
+          "observed": 1823,
+          "pass": true,
+          "evidence": {
+            "mutations": 0,
+            "pathways": 0,
+            "features": 0,
+            "note": "creature objects must not pollute the DNA families"
+          }
+        },
+        {
+          "check": "because_of_honest_empty",
+          "expected": [],
+          "observed": [],
+          "pass": true
+        },
+        {
+          "check": "fts_search_finds_ingested",
+          "expected": "req_element_identity_spine",
+          "observed": [
+            "req_element_identity_spine"
+          ],
+          "pass": true,
+          "evidence": {
+            "query": "Periodic table guides composition and scientific table joins",
+            "n_hits": 1
+          }
+        }
+      ]
+    },
+    {
+      "check": "checks_did_not_modify_inputs",
+      "pass": true,
+      "detail": {
+        ".gitattributes": "9ef2d390f4ec9009f382a050b2d41e15e974422ee42056a1710a82f94131b1d6",
+        "README.md": "a6262b1d7e56a4448e052aeafe6d79140fedd1d4bb57e47ba65419de9eecee26",
+        "tools/creature_graph/data/creature_graph.json": "6df0fc378824c0dc1b2e9c697778b5bc95e40c5ae4f2981aedc125757f7ce32c",
+        "tools/creature_graph/data/authored/project_program.json": "f5c784c749ae7724ac50efa8623ee28581e6c8362098f6c7c67fa31caa31aa21",
+        "tools/science_funnel/data/pubchem/periodic_table.json": "ff0f75976583b8a6493b18d0b42e83e1b68bd6e112b45d33578d98494ed5d321",
+        "tools/science_funnel/data/pubchem/download_receipt.json": "5d15a07a0db3b3285dd6b56ec2469f4ebb8686265c19f1e96dbd81aea7f2eb05",
+        "tools/creature_graph/validation/verify_material_catalog_20260916.py": "205594904863a5414492d3d83bfd8c5d7f42c0584278b03d2353adda3745e15b"
+      }
+    }
+  ],
+  "all_pass": true,
+  "consumer_store": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\material-catalog-consumer-20260916T200440100087\\graph.db",
+  "deployment": "Local repository only; no controller admission, engine restart or push.",
+  "earlier_attempt": "The initial material builder rejected a missing hypothesis priority before writing graph files; the corrected builder passed admission."
+}
