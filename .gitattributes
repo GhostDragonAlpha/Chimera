@@ -20,3 +20,5 @@ agent_logs/codex/graph_contracts_20260915/** -text whitespace=blank-at-eol,blank
 
 # Preserve graph-workflow proof bytes across checkouts.
 tools/agent_fleet/graph_workflow/validation/*.log -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+tools/science_funnel/examples/* -text
+tools/science_funnel/validation/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

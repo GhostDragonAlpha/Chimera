@@ -83,7 +83,10 @@
    "unknowns": [
     "Task-specific independently approved executable checklist must be authored before dispatch."
    ],
-   "notes": "Architecture work item; code presence is not deployment or product proof."
+   "notes": "Architecture work item; code presence is not deployment or product proof.",
+   "evidence": [
+    "ev.scientific_intake_fixture_20260916"
+   ]
   },
   {
    "id": "work.physics_rule_ports",
@@ -724,49 +727,1768 @@
    ],
    "captured_relations": {},
    "last_result": "passing"
+  },
+  {
+   "id": "model.database_family.identity",
+   "kind": "model",
+   "name": "Names, taxonomy and typed relationships",
+   "priority": "P0",
+   "status": "specified",
+   "database_family": {
+    "id": "model.database_family.identity",
+    "name": "Names, taxonomy and typed relationships",
+    "priority": "P0",
+    "adapters": [
+     "uberon_obo",
+     "ro_owl"
+    ],
+    "sources": [
+     "source.database_catalog.uberon",
+     "source.database_catalog.ro"
+    ],
+    "output": "Stable external IDs and relation assertions",
+    "boundary": "Matching names cannot establish equivalence, geometry or forces."
+   },
+   "unknowns": [
+    "Matching names cannot establish equivalence, geometry or forces."
+   ],
+   "falsifier": {
+    "statement": "Matching names cannot establish equivalence, geometry or forces.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "work.funnel.identity",
+   "kind": "work",
+   "name": "Qualify database intake: Names, taxonomy and typed relationships",
+   "priority": "P0",
+   "status": "specified",
+   "dependencies": [
+    "work.scientific_adapters"
+   ],
+   "unknowns": [
+    "Matching names cannot establish equivalence, geometry or forces.",
+    "Select a concrete source/release and approve an executable verification checklist."
+   ],
+   "falsifier": {
+    "statement": "Matching names cannot establish equivalence, geometry or forces.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "model.database_family.units",
+   "kind": "model",
+   "name": "Units and quantity semantics",
+   "priority": "P0",
+   "status": "specified",
+   "database_family": {
+    "id": "model.database_family.units",
+    "name": "Units and quantity semantics",
+    "priority": "P0",
+    "adapters": [
+     "qudt_ttl"
+    ],
+    "sources": [
+     "source.database_catalog.qudt"
+    ],
+    "output": "SI values, dimensions, conversion definitions",
+    "boundary": "Unit definitions alone cannot establish what a measured number means."
+   },
+   "unknowns": [
+    "Unit definitions alone cannot establish what a measured number means."
+   ],
+   "falsifier": {
+    "statement": "Unit definitions alone cannot establish what a measured number means.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "work.funnel.units",
+   "kind": "work",
+   "name": "Qualify database intake: Units and quantity semantics",
+   "priority": "P0",
+   "status": "specified",
+   "dependencies": [
+    "work.scientific_adapters"
+   ],
+   "unknowns": [
+    "Unit definitions alone cannot establish what a measured number means.",
+    "Select a concrete source/release and approve an executable verification checklist."
+   ],
+   "falsifier": {
+    "statement": "Unit definitions alone cannot establish what a measured number means.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "model.database_family.shape",
+   "kind": "model",
+   "name": "Anatomical geometry, topology and coordinate frames",
+   "priority": "P0",
+   "status": "specified",
+   "database_family": {
+    "id": "model.database_family.shape",
+    "name": "Anatomical geometry, topology and coordinate frames",
+    "priority": "P0",
+    "adapters": [
+     "geometry_json"
+    ],
+    "sources": [
+     "source.database_catalog.bodyparts3d"
+    ],
+    "output": "Anchors, source frame, dimensions, shape specification",
+    "boundary": "Two points establish an axis; roll, shape, topology and engine registration need additional rules or data."
+   },
+   "unknowns": [
+    "Two points establish an axis; roll, shape, topology and engine registration need additional rules or data."
+   ],
+   "falsifier": {
+    "statement": "Two points establish an axis; roll, shape, topology and engine registration need additional rules or data.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "work.funnel.shape",
+   "kind": "work",
+   "name": "Qualify database intake: Anatomical geometry, topology and coordinate frames",
+   "priority": "P0",
+   "status": "specified",
+   "dependencies": [
+    "work.scientific_adapters"
+   ],
+   "unknowns": [
+    "Two points establish an axis; roll, shape, topology and engine registration need additional rules or data.",
+    "Select a concrete source/release and approve an executable verification checklist."
+   ],
+   "falsifier": {
+    "statement": "Two points establish an axis; roll, shape, topology and engine registration need additional rules or data.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "model.database_family.materials",
+   "kind": "model",
+   "name": "Material measurements and constitutive responses",
+   "priority": "P0",
+   "status": "specified",
+   "database_family": {
+    "id": "model.database_family.materials",
+    "name": "Material measurements and constitutive responses",
+    "priority": "P0",
+    "adapters": [
+     "measurements_csv",
+     "series_csv"
+    ],
+    "sources": [
+     "source.database_catalog.nist_materials"
+    ],
+    "output": "Scalar properties and measured curves with specimen and test conditions",
+    "boundary": "A hardness, stiffness or strength value cannot be transferred between incompatible definitions or test protocols."
+   },
+   "unknowns": [
+    "A hardness, stiffness or strength value cannot be transferred between incompatible definitions or test protocols."
+   ],
+   "falsifier": {
+    "statement": "A hardness, stiffness or strength value cannot be transferred between incompatible definitions or test protocols.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "work.funnel.materials",
+   "kind": "work",
+   "name": "Qualify database intake: Material measurements and constitutive responses",
+   "priority": "P0",
+   "status": "specified",
+   "dependencies": [
+    "work.scientific_adapters"
+   ],
+   "unknowns": [
+    "A hardness, stiffness or strength value cannot be transferred between incompatible definitions or test protocols.",
+    "Select a concrete source/release and approve an executable verification checklist."
+   ],
+   "falsifier": {
+    "statement": "A hardness, stiffness or strength value cannot be transferred between incompatible definitions or test protocols.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "model.database_family.motion",
+   "kind": "model",
+   "name": "Multibody anatomy, muscles, joint and path models",
+   "priority": "P0",
+   "status": "specified",
+   "database_family": {
+    "id": "model.database_family.motion",
+    "name": "Multibody anatomy, muscles, joint and path models",
+    "priority": "P0",
+    "adapters": [
+     "opensim_xml"
+    ],
+    "sources": [
+     "source.database_catalog.opensim"
+    ],
+    "output": "Declared model parameters and structures",
+    "boundary": "A human musculoskeletal model is not a physically validated creature or a force-controlled engine."
+   },
+   "unknowns": [
+    "A human musculoskeletal model is not a physically validated creature or a force-controlled engine."
+   ],
+   "falsifier": {
+    "statement": "A human musculoskeletal model is not a physically validated creature or a force-controlled engine.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "work.funnel.motion",
+   "kind": "work",
+   "name": "Qualify database intake: Multibody anatomy, muscles, joint and path models",
+   "priority": "P0",
+   "status": "specified",
+   "dependencies": [
+    "work.scientific_adapters"
+   ],
+   "unknowns": [
+    "A human musculoskeletal model is not a physically validated creature or a force-controlled engine.",
+    "Select a concrete source/release and approve an executable verification checklist."
+   ],
+   "falsifier": {
+    "statement": "A human musculoskeletal model is not a physically validated creature or a force-controlled engine.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "model.database_family.transport",
+   "kind": "model",
+   "name": "Fluids, heat, transport and phase behavior",
+   "priority": "P0",
+   "status": "specified",
+   "database_family": {
+    "id": "model.database_family.transport",
+    "name": "Fluids, heat, transport and phase behavior",
+    "priority": "P0",
+    "adapters": [
+     "measurements_csv",
+     "series_csv",
+     "model_json"
+    ],
+    "sources": [
+     "source.database_catalog.nist_webbook"
+    ],
+    "output": "State-dependent properties and transport law candidates",
+    "boundary": "The constant-property reduction must declare temperature, pressure, phase and numerical validity range."
+   },
+   "unknowns": [
+    "The constant-property reduction must declare temperature, pressure, phase and numerical validity range."
+   ],
+   "falsifier": {
+    "statement": "The constant-property reduction must declare temperature, pressure, phase and numerical validity range.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "work.funnel.transport",
+   "kind": "work",
+   "name": "Qualify database intake: Fluids, heat, transport and phase behavior",
+   "priority": "P0",
+   "status": "specified",
+   "dependencies": [
+    "work.scientific_adapters"
+   ],
+   "unknowns": [
+    "The constant-property reduction must declare temperature, pressure, phase and numerical validity range.",
+    "Select a concrete source/release and approve an executable verification checklist."
+   ],
+   "falsifier": {
+    "statement": "The constant-property reduction must declare temperature, pressure, phase and numerical validity range.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "model.database_family.physiology",
+   "kind": "model",
+   "name": "Nerve, organ and regulatory dynamics",
+   "priority": "P1",
+   "status": "specified",
+   "database_family": {
+    "id": "model.database_family.physiology",
+    "name": "Nerve, organ and regulatory dynamics",
+    "priority": "P1",
+    "adapters": [
+     "model_json",
+     "series_csv"
+    ],
+    "sources": [
+     "source.database_catalog.cellml",
+     "source.database_catalog.physionet"
+    ],
+    "output": "Model definitions and measured signal responses",
+    "boundary": "A waveform cannot substitute for a causal sensory pathway or establish its transfer law."
+   },
+   "unknowns": [
+    "A waveform cannot substitute for a causal sensory pathway or establish its transfer law."
+   ],
+   "falsifier": {
+    "statement": "A waveform cannot substitute for a causal sensory pathway or establish its transfer law.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "work.funnel.physiology",
+   "kind": "work",
+   "name": "Qualify database intake: Nerve, organ and regulatory dynamics",
+   "priority": "P1",
+   "status": "specified",
+   "dependencies": [
+    "work.scientific_adapters"
+   ],
+   "unknowns": [
+    "A waveform cannot substitute for a causal sensory pathway or establish its transfer law.",
+    "Select a concrete source/release and approve an executable verification checklist."
+   ],
+   "falsifier": {
+    "statement": "A waveform cannot substitute for a causal sensory pathway or establish its transfer law.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "model.database_family.chemistry",
+   "kind": "model",
+   "name": "Molecules, species and reactions",
+   "priority": "P2",
+   "status": "specified",
+   "database_family": {
+    "id": "model.database_family.chemistry",
+    "name": "Molecules, species and reactions",
+    "priority": "P2",
+    "adapters": [],
+    "sources": [
+     "source.database_catalog.pubchem"
+    ],
+    "output": "Chemical identity, structure and reaction/kinetic parameters where supported",
+    "boundary": "A molecule name or structure does not specify a usable reaction rate or bulk constitutive law."
+   },
+   "unknowns": [
+    "A molecule name or structure does not specify a usable reaction rate or bulk constitutive law."
+   ],
+   "falsifier": {
+    "statement": "A molecule name or structure does not specify a usable reaction rate or bulk constitutive law.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "work.funnel.chemistry",
+   "kind": "work",
+   "name": "Qualify database intake: Molecules, species and reactions",
+   "priority": "P2",
+   "status": "specified",
+   "dependencies": [
+    "work.scientific_adapters"
+   ],
+   "unknowns": [
+    "A molecule name or structure does not specify a usable reaction rate or bulk constitutive law.",
+    "Select a concrete source/release and approve an executable verification checklist."
+   ],
+   "falsifier": {
+    "statement": "A molecule name or structure does not specify a usable reaction rate or bulk constitutive law.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "model.database_family.world",
+   "kind": "model",
+   "name": "Ground, water, weather and environmental boundary conditions",
+   "priority": "P1",
+   "status": "specified",
+   "database_family": {
+    "id": "model.database_family.world",
+    "name": "Ground, water, weather and environmental boundary conditions",
+    "priority": "P1",
+    "adapters": [
+     "geometry_json",
+     "measurements_csv",
+     "series_csv"
+    ],
+    "sources": [
+     "source.database_catalog.nist_materials",
+     "source.database_catalog.nist_webbook"
+    ],
+    "output": "Boundary geometry and material/environmental conditions",
+    "boundary": "A visible ground or water surface must have explicit regions, contact/flow behavior and reservoirs."
+   },
+   "unknowns": [
+    "A visible ground or water surface must have explicit regions, contact/flow behavior and reservoirs."
+   ],
+   "falsifier": {
+    "statement": "A visible ground or water surface must have explicit regions, contact/flow behavior and reservoirs.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "work.funnel.world",
+   "kind": "work",
+   "name": "Qualify database intake: Ground, water, weather and environmental boundary conditions",
+   "priority": "P1",
+   "status": "specified",
+   "dependencies": [
+    "work.scientific_adapters"
+   ],
+   "unknowns": [
+    "A visible ground or water surface must have explicit regions, contact/flow behavior and reservoirs.",
+    "Select a concrete source/release and approve an executable verification checklist."
+   ],
+   "falsifier": {
+    "statement": "A visible ground or water surface must have explicit regions, contact/flow behavior and reservoirs.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "model.database_family.appearance",
+   "kind": "model",
+   "name": "Optical and acoustic material responses",
+   "priority": "P1",
+   "status": "specified",
+   "database_family": {
+    "id": "model.database_family.appearance",
+    "name": "Optical and acoustic material responses",
+    "priority": "P1",
+    "adapters": [
+     "series_csv"
+    ],
+    "sources": [
+     "source.database_catalog.usgs_spectra"
+    ],
+    "output": "Spectral observations and future calibrated response models",
+    "boundary": "A reflectance spectrum does not alone determine a complete view-dependent optical model."
+   },
+   "unknowns": [
+    "A reflectance spectrum does not alone determine a complete view-dependent optical model."
+   ],
+   "falsifier": {
+    "statement": "A reflectance spectrum does not alone determine a complete view-dependent optical model.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "work.funnel.appearance",
+   "kind": "work",
+   "name": "Qualify database intake: Optical and acoustic material responses",
+   "priority": "P1",
+   "status": "specified",
+   "dependencies": [
+    "work.scientific_adapters"
+   ],
+   "unknowns": [
+    "A reflectance spectrum does not alone determine a complete view-dependent optical model.",
+    "Select a concrete source/release and approve an executable verification checklist."
+   ],
+   "falsifier": {
+    "statement": "A reflectance spectrum does not alone determine a complete view-dependent optical model.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "model.database_family.observations",
+   "kind": "model",
+   "name": "Experiment, simulation and behavior measurements",
+   "priority": "P0",
+   "status": "specified",
+   "database_family": {
+    "id": "model.database_family.observations",
+    "name": "Experiment, simulation and behavior measurements",
+    "priority": "P0",
+    "adapters": [
+     "measurements_csv",
+     "series_csv"
+    ],
+    "sources": [
+     "source.database_catalog.local_engine"
+    ],
+    "output": "Recorded observations with input and implementation identity",
+    "boundary": "Successful ingestion cannot promote measurements into independent verification evidence."
+   },
+   "unknowns": [
+    "Successful ingestion cannot promote measurements into independent verification evidence."
+   ],
+   "falsifier": {
+    "statement": "Successful ingestion cannot promote measurements into independent verification evidence.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "work.funnel.observations",
+   "kind": "work",
+   "name": "Qualify database intake: Experiment, simulation and behavior measurements",
+   "priority": "P0",
+   "status": "specified",
+   "dependencies": [
+    "work.scientific_adapters"
+   ],
+   "unknowns": [
+    "Successful ingestion cannot promote measurements into independent verification evidence.",
+    "Select a concrete source/release and approve an executable verification checklist."
+   ],
+   "falsifier": {
+    "statement": "Successful ingestion cannot promote measurements into independent verification evidence.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "model.database_family.project_memory",
+   "kind": "model",
+   "name": "Documentation, decisions, workflow and roadmap",
+   "priority": "P0",
+   "status": "specified",
+   "database_family": {
+    "id": "model.database_family.project_memory",
+    "name": "Documentation, decisions, workflow and roadmap",
+    "priority": "P0",
+    "adapters": [],
+    "sources": [
+     "source.database_catalog.local_project"
+    ],
+    "output": "Lossless versioned documents and independently governed instructions",
+    "boundary": "Imported prose cannot become executable workflow policy without explicit authoring."
+   },
+   "unknowns": [
+    "Imported prose cannot become executable workflow policy without explicit authoring."
+   ],
+   "falsifier": {
+    "statement": "Imported prose cannot become executable workflow policy without explicit authoring.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "work.funnel.project_memory",
+   "kind": "work",
+   "name": "Qualify database intake: Documentation, decisions, workflow and roadmap",
+   "priority": "P0",
+   "status": "specified",
+   "dependencies": [
+    "work.scientific_adapters"
+   ],
+   "unknowns": [
+    "Imported prose cannot become executable workflow policy without explicit authoring.",
+    "Select a concrete source/release and approve an executable verification checklist."
+   ],
+   "falsifier": {
+    "statement": "Imported prose cannot become executable workflow policy without explicit authoring.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "source.database_catalog.uberon",
+   "kind": "source",
+   "name": "Uberon",
+   "status": "specified",
+   "database_catalog": {
+    "id": "source.database_catalog.uberon",
+    "name": "Uberon",
+    "url": "https://uberon.github.io/downloads.html",
+    "connector_status": "pinned_local_adapter",
+    "gap": "appendicular subset only",
+    "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+   },
+   "unknowns": [
+    "appendicular subset only"
+   ],
+   "notes": "Catalog metadata only. Source import and physics qualification are separate records."
+  },
+  {
+   "id": "source.database_catalog.ro",
+   "kind": "source",
+   "name": "Relation Ontology",
+   "status": "specified",
+   "database_catalog": {
+    "id": "source.database_catalog.ro",
+    "name": "Relation Ontology",
+    "url": "https://oborel.github.io/",
+    "connector_status": "pinned_local_adapter",
+    "gap": "selected definitions, no full reasoner",
+    "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+   },
+   "unknowns": [
+    "selected definitions, no full reasoner"
+   ],
+   "notes": "Catalog metadata only. Source import and physics qualification are separate records."
+  },
+  {
+   "id": "source.database_catalog.qudt",
+   "kind": "source",
+   "name": "QUDT",
+   "status": "specified",
+   "database_catalog": {
+    "id": "source.database_catalog.qudt",
+    "name": "QUDT",
+    "url": "https://www.qudt.org/",
+    "connector_status": "pinned_local_adapter",
+    "gap": "selected definitions; executable SI whitelist is independently reviewed",
+    "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+   },
+   "unknowns": [
+    "selected definitions; executable SI whitelist is independently reviewed"
+   ],
+   "notes": "Catalog metadata only. Source import and physics qualification are separate records."
+  },
+  {
+   "id": "source.database_catalog.opensim",
+   "kind": "source",
+   "name": "OpenSim models",
+   "status": "specified",
+   "database_catalog": {
+    "id": "source.database_catalog.opensim",
+    "name": "OpenSim models",
+    "url": "https://github.com/opensim-org/opensim-models",
+    "connector_status": "pinned_local_adapter",
+    "gap": "partial XML projection; imported models never executed",
+    "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+   },
+   "unknowns": [
+    "partial XML projection; imported models never executed"
+   ],
+   "notes": "Catalog metadata only. Source import and physics qualification are separate records."
+  },
+  {
+   "id": "source.database_catalog.bodyparts3d",
+   "kind": "source",
+   "name": "BodyParts3D",
+   "status": "specified",
+   "database_catalog": {
+    "id": "source.database_catalog.bodyparts3d",
+    "name": "BodyParts3D",
+    "url": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html",
+    "connector_status": "source_connector_pending",
+    "gap": "geometry assets and frame/landmark adaptation pending",
+    "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+   },
+   "unknowns": [
+    "geometry assets and frame/landmark adaptation pending"
+   ],
+   "notes": "Catalog metadata only. Source import and physics qualification are separate records."
+  },
+  {
+   "id": "source.database_catalog.nist_materials",
+   "kind": "source",
+   "name": "NIST Materials Data Repository",
+   "status": "specified",
+   "database_catalog": {
+    "id": "source.database_catalog.nist_materials",
+    "name": "NIST Materials Data Repository",
+    "url": "https://materialsdata.nist.gov/",
+    "connector_status": "source_connector_pending",
+    "gap": "varied dataset-specific formats, review states and terms; CSV adapter needs explicit mapping",
+    "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+   },
+   "unknowns": [
+    "varied dataset-specific formats, review states and terms; CSV adapter needs explicit mapping"
+   ],
+   "notes": "Catalog metadata only. Source import and physics qualification are separate records."
+  },
+  {
+   "id": "source.database_catalog.nist_webbook",
+   "kind": "source",
+   "name": "NIST Chemistry WebBook",
+   "status": "specified",
+   "database_catalog": {
+    "id": "source.database_catalog.nist_webbook",
+    "name": "NIST Chemistry WebBook",
+    "url": "https://webbook.nist.gov/chemistry/",
+    "connector_status": "source_connector_pending",
+    "gap": "thermochemical/thermophysical data; access and redistribution terms are dataset-specific",
+    "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+   },
+   "unknowns": [
+    "thermochemical/thermophysical data; access and redistribution terms are dataset-specific"
+   ],
+   "notes": "Catalog metadata only. Source import and physics qualification are separate records."
+  },
+  {
+   "id": "source.database_catalog.cellml",
+   "kind": "source",
+   "name": "Physiome / CellML model repository",
+   "status": "specified",
+   "database_catalog": {
+    "id": "source.database_catalog.cellml",
+    "name": "Physiome / CellML model repository",
+    "url": "https://www.cellml.org/model/index",
+    "connector_status": "source_connector_pending",
+    "gap": "CellML parsing, model selection, units and runtime compilation pending",
+    "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+   },
+   "unknowns": [
+    "CellML parsing, model selection, units and runtime compilation pending"
+   ],
+   "notes": "Catalog metadata only. Source import and physics qualification are separate records."
+  },
+  {
+   "id": "source.database_catalog.physionet",
+   "kind": "source",
+   "name": "PhysioNet",
+   "status": "specified",
+   "database_catalog": {
+    "id": "source.database_catalog.physionet",
+    "name": "PhysioNet",
+    "url": "https://physionet.org/about/",
+    "connector_status": "source_connector_pending",
+    "gap": "specific dataset, access conditions, signal formats and measurement metadata must be selected",
+    "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+   },
+   "unknowns": [
+    "specific dataset, access conditions, signal formats and measurement metadata must be selected"
+   ],
+   "notes": "Catalog metadata only. Source import and physics qualification are separate records."
+  },
+  {
+   "id": "source.database_catalog.pubchem",
+   "kind": "source",
+   "name": "PubChem",
+   "status": "specified",
+   "database_catalog": {
+    "id": "source.database_catalog.pubchem",
+    "name": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest",
+    "connector_status": "source_connector_pending",
+    "gap": "chemical identity/API mapping and model applicability pending",
+    "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+   },
+   "unknowns": [
+    "chemical identity/API mapping and model applicability pending"
+   ],
+   "notes": "Catalog metadata only. Source import and physics qualification are separate records."
+  },
+  {
+   "id": "source.database_catalog.usgs_spectra",
+   "kind": "source",
+   "name": "USGS Spectral Library",
+   "status": "specified",
+   "database_catalog": {
+    "id": "source.database_catalog.usgs_spectra",
+    "name": "USGS Spectral Library",
+    "url": "https://www.usgs.gov/labs/spectroscopy-lab/science/spectral-library",
+    "connector_status": "source_connector_pending",
+    "gap": "source format/spectral conditions and rendering reduction pending",
+    "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+   },
+   "unknowns": [
+    "source format/spectral conditions and rendering reduction pending"
+   ],
+   "notes": "Catalog metadata only. Source import and physics qualification are separate records."
+  },
+  {
+   "id": "source.database_catalog.local_engine",
+   "kind": "source",
+   "name": "Chimera native runtime observations",
+   "status": "specified",
+   "database_catalog": {
+    "id": "source.database_catalog.local_engine",
+    "name": "Chimera native runtime observations",
+    "url": "local:ChimeraEngine",
+    "connector_status": "mapped_export_adapter",
+    "gap": "export columns and experiment identity must be supplied; no live endpoint used",
+    "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+   },
+   "unknowns": [
+    "export columns and experiment identity must be supplied; no live endpoint used"
+   ],
+   "notes": "Catalog metadata only. Source import and physics qualification are separate records."
+  },
+  {
+   "id": "source.database_catalog.local_project",
+   "kind": "source",
+   "name": "Chimera authored project memory",
+   "status": "specified",
+   "database_catalog": {
+    "id": "source.database_catalog.local_project",
+    "name": "Chimera authored project memory",
+    "url": "local:project_documents",
+    "connector_status": "existing_lossless_importer",
+    "gap": "existing project_documents.absorb; complete historical migration remains pending",
+    "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+   },
+   "unknowns": [
+    "existing project_documents.absorb; complete historical migration remains pending"
+   ],
+   "notes": "Catalog metadata only. Source import and physics qualification are separate records."
+  },
+  {
+   "id": "model.scientific_intake",
+   "kind": "model",
+   "name": "Scientific database funnels and reductions",
+   "priority": "P0",
+   "status": "specified",
+   "funnel_catalog": {
+    "schema_version": "1.0.0",
+    "families": [
+     {
+      "id": "model.database_family.identity",
+      "name": "Names, taxonomy and typed relationships",
+      "priority": "P0",
+      "adapters": [
+       "uberon_obo",
+       "ro_owl"
+      ],
+      "sources": [
+       "source.database_catalog.uberon",
+       "source.database_catalog.ro"
+      ],
+      "output": "Stable external IDs and relation assertions",
+      "boundary": "Matching names cannot establish equivalence, geometry or forces."
+     },
+     {
+      "id": "model.database_family.units",
+      "name": "Units and quantity semantics",
+      "priority": "P0",
+      "adapters": [
+       "qudt_ttl"
+      ],
+      "sources": [
+       "source.database_catalog.qudt"
+      ],
+      "output": "SI values, dimensions, conversion definitions",
+      "boundary": "Unit definitions alone cannot establish what a measured number means."
+     },
+     {
+      "id": "model.database_family.shape",
+      "name": "Anatomical geometry, topology and coordinate frames",
+      "priority": "P0",
+      "adapters": [
+       "geometry_json"
+      ],
+      "sources": [
+       "source.database_catalog.bodyparts3d"
+      ],
+      "output": "Anchors, source frame, dimensions, shape specification",
+      "boundary": "Two points establish an axis; roll, shape, topology and engine registration need additional rules or data."
+     },
+     {
+      "id": "model.database_family.materials",
+      "name": "Material measurements and constitutive responses",
+      "priority": "P0",
+      "adapters": [
+       "measurements_csv",
+       "series_csv"
+      ],
+      "sources": [
+       "source.database_catalog.nist_materials"
+      ],
+      "output": "Scalar properties and measured curves with specimen and test conditions",
+      "boundary": "A hardness, stiffness or strength value cannot be transferred between incompatible definitions or test protocols."
+     },
+     {
+      "id": "model.database_family.motion",
+      "name": "Multibody anatomy, muscles, joint and path models",
+      "priority": "P0",
+      "adapters": [
+       "opensim_xml"
+      ],
+      "sources": [
+       "source.database_catalog.opensim"
+      ],
+      "output": "Declared model parameters and structures",
+      "boundary": "A human musculoskeletal model is not a physically validated creature or a force-controlled engine."
+     },
+     {
+      "id": "model.database_family.transport",
+      "name": "Fluids, heat, transport and phase behavior",
+      "priority": "P0",
+      "adapters": [
+       "measurements_csv",
+       "series_csv",
+       "model_json"
+      ],
+      "sources": [
+       "source.database_catalog.nist_webbook"
+      ],
+      "output": "State-dependent properties and transport law candidates",
+      "boundary": "The constant-property reduction must declare temperature, pressure, phase and numerical validity range."
+     },
+     {
+      "id": "model.database_family.physiology",
+      "name": "Nerve, organ and regulatory dynamics",
+      "priority": "P1",
+      "adapters": [
+       "model_json",
+       "series_csv"
+      ],
+      "sources": [
+       "source.database_catalog.cellml",
+       "source.database_catalog.physionet"
+      ],
+      "output": "Model definitions and measured signal responses",
+      "boundary": "A waveform cannot substitute for a causal sensory pathway or establish its transfer law."
+     },
+     {
+      "id": "model.database_family.chemistry",
+      "name": "Molecules, species and reactions",
+      "priority": "P2",
+      "adapters": [],
+      "sources": [
+       "source.database_catalog.pubchem"
+      ],
+      "output": "Chemical identity, structure and reaction/kinetic parameters where supported",
+      "boundary": "A molecule name or structure does not specify a usable reaction rate or bulk constitutive law."
+     },
+     {
+      "id": "model.database_family.world",
+      "name": "Ground, water, weather and environmental boundary conditions",
+      "priority": "P1",
+      "adapters": [
+       "geometry_json",
+       "measurements_csv",
+       "series_csv"
+      ],
+      "sources": [
+       "source.database_catalog.nist_materials",
+       "source.database_catalog.nist_webbook"
+      ],
+      "output": "Boundary geometry and material/environmental conditions",
+      "boundary": "A visible ground or water surface must have explicit regions, contact/flow behavior and reservoirs."
+     },
+     {
+      "id": "model.database_family.appearance",
+      "name": "Optical and acoustic material responses",
+      "priority": "P1",
+      "adapters": [
+       "series_csv"
+      ],
+      "sources": [
+       "source.database_catalog.usgs_spectra"
+      ],
+      "output": "Spectral observations and future calibrated response models",
+      "boundary": "A reflectance spectrum does not alone determine a complete view-dependent optical model."
+     },
+     {
+      "id": "model.database_family.observations",
+      "name": "Experiment, simulation and behavior measurements",
+      "priority": "P0",
+      "adapters": [
+       "measurements_csv",
+       "series_csv"
+      ],
+      "sources": [
+       "source.database_catalog.local_engine"
+      ],
+      "output": "Recorded observations with input and implementation identity",
+      "boundary": "Successful ingestion cannot promote measurements into independent verification evidence."
+     },
+     {
+      "id": "model.database_family.project_memory",
+      "name": "Documentation, decisions, workflow and roadmap",
+      "priority": "P0",
+      "adapters": [],
+      "sources": [
+       "source.database_catalog.local_project"
+      ],
+      "output": "Lossless versioned documents and independently governed instructions",
+      "boundary": "Imported prose cannot become executable workflow policy without explicit authoring."
+     }
+    ],
+    "sources": [
+     {
+      "id": "source.database_catalog.uberon",
+      "name": "Uberon",
+      "url": "https://uberon.github.io/downloads.html",
+      "connector_status": "pinned_local_adapter",
+      "gap": "appendicular subset only",
+      "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+     },
+     {
+      "id": "source.database_catalog.ro",
+      "name": "Relation Ontology",
+      "url": "https://oborel.github.io/",
+      "connector_status": "pinned_local_adapter",
+      "gap": "selected definitions, no full reasoner",
+      "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+     },
+     {
+      "id": "source.database_catalog.qudt",
+      "name": "QUDT",
+      "url": "https://www.qudt.org/",
+      "connector_status": "pinned_local_adapter",
+      "gap": "selected definitions; executable SI whitelist is independently reviewed",
+      "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+     },
+     {
+      "id": "source.database_catalog.opensim",
+      "name": "OpenSim models",
+      "url": "https://github.com/opensim-org/opensim-models",
+      "connector_status": "pinned_local_adapter",
+      "gap": "partial XML projection; imported models never executed",
+      "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+     },
+     {
+      "id": "source.database_catalog.bodyparts3d",
+      "name": "BodyParts3D",
+      "url": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html",
+      "connector_status": "source_connector_pending",
+      "gap": "geometry assets and frame/landmark adaptation pending",
+      "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+     },
+     {
+      "id": "source.database_catalog.nist_materials",
+      "name": "NIST Materials Data Repository",
+      "url": "https://materialsdata.nist.gov/",
+      "connector_status": "source_connector_pending",
+      "gap": "varied dataset-specific formats, review states and terms; CSV adapter needs explicit mapping",
+      "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+     },
+     {
+      "id": "source.database_catalog.nist_webbook",
+      "name": "NIST Chemistry WebBook",
+      "url": "https://webbook.nist.gov/chemistry/",
+      "connector_status": "source_connector_pending",
+      "gap": "thermochemical/thermophysical data; access and redistribution terms are dataset-specific",
+      "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+     },
+     {
+      "id": "source.database_catalog.cellml",
+      "name": "Physiome / CellML model repository",
+      "url": "https://www.cellml.org/model/index",
+      "connector_status": "source_connector_pending",
+      "gap": "CellML parsing, model selection, units and runtime compilation pending",
+      "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+     },
+     {
+      "id": "source.database_catalog.physionet",
+      "name": "PhysioNet",
+      "url": "https://physionet.org/about/",
+      "connector_status": "source_connector_pending",
+      "gap": "specific dataset, access conditions, signal formats and measurement metadata must be selected",
+      "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+     },
+     {
+      "id": "source.database_catalog.pubchem",
+      "name": "PubChem",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest",
+      "connector_status": "source_connector_pending",
+      "gap": "chemical identity/API mapping and model applicability pending",
+      "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+     },
+     {
+      "id": "source.database_catalog.usgs_spectra",
+      "name": "USGS Spectral Library",
+      "url": "https://www.usgs.gov/labs/spectroscopy-lab/science/spectral-library",
+      "connector_status": "source_connector_pending",
+      "gap": "source format/spectral conditions and rendering reduction pending",
+      "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+     },
+     {
+      "id": "source.database_catalog.local_engine",
+      "name": "Chimera native runtime observations",
+      "url": "local:ChimeraEngine",
+      "connector_status": "mapped_export_adapter",
+      "gap": "export columns and experiment identity must be supplied; no live endpoint used",
+      "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+     },
+     {
+      "id": "source.database_catalog.local_project",
+      "name": "Chimera authored project memory",
+      "url": "local:project_documents",
+      "connector_status": "existing_lossless_importer",
+      "gap": "existing project_documents.absorb; complete historical migration remains pending",
+      "licensing": "Each selected artifact retains its own recorded terms; portal listing is not a license."
+     }
+    ],
+    "implemented_adapters": [
+     "geometry_json",
+     "measurements_csv",
+     "model_json",
+     "opensim_xml",
+     "qudt_ttl",
+     "ro_owl",
+     "series_csv",
+     "uberon_obo"
+    ],
+    "implemented_reductions": {
+     "axial_stiffness": {
+      "inputs": {
+       "E": "young_modulus",
+       "A": "area",
+       "L": "length"
+      },
+      "output": [
+       "stiffness",
+       "N/m"
+      ],
+      "equation": "k = E*A/L",
+      "derivation": "stress=E*strain; F/A=E*(delta_L/L); hence F=(E*A/L)*delta_L.",
+      "assumptions": [
+       "small_axial_strain",
+       "homogeneous_material",
+       "uniform_cross_section",
+       "straight_taut_member",
+       "quasistatic_loading"
+      ]
+     },
+     "hydraulic_compliance": {
+      "inputs": {
+       "kappa": "compressibility",
+       "V0": "volume"
+      },
+      "output": [
+       "hydraulic_compliance",
+       "m3/Pa"
+      ],
+      "equation": "C = kappa*V0",
+      "derivation": "kappa=-(1/V)*dV/dP; linearize about V0: delta_V=-kappa*V0*delta_P.",
+      "assumptions": [
+       "small_volume_strain",
+       "constant_compressibility",
+       "single_liquid_phase"
+      ]
+     },
+     "propagation_delay": {
+      "inputs": {
+       "L": "length",
+       "v": "speed"
+      },
+      "output": [
+       "time",
+       "s"
+      ],
+      "equation": "delay = L/v",
+      "derivation": "dt=ds/v(s); constant v gives integral(ds/v)=L/v.",
+      "assumptions": [
+       "uniform_propagation_speed",
+       "path_length_is_traveled_route"
+      ]
+     }
+    },
+    "pipeline": [
+     "pinned_raw_bytes",
+     "source_specific_adapter",
+     "typed_assertion",
+     "serial_graph_admission",
+     "explicit_reduction",
+     "instance_binding",
+     "independent_runtime_test"
+    ],
+    "state_distinctions": [
+     "cataloged",
+     "adapter_implemented",
+     "source_imported",
+     "reduction_candidate",
+     "runtime_qualified"
+    ],
+    "unsupported_now": [
+     "remote_API_clients",
+     "streaming_large_atlases",
+     "tensor_rotation",
+     "multivariate_property_surfaces",
+     "global_identity_resolution",
+     "uncertainty_propagation",
+     "native_rule_compilation"
+    ],
+    "code": "tools/science_funnel",
+    "serial_authority": "existing GraphWorkflowControl.graph_apply",
+    "rule0": {
+     "statement": "Typed, pinned source-specific intake can preserve assertions without promoting physics.",
+     "prediction": "Deterministic replay; malformed data and stale writes refused.",
+     "falsifier": "Pin drift, unit/context mismatch, silently dropped relation or automatic verification passes."
+    }
+   },
+   "falsifier": {
+    "statement": "Pin drift, unit/context mismatch, silently dropped relation or automatic verification passes.",
+    "status": "untested"
+   },
+   "unknowns": [
+    "remote_API_clients",
+    "streaming_large_atlases",
+    "tensor_rotation",
+    "multivariate_property_surfaces",
+    "global_identity_resolution",
+    "uncertainty_propagation",
+    "native_rule_compilation"
+   ],
+   "read_first_document": "source.document.4843a21d9724f7dd0a5fd6518567005a49162d7a40d99ee682bd04d60c7a21f1.21b80b0753c871af1e4dbf90eb3a5fb12629ae1fbafc7ff63b5f13ceecbaf30f",
+   "handoff": {
+    "read_first": "source.document.4843a21d9724f7dd0a5fd6518567005a49162d7a40d99ee682bd04d60c7a21f1.21b80b0753c871af1e4dbf90eb3a5fb12629ae1fbafc7ff63b5f13ceecbaf30f",
+    "code": "tools/science_funnel",
+    "measured_evidence": "ev.scientific_intake_fixture_20260916",
+    "project_home": "E:/PythonChimera",
+    "integration_branch": "codex/graph-workflow-gate",
+    "next": "Integrate with current graph/controller lane, then select and pin a concrete materials dataset; fill its explicit manifest. Existing scientific imports remain external assertions."
+   }
+  },
+  {
+   "id": "source.document.4843a21d9724f7dd0a5fd6518567005a49162d7a40d99ee682bd04d60c7a21f1.041ff8a4a0afb5b778be63ab4e442aaa70fd7deb57c9881dff3020dbc137ecbc",
+   "kind": "source",
+   "name": "tools/science_funnel/README.md",
+   "status": "extracted",
+   "dependencies": [],
+   "evidence": [],
+   "document": {
+    "original_path": "tools/science_funnel/README.md",
+    "sha256": "041ff8a4a0afb5b778be63ab4e442aaa70fd7deb57c9881dff3020dbc137ecbc",
+    "byte_count": 8769,
+    "bytes_base64": "IyBTY2llbnRpZmljIGRhdGEgZnVubmVscwoKUnVuIGZyb20gdGhlIHByb2plY3Qgcm9vdDogYHB5dGhvbiAtbSB0b29scy5zY2llbmNlX2Z1bm5lbCAtLWhlbHBgLgpUaGlzIGlzIG9mZmxpbmUgaW50YWtlLiBUaGUgbmF0aXZlIGVuZ2luZSByZW1haW5zIHRoZSBwaHlzaWNhbCBydW50aW1lLgoKIyMgQ29udHJhY3Qgc3RhdGVkIGJlZm9yZSBpbXBsZW1lbnRhdGlvbgoKKipTdGF0ZW1lbnQ6Kiogc291cmNlLXNwZWNpZmljIGRldGVybWluaXN0aWMgYWRhcHRlcnMgY2FuIHByZXNlcnZlIHNjaWVudGlmaWMKYXNzZXJ0aW9ucyBpbiBvbmUgZ3JhcGggd2l0aG91dCBtaXN0YWtpbmcgZXh0cmFjdGVkIGZhY3RzIGZvciB2ZXJpZmllZCBnYW1lIGxhd3MuCioqUHJlZGljdGlvbjoqKiBwaW5uZWQgaW5wdXRzIHJlcHJvZHVjZSBpZGVudGljYWwgYnVuZGxlczsgaW5jb21wYXRpYmxlIHVuaXRzLAphbWJpZ3VvdXMgaWRlbnRpdHksIGFic2VudCBmcmFtZXMsIHN0YWxlIGdyYXBoIHdyaXRlcyBhbmQgYWx0ZXJlZCBjYXB0dXJlcyBmYWlsCnRoZWlyIG5hbWVkIGNvbnRyb2xzLiBQYXJhbGxlbCBpbXBvcnRlcnMgY2Fubm90IG92ZXJ3cml0ZSB0aGUgZ3JhcGguCioqRmFsc2lmaWVyOioqIGFuIGFsdGVyZWQgc291cmNlIGlzIGFjY2VwdGVkIHVuZGVyIGl0cyBvbGQgcGluOyBhIGNvbmRpdGlvbiBvciB1bml0Cm1pc21hdGNoIGJpbmRzIHNpbGVudGx5OyBhIGZhaWxlZCBpbXBvcnQgY2hhbmdlcyB0aGUgZ3JhcGg7IG9yIGltcG9ydCBwcm9tb3RlcyBhCnBoeXNpY2FsIGNsYWltLiBUZXN0IGVudHJ5OiBgcHl0aG9uIC1tIHVuaXR0ZXN0IGRpc2NvdmVyIC1zIHRvb2xzL3NjaWVuY2VfZnVubmVsL3Rlc3RzIC12YC4KCiMjIFRoZSByb3V0ZQoKYGRhdGFiYXNlIC0+IHBpbm5lZCByYXcgYnl0ZXMgLT4gZGF0YWJhc2UgYWRhcHRlciAtPiB0eXBlZCBhc3NlcnRpb25zIC0+IGdyYXBoIHByb3Bvc2FsYAoKYHNlbGVjdGVkIGFzc2VydGlvbnMgLT4gZXhwbGljaXQgc2NpZW50aWZpYyByZWR1Y3Rpb24gLT4gY2FuZGlkYXRlIHBhcmFtZXRlciAtPiBpbmRlcGVuZGVudCBydW50aW1lIHRlc3RgCgpFYWNoIHNvdXJjZSBtYW5pZmVzdCBwaW5zIGEgZGF0YWJhc2UgcmVsZWFzZSwgYXJ0aWZhY3QgYnl0ZXMsIGxpY2Vuc2UsIGFkYXB0ZXIsCmZpZWxkIG1hcHBpbmdzIGFuZCBrbm93biBjb25kaXRpb25zLiBFYWNoIGRhdGFiYXNlIGdldHMgaXRzIG93biBtYW5pZmVzdDsgYWRhcHRlcnMKYXJlIHJldXNhYmxlIGJ5IGZvcm1hdC4gTm8gQUkgZXh0cmFjdGlvbiBpcyByZXF1aXJlZCBmb3IgdGhlIGltcGxlbWVudGVkIHJvdXRlcy4KUmF3IGJ5dGVzIGFyZSBzdG9yZWQgb25jZSBwZXIgaW50YWtlIGJ1bmRsZSwgYWRkcmVzc2VkIGJ5IFNIQS0yNTYsIHdpdGggYSBjb21wbGV0ZQpncmFwaCBpbmRleC4gVGhlIGdyYXBoIGlzIHRoZSBhdXRob3JpdHk7IGxhcmdlIGRhdGEgYmxvYnMgYXJlIGl0cyBiYWNraW5nIHN0b3JhZ2UuClVucHJvamVjdGVkIHNvdXJjZSBmaWVsZHMgcmVtYWluIHJlY292ZXJhYmxlIGZyb20gdGhlIG9yaWdpbmFsIGJ5dGVzLgoKVGhlIGRhdGFiYXNlLWZhbWlseSBjYXRhbG9nIGFuZCByZW1haW5pbmcgY29ubmVjdG9yIHdvcmsgYXJlIGdyYXBoIHJlY29yZHM6CgpgYGBwb3dlcnNoZWxsCnB5dGhvbiAtbSB0b29scy5zY2llbmNlX2Z1bm5lbCBjYXRhbG9nCmBgYAoKIyMgRXhpc3RpbmcgcGlubmVkIHNvdXJjZXMKCmBwcmVwYXJlLXBpbm5lZGAgcGFja2FnZXMgdGhlIGV4aXN0aW5nIFViZXJvbiwgUk8sIFFVRFQgYW5kIE9wZW5TaW0gY2FjaGUgdXNpbmcgdGhlCioqb3JpZ2luYWwqKiByZWNvcmRlZCBwaW5zLiBJdCByZWZ1c2VzIGRyaWZ0IGFuZCBtYWtlcyBubyBuZXR3b3JrIHJlcXVlc3RzLgpTdXBwbHkgdGhlIGFjdHVhbCBjYWNoZSBkaXJlY3RvcnksIG5vdCBhIHdvcmt0cmVlIHdpdGggc29tZSBzaW1pbGFybHkgbmFtZWQgZmlsZXMuCgpgYGBwb3dlcnNoZWxsCnB5dGhvbiAtbSB0b29scy5zY2llbmNlX2Z1bm5lbCBwcmVwYXJlLXBpbm5lZCAtLWNhY2hlIFBBVEhfVE9fUElOTkVEX0NBQ0hFIC0tb3V0cHV0IC50bXAvaW50YWtlLWlucHV0cwpweXRob24gLW0gdG9vbHMuc2NpZW5jZV9mdW5uZWwgaW5nZXN0IC0tbWFuaWZlc3QgLnRtcC9pbnRha2UtaW5wdXRzL3ViZXJvbi5hcHBlbmRpY3VsYXItbWluaW1hbC9tYW5pZmVzdC5qc29uIC0tbWFuaWZlc3QgLnRtcC9pbnRha2UtaW5wdXRzL3JvLmJhc2UvbWFuaWZlc3QuanNvbiAtLW91dHB1dCAudG1wL2ludGFrZS1idW5kbGVzCnB5dGhvbiAtbSB0b29scy5zY2llbmNlX2Z1bm5lbCB2ZXJpZnkgLnRtcC9pbnRha2UtYnVuZGxlcy9CVU5ETEVfSEFTSApweXRob24gLW0gdG9vbHMuc2NpZW5jZV9mdW5uZWwgcHJvcG9zZSAudG1wL2ludGFrZS1idW5kbGVzL0JVTkRMRV9IQVNIIC0tZ3JhcGggU05BUFNIT1QuanNvbiAtLW91dHB1dCAudG1wL2ludGFrZS1wcm9wb3NhbC5qc29uCmBgYAoKVGhlIHByb3Bvc2FsIGNvbnRhaW5zIGBvcGVyYXRpb246IGdyYXBoX2FwcGx5YCBhbmQgYHBheWxvYWRgLCBpbmNsdWRpbmcgdGhlIGV4YWN0CmV4cGVjdGVkIGdyYXBoIGhhc2gsIG9iamVjdHMsIGFuZCBhcHBlbmQtb25seSBwcm92ZW5hbmNlIGVkZ2VzLiBUaGUgZXhpc3RpbmcKYXV0aGVudGljYXRlZCBjb250cm9sbGVyIGNsaWVudCBzdWJtaXRzIHRoYXQgcGF5bG9hZCB3aXRoIGl0cyBjdXJyZW50IGxlYWQgZXBvY2guCk5vIGNyZWRlbnRpYWxzIG9yIGdyYXBoIG93bmVyc2hpcCBhcmUgY3JlYXRlZCBieSB0aGlzIHRvb2wuIEEgc3RhbGUgcHJvcG9zYWwgaXMKcmVnZW5lcmF0ZWQgYWdhaW5zdCBhIGZyZXNoIHNuYXBzaG90LiBTZXBhcmF0ZSBpbXBvcnQgd29ya2VycyBjYW4gcnVuIGNvbmN1cnJlbnRseTsKb25seSBjb250cm9sbGVyIHRyYW5zYWN0aW9ucyBhZG1pdCB0aGVpciBvdXRwdXRzLiBTb3VyY2Ugc25hcHNob3RzIG5ldmVyIGRpc2FwcGVhcgp3aGVuIGEgbGF0ZXIgZGF0YWJhc2UgdmVyc2lvbiBpcyBpbXBvcnRlZC4gQWRtaXR0ZWQgc2NpZW5jZSByZWNvcmRzIGFyZSBpbW11dGFibGUuCgpGb3IgYW4gdW5kZXBsb3llZCBjb250cm9sbGVyLCBwcm9wb3NhbHMgYXJlIHJldmlld2FibGUgZmlsZXM7IGdlbmVyYXRpbmcgb25lIGlzCm5vdCBhIGNsYWltIG9mIGFkbWlzc2lvbi4gVGhlIHRlc3RzIGV4ZXJjaXNlIGFkbWlzc2lvbiB0aHJvdWdoIGEgcmVhbCB0ZW1wb3JhcnkKY29udHJvbGxlci4gTm8gZGVwbG95ZWQgcHJvamVjdCBjb250cm9sbGVyIG9yIGxpdmUgZW5naW5lIGlzIHRvdWNoZWQuCgojIyBBIG5ldyBkYXRhYmFzZSdzIG1hbmlmZXN0CgpgYGBqc29uCnsKICAic2NoZW1hX3ZlcnNpb24iOiAiMS4wLjAiLAogICJhZGFwdGVyIjogIm1lYXN1cmVtZW50c19jc3YiLAogICJzb3VyY2UiOiB7ImlkIjogImRhdGFzZXQuZXhhbXBsZSIsICJyZWxlYXNlIjogInIxIiwgImxpY2Vuc2UiOiAidW5rbm93biIsICJ1cmwiOiAiaHR0cHM6Ly9leGFtcGxlLm9yZy9kYXRhIn0sCiAgImFydGlmYWN0cyI6IFt7ImlkIjogInRhYmxlIiwgInBhdGgiOiAidGFibGUuY3N2IiwgInNoYTI1NiI6ICJFWFBFQ1RFRF82NF9IRVhfRElHSVRfSEFTSCJ9XSwKICAiY29sdW1ucyI6IHsiaWQiOiAicm93X2lkIiwgInN1YmplY3QiOiAic3BlY2ltZW4iLCAicXVhbnRpdHkiOiAicHJvcGVydHkiLCAidmFsdWUiOiAicmVhZGluZyIsICJ1bml0IjogInVuaXRzIn0sCiAgInF1YW50aXR5X21hcCI6IHsiRWxhc3RpYyBtb2R1bHVzIjogInlvdW5nX21vZHVsdXMifSwKICAiY29uZGl0aW9ucyI6IHsic3BlY2llcyI6ICJ1bmtub3duIiwgInRlbXBlcmF0dXJlIjogInVua25vd24ifSwKICAiY29uZGl0aW9uX2NvbHVtbnMiOiB7ImxvYWRpbmciOiAidGVzdF9wcm90b2NvbCJ9Cn0KYGBgCgpUaGUgYWRhcHRlciBuZXZlciBzaWxlbnRseSBjcmVhdGVzIG9yIHJlZnJlc2hlcyBleHBlY3RlZCBoYXNoZXMuIFByZXBhcmUgYSBtYW5pZmVzdApmcm9tIHRoZSBwdWJsaXNoZWQgcmVsZWFzZSBhbmQgcmVjb3JkZWQgZG93bmxvYWQuIEEgc291cmNlIG1heSBzYXkgYHVua25vd25gIGZvcgpsaWNlbnNlIG9yIGNvbmRpdGlvbnM7IHRoYXQgYWxsb3dzIGFyY2hpdmluZywgbmV2ZXIgYXV0b21hdGljIGRlcGxveW1lbnQgYXBwcm92YWwuCgojIyMgSW1wbGVtZW50ZWQgZm9ybWF0IGFkYXB0ZXJzCgp8IEFkYXB0ZXIgfCBTdXBwb3J0ZWQgaW5wdXQgYW5kIGxpbWl0cyB8CnwtLS18LS0tfAp8IGB1YmVyb25fb2JvYCB8IEV4aXN0aW5nIE9CTyBzdWJzZXQgcGFyc2VyOiBjb25jZXB0cywgdHlwZWRlZnMsIG5hbWVzLCBwYXJlbnRzLCByZWxhdGlvbnNoaXBzLiBGdWxsIGF4aW9tcyByZW1haW4gcmF3LiB8CnwgYHJvX293bGAgfCBFeGlzdGluZyBzZWxlY3RlZCBSTyByZWxhdGlvbiBkZWZpbml0aW9ucyBpbiBSREYvWE1MOyBubyByZWFzb25lciBvciBmdWxsIG9udG9sb2d5IGltcG9ydC4gfAp8IGBxdWR0X3R0bGAgfCBFeGlzdGluZyBzZWxlY3RlZCB1bml0L3F1YW50aXR5LWtpbmQgcHJvamVjdGlvbi4gSW1wb3J0ZWQgZGVmaW5pdGlvbnMgZG8gbm90IG1vZGlmeSBleGVjdXRhYmxlIGNvbnZlcnNpb25zLiB8CnwgYG9wZW5zaW1feG1sYCB8IEV4aXN0aW5nIHBhcnRpYWwgbW9kZWwgcGFyc2VyIGFuZCBUaGVsZW4gbXVzY2xlIHBhcmFtZXRlcnM7IG5vIG1vZGVsIGV4ZWN1dGlvbiBvciBhdXRvbWF0aWMgc3BlY2llcyBzY2FsaW5nLiB8CnwgYG1lYXN1cmVtZW50c19jc3ZgIHwgTG9uZy1mb3JtYXQgc2NhbGFyIG1lYXN1cmVtZW50czsgY29sdW1ucyBvciBjb25zdGFudHMgZm9yIGlkLCBzdWJqZWN0LCBxdWFudGl0eSwgdmFsdWUsIHVuaXQgYW5kIG9wdGlvbmFsIGFic29sdXRlIHVuY2VydGFpbnR5LiBFeHBsaWNpdCBxdWFudGl0eS91bml0IGFsaWFzZXMgb25seS4gfAp8IGBzZXJpZXNfY3N2YCB8IEN1cnZlcy90aW1lIHNlcmllcyBncm91cGVkIGJ5IGlkOyBhZGRpdGlvbmFsbHkgeCwgeF9xdWFudGl0eSwgeF91bml0LiBTdHJpY3RseSBpbmNyZWFzaW5nIHgsIHVuY2hhbmdlZCBzdWJqZWN0L2NvbmRpdGlvbnMuIFByZXNlcnZlcyBpcnJlZ3VsYXIgc2FtcGxlIHRpbWVzOyBubyByZXNhbXBsaW5nIG9yIGludGVycG9sYXRpb24uIHwKfCBgZ2VvbWV0cnlfanNvbmAgfCBMaXN0IG9mIGlkLCB0d28gM0QgYW5jaG9ycywgbGVuZ3RoX3VuaXQsIGZyYW1lIHtpZCwgaGFuZGVkbmVzczogcmlnaHQsIGF4aXNfY29udmVudGlvbn0sIG9wdGlvbmFsIHNoYXBlIHNwZWNpZmljYXRpb24uIEJ1aWxkcyBhIGxvY2FsIG9ydGhvbm9ybWFsIGZyYW1lIGFuZCBsZW5ndGguIE5vIG1lc2ggZ2VuZXJhdGlvbiBvciBlbmdpbmUtZnJhbWUgcmVnaXN0cmF0aW9uLiB8CnwgYG1vZGVsX2pzb25gIHwgTGlzdCBvZiBpZCwgZXF1YXRpb25zLCBwb3J0cyBbe25hbWUsIHF1YW50aXR5LCB1bml0fV0sIGFzc3VtcHRpb25zLCB2YWxpZGl0eV9kb21haW4uIERlY2xhcmF0aXZlIGNvbnRlbnQgb25seTsgY29tcGlsYXRpb24gcmVtYWlucyBhIHNlcGFyYXRlIHRhc2suIHwKCkNTViBpcyBzdHJpY3QgVVRGLTggd2l0aCBhIHVuaXF1ZSBoZWFkZXIuIEEgYmFkIHNjYWxhciByb3cgaXMgcXVhcmFudGluZWQ7IGFuIGludmFsaWQKY3VydmUgZ3JvdXAgaXMgd2l0aGhlbGQgYXMgYSB1bml0LiBEdXBsaWNhdGUgSURzIHdpdGhpbiBhIHNvdXJjZSB2ZXJzaW9uIHdpdGhob2xkCmFsbCBjb250ZW5kZXJzLiBTYW1lLW5hbWVkIGNvbmNlcHRzIGZyb20gZGlmZmVyZW50IHNvdXJjZXMgcmVtYWluIGRpc3RpbmN0LiBFbXB0eQpjYXB0dXJlcywgdW5rbm93biB1bml0cyBhbmQgbm9uZmluaXRlIG51bWJlcnMgZmFpbC4gYGluZ2VzdGAgZXhpdHMgMiBvbiBhbnkgcXVhcmFudGluZQpvciBzb3VyY2UgZmFpbHVyZS4gQSBwYXJ0aWFsIGdyYXBoIHByb3Bvc2FsIHJlcXVpcmVzIGV4cGxpY2l0IGAtLWFsbG93LXBhcnRpYWxgLgpUaGUgcXVhcmFudGluZSBhbmQgb3JpZ2luYWwgYnl0ZXMgc3RheSBhdHRhY2hlZCB0byB0aGUgc291cmNlIHJlY29yZCBlaXRoZXIgd2F5LgoKVGhlIFNJIGNvbnZlcnRlciBpcyBhIHNtYWxsIHJldmlld2VkIHRhYmxlLCBpbmNsdWRpbmcgYWZmaW5lIHRlbXBlcmF0dXJlIGNvbnZlcnNpb24KYW5kIGFic29sdXRlIHVuY2VydGFpbnR5IHNjYWxpbmcuIEl0IHJlZnVzZXMgdW5zdXBwb3J0ZWQgcXVhbnRpdGllcyBhbmQgdW5pdHMuCkl0cyBkaW1lbnNpb25zIHVzZSBbbWFzcywgbGVuZ3RoLCB0aW1lLCBjdXJyZW50LCB0ZW1wZXJhdHVyZSwgYW1vdW50LCBsdW1pbm91cwppbnRlbnNpdHldLiBFcXVhbCBkaW1lbnNpb25zIGRvIG5vdCBpbXBseSBlcXVhbCBtZWFuaW5nOiBwcmVzc3VyZSBpcyBub3QgWW91bmcncwptb2R1bHVzIGFuZCBhIHRvcnF1ZSBpcyBub3QgYW4gZW5lcmd5IHBhcmFtZXRlci4gVGVuc29yIHJvdGF0aW9uLCBjb3JyZWxhdGVkCnVuY2VydGFpbnRpZXMsIGNvbXBsZXggdW5pdHMsIG1pc3NpbmctZGF0YSBpbnRlcnBvbGF0aW9uIGFuZCBtdWx0aWRpbWVuc2lvbmFsCnByb3BlcnR5IHN1cmZhY2VzIGFyZSBleHBsaWNpdGx5IHVuaW1wbGVtZW50ZWQuCgojIyMgVGhlIHJlZHVjdGlvbiBicmlkZ2UKClRocmVlIHJlZHVjdGlvbnMgYXJlIGltcGxlbWVudGVkIHdpdGggZGVyaXZhdGlvbnMgYW5kIG5hbWVkIGFzc3VtcHRpb25zOgoKKiBBeGlhbCBzdGlmZm5lc3M6IHN0cmVzcyA9IEUgc3RyYWluLCBGL0EgPSBFIGRlbHRhTC9MLCBoZW5jZSBrID0gRUEvTC4KKiBIeWRyYXVsaWMgY29tcGxpYW5jZToga2FwcGEgPSAtKDEvVilkVi9kUCwgaGVuY2UgQyA9IGthcHBhIFYwIGFib3V0IHRoZSByZXN0IHN0YXRlLgoqIFByb3BhZ2F0aW9uIGRlbGF5OiBkdCA9IGRzL3YocyksIGhlbmNlIGRlbGF5ID0gTC92IGZvciBjb25zdGFudCBwcm9wYWdhdGlvbiBzcGVlZC4KCmByZWR1Y2UgLS1idW5kbGUgUEFUSCAtLXJlcXVlc3QgUkVRVUVTVC5qc29uIC0tb3V0cHV0IFJFU1VMVC5qc29uYCBzZWxlY3RzIGltbXV0YWJsZQpyZWNvcmQgSURzLiBBZGQgYC0tZ3JhcGggU05BUFNIT1QuanNvbmAgdG8gcHJvZHVjZSBhIHByb3ZlbmFuY2UtbGlua2VkIGdyYXBoIHByb3Bvc2FsOwppbnB1dHMgYW5kIHRhcmdldCBtdXN0IGFscmVhZHkgZXhpc3QgaW4gdGhhdCBncmFwaC4gSW5wdXRzIGFyZSBge3N5bWJvbDoge3JlY29yZDoKSUQsIGZpZWxkOiB2YWx1ZV9zaX19YDsgYSBnZW9tZXRyeSByZWNvcmQgbWF5IHN1cHBseSBgZmllbGQ6IGxlbmd0aF9tYCB0byBhIGxlbmd0aApwb3J0LiBTdXBwbHkgYGxhd2AsIGB0YXJnZXRfaWRgLCBgY29udGV4dGAsIHdyaXR0ZW4ganVzdGlmaWNhdGlvbnMga2V5ZWQgYnkgZWFjaCBsYXcncwpgYXNzdW1wdGlvbnNgLCBhbmQgYHZhbGlkYXRpb25gIHtvYnNlcnZhYmxlLCBmYWxzaWZpZXIsIGFjY2VwdGFuY2VfcnVsZX0uCgpBIGtub3duIGNvbnRleHQgbWlzbWF0Y2ggcmVmdXNlcyBjYWxjdWxhdGlvbi4gTWlzc2luZyBjb250ZXh0IGJlY29tZXMgYSBuYW1lZApibG9ja2VyLiBBbGwgcmVzdWx0cyByZW1haW4gYGRlcml2ZWRfY2FuZGlkYXRlYCwgd2l0aCBydW50aW1lIHZhbGlkYXRpb24gYW5kCnVuY2VydGFpbnR5IHByb3BhZ2F0aW9uIG91dHN0YW5kaW5nLiBBIHR3by1hbmNob3IgbGVuZ3RoIGlzIGEgc3RyYWlnaHQgc2VnbWVudDsKdXNpbmcgaXQgZm9yIGEgY3VydmVkIG5lcnZlIG9yIHdyYXBwaW5nIHRlbmRvbiByZXF1aXJlcyBhbiBleHBsaWNpdCBwYXRoIG1vZGVsLgpUaGUgZGV0ZXJtaW5pc3RpYyByb2xsIGNvbnZlbnRpb24gaXMgbm90IGFuIGFuYXRvbWljYWwgbWVhc3VyZW1lbnQuIE5vIGFyYml0cmFyeQpzb3VyY2UgZXF1YXRpb25zLCBpbnN0cnVjdGlvbnMsIFB5dGhvbiwgWE1MIGhvb2tzIG9yIHNoYXBlIHNjcmlwdHMgYXJlIGV4ZWN1dGVkLgoKIyMgVmVyaWZpY2F0aW9uIGFuZCBsaW1pdHMKCkJ1bmRsZXMgYXJlIGltbXV0YWJsZSBkaXJlY3RvcmllcyBuYW1lZCBieSByZWNlaXB0IGhhc2guIGB2ZXJpZnlgIGNoZWNrcyBvcmlnaW5hbApieXRlcywgaW5wdXQgcGlucywgcHJvZHVjZXIgc291cmNlIGhhc2hlcywgcmVjb3JkIGNvdW50cyBhbmQgZXhhY3QgYWRhcHRlciByZXBsYXkuCk1hdGNoaW5nIGEgc2VsZi1hdXRob3JlZCBoYXNoIGFsb25lIGlzIG5vdCBwcm9vZiBvZiBzb3VyY2UgYXV0aGVudGljaXR5IG9yIHBoeXNpY3MuClRoZSBpbmRlcGVuZGVudCB2ZXJpZmllciBtdXN0IHBpbiB0aGlzIGNvZGUgYW5kIHRoZSBleHBlY3RlZCBzb3VyY2UgcmVsZWFzZXMuCkltcGxlbWVudGF0aW9uIGNoYW5nZXMgcmVxdWlyZSByZS1pbmdlc3Rpb24gaW50byBhIG5ldyBidW5kbGU7IG9sZCBjYXB0dXJlcyByZW1haW4uCgpUaGUgY3VycmVudCBzaXplIGNlaWxpbmdzIGFyZSA2NCBNaUIgcGVyIGFydGlmYWN0IGFuZCAyNTYgTWlCIHBlciBidW5kbGUgKHJlc291cmNlCmxpbWl0cywgbm90IHBoeXNpY2FsIGNvbnN0YW50cykuIFRoaXMgaXMgYSBib3VuZGVkIGJhdGNoIGltcGxlbWVudGF0aW9uLiBTdHJlYW1pbmcKbGFyZ2UgYXRsYXNlcywgYXV0aGVudGljYXRlZCBkb3dubG9hZHMsIHNvdXJjZS1zcGVjaWZpYyByZW1vdGUgQVBJcywgZ2xvYmFsIGlkZW50aXR5CnJlc29sdXRpb24sIHNwZWNpZXMgYWRhcHRhdGlvbiwgdGVuc29yIGNvbnN0aXR1dGl2ZSBmaXR0aW5nLCBuYXRpdmUgcnVsZSBjb21waWxhdGlvbgphbmQgcmVuZGVyaW5nIGFyZSBmdXR1cmUgZ3JhcGggdGFza3MuIEJyb2FkIGRhdGFiYXNlIHBvcnRhbHMgYXJlIGNhdGFsb2cgZW50cmllcywKbm90IGNsYWltcyB0aGF0IGV2ZXJ5IGRhdGFzZXQgYmVoaW5kIHRoZW0gaGFzIGFuIG9wZXJhdGlvbmFsIGNvbm5lY3Rvci4K",
+    "text": "# Scientific data funnels\n\nRun from the project root: `python -m tools.science_funnel --help`.\nThis is offline intake. The native engine remains the physical runtime.\n\n## Contract stated before implementation\n\n**Statement:** source-specific deterministic adapters can preserve scientific\nassertions in one graph without mistaking extracted facts for verified game laws.\n**Prediction:** pinned inputs reproduce identical bundles; incompatible units,\nambiguous identity, absent frames, stale graph writes and altered captures fail\ntheir named controls. Parallel importers cannot overwrite the graph.\n**Falsifier:** an altered source is accepted under its old pin; a condition or unit\nmismatch binds silently; a failed import changes the graph; or import promotes a\nphysical claim. Test entry: `python -m unittest discover -s tools/science_funnel/tests -v`.\n\n## The route\n\n`database -> pinned raw bytes -> database adapter -> typed assertions -> graph proposal`\n\n`selected assertions -> explicit scientific reduction -> candidate parameter -> independent runtime test`\n\nEach source manifest pins a database release, artifact bytes, license, adapter,\nfield mappings and known conditions. Each database gets its own manifest; adapters\nare reusable by format. No AI extraction is required for the implemented routes.\nRaw bytes are stored once per intake bundle, addressed by SHA-256, with a complete\ngraph index. The graph is the authority; large data blobs are its backing storage.\nUnprojected source fields remain recoverable from the original bytes.\n\nThe database-family catalog and remaining connector work are graph records:\n\n```powershell\npython -m tools.science_funnel catalog\n```\n\n## Existing pinned sources\n\n`prepare-pinned` packages the existing Uberon, RO, QUDT and OpenSim cache using the\n**original** recorded pins. It refuses drift and makes no network requests.\nSupply the actual cache directory, not a worktree with some similarly named files.\n\n```powershell\npython -m tools.science_funnel prepare-pinned --cache PATH_TO_PINNED_CACHE --output .tmp/intake-inputs\npython -m tools.science_funnel ingest --manifest .tmp/intake-inputs/uberon.appendicular-minimal/manifest.json --manifest .tmp/intake-inputs/ro.base/manifest.json --output .tmp/intake-bundles\npython -m tools.science_funnel verify .tmp/intake-bundles/BUNDLE_HASH\npython -m tools.science_funnel propose .tmp/intake-bundles/BUNDLE_HASH --graph SNAPSHOT.json --output .tmp/intake-proposal.json\n```\n\nThe proposal contains `operation: graph_apply` and `payload`, including the exact\nexpected graph hash, objects, and append-only provenance edges. The existing\nauthenticated controller client submits that payload with its current lead epoch.\nNo credentials or graph ownership are created by this tool. A stale proposal is\nregenerated against a fresh snapshot. Separate import workers can run concurrently;\nonly controller transactions admit their outputs. Source snapshots never disappear\nwhen a later database version is imported. Admitted science records are immutable.\n\nFor an undeployed controller, proposals are reviewable files; generating one is\nnot a claim of admission. The tests exercise admission through a real temporary\ncontroller. No deployed project controller or live engine is touched.\n\n## A new database's manifest\n\n```json\n{\n  \"schema_version\": \"1.0.0\",\n  \"adapter\": \"measurements_csv\",\n  \"source\": {\"id\": \"dataset.example\", \"release\": \"r1\", \"license\": \"unknown\", \"url\": \"https://example.org/data\"},\n  \"artifacts\": [{\"id\": \"table\", \"path\": \"table.csv\", \"sha256\": \"EXPECTED_64_HEX_DIGIT_HASH\"}],\n  \"columns\": {\"id\": \"row_id\", \"subject\": \"specimen\", \"quantity\": \"property\", \"value\": \"reading\", \"unit\": \"units\"},\n  \"quantity_map\": {\"Elastic modulus\": \"young_modulus\"},\n  \"conditions\": {\"species\": \"unknown\", \"temperature\": \"unknown\"},\n  \"condition_columns\": {\"loading\": \"test_protocol\"}\n}\n```\n\nThe adapter never silently creates or refreshes expected hashes. Prepare a manifest\nfrom the published release and recorded download. A source may say `unknown` for\nlicense or conditions; that allows archiving, never automatic deployment approval.\n\n### Implemented format adapters\n\n| Adapter | Supported input and limits |\n|---|---|\n| `uberon_obo` | Existing OBO subset parser: concepts, typedefs, names, parents, relationships. Full axioms remain raw. |\n| `ro_owl` | Existing selected RO relation definitions in RDF/XML; no reasoner or full ontology import. |\n| `qudt_ttl` | Existing selected unit/quantity-kind projection. Imported definitions do not modify executable conversions. |\n| `opensim_xml` | Existing partial model parser and Thelen muscle parameters; no model execution or automatic species scaling. |\n| `measurements_csv` | Long-format scalar measurements; columns or constants for id, subject, quantity, value, unit and optional absolute uncertainty. Explicit quantity/unit aliases only. |\n| `series_csv` | Curves/time series grouped by id; additionally x, x_quantity, x_unit. Strictly increasing x, unchanged subject/conditions. Preserves irregular sample times; no resampling or interpolation. |\n| `geometry_json` | List of id, two 3D anchors, length_unit, frame {id, handedness: right, axis_convention}, optional shape specification. Builds a local orthonormal frame and length. No mesh generation or engine-frame registration. |\n| `model_json` | List of id, equations, ports [{name, quantity, unit}], assumptions, validity_domain. Declarative content only; compilation remains a separate task. |\n\nCSV is strict UTF-8 with a unique header. A bad scalar row is quarantined; an invalid\ncurve group is withheld as a unit. Duplicate IDs within a source version withhold\nall contenders. Same-named concepts from different sources remain distinct. Empty\ncaptures, unknown units and nonfinite numbers fail. `ingest` exits 2 on any quarantine\nor source failure. A partial graph proposal requires explicit `--allow-partial`.\nThe quarantine and original bytes stay attached to the source record either way.\n\nThe SI converter is a small reviewed table, including affine temperature conversion\nand absolute uncertainty scaling. It refuses unsupported quantities and units.\nIts dimensions use [mass, length, time, current, temperature, amount, luminous\nintensity]. Equal dimensions do not imply equal meaning: pressure is not Young's\nmodulus and a torque is not an energy parameter. Tensor rotation, correlated\nuncertainties, complex units, missing-data interpolation and multidimensional\nproperty surfaces are explicitly unimplemented.\n\n### The reduction bridge\n\nThree reductions are implemented with derivations and named assumptions:\n\n* Axial stiffness: stress = E strain, F/A = E deltaL/L, hence k = EA/L.\n* Hydraulic compliance: kappa = -(1/V)dV/dP, hence C = kappa V0 about the rest state.\n* Propagation delay: dt = ds/v(s), hence delay = L/v for constant propagation speed.\n\n`reduce --bundle PATH --request REQUEST.json --output RESULT.json` selects immutable\nrecord IDs. Add `--graph SNAPSHOT.json` to produce a provenance-linked graph proposal;\ninputs and target must already exist in that graph. Inputs are `{symbol: {record:\nID, field: value_si}}`; a geometry record may supply `field: length_m` to a length\nport. Supply `law`, `target_id`, `context`, written justifications keyed by each law's\n`assumptions`, and `validation` {observable, falsifier, acceptance_rule}.\n\nA known context mismatch refuses calculation. Missing context becomes a named\nblocker. All results remain `derived_candidate`, with runtime validation and\nuncertainty propagation outstanding. A two-anchor length is a straight segment;\nusing it for a curved nerve or wrapping tendon requires an explicit path model.\nThe deterministic roll convention is not an anatomical measurement. No arbitrary\nsource equations, instructions, Python, XML hooks or shape scripts are executed.\n\n## Verification and limits\n\nBundles are immutable directories named by receipt hash. `verify` checks original\nbytes, input pins, producer source hashes, record counts and exact adapter replay.\nMatching a self-authored hash alone is not proof of source authenticity or physics.\nThe independent verifier must pin this code and the expected source releases.\nImplementation changes require re-ingestion into a new bundle; old captures remain.\n\nThe current size ceilings are 64 MiB per artifact and 256 MiB per bundle (resource\nlimits, not physical constants). This is a bounded batch implementation. Streaming\nlarge atlases, authenticated downloads, source-specific remote APIs, global identity\nresolution, species adaptation, tensor constitutive fitting, native rule compilation\nand rendering are future graph tasks. Broad database portals are catalog entries,\nnot claims that every dataset behind them has an operational connector.\n",
+    "authority": "imported_untrusted"
+   },
+   "spatial": {
+    "anchored_to": "model.scientific_intake"
+   },
+   "notes": "Lossless imported version; not a verified claim or instruction."
+  },
+  {
+   "id": "source.document.4843a21d9724f7dd0a5fd6518567005a49162d7a40d99ee682bd04d60c7a21f1.21b80b0753c871af1e4dbf90eb3a5fb12629ae1fbafc7ff63b5f13ceecbaf30f",
+   "kind": "source",
+   "name": "tools/science_funnel/README.md",
+   "status": "extracted",
+   "dependencies": [],
+   "evidence": [],
+   "document": {
+    "original_path": "tools/science_funnel/README.md",
+    "sha256": "21b80b0753c871af1e4dbf90eb3a5fb12629ae1fbafc7ff63b5f13ceecbaf30f",
+    "byte_count": 9860,
+    "bytes_base64": "IyBTY2llbnRpZmljIGRhdGEgZnVubmVscwoKUnVuIGZyb20gdGhlIHByb2plY3Qgcm9vdDogYHB5dGhvbiAtbSB0b29scy5zY2llbmNlX2Z1bm5lbCAtLWhlbHBgLgpUaGlzIGlzIG9mZmxpbmUgaW50YWtlLiBUaGUgbmF0aXZlIGVuZ2luZSByZW1haW5zIHRoZSBwaHlzaWNhbCBydW50aW1lLgoKIyMgQ29udHJhY3Qgc3RhdGVkIGJlZm9yZSBpbXBsZW1lbnRhdGlvbgoKKipTdGF0ZW1lbnQ6Kiogc291cmNlLXNwZWNpZmljIGRldGVybWluaXN0aWMgYWRhcHRlcnMgY2FuIHByZXNlcnZlIHNjaWVudGlmaWMKYXNzZXJ0aW9ucyBpbiBvbmUgZ3JhcGggd2l0aG91dCBtaXN0YWtpbmcgZXh0cmFjdGVkIGZhY3RzIGZvciB2ZXJpZmllZCBnYW1lIGxhd3MuCioqUHJlZGljdGlvbjoqKiBwaW5uZWQgaW5wdXRzIHJlcHJvZHVjZSBpZGVudGljYWwgYnVuZGxlczsgaW5jb21wYXRpYmxlIHVuaXRzLAphbWJpZ3VvdXMgaWRlbnRpdHksIGFic2VudCBmcmFtZXMsIHN0YWxlIGdyYXBoIHdyaXRlcyBhbmQgYWx0ZXJlZCBjYXB0dXJlcyBmYWlsCnRoZWlyIG5hbWVkIGNvbnRyb2xzLiBQYXJhbGxlbCBpbXBvcnRlcnMgY2Fubm90IG92ZXJ3cml0ZSB0aGUgZ3JhcGguCioqRmFsc2lmaWVyOioqIGFuIGFsdGVyZWQgc291cmNlIGlzIGFjY2VwdGVkIHVuZGVyIGl0cyBvbGQgcGluOyBhIGNvbmRpdGlvbiBvciB1bml0Cm1pc21hdGNoIGJpbmRzIHNpbGVudGx5OyBhIGZhaWxlZCBpbXBvcnQgY2hhbmdlcyB0aGUgZ3JhcGg7IG9yIGltcG9ydCBwcm9tb3RlcyBhCnBoeXNpY2FsIGNsYWltLiBUZXN0IGVudHJ5OiBgcHl0aG9uIC1tIHVuaXR0ZXN0IGRpc2NvdmVyIC1zIHRvb2xzL3NjaWVuY2VfZnVubmVsL3Rlc3RzIC12YC4KCiMjIFRoZSByb3V0ZQoKYGRhdGFiYXNlIC0+IHBpbm5lZCByYXcgYnl0ZXMgLT4gZGF0YWJhc2UgYWRhcHRlciAtPiB0eXBlZCBhc3NlcnRpb25zIC0+IGdyYXBoIHByb3Bvc2FsYAoKYHNlbGVjdGVkIGFzc2VydGlvbnMgLT4gZXhwbGljaXQgc2NpZW50aWZpYyByZWR1Y3Rpb24gLT4gY2FuZGlkYXRlIHBhcmFtZXRlciAtPiBpbmRlcGVuZGVudCBydW50aW1lIHRlc3RgCgpFYWNoIHNvdXJjZSBtYW5pZmVzdCBwaW5zIGEgZGF0YWJhc2UgcmVsZWFzZSwgYXJ0aWZhY3QgYnl0ZXMsIGxpY2Vuc2UsIGFkYXB0ZXIsCmZpZWxkIG1hcHBpbmdzIGFuZCBrbm93biBjb25kaXRpb25zLiBFYWNoIGRhdGFiYXNlIGdldHMgaXRzIG93biBtYW5pZmVzdDsgYWRhcHRlcnMKYXJlIHJldXNhYmxlIGJ5IGZvcm1hdC4gTm8gQUkgZXh0cmFjdGlvbiBpcyByZXF1aXJlZCBmb3IgdGhlIGltcGxlbWVudGVkIHJvdXRlcy4KUmF3IGJ5dGVzIGFyZSBzdG9yZWQgb25jZSBwZXIgaW50YWtlIGJ1bmRsZSwgYWRkcmVzc2VkIGJ5IFNIQS0yNTYsIHdpdGggYSBjb21wbGV0ZQpncmFwaCBpbmRleC4gVGhlIGdyYXBoIGlzIHRoZSBhdXRob3JpdHk7IGxhcmdlIGRhdGEgYmxvYnMgYXJlIGl0cyBiYWNraW5nIHN0b3JhZ2UuClVucHJvamVjdGVkIHNvdXJjZSBmaWVsZHMgcmVtYWluIHJlY292ZXJhYmxlIGZyb20gdGhlIG9yaWdpbmFsIGJ5dGVzLgoKVGhlIGRhdGFiYXNlLWZhbWlseSBjYXRhbG9nIGFuZCByZW1haW5pbmcgY29ubmVjdG9yIHdvcmsgYXJlIGdyYXBoIHJlY29yZHM6CgpgYGBwb3dlcnNoZWxsCnB5dGhvbiAtbSB0b29scy5zY2llbmNlX2Z1bm5lbCBjYXRhbG9nCmBgYAoKIyMgRXhpc3RpbmcgcGlubmVkIHNvdXJjZXMKCmBwcmVwYXJlLXBpbm5lZGAgcGFja2FnZXMgdGhlIGV4aXN0aW5nIFViZXJvbiwgUk8sIFFVRFQgYW5kIE9wZW5TaW0gY2FjaGUgdXNpbmcgdGhlCioqb3JpZ2luYWwqKiByZWNvcmRlZCBwaW5zLiBJdCByZWZ1c2VzIGRyaWZ0IGFuZCBtYWtlcyBubyBuZXR3b3JrIHJlcXVlc3RzLgpTdXBwbHkgdGhlIGFjdHVhbCBjYWNoZSBkaXJlY3RvcnksIG5vdCBhIHdvcmt0cmVlIHdpdGggc29tZSBzaW1pbGFybHkgbmFtZWQgZmlsZXMuCgpgYGBwb3dlcnNoZWxsCnB5dGhvbiAtbSB0b29scy5zY2llbmNlX2Z1bm5lbCBwcmVwYXJlLXBpbm5lZCAtLWNhY2hlIFBBVEhfVE9fUElOTkVEX0NBQ0hFIC0tb3V0cHV0IC50bXAvaW50YWtlLWlucHV0cwpweXRob24gLW0gdG9vbHMuc2NpZW5jZV9mdW5uZWwgaW5nZXN0IC0tbWFuaWZlc3QgLnRtcC9pbnRha2UtaW5wdXRzL3ViZXJvbi5hcHBlbmRpY3VsYXItbWluaW1hbC9tYW5pZmVzdC5qc29uIC0tbWFuaWZlc3QgLnRtcC9pbnRha2UtaW5wdXRzL3JvLmJhc2UvbWFuaWZlc3QuanNvbiAtLW91dHB1dCAudG1wL2ludGFrZS1idW5kbGVzCnB5dGhvbiAtbSB0b29scy5zY2llbmNlX2Z1bm5lbCB2ZXJpZnkgLnRtcC9pbnRha2UtYnVuZGxlcy9CVU5ETEVfSEFTSApweXRob24gLW0gdG9vbHMuc2NpZW5jZV9mdW5uZWwgcHJvcG9zZSAudG1wL2ludGFrZS1idW5kbGVzL0JVTkRMRV9IQVNIIC0tZ3JhcGggU05BUFNIT1QuanNvbiAtLW91dHB1dCAudG1wL2ludGFrZS1wcm9wb3NhbC5qc29uCmBgYAoKVGhlIHByb3Bvc2FsIGNvbnRhaW5zIGBvcGVyYXRpb246IGdyYXBoX2FwcGx5YCBhbmQgYHBheWxvYWRgLCBpbmNsdWRpbmcgdGhlIGV4YWN0CmV4cGVjdGVkIGdyYXBoIGhhc2gsIG9iamVjdHMsIGFuZCBhcHBlbmQtb25seSBwcm92ZW5hbmNlIGVkZ2VzLiBUaGUgZXhpc3RpbmcKYXV0aGVudGljYXRlZCBjb250cm9sbGVyIGNsaWVudCBzdWJtaXRzIHRoYXQgcGF5bG9hZCB3aXRoIGl0cyBjdXJyZW50IGxlYWQgZXBvY2guCk5vIGNyZWRlbnRpYWxzIG9yIGdyYXBoIG93bmVyc2hpcCBhcmUgY3JlYXRlZCBieSB0aGlzIHRvb2wuIEEgc3RhbGUgcHJvcG9zYWwgaXMKcmVnZW5lcmF0ZWQgYWdhaW5zdCBhIGZyZXNoIHNuYXBzaG90LiBTZXBhcmF0ZSBpbXBvcnQgd29ya2VycyBjYW4gcnVuIGNvbmN1cnJlbnRseTsKb25seSBjb250cm9sbGVyIHRyYW5zYWN0aW9ucyBhZG1pdCB0aGVpciBvdXRwdXRzLiBTb3VyY2Ugc25hcHNob3RzIG5ldmVyIGRpc2FwcGVhcgp3aGVuIGEgbGF0ZXIgZGF0YWJhc2UgdmVyc2lvbiBpcyBpbXBvcnRlZC4gQWRtaXR0ZWQgc2NpZW5jZSByZWNvcmRzIGFyZSBpbW11dGFibGUuCgpGb3IgYW4gdW5kZXBsb3llZCBjb250cm9sbGVyLCBwcm9wb3NhbHMgYXJlIHJldmlld2FibGUgZmlsZXM7IGdlbmVyYXRpbmcgb25lIGlzCm5vdCBhIGNsYWltIG9mIGFkbWlzc2lvbi4gVGhlIHRlc3RzIGV4ZXJjaXNlIGFkbWlzc2lvbiB0aHJvdWdoIGEgcmVhbCB0ZW1wb3JhcnkKY29udHJvbGxlci4gTm8gZGVwbG95ZWQgcHJvamVjdCBjb250cm9sbGVyIG9yIGxpdmUgZW5naW5lIGlzIHRvdWNoZWQuCgojIyBBIG5ldyBkYXRhYmFzZSdzIG1hbmlmZXN0CgpgYGBqc29uCnsKICAic2NoZW1hX3ZlcnNpb24iOiAiMS4wLjAiLAogICJhZGFwdGVyIjogIm1lYXN1cmVtZW50c19jc3YiLAogICJzb3VyY2UiOiB7ImlkIjogImRhdGFzZXQuZXhhbXBsZSIsICJyZWxlYXNlIjogInIxIiwgImxpY2Vuc2UiOiAidW5rbm93biIsICJ1cmwiOiAiaHR0cHM6Ly9leGFtcGxlLm9yZy9kYXRhIn0sCiAgImFydGlmYWN0cyI6IFt7ImlkIjogInRhYmxlIiwgInBhdGgiOiAidGFibGUuY3N2IiwgInNoYTI1NiI6ICJFWFBFQ1RFRF82NF9IRVhfRElHSVRfSEFTSCJ9XSwKICAiY29sdW1ucyI6IHsiaWQiOiAicm93X2lkIiwgInN1YmplY3QiOiAic3BlY2ltZW4iLCAicXVhbnRpdHkiOiAicHJvcGVydHkiLCAidmFsdWUiOiAicmVhZGluZyIsICJ1bml0IjogInVuaXRzIn0sCiAgInF1YW50aXR5X21hcCI6IHsiRWxhc3RpYyBtb2R1bHVzIjogInlvdW5nX21vZHVsdXMifSwKICAiY29uZGl0aW9ucyI6IHsic3BlY2llcyI6ICJ1bmtub3duIiwgInRlbXBlcmF0dXJlIjogInVua25vd24ifSwKICAiY29uZGl0aW9uX2NvbHVtbnMiOiB7ImxvYWRpbmciOiAidGVzdF9wcm90b2NvbCJ9Cn0KYGBgCgpUaGUgYWRhcHRlciBuZXZlciBzaWxlbnRseSBjcmVhdGVzIG9yIHJlZnJlc2hlcyBleHBlY3RlZCBoYXNoZXMuIFByZXBhcmUgYSBtYW5pZmVzdApmcm9tIHRoZSBwdWJsaXNoZWQgcmVsZWFzZSBhbmQgcmVjb3JkZWQgZG93bmxvYWQuIEEgc291cmNlIG1heSBzYXkgYHVua25vd25gIGZvcgpsaWNlbnNlIG9yIGNvbmRpdGlvbnM7IHRoYXQgYWxsb3dzIGFyY2hpdmluZywgbmV2ZXIgYXV0b21hdGljIGRlcGxveW1lbnQgYXBwcm92YWwuCgojIyMgSW1wbGVtZW50ZWQgZm9ybWF0IGFkYXB0ZXJzCgp8IEFkYXB0ZXIgfCBTdXBwb3J0ZWQgaW5wdXQgYW5kIGxpbWl0cyB8CnwtLS18LS0tfAp8IGB1YmVyb25fb2JvYCB8IEV4aXN0aW5nIE9CTyBzdWJzZXQgcGFyc2VyOiBjb25jZXB0cywgdHlwZWRlZnMsIG5hbWVzLCBwYXJlbnRzLCByZWxhdGlvbnNoaXBzLiBGdWxsIGF4aW9tcyByZW1haW4gcmF3LiB8CnwgYHJvX293bGAgfCBFeGlzdGluZyBzZWxlY3RlZCBSTyByZWxhdGlvbiBkZWZpbml0aW9ucyBpbiBSREYvWE1MOyBubyByZWFzb25lciBvciBmdWxsIG9udG9sb2d5IGltcG9ydC4gfAp8IGBxdWR0X3R0bGAgfCBFeGlzdGluZyBzZWxlY3RlZCB1bml0L3F1YW50aXR5LWtpbmQgcHJvamVjdGlvbi4gSW1wb3J0ZWQgZGVmaW5pdGlvbnMgZG8gbm90IG1vZGlmeSBleGVjdXRhYmxlIGNvbnZlcnNpb25zLiB8CnwgYG9wZW5zaW1feG1sYCB8IEV4aXN0aW5nIHBhcnRpYWwgbW9kZWwgcGFyc2VyIGFuZCBUaGVsZW4gbXVzY2xlIHBhcmFtZXRlcnM7IG5vIG1vZGVsIGV4ZWN1dGlvbiBvciBhdXRvbWF0aWMgc3BlY2llcyBzY2FsaW5nLiB8CnwgYG1lYXN1cmVtZW50c19jc3ZgIHwgTG9uZy1mb3JtYXQgc2NhbGFyIG1lYXN1cmVtZW50czsgY29sdW1ucyBvciBjb25zdGFudHMgZm9yIGlkLCBzdWJqZWN0LCBxdWFudGl0eSwgdmFsdWUsIHVuaXQgYW5kIG9wdGlvbmFsIGFic29sdXRlIHVuY2VydGFpbnR5LiBFeHBsaWNpdCBxdWFudGl0eS91bml0IGFsaWFzZXMgb25seS4gfAp8IGBzZXJpZXNfY3N2YCB8IEN1cnZlcy90aW1lIHNlcmllcyBncm91cGVkIGJ5IGlkOyBhZGRpdGlvbmFsbHkgeCwgeF9xdWFudGl0eSwgeF91bml0LiBTdHJpY3RseSBpbmNyZWFzaW5nIHgsIHVuY2hhbmdlZCBzdWJqZWN0L2NvbmRpdGlvbnMuIFByZXNlcnZlcyBpcnJlZ3VsYXIgc2FtcGxlIHRpbWVzOyBubyByZXNhbXBsaW5nIG9yIGludGVycG9sYXRpb24uIHwKfCBgZ2VvbWV0cnlfanNvbmAgfCBMaXN0IG9mIGlkLCB0d28gM0QgYW5jaG9ycywgbGVuZ3RoX3VuaXQsIGZyYW1lIHtpZCwgaGFuZGVkbmVzczogcmlnaHQsIGF4aXNfY29udmVudGlvbn0sIG9wdGlvbmFsIHNoYXBlIHNwZWNpZmljYXRpb24uIEJ1aWxkcyBhIGxvY2FsIG9ydGhvbm9ybWFsIGZyYW1lIGFuZCBsZW5ndGguIE5vIG1lc2ggZ2VuZXJhdGlvbiBvciBlbmdpbmUtZnJhbWUgcmVnaXN0cmF0aW9uLiB8CnwgYG1vZGVsX2pzb25gIHwgTGlzdCBvZiBpZCwgZXF1YXRpb25zLCBwb3J0cyBbe25hbWUsIHF1YW50aXR5LCB1bml0fV0sIGFzc3VtcHRpb25zLCB2YWxpZGl0eV9kb21haW4uIERlY2xhcmF0aXZlIGNvbnRlbnQgb25seTsgY29tcGlsYXRpb24gcmVtYWlucyBhIHNlcGFyYXRlIHRhc2suIHwKCkNTViBpcyBzdHJpY3QgVVRGLTggd2l0aCBhIHVuaXF1ZSBoZWFkZXIuIEEgYmFkIHNjYWxhciByb3cgaXMgcXVhcmFudGluZWQ7IGFuIGludmFsaWQKY3VydmUgZ3JvdXAgaXMgd2l0aGhlbGQgYXMgYSB1bml0LiBEdXBsaWNhdGUgSURzIHdpdGhpbiBhIHNvdXJjZSB2ZXJzaW9uIHdpdGhob2xkCmFsbCBjb250ZW5kZXJzLiBTYW1lLW5hbWVkIGNvbmNlcHRzIGZyb20gZGlmZmVyZW50IHNvdXJjZXMgcmVtYWluIGRpc3RpbmN0LiBFbXB0eQpjYXB0dXJlcywgdW5rbm93biB1bml0cyBhbmQgbm9uZmluaXRlIG51bWJlcnMgZmFpbC4gYGluZ2VzdGAgZXhpdHMgMiBvbiBhbnkgcXVhcmFudGluZQpvciBzb3VyY2UgZmFpbHVyZS4gQSBwYXJ0aWFsIGdyYXBoIHByb3Bvc2FsIHJlcXVpcmVzIGV4cGxpY2l0IGAtLWFsbG93LXBhcnRpYWxgLgpUaGUgcXVhcmFudGluZSBhbmQgb3JpZ2luYWwgYnl0ZXMgc3RheSBhdHRhY2hlZCB0byB0aGUgc291cmNlIHJlY29yZCBlaXRoZXIgd2F5LgoKRm91ciBwaW5uZWQgc3ludGhldGljIGV4YW1wbGVzIGFyZSBpbmNsdWRlZCB1bmRlciBgZXhhbXBsZXMvYCAobWF0ZXJpYWxzLCByZXNwb25zZSwKZ2VvbWV0cnkgYW5kIGEgZGVjbGFyZWQgbW9kZWwpLiBSdW4gYGluZ2VzdCAtLW1hbmlmZXN0CnRvb2xzL3NjaWVuY2VfZnVubmVsL2V4YW1wbGVzL21hdGVyaWFscy5tYW5pZmVzdC5qc29uIC0tb3V0cHV0IC50bXAvaW50YWtlLWJ1bmRsZXNgCnRvIHRyeSBvbmUuIFRoZWlyIG51bWJlcnMgYXJlIHRlc3QgZml4dHVyZXMsIG5vdCBiaW9sb2dpY2FsIG1lYXN1cmVtZW50cy4KClRoZSBTSSBjb252ZXJ0ZXIgaXMgYSBzbWFsbCByZXZpZXdlZCB0YWJsZSwgaW5jbHVkaW5nIGFmZmluZSB0ZW1wZXJhdHVyZSBjb252ZXJzaW9uCmFuZCBhYnNvbHV0ZSB1bmNlcnRhaW50eSBzY2FsaW5nLiBJdCByZWZ1c2VzIHVuc3VwcG9ydGVkIHF1YW50aXRpZXMgYW5kIHVuaXRzLgpJdHMgZGltZW5zaW9ucyB1c2UgW21hc3MsIGxlbmd0aCwgdGltZSwgY3VycmVudCwgdGVtcGVyYXR1cmUsIGFtb3VudCwgbHVtaW5vdXMKaW50ZW5zaXR5XS4gRXF1YWwgZGltZW5zaW9ucyBkbyBub3QgaW1wbHkgZXF1YWwgbWVhbmluZzogcHJlc3N1cmUgaXMgbm90IFlvdW5nJ3MKbW9kdWx1cyBhbmQgYSB0b3JxdWUgaXMgbm90IGFuIGVuZXJneSBwYXJhbWV0ZXIuIFRlbnNvciByb3RhdGlvbiwgY29ycmVsYXRlZAp1bmNlcnRhaW50aWVzLCBjb21wbGV4IHVuaXRzLCBtaXNzaW5nLWRhdGEgaW50ZXJwb2xhdGlvbiBhbmQgbXVsdGlkaW1lbnNpb25hbApwcm9wZXJ0eSBzdXJmYWNlcyBhcmUgZXhwbGljaXRseSB1bmltcGxlbWVudGVkLgoKIyMjIFRoZSByZWR1Y3Rpb24gYnJpZGdlCgpUaHJlZSByZWR1Y3Rpb25zIGFyZSBpbXBsZW1lbnRlZCB3aXRoIGRlcml2YXRpb25zIGFuZCBuYW1lZCBhc3N1bXB0aW9uczoKCiogQXhpYWwgc3RpZmZuZXNzOiBzdHJlc3MgPSBFIHN0cmFpbiwgRi9BID0gRSBkZWx0YUwvTCwgaGVuY2UgayA9IEVBL0wuCiogSHlkcmF1bGljIGNvbXBsaWFuY2U6IGthcHBhID0gLSgxL1YpZFYvZFAsIGhlbmNlIEMgPSBrYXBwYSBWMCBhYm91dCB0aGUgcmVzdCBzdGF0ZS4KKiBQcm9wYWdhdGlvbiBkZWxheTogZHQgPSBkcy92KHMpLCBoZW5jZSBkZWxheSA9IEwvdiBmb3IgY29uc3RhbnQgcHJvcGFnYXRpb24gc3BlZWQuCgpgcmVkdWNlIC0tYnVuZGxlIFBBVEggLS1yZXF1ZXN0IFJFUVVFU1QuanNvbiAtLW91dHB1dCBSRVNVTFQuanNvbmAgc2VsZWN0cyBpbW11dGFibGUKcmVjb3JkIElEcy4gQWRkIGAtLWdyYXBoIFNOQVBTSE9ULmpzb25gIHRvIHByb2R1Y2UgYSBwcm92ZW5hbmNlLWxpbmtlZCBncmFwaCBwcm9wb3NhbDsKaW5wdXRzIGFuZCB0YXJnZXQgbXVzdCBhbHJlYWR5IGV4aXN0IGluIHRoYXQgZ3JhcGguIElucHV0cyBhcmUgYHtzeW1ib2w6IHtyZWNvcmQ6CklELCBmaWVsZDogdmFsdWVfc2l9fWA7IGEgZ2VvbWV0cnkgcmVjb3JkIG1heSBzdXBwbHkgYGZpZWxkOiBsZW5ndGhfbWAgdG8gYSBsZW5ndGgKcG9ydC4gU3VwcGx5IGBsYXdgLCBgdGFyZ2V0X2lkYCwgYGNvbnRleHRgLCB3cml0dGVuIGp1c3RpZmljYXRpb25zIGtleWVkIGJ5IGVhY2ggbGF3J3MKYGFzc3VtcHRpb25zYCwgYW5kIGB2YWxpZGF0aW9uYCB7b2JzZXJ2YWJsZSwgZmFsc2lmaWVyLCBhY2NlcHRhbmNlX3J1bGV9LgoKQSBrbm93biBjb250ZXh0IG1pc21hdGNoIHJlZnVzZXMgY2FsY3VsYXRpb24uIE1pc3NpbmcgY29udGV4dCBiZWNvbWVzIGEgbmFtZWQKYmxvY2tlci4gQWxsIHJlc3VsdHMgcmVtYWluIGBkZXJpdmVkX2NhbmRpZGF0ZWAsIHdpdGggcnVudGltZSB2YWxpZGF0aW9uIGFuZAp1bmNlcnRhaW50eSBwcm9wYWdhdGlvbiBvdXRzdGFuZGluZy4gQSB0d28tYW5jaG9yIGxlbmd0aCBpcyBhIHN0cmFpZ2h0IHNlZ21lbnQ7CnVzaW5nIGl0IGZvciBhIGN1cnZlZCBuZXJ2ZSBvciB3cmFwcGluZyB0ZW5kb24gcmVxdWlyZXMgYW4gZXhwbGljaXQgcGF0aCBtb2RlbC4KVGhlIGRldGVybWluaXN0aWMgcm9sbCBjb252ZW50aW9uIGlzIG5vdCBhbiBhbmF0b21pY2FsIG1lYXN1cmVtZW50LiBObyBhcmJpdHJhcnkKc291cmNlIGVxdWF0aW9ucywgaW5zdHJ1Y3Rpb25zLCBQeXRob24sIFhNTCBob29rcyBvciBzaGFwZSBzY3JpcHRzIGFyZSBleGVjdXRlZC4KCiMjIFZlcmlmaWNhdGlvbiBhbmQgbGltaXRzCgpCdW5kbGVzIGFyZSBpbW11dGFibGUgZGlyZWN0b3JpZXMgbmFtZWQgYnkgcmVjZWlwdCBoYXNoLiBgdmVyaWZ5YCBjaGVja3Mgb3JpZ2luYWwKYnl0ZXMsIGlucHV0IHBpbnMsIHByb2R1Y2VyIHNvdXJjZSBoYXNoZXMsIHJlY29yZCBjb3VudHMgYW5kIGV4YWN0IGFkYXB0ZXIgcmVwbGF5LgpNYXRjaGluZyBhIHNlbGYtYXV0aG9yZWQgaGFzaCBhbG9uZSBpcyBub3QgcHJvb2Ygb2Ygc291cmNlIGF1dGhlbnRpY2l0eSBvciBwaHlzaWNzLgpUaGUgaW5kZXBlbmRlbnQgdmVyaWZpZXIgbXVzdCBwaW4gdGhpcyBjb2RlIGFuZCB0aGUgZXhwZWN0ZWQgc291cmNlIHJlbGVhc2VzLgpJbXBsZW1lbnRhdGlvbiBjaGFuZ2VzIHJlcXVpcmUgcmUtaW5nZXN0aW9uIGludG8gYSBuZXcgYnVuZGxlOyBvbGQgY2FwdHVyZXMgcmVtYWluLgoKVGhlIGN1cnJlbnQgc2l6ZSBjZWlsaW5ncyBhcmUgNjQgTWlCIHBlciBhcnRpZmFjdCBhbmQgMjU2IE1pQiBwZXIgYnVuZGxlIChyZXNvdXJjZQpsaW1pdHMsIG5vdCBwaHlzaWNhbCBjb25zdGFudHMpLiBUaGlzIGlzIGEgYm91bmRlZCBiYXRjaCBpbXBsZW1lbnRhdGlvbi4gU3RyZWFtaW5nCmxhcmdlIGF0bGFzZXMsIGF1dGhlbnRpY2F0ZWQgZG93bmxvYWRzLCBzb3VyY2Utc3BlY2lmaWMgcmVtb3RlIEFQSXMsIGdsb2JhbCBpZGVudGl0eQpyZXNvbHV0aW9uLCBzcGVjaWVzIGFkYXB0YXRpb24sIHRlbnNvciBjb25zdGl0dXRpdmUgZml0dGluZywgbmF0aXZlIHJ1bGUgY29tcGlsYXRpb24KYW5kIHJlbmRlcmluZyBhcmUgZnV0dXJlIGdyYXBoIHRhc2tzLiBCcm9hZCBkYXRhYmFzZSBwb3J0YWxzIGFyZSBjYXRhbG9nIGVudHJpZXMsCm5vdCBjbGFpbXMgdGhhdCBldmVyeSBkYXRhc2V0IGJlaGluZCB0aGVtIGhhcyBhbiBvcGVyYXRpb25hbCBjb25uZWN0b3IuCgpSZXByb2R1Y2UgdGhlIHdob2xlIHF1YWxpZmljYXRpb24gd2l0aCBgcHl0aG9uIC1tIHRvb2xzLnNjaWVuY2VfZnVubmVsLnF1YWxpZnkKLS1jYWNoZSBQQVRIX1RPX1BJTk5FRF9DQUNIRSAtLW91dHB1dCBORVdfU0NSQVRDSF9ESVJFQ1RPUllgLiBJdCBydW5zIHJlZ3Jlc3Npb25zLAphZG1pdHMgc291cmNlIGFzc2VydGlvbnMgdGhyb3VnaCBhbiBpc29sYXRlZCBpbnN0YW5jZSBvZiB0aGUgcmVhbCBjb250cm9sbGVyLCBhbmQKY2hlY2tzIHRoZSByZWFsIEdyYXBoaWZ5IGNvbnN1bWVyLiBJdCBhbHNvIGNvbm5lY3RzIHN5bnRoZXRpYyBtb2R1bHVzIGFuZCBhcmVhCm1lYXN1cmVtZW50cyB0byBhIHR3by1wb2ludCBzaGFwZSBhbmQgZGVyaXZlcyB0aGUgaW5kZXBlbmRlbnRseSBjaGVja2FibGUgMTAwIE4vbQpiYXIgc3RpZmZuZXNzLiBUaGUgZ3JhcGggc3RpbGwgbGFiZWxzIHRoYXQgcmVzdWx0IGEgY2FuZGlkYXRlLiBVc2UgYSBkaXJlY3QgUHl0aG9uCmludGVycHJldGVyIGZvciBmbGVldCBwcm9jZXNzLWlkZW50aXR5IHRlc3RzOyBgLS1jb25zdW1lci1weXRob25gIG1heSBwb2ludCB0byB0aGUKcHJvamVjdCB2aXJ0dWFsIGVudmlyb25tZW50IHdpdGggR3JhcGhpZnkgZGVwZW5kZW5jaWVzLiBgLS10YXJnZXRlZGAgcmVwbGFjZXMgdGhlCndob2xlIGZsZWV0IHJlZ3Jlc3Npb24gd2l0aCBpdHMgZ3JhcGgtd29ya2Zsb3cgc3VpdGUgd2hlbiBicm9hZGVyIHVuYWZmZWN0ZWQgY2hlY2tzCmFscmVhZHkgcGFzc2VkOyByZXBvcnRzIG5hbWUgZXhhY3RseSB3aGljaCBzdWl0ZXMgcmFuLgo=",
+    "text": "# Scientific data funnels\n\nRun from the project root: `python -m tools.science_funnel --help`.\nThis is offline intake. The native engine remains the physical runtime.\n\n## Contract stated before implementation\n\n**Statement:** source-specific deterministic adapters can preserve scientific\nassertions in one graph without mistaking extracted facts for verified game laws.\n**Prediction:** pinned inputs reproduce identical bundles; incompatible units,\nambiguous identity, absent frames, stale graph writes and altered captures fail\ntheir named controls. Parallel importers cannot overwrite the graph.\n**Falsifier:** an altered source is accepted under its old pin; a condition or unit\nmismatch binds silently; a failed import changes the graph; or import promotes a\nphysical claim. Test entry: `python -m unittest discover -s tools/science_funnel/tests -v`.\n\n## The route\n\n`database -> pinned raw bytes -> database adapter -> typed assertions -> graph proposal`\n\n`selected assertions -> explicit scientific reduction -> candidate parameter -> independent runtime test`\n\nEach source manifest pins a database release, artifact bytes, license, adapter,\nfield mappings and known conditions. Each database gets its own manifest; adapters\nare reusable by format. No AI extraction is required for the implemented routes.\nRaw bytes are stored once per intake bundle, addressed by SHA-256, with a complete\ngraph index. The graph is the authority; large data blobs are its backing storage.\nUnprojected source fields remain recoverable from the original bytes.\n\nThe database-family catalog and remaining connector work are graph records:\n\n```powershell\npython -m tools.science_funnel catalog\n```\n\n## Existing pinned sources\n\n`prepare-pinned` packages the existing Uberon, RO, QUDT and OpenSim cache using the\n**original** recorded pins. It refuses drift and makes no network requests.\nSupply the actual cache directory, not a worktree with some similarly named files.\n\n```powershell\npython -m tools.science_funnel prepare-pinned --cache PATH_TO_PINNED_CACHE --output .tmp/intake-inputs\npython -m tools.science_funnel ingest --manifest .tmp/intake-inputs/uberon.appendicular-minimal/manifest.json --manifest .tmp/intake-inputs/ro.base/manifest.json --output .tmp/intake-bundles\npython -m tools.science_funnel verify .tmp/intake-bundles/BUNDLE_HASH\npython -m tools.science_funnel propose .tmp/intake-bundles/BUNDLE_HASH --graph SNAPSHOT.json --output .tmp/intake-proposal.json\n```\n\nThe proposal contains `operation: graph_apply` and `payload`, including the exact\nexpected graph hash, objects, and append-only provenance edges. The existing\nauthenticated controller client submits that payload with its current lead epoch.\nNo credentials or graph ownership are created by this tool. A stale proposal is\nregenerated against a fresh snapshot. Separate import workers can run concurrently;\nonly controller transactions admit their outputs. Source snapshots never disappear\nwhen a later database version is imported. Admitted science records are immutable.\n\nFor an undeployed controller, proposals are reviewable files; generating one is\nnot a claim of admission. The tests exercise admission through a real temporary\ncontroller. No deployed project controller or live engine is touched.\n\n## A new database's manifest\n\n```json\n{\n  \"schema_version\": \"1.0.0\",\n  \"adapter\": \"measurements_csv\",\n  \"source\": {\"id\": \"dataset.example\", \"release\": \"r1\", \"license\": \"unknown\", \"url\": \"https://example.org/data\"},\n  \"artifacts\": [{\"id\": \"table\", \"path\": \"table.csv\", \"sha256\": \"EXPECTED_64_HEX_DIGIT_HASH\"}],\n  \"columns\": {\"id\": \"row_id\", \"subject\": \"specimen\", \"quantity\": \"property\", \"value\": \"reading\", \"unit\": \"units\"},\n  \"quantity_map\": {\"Elastic modulus\": \"young_modulus\"},\n  \"conditions\": {\"species\": \"unknown\", \"temperature\": \"unknown\"},\n  \"condition_columns\": {\"loading\": \"test_protocol\"}\n}\n```\n\nThe adapter never silently creates or refreshes expected hashes. Prepare a manifest\nfrom the published release and recorded download. A source may say `unknown` for\nlicense or conditions; that allows archiving, never automatic deployment approval.\n\n### Implemented format adapters\n\n| Adapter | Supported input and limits |\n|---|---|\n| `uberon_obo` | Existing OBO subset parser: concepts, typedefs, names, parents, relationships. Full axioms remain raw. |\n| `ro_owl` | Existing selected RO relation definitions in RDF/XML; no reasoner or full ontology import. |\n| `qudt_ttl` | Existing selected unit/quantity-kind projection. Imported definitions do not modify executable conversions. |\n| `opensim_xml` | Existing partial model parser and Thelen muscle parameters; no model execution or automatic species scaling. |\n| `measurements_csv` | Long-format scalar measurements; columns or constants for id, subject, quantity, value, unit and optional absolute uncertainty. Explicit quantity/unit aliases only. |\n| `series_csv` | Curves/time series grouped by id; additionally x, x_quantity, x_unit. Strictly increasing x, unchanged subject/conditions. Preserves irregular sample times; no resampling or interpolation. |\n| `geometry_json` | List of id, two 3D anchors, length_unit, frame {id, handedness: right, axis_convention}, optional shape specification. Builds a local orthonormal frame and length. No mesh generation or engine-frame registration. |\n| `model_json` | List of id, equations, ports [{name, quantity, unit}], assumptions, validity_domain. Declarative content only; compilation remains a separate task. |\n\nCSV is strict UTF-8 with a unique header. A bad scalar row is quarantined; an invalid\ncurve group is withheld as a unit. Duplicate IDs within a source version withhold\nall contenders. Same-named concepts from different sources remain distinct. Empty\ncaptures, unknown units and nonfinite numbers fail. `ingest` exits 2 on any quarantine\nor source failure. A partial graph proposal requires explicit `--allow-partial`.\nThe quarantine and original bytes stay attached to the source record either way.\n\nFour pinned synthetic examples are included under `examples/` (materials, response,\ngeometry and a declared model). Run `ingest --manifest\ntools/science_funnel/examples/materials.manifest.json --output .tmp/intake-bundles`\nto try one. Their numbers are test fixtures, not biological measurements.\n\nThe SI converter is a small reviewed table, including affine temperature conversion\nand absolute uncertainty scaling. It refuses unsupported quantities and units.\nIts dimensions use [mass, length, time, current, temperature, amount, luminous\nintensity]. Equal dimensions do not imply equal meaning: pressure is not Young's\nmodulus and a torque is not an energy parameter. Tensor rotation, correlated\nuncertainties, complex units, missing-data interpolation and multidimensional\nproperty surfaces are explicitly unimplemented.\n\n### The reduction bridge\n\nThree reductions are implemented with derivations and named assumptions:\n\n* Axial stiffness: stress = E strain, F/A = E deltaL/L, hence k = EA/L.\n* Hydraulic compliance: kappa = -(1/V)dV/dP, hence C = kappa V0 about the rest state.\n* Propagation delay: dt = ds/v(s), hence delay = L/v for constant propagation speed.\n\n`reduce --bundle PATH --request REQUEST.json --output RESULT.json` selects immutable\nrecord IDs. Add `--graph SNAPSHOT.json` to produce a provenance-linked graph proposal;\ninputs and target must already exist in that graph. Inputs are `{symbol: {record:\nID, field: value_si}}`; a geometry record may supply `field: length_m` to a length\nport. Supply `law`, `target_id`, `context`, written justifications keyed by each law's\n`assumptions`, and `validation` {observable, falsifier, acceptance_rule}.\n\nA known context mismatch refuses calculation. Missing context becomes a named\nblocker. All results remain `derived_candidate`, with runtime validation and\nuncertainty propagation outstanding. A two-anchor length is a straight segment;\nusing it for a curved nerve or wrapping tendon requires an explicit path model.\nThe deterministic roll convention is not an anatomical measurement. No arbitrary\nsource equations, instructions, Python, XML hooks or shape scripts are executed.\n\n## Verification and limits\n\nBundles are immutable directories named by receipt hash. `verify` checks original\nbytes, input pins, producer source hashes, record counts and exact adapter replay.\nMatching a self-authored hash alone is not proof of source authenticity or physics.\nThe independent verifier must pin this code and the expected source releases.\nImplementation changes require re-ingestion into a new bundle; old captures remain.\n\nThe current size ceilings are 64 MiB per artifact and 256 MiB per bundle (resource\nlimits, not physical constants). This is a bounded batch implementation. Streaming\nlarge atlases, authenticated downloads, source-specific remote APIs, global identity\nresolution, species adaptation, tensor constitutive fitting, native rule compilation\nand rendering are future graph tasks. Broad database portals are catalog entries,\nnot claims that every dataset behind them has an operational connector.\n\nReproduce the whole qualification with `python -m tools.science_funnel.qualify\n--cache PATH_TO_PINNED_CACHE --output NEW_SCRATCH_DIRECTORY`. It runs regressions,\nadmits source assertions through an isolated instance of the real controller, and\nchecks the real Graphify consumer. It also connects synthetic modulus and area\nmeasurements to a two-point shape and derives the independently checkable 100 N/m\nbar stiffness. The graph still labels that result a candidate. Use a direct Python\ninterpreter for fleet process-identity tests; `--consumer-python` may point to the\nproject virtual environment with Graphify dependencies. `--targeted` replaces the\nwhole fleet regression with its graph-workflow suite when broader unaffected checks\nalready passed; reports name exactly which suites ran.\n",
+    "authority": "imported_untrusted"
+   },
+   "spatial": {
+    "anchored_to": "model.scientific_intake"
+   },
+   "notes": "Lossless imported version; not a verified claim or instruction."
+  },
+  {
+   "id": "ev.scientific_intake_fixture_20260916",
+   "kind": "evidence",
+   "name": "Scientific intake and Graphify fixture qualification",
+   "status": "extracted",
+   "validation": "passing",
+   "deps": [
+    "work.scientific_adapters",
+    "model.scientific_intake"
+   ],
+   "captured_utc": "2026-09-16T15:47:05.550631+00:00",
+   "measurement": {
+    "scope": "offline data intake, serial controller fixture, Graphify consumer; not engine/runtime qualification",
+    "source_repository": "E:/PythonChimera",
+    "implementation_worktree": "E:\\ChimeraWork\\codex-graph-workflow-20260916",
+    "branch": "codex/graph-workflow-gate",
+    "base_commit": "626ab1da9fccab07ecb521c79ed1745de339f2a2",
+    "captured_utc": "2026-09-16T15:47:05.550631+00:00",
+    "files": {
+     "tools/science_funnel/validation/intake.txt": {
+      "sha256": "b93d0e75feafb912b5a730212c1128aadc089a809a9c1e4d825466b3670dd936",
+      "bytes": 4600
+     },
+     "tools/science_funnel/validation/workflow.txt": {
+      "sha256": "7ce2db1235a5b6e9b57f7d881a6a432bd5204cb7763d1b530102d7fc701e2bab",
+      "bytes": 128
+     },
+     "tools/science_funnel/validation/graph.txt": {
+      "sha256": "5876b23abff516f571b4e7e55517b691e7d84783bfe793ef14e7b8d919fe825c",
+      "bytes": 2397
+     },
+     "tools/science_funnel/validation/consumer.txt": {
+      "sha256": "bd0ae9525d2af95cbdd608a3d2406bae8eaed09a0e3641e085ce22c32e0790e3",
+      "bytes": 3374
+     },
+     "tools/science_funnel/validation/consumer_checks.json": {
+      "sha256": "3473dc2b91309b3f7b14cd641f14719c836288b4fcfd36aea6dd55cd49c6f7e6",
+      "bytes": 3347
+     },
+     "tools/science_funnel/validation/qualified_intake.json": {
+      "sha256": "6f3870d5c9460eacf38b3b331b634758d0a1383da44aa818abf1f2c9c2758e17",
+      "bytes": 25842
+     },
+     "tools/science_funnel/validation/fleet_before_final_intake_fixes.txt": {
+      "sha256": "dd0eed9c12e450686db9702586544a703b97fb1036585512513bd96c76a6a4ad",
+      "bytes": 1741
+     },
+     "tools/science_funnel/validation/first_qualification.json": {
+      "sha256": "7c0c790c1b4f741d83962e030f58b8c39f62b8be5c6d45ac948e432c5ee2f821",
+      "bytes": 12322
+     },
+     "tools/science_funnel/validation/persistence_regression_before_fix.txt": {
+      "sha256": "32ab75432be2529b28c9e165ca2a93e50eaa45bc548a1cdb00ae03a36362d3d9",
+      "bytes": 1647
+     }
+    },
+    "integration_sources": {
+     "tools/agent_fleet/graph_workflow.py": {
+      "sha256": "9e9b29e47397005a26e3a43301d37b637cedefb65f93ae4d7b219eb05556d543",
+      "lf_normalized_sha256": "5ea39e1b45a9d32240b0272101806f29633ea3561230b2ce105f7a43d7a21d70"
+     },
+     "tools/agent_fleet/test_graph_workflow.py": {
+      "sha256": "dfee464765c8f6f5b4df43b8817ecebc69a053d53d41dd6700e806ed759a483d",
+      "lf_normalized_sha256": "0b5db9640a0ce2117a8740f97c80a4497ec7f699cd73e5a5a8fd57fc4a0e40d3"
+     },
+     "tools/creature_graph/schema.py": {
+      "sha256": "fbc7dc602847c6213f2916f6a2f7cc3b9a238bd160763254687bd52c36f7acb4",
+      "lf_normalized_sha256": "4446ae6323da29200789f8d186432160ffec57b21a338f249212a9b99e957e65"
+     },
+     "tools/creature_graph/store.py": {
+      "sha256": "b8264a855880c3acc6fba198d2f0260c6084ad3bb40c5f87ee997d9be4b917df",
+      "lf_normalized_sha256": "0dedc8e579c33ee94287491a2269d7fdb4f262e9f2f34eed8b2330867f39b4bd"
+     },
+     "tools/creature_graph/graphify_projection.py": {
+      "sha256": "4fa8feca077a71c5b38ee3b60ee0ed9237b434dfba2a9028cb53f38db27f4a86",
+      "lf_normalized_sha256": "440a8319387867bcedc91ae0dc3458cb89ba7c0f671f461a97aefd29a07c1260"
+     },
+     "tools/creature_graph/graphify_consumer.py": {
+      "sha256": "5d833e176928338b1a783c20b0e8effcb359b99f9ccdec014b091fde4790437d",
+      "lf_normalized_sha256": "5f9b4a25b1f4298ae6c77257d9d5ecc5c086555c49ad6e4669c1150ffaab6bab"
+     }
+    },
+    "producer": {
+     "files": {
+      "__init__.py": "c5a9f9b162177ec18d127edb799bbfe1ba08442ed95c72f8f0947f9d64618b19",
+      "__main__.py": "494b8070a646b478488d03b9580b4cc127770c654ba53c0c34c50c86dbdf93a1",
+      "adapters.py": "f69f091f03adc26cd2d2ebc375acf75c5c4694537c74464b7eb4a1a3647c037d",
+      "common.py": "ee4af6e15bff8f941c9b05ef7ce8ac171f6f20ce5673ef90a9f1adaa47bfb87c",
+      "graph.py": "e9d63e904e52a9168b1f3bf1634c91b892bcebde6370b7c6e57773a2f52087a8",
+      "pipeline.py": "2a94a3639413253c02d7af8a5f189df10b2a1824c5185816c46a9bbeb4449911",
+      "qualify.py": "6b86b5d745f04a20b1b50f853914b9ba6ed1512bfc9c2041b8e681af451995a4",
+      "reductions.py": "8f5651a79799cf8742642d622bd788859fe752bbd6ac69f2fae3391246631772",
+      "reference_data/parsers.py": "02c8dfb2b9e157eea2d89f780333229b7d8b2fc82eb47fe0e72e11d71d6b9614",
+      "units.py": "18bee7876f9a17c365e730cd122b5a7762fb105eae121184b1ea7ef0b26be7a1"
+     },
+     "version": "1.0.0"
+    },
+    "tests": {
+     "intake": 40,
+     "workflow": 24,
+     "graph": 19,
+     "consumer_checks": 7,
+     "earlier_full_fleet": {
+      "run": 321,
+      "passed": 320,
+      "skipped": 1,
+      "qualification": "before final intake-only identity fixes; affected suites repeated afterward"
+     }
+    },
+    "database_records": 1355,
+    "synthetic_fixture_records": 6,
+    "database_families": 12,
+    "source_catalogs": 13,
+    "implemented_adapters": 8,
+    "qualified_graph": {
+     "existing_objects_unchanged": 1554,
+     "hash": "e327657f48f862557c10a2947e075c9ab015bc99454e451a49b94d2cbf4cf2bd",
+     "objects": 6013,
+     "relations": 9994
+    },
+    "repeat_import": "Each source re-admitted after JSON/SQLite readback; graph hashes identical.",
+    "synthetic_reduction": {
+     "stiffness_N_per_m": 100.0,
+     "runtime_ready": false
+    },
+    "remaining": [
+     "merge/deploy the branch",
+     "production controller provisioning and qualification",
+     "new portal-specific network connectors",
+     "real material/geometry applicability mapping",
+     "native rule compilation and runtime validation"
+    ]
+   },
+   "notes": "Offline infrastructure and synthetic reduction only. No physical requirement, experience, runtime or purchase gate promoted.",
+   "capture_contract": 1,
+   "captured": {
+    "work.scientific_adapters": "69cab402cc5beaef",
+    "model.scientific_intake": "8bde483a78a6999d"
+   },
+   "captured_dependencies": [
+    "model.scientific_intake",
+    "work.scientific_adapters"
+   ],
+   "captured_relations": {
+    "r_94a964a5542c621244658dbdde3089dcd87835e609063a144defaeab6f06fc9e_0": {
+     "rid": "r_94a964a5542c621244658dbdde3089dcd87835e609063a144defaeab6f06fc9e_0",
+     "src": "work.scientific_adapters",
+     "rel": "uses_model",
+     "dst": "model.scientific_intake",
+     "note": "One intake contract; source-specific adapters"
+    },
+    "r_c6c6147bda94b696e67764c5dbff0701045970b36e94d6283a02905ef012028f_0": {
+     "rid": "r_c6c6147bda94b696e67764c5dbff0701045970b36e94d6283a02905ef012028f_0",
+     "src": "model.scientific_intake",
+     "rel": "uses_model",
+     "dst": "model.database_family.identity",
+     "note": "Typed intake family"
+    },
+    "r_39d06d83c2535e6286cc034bd8cffbd5069eea2bb6df6dbdf3352f896ed13f50_0": {
+     "rid": "r_39d06d83c2535e6286cc034bd8cffbd5069eea2bb6df6dbdf3352f896ed13f50_0",
+     "src": "model.scientific_intake",
+     "rel": "uses_model",
+     "dst": "model.database_family.units",
+     "note": "Typed intake family"
+    },
+    "r_e74670f2448d80b8b16b1b3cbf54cd63e55ee0bea99361669e84fde4f9bac3cc_0": {
+     "rid": "r_e74670f2448d80b8b16b1b3cbf54cd63e55ee0bea99361669e84fde4f9bac3cc_0",
+     "src": "model.scientific_intake",
+     "rel": "uses_model",
+     "dst": "model.database_family.shape",
+     "note": "Typed intake family"
+    },
+    "r_ca1b5f0194fbb1b5e73918f63bf6881970b394f7087c741ebd21c4d25f9c0efb_0": {
+     "rid": "r_ca1b5f0194fbb1b5e73918f63bf6881970b394f7087c741ebd21c4d25f9c0efb_0",
+     "src": "model.scientific_intake",
+     "rel": "uses_model",
+     "dst": "model.database_family.materials",
+     "note": "Typed intake family"
+    },
+    "r_c7f26675c0a622f952e4be3d7ed5373509294ad9b05e061d54d644f7c568d0bc_0": {
+     "rid": "r_c7f26675c0a622f952e4be3d7ed5373509294ad9b05e061d54d644f7c568d0bc_0",
+     "src": "model.scientific_intake",
+     "rel": "uses_model",
+     "dst": "model.database_family.motion",
+     "note": "Typed intake family"
+    },
+    "r_2c64129327281e9e2b740cf65f4c07a8a45209c0f94633596a7c1020f8ccde82_0": {
+     "rid": "r_2c64129327281e9e2b740cf65f4c07a8a45209c0f94633596a7c1020f8ccde82_0",
+     "src": "model.scientific_intake",
+     "rel": "uses_model",
+     "dst": "model.database_family.transport",
+     "note": "Typed intake family"
+    },
+    "r_7eeace74b9a64f721dabe193499326405d21baec08e6675b9d8d115011a35056_0": {
+     "rid": "r_7eeace74b9a64f721dabe193499326405d21baec08e6675b9d8d115011a35056_0",
+     "src": "model.scientific_intake",
+     "rel": "uses_model",
+     "dst": "model.database_family.physiology",
+     "note": "Typed intake family"
+    },
+    "r_dab20545d8859a7b535d79578a1b2d1ffa4c8adf7748e1462d410193be495ff2_0": {
+     "rid": "r_dab20545d8859a7b535d79578a1b2d1ffa4c8adf7748e1462d410193be495ff2_0",
+     "src": "model.scientific_intake",
+     "rel": "uses_model",
+     "dst": "model.database_family.chemistry",
+     "note": "Typed intake family"
+    },
+    "r_8f6a21aae57b1716548caef886aae0e9022c4a61e3db17601d63938d7e96a1f7_0": {
+     "rid": "r_8f6a21aae57b1716548caef886aae0e9022c4a61e3db17601d63938d7e96a1f7_0",
+     "src": "model.scientific_intake",
+     "rel": "uses_model",
+     "dst": "model.database_family.world",
+     "note": "Typed intake family"
+    },
+    "r_922d39b503bb301f732da74f5e1763f3caedf2a630615e2bf503f7f03030b7e6_0": {
+     "rid": "r_922d39b503bb301f732da74f5e1763f3caedf2a630615e2bf503f7f03030b7e6_0",
+     "src": "model.scientific_intake",
+     "rel": "uses_model",
+     "dst": "model.database_family.appearance",
+     "note": "Typed intake family"
+    },
+    "r_fee51c56cc4ed81115f743df19ff0bb42ff25d76a20340819a42675865c1a4d1_0": {
+     "rid": "r_fee51c56cc4ed81115f743df19ff0bb42ff25d76a20340819a42675865c1a4d1_0",
+     "src": "model.scientific_intake",
+     "rel": "uses_model",
+     "dst": "model.database_family.observations",
+     "note": "Typed intake family"
+    },
+    "r_353784f2020dfbc7bf980bd313f776ca3e17a5d0b91e9fb0a8c9ba5cbd1e39e9_0": {
+     "rid": "r_353784f2020dfbc7bf980bd313f776ca3e17a5d0b91e9fb0a8c9ba5cbd1e39e9_0",
+     "src": "model.scientific_intake",
+     "rel": "uses_model",
+     "dst": "model.database_family.project_memory",
+     "note": "Typed intake family"
+    },
+    "r_a88878f10d9656abdffdec66c03632a1c5650f8ecc6c283ea65e586570fe4f49_0": {
+     "rid": "r_a88878f10d9656abdffdec66c03632a1c5650f8ecc6c283ea65e586570fe4f49_0",
+     "src": "source.document.4843a21d9724f7dd0a5fd6518567005a49162d7a40d99ee682bd04d60c7a21f1.041ff8a4a0afb5b778be63ab4e442aaa70fd7deb57c9881dff3020dbc137ecbc",
+     "rel": "attached_to",
+     "dst": "model.scientific_intake",
+     "note": "document subject anchor; location inherited"
+    },
+    "r_a8e2425d2efb8d22ac042fb05107129c55e2ee3ea2cf0fd242fdf24a41dba7b5_0": {
+     "rid": "r_a8e2425d2efb8d22ac042fb05107129c55e2ee3ea2cf0fd242fdf24a41dba7b5_0",
+     "src": "source.document.4843a21d9724f7dd0a5fd6518567005a49162d7a40d99ee682bd04d60c7a21f1.21b80b0753c871af1e4dbf90eb3a5fb12629ae1fbafc7ff63b5f13ceecbaf30f",
+     "rel": "attached_to",
+     "dst": "model.scientific_intake",
+     "note": "document subject anchor; location inherited"
+    }
+   },
+   "last_result": "passing"
   }
  ],
  "relations": [
   {
-   "rid": "r_48210f8ed05af1e180b9984d024ddf506458d4e79df7bea22620449b044c02ac_0",
    "src": "source.document.4453d91803979d262c1895c01b3e9ee5ff41edda7c4cab453c2fd7346376d892.2282771e1bb15f9a574096532a2695b6c4e62f7182d5772ed2bc96d47b72e4ab",
    "rel": "attached_to",
    "dst": "req.graph_is_project",
    "note": "document subject anchor; location inherited"
   },
   {
-   "rid": "r_dbd73ce0d55b3e124c0ba4826765161e39b0f2dbc43b66b1d0c8229ccaa4593b_0",
    "src": "source.document.a7b9339f4982d3b2bbc9bbec29d9d33863e7331c22344644443398fbefb26b78.8a60f0c985df29dc11a38cb1992811784482d9ac6182fec690816226d7a66ef6",
    "rel": "attached_to",
    "dst": "req.graph_is_project",
    "note": "document subject anchor; location inherited"
   },
   {
-   "rid": "r_9f910f31f137aed8b255aac56400f92685765f30316a22dd4b14d25fc7377575_0",
    "src": "source.document.f8bcf74493a5cecd3b6c0c2983b9baa0ffedaa9ab734a759dd660ef510b09be5.238725fcc72637ce51a220da3fa73815fd44c7bd8505735f19a8f1a14f5b0e72",
    "rel": "attached_to",
    "dst": "req.graph_is_project",
    "note": "document subject anchor; location inherited"
   },
   {
-   "rid": "r_5a28cd2c3707836921ba6f24201021b786f3b3ffe9552c48c429f6b439dfe2cb_0",
    "src": "source.document.9bee2591bdafdb0df3e7588f5ba8cb72c5213a8fab175e697e7b11e24c31c462.a44e8b8822214f61cb5546f87c109e3ffd6cde8a4baac58bb663e88f02b53222",
    "rel": "attached_to",
    "dst": "req.graph_is_project",
    "note": "document subject anchor; location inherited"
   },
   {
-   "rid": "r_ec5024330c2f422dd54f8d1cea2be3fa321ba0ff3ea1f4ecff587d558314bce3_0",
    "src": "source.document.585cd67bf9f808832bdf4c179c4bd07f17404cc83334f50b6aa0ec36e60afe57.29bdab4b5c9c8ec8e658b50c50cf40d5bd696bcc9502fca1d26c9442666093fe",
    "rel": "attached_to",
    "dst": "req.graph_is_project",
    "note": "document subject anchor; location inherited"
   },
   {
-   "rid": "r_42ce9cdda3d47fbbc8e817dcae6c6c626723b1e2c5d98375385ea23e148f5f7e_0",
    "src": "source.document.17a7e4c65f553e2608a148aed17886e28c76504185aabcc8215f011c320fa870.7e739c76ddc6d424ecdea9603c9b70fcec490ea8ba955771326114147dfcc473",
    "rel": "attached_to",
    "dst": "req.graph_is_project",
+   "note": "document subject anchor; location inherited"
+  },
+  {
+   "src": "work.funnel.identity",
+   "rel": "uses_model",
+   "dst": "model.database_family.identity",
+   "note": "Database family and reduction requirements"
+  },
+  {
+   "src": "work.funnel.units",
+   "rel": "uses_model",
+   "dst": "model.database_family.units",
+   "note": "Database family and reduction requirements"
+  },
+  {
+   "src": "work.funnel.shape",
+   "rel": "uses_model",
+   "dst": "model.database_family.shape",
+   "note": "Database family and reduction requirements"
+  },
+  {
+   "src": "work.funnel.materials",
+   "rel": "uses_model",
+   "dst": "model.database_family.materials",
+   "note": "Database family and reduction requirements"
+  },
+  {
+   "src": "work.funnel.motion",
+   "rel": "uses_model",
+   "dst": "model.database_family.motion",
+   "note": "Database family and reduction requirements"
+  },
+  {
+   "src": "work.funnel.transport",
+   "rel": "uses_model",
+   "dst": "model.database_family.transport",
+   "note": "Database family and reduction requirements"
+  },
+  {
+   "src": "work.funnel.physiology",
+   "rel": "uses_model",
+   "dst": "model.database_family.physiology",
+   "note": "Database family and reduction requirements"
+  },
+  {
+   "src": "work.funnel.chemistry",
+   "rel": "uses_model",
+   "dst": "model.database_family.chemistry",
+   "note": "Database family and reduction requirements"
+  },
+  {
+   "src": "work.funnel.world",
+   "rel": "uses_model",
+   "dst": "model.database_family.world",
+   "note": "Database family and reduction requirements"
+  },
+  {
+   "src": "work.funnel.appearance",
+   "rel": "uses_model",
+   "dst": "model.database_family.appearance",
+   "note": "Database family and reduction requirements"
+  },
+  {
+   "src": "work.funnel.observations",
+   "rel": "uses_model",
+   "dst": "model.database_family.observations",
+   "note": "Database family and reduction requirements"
+  },
+  {
+   "src": "work.funnel.project_memory",
+   "rel": "uses_model",
+   "dst": "model.database_family.project_memory",
+   "note": "Database family and reduction requirements"
+  },
+  {
+   "src": "model.database_family.identity",
+   "rel": "derived_from",
+   "dst": "source.database_catalog.uberon",
+   "note": "Candidate database for this family; scope recorded"
+  },
+  {
+   "src": "model.database_family.identity",
+   "rel": "derived_from",
+   "dst": "source.database_catalog.ro",
+   "note": "Candidate database for this family; scope recorded"
+  },
+  {
+   "src": "model.database_family.units",
+   "rel": "derived_from",
+   "dst": "source.database_catalog.qudt",
+   "note": "Candidate database for this family; scope recorded"
+  },
+  {
+   "src": "model.database_family.shape",
+   "rel": "derived_from",
+   "dst": "source.database_catalog.bodyparts3d",
+   "note": "Candidate database for this family; scope recorded"
+  },
+  {
+   "src": "model.database_family.materials",
+   "rel": "derived_from",
+   "dst": "source.database_catalog.nist_materials",
+   "note": "Candidate database for this family; scope recorded"
+  },
+  {
+   "src": "model.database_family.motion",
+   "rel": "derived_from",
+   "dst": "source.database_catalog.opensim",
+   "note": "Candidate database for this family; scope recorded"
+  },
+  {
+   "src": "model.database_family.transport",
+   "rel": "derived_from",
+   "dst": "source.database_catalog.nist_webbook",
+   "note": "Candidate database for this family; scope recorded"
+  },
+  {
+   "src": "model.database_family.physiology",
+   "rel": "derived_from",
+   "dst": "source.database_catalog.cellml",
+   "note": "Candidate database for this family; scope recorded"
+  },
+  {
+   "src": "model.database_family.physiology",
+   "rel": "derived_from",
+   "dst": "source.database_catalog.physionet",
+   "note": "Candidate database for this family; scope recorded"
+  },
+  {
+   "src": "model.database_family.chemistry",
+   "rel": "derived_from",
+   "dst": "source.database_catalog.pubchem",
+   "note": "Candidate database for this family; scope recorded"
+  },
+  {
+   "src": "model.database_family.world",
+   "rel": "derived_from",
+   "dst": "source.database_catalog.nist_materials",
+   "note": "Candidate database for this family; scope recorded"
+  },
+  {
+   "src": "model.database_family.world",
+   "rel": "derived_from",
+   "dst": "source.database_catalog.nist_webbook",
+   "note": "Candidate database for this family; scope recorded"
+  },
+  {
+   "src": "model.database_family.appearance",
+   "rel": "derived_from",
+   "dst": "source.database_catalog.usgs_spectra",
+   "note": "Candidate database for this family; scope recorded"
+  },
+  {
+   "src": "model.database_family.observations",
+   "rel": "derived_from",
+   "dst": "source.database_catalog.local_engine",
+   "note": "Candidate database for this family; scope recorded"
+  },
+  {
+   "src": "model.database_family.project_memory",
+   "rel": "derived_from",
+   "dst": "source.database_catalog.local_project",
+   "note": "Candidate database for this family; scope recorded"
+  },
+  {
+   "src": "work.scientific_adapters",
+   "rel": "uses_model",
+   "dst": "model.scientific_intake",
+   "note": "One intake contract; source-specific adapters"
+  },
+  {
+   "src": "model.scientific_intake",
+   "rel": "uses_model",
+   "dst": "model.database_family.identity",
+   "note": "Typed intake family"
+  },
+  {
+   "src": "model.scientific_intake",
+   "rel": "uses_model",
+   "dst": "model.database_family.units",
+   "note": "Typed intake family"
+  },
+  {
+   "src": "model.scientific_intake",
+   "rel": "uses_model",
+   "dst": "model.database_family.shape",
+   "note": "Typed intake family"
+  },
+  {
+   "src": "model.scientific_intake",
+   "rel": "uses_model",
+   "dst": "model.database_family.materials",
+   "note": "Typed intake family"
+  },
+  {
+   "src": "model.scientific_intake",
+   "rel": "uses_model",
+   "dst": "model.database_family.motion",
+   "note": "Typed intake family"
+  },
+  {
+   "src": "model.scientific_intake",
+   "rel": "uses_model",
+   "dst": "model.database_family.transport",
+   "note": "Typed intake family"
+  },
+  {
+   "src": "model.scientific_intake",
+   "rel": "uses_model",
+   "dst": "model.database_family.physiology",
+   "note": "Typed intake family"
+  },
+  {
+   "src": "model.scientific_intake",
+   "rel": "uses_model",
+   "dst": "model.database_family.chemistry",
+   "note": "Typed intake family"
+  },
+  {
+   "src": "model.scientific_intake",
+   "rel": "uses_model",
+   "dst": "model.database_family.world",
+   "note": "Typed intake family"
+  },
+  {
+   "src": "model.scientific_intake",
+   "rel": "uses_model",
+   "dst": "model.database_family.appearance",
+   "note": "Typed intake family"
+  },
+  {
+   "src": "model.scientific_intake",
+   "rel": "uses_model",
+   "dst": "model.database_family.observations",
+   "note": "Typed intake family"
+  },
+  {
+   "src": "model.scientific_intake",
+   "rel": "uses_model",
+   "dst": "model.database_family.project_memory",
+   "note": "Typed intake family"
+  },
+  {
+   "src": "source.document.4843a21d9724f7dd0a5fd6518567005a49162d7a40d99ee682bd04d60c7a21f1.041ff8a4a0afb5b778be63ab4e442aaa70fd7deb57c9881dff3020dbc137ecbc",
+   "rel": "attached_to",
+   "dst": "model.scientific_intake",
+   "note": "document subject anchor; location inherited"
+  },
+  {
+   "src": "source.document.4843a21d9724f7dd0a5fd6518567005a49162d7a40d99ee682bd04d60c7a21f1.21b80b0753c871af1e4dbf90eb3a5fb12629ae1fbafc7ff63b5f13ceecbaf30f",
+   "rel": "attached_to",
+   "dst": "model.scientific_intake",
    "note": "document subject anchor; location inherited"
   }
  ],

@@ -1,0 +1,4 @@
+id,subject,quantity,value,unit,uncertainty
+E,synthetic_bar,young_modulus,2,MPa,
+A,synthetic_bar,area,10,mm2,
+L,synthetic_bar,length,200,mm,

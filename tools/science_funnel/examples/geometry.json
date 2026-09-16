@@ -1,0 +1,9 @@
+[
+  {
+    "id": "synthetic_bar_axis",
+    "anchors": [[0, 0, 0], [0, 0, 200]],
+    "length_unit": "mm",
+    "frame": {"id": "synthetic_fixture_frame", "handedness": "right", "axis_convention": "x right, y up, z along the bar"},
+    "shape": {"type": "uniform_axial_bar", "cross_section_source": "synthetic_bar/A"}
+  }
+]

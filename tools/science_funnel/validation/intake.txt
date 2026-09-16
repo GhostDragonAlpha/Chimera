@@ -1,0 +1,46 @@
+test_affine_temperature_uncertainty (test_funnels.FunnelTests.test_affine_temperature_uncertainty) ... ok
+test_blank_uncertainty_means_unknown (test_funnels.FunnelTests.test_blank_uncertainty_means_unknown) ... ok
+test_coincident_anchors_refused (test_funnels.FunnelTests.test_coincident_anchors_refused) ... ok
+test_context_mismatch_refused (test_funnels.FunnelTests.test_context_mismatch_refused) ... ok
+test_declarative_model_keeps_program_text_inert (test_funnels.FunnelTests.test_declarative_model_keeps_program_text_inert) ... ok
+test_duplicate_ids_never_greedily_selected (test_funnels.FunnelTests.test_duplicate_ids_never_greedily_selected) ... ok
+test_duplicate_json_refused (test_funnels.FunnelTests.test_duplicate_json_refused) ... ok
+test_elastic_bar_physical_oracle (test_funnels.FunnelTests.test_elastic_bar_physical_oracle) ... ok
+test_empty_capture_quarantined (test_funnels.FunnelTests.test_empty_capture_quarantined) ... ok
+test_explicit_database_column_map (test_funnels.FunnelTests.test_explicit_database_column_map) ... ok
+test_forged_output_and_rehashed_receipt_still_fails_replay (test_funnels.FunnelTests.test_forged_output_and_rehashed_receipt_still_fails_replay) ... ok
+test_future_schema_refused (test_funnels.FunnelTests.test_future_schema_refused) ... ok
+test_geometry_unknown_frame_withheld (test_funnels.FunnelTests.test_geometry_unknown_frame_withheld) ... ok
+test_hydraulic_linearization (test_funnels.FunnelTests.test_hydraulic_linearization) ... ok
+test_missing_assumptions_remain_blockers (test_funnels.FunnelTests.test_missing_assumptions_remain_blockers) ... ok
+test_missing_pin_refused (test_funnels.FunnelTests.test_missing_pin_refused) ... ok
+test_nested_scientific_assertion_changes_evidence_version (test_funnels.FunnelTests.test_nested_scientific_assertion_changes_evidence_version) ... ok
+test_nonfinite_refused (test_funnels.FunnelTests.test_nonfinite_refused) ... ok
+test_obo_uses_existing_parser_without_equivalence (test_funnels.FunnelTests.test_obo_uses_existing_parser_without_equivalence) ... ok
+test_ontology_reimport_after_json_storage_is_idempotent (test_funnels.FunnelTests.test_ontology_reimport_after_json_storage_is_idempotent) ... ok
+test_ontology_relations_are_queryable_and_missing_targets_explicit (test_funnels.FunnelTests.test_ontology_relations_are_queryable_and_missing_targets_explicit) ... ok
+test_opensim_model_definition_not_executed (test_funnels.FunnelTests.test_opensim_model_definition_not_executed) ... ok
+test_parallel_identical_imports_are_idempotent (test_funnels.FunnelTests.test_parallel_identical_imports_are_idempotent) ... ok
+test_partial_capture_preserves_good_and_bad (test_funnels.FunnelTests.test_partial_capture_preserves_good_and_bad) ... ok
+test_partial_proposal_requires_choice (test_funnels.FunnelTests.test_partial_proposal_requires_choice) ... {"error": "partial_intake_requires_explicit_choice"}
+ok
+test_path_escape_refused (test_funnels.FunnelTests.test_path_escape_refused) ... ok
+test_qudt_definition_not_executable_conversion (test_funnels.FunnelTests.test_qudt_definition_not_executable_conversion) ... ok
+test_reformatted_manifest_cannot_collide_graph_provenance (test_funnels.FunnelTests.test_reformatted_manifest_cannot_collide_graph_provenance) ... ok
+test_ro_uses_existing_parser (test_funnels.FunnelTests.test_ro_uses_existing_parser) ... ok
+test_same_dimensions_wrong_quantity_refused (test_funnels.FunnelTests.test_same_dimensions_wrong_quantity_refused) ... ok
+test_series_nonmonotonic_withheld (test_funnels.FunnelTests.test_series_nonmonotonic_withheld) ... ok
+test_series_preserves_irregular_time (test_funnels.FunnelTests.test_series_preserves_irregular_time) ... ok
+test_signal_delay (test_funnels.FunnelTests.test_signal_delay) ... ok
+test_source_drift_refused_before_publish (test_funnels.FunnelTests.test_source_drift_refused_before_publish) ... ok
+test_source_versions_coexist (test_funnels.FunnelTests.test_source_versions_coexist) ... ok
+test_tampered_bundle_refused (test_funnels.FunnelTests.test_tampered_bundle_refused) ... ok
+test_two_points_frame_geometric_oracle (test_funnels.FunnelTests.test_two_points_frame_geometric_oracle) ... ok
+test_units_and_semantics_refused (test_funnels.FunnelTests.test_units_and_semantics_refused) ... ok
+test_xml_entity_rejected (test_funnels.FunnelTests.test_xml_entity_rejected) ... ok
+test_zero_preserved_and_no_promotion (test_funnels.FunnelTests.test_zero_preserved_and_no_promotion) ... ok
+
+----------------------------------------------------------------------
+Ran 40 tests in 0.949s
+
+OK

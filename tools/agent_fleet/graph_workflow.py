@@ -206,9 +206,24 @@ class GraphWorkflowControl(ReviewHandoffControl):
                 require(obj.get('kind') != 'evidence', 'workflow_evidence_requires_measurement_api')
                 require(not old or old.get('kind') != 'evidence', 'workflow_history_immutable')
                 require(not old or 'document' not in old or old == obj, 'workflow_document_version_immutable')
+                require(not old or 'science_funnel' not in old or old == obj,
+                        'workflow_science_version_immutable')
                 require(obj.get('status') != 'verified' or old == obj,
                         'workflow_promotion_requires_qualified_integration')
                 g.objects[oid] = copy.deepcopy(obj)
+            # Intake proposals add provenance in the SAME graph CAS transaction.
+            # Physical/verification edges require their qualified admission path.
+            relations = p.get('relations', [])
+            require(isinstance(relations, list), 'workflow_relations_required')
+            for edge in relations:
+                require(isinstance(edge, dict) and
+                        set(edge) == {'src', 'rel', 'dst', 'note'} and
+                        all(isinstance(v, str) for v in edge.values()) and
+                        edge['rel'] == 'derived_from', 'workflow_provenance_edges_only')
+                require(edge['src'] in g.objects and edge['dst'] in g.objects,
+                        'workflow_provenance_endpoint_missing')
+                if not any(all(old.get(k) == v for k, v in edge.items()) for old in g.relations):
+                    g.relate(**edge)
             # Existing edges never disappear through an object update. A changed
             # dependency field needs a separate reviewed graph migration.
             g.sync_dependencies()

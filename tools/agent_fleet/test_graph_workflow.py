@@ -109,6 +109,54 @@ class WorkflowTests(unittest.TestCase):
                          branch=self.claim['branch'], head=head or candidate(self.repo)['head'],
                          evidence='retained runner receipt')
 
+    def test_science_provenance_atomic_and_immutable(self):
+        snap = self.call('graph_snapshot')
+        source = {'id': 'science.src', 'kind': 'source', 'name': 'source', 'status': 'extracted',
+                  'science_funnel': {'bundle': 'fixture'}}
+        assertion = {'id': 'science.value', 'kind': 'property_assertion', 'name': 'value',
+                     'status': 'extracted', 'provenance': {'source_id': 'science.src'},
+                     'science_funnel': {'record': 'fixture'}, 'value': 0}
+        edge = {'src': 'science.value', 'rel': 'derived_from', 'dst': 'science.src', 'note': 'fixture'}
+        args = dict(epoch=1, expected_hash=snap['graph_hash'], objects=[source, assertion], relations=[edge])
+        first = self.call('graph_apply', **args)
+        with self.assertRaisesRegex(Refusal, 'revision_conflict'):
+            self.call('graph_apply', **args)
+        args['expected_hash'] = first['graph_hash']
+        self.assertEqual(self.call('graph_apply', **args)['graph_hash'], first['graph_hash'])
+        assertion['value'] = 10
+        with self.assertRaisesRegex(Refusal, 'science_version_immutable'):
+            self.call('graph_apply', **args)
+
+    def test_science_cannot_attach_verification_edges(self):
+        snap = self.call('graph_snapshot')
+        source = {'id': 'science.src', 'kind': 'source', 'name': 'source', 'status': 'extracted'}
+        with self.assertRaisesRegex(Refusal, 'provenance_edges_only'):
+            self.call('graph_apply', epoch=1, expected_hash=snap['graph_hash'], objects=[source],
+                      relations=[{'src': 'work.test', 'rel': 'verified_by', 'dst': 'science.src', 'note': 'cheat'}])
+        self.assertEqual(self.call('graph_snapshot')['graph_hash'], snap['graph_hash'])
+
+    def test_real_funnel_to_serial_controller(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+        from tools.science_funnel.pipeline import ingest
+        from tools.science_funnel.graph import propose
+        from tools.science_funnel.common import canonical, sha
+        raw = b'id,subject,quantity,value,unit\na,synthetic,pressure,0,Pa\n'
+        (self.root/'input.csv').write_bytes(raw)
+        manifest = {'schema_version': '1.0.0', 'adapter': 'measurements_csv',
+                    'source': {'id': 'fixture', 'release': '1', 'license': 'CC0', 'url': 'local:fixture'},
+                    'artifacts': [{'id': 'input', 'path': 'input.csv', 'sha256': sha(raw)}]}
+        path = self.root/'manifest.json'
+        path.write_bytes(canonical(manifest))
+        bundle = ingest(path, self.root/'bundles')
+        snap = self.call('graph_snapshot')
+        proposal = propose(bundle, unpack(snap['graph']))
+        result = self.call('graph_apply', epoch=1, **proposal['payload'])
+        self.assertEqual(result['graph_hash'], proposal['metadata']['candidate_graph_hash'])
+        actual = unpack(self.call('graph_snapshot')['graph'])
+        for obj in proposal['payload']['objects']:
+            self.assertEqual(actual.get(obj['id']), obj)
+            self.assertEqual(obj['status'], 'extracted')
+
     def test_test_weakening_refused(self):
         self.ready()
         (self.repo/'check.py').write_text('raise SystemExit(False)', encoding='utf-8')

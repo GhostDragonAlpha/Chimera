@@ -1,0 +1,22 @@
+test_ontology_reimport_after_json_storage_is_idempotent (tools.science_funnel.tests.test_funnels.FunnelTests.test_ontology_reimport_after_json_storage_is_idempotent) ... ERROR
+
+======================================================================
+ERROR: test_ontology_reimport_after_json_storage_is_idempotent (tools.science_funnel.tests.test_funnels.FunnelTests.test_ontology_reimport_after_json_storage_is_idempotent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\codex-graph-workflow-20260916\tools\science_funnel\tests\test_funnels.py", line 238, in test_ontology_reimport_after_json_storage_is_idempotent
+    replay = propose(bundle, restored)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\codex-graph-workflow-20260916\tools\science_funnel\graph.py", line 90, in propose
+    return checked_patch(objects, edges, graph, bundle_id=bundle_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\codex-graph-workflow-20260916\tools\science_funnel\graph.py", line 99, in checked_patch
+    require(previous is None or previous == obj, 'immutable_graph_identity_conflict', obj['id'])
+  File "E:\ChimeraWork\codex-graph-workflow-20260916\tools\science_funnel\common.py", line 18, in require
+    raise Refusal(code, detail)
+tools.science_funnel.common.Refusal: immutable_graph_identity_conflict: data.assertion.65a5ee4fd2808928f2682d2d8e894aec9d11f5b6936080f30431b05d0ae18a90
+
+----------------------------------------------------------------------
+Ran 1 test in 0.061s
+
+FAILED (errors=1)

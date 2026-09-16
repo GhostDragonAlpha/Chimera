@@ -1,0 +1,1 @@
+{"adapter":"model_json","artifacts":[{"id":"model","path":"model.json","sha256":"82cfccdf1e245fa78fcdf96941c1dbc013925b2fdbea2b3b9d58a33c3e8e19ee"}],"conditions":{"frame":"synthetic_fixture_frame","specimen":"synthetic_fixture"},"schema_version":"1.0.0","source":{"id":"fixture.model","license":"CC0","release":"synthetic-v1","url":"local:synthetic-fixture-not-real-tissue-data"}}
