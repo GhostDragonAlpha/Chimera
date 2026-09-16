@@ -22,3 +22,6 @@ agent_logs/codex/graph_contracts_20260915/** -text whitespace=blank-at-eol,blank
 tools/agent_fleet/graph_workflow/validation/*.log -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 tools/science_funnel/examples/* -text
 tools/science_funnel/validation/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Downloaded scientific artifacts are SHA-pinned upstream bytes.
+tools/science_funnel/data/coolprop/** -text

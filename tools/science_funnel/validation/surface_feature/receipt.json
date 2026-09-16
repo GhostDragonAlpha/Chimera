@@ -1,0 +1,247 @@
+{
+  "captured_utc": "2026-09-16T18:15:46.983769+00:00",
+  "source_base_commit": "24f217b08fa7e5e940bf275ce002608080a08882",
+  "worktree": "E:\\ChimeraWork\\codex-graph-workflow-20260916",
+  "branch": "codex/graph-workflow-gate",
+  "compiled_input_graph_hash": "e7de576ea38643c88c5750d18b75170c8ca5dd43590f87d4557f22f6493cb549",
+  "qualified_graph_hash": "f0a90ad1f5e7b2c9c54b820029d56487fa2eae5b279d71101181f3805fe9167f",
+  "evidence_id": "ev.science_surface_native.20260916",
+  "source_files_sha256": {
+    "ChimeraEngine/engine/graph_surface.hpp": "07a53e4bcbd470fe0c091f26f9234042c2adf98a542af19d3074808039b37fb9",
+    "ChimeraEngine/engine/main.cpp": "656a88b7b098683b7ae0ec13f8ec7146499eb0829d7077b0a84bb9747b1d600d",
+    "README.md": "b6a3ac201d758d0a7431b297f14d4e5e3f1ae9d13271d5ba868e3d355d198232",
+    "tools/creature_graph/data/authored/project_program.json": "7dc47718dfd981583bdb193ef9069e35bcf5dc08b453f781d953a26e586ff56c",
+    "tools/creature_graph/data/creature_graph.json": "cce9d9c8ef756c9af54e0cde68cada73afba023ff977d75c9dc2fc274d9ec836",
+    "tools/science_funnel/__init__.py": "c5a9f9b162177ec18d127edb799bbfe1ba08442ed95c72f8f0947f9d64618b19",
+    "tools/science_funnel/__main__.py": "494b8070a646b478488d03b9580b4cc127770c654ba53c0c34c50c86dbdf93a1",
+    "tools/science_funnel/adapters.py": "0d0b6e886831b1ce599049490b75519eae6a3a0ac5116448240a0d940b60c6d1",
+    "tools/science_funnel/common.py": "ee4af6e15bff8f941c9b05ef7ce8ac171f6f20ce5673ef90a9f1adaa47bfb87c",
+    "tools/science_funnel/data/coolprop/Ethanol.json": "df844ab4e859424745e83126bfb784bd51142710acc1b14e2b2ba5e45607ebc8",
+    "tools/science_funnel/data/coolprop/LICENSE": "9bf835333ef602af4cb19338b9f9d43671e174fa029b00280e9bdba6ea4719b2",
+    "tools/science_funnel/data/coolprop/Water.json": "540f8e84f721e526e2f9acff775cd9dbddcf2ef35284440ea501b7dd37ac53ac",
+    "tools/science_funnel/data/coolprop/download_receipt.json": "b0b178a14e851cb90bdccd5e37db8ee51629416ce7b25e2536496254a6b712fa",
+    "tools/science_funnel/data/surface_recipe.json": "c38ab1a41b9a9e3be812f9e3151f2316e6e5ed176aa8bd868ee643d02727fd1e",
+    "tools/science_funnel/graph.py": "e9d63e904e52a9168b1f3bf1634c91b892bcebde6370b7c6e57773a2f52087a8",
+    "tools/science_funnel/pipeline.py": "2a94a3639413253c02d7af8a5f189df10b2a1824c5185816c46a9bbeb4449911",
+    "tools/science_funnel/qualify.py": "6b86b5d745f04a20b1b50f853914b9ba6ed1512bfc9c2041b8e681af451995a4",
+    "tools/science_funnel/reductions.py": "8f5651a79799cf8742642d622bd788859fe752bbd6ac69f2fae3391246631772",
+    "tools/science_funnel/run_surface.ps1": "fa48fcf29391292596d8687a96c6b671153a82f8c5ffdc2c7183ebf044a58df3",
+    "tools/science_funnel/surface.html": "6c104f7c383c4e61fe0eb6ec9120c8c8b82578a4cd90bc7892ab58848c0a94b2",
+    "tools/science_funnel/surface_scene.py": "51bdcec0ba3413add9e95fabacc40498621ec25c6862cb9b3c086365de066b4a",
+    "tools/science_funnel/tests/qualify_live_surface.py": "7a0099eada20b4c5301dae666e122c6aacf0cd4232bd89440133becdeb183873",
+    "tools/science_funnel/tests/surface_native.cpp": "b2b1c58155b543a0b355e114a2db70b1501bdd08bc0e800e39c00f82aff52f24",
+    "tools/science_funnel/tests/test_funnels.py": "5b255a2f55d70921886439a29c34c81b29ce7a5e7a8a2ca83f912611ba860286",
+    "tools/science_funnel/tests/test_surface_scene.py": "b4a0c8fc80d054b62f919b9f2a64746a7a9b09dea65e0d8ef95b6f37a8ced753",
+    "tools/science_funnel/units.py": "8481c04c2d1bd877bd080ddb579c085bda1657bec3d6c43308f17d5f370c04dc"
+  },
+  "counts": {
+    "intake_compiler_tests": 50,
+    "native_checks": 14,
+    "graph_contract_tests": 19
+  },
+  "source": "Pinned CoolProp Water/Ethanol; MIT; Mulero-JPCRD-2012 surface correlation evaluated at 298.15 K",
+  "boundary": "20 mm square; fixed rim; 441 vertices/800 triangles; Gaussian probe sigma 3 mm; zero gravity; equal bulk pressures",
+  "derivation": "U = gamma sum A_triangle + F sum w_i h_i. Force is -grad U; Newton-CG minimizes this fixed-rim convex height-field energy with a decreasing-energy line search.",
+  "result": "Water depth 0.681824 mm; Ethanol depth 2.303735 mm at 250 micronewtons. Released image exactly equals original flat pixels.",
+  "limits": [
+    "Equilibrium solver iterations have no physical-time meaning",
+    "Height-field interface, not biological skin or full liquid flow",
+    "No creature, every-bone, product-price, or global architecture qualification",
+    "Scientific properties drive geometry; diagnostic color is not a measured optical model",
+    "Isolated scene qualification; no deployed-controller admission or push"
+  ],
+  "reproduce": [
+    "powershell -File tools/science_funnel/run_surface.ps1",
+    "python -m unittest discover -s tools/science_funnel/tests -p test_*.py",
+    "python -B tools/creature_graph/tests/test_contracts.py",
+    "MSVC: cl /std:c++17 /EHsc /O2 tools/science_funnel/tests/surface_native.cpp /Fe:.tmp/surface-feature/surface_native.exe",
+    "Run native oracle with .tmp/surface-feature/surface_scene.json",
+    "With Pillow: python tools/science_funnel/tests/qualify_live_surface.py --output NEW_DIRECTORY"
+  ],
+  "artifacts": {
+    "browser_checks.json": "2def1e3606bd8833b460f506c991f9834150efa364b48cc2e120ec5c9614dfe7",
+    "compiled_scene.json": "6569d9a64dbf7770ab8ea500167cf35489a472d157e16c59f5aca88a514ea80d",
+    "ethanol.png": "2187057a9e0a1250410d2fb5c1a01512a4c4de99c9fcd9a848603878f3bea1bb",
+    "ethanol_state.json": "0b2a846f12b5b8cf4b86e6643542afc2388708d5aabd075e260623b303ca0c91",
+    "flat.png": "ffa8842fa571667ac6df475f7369ab479861bb01cf7dde07896cf1849550aa5e",
+    "flat_state.json": "c06c7781bc5ae75cf7dd54184bb1ad07d89944c26561045a0000585b11c69cdc",
+    "graph_checks.log": "dda124057aec0dec7409de2d3167b9c10f8c025b449afb1d0caaf95dcbbd64ab",
+    "intake.json": "3aee63e9d25d0b4ad2d30d769435ba709ffb0cdf53be29071915cb514607ed6d",
+    "live_checks.json": "30a8696f58a2a132a1064dd37285126a838d8897dd376b2bbe76968427cd8dee",
+    "native_checks.json": "7c42e3115da86fdb9738f021d151eaf3ff9c6739c2b2a7fca41dfc0f946dd5e8",
+    "python_checks.log": "d60f41ad0af0b1b5c787428c11b3056f1ff8aea6d8dc9c437fa922e0ec066b45",
+    "qualified_graph.json": "1571f0ab2453ccf74854b33923df52db63e2aeb69b0f5f30eac834a0713e4eae",
+    "qualified_page.png": "6ce4508d31896de3d6b4dc2036fdc1c23cc5628c899f3925dd829e8f470c7f29",
+    "reaction_before_fix.txt": "042b5c6b7670439256f6e7aff5ea9923d1c592cf8b8c6ab31107e073bfae133d",
+    "released.png": "ffa8842fa571667ac6df475f7369ab479861bb01cf7dde07896cf1849550aa5e",
+    "released_state.json": "2fb7a82db98504ad69800feb64ae96c4c99aca1a3d45b6244847129cdbaf0625",
+    "runtime.json": "950701d435db13573986a3174aebe98e862a44e8d4c9381692bbc50e7c18026e",
+    "visual_review.md": "82a913c79e31a8f71d5b51cc068d141643b3c613616a4cf84d00cfbc89368092",
+    "water.png": "1ad3f1c4cf492d774a365983f6e809b196e9860e114fff212534f9a74d343faa",
+    "water_state.json": "2324fb48c0658ebac881c8070ef82201970a490ff6c93dda28bbe6ef058efbd8",
+    "graphify_checks.json": "538f25b4dfcc1954cf0f867856ece2aa03efe8c7f5bc0af59aee1ed3eadd9f42"
+  },
+  "graphify_round_trip": {
+    "pass": true,
+    "qualified_graph_hash": "f0a90ad1f5e7b2c9c54b820029d56487fa2eae5b279d71101181f3805fe9167f",
+    "nodes": 1566,
+    "edges": 236,
+    "checks": [
+      {
+        "check": "node_identity_round_trip",
+        "expected": "all 1566 objects reversible + full record/spatial payload equal",
+        "observed": "1566/1566 ok",
+        "pass": true,
+        "evidence": {
+          "mismatches": []
+        }
+      },
+      {
+        "check": "edge_identity_round_trip",
+        "expected": "all 236 relations with direction+note intact",
+        "observed": "missing=0 extra=0",
+        "pass": true,
+        "evidence": {
+          "missing_sample": [],
+          "extra_sample": []
+        }
+      },
+      {
+        "check": "multiplicity_preserved",
+        "expected": "no parallel groups in store (all pairs single-edged)",
+        "observed": "no parallel groups in store",
+        "pass": true
+      },
+      {
+        "check": "traversal_parity_2hop",
+        "expected": [
+          "frame.ankle_l",
+          "frame.knee_l",
+          "ref.osim.leg6dof9musc.body.calcn_r",
+          "ref.osim.leg6dof9musc.body.talus_r",
+          "ref.osim.leg6dof9musc.body.tibia_r",
+          "ref.osim.leg6dof9musc.body.toes_r",
+          "ref.uberon.UBERON_0000313",
+          "ref.uberon.UBERON_0000979",
+          "ref.uberon.UBERON_0001436",
+          "ref.uberon.UBERON_0001446",
+          "ref.uberon.UBERON_0001447",
+          "ref.uberon.UBERON_0001448",
+          "ref.uberon.UBERON_0001449",
+          "ref.uberon.UBERON_0001450",
+          "ref.uberon.UBERON_0001452",
+          "ref.uberon.UBERON_0002395",
+          "ref.uberon.UBERON_0003650",
+          "ref.uberon.UBERON_0004388",
+          "ref.uberon.UBERON_0015180",
+          "ref.uberon.UBERON_1200015",
+          "ref.uberon.UBERON_1200018",
+          "ref.uberon.UBERON_1200020",
+          "region.leg_l",
+          "region.seg.foot_l",
+          "region.seg.shin_l",
+          "region.seg.thigh_l",
+          "seg.shin_l",
+          "seg.thigh_l"
+        ],
+        "observed": [
+          "frame.ankle_l",
+          "frame.knee_l",
+          "ref.osim.leg6dof9musc.body.calcn_r",
+          "ref.osim.leg6dof9musc.body.talus_r",
+          "ref.osim.leg6dof9musc.body.tibia_r",
+          "ref.osim.leg6dof9musc.body.toes_r",
+          "ref.uberon.UBERON_0000313",
+          "ref.uberon.UBERON_0000979",
+          "ref.uberon.UBERON_0001436",
+          "ref.uberon.UBERON_0001446",
+          "ref.uberon.UBERON_0001447",
+          "ref.uberon.UBERON_0001448",
+          "ref.uberon.UBERON_0001449",
+          "ref.uberon.UBERON_0001450",
+          "ref.uberon.UBERON_0001452",
+          "ref.uberon.UBERON_0002395",
+          "ref.uberon.UBERON_0003650",
+          "ref.uberon.UBERON_0004388",
+          "ref.uberon.UBERON_0015180",
+          "ref.uberon.UBERON_1200015",
+          "ref.uberon.UBERON_1200018",
+          "ref.uberon.UBERON_1200020",
+          "region.leg_l",
+          "region.seg.foot_l",
+          "region.seg.shin_l",
+          "region.seg.thigh_l",
+          "seg.shin_l",
+          "seg.thigh_l"
+        ],
+        "pass": true,
+        "evidence": {
+          "start": "seg.foot_l",
+          "out_degree": 18
+        }
+      },
+      {
+        "check": "graphify_query_health",
+        "expected": 1566,
+        "observed": 1566,
+        "pass": true,
+        "evidence": {
+          "mutations": 0,
+          "pathways": 0,
+          "features": 0,
+          "note": "creature objects must not pollute the DNA families"
+        }
+      },
+      {
+        "check": "because_of_honest_empty",
+        "expected": [],
+        "observed": [],
+        "pass": true
+      },
+      {
+        "check": "fts_search_finds_ingested",
+        "expected": "seg_foot_l",
+        "observed": [
+          "seg_foot_l",
+          "source_document_f8bcf74493a5cecd3b6c0c2983b9baa0ffedaa9ab734a759dd660ef510b09be5_238725fcc72637ce51a220da3fa73815fd44c7bd8505735f19a8f1a14f5b0e72"
+        ],
+        "pass": true,
+        "evidence": {
+          "query": "Left foot segment (terminal)",
+          "n_hits": 2
+        }
+      }
+    ],
+    "consumer_storage": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\surface-feature\\graphify"
+  },
+  "source_git_blobs_sha256": {
+    "ChimeraEngine/engine/graph_surface.hpp": "f8c2a1f6ef07d3a2989a4a64f7583f49f5e6b524910ee4bb52e273e8eeeb2e8d",
+    "ChimeraEngine/engine/main.cpp": "765b413b799aeee6eb483c1d4a26059f05f8122a079fe09cb1d32534ba6c49ca",
+    "README.md": "69af8b51085b30787ba6f5e2eff52283f153e256e10185d6d553fd6717fdd531",
+    "tools/creature_graph/data/authored/project_program.json": "48acb94528e66ba2d71ebca1f9b6dd39fa2858b09f435faaf4caffa188827bbf",
+    "tools/creature_graph/data/creature_graph.json": "4cec6be9782e438f353dfda58963a0713d08fed5d9314fa702be87755b8e0017",
+    "tools/science_funnel/__init__.py": "c5a9f9b162177ec18d127edb799bbfe1ba08442ed95c72f8f0947f9d64618b19",
+    "tools/science_funnel/__main__.py": "494b8070a646b478488d03b9580b4cc127770c654ba53c0c34c50c86dbdf93a1",
+    "tools/science_funnel/adapters.py": "e7d35d7a9b44830ee193726d3444ef84764283a6819c0096c11ee8d9bff75b1d",
+    "tools/science_funnel/common.py": "ee4af6e15bff8f941c9b05ef7ce8ac171f6f20ce5673ef90a9f1adaa47bfb87c",
+    "tools/science_funnel/data/coolprop/Ethanol.json": "df844ab4e859424745e83126bfb784bd51142710acc1b14e2b2ba5e45607ebc8",
+    "tools/science_funnel/data/coolprop/LICENSE": "9bf835333ef602af4cb19338b9f9d43671e174fa029b00280e9bdba6ea4719b2",
+    "tools/science_funnel/data/coolprop/Water.json": "540f8e84f721e526e2f9acff775cd9dbddcf2ef35284440ea501b7dd37ac53ac",
+    "tools/science_funnel/data/coolprop/download_receipt.json": "5be993ffbaf1f4a97157bf633fcbd36c1e13eeec5604fc7567ac9988f3d4f49c",
+    "tools/science_funnel/data/surface_recipe.json": "ce2d247c5911a76ee9ceded7c1bf0f79575b5ff89e8c17a4d09bdb209c843818",
+    "tools/science_funnel/graph.py": "e9d63e904e52a9168b1f3bf1634c91b892bcebde6370b7c6e57773a2f52087a8",
+    "tools/science_funnel/pipeline.py": "2a94a3639413253c02d7af8a5f189df10b2a1824c5185816c46a9bbeb4449911",
+    "tools/science_funnel/qualify.py": "6b86b5d745f04a20b1b50f853914b9ba6ed1512bfc9c2041b8e681af451995a4",
+    "tools/science_funnel/reductions.py": "8f5651a79799cf8742642d622bd788859fe752bbd6ac69f2fae3391246631772",
+    "tools/science_funnel/run_surface.ps1": "07473de5d0b1c0723b3dd8ca5a8d374c02a81c720fac9e59a7af229b4dc8ecba",
+    "tools/science_funnel/surface.html": "638777626438da934f8ba56ae07b52ddc3e6a87521719d3ef5d08ea3e9a3453a",
+    "tools/science_funnel/surface_scene.py": "377b0aea262554dad207a36dbd5f42ad3ea0616639a0356127432cf09a63ee29",
+    "tools/science_funnel/tests/qualify_live_surface.py": "bb80c5a3520156d7b5e5ab2de11218563834bde86ad634e0953af2e933d31eec",
+    "tools/science_funnel/tests/surface_native.cpp": "00009dc1c70adb1152d77506fce43f89cdf3002fcbbdd99baa426465091eed34",
+    "tools/science_funnel/tests/test_funnels.py": "5b255a2f55d70921886439a29c34c81b29ce7a5e7a8a2ca83f912611ba860286",
+    "tools/science_funnel/tests/test_surface_scene.py": "e51973c4f7234ba8eb1b41c08b3041d6cf43670381ff580cf4337f190eae9e2b",
+    "tools/science_funnel/units.py": "0bf4d812036f6867198f5029637b6312b320cdc39a96bf150d82efdc182dbbfe",
+    ".gitattributes": "ffe0e9cf70b6005ecf8d418d18139ea51bedc1b2d9ac06adbdd660bc8bad4ebc"
+  },
+  "source_hash_scope": "source_files_sha256 records exact measured worktree bytes; source_git_blobs_sha256 records staged repository bytes. Git text normalization may differ. Raw scientific artifacts and evidence are exempt from normalization."
+}

@@ -214,3 +214,28 @@ def opensim(raw, manifest, path):
 ADAPTERS = {'uberon_obo': ontology, 'ro_owl': relations, 'qudt_ttl': units,
             'opensim_xml': opensim, 'measurements_csv': measurements, 'series_csv': series,
             'geometry_json': geometry, 'model_json': model}
+
+def coolprop_surface(raw, manifest, path):
+    """Strict selected CoolProp correlation; no arbitrary equation execution."""
+    fluid = loads(raw)
+    surface = fluid['ANCILLARIES']['surface_tension']
+    name = text(fluid['INFO']['NAME'], 'fluid name')
+    temperature = number(manifest.get('temperature_K'))
+    # This adapter qualifies one common comparison temperature only. EOS bounds
+    # alone do not establish a surface-correlation applicability interval.
+    require(temperature == 298.15, 'surface_temperature_not_qualified')
+    require(surface['description'] == 'sigma = sum(a_i*(1-T/Tc)^n_i)', 'surface_model_unsupported')
+    tc = number(surface['Tc'])
+    a = [number(x) for x in surface['a']]
+    n = [number(x) for x in surface['n']]
+    require(len(a) == len(n) and a and tc > temperature, 'surface_coefficients_invalid')
+    value = sum(x * (1-temperature/tc)**power for x,power in zip(a,n))
+    require(value > 0, 'surface_tension_nonpositive')
+    payload = convert(value, 'N/m', 'surface_tension')
+    payload.update(subject=name, conditions={'temperature_K':temperature,
+      'interface':'pure_liquid_vapor','measurement_kind':'published_correlation_evaluation'},
+      correlation={'a_N_m':a,'n':n,'Tc_K':tc,'reference':surface['BibTeX']})
+    return [draft(name+'/surface_tension/298.15K', 'measurement', payload,
+              unknowns=['source_fit_uncertainty','bulk_flow','optical_appearance'])]
+
+ADAPTERS['coolprop_surface'] = coolprop_surface

@@ -1,0 +1,16 @@
+{
+  "captured_utc": "2026-09-16T18:15:46.907688+00:00",
+  "graph_hash": "e7de576ea38643c88c5750d18b75170c8ca5dd43590f87d4557f22f6493cb549",
+  "method": "agent-browser connected to isolated Chrome CDP9228; actual UI button clicks and observed native state",
+  "checks": {
+    "press": true,
+    "release": true,
+    "material_switch": true,
+    "reset": true,
+    "source_and_graph_panel": true,
+    "no_overflow_at_390px": true,
+    "state_and_frame_revision_match": true
+  },
+  "scope_note": "Final-identity press/release/image checks repeated; unchanged UI material/reset and mobile controls checked in same run before the compiler identity guard. Native scene identity and values are recorded separately.",
+  "review": "Independent same-provider visual review PASS; no human purchase verdict"
+}

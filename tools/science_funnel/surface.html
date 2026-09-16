@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Matter from data — Chimera</title>
+<style>
+:root{--bg:#090c0e;--panel:#101518;--line:#293136;--muted:#a1aeb5;--text:#edf4f6;--cyan:#8ee8ef;--amber:#e9bc7b;--danger:#f0a29a;--mono:Consolas,"SFMono-Regular",monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Segoe UI",system-ui,sans-serif}button,input{font:inherit}button,a,input,summary{-webkit-tap-highlight-color:transparent}button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--cyan);outline-offset:5px}button{cursor:pointer}button:disabled,input:disabled{cursor:not-allowed;opacity:.4}a{color:var(--cyan);text-underline-offset:4px}a:hover{color:white}[hidden]{display:none!important}.shell{max-width:1680px;margin:auto;padding:30px 42px 26px}.masthead{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:28px;border-bottom:1px solid var(--line)}.identity{display:flex;align-items:center;gap:12px;font-size:12px;font-weight:650;letter-spacing:.16em}.mark{width:28px;height:28px;border:1px solid var(--cyan);display:grid;place-items:center;color:var(--cyan);font-size:16px;letter-spacing:0}.identity span:last-child{color:var(--muted);font-size:11px;font-weight:500;letter-spacing:.12em;border-left:1px solid var(--line);padding-left:15px}.connection{display:flex;align-items:center;gap:9px;color:var(--muted);font:11px var(--mono)}.dot{width:6px;height:6px;flex:0 0 6px;background:var(--amber);border-radius:50%}.connection[data-state="live"] .dot{background:var(--cyan);box-shadow:0 0 10px #8ee8ef44}.connection[data-state="error"] .dot{background:var(--danger)}.intro{padding:38px 0 32px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px}.eyebrow{font:11px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}h1{font-size:clamp(36px,4.3vw,62px);font-weight:450;letter-spacing:-.052em;line-height:1.08;margin:12px 0 14px}h1 span{color:var(--cyan)}.subtitle{margin:0;font-size:16px;color:var(--muted)}.experiment-id{text-align:right;flex-shrink:0;padding-bottom:4px;color:var(--muted);font:11px/1.9 var(--mono);letter-spacing:.05em}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 322px;border:1px solid var(--line)}.scene{min-width:0;display:flex;flex-direction:column}.scene-header{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:17px 22px;border-bottom:1px solid var(--line);font:11px var(--mono)}.scene-title{display:flex;align-items:center;gap:9px}.scene-title::before{content:"";width:6px;height:6px;background:var(--cyan)}.scene-header small{font-size:11px;color:var(--muted)}.viewport{position:relative;display:grid;place-items:center;background:#05080a;min-height:420px;aspect-ratio:1.66;overflow:hidden;flex:1}.viewport img{width:100%;height:100%;object-fit:contain;position:absolute;inset:0}.viewport[data-stale="true"] img{opacity:.35}.frame-notice{position:absolute;inset:0;display:grid;place-content:center;text-align:center;gap:8px;padding:24px;pointer-events:none;background:#060a0c35}.frame-notice strong{font-size:17px;font-weight:500}.frame-notice span{font-size:12px;color:var(--muted);max-width:330px}.viewport-label{position:absolute;left:22px;top:20px;font:11px var(--mono);letter-spacing:.09em;color:#d6e1e6;background:#070b0ed9;padding:6px 8px;border:1px solid #263137;pointer-events:none}.frame-note{position:absolute;right:18px;bottom:16px;color:#c0ccd1;background:#070b0ed9;padding:4px 7px;font:11px var(--mono);pointer-events:none}.measurements{display:grid;grid-template-columns:1.1fr 1fr 1fr;border-top:1px solid var(--line)}.measurement{padding:22px;border-right:1px solid var(--line);min-width:0}.measurement:last-child{border-right:0}.measurement dt{color:var(--muted);font-size:11px}.measurement dd{margin:9px 0 0;font:clamp(22px,2.2vw,32px)/1.15 var(--mono);letter-spacing:-.07em}.measurement dd small{font:11px "Segoe UI",sans-serif;letter-spacing:0;color:var(--muted);margin-left:5px}.measurement:first-child dd{color:var(--cyan)}.measurement .submetric{font:11px/1.4 var(--mono);color:var(--muted);letter-spacing:0;margin-top:10px}.controls{border-left:1px solid var(--line);background:var(--panel);padding:24px;display:flex;flex-direction:column}.section-label{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font:11px var(--mono);letter-spacing:.12em;text-transform:uppercase;margin:0 0 17px}.section-label .number{color:#788b95}.materials{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:18px}.material-button{padding:11px 6px;color:var(--muted);background:none;border:1px solid var(--line);font-size:13px;transition:background .15s,color .15s}.material-button+button{border-left:0}.material-button[aria-pressed="true"]{color:var(--cyan);background:#173034;box-shadow:inset 0 -2px var(--cyan)}.material-button:hover:not(:disabled){background:#213036;color:var(--text)}.property{display:flex;align-items:baseline;justify-content:space-between;gap:10px}.property .label{font-size:11px;color:var(--muted)}.property-value{font:19px var(--mono);letter-spacing:-.05em}.property-value small{font-size:11px;letter-spacing:0;color:var(--muted)}.temperature{margin:7px 0 0;color:var(--muted);font:11px var(--mono);text-align:right}.control-section{border-top:1px solid var(--line);padding-top:25px;margin-top:25px}.load-choice{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}.load-choice label{font-size:12px;color:var(--muted)}.load-choice output{font:30px var(--mono);letter-spacing:-.07em}.load-choice output small{font-size:12px;color:var(--muted);letter-spacing:0;margin-left:4px}input[type="range"]{width:100%;height:24px;margin:8px 0;accent-color:var(--cyan);cursor:pointer}.range-labels{display:flex;justify-content:space-between;color:var(--muted);font:11px var(--mono)}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:23px}.actions button{padding:12px 5px;font-weight:600;border:1px solid var(--line);border-radius:2px;transition:background .15s,color .15s}.press{background:var(--cyan);color:#092022;border-color:var(--cyan)!important}.press:hover:not(:disabled){background:#c4f8fb}.release{color:var(--text);background:#192126}.release:hover:not(:disabled){background:#26363d}.action-message{min-height:33px;margin:11px 0 0;font-size:11px;line-height:1.5;color:var(--muted)}.action-message[data-error="true"]{color:var(--danger)}.state-section{margin-top:auto;padding-top:24px}.solver-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.solver-head span:first-child{font-size:11px;color:var(--muted)}.solver-state{font:11px var(--mono);color:var(--amber)}.solver-state[data-settled="true"]{color:var(--cyan)}.solver-details{margin:0;color:var(--muted);font:11px/1.8 var(--mono)}.reset{padding:8px 0;margin-top:17px;background:none;border:0;border-bottom:1px solid #6d818b;color:var(--muted);font-size:11px}.reset:hover:not(:disabled){color:white;border-color:white}.model-scope{display:grid;grid-template-columns:minmax(0,1fr) 322px;border:1px solid var(--line);border-top:0}.scope-main{padding:17px 22px;font-size:11px;color:var(--muted);line-height:1.75}.scope-main strong{font-weight:500;color:#cad5da}.scope-aside{padding:17px 24px;border-left:1px solid var(--line);font:11px/1.8 var(--mono);color:var(--muted)}.provenance{margin-top:24px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:18px 0}summary::-webkit-details-marker{display:none}.summary-title{font-size:13px;display:flex;align-items:center;gap:10px}.summary-title::before{content:"+";font:18px var(--mono);color:var(--cyan);width:18px}.provenance[open] .summary-title::before{content:"−"}.summary-meta{font:11px var(--mono);color:var(--muted)}.provenance-body{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;padding:8px 0 24px}.provenance dl{margin:0;font-size:11px;min-width:0}.provenance dl>div{display:grid;grid-template-columns:130px minmax(0,1fr);gap:12px;padding:6px 0}.provenance dt{color:var(--muted)}.provenance dd{margin:0;font-family:var(--mono);overflow-wrap:anywhere}.provenance-links{display:flex;gap:20px;flex-wrap:wrap;margin-top:14px;font-size:11px}.graph-message{font-size:11px;color:var(--muted);margin:10px 0 0}.footer{display:flex;justify-content:space-between;gap:16px;padding-top:19px;font:11px var(--mono);color:var(--muted)}.footer span:last-child{text-align:right}dl.measurements{margin:0}
+@media(min-width:1450px){.workspace{grid-template-columns:minmax(0,1fr) 354px}.model-scope{grid-template-columns:minmax(0,1fr) 354px}.controls{padding:28px}.viewport{min-height:530px}}
+@media(max-width:1000px){.shell{padding:24px}.workspace{grid-template-columns:minmax(0,1fr) 290px}.controls{padding:20px}.viewport{min-height:370px}.measurement{padding:18px 15px}.measurement dd{font-size:25px}.scene-header{padding:17px 15px}.model-scope{grid-template-columns:minmax(0,1fr) 290px}.scope-aside{padding:17px 20px}.provenance-body{gap:24px}.provenance dl>div{grid-template-columns:100px minmax(0,1fr)}}
+@media(max-width:740px){.shell{padding:20px 16px}.masthead{padding-bottom:20px}.identity{font-size:11px}.identity span:last-child{display:none}.connection{font-size:11px}.intro{padding:30px 0 25px}.experiment-id{display:none}.subtitle{font-size:14px;max-width:280px}h1{font-size:43px;max-width:320px}.workspace{grid-template-columns:1fr}.viewport{aspect-ratio:1.25;min-height:270px}.controls{border-left:0;border-top:1px solid var(--line);padding:23px}.measurement{padding:18px 13px}.measurement dd{font-size:24px}.measurement dd small{font-size:11px;margin-left:3px}.measurement dt{font-size:11px}.measurement .submetric{font-size:11px}.scene-header small{font-size:11px}.state-section{margin-top:22px;padding-top:17px;border-top:1px solid var(--line)}.model-scope{grid-template-columns:1fr}.scope-main{padding:17px 18px}.scope-aside{border-left:0;border-top:1px solid var(--line);padding:12px 18px}.provenance-body{grid-template-columns:1fr;gap:15px}.summary-meta{font-size:11px}.footer{font-size:11px}.frame-note{font-size:11px}.viewport-label{left:14px;top:14px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.scene-tools{display:flex;align-items:center;justify-content:flex-end;gap:14px;flex-wrap:wrap}.refresh-view{padding:5px 8px;border:1px solid var(--line);background:transparent;color:var(--text);font-size:11px;border-radius:2px;white-space:nowrap}.refresh-view:hover:not(:disabled){background:#213036;color:var(--cyan)}.measurement dt,.property .label,.load-choice label,.solver-head span:first-child,.scope-main,.action-message,.provenance dl,.provenance-links,.graph-message{font-size:12px}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="masthead">
+  <div class="identity"><span class="mark" aria-hidden="true">C</span> CHIMERA <span>SCIENTIFIC WORKBENCH</span></div>
+  <div class="connection" id="connection" data-state="waiting" role="status"><span class="dot" aria-hidden="true"></span><span id="connectionText">Connecting to engine</span></div>
+</header>
+<main>
+  <section class="intro" aria-labelledby="pageTitle">
+    <div><div class="eyebrow">Material study / Surface tension</div><h1 id="pageTitle">Matter <span>from data.</span></h1><p class="subtitle">A scientific record becomes a surface you can press.</p></div>
+    <div class="experiment-id">NATIVE VULKAN RENDERER<br>QUASISTATIC HEIGHT FIELD</div>
+  </section>
+  <section class="workspace" aria-label="Surface experiment">
+    <div class="scene">
+      <div class="scene-header"><span class="scene-title">Surface response</span><span class="scene-tools"><small id="meshInfo">Waiting for native geometry</small><button type="button" class="refresh-view" id="refreshView" title="Capture the current native camera view" disabled>Refresh view ↻</button></span></div>
+      <div class="viewport" id="viewport" data-stale="true" aria-label="Native engine viewport">
+        <img id="frame" alt="Live surface rendered by the native Chimera Vulkan engine" hidden>
+        <div class="viewport-label" id="viewportLabel">AWAITING ENGINE</div>
+        <div class="frame-notice" id="frameNotice" role="status"><strong id="frameNoticeTitle">Waiting for the native surface</strong><span id="frameNoticeDetail">The engine image will appear here when the renderer is available.</span></div>
+        <div class="frame-note">Color is diagnostic · not measured optics</div>
+      </div>
+      <dl class="measurements" aria-label="Measured response">
+        <div class="measurement"><dt>Center depth</dt><dd><span id="depth">—</span><small>mm</small></dd><div class="submetric">native equilibrium solution</div></div>
+        <div class="measurement"><dt>Applied load</dt><dd><span id="appliedLoad">—</span><small>µN</small></dd><div class="submetric" id="reaction">reaction — µN</div></div>
+        <div class="measurement"><dt>Equilibrium residual</dt><dd><span id="residual">—</span><small>µN</small></dd><div class="submetric" id="iterations">iterations —</div></div>
+      </dl>
+    </div>
+    <aside class="controls" aria-label="Experiment controls">
+      <div class="section-label"><span>Material</span><span class="number">01</span></div>
+      <div class="materials" role="group" aria-label="Choose material">
+        <button class="material-button" id="materialWater" type="button" data-material="Water" aria-pressed="false" disabled>Water</button>
+        <button class="material-button" id="materialEthanol" type="button" data-material="Ethanol" aria-pressed="false" disabled>Ethanol</button>
+      </div>
+      <div class="property"><span class="label">Surface tension, γ</span><span class="property-value"><span id="surfaceTension">—</span> <small>mN/m</small></span></div>
+      <p class="temperature" id="temperature">at — K</p>
+      <div class="control-section">
+        <div class="section-label"><span>Apply a load</span><span class="number">02</span></div>
+        <div class="load-choice"><label for="forceSlider">Selected load</label><output id="selectedLoad" for="forceSlider">250<small>µN</small></output></div>
+        <input type="range" id="forceSlider" name="force_microN" min="0" max="400" value="250" step="1" aria-valuetext="250 micronewtons" disabled>
+        <div class="range-labels"><span>0 µN</span><span id="maxLoad">400 µN</span></div>
+        <div class="actions"><button type="button" class="press" id="pressButton" disabled>Press <span aria-hidden="true">↓</span></button><button type="button" class="release" id="releaseButton" disabled>Release</button></div>
+        <p class="action-message" id="actionMessage" role="status">Controls become available when the engine connects.</p>
+      </div>
+      <div class="state-section">
+        <div class="solver-head"><span>Equilibrium</span><span class="solver-state" id="solverState" data-settled="false">Awaiting state</span></div>
+        <p class="solver-details" id="energy">total potential energy — J</p>
+        <p class="solver-details" id="stateRevision">state — / render —</p>
+        <button class="reset" type="button" id="resetButton" disabled>Reset experiment <span aria-hidden="true">↺</span></button>
+      </div>
+    </aside>
+  </section>
+  <div class="model-scope">
+    <div class="scope-main"><strong>Equilibrium surface-tension model</strong> · pinned boundary · gravity and bulk-fluid flow excluded.<br>Solver iterations are not elapsed physical time.</div>
+    <div class="scope-aside">SCIENTIFIC SOURCE<br>CoolProp · revision <span id="shortRevision">—</span></div>
+  </div>
+  <details class="provenance" id="provenance">
+    <summary><span class="summary-title">Follow the scientific record</span><span class="summary-meta">SOURCE → GRAPH → SURFACE</span></summary>
+    <div class="provenance-body">
+      <div>
+        <dl><div><dt>Upstream revision</dt><dd id="sourceRevision">—</dd></div><div><dt>Source record</dt><dd id="sourceRecord">—</dd></div><div><dt>Source license</dt><dd id="sourceLicense">—</dd></div></dl>
+        <div class="provenance-links"><a id="sourceLink" target="_blank" rel="noopener noreferrer" hidden>CoolProp property definition ↗</a></div>
+      </div>
+      <div>
+        <dl><div><dt>CreatureGraph hash</dt><dd id="graphHash">—</dd></div><div><dt>Graph objects</dt><dd id="graphObjects">—</dd></div><div><dt>Model</dt><dd id="modelMode">—</dd></div></dl>
+        <p class="graph-message" id="graphMessage">Expand to inspect the current graph snapshot.</p>
+        <div class="provenance-links"><a href="/science_graph" id="graphLink" target="_blank" rel="noopener noreferrer">Open graph JSON ↗</a></div>
+      </div>
+    </div>
+  </details>
+</main>
+<footer class="footer"><span>DATA IN. PHYSICAL RESPONSE OUT.</span><span id="lastUpdated">No engine state received</span></footer>
+</div>
+<script>
+'use strict';
+// This page displays native engine output. It performs no physics or geometry simulation.
+const $ = id => document.getElementById(id);
+const materialButtons = [...document.querySelectorAll('[data-material]')];
+const controls = [...materialButtons, $('forceSlider'), $('pressButton'), $('releaseButton'), $('resetButton')];
+let online = false, commandPending = false, commandVersion = 0;
+let statusReceivedAt = 0, frameReceivedAt = 0, frameFailed = false;
+let statusError = '', frameError = '', currentState = null, currentFrameURL = null;
+let graphBusy = false, graphRequestedHash = null, graphLoadedHash = null;
+let statusTimer, frameTimer = null, stopped = false;
+let frameInFlight = false, framePending = true, frameRefreshRequested = false;
+let displayedFrameState = null, nextFrameAttemptAt = 0;
+window.lastFrameState = null;
+window.lastState = null;
+
+function text(id, value) { $(id).textContent = value; }
+function format(value, places) { return Number(value).toLocaleString('en-US', {minimumFractionDigits: places, maximumFractionDigits: places}); }
+function scientific(value) { return Number(value).toExponential(3); }
+function conciseError(error) { return error.name === 'AbortError' ? 'The engine did not respond in time.' : error.message; }
+async function requestJSON(path, options = {}) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 6000);
+  try {
+    const response = await fetch(path, {...options, cache: 'no-store', signal: controller.signal});
+    if (!response.ok) throw new Error(`Engine request failed (HTTP ${response.status}).`);
+    return await response.json();
+  } finally { clearTimeout(timer); }
+}
+function validateState(state) {
+  const numbers = ['temperature_K','gamma_N_m','force_N','depth_m','residual_N','iterations','energy_J','reaction_N','vertices','triangles','state_revision','render_revision'];
+  if (!state || state.ok !== true || !['Water','Ethanol'].includes(state.material) ||
+      numbers.some(key => typeof state[key] !== 'number' || !Number.isFinite(state[key])) ||
+      typeof state.converged !== 'boolean' || !state.source || typeof state.source.revision !== 'string' ||
+      typeof state.graph_hash !== 'string' || !state.limits || !Number.isFinite(state.limits.max_force_N) || state.limits.max_force_N < 0) {
+    throw new Error('The engine returned an incomplete surface state.');
+  }
+  return state;
+}
+function frameKey(state) {
+  return state ? JSON.stringify([state.state_revision, state.render_revision, state.material, state.force_N, state.graph_hash]) : null;
+}
+function sameFrameState(first, second) { return Boolean(first && second && frameKey(first) === frameKey(second)); }
+function renderReady(state) { return Boolean(state && state.state_revision === state.render_revision); }
+function updateControls() {
+  controls.forEach(control => { control.disabled = !online || commandPending; });
+  $('refreshView').disabled = !online || commandPending || frameInFlight || framePending;
+  if (online && !commandPending && Array.isArray(currentState?.materials)) {
+    materialButtons.forEach(button => { button.disabled = !currentState.materials.some(material => material.name === button.dataset.material); });
+  }
+}
+function updateConnection() {
+  const age = statusReceivedAt ? Date.now() - statusReceivedAt : Infinity;
+  if (online && age > 6000) { online = false; statusError = 'The last engine state is stale.'; updateControls(); }
+  const compatibleFrame = sameFrameState(displayedFrameState, currentState) && renderReady(currentState);
+  const updating = online && (commandPending || framePending || !compatibleFrame);
+  const currentImage = online && compatibleFrame && !updating && !frameFailed;
+  $('connection').dataset.state = currentImage ? 'live' : (online && !frameFailed ? 'waiting' : statusReceivedAt || frameFailed ? 'error' : 'waiting');
+  text('connectionText', currentImage ? 'Native engine connected' : online ? (frameFailed ? 'Engine connected · image unavailable' : 'Engine connected · image updating') : statusReceivedAt ? 'Engine disconnected · stale state' : statusError ? 'Native engine unavailable' : 'Connecting to engine');
+  $('viewport').dataset.stale = String(!currentImage);
+  $('viewport').dataset.framePending = String(updating);
+  $('frameNotice').hidden = currentImage;
+  if (!currentImage) {
+    text('frameNoticeTitle', !online ? (frameReceivedAt ? 'Last engine image · connection interrupted' : 'Waiting for the native surface') : frameFailed ? 'Native image unavailable' : 'Updating native image');
+    const previous = displayedFrameState ? `The previous frame shows ${displayedFrameState.material} at ${format(displayedFrameState.force_N * 1e6, 1)} µN. ` : '';
+    text('frameNoticeDetail', statusError || frameError || `${previous}Waiting for matching state and render revisions.`);
+  }
+  // The image label always describes its captured state, never a newer metrics response.
+  text('viewportLabel', displayedFrameState ? `${displayedFrameState.material.toUpperCase()} / FRAME R${displayedFrameState.state_revision}${currentImage ? '' : ' · STALE'}` : 'AWAITING NATIVE FRAME');
+  if (statusReceivedAt) text('lastUpdated', `${online ? 'State received' : 'Last state'} ${Math.max(0, age / 1000).toFixed(1)} s ago`);
+  if (!online && currentState) { text('solverState', 'Stale state'); $('solverState').dataset.settled = 'false'; }
+}
+function applyState(state) {
+  currentState = state;
+  window.lastState = state;
+  online = true;
+  statusError = '';
+  statusReceivedAt = Date.now();
+  text('surfaceTension', format(state.gamma_N_m * 1000, 2));
+  text('temperature', `at ${format(state.temperature_K, 2)} K`);
+  text('depth', format(state.depth_m * 1000, 3));
+  text('appliedLoad', format(state.force_N * 1e6, 1));
+  text('residual', format(Math.abs(state.residual_N) * 1e6, 4));
+  text('reaction', `reaction ${format(state.reaction_N * 1e6, 1)} µN`);
+  text('iterations', `iterations ${state.iterations.toLocaleString('en-US')}`);
+  text('energy', `total potential energy ${scientific(state.energy_J)} J`);
+  text('solverState', state.converged ? 'Settled' : 'Not converged');
+  $('solverState').dataset.settled = String(state.converged);
+  text('stateRevision', `state ${state.state_revision ?? '—'} / render ${state.render_revision ?? '—'}`);
+  text('meshInfo', `${state.vertices.toLocaleString('en-US')} vertices / ${state.triangles.toLocaleString('en-US')} triangles`);
+  materialButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.material === state.material)));
+  const maximum = Math.min(400, state.limits.max_force_N * 1e6);
+  $('forceSlider').max = String(maximum);
+  if (Number($('forceSlider').value) > maximum) $('forceSlider').value = String(maximum);
+  text('maxLoad', `${format(maximum, Number.isInteger(maximum) ? 0 : 1)} µN`);
+  updateSelectedLoad();
+  text('shortRevision', state.source.revision.slice(0, 10));
+  text('sourceRevision', state.source.revision);
+  text('sourceRecord', state.source_record_id ?? 'Unavailable');
+  text('sourceLicense', state.source.license ?? 'Unavailable');
+  text('graphHash', state.graph_hash);
+  text('modelMode', state.mode ?? 'Unavailable');
+  const sourceLink = $('sourceLink');
+  try {
+    const sourceURL = new URL(state.source.url);
+    if (!['http:','https:'].includes(sourceURL.protocol)) throw new Error('Unsupported URL');
+    sourceLink.href = sourceURL.href;
+    sourceLink.hidden = false;
+  } catch { sourceLink.hidden = true; sourceLink.removeAttribute('href'); }
+  if (graphLoadedHash && graphLoadedHash !== state.graph_hash) { graphLoadedHash = null; text('graphObjects', '—'); }
+  if ($('provenance').open && !graphBusy && graphLoadedHash !== state.graph_hash) loadGraph();
+  updateControls();
+  updateConnection();
+  if (!$('actionMessage').dataset.touched) text('actionMessage', 'Choose a load, then press the surface.');
+  scheduleFrame();
+}
+function updateSelectedLoad() {
+  const load = Number($('forceSlider').value);
+  $('selectedLoad').replaceChildren(document.createTextNode(format(load, Number.isInteger(load) ? 0 : 1)));
+  const unit = document.createElement('small'); unit.textContent = 'µN'; $('selectedLoad').append(unit);
+  $('forceSlider').setAttribute('aria-valuetext', `${load} micronewtons`);
+}
+async function pollStatus() {
+  if (stopped) return;
+  const version = commandVersion;
+  if (!commandPending && !frameInFlight && !document.hidden) {
+    try {
+      const state = validateState(await requestJSON('/science_surface'));
+      if (version === commandVersion && !commandPending) applyState(state);
+    } catch (error) {
+      if (version === commandVersion && !commandPending) {
+        online = false; statusError = conciseError(error); updateControls(); updateConnection();
+      }
+    }
+  }
+  if (!stopped) statusTimer = setTimeout(pollStatus, 400);
+}
+async function sendCommand(body, message) {
+  if (!online || commandPending) return;
+  commandPending = true;
+  commandVersion++;
+  framePending = true;
+  frameFailed = false;
+  frameError = '';
+  updateControls();
+  updateConnection();
+  $('actionMessage').dataset.touched = 'true';
+  $('actionMessage').dataset.error = 'false';
+  text('actionMessage', 'Applying to the native engine…');
+  try {
+    const state = validateState(await requestJSON('/science_surface', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)}));
+    applyState(state);
+    text('actionMessage', message);
+  } catch (error) {
+    online = false; statusError = conciseError(error);
+    $('actionMessage').dataset.error = 'true';
+    text('actionMessage', `Command failed. ${statusError}`);
+  } finally {
+    commandPending = false;
+    updateControls();
+    updateConnection();
+    scheduleFrame();
+  }
+}
+function scheduleFrame(force = false) {
+  if (force) { frameRefreshRequested = true; frameFailed = false; frameError = ''; }
+  if (stopped || document.hidden || !online || !currentState || commandPending || frameInFlight) return;
+  const needsFrame = frameRefreshRequested || frameFailed || !sameFrameState(displayedFrameState, currentState);
+  framePending = needsFrame;
+  updateControls();
+  updateConnection();
+  if (!needsFrame) {
+    clearTimeout(frameTimer);
+    frameTimer = null;
+    return;
+  }
+  // Render revision is the scientific state uploaded to the native renderer.
+  // Cheap status polling waits for it; it does not trigger repeated PNG readbacks.
+  if (!renderReady(currentState) || frameTimer !== null) return;
+  frameTimer = setTimeout(captureFrame, Math.max(0, nextFrameAttemptAt - Date.now()));
+}
+async function captureFrame() {
+  frameTimer = null;
+  if (stopped || document.hidden || !online || commandPending || frameInFlight) return;
+  frameInFlight = true;
+  framePending = true;
+  updateControls();
+  updateConnection();
+  const version = commandVersion;
+  let controller, timer, nextURL;
+  try {
+    const before = validateState(await requestJSON('/science_surface'));
+    if (version !== commandVersion || commandPending || stopped) return;
+    applyState(before);
+    if (!renderReady(before)) return;
+    controller = new AbortController();
+    timer = setTimeout(() => controller.abort(), 8000);
+    const response = await fetch(`/frame?t=${Date.now()}`, {cache:'no-store', signal:controller.signal});
+    if (!response.ok) throw new Error(`The renderer returned HTTP ${response.status}.`);
+    const blob = await response.blob();
+    if (!blob.type.toLowerCase().startsWith('image/png')) throw new Error('The renderer did not return a PNG image.');
+    nextURL = URL.createObjectURL(blob);
+    const image = new Image();
+    image.src = nextURL;
+    await image.decode();
+    clearTimeout(timer);
+    // Bracket every capture with actual state reads. Discard images captured across
+    // a material/load revision or an unfinished native geometry upload.
+    const after = validateState(await requestJSON('/science_surface'));
+    if (version === commandVersion && !commandPending && !stopped) applyState(after);
+    if (stopped || version !== commandVersion || commandPending || !renderReady(after) ||
+        !sameFrameState(before, after) || !sameFrameState(after, currentState)) {
+      frameError = 'The surface changed during capture. Waiting for a consistent native frame.';
+      return;
+    }
+    $('frame').src = nextURL;
+    $('frame').hidden = false;
+    if (currentFrameURL) URL.revokeObjectURL(currentFrameURL);
+    currentFrameURL = nextURL;
+    nextURL = null;
+    displayedFrameState = after;
+    window.lastFrameState = {material:after.material, force_N:after.force_N, graph_hash:after.graph_hash, state_revision:after.state_revision, render_revision:after.render_revision};
+    frameReceivedAt = Date.now();
+    frameRefreshRequested = false;
+    framePending = false;
+    frameFailed = false;
+    frameError = '';
+  } catch (error) {
+    frameFailed = true;
+    frameError = conciseError(error);
+  } finally {
+    clearTimeout(timer);
+    if (nextURL) URL.revokeObjectURL(nextURL);
+    frameInFlight = false;
+    nextFrameAttemptAt = Date.now() + (frameFailed ? 1200 : 150);
+    updateControls();
+    updateConnection();
+    // A new capture is scheduled only if a revision changed, an image failed,
+    // or the operator explicitly requested a camera-view refresh.
+    scheduleFrame();
+  }
+}
+async function loadGraph() {
+  if (graphBusy || !currentState || !$('provenance').open) return;
+  graphBusy = true;
+  graphRequestedHash = currentState.graph_hash;
+  text('graphMessage', 'Reading the current CreatureGraph snapshot…');
+  try {
+    const graph = await requestJSON('/science_graph');
+    const objects = graph.objects;
+    if (!objects || typeof objects !== 'object') throw new Error('The graph snapshot has no object collection.');
+    if (graphRequestedHash === currentState.graph_hash) {
+      const count = Array.isArray(objects) ? objects.length : Object.keys(objects).length;
+      text('graphObjects', count.toLocaleString('en-US'));
+      text('graphMessage', 'Object count read from the full graph snapshot.');
+      graphLoadedHash = graphRequestedHash;
+    }
+  } catch (error) {
+    text('graphObjects', 'Unavailable');
+    text('graphMessage', `Graph unavailable. ${conciseError(error)} Close and reopen to retry.`);
+    // Avoid retrying a failed expanded graph request on every status poll.
+    graphLoadedHash = graphRequestedHash;
+  } finally { graphBusy = false; }
+}
+$('refreshView').addEventListener('click', () => scheduleFrame(true));
+$('forceSlider').addEventListener('input', updateSelectedLoad);
+$('pressButton').addEventListener('click', () => sendCommand({force_N:Number($('forceSlider').value) / 1e6}, 'Selected load applied to the surface.'));
+$('releaseButton').addEventListener('click', () => sendCommand({force_N:0}, 'Load released. The selected load is ready to press again.'));
+$('resetButton').addEventListener('click', () => sendCommand({reset:true}, 'Experiment reset by the native engine.'));
+materialButtons.forEach(button => button.addEventListener('click', () => sendCommand({material:button.dataset.material}, `${button.dataset.material} source record selected.`)));
+$('provenance').addEventListener('toggle', () => { if ($('provenance').open) { graphLoadedHash = null; loadGraph(); } });
+const freshnessTimer = setInterval(updateConnection, 500);
+window.addEventListener('pagehide', event => { if (event.persisted) return; stopped = true; clearTimeout(statusTimer); clearTimeout(frameTimer); clearInterval(freshnessTimer); if (currentFrameURL) URL.revokeObjectURL(currentFrameURL); });
+pollStatus();
+</script>
+</body>
+</html>
+
+

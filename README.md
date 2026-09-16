@@ -13,6 +13,22 @@ and behind it, a real physics engine that never fakes a number.**
 [docs/THE_GAME.md](docs/THE_GAME.md) is the constitution: the vision, the
 build order, and the laws this project runs under.
 
+## Run the scientific surface
+
+From this checkout:
+
+    powershell -File tools/science_funnel/run_surface.ps1
+
+Then open **http://127.0.0.1:8107/science**. Requires Python, CMake, the C++ build
+toolchain and Vulkan SDK used by the engine. The launcher refuses occupied ports.
+
+The [graph recipe](tools/science_funnel/data/surface_recipe.json) binds pinned
+CoolProp Water/Ethanol data to 800 native triangles. Press, switch material, and
+release: the image is captured from the actual Vulkan engine. This is a
+quasistatic fixed-rim interface experiment, not biological skin or full fluid dynamics.
+The project graph indexes it as doc.science_surface_native; measured scope and
+artifact identities live in its linked qualification graph.
+
 ## What's running today
 
 - **The creature** — a 28-joint rigged body you can pose, march, and

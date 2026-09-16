@@ -1,0 +1,24 @@
+test_D1_selected_parameter_fields_stale (__main__.Contracts.test_D1_selected_parameter_fields_stale) ... ok
+test_D1_unaffected_hash_and_cosmetic_changes (__main__.Contracts.test_D1_unaffected_hash_and_cosmetic_changes) ... ok
+test_D2_relation_mutations_stale (__main__.Contracts.test_D2_relation_mutations_stale) ... ok
+test_D2_unrelated_relation_and_reordering_do_not_stale (__main__.Contracts.test_D2_unrelated_relation_and_reordering_do_not_stale) ... ok
+test_D3_empty_partial_and_changed_scope_are_unknown (__main__.Contracts.test_D3_empty_partial_and_changed_scope_are_unknown) ... ok
+test_D3_fully_captured_pass_and_failure_stay_current (__main__.Contracts.test_D3_fully_captured_pass_and_failure_stay_current) ... ok
+test_D4_build_keeps_measurement_capture_and_time (__main__.Contracts.test_D4_build_keeps_measurement_capture_and_time) ... ok
+test_D5_collision_refuses_before_overwrite (__main__.Contracts.test_D5_collision_refuses_before_overwrite) ... ok
+test_D5_existing_map_and_native_rids_preserved (__main__.Contracts.test_D5_existing_map_and_native_rids_preserved) ... ok
+test_D6_supported_roundtrip_and_foreign_refusal (__main__.Contracts.test_D6_supported_roundtrip_and_foreign_refusal) ... ok
+test_D7_ambiguous_matches_never_assign_or_double_book (__main__.Contracts.test_D7_ambiguous_matches_never_assign_or_double_book) ... ok
+test_D7_distinct_bands_still_match (__main__.Contracts.test_D7_distinct_bands_still_match) ... ok
+test_D8_zero_and_missing_nonfinite (__main__.Contracts.test_D8_zero_and_missing_nonfinite) ... ok
+test_D9_duplicate_wall_is_one_support (__main__.Contracts.test_D9_duplicate_wall_is_one_support) ... ok
+test_bridge_preserves_foreign_objects_and_refuses_id_overlap (__main__.Contracts.test_bridge_preserves_foreign_objects_and_refuses_id_overlap) ... ok
+test_bridge_refuses_foreign_environment (__main__.Contracts.test_bridge_refuses_foreign_environment) ... ok
+test_bridge_refuses_tamper_before_any_write (__main__.Contracts.test_bridge_refuses_tamper_before_any_write) ... ok
+test_record_cannot_overwrite_history (__main__.Contracts.test_record_cannot_overwrite_history) ... ok
+test_risk_query_discloses_no_evidence_and_incomplete_captures (__main__.Contracts.test_risk_query_discloses_no_evidence_and_incomplete_captures) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.096s
+
+OK

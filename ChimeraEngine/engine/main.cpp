@@ -13,6 +13,7 @@
 #include "http_server.hpp"
 #include "png_encoder.hpp"
 #include "membrane_tick.hpp"
+#include "graph_surface.hpp"
 #include "importer.hpp"    // C1: /mesh_import (the aliveness law ingestion)
 
 #include <cstdio>
@@ -33,6 +34,8 @@
 
 static Engine* g_engine = nullptr;
 static Physics g_physics;
+static GraphSurface g_science_surface;
+static std::mutex g_science_mutex;
 static SharedRing g_ring("ChimeraPhysicsRing");
 
 // ── Pending membrane request (Vulkan work must stay on the main/render thread) ───────
@@ -654,6 +657,20 @@ int main(int argc, char** argv) {
         return 1;
     }
     g_engine = &engine;
+    // Opt-in graph scene; existing sessions take no new path.
+    for (int i=1;i+1<argc;++i) if(std::string(argv[i])=="--science-surface") {
+        try {
+            g_science_surface.load(argv[i+1]);
+            auto mesh=g_science_surface.mesh();auto ids=g_science_surface.indices();
+            if(!engine.load_mesh(mesh,ids,uint32_t(mesh.size()/9),uint32_t(ids.size()))) throw std::runtime_error("surface mesh upload failed");
+            engine.set_mesh_mode(2);
+            engine.ui_.set_visible(false);
+            auto camera=g_science_surface.spec.at("camera").get<std::array<float,8>>();
+            for(float x:camera)GraphSurface::need(std::isfinite(x),"nonfinite graph camera");
+            engine.set_camera_full(camera.data());
+        } catch(const std::exception& ex) {fprintf(stderr,"science surface: %s\n",ex.what());return 2;}
+    }
+
 
     // THE STUDIO: optional board file path (argv[2]); default is studio_board.json
     // in the CWD — tools/studio_board.py writes it next to the exe.
@@ -677,7 +694,23 @@ int main(int argc, char** argv) {
         size_t q = path.find('?');
         std::string p = (q == std::string::npos) ? path : path.substr(0, q);
 
-        if (p == "/state" && method == "GET") {
+        if (p == "/science_surface" && (method == "GET" || method == "POST")) {
+            std::lock_guard<std::mutex> lk(g_science_mutex);
+            content_type="application/json";
+            try {
+                GraphSurface::need(g_science_surface.active,"no graph surface loaded");
+                if(method=="POST")g_science_surface.control(GraphSurface::J::parse(req_body));
+                body=g_science_surface.status().dump();
+            } catch(const std::exception& ex){body=GraphSurface::J{{"ok",false},{"error",ex.what()}}.dump();}
+        } else if ((p == "/science" || p == "/science_graph") && method == "GET") {
+            std::lock_guard<std::mutex> lk(g_science_mutex);
+            if(g_science_surface.active){
+                auto key=p=="/science"?"page_file":"graph_file";
+                std::ifstream f(g_science_surface.spec.at(key).get<std::string>(),std::ios::binary);
+                if(f){body.assign(std::istreambuf_iterator<char>(f),{});content_type=p=="/science"?"text/html; charset=utf-8":"application/json";}
+                else{body="{\"ok\":false,\"error\":\"scene asset missing\"}";content_type="application/json";}
+            }else{body="{\"ok\":false,\"error\":\"no graph surface loaded\"}";content_type="application/json";}
+        } else if (p == "/state" && method == "GET") {
             auto& parts = g_physics.particles();
             std::string json; json.reserve(200u * parts.size() + 64);
             json += "{\"n\":" + std::to_string(parts.size()) + ",\"particles\":[";
@@ -4121,6 +4154,19 @@ int main(int argc, char** argv) {
             }
         }
 
+        unsigned surface_frame_revision=0;
+        if (g_science_surface.active) {
+            std::lock_guard<std::mutex> lk(g_science_mutex);
+            try {
+                bool changed=g_science_surface.step();
+                if(changed || g_science_surface.render_revision!=g_science_surface.revision) {
+                    auto mesh=g_science_surface.mesh();
+                    if(!engine.update_mesh(mesh,uint32_t(mesh.size()/9)))throw std::runtime_error("surface render update refused");
+                }
+                surface_frame_revision=g_science_surface.revision;
+            }catch(const std::exception& ex){g_science_surface.error=ex.what();}
+        }
+
         // Apply a pending frost request (Vulkan work must stay on this thread).
         // kind 2 (snapshot) only ARMS here — it completes after the next frame
         // (below), once the debug dispatch + readback copies have been recorded.
@@ -4199,6 +4245,12 @@ int main(int argc, char** argv) {
             break;
         }
         auto ft1 = std::chrono::high_resolution_clock::now();
+        if (surface_frame_revision) {
+            std::lock_guard<std::mutex> lk(g_science_mutex);
+            // This revision passed through frame submission. /frame separately
+            // waits for its own fresh GPU readback; this counter is not a fence.
+            g_science_surface.render_revision=surface_frame_revision;
+        }
 
         // Complete an armed frost snapshot: the frame just submitted recorded the
         // debug dispatch + readback copies; drain and hand the data back.

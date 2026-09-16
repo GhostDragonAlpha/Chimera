@@ -24,7 +24,7 @@ DIMENSIONS = {
 # pressure vs modulus, force vs maximum isometric force, torque vs energy).
 QUANTITIES = {k: k for k in DIMENSIONS}
 QUANTITIES.update({'young_modulus': 'pressure', 'bulk_modulus': 'pressure',
-                   'stress': 'pressure', 'strain': 'dimensionless',
+                   'stress': 'pressure', 'surface_tension': 'stiffness', 'strain': 'dimensionless',
                    'angle': 'dimensionless', 'energy': 'torque',
                    'max_isometric_force': 'force', 'activation_time': 'time'})
 

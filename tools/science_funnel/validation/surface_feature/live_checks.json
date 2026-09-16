@@ -1,0 +1,76 @@
+{
+  "captured_utc": "2026-09-16T18:13:13.354985+00:00",
+  "graph_hash": "e7de576ea38643c88c5750d18b75170c8ca5dd43590f87d4557f22f6493cb549",
+  "scope": "native constant-tension height-field equilibrium and rendered response; no inertial fluid or creature claim",
+  "cases": [
+    {
+      "case": "flat",
+      "state_revision": 4,
+      "material": "Water",
+      "force_N": 0.0,
+      "depth_m": -0.0,
+      "residual_N": 0.0,
+      "source_record_id": "data.assertion.73dbe94008a804d8e7bd4363af419c171aa809848e5ec1493bd08563daff8b57",
+      "raw_png_sha256": "53b5d07cee39c73327cb069b1c78819b72ad5168a87e2497b0c5188d28830e2d",
+      "stored_png_sha256": "ffa8842fa571667ac6df475f7369ab479861bb01cf7dde07896cf1849550aa5e",
+      "pixel_sha256": "57b3b23aa826c411b910392ab170dda7c9181fc77a24819b33bd4cd302e913c4"
+    },
+    {
+      "case": "water",
+      "state_revision": 7,
+      "material": "Water",
+      "force_N": 0.00025,
+      "depth_m": 0.000681824111255686,
+      "residual_N": 5.093564789444989e-13,
+      "source_record_id": "data.assertion.73dbe94008a804d8e7bd4363af419c171aa809848e5ec1493bd08563daff8b57",
+      "raw_png_sha256": "86d1729289228ab610ce2fa3e1b0aa147771380a6e33ac157160976a8d725948",
+      "stored_png_sha256": "1ad3f1c4cf492d774a365983f6e809b196e9860e114fff212534f9a74d343faa",
+      "pixel_sha256": "1ebca763f8e053c752c1d29efb0797513a87c1dd6755cdda3307485c37e0de28"
+    },
+    {
+      "case": "ethanol",
+      "state_revision": 11,
+      "material": "Ethanol",
+      "force_N": 0.00025,
+      "depth_m": 0.002303734615305261,
+      "residual_N": 5.408666204254238e-15,
+      "source_record_id": "data.assertion.99bf8c825eafd02041b9e76b3553aa2a59b1f088de186a887e3677f4ccc08516",
+      "raw_png_sha256": "30e61808bcf3e37d8474a328bd1cc230429eb8e5834b6da49e6587ed5932e9ce",
+      "stored_png_sha256": "2187057a9e0a1250410d2fb5c1a01512a4c4de99c9fcd9a848603878f3bea1bb",
+      "pixel_sha256": "2c33be40d5a078a02f6a1306c751dac2c4a3b3b9eb2ca8eb0b9108eb3aefc03b"
+    },
+    {
+      "case": "released",
+      "state_revision": 15,
+      "material": "Ethanol",
+      "force_N": 0.0,
+      "depth_m": 4.059536826514655e-15,
+      "residual_N": 1.3477369774213244e-16,
+      "source_record_id": "data.assertion.99bf8c825eafd02041b9e76b3553aa2a59b1f088de186a887e3677f4ccc08516",
+      "raw_png_sha256": "53b5d07cee39c73327cb069b1c78819b72ad5168a87e2497b0c5188d28830e2d",
+      "stored_png_sha256": "ffa8842fa571667ac6df475f7369ab479861bb01cf7dde07896cf1849550aa5e",
+      "pixel_sha256": "57b3b23aa826c411b910392ab170dda7c9181fc77a24819b33bd4cd302e913c4"
+    }
+  ],
+  "decoded_pixel_differences": [
+    {
+      "a": "flat",
+      "b": "water",
+      "changed_pixels": 499379,
+      "fraction": 0.14249081218042367
+    },
+    {
+      "a": "water",
+      "b": "ethanol",
+      "changed_pixels": 708336,
+      "fraction": 0.20211376917458
+    },
+    {
+      "a": "ethanol",
+      "b": "released",
+      "changed_pixels": 749579,
+      "fraction": 0.2138818823046019
+    }
+  ],
+  "pass": true
+}

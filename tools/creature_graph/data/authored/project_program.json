@@ -2200,6 +2200,22 @@
     }
    },
    "last_result": "passing"
+  },
+  {
+   "id": "doc.science_surface_native",
+   "kind": "source",
+   "name": "Runnable graph-to-native surface experiment",
+   "status": "specified",
+   "priority": "P0",
+   "document": {
+    "recipe": "tools/science_funnel/data/surface_recipe.json",
+    "launch": "powershell -File tools/science_funnel/run_surface.ps1",
+    "compiler": "python -m tools.science_funnel.surface_scene",
+    "qualified_graph": "tools/science_funnel/validation/surface_feature/qualified_graph.json",
+    "evidence": "tools/science_funnel/validation/surface_feature/receipt.json",
+    "interface": "http://127.0.0.1:8107/science",
+    "scope": "Pinned CoolProp Water/Ethanol correlations drive a native constant-tension triangular height field. Fixed rim, zero gravity, equal bulk pressures; no skin, inertia, bulk flow or creature qualification."
+   }
   }
  ],
  "relations": [
@@ -2490,6 +2506,12 @@
    "rel": "attached_to",
    "dst": "model.scientific_intake",
    "note": "document subject anchor; location inherited"
+  },
+  {
+   "src": "doc.science_surface_native",
+   "rel": "derived_from",
+   "dst": "work.funnel.materials",
+   "note": "Runnable scientific-material compiler and scoped evidence entry"
   }
  ],
  "migration_receipt": [
