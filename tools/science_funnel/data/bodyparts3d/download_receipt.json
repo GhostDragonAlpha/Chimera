@@ -1,0 +1,71 @@
+{
+  "source": "BodyParts3D archive, mesh release 4.0; current archive metadata capture",
+  "retrieved_utc": "2026-09-17T01:20:38.960866+00:00",
+  "license": "CC-BY-4.0",
+  "license_page_updated": "2025-02-27",
+  "attribution": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+  "files": [
+    {
+      "path": "README_e.html",
+      "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/README_e.html",
+      "resolved_url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/README_e.html",
+      "bytes": 19263,
+      "sha256": "f9a90b4d945ad0fe50db45c712e931aa54e52667187b30d7085b6cc394f40107"
+    },
+    {
+      "path": "partof_parts_list_e.txt",
+      "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_parts_list_e.txt",
+      "resolved_url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_parts_list_e.txt",
+      "bytes": 59351,
+      "sha256": "9224080557053e6f1322f1e13ab27f0ecde0db19bb3b505f0631afad230eeebd"
+    },
+    {
+      "path": "partof_inclusion_relation_list.txt",
+      "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_inclusion_relation_list.txt",
+      "resolved_url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_inclusion_relation_list.txt",
+      "bytes": 91241,
+      "sha256": "1b40738270931e3c1d955ce34e0fce0d8d10d8c5ad543463e40b4b4c0243007c"
+    },
+    {
+      "path": "partof_element_parts.txt",
+      "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_element_parts.txt",
+      "resolved_url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_element_parts.txt",
+      "bytes": 651179,
+      "sha256": "3f5f6df1028eb122b30de77c711597b6bb8e5541658e5985859fd228adbf88ea"
+    },
+    {
+      "path": "license.html",
+      "url": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+      "resolved_url": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+      "bytes": 14694,
+      "sha256": "9694f0643dd28a6600d73b70b0bf2eea9ac97471b25ec07dfa84116293bcb164"
+    },
+    {
+      "path": "isa_parts_list_e.txt",
+      "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/isa_parts_list_e.txt",
+      "bytes": 128086,
+      "sha256": "ab7796deedd49205e77f3609a1cb8c53e2bbee14ecb5c9a6ca05227469780513"
+    },
+    {
+      "path": "isa_inclusion_relation_list.txt",
+      "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/isa_inclusion_relation_list.txt",
+      "bytes": 207664,
+      "sha256": "26e7d818e03a8c909fe09c561f38d0d513423c87681f9450a803bc38f5b07564"
+    },
+    {
+      "path": "isa_element_parts.txt",
+      "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/isa_element_parts.txt",
+      "bytes": 1142159,
+      "sha256": "a3de74423f943b0d724ae8f59b3a817f87c423a544f8db98113b1980817cbeaf"
+    }
+  ],
+  "rows": {
+    "parts": 1368,
+    "part_of": 1367,
+    "compound_elements": 17943,
+    "isa_parts_list_e.txt": 2905,
+    "isa_inclusion_relation_list.txt": 2904,
+    "isa_element_parts.txt": 29549
+  },
+  "scope": "Pinned anatomical identity, inclusion and compound-to-element tables. Meshes not downloaded. No material properties, physical attachments, segmentation completeness, units, living behavior or runtime qualification inferred. Source is a reference adult human male, not fitted to the monkey. Game excludes exposed genital geometry and sexual simulation; reference taxonomy is preserved without alteration."
+}

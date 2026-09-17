@@ -1,0 +1,526 @@
+{
+  "schema": "chimera.body_binding_observation.v1",
+  "captured_utc": "2026-09-17T01:24:12+00:00",
+  "candidate_commit": "5a70dd6e010f459c70d1ed74a74483e214ede6b8",
+  "negative_control_commit": "e36144271b39c220872cf46e55b69f1d5b321643",
+  "scope": "Transactional binding validation and production GPU hierarchical transform arithmetic; full engine compiles. No live deployment, coupled tissue dynamics, locomotion or product qualification.",
+  "inputs_and_artifacts": {
+    "ChimeraEngine/engine/joint_binding.hpp": "4ef45388cbb977b9047faaf560ad1e2b2c9a5d21cceeca91de530b06cc09f87e",
+    "ChimeraEngine/engine/engine.cpp": "fe06ac691b591b21ffe180d5584368a599f0c194d0691efe518df91fde8148de",
+    "ChimeraEngine/engine/shaders/joints.comp": "05a6e9ec9ac3e62c98c61f1b47575d0d6780b5f5d8bc52f0ef9f936d679df0d4",
+    "ChimeraEngine/engine/tests_articulation/CMakeLists.txt": "ba31c274e82ebb781a8a445a95bf0ee6a59c4a906234413c0d1d7f863a0fe18e",
+    "ChimeraEngine/engine/tests_articulation/native.cpp": "b7c4b917b1c20dc9a2d00774d35063544b735430f2e7957c96275e2671cf8173",
+    "ChimeraEngine/engine/tests_articulation/gpu.cpp": "98ca4949fb9eeb37081c5cb0b24a55514fc28e24b39467565feda186cc21d2c2",
+    "Saved/meshes/monkey_birth.bin": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c",
+    "Saved/meshes/monkey_joints.bin": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662",
+    ".tmp/body-integration-build/Release/articulation_native.exe": "ce4bd3adaf3653154a58c2a37298a2fede3b8b55cea56f713016b34989219401",
+    ".tmp/body-integration-build/Release/articulation_gpu.exe": "75bffe756e6f9033baee88edf0e9fefbdc2cbe14f95c1d7dee986a19d9fe2762",
+    ".tmp/body-integration-build/joints.spv": "5c5cdc9bf230570c54c3ebab7631c16846b607da71e972c6fd1dda43e037dbb4",
+    ".tmp/body-integration-build/joints_before.spv": "e2e10b2d269943610e91e2266b8f0cf75c13e43f12334eaad4410c9dcfbb7da5",
+    ".tmp/body-engine/Release/chimera_engine.exe": "8da6350300867fd0c5add62057edd075ef1935634a4bb8215f52a703df4e210f"
+  },
+  "results": {
+    "native": {
+      "checks": [
+        {
+          "name": "actual_monkey_pack",
+          "pass": true
+        },
+        {
+          "name": "truncated_packet_preserves_binding",
+          "pass": true
+        },
+        {
+          "name": "trailing_bytes_refused",
+          "pass": true
+        },
+        {
+          "name": "wrong_mesh_count_refused",
+          "pass": true
+        },
+        {
+          "name": "empty_name_refused",
+          "pass": true
+        },
+        {
+          "name": "unbound_lbs_vertex_refused",
+          "pass": true
+        },
+        {
+          "name": "nan_weight_refused",
+          "pass": true
+        },
+        {
+          "name": "overweight_refused",
+          "pass": true
+        },
+        {
+          "name": "parent_cycle_refused",
+          "pass": true
+        },
+        {
+          "name": "negative_parent_refused",
+          "pass": true
+        },
+        {
+          "name": "shader_depth_overflow_refused",
+          "pass": true
+        },
+        {
+          "name": "zero_axis_refused",
+          "pass": true
+        },
+        {
+          "name": "nested_hinge_endpoint",
+          "pass": true
+        },
+        {
+          "name": "child_pivot_follows_parent",
+          "pass": true
+        },
+        {
+          "name": "terminal_bone_length_preserved",
+          "pass": true
+        },
+        {
+          "name": "mixed_axis_chain",
+          "pass": true
+        }
+      ],
+      "failed": 0,
+      "joints": 28,
+      "names": [
+        "neck",
+        "jaw",
+        "spine_upper",
+        "spine_mid",
+        "spine_lower",
+        "tail_base",
+        "tail_mid",
+        "shoulder_L",
+        "shoulder_R",
+        "elbow_L",
+        "elbow_R",
+        "wrist_L",
+        "wrist_R",
+        "hip_L",
+        "hip_R",
+        "knee_L",
+        "knee_R",
+        "ankle_L",
+        "ankle_R",
+        "tail_tip",
+        "ear_L",
+        "ear_R",
+        "lid_L",
+        "lid_R",
+        "brow_L",
+        "brow_R",
+        "mouth_L",
+        "mouth_R"
+      ],
+      "scope": "binding and transform arithmetic; no locomotion qualification",
+      "vertices": 18459
+    },
+    "gpu": {
+      "adapter": "NVIDIA GeForce RTX 4090",
+      "checks": [
+        {
+          "case": "rest",
+          "max_color_error": 0.0,
+          "max_normal_error": 0.0,
+          "max_position_error_world_units": 5.396108093778246e-17,
+          "pass": true,
+          "vertices": 18459
+        },
+        {
+          "case": "hip_and_knee",
+          "max_color_error": 0.0,
+          "max_normal_error": 9.935980804787192e-08,
+          "max_position_error_world_units": 6.783484503003478e-07,
+          "pass": true,
+          "vertices": 18459
+        },
+        {
+          "case": "whole_body_mixed_axes",
+          "max_color_error": 0.0,
+          "max_normal_error": 6.267641676771518e-07,
+          "max_position_error_world_units": 2.4294594762608313e-06,
+          "pass": true,
+          "vertices": 18459
+        }
+      ],
+      "failed": 0,
+      "scope": "production articulation shader, not coupled forces or locomotion"
+    },
+    "gpu_before": {
+      "adapter": "NVIDIA GeForce RTX 4090",
+      "checks": [
+        {
+          "case": "rest",
+          "max_color_error": 0.0,
+          "max_normal_error": 0.0,
+          "max_position_error_world_units": 5.396108093778246e-17,
+          "pass": true,
+          "vertices": 18459
+        },
+        {
+          "case": "hip_and_knee",
+          "max_color_error": 0.0,
+          "max_normal_error": 1.9869494743817318,
+          "max_position_error_world_units": 0.25973262545823683,
+          "pass": false,
+          "vertices": 18459
+        },
+        {
+          "case": "whole_body_mixed_axes",
+          "max_color_error": 0.0,
+          "max_normal_error": 4.295478956881103,
+          "max_position_error_world_units": 0.46888589014597404,
+          "pass": false,
+          "vertices": 18459
+        }
+      ],
+      "failed": 2,
+      "scope": "production articulation shader, not coupled forces or locomotion"
+    },
+    "graph": {
+      "graph_hash": "b38f3e7625051d8c18bb796ae25c71013ab2260126a577751aaa42f421ae3b51",
+      "objects": 5781,
+      "rebuild_identical": true,
+      "force_packet_unchanged": true,
+      "historical_evidence_unchanged": 11,
+      "project_spec_tests": 14,
+      "consumer": [
+        {
+          "check": "node_identity_round_trip",
+          "expected": "all 5781 objects reversible + full record/spatial payload equal",
+          "observed": "5781/5781 ok",
+          "pass": true,
+          "evidence": {
+            "mismatches": []
+          }
+        },
+        {
+          "check": "edge_identity_round_trip",
+          "expected": "all 8839 relations with direction+note intact",
+          "observed": "missing=0 extra=0",
+          "pass": true,
+          "evidence": {
+            "missing_sample": [],
+            "extra_sample": []
+          }
+        },
+        {
+          "check": "multiplicity_preserved",
+          "expected": "no parallel groups in store (all pairs single-edged)",
+          "observed": "no parallel groups in store",
+          "pass": true
+        },
+        {
+          "check": "traversal_parity_2hop",
+          "expected": [
+            "ref.element.atomic_number.1",
+            "ref.element.atomic_number.10",
+            "ref.element.atomic_number.100",
+            "ref.element.atomic_number.101",
+            "ref.element.atomic_number.102",
+            "ref.element.atomic_number.103",
+            "ref.element.atomic_number.104",
+            "ref.element.atomic_number.105",
+            "ref.element.atomic_number.106",
+            "ref.element.atomic_number.107",
+            "ref.element.atomic_number.108",
+            "ref.element.atomic_number.109",
+            "ref.element.atomic_number.11",
+            "ref.element.atomic_number.110",
+            "ref.element.atomic_number.111",
+            "ref.element.atomic_number.112",
+            "ref.element.atomic_number.113",
+            "ref.element.atomic_number.114",
+            "ref.element.atomic_number.115",
+            "ref.element.atomic_number.116",
+            "ref.element.atomic_number.117",
+            "ref.element.atomic_number.118",
+            "ref.element.atomic_number.12",
+            "ref.element.atomic_number.13",
+            "ref.element.atomic_number.14",
+            "ref.element.atomic_number.15",
+            "ref.element.atomic_number.16",
+            "ref.element.atomic_number.17",
+            "ref.element.atomic_number.18",
+            "ref.element.atomic_number.19",
+            "ref.element.atomic_number.2",
+            "ref.element.atomic_number.20",
+            "ref.element.atomic_number.21",
+            "ref.element.atomic_number.22",
+            "ref.element.atomic_number.23",
+            "ref.element.atomic_number.24",
+            "ref.element.atomic_number.25",
+            "ref.element.atomic_number.26",
+            "ref.element.atomic_number.27",
+            "ref.element.atomic_number.28",
+            "ref.element.atomic_number.29",
+            "ref.element.atomic_number.3",
+            "ref.element.atomic_number.30",
+            "ref.element.atomic_number.31",
+            "ref.element.atomic_number.32",
+            "ref.element.atomic_number.33",
+            "ref.element.atomic_number.34",
+            "ref.element.atomic_number.35",
+            "ref.element.atomic_number.36",
+            "ref.element.atomic_number.37",
+            "ref.element.atomic_number.38",
+            "ref.element.atomic_number.39",
+            "ref.element.atomic_number.4",
+            "ref.element.atomic_number.40",
+            "ref.element.atomic_number.41",
+            "ref.element.atomic_number.42",
+            "ref.element.atomic_number.43",
+            "ref.element.atomic_number.44",
+            "ref.element.atomic_number.45",
+            "ref.element.atomic_number.46",
+            "ref.element.atomic_number.47",
+            "ref.element.atomic_number.48",
+            "ref.element.atomic_number.49",
+            "ref.element.atomic_number.5",
+            "ref.element.atomic_number.50",
+            "ref.element.atomic_number.51",
+            "ref.element.atomic_number.52",
+            "ref.element.atomic_number.53",
+            "ref.element.atomic_number.54",
+            "ref.element.atomic_number.55",
+            "ref.element.atomic_number.56",
+            "ref.element.atomic_number.57",
+            "ref.element.atomic_number.58",
+            "ref.element.atomic_number.59",
+            "ref.element.atomic_number.6",
+            "ref.element.atomic_number.60",
+            "ref.element.atomic_number.61",
+            "ref.element.atomic_number.62",
+            "ref.element.atomic_number.63",
+            "ref.element.atomic_number.64",
+            "ref.element.atomic_number.65",
+            "ref.element.atomic_number.66",
+            "ref.element.atomic_number.67",
+            "ref.element.atomic_number.68",
+            "ref.element.atomic_number.69",
+            "ref.element.atomic_number.7",
+            "ref.element.atomic_number.70",
+            "ref.element.atomic_number.71",
+            "ref.element.atomic_number.72",
+            "ref.element.atomic_number.73",
+            "ref.element.atomic_number.74",
+            "ref.element.atomic_number.75",
+            "ref.element.atomic_number.76",
+            "ref.element.atomic_number.77",
+            "ref.element.atomic_number.78",
+            "ref.element.atomic_number.79",
+            "ref.element.atomic_number.8",
+            "ref.element.atomic_number.80",
+            "ref.element.atomic_number.81",
+            "ref.element.atomic_number.82",
+            "ref.element.atomic_number.83",
+            "ref.element.atomic_number.84",
+            "ref.element.atomic_number.85",
+            "ref.element.atomic_number.86",
+            "ref.element.atomic_number.87",
+            "ref.element.atomic_number.88",
+            "ref.element.atomic_number.89",
+            "ref.element.atomic_number.9",
+            "ref.element.atomic_number.90",
+            "ref.element.atomic_number.91",
+            "ref.element.atomic_number.92",
+            "ref.element.atomic_number.93",
+            "ref.element.atomic_number.94",
+            "ref.element.atomic_number.95",
+            "ref.element.atomic_number.96",
+            "ref.element.atomic_number.97",
+            "ref.element.atomic_number.98",
+            "ref.element.atomic_number.99",
+            "source.material_reference.pubchem",
+            "source.operator_material_direction.29facaab418de39bd82217bd95ef83ae616a38b424ad83db7d09ecd1ec7e0956"
+          ],
+          "observed": [
+            "ref.element.atomic_number.1",
+            "ref.element.atomic_number.10",
+            "ref.element.atomic_number.100",
+            "ref.element.atomic_number.101",
+            "ref.element.atomic_number.102",
+            "ref.element.atomic_number.103",
+            "ref.element.atomic_number.104",
+            "ref.element.atomic_number.105",
+            "ref.element.atomic_number.106",
+            "ref.element.atomic_number.107",
+            "ref.element.atomic_number.108",
+            "ref.element.atomic_number.109",
+            "ref.element.atomic_number.11",
+            "ref.element.atomic_number.110",
+            "ref.element.atomic_number.111",
+            "ref.element.atomic_number.112",
+            "ref.element.atomic_number.113",
+            "ref.element.atomic_number.114",
+            "ref.element.atomic_number.115",
+            "ref.element.atomic_number.116",
+            "ref.element.atomic_number.117",
+            "ref.element.atomic_number.118",
+            "ref.element.atomic_number.12",
+            "ref.element.atomic_number.13",
+            "ref.element.atomic_number.14",
+            "ref.element.atomic_number.15",
+            "ref.element.atomic_number.16",
+            "ref.element.atomic_number.17",
+            "ref.element.atomic_number.18",
+            "ref.element.atomic_number.19",
+            "ref.element.atomic_number.2",
+            "ref.element.atomic_number.20",
+            "ref.element.atomic_number.21",
+            "ref.element.atomic_number.22",
+            "ref.element.atomic_number.23",
+            "ref.element.atomic_number.24",
+            "ref.element.atomic_number.25",
+            "ref.element.atomic_number.26",
+            "ref.element.atomic_number.27",
+            "ref.element.atomic_number.28",
+            "ref.element.atomic_number.29",
+            "ref.element.atomic_number.3",
+            "ref.element.atomic_number.30",
+            "ref.element.atomic_number.31",
+            "ref.element.atomic_number.32",
+            "ref.element.atomic_number.33",
+            "ref.element.atomic_number.34",
+            "ref.element.atomic_number.35",
+            "ref.element.atomic_number.36",
+            "ref.element.atomic_number.37",
+            "ref.element.atomic_number.38",
+            "ref.element.atomic_number.39",
+            "ref.element.atomic_number.4",
+            "ref.element.atomic_number.40",
+            "ref.element.atomic_number.41",
+            "ref.element.atomic_number.42",
+            "ref.element.atomic_number.43",
+            "ref.element.atomic_number.44",
+            "ref.element.atomic_number.45",
+            "ref.element.atomic_number.46",
+            "ref.element.atomic_number.47",
+            "ref.element.atomic_number.48",
+            "ref.element.atomic_number.49",
+            "ref.element.atomic_number.5",
+            "ref.element.atomic_number.50",
+            "ref.element.atomic_number.51",
+            "ref.element.atomic_number.52",
+            "ref.element.atomic_number.53",
+            "ref.element.atomic_number.54",
+            "ref.element.atomic_number.55",
+            "ref.element.atomic_number.56",
+            "ref.element.atomic_number.57",
+            "ref.element.atomic_number.58",
+            "ref.element.atomic_number.59",
+            "ref.element.atomic_number.6",
+            "ref.element.atomic_number.60",
+            "ref.element.atomic_number.61",
+            "ref.element.atomic_number.62",
+            "ref.element.atomic_number.63",
+            "ref.element.atomic_number.64",
+            "ref.element.atomic_number.65",
+            "ref.element.atomic_number.66",
+            "ref.element.atomic_number.67",
+            "ref.element.atomic_number.68",
+            "ref.element.atomic_number.69",
+            "ref.element.atomic_number.7",
+            "ref.element.atomic_number.70",
+            "ref.element.atomic_number.71",
+            "ref.element.atomic_number.72",
+            "ref.element.atomic_number.73",
+            "ref.element.atomic_number.74",
+            "ref.element.atomic_number.75",
+            "ref.element.atomic_number.76",
+            "ref.element.atomic_number.77",
+            "ref.element.atomic_number.78",
+            "ref.element.atomic_number.79",
+            "ref.element.atomic_number.8",
+            "ref.element.atomic_number.80",
+            "ref.element.atomic_number.81",
+            "ref.element.atomic_number.82",
+            "ref.element.atomic_number.83",
+            "ref.element.atomic_number.84",
+            "ref.element.atomic_number.85",
+            "ref.element.atomic_number.86",
+            "ref.element.atomic_number.87",
+            "ref.element.atomic_number.88",
+            "ref.element.atomic_number.89",
+            "ref.element.atomic_number.9",
+            "ref.element.atomic_number.90",
+            "ref.element.atomic_number.91",
+            "ref.element.atomic_number.92",
+            "ref.element.atomic_number.93",
+            "ref.element.atomic_number.94",
+            "ref.element.atomic_number.95",
+            "ref.element.atomic_number.96",
+            "ref.element.atomic_number.97",
+            "ref.element.atomic_number.98",
+            "ref.element.atomic_number.99",
+            "source.material_reference.pubchem",
+            "source.operator_material_direction.29facaab418de39bd82217bd95ef83ae616a38b424ad83db7d09ecd1ec7e0956"
+          ],
+          "pass": true,
+          "evidence": {
+            "start": "req.element_identity_spine",
+            "out_degree": 119
+          }
+        },
+        {
+          "check": "graphify_query_health",
+          "expected": 5781,
+          "observed": 5781,
+          "pass": true,
+          "evidence": {
+            "mutations": 0,
+            "pathways": 0,
+            "features": 0,
+            "note": "creature objects must not pollute the DNA families"
+          }
+        },
+        {
+          "check": "because_of_honest_empty",
+          "expected": [],
+          "observed": [],
+          "pass": true
+        },
+        {
+          "check": "fts_search_finds_ingested",
+          "expected": "req_element_identity_spine",
+          "observed": [
+            "req_element_identity_spine"
+          ],
+          "pass": true,
+          "evidence": {
+            "query": "Periodic table guides composition and scientific table joins",
+            "n_hits": 1
+          }
+        }
+      ],
+      "scope": "repository graph and scratch consumer only"
+    }
+  },
+  "full_engine_build": {
+    "exit_code": 0,
+    "configuration": "Release",
+    "output": ".tmp/body-engine/Release/chimera_engine.exe",
+    "warning": "MSVC LINK /DEBUG:FASTLINK deprecated, fell back to /DEBUG:FULL"
+  },
+  "reproduce": [
+    "cmake -S ChimeraEngine/engine/tests_articulation -B .tmp/body-integration-build with Vulkan include/library paths matching installed SDK",
+    "cmake --build .tmp/body-integration-build --config Release --parallel 2",
+    ".tmp/body-integration-build/Release/articulation_native.exe Saved/meshes/monkey_joints.bin",
+    "glslangValidator -S comp -V ChimeraEngine/engine/shaders/joints.comp -o .tmp/body-integration-build/joints.spv",
+    ".tmp/body-integration-build/Release/articulation_gpu.exe .tmp/body-integration-build/joints.spv Saved/meshes/monkey_birth.bin Saved/meshes/monkey_joints.bin",
+    "Export joints.comp from the negative_control_commit, compile it, run the same GPU harness; expected nonzero exit with two movement-case failures."
+  ],
+  "limits": [
+    "Three posed states across the full saved mesh, not exhaustive motion coverage.",
+    "Normals use normalized linear-blend rotations; this is not a full deformed-shell normal Jacobian.",
+    "The alternate CPU hydraulic pose path is not unified with this render rig.",
+    "No requirement, experience, physical evidence or product gate is advanced by this report."
+  ]
+}
