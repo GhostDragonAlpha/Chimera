@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>Arm load — Chimera</title>
+<style>
+:root{--bg:#0b1118;--panel:#121c26;--line:#30404d;--text:#efece3;--muted:#abbac4;--amber:#f1c17b;--ice:#addce6;--moss:#aaba90;--red:#ffb5a8;--mono:Consolas,"SFMono-Regular",monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Segoe UI",sans-serif}button,input{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:3px;color:var(--text);background:transparent;transition:background .15s,border-color .15s}button:hover:not(:disabled){background:#273542;border-color:#60727e}button:disabled,input:disabled{cursor:not-allowed;opacity:.42}button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible,canvas:focus-visible{outline:2px solid var(--ice);outline-offset:4px}a{color:var(--ice);text-underline-offset:4px}a:hover{color:white}[hidden]{display:none!important}.shell{max-width:1600px;margin:auto;padding:26px 34px}.masthead{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-bottom:21px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:12px;font-size:12px;letter-spacing:.16em;font-weight:600}.brand-mark{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--amber);color:var(--amber);font:17px var(--mono)}.brand small{border-left:1px solid var(--line);padding-left:15px;color:var(--muted);font-size:11px;font-weight:400;letter-spacing:.07em}.connection{display:flex;align-items:center;gap:8px;color:var(--muted);font:11px var(--mono)}.connection::before{content:"";width:6px;height:6px;background:var(--amber);border-radius:50%;flex-shrink:0}.connection[data-online="true"]::before{background:var(--moss)}.intro{display:flex;justify-content:space-between;align-items:flex-end;gap:25px;padding:28px 0 26px}.eyebrow,.section-label{color:var(--muted);font:11px var(--mono);letter-spacing:.1em;text-transform:uppercase}h1{margin:9px 0 10px;font-size:clamp(34px,4vw,50px);font-weight:450;letter-spacing:-.045em;line-height:1.08}h1 span{color:var(--amber)}.intro p{margin:0;color:var(--muted);font-size:14px;max-width:710px}.intro-aside{flex-shrink:0;text-align:right;color:var(--muted);font:11px/1.8 var(--mono)}.intro-aside strong{color:var(--moss);font-weight:400}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 330px;border:1px solid var(--line)}.scene-column{min-width:0;display:flex;flex-direction:column}.scene-header{padding:14px 20px;display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);font:11px var(--mono);color:var(--muted)}.scene-header strong{color:var(--text);font-weight:400}.viewport{position:relative;min-height:440px;flex:1;background:#09111b;overflow:hidden;isolation:isolate}canvas{display:block;width:100%;height:100%;position:absolute;inset:0;touch-action:none;cursor:grab}canvas:active{cursor:grabbing}.viewport[data-stale="true"] canvas{opacity:.3}.view-top{position:absolute;top:18px;left:18px;display:flex;gap:7px;flex-wrap:wrap;pointer-events:none}.view-tag{background:#0a141de6;border:1px solid #344552;padding:5px 8px;font:10px var(--mono);color:var(--muted);letter-spacing:.045em}.view-tag.phase{color:var(--amber);border-color:#6b583c}.view-bottom{position:absolute;bottom:17px;left:19px;right:17px;display:flex;justify-content:space-between;align-items:flex-end;gap:18px;pointer-events:none}.legend{font:10px/1.9 var(--mono);color:var(--muted);background:#0b131bbd;padding:5px 8px}.legend span{display:block}.legend i{display:inline-block;width:6px;height:6px;margin-right:8px;background:var(--text)}.legend span:nth-child(2) i{background:var(--amber)}.legend span:nth-child(3) i{background:var(--moss)}.camera-controls{display:flex;align-items:center;gap:5px;pointer-events:auto}.camera-controls button{background:#101c26ed;font:13px var(--mono);width:32px;height:32px}.camera-controls .home-view{width:auto;padding:0 10px;font:11px "Segoe UI",sans-serif}.view-notice{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:35px;background:#09111b55;pointer-events:none}.view-notice strong{font-size:19px;font-weight:500}.view-notice p{max-width:320px;color:var(--muted);font-size:12px;margin:8px auto 0}.readouts{display:grid;grid-template-columns:1fr 1fr 1fr;margin:0;border-top:1px solid var(--line);background:#0f1821}.readout{padding:17px 20px;border-right:1px solid var(--line);min-width:0}.readout:last-child{border-right:0}.readout dt{font-size:11px;color:var(--muted)}.readout dd{font:29px/1.3 var(--mono);letter-spacing:-.045em;margin:8px 0 0}.readout dd small{color:var(--muted);font:11px "Segoe UI",sans-serif;margin-left:5px;letter-spacing:0}.readout:first-child dd{color:var(--amber)}.readout p{font:10px/1.6 var(--mono);color:var(--muted);margin:6px 0 0;min-height:16px}.conditions{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);margin:0}.conditions>div{padding:16px 20px;border-right:1px solid var(--line)}.conditions>div:last-child{border-right:0}.conditions dt{font-size:11px;color:var(--muted)}.conditions dd{font:17px var(--mono);margin:7px 0 0}.conditions small{font:11px "Segoe UI",sans-serif;color:var(--muted)}.control-panel{padding:22px;border-left:1px solid var(--line);background:var(--panel)}.phase-title{font:23px/1.25 var(--mono);color:var(--amber);margin:10px 0}.phase-help{margin:0;color:var(--muted);font-size:12px;min-height:37px}.actions{display:grid;grid-template-columns:1fr 70px;gap:8px;margin-top:18px}.primary{min-height:46px;background:var(--amber);border-color:var(--amber);color:#211b11;font-weight:650}.primary:hover:not(:disabled){background:#ffdda9;border-color:#ffdda9}.pause{font-size:12px}.reset{grid-column:1/-1;min-height:37px;font-size:12px}.pose{border-top:1px solid var(--line);padding-top:18px;margin-top:21px}.field-heading{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.field-heading label{font-size:12px}.field-heading output{font:12px var(--mono);color:var(--text)}input[type="range"]{display:block;width:100%;height:22px;margin:9px 0 0;accent-color:var(--amber);cursor:pointer;touch-action:pan-y}.range-ends{display:flex;justify-content:space-between;font:10px var(--mono);color:var(--muted);margin-top:0}.field-help{font-size:11px;color:var(--muted);margin:6px 0 0}.environment-form{border-top:1px solid var(--line);padding-top:19px;margin-top:19px}.environment-form h2{font-size:13px;font-weight:550;margin:0 0 3px}.environment-form>p{font-size:11px;color:var(--muted);margin:0 0 16px}.environment-form fieldset{border:0;margin:0;padding:0;min-width:0}.env-field{margin:14px 0}.air-control{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:13px 0 14px;border-top:1px solid var(--line);margin-top:16px;cursor:pointer;font-size:12px}.air-control small{display:block;font-size:11px;color:var(--muted);margin-top:2px}.air-control input{width:17px;height:17px;accent-color:var(--moss);cursor:pointer;flex-shrink:0}.apply{width:100%;min-height:39px;border-color:#546778;font-size:12px}.draft-note{color:var(--amber)!important;font-size:11px;margin:7px 0 0!important}.control-message{font-size:11px;line-height:1.6;margin:15px 0 0;color:var(--muted);overflow-wrap:anywhere}.control-message[data-error="true"]{color:var(--red)}.scene-footer{display:flex;justify-content:space-between;gap:18px;padding:12px 18px;border:1px solid var(--line);border-top:0;color:var(--muted);font-size:11px}.scene-footer span:last-child{font-family:var(--mono);text-align:right}.energy-strip{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:20px 0;border-bottom:1px solid var(--line)}.energy-strip h2{font-size:13px;margin:0 0 3px;font-weight:550}.energy-strip p{font-size:11px;color:var(--muted);margin:0}.energy-values{display:flex;gap:40px;margin:0}.energy-values dt{font-size:11px;color:var(--muted)}.energy-values dd{font:18px var(--mono);margin:7px 0 0}.energy-values dd small{color:var(--muted);font:11px "Segoe UI",sans-serif}.energy-values>div:last-child dd{color:var(--ice)}.science{border-bottom:1px solid var(--line)}summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:19px 0;font-size:13px}summary::-webkit-details-marker{display:none}.summary-title::before{content:"+";color:var(--ice);font:18px var(--mono);margin-right:12px}.science[open] .summary-title::before{content:"−"}.summary-note{font:10px var(--mono);color:var(--muted)}.science-body{display:grid;grid-template-columns:1fr 1fr;gap:35px;padding:5px 0 25px}.science h2{font-size:13px;margin:0 0 9px;font-weight:550}.science p,.science li{font-size:12px;color:var(--muted)}.science p{margin:0 0 13px}.science ul{padding-left:18px;margin:12px 0 18px}.science li{margin:7px 0}.science dl{margin:0 0 18px}.science dl>div{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;padding:5px 0;font-size:11px;border-bottom:1px solid #263441}.science dt{color:var(--muted)}.science dd{margin:0;overflow-wrap:anywhere;font-family:var(--mono)}.equation{color:var(--ice);font:12px/1.9 var(--mono);padding:9px 0 14px;overflow-wrap:anywhere}.sources{display:flex;flex-wrap:wrap;gap:8px 17px;margin:12px 0 20px;font-size:12px}.footer{display:flex;justify-content:space-between;gap:20px;padding-top:18px;color:var(--muted);font:10px var(--mono)}
+@media(min-width:1450px){.viewport{min-height:485px}.workspace{grid-template-columns:minmax(0,1fr) 352px}.control-panel{padding:25px}.readout{padding:20px 24px}.readout dd{font-size:33px}}
+@media(max-width:1050px){.shell{padding:22px}.workspace{grid-template-columns:minmax(0,1fr) 300px}.control-panel{padding:20px}.intro-aside{display:none}.viewport{min-height:390px}.readout,.conditions>div{padding:16px 13px}.readout dd{font-size:25px}.energy-values{gap:25px}.view-top{left:13px;top:14px}.view-bottom{left:13px;right:13px}}
+@media(max-width:760px){.shell{padding:16px}.masthead{padding-bottom:16px}.brand small{display:none}.connection{font-size:10px}.intro{padding:22px 0}.intro p{font-size:13px}h1{font-size:37px}.workspace{grid-template-columns:1fr}.viewport{min-height:340px;aspect-ratio:1.18;flex:none}.scene-header{padding:13px;font-size:10px}.readout{padding:15px 11px}.readout dd{font-size:23px}.readout p{font-size:9px}.conditions>div{padding:14px 11px}.conditions dd{font-size:15px}.control-panel{border-left:0;border-top:1px solid var(--line);padding:22px}.phase-help{min-height:0}.actions{grid-template-columns:1fr 85px}.primary{min-height:50px}.environment-form fieldset{display:grid;grid-template-columns:1fr 1fr;gap:2px 24px}.env-field{margin:10px 0}.air-control{grid-column:1/-1}.scene-footer{display:block;padding:12px 15px;font-size:10px}.scene-footer span{display:block}.scene-footer span:last-child{text-align:left;margin-top:5px}.energy-strip{display:block;padding:19px 0}.energy-values{justify-content:space-between;gap:10px;margin-top:17px}.energy-values dd{font-size:16px}.science-body{grid-template-columns:1fr;gap:20px}.summary-note{display:none}.footer{font-size:9px}.view-tag{font-size:9px}.legend{font-size:9px}.camera-controls .home-view{font-size:10px}}
+@media(max-width:380px){.shell{padding:12px}.brand{font-size:11px;gap:8px}.connection{font-size:9px}.readout dd{font-size:20px}.readout dd small{font-size:10px;margin-left:3px}.environment-form fieldset{grid-template-columns:1fr}.energy-values{flex-wrap:wrap;gap:15px 22px}.viewport{min-height:310px}}
+@media(min-width:761px){.environment-form fieldset{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.environment-form .field-heading{display:block}.environment-form .field-heading label{display:block;font-size:11px}.environment-form .field-heading output{display:block;margin-top:4px}.env-field{margin:7px 0}.air-control{grid-column:1/-1;margin-top:9px}.pose{margin-top:17px;padding-top:15px}.environment-form{margin-top:16px;padding-top:16px}.environment-form>p{margin-bottom:10px}.control-message{margin-top:12px}.actions{margin-top:15px}}
+.environment-form .field-heading{display:block}.environment-form .field-heading label{display:block;font-size:11px}.environment-form .field-heading output{display:block;margin-top:4px;white-space:nowrap}.readout dd{white-space:nowrap}
+@media(max-width:380px){.readout{padding:14px 8px}.readout dd{font-size:18px}.readout p{font-size:9px;overflow-wrap:anywhere}.masthead{align-items:flex-start}.connection{max-width:130px;line-height:1.5}}
+.connection[data-fault="true"]::before{background:var(--red)}.phase-title[data-fault="true"]{color:var(--red)}.phase-help,.view-notice p{overflow-wrap:anywhere}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.intro h1{max-width:790px}.control-panel .phase-title{font-size:22px}.drive-settings{border:0;padding:0;margin:21px 0 0;min-width:0}.drive-field{margin:0 0 19px}.drive-field .field-heading{gap:7px}.drive-field output{white-space:nowrap}.actual-note{color:var(--ice)}.store{padding-top:16px;margin-top:17px;border-top:1px solid var(--line)}.store-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}.store-top label{font-size:12px}.store-top output{font:21px var(--mono);color:var(--amber)}.store progress{display:block;width:100%;height:8px;margin:11px 0 7px;border:0;background:#30404d;accent-color:var(--amber)}.store progress::-webkit-progress-bar{background:#30404d}.store progress::-webkit-progress-value{background:var(--amber)}.store[data-empty="true"] output{color:var(--red)}.support-control{margin-top:4px;margin-bottom:0}.trial-reset{width:100%;min-height:42px;font-size:12px}.energy-values{gap:30px}.readout dd{font-size:29px}.conditions dd{white-space:nowrap}.support-control small{max-width:245px}.view-notice p{max-width:390px}.limit-note{font-size:11px;color:var(--muted);margin:8px 0 0}.readout p{overflow-wrap:anywhere}
+@media(max-width:1050px){.readout dd{font-size:25px}.conditions dd{font-size:15px}}
+@media(max-width:760px){.readout dt{min-height:32px}.readout dd small{display:block;margin:3px 0 0}.intro h1{font-size:36px}.readout dd{font-size:24px}.energy-values{gap:12px}.drive-settings{margin-top:22px}.drive-field{margin-bottom:20px}.control-panel .phase-title{font-size:23px}}
+@media(max-width:380px){.readout dd{font-size:20px}.conditions dd{font-size:13px}.intro h1{font-size:32px}}
+</style></head>
+<body>
+<div class="shell">
+<header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">C</span> CHIMERA <small>LOAD &amp; MOTION</small></div><div id="connection" class="connection" data-online="false" role="status">Connecting to native arm</div></header>
+<main>
+<section class="intro" aria-labelledby="pageTitle"><div><div class="eyebrow">Source anatomy / Force-bearing elbow</div><h1 id="pageTitle">An arm that has to <span>carry its weight.</span></h1><p>Ask the elbow to reach an angle, then challenge it with less drive or more load. Cut power to see what gravity does.</p></div><div class="intro-aside"><strong>ONE DYNAMIC JOINT</strong><br>FIXED SHOULDER · FINITE DRIVE</div></section>
+<section class="workspace" aria-label="Force-bearing arm experiment">
+<div class="scene-column"><div class="scene-header"><strong>Macaque arm · Native load trial</strong><span id="sceneTime">t — s</span></div>
+<div class="viewport" id="viewport" data-stale="true"><canvas id="scene" tabindex="0" aria-label="Native 3D macaque arm with a fixed shoulder, dynamic elbow, hand contact proxy and optional support. Drag or use arrow keys to orbit. Plus and minus zoom. Home resets the camera."></canvas><div class="view-top"><span class="view-tag phase" id="phaseTag">WAITING FOR SCENE</span><span class="view-tag" id="supportTag">SUPPORT —</span></div><div class="view-bottom"><div class="legend"><span><i></i>Source anatomy</span><span><i></i>Hand contact proxy</span><span><i></i>Support platform</span></div><div class="camera-controls" aria-label="Camera controls"><button type="button" id="zoomOut" aria-label="Zoom out">−</button><button type="button" id="zoomIn" aria-label="Zoom in">+</button><button type="button" id="homeView" class="home-view">Reset view</button></div></div><div class="view-notice" id="viewNotice" role="status"><strong id="viewNoticeTitle">Connecting to the arm</strong><p id="viewNoticeText">Geometry and readings will arrive together from the native solver.</p></div></div>
+<dl class="readouts" aria-label="Readings from the displayed native snapshot"><div class="readout"><dt>Actual elbow angle</dt><dd><span id="angle">—</span><small>°</small></dd><p id="actualTarget">Target —°</p></div><div class="readout"><dt>Angular speed</dt><dd><span id="speed">—</span><small>rad/s</small></dd><p>Signed elbow motion</p></div><div class="readout"><dt>Hand support force</dt><dd><span id="supportForce">—</span><small>N</small></dd><p id="contactNote">Awaiting native contact</p></div></dl>
+<dl class="conditions" aria-label="Joint torque readings"><div><dt>Motor torque</dt><dd><span id="motorTorque">—</span> <small>N·m</small></dd></div><div><dt>Gravity torque</dt><dd><span id="gravityTorque">—</span> <small>N·m</small></dd></div><div><dt>Joint-limit reaction</dt><dd><span id="limitTorque">—</span> <small>N·m</small></dd></div></dl></div>
+<aside class="control-panel" aria-label="Drive and load controls"><div class="section-label">Drive state</div><h2 class="phase-title" id="phaseTitle">Connecting</h2><p class="phase-help" id="phaseHelp">Waiting for the native arm.</p>
+<div class="actions"><button type="button" class="primary" id="power" disabled>Cut power</button><button type="button" class="pause" id="pause" disabled>Pause</button></div>
+<div class="store" id="store"><div class="store-top"><label for="batteryMeter">Mechanical store</label><output id="batteryValue">— J</output></div><progress id="batteryMeter" max="1" value="0" aria-label="Mechanical energy remaining"></progress><p class="field-help" id="batteryHelp">Finite drive energy · reset refills the store.</p></div>
+<fieldset class="drive-settings" id="driveFields" disabled aria-label="Live actuator and load requests"><div class="drive-field"><div class="field-heading"><label for="target">Target angle</label><output for="target" id="targetValue">110°</output></div><input id="target" type="range" min="20" max="140" step="1" value="110"><div class="range-ends"><span>20°</span><span>140°</span></div><p class="field-help">Actuator request · <span class="actual-note" id="targetActual">actual —°</span></p></div><div class="drive-field"><div class="field-heading"><label for="torqueLimit">Drive torque limit</label><output for="torqueLimit" id="torqueLimitValue">0.30 N·m</output></div><input id="torqueLimit" type="range" min="0" max="0.6" step="0.01" value="0.3"><div class="range-ends"><span>No drive</span><span>0.60 N·m</span></div></div><div class="drive-field"><div class="field-heading"><label for="load">Downward hand load</label><output for="load" id="loadValue">0.0 N</output></div><input id="load" type="range" min="0" max="3" step="0.1" value="0"><div class="range-ends"><span>0 N</span><span>3 N</span></div></div></fieldset>
+<label class="air-control support-control" for="support"><span>Hand support<small>Applied only when you reset the trial.</small></span><input type="checkbox" id="support" checked disabled></label><button type="button" class="trial-reset" id="reset" disabled>Reset trial &amp; refill ↻</button><p class="draft-note" id="supportDraft" hidden>Support change pending · reset to apply</p><p class="field-help">Returns to 90° with zero speed and a fresh 1 J store. Other drive settings are retained.</p><p class="control-message" id="controlMessage" role="status">Drag the scene to orbit. Scroll to zoom.</p></aside>
+</section><div class="scene-footer"><span>The target requests torque. Actual motion and contact come from the native solver.</span><span id="freshness">Awaiting first snapshot</span></div>
+<section class="energy-strip" aria-labelledby="energyTitle"><div><h2 id="energyTitle">Account for the work</h2><p>Watch drive work become motion, height and dissipated heat.</p></div><dl class="energy-values"><div><dt>Mechanical energy</dt><dd><span id="mechanical">—</span> <small>J</small></dd></div><div><dt>Actuator work</dt><dd><span id="actuatorWork">—</span> <small>J</small></dd></div><div><dt>Balance residual</dt><dd><span id="balance">—</span> <small>J</small></dd></div></dl></section>
+<details class="science"><summary><span class="summary-title">Model, energy account &amp; sources</span><span class="summary-note">WHAT THIS ARM REPRESENTS</span></summary><div class="science-body"><section><h2>One elbow bears a modeled load</h2><p>The shoulder is fixed. The elbow angle and angular speed are native dynamic states; the browser never poses the bones. A limited actuator works toward the requested angle using a finite ideal mechanical store.</p><ul><li>The macaque geometry is source-derived. Segment mass and inertia describe the modeled moving assembly, not the isolated bone mesh.</li><li>The drive, hand contact proxy, support and applied downward load are authored mechanisms. This is not a biological muscle, grip model or full animal.</li><li>The support is fixed for a trial. Reset explicitly prepares the joint at 90° with zero speed and refills the store to 1 J.</li><li>Earth gravity acts on the modeled assembly. Atmospheric values below are reference conditions only: arm air drag and heat exchange are not implemented.</li><li>Diagnostic colors and lighting distinguish the geometry; they do not represent measured optical properties.</li></ul><p id="nativeScope" hidden></p><h2>Source record</h2><div class="sources" id="sources">Source links arrive with the native state.</div><dl><div><dt>Moving assembly mass</dt><dd id="movingMass">—</dd></div><div><dt>Elbow inertia</dt><dd id="inertia">—</dd></div><div><dt>Hand position E / U / S</dt><dd id="position">—</dd></div><div><dt>Hand proxy radius</dt><dd id="radius">—</dd></div><div><dt>Mount reaction E / U / S</dt><dd id="mountReaction">—</dd></div><div><dt>Motor reaction torque</dt><dd id="motorReaction">—</dd></div><div><dt>Gravity</dt><dd id="gravity">—</dd></div><div><dt>Reference atmosphere</dt><dd id="atmosphere">—</dd></div><div><dt>Graph revision</dt><dd id="graphHash">—</dd></div><div><dt>Scene identity</dt><dd id="sceneHash">—</dd></div></dl></section>
+<section><h2>Mechanical energy account</h2><div class="equation">E − E₀ − W<sub>actuator</sub> − W<sub>external</sub><br>+ Q<sub>damping</sub> + Q<sub>impact</sub> = residual</div><p>Work is signed; damping and impact heat are dissipated mechanical energy. The native engine reports the residual. Braking heat is recorded separately from the arm's mechanical account.</p><dl><div><dt>Kinetic energy</dt><dd id="kineticEnergy">—</dd></div><div><dt>Gravitational energy</dt><dd id="gravitationalEnergy">—</dd></div><div><dt>Initial mechanical</dt><dd id="initialEnergy">—</dd></div><div><dt>Current mechanical</dt><dd id="currentEnergy">—</dd></div><div><dt>Actuator work</dt><dd id="driveWork">—</dd></div><div><dt>External load work</dt><dd id="externalWork">—</dd></div><div><dt>Damping heat</dt><dd id="dampingHeat">—</dd></div><div><dt>Impact heat</dt><dd id="impactHeat">—</dd></div><div><dt>Brake heat</dt><dd id="brakeHeat">—</dd></div><div><dt>Balance residual</dt><dd id="balanceEnergy">—</dd></div><div><dt>Store remaining / initial</dt><dd id="batteryDetail">—</dd></div><div><dt>Store depletion events</dt><dd id="emptyEvents">—</dd></div></dl><h2>Arm and mechanical store together</h2><div class="equation">E + B + Q<sub>damping</sub> + Q<sub>impact</sub> + Q<sub>brake</sub><br>− E₀ − B₀ − W<sub>external</sub> = store residual</div><p>Signed actuator work already includes braking. Braking heat appears here once, in the combined arm and store account.</p><dl><div><dt>Combined store residual</dt><dd id="storeResidual">—</dd></div></dl><h2>Try a physical comparison</h2><p>Cut power and watch the passive motion. Restore drive with a weak torque limit, or add a downward load. With support enabled, contact can carry force while the hand remains constrained by the platform.</p></section></div></details>
+</main><footer class="footer"><span>ARM LOAD / CHIMERA</span><span>LOCAL AXES · EAST / UP / SOUTH</span></footer></div>
+<script>
+
+'use strict';
+(() => {
+  const $=id=>document.getElementById(id);
+  const finite=value=>typeof value==='number'&&Number.isFinite(value);
+  const number=(value,digits=3)=>finite(value)?value.toFixed(digits):'—';
+  const signed=(value,digits=3)=>finite(value)?(value>0?'+':'')+value.toFixed(digits):'—';
+  const energy=value=>finite(value)?(Math.abs(value)>0&&Math.abs(value)<.0001?value.toExponential(2):signed(value,5)):'—';
+  const set=(id,value)=>{const node=$(id);if(node.textContent!==String(value))node.textContent=value;};
+  const fields={target:{command:'target_deg',state:'target_deg'},torqueLimit:{command:'torque_limit_N_m',state:'torque_limit_N_m'},load:{command:'load_N',state:'external_load_N'}};
+  const editing=new Set();
+  let state=null,latestState=null,lastSnapshot=0,lastResponse=0,nativeFault='',posting=false,supportDirty=false;
+  let snapshotPromise=null,snapshotController=null,pollTimer=null,epoch=0,transportError='',renderError='',sourceSignature='';
+  const canvas=$('scene');let gl=null,renderer=null;
+  const camera={yaw:.5,pitch:.29,radius:1.1,target:[0,.24,0]};
+  const projection=new Float32Array(16),view=new Float32Array(16),vp=new Float32Array(16);
+  // Presentation only: native snapshot vertices pass through unchanged.
+  function initRenderer() {
+    gl = canvas.getContext('webgl2', {antialias:true, alpha:false});
+    if (!gl) throw new Error('WebGL 2 is unavailable. Enable hardware graphics and reload to view the scene.');
+    const shader = (type, source) => {
+      const result = gl.createShader(type); gl.shaderSource(result, source); gl.compileShader(result);
+      if (!gl.getShaderParameter(result, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(result) || 'Could not compile scene shader.');
+      return result;
+    };
+    const program = gl.createProgram();
+    gl.attachShader(program, shader(gl.VERTEX_SHADER, `#version 300 es
+      layout(location=0) in vec3 aPos;
+      layout(location=1) in vec3 aNormal;
+      layout(location=2) in vec3 aColor;
+      uniform mat4 uVP;
+      out vec3 vNormal; out vec3 vColor; out vec3 vWorld;
+      void main(){vNormal=aNormal;vColor=aColor;vWorld=aPos;gl_Position=uVP*vec4(aPos,1.0);}`));
+    gl.attachShader(program, shader(gl.FRAGMENT_SHADER, `#version 300 es
+      precision highp float;
+      in vec3 vNormal; in vec3 vColor; in vec3 vWorld;
+      uniform vec3 uCam; out vec4 outColor;
+      void main(){
+        vec3 n=normalize(vNormal);
+        vec3 light=normalize(vec3(-.35,.85,.5));
+        vec3 color=vColor*(.39+.61*max(dot(n,light),0.0));
+        vec3 direction=normalize(uCam-vWorld);
+        float rim=pow(1.0-max(dot(n,direction),0.0),3.0)*.1;
+        outColor=vec4(color+rim,1.0);
+      }`));
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program) || 'Could not link scene shader.');
+    const vao=gl.createVertexArray(), vbo=gl.createBuffer(), ibo=gl.createBuffer();
+    gl.bindVertexArray(vao); gl.bindBuffer(gl.ARRAY_BUFFER,vbo); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);
+    for(let i=0;i<3;i++){gl.enableVertexAttribArray(i);gl.vertexAttribPointer(i,3,gl.FLOAT,false,36,i*12);}
+    gl.bindVertexArray(null); gl.enable(gl.DEPTH_TEST); gl.clearColor(.035,.062,.092,1);
+    renderer={program,vao,vbo,ibo,count:0,uVP:gl.getUniformLocation(program,'uVP'),uCam:gl.getUniformLocation(program,'uCam')};
+    renderError='';
+  }
+  function upload(vertices, indices) {
+    if (!renderer) return;
+    gl.bindVertexArray(renderer.vao);gl.bindBuffer(gl.ARRAY_BUFFER,renderer.vbo);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.DYNAMIC_DRAW);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,renderer.ibo);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint32Array(indices),gl.DYNAMIC_DRAW);
+    renderer.count=indices.length;gl.bindVertexArray(null);
+  }
+  function perspective(out, aspect) {
+    const f=1/Math.tan(Math.PI/8), near=.01, far=20, nf=1/(near-far);
+    out.fill(0);out[0]=f/aspect;out[5]=f;out[10]=(far+near)*nf;out[11]=-1;out[14]=2*far*near*nf;
+  }
+  function lookAt(out, eye, target) {
+    let zx=eye[0]-target[0],zy=eye[1]-target[1],zz=eye[2]-target[2];
+    let scale=1/(Math.hypot(zx,zy,zz)||1);zx*=scale;zy*=scale;zz*=scale;
+    let xx=zz,xz=-zx;scale=1/(Math.hypot(xx,xz)||1);xx*=scale;xz*=scale;
+    const yx=zy*xz,yy=zz*xx-zx*xz,yz=-zy*xx;
+    out.set([xx,yx,zx,0,0,yy,zy,0,xz,yz,zz,0,-(xx*eye[0]+xz*eye[2]),-(yx*eye[0]+yy*eye[1]+yz*eye[2]),-(zx*eye[0]+zy*eye[1]+zz*eye[2]),1]);
+  }
+  function multiply(out,a,b) {
+    for(let c=0;c<4;c++)for(let r=0;r<4;r++)out[c*4+r]=a[r]*b[c*4]+a[4+r]*b[c*4+1]+a[8+r]*b[c*4+2]+a[12+r]*b[c*4+3];
+  }
+  function draw() {
+    if (!renderer) return;
+    const ratio=Math.min(devicePixelRatio||1,2),width=Math.max(1,Math.round(canvas.clientWidth*ratio)),height=Math.max(1,Math.round(canvas.clientHeight*ratio));
+    if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;gl.viewport(0,0,width,height);}
+    gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    const cp=Math.cos(camera.pitch),eye=[camera.target[0]+camera.radius*cp*Math.sin(camera.yaw),camera.target[1]+camera.radius*Math.sin(camera.pitch),camera.target[2]+camera.radius*cp*Math.cos(camera.yaw)];
+    perspective(projection,width/height);lookAt(view,eye,camera.target);multiply(vp,projection,view);
+    gl.useProgram(renderer.program);gl.uniformMatrix4fv(renderer.uVP,false,vp);gl.uniform3fv(renderer.uCam,eye);gl.bindVertexArray(renderer.vao);
+    gl.drawElements(gl.TRIANGLES,renderer.count,gl.UNSIGNED_INT,0);gl.bindVertexArray(null);
+  }
+  const clampCamera=()=>{camera.pitch=Math.max(-.1,Math.min(1.35,camera.pitch));camera.radius=Math.max(.45,Math.min(3,camera.radius));draw();};
+  let pointer=null;
+  canvas.addEventListener('pointerdown',event=>{if(event.button!==0)return;pointer={id:event.pointerId,x:event.clientX,y:event.clientY};canvas.setPointerCapture(event.pointerId);canvas.focus({preventScroll:true});});
+  canvas.addEventListener('pointermove',event=>{if(!pointer||pointer.id!==event.pointerId)return;camera.yaw-=(event.clientX-pointer.x)*.007;camera.pitch+=(event.clientY-pointer.y)*.006;pointer.x=event.clientX;pointer.y=event.clientY;clampCamera();});
+  for(const name of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(name,()=>{pointer=null;});
+  canvas.addEventListener('wheel',event=>{event.preventDefault();camera.radius*=Math.exp(event.deltaY*.001);clampCamera();},{passive:false});
+  function home(){camera.yaw=.5;camera.pitch=.29;camera.radius=1.1;draw();}
+  canvas.addEventListener('keydown',event=>{const actions={ArrowLeft:()=>camera.yaw+=.12,ArrowRight:()=>camera.yaw-=.12,ArrowUp:()=>camera.pitch+=.1,ArrowDown:()=>camera.pitch-=.1,'+':()=>camera.radius*=.9,'=':()=>camera.radius*=.9,'-':()=>camera.radius*=1.1,Home:home};if(actions[event.key]){event.preventDefault();actions[event.key]();clampCamera();}});
+  $('zoomIn').onclick=()=>{camera.radius*=.85;clampCamera();};$('zoomOut').onclick=()=>{camera.radius*=1.15;clampCamera();};$('homeView').onclick=home;
+  new ResizeObserver(draw).observe(canvas);
+  canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();renderer=null;renderError='Graphics connection lost. Waiting for the browser to restore the scene.';refreshHealth();});
+  canvas.addEventListener('webglcontextrestored',()=>{try{initRenderer();lastSnapshot=0;lastResponse=0;refreshHealth();pollSnapshot();}catch(error){renderError=error.message;refreshHealth();}});
+
+  function showSources(sources){
+    const signature=JSON.stringify(sources||null);if(signature===sourceSignature)return;sourceSignature=signature;
+    const container=$('sources');container.replaceChildren();
+    const entries=Array.isArray(sources)?sources:Object.entries(sources||{}).map(([label,value])=>typeof value==='string'?{label,url:value}:{label,...value});
+    for(const [index,source] of entries.entries()){
+      const raw=typeof source==='string'?source:source?.url||source?.href||source?.link;if(typeof raw!=='string')continue;
+      let url;try{url=new URL(raw,location.href);}catch{continue;}if(!['https:','http:'].includes(url.protocol))continue;
+      const link=document.createElement('a');link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';link.textContent=(typeof source==='object'&&(source.label||source.name||source.title))||'Source '+(index+1);container.append(link);
+    }
+    if(!container.childElementCount)container.textContent='No source links supplied by this native session.';
+  }
+
+
+  function fieldLabels(){set('targetValue',number(Number($('target').value),0)+'°');set('torqueLimitValue',number(Number($('torqueLimit').value),2)+' N·m');set('loadValue',number(Number($('load').value),1)+' N');}
+  function syncControls(){
+    const joint=latestState?.joint;if(!joint)return;
+    for(const [id,field] of Object.entries(fields))if(!editing.has(id)&&finite(joint[field.state]))$(id).value=joint[field.state];
+    if(!supportDirty&&typeof joint.support_enabled==='boolean')$('support').checked=joint.support_enabled;
+    fieldLabels();
+  }
+  for(const [id,field] of Object.entries(fields)){
+    $(id).addEventListener('input',()=>{editing.add(id);fieldLabels();});
+    $(id).addEventListener('change',()=>command({[field.command]:Number($(id).value)},id==='target'?'Target request updated. The native drive determines the actual angle.':id==='load'?'Downward hand load updated.':'Drive torque limit updated.'));
+  }
+  $('support').addEventListener('change',()=>{supportDirty=!latestState?.joint||$('support').checked!==latestState.joint.support_enabled;refreshHealth();});
+  $('power').onclick=()=>state&&command({power:!state.joint.motor_enabled},state.joint.motor_enabled?'Power cut. The arm continues under passive forces.':'Drive enabled. Available torque still depends on the store and torque limit.');
+  $('pause').onclick=()=>state&&command({paused:!state.paused},state.paused?'Trial resumed.':'Trial paused.');
+  $('reset').onclick=()=>command({reset:true,support:$('support').checked},'Trial reset to 90°. Mechanical store refilled to 1 J.',true);
+  function message(text,error=false){set('controlMessage',text);$('controlMessage').dataset.error=String(error);}
+  function renderState(){
+    const j=state.joint,e=state.energy,b=state.body,env=state.environment,x=state.exchange||{};
+    const empty=finite(e.battery_J)&&e.battery_J<=0;
+    const phase=state.paused?'Trial paused':!j.motor_enabled?'Power cut':empty?'Store depleted':'Drive enabled';
+    set('phaseTitle',phase);set('phaseTag',phase.toUpperCase());
+    set('phaseHelp',state.paused?'Simulation time is paused. Resume to continue the trial.':!j.motor_enabled?'The drive supplies no torque. Gravity, load and contact determine the motion.':empty?'The mechanical store is empty. Reset the trial to refill it.':'A finite drive works toward the target. Actual motion depends on the forces.');
+    set('sceneTime','t '+number(state.sim_time_s,2)+' s');set('supportTag',j.support_enabled?(j.support_reaction_N>0?'SUPPORT CONTACT':'SUPPORT ON'):'SUPPORT OFF');
+    set('angle',number(j.angle_deg,1));set('actualTarget','Target '+number(j.target_deg,0)+'°');set('targetActual','actual '+number(j.angle_deg,1)+'°');set('speed',signed(j.speed_rad_s,2));set('supportForce',number(j.support_reaction_N,3));set('contactNote',j.support_enabled?'Native support reaction':'Support disabled');
+    set('motorTorque',signed(j.motor_torque_N_m,3));set('gravityTorque',signed(j.gravity_torque_N_m,3));set('limitTorque',signed(j.limit_reaction_N_m,3));
+    set('batteryValue',number(e.battery_J,3)+' J');$('store').dataset.empty=String(empty);
+    const capacity=finite(e.battery_initial_J)&&e.battery_initial_J>0?e.battery_initial_J:1;
+    $('batteryMeter').max=capacity;$('batteryMeter').value=finite(e.battery_J)?Math.max(0,Math.min(capacity,e.battery_J)):0;
+    $('batteryMeter').setAttribute('aria-valuetext',number(e.battery_J,3)+' of '+number(e.battery_initial_J,3)+' joules');
+    set('batteryHelp',empty?'Store empty · reset to refill.':'Of '+number(e.battery_initial_J,2)+' J initially · reset refills the store.');
+    set('mechanical',energy(e.mechanical_J));set('actuatorWork',energy(e.actuator_work_J));set('balance',energy(e.balance_error_J));
+    const energies={kineticEnergy:'kinetic_J',gravitationalEnergy:'gravitational_J',initialEnergy:'initial_mechanical_J',currentEnergy:'mechanical_J',driveWork:'actuator_work_J',externalWork:'external_work_J',dampingHeat:'damping_heat_J',impactHeat:'impact_heat_J',brakeHeat:'brake_heat_J',balanceEnergy:'balance_error_J',storeResidual:'store_balance_error_J'};
+    for(const [id,key] of Object.entries(energies))set(id,energy(e[key])+' J');
+    set('batteryDetail',number(e.battery_J,5)+' / '+number(e.battery_initial_J,3)+' J');set('emptyEvents',finite(j.battery_empty_events)?String(j.battery_empty_events):'—');
+    const vector=(v,units)=>Array.isArray(v)&&v.length===3?v.map(value=>signed(value,4)).join(' / ')+' '+units:'—';
+    set('movingMass',number(j.moving_mass_kg,5)+' kg');set('inertia',number(j.inertia_kg_m2,6)+' kg·m²');set('position',vector(b.position_m,'m'));set('radius',number(b.radius_m,3)+' m');set('mountReaction',vector(x.mount_reaction_force_N,'N'));set('motorReaction',signed(x.motor_reaction_torque_N_m,4)+' N·m');set('gravity',number(env.gravity_m_s2,5)+' m/s²');
+    set('atmosphere',number(env.temperature_K,2)+' K / '+number(finite(env.pressure_Pa)?env.pressure_Pa/1000:null,2)+' kPa / '+number(env.density_kg_m3,3)+' kg/m³ at '+number(env.altitude_m,0)+' m');
+    set('graphHash',state.graph_hash||'—');set('sceneHash',state.scene_sha256||'—');showSources(state.sources);
+    const scope=typeof state.scope==='string'?state.scope:'';$('nativeScope').hidden=!scope;set('nativeScope',scope);syncControls();
+  }
+  function refreshHealth(){
+    const age=lastSnapshot?performance.now()-lastSnapshot:Infinity;
+    const fresh=lastResponse>0&&performance.now()-lastResponse<2000&&!transportError;
+    const ready=fresh&&!posting&&!renderError,physicsReady=ready&&!nativeFault&&!!state;
+    $('connection').dataset.online=String(fresh&&!renderError&&!nativeFault);$('connection').dataset.fault=String(!!nativeFault);
+    set('connection',renderError?'Scene unavailable':posting?'Applying to native engine':fresh?(nativeFault?'Native physics fault · connected':'Native snapshot connected'):latestState?'Snapshot connection lost':'Waiting for native engine');
+    $('viewport').dataset.stale=String(!fresh||!!renderError||!!nativeFault);$('viewNotice').hidden=fresh&&!renderError&&!nativeFault;
+    if(renderError){set('viewNoticeTitle','Scene unavailable');set('viewNoticeText',renderError);}else if(!fresh){set('viewNoticeTitle',state?'Last scene is frozen':'Waiting for the native arm');set('viewNoticeText',transportError||(state?'Fresh native data has not arrived. Controls resume after reconnection.':'No native snapshot has arrived yet. Reconnecting automatically.'));}else if(nativeFault){set('viewNoticeTitle','Native physics fault');set('viewNoticeText',nativeFault+' '+(state?'The last valid scene and readings are frozen.':'No valid scene has been received.')+' Reset the trial to recover.');}
+    $('phaseTitle').dataset.fault=String(!!nativeFault);
+    if(nativeFault){set('phaseTitle','Native physics fault');set('phaseTag','NATIVE PHYSICS FAULT');set('phaseHelp',nativeFault+' Reset the trial to recover.');}
+    $('power').disabled=!physicsReady;$('pause').disabled=!physicsReady;$('driveFields').disabled=!physicsReady;
+    $('reset').disabled=!ready;$('support').disabled=!ready;$('supportDraft').hidden=!supportDirty;
+    set('power',state?.joint.motor_enabled?'Cut power':'Enable drive');set('pause',state?.paused?'Resume':'Pause');
+    if(nativeFault&&fresh)set('freshness',state?'Native physics fault · last valid t '+number(state.sim_time_s,2)+' s · readings frozen':'Native physics fault · no valid snapshot');
+    else if(lastSnapshot)set('freshness',fresh?'Snapshot aligned · t '+number(state.sim_time_s,2)+' s':'Last snapshot '+number(age/1000,1)+' s ago · readings frozen');
+  }
+  async function jsonRequest(url,options={},controller=new AbortController()){
+    const timeout=setTimeout(()=>controller.abort(),4500);
+    try{
+      const response=await fetch(url,{cache:'no-store',...options,signal:controller.signal});
+      let body;try{body=await response.json();}catch{throw new Error('The native engine returned an unreadable response.');}
+      if(!response.ok||body?.ok===false)throw new Error(body?.error||'Native request failed ('+response.status+').');return body;
+    }finally{clearTimeout(timeout);}
+  }
+  function validateSnapshot(data){
+    if(!data||!data.state||typeof data.state!=='object')throw new Error('The native response contains no state.');
+    const fault=typeof data.state.error==='string'?data.state.error.trim():'';
+    if(data.state.ok===false||fault)return fault||'The native solver reported a fault without an error message.';
+    if(data.state.mode!=='native_force_arm')throw new Error('This endpoint is not serving the force-bearing arm scene.');
+    if(!data.state.joint||!data.state.environment||!data.state.body||!data.state.energy||!finite(data.state.sim_time_s))throw new Error('The snapshot is incomplete; the last complete scene is retained.');
+    const vertices=data.vertices,indices=data.indices;
+    if(!Array.isArray(vertices)||!vertices.length||vertices.length%9||!Array.isArray(indices)||!indices.length||indices.length%3)throw new Error('Native geometry is missing or incomplete.');
+    if(vertices.some(value=>!finite(value)))throw new Error('Native geometry contains an invalid coordinate.');
+    const count=vertices.length/9;if(indices.some(value=>!Number.isInteger(value)||value<0||value>=count))throw new Error('Native triangle indices are invalid.');return '';
+  }
+  function pollSnapshot(){
+    if(snapshotPromise||posting)return snapshotPromise||Promise.resolve();
+    clearTimeout(pollTimer);const requestEpoch=epoch;snapshotController=new AbortController();const controller=snapshotController;
+    snapshotPromise=(async()=>{
+      try{
+        const data=await jsonRequest('/earth_snapshot',{},controller);if(requestEpoch!==epoch)return;
+        const fault=validateSnapshot(data);latestState=data.state;lastResponse=performance.now();transportError='';
+        // Reachable does not mean healthy: failed solver packets never replace valid geometry or readings.
+        if(fault){nativeFault=fault;editing.clear();syncControls();return;}
+        nativeFault='';upload(data.vertices,data.indices);state=data.state;lastSnapshot=lastResponse;renderState();draw();
+      }catch(error){if(requestEpoch!==epoch)return;transportError=error.name==='AbortError'?'The native request timed out. Reconnecting automatically.':error instanceof TypeError?'Could not reach the native engine. Reconnecting automatically.':error.message;}
+      finally{snapshotPromise=null;snapshotController=null;refreshHealth();if(!posting)pollTimer=setTimeout(pollSnapshot,transportError?1000:100);}
+    })();return snapshotPromise;
+  }
+  async function command(payload,success,newTrial=false){
+    if(posting||!lastResponse||performance.now()-lastResponse>=2000||transportError||renderError||(nativeFault?payload.reset!==true:!state)){editing.clear();syncControls();return;}
+    posting=true;epoch++;clearTimeout(pollTimer);if(snapshotController)snapshotController.abort();refreshHealth();message('Applying to the native engine…');
+    try{
+      if(snapshotPromise)await snapshotPromise;
+      await jsonRequest('/earth_state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      if(newTrial)supportDirty=false;message(success);
+    }catch(error){message(error.name==='AbortError'?'The command timed out; its result is uncertain. Waiting for a fresh native snapshot.':error.message,true);}
+    finally{editing.clear();posting=false;transportError='Waiting for a fresh snapshot after the command.';refreshHealth();await pollSnapshot();syncControls();refreshHealth();}
+  }
+  try{initRenderer();}catch(error){renderError=error.message;}
+  fieldLabels();refreshHealth();pollSnapshot();setInterval(refreshHealth,250);
+
+})();
+</script>
+</body></html>

@@ -44,6 +44,7 @@ python -B -m tools.creature_graph.project_spec --show doc.workflow.shared_body_e
 python -B -m tools.creature_graph.project_spec --show doc.workflow.macaque_assembly
 python -B -m tools.creature_graph.project_spec --show req.earth_environment
 python -B -m tools.creature_graph.project_spec --show doc.workflow.earth_patch
+python -B -m tools.creature_graph.project_spec --show doc.workflow.force_arm
 python -B -m tools.creature_graph.project_spec --show req.layered_anatomy
 python -B -m tools.creature_graph.project_spec --show req.embodied_senses
 python -B -m tools.creature_graph.project_spec --show doc.creature_binding_observation
@@ -236,3 +237,14 @@ object into native gravity, air, ground contact and heat exchange. Read
 `doc.workflow.earth_patch` for data provenance, assumptions, energy/momentum
 accounts and continuation tasks. Choose a free private port; other worlds remain
 independent.
+
+### Load-bearing anatomy reference
+
+```powershell
+powershell -File tools/science_funnel/run_earth.ps1 -ForceArm -Port 8126
+```
+
+Open `http://127.0.0.1:8126/earth`. Cut drive power, change the target, apply a
+downward load or reduce torque. Native dynamics owns the elbow angle; the
+source arm can fall or stall against its support. Read `doc.workflow.force_arm`
+for inertia derivation, finite-energy accounting, qualification and limitations.
