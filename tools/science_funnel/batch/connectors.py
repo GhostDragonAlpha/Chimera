@@ -156,7 +156,8 @@ import os as _os
 for _name in sorted(n for n in _os.listdir(_os.path.dirname(__file__))
                     if n.startswith('connectors_') and n.endswith('.py')):
     _mod = _importlib.import_module('.' + _name[:-3], __package__)
-    _extra = getattr(_mod, 'EXTRA_CONNECTORS', None) or getattr(_mod, 'CONNECTORS_LANE', None)
+    _extra = (getattr(_mod, 'EXTRA_CONNECTORS', None) or getattr(_mod, 'CONNECTORS_LANE', None)
+              or getattr(_mod, 'CONNECTORS', None))
     for _cid, _conn in (_extra or {}).items():
         require(_cid not in CONNECTORS, 'lane_connector_collision', _cid)
         CONNECTORS[_cid] = _conn
@@ -166,25 +167,3 @@ def class_for(connector_id, record_type):
     if connector_id in CONNECTORS:
         return CONNECTORS[connector_id]['classes'].get(record_type)
     return DEFAULT_CLASSES.get(record_type)
-
-
-def _load_lane_modules():
-    """Lane-module convention: every sibling connectors_<lane>.py exports
-    CONNECTORS_LANE and is merged here by id. Lane modules import their own
-    adapters (which self-register into the shared ADAPTERS registry), so the
-    core files stay owned by the batch lane. Collision on a connector id is a
-    hard refusal, never a silent overwrite."""
-    import glob
-    import importlib
-    import os
-    for module_path in sorted(glob.glob(os.path.join(os.path.dirname(__file__),
-                                                     'connectors_*.py'))):
-        stem = os.path.splitext(os.path.basename(module_path))[0]
-        module = importlib.import_module('.' + stem, __package__)
-        lane = getattr(module, 'CONNECTORS_LANE', {})
-        for connector_id, connector in lane.items():
-            require(connector_id not in CONNECTORS, 'connector_id_collision', connector_id)
-            CONNECTORS[connector_id] = connector
-
-
-_load_lane_modules()

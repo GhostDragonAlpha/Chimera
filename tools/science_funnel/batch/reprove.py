@@ -15,15 +15,25 @@ from ..adapters import ADAPTERS
 from . import connectors as C
 
 DATA_ROOT = Path(C.DATA_ROOT)
-_SEARCH_DIRS = ['force_sources', 'bodyparts3d', 'coolprop', 'earth', 'pubchem',
-                'macaque_arm', 'smithsonian', 'copernicus_glo30',
-                'guimaraes_arch', 'oku_bipedal']
+
+
+def _search_dirs():
+    """Every data subdirectory that carries artifacts -- dynamic so parallel
+    intake lanes never collide on a shared list."""
+    dynamic = sorted(p.name for p in DATA_ROOT.iterdir() if p.is_dir())
+    pinned = ['force_sources', 'bodyparts3d', 'coolprop', 'earth', 'pubchem',
+              'macaque_arm', 'smithsonian', 'copernicus_glo30']
+    return [d for d in pinned if d in dynamic] + [d for d in dynamic if d not in pinned]
+
+
+# the gait lane's test reads this name; keep it as the resolved list
+_SEARCH_DIRS = _search_dirs()
 
 
 def _blob_index():
     """One pass over the data directories: sha256 -> path for every file."""
     index = {}
-    for name in _SEARCH_DIRS:
+    for name in _search_dirs():
         folder = DATA_ROOT / name
         if not folder.is_dir():
             continue
