@@ -1,0 +1,27 @@
+test_arm_and_environment_are_separate_identities (tools.science_funnel.tests.test_earth_scene.EarthInputs.test_arm_and_environment_are_separate_identities) ... ok
+test_compiled_graph_is_independent_of_later_authoring (tools.science_funnel.tests.test_earth_scene.EarthInputs.test_compiled_graph_is_independent_of_later_authoring) ... ok
+test_compiler_reuses_force_library_and_arm (tools.science_funnel.tests.test_earth_scene.EarthInputs.test_compiler_reuses_force_library_and_arm) ... ok
+test_datum_axes_and_origin (tools.science_funnel.tests.test_earth_scene.EarthInputs.test_datum_axes_and_origin) ... ok
+test_graph_parameter_tamper_refuses (tools.science_funnel.tests.test_earth_scene.EarthInputs.test_graph_parameter_tamper_refuses) ... ok
+test_invalid_coordinate_refuses (tools.science_funnel.tests.test_earth_scene.EarthInputs.test_invalid_coordinate_refuses) ... ok
+test_millimetres_survive_global_roundtrip (tools.science_funnel.tests.test_earth_scene.EarthInputs.test_millimetres_survive_global_roundtrip) ... ok
+test_source_units (tools.science_funnel.tests.test_earth_scene.EarthInputs.test_source_units) ... ok
+test_adoption_never_means_implementation_and_drafts_are_excluded (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_adoption_never_means_implementation_and_drafts_are_excluded) ... ok
+test_archived_document_retains_text_and_checks_exact_bytes (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_archived_document_retains_text_and_checks_exact_bytes) ... ok
+test_complete_checklist_still_does_not_claim_controller_authority (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_complete_checklist_still_does_not_claim_controller_authority) ... ok
+test_document_search_text_cannot_disagree_with_archived_bytes (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_document_search_text_cannot_disagree_with_archived_bytes) ... ok
+test_every_read_leaves_source_bytes_and_graph_unchanged (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_every_read_leaves_source_bytes_and_graph_unchanged) ... ok
+test_incomplete_workflow_uses_controller_refusal (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_incomplete_workflow_uses_controller_refusal) ... ok
+test_inline_recipe_descriptor_is_not_misclassified_as_byte_archive (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_inline_recipe_descriptor_is_not_misclassified_as_byte_archive) ... ok
+test_malformed_contract_is_reported_instead_of_crashing (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_malformed_contract_is_reported_instead_of_crashing) ... ok
+test_missing_contract_and_falsifier_refuse (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_missing_contract_and_falsifier_refuse) ... ok
+test_origin_presence_type_and_edge_are_required (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_origin_presence_type_and_edge_are_required) ... ok
+test_planning_does_not_invent_executable_work (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_planning_does_not_invent_executable_work) ... ok
+test_search_returns_active_and_reference_with_explicit_labels (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_search_returns_active_and_reference_with_explicit_labels) ... ok
+test_stale_evidence_is_visible_without_rewriting_history (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_stale_evidence_is_visible_without_rewriting_history) ... ok
+test_unknown_schema_and_admission_refuse (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_unknown_schema_and_admission_refuse) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 14.010s
+
+OK

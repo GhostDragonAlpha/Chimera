@@ -1,0 +1,36 @@
+{
+  "candidate": "d31fe18600ace6354eba8d518c4f581362195e8c",
+  "html_sha256": "169fe4d6480b63b777e8f3ec82b6de3b17ffc8312bea5691b386a4ca8158810b",
+  "record_type": "Structured summary of browser implementation and independent review reports; not raw browser event trace.",
+  "ordinary_controls": {
+    "reviewer": "earth_ui_review",
+    "method": "Actual keyboard and click against native HTTP routes",
+    "results": [
+      "release and contact",
+      "pause and resume",
+      "return to hand",
+      "altitude/wind/slope/friction/air apply",
+      "elbow reference pose",
+      "responsive desktop/tablet/mobile",
+      "defaults restored"
+    ]
+  },
+  "fault_controls": {
+    "reviewer": "earth_ui",
+    "method": "Browser-only interception of snapshot and POST replies; native engine state untouched",
+    "results": [
+      "nested state.ok=false distinguished from transport failure",
+      "last valid geometry buffer uploads unchanged across repeated fault packets",
+      "injected time999 and velocity1000 not published as readings",
+      "release/pause/elbow blocked",
+      "Reset recovery",
+      "unchanged-environment Apply recovery",
+      "error-only packet",
+      "missing-error fallback",
+      "fault as first response shows no invented geometry/readings",
+      "network loss disables all mutation controls",
+      "normal actions work after recovery"
+    ]
+  },
+  "scope": "UI fault recovery and scene controls; mock packets do not qualify native fault generation or native recovery from an actual solver defect."
+}

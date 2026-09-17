@@ -1,0 +1,137 @@
+{
+  "runtime": {
+    "pid": 104736,
+    "exe": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\earth-engine\\Release\\chimera_engine.exe",
+    "exe_sha256": "A6797F7BB5759C1A80A975E77F530ACDEA1540F8E160CCAA499E5FEA2D17E73A",
+    "scene": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\earth-patch\\scene.json",
+    "scene_file_sha256": "91C4CAB6382E13E0FC27B858070F0D1DB6CF67BB199506B3D9A0B48437D3755B",
+    "graph_hash": "ff1d0c484d7e538bcd42a980ee3f3856358cbc68c39f85ac1bec069825e08792",
+    "scene_sha256": "aad9538c3d42850874192be69853b7c1362e3603d9f41185dd726fb263bedd1b",
+    "port": 8125,
+    "launched_utc": "2026-09-17T03:52:18.0479258Z"
+  },
+  "checks": [
+    {
+      "name": "command_air",
+      "pass": true,
+      "detail": {
+        "response_error": ""
+      }
+    },
+    {
+      "name": "private_scene_identity",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "command_release",
+      "pass": true,
+      "detail": {
+        "response_error": ""
+      }
+    },
+    {
+      "name": "live_vacuum_freefall",
+      "pass": true,
+      "detail": {
+        "time_s": 0.0033333333333333335,
+        "error_m": 0.0
+      }
+    },
+    {
+      "name": "native_mesh_matches_snapshot_body",
+      "pass": true,
+      "detail": {
+        "error_m": 1.92347293648254e-09
+      }
+    },
+    {
+      "name": "live_settled_support_load",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "live_energy_account",
+      "pass": true,
+      "detail": {
+        "error_J": 6.938893903907228e-18
+      }
+    },
+    {
+      "name": "vacuum_disables_convective_heat",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "command_reset",
+      "pass": true,
+      "detail": {
+        "response_error": ""
+      }
+    },
+    {
+      "name": "duplicate_control_refuses",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "out_of_range_refuses",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "command_elbow_deg",
+      "pass": true,
+      "detail": {
+        "response_error": ""
+      }
+    },
+    {
+      "name": "live_hand_attachment_moves",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "command_air",
+      "pass": true,
+      "detail": {
+        "response_error": ""
+      }
+    },
+    {
+      "name": "altitude_changes_air_and_gravity",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "command_release",
+      "pass": true,
+      "detail": {
+        "response_error": ""
+      }
+    },
+    {
+      "name": "native_air_cools_sample",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "live_heat_account",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "command_paused",
+      "pass": true,
+      "detail": {
+        "response_error": ""
+      }
+    },
+    {
+      "name": "paused_preserves_simulation_time",
+      "pass": true,
+      "detail": {}
+    }
+  ],
+  "scope": "Native Earth boundary reference, streamed geometry and controls; not whole planet, weather or force-driven monkey."
+}
