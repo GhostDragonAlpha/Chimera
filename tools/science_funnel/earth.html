@@ -15,6 +15,7 @@
 @media(min-width:761px){.environment-form fieldset{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.environment-form .field-heading{display:block}.environment-form .field-heading label{display:block;font-size:11px}.environment-form .field-heading output{display:block;margin-top:4px}.env-field{margin:7px 0}.air-control{grid-column:1/-1;margin-top:9px}.pose{margin-top:17px;padding-top:15px}.environment-form{margin-top:16px;padding-top:16px}.environment-form>p{margin-bottom:10px}.control-message{margin-top:12px}.actions{margin-top:15px}}
 .environment-form .field-heading{display:block}.environment-form .field-heading label{display:block;font-size:11px}.environment-form .field-heading output{display:block;margin-top:4px;white-space:nowrap}.readout dd{white-space:nowrap}
 @media(max-width:380px){.readout{padding:14px 8px}.readout dd{font-size:18px}.readout p{font-size:9px;overflow-wrap:anywhere}.masthead{align-items:flex-start}.connection{max-width:130px;line-height:1.5}}
+.connection[data-fault="true"]::before{background:var(--red)}.phase-title[data-fault="true"]{color:var(--red)}.phase-help,.view-notice p{overflow-wrap:anywhere}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -73,7 +74,7 @@
   const fields = {altitude_m:'altitude', wind_m_s:'wind', slope_deg:'slope', friction:'friction'};
   const phaseLabels = {held:'Held at the hand',flight:'In flight',contact:'Ground contact',out_of_patch:'Outside the patch'};
   const phaseHelp = {held:'Choose a pose, then release the sample into this environment.',flight:'Gravity and the environment now determine the sample’s motion.',contact:'Watch the ground reaction and energy lost through contact.',out_of_patch:'The sample has left the bounded ground patch. Return it to the hand to try again.'};
-  let state = null, lastSnapshot = 0, posting = false, dirty = false, poseDirty = false;
+  let state = null, latestState = null, lastSnapshot = 0, lastResponse = 0, nativeFault = '', posting = false, dirty = false, poseDirty = false;
   let snapshotPromise = null, snapshotController = null, pollTimer = null, epoch = 0, transportError = '', renderError = '';
   let sourceSignature = '';
   const canvas = $('scene');
@@ -161,20 +162,21 @@
   $('zoomIn').onclick=()=>{camera.radius*=.85;clampCamera();};$('zoomOut').onclick=()=>{camera.radius*=1.15;clampCamera();};$('homeView').onclick=home;
   new ResizeObserver(draw).observe(canvas);
   canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();renderer=null;renderError='Graphics connection lost. Waiting for the browser to restore the scene.';refreshHealth();});
-  canvas.addEventListener('webglcontextrestored',()=>{try{initRenderer();lastSnapshot=0;refreshHealth();pollSnapshot();}catch(error){renderError=error.message;refreshHealth();}});
+  canvas.addEventListener('webglcontextrestored',()=>{try{initRenderer();lastSnapshot=0;lastResponse=0;refreshHealth();pollSnapshot();}catch(error){renderError=error.message;refreshHealth();}});
 
   function draft() {return {altitude_m:Number($('altitude').value),wind_m_s:Number($('wind').value),slope_deg:Number($('slope').value),friction:Number($('friction').value),air:$('air').checked};}
   function fieldLabels(){set('altitudeValue',Number($('altitude').value).toLocaleString('en-US')+' m');set('windValue',signed(Number($('wind').value),1)+' m/s');set('slopeValue',signed(Number($('slope').value),0)+'°');set('frictionValue',number(Number($('friction').value),2));const angle=number(90+Number($('elbow').value),0);set('elbowValue',angle+'°');$('elbow').setAttribute('aria-valuetext',angle+' degrees');set('airHelp',$('air').checked?'Drag, buoyancy and heat exchange':'Evacuated comparison · gravity retained');}
   function syncControls(){
-    if(!state)return;
-    if(!dirty){for(const [key,id] of Object.entries(fields))if(finite(state.environment[key]))$(id).value=state.environment[key];$('air').checked=!!state.environment.air;}
-    if(!poseDirty&&finite(state.elbow_deg))$('elbow').value=state.elbow_deg;
+    const current=latestState||state;
+    if(!current)return;
+    if(!dirty&&current.environment){for(const [key,id] of Object.entries(fields))if(finite(current.environment[key]))$(id).value=current.environment[key];if(typeof current.environment.air==='boolean')$('air').checked=current.environment.air;}
+    if(!poseDirty&&finite(current.elbow_deg))$('elbow').value=current.elbow_deg;
     fieldLabels();
   }
-  for(const id of [...Object.values(fields),'air'])$(id).addEventListener('input',()=>{const values=draft();dirty=!state||Object.keys(values).some(key=>values[key]!==state.environment[key]);fieldLabels();refreshHealth();});
+  for(const id of [...Object.values(fields),'air'])$(id).addEventListener('input',()=>{const values=draft();dirty=!latestState?.environment||Object.keys(values).some(key=>values[key]!==latestState.environment[key]);fieldLabels();refreshHealth();});
   $('elbow').addEventListener('input',()=>{poseDirty=true;fieldLabels();});
   $('elbow').addEventListener('change',()=>command({elbow_deg:Number($('elbow').value)},'Arm pose updated.'));
-  $('environmentForm').addEventListener('submit',event=>{event.preventDefault();if(dirty)command(draft(),'Environment applied. A fresh trial starts at the hand.',true);});
+  $('environmentForm').addEventListener('submit',event=>{event.preventDefault();if(dirty||nativeFault)command(draft(),'Environment applied. A fresh trial starts at the hand.',true);});
   $('release').onclick=()=>command({release:true},'Sample released.');
   $('reset').onclick=()=>command({reset:true},'Sample returned to the hand.');
   $('pause').onclick=()=>state&&command({paused:!state.paused},state.paused?'Trial resumed.':'Trial paused.');
@@ -206,18 +208,23 @@
   }
   function refreshHealth(){
     const age=lastSnapshot?performance.now()-lastSnapshot:Infinity;
-    const fresh=!!state&&age<2000&&!transportError;
+    const fresh=lastResponse>0&&performance.now()-lastResponse<2000&&!transportError;
     const ready=fresh&&!posting&&!renderError;
-    $('connection').dataset.online=String(fresh&&!renderError);
-    set('connection',renderError?'Scene unavailable':posting?'Applying to native engine':fresh?'Native snapshot connected':state?'Snapshot connection lost':'Waiting for native engine');
-    $('viewport').dataset.stale=String(!fresh||!!renderError);$('viewNotice').hidden=fresh&&!renderError;
-    if(renderError){set('viewNoticeTitle','Scene unavailable');set('viewNoticeText',renderError);}else if(!fresh){set('viewNoticeTitle',state?'Last scene is frozen':'Waiting for the Earth patch');set('viewNoticeText',transportError|| (state?'Fresh native data has not arrived. Controls resume after reconnection.':'The native environment has not supplied a snapshot yet. Reconnecting automatically.'));}
-    $('release').disabled=!ready||!state?.held||!!state?.paused||dirty||poseDirty;
-    $('reset').disabled=!ready;$('pause').disabled=!ready;
-    $('elbow').disabled=!ready||!state?.held;
-    $('environmentFields').disabled=!ready;$('apply').disabled=!ready||!dirty;
+    const physicsReady=ready&&!nativeFault&&!!state;
+    $('connection').dataset.online=String(fresh&&!renderError&&!nativeFault);
+    $('connection').dataset.fault=String(!!nativeFault);
+    set('connection',renderError?'Scene unavailable':posting?'Applying to native engine':fresh?(nativeFault?'Native physics fault · connected':'Native snapshot connected'):latestState?'Snapshot connection lost':'Waiting for native engine');
+    $('viewport').dataset.stale=String(!fresh||!!renderError||!!nativeFault);$('viewNotice').hidden=fresh&&!renderError&&!nativeFault;
+    if(renderError){set('viewNoticeTitle','Scene unavailable');set('viewNoticeText',renderError);}else if(!fresh){set('viewNoticeTitle',state?'Last scene is frozen':'Waiting for the Earth patch');set('viewNoticeText',transportError|| (state?'Fresh native data has not arrived. Controls resume after reconnection.':'The native environment has not supplied a snapshot yet. Reconnecting automatically.'));}else if(nativeFault){set('viewNoticeTitle','Native physics fault');set('viewNoticeText',nativeFault+' '+(state?'The last valid scene and readings are frozen.':'No valid scene has been received.')+' Return to hand or apply the environment to start a new trial.');}
+    $('phaseTitle').dataset.fault=String(!!nativeFault);
+    if(nativeFault){set('phaseTitle','Native physics fault');set('phaseTag','NATIVE PHYSICS FAULT');set('phaseHelp',nativeFault+' Return to hand or apply the environment to recover.');}
+    $('release').disabled=!physicsReady||!state?.held||!!state?.paused||dirty||poseDirty;
+    $('reset').disabled=!ready;$('pause').disabled=!physicsReady;
+    $('elbow').disabled=!physicsReady||!state?.held;
+    $('environmentFields').disabled=!ready;$('apply').disabled=!ready||(!dirty&&!nativeFault);
     $('draftNote').hidden=!dirty;set('pause',state?.paused?'Resume':'Pause');
-    if(lastSnapshot)set('freshness',fresh?'Snapshot aligned · t '+number(state.sim_time_s,2)+' s':'Last snapshot '+number(age/1000,1)+' s ago · readings frozen');
+    if(nativeFault&&fresh)set('freshness',state?'Native physics fault · last valid t '+number(state.sim_time_s,2)+' s · readings frozen':'Native physics fault · no valid snapshot');
+    else if(lastSnapshot)set('freshness',fresh?'Snapshot aligned · t '+number(state.sim_time_s,2)+' s':'Last snapshot '+number(age/1000,1)+' s ago · readings frozen');
   }
   async function jsonRequest(url,options={},controller=new AbortController()){
     const timeout=setTimeout(()=>controller.abort(),4500);
@@ -228,11 +235,15 @@
     }finally{clearTimeout(timeout);}
   }
   function validateSnapshot(data){
-    if(!data||!data.state||!data.state.environment||!data.state.body||!data.state.energy||!finite(data.state.sim_time_s))throw new Error('The snapshot is incomplete; the last complete scene is retained.');
+    if(!data||!data.state||typeof data.state!=='object')throw new Error('The native response contains no state.');
+    const fault=typeof data.state.error==='string'?data.state.error.trim():'';
+    if(data.state.ok===false||fault)return fault||'The native solver reported a fault without an error message.';
+    if(!data.state.environment||!data.state.body||!data.state.energy||!finite(data.state.sim_time_s))throw new Error('The snapshot is incomplete; the last complete scene is retained.');
     const vertices=data.vertices,indices=data.indices;
     if(!Array.isArray(vertices)||!vertices.length||vertices.length%9||!Array.isArray(indices)||!indices.length||indices.length%3)throw new Error('Native geometry is missing or incomplete.');
     if(vertices.some(value=>!finite(value)))throw new Error('Native geometry contains an invalid coordinate.');
     const count=vertices.length/9;if(indices.some(value=>!Number.isInteger(value)||value<0||value>=count))throw new Error('Native triangle indices are invalid.');
+    return '';
   }
   function pollSnapshot(){
     if(snapshotPromise||posting)return snapshotPromise||Promise.resolve();
@@ -240,13 +251,17 @@
     snapshotPromise=(async()=>{
       try{
         const data=await jsonRequest('/earth_snapshot',{},controller);if(requestEpoch!==epoch)return;
-        validateSnapshot(data);upload(data.vertices,data.indices);state=data.state;lastSnapshot=performance.now();transportError='';renderState();draw();
+        const fault=validateSnapshot(data);latestState=data.state;lastResponse=performance.now();transportError='';
+        // A reachable solver can be faulted. Never replace valid geometry or readings with its failed state.
+        if(fault){nativeFault=fault;poseDirty=false;syncControls();return;}
+        nativeFault='';upload(data.vertices,data.indices);state=data.state;lastSnapshot=lastResponse;renderState();draw();
       }catch(error){if(requestEpoch!==epoch)return;transportError=error.name==='AbortError'?'The native request timed out. Reconnecting automatically.':error instanceof TypeError?'Could not reach the native engine. Reconnecting automatically.':error.message;}
       finally{snapshotPromise=null;snapshotController=null;refreshHealth();if(!posting)pollTimer=setTimeout(pollSnapshot,transportError?1000:100);}
     })();return snapshotPromise;
   }
   async function command(payload,success,environmentChange=false){
-    if(posting||!state||performance.now()-lastSnapshot>=2000||transportError||renderError)return;
+    if(posting||!lastResponse||performance.now()-lastResponse>=2000||transportError||renderError)return;
+    if(nativeFault?payload.reset!==true&&!environmentChange:!state)return;
     posting=true;epoch++;clearTimeout(pollTimer);if(snapshotController)snapshotController.abort();refreshHealth();message('Applying to the native engine…');
     try{
       if(snapshotPromise)await snapshotPromise;

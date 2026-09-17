@@ -29,6 +29,15 @@ class EarthInputs(unittest.TestCase):
    b=compile_scene(self.graph,d);self.assertEqual(b['models']['schema'],'chimera.force_models.v1');self.assertIn('399',b['models']['gravity']);self.assertEqual(b['scene']['tick_hz'],300)
    self.assertEqual(sha(Path(b['arm']['mesh_file']).read_bytes()),b['arm']['mesh_sha256'])
    self.assertEqual(sha(Path(b['arm']['body_file']).read_bytes()),b['arm']['body_sha256'])
+ def test_compiled_graph_is_independent_of_later_authoring(self):
+  with tempfile.TemporaryDirectory() as d:
+   g=copy.deepcopy(self.graph);b=compile_scene(g,d);p=Path(b['graph_file'])
+   self.assertEqual(CreatureGraph.load(str(p)).graph_hash(),b['graph_hash'])
+   g.get(RECIPE)['physical']['contract']['defaults']['wind_m_s']=2
+   self.assertNotEqual(g.graph_hash(),b['graph_hash'])
+   self.assertEqual(CreatureGraph.load(str(p)).graph_hash(),b['graph_hash'])
+   altered=CreatureGraph.load(str(p));altered.get(RECIPE)['physical']['contract']['defaults']['wind_m_s']=3;altered.save(str(p))
+   with self.assertRaisesRegex(Refusal,'earth_graph_snapshot_drift'):compile_scene(self.graph,d)
  def test_arm_and_environment_are_separate_identities(self):
   self.assertEqual(self.graph.get(RECIPE)['status'],'specified');self.assertEqual(self.graph.get(SOURCE)['status'],'extracted');self.assertEqual(self.graph.get('model.anatomy.macaque_arm')['status'],'extracted')
 if __name__=='__main__':unittest.main()

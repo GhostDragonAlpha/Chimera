@@ -1,6 +1,6 @@
 """Pinned Earth field data and local native scene compilation; no weather inference."""
 from pathlib import Path
-import argparse,json,re,math
+import argparse,json,re,math,copy
 import numpy as np
 from .common import canonical,digest,sha,require,local_file
 from .force_models import compile_packet
@@ -30,7 +30,7 @@ def local_frame(datum,latitude_deg,longitude_deg,altitude_m):
     return origin,np.column_stack((east,up,south))
 
 def compile_scene(graph,output):
-    output=Path(output);params,receipt=source_parameters();obj=graph.get(RECIPE);scene=obj['physical']['contract'];source=graph.get(SOURCE)
+    output=Path(output).resolve();params,receipt=source_parameters();obj=graph.get(RECIPE);scene=obj['physical']['contract'];source=graph.get(SOURCE)
     require(source['physical']['parameters']==params and source['physical']['receipt']==receipt,'earth_graph_source_drift')
     require(scene['schema']=='chimera.earth_patch.v1' and scene['tick_hz']==300,'earth_scene_contract')
     world=graph.get(scene['world_id']);patch=graph.get(scene['patch_id']);ground=graph.get(scene['ground_id']);port=graph.get(scene['hand_port_id'])
@@ -38,7 +38,11 @@ def compile_scene(graph,output):
     require(patch['spatial']['frame']=='local_EUS' and patch['spatial']['latitude_deg']==scene['latitude_deg'] and patch['spatial']['longitude_deg']==scene['longitude_deg'],'earth_patch_frame_drift')
     require(port['physical']['source_body']=='ref.macaque_arm.body.hand','earth_attachment_drift')
     arm=compile_native(graph,output/'arm');models=compile_packet(graph);require('399' in models['gravity'],'earth_gravity_missing')
-    bundle={'schema':'chimera.earth_scene.v1','graph_hash':graph.graph_hash(),'recipe_sha256':digest(obj),'source_parameters':params,'models':models,'scene':scene,'arm':{'mesh_file':str(output/'arm/mesh.bin'),'body_file':str(output/'arm/body.bin'),'mesh_sha256':arm['mesh_sha256'],'body_sha256':arm['binding_sha256'],'hand_vertex_start':next(b for b in arm['bones'] if b['body']=='hand')['vertex_start'],'hand_vertex_count':next(b for b in arm['bones'] if b['body']=='hand')['vertex_count']},'page_file':str(ROOT/'tools/science_funnel/earth.html'),'graph_file':str(ROOT/'tools/creature_graph/data/creature_graph.json'),'sources':[{'title':f['path'],'url':f['url']} for f in receipt['sources']]+[{'title':'JPL gravitational parameters','url':'https://ssd.jpl.nasa.gov/astro_par.html'}],'scope':'Local Earth reference around a kinematic macaque arm. Source gravity/atmosphere and WGS84 frame; authored planar ground and reference sample coefficients. No measured terrain, weather, muscles, biological grasp, rolling, GPU-resident dynamics or whole planet simulation.'}
+    # Keep the selected graph behind this running scene even as documentation advances.
+    graph_file=output/('graph_'+graph.graph_hash()+'.json')
+    if not graph_file.exists():copy.deepcopy(graph).save(str(graph_file))
+    require(CreatureGraph.load(str(graph_file)).graph_hash()==graph.graph_hash(),'earth_graph_snapshot_drift')
+    bundle={'schema':'chimera.earth_scene.v1','graph_hash':graph.graph_hash(),'recipe_sha256':digest(obj),'source_parameters':params,'models':models,'scene':scene,'arm':{'mesh_file':str(output/'arm/mesh.bin'),'body_file':str(output/'arm/body.bin'),'mesh_sha256':arm['mesh_sha256'],'body_sha256':arm['binding_sha256'],'hand_vertex_start':next(b for b in arm['bones'] if b['body']=='hand')['vertex_start'],'hand_vertex_count':next(b for b in arm['bones'] if b['body']=='hand')['vertex_count']},'page_file':str(ROOT/'tools/science_funnel/earth.html'),'graph_file':str(graph_file),'sources':[{'title':f['path'],'url':f['url']} for f in receipt['sources']]+[{'title':'JPL gravitational parameters','url':'https://ssd.jpl.nasa.gov/astro_par.html'}],'scope':'Local Earth reference around a kinematic macaque arm. Source gravity/atmosphere and WGS84 frame; authored planar ground and reference sample coefficients. No measured terrain, weather, muscles, biological grasp, rolling, GPU-resident dynamics or whole planet simulation.'}
     bundle['scene_sha256']=digest(bundle);output.mkdir(parents=True,exist_ok=True);(output/'scene.json').write_bytes(canonical(bundle));return bundle
 
 def main():
