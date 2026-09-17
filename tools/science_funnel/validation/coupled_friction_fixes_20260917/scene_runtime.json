@@ -1,11 +1,11 @@
 ﻿{
-    "pid":  84720,
+    "pid":  87372,
     "exe":  "E:\\ChimeraWork\\friction-fixes-20260917\\.tmp\\coupled-native-engine\\Release\\chimera_engine.exe",
-    "exe_sha256":  "E01143DE245884FEA01035455D96CFE07B74B0984298D0D411C54AB9C1BB990A",
+    "exe_sha256":  "CDC4F8BD0ABC015306BD5DD61DAD44404ED62FD5934E352FBD6CF2C0B9280579",
     "scene":  "E:\\ChimeraWork\\friction-fixes-20260917\\.tmp\\coupled-native\\scene.json",
-    "scene_file_sha256":  "5C173ADABD319267280A95B8779F15EF86D04AA2ED1BD11B4CF30B4932E1B384",
-    "graph_hash":  "49df2845b8e7410d6510df412a248809da01c3133b5ab103f2a73a6befcabd68",
-    "scene_sha256":  "5e26969354f708ac230054f7258f73442a7bb9efcfebd1fa2e441478f863da6a",
+    "scene_file_sha256":  "6A3BA95793D3C4E8276FECF40CAD69906E2F75EF6E44BC73782C786740E60923",
+    "graph_hash":  "f1ba8739810997ede1e18973e77a6c3ce155a42480c951415b411edb2cb985e0",
+    "scene_sha256":  "101cfc90c27498f4d9be93b1eb37fe913935854dd2c3214b7b282fbe60a4343c",
     "port":  8171,
-    "launched_utc":  "2026-09-17T22:20:51.3224428Z"
+    "launched_utc":  "2026-09-17T22:50:52.3174142Z"
 }

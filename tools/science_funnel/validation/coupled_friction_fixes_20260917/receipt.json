@@ -1,18 +1,18 @@
 {
   "schema": "chimera.scoped_validation.v1",
   "recorded_utc": "2026-09-17T23:05:00+00:00",
-  "candidate_commit": "70c5269fe02774d0ed6bcd3d5791e250bad7c8b0",
-  "candidate_tree": "69a850f48fa4d622b8530da9c870cbb381b2d0f4",
-  "qualified_graph_hash": "49df2845b8e7410d6510df412a248809da01c3133b5ab103f2a73a6befcabd68",
+  "candidate_commit": "322d328f39f0079a394c7a364ee2b68f1c980f97",
+  "candidate_tree": "b46bc034e338dc77a67b84822081a814da4fc1de",
+  "qualified_graph_hash": "f1ba8739810997ede1e18973e77a6c3ce155a42480c951415b411edb2cb985e0",
   "source_file_manifest_sha256": {
     "ChimeraEngine/engine/coupled_dynamics.hpp": "4685d02131c842b98c1782b2a9dc96c216adb51363cbcef9264fbf0f4eb8d626",
     "ChimeraEngine/engine/tests_coupled_arm/native.cpp": "1221024560b1bb5cb7a7c6591584699abf7ec7a39b3ecc7beabc3dfa9cdf68f6",
-    "ChimeraEngine/engine/tests_coupled_arm/friction_unit.cpp": "c33c1e166f8f6b15cac855bc5edd2696ba71faf0a81d2bc1239bfd666caf97b1",
-    "ChimeraEngine/engine/tests_coupled_arm/mucrit_derivation.cpp": "a2adaccf0cb7276e536100736301195809fd24692018512ca720e2dfd72f140d",
+    "ChimeraEngine/engine/tests_coupled_arm/friction_unit.cpp": "65d005c47d864c5dcbbd79e8697ed3ba2a935253985a7afbb84754eb8b80bced",
+    "ChimeraEngine/engine/tests_coupled_arm/mucrit_derivation.cpp": "bcd2f2c99f6f2a00e90173900a493867480320c154c8cc3ce45f34e2340d37dc",
     "ChimeraEngine/engine/tests_coupled_arm/CMakeLists.txt": "75504f824cb456ff5a3b91cc391ff81e50cd1ce40f0ea4c904647165e76db412",
     "tools/science_funnel/tests/qualify_coupled_live.py": "1eaf3a50720750ca661ac82e4398d0c9f6ea2296931700f146d3be8584729733",
-    "tools/creature_graph/data/authored/project_program.json": "39c9a6317343a94488478444b570b74d2c06ab08fbb2e5bfce4fe63f7df613c1",
-    "tools/creature_graph/data/creature_graph.json": "056b8c074b3a1f70f0e1f2f39f55ac8a9544c05dc104983e1f6b8db9d757927e"
+    "tools/creature_graph/data/authored/project_program.json": "f292742881ba390c7c9d001ea3b1c2eeb93b33d596b40e1e41a4556e911d911d",
+    "tools/creature_graph/data/creature_graph.json": "a70c9c6fbd5b7d9799b509b89a527f272dc6cee842ab05eb0f9136659bf79c09"
   },
   "scope": "Four independent-review fixes on the published Coulomb friction slice (receipt coupled_friction_20260917, findings F1-F4): the exact-rest slide-sign fallback in friction_solve now opposes impending slip; the deferred critical-mu hold-vs-slide falsifier is exercised by a derived native trial pair (mu=0.8 holds, mu=0.6 slides); the impact-level friction cone is asserted every tick; the live qualifier's scope string names friction. Engine frictionless behavior, frozen references and the mu=0 default are unchanged bit-exactly. No live qualification run (the operator's scene on 8127 was never touched; scene generation used owned port 8171 and a path-guarded PID stop).",
   "review_findings_addressed": {
@@ -61,13 +61,13 @@
   },
   "runtime": {
     "scene_generation_port": 8171,
-    "pid": 84720,
+    "pid": 87372,
     "exe": "E:\\ChimeraWork\\friction-fixes-20260917\\.tmp\\coupled-native-engine\\Release\\chimera_engine.exe",
-    "exe_sha256": "e01143de245884fea01035455d96cfe07b74b0984298d0d411c54ab9c1bb990a",
+    "exe_sha256": "cdc4f8bd0abc015306bd5dd61dad44404ed62fd5934e352fbd6cf2c0b9280579",
     "scene": "E:\\ChimeraWork\\friction-fixes-20260917\\.tmp\\coupled-native\\scene.json",
-    "scene_file_sha256": "5c173adabd319267280a95b8779f15ef86d04aa2ed1bd11b4cf30b4932e1b384",
-    "graph_hash": "49df2845b8e7410d6510df412a248809da01c3133b5ab103f2a73a6befcabd68",
-    "launched_utc": "2026-09-17T22:20:51.3224428Z",
+    "scene_file_sha256": "6a3ba95793d3c4e8276fecf40cad69906e2f75ef6e44bc73782c786740e60923",
+    "graph_hash": "f1ba8739810997ede1e18973e77a6c3ce155a42480c951415b411edb2cb985e0",
+    "launched_utc": "2026-09-17T22:50:52.3174142Z",
     "engine_shutdown": "path-guarded PID kill verified against the worktree exe path before Stop-Process"
   },
   "replay": [
@@ -90,7 +90,7 @@
     "friction_unit.json": "bf198785a7218ff600c27b9d5900157f28903dfdf63ecb7ae6cd13554c9b9d5f",
     "mucrit_derivation.json": "81e71c83facc4fce940129a9b8d13b94452cf16e2491273795ab070077c899b3",
     "native_checks.json": "8ba054e0b5f9203688fff58105e7ae3d0c3a81179b1b34a32bd8044c6e0dad16",
-    "scene_runtime.json": "f37ea5fe4ebee570e7a60812d678902844bf79a6e0bae1b52779f6f2ec758819"
+    "scene_runtime.json": "0d083c3940543f684f9e72b24c7597c94afae59fc522c8ccc3b2b632d72d1691"
   },
   "admission": "work.creature.coupled_arm_friction_fixes (graph, admitted before code); observation recorded with this receipt",
   "worktree_manifest_note": "The manifest pins the qualified candidate content (code files unchanged since candidate_commit). The graph records (project_program.json, creature_graph.json) take their observation updates in the records commit after this snapshot; their receipt-time hashes above predate that update."
