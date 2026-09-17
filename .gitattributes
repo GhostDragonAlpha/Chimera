@@ -35,3 +35,9 @@ tools/science_funnel/data/bodyparts3d/** -text -whitespace
 tools/science_funnel/data/macaque_arm/** -text -whitespace
 
 tools/science_funnel/data/earth/** -text -whitespace
+
+# Life-science intake artifacts (PanTHERIA, NCBI taxdmp Macaca subtree, Rhea)
+# are sha256-pinned upstream bytes; checkout must never convert them.
+tools/science_funnel/data/pantheria/** -text
+tools/science_funnel/data/ncbi_taxdmp/** -text
+tools/science_funnel/data/rhea/** -text

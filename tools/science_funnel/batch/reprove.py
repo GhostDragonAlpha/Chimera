@@ -15,14 +15,12 @@ from ..adapters import ADAPTERS
 from . import connectors as C
 
 DATA_ROOT = Path(C.DATA_ROOT)
-_SEARCH_DIRS = ['force_sources', 'bodyparts3d', 'coolprop', 'earth', 'pubchem',
-                'macaque_arm', 'smithsonian', 'copernicus_glo30']
 
 
 def _blob_index():
     """One pass over the data directories: sha256 -> path for every file."""
     index = {}
-    for name in _SEARCH_DIRS:
+    for name in C.SEARCH_DIRS:
         folder = DATA_ROOT / name
         if not folder.is_dir():
             continue

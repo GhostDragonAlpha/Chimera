@@ -243,6 +243,9 @@ ADAPTERS['coolprop_surface'] = coolprop_surface
 from .force_adapters import FORCE_ADAPTERS
 ADAPTERS.update(FORCE_ADAPTERS)
 
+from .adapters_life import LIFE_ADAPTERS
+ADAPTERS.update(LIFE_ADAPTERS)
+
 
 def smithsonian_voyager(raw, manifest, path):
     """Smithsonian 3D Voyager document.json -> geometry candidates (one per model).

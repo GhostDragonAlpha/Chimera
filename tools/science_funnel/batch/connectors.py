@@ -127,6 +127,34 @@ DEFAULT_CLASSES = {
     'unit_definition': 'batch.entity.external',
 }
 
+# Data directories the reprove blob index scans (one pass, sha256 -> path).
+SEARCH_DIRS = ['force_sources', 'bodyparts3d', 'coolprop', 'earth', 'pubchem',
+               'macaque_arm', 'smithsonian', 'copernicus_glo30']
+
+
+def _merge_lane_modules():
+    """Auto-load convention: every connectors_*.py module in this package
+    merges its CONNECTORS (plus optional REPROVE_SOURCES and SEARCH_DIRS
+    extras) into this registry. One lane, one module -- per-domain connectors
+    never edit this file, so parallel lanes cannot collide here."""
+    import glob
+    import importlib
+    package = os.path.dirname(__file__)
+    for path in sorted(glob.glob(os.path.join(package, 'connectors_*.py'))):
+        module = importlib.import_module('.' + os.path.basename(path)[:-3], __package__)
+        for connector_id, spec in getattr(module, 'CONNECTORS', {}).items():
+            require(connector_id not in CONNECTORS, 'connector_id_collision', connector_id)
+            CONNECTORS[connector_id] = spec
+        for source in getattr(module, 'REPROVE_SOURCES', []):
+            if source not in REPROVE_SOURCES:
+                REPROVE_SOURCES.append(source)
+        for folder in getattr(module, 'SEARCH_DIRS', []):
+            if folder not in SEARCH_DIRS:
+                SEARCH_DIRS.append(folder)
+
+
+_merge_lane_modules()
+
 
 def class_for(connector_id, record_type):
     if connector_id in CONNECTORS:
