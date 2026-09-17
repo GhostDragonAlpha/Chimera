@@ -1815,6 +1815,11 @@ bool Engine::create_triangle_pipeline() {
 
 bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
                        uint32_t vcount, uint32_t icount) {
+    if (preserve_mesh_topology_) {
+        if (verts.size()!=9ull*vcount || indices.size()!=icount || icount%3) return false;
+        for (float x:verts) if (!std::isfinite(x)) return false;
+        for (uint32_t i:indices) if (i>=vcount) return false;
+    }
     vkDeviceWaitIdle(device_);
     // B3: an empty POST clears the mesh slot (was: 0-byte buffer -> NULL-handle crash).
     if (verts.empty() || indices.empty() || icount == 0) {
@@ -1972,6 +1977,10 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     for (size_t t = 0; t + 2 < indices.size(); t += 3) {
         uint32_t ia = indices[t], ib = indices[t + 1], ic = indices[t + 2];
         bool keep = true;
+        if (preserve_mesh_topology_) {
+            clean_idx.push_back(ia); clean_idx.push_back(ib); clean_idx.push_back(ic);
+            continue;
+        }
         if ((size_t)ia < nv && (size_t)ib < nv && (size_t)ic < nv) {
             const float* A = clean.data() + (size_t)ia * 9;
             const float* B = clean.data() + (size_t)ib * 9;
@@ -2010,6 +2019,8 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
         fprintf(stderr, "[load_mesh] degenerate eviction: dropped %zu zero-area tris\n", n_evict);
     if (n_collapse > 0)
         fprintf(stderr, "[load_mesh] sliver collapse: neutralized %zu sub-sample tris (width < %.5f wu)\n", n_collapse, sliver_max);
+    if (preserve_mesh_topology_)
+        fprintf(stderr, "[load_mesh] exact topology: preserved %zu triangles\n", clean_idx.size()/3);
     // THE STRAIN OVERLAY: keep the index list — true triangle strain needs the
     // adjacency, and the loader used to throw it away.
     mesh_tris_.assign(clean_idx.begin(), clean_idx.end());

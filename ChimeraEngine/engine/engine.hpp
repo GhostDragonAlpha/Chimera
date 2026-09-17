@@ -131,6 +131,7 @@ public:
     void push_timeline_markers();         // D2: derive markers from show windows + reel ledger
 
     // ── triangle mesh rendering (depth-tested opaque Lambert) ────────────────
+    bool preserve_mesh_topology_ = false; // opt-in scientific import; no screen-size topology edits
     bool load_mesh(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
                    uint32_t vcount, uint32_t icount);
     // Animation driver path: memcpy new posed vertices into the persistently

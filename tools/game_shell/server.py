@@ -101,6 +101,7 @@ def _allow(ip: str, path: str) -> bool:
 
 class Handler(BaseHTTPRequestHandler):
     engine_url = ENGINE
+    anatomy_scene = None
     # do not advertise the interpreter to every stranger
     server_version = "ChimeraR2"
     sys_version = ""
@@ -167,6 +168,8 @@ class Handler(BaseHTTPRequestHandler):
             return
         if p == "/" or p == "/index.html":
             self._send((HERE / "index.html").read_bytes(), "text/html")
+        elif p == "/api/scene":
+            self._json(self.anatomy_scene or {})
         elif p == "/api/state":
             self._proxy("/tick_state", "GET", None)
         elif p in ("/api/topology", "/api/verts"):
@@ -238,6 +241,9 @@ class Handler(BaseHTTPRequestHandler):
             self._deny(429, "too many requests -- slow down")
             return
         body = self.rfile.read(n) if n else None
+        if self.anatomy_scene and p in ("/api/touch", "/api/touch_hit", "/api/gravity"):
+            self._json({"ok": False, "error": "anatomical_reference_has_no_qualified_contact_material"}, 409)
+            return
         # W1 (R4): /api/gravity joins the pose pattern -- the page's own
         # gravity verb for the_stand, proxied to the engine's /tick_gravity.
         if p in ("/api/touch", "/api/touch_clear", "/api/pose", "/api/touch_hit",
@@ -278,7 +284,13 @@ def main() -> None:
                     help="world URL (default: env CHIMERA_ENGINE_URL, else "
                          "http://127.0.0.1:8107) -- scratch shells point at "
                          "their own private engine")
+    ap.add_argument("--anatomy-scene", type=Path, help="Compiled anatomical reference scene metadata")
     a = ap.parse_args()
+    if a.anatomy_scene:
+        scene = json.loads(a.anatomy_scene.read_text(encoding="utf-8-sig"))
+        if scene.get("schema") != "chimera.anatomical_scene.v1" or scene.get("mode") != "anatomy":
+            ap.error("unsupported anatomical scene")
+        Handler.anatomy_scene = scene
     if a.engine:
         Handler.engine_url = a.engine.rstrip("/")
     server = ThreadingHTTPServer((a.host, a.port), Handler)

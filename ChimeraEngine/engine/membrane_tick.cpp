@@ -985,7 +985,7 @@ bool MembraneTick::load_body_binding(const std::string& body) {
 bool MembraneTick::pose_index(int idx, float deg) {
     std::lock_guard<std::mutex> lk(seal_mtx_);
     if (idx < 0 || idx >= (int)joint_deg_.size()) return false;
-    if (!std::isfinite(deg) || std::fabs(deg) > 90.f) return false;
+    if (!std::isfinite(deg) || (!body_active() && std::fabs(deg) > 90.f)) return false;
     float angle=deg*3.14159265358979f/180.f;
     if(body_active() && (deg<body_binding_.limits[2*idx] || deg>body_binding_.limits[2*idx+1])) return false;
     joint_deg_[idx]=angle;return true;
@@ -1031,7 +1031,7 @@ bool MembraneTick::load_rig(const std::string& config) {
 bool MembraneTick::pose(const std::string& joint, float deg) {
     if(body_active()) {
         std::lock_guard<std::mutex> lk(seal_mtx_);
-        if(!std::isfinite(deg) || std::fabs(deg)>90.f)return false;
+        if(!std::isfinite(deg))return false;
         auto it=std::find(body_binding_.names.begin(),body_binding_.names.end(),joint);
         if(it==body_binding_.names.end())return false;
         size_t j=it-body_binding_.names.begin();float angle=deg*3.14159265358979f/180.f;

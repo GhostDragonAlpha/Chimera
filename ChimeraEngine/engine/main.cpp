@@ -660,6 +660,8 @@ int main(int argc, char** argv) {
         fprintf(stderr, "Failed to initialize Vulkan engine\n");
         return 1;
     }
+    for (int i=1;i<argc;++i)
+        if(std::string(argv[i])=="--preserve-mesh-topology") engine.preserve_mesh_topology_=true;
     g_engine = &engine;
     // Opt-in graph scene; existing sessions take no new path.
     for (int i=1;i+1<argc;++i) if(std::string(argv[i])=="--science-surface") {
@@ -1211,7 +1213,7 @@ int main(int argc, char** argv) {
                                 : g_tick.pose(joint, deg);
             if (ok) body = "{\"ok\":true}";
             else body = "{\"ok\":false,\"error\":\"refused: unknown joint or "
-                        "angle outside +/-90\"}";
+                        "angle outside admitted limits\"}";
             content_type = "application/json";
         } else if (p == "/tick_body_bin" && method == "POST") {
             {

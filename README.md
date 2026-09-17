@@ -41,6 +41,7 @@ python -B -m tools.creature_graph.project_spec --show req.creature_assembly
 python -B -m tools.creature_graph.project_spec --show req.macaque_rebuild
 python -B -m tools.creature_graph.project_spec --show doc.handoff.zcode
 python -B -m tools.creature_graph.project_spec --show doc.workflow.shared_body_example
+python -B -m tools.creature_graph.project_spec --show doc.workflow.macaque_assembly
 python -B -m tools.creature_graph.project_spec --show req.layered_anatomy
 python -B -m tools.creature_graph.project_spec --show req.embodied_senses
 python -B -m tools.creature_graph.project_spec --show doc.creature_binding_observation
@@ -211,3 +212,13 @@ Creating that repository is a later gated task, not part of onboarding.
 
 The engine's existing license is in [LICENSE](LICENSE). The future game's
 visibility and license have not been selected.
+### Explore the data-derived macaque arm
+
+```powershell
+powershell -File tools/science_funnel/run_creature.ps1 -Anatomy -EnginePort 8124 -GamePort 8224
+```
+
+Choose free private ports. Read `doc.workflow.macaque_assembly` for source pins,
+units, geometry processing, native checks and the remaining anatomical work.
+This is a jointed anatomical reference; muscle forces and whole-body tissue layers
+remain unimplemented.

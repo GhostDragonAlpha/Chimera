@@ -1308,7 +1308,7 @@
     gl.uniform3f(RG.gColor, 0x22 / 255, 0x30 / 255, 0x3a / 255);
     gl.depthMask(true);
     gl.bindVertexArray(RG.gridVao);
-    gl.drawArrays(gl.LINES, 0, RG.gridCount);
+    if (!anatomyScene) gl.drawArrays(gl.LINES, 0, RG.gridCount);
 
     /* THE SHADOW: the creature flattened onto the floor (same planar
        projection the engine now uses), drawn under the body */
@@ -1548,6 +1548,7 @@
       var s = await res.json();
       nativeBodySurface = s.body_model === "JNT3_hierarchical";
       canvas.dataset.surfaceOwner = nativeBodySurface ? "native" : "legacy_preview";
+      if (anatomyScene) return true;
       renderBlood(s);
       judgeState(s);
       renderJudgeDebug();     // runs on the setInterval poll, so the judge
@@ -1926,7 +1927,7 @@
     }
   }
   window.addEventListener('keydown', function (e) {
-    if (!$('screen-play').classList.contains('on') || E4overlayOpen()) return;   // E4: an overlay owns the keyboard while up
+    if (anatomyScene || !$('screen-play').classList.contains('on') || E4overlayOpen()) return;   // E4: an overlay owns the keyboard while up
     /* H7 (D4): only TEXT typing owns the keyboard. The old guard skipped
        every INPUT, so once the force slider had focus, SPACE / - / = died
        and the creature went untouched; the slider keeps its native arrows
@@ -2191,6 +2192,7 @@
   }
 
   async function tryTouch(cx, cy) {
+    if (anatomyScene) return false;
     if (holding) return false;            // one press at a time
     var force = Number(forceEl.value);
     // H16 TOUCH-SIDE FIX: the click's contact enters through the surface
@@ -2424,7 +2426,7 @@
   canvas.addEventListener('wheel', function (e) {
     e.preventDefault();
     cam.r *= Math.exp(e.deltaY * 0.001);
-    cam.r = Math.max(3, Math.min(60, cam.r));
+    cam.r = Math.max(anatomyScene ? .08 : 3, Math.min(60, cam.r));
   }, { passive: false });
 
   /* ================= hand, save, screens ================= */
@@ -2471,6 +2473,49 @@
     }
   });
 
+  var anatomyScene = null;
+  var anatomyReady = fetch('/api/scene').then(function(r){ return r.json(); }).then(function(s){
+    if(s.mode !== 'anatomy') return;
+    anatomyScene=s;
+    document.querySelector('#screen-start .subtitle').textContent='Macaque anatomy from published bone geometry. Explore its joints at real scale.';
+    document.querySelector('#screen-start .fineprint').textContent='An anatomical assembly in progress: seven bone meshes, with distinct tissue layers to follow.';
+    $('play-btn').textContent='EXPLORE ANATOMY';
+  }).catch(function(){});
+  function showAnatomy() {
+    $('save-btn').style.display='none';
+    document.title='Chimera — macaque anatomy';
+    cam.target=anatomyScene.camera.target;cam.r=anatomyScene.camera.radius;cam.near=.002;
+    document.querySelectorAll('#sidebar > .card').forEach(function(e){e.style.display='none';});
+    var side=$('sidebar');var panel=document.createElement('section');panel.className='card';side.appendChild(panel);
+    function line(tag,text){var e=document.createElement(tag);e.textContent=text;panel.appendChild(e);return e;}
+    line('h2','MACAQUE • BONE ASSEMBLY');
+    line('p','Published arm geometry, in metres. Move a joint to see its bones move together. Drag to orbit; scroll to zoom.');
+    line('p','Kinematic reference. Muscle forces and soft-tissue layers are not active yet.');
+    var notice=line('p','Rest configuration from the source model.');notice.setAttribute('aria-live','polite');
+    var controls=[];
+    anatomyScene.joints.slice(1).forEach(function(j){
+      var label=document.createElement('label');label.style.display='block';label.style.marginTop='14px';
+      label.textContent=j.name.replace(/_/g,' ');panel.appendChild(label);
+      var input=document.createElement('input');input.type='range';input.min=j.limits_deg[0];input.max=j.limits_deg[1];input.step=.5;input.value=0;input.style.width='100%';input.setAttribute('aria-label',j.name.replace(/_/g,' '));label.appendChild(input);
+      var value=document.createElement('span');label.appendChild(value);
+      function update(){value.textContent=(Number(input.value)+j.source_default_rad*180/Math.PI).toFixed(1)+'°';}
+      update();controls.push({input:input,joint:j,update:update});
+      input.addEventListener('input',update);
+      input.addEventListener('change',async function(){
+        try{var r=await postJSON(API.pose,{joint:j.name,deg:Number(input.value)});var result=await r.json();notice.textContent=result.ok?'Pose applied by the native engine.':'Pose refused: '+result.error;}
+        catch(e){notice.textContent='The native engine did not answer.';}
+      });
+    });
+    var reset=line('button','Restore source pose');reset.className='btn';reset.style.marginTop='16px';
+    reset.addEventListener('click',async function(){
+      for(var c of controls){c.input.value=0;c.update();await postJSON(API.pose,{joint:c.joint.name,deg:0});}
+      notice.textContent='Source pose restored.';
+    });
+    line('h2','SOURCE COVERAGE').style.marginTop='24px';
+    anatomyScene.bones.forEach(function(b){var d=b.metrics.bounds_m;var mm=d[1].map(function(v,i){return ((v-d[0][i])*1000).toFixed(1);});line('p',b.body+': '+mm.join(' × ')+' mm'+(b.metrics.edges_not_shared_twice?' · boundary repair needed':''));});
+    line('p',anatomyScene.muscle_records+' muscle records retained; '+anatomyScene.muscles_with_wrapping+' require paths around bone.');
+    var link=line('a','Source and license: Limblab monkeyArmModel');link.href='https://github.com/limblab/monkeyArmModel';link.target='_blank';link.rel='noopener';
+  }
   async function enterPlay() {
     playerName = $('name-input').value.trim() || 'wanderer';
     $('cam-name').textContent = playerName;
@@ -2483,6 +2528,8 @@
        sound.js never loaded. */
     snd('init');
     snd('ambient', true);   // the session-start swell: the bed fades in under the greeting
+    await anatomyReady;
+    if (anatomyScene) { showAnatomy(); return; }
     await loadKnownProgress();
     await loadLessons();
     if (!seenIntro) E4showIntro();   // E4: the first-run greeting, once per name
