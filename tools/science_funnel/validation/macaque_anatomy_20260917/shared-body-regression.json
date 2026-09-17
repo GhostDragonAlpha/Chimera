@@ -1,0 +1,104 @@
+{
+  "checks": [
+    {
+      "detail": {},
+      "name": "JNT3_admission",
+      "pass": true
+    },
+    {
+      "detail": {
+        "max_error": 4.76837158203125e-07
+      },
+      "name": "rest_geometry",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "pose_hip_L",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "pose_knee_L",
+      "pass": true
+    },
+    {
+      "detail": {
+        "max_error": 4.76837158203125e-07,
+        "vertices": 18459
+      },
+      "name": "full_mesh_independent_hierarchy_oracle",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "invalid_binding_transactional",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "competing_legacy_binding_refused",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "legacy_controller_not_silently_reused",
+      "pass": true
+    },
+    {
+      "detail": {
+        "displacement_m": 2.000820982046646,
+        "vertex": 9732
+      },
+      "name": "touch_reads_moved_surface",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "press_admission",
+      "pass": true
+    },
+    {
+      "detail": {
+        "expected_m": 0.003978873577297387,
+        "inward_m": 0.003978865962297462
+      },
+      "name": "press_uses_posed_normal",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "export_uses_authoritative_surface",
+      "pass": true
+    },
+    {
+      "detail": {
+        "state": ""
+      },
+      "name": "actual_monkey_seal",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "pose_preserves_inventory",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "pose_reset_reference_pressure",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "body_and_seal_restore",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "mesh_reload_clears_body_owner",
+      "pass": true
+    }
+  ],
+  "failed": 0,
+  "scope": "shared geometry, touch and seal state; not force-driven actuation or locomotion"
+}

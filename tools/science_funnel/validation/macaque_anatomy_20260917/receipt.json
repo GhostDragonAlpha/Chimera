@@ -1,0 +1,99 @@
+{
+  "schema": "chimera.scoped_validation.v1",
+  "recorded_utc": "2026-09-17T03:00:51.894189+00:00",
+  "candidate_commit": "289d9a36c00e9c9b0e223b6c32ff2438d4504216",
+  "native_and_python_candidate": "eafbc15161ae10ae95b62d07d3f4878aefa34d9d",
+  "candidate_difference": "Only anatomy HTML route and reset/error handling changed between those candidates. Native, adapter, graph and test source are identical. Browser interaction and live API checks rerun on final candidate.",
+  "graph_hash": "0c22e6a4fcb650c5a984b91bc57ae78940683cd5c0c33ca968121f883ef9a246",
+  "runtime": {
+    "engine_pid": 86852,
+    "game_pid": 84760,
+    "engine_port": 8124,
+    "game_port": 8224,
+    "exe": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\anatomy-engine\\Release\\chimera_engine.exe",
+    "engine_arguments": [
+      "8124",
+      "--hidden",
+      "1600",
+      "900",
+      "--no-restore",
+      "--preserve-mesh-topology"
+    ],
+    "exe_sha256": "567548BDA005067820F421D05A2BB1E80BF07443F18C28ECB28340BF1BEF0F44",
+    "graph_hash": "0c22e6a4fcb650c5a984b91bc57ae78940683cd5c0c33ca968121f883ef9a246",
+    "scene": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\macaque-anatomy\\scene.json",
+    "launched_utc": "2026-09-17T02:55:18.5211665Z",
+    "scope": "Macaque upper limb research geometry and modeled parameters; not full animal, raw scan certification, muscle volume, skin/fat geometry or living physics."
+  },
+  "source_file_manifest_sha256": {
+    ".gitattributes": "f6bc1837018da941c4cae2eebe11b8a5a323112bd0e2164302f00fb9c2154d92",
+    "ChimeraEngine/engine/engine.cpp": "c1a8cc39c2ed7b773088dc0da61c9bb093e0f9f9fa776b075c3ccb6b7d7909e7",
+    "ChimeraEngine/engine/engine.hpp": "40426001b17387769e041683ca303f9173ffedf9cadb3904b2069938dfabba4c",
+    "ChimeraEngine/engine/main.cpp": "e80be320cb0d71df298110074aaa2489ececa5e47c54bcc52d468a45d5c1bf6e",
+    "ChimeraEngine/engine/membrane_tick.cpp": "851b0047e4903771e04d76d27cb93d11183b2538d50bd3e71148399c3e933fab",
+    "README.md": "240707d5fba5aca243465f6897c750b312993eb6ab2687f3cdfb9ddb441a9acc",
+    "tools/creature_graph/data/authored/project_program.json": "6f2ae6f550237582ee131cea649f529b8a4eeb26a3c71ebb9d78a6744d648082",
+    "tools/creature_graph/data/creature_graph.json": "48e9432f7fdc95fc7eda44cc95c4b23bf6d3237dfee2e442a9eaccbeda9d92e4",
+    "tools/game_shell/index.html": "9f5ae59a9bf4c5661e1245ee7ec86fae56d465220fc33440a38111b0ba473b06",
+    "tools/game_shell/server.py": "1d100890b0a3c68dab91cd1a33c032bfe2281f75d81b1635ee8595c8296829aa",
+    "tools/science_funnel/data/macaque_arm/Geometry/clavicle.vtp": "84caf2d4724aef05b7f8e904474deda7342db1b6c0329cfa5b399802bfebc905",
+    "tools/science_funnel/data/macaque_arm/Geometry/hand.vtp": "a06ea7e079c849df07d6eec001e9bcc2ea193ecd3914011c78a993a5faa94fc6",
+    "tools/science_funnel/data/macaque_arm/Geometry/humerus.vtp": "87f6034aa082c49b6448259ae7ec4452c6b0d3314442d5be3e8e1a5e4ec8118b",
+    "tools/science_funnel/data/macaque_arm/Geometry/radius.vtp": "8a2d3f2fe5f8b27014c0f024994ff76659bac73a52844494926dd29b9f3bb10e",
+    "tools/science_funnel/data/macaque_arm/Geometry/scapula.vtp": "e9ffe8ef9ad2dc577fb8c50afd87f694d0ddb6e243d230ba91e2aa7137480fe7",
+    "tools/science_funnel/data/macaque_arm/Geometry/sternum.vtp": "fc688ea2643c356f28a6eb3c825e056941d307d407414f77f0c5d655c91a227d",
+    "tools/science_funnel/data/macaque_arm/Geometry/ulna.vtp": "8f80ac47453fa175118fa385a5fbcb9cf770a21cf10c1757dccc5df2cceb1409",
+    "tools/science_funnel/data/macaque_arm/LICENSE": "3f700b598849d3adbd380342f06e59c5f43efa5b4679a9d56bd071cfc484ba3d",
+    "tools/science_funnel/data/macaque_arm/download_receipt.json": "0f7e195b3a8d55a1f530c1d4ceaf91d8ff73f76c45255408c7dab050bdc27155",
+    "tools/science_funnel/data/macaque_arm/monkeyArm_current.osim": "4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895",
+    "tools/science_funnel/data/macaque_arm/scaleSettings.xml": "fb5469352b83c12ef96756255cee238e9dd02b6ba25ebda607976b5596e8ac14",
+    "tools/science_funnel/macaque_anatomy.py": "949954b74e35305828b54a496477e3c8725c1d9609a5f0071a44255137d8d267",
+    "tools/science_funnel/run_creature.ps1": "b687179435dc798680ea1d2c8c6c05bc51fd1dd0ff561b0b28d3f5c134587192",
+    "tools/science_funnel/tests/qualify_macaque_anatomy.py": "63ab9f21b01357b5506a576c4f7fe44832306f7d9bbba04bf83a2e8c73884793",
+    "tools/science_funnel/tests/test_macaque_anatomy.py": "0bbc1c85a399e4024d2501460c9e40622fa3d72ca66ca6a4d9c601228d4d842a"
+  },
+  "scope": "Pinned macaque upper-limb source geometry and parameters -> connected graph objects -> metric native kinematic assembly -> same streamed viewer geometry. No requirement statuses advanced.",
+  "checks": {
+    "python": 28,
+    "live": 14,
+    "shared_body_native": 17,
+    "graphify": 7,
+    "graph_rebuild_matches": true,
+    "historical_evidence_unchanged": 11,
+    "browser": "Actual elbow slider plus ArrowRight, source-frame vertex oracle, reset button, no browser errors; canvas owner native."
+  },
+  "max_native_source_pose_error_m": 7.31154611507967e-08,
+  "exploratory_findings": [
+    {
+      "finding": "Native legacy visual cleanup neutralized 46 narrow triangles",
+      "resolution": "Opt-in exact topology mode preserves all 5384 triangles; default legacy behavior retained."
+    },
+    {
+      "finding": "API geometry checks passed but browser slider posted to undefined route and showed no such door",
+      "resolution": "Explicit /api/pose route; actual UI action compared with all native source vertices. Original refusal screenshot preserved."
+    }
+  ],
+  "not_qualified": [
+    "whole macaque anatomy",
+    "original specimen or raw scan ancestry",
+    "closed solid boundaries (scapula and hand still have known bad edges)",
+    "bone material law",
+    "muscle wrapping and contractile forces",
+    "skin/fat/cartilage layers",
+    "6-DOF balance and locomotion",
+    "biological sensory behavior",
+    "GPU-resident membrane dynamics or fixed simulation clock"
+  ],
+  "artifacts": {
+    "anatomy.png": "ee7ac9ba5f787469a1c7ba4a58808e300d43c101a867a62c77b6b5bc604e3011",
+    "browser-pose.json": "f648c65d0d773b3b5d33239c80a394a302aac4d859be079fb45074d3a4f2f761",
+    "browser-posed.txt": "a01d8efe7d83b105d158269f37c9ebc92703d81777d6e00aaeab1d44d52f230d",
+    "engine-load.log": "5557b9f3c1c38ed17543549360978b66495c84fddd707ee4b0579a887c3df7d4",
+    "exploratory-ui-refusal.png": "30b0a8f1b5e7bf6e2979f60ac354b383ef1933273295c3d8fbe1349a04c65e47",
+    "graph-roundtrip.json": "84596a17fd3a984c78ec77ee9e5b19bdbcced2ee4f85e6f8024f6918e427bf7e",
+    "live.json": "58d505e5ca5f947589c8d81a0c4aaac74d89fc5882c4a16cb74b5d77ebeaca79",
+    "python-checks.log": "c79ef723792da9e9a8b868f708e357c57d2ac80a53277dd7011dbb4bbc28b46e",
+    "scene.json": "7bfb75afa6c4daae9f1101d517c343b15dc28ce4a22f0212aa4d65d4b8438ea4",
+    "shared-body-regression.json": "ad74456fcf8b7bc604a343c547a64d9acd4de395f46a0ccd163fee014a738df9"
+  }
+}

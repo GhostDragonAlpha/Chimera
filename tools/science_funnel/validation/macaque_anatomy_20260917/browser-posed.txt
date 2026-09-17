@@ -1,0 +1,63 @@
+- generic
+  - generic
+    - Canvas
+    - generic
+      - sectionheader
+        - StaticText "C H I M E R A"
+        - StaticText "camera · "
+        - StaticText "wanderer"
+      - generic
+        - heading "MACAQUE • BONE ASSEMBLY" [level=2, ref=e1]
+        - paragraph
+          - StaticText "Published arm geometry, in metres. Move a joint to see its bones move together. Drag to orbit; scroll to zoom."
+        - paragraph
+          - StaticText "Kinematic reference. Muscle forces and soft-tissue layers are not active yet."
+        - paragraph
+          - StaticText "Pose applied by the native engine."
+        - LabelText
+          - StaticText "shoulder adduction"
+          - slider "shoulder adduction" [ref=e5]: 1.142666690157057e-7
+          - StaticText "0.0°"
+        - LabelText
+          - StaticText "shoulder rotation"
+          - slider "shoulder rotation" [ref=e6]: 9.141332668605173e-8
+          - StaticText "0.0°"
+        - LabelText
+          - StaticText "shoulder flexion"
+          - slider "shoulder flexion" [ref=e7]: -5.7539448761190215e-8
+          - StaticText "0.0°"
+        - LabelText
+          - StaticText "elbow flexion"
+          - slider "elbow flexion" [ref=e8]: -9.5
+          - StaticText "80.5°"
+        - LabelText
+          - StaticText "radial pronation"
+          - slider "radial pronation" [ref=e9]: -1.836389031950603e-7
+          - StaticText "0.0°"
+        - LabelText
+          - StaticText "wrist flexion"
+          - slider "wrist flexion" [ref=e10]: -5.7539448761190215e-8
+          - StaticText "0.0°"
+        - LabelText
+          - StaticText "wrist abduction"
+          - slider "wrist abduction" [ref=e11]: 6.856000567267985e-8
+          - StaticText "0.0°"
+        - button "Restore source pose" [ref=e2]
+        - heading "SOURCE COVERAGE" [level=2, ref=e3]
+        - paragraph
+          - StaticText "sternum: 14.9 × 41.0 × 9.5 mm"
+        - paragraph
+          - StaticText "clavicle: 34.8 × 26.0 × 48.8 mm"
+        - paragraph
+          - StaticText "scapula: 60.4 × 65.4 × 59.2 mm · boundary repair needed"
+        - paragraph
+          - StaticText "humerus: 23.3 × 139.3 × 28.4 mm"
+        - paragraph
+          - StaticText "ulna: 21.8 × 158.0 × 13.3 mm"
+        - paragraph
+          - StaticText "radius: 24.7 × 139.6 × 16.3 mm"
+        - paragraph
+          - StaticText "hand: 33.2 × 83.6 × 6.2 mm · boundary repair needed"
+        - paragraph
+          - StaticText "39 muscle records retained; 30 require paths around bone."
+        - link "Source and license: Limblab monkeyArmModel" [ref=e4]
