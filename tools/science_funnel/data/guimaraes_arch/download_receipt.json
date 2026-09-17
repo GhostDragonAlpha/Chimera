@@ -1,0 +1,34 @@
+{
+ "retrieved_utc": "2026-09-17T00:00:00+00:00",
+ "files": [
+  {
+   "path": "AJPA-190-e70329-s001.xlsx",
+   "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13425262/supplementaryFiles :: zip member AJPA-190-e70329-s001.xlsx",
+   "resolved_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13425262/supplementaryFiles :: zip member AJPA-190-e70329-s001.xlsx",
+   "bytes": 321899,
+   "sha256": "08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678"
+  },
+  {
+   "path": "AJPA-190-e70329-s002.docx",
+   "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13425262/supplementaryFiles :: zip member AJPA-190-e70329-s002.docx",
+   "resolved_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13425262/supplementaryFiles :: zip member AJPA-190-e70329-s002.docx",
+   "bytes": 37901,
+   "sha256": "cac1a53a1b8601582a4e95d5a6eb3d6defd2ecfdeb55119aef7daf5050a7169d"
+  },
+  {
+   "path": "PMC13425262_fulltext.xml",
+   "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13425262/fullTextXML",
+   "resolved_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13425262/fullTextXML",
+   "bytes": 188449,
+   "sha256": "a1ded31fa6d615b4b1dabc91bec824c2b05b90ad37fbbcf709480027b3eb9d40"
+  }
+ ],
+ "source": "Guimaraes, Vereecke & Wiseman 2026 (Am J Phys Anthropol), Supplementary Information S1 (hindlimb muscle architecture, 6 species incl. Macaca mulatta specimen 127 KU Leuven) + S2 homology notes + article full text (license line), via the EuropePMC supplementaryFiles endpoint",
+ "license": "CC BY 4.0 (article full text: creativecommons.org/licenses/by/4.0; (c) 2026 The Author(s), Wiley Periodicals LLC per dbhunt dossier C1)",
+ "verification": {
+  "outer_zip_sha256_non_reproducible": "two consecutive downloads of the endpoint returned different zip bytes (AD3D36F4... then 1F906BB9...); the endpoint repackages per request",
+  "inner_member_bytes_stable": "sha256 of every member identical across both downloads",
+  "xlsx_pin_cross_verified": "S1 xlsx sha256 equals the pin recorded independently in docs/research/20260917_dbhunt_motion.md C1 (08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678)",
+  "task_brief_expected_sha256": "76e76f18a82a8d3b6ef265fc0c66e06203a65c5bf2014e4781baee750cbf6c49f did not reproduce (outer zip; see above)"
+ }
+}

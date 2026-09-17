@@ -132,3 +132,25 @@ def class_for(connector_id, record_type):
     if connector_id in CONNECTORS:
         return CONNECTORS[connector_id]['classes'].get(record_type)
     return DEFAULT_CLASSES.get(record_type)
+
+
+def _load_lane_modules():
+    """Lane-module convention: every sibling connectors_<lane>.py exports
+    CONNECTORS_LANE and is merged here by id. Lane modules import their own
+    adapters (which self-register into the shared ADAPTERS registry), so the
+    core files stay owned by the batch lane. Collision on a connector id is a
+    hard refusal, never a silent overwrite."""
+    import glob
+    import importlib
+    import os
+    for module_path in sorted(glob.glob(os.path.join(os.path.dirname(__file__),
+                                                     'connectors_*.py'))):
+        stem = os.path.splitext(os.path.basename(module_path))[0]
+        module = importlib.import_module('.' + stem, __package__)
+        lane = getattr(module, 'CONNECTORS_LANE', {})
+        for connector_id, connector in lane.items():
+            require(connector_id not in CONNECTORS, 'connector_id_collision', connector_id)
+            CONNECTORS[connector_id] = connector
+
+
+_load_lane_modules()

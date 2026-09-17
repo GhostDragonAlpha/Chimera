@@ -16,7 +16,8 @@ from . import connectors as C
 
 DATA_ROOT = Path(C.DATA_ROOT)
 _SEARCH_DIRS = ['force_sources', 'bodyparts3d', 'coolprop', 'earth', 'pubchem',
-                'macaque_arm', 'smithsonian', 'copernicus_glo30']
+                'macaque_arm', 'smithsonian', 'copernicus_glo30',
+                'guimaraes_arch', 'oku_bipedal']
 
 
 def _blob_index():
