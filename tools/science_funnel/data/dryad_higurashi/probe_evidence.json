@@ -1,0 +1,26 @@
+{
+ "probed_utc": "2026-09-17T00:00:00+00:00",
+ "attempts": [
+  {
+   "url": "https://datadryad.org/api/v2/files/855229/download",
+   "method": "curl.exe -sS -L",
+   "status": 401,
+   "body_file": "dryad_api_401_evidence.json",
+   "note": "Dataset_macaque-gait.xlsx direct API download"
+  },
+  {
+   "url": "https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.fj6q573tc/download",
+   "method": "curl.exe -sS -L",
+   "status": 401,
+   "body_file": "dryad_api_dataset401_evidence.json",
+   "note": "whole-dataset zip (33,614 bytes) API download"
+  },
+  {
+   "url": "https://datadryad.org/downloads/file_stream/855229",
+   "method": "Invoke-WebRequest (plain, PowerShell user agent)",
+   "status": "challenge",
+   "body_file": "dryad_anubis_challenge.html",
+   "note": "Anubis bot-validation interstitial, 4306 bytes, no file bytes"
+  }
+ ]
+}

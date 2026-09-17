@@ -35,3 +35,7 @@ tools/science_funnel/data/bodyparts3d/** -text -whitespace
 tools/science_funnel/data/macaque_arm/** -text -whitespace
 
 tools/science_funnel/data/earth/** -text -whitespace
+
+# Every batch-connector data dir pins upstream bytes for checksum replay
+# (broad law over the per-dir rules above; last match wins over * text=auto).
+tools/science_funnel/data/** -text

@@ -1,0 +1,42 @@
+{
+ "source": "Wimberly, Slater & Granatosky 2021 tetrapod gait database, Dryad doi:10.5061/dryad.z08kprrd5 version 3 (files_changed), API v2 dataset + version file list (12 files, sha-256 digests). Analytic tables only; Gait_Videos.zip (2.1 GB) excluded by intake policy. File BYTES deferred: API download 401 bearer-token wall, file_stream behind Anubis bot challenge, no account registrable from this agent, browser unavailable",
+ "retrieved_utc": "2026-09-17T00:00:00+00:00",
+ "license": "CC0 1.0 (Dryad API v2 dataset record license field)",
+ "files": [
+  {
+   "path": "granatosky_files.json",
+   "url": "https://datadryad.org/api/v2/versions/133565/files",
+   "resolved_url": "https://datadryad.org/api/v2/versions/133565/files",
+   "bytes": 7643,
+   "sha256": "a16c8712dca955b83632fc8ac385ef4e94f399469fdf118f4bb229269ec49878"
+  },
+  {
+   "path": "granatosky_dataset.json",
+   "url": "https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.z08kprrd5",
+   "resolved_url": "https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.z08kprrd5",
+   "bytes": 4223,
+   "sha256": "8270dbdbcdb5751fb69b0f0e2e9bbfe0468bf4eeda32c060c8ea3bafb35b496b"
+  },
+  {
+   "path": "dryad_anubis_challenge.html",
+   "url": "https://datadryad.org/downloads/file_stream/863884",
+   "resolved_url": "https://datadryad.org/downloads/file_stream/863884",
+   "bytes": 4306,
+   "sha256": "8a9c025774da26c190d9bb70fc197591ffcccfd61a7135523335b4113fc21a8a"
+  },
+  {
+   "path": "probe_evidence.json",
+   "url": "recorded from this lane probe run",
+   "resolved_url": "recorded from this lane probe run",
+   "bytes": 952,
+   "sha256": "9fd78e5731173dfadd9bca8c7974c25f5ba0e38736a129dabd3706f361e2ee08"
+  },
+  {
+   "path": "dryad_api_401_evidence.json",
+   "url": "https://datadryad.org/api/v2/files/863883/download",
+   "resolved_url": "https://datadryad.org/api/v2/files/863883/download",
+   "bytes": 56,
+   "sha256": "1ac025323ea66e58c9a8a0b960db5a839ef812e1ff8bfea2f3aff74dc3961296"
+  }
+ ]
+}

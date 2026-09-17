@@ -15,8 +15,13 @@ from ..adapters import ADAPTERS
 from . import connectors as C
 
 DATA_ROOT = Path(C.DATA_ROOT)
-_SEARCH_DIRS = ['force_sources', 'bodyparts3d', 'coolprop', 'earth', 'pubchem',
-                'macaque_arm', 'smithsonian', 'copernicus_glo30']
+# Legacy dirs plus every admitted connector's data dir (lane modules included,
+# via the connectors auto-load): a future re-proof must find any admitted
+# connector's pinned bytes without this list being edited again.
+_SEARCH_DIRS = sorted(set(['force_sources', 'bodyparts3d', 'coolprop', 'earth',
+                           'pubchem', 'macaque_arm', 'smithsonian', 'copernicus_glo30'])
+                      | {c.get('data_dir') for c in C.CONNECTORS.values()
+                         if c.get('mode') == 'admit' and c.get('data_dir')})
 
 
 def _blob_index():

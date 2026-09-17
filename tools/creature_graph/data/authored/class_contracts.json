@@ -66,6 +66,50 @@
     {"kind": "field_range", "params": {"path": "payload.value_si", "min": -100.0, "max": 9000.0}}
    ],
    "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.observation.janisch_stride",
+   "version": 1,
+   "statement": "A wild-primate stride observation admitted by the gait lane carries a species tag inside the 14-species source vocabulary, substrate tags (branch diameter in metres and orientation in degrees) as finite measured numbers inside declared envelopes, and every measured joint angle, mean, yield and excursion inside its declared angular envelope.",
+   "prediction": "All 386 real stride rows of the pinned CSV admit with species + substrate tags and pass these checks; the single all-NA row quarantines; 387 fetched == 386 admitted + 1 quarantined closes with zero silent drops.",
+   "falsifier": "One corrupted stride row (species outside the vocabulary, one angle outside its envelope, or a substrate value outside its envelope) must quarantine exactly that record while every neighbouring stride stays admitted.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_in", "params": {"field": "payload.species", "vocabulary": ["Alouatta_palliata", "Cebus_capucinus", "Cercopithecus_lhoesti", "Chlorocebus_aethiops", "Eulemur_rubriventer", "Eulemur_rufifrons", "Hapalemur_aureus", "Lagothrix_lagotricha", "Lemur_catta", "Lophocebus_albigena", "Papio_anubis", "Piliocolobus_badius", "Plecturocebus_discolor", "Saimiri_sciureus"]}},
+    {"kind": "field_in", "params": {"field": "payload.sex", "vocabulary": ["m", "f", "unknown"]}},
+    {"kind": "field_in", "params": {"field": "payload.age", "vocabulary": ["adult", "mom", "juvenile", "unknown"]}},
+    {"kind": "field_range", "params": {"path": "payload.substrate.diameter_m", "min": 0.0, "max": 2.0}},
+    {"kind": "field_range", "params": {"path": "payload.substrate.orientation_deg", "min": -90.0, "max": 90.0}},
+    {"kind": "field_range", "params": {"path": "payload.body_mass_kg", "min": 0.1, "max": 100.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.joint_angles_deg", "min": 0.0, "max": 360.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.mean_angles_deg", "min": 0.0, "max": 360.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.yields_deg", "min": -180.0, "max": 180.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.excursions_deg", "min": 0.0, "max": 360.0}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.deferred.dryad_file",
+   "version": 1,
+   "statement": "A deferred Dryad file record is an identity claim, never a content claim: it pins what the Dryad API v2 declares about one file (path, byte size, sha-256 digest, file id, license) and states on its face that the bytes were not downloaded and exactly why.",
+   "prediction": "Every record admitted by a Dryad metadata connector passes with status inside {deferred, excluded_by_policy}, license inside the CC0 vocabulary, a positive byte size inside the dataset's own 2.2 GB envelope, and the deferral cause present; the 2.1 GB Gait_Videos.zip admits as excluded_by_policy, never as data.",
+   "falsifier": "A record whose status claims the bytes are present, whose license is not CC0, or whose size falls outside the declared envelope must quarantine exactly that record.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_in", "params": {"field": "payload.status", "vocabulary": ["deferred", "excluded_by_policy"]}},
+    {"kind": "field_in", "params": {"field": "payload.license", "vocabulary": ["https://spdx.org/licenses/CC0-1.0.html"]}},
+    {"kind": "field_range", "params": {"path": "payload.size_bytes", "min": 1, "max": 2200000000.0}},
+    {"kind": "field_in", "params": {"field": "payload.digest_type", "vocabulary": ["sha-256"]}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
   }
  ]
 }

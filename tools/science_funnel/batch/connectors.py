@@ -132,3 +132,31 @@ def class_for(connector_id, record_type):
     if connector_id in CONNECTORS:
         return CONNECTORS[connector_id]['classes'].get(record_type)
     return DEFAULT_CLASSES.get(record_type)
+
+
+def _load_lane_modules():
+    """Auto-load lane connector modules (connectors_*.py in this package).
+
+    Each lane module declares CONNECTORS (and optionally REPROVE_SOURCES or
+    DEFAULT_CLASSES additions) which merge under this file's rules: a
+    duplicate connector id refuses the import (first writer wins is never
+    allowed -- collisions are for the rebase-and-replay publish protocol).
+    Lane modules also import their lane adapters, registering them into the
+    shared ADAPTERS dict in place; the shared adapters module itself is never
+    edited by a lane.
+    """
+    import glob
+    import importlib
+    package = __name__.rsplit('.', 1)[0]
+    here = os.path.dirname(__file__)
+    for path in sorted(glob.glob(os.path.join(here, 'connectors_*.py'))):
+        module = importlib.import_module('.' + os.path.basename(path)[:-3], package)
+        for cid, connector in sorted(getattr(module, 'CONNECTORS', {}).items()):
+            require(cid not in CONNECTORS, 'connector_id_collision', cid)
+            CONNECTORS[cid] = connector
+        REPROVE_SOURCES.extend(s for s in getattr(module, 'REPROVE_SOURCES', [])
+                               if s not in REPROVE_SOURCES)
+        DEFAULT_CLASSES.update(getattr(module, 'DEFAULT_CLASSES', {}))
+
+
+_load_lane_modules()
