@@ -2,6 +2,7 @@
 #pragma once
 
 #include <array>
+#include "joint_binding.hpp"
 #include <atomic>
 #include <cstdint>
 #include <deque>
@@ -47,6 +48,8 @@ public:
     bool load_joint_pins(const std::string& body);  // [u32 n][f32 x3 * n]
     bool load_vertbind(const std::string& body);    // [u32 n][u8 * n]
     bool pose_index(int idx, float deg);
+    bool load_body_binding(const std::string& body); // admitted JNT3, before seals/controllers
+    bool body_active() const { return body_active_.load(std::memory_order_acquire); }
     bool intent_joint(int idx, float force_n);
 
     // THE SEAL / MITOSIS (Appliance 4, recursive): POST /tick_seal
@@ -295,6 +298,9 @@ private:
     std::vector<float>  capacity_;             // newtons per cell
     std::vector<uint8_t> foot_;                // 0 = left cluster, 1 = right
     std::vector<float>  base_color_;           // 3 per vertex
+    std::atomic<bool> body_active_{false};
+    chimera::articulation::JointBinding body_binding_;
+    std::vector<float> published_verts_; // final posed/contact surface, under seal_mtx_
     std::vector<float>  base_pos_;             // 3 per vertex (authored rest)
     std::vector<uint32_t> tri_verts_;          // 3 indices per cell
     std::array<std::array<float, 3>, 2> pivot_ = {};   // ankle pivots [L, R]

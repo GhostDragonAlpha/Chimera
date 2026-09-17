@@ -104,7 +104,7 @@ static MembraneTick g_tick;                    // THE MEMBRANE TICK (Appliance 1
 static const char* const k_snapshot_endpoints[] = {
     "mesh_bin", "tick_joints", "tick_classify", "tick_vertbind",
     "hinge_bin", "joints_bin", "gait_bin", "stride_bin", "water_bin",
-    "tick_seal_state",
+    "tick_body_bin", "tick_seal_state",
     // AN2: the limb registry (segments + patch regions/constants) and the
     // patch states (arm + per-path connection + cut stamps) restore after
     // the seal tree they index into. A stale limb blob (any mesh change)
@@ -712,6 +712,16 @@ int main(int argc, char** argv) {
         size_t q = path.find('?');
         std::string p = (q == std::string::npos) ? path : path.substr(0, q);
 
+        // The selected membrane body has one pose owner. A full mesh load starts
+        // a new body; independent editors and animation uploads cannot bypass it.
+        if(g_tick.body_active() && method=="POST") {
+            static const std::set<std::string> competing={"/hinge_bin","/joints_bin","/joints","/joint","/stride_bin","/stride","/gait_bin","/gait","/volp_bin","/volp","/matter","/skin_bin","/pose_apply","/tick_rig","/tick_flex","/tick_joints","/tick_classify","/tick_vertbind","/water_vis"};
+            bool mesh_update=false;
+            if(p=="/mesh_bin" && req_body.size()>=24) {float mode;std::memcpy(&mode,req_body.data()+20,4);mesh_update=mode>=100.f;}
+            if(competing.count(p) || mesh_update) {
+                body="{\"ok\":false,\"error\":\"shared_body_owns_surface\"}";content_type="application/json";return;
+            }
+        }
         if(g_thermal.active() && method=="POST" && p!="/thermal_state")
             throw chimera::forces::Refusal("thermal_scene_accepts_intent_controls_only");
         if(p=="/thermal_state" && (method=="GET" || method=="POST")) {
@@ -1203,6 +1213,17 @@ int main(int argc, char** argv) {
             else body = "{\"ok\":false,\"error\":\"refused: unknown joint or "
                         "angle outside +/-90\"}";
             content_type = "application/json";
+        } else if (p == "/tick_body_bin" && method == "POST") {
+            {
+                std::lock_guard<std::mutex> lk(g_volp_mutex);
+                g_volp_req=VolpReq{};g_volp_req.kind=4;
+                g_volp_req.blob.assign(req_body.begin(),req_body.end());
+                g_volp_pending=true;g_volp_applied=false;
+            }
+            std::unique_lock<std::mutex> lk(g_volp_mutex);
+            bool done=wait_for_shutdown(g_volp_cv,lk,std::chrono::seconds(60),[]{return g_volp_applied;});
+            body=done && g_volp_req.ok ? "{\"ok\":true,\"body_model\":\"JNT3_hierarchical\",\"actuation\":\"kinematic\"}" : "{\"ok\":false,\"error\":\"body_binding_refused_load_before_seals_and_controllers\"}";
+            content_type="application/json";
         } else if (p == "/tick_classify" && method == "POST") {
             // CA CLASSIFICATION (Appliance 4): per-triangle joint type.
             body = g_tick.load_classify(req_body) ? "{\"ok\":true}"
@@ -3812,7 +3833,7 @@ int main(int argc, char** argv) {
         // creature — a restart must not need a hand-run script to be the
         // same animal. /tick_seal APPENDS (the tree is a history).
         if (g_engine && method == "POST" &&
-            (p == "/tick_classify" || p == "/tick_vertbind" || p == "/tick_joints") &&
+            (p == "/tick_classify" || p == "/tick_vertbind" || p == "/tick_joints" || p == "/tick_body_bin") &&
             body.find("\"ok\":true") != std::string::npos) {
             CreateDirectoryA("session_snapshot", nullptr);
             std::string fn = "session_snapshot/" + p.substr(1) + ".blob";
@@ -4144,6 +4165,7 @@ int main(int argc, char** argv) {
                                 g_mesh_req.verts);
                     g_tick_verts = g_mesh_req.verts;
                     g_tick_vcount = g_mesh_req.N;
+                    engine.external_body_owner_.store(false);
                 }                // cam_radius <= 0 = "keep the current camera": animation drivers stream
                 // meshes every frame and must NOT steal the operator's orbit/zoom/pan.
                 if (!g_mesh_req.update_only && g_mesh_req.cam_radius > 0.0f)
@@ -4216,6 +4238,11 @@ int main(int argc, char** argv) {
                 if (g_volp_req.kind == 1) {
                     g_volp_req.ok = engine.load_volp(g_volp_req.blob);
                     g_volp_req.blob.clear(); g_volp_req.blob.shrink_to_fit();
+                } else if (g_volp_req.kind == 4) {
+                    std::string raw(g_volp_req.blob.begin(),g_volp_req.blob.end());
+                    g_volp_req.ok=g_tick.load_body_binding(raw);
+                    if(g_volp_req.ok)engine.external_body_owner_.store(true);
+                    g_volp_req.blob.clear();
                 } else if (g_volp_req.kind == 3) {
                     g_volp_req.ok = engine.load_joints(g_volp_req.blob);
                     g_volp_req.blob.clear(); g_volp_req.blob.shrink_to_fit();

@@ -7919,7 +7919,7 @@ bool Engine::frame() {
     stride_tick();
     const bool stride_drives = stride_active_.load(std::memory_order_relaxed) &&
                              stride_playing_.load(std::memory_order_relaxed);
-    if ((joints_on_.load(std::memory_order_relaxed) || edit_mode || stride_drives) &&
+    if (!external_body_owner_.load() && (joints_on_.load(std::memory_order_relaxed) || edit_mode || stride_drives) &&
         joints_loaded_ && joints_pipe_ != VK_NULL_HANDLE) {
         float* st = static_cast<float*>(j_state_map_);
         if (stride_drives) {
@@ -8038,7 +8038,7 @@ bool Engine::frame() {
                     0, 1, &mb, 0, nullptr, 0, nullptr);
             }
         }
-    } else if (hinge_active_ && hinge_pipe_ != VK_NULL_HANDLE) {
+    } else if (!external_body_owner_.load() && hinge_active_ && hinge_pipe_ != VK_NULL_HANDLE) {
         if (hinge_desc_dirty_) hinge_rebind();   // tri_vbuf_ recreated -> rebind BEFORE dispatch
         struct HingePC { float JL[4], JR[4], axis[4]; float romL, romR, period, phaseR, time;
                          float thetaL, thetaR; uint32_t flags; uint32_t n; } hpc{};
@@ -8237,7 +8237,7 @@ bool Engine::frame() {
 
     // ── W4 surface displacement — build the water vertex buffer from the POSED
     // mesh (runs after the hinge/clock compute, before the render pass reads it).
-    if (water_vis_on_.load(std::memory_order_relaxed) && water_loaded_ && has_mesh_
+    if (!external_body_owner_.load() && water_vis_on_.load(std::memory_order_relaxed) && water_loaded_ && has_mesh_
         && w_vis_pipe_ != VK_NULL_HANDLE && w_vis_set_ != VK_NULL_HANDLE) {
         if (water_vis_desc_dirty_) water_vis_rebind();
         // zero indirect.vertexCount (instanceCount stays 1 from the init upload)

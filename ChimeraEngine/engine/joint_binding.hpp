@@ -2,6 +2,7 @@
 // Rest-frame articulated transforms and strict, transactional JNT decoding.
 // Geometry binding only: these operations do not supply actuator dynamics.
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstdint>
 #include <cstring>
@@ -111,5 +112,38 @@ inline bool decode_joint_binding(const std::vector<uint8_t>& bytes,
         }
     }
     output=std::move(b); error.clear();return true;
+}
+// CPU reference for the same rest-frame LBS contract as joints.comp.
+// Caller supplies admitted binding and radians; no independent pose state lives here.
+inline void pose_binding(const JointBinding& b, const std::vector<float>& rest,
+                         const std::vector<float>* radians, std::vector<float>& posed) {
+    struct Frame { float M[9]={1,0,0,0,1,0,0,0,1}; float T[3]={0,0,0}; };
+    std::vector<Frame> frames(b.joint_count);
+    for (uint32_t j=0;j<b.joint_count;++j) {
+        int chain[8], n=0;
+        for (int k=int(j);k>=0;k=b.parents[k]) chain[n++]=k;
+        auto& f=frames[j];
+        while (n) {
+            int k=chain[--n]; float angle=radians ? (*radians)[k] : 0.f;
+            if (angle==0.f) continue;
+            const float* a=&b.axes[3*k];float c=std::cos(angle), ss=std::sin(angle), d=1-c;
+            float R[9]={c+d*a[0]*a[0], d*a[0]*a[1]-ss*a[2], d*a[0]*a[2]+ss*a[1],
+                        d*a[1]*a[0]+ss*a[2], c+d*a[1]*a[1], d*a[1]*a[2]-ss*a[0],
+                        d*a[2]*a[0]-ss*a[1], d*a[2]*a[1]+ss*a[0], c+d*a[2]*a[2]};
+            append_local_rotation(R,&b.pivots[3*k],f.M,f.T);
+        }
+    }
+    if (posed.size()!=rest.size()) posed=rest;
+    Frame identity;
+    for (uint32_t v=0;v<b.vertex_count;++v) {
+        int j=b.owner[v], k=b.secondary[v];if(k<0)k=b.parents[j];
+        const Frame& a=frames[j];const Frame& z=k<0?identity:frames[k];
+        float w=b.weight[v];
+        for(int row=0;row<3;++row) {
+            float x=a.T[row],y=z.T[row];
+            for(int col=0;col<3;++col) {x+=a.M[row*3+col]*rest[9*v+col];y+=z.M[row*3+col]*rest[9*v+col];}
+            posed[9*v+row]=w*x+(1-w)*y;
+        }
+    }
 }
 } // namespace chimera::articulation

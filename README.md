@@ -38,6 +38,9 @@ python -B -m tools.creature_graph.project_spec --show req.publication_workflow
 python -B -m tools.creature_graph.project_spec --show req.engine_game_release
 python -B -m tools.creature_graph.project_spec --show req.current_product_focus
 python -B -m tools.creature_graph.project_spec --show req.creature_assembly
+python -B -m tools.creature_graph.project_spec --show req.macaque_rebuild
+python -B -m tools.creature_graph.project_spec --show doc.handoff.zcode
+python -B -m tools.creature_graph.project_spec --show doc.workflow.shared_body_example
 python -B -m tools.creature_graph.project_spec --show req.layered_anatomy
 python -B -m tools.creature_graph.project_spec --show req.embodied_senses
 python -B -m tools.creature_graph.project_spec --show doc.creature_binding_observation

@@ -258,6 +258,12 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
     foot_ = std::move(foot);
     neighbors_ = std::move(neighbors);
     base_pos_ = base_pos;
+    published_verts_ = base_pos;
+    if(body_active()) {
+        cell_joint_.clear();vert_bind_idx_.clear();vert_bind_w_.clear();vert_joint_.clear();
+        joint_pins_.clear();joint_deg_.clear();joint_force_.clear();
+    }
+    body_binding_ = {}; body_active_.store(false, std::memory_order_release);
     base_color_ = std::move(base_color);
     pivot_[0] = pivots[0];
     pivot_[1] = pivots[1];
@@ -349,6 +355,7 @@ void MembraneTick::clear_intent() {
 }
 
 bool MembraneTick::flex(float deg_l, float deg_r) {
+    if(body_active()) return false;
     if (!std::isfinite(deg_l) || !std::isfinite(deg_r)) return false;
     if (std::fabs(deg_l) > 90.f || std::fabs(deg_r) > 90.f) return false;
     flex_l_ = deg_l * 3.14159265358979f / 180.f;
@@ -382,6 +389,10 @@ void MembraneTick::apply_flex(std::vector<float>& verts9) {
 
 void MembraneTick::apply_travel(std::vector<float>& verts9,
                                 const std::vector<float>* deg) const {
+    if (body_active()) {
+        chimera::articulation::pose_binding(body_binding_, base_pos_, deg, verts9);
+        return;
+    }
     // classified smooth travel, verbatim: each vertex mixes the poses of
     // its 3 nearest pins by its stored weights; deg == nullptr -> all
     // angles 0 (the exact rest blend). Shared by step() and seal() so
@@ -481,7 +492,7 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
             float mr02 = 9.f * r02;
             for (size_t v = 0; v < nverts; ++v) {
                 float dx = verts9[v * 9 + 0] - touch_pt_[0];
-                float dy = verts9[v * 9 + 1] - touch_pt_[1];
+                float dy = verts9[v * 9 + 1] + (body_active() && gravity_on_ ? root_y_ : 0.f) - touch_pt_[1];
                 float dz = verts9[v * 9 + 2] - touch_pt_[2];
                 float d2 = dx * dx + dy * dy + dz * dz;
                 if (d2 > mr02) continue;                 // outside the falloff
@@ -562,9 +573,9 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
                 float off = press_off_[v];
                 if (off == 0.f) continue;
                 applied_max = std::max(applied_max, off);
-                verts9[v * 9 + 0] -= base_pos_[v * 9 + 3] * off;  // authored
-                verts9[v * 9 + 1] -= base_pos_[v * 9 + 4] * off;  // normal
-                verts9[v * 9 + 2] -= base_pos_[v * 9 + 5] * off;
+                verts9[v * 9 + 0] -= (body_active() ? verts9[v * 9 + 3] : base_pos_[v * 9 + 3]) * off;  // authored
+                verts9[v * 9 + 1] -= (body_active() ? verts9[v * 9 + 4] : base_pos_[v * 9 + 4]) * off;  // normal
+                verts9[v * 9 + 2] -= (body_active() ? verts9[v * 9 + 5] : base_pos_[v * 9 + 5]) * off;
             }
             // report the TRUE max applied offset, not the theoretical
             // delta — the Gaussian peak can fall between mesh vertices
@@ -608,7 +619,7 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
                 verts9[v * 9 + 5] = nz / len;
             }
             normals_displaced_ = true;
-        } else if (normals_displaced_) {
+        } else if (normals_displaced_ && !body_active()) {
             // field fully cleared: restore the authored normals
             for (size_t v = 0; v < nverts; ++v)
                 for (int k = 0; k < 3; ++k)
@@ -872,7 +883,8 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
     // the /verts export (what the page renders) sees the breath. The root
     // offset composes as a uniform translation and commutes with the
     // displacement.
-    if (reflex_.armed) reflex_breath_locked_(verts9, dt);
+    if (reflex_.armed && !body_active()) reflex_breath_locked_(verts9, dt);
+    published_verts_ = verts9;
 }
 
 bool MembraneTick::intent_joint(int idx, float force_n) {
@@ -884,6 +896,7 @@ bool MembraneTick::intent_joint(int idx, float force_n) {
 
 bool MembraneTick::load_classify(const std::string& body) {
     std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (body_active()) return false;
     if (body.size() < 4) return false;
     uint32_t n = 0;
     std::memcpy(&n, body.data(), 4);
@@ -896,6 +909,7 @@ bool MembraneTick::load_classify(const std::string& body) {
 
 bool MembraneTick::load_vertbind(const std::string& body) {
     std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (body_active()) return false;
     // smooth-travel binding: per vertex, 3 pin indices (u8) and 3
     // normalized weights (f32) -- 15 bytes per vertex. The membrane
     // BENDS by blending the pins' rotations; it never tears.
@@ -917,6 +931,7 @@ bool MembraneTick::load_vertbind(const std::string& body) {
 
 bool MembraneTick::load_joint_pins(const std::string& body) {
     std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (body_active()) return false;
     if (body.size() < 4) return false;
     uint32_t n = 0;
     std::memcpy(&n, body.data(), 4);
@@ -934,15 +949,51 @@ bool MembraneTick::load_joint_pins(const std::string& body) {
     return true;
 }
 
+bool MembraneTick::load_body_binding(const std::string& body) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (!has_scene_ || sealed_ || gravity_on_ || stance_on_ || gait_on_ || reflex_.armed) return false;
+    chimera::articulation::JointBinding b;std::string error;
+    if (!chimera::articulation::decode_joint_binding(std::vector<uint8_t>(body.begin(),body.end()),base_pos_.size()/9,b,error)
+        || !b.second_owner || b.joint_count>255) return false;
+    // Populate legacy region readers from this one admitted binding. Region labels
+    // locate presses; they do not define physical compartment boundaries.
+    std::vector<uint8_t> indices(3*b.vertex_count), dominant(b.vertex_count), labels(cells_.size());
+    std::vector<float> weights(3*b.vertex_count,0.f);
+    std::vector<std::array<float,3>> pins(b.joint_count);
+    for(uint32_t j=0;j<b.joint_count;++j)for(int k=0;k<3;++k)pins[j][k]=b.pivots[3*j+k];
+    for(uint32_t v=0;v<b.vertex_count;++v) {
+        int j=b.owner[v],k=b.secondary[v];if(k<0)k=b.parents[j];
+        indices[3*v]=uint8_t(j);indices[3*v+1]=uint8_t(k<0?j:k);indices[3*v+2]=uint8_t(j);
+        weights[3*v]=b.weight[v];weights[3*v+1]=1-b.weight[v];
+        dominant[v]=uint8_t(k>=0 && b.weight[v]<0.5f?k:j);
+    }
+    for(size_t t=0;t<cells_.size();++t) {
+        std::vector<float> sums(b.joint_count,0.f);
+        for(int c=0;c<3;++c) {uint32_t v=tri_verts_[3*t+c];for(int k=0;k<2;++k)sums[indices[3*v+k]]+=weights[3*v+k];}
+        labels[t]=uint8_t(std::max_element(sums.begin(),sums.end())-sums.begin());
+    }
+    body_binding_=std::move(b);joint_pins_=std::move(pins);cell_joint_=std::move(labels);
+    vert_bind_idx_=std::move(indices);vert_bind_w_=std::move(weights);vert_joint_=std::move(dominant);
+    joint_deg_.assign(joint_pins_.size(),0.f);joint_force_.assign(joint_pins_.size(),0.f);
+    joint_verts_.clear();rig_.clear();rig_angle_.clear();press_off_.clear();press_field_=false;touch_active_=false;
+    force_l_=force_r_=0.f;normals_displaced_=false;
+    reflex_.breathing=false; // legacy cosmetic breathing bypasses physical volumes
+    published_verts_=base_pos_;body_active_.store(true,std::memory_order_release);
+    return true;
+}
+
 bool MembraneTick::pose_index(int idx, float deg) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
     if (idx < 0 || idx >= (int)joint_deg_.size()) return false;
     if (!std::isfinite(deg) || std::fabs(deg) > 90.f) return false;
-    joint_deg_[idx] = deg * 3.14159265358979f / 180.f;
-    return true;
+    float angle=deg*3.14159265358979f/180.f;
+    if(body_active() && (deg<body_binding_.limits[2*idx] || deg>body_binding_.limits[2*idx+1])) return false;
+    joint_deg_[idx]=angle;return true;
 }
 
 
 bool MembraneTick::load_rig(const std::string& config) {
+    if(body_active()) return false;
     // line format: name|start|count|px|py|pz|parent   (parents first)
     std::vector<RigPart> parts;
     size_t pos = 0;
@@ -978,6 +1029,15 @@ bool MembraneTick::load_rig(const std::string& config) {
 }
 
 bool MembraneTick::pose(const std::string& joint, float deg) {
+    if(body_active()) {
+        std::lock_guard<std::mutex> lk(seal_mtx_);
+        if(!std::isfinite(deg) || std::fabs(deg)>90.f)return false;
+        auto it=std::find(body_binding_.names.begin(),body_binding_.names.end(),joint);
+        if(it==body_binding_.names.end())return false;
+        size_t j=it-body_binding_.names.begin();float angle=deg*3.14159265358979f/180.f;
+        if(deg<body_binding_.limits[2*j] || deg>body_binding_.limits[2*j+1])return false;
+        joint_deg_[j]=angle;return true;
+    }
     if (!std::isfinite(deg) || std::fabs(deg) > 90.f) return false;
     for (size_t i = 0; i < rig_.size(); ++i) {
         if (rig_[i].joint == joint) {
@@ -1039,26 +1099,27 @@ void MembraneTick::export_topology(std::vector<uint8_t>& out) {
 void MembraneTick::export_verts(const std::vector<float>& verts9,
                                 std::vector<uint8_t>& out) {
     std::lock_guard<std::mutex> lk(seal_mtx_);
-    uint32_t n = (uint32_t)(verts9.size() / 9);
-    out.resize(4 + verts9.size() * 4);
+    const auto& surface = body_active() ? published_verts_ : verts9;
+    uint32_t n = (uint32_t)(surface.size() / 9);
+    out.resize(4 + surface.size() * 4);
     std::memcpy(out.data(), &n, 4);
-    if (n) std::memcpy(out.data() + 4, verts9.data(), verts9.size() * 4);
+    if (n) std::memcpy(out.data() + 4, surface.data(), surface.size() * 4);
 }
 
 float MembraneTick::point_skin_dist2(const float p[3]) const {
-    float best = 1e30f;
-    const size_t nv = base_pos_.size() / 9;
-    for (size_t v = 0; v < nv; ++v) {
-        float dx = base_pos_[v * 9 + 0] - p[0];
-        float dy = base_pos_[v * 9 + 1] - p[1];
-        float dz = base_pos_[v * 9 + 2] - p[2];
-        float d2 = dx * dx + dy * dy + dz * dz;
-        if (d2 < best) best = d2;
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    float best=1e30f;
+    const auto& surface=body_active()?published_verts_:base_pos_;
+    for(size_t v=0;v<surface.size()/9;++v) {
+        float d2=0;
+        for(int k=0;k<3;++k) {float d=surface[v*9+k]-p[k];d2+=d*d;}
+        best=std::min(best,d2);
     }
     return best;
 }
 
 bool MembraneTick::touch_press_at(const float hit[3], float force_n) {
+    for(int k=0;k<3;++k)if(!std::isfinite(hit[k]))return false;
     if (!std::isfinite(force_n) || force_n <= 0.f) return false;
     std::lock_guard<std::mutex> lk(seal_mtx_);
     touch_pt_[0] = hit[0]; touch_pt_[1] = hit[1]; touch_pt_[2] = hit[2];
@@ -3197,6 +3258,7 @@ bool MembraneTick::set_gravity(bool on) {
 // under the lock, from this engine's own arithmetic -- no tuned gains.
 bool MembraneTick::set_stance(bool on) {
     std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (body_active() && on) return false; // old gains belong to the independent-pin law
     if (!on) { stance_off_locked_(); return true; }
 
     if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return false;
@@ -3337,6 +3399,7 @@ void MembraneTick::gait_off_locked_() {
 // (Rule 1: if a number needed choosing, the derivation broke).
 bool MembraneTick::set_gait(bool on) {
     std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (body_active() && on) return false; // old gains belong to the independent-pin law
     if (!on) { gait_off_locked_(); gait_enable_block_.clear(); return true; }
 
     // the rung stack, checked in order, each refusal HONEST BY NAME
@@ -4220,6 +4283,7 @@ bool MembraneTick::set_reflex(bool on) {
 bool MembraneTick::set_reflex_channel(const std::string& name, bool v) {
     std::lock_guard<std::mutex> lk(seal_mtx_);
     if (name == "breathing") {
+        if (body_active() && v) return false;
         reflex_.breathing = v;   // suspend freezes the phase; the pass
         return true;             // stops displacing -> exact rest (M5)
     }
@@ -4592,6 +4656,8 @@ std::string MembraneTick::state_json() const {
       << ",\"ts_ms\":"
       << std::chrono::duration_cast<std::chrono::milliseconds>(ts_now).count()
       << ",\"ticks\":" << ticks_
+      << ",\"body_model\":\"" << (body_active()?"JNT3_hierarchical":"legacy") << "\""
+      << ",\"body_actuation\":\"kinematic\""
       << ",\"enabled\":" << (enabled_ ? "true" : "false")
       << ",\"reflex_cell_count\":" << cells_.size()
       << ",\"force_l\":" << force_l_ << ",\"force_r\":" << force_r_

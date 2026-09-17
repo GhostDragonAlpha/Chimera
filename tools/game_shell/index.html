@@ -1177,6 +1177,7 @@
      regularization radius rides the amplitude (rad = amp), which is a
      shape law, not a tuned size: cup depth equals cup radius, so the
      response always reads as a dimple at any force the slider can send. */
+  var nativeBodySurface = false; // negotiated from engine state; one geometry owner
   var pressKernel = { hit: null, n: null, delta: 0, radMax: 0,
                       holding: false, tClear: 0 };
   var W2_SIGMA = 4000;          // N/m  — engine sigma_n_
@@ -1211,6 +1212,7 @@
     RG.restDirty = true;
   }
   function pressKernelStart(hit, force) {
+    if (nativeBodySurface) return;
     pressKernel.hit = [hit[0], hit[1], hit[2]];
     pressKernel.delta = force / (4 * Math.PI * W2_SIGMA);
     pressKernel.radMax = pressKernel.delta;   // the rest snapshot's freeze reach
@@ -1238,6 +1240,12 @@
   }
   function pressKernelTick() {
     if (!RG) return;
+    if (nativeBodySurface) {
+      pressKernel.hit = null; pressKernel.holding = false;
+      gl.useProgram(RG.prog);
+      gl.uniform1f(RG.uAmp, 0); gl.uniform1f(RG.uReplace, 0);
+      return; // render the same surface used for picking and native pressures
+    }
     /* the rest surface reaches the GPU only while NO kernel lives — during
        a press (and its tau decay) the shader displaces the frozen
        pre-press snapshot, so the law is applied ONCE, not doubled */
@@ -1538,6 +1546,8 @@
       var res = await fetch(API.state);
       if (!res.ok) throw new Error('http ' + res.status);
       var s = await res.json();
+      nativeBodySurface = s.body_model === "JNT3_hierarchical";
+      canvas.dataset.surfaceOwner = nativeBodySurface ? "native" : "legacy_preview";
       renderBlood(s);
       judgeState(s);
       renderJudgeDebug();     // runs on the setInterval poll, so the judge

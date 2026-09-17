@@ -151,7 +151,7 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps({"ok": False, "error": msg}).encode())
 
     def _proxy(self, path: str, method: str, body: bytes | None):
-        req = urllib.request.Request(ENGINE + path, data=body, method=method,
+        req = urllib.request.Request(self.engine_url + path, data=body, method=method,
                                      headers={"Content-Type": "application/json"})
         try:
             with urllib.request.urlopen(req, timeout=30) as r:

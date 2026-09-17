@@ -9,3 +9,5 @@ if(MSVC)
   target_compile_options(articulation_native PRIVATE /W4 /fp:precise)
   target_compile_options(articulation_gpu PRIVATE /W4 /fp:precise)
 endif()
+
+add_executable(body_surface body_surface.cpp ../membrane_tick.cpp)

@@ -138,6 +138,7 @@ public:
     // streaming poses at driver rate never stalls the render/input loop.
     // Returns false if the mesh layout changed (caller must full-load).
     bool update_mesh(const std::vector<float>& verts9, uint32_t vcount);
+    std::atomic<bool> external_body_owner_{false}; // membrane surface owns mesh positions
     // ── THE HINGE LIVES IN THE ENGINE (operator decree 2026-08-28) ─────────
     // The knee pose is an engine-internal state on the engine's own clock,
     // not a Python stream: per frame, each vertex near the joint rotates by
