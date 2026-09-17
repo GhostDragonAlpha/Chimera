@@ -117,6 +117,42 @@ def _check_field_range(record, params, ctx):
     return None
 
 
+def _check_field_in(record, params, ctx):
+    value, ok = _resolve(record, params['field'])
+    if not ok or not isinstance(value, str) or not value.strip():
+        return params['field'] + ' missing'
+    if value not in params['vocabulary']:
+        return params['field'] + ' = ' + repr(value) + ' outside declared vocabulary'
+    return None
+
+
+def _walk_numbers(node):
+    if node is None or isinstance(node, bool):
+        return
+    if isinstance(node, (int, float)):
+        yield node
+    elif isinstance(node, dict):
+        for value in node.values():
+            yield from _walk_numbers(value)
+    elif isinstance(node, list):
+        for value in node:
+            yield from _walk_numbers(value)
+
+
+def _check_numeric_tree_range(record, params, ctx):
+    """Envelope every numeric leaf under a payload subtree. Absent or empty
+    subtrees pass: presence is the adapter's job (a row with nothing measured
+    must never become a record); this check is the envelope on what did."""
+    value, ok = _resolve(record, params['path'])
+    if not ok or not value:
+        return None
+    for leaf in _walk_numbers(value):
+        if not (math.isfinite(leaf) and params['min'] <= leaf <= params['max']):
+            return (params['path'] + ' value ' + repr(leaf) + ' outside ['
+                    + repr(params['min']) + ', ' + repr(params['max']) + ']')
+    return None
+
+
 CHECKS = {
     'id_syntax': _check_id_syntax,
     'provenance_present': _check_provenance_present,
@@ -124,6 +160,8 @@ CHECKS = {
     'fk_exists': _check_fk_exists,
     'units_in': _check_units_in,
     'field_range': _check_field_range,
+    'field_in': _check_field_in,
+    'numeric_tree_range': _check_numeric_tree_range,
 }
 
 

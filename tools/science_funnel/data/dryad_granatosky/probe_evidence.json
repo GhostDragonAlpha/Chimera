@@ -1,0 +1,26 @@
+{
+ "probed_utc": "2026-09-17T00:00:00+00:00",
+ "attempts": [
+  {
+   "url": "https://datadryad.org/api/v2/files/863883/download",
+   "method": "curl.exe -sS -L",
+   "status": 401,
+   "body_file": "dryad_api_401_evidence.json",
+   "note": "mammal_gait.txt direct API download: Unauthorized, must have current bearer token"
+  },
+  {
+   "url": "https://datadryad.org/api/v2/files/863884/download",
+   "method": "Invoke-WebRequest (plain)",
+   "status": "no_http_response_first_attempt",
+   "body_file": null,
+   "note": "transport-level failure on the first probe; the same API-wide 401 wall is pinned first-hand for 863883 in this directory"
+  },
+  {
+   "url": "https://datadryad.org/downloads/file_stream/863884",
+   "method": "Invoke-WebRequest (plain, PowerShell user agent)",
+   "status": "challenge",
+   "body_file": "dryad_anubis_challenge.html",
+   "note": "Anubis bot-validation interstitial (.within.website), 4306 bytes, no file bytes"
+  }
+ ]
+}
