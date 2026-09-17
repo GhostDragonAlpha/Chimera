@@ -12,6 +12,21 @@ from . import connectors as C
 DATA_ROOT = Path(C.DATA_ROOT)
 
 
+def _resolve_artifact(connector, art):
+    """Artifacts live in the connector's own data dir; a CROSS-CONNECTOR pin
+    (an artifact owned by another connector's data dir, e.g. the taxdmp names
+    companion staged inside the pantheria bundle) resolves from another data
+    dir only when the file's bytes match the pin exactly."""
+    primary = DATA_ROOT / connector['data_dir'] / art['id']
+    if primary.is_file():
+        return primary
+    for other in sorted(path for path in DATA_ROOT.iterdir() if path.is_dir()):
+        candidate = other / art['id']
+        if candidate.is_file() and sha(candidate.read_bytes()) == art['sha256']:
+            return candidate
+    return primary
+
+
 def stage_connector(connector_id, work_root):
     """Copy pinned artifacts into the manifest workspace, re-hashing each file.
 
@@ -20,9 +35,8 @@ def stage_connector(connector_id, work_root):
     connector = C.CONNECTORS[connector_id]
     folder = Path(work_root) / connector_id
     (folder / 'artifacts').mkdir(parents=True, exist_ok=True)
-    source_dir = DATA_ROOT / connector['data_dir']
     for art in connector['artifacts']:
-        pinned = source_dir / art['id']
+        pinned = _resolve_artifact(connector, art)
         require(pinned.is_file(), 'connector_artifact_missing', art['id'])
         raw = pinned.read_bytes()
         require(sha(raw) == art['sha256'], 'pin_drift', art['id'])

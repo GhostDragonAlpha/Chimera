@@ -160,7 +160,12 @@ falsifiers run over every record; existing admissions re-prove byte-identically
 under their recorded producers; the count identity closes with zero silent
 drops (conflicting records quarantine, never merge). One receipt records the
 whole batch. Admitted records stay `extracted` — batch admission is proven
-intake, never verification.
+intake, never verification. Per-domain connector modules
+(`tools/science_funnel/batch/connectors_*.py`) auto-merge their connector
+declarations into the batch registry — `connectors_life.py` (PanTHERIA 1.0 +
+NCBI taxdmp Macaca subtree applied, Rhea proven-but-not-applied; receipts
+under `validation/batch_life_20260917/`) is the first — so parallel intake
+lanes never edit the shared registry.
 
 ## 4. Documentation and proof
 

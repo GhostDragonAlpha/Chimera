@@ -286,6 +286,74 @@
     {"kind": "field_in", "params": {"field": "payload.digest_type", "vocabulary": ["sha-256"]}}
    ],
    "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.entity.pantheria_species",
+   "version": 1,
+   "statement": "A PanTHERIA 1.0 species row keeps its full MSW05 identity tags (order, family, genus, species, binomial); a trait cell holding the -999 sentinel in ANY numeric rendering (-999, -999.0, -999.00) or an empty cell is nodata, recorded as an explicit trait status plus an explicit unknown on the species record, never as a numeric value.",
+   "prediction": "All 5,416 species rows admit as entity records whose binomial agrees with their genus+species tags; the 20 sentinel-BMR Macaca rows carry explicit nodata unknowns while the one measured Macaca (Macaca mulatta) also resolves against the NCBI taxdmp Macaca subtree companion.",
+   "falsifier": "A record whose binomial disagrees with its genus+species tags, whose trait_status value falls outside {measured, sentinel_-999, empty}, or in which a sentinel number appears where a status belongs must quarantine exactly that record; the -999 sentinel never reaches a measurement record of this source.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "units_in", "params": {"path": "payload.trait_status.adult_body_mass_g", "vocabulary": ["measured", "sentinel_-999", "empty"]}},
+    {"kind": "units_in", "params": {"path": "payload.trait_status.basal_met_rate_mLO2hr", "vocabulary": ["measured", "sentinel_-999", "empty"]}},
+    {"kind": "units_in", "params": {"path": "payload.trait_status.bmr_measurement_mass_g", "vocabulary": ["measured", "sentinel_-999", "empty"]}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.property.pantheria_trait",
+   "version": 1,
+   "statement": "A PanTHERIA trait measurement carries a positive finite SI value -- adult body mass in kg (g x 1e-3, exact) or basal metabolic rate in W converted as mLO2hr x 20.1 J/mL O2 / 3600 s with the calorific equivalent DECLARED as an assumption on every record, never as a PanTHERIA measurement -- plus full species tags and pinned-byte provenance.",
+   "prediction": "3,542 adult-mass and 573 BMR records pass with values inside [1e-6, 1e6] (measured extremes: 1.96 g to 1.54e8 g mass, 6.12 to 113,712 mLO2/hr BMR = 0.034 to 635 W); the sole measured Macaca BMR (Macaca mulatta) converts to ~12.50 W and carries the calorific assumption.",
+   "falsifier": "A -999 sentinel reaching a measurement record refuses the class: the adapter guard must quarantine the row before drafting, and if that guard is ever removed the converted sentinel (-5.58 W or -0.999 kg) is negative, outside [1e-6, 1e6], and must be flagged by field_range for exactly that record.",
+   "applies_to": {"kinds": ["property_assertion"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_range", "params": {"path": "payload.value_si", "min": 1e-06, "max": 1000000.0}},
+    {"kind": "units_in", "params": {"path": "payload.unit_si", "vocabulary": ["W", "kg"], "si_tokens": true}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.entity.ncbi_taxon",
+   "version": 1,
+   "statement": "An NCBI taxdmp Macaca-subtree taxon record names its integer tax_id, its parent tax_id, a rank inside the subtree vocabulary, and exactly one scientific name, with every other name-class record (synonyms, authorities, common names) retained verbatim.",
+   "prediction": "All 43 subtree taxa (root genus Macaca, tax_id 9539) admit with ranks inside {genus, species, subspecies, no rank} -- the no-rank entries being unclassified sections and isolate placeholders -- and every PanTHERIA Macaca binomial resolves against these names.",
+   "falsifier": "A taxon whose rank falls outside the vocabulary, whose scientific name is missing or non-unique, or whose projected names disagree with the pinned subtree bytes must quarantine exactly that taxon's record.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_range", "params": {"path": "payload.tax_id", "min": 1.0, "max": 1000000000.0}},
+    {"kind": "units_in", "params": {"path": "payload.rank", "vocabulary": ["genus", "species", "subspecies", "no rank"]}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.entity.rhea_chebi_species",
+   "version": 1,
+   "statement": "A Rhea rhea-chebi-smiles.tsv row maps exactly one CHEBI identifier to one SMILES string under CC BY 4.0 with the license evidence pinned inside the same bundle; a CHEBI id with competing SMILES rows has all of its rows quarantined by the duplicate-identity law, never a greedy pick.",
+   "prediction": "The 14,318 headerless two-column rows reduce to 14,249 unique-CHEBI records with the remaining rows quarantined as duplicate identities; every admitted record declares its identity scheme as chebi and the count identity still closes.",
+   "falsifier": "A row whose CHEBI id is not CHEBI:<digits>, whose SMILES is empty, or whose id competes with a different SMILES must quarantine exactly those rows with zero silent drops.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "units_in", "params": {"path": "payload.id_scheme", "vocabulary": ["chebi"]}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
   }
  ]
 }
