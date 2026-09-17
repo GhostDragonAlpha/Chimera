@@ -1,0 +1,23 @@
+{
+  "sources": [
+    {
+      "url": "https://earth-info.nga.mil/?action=wgs84&dir=wgs84",
+      "bytes": 48657,
+      "path": "nga_wgs84.html",
+      "sha256": "a057b27276450e25c18f2fce6f60e396442410411f9c3662cc61e94fb6b6c09c"
+    },
+    {
+      "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/shape-effects-on-drag/",
+      "bytes": 71878,
+      "path": "nasa_drag.html",
+      "sha256": "6b493992d4e3af838d82650800284c7242fa466449ea592217bad8c3352d9d2a"
+    },
+    {
+      "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/earth-atmosphere-equation-metric/",
+      "bytes": 73542,
+      "path": "nasa_atmosphere_metric.html",
+      "sha256": "c0092dc2c4f928a7a1b258a964b834fbe4209782e92e932cf776415fde049d4c"
+    }
+  ],
+  "scope": "Pinned public US government scientific pages. Numerical facts and model definitions only; no logos or media imported."
+}

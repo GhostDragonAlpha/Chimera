@@ -15,6 +15,7 @@
 #include "membrane_tick.hpp"
 #include "graph_surface.hpp"
 #include "graph_thermal.hpp"
+#include "graph_earth.hpp"
 #include "importer.hpp"    // C1: /mesh_import (the aliveness law ingestion)
 
 #include <cstdio>
@@ -38,6 +39,7 @@ static Physics g_physics;
 static GraphSurface g_science_surface;
 static std::mutex g_science_mutex;
 static GraphThermal g_thermal;
+static GraphEarth g_earth;
 static std::mutex g_thermal_frame_mutex;
 static std::map<uint64_t,GraphThermal::J> g_thermal_frames;
 static SharedRing g_ring("ChimeraPhysicsRing");
@@ -692,6 +694,16 @@ int main(int argc, char** argv) {
         }catch(const std::exception& ex){fprintf(stderr,"thermal salvage: %s\n",ex.what());return 2;}
     }
 
+    for(int i=1;i+1<argc;++i) if(std::string(argv[i])=="--earth-patch") {
+        try {
+            chimera::forces::require(!g_science_surface.active&&!g_thermal.active(),"exclusive_earth_scene");
+            g_earth.load(argv[i+1]);auto view=g_earth.render();engine.preserve_mesh_topology_=true;
+            if(!engine.load_mesh(view.mesh,view.indices,uint32_t(view.mesh.size()/9),uint32_t(view.indices.size()))) throw std::runtime_error("earth_mesh_upload_failed");
+            engine.set_mesh_mode(2);engine.external_body_owner_=true;engine.ui_.set_visible(false);
+            float camera[8]={1.35f,.25f,.3f,0,.27f,0,0,0};engine.set_camera_full(camera);g_earth.start();
+        }catch(const std::exception& e){fprintf(stderr,"earth patch: %s\n",e.what());return 2;}
+    }
+
     // THE STUDIO: optional board file path (argv[2]); default is studio_board.json
     // in the CWD — tools/studio_board.py writes it next to the exe.
     // 2026-09-02: flags are not paths — `chimera_engine.exe 8090 --restore`
@@ -723,6 +735,25 @@ int main(int argc, char** argv) {
             if(competing.count(p) || mesh_update) {
                 body="{\"ok\":false,\"error\":\"shared_body_owns_surface\"}";content_type="application/json";return;
             }
+        }
+        if(g_earth.active() && method=="POST" && p!="/earth_state") throw chimera::forces::Refusal("earth_scene_accepts_intent_controls_only");
+        if(p=="/earth_state" || p=="/earth_snapshot" || p=="/earth" || p=="/earth_graph") {
+            content_type="application/json";
+            try {
+                chimera::forces::require(g_earth.active(),"earth_scene_missing");
+                if(p=="/earth" || p=="/earth_graph") {
+                    chimera::forces::require(method=="GET","earth_method");
+                    std::ifstream f(g_earth.bundle.at(p=="/earth"?"page_file":"graph_file").get<std::string>(),std::ios::binary);
+                    chimera::forces::require(bool(f),"earth_page_missing");body.assign(std::istreambuf_iterator<char>(f),{});content_type=p=="/earth"?"text/html; charset=utf-8":"application/json";
+                } else if(p=="/earth_snapshot") {
+                    chimera::forces::require(method=="GET","earth_method");auto v=g_earth.render();body=GraphEarth::J{{"ok",true},{"state",v.state},{"vertices",v.mesh},{"indices",v.indices}}.dump();
+                } else if(method=="POST") {
+                    chimera::forces::require(req_body.size()<=4096,"earth_control_size");std::vector<std::set<std::string>> keys;
+                    auto cb=[&](int,GraphEarth::J::parse_event_t event,GraphEarth::J& v){if(event==GraphEarth::J::parse_event_t::object_start)keys.emplace_back();if(event==GraphEarth::J::parse_event_t::key)chimera::forces::require(keys.back().insert(v.get<std::string>()).second,"duplicate_json_key");if(event==GraphEarth::J::parse_event_t::object_end)keys.pop_back();return true;};
+                    body=g_earth.control(GraphEarth::J::parse(req_body,cb)).dump();
+                }else {chimera::forces::require(method=="GET","earth_method");body=g_earth.status().dump();}
+            }catch(const std::exception& e){body=GraphEarth::J{{"ok",false},{"error",e.what()}}.dump();}
+            return;
         }
         if(g_thermal.active() && method=="POST" && p!="/thermal_state")
             throw chimera::forces::Refusal("thermal_scene_accepts_intent_controls_only");
@@ -4274,6 +4305,10 @@ int main(int argc, char** argv) {
             }
         }
 
+        if(g_earth.active()) {
+            try {auto view=g_earth.render();if(!engine.update_mesh(view.mesh,uint32_t(view.mesh.size()/9))) throw std::runtime_error("earth_render_update_failed");}
+            catch(const std::exception& e){fprintf(stderr,"earth render: %s\n",e.what());}
+        }
         GraphThermal::J thermal_frame_state;
         if(g_thermal.active()) {
             try {
@@ -4527,6 +4562,7 @@ int main(int argc, char** argv) {
     fflush(stdout);
     printf("Shutting down...\n");
     g_thermal.stop();
+    g_earth.stop();
     engine.shutdown();
     printf("shutdown: engine_shutdown\n");
     fflush(stdout);

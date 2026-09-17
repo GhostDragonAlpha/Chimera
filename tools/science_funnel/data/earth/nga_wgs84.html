@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js" lang=""> <![endif]-->
+
+<!--[if lt IE 9]>
+    <script src="js/vendor/html5-3.6-respond-1.4.2.min.js"></script>
+<![endif]-->
+
+<html lang="en">
+
+<head>
+	<!-- Turn off compatibility mode if being used -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1 ">
+	<meta name="title" content="NGA Geomatics - WGS 84">
+	<meta name="description" content="MISSION:  Develop, maintain, and enhance the World Geodetic System 1984, the reference frame upon which all geospatial-intelligence is based.">
+	<meta name="keywords" content="geodesy, wgs84 wgs, wgs 84, trident, fire control, d5, ins, esgn, wmm, magnetics, gravity, mag model, inertial navigation system, dbed, dbed0, bathymetry">
+	<meta name="IL.agency" content="[National Geospatial-Intelligence Agency (NGA)]">
+	<meta name="IL.poc" content="NGA Public Affairs (publicaffairs@nga.mil)">
+	<meta name="IL.postdate" content="none">
+	<meta name="IL.cutdate" content="none">
+	<meta name="NGA.review" content="20181121">
+	<meta name="NGA.HTML.author" content="[National Geospatial-Intelligence Agency (NGA)]">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1 ">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="x-ua-compatible" content="IE=edge"> <!-- Turn off compatibility mode if being used -->
+
+	<title>NGA Geomatics - WGS 84</title>
+
+	<!-- Custom bootstrap theme -->
+	<link rel="stylesheet" href="/css/bootstrap.custom.css">
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="/css/usa-banner.css">
+
+	<!-- Load jQuery before loading the Ecobar -->
+	<script src="/js/jquery-3.5.1.min.js"></script>
+	<script src="/js/bootstrap/4.3.1/bootstrap.bundle.js"></script>
+	<script src="//cdn.nga.mil/libs/ecobar/versions/3.1.2/ecobar.min.js"></script>
+	<script src="/js/usa-banner.js"></script>
+
+	<style type="text/css">
+		/* Include here instead of CSS so we can inset PHP variables */
+		.jumbotron {
+			background: url('/img/jumbotron-greenland-ice-sheet-a.jpg') no-repeat center center;
+			background-size: 100% 100%;
+			-moz-background-size: 100% 100%;
+			-webkit-background-size: 100% 100%;
+			-o-background-size: 100% 100%;
+			background-size: cover;
+			color: #fff;
+			border-radius: 0px;
+			margin: 0px;
+		}
+	</style>
+
+	<!-- Matomo -->
+	<script type="text/javascript">
+		var _paq = window._paq || [];
+		_paq.push(['trackPageView']);
+		_paq.push(['enableLinkTracking']);
+		(function() {
+			var u="https://webanalytics.nga.mil/";
+			_paq.push(['setTrackerUrl', u+'matomo.php']);
+			_paq.push(['setSiteId', '259']);
+			var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+			g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+		})();
+	</script>
+	<!-- End Matomo Code -->
+</head>
+<body>
+
+  <nav class="navbar navbar-inverse bg-dark navbar-expand-lg">
+
+  <a class="navbar-brand" href="/index.php?action=home">Office of Geomatics</a>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="myNavbar">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" id="home-nav-a" href="/index.php?action=home">HOME <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item" id="wgs84-nav"><a class="nav-link" id="wgs84-nav-a" href="/index.php?dir=wgs84&amp;action=wgs84">WGS 84</a></li>
+      <li class="nav-item" id="pi-nav"><a class="nav-link" id="pi-nav-a" href="/index.php?dir=pi&amp;action=pi">PRECISE IMAGERY</a></li>
+      <li class="nav-item" id="coordsys-nav"><a class="nav-link" id="coordsys-nav-a" href="/index.php?dir=coordsys&amp;action=coordsys">COORDINATE SYSTEMS</a></li>
+      <li class="nav-item" id="elev-nav"><a class="nav-link" id="elev-nav-a" href="/index.php?dir=elevation&amp;action=elevation">ELEVATION</a></li>
+      <li class="nav-item" id="surveys-nav"><a class="nav-link" id="surveys-nav-a" href="/index.php?dir=surveys&amp;action=surveys">GEODETIC SURVEYS</a></li>
+      <li class="nav-item" id="geosciences-nav"><a class="nav-link" id="geosciences-nav-a" href="/index.php?dir=geosci&amp;action=geosciences">GEOSCIENCES</a></li>
+      <li class="nav-item" id="gnss-nav"><a class="nav-link" id="gnss-nav-a" href="/index.php?dir=gnss&amp;action=gnss">GNSS</a></li>
+      <li class="nav-item" id="equip-loan-nav"><a class="nav-link" id="equip-loan-nav-a" href="/index.php?action=equip-loan">EQUIPMENT LOAN</a></li>
+      <li class="nav-item" id="about-nav"><a class="nav-link" id="about-nav-a" href="/index.php?action=about">ABOUT</a></li>
+    </ul>
+  </div>
+</nav>
+
+  <!-- Main jumbotron for a primary marketing message or call to action -->
+  <div class="jumbotron" style="color:#fff;">
+    <div class="container" style="margin-top:-30px;">
+      <h1>Office of Geomatics</h1>
+      <div id="tag-line">
+          <p>Enabling GEOINT accuracy through geodetic, geophysical and photogrammetric sciences and content.</p>
+          <div>
+            <span style="float:right;">
+                <div id="quote-words">"Geodesy remains our life blood"</div>
+                <div id="quote-author"> | Robert Cardillo, NGA Director | </div>
+                <div id="quote-author-title">The Director's Intent, 10/3/14</div>
+            </span>
+          </div>
+      </div>
+    </div>
+  </div><div class="container">
+
+    <div class="row">
+        <div class="col-12">
+            <h3>World Geodetic System 1984 (WGS 84)</h3>
+            <div class="comment more intro">
+                The World Geodetic System 1984 (WGS 84) is a 3-dimensional coordinate reference frame for
+                establishing latitude, longitude and heights for navigation, positioning and targeting for the
+                DoD, IC, NATO, International Hydrographic Office and the International Civil Aviation
+                Organization. WGS 84 represents the best global geodetic reference system for the Earth available
+                at this time for practical applications of mapping, charting, geopositioning, and navigation. This
+                standard includes the definition of the coordinate systems fundamental and derived constants, the
+                ellipsoidal (normal) Earth Gravitational Model (EGM), a description of the associated World
+                Magnetic Model (WMM), and a current list of local datum transformations. NGA and the National
+                System for Geospatial-Intelligence (NSG) recommends clicking the following link for further
+                specifications on
+                <a href="https://gtg.csd.disa.mil/disr/standards/view.html?id=301328" target="_blank" rel="noopener noreferrer">WGS 84 DoD IT Standards Registry (DISR)</a>.
+                <sup class="highlight">PKI certs required</sup>
+            </div>
+            <br /> <br />
+            <div>
+
+                <ul class="nav nav-tabs" role="tablist">
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#">EGM<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <a data-toggle="tab" class="dropdown-item" href="#egm">EGM Summary</a>
+                            <a data-toggle="tab" class="dropdown-item" href="#egm2008">EGM2008</a>
+                            <a data-toggle="tab" class="dropdown-item" href="#egm96">EGM96</a>
+                            <a data-toggle="tab" class="dropdown-item" href="#egm84">EGM84</a>
+                        </ul>
+                    </li>
+
+                    <li><a class="nav-link" data-toggle="tab" href="#wmm">WMM</a></li>
+
+                    <li><a class="nav-link" data-toggle="tab" href="#ref-frame">Reference Frame</a></li>
+
+                    <li><a class="nav-link" data-toggle="tab" href="#datum-trans">Datum Transformations</a></li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Data/Apps<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <a data-toggle="tab" class="dropdown-item" href="#geotrans-wrap">GEOTRANS</a>
+                            <a data-toggle="tab" class="dropdown-item" href="#egm08-data-apps-wrap">EGM2008</a>
+                            <a data-toggle="tab" class="dropdown-item" href="#egm96-data-apps-wrap">EGM96</a>
+                            <a data-toggle="tab" class="dropdown-item" href="#egm84-data-apps-wrap">EGM84</a>
+                            <a data-toggle="tab" class="dropdown-item" href="#wmm-data-wrap">WMM</a>
+                            <a data-toggle="tab" class="dropdown-item" href="#ref-frame-data-wrap">Reference Frame</a>
+                        </ul>
+                    </li>
+
+                    <li><a class="nav-link" data-toggle="tab" href="#wgs84-srv">Services</a></li>
+
+                    <li><a class="nav-link" data-toggle="tab" href="#wgs84-res">Resources</a></li>
+
+                </ul>
+
+                <div class="tab-content intro">
+                    <!-- EGM, WMM, Data Transformations, and Reference Frame -->
+                    <div id="egm" class="tab-pane fade active show">
+    <h5>Earth Gravitational Model (EGM)</h5>
+    <p>
+        This division in the Office of Geomatics at NGA is responsible for collecting, processing, and
+        evaluating gravity data (free-air and Bouguer gravity anomalies). These data are then used to
+        compute gravimetric quantities such as mean gravity anomalies, geoid heights, deflections of the
+        vertical, and gravity disturbances. All of these quantities are used in World Geodetic System 1984
+        support, navigation systems, mapping projects, and different types of surveys.
+    </p>
+    <p>
+        An Earth Gravitational Model (EGM) is set of geopotential coefficients used in a spherical harmonic
+        expansion to create a global potential surface to coincide with Mean Sea Level (MSL). This surface is
+        called a geoid and it fluctuates above and below the reference ellipsoid surface established by WGS 84.
+        For more information, click on a drop-down menu item above on the EGM tab.
+    </p>
+</div>
+<div id="egm2008" class="tab-pane fade">
+	<h5>Earth Gravitational Model 2008 (EGM2008)</h5>
+	<p>The EGM84 and EGM96 are legacy products. Users are encouraged to use the latest EGM from NGA,
+		currently EGM2008. NGA tentatively plans to release a new EGM in 2028.</p>
+	<p>The EGM2008 is provided as a set of normalized, geopotential coefficients complete to degree
+		and order 2159, and contains additional spherical harmonic coefficients extending to degree 2190 and
+		order 2159. Also provided is a 2.5-minute worldwide geoid height file, precomputed from the EGM2008.
+		The coefficient and geoid height files have associated software and documents. EGM2008 was approved
+		for official DoD use as documented in NGA STND.0036_1.0, 2014-07-08.</p>
+		<br />
+
+	<div class="table-responsive tbl-style">
+		<table class="table table-hover">
+			<thead>
+				<tr class="tbl-header">
+					<th>WHAT'S NEW</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><p>April, 2013 - EGM2008 Citation included below with Links to reference EGM2008 and the EGM2008 Erratum are given on left under Additional Information.</p>
+
+							<p>EGM2008 Citation: The development and evaluation of the Earth Gravitational Model 2008
+								(EGM2008) - Nikolaos K. Pavlis, Simon A. Holmes, Steve C. Kenyon, John K. Factor; Journal of
+								Geophysical Research: Solid Earth (1978-2012) Volume 117, Issue B4, April 2012.</p></td>
+				</tr>
+				<tr>
+					<td>May, 2009 - Global 2.5 Minute Geoid Undulation Grid available in GIS format.</td>
+				</tr>
+				<tr>
+					<td>February, 2009 - Middle East Geoid Undulation Grid available in GIS format.</td>
+				</tr>
+				<tr>
+					<td>February, 2009 - Propagated Error Estimates of EGM2008 released.</td>
+				</tr>
+				<tr>
+					<td>January, 2009 - Utility to convert binary files from Big Endian to Small Endian released.</td>
+				</tr>
+				<tr>
+					<td>January, 2009 - Gravity Anomalies & Deflections of the Vertical data released.</td>
+				</tr>
+				<tr>
+					<td>November, 2008 - SMALL ENDIAN versions of binary files released.</td>
+				</tr>
+				<tr>
+					<td>November, 2008 - Files & Products for Oceanographic Applications released.</td>
+				</tr>
+				<tr>
+					<td>July, 2008 - WGS 84 version of EGM2008 released. Includes grids and programs for computing geoid undulations relative to WGS 84 Ellipsoid.</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div>
+		<p>Please contact the Office of Geomatics with comments, suggestions, and feedback.</p>
+	</div>
+
+	<!--
+		<table class="table">
+			<tr>
+				<td>Dr. Nikolaos Pavlis<br /> NGA, Geodesy and Geophysics Basic and Applied Research<br /> <a
+					href="mailto:Nikolaos.K.Pavlis@nga.mil?Subject=EGM%202008" target="_top">Nikolaos.K.Pavlis@nga.mil</a>
+				</td>
+				<td>NGA Office of Geomatics (SFN) <br /> EGM 2008 Development Team <br /> <a
+					href="mailto:wgs84@nga.mil?Subject=EGM%202008" target="_top">Send Email</a></td>
+			</tr>
+		</table>
+	 -->
+
+</div>
+
+<div id="egm96" class="tab-pane fade">
+	<h5>Earth Gravitational Model 1996 (EGM96)</h5>
+	<p>The EGM84 and EGM96 are legacy products. Users are encouraged to use the latest EGM from NGA,
+		currently EGM2008. NGA tentatively plans to release a new EGM in 2028.</p>
+	<p>The EGM96 is provided as a set of normalized, geopotential coefficients to degree and order
+		360. Also provided is a 15-minute worldwide geoid height file, precomputed from the EGM96. The
+		coefficient and geoid height files have associated software and documents. EGM96 was approved for
+		official DoD use as documented in NIMA TR8350.2, Third Edition, 4 July 1997.</p>
+</div><div id="egm84" class="tab-pane fade">
+	<h5>Earth Gravitational Model 1984 (EGM84)</h5>
+	<p>The EGM84 and EGM96 are legacy products. Users are encouraged to use the latest EGM from NGA,
+		currently EGM2008. NGA tentatively plans to release a new EGM in 2028.</p>
+	<p>The EGM84 is provided as a set of normalized, geopotential coefficients to degree and order
+		180. Also provided is a 30-minute worldwide geoid height file, precomputed from the EGM84. The
+		coefficient and geoid height files have associated software and documents. EGM84 was approved for
+		official DoD use as documented in DMA TR8350.2, Second Edition, 1 September 1991.</p>
+</div>
+<div id="wmm" class="tab-pane fade">
+	<h5>World Magnetic Model (WMM)</h5>
+	<p>The World Magnetic Model is the standard model used by the U.S. Department of Defense, the U.K. Ministry of Defence, the North Atlantic Treaty
+		Organization (NATO) and the International Hydrographic Organization (IHO), for navigation, attitude and heading referencing systems using the geomagnetic
+		field. It is also used widely in civilian navigation and heading systems. The model, associated software, and documentation (to be released early 2020)
+		are distributed by NCEI on behalf of NGA. The model is produced at 5-year intervals, with the current model expiring on December 31, 2024.</p>
+	<p>
+
+	<a href="php/download.php?file=wmm">Download WMM 2020</a>
+</div>
+<div id="datum-trans" class="tab-pane fade">
+	<h5>Datum Transformations & Conversions</h5>
+	<p>Data acquired by NGA and referenced to a geodetic datum other than WGS 84 does not meet agency standards, and must therefore undergo a datum
+		transformation to WGS 84. For assistance setting up geographic translations, acquiring grid system and datum parameters, running batch conversions, and
+		loading MSP Geotrans please refer to the GEOTRANS menu item on the Data/Apps tab.</p>
+
+	<h5>Definitions</h5>
+	<p>
+		A <span class="emphasize">transformation</span>, or more specifically a geodetic datum transformation, is a change in a coordinate based on
+		to what geodetic datum a coordinate is referenced. The NGA and DoD approved geographic translator to perform geodetic datum transformations is MSP
+		GEOTRANS.
+	</p>
+	<p>
+		A <span class="emphasize">conversion</span>, or more specifically a coordinate conversion, is a change in coordinate data from one reference
+		system to another. The NGA and DoD approved geographic translator to perform coordinate conversions is MSP GEOTRANS.
+	</p>
+
+</div><div id="ref-frame" class="tab-pane fade">
+<body>
+    <h5>World Geodetic System 1984 Reference System</h5>
+    <p class="p2"><strong>Brief Description: </strong>WGS 84 is an Earth-centered, Earth-fixed terrestrial reference system and
+        geodetic datum. WGS 84 is based on a consistent set of constants and model parameters that describe the Earth's
+        size, shape, and gravity and geomagnetic fields. WGS 84 is the standard U.S. Department of Defense definition of
+        a global reference system for geospatial information and is the reference system for the Global Positioning
+        System (GPS). It is compatible with the International Terrestrial Reference System (ITRS).</p>
+    <p class="p2"><strong>Definition:</strong></p>
+    <p class="p3">• <strong>Origin <span class="Apple-tab-span"> </span></strong>Earth’s center of mass being defined for
+        the whole Earth including oceans and atmosphere.<span class="Apple-converted-space"> </span></p>
+    <p class="p3">• <strong>Axes</strong></p>
+    <ul class="ul1">
+        <li class="li2"><span class="s1"></span>Z-Axis = The direction of the IERS Reference Pole (IRP). This direction
+            corresponds to the direction of the BIH Conventional Terrestrial Pole (CTP) (epoch 1984.0) with an
+            uncertainty of 0.005″.</li>
+        <li class="li2"><span class="s1"></span>X-Axis = Intersection of the IERS Reference Meridian (IRM) and the plane
+            passing through the origin and normal to the Z-axis. The IRM is coincident with the BIH Zero Meridian (epoch
+            1984.0) with an uncertainty of 0.005″.</li>
+        <li class="li2"><span class="s1"></span>Y-Axis = Completes a right-handed, Earth-Centered Earth-Fixed (ECEF)
+            orthogonal coordinate system.</li>
+    </ul>
+    <p class="p3">• <strong>Scale <span class="Apple-tab-span"> </span></strong>Its scale is that of the local Earth frame,
+        in the meaning of a relativistic theory of gravitation. Aligns with ITRS.<span class="Apple-converted-space"> </span></p>
+    <p class="p3">• <strong>Orientation </strong>Given by the Bureau International de l’Heure (BIH) orientation of 1984.0.</p>
+    <p class="p3">• <strong>Time Evolution </strong>Its time evolution in orientation will create no residual global
+        rotation with regards to the crust.<span class="Apple-converted-space"> </span></p>
+    <p class="p2"><strong>Coordinate System: </strong>WGS 84 follows the criteria outlined in the International Earth Rotation
+        Service (IERS) Technical Note 36. The WGS 84 Coordinate System origin also serves as the geometric center of the
+        WGS 84 Ellipsoid and the Z-axis serves as the rotational axis of this ellipsoid of revolution. WGS 84 geodetic
+        coordinates are generated using its reference ellipsoid.</p>
+    <p class="p2"><strong>Defining Parameters: </strong>WGS 84 identifies four defining parameters. These are the semi-major axis
+        of the WGS 84 ellipsoid, the flattening factor of the Earth, the nominal mean angular velocity of the Earth, and
+        the geocentric gravitational constant as specified below.</p>
+    <p class="p4"><br></p>
+    <table class="t1" aria-describedby="WGS 84 Defining Parameters">
+        <tr>
+            <th scope="col"><strong>Parameter</strong></th>
+            <th scope="col"><strong>Notation</strong></th>
+            <th scope="col"><strong>Value</strong></th>
+        </tr>
+        <tbody>
+            <tr>
+                <td class="td1">
+                    <p class="p2">Semi-major Axis</p>
+                </td>
+                <td class="td2">
+                    <p class="p2">a</p>
+                </td>
+                <td class="td3">
+                    <p class="p2">6378137.0 meters</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="td1">
+                    <p class="p2">Flattening Factor of the Earth</p>
+                </td>
+                <td class="td2">
+                    <p class="p2">1/f</p>
+                </td>
+                <td class="td3">
+                    <p class="p2">298.257223563</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="td1">
+                    <p class="p2">Nominal Mean Angular Velocity of the Earth</p>
+                </td>
+                <td class="td2">
+                    <p class="p2">ω</p>
+                </td>
+                <td class="td3">
+                    <p class="p2">7292115 x 10<span class="s2"><sup>-11</sup></span> radians/second</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="td4">
+                    <p class="p2">Geocentric Gravitational Constant (Mass of Earth’s Atmosphere Included)</p>
+                </td>
+                <td class="td5">
+                    <p class="p2">GM**</p>
+                </td>
+                <td class="td6">
+                    <p class="p2">3.986004418 x 10<span class="s2"><sup>14</sup></span> meter<span
+                            class="s2"><sup>3</sup></span>/second<span class="s2"><sup>2</sup></span></p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="p6">**The value of GM for GPS users is 3.9860050x10<span class="s2"><sup>14</sup></span> m<span
+            class="s2"><sup>3</sup></span>/sec<span class="s2"><sup>2</sup></span> as specified in the reference below.
+    </p>
+    &nbsp;
+    <p class="p2"><strong>Relationship to International Terrestrial Reference Frame: </strong>The realization of a system into a
+        frame is accomplished through the establishment of physical reference markers whose coordinates are consistent
+        with its definition.<span class="Apple-converted-space">  </span>Following this model, the WGS 84 Reference
+        Frame (WGS 84 RF) is made real through the Cartesian coordinates of the Antenna Reference Points at the NGA/USSF
+        GPS Monitor Stations.<span class="Apple-converted-space">  </span>WGS 84 RF is aligned to ITRF to within one
+        centimeter in each 3D component.<span class="Apple-converted-space">  </span>At this level, NGA states the two
+        frames are coincident for positioning, navigation, and targeting.</p>
+    <p class="p2">The 7-parameter transformation from WGS 84-to-ITRF is zero in all components by design.<span
+            class="Apple-converted-space">  </span>To support this claim two sets of metrics are provided:</p>
+    <ol class="ol1">
+        <li class="li2">The 7-parameter transformations between the IGS GPS Precise Ephemerides and the NGA GPS Precise
+            Ephemerides with the view that each is a reflection of their underlying reference frames.</li>
+        <p class="p7">
+            <a href="php/download.php?file=wgs84-igs" target="_blank" rel="noopener noreferrer">Download IGS vs NGA</a>
+        </p>
+        <li class="li2">The offsets in Precise Point Positioning solutions using NGA GPS Precise Ephemerides to a subset
+            of IGS stations’ coordinates as presented in the SINEX data.</li>
+        <p class="p7">
+            <a href="php/download.php?file=wgs84-sin" target="_blank" rel="noopener noreferrer">Download SINEX Offsets</a>
+        </p>
+    </ol>
+    <p class="p2"><strong>Reference:</strong></p>
+    <ul class="ul1">
+        <ul class="ul1">
+            <li class="li2"><span class="s3"></span>National Geospatial-Intelligence Agency (NGA) Standardization
+                Document “Department of Defense, World Geodetic System 1984, Its Definition and Relationships with Local
+                Geodetic Systems” Version 1.0.0</li>
+            <p class="p7"></p>
+                <a href="https://nsgreg.nga.mil/doc/view?i=4085" target="_blank" rel="noopener noreferrer">NGA.STND.0036_1.0.0_WGS84 available in NSG Standards Registry</a>
+            </p>
+        </ul>
+    </ul>
+</body>
+</div>
+                    <!-- Data/Apps -->
+                    <div id="geotrans-wrap" class="tab-pane fade">
+                        <div id="geotrans">
+	<h5>Mensuration Services Program Geographic Translator (MSP GEOTRANS) v3.10</h5>
+	<p>
+		MSP GEOTRANS is the Joint-sanctioned software for coordinate conversion 
+		and datum transformation [CJCSI 3900.01E]. The desktop application has 
+		batch conversion, EPSG codes for common conversions, and the capability 
+		to add your own datum.  MSP GEOTRANS can be downloaded to run as a 
+		stand-alone application, as listed under the Downloads section.<br />
+	</p>
+
+	<strong>Operating Systems and Compilers Supported:</strong><br />
+	<ul>
+		<li>Windows 11, 64-bit, Visual Studio 2022</li>
+		<li>Windows 10, 64-bit, Visual Studio 2022</li>
+		<li>RHEL 9, 64-bit, GCC 11.4.1</li>
+		<li>RHEL 8, 64-bit, GCC 8.5.0</li>
+	</ul>
+
+	<p class="note"> NOTE: GeoTrans 3.10 retired support for all Windows versions using the
+		Visual Studio 22015 compiler, and Red Hat Enterprise Linux 7.</p>
+
+	<strong>Bug Fixes:</strong><br />
+	<ul>
+		<li>Adjusted function calls to the data directory, preventing crashes even if 
+			MSPCCS_DATA environment variable is not properly set</li>
+		<li>Updated the Spreadsheet Tester test files</li>
+		<li>Corrected the problem of ignoring the UTM zone override option when batch converting</li>
+		<li>Applied the center-of-cell method [<i>vice</i> the southwest corner] for conversion 
+			<u>from</u> MGRS for 100,000-meter cells (to be consistent with the method for all 
+			other cell-size	levels as was updated in GT v3.8)</li>
+		<li>Adjusted the Look and Feel mode for the Java GUI to allow the dialog window to 
+			close when using the Enter key</li>
+		<li>Updated the code to read sufficient characters in header fields for batch/input files, 
+			to read all characters of worst-case field lengths (esp., long and lat field values)</li>
+	</ul>
+
+	<br />
+
+	<h5>MSP GEOTRANS Documents</h5>
+	<form id="dload" action="php/download.php" method="post">
+		<div class="table-responsive tbl-style">
+			<table class="table table-hover tbl-td-width-400">
+				<thead>
+					<tr class="tbl-header">
+						<th>FILE/LINK</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<a href="php/download.php?file=wgs-rel" download> MSP GeoTrans 3.10 Release Notes</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="php/download.php?file=wgs-user" download> MSP GeoTrans 3.10 User's Guide</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="php/download.php?file=wgs-prog" download> MSP GeoTrans 3.10 Programmer's Guide</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="php/download.php?file=wgs-terms" download> MSP GeoTrans 3.10 Terms of Use</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</form>
+	<br />
+
+	<h5>MSP GEOTRANS 3.10 Downloads</h5>
+	<p>
+		GeoTrans 3.10 requires Java Runtime Environment (JRE) 1.8 or later to execute (JRE 1.8.0.392 or 
+		later is recommended). Refer to the <a href="php/download.php?file=wgs-rel" download> MSP GeoTrans 
+		3.10 Release Notes</a> for information on how to check your Java version and download JRE 1.8.0.392.
+	</p>
+	<p>
+		There are four versions of GeoTrans available for download. After downloading the appropriate version, 
+		please refer to the	<a href="php/download.php?file=wgs-rel" download> MSP GeoTrans 3.10 Release Notes</a>
+		for proper installation instructions and for detailed descriptions of changes included in this release.
+		To verify download integrity, please get the checksums <a href="php/download.php?file=wgs-checksums" download>here</a>.
+	</p>
+
+	<p class="note">
+		<strong>IMPORTANT:</strong> Please follow your organization's IT policy for downloading, 
+		installing, and running executable software.
+	</p>
+
+	<strong>End User Version:</strong><br />
+	<p>The End User version is recommended for the majority of the GeoTrans users and contains everything necessary to
+		run GeoTrans.  We offer a self-installer for Windows OS, which will run on Windows 10 and Windows 11, 64-bit.</p>
+	<ul>
+		<li><a href="php/download.php?file=wgs-inst64" download>Windows 64-bit End User (Self-installer)</a></li>
+		<li><a href="php/download.php?file=wgs-winuser" download>Windows End User (All Files)</a></li>
+		<li><a href="php/download.php?file=wgs-linuser" download>Linux End User (All Files)</a></li>
+	</ul>
+
+	<strong>Developer Version:</strong><br />
+	<p>The Developer version is for software developers and contains the GeoTrans executable software plus the GeoTrans
+		source code, documentation, and a programmer's guide.</p>
+	<ul>
+		<li><a href="php/download.php?file=wgs-windev" download>Windows Developer</a></li>
+		<li><a href="php/download.php?file=wgs-lindev" download>Linux Developer</a></li>
+	</ul>
+
+	<strong>MGRS Version:</strong><br />
+	<p>The MGRS version is for software developers who only need the MGRS, UTM, UPS, Transverse Mercator and Polar
+		Stereographic modules, source code, and documentation. It does not include any GeoTrans executable software.</p>
+	<ul>
+		<li><a href="php/download.php?file=wgs-mgrs" download>MGRS Windows</a></li>
+		<li><a href="php/download.php?file=wgs-mgrstgz" download>MGRS Linux</a></li>
+	</ul>
+
+	<strong>Master Version:</strong><br />
+	<p>The Master version is for software developers and includes all of the GeoTrans executables for all platforms, all
+		source code, and all documentation. The only difference between the Windows and Linux version is the method used
+		to compress the files.</p>
+	<ul>
+		<li><a href="php/download.php?file=wgs-masterzip" download>Windows Master</a></li>
+		<li><a href="php/download.php?file=wgs-mastertgz" download>Linux Master</a></li>
+	</ul>
+
+	<br />
+
+	<div>
+		<h5>MSP GEOTRANS Assistance</h5>
+		<p>
+			<span class="emphasize">Having trouble starting GEOTRANS? Here
+				are some suggestions</span> <br /> If you have installed GEOTRANS and are
+			unable to get it to start (no message given) you may need to download
+			the MS Visual C++ Redistributable Package. This software is normally
+			included on a computer, but system configurations do vary. Please
+			read the instructions for installing GEOTRANS on a
+			<a href="php/download.php?file=wgs-generic" download>Network Drive</a>.
+		</p>
+
+		<p>
+			MS Visual C++ Redistributable Package for 32-bit user download: <a
+				href="https://www.microsoft.com/en-us/download/details.aspx?id=5582" target="_blank"
+				rel="noopener noreferrer">
+				http://www.microsoft.com/en-us/download/details.aspx?id=5582</a>
+		</p>
+
+		<p>
+			MS Visual C++ Redistributable Package for 64-bit user download: <a
+				href="https://www.microsoft.com/en-us/download/details.aspx?id=14632" target="_blank"
+				rel="noopener noreferrer">
+				http://www.microsoft.com/en-us/download/details.aspx?id=14632</a>
+		</p>
+
+		<p class="note">
+			<strong>NOTE:</strong> Java 32-bit and 64-bit may be required to run MSP GEOTRANS.
+			GEOTRANS 3.9 was built using Java JDK 1.8 update 256. The latest
+			releases of Java can be found at <a href="https://www.oracle.com/technetwork/java/index.html" target="_blank"
+				rel="noopener noreferrer">Oracle.com</a>. Should you encounter a Windows Error
+			2 condition during MSP GEOTRANS install, this error usually occurs
+			because the wrong bit-level for Java was selected. Especially with
+			Java 1.8, the Windows environment variable for PATH is often not set
+			correctly. You may try the following procedure to correct the
+			condition:
+		</p>
+		<ol>
+			<li>Right click on Computer and select properties.</li>
+			<li>On the left panel, click on Advanced system settings.</li>
+			<li>At the bottom of the Advanced tab, click on Environment
+				Variables...</li>
+			<li>Under the System variables, select Path and click Edit.</li>
+			<li>Change the Variable values for
+				C:\ProgramData\Oracle\Java\javapath to C:\Program Files
+				(x86)\Java\&#60;your java version&#62;\bin</li>
+			<li>Click Ok and exit out of the Advanced tab</li>
+		</ol>
+
+		<p>
+			<br />
+			<span class="emphasize">Contact the MSP/GEOTRANS Help Desk</span><br />
+			For assistance with MSP GEOTRANS software, including questions about
+			source code, please email <a href="mailto:msp_help@nga.mil">MSP_Help@nga.mil</a>
+			(Unclassified content only).
+		</p>
+	</div>
+
+
+</div>                    </div>
+                    <div id="egm08-data-apps-wrap" class="tab-pane fade">
+                        <div id="egm08-data-apps">
+
+	<h5>Earth Gravitational Model 2008 (EGM2008) Data and Apps</h5>
+	<p>The following links contain documentation, source code, data, and supporting inputs and tools for EGM2008.</p>
+
+	<form id="dload" action="php/gnss_dload.php" method="post">
+	<div class="table-responsive tbl-style">
+		<table class="table table-hover">
+			<thead>
+				<tr class="tbl-header">
+					<th class="tbl-td-width-400">FILE/LINK</th>
+					<th>DESCRIPTION</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="tbl-td-width-400">
+						<a href="php/download.php?file=egm-08spherical" download><div>EGM2008 Spherical Harmonics (104MB)</div></a>
+					</td>
+					<!--
+					<td class="tbl-td-width-400">
+						<input type="hidden" name="egm08sh" value="egm08sh">
+						<button id="1" type="submit" class="btn btn-secondary">Download</button>
+					</td>
+					-->
+					<td>Zip archive containing all EGM2008 Spherical Harmonics code and documentation.</td>
+				</tr>
+				<tr>
+					<td class="tbl-td-width-400">
+						<a href="php/download.php?file=egm-08interpolation" download><div>EGM2008 2.5 Minute Interpolation Grid (128MB)</div></a>
+					</td>
+					<td>Zip archive containing all EGM2008 2.5 Minute Interpolation Grid code and documentation.</td>
+				</tr>
+				<tr>
+					<td class="tbl-td-width-530">
+						<a href="https://earth-info.nga.mil/geograv" target="_blank" rel="noopener noreferrer">
+							<span>GeoGRAV - EGM96 and EGM08 Geoid/Gravity Anomaly Calculator</span>
+							<span class="new-app-pill">NEW</span>
+						</a>
+					</td>
+					<td>Online calculator to determine EGM96 and EGM08 geoid height, gravity anomaly, and deflections 
+						of the vertical based on latitude and longitude
+						inputs.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	</form>
+</div>
+
+<!--
+			<div id="nine-day-op" style="margin-top: 10px;">
+				<form id="dload2" action="php/gnss_dload.php" method="post">
+					<input type="hidden" name="egm08sh1" value="egm08sh1">
+					<button id="2" type="submit" class="btn btn-secondary">Download</button>
+				</form>
+			</div>
+ -->
+
+<!-- <a href="wgs84/apps/egm2008/2190SphericalHarmonics/EGM2008_Spherical_Harmonics.zip" download><div>EGM2008 Spherical Harmonics (104MB)</div></a> -->                    </div>
+                    <div id="egm96-data-apps-wrap" class="tab-pane fade">
+                        <div id="egm96-data-apps">
+
+	<h5>Earth Gravitational Model 96 (EGM96) Data and Apps</h5>
+
+	<p>The following links contain documentation, source code, data, and supporting inputs and tools for EGM96.</p>
+
+	<div class="table-responsive tbl-style">
+		<table class="table table-hover">
+			<thead>
+				<tr class="tbl-header">
+					<th class="tbl-td-width-400">FILE/LINK</th>
+					<th>DESCRIPTION</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="tbl-td-width-400">
+						<a href="php/download.php?file=egm-96spherical"
+							download>
+							<div>360 Spherical Harmonics</div>
+						</a>
+					</td>
+					<td>Zip archive containing all EGM96 360 Spherical Harmonics code and documentation.</td>
+				</tr>
+				<tr>
+					<td class="tbl-td-width-400">
+						<a href="php/download.php?file=egm-96interpolation"
+							download>
+							<div>15 Minute Interpolation Grid</div>
+						</a>
+					</td>
+					<td>Zip archive containing all EGM96 15 Minute Interpolation Grid code and documentation.</td>
+				</tr>
+				<tr>
+					<td class="tbl-td-width-530">
+						<a href="https://earth-info.nga.mil/geograv" target="_blank" rel="noopener noreferrer">
+							<span>GeoGRAV - EGM96 and EGM08 Geoid/Gravity Anomaly Calculator</span>
+							<span class="new-app-pill">NEW</span>
+						</a>
+					</td>
+					<td>Online calculator to determine EGM96 and EGM08 geoid height, gravity anomaly, and deflections 
+						of the vertical based on latitude and longitude
+						inputs.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+</div>                    </div>
+                    <div id="egm84-data-apps-wrap" class="tab-pane fade">
+                        <div id="egm84-data-apps">
+
+	<h5>Earth Gravitational Model 1984 (EGM84) Data and Apps</h5>
+
+	<p>The following links contain documentation, source code, data, and supporting inputs and tools for EGM84.</p>
+
+	<div class="table-responsive tbl-style">
+		<table class="table table-hover">
+			<thead>
+				<tr class="tbl-header">
+					<th class="tbl-td-width-400">FILE/LINK</th>
+					<th>DESCRIPTION</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="tbl-td-width-400">
+						<a href="php/download.php?file=egm-84spherical"
+							download>
+							<div>180 Spherical Harmonics</div>
+						</a>
+					</td>
+					<td>Zip archive containing all EGM84 Spherical Harmonics code and documentation.</td>
+				</tr>
+				<tr>
+					<td class="tbl-td-width-400">
+						<a href="php/download.php?file=egm-84interpolation"
+							download>
+							<div>30 Minute Interpolation Grid</div>
+						</a>
+					</td>
+					<td>Zip archive containing all EGM84 30 Minute Interpolation Grid code and documentation.</td>
+				</tr>
+
+			</tbody>
+		</table>
+	</div>
+
+</div>                    </div>
+                    <div id="wmm-data-wrap" class="tab-pane fade">
+                        <div id="wmm-data">
+
+	<section>
+		<h5>World Magnetic Model 2020 - Data</h5>
+		<p>
+			The World Magnetic Model (WMM) is a joint product of the United States' National Geospatial-Intelligence Agency
+			(NGA)
+			and the United Kingdom's Defence
+			Geographic Centre (DGC). The WMM was developed jointly by the National Centers for Environmental Information
+			(NCEI, Boulder CO, USA) (formerly National
+			Geophysical Data Center (NGDC)) and the British Geological Survey (BGS, Edinburgh, Scotland).
+			Check the NOAA website on the open internet for the most recent annual report of the status of the WMM
+			(<a href="https://www.ncei.noaa.gov/products/world-magnetic-model" target="_blank"
+				rel="noopener noreferrer">https://www.ncei.noaa.gov/products/world-magnetic-model</a>).
+		</p>
+
+		<p>
+			For more information on the WMM and how to implement the coefficients, please read the
+			<a href="php/download.php?file=wmm-tech-rpt" download>WMM 2020 Technical Report</a>.
+		</p>
+
+		<p>
+			<a href="php/download.php?file=wmm" download>Download WMM 2020</a>
+		</p>
+	</section>
+
+	<section>
+		<h5>World Magnetic Model 2020 - Apps</h5>
+		<p>The NOAA/BGS calculators can be found on the open internet
+			(<a href="https://www.ncei.noaa.gov/products/world-magnetic-model" target="_blank"
+				rel="noopener noreferrer">https://www.ncei.noaa.gov/products/world-magnetic-model</a>).
+		</p>
+	</section>
+
+</div>                    </div>
+                    <div id="ref-frame-data-wrap" class="tab-pane fade">
+                        <div id="ref-frame-data">
+    <h5>Reference Frame - Data</h5>
+        <p class="p2"><strong>Relationship to International Terrestrial Reference Frame: </strong>The realization of a system into a
+            frame is accomplished through the establishment of physical reference markers whose coordinates are consistent
+            with its definition.<span class="Apple-converted-space">  </span>Following this model, the WGS 84 Reference
+            Frame (WGS 84 RF) is made real through the Cartesian coordinates of the Antenna Reference Points at the NGA/USSF
+            GPS Monitor Stations.<span class="Apple-converted-space">  </span>WGS 84 RF is aligned to ITRF to within one
+            centimeter in each 3D component.<span class="Apple-converted-space">  </span>At this level, NGA states the two
+            frames are coincident for positioning, navigation, and targeting.</p>
+        <p class="p2">The 7-parameter transformation from WGS 84-to-ITRF is zero in all components by design.<span
+                class="Apple-converted-space">  </span>To support this claim two sets of metrics are provided:</p>
+        <ol class="ol1">
+            <li class="li2">The 7-parameter transformations between the IGS GPS Precise Ephemerides and the NGA GPS Precise
+                Ephemerides with the view that each is a reflection of their underlying reference frames.</li>
+            <p class="p7">
+                <a href="php/download.php?file=wgs84-igs" target="_blank" rel="noopener noreferrer">Download IGS vs NGA</a>
+            </p>
+            <li class="li2">The offsets in Precise Point Positioning solutions using NGA GPS Precise Ephemerides to a subset
+                of IGS stations’ coordinates as presented in the SINEX data.</li>
+            <p class="p7">
+                <a href="php/download.php?file=wgs84-sin" target="_blank" rel="noopener noreferrer">Download SINEX Offsets</a>
+            </p>
+        </ol>
+        <p class="p2"><strong>Reference:</strong></p>
+        <ul class="ul1">
+            <ul class="ul1">
+                <li class="li2"><span class="s3"></span>National Geospatial-Intelligence Agency (NGA) Standardization
+                    Document “Department of Defense, World Geodetic System 1984, Its Definition and Relationships with Local
+                    Geodetic Systems” Version 1.0.0</li>
+                <p class="p7"></p>
+                    <a href="https://nsgreg.nga.mil/doc/view?i=4085" target="_blank" rel="noopener noreferrer">NGA.STND.0036_1.0.0_WGS84 available in NSG Standards Registry</a>
+                </p>
+            </ul>
+        </ul>
+</div>                    </div>
+
+                    <!-- Services -->
+                    
+<div id="wgs84-srv" class="tab-pane fade">
+		<h5>Services <sup class="highlight">PKI certs required</sup></h5>
+	<p>
+		Allows visualization via the IC Portal or ArcGIS desktop (download).
+		After selecting the link below, additional viewing options may be
+		available by following the link under the "Map Contents" heading.
+	</p>
+    <div class="table-responsive tbl-style">
+        <table class="table table-hover">
+            <thead>
+                <tr class="tbl-header">
+                    <th class="tbl-td-width-300">SERVICE NAME</th>
+                    <th class="tbl-td-width-200">LINK</th>
+                    <th>DESCRIPTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="tbl-td-width-300">Earth Gravity Model 2008 (EGM08)</td>
+                    <td class="tbl-td-width-200">
+                        <a href="https://map.nga.mil/#/?map=d1bd4c74e265400996f300b88aa8701b&bbox=-168.75000314779,-87.187501626358,168.75000314779,87.187501626358"  target="_blank" rel="noopener noreferrer"><div>MoW</div></a>
+                        <a href="https://services.gvs.nga.mil/arcgis/rest/services/Map_Of_The_World/Geomatics_EGM/MapServer" target="_blank" rel="noopener noreferrer"><div>REST Endpoint</div></a>
+                    </td>
+                    <td>EGM08 is an interpreted grid of the spherical harmonics model of the earth's gravitational potential.
+                    The grid was formed by merging terrestrial, alimetry-derived and airborne gravity data. EGM08 is complete
+                    to degree and order 2159, and contains additional coefficients up to degree 2190 and order 2159.</td>
+                </tr>
+                <tr>
+                    <td class="tbl-td-width-300">World Magnetic Model 2015 (WMM)</td>
+                    <td class="tbl-td-width-200">
+                        <a href="https://map.nga.mil/#/?map=c35b78dcc7714a8182ca8238f9201fbd&bbox=-168.75000314779,-87.187501626358,168.75000314779,87.187501626358"  target="_blank" rel="noopener noreferrer"><div>MoW</div></a>
+                        <a href="https://websvcs.geo.nga.mil/maps/rest/services/RoW/World_Magnetic_Model_2015/MapServer" target="_blank" rel="noopener noreferrer"><div>REST Endpoint</div></a>
+                    </td>
+                    <td>The World Magnetic Model (WMM) is a set of data, software and charts used to characterize, depict,
+                    and predict various properties of the earth's magnetic field. Primarily used for portraying declination
+                    data (magnetic north) on maps and charts. The model is produced at 5-year intervals, with the current
+                    model expiring 31 Dec 2019.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+<!--
+    <ul>
+        <li><a
+            href="https://portal.geo.nga.mil/portal/home/item.html?id=6077ef2492da4d83ae7236eadf20e25a"
+            target="_blank">Earth Gravity Model 2008 (EGM08)</a></li>
+        <li><a
+            href="https://portal.geo.nga.mil/portal/home/item.html?id=b2542ee988634c6aa8780f0b31853cb5"
+            target="_blank">World Magnetic Model 2015 (WMM)</a></li>
+    </ul>
+ -->
+
+</div>
+                    <!-- Resources & Links -->
+                    <!-- Resources and links for WGS 84 components -->
+<!-- This is set up to be a table style div.  This allows the appearance of tables to be while remaining responsive.  -->
+<!--  Using a standard table structure (even in Bootstrap) will not be responsive. -->
+<div id="wgs84-res" class="tab-pane fade">
+	<h5>WGS 84 Resources & Links</h5>
+	<br />
+	<div class="table-responsive tbl-style">
+		<table class="table table-hover">
+			<thead>
+				<tr class="tbl-header">
+					<th class="tbl-td-width-300">DOCUMENT</th>
+					<th class="tbl-td-width-500">DESCRIPTION</th>
+					<th>DOCUMENT</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="tbl-td-width-300">
+						<a href="https://nsgreg.nga.mil/doc/view?i=4085" target="_blank" rel="noopener noreferrer"><div>NGA.STND.0036_1.0.0_WGS84</div></a>
+					</td>
+					<td class="tbl-td-width-500">NGA Standardization Document, Department of Defense, World Geodetic System 1984 (updated 8 July 2014)</td>
+					<td>WGS 84 definition and relationships with local geodetic systems.</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+
+
+
+                </div>
+            </div>
+
+            <script>
+                //Make WGS 84 menu item active
+                $(document).ready(function() {
+                    $(".navbar li").removeClass("active");
+                    $('#wgs84-nav').addClass("active");
+                });
+            </script>
+
+        </div>
+    </div>
+    <br /><br />
+</div><div class="container-fluid">
+    <div class="row">
+        <!--  1 Column -->
+        <div class="col-12">
+            <div class="poc-info">
+                <p>
+                    <span class="title-spacing">POINTS OF CONTACT</span><br />
+                    <strong>NGA Public Affairs</strong><br />
+                    <!-- (include area code, may also include DSN) -->
+                    <a href="mailto:publicaffairs@nga.mil">publicaffairs@nga.mil</a><br />
+                    Phone:  571-557-5400<br />
+                    <!-- (state network, may be hotlinked if on this network) -->
+                    <strong>Office of Geomatics<br /></strong>
+                    <a href="mailto:geomatics@nga.mil">geomatics@nga.mil</a><br />
+                    Phone:  314-676-9162<br />
+                    Last modified: 11-May-26                 </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+		<script type="text/javascript">
+			//var eco = xdi.ecobar('sfuxus0170105');
+
+			var ecobarLocalConfig = {
+					"app_id": "sfuxus0170105"
+			};
+			window.ecobarApp && ecobarApp.init(ecobarLocalConfig);
+		<!--
+			var config = {
+				"app_id":"sfuxus0170105",
+				"profile":{"show":false}
+			}
+			xdi.ecobar.configJson = config;
+		-->
+
+		</script>
+	</body>
+</html>
+

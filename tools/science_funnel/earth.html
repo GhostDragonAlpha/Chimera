@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Earth patch — Chimera</title>
+<style>
+:root{--bg:#0b1118;--panel:#121c26;--line:#30404d;--text:#efece3;--muted:#abbac4;--amber:#f1c17b;--ice:#addce6;--moss:#aaba90;--red:#ffb5a8;--mono:Consolas,"SFMono-Regular",monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Segoe UI",sans-serif}button,input{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:3px;color:var(--text);background:transparent;transition:background .15s,border-color .15s}button:hover:not(:disabled){background:#273542;border-color:#60727e}button:disabled,input:disabled{cursor:not-allowed;opacity:.42}button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible,canvas:focus-visible{outline:2px solid var(--ice);outline-offset:4px}a{color:var(--ice);text-underline-offset:4px}a:hover{color:white}[hidden]{display:none!important}.shell{max-width:1600px;margin:auto;padding:26px 34px}.masthead{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-bottom:21px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:12px;font-size:12px;letter-spacing:.16em;font-weight:600}.brand-mark{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--amber);color:var(--amber);font:17px var(--mono)}.brand small{border-left:1px solid var(--line);padding-left:15px;color:var(--muted);font-size:11px;font-weight:400;letter-spacing:.07em}.connection{display:flex;align-items:center;gap:8px;color:var(--muted);font:11px var(--mono)}.connection::before{content:"";width:6px;height:6px;background:var(--amber);border-radius:50%;flex-shrink:0}.connection[data-online="true"]::before{background:var(--moss)}.intro{display:flex;justify-content:space-between;align-items:flex-end;gap:25px;padding:28px 0 26px}.eyebrow,.section-label{color:var(--muted);font:11px var(--mono);letter-spacing:.1em;text-transform:uppercase}h1{margin:9px 0 10px;font-size:clamp(34px,4vw,50px);font-weight:450;letter-spacing:-.045em;line-height:1.08}h1 span{color:var(--amber)}.intro p{margin:0;color:var(--muted);font-size:14px;max-width:710px}.intro-aside{flex-shrink:0;text-align:right;color:var(--muted);font:11px/1.8 var(--mono)}.intro-aside strong{color:var(--moss);font-weight:400}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 330px;border:1px solid var(--line)}.scene-column{min-width:0;display:flex;flex-direction:column}.scene-header{padding:14px 20px;display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);font:11px var(--mono);color:var(--muted)}.scene-header strong{color:var(--text);font-weight:400}.viewport{position:relative;min-height:440px;flex:1;background:#09111b;overflow:hidden;isolation:isolate}canvas{display:block;width:100%;height:100%;position:absolute;inset:0;touch-action:none;cursor:grab}canvas:active{cursor:grabbing}.viewport[data-stale="true"] canvas{opacity:.3}.view-top{position:absolute;top:18px;left:18px;display:flex;gap:7px;flex-wrap:wrap;pointer-events:none}.view-tag{background:#0a141de6;border:1px solid #344552;padding:5px 8px;font:10px var(--mono);color:var(--muted);letter-spacing:.045em}.view-tag.phase{color:var(--amber);border-color:#6b583c}.view-bottom{position:absolute;bottom:17px;left:19px;right:17px;display:flex;justify-content:space-between;align-items:flex-end;gap:18px;pointer-events:none}.legend{font:10px/1.9 var(--mono);color:var(--muted);background:#0b131bbd;padding:5px 8px}.legend span{display:block}.legend i{display:inline-block;width:6px;height:6px;margin-right:8px;background:var(--text)}.legend span:nth-child(2) i{background:var(--amber)}.legend span:nth-child(3) i{background:var(--moss)}.camera-controls{display:flex;align-items:center;gap:5px;pointer-events:auto}.camera-controls button{background:#101c26ed;font:13px var(--mono);width:32px;height:32px}.camera-controls .home-view{width:auto;padding:0 10px;font:11px "Segoe UI",sans-serif}.view-notice{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:35px;background:#09111b55;pointer-events:none}.view-notice strong{font-size:19px;font-weight:500}.view-notice p{max-width:320px;color:var(--muted);font-size:12px;margin:8px auto 0}.readouts{display:grid;grid-template-columns:1fr 1fr 1fr;margin:0;border-top:1px solid var(--line);background:#0f1821}.readout{padding:17px 20px;border-right:1px solid var(--line);min-width:0}.readout:last-child{border-right:0}.readout dt{font-size:11px;color:var(--muted)}.readout dd{font:29px/1.3 var(--mono);letter-spacing:-.045em;margin:8px 0 0}.readout dd small{color:var(--muted);font:11px "Segoe UI",sans-serif;margin-left:5px;letter-spacing:0}.readout:first-child dd{color:var(--amber)}.readout p{font:10px/1.6 var(--mono);color:var(--muted);margin:6px 0 0;min-height:16px}.conditions{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);margin:0}.conditions>div{padding:16px 20px;border-right:1px solid var(--line)}.conditions>div:last-child{border-right:0}.conditions dt{font-size:11px;color:var(--muted)}.conditions dd{font:17px var(--mono);margin:7px 0 0}.conditions small{font:11px "Segoe UI",sans-serif;color:var(--muted)}.control-panel{padding:22px;border-left:1px solid var(--line);background:var(--panel)}.phase-title{font:23px/1.25 var(--mono);color:var(--amber);margin:10px 0}.phase-help{margin:0;color:var(--muted);font-size:12px;min-height:37px}.actions{display:grid;grid-template-columns:1fr 70px;gap:8px;margin-top:18px}.primary{min-height:46px;background:var(--amber);border-color:var(--amber);color:#211b11;font-weight:650}.primary:hover:not(:disabled){background:#ffdda9;border-color:#ffdda9}.pause{font-size:12px}.reset{grid-column:1/-1;min-height:37px;font-size:12px}.pose{border-top:1px solid var(--line);padding-top:18px;margin-top:21px}.field-heading{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.field-heading label{font-size:12px}.field-heading output{font:12px var(--mono);color:var(--text)}input[type="range"]{display:block;width:100%;height:22px;margin:9px 0 0;accent-color:var(--amber);cursor:pointer;touch-action:pan-y}.range-ends{display:flex;justify-content:space-between;font:10px var(--mono);color:var(--muted);margin-top:0}.field-help{font-size:11px;color:var(--muted);margin:6px 0 0}.environment-form{border-top:1px solid var(--line);padding-top:19px;margin-top:19px}.environment-form h2{font-size:13px;font-weight:550;margin:0 0 3px}.environment-form>p{font-size:11px;color:var(--muted);margin:0 0 16px}.environment-form fieldset{border:0;margin:0;padding:0;min-width:0}.env-field{margin:14px 0}.air-control{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:13px 0 14px;border-top:1px solid var(--line);margin-top:16px;cursor:pointer;font-size:12px}.air-control small{display:block;font-size:11px;color:var(--muted);margin-top:2px}.air-control input{width:17px;height:17px;accent-color:var(--moss);cursor:pointer;flex-shrink:0}.apply{width:100%;min-height:39px;border-color:#546778;font-size:12px}.draft-note{color:var(--amber)!important;font-size:11px;margin:7px 0 0!important}.control-message{font-size:11px;line-height:1.6;margin:15px 0 0;color:var(--muted);overflow-wrap:anywhere}.control-message[data-error="true"]{color:var(--red)}.scene-footer{display:flex;justify-content:space-between;gap:18px;padding:12px 18px;border:1px solid var(--line);border-top:0;color:var(--muted);font-size:11px}.scene-footer span:last-child{font-family:var(--mono);text-align:right}.energy-strip{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:20px 0;border-bottom:1px solid var(--line)}.energy-strip h2{font-size:13px;margin:0 0 3px;font-weight:550}.energy-strip p{font-size:11px;color:var(--muted);margin:0}.energy-values{display:flex;gap:40px;margin:0}.energy-values dt{font-size:11px;color:var(--muted)}.energy-values dd{font:18px var(--mono);margin:7px 0 0}.energy-values dd small{color:var(--muted);font:11px "Segoe UI",sans-serif}.energy-values>div:last-child dd{color:var(--ice)}.science{border-bottom:1px solid var(--line)}summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:19px 0;font-size:13px}summary::-webkit-details-marker{display:none}.summary-title::before{content:"+";color:var(--ice);font:18px var(--mono);margin-right:12px}.science[open] .summary-title::before{content:"−"}.summary-note{font:10px var(--mono);color:var(--muted)}.science-body{display:grid;grid-template-columns:1fr 1fr;gap:35px;padding:5px 0 25px}.science h2{font-size:13px;margin:0 0 9px;font-weight:550}.science p,.science li{font-size:12px;color:var(--muted)}.science p{margin:0 0 13px}.science ul{padding-left:18px;margin:12px 0 18px}.science li{margin:7px 0}.science dl{margin:0 0 18px}.science dl>div{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;padding:5px 0;font-size:11px;border-bottom:1px solid #263441}.science dt{color:var(--muted)}.science dd{margin:0;overflow-wrap:anywhere;font-family:var(--mono)}.equation{color:var(--ice);font:12px/1.9 var(--mono);padding:9px 0 14px;overflow-wrap:anywhere}.sources{display:flex;flex-wrap:wrap;gap:8px 17px;margin:12px 0 20px;font-size:12px}.footer{display:flex;justify-content:space-between;gap:20px;padding-top:18px;color:var(--muted);font:10px var(--mono)}
+@media(min-width:1450px){.viewport{min-height:485px}.workspace{grid-template-columns:minmax(0,1fr) 352px}.control-panel{padding:25px}.readout{padding:20px 24px}.readout dd{font-size:33px}}
+@media(max-width:1050px){.shell{padding:22px}.workspace{grid-template-columns:minmax(0,1fr) 300px}.control-panel{padding:20px}.intro-aside{display:none}.viewport{min-height:390px}.readout,.conditions>div{padding:16px 13px}.readout dd{font-size:25px}.energy-values{gap:25px}.view-top{left:13px;top:14px}.view-bottom{left:13px;right:13px}}
+@media(max-width:760px){.shell{padding:16px}.masthead{padding-bottom:16px}.brand small{display:none}.connection{font-size:10px}.intro{padding:22px 0}.intro p{font-size:13px}h1{font-size:37px}.workspace{grid-template-columns:1fr}.viewport{min-height:340px;aspect-ratio:1.18;flex:none}.scene-header{padding:13px;font-size:10px}.readout{padding:15px 11px}.readout dd{font-size:23px}.readout p{font-size:9px}.conditions>div{padding:14px 11px}.conditions dd{font-size:15px}.control-panel{border-left:0;border-top:1px solid var(--line);padding:22px}.phase-help{min-height:0}.actions{grid-template-columns:1fr 85px}.primary{min-height:50px}.environment-form fieldset{display:grid;grid-template-columns:1fr 1fr;gap:2px 24px}.env-field{margin:10px 0}.air-control{grid-column:1/-1}.scene-footer{display:block;padding:12px 15px;font-size:10px}.scene-footer span{display:block}.scene-footer span:last-child{text-align:left;margin-top:5px}.energy-strip{display:block;padding:19px 0}.energy-values{justify-content:space-between;gap:10px;margin-top:17px}.energy-values dd{font-size:16px}.science-body{grid-template-columns:1fr;gap:20px}.summary-note{display:none}.footer{font-size:9px}.view-tag{font-size:9px}.legend{font-size:9px}.camera-controls .home-view{font-size:10px}}
+@media(max-width:380px){.shell{padding:12px}.brand{font-size:11px;gap:8px}.connection{font-size:9px}.readout dd{font-size:20px}.readout dd small{font-size:10px;margin-left:3px}.environment-form fieldset{grid-template-columns:1fr}.energy-values{flex-wrap:wrap;gap:15px 22px}.viewport{min-height:310px}}
+@media(min-width:761px){.environment-form fieldset{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.environment-form .field-heading{display:block}.environment-form .field-heading label{display:block;font-size:11px}.environment-form .field-heading output{display:block;margin-top:4px}.env-field{margin:7px 0}.air-control{grid-column:1/-1;margin-top:9px}.pose{margin-top:17px;padding-top:15px}.environment-form{margin-top:16px;padding-top:16px}.environment-form>p{margin-bottom:10px}.control-message{margin-top:12px}.actions{margin-top:15px}}
+.environment-form .field-heading{display:block}.environment-form .field-heading label{display:block;font-size:11px}.environment-form .field-heading output{display:block;margin-top:4px;white-space:nowrap}.readout dd{white-space:nowrap}
+@media(max-width:380px){.readout{padding:14px 8px}.readout dd{font-size:18px}.readout p{font-size:9px;overflow-wrap:anywhere}.masthead{align-items:flex-start}.connection{max-width:130px;line-height:1.5}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">C</span> CHIMERA <small>ENVIRONMENT STUDIES</small></div><div id="connection" class="connection" data-online="false" role="status">Connecting to Earth patch</div></header>
+<main>
+<section class="intro" aria-labelledby="pageTitle"><div><div class="eyebrow">Local Earth environment / 01</div><h1 id="pageTitle">Give the sample <span>to gravity.</span></h1><p>Release a reference sample from the macaque hand. Change the air and ground, then watch its motion and account for the energy.</p></div><div class="intro-aside"><strong>EARTH / BOUNDED PATCH</strong><br>METRIC ANATOMY · NATIVE DYNAMICS</div></section>
+<section class="workspace" aria-label="Earth environment experiment">
+<div class="scene-column">
+<div class="scene-header"><strong>Macaque arm · Earth patch</strong><span id="sceneTime">t — s</span></div>
+<div class="viewport" id="viewport" data-stale="true">
+<canvas id="scene" tabindex="0" aria-label="Interactive 3D view of the native macaque arm, reference sample, and ground. Drag or use arrow keys to orbit. Plus and minus zoom. Home resets the camera."></canvas>
+<div class="view-top"><span class="view-tag phase" id="phaseTag">WAITING FOR SCENE</span><span class="view-tag" id="airTag">AIR —</span></div>
+<div class="view-bottom"><div class="legend" aria-label="Scene colors"><span><i></i>Anatomical reference</span><span><i></i>Reference sample</span><span><i></i>Ground patch</span></div><div class="camera-controls" aria-label="Camera controls"><button type="button" id="zoomOut" aria-label="Zoom out">−</button><button type="button" id="zoomIn" aria-label="Zoom in">+</button><button type="button" id="homeView" class="home-view">Reset view</button></div></div>
+<div class="view-notice" id="viewNotice" role="status"><strong id="viewNoticeTitle">Connecting to the scene</strong><p id="viewNoticeText">The arm, ground and sample will appear together when the native snapshot arrives.</p></div>
+</div>
+<dl class="readouts" aria-label="Sample readings from the displayed snapshot">
+<div class="readout"><dt>Sample speed</dt><dd><span id="speed">—</span><small>m/s</small></dd><p id="velocity">E — · U — · S —</p></div>
+<div class="readout"><dt>Ground reaction</dt><dd><span id="reaction">—</span><small>N</small></dd><p>Normal contact force</p></div>
+<div class="readout"><dt>Sample temperature</dt><dd><span id="sampleTemperature">—</span><small>K</small></dd><p id="heatTransfer">Heat to air — J</p></div>
+</dl>
+<dl class="conditions" aria-label="Local atmosphere"><div><dt>Air pressure</dt><dd><span id="pressure">—</span> <small>kPa</small></dd></div><div><dt>Air density</dt><dd><span id="density">—</span> <small>kg/m³</small></dd></div><div><dt>Air temperature</dt><dd><span id="airTemperature">—</span> <small>K</small></dd></div></dl>
+</div>
+<aside class="control-panel" aria-label="Experiment controls">
+<div class="section-label">Sample state</div><h2 class="phase-title" id="phaseTitle">Connecting</h2><p class="phase-help" id="phaseHelp">Waiting for the native environment.</p>
+<div class="actions"><button type="button" class="primary" id="release" disabled>Release sample ↓</button><button type="button" class="pause" id="pause" disabled>Pause</button><button type="button" class="reset" id="reset" disabled>Return to hand ↻</button></div>
+<div class="pose"><div class="field-heading"><label for="elbow">Arm pose <span style="color:var(--muted)">(reference)</span></label><output for="elbow" id="elbowValue">90°</output></div><input id="elbow" type="range" min="-60" max="40" step="1" value="0" disabled><div class="range-ends"><span>30°</span><span>130°</span></div><p class="field-help">Adjust the elbow while the sample is held.</p></div>
+<form class="environment-form" id="environmentForm"><h2>Set the environment</h2><p>Applying changes starts a new trial at the hand.</p><fieldset id="environmentFields" disabled aria-label="Environment settings">
+<div class="env-field"><div class="field-heading"><label for="altitude">Altitude</label><output for="altitude" id="altitudeValue">0 m</output></div><input id="altitude" type="range" min="0" max="10000" step="100" value="0"><div class="range-ends"><span>Sea level</span><span>10 km</span></div></div>
+<div class="env-field"><div class="field-heading"><label for="wind">East–west wind</label><output for="wind" id="windValue">0.0 m/s</output></div><input id="wind" type="range" min="-10" max="10" step="0.5" value="0"><div class="range-ends"><span>← West</span><span>East →</span></div></div>
+<div class="env-field"><div class="field-heading"><label for="slope">Ground tilt</label><output for="slope" id="slopeValue">0°</output></div><input id="slope" type="range" min="-20" max="20" step="1" value="0"><div class="range-ends"><span>−20°</span><span>+20°</span></div></div>
+<div class="env-field"><div class="field-heading"><label for="friction">Ground friction</label><output for="friction" id="frictionValue">0.50</output></div><input id="friction" type="range" min="0" max="1" step="0.05" value="0.5"><div class="range-ends"><span>Slippery</span><span>Grippy</span></div></div>
+<label class="air-control" for="air"><span>Include air<small id="airHelp">Drag, buoyancy and heat exchange</small></span><input type="checkbox" id="air" checked></label>
+</fieldset><button type="submit" class="apply" id="apply" disabled>Apply &amp; return to hand</button><p class="draft-note" id="draftNote" hidden>Changes pending · apply to begin a new trial</p></form>
+<p class="control-message" id="controlMessage" role="status">Drag the scene to orbit. Scroll to zoom.</p>
+</aside>
+</section>
+<div class="scene-footer"><span>Geometry and readings share one native snapshot. The arm sets the release point.</span><span id="freshness">Awaiting first snapshot</span></div>
+<section class="energy-strip" aria-labelledby="energyTitle"><div><h2 id="energyTitle">Follow the energy</h2><p>Mechanical energy, energy transferred, and the remaining balance.</p></div><dl class="energy-values"><div><dt>Mechanical</dt><dd><span id="mechanical">—</span> <small>J</small></dd></div><div><dt>Drag dissipation</dt><dd><span id="dragLoss">—</span> <small>J</small></dd></div><div><dt>Balance residual</dt><dd><span id="balance">—</span> <small>J</small></dd></div></dl></section>
+<details class="science"><summary><span class="summary-title">Model, energy account &amp; sources</span><span class="summary-note">WHAT THIS PATCH REPRESENTS</span></summary><div class="science-body">
+<section><h2>A local experiment in Earth conditions</h2><p>The native engine advances the sample. This page displays its metric triangles and captured readings; orbiting the camera does not move the physical scene.</p><ul><li>The macaque upper limb is a jointed anatomical reference. Its pose and held attachment are kinematic. Muscle forces, grip dynamics and a whole animal are outside this experiment.</li><li>Earth gravity is constant within this bounded patch, derived from pinned JPL Earth GM and a WGS84 origin. A NASA low-altitude atmosphere fit is sampled once per trial and treated as uniform here. This is not weather or scanned terrain.</li><li>The reference body translates without rolling: mass 0.5 g, support radius 15 mm, drag coefficient 0.47, heat capacity 0.5 J/K, heat transfer coefficient 8 W/m²K, initial temperature 295 K. These are authored reference coefficients, not measured macaque tissue or a measured natural object.</li><li>Turning air off creates an evacuated comparison with Earth gravity retained. Applying environment settings resets position and velocity at the current hand attachment.</li><li>Colors and lighting distinguish the components; they do not represent measured optical properties. The finite ground patch and simple contact model do not describe a full planet.</li></ul><p id="nativeScope" hidden></p><h2>Source record</h2><div class="sources" id="sources"><span style="color:var(--muted);font-size:11px">Source links arrive with the native state.</span></div><dl><div><dt>Gravity</dt><dd id="gravity">—</dd></div><div><dt>Sample mass / radius</dt><dd id="bodyDimensions">—</dd></div><div><dt>Position E / U / S</dt><dd id="position">—</dd></div><div><dt>Scene revision</dt><dd id="sceneRevision">—</dd></div><div><dt>Graph revision</dt><dd id="graphHash">—</dd></div></dl></section>
+<section><h2>Mechanical energy account</h2><div class="equation">E − E₀ − W<sub>wind</sub> − W<sub>buoyancy</sub><br>+ D<sub>drag</sub> + D<sub>contact</sub> + D<sub>friction</sub> = residual</div><p>The residual is reported by the engine. Dissipation terms are positive losses; wind and buoyancy work are signed transfers. Values refer to this trial.</p><dl><div><dt>Initial mechanical</dt><dd id="initialEnergy">—</dd></div><div><dt>Current mechanical</dt><dd id="currentEnergy">—</dd></div><div><dt>Wind work</dt><dd id="windWork">—</dd></div><div><dt>Buoyancy work</dt><dd id="buoyancyWork">—</dd></div><div><dt>Drag dissipation</dt><dd id="dragEnergy">—</dd></div><div><dt>Contact dissipation</dt><dd id="contactEnergy">—</dd></div><div><dt>Friction dissipation</dt><dd id="frictionEnergy">—</dd></div><div><dt>Balance residual</dt><dd id="balanceEnergy">—</dd></div></dl><h2>Heat exchanged with the air</h2><p>Positive heat to air means the sample cools; negative means the air heats the sample. The sample's thermal energy change is recorded separately from the mechanical account.</p><dl><div><dt>Heat to air</dt><dd id="heatToAir">—</dd></div><div><dt>Thermal energy change</dt><dd id="thermalChange">—</dd></div></dl></section>
+</div></details>
+</main><footer class="footer"><span>EARTH PATCH / CHIMERA</span><span>LOCAL AXES · EAST / UP / SOUTH</span></footer>
+</div>
+<script>
+'use strict';
+(() => {
+  const $ = id => document.getElementById(id);
+  const finite = value => typeof value === 'number' && Number.isFinite(value);
+  const number = (value, digits = 3) => finite(value) ? value.toFixed(digits) : '—';
+  const signed = (value, digits = 4) => finite(value) ? (value > 0 ? '+' : '') + value.toFixed(digits) : '—';
+  const energy = value => finite(value) ? (Math.abs(value) > 0 && Math.abs(value) < 0.0001 ? value.toExponential(2) : signed(value, 5)) : '—';
+  const set = (id, value) => { const node = $(id); if (node.textContent !== String(value)) node.textContent = value; };
+  const fields = {altitude_m:'altitude', wind_m_s:'wind', slope_deg:'slope', friction:'friction'};
+  const phaseLabels = {held:'Held at the hand',flight:'In flight',contact:'Ground contact',out_of_patch:'Outside the patch'};
+  const phaseHelp = {held:'Choose a pose, then release the sample into this environment.',flight:'Gravity and the environment now determine the sample’s motion.',contact:'Watch the ground reaction and energy lost through contact.',out_of_patch:'The sample has left the bounded ground patch. Return it to the hand to try again.'};
+  let state = null, lastSnapshot = 0, posting = false, dirty = false, poseDirty = false;
+  let snapshotPromise = null, snapshotController = null, pollTimer = null, epoch = 0, transportError = '', renderError = '';
+  let sourceSignature = '';
+  const canvas = $('scene');
+  let gl = null, renderer = null;
+  const camera = {yaw:.5, pitch:.29, radius:1.1, target:[0,.24,0]};
+  const projection = new Float32Array(16), view = new Float32Array(16), vp = new Float32Array(16);
+
+  // Presentation only: native snapshot vertices pass through unchanged.
+  function initRenderer() {
+    gl = canvas.getContext('webgl2', {antialias:true, alpha:false});
+    if (!gl) throw new Error('WebGL 2 is unavailable. Enable hardware graphics and reload to view the scene.');
+    const shader = (type, source) => {
+      const result = gl.createShader(type); gl.shaderSource(result, source); gl.compileShader(result);
+      if (!gl.getShaderParameter(result, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(result) || 'Could not compile scene shader.');
+      return result;
+    };
+    const program = gl.createProgram();
+    gl.attachShader(program, shader(gl.VERTEX_SHADER, `#version 300 es
+      layout(location=0) in vec3 aPos;
+      layout(location=1) in vec3 aNormal;
+      layout(location=2) in vec3 aColor;
+      uniform mat4 uVP;
+      out vec3 vNormal; out vec3 vColor; out vec3 vWorld;
+      void main(){vNormal=aNormal;vColor=aColor;vWorld=aPos;gl_Position=uVP*vec4(aPos,1.0);}`));
+    gl.attachShader(program, shader(gl.FRAGMENT_SHADER, `#version 300 es
+      precision highp float;
+      in vec3 vNormal; in vec3 vColor; in vec3 vWorld;
+      uniform vec3 uCam; out vec4 outColor;
+      void main(){
+        vec3 n=normalize(vNormal);
+        vec3 light=normalize(vec3(-.35,.85,.5));
+        vec3 color=vColor*(.39+.61*max(dot(n,light),0.0));
+        vec3 direction=normalize(uCam-vWorld);
+        float rim=pow(1.0-max(dot(n,direction),0.0),3.0)*.1;
+        outColor=vec4(color+rim,1.0);
+      }`));
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program) || 'Could not link scene shader.');
+    const vao=gl.createVertexArray(), vbo=gl.createBuffer(), ibo=gl.createBuffer();
+    gl.bindVertexArray(vao); gl.bindBuffer(gl.ARRAY_BUFFER,vbo); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);
+    for(let i=0;i<3;i++){gl.enableVertexAttribArray(i);gl.vertexAttribPointer(i,3,gl.FLOAT,false,36,i*12);}
+    gl.bindVertexArray(null); gl.enable(gl.DEPTH_TEST); gl.clearColor(.035,.062,.092,1);
+    renderer={program,vao,vbo,ibo,count:0,uVP:gl.getUniformLocation(program,'uVP'),uCam:gl.getUniformLocation(program,'uCam')};
+    renderError='';
+  }
+  function upload(vertices, indices) {
+    if (!renderer) return;
+    gl.bindVertexArray(renderer.vao);gl.bindBuffer(gl.ARRAY_BUFFER,renderer.vbo);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.DYNAMIC_DRAW);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,renderer.ibo);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint32Array(indices),gl.DYNAMIC_DRAW);
+    renderer.count=indices.length;gl.bindVertexArray(null);
+  }
+  function perspective(out, aspect) {
+    const f=1/Math.tan(Math.PI/8), near=.01, far=20, nf=1/(near-far);
+    out.fill(0);out[0]=f/aspect;out[5]=f;out[10]=(far+near)*nf;out[11]=-1;out[14]=2*far*near*nf;
+  }
+  function lookAt(out, eye, target) {
+    let zx=eye[0]-target[0],zy=eye[1]-target[1],zz=eye[2]-target[2];
+    let scale=1/(Math.hypot(zx,zy,zz)||1);zx*=scale;zy*=scale;zz*=scale;
+    let xx=zz,xz=-zx;scale=1/(Math.hypot(xx,xz)||1);xx*=scale;xz*=scale;
+    const yx=zy*xz,yy=zz*xx-zx*xz,yz=-zy*xx;
+    out.set([xx,yx,zx,0,0,yy,zy,0,xz,yz,zz,0,-(xx*eye[0]+xz*eye[2]),-(yx*eye[0]+yy*eye[1]+yz*eye[2]),-(zx*eye[0]+zy*eye[1]+zz*eye[2]),1]);
+  }
+  function multiply(out,a,b) {
+    for(let c=0;c<4;c++)for(let r=0;r<4;r++)out[c*4+r]=a[r]*b[c*4]+a[4+r]*b[c*4+1]+a[8+r]*b[c*4+2]+a[12+r]*b[c*4+3];
+  }
+  function draw() {
+    if (!renderer) return;
+    const ratio=Math.min(devicePixelRatio||1,2),width=Math.max(1,Math.round(canvas.clientWidth*ratio)),height=Math.max(1,Math.round(canvas.clientHeight*ratio));
+    if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;gl.viewport(0,0,width,height);}
+    gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    const cp=Math.cos(camera.pitch),eye=[camera.target[0]+camera.radius*cp*Math.sin(camera.yaw),camera.target[1]+camera.radius*Math.sin(camera.pitch),camera.target[2]+camera.radius*cp*Math.cos(camera.yaw)];
+    perspective(projection,width/height);lookAt(view,eye,camera.target);multiply(vp,projection,view);
+    gl.useProgram(renderer.program);gl.uniformMatrix4fv(renderer.uVP,false,vp);gl.uniform3fv(renderer.uCam,eye);gl.bindVertexArray(renderer.vao);
+    gl.drawElements(gl.TRIANGLES,renderer.count,gl.UNSIGNED_INT,0);gl.bindVertexArray(null);
+  }
+  const clampCamera=()=>{camera.pitch=Math.max(-.1,Math.min(1.35,camera.pitch));camera.radius=Math.max(.45,Math.min(3,camera.radius));draw();};
+  let pointer=null;
+  canvas.addEventListener('pointerdown',event=>{if(event.button!==0)return;pointer={id:event.pointerId,x:event.clientX,y:event.clientY};canvas.setPointerCapture(event.pointerId);canvas.focus({preventScroll:true});});
+  canvas.addEventListener('pointermove',event=>{if(!pointer||pointer.id!==event.pointerId)return;camera.yaw-=(event.clientX-pointer.x)*.007;camera.pitch+=(event.clientY-pointer.y)*.006;pointer.x=event.clientX;pointer.y=event.clientY;clampCamera();});
+  for(const name of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(name,()=>{pointer=null;});
+  canvas.addEventListener('wheel',event=>{event.preventDefault();camera.radius*=Math.exp(event.deltaY*.001);clampCamera();},{passive:false});
+  function home(){camera.yaw=.5;camera.pitch=.29;camera.radius=1.1;draw();}
+  canvas.addEventListener('keydown',event=>{const actions={ArrowLeft:()=>camera.yaw+=.12,ArrowRight:()=>camera.yaw-=.12,ArrowUp:()=>camera.pitch+=.1,ArrowDown:()=>camera.pitch-=.1,'+':()=>camera.radius*=.9,'=':()=>camera.radius*=.9,'-':()=>camera.radius*=1.1,Home:home};if(actions[event.key]){event.preventDefault();actions[event.key]();clampCamera();}});
+  $('zoomIn').onclick=()=>{camera.radius*=.85;clampCamera();};$('zoomOut').onclick=()=>{camera.radius*=1.15;clampCamera();};$('homeView').onclick=home;
+  new ResizeObserver(draw).observe(canvas);
+  canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();renderer=null;renderError='Graphics connection lost. Waiting for the browser to restore the scene.';refreshHealth();});
+  canvas.addEventListener('webglcontextrestored',()=>{try{initRenderer();lastSnapshot=0;refreshHealth();pollSnapshot();}catch(error){renderError=error.message;refreshHealth();}});
+
+  function draft() {return {altitude_m:Number($('altitude').value),wind_m_s:Number($('wind').value),slope_deg:Number($('slope').value),friction:Number($('friction').value),air:$('air').checked};}
+  function fieldLabels(){set('altitudeValue',Number($('altitude').value).toLocaleString('en-US')+' m');set('windValue',signed(Number($('wind').value),1)+' m/s');set('slopeValue',signed(Number($('slope').value),0)+'°');set('frictionValue',number(Number($('friction').value),2));const angle=number(90+Number($('elbow').value),0);set('elbowValue',angle+'°');$('elbow').setAttribute('aria-valuetext',angle+' degrees');set('airHelp',$('air').checked?'Drag, buoyancy and heat exchange':'Evacuated comparison · gravity retained');}
+  function syncControls(){
+    if(!state)return;
+    if(!dirty){for(const [key,id] of Object.entries(fields))if(finite(state.environment[key]))$(id).value=state.environment[key];$('air').checked=!!state.environment.air;}
+    if(!poseDirty&&finite(state.elbow_deg))$('elbow').value=state.elbow_deg;
+    fieldLabels();
+  }
+  for(const id of [...Object.values(fields),'air'])$(id).addEventListener('input',()=>{const values=draft();dirty=!state||Object.keys(values).some(key=>values[key]!==state.environment[key]);fieldLabels();refreshHealth();});
+  $('elbow').addEventListener('input',()=>{poseDirty=true;fieldLabels();});
+  $('elbow').addEventListener('change',()=>command({elbow_deg:Number($('elbow').value)},'Arm pose updated.'));
+  $('environmentForm').addEventListener('submit',event=>{event.preventDefault();if(dirty)command(draft(),'Environment applied. A fresh trial starts at the hand.',true);});
+  $('release').onclick=()=>command({release:true},'Sample released.');
+  $('reset').onclick=()=>command({reset:true},'Sample returned to the hand.');
+  $('pause').onclick=()=>state&&command({paused:!state.paused},state.paused?'Trial resumed.':'Trial paused.');
+  function message(text,error=false){set('controlMessage',text);$('controlMessage').dataset.error=String(error);}
+  function showSources(sources){
+    const signature=JSON.stringify(sources||null);if(signature===sourceSignature)return;sourceSignature=signature;
+    const container=$('sources');container.replaceChildren();
+    const entries=Array.isArray(sources)?sources:Object.entries(sources||{}).map(([label,value])=>typeof value==='string'?{label,url:value}:{label,...value});
+    for(const [index,source] of entries.entries()){
+      const raw=typeof source==='string'?source:source?.url||source?.href||source?.link;if(typeof raw!=='string')continue;
+      let url;try{url=new URL(raw,location.href);}catch{continue;}if(!['https:','http:'].includes(url.protocol))continue;
+      const link=document.createElement('a');link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';link.textContent=(typeof source==='object'&&(source.label||source.name||source.title))||'Source '+(index+1);container.append(link);
+    }
+    if(!container.childElementCount)container.textContent='No source links supplied by this native session.';
+  }
+  function renderState(){
+    const e=state.environment,b=state.body,en=state.energy,v=b.velocity_m_s;
+    const phase=phaseLabels[state.phase]||'Native state';set('phaseTitle',phase);set('phaseTag',(state.paused?'PAUSED · ':'')+phase.toUpperCase());set('phaseHelp',phaseHelp[state.phase]||'Review the native state below.');
+    set('sceneTime','t '+number(state.sim_time_s,2)+' s');set('airTag',e.air?'AIR ON':'AIR OFF · GRAVITY ON');
+    set('speed',Array.isArray(v)&&v.length===3&&v.every(finite)?number(Math.hypot(...v)): '—');set('velocity',Array.isArray(v)?'E '+signed(v[0],2)+' · U '+signed(v[1],2)+' · S '+signed(v[2],2):'—');
+    set('reaction',number(b.normal_force_N,4));set('sampleTemperature',number(b.temperature_K,2));set('heatTransfer','Heat to air '+energy(en.heat_to_air_J)+' J');
+    set('pressure',number(finite(e.pressure_Pa)?e.pressure_Pa/1000:null,2));set('density',number(e.density_kg_m3,3));set('airTemperature',number(e.temperature_K,2));
+    set('mechanical',energy(en.mechanical_J));set('dragLoss',energy(en.drag_dissipation_J));set('balance',energy(en.balance_error_J));
+    const energies={initialEnergy:'initial_mechanical_J',currentEnergy:'mechanical_J',windWork:'wind_work_J',buoyancyWork:'buoyancy_work_J',dragEnergy:'drag_dissipation_J',contactEnergy:'contact_dissipation_J',frictionEnergy:'friction_dissipation_J',balanceEnergy:'balance_error_J',heatToAir:'heat_to_air_J',thermalChange:'thermal_energy_change_J'};
+    for(const [id,key] of Object.entries(energies))set(id,energy(en[key])+' J');
+    set('gravity',number(e.gravity_m_s2,5)+' m/s²');set('bodyDimensions',number(b.mass_kg,5)+' kg / '+number(b.radius_m,3)+' m');set('position',Array.isArray(b.position_m)?b.position_m.map(value=>signed(value,4)).join(' / ')+' m':'—');
+    set('sceneRevision',state.scene_revision??'—');set('graphHash',state.graph_hash||'—');showSources(state.sources);
+    const scope=typeof state.scope==='string'?state.scope:'';$('nativeScope').hidden=!scope;set('nativeScope',scope);syncControls();
+  }
+  function refreshHealth(){
+    const age=lastSnapshot?performance.now()-lastSnapshot:Infinity;
+    const fresh=!!state&&age<2000&&!transportError;
+    const ready=fresh&&!posting&&!renderError;
+    $('connection').dataset.online=String(fresh&&!renderError);
+    set('connection',renderError?'Scene unavailable':posting?'Applying to native engine':fresh?'Native snapshot connected':state?'Snapshot connection lost':'Waiting for native engine');
+    $('viewport').dataset.stale=String(!fresh||!!renderError);$('viewNotice').hidden=fresh&&!renderError;
+    if(renderError){set('viewNoticeTitle','Scene unavailable');set('viewNoticeText',renderError);}else if(!fresh){set('viewNoticeTitle',state?'Last scene is frozen':'Waiting for the Earth patch');set('viewNoticeText',transportError|| (state?'Fresh native data has not arrived. Controls resume after reconnection.':'The native environment has not supplied a snapshot yet. Reconnecting automatically.'));}
+    $('release').disabled=!ready||!state?.held||!!state?.paused||dirty||poseDirty;
+    $('reset').disabled=!ready;$('pause').disabled=!ready;
+    $('elbow').disabled=!ready||!state?.held;
+    $('environmentFields').disabled=!ready;$('apply').disabled=!ready||!dirty;
+    $('draftNote').hidden=!dirty;set('pause',state?.paused?'Resume':'Pause');
+    if(lastSnapshot)set('freshness',fresh?'Snapshot aligned · t '+number(state.sim_time_s,2)+' s':'Last snapshot '+number(age/1000,1)+' s ago · readings frozen');
+  }
+  async function jsonRequest(url,options={},controller=new AbortController()){
+    const timeout=setTimeout(()=>controller.abort(),4500);
+    try{
+      const response=await fetch(url,{cache:'no-store',...options,signal:controller.signal});
+      let body;try{body=await response.json();}catch{throw new Error('The native engine returned an unreadable response.');}
+      if(!response.ok||body?.ok===false)throw new Error(body?.error||'Native request failed ('+response.status+').');return body;
+    }finally{clearTimeout(timeout);}
+  }
+  function validateSnapshot(data){
+    if(!data||!data.state||!data.state.environment||!data.state.body||!data.state.energy||!finite(data.state.sim_time_s))throw new Error('The snapshot is incomplete; the last complete scene is retained.');
+    const vertices=data.vertices,indices=data.indices;
+    if(!Array.isArray(vertices)||!vertices.length||vertices.length%9||!Array.isArray(indices)||!indices.length||indices.length%3)throw new Error('Native geometry is missing or incomplete.');
+    if(vertices.some(value=>!finite(value)))throw new Error('Native geometry contains an invalid coordinate.');
+    const count=vertices.length/9;if(indices.some(value=>!Number.isInteger(value)||value<0||value>=count))throw new Error('Native triangle indices are invalid.');
+  }
+  function pollSnapshot(){
+    if(snapshotPromise||posting)return snapshotPromise||Promise.resolve();
+    clearTimeout(pollTimer);const requestEpoch=epoch;snapshotController=new AbortController();const controller=snapshotController;
+    snapshotPromise=(async()=>{
+      try{
+        const data=await jsonRequest('/earth_snapshot',{},controller);if(requestEpoch!==epoch)return;
+        validateSnapshot(data);upload(data.vertices,data.indices);state=data.state;lastSnapshot=performance.now();transportError='';renderState();draw();
+      }catch(error){if(requestEpoch!==epoch)return;transportError=error.name==='AbortError'?'The native request timed out. Reconnecting automatically.':error instanceof TypeError?'Could not reach the native engine. Reconnecting automatically.':error.message;}
+      finally{snapshotPromise=null;snapshotController=null;refreshHealth();if(!posting)pollTimer=setTimeout(pollSnapshot,transportError?1000:100);}
+    })();return snapshotPromise;
+  }
+  async function command(payload,success,environmentChange=false){
+    if(posting||!state||performance.now()-lastSnapshot>=2000||transportError||renderError)return;
+    posting=true;epoch++;clearTimeout(pollTimer);if(snapshotController)snapshotController.abort();refreshHealth();message('Applying to the native engine…');
+    try{
+      if(snapshotPromise)await snapshotPromise;
+      await jsonRequest('/earth_state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      if(environmentChange)dirty=false;poseDirty=false;message(success);
+    }catch(error){poseDirty=false;message(error.name==='AbortError'?'The command timed out; its result is uncertain. Waiting for a fresh native snapshot.':error.message,true);}
+    finally{posting=false;transportError='Waiting for a fresh snapshot after the command.';refreshHealth();await pollSnapshot();syncControls();refreshHealth();}
+  }
+  try{initRenderer();}catch(error){renderError=error.message;}
+  fieldLabels();refreshHealth();pollSnapshot();setInterval(refreshHealth,250);
+})();
+</script>
+</body>
+</html>

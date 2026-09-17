@@ -42,6 +42,8 @@ python -B -m tools.creature_graph.project_spec --show req.macaque_rebuild
 python -B -m tools.creature_graph.project_spec --show doc.handoff.zcode
 python -B -m tools.creature_graph.project_spec --show doc.workflow.shared_body_example
 python -B -m tools.creature_graph.project_spec --show doc.workflow.macaque_assembly
+python -B -m tools.creature_graph.project_spec --show req.earth_environment
+python -B -m tools.creature_graph.project_spec --show doc.workflow.earth_patch
 python -B -m tools.creature_graph.project_spec --show req.layered_anatomy
 python -B -m tools.creature_graph.project_spec --show req.embodied_senses
 python -B -m tools.creature_graph.project_spec --show doc.creature_binding_observation
@@ -222,3 +224,15 @@ Choose free private ports. Read `doc.workflow.macaque_assembly` for source pins,
 units, geometry processing, native checks and the remaining anatomical work.
 This is a jointed anatomical reference; muscle forces and whole-body tissue layers
 remain unimplemented.
+
+### Explore the creature–Earth boundary
+
+```powershell
+powershell -File tools/science_funnel/run_earth.ps1 -Port 8125
+```
+
+Open `http://127.0.0.1:8125/earth`. The source-derived arm releases a reference
+object into native gravity, air, ground contact and heat exchange. Read
+`doc.workflow.earth_patch` for data provenance, assumptions, energy/momentum
+accounts and continuation tasks. Choose a free private port; other worlds remain
+independent.
