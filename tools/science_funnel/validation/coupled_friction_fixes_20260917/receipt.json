@@ -1,9 +1,9 @@
 {
   "schema": "chimera.scoped_validation.v1",
   "recorded_utc": "2026-09-17T23:05:00+00:00",
-  "candidate_commit": "53501e861b57cfb8ab280ef11cefb45b7feabe5b",
-  "candidate_tree": "36196c71a9962c75f44e3d1b06a8570c2ed5ee4d",
-  "qualified_graph_hash": "a4f7dc58d2c4cdb6e3e59a0c4ef951a5b0a909795a16a6302652c5d4d7bd6cc9",
+  "candidate_commit": "cf4b50da750100cf583928f19319f8d3ba642a0b",
+  "candidate_tree": "584e76f015ec04401067025a2330a8b1b013528f",
+  "qualified_graph_hash": "2a0bbc039e3e1885641b10b6a1d7ac1efc132b39862c3c161f2a5340c42a915a",
   "source_file_manifest_sha256": {
     "ChimeraEngine/engine/coupled_dynamics.hpp": "4685d02131c842b98c1782b2a9dc96c216adb51363cbcef9264fbf0f4eb8d626",
     "ChimeraEngine/engine/tests_coupled_arm/native.cpp": "1221024560b1bb5cb7a7c6591584699abf7ec7a39b3ecc7beabc3dfa9cdf68f6",
@@ -11,8 +11,8 @@
     "ChimeraEngine/engine/tests_coupled_arm/mucrit_derivation.cpp": "bcd2f2c99f6f2a00e90173900a493867480320c154c8cc3ce45f34e2340d37dc",
     "ChimeraEngine/engine/tests_coupled_arm/CMakeLists.txt": "75504f824cb456ff5a3b91cc391ff81e50cd1ce40f0ea4c904647165e76db412",
     "tools/science_funnel/tests/qualify_coupled_live.py": "1eaf3a50720750ca661ac82e4398d0c9f6ea2296931700f146d3be8584729733",
-    "tools/creature_graph/data/authored/project_program.json": "d8f984f52350a20a3552c4af92337c098f254643a6e4461008f93dade9c2287d",
-    "tools/creature_graph/data/creature_graph.json": "c6bd68bbc1c4ba0dec1aa1dabc6aaccbd848b7fe10ae165538ea40b92ff4f02f"
+    "tools/creature_graph/data/authored/project_program.json": "3a11f36628ee5dd1ef94383fdffd9f844404c9685e1038363e032c2af7dd0a8b",
+    "tools/creature_graph/data/creature_graph.json": "28d2d4b7e4cc448137df40cf9f82828fc2f7618874beec13b8b24b22af1b7aa3"
   },
   "scope": "Four independent-review fixes on the published Coulomb friction slice (receipt coupled_friction_20260917, findings F1-F4): the exact-rest slide-sign fallback in friction_solve now opposes impending slip; the deferred critical-mu hold-vs-slide falsifier is exercised by a derived native trial pair (mu=0.8 holds, mu=0.6 slides); the impact-level friction cone is asserted every tick; the live qualifier's scope string names friction. Engine frictionless behavior, frozen references and the mu=0 default are unchanged bit-exactly. No live qualification run (the operator's scene on 8127 was never touched; scene generation used owned port 8171 and a path-guarded PID stop).",
   "review_findings_addressed": {
@@ -62,13 +62,13 @@
   },
   "runtime": {
     "scene_generation_port": 8171,
-    "pid": 121452,
+    "pid": 89564,
     "exe": "E:\\ChimeraWork\\friction-fixes-20260917\\.tmp\\coupled-native-engine\\Release\\chimera_engine.exe",
-    "exe_sha256": "e35ed149cf5810503a82cb971cfd03a1406862bf3c316d01b548562520bfd79b",
+    "exe_sha256": "8cd5186612d00329cb2f770572315c75e5a9c4c82eb269a144c81c9f3d590158",
     "scene": "E:\\ChimeraWork\\friction-fixes-20260917\\.tmp\\coupled-native\\scene.json",
-    "scene_file_sha256": "c8cd4ebcf1d2d410eeccadd3a6b175dc64d3ba130b9714d6f6288eaee34992b7",
-    "graph_hash": "a4f7dc58d2c4cdb6e3e59a0c4ef951a5b0a909795a16a6302652c5d4d7bd6cc9",
-    "launched_utc": "2026-09-17T23:00:32.9161669Z",
+    "scene_file_sha256": "4538578f79861bc42d4fa8dd83799da7a9eeab5a18a16ac3615b793fe7462d2f",
+    "graph_hash": "2a0bbc039e3e1885641b10b6a1d7ac1efc132b39862c3c161f2a5340c42a915a",
+    "launched_utc": "2026-09-17T23:17:12.8600613Z",
     "engine_shutdown": "path-guarded PID kill verified against the worktree exe path before Stop-Process"
   },
   "replay": [
@@ -92,7 +92,7 @@
     "friction_unit.json": "bf198785a7218ff600c27b9d5900157f28903dfdf63ecb7ae6cd13554c9b9d5f",
     "mucrit_derivation.json": "81e71c83facc4fce940129a9b8d13b94452cf16e2491273795ab070077c899b3",
     "native_checks.json": "8ba054e0b5f9203688fff58105e7ae3d0c3a81179b1b34a32bd8044c6e0dad16",
-    "scene_runtime.json": "0193512c60b165f185d8b76af1a857d4a6c7418f65fda96bf497c9a6a1fb84cd"
+    "scene_runtime.json": "79f1e85c3eaadd5cacde3111baa5a77ce104b12bfef64aaae643aad11b1c5498"
   },
   "admission": "work.creature.coupled_arm_friction_fixes (graph, admitted before code); observation recorded with this receipt",
   "worktree_manifest_note": "The manifest pins the qualified candidate content (code files unchanged since candidate_commit). The graph records (project_program.json, creature_graph.json) take their observation updates in the records commit after this snapshot; their receipt-time hashes above predate that update."
