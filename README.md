@@ -296,6 +296,11 @@ Open `http://127.0.0.1:8127/earth`. Each drive applies capped torque to a source
 coupled mass matrix. Cut either drive, change a target, add hand load, or cut global
 power. The native state determines both bones and the hand marker. A finite 2 J
 mechanical store, passive losses and source joint stops account for energy.
-Read `doc.workflow.coupled_native` for equations, checks, scope and next work.
-This reference has a fixed mount and two moving coordinates; hand/environment
-collision, whole-body balance, muscles and GPU integration remain unfinished.
+Enable **Hand contact plane** and drive the elbow target toward 20°: the hand presses
+an authored frictionless rigid surface, a measurable normal reaction appears, and the
+elbow stalls short of its target instead of passing through. The toggle resets the
+trial; with it off, the qualified free dynamics run unchanged.
+Read `doc.workflow.coupled_native` and `work.creature.coupled_arm_contact` for
+equations, checks, scope and next work. This reference has a fixed mount and two
+moving coordinates; friction, grasping, whole-body balance, muscles and GPU
+integration remain unfinished.

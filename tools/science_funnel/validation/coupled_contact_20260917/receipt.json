@@ -1,0 +1,100 @@
+{
+  "schema": "chimera.scoped_validation.v1",
+  "recorded_utc": "2026-09-17T15:25:15.727411+00:00",
+  "candidate_commit": "8e0107385ec0c6b02ae9b1434882a25d0ef54ce6",
+  "candidate_tree": "50488d03545327f5b7c75fe20f62d58741f10fa7",
+  "graph_hash": "e8197294a8a0c8421af9fba687ccdc3e4f1a3a31a22befee7c107817a8822b67",
+  "source_file_manifest_sha256": {
+    "README.md": "0e633f841bfb37a1cbf1af29d6a378d1f346b414d63cfb2ccc1883cde07f348c",
+    "ChimeraEngine/engine/coupled_articulation.hpp": "e2cf388123269527d859e324b9344899833a3af4b9ad075d2c92f40552a1e53f",
+    "ChimeraEngine/engine/coupled_dynamics.hpp": "ab92e148e3880af85155b723eaf52240fa07f052768ccd5c588e2e59f6e59c66",
+    "ChimeraEngine/engine/graph_earth.hpp": "37bc948669ed50b82ffa35440c85d33efd4bd59c506933646e0bb32b9aebe321",
+    "ChimeraEngine/engine/tests_coupled_arm/native.cpp": "8f14ba499c8ef7872d9b8c9fc11d9b64d8407d6af539c9595ad4e82beed4341b",
+    "tools/science_funnel/coupled_scene.py": "3af856e6c2b8e1ccdcb988733a14de2041f5c677a63e8540680a85588745fa86",
+    "tools/science_funnel/coupled_arm.html": "1b52ea6efc3d5ea3195058e8f5f66a7adae6e0914d0b07b928d272a6d996becc",
+    "tools/science_funnel/run_earth.ps1": "93aff54a5ec703190a50fdff6d3469fffa3ea7df4b2bd5f370e5a47c55274fe7",
+    "tools/science_funnel/tests/test_coupled_scene.py": "448e55e71e7efab3879cf3829c968c18fc8c9d9b0a1aadd51ef17ad38fb911d6",
+    "tools/science_funnel/tests/qualify_coupled_live.py": "f5660b594d56f9c63baff42d1c8dfeb58211a08256745037630938948b166ba1",
+    "tools/science_funnel/coupled_arm.py": "2a8a779e55ff77c96e8806cbc95858f2821dc83d64d6a48b41dce292b682828d",
+    "tools/creature_graph/data/authored/project_program.json": "c53d259f3804c847f32d9c56e1d72245ea8d523b0b31f079552a92a6807688cf",
+    "tools/creature_graph/data/creature_graph.json": "a96ca647448343634216c6fe95550d6e545ef7a4fca6934231dc97d6e7074537"
+  },
+  "worktree_file_manifest_sha256": {
+    "README.md": "0e633f841bfb37a1cbf1af29d6a378d1f346b414d63cfb2ccc1883cde07f348c",
+    "ChimeraEngine/engine/coupled_articulation.hpp": "e2cf388123269527d859e324b9344899833a3af4b9ad075d2c92f40552a1e53f",
+    "ChimeraEngine/engine/coupled_dynamics.hpp": "ab92e148e3880af85155b723eaf52240fa07f052768ccd5c588e2e59f6e59c66",
+    "ChimeraEngine/engine/graph_earth.hpp": "37bc948669ed50b82ffa35440c85d33efd4bd59c506933646e0bb32b9aebe321",
+    "ChimeraEngine/engine/tests_coupled_arm/native.cpp": "8f14ba499c8ef7872d9b8c9fc11d9b64d8407d6af539c9595ad4e82beed4341b",
+    "tools/science_funnel/coupled_scene.py": "3af856e6c2b8e1ccdcb988733a14de2041f5c677a63e8540680a85588745fa86",
+    "tools/science_funnel/coupled_arm.html": "1b52ea6efc3d5ea3195058e8f5f66a7adae6e0914d0b07b928d272a6d996becc",
+    "tools/science_funnel/run_earth.ps1": "93aff54a5ec703190a50fdff6d3469fffa3ea7df4b2bd5f370e5a47c55274fe7",
+    "tools/science_funnel/tests/test_coupled_scene.py": "448e55e71e7efab3879cf3829c968c18fc8c9d9b0a1aadd51ef17ad38fb911d6",
+    "tools/science_funnel/tests/qualify_coupled_live.py": "f5660b594d56f9c63baff42d1c8dfeb58211a08256745037630938948b166ba1",
+    "tools/science_funnel/coupled_arm.py": "2a8a779e55ff77c96e8806cbc95858f2821dc83d64d6a48b41dce292b682828d",
+    "tools/creature_graph/data/authored/project_program.json": "c53d259f3804c847f32d9c56e1d72245ea8d523b0b31f079552a92a6807688cf",
+    "tools/creature_graph/data/creature_graph.json": "a96ca647448343634216c6fe95550d6e545ef7a4fca6934231dc97d6e7074537"
+  },
+  "scope": "Native source-derived shoulder and elbow with optional frictionless unilateral hand contact on an authored rigid plane at 0.35 m: signed gap, contact row from the source-transform point Jacobian, perfectly inelastic landings, nonnegative acceleration-level reactions with the exact curvature floor, contact accounts in the energy ledger, rendered plane. Contact off by default reproduces candidate 9ab72288 bit-exactly. No friction, grasp, free root, muscles, full animal, distributed contact or GPU qualification.",
+  "checks": {
+    "native_reference_cases": 7,
+    "native_scalar_comparisons": 714,
+    "native_tick_and_contact_assertions": 99035,
+    "live": 36,
+    "python": 40,
+    "scalar_regression": 19,
+    "earth_regression": 23,
+    "graphify_consumer": 7,
+    "historical_evidence_unchanged": 11,
+    "ui": "PASS operator-session browser check: toggle resets trial, plane renders at recipe height, press shows gap ~0 with 1.434 N reaction, no rendering glitches"
+  },
+  "metrics": {
+    "worst_native_reference_absolute_error": 1.2732925824820995e-11,
+    "free_ten_second_peak_residual_J": 4.2412640066658014e-10,
+    "free_refinement_ratio": 15.962558823963903,
+    "contact_worst_gap_m": 4.147475858029548e-07,
+    "contact_peak_reaction_N": 2.5894018617259906,
+    "contact_impact_heat_J": 0.06656390658451124,
+    "contact_touching_band_m": 1e-05
+  },
+  "runtime": {
+    "pid": 122496,
+    "exe": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\coupled-native-engine\\Release\\chimera_engine.exe",
+    "exe_sha256": "87901C6294C740756CFDC8AC6FB9E66FF56A0EBA8B8D0180716B5EE352D443ED",
+    "scene": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\coupled-native\\scene.json",
+    "scene_file_sha256": "2C783D583F073F5A76F89D0CF1D4399FD82FEC61BCB14BA045CFC6263FCBB5D4",
+    "graph_hash": "e8197294a8a0c8421af9fba687ccdc3e4f1a3a31a22befee7c107817a8822b67",
+    "scene_sha256": "12da8259b36480e87d0192647760b0ae11357fbe101eaf2f482c34cdbe1dd103",
+    "port": 8127,
+    "launched_utc": "2026-09-17T15:19:06.7648352Z"
+  },
+  "source_revision": "4fb7dddeec06a0df9525c18f37234a824cb1b5b1",
+  "development_findings": [
+    "Constraint on row*qdd alone ratcheted the hand into the plane at the centripetal bias rate; the physical unilateral condition is on the full gap second derivative row*qdd + bias_up >= 0 with the bias taken from the same analytic transforms. Press/drop residuals fell from 3.5e-5 J to below 1e-9 J.",
+    "Contact rows must not be live in an RK4 stencil that crosses first touch: a boundary stage did unaccounted discrete constraint work. Pre-touching pieces and the detection rollout now run without contact rows; rows are live only in substeps that start in contact.",
+    "The touching band is derived, not tuned: a*h^2/2 with a ~ 20 m/s^2 and h = 1/1200 s gives 1e-5 m, above the stage-probe curvature noise (~6e-8 m) so the row cannot flicker inside one stencil; settled micro-penetration stays inside the band.",
+    "Stage-gate velocity tolerance is scale-aware (1e-3 per rad/s of joint speed) because the contact row itself rotates with q at arm scale.",
+    "MSVC incremental builds in this tree repeatedly served stale objects after header edits; all verification runs used touched/clean rebuilds."
+  ],
+  "replay": [
+    "powershell -File tools/science_funnel/run_earth.ps1 -CoupledArm -Port 8127 -Python E:\\PythonChimera\\.venv-hy3d\\Scripts\\python.exe",
+    "cmake -S ChimeraEngine/engine/tests_coupled_arm -B .tmp/coupled-tests",
+    "cmake --build .tmp/coupled-tests --config Release",
+    ".tmp/coupled-tests/Release/coupled_native.exe .tmp/coupled-native/scene.json tools/science_funnel/validation/coupled_arm_20260917/reference_cases.json",
+    "python -B -m unittest tools.science_funnel.tests.test_coupled_scene tools.science_funnel.tests.test_coupled_arm tools.science_funnel.tests.test_force_arm tools.creature_graph.tests.test_project_spec -v",
+    "python -B -m tools.science_funnel.tests.qualify_coupled_live --runtime .tmp/coupled-native/runtime.json --output .tmp/coupled-native/live_checks.json"
+  ],
+  "limits": [
+    "Endpoint-based event detection with 42-step bisection; not a general arbitrary-speed continuous collision detector. A substep that enters and exits the 1e-5 m band within itself can tunnel; measured trials show none.",
+    "Contact establishes at band entry: the hand may rest up to 1e-5 m above the plane under load (measured worst +4.2e-6 m hover and -4.2e-6 m penetration, both inside the band).",
+    "Frictionless normal contact only. No tangential reactions, stiction, rolling, wrap or grasp; the plane is static, horizontal and rigid.",
+    "Leaving-contact transitions can exchange microjoule-scale work across the activation band; no separation events occur in the preregistered trials.",
+    "RK4 with event splits remains a CPU two-coordinate reference; joint stops and contact share one active-set projection limited to two independent rows."
+  ],
+  "artifacts": {
+    "press.png": "11877258cb03529b9ea52a81d388325f5d829e738a53e1022eaded31c81ec139",
+    "native_checks.json": "859a96e49044b82488dc58dc5e178e051e92e805839e5ae85125bf5f8bca4d53",
+    "live_checks.json": "ad8050dce5644beaa0832f56e69ea27b7e163976e04ac43458ae05c8ad1f1e32",
+    "scalar_regression.json": "22d5369105921c787ed6519557ba59b26c7106f5a07c266c3a6edc7f6b51ace7",
+    "earth_regression.json": "56cbc6cb8ce34c524f33a02772e4eb385b1e3532b480e4db43ffe2a67954890e"
+  }
+}
