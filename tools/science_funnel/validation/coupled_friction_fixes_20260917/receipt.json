@@ -1,9 +1,9 @@
 {
   "schema": "chimera.scoped_validation.v1",
   "recorded_utc": "2026-09-17T23:05:00+00:00",
-  "candidate_commit": "322d328f39f0079a394c7a364ee2b68f1c980f97",
-  "candidate_tree": "b46bc034e338dc77a67b84822081a814da4fc1de",
-  "qualified_graph_hash": "f1ba8739810997ede1e18973e77a6c3ce155a42480c951415b411edb2cb985e0",
+  "candidate_commit": "53501e861b57cfb8ab280ef11cefb45b7feabe5b",
+  "candidate_tree": "36196c71a9962c75f44e3d1b06a8570c2ed5ee4d",
+  "qualified_graph_hash": "a4f7dc58d2c4cdb6e3e59a0c4ef951a5b0a909795a16a6302652c5d4d7bd6cc9",
   "source_file_manifest_sha256": {
     "ChimeraEngine/engine/coupled_dynamics.hpp": "4685d02131c842b98c1782b2a9dc96c216adb51363cbcef9264fbf0f4eb8d626",
     "ChimeraEngine/engine/tests_coupled_arm/native.cpp": "1221024560b1bb5cb7a7c6591584699abf7ec7a39b3ecc7beabc3dfa9cdf68f6",
@@ -11,8 +11,8 @@
     "ChimeraEngine/engine/tests_coupled_arm/mucrit_derivation.cpp": "bcd2f2c99f6f2a00e90173900a493867480320c154c8cc3ce45f34e2340d37dc",
     "ChimeraEngine/engine/tests_coupled_arm/CMakeLists.txt": "75504f824cb456ff5a3b91cc391ff81e50cd1ce40f0ea4c904647165e76db412",
     "tools/science_funnel/tests/qualify_coupled_live.py": "1eaf3a50720750ca661ac82e4398d0c9f6ea2296931700f146d3be8584729733",
-    "tools/creature_graph/data/authored/project_program.json": "f292742881ba390c7c9d001ea3b1c2eeb93b33d596b40e1e41a4556e911d911d",
-    "tools/creature_graph/data/creature_graph.json": "a70c9c6fbd5b7d9799b509b89a527f272dc6cee842ab05eb0f9136659bf79c09"
+    "tools/creature_graph/data/authored/project_program.json": "d8f984f52350a20a3552c4af92337c098f254643a6e4461008f93dade9c2287d",
+    "tools/creature_graph/data/creature_graph.json": "c6bd68bbc1c4ba0dec1aa1dabc6aaccbd848b7fe10ae165538ea40b92ff4f02f"
   },
   "scope": "Four independent-review fixes on the published Coulomb friction slice (receipt coupled_friction_20260917, findings F1-F4): the exact-rest slide-sign fallback in friction_solve now opposes impending slip; the deferred critical-mu hold-vs-slide falsifier is exercised by a derived native trial pair (mu=0.8 holds, mu=0.6 slides); the impact-level friction cone is asserted every tick; the live qualifier's scope string names friction. Engine frictionless behavior, frozen references and the mu=0 default are unchanged bit-exactly. No live qualification run (the operator's scene on 8127 was never touched; scene generation used owned port 8171 and a path-guarded PID stop).",
   "review_findings_addressed": {
@@ -26,7 +26,8 @@
     "native_scalar_comparisons": 714,
     "native_tick_and_contact_assertions": 158229,
     "friction_unit_checks": 27,
-    "python_unittest": 138,
+    "python_unittest_full_discover": "134 ran, 2 loader errors (test_batch, test_batch_muscle) caused by an upstream defect on origin/master itself: connectors.py merges lane modules twice (the 2f0b0ff8 unifier loop and the muscle-intake _load_lane_modules), so the second pass refuses connector_id_collision: guimaraes_arch on first import. tools/science_funnel/batch/ in this tree is byte-identical to origin/master (0 diff files); not this lane's owned scope.",
+    "python_unittest_lane_scoped": "35 tests OK (coupled_scene, coupled_arm, force_arm, earth_scene)",
     "graph_project_spec_check": true,
     "graphify_consumer": "HONEST (bridge round-trips the projection)",
     "live_qualifier": "not run by design (operator scene protection); scope string verified by py_compile and content"
@@ -61,13 +62,13 @@
   },
   "runtime": {
     "scene_generation_port": 8171,
-    "pid": 87372,
+    "pid": 121452,
     "exe": "E:\\ChimeraWork\\friction-fixes-20260917\\.tmp\\coupled-native-engine\\Release\\chimera_engine.exe",
-    "exe_sha256": "cdc4f8bd0abc015306bd5dd61dad44404ed62fd5934e352fbd6cf2c0b9280579",
+    "exe_sha256": "e35ed149cf5810503a82cb971cfd03a1406862bf3c316d01b548562520bfd79b",
     "scene": "E:\\ChimeraWork\\friction-fixes-20260917\\.tmp\\coupled-native\\scene.json",
-    "scene_file_sha256": "6a3ba95793d3c4e8276fecf40cad69906e2f75ef6e44bc73782c786740e60923",
-    "graph_hash": "f1ba8739810997ede1e18973e77a6c3ce155a42480c951415b411edb2cb985e0",
-    "launched_utc": "2026-09-17T22:50:52.3174142Z",
+    "scene_file_sha256": "c8cd4ebcf1d2d410eeccadd3a6b175dc64d3ba130b9714d6f6288eaee34992b7",
+    "graph_hash": "a4f7dc58d2c4cdb6e3e59a0c4ef951a5b0a909795a16a6302652c5d4d7bd6cc9",
+    "launched_utc": "2026-09-17T23:00:32.9161669Z",
     "engine_shutdown": "path-guarded PID kill verified against the worktree exe path before Stop-Process"
   },
   "replay": [
@@ -81,6 +82,7 @@
     "python -B tools/creature_graph/graphify_consumer.py"
   ],
   "limits": [
+    "UPSTREAM DEFECT (not this lane's scope, reported for the integrator): origin/master 2f0b0ff8 + bc94126b together double-merge lane connector modules (connectors.py's EXTRA_CONNECTORS loop and _load_lane_modules both load every connectors_*.py), so importing tools.science_funnel.batch.connectors refuses connector_id_collision: guimaraes_arch on a clean master checkout; test_batch and test_batch_muscle error in unittest discover for that reason alone.",
     "The live qualifier was not run: the scope-string fix (F4) is content-verified only, to be exercised at the next scheduled live qualification; the operator's scene on port 8127 was never touched.",
     "The descent-peak demand (frozen 0.7848445602) is not bit-reproduced by the recreated per-tick sampling (measured boundary 0.78523469467713, 0.05% apart); the settle number and the mu=0.6 slide-tick count reproduce exactly.",
     "The F1 fix is asserted at the unit seam and leaves every published trial number bit-identical (the branch is unreachable in the qualified trials, as the review predicted); no claim is made about scenes outside the qualified scope.",
@@ -90,7 +92,7 @@
     "friction_unit.json": "bf198785a7218ff600c27b9d5900157f28903dfdf63ecb7ae6cd13554c9b9d5f",
     "mucrit_derivation.json": "81e71c83facc4fce940129a9b8d13b94452cf16e2491273795ab070077c899b3",
     "native_checks.json": "8ba054e0b5f9203688fff58105e7ae3d0c3a81179b1b34a32bd8044c6e0dad16",
-    "scene_runtime.json": "0d083c3940543f684f9e72b24c7597c94afae59fc522c8ccc3b2b632d72d1691"
+    "scene_runtime.json": "0193512c60b165f185d8b76af1a857d4a6c7418f65fda96bf497c9a6a1fb84cd"
   },
   "admission": "work.creature.coupled_arm_friction_fixes (graph, admitted before code); observation recorded with this receipt",
   "worktree_manifest_note": "The manifest pins the qualified candidate content (code files unchanged since candidate_commit). The graph records (project_program.json, creature_graph.json) take their observation updates in the records commit after this snapshot; their receipt-time hashes above predate that update."
