@@ -6,6 +6,23 @@ A physics-teaching engine and creature game built from a versioned scientific gr
 The selected graph revision holds project requirements, concepts, work, dependencies,
 sources, and evidence. This README is its bootstrap and command reference.
 
+## Fresh-session continuation
+
+In the verified current checkout, read the maintained onboarding assignment from
+its graph before dispatching work:
+
+```powershell
+python -B -m tools.creature_graph.project_spec --check
+python -B -m tools.creature_graph.project_spec --show doc.handoff.zcode
+```
+
+The last development worktree was
+`E:\ChimeraWork\codex-graph-workflow-20260916`; verify it using the checks below.
+The project home's separate dirty checkout may be older than GitHub master.
+Do not switch or reset that checkout to obtain the latest work.
+The graph handoff covers Z Code/GLM, resumable subagents, serial integration,
+publication, worked examples and exact remaining tasks.
+
 ## 1. Confirm the checkout
 
 The project home is `E:\PythonChimera`. Work may run in an assigned isolated
@@ -45,6 +62,7 @@ python -B -m tools.creature_graph.project_spec --show doc.workflow.macaque_assem
 python -B -m tools.creature_graph.project_spec --show req.earth_environment
 python -B -m tools.creature_graph.project_spec --show doc.workflow.earth_patch
 python -B -m tools.creature_graph.project_spec --show doc.workflow.force_arm
+python -B -m tools.creature_graph.project_spec --show doc.workflow.coupled_arm
 python -B -m tools.creature_graph.project_spec --show req.layered_anatomy
 python -B -m tools.creature_graph.project_spec --show req.embodied_senses
 python -B -m tools.creature_graph.project_spec --show doc.creature_binding_observation
@@ -204,8 +222,8 @@ reference-test commands, evidence identities and the model's limits.
 
 The active contract is `req.engine_game_release`:
 
-**Functioning demo game loop â†’ qualify and lock the open-source engine â†’
-create the separate game repository â†’ focus on the game.**
+**Functioning demo game loop -> qualify and lock the open-source engine ->
+create the separate game repository -> focus on the game.**
 
 The loop must include a concrete objective, player action, physical consequence,
 feedback, success/failure, and recovery. The graph names its prerequisites and
@@ -248,3 +266,16 @@ Open `http://127.0.0.1:8126/earth`. Cut drive power, change the target, apply a
 downward load or reduce torque. Native dynamics owns the elbow angle; the
 source arm can fall or stall against its support. Read `doc.workflow.force_arm`
 for inertia derivation, finite-energy accounting, qualification and limitations.
+
+### Derive coupled joint dynamics
+
+```powershell
+python -B -m tools.science_funnel.coupled_arm
+python -B -m unittest tools.science_funnel.tests.test_coupled_arm -v
+```
+
+This produces `.tmp/coupled-arm/reference.json`: named coordinate slots, the
+source-derived inertia matrix, gravity and velocity-dependent joint loads.
+Read `doc.workflow.coupled_arm` for the derivation and independent checks, and
+`work.creature.coupled_arm_native` for integration. This is an offline reference;
+the live force-arm scene still integrates one elbow coordinate.
