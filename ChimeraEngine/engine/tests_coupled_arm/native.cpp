@@ -38,15 +38,46 @@ int main(int argc,char**argv){try{
  ck(std::abs(rows_seen[0][0]-rows_seen[2][0])>1e-6||std::abs(rows_seen[0][1]-rows_seen[2][1])>1e-6,"contact_geometry_moves_with_shoulder");
 
  // Obstructed target: press the plane, measure reaction and stall, never teleport.
+ // The three frozen metrics are the qualified frictionless receipt values: the
+ // mu=0 default must reproduce candidate 8e010738 bit-exactly.
  double worst_gap=1,peak_reaction=0;{CoupledDynamics d(data,9.81,shift);d.configure({{"contact_enabled",true},{"reset",true},{"shoulder_target_deg",20.},{"elbow_target_deg",20.}});
   for(int i=0;i<6000;++i){d.step();auto s=d.status();double g=number(s["contact"]["gap_m"]),r=number(s["contact"]["reaction_N"]);worst_gap=(std::min)(worst_gap,g);peak_reaction=(std::max)(peak_reaction,r);
    ck(g>=-1e-5,"contact_no_pass_through");ck(r>=-1e-9,"contact_reaction_nonnegative");ck(std::abs(number(s["energy"]["balance_error_J"]))<1e-5&&std::abs(number(s["energy"]["store_balance_error_J"]))<1e-5,"contact_balance");}
-  auto s=d.status();ck(worst_gap<1e-5,"contact_actually_touched");ck(peak_reaction>0.05,"contact_reaction_bears_load");ck(number(s["joints"][1]["angle_deg"])>30.,"contact_target_obstructed");}
+  auto s=d.status();ck(worst_gap<1e-5,"contact_actually_touched");ck(peak_reaction>0.05,"contact_reaction_bears_load");ck(number(s["joints"][1]["angle_deg"])>30.,"contact_target_obstructed");
+  ck(worst_gap==4.147475858029548e-07&&peak_reaction==2.5894018617259906,"frictionless_slice_bit_exact");}
 
  // Power-cut drop: the fall is absorbed inelastically without creating energy.
+ // The frozen heat value is the qualified frictionless receipt's drop impact heat.
  double contact_heat=0;{CoupledDynamics d(data,9.81,shift);d.configure({{"contact_enabled",true},{"reset",true},{"power",false}});
   for(int i=0;i<6000;++i){d.step();auto s=d.status();ck(number(s["contact"]["gap_m"])>=-1e-5,"contact_drop_no_pass_through");ck(number(s["contact"]["reaction_N"])>=-1e-9,"contact_drop_nonnegative");contact_heat=(std::max)(contact_heat,number(s["energy"]["contact_impact_heat_J"]));ck(number(s["energy"]["actuator_work_J"])==0,"contact_passive_no_work");}
-  auto s=d.status();ck(contact_heat>0,"contact_impact_dissipated");ck(std::abs(number(s["energy"]["balance_error_J"]))<1e-5&&std::abs(number(s["energy"]["store_balance_error_J"]))<1e-5,"contact_drop_balance");ck(number(s["contact"]["gap_m"])>=-1e-5&&std::abs(number(s["joints"][1]["speed_rad_s"]))<.05,"contact_settles_on_plane");}
+  auto s=d.status();ck(contact_heat>0,"contact_impact_dissipated");ck(contact_heat==0.06656390658451124,"frictionless_drop_bit_exact");ck(std::abs(number(s["energy"]["balance_error_J"]))<1e-5&&std::abs(number(s["energy"]["store_balance_error_J"]))<1e-5,"contact_drop_balance");ck(number(s["contact"]["gap_m"])>=-1e-5&&std::abs(number(s["joints"][1]["speed_rad_s"]))<.05,"contact_settles_on_plane");}
+
+ // Coulomb friction: cone and no-adhesion every tick, dissipation grows with mu,
+ // the landed arm ends held (stick) with the plane horizontal so only friction
+ // brakes the landing slip; mu=0 shows no tangential force at all.
+ double heat_low=0,heat_high=0;long long stick_low=0;{CoupledDynamics zero(data,9.81,shift);zero.configure({{"contact_enabled",true},{"reset",true},{"contact_friction",0.},{"shoulder_target_deg",20.},{"elbow_target_deg",20.}});
+  for(int i=0;i<300;++i){zero.step();auto s=zero.status();ck(number(s["contact"]["friction_force_N"])==0&&number(s["energy"]["friction_heat_J"])==0,"friction_zero_mu_inert");}
+  for(double mu:{0.05,0.8}){CoupledDynamics d(data,9.81,shift);d.configure({{"contact_enabled",true},{"reset",true},{"contact_friction",mu},{"shoulder_target_deg",20.},{"elbow_target_deg",20.}});long long stick=0;double settled_bal=0;bool settled=false;
+   for(int i=0;i<6000;++i){d.step();auto s=d.status();
+    double fn=number(s["contact"]["reaction_N"]),ft=std::abs(number(s["contact"]["friction_force_N"])),bal=std::abs(number(s["energy"]["balance_error_J"])),store=std::abs(number(s["energy"]["store_balance_error_J"]));
+    ck(ft<=mu*fn+1e-9,"friction_cone");ck(fn>1e-9||ft<1e-12,"friction_no_pull_without_load");
+    ck(number(s["energy"]["friction_heat_J"])>=-1e-12,"friction_heat_nonnegative");
+    // Preregistered: one-time catch-event allowance <= 5e-5 J; below 1e-5 J
+    // thereafter with no sustained drift (amendment recorded in the graph).
+    ck(bal<5e-5&&store<5e-5,"friction_balance_allowance");
+    if(i==600){settled=true;settled_bal=(std::max)(bal,store);}
+    if(settled)ck(bal<settled_bal+1e-5&&store<settled_bal+1e-5,"friction_balance_no_drift");
+    if(s["contact"]["mode"]=="stick")++stick;}
+   auto s=d.status();ck(number(s["energy"]["friction_heat_J"])>0,"friction_dissipated");
+   // On a horizontal plane a fully settled static pose has no impending slip, so
+   // the terminal mode may be free; stick must have been observed while holding.
+   ck(std::abs(d.speeds()[0])<.02&&std::abs(d.speeds()[1])<.02&&number(s["contact"]["gap_m"])>=-1e-5,"friction_lands_settled");
+   ck(stick>0,"friction_stick_observed");
+   if(mu<0.5){heat_low=number(s["energy"]["friction_heat_J"]);stick_low=stick;}else heat_high=number(s["energy"]["friction_heat_J"]);}}
+ ck(heat_high>heat_low&&heat_low>0,"friction_more_mu_more_heat");
+ // The coefficient is a live control: accepted without reset, echoed in status.
+ {CoupledDynamics d(data,9.81,shift);d.configure({{"contact_enabled",true},{"reset",true}});d.step();d.configure({{"contact_friction",.4}});auto s=d.status();ck(number(s["config"]["contact_friction"])==.4&&number(s["contact"]["friction_mu"])==.4,"friction_live_control");bool refused=false;try{d.configure({{"contact_friction",1.5}});}catch(const Refusal&){refused=true;}ck(refused,"friction_range_refused");}
+
 
  GraphEarth graph;graph.load(argv[1]);auto graph_status=graph.status();ck(graph_status["mode"]=="native_coupled_arm"&&!graph_status.contains("elbow_deg"),"coupled_coordinate_schema");ck(graph_status["contacts"]["environment"]==false,"free_mode_default_off");graph.control({{"paused",true}});auto g0=graph.status();graph.control({{"shoulder_target_deg",60.},{"elbow_target_deg",130.}});auto g1=graph.status();for(int i=0;i<2;++i){ck(g0["joints"][i]["angle_deg"]==g1["joints"][i]["angle_deg"],"graph_intent_angle");ck(g0["joints"][i]["speed_rad_s"]==g1["joints"][i]["speed_rad_s"],"graph_intent_speed");}
  size_t triangles_free=number(graph.render().state.at("mesh_triangles"));
@@ -58,5 +89,5 @@ int main(int argc,char**argv){try{
  ck(std::isfinite(number(enabled["contact"]["gap_m"]))&&number(enabled["contact"]["plane_world_up_m"])==number(scene.at("coupled_dynamics").at("recipe").at("contact_plane_height_m")),"contact_plane_recipe_agreement");
  auto plane_render=graph.render();ck(number(plane_render.state.at("mesh_triangles"))>=triangles_free+6,"contact_plane_rendered");
 
- std::cout<<J({{"reference_cases",cases["cases"].size()},{"scalar_comparisons",count},{"worst_absolute_error",worst},{"dynamics_checks",checks},{"peak_energy_residual_J",residual},{"free_refinement_ratio",ratio},{"trials",runs},{"exhaustion",empty.status()},{"contact",{{"worst_gap_m",worst_gap},{"peak_reaction_N",peak_reaction},{"impact_heat_J",contact_heat}}},{"pass",true}}).dump(2)<<"\n";
+ std::cout<<J({{"reference_cases",cases["cases"].size()},{"scalar_comparisons",count},{"worst_absolute_error",worst},{"dynamics_checks",checks},{"peak_energy_residual_J",residual},{"free_refinement_ratio",ratio},{"trials",runs},{"exhaustion",empty.status()},{"contact",{{"worst_gap_m",worst_gap},{"peak_reaction_N",peak_reaction},{"impact_heat_J",contact_heat}}},{"friction",{{"heat_low_mu_J",heat_low},{"heat_high_mu_J",heat_high},{"stick_ticks_low_mu",stick_low}}},{"pass",true}}).dump(2)<<"\n";
 }catch(const std::exception& e){std::cerr<<e.what()<<"\n";return 1;}}

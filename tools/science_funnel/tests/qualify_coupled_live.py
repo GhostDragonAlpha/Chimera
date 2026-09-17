@@ -52,7 +52,16 @@ def qualify(runtime):
   ck('contact_powercut_lands_and_settles',worst_gap>=-1e-5 and s['contact']['gap_m']>=-1e-5 and abs(s['joints'][1]['speed_rad_s'])<.05 and s['contact']['touching'],worst_gap_m=worst_gap)
   ck('contact_passive_no_created_energy',s['energy']['actuator_work_J']==0 and s['energy']['contact_impact_heat_J']>0 and max(abs(s['energy'][k]) for k in ['balance_error_J','store_balance_error_J'])<1e-5,contact_impact_heat_J=s['energy']['contact_impact_heat_J'])
 
-  s=send(dict(defaults,reset=True));ck('contact_restore_free_mode',s['contacts']=={'environment':False,'joint_limits':True} and s['config']['contact_enabled'] is False)
+  # Coulomb friction: mu=0 inert; live mu control without reset; cone, heat, hold.
+  send({'contact_enabled':True,'reset':True});s=until(lambda x:x['sim_time_s']>.05)
+  ck('friction_zero_mu_inert',s['contact']['friction_mu']==0 and s['contact']['friction_force_N']==0 and s['energy']['friction_heat_J']==0)
+  send({'contact_friction':0.8});s=req();ck('friction_live_control_no_reset',s['ok'] and s['config']['contact_friction']==0.8 and s['contact']['friction_mu']==0.8 and s['sim_time_s']>.05)
+  send({'shoulder_target_deg':20.,'elbow_target_deg':20.});s=until(lambda x:x['contact']['touching'] and x['energy']['friction_heat_J']>0,timeout=8)
+  ck('friction_press_slides_and_dissipates',s['contact']['mode'] in ('slide','stick') and s['energy']['friction_heat_J']>0)
+  s=until(lambda x:abs(x['joints'][0]['speed_rad_s'])<.02 and abs(x['joints'][1]['speed_rad_s'])<.02 and x['sim_time_s']>1,timeout=8)
+  ck('friction_cone_and_accounts',abs(s['contact']['friction_force_N'])<=s['contact']['friction_mu']*s['contact']['reaction_N']+1e-9 and max(abs(s['energy'][k]) for k in ['balance_error_J','store_balance_error_J'])<1e-5,friction_heat_J=s['energy']['friction_heat_J'])
+
+  s=send(dict(defaults,reset=True));ck('contact_restore_free_mode',s['contacts']=={'environment':False,'joint_limits':True} and s['config']['contact_enabled'] is False and s['config']['contact_friction']==0)
   ck('honest_contact_scope',s['contacts']=={'environment':False,'joint_limits':True})
   ck('energy_accounts',max(abs(s['energy'][k]) for k in ['balance_error_J','store_balance_error_J'])<1e-5)
   s=send({'paused':True});bad=req({'elbow_deg':0});ck('direct_pose_refused_atomically',bad.get('ok') is False and req()['joints']==s['joints'])

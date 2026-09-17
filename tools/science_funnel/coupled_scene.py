@@ -30,6 +30,8 @@ def compile_coupled(graph,output):
     plane=recipe.get('contact_plane_height_m')
     require(isinstance(plane,(int,float)) and math.isfinite(plane),'coupled_contact_plane_invalid')
     require(isinstance(recipe['defaults'].get('contact_enabled'),bool),'coupled_contact_flag_invalid')
+    friction=recipe['defaults'].get('contact_friction')
+    require(isinstance(friction,(int,float)) and not isinstance(friction,bool) and 0<=friction<=1,'coupled_friction_flag_invalid')
     Assembly(model) # strict physical-inertia and kinematic intake checks
     scene=graph.get('model.environment.earth_patch')['physical']['contract']
     surface=graph.get(recipe['contact_plane_id'])['physical']
@@ -40,7 +42,7 @@ def compile_coupled(graph,output):
     bundle=compile_scene(graph,output)
     bundle['coupled_dynamics']={'model_id':MODEL,'recipe':recipe,'model':model}
     bundle['page_file']=str(ROOT/'tools/science_funnel/coupled_arm.html')
-    bundle['scope']='Native source-derived shoulder/elbow dynamics, fixed mount, finite ideal actuator work, source joint stops and an optional frictionless rigid hand contact plane (off by default; the toggle requires reset). No friction, grasp, free root, whole animal, muscles, tissue mechanics or GPU residency qualification.'
+    bundle['scope']='Native source-derived shoulder/elbow dynamics, fixed mount, finite ideal actuator work, source joint stops, an optional frictionless-to-Coulomb hand contact plane (off and frictionless by default; the plane toggle requires reset, mu is live) and authored friction heat accounts. No grasping, free root, whole animal, muscles, tissue mechanics or GPU residency qualification.'
     bundle['sources'] += [{'title':'Pinned macaque anatomy and effective segment inertia','url':'https://github.com/limblab/monkeyArmModel/tree/4fb7dddeec06a0df9525c18f37234a824cb1b5b1'}]
     bundle.pop('scene_sha256');bundle['scene_sha256']=digest(bundle)
     (Path(output)/'scene.json').write_bytes(canonical(bundle));return bundle

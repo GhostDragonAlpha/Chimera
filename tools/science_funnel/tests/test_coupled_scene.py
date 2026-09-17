@@ -9,9 +9,13 @@ class CoupledScene(unittest.TestCase):
  def compile(self):
   with tempfile.TemporaryDirectory() as d:return compile_coupled(self.g,Path(d))
  def test_source_recipe_compiles(self):
-  s=self.compile();self.assertEqual(s['coupled_dynamics']['recipe']['coordinates'],['shoulder_flexion','elbow_flexion']);self.assertIn('optional frictionless rigid hand contact plane',s['scope'])
+  s=self.compile();self.assertEqual(s['coupled_dynamics']['recipe']['coordinates'],['shoulder_flexion','elbow_flexion']);self.assertIn('optional frictionless-to-Coulomb hand contact plane',s['scope'])
  def test_contact_defaults_preserve_free_mode(self):
-  s=self.compile();r=s['coupled_dynamics']['recipe'];self.assertIs(r['defaults']['contact_enabled'],False);self.assertTrue(isinstance(r['contact_plane_height_m'],float))
+  s=self.compile();r=s['coupled_dynamics']['recipe'];self.assertIs(r['defaults']['contact_enabled'],False);self.assertEqual(r['defaults']['contact_friction'],0.0);self.assertTrue(isinstance(r['contact_plane_height_m'],float))
+ def test_friction_out_of_range_refused(self):
+  self.g.get(MODEL)['physical']['contract']['defaults']['contact_friction']=1.5
+  with self.assertRaises(Refusal) as x:self.compile()
+  self.assertEqual(x.exception.code,'coupled_friction_flag_invalid')
  def test_source_mass_mutation_refused(self):
   self.g.get('model.anatomy.macaque_arm')['physical']['model']['bodies'][1]['mass_kg']+=1
   with self.assertRaises(Refusal):self.compile()
