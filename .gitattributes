@@ -28,3 +28,6 @@ tools/science_funnel/data/coolprop/** -text
 tools/science_funnel/data/pubchem/** -text
 # Preserve pinned scientific downloads, including source line endings.
 tools/science_funnel/data/force_sources/** -text -whitespace
+
+# Anatomical source captures retain their upstream bytes for checksum replay.
+tools/science_funnel/data/bodyparts3d/** -text -whitespace
