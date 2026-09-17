@@ -54,7 +54,7 @@ static Trial press_trial(const J& data,V shift,double mu){
 // Demanded stick ratio |t|/n at the post-tick state, reconstructed through
 // the seam from the same pieces rate() uses (free accel, contact row, floors).
 static double demanded_ratio(const CoupledDynamics& d){
- const auto& s=d.s_;auto e=d.evaluate(s.q,s.v,d.gravity_);
+ const auto& s=d.s_;auto e=d.evaluate(s);
  if(e.point(d.hand_,d.local_).first[1]+d.radius_-d.plane_model_y_>d.kTouch)return 0;
  auto inv=inverse_spd(e.mass,2);
  auto ext=e.force(d.hand_,d.local_,V{0,-number(d.config_["load_N"]),0});
