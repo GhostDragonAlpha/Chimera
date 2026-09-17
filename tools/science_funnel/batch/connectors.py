@@ -149,13 +149,17 @@ DEFAULT_CLASSES = {
 }
 
 # Lane connectors auto-load: sibling modules connectors_*.py may define
-# EXTRA_CONNECTORS = {...}; merged here so parallel lanes never edit this file.
+# EXTRA_CONNECTORS = {...} (this lane's convention) or CONNECTORS_LANE = {...}
+# (the intake lanes' spelling); both merge by id with hard collision refusal.
 import importlib as _importlib
 import os as _os
 for _name in sorted(n for n in _os.listdir(_os.path.dirname(__file__))
                     if n.startswith('connectors_') and n.endswith('.py')):
     _mod = _importlib.import_module('.' + _name[:-3], __package__)
-    CONNECTORS.update(getattr(_mod, 'EXTRA_CONNECTORS', {}))
+    _extra = getattr(_mod, 'EXTRA_CONNECTORS', None) or getattr(_mod, 'CONNECTORS_LANE', None)
+    for _cid, _conn in (_extra or {}).items():
+        require(_cid not in CONNECTORS, 'lane_connector_collision', _cid)
+        CONNECTORS[_cid] = _conn
 
 
 def class_for(connector_id, record_type):
