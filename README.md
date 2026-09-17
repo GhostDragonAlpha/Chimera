@@ -16,6 +16,12 @@ python -B -m tools.creature_graph.project_spec --check
 python -B -m tools.creature_graph.project_spec --show doc.handoff.zcode
 ```
 
+On this Windows host, the examples were checked with
+`E:\PythonChimera\.venv-hy3d\Scripts\python.exe`. Use that executable in place
+of `python` if the default interpreter lacks the project's dependencies.
+PowerShell launchers also accept `-Python` with this path. The coupled reference
+runs offline from the pinned data already in the repository.
+
 The last development worktree was
 `E:\ChimeraWork\codex-graph-workflow-20260916`; verify it using the checks below.
 The project home's separate dirty checkout may be older than GitHub master.
