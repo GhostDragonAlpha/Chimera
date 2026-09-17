@@ -2498,18 +2498,20 @@
       label.textContent=j.name.replace(/_/g,' ');panel.appendChild(label);
       var input=document.createElement('input');input.type='range';input.min=j.limits_deg[0];input.max=j.limits_deg[1];input.step=.5;input.value=0;input.style.width='100%';input.setAttribute('aria-label',j.name.replace(/_/g,' '));label.appendChild(input);
       var value=document.createElement('span');label.appendChild(value);
-      function update(){value.textContent=(Number(input.value)+j.source_default_rad*180/Math.PI).toFixed(1)+'°';}
+      function update(){var angle=Number(input.value)+j.source_default_rad*180/Math.PI;value.textContent=(Math.abs(angle)<.05?0:angle).toFixed(1)+'°';}
       update();controls.push({input:input,joint:j,update:update});
       input.addEventListener('input',update);
       input.addEventListener('change',async function(){
-        try{var r=await postJSON(API.pose,{joint:j.name,deg:Number(input.value)});var result=await r.json();notice.textContent=result.ok?'Pose applied by the native engine.':'Pose refused: '+result.error;}
+        try{var r=await postJSON('/api/pose',{joint:j.name,deg:Number(input.value)});var result=await r.json();notice.textContent=result.ok?'Pose applied by the native engine.':'Pose refused: '+result.error;}
         catch(e){notice.textContent='The native engine did not answer.';}
       });
     });
     var reset=line('button','Restore source pose');reset.className='btn';reset.style.marginTop='16px';
     reset.addEventListener('click',async function(){
-      for(var c of controls){c.input.value=0;c.update();await postJSON(API.pose,{joint:c.joint.name,deg:0});}
-      notice.textContent='Source pose restored.';
+      try {
+        for(var c of controls){var r=await postJSON('/api/pose',{joint:c.joint.name,deg:0});var reply=await r.json();if(!reply.ok)throw new Error(reply.error||'pose refused');c.input.value=0;c.update();}
+        notice.textContent='Source pose restored.';
+      } catch(e) {notice.textContent='Restore failed: '+e.message;}
     });
     line('h2','SOURCE COVERAGE').style.marginTop='24px';
     anatomyScene.bones.forEach(function(b){var d=b.metrics.bounds_m;var mm=d[1].map(function(v,i){return ((v-d[0][i])*1000).toFixed(1);});line('p',b.body+': '+mm.join(' × ')+' mm'+(b.metrics.edges_not_shared_twice?' · boundary repair needed':''));});
