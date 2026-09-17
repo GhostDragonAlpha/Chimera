@@ -3,19 +3,22 @@ param(
     [string]$Python="python",
     [string]$CMake="cmake",
     [switch]$SkipBuild,
-    [switch]$ForceArm
+    [switch]$ForceArm,
+    [switch]$CoupledArm
 )
 $ErrorActionPreference="Stop"
+if($ForceArm -and $CoupledArm){throw "Choose one arm mode."}
+if($CoupledArm -and -not $PSBoundParameters.ContainsKey("Port")){$Port=8127}
 $projectRoot=(Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 Push-Location $projectRoot
 try {
     if(Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue) {
         throw "Port $Port is occupied; this launcher never stops existing processes."
     }
-    $compiler=if($ForceArm){'tools.science_funnel.force_arm'}else{'tools.science_funnel.earth_scene'}
+    $compiler=if($CoupledArm){'tools.science_funnel.coupled_scene'}elseif($ForceArm){'tools.science_funnel.force_arm'}else{'tools.science_funnel.earth_scene'}
     & $Python -B -m $compiler
     if($LASTEXITCODE -ne 0){throw "Graph compilation refused."}
-    $buildRelative=if($ForceArm){'.tmp/force-arm-engine'}else{'.tmp/earth-engine'}
+    $buildRelative=if($CoupledArm){'.tmp/coupled-native-engine'}elseif($ForceArm){'.tmp/force-arm-engine'}else{'.tmp/earth-engine'}
     $buildDir=Join-Path $projectRoot $buildRelative
     if(-not $SkipBuild) {
         & $CMake -S ChimeraEngine/engine -B $buildDir
@@ -25,7 +28,7 @@ try {
     }
     $exe=Join-Path $buildDir "Release\chimera_engine.exe"
     if(-not (Test-Path -LiteralPath $exe)){throw "Executable missing: $exe"}
-    $sceneRelative=if($ForceArm){'.tmp/force-arm/scene.json'}else{'.tmp/earth-patch/scene.json'}
+    $sceneRelative=if($CoupledArm){'.tmp/coupled-native/scene.json'}elseif($ForceArm){'.tmp/force-arm/scene.json'}else{'.tmp/earth-patch/scene.json'}
     $scene=Join-Path $projectRoot $sceneRelative
     $outputDir=Split-Path $scene
     $stamp=Get-Date -Format "yyyyMMdd_HHmmss"

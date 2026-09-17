@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.20)
+project(chimera_coupled_checks LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+add_executable(coupled_native native.cpp)
+if(MSVC)
+ target_compile_options(coupled_native PRIVATE /W4 /fp:precise)
+endif()

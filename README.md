@@ -69,6 +69,7 @@ python -B -m tools.creature_graph.project_spec --show req.earth_environment
 python -B -m tools.creature_graph.project_spec --show doc.workflow.earth_patch
 python -B -m tools.creature_graph.project_spec --show doc.workflow.force_arm
 python -B -m tools.creature_graph.project_spec --show doc.workflow.coupled_arm
+python -B -m tools.creature_graph.project_spec --show doc.workflow.coupled_native
 python -B -m tools.creature_graph.project_spec --show req.layered_anatomy
 python -B -m tools.creature_graph.project_spec --show req.embodied_senses
 python -B -m tools.creature_graph.project_spec --show doc.creature_binding_observation
@@ -283,5 +284,18 @@ python -B -m unittest tools.science_funnel.tests.test_coupled_arm -v
 This produces `.tmp/coupled-arm/reference.json`: named coordinate slots, the
 source-derived inertia matrix, gravity and velocity-dependent joint loads.
 Read `doc.workflow.coupled_arm` for the derivation and independent checks, and
-`work.creature.coupled_arm_native` for integration. This is an offline reference;
-the live force-arm scene still integrates one elbow coordinate.
+`work.creature.coupled_arm_native` for integration. This command produces the offline reference. The two-coordinate native scene below consumes the same source laws.
+
+### Move the coupled shoulder and elbow
+
+```powershell
+powershell -File tools/science_funnel/run_earth.ps1 -CoupledArm -Port 8127
+```
+
+Open `http://127.0.0.1:8127/earth`. Each drive applies capped torque to a source-derived
+coupled mass matrix. Cut either drive, change a target, add hand load, or cut global
+power. The native state determines both bones and the hand marker. A finite 2 J
+mechanical store, passive losses and source joint stops account for energy.
+Read `doc.workflow.coupled_native` for equations, checks, scope and next work.
+This reference has a fixed mount and two moving coordinates; hand/environment
+collision, whole-body balance, muscles and GPU integration remain unfinished.
