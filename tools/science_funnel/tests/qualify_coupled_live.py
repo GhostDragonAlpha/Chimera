@@ -66,6 +66,6 @@ def qualify(runtime):
   ck('energy_accounts',max(abs(s['energy'][k]) for k in ['balance_error_J','store_balance_error_J'])<1e-5)
   s=send({'paused':True});bad=req({'elbow_deg':0});ck('direct_pose_refused_atomically',bad.get('ok') is False and req()['joints']==s['joints'])
  finally:req(dict(defaults,reset=True))
- return {'runtime':info,'checks':checks,'scope':'Two coupled native coordinates, force intent, finite ideal actuator store, actual source geometry, fixed mount and an optional frictionless rigid hand contact plane (off by default; toggle resets). No friction, grasp, free root or whole-animal claim.'}
+ return {'runtime':info,'checks':checks,'scope':'Two coupled native coordinates, force intent, finite ideal actuator store, actual source geometry, fixed mount and a rigid hand contact plane with live Coulomb friction (plane off by default, toggle resets; authored mu in [0,1], default 0, applied live without reset; stick/slide with tangential force, slip speed and friction heat in the energy ledger; mu=0 reproduces the qualified frictionless world bit-exactly). No grasp, free root, whole-animal or distributed-contact claim.'}
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--runtime',required=True);p.add_argument('--output',required=True);a=p.parse_args();result=qualify(a.runtime);Path(a.output).write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8');print(json.dumps({'passed':len(result['checks']),'output':a.output}))

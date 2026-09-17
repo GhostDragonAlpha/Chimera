@@ -82,7 +82,11 @@ class CoupledDynamics {
   double A=inner(row_n,in),B=inner(row_n,it),C=inner(row_t,it),rn=-(inner(row_n,initial)-floor_n),rt=-(inner(row_t,initial)-floor_t),det=A*C-B*B;
   if(det>1e-18){double n=(rn*C-rt*B)/det,t=(rt*A-rn*B)/det;
    if(n>=0&&std::abs(t)<=mu*n+1e-12){force=Dense{row_n[0]*n+row_t[0]*t,row_n[1]*n+row_t[1]*t};lambda_n=n;lambda_t=t;mode=1;return;}}
-  double s=slip_sign!=0.?slip_sign:(rt>=0.?1.:-1.),den=A-s*mu*B;
+  // Exact-rest fallback (review F1): rt>0 means the free tangential motion
+  // would run BELOW floor_t, i.e. impending slip along -t; friction opposes
+  // impending slip, and since the cap is f_t=-s*mu*lambda_n, that demands
+  // s=-1 when rt>=0 (the shipped rt>=0.?1.:-1. aided the impending slip).
+  double s=slip_sign!=0.?slip_sign:(rt>=0.?-1.:1.),den=A-s*mu*B;
   if(den<=1e-12)throw Refusal("coupled_friction_slide_singular");
   double n=rn/den,t=-s*mu*n;
   if(n>=0){force=Dense{row_n[0]*n+row_t[0]*t,row_n[1]*n+row_t[1]*t};lambda_n=n;lambda_t=t;mode=2;return;}

@@ -61,6 +61,11 @@ int main(int argc,char**argv){try{
    for(int i=0;i<6000;++i){d.step();auto s=d.status();
     double fn=number(s["contact"]["reaction_N"]),ft=std::abs(number(s["contact"]["friction_force_N"])),bal=std::abs(number(s["energy"]["balance_error_J"])),store=std::abs(number(s["energy"]["store_balance_error_J"]));
     ck(ft<=mu*fn+1e-9,"friction_cone");ck(fn>1e-9||ft<1e-12,"friction_no_pull_without_load");
+    // Review F3: the impact-level cone, guarded every tick. Whenever a
+    // friction landing impulse exists it is bounded by mu times the normal
+    // landing impulse (previously held by construction, never asserted).
+    double fi=number(s["contact"]["friction_impact_impulse_N_s"]),ni=number(s["contact"]["impact_impulse_N_s"]);
+    if(fi>1e-15)ck(fi<=mu*ni+1e-9,"friction_impact_cone");
     ck(number(s["energy"]["friction_heat_J"])>=-1e-12,"friction_heat_nonnegative");
     // Preregistered: one-time catch-event allowance <= 5e-5 J; below 1e-5 J
     // thereafter with no sustained drift (amendment recorded in the graph).
@@ -78,6 +83,31 @@ int main(int argc,char**argv){try{
  // The coefficient is a live control: accepted without reset, echoed in status.
  {CoupledDynamics d(data,9.81,shift);d.configure({{"contact_enabled",true},{"reset",true}});d.step();d.configure({{"contact_friction",.4}});auto s=d.status();ck(number(s["config"]["contact_friction"])==.4&&number(s["contact"]["friction_mu"])==.4,"friction_live_control");bool refused=false;try{d.configure({{"contact_friction",1.5}});}catch(const Refusal&){refused=true;}ck(refused,"friction_range_refused");}
 
+ // Review F2: the derived critical-mu hold-vs-slide pair (the deferred
+ // falsifier of the qualified slice). The critical coefficient at the
+ // settled press pose (targets 20/20) is mu_crit=0.7820104343 by settle
+ // bisection, descent peak demand 0.7848445602 (derivation recreated in
+ // tests_coupled_arm/mucrit_derivation.cpp, output archived in the fixes
+ // receipt). mu=0.8 sits above the boundary and must end held: sub-threshold
+ // slip on every one of the final 600 ticks. mu=0.6 sits below it and must
+ // keep sliding: measurable tangential travel and strictly more friction
+ // heat than the held trial. If both held or both slid, no derived critical
+ // mu would exist and this falsifier would fail.
+ double heat_hold=0,heat_slide=0,slide_travel=0;bool held=false;
+  for(double mu:{0.8,0.6}){CoupledDynamics d(data,9.81,shift);d.configure({{"contact_enabled",true},{"reset",true},{"contact_friction",mu},{"shoulder_target_deg",20.},{"elbow_target_deg",20.}});
+   double last=NAN,travel_mu=0;bool settle_window=true;
+   for(int i=0;i<6000;++i){d.step();auto s=d.status();
+    double fi=number(s["contact"]["friction_impact_impulse_N_s"]),ni=number(s["contact"]["impact_impulse_N_s"]);
+    if(fi>1e-15)ck(fi<=mu*ni+1e-9,"friction_impact_cone");
+    double slip=number(s["contact"]["slip_speed_m_s"]);
+    if(i>=5400)settle_window=settle_window&&slip<1e-9;
+    auto pos=s["body"]["position_m"];double planar=std::hypot(number(pos[0]),number(pos[2]));
+    if(!std::isnan(last))travel_mu+=std::abs(planar-last);last=planar;}
+   double heat=number(d.status()["energy"]["friction_heat_J"]);
+   if(mu>0.7){held=settle_window;heat_hold=heat;ck(settle_window,"mucrit_high_mu_holds_tail");}
+   else{heat_slide=heat;slide_travel=travel_mu;ck(travel_mu>1e-3,"mucrit_low_mu_slides_travel");ck(heat>heat_hold,"mucrit_low_mu_more_heat");}}
+  ck(held,"mucrit_pair_separates_hold_from_slide");
+
 
  GraphEarth graph;graph.load(argv[1]);auto graph_status=graph.status();ck(graph_status["mode"]=="native_coupled_arm"&&!graph_status.contains("elbow_deg"),"coupled_coordinate_schema");ck(graph_status["contacts"]["environment"]==false,"free_mode_default_off");graph.control({{"paused",true}});auto g0=graph.status();graph.control({{"shoulder_target_deg",60.},{"elbow_target_deg",130.}});auto g1=graph.status();for(int i=0;i<2;++i){ck(g0["joints"][i]["angle_deg"]==g1["joints"][i]["angle_deg"],"graph_intent_angle");ck(g0["joints"][i]["speed_rad_s"]==g1["joints"][i]["speed_rad_s"],"graph_intent_speed");}
  size_t triangles_free=number(graph.render().state.at("mesh_triangles"));
@@ -89,5 +119,5 @@ int main(int argc,char**argv){try{
  ck(std::isfinite(number(enabled["contact"]["gap_m"]))&&number(enabled["contact"]["plane_world_up_m"])==number(scene.at("coupled_dynamics").at("recipe").at("contact_plane_height_m")),"contact_plane_recipe_agreement");
  auto plane_render=graph.render();ck(number(plane_render.state.at("mesh_triangles"))>=triangles_free+6,"contact_plane_rendered");
 
- std::cout<<J({{"reference_cases",cases["cases"].size()},{"scalar_comparisons",count},{"worst_absolute_error",worst},{"dynamics_checks",checks},{"peak_energy_residual_J",residual},{"free_refinement_ratio",ratio},{"trials",runs},{"exhaustion",empty.status()},{"contact",{{"worst_gap_m",worst_gap},{"peak_reaction_N",peak_reaction},{"impact_heat_J",contact_heat}}},{"friction",{{"heat_low_mu_J",heat_low},{"heat_high_mu_J",heat_high},{"stick_ticks_low_mu",stick_low}}},{"pass",true}}).dump(2)<<"\n";
+ std::cout<<J({{"reference_cases",cases["cases"].size()},{"scalar_comparisons",count},{"worst_absolute_error",worst},{"dynamics_checks",checks},{"peak_energy_residual_J",residual},{"free_refinement_ratio",ratio},{"trials",runs},{"exhaustion",empty.status()},{"contact",{{"worst_gap_m",worst_gap},{"peak_reaction_N",peak_reaction},{"impact_heat_J",contact_heat}}},{"friction",{{"heat_low_mu_J",heat_low},{"heat_high_mu_J",heat_high},{"stick_ticks_low_mu",stick_low}}},{"mucrit_pair",{{"heat_hold_J",heat_hold},{"heat_slide_J",heat_slide},{"slide_travel_m",slide_travel},{"held",held}}},{"pass",true}}).dump(2)<<"\n";
 }catch(const std::exception& e){std::cerr<<e.what()<<"\n";return 1;}}
