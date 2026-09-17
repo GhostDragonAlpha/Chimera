@@ -33,6 +33,7 @@ def _artifacts(data_dir, names, pins):
 _smith_receipt, _smith_pins = _pins('smithsonian')
 _cop_receipt, _cop_pins = _pins('copernicus_glo30')
 _bp3d_receipt, _bp3d_pins = _pins('bodyparts3d')
+_egm_receipt, _egm_pins = _pins('nga_egm08')
 
 CONNECTORS = {
     'smithsonian_voyager': {
@@ -110,6 +111,26 @@ CONNECTORS = {
         'constants': {'isa_parts_sha256': _bp3d_pins['isa_parts_list_e.txt']['sha256']},
         'classes': {'entity': 'batch.entity.external'},
     },
+    'nga_egm08': {
+        'connector_id': 'nga_egm08',
+        'mode': 'admit',
+        'data_dir': 'nga_egm08',
+        'adapter': 'egm08_grid_meta',
+        'source': {
+            'id': 'nga.egm08_25',
+            'release': 'Earth Gravitational Model 2008, 2.5-minute grid, PROJ CDN '
+                       'redistribution pinned 2026-09-17',
+            'url': 'https://cdn.proj.org/us_nga_egm08_25.tif',
+            'license': 'Public domain (NGA model; PROJ-data names free use)',
+            'known_gaps': ['2.5-minute grid: geoid slope between nodes is interpolated, '
+                           'not measured', 'no uncertainty field in the grid'],
+        },
+        'artifacts': _artifacts('nga_egm08', [
+            ('us_nga_egm08_25.tif', 'data'),
+        ], _egm_pins),
+        'constants': {'grid_bytes': _egm_pins['us_nga_egm08_25.tif']['bytes']},
+        'classes': {'measurement': 'batch.property.measurement'},
+    },
 }
 
 # Existing science_funnel admissions re-proven by recorded-producer replay.
@@ -126,6 +147,15 @@ DEFAULT_CLASSES = {
     'relation': 'batch.entity.external',
     'unit_definition': 'batch.entity.external',
 }
+
+# Lane connectors auto-load: sibling modules connectors_*.py may define
+# EXTRA_CONNECTORS = {...}; merged here so parallel lanes never edit this file.
+import importlib as _importlib
+import os as _os
+for _name in sorted(n for n in _os.listdir(_os.path.dirname(__file__))
+                    if n.startswith('connectors_') and n.endswith('.py')):
+    _mod = _importlib.import_module('.' + _name[:-3], __package__)
+    CONNECTORS.update(getattr(_mod, 'EXTRA_CONNECTORS', {}))
 
 
 def class_for(connector_id, record_type):

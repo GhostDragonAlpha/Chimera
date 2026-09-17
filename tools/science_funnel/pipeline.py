@@ -7,7 +7,8 @@ import xml.etree.ElementTree as ET
 from .adapters import ADAPTERS
 from .common import VERSION, Refusal, canonical, digest, local_file, loads, require, sha, text
 
-MAX_ARTIFACT_BYTES = 64 * 1024 * 1024  # intake resource limit, not a physical constant
+MAX_ARTIFACT_BYTES = 128 * 1024 * 1024  # intake resource limit, not a physical
+# constant; raised 2026-09-17 for the pinned 80.6 MB EGM08 geoid grid
 MAX_BUNDLE_BYTES = 256 * 1024 * 1024
 
 

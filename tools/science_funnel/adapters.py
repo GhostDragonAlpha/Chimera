@@ -243,6 +243,15 @@ ADAPTERS['coolprop_surface'] = coolprop_surface
 from .force_adapters import FORCE_ADAPTERS
 ADAPTERS.update(FORCE_ADAPTERS)
 
+# Lane adapters auto-load: sibling modules adapters_*.py may define
+# EXTRA_ADAPTERS = {...}; merged here so parallel lanes never edit this file.
+import importlib as _importlib
+import os as _os
+for _name in sorted(n for n in _os.listdir(_os.path.dirname(__file__))
+                    if n.startswith('adapters_') and n.endswith('.py')):
+    _mod = _importlib.import_module('.' + _name[:-3], __package__)
+    ADAPTERS.update(getattr(_mod, 'EXTRA_ADAPTERS', {}))
+
 
 def smithsonian_voyager(raw, manifest, path):
     """Smithsonian 3D Voyager document.json -> geometry candidates (one per model).

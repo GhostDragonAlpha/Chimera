@@ -76,7 +76,7 @@ def _check_fk_exists(record, params, ctx):
 
 SI_TOKENS = {'m', 'kg', 's', 'A', 'K', 'mol', 'cd', 'N', 'Pa', 'J', 'W', 'C', 'V', 'F',
              'ohm', 'S', 'T', 'Wb', 'Hz', 'kat', 'lm', 'lx', 'Bq', 'Gy', 'Sv', 'rad',
-             'sr', 'dimensionless'}
+             'sr', 'degree', 'dimensionless'}
 
 
 def _si_tokens_ok(unit):
