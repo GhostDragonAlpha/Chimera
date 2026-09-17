@@ -1,0 +1,11 @@
+{
+  "pid": 106620,
+  "exe": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\force-arm-engine\\Release\\chimera_engine.exe",
+  "exe_sha256": "CD6845BB49BCB7AC27A76B43D5E47C600C23F8FE463E537F19CDFF533C86FAA5",
+  "scene": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\force-arm\\scene.json",
+  "scene_file_sha256": "C0D18318B14D634A37DAC257715105F61F23A9982B8EAA56A8801423DAAF7DB9",
+  "graph_hash": "d66efc55f0aa5c36508b4917ac267911ced1134e796cbe67a2c4a6b7be451082",
+  "scene_sha256": "d78fcc3c6d5b18463b3cad1a771926116ade95f0ad7e23b19b130258042be834",
+  "port": 8126,
+  "launched_utc": "2026-09-17T04:46:33.7253143Z"
+}

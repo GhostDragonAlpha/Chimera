@@ -1,0 +1,5 @@
+MSBuild version 18.9.1+a81b43525 for .NET Framework
+
+  main.cpp
+LINK : warning LNK4315: /DEBUG:FASTLINK is no longer supported. Using /DEBUG:FULL instead. Use a VS 2022 toolchain to continue building with /DEBUG:FASTLINK [E:\ChimeraWork\codex-graph-workflow-20260916\.tmp\force-arm-engine\chimera_engine.vcxproj]
+  chimera_engine.vcxproj -> E:\ChimeraWork\codex-graph-workflow-20260916\.tmp\force-arm-engine\Release\chimera_engine.exe
