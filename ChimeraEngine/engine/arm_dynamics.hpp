@@ -12,6 +12,7 @@ class ArmDynamics {
  double support_impulse_=0,limit_impulse_=0,torque_=0;
  V mount_force_{};
  uint64_t empty_events_=0;
+ static constexpr double usable_energy_threshold_=1e-12;
  struct Trial{double q,w;};
  V rotate(V v,double angle)const{
   return add(add(mul(v,std::cos(angle)),mul(cross(axis_,v),std::sin(angle))),mul(axis_,dot(axis_,v)*(1-std::cos(angle))));
@@ -101,7 +102,7 @@ public:
   require(target>=lo_-1e-8&&target<=hi_+1e-8&&cap>=0&&cap<=.6&&load>=0&&load<=3,"arm_control_range");config_=c;if(restart)reset();
  }
  void step(){
-  const double h=timestep(),threshold=1e-12;V before_p=momentum();double target=number(config_["target_deg"])*pi/180-rest_;
+  const double h=timestep(),threshold=usable_energy_threshold_;V before_p=momentum();double target=number(config_["target_deg"])*pi/180-rest_;
   double cap=number(config_["torque_limit_N_m"]),tau=config_["power"].get<bool>()&&battery>threshold?(std::max)(-cap,(std::min)(cap,kp_*(target-q)-kd_*w)):0;
   auto attempt=[&](double effort){auto x=*this;x.support_impulse_=x.limit_impulse_=0;x.advance(h,effort);return x;};
   auto candidate=attempt(tau);double work=candidate.Wmotor_-Wmotor_;
@@ -122,7 +123,7 @@ public:
   return {{"sim_time_s",ticks*timestep()},{"ticks",ticks},
    {"joint",{{"angle_deg",(q+rest_)*180/pi},{"target_deg",config_["target_deg"]},{"speed_rad_s",w},{"motor_torque_N_m",torque_},{"gravity_torque_N_m",-gravity_gradient(q)},{"external_load_N",config_["load_N"]},{"support_reaction_N",support},{"limit_reaction_N_m",limit_impulse_/timestep()},{"motor_enabled",config_["power"]},{"torque_limit_N_m",config_["torque_limit_N_m"]},{"support_enabled",config_["support"]},{"inertia_kg_m2",I_},{"moving_mass_kg",mass_},{"battery_empty_events",empty_events_}}},
    {"body",{{"position_m",hand_position()},{"velocity_m_s",hand_velocity()},{"radius_m",radius_}}},
-   {"energy",{{"kinetic_J",.5*I_*w*w},{"gravitational_J",gravity_U(q)},{"mechanical_J",e},{"initial_mechanical_J",E0_},{"actuator_work_J",Wmotor_},{"external_work_J",Wexternal_},{"damping_heat_J",Qdamping_},{"impact_heat_J",Qimpact_},{"brake_heat_J",Qbrake_},{"battery_J",battery},{"battery_initial_J",initial_battery_},{"balance_error_J",e-E0_-Wmotor_-Wexternal_+Qdamping_+Qimpact_},{"store_balance_error_J",e+battery+Qdamping_+Qimpact_+Qbrake_-E0_-initial_battery_-Wexternal_}}},
+   {"energy",{{"kinetic_J",.5*I_*w*w},{"gravitational_J",gravity_U(q)},{"mechanical_J",e},{"initial_mechanical_J",E0_},{"actuator_work_J",Wmotor_},{"external_work_J",Wexternal_},{"damping_heat_J",Qdamping_},{"impact_heat_J",Qimpact_},{"brake_heat_J",Qbrake_},{"battery_J",battery},{"battery_usable",battery>usable_energy_threshold_},{"battery_initial_J",initial_battery_},{"balance_error_J",e-E0_-Wmotor_-Wexternal_+Qdamping_+Qimpact_},{"store_balance_error_J",e+battery+Qdamping_+Qimpact_+Qbrake_-E0_-initial_battery_-Wexternal_}}},
    {"exchange",{{"mount_reaction_force_N",mount_force_},{"support_force_N",support},{"motor_reaction_torque_N_m",-torque_}}}};
  }
 };

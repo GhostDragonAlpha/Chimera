@@ -31,6 +31,11 @@ class ForceArmReduction(unittest.TestCase):
    for h in (-eps,eps):
     f=pose_frames(self.model,{'elbow_flexion':rest+q+h});U.append(sum(b['mass_kg']*(f[b['name']]@np.r_[b['mass_center_m'],1])[1] for b in self.model['bodies']))
    self.assertAlmostEqual((U[1]-U[0])/(2*eps),np.cross(a,rotation(a,q)@S)[1],places=10)
+ def test_unknown_coordinate_and_boundary_drift_refuse(self):
+  g=copy.deepcopy(self.graph);g.get(MODEL)['physical']['contract']['coordinate']='wrist_flexion'
+  with self.assertRaisesRegex(Refusal,'unsupported_force_arm_coordinate'):compile_force_arm(g,self.temp.name)
+  g=copy.deepcopy(self.graph);g.get('world.earth.patch.force_arm_proxy')['physical']['rest_offset_m']=[0,0,0]
+  with self.assertRaisesRegex(Refusal,'force_arm_boundary_recipe_drift'):compile_force_arm(g,self.temp.name)
  def test_tensor_symmetric_and_positive(self):
   I=np.array(self.p['inertia_tensor_kg_m2']);a=np.array(self.p['axis']);np.testing.assert_allclose(I,I.T,atol=1e-18);self.assertGreater(np.linalg.eigvalsh(I).min(),0);self.assertAlmostEqual(float(a@I@a),self.p['inertia_kg_m2'],places=15)
  def test_mutated_anatomical_source_is_not_claimed_as_original(self):

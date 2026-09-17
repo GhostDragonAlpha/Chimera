@@ -33,6 +33,8 @@ def qualify(runtime):
   send({'target_deg':20.,'power':True,'load_N':0.});s=until(lambda s:s['joint']['motor_torque_N_m']<-.29);ck('blocked_target_stalls_with_load',abs(s['joint']['angle_deg']-80)<1e-6 and s['joint']['support_reaction_N']>expected+1)
   send({'reset':True,'support':False,'target_deg':130.,'torque_limit_N_m':.03});s=until(lambda s:s['joint']['angle_deg']<60);ck('weak_drive_cannot_lift',abs(s['joint']['motor_torque_N_m'])<=.03+1e-12)
   send({'reset':True,'support':True,'torque_limit_N_m':.3});s=until(lambda s:s['joint']['angle_deg']>110);ck('strong_drive_lifts_same_mass',s['energy']['actuator_work_J']>0 and s['energy']['battery_J']<1)
+  s=req();recipe=scene['arm_dynamics']['recipe'];ck('force_boundary_identity',s['attachment_id']==recipe['attachment_id'] and s['support_id']==recipe['support_id'])
+  ck('native_energy_availability',s['energy']['battery_usable']==(s['energy']['battery_J']>1e-12))
   snap=req(route='/earth_snapshot');s=snap['state'];native=np.array(snap['vertices']).reshape(-1,9);expected_mesh=np.concatenate([part[2] for part in world_meshes(model,values={'elbow_flexion':np.deg2rad(s['joint']['angle_deg'])})])+scene['scene']['arm_translation_m'];error=np.max(np.abs(native[:len(expected_mesh),:3]-expected_mesh));ck('native_geometry_follows_solved_source_coordinate',error<2e-7,max_vertex_error_m=float(error))
   hand=native[-1080:,:3].mean(axis=0);ck('hand_proxy_matches_force_point',np.max(np.abs(hand-np.array(s['body']['position_m'])))<2e-7)
   ck('live_work_and_store_accounts',abs(s['energy']['balance_error_J'])<1e-9 and abs(s['energy']['store_balance_error_J'])<1e-9)

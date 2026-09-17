@@ -169,10 +169,11 @@
   function message(text,error=false){set('controlMessage',text);$('controlMessage').dataset.error=String(error);}
   function renderState(){
     const j=state.joint,e=state.energy,b=state.body,env=state.environment,x=state.exchange||{};
-    const empty=finite(e.battery_J)&&e.battery_J<=0;
+    // Prefer the native work-availability decision; legacy snapshots use the same 1e-12 J threshold.
+    const empty=typeof e.battery_usable==='boolean'?!e.battery_usable:finite(e.battery_J)&&e.battery_J<=1e-12;
     const phase=state.paused?'Trial paused':!j.motor_enabled?'Power cut':empty?'Store depleted':'Drive enabled';
     set('phaseTitle',phase);set('phaseTag',phase.toUpperCase());
-    set('phaseHelp',state.paused?'Simulation time is paused. Resume to continue the trial.':!j.motor_enabled?'The drive supplies no torque. Gravity, load and contact determine the motion.':empty?'The mechanical store is empty. Reset the trial to refill it.':'A finite drive works toward the target. Actual motion depends on the forces.');
+    set('phaseHelp',state.paused?'Simulation time is paused. Resume to continue the trial.':!j.motor_enabled?'The drive supplies no torque. Gravity, load and contact determine the motion.':empty?'The store has no usable drive energy. Reset the trial to refill it.':'A finite drive works toward the target. Actual motion depends on the forces.');
     set('sceneTime','t '+number(state.sim_time_s,2)+' s');set('supportTag',j.support_enabled?(j.support_reaction_N>0?'SUPPORT CONTACT':'SUPPORT ON'):'SUPPORT OFF');
     set('angle',number(j.angle_deg,1));set('actualTarget','Target '+number(j.target_deg,0)+'°');set('targetActual','actual '+number(j.angle_deg,1)+'°');set('speed',signed(j.speed_rad_s,2));set('supportForce',number(j.support_reaction_N,3));set('contactNote',j.support_enabled?'Native support reaction':'Support disabled');
     set('motorTorque',signed(j.motor_torque_N_m,3));set('gravityTorque',signed(j.gravity_torque_N_m,3));set('limitTorque',signed(j.limit_reaction_N_m,3));
@@ -180,7 +181,7 @@
     const capacity=finite(e.battery_initial_J)&&e.battery_initial_J>0?e.battery_initial_J:1;
     $('batteryMeter').max=capacity;$('batteryMeter').value=finite(e.battery_J)?Math.max(0,Math.min(capacity,e.battery_J)):0;
     $('batteryMeter').setAttribute('aria-valuetext',number(e.battery_J,3)+' of '+number(e.battery_initial_J,3)+' joules');
-    set('batteryHelp',empty?'Store empty · reset to refill.':'Of '+number(e.battery_initial_J,2)+' J initially · reset refills the store.');
+    set('batteryHelp',empty?'No usable drive energy · reset to refill.':'Of '+number(e.battery_initial_J,2)+' J initially · reset refills the store.');
     set('mechanical',energy(e.mechanical_J));set('actuatorWork',energy(e.actuator_work_J));set('balance',energy(e.balance_error_J));
     const energies={kineticEnergy:'kinetic_J',gravitationalEnergy:'gravitational_J',initialEnergy:'initial_mechanical_J',currentEnergy:'mechanical_J',driveWork:'actuator_work_J',externalWork:'external_work_J',dampingHeat:'damping_heat_J',impactHeat:'impact_heat_J',brakeHeat:'brake_heat_J',balanceEnergy:'balance_error_J',storeResidual:'store_balance_error_J'};
     for(const [id,key] of Object.entries(energies))set(id,energy(e[key])+' J');
