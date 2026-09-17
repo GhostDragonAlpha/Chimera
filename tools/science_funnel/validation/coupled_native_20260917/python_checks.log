@@ -1,0 +1,41 @@
+test_hand_attachment_drift_refused (tools.science_funnel.tests.test_coupled_scene.CoupledScene.test_hand_attachment_drift_refused) ... ok
+test_source_mass_mutation_refused (tools.science_funnel.tests.test_coupled_scene.CoupledScene.test_source_mass_mutation_refused) ... ok
+test_source_recipe_compiles (tools.science_funnel.tests.test_coupled_scene.CoupledScene.test_source_recipe_compiles) ... ok
+test_unsupported_coordinates_refused (tools.science_funnel.tests.test_coupled_scene.CoupledScene.test_unsupported_coordinates_refused) ... ok
+test_unsupported_timestep_refused (tools.science_funnel.tests.test_coupled_scene.CoupledScene.test_unsupported_timestep_refused) ... ok
+test_closed_form_two_link_inertia_gravity_bias (tools.science_funnel.tests.test_coupled_arm.CoupledArm.test_closed_form_two_link_inertia_gravity_bias) ... ok
+test_coupling_changes_other_coordinate_acceleration (tools.science_funnel.tests.test_coupled_arm.CoupledArm.test_coupling_changes_other_coordinate_acceleration) ... ok
+test_elbow_entry_matches_qualified_scalar_inertia (tools.science_funnel.tests.test_coupled_arm.CoupledArm.test_elbow_entry_matches_qualified_scalar_inertia) ... ok
+test_full_bias_vector_against_FK_accelerations (tools.science_funnel.tests.test_coupled_arm.CoupledArm.test_full_bias_vector_against_FK_accelerations) ... ok
+test_gravity_is_negative_potential_gradient (tools.science_funnel.tests.test_coupled_arm.CoupledArm.test_gravity_is_negative_potential_gradient) ... ok
+test_inertial_bias_obeys_kinetic_energy_power_identity (tools.science_funnel.tests.test_coupled_arm.CoupledArm.test_inertial_bias_obeys_kinetic_energy_power_identity) ... ok
+test_invalid_inputs_and_inertia_refuse (tools.science_funnel.tests.test_coupled_arm.CoupledArm.test_invalid_inputs_and_inertia_refuse) ... ok
+test_point_force_preserves_virtual_work (tools.science_funnel.tests.test_coupled_arm.CoupledArm.test_point_force_preserves_virtual_work) ... ok
+test_singular_chart_refuses_without_regularization (tools.science_funnel.tests.test_coupled_arm.CoupledArm.test_singular_chart_refuses_without_regularization) ... ok
+test_source_frames_and_energy_against_independent_FK_differences (tools.science_funnel.tests.test_coupled_arm.CoupledArm.test_source_frames_and_energy_against_independent_FK_differences) ... ok
+test_effective_mass_excludes_fixed_upstream_bodies (tools.science_funnel.tests.test_force_arm.ForceArmReduction.test_effective_mass_excludes_fixed_upstream_bodies) ... ok
+test_gravity_gradient_matches_source_COM_motion (tools.science_funnel.tests.test_force_arm.ForceArmReduction.test_gravity_gradient_matches_source_COM_motion) ... ok
+test_inertia_and_hand_proxy_have_correct_units_and_topology (tools.science_funnel.tests.test_force_arm.ForceArmReduction.test_inertia_and_hand_proxy_have_correct_units_and_topology) ... ok
+test_mutated_anatomical_source_is_not_claimed_as_original (tools.science_funnel.tests.test_force_arm.ForceArmReduction.test_mutated_anatomical_source_is_not_claimed_as_original) ... ok
+test_source_inertia_matches_finite_difference_kinetic_energy (tools.science_funnel.tests.test_force_arm.ForceArmReduction.test_source_inertia_matches_finite_difference_kinetic_energy) ... ok
+test_tensor_symmetric_and_positive (tools.science_funnel.tests.test_force_arm.ForceArmReduction.test_tensor_symmetric_and_positive) ... ok
+test_unknown_coordinate_and_boundary_drift_refuse (tools.science_funnel.tests.test_force_arm.ForceArmReduction.test_unknown_coordinate_and_boundary_drift_refuse) ... ok
+test_adoption_never_means_implementation_and_drafts_are_excluded (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_adoption_never_means_implementation_and_drafts_are_excluded) ... ok
+test_archived_document_retains_text_and_checks_exact_bytes (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_archived_document_retains_text_and_checks_exact_bytes) ... ok
+test_complete_checklist_still_does_not_claim_controller_authority (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_complete_checklist_still_does_not_claim_controller_authority) ... ok
+test_document_search_text_cannot_disagree_with_archived_bytes (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_document_search_text_cannot_disagree_with_archived_bytes) ... ok
+test_every_read_leaves_source_bytes_and_graph_unchanged (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_every_read_leaves_source_bytes_and_graph_unchanged) ... ok
+test_incomplete_workflow_uses_controller_refusal (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_incomplete_workflow_uses_controller_refusal) ... ok
+test_inline_recipe_descriptor_is_not_misclassified_as_byte_archive (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_inline_recipe_descriptor_is_not_misclassified_as_byte_archive) ... ok
+test_malformed_contract_is_reported_instead_of_crashing (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_malformed_contract_is_reported_instead_of_crashing) ... ok
+test_missing_contract_and_falsifier_refuse (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_missing_contract_and_falsifier_refuse) ... ok
+test_origin_presence_type_and_edge_are_required (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_origin_presence_type_and_edge_are_required) ... ok
+test_planning_does_not_invent_executable_work (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_planning_does_not_invent_executable_work) ... ok
+test_search_returns_active_and_reference_with_explicit_labels (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_search_returns_active_and_reference_with_explicit_labels) ... ok
+test_stale_evidence_is_visible_without_rewriting_history (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_stale_evidence_is_visible_without_rewriting_history) ... ok
+test_unknown_schema_and_admission_refuse (tools.creature_graph.tests.test_project_spec.ProjectSpecContracts.test_unknown_schema_and_admission_refuse) ... ok
+
+----------------------------------------------------------------------
+Ran 36 tests in 9.897s
+
+OK

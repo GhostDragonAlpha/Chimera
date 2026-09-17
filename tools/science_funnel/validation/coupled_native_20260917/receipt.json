@@ -1,0 +1,107 @@
+{
+  "schema": "chimera.scoped_validation.v1",
+  "recorded_utc": "2026-09-17T07:05:39.089725+00:00",
+  "candidate_commit": "9ab72288df8ea966d4edb4864c95975f04e1d810",
+  "candidate_tree": "4881a21f6796572556ac0fb0aeaf7d53b61bdc3e",
+  "graph_hash": "e5324edee6193fb8bac75bc6aea9e3e2885f8befca1235b2d2562626307c671b",
+  "source_file_manifest_sha256": {
+    "README.md": "1a165741afcd746d1c5e95a3b6c11d885f3c6ff1e6791056ca3f8efbae4eda4a",
+    "ChimeraEngine/engine/coupled_articulation.hpp": "e2cf388123269527d859e324b9344899833a3af4b9ad075d2c92f40552a1e53f",
+    "ChimeraEngine/engine/coupled_dynamics.hpp": "fdb477656df18d38fc37616f7e8be9275bf8e6467ca6e54c13ffab642c2d7912",
+    "ChimeraEngine/engine/graph_earth.hpp": "cd4282e86d388e265a42ddd0e378e56d23eb55668d2d565f370e9b275429c833",
+    "ChimeraEngine/engine/tests_coupled_arm/native.cpp": "558b3a5a65058d50e8d29fa0040dde36ef2bcf61b2462100d6f4a0d13cc102f3",
+    "ChimeraEngine/engine/tests_coupled_arm/CMakeLists.txt": "e9d61d5d82b0d976f3bc7faa4400254e8f77bccd2156094ca9c429b747d29b3f",
+    "tools/science_funnel/coupled_scene.py": "42c7263c8a24ea1d809d7cba282fcf705616ddb09332fa41f3d0aa8f4301c846",
+    "tools/science_funnel/coupled_arm.html": "42180adf51ee80269a5f17f699b914433c63aa9d343d3df29c4556b2cc6c3330",
+    "tools/science_funnel/run_earth.ps1": "93aff54a5ec703190a50fdff6d3469fffa3ea7df4b2bd5f370e5a47c55274fe7",
+    "tools/science_funnel/tests/test_coupled_scene.py": "fb666d82e7d594ef4a14030b7c9c2d55c460c5aaad4e0a126ec4f7d31a5f885a",
+    "tools/science_funnel/tests/qualify_coupled_live.py": "10533c7b2fd7d7f51d43c304196cdf756c84303814186b7e022b6597fd829d6a",
+    "tools/science_funnel/coupled_arm.py": "2a8a779e55ff77c96e8806cbc95858f2821dc83d64d6a48b41dce292b682828d",
+    "tools/science_funnel/macaque_anatomy.py": "949954b74e35305828b54a496477e3c8725c1d9609a5f0071a44255137d8d267",
+    "tools/creature_graph/data/authored/project_program.json": "32994ccd29b7bf044644bf5814a9dee73920db33c37aba72378a4914d477b345",
+    "tools/creature_graph/data/creature_graph.json": "fcdb959d70e63e5f0aec9cc24f5ee0af23ad9d568f505a7332be60e766d461f0"
+  },
+  "worktree_file_manifest_sha256": {
+    "README.md": "0e633f841bfb37a1cbf1af29d6a378d1f346b414d63cfb2ccc1883cde07f348c",
+    "ChimeraEngine/engine/coupled_articulation.hpp": "e2cf388123269527d859e324b9344899833a3af4b9ad075d2c92f40552a1e53f",
+    "ChimeraEngine/engine/coupled_dynamics.hpp": "ded9f9c6b25cbcdb2574d806291a183cbfefa495231b1760966fa52ea1caef44",
+    "ChimeraEngine/engine/graph_earth.hpp": "4d284fe6cf6a64241fee4c5b15ce01934e571703d9f70240f4499c37134f8fde",
+    "ChimeraEngine/engine/tests_coupled_arm/native.cpp": "2063fe9afcd6cfb2531c07b8b61875c7b386c84428ef634b0244a740871534f5",
+    "ChimeraEngine/engine/tests_coupled_arm/CMakeLists.txt": "98a57b38d184886a3114a9f32fd98069beed9a2a4233612d4646fb0a0a065c7a",
+    "tools/science_funnel/coupled_scene.py": "54c13b1aba20dbdffa9cda939b4dd99dbc5deea83f634aeb4221f60c1db78750",
+    "tools/science_funnel/coupled_arm.html": "6dc4fd2b56b79e6355fb116cc589f78b0c4b2fdf472a5c2aa08fe201ef981bc8",
+    "tools/science_funnel/run_earth.ps1": "93aff54a5ec703190a50fdff6d3469fffa3ea7df4b2bd5f370e5a47c55274fe7",
+    "tools/science_funnel/tests/test_coupled_scene.py": "446c718137a32c5b895fcc360d515ff54a7ed23e4a2d854214cd63cfc4eaa80f",
+    "tools/science_funnel/tests/qualify_coupled_live.py": "93818e41f11c0d64a3db367f17e8d3e52ce36e11cc407f5225b58e8714770e6e",
+    "tools/science_funnel/coupled_arm.py": "2a8a779e55ff77c96e8806cbc95858f2821dc83d64d6a48b41dce292b682828d",
+    "tools/science_funnel/macaque_anatomy.py": "949954b74e35305828b54a496477e3c8725c1d9609a5f0071a44255137d8d267",
+    "tools/creature_graph/data/authored/project_program.json": "32994ccd29b7bf044644bf5814a9dee73920db33c37aba72378a4914d477b345",
+    "tools/creature_graph/data/creature_graph.json": "97185f04290c1872274e3e42b830358d8cf6f2a143bff5798ed3f897d79f9253"
+  },
+  "manifest_note": "Committed Git blobs and actual build-worktree bytes are separately hashed. Candidate tree pins remaining dependencies. Runtime binds exe and scene hashes.",
+  "scope": "Native source-derived shoulder and elbow, fixed mount, source joint stops, finite ideal actuator work, rendered source anatomy. No hand/environment collision, free root, muscles, full animal or GPU multibody qualification.",
+  "checks": {
+    "native_reference_cases": 7,
+    "native_scalar_comparisons": 714,
+    "ten_second_dynamics_trials": 7,
+    "native_tick_and_control_assertions": 63019,
+    "live": 19,
+    "python": 36,
+    "scalar_regression": 19,
+    "earth_regression": 23,
+    "graphify": 7,
+    "historical_evidence_unchanged": 11,
+    "ui": "PASS independent-agent review; same provider because no cross-provider model available"
+  },
+  "metrics": {
+    "worst_native_reference_absolute_error": 1.2732925824820995e-11,
+    "worst_ten_second_energy_residual_J": 4.2412640066658014e-10,
+    "free_trajectory_refinement_ratio": 15.962558823963903
+  },
+  "runtime": {
+    "pid": 104208,
+    "exe": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\coupled-native-engine\\Release\\chimera_engine.exe",
+    "exe_sha256": "98CCEADA8F728BBB730C8800B479D95D254822377F27AD61F42F15363C1A16C9",
+    "scene": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\coupled-native\\scene.json",
+    "scene_file_sha256": "0D942EDABCF0C4F3AAE541B1F9B4F8449BEABDD2AA459B32A9DC4F43F4FB9312",
+    "graph_hash": "e5324edee6193fb8bac75bc6aea9e3e2885f8befca1235b2d2562626307c671b",
+    "scene_sha256": "e0276e4a5124b5d19ac00986f73876edb526f6583bee3b70f19e752abe44d888",
+    "port": 8127,
+    "launched_utc": "2026-09-17T07:04:07.3769371Z"
+  },
+  "source_revision": "4fb7dddeec06a0df9525c18f37234a824cb1b5b1",
+  "development_findings": [
+    "Initial passive live test required both velocities to be nonzero at a fixed time; the elbow had already reached its physical stop. A displacement predicate at the same fixed time was also too specific. Replaced with bounded observation of actual displacement. Physics and numerical acceptance tolerances unchanged.",
+    "Legacy scalar elbow_deg telemetry removed from the new two-coordinate mode; joints[] owns its coordinate state.",
+    "CTest found no registered tests in old standalone executable suites; their actual executables were then run, 19 and 23 checks passing."
+  ],
+  "replay": [
+    "powershell -File tools/science_funnel/run_earth.ps1 -CoupledArm -Port 8127 -Python E:\\PythonChimera\\.venv-hy3d\\Scripts\\python.exe",
+    "cmake -S ChimeraEngine/engine/tests_coupled_arm -B .tmp/coupled-tests",
+    "cmake --build .tmp/coupled-tests --config Release",
+    ".tmp/coupled-tests/Release/coupled_native.exe .tmp/coupled-native/scene.json tools/science_funnel/validation/coupled_arm_20260917/reference_cases.json",
+    "python -B -m unittest tools.science_funnel.tests.test_coupled_scene tools.science_funnel.tests.test_coupled_arm tools.science_funnel.tests.test_force_arm tools.creature_graph.tests.test_project_spec -v",
+    "python -B -m tools.science_funnel.tests.qualify_coupled_live --runtime .tmp/coupled-native/runtime.json --output .tmp/coupled-native/live_checks.json"
+  ],
+  "limits": [
+    "RK4 explicit reference is qualified only for this source model, admitted gains/caps and timestep; no unconditional stability claim. Endpoint crossing/event bisection is not a general arbitrary-speed continuous collision detector.",
+    "Worst energy/store residual must remain below 1e-5 J on preregistered ten-second trials. Free trajectory refinement must approach fourth order; impact trajectories require their own event tolerances.",
+    "CPU reference, two coordinates. Native analytic force snapshots support all seven source coordinates; seven-coordinate trajectories are not qualified.",
+    "Work consumption and braking are resolved per substep; within-substep reversals are not separately metered. The energy ledger is a discrete ideal-work model. Earth air/temperature fields are informational here; only sampled gravity enters arm dynamics."
+  ],
+  "screenshots": "Captured from native 8127 before a telemetry-only removal of the unused legacy scalar elbow_deg field and graph-documentation refresh. Physics and HTML identities unchanged; final candidate live FK/control checks repeated on final executable.",
+  "artifacts": {
+    "desktop.png": "850953d48bdbf86d8558c07f43d741c8627b19dac344a4f18140a8c9f1d06d88",
+    "earth_regression.json": "56cbc6cb8ce34c524f33a02772e4eb385b1e3532b480e4db43ffe2a67954890e",
+    "graph-roundtrip.json": "275bded62de787a92a6ed01f3ff03fddcc6ef74f6d3924f07cef5eefab82f60e",
+    "live_checks.json": "ae2cc96873ae190c59b5ac3e22b07587c16983f524ea09c0d24ae91496cb9cc6",
+    "mobile.png": "f26355ced30dd6f5aadc69a1d4fcd42b16cc261bc3dfb14de00b66867a27959d",
+    "native_checks.json": "92261a948a2112f8e455e4288869a98f89480212349b947b75d25568fb9d6dfb",
+    "native_checks.log": "816e2424813291957b6d3275576af4a75f7c45b778c543146e62d819b6cbdd81",
+    "passive.png": "4fb5472cd989a714e1feccf836d1201542e1650bc3762d5dd4b218702a50b186",
+    "python_checks.log": "bb5930ce48f63d37c32e252592dd6797786c8877b77fcf1e69a0c9ae631b2ec2",
+    "runtime.json": "98b9f953f032f30bc55c1c70ec45ed25b85ad83db39d2c54a662c2fb7387a08a",
+    "scalar_regression.json": "22d5369105921c787ed6519557ba59b26c7106f5a07c266c3a6edc7f6b51ace7",
+    "ui-review.md": "b4c9e5115a1ae53e0e9962c74f440a4f0aa73ce842d3d51463786ef10580eb97"
+  }
+}
