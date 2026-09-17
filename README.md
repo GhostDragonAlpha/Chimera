@@ -297,10 +297,17 @@ coupled mass matrix. Cut either drive, change a target, add hand load, or cut gl
 power. The native state determines both bones and the hand marker. A finite 2 J
 mechanical store, passive losses and source joint stops account for energy.
 Enable **Hand contact plane** and drive the elbow target toward 20°: the hand presses
-an authored frictionless rigid surface, a measurable normal reaction appears, and the
+an authored rigid surface, a measurable normal reaction appears, and the
 elbow stalls short of its target instead of passing through. The toggle resets the
-trial; with it off, the qualified free dynamics run unchanged.
-Read `doc.workflow.coupled_native` and `work.creature.coupled_arm_contact` for
+trial; with it off, the qualified free dynamics run unchanged. With contact on, the
+**friction coefficient μ** slider (0–1) applies live, without a reset: μ = 0 is the
+qualified frictionless world bit-exactly, low μ lets the hand slip while dissipating
+friction heat into the energy ledger, and high μ makes it stick (readouts show the
+tangential force, slip speed and stick/slide mode). A preregistered one-time
+catch-event balance allowance of 5e-5 J at first landing is documented in the
+receipt.
+Read `doc.workflow.coupled_native`, `work.creature.coupled_arm_contact` and
+`work.creature.coupled_arm_friction` for
 equations, checks, scope and next work. This reference has a fixed mount and two
-moving coordinates; friction, grasping, whole-body balance, muscles and GPU
+moving coordinates; grasping, whole-body balance, muscles and GPU
 integration remain unfinished.
