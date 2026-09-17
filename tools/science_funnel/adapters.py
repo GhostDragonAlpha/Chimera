@@ -242,3 +242,192 @@ ADAPTERS['coolprop_surface'] = coolprop_surface
 
 from .force_adapters import FORCE_ADAPTERS
 ADAPTERS.update(FORCE_ADAPTERS)
+
+
+def smithsonian_voyager(raw, manifest, path):
+    """Smithsonian 3D Voyager document.json -> geometry candidates (one per model).
+
+    Derivative policy: the Web3D High GLB is the pinned mesh asset; the document
+    itself (with units and bounding box) and the GLB bytes are both pinned in the
+    bundle. Mesh geometry is NOT parsed here -- admission is metadata + pinned
+    bytes, geometry reduction is a later membrane.
+    """
+    doc = loads(raw)
+    require(doc.get('asset', {}).get('type') == 'application/si-dpo-3d.document+json',
+            'smithsonian_document_type')
+    scene = doc['scenes'][doc.get('scene', 0)]
+    units = text(scene.get('units'), 'scene units')
+    collection = doc['metas'][0]['collection']
+    title = text(collection.get('title'), 'collection title')
+    record_id = text(collection.get('edanRecordId'), 'edan record id')
+    # model names live on the SCENE NODES referencing the model index
+    node_names = {}
+    for node in doc.get('nodes', []):
+        if isinstance(node, dict) and 'model' in node and node.get('name'):
+            node_names[node['model']] = node['name']
+    out = []
+    for index, model in enumerate(doc['models']):
+        name = node_names.get(index) or 'model' + str(index)
+        require(model.get('units') == units, 'model_units_conflict', name)
+        derivative = None
+        for candidate in model.get('derivatives', []):
+            if candidate.get('usage') == 'Web3D' and candidate.get('quality') == 'High':
+                derivative = candidate
+                break
+        require(derivative is not None, 'derivative_high_missing', name)
+        asset = derivative['assets'][0]
+        box = model['boundingBox']
+        extents = [box['max'][axis] - box['min'][axis] for axis in range(3)]
+        payload = {'units': units, 'bbox_min_mm': list(box['min']),
+                   'bbox_max_mm': list(box['max']), 'bbox_extent_mm': max(extents),
+                   'glb_uri': asset['uri'], 'glb_byte_size': asset['byteSize'],
+                   'glb_faces': asset['numFaces'], 'title': title,
+                   'copyright_field': doc['asset'].get('copyright', '')}
+        row = draft('si3d:' + record_id + ':' + name, 'geometry', payload,
+                    unknowns=['mesh_geometry_not_parsed', 'license_metadata_conflict'
+                              if payload['copyright_field'] else 'mesh_reduction_pending'],
+                    label=title + ' / ' + name)
+        row['class_contract'] = {'class_id': 'batch.geometry.smithsonian_voyager', 'version': 1}
+        out.append(row)
+    return out
+
+
+ADAPTERS['smithsonian_voyager'] = smithsonian_voyager
+
+
+def copernicus_meta(raw, manifest, path):
+    """Copernicus DSM tile EOXML -> tile property assertions.
+
+    Reads only what the tile's own metadata declares: posting scale, vertical
+    quantization, extent polygon, datum codes, vertical envelope. The EOXML
+    verticalDatumCode carries the horizontal datum code (known ESA quirk); the
+    EGM2008 height datum is named by the vertical extent's geoid element and the
+    ambiguity is carried on every row as an unknown, never silently resolved.
+    """
+    import xml.etree.ElementTree as ET
+    root = ET.fromstring(raw.decode('utf-8-sig'))
+
+    def text_of(tag):
+        for element in root.iter():
+            if element.tag.split('}')[-1] == tag:
+                for child in element.iter():
+                    value = (child.text or '').strip()
+                    if value:
+                        return value
+        raise Refusal('missing_text', tag)
+
+    def decimals(tag, limit):
+        values = []
+        for element in root.iter():
+            if element.tag.split('}')[-1] != tag:
+                continue
+            for child in element.iter():
+                value = (child.text or '').strip()
+                if value:
+                    values.append(float(value))
+                    break
+        require(len(values) >= limit, 'missing_text', tag)
+        return values
+
+    tile = text_of('fileIdentifier').replace('.xml', '')
+    posting = None
+    for element in root.iter():
+        if element.tag.split('}')[-1] != 'resolution':
+            continue
+        for child in element.iter():
+            if child.tag.split('}')[-1] == 'Scale':
+                value = (child.text or '').strip()
+                if value:
+                    posting = float(value)
+                    break
+    require(posting and posting > 0, 'missing_text', 'resolution/Scale')
+    vertical_spacing = float(text_of('verticalSpacing'))
+    h_datum = text_of('horizontalDatumCode')
+    v_datum_field = text_of('verticalDatumCode')
+    lons = sorted({v for v in decimals('westBoundLongitude', 1) + decimals('eastBoundLongitude', 1)})
+    lats = sorted({v for v in decimals('southBoundLatitude', 1) + decimals('northBoundLatitude', 1)})
+    require(len(lons) == 2 and len(lats) == 2, 'extent_incomplete', tile)
+    heights = decimals('minimumValue', 1) + decimals('maximumValue', 1)
+    require(len(heights) >= 2, 'vertical_extent_incomplete', tile)
+    geoid = 'EGM2008 geoid'
+    rows = [
+        ('posting', posting, 'arcsec', 'horizontal posting scale declared by the tile EOXML'),
+        ('vertical_quantization', vertical_spacing, 'm', 'vertical quantization step'),
+        ('extent_west', lons[0], 'degree', 'tile extent polygon'),
+        ('extent_east', lons[1], 'degree', 'tile extent polygon'),
+        ('extent_south', lats[0], 'degree', 'tile extent polygon'),
+        ('extent_north', lats[1], 'degree', 'tile extent polygon'),
+        ('height_min', min(heights), 'm', 'vertical envelope over the tile'),
+        ('height_max', max(heights), 'm', 'vertical envelope over the tile'),
+    ]
+    conditions = {'tile': tile, 'horizontal_datum_code': h_datum,
+                  'dataset': 'Copernicus DEM GLO-30 Public (DSM, not bare earth)',
+                  'datum_law': 'h = H + N: keep H native EGM2008 orthometric, scene frame WGS84 ellipsoidal',
+                  'geoid_named_by_tile': geoid}
+    out = []
+    for field, value, unit, note in rows:
+        payload = {'value_si': value, 'unit_si': unit, 'conditions': dict(conditions),
+                   'subject': tile, 'note': note}
+        row = draft('copernicus:' + tile + ':' + field, 'measurement', payload,
+                    unknowns=['eoxml_vertical_datum_code_carries_horizontal_code:'
+                              + v_datum_field, 'dsm_not_bare_earth', 'abs_accuracy_4m_LE90'])
+        row['class_contract'] = {'class_id': 'batch.property.copernicus_tile', 'version': 1}
+        out.append(row)
+    return out
+
+
+ADAPTERS['copernicus_meta'] = copernicus_meta
+
+
+def bp3d_lists(raw, manifest, path):
+    """BodyParts3D concept lists -> anatomy entity records (one per FMA concept).
+
+    The primary artifact is partof_parts_list_e.txt; the companion isa list is
+    named by sha256 in manifest constants and read from the bundle directory.
+    Concepts appearing in both lists are emitted once with both lists recorded;
+    a concept whose label or representation id disagrees across lists is
+    quarantined (no silent merge). Mesh element files and inclusion pairs stay
+    pinned attachments -- geometry import is a later membrane.
+    """
+    companion_pin = manifest.get('constants', {}).get('isa_parts_sha256')
+    require(companion_pin, 'missing_text', 'constants.isa_parts_sha256')
+
+    def concepts(blob, origin):
+        rows = []
+        for index, line in enumerate(blob.decode('utf-8-sig').splitlines()[1:], 2):
+            if not line.strip():
+                continue
+            parts = line.split('\t')
+            require(len(parts) >= 3, 'missing_text', origin + ':row' + str(index))
+            rows.append((parts[0].strip(), parts[1].strip(), parts[2].strip()))
+        return rows
+
+    merged = {}
+    conflicts = []
+    for origin, blob in (('partof', raw),
+                         ('isa', path.parent.joinpath(companion_pin).read_bytes())):
+        for fma, bp, label in concepts(blob, origin):
+            if fma in merged and merged[fma][1] != (bp, label):
+                conflicts.append({'location': origin + ':' + fma, 'refusal': {
+                    'code': 'duplicate_source_identity',
+                    'detail': 'label/representation differs across lists: '
+                              + repr(merged[fma][1]) + ' vs ' + repr((bp, label))}})
+                continue
+            entry = merged.setdefault(fma, [[], (bp, label)])
+            if origin not in entry[0]:
+                entry[0].append(origin)
+    out = []
+    for fma in sorted(merged):
+        lists, (bp, label) = merged[fma]
+        payload = {'fma_id': fma, 'representation_id': bp, 'label': label,
+                   'lists': lists, 'license': 'CC Attribution 4.0 International',
+                   'attribution': 'BodyParts3D, (c) The Database Center for Life Science'}
+        row = draft('bp3d:' + fma, 'entity', payload,
+                    unknowns=['mesh_geometry_not_imported', 'fma_version_not_pinned'],
+                    label=label)
+        row['class_contract'] = {'class_id': 'batch.entity.external', 'version': 1}
+        out.append(row)
+    return out + conflicts
+
+
+ADAPTERS['bp3d_lists'] = bp3d_lists

@@ -148,6 +148,20 @@ reviewed before controller dispatch. Do not substitute a prose assurance for it.
 Worker self-reports cannot authorize their own verification. The control plane
 enforces workflow within its interfaces; it is not an operating-system sandbox.
 
+### Batch database intake
+
+Whole databases integrate and prove in one run:
+`python -B -m tools.creature_graph.batch_qualify --reprove all --admit
+smithsonian_voyager,copernicus_glo30,bodyparts3d --apply --train exercise --out
+tools/science_funnel/validation/batch_20260917/receipt.json`.
+Each connector pins its artifacts by sha256; every record class carries an
+admitted Rule-0 contract (`data/authored/class_contracts.json`) whose mechanical
+falsifiers run over every record; existing admissions re-prove byte-identically
+under their recorded producers; the count identity closes with zero silent
+drops (conflicting records quarantine, never merge). One receipt records the
+whole batch. Admitted records stay `extracted` — batch admission is proven
+intake, never verification.
+
 ## 4. Documentation and proof
 
 The graph separates **admission**, **implementation**, **measurement**, **freshness**,

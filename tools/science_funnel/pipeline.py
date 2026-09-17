@@ -55,13 +55,18 @@ def transform(manifest, blobs, producer, manifest_pin):
     # IDs but point those records at different immutable bundle source nodes.
     source_version = digest({'manifest': manifest, 'manifest_sha256': manifest_pin})
     with tempfile.TemporaryDirectory(prefix='chimera-funnel-parse-') as temp:
+        # Materialize EVERY pinned artifact before parsing any: adapters may
+        # read declared companions (a second list named by sha256) that are
+        # listed after the data artifact they belong to.
         for art in manifest['artifacts']:
             raw = blobs[art['sha256']]
             require(sha(raw) == art['sha256'], 'pin_drift', art['id'])
+            (Path(temp) / art['sha256']).write_bytes(raw)
+        for art in manifest['artifacts']:
             if art.get('role') == 'attachment':
                 continue
+            raw = blobs[art['sha256']]
             path = Path(temp) / art['sha256']
-            path.write_bytes(raw)
             try:
                 rows = ADAPTERS[manifest['adapter']](raw, manifest, path)
                 require(rows, 'empty_capture', art['id'])

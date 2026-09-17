@@ -54,6 +54,8 @@ def propose(bundle, graph):
         if rec['record_type'] == 'measurement':
             obj.update(value=rec['payload']['value_si'], units=rec['payload']['unit_si'],
                        applicability=rec['payload']['conditions'])
+        if rec.get('class_contract'):
+            obj['class_contract'] = rec['class_contract']
         objects.append(obj)
         edges.append({'src': obj['id'], 'rel': 'derived_from', 'dst': source_id,
                       'note': 'Pinned intake bundle ' + bundle_id})

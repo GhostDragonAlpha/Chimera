@@ -70,6 +70,33 @@ def build(with_reference: bool = False) -> CreatureGraph:
     g.meta["schema_version"] = SCHEMA_VERSION
     g.meta["built_from"] = input_hashes
     g.meta["built_utc"] = None  # determinism: stamped by save(), not by build
+    # Class contracts: one RULE 0 membrane per (source x record class); records
+    # reference a contract by id+version and are proven by its mechanical checks.
+    contracts_path = os.path.join(AUTHORED_DIR, "class_contracts.json")
+    if os.path.exists(contracts_path):
+        input_hashes["authored/class_contracts.json"] = _sha256_file(contracts_path)
+        with open(contracts_path, encoding="utf-8") as f:
+            from schema import validate_class_contracts
+            registry = validate_class_contracts(json.load(f))
+        g.meta["class_contracts"] = {cid: {
+            "version": c["version"],
+            "sha256": hashlib.sha256(
+                json.dumps(c, sort_keys=True, ensure_ascii=False).encode()).hexdigest(),
+        } for cid, c in sorted(registry.items())}
+        for oid, obj in g.objects.items():
+            cc = obj.get("class_contract")
+            if cc is None:
+                continue
+            contract = registry.get(cc.get("class_id"))
+            if contract is None:
+                raise SystemExit(f"store check FAILED:\n  {oid}: unknown class_contract "
+                                 f"{cc.get('class_id')!r}")
+            if contract["version"] != cc.get("version"):
+                raise SystemExit(f"store check FAILED:\n  {oid}: class_contract version "
+                                 f"{cc.get('version')!r} != registry {contract['version']}")
+            if obj.get("kind") not in contract["applies_to"]["kinds"]:
+                raise SystemExit(f"store check FAILED:\n  {oid}: kind {obj.get('kind')!r} "
+                                 f"outside contract {cc['class_id']} applies_to")
     if with_reference:
         join_reference(g)
     g.refresh_validation(stamp=False)

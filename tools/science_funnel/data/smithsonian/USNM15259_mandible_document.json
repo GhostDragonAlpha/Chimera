@@ -1,0 +1,471 @@
+{
+  "asset": {
+    "type": "application/si-dpo-3d.document+json",
+    "version": "1.0",
+    "generator": "Voyager",
+    "copyright": "(c) Smithsonian Institution. All rights reserved."
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "units": "mm",
+      "name": "Scene",
+      "nodes": [
+        0,
+        1,
+        6
+      ],
+      "setup": 0,
+      "meta": 0
+    }
+  ],
+  "nodes": [
+    {
+      "translation": [
+        -44.5308246,
+        45.2274303,
+        91.3017207
+      ],
+      "rotation": [
+        -0.2025829,
+        -0.2200353,
+        -0.04677,
+        0.9530777
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "name": "Camera",
+      "camera": 0
+    },
+    {
+      "rotation": [
+        0,
+        -0.2249511,
+        0,
+        0.9743701
+      ],
+      "name": "Lights",
+      "children": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "translation": [
+        0,
+        0,
+        2
+      ],
+      "rotation": [
+        0.4829741,
+        -0.1070728,
+        0.1880998,
+        0.8484633
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "name": "Key",
+      "light": 0
+    },
+    {
+      "rotation": [
+        0.3546969,
+        0.163893,
+        -0.3861077,
+        0.8356136
+      ],
+      "name": "Fill #1",
+      "light": 1
+    },
+    {
+      "translation": [
+        0,
+        0,
+        1
+      ],
+      "rotation": [
+        0.9374013,
+        -0.3018693,
+        0.0532277,
+        0.1652891
+      ],
+      "name": "Fill #2",
+      "light": 2
+    },
+    {
+      "translation": [
+        1,
+        0,
+        -1
+      ],
+      "rotation": [
+        0.373256,
+        0.6426073,
+        -0.5786063,
+        0.3360813
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "name": "Rim",
+      "light": 3
+    },
+    {
+      "name": "USNM15259_mandible_-300",
+      "model": 0
+    }
+  ],
+  "cameras": [
+    {
+      "type": "perspective",
+      "perspective": {
+        "yfov": 52,
+        "znear": 0.1,
+        "zfar": 100000
+      }
+    }
+  ],
+  "lights": [
+    {
+      "color": [
+        1,
+        0.95,
+        0.9
+      ],
+      "intensity": 1,
+      "type": "directional",
+      "shadowEnabled": true
+    },
+    {
+      "color": [
+        0.9,
+        0.95,
+        1
+      ],
+      "intensity": 0.7,
+      "type": "directional",
+      "shadowEnabled": true
+    },
+    {
+      "color": [
+        0.8,
+        0.85,
+        1
+      ],
+      "intensity": 0.5,
+      "type": "directional"
+    },
+    {
+      "color": [
+        0.85,
+        0.9078313,
+        1
+      ],
+      "intensity": 0.6,
+      "type": "directional"
+    }
+  ],
+  "models": [
+    {
+      "units": "mm",
+      "translation": [
+        0.3068466,
+        -183.3301849,
+        -240.9029999
+      ],
+      "rotation": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "boundingBox": {
+        "min": [
+          -34.1021004,
+          -205.1007996,
+          -281.3049011
+        ],
+        "max": [
+          33.4884071,
+          -161.5595703,
+          -200.5010986
+        ]
+      },
+      "derivatives": [
+        {
+          "usage": "Web3D",
+          "quality": "High",
+          "assets": [
+            {
+              "uri": "USNM15259_mandible_-300-150k-4096-high.glb",
+              "type": "Model",
+              "byteSize": 2426480,
+              "numFaces": 150000,
+              "imageSize": 4096
+            }
+          ]
+        },
+        {
+          "usage": "Web3D",
+          "quality": "Medium",
+          "assets": [
+            {
+              "uri": "USNM15259_mandible_-300-150k-2048-medium.glb",
+              "type": "Model",
+              "byteSize": 1159044,
+              "numFaces": 150000,
+              "imageSize": 2048
+            }
+          ]
+        },
+        {
+          "usage": "Web3D",
+          "quality": "Low",
+          "assets": [
+            {
+              "uri": "USNM15259_mandible_-300-150k-1024-low.glb",
+              "type": "Model",
+              "byteSize": 718124,
+              "numFaces": 150000,
+              "imageSize": 1024
+            }
+          ]
+        },
+        {
+          "usage": "Image2D",
+          "quality": "Thumb",
+          "assets": [
+            {
+              "uri": "scene-image-thumb.jpg",
+              "type": "Image",
+              "mimeType": "image/jpeg",
+              "byteSize": 11847,
+              "imageSize": 320
+            }
+          ]
+        },
+        {
+          "usage": "Image2D",
+          "quality": "Medium",
+          "assets": [
+            {
+              "uri": "scene-image-medium.jpg",
+              "type": "Image",
+              "mimeType": "image/jpeg",
+              "byteSize": 103509,
+              "imageSize": 1280
+            }
+          ]
+        },
+        {
+          "usage": "Image2D",
+          "quality": "Low",
+          "assets": [
+            {
+              "uri": "scene-image-low.jpg",
+              "type": "Image",
+              "mimeType": "image/jpeg",
+              "byteSize": 33396,
+              "imageSize": 640
+            }
+          ]
+        },
+        {
+          "usage": "Image2D",
+          "quality": "High",
+          "assets": [
+            {
+              "uri": "scene-image-high.jpg",
+              "type": "Image",
+              "mimeType": "image/jpeg",
+              "byteSize": 351639,
+              "imageSize": 2560
+            }
+          ]
+        },
+        {
+          "usage": "Web3D",
+          "quality": "AR",
+          "assets": [
+            {
+              "uri": "USNM15259_mandible_-300-150k-2048-medium-100k-2048_draco.glb",
+              "type": "Model",
+              "byteSize": 1382744,
+              "numFaces": 100000,
+              "imageSize": 2048
+            }
+          ]
+        },
+        {
+          "usage": "App3D",
+          "quality": "AR",
+          "assets": [
+            {
+              "uri": "USNM15259_mandible_-300-150k-2048-medium-100k-2048_std_draco.glb",
+              "type": "Model",
+              "byteSize": 1382512,
+              "numFaces": 100000,
+              "imageSize": 2048
+            }
+          ]
+        },
+        {
+          "usage": "iOSApp3D",
+          "quality": "AR",
+          "assets": [
+            {
+              "uri": "USNM15259_mandible_-300-150k-2048-medium-100k-2048_std.usdz",
+              "type": "Model",
+              "byteSize": 3922833,
+              "numFaces": 100000,
+              "imageSize": 2048
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "setups": [
+    {
+      "interface": {
+        "visible": true,
+        "logo": true,
+        "menu": true,
+        "tools": true
+      },
+      "reader": {
+        "enabled": false,
+        "position": "Overlay"
+      },
+      "viewer": {
+        "shader": "Default",
+        "exposure": 1,
+        "gamma": 2
+      },
+      "navigation": {
+        "enabled": true,
+        "autoZoom": true,
+        "autoRotation": false,
+        "lightsFollowCamera": true,
+        "type": "Orbit",
+        "orbit": {
+          "orbit": [
+            -24,
+            -26,
+            0
+          ],
+          "offset": [
+            0,
+            0,
+            111.1958587
+          ],
+          "minOrbit": [
+            -90,
+            null,
+            null
+          ],
+          "maxOrbit": [
+            90,
+            null,
+            null
+          ],
+          "minOffset": [
+            null,
+            null,
+            0.1
+          ],
+          "maxOffset": [
+            null,
+            null,
+            10000
+          ]
+        }
+      },
+      "background": {
+        "style": "RadialGradient",
+        "color0": [
+          0.2,
+          0.25,
+          0.3
+        ],
+        "color1": [
+          0.01,
+          0.03,
+          0.05
+        ]
+      },
+      "floor": {
+        "visible": false,
+        "position": [
+          0,
+          -25,
+          0
+        ],
+        "size": 50,
+        "color": [
+          0.6,
+          0.75,
+          0.8
+        ],
+        "opacity": 0.5,
+        "receiveShadow": false
+      },
+      "grid": {
+        "visible": false,
+        "color": [
+          0.5,
+          0.7,
+          0.8
+        ]
+      },
+      "tape": {
+        "enabled": false,
+        "startPosition": [
+          0,
+          0,
+          0
+        ],
+        "startDirection": [
+          0,
+          0,
+          0
+        ],
+        "endPosition": [
+          0,
+          0,
+          0
+        ],
+        "endDirection": [
+          0,
+          0,
+          0
+        ]
+      },
+      "slicer": {
+        "enabled": false,
+        "axis": "X",
+        "position": 0.5,
+        "inverted": false
+      }
+    }
+  ],
+  "metas": [
+    {
+      "collection": {
+        "edanRecordId": "edanmdm:nmnhvz_7226908",
+        "title": "Macaca sinica: Mandible",
+        "sceneTitle": "Mandible"
+      }
+    }
+  ]
+}

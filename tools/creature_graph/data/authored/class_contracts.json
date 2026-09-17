@@ -1,0 +1,71 @@
+{
+ "schema_version": "chimera.class_contracts.v1",
+ "contracts": [
+  {
+   "class_id": "batch.entity.external",
+   "version": 1,
+   "statement": "A record admitted by a batch connector is a pinned byte-exact external assertion: its identity is content-derived, its bytes are sha256-pinned inside an intake bundle, and it names the source bundle it came from.",
+   "prediction": "Every record of this class passes the mechanical checks declared here, and a batch over N artifacts closes the count identity fetched == admitted + quarantined + conflicts with zero silent drops.",
+   "falsifier": "Mutating exactly one field of one record (or one byte of one pinned artifact) must quarantine exactly that record, close the count identity, and refuse admission of the corrupt class; a second full run must create zero objects and reproduce the graph hash byte-identically.",
+   "applies_to": {"kinds": ["reference_entity", "geometry_asset", "model_definition"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.(assertion|source|relation)\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.property.measurement",
+   "version": 1,
+   "statement": "A measurement record admitted by a batch connector carries a finite SI value with named units, conditions of applicability, and the same pinned-byte provenance as the entity class.",
+   "prediction": "Every measurement passes the entity-class checks plus finiteness and unit-vocabulary checks; no NaN or unitless number ever enters the graph through a batch.",
+   "falsifier": "One non-finite value or one unit outside the declared vocabulary must quarantine exactly that record and refuse the class batch.",
+   "applies_to": {"kinds": ["property_assertion"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_range", "params": {"path": "payload.value_si", "min": -1e30, "max": 1e30}},
+    {"kind": "units_in", "params": {"path": "payload.unit_si", "si_tokens": true}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.geometry.smithsonian_voyager",
+   "version": 1,
+   "statement": "A Smithsonian 3D geometry candidate is a CC0-licensed, millimetre-metric specimen derivative: units mm, a positive bounded bounding box, and the exact GLB bytes pinned by sha256 inside the intake bundle.",
+   "prediction": "Both USNM 15259 derivatives (cranium, mandible) admit with units mm, bounded boxes in the 1-500 mm range, and their pinned GLB sha256 recorded; any derivative without a pinned blob is quarantined.",
+   "falsifier": "A derivative with units other than mm, a non-positive or >500 mm box extent, or a missing/mismatched GLB pin must quarantine exactly that record.",
+   "applies_to": {"kinds": ["geometry_asset"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "units_in", "params": {"path": "payload.units", "vocabulary": ["mm"]}},
+    {"kind": "field_range", "params": {"path": "payload.bbox_extent_mm", "min": 1.0, "max": 500.0}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.property.copernicus_tile",
+   "version": 1,
+   "statement": "A Copernicus GLO-30 tile property names the pinned tile artifacts (DEM, EOXML, WBM, EULA) it was read from and a value inside the dataset's own declared envelope (1.0 arcsec postings, 0.1 m vertical quantization, metres/degrees units).",
+   "prediction": "Every tile property admitted by the connector passes with units inside {m, degree, arcsec} and values inside the source-declared envelope; the h=H+N EGM2008 datum law is carried as provenance text, not silently applied.",
+   "falsifier": "A property whose value falls outside the declared envelope, or whose artifact pin does not match the pinned tile bytes, must quarantine exactly that record.",
+   "applies_to": {"kinds": ["property_assertion"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "units_in", "params": {"path": "payload.unit_si", "vocabulary": ["m", "degree", "arcsec"]}},
+    {"kind": "field_range", "params": {"path": "payload.value_si", "min": -100.0, "max": 9000.0}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  }
+ ]
+}
