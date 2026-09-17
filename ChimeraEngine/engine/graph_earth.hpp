@@ -94,6 +94,16 @@ public:
    quad({-.02,0,-.05},{-.02,h,-.05},{.00,h,-.05},{.00,0,-.05},color);
    quad({.27,0,.06},{.27,h,.06},{.29,h,.06},{.29,0,.06},color);
   }
+  if(coupled_){
+   // The visible slab is the same authored plane the solver presses against.
+   const J& recipe=bundle.at("coupled_dynamics").at("recipe");
+   if(recipe.contains("contact_plane_height_m")&&out.state.at("config").value("contact_enabled",false)){
+    double h=number(recipe.at("contact_plane_height_m"));V color{.30,.42,.48};
+    quad({-.15,h,-.15},{-.15,h,.15},{.40,h,.15},{.40,h,-.15},color);
+    quad({-.15,h,-.15},{-.15,0,-.15},{.40,0,-.15},{.40,h,-.15},color);
+    quad({-.15,h,.15},{-.15,0,.15},{.40,0,.15},{.40,h,.15},color);
+   }
+  }
   V center=coupled_?out.state.at("body").at("position_m").get<V>():dynamics_?dynamics_->hand_position():sim_->x;double radius=coupled_?number(out.state.at("body").at("radius_m")):dynamics_?dynamics_->radius():sim_->radius();double heat=(std::max)(0.,(std::min)(1.,(sim_->temperature-270)/25));V color{.85,.44+.18*heat,.14};
   const int rings=10,slices=20;auto point=[&](int j,int i){double t=pi*j/rings,p=2*pi*i/slices;return add(center,V{radius*std::sin(t)*std::cos(p),radius*std::cos(t),radius*std::sin(t)*std::sin(p)});};
   for(int j=0;j<rings;++j)for(int i=0;i<slices;++i){if(j>0)triangle(point(j,i),point(j,i+1),point(j+1,i),color);if(j<rings-1)triangle(point(j,i+1),point(j+1,i+1),point(j+1,i),color);}
