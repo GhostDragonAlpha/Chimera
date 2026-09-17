@@ -1,4 +1,5 @@
 #include "engine.hpp"
+#include "joint_binding.hpp"
 #include "platform/vulkan_surface.h"
 #include <windows.h>
 #include <vulkan/vulkan_win32.h>
@@ -2458,18 +2459,7 @@ void Engine::compute_strain_joints() {
         // (No early skip on zero angles: identity composes to exact rest, and
         // skipping would leave the PREVIOUS frame's position in the scratch —
         // phantom strain. Always write.)
-        auto step = [](const float R[9], const float Jv[3], float M[9], float T[3]) {
-            float nM[9], nT[3];
-            for (int r = 0; r < 3; ++r) {
-                const float Rt0 = R[r * 3], Rt1 = R[r * 3 + 1], Rt2 = R[r * 3 + 2];
-                nT[r] = Rt0 * T[0] + Rt1 * T[1] + Rt2 * T[2]
-                      + (Jv[r] - (Rt0 * Jv[0] + Rt1 * Jv[1] + Rt2 * Jv[2]));
-                for (int cc = 0; cc < 3; ++cc)
-                    nM[r * 3 + cc] = Rt0 * M[cc] + Rt1 * M[3 + cc] + Rt2 * M[6 + cc];
-            }
-            for (int q = 0; q < 9; ++q) M[q] = nM[q];
-            T[0] = nT[0]; T[1] = nT[1]; T[2] = nT[2];
-        };
+        auto step = chimera::articulation::append_local_rotation;
         // JNT3: term 2's bone is the vertex's SECOND OWNER (its own FULL FK
         // chain — the sibling at limb/torso seams); the -1/missing fallback
         // keeps the JNT2 parent law exactly. Same law as joints.comp, or the
@@ -5176,75 +5166,23 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
     // copy, not a source. When a hinge IS engaged the two are equal by
     // construction, so the old behavior is preserved bit-for-bit there.
     if (!has_mesh_ || mesh_cpu_.empty()) { fprintf(stderr, "joints: no mesh rest\n"); return false; }
-    const bool is_jnt3 = (blob.size() >= 16 && memcmp(blob.data(), "JNT3", 4) == 0);
-    const bool is_jnt2 = (blob.size() >= 16 && memcmp(blob.data(), "JNT2", 4) == 0);
-    if (blob.size() < 16 ||
-        (!is_jnt2 && !is_jnt3 && memcmp(blob.data(), "JNT1", 4) != 0)) {
-        fprintf(stderr, "joints: bad blob\n"); return false;
+    chimera::articulation::JointBinding binding;
+    std::string binding_error;
+    if (!chimera::articulation::decode_joint_binding(
+            blob, tri_vfloats_ / 9, binding, binding_error)) {
+        fprintf(stderr, "joints: refused %s\n", binding_error.c_str());
+        return false; // No existing binding or GPU state changed on refusal.
     }
-    const uint8_t* p = blob.data() + 4;
-    uint32_t nv, nj, nl;
-    memcpy(&nv, p, 4); p += 4;
-    memcpy(&nj, p, 4); p += 4;
-    memcpy(&nl, p, 4); p += 4;
-    j_names_.clear();
-    {   // \0-separated names
-        const char* s = reinterpret_cast<const char*>(p);
-        size_t used = 0;
-        for (uint32_t k = 0; k < nj; ++k) {
-            size_t l = strnlen(s + used, nl - used);
-            j_names_.emplace_back(s + used, l);
-            used += l + 1;
-        }
-    }
-    p += nl;
-    const int32_t* assign = reinterpret_cast<const int32_t*>(p); p += nv * 4;
-    const float* w = reinterpret_cast<const float*>(p); p += nv * 4;
-    const float* J = reinterpret_cast<const float*>(p); p += nj * 12;
-    const float* ax = reinterpret_cast<const float*>(p); p += nj * 12;
-    const float* rom = reinterpret_cast<const float*>(p);
-    p += nj * 8;   // JNT1 ended here; JNT2 continues past the ROM array
-    // JNT2/JNT3: trailing FK parent map (i32 per joint). A JNT1 blob ends at
-    // ROM — a JNT2/3 blob must carry nj more int32s, or it is truncated.
-    // JNT3 then carries the per-vertex SECOND-OWNER arrays (the coverage law:
-    // term 2's bone + its blend share). A JNT2 pack gets the synthesized law
-    // (joint2 = parent) so the shipped behavior survives bit-for-bit.
-    j_parents_.clear();
-    if (is_jnt2 || is_jnt3) {
-        if (blob.size() < static_cast<size_t>(p - blob.data()) + size_t(nj) * 4) {
-            fprintf(stderr, "joints: JNT2/3 truncated parent map\n"); return false;
-        }
-        const int32_t* par = reinterpret_cast<const int32_t*>(p);
-        j_parents_.assign(par, par + nj);
-        for (uint32_t k = 0; k < nj; ++k) {
-            int32_t pk = j_parents_[k];
-            if (pk >= static_cast<int32_t>(nj)) {   // -1 legal (root); >= nj is not
-                fprintf(stderr, "joints: JNT2/3 parent %d out of range\n", k); return false;
-            }
-        }
-        p += size_t(nj) * 4;
-    }
-    j_joint2_.clear();
-    if (is_jnt3) {
-        if (blob.size() < static_cast<size_t>(p - blob.data()) + size_t(nv) * 8) {
-            fprintf(stderr, "joints: JNT3 truncated second-owner arrays\n"); return false;
-        }
-        const int32_t* j2 = reinterpret_cast<const int32_t*>(p);
-        j_joint2_.assign(j2, j2 + nv);
-        const float* w2 = reinterpret_cast<const float*>(p + size_t(nv) * 4);
-        for (uint32_t k = 0; k < nv; ++k) {
-            int32_t jk = j_joint2_[k];
-            if (jk >= static_cast<int32_t>(nj)) {   // -1 legal (kernel falls back)
-                fprintf(stderr, "joints: JNT3 joint2 %d out of range\n", k); return false;
-            }
-        }
-        (void)w2;   // share = 1 - w (the kernel derives it; the gate verifies)
-        p += size_t(nv) * 8;
-    } else {
-        j_joint2_.assign(nv, -1);   // JNT1/JNT2: the kernel's parent fallback
-    }
-    j_lbs_mode_ = is_jnt2 || is_jnt3;
-    if (j_parents_.empty()) j_parents_.assign(nj, -1);   // JNT1: all roots — the legacy law never reads this
+    const uint32_t nv=binding.vertex_count, nj=binding.joint_count;
+    const int32_t* assign=binding.owner.data();
+    const float* w=binding.weight.data();
+    const float* J=binding.pivots.data();
+    const float* ax=binding.axes.data();
+    const float* rom=binding.limits.data();
+    j_names_=binding.names;
+    j_parents_=binding.parents;
+    j_joint2_=binding.secondary;
+    j_lbs_mode_=binding.lbs;
     // THE STRAIN OVERLAY, JOINTS LANE (2026-09-04): keep the pack's CPU copies
     // (the pack arrays are transient pointers into the blob). The GPU side
     // (shared strain SSBO + compact domain) is built AFTER vkDeviceWaitIdle
