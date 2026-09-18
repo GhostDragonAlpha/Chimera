@@ -1,141 +1,154 @@
-# HANDOFF — lane/packet-author-20260918 (agent: GLM 5.3)
+# HANDOFF — lane/library-catalog-20260918 (agent: GLM 5.3)
 
-Date: 2026-09-18. Branch: `lane/packet-author-20260918` (pushed to origin). Base:
-master tip at time of push (lane base `4b047609`; master did not move during the
-lane). All mechanics ran through PowerShell `.ps1` scripts; Python was the pinned
-`E:\PythonChimera\.venv-hy3d\Scripts\python.exe`;
-E:\PythonChimera otherwise untouched, port 8127 avoided, SharedBody*.json untouched.
+Date: 2026-09-18. Branch: `lane/library-catalog-20260918`, PUSHED, remote
+tip verified: `4bea7c92` (parent: master `8f8271ce`, the trust-tooling
+integration; master moved mid-lane and this lane rebased per the collision
+procedure). Worktree: `E:\ChimeraWork\library-catalog-20260918`, clean.
 
 ## What this lane was
 
-AUTHOR-ONLY lane: two concrete, self-contained native-solver implementation packets
-(NO engine implementation), plus the mechanical completeness gate for packets, plus
-their Rule-0 admission records. The executing solver lane implements; this lane made
-sure every equation, constant, falsifier, control, budget and file it needs is already
-derived and falsifiable.
+Two deliverables: (1) THE CATALOG — a GENERATED document
+`docs/THE_LIBRARY.md` plus its pure generator
+`tools/creature_graph/library_catalog.py`; (2) the acceptance sweep,
+`acceptance.py --offline`, every item ending repaired or recorded.
 
-## Deliverables (all on the lane branch)
+## Deliverable 1: the catalog
 
-1. `docs/packets/free_root_balance_v1.md` — the qualified 2-coordinate coupled arm
-   extended to 6-DOF floating base + 2 joints = 8 DOF. Derives, in the exact
-   conventions of `ChimeraEngine/engine/coupled_dynamics.hpp` +
-   `coupled_articulation.hpp` (every constant identifier-matched: kTouch=1e-5,
-   kSlip=1e-9, gate=1e-6+1e-3|v|, 42-step bisection, 1e-9 localizations, depth<8,
-   40-step battery bisection, the share identities): D1 base kinematics as a 6-axis
-   sternum joint through the EXISTING Model (no new kinematics code), D2 the n=8
-   inertia sums with block structure, D3 equations of motion (zero torque on base
-   rows by construction), D4 contact as a LIST of 3D point-on-plane rows,
-   D5 the 3-row stick cone solve + qualified slide closed forms at 8 rows,
-   D6 active-set projection replacing mask enumeration with a termination
-   derivation, D7 balance = gravity compensation through contact (barycentric
-   support-hull condition), D8 the ledger extension, D9 why RK4+event-splits stays,
-   D10 the mount-locked mode as FROZEN bit-exact dispatch (the qualified class runs
-   verbatim; a weld is not six unilateral rows). Falsifiers F1-F9 incl. the task's
-   three: a creature that cannot FALL cannot walk (F1), zero-torque standing must
-   collapse (F2), support-polygon violation must tip (F3).
-2. `docs/packets/seven_coordinate_lift_v1.md` — native lift of all seven unlocked
-   source coordinates against `tools/science_funnel/coupled_arm.py::Assembly` as an
-   independent oracle (1e-12 relative on M/gravity/bias/Jacobian at recorded-seed
-   poses): 7-row joint-stop cascade with a deterministic
-   earliest-crossing/lowest-index tie law (the qualified n=2 `t <= hit` last-wins
-   tie stays byte-for-byte on the frozen path), per-drive actuator stores (honest
-   note: mechanical-energy closure stays GLOBAL), hand contact on the 7-row point
-   Jacobian, staged ladder 2 -> 3 -> 5 -> 7 (stage 0 = the frozen bit-exact
-   control), falsifiers F1-F9, staged file plan. Recommended to land BEFORE the
-   free-root packet (validates the shared generalized-row solver on the fixed root).
-3. `tools/science_funnel/check_packet.py` — the completeness gate: required
-   sections, Rule-0 triple, >= 3 falsifiers each with a refusal criterion, a frozen
-   bit-exactness claim, measurable budgets, an on-disk file list (NEW paths need at
-   least their parent), and the banked admission record in the authored program.
-   Read-only, deterministic, exit 0 over both packets.
-4. `tools/science_funnel/tests/test_packet_checker.py` — wires the gate into the
-   funnel suite permanently.
-5. `tools/creature_graph/validation/admit_solver_packets_20260918.py` — Rule-0
-   records banked BEFORE any implementing code:
-   `work.dynamics.free_root_balance_packet` +
-   `work.dynamics.seven_coordinate_lift_packet` (kind work, status specified,
-   falsifier status untested — honest: nothing in the packets is measured yet).
-   Idempotent AND revision-aware (no-op at current revision, supersedes known prior
-   revisions, REFUSES foreign content). Second run verified a no-op.
-6. `tools/creature_graph/data/{creature_graph.json, authored/project_program.json}`
-   rebuilt via `build_graph.py`: deterministic (identical graph_hash across two
-   builds: 6da0dcccbd3ea9e6), objects 35327 -> 35329, relations 38742 -> 38746,
-   **evidence 11 UNCHANGED**, work 73 -> 75.
-7. `.doclint.allow` — dated block allowing the packets' PLANNED (NEW) file paths
-   (a planned path is not a broken pointer). `doc_lint.py --staged` clean.
+`tools/creature_graph/library_catalog.py` loads the live sharded store
+(`CreatureGraph.load()`, bulk shards merged automatically) and emits
+markdown through one pure function (`build_catalog`: graph in → markdown
+out; sorted iteration, no clock, no locale, no environment text). The
+document contains NO hand-written facts:
 
-## Falsifier status (honest)
+- one section per admitted source (id, manifest identity, license quoted
+  verbatim from the record's own manifest, record counts by kind,
+  quarantine counts with top refusal causes + first detail, deferred
+  records with causes, receipt fields embedded in the record (bundle_id,
+  count-identity law quoted), class contracts used with registry sha
+  prefixes, known gaps from the record, and a per-source **record-set
+  digest** — sha256 over the canonical JSON of every cited record, so ANY
+  byte change to ANY cited record moves the doc);
+- a summary table: source × records × license-class × auth-class (the
+  license class is a documented substring bookkeeping label over the
+  record's own quoted license text; the quote is the authoritative fact);
+- standing gaps: the four gaps quoted verbatim from the graph record
+  `work.data.batch_intake` → `observation.database_hunt_20260917.
+  gaps_that_still_stand` (joint morphology, quadruped EMG, bulk
+  tribology, fur BRDF) with the owning record cited;
+- batch receipts cited by graph records (whole-batch receipt path +
+  sha256 + batch_id from `work.data.batch_intake.observation`);
+- "How to admit the next database": the `batch_qualify` command shape,
+  connector/contract file pointers, and the count-identity law.
 
-Both packets' falsifiers are UNTESTED by design: authoring lane, no runtime runs.
-The admission records say so (`falsifier.status: untested`, acceptance_test filled
-only in the implementing lane's revision 2). The gates that ARE measured for this
-lane are the suite results below.
+Library measured: **19 admitted source objects, 33,417 records** (note:
+two databases were admitted twice through distinct pinned bundles —
+PanTHERIA, and the soil/GSOD/THOR/WorldCover re-batches — so source
+OBJECTS outnumber distinct databases; that duplication is reported
+honestly, never silently merged). Deferred records in-store: 0 (the
+`batch.deferred.dryad_file` class exists but holds no records in this
+store). Largest sources: Rhea 14,202; PanTHERIA 9,531; BodyParts3D 3,432
+(841 quarantined label conflicts); IAEA LiveChart 3,386.
 
-## Evidence-staleness verification (the trap this lane checked for)
+## Rule 0 (and a recorded defect)
 
-7 evidence records are stored-stale (ev.band_seal_conservation,
-ev.reflex_controls_fail, ev.xpbd_fidelity_gap, ev.limb_restore_recipes_20260915,
-ev.limb_live_control_20260915, ev.limb_cold_restart_20260915,
-ev.limb_seal_history_20260915). Verified PRE-EXISTING: extracted the pristine
-baseline store with `git show 4b047609:...` into a temp dir beside byte-identical
-bulk shards, loaded through the same CreatureGraph.load merge — the SAME 7 are
-stored-stale at baseline, and `refresh_validation` recomputes ZERO stale records on
-both trees. The lane's additions (2 work objects + their 4 requires_implementation
-edges) cannot and did not stale anything.
+The falsifier was banked BEFORE the generator existed: revision 1 of
+`work.data.library_catalog_20260918` (statement / prediction /
+falsifier, status `untested`) via the idempotent, revision-aware
+`tools/creature_graph/validation/admit_library_catalog_20260918.py`,
+then `build_graph.py` rebuild. **Process defect, recorded on the record
+itself:** revision 2 (status `tested`) shipped in the same file as
+revision 1, so the FIRST script run banked the tested-status record
+before the generator/tests existed — the statement was prior to any run,
+the status claim was not. Repaired by revision 3: the defect is written
+into the record (`physical.contract.process_defect_recorded`) and the
+outcomes are timestamped to the actual test runs. The revision-aware
+replace path (revisions 1 and 2 are recognized priors) is what made the
+honest rewrite possible; idempotency re-verified (second run = no-op).
 
-## Store-diff audit (object-level, vs baseline 4b047609)
+Falsifier as tests (`tools/creature_graph/tests/test_library_catalog.py`,
+6 tests, OK): byte-identity regeneration from the live store; mutation
+sensitivity (record-name flip on a bulk-shard record, quarantine-code
+flip, license flip — all change the catalog bytes, targeted counts move;
+plus fixture-graph record-add/quarantine-add count movement); every count
+in the doc equals an independent recount from the store (totals, summary
+rows, per-kind, per-source quarantine, gap strings, receipt citations,
+every cited source id exists); the committed `docs/THE_LIBRARY.md` equals
+a fresh regeneration. Test rules follow `tests/harness.py`: temp
+workspaces only, the canonical data dir is never written.
 
-Additions are EXACTLY the two packet records + their 4 requires_implementation
-edges; zero removals. ONE pre-existing object re-synced by the rebuild:
-`work.data.visual_proof_20260917` — the STORE artifact at base held the draco
-lane's revision 3 while the committed AUTHORED program already held revision 4
-(their final store save predated their final admission, or a rebase took an
-upstream store JSON); `build_graph.py` takes the store to its authored input, so
-the rebuild updated that record's `physical`/`falsifier` fields to revision 4.
-Verified field-level: program record == rebuilt-store record; the record is a dep
-of NO evidence capture, so no validation state moves. Reviewers who see
-visual_proof lines in the store diff: that is this sync, not an edit of another
-lane's record by hand.
+## Deliverable 2: acceptance sweep
 
-## Qualification state (final tree)
+`python -B tools/creature_graph/acceptance.py --offline` — final:
+**23/26 pass, 0 fail, 3 NOT_TESTED, exit 0**; evidence JSON at
+`docs/evidence/agent_fleet/SHIP/CREATURE_GRAPH/acceptance_results.json`.
 
-- build_graph.py --check-only: clean.
-- project_spec --check: ok (structure + active-specification contracts).
-- graph contracts (tools/creature_graph/tests/test_contracts.py): 19 tests OK.
-- project_spec tests (unittest discover -p test_project_spec.py): 14 tests OK.
-- packet checker: exit 0 over both packets (also green inside the funnel suite).
-- funnel suite (python -B -m unittest discover -s tools/science_funnel/tests):
-  258 tests OK (skipped=1) on the final tree in 2674 s under heavy CPU
-  contention from other lanes' jobs (baseline on pristine 4b047609: 257 OK,
-  skipped=1, 1062 s). The +1 test is the new packet gate
-  (test_packet_checker.py).
-- graphify consumer roundtrip (qualify --consumer-graph on the built store):
-  HONEST — 35329/35329 objects reversible, 38746/38746 relations intact,
-  all checks pass.
+- REPAIRED (mechanical): authored-bytes check crashed because
+  `data/authored/records/` is now the bulk record-shard DIRECTORY
+  (post store-split) — the check now hashes the shard files too (drift
+  still caught, subdirectories skipped). Item 8 expectation widened:
+  77 authored `source.database_catalog.*` placeholders from the database
+  hunt sit at status=specified (which ranks BELOW extracted); the
+  invariant is unchanged and stated stronger — no reference-kind record
+  ranks at or above geometry_built, so source availability can never
+  satisfy verification.
+- RECORDED with cause (NOT_TESTED, explicit status, not a silent skip):
+  item 6's re-import demo needs every pinned artifact in the local fetch
+  cache; a fresh clone legitimately has none (cache/ is git-ignored) and
+  the fetch layer refuses on any pin drift without a human refresh. The
+  three downstream provenance-survival checks still ran (against the
+  committed reference store) and PASS.
+- POLICY item, recorded, NOT refreshed: the bodyparts3d `lic.html` PIN
+  DRIFT is an upstream change — measured with a read-only probe (pinned
+  `7fd311e6…`, observed `c99c40a3…`, same 14,694 bytes; the CC BY 4.0
+  license STATEMENT is unchanged, non-license page bytes moved). The
+  tool itself says refresh is a human decision; this lane refuses and
+  records. No pin was moved, no cache written.
 
-## Publishing
+## Qualify
 
-Pushed `lane/packet-author-20260918` only; master NEVER touched. Verified
-`git rev-parse origin/lane/packet-author-20260918` == local HEAD after push.
-Commit trailer: `Agent: GLM 5.3`.
+- Funnel suite: `python -B -m unittest discover -s tools/science_funnel/tests`
+  → **Ran 257 tests, OK (skipped=1)** (~32 min wall).
+- Graphify: consumer round-trip **VERDICT: HONEST** (7/7 checks:
+  node/edge identity, multiplicity, 2-hop parity, query health,
+  because_of honest empty, FTS).
+- Evidence records unchanged: **11**.
 
-## Gotchas for the next agent (this checkout)
+## Collisions / publish
 
-- The store/bulk JSONs are LF in the working copy; git warns "LF will be replaced
-  by CRLF" and `git status` lists the bulk shards as modified after every rebuild
-  even when content-identical. `git diff --cached --numstat` on them must show
-  NOTHING before you commit (normalization only); if it shows lines, stop.
-- `Select-String ... | ForEach-Object { $_.LineNumber + ": " }` throws (int + string
-  cast); use "$($_.LineNumber): ..." interpolation.
-- `git show <rev>:<path>` redirected from PowerShell mangles encoding; extract
-  binary-safe via python subprocess (this lane's check_stale.py pattern).
-- qualify --consumer-graph needs its --output dir to exist; it never touches the
-  committed projection (consumer.DEMO_DIR is redirected to scratch).
-- Background suites: redirect to a log file and READ THE LOG; never pipe native
-  output through Select-Object -First (kills the writer mid-run).
+origin/master moved 4b047609 → 8f8271ce (grasp contract, packet-author,
+trust-tooling integrations) mid-lane. Per procedure: work stashed, no
+rebase under a live suite, rebased onto 8f8271ce, **upstream taken on
+the graph JSONs**, the idempotent admission script re-run on the merged
+bytes (already at current revision), store rebuilt, doc regenerated,
+tests re-run green. Publish: only `lane/library-catalog-20260918`
+pushed (never master); first push was rejected by the GitHub 100 MB
+ceiling because the store rebuild re-emitted
+`graphify_projection/creature_graph_projection.json` at 151.8 MB; the
+lane was re-forged as one clean commit on 8f8271ce WITHOUT that
+regenerable snapshot (upstream's committed copy untouched), push
+succeeded, remote tip verified by `git ls-remote`: **4bea7c92**.
 
-## Never-do reminders honored
+## Scope limits (never claim beyond)
 
-E:\PythonChimera untouched (except running its pinned python.exe); port 8127
-avoided; tools/game_shell/progress/SharedBody*.json untouched; no engine
-implementation (author-only lane); only this lane branch pushed.
+The catalog reports the ADMISSION state of the library: counts, pins,
+contracts, quarantines. It is not verification, not physics quality, not
+runtime readiness — every admitted record is status=extracted and every
+source is authority=external_assertion, runtime_ready=false. The doc's
+license-class column is a bookkeeping label; the verbatim quotes are the
+facts.
+
+## Next executable work
+
+1. Operator decision on the bodyparts3d lic.html pin (refresh or keep;
+   measured drift recorded in this handoff and in the acceptance JSON).
+2. Re-run the acceptance offline sweep on a checkout that has the
+   reference-data cache populated to move the 3 NOT_TESTED item-6 checks
+   to pass/fail.
+3. The four standing gaps (graph record `work.data.batch_intake`) remain
+   the honest intake frontier: joint morphology, quadruped EMG, bulk
+   tribology, fur BRDF.
+4. Consider wiring THE_LIBRARY regeneration into the batch pipeline's
+   `--apply` path so the catalog always reflects the store at publish
+   time (the falsifier tests make that regression-proof).
+
+Agent: GLM 5.3
