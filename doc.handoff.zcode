@@ -1,0 +1,126 @@
+# HANDOFF — lane/draco-decode-20260918 (agent: GLM 5.3)
+
+Date: 2026-09-18. Branch: `lane/draco-decode-20260918` (pushed to origin,
+force-with-lease after rebases). Base: master tip at time of push (rebased
+twice onto master as it moved: fcaca2a5, then 8e224920).
+
+## What this lane was
+
+The pinned Smithsonian USNM 15259 cranium/mandible GLBs render as bounding
+boxes in `tools/science_funnel/validation/visual_proof_20260917/` because
+their geometry decode was REFUSED: they are Draco-compressed
+(KHR_draco_mesh_compression, edgebreaker method 1 / valence traversal type 2,
+bitstream 2.2) and a pure-Python port was falsified. The operator-delegated
+decision: decode via the OFFICIAL Google Draco WASM decoder in a browser
+page. This lane executed that decision.
+
+## What was done (in order)
+
+1. RULE 0 FIRST — `work.data.visual_proof_20260917` revision 3 banked BEFORE
+   any code (tools/creature_graph/validation/admit_visual_proof_20260917.py,
+   idempotent + revision-aware; revision 2 superseded). Two more falsified
+   premises banked: (d) all Smithsonian plain-named derivatives are ALSO
+   draco (cran/mand medium+low probed); (e) no Python Draco decoder on PyPI
+   (pydraco/pydraco3/draco-loader 404). Falsifier stated pre-run.
+2. Browser decode channel (all mechanics PowerShell; harness in
+   tools/science_funnel/validation/draco_decode_20260918/):
+   - serve_draco.ps1 — raw TcpListener HTTP server on 127.0.0.1:8791
+     (NOT 8127), serves harness + pinned cdn/ libs + the two GLBs + POST
+     back-channel for results.
+   - harness.html — three.js r160 (GLTFLoader+DRACOLoader, import map) over
+     the OFFICIAL gstatic draco_wasm_wrapper.js + draco_decoder.wasm 1.5.7.
+     Pure-JS sha256 (self-tested against the "abc" vector in-page), decodes
+     each GLB TWICE with FRESH DRACOLoader/WASM instances, extracts
+     positions/normals/indices as typed arrays, hashes bytes, captures a
+     labelled PERCEPTUAL EVIDENCE screenshot (WebGL, software rasterizer),
+     and POSTs buffers + hashes back. Corrupt probe: flips ONE byte inside
+     the draco bufferView (offset recorded) and attempts decode.
+   - run_decode.ps1 / compare_decode_runs.ps1 — orchestration, two full page
+     runs (run1, run2), cross-run comparison, decode_receipt.json.
+   - install_decode_artifacts.ps1 — pins decoded buffers + screenshots into
+     the repo and re-verifies the chain on disk.
+   - CDN pins (fetched sha256s in cdn.lock.json, bytes committed in cdn/):
+     three.module.js 76dea815..., GLTFLoader.js d073b438..., DRACOLoader.js
+     65c114ec..., BufferGeometryUtils.js 9be041e9..., draco_wasm_wrapper.js
+     e8049906..., draco_decoder.wasm 2516a4e4...
+3. FALSIFIERS — ALL HELD:
+   - decode determinism: position/normal/index buffer sha256s identical
+     across fresh-decoder in-run passes AND two separate page runs.
+     cranium pos 3d48583302999116... (133,172 verts, 449,997 indices);
+     mandible pos e73d24836219fee7... (97,967 verts, 449,997 indices).
+   - corrupted GLB: one flipped byte inside the draco bufferView -> decode
+     REFUSED loudly in both runs (GLTFLoader throws; recorded verbatim).
+   - renderer: refuses loudly on any pinned-buffer hash mismatch; foreign
+     GLB bytes (sha not matching the decode record) fall back to the honest
+     bbox+refusal render — never fake geometry.
+4. Renderer wiring — tools/science_funnel/visual_proof.py:
+   - load_decode_identity() gates on glb sha256 + ALL buffer file sha256s
+     before any geometry render; render_glb_geometry() = software z-buffer,
+     two-sided Lambert, document.json camera; labelled with the position
+     hash prefix. Honest bbox fallback kept (checkout without decode
+     identity renders exactly as before).
+   - Manifest gains the draco_decode section: glb sha, draco header facts,
+     decoded position/normal/index buffer sha256, vertex/index counts,
+     screenshot sha, corrupt probe, falsifier results.
+   - Note recorded honestly: the trusted decoder emits 133,172 vertices for
+     the cranium while the accessor declares 133,171 (same producer
+     divergence the pure-python lane measured). Identity is pinned to what
+     the trusted decoder produced; both counts recorded.
+5. Tests — tools/science_funnel/tests/test_visual_proof.py extended with
+   F5 (decode identity): buffer chain on disk, screenshot sha, corrupted
+   decoded buffer -> loud Refusal, foreign GLB -> bbox fallback, receipt
+   re-decode + corrupt assertions. Existing F1-F4 untouched and green.
+6. Graph record — revision 4 banked after the falsifiers ran (status:
+   tested, measured identities in the prediction, receipt pointer).
+   Evidence count UNCHANGED at 11; work count 73.
+
+## Qualification state (on the final rebased tree)
+
+- admit_visual_proof_20260917.py: no-op (already at current revision).
+- build_graph.py --check-only: clean; evidence 11 (unchanged), work 73.
+- visual_proof.py build + --verify: all 5 renders byte-identical, chain
+  intact.
+- graphify consumer roundtrip (qualify --consumer-graph on the built store):
+  ALL CHECKS PASS (35,327 objects reversible, 38,742 relations intact,
+  honest-empty checks pass).
+- Full funnel suite (python -B -m unittest discover -s
+  tools/science_funnel/tests): 224 tests OK on the pre-push tree, plus a
+  final confirmation run on the exact pushed tree (suite_final.log; the
+  commit process is gated on it).
+
+Honest process note: during rebase #2 I let a suite run continue WHILE the
+worktree was being rebased under it -- that run's logs are garbage (a
+transient trainer_spine 'completed' != 'refused' sighting came from files
+changing mid-run; the same SweepHarness PASSES on pristine master 8e224920
+in a clean worktree and arrangement refuses correctly on the final tree --
+verified by direct sweep_module reproduction). Do not repeat that mistake:
+rebase FIRST, then qualify on the stable tree.
+
+## Publishing
+
+Pushed `HEAD:lane/draco-decode-20260918` only; master NEVER touched.
+origin/master moved twice during the lane; rebased both times with the
+policy "take upstream on graph JSONs, re-run the idempotent scripts"
+(admit + build_graph + renders/verify re-run after each rebase). Verify the
+remote tip equals local HEAD before merging:
+  git rev-parse origin/lane/draco-decode-20260918  (== local HEAD)
+
+## Known quirks / gotchas for the next agent
+
+- PowerShell UTF8 BOM: [System.Text.Encoding]::UTF8 in WriteAllText writes a
+  BOM; the lane writers use [System.Text.UTF8Encoding]::new($false) and the
+  Python readers use utf-8-sig. Keep that convention.
+- Select-Object -First N on a native-command pipeline KILLS the process
+  mid-write (broke a build_graph once). Redirect to a log file instead.
+- Git on this box intermittently leaves stale locks under .git when a script
+  crashes (CHERRY_PICK_HEAD.lock, packed-refs.lock). Check Get-Process git,
+  delete the locks, retry.
+- The listener (serve_draco.ps1) runs detached; kill it by matching
+  'serve_draco.ps1' in the command line when done with the harness.
+- Local run artifacts of the harness (out/, logs/, staging/) are gitignored;
+  decode_receipt.json + cdn/ + scripts are the committed evidence.
+
+## Never-do reminders honored
+
+E:\PythonChimera untouched (except running its pinned python.exe); port
+8127 avoided; SharedBody*.json untouched; only this lane branch pushed.
