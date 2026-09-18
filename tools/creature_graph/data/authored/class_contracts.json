@@ -288,6 +288,99 @@
    "admitted_utc": "2026-09-17T00:00:00+00:00"
   },
   {
+   "class_id": "batch.observation.goldenberg_taxon",
+   "version": 1,
+   "statement": "A Goldenberg et al. taxon row is one pinned CSV row carrying a binomial, a taxonomic class inside the source's own seven-class vocabulary, an explicit per-cell status for every reflectance summary variable (measured or NA), and NA cells recorded as absent, never as zero.",
+   "prediction": "All 441 rows admit as observation entities with taxon_class inside {Aranea, Aves, Crocodylia, Insecta, Mammalia, Squamata, Testudines} (Mammalia 94 rows are the fur-optics anchor), n_samples inside [1, 441], and 1,781 measured reflectance cells emitted as batch.property.goldenberg_reflectance records; zero rows quarantine.",
+   "falsifier": "One corrupted cell (a non-numeric reflectance value, a taxon class outside the vocabulary, or an n outside [1, 441]) quarantines exactly that row's records while every neighbouring row admits; the count identity 441 rows == admitted + quarantined closes with zero silent drops.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_in", "params": {"field": "payload.taxon_class", "vocabulary": ["Aranea", "Aves", "Crocodylia", "Insecta", "Mammalia", "Squamata", "Testudines"]}},
+    {"kind": "field_range", "params": {"path": "payload.n_samples", "min": 1.0, "max": 441.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.reflectance_percent", "min": -5.0, "max": 120.0}}
+   ],
+   "admitted_utc": "2026-09-18T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.property.goldenberg_reflectance",
+   "version": 1,
+   "statement": "A Goldenberg reflectance measurement carries one percent-scaled summary reflectance (B2 total/UV/VIS/NIR, plumage or egg) converted to a fraction by the declared law fraction = percent / 100 with the source percent retained; measured noise outside [0, 1] (min -3.39 %, max 116.5 % in the pinned bytes) is retained as measured, never clamped.",
+   "prediction": "All 1,781 measured cells convert with unit_si '1' and land inside [-0.05, 1.2]; the 660 NA cells emit nothing (the row's status records them); the Mammalia plumage cells are the fur-reflectance anchor of the appearance lane.",
+   "falsifier": "A converted fraction outside [-0.05, 1.2] (e.g. a raw percent of 1e6) or a unitless-by-omission record quarantines exactly that cell's record; if the /100 law is ever dropped, raw percents (4.5..116.5) land outside [-0.05, 1.2] and must be flagged by field_range for exactly those records.",
+   "applies_to": {"kinds": ["property_assertion"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_range", "params": {"path": "payload.value_si", "min": -0.05, "max": 1.2}},
+    {"kind": "units_in", "params": {"path": "payload.unit_si", "vocabulary": ["1"]}}
+   ],
+   "admitted_utc": "2026-09-18T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.entity.phylacine_species",
+   "version": 1,
+   "statement": "A PHYLACINE 1.2.1 species row is one mammal taxon of the pinned derived trait table with its binomial agreeing with genus+species tags, a positive measured body mass (Mass.g is 100% populated; 1.6 g..1.9e8 g in the pinned bytes), and categorical traits (IUCN status, island endemicity, habitat flags, diet percentages) each inside the vocabularies the pinned bytes declare.",
+   "prediction": "All 5,831 rows admit as species entities with masses inside [1e-6, 2e5] kg after the exact g->kg conversion, IUCN status inside {DD, LC, NT, VU, EN, CR, EW, EX, EP}, diet percentages inside [0, 100], habitat flags inside [0, 1], zero duplicate binomials and zero quarantined rows; the 22 Macaca rows carry the macaque-relevant masses.",
+   "falsifier": "A row whose binomial disagrees with its genus+species tags, whose mass is missing, non-positive, or outside [1e-6, 2e5] kg, or whose categorical trait falls outside its declared vocabulary quarantines exactly that row; the count identity 5,831 rows == admitted + quarantined closes with zero silent drops.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_range", "params": {"path": "payload.mass_kg", "min": 1e-06, "max": 200000.0}},
+    {"kind": "units_in", "params": {"path": "payload.iucn_status", "vocabulary": ["DD", "LC", "NT", "VU", "EN", "CR", "EW", "EX", "EP"]}},
+    {"kind": "field_in", "params": {"field": "payload.island_endemicity", "vocabulary": ["Occurs only on isolated islands", "Occurs on large land bridge islands", "Occurs on small land bridge islands", "Occurs on mainland", "Exclusively marine"]}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.diet_percent", "min": 0.0, "max": 100.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.habitat_flags", "min": 0.0, "max": 1.0}}
+   ],
+   "admitted_utc": "2026-09-18T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.series.splib07_spectrum",
+   "version": 1,
+   "statement": "A USGS SPLib v7 spectrum record is one Chapter-V/Chapter-S ASCII spectrum of the pinned splib07a zip whose wavelength axis is paired by the recorded family+channel-count rule to the zip's own Wavelengths file, is strictly increasing over the MEASURED samples in metres, carries only measured channels (the -1.23e34 nodata sentinel channels are excluded and counted as wavelength runs, never interpolated), and whose reflectance values sit inside the data-derived [0, 2.5] envelope.",
+   "prediction": "All 495 Chapter-V+Chapter-S spectra pair (ASDFR*/ASDNG*->2151 ch ASD, AVIRIS*->224 ch, BECK*->480 ch, NIC4*->4595 ch); 494 admit as series records and 1 AVIRIS spectrum quarantines (its detector-overlap grid decrease falls on MEASURED channels); in the other 38 AVIRIS spectra the overlap channels are nodata, so the admitted sample axes are monotonic and each carries the recorded grid-overlap unknown; plus one deferred identity record for the 5.1 GB full bundle; 151 spectra carry paired per-channel error bars as uncertainties.",
+   "falsifier": "One corrupted y value (or one corrupted error bar) breaks its spectrum's content-derived identity and quarantines exactly that spectrum; a spectrum whose channel count matches no Wavelengths file refuses pairing (spectrum_grid_unpaired); an out-of-envelope channel poisons exactly its spectrum; a monotonic violation on measured channels quarantines exactly that spectrum; the count identity 495 spectra == 494 admitted + 1 quarantined closes with zero silent drops.",
+   "applies_to": {"kinds": ["property_assertion"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "units_in", "params": {"path": "payload.unit_si", "vocabulary": ["1"]}},
+    {"kind": "units_in", "params": {"path": "payload.x_unit_si", "vocabulary": ["m"]}},
+    {"kind": "field_in", "params": {"field": "payload.instrument_family", "vocabulary": ["ASD", "AVIRIS", "BECK", "NIC4"]}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.samples", "min": 0.0, "max": 2.5}},
+    {"kind": "field_range", "params": {"path": "payload.nodata_channel_count", "min": 0.0, "max": 4600.0}}
+   ],
+   "admitted_utc": "2026-09-18T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.deferred.usgs_splib07_full",
+   "version": 1,
+   "statement": "A deferred USGS SPLib v7 identity record is an identity claim, never a content claim: it pins what the ScienceBase item declares about the full 5,479,324,354-byte usgs_splib07.zip bundle and states on its face that the bytes were not downloaded and exactly why (far above the 256 MB bundle and 100 MB per-file ceilings; its SPECPR/GIF/photo content is not the admitted ASCII channel).",
+   "prediction": "The one deferred record admits with status 'deferred', license CC0 1.0, and size inside [1, 6e9]; it never counts as data and the count identity of the usgs connector still closes.",
+   "falsifier": "A record whose status claims the bytes are present, whose license is not CC0 1.0, or whose size falls outside [1, 6e9] must quarantine exactly that record.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_in", "params": {"field": "payload.status", "vocabulary": ["deferred", "excluded_by_policy"]}},
+    {"kind": "field_in", "params": {"field": "payload.license", "vocabulary": ["CC0 1.0"]}},
+    {"kind": "field_range", "params": {"path": "payload.size_bytes", "min": 1.0, "max": 6000000000.0}}
+   ],
+   "admitted_utc": "2026-09-18T00:00:00+00:00"
+  },
+  {
    "class_id": "batch.entity.pantheria_species",
    "version": 1,
    "statement": "A PanTHERIA 1.0 species row keeps its full MSW05 identity tags (order, family, genus, species, binomial); a trait cell holding the -999 sentinel in ANY numeric rendering (-999, -999.0, -999.00) or an empty cell is nodata, recorded as an explicit trait status plus an explicit unknown on the species record, never as a numeric value.",

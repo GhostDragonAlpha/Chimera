@@ -1,0 +1,11 @@
+{
+ "graph_hash": "45a2a2cadd0b5d5af13e6b9c7046f327e9b8478d77e310a4e3897f044f6184b2",
+ "graph_hash_unchanged": true,
+ "law": "the identical second --apply over the cached bundles adds zero objects, rewrites the last shard byte-identically, and leaves the graph hash unchanged",
+ "objects_added": 0,
+ "recorded_utc": "2026-09-18T17:51:51.292856+00:00",
+ "schema": "chimera.batch_apply_noop.v1",
+ "shards_touched": [
+  "records_007.json"
+ ]
+}
