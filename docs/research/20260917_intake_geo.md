@@ -162,16 +162,16 @@ unchanged is part of this admission's claim.
 recorded at first measurement and none papered over.
 
 **Applied receipt** `tools/science_funnel/validation/batch_geo_20260917/receipt.json`
-(batch_id `375762c306cb373b…`): all five pre-existing admissions re-proved
-byte-identically (3,821 records); 1,189 new records admitted and applied — THOR 48/0,
-Soranzo 777 (+289 quarantined), GSOD 359/0, WorldCover 5/0; 5,010 records verified,
-**0 contract failures**, count identity closed; graph rebuilt to 32,942 objects /
-37,548 relations (hash `164e40ccbc9bc5d4…`); graphify consumer roundtrip HONEST 7/7;
-mutation probe flagged exactly one corrupted record.
+(batch_id `a9ac96cda0f424df…`, replayed on the merged graph after the rebase — see
+FORCED DEVIATIONS): all five pre-existing admissions re-proved byte-identically
+(3,821 records); 1,189 new records admitted and applied — THOR 48/0, Soranzo 777
+(+289 quarantined), GSOD 359/0, WorldCover 5/0; 5,010 records verified, **0 contract
+failures**, count identity closed; graph rebuilt to 34,134 objects / 37,553 relations
+(hash `fda2ff1ac951f12c…`); graphify consumer roundtrip HONEST 7/7; mutation probe
+flagged exactly one corrupted record.
 
-**Idempotency receipt** `receipt_rerun.json` (batch_id `7ba9c6ad41db30fa…`): the
-identical second `--apply` run added **0 objects**, rewrote no shard bytes
-(records_003.json = 4,505,538 bytes in both runs) and reproduced the graph hash.
+**Idempotency receipt** `receipt_rerun.json` (batch_id `4b08bd04f08b5b1a…`): the
+identical second `--apply` run added **0 objects** and reproduced the graph hash.
 
 1. **THOR — SUPPORTED, with a count correction.** 48 rows admit (the brief-stage
    "47" was a miscount of Class III; corrected at first adapter run, before the
@@ -208,17 +208,26 @@ bit-exactly with tifffile on synthetic uint8/uint16 predictor-1/2 tiles while th
 float reader's behavior is frozen; `geo_fetch` re-runs offline-idempotent and the
 tile resolution is a single hit.
 
-**FORCED DEVIATION (shared-code repair, recorded 2026-09-17).** The first full
-idempotency re-run REFUSED at `build_graph` ("duplicate object id"):
-`apply_patches` — as sharded at this lane's base 14c56162 — tracked known ids from
-the program file only, so a second `--apply` re-appended shard-resident bulk
-objects and the rebuild refused. The defect is latent in the shard split itself
-(no lane had re-applied after 14c56162). Repaired in this lane minimally: shard
-objects/relations now load into the known-identity sets; the stores were restored
-to base and the qualifying run executed twice under the repaired writer —
-first run added 1,193 objects, second added 0 and reproduced the hash. Evidence
-unchanged was re-proven after the repair (the five reprove sources replayed
-byte-identically in both runs).
+**FORCED DEVIATIONS (recorded 2026-09-17).**
+
+1. **Shared-code repair.** The first full idempotency re-run REFUSED at
+   `build_graph` ("duplicate object id"): `apply_patches` — as sharded at this
+   lane's base 14c56162 — tracked known ids from the program file only, so a
+   second `--apply` re-appended shard-resident bulk objects and the rebuild
+   refused. The defect is latent in the shard split itself (no lane had
+   re-applied after 14c56162). Repaired minimally: shard objects/relations now
+   load into the known-identity sets (subsuming the rotation-target-only guard
+   upstream landed as review F5 while this lane worked); the stores were
+   restored to base and the qualifying run executed twice under the repaired
+   writer — first run added 1,193 objects, second added 0 and reproduced the
+   hash. Evidence unchanged was re-proven after the repair (the five reprove
+   sources replayed byte-identically in both runs).
+2. **Collision replay.** origin/master moved mid-lane (14c56162 → 1b44ecd0,
+   the visual-proof lane). Rebased per the collision protocol: upstream taken
+   on the graph JSONs, both runs re-executed on the merged graph (receipts
+   above carry the merged-graph batch ids and hash; bundle ids legitimately
+   changed because the visual-proof lane changed recorded-producer files).
+   Class contracts and all lane code/data survived the rebase unchanged.
 
 **Honest findings for downstream laws.** The Cayo Santiago patch centre reads
 Permanent water bodies (80) at 10 m in WorldCover v200 2021 — the source
