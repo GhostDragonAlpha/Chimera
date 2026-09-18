@@ -62498,6 +62498,93 @@
     "storage": "chimera-intake:981382822a42e49bf0d4ed607808c8a7cc8091dfcb1a89749dbe8e4f37a2646d"
    },
    "status": "extracted"
+  },
+  {
+   "id": "source.operator.coupled_arm_grasp_20260918",
+   "kind": "source",
+   "name": "Operator dispatches the bounded coupled-arm grasp contract",
+   "status": "extracted",
+   "physical": {
+    "text": "Admit the bounded grasp membrane before any runtime implementation: a spherical hand proxy between two opposing parallel planes, a finite squeeze store, anti-parallel friction rows, and a capped catch impulse.",
+    "selection": "GRASP-CONTRACT lane brief, branched from origin/master at fcaca2a5dd78cc92ea92bbe434050d4f857835ed."
+   }
+  },
+  {
+   "id": "work.creature.coupled_arm_grasp",
+   "kind": "work",
+   "name": "Derive and admit the bounded two-coordinate arm grasp contract",
+   "status": "specified",
+   "priority": "P0",
+   "dependencies": [
+    "model.dynamics.coupled_arm"
+   ],
+   "evidence": [],
+   "falsifier": {
+    "statement": "The grasp contract is false if any of its four preregistered energy, cone, release-control, or zero-squeeze controls fails when the future runtime slice is implemented.",
+    "status": "preregistered",
+    "tests": [
+     "A grasp that pulls the planes together without a store debit is not grasp (energy falsifier).",
+     "|f_pair| <= mu*(lambda_n1+lambda_n2) cone always.",
+     "Releasing one plane returns EXACTLY the qualified frictionless/contact control bit-for-bit.",
+     "Zero-squeeze grasp is bit-identically the qualified friction world."
+    ]
+   },
+   "physical": {
+    "statement": "For a fixed-root shoulder/elbow arm, the grasp reaction pair and its squeeze store can be written as a bounded, energy-accounted contact contract without claiming that opposing parallel-plane rows span both joint coordinates.",
+    "prediction": "At the settled 20/20 pose the opposing plane rows have rank one with determinant below numerical precision; an independent normal/tangent pair has a nonzero mass-metric determinant, and the capped catch removes normal closing velocity while its normal/tangential dissipation split closes exactly.",
+    "contract": {
+     "schema": "chimera.grasp_contract.v1",
+     "base_commit": "fcaca2a5dd78cc92ea92bbe434050d4f857835ed",
+     "derivation": "docs/research/20260918_grasp_derivation.md",
+     "prestudy": "tools/science_funnel/validation/grasp_contract_20260918/prestudy.json",
+     "prestudy_script": "tools/science_funnel/validation/grasp_contract_20260918/prestudy.py",
+     "qualified_controls": [
+      "tools/science_funnel/validation/coupled_contact_20260917/receipt.json",
+      "tools/science_funnel/validation/coupled_friction_20260917/receipt.json"
+     ],
+     "geometry": {
+      "proxy": "sphere",
+      "planes": "opposing parallel planes",
+      "pair_is_reaction_pair": true,
+      "normal_rows": "a and -a",
+      "two_dof_full_rank_requires": "a second effective row b with det([a;b]) != 0"
+     },
+     "law": [
+      "g1=n·x+d/2-r and g2=d/2-n·x-r are unilateral gaps.",
+      "G_pair=[a;-a], a=n^T J; opposing parallel planes are rank <= 1.",
+      "Squeeze work is integral F_s dδ and debits a finite store; opening returns no credit.",
+      "Stick KKT uses A_ij=row_i M^-1 row_j^T and factorized det(A)=A_nn A_tt-A_nt^2.",
+      "The pair Coulomb cone is |f_pair| <= mu*(lambda_n1+lambda_n2).",
+      "A capped catch re-solves normal impulse after tangential clipping using exact M^-1 cross-coupling."
+     ],
+     "owned_files": [
+      "ChimeraEngine/engine/coupled_dynamics.hpp",
+      "ChimeraEngine/engine/tests_coupled_arm/native.cpp",
+      "tools/science_funnel/coupled_scene.py",
+      "tools/science_funnel/tests/test_coupled_arm.py",
+      "tools/science_funnel/tests/test_coupled_scene.py",
+      "tools/science_funnel/tests/qualify_coupled_live.py",
+      "tools/science_funnel/validation/grasp_contract_20260918/"
+     ],
+     "not_implemented": [
+      "no runtime grasp state or engine code in this admission",
+      "no coupled_dynamics.hpp edit in this lane",
+      "no free-root, whole-animal, muscle, distributed-contact, rolling, wrapping, or GPU claim",
+      "no claim that two opposing parallel planes immobilize both DOF",
+      "no implementation-level bit-identity result beyond the prior qualified controls",
+      "prior friction receipt independent-review minor findings remain open and are not promoted"
+     ]
+    }
+   },
+   "project_spec": {
+    "schema": "chimera.project_spec.v1",
+    "admission": "active_specification",
+    "category": "work",
+    "origin_id": "source.operator.coupled_arm_grasp_20260918",
+    "admitted_utc": "2026-09-18T03:30:00+00:00",
+    "authorization": "Operator GRASP-CONTRACT lane brief",
+    "authority_scope": "Derivation and Rule-0 admission only; no runtime qualification."
+   }
   }
  ],
  "relations": [
@@ -293470,6 +293557,12 @@
    "note": "Pinned intake bundle 981382822a42e49bf0d4ed607808c8a7cc8091dfcb1a89749dbe8e4f37a2646d",
    "rel": "derived_from",
    "src": "data.assertion.c99cad41cdc920d3ae91756f05f40b3d06fbc0a6d9411b97a1b02ba2eeb3b596"
+  },
+  {
+   "src": "work.creature.coupled_arm_grasp",
+   "rel": "derived_from",
+   "dst": "source.operator.coupled_arm_grasp_20260918",
+   "note": "Operator-directed bounded grasp contract admission"
   }
  ],
  "migration_receipt": [
