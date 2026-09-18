@@ -57,8 +57,20 @@ def run(live=True):
         print(f"  [{'PASS' if ok else 'FAIL'}] {item}: {name} -- {detail}")
 
     authored_dir = os.path.join(HERE, "data", "authored")
-    authored_before = {f: sha256_file(os.path.join(authored_dir, f))
-                       for f in sorted(os.listdir(authored_dir))}
+    # records/ is the bulk record-shard DIRECTORY (work.data.graph_store_split);
+    # hash its files too so shard drift is caught, skipping subdirectories.
+    def _authored_files():
+        for name in sorted(os.listdir(authored_dir)):
+            full = os.path.join(authored_dir, name)
+            if os.path.isfile(full):
+                yield name
+            elif os.path.isdir(full):
+                for sub in sorted(os.listdir(full)):
+                    sub_full = os.path.join(full, sub)
+                    if os.path.isfile(sub_full):
+                        yield name + "/" + sub
+    authored_before = {f: sha256_file(os.path.join(authored_dir, *f.split("/")))
+                       for f in _authored_files()}
 
     # ------------------------------------------------------------------ build
     print("[build] building the store from authored seeds")
@@ -75,16 +87,41 @@ def run(live=True):
         def no_fetch(*args, **kwargs):
             raise RuntimeError("offline acceptance requires the pinned cache; network fetch disabled")
         fetch_cache._fetch = no_fetch
-    rep1 = import_reference.import_all()
-    store_after_1 = sha256_file(import_reference.STORE_PATH)
-    rep2 = import_reference.import_all()
-    store_after_2 = sha256_file(import_reference.STORE_PATH)
-    check(6, "second import creates nothing", rep2["created"] == 0,
-          f"first run created {rep1['created']}, second created "
-          f"{rep2['created']}, unchanged {rep2['unchanged']}, "
-          f"conflicts {len(rep2['conflicts'])}")
-    check(6, "store bytes identical after re-import", store_after_1 == store_after_2,
-          f"sha256 {store_after_2[:16]}")
+    # The re-import demo needs every pinned artifact already in the local
+    # fetch cache; a fresh clone legitimately has none (cache/ is
+    # git-ignored). Offline, a missing cache (or an upstream pin drift,
+    # which the fetch layer itself refuses) is RECORDED, never silently
+    # skipped: the demo marks its checks NOT_TESTED with the cause; the
+    # provenance-survival checks below still run against the committed
+    # reference store.
+    rep1 = rep2 = None
+    import_error = None
+    try:
+        rep1 = import_reference.import_all()
+        store_after_1 = sha256_file(import_reference.STORE_PATH)
+        rep2 = import_reference.import_all()
+        store_after_2 = sha256_file(import_reference.STORE_PATH)
+        check(6, "second import creates nothing", rep2["created"] == 0,
+              f"first run created {rep1['created']}, second created "
+              f"{rep2['created']}, unchanged {rep2['unchanged']}, "
+              f"conflicts {len(rep2['conflicts'])}")
+        check(6, "store bytes identical after re-import", store_after_1 == store_after_2,
+              f"sha256 {store_after_2[:16]}")
+    except Exception as exc:  # noqa: BLE001 - recorded, never silent
+        detail = f"{type(exc).__name__}: {exc}"
+        if not live:
+            detail += ("; offline contract run: the pinned artifact cache is "
+                       "absent (cache/ is git-ignored, fresh clone) or a pin "
+                       "drifted upstream; the fetch layer refuses without a "
+                       "human refresh decision, which was NOT performed")
+        # NOT_TESTED convention (as item 9's live-engine entry): ok=None,
+        # explicit status, appended directly -- check() would coerce to False.
+        for name in ("second import creates nothing",
+                     "store bytes identical after re-import"):
+            results["checks"].append({"item": 6, "check": name, "ok": None,
+                                      "status": "NOT_TESTED",
+                                      "detail": "re-import demo unavailable: " + detail})
+            print(f"  [NOT_TESTED] 6: {name} -- {detail}")
     with open(import_reference.STORE_PATH, encoding="utf-8") as f:
         ref = json.load(f)
     by_id = {o["id"]: o for o in ref["objects"]}
@@ -109,9 +146,10 @@ def run(live=True):
 
     # ================================================================= A7 ====
     print("[item 7] graph fidelity: refreshes + placeholders + typed connections")
-    # authored seeds unchanged by everything so far
-    authored_after = {f: sha256_file(os.path.join(authored_dir, f))
-                      for f in sorted(os.listdir(authored_dir))}
+    # authored seeds unchanged by everything so far (records/ is the bulk
+    # record-shard DIRECTORY; hash its files too, skip subdirectories)
+    authored_after = {f: sha256_file(os.path.join(authored_dir, *f.split("/")))
+                      for f in _authored_files()}
     check(7, "authored seed files unchanged through build+import+export",
           authored_before == authored_after,
           f"{len(authored_before)} files, sha256 match")
@@ -198,18 +236,28 @@ def run(live=True):
           and ev_fail["validation"] in ("failing", "stale"),
           f"ev.reflex_controls_fail validation={ev_fail['validation']} "
           f"(last_result={ev_fail.get('last_result')})")
-    # source availability never marks a feature verified
-    ref_statuses = {o["status"] for o in g2.objects.values()
-                    if o["kind"] in ("reference_entity", "property_assertion",
-                                     "model_definition", "source", "mapping",
-                                     "relationship")}
+    # source availability never marks a feature verified. (Expectation
+    # widened 2026-09-18 for the grown store: authored not-yet-batched
+    # source placeholders from the database-catalog hunt legitimately sit
+    # at status=specified, which ranks BELOW extracted. The invariant is
+    # unchanged and stronger: NO reference-kind record ranks at or above
+    # geometry_built, so source availability can never satisfy
+    # verification -- nothing auto-promotes.)
+    ref_records = [o for o in g2.objects.values()
+                   if o["kind"] in ("reference_entity", "property_assertion",
+                                    "model_definition", "source", "mapping",
+                                    "relationship")]
+    ref_statuses = {o["status"] for o in ref_records}
     check(8, "source availability never auto-verifies (EXTRACTED is not verified)",
-          ref_statuses == {"extracted"}
+          ref_statuses <= {"specified", "extracted"}
           and schema.status_at_least("extracted", "geometry_built") is False
-          and schema.status_at_least("extracted", "verified") is False,
-          f"all {len([o for o in g2.objects.values() if o['kind'] in ('reference_entity', 'property_assertion', 'model_definition', 'source', 'mapping', 'relationship')])} "
-          f"reference records are status=extracted; extracted ranks below "
-          f"geometry_built and never satisfies verification")
+          and schema.status_at_least("extracted", "verified") is False
+          and schema.status_at_least("specified", "geometry_built") is False
+          and schema.status_at_least("specified", "verified") is False,
+          f"all {len(ref_records)} reference records are status in "
+          f"(specified, extracted) -- specified are authored not-yet-batched "
+          f"source placeholders; both rank below geometry_built, which never "
+          f"satisfies verification")
 
     # ================================================================= A9 ====
     print("[item 9] consistent IDs + timestamps (graph side)")
