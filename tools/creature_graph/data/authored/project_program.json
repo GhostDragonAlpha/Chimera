@@ -41310,7 +41310,24 @@
      ],
      "observed_utc": "2026-09-17T17:30:03.504553+00:00"
     },
-    "batch_admission_20260917": "Copernicus GLO-30 tile N18 W066 metadata admitted through the batch layer (bundle copernicus.dem_glo30.n18w066, 8 property records, class batch.property.copernicus_tile); DEM/WBM/EULA bytes pinned in the bundle. The height reduction with its six falsifiers remains the terrain implementation slice."
+    "batch_admission_20260917": "Copernicus GLO-30 tile N18 W066 metadata admitted through the batch layer (bundle copernicus.dem_glo30.n18w066, 8 property records, class batch.property.copernicus_tile); DEM/WBM/EULA bytes pinned in the bundle. The height reduction with its six falsifiers remains the terrain implementation slice.",
+    "wiring_20260918": {
+     "rule0_statement": "The coupled-arm contact plane consumes the qualified terrain reduction as an OPT-IN recipe value: the scene compile path (tools/science_funnel/coupled_scene.py) admits contact_plane_height_source='terrain_cayo_20260917', sets the effective contact_plane_height_m from the pinned reduction result (validation/terrain_20260917/reduction_result.json, sha256-pinned by its receipt), and records the provenance in the scene bundle. The committed default recipe carries NO source key; the authored contact_plane_height_m=0.35 path remains the qualified default world, and terrain.py itself is not edited (the terrain receipt pins its sha256).",
+     "prediction": "(a) a default compile of the committed graph reproduces the pre-change scene byte-identically (scene.json sha256 7bb9af66839b2762eee216f88c61e9fee6ec4bb6193fc8dfdeeadb3cd550f8b7 at base e9c7bd5e..4b047609 lineage); (b) an opted-in compile sets the plane to cayo_santiago_patch.h_ellipsoidal_m = -42.82679794555668 exactly -- in the scene bundle and in the live engine readout contact.plane_world_up_m on an owned port; (c) the scene digest changes only when the source key is present.",
+     "falsifiers_preregistered": {
+      "default_scene_byte_identity": "compiling the committed default graph after the change must produce a scene.json byte-identical to the pre-change compile (same scene_sha256 and same file bytes); any drift falsifies the wiring",
+      "unknown_source_refused": "any contact_plane_height_source value other than 'terrain_cayo_20260917' refuses with coupled_contact_plane_source_unknown; the compile never guesses a source",
+      "reduction_pin_closure": "the wired value is accepted only when reduction_result.json hashes to the receipt-pinned sha256 AND agrees with the receipt metric copy; a drifted pin or disagreeing copy refuses (terrain_reduction_result_pin_drift / terrain_receipt_result_disagree)",
+      "digest_provenance_closure": "the opted-in scene digest differs from the default digest and the bundle carries the provenance block; the default digest is unchanged (pairs with default_scene_byte_identity)",
+      "live_readout_identity": "on the owned-port engine run of the opted-in scene, contact.plane_world_up_m equals -42.82679794555668 exactly"
+     },
+     "falsifier_status": "untested (banked pre-code); the lane receipt records the outcomes",
+     "height_choice_derivation": "Cayo patch, not Luquillo: the terrain receipt scope reduces 'the Cayo Santiago patch centre' and names Luquillo a 'coastal-plain land control' (validation-only) and El Yunque a gate refusal; the coupled scene is the Cayo Santiago macaque reference; the receipt limits name contact_plane_height_m as the consumer of 'the reduced height'. So the wiring height is cayo_santiago_patch.h_ellipsoidal_m. Recorded honestly: the Cayo 5x5 GLO-30 window resolves to open ocean, so the value is the geoid undulation (-42.82679794555668 m) -- that IS the recorded real-ground height under the patch at this dataset's resolution, with the receipt's own note retained.",
+     "pin_not_recompute_derivation": "PIN the recorded number (hash-verified at compile); do NOT re-run terrain.reduce_terrain at compile time. Why: the reduction is already qualified and deterministically replayed by tools.science_funnel.tests.test_terrain against the pinned DEM + EGM08 grids; re-deriving at compile would (i) couple every scene launch to a ~250 MB two-grid tifffile decode, (ii) create a second producer of the number that can drift from the receipted one, and (iii) add zero verification the receipt replays do not already own. The compile verifies the pin instead.",
+     "frame_note": "The scene frame is local_EUS with its origin ON the WGS84 ellipsoid (earth altitude_m=0), so the terrain-derived plane height in scene world-up metres IS h_ellipsoidal_m (datum_law above: 'the scene frame stays WGS84 ellipsoidal'). The mounted arm cannot reach a plane ~42.8 m below its mount origin; under the opt-in the workspace reach scan is therefore RECORDED in the provenance (plane_reachable, gap extremes) instead of asserted, while the no-initial-penetration gate (reset gap > 0) stays asserted in BOTH worlds and the authored pressing workload stays qualified on the authored plane.",
+     "banked_utc_date": "2026-09-18",
+     "lane": "lane/terrain-wiring-20260918"
+    }
    }
   },
   {
