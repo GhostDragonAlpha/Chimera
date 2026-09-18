@@ -5,11 +5,12 @@ tools/science_funnel/adapters_local_refs.py and register themselves via
 LOCAL_REFS_ADAPTERS; adapters.py itself is owned by another lane and is not
 edited here.
 
-All artifacts are REPO-RESIDENT research_references/human/ files: the data dirs
-carry a copy-in with the committed (LF) bytes and the download receipt records
-source 'repo-resident research_references/human/...' -- no URL is invented,
-none is needed. Derivations are by tools/science_funnel/derive_local_refs_*.py
-(idempotent, Rule-1-recorded rules; the anchors gate the ANSUR derivation).
+All source inputs are REPO-RESIDENT research_references/human/ files. The
+funnel data dirs carry only derived/admitted artifacts; person-level ANSUR
+source rows are not duplicated into the intake bundle. Download receipts pin
+the resident source provenance and the derived table bytes without inventing a
+URL. Derivations are by tools/science_funnel/derive_local_refs_*.py (idempotent,
+Rule-1-recorded rules; the anchors gate the ANSUR derivation).
 """
 from .. import adapters_local_refs  # noqa: F401  (registers the three adapters)
 from .connectors import _artifacts, _pins
@@ -57,8 +58,8 @@ CONNECTORS_LANE = {
                        '2026-09-18 by tools/science_funnel/'
                        'derive_local_refs_ansur.py; anchors verified to 1e-9',
             'url': 'repo-resident research_references/human/ANSUR_II_MALE_Public.csv '
-                   '+ ANSUR_II_FEMALE_Public.csv (no download; copy-in of committed '
-                   'bytes)',
+                   '+ ANSUR_II_FEMALE_Public.csv (source inputs remain resident; '
+                   'only derived tables enter the intake bundle)',
             'license': 'US Government work (17 USC 105), public release 2017 via '
                        'Penn State OPEN Design Lab; no person-level redistribution '
                        'grant recorded -- aggregate-only admission (see SOURCES.md '
@@ -73,13 +74,12 @@ CONNECTORS_LANE = {
             ],
         },
         # ONE data artifact (the adapter is run once per data artifact); the
-        # female table, the mocap siblings and the raw CSVs ride as pinned
-        # attachments (the bp3d companion pattern).
+        # female derived table rides as a pinned companion. Raw ANSUR source
+        # rows remain available only under research_references/human/ and are
+        # never copied into this intake bundle.
         'artifacts': _artifacts('ansur2_derived_20260918', [
             ('ansur2_male_derived.csv', 'data'),
             ('ansur2_female_derived.csv', 'attachment'),
-            ('ANSUR_II_MALE_Public.csv', 'attachment'),
-            ('ANSUR_II_FEMALE_Public.csv', 'attachment'),
         ], _ansur_pins),
         'constants': {'female_derived_sha256':
                       _ansur_pins['ansur2_female_derived.csv']['sha256']},

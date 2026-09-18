@@ -11,9 +11,10 @@ Rule 0 (banked first as work.data.local_refs_20260918): the anchors' published
 aggregates must reproduce from the raw rows under this recorded derivation --
 checked here BEFORE any table is written; any mismatch refuses loudly.
 
-Privacy law: raw CSV rows are copied here ONLY as pinned bundle bytes
-(LF-normalized to the committed i/lf form so pins are cross-checkout stable);
-the graph admits aggregates only.
+Privacy law: raw CSV rows remain only in the repo-resident
+research_references/human/ source location; this intake directory contains
+only deterministic derived tables and their provenance receipt. The graph
+admits aggregates only.
 
 Deterministic: fixed column order, fixed row order (file order), repr() float
 formatting, no locale, no timestamps beyond the receipt's fixed day stamp.
@@ -166,13 +167,10 @@ def write_csv(path, rows):
     path.write_bytes(buffer.getvalue().encode("utf-8"))
 
 
-def pinned_copy(src, dest):
-    """Copy a source file in its committed (LF) byte form so the sha256 pin is
-    checkout-stable (.gitattributes: tools/science_funnel/data/** -text)."""
-    raw = src.read_bytes().replace(b"\r\n", b"\n")
-    dest.write_bytes(raw)
-    import hashlib
-    return len(raw), hashlib.sha256(raw).hexdigest()
+def canonical_source_bytes(src):
+    """Hash the resident source in its committed LF form without copying
+    person-level rows into the intake data directory."""
+    return src.read_bytes().replace(b"\r\n", b"\n")
 
 
 def main() -> int:
@@ -238,13 +236,14 @@ def main() -> int:
             return 1
         table = OUT / ("ansur2_%s_derived.csv" % sex)
         write_csv(table, derived)
-        nbytes, sha = pinned_copy(src, OUT / filename)
+        source_bytes = canonical_source_bytes(src)
+        import hashlib
         receipt["source_repo_files"]["research_references/human/" + filename] = {
-            "bytes": nbytes, "sha256": sha,
-            "source": "repo-resident research_references/human/" + filename}
-        add_file_entry(filename,
-                       "repo-resident research_references/human/" + filename,
-                       (OUT / filename).read_bytes())
+            "bytes": len(source_bytes),
+            "sha256": hashlib.sha256(source_bytes).hexdigest(),
+            "source": "repo-resident research_references/human/" + filename,
+            "admission": "source remains resident; person-level rows are not copied "
+                         "into the intake bundle"}
         receipt["sexes"][sex] = {
             "derived_table": table.name,
             "source_csv_rows": len(rows),

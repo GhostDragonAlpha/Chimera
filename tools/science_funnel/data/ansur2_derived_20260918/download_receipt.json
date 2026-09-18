@@ -56,27 +56,17 @@
   "research_references/human/ANSUR_II_MALE_Public.csv": {
    "bytes": 1996711,
    "sha256": "e468eb5787b8ba6c716a86378cf476ba9bd8c57e09493f0fc65b1b8f33e48db8",
-   "source": "repo-resident research_references/human/ANSUR_II_MALE_Public.csv"
+   "source": "repo-resident research_references/human/ANSUR_II_MALE_Public.csv",
+   "admission": "source remains resident; person-level rows are not copied into the intake bundle"
   },
   "research_references/human/ANSUR_II_FEMALE_Public.csv": {
    "bytes": 974586,
    "sha256": "4854f4888146c81690b374d07d044008798ae4a21552afb90823ebd64e04b99f",
-   "source": "repo-resident research_references/human/ANSUR_II_FEMALE_Public.csv"
+   "source": "repo-resident research_references/human/ANSUR_II_FEMALE_Public.csv",
+   "admission": "source remains resident; person-level rows are not copied into the intake bundle"
   }
  },
  "files": [
-  {
-   "path": "ANSUR_II_MALE_Public.csv",
-   "url": "repo-resident research_references/human/ANSUR_II_MALE_Public.csv",
-   "bytes": 1996711,
-   "sha256": "e468eb5787b8ba6c716a86378cf476ba9bd8c57e09493f0fc65b1b8f33e48db8"
-  },
-  {
-   "path": "ANSUR_II_FEMALE_Public.csv",
-   "url": "repo-resident research_references/human/ANSUR_II_FEMALE_Public.csv",
-   "bytes": 974586,
-   "sha256": "4854f4888146c81690b374d07d044008798ae4a21552afb90823ebd64e04b99f"
-  },
   {
    "path": "ansur2_male_derived.csv",
    "url": "derived by tools/science_funnel/derive_local_refs_ansur.py from repo-resident research_references/human/ ANSUR II CSVs (anchors' own column set and laws)",
