@@ -336332,6 +336332,2603 @@
     "pixel_is_an_area_sample_10m_at_equator_declared_by_source_not_a_point"
    ],
    "value": 36000.0
+  },
+  {
+   "applicability": {
+    "basis": "mass",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "0.557",
+     "segment": "thigh"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.00741c38c78023236fccbe233264b8433d87ed4371211f79f3be5a10e819b376",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 thigh mass",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:thigh:mass",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:thigh:mass",
+    "id": "data.assertion.00741c38c78023236fccbe233264b8433d87ed4371211f79f3be5a10e819b376",
+    "label": "Oku 2021 Table 1 thigh mass",
+    "payload": {
+     "conditions": {
+      "basis": "mass",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "0.557",
+       "segment": "thigh"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "kg",
+      "value": 0.557
+     },
+     "parameter": "segment_mass",
+     "quantity": "mass",
+     "source_field": "mass",
+     "subject": "Macaca fuscata/thigh",
+     "uncertainty_si": null,
+     "unit_si": "kg",
+     "value_si": 0.557
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "kg",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.557
+  },
+  {
+   "applicability": {
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "derivation": "sum of the five published segment masses (8.184 + 0.557 + 0.269 + 0.080 + 0.021 kg)",
+    "known_gaps": [
+     "forelimbs are folded into HAT in this table (structural; never patched)",
+     "whole-body mass not published; implied mass is the five-segment sum",
+     "single cadaver specimen; no population variance, no uncertainty columns",
+     "inertia axis basis: about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+     "foot and phalangeal values were recalculated by the authors from CT-scanned surface data, unlike the other rows (recorded per footnote)"
+    ],
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "pantheria_deviation": "-9.92% (inside the declared ±10% envelope, margin 0.0077160 kg)",
+    "pantheria_species_mean_kg": 10.11476,
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "rounding_tolerance_kg": 0.0025,
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "summary_kind": "table_summary (implied whole-body mass)",
+    "tolerance_derivation": "5 cells x 0.0005 kg at the table's stated 0.001 kg precision"
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.0a1d077793b34d630656693f712f8416cb48b9a6c43602c54f95b2cbe0a805c0",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 implied whole-body mass",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:summary:implied_mass",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:summary:implied_mass",
+    "id": "data.assertion.0a1d077793b34d630656693f712f8416cb48b9a6c43602c54f95b2cbe0a805c0",
+    "label": "Oku 2021 Table 1 implied whole-body mass",
+    "payload": {
+     "conditions": {
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "derivation": "sum of the five published segment masses (8.184 + 0.557 + 0.269 + 0.080 + 0.021 kg)",
+      "known_gaps": [
+       "forelimbs are folded into HAT in this table (structural; never patched)",
+       "whole-body mass not published; implied mass is the five-segment sum",
+       "single cadaver specimen; no population variance, no uncertainty columns",
+       "inertia axis basis: about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+       "foot and phalangeal values were recalculated by the authors from CT-scanned surface data, unlike the other rows (recorded per footnote)"
+      ],
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "pantheria_deviation": "-9.92% (inside the declared ±10% envelope, margin 0.0077160 kg)",
+      "pantheria_species_mean_kg": 10.11476,
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "rounding_tolerance_kg": 0.0025,
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "summary_kind": "table_summary (implied whole-body mass)",
+      "tolerance_derivation": "5 cells x 0.0005 kg at the table's stated 0.001 kg precision"
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "kg",
+      "value": 9.111
+     },
+     "parameter": "whole_body_mass_implied",
+     "quantity": "mass",
+     "source_field": "table_summary",
+     "subject": "Macaca fuscata/whole_body_implied",
+     "uncertainty_si": null,
+     "unit_si": "kg",
+     "value_si": 9.111
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "kg",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 9.111
+  },
+  {
+   "applicability": {
+    "basis": "mass",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "0.021",
+     "segment": "phalanges"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.0c6774bc6b2e004b7490da54658d41163acdc6fed0649dad78fce01219cfbb49",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 phalanges mass",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:phalanges:mass",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:phalanges:mass",
+    "id": "data.assertion.0c6774bc6b2e004b7490da54658d41163acdc6fed0649dad78fce01219cfbb49",
+    "label": "Oku 2021 Table 1 phalanges mass",
+    "payload": {
+     "conditions": {
+      "basis": "mass",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "0.021",
+       "segment": "phalanges"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "kg",
+      "value": 0.021
+     },
+     "parameter": "segment_mass",
+     "quantity": "mass",
+     "source_field": "mass",
+     "subject": "Macaca fuscata/phalanges",
+     "uncertainty_si": null,
+     "unit_si": "kg",
+     "value_si": 0.021
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "kg",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.021
+  },
+  {
+   "applicability": {
+    "basis": "moment of inertia about the COM (per table footnote)",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "2.07e-2",
+     "segment": "HAT"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.16b9758d9cc52eb3a82e6b8d8b0976a4d0b96ff830b28ea8b140a551b82b67b8",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 HAT inertia",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:HAT:inertia",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:HAT:inertia",
+    "id": "data.assertion.16b9758d9cc52eb3a82e6b8d8b0976a4d0b96ff830b28ea8b140a551b82b67b8",
+    "label": "Oku 2021 Table 1 HAT inertia",
+    "payload": {
+     "conditions": {
+      "basis": "moment of inertia about the COM (per table footnote)",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "2.07e-2",
+       "segment": "HAT"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "kg*m2",
+      "value": 0.0207
+     },
+     "parameter": "segment_moment_of_inertia",
+     "quantity": "moment_of_inertia",
+     "source_field": "inertia",
+     "subject": "Macaca fuscata/HAT",
+     "uncertainty_si": null,
+     "unit_si": "kg*m2",
+     "value_si": 0.0207
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "kg*m2",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.0207
+  },
+  {
+   "applicability": {
+    "basis": "COM position (fraction of segment length from the proximal end, per table footnote)",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "50",
+     "segment": "phalanges"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.21cbfedb269e4f3ed1d0797cba712844a1cf3116e180c0f76247a4be34cda111",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 phalanges com",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:phalanges:com",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:phalanges:com",
+    "id": "data.assertion.21cbfedb269e4f3ed1d0797cba712844a1cf3116e180c0f76247a4be34cda111",
+    "label": "Oku 2021 Table 1 phalanges com",
+    "payload": {
+     "conditions": {
+      "basis": "COM position (fraction of segment length from the proximal end, per table footnote)",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "50",
+       "segment": "phalanges"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 0.01
+     },
+     "dimensions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "percent",
+      "value": 50.0
+     },
+     "parameter": "segment_com_fraction",
+     "quantity": "dimensionless",
+     "source_field": "com",
+     "subject": "Macaca fuscata/phalanges",
+     "uncertainty_si": null,
+     "unit_si": "1",
+     "value_si": 0.5
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "1",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.5
+  },
+  {
+   "applicability": {
+    "basis": "COM position (fraction of segment length from the proximal end, per table footnote)",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "62",
+     "segment": "foot"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.29949ff1c24b9ce3f6ec38673a88e2f90d2f9e4afa3988fde392c6eb9007d2fb",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 foot com",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:foot:com",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:foot:com",
+    "id": "data.assertion.29949ff1c24b9ce3f6ec38673a88e2f90d2f9e4afa3988fde392c6eb9007d2fb",
+    "label": "Oku 2021 Table 1 foot com",
+    "payload": {
+     "conditions": {
+      "basis": "COM position (fraction of segment length from the proximal end, per table footnote)",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "62",
+       "segment": "foot"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 0.01
+     },
+     "dimensions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "percent",
+      "value": 62.0
+     },
+     "parameter": "segment_com_fraction",
+     "quantity": "dimensionless",
+     "source_field": "com",
+     "subject": "Macaca fuscata/foot",
+     "uncertainty_si": null,
+     "unit_si": "1",
+     "value_si": 0.62
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "1",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.62
+  },
+  {
+   "applicability": {
+    "basis": "COM position (fraction of segment length from the proximal end, per table footnote)",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "52",
+     "segment": "HAT"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.4ead083a20ed9b479b77947ad5db109f18534cfd5f315f729c63bb4acc1461a2",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 HAT com",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:HAT:com",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:HAT:com",
+    "id": "data.assertion.4ead083a20ed9b479b77947ad5db109f18534cfd5f315f729c63bb4acc1461a2",
+    "label": "Oku 2021 Table 1 HAT com",
+    "payload": {
+     "conditions": {
+      "basis": "COM position (fraction of segment length from the proximal end, per table footnote)",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "52",
+       "segment": "HAT"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 0.01
+     },
+     "dimensions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "percent",
+      "value": 52.0
+     },
+     "parameter": "segment_com_fraction",
+     "quantity": "dimensionless",
+     "source_field": "com",
+     "subject": "Macaca fuscata/HAT",
+     "uncertainty_si": null,
+     "unit_si": "1",
+     "value_si": 0.52
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "1",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.52
+  },
+  {
+   "applicability": {
+    "basis": "COM position (fraction of segment length from the proximal end, per table footnote)",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "40",
+     "segment": "shank"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.5731a616148d987599701fb5d1f718b45b523d764fdaa47bb3179ac95b1e8692",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 shank com",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:shank:com",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:shank:com",
+    "id": "data.assertion.5731a616148d987599701fb5d1f718b45b523d764fdaa47bb3179ac95b1e8692",
+    "label": "Oku 2021 Table 1 shank com",
+    "payload": {
+     "conditions": {
+      "basis": "COM position (fraction of segment length from the proximal end, per table footnote)",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "40",
+       "segment": "shank"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 0.01
+     },
+     "dimensions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "percent",
+      "value": 40.0
+     },
+     "parameter": "segment_com_fraction",
+     "quantity": "dimensionless",
+     "source_field": "com",
+     "subject": "Macaca fuscata/shank",
+     "uncertainty_si": null,
+     "unit_si": "1",
+     "value_si": 0.4
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "1",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.4
+  },
+  {
+   "applicability": {
+    "basis": "mass",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "0.080",
+     "segment": "foot"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.5b373df18bbd71681ad7e025166748eaa1165a5272940054c35733af569a7c94",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 foot mass",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:foot:mass",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:foot:mass",
+    "id": "data.assertion.5b373df18bbd71681ad7e025166748eaa1165a5272940054c35733af569a7c94",
+    "label": "Oku 2021 Table 1 foot mass",
+    "payload": {
+     "conditions": {
+      "basis": "mass",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "0.080",
+       "segment": "foot"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "kg",
+      "value": 0.08
+     },
+     "parameter": "segment_mass",
+     "quantity": "mass",
+     "source_field": "mass",
+     "subject": "Macaca fuscata/foot",
+     "uncertainty_si": null,
+     "unit_si": "kg",
+     "value_si": 0.08
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "kg",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.08
+  },
+  {
+   "applicability": {
+    "basis": "mass",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "8.184",
+     "segment": "HAT"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.60c4d5fcb9593c82e22dfad8b1cb3647b96a55e8a28ab12d70860dab3e44d5ba",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 HAT mass",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:HAT:mass",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:HAT:mass",
+    "id": "data.assertion.60c4d5fcb9593c82e22dfad8b1cb3647b96a55e8a28ab12d70860dab3e44d5ba",
+    "label": "Oku 2021 Table 1 HAT mass",
+    "payload": {
+     "conditions": {
+      "basis": "mass",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "8.184",
+       "segment": "HAT"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "kg",
+      "value": 8.184
+     },
+     "parameter": "segment_mass",
+     "quantity": "mass",
+     "source_field": "mass",
+     "subject": "Macaca fuscata/HAT",
+     "uncertainty_si": null,
+     "unit_si": "kg",
+     "value_si": 8.184
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "kg",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 8.184
+  },
+  {
+   "applicability": {
+    "basis": "length",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "0.074",
+     "segment": "foot"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.6aa5c8dbfeb7650e0353a44f41a00fc5df1cbb79fd8a06bd302dec22b9d5e5c0",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 foot length",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:foot:length",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:foot:length",
+    "id": "data.assertion.6aa5c8dbfeb7650e0353a44f41a00fc5df1cbb79fd8a06bd302dec22b9d5e5c0",
+    "label": "Oku 2021 Table 1 foot length",
+    "payload": {
+     "conditions": {
+      "basis": "length",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "0.074",
+       "segment": "foot"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "m",
+      "value": 0.074
+     },
+     "parameter": "segment_length",
+     "quantity": "length",
+     "source_field": "length",
+     "subject": "Macaca fuscata/foot",
+     "uncertainty_si": null,
+     "unit_si": "m",
+     "value_si": 0.074
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "m",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.074
+  },
+  {
+   "applicability": {
+    "basis": "length",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "0.482",
+     "segment": "HAT"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.ae111948975e6d4de220fb73e35d1fe22e8bcaa65d1c214476ab4194c8a2ff5b",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 HAT length",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:HAT:length",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:HAT:length",
+    "id": "data.assertion.ae111948975e6d4de220fb73e35d1fe22e8bcaa65d1c214476ab4194c8a2ff5b",
+    "label": "Oku 2021 Table 1 HAT length",
+    "payload": {
+     "conditions": {
+      "basis": "length",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "0.482",
+       "segment": "HAT"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "m",
+      "value": 0.482
+     },
+     "parameter": "segment_length",
+     "quantity": "length",
+     "source_field": "length",
+     "subject": "Macaca fuscata/HAT",
+     "uncertainty_si": null,
+     "unit_si": "m",
+     "value_si": 0.482
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "m",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.482
+  },
+  {
+   "applicability": {
+    "basis": "length",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "0.163",
+     "segment": "thigh"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.b77351606f7cc6ce8781bb567bffe53aa394203767746f12637467f5ffedde19",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 thigh length",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:thigh:length",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:thigh:length",
+    "id": "data.assertion.b77351606f7cc6ce8781bb567bffe53aa394203767746f12637467f5ffedde19",
+    "label": "Oku 2021 Table 1 thigh length",
+    "payload": {
+     "conditions": {
+      "basis": "length",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "0.163",
+       "segment": "thigh"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "m",
+      "value": 0.163
+     },
+     "parameter": "segment_length",
+     "quantity": "length",
+     "source_field": "length",
+     "subject": "Macaca fuscata/thigh",
+     "uncertainty_si": null,
+     "unit_si": "m",
+     "value_si": 0.163
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "m",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.163
+  },
+  {
+   "applicability": {
+    "basis": "moment of inertia about the COM (per table footnote)",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "6.26e-6",
+     "segment": "phalanges"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.bc295dae0c7926de1789fafd32b105a7e0c66eae08cdb715c3d8418a92ac12ef",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 phalanges inertia",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:phalanges:inertia",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:phalanges:inertia",
+    "id": "data.assertion.bc295dae0c7926de1789fafd32b105a7e0c66eae08cdb715c3d8418a92ac12ef",
+    "label": "Oku 2021 Table 1 phalanges inertia",
+    "payload": {
+     "conditions": {
+      "basis": "moment of inertia about the COM (per table footnote)",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "6.26e-6",
+       "segment": "phalanges"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "kg*m2",
+      "value": 6.26e-06
+     },
+     "parameter": "segment_moment_of_inertia",
+     "quantity": "moment_of_inertia",
+     "source_field": "inertia",
+     "subject": "Macaca fuscata/phalanges",
+     "uncertainty_si": null,
+     "unit_si": "kg*m2",
+     "value_si": 6.26e-06
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "kg*m2",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 6.26e-06
+  },
+  {
+   "applicability": {
+    "basis": "moment of inertia about the COM (per table footnote)",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "1.61e-3",
+     "segment": "thigh"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.c2d72da06e425ae36a486a180c5dca6af68b715aaf654e61e839ad4195f9abc4",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 thigh inertia",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:thigh:inertia",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:thigh:inertia",
+    "id": "data.assertion.c2d72da06e425ae36a486a180c5dca6af68b715aaf654e61e839ad4195f9abc4",
+    "label": "Oku 2021 Table 1 thigh inertia",
+    "payload": {
+     "conditions": {
+      "basis": "moment of inertia about the COM (per table footnote)",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "1.61e-3",
+       "segment": "thigh"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "kg*m2",
+      "value": 0.00161
+     },
+     "parameter": "segment_moment_of_inertia",
+     "quantity": "moment_of_inertia",
+     "source_field": "inertia",
+     "subject": "Macaca fuscata/thigh",
+     "uncertainty_si": null,
+     "unit_si": "kg*m2",
+     "value_si": 0.00161
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "kg*m2",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.00161
+  },
+  {
+   "applicability": {
+    "basis": "COM position (fraction of segment length from the proximal end, per table footnote)",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "41",
+     "segment": "thigh"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.d009b39037e855e14b2e5203ac2e6c58bed5e2e851a31947d49d86502a882258",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 thigh com",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:thigh:com",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:thigh:com",
+    "id": "data.assertion.d009b39037e855e14b2e5203ac2e6c58bed5e2e851a31947d49d86502a882258",
+    "label": "Oku 2021 Table 1 thigh com",
+    "payload": {
+     "conditions": {
+      "basis": "COM position (fraction of segment length from the proximal end, per table footnote)",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "41",
+       "segment": "thigh"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 0.01
+     },
+     "dimensions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "percent",
+      "value": 41.0
+     },
+     "parameter": "segment_com_fraction",
+     "quantity": "dimensionless",
+     "source_field": "com",
+     "subject": "Macaca fuscata/thigh",
+     "uncertainty_si": null,
+     "unit_si": "1",
+     "value_si": 0.41000000000000003
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "1",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.41000000000000003
+  },
+  {
+   "applicability": {
+    "basis": "length",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "0.045",
+     "segment": "phalanges"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.d3d524d6f4056c41c56b5759afaea6d934d6428de97d2330082fa1d7fb1c8d96",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 phalanges length",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:phalanges:length",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:phalanges:length",
+    "id": "data.assertion.d3d524d6f4056c41c56b5759afaea6d934d6428de97d2330082fa1d7fb1c8d96",
+    "label": "Oku 2021 Table 1 phalanges length",
+    "payload": {
+     "conditions": {
+      "basis": "length",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "0.045",
+       "segment": "phalanges"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "m",
+      "value": 0.045
+     },
+     "parameter": "segment_length",
+     "quantity": "length",
+     "source_field": "length",
+     "subject": "Macaca fuscata/phalanges",
+     "uncertainty_si": null,
+     "unit_si": "m",
+     "value_si": 0.045
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "m",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.045
+  },
+  {
+   "applicability": {
+    "basis": "moment of inertia about the COM (per table footnote)",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "5.49e-5",
+     "segment": "foot"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.d99980f2974d144e0479a00a88f05f1f18f48dcdab91ab0f80ee8eefcfc48bc3",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 foot inertia",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:foot:inertia",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:foot:inertia",
+    "id": "data.assertion.d99980f2974d144e0479a00a88f05f1f18f48dcdab91ab0f80ee8eefcfc48bc3",
+    "label": "Oku 2021 Table 1 foot inertia",
+    "payload": {
+     "conditions": {
+      "basis": "moment of inertia about the COM (per table footnote)",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "5.49e-5",
+       "segment": "foot"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "kg*m2",
+      "value": 5.49e-05
+     },
+     "parameter": "segment_moment_of_inertia",
+     "quantity": "moment_of_inertia",
+     "source_field": "inertia",
+     "subject": "Macaca fuscata/foot",
+     "uncertainty_si": null,
+     "unit_si": "kg*m2",
+     "value_si": 5.49e-05
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "kg*m2",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 5.49e-05
+  },
+  {
+   "applicability": {
+    "basis": "moment of inertia about the COM (per table footnote)",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "7.01e-4",
+     "segment": "shank"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.e2e268b40a47211016485edc34c3f1ecf4e94bf9373526202d90516863bcd27b",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 shank inertia",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:shank:inertia",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:shank:inertia",
+    "id": "data.assertion.e2e268b40a47211016485edc34c3f1ecf4e94bf9373526202d90516863bcd27b",
+    "label": "Oku 2021 Table 1 shank inertia",
+    "payload": {
+     "conditions": {
+      "basis": "moment of inertia about the COM (per table footnote)",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "7.01e-4",
+       "segment": "shank"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "kg*m2",
+      "value": 0.000701
+     },
+     "parameter": "segment_moment_of_inertia",
+     "quantity": "moment_of_inertia",
+     "source_field": "inertia",
+     "subject": "Macaca fuscata/shank",
+     "uncertainty_si": null,
+     "unit_si": "kg*m2",
+     "value_si": 0.000701
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "kg*m2",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.000701
+  },
+  {
+   "applicability": {
+    "basis": "length",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "0.182",
+     "segment": "shank"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.f0fcf137b51691da160037a95f5313ee3a2a9f3482e41eccaa8d1de5fe4b3c6b",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 shank length",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:shank:length",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:shank:length",
+    "id": "data.assertion.f0fcf137b51691da160037a95f5313ee3a2a9f3482e41eccaa8d1de5fe4b3c6b",
+    "label": "Oku 2021 Table 1 shank length",
+    "payload": {
+     "conditions": {
+      "basis": "length",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "0.182",
+       "segment": "shank"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "m",
+      "value": 0.182
+     },
+     "parameter": "segment_length",
+     "quantity": "length",
+     "source_field": "length",
+     "subject": "Macaca fuscata/shank",
+     "uncertainty_si": null,
+     "unit_si": "m",
+     "value_si": 0.182
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "m",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.182
+  },
+  {
+   "applicability": {
+    "basis": "mass",
+    "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+    "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+    "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+    "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+    "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+    "species": "Macaca fuscata (Japanese macaque)",
+    "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+    "table_cell": {
+     "precision_note": "values as published; the table rounds mass to 0.001 kg",
+     "published": "0.269",
+     "segment": "shank"
+    }
+   },
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "geometry": null,
+   "id": "data.assertion.f2b7aae62b82f0c061db433bbbb1de362fc5fae1bcfd8dd0d5051e81ae4b577f",
+   "kind": "property_assertion",
+   "name": "Oku 2021 Table 1 shank mass",
+   "notes": "Source assertion; explicit reduction and instance binding required.",
+   "physical": null,
+   "provenance": {
+    "external_id": "oku2021.table1:shank:mass",
+    "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+   },
+   "science_funnel": {
+    "adapter": "oku_paper_table",
+    "artifact": {
+     "id": "PMC7940622_fulltext.xml",
+     "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+    },
+    "authority": "external_assertion",
+    "class_contract": {
+     "class_id": "batch.property.paper_table_inertial",
+     "version": 1
+    },
+    "external_id": "oku2021.table1:shank:mass",
+    "id": "data.assertion.f2b7aae62b82f0c061db433bbbb1de362fc5fae1bcfd8dd0d5051e81ae4b577f",
+    "label": "Oku 2021 Table 1 shank mass",
+    "payload": {
+     "conditions": {
+      "basis": "mass",
+      "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+      "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+      "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+      "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+      "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+      "species": "Macaca fuscata (Japanese macaque)",
+      "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+      "table_cell": {
+       "precision_note": "values as published; the table rounds mass to 0.001 kg",
+       "published": "0.269",
+       "segment": "shank"
+      }
+     },
+     "conversion": {
+      "offset": 0,
+      "scale": 1
+     },
+     "dimensions": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "original": {
+      "uncertainty": null,
+      "unit": "kg",
+      "value": 0.269
+     },
+     "parameter": "segment_mass",
+     "quantity": "mass",
+     "source_field": "mass",
+     "subject": "Macaca fuscata/shank",
+     "uncertainty_si": null,
+     "unit_si": "kg",
+     "value_si": 0.269
+    },
+    "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+    "record_type": "measurement",
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "source": {
+     "id": "oku2021.paper_table_inertial",
+     "known_gaps": [
+      "forelimbs are folded into HAT in this table (structural; never patched)",
+      "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+      "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+      "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+      "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+     ],
+     "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+     "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+    },
+    "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+    "unknowns": [
+     "forelimbs_folded_into_hat_structural_gap",
+     "inertia_axis_about_com_per_footnote",
+     "single_cadaver_no_population_variance",
+     "whole_body_mass_implied_not_published"
+    ]
+   },
+   "spatial": null,
+   "status": "extracted",
+   "units": "kg",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ],
+   "value": 0.269
   }
  ],
  "relations": []

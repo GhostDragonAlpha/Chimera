@@ -1,4 +1,3456 @@
 {
+ "data.assertion.d5fcfac8f63db03cb60cfec1456a8f196d2ace15ccf281cdb8898c765500036f": {
+  "applicability": {
+   "bmr_measurement_mass_g": 10.0,
+   "bmr_measurement_mass_status": "measured",
+   "genus": "Sicista",
+   "source_row": 4406,
+   "species": "Sicista betulina"
+  },
+  "class_contract": {
+   "class_id": "batch.property.pantheria_trait",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d5fcfac8f63db03cb60cfec1456a8f196d2ace15ccf281cdb8898c765500036f",
+  "kind": "property_assertion",
+  "name": "pantheria:Sicista betulina:basal_metabolic_rate",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "pantheria:Sicista betulina:basal_metabolic_rate",
+   "source_id": "data.source.169d3b31692ff6e0567b66a3ce00735326e2f9f45c6373b711f55ead1e5979b0",
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2"
+  },
+  "science_funnel": {
+   "adapter": "pantheria_traits",
+   "artifact": {
+    "id": "ECOL_90_184.zip",
+    "sha256": "fe84274a39ba73b3c9b6950b78ba44c545852db9809d1549b0071cfdde46df9f"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.property.pantheria_trait",
+    "version": 1
+   },
+   "external_id": "pantheria:Sicista betulina:basal_metabolic_rate",
+   "id": "data.assertion.d5fcfac8f63db03cb60cfec1456a8f196d2ace15ccf281cdb8898c765500036f",
+   "label": "pantheria:Sicista betulina:basal_metabolic_rate",
+   "payload": {
+    "conditions": {
+     "bmr_measurement_mass_g": 10.0,
+     "bmr_measurement_mass_status": "measured",
+     "genus": "Sicista",
+     "source_row": 4406,
+     "species": "Sicista betulina"
+    },
+    "conversion": {
+     "assumption": "approximate respiratory calorific equivalent (typical mixed-diet RQ); DECLARED assumption, not a PanTHERIA measurement",
+     "law": "W = mLO2hr * J_per_mL_O2 / 3600",
+     "o2_calorific_J_per_mL": 20.1
+    },
+    "dimensions": [
+     1,
+     2,
+     -3,
+     0,
+     0,
+     0,
+     0
+    ],
+    "original": {
+     "unit": "mL O2 / hour",
+     "value": 32.0
+    },
+    "quantity": "power",
+    "raw_cell": "32.00",
+    "subject": "Sicista betulina",
+    "unit_si": "W",
+    "value_si": 0.17866666666666667
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "measurement",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "pantheria.1.0.wr05",
+    "known_gaps": [
+     "BMR measured 573/5,416 rows; adult mass 3,542",
+     "sentinels (-999) are nodata, never measurements",
+     "BMR->W assumes 20.1 J/mL O2 (declared on every record)",
+     "name resolution covers the Macaca subtree only"
+    ],
+    "license": "CC0 (figshare API license field, probe-verified 2026-09-17)",
+    "release": "PanTHERIA 1.0 WR05 Aug2008, figshare 3531875 (ECOL_90_184.zip), pinned 2026-09-17",
+    "url": "https://ndownloader.figshare.com/files/5604752"
+   },
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2",
+   "unknowns": [
+    "o2_calorific_assumed_20.1_J_per_mL",
+    "uncertainty"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "units": "W",
+  "unknowns": [
+   "o2_calorific_assumed_20.1_J_per_mL",
+   "uncertainty"
+  ],
+  "value": 0.17866666666666667
+ },
+ "data.assertion.d6012f460b875b975f69ffae3f5afc98e697683490a0c0894f3469db19a80f2c": {
+  "class_contract": {
+   "class_id": "batch.entity.external",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d6012f460b875b975f69ffae3f5afc98e697683490a0c0894f3469db19a80f2c",
+  "kind": "reference_entity",
+  "name": "second lumbrical of foot",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "bp3d:FMA37480",
+   "source_id": "data.source.0ed68934bc113bcd4c6e683c668fcda98f061ebf0aa94b97e647c822b436d2f9",
+   "source_version": "dca144edd24efd5ef7bf0bf758b420f0c01a185685094bc9d2f716b97f16da91"
+  },
+  "science_funnel": {
+   "adapter": "bp3d_lists",
+   "artifact": {
+    "id": "partof_parts_list_e.txt",
+    "sha256": "9224080557053e6f1322f1e13ab27f0ecde0db19bb3b505f0631afad230eeebd"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.external",
+    "version": 1
+   },
+   "external_id": "bp3d:FMA37480",
+   "id": "data.assertion.d6012f460b875b975f69ffae3f5afc98e697683490a0c0894f3469db19a80f2c",
+   "label": "second lumbrical of foot",
+   "payload": {
+    "attribution": "BodyParts3D, (c) The Database Center for Life Science",
+    "fma_id": "FMA37480",
+    "label": "second lumbrical of foot",
+    "license": "CC Attribution 4.0 International",
+    "lists": [
+     "isa"
+    ],
+    "representation_id": "BP8180"
+   },
+   "producer_hash": "3418eab7a6d30ea1ad4b267baae87c77e5e16037a123e666dd03997aee9a4fad",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "bodyparts3d.lists",
+    "known_gaps": [
+     "mesh zips not imported (lists only)",
+     "FMA version not pinned by the archive",
+     "isa/partof inclusion pairs pinned as attachments, not reified"
+    ],
+    "license": "CC Attribution 4.0 International; attribution: BodyParts3D, (c) The Database Center for Life Science",
+    "release": "archive layout observed 2026-09-15/17 (FMA-based tables, no release versioning on the archive)",
+    "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/"
+   },
+   "source_version": "dca144edd24efd5ef7bf0bf758b420f0c01a185685094bc9d2f716b97f16da91",
+   "unknowns": [
+    "fma_version_not_pinned",
+    "mesh_geometry_not_imported"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "fma_version_not_pinned",
+   "mesh_geometry_not_imported"
+  ]
+ },
+ "data.assertion.d60201ed7dc2763e1c7f14322b5d686bcf973c4aeb37022f44f613931ded75fb": {
+  "geometry": null,
+  "id": "data.assertion.d60201ed7dc2763e1c7f14322b5d686bcf973c4aeb37022f44f613931ded75fb",
+  "kind": "reference_entity",
+  "name": "Ba-139 ground state",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "IAEA/nuclide/56/83/ground_states_row",
+   "source_id": "data.source.60e0d5c918a14967131a1c13921570d5773e8bd7a3d7774124169de05e962b0b",
+   "source_version": "2a3fcfb54f48c9d559f08e77c1a312b963e26b8457ee6d9d3c0516e898669870"
+  },
+  "science_funnel": {
+   "adapter": "iaea_ground_states",
+   "artifact": {
+    "id": "iaea_ground_states.csv",
+    "sha256": "8aee5dc431af1e35fcb49746387b83e927b3c300e7787defbda621a08212c795"
+   },
+   "authority": "external_assertion",
+   "external_id": "IAEA/nuclide/56/83/ground_states_row",
+   "id": "data.assertion.d60201ed7dc2763e1c7f14322b5d686bcf973c4aeb37022f44f613931ded75fb",
+   "label": "Ba-139 ground state",
+   "payload": {
+    "A": 139,
+    "N": 83,
+    "Z": 56,
+    "atomic_mass_u": 138.908841164,
+    "atomic_mass_uncertainty_u": 2.7100000000000003e-07,
+    "binding_energy_per_nucleon_keV": 8367.0194,
+    "binding_uncertainty_keV": 0.0018,
+    "decay_completeness": "Only three most probable modes; not a complete reaction network.",
+    "evaluation_cutoff": "15-Oct-2016",
+    "evaluators": "P.K. JOSHI and  B. SINGH and  S. SINGH and  A.K. JAIN",
+    "half_life": {
+     "kind": "estimate",
+     "operator": "",
+     "seconds": 4975.8,
+     "uncertainty_seconds": 5.4
+    },
+    "level": {
+     "energy_numeric_keV": 0.0,
+     "resolved_ground_state": true,
+     "ripl_assigned_shift_keV": null,
+     "unknown_shift_label": ""
+    },
+    "listed_decay_modes": [
+     {
+      "fraction": 1.0,
+      "mode": "B-",
+      "raw_uncertainty": ""
+     }
+    ],
+    "mass_from_systematics": "N",
+    "mass_semantics": "Neutral atomic mass in u, converted from source micro-AMU; neutron row is explicitly Z=0.",
+    "raw_row": {
+     "ENSDFauthors": "P.K. JOSHI and  B. SINGH and  S. SINGH and  A.K. JAIN",
+     "ENSDFpublicationcut-off": "15-Oct-2016",
+     "Extraction_date": "2023-10-18",
+     "abundance": "",
+     "atomic_mass": "138908841.164",
+     "binding": "8367.0194",
+     "decay_1": "B-",
+     "decay_1_%": "100",
+     "decay_2": "",
+     "decay_2_%": "",
+     "decay_3": "",
+     "decay_3_%": "",
+     "discovery": "1937",
+     "electric_quadrupole": "-0.552",
+     "energy": "0",
+     "energy_shift": "",
+     "half_life": "82.93",
+     "half_life_sec": "4975.8",
+     "isospin": "",
+     "jp": "7/2-",
+     "magnetic_dipole": "-0.973",
+     "massexcess": "-84913.918",
+     "me_systematics": "N",
+     "n": "83",
+     "operator_hl": "",
+     "qa": "-925.4687",
+     "qbm": "2308.4632",
+     "qbm_n": "-6471.8276",
+     "qec": "-4212.83",
+     "radius": "4.8513",
+     "ripl_shift": "",
+     "sn": "4723.4300",
+     "sp": "9315.8606",
+     "symbol": "Ba",
+     "unc_1": "",
+     "unc_2": "",
+     "unc_3": "",
+     "unc_a": "",
+     "unc_am": "0.271",
+     "unc_ba": "0.0018",
+     "unc_e": "",
+     "unc_eq": "0.013",
+     "unc_hl": "9",
+     "unc_hls": "5.4",
+     "unc_md": "0.005",
+     "unc_me": "0.253",
+     "unc_qa": "3.6675",
+     "unc_qb": "0.6571",
+     "unc_qbmn": "0.3408",
+     "unc_qec": "3.14",
+     "unc_r": "0.0049",
+     "unc_sn": "0.0400",
+     "unc_sp": "9.1585",
+     "unit_hl": "m",
+     "z": "56"
+    },
+    "source_extraction_date": "2023-10-18",
+    "symbol": "Ba",
+    "type": "nuclide_ground_states_entry"
+   },
+   "producer_hash": "ecf1f76aac6dbac6a318a7101b226d0b28be9ae45ed4708572e6e76ffe445eb0",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "attribution": "IAEA Nuclear Data Section LiveChart. Data include ENSDF, AME2020, NUBASE2020 and other sources identified in the pinned API guide. Original evaluator names, publication cutoff and extraction dates remain attached to every row. IAEA endorsement is not implied.",
+    "id": "iaea.livechart",
+    "license": "IAEA terms with acknowledgment; original ENSDF/AME/RIPL provenance retained",
+    "release": "LiveChart v1 served snapshot; per-row extraction/evaluation dates retained",
+    "scope": "3386 source-selected nuclide entries, including qualified level assignments. Mass, binding and decay metadata are not a reaction network, dose model or heat-deposition model.",
+    "url": "https://www-nds.iaea.org/relnsd/v1/data?fields=ground_states&nuclides=all"
+   },
+   "source_version": "2a3fcfb54f48c9d559f08e77c1a312b963e26b8457ee6d9d3c0516e898669870",
+   "unknowns": [
+    "decay_energy_deposition",
+    "full_decay_network"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "decay_energy_deposition",
+   "full_decay_network"
+  ]
+ },
+ "data.assertion.d602e8d9df049d1a975b81410b0f486cd8874b79123278d75fe40c1a3f7bf90f": {
+  "geometry": null,
+  "id": "data.assertion.d602e8d9df049d1a975b81410b0f486cd8874b79123278d75fe40c1a3f7bf90f",
+  "kind": "reference_entity",
+  "name": "Co-54 ground state",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "IAEA/nuclide/27/27/ground_states_row",
+   "source_id": "data.source.60e0d5c918a14967131a1c13921570d5773e8bd7a3d7774124169de05e962b0b",
+   "source_version": "2a3fcfb54f48c9d559f08e77c1a312b963e26b8457ee6d9d3c0516e898669870"
+  },
+  "science_funnel": {
+   "adapter": "iaea_ground_states",
+   "artifact": {
+    "id": "iaea_ground_states.csv",
+    "sha256": "8aee5dc431af1e35fcb49746387b83e927b3c300e7787defbda621a08212c795"
+   },
+   "authority": "external_assertion",
+   "external_id": "IAEA/nuclide/27/27/ground_states_row",
+   "id": "data.assertion.d602e8d9df049d1a975b81410b0f486cd8874b79123278d75fe40c1a3f7bf90f",
+   "label": "Co-54 ground state",
+   "payload": {
+    "A": 54,
+    "N": 27,
+    "Z": 27,
+    "atomic_mass_u": 53.948459075,
+    "atomic_mass_uncertainty_u": 3.7999999999999996e-07,
+    "binding_energy_per_nucleon_keV": 8569.2199,
+    "binding_uncertainty_keV": 0.0066,
+    "decay_completeness": "Only three most probable modes; not a complete reaction network.",
+    "evaluation_cutoff": "20-Jun-2014",
+    "evaluators": "YANG DONG and  HUO JUNDE",
+    "half_life": {
+     "kind": "estimate",
+     "operator": "",
+     "seconds": 0.19328,
+     "uncertainty_seconds": 7e-05
+    },
+    "level": {
+     "energy_numeric_keV": 0.0,
+     "resolved_ground_state": true,
+     "ripl_assigned_shift_keV": null,
+     "unknown_shift_label": ""
+    },
+    "listed_decay_modes": [
+     {
+      "fraction": 1.0,
+      "mode": "EC+B+",
+      "raw_uncertainty": ""
+     }
+    ],
+    "mass_from_systematics": "N",
+    "mass_semantics": "Neutral atomic mass in u, converted from source micro-AMU; neutron row is explicitly Z=0.",
+    "raw_row": {
+     "ENSDFauthors": "YANG DONG and  HUO JUNDE",
+     "ENSDFpublicationcut-off": "20-Jun-2014",
+     "Extraction_date": "2023-10-18",
+     "abundance": "",
+     "atomic_mass": "53948459.075",
+     "binding": "8569.2199",
+     "decay_1": "EC+B+",
+     "decay_1_%": "100",
+     "decay_2": "",
+     "decay_2_%": "",
+     "decay_3": "",
+     "decay_3_%": "",
+     "discovery": "1952",
+     "electric_quadrupole": "",
+     "energy": "0",
+     "energy_shift": "",
+     "half_life": "193.28",
+     "half_life_sec": "0.19328",
+     "isospin": "1",
+     "jp": "0+",
+     "magnetic_dipole": "",
+     "massexcess": "-48010.068",
+     "me_systematics": "N",
+     "n": "27",
+     "operator_hl": "",
+     "qa": "-7808.097",
+     "qbm": "-8731.7558",
+     "qbm_n": "-26450.5582",
+     "qec": "8244.547",
+     "radius": "",
+     "ripl_shift": "",
+     "sn": "13422.0097",
+     "sp": "4351.5554",
+     "symbol": "Co",
+     "unc_1": "",
+     "unc_2": "",
+     "unc_3": "",
+     "unc_a": "",
+     "unc_am": "0.380",
+     "unc_ba": "0.0066",
+     "unc_e": "",
+     "unc_eq": "",
+     "unc_hl": "7",
+     "unc_hls": "0.00007",
+     "unc_md": "",
+     "unc_me": "0.355",
+     "unc_qa": "0.3596",
+     "unc_qb": "4.6710",
+     "unc_qbmn": "25.1528",
+     "unc_qec": "0.494",
+     "unc_r": "",
+     "unc_sn": "1.6951",
+     "unc_sp": "1.6361",
+     "unit_hl": "ms",
+     "z": "27"
+    },
+    "source_extraction_date": "2023-10-18",
+    "symbol": "Co",
+    "type": "nuclide_ground_states_entry"
+   },
+   "producer_hash": "ecf1f76aac6dbac6a318a7101b226d0b28be9ae45ed4708572e6e76ffe445eb0",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "attribution": "IAEA Nuclear Data Section LiveChart. Data include ENSDF, AME2020, NUBASE2020 and other sources identified in the pinned API guide. Original evaluator names, publication cutoff and extraction dates remain attached to every row. IAEA endorsement is not implied.",
+    "id": "iaea.livechart",
+    "license": "IAEA terms with acknowledgment; original ENSDF/AME/RIPL provenance retained",
+    "release": "LiveChart v1 served snapshot; per-row extraction/evaluation dates retained",
+    "scope": "3386 source-selected nuclide entries, including qualified level assignments. Mass, binding and decay metadata are not a reaction network, dose model or heat-deposition model.",
+    "url": "https://www-nds.iaea.org/relnsd/v1/data?fields=ground_states&nuclides=all"
+   },
+   "source_version": "2a3fcfb54f48c9d559f08e77c1a312b963e26b8457ee6d9d3c0516e898669870",
+   "unknowns": [
+    "decay_energy_deposition",
+    "full_decay_network"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "decay_energy_deposition",
+   "full_decay_network"
+  ]
+ },
+ "data.assertion.d6042dfb5def37f8abb3a38e530333d6677f3b46798e9d2671095485d1bbe4db": {
+  "geometry": null,
+  "id": "data.assertion.d6042dfb5def37f8abb3a38e530333d6677f3b46798e9d2671095485d1bbe4db",
+  "kind": "reference_entity",
+  "name": "W-167 ground state",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "IAEA/nuclide/74/93/ground_states_row",
+   "source_id": "data.source.60e0d5c918a14967131a1c13921570d5773e8bd7a3d7774124169de05e962b0b",
+   "source_version": "2a3fcfb54f48c9d559f08e77c1a312b963e26b8457ee6d9d3c0516e898669870"
+  },
+  "science_funnel": {
+   "adapter": "iaea_ground_states",
+   "artifact": {
+    "id": "iaea_ground_states.csv",
+    "sha256": "8aee5dc431af1e35fcb49746387b83e927b3c300e7787defbda621a08212c795"
+   },
+   "authority": "external_assertion",
+   "external_id": "IAEA/nuclide/74/93/ground_states_row",
+   "id": "data.assertion.d6042dfb5def37f8abb3a38e530333d6677f3b46798e9d2671095485d1bbe4db",
+   "label": "W-167 ground state",
+   "payload": {
+    "A": 167,
+    "N": 93,
+    "Z": 74,
+    "atomic_mass_u": 166.95481108,
+    "atomic_mass_uncertainty_u": 2.0078e-05,
+    "binding_energy_per_nucleon_keV": 7976.7045,
+    "binding_uncertainty_keV": 0.112,
+    "decay_completeness": "Only three most probable modes; not a complete reaction network.",
+    "evaluation_cutoff": "5-Jul-2000",
+    "evaluators": "Coral M. Baglin",
+    "half_life": {
+     "kind": "estimate",
+     "operator": "",
+     "seconds": 19.9,
+     "uncertainty_seconds": 0.5
+    },
+    "level": {
+     "energy_numeric_keV": 0.0,
+     "resolved_ground_state": true,
+     "ripl_assigned_shift_keV": null,
+     "unknown_shift_label": ""
+    },
+    "listed_decay_modes": [
+     {
+      "fraction": 0.9995999999999999,
+      "mode": "EC+B+",
+      "raw_uncertainty": "0.01"
+     },
+     {
+      "fraction": 0.0004,
+      "mode": "A",
+      "raw_uncertainty": "0.01"
+     }
+    ],
+    "mass_from_systematics": "N",
+    "mass_semantics": "Neutral atomic mass in u, converted from source micro-AMU; neutron row is explicitly Z=0.",
+    "raw_row": {
+     "ENSDFauthors": "Coral M. Baglin",
+     "ENSDFpublicationcut-off": "5-Jul-2000",
+     "Extraction_date": "2023-10-18",
+     "abundance": "",
+     "atomic_mass": "166954811.08",
+     "binding": "7976.7045",
+     "decay_1": "EC+B+",
+     "decay_1_%": "99.96",
+     "decay_2": "A",
+     "decay_2_%": "0.04",
+     "decay_3": "",
+     "decay_3_%": "",
+     "discovery": "1985",
+     "electric_quadrupole": "",
+     "energy": "0",
+     "energy_shift": "",
+     "half_life": "19.9",
+     "half_life_sec": "19.9",
+     "isospin": "",
+     "jp": "(+)",
+     "magnetic_dipole": "",
+     "massexcess": "-42093.212",
+     "me_systematics": "N",
+     "n": "93",
+     "operator_hl": "",
+     "qa": "4751.1923",
+     "qbm": "-7259",
+     "qbm_n": "-18327.1950",
+     "qec": "6257.852",
+     "radius": "",
+     "ripl_shift": "",
+     "sn": "8277.0592",
+     "sp": "3284.4030",
+     "symbol": "W",
+     "unc_1": "0.01",
+     "unc_2": "0.01",
+     "unc_3": "",
+     "unc_a": "",
+     "unc_am": "20.078",
+     "unc_ba": "0.1120",
+     "unc_e": "",
+     "unc_eq": "",
+     "unc_hl": "5",
+     "unc_hls": "0.5",
+     "unc_md": "",
+     "unc_me": "18.703",
+     "unc_qa": "29.8826",
+     "unc_qb": "44",
+     "unc_qbmn": "90.2019",
+     "unc_qec": "33.626",
+     "unc_r": "",
+     "unc_sn": "20.9609",
+     "unc_sp": "33.6262",
+     "unit_hl": "s",
+     "z": "74"
+    },
+    "source_extraction_date": "2023-10-18",
+    "symbol": "W",
+    "type": "nuclide_ground_states_entry"
+   },
+   "producer_hash": "ecf1f76aac6dbac6a318a7101b226d0b28be9ae45ed4708572e6e76ffe445eb0",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "attribution": "IAEA Nuclear Data Section LiveChart. Data include ENSDF, AME2020, NUBASE2020 and other sources identified in the pinned API guide. Original evaluator names, publication cutoff and extraction dates remain attached to every row. IAEA endorsement is not implied.",
+    "id": "iaea.livechart",
+    "license": "IAEA terms with acknowledgment; original ENSDF/AME/RIPL provenance retained",
+    "release": "LiveChart v1 served snapshot; per-row extraction/evaluation dates retained",
+    "scope": "3386 source-selected nuclide entries, including qualified level assignments. Mass, binding and decay metadata are not a reaction network, dose model or heat-deposition model.",
+    "url": "https://www-nds.iaea.org/relnsd/v1/data?fields=ground_states&nuclides=all"
+   },
+   "source_version": "2a3fcfb54f48c9d559f08e77c1a312b963e26b8457ee6d9d3c0516e898669870",
+   "unknowns": [
+    "decay_energy_deposition",
+    "full_decay_network"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "decay_energy_deposition",
+   "full_decay_network"
+  ]
+ },
+ "data.assertion.d606a7e9e4c0f0c994094ddd300d16eebf9ab6c11c0ad49b82ab2697ef811a69": {
+  "geometry": null,
+  "id": "data.assertion.d606a7e9e4c0f0c994094ddd300d16eebf9ab6c11c0ad49b82ab2697ef811a69",
+  "kind": "reference_entity",
+  "name": "Mo-85 ground state",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "IAEA/nuclide/42/43/ground_states_row",
+   "source_id": "data.source.60e0d5c918a14967131a1c13921570d5773e8bd7a3d7774124169de05e962b0b",
+   "source_version": "2a3fcfb54f48c9d559f08e77c1a312b963e26b8457ee6d9d3c0516e898669870"
+  },
+  "science_funnel": {
+   "adapter": "iaea_ground_states",
+   "artifact": {
+    "id": "iaea_ground_states.csv",
+    "sha256": "8aee5dc431af1e35fcb49746387b83e927b3c300e7787defbda621a08212c795"
+   },
+   "authority": "external_assertion",
+   "external_id": "IAEA/nuclide/42/43/ground_states_row",
+   "id": "data.assertion.d606a7e9e4c0f0c994094ddd300d16eebf9ab6c11c0ad49b82ab2697ef811a69",
+   "label": "Mo-85 ground state",
+   "payload": {
+    "A": 85,
+    "N": 43,
+    "Z": 42,
+    "atomic_mass_u": 84.938260736,
+    "atomic_mass_uncertainty_u": 1.7e-05,
+    "binding_energy_per_nucleon_keV": 8361.332,
+    "binding_uncertainty_keV": 0.1863,
+    "decay_completeness": "Only three most probable modes; not a complete reaction network.",
+    "evaluation_cutoff": "31-Dec-2013",
+    "evaluators": "BALRAJ SINGH AND JUN CHEN",
+    "half_life": {
+     "kind": "estimate",
+     "operator": "",
+     "seconds": 3.2,
+     "uncertainty_seconds": 0.2
+    },
+    "level": {
+     "energy_numeric_keV": 0.0,
+     "resolved_ground_state": true,
+     "ripl_assigned_shift_keV": null,
+     "unknown_shift_label": ""
+    },
+    "listed_decay_modes": [
+     {
+      "fraction": 1.0,
+      "mode": "EC+B+",
+      "raw_uncertainty": ""
+     },
+     {
+      "fraction": 0.0014000000000000002,
+      "mode": "ECP",
+      "raw_uncertainty": "0.02"
+     }
+    ],
+    "mass_from_systematics": "N",
+    "mass_semantics": "Neutral atomic mass in u, converted from source micro-AMU; neutron row is explicitly Z=0.",
+    "raw_row": {
+     "ENSDFauthors": "BALRAJ SINGH AND JUN CHEN",
+     "ENSDFpublicationcut-off": "31-Dec-2013",
+     "Extraction_date": "2023-10-18",
+     "abundance": "",
+     "atomic_mass": "84938260.736",
+     "binding": "8361.332",
+     "decay_1": "EC+B+",
+     "decay_1_%": "100",
+     "decay_2": "ECP",
+     "decay_2_%": "0.14",
+     "decay_3": "",
+     "decay_3_%": "",
+     "discovery": "1992",
+     "electric_quadrupole": "",
+     "energy": "0",
+     "energy_shift": "",
+     "half_life": "3.2",
+     "half_life_sec": "3.2",
+     "isospin": "",
+     "jp": "(1/2-)",
+     "magnetic_dipole": "",
+     "massexcess": "-57509.760",
+     "me_systematics": "N",
+     "n": "43",
+     "operator_hl": "",
+     "qa": "-2410.2578",
+     "qbm": "-11660",
+     "qbm_n": "-27881",
+     "qec": "8769.924",
+     "radius": "",
+     "ripl_shift": "",
+     "sn": "11411",
+     "sp": "3604.8889",
+     "symbol": "Mo",
+     "unc_1": "",
+     "unc_2": "0.02",
+     "unc_3": "",
+     "unc_a": "",
+     "unc_am": "17.000",
+     "unc_ba": "0.1863",
+     "unc_e": "",
+     "unc_eq": "",
+     "unc_hl": "2",
+     "unc_hls": "0.2",
+     "unc_md": "",
+     "unc_me": "15.835",
+     "unc_qa": "93.5676",
+     "unc_qb": "400",
+     "unc_qbmn": "400",
+     "unc_qec": "16.357",
+     "unc_r": "",
+     "unc_sn": "298",
+     "unc_sp": "15.8405",
+     "unit_hl": "s",
+     "z": "42"
+    },
+    "source_extraction_date": "2023-10-18",
+    "symbol": "Mo",
+    "type": "nuclide_ground_states_entry"
+   },
+   "producer_hash": "ecf1f76aac6dbac6a318a7101b226d0b28be9ae45ed4708572e6e76ffe445eb0",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "attribution": "IAEA Nuclear Data Section LiveChart. Data include ENSDF, AME2020, NUBASE2020 and other sources identified in the pinned API guide. Original evaluator names, publication cutoff and extraction dates remain attached to every row. IAEA endorsement is not implied.",
+    "id": "iaea.livechart",
+    "license": "IAEA terms with acknowledgment; original ENSDF/AME/RIPL provenance retained",
+    "release": "LiveChart v1 served snapshot; per-row extraction/evaluation dates retained",
+    "scope": "3386 source-selected nuclide entries, including qualified level assignments. Mass, binding and decay metadata are not a reaction network, dose model or heat-deposition model.",
+    "url": "https://www-nds.iaea.org/relnsd/v1/data?fields=ground_states&nuclides=all"
+   },
+   "source_version": "2a3fcfb54f48c9d559f08e77c1a312b963e26b8457ee6d9d3c0516e898669870",
+   "unknowns": [
+    "decay_energy_deposition",
+    "full_decay_network"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "decay_energy_deposition",
+   "full_decay_network"
+  ]
+ },
+ "data.assertion.d60735eda0322bcc75d0a5943e938304be4d46a08055e18cc24a47f6e4c319b7": {
+  "applicability": {
+   "genus": "Pipistrellus",
+   "source_row": 3743,
+   "species": "Pipistrellus nathusii"
+  },
+  "class_contract": {
+   "class_id": "batch.property.pantheria_trait",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d60735eda0322bcc75d0a5943e938304be4d46a08055e18cc24a47f6e4c319b7",
+  "kind": "property_assertion",
+  "name": "pantheria:Pipistrellus nathusii:adult_body_mass_g",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "pantheria:Pipistrellus nathusii:adult_body_mass_g",
+   "source_id": "data.source.169d3b31692ff6e0567b66a3ce00735326e2f9f45c6373b711f55ead1e5979b0",
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2"
+  },
+  "science_funnel": {
+   "adapter": "pantheria_traits",
+   "artifact": {
+    "id": "ECOL_90_184.zip",
+    "sha256": "fe84274a39ba73b3c9b6950b78ba44c545852db9809d1549b0071cfdde46df9f"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.property.pantheria_trait",
+    "version": 1
+   },
+   "external_id": "pantheria:Pipistrellus nathusii:adult_body_mass_g",
+   "id": "data.assertion.d60735eda0322bcc75d0a5943e938304be4d46a08055e18cc24a47f6e4c319b7",
+   "label": "pantheria:Pipistrellus nathusii:adult_body_mass_g",
+   "payload": {
+    "conditions": {
+     "genus": "Pipistrellus",
+     "source_row": 3743,
+     "species": "Pipistrellus nathusii"
+    },
+    "conversion": {
+     "offset": 0,
+     "scale": 0.001
+    },
+    "dimensions": [
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "original": {
+     "uncertainty": null,
+     "unit": "g",
+     "value": 7.44
+    },
+    "quantity": "mass",
+    "raw_cell": "7.44",
+    "subject": "Pipistrellus nathusii",
+    "uncertainty_si": null,
+    "unit_si": "kg",
+    "value_si": 0.00744
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "measurement",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "pantheria.1.0.wr05",
+    "known_gaps": [
+     "BMR measured 573/5,416 rows; adult mass 3,542",
+     "sentinels (-999) are nodata, never measurements",
+     "BMR->W assumes 20.1 J/mL O2 (declared on every record)",
+     "name resolution covers the Macaca subtree only"
+    ],
+    "license": "CC0 (figshare API license field, probe-verified 2026-09-17)",
+    "release": "PanTHERIA 1.0 WR05 Aug2008, figshare 3531875 (ECOL_90_184.zip), pinned 2026-09-17",
+    "url": "https://ndownloader.figshare.com/files/5604752"
+   },
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2",
+   "unknowns": [
+    "uncertainty"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "units": "kg",
+  "unknowns": [
+   "uncertainty"
+  ],
+  "value": 0.00744
+ },
+ "data.assertion.d6074079c8c7e627da98b62601f90225350108d86de7f5705f98033898e9133d": {
+  "class_contract": {
+   "class_id": "batch.observation.soil_specimen",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d6074079c8c7e627da98b62601f90225350108d86de7f5705f98033898e9133d",
+  "kind": "reference_entity",
+  "name": "soil specimen, file row 62, Laxenburg",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "soranzo:specimen:62",
+   "source_id": "data.source.4950ee441e35e87d1f3927b0158e1f12c88cc5bfb9a239b3f53dd6c5cef7c276",
+   "source_version": "454b8a0d9237bd63d10b34a8bee93871a562f00c062934f422377df4497fccb2"
+  },
+  "science_funnel": {
+   "adapter": "vienna_soil_specimens",
+   "artifact": {
+    "id": "Zenodo_DATA_Soranzo.csv",
+    "sha256": "5932484eac2ba102af9ec71cb414570b338a37975569e88b879e6f83f447a71f"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.observation.soil_specimen",
+    "version": 1
+   },
+   "external_id": "soranzo:specimen:62",
+   "id": "data.assertion.d6074079c8c7e627da98b62601f90225350108d86de7f5705f98033898e9133d",
+   "label": "soil specimen, file row 62, Laxenburg",
+   "payload": {
+    "coord_lat_deg": {
+     "Latitude": 48.0686831
+    },
+    "coord_lon_deg": {
+     "Longitude": 16.3561206
+    },
+    "gradation_percent": {
+     "Cl": 24.73176,
+     "Co": 0.0,
+     "Gr": 0.0,
+     "Sa": 0.4860818,
+     "Si": 74.78216
+    },
+    "grain_sizes_mm": {
+     "d50": 0.009352736,
+     "dmax": 2.0
+    },
+    "location": "Laxenburg",
+    "n_measured_values": 13,
+    "permeability_m_per_s": {
+     "k10": 3.893838e-10
+    },
+    "proctor_g_per_cm3": {
+     "RHPRUSP": 2.139424,
+     "RHS": 2.75
+    },
+    "proctor_percent": {
+     "WPRUSP": 8.867243
+    }
+   },
+   "producer_hash": "535245e5230e82ae96aab6d5b2e489e1c29b1b42770dabaaadb3a0aeb5c40703",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "zenodo.soranzo.14251191.lab",
+    "known_gaps": [
+     "one record per specimen row; the source carries no specimen id, so external ids are file row order",
+     "per-column units are not declared in the pinned bytes; families carry source-conventional units (%, mm, g/cm3, m/s, kPa, degree) declared as an assumption on every record",
+     "Location is sparse (711/1,066 rows) and lat/lon sparser (646 rows)",
+     "a row admits only its measured cells: empty means the test was not run, never zero"
+    ],
+    "license": "CC BY 4.0 (Zenodo API metadata license.id=cc-by-4.0, pinned as artifact)",
+    "release": "Geotechnical laboratory test dataset of Austria (Vienna, Lower Austria, Burgenland; Zenodo record 14251191, dataset for \"Machine learning predictions on an extensive geotechnical dataset of laboratory tests in Austria\"); CSV bytes sha256-verified 2026-09-17",
+    "url": "https://zenodo.org/records/14251191/files/Zenodo_DATA_Soranzo.csv?download=1"
+   },
+   "source_version": "454b8a0d9237bd63d10b34a8bee93871a562f00c062934f422377df4497fccb2",
+   "unknowns": [
+    "location_sparse_absent_where_unrecorded",
+    "per_column_units_not_declared_in_pinned_source_bytes_families_carry_source_conventional_units_percent_mm_g_per_cm3_m_per_s_kpa_degree",
+    "specimen_id_not_pinned_by_source_external_id_is_file_row_order"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "location_sparse_absent_where_unrecorded",
+   "per_column_units_not_declared_in_pinned_source_bytes_families_carry_source_conventional_units_percent_mm_g_per_cm3_m_per_s_kpa_degree",
+   "specimen_id_not_pinned_by_source_external_id_is_file_row_order"
+  ]
+ },
+ "data.assertion.d60cf6ef686d499a9aa66d755c17eec23a9ef3f87d13ca79264fd49a6bc6048b": {
+  "geometry": null,
+  "id": "data.assertion.d60cf6ef686d499a9aa66d755c17eec23a9ef3f87d13ca79264fd49a6bc6048b",
+  "kind": "reference_entity",
+  "name": "Br-74 ground state",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "IAEA/nuclide/35/39/ground_states_row",
+   "source_id": "data.source.60e0d5c918a14967131a1c13921570d5773e8bd7a3d7774124169de05e962b0b",
+   "source_version": "2a3fcfb54f48c9d559f08e77c1a312b963e26b8457ee6d9d3c0516e898669870"
+  },
+  "science_funnel": {
+   "adapter": "iaea_ground_states",
+   "artifact": {
+    "id": "iaea_ground_states.csv",
+    "sha256": "8aee5dc431af1e35fcb49746387b83e927b3c300e7787defbda621a08212c795"
+   },
+   "authority": "external_assertion",
+   "external_id": "IAEA/nuclide/35/39/ground_states_row",
+   "id": "data.assertion.d60cf6ef686d499a9aa66d755c17eec23a9ef3f87d13ca79264fd49a6bc6048b",
+   "label": "Br-74 ground state",
+   "payload": {
+    "A": 74,
+    "N": 39,
+    "Z": 35,
+    "atomic_mass_u": 73.929910279,
+    "atomic_mass_uncertainty_u": 6.264e-06,
+    "binding_energy_per_nucleon_keV": 8583.5615,
+    "binding_uncertainty_keV": 0.0789,
+    "decay_completeness": "Only three most probable modes; not a complete reaction network.",
+    "evaluation_cutoff": "30-Apr-2006",
+    "evaluators": "BALRAJ SINGH and  AMEENAH R. FARHAN",
+    "half_life": {
+     "kind": "estimate",
+     "operator": "",
+     "seconds": 1524.0,
+     "uncertainty_seconds": 18.0
+    },
+    "level": {
+     "energy_numeric_keV": 0.0,
+     "resolved_ground_state": true,
+     "ripl_assigned_shift_keV": null,
+     "unknown_shift_label": ""
+    },
+    "listed_decay_modes": [
+     {
+      "fraction": 1.0,
+      "mode": "EC+B+",
+      "raw_uncertainty": ""
+     }
+    ],
+    "mass_from_systematics": "N",
+    "mass_semantics": "Neutral atomic mass in u, converted from source micro-AMU; neutron row is explicitly Z=0.",
+    "raw_row": {
+     "ENSDFauthors": "BALRAJ SINGH and  AMEENAH R. FARHAN",
+     "ENSDFpublicationcut-off": "30-Apr-2006",
+     "Extraction_date": "2023-10-18",
+     "abundance": "",
+     "atomic_mass": "73929910.279",
+     "binding": "8583.5615",
+     "decay_1": "EC+B+",
+     "decay_1_%": "100",
+     "decay_2": "",
+     "decay_2_%": "",
+     "decay_3": "",
+     "decay_3_%": "",
+     "discovery": "1952",
+     "electric_quadrupole": "",
+     "energy": "0",
+     "energy_shift": "",
+     "half_life": "25.4",
+     "half_life_sec": "1524",
+     "isospin": "",
+     "jp": "(0-)",
+     "magnetic_dipole": "1.82",
+     "massexcess": "-65288.161",
+     "me_systematics": "N",
+     "n": "39",
+     "operator_hl": "",
+     "qa": "-3379.1039",
+     "qbm": "-2956.3173",
+     "qbm_n": "-16807.7215",
+     "qec": "6925.049",
+     "radius": "",
+     "ripl_shift": "",
+     "sn": "9713.6928",
+     "sp": "4349.7363",
+     "symbol": "Br",
+     "unc_1": "",
+     "unc_2": "",
+     "unc_3": "",
+     "unc_a": "",
+     "unc_am": "6.264",
+     "unc_ba": "0.0789",
+     "unc_e": "",
+     "unc_eq": "",
+     "unc_hl": "3",
+     "unc_hls": "18",
+     "unc_md": "0.012",
+     "unc_me": "5.835",
+     "unc_qa": "6.0003",
+     "unc_qb": "6.1730",
+     "unc_qbmn": "8.7931",
+     "unc_qec": "5.835",
+     "unc_r": "",
+     "unc_sn": "8.9159",
+     "unc_sp": "9.4426",
+     "unit_hl": "m",
+     "z": "35"
+    },
+    "source_extraction_date": "2023-10-18",
+    "symbol": "Br",
+    "type": "nuclide_ground_states_entry"
+   },
+   "producer_hash": "ecf1f76aac6dbac6a318a7101b226d0b28be9ae45ed4708572e6e76ffe445eb0",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "attribution": "IAEA Nuclear Data Section LiveChart. Data include ENSDF, AME2020, NUBASE2020 and other sources identified in the pinned API guide. Original evaluator names, publication cutoff and extraction dates remain attached to every row. IAEA endorsement is not implied.",
+    "id": "iaea.livechart",
+    "license": "IAEA terms with acknowledgment; original ENSDF/AME/RIPL provenance retained",
+    "release": "LiveChart v1 served snapshot; per-row extraction/evaluation dates retained",
+    "scope": "3386 source-selected nuclide entries, including qualified level assignments. Mass, binding and decay metadata are not a reaction network, dose model or heat-deposition model.",
+    "url": "https://www-nds.iaea.org/relnsd/v1/data?fields=ground_states&nuclides=all"
+   },
+   "source_version": "2a3fcfb54f48c9d559f08e77c1a312b963e26b8457ee6d9d3c0516e898669870",
+   "unknowns": [
+    "decay_energy_deposition",
+    "full_decay_network"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "decay_energy_deposition",
+   "full_decay_network"
+  ]
+ },
+ "data.assertion.d60ed2346b1e1e1d9728df4f54a89a896401c1684f68958fde1fe744cd867f97": {
+  "class_contract": {
+   "class_id": "batch.entity.external",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d60ed2346b1e1e1d9728df4f54a89a896401c1684f68958fde1fe744cd867f97",
+  "kind": "reference_entity",
+  "name": "segment of midbrain tectum",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "bp3d:FMA62398",
+   "source_id": "data.source.0ed68934bc113bcd4c6e683c668fcda98f061ebf0aa94b97e647c822b436d2f9",
+   "source_version": "dca144edd24efd5ef7bf0bf758b420f0c01a185685094bc9d2f716b97f16da91"
+  },
+  "science_funnel": {
+   "adapter": "bp3d_lists",
+   "artifact": {
+    "id": "partof_parts_list_e.txt",
+    "sha256": "9224080557053e6f1322f1e13ab27f0ecde0db19bb3b505f0631afad230eeebd"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.external",
+    "version": 1
+   },
+   "external_id": "bp3d:FMA62398",
+   "id": "data.assertion.d60ed2346b1e1e1d9728df4f54a89a896401c1684f68958fde1fe744cd867f97",
+   "label": "segment of midbrain tectum",
+   "payload": {
+    "attribution": "BodyParts3D, (c) The Database Center for Life Science",
+    "fma_id": "FMA62398",
+    "label": "segment of midbrain tectum",
+    "license": "CC Attribution 4.0 International",
+    "lists": [
+     "isa"
+    ],
+    "representation_id": "BP5689"
+   },
+   "producer_hash": "3418eab7a6d30ea1ad4b267baae87c77e5e16037a123e666dd03997aee9a4fad",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "bodyparts3d.lists",
+    "known_gaps": [
+     "mesh zips not imported (lists only)",
+     "FMA version not pinned by the archive",
+     "isa/partof inclusion pairs pinned as attachments, not reified"
+    ],
+    "license": "CC Attribution 4.0 International; attribution: BodyParts3D, (c) The Database Center for Life Science",
+    "release": "archive layout observed 2026-09-15/17 (FMA-based tables, no release versioning on the archive)",
+    "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/"
+   },
+   "source_version": "dca144edd24efd5ef7bf0bf758b420f0c01a185685094bc9d2f716b97f16da91",
+   "unknowns": [
+    "fma_version_not_pinned",
+    "mesh_geometry_not_imported"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "fma_version_not_pinned",
+   "mesh_geometry_not_imported"
+  ]
+ },
+ "data.assertion.d6112a4f3e71dd2f18f364a4b1a71beaf290011044b31e73a0a909267db796bc": {
+  "class_contract": {
+   "class_id": "batch.entity.rhea_chebi_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d6112a4f3e71dd2f18f364a4b1a71beaf290011044b31e73a0a909267db796bc",
+  "kind": "reference_entity",
+  "name": "CHEBI:231630",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "rhea-chebi:CHEBI:231630",
+   "source_id": "data.source.af4265c7202c51fae857900ca5eaf4b0118204a08cd5ce0509c44488a8de9925",
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739"
+  },
+  "science_funnel": {
+   "adapter": "rhea_chebi_smiles",
+   "artifact": {
+    "id": "rhea-chebi-smiles.tsv",
+    "sha256": "567034c7dfdb0619697964bb6dd8180579e47cc3e6d994526d39fd92c5794f50"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.rhea_chebi_species",
+    "version": 1
+   },
+   "external_id": "rhea-chebi:CHEBI:231630",
+   "id": "data.assertion.d6112a4f3e71dd2f18f364a4b1a71beaf290011044b31e73a0a909267db796bc",
+   "label": "CHEBI:231630",
+   "payload": {
+    "chebi_id": "CHEBI:231630",
+    "id_scheme": "chebi",
+    "smiles": "COc1ccc(C[C@@H]2[NH2+]CCc3cc(O)c(OC)cc32)cc1O"
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "rhea.chebi_smiles.tsv",
+    "known_gaps": [
+     "participant species map, not the reaction list",
+     "competing-SMILES ids quarantine, never merge",
+     "SMILES are pinned bytes, not validated structures"
+    ],
+    "license": "CC BY 4.0; LICENSE.txt pinned in-bundle; attribution: Rhea database, Swiss Institute of Bioinformatics",
+    "release": "Rhea release 142 (2026-09-02), per pinned rhea-release.properties",
+    "url": "https://ftp.expasy.org/databases/rhea/tsv/rhea-chebi-smiles.tsv"
+   },
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739",
+   "unknowns": [
+    "reaction_membership_not_in_file",
+    "structure_not_validated"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "reaction_membership_not_in_file",
+   "structure_not_validated"
+  ]
+ },
+ "data.assertion.d61199b59fc11f15f998abbc3e6f613333d666b98e324ecef0442a7a22d74a2a": {
+  "applicability": {
+   "genus": "Potorous",
+   "source_row": 3821,
+   "species": "Potorous tridactylus"
+  },
+  "class_contract": {
+   "class_id": "batch.property.pantheria_trait",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d61199b59fc11f15f998abbc3e6f613333d666b98e324ecef0442a7a22d74a2a",
+  "kind": "property_assertion",
+  "name": "pantheria:Potorous tridactylus:adult_body_mass_g",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "pantheria:Potorous tridactylus:adult_body_mass_g",
+   "source_id": "data.source.169d3b31692ff6e0567b66a3ce00735326e2f9f45c6373b711f55ead1e5979b0",
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2"
+  },
+  "science_funnel": {
+   "adapter": "pantheria_traits",
+   "artifact": {
+    "id": "ECOL_90_184.zip",
+    "sha256": "fe84274a39ba73b3c9b6950b78ba44c545852db9809d1549b0071cfdde46df9f"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.property.pantheria_trait",
+    "version": 1
+   },
+   "external_id": "pantheria:Potorous tridactylus:adult_body_mass_g",
+   "id": "data.assertion.d61199b59fc11f15f998abbc3e6f613333d666b98e324ecef0442a7a22d74a2a",
+   "label": "pantheria:Potorous tridactylus:adult_body_mass_g",
+   "payload": {
+    "conditions": {
+     "genus": "Potorous",
+     "source_row": 3821,
+     "species": "Potorous tridactylus"
+    },
+    "conversion": {
+     "offset": 0,
+     "scale": 0.001
+    },
+    "dimensions": [
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "original": {
+     "uncertainty": null,
+     "unit": "g",
+     "value": 1054.67
+    },
+    "quantity": "mass",
+    "raw_cell": "1054.67",
+    "subject": "Potorous tridactylus",
+    "uncertainty_si": null,
+    "unit_si": "kg",
+    "value_si": 1.05467
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "measurement",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "pantheria.1.0.wr05",
+    "known_gaps": [
+     "BMR measured 573/5,416 rows; adult mass 3,542",
+     "sentinels (-999) are nodata, never measurements",
+     "BMR->W assumes 20.1 J/mL O2 (declared on every record)",
+     "name resolution covers the Macaca subtree only"
+    ],
+    "license": "CC0 (figshare API license field, probe-verified 2026-09-17)",
+    "release": "PanTHERIA 1.0 WR05 Aug2008, figshare 3531875 (ECOL_90_184.zip), pinned 2026-09-17",
+    "url": "https://ndownloader.figshare.com/files/5604752"
+   },
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2",
+   "unknowns": [
+    "uncertainty"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "units": "kg",
+  "unknowns": [
+   "uncertainty"
+  ],
+  "value": 1.05467
+ },
+ "data.assertion.d613c3a5dfdf20624a05a7e42b1c6b33055018614c327041021c7de78eeae231": {
+  "class_contract": {
+   "class_id": "batch.entity.rhea_chebi_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d613c3a5dfdf20624a05a7e42b1c6b33055018614c327041021c7de78eeae231",
+  "kind": "reference_entity",
+  "name": "CHEBI:192244",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "rhea-chebi:CHEBI:192244",
+   "source_id": "data.source.af4265c7202c51fae857900ca5eaf4b0118204a08cd5ce0509c44488a8de9925",
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739"
+  },
+  "science_funnel": {
+   "adapter": "rhea_chebi_smiles",
+   "artifact": {
+    "id": "rhea-chebi-smiles.tsv",
+    "sha256": "567034c7dfdb0619697964bb6dd8180579e47cc3e6d994526d39fd92c5794f50"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.rhea_chebi_species",
+    "version": 1
+   },
+   "external_id": "rhea-chebi:CHEBI:192244",
+   "id": "data.assertion.d613c3a5dfdf20624a05a7e42b1c6b33055018614c327041021c7de78eeae231",
+   "label": "CHEBI:192244",
+   "payload": {
+    "chebi_id": "CHEBI:192244",
+    "id_scheme": "chebi",
+    "smiles": "*c1c(*)c(*)c(OC)c(*)c1*"
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "rhea.chebi_smiles.tsv",
+    "known_gaps": [
+     "participant species map, not the reaction list",
+     "competing-SMILES ids quarantine, never merge",
+     "SMILES are pinned bytes, not validated structures"
+    ],
+    "license": "CC BY 4.0; LICENSE.txt pinned in-bundle; attribution: Rhea database, Swiss Institute of Bioinformatics",
+    "release": "Rhea release 142 (2026-09-02), per pinned rhea-release.properties",
+    "url": "https://ftp.expasy.org/databases/rhea/tsv/rhea-chebi-smiles.tsv"
+   },
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739",
+   "unknowns": [
+    "reaction_membership_not_in_file",
+    "structure_not_validated"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "reaction_membership_not_in_file",
+   "structure_not_validated"
+  ]
+ },
+ "data.assertion.d6158046d7075099960443bd6f2896ac9a67b8d05ba40ec8681f60b1698db9a7": {
+  "class_contract": {
+   "class_id": "batch.entity.rhea_chebi_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d6158046d7075099960443bd6f2896ac9a67b8d05ba40ec8681f60b1698db9a7",
+  "kind": "reference_entity",
+  "name": "CHEBI:73995",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "rhea-chebi:CHEBI:73995",
+   "source_id": "data.source.af4265c7202c51fae857900ca5eaf4b0118204a08cd5ce0509c44488a8de9925",
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739"
+  },
+  "science_funnel": {
+   "adapter": "rhea_chebi_smiles",
+   "artifact": {
+    "id": "rhea-chebi-smiles.tsv",
+    "sha256": "567034c7dfdb0619697964bb6dd8180579e47cc3e6d994526d39fd92c5794f50"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.rhea_chebi_species",
+    "version": 1
+   },
+   "external_id": "rhea-chebi:CHEBI:73995",
+   "id": "data.assertion.d6158046d7075099960443bd6f2896ac9a67b8d05ba40ec8681f60b1698db9a7",
+   "label": "CHEBI:73995",
+   "payload": {
+    "chebi_id": "CHEBI:73995",
+    "id_scheme": "chebi",
+    "smiles": "*N[C@@H](Cc1cnc(CC[C@H]([NH3+])C(=O)[O-])[nH]1)C(*)=O"
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "rhea.chebi_smiles.tsv",
+    "known_gaps": [
+     "participant species map, not the reaction list",
+     "competing-SMILES ids quarantine, never merge",
+     "SMILES are pinned bytes, not validated structures"
+    ],
+    "license": "CC BY 4.0; LICENSE.txt pinned in-bundle; attribution: Rhea database, Swiss Institute of Bioinformatics",
+    "release": "Rhea release 142 (2026-09-02), per pinned rhea-release.properties",
+    "url": "https://ftp.expasy.org/databases/rhea/tsv/rhea-chebi-smiles.tsv"
+   },
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739",
+   "unknowns": [
+    "reaction_membership_not_in_file",
+    "structure_not_validated"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "reaction_membership_not_in_file",
+   "structure_not_validated"
+  ]
+ },
+ "data.assertion.d6178b7dadfec18d438090bad627f8fa01d0e5d2d4b1c658ebd4c32577f6662b": {
+  "class_contract": {
+   "class_id": "batch.entity.external",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d6178b7dadfec18d438090bad627f8fa01d0e5d2d4b1c658ebd4c32577f6662b",
+  "kind": "reference_entity",
+  "name": "right twelfth rib",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "bp3d:FMA8533",
+   "source_id": "data.source.0ed68934bc113bcd4c6e683c668fcda98f061ebf0aa94b97e647c822b436d2f9",
+   "source_version": "dca144edd24efd5ef7bf0bf758b420f0c01a185685094bc9d2f716b97f16da91"
+  },
+  "science_funnel": {
+   "adapter": "bp3d_lists",
+   "artifact": {
+    "id": "partof_parts_list_e.txt",
+    "sha256": "9224080557053e6f1322f1e13ab27f0ecde0db19bb3b505f0631afad230eeebd"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.external",
+    "version": 1
+   },
+   "external_id": "bp3d:FMA8533",
+   "id": "data.assertion.d6178b7dadfec18d438090bad627f8fa01d0e5d2d4b1c658ebd4c32577f6662b",
+   "label": "right twelfth rib",
+   "payload": {
+    "attribution": "BodyParts3D, (c) The Database Center for Life Science",
+    "fma_id": "FMA8533",
+    "label": "right twelfth rib",
+    "license": "CC Attribution 4.0 International",
+    "lists": [
+     "partof"
+    ],
+    "representation_id": "BP10213"
+   },
+   "producer_hash": "3418eab7a6d30ea1ad4b267baae87c77e5e16037a123e666dd03997aee9a4fad",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "bodyparts3d.lists",
+    "known_gaps": [
+     "mesh zips not imported (lists only)",
+     "FMA version not pinned by the archive",
+     "isa/partof inclusion pairs pinned as attachments, not reified"
+    ],
+    "license": "CC Attribution 4.0 International; attribution: BodyParts3D, (c) The Database Center for Life Science",
+    "release": "archive layout observed 2026-09-15/17 (FMA-based tables, no release versioning on the archive)",
+    "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/"
+   },
+   "source_version": "dca144edd24efd5ef7bf0bf758b420f0c01a185685094bc9d2f716b97f16da91",
+   "unknowns": [
+    "fma_version_not_pinned",
+    "mesh_geometry_not_imported"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "fma_version_not_pinned",
+   "mesh_geometry_not_imported"
+  ]
+ },
+ "data.assertion.d617f021045269b7bf67c2b8f19e934611b0f0288896aad5317ccdac773d1690": {
+  "class_contract": {
+   "class_id": "batch.observation.soil_specimen",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d617f021045269b7bf67c2b8f19e934611b0f0288896aad5317ccdac773d1690",
+  "kind": "reference_entity",
+  "name": "soil specimen, file row 193, Hohenruppersdorf",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "soranzo:specimen:193",
+   "source_id": "data.source.0785d0f38325dd7423647ceab92c0d6a4f372f848396171f40b1fe95dc4d5be0",
+   "source_version": "454b8a0d9237bd63d10b34a8bee93871a562f00c062934f422377df4497fccb2"
+  },
+  "science_funnel": {
+   "adapter": "vienna_soil_specimens",
+   "artifact": {
+    "id": "Zenodo_DATA_Soranzo.csv",
+    "sha256": "5932484eac2ba102af9ec71cb414570b338a37975569e88b879e6f83f447a71f"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.observation.soil_specimen",
+    "version": 1
+   },
+   "external_id": "soranzo:specimen:193",
+   "id": "data.assertion.d617f021045269b7bf67c2b8f19e934611b0f0288896aad5317ccdac773d1690",
+   "label": "soil specimen, file row 193, Hohenruppersdorf",
+   "payload": {
+    "coord_lat_deg": {
+     "Latitude": 48.4642356
+    },
+    "coord_lon_deg": {
+     "Longitude": 16.6508678
+    },
+    "gradation_percent": {
+     "Cl": 26.45,
+     "Co": 0.0,
+     "Gr": 0.36,
+     "Sa": 9.84,
+     "Si": 63.35
+    },
+    "grain_sizes_mm": {
+     "d50": 0.006,
+     "dmax": 4.0
+    },
+    "location": "Hohenruppersdorf",
+    "n_measured_values": 9
+   },
+   "producer_hash": "ed798c4b6043aa5f841067dd131411590ad2808fc3359a13d41834678f6d068d",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "zenodo.soranzo.14251191.lab",
+    "known_gaps": [
+     "one record per specimen row; the source carries no specimen id, so external ids are file row order",
+     "per-column units are not declared in the pinned bytes; families carry source-conventional units (%, mm, g/cm3, m/s, kPa, degree) declared as an assumption on every record",
+     "Location is sparse (711/1,066 rows) and lat/lon sparser (646 rows)",
+     "a row admits only its measured cells: empty means the test was not run, never zero"
+    ],
+    "license": "CC BY 4.0 (Zenodo API metadata license.id=cc-by-4.0, pinned as artifact)",
+    "release": "Geotechnical laboratory test dataset of Austria (Vienna, Lower Austria, Burgenland; Zenodo record 14251191, dataset for \"Machine learning predictions on an extensive geotechnical dataset of laboratory tests in Austria\"); CSV bytes sha256-verified 2026-09-17",
+    "url": "https://zenodo.org/records/14251191/files/Zenodo_DATA_Soranzo.csv?download=1"
+   },
+   "source_version": "454b8a0d9237bd63d10b34a8bee93871a562f00c062934f422377df4497fccb2",
+   "unknowns": [
+    "location_sparse_absent_where_unrecorded",
+    "per_column_units_not_declared_in_pinned_source_bytes_families_carry_source_conventional_units_percent_mm_g_per_cm3_m_per_s_kpa_degree",
+    "specimen_id_not_pinned_by_source_external_id_is_file_row_order"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "location_sparse_absent_where_unrecorded",
+   "per_column_units_not_declared_in_pinned_source_bytes_families_carry_source_conventional_units_percent_mm_g_per_cm3_m_per_s_kpa_degree",
+   "specimen_id_not_pinned_by_source_external_id_is_file_row_order"
+  ]
+ },
+ "data.assertion.d6189410a6af32305f697c80088f15a211e34d7386a175cee58b06040e751a2b": {
+  "applicability": {
+   "genus": "Andalgalomys",
+   "source_row": 4999,
+   "species": "Andalgalomys olrogi"
+  },
+  "class_contract": {
+   "class_id": "batch.property.pantheria_trait",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d6189410a6af32305f697c80088f15a211e34d7386a175cee58b06040e751a2b",
+  "kind": "property_assertion",
+  "name": "pantheria:Andalgalomys olrogi:adult_body_mass_g",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "pantheria:Andalgalomys olrogi:adult_body_mass_g",
+   "source_id": "data.source.169d3b31692ff6e0567b66a3ce00735326e2f9f45c6373b711f55ead1e5979b0",
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2"
+  },
+  "science_funnel": {
+   "adapter": "pantheria_traits",
+   "artifact": {
+    "id": "ECOL_90_184.zip",
+    "sha256": "fe84274a39ba73b3c9b6950b78ba44c545852db9809d1549b0071cfdde46df9f"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.property.pantheria_trait",
+    "version": 1
+   },
+   "external_id": "pantheria:Andalgalomys olrogi:adult_body_mass_g",
+   "id": "data.assertion.d6189410a6af32305f697c80088f15a211e34d7386a175cee58b06040e751a2b",
+   "label": "pantheria:Andalgalomys olrogi:adult_body_mass_g",
+   "payload": {
+    "conditions": {
+     "genus": "Andalgalomys",
+     "source_row": 4999,
+     "species": "Andalgalomys olrogi"
+    },
+    "conversion": {
+     "offset": 0,
+     "scale": 0.001
+    },
+    "dimensions": [
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "original": {
+     "uncertainty": null,
+     "unit": "g",
+     "value": 32.9
+    },
+    "quantity": "mass",
+    "raw_cell": "32.90",
+    "subject": "Andalgalomys olrogi",
+    "uncertainty_si": null,
+    "unit_si": "kg",
+    "value_si": 0.0329
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "measurement",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "pantheria.1.0.wr05",
+    "known_gaps": [
+     "BMR measured 573/5,416 rows; adult mass 3,542",
+     "sentinels (-999) are nodata, never measurements",
+     "BMR->W assumes 20.1 J/mL O2 (declared on every record)",
+     "name resolution covers the Macaca subtree only"
+    ],
+    "license": "CC0 (figshare API license field, probe-verified 2026-09-17)",
+    "release": "PanTHERIA 1.0 WR05 Aug2008, figshare 3531875 (ECOL_90_184.zip), pinned 2026-09-17",
+    "url": "https://ndownloader.figshare.com/files/5604752"
+   },
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2",
+   "unknowns": [
+    "uncertainty"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "units": "kg",
+  "unknowns": [
+   "uncertainty"
+  ],
+  "value": 0.0329
+ },
+ "data.assertion.d619b8d28abf3d02390328c8ae99341b803f1a2a973580a6721e91242d36c7a8": {
+  "class_contract": {
+   "class_id": "batch.entity.pantheria_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d619b8d28abf3d02390328c8ae99341b803f1a2a973580a6721e91242d36c7a8",
+  "kind": "reference_entity",
+  "name": "Desmana moschata",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "pantheria:Desmana moschata",
+   "source_id": "data.source.169d3b31692ff6e0567b66a3ce00735326e2f9f45c6373b711f55ead1e5979b0",
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2"
+  },
+  "science_funnel": {
+   "adapter": "pantheria_traits",
+   "artifact": {
+    "id": "ECOL_90_184.zip",
+    "sha256": "fe84274a39ba73b3c9b6950b78ba44c545852db9809d1549b0071cfdde46df9f"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.pantheria_species",
+    "version": 1
+   },
+   "external_id": "pantheria:Desmana moschata",
+   "id": "data.assertion.d619b8d28abf3d02390328c8ae99341b803f1a2a973580a6721e91242d36c7a8",
+   "label": "Desmana moschata",
+   "payload": {
+    "source_row": 454,
+    "species_tags": {
+     "MSW05_Binomial": "Desmana moschata",
+     "MSW05_Family": "Talpidae",
+     "MSW05_Genus": "Desmana",
+     "MSW05_Order": "Soricomorpha",
+     "MSW05_Species": "moschata"
+    },
+    "taxonomy": null,
+    "trait_status": {
+     "adult_body_mass_g": "measured",
+     "basal_met_rate_mLO2hr": "sentinel_-999",
+     "bmr_measurement_mass_g": "sentinel_-999"
+    }
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "pantheria.1.0.wr05",
+    "known_gaps": [
+     "BMR measured 573/5,416 rows; adult mass 3,542",
+     "sentinels (-999) are nodata, never measurements",
+     "BMR->W assumes 20.1 J/mL O2 (declared on every record)",
+     "name resolution covers the Macaca subtree only"
+    ],
+    "license": "CC0 (figshare API license field, probe-verified 2026-09-17)",
+    "release": "PanTHERIA 1.0 WR05 Aug2008, figshare 3531875 (ECOL_90_184.zip), pinned 2026-09-17",
+    "url": "https://ndownloader.figshare.com/files/5604752"
+   },
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2",
+   "unknowns": [
+    "nodata:basal_met_rate_mLO2hr:sentinel_-999",
+    "nodata:bmr_measurement_mass_g:sentinel_-999"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "nodata:basal_met_rate_mLO2hr:sentinel_-999",
+   "nodata:bmr_measurement_mass_g:sentinel_-999"
+  ]
+ },
+ "data.assertion.d619d797f324ae9af62c8a40be4abc4e0a4f212edf21d97b56b1dd8d8f176207": {
+  "class_contract": {
+   "class_id": "batch.entity.rhea_chebi_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d619d797f324ae9af62c8a40be4abc4e0a4f212edf21d97b56b1dd8d8f176207",
+  "kind": "reference_entity",
+  "name": "CHEBI:58720",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "rhea-chebi:CHEBI:58720",
+   "source_id": "data.source.af4265c7202c51fae857900ca5eaf4b0118204a08cd5ce0509c44488a8de9925",
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739"
+  },
+  "science_funnel": {
+   "adapter": "rhea_chebi_smiles",
+   "artifact": {
+    "id": "rhea-chebi-smiles.tsv",
+    "sha256": "567034c7dfdb0619697964bb6dd8180579e47cc3e6d994526d39fd92c5794f50"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.rhea_chebi_species",
+    "version": 1
+   },
+   "external_id": "rhea-chebi:CHEBI:58720",
+   "id": "data.assertion.d619d797f324ae9af62c8a40be4abc4e0a4f212edf21d97b56b1dd8d8f176207",
+   "label": "CHEBI:58720",
+   "payload": {
+    "chebi_id": "CHEBI:58720",
+    "id_scheme": "chebi",
+    "smiles": "O=C([O-])[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O"
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "rhea.chebi_smiles.tsv",
+    "known_gaps": [
+     "participant species map, not the reaction list",
+     "competing-SMILES ids quarantine, never merge",
+     "SMILES are pinned bytes, not validated structures"
+    ],
+    "license": "CC BY 4.0; LICENSE.txt pinned in-bundle; attribution: Rhea database, Swiss Institute of Bioinformatics",
+    "release": "Rhea release 142 (2026-09-02), per pinned rhea-release.properties",
+    "url": "https://ftp.expasy.org/databases/rhea/tsv/rhea-chebi-smiles.tsv"
+   },
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739",
+   "unknowns": [
+    "reaction_membership_not_in_file",
+    "structure_not_validated"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "reaction_membership_not_in_file",
+   "structure_not_validated"
+  ]
+ },
+ "data.assertion.d61aecb5266c7deddc0566bf59cf164b0bd304d8b170e7b076a38ce1f97af157": {
+  "applicability": {
+   "genus": "Cryptotis",
+   "source_row": 1067,
+   "species": "Cryptotis thomasi"
+  },
+  "class_contract": {
+   "class_id": "batch.property.pantheria_trait",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d61aecb5266c7deddc0566bf59cf164b0bd304d8b170e7b076a38ce1f97af157",
+  "kind": "property_assertion",
+  "name": "pantheria:Cryptotis thomasi:adult_body_mass_g",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "pantheria:Cryptotis thomasi:adult_body_mass_g",
+   "source_id": "data.source.169d3b31692ff6e0567b66a3ce00735326e2f9f45c6373b711f55ead1e5979b0",
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2"
+  },
+  "science_funnel": {
+   "adapter": "pantheria_traits",
+   "artifact": {
+    "id": "ECOL_90_184.zip",
+    "sha256": "fe84274a39ba73b3c9b6950b78ba44c545852db9809d1549b0071cfdde46df9f"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.property.pantheria_trait",
+    "version": 1
+   },
+   "external_id": "pantheria:Cryptotis thomasi:adult_body_mass_g",
+   "id": "data.assertion.d61aecb5266c7deddc0566bf59cf164b0bd304d8b170e7b076a38ce1f97af157",
+   "label": "pantheria:Cryptotis thomasi:adult_body_mass_g",
+   "payload": {
+    "conditions": {
+     "genus": "Cryptotis",
+     "source_row": 1067,
+     "species": "Cryptotis thomasi"
+    },
+    "conversion": {
+     "offset": 0,
+     "scale": 0.001
+    },
+    "dimensions": [
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "original": {
+     "uncertainty": null,
+     "unit": "g",
+     "value": 11.77
+    },
+    "quantity": "mass",
+    "raw_cell": "11.77",
+    "subject": "Cryptotis thomasi",
+    "uncertainty_si": null,
+    "unit_si": "kg",
+    "value_si": 0.01177
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "measurement",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "pantheria.1.0.wr05",
+    "known_gaps": [
+     "BMR measured 573/5,416 rows; adult mass 3,542",
+     "sentinels (-999) are nodata, never measurements",
+     "BMR->W assumes 20.1 J/mL O2 (declared on every record)",
+     "name resolution covers the Macaca subtree only"
+    ],
+    "license": "CC0 (figshare API license field, probe-verified 2026-09-17)",
+    "release": "PanTHERIA 1.0 WR05 Aug2008, figshare 3531875 (ECOL_90_184.zip), pinned 2026-09-17",
+    "url": "https://ndownloader.figshare.com/files/5604752"
+   },
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2",
+   "unknowns": [
+    "uncertainty"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "units": "kg",
+  "unknowns": [
+   "uncertainty"
+  ],
+  "value": 0.01177
+ },
+ "data.assertion.d61b34e6278feb5c00259ce865630d848869a82520845b4701b2b1b7d0ad056e": {
+  "class_contract": {
+   "class_id": "batch.entity.external",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d61b34e6278feb5c00259ce865630d848869a82520845b4701b2b1b7d0ad056e",
+  "kind": "reference_entity",
+  "name": "right trapezium",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "bp3d:FMA24443",
+   "source_id": "data.source.0ed68934bc113bcd4c6e683c668fcda98f061ebf0aa94b97e647c822b436d2f9",
+   "source_version": "dca144edd24efd5ef7bf0bf758b420f0c01a185685094bc9d2f716b97f16da91"
+  },
+  "science_funnel": {
+   "adapter": "bp3d_lists",
+   "artifact": {
+    "id": "partof_parts_list_e.txt",
+    "sha256": "9224080557053e6f1322f1e13ab27f0ecde0db19bb3b505f0631afad230eeebd"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.external",
+    "version": 1
+   },
+   "external_id": "bp3d:FMA24443",
+   "id": "data.assertion.d61b34e6278feb5c00259ce865630d848869a82520845b4701b2b1b7d0ad056e",
+   "label": "right trapezium",
+   "payload": {
+    "attribution": "BodyParts3D, (c) The Database Center for Life Science",
+    "fma_id": "FMA24443",
+    "label": "right trapezium",
+    "license": "CC Attribution 4.0 International",
+    "lists": [
+     "partof"
+    ],
+    "representation_id": "BP9841"
+   },
+   "producer_hash": "3418eab7a6d30ea1ad4b267baae87c77e5e16037a123e666dd03997aee9a4fad",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "bodyparts3d.lists",
+    "known_gaps": [
+     "mesh zips not imported (lists only)",
+     "FMA version not pinned by the archive",
+     "isa/partof inclusion pairs pinned as attachments, not reified"
+    ],
+    "license": "CC Attribution 4.0 International; attribution: BodyParts3D, (c) The Database Center for Life Science",
+    "release": "archive layout observed 2026-09-15/17 (FMA-based tables, no release versioning on the archive)",
+    "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/"
+   },
+   "source_version": "dca144edd24efd5ef7bf0bf758b420f0c01a185685094bc9d2f716b97f16da91",
+   "unknowns": [
+    "fma_version_not_pinned",
+    "mesh_geometry_not_imported"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "fma_version_not_pinned",
+   "mesh_geometry_not_imported"
+  ]
+ },
+ "data.assertion.d61fa8823dc84dd3e7543bf2a62dd016b8505e2044f1783915d0962d6fc2087f": {
+  "class_contract": {
+   "class_id": "batch.entity.pantheria_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d61fa8823dc84dd3e7543bf2a62dd016b8505e2044f1783915d0962d6fc2087f",
+  "kind": "reference_entity",
+  "name": "Geomys tropicalis",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "pantheria:Geomys tropicalis",
+   "source_id": "data.source.169d3b31692ff6e0567b66a3ce00735326e2f9f45c6373b711f55ead1e5979b0",
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2"
+  },
+  "science_funnel": {
+   "adapter": "pantheria_traits",
+   "artifact": {
+    "id": "ECOL_90_184.zip",
+    "sha256": "fe84274a39ba73b3c9b6950b78ba44c545852db9809d1549b0071cfdde46df9f"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.pantheria_species",
+    "version": 1
+   },
+   "external_id": "pantheria:Geomys tropicalis",
+   "id": "data.assertion.d61fa8823dc84dd3e7543bf2a62dd016b8505e2044f1783915d0962d6fc2087f",
+   "label": "Geomys tropicalis",
+   "payload": {
+    "source_row": 1343,
+    "species_tags": {
+     "MSW05_Binomial": "Geomys tropicalis",
+     "MSW05_Family": "Geomyidae",
+     "MSW05_Genus": "Geomys",
+     "MSW05_Order": "Rodentia",
+     "MSW05_Species": "tropicalis"
+    },
+    "taxonomy": null,
+    "trait_status": {
+     "adult_body_mass_g": "measured",
+     "basal_met_rate_mLO2hr": "sentinel_-999",
+     "bmr_measurement_mass_g": "sentinel_-999"
+    }
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "pantheria.1.0.wr05",
+    "known_gaps": [
+     "BMR measured 573/5,416 rows; adult mass 3,542",
+     "sentinels (-999) are nodata, never measurements",
+     "BMR->W assumes 20.1 J/mL O2 (declared on every record)",
+     "name resolution covers the Macaca subtree only"
+    ],
+    "license": "CC0 (figshare API license field, probe-verified 2026-09-17)",
+    "release": "PanTHERIA 1.0 WR05 Aug2008, figshare 3531875 (ECOL_90_184.zip), pinned 2026-09-17",
+    "url": "https://ndownloader.figshare.com/files/5604752"
+   },
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2",
+   "unknowns": [
+    "nodata:basal_met_rate_mLO2hr:sentinel_-999",
+    "nodata:bmr_measurement_mass_g:sentinel_-999"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "nodata:basal_met_rate_mLO2hr:sentinel_-999",
+   "nodata:bmr_measurement_mass_g:sentinel_-999"
+  ]
+ },
+ "data.assertion.d6226342d672c285d7d52aca12cc5266a526dc669f1467d2b98e4f524508599f": {
+  "class_contract": {
+   "class_id": "batch.entity.rhea_chebi_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d6226342d672c285d7d52aca12cc5266a526dc669f1467d2b98e4f524508599f",
+  "kind": "reference_entity",
+  "name": "CHEBI:77471",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "rhea-chebi:CHEBI:77471",
+   "source_id": "data.source.af4265c7202c51fae857900ca5eaf4b0118204a08cd5ce0509c44488a8de9925",
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739"
+  },
+  "science_funnel": {
+   "adapter": "rhea_chebi_smiles",
+   "artifact": {
+    "id": "rhea-chebi-smiles.tsv",
+    "sha256": "567034c7dfdb0619697964bb6dd8180579e47cc3e6d994526d39fd92c5794f50"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.rhea_chebi_species",
+    "version": 1
+   },
+   "external_id": "rhea-chebi:CHEBI:77471",
+   "id": "data.assertion.d6226342d672c285d7d52aca12cc5266a526dc669f1467d2b98e4f524508599f",
+   "label": "CHEBI:77471",
+   "payload": {
+    "chebi_id": "CHEBI:77471",
+    "id_scheme": "chebi",
+    "smiles": "CCCCCCCCCCCCCCCCCOCC(=O)COP(=O)([O-])[O-]"
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "rhea.chebi_smiles.tsv",
+    "known_gaps": [
+     "participant species map, not the reaction list",
+     "competing-SMILES ids quarantine, never merge",
+     "SMILES are pinned bytes, not validated structures"
+    ],
+    "license": "CC BY 4.0; LICENSE.txt pinned in-bundle; attribution: Rhea database, Swiss Institute of Bioinformatics",
+    "release": "Rhea release 142 (2026-09-02), per pinned rhea-release.properties",
+    "url": "https://ftp.expasy.org/databases/rhea/tsv/rhea-chebi-smiles.tsv"
+   },
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739",
+   "unknowns": [
+    "reaction_membership_not_in_file",
+    "structure_not_validated"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "reaction_membership_not_in_file",
+   "structure_not_validated"
+  ]
+ },
+ "data.assertion.d6230dcc9926a8ea9c19468b6ee0296569869e2c3fcadc451ffb9d24b5e9fb77": {
+  "class_contract": {
+   "class_id": "batch.entity.rhea_chebi_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d6230dcc9926a8ea9c19468b6ee0296569869e2c3fcadc451ffb9d24b5e9fb77",
+  "kind": "reference_entity",
+  "name": "CHEBI:70856",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "rhea-chebi:CHEBI:70856",
+   "source_id": "data.source.af4265c7202c51fae857900ca5eaf4b0118204a08cd5ce0509c44488a8de9925",
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739"
+  },
+  "science_funnel": {
+   "adapter": "rhea_chebi_smiles",
+   "artifact": {
+    "id": "rhea-chebi-smiles.tsv",
+    "sha256": "567034c7dfdb0619697964bb6dd8180579e47cc3e6d994526d39fd92c5794f50"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.rhea_chebi_species",
+    "version": 1
+   },
+   "external_id": "rhea-chebi:CHEBI:70856",
+   "id": "data.assertion.d6230dcc9926a8ea9c19468b6ee0296569869e2c3fcadc451ffb9d24b5e9fb77",
+   "label": "CHEBI:70856",
+   "payload": {
+    "chebi_id": "CHEBI:70856",
+    "id_scheme": "chebi",
+    "smiles": "*c1ccccc1C(=O)[O-]"
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "rhea.chebi_smiles.tsv",
+    "known_gaps": [
+     "participant species map, not the reaction list",
+     "competing-SMILES ids quarantine, never merge",
+     "SMILES are pinned bytes, not validated structures"
+    ],
+    "license": "CC BY 4.0; LICENSE.txt pinned in-bundle; attribution: Rhea database, Swiss Institute of Bioinformatics",
+    "release": "Rhea release 142 (2026-09-02), per pinned rhea-release.properties",
+    "url": "https://ftp.expasy.org/databases/rhea/tsv/rhea-chebi-smiles.tsv"
+   },
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739",
+   "unknowns": [
+    "reaction_membership_not_in_file",
+    "structure_not_validated"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "reaction_membership_not_in_file",
+   "structure_not_validated"
+  ]
+ },
+ "data.assertion.d625d0669c7af2b5918036f51542607291afe72989f700ff79612c8a2976f578": {
+  "class_contract": {
+   "class_id": "batch.entity.external",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d625d0669c7af2b5918036f51542607291afe72989f700ff79612c8a2976f578",
+  "kind": "reference_entity",
+  "name": "superficial medial plantar artery",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "bp3d:FMA43933",
+   "source_id": "data.source.0ed68934bc113bcd4c6e683c668fcda98f061ebf0aa94b97e647c822b436d2f9",
+   "source_version": "dca144edd24efd5ef7bf0bf758b420f0c01a185685094bc9d2f716b97f16da91"
+  },
+  "science_funnel": {
+   "adapter": "bp3d_lists",
+   "artifact": {
+    "id": "partof_parts_list_e.txt",
+    "sha256": "9224080557053e6f1322f1e13ab27f0ecde0db19bb3b505f0631afad230eeebd"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.external",
+    "version": 1
+   },
+   "external_id": "bp3d:FMA43933",
+   "id": "data.assertion.d625d0669c7af2b5918036f51542607291afe72989f700ff79612c8a2976f578",
+   "label": "superficial medial plantar artery",
+   "payload": {
+    "attribution": "BodyParts3D, (c) The Database Center for Life Science",
+    "fma_id": "FMA43933",
+    "label": "superficial medial plantar artery",
+    "license": "CC Attribution 4.0 International",
+    "lists": [
+     "isa"
+    ],
+    "representation_id": "BP6435"
+   },
+   "producer_hash": "3418eab7a6d30ea1ad4b267baae87c77e5e16037a123e666dd03997aee9a4fad",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "bodyparts3d.lists",
+    "known_gaps": [
+     "mesh zips not imported (lists only)",
+     "FMA version not pinned by the archive",
+     "isa/partof inclusion pairs pinned as attachments, not reified"
+    ],
+    "license": "CC Attribution 4.0 International; attribution: BodyParts3D, (c) The Database Center for Life Science",
+    "release": "archive layout observed 2026-09-15/17 (FMA-based tables, no release versioning on the archive)",
+    "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/"
+   },
+   "source_version": "dca144edd24efd5ef7bf0bf758b420f0c01a185685094bc9d2f716b97f16da91",
+   "unknowns": [
+    "fma_version_not_pinned",
+    "mesh_geometry_not_imported"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "fma_version_not_pinned",
+   "mesh_geometry_not_imported"
+  ]
+ },
+ "data.assertion.d625e89f9093f533bf1e6a0162ea849114066ce3ce54bdb1e46ed6be14b41563": {
+  "class_contract": {
+   "class_id": "batch.entity.pantheria_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d625e89f9093f533bf1e6a0162ea849114066ce3ce54bdb1e46ed6be14b41563",
+  "kind": "reference_entity",
+  "name": "Vespertilio murinus",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "pantheria:Vespertilio murinus",
+   "source_id": "data.source.169d3b31692ff6e0567b66a3ce00735326e2f9f45c6373b711f55ead1e5979b0",
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2"
+  },
+  "science_funnel": {
+   "adapter": "pantheria_traits",
+   "artifact": {
+    "id": "ECOL_90_184.zip",
+    "sha256": "fe84274a39ba73b3c9b6950b78ba44c545852db9809d1549b0071cfdde46df9f"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.pantheria_species",
+    "version": 1
+   },
+   "external_id": "pantheria:Vespertilio murinus",
+   "id": "data.assertion.d625e89f9093f533bf1e6a0162ea849114066ce3ce54bdb1e46ed6be14b41563",
+   "label": "Vespertilio murinus",
+   "payload": {
+    "source_row": 5360,
+    "species_tags": {
+     "MSW05_Binomial": "Vespertilio murinus",
+     "MSW05_Family": "Vespertilionidae",
+     "MSW05_Genus": "Vespertilio",
+     "MSW05_Order": "Chiroptera",
+     "MSW05_Species": "murinus"
+    },
+    "taxonomy": null,
+    "trait_status": {
+     "adult_body_mass_g": "measured",
+     "basal_met_rate_mLO2hr": "sentinel_-999",
+     "bmr_measurement_mass_g": "sentinel_-999"
+    }
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "pantheria.1.0.wr05",
+    "known_gaps": [
+     "BMR measured 573/5,416 rows; adult mass 3,542",
+     "sentinels (-999) are nodata, never measurements",
+     "BMR->W assumes 20.1 J/mL O2 (declared on every record)",
+     "name resolution covers the Macaca subtree only"
+    ],
+    "license": "CC0 (figshare API license field, probe-verified 2026-09-17)",
+    "release": "PanTHERIA 1.0 WR05 Aug2008, figshare 3531875 (ECOL_90_184.zip), pinned 2026-09-17",
+    "url": "https://ndownloader.figshare.com/files/5604752"
+   },
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2",
+   "unknowns": [
+    "nodata:basal_met_rate_mLO2hr:sentinel_-999",
+    "nodata:bmr_measurement_mass_g:sentinel_-999"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "nodata:basal_met_rate_mLO2hr:sentinel_-999",
+   "nodata:bmr_measurement_mass_g:sentinel_-999"
+  ]
+ },
+ "data.assertion.d626b56c7ad6cbb0d16093b14d8de44556c468ac0036b7b44e23fe6f5096a60b": {
+  "class_contract": {
+   "class_id": "batch.entity.rhea_chebi_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d626b56c7ad6cbb0d16093b14d8de44556c468ac0036b7b44e23fe6f5096a60b",
+  "kind": "reference_entity",
+  "name": "CHEBI:234194",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "rhea-chebi:CHEBI:234194",
+   "source_id": "data.source.af4265c7202c51fae857900ca5eaf4b0118204a08cd5ce0509c44488a8de9925",
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739"
+  },
+  "science_funnel": {
+   "adapter": "rhea_chebi_smiles",
+   "artifact": {
+    "id": "rhea-chebi-smiles.tsv",
+    "sha256": "567034c7dfdb0619697964bb6dd8180579e47cc3e6d994526d39fd92c5794f50"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.rhea_chebi_species",
+    "version": 1
+   },
+   "external_id": "rhea-chebi:CHEBI:234194",
+   "id": "data.assertion.d626b56c7ad6cbb0d16093b14d8de44556c468ac0036b7b44e23fe6f5096a60b",
+   "label": "CHEBI:234194",
+   "payload": {
+    "chebi_id": "CHEBI:234194",
+    "id_scheme": "chebi",
+    "smiles": "*N[C@@H](CC(=O)N[C@@H]1O[C@H](CO)[C@@H](O[C@@H]2O[C@H](CO)[C@@H](O[C@@H]3O[C@H](CO[C@H]4O[C@H](CO)[C@@H](O)[C@H](O)[C@@H]4O[C@@H]4O[C@H](CO)[C@@H](O[C@@H]5O[C@H](CO)[C@H](O)[C@H](O)[C@H]5O)[C@H](O)[C@H]4NC(C)=O)[C@@H](O[C@@H]4O[C@H](CO)[C@@H](O)[C@H](O)[C@H]4NC(C)=O)[C@H](O[C@H]4O[C@H](CO)[C@@H](O)[C@H](O)[C@@H]4O[C@@H]4O[C@H](CO)[C@@H](O)[C@H](O)[C@H]4NC(C)=O)[C@@H]3O)[C@H](O)[C@H]2NC(C)=O)[C@H](O)[C@H]1NC(C)=O)C(*)=O"
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "rhea.chebi_smiles.tsv",
+    "known_gaps": [
+     "participant species map, not the reaction list",
+     "competing-SMILES ids quarantine, never merge",
+     "SMILES are pinned bytes, not validated structures"
+    ],
+    "license": "CC BY 4.0; LICENSE.txt pinned in-bundle; attribution: Rhea database, Swiss Institute of Bioinformatics",
+    "release": "Rhea release 142 (2026-09-02), per pinned rhea-release.properties",
+    "url": "https://ftp.expasy.org/databases/rhea/tsv/rhea-chebi-smiles.tsv"
+   },
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739",
+   "unknowns": [
+    "reaction_membership_not_in_file",
+    "structure_not_validated"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "reaction_membership_not_in_file",
+   "structure_not_validated"
+  ]
+ },
+ "data.assertion.d626c4e0809373cc84f2179cf55dd9f1d34c87876b58b035fc4da7f90362a7ef": {
+  "class_contract": {
+   "class_id": "batch.entity.rhea_chebi_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d626c4e0809373cc84f2179cf55dd9f1d34c87876b58b035fc4da7f90362a7ef",
+  "kind": "reference_entity",
+  "name": "CHEBI:18252",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "rhea-chebi:CHEBI:18252",
+   "source_id": "data.source.af4265c7202c51fae857900ca5eaf4b0118204a08cd5ce0509c44488a8de9925",
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739"
+  },
+  "science_funnel": {
+   "adapter": "rhea_chebi_smiles",
+   "artifact": {
+    "id": "rhea-chebi-smiles.tsv",
+    "sha256": "567034c7dfdb0619697964bb6dd8180579e47cc3e6d994526d39fd92c5794f50"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.rhea_chebi_species",
+    "version": 1
+   },
+   "external_id": "rhea-chebi:CHEBI:18252",
+   "id": "data.assertion.d626c4e0809373cc84f2179cf55dd9f1d34c87876b58b035fc4da7f90362a7ef",
+   "label": "CHEBI:18252",
+   "payload": {
+    "chebi_id": "CHEBI:18252",
+    "id_scheme": "chebi",
+    "smiles": "CC(C)=CCC[C@@H](C)[C@H]1CC[C@H]2C3=C(CC[C@]12C)[C@@]1(C)CC[C@H](O)C[C@@H]1CC3"
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "rhea.chebi_smiles.tsv",
+    "known_gaps": [
+     "participant species map, not the reaction list",
+     "competing-SMILES ids quarantine, never merge",
+     "SMILES are pinned bytes, not validated structures"
+    ],
+    "license": "CC BY 4.0; LICENSE.txt pinned in-bundle; attribution: Rhea database, Swiss Institute of Bioinformatics",
+    "release": "Rhea release 142 (2026-09-02), per pinned rhea-release.properties",
+    "url": "https://ftp.expasy.org/databases/rhea/tsv/rhea-chebi-smiles.tsv"
+   },
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739",
+   "unknowns": [
+    "reaction_membership_not_in_file",
+    "structure_not_validated"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "reaction_membership_not_in_file",
+   "structure_not_validated"
+  ]
+ },
+ "data.assertion.d628b8e965a70580f72093742388dcda52730300aceb4d7079140372dbb792df": {
+  "applicability": {
+   "bmr_measurement_mass_g": 18000.0,
+   "bmr_measurement_mass_status": "measured",
+   "genus": "Enhydra",
+   "source_row": 1278,
+   "species": "Enhydra lutris"
+  },
+  "class_contract": {
+   "class_id": "batch.property.pantheria_trait",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d628b8e965a70580f72093742388dcda52730300aceb4d7079140372dbb792df",
+  "kind": "property_assertion",
+  "name": "pantheria:Enhydra lutris:basal_metabolic_rate",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "pantheria:Enhydra lutris:basal_metabolic_rate",
+   "source_id": "data.source.169d3b31692ff6e0567b66a3ce00735326e2f9f45c6373b711f55ead1e5979b0",
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2"
+  },
+  "science_funnel": {
+   "adapter": "pantheria_traits",
+   "artifact": {
+    "id": "ECOL_90_184.zip",
+    "sha256": "fe84274a39ba73b3c9b6950b78ba44c545852db9809d1549b0071cfdde46df9f"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.property.pantheria_trait",
+    "version": 1
+   },
+   "external_id": "pantheria:Enhydra lutris:basal_metabolic_rate",
+   "id": "data.assertion.d628b8e965a70580f72093742388dcda52730300aceb4d7079140372dbb792df",
+   "label": "pantheria:Enhydra lutris:basal_metabolic_rate",
+   "payload": {
+    "conditions": {
+     "bmr_measurement_mass_g": 18000.0,
+     "bmr_measurement_mass_status": "measured",
+     "genus": "Enhydra",
+     "source_row": 1278,
+     "species": "Enhydra lutris"
+    },
+    "conversion": {
+     "assumption": "approximate respiratory calorific equivalent (typical mixed-diet RQ); DECLARED assumption, not a PanTHERIA measurement",
+     "law": "W = mLO2hr * J_per_mL_O2 / 3600",
+     "o2_calorific_J_per_mL": 20.1
+    },
+    "dimensions": [
+     1,
+     2,
+     -3,
+     0,
+     0,
+     0,
+     0
+    ],
+    "original": {
+     "unit": "mL O2 / hour",
+     "value": 12060.0
+    },
+    "quantity": "power",
+    "raw_cell": "12060.00",
+    "subject": "Enhydra lutris",
+    "unit_si": "W",
+    "value_si": 67.33500000000001
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "measurement",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "pantheria.1.0.wr05",
+    "known_gaps": [
+     "BMR measured 573/5,416 rows; adult mass 3,542",
+     "sentinels (-999) are nodata, never measurements",
+     "BMR->W assumes 20.1 J/mL O2 (declared on every record)",
+     "name resolution covers the Macaca subtree only"
+    ],
+    "license": "CC0 (figshare API license field, probe-verified 2026-09-17)",
+    "release": "PanTHERIA 1.0 WR05 Aug2008, figshare 3531875 (ECOL_90_184.zip), pinned 2026-09-17",
+    "url": "https://ndownloader.figshare.com/files/5604752"
+   },
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2",
+   "unknowns": [
+    "o2_calorific_assumed_20.1_J_per_mL",
+    "uncertainty"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "units": "W",
+  "unknowns": [
+   "o2_calorific_assumed_20.1_J_per_mL",
+   "uncertainty"
+  ],
+  "value": 67.33500000000001
+ },
+ "data.assertion.d628fcfb2e928a32a972a8f6eb2411f08cce2efc0e6d01e6277d33964f3ec8be": {
+  "class_contract": {
+   "class_id": "batch.entity.rhea_chebi_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d628fcfb2e928a32a972a8f6eb2411f08cce2efc0e6d01e6277d33964f3ec8be",
+  "kind": "reference_entity",
+  "name": "CHEBI:143275",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "rhea-chebi:CHEBI:143275",
+   "source_id": "data.source.af4265c7202c51fae857900ca5eaf4b0118204a08cd5ce0509c44488a8de9925",
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739"
+  },
+  "science_funnel": {
+   "adapter": "rhea_chebi_smiles",
+   "artifact": {
+    "id": "rhea-chebi-smiles.tsv",
+    "sha256": "567034c7dfdb0619697964bb6dd8180579e47cc3e6d994526d39fd92c5794f50"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.rhea_chebi_species",
+    "version": 1
+   },
+   "external_id": "rhea-chebi:CHEBI:143275",
+   "id": "data.assertion.d628fcfb2e928a32a972a8f6eb2411f08cce2efc0e6d01e6277d33964f3ec8be",
+   "label": "CHEBI:143275",
+   "payload": {
+    "chebi_id": "CHEBI:143275",
+    "id_scheme": "chebi",
+    "smiles": "NC(=O)CC[C@H](NC(=O)CCCc1c[nH]c2ccccc12)C(=O)[O-]"
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "rhea.chebi_smiles.tsv",
+    "known_gaps": [
+     "participant species map, not the reaction list",
+     "competing-SMILES ids quarantine, never merge",
+     "SMILES are pinned bytes, not validated structures"
+    ],
+    "license": "CC BY 4.0; LICENSE.txt pinned in-bundle; attribution: Rhea database, Swiss Institute of Bioinformatics",
+    "release": "Rhea release 142 (2026-09-02), per pinned rhea-release.properties",
+    "url": "https://ftp.expasy.org/databases/rhea/tsv/rhea-chebi-smiles.tsv"
+   },
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739",
+   "unknowns": [
+    "reaction_membership_not_in_file",
+    "structure_not_validated"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "reaction_membership_not_in_file",
+   "structure_not_validated"
+  ]
+ },
+ "data.assertion.d62dba84c4fe48bb377f12daf079a4f884a0e69033ab81c299c87d35fabe4e9d": {
+  "class_contract": {
+   "class_id": "batch.entity.external",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d62dba84c4fe48bb377f12daf079a4f884a0e69033ab81c299c87d35fabe4e9d",
+  "kind": "reference_entity",
+  "name": "right femoral artery",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "bp3d:FMA70249",
+   "source_id": "data.source.0ed68934bc113bcd4c6e683c668fcda98f061ebf0aa94b97e647c822b436d2f9",
+   "source_version": "dca144edd24efd5ef7bf0bf758b420f0c01a185685094bc9d2f716b97f16da91"
+  },
+  "science_funnel": {
+   "adapter": "bp3d_lists",
+   "artifact": {
+    "id": "partof_parts_list_e.txt",
+    "sha256": "9224080557053e6f1322f1e13ab27f0ecde0db19bb3b505f0631afad230eeebd"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.external",
+    "version": 1
+   },
+   "external_id": "bp3d:FMA70249",
+   "id": "data.assertion.d62dba84c4fe48bb377f12daf079a4f884a0e69033ab81c299c87d35fabe4e9d",
+   "label": "right femoral artery",
+   "payload": {
+    "attribution": "BodyParts3D, (c) The Database Center for Life Science",
+    "fma_id": "FMA70249",
+    "label": "right femoral artery",
+    "license": "CC Attribution 4.0 International",
+    "lists": [
+     "partof"
+    ],
+    "representation_id": "BP10394"
+   },
+   "producer_hash": "3418eab7a6d30ea1ad4b267baae87c77e5e16037a123e666dd03997aee9a4fad",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "bodyparts3d.lists",
+    "known_gaps": [
+     "mesh zips not imported (lists only)",
+     "FMA version not pinned by the archive",
+     "isa/partof inclusion pairs pinned as attachments, not reified"
+    ],
+    "license": "CC Attribution 4.0 International; attribution: BodyParts3D, (c) The Database Center for Life Science",
+    "release": "archive layout observed 2026-09-15/17 (FMA-based tables, no release versioning on the archive)",
+    "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/"
+   },
+   "source_version": "dca144edd24efd5ef7bf0bf758b420f0c01a185685094bc9d2f716b97f16da91",
+   "unknowns": [
+    "fma_version_not_pinned",
+    "mesh_geometry_not_imported"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "fma_version_not_pinned",
+   "mesh_geometry_not_imported"
+  ]
+ },
+ "data.assertion.d62e468c016de9516abbf4eb5c0b155b83ce754f75152683a0f0d51b98a9a87f": {
+  "class_contract": {
+   "class_id": "batch.entity.pantheria_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d62e468c016de9516abbf4eb5c0b155b83ce754f75152683a0f0d51b98a9a87f",
+  "kind": "reference_entity",
+  "name": "Nyctimene sanctacrucis",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "pantheria:Nyctimene sanctacrucis",
+   "source_id": "data.source.169d3b31692ff6e0567b66a3ce00735326e2f9f45c6373b711f55ead1e5979b0",
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2"
+  },
+  "science_funnel": {
+   "adapter": "pantheria_traits",
+   "artifact": {
+    "id": "ECOL_90_184.zip",
+    "sha256": "fe84274a39ba73b3c9b6950b78ba44c545852db9809d1549b0071cfdde46df9f"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.pantheria_species",
+    "version": 1
+   },
+   "external_id": "pantheria:Nyctimene sanctacrucis",
+   "id": "data.assertion.d62e468c016de9516abbf4eb5c0b155b83ce754f75152683a0f0d51b98a9a87f",
+   "label": "Nyctimene sanctacrucis",
+   "payload": {
+    "source_row": 3172,
+    "species_tags": {
+     "MSW05_Binomial": "Nyctimene sanctacrucis",
+     "MSW05_Family": "Pteropodidae",
+     "MSW05_Genus": "Nyctimene",
+     "MSW05_Order": "Chiroptera",
+     "MSW05_Species": "sanctacrucis"
+    },
+    "taxonomy": null,
+    "trait_status": {
+     "adult_body_mass_g": "sentinel_-999",
+     "basal_met_rate_mLO2hr": "sentinel_-999",
+     "bmr_measurement_mass_g": "sentinel_-999"
+    }
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "pantheria.1.0.wr05",
+    "known_gaps": [
+     "BMR measured 573/5,416 rows; adult mass 3,542",
+     "sentinels (-999) are nodata, never measurements",
+     "BMR->W assumes 20.1 J/mL O2 (declared on every record)",
+     "name resolution covers the Macaca subtree only"
+    ],
+    "license": "CC0 (figshare API license field, probe-verified 2026-09-17)",
+    "release": "PanTHERIA 1.0 WR05 Aug2008, figshare 3531875 (ECOL_90_184.zip), pinned 2026-09-17",
+    "url": "https://ndownloader.figshare.com/files/5604752"
+   },
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2",
+   "unknowns": [
+    "nodata:adult_body_mass_g:sentinel_-999",
+    "nodata:basal_met_rate_mLO2hr:sentinel_-999",
+    "nodata:bmr_measurement_mass_g:sentinel_-999"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "nodata:adult_body_mass_g:sentinel_-999",
+   "nodata:basal_met_rate_mLO2hr:sentinel_-999",
+   "nodata:bmr_measurement_mass_g:sentinel_-999"
+  ]
+ },
+ "data.assertion.d631638b1c73fc2c20e340067b1662ae54e06658a5cc3db0953b8186a1b14d42": {
+  "applicability": {
+   "database": "THOR rock strength database (Zenodo 12687445)",
+   "quantity": "sigma_UCS uniaxial compressive strength, lithologic-group summary",
+   "statistic": "mean of published UCS measurements 1980-2024, as compiled by the source"
+  },
+  "class_contract": {
+   "class_id": "batch.property.measurement",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d631638b1c73fc2c20e340067b1662ae54e06658a5cc3db0953b8186a1b14d42",
+  "kind": "property_assertion",
+  "name": "THOR sigma_UCS mean, Marble (Class III)",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "thor:ucs:Class III:Marble",
+   "source_id": "data.source.7ba9a56bc0749fb2337a025f06fc0bb50fca50e71a90a7d9d28adcfb2685493c",
+   "source_version": "51d08cfddda4a974ca00f40f41f398aae56b3acbea5136f6a2681dc699c596e3"
+  },
+  "science_funnel": {
+   "adapter": "thor_ucs_stats",
+   "artifact": {
+    "id": "2 -  UCS.csv",
+    "sha256": "466e47ef419b1d777b513441631a9e72b65b840f9ded07fed73f444e77599eff"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.property.measurement",
+    "version": 1
+   },
+   "external_id": "thor:ucs:Class III:Marble",
+   "id": "data.assertion.d631638b1c73fc2c20e340067b1662ae54e06658a5cc3db0953b8186a1b14d42",
+   "label": "THOR sigma_UCS mean, Marble (Class III)",
+   "payload": {
+    "conditions": {
+     "database": "THOR rock strength database (Zenodo 12687445)",
+     "quantity": "sigma_UCS uniaxial compressive strength, lithologic-group summary",
+     "statistic": "mean of published UCS measurements 1980-2024, as compiled by the source"
+    },
+    "n_samples": 221,
+    "percentiles_mpa": {
+     "median": 54.14,
+     "p10": 23.24,
+     "p25": 32.17,
+     "p75": 114.36,
+     "p90": 214.76
+    },
+    "source_unit": "MPa",
+    "source_value_mpa": 89.36,
+    "std_mpa": 89.02,
+    "subject": "lithology Marble (Class III)",
+    "unit_attribution": "megapascal per the companion paper (Haag & Schoenbohm 2025, EPSL 660, 119364); the pinned CSV bytes carry no unit column",
+    "unit_si": "Pa",
+    "value_si": 89360000.0
+   },
+   "producer_hash": "ed798c4b6043aa5f841067dd131411590ad2808fc3359a13d41834678f6d068d",
+   "record_type": "measurement",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "zenodo.thor.12687445.ucs",
+    "known_gaps": [
+     "group summaries, not raw measurements (n, mean, std, percentiles per lithology)",
+     "the source CSV carries no unit column; the megapascal reading is declared on every record",
+     "75/25 and 90/10 ratio columns omitted (recomputable from the admitted percentiles)",
+     "classes I/II/III overlap: group rows are cross-cutting aggregations, never merged"
+    ],
+    "license": "CC BY 4.0 (Zenodo API metadata license.id=cc-by-4.0, pinned as artifact); attribution: Haag, M.B., Schoenbohm, L.M., 2025, Thor: a rock strength database",
+    "release": "THOR - the rock strength database, Zenodo record 12687445 (companion paper Haag & Schoenbohm 2025, EPSL 660, 119364); UCS.csv bytes sha256-verified 2026-09-17; a newer record version exists upstream (10.5281/zenodo.12687444) -- THIS admission pins the brief-pinned record 12687445",
+    "url": "https://zenodo.org/records/12687445/files/2%20-%20%20UCS.csv?download=1"
+   },
+   "source_version": "51d08cfddda4a974ca00f40f41f398aae56b3acbea5136f6a2681dc699c596e3",
+   "unknowns": [
+    "ratio_columns_75_25_and_90_10_omitted_recomputable_from_admitted_percentiles",
+    "ucs_unit_megapascal_assumed_source_csv_carries_no_unit_column_unit_per_companion_paper_haag_schoenbohm_2025"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "units": "Pa",
+  "unknowns": [
+   "ratio_columns_75_25_and_90_10_omitted_recomputable_from_admitted_percentiles",
+   "ucs_unit_megapascal_assumed_source_csv_carries_no_unit_column_unit_per_companion_paper_haag_schoenbohm_2025"
+  ],
+  "value": 89360000.0
+ },
+ "data.assertion.d63430a051992f820fd28db934cf76d82aad9be80d0f8ffb9cf544de08a78bb6": {
+  "class_contract": {
+   "class_id": "batch.entity.rhea_chebi_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d63430a051992f820fd28db934cf76d82aad9be80d0f8ffb9cf544de08a78bb6",
+  "kind": "reference_entity",
+  "name": "CHEBI:77292",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "rhea-chebi:CHEBI:77292",
+   "source_id": "data.source.af4265c7202c51fae857900ca5eaf4b0118204a08cd5ce0509c44488a8de9925",
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739"
+  },
+  "science_funnel": {
+   "adapter": "rhea_chebi_smiles",
+   "artifact": {
+    "id": "rhea-chebi-smiles.tsv",
+    "sha256": "567034c7dfdb0619697964bb6dd8180579e47cc3e6d994526d39fd92c5794f50"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.rhea_chebi_species",
+    "version": 1
+   },
+   "external_id": "rhea-chebi:CHEBI:77292",
+   "id": "data.assertion.d63430a051992f820fd28db934cf76d82aad9be80d0f8ffb9cf544de08a78bb6",
+   "label": "CHEBI:77292",
+   "payload": {
+    "chebi_id": "CHEBI:77292",
+    "id_scheme": "chebi",
+    "smiles": "CCCCC/C=C\\C/C=C\\C/C=C\\C/C=C\\CCCC(=O)O[C@H](CO/C=C\\CCCCCCCCCCCCCC)COP(=O)([O-])OCC[N+](C)(C)C"
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "rhea.chebi_smiles.tsv",
+    "known_gaps": [
+     "participant species map, not the reaction list",
+     "competing-SMILES ids quarantine, never merge",
+     "SMILES are pinned bytes, not validated structures"
+    ],
+    "license": "CC BY 4.0; LICENSE.txt pinned in-bundle; attribution: Rhea database, Swiss Institute of Bioinformatics",
+    "release": "Rhea release 142 (2026-09-02), per pinned rhea-release.properties",
+    "url": "https://ftp.expasy.org/databases/rhea/tsv/rhea-chebi-smiles.tsv"
+   },
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739",
+   "unknowns": [
+    "reaction_membership_not_in_file",
+    "structure_not_validated"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "reaction_membership_not_in_file",
+   "structure_not_validated"
+  ]
+ },
+ "data.assertion.d63583abbdd27aeb0f00a48e32ebf22bf4574a1af27f0ab504f422c48f48a549": {
+  "class_contract": {
+   "class_id": "batch.entity.rhea_chebi_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d63583abbdd27aeb0f00a48e32ebf22bf4574a1af27f0ab504f422c48f48a549",
+  "kind": "reference_entity",
+  "name": "CHEBI:75620",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "rhea-chebi:CHEBI:75620",
+   "source_id": "data.source.af4265c7202c51fae857900ca5eaf4b0118204a08cd5ce0509c44488a8de9925",
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739"
+  },
+  "science_funnel": {
+   "adapter": "rhea_chebi_smiles",
+   "artifact": {
+    "id": "rhea-chebi-smiles.tsv",
+    "sha256": "567034c7dfdb0619697964bb6dd8180579e47cc3e6d994526d39fd92c5794f50"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.rhea_chebi_species",
+    "version": 1
+   },
+   "external_id": "rhea-chebi:CHEBI:75620",
+   "id": "data.assertion.d63583abbdd27aeb0f00a48e32ebf22bf4574a1af27f0ab504f422c48f48a549",
+   "label": "CHEBI:75620",
+   "payload": {
+    "chebi_id": "CHEBI:75620",
+    "id_scheme": "chebi",
+    "smiles": "CCCCCCCC/C=C\\CCCCCCCC(=O)OCCCCCCCCCC"
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "rhea.chebi_smiles.tsv",
+    "known_gaps": [
+     "participant species map, not the reaction list",
+     "competing-SMILES ids quarantine, never merge",
+     "SMILES are pinned bytes, not validated structures"
+    ],
+    "license": "CC BY 4.0; LICENSE.txt pinned in-bundle; attribution: Rhea database, Swiss Institute of Bioinformatics",
+    "release": "Rhea release 142 (2026-09-02), per pinned rhea-release.properties",
+    "url": "https://ftp.expasy.org/databases/rhea/tsv/rhea-chebi-smiles.tsv"
+   },
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739",
+   "unknowns": [
+    "reaction_membership_not_in_file",
+    "structure_not_validated"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "reaction_membership_not_in_file",
+   "structure_not_validated"
+  ]
+ },
+ "data.assertion.d6367d940a11291846d150f9f17637a93235f4e20018be464b404f34995ef6af": {
+  "class_contract": {
+   "class_id": "batch.entity.external",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d6367d940a11291846d150f9f17637a93235f4e20018be464b404f34995ef6af",
+  "kind": "reference_entity",
+  "name": "left internal iliac vein",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "bp3d:FMA18888",
+   "source_id": "data.source.0ed68934bc113bcd4c6e683c668fcda98f061ebf0aa94b97e647c822b436d2f9",
+   "source_version": "dca144edd24efd5ef7bf0bf758b420f0c01a185685094bc9d2f716b97f16da91"
+  },
+  "science_funnel": {
+   "adapter": "bp3d_lists",
+   "artifact": {
+    "id": "partof_parts_list_e.txt",
+    "sha256": "9224080557053e6f1322f1e13ab27f0ecde0db19bb3b505f0631afad230eeebd"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.external",
+    "version": 1
+   },
+   "external_id": "bp3d:FMA18888",
+   "id": "data.assertion.d6367d940a11291846d150f9f17637a93235f4e20018be464b404f34995ef6af",
+   "label": "left internal iliac vein",
+   "payload": {
+    "attribution": "BodyParts3D, (c) The Database Center for Life Science",
+    "fma_id": "FMA18888",
+    "label": "left internal iliac vein",
+    "license": "CC Attribution 4.0 International",
+    "lists": [
+     "partof"
+    ],
+    "representation_id": "BP10396"
+   },
+   "producer_hash": "3418eab7a6d30ea1ad4b267baae87c77e5e16037a123e666dd03997aee9a4fad",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "bodyparts3d.lists",
+    "known_gaps": [
+     "mesh zips not imported (lists only)",
+     "FMA version not pinned by the archive",
+     "isa/partof inclusion pairs pinned as attachments, not reified"
+    ],
+    "license": "CC Attribution 4.0 International; attribution: BodyParts3D, (c) The Database Center for Life Science",
+    "release": "archive layout observed 2026-09-15/17 (FMA-based tables, no release versioning on the archive)",
+    "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/"
+   },
+   "source_version": "dca144edd24efd5ef7bf0bf758b420f0c01a185685094bc9d2f716b97f16da91",
+   "unknowns": [
+    "fma_version_not_pinned",
+    "mesh_geometry_not_imported"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "fma_version_not_pinned",
+   "mesh_geometry_not_imported"
+  ]
+ },
+ "data.assertion.d636d4dcf05dfa6f4a3928ebafdf2cf7a28398b24b148ad8b02e47fa14197fe7": {
+  "geometry": null,
+  "id": "data.assertion.d636d4dcf05dfa6f4a3928ebafdf2cf7a28398b24b148ad8b02e47fa14197fe7",
+  "kind": "reference_entity",
+  "name": "Eu-152 ground state",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "IAEA/nuclide/63/89/ground_states_row",
+   "source_id": "data.source.60e0d5c918a14967131a1c13921570d5773e8bd7a3d7774124169de05e962b0b",
+   "source_version": "2a3fcfb54f48c9d559f08e77c1a312b963e26b8457ee6d9d3c0516e898669870"
+  },
+  "science_funnel": {
+   "adapter": "iaea_ground_states",
+   "artifact": {
+    "id": "iaea_ground_states.csv",
+    "sha256": "8aee5dc431af1e35fcb49746387b83e927b3c300e7787defbda621a08212c795"
+   },
+   "authority": "external_assertion",
+   "external_id": "IAEA/nuclide/63/89/ground_states_row",
+   "id": "data.assertion.d636d4dcf05dfa6f4a3928ebafdf2cf7a28398b24b148ad8b02e47fa14197fe7",
+   "label": "Eu-152 ground state",
+   "payload": {
+    "A": 152,
+    "N": 89,
+    "Z": 63,
+    "atomic_mass_u": 151.92175097999998,
+    "atomic_mass_uncertainty_u": 1.252e-06,
+    "binding_energy_per_nucleon_keV": 8226.5854,
+    "binding_uncertainty_keV": 0.0077,
+    "decay_completeness": "Only three most probable modes; not a complete reaction network.",
+    "evaluation_cutoff": "31-Aug-2013",
+    "evaluators": "M. J. MARTIN",
+    "half_life": {
+     "kind": "estimate",
+     "operator": "",
+     "seconds": 426554968.39856005,
+     "uncertainty_seconds": 284012.333771328
+    },
+    "level": {
+     "energy_numeric_keV": 0.0,
+     "resolved_ground_state": true,
+     "ripl_assigned_shift_keV": null,
+     "unknown_shift_label": ""
+    },
+    "listed_decay_modes": [
+     {
+      "fraction": 0.7208,
+      "mode": "EC+B+",
+      "raw_uncertainty": "0.13"
+     },
+     {
+      "fraction": 0.2792,
+      "mode": "B-",
+      "raw_uncertainty": "0.13"
+     }
+    ],
+    "mass_from_systematics": "N",
+    "mass_semantics": "Neutral atomic mass in u, converted from source micro-AMU; neutron row is explicitly Z=0.",
+    "raw_row": {
+     "ENSDFauthors": "M. J. MARTIN",
+     "ENSDFpublicationcut-off": "31-Aug-2013",
+     "Extraction_date": "2023-10-18",
+     "abundance": "",
+     "atomic_mass": "151921750.98",
+     "binding": "8226.5854",
+     "decay_1": "EC+B+",
+     "decay_1_%": "72.08",
+     "decay_2": "B-",
+     "decay_2_%": "27.92",
+     "decay_3": "",
+     "decay_3_%": "",
+     "discovery": "1938",
+     "electric_quadrupole": "2.72",
+     "energy": "0",
+     "energy_shift": "",
+     "half_life": "13.517",
+     "half_life_sec": "426554968.39856005",
+     "isospin": "",
+     "jp": "3-",
+     "magnetic_dipole": "-1.9354",
+     "massexcess": "-72888.500",
+     "me_systematics": "N",
+     "n": "89",
+     "operator_hl": "",
+     "qa": "1552.4609",
+     "qbm": "1818.8037",
+     "qbm_n": "-6770.8977",
+     "qec": "1874.477",
+     "radius": "5.1064",
+     "ripl_shift": "",
+     "sn": "6306.7198",
+     "sp": "5600.9911",
+     "symbol": "Eu",
+     "unc_1": "0.13",
+     "unc_2": "0.13",
+     "unc_3": "",
+     "unc_a": "",
+     "unc_am": "1.252",
+     "unc_ba": "0.0077",
+     "unc_e": "",
+     "unc_eq": "0.03",
+     "unc_hl": "9",
+     "unc_hls": "284012.333771328",
+     "unc_md": "0.0017",
+     "unc_me": "1.166",
+     "unc_qa": "5.6105",
+     "unc_qb": "0.7002",
+     "unc_qbmn": "2.7807",
+     "unc_qec": "1.547",
+     "unc_r": "0.0066",
+     "unc_sn": "0.0997",
+     "unc_sp": "0.5432",
+     "unit_hl": "Y",
+     "z": "63"
+    },
+    "source_extraction_date": "2023-10-18",
+    "symbol": "Eu",
+    "type": "nuclide_ground_states_entry"
+   },
+   "producer_hash": "ecf1f76aac6dbac6a318a7101b226d0b28be9ae45ed4708572e6e76ffe445eb0",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "attribution": "IAEA Nuclear Data Section LiveChart. Data include ENSDF, AME2020, NUBASE2020 and other sources identified in the pinned API guide. Original evaluator names, publication cutoff and extraction dates remain attached to every row. IAEA endorsement is not implied.",
+    "id": "iaea.livechart",
+    "license": "IAEA terms with acknowledgment; original ENSDF/AME/RIPL provenance retained",
+    "release": "LiveChart v1 served snapshot; per-row extraction/evaluation dates retained",
+    "scope": "3386 source-selected nuclide entries, including qualified level assignments. Mass, binding and decay metadata are not a reaction network, dose model or heat-deposition model.",
+    "url": "https://www-nds.iaea.org/relnsd/v1/data?fields=ground_states&nuclides=all"
+   },
+   "source_version": "2a3fcfb54f48c9d559f08e77c1a312b963e26b8457ee6d9d3c0516e898669870",
+   "unknowns": [
+    "decay_energy_deposition",
+    "full_decay_network"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "decay_energy_deposition",
+   "full_decay_network"
+  ]
+ },
+ "data.assertion.d63a77f62b8b730d5fd16b9ea6157f5a641363a7e301f2056e983afe1df2f761": {
+  "class_contract": {
+   "class_id": "batch.entity.pantheria_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d63a77f62b8b730d5fd16b9ea6157f5a641363a7e301f2056e983afe1df2f761",
+  "kind": "reference_entity",
+  "name": "Dendromus insignis",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "pantheria:Dendromus insignis",
+   "source_id": "data.source.169d3b31692ff6e0567b66a3ce00735326e2f9f45c6373b711f55ead1e5979b0",
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2"
+  },
+  "science_funnel": {
+   "adapter": "pantheria_traits",
+   "artifact": {
+    "id": "ECOL_90_184.zip",
+    "sha256": "fe84274a39ba73b3c9b6950b78ba44c545852db9809d1549b0071cfdde46df9f"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.pantheria_species",
+    "version": 1
+   },
+   "external_id": "pantheria:Dendromus insignis",
+   "id": "data.assertion.d63a77f62b8b730d5fd16b9ea6157f5a641363a7e301f2056e983afe1df2f761",
+   "label": "Dendromus insignis",
+   "payload": {
+    "source_row": 438,
+    "species_tags": {
+     "MSW05_Binomial": "Dendromus insignis",
+     "MSW05_Family": "Nesomyidae",
+     "MSW05_Genus": "Dendromus",
+     "MSW05_Order": "Rodentia",
+     "MSW05_Species": "insignis"
+    },
+    "taxonomy": null,
+    "trait_status": {
+     "adult_body_mass_g": "sentinel_-999",
+     "basal_met_rate_mLO2hr": "sentinel_-999",
+     "bmr_measurement_mass_g": "sentinel_-999"
+    }
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "pantheria.1.0.wr05",
+    "known_gaps": [
+     "BMR measured 573/5,416 rows; adult mass 3,542",
+     "sentinels (-999) are nodata, never measurements",
+     "BMR->W assumes 20.1 J/mL O2 (declared on every record)",
+     "name resolution covers the Macaca subtree only"
+    ],
+    "license": "CC0 (figshare API license field, probe-verified 2026-09-17)",
+    "release": "PanTHERIA 1.0 WR05 Aug2008, figshare 3531875 (ECOL_90_184.zip), pinned 2026-09-17",
+    "url": "https://ndownloader.figshare.com/files/5604752"
+   },
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2",
+   "unknowns": [
+    "nodata:adult_body_mass_g:sentinel_-999",
+    "nodata:basal_met_rate_mLO2hr:sentinel_-999",
+    "nodata:bmr_measurement_mass_g:sentinel_-999"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "nodata:adult_body_mass_g:sentinel_-999",
+   "nodata:basal_met_rate_mLO2hr:sentinel_-999",
+   "nodata:bmr_measurement_mass_g:sentinel_-999"
+  ]
+ },
+ "data.assertion.d63b7b32120abab2bac0335c8f17bcf3a148ce5330d61d77233cfb34362e8ee4": {
+  "class_contract": {
+   "class_id": "batch.entity.rhea_chebi_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d63b7b32120abab2bac0335c8f17bcf3a148ce5330d61d77233cfb34362e8ee4",
+  "kind": "reference_entity",
+  "name": "CHEBI:77460",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "rhea-chebi:CHEBI:77460",
+   "source_id": "data.source.af4265c7202c51fae857900ca5eaf4b0118204a08cd5ce0509c44488a8de9925",
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739"
+  },
+  "science_funnel": {
+   "adapter": "rhea_chebi_smiles",
+   "artifact": {
+    "id": "rhea-chebi-smiles.tsv",
+    "sha256": "567034c7dfdb0619697964bb6dd8180579e47cc3e6d994526d39fd92c5794f50"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.rhea_chebi_species",
+    "version": 1
+   },
+   "external_id": "rhea-chebi:CHEBI:77460",
+   "id": "data.assertion.d63b7b32120abab2bac0335c8f17bcf3a148ce5330d61d77233cfb34362e8ee4",
+   "label": "CHEBI:77460",
+   "payload": {
+    "chebi_id": "CHEBI:77460",
+    "id_scheme": "chebi",
+    "smiles": "*[C@H]([NH3+])C(=O)N[C@@H](*)C(=O)[O-]"
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "rhea.chebi_smiles.tsv",
+    "known_gaps": [
+     "participant species map, not the reaction list",
+     "competing-SMILES ids quarantine, never merge",
+     "SMILES are pinned bytes, not validated structures"
+    ],
+    "license": "CC BY 4.0; LICENSE.txt pinned in-bundle; attribution: Rhea database, Swiss Institute of Bioinformatics",
+    "release": "Rhea release 142 (2026-09-02), per pinned rhea-release.properties",
+    "url": "https://ftp.expasy.org/databases/rhea/tsv/rhea-chebi-smiles.tsv"
+   },
+   "source_version": "d5af509992602224d066b7e981a630bd502cde80c756fa72f36b97825d590739",
+   "unknowns": [
+    "reaction_membership_not_in_file",
+    "structure_not_validated"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "reaction_membership_not_in_file",
+   "structure_not_validated"
+  ]
+ },
+ "data.assertion.d6414f48476906c6b78783d96f211d9f35858225ba8d2950d18b43f93a5b48c8": {
+  "class_contract": {
+   "class_id": "batch.entity.pantheria_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d6414f48476906c6b78783d96f211d9f35858225ba8d2950d18b43f93a5b48c8",
+  "kind": "reference_entity",
+  "name": "Chrotomys gonzalesi",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "pantheria:Chrotomys gonzalesi",
+   "source_id": "data.source.169d3b31692ff6e0567b66a3ce00735326e2f9f45c6373b711f55ead1e5979b0",
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2"
+  },
+  "science_funnel": {
+   "adapter": "pantheria_traits",
+   "artifact": {
+    "id": "ECOL_90_184.zip",
+    "sha256": "fe84274a39ba73b3c9b6950b78ba44c545852db9809d1549b0071cfdde46df9f"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.pantheria_species",
+    "version": 1
+   },
+   "external_id": "pantheria:Chrotomys gonzalesi",
+   "id": "data.assertion.d6414f48476906c6b78783d96f211d9f35858225ba8d2950d18b43f93a5b48c8",
+   "label": "Chrotomys gonzalesi",
+   "payload": {
+    "source_row": 875,
+    "species_tags": {
+     "MSW05_Binomial": "Chrotomys gonzalesi",
+     "MSW05_Family": "Muridae",
+     "MSW05_Genus": "Chrotomys",
+     "MSW05_Order": "Rodentia",
+     "MSW05_Species": "gonzalesi"
+    },
+    "taxonomy": null,
+    "trait_status": {
+     "adult_body_mass_g": "measured",
+     "basal_met_rate_mLO2hr": "sentinel_-999",
+     "bmr_measurement_mass_g": "sentinel_-999"
+    }
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "pantheria.1.0.wr05",
+    "known_gaps": [
+     "BMR measured 573/5,416 rows; adult mass 3,542",
+     "sentinels (-999) are nodata, never measurements",
+     "BMR->W assumes 20.1 J/mL O2 (declared on every record)",
+     "name resolution covers the Macaca subtree only"
+    ],
+    "license": "CC0 (figshare API license field, probe-verified 2026-09-17)",
+    "release": "PanTHERIA 1.0 WR05 Aug2008, figshare 3531875 (ECOL_90_184.zip), pinned 2026-09-17",
+    "url": "https://ndownloader.figshare.com/files/5604752"
+   },
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2",
+   "unknowns": [
+    "nodata:basal_met_rate_mLO2hr:sentinel_-999",
+    "nodata:bmr_measurement_mass_g:sentinel_-999"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": [
+   "nodata:basal_met_rate_mLO2hr:sentinel_-999",
+   "nodata:bmr_measurement_mass_g:sentinel_-999"
+  ]
+ },
+ "data.assertion.d64197e9e9379845ef831cc08bedd4ae6dda90ad76a44bd1ea9b369b9399bdce": {
+  "class_contract": {
+   "class_id": "batch.entity.pantheria_species",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d64197e9e9379845ef831cc08bedd4ae6dda90ad76a44bd1ea9b369b9399bdce",
+  "kind": "reference_entity",
+  "name": "Blarina brevicauda",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "pantheria:Blarina brevicauda",
+   "source_id": "data.source.169d3b31692ff6e0567b66a3ce00735326e2f9f45c6373b711f55ead1e5979b0",
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2"
+  },
+  "science_funnel": {
+   "adapter": "pantheria_traits",
+   "artifact": {
+    "id": "ECOL_90_184.zip",
+    "sha256": "fe84274a39ba73b3c9b6950b78ba44c545852db9809d1549b0071cfdde46df9f"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.entity.pantheria_species",
+    "version": 1
+   },
+   "external_id": "pantheria:Blarina brevicauda",
+   "id": "data.assertion.d64197e9e9379845ef831cc08bedd4ae6dda90ad76a44bd1ea9b369b9399bdce",
+   "label": "Blarina brevicauda",
+   "payload": {
+    "source_row": 386,
+    "species_tags": {
+     "MSW05_Binomial": "Blarina brevicauda",
+     "MSW05_Family": "Soricidae",
+     "MSW05_Genus": "Blarina",
+     "MSW05_Order": "Soricomorpha",
+     "MSW05_Species": "brevicauda"
+    },
+    "taxonomy": null,
+    "trait_status": {
+     "adult_body_mass_g": "measured",
+     "basal_met_rate_mLO2hr": "measured",
+     "bmr_measurement_mass_g": "measured"
+    }
+   },
+   "producer_hash": "297613c4e7c3abecdd3470db1196e8197c3eaafddc4040f770a9e996745bf7f3",
+   "record_type": "entity",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "pantheria.1.0.wr05",
+    "known_gaps": [
+     "BMR measured 573/5,416 rows; adult mass 3,542",
+     "sentinels (-999) are nodata, never measurements",
+     "BMR->W assumes 20.1 J/mL O2 (declared on every record)",
+     "name resolution covers the Macaca subtree only"
+    ],
+    "license": "CC0 (figshare API license field, probe-verified 2026-09-17)",
+    "release": "PanTHERIA 1.0 WR05 Aug2008, figshare 3531875 (ECOL_90_184.zip), pinned 2026-09-17",
+    "url": "https://ndownloader.figshare.com/files/5604752"
+   },
+   "source_version": "9826112f0922e96c929f99b5ed2191935c42ce2c0924f6eec512b4c0597b03d2",
+   "unknowns": []
+  },
+  "spatial": null,
+  "status": "extracted",
+  "unknowns": []
+ },
  "data.assertion.d64279db16401163d72263595254e19f050919f4c90cadc9890a3e26c52cdb08": {
   "class_contract": {
    "class_id": "batch.entity.rhea_chebi_species",
@@ -38241,6 +41693,129 @@
    "fma_version_not_pinned",
    "mesh_geometry_not_imported"
   ]
+ },
+ "data.assertion.d99980f2974d144e0479a00a88f05f1f18f48dcdab91ab0f80ee8eefcfc48bc3": {
+  "applicability": {
+   "basis": "moment of inertia about the COM (per table footnote)",
+   "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+   "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+   "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+   "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+   "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+   "species": "Macaca fuscata (Japanese macaque)",
+   "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+   "table_cell": {
+    "precision_note": "values as published; the table rounds mass to 0.001 kg",
+    "published": "5.49e-5",
+    "segment": "foot"
+   }
+  },
+  "class_contract": {
+   "class_id": "batch.property.paper_table_inertial",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.d99980f2974d144e0479a00a88f05f1f18f48dcdab91ab0f80ee8eefcfc48bc3",
+  "kind": "property_assertion",
+  "name": "Oku 2021 Table 1 foot inertia",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "oku2021.table1:foot:inertia",
+   "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+   "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+  },
+  "science_funnel": {
+   "adapter": "oku_paper_table",
+   "artifact": {
+    "id": "PMC7940622_fulltext.xml",
+    "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "external_id": "oku2021.table1:foot:inertia",
+   "id": "data.assertion.d99980f2974d144e0479a00a88f05f1f18f48dcdab91ab0f80ee8eefcfc48bc3",
+   "label": "Oku 2021 Table 1 foot inertia",
+   "payload": {
+    "conditions": {
+     "basis": "moment of inertia about the COM (per table footnote)",
+     "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+     "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+     "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+     "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+     "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+     "species": "Macaca fuscata (Japanese macaque)",
+     "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+     "table_cell": {
+      "precision_note": "values as published; the table rounds mass to 0.001 kg",
+      "published": "5.49e-5",
+      "segment": "foot"
+     }
+    },
+    "conversion": {
+     "offset": 0,
+     "scale": 1
+    },
+    "dimensions": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "original": {
+     "uncertainty": null,
+     "unit": "kg*m2",
+     "value": 5.49e-05
+    },
+    "parameter": "segment_moment_of_inertia",
+    "quantity": "moment_of_inertia",
+    "source_field": "inertia",
+    "subject": "Macaca fuscata/foot",
+    "uncertainty_si": null,
+    "unit_si": "kg*m2",
+    "value_si": 5.49e-05
+   },
+   "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+   "record_type": "measurement",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "oku2021.paper_table_inertial",
+    "known_gaps": [
+     "forelimbs are folded into HAT in this table (structural; never patched)",
+     "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+     "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+     "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+     "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+    ],
+    "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+    "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+   },
+   "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "units": "kg*m2",
+  "unknowns": [
+   "forelimbs_folded_into_hat_structural_gap",
+   "inertia_axis_about_com_per_footnote",
+   "single_cadaver_no_population_variance",
+   "whole_body_mass_implied_not_published"
+  ],
+  "value": 5.49e-05
  },
  "data.assertion.d99a80315d7cbcdb0a32fe54f73cd7083686076a60f9d29b06da34c3a754a0a9": {
   "class_contract": {
@@ -138181,6 +141756,129 @@
    "reaction_membership_not_in_file",
    "structure_not_validated"
   ]
+ },
+ "data.assertion.e2e268b40a47211016485edc34c3f1ecf4e94bf9373526202d90516863bcd27b": {
+  "applicability": {
+   "basis": "moment of inertia about the COM (per table footnote)",
+   "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+   "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+   "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+   "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+   "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+   "species": "Macaca fuscata (Japanese macaque)",
+   "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+   "table_cell": {
+    "precision_note": "values as published; the table rounds mass to 0.001 kg",
+    "published": "7.01e-4",
+    "segment": "shank"
+   }
+  },
+  "class_contract": {
+   "class_id": "batch.property.paper_table_inertial",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.e2e268b40a47211016485edc34c3f1ecf4e94bf9373526202d90516863bcd27b",
+  "kind": "property_assertion",
+  "name": "Oku 2021 Table 1 shank inertia",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "oku2021.table1:shank:inertia",
+   "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+   "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+  },
+  "science_funnel": {
+   "adapter": "oku_paper_table",
+   "artifact": {
+    "id": "PMC7940622_fulltext.xml",
+    "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "external_id": "oku2021.table1:shank:inertia",
+   "id": "data.assertion.e2e268b40a47211016485edc34c3f1ecf4e94bf9373526202d90516863bcd27b",
+   "label": "Oku 2021 Table 1 shank inertia",
+   "payload": {
+    "conditions": {
+     "basis": "moment of inertia about the COM (per table footnote)",
+     "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+     "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+     "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+     "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+     "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+     "species": "Macaca fuscata (Japanese macaque)",
+     "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+     "table_cell": {
+      "precision_note": "values as published; the table rounds mass to 0.001 kg",
+      "published": "7.01e-4",
+      "segment": "shank"
+     }
+    },
+    "conversion": {
+     "offset": 0,
+     "scale": 1
+    },
+    "dimensions": [
+     1,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "original": {
+     "uncertainty": null,
+     "unit": "kg*m2",
+     "value": 0.000701
+    },
+    "parameter": "segment_moment_of_inertia",
+    "quantity": "moment_of_inertia",
+    "source_field": "inertia",
+    "subject": "Macaca fuscata/shank",
+    "uncertainty_si": null,
+    "unit_si": "kg*m2",
+    "value_si": 0.000701
+   },
+   "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+   "record_type": "measurement",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "oku2021.paper_table_inertial",
+    "known_gaps": [
+     "forelimbs are folded into HAT in this table (structural; never patched)",
+     "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+     "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+     "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+     "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+    ],
+    "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+    "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+   },
+   "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "units": "kg*m2",
+  "unknowns": [
+   "forelimbs_folded_into_hat_structural_gap",
+   "inertia_axis_about_com_per_footnote",
+   "single_cadaver_no_population_variance",
+   "whole_body_mass_implied_not_published"
+  ],
+  "value": 0.000701
  },
  "data.assertion.e2e32cfb70670a7b0119bdc317d262488fa271311c324590398107376e666af9": {
   "applicability": {
@@ -295582,6 +299280,129 @@
    "full_decay_network"
   ]
  },
+ "data.assertion.f0fcf137b51691da160037a95f5313ee3a2a9f3482e41eccaa8d1de5fe4b3c6b": {
+  "applicability": {
+   "basis": "length",
+   "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+   "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+   "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+   "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+   "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+   "species": "Macaca fuscata (Japanese macaque)",
+   "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+   "table_cell": {
+    "precision_note": "values as published; the table rounds mass to 0.001 kg",
+    "published": "0.182",
+    "segment": "shank"
+   }
+  },
+  "class_contract": {
+   "class_id": "batch.property.paper_table_inertial",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.f0fcf137b51691da160037a95f5313ee3a2a9f3482e41eccaa8d1de5fe4b3c6b",
+  "kind": "property_assertion",
+  "name": "Oku 2021 Table 1 shank length",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "oku2021.table1:shank:length",
+   "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+   "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+  },
+  "science_funnel": {
+   "adapter": "oku_paper_table",
+   "artifact": {
+    "id": "PMC7940622_fulltext.xml",
+    "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "external_id": "oku2021.table1:shank:length",
+   "id": "data.assertion.f0fcf137b51691da160037a95f5313ee3a2a9f3482e41eccaa8d1de5fe4b3c6b",
+   "label": "Oku 2021 Table 1 shank length",
+   "payload": {
+    "conditions": {
+     "basis": "length",
+     "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+     "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+     "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+     "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+     "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+     "species": "Macaca fuscata (Japanese macaque)",
+     "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+     "table_cell": {
+      "precision_note": "values as published; the table rounds mass to 0.001 kg",
+      "published": "0.182",
+      "segment": "shank"
+     }
+    },
+    "conversion": {
+     "offset": 0,
+     "scale": 1
+    },
+    "dimensions": [
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "original": {
+     "uncertainty": null,
+     "unit": "m",
+     "value": 0.182
+    },
+    "parameter": "segment_length",
+    "quantity": "length",
+    "source_field": "length",
+    "subject": "Macaca fuscata/shank",
+    "uncertainty_si": null,
+    "unit_si": "m",
+    "value_si": 0.182
+   },
+   "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+   "record_type": "measurement",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "oku2021.paper_table_inertial",
+    "known_gaps": [
+     "forelimbs are folded into HAT in this table (structural; never patched)",
+     "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+     "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+     "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+     "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+    ],
+    "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+    "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+   },
+   "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "units": "m",
+  "unknowns": [
+   "forelimbs_folded_into_hat_structural_gap",
+   "inertia_axis_about_com_per_footnote",
+   "single_cadaver_no_population_variance",
+   "whole_body_mass_implied_not_published"
+  ],
+  "value": 0.182
+ },
  "data.assertion.f0ff151fc6f711f3aaa9d34285e2785fcdf0d7017f3ad9b43fcd8280f7b6d9e0": {
   "applicability": {
    "genus": "Marmosa",
@@ -313776,6 +317597,129 @@
    "fma_version_not_pinned",
    "mesh_geometry_not_imported"
   ]
+ },
+ "data.assertion.f2b7aae62b82f0c061db433bbbb1de362fc5fae1bcfd8dd0d5051e81ae4b577f": {
+  "applicability": {
+   "basis": "mass",
+   "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+   "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+   "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+   "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+   "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+   "species": "Macaca fuscata (Japanese macaque)",
+   "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+   "table_cell": {
+    "precision_note": "values as published; the table rounds mass to 0.001 kg",
+    "published": "0.269",
+    "segment": "shank"
+   }
+  },
+  "class_contract": {
+   "class_id": "batch.property.paper_table_inertial",
+   "version": 1
+  },
+  "geometry": null,
+  "id": "data.assertion.f2b7aae62b82f0c061db433bbbb1de362fc5fae1bcfd8dd0d5051e81ae4b577f",
+  "kind": "property_assertion",
+  "name": "Oku 2021 Table 1 shank mass",
+  "notes": "Source assertion; explicit reduction and instance binding required.",
+  "physical": null,
+  "provenance": {
+   "external_id": "oku2021.table1:shank:mass",
+   "source_id": "data.source.1ad2c92f0b1eaf0bf9011acfed6ab48b7203e9c4a02779e7343ccfac3c444226",
+   "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb"
+  },
+  "science_funnel": {
+   "adapter": "oku_paper_table",
+   "artifact": {
+    "id": "PMC7940622_fulltext.xml",
+    "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+   },
+   "authority": "external_assertion",
+   "class_contract": {
+    "class_id": "batch.property.paper_table_inertial",
+    "version": 1
+   },
+   "external_id": "oku2021.table1:shank:mass",
+   "id": "data.assertion.f2b7aae62b82f0c061db433bbbb1de362fc5fae1bcfd8dd0d5051e81ae4b577f",
+   "label": "Oku 2021 Table 1 shank mass",
+   "payload": {
+    "conditions": {
+     "basis": "mass",
+     "closure_dimensional": "per-quantity unit + envelope checks (mass kg, length m, COM dimensionless fraction, I kg*m2) enforced per record",
+     "closure_mass_sum": "segment masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance ±0.0025 kg (5 cells × 0.0005 kg at the table's stated 0.001 kg precision); the table publishes no whole-body mass",
+     "closure_plausibility": "implied mass 9.111 kg lies INSIDE the declared ±10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92% deviation, margin 0.0077160 kg -- tight; the shortfall is an open specimen-coverage question, comparison only, never fused or scaled",
+     "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+     "paper": "Oku, Ide & Ogihara 2021, Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w, Table 1",
+     "species": "Macaca fuscata (Japanese macaque)",
+     "specimen": "single adult male Japanese macaque (Macaca fuscata) cadaver, Ogihara 2009 lineage; values recalculated for the foot and phalangeal segments from CT-scanned surface data per the table footnote",
+     "table_cell": {
+      "precision_note": "values as published; the table rounds mass to 0.001 kg",
+      "published": "0.269",
+      "segment": "shank"
+     }
+    },
+    "conversion": {
+     "offset": 0,
+     "scale": 1
+    },
+    "dimensions": [
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "original": {
+     "uncertainty": null,
+     "unit": "kg",
+     "value": 0.269
+    },
+    "parameter": "segment_mass",
+    "quantity": "mass",
+    "source_field": "mass",
+    "subject": "Macaca fuscata/shank",
+    "uncertainty_si": null,
+    "unit_si": "kg",
+    "value_si": 0.269
+   },
+   "producer_hash": "9ccd51b31ae7f5086f92d6c2f8547dafeac395baecbf4761aa84b9f0cbb0a0be",
+   "record_type": "measurement",
+   "runtime_ready": false,
+   "schema_version": "1.0.0",
+   "source": {
+    "id": "oku2021.paper_table_inertial",
+    "known_gaps": [
+     "forelimbs are folded into HAT in this table (structural; never patched)",
+     "whole-body mass not published; implied mass is the five-segment sum (9.111 kg ±0.0025 kg rounding)",
+     "single adult male cadaver (Ogihara 2009 lineage); no population variance, no uncertainty columns",
+     "inertia about the segment COM per the table footnote; axial vs transverse axis distinction not published",
+     "foot and phalangeal rows recalculated by the authors from CT-scanned surface data (per the table footnote)"
+    ],
+    "license": "CC BY 4.0 ((c) The Author(s) 2021, Communications Biology; license sentence quoted verbatim from the pinned page and carried on every record)",
+    "release": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 \"Dimensions and inertial parameters of the limb segments\", pinned 2026-09-18 as the article full text (PMC version of record) via the EuropePMC fullTextXML endpoint; nature.com/tables/1 does not serve authlessly (bot wall, recorded)",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML"
+   },
+   "source_version": "566ae03665bc1b835127ef922760fcff71504de0c930834ea8e9f33f0cb2cfdb",
+   "unknowns": [
+    "forelimbs_folded_into_hat_structural_gap",
+    "inertia_axis_about_com_per_footnote",
+    "single_cadaver_no_population_variance",
+    "whole_body_mass_implied_not_published"
+   ]
+  },
+  "spatial": null,
+  "status": "extracted",
+  "units": "kg",
+  "unknowns": [
+   "forelimbs_folded_into_hat_structural_gap",
+   "inertia_axis_about_com_per_footnote",
+   "single_cadaver_no_population_variance",
+   "whole_body_mass_implied_not_published"
+  ],
+  "value": 0.269
  },
  "data.assertion.f2bb1a64276051a1a7a316e51ae39cac44983024d44b35548cecd27ad1a1e328": {
   "applicability": {

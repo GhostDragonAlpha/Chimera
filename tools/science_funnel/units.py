@@ -15,6 +15,7 @@ DIMENSIONS = {
     'force': (1, 1, -2, 0, 0, 0, 0), 'pressure': (1, -1, -2, 0, 0, 0, 0),
     'compressibility': (-1, 1, 2, 0, 0, 0, 0),
     'stiffness': (1, 0, -2, 0, 0, 0, 0), 'torque': (1, 2, -2, 0, 0, 0, 0),
+    'moment_of_inertia': (1, 2, 0, 0, 0, 0, 0),
     'temperature': (0, 0, 0, 0, 1, 0, 0), 'speed': (0, 1, -1, 0, 0, 0, 0),
     'density': (1, -3, 0, 0, 0, 0, 0), 'viscosity': (1, -1, -1, 0, 0, 0, 0),
     'volume_flow': (0, 3, -1, 0, 0, 0, 0),
@@ -63,8 +64,9 @@ _add('mass', 'kg', [('kg', 1, 0), ('g', .001, 0)])
 _add('time', 's', [('s', 1, 0), ('ms', .001, 0)])
 _add('pressure', 'Pa', [('Pa', 1, 0), ('kPa', 1e3, 0), ('MPa', 1e6, 0), ('GPa', 1e9, 0)])
 _add('temperature', 'K', [('K', 1, 0), ('degC', 1, 273.15)])
-_add('dimensionless', '1', [('1', 1, 0)])
+_add('dimensionless', '1', [('1', 1, 0), ('percent', 0.01, 0)])
 _add('dimensionless', 'rad', [('rad', 1, 0), ('deg', math.pi / 180, 0)])
+_add('moment_of_inertia', 'kg*m2', [('kg*m2', 1, 0)])
 for _dim, _unit in [('force', 'N'), ('stiffness', 'N/m'), ('compressibility', '1/Pa'),
                     ('torque', 'N*m'), ('torque', 'J'), ('frequency', 'Hz'),
                     ('frequency', '1/s'), ('speed', 'm/s'), ('density', 'kg/m3'),
