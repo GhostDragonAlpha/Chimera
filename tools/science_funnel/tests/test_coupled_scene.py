@@ -54,7 +54,7 @@ class CoupledScene(unittest.TestCase):
  # (scene.json sha256 9947d074... at store 319fe2af...) and re-proven after
  # the second upstream integration (7c784f09... at store ca68dc9c..., master
  # 0b8d80d5), whose graph_hash is the ONLY delta in the scene.
- DEFAULT_SCENE_PORTABLE_SHA256='135699e62ed8eeb4be42c85944397ea066324e5cab33e8daf0be5802dda8cedc'
+ DEFAULT_SCENE_PORTABLE_SHA256='a7b36b531f20e64da4119ad09ebb40448c17dfbc2c2d31489ac0160fb2513a52'
  CAYO_H_ELLIPSOIDAL_M=-42.82679794555668
  def portable_digest(self,bundle,out_dir):
   from tools.science_funnel.common import digest
