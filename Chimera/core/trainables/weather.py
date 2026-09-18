@@ -78,7 +78,11 @@ EVAL_SEED = 20260717             # fixed base; restarts are EVAL_SEED+r for ever
                                  # genome alike, so "worst of N" compares apples to apples
 
 
-def seed() -> dict:
+def seed(rng=None) -> dict:
+    # protocol alignment 2026-09-18: the trainer passes seed(rng); this
+    # domain is a deterministic live-value fixture, so the rng is accepted
+    # and intentionally unused (a fixed point, not a random draw).
+    del rng  # noqa: F841
     """The live WIND table, CHIMERA_VISION.py:1724-1726:
 
         WIND = dict(calm=2.0, breeze=6.0, gust=12.0, storm=24.0,

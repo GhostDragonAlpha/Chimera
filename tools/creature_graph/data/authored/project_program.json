@@ -56420,6 +56420,14 @@
     "admitted_utc": "2026-09-18T00:54:11.600644+00:00",
     "authorization": "Operator's trainer-repair lane brief (lane/trainer-repair-20260917 from 14c56162)",
     "authority_scope": "Isolated repository prototype on the assigned lane; no production qualification."
+   },
+   "observation": {
+    "protocol_alignment_20260918": {
+     "statement": "The six pre-protocol domains (attunement, creature, director, economy, memorial, weather) accept seed(rng) and document the rng as intentionally unused deterministic fixtures.",
+     "walker_finding": "walker.py restoration REVERSED BY EVIDENCE: the file was deliberately deleted (79214cef 'delete every distraction: no physics outside the Chimera Engine'); brain/walker_gpu env refusals are correct as stated, not defects.",
+     "falsifier": "the bounded sweep re-run: no internal TypeError from any module; the six aligned domains complete or refuse with designed causes",
+     "observed_utc": "2026-09-18T07:40:14.428496+00:00"
+    }
    }
   },
   {

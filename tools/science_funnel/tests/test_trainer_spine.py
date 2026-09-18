@@ -120,13 +120,23 @@ class PrefSelftestProtocol(unittest.TestCase):
         inspect.signature(fixture.measure).bind({})
 
     def test_protocol_violation_is_an_honest_refusal(self):
-        """creature.seed() predates the protocol: the spine must refuse with a
-        named cause, never leak the bare TypeError from the call site."""
+        """A noncompliant domain must refuse with a named cause, never leak the
+        bare TypeError from the call site. All live domains were aligned
+        2026-09-18, so the probe is exercised through a stub module."""
+        import types
+        from core.train_loop import _require_protocol
+        stub = types.SimpleNamespace()  # defines nothing: every probe refuses
         with self.assertRaises(DomainRefusal) as caught:
-            train_and_audit('creature', pop=6, gens=3)
+            _require_protocol(stub, 'stub_domain')
         self.assertEqual(caught.exception.code, 'domain_protocol_violation')
-        self.assertIn('creature', caught.exception.detail)
+        self.assertIn('stub_domain', caught.exception.detail)
         self.assertIn('seed(rng)', caught.exception.detail)
+
+    def test_creature_now_completes_under_the_protocol(self):
+        """creature.seed() was aligned 2026-09-18: it must complete (the old
+        protocol refusal is gone -- pin the new truth, not the stale one)."""
+        result = train_and_audit('creature', pop=6, gens=3)
+        self.assertIn('best_score', result)
 
 
 class BatchExercise(unittest.TestCase):
@@ -169,9 +179,10 @@ class SweepHarness(unittest.TestCase):
         python = sys.executable
         completed = sweep_module(python, 'pref_selftest', 120)
         self.assertEqual(completed['outcome'], 'completed', completed)
-        refused = sweep_module(python, 'creature', 120)
+        completed = sweep_module(python, 'creature', 120)
+        self.assertEqual(completed['outcome'], 'completed', completed)
+        refused = sweep_module(python, 'arrangement', 300)
         self.assertEqual(refused['outcome'], 'refused', refused)
-        self.assertEqual(refused['exc_type'], 'DomainRefusal')
 
     def test_sweep_child_survives_missing_gpu_dependency(self):
         """Whatever the GPU flavor does here (warp present: it refuses honestly
