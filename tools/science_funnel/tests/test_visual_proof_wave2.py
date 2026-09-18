@@ -92,8 +92,8 @@ class Wave2VisualProof(unittest.TestCase):
         from tools.creature_graph.store import CreatureGraph
         graph = CreatureGraph.load(ROOT / 'tools' / 'creature_graph' / 'data' / 'creature_graph.json')
         self.assertEqual(len(graph.evidence_records()), 11)
-        self.assertEqual(len(graph.objects), 34134)
-        self.assertEqual(len(graph.relations), 37553)
+        self.assertEqual(len(graph.objects), 35331)
+        self.assertEqual(len(graph.relations), 38748)
         self.assertEqual(graph.check(), [])
 
     def test_scope_labels_and_honest_metrics(self):

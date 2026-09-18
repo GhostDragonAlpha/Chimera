@@ -15,7 +15,7 @@
   "python": "3.11.15",
   "zlib": "1.3.2",
   "numpy": "2.2.6",
-  "module_sha256": "8707a01d360f4cd76720940ac975da1cec5f3ebd47390c61546106d9ddcbbf9b"
+  "module_sha256": "e79f303838873017c9c968c0b3df748416f1ec3380805c74303052c9e81b46e3"
  },
  "renders": [
   {

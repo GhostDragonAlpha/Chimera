@@ -87,18 +87,9 @@ def build(with_reference: bool = False, workers=None) -> CreatureGraph:
     # hand-editable while the bulk rotates in sibling files.
     records_dir = os.path.join(AUTHORED_DIR, "records")
     if os.path.isdir(records_dir):
-<<<<<<< HEAD
-        for fname in sorted(os.listdir(records_dir)):
-            if not (fname.startswith("records_") and fname.endswith(".json")):
-                continue  # only the serial writer's rotation pattern
-            shard_path = os.path.join(records_dir, fname)
-            input_hashes[f"authored/records/{fname}"] = _sha256_file(shard_path)
-            with open(shard_path, encoding="utf-8") as stream:
-                shard = json.load(stream)
-=======
         shard_paths = [os.path.join(records_dir, fname)
                        for fname in sorted(os.listdir(records_dir))
-                       if fname.endswith(".json")]
+                       if fname.startswith("records_") and fname.endswith(".json")]
         count = _worker_count(workers, len(shard_paths)) if shard_paths else 1
         if count == 1:
             loaded = [_load_record_shard(path) for path in shard_paths]
@@ -109,7 +100,6 @@ def build(with_reference: bool = False, workers=None) -> CreatureGraph:
                 loaded = list(pool.map(_load_record_shard, shard_paths))
         for fname, digest, shard in loaded:
             input_hashes[f"authored/records/{fname}"] = digest
->>>>>>> origin/lane/visual-proof-wave2-20260918
             for obj in shard.get("objects", []):
                 g.add(obj)
             deferred_edges.extend(shard.get("relations", []))
