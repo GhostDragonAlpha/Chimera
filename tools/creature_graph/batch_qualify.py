@@ -35,6 +35,11 @@ from tools.science_funnel.graph import graph_from, propose  # noqa: E402
 DEFAULT_GRAPH = ROOT / 'tools' / 'creature_graph' / 'data' / 'creature_graph.json'
 AUTHORED_PROGRAM = ROOT / 'tools' / 'creature_graph' / 'data' / 'authored' / 'project_program.json'
 
+# Shard rotation target (measured written bytes). Intake resource limit, not a
+# physical constant; stays far below the 100 MB git per-file ceiling and
+# matches the start-of-run rotation threshold the writer always used.
+ROTATE_BYTES = 24 * 1024 * 1024
+
 
 def mutation_probe(graph, registry):
     """Falsifier as code: corrupt exactly one record of a real admitted class
@@ -62,9 +67,17 @@ def mutation_probe(graph, registry):
 
 def apply_patches(graph, patches):
     """Serial writer: merge patch objects/edges into the authored stores.
-    Bulk reference families route to a rotated record shard; everything else
+    Bulk reference families route to rotated record shards; everything else
     (sources, work records...) goes to the hand-editable program file.
-    Existing ids must be identical (immutable identity); new ids append."""
+    Existing ids must be identical (immutable identity); new ids append.
+
+    Shard rotation is enforced PER OBJECT (2026-09-18 repair): one batch can
+    carry a bulk family far larger than the 24 MB rotation target, and a
+    start-of-run-only check let a single shard blow past the 100 MB git
+    per-file ceiling (records_003.json hit 125 MB during the appearance
+    intake -- refused by push). Measured written bytes drive the rotation;
+    the last object may overshoot the target but every shard stays far below
+    the ceiling."""
     program = json.loads(AUTHORED_PROGRAM.read_bytes().decode('utf-8-sig'))
     known = {obj['id']: obj for obj in program['objects']}
     edges = {(e['src'], e['rel'], e['dst'], e.get('note', ''))
@@ -72,6 +85,20 @@ def apply_patches(graph, patches):
     records_dir = AUTHORED_PROGRAM.parent / 'records'
     shard_path = None
     shard = {'objects': [], 'relations': []}
+    shard_len = 0
+    shards_written = []
+
+    def _serialized(payload):
+        return (json.dumps(payload, ensure_ascii=False, indent=1) + '\n').encode()
+
+    def _next_shard_path():
+        return records_dir / (
+            'records_%03d.json' % (len(list(records_dir.glob('records_*.json'))) + 1))
+
+    def _flush():
+        shard_path.write_bytes(_serialized(shard))
+        shards_written.append(shard_path.name)
+
     if records_dir.is_dir():
         shards = sorted(records_dir.glob('records_*.json'))
         if shards:
@@ -90,14 +117,15 @@ def apply_patches(graph, patches):
             # rotate into the last shard unless it is full
             last = shards[-1]
             shard = json.loads(last.read_bytes().decode('utf-8-sig'))
-            if len(last.read_bytes()) < 24 * 1024 * 1024:
+            if last.stat().st_size < ROTATE_BYTES:
                 shard_path = last
+                shard_len = last.stat().st_size
             else:
                 shard = {'objects': [], 'relations': []}
+                shard_len = 0
     if shard_path is None:
         records_dir.mkdir(parents=True, exist_ok=True)
-        shard_path = records_dir / (
-            'records_%03d.json' % (len(list(records_dir.glob('records_*.json'))) + 1))
+        shard_path = _next_shard_path()
     # immutability guards see shard-resident identities too (review F5)
     for obj in shard.get('objects', []):
         known.setdefault(obj['id'], obj)
@@ -113,7 +141,16 @@ def apply_patches(graph, patches):
                     'immutable_graph_identity_conflict', obj['id'])
             if previous is None:
                 if obj.get('kind') in BULK:
+                    # per-object rotation: flush + start a fresh shard before
+                    # the append would push the written shard past the target
+                    if shard['objects'] and \
+                            shard_len >= ROTATE_BYTES:
+                        _flush()
+                        shard = {'objects': [], 'relations': []}
+                        shard_len = 0
+                        shard_path = _next_shard_path()
                     shard['objects'].append(obj)
+                    shard_len += len(_serialized(obj)) + 1
                 else:
                     program['objects'].append(obj)
                 known[obj['id']] = obj
@@ -123,14 +160,14 @@ def apply_patches(graph, patches):
             if key not in edges:
                 program['relations'].append(dict(edge))
                 edges.add(key)
-    raw = (json.dumps(program, ensure_ascii=False, indent=1) + '\n').encode()
+    _flush()
+    raw = _serialized(program)
     AUTHORED_PROGRAM.write_bytes(raw)
-    shard_raw = (json.dumps(shard, ensure_ascii=False, indent=1) + '\n').encode()
-    shard_path.write_bytes(shard_raw)
     return {'objects_added': added,
             'program_bytes': len(raw),
-            'shard': str(shard_path.name), 'shard_bytes': len(shard_raw),
-            'note': 'bulk kinds shard; core in the program; one serial writer'}
+            'shards': shards_written,
+            'note': 'bulk kinds shard with per-object rotation; core in the '
+                    'program; one serial writer'}
 
 
 def rebuild_store():

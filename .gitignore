@@ -305,3 +305,9 @@ ChimeraEngine/native/nul
 
 # native relay stdout litter (per-launch logs, never source)
 /ChimeraEngine/native/relay_*.out
+
+# PHYLACINE 1.2.1 release zip (106,362,537 bytes, sha256-pinned in
+# tools/science_funnel/data/phylacine/download_receipt.json) -- exceeds the
+# 100 MB git per-file ceiling; the committed artifacts are the derived trait
+# table + release notes, re-derivable byte-identically from the pinned zip.
+tools/science_funnel/data/phylacine/PHYLACINE_1.2.1.zip
