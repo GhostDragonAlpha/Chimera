@@ -85,6 +85,11 @@ def apply_patches(graph, patches):
         records_dir.mkdir(parents=True, exist_ok=True)
         shard_path = records_dir / (
             'records_%03d.json' % (len(list(records_dir.glob('records_*.json'))) + 1))
+    # immutability guards see shard-resident identities too (review F5)
+    for obj in shard.get('objects', []):
+        known.setdefault(obj['id'], obj)
+    for edge in shard.get('relations', []):
+        edges.add((edge['src'], edge['rel'], edge['dst'], edge.get('note', '')))
     added = 0
     BULK = {'reference_entity', 'property_assertion', 'geometry_asset',
             'mapping', 'relationship'}

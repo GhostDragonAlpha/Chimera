@@ -313,7 +313,7 @@ class CreatureGraph:
             stem = os.path.splitext(os.path.basename(path))[0]
             chunk, size, index = {}, 0, 0
             for key in sorted(bulk):
-                item = len(json.dumps({key: bulk[key]}, ensure_ascii=False)) + 2
+                item = len(json.dumps({key: bulk[key]}, ensure_ascii=False).encode()) + 2
                 if chunk and size + item > SHARD_TARGET_BYTES:
                     shard_names.append(self._write_bulk_shard(
                         path, stem, index, chunk))

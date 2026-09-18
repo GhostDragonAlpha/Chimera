@@ -202,7 +202,8 @@ def main():
                         default=ROOT / "tools/creature_graph/data/creature_graph.json")
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
-    packet = compile_packet(loads(args.graph.read_bytes()))
+    from tools.creature_graph.store import merged_payload
+    packet = compile_packet(merged_payload(str(args.graph)))
     raw = canonical(packet)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_bytes(raw)
