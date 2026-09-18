@@ -876,5 +876,17 @@ def main(argv=None):
     return 0
 
 
+# Wave-2 extension is lazy-loaded to preserve the original public API and
+# avoid a circular import: visual_proof_wave2 reuses Canvas and Plot here.
+def build_wave2_renders(out_dir):
+    from .visual_proof_wave2 import build_wave2_renders as _build
+    return _build(out_dir)
+
+
+def verify_wave2(out_dir):
+    from .visual_proof_wave2 import verify_wave2 as _verify
+    return _verify(out_dir)
+
+
 if __name__ == '__main__':
     raise SystemExit(main())

@@ -345,3 +345,218 @@ def reduce_terrain(dem_path, geoid_path, centre_lat, centre_lon, patch_metres=2.
                   'residual_m': residual},
         'window': {'rows': r0, 'cols': c0, 'size': len(values)},
     }
+
+
+# --------------------------------------------------------------------------
+# Integer-band GeoTIFF support (added 2026-09-17, intake-geo lane).
+#
+# The reader above is a FLOAT reader by law: sample_grid decodes float32
+# grids and its behavior is frozen (the pinned terrain receipts replay
+# against it). Categorical land-cover bands (ESA WorldCover uint8) and int16
+# measurement rasters need their own reader that REFUSES float assumptions
+# instead of assuming them away. Same container, same tiepoint/pixel-scale
+# geotransform -- a different value law.
+
+TAG_SAMPLES, TAG_PLANAR, TAG_PREDICTOR = 277, 284, 317
+TAG_GEOKEY_DIR, TAG_GDAL_METADATA, TAG_GDAL_NODATA = 34735, 42112, 42113
+
+SAMPLE_FORMAT_UINT, SAMPLE_FORMAT_INT, SAMPLE_FORMAT_FLOAT = 1, 2, 3
+GEOKEY_GTRASTER, GEOKEY_GEOGRAPHIC_TYPE = 1025, 2048
+
+
+def geokeys(path):
+    """GeoKeyDirectoryTag (34735) direct values: {key: value} for keys stored
+    inline. Keys whose value lives in another tag are returned as
+    ('tag_ref', tag, count) -- this reader only needs the inline ones."""
+    tags, endian, size = tiff_tags(path)
+    require(TAG_GEOKEY_DIR in tags, 'terrain_geokeys_missing', path)
+    typ, cnt, val = tags[TAG_GEOKEY_DIR]
+    require(typ == 3, 'terrain_geokeys_type', path)
+    with open(path, 'rb') as stream:
+        stream.seek(val)
+        raw = stream.read(cnt * 2)
+    numbers = struct.unpack(endian + '%dH' % cnt, raw)
+    require(len(numbers) >= 4 and numbers[0] == 1, 'terrain_geokeys_version', path)
+    keys = {}
+    for i in range(4, len(numbers), 4):
+        key, location, count, value = numbers[i:i + 4]
+        keys[key] = value if location == 0 else ('tag_ref', location, count)
+    return keys
+
+
+def gdal_metadata_items(path):
+    """GDAL_METADATA (42112) ASCII XML -> {item_name: text}. Items carrying a
+    sample index are keyed name#sample (multi-band files)."""
+    import xml.etree.ElementTree as ET
+    tags, endian, size = tiff_tags(path)
+    if TAG_GDAL_METADATA not in tags:
+        return {}
+    typ, cnt, val = tags[TAG_GDAL_METADATA]
+    require(typ == 2, 'terrain_gdal_metadata_type', path)
+    with open(path, 'rb') as stream:
+        stream.seek(val)
+        raw = stream.read(cnt)
+    try:
+        text = raw.decode('utf-8', 'replace')
+        # GDAL pads the ASCII field past the closing tag; parse only the document
+        start = text.find('<GDALMetadata>')
+        end = text.find('</GDALMetadata>')
+        require(start >= 0 and end > start, 'terrain_gdal_metadata_no_document',
+                path)
+        root = ET.fromstring(text[start:end + len('</GDALMetadata>')])
+    except ET.ParseError as exc:
+        raise Refusal('terrain_gdal_metadata_unparsable', str(exc)) from exc
+    items = {}
+    for item in root.iter('Item'):
+        name = item.get('name')
+        if not name:
+            continue
+        key = name + ('#' + item['sample'] if 'sample' in item.attrib else '')
+        items[key] = item.text or ''
+    return items
+
+
+def int_grid_info(path):
+    """Header law of an integer-band tiled GeoTIFF. uint8/int16, single band,
+    Deflate or uncompressed, predictor none/horizontal, tiled layout. A float
+    band (SampleFormat 3) or float predictor (3) REFUSES -- this reader never
+    guesses a float band into integers."""
+    tags, endian, size = tiff_tags(path)
+    width, height = _short(tags, TAG_WIDTH), _short(tags, TAG_HEIGHT)
+    bits = _short(tags, TAG_BITS)
+    compression = _short(tags, TAG_COMPRESSION)
+    predictor = _short(tags, TAG_PREDICTOR) if TAG_PREDICTOR in tags else 1
+    samples = _short(tags, TAG_SAMPLES) if TAG_SAMPLES in tags else 1
+    planar = _short(tags, TAG_PLANAR) if TAG_PLANAR in tags else 1
+    sample_format = (_short(tags, TAG_SAMPLE_FMT) if TAG_SAMPLE_FMT in tags
+                     else SAMPLE_FORMAT_UINT)
+    require(sample_format != SAMPLE_FORMAT_FLOAT, 'terrain_int_reader_refuses_float_band',
+            f'{path}: SampleFormat=3')
+    require(sample_format in (SAMPLE_FORMAT_UINT, SAMPLE_FORMAT_INT),
+            'terrain_int_reader_sample_format_unsupported', str(sample_format))
+    require(bits in (8, 16), 'terrain_int_reader_bits_unsupported', str(bits))
+    require(predictor != 3, 'terrain_int_reader_refuses_float_predictor',
+            f'{path}: Predictor=3')
+    require(predictor in (1, 2), 'terrain_int_reader_predictor_unsupported',
+            str(predictor))
+    require(samples == 1 and planar == 1, 'terrain_int_reader_single_band',
+            f'{path}: samples={samples} planar={planar}')
+    require(compression in (1, 8), 'terrain_int_reader_compression_unsupported',
+            str(compression))
+    for tag in (TAG_TILE_W, TAG_TILE_H, TAG_TILE_OFFS, TAG_TILE_BYTES):
+        require(tag in tags, 'terrain_int_reader_tiled_required', str(tag))
+    nodata = None
+    if TAG_GDAL_NODATA in tags:
+        typ, cnt, val = tags[TAG_GDAL_NODATA]
+        with open(path, 'rb') as stream:
+            stream.seek(val)
+            nodata = stream.read(cnt).split(b'\x00')[0].decode('ascii', 'replace')
+    return {'width': width, 'height': height, 'bits': bits,
+            'sample_format': sample_format, 'predictor': predictor,
+            'compression': compression, 'tile_w': _short(tags, TAG_TILE_W),
+            'tile_h': _short(tags, TAG_TILE_H), 'nodata': nodata,
+            'file_bytes': size}
+
+
+def _undifference(raw, tile_w, tile_h, bytes_per, predictor, endian='<',
+                  signed=False):
+    """TIFF 6.0 predictor-2 (horizontal) undifferencing, WORD-wise per
+    sample (the libtiff/tifffile law): the first sample of each row is
+    absolute, every following sample is the delta from its left neighbour.
+    Predictor 1 is the identity. Rows past the image edge are undifferenced
+    harmlessly -- they are never sampled."""
+    if predictor != 2:
+        return raw
+    code = ('h' if signed else 'H') if bytes_per == 2 else \
+        ('b' if signed else 'B')
+    row_fmt = endian + code * tile_w
+    mask = (1 << (bytes_per * 8)) - 1
+    row_len = tile_w * bytes_per
+    data = bytearray(raw)
+    for r in range(tile_h):
+        base = r * row_len
+        values = list(struct.unpack(row_fmt, bytes(data[base:base + row_len])))
+        for i in range(1, tile_w):
+            values[i] = (values[i] + values[i - 1]) & mask
+        data[base:base + row_len] = struct.pack(row_fmt, *values)
+    return bytes(data)
+
+
+_INT_DECODE_CACHE = {}
+
+
+def sample_grid_int(path, samples, allowed=None):
+    """Read specific (row, col) INTEGER samples from a tiled uint8/int16
+    GeoTIFF -- the categorical/measurement companion of sample_grid.
+
+    Only the tiles actually containing the samples are decoded (the 4.6 MB
+    WorldCover COG expands to 1.3 GB; the float reader's whole-page decode is
+    not repeated here). `allowed` is the band's declared code vocabulary
+    (categorical law): a decoded value outside it refuses. Both decode orders
+    -- this stdlib zlib path and tifffile -- must agree bit-exactly; the
+    agreement is a test falsifier, not an assumption."""
+    info = int_grid_info(path)
+    width, height = info['width'], info['height']
+    tile_w, tile_h = info['tile_w'], info['tile_h']
+    bytes_per = info['bits'] // 8
+    signed = info['sample_format'] == SAMPLE_FORMAT_INT
+    code = ('h' if signed else 'H') if bytes_per == 2 else ('b' if signed else 'B')
+    tags, endian, _ = tiff_tags(path)
+    offsets = _longs_at(path, endian, tags, TAG_TILE_OFFS)
+    counts = _longs_at(path, endian, tags, TAG_TILE_BYTES)
+    tiles_across = (width + tile_w - 1) // tile_w
+    tiles_down = (height + tile_h - 1) // tile_h
+    require(len(offsets) == tiles_across * tiles_down, 'terrain_int_reader_tile_table',
+            path)
+
+    snapped = []
+    for row, col in samples:
+        require(isinstance(row, int) and isinstance(col, int),
+                'terrain_int_reader_integer_index', f'{row},{col}')
+        require(0 <= row < height and 0 <= col < width, 'terrain_sample_outside_grid',
+                f'{path} ({row},{col})')
+        snapped.append((row, col))
+
+    out = {}
+    with open(path, 'rb') as stream:
+        for row, col in snapped:
+            tile_row, tile_col = row // tile_h, col // tile_w
+            index = tile_row * tiles_across + tile_col
+            cache_key = (str(path), index)
+            if cache_key not in _INT_DECODE_CACHE:
+                stream.seek(offsets[index])
+                blob = stream.read(counts[index])
+                if info['compression'] == 8:
+                    blob = zlib.decompress(blob)
+                require(len(blob) >= tile_w * tile_h * bytes_per,
+                        'terrain_int_reader_short_tile', f'{path} tile {index}')
+                decoded = _undifference(blob, tile_w, tile_h, bytes_per,
+                                        info['predictor'], endian,
+                                        info['sample_format']
+                                        == SAMPLE_FORMAT_INT)
+                _INT_DECODE_CACHE[cache_key] = decoded
+            decoded = _INT_DECODE_CACHE[cache_key]
+            rr, cc = row - tile_row * tile_h, col - tile_col * tile_w
+            base = rr * tile_w * bytes_per + cc * bytes_per
+            value = struct.unpack(endian + code, decoded[base:base + bytes_per])[0]
+            if allowed is not None:
+                require(value in allowed, 'terrain_class_outside_legend',
+                        f'{path} ({row},{col}) = {value}')
+            out[(row, col)] = value
+    return out
+
+
+def rowcol_area(gt, lat, lon, edge_eps=1e-9):
+    """Containing pixel of (lat, lon) under RasterPixelIsArea: pixel (row,
+    col) covers lat [lat0-(row+1)*d, lat0-row*d], lon [lon0+col*d,
+    lon0+(col+1)*d]. A point within edge_eps of a pixel edge snaps
+    deterministically and is reported (the tie is recorded, never hidden)."""
+    row_f = (gt['lat0'] - lat) / gt['d_lat']
+    col_f = (lon - gt['lon0']) / gt['d_lon']
+    row_edge = abs(row_f - round(row_f)) <= edge_eps
+    col_edge = abs(col_f - round(col_f)) <= edge_eps
+    if row_edge:
+        row_f = float(round(row_f))
+    if col_edge:
+        col_f = float(round(col_f))
+    return int(math.floor(row_f)), int(math.floor(col_f)), row_edge or col_edge
