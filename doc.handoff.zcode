@@ -1,126 +1,141 @@
-# HANDOFF — lane/draco-decode-20260918 (agent: GLM 5.3)
+# HANDOFF — lane/packet-author-20260918 (agent: GLM 5.3)
 
-Date: 2026-09-18. Branch: `lane/draco-decode-20260918` (pushed to origin,
-force-with-lease after rebases). Base: master tip at time of push (rebased
-twice onto master as it moved: fcaca2a5, then 8e224920).
+Date: 2026-09-18. Branch: `lane/packet-author-20260918` (pushed to origin). Base:
+master tip at time of push (lane base `4b047609`; master did not move during the
+lane). All mechanics ran through PowerShell `.ps1` scripts; Python was the pinned
+`E:\PythonChimera\.venv-hy3d\Scripts\python.exe`;
+E:\PythonChimera otherwise untouched, port 8127 avoided, SharedBody*.json untouched.
 
 ## What this lane was
 
-The pinned Smithsonian USNM 15259 cranium/mandible GLBs render as bounding
-boxes in `tools/science_funnel/validation/visual_proof_20260917/` because
-their geometry decode was REFUSED: they are Draco-compressed
-(KHR_draco_mesh_compression, edgebreaker method 1 / valence traversal type 2,
-bitstream 2.2) and a pure-Python port was falsified. The operator-delegated
-decision: decode via the OFFICIAL Google Draco WASM decoder in a browser
-page. This lane executed that decision.
+AUTHOR-ONLY lane: two concrete, self-contained native-solver implementation packets
+(NO engine implementation), plus the mechanical completeness gate for packets, plus
+their Rule-0 admission records. The executing solver lane implements; this lane made
+sure every equation, constant, falsifier, control, budget and file it needs is already
+derived and falsifiable.
 
-## What was done (in order)
+## Deliverables (all on the lane branch)
 
-1. RULE 0 FIRST — `work.data.visual_proof_20260917` revision 3 banked BEFORE
-   any code (tools/creature_graph/validation/admit_visual_proof_20260917.py,
-   idempotent + revision-aware; revision 2 superseded). Two more falsified
-   premises banked: (d) all Smithsonian plain-named derivatives are ALSO
-   draco (cran/mand medium+low probed); (e) no Python Draco decoder on PyPI
-   (pydraco/pydraco3/draco-loader 404). Falsifier stated pre-run.
-2. Browser decode channel (all mechanics PowerShell; harness in
-   tools/science_funnel/validation/draco_decode_20260918/):
-   - serve_draco.ps1 — raw TcpListener HTTP server on 127.0.0.1:8791
-     (NOT 8127), serves harness + pinned cdn/ libs + the two GLBs + POST
-     back-channel for results.
-   - harness.html — three.js r160 (GLTFLoader+DRACOLoader, import map) over
-     the OFFICIAL gstatic draco_wasm_wrapper.js + draco_decoder.wasm 1.5.7.
-     Pure-JS sha256 (self-tested against the "abc" vector in-page), decodes
-     each GLB TWICE with FRESH DRACOLoader/WASM instances, extracts
-     positions/normals/indices as typed arrays, hashes bytes, captures a
-     labelled PERCEPTUAL EVIDENCE screenshot (WebGL, software rasterizer),
-     and POSTs buffers + hashes back. Corrupt probe: flips ONE byte inside
-     the draco bufferView (offset recorded) and attempts decode.
-   - run_decode.ps1 / compare_decode_runs.ps1 — orchestration, two full page
-     runs (run1, run2), cross-run comparison, decode_receipt.json.
-   - install_decode_artifacts.ps1 — pins decoded buffers + screenshots into
-     the repo and re-verifies the chain on disk.
-   - CDN pins (fetched sha256s in cdn.lock.json, bytes committed in cdn/):
-     three.module.js 76dea815..., GLTFLoader.js d073b438..., DRACOLoader.js
-     65c114ec..., BufferGeometryUtils.js 9be041e9..., draco_wasm_wrapper.js
-     e8049906..., draco_decoder.wasm 2516a4e4...
-3. FALSIFIERS — ALL HELD:
-   - decode determinism: position/normal/index buffer sha256s identical
-     across fresh-decoder in-run passes AND two separate page runs.
-     cranium pos 3d48583302999116... (133,172 verts, 449,997 indices);
-     mandible pos e73d24836219fee7... (97,967 verts, 449,997 indices).
-   - corrupted GLB: one flipped byte inside the draco bufferView -> decode
-     REFUSED loudly in both runs (GLTFLoader throws; recorded verbatim).
-   - renderer: refuses loudly on any pinned-buffer hash mismatch; foreign
-     GLB bytes (sha not matching the decode record) fall back to the honest
-     bbox+refusal render — never fake geometry.
-4. Renderer wiring — tools/science_funnel/visual_proof.py:
-   - load_decode_identity() gates on glb sha256 + ALL buffer file sha256s
-     before any geometry render; render_glb_geometry() = software z-buffer,
-     two-sided Lambert, document.json camera; labelled with the position
-     hash prefix. Honest bbox fallback kept (checkout without decode
-     identity renders exactly as before).
-   - Manifest gains the draco_decode section: glb sha, draco header facts,
-     decoded position/normal/index buffer sha256, vertex/index counts,
-     screenshot sha, corrupt probe, falsifier results.
-   - Note recorded honestly: the trusted decoder emits 133,172 vertices for
-     the cranium while the accessor declares 133,171 (same producer
-     divergence the pure-python lane measured). Identity is pinned to what
-     the trusted decoder produced; both counts recorded.
-5. Tests — tools/science_funnel/tests/test_visual_proof.py extended with
-   F5 (decode identity): buffer chain on disk, screenshot sha, corrupted
-   decoded buffer -> loud Refusal, foreign GLB -> bbox fallback, receipt
-   re-decode + corrupt assertions. Existing F1-F4 untouched and green.
-6. Graph record — revision 4 banked after the falsifiers ran (status:
-   tested, measured identities in the prediction, receipt pointer).
-   Evidence count UNCHANGED at 11; work count 73.
+1. `docs/packets/free_root_balance_v1.md` — the qualified 2-coordinate coupled arm
+   extended to 6-DOF floating base + 2 joints = 8 DOF. Derives, in the exact
+   conventions of `ChimeraEngine/engine/coupled_dynamics.hpp` +
+   `coupled_articulation.hpp` (every constant identifier-matched: kTouch=1e-5,
+   kSlip=1e-9, gate=1e-6+1e-3|v|, 42-step bisection, 1e-9 localizations, depth<8,
+   40-step battery bisection, the share identities): D1 base kinematics as a 6-axis
+   sternum joint through the EXISTING Model (no new kinematics code), D2 the n=8
+   inertia sums with block structure, D3 equations of motion (zero torque on base
+   rows by construction), D4 contact as a LIST of 3D point-on-plane rows,
+   D5 the 3-row stick cone solve + qualified slide closed forms at 8 rows,
+   D6 active-set projection replacing mask enumeration with a termination
+   derivation, D7 balance = gravity compensation through contact (barycentric
+   support-hull condition), D8 the ledger extension, D9 why RK4+event-splits stays,
+   D10 the mount-locked mode as FROZEN bit-exact dispatch (the qualified class runs
+   verbatim; a weld is not six unilateral rows). Falsifiers F1-F9 incl. the task's
+   three: a creature that cannot FALL cannot walk (F1), zero-torque standing must
+   collapse (F2), support-polygon violation must tip (F3).
+2. `docs/packets/seven_coordinate_lift_v1.md` — native lift of all seven unlocked
+   source coordinates against `tools/science_funnel/coupled_arm.py::Assembly` as an
+   independent oracle (1e-12 relative on M/gravity/bias/Jacobian at recorded-seed
+   poses): 7-row joint-stop cascade with a deterministic
+   earliest-crossing/lowest-index tie law (the qualified n=2 `t <= hit` last-wins
+   tie stays byte-for-byte on the frozen path), per-drive actuator stores (honest
+   note: mechanical-energy closure stays GLOBAL), hand contact on the 7-row point
+   Jacobian, staged ladder 2 -> 3 -> 5 -> 7 (stage 0 = the frozen bit-exact
+   control), falsifiers F1-F9, staged file plan. Recommended to land BEFORE the
+   free-root packet (validates the shared generalized-row solver on the fixed root).
+3. `tools/science_funnel/check_packet.py` — the completeness gate: required
+   sections, Rule-0 triple, >= 3 falsifiers each with a refusal criterion, a frozen
+   bit-exactness claim, measurable budgets, an on-disk file list (NEW paths need at
+   least their parent), and the banked admission record in the authored program.
+   Read-only, deterministic, exit 0 over both packets.
+4. `tools/science_funnel/tests/test_packet_checker.py` — wires the gate into the
+   funnel suite permanently.
+5. `tools/creature_graph/validation/admit_solver_packets_20260918.py` — Rule-0
+   records banked BEFORE any implementing code:
+   `work.dynamics.free_root_balance_packet` +
+   `work.dynamics.seven_coordinate_lift_packet` (kind work, status specified,
+   falsifier status untested — honest: nothing in the packets is measured yet).
+   Idempotent AND revision-aware (no-op at current revision, supersedes known prior
+   revisions, REFUSES foreign content). Second run verified a no-op.
+6. `tools/creature_graph/data/{creature_graph.json, authored/project_program.json}`
+   rebuilt via `build_graph.py`: deterministic (identical graph_hash across two
+   builds: 6da0dcccbd3ea9e6), objects 35327 -> 35329, relations 38742 -> 38746,
+   **evidence 11 UNCHANGED**, work 73 -> 75.
+7. `.doclint.allow` — dated block allowing the packets' PLANNED (NEW) file paths
+   (a planned path is not a broken pointer). `doc_lint.py --staged` clean.
 
-## Qualification state (on the final rebased tree)
+## Falsifier status (honest)
 
-- admit_visual_proof_20260917.py: no-op (already at current revision).
-- build_graph.py --check-only: clean; evidence 11 (unchanged), work 73.
-- visual_proof.py build + --verify: all 5 renders byte-identical, chain
-  intact.
+Both packets' falsifiers are UNTESTED by design: authoring lane, no runtime runs.
+The admission records say so (`falsifier.status: untested`, acceptance_test filled
+only in the implementing lane's revision 2). The gates that ARE measured for this
+lane are the suite results below.
+
+## Evidence-staleness verification (the trap this lane checked for)
+
+7 evidence records are stored-stale (ev.band_seal_conservation,
+ev.reflex_controls_fail, ev.xpbd_fidelity_gap, ev.limb_restore_recipes_20260915,
+ev.limb_live_control_20260915, ev.limb_cold_restart_20260915,
+ev.limb_seal_history_20260915). Verified PRE-EXISTING: extracted the pristine
+baseline store with `git show 4b047609:...` into a temp dir beside byte-identical
+bulk shards, loaded through the same CreatureGraph.load merge — the SAME 7 are
+stored-stale at baseline, and `refresh_validation` recomputes ZERO stale records on
+both trees. The lane's additions (2 work objects + their 4 requires_implementation
+edges) cannot and did not stale anything.
+
+## Store-diff audit (object-level, vs baseline 4b047609)
+
+Additions are EXACTLY the two packet records + their 4 requires_implementation
+edges; zero removals. ONE pre-existing object re-synced by the rebuild:
+`work.data.visual_proof_20260917` — the STORE artifact at base held the draco
+lane's revision 3 while the committed AUTHORED program already held revision 4
+(their final store save predated their final admission, or a rebase took an
+upstream store JSON); `build_graph.py` takes the store to its authored input, so
+the rebuild updated that record's `physical`/`falsifier` fields to revision 4.
+Verified field-level: program record == rebuilt-store record; the record is a dep
+of NO evidence capture, so no validation state moves. Reviewers who see
+visual_proof lines in the store diff: that is this sync, not an edit of another
+lane's record by hand.
+
+## Qualification state (final tree)
+
+- build_graph.py --check-only: clean.
+- project_spec --check: ok (structure + active-specification contracts).
+- graph contracts (tools/creature_graph/tests/test_contracts.py): 19 tests OK.
+- project_spec tests (unittest discover -p test_project_spec.py): 14 tests OK.
+- packet checker: exit 0 over both packets (also green inside the funnel suite).
+- funnel suite (python -B -m unittest discover -s tools/science_funnel/tests):
+  258 tests OK (skipped=1) on the final tree in 2674 s under heavy CPU
+  contention from other lanes' jobs (baseline on pristine 4b047609: 257 OK,
+  skipped=1, 1062 s). The +1 test is the new packet gate
+  (test_packet_checker.py).
 - graphify consumer roundtrip (qualify --consumer-graph on the built store):
-  ALL CHECKS PASS (35,327 objects reversible, 38,742 relations intact,
-  honest-empty checks pass).
-- Full funnel suite (python -B -m unittest discover -s
-  tools/science_funnel/tests): 224 tests OK on the pre-push tree, plus a
-  final confirmation run on the exact pushed tree (suite_final.log; the
-  commit process is gated on it).
-
-Honest process note: during rebase #2 I let a suite run continue WHILE the
-worktree was being rebased under it -- that run's logs are garbage (a
-transient trainer_spine 'completed' != 'refused' sighting came from files
-changing mid-run; the same SweepHarness PASSES on pristine master 8e224920
-in a clean worktree and arrangement refuses correctly on the final tree --
-verified by direct sweep_module reproduction). Do not repeat that mistake:
-rebase FIRST, then qualify on the stable tree.
+  HONEST — 35329/35329 objects reversible, 38746/38746 relations intact,
+  all checks pass.
 
 ## Publishing
 
-Pushed `HEAD:lane/draco-decode-20260918` only; master NEVER touched.
-origin/master moved twice during the lane; rebased both times with the
-policy "take upstream on graph JSONs, re-run the idempotent scripts"
-(admit + build_graph + renders/verify re-run after each rebase). Verify the
-remote tip equals local HEAD before merging:
-  git rev-parse origin/lane/draco-decode-20260918  (== local HEAD)
+Pushed `lane/packet-author-20260918` only; master NEVER touched. Verified
+`git rev-parse origin/lane/packet-author-20260918` == local HEAD after push.
+Commit trailer: `Agent: GLM 5.3`.
 
-## Known quirks / gotchas for the next agent
+## Gotchas for the next agent (this checkout)
 
-- PowerShell UTF8 BOM: [System.Text.Encoding]::UTF8 in WriteAllText writes a
-  BOM; the lane writers use [System.Text.UTF8Encoding]::new($false) and the
-  Python readers use utf-8-sig. Keep that convention.
-- Select-Object -First N on a native-command pipeline KILLS the process
-  mid-write (broke a build_graph once). Redirect to a log file instead.
-- Git on this box intermittently leaves stale locks under .git when a script
-  crashes (CHERRY_PICK_HEAD.lock, packed-refs.lock). Check Get-Process git,
-  delete the locks, retry.
-- The listener (serve_draco.ps1) runs detached; kill it by matching
-  'serve_draco.ps1' in the command line when done with the harness.
-- Local run artifacts of the harness (out/, logs/, staging/) are gitignored;
-  decode_receipt.json + cdn/ + scripts are the committed evidence.
+- The store/bulk JSONs are LF in the working copy; git warns "LF will be replaced
+  by CRLF" and `git status` lists the bulk shards as modified after every rebuild
+  even when content-identical. `git diff --cached --numstat` on them must show
+  NOTHING before you commit (normalization only); if it shows lines, stop.
+- `Select-String ... | ForEach-Object { $_.LineNumber + ": " }` throws (int + string
+  cast); use "$($_.LineNumber): ..." interpolation.
+- `git show <rev>:<path>` redirected from PowerShell mangles encoding; extract
+  binary-safe via python subprocess (this lane's check_stale.py pattern).
+- qualify --consumer-graph needs its --output dir to exist; it never touches the
+  committed projection (consumer.DEMO_DIR is redirected to scratch).
+- Background suites: redirect to a log file and READ THE LOG; never pipe native
+  output through Select-Object -First (kills the writer mid-run).
 
 ## Never-do reminders honored
 
-E:\PythonChimera untouched (except running its pinned python.exe); port
-8127 avoided; SharedBody*.json untouched; only this lane branch pushed.
+E:\PythonChimera untouched (except running its pinned python.exe); port 8127
+avoided; tools/game_shell/progress/SharedBody*.json untouched; no engine
+implementation (author-only lane); only this lane branch pushed.
