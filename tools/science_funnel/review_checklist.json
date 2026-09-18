@@ -1,0 +1,81 @@
+{
+  "_comment": "Static review checklist — patterns that have caught real bugs. Edit patterns, not code, to tune.",
+  "physics_paths": [
+    "ChimeraEngine/engine/*.hpp",
+    "ChimeraEngine/engine/*.cpp",
+    "tools/science_funnel/coupled_*.py",
+    "tools/science_funnel/force_*.py",
+    "tools/science_funnel/earth_scene.py",
+    "tools/science_funnel/surface_scene.py",
+    "tools/science_funnel/thermal_scene.py"
+  ],
+  "test_paths": [
+    "tools/science_funnel/tests/test_*.py",
+    "tools/science_funnel/tests/qualify_*.py",
+    "ChimeraEngine/engine/tests_*/native.cpp",
+    "ChimeraEngine/engine/tests_*/friction_unit.cpp",
+    "ChimeraEngine/engine/tests_*/mucrit_derivation.cpp"
+  ],
+  "receipt_glob": "tools/science_funnel/validation/*/receipt.json",
+  "graph_json_prefixes": [
+    "tools/creature_graph/data/creature_graph.json",
+    "tools/creature_graph/data/authored/"
+  ],
+  "frozen_markers": [
+    "bit_exact",
+    "bit-exact",
+    "bit_identical",
+    "bit-identical",
+    "frozen",
+    "reference_cases",
+    "reproduces.*bit",
+    "bit-exactly"
+  ],
+  "assertion_markers": [
+    "assert",
+    "ck(",
+    "REQUIRE",
+    "CHECK(",
+    "EXPECT",
+    "Refusal",
+    "refused",
+    "falsifier"
+  ],
+  "f2_mu_pair": ["0.05", "0.8"],
+  "f2_threshold_markers": [
+    "mucrit",
+    "critical",
+    "threshold",
+    "hold_vs_slide",
+    "hold-vs-slide",
+    "0.6",
+    "slide_ticks",
+    "travel"
+  ],
+  "f3_cone_markers": ["friction_cone"],
+  "f3_impact_markers": ["friction_impact_cone", "impact_cone", "impact-level"],
+  "f3_jt_markers": ["jt_row", "force_decomposition", "J^T", "jt_force", "friction_impact_cone"],
+  "f1_rest_markers": ["slip_sign", "rt>=", "rt >=", "exact-rest", "exact_rest", "slip_sign==0"],
+  "f1_seam_markers": ["friction_unit", "rest_lambda", "opposes_impending", "impending_slip"],
+  "f4_stale_markers": ["No friction"],
+  "f4_fixed_markers": ["live Coulomb", "Coulomb friction", "mu in [0,1]"],
+  "receipt_required_keys": [
+    "schema",
+    "candidate_commit",
+    "candidate_tree",
+    "scope",
+    "checks",
+    "replay"
+  ],
+  "receipt_schema_value": "chimera.scoped_validation.v1",
+  "evidence_pin_value": 11,
+  "merge_replay_markers": [
+    "replay",
+    "re-run",
+    "rerun",
+    "reprove",
+    "admission",
+    "receipt",
+    "idempotent"
+  ]
+}
