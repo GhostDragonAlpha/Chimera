@@ -24485,6 +24485,23 @@
       "verified_utc": "2026-09-18T00:24:42.747775+00:00",
       "note": "Store split + Rhea residency; receipts terrain_20260917/batch_rhea_20260917."
      }
+    },
+    "observation": {
+     "lane_reports": [
+      {
+       "stamp": "lane_report_20260918_paper_table_inertia",
+       "lane": "PAPER-TABLE-INERTIA-INTAKE (thread 4, branch lane/paper-inertia-20260918, 2026-09-18)",
+       "changed_behavior": "Oku, Ide & Ogihara 2021 Table 1 (Macaca fuscata segment inertial parameters, single adult male cadaver, Ogihara 2009 lineage) is now admitted through the batch membrane: connector oku_paper_table, adapter oku_paper_table, class contract batch.property.paper_table_inertial (paper-table variant authored because the shared measurement class cannot express a mixed kg/m/dimensionless/kg*m2 source without re-gating other lanes).",
+       "counts": "21 property_assertion records (20 segment x quantity + 1 table-summary implied whole-body mass 9.111 kg), 0 quarantined, count identity closed; every banked value verified digit-for-digit against the live page (PMC version of record; nature.com serves a JS client-challenge to non-browser fetchers, recorded).",
+       "candidate": "bundle 1ad2c92f0b1e (content-addressed), store objects_added 0 on re-apply, idempotent replay no-op, graphify round-trip HONEST (7 checks), receipt tools/science_funnel/validation/batch_paper_inertia_20260918/receipt.json",
+       "closures": "mass sum 9.111 kg +/-0.0025 kg (table rounding); implied mass INSIDE the declared +/-10% PanTHERIA Macaca fuscata envelope (mean 10.11476 kg) at -9.92%, margin 0.0077160 kg -- tight, recorded as an open specimen-coverage question; comparison only, never fused",
+       "not_implemented": "forelimbs folded into HAT (structural, on every record); whole-body mass implied not published; single cadaver, no population variance; inertia axis basis \"about the COM\" per footnote, axial vs transverse not published",
+       "qualified_scope": "paper-table intake and mechanical batch proof only; no runtime, no organism claim, Ogihara model release remains ON_REQUEST (this lane is R3-adjacent intake, not the release)",
+       "blockers": "none for this lane; host contention with parallel lanes required detached runs (integrator timeout directive followed)",
+       "next_executable": "reductions over the admitted inertias (segment sum -> candidate whole-body parameters) are NOT done and are the natural next lane; free-root balance work follows whole-body inertias per the banked proposal",
+       "unit_tests": "tools/science_funnel/tests/test_batch_paper.py (11 tests) green"
+      }
+     ]
     }
    },
    "falsifier": {
@@ -40935,6 +40952,43 @@
      "licensing": "Paper license is not dataset license. Do not incorporate noncommercial-only meshes into a commercial game without separate authorization. On-request model availability is not a downloaded asset.",
      "taxon": "Keep Macaca species and specimens separate. No silent whole-body fusion of different specimens; fitted/analogous records require explicit mapping and scale.",
      "target": "Complete skeleton, then cartilage/ligament/tendon, active muscle, fat/skin, eyes/ears with honest physical boundaries."
+    },
+    "observation": {
+     "paper_table_admissions": [
+      {
+       "stamp": "admission_20260918_paper_table_inertial",
+       "lane": "PAPER-TABLE-INERTIA-INTAKE (thread 4, 2026-09-18)",
+       "kind": "R3-adjacent paper-table intake, NOT the Ogihara model release (the model itself stays ON_REQUEST per the banked dossier)",
+       "statement": "Oku, Ide & Ogihara 2021 (Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w) Table 1 \"Dimensions and inertial parameters of the limb segments\" (single adult male Macaca fuscata cadaver, Ogihara 2009 lineage) is admitted through the batch membrane as 20 property_assertion records (one per segment x quantity: mass kg, length m, COM fraction, moment of inertia kg*m2 for HAT/thigh/shank/foot/phalanges) plus one table-summary record (implied whole-body mass 9.111 kg), under the paper-table class contract batch.property.paper_table_inertial.",
+       "prediction": "Every banked value matches the live page digit-for-digit (one recorded normalization: exponent case, U+2212, zero padding); the count identity closes fetched == admitted + quarantined + conflicts at 21 == 21 + 0 + 0; a corrupted cell quarantines exactly its segment row (and the dependent summary) and refuses the batch; a second full run creates zero objects and reproduces the graph hash byte-identically.",
+       "falsifiers": {
+        "corrupted_table_value": "one digit altered in the pinned table XML must quarantine exactly that segment row with digit_mismatch (and the dependent summary), close the count identity, and refuse the batch",
+        "count_identity": "fetched == admitted + quarantined + conflicts, asserted per connector run",
+        "idempotent_apply": "re-running the batch apply against the rebuilt graph must be a no-op (same hash, no new identities)"
+       },
+       "closures_derived_before_admission": {
+        "mass_sum": "5 published masses sum to 9.111 kg = the implied whole-body mass; rounding tolerance +/-0.0025 kg (5 x 0.0005 kg at the table's stated 0.001 kg precision); whole-body mass is not published by the table",
+        "dimensional": "units kg / m / dimensionless fraction / kg*m2 with per-quantity envelopes derived and enforced per record",
+        "plausibility": "implied mass 9.111 kg sits INSIDE the declared +/-10% envelope around the PanTHERIA 1.0 Macaca fuscata species mean (10.11476 kg, pinned ECOL_90_184.zip) at -9.92%, margin 0.0077160 kg -- tight; comparison only, never fused or scaled"
+       },
+       "not_implemented": [
+        "forelimbs are folded into HAT in this table: structural gap of the source, recorded on every record, never patched",
+        "whole-body mass not published; implied mass is the five-segment sum, ~1 kg below the species mean (open specimen-coverage question)",
+        "single cadaver: no population variance, no per-segment uncertainty columns",
+        "inertia axis basis is \"about the COM\" per the table footnote; axial vs transverse axis distinction not published",
+        "no bilateral pairing: the table is single-limb/agnostic"
+       ],
+       "provenance": {
+        "pinned_artifact": "tools/science_funnel/data/oku_paper_table/PMC7940622_fulltext.xml",
+        "artifact_sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d",
+        "route": "EuropePMC fullTextXML (PMC version of record); nature.com/tables/1 refuses non-browser fetchers (recorded)",
+        "license": "CC BY 4.0, sentence quoted verbatim from the pinned page and carried on every record",
+        "verification": "tools/creature_graph/validation/batch_paper_inertia_20260918/verification.json (verdict CLOSED, 20/20 cells MATCH)",
+        "closures": "tools/creature_graph/validation/batch_paper_inertia_20260918/closures.json"
+       },
+       "classification": "Admission record banked before the batch apply; not a claim of runtime readiness."
+      }
+     ]
     }
    },
    "falsifier": {

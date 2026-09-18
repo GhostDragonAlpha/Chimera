@@ -7,7 +7,7 @@ $ErrorActionPreference = 'Stop'
 $lane = 'E:\ChimeraWork\paper-inertia-20260918'
 $val  = Join-Path $lane 'tools\creature_graph\validation\batch_paper_inertia_20260918'
 $py   = 'E:\PythonChimera\.venv-hy3d\Scripts\python.exe'
-$receipt = Join-Path $val 'receipt.json'
+$receipt = Join-Path $lane 'tools\science_funnel\validation\batch_paper_inertia_20260918\receipt.json'
 
 # Quiet-window guard: other lanes' qualify/consumer suites share this host.
 $deadline = (Get-Date).AddMinutes(10)
