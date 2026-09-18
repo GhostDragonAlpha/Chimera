@@ -63073,6 +63073,93 @@
     "storage": "chimera-intake:e5fa2ec877335887d552908b45a15f9fcf4fd994fdb8bedbefb2ff4dce380f02"
    },
    "status": "extracted"
+  },
+  {
+   "id": "model.dynamics.coupled_arm7",
+   "kind": "model",
+   "name": "Seven-coordinate native arm dynamics recipe",
+   "status": "specified",
+   "priority": "P1",
+   "dependencies": [
+    "model.anatomy.macaque_arm",
+    "model.environment.earth_patch"
+   ],
+   "evidence": [],
+   "falsifier": {
+    "statement": "A native M/gravity/bias/Jacobian deviating from the Python Assembly oracle beyond 1e-12 relative, a stop landing outside its bound by more than 1e-9, a negative per-drive store, a disabled drive that spends energy, a ledger identity violation, or a single byte of regression in the qualified two-coordinate world falsifies the seven-coordinate recipe.",
+    "status": "untested"
+   },
+   "physical": {
+    "statement": "Seven-coordinate native arm dynamics recipe",
+    "prediction": "All seven unlocked source coordinates move under per-drive capped servo drives with finite per-drive stores; generalized quantities match the Python oracle to 1e-12 relative at every pose; the qualified two-coordinate scene runs bit-exactly unchanged.",
+    "contract": {
+     "schema": "chimera.coupled_scene7.v1",
+     "source_model_id": "model.anatomy.macaque_arm",
+     "coordinates": [
+      "shoulder_flexion",
+      "elbow_flexion",
+      "radial_pronation",
+      "wrist_flexion",
+      "wrist_abduction",
+      "shoulder_adduction",
+      "shoulder_rotation"
+     ],
+     "hand_body": "hand",
+     "hand_point_m": [
+      0.001777657291666502,
+      -0.036138621093750024,
+      0.002310406250000002
+     ],
+     "attachment_id": "world.earth.patch.coupled_arm_hand",
+     "proxy_radius_m": 0.007,
+     "tick_hz": 300,
+     "substeps": 4,
+     "servo_frequency_Hz": 2.0,
+     "servo_damping_ratio": 0.8,
+     "passive_decay_rate_s": 2.0,
+     "battery_initial_J": 2.0,
+     "defaults": {
+      "shoulder_flexion_target_deg": 20.0,
+      "elbow_flexion_target_deg": 110.0,
+      "radial_pronation_target_deg": 0.0,
+      "wrist_flexion_target_deg": 0.0,
+      "wrist_abduction_target_deg": 0.0,
+      "shoulder_adduction_target_deg": 0.0,
+      "shoulder_rotation_target_deg": 0.0,
+      "shoulder_flexion_torque_limit_N_m": 0.6,
+      "elbow_flexion_torque_limit_N_m": 0.3,
+      "radial_pronation_torque_limit_N_m": 0.3,
+      "wrist_flexion_torque_limit_N_m": 0.3,
+      "wrist_abduction_torque_limit_N_m": 0.3,
+      "shoulder_adduction_torque_limit_N_m": 0.6,
+      "shoulder_rotation_torque_limit_N_m": 0.6,
+      "shoulder_flexion_drive": true,
+      "elbow_flexion_drive": true,
+      "radial_pronation_drive": true,
+      "wrist_flexion_drive": true,
+      "wrist_abduction_drive": true,
+      "shoulder_adduction_drive": true,
+      "shoulder_rotation_drive": true,
+      "power": true,
+      "load_N": 0.0,
+      "contact_enabled": false,
+      "contact_friction": 0.0
+     },
+     "assumptions": [
+      "Root fixed (mounted sternum, the free-root packet's scope, not this one); all seven unlocked source coordinates move; the source model's locked coordinates stay fixed by authoring.",
+      "Pinned coordinate order is kinematic chain depth order (sternum->humerus->ulna->radius->hand) with the qualified pair first, so stage comparisons are prefix expansions; the Python oracle's own order is sorted() and the fixture pins the permutation in one declared list.",
+      "Per-drive ideal capped actuator stores (battery_initial_J per drive, the same derived 2.0 J capacity per source): the qualified scene's ONE shared battery is a TWO-drive contract and is not extended; adding a third drive to a shared store would change qualified behavior, which the frozen control forbids.",
+      "Torque-cap rails: 0.6 N m for shoulder-class drives (shoulder_flexion, shoulder_adduction, shoulder_rotation) and 0.3 N m for elbow/wrist-class drives, carried from the qualified drive hardware classes; an authored hardware mapping, not a measured muscle limit.",
+      "Servo gains extend by the qualified mass-normalized PD at the diagonal: kp_d = M[d][d]*(2*pi*f)^2, kd_d = 2*zeta*M[d][d]*(2*pi*f), damping_d = M[d][d]*decay, evaluated at model defaults.",
+      "Simultaneous joint stops project in the mass metric with nonnegative multipliers; an event-level cascade localizes each violated bound by its own bisection, the earliest crossing wins and ties within 1e-12*h break to the LOWEST recipe-coordinate index (one stop impact per event, recursion bounded); the qualified n=2 loop keeps its own last-index tie law byte-for-byte.",
+      "Optional hand contact on the full n-row point Jacobian with the qualified single-tangent Coulomb solve lifted row-count-only; touching band, gate and floors carried verbatim; friction heat enters the GLOBAL energy ledger (there is no per-drive energy closure and none is claimed).",
+      "contact_enabled is false by default; toggling it requires an explicit reset; enabled scenes start with a strictly positive gap at the reset pose; mu is live without reset.",
+      "CPU reference reuses native source binding and Earth field; no free root, muscles, grasping, whole animal or GPU residency is claimed at seven coordinates."
+     ],
+     "contact_plane_height_m": 0.35,
+     "contact_plane_id": "world.earth.patch.coupled_arm_contact_plane"
+    }
+   }
   }
  ],
  "relations": [
