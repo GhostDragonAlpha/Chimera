@@ -7,9 +7,11 @@ import csv
 import hashlib
 import json
 import math
+import os
 import re
 import struct
 import zipfile
+from concurrent.futures import ProcessPoolExecutor
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -303,18 +305,61 @@ def render_taxdmp(names_path, nodes_path):
     return c.png(), {'root_tax_id':'9539','root_rank':'genus','binomials':len(children),'names':[names[x] for x in children]}
 
 
-def build_wave2_renders(out_dir):
-    out=Path(out_dir); out.mkdir(parents=True,exist_ok=True); renders=[]
+def _wave2_jobs():
+    """Return the ordered, immutable render job table.
+
+    Workers receive only paths and scalar parameters. They never write the
+    manifest or validation directory, so a worker failure cannot leave a
+    plausible partial proof bundle behind.
+    """
     gu=DATA/'guimaraes_arch'/'AJPA-190-e70329-s001.xlsx'; oku=DATA/'oku_bipedal'/'42003_2021_1831_MOESM2_ESM.xlsx'; rh=DATA/'rhea'/'rhea-chebi-smiles.tsv'; thor=DATA/'thor_ucs'/'2 -  UCS.csv'; soil=DATA/'vienna_soil'/'Zenodo_DATA_Soranzo.csv'; gs=DATA/'noaa_gsod'/'78535011630.csv'; gsread=DATA/'noaa_gsod'/'readme.txt'; wc=DATA/'esa_worldcover'/'ESA_WorldCover_10m_2021_v200_N18W066_Map.tif'; grid=DATA/'esa_worldcover'/'esa_worldcover_grid.geojson'; pum=DATA/'esa_worldcover'/'WorldCover_PUM_V2.0.pdf'; names=DATA/'ncbi_taxdmp'/'macaca_names.tsv'; nodes=DATA/'ncbi_taxdmp'/'macaca_nodes.tsv'
-    png,m=render_guimaraes(gu); _emit(out,renders,'guimaraes_muscle_architecture',png,m,[('xlsx',gu)],{'identity':'mass/(1060 kg/m3 x fascicle_length)'})
-    png,m=render_oku(oku); _emit(out,renders,'oku_bipedal_gait_grf',png,m,[('xlsx',oku)],{'panel':'posture blocks; twin angle/GRF axes'})
-    png,m=render_rhea(rh); _emit(out,renders,'rhea_participant_species_distribution',png,m,[('participant_smiles',rh)],{'measure':'SMILES character length; non-spatial distribution'})
-    png,m=render_thor(thor); _emit(out,renders,'thor_rock_ucs_lithology',png,m,[('csv',thor)],{'sort':'mean UCS descending'})
-    png,m=render_soil(soil); _emit(out,renders,'vienna_soil_depth_density',png,m,[('csv',soil)],{'scatter':'source depth if present; specimen order when absent'})
-    png,m=render_gsod(gs); _emit(out,renders,'noaa_gsod_annual_temperature',png,m,[('csv',gs),('sentinel_readme',gsread)],{'missing':'sentinel cells marked red'})
-    png,m=render_worldcover(wc); _emit(out,renders,'esa_worldcover_n18w066_class',png,m,[('tif',wc),('tile_grid',grid),('product_manual',pum)],{'centre':[18.1565,-65.7350],'class_label':'Permanent water bodies'})
-    png,m=render_taxdmp(names,nodes); _emit(out,renders,'ncbi_taxdmp_macaca_tree',png,m,[('names',names),('nodes',nodes)],{'root':'9539 genus Macaca'})
-    manifest={'kind':'visual_proof_manifest.v2','label':'PROOF-OF-INTAKE renders: pinned admitted data rendered deterministically. NOT physics verification.','work_item':'work.data.visual_proof_wave2_20260918','admission':'docs/research/20260918_visual_proof_wave2.md','parent_wave1_manifest':_sha(WAVE1/'manifest.json') if (WAVE1/'manifest.json').exists() else None,'renders':renders}
+    return [
+        ('guimaraes_muscle_architecture','render_guimaraes',(gu,),[('xlsx',gu)],{'identity':'mass/(1060 kg/m3 x fascicle_length)'}),
+        ('oku_bipedal_gait_grf','render_oku',(oku,),[('xlsx',oku)],{'panel':'posture blocks; twin angle/GRF axes'}),
+        ('rhea_participant_species_distribution','render_rhea',(rh,),[('participant_smiles',rh)],{'measure':'SMILES character length; non-spatial distribution'}),
+        ('thor_rock_ucs_lithology','render_thor',(thor,),[('csv',thor)],{'sort':'mean UCS descending'}),
+        ('vienna_soil_depth_density','render_soil',(soil,),[('csv',soil)],{'scatter':'source depth if present; specimen order when absent'}),
+        ('noaa_gsod_annual_temperature','render_gsod',(gs,),[('csv',gs),('sentinel_readme',gsread)],{'missing':'sentinel cells marked red'}),
+        ('esa_worldcover_n18w066_class','render_worldcover',(wc,),[('tif',wc),('tile_grid',grid),('product_manual',pum)],{'centre':[18.1565,-65.7350],'class_label':'Permanent water bodies'}),
+        ('ncbi_taxdmp_macaca_tree','render_taxdmp',(names,nodes),[('names',names),('nodes',nodes)],{'root':'9539 genus Macaca'}),
+    ]
+
+
+def _run_wave2_job(job):
+    rid, function_name, args, inputs, params = job
+    png, metrics = globals()[function_name](*args)
+    return rid, png, metrics, inputs, params
+
+
+def _worker_count(workers):
+    if workers is None:
+        workers = os.environ.get('CHIMERA_PROOF_WORKERS', '1')
+    workers = int(workers)
+    require(workers >= 1, 'proof_workers', workers)
+    return min(workers, len(_wave2_jobs()))
+
+
+def build_wave2_renders(out_dir, workers=None):
+    """Build the wave-2 bundle, optionally using bounded process parallelism.
+
+    `workers=1` is the reference path. For bulk runs, set
+    `CHIMERA_PROOF_WORKERS` or pass `workers=N`; N processes parse/draw in
+    parallel, while result ordering, hashing, and all filesystem writes remain
+    serial and deterministic.
+    """
+    out=Path(out_dir); out.mkdir(parents=True,exist_ok=True); renders=[]
+    jobs = _wave2_jobs()
+    count = _worker_count(workers)
+    if count == 1:
+        results = [_run_wave2_job(job) for job in jobs]
+    else:
+        with ProcessPoolExecutor(max_workers=count) as pool:
+            futures = [pool.submit(_run_wave2_job, job) for job in jobs]
+            # Deliberately consume in declaration order, not completion order.
+            results = [future.result() for future in futures]
+    for rid, png, metrics, inputs, params in results:
+        _emit(out, renders, rid, png, metrics, inputs, params)
+    manifest={'kind':'visual_proof_manifest.v2','label':'PROOF-OF-INTAKE renders: pinned admitted data rendered deterministically. NOT physics verification.','work_item':'work.data.visual_proof_wave2_20260918','admission':'docs/research/20260918_visual_proof_wave2.md','parent_wave1_manifest':_sha(WAVE1/'manifest.json') if (WAVE1/'manifest.json').exists() else None,'workers':count,'render_order':'declaration order; worker completion order is not observable','renders':renders}
     (out/'manifest.json').write_text(json.dumps(manifest,indent=1,sort_keys=True)+'\n',encoding='utf-8')
     return manifest
 

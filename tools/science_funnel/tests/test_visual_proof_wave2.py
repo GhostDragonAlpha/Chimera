@@ -13,10 +13,19 @@ OUT = ROOT / 'tools' / 'science_funnel' / 'validation' / 'visual_proof_wave2_202
 
 
 class Wave2VisualProof(unittest.TestCase):
+    def test_parallel_render_set_matches_serial_byte_for_byte(self):
+        with tempfile.TemporaryDirectory() as serial, tempfile.TemporaryDirectory() as parallel:
+            one = VP.build_wave2_renders(serial, workers=1)
+            many = VP.build_wave2_renders(parallel, workers=2)
+            self.assertEqual([x['id'] for x in one['renders']], [x['id'] for x in many['renders']])
+            self.assertEqual([x['png_sha256'] for x in one['renders']], [x['png_sha256'] for x in many['renders']])
+            self.assertEqual(many['workers'], 2)
+            self.assertEqual(many['render_order'], 'declaration order; worker completion order is not observable')
+
     def test_render_set_is_deterministic(self):
         with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
-            ma = VP.build_wave2_renders(a)
-            mb = VP.build_wave2_renders(b)
+            ma = VP.build_wave2_renders(a, workers=1)
+            mb = VP.build_wave2_renders(b, workers=1)
             self.assertEqual([x['id'] for x in ma['renders']], [x['id'] for x in mb['renders']])
             self.assertEqual(len(ma['renders']), 8)
             for ra, rb in zip(ma['renders'], mb['renders']):
@@ -35,6 +44,12 @@ class Wave2VisualProof(unittest.TestCase):
             for source in entry['inputs']:
                 self.assertEqual(hashlib.sha256((ROOT / source['path']).read_bytes()).hexdigest(), source['sha256'])
 
+    def test_invalid_worker_count_refuses_before_writing(self):
+        with tempfile.TemporaryDirectory() as out:
+            with self.assertRaisesRegex(ValueError, 'proof_workers'):
+                VP.build_wave2_renders(out, workers=0)
+            self.assertEqual(list(Path(out).iterdir()), [])
+
     def test_one_byte_rhea_input_changes_or_refuses(self):
         source = W.DATA / 'rhea' / 'rhea-chebi-smiles.tsv'
         base, _ = W.render_rhea(source)
@@ -48,6 +63,17 @@ class Wave2VisualProof(unittest.TestCase):
                 self.assertNotEqual(base, changed)
             except Exception:
                 pass
+
+    def test_parallel_graph_shard_reads_match_serial_reads(self):
+        from concurrent.futures import ThreadPoolExecutor
+        from tools.creature_graph import build_graph
+        shard_dir = ROOT / 'tools' / 'creature_graph' / 'data' / 'authored' / 'records'
+        paths = sorted(str(p) for p in shard_dir.glob('*.json'))
+        serial = [build_graph._load_record_shard(path) for path in paths]
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            parallel = list(pool.map(build_graph._load_record_shard, paths))
+        self.assertEqual([(x[0], x[1]) for x in serial], [(x[0], x[1]) for x in parallel])
+        self.assertEqual([len(x[2].get('objects', [])) for x in serial], [len(x[2].get('objects', [])) for x in parallel])
 
     def test_graph_merge_is_honest_and_evidence_count_is_unchanged(self):
         from tools.creature_graph.store import CreatureGraph
