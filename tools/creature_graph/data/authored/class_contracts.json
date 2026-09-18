@@ -354,6 +354,80 @@
     {"kind": "units_in", "params": {"path": "payload.id_scheme", "vocabulary": ["chebi"]}}
    ],
    "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.observation.soil_specimen",
+   "version": 1,
+   "statement": "A soil-specimen observation is one laboratory specimen row carrying only its measured quantities, grouped under the source-conventional unit of each family (%, mm, g/cm3, m/s, kPa, degree; the source bytes declare no unit column, so the family keys carry the unit and the assumption is declared on every record); an absent test is absent, never zero, and every measured value sits inside a declared physical envelope.",
+   "prediction": "All 1,066 Soranzo specimen rows admit; every measured cell of every row sits inside its family envelope (fractions 0-100 %, grain sizes 0-150 mm, CU/CC 0-5000, densities 0.5-3.5 g/cm3, Atterberg 0-150 %, indices -2..10, permeability 1e-13..1e-1 m/s, shear 0-200 kPa / 0-90 degrees, Austrian coords inside their degree boxes); no row without a single measured value admits.",
+   "falsifier": "One cell outside its family envelope (e.g. a gradation fraction of 150 %) quarantines exactly that specimen row; a row with no measured values quarantines; the count identity fetched == admitted + quarantined closes with zero silent drops.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.gradation_percent", "min": 0.0, "max": 100.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.grain_sizes_mm", "min": 0.0, "max": 150.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.grading_indices", "min": 0.0, "max": 5000.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.proctor_g_per_cm3", "min": 0.5, "max": 3.5}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.proctor_percent", "min": 0.0, "max": 100.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.atterberg_percent", "min": 0.0, "max": 150.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.state_percent", "min": 0.0, "max": 100.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.indices", "min": -2.0, "max": 10.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.permeability_m_per_s", "min": 1e-13, "max": 0.1}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.shear_kPa", "min": 0.0, "max": 200.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.shear_deg", "min": 0.0, "max": 90.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.coord_lat_deg", "min": 40.0, "max": 55.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.coord_lon_deg", "min": 5.0, "max": 25.0}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.observation.gsod_day",
+   "version": 1,
+   "statement": "A GSOD station-day carries the asserted daily summary values grouped per source-declared unit family (degF, mb, knots, miles, inches; anchored to the pinned readme), the station identity, and explicit nodata entries for the documented missing codes; a missing code never becomes a value, an unrecognized all-9s rendering never becomes one either, and asserted bytes are carried even where the source field truncates (STP).",
+   "prediction": "All 359 unique station-days of the pinned 2024 file admit; the 519 documented missing cells become nodata entries (SNDP 359, GUST 106, STP 31, VISIB 9, WDSP 5, MXSPD 5, PRCP 3, SLP 1); STP truncation rides as asserted with an unknown on every affected record.",
+   "falsifier": "One value outside a family envelope quarantines exactly that station-day; an all-9s cell outside the column's accepted code set quarantines (gsod_unrecognized_sentinel_code); a wrong station id or unparseable date quarantines; the count identity fetched == admitted + quarantined closes with zero silent drops.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_in", "params": {"field": "payload.station_id", "vocabulary": ["78535011630"]}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.air_temp_f", "min": -80.0, "max": 150.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.pressure_mb", "min": 0.0, "max": 1100.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.wind_knots", "min": 0.0, "max": 250.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.visibility_miles", "min": 0.0, "max": 100.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.precip_inches", "min": 0.0, "max": 30.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.obs_counts", "min": 0.0, "max": 31.0}},
+    {"kind": "field_range", "params": {"path": "payload.latitude_deg", "min": -90.0, "max": 90.0}},
+    {"kind": "field_range", "params": {"path": "payload.longitude_deg", "min": -180.0, "max": 180.0}},
+    {"kind": "field_range", "params": {"path": "payload.elevation_m", "min": -500.0, "max": 9000.0}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.property.worldcover_class",
+   "version": 1,
+   "statement": "A land-cover class property is the categorical class at a stated point, read from an integer-band GeoTIFF (uint8/int16; a float band refuses) whose class legend the tile itself declares: the class code and its label must both sit inside that legend, the tile id must match both the bucket tile-index resolution and the tile's embedded product_tile, and the band format must be declared, never assumed.",
+   "prediction": "The patch-centre class admits with its code and label inside the tile's embedded eleven-class legend; the tile metadata measurements (grid columns, rows, pixel scale, file bytes) admit under batch.property.measurement; the count identity closes at 5 records for the connector.",
+   "falsifier": "A class code outside the legend refuses at the reader (terrain_class_outside_legend); a float band refuses (terrain_int_reader_refuses_float_band); a product_tile or CRS mismatch refuses; a label outside the declared legend vocabulary quarantines exactly that record.",
+   "applies_to": {"kinds": ["property_assertion"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "units_in", "params": {"path": "payload.unit_si", "vocabulary": ["dimensionless"]}},
+    {"kind": "field_in", "params": {"field": "payload.class_label", "vocabulary": ["Tree cover", "Shrubland", "Grassland", "Cropland", "Built-up", "Bare/sparse vegetation", "Snow and ice", "Permanent water bodies", "Herbaceous wetland", "Mangroves", "Moss and lichen"]}},
+    {"kind": "field_in", "params": {"field": "payload.sample_format", "vocabulary": ["uint8", "int8", "uint16", "int16"]}},
+    {"kind": "field_range", "params": {"path": "payload.class_code", "min": 10.0, "max": 100.0}},
+    {"kind": "field_range", "params": {"path": "payload.centre_lat", "min": -90.0, "max": 90.0}},
+    {"kind": "field_range", "params": {"path": "payload.centre_lon", "min": -180.0, "max": 180.0}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
   }
  ]
 }
