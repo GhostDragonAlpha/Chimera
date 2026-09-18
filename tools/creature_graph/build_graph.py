@@ -57,14 +57,32 @@ def build(with_reference: bool = False) -> CreatureGraph:
     # Optional project program: versioned documentation, workflow and typed
     # scientific interfaces share the same authored graph, never a second board.
     program_path = os.path.join(AUTHORED_DIR, "project_program.json")
+    deferred_edges = []
     if os.path.exists(program_path):
         input_hashes["authored/project_program.json"] = _sha256_file(program_path)
         with open(program_path, encoding="utf-8") as stream:
             program = json.load(stream)
         for obj in program["objects"]:
             g.add(obj)
-        for edge in program.get("relations", []):
-            g.relate(edge["src"], edge["rel"], edge["dst"], edge.get("note", ""))
+        deferred_edges.extend(program.get("relations", []))
+    # Authored record shards: bulk reference families admitted by batch lanes
+    # (work.data.graph_store_split) -- the program file stays small and
+    # hand-editable while the bulk rotates in sibling files.
+    records_dir = os.path.join(AUTHORED_DIR, "records")
+    if os.path.isdir(records_dir):
+        for fname in sorted(os.listdir(records_dir)):
+            if not fname.endswith(".json"):
+                continue
+            shard_path = os.path.join(records_dir, fname)
+            input_hashes[f"authored/records/{fname}"] = _sha256_file(shard_path)
+            with open(shard_path, encoding="utf-8") as stream:
+                shard = json.load(stream)
+            for obj in shard.get("objects", []):
+                g.add(obj)
+            deferred_edges.extend(shard.get("relations", []))
+    # relations last: program edges may reference sharded endpoints and vice versa
+    for edge in deferred_edges:
+        g.relate(edge["src"], edge["rel"], edge["dst"], edge.get("note", ""))
     # Captures are historical measurement inputs, never build products.
     g.sync_dependencies()
     g.meta["schema_version"] = SCHEMA_VERSION

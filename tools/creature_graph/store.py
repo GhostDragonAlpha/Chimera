@@ -24,6 +24,13 @@ from schema import (  # noqa: E402
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 STORE_PATH = os.path.join(DATA_DIR, "creature_graph.json")
 
+# Bulk reference families shard into rotated side files below the 100 MB
+# per-file publish ceiling (work.data.graph_store_split). Everything else --
+# sources, work, model, doc, model_definition -- stays in the single core.
+BULK_KINDS = {"reference_entity", "property_assertion", "geometry_asset",
+              "mapping", "relationship"}
+SHARD_TARGET_BYTES = 24 * 1024 * 1024
+
 # validation states are INDEPENDENT of implementation status (the brief):
 #   untested -> passing | failing   (a run happened)
 #   any of the above -> stale       (a physics-relevant input changed; the last
@@ -39,6 +46,23 @@ def content_version(obj: dict) -> str:
     """Stable hash of an object's physics-relevant projection."""
     blob = json.dumps(content_projection(obj), sort_keys=True, ensure_ascii=False)
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:16]
+
+
+def merged_payload(path=STORE_PATH):
+    """The store file's payload with bulk shards merged: the raw-dict view for
+    snapshot-style consumers (objects/relations/layout/meta keys intact)."""
+    with open(path, encoding="utf-8") as f:
+        payload = json.load(f)
+    shards = (payload.get("meta", {}) or {}).get("bulk_shards", [])
+    if shards:
+        merged = dict(payload)
+        objects = dict(payload["objects"])
+        for name in shards:
+            with open(os.path.join(os.path.dirname(path), name), encoding="utf-8") as f:
+                objects.update(json.load(f))
+        merged["objects"] = objects
+        return merged
+    return payload
 
 
 class CreatureGraph:
@@ -280,21 +304,55 @@ class CreatureGraph:
         os.makedirs(os.path.dirname(path), exist_ok=True)
         self.meta["schema_version"] = SCHEMA_VERSION
         self.meta["saved_utc"] = _utcnow()
+        core = {k: v for k, v in self.objects.items() if v.get("kind") not in BULK_KINDS}
+        bulk = {k: v for k, v in self.objects.items() if v.get("kind") in BULK_KINDS}
+        shard_names = []
+        if len(json.dumps(bulk, ensure_ascii=False)) > SHARD_TARGET_BYTES:
+            # deterministic packing: ids in sort order, shards capped by
+            # serialized size; same content -> same shards, always
+            stem = os.path.splitext(os.path.basename(path))[0]
+            chunk, size, index = {}, 0, 0
+            for key in sorted(bulk):
+                item = len(json.dumps({key: bulk[key]}, ensure_ascii=False)) + 2
+                if chunk and size + item > SHARD_TARGET_BYTES:
+                    shard_names.append(self._write_bulk_shard(
+                        path, stem, index, chunk))
+                    chunk, size, index = {}, 0, index + 1
+                chunk[key] = bulk[key]
+                size += item
+            if chunk:
+                shard_names.append(self._write_bulk_shard(path, stem, index, chunk))
+        else:
+            core.update(bulk)
+        self.meta["bulk_shards"] = shard_names
         payload = {
             "schema_version": SCHEMA_VERSION,
             "meta": self.meta,
-            "objects": self.objects,
+            "objects": core,
             "relations": self.relations,
             "layout": self.layout,
         }
-        with open(path, "w", encoding="utf-8") as f:
+        with open(path, "w", encoding="utf-8", newline="\n") as f:
             json.dump(payload, f, indent=1, ensure_ascii=False)
+        # retire stale shards from earlier rotations
+        if shard_names:
+            stem = os.path.splitext(os.path.basename(path))[0]
+            for name in os.listdir(os.path.dirname(path)):
+                if name.startswith(stem + ".bulk_") and name not in shard_names:
+                    os.remove(os.path.join(os.path.dirname(path), name))
         return path
+
+    @staticmethod
+    def _write_bulk_shard(path, stem, index, chunk) -> str:
+        name = f"{stem}.bulk_{index:02d}.json"
+        shard_path = os.path.join(os.path.dirname(path), name)
+        with open(shard_path, "w", encoding="utf-8", newline="\n") as f:
+            json.dump(chunk, f, indent=1, ensure_ascii=False)
+        return name
 
     @classmethod
     def load(cls, path: str = STORE_PATH) -> "CreatureGraph":
-        with open(path, encoding="utf-8") as f:
-            payload = json.load(f)
+        payload = merged_payload(path)
         version = payload.get("schema_version", SCHEMA_VERSION_LEGACY)
         if version not in (SCHEMA_VERSION, SCHEMA_VERSION_LEGACY):
             raise ValueError(f"unsupported creature graph schema_version: {version!r}")
@@ -302,6 +360,9 @@ class CreatureGraph:
         g.objects = payload["objects"]
         g.relations = payload["relations"]
         g.layout = payload.get("layout", {})
+        for name in (payload.get("meta", {}) or {}).get("bulk_shards", []):
+            with open(os.path.join(os.path.dirname(path), name), encoding="utf-8") as f:
+                g.objects.update(json.load(f))
         g.meta = payload.get("meta", {})
         g.meta["loaded_schema_version"] = payload.get("schema_version",
                                                       SCHEMA_VERSION_LEGACY)

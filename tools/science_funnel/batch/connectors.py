@@ -163,6 +163,10 @@ for _name in sorted(n for n in _os.listdir(_os.path.dirname(__file__))
         CONNECTORS[_cid] = _conn
 
 
+SEARCH_DIRS = sorted(n for n in os.listdir(DATA_ROOT)
+                     if os.path.isdir(os.path.join(DATA_ROOT, n)))
+
+
 def class_for(connector_id, record_type):
     if connector_id in CONNECTORS:
         return CONNECTORS[connector_id]['classes'].get(record_type)

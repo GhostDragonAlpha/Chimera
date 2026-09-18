@@ -250,7 +250,11 @@ import os as _os
 for _name in sorted(n for n in _os.listdir(_os.path.dirname(__file__))
                     if n.startswith('adapters_') and n.endswith('.py')):
     _mod = _importlib.import_module('.' + _name[:-3], __package__)
-    ADAPTERS.update(getattr(_mod, 'EXTRA_ADAPTERS', {}))
+    for _key, _value in vars(_mod).items():
+        # any module-level *_ADAPTERS dict merges (EXTRA_ADAPTERS,
+        # LIFE_ADAPTERS, FORCE_ADAPTERS-style spellings from parallel lanes)
+        if _key.endswith('_ADAPTERS') and isinstance(_value, dict) and _key.isupper():
+            ADAPTERS.update(_value)
 
 
 def smithsonian_voyager(raw, manifest, path):

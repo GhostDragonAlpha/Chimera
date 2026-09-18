@@ -61,19 +61,43 @@ def mutation_probe(graph, registry):
 
 
 def apply_patches(graph, patches):
-    """Serial writer: merge patch objects/edges into the authored program.
+    """Serial writer: merge patch objects/edges into the authored stores.
+    Bulk reference families route to a rotated record shard; everything else
+    (sources, work records...) goes to the hand-editable program file.
     Existing ids must be identical (immutable identity); new ids append."""
     program = json.loads(AUTHORED_PROGRAM.read_bytes().decode('utf-8-sig'))
     known = {obj['id']: obj for obj in program['objects']}
     edges = {(e['src'], e['rel'], e['dst'], e.get('note', '')) for e in program['relations']}
+    records_dir = AUTHORED_PROGRAM.parent / 'records'
+    shard_path = None
+    shard = {'objects': [], 'relations': []}
+    if records_dir.is_dir():
+        shards = sorted(records_dir.glob('records_*.json'))
+        if shards:
+            # rotate into the last shard unless it is full
+            last = shards[-1]
+            shard = json.loads(last.read_bytes().decode('utf-8-sig'))
+            if len(last.read_bytes()) < 24 * 1024 * 1024:
+                shard_path = last
+            else:
+                shard = {'objects': [], 'relations': []}
+    if shard_path is None:
+        records_dir.mkdir(parents=True, exist_ok=True)
+        shard_path = records_dir / (
+            'records_%03d.json' % (len(list(records_dir.glob('records_*.json'))) + 1))
     added = 0
+    BULK = {'reference_entity', 'property_assertion', 'geometry_asset',
+            'mapping', 'relationship'}
     for patch in patches:
         for obj in patch['payload']['objects']:
             previous = known.get(obj['id'])
             require(previous is None or previous == obj,
                     'immutable_graph_identity_conflict', obj['id'])
             if previous is None:
-                program['objects'].append(obj)
+                if obj.get('kind') in BULK:
+                    shard['objects'].append(obj)
+                else:
+                    program['objects'].append(obj)
                 known[obj['id']] = obj
                 added += 1
         for edge in patch['payload']['relations']:
@@ -83,9 +107,12 @@ def apply_patches(graph, patches):
                 edges.add(key)
     raw = (json.dumps(program, ensure_ascii=False, indent=1) + '\n').encode()
     AUTHORED_PROGRAM.write_bytes(raw)
+    shard_raw = (json.dumps(shard, ensure_ascii=False, indent=1) + '\n').encode()
+    shard_path.write_bytes(shard_raw)
     return {'objects_added': added,
             'program_bytes': len(raw),
-            'note': 'merged through the one serial writer; store rebuilt after'}
+            'shard': str(shard_path.name), 'shard_bytes': len(shard_raw),
+            'note': 'bulk kinds shard; core in the program; one serial writer'}
 
 
 def rebuild_store():

@@ -6,13 +6,14 @@ import shutil
 import tempfile
 import unittest
 from tools.science_funnel.common import Refusal, digest, loads
+from tools.creature_graph.store import merged_payload
 from tools.science_funnel.force_catalog import DATA, ROOT
 from tools.science_funnel.force_models import compile_packet, RECIPE
 
 class ForceCompilerTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.graph=loads((ROOT/"tools/creature_graph/data/creature_graph.json").read_bytes())
+        cls.graph=merged_payload(str(ROOT/"tools/creature_graph/data/creature_graph.json"))
         cls.packet=compile_packet(cls.graph)
     def graph_copy(self):
         # Compiler is read-only. Only selected/changed records need deep copies.
