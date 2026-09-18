@@ -18,6 +18,7 @@ import hashlib
 import json
 import os
 import sys
+from concurrent.futures import ThreadPoolExecutor
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -39,7 +40,23 @@ def _sha256_file(path: str) -> str:
     return h.hexdigest()
 
 
-def build(with_reference: bool = False) -> CreatureGraph:
+def _load_record_shard(path: str):
+    """Read/hash one independent authored shard without touching graph state."""
+    with open(path, encoding="utf-8") as stream:
+        shard = json.load(stream)
+    return os.path.basename(path), _sha256_file(path), shard
+
+
+def _worker_count(workers, jobs: int) -> int:
+    if workers is None:
+        workers = os.environ.get("CHIMERA_GRAPH_WORKERS", "1")
+    workers = int(workers)
+    if workers < 1:
+        raise ValueError(f"graph workers must be >= 1, got {workers}")
+    return min(workers, max(1, jobs))
+
+
+def build(with_reference: bool = False, workers=None) -> CreatureGraph:
     g = CreatureGraph()
     input_hashes = {}
     # authored objects
@@ -70,6 +87,7 @@ def build(with_reference: bool = False) -> CreatureGraph:
     # hand-editable while the bulk rotates in sibling files.
     records_dir = os.path.join(AUTHORED_DIR, "records")
     if os.path.isdir(records_dir):
+<<<<<<< HEAD
         for fname in sorted(os.listdir(records_dir)):
             if not (fname.startswith("records_") and fname.endswith(".json")):
                 continue  # only the serial writer's rotation pattern
@@ -77,6 +95,21 @@ def build(with_reference: bool = False) -> CreatureGraph:
             input_hashes[f"authored/records/{fname}"] = _sha256_file(shard_path)
             with open(shard_path, encoding="utf-8") as stream:
                 shard = json.load(stream)
+=======
+        shard_paths = [os.path.join(records_dir, fname)
+                       for fname in sorted(os.listdir(records_dir))
+                       if fname.endswith(".json")]
+        count = _worker_count(workers, len(shard_paths)) if shard_paths else 1
+        if count == 1:
+            loaded = [_load_record_shard(path) for path in shard_paths]
+        else:
+            # Disk/XML-sized shard reads overlap; graph mutation remains below,
+            # deterministic and single-threaded in sorted filename order.
+            with ThreadPoolExecutor(max_workers=count) as pool:
+                loaded = list(pool.map(_load_record_shard, shard_paths))
+        for fname, digest, shard in loaded:
+            input_hashes[f"authored/records/{fname}"] = digest
+>>>>>>> origin/lane/visual-proof-wave2-20260918
             for obj in shard.get("objects", []):
                 g.add(obj)
             deferred_edges.extend(shard.get("relations", []))
@@ -166,9 +199,11 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--with-reference", action="store_true",
                     help="join the reference-data store (explicit mappings only)")
+    ap.add_argument("--workers", type=int, default=None,
+                    help="parallel authored-shard readers; graph insertion stays serial")
     ap.add_argument("--check-only", action="store_true")
     args = ap.parse_args()
-    g = build(with_reference=args.with_reference)
+    g = build(with_reference=args.with_reference, workers=args.workers)
     print(f"objects: {len(g.objects)}  relations: {len(g.relations)}")
     kinds = {}
     for o in g.objects.values():

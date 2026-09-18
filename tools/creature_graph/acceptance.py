@@ -58,7 +58,8 @@ def run(live=True):
 
     authored_dir = os.path.join(HERE, "data", "authored")
     authored_before = {f: sha256_file(os.path.join(authored_dir, f))
-                       for f in sorted(os.listdir(authored_dir))}
+                       for f in sorted(os.listdir(authored_dir))
+                       if os.path.isfile(os.path.join(authored_dir, f))}
 
     # ------------------------------------------------------------------ build
     print("[build] building the store from authored seeds")
