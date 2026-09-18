@@ -331,15 +331,24 @@ def _run_wave2_job(job):
     return rid, png, metrics, inputs, params
 
 
-def _worker_count(workers):
+def _worker_count(workers, jobs):
     if workers is None:
         workers = os.environ.get('CHIMERA_PROOF_WORKERS', '1')
-    workers = int(workers)
+    if isinstance(workers, str) and workers.lower() == 'auto':
+        paths = {Path(path) for job in jobs for _role, path in job[3]}
+        total_bytes = sum(path.stat().st_size for path in paths if path.is_file())
+        # Small bundles are faster serially because Windows process startup is
+        # measurable; large/future batches use available CPU up to a safe cap.
+        workers = min(8, os.cpu_count() or 1) if total_bytes >= 32 * 1024 * 1024 or len(jobs) >= 16 else 1
+    try:
+        workers = int(workers)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f'proof workers must be an integer or auto, got {workers!r}') from exc
     require(workers >= 1, 'proof_workers', workers)
-    return min(workers, len(_wave2_jobs()))
+    return min(workers, len(jobs))
 
 
-def build_wave2_renders(out_dir, workers=None):
+def build_wave2_renders(out_dir, workers=None, jobs=None):
     """Build the wave-2 bundle, optionally using bounded process parallelism.
 
     `workers=1` is the reference path. For bulk runs, set
@@ -348,8 +357,9 @@ def build_wave2_renders(out_dir, workers=None):
     serial and deterministic.
     """
     out=Path(out_dir); out.mkdir(parents=True,exist_ok=True); renders=[]
-    jobs = _wave2_jobs()
-    count = _worker_count(workers)
+    jobs = list(_wave2_jobs() if jobs is None else jobs)
+    require(jobs, 'proof_jobs', 'empty job table')
+    count = _worker_count(workers, jobs)
     if count == 1:
         results = [_run_wave2_job(job) for job in jobs]
     else:

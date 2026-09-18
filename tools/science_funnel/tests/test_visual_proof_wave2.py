@@ -44,6 +44,19 @@ class Wave2VisualProof(unittest.TestCase):
             for source in entry['inputs']:
                 self.assertEqual(hashlib.sha256((ROOT / source['path']).read_bytes()).hexdigest(), source['sha256'])
 
+    def test_auto_uses_serial_for_current_small_bundle(self):
+        with tempfile.TemporaryDirectory() as out:
+            manifest = VP.build_wave2_renders(out, workers='auto')
+            self.assertEqual(manifest['workers'], 1)
+
+    def test_custom_job_table_is_ordered_and_byte_stable(self):
+        jobs = W._wave2_jobs()[:2]
+        with tempfile.TemporaryDirectory() as serial, tempfile.TemporaryDirectory() as parallel:
+            one = VP.build_wave2_renders(serial, workers=1, jobs=jobs)
+            many = VP.build_wave2_renders(parallel, workers=2, jobs=jobs)
+            self.assertEqual([x['id'] for x in one['renders']], [x['id'] for x in many['renders']])
+            self.assertEqual([x['png_sha256'] for x in one['renders']], [x['png_sha256'] for x in many['renders']])
+
     def test_invalid_worker_count_refuses_before_writing(self):
         with tempfile.TemporaryDirectory() as out:
             with self.assertRaisesRegex(ValueError, 'proof_workers'):

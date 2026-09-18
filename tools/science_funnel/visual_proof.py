@@ -878,9 +878,9 @@ def main(argv=None):
 
 # Wave-2 extension is lazy-loaded to preserve the original public API and
 # avoid a circular import: visual_proof_wave2 reuses Canvas and Plot here.
-def build_wave2_renders(out_dir, workers=None):
+def build_wave2_renders(out_dir, workers=None, jobs=None):
     from .visual_proof_wave2 import build_wave2_renders as _build
-    return _build(out_dir, workers=workers)
+    return _build(out_dir, workers=workers, jobs=jobs)
 
 
 def verify_wave2(out_dir):
