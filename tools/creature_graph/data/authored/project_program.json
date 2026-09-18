@@ -56357,6 +56357,70 @@
     "storage": "chimera-intake:af4265c7202c51fae857900ca5eaf4b0118204a08cd5ce0509c44488a8de9925"
    },
    "status": "extracted"
+  },
+  {
+   "id": "source.operator.trainer_spine_repair_20260917",
+   "kind": "source",
+   "name": "Operator dispatches the trainer-spine repair lane",
+   "status": "extracted",
+   "physical": {
+    "text": "Repair the trainer spine so the batch gate can run ANY domain: the auditor's short-history shape, the beat_generator audit path, pref_selftest's seed(rng) protocol alignment, and a two-domain batch exercise. The admitted falsifier is a bounded domain sweep over every module in Chimera/core/trainables at pop=6, gens=5.",
+    "selection": "Operator lane brief (branch lane/trainer-repair-20260917 from 14c56162c856); tools/science_funnel/batch/train.py had recorded the auditor short-history KeyError and the pref_selftest protocol drift for exactly this repair."
+   }
+  },
+  {
+   "id": "work.data.trainer_spine_repair_20260917",
+   "kind": "work",
+   "name": "Repair the trainer spine so the batch gate runs any domain",
+   "status": "specified",
+   "priority": "P0",
+   "dependencies": [
+    "work.data.graph_store_split"
+   ],
+   "evidence": [],
+   "falsifier": {
+    "statement": "A spine repair that still lets a trainable domain die on an internal spine error is not a repair: the bounded domain sweep must show every module in Chimera/core/trainables completing train_and_audit(pop=6, gens=5) or refusing with its own honest cause — never an internal spine TypeError/KeyError.",
+    "status": "untested"
+   },
+   "physical": {
+    "statement": "The trainer spine (core/train_loop.py train_and_audit + core/model_auditor.py audit_run) returns an audit dict of ONE shape at every history length, refuses domains that violate the documented seed(rng) / mutate(genome, rng) / measure(genome) protocol with a named refusal instead of an internal TypeError, and the batch exercise runs the canonical domain plus a second domain end to end.",
+    "prediction": "After the repair: (1) train_and_audit completes at every history length >= 1 with the same audit keys; (2) beat_generator and pref_selftest complete at pop=6, gens=3 and pop=6, gens=5 (both crashed before — KeyError 'stuck_metrics' on the short-history audit dict, TypeError on seed(rng) respectively); (3) the bounded sweep over every Chimera/core/trainables module at pop=6, gens=5 shows zero internal spine errors: each module completes or refuses with its own named cause (protocol violation, missing scan, missing optional GPU dependency).",
+    "contract": {
+     "base_commit": "14c56162c85641877bbbfc3d9bba02bbd5e59ec6",
+     "law": [
+      "audit_run returns the full shape (generations, total_metrics, stuck_metrics, stuck_rate, recommendation, stuck) at EVERY history length; below 5 generations it makes NO stuck-metric claim: stuck_metrics 0, stuck [], and a recommendation that says no audit was possible — never 'All metrics moving', which would be a claim.",
+      "train_and_audit probes the domain protocol (seed accepts the protocol's rng, mutate accepts (genome, rng), measure accepts (genome)) before training and raises DomainRefusal naming the domain and the violated protocol; it never leaks a raw signature TypeError.",
+      "pref_selftest.seed aligns to the documented protocol by accepting the rng and ignoring it: the fixture is a deterministic fixed point by design, so its genome is unchanged.",
+      "The batch exercise runs EXERCISE_DOMAINS = (erisaid_mirror, pref_selftest) — the documented canonical domain plus the domain this repair unblocked — and records both runs in the receipt dict."
+     ],
+     "falsifiers": [
+      "DOMAIN SWEEP (bounded, per-module timeout), run by tools/science_funnel/sweep_trainer_spine.py: every module in Chimera/core/trainables completes train_and_audit(pop=6, gens=5) or refuses with its own honest cause — a Refusal/DomainRefusal, a designed domain-frame refusal (e.g. arrangement's missing-scan FileNotFoundError), or a missing optional dependency at import (GPU domains without warp/newton). Any internal spine TypeError/KeyError, any refused outcome whose exception type is not a designed refusal, or a timeout/crash without a classified cause REFUTES the repair."
+     ],
+     "owned_files": [
+      "Chimera/core/model_auditor.py",
+      "Chimera/core/train_loop.py",
+      "Chimera/core/trainables/pref_selftest.py",
+      "tools/science_funnel/batch/train.py",
+      "tools/science_funnel/sweep_trainer_spine.py",
+      "tools/science_funnel/tests/test_trainer_spine.py",
+      "tools/science_funnel/validation/trainer_repair_20260917/"
+     ],
+     "not_implemented": [
+      "the seven bare-seed() domains (creature, director, brain, economy, attunement, memorial, weather) keep their signatures and are refused honestly by the spine; aligning each is per-domain work",
+      "no ML quality claim: the exercise proves wiring, not policy",
+      "GPU domains stay unexercised where warp/newton are absent"
+     ]
+    }
+   },
+   "project_spec": {
+    "schema": "chimera.project_spec.v1",
+    "admission": "active_specification",
+    "category": "work",
+    "origin_id": "source.operator.trainer_spine_repair_20260917",
+    "admitted_utc": "2026-09-18T00:54:11.600644+00:00",
+    "authorization": "Operator's trainer-repair lane brief (lane/trainer-repair-20260917 from 14c56162)",
+    "authority_scope": "Isolated repository prototype on the assigned lane; no production qualification."
+   }
   }
  ],
  "relations": [
@@ -273055,6 +273119,12 @@
    "note": "Pinned intake bundle af4265c7202c51fae857900ca5eaf4b0118204a08cd5ce0509c44488a8de9925",
    "rel": "derived_from",
    "src": "data.assertion.fffc3a6abc64a896c9792954b5d88a708eb27ae357c422f19cf8775046914331"
+  },
+  {
+   "src": "work.data.trainer_spine_repair_20260917",
+   "rel": "derived_from",
+   "dst": "source.operator.trainer_spine_repair_20260917",
+   "note": "Operator-directed trainer-spine repair lane"
   }
  ],
  "migration_receipt": [
