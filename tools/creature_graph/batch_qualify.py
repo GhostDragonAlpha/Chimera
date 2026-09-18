@@ -67,13 +67,26 @@ def apply_patches(graph, patches):
     Existing ids must be identical (immutable identity); new ids append."""
     program = json.loads(AUTHORED_PROGRAM.read_bytes().decode('utf-8-sig'))
     known = {obj['id']: obj for obj in program['objects']}
-    edges = {(e['src'], e['rel'], e['dst'], e.get('note', '')) for e in program['relations']}
+    edges = {(e['src'], e['rel'], e['dst'], e.get('note', ''))
+             for e in program['relations']}
     records_dir = AUTHORED_PROGRAM.parent / 'records'
     shard_path = None
     shard = {'objects': [], 'relations': []}
     if records_dir.is_dir():
         shards = sorted(records_dir.glob('records_*.json'))
         if shards:
+            # every existing object/edge is known identity, wherever it lives:
+            # a shard-resident id seen again in a patch must compare identical,
+            # never re-append (a second --apply run would otherwise duplicate
+            # the bulk families build_graph refuses)
+            for previous_shard in shards:
+                payload = json.loads(previous_shard.read_bytes()
+                                     .decode('utf-8-sig'))
+                for obj in payload.get('objects', []):
+                    known.setdefault(obj['id'], obj)
+                for edge in payload.get('relations', []):
+                    edges.add((edge['src'], edge['rel'], edge['dst'],
+                               edge.get('note', '')))
             # rotate into the last shard unless it is full
             last = shards[-1]
             shard = json.loads(last.read_bytes().decode('utf-8-sig'))
