@@ -1,0 +1,21 @@
+{
+ "schema": "chimera.local_refs.derive.v1",
+ "derived_utc_day": "2026-09-18",
+ "files": [
+  {
+   "path": "MUSCLE_INVENTORY.md",
+   "url": "repo-resident research_references/human/MUSCLE_INVENTORY.md",
+   "bytes": 19066,
+   "sha256": "f16fde6da59c1e6ccf5214734957b6570cc120310b22959ef35c13caab121c71"
+  }
+ ],
+ "rule": "admit MUSCLE_INVENTORY.md as ONE documentation-reference entity pinned by its sha256 -- a citation, never measurements",
+ "source_repo_file": {
+  "path": "research_references/human/MUSCLE_INVENTORY.md",
+  "source": "repo-resident research_references/human/MUSCLE_INVENTORY.md",
+  "bytes": 19066,
+  "sha256": "f16fde6da59c1e6ccf5214734957b6570cc120310b22959ef35c13caab121c71"
+ },
+ "work_record_pin": "f16fde6da59c1e6ccf5214734957b6570cc120310b22959ef35c13caab121c71",
+ "license_note": "repository-authored document citing Neumann (Kinesiology), Ward et al. 2009, Rajagopal et al. 2016, Saul et al. 2015, Christophy et al. 2012, Caggiano et al. 2022 (MyoSuite)"
+}

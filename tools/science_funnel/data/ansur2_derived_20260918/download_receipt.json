@@ -1,0 +1,443 @@
+{
+ "schema": "chimera.local_refs.derive.v1",
+ "derived_utc_day": "2026-09-18",
+ "rule": "derive, never sweep -- exactly the anchors' own column set and laws",
+ "selection_rule": {
+  "columns_raw": [
+   "stature",
+   "trochanterionheight",
+   "weightkg",
+   "tragiontopofhead",
+   "footlength",
+   "footbreadthhorizontal",
+   "handlength",
+   "handbreadth",
+   "handcircumference",
+   "waistheightomphalion"
+  ],
+  "columns_si": [
+   "stature_m",
+   "trochanterion_m",
+   "mass_kg",
+   "head_height_m",
+   "foot_length_m",
+   "foot_breadth_m",
+   "hand_length_m",
+   "hand_breadth_m",
+   "hand_circumference_m",
+   "waist_height_m"
+  ],
+  "columns_derived": [
+   "leg_frac_of_stature",
+   "eye_frac_of_stature",
+   "waist_frac_of_stature",
+   "bmi"
+  ],
+  "provenance_of_rule": "tools/build_ansur_anchors.py (the existing anchors' own derivation)",
+  "unit_laws": [
+   "lengths mm -> m",
+   "weightkg is 100-g units -> kg (x0.1)"
+  ],
+  "derived_formulas": {
+   "leg_frac_of_stature": "trochanterionheight / stature",
+   "eye_frac_of_stature": "(stature - tragiontopofhead) / stature",
+   "waist_frac_of_stature": "waistheightomphalion / stature",
+   "bmi": "weightkg*0.1 / (stature*0.001)^2"
+  },
+  "aggregation_law": "median; p5 = sorted[int(0.05*n)]; p95 = sorted[min(n-1,int(0.95*n))]; mean (fmean); n",
+  "row_law": "all ten raw cells present, parseable, positive; a failing row quarantines exactly itself",
+  "row_retention": "full rows per sex (the anchors' aggregates are full-population summaries)"
+ },
+ "privacy_law": {
+  "aggregate_only_admission": true,
+  "statement": "SOURCES.md records the CSVs as 'DOWNLOADED (mirror of the Penn State OPEN Design Lab release; US Gov work, public since 2017)' and grants no person-level redistribution; raw rows stay repo-resident and are pinned here only as bundle bytes; the graph admits per-sex aggregates only. A recorded redistribution grant would falsify this decision."
+ },
+ "source_repo_files": {
+  "research_references/human/ANSUR_II_MALE_Public.csv": {
+   "bytes": 1996711,
+   "sha256": "e468eb5787b8ba6c716a86378cf476ba9bd8c57e09493f0fc65b1b8f33e48db8",
+   "source": "repo-resident research_references/human/ANSUR_II_MALE_Public.csv"
+  },
+  "research_references/human/ANSUR_II_FEMALE_Public.csv": {
+   "bytes": 974586,
+   "sha256": "4854f4888146c81690b374d07d044008798ae4a21552afb90823ebd64e04b99f",
+   "source": "repo-resident research_references/human/ANSUR_II_FEMALE_Public.csv"
+  }
+ },
+ "files": [
+  {
+   "path": "ANSUR_II_MALE_Public.csv",
+   "url": "repo-resident research_references/human/ANSUR_II_MALE_Public.csv",
+   "bytes": 1996711,
+   "sha256": "e468eb5787b8ba6c716a86378cf476ba9bd8c57e09493f0fc65b1b8f33e48db8"
+  },
+  {
+   "path": "ANSUR_II_FEMALE_Public.csv",
+   "url": "repo-resident research_references/human/ANSUR_II_FEMALE_Public.csv",
+   "bytes": 974586,
+   "sha256": "4854f4888146c81690b374d07d044008798ae4a21552afb90823ebd64e04b99f"
+  },
+  {
+   "path": "ansur2_male_derived.csv",
+   "url": "derived by tools/science_funnel/derive_local_refs_ansur.py from repo-resident research_references/human/ ANSUR II CSVs (anchors' own column set and laws)",
+   "bytes": 633237,
+   "sha256": "943c33186a1752bb9fb6d0f7014aa4af54f108021510e97202a1d85a06d9ddc1"
+  },
+  {
+   "path": "ansur2_female_derived.csv",
+   "url": "derived by tools/science_funnel/derive_local_refs_ansur.py from repo-resident research_references/human/ ANSUR II CSVs (anchors' own column set and laws)",
+   "bytes": 303428,
+   "sha256": "3a17cb2572541e1fa979add24d90b73d721b25936d08986eb9393ac8629908bf"
+  }
+ ],
+ "sexes": {
+  "male": {
+   "derived_table": "ansur2_male_derived.csv",
+   "source_csv_rows": 4082,
+   "derived_rows": 4082,
+   "quarantined_rows": 0,
+   "quarantine": [],
+   "anchor_verification": {
+    "stature_m": {
+     "matches_anchor_stature_m": true,
+     "computed_median": 1.7550000000000001,
+     "published_median": 1.7550000000000001
+    },
+    "trochanterion_m": {
+     "matches_anchor_trochanterion_m": true,
+     "computed_median": 0.899,
+     "published_median": 0.899
+    },
+    "leg_frac_of_stature": {
+     "matches_anchor_leg_frac_of_stature": true,
+     "computed_median": 0.5121012101210121,
+     "published_median": 0.5121012101210121
+    },
+    "eye_frac_of_stature": {
+     "matches_anchor_eye_frac_of_stature": true,
+     "computed_median": 0.9253088903999963,
+     "published_median": 0.9253088903999963
+    },
+    "bmi": {
+     "matches_anchor_bmi": true,
+     "computed_median": 27.46404813736278,
+     "published_median": 27.46404813736278
+    },
+    "mass_kg": {
+     "matches_anchor_mass_kg": true,
+     "computed_median": 84.60000000000001,
+     "published_median": 84.60000000000001
+    },
+    "foot_length_m": {
+     "matches_anchor_foot_length_m": true,
+     "computed_median": 0.271,
+     "published_median": 0.271
+    },
+    "foot_breadth_m": {
+     "matches_anchor_foot_breadth_m": true,
+     "computed_median": 0.10200000000000001,
+     "published_median": 0.10200000000000001
+    },
+    "hand_length_m": {
+     "matches_anchor_hand_length_m": true,
+     "computed_median": 0.193,
+     "published_median": 0.193
+    },
+    "hand_breadth_m": {
+     "matches_anchor_hand_breadth_m": true,
+     "computed_median": 0.088,
+     "published_median": 0.088
+    },
+    "hand_circumference_m": {
+     "matches_anchor_hand_circumference_m": true,
+     "computed_median": 0.212,
+     "published_median": 0.212
+    },
+    "head_height_m": {
+     "matches_anchor_head_height_m": true,
+     "computed_median": 0.131,
+     "published_median": 0.131
+    },
+    "waist_frac_of_stature": {
+     "matches_anchor_waist_frac_of_stature": true,
+     "computed_median": 0.6016189954645661,
+     "published_median": 0.6016189954645661
+    }
+   },
+   "aggregates": {
+    "bmi": {
+     "median": 27.46404813736278,
+     "p5": 21.40425969160182,
+     "p95": 34.79684452968886,
+     "mean": 27.686312043746593,
+     "n": 4082
+    },
+    "eye_frac_of_stature": {
+     "median": 0.9253088903999963,
+     "p5": 0.9183548189073051,
+     "p95": 0.9318306761957119,
+     "mean": 0.9252374324229642,
+     "n": 4082
+    },
+    "foot_breadth_m": {
+     "median": 0.10200000000000001,
+     "p5": 0.094,
+     "p95": 0.111,
+     "mean": 0.10185913767760901,
+     "n": 4082
+    },
+    "foot_length_m": {
+     "median": 0.271,
+     "p5": 0.25,
+     "p95": 0.293,
+     "mean": 0.2711783439490446,
+     "n": 4082
+    },
+    "hand_breadth_m": {
+     "median": 0.088,
+     "p5": 0.081,
+     "p95": 0.096,
+     "mean": 0.08826139147476728,
+     "n": 4082
+    },
+    "hand_circumference_m": {
+     "median": 0.212,
+     "p5": 0.195,
+     "p95": 0.23,
+     "mean": 0.21228368446839785,
+     "n": 4082
+    },
+    "hand_length_m": {
+     "median": 0.193,
+     "p5": 0.177,
+     "p95": 0.21,
+     "mean": 0.19327780499755023,
+     "n": 4082
+    },
+    "head_height_m": {
+     "median": 0.131,
+     "p5": 0.121,
+     "p95": 0.14100000000000001,
+     "mean": 0.13114698677119058,
+     "n": 4082
+    },
+    "leg_frac_of_stature": {
+     "median": 0.5121012101210121,
+     "p5": 0.4892729439809297,
+     "p95": 0.5395763656633222,
+     "mean": 0.5128495935696534,
+     "n": 4082
+    },
+    "mass_kg": {
+     "median": 84.60000000000001,
+     "p5": 64.4,
+     "p95": 110.7,
+     "mean": 85.52395884370408,
+     "n": 4082
+    },
+    "stature_m": {
+     "median": 1.7550000000000001,
+     "p5": 1.6480000000000001,
+     "p95": 1.87,
+     "mean": 1.7562146006859383,
+     "n": 4082
+    },
+    "trochanterion_m": {
+     "median": 0.899,
+     "p5": 0.8240000000000001,
+     "p95": 0.985,
+     "mean": 0.9009306712395885,
+     "n": 4082
+    },
+    "waist_frac_of_stature": {
+     "median": 0.6016189954645661,
+     "p5": 0.5800691244239631,
+     "p95": 0.6222098214285714,
+     "mean": 0.6014334838168989,
+     "n": 4082
+    },
+    "waist_height_m": {
+     "median": 1.055,
+     "p5": 0.972,
+     "p95": 1.145,
+     "mean": 1.056485301322881,
+     "n": 4082
+    }
+   }
+  },
+  "female": {
+   "derived_table": "ansur2_female_derived.csv",
+   "source_csv_rows": 1986,
+   "derived_rows": 1986,
+   "quarantined_rows": 0,
+   "quarantine": [],
+   "anchor_verification": {
+    "stature_m": {
+     "matches_anchor_stature_m": true,
+     "computed_median": 1.6260000000000001,
+     "published_median": 1.6260000000000001
+    },
+    "trochanterion_m": {
+     "matches_anchor_trochanterion_m": true,
+     "computed_median": 0.844,
+     "published_median": 0.844
+    },
+    "leg_frac_of_stature": {
+     "matches_anchor_leg_frac_of_stature": true,
+     "computed_median": 0.5190185421044051,
+     "published_median": 0.5190185421044051
+    },
+    "eye_frac_of_stature": {
+     "matches_anchor_eye_frac_of_stature": true,
+     "computed_median": 0.9223088797194976,
+     "published_median": 0.9223088797194976
+    },
+    "bmi": {
+     "matches_anchor_bmi": true,
+     "computed_median": 25.26675165226321,
+     "published_median": 25.26675165226321
+    },
+    "mass_kg": {
+     "matches_anchor_mass_kg": true,
+     "computed_median": 66.8,
+     "published_median": 66.8
+    },
+    "foot_length_m": {
+     "matches_anchor_foot_length_m": true,
+     "computed_median": 0.246,
+     "published_median": 0.246
+    },
+    "foot_breadth_m": {
+     "matches_anchor_foot_breadth_m": true,
+     "computed_median": 0.093,
+     "published_median": 0.093
+    },
+    "hand_length_m": {
+     "matches_anchor_hand_length_m": true,
+     "computed_median": 0.18,
+     "published_median": 0.18
+    },
+    "hand_breadth_m": {
+     "matches_anchor_hand_breadth_m": true,
+     "computed_median": 0.078,
+     "published_median": 0.078
+    },
+    "hand_circumference_m": {
+     "matches_anchor_hand_circumference_m": true,
+     "computed_median": 0.187,
+     "published_median": 0.187
+    },
+    "head_height_m": {
+     "matches_anchor_head_height_m": true,
+     "computed_median": 0.127,
+     "published_median": 0.127
+    },
+    "waist_frac_of_stature": {
+     "matches_anchor_waist_frac_of_stature": true,
+     "computed_median": 0.6019628142699787,
+     "published_median": 0.6019628142699787
+    }
+   },
+   "aggregates": {
+    "bmi": {
+     "median": 25.26675165226321,
+     "p5": 20.258883430743303,
+     "p95": 31.673160757686816,
+     "mean": 25.495970355196313,
+     "n": 1986
+    },
+    "eye_frac_of_stature": {
+     "median": 0.9223088797194976,
+     "p5": 0.9147479775980087,
+     "p95": 0.9294342021614749,
+     "mean": 0.9222490929606989,
+     "n": 1986
+    },
+    "foot_breadth_m": {
+     "median": 0.093,
+     "p5": 0.085,
+     "p95": 0.101,
+     "mean": 0.09271198388721047,
+     "n": 1986
+    },
+    "foot_length_m": {
+     "median": 0.246,
+     "p5": 0.226,
+     "p95": 0.268,
+     "mean": 0.24629305135951662,
+     "n": 1986
+    },
+    "hand_breadth_m": {
+     "median": 0.078,
+     "p5": 0.07200000000000001,
+     "p95": 0.085,
+     "mean": 0.07815407854984895,
+     "n": 1986
+    },
+    "hand_circumference_m": {
+     "median": 0.187,
+     "p5": 0.17300000000000001,
+     "p95": 0.202,
+     "mean": 0.1865503524672709,
+     "n": 1986
+    },
+    "hand_length_m": {
+     "median": 0.18,
+     "p5": 0.165,
+     "p95": 0.199,
+     "mean": 0.181083081570997,
+     "n": 1986
+    },
+    "head_height_m": {
+     "median": 0.127,
+     "p5": 0.116,
+     "p95": 0.137,
+     "mean": 0.12647532729103728,
+     "n": 1986
+    },
+    "leg_frac_of_stature": {
+     "median": 0.5190185421044051,
+     "p5": 0.49586776859504134,
+     "p95": 0.5425597060624617,
+     "mean": 0.5189846304592636,
+     "n": 1986
+    },
+    "mass_kg": {
+     "median": 66.8,
+     "p5": 51.300000000000004,
+     "p95": 87.10000000000001,
+     "mean": 67.75820745216517,
+     "n": 1986
+    },
+    "stature_m": {
+     "median": 1.6260000000000001,
+     "p5": 1.5250000000000001,
+     "p95": 1.74,
+     "mean": 1.6284733131923466,
+     "n": 1986
+    },
+    "trochanterion_m": {
+     "median": 0.844,
+     "p5": 0.774,
+     "p95": 0.919,
+     "mean": 0.8453509566968781,
+     "n": 1986
+    },
+    "waist_frac_of_stature": {
+     "median": 0.6019628142699787,
+     "p5": 0.5795165394402035,
+     "p95": 0.6243127672571778,
+     "mean": 0.6017168692311125,
+     "n": 1986
+    },
+    "waist_height_m": {
+     "median": 0.9775,
+     "p5": 0.9,
+     "p95": 1.064,
+     "mean": 0.9801490433031219,
+     "n": 1986
+    }
+   }
+  }
+ }
+}

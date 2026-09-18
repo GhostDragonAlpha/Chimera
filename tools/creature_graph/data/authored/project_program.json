@@ -62700,6 +62700,393 @@
     "acceptance_test": "Not yet runnable: the implementing lane executes falsifiers F1-F9 of docs/packets/seven_coordinate_lift_v1.md per ladder stage and records measured results here in revision 2. Until then the honest status is untested.",
     "status": "untested"
    }
+  },
+  {
+   "id": "work.data.local_refs_20260918",
+   "kind": "work",
+   "name": "Local human comparative references intake through the batch membrane (ANSUR II derived aggregates, mocap walk series, muscle inventory doc)",
+   "status": "specified",
+   "priority": "P1",
+   "dependencies": [
+    "work.data.batch_intake",
+    "work.creature.macaque_whole_body_sources"
+   ],
+   "physical": {
+    "statement": "The resident human datasets in research_references/human/ -- the ANSUR II public CSVs, mocap_walk_reference.json and MUSCLE_INVENTORY.md -- are admitted through the batch membrane as Homo sapiens (comparative) evidence for the macaque project, by DERIVATION ONLY (Rule 1), never bulk dump. ANSUR II: a recorded selection rule -- exactly the ten columns the existing anchors' own derivation reads (tools/build_ansur_anchors.py: stature, trochanterionheight, weightkg, tragiontopofhead, footlength, footbreadthhorizontal, handlength, handbreadth, handcircumference, waistheightomphalion) -- produces a deterministic derived table per sex (male 4082 subject rows, female 1986; unit laws mm->m and weightkg 100-g units -> kg; per-subject derived leg_frac_of_stature, eye_frac_of_stature, waist_frac_of_stature and bmi; full-row retention, zero/nonpositive refused row-by-row). The per-subject tables are PINNED BYTES in the intake data dir; the graph admits only per-sex AGGREGATE summaries over the derived columns (median/p5/p95/mean/n under the anchors' own aggregation law). mocap_walk_reference.json: the three gait-cycle mean curves (hip/knee/ankle, 101 samples, n_cycles=4) admit as series records under batch.property.series (x = percent-of-cycle/100 dimensionless, angle in SI rad with the source's degree values preserved as originals; spatiotemporal scalars and the file's own sign/cycle conventions carried on every record). MUSCLE_INVENTORY.md admits as ONE documentation-reference entity pinned by its sha256 -- a citation, never measurements. PRIVACY LAW (a falsifiable decision, not taste): SOURCES.md records the CSVs as 'DOWNLOADED (mirror of the Penn State OPEN Design Lab release; US Gov work, public since 2017)' and grants no person-level redistribution, so the conservative reading governs: raw CSV rows are never copied into the membrane and never admitted; aggregate-only entry is the recorded choice and a recorded redistribution grant would falsify it. Species discipline: every record carries subject_species 'Homo sapiens (comparative)'; nothing merges with any Macaca entity.",
+    "prediction": "The anchors' published aggregates (ansur_anchors.json, both sexes, all 13 fields) reproduce from the raw rows under the recorded derivation within 1e-9 relative tolerance; the three mocap series admit under batch.property.series with strictly increasing x on [0,1] and 101 samples each; the muscle inventory admits as exactly one entity pinned by sha256 f16fde6da59c1e6ccf5214734957b6570cc120310b22959ef35c13caab121c71; total graph evidence records stay 11; a corrupted input row quarantines exactly itself; a second full apply adds zero objects and reproduces the graph hash.",
+    "contract": {
+     "derivation_law": "ANSUR II columns (the anchors' own set): stature, trochanterionheight, weightkg, tragiontopofhead, footlength, footbreadthhorizontal, handlength, handbreadth, handcircumference, waistheightomphalion; unit laws lengths mm->m and weightkg 100-g units -> kg (verified against Paquette 2014 published means by the anchors builder); per-subject derived: leg_frac_of_stature = trochanterion/stature, eye_frac_of_stature = (stature - tragiontopofhead)/stature, waist_frac_of_stature = waistheightomphalion/stature, bmi = weightkg*0.1/(stature*0.001)^2; aggregation exactly the anchors' law: median, p5 = sorted[int(0.05*n)], p95 = sorted[min(n-1, int(0.95*n))], mean (fmean), n. Mocap: x = percent_of_cycle/100 dimensionless on [0,1]; y degrees -> rad via the units table; conventions carried verbatim from the file (sagittal vector-based, +flexion/+dorsiflexion, cycle 0% = heel strike); raw BVH unit-scale derivation noted as recorded in the file's units block.",
+     "privacy_decision": "Aggregate-only admission; per-subject derived rows remain pinned bundle bytes under tools/science_funnel/data/ansur2_derived_20260918/ with download_receipt.json recording source 'repo-resident research_references/human/ANSUR_II_{MALE,FEMALE}_Public.csv' and their sha256 pins (no URL invented, none needed). Falsifiable: a recorded grant permitting person-level redistribution of ANSUR II rows would falsify this decision and reopen per-subject admission.",
+     "sources_quoted": "SOURCES.md Tier 0, verbatim: 'DOWNLOADED (mirror of the Penn State OPEN Design Lab release; US Gov work, public since 2017)'. CMU mocap: 'License: free for research AND commercial inclusion; may not resell the data itself; credit mocap.cs.cmu.edu + NSF EIA-0196217' (SOURCES.md ACQUISITION SWEEP row).",
+     "owned_files": [
+      "tools/science_funnel/adapters_local_refs.py",
+      "tools/science_funnel/batch/connectors_local_refs.py",
+      "tools/science_funnel/data/ansur2_derived_20260918/",
+      "tools/science_funnel/data/mocap_walk_series_20260918/",
+      "tools/science_funnel/data/muscle_inventory_doc_20260918/",
+      "tools/science_funnel/tests/test_batch_local_refs.py",
+      "tools/science_funnel/validation/batch_local_refs_20260918/",
+      "tools/science_funnel/derive_local_refs_ansur.py",
+      "tools/science_funnel/derive_local_refs_mocap_doc.py"
+     ]
+    }
+   },
+   "falsifier": {
+    "statement": "This intake is not a derivation if any of these hold. F1: a corrupted input row does not quarantine exactly itself -- anything else admitted or dropped alongside it. F2: the count identity does not close -- derived subject rows (male 4082, female 1986), mocap series (3 curves x 101 samples) and the muscle-inventory entity (1, sha-pinned) do not equal the recorded and admitted counts. F3: a second apply adds any object or shifts the graph hash. F4: the anchors' aggregates do not reproduce from the raw rows under the recorded derivation. F5: any admitted record lacks the Homo sapiens (comparative) tag or merges with a Macaca entity.",
+    "acceptance_test": "python -B -m tools.creature_graph.batch_qualify --reprove all --admit ansur2_derived_20260918,mocap_walk_series_20260918,muscle_inventory_doc_20260918 --apply --out tools/science_funnel/validation/batch_local_refs_20260918/receipt.json; then the science_funnel test suite green; then graphify consumer round-trip HONEST; then evidence records still 11; then a second --apply run adds zero objects; then the lane test corrupts one CSV cell in memory and asserts exactly one quarantine; then aggregate reproduction is compared field-by-field against ansur_anchors.json. Status at bank time 2026-09-18: untested -- this record is banked BEFORE connector code per Rule 0.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "kind": "source",
+   "name": "ansur2.derived_aggregates_20260918",
+   "science_funnel": {
+    "authority": "external_assertion",
+    "bundle_id": "5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+    "manifest": {
+     "adapter": "ansur2_aggregates",
+     "artifacts": [
+      {
+       "id": "ansur2_male_derived.csv",
+       "path": "artifacts/943c33186a1752bb9fb6d0f7014aa4af54f108021510e97202a1d85a06d9ddc1",
+       "role": "data",
+       "sha256": "943c33186a1752bb9fb6d0f7014aa4af54f108021510e97202a1d85a06d9ddc1",
+       "url": "derived by tools/science_funnel/derive_local_refs_ansur.py from repo-resident research_references/human/ ANSUR II CSVs (anchors' own column set and laws)"
+      },
+      {
+       "id": "ansur2_female_derived.csv",
+       "path": "artifacts/3a17cb2572541e1fa979add24d90b73d721b25936d08986eb9393ac8629908bf",
+       "role": "attachment",
+       "sha256": "3a17cb2572541e1fa979add24d90b73d721b25936d08986eb9393ac8629908bf",
+       "url": "derived by tools/science_funnel/derive_local_refs_ansur.py from repo-resident research_references/human/ ANSUR II CSVs (anchors' own column set and laws)"
+      },
+      {
+       "id": "ANSUR_II_MALE_Public.csv",
+       "path": "artifacts/e468eb5787b8ba6c716a86378cf476ba9bd8c57e09493f0fc65b1b8f33e48db8",
+       "role": "attachment",
+       "sha256": "e468eb5787b8ba6c716a86378cf476ba9bd8c57e09493f0fc65b1b8f33e48db8",
+       "url": "repo-resident research_references/human/ANSUR_II_MALE_Public.csv"
+      },
+      {
+       "id": "ANSUR_II_FEMALE_Public.csv",
+       "path": "artifacts/4854f4888146c81690b374d07d044008798ae4a21552afb90823ebd64e04b99f",
+       "role": "attachment",
+       "sha256": "4854f4888146c81690b374d07d044008798ae4a21552afb90823ebd64e04b99f",
+       "url": "repo-resident research_references/human/ANSUR_II_FEMALE_Public.csv"
+      }
+     ],
+     "constants": {
+      "female_derived_sha256": "3a17cb2572541e1fa979add24d90b73d721b25936d08986eb9393ac8629908bf"
+     },
+     "schema_version": "1.0.0",
+     "source": {
+      "id": "ansur2.derived_aggregates_20260918",
+      "known_gaps": [
+       "person-level rows never admitted; aggregate-only is a recorded falsifiable decision",
+       "2012 military population; not a civilian sample",
+       "margins in the derived tables are derived, not directly measured",
+       "the anchors' percentile law is an order-statistic, not an interpolated percentile"
+      ],
+      "license": "US Government work (17 USC 105), public release 2017 via Penn State OPEN Design Lab; no person-level redistribution grant recorded -- aggregate-only admission (see SOURCES.md and the work record)",
+      "release": "deterministic per-sex derived tables (columns and unit laws = the existing anchors' own derivation), built 2026-09-18 by tools/science_funnel/derive_local_refs_ansur.py; anchors verified to 1e-9",
+      "url": "repo-resident research_references/human/ANSUR_II_MALE_Public.csv + ANSUR_II_FEMALE_Public.csv (no download; copy-in of committed bytes)"
+     }
+    },
+    "quarantine": [],
+    "receipt": {
+     "accepted": 140,
+     "bundle_id": "5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+     "files": {
+      "blobs/3a17cb2572541e1fa979add24d90b73d721b25936d08986eb9393ac8629908bf": "3a17cb2572541e1fa979add24d90b73d721b25936d08986eb9393ac8629908bf",
+      "blobs/4854f4888146c81690b374d07d044008798ae4a21552afb90823ebd64e04b99f": "4854f4888146c81690b374d07d044008798ae4a21552afb90823ebd64e04b99f",
+      "blobs/943c33186a1752bb9fb6d0f7014aa4af54f108021510e97202a1d85a06d9ddc1": "943c33186a1752bb9fb6d0f7014aa4af54f108021510e97202a1d85a06d9ddc1",
+      "blobs/e468eb5787b8ba6c716a86378cf476ba9bd8c57e09493f0fc65b1b8f33e48db8": "e468eb5787b8ba6c716a86378cf476ba9bd8c57e09493f0fc65b1b8f33e48db8",
+      "manifest.json": "1390bd00fd08243200936be0425a339c748a4da380b6addeec8e3c5f7d567b00",
+      "quarantine.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "records.json": "75f1867e6500070a0af7d1799ced55e85e835fb1795afa59b623984c17abbc03"
+     },
+     "implementation": {
+      "files": {
+       "__init__.py": "dc62787febbc18f03ce0b857564b41ed1af21aee4a1d17a87b12de2ff9837ad1",
+       "__main__.py": "4ae03ea3490b890cb0e5a778bb3638f94b6b775495646d576541118f4553f7b7",
+       "adapters.py": "dad7560815516cae7bbe3b2b289ff37f2481912fa80be53fda2ea63719d83796",
+       "adapters_egm08.py": "de5dd4be80c2d493cb9a6b0c7c78e10caecf21645d6da7818d0a5c59f0c1204f",
+       "adapters_gait.py": "5f3a5ea9637b4b1cbbe52c2e1261f366f971fbf681166a1ac99f9ed075fc64d7",
+       "adapters_geo.py": "ca5f2dadcfa3e8b676e0b377dcfddd910c7a8bb461e42fbc8079990b9eaca10b",
+       "adapters_life.py": "a1ea0a28c06d5d1c98afd53cceeeccbe179fa048998b59dbd1a8a947c5378169",
+       "adapters_local_refs.py": "3c172b10866543d4e7ce6e8070ebd23272e503f3b7e8eaaf865aef9398962a83",
+       "adapters_muscle.py": "c26d8ec342f79533af1d0b59e28f2d318070502fb48ff36a0d8741f7dc6c7631",
+       "check_packet.py": "d53f802c75e637f06f4ef0190f8f8db4a5c9e7038549e53052415c438bb41d5b",
+       "common.py": "85dd26591a104c68e847bd4c76baef4fc34ca87957dd9f33d72affaf79ab4d7d",
+       "coupled_arm.py": "acadc7327031ea2eb14411bf38701b08ff2da6c945daf692461ed8b1004947f4",
+       "coupled_scene.py": "3ddb6f8f4a54f25192431ba8ff069b49ae6fc7f7a6e8988e1bf9359db108159e",
+       "creature_scene.py": "929b3b36d893e27aa1d18128f204c4d3ed5d62355c6a2fbd5ce073cab20da4d1",
+       "derive_local_refs_ansur.py": "99cfb1fa7faa9a013e88c750bef809a44404e614ac03ccfc963773c2023e5c4c",
+       "derive_local_refs_mocap_doc.py": "3b432280e70e7e535d8157492b8c09f2830b7a7bbc6ec1768219c50500a75afc",
+       "earth_scene.py": "ebbfc37a6907cd706d4e7ae36ce8dc9e20e584682404a5092a79d951bd3d94e6",
+       "force_adapters.py": "bbf6fa2c30c7c5c0d37594f81ba8144011c7adff36ab5e25ea1edd91052405a5",
+       "force_arm.py": "f02cf4f8ae84d4a6729d8dad586c782ead8e53760677de07b545c81e41e21a13",
+       "force_catalog.py": "28c439e4df539b2b20c4b69d3ef3b3a3589682e0dff6220be978e4439d53d7eb",
+       "force_models.py": "819715b7b5abe318418ec88e9442c55516dce55c6936e9bbd8e08e319a305fe6",
+       "geo_fetch.py": "45d9cb29bdbb0e405c1302d377786e7d127de01d3682d52b7b40601ba1ffe8cb",
+       "graph.py": "99ca2ca79fe64b154dd4462ff7207e1bd0e1ba361fdcb06489c9330c80c1db85",
+       "life_fetch.py": "cc740345fb2280986fcc88ca013deb827afdf81cedd861935f192cfa8b456ee3",
+       "macaque_anatomy.py": "d1e23defcf27a6fae61d637609f7bfc609ac3a6fccdffeaa666ef44b738105ad",
+       "parallel_visual_proof.py": "7b2c1f1afb2703e4caa78d2ef4d377075c29294c2644cf4122bf472f7fbe85e7",
+       "pipeline.py": "662d3c91d13a56c379987d5357b88ebddfa7342fc341535de0a74caa72a79dde",
+       "qualify.py": "93895e43f986d22f836f243d242557454dac285bee2c40342034b03c9e3ed60f",
+       "reductions.py": "cc8759d6325d1de0d10c7e89332220821b2f3b956448be696fca75a88fdb126e",
+       "reference_data/parsers.py": "02c8dfb2b9e157eea2d89f780333229b7d8b2fc82eb47fe0e72e11d71d6b9614",
+       "review_candidate.py": "7c03a5017da4f0fd0d15b47b21167bfcdb840152488b3dd4f1afb329e77aee35",
+       "surface_scene.py": "51bdcec0ba3413add9e95fabacc40498621ec25c6862cb9b3c086365de066b4a",
+       "sweep_trainer_spine.py": "e4b78fd7f5fecbee34456809e469274b4f71be0f041a6dd47fbfeeee6961d569",
+       "terrain.py": "6271829f0dc53ea58185d9e7f551dc32f6e990cd23d070845660186069644b9d",
+       "thermal_scene.py": "02d6f40afcec033c027d3acd3f2779179bbed84c88e4bbb0d63f3af3789fc55e",
+       "units.py": "38220629308898b932b85bb20138b057a6b446ddf4d013d07b10c74ef24bc780",
+       "visual_proof.py": "e79f303838873017c9c968c0b3df748416f1ec3380805c74303052c9e81b46e3",
+       "visual_proof_wave2.py": "d567f7c25c2ec2ec5c75bfb8b4252ecb2c93584ac285ce2af9238def100b0b36"
+      },
+      "version": "1.0.0"
+     },
+     "quarantined": 0,
+     "schema_version": "1.0.0"
+    },
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "storage": "chimera-intake:5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e"
+   },
+   "status": "extracted"
+  },
+  {
+   "id": "data.source.59e88aac0da18b365695c37236e239ec8af7acb95649f0e9c52fbf727c672954",
+   "kind": "source",
+   "name": "cmu.mocap.subject35.walk",
+   "science_funnel": {
+    "authority": "external_assertion",
+    "bundle_id": "59e88aac0da18b365695c37236e239ec8af7acb95649f0e9c52fbf727c672954",
+    "manifest": {
+     "adapter": "mocap_walk_series",
+     "artifacts": [
+      {
+       "id": "mocap_cmus35_walk_hip_mean_cycle.csv",
+       "path": "artifacts/d73368f3deddb957dce7490e2e1dd884e65a19a1c2cfadd09cf4564783f513df",
+       "role": "data",
+       "sha256": "d73368f3deddb957dce7490e2e1dd884e65a19a1c2cfadd09cf4564783f513df",
+       "url": "derived by tools/science_funnel/derive_local_refs_mocap_doc.py from repo-resident research_references/human/mocap_walk_reference.json"
+      },
+      {
+       "id": "mocap_cmus35_walk_knee_mean_cycle.csv",
+       "path": "artifacts/226abf73092b67f6b987aa96d0f1ab8d7b1df625d34c3dd6b5eba5ab2f360b48",
+       "role": "attachment",
+       "sha256": "226abf73092b67f6b987aa96d0f1ab8d7b1df625d34c3dd6b5eba5ab2f360b48",
+       "url": "derived by tools/science_funnel/derive_local_refs_mocap_doc.py from repo-resident research_references/human/mocap_walk_reference.json"
+      },
+      {
+       "id": "mocap_cmus35_walk_ankle_mean_cycle.csv",
+       "path": "artifacts/e42a2c4a08b57a18348c6bbe3af3cb13f2036ea82e334692de5523d4563d747a",
+       "role": "attachment",
+       "sha256": "e42a2c4a08b57a18348c6bbe3af3cb13f2036ea82e334692de5523d4563d747a",
+       "url": "derived by tools/science_funnel/derive_local_refs_mocap_doc.py from repo-resident research_references/human/mocap_walk_reference.json"
+      },
+      {
+       "id": "mocap_walk_reference.json",
+       "path": "artifacts/2f19832f00d115aaa55eed393113a41cf5b385dca3001b4a12aa6648c9182b26",
+       "role": "attachment",
+       "sha256": "2f19832f00d115aaa55eed393113a41cf5b385dca3001b4a12aa6648c9182b26",
+       "url": "repo-resident research_references/human/mocap_walk_reference.json"
+      }
+     ],
+     "constants": {
+      "ankle_curve_sha256": "e42a2c4a08b57a18348c6bbe3af3cb13f2036ea82e334692de5523d4563d747a",
+      "conventions_verbatim": "angles: vector-based sagittal, hip/knee +flexion, ankle +dorsiflexion; cycle 0% = heel strike (toe-contact onset)",
+      "knee_curve_sha256": "226abf73092b67f6b987aa96d0f1ab8d7b1df625d34c3dd6b5eba5ab2f360b48",
+      "spatiotemporal_scalars": {
+       "cadence_steps_per_min": 106.5,
+       "duration_s": 2.992,
+       "duty_factor": 0.596,
+       "fps": 120.0,
+       "frames": 359,
+       "leg_length_m": 0.853,
+       "speed_m_s": 1.285,
+       "stride_length_leg_lengths": 1.716,
+       "stride_length_m": 1.464,
+       "stride_time_s": 1.127
+      }
+     },
+     "schema_version": "1.0.0",
+     "source": {
+      "id": "cmu.mocap.subject35.walk",
+      "known_gaps": [
+       "mean over 4 cycles, not per-cycle data",
+       "source degrees rounded to 2 decimal places",
+       "BVH raw-unit scale was measured, not documented, by the source file",
+       "one subject, one speed (1.285 m/s); not a population norm"
+      ],
+      "license": "CMU MoCap: free for research AND commercial inclusion; may not resell the data itself; credit mocap.cs.cmu.edu + NSF EIA-0196217",
+      "release": "mean gait-cycle curves derived 2026-09-18 by tools/science_funnel/derive_local_refs_mocap_doc.py from the repo-resident reference file (101 samples, n_cycles=4 per curve)",
+      "url": "repo-resident research_references/human/mocap_walk_reference.json (no download; copy-in of committed bytes)"
+     }
+    },
+    "quarantine": [],
+    "receipt": {
+     "accepted": 3,
+     "bundle_id": "59e88aac0da18b365695c37236e239ec8af7acb95649f0e9c52fbf727c672954",
+     "files": {
+      "blobs/226abf73092b67f6b987aa96d0f1ab8d7b1df625d34c3dd6b5eba5ab2f360b48": "226abf73092b67f6b987aa96d0f1ab8d7b1df625d34c3dd6b5eba5ab2f360b48",
+      "blobs/2f19832f00d115aaa55eed393113a41cf5b385dca3001b4a12aa6648c9182b26": "2f19832f00d115aaa55eed393113a41cf5b385dca3001b4a12aa6648c9182b26",
+      "blobs/d73368f3deddb957dce7490e2e1dd884e65a19a1c2cfadd09cf4564783f513df": "d73368f3deddb957dce7490e2e1dd884e65a19a1c2cfadd09cf4564783f513df",
+      "blobs/e42a2c4a08b57a18348c6bbe3af3cb13f2036ea82e334692de5523d4563d747a": "e42a2c4a08b57a18348c6bbe3af3cb13f2036ea82e334692de5523d4563d747a",
+      "manifest.json": "c23568e4c4e612431c59e3f0a5c6672fcb7f5d77680a2d5a1d72d0bf3a7268be",
+      "quarantine.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "records.json": "5b7e204ffc2b1a41f2f9510c9824da1395253ca9341165e914de91a06a5dd3ae"
+     },
+     "implementation": {
+      "files": {
+       "__init__.py": "dc62787febbc18f03ce0b857564b41ed1af21aee4a1d17a87b12de2ff9837ad1",
+       "__main__.py": "4ae03ea3490b890cb0e5a778bb3638f94b6b775495646d576541118f4553f7b7",
+       "adapters.py": "dad7560815516cae7bbe3b2b289ff37f2481912fa80be53fda2ea63719d83796",
+       "adapters_egm08.py": "de5dd4be80c2d493cb9a6b0c7c78e10caecf21645d6da7818d0a5c59f0c1204f",
+       "adapters_gait.py": "5f3a5ea9637b4b1cbbe52c2e1261f366f971fbf681166a1ac99f9ed075fc64d7",
+       "adapters_geo.py": "ca5f2dadcfa3e8b676e0b377dcfddd910c7a8bb461e42fbc8079990b9eaca10b",
+       "adapters_life.py": "a1ea0a28c06d5d1c98afd53cceeeccbe179fa048998b59dbd1a8a947c5378169",
+       "adapters_local_refs.py": "3c172b10866543d4e7ce6e8070ebd23272e503f3b7e8eaaf865aef9398962a83",
+       "adapters_muscle.py": "c26d8ec342f79533af1d0b59e28f2d318070502fb48ff36a0d8741f7dc6c7631",
+       "check_packet.py": "d53f802c75e637f06f4ef0190f8f8db4a5c9e7038549e53052415c438bb41d5b",
+       "common.py": "85dd26591a104c68e847bd4c76baef4fc34ca87957dd9f33d72affaf79ab4d7d",
+       "coupled_arm.py": "acadc7327031ea2eb14411bf38701b08ff2da6c945daf692461ed8b1004947f4",
+       "coupled_scene.py": "3ddb6f8f4a54f25192431ba8ff069b49ae6fc7f7a6e8988e1bf9359db108159e",
+       "creature_scene.py": "929b3b36d893e27aa1d18128f204c4d3ed5d62355c6a2fbd5ce073cab20da4d1",
+       "derive_local_refs_ansur.py": "99cfb1fa7faa9a013e88c750bef809a44404e614ac03ccfc963773c2023e5c4c",
+       "derive_local_refs_mocap_doc.py": "3b432280e70e7e535d8157492b8c09f2830b7a7bbc6ec1768219c50500a75afc",
+       "earth_scene.py": "ebbfc37a6907cd706d4e7ae36ce8dc9e20e584682404a5092a79d951bd3d94e6",
+       "force_adapters.py": "bbf6fa2c30c7c5c0d37594f81ba8144011c7adff36ab5e25ea1edd91052405a5",
+       "force_arm.py": "f02cf4f8ae84d4a6729d8dad586c782ead8e53760677de07b545c81e41e21a13",
+       "force_catalog.py": "28c439e4df539b2b20c4b69d3ef3b3a3589682e0dff6220be978e4439d53d7eb",
+       "force_models.py": "819715b7b5abe318418ec88e9442c55516dce55c6936e9bbd8e08e319a305fe6",
+       "geo_fetch.py": "45d9cb29bdbb0e405c1302d377786e7d127de01d3682d52b7b40601ba1ffe8cb",
+       "graph.py": "99ca2ca79fe64b154dd4462ff7207e1bd0e1ba361fdcb06489c9330c80c1db85",
+       "life_fetch.py": "cc740345fb2280986fcc88ca013deb827afdf81cedd861935f192cfa8b456ee3",
+       "macaque_anatomy.py": "d1e23defcf27a6fae61d637609f7bfc609ac3a6fccdffeaa666ef44b738105ad",
+       "parallel_visual_proof.py": "7b2c1f1afb2703e4caa78d2ef4d377075c29294c2644cf4122bf472f7fbe85e7",
+       "pipeline.py": "662d3c91d13a56c379987d5357b88ebddfa7342fc341535de0a74caa72a79dde",
+       "qualify.py": "93895e43f986d22f836f243d242557454dac285bee2c40342034b03c9e3ed60f",
+       "reductions.py": "cc8759d6325d1de0d10c7e89332220821b2f3b956448be696fca75a88fdb126e",
+       "reference_data/parsers.py": "02c8dfb2b9e157eea2d89f780333229b7d8b2fc82eb47fe0e72e11d71d6b9614",
+       "review_candidate.py": "7c03a5017da4f0fd0d15b47b21167bfcdb840152488b3dd4f1afb329e77aee35",
+       "surface_scene.py": "51bdcec0ba3413add9e95fabacc40498621ec25c6862cb9b3c086365de066b4a",
+       "sweep_trainer_spine.py": "e4b78fd7f5fecbee34456809e469274b4f71be0f041a6dd47fbfeeee6961d569",
+       "terrain.py": "6271829f0dc53ea58185d9e7f551dc32f6e990cd23d070845660186069644b9d",
+       "thermal_scene.py": "02d6f40afcec033c027d3acd3f2779179bbed84c88e4bbb0d63f3af3789fc55e",
+       "units.py": "38220629308898b932b85bb20138b057a6b446ddf4d013d07b10c74ef24bc780",
+       "visual_proof.py": "e79f303838873017c9c968c0b3df748416f1ec3380805c74303052c9e81b46e3",
+       "visual_proof_wave2.py": "d567f7c25c2ec2ec5c75bfb8b4252ecb2c93584ac285ce2af9238def100b0b36"
+      },
+      "version": "1.0.0"
+     },
+     "quarantined": 0,
+     "schema_version": "1.0.0"
+    },
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "storage": "chimera-intake:59e88aac0da18b365695c37236e239ec8af7acb95649f0e9c52fbf727c672954"
+   },
+   "status": "extracted"
+  },
+  {
+   "id": "data.source.481c87feceda92de611f1ebbd034be8ab8216c38d6316e156275e842aca9d19f",
+   "kind": "source",
+   "name": "chimera.muscle_inventory_doc",
+   "science_funnel": {
+    "authority": "external_assertion",
+    "bundle_id": "481c87feceda92de611f1ebbd034be8ab8216c38d6316e156275e842aca9d19f",
+    "manifest": {
+     "adapter": "muscle_inventory_doc",
+     "artifacts": [
+      {
+       "id": "MUSCLE_INVENTORY.md",
+       "path": "artifacts/f16fde6da59c1e6ccf5214734957b6570cc120310b22959ef35c13caab121c71",
+       "role": "data",
+       "sha256": "f16fde6da59c1e6ccf5214734957b6570cc120310b22959ef35c13caab121c71",
+       "url": "repo-resident research_references/human/MUSCLE_INVENTORY.md"
+      }
+     ],
+     "constants": {
+      "muscle_inventory_sha256": "f16fde6da59c1e6ccf5214734957b6570cc120310b22959ef35c13caab121c71"
+     },
+     "schema_version": "1.0.0",
+     "source": {
+      "id": "chimera.muscle_inventory_doc",
+      "known_gaps": [
+       "prose document admitted as a citation entity, never reified into measurement records",
+       "muscle role text is not machine-parsed"
+      ],
+      "license": "repository-authored; cites published kinesiology sources (Neumann; Ward et al. 2009; Rajagopal et al. 2016; Saul et al. 2015; Christophy et al. 2012; Caggiano et al. 2022)",
+      "release": "repository-authored document, committed LF bytes pinned 2026-09-18 (sha256 in the connector constants and the work record)",
+      "url": "repo-resident research_references/human/MUSCLE_INVENTORY.md (no download; copy-in of committed bytes)"
+     }
+    },
+    "quarantine": [],
+    "receipt": {
+     "accepted": 1,
+     "bundle_id": "481c87feceda92de611f1ebbd034be8ab8216c38d6316e156275e842aca9d19f",
+     "files": {
+      "blobs/f16fde6da59c1e6ccf5214734957b6570cc120310b22959ef35c13caab121c71": "f16fde6da59c1e6ccf5214734957b6570cc120310b22959ef35c13caab121c71",
+      "manifest.json": "9a4ff16ae3e385b8812eb7da4761d2d44b708c0cba81ca9f513bca3394a2a534",
+      "quarantine.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "records.json": "351bb9b9062badbc7668a624a992218a2e82406b5ea2da901fc6662bbc75a7a3"
+     },
+     "implementation": {
+      "files": {
+       "__init__.py": "dc62787febbc18f03ce0b857564b41ed1af21aee4a1d17a87b12de2ff9837ad1",
+       "__main__.py": "4ae03ea3490b890cb0e5a778bb3638f94b6b775495646d576541118f4553f7b7",
+       "adapters.py": "dad7560815516cae7bbe3b2b289ff37f2481912fa80be53fda2ea63719d83796",
+       "adapters_egm08.py": "de5dd4be80c2d493cb9a6b0c7c78e10caecf21645d6da7818d0a5c59f0c1204f",
+       "adapters_gait.py": "5f3a5ea9637b4b1cbbe52c2e1261f366f971fbf681166a1ac99f9ed075fc64d7",
+       "adapters_geo.py": "ca5f2dadcfa3e8b676e0b377dcfddd910c7a8bb461e42fbc8079990b9eaca10b",
+       "adapters_life.py": "a1ea0a28c06d5d1c98afd53cceeeccbe179fa048998b59dbd1a8a947c5378169",
+       "adapters_local_refs.py": "3c172b10866543d4e7ce6e8070ebd23272e503f3b7e8eaaf865aef9398962a83",
+       "adapters_muscle.py": "c26d8ec342f79533af1d0b59e28f2d318070502fb48ff36a0d8741f7dc6c7631",
+       "check_packet.py": "d53f802c75e637f06f4ef0190f8f8db4a5c9e7038549e53052415c438bb41d5b",
+       "common.py": "85dd26591a104c68e847bd4c76baef4fc34ca87957dd9f33d72affaf79ab4d7d",
+       "coupled_arm.py": "acadc7327031ea2eb14411bf38701b08ff2da6c945daf692461ed8b1004947f4",
+       "coupled_scene.py": "3ddb6f8f4a54f25192431ba8ff069b49ae6fc7f7a6e8988e1bf9359db108159e",
+       "creature_scene.py": "929b3b36d893e27aa1d18128f204c4d3ed5d62355c6a2fbd5ce073cab20da4d1",
+       "derive_local_refs_ansur.py": "99cfb1fa7faa9a013e88c750bef809a44404e614ac03ccfc963773c2023e5c4c",
+       "derive_local_refs_mocap_doc.py": "3b432280e70e7e535d8157492b8c09f2830b7a7bbc6ec1768219c50500a75afc",
+       "earth_scene.py": "ebbfc37a6907cd706d4e7ae36ce8dc9e20e584682404a5092a79d951bd3d94e6",
+       "force_adapters.py": "bbf6fa2c30c7c5c0d37594f81ba8144011c7adff36ab5e25ea1edd91052405a5",
+       "force_arm.py": "f02cf4f8ae84d4a6729d8dad586c782ead8e53760677de07b545c81e41e21a13",
+       "force_catalog.py": "28c439e4df539b2b20c4b69d3ef3b3a3589682e0dff6220be978e4439d53d7eb",
+       "force_models.py": "819715b7b5abe318418ec88e9442c55516dce55c6936e9bbd8e08e319a305fe6",
+       "geo_fetch.py": "45d9cb29bdbb0e405c1302d377786e7d127de01d3682d52b7b40601ba1ffe8cb",
+       "graph.py": "99ca2ca79fe64b154dd4462ff7207e1bd0e1ba361fdcb06489c9330c80c1db85",
+       "life_fetch.py": "cc740345fb2280986fcc88ca013deb827afdf81cedd861935f192cfa8b456ee3",
+       "macaque_anatomy.py": "d1e23defcf27a6fae61d637609f7bfc609ac3a6fccdffeaa666ef44b738105ad",
+       "parallel_visual_proof.py": "7b2c1f1afb2703e4caa78d2ef4d377075c29294c2644cf4122bf472f7fbe85e7",
+       "pipeline.py": "662d3c91d13a56c379987d5357b88ebddfa7342fc341535de0a74caa72a79dde",
+       "qualify.py": "93895e43f986d22f836f243d242557454dac285bee2c40342034b03c9e3ed60f",
+       "reductions.py": "cc8759d6325d1de0d10c7e89332220821b2f3b956448be696fca75a88fdb126e",
+       "reference_data/parsers.py": "02c8dfb2b9e157eea2d89f780333229b7d8b2fc82eb47fe0e72e11d71d6b9614",
+       "review_candidate.py": "7c03a5017da4f0fd0d15b47b21167bfcdb840152488b3dd4f1afb329e77aee35",
+       "surface_scene.py": "51bdcec0ba3413add9e95fabacc40498621ec25c6862cb9b3c086365de066b4a",
+       "sweep_trainer_spine.py": "e4b78fd7f5fecbee34456809e469274b4f71be0f041a6dd47fbfeeee6961d569",
+       "terrain.py": "6271829f0dc53ea58185d9e7f551dc32f6e990cd23d070845660186069644b9d",
+       "thermal_scene.py": "02d6f40afcec033c027d3acd3f2779179bbed84c88e4bbb0d63f3af3789fc55e",
+       "units.py": "38220629308898b932b85bb20138b057a6b446ddf4d013d07b10c74ef24bc780",
+       "visual_proof.py": "e79f303838873017c9c968c0b3df748416f1ec3380805c74303052c9e81b46e3",
+       "visual_proof_wave2.py": "d567f7c25c2ec2ec5c75bfb8b4252ecb2c93584ac285ce2af9238def100b0b36"
+      },
+      "version": "1.0.0"
+     },
+     "quarantined": 0,
+     "schema_version": "1.0.0"
+    },
+    "runtime_ready": false,
+    "schema_version": "1.0.0",
+    "storage": "chimera-intake:481c87feceda92de611f1ebbd034be8ab8216c38d6316e156275e842aca9d19f"
+   },
+   "status": "extracted"
   }
  ],
  "relations": [
@@ -293678,6 +294065,870 @@
    "rel": "derived_from",
    "dst": "source.operator.coupled_arm_grasp_20260918",
    "note": "Operator-directed bounded grasp contract admission"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.00fe7ee98279d500a81f0ccce33caaacbe9a460e7076cca46a3e6351a7c04183"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.012e6c78a201443e5e6d3a26fed96082152b340d4f891ef46dbb6b5ff5101b33"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.01fd05e8330dcdead6cda5c200040b02c67b408c77fd88a9f24be2a96159592b"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.0373adf1fce43b3d3578352bafaee52c560ee7d72c67028c5e254dd2ca92a573"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.03c78cf13c7665df1df3d04c926b1c4830d4f71abe9dbef7c0c97287219bdb4c"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.040e97317fcd006fe0a75b7e4d4a825f9b1678e514ca4490e0b12b50e8db92c6"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.058c1860cbd51a53cdc29ce5a6b32b5c16c2654bc9311100614dd685c01ddabd"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.06502c5754e3aeeda8b8f6cf467b5832a51ff084ef57ca2e5eb7c7a92e110693"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.07c728ec78a877467ae50dd06d0bcf32951377915bd68390bd6c0d0a74925008"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.0c3c56e8ab1d36b79834c57e93dd0ae585d2a86895089a1507ae1e4529494a24"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.0cbbd3af0d445dfe29f2f52a054e2160bd218cf9540b1be2450312fcbe241faf"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.0cfa09615d09f3c6bc480dff9c43c343c942fe69eb837be1f24a5a811fccbe3e"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.113281cde167fdf96657d9c6f5fa53d6507d1f49f43ab4a522d0ea6620166f5c"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.11af7add2175add782b315d2e8aa2f3dc6da3e53568564c7ce30f8c9ddb4aa4c"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.12de972c1ec78067077f6c383f5780d908bc9b7d4d76b2e7c3c8fd78a9ce7b25"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.145a0a326821f51c616a931d3db2b330679b0eb502dbfdcb7d348cb1353ea0ed"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.153a2855878d6eec625348e17ca67589e9178a247468939c2cfcd3e83bd864a0"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.15c20148beccf0dfd8de8577691d35061c1a6ef7a9c7e829ae0b5d3acff0e9db"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.171b1b9420e404dfab3319e7540122b0291c02326bde4a8f8819d75ed04faee2"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.1a9a444bd3a3db5eeb86e2b3f1f740aab57c6e41fb5b3baf8944243c4c4cf79a"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.1b7aa75c71e05c02133ba8eb03e8790ad9416380faff24dc5fc7c5e7ecbe6917"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.1c416ed9a34cf8d5057ee8938bc2ec1a045e5dc053a8b5c99cce43b4ec67a16b"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.1e0a28be940049ad24455416a1fb85c787073358ec865cd9ef6612f261fdc28e"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.1eca958af03493e92ebd7b6b5291a3e15674d234c34bb210ddf48f573f157abb"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.1f5ba9263f981f3b2a5f1e8efa7d1793e34882d446bccd38efec88c4f7c4b51f"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.1f6d45d895b0d25bad33d7149280c279ae720f2ababc206ef684443ce5873643"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.1fb2c240424274d2b613e08d21c765f4acbb10f12762803925a05a6cca403258"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.203b23deba24598c59affa2584173b734d89b348d0cb19d2addb4edecfc3faac"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.227e377bcf725a3d909f9aaeb5444e9ac2c168b52d1aa7d4e8d94043c1170ede"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.25f4fc7918f17dfda96ec3c3795ec08a33b556ed2fc0f84f75276b70877165de"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.270f1e078b16f0453d11247f19db678413aabbdd87e7768e4f48bf1dc99a18d2"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.2d5d6f5be3faf069d91f14553984e5c28380565bcab6f89bee07a675a7f5cb73"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.2df538143045e02e65db298358a4316e649ddb9a5e654ae096c95e78d7bf510c"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.2f6dd8a658c43586a1cd7fdf0a17e19e418ff9c5a793c3527072ef393b3baba5"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.2fc104ebba99ccc092f9fbb025d0330ff4ec4cb452248ca87191136ec1706b51"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.2fede32a4a9bea7eedffa0339517bc000b2b7042561e389cf663e9811b61a062"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.332e1374255bc7a6829668538cb3fe6645b93d159df6f8f75dfdb2a4149b327c"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.3360858d4052cbc4e23d41b8ae15f240baa7bc37bf4700307d6a78dbb0d69fcd"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.33cdddd917f78a88983022d2de033d052ae77246fb8c658806063c5797a3fa25"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.33e93b64e73dd1d6818037e705bd85c8a0989f7217404e6c5ffa716f76ada033"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.3427c59d4f00d05e7f17390bc41e7912b44f32526b10edf04aa0b8650bdfc4da"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.3525af78807e34cb1302daed54e073699a239dcbbf383bb8e0b44cef34c259f3"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.362cfb95b854c4bf0bba17b865c29df87bd1630ee795e66b02b2e9374836d270"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.369640864370ef9e0a7635f160c6998847a91a95d96915d61588f97194958b94"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.38e962262907710549797170ab8ae883717a356b1af4a980dc8fa2ef137462d9"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.3b632431e1245bf412b6ce31f3a74ed0c99acb8cdfd8ba9155eabca231cae3b6"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.3c811e779665956146395d09ba4735fb82c1f6c8d30e73c3e41260fbd6cd6e06"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.3d7849a846c1b667b401a34aa97fa642a7a2b60b27d2665ba1d6d3048b401390"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.4435e746385c0514bb6b5f9a6e3d31737e4b05404f489976e8fc079a3d1561e4"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.4500049f80278a6313ad8a58c7990aef424624062d6afd3ef4026fd8afd8911c"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.4656f1ab4ad49f547254163f35dda17fa2ad25c91f59f3e716a033820200866a"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.469ec144bd023c8ff0d70768a61f2dc1e45c0b923f9afde4b4bf7b583b40fbf0"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.46d82c7636e53958fff216f2914ef41c50ebc4d972884422358752e552b6b31d"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.4bc1a3a58cf09884ce0eefacbe756329cdc230c15229afbd9d3e3fb63b39b430"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.4cfde7453e6cc370faa360b1cae5ea7f602b5385882c61a5472b910675cbf36d"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.4f167829c0a0242af27b0a1c0fb87fc598f73f5948529aa3cf7761ec807bf3b3"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.4f4db7a5a53067dd6fd24d3d305f919e4f5bd62dd3ea573bd116c435c85d1808"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.534d716dd8a8d6aba16f75c4bd12c33f995d1e7ad120ab489c12f2fb3c40fbdc"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.57a312be56b2ea01dc50ca8137dc6d29ce1d5d4ea8f8c4270c4224c270f1d954"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.5aa67f7bc0303f2176419aa7ce947d870cfc73c2bb0fd8b6c0cffe6beb10d69c"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.5c0846a77b326db8f270161029bfe19296ef442a4871501bb98e17161bb77941"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.5e5c57636f194d8011d2b99240e53921ae011d5f0df08a50afeb3a2d700d9f85"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.60e66ba741fb00d1e7a58c95547cd7030951d09258403759f36fcac3f60e2b71"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.62f84f0e049d112bc2f36f081a4b87d9cc651fa0c67e537d4a466426957803c6"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.652223309778c5535de7e70f649ed879842e37064305c4c05326e84401d89d59"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.67d08e675b3ad4463fb037f822ff8e25e05fea6df750bc59359c67c933c2fbc5"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.68bfd1efe506ac3d11cc94ac8a1e96b0b63103f6888b177a80d0adf97ee5404d"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.694fdb3e25e4bb06ba21ec05df97c21d41725a02bd9a9f2367950ea55d85f210"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.6a143ce16e27ad7b391308504677cdb0a7e3d2e5637190c778ac57742d9f3015"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.6a727d9cc6dcbac26ecf60172f97daec39a87858c6869426d7edb4c17e6ae40d"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.6aa8a3ab94e045dba1dead09acbc5a1b73018e5dfb64e636d87782b9db1368e2"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.6ad262cda3fdb26d04681ae39fd6f8d1aa6c4e92c42858cb9ef3b18ccca6cbb1"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.6ca2559c6baef9c32742bf46ad7cdc6fe878c98ce854da097071942fcbfce0a1"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.6d1e34b2a74aa3db850f1545c77944f89e094a9df45f4bee77da19b30e19c6c9"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.72fdce148fffb61c3182583472a0d3f630d861ff0640c1b73eb0dd7e8c4dd1ec"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.74f0a1eb25da2a2b71163b68d6788d4247c1dc7ce8779ccfcb765a4320bfb5aa"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.7540f976af427c504890fdcb0775263309a2868126c149a1e3bac8aabc1ea0e9"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.756c8fceaeaefd9de282b4a36bb0de6a8b5008816cd8e71d69e7719ae4cf8f3c"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.769665b38bfabf58898b7c55c8f32b396cac3c362112ec65fe750b4f2ed41f02"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.7881ccb3cf9a3ea6171013c96a28a136bf27c3510b185c1ed4e28cc8289f771a"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.7e5b06032941b84a20f887d9612be2984f63424fe3729a2087e9880ad505358a"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.812f10d91cdbed8532456961d8cc57cbd6f8083e3d5367dd571072a1f91ca988"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.814408f769871e1b77c37613d99753ec5e90bed71ce61d02c31a41e0d1b51e99"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.86eeca54b6da037bc1018f5dbe0e9de32556e0bfbf989d9085f9da020fcf4a40"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.872dff113d9e2c949d3e227da349113bcd8b353ce653544afbd09124c1ab59b6"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.87c8a34a18de6560f3a4ff4a1873d3b0134dfcbfe8a5cc196a5aa2cdd882d3ea"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.8a57cc2dd3a8b86520d70c3abdf1361060b2213898e184604d3783cd61613666"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.8a90a7451d896f7a53c877342faa336c6e4495355b80d2c7961d67c68f5fb35a"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.94a81f564a71b4cf12e617b5be2740282c76411113283cdcb96afb171a97bb66"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.970ef8f278fc74791b35fdff74bd029ae30f54bc76fe91ec082304d1fb83d154"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.9afa693fbe19621cb4ff3bc5236a9fabdab062e186282d5242550081482093b9"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.9b9761d72fc3437f223ca35fc09e813e33758cbe1d72ba9c13e2a310dec8898d"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.9c25af0074db0587b1c203fa2fc7e545525b6cc5d342d42bf891e8d937adae54"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.9ca1b708a6582ca8db20f50953fdf80c0b180374775a786462e999fc02026e3f"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.9d94a9f93cb6bd3e617ccd75cbc63322901a0c462ee913cbace1d48ce2210e6e"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.a34a2828aafac361c2513e9f15c68e3efbb5b413032074611d33d078598b2483"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.a4d91903e54fe0288ff70303962206b2b9d180d7817c485065cd93c17e88cfd0"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.a74654aacdecc3337b24cdbc606ceeda419d9aeb888fb83265ec5cd36ae6ac4f"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.ab537e4ba6eb500c1e871cd9fbfcf83e412a7c300a2d8f7322e9cd4b0f98913a"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.ab82d1d2c7ff980bd2c1281b7a0e6433145c24e0ea083f61fb93c633bca5ab35"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.abe63b76b62fe27520d12f169ca60055f470a8b78e6e01c94a62f37d57567e08"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.ace78900af16ffaf5df0c2beaf16176ea56c0a06f5351950f9c98b0e0ac42c6b"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.b4474ae8830c93c336dd5bcd367e838358d9df79e4d4efe167fc01313ea7afca"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.b7bd0d57f2f50bf98ff10a31dad63ae1f650e4ed4b613785697ec54ff8e7f508"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.b83f24c12022eeb898cfdbd125253abc8c46517bb0ae9c75f60967db03991716"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.b9dd8a19ccf53fb6b884de0297da8ede03af08c417ceb1cbf60ce54050fd943c"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.ba302accecc0c04046b33736f9ca6cc76989a7158db238d310081248caf2ddb6"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.bd41411b0a815b4bf211c0b91b365f14a27977918f94dc6cb8ba0309947e07e2"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.c2582cf504285eebbfb3e4a4abfb46fd7ee9eb4b348a0c4827112fa06f527642"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.c55bdfae3411b4ec43a67ae5c5c3ab7948fabe26307fbed2e2abcbe3966791de"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.c6b32310d3e0bf15ae5fdf8a7e4a395b3df7ff0736a12c3b592998632246f974"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.c8ee38449dd6b3d7f24eae606ed0c0b54d8cb6f38d926bc2b723bf1f2b9662ea"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.ca7ac23c9fa551fe5623e8ea1228758ea2d6107231cd86f37ed1b890c29bea52"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.cd240881aaf86b2a6afcadb4c49c9bafd50d456463bf266fd3b638a662f4abd5"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.cd65d0e5797091b62748c4d7f02f5a211327b8be4aa992e43c6eaa2218fef833"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.cf60b9d6c2e58927e6c75adf64a2c298e81acf304e04c01eba0993c1ed9f2a4d"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.cfe390f7d1e45db49b8be2e005899c384703207f1fa39ee3886d4a5f9dd4884d"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.d60a35d83ae4cff05232b6aa396edf1a3550c7f132a11e310dadbf38bc46bd92"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.d80aa8cb52a55a6003a6817c7aa3bee92923bca493447e39af9321cde2ae6aa1"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.d83cbaee2d8539f49ba80d3fc09f43a1a80f7f7ae941249d0edbbd6311d10c5d"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.d924656b0cd4e817913f6b16bea7cd61fc2d4bf668cf88972b95b57b150ba1d2"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.de881b250e8529a4e2cd5d37ec696d9b0a29a7c09700c7ef8c346ead06562cc6"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.e167bd89688c6c62403a56d9147e07970df41b51bd046b95a96881c40834fc32"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.e32502b030f132467c8ddafd22236bf461d9e859b373008f54456120e4c908cd"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.e33d484889461bcdae38288a40074e7c28f35abf3447d2192267091d5b802820"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.e48d1f72b0e01f92c3b7ee13c522ca24c0a14d68cac23a91c468c4f481f6d42c"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.e4d534ff1205e60c20b96ce1c3aa2bb760ec693c91c31823ab5d5972ae53c0be"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.e5b784f605aeafd7b684e7381520dc7f4b0501045ee414853509a85943756813"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.ed88d2b482104b28029658f78c9c688aad9c802048f05dcdfb6d93c2f5de654f"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.edd70c363e3fb7ffbaf101764ff0cc25bcb75ce48456b00cca8a49ab4873d00c"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.ee0ca7545b8e68f511b638c643f3d363886bd720ea1c38ed759b7f9edbd404ac"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.eeed080a42b9a14f18cc55c24a23e9f0cb54c4692680fed9e1da858ede539ffe"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.f0100e0b731f3c275db378c60de1d34fc66d7934c52a81c793741f200ebe5fbb"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.f37cbc70493684eb08622f0085723ad35caed9c0bd4592085b689c3ad32da2c6"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.f961b585c3e481f7cb1fb6e25d4be43e8f740b963ae7a86dc85bb27e9545969e"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.fa5b2142ec2e91c4b3f5ea05591cedbcd6eed5a47d9369a3b03f8ad736b977ab"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.fd64d78e18de5738cf511b00b94e2f35d29a996ac077dea66eeb92efa775246b"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.fd718b5fbf2f89942332aef56ba542d580cd3fb2d58d7958a04f1c7a7871fa3e"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.fd7b01bc3e770eff9286893f27f4d8fbc28e1c46a3a1f1c92e74a804cbcee9e1"
+  },
+  {
+   "dst": "data.source.5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "note": "Pinned intake bundle 5c109d6c502d4d9deb748467b4f1608cbf500ee6f2b6e114acae3da3cbc51b4e",
+   "rel": "derived_from",
+   "src": "data.assertion.ff0013c9d3b9c20376565c98513f07daed05f618214432436be9bc23b8d3d469"
+  },
+  {
+   "dst": "data.source.59e88aac0da18b365695c37236e239ec8af7acb95649f0e9c52fbf727c672954",
+   "note": "Pinned intake bundle 59e88aac0da18b365695c37236e239ec8af7acb95649f0e9c52fbf727c672954",
+   "rel": "derived_from",
+   "src": "data.assertion.2b7d1a0d1001c1056b99a8ee44c0d878b1f923e17190830b59925008799b191e"
+  },
+  {
+   "dst": "data.source.59e88aac0da18b365695c37236e239ec8af7acb95649f0e9c52fbf727c672954",
+   "note": "Pinned intake bundle 59e88aac0da18b365695c37236e239ec8af7acb95649f0e9c52fbf727c672954",
+   "rel": "derived_from",
+   "src": "data.assertion.5565397bbfdae5aedbecfb616db6bf5b00799777226b92f77b73d5f0cd67c5fe"
+  },
+  {
+   "dst": "data.source.59e88aac0da18b365695c37236e239ec8af7acb95649f0e9c52fbf727c672954",
+   "note": "Pinned intake bundle 59e88aac0da18b365695c37236e239ec8af7acb95649f0e9c52fbf727c672954",
+   "rel": "derived_from",
+   "src": "data.assertion.60b53650b0db455a4673741699ae3676d63d1ff4d64fc9be0b6d214c4f0fa4ce"
+  },
+  {
+   "dst": "data.source.481c87feceda92de611f1ebbd034be8ab8216c38d6316e156275e842aca9d19f",
+   "note": "Pinned intake bundle 481c87feceda92de611f1ebbd034be8ab8216c38d6316e156275e842aca9d19f",
+   "rel": "derived_from",
+   "src": "data.assertion.164d0c8f1633b6ed184b8266bf8e4bda80e7b6b336d744d276a52dbfc4b1e3ae"
   }
  ],
  "migration_receipt": [

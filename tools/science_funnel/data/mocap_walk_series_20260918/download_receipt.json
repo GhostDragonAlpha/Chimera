@@ -1,0 +1,93 @@
+{
+ "schema": "chimera.local_refs.derive.v1",
+ "derived_utc_day": "2026-09-18",
+ "files": [
+  {
+   "path": "mocap_cmus35_walk_hip_mean_cycle.csv",
+   "url": "derived by tools/science_funnel/derive_local_refs_mocap_doc.py from repo-resident research_references/human/mocap_walk_reference.json",
+   "bytes": 4440,
+   "sha256": "d73368f3deddb957dce7490e2e1dd884e65a19a1c2cfadd09cf4564783f513df"
+  },
+  {
+   "path": "mocap_cmus35_walk_knee_mean_cycle.csv",
+   "url": "derived by tools/science_funnel/derive_local_refs_mocap_doc.py from repo-resident research_references/human/mocap_walk_reference.json",
+   "bytes": 4553,
+   "sha256": "226abf73092b67f6b987aa96d0f1ab8d7b1df625d34c3dd6b5eba5ab2f360b48"
+  },
+  {
+   "path": "mocap_cmus35_walk_ankle_mean_cycle.csv",
+   "url": "derived by tools/science_funnel/derive_local_refs_mocap_doc.py from repo-resident research_references/human/mocap_walk_reference.json",
+   "bytes": 4671,
+   "sha256": "e42a2c4a08b57a18348c6bbe3af3cb13f2036ea82e334692de5523d4563d747a"
+  },
+  {
+   "path": "mocap_walk_reference.json",
+   "url": "repo-resident research_references/human/mocap_walk_reference.json",
+   "bytes": 10184,
+   "sha256": "2f19832f00d115aaa55eed393113a41cf5b385dca3001b4a12aa6648c9182b26"
+  }
+ ],
+ "rule": "admit the gait-cycle mean curves as series records under batch.property.series; x = percent_of_cycle/100 (dimensionless, 0..1); y source degrees -> SI rad in the adapter via the units table",
+ "source_repo_file": {
+  "path": "research_references/human/mocap_walk_reference.json",
+  "source": "repo-resident research_references/human/mocap_walk_reference.json",
+  "bytes": 10184,
+  "sha256": "2f19832f00d115aaa55eed393113a41cf5b385dca3001b4a12aa6648c9182b26"
+ },
+ "series": {
+  "joints": [
+   "hip",
+   "knee",
+   "ankle"
+  ],
+  "samples_per_curve": 101,
+  "n_cycles_per_curve": 4,
+  "series_id_prefix": "mocap_cmus35_walk_",
+  "scalars_carried_on_records": {
+   "fps": 120.0,
+   "frames": 359,
+   "duration_s": 2.992,
+   "cadence_steps_per_min": 106.5,
+   "stride_length_m": 1.464,
+   "stride_length_leg_lengths": 1.716,
+   "stride_time_s": 1.127,
+   "duty_factor": 0.596,
+   "speed_m_s": 1.285,
+   "leg_length_m": 0.853
+  },
+  "conventions_verbatim": "angles: vector-based sagittal, hip/knee +flexion, ankle +dorsiflexion; cycle 0% = heel strike (toe-contact onset)",
+  "events_verbatim": {
+   "L": {
+    "n_strikes": 3,
+    "strike_times_s": [
+     0.058,
+     1.2,
+     2.325
+    ],
+    "mean_stride_s": 1.1333288000000001
+   },
+   "R": {
+    "n_strikes": 3,
+    "strike_times_s": [
+     0.633,
+     1.75,
+     2.875
+    ],
+    "mean_stride_s": 1.12082885
+   }
+  },
+  "units_block_verbatim": {
+   "raw_unit": "BVH offset units (UNDOCUMENTED by the mirror — measured here)",
+   "measured_hip_center_height_raw": 15.758,
+   "anchor": "ANSUR II male median trochanterion height = 0.8990 m",
+   "scale_m_per_raw_unit": 0.05705,
+   "sanity": {
+    "thigh_m": 0.423,
+    "shank_m": 0.452,
+    "speed_m_s": 1.285
+   }
+  },
+  "source_verbatim": "CMU MoCap subject 35, walk trial (35_01_walk.bvh), una-dinosauria BVH mirror"
+ },
+ "license_note": "CMU MoCap via una-dinosauria BVH mirror; per SOURCES.md: 'free for research AND commercial inclusion; may not resell the data itself; credit mocap.cs.cmu.edu + NSF EIA-0196217'"
+}

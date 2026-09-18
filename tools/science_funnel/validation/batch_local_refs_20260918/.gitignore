@@ -1,0 +1,5 @@
+# Local run artifacts of the local-references intake lane: the dry-run
+# scratch receipt (admission rehearsed on scratch before the real --apply)
+# stays local. receipt.json from the real --apply is the committed lane
+# evidence.
+receipt_scratch.json
