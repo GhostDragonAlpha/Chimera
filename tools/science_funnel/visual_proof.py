@@ -17,7 +17,7 @@ tools/science_funnel/tests/test_visual_proof.py:
      the PNG hash changes, or the renderer refuses loudly. A corrupted
      compressed container refuses; it can never silently reproduce bytes.
 
-FALSIFIED ASSUMPTIONS (recorded in the admission contract, both mechanical):
+FALSIFIED ASSUMPTIONS (recorded in the admission contract, all mechanical):
   a. The intake brief assumed a pure struct decode of the Smithsonian GLB
      geometry. The pinned artifacts carry KHR_draco_mesh_compression as an
      EXTENSION REQUIRED (accessors have no bufferView), so plain accessor
@@ -30,11 +30,34 @@ FALSIFIED ASSUMPTIONS (recorded in the admission contract, both mechanical):
      section: under the reference layout the very first event pair fails the
      reference decoder's own validity check, and neither event order yields a
      consistent stream to completion. The pinned producer's exact event
-     coding could not be identified within this lane, so the geometry decode
-     REFUSES. What IS proven for the GLBs: the glTF-binary container and JSON
-     chunk parse with stdlib struct, and the render therefore shows the
-     accessor-declared bounding boxes under the document.json camera --
-     an intake proof of the geometry METADATA, never of the geometry.
+     coding could not be identified within this lane, so a python decode
+     port is FALSIFIED and never retried. Until 2026-09-18 the render
+     honestly showed the accessor-declared bounding boxes under the
+     document.json camera -- an intake proof of the geometry METADATA, never
+     of the geometry.
+  d. A non-draco Smithsonian derivative of USNM 15259 was assumed to exist
+     for re-pinning; the medium and low derivatives of BOTH the cranium and
+     the mandible were probed and ALL carry the draco extension REQUIRED.
+  e. A Python Draco decoder was assumed to be installable; the PyPI names
+     pydraco, pydraco3 and draco-loader all resolve to nothing (404).
+
+THE DECODED PATH (2026-09-18, operator-delegated decision): decode with the
+OFFICIAL Google Draco WASM decoder (the trusted reference decoder, no port)
+running in a browser page -- three.js GLTFLoader + DRACOLoader over the
+pinned-CDN draco_wasm_wrapper.js + draco_decoder.wasm (fetched sha256s
+recorded in data/smithsonian/draco_decode/draco_decode_manifest.json, full
+receipt in validation/draco_decode_20260918/). Decoding is a pure function
+of the pinned bytes: the harness re-decodes with fresh decoder instances in
+separate page runs and requires byte-identical POSITION/NORMAL/index
+buffers; one flipped byte inside the draco bufferView refuses loudly. The
+recorded buffer sha256s are the geometry's machine identity. When that
+decode identity is present and verifies, the smithsonian renders become
+TRUE decoded-geometry renders (software z-buffer, two-sided Lambert, under
+the document.json camera); when it is absent the render falls back to the
+honest bbox + refusal form; when the pinned GLB matches but any pinned
+buffer byte differs, the renderer REFUSES loudly. The harness screenshots
+are PERCEPTUAL EVIDENCE -- the decode hash is the proof, the picture is for
+the human.
 
 No new dependencies: PNG writing is pure zlib (IDAT chunks). numpy is
 already pinned in this environment through tifffile.
@@ -279,6 +302,259 @@ def smithsonian_glb_status(glb_path):
     }
 
 
+# ---------------------------------------------------------------------------
+# Pinned decode identity (official Google Draco WASM decoder, browser page)
+# ---------------------------------------------------------------------------
+
+SMITHSONIAN_SPECS = (
+    ('cranium', 'USNM15259_cranium_-300_dec-150k-4096-high.glb',
+     'USNM15259_cranium_document.json'),
+    ('mandible', 'USNM15259_mandible_-300-150k-4096-high.glb',
+     'USNM15259_mandible_document.json'),
+)
+
+
+def decode_paths():
+    data_dir = Path(__file__).resolve().parent / 'data'
+    return (data_dir / 'smithsonian' / 'draco_decode',
+            data_dir / 'smithsonian' / 'draco_decode'
+            / 'draco_decode_manifest.json')
+
+
+def load_decode_identity(spec_key, glb_path):
+    """Load the pinned decode identity for a smithsonian GLB.
+
+    Returns None when the decode manifest is absent (channel not produced in
+    this checkout) or when the GLB bytes do not match the pinned record --
+    callers fall back to the honest bbox render for those bytes. When the
+    GLB bytes MATCH the record, any inconsistency in the pinned decode data
+    (missing buffer, hash mismatch, length mismatch) refuses loudly: pinned
+    identity is never silently downgraded."""
+    decode_dir, manifest_path = decode_paths()
+    if not manifest_path.exists():
+        return None
+    manifest = json.loads(manifest_path.read_text(encoding='utf-8-sig'))
+    require(manifest.get('kind') == 'draco_decode_manifest.v1',
+            'decode_manifest_kind', manifest.get('kind'))
+    spec = manifest.get('specimens', {}).get(spec_key)
+    require(spec is not None, 'decode_specimen_missing', spec_key)
+    glb_sha = _sha256_file(glb_path)
+    if spec['glb']['sha256'] != glb_sha:
+        return None  # foreign byte stream: it has no decode record here
+    decoded = spec['decoded']
+    roles = {'positions': 'positions_sha256', 'normals': 'normals_sha256',
+             'indices': 'indices_sha256'}
+    arrays = {}
+    dtype = {'positions': np.float32, 'normals': np.float32,
+             'indices': np.uint32}
+    for role, hash_key in roles.items():
+        fname = spec['buffers'].get(role)
+        if fname is None:
+            continue
+        raw = (decode_dir / fname).read_bytes()
+        import hashlib
+        require(hashlib.sha256(raw).hexdigest() == decoded[hash_key],
+                'decode_buffer_sha_mismatch', f'{spec_key}.{role}')
+        arrays[role] = np.frombuffer(raw, dtype=dtype[role])
+    vertex_count = decoded['vertex_count']
+    index_count = decoded['index_count']
+    require(arrays['positions'].size == 3 * vertex_count,
+            'decode_positions_len', arrays['positions'].size)
+    if 'normals' in arrays:
+        require(arrays['normals'].size == 3 * vertex_count,
+                'decode_normals_len', arrays['normals'].size)
+    require(arrays['indices'].size == index_count,
+            'decode_indices_len', arrays['indices'].size)
+    normals = arrays.get('normals')
+    if normals is not None:
+        normals = normals.reshape(vertex_count, 3)
+    return {'spec': spec, 'manifest': manifest,
+            'positions': arrays['positions'].reshape(vertex_count, 3),
+            'normals': normals,
+            'indices': arrays['indices']}
+
+
+def render_glb_geometry(glb_path, doc_path, identity, size=SIZE):
+    """TRUE decoded-geometry render of a pinned smithsonian GLB pair.
+
+    Software z-buffer raster of the sha-verified decoded buffers under the
+    document.json camera, two-sided Lambert with a headlight. The geometry
+    is exactly the pinned buffer bytes (verified by load_decode_identity);
+    the render is a deterministic function of those bytes."""
+    width, height = size
+    spec = identity['spec']
+    positions = identity['positions'].astype(np.float64)
+    normals = identity['normals']
+    indices = identity['indices']
+    doc = json.loads(Path(doc_path).read_text(encoding='utf-8'))
+    project, model_to_world, cam_meta = document_camera(doc, size)
+    world = model_to_world(positions)
+    sx, sy, w_cam = project(world)
+    require(bool(np.all(w_cam > 0)), 'glb_vertex_behind_camera',
+            float(w_cam.min()))
+    px = sx - 0.5
+    py = sy - 0.5
+    if bool(px.max() < 0 or px.min() >= width or py.max() < 0
+            or py.min() >= height):
+        require(False, 'glb_geometry_offscreen',
+                (float(px.min()), float(px.max()), float(py.min()),
+                 float(py.max())))
+    # shading: two-sided Lambert, headlight at the camera
+    cam_R, cam_t = camera_pose(doc)
+    R_model = model_rotation(doc)
+    if normals is not None:
+        n_world = normals.astype(np.float64) @ R_model.T
+        n_cam = n_world @ cam_R
+        norm = np.linalg.norm(n_cam, axis=1, keepdims=True)
+        with np.errstate(invalid='ignore', divide='ignore'):
+            n_cam = n_cam / np.where(norm == 0, 1.0, norm)
+        view = (world - cam_t) @ cam_R
+        ray = view / np.linalg.norm(view, axis=1, keepdims=True)
+        ndl = np.abs(np.einsum('ij,ij->i', n_cam, -ray))
+        shade = np.clip(0.32 + 0.68 * ndl, 0.0, 1.0)
+    else:
+        shade = np.full(len(positions), 0.75)
+    base = np.array([206.0, 197.0, 180.0])
+
+    canvas = Canvas(width, height)
+    # background from the document setups[0].background radial gradient
+    bg = doc['setups'][0].get('background', {})
+    c0 = np.array(bg.get('color0', [0.2, 0.25, 0.3])) * 255
+    c1 = np.array(bg.get('color1', [0.01, 0.03, 0.05])) * 255
+    yy, xx = np.mgrid[0:height, 0:width]
+    r = np.sqrt(((xx - (width - 1) / 2) / ((width - 1) / 2)) ** 2
+                + ((yy - (height - 1) / 2) / ((height - 1) / 2)) ** 2)
+    t = np.clip(r, 0, 1)
+    img = (c1[None, None, :] * t[..., None] + c0[None, None, :] * (1 - t[..., None]))
+    canvas.buf = bytearray(np.clip(img, 0, 255).astype(np.uint8).tobytes())
+
+    _rasterize(canvas, sx, sy, w_cam, indices,
+               np.clip(base[None, :] * shade[:, None], 0, 255).astype(np.uint8))
+
+    pos_sha = spec['decoded']['positions_sha256']
+    band_y = height - 31
+    canvas.rect(0, band_y, width - 1, height - 1, (0, 0, 0))
+    canvas.text(3, band_y + 3, PROOF_LABEL, (255, 255, 255))
+    canvas.text(3, band_y + 12, 'DECODED GEOMETRY - OFFICIAL DRACO WASM,',
+                (255, 255, 255))
+    canvas.text(3, band_y + 20, f'POS SHA {pos_sha[:28]}', (255, 210, 127))
+    metrics = {
+        'geometry_decode': 'OK (official google draco wasm decoder, '
+                           'browser channel; see decode manifest receipt)',
+        'draco': spec['draco_header'],
+        'camera': cam_meta,
+        'vertex_count': spec['decoded']['vertex_count'],
+        'index_count': spec['decoded']['index_count'],
+        'accessor_declared': spec['accessor_declared'],
+        'decoded_buffers': {
+            'positions_sha256': spec['decoded']['positions_sha256'],
+            'normals_sha256': spec['decoded']['normals_sha256'],
+            'indices_sha256': spec['decoded']['indices_sha256'],
+        },
+        'renderer': 'software z-buffer, two-sided lambert, headlight; '
+                    'deterministic function of the pinned decoded buffers',
+    }
+    return canvas.png(), metrics
+
+
+def _rasterize(canvas, sx, sy, depth, indices, tri_rgb):
+    """Triangle raster with a z-buffer. Flat shading (per-triangle colour is
+    the per-vertex shade colour of its first vertex's interpolated band --
+    deterministic; barycentric edge functions, perspective-correct depth via
+    1/w interpolation). Pure python inner loop over small bounding boxes."""
+    w, h = canvas.w, canvas.h
+    buf = canvas.buf
+    zbuf = [float('inf')] * (w * h)
+    SX = sx.tolist()
+    SY = sy.tolist()
+    D = depth.tolist()
+    RGB = tri_rgb.tolist()
+    IDX = indices.tolist()
+    ntri = len(IDX) // 3
+    for ti in range(ntri):
+        t = ti * 3
+        v0 = IDX[t]
+        v1 = IDX[t + 1]
+        v2 = IDX[t + 2]
+        x0 = SX[v0]
+        y0 = SY[v0]
+        d0 = D[v0]
+        x1 = SX[v1]
+        y1 = SY[v1]
+        d1 = D[v1]
+        x2 = SX[v2]
+        y2 = SY[v2]
+        d2 = D[v2]
+        minx = int(min(x0, x1, x2))
+        maxx = int(max(x0, x1, x2)) + 1
+        miny = int(min(y0, y1, y2))
+        maxy = int(max(y0, y1, y2)) + 1
+        if minx < 0:
+            minx = 0
+        if miny < 0:
+            miny = 0
+        if maxx > w - 1:
+            maxx = w - 1
+        if maxy > h - 1:
+            maxy = h - 1
+        if minx > maxx or miny > maxy:
+            continue
+        area = (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0)
+        if area == 0.0:
+            continue
+        col = RGB[v0]
+        r = col[0]
+        g = col[1]
+        b = col[2]
+        inv = 1.0 / area
+        for py in range(miny, maxy + 1):
+            fy = py + 0.5
+            rowbase = py * w
+            for pxx in range(minx, maxx + 1):
+                fx = pxx + 0.5
+                l0 = ((x1 - fx) * (y2 - fy) - (x2 - fx) * (y1 - fy)) * inv
+                if l0 < 0.0:
+                    continue
+                l1 = ((x2 - fx) * (y0 - fy) - (x0 - fx) * (y2 - fy)) * inv
+                if l1 < 0.0:
+                    continue
+                l2 = 1.0 - l0 - l1
+                if l2 < 0.0:
+                    continue
+                iw = l0 / d0 + l1 / d1 + l2 / d2
+                z = 1.0 / iw
+                k = rowbase + pxx
+                if z < zbuf[k]:
+                    zbuf[k] = z
+                    i3 = k * 3
+                    buf[i3] = r
+                    buf[i3 + 1] = g
+                    buf[i3 + 2] = b
+
+
+def camera_pose(doc):
+    """Camera rotation + translation from the document camera node (the
+    projection uses the same convention: v_cam = (p - t) @ R)."""
+    cam_node = next(n for n in doc['nodes'] if 'camera' in n)
+    R = quat_matrix(cam_node['rotation']) if 'rotation' in cam_node \
+        else np.eye(3)
+    t = np.array(cam_node.get('translation', [0, 0, 0]), dtype=np.float64)
+    return R, t
+
+
+def model_rotation(doc):
+    """The composed rotation applied to model points (node outermost, model
+    entry innermost); normals transform with the same rotation."""
+    nodes = doc['nodes']
+    model_node = next(n for n in nodes if 'model' in n)
+    model_def = doc['models'][model_node['model']]
+
+    def rot(obj):
+        return quat_matrix(obj['rotation']) if 'rotation' in obj else np.eye(3)
+
+    return rot(model_node) @ rot(model_def)
+
+
 def quat_matrix(q):
     x, y, z, w = q
     return np.array([
@@ -340,11 +616,35 @@ def document_camera(doc, size):
 def render_glb_intake(glb_path, doc_path, size=SIZE):
     """PROOF-OF-INTAKE render of a pinned smithsonian GLB pair.
 
-    The draco-compressed geometry REFUSES to decode (see
-    smithsonian_glb_status); this render honestly shows what the pinned
-    bytes DO admit through stdlib: the accessor-declared bounding box of the
-    geometry, drawn as a wireframe under the document.json camera, with the
-    draco refusal recorded in the manifest. NOT a render of the geometry."""
+    When the pinned decode identity is present and verifies (glb sha256 +
+    decoded buffer sha256s, official draco wasm channel), this renders the
+    TRUE decoded geometry. When the identity is absent or the GLB bytes are
+    foreign to it, this falls back to the honest accessor-bounding-box
+    render with the recorded refusal. Never renders geometry it cannot
+    verify."""
+    spec_key = _smithsonian_spec_key(glb_path)
+    identity = load_decode_identity(spec_key, glb_path)
+    if identity is not None:
+        return render_glb_geometry(glb_path, doc_path, identity, size)
+    return _render_glb_bbox_refused(glb_path, doc_path, size)
+
+
+def _smithsonian_spec_key(glb_path):
+    name = Path(glb_path).name.lower()
+    for key, glb_name, _doc in SMITHSONIAN_SPECS:
+        if name == glb_name.lower():
+            return key
+    require('cranium' in name or 'mandible' in name,
+            'glb_specimen_unknown', name)
+    return 'cranium' if 'cranium' in name else 'mandible'
+
+
+def _render_glb_bbox_refused(glb_path, doc_path, size=SIZE):
+    """The honest fallback: the pinned bytes admit only the accessor-declared
+    bounding box through stdlib (draco geometry decode refused in pure
+    python -- falsified assumption (c)); this render shows that box under
+    the document.json camera and records the refusal in the manifest.
+    NOT a render of the geometry."""
     width, height = size
     status = smithsonian_glb_status(glb_path)
     doc = json.loads(Path(doc_path).read_text(encoding='utf-8'))
@@ -745,30 +1045,47 @@ def build_renders(smithsonian_dir, out_dir):
         })
 
     # --- smithsonian pair: intake render of what the pinned bytes admit ---
-    for rid, glb_name, doc_name, label in (
-            ('smithsonian_usnm15259_cranium',
-             'USNM15259_cranium_-300_dec-150k-4096-high.glb',
-             'USNM15259_cranium_document.json', 'USNM 15259 CRANIUM'),
-            ('smithsonian_usnm15259_mandible',
-             'USNM15259_mandible_-300-150k-4096-high.glb',
-             'USNM15259_mandible_document.json', 'USNM 15259 MANDIBLE')):
+    decode_dir, decode_manifest_path = decode_paths()
+    decode_manifest = None
+    if decode_manifest_path.exists():
+        decode_manifest = json.loads(
+            decode_manifest_path.read_text(encoding='utf-8-sig'))
+    for (spec_key, glb_name, doc_name), rid, label in (
+            (SMITHSONIAN_SPECS[0], 'smithsonian_usnm15259_cranium',
+             'USNM 15259 CRANIUM'),
+            (SMITHSONIAN_SPECS[1], 'smithsonian_usnm15259_mandible',
+             'USNM 15259 MANDIBLE')):
         glb = smithsonian_dir / glb_name
         doc = smithsonian_dir / doc_name
+        identity = load_decode_identity(spec_key, glb)
+        inputs = [('geometry_glb', glb), ('camera_document', doc),
+                  ('download_receipt', smithsonian_dir
+                   / 'download_receipt.json')]
+        if identity is not None:
+            for role in ('positions', 'normals', 'indices'):
+                inputs.append((f'decoded_{role}',
+                               decode_dir / identity['spec']['buffers'][role]))
+            inputs.append(('decode_manifest', decode_manifest_path))
         png, metrics = render_glb_intake(glb, doc)
-        emit(rid, png, metrics,
-             [('geometry_glb', glb), ('camera_document', doc),
-              ('download_receipt', smithsonian_dir / 'download_receipt.json')],
-             {'renderer': 'accessor-bbox wireframe under the document.json '
-                          'camera (320x240); geometry decode REFUSED '
-                          '(draco edgebreaker, see refusal_cause)',
-              'specimen': label})
-        refusals.append({
-            'id': rid, 'cause': metrics['refusal_cause'],
-            'detail': metrics['draco'],
-            'evidence': 'smithsonian_glb_status() in visual_proof.py; '
-                        'google/draco HEAD and 1.3.6 reference layouts '
-                        'both fail the pinned event stream',
-        })
+        if identity is not None:
+            renderer_desc = 'decoded-geometry software z-buffer under the ' \
+                            'document.json camera (320x240); decode ' \
+                            'identity (official draco wasm, browser) ' \
+                            'hash-verified before render'
+        else:
+            renderer_desc = 'accessor-bbox wireframe under the document.json ' \
+                            'camera (320x240); geometry decode REFUSED ' \
+                            '(draco edgebreaker, see refusal_cause)'
+        emit(rid, png, metrics, inputs,
+             {'renderer': renderer_desc, 'specimen': label})
+        if identity is None:
+            refusals.append({
+                'id': rid, 'cause': metrics['refusal_cause'],
+                'detail': metrics['draco'],
+                'evidence': 'smithsonian_glb_status() in visual_proof.py; '
+                            'google/draco HEAD and 1.3.6 reference layouts '
+                            'both fail the pinned event stream',
+            })
 
     pantheria_zip = DATA_DIR / 'pantheria' / 'ECOL_90_184.zip'
     png, metrics = render_pantheria(pantheria_zip)
@@ -809,9 +1126,22 @@ def build_renders(smithsonian_dir, out_dir):
             'bitstream 2.2).',
             'The topology-split event section does not parse under '
             'google/draco HEAD or 1.3.6 reference layouts; the producer '
-            'variant is unidentified; geometry decode REFUSED (see '
-            'refusals). The smithsonian renders therefore show the '
-            'accessor-declared bounding boxes only.',
+            'variant is unidentified; a pure-python decode port is FALSIFIED '
+            'and never retried.',
+            'A non-draco Smithsonian USNM 15259 derivative was assumed to '
+            'exist for re-pinning; the medium and low derivatives of BOTH '
+            'the cranium and the mandible were probed and ALL carry the '
+            'draco extension REQUIRED.',
+            'A Python Draco decoder was assumed to be installable; the PyPI '
+            'names pydraco, pydraco3 and draco-loader all resolve to '
+            'nothing (404).',
+            'PATH CHOSEN (operator-delegated): decode with the OFFICIAL '
+            'Google Draco WASM decoder in a browser page (three.js '
+            'GLTFLoader + DRACOLoader over pinned-CDN draco_wasm_wrapper, '
+            'sha256s recorded). The smithsonian renders are TRUE decoded '
+            'geometry when the decode identity is present and verifies; the '
+            'bbox + refusal form remains the fallback. Screenshots are '
+            'PERCEPTUAL EVIDENCE.',
         ],
         'refusals': refusals,
         'producer': {
@@ -822,6 +1152,41 @@ def build_renders(smithsonian_dir, out_dir):
         },
         'renders': renders,
     }
+    if decode_manifest is not None:
+        val_dir = repo_root / 'tools' / 'science_funnel' / 'validation' \
+            / 'visual_proof_20260917'
+        specimens = {}
+        for key, spec in decode_manifest['specimens'].items():
+            shot = spec['screenshot']
+            shot_path = val_dir / shot['file']
+            require(shot_path.exists(), 'decode_screenshot_missing',
+                    shot['file'])
+            import hashlib
+            shot_sha = hashlib.sha256(shot_path.read_bytes()).hexdigest()
+            require(shot_sha == shot['sha256'],
+                    'decode_screenshot_sha_mismatch', shot['file'])
+            specimens[key] = {
+                'glb_sha256': spec['glb']['sha256'],
+                'draco_header': spec['draco_header'],
+                'accessor_declared': spec['accessor_declared'],
+                'decoded': spec['decoded'],
+                'screenshot': {'file': shot['file'], 'sha256': shot_sha},
+            }
+        manifest['draco_decode'] = {
+            'channel': {
+                'decoder': decode_manifest['channel']['decoder'],
+                'page': decode_manifest['channel']['page'],
+                'three_revision': decode_manifest['channel']['three_revision'],
+                'receipt': decode_manifest['channel']['receipt'],
+            },
+            'identity_law': 'the decoded position/normal/index buffer '
+                            'sha256s are the geometry machine identity; '
+                            're-decode reproduces them exactly (fresh '
+                            'decoder instances, separate page runs)',
+            'falsifiers': decode_manifest['falsifiers'],
+            'corrupt_probe': decode_manifest['corrupt_probe'],
+            'specimens': specimens,
+        }
     (out / 'manifest.json').write_bytes(
         (json.dumps(manifest, indent=1) + '\n').replace('\n', '\r\n')
         .encode('utf-8'))
@@ -837,6 +1202,9 @@ def verify(out_dir):
                           / 'smithsonian', out)
     require([r['id'] for r in manifest['renders']]
             == [r['id'] for r in fresh['renders']], 'verify_render_set', '')
+    if 'draco_decode' in manifest:
+        require(manifest['draco_decode'] == fresh['draco_decode'],
+                'verify_draco_decode_section', 'decode section drift')
     results = []
     for recorded, new in zip(manifest['renders'], fresh['renders']):
         require(recorded['id'] == new['id'], 'verify_render_id',

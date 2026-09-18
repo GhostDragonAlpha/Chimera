@@ -5,47 +5,23 @@
  "falsified_assumptions": [
   "Pure-struct GLB geometry decode is impossible: the pinned artifacts REQUIRE KHR_draco_mesh_compression.",
   "A sequential-draco decode was assumed next; the pinned streams are draco EDGEBREAKER (method 1, VALENCE traversal type 2, bitstream 2.2).",
-  "The topology-split event section does not parse under google/draco HEAD or 1.3.6 reference layouts; the producer variant is unidentified; geometry decode REFUSED (see refusals). The smithsonian renders therefore show the accessor-declared bounding boxes only."
+  "The topology-split event section does not parse under google/draco HEAD or 1.3.6 reference layouts; the producer variant is unidentified; a pure-python decode port is FALSIFIED and never retried.",
+  "A non-draco Smithsonian USNM 15259 derivative was assumed to exist for re-pinning; the medium and low derivatives of BOTH the cranium and the mandible were probed and ALL carry the draco extension REQUIRED.",
+  "A Python Draco decoder was assumed to be installable; the PyPI names pydraco, pydraco3 and draco-loader all resolve to nothing (404).",
+  "PATH CHOSEN (operator-delegated): decode with the OFFICIAL Google Draco WASM decoder in a browser page (three.js GLTFLoader + DRACOLoader over pinned-CDN draco_wasm_wrapper, sha256s recorded). The smithsonian renders are TRUE decoded geometry when the decode identity is present and verifies; the bbox + refusal form remains the fallback. Screenshots are PERCEPTUAL EVIDENCE."
  ],
- "refusals": [
-  {
-   "id": "smithsonian_usnm15259_cranium",
-   "cause": "draco_edgebreaker_event_stream_not_decodable: topology-split event section diverges from the reference layouts (google/draco HEAD and 1.3.6); no producer-matching decoder exists in this lane",
-   "detail": {
-    "bitstream": "2.2",
-    "encoder_type": 1,
-    "encoder_method": 1,
-    "encoder_method_name": "MESH_EDGEBREAKER_ENCODING",
-    "traversal_type": 2,
-    "traversal_name": "MESH_EDGEBREAKER_VALENCE_ENCODING"
-   },
-   "evidence": "smithsonian_glb_status() in visual_proof.py; google/draco HEAD and 1.3.6 reference layouts both fail the pinned event stream"
-  },
-  {
-   "id": "smithsonian_usnm15259_mandible",
-   "cause": "draco_edgebreaker_event_stream_not_decodable: topology-split event section diverges from the reference layouts (google/draco HEAD and 1.3.6); no producer-matching decoder exists in this lane",
-   "detail": {
-    "bitstream": "2.2",
-    "encoder_type": 1,
-    "encoder_method": 1,
-    "encoder_method_name": "MESH_EDGEBREAKER_ENCODING",
-    "traversal_type": 2,
-    "traversal_name": "MESH_EDGEBREAKER_VALENCE_ENCODING"
-   },
-   "evidence": "smithsonian_glb_status() in visual_proof.py; google/draco HEAD and 1.3.6 reference layouts both fail the pinned event stream"
-  }
- ],
+ "refusals": [],
  "producer": {
   "python": "3.11.15",
   "zlib": "1.3.2",
   "numpy": "2.2.6",
-  "module_sha256": "2f42d07dfe0ecbff0980c5c53a232cd3c222cc5d965bb9aeb2671b5d367a4a04"
+  "module_sha256": "8707a01d360f4cd76720940ac975da1cec5f3ebd47390c61546106d9ddcbbf9b"
  },
  "renders": [
   {
    "id": "smithsonian_usnm15259_cranium",
    "png": "smithsonian_usnm15259_cranium.png",
-   "png_sha256": "335380ecd343de2551a3ab31ea4eca5c67e5ba22b81944dce99c300784a3dc88",
+   "png_sha256": "9ae5b430652d23ca709755888789c1e6b119845b1753dd8bd326fac3d2c96d0f",
    "inputs": [
     {
      "role": "geometry_glb",
@@ -61,25 +37,34 @@
      "role": "download_receipt",
      "path": "tools/science_funnel/data/smithsonian/download_receipt.json",
      "sha256": "46d1cb5e433d2bc20210cd4f3c918bfd07174b4df41bb5dd6044eebf86e06cf2"
+    },
+    {
+     "role": "decoded_positions",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/USNM15259_cranium.positions.f32",
+     "sha256": "3d48583302999116dee831e942cea493200cb7e7e4815132a0681ea331df9c60"
+    },
+    {
+     "role": "decoded_normals",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/USNM15259_cranium.normals.f32",
+     "sha256": "c2729b58f0d8d41f7e318d1d260e45f57b7c918cc0d1a5cc54538bc8ddd8048b"
+    },
+    {
+     "role": "decoded_indices",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/USNM15259_cranium.indices.u32",
+     "sha256": "03b941419a752e2d6d88ab9bde929859bbc075e711c017889ec3de279a46e476"
+    },
+    {
+     "role": "decode_manifest",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/draco_decode_manifest.json",
+     "sha256": "8a7f9c8abbf77cde2ad42097b0672e87af94ee222753c7515a0d8d12fccd6780"
     }
    ],
    "params": {
-    "renderer": "accessor-bbox wireframe under the document.json camera (320x240); geometry decode REFUSED (draco edgebreaker, see refusal_cause)",
+    "renderer": "decoded-geometry software z-buffer under the document.json camera (320x240); decode identity (official draco wasm, browser) hash-verified before render",
     "specimen": "USNM 15259 CRANIUM"
    },
    "metrics": {
-    "accessor_min": [
-     -39.5854415893555,
-     -223.100601196289,
-     -199.098403930664
-    ],
-    "accessor_max": [
-     39.5719184875488,
-     -160.482604980469,
-     -73.4939270019531
-    ],
-    "position_count": 133171,
-    "index_count": 449997,
+    "geometry_decode": "OK (official google draco wasm decoder, browser channel; see decode manifest receipt)",
     "draco": {
      "bitstream": "2.2",
      "encoder_type": 1,
@@ -94,14 +79,24 @@
      "zfar": 100000.0,
      "model_transform_source": "models entry"
     },
-    "geometry_decode": "REFUSED",
-    "refusal_cause": "draco_edgebreaker_event_stream_not_decodable: topology-split event section diverges from the reference layouts (google/draco HEAD and 1.3.6); no producer-matching decoder exists in this lane"
+    "vertex_count": 133172,
+    "index_count": 449997,
+    "accessor_declared": {
+     "position_count": 133171,
+     "index_count": 449997
+    },
+    "decoded_buffers": {
+     "positions_sha256": "3d48583302999116dee831e942cea493200cb7e7e4815132a0681ea331df9c60",
+     "normals_sha256": "c2729b58f0d8d41f7e318d1d260e45f57b7c918cc0d1a5cc54538bc8ddd8048b",
+     "indices_sha256": "03b941419a752e2d6d88ab9bde929859bbc075e711c017889ec3de279a46e476"
+    },
+    "renderer": "software z-buffer, two-sided lambert, headlight; deterministic function of the pinned decoded buffers"
    }
   },
   {
    "id": "smithsonian_usnm15259_mandible",
    "png": "smithsonian_usnm15259_mandible.png",
-   "png_sha256": "5d6d4c7ccf080459da6ef03c5073796e5cc958f707dd1900faa44abec8ad6947",
+   "png_sha256": "474143c4d47583942d3547579303a81454ec31f380ba42f3e50edad3f442fff2",
    "inputs": [
     {
      "role": "geometry_glb",
@@ -117,25 +112,34 @@
      "role": "download_receipt",
      "path": "tools/science_funnel/data/smithsonian/download_receipt.json",
      "sha256": "46d1cb5e433d2bc20210cd4f3c918bfd07174b4df41bb5dd6044eebf86e06cf2"
+    },
+    {
+     "role": "decoded_positions",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/USNM15259_mandible.positions.f32",
+     "sha256": "e73d24836219fee7df0d1e754fd3950fe233c83e61127d802b0baf21df991239"
+    },
+    {
+     "role": "decoded_normals",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/USNM15259_mandible.normals.f32",
+     "sha256": "76377aef59922062d4d4072278b5aca5968066b924af2399b80d6af9fe281fe7"
+    },
+    {
+     "role": "decoded_indices",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/USNM15259_mandible.indices.u32",
+     "sha256": "e5be9e5203a2bf3856d494ee9db7f3328bd9bdd83507fa5d8d0975e3d63e60b6"
+    },
+    {
+     "role": "decode_manifest",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/draco_decode_manifest.json",
+     "sha256": "8a7f9c8abbf77cde2ad42097b0672e87af94ee222753c7515a0d8d12fccd6780"
     }
    ],
    "params": {
-    "renderer": "accessor-bbox wireframe under the document.json camera (320x240); geometry decode REFUSED (draco edgebreaker, see refusal_cause)",
+    "renderer": "decoded-geometry software z-buffer under the document.json camera (320x240); decode identity (official draco wasm, browser) hash-verified before render",
     "specimen": "USNM 15259 MANDIBLE"
    },
    "metrics": {
-    "accessor_min": [
-     -34.1021003723145,
-     -205.100799560547,
-     -281.304901123047
-    ],
-    "accessor_max": [
-     33.4902114868164,
-     -161.559295654297,
-     -200.501098632813
-    ],
-    "position_count": 97967,
-    "index_count": 449997,
+    "geometry_decode": "OK (official google draco wasm decoder, browser channel; see decode manifest receipt)",
     "draco": {
      "bitstream": "2.2",
      "encoder_type": 1,
@@ -150,8 +154,18 @@
      "zfar": 100000.0,
      "model_transform_source": "models entry"
     },
-    "geometry_decode": "REFUSED",
-    "refusal_cause": "draco_edgebreaker_event_stream_not_decodable: topology-split event section diverges from the reference layouts (google/draco HEAD and 1.3.6); no producer-matching decoder exists in this lane"
+    "vertex_count": 97967,
+    "index_count": 449997,
+    "accessor_declared": {
+     "position_count": 97967,
+     "index_count": 449997
+    },
+    "decoded_buffers": {
+     "positions_sha256": "e73d24836219fee7df0d1e754fd3950fe233c83e61127d802b0baf21df991239",
+     "normals_sha256": "76377aef59922062d4d4072278b5aca5968066b924af2399b80d6af9fe281fe7",
+     "indices_sha256": "e5be9e5203a2bf3856d494ee9db7f3328bd9bdd83507fa5d8d0975e3d63e60b6"
+    },
+    "renderer": "software z-buffer, two-sided lambert, headlight; deterministic function of the pinned decoded buffers"
    }
   },
   {
@@ -288,5 +302,86 @@
     ]
    }
   }
- ]
+ ],
+ "draco_decode": {
+  "channel": {
+   "decoder": "official Google Draco WASM decoder (gstatic versioned 1.5.7), draco_wasm_wrapper.js + draco_decoder.wasm",
+   "page": "three.js r160 GLTFLoader + DRACOLoader, decoder_config wasm",
+   "three_revision": "160",
+   "receipt": "tools/science_funnel/validation/draco_decode_20260918/decode_receipt.json"
+  },
+  "identity_law": "the decoded position/normal/index buffer sha256s are the geometry machine identity; re-decode reproduces them exactly (fresh decoder instances, separate page runs)",
+  "falsifiers": {
+   "redecode_in_run": "pass1 == pass2, fresh DRACOLoader/WASM instances (identical=true for both specimens)",
+   "redecode_cross_run": "two separate page loads reproduce every buffer sha256 (identical=true for both specimens)",
+   "corrupt_probe": "one flipped byte inside the draco bufferView: REFUSED / REFUSED"
+  },
+  "corrupt_probe": {
+   "source_glb": "/glb/USNM15259_mandible_-300-150k-4096-high.glb",
+   "flip_offset": 5440,
+   "corrupted_sha256": "361c443ca088134d81ab3910a779ace4d01ad83a99b327f9b1e4e4416b88e1c5",
+   "outcome_runA": "REFUSED",
+   "outcome_runB": "REFUSED",
+   "error_runA": "[object Object]",
+   "error_runB": "[object Object]"
+  },
+  "specimens": {
+   "cranium": {
+    "glb_sha256": "04b58b90e36caf68548807b7d9609574d1ad7fcacae7a2e50ca7e6b77abc33a4",
+    "draco_header": {
+     "bitstream": "2.2",
+     "encoder_type": 1,
+     "encoder_method": 1,
+     "encoder_method_name": "MESH_EDGEBREAKER_ENCODING",
+     "traversal_type": 2,
+     "traversal_name": "MESH_EDGEBREAKER_VALENCE_ENCODING"
+    },
+    "accessor_declared": {
+     "position_count": 133171,
+     "index_count": 449997
+    },
+    "decoded": {
+     "positions_sha256": "3d48583302999116dee831e942cea493200cb7e7e4815132a0681ea331df9c60",
+     "normals_sha256": "c2729b58f0d8d41f7e318d1d260e45f57b7c918cc0d1a5cc54538bc8ddd8048b",
+     "indices_sha256": "03b941419a752e2d6d88ab9bde929859bbc075e711c017889ec3de279a46e476",
+     "index_type": "Uint32Array",
+     "vertex_count": 133172,
+     "index_count": 449997,
+     "meshes": 1
+    },
+    "screenshot": {
+     "file": "smithsonian_usnm15259_cranium.decode_screenshot.png",
+     "sha256": "4ed30fc2aa6d2a8f407630ee3a1e0412021c5fde91b5605816139d3a5e84482b"
+    }
+   },
+   "mandible": {
+    "glb_sha256": "0e6d83f25c9242d3a982f53f080ff6035e984413077dd2f46b246d1724e162a4",
+    "draco_header": {
+     "bitstream": "2.2",
+     "encoder_type": 1,
+     "encoder_method": 1,
+     "encoder_method_name": "MESH_EDGEBREAKER_ENCODING",
+     "traversal_type": 2,
+     "traversal_name": "MESH_EDGEBREAKER_VALENCE_ENCODING"
+    },
+    "accessor_declared": {
+     "position_count": 97967,
+     "index_count": 449997
+    },
+    "decoded": {
+     "positions_sha256": "e73d24836219fee7df0d1e754fd3950fe233c83e61127d802b0baf21df991239",
+     "normals_sha256": "76377aef59922062d4d4072278b5aca5968066b924af2399b80d6af9fe281fe7",
+     "indices_sha256": "e5be9e5203a2bf3856d494ee9db7f3328bd9bdd83507fa5d8d0975e3d63e60b6",
+     "index_type": "Uint32Array",
+     "vertex_count": 97967,
+     "index_count": 449997,
+     "meshes": 1
+    },
+    "screenshot": {
+     "file": "smithsonian_usnm15259_mandible.decode_screenshot.png",
+     "sha256": "8cfb84c32755df8b1e468fb28d238a85cfa64814312605f11d2ecc42760e6fc8"
+    }
+   }
+  }
+ }
 }

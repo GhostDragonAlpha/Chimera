@@ -8,10 +8,18 @@ RULE 0 for this lane, mechanically enforced here:
   F3 CHAIN -- the committed manifest's input sha256 -> png sha256 identities
      hold on disk, and the committed renders re-render byte-identically;
   F4 PIN -- the terrain render path re-proves the admitted 7-step reduction
-     at the Luquillo control against the recorded receipt numbers.
+     at the Luquillo control against the recorded receipt numbers;
+  F5 DECODE IDENTITY -- the pinned draco decode chain holds (glb sha ->
+     decoded buffer sha256s on disk), re-decode reproduced the identity in
+     two independent harness runs (committed receipt), a one-byte-corrupted
+     decoded buffer refuses loudly, and foreign GLB bytes never render as
+     verified geometry (they fall back to the honest bbox refusal).
 
 Scope guard: everything here proves INTAKE and determinism only. None of it
-is physics verification; the renders say so on their face.
+is physics verification; the renders say so on their face. The draco decode
+identity comes from the OFFICIAL Google Draco WASM decoder (browser
+channel, recorded receipt); the decode hashes are the proof, the harness
+screenshots are PERCEPTUAL EVIDENCE.
 """
 import json
 import shutil
@@ -26,6 +34,9 @@ ROOT = Path(__file__).resolve().parents[3]
 SF = ROOT / 'tools' / 'science_funnel'
 VALIDATION = SF / 'validation' / 'visual_proof_20260917'
 SMITH = SF / 'data' / 'smithsonian'
+DECODE_DIR, DECODE_MANIFEST = VP.decode_paths()
+DECODE_RECEIPT = SF / 'validation' / 'draco_decode_20260918' / \
+    'decode_receipt.json'
 DEM = SF / 'data' / 'copernicus_glo30' / \
     'Copernicus_DSM_COG_10_N18_00_W066_00_DEM.tif'
 
@@ -81,9 +92,28 @@ class VerifyCommittedRenders(unittest.TestCase):
         manifest = json.loads((VALIDATION / 'manifest.json')
                               .read_text('utf-8'))
         self.assertIn('NOT physics verification', manifest['label'])
-        self.assertEqual(len(manifest['refusals']), 2)
-        for r in manifest['refusals']:
-            self.assertIn('draco_edgebreaker', r['cause'])
+        if 'draco_decode' in manifest:
+            # decoded-geometry mode: the pinned artifacts DID decode through
+            # the official wasm channel, so there is no smithsonian refusal;
+            # the decode section must carry the machine identities.
+            section = manifest['draco_decode']
+            self.assertEqual(set(section['specimens']),
+                             {'cranium', 'mandible'})
+            for key, spec in section['specimens'].items():
+                self.assertTrue(spec['decoded']['positions_sha256'])
+                self.assertTrue(spec['decoded']['indices_sha256'])
+                self.assertGreater(spec['decoded']['vertex_count'], 0)
+                shot = section['specimens'][key]['screenshot']
+                self.assertTrue((VALIDATION / shot['file']).exists())
+            # the honest provenance of the channel: falsified premises stay
+            # banked even after the decode succeeds
+            joined = ' '.join(manifest['falsified_assumptions'])
+            self.assertIn('OFFICIAL', joined)
+            self.assertIn('404', joined)
+        else:
+            self.assertEqual(len(manifest['refusals']), 2)
+            for r in manifest['refusals']:
+                self.assertIn('draco_edgebreaker', r['cause'])
         for r in manifest['renders']:
             self.assertTrue((VALIDATION / r['png']).exists())
             self.assertTrue(r['inputs'])
@@ -176,6 +206,110 @@ class InputFlipSensitivity(unittest.TestCase):
             self.assertNotEqual(flipped, base_png)
         except Exception:
             pass  # corrupted row refuses loudly
+
+
+@unittest.skipUnless(DECODE_MANIFEST.exists(),
+                     'draco decode manifest not present in this checkout')
+class DecodeIdentityChain(unittest.TestCase):
+    """F5: the pinned decode identity holds on disk, and the renderer never
+    draws geometry it cannot verify."""
+
+    def _manifest(self):
+        return json.loads(DECODE_MANIFEST.read_text(encoding='utf-8-sig'))
+
+    def test_buffer_files_hash_to_recorded_identity(self):
+        import hashlib
+        manifest = self._manifest()
+        for key, spec in manifest['specimens'].items():
+            glb = SMITH / spec['glb']['name']
+            self.assertTrue(glb.exists(), key)
+            raw = glb.read_bytes()
+            self.assertEqual(
+                hashlib.sha256(raw).hexdigest(), spec['glb']['sha256'], key)
+            for role in ('positions', 'normals', 'indices'):
+                fname = spec['buffers'].get(role)
+                want = spec['decoded'][f'{role}_sha256']
+                if fname is None or want is None:
+                    continue
+                data = (DECODE_DIR / fname).read_bytes()
+                self.assertEqual(hashlib.sha256(data).hexdigest(), want,
+                                 f'{key}.{role}')
+
+    def test_screenshots_are_committed_perceptual_evidence(self):
+        import hashlib
+        manifest = self._manifest()
+        for key, spec in manifest['specimens'].items():
+            shot = spec['screenshot']
+            path = VALIDATION / shot['file']
+            self.assertTrue(path.exists(), shot['file'])
+            self.assertEqual(
+                hashlib.sha256(path.read_bytes()).hexdigest(),
+                shot['sha256'], key)
+            self.assertEqual(path.read_bytes()[:8], b'\x89PNG\r\n\x1a\n')
+
+    def test_corrupted_decoded_buffer_refuses_loudly(self):
+        # a pinned buffer that loses even one byte must never render as
+        # verified geometry -- loud refusal, not silent bbox downgrade
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_dir = Path(tmp)
+            shutil.copytree(DECODE_DIR, tmp_dir / 'draco_decode')
+            pos_file = tmp_dir / 'draco_decode' / \
+                'USNM15259_cranium.positions.f32'
+            raw = bytearray(pos_file.read_bytes())
+            raw[len(raw) // 2] ^= 0x01
+            pos_file.write_bytes(bytes(raw))
+            original = VP.decode_paths
+            VP.decode_paths = lambda: (tmp_dir / 'draco_decode',
+                                       tmp_dir / 'draco_decode'
+                                       / 'draco_decode_manifest.json')
+            try:
+                with self.assertRaises(Refusal) as ctx:
+                    VP.render_glb_intake(
+                        SMITH / 'USNM15259_cranium_-300_dec-150k-4096-'
+                        'high.glb',
+                        SMITH / 'USNM15259_cranium_document.json')
+                self.assertIn('sha', str(ctx.exception))
+            finally:
+                VP.decode_paths = original
+
+    def test_foreign_glb_bytes_fall_back_to_bbox_refusal(self):
+        # bytes that do not match the decode record have NO decode identity:
+        # the render must be the honest bbox+refusal form, never geometry
+        glb_path = SMITH / 'USNM15259_cranium_-300_dec-150k-4096-high.glb'
+        raw = bytearray(glb_path.read_bytes())
+        raw[40] ^= 0x01
+        with tempfile.TemporaryDirectory() as tmp:
+            foreign = Path(tmp) / glb_path.name
+            foreign.write_bytes(bytes(raw))
+            png, metrics = VP.render_glb_intake(
+                foreign, SMITH / 'USNM15259_cranium_document.json')
+            self.assertEqual(metrics['geometry_decode'], 'REFUSED')
+            self.assertIn('refusal_cause', metrics)
+            self.assertTrue(png.startswith(b'\x89PNG'))
+
+
+@unittest.skipUnless(DECODE_RECEIPT.exists(),
+                     'draco decode receipt not present in this checkout')
+class HarnessDecodeFalsifiers(unittest.TestCase):
+    """F5 at the channel level: the committed browser receipt must show the
+    re-decode determinism and the corruption refusal exactly as banked."""
+
+    def test_redecode_reproduced_identity_in_both_runs(self):
+        receipt = json.loads(DECODE_RECEIPT.read_text('utf-8-sig'))
+        for key, spec in receipt['specimens'].items():
+            self.assertTrue(spec['redecode_identical_in_run'], key)
+            self.assertTrue(spec['redecode_identical_cross_run'], key)
+
+    def test_corrupt_probe_never_reproduced_the_identity(self):
+        receipt = json.loads(DECODE_RECEIPT.read_text('utf-8-sig'))
+        probe = receipt['corrupt_probe']
+        self.assertIn(probe['outcome_runA'],
+                      ('REFUSED', 'SILENTLY DECODED DIFFERENT GEOMETRY'))
+        self.assertIn(probe['outcome_runB'],
+                      ('REFUSED', 'SILENTLY DECODED DIFFERENT GEOMETRY'))
+        manifest = json.loads(DECODE_MANIFEST.read_text('utf-8-sig'))
+        pinned_sha = manifest['specimens']['mandible']['glb']['sha256']
+        self.assertNotEqual(probe['corrupted_sha256'], pinned_sha)
 
 
 @unittest.skipUnless(

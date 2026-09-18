@@ -1,0 +1,87 @@
+﻿{
+    "kind":  "draco_decode_receipt.v1",
+    "utc":  "2026-09-18T07:37:26.4405817Z",
+    "falsifier":  "re-decode (fresh decoder instances, separate page runs) must reproduce identical position/normal/index buffer sha256; a one-byte-corrupted GLB inside the draco bufferView must refuse loudly or change the identity -- never reproduce it",
+    "selftest_expected":  "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+    "specimens":  {
+                      "cranium":  {
+                                      "glb_file":  "USNM15259_cranium_-300_dec-150k-4096-high.glb",
+                                      "glb_sha256":  "04b58b90e36caf68548807b7d9609574d1ad7fcacae7a2e50ca7e6b77abc33a4",
+                                      "three_revision":  "160",
+                                      "draco_header":  {
+                                                           "bitstream":  "2.2",
+                                                           "encoder_type":  1,
+                                                           "encoder_method":  1,
+                                                           "encoder_method_name":  "MESH_EDGEBREAKER_ENCODING",
+                                                           "traversal_type":  2,
+                                                           "traversal_name":  "MESH_EDGEBREAKER_VALENCE_ENCODING"
+                                                       },
+                                      "accessor_declared":  {
+                                                                "position_count":  133171,
+                                                                "index_count":  449997
+                                                            },
+                                      "decoded":  {
+                                                      "positions_sha256":  "3d48583302999116dee831e942cea493200cb7e7e4815132a0681ea331df9c60",
+                                                      "normals_sha256":  "c2729b58f0d8d41f7e318d1d260e45f57b7c918cc0d1a5cc54538bc8ddd8048b",
+                                                      "indices_sha256":  "03b941419a752e2d6d88ab9bde929859bbc075e711c017889ec3de279a46e476",
+                                                      "index_type":  "Uint32Array",
+                                                      "vertex_count":  133172,
+                                                      "index_count":  449997,
+                                                      "meshes":  1
+                                                  },
+                                      "redecode_identical_in_run":  true,
+                                      "redecode_identical_cross_run":  true,
+                                      "posted_buffer_bytes":  {
+                                                                  "positions":  1598064,
+                                                                  "indices":  1799988
+                                                              },
+                                      "screenshot_sha256":  "4ed30fc2aa6d2a8f407630ee3a1e0412021c5fde91b5605816139d3a5e84482b",
+                                      "screenshot_error":  null,
+                                      "user_agent":  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36"
+                                  },
+                      "mandible":  {
+                                       "glb_file":  "USNM15259_mandible_-300-150k-4096-high.glb",
+                                       "glb_sha256":  "0e6d83f25c9242d3a982f53f080ff6035e984413077dd2f46b246d1724e162a4",
+                                       "three_revision":  "160",
+                                       "draco_header":  {
+                                                            "bitstream":  "2.2",
+                                                            "encoder_type":  1,
+                                                            "encoder_method":  1,
+                                                            "encoder_method_name":  "MESH_EDGEBREAKER_ENCODING",
+                                                            "traversal_type":  2,
+                                                            "traversal_name":  "MESH_EDGEBREAKER_VALENCE_ENCODING"
+                                                        },
+                                       "accessor_declared":  {
+                                                                 "position_count":  97967,
+                                                                 "index_count":  449997
+                                                             },
+                                       "decoded":  {
+                                                       "positions_sha256":  "e73d24836219fee7df0d1e754fd3950fe233c83e61127d802b0baf21df991239",
+                                                       "normals_sha256":  "76377aef59922062d4d4072278b5aca5968066b924af2399b80d6af9fe281fe7",
+                                                       "indices_sha256":  "e5be9e5203a2bf3856d494ee9db7f3328bd9bdd83507fa5d8d0975e3d63e60b6",
+                                                       "index_type":  "Uint32Array",
+                                                       "vertex_count":  97967,
+                                                       "index_count":  449997,
+                                                       "meshes":  1
+                                                   },
+                                       "redecode_identical_in_run":  true,
+                                       "redecode_identical_cross_run":  true,
+                                       "posted_buffer_bytes":  {
+                                                                   "positions":  1175604,
+                                                                   "indices":  1799988
+                                                               },
+                                       "screenshot_sha256":  "8cfb84c32755df8b1e468fb28d238a85cfa64814312605f11d2ecc42760e6fc8",
+                                       "screenshot_error":  null,
+                                       "user_agent":  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36"
+                                   }
+                  },
+    "corrupt_probe":  {
+                          "source_glb":  "/glb/USNM15259_mandible_-300-150k-4096-high.glb",
+                          "flip_offset":  5440,
+                          "corrupted_sha256":  "361c443ca088134d81ab3910a779ace4d01ad83a99b327f9b1e4e4416b88e1c5",
+                          "outcome_runA":  "REFUSED",
+                          "outcome_runB":  "REFUSED",
+                          "error_runA":  "[object Object]",
+                          "error_runB":  "[object Object]"
+                      }
+}
