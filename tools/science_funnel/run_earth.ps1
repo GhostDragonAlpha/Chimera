@@ -4,7 +4,8 @@ param(
     [string]$CMake="cmake",
     [switch]$SkipBuild,
     [switch]$ForceArm,
-    [switch]$CoupledArm
+    [switch]$CoupledArm,
+    [string]$ContactPlaneHeightSource=""
 )
 $ErrorActionPreference="Stop"
 if($ForceArm -and $CoupledArm){throw "Choose one arm mode."}
@@ -16,7 +17,15 @@ try {
         throw "Port $Port is occupied; this launcher never stops existing processes."
     }
     $compiler=if($CoupledArm){'tools.science_funnel.coupled_scene'}elseif($ForceArm){'tools.science_funnel.force_arm'}else{'tools.science_funnel.earth_scene'}
-    & $Python -B -m $compiler
+    # Opt-in terrain-derived contact plane (work.environment.terrain
+    # wiring_20260918): empty by default, so the default compile argv -- and
+    # therefore the qualified default scene -- is untouched.
+    $compileArgs=@()
+    if($ContactPlaneHeightSource){
+        if(-not $CoupledArm){throw "-ContactPlaneHeightSource applies only to -CoupledArm."}
+        $compileArgs=@('--contact-plane-height-source',$ContactPlaneHeightSource)
+    }
+    & $Python -B -m $compiler @compileArgs
     if($LASTEXITCODE -ne 0){throw "Graph compilation refused."}
     $buildRelative=if($CoupledArm){'.tmp/coupled-native-engine'}elseif($ForceArm){'.tmp/force-arm-engine'}else{'.tmp/earth-engine'}
     $buildDir=Join-Path $projectRoot $buildRelative
