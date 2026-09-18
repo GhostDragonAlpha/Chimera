@@ -1,7 +1,7 @@
 {
   "schema": "chimera.grasp_contract_qualification.v1",
   "work_id": "work.creature.coupled_arm_grasp",
-  "graph_hash": "9178f1e7ccc8351fcca692ad2ab440a9605bc58276dc19c91f9d0dd457ec2ff8",
+  "graph_hash": "960bf8f6f4b0756dad6b172c696ba80e0a891a640daaa2c7e96ba22e764a490d",
   "project_spec_ok": true,
   "graph_ok": true,
   "historical_evidence_count": 11,

@@ -18,7 +18,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
 PROGRAM = os.path.join(ROOT, "tools", "creature_graph", "data", "authored",
                        "project_program.json")
-BASE_COMMIT = "fcaca2a5dd78cc92ea92bbe434050d4f857835ed"
+BASE_COMMIT = "4b047609c8f51782da10c9d63726f10ddb525cbc"
 ADMITTED_UTC = "2026-09-18T03:30:00+00:00"
 SOURCE_ID = "source.operator.coupled_arm_grasp_20260918"
 WORK_ID = "work.creature.coupled_arm_grasp"

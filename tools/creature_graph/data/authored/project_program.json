@@ -62506,7 +62506,7 @@
    "status": "extracted",
    "physical": {
     "text": "Admit the bounded grasp membrane before any runtime implementation: a spherical hand proxy between two opposing parallel planes, a finite squeeze store, anti-parallel friction rows, and a capped catch impulse.",
-    "selection": "GRASP-CONTRACT lane brief, branched from origin/master at fcaca2a5dd78cc92ea92bbe434050d4f857835ed."
+    "selection": "GRASP-CONTRACT lane brief, branched from origin/master at 4b047609c8f51782da10c9d63726f10ddb525cbc."
    }
   },
   {
@@ -62534,7 +62534,7 @@
     "prediction": "At the settled 20/20 pose the opposing plane rows have rank one with determinant below numerical precision; an independent normal/tangent pair has a nonzero mass-metric determinant, and the capped catch removes normal closing velocity while its normal/tangential dissipation split closes exactly.",
     "contract": {
      "schema": "chimera.grasp_contract.v1",
-     "base_commit": "fcaca2a5dd78cc92ea92bbe434050d4f857835ed",
+     "base_commit": "4b047609c8f51782da10c9d63726f10ddb525cbc",
      "derivation": "docs/research/20260918_grasp_derivation.md",
      "prestudy": "tools/science_funnel/validation/grasp_contract_20260918/prestudy.json",
      "prestudy_script": "tools/science_funnel/validation/grasp_contract_20260918/prestudy.py",

@@ -168,6 +168,8 @@ F_t = -0.2307768068.
 
 For the symmetric pair, `Λ_n(pair) = 0.6350866191`. With `μ = 0.50`, the cone limit is `0.3175433096`, so the stick example passes the pair cone. The off-diagonal `A_nt = 7.6722443431` is nonzero, so it does not decouple.
 
+**Reading note (what the solved multiplier is, and what it is not).** The single-effective-row KKT solve returns the multiplier of the *net* normal row requirement: in the pair convention the generalized normal force is `aᵀ(λ_n1 - λ_n2)`, so the solved `Λ_n` is a net quantity, not the squeeze. The example's `Λ_n(pair) = 2 Λ_n(solved)` is therefore a **declared illustrative convention** (per-plane load equal to the solved value), used only to demonstrate the cone arithmetic; the receipt records it as `pair_total_normal`. In the contract itself the squeeze load `λ_n1 + λ_n2` is set by the squeeze store of section 2, never by the floor solve. The distinction is load-bearing: under the one-sided reading (`λ_n2 = 0`) the cone limit would be the tighter `μ·0.3175433096 = 0.1587716548`, which the worked `F_t = -0.2307768068` exceeds — that floor would *slide*, and telling those two regimes apart is exactly what the future active set must resolve at runtime.
+
 ## 4. Squeeze-catch impact and exact dissipation split
 
 Let the pre-impact joint velocity be `qdot⁻`, with normal and tangent point velocities
@@ -260,4 +262,6 @@ Not implemented by this admission:
 
 ## Graph admission reference
 
-The Rule-0 record admitted by `admit_work_record.py` is `work.creature.coupled_arm_grasp`, with source `source.operator.coupled_arm_grasp_20260918`. It carries this document, the pre-study receipt, both qualified receipt paths, base commit `fcaca2a5dd78cc92ea92bbe434050d4f857835ed`, the owned future files, and the explicit `not_implemented` list.
+The Rule-0 record admitted by `admit_work_record.py` is `work.creature.coupled_arm_grasp`, with source `source.operator.coupled_arm_grasp_20260918`. It carries this document, the pre-study receipt, both qualified receipt paths, base commit `4b047609c8f51782da10c9d63726f10ddb525cbc`, the owned future files, and the explicit `not_implemented` list.
+
+Provenance of the base: the lane originally branched from origin/master at `fcaca2a5dd78cc92ea92bbe434050d4f857835ed`; after master moved (draco-decode and trainer-alignment lanes), the branch was rebased with upstream taken for the graph JSONs per the collision rule, and the idempotent admission script re-declared both records against the new base. The falsifiers, statement, and prediction are unchanged by the rebase; the pre-study numbers were re-run and reproduce bit-for-bit on the new base.
