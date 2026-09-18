@@ -1,7 +1,7 @@
 """Batch-gated trainer hook. The gate is the batch's own law: training may only
 run on a proven library state (graph valid + zero contract failures + count
-identity closed). The exercise runs ONE existing trainer domain in a child
-process; no ML quality is claimed -- this proves the wiring, not a policy."""
+identity closed). The exercise runs trainer domains in child processes; no ML
+quality is claimed -- this proves the wiring, not a policy."""
 import subprocess
 import sys
 from pathlib import Path
@@ -9,11 +9,16 @@ from pathlib import Path
 from ..common import canonical, require, sha
 
 ROOT = Path(__file__).resolve().parents[3]
-# The documented canonical domain (train_loop docstring example). arrangement
-# refuses without a scan (by design), pref_selftest predates the seed(rng)
-# protocol, beat_generator hits a latent auditor KeyError -- recorded here so
-# the next slice can repair the auditor, not silently skip it.
-EXERCISE_DOMAIN = 'erisaid_mirror'
+# The documented canonical domain (train_loop docstring example) PLUS the domain
+# the trainer-spine repair unblocked: pref_selftest used to predate the
+# seed(rng) protocol and died with a TypeError under train_and_audit; the spine
+# now probes the protocol and pref_selftest accepts the rng
+# (work.data.trainer_spine_repair_20260917). arrangement still refuses without
+# a scan (by design) and is therefore NOT an exercise domain.
+EXERCISE_DOMAINS = ('erisaid_mirror', 'pref_selftest')
+# Retained name for the recorded canonical domain (receipts and replay logs
+# older than the repair name it singly).
+EXERCISE_DOMAIN = EXERCISE_DOMAINS[0]
 
 
 def batch_gate(graph, batch_summary):
@@ -26,14 +31,14 @@ def batch_gate(graph, batch_summary):
     return {'gate': 'closed-proven-library-state', 'passed': True}
 
 
-def exercise(domain=EXERCISE_DOMAIN, pop=6, gens=5, timeout=300):
+def _run_one(domain, pop, gens, timeout):
     """Run one trainer domain in a child process; capture and hash its output.
 
-    gens >= 5 is REQUIRED: model_auditor.audit_run returns a short-history dict
-    without 'stuck_metrics' below five generations and train_loop reads that key
-    unconditionally -- a latent defect recorded in the batch receipt, not
-    silently patched here. train_loop's CLI takes only a domain name, so the
-    exercise calls train_and_audit directly."""
+    train_loop's CLI takes only a domain name, so the exercise calls
+    train_and_audit directly. Since work.data.trainer_spine_repair_20260917 the
+    audit dict has ONE shape at every history length (the old short-history
+    dict without 'stuck_metrics' below five generations is gone), so no
+    generation floor is required here; gens=5 stays the recorded default."""
     code = ("from core.train_loop import train_and_audit; import json;"
             " print(json.dumps(train_and_audit(%r, pop=%d, gens=%d)))" % (domain, pop, gens))
     command = [sys.executable, '-B', '-c', code]
@@ -48,3 +53,12 @@ def exercise(domain=EXERCISE_DOMAIN, pop=6, gens=5, timeout=300):
     except subprocess.TimeoutExpired:
         return {'domain': domain, 'command': command, 'exit_code': None,
                 'completed': False, 'failure': 'timeout'}
+
+
+def exercise(domains=EXERCISE_DOMAINS, pop=6, gens=5, timeout=300):
+    """Run every exercise domain in a child process; record each run in the
+    returned receipt dict under 'runs', keyed by domain."""
+    runs = {domain: _run_one(domain, pop, gens, timeout) for domain in domains}
+    return {'domains': list(domains), 'pop': pop, 'gens': gens,
+            'runs': runs,
+            'completed': all(run['completed'] for run in runs.values())}

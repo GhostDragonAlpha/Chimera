@@ -11,7 +11,10 @@ can maximize any of them and produce a spread of physics-feasible scores to shor
 from __future__ import annotations
 
 
-def seed() -> dict:
+def seed(rng=None) -> dict:
+    """Accept the documented protocol's rng (seed(rng) -> genome) and IGNORE it:
+    this fixture is a deterministic fixed point by design, so every caller gets
+    the same genome no matter what rng they pass (work.data.trainer_spine_repair_20260917)."""
     return {"a": 0.5, "b": 0.5}
 
 

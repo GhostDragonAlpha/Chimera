@@ -56372,7 +56372,7 @@
    "id": "work.data.trainer_spine_repair_20260917",
    "kind": "work",
    "name": "Repair the trainer spine so the batch gate runs any domain",
-   "status": "specified",
+   "status": "verified",
    "priority": "P0",
    "dependencies": [
     "work.data.graph_store_split"
@@ -56380,7 +56380,7 @@
    "evidence": [],
    "falsifier": {
     "statement": "A spine repair that still lets a trainable domain die on an internal spine error is not a repair: the bounded domain sweep must show every module in Chimera/core/trainables completing train_and_audit(pop=6, gens=5) or refusing with its own honest cause — never an internal spine TypeError/KeyError.",
-    "status": "untested"
+    "status": "tested_survived"
    },
    "physical": {
     "statement": "The trainer spine (core/train_loop.py train_and_audit + core/model_auditor.py audit_run) returns an audit dict of ONE shape at every history length, refuses domains that violate the documented seed(rng) / mutate(genome, rng) / measure(genome) protocol with a named refusal instead of an internal TypeError, and the batch exercise runs the canonical domain plus a second domain end to end.",

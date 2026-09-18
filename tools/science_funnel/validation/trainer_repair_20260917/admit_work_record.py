@@ -18,8 +18,11 @@ PROGRAM = os.path.join(ROOT, 'tools', 'creature_graph', 'data', 'authored',
                        'project_program.json')
 
 ADMITTED_UTC = '2026-09-18T00:54:11.600644+00:00'
-WORK_STATUS = 'specified'          # -> 'verified' only after the sweep survives
-FALSIFIER_STATUS = 'untested'      # -> 'tested_survived' only after the sweep
+# The bounded DOMAIN SWEEP ran against the repaired spine on this lane and
+# survived (12 completed, 8 refused with designed causes, 2 refused_env,
+# 0 internal/refuting classes); see sweep_receipt.json in this directory.
+WORK_STATUS = 'verified'
+FALSIFIER_STATUS = 'tested_survived'
 
 SOURCE = {
     "id": "source.operator.trainer_spine_repair_20260917",

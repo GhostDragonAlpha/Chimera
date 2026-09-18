@@ -9,14 +9,56 @@ Every training run:
 Usage: python -m core.train_loop erisaid_mirror
 """
 
-import importlib, json, random, sys, time
+import importlib, inspect, json, random, sys, time
 from pathlib import Path
 from core.model_auditor import audit_run
+
+
+class DomainRefusal(Exception):
+    """The spine refuses to train a domain — with a named cause.
+
+    work.data.trainer_spine_repair_20260917: a domain that violates the
+    documented protocol used to surface as a bare TypeError from the call site
+    (e.g. seed() called as seed(rng)). That is an internal crash, not a
+    verdict. The spine refuses BEFORE training and says exactly what is wrong.
+    """
+
+    def __init__(self, code: str, detail: str = ""):
+        self.code, self.detail = code, str(detail)
+        super().__init__(f"{code}: {detail}" if detail else code)
+
+
+def _require_protocol(domain, domain_name: str) -> None:
+    """Refuse honestly unless the domain speaks the documented protocol
+    (trainer.py's domain section): seed(rng) -> genome,
+    mutate(genome, rng) -> genome, measure(genome) -> dict of numbers.
+    Optional trailing parameters with defaults are fine. A MISSING function is
+    also a protocol violation (e.g. a GPU-flavored domain that exposes only
+    measure_batch cannot run through this CPU spine) — refused, never an
+    AttributeError from the call site."""
+    for attr, call, what in (("seed", (None,), "seed(rng)"),
+                             ("mutate", ({}, None), "mutate(genome, rng)"),
+                             ("measure", ({},), "measure(genome)")):
+        func = getattr(domain, attr, None)
+        if not callable(func):
+            raise DomainRefusal(
+                "domain_protocol_violation",
+                f"{domain_name} does not define a callable {attr}(); the "
+                f"documented protocol requires {what}. The spine refuses "
+                f"instead of crashing on the call.")
+        try:
+            inspect.signature(func).bind(*call)
+        except TypeError as exc:
+            raise DomainRefusal(
+                "domain_protocol_violation",
+                f"{domain_name}.{what} does not accept the documented protocol "
+                f"({exc}); the spine refuses instead of crashing on the call.") from exc
 
 
 def train_and_audit(domain_name: str, pop: int = 40, gens: int = 20):
     """Train a domain and audit the model."""
     domain = importlib.import_module(f"core.trainables.{domain_name}")
+    _require_protocol(domain, domain_name)
 
     t0 = time.time()
     rng = random.Random(42)
