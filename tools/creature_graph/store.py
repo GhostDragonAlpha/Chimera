@@ -38,6 +38,25 @@ SHARD_TARGET_BYTES = 24 * 1024 * 1024
 VALIDATION_STATES = ("untested", "passing", "failing", "stale")
 
 
+class StoreRefusal(ValueError):
+    """Named refusal for corrupt store edges (trust-tooling 20260918).
+
+    Replaces the bare `TypeError: 'set' object is not subscriptable` that a
+    single trainer-lane build measured once in relate(): a non-dict sitting in
+    self.relations where a {"rid","src","rel","dst","note"} dict was expected,
+    entering via an unguarded direct-assignment/load path. The guard names the
+    offending index/type instead of dying inside a set comprehension.
+    UNREPRODUCED-WITH-CAUSE: 500 honest builds + 125 file roundtrips green;
+    injected set reproduces the exact TypeError (see
+    validation/trust_tooling_20260918/stress_relate.py + log). Never silently
+    closed.
+    """
+
+    def __init__(self, code, detail=""):
+        self.code, self.detail = code, str(detail)
+        super().__init__(code + (": " + self.detail if detail else ""))
+
+
 def _utcnow() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
@@ -91,6 +110,13 @@ class CreatureGraph:
         for oid in (src, dst):
             if oid not in self.objects:
                 raise ValueError(f"relation endpoint missing: {oid} ({src} -{rel}-> {dst})")
+        for idx, r in enumerate(self.relations):
+            if not isinstance(r, dict) or not isinstance(r.get("rid"), str) or not r["rid"]:
+                raise StoreRefusal(
+                    "store_corrupt_relation_edge",
+                    "relations[%d] is %s, not a dict with string rid; "
+                    "refusing to append %s -%s-> %s" % (
+                        idx, type(r).__name__, src, rel, dst))
         identity = json.dumps([src, rel, dst, note], ensure_ascii=False)
         stem = "r_" + hashlib.sha256(identity.encode("utf-8")).hexdigest()
         used = {r["rid"] for r in self.relations}
