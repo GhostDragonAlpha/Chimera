@@ -325,6 +325,12 @@ class CreatureGraph:
         else:
             core.update(bulk)
         self.meta["bulk_shards"] = shard_names
+        # retire stale shards from earlier rotations -- including the case
+        # where bulk shrank back below the target and no shards are written
+        stem = os.path.splitext(os.path.basename(path))[0]
+        for name in os.listdir(os.path.dirname(path)):
+            if name.startswith(stem + ".bulk_") and name not in shard_names:
+                os.remove(os.path.join(os.path.dirname(path), name))
         payload = {
             "schema_version": SCHEMA_VERSION,
             "meta": self.meta,
@@ -334,12 +340,6 @@ class CreatureGraph:
         }
         with open(path, "w", encoding="utf-8", newline="\n") as f:
             json.dump(payload, f, indent=1, ensure_ascii=False)
-        # retire stale shards from earlier rotations
-        if shard_names:
-            stem = os.path.splitext(os.path.basename(path))[0]
-            for name in os.listdir(os.path.dirname(path)):
-                if name.startswith(stem + ".bulk_") and name not in shard_names:
-                    os.remove(os.path.join(os.path.dirname(path), name))
         return path
 
     @staticmethod

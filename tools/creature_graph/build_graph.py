@@ -71,8 +71,8 @@ def build(with_reference: bool = False) -> CreatureGraph:
     records_dir = os.path.join(AUTHORED_DIR, "records")
     if os.path.isdir(records_dir):
         for fname in sorted(os.listdir(records_dir)):
-            if not fname.endswith(".json"):
-                continue
+            if not (fname.startswith("records_") and fname.endswith(".json")):
+                continue  # only the serial writer's rotation pattern
             shard_path = os.path.join(records_dir, fname)
             input_hashes[f"authored/records/{fname}"] = _sha256_file(shard_path)
             with open(shard_path, encoding="utf-8") as stream:
