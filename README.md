@@ -325,6 +325,11 @@ friction heat into the energy ledger, and high μ makes it stick (readouts show 
 tangential force, slip speed and stick/slide mode). A preregistered one-time
 catch-event balance allowance of 5e-5 J at first landing is documented in the
 receipt.
+The optional `-ContactPlaneHeightSource terrain_cayo_20260917` launcher flag opts the
+hand contact plane out of its authored height into the terrain-derived value from the
+pinned Cayo Santiago reduction (`work.environment.terrain`; receipt
+`tools/science_funnel/validation/terrain_wiring_20260918/receipt.json`); without the
+flag the qualified authored world is untouched.
 Read `doc.workflow.coupled_native`, `work.creature.coupled_arm_contact` and
 `work.creature.coupled_arm_friction` for
 equations, checks, scope and next work. This reference has a fixed mount and two

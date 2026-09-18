@@ -139,3 +139,120 @@ Commit trailer: `Agent: GLM 5.3`.
 E:\PythonChimera untouched (except running its pinned python.exe); port 8127
 avoided; tools/game_shell/progress/SharedBody*.json untouched; no engine
 implementation (author-only lane); only this lane branch pushed.
+
+
+# HANDOFF — lane/terrain-wiring-20260918 (agent: GLM 5.3)
+
+Date: 2026-09-18. Branch: `lane/terrain-wiring-20260918` (pushed to origin).
+Base: master tip 0b8d80d5. Master moved TWICE mid-lane (4b047609 -> 8c0a9155
+-> 0b8d80d5); both rebase collisions were the compiled graph store only,
+resolved by taking master's store side and replaying the idempotent
+build_graph (final store graph_hash ca68dc9c...). After each integration the
+wiring falsifiers were RE-PROVEN (byte identity pre-code vs post-code and
+live engine readouts) and the pinned identity re-verified.
+
+## What this lane was
+
+Operator task: wire the qualified terrain reduction
+(`tools/science_funnel/validation/terrain_20260917/`) into the coupled-arm
+scene as the hand contact plane height WITHOUT touching the qualified
+defaults. Rule 0 record banked pre-code:
+`work.environment.terrain` `observation.wiring_20260918`
+— statement/prediction/five named falsifiers, status untested at bank time.
+
+## What was done (in order)
+
+1. RULE 0 bank (commit 1): the wiring contract on work.environment.terrain.
+   Store rebuilt; surgical authored diff; evidence objects exactly 11 before
+   and after (re-verified at the final base).
+2. Implementation (commit 2): `tools/science_funnel/coupled_scene.py` admits
+   recipe key `contact_plane_height_source` (default ABSENT = qualified
+   authored 0.35 world untouched). Exactly one admitted source,
+   `terrain_cayo_20260917`; anything else refuses
+   (`coupled_contact_plane_source_unknown`). Resolution is PIN, NOT RECOMPUTE:
+   `reduction_result.json` must hash to its receipt pin and agree with the
+   receipt metric; `terrain.reduce_terrain` is never run at compile.
+   The stored graph contract is never mutated (compile works on a copy);
+   the launcher passthrough (`run_earth.ps1 -ContactPlaneHeightSource`, or the
+   compiler's `--contact-plane-height-source`) injects the key + coherent
+   surface entity in memory only. Provenance block recorded in the scene
+   bundle under the opt-in; reach scan RECORDED there (see derivations).
+   The default-scene regression identity lives in
+   `test_coupled_scene.DEFAULT_SCENE_PORTABLE_SHA256` with its verification
+   lineage cited in place (byte-identical pre-code vs post-code at BOTH
+   bases: 9947d074... at store 319fe2af..., 7c784f09... at store ca68dc9c...).
+3. Qualification (receipt
+   `tools/science_funnel/validation/terrain_wiring_20260918/receipt.json`):
+   falsifiers ALL HELD. test_coupled_scene 16/16 (green at every base); full
+   funnel suite GREEN (Ran 263 tests, OK skipped=1, exit 0); graphify
+   consumer HONEST (7 checks, 36,701 objects / 38,767 relations, 0 id
+   collisions, re-run at the final tip); evidence objects 11 unchanged.
+4. Engine runs, OWNED port 8183 only (8127 never touched), re-run at the
+   FINAL tip: default world via `run_earth.ps1 -CoupledArm -Port 8183` —
+   launcher readiness gate qualified, `contact.plane_world_up_m == 0.35`
+   exact (raw-JSON-text compare), contact off/friction off; terrain scene
+   (same Start-Process shape, scene compiled with the opt-in) —
+   `contact.plane_world_up_m == -42.82679794555668` EXACT, contact off by
+   default, free dynamics with store balance error 1.4e-13 J, gap +43.27 m
+   (the recorded unreachable). BOTH engines stopped path-guarded: kill only
+   after `(Get-Process -Id).Path` equals the owned exe.
+
+## Key derivations (do not re-derive)
+
+- Cayo patch, not Luquillo: the terrain receipt scope reduces the Cayo
+  Santiago patch centre; Luquillo is a named coastal-plain CONTROL, El Yunque
+  a gate refusal; the coupled scene is the Cayo Santiago macaque reference.
+  Wired value = cayo_santiago_patch.h_ellipsoidal_m = -42.82679794555668 m
+  (the Cayo GLO-30 window resolves to ocean, so this IS the geoid undulation;
+  recorded honestly, never hidden).
+- Pin, not recompute: the reduction is qualified + replayed by test_terrain;
+  compile-time re-derivation would add a drifting second producer and a
+  ~250 MB two-grid decode per launch for zero added verification.
+- Frame: the scene origin sits ON the WGS84 ellipsoid (earth altitude_m=0),
+  so the plane height in scene world-up metres IS h_ellipsoidal_m. The real
+  ground is ~42.8 m BELOW the mount origin, so under the opt-in the reach
+  scan is recorded (plane_reachable=false, measured) instead of asserting the
+  authored pressing-workload law; the no-initial-penetration gate stays
+  asserted in BOTH worlds.
+- The scene digest is output-dir dependent (pre-existing compile_scene
+  behavior: absolute arm/graph paths). The pinned regression identity in
+  test_coupled_scene normalizes the worktree root + output dir and drops the
+  self-referential scene_sha256 before canonical digesting. Re-pin ONLY
+  deliberately, cite the record that moved the scene, and re-prove exact
+  byte identity pre-code vs post-code at the same output dir.
+
+## Never-do reminders / quirks (host-measured)
+
+- `tools/science_funnel/terrain.py` sha256 is PINNED by the terrain receipt
+  manifest — never edit it casually; put companions beside it.
+- Windows PowerShell 5.1 reads BOM-less UTF-8 .ps1 as ANSI: an em-dash in a
+  string becomes a smart quote and breaks parsing. Keep .ps1 ASCII-only.
+- `git show <rev>:<path> | Set-Content` MANGLES newlines; extract files with
+  bash redirection (`git show rev:path > path`) instead.
+- PowerShell `[double]` parameter binding rounds to 15 digits — comparing
+  engine readouts must be done on RAW JSON text, not parsed doubles.
+- `& python ... 2>&1` under `$ErrorActionPreference='Stop'` promotes native
+  stderr to terminating errors — drop to 'Continue' around expected refusals.
+- `Get-Content`/`Add-Content` without `-Encoding` on PS 5.1 treat BOM-less
+  UTF-8 as ANSI — handoff sections appended through them get mojibake;
+  do file surgery through the venv Python with explicit encodings.
+- Background exec tasks on this host can be reaped with the stdout log left
+  empty and NO completion notification; a full-suite run that outlives ~5
+  minutes is safer CHUNKED into foreground module runs, or re-checked via its
+  log after the fact (both full-suite runs eventually completed exit 0).
+- Graph JSONs re-shard when the store rebuilds — after authored edits run
+  `build_graph.py` then `--check-only`, commit the whole data/ set atomically,
+  and on rebase take master's store side + replay the idempotent build.
+- Another lane's engine may be alive on this host (a foreign chimera_engine
+  PID was observed). Kill ONLY your own PID after the path guard.
+
+## Next executable work
+
+- A tilted/offset terrain MOUNT (moving the arm origin to the real ground) is
+  NOT part of this lane; the opt-in only pins the plane height honestly.
+- Friction/contact qualification at the terrain height is not claimed and
+  would need its own reachable-plane workload (or a repositioned mount).
+- `docs/research/20260917_terrain_source.md` falsifier 4 (NASADEM
+  cross-source) remains deferred (Earthdata login wall).
+- Whole-body source intake per the banked proposal on
+  work.creature.macaque_whole_body_sources remains the mainline.
