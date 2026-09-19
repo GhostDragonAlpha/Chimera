@@ -1,0 +1,25 @@
+{
+ "lane": "in-session (codex/force-data-runtime-20260916), wave 5",
+ "date": "2026-09-19",
+ "agent": "GLM 5.3",
+ "deliverable": "The caps membrane banked, measured, FALSIFIED, and reverted per its own pre-registered law -- and the real binding failure chain measured with the new [pt] contact trace: entry-contact bounce, then the splits.",
+ "caps_amendment_outcome": {
+  "what_was_done": "revision 3 banked (knee 6.64 -> 13.18, ankle 7.40 -> 9.01 N.m, provenance = 1.25x our assembly's measured quasi-static demands); scene recompiled with the new caps verified in the recipe",
+  "falsifier_1_fired": "the walk refused identically -- tick 118, fall depth y=0.1345 (vs 0.1343 with the old caps) -- the caps were never binding",
+  "action": "REVERTED per the membrane's own law (admitter now detects the banked state and restores the source-peak caps with the falsification recorded in the contract note); store rebuilt, baseline confirmed (tick 118, ledger 3.593, F-G7 bit-identical)"
+ },
+ "the_real_failure_chain_measured": {
+  "1_entry_bounce": "[pt] tick 0: the seated left MP has LIFTED (gap +0.37 mm, touching=0) -- NOTHING touches at the entry instant; the body is in free flight. The seated contact never engages the force path (the plane-arming velocity gate rejects the initial state) and the first contact is an impact bounce, not a load transfer.",
+  "2_the_catch": "tick ~10-20: the RIGHT swing leg (its TD was imminent at phi=0.949) lands and carries the body (heel reaction 77.5 N) -- the walk proceeds on the WRONG leg's schedule relative to the entry pose",
+  "3_the_splits": "tick ~60: all four points touching but skating (left heel+MP slip 1.206 m/s) under only ~40 N total reaction (the 98.4 N weight is NOT carried) -- the feet slide out while the body sinks between them; the tables sweep the legs at the stride speed while the stalled body cannot follow",
+  "4_the_end": "the sinking body reaches geometric collapse at tick 118; the impact-event budget refuses on the chattering wreckage"
+ },
+ "what_this_changes": "The binding problems are ENTRY CONTACT ENGAGEMENT and STANCE SKATING -- both are hybrid-clock/contact-law questions, NOT torque or cap questions. Named next membranes: (a) the entry instant must TRANSFER LOAD, not bounce: the seated point needs its force path armed at t=0 (the plane gate's velocity test rejects the entry state -- the gate law needs an entry case, or the entry must include the pre-load closing velocity); (b) the stance skate: with mu=0.6 and 10-15 N normals the friction capacity is 6-9 N per foot while the tables demand the stride schedule -- either the body must be moving at the tables' implied base speed when loaded (the no-skid law at the TD instant, not the mid-stance instant), or the clock's contact-reset must catch the skate (a touching-but-sliding stance foot never resets, so the tables keep advancing against a stalled body).",
+ "also_this_wave": {
+  "clamp_pin_order_bug": "found and fixed (u_pin was computed before the wall snap = identically zero; the wave-4 'fix' was a no-op, explaining the bit-identical measurement); measured contribution after the real fix: zero (the clamp branch never fires in this walk)",
+  "E8_constraint_power": "booked (the discrete constraint impulse work, trapezoidal, in the identity and the energy report); measured magnitude 57 uJ over the walk -- real but tiny",
+  "ledger_status": "tick-0 baseline fixed (0.0087 J); the residual 3.59 J growth remains UNEXPLAINED by poscorr (ablated), clamp pin (never fires), E8 (57 uJ), and caps (falsified) -- the per-10-tick energy books show the unexplained residual wobbles +/-0.1-0.9 J per window against 1-2 J fluxes through a FALLING body; with the splits fixed and a loaded stance, the fluxes shrink and the audit gets clean numbers. The meter question stays OPEN, deprioritized behind the entry/skate membranes (a meter over a crashing body conflates book errors with physics)"
+ },
+ "pass": false,
+ "honest_summary": "A full membrane cycle executed honestly: derive -> bank -> measure -> falsifier fires -> revert, all recorded in the contract. The walk's binding failures are now measured as the entry-contact bounce and the stance skate (the splits) -- contact-engagement questions, not torque questions. The [pt] trace (per-point gap/touching/reaction/slip every 10 ticks) is the working instrument for the next session."
+}

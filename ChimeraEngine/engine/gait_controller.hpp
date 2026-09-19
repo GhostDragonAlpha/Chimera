@@ -56,7 +56,7 @@ class GaitWalker {
   void at(double phi,double out[4])const{out[0]=interp(hip,phi)+zeros[0];out[1]=interp(knee,phi)+zeros[1];out[2]=interp(ankle,phi)+zeros[2];out[3]=interp(mp,phi)+zeros[3];}
  };
  private:
- struct State {Dense q,v,work,impulse;double external=0,damping=0,impact=0;std::vector<double> contact_impact,contact_impact_impulse,contact_force_impulse,friction_heat,friction_heat_tick,friction_impulse,friction_force_impulse;Dense contact_generalized;
+ struct State {Dense q,v,work,impulse;double external=0,damping=0,impact=0,constraint_work=0;std::vector<double> contact_impact,contact_impact_impulse,contact_force_impulse,friction_heat,friction_heat_tick,friction_impulse,friction_force_impulse;Dense contact_generalized;
   State()=default;
   State(size_t n,size_t pts):q(n,0.),v(n,0.),work(n,0.),impulse(n,0.),contact_impact(pts,0.),contact_impact_impulse(pts,0.),contact_force_impulse(pts,0.),friction_heat(pts,0.),friction_heat_tick(pts,0.),friction_impulse(pts,0.),friction_force_impulse(pts,0.),contact_generalized(n,0.){}};
  struct Rate {Dense q,v,reaction;double damping=0;std::vector<double> contact_lambda,friction_lambda,friction_heat,slip;std::vector<int> mode;std::vector<Dense> point_force;
@@ -294,7 +294,9 @@ class GaitWalker {
   auto a=rate(start,tau,live,plane),b=rate(shifted(a,h/2),tau,live,plane),c=rate(shifted(b,h/2),tau,live,plane),d=rate(shifted(c,h),tau,live,plane);
   State end=start;
   for(size_t i=0;i<n_;++i){end.q[i]+=h*(a.q[i]+2*b.q[i]+2*c.q[i]+d.q[i])/6;end.v[i]+=h*(a.v[i]+2*b.v[i]+2*c.v[i]+d.v[i])/6;
-   end.impulse[i]+=h*(a.reaction[i]+2*b.reaction[i]+2*c.reaction[i]+d.reaction[i])/6;
+   double di=h*(a.reaction[i]+2*b.reaction[i]+2*c.reaction[i]+d.reaction[i])/6;
+   end.impulse[i]+=di;
+   end.constraint_work+=di*(start.v[i]+end.v[i])/2; // E8: the discrete constraint power -- booked, never silent
    end.work[i]+=tau[i]*(end.q[i]-start.q[i]);}
   for(size_t k=0;k<npts_;++k){
    for(size_t i=0;i<n_;++i)end.contact_generalized[i]+=h*((a.point_force[k].empty()?0.:a.point_force[k][i])+2*(b.point_force[k].empty()?0.:b.point_force[k][i])+2*(c.point_force[k].empty()?0.:c.point_force[k][i])+(d.point_force[k].empty()?0.:d.point_force[k][i]))/6;
@@ -445,9 +447,12 @@ class GaitWalker {
     // booking, its potential shift leaves the ledger (measured: up to 2.99 J
     // of balance error accumulated over the walk's clamp events). Same law
     // as the poscorr booking: the identity must see du paired with -du.
+    // ORDER LAW: snap FIRST, then measure -- u_pin computed before the snap
+    // is identically zero (the wave-4 no-op this line was until 20260919
+    // wave 5 caught it: bit-identical ledger pre/post "fix").
+    pinned.q[pc]=wall;
     double u_pin=evaluate(pinned).potential-evaluate(start).potential;
-    pinned.impact-=u_pin;
-    pinned.q[pc]=wall;}
+    pinned.impact-=u_pin;}
 #ifdef GAIT_EVENT_TRACE
   if(clamps>=8){size_t c0=drives_[0].coordinate;auto jn=normals(pinned);
    auto endp=free_step(pinned,h,tau,live);
@@ -683,14 +688,14 @@ class GaitWalker {
   // potential, v=0) silently offset every gait-entry walk by the injected
   // KE + pose offset (-0.59 J at tick 0, growing as the walk ran) -- the
   // meter, not the walk, was broken.
-  double bal=kinetic+(u-u0)-(e_ref_-u0)-work-s_.external+s_.damping+impact_heat_total2+friction_heat_total;
-  double stor=kinetic+(u-u0)-(e_ref_-u0)+battery_total+s_.damping+impact_heat_total2+friction_heat_total+brake_total-store_total_-s_.external;
+  double bal=kinetic+(u-u0)-(e_ref_-u0)-work-s_.external+s_.damping+impact_heat_total2+friction_heat_total-s_.constraint_work;
+  double stor=kinetic+(u-u0)-(e_ref_-u0)+battery_total+s_.damping+impact_heat_total2+friction_heat_total+brake_total-store_total_-s_.external-s_.constraint_work;
   J energy{{"kinetic_J",kinetic},{"gravitational_J",u-u0},{"potential_reference","reset pose"},{"mechanical_J",kinetic+(u-u0)},
    {"actuator_work_J",work},{"external_work_J",s_.external},
    {"damping_heat_J",s_.damping},{"impact_heat_J",impact_heat_total2},{"friction_heat_J",friction_heat_total},
    {"brake_heat_J",brake_total},{"battery_J",battery_total},{"battery_initial_J",store_total_},
    {"battery_usable",battery_total>1e-12},
-   {"balance_error_J",bal},{"store_balance_error_J",stor}};
+   {"constraint_work_J",s_.constraint_work},{"balance_error_J",bal},{"store_balance_error_J",stor}};
   J gait{{"cycle_duration_s",T_CYCLE},{"duty_factor_sampled",DUTY_SAMPLED},{"servo_frequency_Hz",FS_HZ},
    {"phase_left",phi_[0]},{"phase_right",phi_[1]},{"phase_offset",std::fmod(phi_[1]-phi_[0]+1.,1.)},
    {"capture_events",capture_events_},{"touching_left",touching_prev_[0]},{"touching_right",touching_prev_[1]}};

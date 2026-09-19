@@ -63722,7 +63722,9 @@
       "stem_mapping": "scene q_j = zero_map_rad[j] + tables_rad[j] -- amends the gait-impl lane's declared +/-1 mapping, which composed the TD foot nose-up 72.5 deg (heel digging); with the zeros the TD pitch is +15.9 deg (heel-first) and the stance ride closes",
       "falsifier_replay": "python -B tools/creature_graph/validation/admit_gait_zeros_20260919.py",
       "native_suite_pending": "ChimeraEngine/engine/tests_coupled_arm/gait_unit.cpp F-G1..G8 on the recompiled scene is the decisive test; predicted risk: mid-swing toe-tip dip -45 mm at constant stance-level hip (the free pelvis may resolve it)"
-     }
+     },
+     "cap_provenance": "source_peaks_v1_RESTORED",
+     "cap_amendment_note": "REVISED (wave 5, falsifier 1 fired): the assembly-statics cap amendment (knee 13.18, ankle 9.01) was banked, measured, and FALSIFIED -- the walk fell identically (tick 118, y=0.1345) with the doubled caps; the caps were not binding. Original source-peak caps restored. The binding failures are the entry-contact bounce and stance-foot skating (see receipt_wave5)."
     }
    },
    "measured_verification": {
@@ -63748,7 +63750,7 @@
      "MP": 0.5013
     }
    },
-   "revision_note": "revision 2 (2026-09-19): the derived angle-zero map banked; the stem mapping amended to q = zero + table. The native F-G suite remains the decisive falsifier (pending on the recompiled scene)."
+   "revision_note": "revision 2 (2026-09-19): the derived angle-zero map banked; the stem mapping amended to q = zero + table. The native F-G suite remains the decisive falsifier (pending on the recompiled scene). revision 3: drive caps re-provenanced to the assembly's measured statics (wave 5). cap amendment reverted (falsifier 1: not binding)."
   }
  ],
  "relations": [
