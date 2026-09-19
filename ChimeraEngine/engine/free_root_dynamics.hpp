@@ -36,8 +36,8 @@ class FreeRootDynamics {
  struct NamedRow {Dense row;double floor;int point;bool stop_row;}; // point<0: joint stop
  struct BodyRef {double mass;V com;Mat inertia;};
  std::shared_ptr<const Model> model_;J recipe_,config_,model_data_;std::vector<ContactPoint> points_;size_t hand_=0,n_=0,nb_=6,npts_=0;
- V local_,shift_,gravity_;double dt_=0,initial_store_=0,initial_potential_=0,plane_world_y_=0,plane_model_y_=0,mu_=0,mtot_=0;
- Dense kp_,kd_,damping_,last_torque_;bool contact_=false;
+ V local_,shift_,gravity_;double dt_=0,initial_store_=0,initial_potential_=0,plane_world_y_=0,plane_model_y_=0,mu_=0,mtot_=0,gravity_magnitude_=0;
+ Dense kp_,kd_,damping_,last_torque_;bool contact_=false,gravity_off_=false;
  std::vector<BodyRef> bodies_; // indexed EXACTLY like Model::evaluate frames
  // Touching band: carried over VERBATIM from the qualified header -- the band
  // argument is h- and acceleration-scale (a*h^2/2 ~ 6.9e-6 m < kTouch at
@@ -98,8 +98,8 @@ class FreeRootDynamics {
     for(size_t a=0;a<k;++a)rhs[a]=-(inner(rows[act[a]],initial)-floors[act[a]]);
     if(!gram_factor(g,k,rhs,lam)){
      // Dependent rows: drop the one with the smallest Gram diagonal, re-solve.
-     size_t small=0;for(size_t a=1;a<k;++a)if(g[a*k+a]<g[small*k+small])small=a;
-     sick[act[small]]=1;act.erase(act.begin()+small);continue;}}
+     size_t small_index=0;for(size_t a=1;a<k;++a)if(g[a*k+a]<g[small_index*k+small_index])small_index=a;
+     sick[act[small_index]]=1;act.erase(act.begin()+small_index);continue;}}
    int worst=-1;for(size_t a=0;a<k;++a)if(lam[a]<-1e-6&&(worst<0||lam[a]<lam[worst]))worst=int(a);// removal threshold calibrated at n=8 with impact-scale rhs (solve noise ~1e-6*|rhs|); the clamp zeroes smaller negatives
    if(worst>=0){act.erase(act.begin()+worst);continue;}
    Dense p(initial.size(),0.);for(size_t a=0;a<k;++a){double l=(std::max)(0.,lam[a]);for(size_t i=0;i<p.size();++i)p[i]+=l*rows[act[a]][i];}
@@ -365,7 +365,7 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
    for(int k=0;k<3;++k){P[k]+=body.mass*vb[k];H[k]+=iomega[k]+mom[k];}}
   return {{"linear_kg_m_s",J::array({P[0],P[1],P[2]})},{"angular_about_com_kg_m2_s",J::array({H[0],H[1],H[2]})},{"com_up_m",c[1]}};}
  public:
- FreeRootDynamics(const J& data,double gravity,V shift,double dt=1/300.):recipe_(data.at("recipe")),shift_(shift),gravity_{0,-gravity,0},dt_(dt){
+ FreeRootDynamics(const J& data,double gravity,V shift,double dt=1/300.):recipe_(data.at("recipe")),shift_(shift),gravity_{0,-gravity,0},dt_(dt),gravity_magnitude_(gravity){
   model_data_=data.at("model");
   require(recipe_.at("schema")=="chimera.coupled_free_scene.v1","coupled_free_schema");
   require(recipe_.at("coordinates")==J::array({"base_rot_x","base_rot_y","base_rot_z","base_trans_x","base_trans_y","base_trans_z","shoulder_flexion","elbow_flexion"}),"coupled_free_coordinate_order");
@@ -418,10 +418,12 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
   auto e=evaluate(s_);
   for(size_t k=0;k<npts_;++k)require(gap_of(e,k)>0,"coupled_free_initial_penetration");}
  void configure(const J& input){
-  require(input.is_object()&&!input.empty(),"coupled_control_object");auto c=config_;bool restart=false;
+  require(input.is_object()&&!input.empty(),"coupled_control_object");auto c=config_;bool restart=false,knock=false;
   for(auto it=input.begin();it!=input.end();++it){
    if(it.key()=="reset"){require(it.value().is_boolean()&&it.value().get<bool>(),"coupled_reset_true");restart=true;}
    else if(it.key()=="free_root_enabled"){require(it.value()==config_["free_root_enabled"],"coupled_free_flag_frozen");}
+   else if(it.key()=="gravity_off"){require(it.value().is_boolean(),"coupled_gravity_boolean");c[it.key()]=it.value();}
+   else if(it.key()=="knock_over"){require(it.value().is_boolean()&&it.value().get<bool>(),"macaque_knock_control");knock=true;}
    else{require(c.contains(it.key()),"unknown_coupled_control");c[it.key()]=it.value();}}
   for(auto key:{"power","shoulder_drive","elbow_drive"})require(c[key].is_boolean(),"coupled_boolean_control");
   if(c.contains("contact_enabled")){require(c["contact_enabled"].is_boolean(),"coupled_boolean_control");if(c["contact_enabled"].get<bool>()!=config_["contact_enabled"].get<bool>())require(restart,"coupled_contact_toggle_requires_reset");}
@@ -438,7 +440,8 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
   for(int i=0;i<2;++i){std::string stem=i?"elbow":"shoulder";double target=number(c[stem+"_target_deg"])*pi/180,cap=number(c[stem+"_torque_limit_N_m"]);size_t ci=nb_+size_t(i);
    require(target>=model_->lower[ci]-1e-8&&target<=model_->upper[ci]+1e-8&&cap>=0&&cap<=(i?.6:1.),"coupled_control_range");}
   double load=number(c["load_N"]);require(load>=0&&load<=3,"coupled_load_range");
-  config_=c;contact_=config_["contact_enabled"].get<bool>();mu_=number(config_["contact_friction"]);if(restart)reset();}
+  config_=c;contact_=config_["contact_enabled"].get<bool>();mu_=number(config_["contact_friction"]);
+  gravity_off_=config_.value("gravity_off",false);gravity_=gravity_off_?V{0,0,0}:V{0,-gravity_magnitude_,0};if(restart)reset();if(knock){s_.v[3]+=1.8;config_["last_control"]="knock_over";}}
  void step(){
   s_.impulse=Dense(n_,0.);s_.contact_impact_impulse.assign(npts_,0.);s_.contact_force_impulse.assign(npts_,0.);s_.contact_generalized=Dense(n_,0.);s_.friction_impulse.assign(npts_,0.);s_.friction_force_impulse.assign(npts_,0.);s_.friction_heat_tick.assign(npts_,0.);
   Dense impulse_torque(2,0.);for(int k=0;k<4;++k){auto tau=torque();auto trial=advance(s_,dt_/4,tau);
@@ -484,15 +487,15 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
   J support{{"plane_world_up_m",plane_world_up_m()},{"points",hullj},{"com_projection_east_m",c[0]},{"com_projection_south_m",c[2]},{"com_in_hull",false},{"assembly_mass_kg",mtot_},{"weight_N",mtot_*norm(gravity_)}};
   if(hull.size()==3){double det=(hull[1].first-hull[0].first)*(hull[2].second-hull[0].second)-(hull[2].first-hull[0].first)*(hull[1].second-hull[0].second);
    if(std::abs(det)>1e-15){double w0=((hull[1].first-c[0])*(hull[2].second-c[1])-(hull[2].first-c[0])*(hull[1].second-c[1]))/det,
-    w1=((hull[2].first-c[0])*(hull[0].second-c[1])-(hull[0].first-c[0])*(hull[2].second-c[1]))/det,w2=1.-w0-w1;
+    w1=((c[0]-hull[0].first)*(hull[2].second-hull[0].second)-(hull[2].first-hull[0].first)*(c[1]-hull[0].second))/det,w2=1.-w0-w1;
    support["barycentric"]=J::array({w0,w1,w2});support["com_in_hull"]=w0>=0&&w1>=0&&w2>=0;}}
   J contact{{"enabled",contact_},{"friction",mu_>0},{"friction_mu",mu_},{"grasp",false},{"plane_world_up_m",plane_world_up_m()},{"normal_world_up",J::array({0.,1.,0.})},{"points",points},
    {"reaction_N",reaction_total},{"friction_force_N",friction_force_total},{"impact_heat_J",impact_heat_total},{"friction_heat_J",friction_heat_total},{"cone_valid",cone_valid}};
   auto mom=momentum();
-  return {{"sim_time_s",ticks_*dt_},{"ticks",ticks_},{"mode","native_coupled_arm_free"},{"joints",joints},{"base",base},{"config",config_},{"power",config_["power"]},{"load_N",config_["load_N"]},{"battery_empty_events",empty_events_},
+  return {{"sim_time_s",ticks_*dt_},{"ticks",ticks_},{"mode","native_coupled_arm_free"},{"joints",joints},{"base",base},{"config",config_},{"gravity_off",gravity_off_},{"power",config_["power"]},{"load_N",config_["load_N"]},{"battery_empty_events",empty_events_},
    {"contacts",{{"environment",contact_},{"joint_limits",true}}},
    {"contact",contact},{"support",support},{"momentum",mom},
-   {"body",{{"position_m",add(hand.first,shift_)},{"velocity_m_s",velocity},{"radius_m",recipe_["proxy_radius_m"]}}},
+   {"body",{{"position_m",add(hand.first,shift_)},{"velocity_m_s",velocity},{"com_position_m",add(c,shift_)},{"radius_m",recipe_["proxy_radius_m"]}}},
    {"energy",{{"kinetic_J",kinetic},{"gravitational_J",u},{"potential_reference","reset pose"},{"mechanical_J",energy},{"actuator_work_J",work},{"external_work_J",s_.external},{"damping_heat_J",s_.damping},{"impact_heat_J",s_.impact+impact_heat_total},{"contact_impact_heat_J",impact_heat_total},{"friction_heat_J",friction_heat_total},{"brake_heat_J",brake_},{"battery_J",battery_},{"battery_initial_J",initial_store_},{"battery_usable",battery_>1e-12},
     {"balance_error_J",energy-work-s_.external+s_.damping+s_.impact+impact_heat_total+friction_heat_total},
     {"store_balance_error_J",energy+battery_+s_.damping+s_.impact+impact_heat_total+friction_heat_total+brake_-initial_store_-s_.external}}},
