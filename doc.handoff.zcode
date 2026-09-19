@@ -1,402 +1,90 @@
-# HANDOFF — lane/packet-author-20260918 (agent: GLM 5.3)
+# HANDOFF — lane/gait-impl-20260919 (agent: GLM 5.3)
 
-Date: 2026-09-18. Branch: `lane/packet-author-20260918` (pushed to origin). Base:
-master tip at time of push (lane base `4b047609`; master did not move during the
-lane). All mechanics ran through PowerShell `.ps1` scripts; Python was the pinned
-`E:\PythonChimera\.venv-hy3d\Scripts\python.exe`;
-E:\PythonChimera otherwise untouched, port 8127 avoided, SharedBody*.json untouched.
-
-## What this lane was
-
-AUTHOR-ONLY lane: two concrete, self-contained native-solver implementation packets
-(NO engine implementation), plus the mechanical completeness gate for packets, plus
-their Rule-0 admission records. The executing solver lane implements; this lane made
-sure every equation, constant, falsifier, control, budget and file it needs is already
-derived and falsifiable.
-
-## Deliverables (all on the lane branch)
-
-1. `docs/packets/free_root_balance_v1.md` — the qualified 2-coordinate coupled arm
-   extended to 6-DOF floating base + 2 joints = 8 DOF. Derives, in the exact
-   conventions of `ChimeraEngine/engine/coupled_dynamics.hpp` +
-   `coupled_articulation.hpp` (every constant identifier-matched: kTouch=1e-5,
-   kSlip=1e-9, gate=1e-6+1e-3|v|, 42-step bisection, 1e-9 localizations, depth<8,
-   40-step battery bisection, the share identities): D1 base kinematics as a 6-axis
-   sternum joint through the EXISTING Model (no new kinematics code), D2 the n=8
-   inertia sums with block structure, D3 equations of motion (zero torque on base
-   rows by construction), D4 contact as a LIST of 3D point-on-plane rows,
-   D5 the 3-row stick cone solve + qualified slide closed forms at 8 rows,
-   D6 active-set projection replacing mask enumeration with a termination
-   derivation, D7 balance = gravity compensation through contact (barycentric
-   support-hull condition), D8 the ledger extension, D9 why RK4+event-splits stays,
-   D10 the mount-locked mode as FROZEN bit-exact dispatch (the qualified class runs
-   verbatim; a weld is not six unilateral rows). Falsifiers F1-F9 incl. the task's
-   three: a creature that cannot FALL cannot walk (F1), zero-torque standing must
-   collapse (F2), support-polygon violation must tip (F3).
-2. `docs/packets/seven_coordinate_lift_v1.md` — native lift of all seven unlocked
-   source coordinates against `tools/science_funnel/coupled_arm.py::Assembly` as an
-   independent oracle (1e-12 relative on M/gravity/bias/Jacobian at recorded-seed
-   poses): 7-row joint-stop cascade with a deterministic
-   earliest-crossing/lowest-index tie law (the qualified n=2 `t <= hit` last-wins
-   tie stays byte-for-byte on the frozen path), per-drive actuator stores (honest
-   note: mechanical-energy closure stays GLOBAL), hand contact on the 7-row point
-   Jacobian, staged ladder 2 -> 3 -> 5 -> 7 (stage 0 = the frozen bit-exact
-   control), falsifiers F1-F9, staged file plan. Recommended to land BEFORE the
-   free-root packet (validates the shared generalized-row solver on the fixed root).
-3. `tools/science_funnel/check_packet.py` — the completeness gate: required
-   sections, Rule-0 triple, >= 3 falsifiers each with a refusal criterion, a frozen
-   bit-exactness claim, measurable budgets, an on-disk file list (NEW paths need at
-   least their parent), and the banked admission record in the authored program.
-   Read-only, deterministic, exit 0 over both packets.
-4. `tools/science_funnel/tests/test_packet_checker.py` — wires the gate into the
-   funnel suite permanently.
-5. `tools/creature_graph/validation/admit_solver_packets_20260918.py` — Rule-0
-   records banked BEFORE any implementing code:
-   `work.dynamics.free_root_balance_packet` +
-   `work.dynamics.seven_coordinate_lift_packet` (kind work, status specified,
-   falsifier status untested — honest: nothing in the packets is measured yet).
-   Idempotent AND revision-aware (no-op at current revision, supersedes known prior
-   revisions, REFUSES foreign content). Second run verified a no-op.
-6. `tools/creature_graph/data/{creature_graph.json, authored/project_program.json}`
-   rebuilt via `build_graph.py`: deterministic (identical graph_hash across two
-   builds: 6da0dcccbd3ea9e6), objects 35327 -> 35329, relations 38742 -> 38746,
-   **evidence 11 UNCHANGED**, work 73 -> 75.
-7. `.doclint.allow` — dated block allowing the packets' PLANNED (NEW) file paths
-   (a planned path is not a broken pointer). `doc_lint.py --staged` clean.
-
-## Falsifier status (honest)
-
-Both packets' falsifiers are UNTESTED by design: authoring lane, no runtime runs.
-The admission records say so (`falsifier.status: untested`, acceptance_test filled
-only in the implementing lane's revision 2). The gates that ARE measured for this
-lane are the suite results below.
-
-## Evidence-staleness verification (the trap this lane checked for)
-
-7 evidence records are stored-stale (ev.band_seal_conservation,
-ev.reflex_controls_fail, ev.xpbd_fidelity_gap, ev.limb_restore_recipes_20260915,
-ev.limb_live_control_20260915, ev.limb_cold_restart_20260915,
-ev.limb_seal_history_20260915). Verified PRE-EXISTING: extracted the pristine
-baseline store with `git show 4b047609:...` into a temp dir beside byte-identical
-bulk shards, loaded through the same CreatureGraph.load merge — the SAME 7 are
-stored-stale at baseline, and `refresh_validation` recomputes ZERO stale records on
-both trees. The lane's additions (2 work objects + their 4 requires_implementation
-edges) cannot and did not stale anything.
-
-## Store-diff audit (object-level, vs baseline 4b047609)
-
-Additions are EXACTLY the two packet records + their 4 requires_implementation
-edges; zero removals. ONE pre-existing object re-synced by the rebuild:
-`work.data.visual_proof_20260917` — the STORE artifact at base held the draco
-lane's revision 3 while the committed AUTHORED program already held revision 4
-(their final store save predated their final admission, or a rebase took an
-upstream store JSON); `build_graph.py` takes the store to its authored input, so
-the rebuild updated that record's `physical`/`falsifier` fields to revision 4.
-Verified field-level: program record == rebuilt-store record; the record is a dep
-of NO evidence capture, so no validation state moves. Reviewers who see
-visual_proof lines in the store diff: that is this sync, not an edit of another
-lane's record by hand.
-
-## Qualification state (final tree)
-
-- build_graph.py --check-only: clean.
-- project_spec --check: ok (structure + active-specification contracts).
-- graph contracts (tools/creature_graph/tests/test_contracts.py): 19 tests OK.
-- project_spec tests (unittest discover -p test_project_spec.py): 14 tests OK.
-- packet checker: exit 0 over both packets (also green inside the funnel suite).
-- funnel suite (python -B -m unittest discover -s tools/science_funnel/tests):
-  258 tests OK (skipped=1) on the final tree in 2674 s under heavy CPU
-  contention from other lanes' jobs (baseline on pristine 4b047609: 257 OK,
-  skipped=1, 1062 s). The +1 test is the new packet gate
-  (test_packet_checker.py).
-- graphify consumer roundtrip (qualify --consumer-graph on the built store):
-  HONEST — 35329/35329 objects reversible, 38746/38746 relations intact,
-  all checks pass.
-
-## Publishing
-
-Pushed `lane/packet-author-20260918` only; master NEVER touched. Verified
-`git rev-parse origin/lane/packet-author-20260918` == local HEAD after push.
-Commit trailer: `Agent: GLM 5.3`.
-
-## Gotchas for the next agent (this checkout)
-
-- The store/bulk JSONs are LF in the working copy; git warns "LF will be replaced
-  by CRLF" and `git status` lists the bulk shards as modified after every rebuild
-  even when content-identical. `git diff --cached --numstat` on them must show
-  NOTHING before you commit (normalization only); if it shows lines, stop.
-- `Select-String ... | ForEach-Object { $_.LineNumber + ": " }` throws (int + string
-  cast); use "$($_.LineNumber): ..." interpolation.
-- `git show <rev>:<path>` redirected from PowerShell mangles encoding; extract
-  binary-safe via python subprocess (this lane's check_stale.py pattern).
-- qualify --consumer-graph needs its --output dir to exist; it never touches the
-  committed projection (consumer.DEMO_DIR is redirected to scratch).
-- Background suites: redirect to a log file and READ THE LOG; never pipe native
-  output through Select-Object -First (kills the writer mid-run).
-
-## Never-do reminders honored
-
-E:\PythonChimera untouched (except running its pinned python.exe); port 8127
-avoided; tools/game_shell/progress/SharedBody*.json untouched; no engine
-implementation (author-only lane); only this lane branch pushed.
-
-
-# HANDOFF — lane/terrain-wiring-20260918 (agent: GLM 5.3)
-
-Date: 2026-09-18. Branch: `lane/terrain-wiring-20260918` (pushed to origin).
-Base: master tip 0b8d80d5. Master moved TWICE mid-lane (4b047609 -> 8c0a9155
--> 0b8d80d5); both rebase collisions were the compiled graph store only,
-resolved by taking master's store side and replaying the idempotent
-build_graph (final store graph_hash ca68dc9c...). After each integration the
-wiring falsifiers were RE-PROVEN (byte identity pre-code vs post-code and
-live engine readouts) and the pinned identity re-verified.
+Date: 2026-09-19. Branch: `lane/gait-impl-20260919` (pushed to origin). Lane base:
+origin/master c43d3363 + fast-forward of the derivation lane (a34f47b5) + merges of
+`origin/lane/seven-coord-complete-20260918` and `origin/lane/free-root-20260918`
+(the ladder's stages A-C, required by this lane's authority). Mechanics via
+PowerShell/`E:\PythonChimera\.venv-hy3d\Scripts\python.exe`; E:\PythonChimera
+untouched; port 8127 avoided; SharedBody*.json untouched; no other worktrees touched.
 
 ## What this lane was
 
-Operator task: wire the qualified terrain reduction
-(`tools/science_funnel/validation/terrain_20260917/`) into the coupled-arm
-scene as the hand contact plane height WITHOUT touching the qualified
-defaults. Rule 0 record banked pre-code:
-`work.environment.terrain` `observation.wiring_20260918`
-— statement/prediction/five named falsifiers, status untested at bank time.
+IMPLEMENTATION lane for stages D-F of `docs/research/20260918_gait_controller_derivation.md`:
+the gait controller header + walker runtime, the scene compiler, the admission
+machinery, and the F-G1..F-G8 falsifier suite. THE WALK IS NOT GREEN YET — the
+honest state, the named root causes and the exact next steps are in
+`tools/science_funnel/validation/gait_impl_20260919/receipt.json` (read it FIRST).
 
-## What was done (in order)
+## Deliverables on the lane
 
-1. RULE 0 bank (commit 1): the wiring contract on work.environment.terrain.
-   Store rebuilt; surgical authored diff; evidence objects exactly 11 before
-   and after (re-verified at the final base).
-2. Implementation (commit 2): `tools/science_funnel/coupled_scene.py` admits
-   recipe key `contact_plane_height_source` (default ABSENT = qualified
-   authored 0.35 world untouched). Exactly one admitted source,
-   `terrain_cayo_20260917`; anything else refuses
-   (`coupled_contact_plane_source_unknown`). Resolution is PIN, NOT RECOMPUTE:
-   `reduction_result.json` must hash to its receipt pin and agree with the
-   receipt metric; `terrain.reduce_terrain` is never run at compile.
-   The stored graph contract is never mutated (compile works on a copy);
-   the launcher passthrough (`run_earth.ps1 -ContactPlaneHeightSource`, or the
-   compiler's `--contact-plane-height-source`) injects the key + coherent
-   surface entity in memory only. Provenance block recorded in the scene
-   bundle under the opt-in; reach scan RECORDED there (see derivations).
-   The default-scene regression identity lives in
-   `test_coupled_scene.DEFAULT_SCENE_PORTABLE_SHA256` with its verification
-   lineage cited in place (byte-identical pre-code vs post-code at BOTH
-   bases: 9947d074... at store 319fe2af..., 7c784f09... at store ca68dc9c...).
-3. Qualification (receipt
-   `tools/science_funnel/validation/terrain_wiring_20260918/receipt.json`):
-   falsifiers ALL HELD. test_coupled_scene 16/16 (green at every base); full
-   funnel suite GREEN (Ran 263 tests, OK skipped=1, exit 0); graphify
-   consumer HONEST (7 checks, 36,701 objects / 38,767 relations, 0 id
-   collisions, re-run at the final tip); evidence objects 11 unchanged.
-4. Engine runs, OWNED port 8183 only (8127 never touched), re-run at the
-   FINAL tip: default world via `run_earth.ps1 -CoupledArm -Port 8183` —
-   launcher readiness gate qualified, `contact.plane_world_up_m == 0.35`
-   exact (raw-JSON-text compare), contact off/friction off; terrain scene
-   (same Start-Process shape, scene compiled with the opt-in) —
-   `contact.plane_world_up_m == -42.82679794555668` EXACT, contact off by
-   default, free dynamics with store balance error 1.4e-13 J, gap +43.27 m
-   (the recorded unreachable). BOTH engines stopped path-guarded: kill only
-   after `(Get-Process -Id).Path` equals the owned exe.
+1. `ChimeraEngine/engine/gait_controller.hpp` — GaitWalker: contact-reset hybrid
+   phase clock (T=0.71 s, offsets {0,0.5}, reset at the solver's own kTouch), the
+   21-node tables (verified against the admitted Oku xlsx to the contract's stated
+   reconstruction maxima at admission time), mass-normalized PD at the derived
+   4.0 Hz (zeta 0.8), per-drive depletive stores (1.5x W+ x the 10-stride window,
+   40-step bisection), support-hull monitor + capture-step reflex (phi jump 0.95),
+   trunk-pitch posture drive (the source model's theta_HAT musculature, found in
+   the pinned fulltext — the derivation contract OMITS it), and the 14-coordinate
+   walker runtime through the UNCHANGED Model::evaluate. Enumerative cone
+   projection (the n-coordinate class's solver, row-count lift). The qualified
+   coupled_dynamics.hpp is byte-untouched; coupled_multidynamics.hpp and
+   free_root_dynamics.hpp are untouched.
+2. `tools/science_funnel/gait_scene.py` — default-off `gait_controller` bundle
+   compiler (Oku Table 1 walker model authored from derived_numbers.json; compile-
+   time seating scan: all contact gaps +2e-6 m, CoM strictly inside the hull,
+   mass exactly 10.038 kg / 98.439 N). Emits `.tmp/gait-walker/scene.json`.
+3. `tools/creature_graph/validation/admit_gait_walker_20260919.py` — revision-aware
+   admission of `model.dynamics.gait_walker` (rev 1, specified, pre-code — IN TREE)
+   + work.creature.gait_controller rev 2 (implemented). The tables are verified
+   against the raw xlsx AT ADMISSION: reconstruction errors hip 1.76 / knee 2.022 /
+   ankle 2.699 / MP 4.072 deg — within the contract's stated maxima. Genuinely
+   foreign content still refuses. Note: the in-tree rev-2 work text claims
+   "implemented"; the falsifier PARTIAL state lives in the receipt — a follow-up
+   revision should reconcile the wording when the walk lands.
+4. `ChimeraEngine/engine/tests_coupled_arm/gait_unit.cpp` (+ CMake target) — the
+   F-G1..F-G8 suite, self-bounding (work/wall guards), honest RED reporting.
+5. `ChimeraEngine/engine/coupled_articulation.hpp` — ONE-TOKEN capacity amendment
+   (8 -> 16, the E1 pattern: integer validation only, no arithmetic), required for
+   the 14-coordinate walker; coupled_native re-run PASS (158229 checks) on the
+   final tree.
+6. `tools/science_funnel/validation/gait_impl_20260919/` — receipt.json (READ IT),
+   build_oracle_free.py + oracle_cases_free.json (the free-root oracle fixture the
+   original lane never committed), gait_unit_run.log.
+7. Scene pin re-measured on the merged store:
+   `DEFAULT_SCENE_PORTABLE_SHA256 = faf96e3e...` (test_coupled_scene.py, lineage in
+   the comment). Evidence count 11 UNCHANGED. Work records 76 -> 77.
 
-## Key derivations (do not re-derive)
+## STAGE 0 / regression proof
 
-- Cayo patch, not Luquillo: the terrain receipt scope reduces the Cayo
-  Santiago patch centre; Luquillo is a named coastal-plain CONTROL, El Yunque
-  a gate refusal; the coupled scene is the Cayo Santiago macaque reference.
-  Wired value = cayo_santiago_patch.h_ellipsoidal_m = -42.82679794555668 m
-  (the Cayo GLO-30 window resolves to ocean, so this IS the geoid undulation;
-  recorded honestly, never hidden).
-- Pin, not recompute: the reduction is qualified + replayed by test_terrain;
-  compile-time re-derivation would add a drifting second producer and a
-  ~250 MB two-grid decode per launch for zero added verification.
-- Frame: the scene origin sits ON the WGS84 ellipsoid (earth altitude_m=0),
-  so the plane height in scene world-up metres IS h_ellipsoidal_m. The real
-  ground is ~42.8 m BELOW the mount origin, so under the opt-in the reach
-  scan is recorded (plane_reachable=false, measured) instead of asserting the
-  authored pressing-workload law; the no-initial-penetration gate stays
-  asserted in BOTH worlds.
-- The scene digest is output-dir dependent (pre-existing compile_scene
-  behavior: absolute arm/graph paths). The pinned regression identity in
-  test_coupled_scene normalizes the worktree root + output dir and drops the
-  self-referential scene_sha256 before canonical digesting. Re-pin ONLY
-  deliberately, cite the record that moved the scene, and re-prove exact
-  byte identity pre-code vs post-code at the same output dir.
+coupled_native PASS (158229 checks, re-proven post-amendment); multidynamics_unit
+PASS (stage 3); coupled_free oracle+F1-F7 PASS (F9 budget refusal PRE-EXISTING,
+disclosed by the free-root lane's own commit; their oracle fixture was missing from
+the tree and is regenerated by build_oracle_free.py). FULL funnel pytest suite NOT
+run on this lane (context exhausted; the scene pin was re-measured and the store
+rebuilt — run the funnel as the first action of the follow-up lane).
 
-## Never-do reminders / quirks (host-measured)
+## The four open root causes (receipt has the full text)
 
-- `tools/science_funnel/terrain.py` sha256 is PINNED by the terrain receipt
-  manifest — never edit it casually; put companions beside it.
-- Windows PowerShell 5.1 reads BOM-less UTF-8 .ps1 as ANSI: an em-dash in a
-  string becomes a smart quote and breaks parsing. Keep .ps1 ASCII-only.
-- `git show <rev>:<path> | Set-Content` MANGLES newlines; extract files with
-  bash redirection (`git show rev:path > path`) instead.
-- PowerShell `[double]` parameter binding rounds to 15 digits — comparing
-  engine readouts must be done on RAW JSON text, not parsed doubles.
-- `& python ... 2>&1` under `$ErrorActionPreference='Stop'` promotes native
-  stderr to terminating errors — drop to 'Continue' around expected refusals.
-- `Get-Content`/`Add-Content` without `-Encoding` on PS 5.1 treat BOM-less
-  UTF-8 as ANSI — handoff sections appended through them get mojibake;
-  do file surgery through the venv Python with explicit encodings.
-- Background exec tasks on this host can be reaped with the stdout log left
-  empty and NO completion notification; a full-suite run that outlives ~5
-  minutes is safer CHUNKED into foreground module runs, or re-checked via its
-  log after the fact (both full-suite runs eventually completed exit 0).
-- Graph JSONs re-shard when the store rebuilds — after authored edits run
-  `build_graph.py` then `--check-only`, commit the whole data/ set atomically,
-  and on rebase take master's store side + replay the idempotent build.
-- Another lane's engine may be alive on this host (a foreign chimera_engine
-  PID was observed). Kill ONLY your own PID after the path guard.
+1. The Oku joint-angle ZERO conventions are underdetermined by the admitted bytes —
+   the declared ±1 stem mapping does not compose the tables into geometrically
+   consistent poses (phi=0 composes nose-UP 72 deg, not toe-contact). Falsifies the
+   derivation's completeness claim at the convention level; pin the zeros from the
+   paper's Fig. 2 / simulation source.
+2. The source model's trunk-pitch (theta_HAT) controller was omitted from the
+   derivation contract — this lane added it as the posture drive; amend the record.
+3. The stand-to-walk transition is unspecified (the flat-stand squat exceeds the
+   derived knee cap); the gait-state initialization (measured 1.01 m/s, TD columns)
+   is the implemented resolution; amend or derive a transition.
+4. The integrator event/energy storm on violent states: a per-step advance budget
+   (3000) and wall guards bound the suite, but a single-step hang persisted in the
+   final build (regressed from an earlier build where F-G5 completed in seconds) —
+   locate before the next measurement attempt.
 
-## Next executable work
+## Next lane's first moves
 
-- A tilted/offset terrain MOUNT (moving the arm origin to the real ground) is
-  NOT part of this lane; the opt-in only pins the plane height honestly.
-- Friction/contact qualification at the terrain height is not claimed and
-  would need its own reachable-plane workload (or a repositioned mount).
-- `docs/research/20260917_terrain_source.md` falsifier 4 (NASADEM
-  cross-source) remains deferred (Earthdata login wall).
-- Whole-body source intake per the banked proposal on
-  work.creature.macaque_whole_body_sources remains the mainline.
-
-# HANDOFF - lane/gait-controller-20260918 (agent: GLM 5.3)
-
-
-Date: 2026-09-18. Branch: `lane/gait-controller-20260918` (pushed to origin, by name).
-Base: master tip `c43d3363` (appearance admissions replay). All mechanics ran through
-PowerShell `.ps1` scripts; Python was the pinned
-`E:\PythonChimera\.venv-hy3d\Scripts\python.exe`; E:\PythonChimera otherwise untouched
-(only its interpreter executed), port 8127 avoided, SharedBody*.json untouched, no
-other worktree touched, no engine code written (author-only lane).
-
-## What this lane was
-
-DERIVATION lane: the macaque gait controller derived from the admitted movement data
-and authored as a contract — the document that makes the monkey WALK once the
-free-root and joint-ladder packets land. Deliverables:
-
-1. `docs/research/20260918_gait_controller_derivation.md` — the full derivation:
-   gait cycle (duty 0.683 sampled vs paper 0.67, toe-off 68%, T = 0.71 s),
-   joint-trajectory tables (21-node piecewise-linear phase tables, rad + deg, max
-   reconstruction error 4.1 deg on MP), GRF profile (peak 106.5 N = 1.082 BW at 3%,
-   loading rate 13.2 kN/s, stance impulse 34.48 N·s, closure 2·I_stance = BW·T_cycle
-   at −1.3%), torque requirements (peaks hip 8.97 / knee 5.31 / ankle 5.92 / MP
-   0.71 N·m; positive work per stride 5.25/2.56/3.27/0.50 J), the actuator-budget
-   VERDICT (the qualified 2.0 J per-drive store does NOT power one stride — hip
-   needs 3.25 J at arm scale; derived store floor = 1.5×W+_d per drive), the
-   controller (contact-reset phase clock + tables + the qualified capped
-   mass-normalized PD at f_s = 4.0 Hz, derived from a 0.95 amplitude-ratio criterion
-   at the 1.41 Hz gait fundamental; the qualified 2.0 Hz servo is falsified for gait
-   tracking), support-polygon stability with a capture-step reflex, falsifiers
-   F-G1..F-G8, and the staged ladder A..G (frozen arm → 7-coord → free root →
-   hindlimb lift → stand → walk → quadrupedal/substrates).
-2. `tools/science_funnel/validation/gait_controller_20260918/derive_gait_numbers.py`
-   + `derived_numbers.json` — the deterministic derivation script (stdlib-only xlsx
-   reader; reads ONLY the pinned Oku MOESM2 xlsx and the pinned Janisch CSV) and its
-   byte-stable machine output (sha256-identical across re-runs). Body anchor: Oku
-   Table 1 nine segments = 10.038 kg, BW 98.44 N, leg 0.419 m.
-3. `tools/creature_graph/validation/admit_gait_controller_20260918.py` — the Rule-0
-   admission of `work.creature.gait_controller` (kind work, status specified,
-   falsifier untested — honest; nothing measured on the engine). Idempotent
-   (re-run verified a no-op), revision-aware, refuses foreign content.
-4. Two deliberate re-pins of OTHER lanes' stale pins, each measured before touching
-   (details below): the coupled-scene digest and the wave2 store-snapshot test.
-
-## Store state
-
-Rebuild via `build_graph.py`: objects 52430 → 52431 (+exactly the one work record),
-relations 47296 → 47301 (+5 dependency edges), **evidence 11 UNCHANGED**, work
-76 → 77, graph_hash bf9e5a9b13468fbd. `--check-only` clean. Idempotent re-admission
-verified a no-op. project_program.json delta is exactly the one record (+52 lines).
-The bulk shards show LF-normalization warnings but ZERO content diff (numstat empty).
-
-## Qualification state (final tree)
-
-- project_spec --check (module form! `python -B -m tools.creature_graph.project_spec
-  --check` — direct-script invocation dies on relative imports): ok.
-- Graph contracts test_contracts.py: 19 tests OK. project_spec
-  test_project_spec.py: 14 tests OK. doc_lint --staged: clean.
-- Graphify consumer roundtrip on the rebuilt store: HONEST, 7/7 checks PASS
-  (52,803 objects / 47,324 relations incl. the reference join).
-- Funnel suite CHUNKED per module (293 tests + surface 10 = all OK):
-  test_batch 15, test_batch_gait 19, test_batch_muscle 10, test_batch_appearance 22
-  (after the pinned phylacine zip fetch), test_batch_geo 32 (skipped=1),
-  test_batch_life 16, test_coupled_arm 10, test_coupled_scene 16 (after re-pin),
-  test_packet_checker 1, test_earth_scene 8, test_macaque_anatomy 13, test_visual_proof
-  16, test_visual_proof_wave2 10 (after re-pin), test_terrain 9, test_force_arm 7,
-  test_force_compiler 9, test_force_sources 15, test_funnels 40, test_game_body_proxy 1,
-  test_review_candidate 3, test_store_relate_guard 4, test_trainer_spine 17,
-  test_surface_scene 10 (part-run on the contended host: 4 + 3 + 3, all OK; the part2 "3 errors" were this lane's own unittest-name typos -- the file's methods are test_*_refuse singular -- never real failures).
-
-## The three traps found and repaired (all pre-existing, all measured first)
-
-1. **PHYLACINE zip is gitignored by policy** (106,362,537 bytes > the 100 MB git
-   ceiling; receipt-pinned). A FRESH CLONE fails test_batch_appearance's
-   byte-identity test (FileNotFoundError). Repair: fetched the receipt-pinned URL,
-   verified sha256 `6f37526e...` and exact byte size, reran → 22/22 OK. The zip
-   stays untracked. ANY fresh-clone lane will hit this; fetch before the suite.
-2. **DEFAULT_SCENE_PORTABLE_SHA256 was stale at this lane's base.** Measured: at
-   base c43d3363 (store d16d38a4) the digest test FAILS (23d27409... computed vs
-   pin a7b36b53...); the terrain-era origin store ca68dc9c itself now digests
-   135699e6... The appearance replay (2d5ebe5a) moved the scene's embedded graph
-   hash without a re-pin. This lane's admission moves ONLY the embedded graph
-   hash — measured: the normalized bundle diff base → lane is EXACTLY /graph_file +
-   /graph_hash (2 fields; scene recipe untouched). Re-pinned on the live store
-   bf9e5a9b → 64cdd028..., lineage written into the test file's comment.
-   test_coupled_scene 16/16 after.
-3. **test_visual_proof_wave2 pinned absolute store counts (35331 objects / 38748
-   relations)** — stale since the batch intake lanes grew the store to 52k; already
-   red at base (measured). The test's load-bearing pin (evidence == 11) is kept;
-   the absolute snapshots were replaced by the invariant its name promises: the
-   saved store must equal the DETERMINISTIC REBUILD of the authored inputs
-   (object/relation counts AND graph_hash), so no admission can ever desync the
-   saved store from its inputs. wave2 10/10 after (883 s — the module also
-   rebuilds the graph now; budget ~15 min on a contended host).
-
-## Gotchas for the next agent (this checkout)
-
-- The host is SHARED and heavily loaded (12+ foreign python processes observed);
-  single modules can take 13+ minutes (test_macaque_anatomy 793 s). Background
-  exec tasks get REAPED (empty log, exit -1, no notification) — run long modules
-  in FOREGROUND calls with a generous timeout, one module per call, and never pipe
-  native output through Select-Object (it buffers until exit; use a redirect to a
-  log file and read the file).
-- `unittest discover -p <module>` per module is the safe chunk shape; the full
-  suite in one process exceeds any single exec window under this load.
-- project_spec.py MUST be invoked as a module (`-m tools.creature_graph.project_spec`),
-  not as a script path.
-- The scene bundle embeds the store graph hash under /graph_hash AND /graph_file
-  (the graph_<hash>.json copy name) — EVERY store rebuild moves the scene digest.
-  If your lane rebuilds the store, re-pin DEFAULT_SCENE_PORTABLE_SHA256 deliberately
-  with the diff proof (graph-hash-only) IN THE SAME COMMIT.
-- Extract a historical store via `git ls-tree -r --name-only <rev>` + `git show
-  <rev>:<path>` through a python subprocess (binary-safe) into an aside dir, then
-  CreatureGraph.load from there. Label aside copies: a copy made from a working
-  tree holds whatever the tree held at copy time (this bit me once — a "baseline"
-  aside that was actually my own store).
-- The pinned interpreter has numpy/pandas but NO openpyxl and must not gain
-  packages (never pip-install into E:\PythonChimera); parse xlsx with the stdlib
-  zipfile+ElementTree readers that visual_proof_wave2.py and adapters_muscle.py
-  already carry.
-
-## Publishing
-
-Pushed `lane/gait-controller-20260918` only (verified rev-parse == local HEAD);
-master NEVER touched. Commit trailer: `Agent: GLM 5.3`.
-
-## Never-do reminders honored
-
-E:\PythonChimera untouched (except running its pinned python.exe); port 8127
-avoided; tools/game_shell/progress/SharedBody*.json untouched; no engine
-implementation (author-only lane); only this lane branch pushed.
-
-## Next executable work
-
-- Stage D of the ladder: the hindlimb lift packet (coordinates hip_flexion,
-  knee_extension, ankle_dorsiflexion, MP_dorsiflexion in the Oku sign convention,
-  caps/stores/f_s from the derivation doc Sections 4-5) — the owed packet this
-  contract makes executable.
-- Granatosky/Higurashi Dryad bytes remain deferred (401/Anubis); when a human
-  downloads them, the pinned sha256s decide, and the quadrupedal limb-phase
-  numbers leave their UNMEASURED labels only through a superseding record.
-- If the scene digest moves again: follow the re-pin protocol in
-  test_coupled_scene.py's comment — measure the diff, prove graph-hash-only (or
-  name the mover), re-pin with lineage, same commit as the store change.
+1. Read the receipt. 2. Reproduce: `python -B -m tools.science_funnel.gait_scene`,
+build `.tmp/gait-tests`, run `gait_unit.exe .tmp/gait-walker/scene.json`.
+3. Root-cause the single-step hang (per-step advance budget at 3000 does not trip —
+the cost is inside ONE advance's bisection stack). 4. Pin the Oku angle zeros, fix
+the stem mapping in gait_scene.py + the admit script, re-seat, re-run. 5. Run the
+full funnel suite; graphify; only then bank a verified revision.

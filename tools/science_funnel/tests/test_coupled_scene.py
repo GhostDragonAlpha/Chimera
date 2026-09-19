@@ -61,10 +61,12 @@ class CoupledScene(unittest.TestCase):
  # (also inside the graph_file name) and the self-referential scene_sha256
  # -- no physics, recipe, model or source bytes moved. Old pin: a7b36b53
  # 1f20e64da4119ad09ebb40448c17dfbc2c2d31489ac0160fb2513a52.
- # (Merged lane gait-impl-20260919: this pin is provisional at the seven-coord
- # value and is re-measured after the merged store rebuild + this lane's own
- # admissions; lineage: derivation-lane pin 64cdd028 on store bf9e5a9b.)
- DEFAULT_SCENE_PORTABLE_SHA256='c44673e17123727a8a41edf5e3eeeda69850799d9ad032e0f77fde6308ec3d98'
+ # (Merged lane gait-impl-20260919: re-measured on the merged store after the
+ # derivation + seven-coord + free-root + gait_walker admissions and the store
+ # rebuild; measured pin faf96e3e, lineage: seven-coord provisional c44673e1,
+ # derivation-lane 64cdd028 on store bf9e5a9b. The measured diff vs the prior
+ # lane pins is the embedded graph hash only -- the scene recipe is untouched.)
+ DEFAULT_SCENE_PORTABLE_SHA256='faf96e3e8e84eef96e8d3f7e3ec84ca330d5d3ee699a534376461fa9f1b133ad'
  CAYO_H_ELLIPSOIDAL_M=-42.82679794555668
  def portable_digest(self,bundle,out_dir):
   from tools.science_funnel.common import digest

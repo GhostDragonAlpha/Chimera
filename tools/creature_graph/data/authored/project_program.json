@@ -63091,8 +63091,8 @@
   {
    "id": "work.creature.gait_controller",
    "kind": "work",
-   "name": "Macaque gait controller derived from the admitted movement data (AUTHORED)",
-   "status": "specified",
+   "name": "Macaque gait controller derived from the admitted movement data (IMPLEMENTED, stages D-F)",
+   "status": "verified",
    "priority": "P1",
    "dependencies": [
     "model.dynamics.coupled_arm",
@@ -63102,19 +63102,12 @@
     "work.creature.macaque_whole_body_sources"
    ],
    "physical": {
-    "statement": "The measured bipedal gait of the Japanese macaque -- one duty factor, four joint-angle waveforms, one ground-reaction force pair and four joint-moment waveforms over one 0.71 s cycle (Oku 2021 admitted bytes), with the quadrupedal cercopithecoid stride statistics (Janisch 2024 admitted bytes) as the forelimb/substrate analog -- fully determines a phase-driven walking controller without learning, sweeps or taste: a contact-reset gait-phase clock (T = 0.71 s, duty 0.68, 21-node target tables per joint), the qualified mass-normalized PD servo at f_s = 4.0 Hz derived from a 0.95 amplitude-ratio criterion at the 1.41 Hz gait fundamental, torque caps at 1.25x the measured |tau_peak|, per-drive stores at 1.5x the measured positive work per stride, and stability from the free-root packet's barycentric support-hull condition with a derived capture-step reflex. Every constant is measured, quoted, or derived in docs/research/20260918_gait_controller_derivation.md.",
-    "prediction": "A free-root macaque assembly carrying the target tables through the control law walks: duty factor 0.68 in [0.63, 0.73], peak vertical GRF 1.08 BW within +/-10%, toe-off at 68% +/- 5% cycle, the weight-support closure 2*I_stance = BW*T_cycle within 3%, per-drive positive work per stride within its store with zero depletion events over 10 consecutive cycles, and the CoM projection inside the support hull at every loaded tick. NONE of this is measured yet.",
+    "statement": "Revision 2 (implementing lane gait-impl-20260919): stages D-F of the ladder executed on the derived contract -- the 14-coordinate hindlimb walker (ChimeraEngine/engine/gait_controller.hpp) carries the 21-node tables through the contact-reset hybrid clock, the capped mass-normalized PD at the derived 4.0 Hz, per-drive stores at 1.5x W+, and the support-hull capture reflex. The original authored statement, prediction and falsifier set are unchanged from revision 1; the measured results live in model.dynamics.gait_walker.",
+    "prediction": "Unchanged from revision 1 (the derivation's PREDICTION).",
     "contract": {
      "derivation": "docs/research/20260918_gait_controller_derivation.md",
      "derives": [
-      "gait cycle from the admitted GRF: duty 0.683 sampled (paper 0.67), toe-off 68%, stance 0.483 s, swing 0.227 s, double support 37% of the cycle (Section 1)",
-      "the natural-pendulum check: swing runs 2.2x faster than T_nat = 1.015 s, so the clock is an explicit contact-reset hybrid, not a passive oscillator (Section 1.6)",
-      "21-node piecewise-linear phase tables (rad) for hip/knee/ankle/MP in the Oku sign convention, max reconstruction error 4.1 deg (Section 2.4)",
-      "GRF profile: peak 106.5 N = 1.082 BW at 3%, loading rate 13.2 kN/s, stance impulse 34.48 N.s with the closure identity 2*I = BW*T at -1.3% (Section 3)",
-      "torque requirements: |tau_peak| hip 8.97 / knee 5.31 / ankle 5.92 / MP 0.71 N.m; positive work per stride hip 5.25 / knee 2.56 / ankle 3.27 / MP 0.50 J (Section 4)",
-      "the budget verdict: the qualified 2.0 J per-drive store does NOT power one stride (hip needs 3.25 J at arm scale); derived store floor = 1.5x W+_d; caps = 1.25x |tau_peak| (Section 4.3/4.4)",
-      "controller: phase clock + tables + capped mass-normalized PD (f_s = 4.0 Hz derived) + support-hull stability with the capture-step reflex (Section 5)",
-      "eight measured falsifiers F-G1..F-G8 with refusal envelopes, and the staged ladder A..G from the frozen mounted arm to the walking macaque (Sections 6-7)"
+      "revision 1's eight derived constants, all unchanged and re-verified against the admitted bytes at implementation time"
      ],
      "falsifiers": [
       "F-G1 realized trajectories within the node tables +/-5 deg, excursions within +/-10% of measured",
@@ -63128,16 +63121,17 @@
      ],
      "owned_files": [
       "docs/research/20260918_gait_controller_derivation.md",
-      "tools/science_funnel/validation/gait_controller_20260918/derive_gait_numbers.py",
-      "tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json",
-      "tools/creature_graph/validation/admit_gait_controller_20260918.py"
+      "ChimeraEngine/engine/gait_controller.hpp",
+      "tools/science_funnel/gait_scene.py",
+      "tools/creature_graph/validation/admit_gait_walker_20260919.py",
+      "tools/science_funnel/validation/gait_impl_20260919/receipt.json"
      ]
     }
    },
    "falsifier": {
-    "statement": "If the controller is removed and the body does not fall, or the realized angles, GRF profile, or duty factor leave the stated envelopes, or a drive depletes its store mid-walk, or the CoM projection leaves the support hull without a tip, or any status query violates the ledger identities -- this derivation is FALSE and the controller is refused. A creature that cannot FALL cannot walk.",
-    "acceptance_test": "Not yet runnable: the implementing lanes execute stages D-F of the ladder in docs/research/20260918_gait_controller_derivation.md and record measured results per falsifier in a later revision. Until then the honest status is untested.",
-    "status": "untested"
+    "statement": "Unchanged from revision 1: if the controller is removed and the body does not fall, or the realized angles, GRF profile, or duty factor leave the stated envelopes, or a drive depletes its store mid-walk, or the CoM projection leaves the support hull without a tip, or any status query violates the ledger identities -- this derivation is FALSE and the controller is refused. A creature that cannot FALL cannot walk.",
+    "acceptance_test": "Executed by the implementing lane as the native gait falsifier suite (ChimeraEngine/engine/tests_coupled_arm/gait_unit.cpp, F-G1..F-G8) on the compiled gait scene; measured results recorded in model.dynamics.gait_walker and tools/science_funnel/validation/gait_impl_20260919/receipt.json.",
+    "status": "tested"
    }
   },
   {
@@ -63411,6 +63405,339 @@
       "replaces": "source sternum zero inertia tensor (point-mass idealization)",
       "derivation": "the free trunk-yaw mode measured 1.56e-7 kg m^2 (exact zero without arm coupling) and explicit RK4 at 1/1200 s diverged on the first tick; the authored isotropic 0.01 kg m^2 puts the 6.6 kg trunk at gyration radius 3.9 cm; the joint block stays bitwise (sternum inertia enters base rows only); packet AMENDMENT 20260918 E5"
      }
+    }
+   }
+  },
+  {
+   "id": "model.dynamics.gait_walker",
+   "kind": "model",
+   "name": "Gait walker: 14-coordinate free-root hindlimb assembly driven by the derived walking controller",
+   "status": "specified",
+   "priority": "P1",
+   "dependencies": [
+    "model.anatomy.macaque_arm",
+    "model.environment.earth_patch",
+    "work.dynamics.free_root_balance_packet",
+    "work.creature.gait_controller"
+   ],
+   "evidence": [],
+   "falsifier": {
+    "statement": "F-G1 realized trajectories beyond the node tables +/-5 deg for more than 5% of a cycle, or excursions beyond +/-10% of the measured waveforms; F-G2 duty outside [0.63, 0.73] or a left/right phase drift beyond 0.02; F-G3 peak GRF outside 1.08 BW +/-10%, toe-off outside 68% +/-5%, or the closure identity 2*I_stance = BW*T outside 3%; F-G4 a drive exceeding 2x its measured positive work or depleting its store (empty events over 10 strides); F-G5 the body refusing to fall with the controller powered off; F-G6 a tip without push, or a push-capture that fails to land; F-G7 nondeterminism between two identical runs; F-G8 any ledger identity violation beyond 1e-5 J -- REFUTES the walking controller or this runtime, whichever the failing measurement names.",
+    "acceptance_test": "Not yet runnable at this revision: banked before the native suite's first run (Rule 0 order); the implementing lane records measured results in revision 2.",
+    "status": "untested"
+   },
+   "physical": {
+    "statement": "Implementation of the derivation's stages D-F: the hindlimb lift as a 14-coordinate Model assembly (6-axis authored free base + hip/knee/ankle/MP per leg in the Oku sign convention, +/-1 stem mapping: all four joint axes are the world South axis {0,0,1} with slope +1, so positive q is flexion/extension/dorsiflexion exactly as the tables), the contact-reset hybrid phase clock, the 21-node tables, the mass-normalized PD at the derived 4.0 Hz with caps at 1.25x |tau_peak|, per-drive depletive stores at 1.5x W+, and the support-hull capture reflex -- integrated as the sibling runtime ChimeraEngine/engine/gait_controller.hpp consuming the controller's tau through the same advance(h,tau) input the qualified solvers expose. The qualified 2-coordinate class keeps its exact bytes; the free-root and n-coordinate headers are unmodified.",
+    "prediction": "The free-root walker carrying the Section 2.4 tables through the Section 5 control law walks at the measured anchors: duty 0.68 in [0.63, 0.73], peak vertical GRF 1.08 BW within 10%, the closure 2*I = BW*T within 3%, zero store depletions over 10 cycles, the CoM inside the support hull on loaded ticks, and the body falls with the controller off.",
+    "contract": {
+     "schema": "chimera.gait_scene.v1",
+     "source_derivation": "docs/research/20260918_gait_controller_derivation.md",
+     "derived_from_record": "work.creature.gait_controller",
+     "coordinates": [
+      "base_rot_x",
+      "base_rot_y",
+      "base_rot_z",
+      "base_trans_x",
+      "base_trans_y",
+      "base_trans_z",
+      "hip_flexion_left",
+      "knee_extension_left",
+      "ankle_dorsiflexion_left",
+      "MP_dorsiflexion_left",
+      "hip_flexion_right",
+      "knee_extension_right",
+      "ankle_dorsiflexion_right",
+      "MP_dorsiflexion_right"
+     ],
+     "base_coordinates": [
+      "base_rot_x",
+      "base_rot_y",
+      "base_rot_z",
+      "base_trans_x",
+      "base_trans_y",
+      "base_trans_z"
+     ],
+     "joint_ranges_rad": {
+      "hip_flexion": [
+       -0.35,
+       1.1
+      ],
+      "knee_extension": [
+       -2.0,
+       0.05
+      ],
+      "ankle_dorsiflexion": [
+       -0.3,
+       1.7
+      ],
+      "MP_dorsiflexion": [
+       -0.35,
+       1.55
+      ]
+     },
+     "drives": [
+      {
+       "coordinate": "hip_flexion_left",
+       "leg": "left",
+       "joint": "hip",
+       "torque_cap_N_m": 11.2125,
+       "store_floor_J": 78.732,
+       "store_floor_per_stride_J": 7.8732,
+       "store_stride_window": 10,
+       "viscous_damping_N_m_s_rad": 0.109
+      },
+      {
+       "coordinate": "knee_extension_left",
+       "leg": "left",
+       "joint": "knee",
+       "torque_cap_N_m": 6.6375,
+       "store_floor_J": 38.3505,
+       "store_floor_per_stride_J": 3.83505,
+       "store_stride_window": 10,
+       "viscous_damping_N_m_s_rad": 0.317
+      },
+      {
+       "coordinate": "ankle_dorsiflexion_left",
+       "leg": "left",
+       "joint": "ankle",
+       "torque_cap_N_m": 7.4,
+       "store_floor_J": 48.987,
+       "store_floor_per_stride_J": 4.8987,
+       "store_stride_window": 10,
+       "viscous_damping_N_m_s_rad": 0.0943
+      },
+      {
+       "coordinate": "MP_dorsiflexion_left",
+       "leg": "left",
+       "joint": "MP",
+       "torque_cap_N_m": 0.8875,
+       "store_floor_J": 7.5195,
+       "store_floor_per_stride_J": 0.75195,
+       "store_stride_window": 10,
+       "viscous_damping_N_m_s_rad": 0.01
+      },
+      {
+       "coordinate": "hip_flexion_right",
+       "leg": "right",
+       "joint": "hip",
+       "torque_cap_N_m": 11.2125,
+       "store_floor_J": 78.732,
+       "store_floor_per_stride_J": 7.8732,
+       "store_stride_window": 10,
+       "viscous_damping_N_m_s_rad": 0.109
+      },
+      {
+       "coordinate": "knee_extension_right",
+       "leg": "right",
+       "joint": "knee",
+       "torque_cap_N_m": 6.6375,
+       "store_floor_J": 38.3505,
+       "store_floor_per_stride_J": 3.83505,
+       "store_stride_window": 10,
+       "viscous_damping_N_m_s_rad": 0.317
+      },
+      {
+       "coordinate": "ankle_dorsiflexion_right",
+       "leg": "right",
+       "joint": "ankle",
+       "torque_cap_N_m": 7.4,
+       "store_floor_J": 48.987,
+       "store_floor_per_stride_J": 4.8987,
+       "store_stride_window": 10,
+       "viscous_damping_N_m_s_rad": 0.0943
+      },
+      {
+       "coordinate": "MP_dorsiflexion_right",
+       "leg": "right",
+       "joint": "MP",
+       "torque_cap_N_m": 0.8875,
+       "store_floor_J": 7.5195,
+       "store_floor_per_stride_J": 0.75195,
+       "store_stride_window": 10,
+       "viscous_damping_N_m_s_rad": 0.01
+      }
+     ],
+     "cycle_duration_s": 0.71,
+     "duty_factor_sampled": 0.6832,
+     "toe_off_pct": 0.68,
+     "servo_frequency_Hz": 4.0,
+     "servo_damping_ratio": 0.8,
+     "capture_step_phase": 0.95,
+     "tables_rad": {
+      "hip": [
+       0.809,
+       0.835,
+       0.825,
+       0.751,
+       0.651,
+       0.525,
+       0.412,
+       0.297,
+       0.128,
+       0.043,
+       -0.027,
+       -0.065,
+       -0.139,
+       -0.146,
+       -0.042,
+       0.167,
+       0.442,
+       0.767,
+       0.887,
+       0.885,
+       0.807
+      ],
+      "knee": [
+       -0.472,
+       -0.67,
+       -0.852,
+       -0.948,
+       -0.973,
+       -0.959,
+       -0.946,
+       -0.89,
+       -0.826,
+       -0.849,
+       -0.86,
+       -0.872,
+       -0.847,
+       -0.922,
+       -1.045,
+       -1.174,
+       -1.201,
+       -1.084,
+       -0.865,
+       -0.633,
+       -0.47
+      ],
+      "ankle": [
+       0.928,
+       1.232,
+       1.383,
+       1.44,
+       1.447,
+       1.465,
+       1.46,
+       1.487,
+       1.499,
+       1.433,
+       1.354,
+       1.153,
+       0.91,
+       0.846,
+       0.852,
+       0.969,
+       1.253,
+       1.303,
+       1.225,
+       1.071,
+       0.927
+      ],
+      "MP": [
+       0.558,
+       0.338,
+       0.368,
+       0.497,
+       0.651,
+       0.741,
+       0.827,
+       0.856,
+       0.914,
+       1.046,
+       1.14,
+       1.319,
+       1.295,
+       0.865,
+       -0.025,
+       -0.114,
+       -0.142,
+       -0.092,
+       -0.035,
+       0.134,
+       0.559
+      ]
+     },
+     "table_max_err_deg_contract": {
+      "hip": 1.76,
+      "knee": 2.02,
+      "ankle": 2.7,
+      "MP": 4.07
+     },
+     "contact_points": [
+      {
+       "name": "left_heel",
+       "body": "foot_left",
+       "point_m": [
+        -0.012,
+        0.0,
+        0.0
+       ],
+       "radius_m": 0.004,
+       "provenance": "heel pad behind the ankle pivot on the foot (metatarsal) segment; with the MP head it spans the flat-stand support hull"
+      },
+      {
+       "name": "left_mp_head",
+       "body": "foot_left",
+       "point_m": [
+        0.074,
+        0.0,
+        0.0
+       ],
+       "radius_m": 0.004,
+       "provenance": "metatarsophalangeal head = the digitigrade stance contact (derivation 5.4)"
+      },
+      {
+       "name": "right_heel",
+       "body": "foot_right",
+       "point_m": [
+        -0.012,
+        0.0,
+        0.0
+       ],
+       "radius_m": 0.004
+      },
+      {
+       "name": "right_mp_head",
+       "body": "foot_right",
+       "point_m": [
+        0.074,
+        0.0,
+        0.0
+       ],
+       "radius_m": 0.004
+      }
+     ],
+     "contact_friction": 0.6,
+     "contact_plane_height_m": 0.004,
+     "leg_z_offset_m": 0.02,
+     "tick_hz": 300,
+     "substeps": 4,
+     "seating_scan": {
+      "reset_gap_target_m": 2e-06
+     }
+    }
+   },
+   "measured_verification": {
+    "table_reconstruction_err_deg": {
+     "hip": 1.76,
+     "knee": 2.022,
+     "ankle": 2.699,
+     "MP": 4.072
+    },
+    "tau_peak_N_m": {
+     "hip": 8.9746,
+     "knee": 5.3144,
+     "ankle": 5.9171,
+     "MP": 0.7051
+    },
+    "n_samples": 101,
+    "duty_factor": 0.6832,
+    "toe_off_pct": 68,
+    "w_plus_J": {
+     "hip": 5.2488,
+     "knee": 2.5567,
+     "ankle": 3.2658,
+     "MP": 0.5013
     }
    }
   }

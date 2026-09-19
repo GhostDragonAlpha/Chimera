@@ -1,0 +1,42 @@
+{
+  "lane": "lane/gait-impl-20260919",
+  "date": "2026-09-19",
+  "agent": "GLM 5.3",
+  "deliverable": "Gait controller implementation (stages D-F of docs/research/20260918_gait_controller_derivation.md): ChimeraEngine/engine/gait_controller.hpp (contact-reset hybrid phase clock, 21-node tables, capped mass-normalized PD at the derived 4.0 Hz, per-drive depletive stores at 1.5x W+ x the 10-stride window, support-hull capture reflex, trunk-pitch posture drive per the source model's theta_HAT musculature, and the 14-coordinate walker runtime on the UNCHANGED Model::evaluate), tools/science_funnel/gait_scene.py (default-off gait_controller bundle compiler with the compile-time seating scan), tools/creature_graph/validation/admit_gait_walker_20260919.py (revision-aware admission; the 21-node tables VERIFIED against the admitted Oku xlsx: reconstruction errors hip 1.76 / knee 2.022 / ankle 2.699 / MP 4.072 deg, all within the contract's stated maxima), ChimeraEngine/engine/tests_coupled_arm/gait_unit.cpp (the F-G1..F-G8 falsifier suite, self-bounding).",
+  "stage0_baseline": {
+    "coupled_native": "PASS, 158229 checks",
+    "multidynamics_unit": "PASS at stage 3",
+    "coupled_free": "oracle + F1-F7 PASS; F9 budget refusal PRE-EXISTING (disclosed by the free-root lane's own commit: 'F9 fired - budget supersession owed'); the free-root oracle fixture was regenerated deterministically by this lane (build_oracle_free.py) because the original was never committed",
+    "post_capacity_amendment": "coupled_native re-run PASS on the final tree (the coupled_articulation.hpp capacity 8->16 amendment is one validation token, E1 pattern; no arithmetic line moves)"
+  },
+  "measured_results": {
+    "F-G5": "GREEN in the pre-work-bound build: free fall measured at -9.806650 m/s2 (96-point stencil, bar 1e-3), base drop 0.5448 m over 100 ticks, zero-torque standing fold 5.089-5.777 deg > 5 deg, ledger < 5e-2. A creature that cannot FALL cannot walk: the simulator falls honestly.",
+    "F-G1_to_G4_G6_G7": "NOT MEASURED TO GREEN: the gait-state walk (initialized at the TD columns with the measured 1.01 m/s forward speed and the table phase slopes) enters an event/energy-integrator storm inside the first cycle. The falsifier suite completes only under self-imposed wall/work bounds; the recorded statuses are RED, honestly.",
+    "F-G8": "stand-tier ledger leak measured at 6.2e-2 J over the 213-tick stand window (the free-root AMENDMENT E8 constraint-power class of leak, unbooked by their measured decision); walking tier unmeasured (the walk refuses first).",
+    "evidence_count": "11 UNCHANGED",
+    "store": "rebuilt, work records 76 -> 77 (model.dynamics.gait_walker rev1 specified pre-code), graph_hash 1a579b93bb220b31 -> advanced by later admissions; scene portable pin re-measured faf96e3e and re-pinned with lineage"
+  },
+  "named_root_causes_open": [
+    "1. THE OKU ANGLE-ZERO CONVENTIONS ARE UNDERDETERMINED BY THE ADMITTED BYTES: the paper defines only the SIGNS ('positive for hip flexion, knee extension, ankle and MP dorsiflexion'); the segment-angle zeros are not in the fulltext. The declared +/-1 stem mapping (all four joint axes South {0,0,1}, slope +1, ankle/MP reinterpretation attempted) does NOT compose the 21-node tables into geometrically consistent poses: at phi=0 the composed foot pitches nose-UP 72 deg (heel digging) instead of the digitigrade toe-contact pose. The derivation's claim that the tables are a complete controller specification is FALSIFIED AT THE CONVENTION LEVEL until the zeros are pinned (needs the paper's Fig. 2 model diagram or the Oku simulation source).",
+    "2. THE SOURCE MODEL'S TRUNK-PITCH CONTROLLER WAS OMITTED FROM THE DERIVATION CONTRACT: the pinned fulltext shows theta_HAT is a controlled DOF (hip uniarticular iliopsoas/gluteus-medius reflexes toward a trunk target). This lane added it (the posture drive, mass-normalized, hip-capped, its own store) -- without it the trunk topples immediately; the derivation record should be amended to carry a fifth drive.",
+    "3. THE STAND-TO-WALK TRANSITION IS UNSPECIFIED: from a flat stand the tables demand a squat whose knee moment exceeds the derived cap (1.25x the DYNAMIC gait torque); the gait-state initialization (the source model's own periodic-entry scheme) is the implemented resolution; the derivation's 'standing start' phrasing needs amendment or a transition derivation.",
+    "4. THE INTEGRATOR EVENT/ENERGY STORM: violent states (stops+contact+friction) make a tick cost minutes (event-split tree x the 40-step store bisections x 8 rounds); a per-step advance budget (3000) and wall guards were added to the suite, but a single-step hang persisted in the final build after the adv_calls patch (regressed from the earlier build where F-G5 completed in seconds) -- locate and fix before the next measurement attempt."
+  ],
+  "owned_files": [
+    "ChimeraEngine/engine/gait_controller.hpp",
+    "ChimeraEngine/engine/tests_coupled_arm/gait_unit.cpp",
+    "tools/science_funnel/gait_scene.py",
+    "tools/creature_graph/validation/admit_gait_walker_20260919.py",
+    "tools/science_funnel/validation/gait_impl_20260919/receipt.json",
+    "tools/science_funnel/validation/gait_impl_20260919/build_oracle_free.py",
+    "tools/science_funnel/validation/gait_impl_20260919/oracle_cases_free.json",
+    "tools/science_funnel/validation/gait_impl_20260919/gait_unit_run.log",
+    "ChimeraEngine/engine/coupled_articulation.hpp (one-token capacity amendment, E1 pattern)"
+  ],
+  "record_state": {
+    "work.creature.gait_controller": "revision 2 (implemented); falsifier honestly PARTIAL: F-G5 green, the walk falsifiers unmeasured-to-red; the record in-tree carries the pre-bank revision-2 text and the model record stays revision 1 (specified, falsifier untested) -- the measured-green revision was NOT banked because the walk is not green",
+    "model.dynamics.gait_walker": "revision 1 (specified, pre-run) -- honest"
+  },
+  "pass": false,
+  "honest_summary": "The controller architecture, scene compiler, admission machinery and falsifier suite are implemented and the derivation's table constants are verified byte-level against the admitted Oku data; the walk itself is NOT yet achieved on this lane and the failure is traced to named, fixable contract gaps (angle zeros, trunk controller, transition spec) recorded above with the next steps in doc.handoff.zcode."
+}
