@@ -2,7 +2,7 @@
  "admission": "docs/research/20260918_visual_proof_wave2.md",
  "kind": "visual_proof_manifest.v2",
  "label": "PROOF-OF-INTAKE renders: pinned admitted data rendered deterministically. NOT physics verification.",
- "parent_wave1_manifest": "e6b3aa5ec098f8ef56620b62cc03416f1ac0d7f778b69bcaceeef728e3a9cb7e",
+ "parent_wave1_manifest": "1d8613fc74560de4fa21c387c8e68d31d5ffd1ee17c2d0699b67193854257eaf",
  "render_order": "declaration order; worker completion order is not observable",
  "renders": [
   {

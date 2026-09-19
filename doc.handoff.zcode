@@ -256,3 +256,91 @@ defaults. Rule 0 record banked pre-code:
   cross-source) remains deferred (Earthdata login wall).
 - Whole-body source intake per the banked proposal on
   work.creature.macaque_whole_body_sources remains the mainline.
+
+
+---
+
+# HANDOFF -- lane/monkey-assembly-20260918 (agent: GLM 5.3)
+
+Date: 2026-09-18. Branch: `lane/monkey-assembly-20260918` (base c43d3363 = origin/master
+tip at clone time). All mechanics via PowerShell; pinned interpreter
+`E:\PythonChimera\.venv-hy3d\Scripts\python.exe`; E:\PythonChimera untouched,
+port 8127 avoided, SharedBody*.json untouched, no other worktree entered.
+
+## What this lane was
+
+Derivation-only lane: the whole-body macaque assembly (32 DOF) authored FROM ADMITTED
+GRAPH DATA as `docs/research/20260918_monkey_assembly_derivation.md` + Rule-0 record
+`work.creature.macaque_assembly` (admitted by
+`tools/creature_graph/validation/admit_macaque_assembly_20260918.py`, idempotent,
+revision-aware; store rebuilt: 52431 objects / 47300 relations / **evidence 11
+unchanged** / work 77). NO engine code, no scene compiler change, no controller.
+
+## Deliverables
+
+1. The derivation doc: assembly map (6 base + 2x7 arm + 2x6 hindlimb = 32 DOF, staged
+   A..F ladder with per-stage falsifiers), mass distribution (10.038 kg total; the
+   task's 9.111 kg is the UNILATERAL Oku sum; HAT_eff = 8.184 - 2x0.406001 = 7.371998
+   kg is the single declared cross-species carve-out), standing statics at the Cayo
+   plane (hip 0.3307 m, trunk pitch 26.33 deg, COM margins ~0.25 m both ways,
+   trunk-beam girdle split 69/31 fore-dominant, ankle activation 22.3-28.6%, knee
+   flexors 4.3-5.6%, fore-paw tenability <= 0.110 m), the zero-activation fall
+   (elbow 58 ms -> knee 98 ms -> hip 191 ms; ~20.49 J to prone; FOLD beats TIP), the
+   gait reference (Oku ROMs + GRF peak 1.082 BW + duty 0.663 + bilateral closure
+   -2.3%; Janisch 145 cercopithecoid strides), and the implementation ladder A-F.
+2. `work.creature.macaque_assembly` revision 1 (status specified, falsifier untested
+   -- honest: nothing simulated yet).
+
+## Key derivations (do not re-derive)
+
+- Oku Table 1 sums TWO ways: unilateral 9.111 kg, Oku nine-link bilateral 10.038 kg.
+  The assembly is 10.038 kg; 9.111 is NOT the body mass.
+- The Oku stance means do NOT close flat-footed: ankle - 90deg - phi_shank = +15.75 deg
+  is the macaque's PITCHED sole line, derived, not an error. The -15.75 deg reading
+  (heel-down) is disambiguated dynamically by falsifier F3, not by assumption.
+- Effective hindlimb moment arms came from least squares over the Oku series itself
+  (tau_j = sum_i r_ij F_i, 101 samples; R^2 0.991-1.000); capacities = sigma x PCSA
+  with sigma = 25-32 N/cm^2 from the pinned muscle reference. Rectus femoris has NO
+  Macaca row in Guimaraes -- knee-extensor capacity quotes VAS only (conservative).
+- The paw loads are NOT W/4: trunk-beam on two girdles gives fore paws 34.18 N (34.7%
+  BW) vs hind 15.04 N (15.3%). The Janisch walking-pose forelimb CANNOT stand still
+  (elbow demand 5.15 N*m vs triceps 3.76) -- the tenability bound is fore paw within
+  0.110 m of the shoulder.
+
+## Qualify receipts (this lane, on the rebuilt store)
+
+- graphify roundtrip: HONEST (7 checks PASS, exit 0).
+- project_spec suite: 14/14 OK (exit 0). check_packet.py: exit 0 (2 packets complete).
+- creature_graph tests: 23/24 in-dir OK; test_project_spec needs repo-root invocation
+  (14/14 from root). The in-dir import error is an invocation artifact, not a regression.
+- Funnel suite module-by-module (discover crashes natively at ~0xC0000005 on this
+  host -- pre-existing; run modules individually): 20 modules OK; THREE pre-existing
+  reds, all reproduced at the pristine tip c43d3363 BEFORE any lane change:
+  (1) test_batch_appearance test_rebuild_is_byte_identical -- PHYLACINE_1.2.1.zip is
+  not in the fresh clone (untracked data artifact); (2) test_coupled_scene
+  test_default_scene_bit_identical -- the scene-digest pin a7b36b53 was invalidated by
+  the appearance-lane store bump (graph_hash d16d38a4 at c43d3363); NOT re-pinned by
+  this lane (an assembly admission does not advance the coupled scene -- the pin's own
+  re-pin law); (3) test_visual_proof_wave2 stale store-size pin 35331 vs 52430 (store
+  grew through later admissions; pin never refreshed).
+- `tools/science_funnel/validation/visual_proof_wave2_20260918/manifest.json` was
+  mechanically refreshed by its own test run: parent_wave1_manifest now hashes the
+  wave1 manifest ON DISK (1d8613fc; the committed value e6b3aa5e was stale at HEAD --
+  wave1 was re-pinned by 0b8d80d5 after wave2 committed). Committed as-is.
+
+## Next executable work
+
+- Stage C (free-root 8-DOF) then D/E per the ladder in the derivation doc section 6;
+  stage E replays sections 3-4 of the doc as falsifiers F1-F3 with no new code.
+- The stale pins above belong to their owning lanes (appearance / wave2); this lane
+  deliberately did not touch them.
+- Scratched nothing: derivation scripts live outside the repo (temp); scratch .ps1
+  helpers under docs/scratch were removed pre-commit.
+
+- Post-admission module verification (run 2, after the admission rebuild):
+  18 modules identical to baseline through test_store_relate_guard, plus
+  test_visual_proof OK, test_trainer_spine OK, test_terrain OK,
+  test_visual_proof_wave2 identical stale-count red. test_surface_scene was
+  still executing at push time (>25 min under a loaded host; baseline result
+  on the same rebuilt-store state: OK). Its outcome is the one open row for
+  the next reader; nothing in this lane touches surface-scene code paths.
