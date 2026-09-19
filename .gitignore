@@ -318,3 +318,10 @@ tools/science_funnel/data/phylacine/PHYLACINE_1.2.1.zip
 # manifest, and the MIP projection PNGs. Regenerate full-res via
 # .tmp/segment_bones.py + .tmp/decimate_meshes.py from the pinned CT.
 tools/science_funnel/data/morphosource_ct/meshes/*.obj
+
+# MorphoSource media 000875599 (USNM 497135) full-resolution bone meshes —
+# same sha256-pinning pattern as the 000875604 rule above. Committed artifacts
+# are the decimated previews (meshes_preview_875599/), the segmentation manifest,
+# and the MIP projection PNGs (proj_*_875599.png). Regenerate full-res via
+# .tmp/segment_bones_875599.py + .tmp/decimate_meshes_875599.py from the pinned CT.
+tools/science_funnel/data/morphosource_ct/meshes_875599/*.obj
