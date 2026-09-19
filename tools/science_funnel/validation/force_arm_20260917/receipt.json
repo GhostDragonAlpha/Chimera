@@ -122,12 +122,5 @@
     "python-checks.log": "b7ed92099bdb1a2e68c06ac308766fa9ae1c0771852681bc949c0ed810dbc7a5",
     "runtime.json": "b5bf4413cebdfc56e0ecd3a43f96da9e762d978789faf1fc15ff408e835b1d0e",
     "scene.json": "c0d18318b14d634a37dac257715105f61f23a9982b8eaa56a8801423daaf7db9"
-  },
-  "geometric_conservation_proof": {
-    "theorem": "Energy conservation follows from the canonical form's closure: d(omega_P) = 0 in the interior of the contact polytope.",
-    "proof_reference": "work.math.surface_geometry_membrane",
-    "derivation": "docs/research/20260919_surface_geometry_membrane.md",
-    "numerical_bound": "The 1e-5 J balance error is the RK4 discretization of the continuous canonical form, not a physical effect.",
-    "elevation": "Previous receipts verified conservation numerically; this proof elevates it to a geometric theorem."
   }
 }

@@ -54,19 +54,7 @@ class CoupledScene(unittest.TestCase):
  # (scene.json sha256 9947d074... at store 319fe2af...) and re-proven after
  # the second upstream integration (7c784f09... at store ca68dc9c..., master
  # 0b8d80d5), whose graph_hash is the ONLY delta in the scene.
- # Re-pinned 2026-09-18 by lane seven-coord-complete (GLM 5.3): admission of
- # model.dynamics.coupled_arm7 (the work.dynamics.seven_coordinate_lift_packet
- # implementation) rebuilt the graph; the normalized diff of the scene
- # compiled pre- vs post-admission shows the ONLY deltas are graph_hash
- # (also inside the graph_file name) and the self-referential scene_sha256
- # -- no physics, recipe, model or source bytes moved. Old pin: a7b36b53
- # 1f20e64da4119ad09ebb40448c17dfbc2c2d31489ac0160fb2513a52.
- # (Merged lane gait-impl-20260919: re-measured on the merged store after the
- # derivation + seven-coord + free-root + gait_walker admissions and the store
- # rebuild; measured pin faf96e3e, lineage: seven-coord provisional c44673e1,
- # derivation-lane 64cdd028 on store bf9e5a9b. The measured diff vs the prior
- # lane pins is the embedded graph hash only -- the scene recipe is untouched.)
- DEFAULT_SCENE_PORTABLE_SHA256='faf96e3e8e84eef96e8d3f7e3ec84ca330d5d3ee699a534376461fa9f1b133ad'
+ DEFAULT_SCENE_PORTABLE_SHA256='a7b36b531f20e64da4119ad09ebb40448c17dfbc2c2d31489ac0160fb2513a52'
  CAYO_H_ELLIPSOIDAL_M=-42.82679794555668
  def portable_digest(self,bundle,out_dir):
   from tools.science_funnel.common import digest

@@ -43,7 +43,6 @@
 <aside class="control-panel" aria-label="Experiment controls">
 <div class="section-label">Sample state</div><h2 class="phase-title" id="phaseTitle">Connecting</h2><p class="phase-help" id="phaseHelp">Waiting for the native environment.</p>
 <div class="actions"><button type="button" class="primary" id="release" disabled>Release sample ↓</button><button type="button" class="pause" id="pause" disabled>Pause</button><button type="button" class="reset" id="reset" disabled>Return to hand ↻</button></div>
-<div id="macaquePanel" hidden style="border-top:1px solid var(--line);padding-top:18px;margin-top:18px"><div class="section-label">Macaque free-root controls</div><div class="actions"><button type="button" class="primary" id="stand" disabled>Stand</button><button type="button" id="gravityOff" disabled>Gravity off</button><button type="button" class="reset" id="knockOver" disabled>Knock over</button></div><p class="field-help">Authored terrain plane: <span id="terrainHeight">—</span> m Up. The solver reports the COM and support hull.</p><dl style="font:11px var(--mono);color:var(--muted);margin:12px 0 0"><div><dt>COM E / U / S</dt><dd id="comReadout">—</dd></div><div><dt>Support hull</dt><dd id="hullReadout">—</dd></div><div><dt>Balance state</dt><dd id="balanceReadout">—</dd></div></dl></div>
 <div class="pose"><div class="field-heading"><label for="elbow">Arm pose <span style="color:var(--muted)">(reference)</span></label><output for="elbow" id="elbowValue">90°</output></div><input id="elbow" type="range" min="-60" max="40" step="1" value="0" disabled><div class="range-ends"><span>30°</span><span>130°</span></div><p class="field-help">Adjust the elbow while the sample is held.</p></div>
 <form class="environment-form" id="environmentForm"><h2>Set the environment</h2><p>Applying changes starts a new trial at the hand.</p><fieldset id="environmentFields" disabled aria-label="Environment settings">
 <div class="env-field"><div class="field-heading"><label for="altitude">Altitude</label><output for="altitude" id="altitudeValue">0 m</output></div><input id="altitude" type="range" min="0" max="10000" step="100" value="0"><div class="range-ends"><span>Sea level</span><span>10 km</span></div></div>
@@ -180,9 +179,6 @@
   $('environmentForm').addEventListener('submit',event=>{event.preventDefault();if(dirty||nativeFault)command(draft(),'Environment applied. A fresh trial starts at the hand.',true);});
   $('release').onclick=()=>command({release:true},'Sample released.');
   $('reset').onclick=()=>command({reset:true},'Sample returned to the hand.');
-  $('stand').onclick=()=>command({stand:true},'Balanced standing pose restored.');
-  $('gravityOff').onclick=()=>command({gravity_off:true},'Gravity disabled for free float.');
-  $('knockOver').onclick=()=>command({knock_over:true},'Lateral impulse applied.');
   $('pause').onclick=()=>state&&command({paused:!state.paused},state.paused?'Trial resumed.':'Trial paused.');
   function message(text,error=false){set('controlMessage',text);$('controlMessage').dataset.error=String(error);}
   function showSources(sources){
@@ -198,8 +194,7 @@
   }
   function renderState(){
     const e=state.environment,b=state.body,en=state.energy,v=b.velocity_m_s;
-    const macaque=state.scene_kind==='coupled_macaque_scene';$('macaquePanel').hidden=!macaque;set('phaseTitle',macaque?(state.standing_falling_tipped||'native state'):(phaseLabels[state.phase]||'Native state'));set('phaseTag',(state.paused?'PAUSED · ':'')+(macaque?(state.standing_falling_tipped||'native state').toUpperCase():(phaseLabels[state.phase]||'Native state').toUpperCase()));set('phaseHelp',macaque?'Free-root macaque on the admitted Cayo Santiago plane.':phaseHelp[state.phase]||'Review the native state below.');
-    if(macaque){const c=state.com_position_m||state.body?.com_position_m;set('terrainHeight',number(state.terrain_height_world_up_m,3));set('comReadout',Array.isArray(c)?c.map(v=>signed(v,3)).join(' / '):'—');const pts=state.support?.points;set('hullReadout',Array.isArray(pts)?pts.map(p=>Array.isArray(p)?p.map(v=>number(v,3)).join(','):JSON.stringify(p)).join(' · '):'—');set('balanceReadout',state.support?.com_in_hull?'COM inside hull':'COM outside hull');}
+    const phase=phaseLabels[state.phase]||'Native state';set('phaseTitle',phase);set('phaseTag',(state.paused?'PAUSED · ':'')+phase.toUpperCase());set('phaseHelp',phaseHelp[state.phase]||'Review the native state below.');
     set('sceneTime','t '+number(state.sim_time_s,2)+' s');set('airTag',e.air?'AIR ON':'AIR OFF · GRAVITY ON');
     set('speed',Array.isArray(v)&&v.length===3&&v.every(finite)?number(Math.hypot(...v)): '—');set('velocity',Array.isArray(v)?'E '+signed(v[0],2)+' · U '+signed(v[1],2)+' · S '+signed(v[2],2):'—');
     set('reaction',number(b.normal_force_N,4));set('sampleTemperature',number(b.temperature_K,2));set('heatTransfer','Heat to air '+energy(en.heat_to_air_J)+' J');
@@ -224,7 +219,6 @@
     $('phaseTitle').dataset.fault=String(!!nativeFault);
     if(nativeFault){set('phaseTitle','Native physics fault');set('phaseTag','NATIVE PHYSICS FAULT');set('phaseHelp',nativeFault+' Return to hand or apply the environment to recover.');}
     $('release').disabled=!physicsReady||!state?.held||!!state?.paused||dirty||poseDirty;
-    const macaque=state?.scene_kind==='coupled_macaque_scene';$('stand').disabled=!physicsReady||!!state?.paused||!macaque;$('gravityOff').disabled=!physicsReady||!!state?.paused||!macaque;$('knockOver').disabled=!physicsReady||!!state?.paused||!macaque;
     $('reset').disabled=!ready;$('pause').disabled=!physicsReady;
     $('elbow').disabled=!physicsReady||!state?.held;
     $('environmentFields').disabled=!ready;$('apply').disabled=!ready||(!dirty&&!nativeFault);

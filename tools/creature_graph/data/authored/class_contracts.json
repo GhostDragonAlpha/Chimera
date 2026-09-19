@@ -521,25 +521,6 @@
     {"kind": "field_range", "params": {"path": "payload.centre_lon", "min": -180.0, "max": 180.0}}
    ],
    "admitted_utc": "2026-09-17T00:00:00+00:00"
-  },
-  {
-   "class_id": "batch.property.paper_table_inertial",
-   "version": 1,
-   "statement": "A paper-table inertial record is a value transcribed digit-for-digit from the pinned full text of a published table (Oku/Ide/Ogihara 2021 Table 1, Macaca fuscata segment inertial parameters): one (segment, quantity) per record with the specimen qualifier, the verbatim CC BY 4.0 license sentence and the lane's derived closure results carried as conditions, and the structural forelimbs-in-HAT gap recorded, never patched.",
-   "prediction": "Every record of this class passes the entity checks with units inside {kg, m, 1, kg*m2}, its SI value inside the derived union envelope [1e-8, 50] and its original representation inside [1e-6, 100] (COM percents included); the per-quantity envelopes are derived in the lane and enforced per record by the adapter; the count identity closes at 21 records (20 segment-quantity + 1 table summary) with zero quarantine, and the summary's implied whole-body mass (9.111 kg, +/-0.0025 kg rounding) sits inside the declared PanTHERIA species envelope.",
-   "falsifier": "One digit altered in the pinned table cell must quarantine exactly that segment row (and the dependent summary) with digit_mismatch, close the count identity, and refuse the batch; a re-run against unchanged pins must reproduce byte-identical records and a zero-new-object idempotent apply.",
-   "rationale": "Authored as a paper-table variant rather than extending batch.property.measurement: (1) a shared-class units_vocabulary edit would re-gate every existing lane's already-admitted records; (2) this source legitimately mixes kg/m/dimensionless/kg*m2 in one class, so the shared single-unit vocabulary cannot express it; (3) the per-quantity envelopes are derived and enforced in the adapter (violations quarantine per record), while the contract carries two union backstops: the SI value sits in [1e-8, 50] (floor = the phalanges inertia 6.26e-6 kg*m2 four orders above it, ceiling = HAT mass 8.184 kg well below it) and the original representation sits in [1e-6, 100] whose binding constraint is the COM-percent ceiling of 100 by definition of a percent of segment length.",
-   "applies_to": {"kinds": ["property_assertion"]},
-   "checks": [
-    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
-    {"kind": "provenance_present", "params": {}},
-    {"kind": "sha256_chain", "params": {}},
-    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
-    {"kind": "units_in", "params": {"path": "payload.unit_si", "vocabulary": ["kg", "m", "1", "kg*m2"]}},
-    {"kind": "field_range", "params": {"path": "payload.value_si", "min": 1e-08, "max": 50.0}},
-    {"kind": "field_range", "params": {"path": "payload.original.value", "min": 1e-06, "max": 100.0}}
-   ],
-   "admitted_utc": "2026-09-18T00:00:00+00:00"
   }
  ]
 }

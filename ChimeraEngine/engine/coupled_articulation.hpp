@@ -5,6 +5,17 @@ namespace chimera::multibody {
 using namespace chimera::environment;
 using Dense=std::vector<double>;
 using chimera::forces::Refusal;
+// F9 profile counters (lane/f9-budget-20260919): compiled ONLY when
+// CHIMERA_F9_PROFILE is defined (the probe target); zero cost otherwise.
+#ifdef CHIMERA_F9_PROFILE
+extern unsigned long long* f9_evaluate_count();
+extern unsigned long long* f9_inverse_spd_count();
+#define F9_EVAL_INC() (++(*f9_evaluate_count()))
+#define F9_INV_INC() (++(*f9_inverse_spd_count()))
+#else
+#define F9_EVAL_INC() ((void)0)
+#define F9_INV_INC() ((void)0)
+#endif
 struct Mat {
  std::array<double,16> x{};
  double& operator()(int i,int j){return x[4*i+j];} double operator()(int i,int j)const{return x[4*i+j];}
@@ -23,6 +34,7 @@ inline Mat inverse_rigid(const Mat& a){Mat b=Mat::identity();for(int i=0;i<3;++i
 inline Dense multiply(const Dense& a,const Dense& v){size_t n=v.size();require(a.size()==n*n,"coupled_matrix_size");Dense out(n);for(size_t i=0;i<n;++i)for(size_t j=0;j<n;++j)out[i]+=a[i*n+j]*v[j];return out;}
 inline double inner(const Dense& a,const Dense& b){require(a.size()==b.size(),"coupled_vector_size");double v=0;for(size_t i=0;i<a.size();++i)v+=a[i]*b[i];return v;}
 inline Dense inverse_spd(const Dense& a,size_t n){
+ F9_INV_INC();
  require(a.size()==n*n&&n>0,"coupled_matrix_size");Dense l(n*n),inv(n*n);
  for(size_t i=0;i<n;++i)for(size_t j=0;j<=i;++j){double t=a[i*n+j];require(std::isfinite(t)&&std::abs(t-a[j*n+i])<1e-12,"coupled_mass_not_symmetric");for(size_t k=0;k<j;++k)t-=l[i*n+k]*l[j*n+k];if(i==j){require(t>0,"coupled_singular_mass");l[i*n+j]=std::sqrt(t);}else l[i*n+j]=t/l[j*n+j];}
  for(size_t col=0;col<n;++col){Dense y(n),x(n);for(size_t i=0;i<n;++i){double t=i==col?1.:0.;for(size_t k=0;k<i;++k)t-=l[i*n+k]*y[k];y[i]=t/l[i*n+i];}for(size_t ii=n;ii-->0;){double t=y[ii];for(size_t k=ii+1;k<n;++k)t-=l[k*n+ii]*x[k];x[ii]=t/l[ii*n+ii];inv[ii*n+col]=x[ii];}}
@@ -46,15 +58,12 @@ public:
  explicit Model(const J& model,std::vector<std::string> selected={}){
   require(model.at("schema")=="chimera.anatomical_assembly.v1","coupled_anatomy_schema");auto coords=model.at("coordinates");if(selected.empty())for(auto it=coords.begin();it!=coords.end();++it)if(!it.value().at("locked").get<bool>())selected.push_back(it.key());
   std::set<std::string> seen;for(auto name:selected){require(coords.contains(name)&&seen.insert(name).second&&!coords[name]["locked"].get<bool>(),"coupled_coordinate_selection");names.push_back(name);defaults.push_back(number(coords[name]["default_rad"]));lower.push_back(number(coords[name]["range_rad"][0]));upper.push_back(number(coords[name]["range_rad"][1]));require(lower.back()<upper.back()&&defaults.back()>=lower.back()&&defaults.back()<=upper.back(),"coupled_coordinate_range");}
-  // Capacity (packet AMENDMENT 20260918 E1, extended 20260919 by the gait lane
-  // -- docs/research/20260918_gait_controller_derivation.md stage D, same
-  // one-token validation pattern): 16 = 2x the free-root eight-coordinate
-  // selection, sized for the 14-coordinate gait walker (6-axis base + 4
-  // hindlimb drives x 2 legs). Integer VALIDATION only -- no arithmetic line
-  // moves; every selection <= 8 evaluates BIT-IDENTICALLY (the frozen
-  // qualified/free worlds are unaffected by construction; all committed native
-  // suites re-run green on this tree, gait_impl_20260919 receipt).
-  require(!names.empty()&&names.size()<=16,"coupled_coordinate_capacity");std::map<std::string,J> remaining;for(auto b:model.at("bodies")){std::string name=b.at("name");require(remaining.emplace(name,b).second,"coupled_duplicate_body");}std::map<std::string,int> ids;
+  // Capacity (packet AMENDMENT 20260918 E1): 8 = the free-root eight-coordinate
+  // selection. Integer VALIDATION only -- no arithmetic line moves; every
+  // selection <= 7 (the qualified two-coordinate world, the seven-coordinate
+  // lift) is bit-identical, so the frozen bit-exact control is unaffected by
+  // construction.
+  require(!names.empty()&&names.size()<=8,"coupled_coordinate_capacity");std::map<std::string,J> remaining;for(auto b:model.at("bodies")){std::string name=b.at("name");require(remaining.emplace(name,b).second,"coupled_duplicate_body");}std::map<std::string,int> ids;
   while(!remaining.empty()){bool progress=false;for(auto it=remaining.begin();it!=remaining.end();){auto b=it->second;bool ground=it->first=="ground";if(!ground&&!ids.count(b.at("joint").at("parent").get<std::string>())){++it;continue;}
    Body out;out.name=it->first;out.mass=number(b.at("mass_kg"));out.com=b.at("mass_center_m").get<V>();require(out.mass>=0,"coupled_mass_negative");for(double v:out.com)require(std::isfinite(v),"coupled_com_nonfinite");auto ic=b.at("inertia_kg_m2");require(ic.size()==6,"coupled_inertia_shape");for(int i=0;i<3;++i)out.inertia(i,i)=number(ic[i]);out.inertia(0,1)=out.inertia(1,0)=number(ic[3]);out.inertia(0,2)=out.inertia(2,0)=number(ic[4]);out.inertia(1,2)=out.inertia(2,1)=number(ic[5]);
    // Source compiler performs full tensor physicality; preserve admitted values, including regularization mass.
@@ -66,6 +75,7 @@ public:
  }
  size_t body(const std::string& name)const{for(size_t i=0;i<bodies_.size();++i)if(bodies_[i].name==name)return i;throw Refusal("coupled_body_missing");}
  Evaluation evaluate(const Dense& q,const Dense& v,V gravity)const{
+  F9_EVAL_INC();
   size_t n=names.size();require(q.size()==n&&v.size()==n,"coupled_state_shape");for(double x:q)require(std::isfinite(x),"coupled_state_nonfinite");for(double x:v)require(std::isfinite(x),"coupled_state_nonfinite");Evaluation e;e.mass.assign(n*n,0);e.gravity.assign(n,0);e.bias.assign(n,0);
   for(auto& b:bodies_){Transform f(n);if(b.parent>=0){Transform motion(n);V translation{},velocity{};std::vector<V> dj(n);
     for(auto& a:b.axes){double angle=a.constant+(a.slot<0?0:a.slope*q[a.slot]),rate=a.slot<0?0:a.slope*v[a.slot];if(a.rotational){Transform one(n);one.t=rotation(a.axis,angle);auto dr=skew(a.axis)*one.t;if(a.slot>=0)one.d[a.slot]=dr*a.slope;one.dt=dr*rate;one.ddt=skew(a.axis)*dr*(rate*rate);motion=product(motion,one);}else{translation=add(translation,mul(a.axis,angle));velocity=add(velocity,mul(a.axis,rate));if(a.slot>=0)dj[a.slot]=add(dj[a.slot],mul(a.axis,a.slope));}}

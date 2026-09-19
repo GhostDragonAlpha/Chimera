@@ -4,17 +4,6 @@ project(chimera_engine LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# work.data.compute_harness: parallel native builds. The engine's four large
-# translation units (engine/main/membrane_tick/ui, 200-500 KB each) dominated
-# serial build time. /MP24 lets one cl.exe invocation compile them across the
-# 24 physical cores; CMAKE_BUILD_PARALLEL_LEVEL is the default -j for
-# `cmake --build` when no --parallel flag is passed.
-if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP24")
-endif()
-set(CMAKE_BUILD_PARALLEL_LEVEL 24 CACHE STRING "Default parallel build level")
-
-
 # Vulkan SDK path
 set(VULKAN_SDK "C:/VulkanSDK/1.4.328.1" CACHE STRING "Vulkan SDK install path")
 set(ENV{VULKAN_SDK} "${VULKAN_SDK}")

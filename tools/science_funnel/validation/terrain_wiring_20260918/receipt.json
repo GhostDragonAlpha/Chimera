@@ -1,121 +1,114 @@
 {
-  "artifacts": {
-    "default_scene_json_sha256": "1ba34e0b36deb441688b4977764c5397136d89ca2db9db43b9b523b51692f6f3",
-    "engine_exe_sha256": "efb250efea4904178c62be47b079dbebe6e1ec75251df9ad78f27ca46d343298",
-    "runtime_default": ".tmp/coupled-native/runtime.json",
-    "runtime_terrain": ".tmp/coupled-native-terrain/runtime.json",
-    "terrain_scene_json_sha256": "17d350e9be5ac02efb8e3da59d0703068a862ace63728e216b5930db43d9f4ff"
+ "artifacts": {
+  "default_scene_json_sha256": "1ba34e0b36deb441688b4977764c5397136d89ca2db9db43b9b523b51692f6f3",
+  "engine_exe_sha256": "efb250efea4904178c62be47b079dbebe6e1ec75251df9ad78f27ca46d343298",
+  "runtime_default": ".tmp/coupled-native/runtime.json",
+  "runtime_terrain": ".tmp/coupled-native-terrain/runtime.json",
+  "terrain_scene_json_sha256": "17d350e9be5ac02efb8e3da59d0703068a862ace63728e216b5930db43d9f4ff"
+ },
+ "base": "0b8d80d5 (master moved twice mid-lane; rebased onto 8c0a9155 then 0b8d80d5; each store collision resolved by master's side + idempotent rebuild, final graph_hash ca68dc9c...)",
+ "checks": {
+  "coupled_scene_unit_tests": "16/16 PASS (tools/science_funnel/tests/test_coupled_scene.py, incl. the 7 new wiring tests)",
+  "evidence_note": "graph evidence object count is 11 before and after the lane; the bank touches only the work.environment.terrain observation (no evidence records added, changed or removed)",
+  "falsifiers": {
+   "default_scene_byte_identity": {
+    "detail": "at the FINAL base (master 0b8d80d5): pre-code compiler (bank commit) vs wired compiler, same output dir, scene.json BYTE-IDENTICAL (sha256 7c784f095ba75c5eafa88aa59e149d31686f12c13ec0733e93aae2038b6568e3, digest e9bb8213c338d4dfc6de3584fa53e36887ca4aa9627b8f78d82b3895f9e70c1f); re-proven at every upstream integration (9947d074... at store 319fe2af... earlier); structural diff across integrations shows exactly the graph_hash change and nothing else",
+    "pass": true
+   },
+   "digest_provenance_closure": {
+    "detail": "default scene digest e9bb8213c338d4dfc6de3584fa53e36887ca4aa9627b8f78d82b3895f9e70c1f; opted-in scene digest 6869adf7181cd7ab9ef9412a4344e6144c794a1be6578cc80fb9eb9235e893c6; the bundle carries the provenance block only under the opt-in",
+    "pass": true
+   },
+   "live_readout_identity": {
+    "detail": "default run: engine contact.plane_world_up_m == 0.35 exactly (contact off, friction off); terrain run: engine contact.plane_world_up_m == -42.82679794555668 exactly, compared as raw JSON text (no float parsing); both runs served the exact scene_sha256 of their compiled scene.json",
+    "pass": true
+   },
+   "reduction_pin_closure": {
+    "detail": "terrain_plane_height verifies reduction_result.json sha256 == receipt artifacts pin (80819234789f85122ff6d764539325f9ccd9b578271fa324322fce35f58b2e77) and the value equals the receipt metric copy; live resolver test green",
+    "pass": true
+   },
+   "unknown_source_refused": {
+    "detail": "contact_plane_height_source='terrain_luquillo_20260917' refuses with coupled_contact_plane_source_unknown; admitted list names only terrain_cayo_20260917",
+    "pass": true
+   }
   },
-  "base": "0b8d80d5 (master moved twice mid-lane; rebased onto 8c0a9155 then 0b8d80d5; each store collision resolved by master's side + idempotent rebuild, final graph_hash ca68dc9c...)",
-  "checks": {
-    "coupled_scene_unit_tests": "16/16 PASS (tools/science_funnel/tests/test_coupled_scene.py, incl. the 7 new wiring tests)",
-    "evidence_note": "graph evidence object count is 11 before and after the lane; the bank touches only the work.environment.terrain observation (no evidence records added, changed or removed)",
-    "falsifiers": {
-      "default_scene_byte_identity": {
-        "detail": "at the FINAL base (master 0b8d80d5): pre-code compiler (bank commit) vs wired compiler, same output dir, scene.json BYTE-IDENTICAL (sha256 7c784f095ba75c5eafa88aa59e149d31686f12c13ec0733e93aae2038b6568e3, digest e9bb8213c338d4dfc6de3584fa53e36887ca4aa9627b8f78d82b3895f9e70c1f); re-proven at every upstream integration (9947d074... at store 319fe2af... earlier); structural diff across integrations shows exactly the graph_hash change and nothing else",
-        "pass": true
-      },
-      "digest_provenance_closure": {
-        "detail": "default scene digest e9bb8213c338d4dfc6de3584fa53e36887ca4aa9627b8f78d82b3895f9e70c1f; opted-in scene digest 6869adf7181cd7ab9ef9412a4344e6144c794a1be6578cc80fb9eb9235e893c6; the bundle carries the provenance block only under the opt-in",
-        "pass": true
-      },
-      "live_readout_identity": {
-        "detail": "default run: engine contact.plane_world_up_m == 0.35 exactly (contact off, friction off); terrain run: engine contact.plane_world_up_m == -42.82679794555668 exactly, compared as raw JSON text (no float parsing); both runs served the exact scene_sha256 of their compiled scene.json",
-        "pass": true
-      },
-      "reduction_pin_closure": {
-        "detail": "terrain_plane_height verifies reduction_result.json sha256 == receipt artifacts pin (80819234789f85122ff6d764539325f9ccd9b578271fa324322fce35f58b2e77) and the value equals the receipt metric copy; live resolver test green",
-        "pass": true
-      },
-      "unknown_source_refused": {
-        "detail": "contact_plane_height_source='terrain_luquillo_20260917' refuses with coupled_contact_plane_source_unknown; admitted list names only terrain_cayo_20260917",
-        "pass": true
-      }
-    },
-    "funnel_suite": "GREEN: python -B -m unittest discover -s tools/science_funnel/tests -p 'test_*.py' -> Ran 263 tests in 3467.363s, OK (skipped=1), exit 0 (host was heavily contended by parallel lanes; duration reflects contention, not test cost); corroborated by a second full run, exit 0; chunked re-runs of test_coupled_scene (16/16), test_terrain (9/9), test_coupled_arm (10/10), test_earth_scene (8/8), test_force_arm (7/7) all green",
-    "graphify_consumer": "HONEST (7 checks, 36,701 objects / 38,767 relations, 0 id collisions) re-run at the rebased tip",
-    "historical_evidence_unchanged": 11
+  "funnel_suite": "GREEN: python -B -m unittest discover -s tools/science_funnel/tests -p 'test_*.py' -> Ran 263 tests in 3467.363s, OK (skipped=1), exit 0 (host was heavily contended by parallel lanes; duration reflects contention, not test cost); corroborated by a second full run, exit 0; chunked re-runs of test_coupled_scene (16/16), test_terrain (9/9), test_coupled_arm (10/10), test_earth_scene (8/8), test_force_arm (7/7) all green",
+  "graphify_consumer": "HONEST (7 checks, 36,701 objects / 38,767 relations, 0 id collisions) re-run at the rebased tip",
+  "historical_evidence_unchanged": 11
+ },
+ "commits": [
+  "68ef5ac9 (Rule 0 bank, pre-code)",
+  "<wiring commit> (wiring implementation)",
+  "<receipt commit> (this receipt at the final tip; the default-scene identity pin lives in test_coupled_scene.py inside the wiring commit, with its verification lineage cited there)"
+ ],
+ "engine_runs": {
+  "default": {
+   "exe": ".tmp/coupled-native-engine/Release/chimera_engine.exe",
+   "exe_sha256": "efb250efea4904178c62be47b079dbebe6e1ec75251df9ad78f27ca46d343298",
+   "graph_hash": "ca68dc9c6982e1688fc45df924cf5cb89da33b8d670faff9c681d298505d4102",
+   "launcher": "tools/science_funnel/run_earth.ps1 -CoupledArm -Port 8183",
+   "pid": 123548,
+   "readiness": "launcher gate qualified (state.ok and scene_sha256 match) + live plane check 0.35",
+   "scene_file_sha256": "1ba34e0b36deb441688b4977764c5397136d89ca2db9db43b9b523b51692f6f3",
+   "scene_sha256": "e9bb8213c338d4dfc6de3584fa53e36887ca4aa9627b8f78d82b3895f9e70c1f",
+   "stopped": "path-guarded (process Path == owned exe) after check"
   },
-  "commits": [
-    "68ef5ac9 (Rule 0 bank, pre-code)",
-    "<wiring commit> (wiring implementation)",
-    "<receipt commit> (this receipt at the final tip; the default-scene identity pin lives in test_coupled_scene.py inside the wiring commit, with its verification lineage cited there)"
-  ],
-  "engine_runs": {
-    "default": {
-      "exe": ".tmp/coupled-native-engine/Release/chimera_engine.exe",
-      "exe_sha256": "efb250efea4904178c62be47b079dbebe6e1ec75251df9ad78f27ca46d343298",
-      "graph_hash": "ca68dc9c6982e1688fc45df924cf5cb89da33b8d670faff9c681d298505d4102",
-      "launcher": "tools/science_funnel/run_earth.ps1 -CoupledArm -Port 8183",
-      "pid": 123548,
-      "readiness": "launcher gate qualified (state.ok and scene_sha256 match) + live plane check 0.35",
-      "scene_file_sha256": "1ba34e0b36deb441688b4977764c5397136d89ca2db9db43b9b523b51692f6f3",
-      "scene_sha256": "e9bb8213c338d4dfc6de3584fa53e36887ca4aa9627b8f78d82b3895f9e70c1f",
-      "stopped": "path-guarded (process Path == owned exe) after check"
-    },
-    "terrain": {
-      "exe": ".tmp/coupled-native-engine/Release/chimera_engine.exe",
-      "exe_sha256": "efb250efea4904178c62be47b079dbebe6e1ec75251df9ad78f27ca46d343298",
-      "graph_hash": "1c6e14f591176b44eac105286bec6ae75b6748c55a8169a62997e716cfa15064",
-      "launcher": "scratch engine_terrain_run.ps1 (same Start-Process shape; run_earth.ps1 -ContactPlaneHeightSource passthrough compiles the identical scene)",
-      "pid": 114580,
-      "readiness": "state.ok and scene_sha256 match + raw-text plane check -42.82679794555668",
-      "scene_file_sha256": "17d350e9be5ac02efb8e3da59d0703068a862ace63728e216b5930db43d9f4ff",
-      "scene_sha256": "6869adf7181cd7ab9ef9412a4344e6144c794a1be6578cc80fb9eb9235e893c6",
-      "stopped": "path-guarded (process Path == owned exe) after check"
-    }
-  },
-  "lane": "lane/terrain-wiring-20260918",
-  "limits": [
-    "The terrain-derived plane is measured UNREACHABLE for the mounted arm (gap >= ~43 m at every pose): the real Cayo ground sits ~42.8 m below the scene origin ON the WGS84 ellipsoid (the Cayo GLO-30 window resolves to ocean, so the value is the geoid undulation). The qualified pressing workload stays the authored plane.",
-    "No qualified default changed: the committed recipe and the authored surface entity keep contact_plane_height_m=0.35.",
-    "Friction/contact dynamics under the opt-in are NOT newly qualified: the contact world was exercised only in its default-off free mode at the terrain height.",
-    "The scene digest is output-dir dependent (pre-existing compile_scene behavior); the pinned regression identity normalizes the worktree root + output dir and drops the self-referential scene_sha256 before digesting."
-  ],
-  "metrics": {
-    "authored_default_plane_m": 0.35,
-    "cayo_h_ellipsoidal_m": -42.82679794555668,
-    "height_choice": "cayo_santiago_patch.h_ellipsoidal_m (receipt scope reduces the Cayo Santiago patch centre; Luquillo is a named control, El Yunque a gate refusal; the scene is the Cayo Santiago macaque reference)",
-    "opt_in_gap_scan": {
-      "least_gap_m": 43.09063506035093,
-      "reading": "the terrain plane is recorded unreachable for the mounted arm at arm scale; the qualified pressing workload remains the authored plane",
-      "reset_gap_m": 43.26957382778079
-    },
-    "opt_in_plane_reachable": false,
-    "resolution_mode": "pinned recorded reduction result, hash-verified at compile; terrain.reduce_terrain NOT re-run at compile (per the banked derivation on work.environment.terrain wiring_20260918)",
-    "terrain_run_live": {
-      "contact.enabled": false,
-      "gap_m": 43.26937259325857,
-      "joints_deg": {
-        "elbow_flexion": 82.33,
-        "shoulder_flexion": 7.28
-      },
-      "note": "at the final tip; longer runs (159.4 s sim pre-rebase) showed the same balance to 1.4e-13 J",
-      "sim_time_s": 15.99,
-      "store_balance_error_J": 1.4432899320127e-13,
-      "ticks": 4797
-    }
-  },
-  "recorded_utc": "2026-09-18T18:02:52.048903+00:00",
-  "replay": [
-    "python -B -m unittest tools.science_funnel.tests.test_coupled_scene -v",
-    "python -B -m tools.science_funnel.coupled_scene --output .tmp/coupled-native",
-    "python -B -m tools.science_funnel.coupled_scene --output .tmp/coupled-native-terrain --contact-plane-height-source terrain_cayo_20260917",
-    "python -B -m tools.creature_graph.graphify_consumer",
-    "powershell -File tools/science_funnel/run_earth.ps1 -CoupledArm -Port <free private port>"
-  ],
-  "schema": "chimera.scoped_validation.v1",
-  "scope": "Terrain-derived contact plane wired into the coupled-arm scene as an OPT-IN recipe key (contact_plane_height_source='terrain_cayo_20260917'): compile-time resolution from the PINNED terrain_20260917 reduction result (hash verified, never recomputed), full provenance recorded in the scene bundle, digest changes only under the opt-in. The committed default recipe carries no source key and the qualified authored contact_plane_height_m=0.35 world is untouched; terrain.py is not edited (the terrain receipt pins its sha256). One owned-port (8183) engine run per world, both stopped path-guarded; port 8127 never touched; no other lane, worktree or shared process disturbed.",
-  "source_file_manifest_sha256": {
-    "tools/science_funnel/coupled_scene.py": "3ddb6f8f4a54f25192431ba8ff069b49ae6fc7f7a6e8988e1bf9359db108159e",
-    "tools/science_funnel/run_earth.ps1": "978a5a36d955b162a8f6a04902cb4d849e4526bb195530c3da4374a7d86d395c",
-    "tools/science_funnel/tests/test_coupled_scene.py": "05e338c67de47359f730c60fcea033f3071cb275189c626f179884c25deb5a2e"
-  },
-  "geometric_conservation_proof": {
-    "theorem": "Energy conservation follows from the canonical form's closure: d(omega_P) = 0 in the interior of the contact polytope.",
-    "proof_reference": "work.math.surface_geometry_membrane",
-    "derivation": "docs/research/20260919_surface_geometry_membrane.md",
-    "numerical_bound": "The 1e-5 J balance error is the RK4 discretization of the continuous canonical form, not a physical effect.",
-    "elevation": "Previous receipts verified conservation numerically; this proof elevates it to a geometric theorem."
+  "terrain": {
+   "exe": ".tmp/coupled-native-engine/Release/chimera_engine.exe",
+   "exe_sha256": "efb250efea4904178c62be47b079dbebe6e1ec75251df9ad78f27ca46d343298",
+   "graph_hash": "1c6e14f591176b44eac105286bec6ae75b6748c55a8169a62997e716cfa15064",
+   "launcher": "scratch engine_terrain_run.ps1 (same Start-Process shape; run_earth.ps1 -ContactPlaneHeightSource passthrough compiles the identical scene)",
+   "pid": 114580,
+   "readiness": "state.ok and scene_sha256 match + raw-text plane check -42.82679794555668",
+   "scene_file_sha256": "17d350e9be5ac02efb8e3da59d0703068a862ace63728e216b5930db43d9f4ff",
+   "scene_sha256": "6869adf7181cd7ab9ef9412a4344e6144c794a1be6578cc80fb9eb9235e893c6",
+   "stopped": "path-guarded (process Path == owned exe) after check"
   }
+ },
+ "lane": "lane/terrain-wiring-20260918",
+ "limits": [
+  "The terrain-derived plane is measured UNREACHABLE for the mounted arm (gap >= ~43 m at every pose): the real Cayo ground sits ~42.8 m below the scene origin ON the WGS84 ellipsoid (the Cayo GLO-30 window resolves to ocean, so the value is the geoid undulation). The qualified pressing workload stays the authored plane.",
+  "No qualified default changed: the committed recipe and the authored surface entity keep contact_plane_height_m=0.35.",
+  "Friction/contact dynamics under the opt-in are NOT newly qualified: the contact world was exercised only in its default-off free mode at the terrain height.",
+  "The scene digest is output-dir dependent (pre-existing compile_scene behavior); the pinned regression identity normalizes the worktree root + output dir and drops the self-referential scene_sha256 before digesting."
+ ],
+ "metrics": {
+  "authored_default_plane_m": 0.35,
+  "cayo_h_ellipsoidal_m": -42.82679794555668,
+  "height_choice": "cayo_santiago_patch.h_ellipsoidal_m (receipt scope reduces the Cayo Santiago patch centre; Luquillo is a named control, El Yunque a gate refusal; the scene is the Cayo Santiago macaque reference)",
+  "opt_in_gap_scan": {
+   "least_gap_m": 43.09063506035093,
+   "reading": "the terrain plane is recorded unreachable for the mounted arm at arm scale; the qualified pressing workload remains the authored plane",
+   "reset_gap_m": 43.26957382778079
+  },
+  "opt_in_plane_reachable": false,
+  "resolution_mode": "pinned recorded reduction result, hash-verified at compile; terrain.reduce_terrain NOT re-run at compile (per the banked derivation on work.environment.terrain wiring_20260918)",
+  "terrain_run_live": {
+   "contact.enabled": false,
+   "gap_m": 43.26937259325857,
+   "joints_deg": {
+    "elbow_flexion": 82.33,
+    "shoulder_flexion": 7.28
+   },
+   "note": "at the final tip; longer runs (159.4 s sim pre-rebase) showed the same balance to 1.4e-13 J",
+   "sim_time_s": 15.99,
+   "store_balance_error_J": 1.4432899320127e-13,
+   "ticks": 4797
+  }
+ },
+ "recorded_utc": "2026-09-18T18:02:52.048903+00:00",
+ "replay": [
+  "python -B -m unittest tools.science_funnel.tests.test_coupled_scene -v",
+  "python -B -m tools.science_funnel.coupled_scene --output .tmp/coupled-native",
+  "python -B -m tools.science_funnel.coupled_scene --output .tmp/coupled-native-terrain --contact-plane-height-source terrain_cayo_20260917",
+  "python -B -m tools.creature_graph.graphify_consumer",
+  "powershell -File tools/science_funnel/run_earth.ps1 -CoupledArm -Port <free private port>"
+ ],
+ "schema": "chimera.scoped_validation.v1",
+ "scope": "Terrain-derived contact plane wired into the coupled-arm scene as an OPT-IN recipe key (contact_plane_height_source='terrain_cayo_20260917'): compile-time resolution from the PINNED terrain_20260917 reduction result (hash verified, never recomputed), full provenance recorded in the scene bundle, digest changes only under the opt-in. The committed default recipe carries no source key and the qualified authored contact_plane_height_m=0.35 world is untouched; terrain.py is not edited (the terrain receipt pins its sha256). One owned-port (8183) engine run per world, both stopped path-guarded; port 8127 never touched; no other lane, worktree or shared process disturbed.",
+ "source_file_manifest_sha256": {
+  "tools/science_funnel/coupled_scene.py": "3ddb6f8f4a54f25192431ba8ff069b49ae6fc7f7a6e8988e1bf9359db108159e",
+  "tools/science_funnel/run_earth.ps1": "978a5a36d955b162a8f6a04902cb4d849e4526bb195530c3da4374a7d86d395c",
+  "tools/science_funnel/tests/test_coupled_scene.py": "05e338c67de47359f730c60fcea033f3071cb275189c626f179884c25deb5a2e"
+ }
 }

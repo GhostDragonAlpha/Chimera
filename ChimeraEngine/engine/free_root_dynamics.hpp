@@ -5,6 +5,38 @@
 #include <cstdio>
 #include <memory>
 namespace chimera::multibody {
+// F9 profile counters (lane/f9-budget-20260919): compiled ONLY when
+// CHIMERA_F9_PROFILE is defined (the probe target); zero cost otherwise.
+#ifdef CHIMERA_F9_PROFILE
+extern unsigned long long* f9_gram_factor_count();
+extern unsigned long long* f9_friction_solve_count();
+extern unsigned long long* f9_project_rows_calls();
+extern unsigned long long* f9_project_rows_iters();
+extern unsigned long long* f9_rate_count();
+extern unsigned long long* f9_free_step_count();
+extern unsigned long long* f9_advance_count();
+extern unsigned long long* f9_impact_count();
+extern unsigned long long* f9_bisection_count();
+#define F9_GRAM_INC() (++(*f9_gram_factor_count()))
+#define F9_FRIC_INC() (++(*f9_friction_solve_count()))
+#define F9_PR_CALL_INC() (++(*f9_project_rows_calls()))
+#define F9_PR_ITER_INC() (++(*f9_project_rows_iters()))
+#define F9_RATE_INC() (++(*f9_rate_count()))
+#define F9_STEP_INC() (++(*f9_free_step_count()))
+#define F9_ADV_INC() (++(*f9_advance_count()))
+#define F9_IMPACT_INC() (++(*f9_impact_count()))
+#define F9_BISECT_INC() (++(*f9_bisection_count()))
+#else
+#define F9_GRAM_INC() ((void)0)
+#define F9_FRIC_INC() ((void)0)
+#define F9_PR_CALL_INC() ((void)0)
+#define F9_PR_ITER_INC() ((void)0)
+#define F9_RATE_INC() ((void)0)
+#define F9_STEP_INC() ((void)0)
+#define F9_ADV_INC() ((void)0)
+#define F9_IMPACT_INC() ((void)0)
+#define F9_BISECT_INC() ((void)0)
+#endif
 // Free-root eight-coordinate dynamics (docs/packets/free_root_balance_v1.md).
 // The qualified two-coordinate scene with the sternum weld re-authored as a
 // six-axis joint (D1): q = (base_rot_x,base_rot_y,base_rot_z,base_trans_x,
@@ -36,8 +68,8 @@ class FreeRootDynamics {
  struct NamedRow {Dense row;double floor;int point;bool stop_row;}; // point<0: joint stop
  struct BodyRef {double mass;V com;Mat inertia;};
  std::shared_ptr<const Model> model_;J recipe_,config_,model_data_;std::vector<ContactPoint> points_;size_t hand_=0,n_=0,nb_=6,npts_=0;
- V local_,shift_,gravity_;double dt_=0,initial_store_=0,initial_potential_=0,plane_world_y_=0,plane_model_y_=0,mu_=0,mtot_=0,gravity_magnitude_=0;
- Dense kp_,kd_,damping_,last_torque_;bool contact_=false,gravity_off_=false;
+ V local_,shift_,gravity_;double dt_=0,initial_store_=0,initial_potential_=0,plane_world_y_=0,plane_model_y_=0,mu_=0,mtot_=0;
+ Dense kp_,kd_,damping_,last_torque_;bool contact_=false;
  std::vector<BodyRef> bodies_; // indexed EXACTLY like Model::evaluate frames
  // Touching band: carried over VERBATIM from the qualified header -- the band
  // argument is h- and acceleration-scale (a*h^2/2 ~ 6.9e-6 m < kTouch at
@@ -66,6 +98,7 @@ class FreeRootDynamics {
  // packet's bound) converts finite into bounded and the refusal keeps the
  // failure loud, never silent.
  static bool gram_factor(std::vector<double> g,size_t k,const Dense& rhs,Dense& lambda){
+  F9_GRAM_INC();
   // Cholesky factorization of the mirrored-symmetric Gram block; a pivot at
   // or below 1e-18 relative to the largest diagonal reports a dependent row.
   double scale=0;for(size_t i=0;i<k;++i)scale=(std::max)(scale,std::abs(g[i*k+i]));if(!(scale>0))return false;
@@ -80,6 +113,7 @@ class FreeRootDynamics {
    for(size_t ii=k;ii-->0;){double t=y[ii];for(size_t m=ii+1;m<k;++m)t-=l[m*k+ii]*x[m];x[ii]=t/l[ii*k+ii];lambda[ii]+=x[ii]*rhs[col];}}
   return true;}
  static Dense project_rows(const Dense& initial,const Dense& inverse,const std::vector<Dense>& rows,const Dense& floors,std::vector<double>* multipliers){
+  F9_PR_CALL_INC();
   const size_t R=rows.size();
   if(R<1||R>11)std::fprintf(stderr,"ROWBUDGET-TOP R=%d\n",(int)R);
   require(R>=1&&R<=11,"coupled_free_row_budget");
@@ -90,6 +124,7 @@ class FreeRootDynamics {
    // strict-convex dual argument bounds the swap count finitely, and the cap
    // (3R+3, measured headroom) keeps the refusal loud and bounded.
    for(size_t it=0;it<=3*R+3;++it){
+   F9_PR_ITER_INC();
    const size_t k=act.size();Dense lam(k,0.);
    if(k){
     std::vector<double> g(k*k,0.);Dense rhs(k,0.);std::vector<Dense> ir(k);
@@ -98,8 +133,8 @@ class FreeRootDynamics {
     for(size_t a=0;a<k;++a)rhs[a]=-(inner(rows[act[a]],initial)-floors[act[a]]);
     if(!gram_factor(g,k,rhs,lam)){
      // Dependent rows: drop the one with the smallest Gram diagonal, re-solve.
-     size_t small_index=0;for(size_t a=1;a<k;++a)if(g[a*k+a]<g[small_index*k+small_index])small_index=a;
-     sick[act[small_index]]=1;act.erase(act.begin()+small_index);continue;}}
+     size_t small=0;for(size_t a=1;a<k;++a)if(g[a*k+a]<g[small*k+small])small=a;
+     sick[act[small]]=1;act.erase(act.begin()+small);continue;}}
    int worst=-1;for(size_t a=0;a<k;++a)if(lam[a]<-1e-6&&(worst<0||lam[a]<lam[worst]))worst=int(a);// removal threshold calibrated at n=8 with impact-scale rhs (solve noise ~1e-6*|rhs|); the clamp zeroes smaller negatives
    if(worst>=0){act.erase(act.begin()+worst);continue;}
    Dense p(initial.size(),0.);for(size_t a=0;a<k;++a){double l=(std::max)(0.,lam[a]);for(size_t i=0;i<p.size();++i)p[i]+=l*rows[act[a]][i];}
@@ -124,6 +159,7 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
  // the qualified review-F1 rule (friction opposes impending slip). mode
  // 1 stick, 2 slide, 0 no force (friction never acts without normal reaction).
  static void friction_solve(const Dense& initial,const Dense& inverse,const Dense& row_n,const Dense& row_t,double floor_n,double floor_t,double mu,double slip_sign,Dense& force,double& lambda_n,double& lambda_t,int& mode){
+  F9_FRIC_INC();
   force=Dense(initial.size(),0.);lambda_n=0;lambda_t=0;mode=0;
   auto in=multiply(inverse,row_n),it=multiply(inverse,row_t);
   double A=inner(row_n,in),B=inner(row_n,it),C=inner(row_t,it),rn=-(inner(row_n,initial)-floor_n),rt=-(inner(row_t,initial)-floor_t),det=A*C-B*B;
@@ -135,6 +171,7 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
   if(n>=0){for(size_t i=0;i<initial.size();++i)force[i]=row_n[i]*n+row_t[i]*t;lambda_n=n;lambda_t=t;mode=2;return;}
   force=Dense(initial.size(),0.);lambda_n=0;lambda_t=0;mode=0;}
  Rate rate(const State& s,const Dense& tau,const std::vector<char>& live,const std::vector<char>& plane)const{
+  F9_RATE_INC();
   auto e=evaluate(s);auto inv=inverse_spd(e.mass,n_);
   auto external=e.force(hand_,local_,V{0,-number(config_["load_N"]),0});
   Dense rhs(n_,0.);double heat=0;
@@ -202,13 +239,17 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
   // AMENDMENT E8, final form).
   out.v=free;
   return out;}
- State free_step(const State& start,double h,const Dense& tau,const std::vector<char>& live)const{
+ State free_step(const State& start,double h,const Dense& tau,const std::vector<char>& live,const Evaluation* estart=nullptr)const{
+  F9_STEP_INC();
   auto shifted=[&](const Rate& d,double t){State x=start;for(size_t i=0;i<n_;++i){x.q[i]+=d.q[i]*t;x.v[i]+=d.v[i]*t;}return x;};
   // Substep-level friction hold per point: the friction impulse chain can
   // leave a tiny separating residue that would flicker the per-stage gate
   // (carried over from the qualified free_step, generalized per point).
+  // estart: the caller's already-computed Evaluation of `start` (lane
+  // f9-budget-20260919 F9 profile) -- identical state, identical arithmetic,
+  // identical floating-point result; only the duplicate evaluation is elided.
   std::vector<char> plane(npts_,0);
-  if(contact_&&mu_>0){auto e0=evaluate(start);double gate=1e-6+1e-3*joint_speed_scale(start);
+  if(contact_&&mu_>0){auto e0=estart?*estart:evaluate(start);double gate=1e-6+1e-3*joint_speed_scale(start);
    for(size_t k=0;k<npts_;++k)if(live[k]&&gap_of(e0,k)<=kTouch&&inner(contact_row(e0,k),start.v)<=gate)plane[k]=1;}
   auto a=rate(start,tau,live,plane),b=rate(shifted(a,h/2),tau,live,plane),c=rate(shifted(b,h/2),tau,live,plane),d=rate(shifted(c,h),tau,live,plane);
   State end=start;
@@ -223,8 +264,8 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
    end.friction_heat_tick[k]+=h*(a.friction_heat[k]+2*b.friction_heat[k]+2*c.friction_heat[k]+d.friction_heat[k])/6;
    end.friction_force_impulse[k]+=h*(a.friction_lambda[k]+2*b.friction_lambda[k]+2*c.friction_lambda[k]+d.friction_lambda[k])/6;}
   end.damping+=h*(a.damping+2*b.damping+2*c.damping+d.damping)/6;
-  double dy=evaluate(end).point(hand_,local_).first[1]-evaluate(start).point(hand_,local_).first[1];end.external-=number(config_["load_N"])*dy;
-#if 1 // CHIMERA_FREE_TRACE
+  double dy=evaluate(end).point(hand_,local_).first[1]-(estart?estart->point(hand_,local_).first[1]:evaluate(start).point(hand_,local_).first[1]);end.external-=number(config_["load_N"])*dy;
+#if defined(CHIMERA_FREE_TRACE) // per-substep ledger diagnostic, lane f9-budget-20260919: was #if 1 (F9 profile: 8 evaluates/tick in the measured window); the qualified header's own CHIMERA_FREE_TRACE guard convention
   {double de=mechanical(end)-mechanical(start),w=0;for(size_t i=nb_;i<n_;++i)w+=end.work[i]-start.work[i];
    double dm=end.damping-start.damping,fh=0;for(size_t k=0;k<npts_;++k)fh+=end.friction_heat[k]-start.friction_heat[k];
    double r=de-w-(end.external-start.external)+dm+fh;
@@ -232,6 +273,7 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
 #endif
   return end;}
  double impact(State& s)const{
+  F9_IMPACT_INC();
   auto e=evaluate(s);auto inv=inverse_spd(e.mass,n_);
   std::vector<NamedRow> rows;auto joint=normals(s);
   // At the localized wall the stop rows are ALWAYS armed (velocity floors).
@@ -301,6 +343,7 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
     s.impact+=(std::max)(0.,loss+share_contact);}
   return caught;}
  State advance(State start,double h,const Dense& tau,int depth=0)const{
+  F9_ADV_INC();
   if(h<1e-12)return start;
   // Free-class impact-event budget (packet AMENDMENT E3): one substep can
   // host 3N+2 sequential landings; a Coulomb catch consumes depth 3 (halving,
@@ -314,12 +357,12 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
   // Contact rows are live only in a substep that STARTS touching, per point.
   std::vector<char> live(npts_,0);auto estart=evaluate(start);
   if(contact_)for(size_t k=0;k<npts_;++k)live[k]=gap_of(estart,k)<=kTouch?1:0;
-  auto end=free_step(start,h,tau,live);int which=-1,khit=-1;double hit=h,wall=0;
+  auto end=free_step(start,h,tau,live,&estart);int which=-1,khit=-1;double hit=h,wall=0;
   // Joint-stop crossings: joint rows only; earliest t wins, ties break to the
   // LOWEST coordinate index (the packet's deterministic generalized law, D9).
   for(int i=0;i<2;++i){size_t c=nb_+size_t(i);bool low=end.q[c]<model_->lower[c];if(!low&&end.q[c]<=model_->upper[c])continue;
    double bound=low?model_->lower[c]:model_->upper[c],left=0,right=h;
-   for(int j=0;j<42;++j){double mid=(left+right)/2;double q=free_step(start,mid,tau,live).q[c];if(low?q<=bound:q>=bound)right=mid;else left=mid;}
+   for(int j=0;j<42;++j){double mid=(left+right)/2;double q=free_step(start,mid,tau,live).q[c];F9_BISECT_INC();if(low?q<=bound:q>=bound)right=mid;else left=mid;}
    double t=(left+right)/2;if(t<hit||(t==hit&&which>=0&&i<which)){hit=t;which=i;khit=-1;wall=bound;}}
   // First contact crossings per point: earliest across points; the
   // pre-touching piece integrates without the crossing point's rows.
@@ -327,7 +370,7 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
    for(size_t k=0;k<npts_;++k){
     if(live[k]||gap_of(eend,k)>=0)continue;
     auto probe=live;probe[k]=0;double left=0,right=h;
-    for(int j=0;j<42;++j){double mid=(left+right)/2;if(gap_of(evaluate(free_step(start,mid,tau,probe)),k)<=0)right=mid;else left=mid;}
+    for(int j=0;j<42;++j){double mid=(left+right)/2;if(gap_of(evaluate(free_step(start,mid,tau,probe)),k)<=0)right=mid;else left=mid;F9_BISECT_INC();}
     double t=(left+right)/2;if(t<hit){hit=t;which=2;khit=int(k);}}}
   if(which<0)return end;
   require(hit>1e-12,"coupled_unresolved_impact_time");
@@ -365,7 +408,7 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
    for(int k=0;k<3;++k){P[k]+=body.mass*vb[k];H[k]+=iomega[k]+mom[k];}}
   return {{"linear_kg_m_s",J::array({P[0],P[1],P[2]})},{"angular_about_com_kg_m2_s",J::array({H[0],H[1],H[2]})},{"com_up_m",c[1]}};}
  public:
- FreeRootDynamics(const J& data,double gravity,V shift,double dt=1/300.):recipe_(data.at("recipe")),shift_(shift),gravity_{0,-gravity,0},dt_(dt),gravity_magnitude_(gravity){
+ FreeRootDynamics(const J& data,double gravity,V shift,double dt=1/300.):recipe_(data.at("recipe")),shift_(shift),gravity_{0,-gravity,0},dt_(dt){
   model_data_=data.at("model");
   require(recipe_.at("schema")=="chimera.coupled_free_scene.v1","coupled_free_schema");
   require(recipe_.at("coordinates")==J::array({"base_rot_x","base_rot_y","base_rot_z","base_trans_x","base_trans_y","base_trans_z","shoulder_flexion","elbow_flexion"}),"coupled_free_coordinate_order");
@@ -418,12 +461,10 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
   auto e=evaluate(s_);
   for(size_t k=0;k<npts_;++k)require(gap_of(e,k)>0,"coupled_free_initial_penetration");}
  void configure(const J& input){
-  require(input.is_object()&&!input.empty(),"coupled_control_object");auto c=config_;bool restart=false,knock=false;
+  require(input.is_object()&&!input.empty(),"coupled_control_object");auto c=config_;bool restart=false;
   for(auto it=input.begin();it!=input.end();++it){
    if(it.key()=="reset"){require(it.value().is_boolean()&&it.value().get<bool>(),"coupled_reset_true");restart=true;}
    else if(it.key()=="free_root_enabled"){require(it.value()==config_["free_root_enabled"],"coupled_free_flag_frozen");}
-   else if(it.key()=="gravity_off"){require(it.value().is_boolean(),"coupled_gravity_boolean");c[it.key()]=it.value();}
-   else if(it.key()=="knock_over"){require(it.value().is_boolean()&&it.value().get<bool>(),"macaque_knock_control");knock=true;}
    else{require(c.contains(it.key()),"unknown_coupled_control");c[it.key()]=it.value();}}
   for(auto key:{"power","shoulder_drive","elbow_drive"})require(c[key].is_boolean(),"coupled_boolean_control");
   if(c.contains("contact_enabled")){require(c["contact_enabled"].is_boolean(),"coupled_boolean_control");if(c["contact_enabled"].get<bool>()!=config_["contact_enabled"].get<bool>())require(restart,"coupled_contact_toggle_requires_reset");}
@@ -440,8 +481,7 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
   for(int i=0;i<2;++i){std::string stem=i?"elbow":"shoulder";double target=number(c[stem+"_target_deg"])*pi/180,cap=number(c[stem+"_torque_limit_N_m"]);size_t ci=nb_+size_t(i);
    require(target>=model_->lower[ci]-1e-8&&target<=model_->upper[ci]+1e-8&&cap>=0&&cap<=(i?.6:1.),"coupled_control_range");}
   double load=number(c["load_N"]);require(load>=0&&load<=3,"coupled_load_range");
-  config_=c;contact_=config_["contact_enabled"].get<bool>();mu_=number(config_["contact_friction"]);
-  gravity_off_=config_.value("gravity_off",false);gravity_=gravity_off_?V{0,0,0}:V{0,-gravity_magnitude_,0};if(restart)reset();if(knock){s_.v[3]+=1.8;config_["last_control"]="knock_over";}}
+  config_=c;contact_=config_["contact_enabled"].get<bool>();mu_=number(config_["contact_friction"]);if(restart)reset();}
  void step(){
   s_.impulse=Dense(n_,0.);s_.contact_impact_impulse.assign(npts_,0.);s_.contact_force_impulse.assign(npts_,0.);s_.contact_generalized=Dense(n_,0.);s_.friction_impulse.assign(npts_,0.);s_.friction_force_impulse.assign(npts_,0.);s_.friction_heat_tick.assign(npts_,0.);
   Dense impulse_torque(2,0.);for(int k=0;k<4;++k){auto tau=torque();auto trial=advance(s_,dt_/4,tau);
@@ -487,15 +527,15 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
   J support{{"plane_world_up_m",plane_world_up_m()},{"points",hullj},{"com_projection_east_m",c[0]},{"com_projection_south_m",c[2]},{"com_in_hull",false},{"assembly_mass_kg",mtot_},{"weight_N",mtot_*norm(gravity_)}};
   if(hull.size()==3){double det=(hull[1].first-hull[0].first)*(hull[2].second-hull[0].second)-(hull[2].first-hull[0].first)*(hull[1].second-hull[0].second);
    if(std::abs(det)>1e-15){double w0=((hull[1].first-c[0])*(hull[2].second-c[1])-(hull[2].first-c[0])*(hull[1].second-c[1]))/det,
-    w1=((c[0]-hull[0].first)*(hull[2].second-hull[0].second)-(hull[2].first-hull[0].first)*(c[1]-hull[0].second))/det,w2=1.-w0-w1;
+    w1=((hull[2].first-c[0])*(hull[0].second-c[1])-(hull[0].first-c[0])*(hull[2].second-c[1]))/det,w2=1.-w0-w1;
    support["barycentric"]=J::array({w0,w1,w2});support["com_in_hull"]=w0>=0&&w1>=0&&w2>=0;}}
   J contact{{"enabled",contact_},{"friction",mu_>0},{"friction_mu",mu_},{"grasp",false},{"plane_world_up_m",plane_world_up_m()},{"normal_world_up",J::array({0.,1.,0.})},{"points",points},
    {"reaction_N",reaction_total},{"friction_force_N",friction_force_total},{"impact_heat_J",impact_heat_total},{"friction_heat_J",friction_heat_total},{"cone_valid",cone_valid}};
   auto mom=momentum();
-  return {{"sim_time_s",ticks_*dt_},{"ticks",ticks_},{"mode","native_coupled_arm_free"},{"joints",joints},{"base",base},{"config",config_},{"gravity_off",gravity_off_},{"power",config_["power"]},{"load_N",config_["load_N"]},{"battery_empty_events",empty_events_},
+  return {{"sim_time_s",ticks_*dt_},{"ticks",ticks_},{"mode","native_coupled_arm_free"},{"joints",joints},{"base",base},{"config",config_},{"power",config_["power"]},{"load_N",config_["load_N"]},{"battery_empty_events",empty_events_},
    {"contacts",{{"environment",contact_},{"joint_limits",true}}},
    {"contact",contact},{"support",support},{"momentum",mom},
-   {"body",{{"position_m",add(hand.first,shift_)},{"velocity_m_s",velocity},{"com_position_m",add(c,shift_)},{"radius_m",recipe_["proxy_radius_m"]}}},
+   {"body",{{"position_m",add(hand.first,shift_)},{"velocity_m_s",velocity},{"radius_m",recipe_["proxy_radius_m"]}}},
    {"energy",{{"kinetic_J",kinetic},{"gravitational_J",u},{"potential_reference","reset pose"},{"mechanical_J",energy},{"actuator_work_J",work},{"external_work_J",s_.external},{"damping_heat_J",s_.damping},{"impact_heat_J",s_.impact+impact_heat_total},{"contact_impact_heat_J",impact_heat_total},{"friction_heat_J",friction_heat_total},{"brake_heat_J",brake_},{"battery_J",battery_},{"battery_initial_J",initial_store_},{"battery_usable",battery_>1e-12},
     {"balance_error_J",energy-work-s_.external+s_.damping+s_.impact+impact_heat_total+friction_heat_total},
     {"store_balance_error_J",energy+battery_+s_.damping+s_.impact+impact_heat_total+friction_heat_total+brake_-initial_store_-s_.external}}},
