@@ -173,11 +173,14 @@ def compile_gait(graph,output):
     # pose's lowest contact point at +2e-6 m, and the MEASURED gait speed
     # (derived timing: 1.01 m/s simulated anchor) on the base.
     tables=contract['tables_rad']
+    zeros=contract.get('zero_map_rad')
+    require(zeros is not None,'gait_zero_map_missing','bank revision 2 with admit_gait_zeros_20260919.py')
     jstems=['hip_flexion','knee_extension','ankle_dorsiflexion','MP_dorsiflexion']
     start_values={}
     for leg,phi_idx in (('left',0),('right',10)):
         for stem,key in zip(jstems,('hip','knee','ankle','MP')):
-            start_values[f'{stem}_{leg}']=tables[key][phi_idx]
+            # scene q = zero + table (revision 2: the derived Oku angle zeros)
+            start_values[f'{stem}_{leg}']=float(tables[key][phi_idx])+float(zeros[key])
     for b in ('base_rot_x','base_rot_y','base_rot_z','base_trans_x','base_trans_y','base_trans_z'):
         start_values[b]=0.0  # probe the gait pose relative to the origin
     asm0=Assembly(model,values=start_values,gravity=[0.,-9.80665,0.])
@@ -199,6 +202,7 @@ def compile_gait(graph,output):
                 'servo_damping_ratio':contract['servo_damping_ratio'],
                 'capture_step_phase':contract['capture_step_phase'],
                 'tables_rad':contract['tables_rad'],
+                'zero_map_rad':contract['zero_map_rad'],
                 'contact_points':contract['contact_points'],
                 'contact_plane_height_m':contract['contact_plane_height_m'],
                 'contact_friction':contract['contact_friction'],

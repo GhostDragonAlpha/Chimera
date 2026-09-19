@@ -58,12 +58,12 @@ public:
  explicit Model(const J& model,std::vector<std::string> selected={}){
   require(model.at("schema")=="chimera.anatomical_assembly.v1","coupled_anatomy_schema");auto coords=model.at("coordinates");if(selected.empty())for(auto it=coords.begin();it!=coords.end();++it)if(!it.value().at("locked").get<bool>())selected.push_back(it.key());
   std::set<std::string> seen;for(auto name:selected){require(coords.contains(name)&&seen.insert(name).second&&!coords[name]["locked"].get<bool>(),"coupled_coordinate_selection");names.push_back(name);defaults.push_back(number(coords[name]["default_rad"]));lower.push_back(number(coords[name]["range_rad"][0]));upper.push_back(number(coords[name]["range_rad"][1]));require(lower.back()<upper.back()&&defaults.back()>=lower.back()&&defaults.back()<=upper.back(),"coupled_coordinate_range");}
-  // Capacity (packet AMENDMENT 20260918 E1): 8 = the free-root eight-coordinate
-  // selection. Integer VALIDATION only -- no arithmetic line moves; every
-  // selection <= 7 (the qualified two-coordinate world, the seven-coordinate
-  // lift) is bit-identical, so the frozen bit-exact control is unaffected by
-  // construction.
-  require(!names.empty()&&names.size()<=8,"coupled_coordinate_capacity");std::map<std::string,J> remaining;for(auto b:model.at("bodies")){std::string name=b.at("name");require(remaining.emplace(name,b).second,"coupled_duplicate_body");}std::map<std::string,int> ids;
+  // Capacity (packet AMENDMENT 20260918 E1, second hop 20260919 gait-impl):
+  // 16 = the gait walker's fourteen-coordinate selection. Integer VALIDATION
+  // only -- no arithmetic line moves; every selection <= 7 (the qualified
+  // two-coordinate world, the seven-coordinate lift) is bit-identical, so the
+  // frozen bit-exact control is unaffected by construction.
+  require(!names.empty()&&names.size()<=16,"coupled_coordinate_capacity");std::map<std::string,J> remaining;for(auto b:model.at("bodies")){std::string name=b.at("name");require(remaining.emplace(name,b).second,"coupled_duplicate_body");}std::map<std::string,int> ids;
   while(!remaining.empty()){bool progress=false;for(auto it=remaining.begin();it!=remaining.end();){auto b=it->second;bool ground=it->first=="ground";if(!ground&&!ids.count(b.at("joint").at("parent").get<std::string>())){++it;continue;}
    Body out;out.name=it->first;out.mass=number(b.at("mass_kg"));out.com=b.at("mass_center_m").get<V>();require(out.mass>=0,"coupled_mass_negative");for(double v:out.com)require(std::isfinite(v),"coupled_com_nonfinite");auto ic=b.at("inertia_kg_m2");require(ic.size()==6,"coupled_inertia_shape");for(int i=0;i<3;++i)out.inertia(i,i)=number(ic[i]);out.inertia(0,1)=out.inertia(1,0)=number(ic[3]);out.inertia(0,2)=out.inertia(2,0)=number(ic[4]);out.inertia(1,2)=out.inertia(2,1)=number(ic[5]);
    // Source compiler performs full tensor physicality; preserve admitted values, including regularization mass.

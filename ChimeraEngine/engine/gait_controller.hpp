@@ -46,8 +46,14 @@ class GaitWalker {
   double knee[21]={-0.472,-0.670,-0.852,-0.948,-0.973,-0.959,-0.946,-0.890,-0.826,-0.849,-0.860,-0.872,-0.847,-0.922,-1.045,-1.174,-1.201,-1.084,-0.865,-0.633,-0.470};
   double ankle[21]={0.928,1.232,1.383,1.440,1.447,1.465,1.460,1.487,1.499,1.433,1.354,1.153,0.910,0.846,0.852,0.969,1.253,1.303,1.225,1.071,0.927};
   double mp[21]={0.558,0.338,0.368,0.497,0.651,0.741,0.827,0.856,0.914,1.046,1.140,1.319,1.295,0.865,-0.025,-0.114,-0.142,-0.092,-0.035,0.134,0.559};
+  // The four Oku angle zeros (model.dynamics.gait_walker revision 2, derived
+  // by kinematic closure -- tools/science_funnel/validation/gait_zero_20260919).
+  // Scene target q_j = zero_j + table_j: without them the composed TD foot
+  // pitches nose-up 72.5 deg (heel digging); with them +15.9 deg heel-first
+  // and the stance rolling contact rides 5.8 mm.
+  double zeros[4]={0.,0.,0.,0.};
   static double interp(const double* t,double phi){phi-=std::floor(phi);double x=phi*20.;int k=(int)x;if(k>=20)k=19;double f=x-k;return t[k]*(1.-f)+t[k+1]*f;}
-  void at(double phi,double out[4])const{out[0]=interp(hip,phi);out[1]=interp(knee,phi);out[2]=interp(ankle,phi);out[3]=interp(mp,phi);}
+  void at(double phi,double out[4])const{out[0]=interp(hip,phi)+zeros[0];out[1]=interp(knee,phi)+zeros[1];out[2]=interp(ankle,phi)+zeros[2];out[3]=interp(mp,phi)+zeros[3];}
  };
  private:
  struct State {Dense q,v,work,impulse;double external=0,damping=0,impact=0;std::vector<double> contact_impact,contact_impact_impulse,contact_force_impulse,friction_heat,friction_heat_tick,friction_impulse,friction_force_impulse;Dense contact_generalized;
@@ -331,6 +337,11 @@ class GaitWalker {
   // event-split TREE (each level halves the interval), keeping every tick's
   // work finite.
   require(depth<10+6*(int)npts_,"gait_impact_event_budget");
+#ifdef GAIT_EVENT_TRACE
+  if(depth>=10+6*(int)npts_-4){std::fprintf(stderr,"[evt] tick=%llu depth=%d clamps=%d adv=%llu h=%.3e mu=%.2f\n",ticks_,depth,clamps,adv_calls_,h,mu_);
+   auto ee=evaluate(start);for(size_t k=0;k<npts_;++k){auto pp=ee.point(points_[k].index,points_[k].local);std::fprintf(stderr,"    %-12s gap=%.3e vy=%+.3e\n",points_[k].name.c_str(),pp.first[1]+points_[k].radius-plane_model_y_,pp.second[1]);}
+   for(size_t d=0;d<nd_;++d){size_t c=drives_[d].coordinate;std::fprintf(stderr,"    drive %-28s q=%+.4f v=%+.4f\n",drives_[d].name.c_str(),start.q[c],start.v[c]);}}
+#endif
   double caught=impact(start);
   if(mu_>0&&caught>1e-9&&depth<5)return advance(advance(start,h/2,tau,depth+3),h/2,tau,depth+3);
   std::vector<char> live(npts_,0);auto estart=evaluate(start);
@@ -349,9 +360,13 @@ class GaitWalker {
     for(int j=0;j<42;++j){double mid=(left+right)/2;if(gap_of(evaluate(free_step(start,mid,tau,probe)),k)<=0)right=mid;else left=mid;}
     double t=(left+right)/2;if(t<hit){hit=t;which=2;khit=int(k);}}}
   if(which<0)return end;
-  if(hit<=1e-12){
+   if(hit<=1e-12){
    // An fp-level crossing at the substep boundary (the n-coordinate clamp
    // law): pin the violated stop, absorb the impact, integrate the remainder.
+#ifdef GAIT_EVENT_TRACE
+  if(clamps>=8){std::fprintf(stderr,"[clamp] tick=%llu depth=%d clamps=%d which=%d khit=%d wall=%+.6f h=%.3e\n",ticks_,depth,clamps,which,khit,wall,h);
+   auto ee=evaluate(start);for(size_t k=0;k<npts_;++k){auto pp=ee.point(points_[k].index,points_[k].local);std::fprintf(stderr,"    %-12s gap=%.3e vy=%+.3e\n",points_[k].name.c_str(),pp.first[1]+points_[k].radius-plane_model_y_,pp.second[1]);}}
+#endif
    require(clamps<64,"gait_impact_event_budget");
    State pinned=start;
    if(which<2)pinned.q[drives_[size_t(which)].coordinate]=wall;
@@ -381,6 +396,14 @@ class GaitWalker {
    bodies_[idx]=out;mtot_+=out.mass;}
   for(auto& b:bodies_)require(b.mass>=0,"gait_mass_negative");
   config_=recipe_.at("defaults");
+ // The derived angle zeros (revision 2): loaded from the scene recipe when
+ // present; absent -> all zeros (a pre-revision scene composes unchanged).
+ if(recipe_.contains("zero_map_rad")){
+  const J& zm=recipe_.at("zero_map_rad");
+  require(zm.contains("hip")&&zm.contains("knee")&&zm.contains("ankle")&&zm.contains("MP"),"gait_zero_map_keys");
+  tables_.zeros[0]=number(zm.at("hip"));tables_.zeros[1]=number(zm.at("knee"));
+  tables_.zeros[2]=number(zm.at("ankle"));tables_.zeros[3]=number(zm.at("MP"));
+  for(double z:tables_.zeros)require(std::isfinite(z)&&std::abs(z)<=3.,"gait_zero_map_range");}
   plane_world_y_=number(recipe_.at("contact_plane_height_m"));require(std::isfinite(plane_world_y_),"gait_contact_plane_invalid");plane_model_y_=plane_world_y_-shift_[1];
   require(config_.contains("contact_enabled")&&config_["contact_enabled"].is_boolean(),"gait_contact_flag_invalid");contact_=config_["contact_enabled"].get<bool>();
   require(config_.contains("contact_friction")&&config_["contact_friction"].is_number()&&number(config_["contact_friction"])>=0&&number(config_["contact_friction"])<=1,"gait_friction_flag_invalid");mu_=number(config_["contact_friction"]);
