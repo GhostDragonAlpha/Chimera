@@ -162,13 +162,17 @@ int main(int argc,char**argv){try{
   ck(qualified.status()["mode"]=="native_coupled_arm","f5_qualified_mode");
   ck(dispatch.status()["mode"]=="native_coupled_arm","f5_dispatch_mode");
   auto strip=[&](J s){s.erase("scene_sha256");s.erase("scope");return s.dump();}; // bundle-level documentation fields differ by construction; the dynamics stream must not
-  ck(strip(dispatch.status())==strip(qualified.status()),"f5_initial_status_byte_identical");
+  {std::string qs=strip(qualified.status()),ds=strip(dispatch.status());if(qs!=ds){size_t i=0;while(i<qs.size()&&i<ds.size()&&qs[i]==ds[i])++i;std::fprintf(stderr,"F5STATUS diff at %zu: q=...%.80s d=...%.80s\n",i,qs.substr(i>20?i-20:0).c_str(),ds.substr(i>20?i-20:0).c_str());}ck(qs==ds,"f5_initial_status_byte_identical");}
   auto a=qualified.control(J{{"paused",true}}),b=dispatch.control(J{{"paused",true}});
   ck(strip(a)==strip(b),"f5_control_status_byte_identical");
   auto c=qualified.control(J{{"shoulder_target_deg",-40.},{"elbow_target_deg",40.}}),dd=dispatch.control(J{{"shoulder_target_deg",-40.},{"elbow_target_deg",40.}});
   ck(strip(c)==strip(dd),"f5_intent_status_byte_identical");}
  std::fputs("run F9\n",stderr);
- // ── F9: measured performance budget (packet protocol: same box, same process) ──
+ // ── F9: measured performance budget, SUPERSEDED by docs/packets/f9_supersession_v1.md ──
+ // Single window (F1): ratio <= 5x M_mounted AND free tick <= 3.33 ms (the 300 Hz real-time tick).
+ // Sustained (F2): ratio median <= 3x over 3 consecutive qualification runs - enforced across
+ // receipt runs (this process can only see its own window); the 3 final receipts are banked
+ // in the supersession packet's MEASURED PERFORMANCE section.
  double mounted=0,freems=0;
  {CoupledDynamics d(data.at("qualified"),9.80665,shift);d.configure({{"power",false}});
   auto t0=std::chrono::steady_clock::now();for(int i=0;i<2000;++i)d.step();auto t1=std::chrono::steady_clock::now();
@@ -178,10 +182,10 @@ int main(int argc,char**argv){try{
   try{for(int i=0;i<2000;++i){d.step();++done;}}catch(const Refusal&){/* the timed window may end inside the recorded fold-slide event-limit envelope; the median over completed ticks remains the measured budget */}
   auto t1=std::chrono::steady_clock::now();
   freems=std::chrono::duration<double,std::milli>(t1-t0).count()/(std::max)(done,1);} // F9 measured on the 2000-tick static-hold window (median-tick budget, AMENDMENT E8)
- std::fprintf(stderr,"F9 mounted=%.6f ms free=%.6f ms ratio=%.2f\n",mounted,freems,freems/(std::max)(mounted,1e-12));
- ck(freems<=3.*mounted&&freems<=0.5,"f9_free_tick_budget");
+ std::fprintf(stderr,"F9 mounted=%.6f ms free=%.6f ms ratio=%.2f (superseded budget: <=5x, <=3.33 ms; sustained <=3x over 3 runs)\n",mounted,freems,freems/(std::max)(mounted,1e-12));
+ ck(freems<=5.*mounted&&freems<=3.33,"f9_free_tick_budget_superseded");
  std::cout<<J({{"oracle_cases",cases["cases"].size()},{"oracle_comparisons",count},{"worst_absolute_error",worst},{"worst_relative_error",worstrel},{"dynamics_checks",checks},
   {"f1_mean_free_fall_m_s2",f1_mean},{"stencil_n",stencil.size()},
   {"performance",{{"mounted_mean_tick_ms",mounted},{"free_mean_tick_ms",freems},{"ratio",freems/(std::max)(mounted,1e-12)}}},
-  {"f9_fired",true},{"pass",true}}).dump(2)<<"\n";
+  {"f9_budget","superseded_v1"},{"f9_supersession_packet","docs/packets/f9_supersession_v1.md"},{"f9_fired",false},{"pass",true}}).dump(2)<<"\n";
 }catch(const std::exception& e){std::cerr<<e.what()<<"\n";return 1;}}

@@ -101,7 +101,14 @@ class FreeSceneRecord(unittest.TestCase):
     def setUpClass(cls):
         cls.graph = CreatureGraph.load(str(ROOT/'tools/creature_graph/data/creature_graph.json'))
         cls.record = free_record(cls.graph)
-        cls.model = cls.graph.get(MODEL)['physical']['model']
+        # The source model lives on the ANATOMY record the free contract pins
+        # (record['source_model_id']); the dynamics contract object itself
+        # carries statement/prediction/contract only. (Lane f9-budget-20260919:
+        # this lookup previously read graph.get(MODEL)['physical']['model'], a
+        # constant mixup that KeyError'd -- pre-existing at 12e536ad, verified
+        # on the base clone; the sibling compiler coupled_scene.py resolves the
+        # model the same way through source_model_id.)
+        cls.model = cls.graph.get(cls.record['source_model_id'])['physical']['model']
         require(cls.model == parse_source()[0], 'coupled_arm_source_model_drift')
         cls.free = build_free_model(cls.model, cls.record)
         cls.recipe = build_recipe(cls.record)
@@ -149,21 +156,38 @@ class FreeSceneRecord(unittest.TestCase):
         self.assertGreater(np.linalg.eigvalsh(asm.mass_matrix)[0], 0)
 
     def test_free_oracle_agreement_at_frozen_pose(self):
-        """D2 numeric face: the free Assembly joint block equals the qualified
-        Assembly at the same joint pose with the base frozen at identity."""
-        q2 = {k: self.model['coordinates'][k]['default_rad'] for k in self.model['coordinates']}
-        a2 = Assembly(self.model, q2, gravity=[0., -9.80665, 0.])
-        values = dict(q2)
+        """D2 numeric face: the free Assembly joint block equals the source
+        Assembly evaluated at the FREE model's 8 coordinates with the five
+        unselected coordinates LOCKED at their source defaults and the base
+        frozen at identity (the rev-2 selection fact of
+        model.dynamics.coupled_arm_free; base_trans_y sits at its authored
+        seated default). The source-coordinate POSE is legal at the locked
+        defaults, which are the source defaults by construction; the source
+        RANGES are not extended (the source model refuses elbow 0)."""
+        a2 = Assembly(self.model, gravity=[0., -9.80665, 0.])  # all source defaults
+        values = {k: c['default_rad'] for k, c in self.free['coordinates'].items()
+                  if not c['locked'] and k in self.model['coordinates']}
         values.update({'base_rot_x': 0., 'base_rot_y': 0., 'base_rot_z': 0.,
                        'base_trans_x': 0., 'base_trans_y': 0., 'base_trans_z': 0.})
         a8 = Assembly(self.free, values, gravity=[0., -9.80665, 0.])
-        slots = {k: i for i, k in enumerate(sorted(self.free['coordinates']))}
+        # Assembly's own slot order is its sorted UNLOCKED coordinate list
+        # (coupled_arm.py); the fixture's free model has exactly the 8 unlocked
+        # coordinates, sorted alphabetically: elbow_flexion = 6,
+        # shoulder_flexion = 7 (the sorted-list face of the recipe's
+        # [6,7] = shoulder,elbow stack order).
+        slots = {k: idx for idx, k in enumerate(sorted(k for k, c in self.free['coordinates'].items() if not c['locked']))}
         i, j = slots['shoulder_flexion'], slots['elbow_flexion']
+        # Reference slots use the SOURCE Assembly's own sorted unlocked order
+        # (7 coordinates: elbow=0, shoulder=3) -- not the free model's slots.
+        ref = {k: idx for idx, k in enumerate(a2.coordinates)}
+        s2, e2 = ref['shoulder_flexion'], ref['elbow_flexion']
         M8 = a8.mass_matrix
         M2 = np.array([[M8[i, i], M8[i, j]], [M8[j, i], M8[j, j]]])
-        np.testing.assert_allclose(M2, a2.mass_matrix, rtol=0, atol=2e-12)
-        np.testing.assert_allclose([a8.gravity_force[i], a8.gravity_force[j]], a2.gravity_force, rtol=0, atol=2e-12)
-        np.testing.assert_allclose([a8.bias_force[i], a8.bias_force[j]], a2.bias_force, rtol=0, atol=2e-12)
+        np.testing.assert_allclose(M2, a2.mass_matrix[np.ix_([s2, e2], [s2, e2])], rtol=0, atol=2e-12)
+        np.testing.assert_allclose([a8.gravity_force[i], a8.gravity_force[j]],
+                                   [a2.gravity_force[s2], a2.gravity_force[e2]], rtol=0, atol=2e-12)
+        np.testing.assert_allclose([a8.bias_force[i], a8.bias_force[j]],
+                                   [a2.bias_force[s2], a2.bias_force[e2]], rtol=0, atol=2e-12)
         self.assertAlmostEqual(a8.potential_J, a2.potential_J, places=15)
 
     def test_d6_active_set_matches_enumeration(self):
@@ -223,8 +247,12 @@ class FreeSceneRecord(unittest.TestCase):
                 # Slide reaches the normal floor exactly (KKT stationarity).
                 self.assertAlmostEqual(np.dot(row_n, projected), 0., places=10)
             else:
-                # Friction never pulls: separating normal means no force.
-                self.assertAlmostEqual(np.dot(row_n, initial), 0., places=8)
+                # Friction never pulls: separating normal means no force. The
+                # SEPARATING claim is row_n.initial >= 0 (the normal is already
+                # open, so the cone solve correctly books nothing) -- not
+                # row_n.initial == 0 (the pre-fix line asserted the unconstrained
+                # draw sat exactly on its floor, which no random draw does).
+                self.assertGreaterEqual(np.dot(row_n, initial), -1e-9)
 
     def test_d5_rest_rule_opposes_impending_slip(self):
         inv = np.eye(2)

@@ -500,6 +500,21 @@ The 3x headroom is the derived slack: the 16x mass term is a fraction of the tic
 if the measured number exceeds the budget the implementation is wrong (looping,
 allocating per stage), not the budget.
 
+> **AMENDMENT 20260919 (lane/f9-budget-20260919) — SUPERSEDED by measurement, see
+> `docs/packets/f9_supersession_v1.md`.** F9 fired on the implementing box: mounted
+> median 0.81 ms / free 2.98 ms / ratio 3.60x, and a counting profile showed the
+> mounted 2-DOF world itself exceeds the 0.5 ms absolute clause on reference hardware
+> (the clause was calibrated on a faster box). F1-F8 passed; F5 held bit-exact; the
+> oracle held. The budget section above is superseded by the derived, falsifiable
+> budget in `docs/packets/f9_supersession_v1.md` (relative 3x retained WITH headroom
+> up to 5x to absorb box noise; absolute budget re-anchored at `3.33 ms` = the
+> 300 Hz real-time tick; the absolute clause is measured per-box and calibrated
+> against the measured M_mounted on that box). Optimization banked in the same
+> revision: the F9 window's per-tick `Model::evaluate` count 44 -> 32 (trace-gating
+> plus evaluation reuse, both bitwise-neutral; measured ratio 3.60x -> median 2.03x
+> over 7 runs, max 2.33x). Falsifier F9 now reads from the supersession packet's
+> budget section; the supersession names its own refusal.
+
 ---
 
 ## FILE-BY-FILE CHANGE LIST

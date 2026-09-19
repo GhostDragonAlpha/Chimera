@@ -5,6 +5,38 @@
 #include <cstdio>
 #include <memory>
 namespace chimera::multibody {
+// F9 profile counters (lane/f9-budget-20260919): compiled ONLY when
+// CHIMERA_F9_PROFILE is defined (the probe target); zero cost otherwise.
+#ifdef CHIMERA_F9_PROFILE
+extern unsigned long long* f9_gram_factor_count();
+extern unsigned long long* f9_friction_solve_count();
+extern unsigned long long* f9_project_rows_calls();
+extern unsigned long long* f9_project_rows_iters();
+extern unsigned long long* f9_rate_count();
+extern unsigned long long* f9_free_step_count();
+extern unsigned long long* f9_advance_count();
+extern unsigned long long* f9_impact_count();
+extern unsigned long long* f9_bisection_count();
+#define F9_GRAM_INC() (++(*f9_gram_factor_count()))
+#define F9_FRIC_INC() (++(*f9_friction_solve_count()))
+#define F9_PR_CALL_INC() (++(*f9_project_rows_calls()))
+#define F9_PR_ITER_INC() (++(*f9_project_rows_iters()))
+#define F9_RATE_INC() (++(*f9_rate_count()))
+#define F9_STEP_INC() (++(*f9_free_step_count()))
+#define F9_ADV_INC() (++(*f9_advance_count()))
+#define F9_IMPACT_INC() (++(*f9_impact_count()))
+#define F9_BISECT_INC() (++(*f9_bisection_count()))
+#else
+#define F9_GRAM_INC() ((void)0)
+#define F9_FRIC_INC() ((void)0)
+#define F9_PR_CALL_INC() ((void)0)
+#define F9_PR_ITER_INC() ((void)0)
+#define F9_RATE_INC() ((void)0)
+#define F9_STEP_INC() ((void)0)
+#define F9_ADV_INC() ((void)0)
+#define F9_IMPACT_INC() ((void)0)
+#define F9_BISECT_INC() ((void)0)
+#endif
 // Free-root eight-coordinate dynamics (docs/packets/free_root_balance_v1.md).
 // The qualified two-coordinate scene with the sternum weld re-authored as a
 // six-axis joint (D1): q = (base_rot_x,base_rot_y,base_rot_z,base_trans_x,
@@ -66,6 +98,7 @@ class FreeRootDynamics {
  // packet's bound) converts finite into bounded and the refusal keeps the
  // failure loud, never silent.
  static bool gram_factor(std::vector<double> g,size_t k,const Dense& rhs,Dense& lambda){
+  F9_GRAM_INC();
   // Cholesky factorization of the mirrored-symmetric Gram block; a pivot at
   // or below 1e-18 relative to the largest diagonal reports a dependent row.
   double scale=0;for(size_t i=0;i<k;++i)scale=(std::max)(scale,std::abs(g[i*k+i]));if(!(scale>0))return false;
@@ -80,6 +113,7 @@ class FreeRootDynamics {
    for(size_t ii=k;ii-->0;){double t=y[ii];for(size_t m=ii+1;m<k;++m)t-=l[m*k+ii]*x[m];x[ii]=t/l[ii*k+ii];lambda[ii]+=x[ii]*rhs[col];}}
   return true;}
  static Dense project_rows(const Dense& initial,const Dense& inverse,const std::vector<Dense>& rows,const Dense& floors,std::vector<double>* multipliers){
+  F9_PR_CALL_INC();
   const size_t R=rows.size();
   if(R<1||R>11)std::fprintf(stderr,"ROWBUDGET-TOP R=%d\n",(int)R);
   require(R>=1&&R<=11,"coupled_free_row_budget");
@@ -90,6 +124,7 @@ class FreeRootDynamics {
    // strict-convex dual argument bounds the swap count finitely, and the cap
    // (3R+3, measured headroom) keeps the refusal loud and bounded.
    for(size_t it=0;it<=3*R+3;++it){
+   F9_PR_ITER_INC();
    const size_t k=act.size();Dense lam(k,0.);
    if(k){
     std::vector<double> g(k*k,0.);Dense rhs(k,0.);std::vector<Dense> ir(k);
@@ -124,6 +159,7 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
  // the qualified review-F1 rule (friction opposes impending slip). mode
  // 1 stick, 2 slide, 0 no force (friction never acts without normal reaction).
  static void friction_solve(const Dense& initial,const Dense& inverse,const Dense& row_n,const Dense& row_t,double floor_n,double floor_t,double mu,double slip_sign,Dense& force,double& lambda_n,double& lambda_t,int& mode){
+  F9_FRIC_INC();
   force=Dense(initial.size(),0.);lambda_n=0;lambda_t=0;mode=0;
   auto in=multiply(inverse,row_n),it=multiply(inverse,row_t);
   double A=inner(row_n,in),B=inner(row_n,it),C=inner(row_t,it),rn=-(inner(row_n,initial)-floor_n),rt=-(inner(row_t,initial)-floor_t),det=A*C-B*B;
@@ -135,6 +171,7 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
   if(n>=0){for(size_t i=0;i<initial.size();++i)force[i]=row_n[i]*n+row_t[i]*t;lambda_n=n;lambda_t=t;mode=2;return;}
   force=Dense(initial.size(),0.);lambda_n=0;lambda_t=0;mode=0;}
  Rate rate(const State& s,const Dense& tau,const std::vector<char>& live,const std::vector<char>& plane)const{
+  F9_RATE_INC();
   auto e=evaluate(s);auto inv=inverse_spd(e.mass,n_);
   auto external=e.force(hand_,local_,V{0,-number(config_["load_N"]),0});
   Dense rhs(n_,0.);double heat=0;
@@ -202,13 +239,17 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
   // AMENDMENT E8, final form).
   out.v=free;
   return out;}
- State free_step(const State& start,double h,const Dense& tau,const std::vector<char>& live)const{
+ State free_step(const State& start,double h,const Dense& tau,const std::vector<char>& live,const Evaluation* estart=nullptr)const{
+  F9_STEP_INC();
   auto shifted=[&](const Rate& d,double t){State x=start;for(size_t i=0;i<n_;++i){x.q[i]+=d.q[i]*t;x.v[i]+=d.v[i]*t;}return x;};
   // Substep-level friction hold per point: the friction impulse chain can
   // leave a tiny separating residue that would flicker the per-stage gate
   // (carried over from the qualified free_step, generalized per point).
+  // estart: the caller's already-computed Evaluation of `start` (lane
+  // f9-budget-20260919 F9 profile) -- identical state, identical arithmetic,
+  // identical floating-point result; only the duplicate evaluation is elided.
   std::vector<char> plane(npts_,0);
-  if(contact_&&mu_>0){auto e0=evaluate(start);double gate=1e-6+1e-3*joint_speed_scale(start);
+  if(contact_&&mu_>0){auto e0=estart?*estart:evaluate(start);double gate=1e-6+1e-3*joint_speed_scale(start);
    for(size_t k=0;k<npts_;++k)if(live[k]&&gap_of(e0,k)<=kTouch&&inner(contact_row(e0,k),start.v)<=gate)plane[k]=1;}
   auto a=rate(start,tau,live,plane),b=rate(shifted(a,h/2),tau,live,plane),c=rate(shifted(b,h/2),tau,live,plane),d=rate(shifted(c,h),tau,live,plane);
   State end=start;
@@ -223,8 +264,8 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
    end.friction_heat_tick[k]+=h*(a.friction_heat[k]+2*b.friction_heat[k]+2*c.friction_heat[k]+d.friction_heat[k])/6;
    end.friction_force_impulse[k]+=h*(a.friction_lambda[k]+2*b.friction_lambda[k]+2*c.friction_lambda[k]+d.friction_lambda[k])/6;}
   end.damping+=h*(a.damping+2*b.damping+2*c.damping+d.damping)/6;
-  double dy=evaluate(end).point(hand_,local_).first[1]-evaluate(start).point(hand_,local_).first[1];end.external-=number(config_["load_N"])*dy;
-#if 1 // CHIMERA_FREE_TRACE
+  double dy=evaluate(end).point(hand_,local_).first[1]-(estart?estart->point(hand_,local_).first[1]:evaluate(start).point(hand_,local_).first[1]);end.external-=number(config_["load_N"])*dy;
+#if defined(CHIMERA_FREE_TRACE) // per-substep ledger diagnostic, lane f9-budget-20260919: was #if 1 (F9 profile: 8 evaluates/tick in the measured window); the qualified header's own CHIMERA_FREE_TRACE guard convention
   {double de=mechanical(end)-mechanical(start),w=0;for(size_t i=nb_;i<n_;++i)w+=end.work[i]-start.work[i];
    double dm=end.damping-start.damping,fh=0;for(size_t k=0;k<npts_;++k)fh+=end.friction_heat[k]-start.friction_heat[k];
    double r=de-w-(end.external-start.external)+dm+fh;
@@ -232,6 +273,7 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
 #endif
   return end;}
  double impact(State& s)const{
+  F9_IMPACT_INC();
   auto e=evaluate(s);auto inv=inverse_spd(e.mass,n_);
   std::vector<NamedRow> rows;auto joint=normals(s);
   // At the localized wall the stop rows are ALWAYS armed (velocity floors).
@@ -301,6 +343,7 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
     s.impact+=(std::max)(0.,loss+share_contact);}
   return caught;}
  State advance(State start,double h,const Dense& tau,int depth=0)const{
+  F9_ADV_INC();
   if(h<1e-12)return start;
   // Free-class impact-event budget (packet AMENDMENT E3): one substep can
   // host 3N+2 sequential landings; a Coulomb catch consumes depth 3 (halving,
@@ -314,12 +357,12 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
   // Contact rows are live only in a substep that STARTS touching, per point.
   std::vector<char> live(npts_,0);auto estart=evaluate(start);
   if(contact_)for(size_t k=0;k<npts_;++k)live[k]=gap_of(estart,k)<=kTouch?1:0;
-  auto end=free_step(start,h,tau,live);int which=-1,khit=-1;double hit=h,wall=0;
+  auto end=free_step(start,h,tau,live,&estart);int which=-1,khit=-1;double hit=h,wall=0;
   // Joint-stop crossings: joint rows only; earliest t wins, ties break to the
   // LOWEST coordinate index (the packet's deterministic generalized law, D9).
   for(int i=0;i<2;++i){size_t c=nb_+size_t(i);bool low=end.q[c]<model_->lower[c];if(!low&&end.q[c]<=model_->upper[c])continue;
    double bound=low?model_->lower[c]:model_->upper[c],left=0,right=h;
-   for(int j=0;j<42;++j){double mid=(left+right)/2;double q=free_step(start,mid,tau,live).q[c];if(low?q<=bound:q>=bound)right=mid;else left=mid;}
+   for(int j=0;j<42;++j){double mid=(left+right)/2;double q=free_step(start,mid,tau,live).q[c];F9_BISECT_INC();if(low?q<=bound:q>=bound)right=mid;else left=mid;}
    double t=(left+right)/2;if(t<hit||(t==hit&&which>=0&&i<which)){hit=t;which=i;khit=-1;wall=bound;}}
   // First contact crossings per point: earliest across points; the
   // pre-touching piece integrates without the crossing point's rows.
@@ -327,7 +370,7 @@ std::fprintf(stderr,"ROWBUDGET-END R=%d\n",(int)R);
    for(size_t k=0;k<npts_;++k){
     if(live[k]||gap_of(eend,k)>=0)continue;
     auto probe=live;probe[k]=0;double left=0,right=h;
-    for(int j=0;j<42;++j){double mid=(left+right)/2;if(gap_of(evaluate(free_step(start,mid,tau,probe)),k)<=0)right=mid;else left=mid;}
+    for(int j=0;j<42;++j){double mid=(left+right)/2;if(gap_of(evaluate(free_step(start,mid,tau,probe)),k)<=0)right=mid;else left=mid;F9_BISECT_INC();}
     double t=(left+right)/2;if(t<hit){hit=t;which=2;khit=int(k);}}}
   if(which<0)return end;
   require(hit>1e-12,"coupled_unresolved_impact_time");
