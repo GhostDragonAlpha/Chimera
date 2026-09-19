@@ -188,14 +188,36 @@ def compile_gait(graph,output):
         x=phi*20.0;k=min(19,int(x));f=x-k;return t[k]*(1.0-f)+t[k+1]*f
     def _thigh_tilt(phi):  # composed stance-thigh tilt from vertical-down
         return zeros['hip']+_table(tables['hip'],phi)
+    def _contact_xy(phi):
+        th1=zeros['hip']+_table(tables['hip'],phi)
+        th2=th1+zeros['knee']+_table(tables['knee'],phi)
+        p=th2+zeros['ankle']+_table(tables['ankle'],phi)
+        x=_L1*_m.sin(th1)+_L2*_m.sin(th2)+((_XH if p>0 else _XM)*_m.cos(p))
+        y=-_L1*_m.cos(th1)-_L2*_m.cos(th2)+((_XH if p>0 else _XM)*_m.sin(p))
+        return x,y
+    _cd=1e-4
+    def _contact_vy(phi):  # the composed contact's vertical speed rel. hip
+        return (_contact_xy(phi+_cd)[1]-_contact_xy(phi-_cd)[1])/(2*_cd)/float(contract['cycle_duration_s'])
+    # ENTRY LOAD-TRANSFER LAW (wave 6): the seated contact must not be
+    # OPENING at entry -- the solver's plane-arming gate rejects a point
+    # whose normal velocity exceeds ~4 mm/s upward, so an entry on the
+    # rising limb of the closure residual's bob (measured +64 mm/s at the
+    # bare vertical-thigh instant, phi=0.449) lifts the seated foot within
+    # one tick: no force path, a bounce, and the wrong leg catches the body
+    # (the [pt] trace, receipt_wave5). The entry is therefore the phase
+    # nearest vertical thigh SUBJECT TO the composed contact settling
+    # (vy <= 0). Measured convergence: this also lands on the most
+    # statically-holdable phase in the window (phi~0.35: knee 4.34,
+    # ankle 7.20 -- every demand inside the ORIGINAL caps; why the caps
+    # amendment was not binding).
     e_best,e_err=None,1e9
     for i in range(180,501):  # phi in [0.09, 0.50] at 1e-3: the stance window before heel-off
         phi=i/1000.0
         err=abs(_thigh_tilt(phi))
         # the swing partner (phi+0.5) must be airborne: after its toe-off (0.68) before its TD (1.0)
-        if 0.70<phi+0.5<0.99 and err<e_err: e_best,e_err=phi,err
+        if 0.70<phi+0.5<0.99 and _contact_vy(phi)<=0.0 and err<e_err: e_best,e_err=phi,err
     entry_phase=float(e_best)
-    require(entry_phase is not None and e_err<0.02,'gait_entry_phase_not_found',e_err)
+    require(entry_phase is not None and e_err<0.35,'gait_entry_phase_not_found',e_err)
     jstems=['hip_flexion','knee_extension','ankle_dorsiflexion','MP_dorsiflexion']
     start_values={}
     for leg,phi in (('left',entry_phase),('right',entry_phase+0.5)):
