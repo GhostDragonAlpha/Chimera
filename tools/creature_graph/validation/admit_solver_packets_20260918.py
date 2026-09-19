@@ -32,7 +32,7 @@ ADMITTER = "tools/creature_graph/validation/admit_solver_packets_20260918.py"
 PACKET_TEST = "tools/science_funnel/tests/test_packet_checker.py"
 
 FREE_ROOT_REVISIONS = [
-    # revision 1 (current): the packet is authored; nothing measured yet.
+    # revision 1 (superseded 2026-09-18 by the implementing lane): packet authored.
     {
         "id": FREE_ROOT_ID,
         "kind": "work",
@@ -126,6 +126,136 @@ FREE_ROOT_REVISIONS = [
                 "F1-F9 of docs/packets/free_root_balance_v1.md via its live "
                 "qualification script and records measured results here in "
                 "revision 2. Until then the honest status is untested.",
+            "status": "untested",
+        },
+    },
+    # revision 2 (current, 2026-09-18, implementing lane GLM 5.3): IMPLEMENTATION
+    # ADMISSION, recorded BEFORE any implementing code (RULE 0 order). Stage 0 was
+    # measured first: the untouched qualified suite on this lane's worktree
+    # reproduces both frozen bit-exact anchors (press gap 4.147475858029548e-07 m,
+    # peak reaction 2.5894018617259906 N, drop heat 0.06656390658451124 J;
+    # 158229 dynamics checks, pass). Four implementation errata are admitted
+    # through the packet's own revision path and recorded in the packet's
+    # AMENDMENT 20260918 section: E1 one-token validation diff to
+    # coupled_articulation.hpp (coupled_coordinate_capacity 7 -> 8; integer
+    # validation, not arithmetic; frozen control unaffected by construction),
+    # E2 scene-server wiring lands in graph_earth.hpp + main.cpp (the actual
+    # scene-server files; the packet had named engine.cpp), E3 the free class
+    # derives its own impact-event budget depth < 10 + 6N (Refusal
+    # coupled_free_impact_event_budget) because one substep can host 3N+2
+    # sequential landings, E4 the scene opt-in ships as the sibling compiler
+    # tools/science_funnel/coupled_free_scene.py (NEW) because the qualified
+    # receipts pin coupled_scene.py's sha256. The support seating is derived and
+    # recorded in the amendment (hand point + two sourced ulna1 points;
+    # base_trans_y default -0.08977588222411312; CoM strictly inside the hull).
+    {
+        "id": FREE_ROOT_ID,
+        "kind": "work",
+        "name": "Free-root balance packet for the coupled-arm native solver (IMPLEMENTATION ADMITTED)",
+        # Ladder note: the store status enum has no 'implementation' rung; the
+        # honest pre-measurement rung is 'specified'. The implementation
+        # admission itself is carried by this revision's name, statement and
+        # contract (banked BEFORE code), and the falsifier status stays
+        # 'untested' until revision 3 records measured results.
+        "status": "specified",
+        "priority": "P1",
+        "dependencies": [
+            "model.dynamics.coupled_arm",
+            "model.anatomy.macaque_arm",
+        ],
+        "physical": {
+            "statement":
+                "Revision 2: the implementing lane (GLM 5.3, "
+                "lane/free-root-20260918) admits implementation of "
+                "docs/packets/free_root_balance_v1.md with errata E1-E4 "
+                "recorded in the packet's AMENDMENT 20260918 section and in "
+                "this revision BEFORE implementing code. The 8-DOF free-root "
+                "dynamics (new header ChimeraEngine/engine/"
+                "free_root_dynamics.hpp, Refusal tags coupled_free_*), the "
+                "frozen mount-locked dispatch to the untouched qualified class "
+                "(D10), the sibling scene compiler and the live falsifier "
+                "script are admitted under the packet's D1-D10 derivations, "
+                "falsifiers F1-F9 and performance budgets unchanged. Stage 0 "
+                "(the frozen control) was measured first and holds bit-exactly "
+                "on this lane's worktree.",
+            "prediction":
+                "Unchanged from revision 1 (the packet's PREDICTION); nothing "
+                "free-root has been measured yet. The only measured claim so "
+                "far is Stage 0: the qualified suite's frozen anchors "
+                "(press gap 4.147475858029548e-07 m, peak reaction "
+                "2.5894018617259906 N, drop heat 0.06656390658451124 J) "
+                "reproduce bit-exactly with 158229 dynamics checks passing on "
+                "the lane worktree before any implementing diff.",
+            "contract": {
+                "packet": "docs/packets/free_root_balance_v1.md",
+                "derives": [
+                    "D1-D10 unchanged; falsifiers F1-F9 unchanged; performance "
+                    "budgets unchanged",
+                    "E1 (packet AMENDMENT 20260918): coupled_articulation.hpp "
+                    "takes a one-token VALIDATION diff (capacity 7 -> 8); no "
+                    "arithmetic moves, frozen bit-exact control unaffected by "
+                    "construction; the packet's own 'packet revision first' "
+                    "path, recorded here before code",
+                    "E2: scene-server wiring in graph_earth.hpp + main.cpp "
+                    "(actual scene-server files), new bundle kind "
+                    "coupled_free_dynamics, class construction on "
+                    "free_root_enabled",
+                    "E3: free-class impact-event budget depth < 10 + 6N with "
+                    "Refusal coupled_free_impact_event_budget (loud, derived: "
+                    "3N+2 sequential landings per substep, halving nesting <= "
+                    "2 consuming <= 6, <= 2 per event split)",
+                    "E4: coupled_scene.py stays byte-untouched (sha pinned by "
+                    "qualified receipts); the opt-in is the sibling compiler "
+                    "coupled_free_scene.py; default compile output remains the "
+                    "qualified mounted world",
+                ],
+                "falsifiers": [
+                    "F1 cannot-FALL-cannot-walk (unsupported base must fall at g)",
+                    "F2 zero-torque standing must collapse (no phantom stiffness)",
+                    "F3 support-polygon violation must tip",
+                    "F4 ledger closure < 1e-5 J everywhere",
+                    "F5 frozen bit-exact control (ULP-zero vs qualified receipts)",
+                    "F6 free-flight momentum conservation 1e-9 relative",
+                    "F7 base range scaffold must not clamp",
+                    "F8 friction cone validity per touching point",
+                    "F9 measured performance budgets (median tick, memory)",
+                ],
+                "owned_files": [
+                    "docs/packets/free_root_balance_v1.md",
+                    CHECKER,
+                    PACKET_TEST,
+                    ADMITTER,
+                    "ChimeraEngine/engine/free_root_dynamics.hpp",
+                    "tools/science_funnel/coupled_free_scene.py",
+                    "tools/science_funnel/tests/qualify_coupled_free_live.py",
+                    "tools/science_funnel/tests/test_coupled_free.py",
+                    "tools/creature_graph/validation/admit_coupled_free_20260918.py",
+                ],
+            },
+        },
+        "falsifier": {
+            "statement":
+                "Unchanged from revision 1: if with contact disabled the base "
+                "fails to accelerate downward at g, or zero-torque standing "
+                "holds pose without a contact reaction, or a CoM projection "
+                "outside the support hull fails to tip, or any status query "
+                "violates the ledger identities, or the mount-locked mode "
+                "differs from the qualified candidate by a single ULP, or a "
+                "free-flight trajectory clamps at the authored base range, or "
+                "the measured budgets are exceeded -- the packet's dynamics "
+                "claim is FALSE and the implementation is refused. A creature "
+                "that cannot FALL cannot walk.",
+            "acceptance_test":
+                "Runnable with revision 3 of this record: the implementing "
+                "lane executes falsifiers F1-F9 of "
+                "docs/packets/free_root_balance_v1.md via "
+                "tools/science_funnel/tests/qualify_coupled_free_live.py "
+                "against the native runtime on the lane-owned port, plus the "
+                "offline unit checks in tools/science_funnel/tests/"
+                "test_coupled_free.py and the in-process native free suite; "
+                "measured results are recorded in revision 3. Falsifier "
+                "status stays honestly untested at this revision: no "
+                "free-root falsifier has been run.",
             "status": "untested",
         },
     },
