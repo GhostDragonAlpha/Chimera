@@ -63073,6 +63073,87 @@
     "storage": "chimera-intake:e5fa2ec877335887d552908b45a15f9fcf4fd994fdb8bedbefb2ff4dce380f02"
    },
    "status": "extracted"
+  },
+  {
+   "id": "work.data.compute_harness",
+   "kind": "work",
+   "name": "Parallel compute harness: /MP24 native builds, parallel funnel tests, GPU oracle",
+   "status": "specified",
+   "priority": "P1",
+   "dependencies": [],
+   "evidence": [],
+   "falsifier": {
+    "statement": "A clean rebuild completes in <5 minutes (was 10-20) and the full test suite completes in <8 minutes (was 15-30) - measure before and after on the same machine; either number failing falsifies the harness.",
+    "status": "tested_survived"
+   },
+   "physical": {
+    "statement": "The fleet's compute mechanics run parallel on the 24-core operator box: every ChimeraEngine CMake build compiles MSVC translation units with /MP24 and a parallel-level default of 24; tools/parallel_test.ps1 runs every science_funnel test module as an independent python process (up to 12 concurrent, --quick skips the known-slow set); tools/compute_harness.py exposes build, test-native, test-python-quick, test-python-full, gpu-info, gpu-oracle and profile subcommands, each reporting wall time; tools/gpu_oracle.py batches M(q), gravity, bias and point Jacobians for many poses on the RTX 4090 in float64 and proves numerical parity against the CPU analytic reference (tools/science_funnel/coupled_arm.py) before any speed claim.",
+    "prediction": "On this machine: the parallel clean rebuild is faster than the measured serial baseline, the parallel full funnel suite is faster than the measured sequential baseline, and both land under the preregistered absolute thresholds (rebuild <300 s, full suite <480 s). The oracle's max relative deviation vs the CPU reference stays under 1e-9 on every checked quantity.",
+    "contract": {
+     "base_commit": "c43d3363539b1d4ea4481e89d7936c57210ad8ba",
+     "law": [
+      "Every subcommand of tools/compute_harness.py reports its own wall time and writes machine-readable JSON under .tmp/compute_harness/.",
+      "parallel_test.ps1 runs modules as independent python processes with per-module exit codes; a module counts as passed only on exit code 0.",
+      "The GPU oracle never extrapolates a speedup without first proving parity on the checked poses; cpu timing is reported as a bounded per-pose rate, never a silent extrapolation.",
+      "The harness installs nothing silently: a missing torch reports the one-command operator action (tools/install_torch_cuda.ps1)."
+     ],
+     "falsifiers": [
+      "CLEAN REBUILD (tools/compute_harness.py build --clean): measured wall time must be <300 s; the serial baseline is measured first on the same tree.",
+      "FULL TEST SUITE (tools/compute_harness.py test-python-full): measured wall time must be <480 s; the sequential baseline is measured first with the same module set and invocation.",
+      "ORACLE PARITY (tools/compute_harness.py gpu-oracle): max relative deviation vs coupled_arm.Assembly must stay <1e-9 on M, gravity, bias and potential; a larger deviation refutes the GPU oracle."
+     ],
+     "owned_files": [
+      "tools/compute_harness.py",
+      "tools/parallel_test.ps1",
+      "tools/gpu_oracle.py",
+      "tools/gpu_check.py",
+      "tools/install_torch_cuda.ps1",
+      "ChimeraEngine/engine/CMakeLists.txt",
+      "ChimeraEngine/engine/tests_arm_dynamics/CMakeLists.txt",
+      "ChimeraEngine/engine/tests_articulation/CMakeLists.txt",
+      "ChimeraEngine/engine/tests_coupled_arm/CMakeLists.txt",
+      "ChimeraEngine/engine/tests_environment/CMakeLists.txt",
+      "ChimeraEngine/engine/tests_p1/CMakeLists.txt"
+     ],
+     "not_implemented": [
+      "no claim that the 10-20 minute rebuild or 15-30 minute suite premises reproduce on this box - the serial baseline is measured and reported alongside",
+      "no ML/training acceleration: the harness accelerates builds, tests and reference math only",
+      "no GPU multibody integration: the oracle computes fixed-root force ingredients, not a simulator"
+     ]
+    }
+   },
+   "project_spec": {
+    "schema": "chimera.project_spec.v1",
+    "admission": "active_specification",
+    "category": "work",
+    "origin_id": "source.operator.compute_harness_20260918",
+    "admitted_utc": "2026-09-18T02:30:00+00:00",
+    "authorization": "Operator's compute-harness lane brief (lane/compute-harness-20260918 from c43d3363539b1d4ea4481e89d7936c57210ad8ba)",
+    "authority_scope": "Isolated repository lane on the assigned worktree; no production qualification."
+   },
+   "observation": {
+    "measured_20260918": {
+     "statement": "Measured before/after on the operator box (24 physical cores, RTX 4090, VS 2026 toolchain). CLEAN REBUILD: serial baseline 23.12 s vs parallel /MP24 build 23.04 s - the preregistered <300 s threshold survives, and the operator's 'was 10-20 minutes' premise does not reproduce on this toolchain (measured honestly; /MP24 remains correct for slower toolchains such as the documented VS 2022 route). FULL FUNNEL SUITE: sequential baseline 3879.27 s (64.7 min, 23 modules, 3 failures) vs parallel full suite 296.72 s (4.9 min) - 13.1x, and the preregistered <480 s threshold survives. The sequential baseline ran while other lanes' processes loaded the box; part of the 13.1x is removal of that contention-thrashing (test_surface_scene: 3072 s contended vs ~290 s quiet), which the observation records rather than claims as harness speedup alone. QUICK MODE (skips test_surface_scene + test_force_compiler): 21 modules in 261-283 s across two runs vs a ~744 s sequential-equivalent. TEST-NATIVE: 10 executables built with the /MP24 CMake changes across all 5 test dirs and run in 3.25 s (3 pass, 7 need per-fixture arguments - bare invocations print usage and are reported needs_args, not failures). GPU ORACLE: 4096 poses batched on the RTX 4090 in 0.776 s (5279 poses/s, float64); parity against tools/science_funnel/coupled_arm.py at max relative deviation 5.55e-17 across M(q), gravity, bias and potential - machine epsilon, far under the preregistered 1e-9. Pass/fail set is IDENTICAL between sequential and parallel runs: 3 modules fail for causes verified pre-existing on master (test_batch_appearance: untracked PHYLACINE zip download; test_coupled_scene: stale pinned scene digest - reproduced on the pristine c43d3363 store; test_visual_proof_wave2: stale object-count pin 35331 vs 52430 before this lane).",
+     "falsifier": "Both preregistered thresholds measured and survived: clean rebuild 23.04 s < 300 s AND full suite 296.72 s < 480 s. The 'was 10-20' and 'was 15-30' premises are reported as measured (23.12 s serial; 3879.27 s sequential) rather than as assumed.",
+     "measured_utc": "2026-09-19T03:55:00+00:00",
+     "numbers": {
+      "serial_clean_build_seconds": 23.12,
+      "parallel_clean_build_seconds": 23.04,
+      "sequential_funnel_suite_seconds": 3879.27,
+      "parallel_full_suite_seconds": 296.72,
+      "parallel_quick_suite_seconds_range": [
+       260.8,
+       282.68
+      ],
+      "native_test_executables": 10,
+      "native_suite_seconds": 3.25,
+      "gpu_oracle_poses": 4096,
+      "gpu_oracle_seconds": 0.776,
+      "gpu_oracle_parity_max_rel": 5.55e-17,
+      "cpu_reference_ms_per_pose": 6.841
+     }
+    }
+   }
   }
  ],
  "relations": [

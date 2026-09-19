@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.20)
 project(chimera_coupled_checks LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
+# work.data.compute_harness: parallel MSVC compilation across the 24 cores.
+if(MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP24")
+endif()
+set(CMAKE_BUILD_PARALLEL_LEVEL 24 CACHE STRING "Default parallel build level")
 add_executable(coupled_native native.cpp)
 if(MSVC)
  target_compile_options(coupled_native PRIVATE /W4 /fp:precise)
