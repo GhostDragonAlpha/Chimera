@@ -1,258 +1,140 @@
-# HANDOFF — lane/packet-author-20260918 (agent: GLM 5.3)
+# HANDOFF — lane/f9-budget-20260919 (agent: BUFFY)
 
-Date: 2026-09-18. Branch: `lane/packet-author-20260918` (pushed to origin). Base:
-master tip at time of push (lane base `4b047609`; master did not move during the
-lane). All mechanics ran through PowerShell `.ps1` scripts; Python was the pinned
-`E:\PythonChimera\.venv-hy3d\Scripts\python.exe`;
-E:\PythonChimera otherwise untouched, port 8127 avoided, SharedBody*.json untouched.
+Date: 2026-09-19. Branch: `lane/f9-budget-20260919` (pushed to origin, tip
+`f63486f6`, base `12e536ad` = the free-root implementation tip from
+`lane/free-root-20260918` — note the implementation is NOT on master yet; the lane
+branches off it, master `c43d3363` did not move). All mechanics ran through
+PowerShell `.ps1` scripts (`E:\ChimeraWork\f9_*.ps1`); Python was the pinned
+`E:\PythonChimera\.venv-hy3d\Scripts\python.exe`; E:\PythonChimera otherwise
+untouched, port 8127 avoided, port 8127 engine never started, SharedBody*.json
+untouched. The frozen qualified class (`coupled_dynamics.hpp` + its
+`coupled_articulation.hpp` arithmetic) is byte-untouched.
 
 ## What this lane was
 
-AUTHOR-ONLY lane: two concrete, self-contained native-solver implementation packets
-(NO engine implementation), plus the mechanical completeness gate for packets, plus
-their Rule-0 admission records. The executing solver lane implements; this lane made
-sure every equation, constant, falsifier, control, budget and file it needs is already
-derived and falsifiable.
+The free-root solver honestly failed its F9 performance falsifier (measured
+3.60x the mounted solver's tick, 2.98 ms, against a `3x M_mounted AND 0.5 ms`
+budget). Task: profile, optimize under 3x if possible, and either bank the result
+or supersede the budget section with a falsifiable packet. DONE: optimized
+ bitwise-neutrally, then superseded the budget section with evidence, with the
+falsifier enforced mechanically in the suite.
+
+## What the profile found (probe: `tests_coupled_arm/f9_profile.cpp`,
+target `f9_profile`, `CHIMERA_F9_PROFILE`; counters in the engine headers are
+`#ifdef`-guarded zero-cost in production builds)
+
+Per tick in the F9 window (free, mu=0), BASE implementation: 44.0
+`Model::evaluate` (16 minimum needed = 4 RK4 stages x 4 substeps), 20.0
+`inverse_spd`, 20.0 `project_rows` (1.0 iterations/call - already at floor),
+0 friction solves, 0 bisection steps. The excess was WASTE, not n=8 scaling:
+- 8/tick: a live `#if 1` FLEAK ledger-trace block in `free_step` running two
+  FULL evaluates per substep on every tick. Now `#ifdef CHIMERA_FREE_TRACE`
+  (the qualified header's own convention).
+- 4/tick: `advance()` re-evaluated the substep start state after `impact()`
+  had just evaluated it. Reused (Evaluation is a pure function of (q,v,g)).
+- 8/tick: `free_step()` re-evaluated its start state (friction-hold e0 +
+  external-work start point). Reused the same way.
+Both reuse edits verified BITWISE-NEUTRAL: same receipts, bit-exact anchors.
+
+Post-optimization: 32.0 evaluates/tick (F9 window). Seated mu=0.6 window:
+65.4 evaluates, 42.3 projections (1.22 it/call), 75.5 friction solves/tick.
+
+## Why supersede rather than chase 3x
+
+The absolute clause `<= 0.5 ms` is unreachable BY THE MOUNTED BASELINE ITSELF:
+the frozen 2-DOF `CoupledDynamics` measures 0.70-0.83 ms/tick on the reference
+box (i9-13900K, MSVC 2022 Release). No free-solver optimization can satisfy a
+clause the qualified class fails; the clause was a box-calibration error, not a
+solver cost. The relative clause was the meaningful budget and the optimized
+solver holds it.
 
 ## Deliverables (all on the lane branch)
 
-1. `docs/packets/free_root_balance_v1.md` — the qualified 2-coordinate coupled arm
-   extended to 6-DOF floating base + 2 joints = 8 DOF. Derives, in the exact
-   conventions of `ChimeraEngine/engine/coupled_dynamics.hpp` +
-   `coupled_articulation.hpp` (every constant identifier-matched: kTouch=1e-5,
-   kSlip=1e-9, gate=1e-6+1e-3|v|, 42-step bisection, 1e-9 localizations, depth<8,
-   40-step battery bisection, the share identities): D1 base kinematics as a 6-axis
-   sternum joint through the EXISTING Model (no new kinematics code), D2 the n=8
-   inertia sums with block structure, D3 equations of motion (zero torque on base
-   rows by construction), D4 contact as a LIST of 3D point-on-plane rows,
-   D5 the 3-row stick cone solve + qualified slide closed forms at 8 rows,
-   D6 active-set projection replacing mask enumeration with a termination
-   derivation, D7 balance = gravity compensation through contact (barycentric
-   support-hull condition), D8 the ledger extension, D9 why RK4+event-splits stays,
-   D10 the mount-locked mode as FROZEN bit-exact dispatch (the qualified class runs
-   verbatim; a weld is not six unilateral rows). Falsifiers F1-F9 incl. the task's
-   three: a creature that cannot FALL cannot walk (F1), zero-torque standing must
-   collapse (F2), support-polygon violation must tip (F3).
-2. `docs/packets/seven_coordinate_lift_v1.md` — native lift of all seven unlocked
-   source coordinates against `tools/science_funnel/coupled_arm.py::Assembly` as an
-   independent oracle (1e-12 relative on M/gravity/bias/Jacobian at recorded-seed
-   poses): 7-row joint-stop cascade with a deterministic
-   earliest-crossing/lowest-index tie law (the qualified n=2 `t <= hit` last-wins
-   tie stays byte-for-byte on the frozen path), per-drive actuator stores (honest
-   note: mechanical-energy closure stays GLOBAL), hand contact on the 7-row point
-   Jacobian, staged ladder 2 -> 3 -> 5 -> 7 (stage 0 = the frozen bit-exact
-   control), falsifiers F1-F9, staged file plan. Recommended to land BEFORE the
-   free-root packet (validates the shared generalized-row solver on the fixed root).
-3. `tools/science_funnel/check_packet.py` — the completeness gate: required
-   sections, Rule-0 triple, >= 3 falsifiers each with a refusal criterion, a frozen
-   bit-exactness claim, measurable budgets, an on-disk file list (NEW paths need at
-   least their parent), and the banked admission record in the authored program.
-   Read-only, deterministic, exit 0 over both packets.
-4. `tools/science_funnel/tests/test_packet_checker.py` — wires the gate into the
-   funnel suite permanently.
+1. `docs/packets/f9_supersession_v1.md` — the supersession packet: the fired
+   measurement, the profile with call counts, the complexity derivation (why
+   8-DOF+3D-contact is NOT 3x a 2-DOF arm: O(bodies*n^2) assembly feeds every
+   term, so n=2->8 is 16x the dominant loop while mounted runs the SAME
+   evaluate at n=2), the SUPERSEDED BUDGET, and its own falsifiers F1-F4:
+   - F1 single window: ratio > 5x M_mounted OR free tick > 3.33 ms (300 Hz tick)
+   - F2 sustained: ratio median > 3x across 3 consecutive qualification runs
+   - F3 working set / status serialization (inherited, unchanged)
+   - F4 real-time envelope: seated mu=0.6 tick > 3.33 ms refuses the real-time
+     claim until the budget is re-derived for the slower regime
+2. `docs/packets/free_root_balance_v1.md` — PERFORMANCE BUDGET section amended
+   with a superseded-by pointer (supersession declared in the packet it
+   supersedes, per that packet's own rule).
+3. `tests_coupled_arm/native_free.cpp` — F9 falsifier now enforces the
+   SUPERSEDED budget mechanically: `f9_free_tick_budget_superseded` =
+   `freems <= 5*mounted && freems <= 3.33`; receipt carries
+   `f9_budget: "superseded_v1"` + packet path + `f9_fired: false`. F2's
+   3-consecutive-run median is enforced across receipt runs (a single process
+   cannot see its own median); the 3 final receipts are banked in the packet.
+4. `tests_coupled_arm/f9_profile.cpp` + `#ifdef CHIMERA_F9_PROFILE` counters in
+   `free_root_dynamics.hpp` / `coupled_articulation.hpp` — the counting probe
+   (evaluate/inverse_spd/project_rows/friction/bisection/advance/impact +
+   per-section wall time). Production builds unaffected.
 5. `tools/creature_graph/validation/admit_solver_packets_20260918.py` — Rule-0
-   records banked BEFORE any implementing code:
-   `work.dynamics.free_root_balance_packet` +
-   `work.dynamics.seven_coordinate_lift_packet` (kind work, status specified,
-   falsifier status untested — honest: nothing in the packets is measured yet).
-   Idempotent AND revision-aware (no-op at current revision, supersedes known prior
-   revisions, REFUSES foreign content). Second run verified a no-op.
-6. `tools/creature_graph/data/{creature_graph.json, authored/project_program.json}`
-   rebuilt via `build_graph.py`: deterministic (identical graph_hash across two
-   builds: 6da0dcccbd3ea9e6), objects 35327 -> 35329, relations 38742 -> 38746,
-   **evidence 11 UNCHANGED**, work 73 -> 75.
-7. `.doclint.allow` — dated block allowing the packets' PLANNED (NEW) file paths
-   (a planned path is not a broken pointer). `doc_lint.py --staged` clean.
+   revisions 4 and 5 of `work.dynamics.free_root_balance_packet`: revision 4
+   admits the supersession packet against the recorded F9 fire; revision 5
+   re-records it on the FINAL receipts (statuses on the store ladder;
+   `tested_survived` is a falsifier status only). Graph rebuilt; checker exit 0
+   (3/3 packets PASS). Store re-saved on `creature_graph.json` (joined store is
+   the tracked convention; the ~330 MB bulk shards stay local as rebuild
+   artifacts, per the prior lane).
+6. `tools/science_funnel/tests/test_coupled_free.py` — repaired a PRE-EXISTING
+   constant mixup (`MODEL` = the dynamics contract object used where the
+   anatomy model record was meant; D2 reference indexed with free-model slots).
+   Offline unit checks 7/7 OK, bitwise identity intact.
 
-## Falsifier status (honest)
+## TRAP for the next lane (cost an afternoon)
 
-Both packets' falsifiers are UNTESTED by design: authoring lane, no runtime runs.
-The admission records say so (`falsifier.status: untested`, acceptance_test filled
-only in the implementing lane's revision 2). The gates that ARE measured for this
-lane are the suite results below.
+F5 compares the two scenes' embedded `graph_hash` BYTE-EXACTLY. Rule-0
+admissions change the store hash, so `.tmp/coupled-native/scene.json` COPIED
+from an older clone (old hash `5cb2a185...`) fails
+`f5_initial_status_byte_identical` against a scene compiled from the admitted
+store (new hash `3463194a...`) - and the only symptom is the refusal message
+landing on stdout while the runner tails stderr. RECOMPILE BOTH SCENES from the
+current store after any admission: `python -m
+tools.science_funnel.coupled_scene` then `python -m
+tools.science_funnel.coupled_free_scene`. Graph-hash equality across the two
+scenes is a feature, not a bug - it pins the whole graph generation.
 
-## Evidence-staleness verification (the trap this lane checked for)
+## FINAL RECEIPTS (reference box i9-13900K, 3 consecutive qualification runs on
+the final binary, F1-F8 passing in the same runs, frozen qualified anchors
+reproduced bit-exactly: gap 4.14747585802955e-07, heat 0.06656390658451124;
+oracle worst 5.47e-12 abs / 3.64e-11 rel over 868 comparisons)
 
-7 evidence records are stored-stale (ev.band_seal_conservation,
-ev.reflex_controls_fail, ev.xpbd_fidelity_gap, ev.limb_restore_recipes_20260915,
-ev.limb_live_control_20260915, ev.limb_cold_restart_20260915,
-ev.limb_seal_history_20260915). Verified PRE-EXISTING: extracted the pristine
-baseline store with `git show 4b047609:...` into a temp dir beside byte-identical
-bulk shards, loaded through the same CreatureGraph.load merge — the SAME 7 are
-stored-stale at baseline, and `refresh_validation` recomputes ZERO stale records on
-both trees. The lane's additions (2 work objects + their 4 requires_implementation
-edges) cannot and did not stale anything.
+```
+run  mounted ms  free ms   ratio
+ 1     0.8208    2.2354    2.72
+ 2     0.8164    2.2269    2.73
+ 3     0.8332    2.2943    2.75
+median 0.8208    2.2269    2.73
+```
 
-## Store-diff audit (object-level, vs baseline 4b047609)
+F1: 2.75 <= 5x AND 2.2943 <= 3.33. F2: median 2.73 <= 3x. F4 envelope: seated
+mu=0.6 profile 2.40 ms = 72% of the 300 Hz tick. The 7-run development table
+(median 2.03x) and these 3 receipts (median 2.73x, heavier background load)
+bracket the ratio between two load regimes with no solver change - itself
+evidence for the 5x single-window headroom.
 
-Additions are EXACTLY the two packet records + their 4 requires_implementation
-edges; zero removals. ONE pre-existing object re-synced by the rebuild:
-`work.data.visual_proof_20260917` — the STORE artifact at base held the draco
-lane's revision 3 while the committed AUTHORED program already held revision 4
-(their final store save predated their final admission, or a rebase took an
-upstream store JSON); `build_graph.py` takes the store to its authored input, so
-the rebuild updated that record's `physical`/`falsifier` fields to revision 4.
-Verified field-level: program record == rebuilt-store record; the record is a dep
-of NO evidence capture, so no validation state moves. Reviewers who see
-visual_proof lines in the store diff: that is this sync, not an edit of another
-lane's record by hand.
+## Verification checklist (all green at push)
 
-## Qualification state (final tree)
+- cmake Release build clean; f9_profile target builds
+- coupled_native (frozen qualified suite): exit 0, anchors bit-exact
+- coupled_free (F1-F9): exit 0 on the superseded falsifier, x3 consecutive
+- check_packet.py exit 0 (3/3 packets)
+- offline unit checks 7/7 (test_coupled_free.py)
+- graph rebuild from admitted revisions; F5 graph-hash equality across scenes
+- commit `f63486f6` pushed to origin/lane/f9-budget-20260919 ONLY
+  (master untouched; bulk shards uncommitted by convention)
 
-- build_graph.py --check-only: clean.
-- project_spec --check: ok (structure + active-specification contracts).
-- graph contracts (tools/creature_graph/tests/test_contracts.py): 19 tests OK.
-- project_spec tests (unittest discover -p test_project_spec.py): 14 tests OK.
-- packet checker: exit 0 over both packets (also green inside the funnel suite).
-- funnel suite (python -B -m unittest discover -s tools/science_funnel/tests):
-  258 tests OK (skipped=1) on the final tree in 2674 s under heavy CPU
-  contention from other lanes' jobs (baseline on pristine 4b047609: 257 OK,
-  skipped=1, 1062 s). The +1 test is the new packet gate
-  (test_packet_checker.py).
-- graphify consumer roundtrip (qualify --consumer-graph on the built store):
-  HONEST — 35329/35329 objects reversible, 38746/38746 relations intact,
-  all checks pass.
+## What remains (for whoever picks this up)
 
-## Publishing
-
-Pushed `lane/packet-author-20260918` only; master NEVER touched. Verified
-`git rev-parse origin/lane/packet-author-20260918` == local HEAD after push.
-Commit trailer: `Agent: GLM 5.3`.
-
-## Gotchas for the next agent (this checkout)
-
-- The store/bulk JSONs are LF in the working copy; git warns "LF will be replaced
-  by CRLF" and `git status` lists the bulk shards as modified after every rebuild
-  even when content-identical. `git diff --cached --numstat` on them must show
-  NOTHING before you commit (normalization only); if it shows lines, stop.
-- `Select-String ... | ForEach-Object { $_.LineNumber + ": " }` throws (int + string
-  cast); use "$($_.LineNumber): ..." interpolation.
-- `git show <rev>:<path>` redirected from PowerShell mangles encoding; extract
-  binary-safe via python subprocess (this lane's check_stale.py pattern).
-- qualify --consumer-graph needs its --output dir to exist; it never touches the
-  committed projection (consumer.DEMO_DIR is redirected to scratch).
-- Background suites: redirect to a log file and READ THE LOG; never pipe native
-  output through Select-Object -First (kills the writer mid-run).
-
-## Never-do reminders honored
-
-E:\PythonChimera untouched (except running its pinned python.exe); port 8127
-avoided; tools/game_shell/progress/SharedBody*.json untouched; no engine
-implementation (author-only lane); only this lane branch pushed.
-
-
-# HANDOFF — lane/terrain-wiring-20260918 (agent: GLM 5.3)
-
-Date: 2026-09-18. Branch: `lane/terrain-wiring-20260918` (pushed to origin).
-Base: master tip 0b8d80d5. Master moved TWICE mid-lane (4b047609 -> 8c0a9155
--> 0b8d80d5); both rebase collisions were the compiled graph store only,
-resolved by taking master's store side and replaying the idempotent
-build_graph (final store graph_hash ca68dc9c...). After each integration the
-wiring falsifiers were RE-PROVEN (byte identity pre-code vs post-code and
-live engine readouts) and the pinned identity re-verified.
-
-## What this lane was
-
-Operator task: wire the qualified terrain reduction
-(`tools/science_funnel/validation/terrain_20260917/`) into the coupled-arm
-scene as the hand contact plane height WITHOUT touching the qualified
-defaults. Rule 0 record banked pre-code:
-`work.environment.terrain` `observation.wiring_20260918`
-— statement/prediction/five named falsifiers, status untested at bank time.
-
-## What was done (in order)
-
-1. RULE 0 bank (commit 1): the wiring contract on work.environment.terrain.
-   Store rebuilt; surgical authored diff; evidence objects exactly 11 before
-   and after (re-verified at the final base).
-2. Implementation (commit 2): `tools/science_funnel/coupled_scene.py` admits
-   recipe key `contact_plane_height_source` (default ABSENT = qualified
-   authored 0.35 world untouched). Exactly one admitted source,
-   `terrain_cayo_20260917`; anything else refuses
-   (`coupled_contact_plane_source_unknown`). Resolution is PIN, NOT RECOMPUTE:
-   `reduction_result.json` must hash to its receipt pin and agree with the
-   receipt metric; `terrain.reduce_terrain` is never run at compile.
-   The stored graph contract is never mutated (compile works on a copy);
-   the launcher passthrough (`run_earth.ps1 -ContactPlaneHeightSource`, or the
-   compiler's `--contact-plane-height-source`) injects the key + coherent
-   surface entity in memory only. Provenance block recorded in the scene
-   bundle under the opt-in; reach scan RECORDED there (see derivations).
-   The default-scene regression identity lives in
-   `test_coupled_scene.DEFAULT_SCENE_PORTABLE_SHA256` with its verification
-   lineage cited in place (byte-identical pre-code vs post-code at BOTH
-   bases: 9947d074... at store 319fe2af..., 7c784f09... at store ca68dc9c...).
-3. Qualification (receipt
-   `tools/science_funnel/validation/terrain_wiring_20260918/receipt.json`):
-   falsifiers ALL HELD. test_coupled_scene 16/16 (green at every base); full
-   funnel suite GREEN (Ran 263 tests, OK skipped=1, exit 0); graphify
-   consumer HONEST (7 checks, 36,701 objects / 38,767 relations, 0 id
-   collisions, re-run at the final tip); evidence objects 11 unchanged.
-4. Engine runs, OWNED port 8183 only (8127 never touched), re-run at the
-   FINAL tip: default world via `run_earth.ps1 -CoupledArm -Port 8183` —
-   launcher readiness gate qualified, `contact.plane_world_up_m == 0.35`
-   exact (raw-JSON-text compare), contact off/friction off; terrain scene
-   (same Start-Process shape, scene compiled with the opt-in) —
-   `contact.plane_world_up_m == -42.82679794555668` EXACT, contact off by
-   default, free dynamics with store balance error 1.4e-13 J, gap +43.27 m
-   (the recorded unreachable). BOTH engines stopped path-guarded: kill only
-   after `(Get-Process -Id).Path` equals the owned exe.
-
-## Key derivations (do not re-derive)
-
-- Cayo patch, not Luquillo: the terrain receipt scope reduces the Cayo
-  Santiago patch centre; Luquillo is a named coastal-plain CONTROL, El Yunque
-  a gate refusal; the coupled scene is the Cayo Santiago macaque reference.
-  Wired value = cayo_santiago_patch.h_ellipsoidal_m = -42.82679794555668 m
-  (the Cayo GLO-30 window resolves to ocean, so this IS the geoid undulation;
-  recorded honestly, never hidden).
-- Pin, not recompute: the reduction is qualified + replayed by test_terrain;
-  compile-time re-derivation would add a drifting second producer and a
-  ~250 MB two-grid decode per launch for zero added verification.
-- Frame: the scene origin sits ON the WGS84 ellipsoid (earth altitude_m=0),
-  so the plane height in scene world-up metres IS h_ellipsoidal_m. The real
-  ground is ~42.8 m BELOW the mount origin, so under the opt-in the reach
-  scan is recorded (plane_reachable=false, measured) instead of asserting the
-  authored pressing-workload law; the no-initial-penetration gate stays
-  asserted in BOTH worlds.
-- The scene digest is output-dir dependent (pre-existing compile_scene
-  behavior: absolute arm/graph paths). The pinned regression identity in
-  test_coupled_scene normalizes the worktree root + output dir and drops the
-  self-referential scene_sha256 before canonical digesting. Re-pin ONLY
-  deliberately, cite the record that moved the scene, and re-prove exact
-  byte identity pre-code vs post-code at the same output dir.
-
-## Never-do reminders / quirks (host-measured)
-
-- `tools/science_funnel/terrain.py` sha256 is PINNED by the terrain receipt
-  manifest — never edit it casually; put companions beside it.
-- Windows PowerShell 5.1 reads BOM-less UTF-8 .ps1 as ANSI: an em-dash in a
-  string becomes a smart quote and breaks parsing. Keep .ps1 ASCII-only.
-- `git show <rev>:<path> | Set-Content` MANGLES newlines; extract files with
-  bash redirection (`git show rev:path > path`) instead.
-- PowerShell `[double]` parameter binding rounds to 15 digits — comparing
-  engine readouts must be done on RAW JSON text, not parsed doubles.
-- `& python ... 2>&1` under `$ErrorActionPreference='Stop'` promotes native
-  stderr to terminating errors — drop to 'Continue' around expected refusals.
-- `Get-Content`/`Add-Content` without `-Encoding` on PS 5.1 treat BOM-less
-  UTF-8 as ANSI — handoff sections appended through them get mojibake;
-  do file surgery through the venv Python with explicit encodings.
-- Background exec tasks on this host can be reaped with the stdout log left
-  empty and NO completion notification; a full-suite run that outlives ~5
-  minutes is safer CHUNKED into foreground module runs, or re-checked via its
-  log after the fact (both full-suite runs eventually completed exit 0).
-- Graph JSONs re-shard when the store rebuilds — after authored edits run
-  `build_graph.py` then `--check-only`, commit the whole data/ set atomically,
-  and on rebase take master's store side + replay the idempotent build.
-- Another lane's engine may be alive on this host (a foreign chimera_engine
-  PID was observed). Kill ONLY your own PID after the path guard.
-
-## Next executable work
-
-- A tilted/offset terrain MOUNT (moving the arm origin to the real ground) is
-  NOT part of this lane; the opt-in only pins the plane height honestly.
-- Friction/contact qualification at the terrain height is not claimed and
-  would need its own reachable-plane workload (or a repositioned mount).
-- `docs/research/20260917_terrain_source.md` falsifier 4 (NASADEM
-  cross-source) remains deferred (Earthdata login wall).
-- Whole-body source intake per the banked proposal on
-  work.creature.macaque_whole_body_sources remains the mainline.
+- MERGE GATE: master still lacks `12e536ad` and this lane. The supersession
+  unblocks the F9 section; the merge itself is the maintainer's call.
+- The seated mu=0.6 window is the next honest optimization target if real-time
+  headroom is wanted: 75.5 friction solves/tick at N=3 contact points is the
+  dominant remaining cost (see packet's "what was NOT done" section - a
+  per-point cone solve was kept for correctness, and is the documented
+  next candidate if a future window exceeds F4).
