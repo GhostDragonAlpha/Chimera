@@ -72,7 +72,13 @@ class GaitWalker {
  State s_;mutable uint64_t adv_calls_=0;
  Evaluation evaluate(const State& s)const{return model_->evaluate(s.q,s.v,gravity_);}
  double mechanical(const State& s)const{auto e=evaluate(s);return .5*inner(s.v,multiply(e.mass,s.v))+e.potential;}
- double gap_of(const Evaluation& e,size_t k)const{return e.point(points_[k].index,points_[k].local).first[1]+points_[k].radius-plane_model_y_;}
+ double gap_of(const Evaluation& e,size_t k)const{
+#ifdef GAIT_EVENT_TRACE
+  if(k>=points_.size()||points_[k].index>=e.frames.size())
+   std::fprintf(stderr,"[gapbound] k=%zu npts=%zu frames=%zu tick=%llu\n",
+    k,points_.size(),e.frames.size(),(unsigned long long)ticks_);
+#endif
+  return e.point(points_[k].index,points_[k].local).first[1]+points_[k].radius-plane_model_y_;}
  Dense contact_row(const Evaluation& e,size_t k)const{auto j=e.point(points_[k].index,points_[k].local).second;Dense r(n_,0.);for(size_t i=0;i<n_;++i)r[i]=j[i][1];return r;}
  Dense tangent_row(const Evaluation& e,size_t k,int axis)const{auto j=e.point(points_[k].index,points_[k].local).second;Dense r(n_,0.);for(size_t i=0;i<n_;++i)r[i]=j[i][axis];return r;}
  V contact_bias(const Evaluation& e,size_t k)const{return vector(e.frames[points_[k].index].ddt,points_[k].local,1);}
@@ -341,6 +347,49 @@ class GaitWalker {
     caught=(std::max)(caught,lambda);}
    require(share_contact<=1e-3,"gait_contact_impact_gain");
    s.impact+=(std::max)(0.,loss+share_contact);}
+  // ── POSITIONAL CORRECTION (the over-constraint membrane, wave 3): a
+  // velocity projection cannot restore FEASIBILITY. When a contact point
+  // sits below the plane at an impact state (gap < -1e-6 m -- measured at
+  // the tick-40 deadlock: the MP head 0.58 mm under while the heel rides
+  // the plane and the hip holds its wall), the CONFIGURATION is outside
+  // the admissible set and every velocity-level solve leaves a residual
+  // that re-violates a stop. Correct q along the mass-metric least-norm
+  // direction that zeroes the penetrating gaps (the contact rows ARE
+  // d gap/d q), and book the potential change as the penetration's stored
+  // elastic energy RETURNED (the compression was stored energy; releasing
+  // it is a source, never free energy -- the ledger closes by
+  // construction: u shifts by du, the dissipation books du).
+#ifdef GAIT_NO_POSCORR
+  if(false){
+#else
+  if(contact_){
+#endif
+   std::vector<size_t> pen;std::vector<double> gaps;
+   {auto ec=evaluate(s);
+    for(size_t k=0;k<npts_;++k){double g=gap_of(ec,k);if(g<-1e-6){pen.push_back(k);gaps.push_back(g);}}}
+   if(!pen.empty()){
+    double u_before=evaluate(s).potential;
+    std::vector<Dense> arows;for(size_t k:pen)arows.push_back(contact_row(evaluate(s),k));
+    size_t R=pen.size();std::vector<double> gram(R*R,0),rhs(R);
+    for(size_t a2=0;a2<R;++a2){for(size_t b2=0;b2<R;++b2)gram[a2*R+b2]=inner(arows[a2],multiply(inv,arows[b2]));rhs[a2]=-gaps[a2];}
+    std::vector<double> lam;
+    if(gram_factor(gram,R,rhs,lam)){
+     Dense corr(n_,0.);for(size_t a2=0;a2<R;++a2)for(size_t i=0;i<n_;++i)corr[i]+=lam[a2]*multiply(inv,arows[a2])[i];
+     double dq_max=0;for(size_t i=0;i<n_;++i)dq_max=(std::max)(dq_max,std::abs(corr[i]));
+     require(dq_max<=0.05,"gait_positional_correction_budget");
+     for(size_t i=0;i<n_;++i)s.q[i]+=corr[i];
+     double du=evaluate(s).potential-u_before;
+     s.impact-=du; // the stored compression returned: the round trip gives back
+     // exactly what the discretization let through while penetrating (the
+     // mechanical energy DROPPED as the point went under; the correction
+     // returns it) -- the ledger closes by construction, no net free energy
+#ifdef GAIT_EVENT_TRACE
+     std::fprintf(stderr,"[poscorr] tick=%llu points=%d dq_max=%.3e du=%+.6e J\n",(unsigned long long)ticks_,(int)R,dq_max,du);
+#endif
+     }
+    // gram failure: no correction applied -- the state stays infeasible and
+    // the budgets refuse loudly downstream (honest, never silent)
+   }}
   return caught;}
  State advance(State start,double h,const Dense& tau,int depth=0,int clamps=0)const{
   if(h<1e-12)return start;
@@ -362,6 +411,12 @@ class GaitWalker {
   std::vector<char> live(npts_,0);auto estart=evaluate(start);
   if(contact_)for(size_t k=0;k<npts_;++k)live[k]=gap_of(estart,k)<=kTouch?1:0;
   auto end=free_step(start,h,tau,live);int which=-1,khit=-1;double hit=h,wall=0;
+  // Event namespaces: which = 0..nd_-1 a DRIVE joint-stop event (the drive
+  // index), which = -2 a CONTACT event (khit = the point), which = -1 none.
+  // THE SENTINEL COLLISION BUG (found by the walk at tick 117, 20260919):
+  // contacts were marked which==2 -- the SAME value as a drive-2 (the left
+  // ankle) stop event; the contact branch then indexed probe[(size_t)khit]
+  // with khit=-1 and smeared the heap. Distinct sentinels, distinct laws.
   for(size_t d=0;d<nd_;++d){size_t c=drives_[d].coordinate;bool low=end.q[c]<model_->lower[c];if(!low&&end.q[c]<=model_->upper[c])continue;
    double depth_v=low?model_->lower[c]-end.q[c]:end.q[c]-model_->upper[c];
    if(depth_v<=1e-12)continue; // fp noise of an armed wall: not an event (the n-coordinate law)
@@ -373,8 +428,8 @@ class GaitWalker {
     if(live[k]||gap_of(eend,k)>=0)continue;
     auto probe=live;probe[k]=0;double left=0,right=h;
     for(int j=0;j<42;++j){double mid=(left+right)/2;if(gap_of(evaluate(free_step(start,mid,tau,probe)),k)<=0)right=mid;else left=mid;}
-    double t=(left+right)/2;if(t<hit){hit=t;which=2;khit=int(k);}}}
-  if(which<0)return end;
+    double t=(left+right)/2;if(t<hit){hit=t;which=-2;khit=int(k);}}}
+  if(which==-1)return end;
    if(hit<=1e-12){
    // An fp-level crossing at the substep boundary (the n-coordinate clamp
    // law): pin the violated stop, absorb the impact, integrate the remainder.
@@ -384,7 +439,7 @@ class GaitWalker {
 #endif
    require(clamps<64,"gait_impact_event_budget");
    State pinned=start;
-   if(which<2)pinned.q[drives_[size_t(which)].coordinate]=wall;
+   if(which>=0)pinned.q[drives_[size_t(which)].coordinate]=wall;
 #ifdef GAIT_EVENT_TRACE
   if(clamps>=8){size_t c0=drives_[0].coordinate;auto jn=normals(pinned);
    auto endp=free_step(pinned,h,tau,live);
@@ -395,11 +450,11 @@ class GaitWalker {
 #endif
    impact(pinned);
    return advance(pinned,h,tau,depth,clamps+1);}
-  if(which==2){auto probe=live;probe[size_t(khit)]=0;auto crossing=free_step(start,hit,tau,probe);
+  if(which==-2&&khit>=0){auto probe=live;probe[size_t(khit)]=0;auto crossing=free_step(start,hit,tau,probe);
    require(std::abs(gap_of(evaluate(crossing),size_t(khit)))<1e-9,"gait_contact_localization");impact(crossing);
    if(mu_>0)return advance(advance(crossing,(h-hit)/2,tau,depth+1),(h-hit)/2,tau,depth+2);
    return advance(crossing,h-hit,tau,depth+1);}
-  size_t c=drives_[size_t(which)].coordinate;auto wall_state=free_step(start,hit,tau,live);
+  require(which>=0&&which<(int)nd_,"gait_event_namespace");size_t c=drives_[size_t(which)].coordinate;auto wall_state=free_step(start,hit,tau,live);
   require(std::abs(wall_state.q[c]-wall)<1e-9,"gait_impact_localization");wall_state.q[c]=wall;impact(wall_state);
   return advance(wall_state,h-hit,tau,depth+1);}
  public:
@@ -472,6 +527,10 @@ class GaitWalker {
   for(size_t d=0;d<nd_;++d){battery_[d]=drives_[d].store_floor;store_total_+=drives_[d].store_floor;}
   battery_post_=store_post_;brake_post_=0;empty_post_=0;store_total_+=store_post_;
   phi_[0]=0.;phi_[1]=0.5;
+  // The entry phases (the single-support entry law, wave 4): the scene
+  // recipe names them; absent -> the TD entry {0, 0.5}.
+  if(config_.contains("start_phase_left"))phi_[0]=number(config_["start_phase_left"]);
+  if(config_.contains("start_phase_right"))phi_[1]=number(config_["start_phase_right"]);
   // The gait-state initialization (the source model's own scheme: enter the
   // periodic cycle AT the TD state): joints at the reset columns, joint
   // speeds at the table phase slope, the base at the authored gait-pose
@@ -507,6 +566,9 @@ class GaitWalker {
   if(c.contains("push_N")){double p=number(c["push_N"]);require(c["push_N"].is_number()&&p>=-30.&&p<=30.,"gait_push_range");}
   config_=c;contact_=config_["contact_enabled"].get<bool>();mu_=number(config_["contact_friction"]);if(restart)reset();}
  void step(){
+#ifdef GAIT_EVENT_TRACE
+  if(ticks_%10==0)std::fprintf(stderr,"[tick] %llu\n",(unsigned long long)ticks_);
+#endif
   s_.impulse=Dense(n_,0.);s_.contact_impact_impulse.assign(npts_,0.);s_.contact_force_impulse.assign(npts_,0.);s_.contact_generalized=Dense(n_,0.);s_.friction_impulse.assign(npts_,0.);s_.friction_force_impulse.assign(npts_,0.);s_.friction_heat_tick.assign(npts_,0.);
   // Stage E -> F handoff (the derivation's ladder): gait_enabled=false holds
   // the clock frozen at the reset columns phi={0, 0.5} -- both legs standing

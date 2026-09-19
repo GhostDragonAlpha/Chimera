@@ -167,33 +167,41 @@ def compile_gait(graph,output):
     if recorded:
         require(abs(measured['assembly_mass_kg']-recorded['assembly_mass_kg'])<1e-9,'gait_seating_mass_drift')
         require(max(abs(a-b) for a,b in zip(measured['com_projection_model_m'],recorded['com_projection_model_m']))<1e-9,'gait_seating_com_drift')
-    # The gait-state initialization (the source model's own scheme: the
-    # periodic cycle is entered AT the TD state): joints at the reset columns
-    # (left phi=0, right phi=0.5), joint speeds at the table phase slope, the
-    # base at the height that seats the gait pose's lowest contact point at
-    # +2e-6 m, and the NO-SKID gait speed on the base. The paper's 1.01 m/s is
-    # the cycle AVERAGE (stride 0.72 m / T 0.71 s); entering the cycle at TD
-    # with the average leaves the stance foot skidding FORWARD at ~0.25 m/s
-    # (measured: the composed contact-point velocity at phi=0 is -0.764 m/s
-    # relative to the hip), whose impulse slams the hip onto its stop (the
-    # tick-40 clamp chatter). The periodic entry speed is the one that makes
-    # the TD contact point's ground-relative horizontal velocity ZERO --
-    # derived here from the zero-mapped tables, never a taste knob.
+    # THE SINGLE-SUPPORT ENTRY (the entry law, wave 4): the source model's
+    # "enter at the TD state" is over-determined -- TD-left means
+    # mid-stance-right, a DOUBLE-support instant, and the tables' closure
+    # residual leaves the two stance contacts 2.96 mm apart; the
+    # require(gap>0) reset then forces the loaded leg 3 mm into the air and
+    # its drop delivers ~1 J into the hip/trunk (the measured tick-40
+    # cascade). The lawful entry is the SINGLE-SUPPORT mid-stance instant:
+    # the phase where the tables put the stance thigh exactly VERTICAL (the
+    # mid-stance definition), the swing foot still clear. One load-bearing
+    # contact seats; the swing leg lands through its own normal TD event.
     tables=contract['tables_rad']
     zeros=contract.get('zero_map_rad')
     require(zeros is not None,'gait_zero_map_missing','bank revision 2 with admit_gait_zeros_20260919.py')
-    jstems=['hip_flexion','knee_extension','ankle_dorsiflexion','MP_dorsiflexion']
-    start_values={}
-    for leg,phi_idx in (('left',0),('right',10)):
-        for stem,key in zip(jstems,('hip','knee','ankle','MP')):
-            # scene q = zero + table (revision 2: the derived Oku angle zeros)
-            start_values[f'{stem}_{leg}']=float(tables[key][phi_idx])+float(zeros[key])
     import math as _m
     seg=derived['body_model']['segments_Table1']
     _L1=float(seg['thigh']['length_m']);_L2=float(seg['shank']['length_m'])
     _XM=0.074;_XH=-0.012
     def _table(t,phi):
         x=phi*20.0;k=min(19,int(x));f=x-k;return t[k]*(1.0-f)+t[k+1]*f
+    def _thigh_tilt(phi):  # composed stance-thigh tilt from vertical-down
+        return zeros['hip']+_table(tables['hip'],phi)
+    e_best,e_err=None,1e9
+    for i in range(180,501):  # phi in [0.09, 0.50] at 1e-3: the stance window before heel-off
+        phi=i/1000.0
+        err=abs(_thigh_tilt(phi))
+        # the swing partner (phi+0.5) must be airborne: after its toe-off (0.68) before its TD (1.0)
+        if 0.70<phi+0.5<0.99 and err<e_err: e_best,e_err=phi,err
+    entry_phase=float(e_best)
+    require(entry_phase is not None and e_err<0.02,'gait_entry_phase_not_found',e_err)
+    jstems=['hip_flexion','knee_extension','ankle_dorsiflexion','MP_dorsiflexion']
+    start_values={}
+    for leg,phi in (('left',entry_phase),('right',entry_phase+0.5)):
+        for stem,key in zip(jstems,('hip','knee','ankle','MP')):
+            # scene q = zero + table (revision 2: the derived Oku angle zeros)
+            start_values[f'{stem}_{leg}']=float(_table(tables[key],phi%1.0))+float(zeros[key])
     def _contact_vx(phi):
         th1=zeros['hip']+_table(tables['hip'],phi)
         th2=th1+zeros['knee']+_table(tables['knee'],phi)
@@ -201,16 +209,27 @@ def compile_gait(graph,output):
         x=_L1*_m.sin(th1)+_L2*_m.sin(th2)+((_XH if p>0 else _XM)*_m.cos(p))
         return x
     _d=1e-4
-    _contact_rel_vx=(_contact_vx(_d)-_contact_vx(-_d))/(2*_d)/float(contract['cycle_duration_s'])
-    speed=-_contact_rel_vx  # base speed making the TD contact point still on the ground
+    _contact_rel_vx=(_contact_vx(entry_phase+_d)-_contact_vx(entry_phase-_d))/(2*_d)/float(contract['cycle_duration_s'])
+    speed=-_contact_rel_vx  # base speed making the stance contact still on the ground
     for b in ('base_rot_x','base_rot_y','base_rot_z','base_trans_x','base_trans_y','base_trans_z'):
         start_values[b]=0.0  # probe the gait pose relative to the origin
     asm0=Assembly(model,values=start_values,gravity=[0.,-9.80665,0.])
     heights=[float(asm0.point(p['body'],p['point_m'])[0][1]) for p in contract['contact_points']]
-    base_y=-min(heights)+contract['seating_scan']['reset_gap_target_m']
+    # SEAT THE STANCE LEG ONLY (the single-support entry): the mid-stance leg
+    # carries the body and its contact defines the floor; the swing leg must
+    # be strictly airborne at the entry instant (a derived require, not a
+    # hope).
+    left_idx=[i for i,p in enumerate(contract['contact_points']) if p['name'].startswith('left')]
+    right_idx=[i for i,p in enumerate(contract['contact_points']) if p['name'].startswith('right')]
+    seated=min(heights[i] for i in left_idx)
+    require(min(heights[i] for i in right_idx)>seated,
+            'gait_entry_swing_not_clear',min(heights[i] for i in right_idx)-seated)
+    base_y=-seated+contract['seating_scan']['reset_gap_target_m']
     defaults['start_at_tables']=True
     defaults['base_speed_x_m_s']=float(speed)
     defaults['base_trans_y_m']=base_y
+    defaults['start_phase_left']=entry_phase
+    defaults['start_phase_right']=(entry_phase+0.5)%1.0
     bundle={'schema':'chimera.earth_scene.v1','graph_hash':graph.graph_hash(),
             'scene':{'arm_translation_m':[0.,0.,0.],'world_id':'gait_walker_plane','ground_id':'gait_plane'},
             'gait_controller':{'gait_enabled':True,'recipe':{
