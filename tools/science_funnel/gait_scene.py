@@ -169,9 +169,16 @@ def compile_gait(graph,output):
         require(max(abs(a-b) for a,b in zip(measured['com_projection_model_m'],recorded['com_projection_model_m']))<1e-9,'gait_seating_com_drift')
     # The gait-state initialization (the source model's own scheme: the
     # periodic cycle is entered AT the TD state): joints at the reset columns
-    # (left phi=0, right phi=0.5), the base at the height that seats the gait
-    # pose's lowest contact point at +2e-6 m, and the MEASURED gait speed
-    # (derived timing: 1.01 m/s simulated anchor) on the base.
+    # (left phi=0, right phi=0.5), joint speeds at the table phase slope, the
+    # base at the height that seats the gait pose's lowest contact point at
+    # +2e-6 m, and the NO-SKID gait speed on the base. The paper's 1.01 m/s is
+    # the cycle AVERAGE (stride 0.72 m / T 0.71 s); entering the cycle at TD
+    # with the average leaves the stance foot skidding FORWARD at ~0.25 m/s
+    # (measured: the composed contact-point velocity at phi=0 is -0.764 m/s
+    # relative to the hip), whose impulse slams the hip onto its stop (the
+    # tick-40 clamp chatter). The periodic entry speed is the one that makes
+    # the TD contact point's ground-relative horizontal velocity ZERO --
+    # derived here from the zero-mapped tables, never a taste knob.
     tables=contract['tables_rad']
     zeros=contract.get('zero_map_rad')
     require(zeros is not None,'gait_zero_map_missing','bank revision 2 with admit_gait_zeros_20260919.py')
@@ -181,12 +188,26 @@ def compile_gait(graph,output):
         for stem,key in zip(jstems,('hip','knee','ankle','MP')):
             # scene q = zero + table (revision 2: the derived Oku angle zeros)
             start_values[f'{stem}_{leg}']=float(tables[key][phi_idx])+float(zeros[key])
+    import math as _m
+    seg=derived['body_model']['segments_Table1']
+    _L1=float(seg['thigh']['length_m']);_L2=float(seg['shank']['length_m'])
+    _XM=0.074;_XH=-0.012
+    def _table(t,phi):
+        x=phi*20.0;k=min(19,int(x));f=x-k;return t[k]*(1.0-f)+t[k+1]*f
+    def _contact_vx(phi):
+        th1=zeros['hip']+_table(tables['hip'],phi)
+        th2=th1+zeros['knee']+_table(tables['knee'],phi)
+        p=th2+zeros['ankle']+_table(tables['ankle'],phi)
+        x=_L1*_m.sin(th1)+_L2*_m.sin(th2)+((_XH if p>0 else _XM)*_m.cos(p))
+        return x
+    _d=1e-4
+    _contact_rel_vx=(_contact_vx(_d)-_contact_vx(-_d))/(2*_d)/float(contract['cycle_duration_s'])
+    speed=-_contact_rel_vx  # base speed making the TD contact point still on the ground
     for b in ('base_rot_x','base_rot_y','base_rot_z','base_trans_x','base_trans_y','base_trans_z'):
         start_values[b]=0.0  # probe the gait pose relative to the origin
     asm0=Assembly(model,values=start_values,gravity=[0.,-9.80665,0.])
     heights=[float(asm0.point(p['body'],p['point_m'])[0][1]) for p in contract['contact_points']]
     base_y=-min(heights)+contract['seating_scan']['reset_gap_target_m']
-    speed=derived['timing_paper']['simulated_before']['speed_m_s']
     defaults['start_at_tables']=True
     defaults['base_speed_x_m_s']=float(speed)
     defaults['base_trans_y_m']=base_y

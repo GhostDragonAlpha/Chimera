@@ -100,11 +100,26 @@ class GaitWalker {
  // cannot churn; R is capped loudly (the free-root's seated 4-point scenes
  // measure R<=6; stops arm only within 1e-10 of a bound, so the walk's
  // plain-contact stages measure R<=4).
- static Dense project_rows(const Dense& initial,const Dense& inverse,const std::vector<Dense>& rows,const Dense& floors,std::vector<double>* multipliers){
+ // TIER LAW (the over-constraint membrane, 20260919): when an armed joint
+ // stop coexists with arriving contacts (a heel seated, an MP landing under
+ // the floor, the hip on its wall), more than one mask can be cone-valid and
+ // numeric order can pick the one that DROPS the stop -- the contact then
+ // relieves its penetration by pushing the joint past its wall, the clamp
+ // loop re-pins, and the walk chatters into the budget refusal (measured:
+ // tick 40, 64 identical clamp iterations, frozen state). A hard stop is
+ // never sacrificed while a stop-holding projection exists: masks holding
+ // EVERY stop row (plus the no-op mask 0, which sacrifices nothing) are
+ // searched FIRST, the rest only if none is valid. The unilateral contacts
+ // separate instead -- the heel lifts, the foot pivots on the MP head.
+ static Dense project_rows(const Dense& initial,const Dense& inverse,const std::vector<Dense>& rows,const Dense& floors,std::vector<double>* multipliers,size_t n_stops=0){
   size_t n=initial.size();size_t R=rows.size();
   require(R>=1&&R<=10,"gait_row_budget");
   bool dbg=R==1;
+  for(int tier=0;tier<2;++tier)
   for(size_t mask=0;mask<(size_t(1)<<R);++mask){
+   if(mask!=0){bool holds=true;for(size_t k=0;k<n_stops;++k)if(!(mask>>k&1)){holds=false;break;}
+    if(holds!=(tier==0))continue;}
+   else if(tier!=0)continue;
    std::vector<size_t> act;for(size_t k=0;k<R;++k)if(mask>>k&1)act.push_back(k);
    if(act.size()>n)continue; // mask 0 (no correction) is a legal candidate
    if(act.empty()){ // mask 0: no correction -- valid iff every floor already holds
@@ -258,8 +273,8 @@ class GaitWalker {
    double floor_k=-contact_bias(e,k)[1];
    if(out.mode[k]&&inner(rn,free)>=floor_k-1e-9)continue;
    rows.push_back({rn,floor_k,int(k),false});}
-  if(!rows.empty()){std::vector<Dense> plain;Dense plainfloors;for(auto&r:rows){plain.push_back(r.row);plainfloors.push_back(r.floor);}
-   std::vector<double> multipliers;auto p=project_rows(free,inv,plain,plainfloors,&multipliers);auto correction=multiply(inv,p);
+  if(!rows.empty()){std::vector<Dense> plain;Dense plainfloors;size_t n_stops=0;for(auto&r:rows){plain.push_back(r.row);plainfloors.push_back(r.floor);if(r.stop_row)++n_stops;}
+   std::vector<double> multipliers;auto p=project_rows(free,inv,plain,plainfloors,&multipliers,n_stops);auto correction=multiply(inv,p);
    for(size_t i=0;i<n_;++i){free[i]+=correction[i];out.reaction[i]=p[i];}
    for(size_t r=0;r<rows.size();++r)if(!rows[r].stop_row)out.contact_lambda[rows[r].point]=(std::max)(out.contact_lambda[rows[r].point],multipliers[r]);}
   out.v=free;
@@ -314,8 +329,8 @@ class GaitWalker {
       caught=(std::max)(caught,lambda_n);engaged[k]=1;}}
     catch(const Refusal&){}}}
   for(size_t k=0;k<npts_;++k)if(touching[k])rows.push_back({rown[k],0.,int(k),false});
-  if(!rows.empty()){std::vector<Dense> plain;Dense plainfloors;for(auto&r:rows){plain.push_back(r.row);plainfloors.push_back(r.floor);}
-   std::vector<double> multipliers;auto p=project_rows(s.v,inv,plain,plainfloors,&multipliers);auto change=multiply(inv,p);
+  if(!rows.empty()){std::vector<Dense> plain;Dense plainfloors;size_t n_stops=0;for(auto&r:rows){plain.push_back(r.row);plainfloors.push_back(r.floor);if(r.stop_row)++n_stops;}
+   std::vector<double> multipliers;auto p=project_rows(s.v,inv,plain,plainfloors,&multipliers,n_stops);auto change=multiply(inv,p);
    double before=.5*inner(s.v,multiply(e.mass,s.v));Dense mean(n_);
    for(size_t i=0;i<n_;++i){mean[i]=s.v[i]+change[i]/2;s.v[i]+=change[i];s.impulse[i]+=p[i];}
    double loss=before-.5*inner(s.v,multiply(e.mass,s.v));require(loss>=-1e-11,"gait_impact_created_energy");
@@ -370,6 +385,14 @@ class GaitWalker {
    require(clamps<64,"gait_impact_event_budget");
    State pinned=start;
    if(which<2)pinned.q[drives_[size_t(which)].coordinate]=wall;
+#ifdef GAIT_EVENT_TRACE
+  if(clamps>=8){size_t c0=drives_[0].coordinate;auto jn=normals(pinned);
+   auto endp=free_step(pinned,h,tau,live);
+   std::fprintf(stderr,"    [clamp2] armed=%d v_hip=%.3e dq_over_wall=%.3e tau_hip=%+.4f target=%+.4f\n",
+    jn[c0]!=0?1:0,pinned.v[c0],endp.q[c0]-model_->upper[c0],tau[c0],0.);
+   for(size_t d=0;d<nd_;++d){size_t c=drives_[d].coordinate;
+    if(d<4)std::fprintf(stderr,"      drive%zu %-26s q=%+.5f v=%+.3e tau=%+.3f\n",d,drives_[d].name.c_str(),pinned.q[c],pinned.v[c],tau[c]);}}
+#endif
    impact(pinned);
    return advance(pinned,h,tau,depth,clamps+1);}
   if(which==2){auto probe=live;probe[size_t(khit)]=0;auto crossing=free_step(start,hit,tau,probe);
