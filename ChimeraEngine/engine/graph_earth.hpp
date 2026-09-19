@@ -3,6 +3,7 @@
 #include "arm_dynamics.hpp"
 #include "coupled_dynamics.hpp"
 #include "coupled_multidynamics.hpp"
+#include "free_root_dynamics.hpp"
 #include "joint_binding.hpp"
 #include <atomic>
 #include <chrono>
@@ -17,7 +18,7 @@ public:
  struct Render{std::vector<float> mesh;std::vector<uint32_t> indices;J state;};
  J bundle;
 private:
- std::unique_ptr<chimera::environment::EarthTrial> sim_;std::unique_ptr<chimera::environment::ArmDynamics> dynamics_;std::unique_ptr<chimera::multibody::CoupledDynamics> coupled_;std::unique_ptr<chimera::multibody::CoupledMultiDynamics> coupled7_;
+ std::unique_ptr<chimera::environment::EarthTrial> sim_;std::unique_ptr<chimera::environment::ArmDynamics> dynamics_;std::unique_ptr<chimera::multibody::CoupledDynamics> coupled_;std::unique_ptr<chimera::multibody::CoupledMultiDynamics> coupled7_;std::unique_ptr<chimera::multibody::FreeRootDynamics> free_;
  chimera::articulation::JointBinding binding_;std::vector<float> rest_,angles_;std::vector<uint32_t> indices_;
  mutable std::mutex mutex_;std::thread worker_;std::atomic<bool> stop_{false};bool paused_=false;uint64_t revision_=1,epoch_=0;double lag_=0,elbow_=0;std::string error_;
  static std::vector<uint8_t> read(const std::string& path){std::ifstream f(path,std::ios::binary);chimera::forces::require(bool(f),"earth_asset_missing");return {std::istreambuf_iterator<char>(f),{}};}
@@ -25,6 +26,8 @@ private:
   auto angles=angles_;auto elbow_it=std::find(binding_.names.begin(),binding_.names.end(),"elbow_flexion");chimera::forces::require(elbow_it!=binding_.names.end(),"arm_elbow_missing");angles[elbow_it-binding_.names.begin()]=float(elbow*chimera::environment::pi/180);
   if(coupled_){auto& model=coupled_->model();for(size_t i=0;i<model.names.size();++i){auto found=std::find(binding_.names.begin(),binding_.names.end(),model.names[i]);chimera::forces::require(found!=binding_.names.end(),"coupled_binding_coordinate_missing");angles[found-binding_.names.begin()]=float(coupled_->angles()[i]-model.defaults[i]);}}
   if(coupled7_){auto& model=coupled7_->model();for(size_t i=0;i<model.names.size();++i){auto found=std::find(binding_.names.begin(),binding_.names.end(),model.names[i]);chimera::forces::require(found!=binding_.names.end(),"coupled_binding_coordinate_missing");angles[found-binding_.names.begin()]=float(coupled7_->angles()[i]-model.defaults[i]);}}
+  if(free_){auto& model=free_->model();for(size_t i=0;i<model.names.size();++i){auto found=std::find(binding_.names.begin(),binding_.names.end(),model.names[i]);if(found==binding_.names.end())continue; // floating-base coordinates are not render bindings; joints pose the visible bones
+   angles[found-binding_.names.begin()]=float(free_->angles()[i]-model.defaults[i]);}}
   std::vector<float> posed;chimera::articulation::pose_binding(binding_,rest_,&angles,posed);V shift=bundle.at("scene").at("arm_translation_m").get<V>();
   for(size_t i=0;i<posed.size();i+=9)for(int k=0;k<3;++k){posed[i+k]+=float(shift[k]);posed[i+3+k]=0;}
   using namespace chimera::environment;
@@ -34,7 +37,8 @@ private:
  }
  V hand(double elbow)const{auto mesh=arm(elbow);size_t start=bundle.at("arm").at("hand_vertex_start"),count=bundle.at("arm").at("hand_vertex_count");V p{};for(size_t i=start;i<start+count;++i)for(int k=0;k<3;++k)p[k]+=mesh[9*i+k]/count;p[1]-=chimera::forces::number(bundle.at("scene").at("hand_clearance_m"));return p;}
  J status_locked()const{
-  auto s=coupled7_?coupled7_->status():coupled_?coupled_->status():(dynamics_?dynamics_->status():sim_->status());if(dynamics_||coupled_||coupled7_)s["environment"]=sim_->status()["environment"];s["ok"]=error_.empty();s["error"]=error_;s["mode"]=coupled7_?"native_coupled_arm7":coupled_?"native_coupled_arm":(dynamics_?"native_force_arm":"native_earth_patch");s["scene_revision"]=revision_;s["epoch"]=epoch_;s["paused"]=paused_;s["clock_lag_s"]=lag_;s["graph_hash"]=bundle.at("graph_hash");s["scene_sha256"]=bundle.at("scene_sha256");if(!coupled_&&!coupled7_)s["elbow_deg"]=elbow_;s["world_id"]=bundle.at("scene").at("world_id");s["ground_id"]=bundle.at("scene").at("ground_id");s["attachment_id"]=bundle.at("scene").at("hand_port_id");if(dynamics_){s["attachment_id"]=bundle.at("arm_dynamics").at("recipe").at("attachment_id");s["support_id"]=bundle.at("arm_dynamics").at("recipe").at("support_id");}if(coupled_)s["attachment_id"]=bundle.at("coupled_dynamics").at("recipe").at("attachment_id");if(coupled7_)s["attachment_id"]=bundle.at("coupled_dynamics").at("recipe").at("attachment_id");s["sources"]=bundle.at("sources");s["scope"]=bundle.at("scope");s["assumptions"]=coupled7_?bundle.at("coupled_dynamics").at("recipe").at("assumptions"):coupled_?bundle.at("coupled_dynamics").at("recipe").at("assumptions"):dynamics_?bundle.at("arm_dynamics").at("recipe").at("assumptions"):bundle.at("scene").at("assumptions");return s;
+  const J& coupled_recipe=(bundle.contains("coupled_dynamics")?bundle.at("coupled_dynamics"):bundle.at("coupled_free_dynamics").at("qualified")); // frozen dispatch constructs the qualified class from the free bundle's embedded payload
+  auto s=coupled7_?coupled7_->status():free_?free_->status():coupled_?coupled_->status():(dynamics_?dynamics_->status():sim_->status());if(dynamics_||coupled_||coupled7_||free_)s["environment"]=sim_->status()["environment"];s["ok"]=error_.empty();s["error"]=error_;s["mode"]=coupled7_?"native_coupled_arm7":free_?"native_coupled_arm_free":coupled_?"native_coupled_arm":(dynamics_?"native_force_arm":"native_earth_patch");s["scene_revision"]=revision_;s["epoch"]=epoch_;s["paused"]=paused_;s["clock_lag_s"]=lag_;s["graph_hash"]=bundle.at("graph_hash");s["scene_sha256"]=bundle.at("scene_sha256");if(!coupled_&&!coupled7_&&!free_)s["elbow_deg"]=elbow_;s["world_id"]=bundle.at("scene").at("world_id");s["ground_id"]=bundle.at("scene").at("ground_id");s["attachment_id"]=bundle.at("scene").at("hand_port_id");if(dynamics_){s["attachment_id"]=bundle.at("arm_dynamics").at("recipe").at("attachment_id");s["support_id"]=bundle.at("arm_dynamics").at("recipe").at("support_id");}if(coupled_)s["attachment_id"]=coupled_recipe.at("recipe").at("attachment_id");if(coupled7_)s["attachment_id"]=bundle.at("coupled_dynamics").at("recipe").at("attachment_id");s["sources"]=bundle.at("sources");s["scope"]=bundle.at("scope");s["assumptions"]=coupled7_?bundle.at("coupled_dynamics").at("recipe").at("assumptions"):free_?bundle.at("coupled_free_dynamics").at("recipe").at("assumptions"):coupled_?coupled_recipe.at("recipe").at("assumptions"):dynamics_?bundle.at("arm_dynamics").at("recipe").at("assumptions"):bundle.at("scene").at("assumptions");return s;
  }
 public:
  ~GraphEarth(){stop();}
@@ -46,11 +50,19 @@ public:
   rest_.resize(9ull*nv);indices_.resize(ni);std::memcpy(rest_.data(),mesh.data()+24,rest_.size()*4);std::memcpy(indices_.data(),mesh.data()+24+rest_.size()*4,indices_.size()*4);for(float p:rest_)require(std::isfinite(p),"earth_mesh_nonfinite");for(auto i:indices_)require(i<nv,"earth_mesh_index");
   std::string error;require(chimera::articulation::decode_joint_binding(read(bundle.at("arm").at("body_file")),nv,binding_,error),"earth_binding_refused");angles_.assign(binding_.joint_count,0);size_t start=bundle.at("arm").at("hand_vertex_start"),count=bundle.at("arm").at("hand_vertex_count");require(count>0&&start<=nv&&count<=nv-start,"earth_hand_range");
   sim_=std::make_unique<EarthTrial>(bundle.at("models"),bundle.at("source_parameters"),bundle.at("scene"));sim_->reset(hand(0));if(bundle.contains("coupled_dynamics")){const J& recipe=bundle.at("coupled_dynamics").at("recipe");double g=number(sim_->status()["environment"]["gravity_m_s2"]);V shift=bundle.at("scene").at("arm_translation_m").get<V>();if(recipe.at("schema")=="chimera.coupled_scene7.v1")coupled7_=std::make_unique<chimera::multibody::CoupledMultiDynamics>(bundle.at("coupled_dynamics"),g,shift);else coupled_=std::make_unique<chimera::multibody::CoupledDynamics>(bundle.at("coupled_dynamics"),g,shift);}if(bundle.contains("arm_dynamics"))dynamics_=std::make_unique<ArmDynamics>(bundle.at("arm_dynamics"),number(sim_->status()["environment"]["gravity_m_s2"]));
+  // Free-root dispatch (packet D10, AMENDMENT E2): the free bundle carries the
+  // flag; free_root_enabled=false constructs the QUALIFIED class verbatim from
+  // the embedded qualified data (the frozen bit-exact control, no shared
+  // arithmetic), true constructs the eight-coordinate free class.
+  if(bundle.contains("coupled_free_dynamics")){require(!coupled_&&!dynamics_,"earth_bundle_conflict");const J& fd=bundle.at("coupled_free_dynamics");
+   require(fd.contains("free_root_enabled")&&fd.at("free_root_enabled").is_boolean(),"coupled_free_flag_invalid");
+   if(fd.at("free_root_enabled").get<bool>())free_=std::make_unique<chimera::multibody::FreeRootDynamics>(fd,number(sim_->status()["environment"]["gravity_m_s2"]),bundle.at("scene").at("arm_translation_m").get<V>());
+   else coupled_=std::make_unique<chimera::multibody::CoupledDynamics>(fd.at("qualified"),number(sim_->status()["environment"]["gravity_m_s2"]),bundle.at("scene").at("arm_translation_m").get<V>());}
  }
  void start(){
   chimera::forces::require(sim_&&!worker_.joinable(),"earth_worker_state");stop_=false;
   worker_=std::thread([this]{using clock=std::chrono::steady_clock;auto dt=std::chrono::duration_cast<clock::duration>(std::chrono::duration<double>(sim_->timestep()));auto next=clock::now()+dt;
-   while(!stop_){std::this_thread::sleep_until(next);if(stop_)break;auto now=clock::now();{std::lock_guard<std::mutex> lock(mutex_);lag_=(std::max)(0.,std::chrono::duration<double>(now-next).count());if(!paused_&&error_.empty()&&(coupled7_||coupled_||dynamics_||(!sim_->held&&!sim_->outside))){try{if(coupled7_){coupled7_->step();}else if(coupled_){coupled_->step();}else if(dynamics_){dynamics_->step();elbow_=dynamics_->delta_deg();}else sim_->step();++revision_;}catch(const std::exception& e){error_=e.what();paused_=true;}}}next+=dt;}
+   while(!stop_){std::this_thread::sleep_until(next);if(stop_)break;auto now=clock::now();{std::lock_guard<std::mutex> lock(mutex_);lag_=(std::max)(0.,std::chrono::duration<double>(now-next).count());if(!paused_&&error_.empty()&&(coupled7_||coupled_||free_||dynamics_||(!sim_->held&&!sim_->outside))){try{if(coupled7_){coupled7_->step();}else if(coupled_){coupled_->step();}else if(free_){free_->step();}else if(dynamics_){dynamics_->step();elbow_=dynamics_->delta_deg();}else sim_->step();++revision_;}catch(const std::exception& e){error_=e.what();paused_=true;}}}next+=dt;}
   });
  }
  J status()const{std::lock_guard<std::mutex> lock(mutex_);chimera::forces::require(bool(sim_),"earth_scene_missing");return status_locked();}
@@ -66,6 +78,12 @@ public:
    std::lock_guard<std::mutex> lock(mutex_);
    if(q.contains("paused")){require(q.size()==1&&q.at("paused").is_boolean(),"coupled_pause_control");paused_=q.at("paused").get<bool>();}
    else {auto next=*coupled_;next.configure(q);*coupled_=std::move(next);if(q.value("reset",false)){error_.clear();paused_=false;++epoch_;}}
+   ++revision_;return status_locked();
+  }
+  if(free_){
+   std::lock_guard<std::mutex> lock(mutex_);
+   if(q.contains("paused")){require(q.size()==1&&q.at("paused").is_boolean(),"coupled_pause_control");paused_=q.at("paused").get<bool>();}
+   else {auto next=*free_;next.configure(q);*free_=std::move(next);if(q.value("reset",false)){error_.clear();paused_=false;++epoch_;}}
    ++revision_;return status_locked();
   }
   if(dynamics_){
@@ -104,7 +122,7 @@ public:
   }
   if(coupled_||coupled7_){
    // The visible slab is the same authored plane the solver presses against.
-   const J& recipe=bundle.at("coupled_dynamics").at("recipe");
+   const J& recipe=bundle.contains("coupled_dynamics")?bundle.at("coupled_dynamics").at("recipe"):bundle.at("coupled_free_dynamics").at("qualified").at("recipe");
    if(recipe.contains("contact_plane_height_m")&&out.state.at("config").value("contact_enabled",false)){
     double h=number(recipe.at("contact_plane_height_m"));V color{.30,.42,.48};
     quad({-.15,h,-.15},{-.15,h,.15},{.40,h,.15},{.40,h,-.15},color);
@@ -112,7 +130,17 @@ public:
     quad({-.15,h,.15},{-.15,0,.15},{.40,0,.15},{.40,h,.15},color);
    }
   }
-  V center=(coupled_||coupled7_)?out.state.at("body").at("position_m").get<V>():dynamics_?dynamics_->hand_position():sim_->x;double radius=(coupled_||coupled7_)?number(out.state.at("body").at("radius_m")):dynamics_?dynamics_->radius():sim_->radius();double heat=(std::max)(0.,(std::min)(1.,(sim_->temperature-270)/25));V color{.85,.44+.18*heat,.14};
+  if(free_&&!coupled_&&!coupled7_){
+   // Same slab for the free scene: the authored rigid plane of the support.
+   const J& recipe=bundle.at("coupled_free_dynamics").at("recipe");
+   if(recipe.contains("contact_plane_height_m")&&out.state.at("config").value("contact_enabled",false)){
+    double h=number(recipe.at("contact_plane_height_m"));V color{.30,.42,.48};
+    quad({-.30,h,-.30},{-.30,h,.30},{.55,h,.30},{.55,h,-.30},color);
+    quad({-.30,h,-.30},{-.30,0,-.30},{.55,0,-.30},{.55,h,-.30},color);
+    quad({-.30,h,.30},{-.30,0,.30},{.55,0,.30},{.55,h,.30},color);
+   }
+  }
+  V center=(coupled_||coupled7_||free_)?out.state.at("body").at("position_m").get<V>():dynamics_?dynamics_->hand_position():sim_->x;double radius=(coupled_||coupled7_||free_)?number(out.state.at("body").at("radius_m")):dynamics_?dynamics_->radius():sim_->radius();double heat=(std::max)(0.,(std::min)(1.,(sim_->temperature-270)/25));V color{.85,.44+.18*heat,.14};
   const int rings=10,slices=20;auto point=[&](int j,int i){double t=pi*j/rings,p=2*pi*i/slices;return add(center,V{radius*std::sin(t)*std::cos(p),radius*std::cos(t),radius*std::sin(t)*std::sin(p)});};
   for(int j=0;j<rings;++j)for(int i=0;i<slices;++i){if(j>0)triangle(point(j,i),point(j,i+1),point(j+1,i),color);if(j<rings-1)triangle(point(j,i+1),point(j+1,i+1),point(j+1,i),color);}
   out.state["mesh_triangles"]=out.indices.size()/3;return out;

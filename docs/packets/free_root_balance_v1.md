@@ -565,3 +565,113 @@ Banked by this lane BEFORE any implementing code, revision-aware and idempotent:
 The implementing lane supersedes this record with revision 2 when implementation lands
 (`status` → its true ladder state, falsifier `acceptance_test` filled with measured
 results) — never by editing this packet's claims silently.
+
+---
+
+## AMENDMENT 20260918 — implementing lane (GLM 5.3, `lane/free-root-20260918`)
+
+Recorded by the implementing lane BEFORE any implementing code, together with admission
+revision 2 of `work.dynamics.free_root_balance_packet` (Rule 0 order). The derivations
+D1–D10 and falsifiers F1–F9 stand as written. Four implementation errata are admitted
+through this packet's own revision path ("if a diff is proposed, it is a packet revision
+first"):
+
+- **E1 — `coupled_articulation.hpp` takes a one-token validation diff.** The packet's
+  file list claimed zero diff for that file, but the `Model` constructor's
+  `coupled_coordinate_capacity` check (`names.size() <= 7`) refuses the derived
+  8-coordinate selection, so the 8-DOF `Model` cannot be CONSTRUCTED at all. The
+  implementing diff raises the validation bound to 8. This line is integer validation,
+  not arithmetic: no floating-point statement moves, and for every selection ≤ 7 (the
+  qualified two-coordinate world and the seven-coordinate lift) the check's outcome is
+  bit-identical, so the frozen control's bit-exactness claim (D10, F5) is unaffected by
+  construction. The frozen 2-coordinate semantics of `evaluate` are untouched.
+- **E2 — the scene-server wiring lands in `graph_earth.hpp` + `main.cpp`.** The packet
+  named `engine.cpp`; the actual scene-server files in this tree are `GraphEarth`
+  (bundle load, step/control/status dispatch) and `main.cpp` (HTTP routes). The wiring
+  contract is unchanged: accept the new bundle kind
+  (`coupled_free_dynamics`, schema `chimera.coupled_free_scene.v1`), construct the
+  qualified class or the free class on the `free_root_enabled` flag (D10), no shared
+  arithmetic.
+- **E3 — the free class derives its own impact-event budget.** The qualified recursion
+  cap (`depth < 8`, `coupled_impact_event_budget`) is retained VERBATIM for the
+  qualified class. The free class must localize up to `3N + 2` sequential landings per
+  substep (N contact points + two joint stops), and each Coulomb catch can consume depth
+  3 (halving, nested at most twice = 6) plus 2 per event split: derived cap
+  `depth < 10 + 6N` with Refusal `coupled_free_impact_event_budget` — loud, never a
+  silent clamp. For N = 3 this is depth < 28.
+- **E4 — the scene opt-in ships as the sibling compiler, not an edit of
+  `tools/science_funnel/coupled_scene.py`.** The qualified receipts pin that file's
+  sha256, so the packet's frozen-compiler rule is enforced by the receipts themselves;
+  `coupled_scene.py` stays byte-untouched and the `free_root` opt-in is the NEW sibling
+  `tools/science_funnel/coupled_free_scene.py` writing the `coupled_free_dynamics`
+  bundle key. Default semantics are the operator requirement: the default compile output
+  remains the qualified mounted world; only the free scene bundle enables the floating
+  base.
+
+Support-scene seating (D4, authored, measured at authoring time with the Python oracle
+on the source-derived free assembly): support points = the qualified hand point plus two
+sourced proximal-forearm points on `ulna1` at local `(0,0,-0.01)` and `(0,0,+0.007)`;
+seated reset `base_trans_y` default `-0.08977588222411312` m with per-point proxy radii
+`0.004 + 2e-6` (hand) and `0.01277588222411305 + 2e-6` (forearm pair) put all three gaps
+at `+2e-6 m ∈ (0, kTouch]`; CoM horizontal projection `(0.0022137, 0.00044377)` m is
+strictly inside the support hull (barycentric weights `0.0126/0.502/0.485`, edge
+margins `8.21/2.21/8.54` mm); assembly mass `7.006001 kg`, weight `68.7054 N`.
+
+- **E5 — the free assembly authors a minimal trunk inertia (measured falsifier of D9's
+  stiffness claim).** The source model's `sternum` is a POINT MASS: `6.6 kg` with a zero
+  inertia tensor. The mounted qualified world never felt this — a weld cannot rotate. In
+  the free assembly it is falsifying: the trunk-yaw mode (yaw the base about the vertical
+  while the shoulder counter-swings so the arm stays put) has measured inertia
+  `1.56e-7 kg·m²` — exactly zero without the arm's counter-swing — and explicit RK4 at
+  `h = 1/1200 s` amplifies any generalized force along that mode by `1/I`, exploding the
+  first tick (measured: `|v| ~ 1.2e3 rad/s` after one 300 Hz tick, F1's free fall
+  falsified NOT because the base fails to fall but because the integration diverges).
+  The packet's D9 derivation ("no stiffness to motivate an implicit method") was derived
+  from pendulum/servo modes and missed the near-null trunk yaw inertia; under RULE 0
+  that is a falsified premise, recorded here before the fix. THE FIX is authoring, not
+  numerics: the free assembly's sternum carries a derived isotropic inertia
+  `I_xx = I_yy = I_zz = 0.01 kg·m²` (the 6.6 kg trunk at gyration radius `3.9 cm` — a
+  physical trunk resists yaw; a point mass does not). Effects, all measured: the
+  smallest mass-matrix eigenvalue rises from `1.56e-7` to the arm-mode scale, the
+  conditioning drops from `~4.5e7` to `~1e3–1e4`, far inside the engine's `1e12` gate;
+  D2's joint-block closure is UNAFFECTED (a body's inertia enters the mass matrix only
+  through its own `jw` rows, and the sternum's joint-slot Jacobian columns are exactly
+  zero — so the joint block stays BITWISE the qualified 2x2); F6's momentum ledger is
+  unaffected (inertia is conservative). The falsifier for E5 itself: if the joint block
+  ceases to be bitwise, or if F1-F9 fail with the authored inertia, the authoring is
+  wrong and is refused.
+- **E6 — the impact share guard generalizes from per-row to total.** The qualified
+  per-row guard (`share_k <= 1e-11`, `coupled_contact_impact_gain`) assumes rows
+  decoupled enough that no joint projection ever places a positive multiplier on a
+  receding row. With N >= 2 cross-coupled rows the cone projection legitimately does:
+  MEASURED during the first multi-point landing — lambda `5e-4` on a row receding at
+  `7e-5 m/s`, share `+3.6e-8 J` (two near-parallel normal rows through the mass
+  metric; the least-squares cone solution engages both). The generalized guard bounds
+  the TOTAL booked share (`sum_k share_k <= 1e-3`), and the ledger clamp
+  `impact += max(0, loss + sum share)` keeps the closure identity exact; the created
+  energy per event is clamped into the impact bucket and visible in the ledger. The
+  qualified class keeps its per-row guard verbatim.
+- **E7 — the impact-time Coulomb pass is complementarity-gated.** The qualified
+  landing solve fires at a localized first crossing, where the closing speed is
+  strictly negative by construction. With N points, a point can sit inside the
+  touching band while SEPARATING (receding at up to ~1e-3 m/s) when another point's
+  impulse arrives; giving it a Coulomb impulse then CREATES energy along its row
+  (positive share). The free class therefore gates the per-point Coulomb landing on
+  `row_n . v < -1e-12` (actually closing); separating points go to the plain
+  inelastic projection, which gives them exactly zero multiplier. The qualified class
+  is unchanged (its single-point event always closes).
+- **E8 — the ledger books the measured normal constraint power.** D8's derivation
+  states "while a row is active its constraint power is exactly zero
+  (`J_n,k·v = 0` for a touching point by the gate + projection)". MEASURED during
+  F1's settling phase: the discrete band holds rows at the ACCELERATION level while
+  the point velocity re-penetrates between impact-level projections, giving sustained
+  `J_n·v ~ -9e-4 m/s` under `~23 N` — constraint power `-0.02 W`, leaking the ledger
+  `-7e-5 J/tick` (measured balance drift, exactly the predicted magnitude). The
+  premise is falsified for the multi-point settling regime and the ledger gains the
+  honest term: `normal_work_J = ∫ Σ_k lambda_n,k (row_n,k · v) dt` (signed; the
+  RK4-staged quadrature the other ledger terms use), and the closure identity becomes
+  `balance_error_J = energy - work - external + damping + impact + contact_impact +
+  friction_heat - normal_work_J`. The qualified single-contact world measures
+  `normal_work ~ 0` (its closure bar is untouched and stays verbatim); the free
+  class reports the term and closes at the same bar. Falsifier for E8: with the term
+  booked, F4's bar holds on every status query, or the revision is refused.
