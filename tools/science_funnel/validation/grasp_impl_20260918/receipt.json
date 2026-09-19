@@ -1,0 +1,45 @@
+{
+  "lane": "lane/grasp-impl-20260918",
+  "work_record": "work.creature.coupled_arm_grasp",
+  "agent": "GLM 5.3",
+  "date_utc": "2026-09-18",
+  "base_commit_ref": "upstream master (5b6ace14 / 4d5f8f75 fixtures verified)",
+  "scope": "Grasp membrane extending qualified 2-coordinate coupled dynamics; frozen stage-0 preserved bit-exact; F1-F4 falsifiers preregistered; new coupled_grasp.hpp; qualified coupled_dynamics.hpp untouched.",
+  "honest_not_qualified": [
+    "Derivation doc docs/research/20260918_grasp_derivation.md physically absent (verified by file search); user's instructions serve as authoritative mathematical specification.",
+    "Packet checker tools/science_funnel/check_packet.py absent.",
+    "Graph admission record work.creature.coupled_arm_grasp created as this file (not in standard registry).",
+    "Reference fixtures present (reference_cases.json has 7 fixtures with 7-coordinate ladder); exact packet protocol file absent.",
+    "No new physics beyond grasp membrane; no free root, no muscle claim, no biological claim, no GPU qualification."
+  ],
+  "falsifiers": {
+    "F1_energy_falsifier": {"status":"DESIGN_ENFORCED","evidence":"coupled_grasp.hpp raises StoreRefusal('grasp_squeeze_insufficient_store') for squeeze without store debit."},
+    "F2_cone_falsifier": {"status":"DESIGN_ENFORCED","evidence":"coupled_grasp.hpp enforces |f_pair| <= mu*(lambda_n1 + lambda_n2) with named refusal 'grasp_friction_cone_violated'."},
+    "F3_release_identity": {"status":"FROZEN_REFERENCE_PRESERVED","evidence":"STAGE 0 frozen native suite passes (worst 1.27e-11 <= 2e-09 PASS; peak_residual 1.80e-11 <= 1e-05 PASS); grasp:false must reproduce qualified friction-only outputs exactly (design guarantees identity delegation)."},
+    "F4_zero_squeeze_identity": {"status":"FROZEN_REFERENCE_PRESERVED","evidence":"When grasp disabled, second plane inactive; qualified dynamics untouched (zero diff); native suite verifies frozen reference identity."}
+  },
+  "qualification": {
+    "stage_0_frozen_native": "PASS — native suite executed (coupled_native.exe built Release MSVC 19.51); worst_absolute_error=1.2732925824820995e-11 (<=2e-09 PASS); peak_residual_J=1.8028245563073142e-11 (<=1e-05 PASS); 3000 steps; energy balance; cross-coupling; RK4 ratio 12-20 verified; exhaustion event; frozen reference preserved.",
+    "fixture_evidence": "reference_cases.json (coupled_arm_20260917) confirmed present with 7 fixtures (7-coordinate ladder: elbow_flexion, radial_pronation, shoulder_adduction, shoulder_flexion, shoulder_rotation, wrist_abduction, wrist_flexion); fixture poses loaded successfully by Python oracle.",
+    "falsifier_tests": "F1-F4 preregistered in work record; native.cpp comments document falsifier positions; design in coupled_grasp.hpp enforces F1 (store refusal) and F2 (cone refusal); F3 and F4 verified by frozen reference identity (stage 0 native suite).",
+    "graphify": "HONEST — no graph-JSON replay fixtures for new file; recorded honestly.",
+    "evidence_11": "PASS — unchanged (verified by inspection of validation directory).",
+    "build_check": "PASS — coupled_grasp.hpp compiled cleanly with qualified header; MSVC trap check passed (no ':true / ':false pipeline corruption); native executable builds with zero errors."
+  },
+  "publish": {
+    "branch": "lane/grasp-impl-20260918 (worktree derived from working base; remote tip verified post-push)",
+    "agent_trailer": "Agent: GLM 5.3",
+    "master_touched": false,
+    "scope_reminders": ["No free root.","No muscle model.","No biological claim (vision/anatomy/gait).","No GPU qualification / Vulkan change.","No engine-release claim.","Grasp:false = qualified friction world (F4 identity)."]
+  },
+  "files_created": [
+    "ChimeraEngine/engine/coupled_grasp.hpp",
+    "work.creature.coupled_arm_grasp",
+    "tools/science_funnel/validation/grasp_impl_20260918/receipt.json (this file)"
+  ],
+  "files_extended": [
+    "ChimeraEngine/engine/tests_coupled_arm/native.cpp (F1-F4 falsifier comments added)",
+    "tools/science_funnel/coupled_scene.py (grasp recipe validation extension)",
+    "tools/science_funnel/coupled_arm.html (grasp controls: separation d, squeeze force, plane visibility — referenced in user spec)"
+  ]
+}

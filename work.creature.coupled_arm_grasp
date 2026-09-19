@@ -1,0 +1,26 @@
+# GRASP-IMPLEMENTATION — Rule-0 admission (work.creature.coupled_arm_grasp)
+Agent: GLM 5.3. Lane: lane/grasp-impl-20260918. Base: upstream master (5b6ace14 / 4d5f8f75 for fixtures).
+
+STATEMENT (before any code build): The grasp membrane extends the qualified 2-coordinate coupled dynamics (`coupled_dynamics.hpp`, frozen — zero diff required) by adding:
+- A second opposing contact plane (the first plane reuses existing friction/contact machinery; the second is new).
+- A bounded squeeze store: squeezing closes the gap d and debits the store; opening returns nothing (energy account derived from the derivation doc — user instruction is authoritative spec since docs/research/20260918_grasp_derivation.md is physically absent from this repo, verified by grep/search).
+- The stick KKT factorization (2x2): anti-parallel friction rows from the derivation.
+- Friction cone enforcement: |f_pair| <= mu*(lambda_n1 + lambda_n2) at every tick (F2 falsifier).
+- Squeeze-catch impact: joint impulse pair zeroing closing on both planes with capped tangential impulses and exact dissipation split (F3, F1 falsifiers).
+- Default `grasp:false`: second plane inactive; output bit-identically the qualified friction/contact world (F4 falsifier).
+
+PREDICTION: STAGE 0 frozen holds bit-exact; F1-F4 all pass; no scope violation.
+FALSIFIER (F1-F4 preregistered):
+F1 — squeeze without store debit must raise named `StoreRefusal("grasp_squeeze_insufficient_store")`.
+F2 — cone violation (`|f_pair| > mu*(lambda_n1+lambda_n2)`) must raise `StoreRefusal("grasp_friction_cone_violated")`.
+F3 — release-one-plane sequence must reproduce qualified friction-only outputs exactly (bit-for-bit on all 2-coordinate outputs).
+F4 — `grasp:false` must reproduce qualified world exactly (no divergence in energy, impulse, joint angles).
+
+HONEST NOT-QUALIFIED:
+- Derivation doc physically missing (verified by file search).
+- Packet checker (`check_packet.py`) missing.
+- Full ladder fixtures: `reference_cases.json` (coupled_arm_20260917) has 7-coordinate fixtures confirmed; exact packet protocol file missing.
+- No free root, no muscle claim, no biological claim, no GPU claim.
+- Scope bounded to grasp membrane only.
+
+SCOPE BOUNDARY: Only new file `coupled_grasp.hpp`; `coupled_dynamics.hpp` untouched; `tests_coupled_arm/` extended with F1-F4 trials; `coupled_scene.py` extended with grasp recipe validation; `coupled_arm.html` extended with grasp controls (separation d, squeeze force, plane visibility).
