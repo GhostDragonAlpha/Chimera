@@ -54,7 +54,14 @@ class CoupledScene(unittest.TestCase):
  # (scene.json sha256 9947d074... at store 319fe2af...) and re-proven after
  # the second upstream integration (7c784f09... at store ca68dc9c..., master
  # 0b8d80d5), whose graph_hash is the ONLY delta in the scene.
- DEFAULT_SCENE_PORTABLE_SHA256='a7b36b531f20e64da4119ad09ebb40448c17dfbc2c2d31489ac0160fb2513a52'
+ # Re-pinned again by the MUSCLE-PATHS lane 20260918 (lane/muscle-paths-20260918,
+ # store 5249aafc...): the pin was already stale at HEAD c43d3363 (the appearance
+ # replay advanced the store to d16d38a4... without a re-pin; its scene digests
+ # to 23d27409...), and this lane proved by field-level diff that the ONLY
+ # bundle delta across the store advance is /graph_hash plus the /graph_file
+ # hash-named path (2 fields, all scene physics identical). The pin keeps
+ # guarding scene physics: any real default-world change still fails here.
+ DEFAULT_SCENE_PORTABLE_SHA256='d441d1a013bd5b8cc39e21756a759dc5738316fb33078c4409a2b54109676cbd'
  CAYO_H_ELLIPSOIDAL_M=-42.82679794555668
  def portable_digest(self,bundle,out_dir):
   from tools.science_funnel.common import digest

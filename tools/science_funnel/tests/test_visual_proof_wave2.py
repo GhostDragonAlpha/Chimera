@@ -92,8 +92,14 @@ class Wave2VisualProof(unittest.TestCase):
         from tools.creature_graph.store import CreatureGraph
         graph = CreatureGraph.load(ROOT / 'tools' / 'creature_graph' / 'data' / 'creature_graph.json')
         self.assertEqual(len(graph.evidence_records()), 11)
-        self.assertEqual(len(graph.objects), 35331)
-        self.assertEqual(len(graph.relations), 38748)
+        # Store-size pins re-stamped 2026-09-18 by the MUSCLE-PATHS lane
+        # (store 5249aafc...): the wave2 count (35331 objects / 38748
+        # relations) was left stale by later admitted batches (it already
+        # failed at HEAD c43d3363 with 52430 objects). The durable
+        # invariants stay: exactly 11 evidence records and a clean
+        # graph.check(); re-stamp again ONLY with a citing admission.
+        self.assertEqual(len(graph.objects), 52433)
+        self.assertEqual(len(graph.relations), 47300)
         self.assertEqual(graph.check(), [])
 
     def test_scope_labels_and_honest_metrics(self):
