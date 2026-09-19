@@ -63749,6 +63749,125 @@
     }
    },
    "revision_note": "revision 2 (2026-09-19): the derived angle-zero map banked; the stem mapping amended to q = zero + table. The native F-G suite remains the decisive falsifier (pending on the recompiled scene)."
+  },
+  {
+   "id": "work.creature.macaque_assembly",
+   "kind": "work",
+   "name": "Whole-body macaque assembly derived from admitted graph data (AUTHORED)",
+   "status": "specified",
+   "priority": "P1",
+   "dependencies": [
+    "model.anatomy.macaque_arm",
+    "work.creature.macaque_whole_body_sources",
+    "work.environment.terrain",
+    "work.creature.macaque_intake"
+   ],
+   "physical": {
+    "statement": "The admitted graph records assemble into one 32-DOF physically simulated macaque: a 6-coordinate floating base on the HAT (Oku Table 1 HAT minus two declared arm carve-outs = 7.371998 kg), two 7-coordinate rhesus arm chains (0.406001 kg each), and two 6-coordinate hindlimbs (hip ball + knee + ankle + MTP; 0.927 kg each) for a preserved total of 10.038 kg / W = 98.44 N. The derivation at docs/research/20260918_monkey_assembly_derivation.md computes, with no free parameter: the standing configuration at the Cayo plane (-42.82679794555668 m ellipsoidal; hip height 0.3307 m, trunk pitch 26.33 deg, COM 0.1917 m ahead of the hind paws, inside the support polygon by ~0.25 m both ways), the trunk-beam girdle split (fore paws 34.18 N = 34.7% BW each, hind 15.04 N = 15.3%: 69/31 fore-dominant), the static muscle demands against Guimaraes PCSA capacities with Oku-fit effective moment arms (triceps surae 22.3-28.6% activation, knee flexors 4.3-5.6%), the fore-paw tenability bound (0.110 m at the walking pose), the zero-activation fall (elbow 58 ms -> knee 98 ms -> hip 191 ms, ~20.49 J dissipated to prone), and the gait reference (Oku ROMs, GRF peak 1.082 BW, duty 0.663, bilateral closure -2.3%; Janisch cercopithecoid excursions). It implements nothing.",
+    "prediction": "Replayed in the qualified dynamics, the assembled body at the derived stance carries fore paws at 34.7% BW each (+/-10), stands with triceps surae inside the 22-29% activation band, and with zero activation folds elbow-first inside 0.2 s dropping the COM 0.358 -> ~0.15 m with ~20.49 J appearing in the impact/friction ledgers at the packets' 1e-5 J closure bar. NONE of this is measured in simulation yet.",
+    "contract": {
+     "derivation": "docs/research/20260918_monkey_assembly_derivation.md",
+     "sources": [
+      "model.anatomy.macaque_arm (limblab monkeyArmModel @ 4fb7ddee, M. mulatta, MIT)",
+      "oku2021 Table 1 inertias via work.creature.macaque_whole_body_sources (M. fuscata, CC BY)",
+      "guimaraes2026.hindlimb_architecture (M. mulatta PCSA, CC BY)",
+      "oku2021.bipedal_series (SIMULATION-derived gait reference, CC BY)",
+      "janisch.wildprimate_kinematics (cercopithecoid quadrupedal analog, CC BY)",
+      "work.environment.terrain wiring (Cayo plane height)",
+      "docs/research/muscle_physiology_reference.md (specific tension 25-32 N/cm^2)"
+     ],
+     "declared_mappings": [
+      "HAT carve-out: fuscata HAT minus 2x mulatta arm chain mass, total preserved at 10.038 kg; HAT COM fraction and pitch inertia retained on the residual",
+      "second arm = first arm mirrored through the sagittal plane",
+      "hip abduction/rotation DOFs derived from function, locked at 0 until the balance stage",
+      "no tail DOF (req.macaque_rebuild); head welded into HAT; mandible locked (future feeding lane)"
+     ],
+     "explicit_unknowns": [
+      "fuscata forelimb mass split inside Oku HAT (Ogihara model ON_REQUEST)",
+      "Ogihara 3-D joint axes and true hip-to-shoulder span (reference s = 0.30 m, bounds [0.28, 0.482])",
+      "Janisch angle-convention signs (source R code unpinned); the foot-pitch sign (+/-15.75 deg) is disambiguated dynamically by falsifier F3",
+      "Oku cycle period (series x axis is percent of cycle)",
+      "rectus femoris absent from the Guimaraes Macaca sheet; knee-extensor capacity quotes VAS only"
+     ],
+     "staged_ladder": [
+      "A: 2-coordinate mounted arm (qualified, frozen)",
+      "B: 7-coordinate arm (seven_coordinate_lift packet F1-F9)",
+      "C: 8-DOF free root (free_root_balance packet F1-F9)",
+      "D: 20-DOF second arm (mirror-oracle gate at 1e-12)",
+      "E: 32-DOF hindlimbs; F1 statics replay (69/31 paw split, ankle 22-29% band), F2 fall cascade, F3 foot-pitch disambiguation",
+      "F: hip abd/rot unlock; walk closure per F4"
+     ],
+     "owned_files": [
+      "docs/research/20260918_monkey_assembly_derivation.md",
+      "tools/creature_graph/validation/admit_macaque_assembly_20260918.py"
+     ]
+    }
+   },
+   "falsifier": {
+    "statement": "If the replayed statics differ from the derivation's fore/hind paw split (69/31) by more than 10 points, place the COM projection outside the derived support polygon, hold a passive stance, fold in any order other than elbow->knee->hip on zero activation, settle without ~20.49 J of accounted dissipation, or violate the 1e-5 J ledger closure on any status query -- the assembly claim is FALSE and the implementing lane supersedes this record with the measured revision. A creature that cannot FALL cannot walk.",
+    "acceptance_test": "Not yet runnable: stages C-E of the ladder execute the falsifiers of docs/research/20260918_monkey_assembly_derivation.md sections 3-6 via the packets' qualification machinery and record measured results here in revision 2. Until then the honest status is untested.",
+    "status": "untested"
+   }
+  },
+  {
+   "id": "work.creature.macaque_skeleton_layer",
+   "kind": "work",
+   "name": "CT bone meshes as the whole-body macaque scene visual skeleton layer (AUTHORED)",
+   "status": "specified",
+   "priority": "P1",
+   "dependencies": [
+    "work.creature.macaque_assembly",
+    "work.creature.macaque_whole_body_sources"
+   ],
+   "physical": {
+    "statement": "The 25 committed CT bone meshes of USNM 497136-3 (Macaca mulatta, 160 um CT, MorphoSource 000875604; license pinned in download_receipt.json) become the macaque scene's visual skeleton layer, mounted on the stage-E whole-body assembly of work.creature.macaque_assembly at its derived standing pose (hip height 0.3307 m, hip +0.3287 rad, knee -0.8661 rad, ankle +1.3082, MP +0.8198; Cayo plane y = -42.82679794555668 m). Each bone is converted mm -> m (x0.001). The femur pair (bones 2 and 3, identified by near-equal principal-axis length 48.102/48.500 mm and a head end marked by proximity to the axial skeleton/acetabulum at 1.78/4.84 mm gap = acetabular side) receives the MEASURED segment-aware scale mapping 0.163 / (femur joint span) onto the 0.163 m thigh segment, where joint span = head-cap centroid -> condyle-cap centroid (42.734/42.970 mm; scale 3.8143/3.7933). The head-cap centroid is seated at the hip joint center and the head->condyle axis is aligned with the derived hip->knee direction, so the condyle-cap centroid lands on the knee center by construction. MEASURED at compile time on the compiler's own emitted geometry: exact point-to-triangle nearest-surface from the derived joints to the mounted femurs -- bone 2 hip 0.224 mm / knee 0.003 mm, bone 3 hip 0.015 mm / knee 0.102 mm (every value <= 5 mm); landmark-seating residuals (condyle-cap centroid to knee center) 3.1e-14 mm / 0.0 (the head-cap centroid is seated exactly at the hip by construction). The rev1 extent candidate's honest failure is the seating residual ~18.3 mm at the knee (see the falsifier correction). The other bones render at true mm scale in the CT frame; their segment attribution is undetermined (manifest carries size class only).",
+    "prediction": "After the declared mm->m conversion, the measured joint-span scale mapping and mount, the nearest-surface distance from each mounted femur to the derived hip and knee joint centers is each at most 5 mm, all 25 meshes render at correct mm scale in the compiled scene, and each femur's landmark-seating residual at the knee is at most 5 mm. This is measured on the compiled geometry, not in the engine. FALSIFIER STATUS: passing (rev3, measured).",
+    "contract": {
+     "derivation": "docs/research/20260918_monkey_assembly_derivation.md",
+     "sources": [
+      "tools/science_funnel/data/morphosource_ct/download_receipt.json",
+      "tools/science_funnel/data/morphosource_ct/mesh_receipt.json",
+      "work.creature.macaque_assembly (stage E standing pose)"
+     ],
+     "declared_mappings": [
+      "femur pair = bones 2,3: near-equal principal-axis length (48.102/48.500 mm) and head end nearest the axial skeleton (1.78/4.84 mm gap = acetabular side)",
+      "femur joint span = head-cap centroid -> condyle-cap centroid (10% projection end caps; 42.734/42.970 mm); scale = 0.163 m / (joint span in m) = 3.8143/3.7933",
+      "head-cap centroid seated at hip joint center; head->condyle axis aligned to the derived hip->knee direction (thigh 0.163 m at +18.83 deg); condyle-cap centroid lands on the knee center by construction",
+      "non-femur bones render at true mm scale (x0.001) in the CT frame; segment attribution undetermined"
+     ],
+     "explicit_unknowns": [
+      "non-femur bones' segment attribution is undetermined (manifest records size class only)",
+      "lateral hip spacing of the standing scaffold is locked at 0 (assembly stage E hip abduction locked at 0); both femora mount in the sagittal plane",
+      "infant specimen anatomy mounted on adult segment kinematics is a declared mapping, not a claim of adult femur proportions"
+     ],
+     "staged_ladder": [
+      "A: skeleton scene compiler emits the standing scaffold + 25 bones at mm scale; femur falsifier measured at compile time",
+      "B: render the compiled scene in the engine and judge the femur joint alignment on screen"
+     ],
+     "owned_files": [
+      "tools/science_funnel/data/morphosource_ct/download_receipt.json",
+      "tools/science_funnel/data/morphosource_ct/mesh_receipt.json",
+      "tools/creature_graph/validation/admit_macaque_skeleton_layer_20260919.py"
+     ],
+     "measured_values_m": {
+      "bone_2": {
+       "hip_surface": 0.000224370622040146,
+       "knee_surface": 3.411363514252586e-06,
+       "seating_knee": 3.1031676915590914e-17
+      },
+      "bone_3": {
+       "hip_surface": 1.4556536518807113e-05,
+       "knee_surface": 0.00010210699822516641,
+       "seating_knee": 0.0
+      }
+     }
+    }
+   },
+   "falsifier": {
+    "statement": "The skeleton-layer claim is false if the mounted femur pair's nearest-surface distance to the derived hip or knee joint centers exceeds 5 mm after the declared mm->m conversion and the measured joint-span scale mapping, if the mm->m conversion is not x0.001, if the femur scale is not 0.163 divided by the measured joint span (head-cap centroid -> condyle-cap centroid), if the head is not seated at the hip joint center, if a femur's landmark-seating residual at the knee exceeds 5 mm, or if any of the 25 meshes is not present at its committed hash in the compiled scene. A bone that cannot be seated on its joint cannot be a skeleton layer. CORRECTION to rev2's narrative: the rev1 firing numbers (nearest-surface 11.279/11.840 mm) were a vertex-proxy artifact; under the exact point-to-triangle surface metric the extent mapping reaches the knee joint too (rev1 exact-surface knee 0.476/2.486 mm). The extent mapping's real failure is the landmark-seating residual ~18.3 mm at the knee -- the condyle-cap centroid (the joint's own articulation center) lands 18.3 mm short of the knee even though the bone's extremity tip reaches it. The built compiler emits both metrics; the seating residual is the mapping discriminator, the surface bound is the operator's sanity cap.",
+    "acceptance_test": "Compile the skeleton scene and measure, on the compiled geometry, the exact point-to-triangle nearest-surface distance from each mounted femur to the derived hip and knee joint centers (both <= 0.005 m) AND each femur's landmark-seating residual at the knee (<= 0.005 m). Implemented as a compile-time geometric check inside the scene compiler and pinned by tests/test_macaque_skeleton_scene.py (7 tests green, rev3). Engine screen remains ladder stage B.",
+    "status": "passing"
+   }
   }
  ],
  "relations": [

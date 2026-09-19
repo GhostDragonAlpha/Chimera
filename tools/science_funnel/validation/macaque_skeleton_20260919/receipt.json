@@ -1,0 +1,91 @@
+{
+  "schema": "chimera.scoped_validation.v1",
+  "recorded_utc": "2026-09-19T00:00:00+00:00",
+  "candidate_commit": "committed_candidate",
+  "graph_hash": "f10973cd17593ead96845fc5669a8f29717314cfbb1626a34417441d08e90f05",
+  "lane": "codex/macaque-bones-lane-20260919",
+  "scope": "Stage-A CT visual skeleton layer compiler for the whole-body macaque scene: tools/science_funnel/macaque_skeleton_scene.py emits the standing scaffold plus all 25 committed CT bone meshes (USNM 497136-3, mm -> m x0.001) and mounts the femur pair (bones 2, 3) with the MEASURED joint-span scale 0.163 / head-cap-to-condyle-cap centroid. Falsifier solved at compile time on the compiler's own emitted geometry (exact point-to-triangle nearest-surface + landmark-seating residuals). NO engine render, no engine restart, no qualification of ladder stage B (engine screen is the operator's next ladder step).",
+  "source_file_manifest_sha256": {
+    "tools/creature_graph/data/authored/project_program.json": "d54d5aa3361bede3bce1b33c8e2047723ab5ea14261cd67c002990bd013ae289",
+    "tools/creature_graph/data/creature_graph.json": "c02c69e7bcde01aab47ef7d463b55a79d49816861faade8c0f763dec19ed36ac",
+    "tools/creature_graph/validation/admit_macaque_skeleton_layer_20260919.py": "c07a0d0c5b7c8edcb47de652556b9309401a4079ad767d6c878e9adace4aaec9",
+    "tools/science_funnel/common.py": "85dd26591a104c68e847bd4c76baef4fc34ca87957dd9f33d72affaf79ab4d7d",
+    "tools/science_funnel/data/morphosource_ct/download_receipt.json": "67438dd2e44a7554bc87e1274259e60265b1a70259f0daceeb3bc687aa36baf9",
+    "tools/science_funnel/data/morphosource_ct/mesh_receipt.json": "a48a608c0fd8321bf575ec243b8331419e61fba72eee2b800d38bbba6ba891a7",
+    "tools/science_funnel/macaque_skeleton_scene.py": "e67f1b1fd70eba616763f903a1fe012e20805c9e042fa4218dcc92143bc2a0b0",
+    "tools/science_funnel/tests/test_macaque_skeleton_scene.py": "7c5a77ea9809ce62a36c73a7d12223ead0fcd367a660b890fad6f38ff575e0d4"
+  },
+  "scene_sha256": "f69f2d8294298f88a244e28c90e6b7a87e23ccb46b60f460e3b43fe4f6204d60",
+  "falsifier": {
+    "tol_m": 0.005,
+    "passed": true,
+    "surface_method": "exact point-to-triangle distance from the derived hip and knee joint centers to the compiled mounted femur geometry (the operator's named falsifier; does not separate the extent mapping from the joint-span mapping because the bone tip reaches the joint in both)",
+    "seating_method": "distance from the derived hip/knee joint centers to the femur's OWN joint-surrogate landmarks (head-cap and condyle-cap centroids) after mounting; this is the mapping discriminator and the measured rev1 failure (~18.3 mm at the knee)",
+    "distances_m": {
+      "2": {
+        "hip_m": 0.000224370622040146,
+        "knee_m": 3.411363514252586e-06,
+        "seating_hip_m": 0.0,
+        "seating_knee_m": 3.1031676915590914e-17
+      },
+      "3": {
+        "hip_m": 1.4556536518807113e-05,
+        "knee_m": 0.00010210699822516641,
+        "seating_hip_m": 0.0,
+        "seating_knee_m": 0.0
+      }
+    }
+  },
+  "measured_joint_spans_mm": {
+    "bone_2": 42.734,
+    "bone_3": 42.970
+  },
+  "measured_scales": {
+    "bone_2": 3.8143,
+    "bone_3": 3.7933
+  },
+  "scaffold": {
+    "hip_height_m": 0.3307098711180544,
+    "hip_world_y_m": -42.4960879244376,
+    "thigh_m": 0.163,
+    "shank_m": 0.182,
+    "tarsometatarsus_m": 0.074,
+    "phi_thigh_deg": 18.83,
+    "phi_shank_deg": -30.79,
+    "foot_pitch_deg": 15.75
+  },
+  "checks": [
+    {
+      "check": "tests/test_macaque_skeleton_scene.py",
+      "run": "python -B -m unittest tools.science_funnel.tests.test_macaque_skeleton_scene -v",
+      "result": "7/7 OK",
+      "detail": "bundle schema/kind, stable scene_sha256, 25 bones from CT receipt, mm->m x0.001, femur joint-span scale identity, falsifier <= 0.005 m (surface + seating), scaffold standing pose, rule-zero record present with falsifier status passing"
+    },
+    {
+      "check": "falsifier_discriminates",
+      "result": "PASS",
+      "detail": "rev1 extent mapping fails at the landmark-seating residual (~18.3 mm knee), not the nearest-surface metric; the vertex-proxy 11.279/11.840 mm firing numbers recorded in rev2 were corrected in rev3. The built compiler emits both metrics."
+    },
+    {
+      "check": "existing_engine_and_graph_state",
+      "result": "UNTOUCHED",
+      "detail": "No engine process started or killed; no engine ports touched; gait_controller.hpp and validation/gait_* untouched; project_program.json formatting preserved (1-space indent, CRLF, no BOM); graph rebuilt deterministically."
+    },
+    {
+      "check": "pre_existing_sibling_failure",
+      "result": "NOT OURS",
+      "detail": "test_force_compiler / test_macaque_scene fail at HEAD with model_semantic_replay_mismatch:data.assertion.0621... on a clean worktree checkout 459fa1c7 BEFORE this lane's admit; reproduced on the pristine HEAD worktree, not caused by the skeleton admit."
+    }
+  ],
+  "not_qualified": [
+    "engine render (ladder stage B - operator next)",
+    "whole-body segment attribution of the 23 non-femur bones (undetermined role)",
+    "raw scan / full-res mesh certification",
+    "infant-vs-adult femur proportion claim",
+    "lateral hip spacing (locked at 0, assembly stage E)",
+    "any dynamics, muscle, skin or balance claim"
+  ],
+  "artifacts": {
+    "scene.json": "f69f2d8294298f88a244e28c90e6b7a87e23ccb46b60f460e3b43fe4f6204d60"
+  }
+}
