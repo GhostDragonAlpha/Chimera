@@ -1,0 +1,245 @@
+{
+ "schema": "chimera.ct_mesh_receipt.v1",
+ "source_ct": "Macaca_mulatta-USNM497136-3-160um-000875604.tif",
+ "source_media_id": "000875604",
+ "note": "Full-res meshes are gitignored; this receipt pins them by sha256. Previews (meshes_preview/) are committed. Regenerate via .tmp/segment_bones.py + .tmp/decimate_meshes.py.",
+ "segmentation_params": {
+  "bone_threshold": 118,
+  "threshold_percentile": 95,
+  "min_voxels": 1000,
+  "voxel_size_mm": 0.16,
+  "volume_shape": [
+   1373,
+   380,
+   374
+  ]
+ },
+ "meshes": [
+  {
+   "bone": 1,
+   "full_res": "bone_01_4737869vox.obj",
+   "full_res_sha256": "d789f917006d29f912c4fecd2d5084f17458ccd6b28628000d5b30b3dd9f207f",
+   "full_res_bytes": 166617961,
+   "full_faces": 3817770,
+   "preview": "bone_01_4737869vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 2,
+   "full_res": "bone_02_210240vox.obj",
+   "full_res_sha256": "fa5ec398c9b5289684579598b98e0bd4919bdcec224553086188a936c4d7f5f5",
+   "full_res_bytes": 5129871,
+   "full_faces": 133558,
+   "preview": "bone_02_210240vox_lo.obj",
+   "preview_faces": 29998
+  },
+  {
+   "bone": 3,
+   "full_res": "bone_03_208514vox.obj",
+   "full_res_sha256": "6f77cc0710f528715b8053c52d845b65e832147e473b22e579381e9f10696945",
+   "full_res_bytes": 5112630,
+   "full_faces": 132794,
+   "preview": "bone_03_208514vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 4,
+   "full_res": "bone_04_180534vox.obj",
+   "full_res_sha256": "cab5f4cc787783d3402a55483d291a995aef68cdb9d7e3a44321cc34cf0417f1",
+   "full_res_bytes": 4272670,
+   "full_faces": 109860,
+   "preview": "bone_04_180534vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 5,
+   "full_res": "bone_05_174742vox.obj",
+   "full_res_sha256": "a7a0899a2fdbc0da033c55f1368431b0b7e0d7f4ea9e8c740b5b799b38fa35fc",
+   "full_res_bytes": 3996179,
+   "full_faces": 103350,
+   "preview": "bone_05_174742vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 6,
+   "full_res": "bone_06_154508vox.obj",
+   "full_res_sha256": "bbef9035417fc81928f1962fc3dcfc26f154f4eee47e3779be4ee7c534118868",
+   "full_res_bytes": 4133123,
+   "full_faces": 108238,
+   "preview": "bone_06_154508vox_lo.obj",
+   "preview_faces": 29998
+  },
+  {
+   "bone": 7,
+   "full_res": "bone_07_150102vox.obj",
+   "full_res_sha256": "a88424125db2f282edf715c738dfdba15ad1212da11228a53b73428f5ccf3307",
+   "full_res_bytes": 4150810,
+   "full_faces": 108134,
+   "preview": "bone_07_150102vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 8,
+   "full_res": "bone_08_102171vox.obj",
+   "full_res_sha256": "bbcc99cd0899f9dd602b7b2e29baba8654e40c8ad52c1785472f4fd8635f1435",
+   "full_res_bytes": 3311175,
+   "full_faces": 85496,
+   "preview": "bone_08_102171vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 9,
+   "full_res": "bone_09_100874vox.obj",
+   "full_res_sha256": "b2b4ecc9bcb154363c647d489e1196cc5c966281945343d364cfdb9f9ab173ca",
+   "full_res_bytes": 3234289,
+   "full_faces": 83712,
+   "preview": "bone_09_100874vox_lo.obj",
+   "preview_faces": 29998
+  },
+  {
+   "bone": 10,
+   "full_res": "bone_10_92842vox.obj",
+   "full_res_sha256": "f3ac1b0ddffb7a7e54dc7a18165d5eefbe1b522863588eda6a3d79041ee6326a",
+   "full_res_bytes": 2316516,
+   "full_faces": 60456,
+   "preview": "bone_10_92842vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 11,
+   "full_res": "bone_11_90563vox.obj",
+   "full_res_sha256": "e025f9485c1bc1cf4231bf7dfc20e7b730ab5a42a5e83f425c589430a4667d6b",
+   "full_res_bytes": 2325772,
+   "full_faces": 60750,
+   "preview": "bone_11_90563vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 12,
+   "full_res": "bone_12_88112vox.obj",
+   "full_res_sha256": "61c180d64d6c9204dd10a37e0293cd59c3f1fbc1cd4641dba6f5d7fd073224ec",
+   "full_res_bytes": 2237188,
+   "full_faces": 58444,
+   "preview": "bone_12_88112vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 13,
+   "full_res": "bone_13_86590vox.obj",
+   "full_res_sha256": "56bf6be6d35b8d841e01dcd75a7668de133f4f386d478c7bacd754edf480d3c4",
+   "full_res_bytes": 2221032,
+   "full_faces": 58052,
+   "preview": "bone_13_86590vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 14,
+   "full_res": "bone_14_58499vox.obj",
+   "full_res_sha256": "d06eed98fcba1cb45a6c28073cc60cc5cf96508af69a561c43d7ee5bdfa55e1b",
+   "full_res_bytes": 2491447,
+   "full_faces": 65580,
+   "preview": "bone_14_58499vox_lo.obj",
+   "preview_faces": 29998
+  },
+  {
+   "bone": 15,
+   "full_res": "bone_15_54574vox.obj",
+   "full_res_sha256": "316f9dc9e83eb41a77ba7f24715213cac0d9f75011920723f67b4d88ab92c604",
+   "full_res_bytes": 1220252,
+   "full_faces": 32992,
+   "preview": "bone_15_54574vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 16,
+   "full_res": "bone_16_54463vox.obj",
+   "full_res_sha256": "b2fef7f4f0d3b65c94441a6521343938744cef31015f28a8e6049c467ba65593",
+   "full_res_bytes": 2209985,
+   "full_faces": 58612,
+   "preview": "bone_16_54463vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 17,
+   "full_res": "bone_17_54226vox.obj",
+   "full_res_sha256": "dfbb43a7fede054161f95f41e316d1e079e6113ae7b2dc8ae26cd84f14c34694",
+   "full_res_bytes": 1194686,
+   "full_faces": 32336,
+   "preview": "bone_17_54226vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 18,
+   "full_res": "bone_18_53022vox.obj",
+   "full_res_sha256": "e3665e9395695206ed702894038ae5c5f68047d134037011d4ddeb3c9fa2f451",
+   "full_res_bytes": 2363280,
+   "full_faces": 62760,
+   "preview": "bone_18_53022vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 19,
+   "full_res": "bone_19_44805vox.obj",
+   "full_res_sha256": "ee7372950dd2378c2295f97a295aab1aabd7b99eaea13e88ad64979549c8cdf5",
+   "full_res_bytes": 1930040,
+   "full_faces": 51198,
+   "preview": "bone_19_44805vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 20,
+   "full_res": "bone_20_34255vox.obj",
+   "full_res_sha256": "3d85c68a538d93b41a8764a71de425d6f6c1b3513668e5ac89eae526be2818e7",
+   "full_res_bytes": 1193754,
+   "full_faces": 32380,
+   "preview": "bone_20_34255vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 21,
+   "full_res": "bone_21_33153vox.obj",
+   "full_res_sha256": "f1d7400c7a231b38c0025dba9b606198db22e784be5da3bb61691680115057aa",
+   "full_res_bytes": 1124485,
+   "full_faces": 30536,
+   "preview": "bone_21_33153vox_lo.obj",
+   "preview_faces": 30000
+  },
+  {
+   "bone": 22,
+   "full_res": "bone_22_31952vox.obj",
+   "full_res_sha256": "15272ed8bab2e9e9c584d5a78a0983c525863368c31f10fcec5311b3351835bf",
+   "full_res_bytes": 951283,
+   "full_faces": 26104,
+   "preview": "bone_22_31952vox_lo.obj",
+   "preview_faces": 26104
+  },
+  {
+   "bone": 23,
+   "full_res": "bone_23_31588vox.obj",
+   "full_res_sha256": "6afe670eeae573511787ba1b6853de714462a99e0703d01daba85150b7c4b6bd",
+   "full_res_bytes": 964786,
+   "full_faces": 26450,
+   "preview": "bone_23_31588vox_lo.obj",
+   "preview_faces": 26450
+  },
+  {
+   "bone": 24,
+   "full_res": "bone_24_25423vox.obj",
+   "full_res_sha256": "5e93fd0604d82285ce1f15f613795cf6931257c2a2b09794954948370c660892",
+   "full_res_bytes": 524415,
+   "full_faces": 14748,
+   "preview": "bone_24_25423vox_lo.obj",
+   "preview_faces": 14748
+  },
+  {
+   "bone": 25,
+   "full_res": "bone_25_25400vox.obj",
+   "full_res_sha256": "e73d847f2d937e3af921821ca8569b57c31456a29d3653c5efa03c45276e7f43",
+   "full_res_bytes": 541686,
+   "full_faces": 15228,
+   "preview": "bone_25_25400vox_lo.obj",
+   "preview_faces": 15228
+  }
+ ],
+ "timestamp": "2026-09-19T18:31:39+00:00"
+}

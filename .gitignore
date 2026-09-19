@@ -311,3 +311,10 @@ ChimeraEngine/native/nul
 # 100 MB git per-file ceiling; the committed artifacts are the derived trait
 # table + release notes, re-derivable byte-identically from the pinned zip.
 tools/science_funnel/data/phylacine/PHYLACINE_1.2.1.zip
+
+# MorphoSource full-resolution bone meshes (216 MB, sha256-pinned in
+# tools/science_funnel/data/morphosource_ct/mesh_receipt.json) -- committed
+# artifacts are the decimated previews (meshes_preview/), the segmentation
+# manifest, and the MIP projection PNGs. Regenerate full-res via
+# .tmp/segment_bones.py + .tmp/decimate_meshes.py from the pinned CT.
+tools/science_funnel/data/morphosource_ct/meshes/*.obj
