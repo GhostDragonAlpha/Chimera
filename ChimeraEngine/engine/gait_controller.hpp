@@ -73,16 +73,36 @@ class GaitWalker {
  State s_;mutable uint64_t adv_calls_=0;
  Evaluation evaluate(const State& s)const{return model_->evaluate(s.q,s.v,gravity_);}
  double mechanical(const State& s)const{auto e=evaluate(s);return .5*inner(s.v,multiply(e.mass,s.v))+e.potential;}
+ bool sole_representative(size_t k)const{return k<npts_ && (k%2)==0;}
+ V sole_local(const Evaluation& e,size_t k)const{
+  // The contract keeps heel and MP endpoints. The active row is evaluated at
+  // the closest point of their sole segment; a flat tie chooses its midpoint
+  // deterministically, sharing the flat-phase load through the sole.
+  size_t h=k-(k%2),m=h+1;
+  auto ph=e.point(points_[h].index,points_[h].local).first;
+  auto pm=e.point(points_[m].index,points_[m].local).first;
+  double gh=ph[1]+points_[h].radius-plane_model_y_;
+  double gm=pm[1]+points_[m].radius-plane_model_y_;
+  double dy=pm[1]-ph[1];
+  // Near a flat loaded window the segment's closest set is degenerate; keep
+  // the CoP in its interior rather than letting endpoint roundoff select the
+  // MP lever. Outside that band the lower endpoint is the migrating CoP.
+  double a=(gh<=2e-6&&gm<=2e-6)||std::abs(dy)<1e-8?0.5:(dy<0.?1.:0.);
+  V local=points_[h].local;for(int i=0;i<3;++i)local[i]+=(points_[m].local[i]-points_[h].local[i])*a;return local;}
+ V sole_position(const Evaluation& e,size_t k)const{return e.point(points_[k-(k%2)].index,sole_local(e,k)).first;}
  double gap_of(const Evaluation& e,size_t k)const{
 #ifdef GAIT_EVENT_TRACE
   if(k>=points_.size()||points_[k].index>=e.frames.size())
    std::fprintf(stderr,"[gapbound] k=%zu npts=%zu frames=%zu tick=%llu\n",
     k,points_.size(),e.frames.size(),(unsigned long long)ticks_);
 #endif
-  return e.point(points_[k].index,points_[k].local).first[1]+points_[k].radius-plane_model_y_;}
- Dense contact_row(const Evaluation& e,size_t k)const{auto j=e.point(points_[k].index,points_[k].local).second;Dense r(n_,0.);for(size_t i=0;i<n_;++i)r[i]=j[i][1];return r;}
- Dense tangent_row(const Evaluation& e,size_t k,int axis)const{auto j=e.point(points_[k].index,points_[k].local).second;Dense r(n_,0.);for(size_t i=0;i<n_;++i)r[i]=j[i][axis];return r;}
- V contact_bias(const Evaluation& e,size_t k)const{return vector(e.frames[points_[k].index].ddt,points_[k].local,1);}
+  size_t h=k-(k%2),m=h+1;
+  double gh=e.point(points_[h].index,points_[h].local).first[1]+points_[h].radius-plane_model_y_;
+  double gm=e.point(points_[m].index,points_[m].local).first[1]+points_[m].radius-plane_model_y_;
+  return (std::min)(gh,gm);}
+ Dense contact_row(const Evaluation& e,size_t k)const{auto j=e.point(points_[k-(k%2)].index,sole_local(e,k)).second;Dense r(n_,0.);for(size_t i=0;i<n_;++i)r[i]=j[i][1];return r;}
+ Dense tangent_row(const Evaluation& e,size_t k,int axis)const{auto j=e.point(points_[k-(k%2)].index,sole_local(e,k)).second;Dense r(n_,0.);for(size_t i=0;i<n_;++i)r[i]=j[i][axis];return r;}
+ V contact_bias(const Evaluation& e,size_t k)const{return vector(e.frames[points_[k-(k%2)].index].ddt,sole_local(e,k),1);}
  double joint_speed_scale(const State& s)const{double a=0;for(size_t d=0;d<nd_;++d)a+=std::abs(s.v[drives_[d].coordinate]);return a;}
  Dense normals(const State& s)const{Dense row(n_,0.);for(size_t d=0;d<nd_;++d){size_t c=drives_[d].coordinate;if(std::abs(s.q[c]-model_->lower[c])<1e-10)row[c]=1;else if(std::abs(s.q[c]-model_->upper[c])<1e-10)row[c]=-1;}return row;}
  static bool gram_factor(std::vector<double> g,size_t k,const Dense& rhs,Dense& lambda){
@@ -256,7 +276,7 @@ class GaitWalker {
   bool friction=contact_&&mu_>0;
   if(friction&&!stop){
    for(size_t k=0;k<npts_;++k){
-    if(!touching[k])continue;
+    if(!sole_representative(k)||!touching[k])continue;
     auto j_t1=tangent_row(e,k,0),j_t2=tangent_row(e,k,2);
     V bias=contact_bias(e,k);
     V slip_v{};for(size_t i=0;i<n_;++i){slip_v[0]+=j_t1[i]*s.v[i];slip_v[2]+=j_t2[i]*s.v[i];}
@@ -275,7 +295,7 @@ class GaitWalker {
       out.friction_heat[k]=-lambda_t*inner(row_t,s.v);}}
     catch(const Refusal&){}}}
   for(size_t k=0;k<npts_;++k){
-   if(!touching[k])continue;
+   if(!sole_representative(k)||!touching[k])continue;
    Dense rn=contact_row(e,k);
    double floor_k=-contact_bias(e,k)[1];
    if(out.mode[k]&&inner(rn,free)>=floor_k-1e-9)continue;
@@ -290,7 +310,7 @@ class GaitWalker {
   auto shifted=[&](const Rate& d,double t){State x=start;for(size_t i=0;i<n_;++i){x.q[i]+=d.q[i]*t;x.v[i]+=d.v[i]*t;}return x;};
   std::vector<char> plane(npts_,0);
   if(contact_&&mu_>0){auto e0=evaluate(start);double gate=1e-6+1e-3*joint_speed_scale(start);
-   for(size_t k=0;k<npts_;++k)if(live[k]&&gap_of(e0,k)<=kTouch&&inner(contact_row(e0,k),start.v)<=gate)plane[k]=1;}
+   for(size_t k=0;k<npts_;++k)if(sole_representative(k)&&live[k]&&gap_of(e0,k)<=kTouch&&inner(contact_row(e0,k),start.v)<=gate)plane[k]=1;}
   auto a=rate(start,tau,live,plane),b=rate(shifted(a,h/2),tau,live,plane),c=rate(shifted(b,h/2),tau,live,plane),d=rate(shifted(c,h),tau,live,plane);
   State end=start;
   for(size_t i=0;i<n_;++i){end.q[i]+=h*(a.q[i]+2*b.q[i]+2*c.q[i]+d.q[i])/6;end.v[i]+=h*(a.v[i]+2*b.v[i]+2*c.v[i]+d.v[i])/6;
@@ -319,7 +339,7 @@ class GaitWalker {
   std::vector<char> engaged(npts_,0);
   if(contact_&&mu_>0&&rows.empty()){
    for(size_t k=0;k<npts_;++k){
-    if(!touching[k])continue;
+    if(!sole_representative(k)||!touching[k])continue;
     auto j_t1=tangent_row(e,k,0),j_t2=tangent_row(e,k,2);
     V slip_v{};for(size_t i=0;i<n_;++i){slip_v[0]+=j_t1[i]*s.v[i];slip_v[2]+=j_t2[i]*s.v[i];}
     Dense rown_k=rown[k];double closing=inner(rown_k,s.v);if(closing>-1e-12)continue;
@@ -337,7 +357,7 @@ class GaitWalker {
       s.friction_heat[k]+=(std::max)(0.,-share_t);s.friction_impulse[k]+=std::abs(lambda_t);
       caught=(std::max)(caught,lambda_n);engaged[k]=1;}}
     catch(const Refusal&){}}}
-  for(size_t k=0;k<npts_;++k)if(touching[k])rows.push_back({rown[k],0.,int(k),false});
+  for(size_t k=0;k<npts_;++k)if(sole_representative(k)&&touching[k])rows.push_back({rown[k],0.,int(k),false});
   if(!rows.empty()){std::vector<Dense> plain;Dense plainfloors;size_t n_stops=0;for(auto&r:rows){plain.push_back(r.row);plainfloors.push_back(r.floor);if(r.stop_row)++n_stops;}
    std::vector<double> multipliers;auto p=project_rows(s.v,inv,plain,plainfloors,&multipliers,n_stops);auto change=multiply(inv,p);
    double before=.5*inner(s.v,multiply(e.mass,s.v));Dense mean(n_);
@@ -369,7 +389,7 @@ class GaitWalker {
 #endif
    std::vector<size_t> pen;std::vector<double> gaps;
    {auto ec=evaluate(s);
-    for(size_t k=0;k<npts_;++k){double g=gap_of(ec,k);if(g<-1e-6){pen.push_back(k);gaps.push_back(g);}}}
+    for(size_t k=0;k<npts_;++k){if(!sole_representative(k))continue;double g=gap_of(ec,k);if(g<-1e-6){pen.push_back(k);gaps.push_back(g);}}}
    if(!pen.empty()){
     double u_before=evaluate(s).potential;
     std::vector<Dense> arows;for(size_t k:pen)arows.push_back(contact_row(evaluate(s),k));
@@ -412,7 +432,7 @@ class GaitWalker {
   double caught=impact(start);
   if(mu_>0&&caught>1e-9&&depth<5)return advance(advance(start,h/2,tau,depth+3),h/2,tau,depth+3);
   std::vector<char> live(npts_,0);auto estart=evaluate(start);
-  if(contact_)for(size_t k=0;k<npts_;++k)live[k]=gap_of(estart,k)<=kTouch?1:0;
+  if(contact_)for(size_t k=0;k<npts_;++k)if(sole_representative(k))live[k]=gap_of(estart,k)<=kTouch?1:0;
   auto end=free_step(start,h,tau,live);int which=-1,khit=-1;double hit=h,wall=0;
   // Event namespaces: which = 0..nd_-1 a DRIVE joint-stop event (the drive
   // index), which = -2 a CONTACT event (khit = the point), which = -1 none.
@@ -428,7 +448,7 @@ class GaitWalker {
    double t=(left+right)/2;if(t<hit||(t==hit&&which>=0&&d<(size_t)which)){hit=t;which=int(d);khit=-1;wall=bound;}}
   if(contact_){auto eend=evaluate(end);
    for(size_t k=0;k<npts_;++k){
-    if(live[k]||gap_of(eend,k)>=0)continue;
+    if(!sole_representative(k)||live[k]||gap_of(eend,k)>=0)continue;
     auto probe=live;probe[k]=0;double left=0,right=h;
     for(int j=0;j<42;++j){double mid=(left+right)/2;if(gap_of(evaluate(free_step(start,mid,tau,probe)),k)<=0)right=mid;else left=mid;}
     double t=(left+right)/2;if(t<hit){hit=t;which=-2;khit=int(k);}}}
@@ -668,7 +688,8 @@ class GaitWalker {
    double slip=std::hypot(slip_v[0],slip_v[2]);
    friction_heat_total+=s_.friction_heat[k];impact_heat_total+=s_.contact_impact[k];reaction_total+=reaction;
    if(touching)cone_valid=cone_valid&&std::abs(friction_force)<=mu_*reaction+1e-9&&reaction>=-1e-9;
-   points.push_back({{"name",points_[k].name},{"body",points_[k].body},{"gap_m",g},{"touching",touching},
+   auto cop=sole_position(e,k);
+   points.push_back({{"name",points_[k].name},{"body",points_[k].body},{"position_m",cop},{"gap_m",g},{"touching",touching},
     {"reaction_N",reaction},{"friction_force_N",friction_force},{"slip_speed_m_s",slip},
     {"impact_heat_J",s_.contact_impact[k]},{"friction_heat_J",s_.friction_heat[k]},
     {"impact_impulse_N_s",s_.contact_impact_impulse[k]},{"normal_impulse_N_s",s_.contact_force_impulse[k]}});}
