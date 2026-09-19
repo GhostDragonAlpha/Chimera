@@ -54,16 +54,17 @@ class CoupledScene(unittest.TestCase):
  # (scene.json sha256 9947d074... at store 319fe2af...) and re-proven after
  # the second upstream integration (7c784f09... at store ca68dc9c..., master
  # 0b8d80d5), whose graph_hash is the ONLY delta in the scene.
- # Re-pinned 2026-09-18 (lane gait-controller-20260918): the pin was already
- # STALE at this lane's base -- store d16d38a4 (master c43d3363, appearance
- # admissions replay) digests 23d27409... and the terrain-era origin store
- # ca68dc9c now digests 135699e6... (both measured; the appearance replay
- # moved the embedded graph hash without a re-pin). This lane's admission
- # (work.creature.gait_controller) moves ONLY the embedded graph hash: the
- # base -> lane normalized bundle diff is exactly /graph_file + /graph_hash
- # (2 fields, measured; the scene recipe is untouched). New pin measured on
- # the live store bf9e5a9b: 64cdd028...
- DEFAULT_SCENE_PORTABLE_SHA256='64cdd028e4d6df1639e0a4b2495e273d7c3f77dbd46812bf559fdce7a1fb2773'
+ # Re-pinned 2026-09-18 by lane seven-coord-complete (GLM 5.3): admission of
+ # model.dynamics.coupled_arm7 (the work.dynamics.seven_coordinate_lift_packet
+ # implementation) rebuilt the graph; the normalized diff of the scene
+ # compiled pre- vs post-admission shows the ONLY deltas are graph_hash
+ # (also inside the graph_file name) and the self-referential scene_sha256
+ # -- no physics, recipe, model or source bytes moved. Old pin: a7b36b53
+ # 1f20e64da4119ad09ebb40448c17dfbc2c2d31489ac0160fb2513a52.
+ # (Merged lane gait-impl-20260919: this pin is provisional at the seven-coord
+ # value and is re-measured after the merged store rebuild + this lane's own
+ # admissions; lineage: derivation-lane pin 64cdd028 on store bf9e5a9b.)
+ DEFAULT_SCENE_PORTABLE_SHA256='c44673e17123727a8a41edf5e3eeeda69850799d9ad032e0f77fde6308ec3d98'
  CAYO_H_ELLIPSOIDAL_M=-42.82679794555668
  def portable_digest(self,bundle,out_dir):
   from tools.science_funnel.common import digest
