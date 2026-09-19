@@ -1,0 +1,37 @@
+{
+ "lane": "in-session (codex/force-data-runtime-20260916), wave 4",
+ "date": "2026-09-19",
+ "agent": "GLM 5.3",
+ "deliverable": "The stance-hold membrane MEASURED: the quasi-static actuator demands at the zero-mapped table poses vs the derived caps. The walk's fall is a torque-budget fact, predicted and confirmed -- and the finding opens the load-provenance question.",
+ "method": "11-DOF planar statics per stance node: bodies from the Oku Table-1 segments at the zero-mapped pose; mass matrix + gravity torque from the per-body COM Jacobians; the rolling-law contact planted (welded x,y); the contact reaction solved from the UNACTUATED base rows (the engine's own tau=0 law on base x,y); tau_act = -(G + A^T lambda) per coordinate.",
+ "measured_statics_single_support": {
+  "entry_phi_0.449": "knee demand 7.28 N.m vs cap 6.6 -- OVER CAP AT THE ENTRY INSTANT; hip 7.27/11.2 ok; ankle -6.77/7.4 ok; posture 8.08/11.2 ok",
+  "single_support_window_phi_0.20_to_0.50": "knee demand 8.81 / 10.54 / 3.52(heel-off transition) / 4.34 / 5.76 / 7.31 vs cap 6.6 -- over through the loaded window by 33-60% at its center",
+  "late_stance_phi_0.55_to_0.65": "hip 11.78-16.60 vs cap 11.2 (over), knee 10.14-13.75 vs 6.6 (over), posture 12.53-17.16 vs 11.2 (over) -- the push-off window demands beyond every cap",
+  "early_stance_phi_0.00_to_0.15": "these are DOUBLE-support nodes in the cycle (the other leg's stance overlaps phi 0.5-0.683) -- single-support statics overestimates them; also the MP demand 7.8-8.4 N.m vs cap 0.88 at the heel-branch nodes flags the windlass load, but the load is shared in truth"
+ },
+ "falsifier_outcomes": {
+  "f1_sim_saturation_match": "PASS -- the sim's measured fall shows the KNEES absorbing -4.65/-5.56 J (the collapse energy), exactly the joints the statics name as over-budget; the fall direction (hip sinking, knee folding) matches",
+  "f2_standing_holds": "the flat stand (four planted points, CoM centered) shares load across both legs and four contacts -- the F-G5 armed stand HOLDS in the engine; this script's single-point statics do not contradict it (different constraint set)"
+ },
+ "the_deeper_finding": "The admitted source data contains its own tension: the GRF closure identity 2*I_stance = BW*T holds at -1.3% (the hindlimbs carry the full weight in the data), yet the measured knee torque peak is 5.31 N.m while the static demand at the SAME table poses is 9+ N.m. Resolution: THE SOURCE WALK IS DYNAMICALLY SUPPORTED -- the inverted-pendulum exchange carries the body through the single-support window; the muscles never hold these poses statically. A static-hold requirement is the WRONG demand model for mid-gait; it IS the right model for the entry instant and any recovery -- and there the caps are 10% short at the entry and 33-60% short through the window.",
+ "implications_ranked": [
+  "1. THE WALK NEEDS MOMENTUM, NOT BIGGER CAPS: with the source's own dynamics, the caps suffice mid-gait (their sim proved it); the failure is that our entry momentum (KE 3.6 J at the no-skid speed) DISSIPATES before the first full cycle: the measured worst ledger error is 2.99 J (an F-G8 RED in its own right -- the energy accounting itself breaks during the walk, candidate: the poscorr booking under the store-bisection's repeated trial advances). THE NEXT MEMBRANE: close the ledger first (a broken meter cannot tune a walk), then measure the dissipation channels (impact heat, friction, clamp-pin losses) against the injected 3.6 J.",
+  "2. CAP PROVENANCE: if a static-recovery capability is wanted (F-G6's push test demands it!), the caps need bipedal-load provenance: the honest rescale is cap_j = 1.25 x peak_j / hindlimb_share with the share derived from the admitted GRF bytes -- but the closure identity says the share is 1.0, so NO rescale is derivable from the admitted data alone; a static-capable walker needs either the quadruped (forelimb load path) or a cap amendment with NEW provenance (named, not derived today).",
+  "3. The push-test implication: F-G6's scripted push (0.1 BW) demands capture-or-recover; with statically-infeasible single support, recovery MUST be the capture reflex (kinematic), never torque hold -- consistent with the source architecture."
+ ],
+ "pass": false,
+ "honest_summary": "The stance-hold membrane measured: the caps cannot hold the bipedal walker statically in the single-support window (knee 33-60% over at center), the sim's fall matches joint-for-joint, and the source data proves these poses were never held statically -- the walk is a pendulum. Our pendulum's meter was also broken: the ledger baseline bug (fixed, -0.591 J at tick 0) and a residual 3.5 J leak now characterized to the mechanical terms (bal==stor at every tick) with the work-across-poscorr-jumps as the prime suspect. Next membrane: audit the work integral across positional corrections, then the dissipation channels against the 3.6 J entry KE.",
+ "ledger_work_this_wave": {
+  "baseline_bug_fixed": "the ledger identity measured from the STANDING-pose potential (v=0) while the gait entry starts from the tables pose with injected momentum -- a constant -0.591 J offset at tick 0 (KE 3.557 + du -4.180). Fixed: e_ref_ = the actual reset state's mechanical energy; tick-0 balance error now 0.0087 J. The clamp-pin path was also booked (poscorr law) -- measured zero contribution (the clamp chatter is gone).",
+  "residual_leak_characterized": "the balance error grows smoothly with contact activity: 0.009 (tick 0) -> 0.67 (20) -> 1.52 (50) -> 2.39 (60) -> 3.04 (70) -> 3.34 (80) -> 3.47 (90) -> 3.58 (100) -> plateau ~3.5 J. bal == stor at EVERY tick (the leak is in the shared mechanical terms: KE + du - work - external + damping + impact + friction), so the battery/store accounting is consistent.",
+  "prime_suspect": "free_step books work as tau*(q_end - q_start) per substep -- including the q jumps made by the positional correction between impacts (the actuator did not cause those displacements): ~tau*delta_q ~ 5e-4 J x ~2500 poscorr events ~ 1.3 J, plus impact-projection impulse interactions; the magnitude is right, the audit is the next membrane's first task",
+  "instrumentation": "[ledger] first-breach + [ledger] growth + [ledger10] per-10-tick traces in gait_unit.cpp under GAIT_EVENT_TRACE"
+ },
+ "reproduce": [
+  "python -B tools/science_funnel/validation/gait_zero_20260919/derive_stance_hold.py",
+  "cmake --build .tmp/gait-tests --config Release --target gait_unit gait_unit_trace",
+  ".tmp/gait-tests/Release/gait_unit.exe .tmp/gait-walker/scene.json",
+  ".tmp/gait-tests/Release/gait_unit_trace.exe .tmp/gait-walker/scene.json  # [ledger10] trace"
+ ]
+}

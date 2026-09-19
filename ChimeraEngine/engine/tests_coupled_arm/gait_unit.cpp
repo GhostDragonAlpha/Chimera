@@ -68,7 +68,7 @@ int main(int argc,char**argv){try{
   GaitWalker d(data,9.80665,V{0,0,0},dt);
   d.configure({{"capture_enabled",capture},{"reset",true}});
   const int WALK=10*CYCLE_TICKS;
-  WalkOut out;bool prev_t[2]={false,false};
+  WalkOut out;bool prev_t[2]={false,false};int w_ledger_first=-1;double w_ledger_prev=0;
   auto t_start=std::chrono::steady_clock::now();
   for(int i=0;i<WALK;++i){
    try{
@@ -82,6 +82,17 @@ int main(int argc,char**argv){try{
     std::fprintf(stderr,"%s | y=%.4f x=%.4f\n",b,d.angles()[4],d.angles()[3]);break;}
    auto s=d.status();
    double bal=std::abs(number(s["energy"]["balance_error_J"])),stor=std::abs(number(s["energy"]["store_balance_error_J"]));
+#ifdef GAIT_EVENT_TRACE
+   if((bal>1e-3||stor>1e-3)&&w_ledger_first<0){w_ledger_first=i;
+    std::fprintf(stderr,"[ledger] first breach tick %d: %s\n",i,s["energy"].dump().c_str());}
+   if((bal>1e-3||stor>1e-3)&&(bal>w_ledger_prev+0.25||stor>w_ledger_prev+0.25)){
+    std::fprintf(stderr,"[ledger] tick %d bal=%.4f stor=%.4f | KE=%.3f grav=%.3f work=%.3f damp=%.3f imp=%.3f fric=%.3f brake=%.3f ext=%.3f\n",
+     i,bal,stor,number(s["energy"]["kinetic_J"]),number(s["energy"]["gravitational_J"]),number(s["energy"]["actuator_work_J"]),
+     number(s["energy"]["damping_heat_J"]),number(s["energy"]["impact_heat_J"]),number(s["energy"]["friction_heat_J"]),
+     number(s["energy"]["brake_heat_J"]),number(s["energy"]["external_work_J"]));}
+   w_ledger_prev=(std::max)(w_ledger_prev,(std::max)(bal,stor));
+   if(i%10==0)std::fprintf(stderr,"[ledger10] tick %d bal=%.4f stor=%.4f\n",i,bal,stor);
+#endif
    out.worst_ledger=(std::max)(out.worst_ledger,(std::max)(bal,stor));
    if(s["support"]["hull_size"].get<int>()>=3){++out.hull_checks;if(!s["support"]["com_in_hull"].get<bool>())out.hull_all=false;}
    for(size_t leg=0;leg<2;++leg){

@@ -68,6 +68,7 @@ class GaitWalker {
  Tables tables_{};double phi_[2]={0.,0.5};bool touching_prev_[2]={false,false};uint64_t ticks_=0;uint64_t capture_events_=0;
  Dense kp_,kd_,damping_,last_torque_,battery_,brake_;std::vector<uint64_t> empty_events_;
  double kp_post_=0,kd_post_=0,battery_post_=0,brake_post_=0,store_post_=0;uint64_t empty_post_=0;
+ double e_ref_=0; // the LEDGER BASELINE: the reset state's actual mechanical energy (the gait entry injects pose+momentum the standing-pose reference never sees; measured offset -0.59 J at tick 0 before this)
  std::vector<BodyRef> bodies_;bool contact_=false;
  State s_;mutable uint64_t adv_calls_=0;
  Evaluation evaluate(const State& s)const{return model_->evaluate(s.q,s.v,gravity_);}
@@ -439,7 +440,14 @@ class GaitWalker {
 #endif
    require(clamps<64,"gait_impact_event_budget");
    State pinned=start;
-   if(which>=0)pinned.q[drives_[size_t(which)].coordinate]=wall;
+   if(which>=0){size_t pc=drives_[size_t(which)].coordinate;
+    // BOOK THE PIN: setting q to the wall is a positional change; without
+    // booking, its potential shift leaves the ledger (measured: up to 2.99 J
+    // of balance error accumulated over the walk's clamp events). Same law
+    // as the poscorr booking: the identity must see du paired with -du.
+    double u_pin=evaluate(pinned).potential-evaluate(start).potential;
+    pinned.impact-=u_pin;
+    pinned.q[pc]=wall;}
 #ifdef GAIT_EVENT_TRACE
   if(clamps>=8){size_t c0=drives_[0].coordinate;auto jn=normals(pinned);
    auto endp=free_step(pinned,h,tau,live);
@@ -549,7 +557,8 @@ class GaitWalker {
   for(size_t leg=0;leg<2;++leg){bool touching=false;const char* prefix=leg==0?"left":"right";
    for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0&&gap_of(e,k)<=kTouch)touching=true;
    touching_prev_[leg]=touching;}
-  for(size_t k=0;k<npts_;++k)require(gap_of(e,k)>0,"gait_initial_penetration");}
+  for(size_t k=0;k<npts_;++k)require(gap_of(e,k)>0,"gait_initial_penetration");
+  e_ref_=mechanical(s_);} // baseline the ledger at the ACTUAL initial state (entry pose + injected momentum)
  void configure(const J& input){
   require(input.is_object()&&!input.empty(),"gait_control_object");auto c=config_;bool restart=false;
   for(auto it=input.begin();it!=input.end();++it){
@@ -669,8 +678,13 @@ class GaitWalker {
   // the reset pose (recomputed from the stored default pose, deterministic,
   // no hidden state); external = the scripted push's work on the pelvis.
   double u0;{State r;r.q=model_->defaults;r.v=Dense(n_,0.);u0=evaluate(r).potential;}
-  double bal=kinetic+(u-u0)-work-s_.external+s_.damping+impact_heat_total2+friction_heat_total;
-  double stor=kinetic+(u-u0)+battery_total+s_.damping+impact_heat_total2+friction_heat_total+brake_total-store_total_-s_.external;
+  // LEDGER BASELINE (20260919 wave 4): the identities measure FROM the
+  // reset state's actual mechanical energy. The old u0 (the standing-pose
+  // potential, v=0) silently offset every gait-entry walk by the injected
+  // KE + pose offset (-0.59 J at tick 0, growing as the walk ran) -- the
+  // meter, not the walk, was broken.
+  double bal=kinetic+(u-u0)-(e_ref_-u0)-work-s_.external+s_.damping+impact_heat_total2+friction_heat_total;
+  double stor=kinetic+(u-u0)-(e_ref_-u0)+battery_total+s_.damping+impact_heat_total2+friction_heat_total+brake_total-store_total_-s_.external;
   J energy{{"kinetic_J",kinetic},{"gravitational_J",u-u0},{"potential_reference","reset pose"},{"mechanical_J",kinetic+(u-u0)},
    {"actuator_work_J",work},{"external_work_J",s_.external},
    {"damping_heat_J",s_.damping},{"impact_heat_J",impact_heat_total2},{"friction_heat_J",friction_heat_total},
