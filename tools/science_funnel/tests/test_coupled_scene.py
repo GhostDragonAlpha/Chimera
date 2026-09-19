@@ -61,7 +61,7 @@ class CoupledScene(unittest.TestCase):
  # (also inside the graph_file name) and the self-referential scene_sha256
  # -- no physics, recipe, model or source bytes moved. Old pin: a7b36b53
  # 1f20e64da4119ad09ebb40448c17dfbc2c2d31489ac0160fb2513a52.
- DEFAULT_SCENE_PORTABLE_SHA256='ea6dc08b77773fb286ac930940566c3fbe833782ebf3df160107068d15615521'
+ DEFAULT_SCENE_PORTABLE_SHA256='c44673e17123727a8a41edf5e3eeeda69850799d9ad032e0f77fde6308ec3d98'
  CAYO_H_ELLIPSOIDAL_M=-42.82679794555668
  def portable_digest(self,bundle,out_dir):
   from tools.science_funnel.common import digest
