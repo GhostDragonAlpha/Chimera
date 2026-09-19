@@ -256,3 +256,97 @@ defaults. Rule 0 record banked pre-code:
   cross-source) remains deferred (Earthdata login wall).
 - Whole-body source intake per the banked proposal on
   work.creature.macaque_whole_body_sources remains the mainline.
+
+
+# HANDOFF - lane/visual-verify-20260918 (agent: GLM 5.3)
+
+Date: 2026-09-18. Branch: `lane/visual-verify-20260918`. Base: master tip
+c43d3363 (appearance integration). All mechanics through PowerShell .ps1;
+python = E:\PythonChimera\.venv-hy3d\Scripts\python.exe; E:\PythonChimera
+untouched except running its pinned interpreter; port 8127 avoided
+(verified present-and-untouched mid-run); SharedBody*.json untouched.
+
+## What this lane was
+
+DYAD visual verification of the LIVE coupled-arm scene: render the live
+state and judge it against expected physics, closing the loop between "the
+numbers say it works" and "a human can see it works". Rule 0 record
+(statement/prediction/falsifiers F1-F4) admitted BEFORE the run; it lives in
+tools/science_funnel/visual_scene.py and in every manifest under
+tools/science_funnel/validation/visual_scene_20260918/.
+
+## Deliverables
+
+1. tools/science_funnel/visual_scene.py - the harness: drives the live scene
+   over GET/POST /earth_state on OWNED port 8191 (refuses other ports),
+   five scenarios (free_fall, target_reach, contact_press, friction_stick,
+   friction_slide), deterministic pure-Python PNG renders (state + energy
+   ledger) from the recorded numeric state, structured judgement templates,
+   sha-chained manifests, --verify (F1), --record-visual (the GLM judge's
+   visual pass). Unit falsifier tests in
+   tools/science_funnel/tests/test_visual_scene.py (9 tests, green).
+2. tools/science_funnel/validation/visual_scene_20260918/ - the record:
+   per scenario state_render.png + energy_bars.png + numeric_state.json +
+   judgement.json + manifest.json; wrong_state_probe/ (corrupted
+   penetrating-hand state FAILS the template and renders visibly below the
+   plane); run_manifest.json.
+3. run_visual_verify.ps1 / build_engine.ps1 / qualify_visual_verify.ps1 /
+   publish_visual_verify.ps1 - owned engine lifecycle (path-guarded stop,
+   port-release check), one-shot build, QUALIFY gate, guarded push.
+
+## Measured results (live run, 2026-09-18)
+
+- 5/5 scenarios FINAL PASS = numeric template PASS AND GLM 5.3 visual pass
+  PASS (visual verdicts recorded inside each judgement.json).
+- F1 byte-identical re-render: PASS all scenarios. F2 python FK vs engine
+  body.position_m: ~1e-17 m. F3 corrupted state: caught (template FAIL +
+  visibly wrong render). F4 ledger closes < 1e-4 J (repo live-qual bar
+  1e-5 x10 for these 45-90 s windows; measured residuals 2.4e-6..2.1e-5).
+- Falsified expectations (recorded in run_manifest.json): total friction
+  heat does NOT discriminate stick from slide (mu=1 landing books 4.79e-3 J
+  > whole mu=0.05 slide 2.0e-3 J); the (60,60) command stalls at
+  (36.6,33.0) deg under the authored torque caps; friction_slide never
+  freezes - it ends in a BOUNDED stick-slip cycle (steady rule |v| < 5e-3,
+  hand bound ~1e-4 m).
+
+## QUALIFY state (honest)
+
+- graphify consumer: HONEST, exit 0 (rerun at final tree).
+- evidence objects: exactly 11 (unchanged).
+- funnel suite: my 9 added tests green in discovery; the suite carries TWO
+  MASTER-INHERITED failures, both proven NOT from this lane:
+  (a) test_coupled_scene...test_default_scene_bit_identical FAILS on a
+  PRISTINE clone of the lane base c43d3363 with the IDENTICAL mismatch
+  (computed 23d27409... vs pinned a7b36b53...): a stale pin that landed
+  master-side (appearance integration); re-pinning is deliberately NOT this
+  lane's move. (b) test_batch_appearance...test_rebuild_is_byte_identical
+  ERRORs on any FRESH clone: it needs the GITIGNORED fetched artifact
+  tools/science_funnel/data/phylacine/PHYLACINE_1.2.1.zip
+  (.gitignore:313) that only worktrees which ran the appearance fetch have.
+
+## Traps hit (host-measured; do not re-pay)
+
+1. run_earth.ps1 Start-Processes the engine, which INHERITS the launcher's
+   stdout pipe handle: capturing the inner powershell's output
+   ($out = & powershell ...) waits for pipe EOF that only the engine can
+   release - the caller hangs forever with no children. Invoke it PLAIN.
+2. Windows PowerShell 5.1 parses BOM-less UTF-8 .ps1 as ANSI: one em-dash
+   or curly quote breaks the whole script. ASCII-only .ps1.
+3. runtime.json is UTF-8 WITH BOM (Set-Content utf8): read with utf-8-sig.
+4. FK law: the hand marker is T_hand @ [hand_point_m, 1], NOT frame origin
+   + local (the naive sum is off by exactly |hand_point_m| = 3.63 cm and
+   was caught by falsifier F2 on the first live run - the harness worked
+   as designed).
+5. The engine steps on a wall-clock thread; a settled state is an exact
+   fixed point for the damped scenarios (poll deltas 0) but friction_slide
+   legitimately never settles (stick-slip cycle) - per-scenario steady
+   rules, not one global bar.
+
+## Next executable work
+
+- Master-side fixes this lane deliberately did not make: re-pin
+  test_coupled_scene.DEFAULT_SCENE_PORTABLE_SHA256 (cite the record that
+  moved the scene) and either commit the PHYLACINE zip handling or gate the
+  rebuild test on the artifact's presence.
+- The dyad harness is reusable: point new physics workloads at
+  visual_scene.py's scenario structure; judge visually with --record-visual.

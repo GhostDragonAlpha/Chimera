@@ -1,0 +1,539 @@
+{
+ "captured_utc": "2026-09-18T22:16:23.264648+00:00",
+ "control_sent": {
+  "contact_enabled": false,
+  "elbow_target_deg": 60.0,
+  "power": true,
+  "reset": true,
+  "shoulder_target_deg": 60.0
+ },
+ "fk_coherence": {
+  "coherent": true,
+  "delta_m": 2.7809732887839817e-17,
+  "engine_hand_m": [
+   0.2427560689263268,
+   0.39855229028769923,
+   0.007835990781146291
+  ],
+  "python_fk_hand_m": [
+   0.24275606892632684,
+   0.39855229028769923,
+   0.00783599078114629
+  ],
+  "tolerance_m": 1e-06
+ },
+ "scenario": "target_reach",
+ "series": [
+  {
+   "elbow_deg": 41.03400663856912,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.07503833077082403,
+   "hand_x_m": 0.2460817828432528,
+   "hand_y_m": 0.418038330770824,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 35.56636031968867,
+   "sim_time_s": 0.2733333333333334,
+   "slip": 0.046733044908795845,
+   "t_wall": 1789769777.819,
+   "ticks": 82
+  },
+  {
+   "elbow_deg": 34.14511831481238,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.059070525311591904,
+   "hand_x_m": 0.2438435514540746,
+   "hand_y_m": 0.4020705253115919,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.65234820697652,
+   "sim_time_s": 0.53,
+   "slip": 0.023581277563592726,
+   "t_wall": 1789769778.072,
+   "ticks": 159
+  },
+  {
+   "elbow_deg": 32.754167954950134,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.05391631455932966,
+   "hand_x_m": 0.2419116385311958,
+   "hand_y_m": 0.39691631455932963,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.401393431426584,
+   "sim_time_s": 0.78,
+   "slip": 0.004138312770304916,
+   "t_wall": 1789769778.323,
+   "ticks": 234
+  },
+  {
+   "elbow_deg": 33.01550027916496,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.055851094891033404,
+   "hand_x_m": 0.24289946566998108,
+   "hand_y_m": 0.3988510948910334,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.67760196696434,
+   "sim_time_s": 1.0466666666666666,
+   "slip": 0.0009163957719413679,
+   "t_wall": 1789769778.589,
+   "ticks": 314
+  },
+  {
+   "elbow_deg": 32.97817750386282,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.05560656896803767,
+   "hand_x_m": 0.2427797617553847,
+   "hand_y_m": 0.39860656896803764,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.64576004593809,
+   "sim_time_s": 1.31,
+   "slip": 0.000656732640936936,
+   "t_wall": 1789769778.854,
+   "ticks": 393
+  },
+  {
+   "elbow_deg": 32.959174715464364,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.05550648550097806,
+   "hand_x_m": 0.2427341268928576,
+   "hand_y_m": 0.398506485500978,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.63530147048471,
+   "sim_time_s": 1.56,
+   "slip": 0.00012690620795533186,
+   "t_wall": 1789769779.105,
+   "ticks": 468
+  },
+  {
+   "elbow_deg": 32.96793584968836,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.055560510216159015,
+   "hand_x_m": 0.2427601557463129,
+   "hand_y_m": 0.398560510216159,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.64198410924597,
+   "sim_time_s": 1.8133333333333335,
+   "slip": 2.569070281754844e-05,
+   "t_wall": 1789769779.357,
+   "ticks": 544
+  },
+  {
+   "elbow_deg": 32.96713322884268,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.055554327719686325,
+   "hand_x_m": 0.24275699238895257,
+   "hand_y_m": 0.3985543277196863,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.6410808906998,
+   "sim_time_s": 2.0633333333333335,
+   "slip": 2.0031975600104458e-05,
+   "t_wall": 1789769779.609,
+   "ticks": 619
+  },
+  {
+   "elbow_deg": 32.96653929030493,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.05555109351385923,
+   "hand_x_m": 0.24275549893503454,
+   "hand_y_m": 0.3985510935138592,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.640728966854105,
+   "sim_time_s": 2.3400000000000003,
+   "slip": 3.8405006526389095e-06,
+   "t_wall": 1789769779.885,
+   "ticks": 702
+  },
+  {
+   "elbow_deg": 32.9667777581265,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.0555525415116033,
+   "hand_x_m": 0.24275619303973026,
+   "hand_y_m": 0.39855254151160324,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.64090554056784,
+   "sim_time_s": 2.5933333333333337,
+   "slip": 5.030976826913194e-07,
+   "t_wall": 1789769780.137,
+   "ticks": 778
+  },
+  {
+   "elbow_deg": 32.96674886221287,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.05555233230361836,
+   "hand_x_m": 0.2427560876002328,
+   "hand_y_m": 0.3985523323036183,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.64087617900001,
+   "sim_time_s": 2.8433333333333337,
+   "slip": 5.248145744638721e-07,
+   "t_wall": 1789769780.388,
+   "ticks": 853
+  },
+  {
+   "elbow_deg": 32.96673436011783,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.055552254326429684,
+   "hand_x_m": 0.24275605176159276,
+   "hand_y_m": 0.39855225432642966,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.64086782022315,
+   "sim_time_s": 3.0966666666666667,
+   "slip": 1.039988503346455e-07,
+   "t_wall": 1789769780.64,
+   "ticks": 929
+  },
+  {
+   "elbow_deg": 32.96674131963917,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.05555229689848837,
+   "hand_x_m": 0.2427560722164502,
+   "hand_y_m": 0.39855229689848837,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.6408730473277,
+   "sim_time_s": 3.3466666666666667,
+   "slip": 2.025681175467818e-08,
+   "t_wall": 1789769780.892,
+   "ticks": 1004
+  },
+  {
+   "elbow_deg": 32.96674056644052,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.055552291263276876,
+   "hand_x_m": 0.2427560693530169,
+   "hand_y_m": 0.39855229126327685,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.64087223903209,
+   "sim_time_s": 3.6166666666666667,
+   "slip": 1.4207310366677763e-08,
+   "t_wall": 1789769781.16,
+   "ticks": 1085
+  },
+  {
+   "elbow_deg": 32.96674019492508,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.055552289291486895,
+   "hand_x_m": 0.24275606845123032,
+   "hand_y_m": 0.3985522892914869,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.64087203099384,
+   "sim_time_s": 3.8666666666666667,
+   "slip": 2.9996126132343556e-09,
+   "t_wall": 1789769781.412,
+   "ticks": 1160
+  },
+  {
+   "elbow_deg": 32.966740392836414,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.055552290494907175,
+   "hand_x_m": 0.2427560690283498,
+   "hand_y_m": 0.39855229049490715,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.64087217793494,
+   "sim_time_s": 4.133333333333334,
+   "slip": 0.0,
+   "t_wall": 1789769781.678,
+   "ticks": 1240
+  },
+  {
+   "elbow_deg": 32.96674036687679,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.05555229031208167,
+   "hand_x_m": 0.2427560689368632,
+   "hand_y_m": 0.3985522903120816,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.640872152766256,
+   "sim_time_s": 4.386666666666667,
+   "slip": 0.0,
+   "t_wall": 1789769781.93,
+   "ticks": 1316
+  },
+  {
+   "elbow_deg": 32.966740356968934,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.05555229025996372,
+   "hand_x_m": 0.24275606891310902,
+   "hand_y_m": 0.3985522902599637,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.64087214732841,
+   "sim_time_s": 4.636666666666667,
+   "slip": 0.0,
+   "t_wall": 1789769782.182,
+   "ticks": 1391
+  },
+  {
+   "elbow_deg": 32.966740362428986,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.05555229029316461,
+   "hand_x_m": 0.24275606892903112,
+   "hand_y_m": 0.3985522902931646,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.640872151382396,
+   "sim_time_s": 4.890000000000001,
+   "slip": 0.0,
+   "t_wall": 1789769782.434,
+   "ticks": 1467
+  },
+  {
+   "elbow_deg": 32.96674036178183,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.05555229028845357,
+   "hand_x_m": 0.24275606892665347,
+   "hand_y_m": 0.3985522902884535,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.64087215071877,
+   "sim_time_s": 5.1433333333333335,
+   "slip": 0.0,
+   "t_wall": 1789769782.686,
+   "ticks": 1543
+  },
+  {
+   "elbow_deg": 32.96674036147282,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.05555229028681516,
+   "hand_x_m": 0.2427560689259044,
+   "hand_y_m": 0.39855229028681516,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.64087215054612,
+   "sim_time_s": 5.416666666666667,
+   "slip": 0.0,
+   "t_wall": 1789769782.961,
+   "ticks": 1625
+  },
+  {
+   "elbow_deg": 32.966740361619735,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.05555229028769834,
+   "hand_x_m": 0.24275606892632642,
+   "hand_y_m": 0.39855229028769834,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.6408721506528,
+   "sim_time_s": 5.680000000000001,
+   "slip": 0.0,
+   "t_wall": 1789769783.224,
+   "ticks": 1704
+  },
+  {
+   "elbow_deg": 32.96674036161998,
+   "friction_heat_J": 0.0,
+   "gap_m": 0.05555229028769926,
+   "hand_x_m": 0.2427560689263268,
+   "hand_y_m": 0.39855229028769923,
+   "mode": "off",
+   "reaction_N": 0.0,
+   "shoulder_deg": 36.64087215065285,
+   "sim_time_s": 5.683333333333334,
+   "slip": 0.0,
+   "t_wall": 1789769783.226,
+   "ticks": 1705
+  }
+ ],
+ "settled": true,
+ "state": {
+  "assumptions": [
+   "Root and five source coordinates fixed; only source shoulder flexion and elbow flexion move.",
+   "Effective segment masses/inertias retained; this is not isolated bone material.",
+   "RK4 reference at four substeps per 300 Hz tick; trajectory convergence and bounded energy error must be measured separately.",
+   "Joint limits are perfectly inelastic unilateral stops with coupled-mass reaction impulses; no arbitrary pose clipping.",
+   "Optional frictionless unilateral hand contact with an authored rigid plane at contact_plane_height_m in the local East/Up/South world frame (metres). Signed gap g = hand point Up coordinate + proxy_radius_m - contact_plane_height_m; free motion keeps g >= 0.",
+   "Optional authored Coulomb friction at the same plane: contact_friction in [0,1] (default 0 = the qualified frictionless contact, bit-exact control). Stick solves the normal and tangential accelerations jointly in the mass metric; slide caps the tangential reaction at mu times the normal reaction and re-solves the normal row with the exact cross-coupling. Heat enters the ledger as friction_heat_J. Grasping remains unimplemented; friction never pulls without normal load.",
+   "contact_enabled is false by default; toggling it requires an explicit reset, and the disabled mode must reproduce the qualified free coupled dynamics. Enabled scenes must start with a strictly positive gap at the reset pose.",
+   "Ideal capped actuator work consumes finite mechanical energy; braking produces heat. Isometric metabolic/electrical costs and biological muscles absent.",
+   "CPU reference reuses native source binding and Earth field; GPU residency and full animal unqualified."
+  ],
+  "attachment_id": "world.earth.patch.coupled_arm_hand",
+  "battery_empty_events": 0,
+  "body": {
+   "position_m": [
+    0.2427560689263268,
+    0.39855229028769923,
+    0.007835990781146291
+   ],
+   "radius_m": 0.007,
+   "velocity_m_s": [
+    9.433923990376199e-14,
+    2.5291358589065805e-13,
+    0.0
+   ]
+  },
+  "clock_lag_s": 0.00096783,
+  "config": {
+   "contact_enabled": false,
+   "contact_friction": 0.0,
+   "elbow_drive": true,
+   "elbow_target_deg": 60.0,
+   "elbow_torque_limit_N_m": 0.3,
+   "load_N": 0.0,
+   "power": true,
+   "shoulder_drive": true,
+   "shoulder_target_deg": 60.0,
+   "shoulder_torque_limit_N_m": 0.6
+  },
+  "contact": {
+   "closing_speed_m_s": 2.5291358589065805e-13,
+   "enabled": false,
+   "friction": false,
+   "friction_force_N": 0.0,
+   "friction_impact_impulse_N_s": 0.0,
+   "friction_mu": 0.0,
+   "gap_m": 0.05555229028769926,
+   "generalized_reaction_N_m": [
+    0.0,
+    0.0
+   ],
+   "grasp": false,
+   "impact_heat_J": 0.0,
+   "impact_impulse_N_s": 0.0,
+   "jacobian_m_per_rad": [
+    0.2427560689263268,
+    0.16815639193224458
+   ],
+   "mode": "off",
+   "normal_world_up": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "plane_world_up_m": 0.35,
+   "proxy_radius_m": 0.007,
+   "reaction_N": 0.0,
+   "slip_speed_m_s": 0.0,
+   "touching": false
+  },
+  "contacts": {
+   "environment": false,
+   "joint_limits": true
+  },
+  "coupling": {
+   "bias_torque_N_m": [
+    -2.4653517289380254e-27,
+    4.380068395657541e-29
+   ],
+   "mass_matrix_kg_m2": [
+    [
+     0.009093136248995494,
+     0.003498461828464602
+    ],
+    [
+     0.003498461828464602,
+     0.00199396878293371
+    ]
+   ]
+  },
+  "energy": {
+   "actuator_work_J": 0.05339365150469641,
+   "balance_error_J": 9.609861517656526e-12,
+   "battery_J": 1.7920087748751927,
+   "battery_initial_J": 2.0,
+   "battery_usable": true,
+   "brake_heat_J": 0.1545975736201125,
+   "contact_impact_heat_J": 0.0,
+   "damping_heat_J": 0.03650027687907111,
+   "external_work_J": 0.0,
+   "friction_heat_J": 0.0,
+   "gravitational_J": 0.01689337463523516,
+   "impact_heat_J": 0.0,
+   "kinetic_J": 2.485783459404683e-27,
+   "mechanical_J": 0.01689337463523516,
+   "potential_reference": "reset pose",
+   "store_balance_error_J": 9.611422768784905e-12
+  },
+  "environment": {
+   "air": true,
+   "altitude_m": 0.0,
+   "density_kg_m3": 1.22661378741097,
+   "friction": 0.4,
+   "gravity_m_s2": 9.798285324494524,
+   "pressure_Pa": 101400.93090454885,
+   "slope_deg": 0.0,
+   "temperature_K": 288.19,
+   "wind_m_s": 0.0
+  },
+  "epoch": 2,
+  "error": "",
+  "graph_hash": "d16d38a4e715fa8231c0ad44a5cf1a0f58b11c69c71faef6cc86771b325e8086",
+  "ground_id": "world.earth.patch.ground",
+  "joints": [
+   {
+    "angle_deg": 36.64087215065285,
+    "drive_enabled": true,
+    "gravity_torque_N_m": -0.36282934632658204,
+    "limit_reaction_N_m": 0.0,
+    "motor_torque_N_m": 0.36282934632606034,
+    "name": "shoulder_flexion",
+    "speed_rad_s": 1.877146286850969e-13,
+    "target_deg": 60.0,
+    "torque_limit_N_m": 0.6
+   },
+   {
+    "angle_deg": 32.96674036161998,
+    "drive_enabled": true,
+    "gravity_torque_N_m": -0.14856409647135943,
+    "limit_reaction_N_m": 0.0,
+    "motor_torque_N_m": 0.14856409647112817,
+    "name": "elbow_flexion",
+    "speed_rad_s": 1.233046916436245e-12,
+    "target_deg": 60.0,
+    "torque_limit_N_m": 0.3
+   }
+  ],
+  "load_N": 0.0,
+  "mode": "native_coupled_arm",
+  "ok": true,
+  "paused": false,
+  "power": true,
+  "scene_revision": 14593,
+  "scene_sha256": "89a21c17f0d1c123ef4a7fd8ae909e7506f96da418b9ec34eb2dfc8cca2d4619",
+  "scope": "Native source-derived shoulder/elbow dynamics, fixed mount, finite ideal actuator work, source joint stops, an optional frictionless-to-Coulomb hand contact plane (off and frictionless by default; the plane toggle requires reset, mu is live) and authored friction heat accounts. No grasping, free root, whole animal, muscles, tissue mechanics or GPU residency qualification.",
+  "sim_time_s": 5.683333333333334,
+  "sources": [
+   {
+    "title": "nga_wgs84.html",
+    "url": "https://earth-info.nga.mil/?action=wgs84&dir=wgs84"
+   },
+   {
+    "title": "nasa_drag.html",
+    "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/shape-effects-on-drag/"
+   },
+   {
+    "title": "nasa_atmosphere_metric.html",
+    "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/earth-atmosphere-equation-metric/"
+   },
+   {
+    "title": "JPL gravitational parameters",
+    "url": "https://ssd.jpl.nasa.gov/astro_par.html"
+   },
+   {
+    "title": "Pinned macaque anatomy and effective segment inertia",
+    "url": "https://github.com/limblab/monkeyArmModel/tree/4fb7dddeec06a0df9525c18f37234a824cb1b5b1"
+   }
+  ],
+  "ticks": 1705,
+  "world_id": "world.earth"
+ },
+ "steady_rule": {
+  "speed": 1e-06,
+  "stable_polls": 3,
+  "timeout": 45.0
+ },
+ "title": "TARGET REACH (drives on, no contact)"
+}
