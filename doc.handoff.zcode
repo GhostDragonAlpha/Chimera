@@ -256,3 +256,147 @@ defaults. Rule 0 record banked pre-code:
   cross-source) remains deferred (Earthdata login wall).
 - Whole-body source intake per the banked proposal on
   work.creature.macaque_whole_body_sources remains the mainline.
+
+# HANDOFF - lane/gait-controller-20260918 (agent: GLM 5.3)
+
+
+Date: 2026-09-18. Branch: `lane/gait-controller-20260918` (pushed to origin, by name).
+Base: master tip `c43d3363` (appearance admissions replay). All mechanics ran through
+PowerShell `.ps1` scripts; Python was the pinned
+`E:\PythonChimera\.venv-hy3d\Scripts\python.exe`; E:\PythonChimera otherwise untouched
+(only its interpreter executed), port 8127 avoided, SharedBody*.json untouched, no
+other worktree touched, no engine code written (author-only lane).
+
+## What this lane was
+
+DERIVATION lane: the macaque gait controller derived from the admitted movement data
+and authored as a contract — the document that makes the monkey WALK once the
+free-root and joint-ladder packets land. Deliverables:
+
+1. `docs/research/20260918_gait_controller_derivation.md` — the full derivation:
+   gait cycle (duty 0.683 sampled vs paper 0.67, toe-off 68%, T = 0.71 s),
+   joint-trajectory tables (21-node piecewise-linear phase tables, rad + deg, max
+   reconstruction error 4.1 deg on MP), GRF profile (peak 106.5 N = 1.082 BW at 3%,
+   loading rate 13.2 kN/s, stance impulse 34.48 N·s, closure 2·I_stance = BW·T_cycle
+   at −1.3%), torque requirements (peaks hip 8.97 / knee 5.31 / ankle 5.92 / MP
+   0.71 N·m; positive work per stride 5.25/2.56/3.27/0.50 J), the actuator-budget
+   VERDICT (the qualified 2.0 J per-drive store does NOT power one stride — hip
+   needs 3.25 J at arm scale; derived store floor = 1.5×W+_d per drive), the
+   controller (contact-reset phase clock + tables + the qualified capped
+   mass-normalized PD at f_s = 4.0 Hz, derived from a 0.95 amplitude-ratio criterion
+   at the 1.41 Hz gait fundamental; the qualified 2.0 Hz servo is falsified for gait
+   tracking), support-polygon stability with a capture-step reflex, falsifiers
+   F-G1..F-G8, and the staged ladder A..G (frozen arm → 7-coord → free root →
+   hindlimb lift → stand → walk → quadrupedal/substrates).
+2. `tools/science_funnel/validation/gait_controller_20260918/derive_gait_numbers.py`
+   + `derived_numbers.json` — the deterministic derivation script (stdlib-only xlsx
+   reader; reads ONLY the pinned Oku MOESM2 xlsx and the pinned Janisch CSV) and its
+   byte-stable machine output (sha256-identical across re-runs). Body anchor: Oku
+   Table 1 nine segments = 10.038 kg, BW 98.44 N, leg 0.419 m.
+3. `tools/creature_graph/validation/admit_gait_controller_20260918.py` — the Rule-0
+   admission of `work.creature.gait_controller` (kind work, status specified,
+   falsifier untested — honest; nothing measured on the engine). Idempotent
+   (re-run verified a no-op), revision-aware, refuses foreign content.
+4. Two deliberate re-pins of OTHER lanes' stale pins, each measured before touching
+   (details below): the coupled-scene digest and the wave2 store-snapshot test.
+
+## Store state
+
+Rebuild via `build_graph.py`: objects 52430 → 52431 (+exactly the one work record),
+relations 47296 → 47301 (+5 dependency edges), **evidence 11 UNCHANGED**, work
+76 → 77, graph_hash bf9e5a9b13468fbd. `--check-only` clean. Idempotent re-admission
+verified a no-op. project_program.json delta is exactly the one record (+52 lines).
+The bulk shards show LF-normalization warnings but ZERO content diff (numstat empty).
+
+## Qualification state (final tree)
+
+- project_spec --check (module form! `python -B -m tools.creature_graph.project_spec
+  --check` — direct-script invocation dies on relative imports): ok.
+- Graph contracts test_contracts.py: 19 tests OK. project_spec
+  test_project_spec.py: 14 tests OK. doc_lint --staged: clean.
+- Graphify consumer roundtrip on the rebuilt store: HONEST, 7/7 checks PASS
+  (52,803 objects / 47,324 relations incl. the reference join).
+- Funnel suite CHUNKED per module (293 tests + surface 10 = all OK):
+  test_batch 15, test_batch_gait 19, test_batch_muscle 10, test_batch_appearance 22
+  (after the pinned phylacine zip fetch), test_batch_geo 32 (skipped=1),
+  test_batch_life 16, test_coupled_arm 10, test_coupled_scene 16 (after re-pin),
+  test_packet_checker 1, test_earth_scene 8, test_macaque_anatomy 13, test_visual_proof
+  16, test_visual_proof_wave2 10 (after re-pin), test_terrain 9, test_force_arm 7,
+  test_force_compiler 9, test_force_sources 15, test_funnels 40, test_game_body_proxy 1,
+  test_review_candidate 3, test_store_relate_guard 4, test_trainer_spine 17,
+  test_surface_scene 10 (part-run on the contended host: 4 + 3 + 3, all OK; the part2 "3 errors" were this lane's own unittest-name typos -- the file's methods are test_*_refuse singular -- never real failures).
+
+## The three traps found and repaired (all pre-existing, all measured first)
+
+1. **PHYLACINE zip is gitignored by policy** (106,362,537 bytes > the 100 MB git
+   ceiling; receipt-pinned). A FRESH CLONE fails test_batch_appearance's
+   byte-identity test (FileNotFoundError). Repair: fetched the receipt-pinned URL,
+   verified sha256 `6f37526e...` and exact byte size, reran → 22/22 OK. The zip
+   stays untracked. ANY fresh-clone lane will hit this; fetch before the suite.
+2. **DEFAULT_SCENE_PORTABLE_SHA256 was stale at this lane's base.** Measured: at
+   base c43d3363 (store d16d38a4) the digest test FAILS (23d27409... computed vs
+   pin a7b36b53...); the terrain-era origin store ca68dc9c itself now digests
+   135699e6... The appearance replay (2d5ebe5a) moved the scene's embedded graph
+   hash without a re-pin. This lane's admission moves ONLY the embedded graph
+   hash — measured: the normalized bundle diff base → lane is EXACTLY /graph_file +
+   /graph_hash (2 fields; scene recipe untouched). Re-pinned on the live store
+   bf9e5a9b → 64cdd028..., lineage written into the test file's comment.
+   test_coupled_scene 16/16 after.
+3. **test_visual_proof_wave2 pinned absolute store counts (35331 objects / 38748
+   relations)** — stale since the batch intake lanes grew the store to 52k; already
+   red at base (measured). The test's load-bearing pin (evidence == 11) is kept;
+   the absolute snapshots were replaced by the invariant its name promises: the
+   saved store must equal the DETERMINISTIC REBUILD of the authored inputs
+   (object/relation counts AND graph_hash), so no admission can ever desync the
+   saved store from its inputs. wave2 10/10 after (883 s — the module also
+   rebuilds the graph now; budget ~15 min on a contended host).
+
+## Gotchas for the next agent (this checkout)
+
+- The host is SHARED and heavily loaded (12+ foreign python processes observed);
+  single modules can take 13+ minutes (test_macaque_anatomy 793 s). Background
+  exec tasks get REAPED (empty log, exit -1, no notification) — run long modules
+  in FOREGROUND calls with a generous timeout, one module per call, and never pipe
+  native output through Select-Object (it buffers until exit; use a redirect to a
+  log file and read the file).
+- `unittest discover -p <module>` per module is the safe chunk shape; the full
+  suite in one process exceeds any single exec window under this load.
+- project_spec.py MUST be invoked as a module (`-m tools.creature_graph.project_spec`),
+  not as a script path.
+- The scene bundle embeds the store graph hash under /graph_hash AND /graph_file
+  (the graph_<hash>.json copy name) — EVERY store rebuild moves the scene digest.
+  If your lane rebuilds the store, re-pin DEFAULT_SCENE_PORTABLE_SHA256 deliberately
+  with the diff proof (graph-hash-only) IN THE SAME COMMIT.
+- Extract a historical store via `git ls-tree -r --name-only <rev>` + `git show
+  <rev>:<path>` through a python subprocess (binary-safe) into an aside dir, then
+  CreatureGraph.load from there. Label aside copies: a copy made from a working
+  tree holds whatever the tree held at copy time (this bit me once — a "baseline"
+  aside that was actually my own store).
+- The pinned interpreter has numpy/pandas but NO openpyxl and must not gain
+  packages (never pip-install into E:\PythonChimera); parse xlsx with the stdlib
+  zipfile+ElementTree readers that visual_proof_wave2.py and adapters_muscle.py
+  already carry.
+
+## Publishing
+
+Pushed `lane/gait-controller-20260918` only (verified rev-parse == local HEAD);
+master NEVER touched. Commit trailer: `Agent: GLM 5.3`.
+
+## Never-do reminders honored
+
+E:\PythonChimera untouched (except running its pinned python.exe); port 8127
+avoided; tools/game_shell/progress/SharedBody*.json untouched; no engine
+implementation (author-only lane); only this lane branch pushed.
+
+## Next executable work
+
+- Stage D of the ladder: the hindlimb lift packet (coordinates hip_flexion,
+  knee_extension, ankle_dorsiflexion, MP_dorsiflexion in the Oku sign convention,
+  caps/stores/f_s from the derivation doc Sections 4-5) — the owed packet this
+  contract makes executable.
+- Granatosky/Higurashi Dryad bytes remain deferred (401/Anubis); when a human
+  downloads them, the pinned sha256s decide, and the quadrupedal limb-phase
+  numbers leave their UNMEASURED labels only through a superseding record.
+- If the scene digest moves again: follow the re-pin protocol in
+  test_coupled_scene.py's comment — measure the diff, prove graph-hash-only (or
+  name the mover), re-pin with lineage, same commit as the store change.

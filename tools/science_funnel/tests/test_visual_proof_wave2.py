@@ -90,10 +90,21 @@ class Wave2VisualProof(unittest.TestCase):
 
     def test_graph_merge_is_honest_and_evidence_count_is_unchanged(self):
         from tools.creature_graph.store import CreatureGraph
+        from tools.creature_graph import build_graph
         graph = CreatureGraph.load(ROOT / 'tools' / 'creature_graph' / 'data' / 'creature_graph.json')
         self.assertEqual(len(graph.evidence_records()), 11)
-        self.assertEqual(len(graph.objects), 35331)
-        self.assertEqual(len(graph.relations), 38748)
+        # Re-pinned 2026-09-18 (lane gait-controller-20260918). The absolute
+        # snapshots (35331 objects / 38748 relations) went stale at every batch
+        # admission and were already red at this lane's base c43d3363 (store
+        # 52430 objects, measured). The invariant the name promises is that the
+        # SAVED store is exactly the deterministic rebuild of the authored
+        # inputs -- counts AND graph hash -- so an admission can never desync
+        # the saved store from its inputs and the merge can never invent
+        # objects.
+        rebuilt = build_graph.build()
+        self.assertEqual(len(graph.objects), len(rebuilt.objects))
+        self.assertEqual(len(graph.relations), len(rebuilt.relations))
+        self.assertEqual(graph.graph_hash(), rebuilt.graph_hash())
         self.assertEqual(graph.check(), [])
 
     def test_scope_labels_and_honest_metrics(self):
