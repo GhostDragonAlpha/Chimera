@@ -1,0 +1,133 @@
+{
+ "checks": [
+  {
+   "expected": "max |speed_rad_s| < 1e-06",
+   "name": "settled_speeds",
+   "note": "",
+   "observed": "3.92E-11",
+   "pass": true
+  },
+  {
+   "expected": "|balance_error_J| < 0.0001",
+   "name": "balance_residual",
+   "note": "",
+   "observed": "2.42E-11",
+   "pass": true
+  },
+  {
+   "expected": "|store_balance_error_J| < 0.0001",
+   "name": "store_ledger_closes",
+   "note": "",
+   "observed": "2.42E-11",
+   "pass": true
+  },
+  {
+   "expected": "mechanical_J == kinetic_J + gravitational_J (1e-9)",
+   "name": "mechanical_identity",
+   "note": "",
+   "observed": "0.000000000",
+   "pass": true
+  },
+  {
+   "expected": "native_coupled_arm",
+   "name": "scene_mode",
+   "note": "",
+   "observed": "native_coupled_arm",
+   "pass": true
+  },
+  {
+   "expected": "|actuator_work_J| < 1e-9",
+   "name": "actuator_work_zero",
+   "note": "",
+   "observed": "0.000000000",
+   "pass": true
+  },
+  {
+   "expected": "|external_work_J| < 1e-9",
+   "name": "external_work_zero",
+   "note": "",
+   "observed": "0.000000000",
+   "pass": true
+  },
+  {
+   "expected": "mode off",
+   "name": "contact_off",
+   "note": "",
+   "observed": "off",
+   "pass": true
+  },
+  {
+   "expected": "hand y < mount y - 0.02 m",
+   "name": "hand_below_mount",
+   "note": "",
+   "observed": "0.2578",
+   "pass": true
+  },
+  {
+   "expected": "mechanical + damping + impact + contact_impact + friction == 0 (1e-6, no actuator/external work)",
+   "name": "damping_only_conservation",
+   "note": "",
+   "observed": "2.42E-11",
+   "pass": true
+  },
+  {
+   "expected": "python FK == engine FK within 1e-06 m",
+   "name": "fk_coherence",
+   "note": "",
+   "observed": "1.40E-17 m",
+   "pass": true
+  }
+ ],
+ "expected": "The arm hangs under gravity below the mount (elbow falls to its stop, shoulder finds the passive equilibrium); no actuator or external work; mechanical energy drops only into damping and joint-stop heat; the ledger closes.",
+ "numeric_verdict": "PASS",
+ "observed": {
+  "actuator_work_J": 0.0,
+  "battery_J": 2.0,
+  "contact_impact_heat_J": 0.0,
+  "elbow_deg": 19.99999997714667,
+  "friction_heat_J": 0.0,
+  "gap_m": -0.08518078656014838,
+  "hand_m": [
+   0.028502050205632592,
+   0.2578192134398516,
+   0.007835990781146291
+  ],
+  "mode": "off",
+  "reaction_N": 0.0,
+  "series_stats": {
+   "friction_heat_first": 0.0,
+   "friction_heat_last": 0.0,
+   "friction_heat_max": 0.0,
+   "hand_x_max": 0.09566231692269239,
+   "hand_x_min": -0.08218358736103548,
+   "slip_max": 0.9338674535705238
+  },
+  "settled": true,
+  "shoulder_deg": -7.864930950556913
+ },
+ "rule0": {
+  "admitted_utc": "2026-09-17 (before the first run of this lane)",
+  "falsifiers": {
+   "F1": "re-render from the recorded state is byte-identical (sha256)",
+   "F2": "python FK hand point == engine body.position_m within 1e-6 m",
+   "F3": "a corrupted penetrating state FAILS the template and renders visibly wrong; a template that passes it is worthless",
+   "F4": "every settled ledger closes (balance_error_J and store_balance_error_J within 1e-4 J -- 10x the repo live-qual bar for these 45-90 s windows -- and the mechanical identity holds); a leak falsifies the energy claims"
+  },
+  "prediction": "All five scenarios pass their numeric templates AND render the expected picture (hang / reach / press-at-plane / stick / slide-with-heat); a penetrating-hand corruption fails.",
+  "statement": "The live scene's own numeric state, rendered by a pure deterministic renderer and judged against a structured expected-physics template, is a valid verification record closing the loop between the numbers and the eye."
+ },
+ "scenario": "free_fall",
+ "verdict": "PASS",
+ "visual_judge": {
+  "findings": [
+   "Arm hangs below the mount with elbow resting at its 20 deg stop and shoulder at the passive -7.9 deg equilibrium",
+   " dashed ghost shows the inactive target pose",
+   " no plane drawn",
+   " ledger bars show gravity drop -0.1591 J exactly offset by damping 0.1058 + impact 0.0533 J",
+   " store full 2 J."
+  ],
+  "judge": "GLM 5.3 Flash (dyad visual pass)",
+  "recorded_utc": "2026-09-18T22:22:11.723566+00:00",
+  "verdict": "PASS"
+ }
+}

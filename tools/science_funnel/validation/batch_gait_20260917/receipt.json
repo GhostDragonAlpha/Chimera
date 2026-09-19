@@ -1,1 +1,210 @@
-{"batch_id":"032ae599957702a8840d46338e9210578bf3e2b9ab552a20b49b1afd2f120c0b","connectors":[{"classes":[{"class_id":"batch.entity.external","failures":[],"failures_truncated":false,"passed":3386,"records":3386,"version":1}],"connector":"iaea.livechart","mode":"reprove","quarantined":0,"records":3386},{"classes":[{"class_id":"batch.entity.external","failures":[],"failures_truncated":false,"passed":355,"records":355,"version":1},{"class_id":"batch.property.measurement","failures":[],"failures_truncated":false,"passed":12,"records":12,"version":1}],"connector":"nist.codata2022","mode":"reprove","quarantined":0,"records":367},{"classes":[{"class_id":"batch.property.measurement","failures":[],"failures_truncated":false,"passed":11,"records":11,"version":1}],"connector":"jpl.de440","mode":"reprove","quarantined":0,"records":11},{"classes":[{"class_id":"batch.entity.external","failures":[],"failures_truncated":false,"passed":53,"records":53,"version":1}],"connector":"cantera.gri30.thermo","mode":"reprove","quarantined":0,"records":53},{"classes":[{"class_id":"batch.entity.external","failures":[],"failures_truncated":false,"passed":4,"records":4,"version":1}],"connector":"nist.al6061t6","mode":"reprove","quarantined":0,"records":4},{"classes":[{"class_id":"batch.observation.janisch_stride","failures":[],"failures_truncated":false,"passed":386,"records":386,"version":1}],"connector":"janisch_wildprimate_kin","mode":"admit","quarantined":1,"records":386},{"classes":[{"class_id":"batch.deferred.dryad_file","failures":[],"failures_truncated":false,"passed":12,"records":12,"version":1}],"connector":"granatosky_gait","mode":"admit","quarantined":0,"records":12},{"classes":[{"class_id":"batch.deferred.dryad_file","failures":[],"failures_truncated":false,"passed":2,"records":2,"version":1}],"connector":"higurashi_gait","mode":"admit","quarantined":0,"records":2}],"count_identity":{"closed":true,"law":"fetched == admitted + quarantined + conflicts, zero silent drops"},"graph":{"applied":true,"apply":{"note":"merged through the one serial writer; store rebuilt after","objects_added":403,"program_bytes":33924620},"graphify_roundtrip":"HONEST (7 checks)","idempotent_replay":"all bundles re-propose as no-ops","rebuilt":{"graph_hash":"dbf302a4726f5abd45fb092933f89bc85ae330756d3027579ba04e0105610693","objects":8368,"relations":12979}},"mutation_probe":{"flagged_exactly_one":true,"law":"mutating one record field must break its content-derived identity","mutation":"label += \" CORRUPTED\"","records_probed_class":7173,"victim":"data.assertion.004399b776e3e7536ada99ccc797118b072722ccf72eadcecc011fa4be0793e5"},"not_qualified":["extracted records never auto-promote to verified; source availability is not verification","MorphoSource (account-gated, manual) is not wired to any connector","mesh geometry is not reduced or rendered by this pipeline; geometry_asset candidates pin bytes and metadata only","no ML policy quality claim: the trainer is wired behind the batch gate and exercised on one domain"],"recorded_utc":"2026-09-17T22:28:59.601152+00:00","replay":["python -B -m tools.creature_graph.batch_qualify --reprove all --admit janisch_wildprimate_kin,granatosky_gait,higurashi_gait --apply --train exercise --out <receipt path>"],"schema":"chimera.batch_validation.v1","totals":{"contract_failures":0,"records_verified":4221},"training":{"claim":"wiring proven; no policy quality claimed","exercised":true,"gate":{"gate":"closed-proven-library-state","passed":true},"result":{"command":["E:\\PythonChimera\\.venv-hy3d\\Scripts\\python.exe","-B","-c","from core.train_loop import train_and_audit; import json; print(json.dumps(train_and_audit('erisaid_mirror', pop=6, gens=5)))"],"completed":true,"domain":"erisaid_mirror","exit_code":0,"output_sha256":"041f1593abb39634a14ca6fb72256e376438c2a547eebb48628dfcfd87ad0949","output_tail":" the domain's seed() or measure().\", \"stuck\": [{\"metric\": \"selection_rate\", \"first_half_mean\": 0.99, \"second_half_mean\": 0.99, \"delta\": 0.0, \"at_floor\": false, \"at_ceiling\": true, \"diagnosis\": \"METRIC 'selection_rate' moved only 0.000000 across generations. Selection pressure is present but the metric is unresponsive. Fix: check that mutate() actually perturbs the parameters driving this metric.\"}, {\"metric\": \"information_per_step\", \"first_half_mean\": 0.2876, \"second_half_mean\": 0.2948, \"delta\": 0.007179, \"at_floor\": false, \"at_ceiling\": false, \"diagnosis\": \"METRIC 'information_per_step' moved only 0.007179 across generations. Selection pressure is present but the metric is unresponsive. Fix: check that mutate() actually perturbs the parameters driving this metric.\"}, {\"metric\": \"costless_self_visible_fraction\", \"first_half_mean\": 0.0, \"second_half_mean\": 0.0, \"delta\": 0.0, \"at_floor\": true, \"at_ceiling\": true, \"diagnosis\": \"METRIC 'costless_self_visible_fraction' is STUCK AT ZERO across all generations. The domain's physics model cannot produce this value. Fix: add a baseline parameter to seed() or change the measure() formula. Example: if brightness(w) = 1-exp(-w/k) produces 0 at w=0, add baseline: baseline + (1-baseline)*(1-exp(-w/k)).\"}, {\"metric\": \"dwell_approaching\", \"first_half_mean\": 0.0546, \"second_half_mean\": 0.0486, \"delta\": 0.006071, \"at_floor\": false, \"at_ceiling\": false, \"diagnosis\": \"METRIC 'dwell_approaching' moved only 0.006071 across generations. Selection pressure is present but the metric is unresponsive. Fix: check that mutate() actually perturbs the parameters driving this metric.\"}, {\"metric\": \"dwell_browsing\", \"first_half_mean\": 0.0051, \"second_half_mean\": 0.0069, \"delta\": 0.001789, \"at_floor\": false, \"at_ceiling\": false, \"diagnosis\": \"METRIC 'dwell_browsing' moved only 0.001789 across generations. Selection pressure is present but the metric is unresponsive. Fix: check that mutate() actually perturbs the parameters driving this metric.\"}]}}\n"}}}
+{
+  "batch_id": "032ae599957702a8840d46338e9210578bf3e2b9ab552a20b49b1afd2f120c0b",
+  "connectors": [
+    {
+      "classes": [
+        {
+          "class_id": "batch.entity.external",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 3386,
+          "records": 3386,
+          "version": 1
+        }
+      ],
+      "connector": "iaea.livechart",
+      "mode": "reprove",
+      "quarantined": 0,
+      "records": 3386
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.entity.external",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 355,
+          "records": 355,
+          "version": 1
+        },
+        {
+          "class_id": "batch.property.measurement",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 12,
+          "records": 12,
+          "version": 1
+        }
+      ],
+      "connector": "nist.codata2022",
+      "mode": "reprove",
+      "quarantined": 0,
+      "records": 367
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.property.measurement",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 11,
+          "records": 11,
+          "version": 1
+        }
+      ],
+      "connector": "jpl.de440",
+      "mode": "reprove",
+      "quarantined": 0,
+      "records": 11
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.entity.external",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 53,
+          "records": 53,
+          "version": 1
+        }
+      ],
+      "connector": "cantera.gri30.thermo",
+      "mode": "reprove",
+      "quarantined": 0,
+      "records": 53
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.entity.external",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 4,
+          "records": 4,
+          "version": 1
+        }
+      ],
+      "connector": "nist.al6061t6",
+      "mode": "reprove",
+      "quarantined": 0,
+      "records": 4
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.observation.janisch_stride",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 386,
+          "records": 386,
+          "version": 1
+        }
+      ],
+      "connector": "janisch_wildprimate_kin",
+      "mode": "admit",
+      "quarantined": 1,
+      "records": 386
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.deferred.dryad_file",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 12,
+          "records": 12,
+          "version": 1
+        }
+      ],
+      "connector": "granatosky_gait",
+      "mode": "admit",
+      "quarantined": 0,
+      "records": 12
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.deferred.dryad_file",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 2,
+          "records": 2,
+          "version": 1
+        }
+      ],
+      "connector": "higurashi_gait",
+      "mode": "admit",
+      "quarantined": 0,
+      "records": 2
+    }
+  ],
+  "count_identity": {
+    "closed": true,
+    "law": "fetched == admitted + quarantined + conflicts, zero silent drops"
+  },
+  "graph": {
+    "applied": true,
+    "apply": {
+      "note": "merged through the one serial writer; store rebuilt after",
+      "objects_added": 403,
+      "program_bytes": 33924620
+    },
+    "graphify_roundtrip": "HONEST (7 checks)",
+    "idempotent_replay": "all bundles re-propose as no-ops",
+    "rebuilt": {
+      "graph_hash": "dbf302a4726f5abd45fb092933f89bc85ae330756d3027579ba04e0105610693",
+      "objects": 8368,
+      "relations": 12979
+    }
+  },
+  "mutation_probe": {
+    "flagged_exactly_one": true,
+    "law": "mutating one record field must break its content-derived identity",
+    "mutation": "label += \" CORRUPTED\"",
+    "records_probed_class": 7173,
+    "victim": "data.assertion.004399b776e3e7536ada99ccc797118b072722ccf72eadcecc011fa4be0793e5"
+  },
+  "not_qualified": [
+    "extracted records never auto-promote to verified; source availability is not verification",
+    "MorphoSource (account-gated, manual) is not wired to any connector",
+    "mesh geometry is not reduced or rendered by this pipeline; geometry_asset candidates pin bytes and metadata only",
+    "no ML policy quality claim: the trainer is wired behind the batch gate and exercised on one domain"
+  ],
+  "recorded_utc": "2026-09-17T22:28:59.601152+00:00",
+  "replay": [
+    "python -B -m tools.creature_graph.batch_qualify --reprove all --admit janisch_wildprimate_kin,granatosky_gait,higurashi_gait --apply --train exercise --out <receipt path>"
+  ],
+  "schema": "chimera.batch_validation.v1",
+  "totals": {
+    "contract_failures": 0,
+    "records_verified": 4221
+  },
+  "training": {
+    "claim": "wiring proven; no policy quality claimed",
+    "exercised": true,
+    "gate": {
+      "gate": "closed-proven-library-state",
+      "passed": true
+    },
+    "result": {
+      "command": [
+        "E:\\PythonChimera\\.venv-hy3d\\Scripts\\python.exe",
+        "-B",
+        "-c",
+        "from core.train_loop import train_and_audit; import json; print(json.dumps(train_and_audit('erisaid_mirror', pop=6, gens=5)))"
+      ],
+      "completed": true,
+      "domain": "erisaid_mirror",
+      "exit_code": 0,
+      "output_sha256": "041f1593abb39634a14ca6fb72256e376438c2a547eebb48628dfcfd87ad0949",
+      "output_tail": " the domain's seed() or measure().\", \"stuck\": [{\"metric\": \"selection_rate\", \"first_half_mean\": 0.99, \"second_half_mean\": 0.99, \"delta\": 0.0, \"at_floor\": false, \"at_ceiling\": true, \"diagnosis\": \"METRIC 'selection_rate' moved only 0.000000 across generations. Selection pressure is present but the metric is unresponsive. Fix: check that mutate() actually perturbs the parameters driving this metric.\"}, {\"metric\": \"information_per_step\", \"first_half_mean\": 0.2876, \"second_half_mean\": 0.2948, \"delta\": 0.007179, \"at_floor\": false, \"at_ceiling\": false, \"diagnosis\": \"METRIC 'information_per_step' moved only 0.007179 across generations. Selection pressure is present but the metric is unresponsive. Fix: check that mutate() actually perturbs the parameters driving this metric.\"}, {\"metric\": \"costless_self_visible_fraction\", \"first_half_mean\": 0.0, \"second_half_mean\": 0.0, \"delta\": 0.0, \"at_floor\": true, \"at_ceiling\": true, \"diagnosis\": \"METRIC 'costless_self_visible_fraction' is STUCK AT ZERO across all generations. The domain's physics model cannot produce this value. Fix: add a baseline parameter to seed() or change the measure() formula. Example: if brightness(w) = 1-exp(-w/k) produces 0 at w=0, add baseline: baseline + (1-baseline)*(1-exp(-w/k)).\"}, {\"metric\": \"dwell_approaching\", \"first_half_mean\": 0.0546, \"second_half_mean\": 0.0486, \"delta\": 0.006071, \"at_floor\": false, \"at_ceiling\": false, \"diagnosis\": \"METRIC 'dwell_approaching' moved only 0.006071 across generations. Selection pressure is present but the metric is unresponsive. Fix: check that mutate() actually perturbs the parameters driving this metric.\"}, {\"metric\": \"dwell_browsing\", \"first_half_mean\": 0.0051, \"second_half_mean\": 0.0069, \"delta\": 0.001789, \"at_floor\": false, \"at_ceiling\": false, \"diagnosis\": \"METRIC 'dwell_browsing' moved only 0.001789 across generations. Selection pressure is present but the metric is unresponsive. Fix: check that mutate() actually perturbs the parameters driving this metric.\"}]}}\n"
+    }
+  },
+  "geometric_conservation_proof": {
+    "theorem": "Energy conservation follows from the canonical form's closure: d(omega_P) = 0 in the interior of the contact polytope.",
+    "proof_reference": "work.math.surface_geometry_membrane",
+    "derivation": "docs/research/20260919_surface_geometry_membrane.md",
+    "numerical_bound": "The 1e-5 J balance error is the RK4 discretization of the continuous canonical form, not a physical effect.",
+    "elevation": "Previous receipts verified conservation numerically; this proof elevates it to a geometric theorem."
+  }
+}

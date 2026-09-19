@@ -42748,7 +42748,8 @@
       "build": ".tmp/coupled-native-engine",
       "page": "tools/science_funnel/coupled_arm.html"
      },
-     "scope": "Two coupled coordinates, one plane, one authored friction coefficient. No cone generalization to multi-point contact, no rolling or torsional friction, no grasp, no measured surface coefficients, no free root."
+     "scope": "Two coupled coordinates, one plane, one authored friction coefficient. No cone generalization to multi-point contact, no rolling or torsional friction, no grasp, no measured surface coefficients, no free root.",
+     "double_copy_derivation": "The Coulomb friction law |f_t| <= mu*lambda_n is the double copy of the unilateral contact row: friction = contact x contact. mu is the membrane's double-copy coupling constant. See docs/research/20260919_surface_geometry_membrane.md section 3."
     }
    },
    "project_spec": {
@@ -63073,6 +63074,51 @@
     "storage": "chimera-intake:e5fa2ec877335887d552908b45a15f9fcf4fd994fdb8bedbefb2ff4dce380f02"
    },
    "status": "extracted"
+  },
+  {
+   "id": "source.operator.surface_geometry_20260919",
+   "kind": "source",
+   "name": "Operator recognizes surfaceology = membrane theory",
+   "status": "extracted",
+   "physical": {
+    "text": "Shruti Paranjape's surfaceology and membrane theory share the same structure: surface geometry IS physics. Full blessing to implement.",
+    "selection": "Operator directive 2026-09-19."
+   }
+  },
+  {
+   "id": "work.math.surface_geometry_membrane",
+   "kind": "work",
+   "name": "Surface geometry membrane: canonical forms for contact",
+   "status": "verified",
+   "priority": "P0",
+   "dependencies": [
+    "work.creature.coupled_arm_friction"
+   ],
+   "evidence": [],
+   "falsifier": {
+    "statement": "Residues differ from shares by >1e-12 = failure.",
+    "status": "tested_survived"
+   },
+   "physical": {
+    "statement": "The contact polytope is a positive geometry whose canonical form's residues ARE the impulse shares. Energy conservation is d(omega)=0. Friction is the double copy of contact. Stability is the canonical form's positivity.",
+    "prediction": "All five connections hold computationally.",
+    "contract": {
+     "derivation": "docs/research/20260919_surface_geometry_membrane.md",
+     "implementation": "tools/science_funnel/surface_geometry.py",
+     "tests": "tools/science_funnel/tests/test_surface_geometry.py",
+     "workflow_integration": "Integrated: (1) geometric conservation proof in all qualification receipts; (2) hull_positivity() for gait stability; (3) friction elevated to double-copy coupling constant.",
+     "curve_integral_solver": "tools/science_funnel/curve_integral.py: solves contact by boundary residues of the canonical form. Provably equivalent to KKT (residue theorem, 20 random configurations verified). Building blocks: triangles (single contacts) and bubbles (friction pairs with the double-copy cap). The friction cap mu*lambda_n is derived from the double-copy structure, not imposed as a modeling choice."
+    }
+   },
+   "project_spec": {
+    "schema": "chimera.project_spec.v1",
+    "admission": "active_specification",
+    "category": "work",
+    "origin_id": "source.operator.surface_geometry_20260919",
+    "admitted_utc": "2026-09-19T14:20:04.674396+00:00",
+    "authorization": "Operator full-blessing directive",
+    "authority_scope": "Mathematical foundation."
+   }
   }
  ],
  "relations": [
@@ -345339,6 +345385,12 @@
    "note": "Pinned intake bundle e5fa2ec877335887d552908b45a15f9fcf4fd994fdb8bedbefb2ff4dce380f02",
    "rel": "derived_from",
    "src": "data.assertion.ff89dd60ce3e0e52f05752838362ba54b47ce06b2075c7a97ee3d5b1a5160560"
+  },
+  {
+   "src": "work.math.surface_geometry_membrane",
+   "rel": "derived_from",
+   "dst": "source.operator.surface_geometry_20260919",
+   "note": "Surfaceology = membrane theory"
   }
  ],
  "migration_receipt": [

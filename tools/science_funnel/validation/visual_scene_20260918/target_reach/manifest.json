@@ -1,0 +1,47 @@
+{
+ "artifacts": {
+  "energy_bars.png": "5120a818bf6dbcf6a4b98588759795f312534e118bae14f6014e4cf897dba6be",
+  "judgement.json": "bc395c82c673030b1fa25caa4e67d16f7f5ae2e62248c7d3f0aa5062960d7407",
+  "numeric_state.json": "31c3e58c775ffa83ce65acc61822bd2914670e37e1f198e208f2555ec6b9ee40",
+  "state_render.png": "4c80d93fe9853594f788e742d171ae48f2adf1910770d561558201ff6db50e56"
+ },
+ "falsifiers": {
+  "F1_determinism": {
+   "re_render_byte_identical": true,
+   "verified_utc": "2026-09-18T22:16:31.310644+00:00"
+  },
+  "F2_state_render_coherence": {
+   "delta_m": 2.7809732887839817e-17,
+   "passed": true,
+   "tolerance_m": 1e-06
+  },
+  "F3_wrong_state_catch": "run-level probe",
+  "F4_energy_sanity": "per-check balance_residual + mechanical_identity"
+ },
+ "kind": "visual_scene_manifest.v1",
+ "rule0": {
+  "admitted_utc": "2026-09-17 (before the first run of this lane)",
+  "falsifiers": {
+   "F1": "re-render from the recorded state is byte-identical (sha256)",
+   "F2": "python FK hand point == engine body.position_m within 1e-6 m",
+   "F3": "a corrupted penetrating state FAILS the template and renders visibly wrong; a template that passes it is worthless",
+   "F4": "every settled ledger closes (balance_error_J and store_balance_error_J within 1e-4 J -- 10x the repo live-qual bar for these 45-90 s windows -- and the mechanical identity holds); a leak falsifies the energy claims"
+  },
+  "prediction": "All five scenarios pass their numeric templates AND render the expected picture (hang / reach / press-at-plane / stick / slide-with-heat); a penetrating-hand corruption fails.",
+  "statement": "The live scene's own numeric state, rendered by a pure deterministic renderer and judged against a structured expected-physics template, is a valid verification record closing the loop between the numbers and the eye."
+ },
+ "scenario": "target_reach",
+ "scene_provenance": {
+  "compiled_scene_sha256": "89a21c17f0d1c123ef4a7fd8ae909e7506f96da418b9ec34eb2dfc8cca2d4619",
+  "engine_exe": "E:/ChimeraWork/visual-verify-20260918/.tmp/coupled-native-engine/Release/chimera_engine.exe",
+  "engine_exe_sha256": "18B13786E603131945C972AA33AA8C13B21CD8A0F20A1601C08A5A4D749574DE",
+  "engine_pid": 144668,
+  "graph_hash": "d16d38a4e715fa8231c0ad44a5cf1a0f58b11c69c71faef6cc86771b325e8086",
+  "mode": "native_coupled_arm",
+  "port": 8191,
+  "runtime_json": "E:/ChimeraWork/visual-verify-20260918/.tmp/coupled-native/runtime.json",
+  "scene_json_sha256": "DF914B641B247236B69BD9EBEB435DDB525C20EEBE7075470D4D1E1BFFD32128",
+  "verified_scene_sha256": "89a21c17f0d1c123ef4a7fd8ae909e7506f96da418b9ec34eb2dfc8cca2d4619"
+ },
+ "written_utc": "2026-09-18T22:16:23.280309+00:00"
+}

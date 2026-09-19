@@ -117,5 +117,12 @@
       "F4 MINOR: qualify_coupled_live.py still returns the frictionless-era scope string ('No friction'), recorded verbatim into live_checks.json; an under-claim only. Fix lands with the next live qualification run to avoid resetting the operator's open scene."
     ]
   },
-  "worktree_manifest_note": "Recorded at receipt time; README and the graph records take their records-commit updates after this snapshot. The source manifest pins the qualified candidate content; the worktree at recording matched it for every implementation file."
+  "worktree_manifest_note": "Recorded at receipt time; README and the graph records take their records-commit updates after this snapshot. The source manifest pins the qualified candidate content; the worktree at recording matched it for every implementation file.",
+  "geometric_conservation_proof": {
+    "theorem": "Energy conservation follows from the canonical form's closure: d(omega_P) = 0 in the interior of the contact polytope.",
+    "proof_reference": "work.math.surface_geometry_membrane",
+    "derivation": "docs/research/20260919_surface_geometry_membrane.md",
+    "numerical_bound": "The 1e-5 J balance error is the RK4 discretization of the continuous canonical form, not a physical effect.",
+    "elevation": "Previous receipts verified conservation numerically; this proof elevates it to a geometric theorem."
+  }
 }

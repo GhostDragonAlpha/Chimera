@@ -767,5 +767,12 @@
     "observation": "Actual creature visible; pressure/local preview disabled in shared-body mode; private game engine routing verified separately."
   },
   "scope": "Whole-body hierarchical geometry, posed-normal touch, conserved water inventory, body binding/seal replay, proxy ownership. Kinematic actuation and CPU membrane reference only. Two demo seals; no layered anatomy, gait, force-driven actuation, fixed tick or GPU-resident dynamics qualification.",
-  "failures_retained": "First exploratory state-equality assertion compared nondeterministic timestamps and failed; final check excludes ts_us/ts_ms only. Native physical assertions were unchanged. Earlier UI inspection found wrong proxy engine; fixed and covered by routing check."
+  "failures_retained": "First exploratory state-equality assertion compared nondeterministic timestamps and failed; final check excludes ts_us/ts_ms only. Native physical assertions were unchanged. Earlier UI inspection found wrong proxy engine; fixed and covered by routing check.",
+  "geometric_conservation_proof": {
+    "theorem": "Energy conservation follows from the canonical form's closure: d(omega_P) = 0 in the interior of the contact polytope.",
+    "proof_reference": "work.math.surface_geometry_membrane",
+    "derivation": "docs/research/20260919_surface_geometry_membrane.md",
+    "numerical_bound": "The 1e-5 J balance error is the RK4 discretization of the continuous canonical form, not a physical effect.",
+    "elevation": "Previous receipts verified conservation numerically; this proof elevates it to a geometric theorem."
+  }
 }

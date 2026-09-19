@@ -1,0 +1,156 @@
+{
+ "checks": [
+  {
+   "expected": "max |speed_rad_s| < 1e-06",
+   "name": "settled_speeds",
+   "note": "",
+   "observed": "9.60E-12",
+   "pass": true
+  },
+  {
+   "expected": "|balance_error_J| < 0.0001",
+   "name": "balance_residual",
+   "note": "",
+   "observed": "0.000002359",
+   "pass": true
+  },
+  {
+   "expected": "|store_balance_error_J| < 0.0001",
+   "name": "store_ledger_closes",
+   "note": "",
+   "observed": "0.000002359",
+   "pass": true
+  },
+  {
+   "expected": "mechanical_J == kinetic_J + gravitational_J (1e-9)",
+   "name": "mechanical_identity",
+   "note": "",
+   "observed": "0.000000000",
+   "pass": true
+  },
+  {
+   "expected": "native_coupled_arm",
+   "name": "scene_mode",
+   "note": "",
+   "observed": "native_coupled_arm",
+   "pass": true
+  },
+  {
+   "expected": "touching true",
+   "name": "touching",
+   "note": "",
+   "observed": true,
+   "pass": true
+  },
+  {
+   "expected": "|gap_m| < 1e-3",
+   "name": "gap_near_zero",
+   "note": "",
+   "observed": "-0.000002",
+   "pass": true
+  },
+  {
+   "expected": "gap >= -kTouch (1.1e-5 m): the solver holds contact inside its touch band; the hand is never visibly below the plane",
+   "name": "no_penetration",
+   "note": "",
+   "observed": "-0.000002",
+   "pass": true
+  },
+  {
+   "expected": "reaction_N > 0.005",
+   "name": "reaction_nonzero",
+   "note": "",
+   "observed": "1.43353",
+   "pass": true
+  },
+  {
+   "expected": "elbow angle > target + 1.0 deg (plane prevents full reach)",
+   "name": "elbow_stalled_short",
+   "note": "",
+   "observed": "14.5778",
+   "pass": true
+  },
+  {
+   "expected": "impact_heat_J > 1e-9 (contact landing dissipates)",
+   "name": "landing_heat",
+   "note": "",
+   "observed": "0.034226469",
+   "pass": true
+  },
+  {
+   "expected": "frictionless press reads mode free",
+   "name": "mode_free",
+   "note": "",
+   "observed": "free",
+   "pass": true
+  },
+  {
+   "expected": "mu=0 -> friction_heat_J < 1e-12",
+   "name": "friction_heat_zero",
+   "note": "",
+   "observed": "0.000000000",
+   "pass": true
+  },
+  {
+   "expected": "python FK == engine FK within 1e-06 m",
+   "name": "fk_coherence",
+   "note": "",
+   "observed": "2.78E-17 m",
+   "pass": true
+  }
+ ],
+ "expected": "The hand stops AT the plane (gap ~ 0, held inside the kTouch=1e-5 band, never visibly below); a nonzero normal reaction appears; the elbow stalls short of its 20 deg target; the landing books contact impact heat; mode free.",
+ "numeric_verdict": "PASS",
+ "observed": {
+  "actuator_work_J": -0.002730763260937093,
+  "battery_J": 1.9511318480768332,
+  "contact_impact_heat_J": 0.03422646948738444,
+  "elbow_deg": 34.57779801544516,
+  "friction_heat_J": 0.0,
+  "gap_m": -1.6668531831742772e-06,
+  "hand_m": [
+   0.19507810238341275,
+   0.3429983331468168,
+   0.007835990781146291
+  ],
+  "mode": "free",
+  "reaction_N": 1.4335270907451338,
+  "series_stats": {
+   "friction_heat_first": 0.0,
+   "friction_heat_last": 0.0,
+   "friction_heat_max": 0.0,
+   "hand_x_max": 0.19507810238443077,
+   "hand_x_min": 0.18898042403233353,
+   "slip_max": 0.06317441913142735
+  },
+  "settled": true,
+  "shoulder_deg": 21.007275891222807
+ },
+ "rule0": {
+  "admitted_utc": "2026-09-17 (before the first run of this lane)",
+  "falsifiers": {
+   "F1": "re-render from the recorded state is byte-identical (sha256)",
+   "F2": "python FK hand point == engine body.position_m within 1e-6 m",
+   "F3": "a corrupted penetrating state FAILS the template and renders visibly wrong; a template that passes it is worthless",
+   "F4": "every settled ledger closes (balance_error_J and store_balance_error_J within 1e-4 J -- 10x the repo live-qual bar for these 45-90 s windows -- and the mechanical identity holds); a leak falsifies the energy claims"
+  },
+  "prediction": "All five scenarios pass their numeric templates AND render the expected picture (hang / reach / press-at-plane / stick / slide-with-heat); a penetrating-hand corruption fails.",
+  "statement": "The live scene's own numeric state, rendered by a pure deterministic renderer and judged against a structured expected-physics template, is a valid verification record closing the loop between the numbers and the eye."
+ },
+ "scenario": "contact_press",
+ "verdict": "PASS",
+ "visual_judge": {
+  "findings": [
+   "Hand circle sits ON the blue plane line at gap -1.7e-6 m",
+   " red reaction arrow R=1.434 N points straight up along the normal",
+   " elbow visibly stalled at 34.6 deg vs the 20 deg command",
+   " dashed ghost hand lies BELOW the plane (the command would penetrate",
+   " the plane prevents it)",
+   " mode FREE",
+   " zero friction heat."
+  ],
+  "judge": "GLM 5.3 Flash (dyad visual pass)",
+  "recorded_utc": "2026-09-18T22:22:12.215314+00:00",
+  "verdict": "PASS"
+ }
+}

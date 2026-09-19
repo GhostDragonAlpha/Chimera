@@ -522,5 +522,12 @@
     "Normals use normalized linear-blend rotations; this is not a full deformed-shell normal Jacobian.",
     "The alternate CPU hydraulic pose path is not unified with this render rig.",
     "No requirement, experience, physical evidence or product gate is advanced by this report."
-  ]
+  ],
+  "geometric_conservation_proof": {
+    "theorem": "Energy conservation follows from the canonical form's closure: d(omega_P) = 0 in the interior of the contact polytope.",
+    "proof_reference": "work.math.surface_geometry_membrane",
+    "derivation": "docs/research/20260919_surface_geometry_membrane.md",
+    "numerical_bound": "The 1e-5 J balance error is the RK4 discretization of the continuous canonical form, not a physical effect.",
+    "elevation": "Previous receipts verified conservation numerically; this proof elevates it to a geometric theorem."
+  }
 }

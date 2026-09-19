@@ -1,0 +1,163 @@
+{
+  "batch_id": "f7b85e8ad4192ecba4fcba7fb10ffa2ea7ec2f83fdcac874e8a8e337ee1836af",
+  "connectors": [
+    {
+      "classes": [
+        {
+          "class_id": "batch.entity.external",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 3386,
+          "records": 3386,
+          "version": 1
+        }
+      ],
+      "connector": "iaea.livechart",
+      "mode": "reprove",
+      "quarantined": 0,
+      "records": 3386
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.entity.external",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 355,
+          "records": 355,
+          "version": 1
+        },
+        {
+          "class_id": "batch.property.measurement",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 12,
+          "records": 12,
+          "version": 1
+        }
+      ],
+      "connector": "nist.codata2022",
+      "mode": "reprove",
+      "quarantined": 0,
+      "records": 367
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.property.measurement",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 11,
+          "records": 11,
+          "version": 1
+        }
+      ],
+      "connector": "jpl.de440",
+      "mode": "reprove",
+      "quarantined": 0,
+      "records": 11
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.entity.external",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 53,
+          "records": 53,
+          "version": 1
+        }
+      ],
+      "connector": "cantera.gri30.thermo",
+      "mode": "reprove",
+      "quarantined": 0,
+      "records": 53
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.entity.external",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 4,
+          "records": 4,
+          "version": 1
+        }
+      ],
+      "connector": "nist.al6061t6",
+      "mode": "reprove",
+      "quarantined": 0,
+      "records": 4
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.property.paper_table_inertial",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 21,
+          "records": 21,
+          "version": 1
+        }
+      ],
+      "connector": "oku_paper_table",
+      "mode": "admit",
+      "quarantined": 0,
+      "records": 21
+    }
+  ],
+  "count_identity": {
+    "closed": true,
+    "law": "fetched == admitted + quarantined + conflicts, zero silent drops"
+  },
+  "graph": {
+    "applied": true,
+    "apply": {
+      "note": "bulk kinds shard with per-object rotation; core in the program; one serial writer",
+      "objects_added": 22,
+      "program_bytes": 17466426,
+      "shards": [
+        "records_011.json"
+      ]
+    },
+    "graphify_roundtrip": "HONEST (7 checks)",
+    "idempotent_replay": "all bundles re-propose as no-ops",
+    "rebuilt": {
+      "graph_hash": "6957d2b184d5faa51f9d72b305346de725a4f932bcbdcabf261138811bbfc6b1",
+      "objects": 52452,
+      "relations": 47317
+    }
+  },
+  "mutation_probe": {
+    "flagged_exactly_one": false,
+    "law": "mutating one record field must break its content-derived identity",
+    "mutation": "label += \" CORRUPTED\"",
+    "records_probed_class": 42788,
+    "victim": "data.assertion.0002cb36f446dce8626cad0f06d37c0a0df6eeb78fcd0a6cef8d284f9268c3b1"
+  },
+  "not_qualified": [
+    "extracted records never auto-promote to verified; source availability is not verification",
+    "MorphoSource (account-gated, manual) is not wired to any connector",
+    "mesh geometry is not reduced or rendered by this pipeline; geometry_asset candidates pin bytes and metadata only",
+    "no ML policy quality claim: the trainer is wired behind the batch gate and exercised on one domain"
+  ],
+  "recorded_utc": "2026-09-18T20:23:48.619058+00:00",
+  "replay": [
+    "python -B -m tools.creature_graph.batch_qualify --reprove all --admit oku_paper_table --apply --train skip --out <receipt path>"
+  ],
+  "schema": "chimera.batch_validation.v1",
+  "totals": {
+    "contract_failures": 0,
+    "records_verified": 3842
+  },
+  "training": {
+    "exercised": false
+  },
+  "geometric_conservation_proof": {
+    "theorem": "Energy conservation follows from the canonical form's closure: d(omega_P) = 0 in the interior of the contact polytope.",
+    "proof_reference": "work.math.surface_geometry_membrane",
+    "derivation": "docs/research/20260919_surface_geometry_membrane.md",
+    "numerical_bound": "The 1e-5 J balance error is the RK4 discretization of the continuous canonical form, not a physical effect.",
+    "elevation": "Previous receipts verified conservation numerically; this proof elevates it to a geometric theorem."
+  }
+}

@@ -1,0 +1,225 @@
+"""Compile the gait walker native scene (docs/research/20260918_gait_controller_derivation.md,
+stages D-F implementation, record model.dynamics.gait_walker).
+
+Sibling of coupled_free_scene.py (which stays byte-untouched). This compiler
+emits the `gait_controller` bundle kind: the 14-coordinate walker recipe
+(6-axis authored free base + hip/knee/ankle/MP per leg in the Oku sign
+convention) and the walker model authored from the pinned Oku Table 1
+segments. The qualified world's compilers are untouched: the
+`gait_controller` key exists ONLY in this compiler's output (default off).
+
+The seating scan is the compile-time proof that the standing reset puts all
+six foot contact points at the authored +2e-6 m gap and the CoM strictly
+inside the support hull (the free-root packet's D4/D7 pattern).
+"""
+import argparse,json,math,sys
+from pathlib import Path
+import numpy as np
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from tools.science_funnel.common import canonical,digest
+from tools.creature_graph.store import CreatureGraph
+
+RECORD='model.dynamics.gait_walker'
+DERIVED=ROOT/'tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json'
+K_TOUCH=1e-5
+SOLE_RADIUS=0.004
+RESET_GAP=2e-6
+
+
+def body(name,parent,mass,com,inertia,joint=None):
+    return {'name':name,'mass_kg':mass,'mass_center_m':com,'inertia_kg_m2':inertia,
+            'joint':joint}
+
+
+def revolute(name,parent,parent_location,child_location,coordinate,axis=(0.,0.,1.)):
+    return {'name':name,'type':'CustomJoint','parent':parent,
+            'parent_location_m':[float(v) for v in parent_location],
+            'parent_orientation_rad':[0.,0.,0.],
+            'child_location_m':[float(v) for v in child_location],
+            'child_orientation_rad':[0.,0.,0.],
+            'axes':[{'name':'rotation1','axis':[float(v) for v in axis],'coordinate':coordinate,
+                     'function':{'type':'LinearFunction','coefficients':[1.0,0.0]}}]}
+
+
+def build_walker_model(record,derived):
+    """The Oku Table 1 planar assembly: pelvis (HAT) on an authored 6-axis
+    base joint, two identical hindlimb chains (thigh/shank/foot/toe). q=0 is
+    the straight-leg standing pose; the +/-1 stem mapping is the DECLARED
+    convention: every joint axis is world South {0,0,1} with slope +1, so
+    positive q IS flexion/extension/dorsiflexion exactly as the tables."""
+    seg=derived['body_model']['segments_Table1']
+    def inert(i): return [float(i),float(i),float(i),0.,0.,0.]
+    contract=record['physical']['contract']
+    z=contract['leg_z_offset_m']
+    base_axes=[]
+    for k,coord in enumerate(['base_rot_x','base_rot_y','base_rot_z']):
+        axis=[1.0 if k==0 else 0.0,1.0 if k==1 else 0.0,1.0 if k==2 else 0.0]
+        base_axes.append({'name':f'rotation{k+1}','axis':axis,'coordinate':coord,
+                          'function':{'type':'LinearFunction','coefficients':[1.0,0.0]}})
+    for k,coord in enumerate(['base_trans_x','base_trans_y','base_trans_z']):
+        axis=[1.0 if k==0 else 0.0,1.0 if k==1 else 0.0,1.0 if k==2 else 0.0]
+        base_axes.append({'name':f'translation{k+1}','axis':axis,'coordinate':coord,
+                          'function':{'type':'LinearFunction','coefficients':[1.0,0.0]}})
+    base_joint={'name':'ground_pelvis','type':'CustomJoint','parent':'ground',
+                'parent_location_m':[0.,0.,0.],'parent_orientation_rad':[0.,0.,0.],
+                'child_location_m':[0.,0.,0.],'child_orientation_rad':[0.,0.,0.],
+                'axes':base_axes}
+    pelvis=body('pelvis',None,float(seg['HAT']['mass_kg']),
+                [0.,float(seg['HAT']['com_frac']*seg['HAT']['length_m']),0.],
+                inert(seg['HAT']['I_com']),base_joint)
+    bodies=[{'name':'ground','mass_kg':0.0,'mass_center_m':[0.,0.,0.],
+             'inertia_kg_m2':[0.,0.,0.,0.,0.,0.],'joint':None},pelvis]
+    ranges=contract['joint_ranges_rad']
+    for leg,side in (('left',1.0),('right',-1.0)):
+        bodies.append(body(f'thigh_{leg}','pelvis',float(seg['thigh']['mass_kg']),
+            [0.,-float(seg['thigh']['com_frac']*seg['thigh']['length_m']),0.],
+            inert(seg['thigh']['I_com']),
+            revolute(f'ground_thigh_{leg}','pelvis',[0.,0.,side*z],[0.,0.,0.],f'hip_flexion_{leg}')))
+        bodies.append(body(f'shank_{leg}',f'thigh_{leg}',float(seg['shank']['mass_kg']),
+            [0.,-float(seg['shank']['com_frac']*seg['shank']['length_m']),0.],
+            inert(seg['shank']['I_com']),
+            revolute(f'thigh_shank_{leg}',f'thigh_{leg}',[0.,-float(seg['thigh']['length_m']),0.],[0.,0.,0.],f'knee_extension_{leg}')))
+        bodies.append(body(f'foot_{leg}',f'shank_{leg}',float(seg['foot']['mass_kg']),
+            [float(seg['foot']['com_frac']*seg['foot']['length_m']),0.,0.],
+            inert(seg['foot']['I_com']),
+            revolute(f'shank_foot_{leg}',f'shank_{leg}',[0.,-float(seg['shank']['length_m']),0.],[0.,0.,0.],f'ankle_dorsiflexion_{leg}')))
+        bodies.append(body(f'toe_{leg}',f'foot_{leg}',float(seg['phalanges']['mass_kg']),
+            [float(seg['phalanges']['com_frac']*seg['phalanges']['length_m']),0.,0.],
+            inert(seg['phalanges']['I_com']),
+            revolute(f'foot_toe_{leg}',f'foot_{leg}',[float(seg['foot']['length_m']),0.,0.],[0.,0.,0.],f'MP_dorsiflexion_{leg}')))
+    coordinates={}
+    for c in contract['coordinates']:
+        if c.startswith('base_rot'):
+            coordinates[c]={'default_rad':0.0,'range_rad':[-math.pi,math.pi],'locked':False}
+        elif c.startswith('base_trans'):
+            coordinates[c]={'default_rad':0.0,'range_rad':[-1.0,1.0],'locked':False}
+        else:
+            stem=c.rsplit('_',1)[0]
+            lo,hi=ranges[stem]
+            coordinates[c]={'default_rad':0.0,'range_rad':[float(lo),float(hi)],'locked':False}
+    # Standing reset height: ankle at sole radius above the plane model origin,
+    # minus the authored +2e-6 seating lift (the free-root's D4 pattern).
+    leg_drop=float(seg['thigh']['length_m'])+float(seg['shank']['length_m'])
+    base_y=leg_drop+contract['seating_scan']['reset_gap_target_m']
+    coordinates['base_trans_y']['default_rad']=base_y
+    return {'schema':'chimera.anatomical_assembly.v1','coordinates':coordinates,'bodies':bodies}
+
+
+def seating_scan(model,record):
+    """Compile-time seat proof: all six foot points at the authored gap, CoM
+    strictly inside the standing support hull."""
+    contract=record['physical']['contract']
+    plane=contract['contact_plane_height_m']
+    from tools.science_funnel.coupled_arm import Assembly
+    asm=Assembly(model,gravity=[0.,-9.80665,0.])
+    com=np.zeros(3);mtot=0.
+    for b in model['bodies']:
+        m=float(b['mass_kg']);p,_=asm.point(b['name'],b['mass_center_m'])
+        com+=m*np.asarray(p);mtot+=m
+    com/=mtot
+    pts=contract['contact_points']
+    gaps=[]
+    for p in pts:
+        pos,_=asm.point(p['body'],p['point_m'])
+        gaps.append(float(pos[1])+float(p['radius_m'])-plane)
+    for g in gaps:require(0<g<K_TOUCH,'gait_seated_reset_gap_invalid',g)
+    hull=[(float(asm.point(p['body'],p['point_m'])[0][0]),float(asm.point(p['body'],p['point_m'])[0][2])) for p in pts]
+    c=(float(com[0]),float(com[2]))
+    # Convex hull (monotone chain) then strict inside test.
+    pts2=sorted(set(hull))
+    def cross(o,a,b):return (a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0])
+    lower=[]
+    for p in pts2:
+        while len(lower)>=2 and cross(lower[-2],lower[-1],p)<=0:lower.pop()
+        lower.append(p)
+    upper=[]
+    for p in reversed(pts2):
+        while len(upper)>=2 and cross(upper[-2],upper[-1],p)<=0:upper.pop()
+        upper.append(p)
+    hull2=lower[:-1]+upper[:-1]
+    inside=all(cross(hull2[i],hull2[(i+1)%len(hull2)],c)>0 for i in range(len(hull2)))
+    require(inside,'gait_com_outside_support_hull',c)
+    return {'reset_gaps_m':gaps,'com_projection_model_m':[c[0],c[1]],'assembly_mass_kg':mtot,
+            'weight_N':mtot*9.80665,'hull_vertices':hull2}
+
+
+def require(cond,msg,*args):
+    if not cond:raise SystemExit(f'REFUSAL: {msg} {list(args)}')
+
+
+def compile_gait(graph,output):
+    record=graph.get(RECORD)
+    contract=record['physical']['contract']
+    require(contract['schema']=='chimera.gait_scene.v1','gait_scene_contract')
+    derived=json.loads(DERIVED.read_text(encoding='utf-8'))
+    model=build_walker_model(record,derived)
+    from tools.science_funnel.coupled_arm import Assembly
+    Assembly(model)
+    defaults={'power':True,'gait_enabled':True,'capture_enabled':True,'posture_drive':True,'push_N':0.0,'contact_enabled':True,
+              'contact_friction':contract['contact_friction']}
+    for d in contract['drives']:
+        defaults[d['coordinate']+'_drive']=True
+    measured=seating_scan(model,record)
+    recorded=contract.get('seating_scan_measured')
+    if recorded:
+        require(abs(measured['assembly_mass_kg']-recorded['assembly_mass_kg'])<1e-9,'gait_seating_mass_drift')
+        require(max(abs(a-b) for a,b in zip(measured['com_projection_model_m'],recorded['com_projection_model_m']))<1e-9,'gait_seating_com_drift')
+    # The gait-state initialization (the source model's own scheme: the
+    # periodic cycle is entered AT the TD state): joints at the reset columns
+    # (left phi=0, right phi=0.5), the base at the height that seats the gait
+    # pose's lowest contact point at +2e-6 m, and the MEASURED gait speed
+    # (derived timing: 1.01 m/s simulated anchor) on the base.
+    tables=contract['tables_rad']
+    jstems=['hip_flexion','knee_extension','ankle_dorsiflexion','MP_dorsiflexion']
+    start_values={}
+    for leg,phi_idx in (('left',0),('right',10)):
+        for stem,key in zip(jstems,('hip','knee','ankle','MP')):
+            start_values[f'{stem}_{leg}']=tables[key][phi_idx]
+    for b in ('base_rot_x','base_rot_y','base_rot_z','base_trans_x','base_trans_y','base_trans_z'):
+        start_values[b]=0.0  # probe the gait pose relative to the origin
+    asm0=Assembly(model,values=start_values,gravity=[0.,-9.80665,0.])
+    heights=[float(asm0.point(p['body'],p['point_m'])[0][1]) for p in contract['contact_points']]
+    base_y=-min(heights)+contract['seating_scan']['reset_gap_target_m']
+    speed=derived['timing_paper']['simulated_before']['speed_m_s']
+    defaults['start_at_tables']=True
+    defaults['base_speed_x_m_s']=float(speed)
+    defaults['base_trans_y_m']=base_y
+    bundle={'schema':'chimera.earth_scene.v1','graph_hash':graph.graph_hash(),
+            'scene':{'arm_translation_m':[0.,0.,0.],'world_id':'gait_walker_plane','ground_id':'gait_plane'},
+            'gait_controller':{'gait_enabled':True,'recipe':{
+                'schema':'chimera.gait_scene.v1',
+                'coordinates':contract['coordinates'],
+                'drives':contract['drives'],
+                'cycle_duration_s':contract['cycle_duration_s'],
+                'duty_factor_sampled':contract['duty_factor_sampled'],
+                'servo_frequency_Hz':contract['servo_frequency_Hz'],
+                'servo_damping_ratio':contract['servo_damping_ratio'],
+                'capture_step_phase':contract['capture_step_phase'],
+                'tables_rad':contract['tables_rad'],
+                'contact_points':contract['contact_points'],
+                'contact_plane_height_m':contract['contact_plane_height_m'],
+                'contact_friction':contract['contact_friction'],
+                'tick_hz':contract['tick_hz'],'substeps':contract['substeps'],
+                'defaults':defaults},
+                'model':model,'seating_scan_measured':measured,
+                'record_id':RECORD,'scope':'Gait walker: the derivation stages D-F runtime. Headless native scene for the F-G1..F-G8 falsifier suite; the live renderer path stays the qualified arm world (untouched).'},
+            'sources':[{'title':'docs/research/20260918_gait_controller_derivation.md','url':'in-tree'}]}
+    bundle['scene_sha256']=digest(bundle)
+    out=Path(output);out.mkdir(parents=True,exist_ok=True)
+    (out/'scene.json').write_bytes(canonical(bundle))
+    return bundle
+
+
+def main():
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--output',type=Path,default=ROOT/'.tmp/gait-walker')
+    a=p.parse_args()
+    graph=CreatureGraph.load(str(ROOT/'tools/creature_graph/data/creature_graph.json'))
+    require(RECORD in graph.objects,'gait_model_record_missing',RECORD)
+    b=compile_gait(graph,a.output)
+    print(json.dumps({'scene':str(a.output/'scene.json'),'scene_sha256':b['scene_sha256'],
+                      'seating_scan':b['gait_controller']['seating_scan_measured']}))
+if __name__=='__main__':main()

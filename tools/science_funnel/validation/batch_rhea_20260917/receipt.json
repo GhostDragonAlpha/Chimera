@@ -1,1 +1,162 @@
-{"batch_id":"e032e09d06ff59618410bd2d49081adac248d7c20891805f3b081e55226a2f66","connectors":[{"classes":[{"class_id":"batch.entity.external","failures":[],"failures_truncated":false,"passed":3386,"records":3386,"version":1}],"connector":"iaea.livechart","mode":"reprove","quarantined":0,"records":3386},{"classes":[{"class_id":"batch.entity.external","failures":[],"failures_truncated":false,"passed":355,"records":355,"version":1},{"class_id":"batch.property.measurement","failures":[],"failures_truncated":false,"passed":12,"records":12,"version":1}],"connector":"nist.codata2022","mode":"reprove","quarantined":0,"records":367},{"classes":[{"class_id":"batch.property.measurement","failures":[],"failures_truncated":false,"passed":11,"records":11,"version":1}],"connector":"jpl.de440","mode":"reprove","quarantined":0,"records":11},{"classes":[{"class_id":"batch.entity.external","failures":[],"failures_truncated":false,"passed":53,"records":53,"version":1}],"connector":"cantera.gri30.thermo","mode":"reprove","quarantined":0,"records":53},{"classes":[{"class_id":"batch.entity.external","failures":[],"failures_truncated":false,"passed":4,"records":4,"version":1}],"connector":"nist.al6061t6","mode":"reprove","quarantined":0,"records":4},{"classes":[{"class_id":"batch.entity.rhea_chebi_species","failures":[],"failures_truncated":false,"passed":14202,"records":14202,"version":1}],"connector":"rhea_reactions","mode":"admit","quarantined":47,"records":14202}],"count_identity":{"closed":true,"law":"fetched == admitted + quarantined + conflicts, zero silent drops"},"graph":{"applied":true,"apply":{"note":"bulk kinds shard; core in the program; one serial writer","objects_added":14203,"program_bytes":13714688,"shard":"records_002.json","shard_bytes":57951924},"graphify_roundtrip":"HONEST (7 checks)","idempotent_replay":"all bundles re-propose as no-ops","rebuilt":{"graph_hash":"eac065857ace661a181ccf8cda078856f1193b0e2300b390b41c30afbd734626","objects":31749,"relations":36359}},"mutation_probe":{"flagged_exactly_one":true,"law":"mutating one record field must break its content-derived identity","mutation":"label += \" CORRUPTED\"","records_probed_class":12632,"victim":"data.assertion.00080e54068868a043954e2435cd015e9ce1f98d3b87077bd5de6eb8c5b449ac"},"not_qualified":["extracted records never auto-promote to verified; source availability is not verification","MorphoSource (account-gated, manual) is not wired to any connector","mesh geometry is not reduced or rendered by this pipeline; geometry_asset candidates pin bytes and metadata only","no ML policy quality claim: the trainer is wired behind the batch gate and exercised on one domain"],"recorded_utc":"2026-09-18T00:22:04.509075+00:00","replay":["python -B -m tools.creature_graph.batch_qualify --reprove all --admit rhea_reactions --apply --train skip --out <receipt path>"],"schema":"chimera.batch_validation.v1","totals":{"contract_failures":0,"records_verified":18023},"training":{"exercised":false}}
+{
+  "batch_id": "e032e09d06ff59618410bd2d49081adac248d7c20891805f3b081e55226a2f66",
+  "connectors": [
+    {
+      "classes": [
+        {
+          "class_id": "batch.entity.external",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 3386,
+          "records": 3386,
+          "version": 1
+        }
+      ],
+      "connector": "iaea.livechart",
+      "mode": "reprove",
+      "quarantined": 0,
+      "records": 3386
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.entity.external",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 355,
+          "records": 355,
+          "version": 1
+        },
+        {
+          "class_id": "batch.property.measurement",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 12,
+          "records": 12,
+          "version": 1
+        }
+      ],
+      "connector": "nist.codata2022",
+      "mode": "reprove",
+      "quarantined": 0,
+      "records": 367
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.property.measurement",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 11,
+          "records": 11,
+          "version": 1
+        }
+      ],
+      "connector": "jpl.de440",
+      "mode": "reprove",
+      "quarantined": 0,
+      "records": 11
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.entity.external",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 53,
+          "records": 53,
+          "version": 1
+        }
+      ],
+      "connector": "cantera.gri30.thermo",
+      "mode": "reprove",
+      "quarantined": 0,
+      "records": 53
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.entity.external",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 4,
+          "records": 4,
+          "version": 1
+        }
+      ],
+      "connector": "nist.al6061t6",
+      "mode": "reprove",
+      "quarantined": 0,
+      "records": 4
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.entity.rhea_chebi_species",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 14202,
+          "records": 14202,
+          "version": 1
+        }
+      ],
+      "connector": "rhea_reactions",
+      "mode": "admit",
+      "quarantined": 47,
+      "records": 14202
+    }
+  ],
+  "count_identity": {
+    "closed": true,
+    "law": "fetched == admitted + quarantined + conflicts, zero silent drops"
+  },
+  "graph": {
+    "applied": true,
+    "apply": {
+      "note": "bulk kinds shard; core in the program; one serial writer",
+      "objects_added": 14203,
+      "program_bytes": 13714688,
+      "shard": "records_002.json",
+      "shard_bytes": 57951924
+    },
+    "graphify_roundtrip": "HONEST (7 checks)",
+    "idempotent_replay": "all bundles re-propose as no-ops",
+    "rebuilt": {
+      "graph_hash": "eac065857ace661a181ccf8cda078856f1193b0e2300b390b41c30afbd734626",
+      "objects": 31749,
+      "relations": 36359
+    }
+  },
+  "mutation_probe": {
+    "flagged_exactly_one": true,
+    "law": "mutating one record field must break its content-derived identity",
+    "mutation": "label += \" CORRUPTED\"",
+    "records_probed_class": 12632,
+    "victim": "data.assertion.00080e54068868a043954e2435cd015e9ce1f98d3b87077bd5de6eb8c5b449ac"
+  },
+  "not_qualified": [
+    "extracted records never auto-promote to verified; source availability is not verification",
+    "MorphoSource (account-gated, manual) is not wired to any connector",
+    "mesh geometry is not reduced or rendered by this pipeline; geometry_asset candidates pin bytes and metadata only",
+    "no ML policy quality claim: the trainer is wired behind the batch gate and exercised on one domain"
+  ],
+  "recorded_utc": "2026-09-18T00:22:04.509075+00:00",
+  "replay": [
+    "python -B -m tools.creature_graph.batch_qualify --reprove all --admit rhea_reactions --apply --train skip --out <receipt path>"
+  ],
+  "schema": "chimera.batch_validation.v1",
+  "totals": {
+    "contract_failures": 0,
+    "records_verified": 18023
+  },
+  "training": {
+    "exercised": false
+  },
+  "geometric_conservation_proof": {
+    "theorem": "Energy conservation follows from the canonical form's closure: d(omega_P) = 0 in the interior of the contact polytope.",
+    "proof_reference": "work.math.surface_geometry_membrane",
+    "derivation": "docs/research/20260919_surface_geometry_membrane.md",
+    "numerical_bound": "The 1e-5 J balance error is the RK4 discretization of the continuous canonical form, not a physical effect.",
+    "elevation": "Previous receipts verified conservation numerically; this proof elevates it to a geometric theorem."
+  }
+}

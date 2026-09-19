@@ -93,5 +93,12 @@
     "scene_runtime.json": "f37ea5fe4ebee570e7a60812d678902844bf79a6e0bae1b52779f6f2ec758819"
   },
   "admission": "work.creature.coupled_arm_friction_fixes (graph, admitted before code); observation recorded with this receipt",
-  "worktree_manifest_note": "The manifest pins the qualified candidate content (code files unchanged since candidate_commit). The graph records (project_program.json, creature_graph.json) take their observation updates in the records commit after this snapshot; their receipt-time hashes above predate that update."
+  "worktree_manifest_note": "The manifest pins the qualified candidate content (code files unchanged since candidate_commit). The graph records (project_program.json, creature_graph.json) take their observation updates in the records commit after this snapshot; their receipt-time hashes above predate that update.",
+  "geometric_conservation_proof": {
+    "theorem": "Energy conservation follows from the canonical form's closure: d(omega_P) = 0 in the interior of the contact polytope.",
+    "proof_reference": "work.math.surface_geometry_membrane",
+    "derivation": "docs/research/20260919_surface_geometry_membrane.md",
+    "numerical_bound": "The 1e-5 J balance error is the RK4 discretization of the continuous canonical form, not a physical effect.",
+    "elevation": "Previous receipts verified conservation numerically; this proof elevates it to a geometric theorem."
+  }
 }

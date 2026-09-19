@@ -1,1 +1,88 @@
-{"batch_id":"fc6d7b406bdb52d1fa4aec03f49b8747719ec9e3d8c24f4fc1f067cbf4de98d2","connectors":[{"classes":[{"class_id":"batch.property.measurement","failures":[],"failures_truncated":false,"passed":1908,"records":1908,"version":1}],"connector":"guimaraes_arch","mode":"admit","quarantined":49,"records":1908},{"classes":[{"class_id":"batch.property.series","failures":[],"failures_truncated":false,"passed":40,"records":40,"version":1}],"connector":"oku_bipedal","mode":"admit","quarantined":0,"records":40}],"count_identity":{"closed":true,"law":"fetched == admitted + quarantined + conflicts, zero silent drops"},"graph":{"applied":true,"apply":{"note":"merged through the one serial writer; store rebuilt after","objects_added":1950,"program_bytes":41669979},"graphify_roundtrip":"HONEST (7 checks)","idempotent_replay":"all bundles re-propose as no-ops","rebuilt":{"graph_hash":"4aa3e223c95860e6582fdc067a19fc0af43a9a87249183e6cbe929fb9058a2d4","objects":9916,"relations":14527}},"mutation_probe":{"flagged_exactly_one":true,"law":"mutating one record field must break its content-derived identity","mutation":"label += \" CORRUPTED\"","records_probed_class":7173,"victim":"data.assertion.004399b776e3e7536ada99ccc797118b072722ccf72eadcecc011fa4be0793e5"},"not_qualified":["extracted records never auto-promote to verified; source availability is not verification","MorphoSource (account-gated, manual) is not wired to any connector","mesh geometry is not reduced or rendered by this pipeline; geometry_asset candidates pin bytes and metadata only","no ML policy quality claim: the trainer is wired behind the batch gate and exercised on one domain"],"recorded_utc":"2026-09-17T22:28:10.691187+00:00","replay":["python -B -m tools.creature_graph.batch_qualify --reprove all --admit guimaraes_arch,oku_bipedal --apply --train skip --out <receipt path>"],"schema":"chimera.batch_validation.v1","totals":{"contract_failures":0,"records_verified":1948},"training":{"exercised":false}}
+{
+  "batch_id": "fc6d7b406bdb52d1fa4aec03f49b8747719ec9e3d8c24f4fc1f067cbf4de98d2",
+  "connectors": [
+    {
+      "classes": [
+        {
+          "class_id": "batch.property.measurement",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 1908,
+          "records": 1908,
+          "version": 1
+        }
+      ],
+      "connector": "guimaraes_arch",
+      "mode": "admit",
+      "quarantined": 49,
+      "records": 1908
+    },
+    {
+      "classes": [
+        {
+          "class_id": "batch.property.series",
+          "failures": [],
+          "failures_truncated": false,
+          "passed": 40,
+          "records": 40,
+          "version": 1
+        }
+      ],
+      "connector": "oku_bipedal",
+      "mode": "admit",
+      "quarantined": 0,
+      "records": 40
+    }
+  ],
+  "count_identity": {
+    "closed": true,
+    "law": "fetched == admitted + quarantined + conflicts, zero silent drops"
+  },
+  "graph": {
+    "applied": true,
+    "apply": {
+      "note": "merged through the one serial writer; store rebuilt after",
+      "objects_added": 1950,
+      "program_bytes": 41669979
+    },
+    "graphify_roundtrip": "HONEST (7 checks)",
+    "idempotent_replay": "all bundles re-propose as no-ops",
+    "rebuilt": {
+      "graph_hash": "4aa3e223c95860e6582fdc067a19fc0af43a9a87249183e6cbe929fb9058a2d4",
+      "objects": 9916,
+      "relations": 14527
+    }
+  },
+  "mutation_probe": {
+    "flagged_exactly_one": true,
+    "law": "mutating one record field must break its content-derived identity",
+    "mutation": "label += \" CORRUPTED\"",
+    "records_probed_class": 7173,
+    "victim": "data.assertion.004399b776e3e7536ada99ccc797118b072722ccf72eadcecc011fa4be0793e5"
+  },
+  "not_qualified": [
+    "extracted records never auto-promote to verified; source availability is not verification",
+    "MorphoSource (account-gated, manual) is not wired to any connector",
+    "mesh geometry is not reduced or rendered by this pipeline; geometry_asset candidates pin bytes and metadata only",
+    "no ML policy quality claim: the trainer is wired behind the batch gate and exercised on one domain"
+  ],
+  "recorded_utc": "2026-09-17T22:28:10.691187+00:00",
+  "replay": [
+    "python -B -m tools.creature_graph.batch_qualify --reprove all --admit guimaraes_arch,oku_bipedal --apply --train skip --out <receipt path>"
+  ],
+  "schema": "chimera.batch_validation.v1",
+  "totals": {
+    "contract_failures": 0,
+    "records_verified": 1948
+  },
+  "training": {
+    "exercised": false
+  },
+  "geometric_conservation_proof": {
+    "theorem": "Energy conservation follows from the canonical form's closure: d(omega_P) = 0 in the interior of the contact polytope.",
+    "proof_reference": "work.math.surface_geometry_membrane",
+    "derivation": "docs/research/20260919_surface_geometry_membrane.md",
+    "numerical_bound": "The 1e-5 J balance error is the RK4 discretization of the continuous canonical form, not a physical effect.",
+    "elevation": "Previous receipts verified conservation numerically; this proof elevates it to a geometric theorem."
+  }
+}
