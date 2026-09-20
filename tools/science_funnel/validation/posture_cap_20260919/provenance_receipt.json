@@ -1,0 +1,569 @@
+{
+ "lane": "agent/posture-cap-provenance",
+ "date": "2026-09-20",
+ "question": "Does the admitted data support the wave-10 posture cap's provenance (trunk drive shares the hip cap via iliopsoas/gluteus medius), and can that musculature produce the Task-1 price tag?",
+ "provenance_chain": [
+  {
+   "step": 1,
+   "artifact": "tools/science_funnel/data/guimaraes_arch/AJPA-190-e70329-s001.xlsx",
+   "what": "Guimaraes, Vereecke & Wiseman 2026, Am J Phys Anthropol S1: hindlimb muscle architecture for Macaca mulatta (specimen 127, KU Leuven); per-muscle PCSA, fascicle length, pennation",
+   "pin": "sha256 08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678 (member-stable per download_receipt.json)",
+   "license": "CC BY 4.0"
+  },
+  {
+   "step": 2,
+   "artifact": "tools/science_funnel/validation/batch_muscle_20260917/receipt.json",
+   "what": "batch admission: guimaraes_arch connector admitted 1908 measurement records, 49 quarantined, count identity closed (schema chimera.batch_validation.v1)"
+  },
+  {
+   "step": 3,
+   "artifact": "tools/science_funnel/validation/muscle_paths_20260918/muscle_path_geometry.json",
+   "what": "derived moment arms (straight-line paths, Oku segment lengths) + per-muscle max_force_N = PCSA x derived specific tension x cos(pennation); Rule-0 admitted as model.creature.muscle_path_geometry; knee-extension and mtp-flexion directions FALSIFIED (no patella / no mtp pulley) and excluded from force claims",
+   "derived_specific_tension": {
+    "Pa": 1280914.1381700735,
+    "N_per_cm2": 128.09141381700735,
+    "method": "least squares through origin, 8 matched groups, implied range 0.312-5.277 MPa"
+   }
+  },
+  {
+   "step": 4,
+   "artifact": "tools/science_funnel/validation/gait_zero_20260919/derive_trunk_pitch.py",
+   "what": "the audited constant: CAP_POST = 1.25 * 8.9746 with the comment 'the posture drive shares the hip cap (the lane's contract)' - the provenance under audit"
+  }
+ ],
+ "price_tag": {
+  "min_admissible_cap_Nm": null,
+  "sweep_status": "falsified",
+  "wave10_cap_Nm": 11.2125,
+  "window_Nm": [
+   11.2125,
+   22.425
+  ],
+  "falsified_membrane": true,
+  "best_combined_ratio_in_window": 1.3203511848625433,
+  "note": "the sweep's own floor is 1x the wave-10 cap; any admissible C* >= 11.2125 N.m. The pre-registered membrane predicted an admissible C* inside the window; the measurement falsified it: at 22.425 N.m (2x) the best reachable trajectory still holds combined ratio 1.001086 > 1.0. The minimum admissible cap, if it exists at all, therefore lies ABOVE the window.",
+  "probe_beyond_window": {
+   "33.6375": {
+    "cap_Nm": 33.6375,
+    "success": true,
+    "message": "Optimization terminated successfully",
+    "objective": 0.7682730734576461,
+    "max_required_posture_Nm": 32.22537558524276,
+    "max_combined_ratio": 0.977327212228678,
+    "worst_node": {
+     "phi": 0.4,
+     "posture_ratio": 0.635965472843152,
+     "stance_ratio": 0.977327212228678,
+     "leg_ratios": [
+      0.07233968570128074,
+      0.48249117723563506,
+      0.977327212228678,
+      0.005201863914897502
+     ]
+    },
+    "admissible": true,
+    "theta_reachable_deg": [
+     -14.2076,
+     -9.2028,
+     -1.0676,
+     8.3147,
+     15.2233,
+     19.2042,
+     18.0682,
+     14.0918,
+     10.6483,
+     9.2236,
+     11.4029,
+     16.8341,
+     24.7008,
+     31.013,
+     31.608,
+     26.0366,
+     14.4921,
+     1.73,
+     -8.2375,
+     -13.6639,
+     -15.6289
+    ]
+   },
+   "50.4563": {
+    "cap_Nm": 50.456250000000004,
+    "success": true,
+    "message": "Optimization terminated successfully",
+    "objective": 0.7549340833243933,
+    "max_required_posture_Nm": 48.018045375261266,
+    "max_combined_ratio": 0.9773184573059692,
+    "worst_node": {
+     "phi": 0.4,
+     "posture_ratio": 0.28039759293366656,
+     "stance_ratio": 0.9773184573059692,
+     "leg_ratios": [
+      0.062140634797226584,
+      0.4909665619742876,
+      0.9773184573059692,
+      0.005204862844849469
+     ]
+    },
+    "admissible": true,
+    "theta_reachable_deg": [
+     -15.5957,
+     -10.3094,
+     -0.3745,
+     8.3148,
+     15.2229,
+     19.9765,
+     18.0681,
+     14.4232,
+     10.4195,
+     7.4764,
+     10.4255,
+     16.8342,
+     24.5874,
+     30.7885,
+     31.6084,
+     24.5212,
+     10.9141,
+     1.4208,
+     -5.3681,
+     -13.255,
+     -16.4994
+    ]
+   }
+  }
+ },
+ "muscle_table": {
+  "named_trunk_control_pool": {
+   "ILI": {
+    "guimaraes_group": "IL (iliopsoas member)",
+    "functional_group": [
+     "hip_flexors"
+    ],
+    "pcsa_cm2": 2.60885,
+    "cos_pennation": 0.932324,
+    "fascicle_length_m": 0.052,
+    "Fmax_derived_1.281MPa_N": 311.56,
+    "Fmax_cons_0.3MPa_N": 72.97,
+    "hip_arm_walking_mm": 12.594,
+    "hip_arm_neutral_mm": 12.886,
+    "tau_walking_derived_Nm": 3.9236,
+    "tau_walking_cons_Nm": 0.9189
+   },
+   "GMed": {
+    "guimaraes_group": "GMED",
+    "functional_group": [
+     "hip_abductors"
+    ],
+    "pcsa_cm2": 8.56724,
+    "cos_pennation": 0.863396,
+    "fascicle_length_m": 0.0689,
+    "Fmax_derived_1.281MPa_N": 947.48,
+    "Fmax_cons_0.3MPa_N": 221.91,
+    "hip_arm_walking_mm": 6.985,
+    "hip_arm_neutral_mm": 7.2,
+    "tau_walking_derived_Nm": 6.6182,
+    "tau_walking_cons_Nm": 1.55
+   },
+   "GMin": {
+    "guimaraes_group": "GMED-minor (abductor, not named by the lane)",
+    "functional_group": [
+     "hip_abductors"
+    ],
+    "pcsa_cm2": 1.60718,
+    "cos_pennation": 0.979925,
+    "fascicle_length_m": 0.0415,
+    "Fmax_derived_1.281MPa_N": 201.73,
+    "Fmax_cons_0.3MPa_N": 47.25,
+    "hip_arm_walking_mm": 5.294,
+    "hip_arm_neutral_mm": 5.569,
+    "tau_walking_derived_Nm": 1.0679,
+    "tau_walking_cons_Nm": 0.2501
+   }
+  },
+  "hip_spanning": {
+   "AL": {
+    "guimaraes_group": "hip_adductors",
+    "functional_group": [
+     "hip_adductors"
+    ],
+    "pcsa_cm2": 4.46229,
+    "cos_pennation": 0.870356,
+    "fascicle_length_m": 0.0726,
+    "Fmax_derived_1.281MPa_N": 497.48,
+    "Fmax_cons_0.3MPa_N": 116.51,
+    "hip_arm_walking_mm": -4.413,
+    "hip_arm_neutral_mm": -4.009,
+    "tau_walking_derived_Nm": -2.1953,
+    "tau_walking_cons_Nm": -0.5142
+   },
+   "AM": {
+    "guimaraes_group": "hip_adductors",
+    "functional_group": [
+     "hip_adductors"
+    ],
+    "pcsa_cm2": 2.74347,
+    "cos_pennation": 1.0,
+    "fascicle_length_m": 0.1164,
+    "Fmax_derived_1.281MPa_N": 351.41,
+    "Fmax_cons_0.3MPa_N": 82.3,
+    "hip_arm_walking_mm": -8.677,
+    "hip_arm_neutral_mm": -8.15,
+    "tau_walking_derived_Nm": -3.0491,
+    "tau_walking_cons_Nm": -0.7141
+   },
+   "BFL": {
+    "guimaraes_group": "hip_extensors",
+    "functional_group": [
+     "hip_extensors",
+     "knee_flexors"
+    ],
+    "pcsa_cm2": 10.07659,
+    "cos_pennation": 0.897258,
+    "fascicle_length_m": 0.0712,
+    "Fmax_derived_1.281MPa_N": 1158.11,
+    "Fmax_cons_0.3MPa_N": 271.24,
+    "hip_arm_walking_mm": -56.705,
+    "hip_arm_neutral_mm": -55.888,
+    "tau_walking_derived_Nm": -65.6705,
+    "tau_walking_cons_Nm": -15.3805
+   },
+   "GMax": {
+    "guimaraes_group": "hip_extensors",
+    "functional_group": [
+     "hip_extensors"
+    ],
+    "pcsa_cm2": 4.19802,
+    "cos_pennation": 0.987688,
+    "fascicle_length_m": 0.05908,
+    "Fmax_derived_1.281MPa_N": 531.11,
+    "Fmax_cons_0.3MPa_N": 124.39,
+    "hip_arm_walking_mm": -35.304,
+    "hip_arm_neutral_mm": -34.709,
+    "tau_walking_derived_Nm": -18.7504,
+    "tau_walking_cons_Nm": -4.3915
+   },
+   "GRA": {
+    "guimaraes_group": "hip_adductors",
+    "functional_group": [
+     "hip_adductors",
+     "knee_flexors"
+    ],
+    "pcsa_cm2": 1.66868,
+    "cos_pennation": 1.0,
+    "fascicle_length_m": 0.1622,
+    "Fmax_derived_1.281MPa_N": 213.74,
+    "Fmax_cons_0.3MPa_N": 50.06,
+    "hip_arm_walking_mm": -41.228,
+    "hip_arm_neutral_mm": -39.704,
+    "tau_walking_derived_Nm": -8.8123,
+    "tau_walking_cons_Nm": -2.0639
+   },
+   "GemInf": {
+    "guimaraes_group": "hip_rotators",
+    "functional_group": [
+     "hip_rotators"
+    ],
+    "pcsa_cm2": 0.144,
+    "cos_pennation": 0.966823,
+    "fascicle_length_m": 0.0197,
+    "Fmax_derived_1.281MPa_N": 17.83,
+    "Fmax_cons_0.3MPa_N": 4.18,
+    "hip_arm_walking_mm": -5.152,
+    "hip_arm_neutral_mm": -5.231,
+    "tau_walking_derived_Nm": -0.0919,
+    "tau_walking_cons_Nm": -0.0215
+   },
+   "GemSup": {
+    "guimaraes_group": "hip_rotators",
+    "functional_group": [
+     "hip_rotators"
+    ],
+    "pcsa_cm2": 0.445,
+    "cos_pennation": 1.0,
+    "fascicle_length_m": 0.0265,
+    "Fmax_derived_1.281MPa_N": 57.0,
+    "Fmax_cons_0.3MPa_N": 13.35,
+    "hip_arm_walking_mm": -5.763,
+    "hip_arm_neutral_mm": -5.793,
+    "tau_walking_derived_Nm": -0.3285,
+    "tau_walking_cons_Nm": -0.0769
+   },
+   "ObtExt": {
+    "guimaraes_group": "hip_rotators",
+    "functional_group": [
+     "hip_rotators"
+    ],
+    "pcsa_cm2": 1.84906,
+    "cos_pennation": 0.989272,
+    "fascicle_length_m": 0.0425,
+    "Fmax_derived_1.281MPa_N": 234.31,
+    "Fmax_cons_0.3MPa_N": 54.88,
+    "hip_arm_walking_mm": -5.109,
+    "hip_arm_neutral_mm": -5.19,
+    "tau_walking_derived_Nm": -1.1971,
+    "tau_walking_cons_Nm": -0.2804
+   },
+   "PECT": {
+    "guimaraes_group": "hip_adductors",
+    "functional_group": [
+     "hip_adductors"
+    ],
+    "pcsa_cm2": 0.992,
+    "cos_pennation": 0.975149,
+    "fascicle_length_m": 0.0523,
+    "Fmax_derived_1.281MPa_N": 123.91,
+    "Fmax_cons_0.3MPa_N": 29.02,
+    "hip_arm_walking_mm": -1.706,
+    "hip_arm_neutral_mm": -1.392,
+    "tau_walking_derived_Nm": -0.2114,
+    "tau_walking_cons_Nm": -0.0495
+   },
+   "PIRI": {
+    "guimaraes_group": "hip_abductors",
+    "functional_group": [
+     "hip_abductors",
+     "hip_rotators"
+    ],
+    "pcsa_cm2": 1.39504,
+    "cos_pennation": 0.984808,
+    "fascicle_length_m": 0.0447,
+    "Fmax_derived_1.281MPa_N": 175.98,
+    "Fmax_cons_0.3MPa_N": 41.22,
+    "hip_arm_walking_mm": -7.668,
+    "hip_arm_neutral_mm": -7.819,
+    "tau_walking_derived_Nm": -1.3495,
+    "tau_walking_cons_Nm": -0.3161
+   },
+   "SM": {
+    "guimaraes_group": "hip_extensors",
+    "functional_group": [
+     "hip_extensors"
+    ],
+    "pcsa_cm2": 2.10197,
+    "cos_pennation": 0.976672,
+    "fascicle_length_m": 0.1175,
+    "Fmax_derived_1.281MPa_N": 262.96,
+    "Fmax_cons_0.3MPa_N": 61.59,
+    "hip_arm_walking_mm": -59.558,
+    "hip_arm_neutral_mm": -58.099,
+    "tau_walking_derived_Nm": -15.6616,
+    "tau_walking_cons_Nm": -3.6681
+   },
+   "ST": {
+    "guimaraes_group": "hip_extensors",
+    "functional_group": [
+     "hip_extensors"
+    ],
+    "pcsa_cm2": 1.78891,
+    "cos_pennation": 0.931056,
+    "fascicle_length_m": 0.0906,
+    "Fmax_derived_1.281MPa_N": 213.35,
+    "Fmax_cons_0.3MPa_N": 49.97,
+    "hip_arm_walking_mm": -62.88,
+    "hip_arm_neutral_mm": -61.168,
+    "tau_walking_derived_Nm": -13.4151,
+    "tau_walking_cons_Nm": -3.1419
+   }
+  },
+  "no_hip_arm_recorded": {
+   "EDL": {
+    "functional_group": [
+     "ankle_dorsiflexors"
+    ],
+    "pcsa_cm2": 0.383,
+    "Fmax_derived_1.281MPa_N": 48.59
+   },
+   "EHL": {
+    "functional_group": [
+     "ankle_dorsiflexors"
+    ],
+    "pcsa_cm2": 0.819,
+    "Fmax_derived_1.281MPa_N": 102.98
+   },
+   "FDL": {
+    "functional_group": [
+     "mtp_flexors"
+    ],
+    "pcsa_cm2": 4.60213,
+    "Fmax_derived_1.281MPa_N": 548.85
+   },
+   "FHL": {
+    "functional_group": [
+     "mtp_flexors"
+    ],
+    "pcsa_cm2": 1.00614,
+    "Fmax_derived_1.281MPa_N": 128.07
+   },
+   "LG": {
+    "functional_group": [
+     "ankle_plantarflexors"
+    ],
+    "pcsa_cm2": 2.41479,
+    "Fmax_derived_1.281MPa_N": 302.89
+   },
+   "MG": {
+    "functional_group": [
+     "ankle_plantarflexors"
+    ],
+    "pcsa_cm2": 2.00318,
+    "Fmax_derived_1.281MPa_N": 255.18
+   },
+   "PB": {
+    "functional_group": [
+     "ankle_plantarflexors"
+    ],
+    "pcsa_cm2": 1.90549,
+    "Fmax_derived_1.281MPa_N": 244.08
+   },
+   "PL": {
+    "functional_group": [
+     "ankle_plantarflexors"
+    ],
+    "pcsa_cm2": 4.88614,
+    "Fmax_derived_1.281MPa_N": 625.87
+   },
+   "PLANT": {
+    "functional_group": [
+     "knee_flexors"
+    ],
+    "pcsa_cm2": 1.21995,
+    "Fmax_derived_1.281MPa_N": 154.03
+   },
+   "POP": {
+    "functional_group": [
+     "knee_flexors"
+    ],
+    "pcsa_cm2": 1.36096,
+    "Fmax_derived_1.281MPa_N": 169.3
+   },
+   "SOL": {
+    "functional_group": [
+     "ankle_plantarflexors"
+    ],
+    "pcsa_cm2": 1.24136,
+    "Fmax_derived_1.281MPa_N": 157.34
+   },
+   "TA": {
+    "functional_group": [
+     "ankle_dorsiflexors"
+    ],
+    "pcsa_cm2": 0.733,
+    "Fmax_derived_1.281MPa_N": 92.17
+   },
+   "VI": {
+    "functional_group": [
+     "knee_extensors"
+    ],
+    "pcsa_cm2": 1.7179,
+    "Fmax_derived_1.281MPa_N": 214.58
+   },
+   "VL": {
+    "functional_group": [
+     "knee_extensors"
+    ],
+    "pcsa_cm2": 6.21306,
+    "Fmax_derived_1.281MPa_N": 737.89
+   },
+   "VM": {
+    "functional_group": [
+     "knee_extensors"
+    ],
+    "pcsa_cm2": 4.49501,
+    "Fmax_derived_1.281MPa_N": 496.1
+   }
+  }
+ },
+ "pool_totals": {
+  "named_pool_ili_gmed": {
+   "tau_walking_derived_Nm": 10.5418,
+   "tau_walking_cons_0.3MPa_Nm": 2.4689
+  },
+  "sensitivity_extension_side_pool_hamstrings_glutes_adductors": {
+   "tau_walking_derived_Nm": 130.7327,
+   "tau_walking_cons_0.3MPa_Nm": 30.6186,
+   "caveat": "NOT the lane's named trunk pool; these are the stance hip drive's own extensors (sum budget loads them concurrently) and GMax/BFL/ST/SM hold the stance hip in swing+stance"
+  },
+  "sensitivity_flex_side_pool_total_derived_Nm": 11.6097,
+  "raw_xlsx_crosscheck_pcsa_matches_deliverable": true
+ },
+ "audit_answers": {
+  "a_sum_budget_or_independent": {
+   "verdict": "SUM BUDGET is the admitted architecture's constraint; the model's independent caps double-count one pool",
+   "numbers": {
+    "wave10_model_grants": "posture drive an INDEPENDENT cap = hip cap (11.2183 = 1.25 x 8.9746 N.m) on top of the hip drive's own 11.2183 N.m",
+    "admitted_pool_ILI_GMed_derived_Nm": 10.5418,
+    "admitted_pool_ILI_GMed_cons_Nm": 2.4689,
+    "wave10_worst_node_concurrent_demand_Nm": 13.7483,
+    "worst_node": {
+     "phi": 0.75,
+     "posture_Nm": 10.091249999999938,
+     "hip_Nm_ratio": 0.32599003301160295
+    },
+    "overdraw_vs_pool_derived_pct": 30.4
+   },
+   "reasoning": "ILI crosses the hip (spine/iliac fossa -> lesser trochanter) and GMed spans pelvis->femur: their trunk moment about the pelvis origin IS the reaction of their hip torque, same force, same arm. One contractile pool serves both demands when hip and posture fire concurrently, so tau_posture + tau_hip <= pool is the data's constraint. The lane's contract line grants EACH drive the full hip cap instead - no admitted record supports two pools."
+  },
+  "b_supports_price_tag": {
+   "verdict": "NO. PCSA x 0.3 MPa x moment arm gives the named trunk pool 2.47 N.m; even the repo's own derived 1.281 MPa gives 10.54 N.m - both below the wave-10 cap (11.2125) and below the measured floor of any admissible cap (> 22.425 N.m, since the window closed at 2x)",
+   "numbers": {
+    "ILI": {
+     "guimaraes_group": "IL (iliopsoas member)",
+     "functional_group": [
+      "hip_flexors"
+     ],
+     "pcsa_cm2": 2.60885,
+     "cos_pennation": 0.932324,
+     "fascicle_length_m": 0.052,
+     "Fmax_derived_1.281MPa_N": 311.56,
+     "Fmax_cons_0.3MPa_N": 72.97,
+     "hip_arm_walking_mm": 12.594,
+     "hip_arm_neutral_mm": 12.886,
+     "tau_walking_derived_Nm": 3.9236,
+     "tau_walking_cons_Nm": 0.9189
+    },
+    "GMed": {
+     "guimaraes_group": "GMED",
+     "functional_group": [
+      "hip_abductors"
+     ],
+     "pcsa_cm2": 8.56724,
+     "cos_pennation": 0.863396,
+     "fascicle_length_m": 0.0689,
+     "Fmax_derived_1.281MPa_N": 947.48,
+     "Fmax_cons_0.3MPa_N": 221.91,
+     "hip_arm_walking_mm": 6.985,
+     "hip_arm_neutral_mm": 7.2,
+     "tau_walking_derived_Nm": 6.6182,
+     "tau_walking_cons_Nm": 1.55
+    },
+    "pool_0.3MPa_Nm": 2.4689,
+    "pool_derived_Nm": 10.5418,
+    "price_tag_Nm": null,
+    "price_tag_floor_used": 22.425,
+    "price_tag_note": "no admissible cap exists inside the pre-registered window; any admissible cap must exceed 22.425 N.m",
+    "shortfall_vs_price_tag_floor_0.3MPa_x": 9.08,
+    "shortfall_vs_price_tag_floor_derived_x": 2.13
+   },
+   "reasoning": "The trunk moment's moment arm is the hip arm (reaction): ILI 12.594 mm, GMed 6.985 mm at the walking pose. Measured PCSA (raw xlsx crosscheck = True) x 0.3 MPa x cos(pennation) x arm: ILI 0.919 N.m + GMed 1.550 N.m = 2.47 N.m. That is 9.1x below the price-tag floor; even at the repo's derived tension the pool (10.54 N.m) is 2.13x short, and the existing 11.2125 N.m cap itself already exceeds the pool by 1.06x (derived) / 4.5x (0.3 MPa)."
+  }
+ },
+ "falsifiers": {
+  "falsifier_1_cap_exceeds_musculature": {
+   "rule": "if the minimum admissible cap exceeds what the admitted musculature produces, the biped is CLOSED on muscle grounds",
+   "measured": {
+    "min_admissible_cap_Nm": null,
+    "price_tag_bracket_Nm": "C* in (22.4250, 33.6375] N.m",
+    "pool_derived_Nm": 10.5418,
+    "pool_cons0.3_Nm": 2.4689
+   },
+   "fired": true,
+   "reason": "the price tag C* in (22.4250, 33.6375] N.m exceeds the pool ceiling 10.54 N.m (derived tension) by >= 2.13x and the 0.3 MPa pool (2.47 N.m) by >= 9.08x"
+  },
+  "membrane_outcome": {
+   "status": "falsified",
+   "falsifier_text": "If at C = 22.425 N.m (2x the wave-10 cap) the best reachable trajectory still has combined ratio > 1.0 at any node, the infeasibility is NOT a posture-cap artifact, this membrane dies, the 11.2125 N.m cap is exonerated, and the wave-10 INFEASIBLE verdict stands as the final word on the admissible-vault path.",
+   "measured": "at C = 22.425 N.m (2x) the best reachable trajectory holds combined ratio 1.001086 > 1.0 (SLSQP converged, posture saturated at the cap, hip ratio 1.0011 at phi=0.30); the beyond-window probe then finds admissibility at 33.6375 N.m (3x) with the envelope floor converged at 0.9773 (ankle-bound, phi=0.40) - identical at 4.5x",
+   "outcome": "FALSIFIED AS PRE-REGISTERED - C* is NOT inside the claimed window; the window's premise (a reachable admissible cap at 1x-2x) is dead, and the true price tag sits at 2x-3x, unreachable by the admitted musculature a fortiori"
+  }
+ },
+ "verdict": "CLOSED on muscle grounds (falsifier 1 fired). The price tag C* in (22.4250, 33.6375] N.m: no posture cap at 1x-2x makes the combined envelope admissible (best 1.001086 at 2x, posture saturated, hip-bound at phi=0.30), and the beyond-window probe bounds the true C* above 22.4250 N.m. The admitted trunk-control pool (iliopsoas ILI + gluteus medius GMed) produces at most 10.54 N.m at the repo's own derived specific tension (1.281 MPa) and 2.47 N.m at the conservative 0.3 MPa - below even the existing 11.2125 N.m cap. No derivable cap amendment exists; the amendment path (falsifier 2: walk with the amended cap, posture saturation < 10% of loaded ticks, past tick 426) is never reached. The wave-10 cap's provenance (sharing the hip cap) is exonerated as the binding constraint - the envelope is closed by the stance side and by the musculature, not by the cap's number. The bipedal admissible-vault path is CLOSED; the quadruped lane is the architecture."
+}

@@ -1,0 +1,45 @@
+{
+  "lane": "agent/posture-cap-provenance",
+  "base": "7e0904ec (origin/buffy/gait-wave10-admissible-vault)",
+  "date": "2026-09-20",
+  "agent": "GLM 5.3 (posture-cap provenance, Tasks 1+2: derivation + data audit; no engine edits)",
+  "rule_0_part_a": {
+    "statement": "The wave-10 combined-envelope infeasibility is an artifact of the posture-drive cap: the minimum achievable combined stance+posture ratio over periodic collocated theta trajectories crosses 1.0 at a derivable cap C* inside [11.2125, 22.425] N.m, and C* is the biped's price tag.",
+    "prediction": "C* lies in (11.2125, 22.425] N.m: the 8-step sweep plus bisection finds a cap at which every collocation node's combined ratio is <= 1.0, with the binding node near phi ~ 0.75-0.85 where the knee ratio bounds the envelope.",
+    "falsifier": "If at C = 22.425 N.m (2x the wave-10 cap) the best reachable trajectory still has combined ratio > 1.0 at any node, the infeasibility is NOT a posture-cap artifact, this membrane dies, the 11.2125 N.m cap is exonerated, and the wave-10 INFEASIBLE verdict stands as the final word on the admissible-vault path."
+  },
+  "rule_0_part_b": {
+    "statement": "The admitted musculature (iliopsoas ILI + gluteus medius GMed, the lane's named trunk-control pool) either supports the price tag (amendment derivable) or it does not (biped CLOSED on muscle grounds).",
+    "prediction": "PCSA x 0.3 MPa x moment arm for ILI + GMed produces a trunk-control torque at the price-tag level, making the cap amendment derivable.",
+    "falsifier": "If the minimum admissible cap exceeds what the admitted musculature produces, the biped is CLOSED on muscle grounds - the final verdict."
+  },
+  "part_a_measurements": {
+    "method": "derive_posture_cap_sweep.py (copied+modified from gait_zero_20260919/derive_reachable_vault.py; admissibility ratio <= 1.0, cap parameterized, warm-started SLSQP, 8-step sweep + bisection ready)",
+    "sweep": [
+      "cap 11.2125 (1x): combined 1.320351 INADMISSIBLE (knee-bound, phi=0.75)",
+      "cap 12.8143: combined 1.210812 INADMISSIBLE",
+      "cap 14.4161: combined 1.219453 INADMISSIBLE",
+      "cap 16.0179: combined 1.199885 INADMISSIBLE",
+      "cap 17.6196: combined 1.140500 INADMISSIBLE",
+      "cap 19.2214: combined 1.060060 INADMISSIBLE (hip-bound, phi=0.30)",
+      "cap 20.8232: combined 1.055360 INADMISSIBLE (posture saturated at cap)",
+      "cap 22.4250 (2x): combined 1.001086 INADMISSIBLE (posture saturated at cap, hip ratio 1.0011 at phi=0.30)"
+    ],
+    "verdict": "MEMBRANE FALSIFIED exactly as pre-registered: no cap in [11.2125, 22.425] N.m admits the envelope. The binder migrated (knee at phi=0.75 under 1x -> hip at phi=0.30 under 2x, posture saturated either way). The frontier approaches 1.0 from above. Node-wise, the knee floor over ALL pitches is only 0.632 (phi=0.70), so the residual ~1.0 is structural (periodicity + pose/velocity bounds), not a single-joint wall.",
+    "supplementary_probe": "probe_beyond_window.py at 3x: ADMISSIBLE, combined 0.977327 (ankle-bound at phi=0.40, posture using 32.23 N.m); at 4.5x the envelope floor converges to the identical 0.977318 - the true frontier floor, ankle-limited. Price tag bracket: C* in (22.425, 33.6375] N.m (2x-3x the wave-10 cap). The verdict is CLOSED under this outcome: every cap in the bracket exceeds the admitted trunk pool ceiling (10.54 N.m derived / 2.47 N.m at 0.3 MPa) by >= 2.13x / 9.08x.",
+    "invariants": "graph tests green under both PYTHONPATH roots: 19 passed, 27 subtests passed (identical to the wave-10 baseline). Original gait_zero_20260919 dir untouched (git clean, byte-identical rerun)."
+  },
+  "part_b_measurements": {
+    "provenance_chain": "Guimaraes 2026 S1 xlsx (sha256 08ead4a9..., CC BY 4.0) -> batch_muscle_20260917 (1908 admitted, 49 quarantined, count identity closed) -> muscle_paths_20260918 deliverable (moment arms + forces; knee-extension and mtp-flexion directions FALSIFIED there and excluded) -> this audit. Raw-xlsx PCSA crosscheck against the deliverable: exact.",
+    "named_trunk_pool": {
+      "ILI (iliopsoas member, Guimaraes IL)": "PCSA 2.6088 cm2, cos_p 0.9323, hip arm 12.594 mm (walking pose): 311.56 N @ derived 1.281 MPa / 72.97 N @ 0.3 MPa -> 3.924 / 0.919 N.m",
+      "GMed (gluteus medius, GMED)": "PCSA 8.5672 cm2, cos_p 0.8634, hip arm 6.985 mm (walking pose): 947.48 N @ derived 1.281 MPa / 221.91 N @ 0.3 MPa -> 6.618 / 1.550 N.m",
+      "pool_total": "10.54 N.m @ derived 1.281 MPa; 2.47 N.m @ conservative 0.3 MPa"
+    },
+    "sum_budget_verdict": "SUM budget is the admitted architecture's constraint: ILI and GMed cross the hip, so their trunk moment about the pelvis origin IS the reaction of their hip torque (same force, same arm); one pool serves hip + posture concurrently. The audited lane contract line (derive_trunk_pitch.py: 'the posture drive shares the hip cap') grants EACH drive the full hip cap - no admitted record supports two pools. At the wave-10 worst node the concurrent demand is 13.75 N.m against a 10.54 N.m pool: overdrawn by 30.4% even before any cap raise.",
+    "price_tag_support": "NO. The pool ceiling (10.54 N.m derived / 2.47 N.m at 0.3 MPa) is below the EXISTING 11.2125 N.m cap (1.06x / 4.5x) and below the measured floor of any admissible cap (> 22.425 N.m: 2.13x / 9.08x). Sensitivity: the extension-side pool (hamstrings/glutes/adductors, NOT the lane's named pool and concurrently loaded by the stance hip drive under the sum budget) measures 130.7 N.m derived / 29.9 N.m at 0.3 MPa, but adopting it would be a different architecture, not a derivation from the admitted one.",
+    "falsifier_1": "FIRED. The minimum admissible cap does not exist inside the window; if any exists it exceeds 22.425 N.m, which exceeds the admitted trunk pool's ceiling by >= 2.13x (derived tension) / 9.08x (0.3 MPa)."
+  },
+  "pass": false,
+  "honest_summary": "Part A's membrane died exactly at its pre-registered falsifier: doubling the posture cap to 22.425 N.m still leaves the best reachable combined ratio at 1.001086 (> 1.0), with posture saturated and the hip the new binder at phi=0.30. The beyond-window probe then found admissibility at 3x (33.6375 N.m, combined 0.977327, ankle-bound) with the frontier floor converged at 4.5x to the identical 0.977318 - so the price tag exists but sits at C* in (22.425, 33.6375] N.m, 2x-3x the wave-10 cap. Part B then closes the door: the named trunk-control pool (ILI + GMed) can produce at most 10.54 N.m at the repo's own derived specific tension and 2.47 N.m at the conservative 0.3 MPa - below even the existing 11.2125 N.m cap, so every cap in the price-tag bracket is musculature-unproducible by >= 2.13x (derived) / 9.08x (0.3 MPa). Falsifier 1 fired: the bipedal admissible-vault path is CLOSED on muscle grounds; falsifier 2 (walk with the amended cap: posture saturation < 10% of loaded ticks, past tick 426) is never reached. The sum-budget audit adds that the wave-10 model's worst node already overdraws the shared ILI+GMed pool by 30.4% (13.75 N.m demanded concurrently vs 10.54 N.m capability). Graph tests green under both PYTHONPATH roots (19 passed, 27 subtests); no engine files touched."
+}
