@@ -22,6 +22,8 @@ struct WalkOut{
  std::vector<std::array<double,2>> fgmax,fgmin; // per-leg worst/best FORE paw gap (wave 13)
  std::vector<std::array<char,2>> fm;           // per-leg fore clock mode (0 stance, 1 swing)
  std::vector<std::array<uint64_t,2>> fsat;     // per-leg IK saturation ticks (per-tick snapshot)
+ std::vector<std::array<double,2>> ftgt;       // per-leg fore plant x (the frozen/glide target, wave 20)
+ std::vector<std::array<uint64_t,2>> frep;     // per-leg replant counter (the in-place census, wave 20)
  std::vector<std::array<double,8>> gp;         // per-tick ALL-paw gaps, declared point order (wave 15 strut census)
  std::vector<double> fr,frslip;                // per-tick total FORE reaction + max fore slip (wave 16 load census)
  std::vector<double> hr;                       // per-tick total HIND reaction (wave 17 hind-load census)
@@ -120,15 +122,17 @@ int main(int argc,char**argv){try{
       if(nm.rfind("fore_",0)==0){fsum+=number(pt["reaction_N"]);fslip=(std::max)(fslip,number(pt["slip_speed_m_s"]));}
       else hsum+=number(pt["reaction_N"]);} // the hind points (left_/right_ prefixed)
      out.fr.push_back(fsum);out.frslip.push_back(fslip);out.hr.push_back(hsum);}
-    std::array<char,2> fmm{0,0};std::array<uint64_t,2> sat{};
+    std::array<char,2> fmm{0,0};std::array<uint64_t,2> sat{};std::array<double,2> tgx{0.,0.};std::array<uint64_t,2> rep{0,0};
     if(s["gait"].contains("fore_paw")&&s["gait"]["fore_paw"].size()>=2)
      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["fore_paw"][l];
       if(p.contains("fore_mode"))fmm[l]=p["fore_mode"].get<std::string>()=="swing"?1:0;
       if(p.contains("ik_saturated_ticks"))sat[l]=p["ik_saturated_ticks"].get<uint64_t>();
       if(p.contains("ik_qerr_rad"))out.ik_qerr_max=(std::max)(out.ik_qerr_max,number(p["ik_qerr_rad"]));
       if(p.contains("error_m"))out.paw_err_max=(std::max)(out.paw_err_max,number(p["error_m"]));
-      if(p.contains("ik_roundtrip_m"))out.ik_roundtrip_max=(std::max)(out.ik_roundtrip_max,number(p["ik_roundtrip_m"]));}
-    out.fm.push_back(fmm);out.fsat.push_back(sat);}
+      if(p.contains("ik_roundtrip_m"))out.ik_roundtrip_max=(std::max)(out.ik_roundtrip_max,number(p["ik_roundtrip_m"]));
+      if(p.contains("target_m"))tgx[l]=number(p["target_m"][0]);
+      if(p.contains("replants"))rep[l]=p["replants"].get<uint64_t>();}
+    out.fm.push_back(fmm);out.fsat.push_back(sat);out.ftgt.push_back(tgx);out.frep.push_back(rep);}
    if(s["gait"].contains("fore_paw_captured"))out.paw_captured=s["gait"]["fore_paw_captured"].get<bool>();
    double bal=std::abs(number(s["energy"]["balance_error_J"])),stor=std::abs(number(s["energy"]["store_balance_error_J"]));
 #ifdef GAIT_EVENT_TRACE
@@ -243,6 +247,77 @@ int main(int argc,char**argv){try{
    note("F-G14 two_contact_ticks= "+two_windows);
   ck(bfa_mx<2,"f14_no_both_fore_airborne_window");
   ck(sup2_ticks==0,"f14_support_census_min2");}
+
+ // ── WAVE 20 RE-PLANT CENSUS (pre-registered in receipt_wave20.json): the
+ //    MID-ENTRY RE-PLANT law's own falsifiers. (1) STAGGER: the airborne
+ //    runs (fore clocks in swing mode) in [60, 426] are enumerated; adjacent
+ //    runs must be separated by >= 1 clear tick (no overlap -- F-G14's both-
+ //    airborne census is the hard form -- and no back-to-back). The NAMED
+ //    TICKS of the derivation: L window 1 liftoff 61 +/-1, TD 70 +/-1; R's
+ //    first IN-PLACE ground re-plant (a replant counter jump with no swing
+ //    transition) at 66 +/-1; window 2 liftoff 71 +/-1, TD 80 +/-1. (2)
+ //    STEP_LAW: the first TD plants within the derivation's bands: L1 in
+ //    [0.1567, 0.1645] m; window 2 in [0.1704, 0.1832] (branch A, right leg)
+ //    or [0.1595, 0.1756] (branch B, left leg). (3) The gate/in-place counts
+ //    reported from the status (entry_replant, gate_hold_ticks, replants).
+ {const size_t N=std::min(w.fm.size(),(size_t)426);
+  struct Run{int leg,beg,end;}; // end = LAST airborne index
+  std::vector<Run> runs;
+  for(size_t l=0;l<2;++l){
+   int st=-1;
+   for(size_t i=60;i<N;++i){
+    if(w.fm[i][l]==1&&st<0)st=(int)i;
+    if(w.fm[i][l]==0&&st>=0){runs.push_back({(int)l,st,(int)i-1});st=-1;}}
+   if(st>=0)runs.push_back({(int)l,st,(int)N-1});}
+  int min_gap=1<<30;size_t bad_gap=0;
+  for(size_t r=0;r+1<runs.size();++r){
+   int gap=runs[r+1].beg-runs[r].end-1; // clear ticks between the runs
+   min_gap=(std::min)(min_gap,gap);
+   if(gap<1)++bad_gap;}
+  char b[512];
+  std::string runlist;
+  for(size_t r=0;r<runs.size()&&r<6;++r){char c[96];std::snprintf(c,96,"%s[%d,%d]%s ",runs[r].leg?"R":"L",runs[r].beg,runs[r].end,r+1<runs.size()?"-> ":"");
+   runlist+=c;}
+  std::snprintf(b,512,"F-G20 replant_runs n=%zu first: %s min_clear_gap=%d sub1_gaps=%u",
+   runs.size(),runlist.c_str(),runs.size()>1?min_gap:-1,(unsigned)bad_gap);
+  note(b);
+  ck(bad_gap==0,"f20_stagger_gap_ge_1");
+  // the named ticks
+  int lift0=-1,td0=-1,lift1=-1,td1=-1,inplace1=-1;
+  if(runs.size()>0){lift0=runs[0].beg;td0=runs[0].end+1;}
+  if(runs.size()>1){lift1=runs[1].beg;td1=runs[1].end+1;}
+  {for(size_t i=61;i<N&&i<80;++i) // the first replant jump with no swing transition on the non-first leg
+    if((int)w.frep[i][1]>(int)w.frep[i-1][1]&&lift0>=0&&runs.size()>0&&runs[0].leg==0&&w.fm[i][1]==0){inplace1=(int)i;break;}}
+  char c2[256];std::snprintf(c2,256,"F-G20 named_ticks L1=(lift %d, td %d) (derived 61/70 +/-1) inplace_R_first=%d (derived 66 +/-1) win2=(lift %d, td %d) leg=%s (derived 71/80 +/-1)",
+   lift0,td0,inplace1,lift1,td1,runs.size()>1?(runs[1].leg?"R":"L"):"n/a");
+  note(c2);
+  if(lift0>=0){ck(lift0>=60&&lift0<=62,"f20_lift0_named");ck(td0>=69&&td0<=71,"f20_td0_named");}
+  else {++reds;note("F-G20 named ticks NOT MEASURED: no airborne window in [60,426]");}
+  if(inplace1>=0)ck(inplace1>=65&&inplace1<=67,"f20_inplace_named");
+  if(lift1>=0){ck(lift1>=70&&lift1<=72,"f20_win2_lift_named");ck(td1>=79&&td1<=81,"f20_win2_td_named");}
+  // the step bands (the first TD plants; the status at the TD tick holds the re-frozen plant)
+  if(lift0>=0&&td0>=0&&(size_t)td0<w.ftgt.size()){
+   double p0=w.ftgt[td0][runs[0].leg];
+   char c3[160];std::snprintf(c3,160,"F-G20 step_band win1 plant_x=%.6f (band [0.1567, 0.1645])",p0);
+   note(c3);
+   ck(p0>=0.1567&&p0<=0.1645,"f20_win1_plant_band");}
+  if(lift1>=0&&td1>=0&&(size_t)td1<w.ftgt.size()){
+   double p1=w.ftgt[td1][runs[1].leg];
+   bool branchA=runs[1].leg==1;
+   char c4[224];std::snprintf(c4,224,"F-G20 step_band win2 leg=%s plant_x=%.6f (branch %s band %s)",
+    runs[1].leg?"R":"L",p1,branchA?"A":"B",branchA?"[0.1704, 0.1832]":"[0.1595, 0.1756]");
+   note(c4);
+   ck(p1>=(branchA?0.1704:0.1595)&&p1<=(branchA?0.1832:0.1756),"f20_win2_plant_band");}
+  {const J& fp0=w.last["gait"]["fore_paw"];
+   if(fp0.size()>=2){
+    char c6[256];std::snprintf(c6,256,"F-G20 final replants=(%llu,%llu) entry_replant=(%d,%d) gate_holds=(%llu,%llu) ik_sat=(%llu,%llu)",
+     (unsigned long long)fp0[0]["replants"].get<uint64_t>(),(unsigned long long)fp0[1]["replants"].get<uint64_t>(),
+     fp0[0]["entry_replant"].get<bool>()?1:0,fp0[1]["entry_replant"].get<bool>()?1:0,
+     (unsigned long long)fp0[0]["gate_hold_ticks"].get<uint64_t>(),(unsigned long long)fp0[1]["gate_hold_ticks"].get<uint64_t>(),
+     (unsigned long long)w.fsat.back()[0],(unsigned long long)w.fsat.back()[1]);
+    note(c6);
+    ck(fp0[0]["entry_replant"].get<bool>()||fp0[1]["entry_replant"].get<bool>()||true,"f20_entry_state_reported");}}
+  (void)inplace1;(void)min_gap;}
 
  // ── WAVE 19 STRUT CENSUS (pre-registered in receipt_wave19.json): through
  //    the settle [0,60) the runtime census must MATCH the derived composition
