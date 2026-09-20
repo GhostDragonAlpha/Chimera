@@ -1,0 +1,164 @@
+{
+ "allometry": {
+  "expectation_exclusions": [],
+  "ratios": {
+   "foot:HAT": {
+    "from": [
+     "segments_Table1"
+    ],
+    "source": "derived_numbers.json",
+    "value": 0.15352697095435686
+   },
+   "shank:HAT": {
+    "from": [
+     "segments_Table1"
+    ],
+    "source": "derived_numbers.json",
+    "value": 0.3775933609958506
+   },
+   "shank:thigh": {
+    "from": [
+     "segments_Table1"
+    ],
+    "source": "derived_numbers.json",
+    "value": 1.116564417177914
+   },
+   "thigh:HAT": {
+    "from": [
+     "segments_Table1"
+    ],
+    "source": "derived_numbers.json",
+    "value": 0.3381742738589212
+   },
+   "thigh:shank": {
+    "from": [
+     "segments_Table1"
+    ],
+    "source": "derived_numbers.json",
+    "value": 0.8956043956043956
+   }
+  },
+  "stage": "adult"
+ },
+ "components": [
+  {
+   "id": "walker_segment_HAT",
+   "kind": "anatomy",
+   "length_m": 0.482,
+   "mass_kg": 8.184,
+   "segment_label": "hat",
+   "source": "derived_numbers.json body_model.segments_Table1",
+   "species": "Macaca fuscata",
+   "stage": {
+    "confirmed": true,
+    "label": "adult",
+    "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+   }
+  },
+  {
+   "id": "walker_segment_foot",
+   "kind": "anatomy",
+   "length_m": 0.074,
+   "mass_kg": 0.08,
+   "segment_label": "foot",
+   "source": "derived_numbers.json body_model.segments_Table1",
+   "species": "Macaca fuscata",
+   "stage": {
+    "confirmed": true,
+    "label": "adult",
+    "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+   }
+  },
+  {
+   "id": "walker_segment_phalanges",
+   "kind": "anatomy",
+   "length_m": 0.045,
+   "mass_kg": 0.021,
+   "segment_label": "phalanges",
+   "source": "derived_numbers.json body_model.segments_Table1",
+   "species": "Macaca fuscata",
+   "stage": {
+    "confirmed": true,
+    "label": "adult",
+    "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+   }
+  },
+  {
+   "id": "walker_segment_shank",
+   "kind": "anatomy",
+   "length_m": 0.182,
+   "mass_kg": 0.269,
+   "segment_label": "shank",
+   "source": "derived_numbers.json body_model.segments_Table1",
+   "species": "Macaca fuscata",
+   "stage": {
+    "confirmed": true,
+    "label": "adult",
+    "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+   }
+  },
+  {
+   "id": "walker_segment_thigh",
+   "kind": "anatomy",
+   "length_m": 0.163,
+   "mass_kg": 0.557,
+   "segment_label": "thigh",
+   "source": "derived_numbers.json body_model.segments_Table1",
+   "species": "Macaca fuscata",
+   "stage": {
+    "confirmed": true,
+    "label": "adult",
+    "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+   }
+  }
+ ],
+ "description": "the walker: the adult Japanese macaque model the physics already uses (Table-1 proportions, literature stage)",
+ "name": "walker_table1_adult",
+ "named_circularity": "the adult allometry table IS this bundle's source (Oku/Ogihara Table-1): this adjudication certifies provenance + coherence, not independent adult replication; an independent adult forelimb reference is OPEN",
+ "physics_bars": [
+  {
+   "falsifier": "per-drive positive work must sum to the banked total positive work within the 15% house band",
+   "law": "conservation",
+   "measured": {
+    "closure_deviation_frac": 0.0,
+    "per_drive_budget_sum_J": 11.5726,
+    "work_positive_total_J": 11.5726
+   },
+   "source": "derived_numbers.json oku_before_alteration.work_positive_total_J + per_drive_budget_check_J",
+   "verdict": "pass"
+  },
+  {
+   "falsifier": "simulated hip excursion must land inside the measured cercopithecoid cohort range (145 wild-primate strides, janisch_kinematics)",
+   "law": "pose",
+   "measured": {
+    "cercopithecoid_cohort_max_deg": 95.027,
+    "cercopithecoid_cohort_mean_deg": 42.998,
+    "cercopithecoid_cohort_min_deg": 1.604,
+    "hip_excursion_deg": 59.95,
+    "n_strides": 131
+   },
+   "source": "derived_numbers.json oku_before_alteration.angles.hip + janisch_cercopithecoids.stats.hipExcur",
+   "verdict": "pass"
+  },
+  {
+   "falsifier": "vertical impulse must equal mean stance force x stance duration within the 15% house band",
+   "law": "touch",
+   "measured": {
+    "closure_deviation_frac": -4.1799078362547704e-05,
+    "grf_v_impulse_Ns": 34.4821,
+    "grf_v_peak_xBW": 1.0823,
+    "mean_stance_N_x_stance_dur_s": 34.4807,
+    "weight_N": 98.439
+   },
+   "source": "derived_numbers.json oku_before_alteration GRF block",
+   "verdict": "pass"
+  }
+ ],
+ "schema": "chimera.creature_bundle.v1",
+ "species": [
+  {
+   "name": "Macaca fuscata",
+   "provenance": "PMC7940622 (Oku/Ide/Ogihara 2021); pinned NCBI taxdmp extract tax_id 9542"
+  }
+ ]
+}
