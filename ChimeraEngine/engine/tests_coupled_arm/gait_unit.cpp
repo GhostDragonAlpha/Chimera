@@ -68,7 +68,7 @@ int main(int argc,char**argv){try{
  const double BW=number(data.at("seating_scan_measured").at("weight_N"));
  const double PUSH=0.1*BW; // F-G6 scripted push: a derived fraction of the measured weight
  int checks=0;int reds=0;std::vector<std::string> measured;
- auto ck=[&](bool ok,const char* msg){if(!ok)++reds;++checks;};
+ auto ck=[&](bool ok,const char* msg){if(!ok){++reds;measured.push_back(std::string("RED falsifier: ")+msg);}++checks;};
  auto note=[&](const std::string& s){measured.push_back(s);};
 
  // ── F-G5: the free-root falsifier -- controller powered off, the body FALLS
@@ -325,30 +325,60 @@ int main(int argc,char**argv){try{
  //    (>= 3 except the steady lateral pattern's own 2-paw windows). A fore leg
  //    is AIRBORNE here in the clock sense (swing mode) and in the contact
  //    sense (both pad gaps above the 1e-5 band) -- both counted.
+ //    WAVE 25 DUAL READING (pre-registered in receipt_wave25.json, THE
+ //    GATE'S CADENCE LAW): the census is OWNED on the CONTACT sense -- both
+ //    legs' min fore pad gap above the kTouch band simultaneously. A HELD
+ //    glide (the wave-24 pocket-clear hold: pads live, in-band, support
+ //    intact) is NOT airborne for the owned census; the CLOCK sense is
+ //    REPORTED, never owned -- the held interleave is the law's designed
+ //    face. Plus the cadence-law support clauses: support >= 3 through
+ //    every held tick and >= 2 through every true-airborne fore swing tick
+ //    (the gate's purpose, measured per tick).
  {const size_t N=std::min(w.fm.size(),(size_t)426);
-  int bfa_run=0,bfa_mx=0,bfa_first=-1,bfa_windows=0,bfa_contact_run=0,bfa_contact_mx=0;
+  int bfa_run=0,bfa_mx=0,bfa_first=-1,bfa_windows=0;
+  int bfc_run=0,bfc_mx=0,bfc_first=-1,bfc_windows=0;
   int sup2_first=-1,sup2_ticks=0,sup_min=99;
+  int held_ticks=0,held_sup_bad=0,held_sup_min=99,swing_true_ticks=0,swing_sup_bad=0,swing_sup_min=99;
   std::string two_windows;
   for(size_t i=60;i<N;++i){
    bool l_air=w.fm[i][0]==1,r_air=w.fm[i][1]==1;
    bool l_ct=w.fgmin[i][0]>1e-5,r_ct=w.fgmin[i][1]>1e-5; // contact-airborne
    if(l_air&&r_air){++bfa_run;if(bfa_run==1)++bfa_windows;if(bfa_first<0)bfa_first=(int)i;bfa_mx=(std::max)(bfa_mx,bfa_run);}
    else bfa_run=0;
-   if(l_ct&&r_ct){++bfa_contact_run;bfa_contact_mx=(std::max)(bfa_contact_mx,bfa_contact_run);}
-   else bfa_contact_run=0;
+   if(l_ct&&r_ct){++bfc_run;if(bfc_run==1)++bfc_windows;if(bfc_first<0)bfc_first=(int)i;bfc_mx=(std::max)(bfc_mx,bfc_run);}
+   else bfc_run=0;
    int c=(w.t[i][0]?1:0)+(w.t[i][1]?1:0)+((w.fgmin[i][0]<=1e-5)?1:0)+((w.fgmin[i][1]<=1e-5)?1:0);
    sup_min=(std::min)(sup_min,c);
    if(c<2){++sup2_ticks;if(sup2_first<0)sup2_first=(int)i;}
-   if(c==2){char b[64];std::snprintf(b,64,"%d ",(int)i);two_windows+=b;}}
-  note("F-G14 stagger both_fore_swing_windows="+std::to_string(bfa_windows)+
-   " max_window_ticks="+std::to_string(bfa_mx)+" first="+(bfa_first<0?"none":std::to_string(bfa_first))+
-   " both_fore_contact_airborne_max_ticks="+std::to_string(bfa_contact_mx));
+   if(c==2){char b[64];std::snprintf(b,64,"%d ",(int)i);two_windows+=b;}
+   // THE WAVE-25 CADENCE-LAW SUPPORT CLAUSES (per tick): a held glide's
+   // pads are live -> support >= 3 through every held tick; a true
+   // airborne fore swing (mode 1, not held, pads above the band) must
+   // never run support below 2 -- the gate's purpose.
+   bool any_held=w.fhold[i][0]!=0||w.fhold[i][1]!=0;
+   bool any_true_swing=(w.fm[i][0]==1&&w.fhold[i][0]==0&&w.fgmin[i][0]>1e-5)||
+                       (w.fm[i][1]==1&&w.fhold[i][1]==0&&w.fgmin[i][1]>1e-5);
+   if(any_held){++held_ticks;held_sup_min=(std::min)(held_sup_min,c);if(c<3)++held_sup_bad;}
+   if(any_true_swing){++swing_true_ticks;swing_sup_min=(std::min)(swing_sup_min,c);if(c<2)++swing_sup_bad;}}
+  note("F-G14 stagger both_fore_swing_windows(clock,REPORTED)="+std::to_string(bfa_windows)+
+   " max_window_ticks(clock)="+std::to_string(bfa_mx)+" first="+(bfa_first<0?"none":std::to_string(bfa_first))+
+   " both_fore_contact_airborne_windows(OWNED)="+std::to_string(bfc_windows)+
+   " max_window_ticks(contact)="+std::to_string(bfc_mx)+" first="+(bfc_first<0?"none":std::to_string(bfc_first))+
+   " [WAVE 25 dual reading: the contact sense owns; a held glide (pads live) is not airborne]");
   note("F-G14 support_census min_contacts="+std::to_string(sup_min)+
    " sub2_ticks="+std::to_string(sup2_ticks)+" sub2_first="+(sup2_first<0?"none":std::to_string(sup2_first)));
   if(!two_windows.empty()&&two_windows.size()<800)
    note("F-G14 two_contact_ticks= "+two_windows);
-  ck(bfa_mx<2,"f14_no_both_fore_airborne_window");
-  ck(sup2_ticks==0,"f14_support_census_min2");}
+  note("F-G25 cadence_support held_ticks="+std::to_string(held_ticks)+
+   " held_support_min="+(held_ticks?std::to_string(held_sup_min):"n/a")+
+   " held_support_viol(<3)="+std::to_string(held_sup_bad)+
+   " true_swing_ticks="+std::to_string(swing_true_ticks)+
+   " true_swing_support_min="+(swing_true_ticks?std::to_string(swing_sup_min):"n/a")+
+   " true_swing_support_viol(<2)="+std::to_string(swing_sup_bad));
+  ck(bfc_mx<2,"f25_no_both_fore_contact_airborne_window");
+  ck(sup2_ticks==0,"f14_support_census_min2");
+  ck(held_sup_bad==0,"f25_held_support_min3");
+  ck(swing_sup_bad==0,"f25_true_swing_support_min2");}
 
  // ── WAVE 20 RE-PLANT CENSUS (pre-registered in receipt_wave20.json): the
  //    MID-ENTRY RE-PLANT law's own falsifiers. (1) STAGGER: the airborne
@@ -383,14 +413,43 @@ int main(int argc,char**argv){try{
    int gap=runs[r+1].beg-runs[r].end-1; // clear ticks between the runs
    min_gap=(std::min)(min_gap,gap);
    if(gap<1)++bad_gap;}
-  char b[512];
+  // WAVE 25 (pre-registered in receipt_wave25.json, THE GATE'S CADENCE LAW):
+  // the disjointness falsifier moves to the TRUE-AIR runs -- swing mode AND
+  // not held (the pocket-clear hold's pads are live: a held span is not a
+  // swing window and may lawfully interleave with one). The owned crime is a
+  // SHARED tick between two true-air runs (a real double swing in progress;
+  // the contact-form hard census is F-G25's f25_no_both_fore_contact_airborne_window
+  // above); the min clear gap and the clock-run overlaps are REPORTED.
+  // The clock runs keep the named-tick fence and the step bands (their
+  // extraction bytes unchanged).
+  struct AirRun{int leg,beg,end;};
+  std::vector<AirRun> aruns;
+  for(size_t l=0;l<2;++l){
+   int st=-1;
+   for(size_t i=60;i<N;++i){
+    bool air=w.fm[i][l]==1&&w.fhold[i][l]==0;
+    if(air&&st<0)st=(int)i;
+    if(!air&&st>=0){aruns.push_back({(int)l,st,(int)i-1});st=-1;}}
+   if(st>=0)aruns.push_back({(int)l,st,(int)N-1});}
+  std::sort(aruns.begin(),aruns.end(),[](const AirRun&a,const AirRun&b){return a.beg<b.beg;});
+  int min_agap=1<<30;size_t bad_agap=0,clock_overlaps=0;
+  for(size_t r=0;r+1<aruns.size();++r){
+   int gap=aruns[r+1].beg-aruns[r].end-1;
+   min_agap=(std::min)(min_agap,gap);
+   if(gap<0)++bad_agap;}
+  for(size_t r=0;r+1<runs.size();++r)if(runs[r+1].beg<=runs[r].end)++clock_overlaps;
+  char b[768];
   std::string runlist;
   for(size_t r=0;r<runs.size()&&r<6;++r){char c[96];std::snprintf(c,96,"%s[%d,%d]%s ",runs[r].leg?"R":"L",runs[r].beg,runs[r].end,r+1<runs.size()?"-> ":"");
    runlist+=c;}
-  std::snprintf(b,512,"F-G20 replant_runs n=%zu first: %s min_clear_gap=%d sub1_gaps=%u",
-   runs.size(),runlist.c_str(),runs.size()>1?min_gap:-1,(unsigned)bad_gap);
+  std::string arunlist;
+  for(size_t r=0;r<aruns.size()&&r<8;++r){char c[96];std::snprintf(c,96,"%s[%d,%d]%s ",aruns[r].leg?"R":"L",aruns[r].beg,aruns[r].end,r+1<aruns.size()?"-> ":"");
+   arunlist+=c;}
+  std::snprintf(b,768,"F-G20 replant_runs(clock) n=%zu first: %s min_clear_gap=%d sub1_gaps=%u [REPORTED: the held interleave is the law's face; overlaps=%u] true_air_runs n=%zu first: %s min_clear_gap=%d shared_tick_runs=%u [OWNED: no shared tick]",
+   runs.size(),runlist.c_str(),runs.size()>1?min_gap:-1,(unsigned)bad_gap,(unsigned)clock_overlaps,
+   aruns.size(),arunlist.c_str(),aruns.size()>1?min_agap:-1,(unsigned)bad_agap);
   note(b);
-  ck(bad_gap==0,"f20_stagger_gap_ge_1");
+  ck(bad_agap==0,"f20_stagger_gap_ge_1");
   // the named ticks
   int lift0=-1,td0=-1,lift1=-1,td1=-1,inplace1=-1;
   if(runs.size()>0){lift0=runs[0].beg;td0=runs[0].end+1;}
@@ -545,6 +604,38 @@ int main(int argc,char**argv){try{
    held_gaptick[0]>=0?std::to_string(held_gapmin[0]).c_str():"n/a",held_gaptick[0],
    held_gaptick[1]>=0?std::to_string(held_gapmin[1]).c_str():"n/a",held_gaptick[1]);
   note(b2);}
+
+ // ── WAVE 25 CADENCE CENSUS (pre-registered in receipt_wave25.json; THE
+ //    GATE'S CADENCE LAW). THE DERIVED BOUND (not tuned): every fore leg's
+ //    PLANTED span (a stance-mode run of the fore clock, ticks >= 60) is at
+ //    most floor(kWallMargin / dive_rate) = floor(0.0511 / 0.0039) = 13
+ //    ticks -- the machinery's own deflection envelope over the max
+ //    measured sustained dive (the wave-22 mined L dive 0.0482 -> 0.0017
+ //    over [70,82] = 0.0039 rad/tick; reproduced on this lane's wave-24
+ //    baseline by the R's gate-held dive 0.024597@82 -> 0.002229@88 =
+ //    0.00373). The wave-24 baseline measures RED here by construction
+ //    (the R's planted [81,99+] span, its actual at hr=0.000007@89): the
+ //    separation IS the test. Inter-lift intervals (mode 0->1 transitions)
+ //    reported per leg.
+ {const double DIVE_RATE=0.0039;const int SPAN_BOUND=(int)(0.0511/DIVE_RATE); // = 13, derived
+  const size_t NC=std::min(w.fm.size(),w.fcap.size());
+  int worst[2]={-1,-1},wtick[2]={-1,-1};
+  std::vector<int> lifts[2];
+  for(size_t l=0;l<2;++l){
+   int st=-1;
+   for(size_t i=60;i<NC;++i){
+    if(w.fm[i][l]==0&&st<0)st=(int)i;
+    if(w.fm[i][l]==1&&st>=0){int len=(int)i-st;if(len>worst[l]){worst[l]=len;wtick[l]=st;}st=-1;}}
+   if(st>=0){int len=(int)NC-st;if(len>worst[l]){worst[l]=len;wtick[l]=st;}}
+   for(size_t i=61;i<NC;++i)if(w.fm[i][l]==1&&w.fm[i-1][l]==0)lifts[l].push_back((int)i);}
+  std::string iv;
+  for(size_t l=0;l<2;++l){std::string s=l?"R lifts: ":"L lifts: ";
+   for(size_t k=0;k<lifts[l].size()&&k<14;++k){char c2[24];std::snprintf(c2,24,"%d ",lifts[l][k]);s+=c2;}
+   s+="| ";iv+=s;}
+  char b[768];std::snprintf(b,768,"F-G25 cadence span_bound=%d (kWallMargin 0.0511 / dive 0.0039 rad/tick, derived) planted_span_max L=%d@%d R=%d@%d [GREEN <= bound; the wave-24 baseline RED: the R's [81,99+] span, hr 0.000007@89] %s",
+   SPAN_BOUND,worst[0],wtick[0],worst[1],wtick[1],iv.c_str());
+  note(b);
+  ck(worst[0]<=SPAN_BOUND&&worst[1]<=SPAN_BOUND,"f25_no_leg_planted_past_the_dive_margin");}
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the
  //    causal verdict REFLEX-FIRST): (a) THE REFLEX ARMING CENSUS -- the

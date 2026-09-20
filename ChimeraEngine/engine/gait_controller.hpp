@@ -653,6 +653,16 @@ class GaitWalker {
    fore_hold_off_[leg][0],fore_hold_off_[leg][1]);
 #endif
  }
+ // THE HELD GLIDE predicate (wave 25, receipt_wave25.json): the pocket-clear
+ // hold's pads-live span -- EXACTLY the held branch of the glide target update
+ // below, factored so the gate and the target update read one truth. During
+ // the held ticks the target is the body-locked annulus-edge seat ON THE
+ // GROUND LINE: the pads stay live (the wave-24 measured held gaps
+ // 1e-6..3e-6, in-band, touching; support measured min 3 through every hold),
+ // so a held glide is NOT a swing in the contact sense -- it spends no
+ // support and must not consume the other leg's swing calendar.
+ bool fore_glide_held(size_t leg)const{
+  return fore_glide_hold_[leg]!=0&&fore_t_[leg]<fore_hold_last_[leg]&&fore_t_[leg]+1.<fore_cycle_[leg];}
  // THE PLANT CAPTURE (per leg; wave 13 refactor): freeze the paw's world
  // (model-frame) position as the target, pick the IK branch that matches the
  // planted configuration, and measure the analytic closure round-trip (FK of
@@ -842,7 +852,7 @@ class GaitWalker {
     // wall-LEAVING -- the clamp's precondition, a wallward crossing, is
     // structurally dead). The release (the map's exit or the TD's eve)
     // resumes the standard bytes below.
-    if(fore_glide_hold_[leg]&&fore_t_[leg]<fore_hold_last_[leg]&&fore_t_[leg]+1.<fore_cycle_[leg]){
+    if(fore_glide_held(leg)){
      auto shh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
      paw_target_[leg]=V{shh[0]+fore_hold_off_[leg][0],shh[1]+fore_hold_off_[leg][1],shh[2]+fore_hold_off_[leg][2]};
     }else{
@@ -888,11 +898,27 @@ class GaitWalker {
     // clause (b) then gates the OTHER leg forever -- the mined fixed-run
     // stall (both fores holding to the budget). Clause (a) -- the other
     // leg AIRBORNE -- is untouched and still forbids every double swing.
+    // THE WAVE-25 CONTACT-AWARE SCOPE (receipt_wave25.json, THE GATE'S
+    // CADENCE LAW): the gate schedules on CONTACT TRUTH, not phase
+    // bookkeeping. Clause (a) gates only a TRUE airborne glide -- the other
+    // fore in swing mode AND its pads out of the kTouch band (NOT
+    // fore_glide_held: the pocket-clear hold rides the ground line, its
+    // pads live, support measured min 3 through every hold -- a held glide
+    // spends no support and must not consume the other leg's swing
+    // calendar; the wave-24 death held the R off its last window exactly by
+    // counting the L's held glides as airborne). Clauses (b) and (c) read
+    // STANCE bookkeeping -- the hand-off clearance keys on the other leg's
+    // last TD PLANT and the pending priority compares PLANT AGES, both of
+    // which exist only in stance mode (mid-glide fore_t_ was reset at the
+    // lift: a lift-clock, not a plant-clock) -- so both are scoped to
+    // fore_mode_[o]==0. On mode-0 others every condition is byte-identical
+    // to the wave-20/23 gate; the gate's total order, the tie-break, and
+    // the wave-23 stall breaker are untouched.
     bool gated=false;
     if(fore_entry_[leg]){
-     if(fore_mode_[o]==1)gated=true;
-     else if(fore_entry_[o]&&fore_td_plant_[o]&&fore_t_[o]<1.)gated=true;
-     else if(fore_entry_[o]&&fore_t_[o]>=fore_stance_[o]){
+     if(fore_mode_[o]==1&&!fore_glide_held(o))gated=true;
+     else if(fore_mode_[o]==0&&fore_entry_[o]&&fore_td_plant_[o]&&fore_t_[o]<1.)gated=true;
+     else if(fore_mode_[o]==0&&fore_entry_[o]&&fore_t_[o]>=fore_stance_[o]){
       bool o_prior=fore_t_[o]>fore_t_[leg];
       if(fore_t_[o]==fore_t_[leg]){
        auto sha=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
