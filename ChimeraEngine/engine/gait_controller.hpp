@@ -258,7 +258,14 @@ class GaitWalker {
    // seating scan proves supportable -- not the TD columns (a pointe-feet
    // pose is not a static stand). The tables engage with the walk.
    double target=0.;
-   if(walking){double qstar[4];tables_.at(phi_[dr.leg=="left"?0:1],qstar);target=qstar[dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3];}
+   if(walking){
+    if(dr.leg=="fore_left"||dr.leg=="fore_right"){
+     // Load-sharing struts hold the derived s=0.45 statics pose; they do not
+     // invent a seven-DOF forelimb gait. Constants are the quad-share lane's
+     // shoulder/elbow solution at the measured fore envelope midpoint.
+     target=dr.joint=="shoulder"?-0.903:0.838;
+    } else {double qstar[4];tables_.at(dr.leg=="left"?0:1,qstar);target=qstar[dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3];}}
+
    tau[c]=(std::max)(-dr.cap,(std::min)(dr.cap,kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c]));}
   // The source model's POSTURE CONTROL (the pinned fulltext: the trunk pitch
   // theta_HAT is a model DOF driven by hip uniarticular muscles -- iliopsoas
@@ -446,7 +453,7 @@ class GaitWalker {
   require(depth<10+6*(int)npts_,"gait_impact_event_budget");
 #ifdef GAIT_EVENT_TRACE
   if(depth>=10+6*(int)npts_-4){std::fprintf(stderr,"[evt] tick=%llu depth=%d clamps=%d adv=%llu h=%.3e mu=%.2f\n",ticks_,depth,clamps,adv_calls_,h,mu_);
-   auto ee=evaluate(start);for(size_t k=0;k<npts_;++k){auto pp=ee.point(points_[k].index,points_[k].local);std::fprintf(stderr,"    %-12s gap=%.3e vy=%+.3e\n",points_[k].name.c_str(),pp.first[1]+points_[k].radius-plane_model_y_,pp.second[1]);}
+   auto ee=evaluate(start);for(size_t k=0;k<npts_;++k){auto pp=ee.point(points_[k].index,points_[k].local);std::fprintf(stderr,"    %-12s gap=%.3e vy=%+.3e\n",points_[k].name.c_str(),pp.first[1]+points_[k].radius-plane_model_y_,pp.second[0][1]);}
    for(size_t d=0;d<nd_;++d){size_t c=drives_[d].coordinate;std::fprintf(stderr,"    drive %-28s q=%+.4f v=%+.4f\n",drives_[d].name.c_str(),start.q[c],start.v[c]);}}
 #endif
   double caught=impact(start);
@@ -478,7 +485,7 @@ class GaitWalker {
    // law): pin the violated stop, absorb the impact, integrate the remainder.
 #ifdef GAIT_EVENT_TRACE
   if(clamps>=8){std::fprintf(stderr,"[clamp] tick=%llu depth=%d clamps=%d which=%d khit=%d wall=%+.6f h=%.3e\n",ticks_,depth,clamps,which,khit,wall,h);
-   auto ee=evaluate(start);for(size_t k=0;k<npts_;++k){auto pp=ee.point(points_[k].index,points_[k].local);std::fprintf(stderr,"    %-12s gap=%.3e vy=%+.3e\n",points_[k].name.c_str(),pp.first[1]+points_[k].radius-plane_model_y_,pp.second[1]);}}
+   auto ee=evaluate(start);for(size_t k=0;k<npts_;++k){auto pp=ee.point(points_[k].index,points_[k].local);std::fprintf(stderr,"    %-12s gap=%.3e vy=%+.3e\n",points_[k].name.c_str(),pp.first[1]+points_[k].radius-plane_model_y_,pp.second[0][1]);}}
 #endif
    require(clamps<64,"gait_impact_event_budget");
    State pinned=start;
@@ -516,7 +523,10 @@ class GaitWalker {
   require(recipe_.at("schema")=="chimera.gait_scene.v1","gait_schema");
   require(dt>0&&dt<=1/300.,"gait_timestep");require(recipe_.at("substeps")==4,"gait_substeps");
   model_=std::make_shared<Model>(model_data_,recipe_.at("coordinates").get<std::vector<std::string>>());
-  n_=model_->names.size();require(n_>NB&&n_==NB+2*NLEG,"gait_coordinate_capacity");
+  n_=model_->names.size();// Quadruped amendment: 6 floating-base + 8 hind + 4 fore strut coordinates.
+  // The fore pair is intentionally only shoulder/elbow (no unsupported wrist
+  // walker), preserving the 20-coordinate capacity amendment in Model.
+  require(n_>NB&&n_==18,"gait_coordinate_capacity");
   std::vector<std::string> body_names;for(const J& b:model_data_.at("bodies"))body_names.push_back(b.at("name").get<std::string>());
   bodies_.assign(body_names.size(),BodyRef{0.,V{},Mat()});
   for(size_t i=0;i<body_names.size();++i){const J& b=model_data_.at("bodies")[i];size_t idx=model_->body(body_names[i]);
@@ -549,11 +559,11 @@ class GaitWalker {
   for(const J& p:recipe_.at("contact_points")){ContactPoint out;out.name=p.at("name").get<std::string>();out.body=p.at("body").get<std::string>();
    out.index=model_->body(out.body);out.local=p.at("point_m").get<V>();
    out.radius=number(p.at("radius_m"));require(out.radius>0,"gait_contact_radius_invalid");points_.push_back(out);}
-  npts_=points_.size();require(npts_>=1&&npts_<=6,"gait_contact_capacity");
+  npts_=points_.size();require(npts_>=1&&npts_<=8,"gait_contact_capacity");
   // Drives: the recipe lists them AFTER the six base coordinates, in leg
   // pairs; the mass-normalized gains use the DEFAULTS-pose diagonal (the
   // qualified mass-normalized PD), the DERIVED f_s and the qualified zeta.
-  const J& dj=recipe_.at("drives");require(dj.is_array()&&dj.size()==2*NLEG,"gait_drive_count");
+  const J& dj=recipe_.at("drives");require(dj.is_array()&&dj.size()==12,"gait_drive_count");
   auto e=model_->evaluate(model_->defaults,Dense(n_,0.),gravity_);
   double freq=2*pi*FS_HZ;
   for(const J& d:dj){Drive out;out.name=d.at("coordinate").get<std::string>();out.leg=d.at("leg").get<std::string>();out.joint=d.at("joint").get<std::string>();
@@ -598,7 +608,8 @@ class GaitWalker {
   if(config_.contains("start_at_tables")&&config_["start_at_tables"].get<bool>()){
    if(config_.contains("base_trans_y_m"))s_.q[4]=number(config_["base_trans_y_m"]);
    for(size_t d=0;d<nd_;++d){const Drive& dr=drives_[d];
-    double qstar[4];tables_.at(phi_[dr.leg=="left"?0:1],qstar);
+    if(dr.leg=="fore_left"||dr.leg=="fore_right"){s_.q[dr.coordinate]=dr.joint=="shoulder"?-0.903:0.838;s_.v[dr.coordinate]=0.;continue;}
+    double qstar[4];tables_.at(dr.leg=="left"?0:1,qstar);
     int ji=dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3;
     s_.q[dr.coordinate]=qstar[ji];
     double p=phi_[dr.leg=="left"?0:1],dp=0.05;double a1[4],a2[4];
@@ -704,7 +715,7 @@ class GaitWalker {
   double kinetic=.5*inner(s_.v,multiply(e.mass,s_.v)),u=e.potential; // absolute; the ledger works in deltas below
   J joints=J::array();double work=0,battery_total=0,brake_total=0;uint64_t empty_total=0;
   for(size_t d=0;d<nd_;++d){const Drive& dr=drives_[d];size_t c=dr.coordinate;work+=s_.work[c];battery_total+=battery_[d];brake_total+=brake_[d];empty_total+=empty_events_[d];
-   double qstar[4];tables_.at(phi_[dr.leg=="left"?0:1],qstar);double target=qstar[dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3];
+   double qstar[4];tables_.at(phi_[dr.leg=="left"?0:1],qstar);double target=(dr.leg=="fore_left"||dr.leg=="fore_right")?(dr.joint=="shoulder"?-0.903:0.838):qstar[dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3];
    joints.push_back({{"name",dr.name},{"leg",dr.leg},{"joint",dr.joint},{"phase",phi_[dr.leg=="left"?0:1]},
     {"angle_deg",s_.q[c]*180/pi},{"target_rad",target},{"target_deg",target*180/pi},{"speed_rad_s",s_.v[c]},
     {"motor_torque_N_m",last_torque_[c]},{"drive_enabled",config_[dr.name+"_drive"]},{"torque_cap_N_m",dr.cap},

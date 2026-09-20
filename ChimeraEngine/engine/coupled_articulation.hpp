@@ -63,7 +63,12 @@ public:
   // only -- no arithmetic line moves; every selection <= 7 (the qualified
   // two-coordinate world, the seven-coordinate lift) is bit-identical, so the
   // frozen bit-exact control is unaffected by construction.
-  require(!names.empty()&&names.size()<=16,"coupled_coordinate_capacity");std::map<std::string,J> remaining;for(auto b:model.at("bodies")){std::string name=b.at("name");require(remaining.emplace(name,b).second,"coupled_duplicate_body");}std::map<std::string,int> ids;
+  // Capacity amendment for the quadruped walker: six floating-base coordinates,
+  // eight hindlimb coordinates, and four forelimb strut coordinates = 18.
+  // The previous 16-coordinate amendment remains sufficient for the biped;
+  // this explicit 20-slot ceiling admits the whole quadruped without changing
+  // any qualified <=16-coordinate path.
+  require(!names.empty()&&names.size()<=20,"coupled_coordinate_capacity");std::map<std::string,J> remaining;for(auto b:model.at("bodies")){std::string name=b.at("name");require(remaining.emplace(name,b).second,"coupled_duplicate_body");}std::map<std::string,int> ids;
   while(!remaining.empty()){bool progress=false;for(auto it=remaining.begin();it!=remaining.end();){auto b=it->second;bool ground=it->first=="ground";if(!ground&&!ids.count(b.at("joint").at("parent").get<std::string>())){++it;continue;}
    Body out;out.name=it->first;out.mass=number(b.at("mass_kg"));out.com=b.at("mass_center_m").get<V>();require(out.mass>=0,"coupled_mass_negative");for(double v:out.com)require(std::isfinite(v),"coupled_com_nonfinite");auto ic=b.at("inertia_kg_m2");require(ic.size()==6,"coupled_inertia_shape");for(int i=0;i<3;++i)out.inertia(i,i)=number(ic[i]);out.inertia(0,1)=out.inertia(1,0)=number(ic[3]);out.inertia(0,2)=out.inertia(2,0)=number(ic[4]);out.inertia(1,2)=out.inertia(2,1)=number(ic[5]);
    // Source compiler performs full tensor physicality; preserve admitted values, including regularization mass.

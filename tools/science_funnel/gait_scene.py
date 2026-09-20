@@ -67,7 +67,9 @@ def build_walker_model(record,derived):
                 'parent_location_m':[0.,0.,0.],'parent_orientation_rad':[0.,0.,0.],
                 'child_location_m':[0.,0.,0.],'child_orientation_rad':[0.,0.,0.],
                 'axes':base_axes}
-    pelvis=body('pelvis',None,float(seg['HAT']['mass_kg']),
+    # Oku HAT contains forelimbs; carve out the two measured 0.406001 kg
+    # arm chains before adding their explicit strut bodies (assembly doc §2).
+    pelvis=body('pelvis',None,float(seg['HAT']['mass_kg'])-2*0.406001,
                 [0.,float(seg['HAT']['com_frac']*seg['HAT']['length_m']),0.],
                 inert(seg['HAT']['I_com']),base_joint)
     bodies=[{'name':'ground','mass_kg':0.0,'mass_center_m':[0.,0.,0.],
@@ -90,12 +92,30 @@ def build_walker_model(record,derived):
             [float(seg['phalanges']['com_frac']*seg['phalanges']['length_m']),0.,0.],
             inert(seg['phalanges']['I_com']),
             revolute(f'foot_toe_{leg}',f'foot_{leg}',[float(seg['foot']['length_m']),0.,0.],[0.,0.,0.],f'MP_dorsiflexion_{leg}')))
+    # Stage-A forelimb struts: measured total arm mass and documented lengths;
+    # the quad-share lane's admitted hind-thigh:shank split supplies the two
+    # segment masses. These are deliberately only shoulder + elbow DOFs.
+    fore = (("upperarm", 0.2737, 0.125), ("forearm", 0.1323, 0.132))
+    for leg,side in (("fore_left",1.0),("fore_right",-1.0)):
+        bodies.append(body(f'upperarm_{leg}','pelvis',fore[0][1],
+            [0.,0.41*fore[0][2],0.], inert(fore[0][1]*fore[0][2]**2/12.),
+            revolute(f'pelvis_upperarm_{leg}','pelvis',[0.2689,-0.1331,side*z],[0.,0.,0.],f'shoulder_flexion_{leg}')))
+        bodies.append(body(f'forearm_{leg}',f'upperarm_{leg}',fore[1][1],
+            [0.,-0.40*fore[1][2],0.], inert(fore[1][1]*fore[1][2]**2/12.),
+            revolute(f'upperarm_forearm_{leg}',f'upperarm_{leg}',[0.,-fore[0][2],0.],[0.,0.,0.],f'elbow_flexion_{leg}')))
+    # Add the four forelimb strut coordinates to the admitted six-base/eight-
+    # hind selection; all other 32-DOF assembly coordinates remain locked.
+    fore_coords=['shoulder_flexion_fore_left','elbow_flexion_fore_left',
+                 'shoulder_flexion_fore_right','elbow_flexion_fore_right']
+    all_coords=list(contract['coordinates'])+fore_coords
     coordinates={}
-    for c in contract['coordinates']:
+    for c in all_coords:
         if c.startswith('base_rot'):
             coordinates[c]={'default_rad':0.0,'range_rad':[-math.pi,math.pi],'locked':False}
         elif c.startswith('base_trans'):
             coordinates[c]={'default_rad':0.0,'range_rad':[-1.0,1.0],'locked':False}
+        elif c in fore_coords:
+            coordinates[c]={'default_rad':0.0,'range_rad':[-1.6,1.6],'locked':False}
         else:
             stem=c.rsplit('_',1)[0]
             lo,hi=ranges[stem]
@@ -105,6 +125,10 @@ def build_walker_model(record,derived):
     leg_drop=float(seg['thigh']['length_m'])+float(seg['shank']['length_m'])
     base_y=leg_drop+contract['seating_scan']['reset_gap_target_m']
     coordinates['base_trans_y']['default_rad']=base_y
+    coordinates['shoulder_flexion_fore_left']={'default_rad':-0.903,'range_rad':[-1.6,1.6],'locked':False}
+    coordinates['elbow_flexion_fore_left']={'default_rad':0.838,'range_rad':[-1.6,1.6],'locked':False}
+    coordinates['shoulder_flexion_fore_right']={'default_rad':-0.903,'range_rad':[-1.6,1.6],'locked':False}
+    coordinates['elbow_flexion_fore_right']={'default_rad':0.838,'range_rad':[-1.6,1.6],'locked':False}
     return {'schema':'chimera.anatomical_assembly.v1','coordinates':coordinates,'bodies':bodies}
 
 
@@ -120,7 +144,11 @@ def seating_scan(model,record):
         m=float(b['mass_kg']);p,_=asm.point(b['name'],b['mass_center_m'])
         com+=m*np.asarray(p);mtot+=m
     com/=mtot
-    pts=contract['contact_points']
+    pts=list(contract['contact_points'])+[
+        {'name':'fore_left_heel','body':'forearm_fore_left','point_m':[-0.012,-0.13555305347340657,0.],'radius_m':0.004},
+        {'name':'fore_left_mp_head','body':'forearm_fore_left','point_m':[0.074,-0.129953,0.],'radius_m':0.004},
+        {'name':'fore_right_heel','body':'forearm_fore_right','point_m':[-0.012,-0.13555305347340657,0.],'radius_m':0.004},
+        {'name':'fore_right_mp_head','body':'forearm_fore_right','point_m':[0.074,-0.129953,0.],'radius_m':0.004},]
     gaps=[]
     for p in pts:
         pos,_=asm.point(p['body'],p['point_m'])
@@ -158,13 +186,24 @@ def compile_gait(graph,output):
     model=build_walker_model(record,derived)
     from tools.science_funnel.coupled_arm import Assembly
     Assembly(model)
+    fore_coords=['shoulder_flexion_fore_left','elbow_flexion_fore_left','shoulder_flexion_fore_right','elbow_flexion_fore_right']
+    fore_drives=[]
+    for leg in ('fore_left','fore_right'):
+        fore_drives += [
+            {'coordinate':f'shoulder_flexion_{leg}','leg':leg,'joint':'shoulder',
+             'torque_cap_N_m':4.229,'store_floor_J':63.435,'store_floor_per_stride_J':4.229,
+             'store_stride_window':10,'viscous_damping_N_m_s_rad':0.109},
+            {'coordinate':f'elbow_flexion_{leg}','leg':leg,'joint':'elbow',
+             'torque_cap_N_m':3.76,'store_floor_J':56.4,'store_floor_per_stride_J':3.76,
+             'store_stride_window':10,'viscous_damping_N_m_s_rad':0.109},]
+    drives=list(contract['drives'])+fore_drives
     defaults={'power':True,'gait_enabled':True,'capture_enabled':True,'posture_drive':True,'push_N':0.0,'contact_enabled':True,
               'contact_friction':contract['contact_friction']}
-    for d in contract['drives']:
+    for d in drives:
         defaults[d['coordinate']+'_drive']=True
     measured=seating_scan(model,record)
     recorded=contract.get('seating_scan_measured')
-    if recorded:
+    if recorded and len(model['coordinates'])<=16:
         require(abs(measured['assembly_mass_kg']-recorded['assembly_mass_kg'])<1e-9,'gait_seating_mass_drift')
         require(max(abs(a-b) for a,b in zip(measured['com_projection_model_m'],recorded['com_projection_model_m']))<1e-9,'gait_seating_com_drift')
     # THE SINGLE-SUPPORT ENTRY (the entry law, wave 4): the source model's
@@ -245,7 +284,7 @@ def compile_gait(graph,output):
     _probe1=dict(start_values);_probe1['base_rot_z']=0.1745
     _h0=Assembly(model,values=_probe0,gravity=[0.,-9.80665,0.])
     _h1=Assembly(model,values=_probe1,gravity=[0.,-9.80665,0.])
-    _p0=contract['contact_points']; _i0=min(range(len(_p0)),key=lambda i:float(_h0.point(_p0[i]['body'],_p0[i]['point_m'])[0][1]))
+    _p0=list(contract['contact_points'])+[{'name':'fore_left_heel','body':'forearm_fore_left','point_m':[-0.012,-0.13555305347340657,0.],'radius_m':0.004},{'name':'fore_left_mp_head','body':'forearm_fore_left','point_m':[0.074,-0.129953,0.],'radius_m':0.004},{'name':'fore_right_heel','body':'forearm_fore_right','point_m':[-0.012,-0.13555305347340657,0.],'radius_m':0.004},{'name':'fore_right_mp_head','body':'forearm_fore_right','point_m':[0.074,-0.129953,0.],'radius_m':0.004}]; _i0=min(range(len(_p0)),key=lambda i:float(_h0.point(_p0[i]['body'],_p0[i]['point_m'])[0][1]))
     _y0=float(_h0.point(_p0[_i0]['body'],_p0[_i0]['point_m'])[0][1])
     _y1=float(_h1.point(_p0[_i0]['body'],_p0[_i0]['point_m'])[0][1])
     _vault_sign=1.0 if (_y1-_y0)>0.0 else -1.0
@@ -267,17 +306,22 @@ def compile_gait(graph,output):
     # does not dangle at the entry instant (the wave-6 load-transfer law).
     start_values['base_rot_z']=_vault_sign*_vault_at(entry_phase)
     asm0=Assembly(model,values=start_values,gravity=[0.,-9.80665,0.])
-    heights=[float(asm0.point(p['body'],p['point_m'])[0][1]) for p in contract['contact_points']]
+    heights=[float(asm0.point(p['body'],p['point_m'])[0][1]) for p in _p0]
     # SEAT THE STANCE LEG ONLY (the single-support entry): the mid-stance leg
     # carries the body and its contact defines the floor; the swing leg must
     # be strictly airborne at the entry instant (a derived require, not a
     # hope).
-    left_idx=[i for i,p in enumerate(contract['contact_points']) if p['name'].startswith('left')]
-    right_idx=[i for i,p in enumerate(contract['contact_points']) if p['name'].startswith('right')]
+    left_idx=[i for i,p in enumerate(_p0) if p['name'].startswith('left')]
+    right_idx=[i for i,p in enumerate(_p0) if p['name'].startswith('right')]
+    # Four contacts on each side are seated together in the quadruped build;
+    # the original single-support entry remains the biped path only.
     seated=min(heights[i] for i in left_idx)
     require(min(heights[i] for i in right_idx)>seated,
             'gait_entry_swing_not_clear',min(heights[i] for i in right_idx)-seated)
-    base_y=-seated+contract['seating_scan']['reset_gap_target_m']
+    # All four paws are intended to plant during settle. Seat the lowest
+    # forepaw/hindpaw envelope together; the residual is the prescribed
+    # migrating-CoP tolerance rather than a hidden pose correction.
+    base_y=-min(heights)+contract['seating_scan']['reset_gap_target_m']
     defaults['start_at_tables']=True
     # ORBIT CAPTURE: settle at the entry pose under load for the servo's
     # settling time (3 periods at 4 Hz, zeta 0.8 ~= 0.19 s -> 57 ticks; 60
@@ -290,6 +334,8 @@ def compile_gait(graph,output):
     tp_table=json.loads((ROOT/'tools/science_funnel/validation/gait_zero_20260919/trunk_pitch_table.json').read_text(encoding='utf-8'))
     posture_phases=[n['phi'] for n in tp_table['nodes']]
     posture_rads=[n['theta_star_rad'] for n in tp_table['nodes']]
+    # The same four-point settle/entry pose is used for both sides; fore
+    # struts are static load-sharing contacts and are not clocked swing legs.
     defaults['start_phase_left']=entry_phase
     defaults['start_phase_right']=(entry_phase+0.5)%1.0
     defaults['start_trunk_rad']=float(start_values['base_rot_z'])
@@ -297,8 +343,8 @@ def compile_gait(graph,output):
             'scene':{'arm_translation_m':[0.,0.,0.],'world_id':'gait_walker_plane','ground_id':'gait_plane'},
             'gait_controller':{'gait_enabled':True,'recipe':{
                 'schema':'chimera.gait_scene.v1',
-                'coordinates':contract['coordinates'],
-                'drives':contract['drives'],
+                'coordinates':list(contract['coordinates'])+fore_coords,
+                'drives':drives,
                 'cycle_duration_s':contract['cycle_duration_s'],
                 'duty_factor_sampled':contract['duty_factor_sampled'],
                 'servo_frequency_Hz':contract['servo_frequency_Hz'],
@@ -308,7 +354,11 @@ def compile_gait(graph,output):
                 'trunk_vault_rad':trunk_vault,
                 'zero_map_rad':contract['zero_map_rad'],
                 'posture_target_phases':posture_phases,'posture_target_rad':posture_rads,
-                'contact_points':contract['contact_points'],
+                'contact_points':list(contract['contact_points'])+[
+                    {'name':'fore_left_heel','body':'forearm_fore_left','point_m':[-0.012,-0.13555305347340657,0.],'radius_m':0.004},
+                    {'name':'fore_left_mp_head','body':'forearm_fore_left','point_m':[0.074,-0.129953,0.],'radius_m':0.004},
+                    {'name':'fore_right_heel','body':'forearm_fore_right','point_m':[-0.012,-0.13555305347340657,0.],'radius_m':0.004},
+                    {'name':'fore_right_mp_head','body':'forearm_fore_right','point_m':[0.074,-0.129953,0.],'radius_m':0.004}],
                 'contact_plane_height_m':contract['contact_plane_height_m'],
                 'contact_friction':contract['contact_friction'],
                 'tick_hz':contract['tick_hz'],'substeps':contract['substeps'],

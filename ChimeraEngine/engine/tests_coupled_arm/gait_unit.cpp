@@ -93,8 +93,9 @@ int main(int argc,char**argv){try{
    w_ledger_prev=(std::max)(w_ledger_prev,(std::max)(bal,stor));
    if(i%10==0){std::fprintf(stderr,"[ledger10] tick %d %s\n",i,s["energy"].dump().c_str());
     for(const auto&pt:s["contact"]["points"])std::fprintf(stderr,"[pt] %s cop_x=%.5f cop_y=%.5f gap=%.3e touching=%d rxn=%.3f slip=%.3f\n",pt["name"].get<std::string>().c_str(),number(pt["position_m"][0]),number(pt["position_m"][1]),number(pt["gap_m"]),pt["touching"].get<bool>()?1:0,number(pt["reaction_N"]),number(pt["slip_speed_m_s"]));
-    const J& trunk=s["joints"][8];
+    const J& trunk=s["joints"][12];
     std::fprintf(stderr,"[trunk] phase=%.5f angle_deg=%.5f target_deg=%.5f torque=%.5f speed=%.5f\n",number(trunk["phase"]),number(trunk["angle_deg"]),number(trunk["target_deg"]),number(trunk["motor_torque_N_m"]),number(trunk["speed_rad_s"]));
+    for(size_t fj=8;fj<12;++fj){const J& fore=s["joints"][fj];std::fprintf(stderr,"[fore] name=%s angle_deg=%.5f target_deg=%.5f torque=%.5f cap=%.5f\n",fore["name"].get<std::string>().c_str(),number(fore["angle_deg"]),number(fore["target_deg"]),number(fore["motor_torque_N_m"]),number(fore["torque_cap_N_m"]));}
     std::fprintf(stderr,"[body] tick=%d x=%.6f y=%.6f\n",i,number(s["base_q"][0]),number(s["base_q"][1]));}
 #endif
    out.worst_ledger=(std::max)(out.worst_ledger,(std::max)(bal,stor));
