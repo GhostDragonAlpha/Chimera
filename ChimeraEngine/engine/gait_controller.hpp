@@ -310,7 +310,13 @@ class GaitWalker {
    touching_prev_[leg]=touching;}
   return reset_fired;}
  // Support hull + CoM (Section 5.4). Returns com_in_hull; sets hull/com refs.
- bool support_state(const Evaluation& e,std::vector<std::pair<double,double>>& hull,V& com)const{
+ // The out-parameter `hull` keeps its historical bytes: the lexicographically
+ // SORTED touching-point cloud. The WAVE-21 ARMING LAW (receipt_wave21.json)
+ // additionally needs the TRUE convex hull -- the monotone chain this function
+ // builds locally -- so a defaulted out-param receives it; every existing call
+ // site passes nothing and is byte-unchanged.
+ bool support_state(const Evaluation& e,std::vector<std::pair<double,double>>& hull,V& com,
+  std::vector<std::pair<double,double>>* chain=nullptr)const{
   hull.clear();
   for(size_t k=0;k<npts_;++k)if(contact_&&gap_of(e,k)<=kTouch){auto p=e.point(points_[k].index,points_[k].local).first;hull.push_back({p[0],p[2]});}
   for(size_t b=0;b<bodies_.size();++b){auto p=vector(e.frames[b].t,bodies_[b].com,1);for(int k=0;k<3;++k)com[k]+=bodies_[b].mass*p[k];}
@@ -324,30 +330,74 @@ class GaitWalker {
   size_t k=0;
   for(size_t i=0;i<hull.size();++i){while(k>=2&&(h[k-1].first-h[k-2].first)*(hull[i].second-h[k-2].second)-(h[k-1].second-h[k-2].second)*(hull[i].first-h[k-2].first)<=0)--k;h[k++]=hull[i];}
   for(size_t i=hull.size()-1,t=k+1;i-->0;){while(k>=t&&(h[k-1].first-h[k-2].first)*(hull[i].second-h[k-2].second)-(h[k-1].second-h[k-2].second)*(hull[i].first-h[k-2].first)<=0)--k;h[k++]=hull[i];}
-  h.resize(k-1);double px=com[0],pz=com[2];bool inside=true;int side=0;
+  h.resize(k-1);
+  if(chain)*chain=h;
+  double px=com[0],pz=com[2];bool inside=true;int side=0;
   for(size_t i=0;i<h.size();++i){auto&a=h[i];auto&b=h[(i+1)%h.size()];double cross=(b.first-a.first)*(pz-a.second)-(b.second-a.second)*(px-a.first);
    if(std::abs(cross)<1e-15)continue;int s=cross>0?1:-1;if(side==0)side=s;else if(s!=side){inside=false;break;}}
   return inside;}
- // Capture-step reflex (Section 5.4): CoM projection outside the hull moving
+ // Capture-step reflex (Section 5.4): CoM projection exits the hull moving
  // outward -> swing leg phase jumps to 0.95 (early touchdown). Falsified by
  // F-G6: without it a push must tip; with it the capture step must land.
+ // ── THE WAVE-21 ARMING LAW (receipt_wave21.json): the arming test had two
+ //    measured defects -- it ran on the SORTED POINT CLOUD (a self-intersecting
+ //    pseudo-polygon: the tick-65 fire armed at +0.0046 m 'outside' a pseudo-
+ //    edge while the true hull held the CoM strictly inside) and it chose as
+ //    its capture leg any non-touching leg (the tick-65 fire picked a foot
+ //    straddling the band edge by 1.6e-7 m at stance clock 0.0235). The fire
+ //    now requires ALL THREE derived clauses:
+ // (i)  THE TRUE-HULL CLAUSE: the containment test runs on the monotone-chain
+ //      convex hull (the doc's own law), never on the sorted cloud;
+ // (ii) THE SWING-CLOCK CLAUSE: the candidate leg's clock is in its swing
+ //      window (phi >= TOE_OFF, the machinery's own sampled toe-off -- a
+ //      stance-clock leg's contact loss is instability, not swing; the reflex
+ //      waits for the clock to bring the leg to swing);
+ // (iii) THE SLIP-CONE CLAUSE: no touching sole's slip exceeds the derived
+ //      bound v_bound = mu * g * (1-CAPTURE_PHI) * T_CYCLE = 0.2089 m/s --
+ //      the cone's arrest capacity (mu*g, N-independent) within the capture's
+ //      OWN touchdown window (the (1-CAPTURE_PHI)*T_CYCLE = 0.0355 s the jump
+ //      itself grants).
+ // MEASURED OUTCOME (honest, wave 21): the clauses removed the spurious fires
+ // (capture_events 2 -> 0; the wave-19/20 phase-0.95 fingerprints gone) and
+ // the walk STILL refused at 80 with the identical ledger -- the death's root
+ // is the HIND CLOCK'S TOUCH-RESET SLAM (the kTouch chatter at [62,66] resets
+ // a coherent mid-stance clock to the TD column: a ~47 deg multi-joint target
+ // step whose capped drive plows the loaded sliding foot), NOT this reflex.
+ // This law repairs the F-G6 machinery; it does not own the walk's lifetime.
  void capture_reflex(const Evaluation& e,const std::vector<std::pair<double,double>>& hull,const V& com){
   if(hull.size()<3)return;
-  // Outward-velocity probe: pelvis horizontal speed (base trans rows 3,5).
   double vx=s_.v[3],vz=s_.v[5];
-  for(size_t i=0;i<hull.size();++i){auto&a=hull[i];auto&b=hull[(i+1)%hull.size()];
-   double ex=b.first-a.first,ez=b.second-a.second,nx=ez,nz=-ex;double nl=std::hypot(nx,nz);if(nl<1e-12)continue;nx/=nl;nz/=nl;
-   // outward normal = pointing away from hull centroid
-   double cx=0,cz=0;for(auto&p:hull){cx+=p.first;cz+=p.second;}cx/=hull.size();cz/=hull.size();
-   if((com[0]-cx)*nx+(com[2]-cz)*nz<0){nx=-nx;nz=-nz;}
-   bool outside=(com[0]-a.first)*nx+(com[2]-a.second)*nz>1e-9;
-   if(outside&&(vx*nx+vz*nz)>0){
-    // capture with the SWING leg (the non-touching one; if both or neither,
-    // the nearer-to-liftoff phase drives).
-    for(size_t leg=0;leg<2;++leg){bool touching=false;const char* prefix=leg==0?"left":"right";
-     for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0&&gap_of(e,k)<=kTouch)touching=true;
-     if(!touching){phi_[leg]=CAPTURE_PHI;++capture_events_;return;}}
-    return;}}}
+  // (iii) the slip-cone bound, derived from machinery constants only.
+  double v_bound=mu_*norm(gravity_)*(1.-CAPTURE_PHI)*T_CYCLE;
+  // (iii) max touching-sole slip, computed exactly as status() computes it.
+  double slip_mx=0;
+  for(size_t k=0;k<npts_;k+=2){
+   if(!(contact_&&gap_of(e,k)<=kTouch))continue;
+   auto j_t1=tangent_row(e,k,0),j_t2=tangent_row(e,k,2);
+   V slip_v{};for(size_t i=0;i<n_;++i){slip_v[0]+=j_t1[i]*s_.v[i];slip_v[2]+=j_t2[i]*s_.v[i];}
+   slip_mx=(std::max)(slip_mx,std::hypot(slip_v[0],slip_v[2]));}
+  if(slip_mx>v_bound)return;
+  // (i) the true-hull containment (the all-edge cross-sign law support_state
+  // uses): still strictly inside -> nothing to capture. Outside -> the FIRST
+  // violated edge supplies the outward probe (deterministic).
+  size_t n=hull.size();int side=0;size_t violated=n;
+  for(size_t i=0;i<n;++i){auto&a=hull[i];auto&b=hull[(i+1)%n];
+   double cross=(b.first-a.first)*(com[2]-a.second)-(b.second-a.second)*(com[0]-a.first);
+   if(std::abs(cross)<1e-15)continue;
+   int s=cross>0?1:-1;if(side==0)side=s;else if(s!=side){violated=i;break;}}
+  if(violated>=n)return; // strictly inside: the doc's trigger never armed
+  {auto&a=hull[violated];auto&b=hull[(violated+1)%n];
+   double ex=b.first-a.first,ez=b.second-a.second,nx=ez,nz=-ex;double nl=std::hypot(nx,nz);if(nl<1e-12)return;nx/=nl;nz/=nl;
+   // outward normal = pointing away from the hull centroid (inside a convex chain)
+   double cx=0,cz=0;for(auto&p:hull){cx+=p.first;cz+=p.second;}cx/=n;cz/=n;
+   if((cx-a.first)*nx+(cz-a.second)*nz<0){nx=-nx;nz=-nz;}
+   if((vx*nx+vz*nz)<=0)return; // exited but not moving outward
+   // (ii) capture with the SWING leg: non-touching AND its clock in the
+   // swing window -- a stance-clock leg's contact loss is instability; wait.
+   for(size_t leg=0;leg<2;++leg){bool touching=false;const char* prefix=leg==0?"left":"right";
+    for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0&&gap_of(e,k)<=kTouch)touching=true;
+    if(!touching&&phi_[leg]>=TOE_OFF){phi_[leg]=CAPTURE_PHI;++capture_events_;return;}}
+   return;}}
  // ── THE PLANTED-STRUT IK (wave 12) ──
  // Planar 2-DOF closed form (deterministic, no iteration), solved in the
  // PELVIS frame -- where the chain is defined: at q=0 the upperarm hangs
@@ -1178,10 +1228,15 @@ class GaitWalker {
    // CLOCK-derived (deterministic), never force- or position-triggered.
    if(walking&&paws_captured_)update_fore_clock(e);}
   // 2) reflex on the tick-start state (armed only in the walk, and only when
-  //    the capture reflex is enabled -- F-G6's disarmed control leg).
-  {auto e=evaluate(s_);std::vector<std::pair<double,double>> hull;V com{};
+  //    the capture reflex is enabled -- F-G6's disarmed control leg). THE
+  //    WAVE-21 ARMING LAW: the containment test runs on the TRUE monotone-chain
+  //    hull (the chain out-param), not on the sorted point cloud -- the
+  //    misfire's measured arming defect (receipt_wave21.json).
+  {auto e=evaluate(s_);std::vector<std::pair<double,double>> hull,chain;V com{};
    bool inside=support_state(e,hull,com);(void)inside;
-   if(walking&&config_["capture_enabled"].get<bool>())capture_reflex(e,hull,com);}
+   if(walking&&config_["capture_enabled"].get<bool>()){
+    support_state(e,chain,com,&chain);
+    capture_reflex(e,chain,com);}}
   // 3) integrate 4 substeps; the tau input is the controller's capped PD;
   //    the per-drive store bisection (40-step, the qualified law) scales tau
   //    so each drive's positive substep work fits ITS store.

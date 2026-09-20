@@ -27,6 +27,16 @@ struct WalkOut{
  std::vector<std::array<double,8>> gp;         // per-tick ALL-paw gaps, declared point order (wave 15 strut census)
  std::vector<double> fr,frslip;                // per-tick total FORE reaction + max fore slip (wave 16 load census)
  std::vector<double> hr;                       // per-tick total HIND reaction (wave 17 hind-load census)
+ // WAVE 21 HIND-RIDE census inputs: per-tick hind-point detail (declared order
+ // 0..3 = left heel/mp, right heel/mp), the posture drive, the capture events,
+ // the hind clock phases, the CoM/hull state, the base x.
+ std::vector<std::array<double,4>> hgap,hrxn,hfrc,hslip; // per hind point
+ std::vector<std::array<double,4>> post;       // posture {torque, target_deg, angle_deg, speed}
+ std::vector<uint64_t> cev;                    // capture_events
+ std::vector<std::array<double,2>> hphase;     // {phase_left, phase_right}
+ std::vector<std::array<double,4>> comh;       // {com_x, com_z, hull_size, in_hull}
+ std::vector<double> bx;                       // base x
+ std::vector<std::array<double,8>> hspd;       // hind drive speeds
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
@@ -122,6 +132,47 @@ int main(int argc,char**argv){try{
       if(nm.rfind("fore_",0)==0){fsum+=number(pt["reaction_N"]);fslip=(std::max)(fslip,number(pt["slip_speed_m_s"]));}
       else hsum+=number(pt["reaction_N"]);} // the hind points (left_/right_ prefixed)
      out.fr.push_back(fsum);out.frslip.push_back(fslip);out.hr.push_back(hsum);}
+    // WAVE 21 HIND-RIDE census inputs (the derivation's measured base): hind
+    // point detail in declared order, the posture drive, capture events, hind
+    // clock phases, CoM/hull, base x, hind drive speeds.
+    {std::array<double,4> hg{},hn{},hf{},hs{};size_t k=0;
+     for(const auto&pt:s["contact"]["points"]){if(k>=4)break;
+      hg[k]=number(pt["gap_m"]);hn[k]=number(pt["reaction_N"]);
+      hf[k]=number(pt["friction_force_N"]);hs[k]=number(pt["slip_speed_m_s"]);++k;}
+     out.hgap.push_back(hg);out.hrxn.push_back(hn);out.hfrc.push_back(hf);out.hslip.push_back(hs);}
+    {const J& tr=s["joints"][12];
+     out.post.push_back({number(tr["motor_torque_N_m"]),number(tr["target_deg"]),
+      number(tr["angle_deg"]),number(tr["speed_rad_s"])});}
+    out.cev.push_back(s["gait"]["capture_events"].get<uint64_t>());
+    out.hphase.push_back({number(s["gait"]["phase_left"]),number(s["gait"]["phase_right"])});
+    out.comh.push_back({number(s["support"]["com_projection_east_m"]),
+      number(s["support"]["com_projection_south_m"]),
+      double(s["support"]["hull_size"].get<int>()),s["support"]["com_in_hull"].get<bool>()?1.:0.});
+    out.bx.push_back(number(s["base_q"][0]));
+    {std::array<double,8> sp{};for(size_t k=0;k<8;++k)sp[k]=number(s["joints"][k]["speed_rad_s"]);
+     out.hspd.push_back(sp);}
+#ifdef GAIT_EVENT_TRACE
+    if(i>=50&&i<=95){
+     const J& tr=s["joints"][12];
+     std::fprintf(stderr,"[dv] t=%d ptq=%.5f ptgt=%.4f pang=%.4f pspd=%.4f ev=%llu phL=%.5f phR=%.5f com=(%.6f,%.6f) hull=%d in=%d bx=%.6f\n",
+      i,number(tr["motor_torque_N_m"]),number(tr["target_deg"]),number(tr["angle_deg"]),number(tr["speed_rad_s"]),
+      (unsigned long long)out.cev.back(),out.hphase.back()[0],out.hphase.back()[1],
+      out.comh.back()[0],out.comh.back()[1],(int)out.comh.back()[2],(int)out.comh.back()[3],out.bx.back());
+     for(size_t k=0;k<4;++k)
+      std::fprintf(stderr,"[dvp] t=%d k=%zu gap=%.4e rxn=%.5f frc=%.5f slip=%.5f\n",
+       i,k,out.hgap.back()[k],out.hrxn.back()[k],out.hfrc.back()[k],out.hslip.back()[k]);
+     for(size_t k=0;k<8;++k)
+      std::fprintf(stderr,"[dvj] t=%d k=%zu ang=%.4f tgt=%.4f spd=%.4f\n",
+       i,k,number(s["joints"][k]["angle_deg"]),number(s["joints"][k]["target_deg"]),number(s["joints"][k]["speed_rad_s"]));
+     if(out.cev.size()>=2&&out.cev[out.cev.size()-2]!=out.cev.back())
+      std::fprintf(stderr,"[dvfire] t=%d capture_events %llu->%llu phL=%.5f phR=%.5f in_hull=%d com=(%.6f,%.6f)\n",
+       i,(unsigned long long)out.cev[out.cev.size()-2],(unsigned long long)out.cev.back(),
+       out.hphase.back()[0],out.hphase.back()[1],(int)out.comh.back()[3],out.comh.back()[0],out.comh.back()[1]);
+     if(i>=60&&i<=70){
+      std::fprintf(stderr,"[dvhull] t=%d hull:",i);
+      for(const auto&h:s["support"]["points"])std::fprintf(stderr," (%.6f,%.6f)",number(h[0]),number(h[1]));
+      std::fprintf(stderr," vx_prev=%.4f\n",i>0?out.bx[out.bx.size()-1]-out.bx[out.bx.size()-2]:0.);}}
+#endif
     std::array<char,2> fmm{0,0};std::array<uint64_t,2> sat{};std::array<double,2> tgx{0.,0.};std::array<uint64_t,2> rep{0,0};
     if(s["gait"].contains("fore_paw")&&s["gait"]["fore_paw"].size()>=2)
      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["fore_paw"][l];
@@ -318,6 +369,75 @@ int main(int argc,char**argv){try{
     note(c6);
     ck(fp0[0]["entry_replant"].get<bool>()||fp0[1]["entry_replant"].get<bool>()||true,"f20_entry_state_reported");}}
   (void)inplace1;(void)min_gap;}
+
+ // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the
+ //    causal verdict REFLEX-FIRST): (a) THE REFLEX ARMING CENSUS -- the
+ //    mechanism's OWNED direct test: at every capture event (the per-tick
+ //    capture_events delta; the fire ran during that step on the PREVIOUS
+ //    tick's post-step state) all three derived clauses must hold at the
+ //    decision state: (i) the true-hull containment OPEN (com_in_hull==0,
+ //    hull>=3); (ii) the jumped leg's clock in its swing window at the fire
+ //    (phi >= TOE_OFF=0.68, decision phi = prev + dt/T unless a touch reset
+ //    fired in the fire step); (iii) no touching sole's slip > the derived
+ //    bound v_bound = mu*g*(1-CAPTURE_PHI)*T_CYCLE = 0.2089 m/s. (b) THE SKID
+ //    CENSUS -- REPORTED (not owned): max touching-hind slip, worst tick,
+ //    count/run above 0.1 m/s. (c) THE FOLD CENSUS -- REPORTED (not owned):
+ //    posture |torque| vs the 11.2125 cap, first rail tick, the pitch speed's
+ //    sign through the former run-away window [65,80].
+ {const double MU=number(recipe.at("contact_friction"));
+  const double V_BOUND=MU*9.80665*(1.-number(recipe.at("capture_step_phase")))*T;
+  const double TOE=0.68,DPH=T>0?dt/T:0.;
+  {char cb[160];std::snprintf(cb,160,"F-G21 arming bound v_bound=%.6f m/s (mu=%.2f g=9.80665 capture_phase=%.2f T=%.3f)",
+   V_BOUND,MU,number(recipe.at("capture_step_phase")),T);note(cb);}
+  // (a) the reflex arming census
+  {uint64_t fires=0,viol=0;
+   for(size_t i=1;i<w.cev.size();++i){
+    if(w.cev[i]==w.cev[i-1])continue;
+    ++fires;
+    size_t d=i-1; // the decision state
+    bool c1=w.comh[d][3]==0.&&w.comh[d][2]>=3.;
+    // the jumped leg: its phase this tick is the capture phase 0.95
+    int leg=-1;for(size_t l=0;l<2;++l)if(std::abs(w.hphase[i][l]-0.95)<1e-9)leg=(int)l;
+    double pre_phi=leg>=0?w.hphase[d][leg]:-1.;
+    bool reset_fired=leg>=0&&w.hgap[d][leg*2]<=1e-5&&d>=1&&w.hgap[d-1][leg*2]>1e-5;
+    double dec_phi=reset_fired?0.:pre_phi+DPH;
+    bool c2=leg>=0&&dec_phi>=TOE-1e-12;
+    double slip_mx=0;
+    for(size_t k=0;k<4;++k)if(w.hgap[d][k]<=1e-5)slip_mx=(std::max)(slip_mx,w.hslip[d][k]);
+    // the fore soles: per-leg min gap above the band == airborne; the max
+    // fore slip rides the wave-16 series (all fore points)
+    {double fg0=(std::min)(w.fgmin[d][0],w.fgmin[d][1]);
+     if(fg0<=1e-5)slip_mx=(std::max)(slip_mx,w.frslip[d]);}
+    bool c3=slip_mx<=V_BOUND+1e-12;
+    char b[288];std::snprintf(b,288,"F-G21 fire #%llu at decision tick %zu: clause1(in_hull=%.0f,hull=%d)=%d clause2(leg=%d dec_phi=%.4f%s)=%d clause3(slip_mx=%.4f<=%.4f)=%d",
+     (unsigned long long)fires,d,w.comh[d][3],(int)w.comh[d][2],c1?1:0,leg,dec_phi,
+     reset_fired?" reset_fired":"",c2?1:0,slip_mx,V_BOUND,c3?1:0);
+    note(b);
+    if(!(c1&&c2&&c3))++viol;}
+   char b[160];std::snprintf(b,160,"F-G21 reflex_arming fires=%llu violating=%llu (baseline witness: the wave-20 fires at decision ticks 64/79 armed with in_hull=1 / stance clocks 0.0235 / slip 0.453 and slips 0.586-1.981 -- all three clauses blocked them)",
+    (unsigned long long)fires,(unsigned long long)viol);
+   note(b);
+   ck(viol==0,"f21_no_fire_against_arming_law");}
+  // (b) the skid census (reported)
+  {double mx=-1;int mx_tick=-1,cnt=0,run=0,mx_run=0;
+   for(size_t i=60;i<w.hslip.size();++i){
+    double sm=0;for(size_t k=0;k<4;++k)if(w.hgap[i][k]<=1e-5)sm=(std::max)(sm,w.hslip[i][k]);
+    if(sm>mx){mx=sm;mx_tick=(int)i;}
+    if(sm>0.1){++cnt;mx_run=(std::max)(mx_run,++run);}else run=0;}
+   char b[224];std::snprintf(b,224,"F-G21 skid_census max_touching_hind_slip=%.4f at tick %d ticks_above_0.1=%d max_run=%d [REPORTED: not this verdict's clause]",
+    mx<0?0.:mx,mx_tick,cnt,mx_run);
+   note(b);}
+  // (c) the fold census (reported)
+  {double cmx=0;int first_rail=-1;int neg_spd=0;
+   const double CAP=11.2125;
+   for(size_t i=60;i<w.post.size();++i){
+    double q=std::abs(w.post[i][0]);
+    if(q>cmx)cmx=q;
+    if(first_rail<0&&q>=CAP*(1.-1e-9))first_rail=(int)i;
+    if(i>=65&&i<80&&w.post[i][3]<0.)++neg_spd;}
+   char b[256];std::snprintf(b,256,"F-G21 fold_census posture_tau_max=%.5f (cap %.4f) first_rail_tick=%s ticks_pspd_negative_in_[65,79]=%d [REPORTED: not this verdict's clause]",
+    cmx,CAP,first_rail<0?"none":std::to_string(first_rail).c_str(),neg_spd);
+   note(b);}}
 
  // ── WAVE 19 STRUT CENSUS (pre-registered in receipt_wave19.json): through
  //    the settle [0,60) the runtime census must MATCH the derived composition
