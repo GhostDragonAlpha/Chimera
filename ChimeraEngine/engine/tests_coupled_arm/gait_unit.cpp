@@ -24,8 +24,10 @@ struct WalkOut{
 };
 
 int main(int argc,char**argv){try{
- require(argc==2,"usage: gait_unit gait_scene.json");
+ require(argc==2||argc==3,"usage: gait_unit gait_scene.json [fore_share]");
  J scene=load_json(argv[1]);
+ const double requested_share=argc==3?std::stod(argv[2]):number(scene.at("gait_controller").at("recipe").at("defaults").at("fore_share"));
+ require(requested_share>0.05&&requested_share<0.9,"gait_fore_share_cli_range");
  const J& data=scene.at("gait_controller");
  const J& recipe=data.at("recipe");
  const double dt=1.0/number(recipe.at("tick_hz"));
@@ -66,7 +68,7 @@ int main(int argc,char**argv){try{
  //    source model's own periodic-cycle entry.
  auto walk_run=[&](bool capture){
   GaitWalker d(data,9.80665,V{0,0,0},dt);
-  d.configure({{"capture_enabled",capture},{"reset",true}});
+  d.configure({{"capture_enabled",capture},{"fore_share",requested_share},{"reset",true}});
   const int WALK=10*CYCLE_TICKS;
   WalkOut out;bool prev_t[2]={false,false};int w_ledger_first=-1;double w_ledger_prev=0;
   auto t_start=std::chrono::steady_clock::now();
@@ -93,9 +95,10 @@ int main(int argc,char**argv){try{
    w_ledger_prev=(std::max)(w_ledger_prev,(std::max)(bal,stor));
    if(i%10==0){std::fprintf(stderr,"[ledger10] tick %d %s\n",i,s["energy"].dump().c_str());
     for(const auto&pt:s["contact"]["points"])std::fprintf(stderr,"[pt] %s cop_x=%.5f cop_y=%.5f gap=%.3e touching=%d rxn=%.3f slip=%.3f\n",pt["name"].get<std::string>().c_str(),number(pt["position_m"][0]),number(pt["position_m"][1]),number(pt["gap_m"]),pt["touching"].get<bool>()?1:0,number(pt["reaction_N"]),number(pt["slip_speed_m_s"]));
+     for(const auto&pt:s["contact"]["points"])std::fprintf(stderr,"[poscorr] %s work=%.6f events=%llu\n",pt["name"].get<std::string>().c_str(),number(pt["poscorr_work_J"]),pt["poscorr_events"].get<uint64_t>());
     const J& trunk=s["joints"][12];
     std::fprintf(stderr,"[trunk] phase=%.5f angle_deg=%.5f target_deg=%.5f torque=%.5f speed=%.5f\n",number(trunk["phase"]),number(trunk["angle_deg"]),number(trunk["target_deg"]),number(trunk["motor_torque_N_m"]),number(trunk["speed_rad_s"]));
-    for(size_t fj=8;fj<12;++fj){const J& fore=s["joints"][fj];std::fprintf(stderr,"[fore] name=%s angle_deg=%.5f target_deg=%.5f torque=%.5f cap=%.5f\n",fore["name"].get<std::string>().c_str(),number(fore["angle_deg"]),number(fore["target_deg"]),number(fore["motor_torque_N_m"]),number(fore["torque_cap_N_m"]));}
+    for(size_t fj=8;fj<12;++fj){const J& fore=s["joints"][fj];std::fprintf(stderr,"[fore] name=%s angle_deg=%.5f target_deg=%.5f torque=%.5f cap=%.5f planted=%s\n",fore["name"].get<std::string>().c_str(),number(fore["angle_deg"]),number(fore["target_deg"]),number(fore["motor_torque_N_m"]),number(fore["torque_cap_N_m"]),s["gait"]["planted_fore_left"].is_array()?s["gait"]["planted_fore_left"].dump().c_str():"null");}
     std::fprintf(stderr,"[body] tick=%d x=%.6f y=%.6f\n",i,number(s["base_q"][0]),number(s["base_q"][1]));}
 #endif
    out.worst_ledger=(std::max)(out.worst_ledger,(std::max)(bal,stor));

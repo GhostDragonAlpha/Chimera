@@ -1,0 +1,55 @@
+{
+  "lane": "buffy/gait-wave12-planted-struts",
+  "date": "2026-09-20",
+  "agent": "Buffy trailer",
+  "base": "f0efbba7 (origin/buffy/gait-wave11-quadruped)",
+  "rule_0": {
+    "statement": "A 2-DOF analytic law-of-cosines closure holds each forepaw at its planted world position against the moving body.",
+    "prediction": "Forepaw gaps remain within the kTouch band through the first two hind transitions, beyond the wave-11 lift point at tick 291.",
+    "falsifiers": {
+      "milestone": "At fore_share=0.45 the walk exceeds tick 426 with planted paws and reports F-G1/F-G2/F-G3.",
+      "share_bisect": "Run fore_share in {0.25,0.45,0.55}; refusal tick and failing joint must vary monotonically with share, or the dynamic load-share model is falsified.",
+      "free_fall": "F-G5 remains -9.806650 m/s2 with four legs and powered-off contacts.",
+      "determinism": "F-G7 remains bit-identical.",
+      "graph": "Graph tests remain green.",
+      "diagnostic": "A 300-tick trace separates brake/damping/impact/friction ledger growth from per-contact positional-correction work."
+    }
+  },
+  "design": {
+    "fore_share_default": 0.45,
+    "ik": "Closed-form planar 2-DOF IK; planted world x/y captured after settle; branch minimizes distance to the live planted configuration.",
+    "lengths_m": {"humerus": 0.125, "forearm": 0.132},
+    "mount_m": [0.2689, -0.1331],
+    "contacts": "four hind sole points plus four forepaw sole points",
+    "fore_elbow_cap_Nm": 3.76
+  },
+  "measurements": {
+    "full_walk_s045": {
+      "refusal_tick": 405,
+      "refusal": "gait_impact_event_budget",
+      "required_tick": 426,
+      "worst_ledger_J": 32.061539,
+      "F-G1": "not measured: refusal before three-cycle tracking window",
+      "F-G2": "not measured: refusal before three-cycle duty window",
+      "F-G3": "not measured: refusal before cycle 5",
+      "F-G5_free_fall_m_s2": -9.806650,
+      "F-G7_bit_identical": true,
+      "F-G6_capture_events": 11
+    },
+    "share_bisect": [
+      {"fore_share": 0.25, "refusal_tick": 425, "refusal": "gait_impact_event_budget", "worst_ledger_J": 33.203249, "failing_joint_or_phase": "impact-event localization during late hind transition"},
+      {"fore_share": 0.45, "refusal_tick": 405, "refusal": "gait_impact_event_budget", "worst_ledger_J": 32.061539, "failing_joint_or_phase": "impact-event localization during late hind transition"},
+      {"fore_share": 0.55, "refusal_tick": 56, "refusal": "gait_positional_correction_budget", "worst_ledger_J": 0.803010, "failing_joint_or_phase": "front/fore seating correction during settle release"}
+    ],
+    "diagnostic_300_tick": {
+      "reached": 300,
+      "ledger_at_tick_300_J": 7.419814,
+      "channels_at_tick_300_J": {"brake": 16.226767, "damping": 5.402689, "impact": 0.992896, "friction": 1.021998},
+      "poscorr": "per-contact [poscorr] trace enabled; late refusal storm is impact-localization, while the ledger persists and is dominated by brake heat"
+    },
+    "graph_tests": "19 passed, 27 subtests passed",
+    "build": "Release gait_unit and gait_unit_trace passed"
+  },
+  "pass": false,
+  "honest_summary": "Analytic planted-paw IK is wired and deterministic. The milestone remains red: s=0.45 refuses at tick 405, s=0.25 at 425, and s=0.55 at 56. F-G5/F-G7 and graph tests are green; F-G1/F-G2/F-G3 are not measurable after early refusal. The dynamic refusal ordering is non-monotone, falsifying the requested dynamic load-share monotonicity. The 300-tick ledger does not collapse; brake heat is the largest named growth channel."
+}

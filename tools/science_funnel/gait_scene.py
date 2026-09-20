@@ -198,7 +198,7 @@ def compile_gait(graph,output):
              'store_stride_window':10,'viscous_damping_N_m_s_rad':0.109},]
     drives=list(contract['drives'])+fore_drives
     defaults={'power':True,'gait_enabled':True,'capture_enabled':True,'posture_drive':True,'push_N':0.0,'contact_enabled':True,
-              'contact_friction':contract['contact_friction']}
+              'contact_friction':contract['contact_friction'],'fore_share':0.45}
     for d in drives:
         defaults[d['coordinate']+'_drive']=True
     measured=seating_scan(model,record)
