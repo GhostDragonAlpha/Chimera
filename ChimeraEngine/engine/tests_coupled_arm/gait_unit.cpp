@@ -244,16 +244,20 @@ int main(int argc,char**argv){try{
   ck(bfa_mx<2,"f14_no_both_fore_airborne_window");
   ck(sup2_ticks==0,"f14_support_census_min2");}
 
- // ── WAVE 15 STRUT CENSUS (pre-registered in receipt_wave15.json): through
- //    the settle [0,60) the CALIBRATED fore-hind strut difference -- the
- //    TD-side hind heel dangle over the lowest paw (the seat), the quantity
- //    the 5.9 cm survivable / 10.5 cm fatal calibration measured -- stays
- //    within 0.059 m at EVERY tick; the full 8-point spread stays within
- //    0.1744 m (the strongest dangle that ever SURVIVED a settle -- the
- //    wave-13 entry's own tick-0 spread). Worst tick named for both.
- {const size_t N=std::min(w.gp.size(),(size_t)60);
-  // The TD heel is the FIRST declared contact point (the scene's order:
-  // left_heel before all others; the seat's +2e-6 target added back).
+ // ── WAVE 19 STRUT CENSUS (pre-registered in receipt_wave19.json): through
+ //    the settle [0,60) the runtime census must MATCH the derived composition
+ //    and only DECAY (the wave-13/16/17 precedent): the calibrated TD-heel
+ //    strut difference vs the derived d_td, the 8-point spread vs the derived
+ //    spread (the recipe 'leaned_entry' bounds, +the 2e-3 census gate). THE
+ //    HONEST ANCHOR COMPARISON (never tuned away): the derived d_td EXCEEDS
+ //    the 0.059 m strut-side law of the level membranes because this
+ //    composition IS the 291 run's survived geometry (the existence proof);
+ //    the derivation and the receipt own the comparison. Worst tick named.
+ {const J& le=recipe.at("leaned_entry");
+  const double TD_B=number(le.at("d_td_m"))+number(le.at("census_gate_m"));
+  const double SPR_B=number(le.at("spread_m"))+number(le.at("census_gate_m"));
+  const double TD_DER=number(le.at("d_td_m")),SPR_DER=number(le.at("spread_m"));
+  const size_t N=std::min(w.gp.size(),(size_t)60);
   const size_t heelL=0;
   double td_mx=0,sp_mx=0;int td_tick=-1,sp_tick=-1;
   for(size_t i=0;i<N;++i){
@@ -263,43 +267,56 @@ int main(int argc,char**argv){try{
    if(d_td>td_mx){td_mx=d_td;td_tick=(int)i;}
    if(spread>sp_mx){sp_mx=spread;sp_tick=(int)i;}}
   note("F-G15 strut_census td_heel_worst_m="+std::to_string(td_mx)+" at tick "+std::to_string(td_tick)+
+   " (derived "+std::to_string(TD_DER)+" bound "+std::to_string(TD_B)+")"+
    " spread_worst_m="+std::to_string(sp_mx)+" at tick "+std::to_string(sp_tick)+
-   " (bounds: 0.059 calibrated / 0.1744 survived anchor)");
-  ck(td_mx<=0.059,"f15_strut_bound_td_heel");
-  ck(sp_mx<=0.1744,"f15_strut_spread_survived_anchor");}
+   " (derived "+std::to_string(SPR_DER)+" bound "+std::to_string(SPR_B)+")"+
+   " [anchor comparison: the 0.059 strut-side law does NOT bind this composition -- the 291 existence proof does]");
+  ck(td_mx<=TD_B,"f19_strut_census_td_heel");
+  ck(sp_mx<=SPR_B,"f19_strut_census_spread");}
 
- // ── WAVE 16 FORE-LOAD CENSUS (pre-registered in receipt_wave16.json): the
- //    settle window [0,60) total FORE reaction (the runtime contact rows are
- //    per-foot pair quantities; the fore sum is the trade's load) stays at or
- //    above N_plant -- the derived slide ceiling, recipe 'fore_load_plant_N'
- //    -- at EVERY tick; worst tick named with its slip. THE direct test of the
- //    load/strut trade: below the bound with the pads sliding means the trade
- //    failed to plant. The pinned marker ('fore_load_pinned_N', the wave-14
- //    leaned anchor) is reported alongside.
+ // ── WAVE 19 FORE-PRESS CENSUS (pre-registered in receipt_wave19.json): the
+ //    LEAN'S PRESS -- the direct test this is the 291-class load path: the
+ //    total FORE reaction reaches the N_plant-consistent bound (the recipe
+ //    'fore_load_plant_N', the 5.199 N slide ceiling) BY the pre-registered
+ //    deadline tick ('leaned_entry.fore_press_deadline_tick', 10). The
+ //    [0,60) trajectory (worst min with its slip, peak) reported alongside
+ //    with the pinned marker (21.85 N). The wave-16 EVERY-TICK clause is
+ //    dropped with the level composition it belonged to (itemized in the
+ //    receipt): the leaned entry's press is a GROWING load path (the tip
+ //    loads the pads), judged at its deadline + at the planted-by-60 hold.
  {const double PLANT_N=number(recipe.at("fore_load_plant_N"));
   const double PIN_N=number(recipe.at("fore_load_pinned_N"));
+  const int DEADLINE=(int)number(recipe.at("leaned_entry").at("fore_press_deadline_tick"));
   const size_t N=std::min(w.fr.size(),(size_t)60);
-  double mn=1e9,mx=-1e9,mn_slip=-1;int mn_tick=-1,mx_tick=-1;
+  int press_tick=-1;double mn=1e9,mx=-1e9,mn_slip=-1;int mn_tick=-1,mx_tick=-1;
   for(size_t i=0;i<N;++i){
+   if(press_tick<0&&w.fr[i]>=PLANT_N)press_tick=(int)i;
    if(w.fr[i]<mn){mn=w.fr[i];mn_tick=(int)i;mn_slip=w.frslip[i];}
    if(w.fr[i]>mx){mx=w.fr[i];mx_tick=(int)i;}}
-  note("F-G16 fore_load_census worst_min_N="+std::to_string(mn)+" at tick "+std::to_string(mn_tick)+
+  note("F-G16 fore_press press_by_tick="+std::to_string(press_tick)+
+   " (bound N>="+std::to_string(PLANT_N)+" by tick "+std::to_string(DEADLINE)+")"+
+   " worst_min_N="+std::to_string(mn)+" at tick "+std::to_string(mn_tick)+
    " slip_at_worst_m_s="+std::to_string(mn_slip)+" peak_N="+std::to_string(mx)+" at tick "+std::to_string(mx_tick)+
-   " plant_bound_N="+std::to_string(PLANT_N)+" pinned_marker_N="+std::to_string(PIN_N));
-  ck(mn>=PLANT_N,"f16_fore_load_plant");}
+   " pinned_marker_N="+std::to_string(PIN_N));
+  if(press_tick<0){++reds;note("F-G19 entry clause (i) FAILED: the press never reached N_plant in [0,60)");}
+  else ck(press_tick<=DEADLINE,"f19_fore_press_by_10");}
 
- // ── WAVE 16/17 HIND-RESET CENSUS (the branch-B repair's falsifier, its
- //    tick-0 quantities moved to the SEAT-LAW derivation): under the wave-17
- //    hind seat the runtime pair-min gaps are {L 2e-6 (the seat), R 2.97e-3}
- //    -- the recipe's seat_law block carries the derived values (before the
- //    seat law the fore-seat derivation measured {4.6161e-2, 4.9125e-2}, and
- //    before the wave-16 repair the defected runtime measured
- //    4.575e-2/4.557e-2); the right hind's tick-0 joint angles clause stands.
- {const J& sl=recipe.at("seat_law");
-  const double L_DER=number(sl.at("hind_pairmin_gaps_derived_m").at("left"));
-  const double R_DER=number(sl.at("hind_pairmin_gaps_derived_m").at("right"));
-  double l=w.gp.empty()?0.:w.gp[0][0],r=w.gp.empty()?0.:w.gp[0][2];
-  char b[192];std::snprintf(b,192,"F-G16 hind_reset pairmin_gaps_m L=%.9f (derived %.9f) R=%.9f (derived %.9f) [seat law: the L heel IS the seat]",l,L_DER,r,R_DER);
+ // ── WAVE 16/19 HIND-RESET CENSUS (the branch-B repair's falsifier, its
+ //    tick-0 quantities re-derived for the leaned composition): at the FORE
+ //    seat the corrected hind columns dangle the derived census values (the
+ //    recipe 'leaned_entry.hind_pairmin_gaps_derived_m'; before this lane the
+ //    wave-17 hind seat measured {2e-6, 2.97e-3} and the wave-16 fore seat
+ //    {4.616e-2, 4.913e-2}); the right hind's tick-0 joint angles clause
+ //    stands (composition-independent: the corrected 0.5 column).
+ {const J& le=recipe.at("leaned_entry");
+  const double L_DER=number(le.at("hind_pairmin_gaps_derived_m").at("left"));
+  const double R_DER=number(le.at("hind_pairmin_gaps_derived_m").at("right"));
+  // TRUE pair mins (this composition's R pair min is the MP head, not the
+  // heel -- the leaned columns pitch the feet): min over each foot's points.
+  double l=w.gp.empty()?0.:(std::min)(w.gp[0][0],w.gp[0][1]);
+  double r=w.gp.empty()?0.:(std::min)(w.gp[0][2],w.gp[0][3]);
+  char b[224];std::snprintf(b,224,"F-G16 hind_reset pairmin_gaps_m L=%.9f (derived %.9f) R=%.9f (derived %.9f) [the fore seat: both hind pairs airborne, the corrected columns]",
+   l,L_DER,r,R_DER);
   note(b);
   ck(std::abs(l-L_DER)<=2e-3,"f16_hind_reset_left_pairmin");
   ck(std::abs(r-R_DER)<=2e-3,"f16_hind_reset_right_pairmin");
@@ -322,33 +339,43 @@ int main(int argc,char**argv){try{
   if(w.lift_tick[0]>=0)ck(std::abs(w.lift_phase[0]-0.68)<=0.08,"f16_left_hind_clock_lift");
   if(w.lift_tick[1]>=0)ck(std::abs(w.lift_phase[1]-0.68)<=0.08,"f16_right_hind_clock_lift");}
 
- // ── WAVE 17 HIND-LOAD CENSUS (pre-registered in receipt_wave17.json): the
- //    SEAT LAW's tick-0 clause -- the hind pair's reactions bear >= 0.5*W at
- //    tick 0 (the recipe 'seat_law.hind_load_floor_N'), and the opening is
- //    never a fore-only cantilever: the hind reaction stays > 0 through
- //    [0, 30) (the L heel is the seat; the fore pads kiss at ~zero load).
- //    A fore-only bearing tick is the direct falsification.
- {const double FLOOR_N=number(recipe.at("seat_law").at("hind_load_floor_N"));
-  double t0=w.hr.empty()?0.:w.hr[0];int fore_only_tick=-1;double hr_min30=1e9;
-  const size_t N30=std::min(w.hr.size(),(size_t)30);
-  for(size_t i=0;i<N30;++i){hr_min30=(std::min)(hr_min30,w.hr[i]);
-   if(w.hr[i]<=1e-9&&fore_only_tick<0)fore_only_tick=(int)i;}
-  char b[224];std::snprintf(b,224,"F-G17 hind_load tick0_N=%.6f floor_N=%.6f hr_min_[0,30)_N=%.6f fore_only_first_tick=%s",
-   t0,FLOOR_N,hr_min30,fore_only_tick<0?"none":std::to_string(fore_only_tick).c_str());
+ // ── WAVE 19 HIND-LANDING CENSUS (pre-registered in receipt_wave19.json):
+ //    the corrected composition's hind clauses: the LEFT hind lands through
+ //    the settle inside the derived window (the carried descent-rate anchor:
+ //    the wave-18 leaned-settle measurement 3.371e-2 m / tick 22, validated
+ //    by the touch at 38 inside [14,39]); the RIGHT hind (its deepened
+ //    0.5-column pair-min) lands at its clock's first TD slot inside the
+ //    derived window -- NOT MEASURED if the walk refuses before the window
+ //    opens (reported honestly). The wave-17 hind-seat clauses (the tick-0
+ //    0.5*W floor, the no-fore-only-cantilever clause) are DROPPED with the
+ //    hind seat they belonged to: this composition opens FORE-BEARING by
+ //    design (all four hind points airborne -- the derivation's pre-
+ //    registered cantilever note and stage-A containment).
+ {const J& le=recipe.at("leaned_entry");
+  const auto& LW=le.at("hind_land_left_window_ticks");
+  const auto& RW=le.at("hind_land_right_window_ticks");
+  const int L_LO=(int)number(LW[0]),L_HI=(int)number(LW[1]);
+  const int R_LO=(int)number(RW[0]),R_HI=(int)number(RW[1]);
+  int l_touch=w.td[0].empty()?-1:(int)std::lround(w.td[0].front()/dt);
+  int r_touch=w.td[1].empty()?-1:(int)std::lround(w.td[1].front()/dt);
+  char b[224];std::snprintf(b,224,"F-G19 hind_landing left_tick=%d (window [%d,%d]) right_tick=%d (window [%d,%d])",
+   l_touch,L_LO,L_HI,r_touch,R_LO,R_HI);
   note(b);
-  ck(t0>=FLOOR_N,"f17_hind_load_tick0");
-  ck(fore_only_tick<0,"f17_no_fore_only_cantilever");}
+  if(l_touch>=0)ck(l_touch>=L_LO&&l_touch<=L_HI,"f19_hind_land_left_window");
+  else note("F-G19 hind_landing left NOT MEASURED: the left hind never touched before the refusal");
+  if(r_touch>=0)ck(r_touch>=R_LO&&r_touch<=R_HI,"f19_hind_land_right_window");
+  else note("F-G19 hind_landing right NOT MEASURED: the right hind never touched before the refusal (predicted: its window extends past the settle)");}
 
- // ── WAVE 17 FORE-PLANT CENSUS (pre-registered in receipt_wave17.json): the
- //    re-pinned pads TOUCH at tick 0 (kissing at the +2e-6 seat gap -- a pad
- //    not touching at tick 0 falsifies the re-pin); their load GROWS through
- //    the settle and they are PLANTED by the capture at 60: fore gap in the
- //    stance band, slip <= the recipe bound (0.1 m/s), total fore reaction
- //    >= N_plant (the 5.199 N slide ceiling; the 21.85 N pinned marker
- //    reported alongside). THE direct test of the seat law's purpose.
+ // ── WAVE 19 FORE-PLANT CENSUS (pre-registered in receipt_wave19.json): the
+ //    fore pads ARE the seat (the 291-class composition): a pad not touching
+ //    at tick 0 falsifies the seat; the press must HOLD through the settle:
+ //    at the capture at 60 the pads are PLANTED (gap in the stance band,
+ //    slip <= the recipe bound 0.1 m/s, total fore reaction >= N_plant).
+ //    The capture MUST fire at tick 60 (the entry clause (iv)); a settle
+ //    death (refusal < 60) is the entry clause's direct falsification.
  {const double PLANT_N=number(recipe.at("fore_load_plant_N"));
   const double PIN_N=number(recipe.at("fore_load_pinned_N"));
-  const double SLIP_B=number(recipe.at("seat_law").at("fore_plant_slip_bound_m_s"));
+  const double SLIP_B=number(recipe.at("leaned_entry").at("fore_plant_slip_bound_m_s"));
   bool touch0=(!w.fgmin.empty()&&w.fgmin[0][0]<=1e-5&&w.fgmin[0][1]<=1e-5);
   double fr_mx=-1e9;int fr_mx_tick=-1,fr_cross=-1;
   const size_t N=std::min(w.fr.size(),(size_t)61);
@@ -359,19 +386,26 @@ int main(int argc,char**argv){try{
    double gmn=(std::min)(w.fgmin[60][0],w.fgmin[60][1]);
    planted60=(w.fgmax[60][0]<=1e-5&&w.fgmax[60][1]<=1e-5&&gmn>=-1e-6);
    slip60=w.frslip[60];rxn60=w.fr[60];}
-  char b[320];std::snprintf(b,320,"F-G17 fore_plant touch_at_0=%d fore_rxn_peak_N=%.6f@%d first_ge_plant_tick=%s reached60=%d at60: rxn=%.6f gap_max=(%.3e,%.3e) slip=%.6f planted=%d (bounds: N>=%.3f pinned marker %.3f slip<=%.2f)",
+  char b[384];std::snprintf(b,384,"F-G19 fore_plant touch_at_0=%d fore_rxn_peak_N=%.6f@%d first_ge_plant_tick=%s reached60=%d captured=%d at60: rxn=%.6f gap_max=(%.3e,%.3e) slip=%.6f planted=%d (bounds: N>=%.3f pinned marker %.3f slip<=%.2f)",
    touch0?1:0,fr_mx,fr_mx_tick,fr_cross<0?"never":std::to_string(fr_cross).c_str(),
-   reached60?1:0,rxn60,gap60a,gap60b,slip60,planted60?1:0,PLANT_N,PIN_N,SLIP_B);
+   reached60?1:0,w.paw_captured?1:0,rxn60,gap60a,gap60b,slip60,planted60?1:0,PLANT_N,PIN_N,SLIP_B);
   note(b);
-  ck(touch0,"f17_fore_touch_at_seat");
-  if(reached60)ck(planted60&&rxn60>=PLANT_N&&slip60<=SLIP_B,"f17_fore_planted_by_capture");
-  else note("F-G17 fore_planted_by_capture NOT MEASURED: the walk refused before the capture tick");}
+  ck(touch0,"f19_fore_touch_at_seat");
+  if(reached60){
+   ck(w.paw_captured,"f19_capture_fired_at_60");
+   ck(planted60&&rxn60>=PLANT_N&&slip60<=SLIP_B,"f19_fore_planted_by_capture");}
+  else {++reds;note("F-G19 entry clause DIRECT FALSIFICATION: the walk refused before the capture tick (a settle death)");}}
 
- // ── WAVE 17 DANGLE CENSUS (pre-registered in receipt_wave17.json): every
- //    paw's dangle <= the wave-15 per-paw bound (0.0919 m) and the 8-point
- //    spread <= 0.1744 m at EVERY tick in [0, 60]; worst tick named for both.
- {const double PAW_B=number(recipe.at("seat_law").at("per_paw_dangle_m"));
-  const double SPR_B=number(recipe.at("seat_law").at("spread_m"));
+ // ── WAVE 19 DANGLE CENSUS (pre-registered in receipt_wave19.json): every
+ //    paw's dangle and the 8-point spread stay within the derived
+ //    composition's own census bounds (+ the 2e-3 gate) at EVERY tick in
+ //    [0, 60] -- the runtime builds the derived state and the settle may
+ //    only DECAY the dangles (the wave-13/16/17 precedent); growth beyond
+ //    the authored composition is the direct falsification. Worst tick named.
+ {const J& le=recipe.at("leaned_entry");
+  const double PAW_B=number(le.at("per_paw_dangle_m"))+number(le.at("census_gate_m"));
+  const double PAW_DER=number(le.at("per_paw_dangle_m"));
+  const double SPR_B=number(le.at("spread_m"))+number(le.at("census_gate_m"));
   double paw_mx=0,spr_mx=0;int paw_tick=-1,spr_tick=-1;
   const size_t N=std::min(w.gp.size(),(size_t)60);
   for(size_t i=0;i<N;++i){
@@ -380,11 +414,11 @@ int main(int argc,char**argv){try{
    if(hi>paw_mx){paw_mx=hi;paw_tick=(int)i;}
    double spr=hi-lo+2e-6;
    if(spr>spr_mx){spr_mx=spr;spr_tick=(int)i;}}
-  char b[192];std::snprintf(b,192,"F-G17 dangle_census per_paw_worst_m=%.6f at tick %d (bound %.4f) spread_worst_m=%.6f at tick %d (bound %.4f)",
-   paw_mx,paw_tick,PAW_B,spr_mx,spr_tick,SPR_B);
+  char b[192];std::snprintf(b,192,"F-G19 dangle_census per_paw_worst_m=%.6f at tick %d (derived %.6f bound %.6f) spread_worst_m=%.6f at tick %d (bound %.6f)",
+   paw_mx,paw_tick,PAW_DER,PAW_B,spr_mx,spr_tick,SPR_B);
   note(b);
-  ck(paw_mx<=PAW_B,"f17_per_paw_dangle");
-  ck(spr_mx<=SPR_B,"f17_dangle_spread");}
+  ck(paw_mx<=PAW_B,"f19_per_paw_dangle");
+  ck(spr_mx<=SPR_B,"f19_dangle_spread");}
 
 
  // ── F-G1: trajectories within the tables (+/-5 deg, >=95% of samples after
