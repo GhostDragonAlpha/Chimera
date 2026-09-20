@@ -25,6 +25,7 @@ struct WalkOut{
  std::vector<std::array<double,8>> gp;         // per-tick ALL-paw gaps, declared point order (wave 15 strut census)
  std::vector<double> fr,frslip;                // per-tick total FORE reaction + max fore slip (wave 16 load census)
  std::vector<double> hr;                       // per-tick total HIND reaction (wave 17 hind-load census)
+ std::vector<double> pd;                       // per-tick PRE-clamp posture demand (wave 18 trunk-moment census)
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
@@ -120,6 +121,10 @@ int main(int argc,char**argv){try{
       if(nm.rfind("fore_",0)==0){fsum+=number(pt["reaction_N"]);fslip=(std::max)(fslip,number(pt["slip_speed_m_s"]));}
       else hsum+=number(pt["reaction_N"]);} // the hind points (left_/right_ prefixed)
      out.fr.push_back(fsum);out.frslip.push_back(fslip);out.hr.push_back(hsum);}
+    {double pdm=0; // WAVE 18 trunk-moment census input: the PRE-clamp posture demand
+     for(const auto&jn:s["joints"])if(jn["name"].get<std::string>()=="trunk_pitch_HAT")
+      pdm=jn.contains("posture_demand_N_m")?number(jn["posture_demand_N_m"]):0.;
+     out.pd.push_back(pdm);}
     std::array<char,2> fmm{0,0};std::array<uint64_t,2> sat{};
     if(s["gait"].contains("fore_paw")&&s["gait"]["fore_paw"].size()>=2)
      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["fore_paw"][l];
@@ -143,7 +148,7 @@ int main(int argc,char**argv){try{
    if(i%10==0){std::fprintf(stderr,"[ledger10] tick %d %s\n",i,s["energy"].dump().c_str());
     for(const auto&pt:s["contact"]["points"])std::fprintf(stderr,"[pt] %s cop_x=%.5f cop_y=%.5f gap=%.3e touching=%d rxn=%.3f slip=%.3f\n",pt["name"].get<std::string>().c_str(),number(pt["position_m"][0]),number(pt["position_m"][1]),number(pt["gap_m"]),pt["touching"].get<bool>()?1:0,number(pt["reaction_N"]),number(pt["slip_speed_m_s"]));
     const J& trunk=s["joints"][12];
-    std::fprintf(stderr,"[trunk] phase=%.5f angle_deg=%.5f target_deg=%.5f torque=%.5f speed=%.5f\n",number(trunk["phase"]),number(trunk["angle_deg"]),number(trunk["target_deg"]),number(trunk["motor_torque_N_m"]),number(trunk["speed_rad_s"]));
+    std::fprintf(stderr,"[trunk] phase=%.5f angle_deg=%.5f target_deg=%.5f torque=%.5f demand=%.5f speed=%.5f\n",number(trunk["phase"]),number(trunk["angle_deg"]),number(trunk["target_deg"]),number(trunk["motor_torque_N_m"]),trunk.contains("posture_demand_N_m")?number(trunk["posture_demand_N_m"]):0.,number(trunk["speed_rad_s"]));
     for(size_t fj=8;fj<12;++fj){const J& fore=s["joints"][fj];std::fprintf(stderr,"[fore] name=%s angle_deg=%.5f target_deg=%.5f torque=%.5f cap=%.5f\n",fore["name"].get<std::string>().c_str(),number(fore["angle_deg"]),number(fore["target_deg"]),number(fore["motor_torque_N_m"]),number(fore["torque_cap_N_m"]));}
     std::fprintf(stderr,"[body] tick=%d x=%.6f y=%.6f\n",i,number(s["base_q"][0]),number(s["base_q"][1]));}
 #endif
@@ -339,17 +344,26 @@ int main(int argc,char**argv){try{
   ck(t0>=FLOOR_N,"f17_hind_load_tick0");
   ck(fore_only_tick<0,"f17_no_fore_only_cantilever");}
 
- // ── WAVE 17 FORE-PLANT CENSUS (pre-registered in receipt_wave17.json): the
- //    re-pinned pads TOUCH at tick 0 (kissing at the +2e-6 seat gap -- a pad
- //    not touching at tick 0 falsifies the re-pin); their load GROWS through
- //    the settle and they are PLANTED by the capture at 60: fore gap in the
- //    stance band, slip <= the recipe bound (0.1 m/s), total fore reaction
- //    >= N_plant (the 5.199 N slide ceiling; the 21.85 N pinned marker
- //    reported alongside). THE direct test of the seat law's purpose.
+ // ── WAVE 17/18 FORE-PLANT CENSUS (pre-registered in receipt_wave17.json,
+ //    the touch clause re-derived at the wave-18 authored lean): the pads
+ //    DANGLE off the plane at the seat (touch_at_0 = 0 AS DESIGNED -- airborne
+ //    pads cannot skate, the wave-17 run-1 falsifier finding) and touch inside
+ //    the RE-DERIVED window (recipe 'seat_law.fore_touch_window_ticks', the
+ //    leaned dangle scaled on the carried settle descent-rate anchor); their
+ //    load GROWS through the settle and they are PLANTED by the capture at
+ //    60: fore gap in the stance band, slip <= the recipe bound (0.1 m/s),
+ //    total fore reaction >= N_plant (the 5.199 N slide ceiling; the 21.85 N
+ //    pinned marker reported alongside). THE direct test of the seat law's
+ //    purpose.
  {const double PLANT_N=number(recipe.at("fore_load_plant_N"));
   const double PIN_N=number(recipe.at("fore_load_pinned_N"));
   const double SLIP_B=number(recipe.at("seat_law").at("fore_plant_slip_bound_m_s"));
+  const int TW_LO=(int)number(recipe.at("seat_law").at("fore_touch_window_ticks").at(0));
+  const int TW_HI=(int)number(recipe.at("seat_law").at("fore_touch_window_ticks").at(1));
   bool touch0=(!w.fgmin.empty()&&w.fgmin[0][0]<=1e-5&&w.fgmin[0][1]<=1e-5);
+  int touch_tick=-1;
+  for(size_t i=0;i<w.fgmin.size();++i)
+   if(w.fgmin[i][0]<=1e-5&&w.fgmin[i][1]<=1e-5){touch_tick=(int)i;break;}
   double fr_mx=-1e9;int fr_mx_tick=-1,fr_cross=-1;
   const size_t N=std::min(w.fr.size(),(size_t)61);
   for(size_t i=0;i<N;++i){if(w.fr[i]>fr_mx){fr_mx=w.fr[i];fr_mx_tick=(int)i;}
@@ -359,13 +373,39 @@ int main(int argc,char**argv){try{
    double gmn=(std::min)(w.fgmin[60][0],w.fgmin[60][1]);
    planted60=(w.fgmax[60][0]<=1e-5&&w.fgmax[60][1]<=1e-5&&gmn>=-1e-6);
    slip60=w.frslip[60];rxn60=w.fr[60];}
-  char b[320];std::snprintf(b,320,"F-G17 fore_plant touch_at_0=%d fore_rxn_peak_N=%.6f@%d first_ge_plant_tick=%s reached60=%d at60: rxn=%.6f gap_max=(%.3e,%.3e) slip=%.6f planted=%d (bounds: N>=%.3f pinned marker %.3f slip<=%.2f)",
-   touch0?1:0,fr_mx,fr_mx_tick,fr_cross<0?"never":std::to_string(fr_cross).c_str(),
+  char b[384];std::snprintf(b,384,"F-G17 fore_plant touch_at_0=%d (designed 0: the dangle) first_both_touch_tick=%d window=[%d,%d] fore_rxn_peak_N=%.6f@%d first_ge_plant_tick=%s reached60=%d at60: rxn=%.6f gap_max=(%.3e,%.3e) slip=%.6f planted=%d (bounds: N>=%.3f pinned marker %.3f slip<=%.2f)",
+   touch0?1:0,touch_tick,TW_LO,TW_HI,fr_mx,fr_mx_tick,fr_cross<0?"never":std::to_string(fr_cross).c_str(),
    reached60?1:0,rxn60,gap60a,gap60b,slip60,planted60?1:0,PLANT_N,PIN_N,SLIP_B);
   note(b);
-  ck(touch0,"f17_fore_touch_at_seat");
+  ck(touch0==false,"f17_fore_pads_airborne_at_seat");
+  if(touch_tick>=0)ck(touch_tick>=TW_LO&&touch_tick<=TW_HI,"f17_fore_touch_in_window");
+  else note("F-G17 fore_touch_in_window NOT MEASURED: the pads never touched both before the walk ended");
   if(reached60)ck(planted60&&rxn60>=PLANT_N&&slip60<=SLIP_B,"f17_fore_planted_by_capture");
   else note("F-G17 fore_planted_by_capture NOT MEASURED: the walk refused before the capture tick");}
+
+ // ── WAVE 18 TRUNK-MOMENT CENSUS (pre-registered in receipt_wave18.json):
+ //    THE direct test of the wave-17 blocker -- the posture servo's PRE-CLAMP
+ //    PD demand (reported per tick by the controller's trunk row as
+ //    'posture_demand_N_m'; the applied torque is post-clamp and cannot
+ //    exceed the cap, the demand is what railed) stays <= the cap
+ //    (recipe 'trunk_moment_cap_N_m', the provenance lane's 11.2125 -- NOT
+ //    raisable) at EVERY tick in [0, 60]; worst tick and value named. At the
+ //    level entry (wave 17) the demand crossed the cap by ~tick 6 and ran to
+ //    ~4x cap as the pitch ran away -- the census reads that signature
+ //    directly.
+ if(recipe.contains("trunk_moment_cap_N_m")){
+  const double CAP=number(recipe.at("trunk_moment_cap_N_m"));
+  double dem_mx=0;int dem_tick=-1;int dem_over=0;int dem_first=-1;
+  const size_t N=std::min(w.pd.size(),(size_t)61);
+  for(size_t i=0;i<N;++i){
+   double d=std::abs(w.pd[i]);
+   if(d>dem_mx){dem_mx=d;dem_tick=(int)i;}
+   if(d>CAP){++dem_over;if(dem_first<0)dem_first=(int)i;}}
+  char b[256];std::snprintf(b,256,"F-G18 trunk_moment_census worst=%.6f N.m at tick %d cap=%.4f over_cap_ticks=%d first_over=%s window=[0,60]",
+   dem_mx,dem_tick,CAP,dem_over,dem_first<0?"never":std::to_string(dem_first).c_str());
+  note(b);
+  ck(dem_mx<=CAP,"f18_trunk_moment_census");}
+ else note("F-G18 trunk_moment_census NOT MEASURED: no trunk_moment_cap_N_m key (legacy scene)");
 
  // ── WAVE 17 DANGLE CENSUS (pre-registered in receipt_wave17.json): every
  //    paw's dangle <= the wave-15 per-paw bound (0.0919 m) and the 8-point

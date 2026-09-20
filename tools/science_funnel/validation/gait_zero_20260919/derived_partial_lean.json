@@ -1,0 +1,231 @@
+{
+ "schema": "chimera.partial_lean.v1",
+ "model_validation": {
+  "seat_base_y_err_m": 0.0,
+  "seat_gaps_err_m": 0.0,
+  "seat_com_err_m": 0.0,
+  "note": "the wave-18 machinery reproduces the committed wave-17 seat (derived_seat_law.json) at theta=0 to 1e-9 before any leaned measurement"
+ },
+ "trunk_moment_curve": {
+  "law": "tau(theta) = -(G + A^T lambda) base_rot_z row at the seated entry state, ONE vertical reaction at the L heel (the seat; the R MP is airborne 2.97e-3..1.4e-2 and the fore pads 3.2e-2..3.5e-2) -- the exact single-support posture-servo demand (judged in magnitude: |tau|). IDENTITY (machine-checked to 1e-9): tau == W*(x_com - x_heel), the contact-frame gravity moment (the Assembly torque sign is opposite the tip direction: the hold demand at level reacts the NOSE-UP tip W*(x_heel-x_com) = +11.2024 -- the seat law's own free-tip torque -- through the chain). THE WAVE-17 11.9 N.m IS THIS TERM at the run's drifted geometry; its exact level magnitude is 11.2024 N.m = 0.9992 of cap: the razor edge the run fell off.",
+  "composition_note": "MEASURED composition at level (Assembly rows): the heel-reaction coupling dominates (-13.745 N.m); the gravity rows are the fore arms 2.083 and the hind chains 0.460; the PELVIS ROW IS EXACTLY 0.0 -- the trunk CoM rides the base_rot_z axis, so the \"trunk+HAT gravitational moment\" is nil at this pose and the 11.2 is the CONTACT-FRAME moment itself. The relief is lever geometry, not a CoM-forward push: the nose-down rotation about the high base origin RETREATS the planted heel toward the CoM (0.302 m/rad) and advances the CoM (0.149 m/rad) -- together W*(x_heel-x_com) shrinks at 44.36 N.m/rad of |theta|.",
+  "points": [
+   {
+    "theta_rad": 0.0,
+    "tau_single_N_m": -11.202387280992859,
+    "demand_magnitude_N_m": 11.202387280992859,
+    "com_x_m": 0.02583053388172982,
+    "x_heel_m": 0.13963067544866528,
+    "gravity_rows_N_m": {
+     "trunk_pelvis": 0.0,
+     "hind_legs": -0.45960452411452357,
+     "fore_arms": -2.083130838369593
+    },
+    "reaction_coupling_N_m": -13.745122643476975
+   },
+   {
+    "theta_rad": -0.0225,
+    "tau_single_N_m": -10.206826255246295,
+    "demand_magnitude_N_m": 10.206826255246295,
+    "com_x_m": 0.029185308524085327,
+    "x_heel_m": 0.1328719820572285,
+    "gravity_rows_N_m": {
+     "trunk_pelvis": -0.4076637921863505,
+     "hind_legs": -0.4095989482809215,
+     "fore_arms": -2.055713729511565
+    },
+    "reaction_coupling_N_m": -13.07980272522513
+   },
+   {
+    "theta_rad": -0.0449,
+    "tau_single_N_m": -9.210556608310766,
+    "demand_magnitude_N_m": 9.210556608310766,
+    "com_x_m": 0.032510499459305425,
+    "x_heel_m": 0.1260765063866378,
+    "gravity_rows_N_m": {
+     "trunk_pelvis": -0.8133110515847668,
+     "hind_legs": -0.3596096116500299,
+     "fore_arms": -2.0273847197548593
+    },
+    "reaction_coupling_N_m": -12.410861991300422
+   }
+  ],
+  "midpoint_closure": {
+   "chord_dev_N_m": 0.00035431059448143287,
+   "relief_total_N_m": 1.9918306726820934,
+   "closes_three_points": true,
+   "law": "the mid-point sits on the 0/-0.0449 demand chord to <= 5% of the band relief: three points close the piecewise-linear standing"
+  },
+  "margin_derived_N_m": 0.6875,
+  "margin_provenance": "the wave-17 run-realized single-point moment 11.9 N.m (the trace estimate, receipt_wave17) minus the cap 11.2125: the relief the lean must buy back so the same entry drift lands UNDER cap",
+  "cap_N_m": 11.2125,
+  "bound_N_m": 10.525
+ },
+ "window": {
+  "moment_clause": "tau(theta) <= 10.5250 N.m",
+  "theta_root_rad": -0.015309170837528557,
+  "strut_clause": "every paw dangle <= 0.0919 m and spread <= 0.1744 m at all three points (the hind-seat strut curves; the fore-seat D-law and its -0.0449 edge are the wave-15 measured anchors this domain inherits)",
+  "containment_clause": "the CoM strictly inside the hind polygon at all three points (margins reported per point)",
+  "admissible_interval_rad": [
+   -0.0449,
+   -0.015309170837528557
+  ],
+  "empty": false
+ },
+ "entry_state": {
+  "theta_e_rad": -0.015309170837528557,
+  "predicted_single_point_moment_N_m": -10.525585946565473,
+  "predicted_moment_ratio_of_cap": 0.9387367622354936,
+  "relief_vs_level_N_m": 0.6768013344273864,
+  "seat_base_trans_y_m": 0.30094533546126084,
+  "com_x_m": 0.02811467331628642,
+  "x_heel_m": 0.1350394868179971,
+  "hind_margins_m": {
+   "rear_m": 0.20830749987092842,
+   "front_m": 0.1899745817990593
+  },
+  "gaps_m": {
+   "left_heel": 2.000000000028021e-06,
+   "left_mp_head": 0.022334397671470795,
+   "right_heel": 0.05052942959231442,
+   "right_mp_head": 0.006660154910206564,
+   "fore_left_heel": 0.035028934834141684,
+   "fore_left_mp_head": 0.03370960932462852,
+   "fore_right_heel": 0.035028934834141684,
+   "fore_right_mp_head": 0.03370960932462852
+  },
+  "hind_pairmin_gaps_derived_m": {
+   "left": 2.000000000028021e-06,
+   "right": 0.006660154910206564
+  },
+  "per_paw_dangle_m": 0.05052942959231442,
+  "spread_m": 0.05052942959231439,
+  "d_td_m": 2e-06,
+  "fore_dangle_m": 0.03370760932462852,
+  "pair_statics": {
+   "reactions_N": [
+    54.81207866008466,
+    43.62705442661534
+   ],
+   "reaction_fractions_of_W": [
+    0.5568118789893147,
+    0.443188121010685
+   ],
+   "worst_ratio": 0.5907133651121091,
+   "worst_joint": "hip_flexion_left",
+   "base_rot_residual_N_m": -1.3322676295501878e-15
+  },
+  "r_mp_landing": {
+   "gap_at_seat_m": 0.006660154910206564,
+   "tip_arm_m": 0.241262814666309,
+   "theta_land_rad": 0.02760539339399748,
+   "rotation_needed_rad": 0.04291456423152604,
+   "tip_torque_N_m": 10.525585946565478,
+   "I_edge_kg_m2": 2.7697934686445405,
+   "alpha_rad_s2": 3.8001338604197104,
+   "land_ticks_upper_bound": 45.08573546281797,
+   "touch_window_ticks": [
+    0,
+    46
+   ],
+   "note": "free-rotation UPPER bound from the leaned start (the leaned gap is larger, the tip torque smaller: the single-support window WIDENS vs wave-17 and the moment relief must -- and does -- cover it)"
+  },
+  "fore_touch_prediction": {
+   "dangle_m": 0.03370760932462852,
+   "rate_anchor_m_per_tick": 0.0015121293014162432,
+   "derived_touch_tick": 22,
+   "touch_window_ticks": [
+    14,
+    39
+   ],
+   "window_factors_carried": [
+    0.6521739130434783,
+    1.7391304347826086
+   ],
+   "note": "the settle descent-rate anchor carried from the wave-17 derivation (dangle0/23); the leaned dangle scales the tick; the [15,40] band factors carried"
+  },
+  "capture_prediction": {
+   "per_leg": {
+    "left": {
+     "reset_offset_m": -0.10463481029351401,
+     "band_m": [
+      -0.20263481029351402,
+      -0.08550987333593374
+     ]
+    },
+    "right": {
+     "reset_offset_m": -0.10463481029351401,
+     "band_m": [
+      -0.19683481029351402,
+      -0.08509987333593375
+     ]
+    }
+   },
+   "mean_band_m": [
+    -0.19973481029351403,
+    -0.08530487333593374
+   ],
+   "interpolation_law": "delta_settle linear in the fore load fraction between the measured anchors (the wave-14/17 law, carried); off_reset re-measured at the leaned seat",
+   "fold_geometry_cross_check": {
+    "hold_height_m": 0.12937518521117064,
+    "fold_equilibrium_m": 0.081667,
+    "predicted_transfer_m": -0.04770818521117064,
+    "inside_band": true
+   }
+  },
+  "press_prediction": {
+   "plant_bound_N": 5.199,
+   "pinned_marker_N": 21.85,
+   "anchor_N": 14.5,
+   "note": "the landing press >= the plant bound by the capture; predicted on the wave-17 run-2 anchor 14.5 N (the descent rate is dangle-independent, the press scale carried); the exact peak is the run's to measure"
+  }
+ },
+ "gait_bounds": {
+  "trunk_moment_cap_N_m": 11.2125,
+  "trunk_moment_census_window_ticks": [
+   0,
+   60
+  ],
+  "hind_load_floor_N": 49.21956654335001,
+  "fore_load_plant_N": 5.199,
+  "fore_load_pinned_N": 21.85,
+  "per_paw_dangle_m": 0.0919,
+  "spread_m": 0.1744,
+  "d_td_m": 0.059,
+  "fore_plant_slip_bound_m_s": 0.1,
+  "capture_band_left_m": [
+   -0.20263481029351402,
+   -0.08550987333593374
+  ],
+  "capture_band_right_m": [
+   -0.19683481029351402,
+   -0.08509987333593375
+  ],
+  "capture_band_mean_m": [
+   -0.19973481029351403,
+   -0.08530487333593374
+  ],
+  "fore_touch_window_ticks": [
+   14,
+   39
+  ],
+  "r_mp_touch_window_ticks": [
+   0,
+   46
+  ],
+  "vault_capture_bound_deg": 2.0
+ },
+ "provenance": {
+  "script": "tools/science_funnel/validation/gait_zero_20260919/derive_partial_lean.py",
+  "law": "THE PARTIAL-LEAN TIP: a small forward entry lean theta_e in (-0.0449, 0) relieves the single-point trunk moment (the trunk CoM advances toward the planted L heel) while the seat law holds and the dangles stay in band; theta_e is the MINIMAL lean clearing tau(theta) = cap - margin_derived (the machine's own constraint selects; no sweep). The fork (the staged trunk) is NOT executed: the window is non-empty.",
+  "measured": {
+   "cap_N_m": 11.2125,
+   "margin_derived_N_m": 0.6875,
+   "wave17_level_moment_N_m": 11.202387280992864,
+   "wave17_run_realized_moment_N_m": 11.9,
+   "press_anchor_N": 14.5,
+   "dangle0_m": 0.03477897393257359,
+   "touch_tick0": 23
+  }
+ }
+}

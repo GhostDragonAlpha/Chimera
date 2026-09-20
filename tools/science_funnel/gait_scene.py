@@ -360,7 +360,25 @@ def compile_gait(graph,output,fore_share=0.45):
     require(_trade_path.exists(),'gait_load_strut_trade_missing','run derive_load_strut_trade.py first')
     _trade=json.loads(_trade_path.read_text(encoding='utf-8'))
     require(_trade.get('schema')=='chimera.load_strut_trade.v1','gait_load_strut_trade_schema')
-    start_values['base_rot_z']=float(_trade['entry_state']['entry_trunk_rad'])
+    # THE PARTIAL-LEAN TIP (wave 18, scene statics): the entry trunk state is
+    # re-derived by derive_partial_lean.py -- the exact single-support trunk
+    # moment W*(x_com - x_heel) sits at 0.9992 of the posture cap at theta=0
+    # (the wave-17 blocker: the run's drift realized 11.9 vs cap 11.2125), and
+    # the minimal lean clearing cap - margin_derived (margin_derived = the
+    # wave-17 run-realized excess 0.6875 N.m) is theta_e = -0.015309 rad. The
+    # wave-17 seat-law file is UNTOUCHED (its entry_trunk_rad stays the trade's
+    # 0); the leaned seat is THIS file's state, re-measured at the authored
+    # lean. Absent file -> refusal: the entry lean is not a free constant.
+    _lean_path=ROOT/'tools/science_funnel/validation/gait_zero_20260919/derived_partial_lean.json'
+    require(_lean_path.exists(),'gait_partial_lean_missing','run derive_partial_lean.py first')
+    _lean=json.loads(_lean_path.read_text(encoding='utf-8'))
+    require(_lean.get('schema')=='chimera.partial_lean.v1','gait_partial_lean_schema')
+    require(_lean['window']['empty']==False,'gait_partial_lean_window_empty')
+    _theta_e=float(_lean['entry_state']['theta_e_rad'])
+    _wlo,_whi=(float(v) for v in _lean['window']['admissible_interval_rad'])
+    require(_wlo<=_theta_e<=_whi,'gait_partial_lean_theta_outside_window',_theta_e,_wlo,_whi)
+    require(abs(_theta_e)<=0.0449,'gait_partial_lean_theta_outside_strut_band',_theta_e)
+    start_values['base_rot_z']=_theta_e
     # THE SEAT LAW (wave 17), part 2 -- the seat + the compile-time proof at
     # the seated entry state: the seating pair is the pair whose support
     # polygon CONTAINS the CoM with margin (the statics-stability condition;
@@ -386,9 +404,11 @@ def compile_gait(graph,output,fore_share=0.45):
     require(spread<=float(_trade['provenance']['measured']['D_LIVED_m']),
             'gait_entry_dangle_survived_anchor',spread,
             _trade['provenance']['measured']['D_LIVED_m'])
-    # THE SEAT (wave 17): base_y = the HIND pair's minimum (the derivation's
-    # own arithmetic, cross-checked against the scene's re-measurement).
-    base_y=float(_seat['seat']['base_trans_y_m'])
+    # THE SEAT (wave 17, re-measured at the wave-18 authored lean): base_y =
+    # the HIND pair's minimum AT theta_e (the derivation's own arithmetic,
+    # cross-checked against the scene's re-measurement; the lean file's seat
+    # is the state the runtime actually assembles).
+    base_y=float(_lean['entry_state']['seat_base_trans_y_m'])
     base_y_law=-min(heights[i] for i in _hind_idx)+contract['seating_scan']['reset_gap_target_m']
     require(abs(base_y-base_y_law)<1e-9,'gait_seat_law_base_mismatch',base_y,base_y_law)
     # THE COMPILE-TIME SEAT PROOF at the SEATED entry state: no paw penetrates
@@ -413,16 +433,17 @@ def compile_gait(graph,output,fore_share=0.45):
     margin_rear=com[0]-min(hx);margin_front=max(hx)-com[0]
     require(margin_rear>0 and margin_front>0,'gait_seat_com_outside_hind_polygon',
             margin_rear,margin_front)
-    require(float(_seat['hind_statics_at_seat']['worst_ratio'])<=1.0,
-            'gait_seat_hind_statics_over_cap',_seat['hind_statics_at_seat']['worst_ratio'])
+    require(float(_lean['entry_state']['pair_statics']['worst_ratio'])<=1.0,
+            'gait_seat_hind_statics_over_cap',_lean['entry_state']['pair_statics']['worst_ratio'])
     measured={'reset_gaps_m':seated_gaps,'com_projection_model_m':[float(com[0]),float(com[2])],
               'assembly_mass_kg':mtot,'weight_N':mtot*9.80665,
               'hull_vertices':[[min(hx),seated_pos[_hind_idx[0]][1]],
                                [max(hx),seated_pos[_hind_idx[0]][1]]],
               'seat':{'seated_pair':'hind_pair','hind_polygon_x_m':[min(hx),max(hx)],
                       'com_margins_m':{'rear':float(margin_rear),'front':float(margin_front)},
-                      'hind_statics_worst_ratio':float(_seat['hind_statics_at_seat']['worst_ratio']),
-                      'base_trans_y_m':base_y}}
+                      'hind_statics_worst_ratio':float(_lean['entry_state']['pair_statics']['worst_ratio']),
+                      'base_trans_y_m':base_y,
+                      'entry_lean_rad':_theta_e}}
     recorded=contract.get('seating_scan_measured')
     if recorded and len(model['coordinates'])<=16:
         require(abs(measured['assembly_mass_kg']-recorded['assembly_mass_kg'])<1e-9,'gait_seating_mass_drift')
@@ -475,25 +496,43 @@ def compile_gait(graph,output,fore_share=0.45):
                 # the derivation (derive_load_strut_trade.py) owns the numbers.
                 'fore_load_plant_N':float(_trade['fore_load_law']['falsifier_bound_total_N']),
                 'fore_load_pinned_N':float(_trade['fore_load_law']['pinned_marker_total_N']),
-                # THE SEAT-LAW CENSUS BOUNDS (wave 17): the hind pair bears
-                # tick 0 (the hind-load census floor 0.5*W), the fore pads
-                # kiss at tick 0 and take the load through the settle (the
-                # fore-plant census: slip bound + the N_plant bound above),
-                # the dangle bounds, and the derived pair-min gaps the
-                # F-G16 hind-reset census now judges against. The derivation
-                # (derive_seat_law.py) owns the numbers.
+                # THE ENTRY-LEAN HOLD (wave 18): the posture target through the
+                # settle IS the authored lean theta_e (the partial-lean tip's
+                # state; the level-entry 0 would dissolve it inside the settle),
+                # and the first-cycle hand-off blends FROM theta_e onto
+                # theta*(phi) -- at amp=1 the vault table is recovered exactly.
+                # The controller gates on this key: absent -> the wave-15 bytes.
+                'trunk_entry_rad':_theta_e,
+                # THE TRUNK-MOMENT CENSUS BOUND (wave 18): the posture cap (the
+                # provenance lane closed it: NOT raisable) -- the gait_unit
+                # F-G18 census judges the pre-clamp demand against it at every
+                # tick in [0, 60]; the derivation (derive_partial_lean.py)
+                # owns the number.
+                'trunk_moment_cap_N_m':float(_lean['gait_bounds']['trunk_moment_cap_N_m']),
+                # THE SEAT-LAW CENSUS BOUNDS (wave 17, re-derived at the
+                # wave-18 authored lean): the hind pair bears tick 0 (the
+                # hind-load census floor 0.5*W), the fore pads DANGLE off the
+                # plane at the seat (airborne pads cannot skate -- the run-1
+                # falsifier finding) and land through the settle inside the
+                # RE-DERIVED touch window (the fore-plant census: slip bound +
+                # the N_plant bound above), the dangle bounds, and the derived
+                # pair-min gaps + capture bands the censuses judge. The
+                # derivation (derive_partial_lean.py at theta_e) owns the
+                # numbers; derive_seat_law.py owns the bounds structure.
                 'seat_law':{
                     'seated_pair':_seat['seat']['seated_pair'],
                     'base_trans_y_m':base_y,
+                    'entry_lean_rad':_theta_e,
                     'hind_load_floor_N':float(_seat['gait_bounds']['hind_load_floor_N']),
                     'per_paw_dangle_m':float(_seat['gait_bounds']['per_paw_dangle_m']),
                     'spread_m':float(_seat['gait_bounds']['spread_m']),
-                    'hind_pairmin_gaps_derived_m':_seat['gait_bounds']['hind_pairmin_gaps_derived_m'],
+                    'hind_pairmin_gaps_derived_m':_lean['entry_state']['hind_pairmin_gaps_derived_m'],
                     'fore_plant_slip_bound_m_s':float(_seat['gait_bounds']['fore_plant_slip_bound_m_s']),
-                    'capture_band_left_m':_seat['gait_bounds']['capture_band_left_m'],
-                    'capture_band_right_m':_seat['gait_bounds']['capture_band_right_m'],
-                    'fore_touch_tick_derived':int(_seat['fore_touch_law']['fore_touch_tick_derived']),
-                    'r_mp_touch_window_ticks':_seat['fore_touch_law']['r_mp_landing']['derived_touch_window_ticks'],
+                    'capture_band_left_m':_lean['gait_bounds']['capture_band_left_m'],
+                    'capture_band_right_m':_lean['gait_bounds']['capture_band_right_m'],
+                    'fore_touch_tick_derived':int(_lean['entry_state']['fore_touch_prediction']['derived_touch_tick']),
+                    'fore_touch_window_ticks':_lean['gait_bounds']['fore_touch_window_ticks'],
+                    'r_mp_touch_window_ticks':_lean['gait_bounds']['r_mp_touch_window_ticks'],
                 },
                 'posture_target_phases':posture_phases,'posture_target_rad':posture_rads,
                 'contact_points':list(contract['contact_points'])+[

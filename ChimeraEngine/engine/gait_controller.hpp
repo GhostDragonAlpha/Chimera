@@ -79,6 +79,7 @@ class GaitWalker {
  Tables tables_{};double phi_[2]={0.,0.5};bool touching_prev_[2]={false,false};uint64_t ticks_=0;uint64_t capture_events_=0;
  Dense kp_,kd_,damping_,last_torque_,battery_,brake_;std::vector<uint64_t> empty_events_;
  double kp_post_=0,kd_post_=0,battery_post_=0,brake_post_=0,store_post_=0;uint64_t empty_post_=0;
+ mutable double posture_demand_=0; // the PRE-clamp posture PD demand (the wave-18 F-G18 census measure)
  std::vector<double> posture_phi_,posture_theta_; // legacy non-periodic posture table (retained for receipt compatibility, not consumed)
  int settle_ticks_=0; // ORBIT CAPTURE (wave 8): hold the clock at the entry pose under load for the servo's settling time
  int settle_total_=0; // immutable reset value used by the wave-10 gradual vault activation
@@ -550,6 +551,7 @@ class GaitWalker {
   }}
  Dense servo()const{ // capped mass-normalized PD at the derived 4.0 Hz (Section 5.2)
   Dense tau(n_,0.);
+  posture_demand_=0.; // reset per call (the trunk row reports 0 when the posture drive is off)
   bool walking=config_["gait_enabled"].get<bool>();
   Evaluation fe{};bool have_fe=false; // the planted-strut IK evaluates the shoulder pose once per call
   for(size_t d=0;d<nd_;++d){const Drive& dr=drives_[d];size_t c=dr.coordinate;
@@ -610,9 +612,19 @@ class GaitWalker {
    // the main branch's settle window) holds the authored erect default 0.
    // WAVE 15: the activation is the post_amp() law -- the legacy wave-10 ramp,
    // or the level-entry first-cycle hand-off when the scene authors it.
+   // WAVE 18: the PARTIAL-LEAN entry state -- when the scene authors recipe
+   // 'trunk_entry_rad' the target holds the authored lean theta_e through the
+   // settle (the level-entry 0 would dissolve the lean and re-form the wave-17
+   // single-point moment inside the falsifier's own window) and the blend
+   // runs FROM theta_e onto theta*(phi): at amp=1 the vault table is
+   // recovered exactly. Absent key -> the wave-15 bytes exactly.
    double trunk_amp=post_amp();
    double target_post=trunk_amp*tables_.trunk_target(phi_[0]);
-   tau[2]=(std::max)(-drives_[0].cap,(std::min)(drives_[0].cap,kp_post_*(target_post-s_.q[2])-kd_post_*s_.v[2]));}
+   if(recipe_.contains("trunk_entry_rad")){
+    double entry_lean=number(recipe_["trunk_entry_rad"]);
+    target_post=entry_lean+trunk_amp*(tables_.trunk_target(phi_[0])-entry_lean);}
+   posture_demand_=kp_post_*(target_post-s_.q[2])-kd_post_*s_.v[2]; // the PRE-clamp demand (the F-G18 census measure)
+   tau[2]=(std::max)(-drives_[0].cap,(std::min)(drives_[0].cap,posture_demand_));}
   return tau;}
  // ── walker runtime (the free-root laws, n generalization) ──
  Rate rate(const State& s,const Dense& tau,const std::vector<char>& live,const std::vector<char>& plane)const{
@@ -896,6 +908,13 @@ class GaitWalker {
   require(th.is_number(),"gait_trunk_handoff_shape");
   double thv=number(th);
   require(std::isfinite(thv)&&thv>0.&&thv<=600.,"gait_trunk_handoff_range");}
+ if(recipe_.contains("trunk_entry_rad")){ // the wave-18 partial-lean entry state (scene statics; absent -> the wave-15 bytes)
+  const J& te=recipe_.at("trunk_entry_rad");
+  require(te.is_number(),"gait_trunk_entry_shape");
+  double tev=number(te);
+  // the entry lean may not exceed the vault table's own entry-phase magnitude
+  // (the table's scale; the derivation selects inside the strut band anyway)
+  require(std::isfinite(tev)&&std::abs(tev)<=0.2065,"gait_trunk_entry_range");}
  // theta*(phi): the derived posture target table (wave 8)
  if(config_.contains("settle_ticks")){require(config_["settle_ticks"].is_number(),"gait_settle_shape");settle_ticks_=(int)number(config_["settle_ticks"]);require(settle_ticks_>=0&&settle_ticks_<=600,"gait_settle_range");settle_total_=settle_ticks_;}
   plane_world_y_=number(recipe_.at("contact_plane_height_m"));require(std::isfinite(plane_world_y_),"gait_contact_plane_invalid");plane_model_y_=plane_world_y_-shift_[1];
@@ -1159,12 +1178,21 @@ class GaitWalker {
     {"battery_J",battery_[d]},{"brake_heat_J",brake_[d]},{"empty_events",empty_events_[d]},{"actuator_work_J",s_.work[c]}});}
   // The trunk-pitch posture drive (the source model's theta_HAT musculature).
   // WAVE 15: the reported target mirrors servo()'s post_amp() law exactly.
+  // WAVE 18: the mirror includes the gated entry-lean hold, and the row
+  // reports the PRE-clamp posture demand (the F-G18 census measure -- the
+  // applied torque is post-clamp and cannot exceed the cap; the demand is
+  // what the wave-17 blocker measured).
   {work+=s_.work[2];battery_total+=battery_post_;brake_total+=brake_post_;empty_total+=empty_post_;
    double trunk_amp=post_amp();
+   double target_mirror=trunk_amp*tables_.trunk_target(phi_[0]);
+   if(recipe_.contains("trunk_entry_rad")){
+    double entry_lean=number(recipe_["trunk_entry_rad"]);
+    target_mirror=entry_lean+trunk_amp*(tables_.trunk_target(phi_[0])-entry_lean);}
    joints.push_back({{"name","trunk_pitch_HAT"},{"leg","trunk"},{"joint","posture"},{"phase",phi_[0]},
-    {"angle_deg",s_.q[2]*180/pi},{"target_rad",trunk_amp*tables_.trunk_target(phi_[0])},
-    {"target_deg",trunk_amp*tables_.trunk_target(phi_[0])*180/pi},{"speed_rad_s",s_.v[2]},
-    {"motor_torque_N_m",last_torque_[2]},{"drive_enabled",config_["posture_drive"]},{"torque_cap_N_m",drives_[0].cap},
+    {"angle_deg",s_.q[2]*180/pi},{"target_rad",target_mirror},
+    {"target_deg",target_mirror*180/pi},{"speed_rad_s",s_.v[2]},
+    {"motor_torque_N_m",last_torque_[2]},{"posture_demand_N_m",posture_demand_},
+    {"drive_enabled",config_["posture_drive"]},{"torque_cap_N_m",drives_[0].cap},
     {"battery_J",battery_post_},{"brake_heat_J",brake_post_},{"empty_events",empty_post_},{"actuator_work_J",s_.work[2]}});}
   double friction_heat_total=0,reaction_total=0,impact_heat_total=0;bool cone_valid=true;
   J points=J::array();
