@@ -138,3 +138,12 @@ tools/science_funnel/tests/qualify_coupled_free_live.py
 tools/science_funnel/tests/qualify_coupled_live7.py
 tools/science_funnel/tests/test_coupled_free.py
 tools/science_funnel/tests/test_coupled_arm7.py
+
+# mount-reconciliation-20260919 (agent/mount-reconciliation): both refs are
+# CROSS-BRANCH reads resolved at runtime via `git show` -- the H2 mounting
+# module lives on origin/codex/macaque-bones-lane-20260919 and the v3 arbiter
+# on origin/buffy/bone-id-transfer-20260919 (a sha256-provenance copy is
+# committed in tools/science_funnel/validation/mount_reconciliation_20260919/).
+# A file that lives on another lane's branch is not a broken pointer.
+tools/science_funnel/macaque_skeleton_scene.py
+tools/science_funnel/data/morphosource_ct/bone_identification_v3.json
