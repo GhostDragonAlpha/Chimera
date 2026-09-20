@@ -224,6 +224,28 @@ def compile_gait(graph,output):
         for stem,key in zip(jstems,('hip','knee','ankle','MP')):
             # scene q = zero + table (revision 2: the derived Oku angle zeros)
             start_values[f'{stem}_{leg}']=float(_table(tables[key],phi%1.0))+float(zeros[key])
+    # THE TRUNK-VAULT TABLE (wave 8): the posture target theta*(phi) derived by
+    # derive_trunk_vault.py (the wave-4 statics + the base-rot DOF + the sole
+    # CoP envelope; min-max demand/cap ratio 0.881 <= 1 at every
+    # single-support node). HAT-FORWARD-POSITIVE in the derivation's frame;
+    # mapped into the ENGINE's base_rot_z frame by the same sign probe every
+    # other table gets: pitch the assembled walker +10 deg about z and watch
+    # the seat rise (slope +1 -> identity) or fall (slope -1 -> negation).
+    _vault_path=ROOT/'tools/science_funnel/validation/gait_zero_20260919/trunk_vault.json'
+    require(_vault_path.exists(),'gait_trunk_vault_missing','run derive_trunk_vault.py first')
+    _vault_derived=json.loads(_vault_path.read_text(encoding='utf-8'))['theta_vault_fwd_rad']
+    require(len(_vault_derived)==21,'gait_trunk_vault_shape',len(_vault_derived))
+    def _vault_at(phi):
+        x=(phi%1.0)*20.0;k=min(19,int(x));f=x-k;return _vault_derived[k]*(1.0-f)+_vault_derived[k+1]*f
+    _probe0=dict(start_values);_probe0['base_rot_z']=0.0
+    _probe1=dict(start_values);_probe1['base_rot_z']=0.1745
+    _h0=Assembly(model,values=_probe0,gravity=[0.,-9.80665,0.])
+    _h1=Assembly(model,values=_probe1,gravity=[0.,-9.80665,0.])
+    _p0=contract['contact_points']; _i0=min(range(len(_p0)),key=lambda i:float(_h0.point(_p0[i]['body'],_p0[i]['point_m'])[0][1]))
+    _y0=float(_h0.point(_p0[_i0]['body'],_p0[_i0]['point_m'])[0][1])
+    _y1=float(_h1.point(_p0[_i0]['body'],_p0[_i0]['point_m'])[0][1])
+    _vault_sign=1.0 if (_y1-_y0)>0.0 else -1.0
+    trunk_vault=[round(_vault_sign*t,4) for t in _vault_derived]  # ENGINE frame (base_rot_z+)
     def _contact_vx(phi):
         th1=zeros['hip']+_table(tables['hip'],phi)
         th2=th1+zeros['knee']+_table(tables['knee'],phi)
@@ -235,6 +257,11 @@ def compile_gait(graph,output):
     speed=-_contact_rel_vx  # base speed making the stance contact still on the ground
     for b in ('base_rot_x','base_rot_y','base_rot_z','base_trans_x','base_trans_y','base_trans_z'):
         start_values[b]=0.0  # probe the gait pose relative to the origin
+    # The walker ENTERS ON the vault table: the reset pose is leaned at
+    # theta*(entry phase) (the engine adds the table-slope pitch speed), so
+    # the seat below is measured on the LEANED pose and the seated contact
+    # does not dangle at the entry instant (the wave-6 load-transfer law).
+    start_values['base_rot_z']=_vault_sign*_vault_at(entry_phase)
     asm0=Assembly(model,values=start_values,gravity=[0.,-9.80665,0.])
     heights=[float(asm0.point(p['body'],p['point_m'])[0][1]) for p in contract['contact_points']]
     # SEAT THE STANCE LEG ONLY (the single-support entry): the mid-stance leg
@@ -252,6 +279,7 @@ def compile_gait(graph,output):
     defaults['base_trans_y_m']=base_y
     defaults['start_phase_left']=entry_phase
     defaults['start_phase_right']=(entry_phase+0.5)%1.0
+    defaults['start_trunk_rad']=float(start_values['base_rot_z'])
     bundle={'schema':'chimera.earth_scene.v1','graph_hash':graph.graph_hash(),
             'scene':{'arm_translation_m':[0.,0.,0.],'world_id':'gait_walker_plane','ground_id':'gait_plane'},
             'gait_controller':{'gait_enabled':True,'recipe':{
@@ -264,6 +292,7 @@ def compile_gait(graph,output):
                 'servo_damping_ratio':contract['servo_damping_ratio'],
                 'capture_step_phase':contract['capture_step_phase'],
                 'tables_rad':contract['tables_rad'],
+                'trunk_vault_rad':trunk_vault,
                 'zero_map_rad':contract['zero_map_rad'],
                 'contact_points':contract['contact_points'],
                 'contact_plane_height_m':contract['contact_plane_height_m'],
