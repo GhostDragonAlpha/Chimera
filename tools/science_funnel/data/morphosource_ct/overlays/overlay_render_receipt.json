@@ -1,0 +1,220 @@
+{
+ "000875604": {
+  "voxel_check": {
+   "1": {
+    "manifest_voxels": 4737869,
+    "surface_marked_voxels": 1677291
+   },
+   "2": {
+    "manifest_voxels": 210240,
+    "surface_marked_voxels": 62779
+   },
+   "3": {
+    "manifest_voxels": 208514,
+    "surface_marked_voxels": 63113
+   },
+   "4": {
+    "manifest_voxels": 180534,
+    "surface_marked_voxels": 51527
+   },
+   "5": {
+    "manifest_voxels": 174742,
+    "surface_marked_voxels": 48747
+   },
+   "6": {
+    "manifest_voxels": 154508,
+    "surface_marked_voxels": 49734
+   },
+   "7": {
+    "manifest_voxels": 150102,
+    "surface_marked_voxels": 50394
+   },
+   "8": {
+    "manifest_voxels": 102171,
+    "surface_marked_voxels": 39540
+   },
+   "9": {
+    "manifest_voxels": 100874,
+    "surface_marked_voxels": 38600
+   },
+   "10": {
+    "manifest_voxels": 92842,
+    "surface_marked_voxels": 27280
+   },
+   "11": {
+    "manifest_voxels": 90563,
+    "surface_marked_voxels": 27589
+   },
+   "12": {
+    "manifest_voxels": 88112,
+    "surface_marked_voxels": 26452
+   },
+   "13": {
+    "manifest_voxels": 86590,
+    "surface_marked_voxels": 26326
+   },
+   "14": {
+    "manifest_voxels": 58499,
+    "surface_marked_voxels": 29068
+   },
+   "15": {
+    "manifest_voxels": 54574,
+    "surface_marked_voxels": 15151
+   },
+   "16": {
+    "manifest_voxels": 54463,
+    "surface_marked_voxels": 27444
+   },
+   "17": {
+    "manifest_voxels": 54226,
+    "surface_marked_voxels": 15025
+   },
+   "18": {
+    "manifest_voxels": 53022,
+    "surface_marked_voxels": 28839
+   },
+   "19": {
+    "manifest_voxels": 44805,
+    "surface_marked_voxels": 22791
+   },
+   "20": {
+    "manifest_voxels": 34255,
+    "surface_marked_voxels": 14516
+   },
+   "21": {
+    "manifest_voxels": 33153,
+    "surface_marked_voxels": 14260
+   },
+   "22": {
+    "manifest_voxels": 31952,
+    "surface_marked_voxels": 11814
+   },
+   "23": {
+    "manifest_voxels": 31588,
+    "surface_marked_voxels": 11983
+   },
+   "24": {
+    "manifest_voxels": 25423,
+    "surface_marked_voxels": 6679
+   },
+   "25": {
+    "manifest_voxels": 25400,
+    "surface_marked_voxels": 6955
+   }
+  },
+  "alignment_iou": {
+   "sagittal": 0.7667,
+   "coronal": 0.773,
+   "axial": 0.8999
+  }
+ },
+ "000875599": {
+  "voxel_check": {
+   "1": {
+    "manifest_voxels": 4909791,
+    "surface_marked_voxels": 1792761
+   },
+   "2": {
+    "manifest_voxels": 279900,
+    "surface_marked_voxels": 64270
+   },
+   "3": {
+    "manifest_voxels": 269762,
+    "surface_marked_voxels": 62373
+   },
+   "4": {
+    "manifest_voxels": 259744,
+    "surface_marked_voxels": 77430
+   },
+   "5": {
+    "manifest_voxels": 234649,
+    "surface_marked_voxels": 60601
+   },
+   "6": {
+    "manifest_voxels": 178948,
+    "surface_marked_voxels": 59358
+   },
+   "7": {
+    "manifest_voxels": 165292,
+    "surface_marked_voxels": 51930
+   },
+   "8": {
+    "manifest_voxels": 128172,
+    "surface_marked_voxels": 42451
+   },
+   "9": {
+    "manifest_voxels": 127314,
+    "surface_marked_voxels": 39237
+   },
+   "10": {
+    "manifest_voxels": 124371,
+    "surface_marked_voxels": 45469
+   },
+   "11": {
+    "manifest_voxels": 121635,
+    "surface_marked_voxels": 47841
+   },
+   "12": {
+    "manifest_voxels": 102189,
+    "surface_marked_voxels": 31622
+   },
+   "13": {
+    "manifest_voxels": 76638,
+    "surface_marked_voxels": 39742
+   },
+   "14": {
+    "manifest_voxels": 75573,
+    "surface_marked_voxels": 35087
+   },
+   "15": {
+    "manifest_voxels": 72570,
+    "surface_marked_voxels": 26498
+   },
+   "16": {
+    "manifest_voxels": 63613,
+    "surface_marked_voxels": 15693
+   },
+   "17": {
+    "manifest_voxels": 62995,
+    "surface_marked_voxels": 15816
+   },
+   "18": {
+    "manifest_voxels": 48831,
+    "surface_marked_voxels": 25990
+   },
+   "19": {
+    "manifest_voxels": 44548,
+    "surface_marked_voxels": 18938
+   },
+   "20": {
+    "manifest_voxels": 43835,
+    "surface_marked_voxels": 17947
+   },
+   "21": {
+    "manifest_voxels": 40306,
+    "surface_marked_voxels": 11189
+   },
+   "22": {
+    "manifest_voxels": 27256,
+    "surface_marked_voxels": 10465
+   },
+   "23": {
+    "manifest_voxels": 26874,
+    "surface_marked_voxels": 10567
+   },
+   "24": {
+    "manifest_voxels": 24799,
+    "surface_marked_voxels": 6550
+   },
+   "25": {
+    "manifest_voxels": 23917,
+    "surface_marked_voxels": 9912
+   }
+  },
+  "alignment_iou": {
+   "sagittal": 0.7579,
+   "coronal": 0.8127,
+   "axial": 0.906
+  }
+ }
+}

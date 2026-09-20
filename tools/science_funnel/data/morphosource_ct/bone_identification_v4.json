@@ -1,0 +1,5818 @@
+{
+ "schema": "chimera.ct_bone_identification.v4",
+ "lane": "agent/bone-id-v3-companion (base 59098314, bone-id-v3)",
+ "rule0_membranes": {
+  "task1_companion_tiebreak": {
+   "statement": "An unlabeled B bone whose limb kind is undecidable in isolation takes the limb kind (fore/hind) of its joint-touching partners (surface gap <= 3.0 mm in v2's adjacency); a partner is kind-decisive iff it is a thin-rod fibula-morphology bone (elongation > 10, length > 30 mm) = hind, or an already-labeled bone (= its recorded chain_kind). Exactly one kind in the partner set -> the bone takes that kind, ONLY that; the class must then be the unique within-10% A-envelope match among kind-compatible classes (v3's gate, unchanged); a tie that remains a tie stays refused.",
+   "prediction": "B (000875599) reaches 16/24 confident (both ambiguous bones resolve to a unique class).",
+   "falsifier": "two partners of different kinds touching the same bone = still ambiguous; every assignment carries partner evidence; NON-CIRCULARITY LAW: companion kind is never inferred from the ambiguous bone's own extent.",
+   "outcome": {
+    "b_confident_total": 14,
+    "labels_added_by_companion": 0,
+    "prediction_16_of_24_holds": false,
+    "detail": "both B-2 and B-6 received exactly one kind-decisive companion (B-2 <- rank 16 foot_class/hind @1.24 mm; B-6 <- rank 10 hand_class/fore @0.36 mm); each resolved kind still leaves TWO classes within 10% (B-2: femur 0.0259 + tibia 0.0116; B-6: forearm_class 0.0000 + humerus 0.0181) -- ties that remain ties stay refused, so B stays at 14/24 and the 16/24 prediction is FALSIFIED (refusals recorded with partner evidence)."
+   }
+  },
+  "task2_corroboration": {
+   "statement": "A's medium foot bones (15, 17, 18) are medium ONLY because no within-10% homolog existed in B's high set; B now has transferred feet (16, 17), so each A medium bone is corroborated iff its max extent agrees with at least one B transferred foot within the lane's 10% homology tolerance (rel = |a-b|/max(a,b), the v2 convention); agreement resolves the medium reason -> high; failure keeps the bone medium. B's transferred feet record the symmetric corroboration.",
+   "prediction": "all three A medium feet corroborate (A reaches 21 high + 0 medium, total unchanged 21/24); each B transferred foot gains >= 1 corroboration link.",
+   "falsifier": "an upgrade whose best agreement is borderline (rel_diff > 0.095) is flagged, never silently counted; if no A medium bone corroborated, the transfer gate itself would be falsified.",
+   "outcome": {
+    "a_high": 21,
+    "a_medium": 0,
+    "a_total": 21,
+    "upgraded_ranks": [
+     15,
+     17,
+     18
+    ],
+    "borderline_ranks": [
+     18
+    ],
+    "detail": "see falsifier 8 (per-pair numbers)."
+   }
+  }
+ },
+ "method": "v3 carried forward; specimen 000875599's two kind-ambiguous bones (ranks 2, 6) were routed through the mission's companion-proximity tiebreak: partners at surface gap <= 3.0 mm in v2's adjacency fix the limb kind (exactly one kind-decisive partner kind required; thin-rod morphology = hind, already-labeled bone = its recorded kind), then v3's class gate applies within that kind -- a tie that remains a tie stays refused. Specimen 000875604's three medium feet were tested against B's transferred feet for mutual corroboration at the lane's 10% homology tolerance (max extent, |a-b|/max): agreement upgrades medium->high and is recorded per pair. Labeled MIP overlays rendered from the segmentation meshes; all numbers recomputed from the preview meshes and asserted against v3's tables.",
+ "derived_cuts": {
+  "joint_gap_mm": 3.0,
+  "gap_valley_specA": [
+   2.91,
+   3.3
+  ],
+  "gap_valley_specB": [
+   2.97,
+   3.04
+  ],
+  "sensitivity": "at 2.5 mm specimen A's hind chains fragment (2-6 at 2.91 lost); at 3.5 mm A's two hind chains merge via 15-17 (3.68) and B's hind fragments join via 2-4 (3.39); (2.91, 3.04) is the only shared cut interval avoiding both",
+  "thin_elongation_cut": 10.0,
+  "elongation_valley": [
+   9.64,
+   13.18
+  ],
+  "transfer_tolerance": 0.1,
+  "cluster_anchor_factor": 1.5,
+  "max_extent": {
+   "percentiles": [
+    1.0,
+    99.0
+   ],
+   "capped": false
+  },
+  "companion_gap_mm": 3.0,
+  "corroboration_tolerance": 0.1,
+  "borderline_flag": 0.095
+ },
+ "transfer_rules": {
+  "unit": "per B bone (fragmented bones transfer individually; the v2-unlabeled cluster is excluded and routed through the falsifier-2 hint rule)",
+  "gate_order": [
+   "B-side chain kind/position evidence (v2 morphology rules, kind-relative)",
+   "A class max-extent envelope within 10%",
+   "uniqueness within the eligible set"
+  ],
+  "circularity_guard": "position evidence never derives from the extent match",
+  "cluster_hint_rule": "3-bone cluster: class-hint iff axial distance of the anchor bone <= 1.5x its max extent; hints are never labels and never counted confident",
+  "side_rule": "sides never assigned (the curl jumbles them)"
+ },
+ "specimens": {
+  "000875604": {
+   "volume_shape": [
+    1373,
+    380,
+    374
+   ],
+   "bone_threshold": 118,
+   "nonaxial_bones": 24,
+   "chains": [
+    {
+     "members": [
+      2,
+      6,
+      15,
+      20,
+      22,
+      25
+     ],
+     "kind": "hind",
+     "labels": {
+      "20": "fibula",
+      "6": "tibia",
+      "2": "femur",
+      "15": "foot_class",
+      "22": "foot_class",
+      "25": "foot_class"
+     },
+     "derivation": {
+      "fibula": 20,
+      "tibia": 6,
+      "femur": [
+       2
+      ],
+      "tibia_gap_to_fibula_mm": 0.48,
+      "size_order_agrees": true
+     },
+     "anchored": true,
+     "anchor_dist_mm": 19.65,
+     "proximal_bone": 2,
+     "chaining_subset_min": {
+      "pass": true,
+      "run_bones": 3,
+      "run_path": [
+       2,
+       6,
+       20
+      ],
+      "full_chain_pass": false
+     },
+     "chaining_subset_mean": {
+      "pass": true,
+      "run_bones": 6,
+      "run_path": [
+       2,
+       6,
+       15,
+       20,
+       22,
+       25
+      ],
+      "full_chain_pass": true
+     },
+     "touching_edges": [
+      {
+       "pair": [
+        2,
+        6
+       ],
+       "gap_mm": 2.91
+      },
+      {
+       "pair": [
+        2,
+        15
+       ],
+       "gap_mm": 1.01
+      },
+      {
+       "pair": [
+        6,
+        20
+       ],
+       "gap_mm": 0.48
+      },
+      {
+       "pair": [
+        6,
+        25
+       ],
+       "gap_mm": 0.66
+      },
+      {
+       "pair": [
+        20,
+        25
+       ],
+       "gap_mm": 2.47
+      },
+      {
+       "pair": [
+        22,
+        25
+       ],
+       "gap_mm": 0.99
+      }
+     ]
+    },
+    {
+     "members": [
+      3,
+      7,
+      17,
+      18,
+      21,
+      23,
+      24
+     ],
+     "kind": "hind",
+     "labels": {
+      "21": "fibula",
+      "7": "tibia",
+      "3": "femur",
+      "17": "foot_class",
+      "18": "foot_class",
+      "23": "foot_class",
+      "24": "foot_class"
+     },
+     "derivation": {
+      "fibula": 21,
+      "tibia": 7,
+      "femur": [
+       3
+      ],
+      "tibia_gap_to_fibula_mm": 0.45,
+      "size_order_agrees": true
+     },
+     "anchored": true,
+     "anchor_dist_mm": 14.74,
+     "proximal_bone": 3,
+     "chaining_subset_min": {
+      "pass": true,
+      "run_bones": 3,
+      "run_path": [
+       3,
+       7,
+       21
+      ],
+      "full_chain_pass": false
+     },
+     "chaining_subset_mean": {
+      "pass": true,
+      "run_bones": 7,
+      "run_path": [
+       3,
+       17,
+       21,
+       23,
+       24,
+       7,
+       18
+      ],
+      "full_chain_pass": true
+     },
+     "touching_edges": [
+      {
+       "pair": [
+        3,
+        7
+       ],
+       "gap_mm": 2.83
+      },
+      {
+       "pair": [
+        3,
+        17
+       ],
+       "gap_mm": 0.69
+      },
+      {
+       "pair": [
+        7,
+        18
+       ],
+       "gap_mm": 1.79
+      },
+      {
+       "pair": [
+        7,
+        21
+       ],
+       "gap_mm": 0.45
+      },
+      {
+       "pair": [
+        7,
+        24
+       ],
+       "gap_mm": 0.86
+      },
+      {
+       "pair": [
+        21,
+        24
+       ],
+       "gap_mm": 2.9
+      },
+      {
+       "pair": [
+        23,
+        24
+       ],
+       "gap_mm": 1.01
+      }
+     ]
+    },
+    {
+     "members": [
+      4,
+      8,
+      10,
+      12
+     ],
+     "kind": "fore",
+     "labels": {
+      "10": "forearm_class",
+      "12": "forearm_class",
+      "4": "humerus",
+      "8": "hand_class"
+     },
+     "derivation": {
+      "forearm_pair": [
+       10,
+       12
+      ],
+      "forearm_pair_gap_mm": 0.38,
+      "humerus": [
+       4
+      ]
+     },
+     "anchored": true,
+     "anchor_dist_mm": 6.14,
+     "proximal_bone": 12,
+     "chaining_subset_min": {
+      "pass": true,
+      "run_bones": 4,
+      "run_path": [
+       8,
+       4,
+       10,
+       12
+      ],
+      "full_chain_pass": true
+     },
+     "chaining_subset_mean": {
+      "pass": true,
+      "run_bones": 4,
+      "run_path": [
+       4,
+       8,
+       10,
+       12
+      ],
+      "full_chain_pass": true
+     },
+     "touching_edges": [
+      {
+       "pair": [
+        4,
+        8
+       ],
+       "gap_mm": 0.73
+      },
+      {
+       "pair": [
+        4,
+        10
+       ],
+       "gap_mm": 2.0
+      },
+      {
+       "pair": [
+        4,
+        12
+       ],
+       "gap_mm": 0.93
+      },
+      {
+       "pair": [
+        10,
+        12
+       ],
+       "gap_mm": 0.38
+      }
+     ]
+    },
+    {
+     "members": [
+      5,
+      9,
+      11,
+      13
+     ],
+     "kind": "fore",
+     "labels": {
+      "11": "forearm_class",
+      "13": "forearm_class",
+      "5": "humerus",
+      "9": "hand_class"
+     },
+     "derivation": {
+      "forearm_pair": [
+       11,
+       13
+      ],
+      "forearm_pair_gap_mm": 0.47,
+      "humerus": [
+       5
+      ]
+     },
+     "anchored": true,
+     "anchor_dist_mm": 5.33,
+     "proximal_bone": 13,
+     "chaining_subset_min": {
+      "pass": true,
+      "run_bones": 4,
+      "run_path": [
+       9,
+       5,
+       11,
+       13
+      ],
+      "full_chain_pass": true
+     },
+     "chaining_subset_mean": {
+      "pass": true,
+      "run_bones": 4,
+      "run_path": [
+       5,
+       9,
+       11,
+       13
+      ],
+      "full_chain_pass": true
+     },
+     "touching_edges": [
+      {
+       "pair": [
+        5,
+        9
+       ],
+       "gap_mm": 0.86
+      },
+      {
+       "pair": [
+        5,
+        11
+       ],
+       "gap_mm": 2.27
+      },
+      {
+       "pair": [
+        5,
+        13
+       ],
+       "gap_mm": 0.86
+      },
+      {
+       "pair": [
+        11,
+        13
+       ],
+       "gap_mm": 0.47
+      }
+     ]
+    }
+   ],
+   "fragments_2bone": [],
+   "fragment_hints": [],
+   "singletons": [
+    [
+     14
+    ],
+    [
+     16
+    ],
+    [
+     19
+    ]
+   ],
+   "bones": [
+    {
+     "rank": 2,
+     "length_mm": 44.94,
+     "elongation": 7.01,
+     "volume_mm3": 861.1,
+     "centroid_mm": [
+      69.54,
+      22.39,
+      41.73
+     ],
+     "axis_unit": [
+      -0.5313,
+      0.8291,
+      0.1739
+     ],
+     "end_a_mm": [
+      80.87,
+      4.7,
+      38.02
+     ],
+     "end_b_mm": [
+      56.99,
+      41.97,
+      45.84
+     ],
+     "chain": [
+      2,
+      6,
+      15,
+      20,
+      22,
+      25
+     ],
+     "chain_kind": "hind",
+     "segment_label": "femur",
+     "touching_neighbors": [
+      {
+       "rank": 15,
+       "gap_mm": 1.01
+      },
+      {
+       "rank": 6,
+       "gap_mm": 2.91
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 3,
+     "length_mm": 45.16,
+     "elongation": 7.11,
+     "volume_mm3": 854.1,
+     "centroid_mm": [
+      76.28,
+      31.29,
+      17.43
+     ],
+     "axis_unit": [
+      -0.8869,
+      0.4434,
+      0.1296
+     ],
+     "end_a_mm": [
+      94.78,
+      22.05,
+      14.73
+     ],
+     "end_b_mm": [
+      54.73,
+      42.07,
+      20.58
+     ],
+     "chain": [
+      3,
+      7,
+      17,
+      18,
+      21,
+      23,
+      24
+     ],
+     "chain_kind": "hind",
+     "segment_label": "femur",
+     "touching_neighbors": [
+      {
+       "rank": 17,
+       "gap_mm": 0.69
+      },
+      {
+       "rank": 7,
+       "gap_mm": 2.83
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 4,
+     "length_mm": 41.82,
+     "elongation": 7.23,
+     "volume_mm3": 739.5,
+     "centroid_mm": [
+      137.45,
+      30.42,
+      49.87
+     ],
+     "axis_unit": [
+      -0.5003,
+      0.8394,
+      -0.2124
+     ],
+     "end_a_mm": [
+      148.29,
+      12.23,
+      54.47
+     ],
+     "end_b_mm": [
+      127.37,
+      47.33,
+      45.59
+     ],
+     "chain": [
+      4,
+      8,
+      10,
+      12
+     ],
+     "chain_kind": "fore",
+     "segment_label": "humerus",
+     "touching_neighbors": [
+      {
+       "rank": 8,
+       "gap_mm": 0.73
+      },
+      {
+       "rank": 12,
+       "gap_mm": 0.93
+      },
+      {
+       "rank": 10,
+       "gap_mm": 2.0
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 5,
+     "length_mm": 40.69,
+     "elongation": 6.84,
+     "volume_mm3": 715.7,
+     "centroid_mm": [
+      142.26,
+      22.77,
+      12.93
+     ],
+     "axis_unit": [
+      -0.2976,
+      0.936,
+      -0.188
+     ],
+     "end_a_mm": [
+      148.57,
+      2.9,
+      16.92
+     ],
+     "end_b_mm": [
+      136.46,
+      40.98,
+      9.27
+     ],
+     "chain": [
+      5,
+      9,
+      11,
+      13
+     ],
+     "chain_kind": "fore",
+     "segment_label": "humerus",
+     "touching_neighbors": [
+      {
+       "rank": 9,
+       "gap_mm": 0.86
+      },
+      {
+       "rank": 13,
+       "gap_mm": 0.86
+      },
+      {
+       "rank": 11,
+       "gap_mm": 2.27
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 6,
+     "length_mm": 43.14,
+     "elongation": 8.25,
+     "volume_mm3": 632.9,
+     "centroid_mm": [
+      56.65,
+      14.19,
+      41.0
+     ],
+     "axis_unit": [
+      -0.7267,
+      0.6644,
+      0.1744
+     ],
+     "end_a_mm": [
+      71.3,
+      0.79,
+      37.48
+     ],
+     "end_b_mm": [
+      39.95,
+      29.45,
+      45.0
+     ],
+     "chain": [
+      2,
+      6,
+      15,
+      20,
+      22,
+      25
+     ],
+     "chain_kind": "hind",
+     "segment_label": "tibia",
+     "touching_neighbors": [
+      {
+       "rank": 20,
+       "gap_mm": 0.48
+      },
+      {
+       "rank": 25,
+       "gap_mm": 0.66
+      },
+      {
+       "rank": 2,
+       "gap_mm": 2.91
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 7,
+     "length_mm": 43.27,
+     "elongation": 8.2,
+     "volume_mm3": 614.8,
+     "centroid_mm": [
+      68.82,
+      21.32,
+      21.84
+     ],
+     "axis_unit": [
+      -0.9242,
+      0.3228,
+      0.2042
+     ],
+     "end_a_mm": [
+      88.3,
+      14.52,
+      17.54
+     ],
+     "end_b_mm": [
+      48.31,
+      28.49,
+      26.37
+     ],
+     "chain": [
+      3,
+      7,
+      17,
+      18,
+      21,
+      23,
+      24
+     ],
+     "chain_kind": "hind",
+     "segment_label": "tibia",
+     "touching_neighbors": [
+      {
+       "rank": 21,
+       "gap_mm": 0.45
+      },
+      {
+       "rank": 24,
+       "gap_mm": 0.86
+      },
+      {
+       "rank": 18,
+       "gap_mm": 1.79
+      },
+      {
+       "rank": 3,
+       "gap_mm": 2.83
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 8,
+     "length_mm": 24.44,
+     "elongation": 2.19,
+     "volume_mm3": 418.5,
+     "centroid_mm": [
+      148.73,
+      26.12,
+      43.5
+     ],
+     "axis_unit": [
+      -0.3903,
+      0.7163,
+      -0.5784
+     ],
+     "end_a_mm": [
+      153.67,
+      17.05,
+      50.82
+     ],
+     "end_b_mm": [
+      144.13,
+      34.56,
+      36.68
+     ],
+     "chain": [
+      4,
+      8,
+      10,
+      12
+     ],
+     "chain_kind": "fore",
+     "segment_label": "hand_class",
+     "touching_neighbors": [
+      {
+       "rank": 4,
+       "gap_mm": 0.73
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 9,
+     "length_mm": 24.62,
+     "elongation": 2.22,
+     "volume_mm3": 413.2,
+     "centroid_mm": [
+      150.6,
+      18.56,
+      20.71
+     ],
+     "axis_unit": [
+      -0.3692,
+      0.9137,
+      0.17
+     ],
+     "end_a_mm": [
+      155.32,
+      6.88,
+      18.53
+     ],
+     "end_b_mm": [
+      146.23,
+      29.38,
+      22.72
+     ],
+     "chain": [
+      5,
+      9,
+      11,
+      13
+     ],
+     "chain_kind": "fore",
+     "segment_label": "hand_class",
+     "touching_neighbors": [
+      {
+       "rank": 5,
+       "gap_mm": 0.86
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 10,
+     "length_mm": 40.57,
+     "elongation": 9.57,
+     "volume_mm3": 380.3,
+     "centroid_mm": [
+      110.67,
+      29.77,
+      50.48
+     ],
+     "axis_unit": [
+      -0.6305,
+      -0.7726,
+      0.0748
+     ],
+     "end_a_mm": [
+      123.14,
+      45.05,
+      49.0
+     ],
+     "end_b_mm": [
+      97.56,
+      13.71,
+      52.03
+     ],
+     "chain": [
+      4,
+      8,
+      10,
+      12
+     ],
+     "chain_kind": "fore",
+     "segment_label": "forearm_class",
+     "touching_neighbors": [
+      {
+       "rank": 12,
+       "gap_mm": 0.38
+      },
+      {
+       "rank": 4,
+       "gap_mm": 2.0
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 11,
+     "length_mm": 40.2,
+     "elongation": 9.64,
+     "volume_mm3": 370.9,
+     "centroid_mm": [
+      119.0,
+      23.66,
+      13.36
+     ],
+     "axis_unit": [
+      -0.6332,
+      -0.7162,
+      0.2934
+     ],
+     "end_a_mm": [
+      131.63,
+      37.94,
+      7.51
+     ],
+     "end_b_mm": [
+      106.17,
+      9.15,
+      19.31
+     ],
+     "chain": [
+      5,
+      9,
+      11,
+      13
+     ],
+     "chain_kind": "fore",
+     "segment_label": "forearm_class",
+     "touching_neighbors": [
+      {
+       "rank": 13,
+       "gap_mm": 0.47
+      },
+      {
+       "rank": 5,
+       "gap_mm": 2.27
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 12,
+     "length_mm": 43.92,
+     "elongation": 9.36,
+     "volume_mm3": 360.9,
+     "centroid_mm": [
+      112.46,
+      38.76,
+      48.2
+     ],
+     "axis_unit": [
+      -0.6644,
+      -0.7068,
+      0.2429
+     ],
+     "end_a_mm": [
+      124.31,
+      51.37,
+      43.87
+     ],
+     "end_b_mm": [
+      95.13,
+      20.33,
+      54.54
+     ],
+     "chain": [
+      4,
+      8,
+      10,
+      12
+     ],
+     "chain_kind": "fore",
+     "segment_label": "forearm_class",
+     "touching_neighbors": [
+      {
+       "rank": 10,
+       "gap_mm": 0.38
+      },
+      {
+       "rank": 4,
+       "gap_mm": 0.93
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 13,
+     "length_mm": 43.71,
+     "elongation": 9.47,
+     "volume_mm3": 354.7,
+     "centroid_mm": [
+      121.14,
+      33.48,
+      11.9
+     ],
+     "axis_unit": [
+      -0.6947,
+      -0.7026,
+      0.1539
+     ],
+     "end_a_mm": [
+      133.41,
+      45.89,
+      9.18
+     ],
+     "end_b_mm": [
+      103.04,
+      15.18,
+      15.91
+     ],
+     "chain": [
+      5,
+      9,
+      11,
+      13
+     ],
+     "chain_kind": "fore",
+     "segment_label": "forearm_class",
+     "touching_neighbors": [
+      {
+       "rank": 11,
+       "gap_mm": 0.47
+      },
+      {
+       "rank": 5,
+       "gap_mm": 0.86
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 14,
+     "length_mm": 15.87,
+     "elongation": 1.33,
+     "volume_mm3": 239.6,
+     "centroid_mm": [
+      26.43,
+      19.89,
+      31.37
+     ],
+     "axis_unit": [
+      -0.5984,
+      -0.7472,
+      0.2893
+     ],
+     "end_a_mm": [
+      31.14,
+      25.77,
+      29.09
+     ],
+     "end_b_mm": [
+      21.64,
+      13.91,
+      33.68
+     ],
+     "chain": null,
+     "chain_kind": null,
+     "segment_label": null,
+     "touching_neighbors": [],
+     "morphology_hint": "compact block (carpal/tarsal/epiphyseal-class)"
+    },
+    {
+     "rank": 15,
+     "length_mm": 14.1,
+     "elongation": 1.79,
+     "volume_mm3": 223.5,
+     "centroid_mm": [
+      52.21,
+      43.95,
+      38.96
+     ],
+     "axis_unit": [
+      -0.9708,
+      -0.2324,
+      0.0587
+     ],
+     "end_a_mm": [
+      58.55,
+      45.47,
+      38.57
+     ],
+     "end_b_mm": [
+      44.86,
+      42.19,
+      39.4
+     ],
+     "chain": [
+      2,
+      6,
+      15,
+      20,
+      22,
+      25
+     ],
+     "chain_kind": "hind",
+     "segment_label": "foot_class",
+     "touching_neighbors": [
+      {
+       "rank": 2,
+       "gap_mm": 1.01
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high(chain+rank, cross-specimen corroboration: B feet 16,17 @ rel 0.0262)"
+    },
+    {
+     "rank": 16,
+     "length_mm": 13.06,
+     "elongation": 1.1,
+     "volume_mm3": 223.1,
+     "centroid_mm": [
+      82.35,
+      11.86,
+      52.98
+     ],
+     "axis_unit": [
+      -0.9784,
+      -0.2023,
+      -0.043
+     ],
+     "end_a_mm": [
+      88.08,
+      13.05,
+      53.23
+     ],
+     "end_b_mm": [
+      75.3,
+      10.4,
+      52.67
+     ],
+     "chain": null,
+     "chain_kind": null,
+     "segment_label": null,
+     "touching_neighbors": [],
+     "morphology_hint": "compact block (carpal/tarsal/epiphyseal-class)"
+    },
+    {
+     "rank": 17,
+     "length_mm": 14.14,
+     "elongation": 1.81,
+     "volume_mm3": 222.1,
+     "centroid_mm": [
+      51.24,
+      43.75,
+      27.96
+     ],
+     "axis_unit": [
+      -0.9618,
+      -0.2558,
+      0.0978
+     ],
+     "end_a_mm": [
+      57.67,
+      45.46,
+      27.31
+     ],
+     "end_b_mm": [
+      44.07,
+      41.85,
+      28.69
+     ],
+     "chain": [
+      3,
+      7,
+      17,
+      18,
+      21,
+      23,
+      24
+     ],
+     "chain_kind": "hind",
+     "segment_label": "foot_class",
+     "touching_neighbors": [
+      {
+       "rank": 3,
+       "gap_mm": 0.69
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high(chain+rank, cross-specimen corroboration: B feet 16,17 @ rel 0.0242)"
+    },
+    {
+     "rank": 18,
+     "length_mm": 12.89,
+     "elongation": 1.13,
+     "volume_mm3": 217.2,
+     "centroid_mm": [
+      91.84,
+      10.07,
+      26.0
+     ],
+     "axis_unit": [
+      0.8304,
+      -0.1091,
+      -0.5464
+     ],
+     "end_a_mm": [
+      86.2,
+      10.81,
+      29.71
+     ],
+     "end_b_mm": [
+      96.9,
+      9.41,
+      22.67
+     ],
+     "chain": [
+      3,
+      7,
+      17,
+      18,
+      21,
+      23,
+      24
+     ],
+     "chain_kind": "hind",
+     "segment_label": "foot_class",
+     "touching_neighbors": [
+      {
+       "rank": 7,
+       "gap_mm": 1.79
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high(chain+rank, cross-specimen corroboration: B feet 16 @ rel 0.0995 [BORDERLINE 0.0995])"
+    },
+    {
+     "rank": 19,
+     "length_mm": 15.96,
+     "elongation": 1.72,
+     "volume_mm3": 183.5,
+     "centroid_mm": [
+      19.6,
+      22.06,
+      49.45
+     ],
+     "axis_unit": [
+      -0.6382,
+      -0.7563,
+      -0.1436
+     ],
+     "end_a_mm": [
+      24.49,
+      27.86,
+      50.55
+     ],
+     "end_b_mm": [
+      14.3,
+      15.79,
+      48.26
+     ],
+     "chain": null,
+     "chain_kind": null,
+     "segment_label": null,
+     "touching_neighbors": [],
+     "morphology_hint": "compact block (carpal/tarsal/epiphyseal-class)"
+    },
+    {
+     "rank": 20,
+     "length_mm": 37.97,
+     "elongation": 13.18,
+     "volume_mm3": 140.3,
+     "centroid_mm": [
+      55.64,
+      18.03,
+      45.22
+     ],
+     "axis_unit": [
+      -0.766,
+      0.6052,
+      0.2165
+     ],
+     "end_a_mm": [
+      70.22,
+      6.51,
+      41.09
+     ],
+     "end_b_mm": [
+      41.13,
+      29.49,
+      49.32
+     ],
+     "chain": [
+      2,
+      6,
+      15,
+      20,
+      22,
+      25
+     ],
+     "chain_kind": "hind",
+     "segment_label": "fibula",
+     "touching_neighbors": [
+      {
+       "rank": 6,
+       "gap_mm": 0.48
+      },
+      {
+       "rank": 25,
+       "gap_mm": 2.47
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 21,
+     "length_mm": 38.08,
+     "elongation": 14.65,
+     "volume_mm3": 135.8,
+     "centroid_mm": [
+      64.57,
+      24.24,
+      18.55
+     ],
+     "axis_unit": [
+      -0.9545,
+      0.249,
+      0.1639
+     ],
+     "end_a_mm": [
+      83.99,
+      19.17,
+      15.21
+     ],
+     "end_b_mm": [
+      47.64,
+      28.66,
+      21.45
+     ],
+     "chain": [
+      3,
+      7,
+      17,
+      18,
+      21,
+      23,
+      24
+     ],
+     "chain_kind": "hind",
+     "segment_label": "fibula",
+     "touching_neighbors": [
+      {
+       "rank": 7,
+       "gap_mm": 0.45
+      },
+      {
+       "rank": 24,
+       "gap_mm": 2.9
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 22,
+     "length_mm": 11.17,
+     "elongation": 2.26,
+     "volume_mm3": 130.9,
+     "centroid_mm": [
+      34.94,
+      36.52,
+      49.11
+     ],
+     "axis_unit": [
+      -0.8999,
+      -0.4221,
+      -0.1096
+     ],
+     "end_a_mm": [
+      40.14,
+      38.96,
+      49.74
+     ],
+     "end_b_mm": [
+      30.09,
+      34.25,
+      48.52
+     ],
+     "chain": [
+      2,
+      6,
+      15,
+      20,
+      22,
+      25
+     ],
+     "chain_kind": "hind",
+     "segment_label": "foot_class",
+     "touching_neighbors": [
+      {
+       "rank": 25,
+       "gap_mm": 0.99
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 23,
+     "length_mm": 11.17,
+     "elongation": 2.26,
+     "volume_mm3": 129.4,
+     "centroid_mm": [
+      40.86,
+      34.04,
+      25.22
+     ],
+     "axis_unit": [
+      -0.7405,
+      -0.4361,
+      0.5113
+     ],
+     "end_a_mm": [
+      45.16,
+      36.57,
+      22.25
+     ],
+     "end_b_mm": [
+      36.88,
+      31.7,
+      27.96
+     ],
+     "chain": [
+      3,
+      7,
+      17,
+      18,
+      21,
+      23,
+      24
+     ],
+     "chain_kind": "hind",
+     "segment_label": "foot_class",
+     "touching_neighbors": [
+      {
+       "rank": 24,
+       "gap_mm": 1.01
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 24,
+     "length_mm": 8.97,
+     "elongation": 1.79,
+     "volume_mm3": 104.1,
+     "centroid_mm": [
+      42.64,
+      29.02,
+      27.72
+     ],
+     "axis_unit": [
+      -0.6889,
+      -0.3217,
+      0.6496
+     ],
+     "end_a_mm": [
+      45.58,
+      30.39,
+      24.95
+     ],
+     "end_b_mm": [
+      39.4,
+      27.5,
+      30.78
+     ],
+     "chain": [
+      3,
+      7,
+      17,
+      18,
+      21,
+      23,
+      24
+     ],
+     "chain_kind": "hind",
+     "segment_label": "foot_class",
+     "touching_neighbors": [
+      {
+       "rank": 7,
+       "gap_mm": 0.86
+      },
+      {
+       "rank": 23,
+       "gap_mm": 1.01
+      },
+      {
+       "rank": 21,
+       "gap_mm": 2.9
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 25,
+     "length_mm": 8.98,
+     "elongation": 1.79,
+     "volume_mm3": 104.0,
+     "centroid_mm": [
+      35.33,
+      31.93,
+      45.48
+     ],
+     "axis_unit": [
+      -0.8908,
+      -0.1782,
+      -0.418
+     ],
+     "end_a_mm": [
+      39.11,
+      32.68,
+      47.26
+     ],
+     "end_b_mm": [
+      31.12,
+      31.08,
+      43.51
+     ],
+     "chain": [
+      2,
+      6,
+      15,
+      20,
+      22,
+      25
+     ],
+     "chain_kind": "hind",
+     "segment_label": "foot_class",
+     "touching_neighbors": [
+      {
+       "rank": 6,
+       "gap_mm": 0.66
+      },
+      {
+       "rank": 22,
+       "gap_mm": 0.99
+      },
+      {
+       "rank": 20,
+       "gap_mm": 2.47
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    }
+   ]
+  },
+  "000875599": {
+   "volume_shape": [
+    1402,
+    377,
+    378
+   ],
+   "bone_threshold": 148,
+   "nonaxial_bones": 24,
+   "chains": [
+    {
+     "members": [
+      3,
+      7,
+      19,
+      21,
+      24
+     ],
+     "kind": "hind",
+     "labels": {
+      "19": "fibula",
+      "7": "tibia",
+      "3": "femur",
+      "21": "foot_class",
+      "24": "foot_class"
+     },
+     "derivation": {
+      "fibula": 19,
+      "tibia": 7,
+      "femur": [
+       3
+      ],
+      "tibia_gap_to_fibula_mm": 0.53,
+      "size_order_agrees": true,
+      "transfer": "labels retained from v2 (intact chain); not a transfer target",
+      "source_specimen": null
+     },
+     "anchored": true,
+     "anchor_dist_mm": 19.66,
+     "proximal_bone": 3,
+     "chaining_subset_min": {
+      "pass": true,
+      "run_bones": 3,
+      "run_path": [
+       3,
+       7,
+       19
+      ],
+      "full_chain_pass": false
+     },
+     "chaining_subset_mean": {
+      "pass": true,
+      "run_bones": 5,
+      "run_path": [
+       3,
+       7,
+       19,
+       21,
+       24
+      ],
+      "full_chain_pass": true
+     },
+     "touching_edges": [
+      {
+       "pair": [
+        3,
+        19
+       ],
+       "gap_mm": 2.97
+      },
+      {
+       "pair": [
+        7,
+        19
+       ],
+       "gap_mm": 0.53
+      },
+      {
+       "pair": [
+        7,
+        24
+       ],
+       "gap_mm": 2.62
+      },
+      {
+       "pair": [
+        19,
+        24
+       ],
+       "gap_mm": 2.94
+      },
+      {
+       "pair": [
+        21,
+        24
+       ],
+       "gap_mm": 0.93
+      }
+     ]
+    },
+    {
+     "members": [
+      5,
+      8,
+      9,
+      11
+     ],
+     "kind": "fore",
+     "labels": {
+      "8": "forearm_class",
+      "9": "forearm_class",
+      "5": "humerus",
+      "11": "hand_class"
+     },
+     "derivation": {
+      "forearm_pair": [
+       8,
+       9
+      ],
+      "forearm_pair_gap_mm": 0.7,
+      "humerus": [
+       5
+      ],
+      "transfer": "labels retained from v2 (intact chain); not a transfer target",
+      "source_specimen": null
+     },
+     "anchored": true,
+     "anchor_dist_mm": 6.58,
+     "proximal_bone": 9,
+     "chaining_subset_min": {
+      "pass": true,
+      "run_bones": 4,
+      "run_path": [
+       8,
+       9,
+       5,
+       11
+      ],
+      "full_chain_pass": true
+     },
+     "chaining_subset_mean": {
+      "pass": true,
+      "run_bones": 4,
+      "run_path": [
+       8,
+       9,
+       5,
+       11
+      ],
+      "full_chain_pass": true
+     },
+     "touching_edges": [
+      {
+       "pair": [
+        5,
+        9
+       ],
+       "gap_mm": 2.71
+      },
+      {
+       "pair": [
+        5,
+        11
+       ],
+       "gap_mm": 1.48
+      },
+      {
+       "pair": [
+        8,
+        9
+       ],
+       "gap_mm": 0.7
+      }
+     ]
+    },
+    {
+     "members": [
+      14,
+      23,
+      25
+     ],
+     "kind": "unknown",
+     "labels": {},
+     "derivation": {
+      "note": "no thin member, no mutually-touching long pair",
+      "transfer": "cluster stayed unlabeled; see transfer_provenance.three_bone_cluster",
+      "source_specimen": null
+     },
+     "anchored": false,
+     "anchor_dist_mm": 19.02,
+     "proximal_bone": 14,
+     "chaining_subset_min": {
+      "pass": true,
+      "run_bones": 3,
+      "run_path": [
+       14,
+       23,
+       25
+      ],
+      "full_chain_pass": true
+     },
+     "chaining_subset_mean": {
+      "pass": true,
+      "run_bones": 3,
+      "run_path": [
+       14,
+       23,
+       25
+      ],
+      "full_chain_pass": true
+     },
+     "touching_edges": [
+      {
+       "pair": [
+        14,
+        23
+       ],
+       "gap_mm": 0.96
+      },
+      {
+       "pair": [
+        14,
+        25
+       ],
+       "gap_mm": 0.92
+      },
+      {
+       "pair": [
+        23,
+        25
+       ],
+       "gap_mm": 0.72
+      }
+     ]
+    }
+   ],
+   "fragments_2bone": [
+    [
+     2,
+     16
+    ],
+    [
+     4,
+     20
+    ],
+    [
+     6,
+     10
+    ],
+    [
+     12,
+     15
+    ]
+   ],
+   "fragment_hints": [
+    {
+     "members": [
+      2,
+      16
+     ],
+     "hint": "robust long bone (long-bone-class) + compact block (carpal/tarsal/epiphyseal-class)"
+    },
+    {
+     "members": [
+      4,
+      20
+     ],
+     "hint": "robust long bone (long-bone-class) + thin-rod (fibula-class morphology) -> hindlimb-diad morphology (tibia+fibula-class) or detached pelvic ossification; unresolved"
+    },
+    {
+     "members": [
+      6,
+      10
+     ],
+     "hint": "robust long bone (long-bone-class) + compact block (carpal/tarsal/epiphyseal-class)"
+    },
+    {
+     "members": [
+      12,
+      15
+     ],
+     "hint": "robust long bone (long-bone-class) + irregular"
+    }
+   ],
+   "singletons": [
+    [
+     13
+    ],
+    [
+     17
+    ],
+    [
+     18
+    ],
+    [
+     22
+    ]
+   ],
+   "bones": [
+    {
+     "rank": 2,
+     "length_mm": 43.75,
+     "elongation": 6.43,
+     "volume_mm3": 1146.5,
+     "centroid_mm": [
+      74.73,
+      20.05,
+      22.38
+     ],
+     "axis_unit": [
+      -0.5575,
+      0.4762,
+      -0.68
+     ],
+     "end_a_mm": [
+      86.4,
+      10.08,
+      36.62
+     ],
+     "end_b_mm": [
+      62.01,
+      30.91,
+      6.87
+     ],
+     "chain": null,
+     "chain_kind": null,
+     "segment_label": null,
+     "touching_neighbors": [
+      {
+       "rank": 16,
+       "gap_mm": 1.24
+      }
+     ],
+     "morphology_hint": "robust long bone (long-bone-class)",
+     "confidence": "refused(refused_tie_remains_within_kind: companion kind hind leaves 2 classes within 10% (femur 0.0259, tibia 0.0116) -- a tie that remains a tie stays refused)"
+    },
+    {
+     "rank": 3,
+     "length_mm": 43.0,
+     "elongation": 6.03,
+     "volume_mm3": 1104.9,
+     "centroid_mm": [
+      66.3,
+      23.91,
+      43.24
+     ],
+     "axis_unit": [
+      -0.4768,
+      0.741,
+      -0.4729
+     ],
+     "end_a_mm": [
+      76.46,
+      8.11,
+      53.32
+     ],
+     "end_b_mm": [
+      55.96,
+      39.98,
+      32.98
+     ],
+     "chain": [
+      3,
+      7,
+      19,
+      21,
+      24
+     ],
+     "chain_kind": "hind",
+     "segment_label": "femur",
+     "touching_neighbors": [
+      {
+       "rank": 19,
+       "gap_mm": 2.97
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 4,
+     "length_mm": 54.53,
+     "elongation": 7.57,
+     "volume_mm3": 1063.9,
+     "centroid_mm": [
+      50.69,
+      11.97,
+      33.17
+     ],
+     "axis_unit": [
+      -0.9439,
+      0.1705,
+      -0.2828
+     ],
+     "end_a_mm": [
+      76.97,
+      7.23,
+      41.04
+     ],
+     "end_b_mm": [
+      25.5,
+      16.52,
+      25.62
+     ],
+     "chain": null,
+     "chain_kind": null,
+     "segment_label": null,
+     "touching_neighbors": [
+      {
+       "rank": 20,
+       "gap_mm": 0.47
+      }
+     ],
+     "morphology_hint": "robust long bone (long-bone-class)"
+    },
+    {
+     "rank": 5,
+     "length_mm": 41.84,
+     "elongation": 6.26,
+     "volume_mm3": 961.1,
+     "centroid_mm": [
+      145.87,
+      39.64,
+      18.14
+     ],
+     "axis_unit": [
+      -0.5094,
+      0.7305,
+      0.4548
+     ],
+     "end_a_mm": [
+      156.87,
+      23.87,
+      8.32
+     ],
+     "end_b_mm": [
+      135.56,
+      54.43,
+      27.35
+     ],
+     "chain": [
+      5,
+      8,
+      9,
+      11
+     ],
+     "chain_kind": "fore",
+     "segment_label": "humerus",
+     "touching_neighbors": [
+      {
+       "rank": 11,
+       "gap_mm": 1.48
+      },
+      {
+       "rank": 9,
+       "gap_mm": 2.71
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 6,
+     "length_mm": 39.87,
+     "elongation": 4.67,
+     "volume_mm3": 733.0,
+     "centroid_mm": [
+      141.76,
+      13.03,
+      50.84
+     ],
+     "axis_unit": [
+      -0.727,
+      0.6583,
+      0.1954
+     ],
+     "end_a_mm": [
+      156.97,
+      -0.74,
+      46.75
+     ],
+     "end_b_mm": [
+      127.98,
+      25.5,
+      54.55
+     ],
+     "chain": null,
+     "chain_kind": null,
+     "segment_label": null,
+     "touching_neighbors": [
+      {
+       "rank": 10,
+       "gap_mm": 0.36
+      }
+     ],
+     "morphology_hint": "robust long bone (long-bone-class)",
+     "confidence": "refused(refused_tie_remains_within_kind: companion kind fore leaves 2 classes within 10% (forearm_class 0.0000, humerus 0.0181) -- a tie that remains a tie stays refused)"
+    },
+    {
+     "rank": 7,
+     "length_mm": 41.2,
+     "elongation": 6.69,
+     "volume_mm3": 677.0,
+     "centroid_mm": [
+      49.72,
+      15.05,
+      44.34
+     ],
+     "axis_unit": [
+      -0.7343,
+      0.5151,
+      -0.4421
+     ],
+     "end_a_mm": [
+      64.35,
+      4.78,
+      53.14
+     ],
+     "end_b_mm": [
+      34.09,
+      26.01,
+      34.93
+     ],
+     "chain": [
+      3,
+      7,
+      19,
+      21,
+      24
+     ],
+     "chain_kind": "hind",
+     "segment_label": "tibia",
+     "touching_neighbors": [
+      {
+       "rank": 19,
+       "gap_mm": 0.53
+      },
+      {
+       "rank": 24,
+       "gap_mm": 2.62
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 8,
+     "length_mm": 42.39,
+     "elongation": 8.33,
+     "volume_mm3": 525.0,
+     "centroid_mm": [
+      114.86,
+      40.62,
+      12.65
+     ],
+     "axis_unit": [
+      -0.6643,
+      -0.5996,
+      -0.4463
+     ],
+     "end_a_mm": [
+      129.7,
+      54.02,
+      22.63
+     ],
+     "end_b_mm": [
+      101.54,
+      28.6,
+      3.71
+     ],
+     "chain": [
+      5,
+      8,
+      9,
+      11
+     ],
+     "chain_kind": "fore",
+     "segment_label": "forearm_class",
+     "touching_neighbors": [
+      {
+       "rank": 9,
+       "gap_mm": 0.7
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 9,
+     "length_mm": 45.19,
+     "elongation": 8.58,
+     "volume_mm3": 521.5,
+     "centroid_mm": [
+      115.75,
+      48.02,
+      19.02
+     ],
+     "axis_unit": [
+      -0.7093,
+      -0.4855,
+      -0.5111
+     ],
+     "end_a_mm": [
+      130.84,
+      58.35,
+      29.89
+     ],
+     "end_b_mm": [
+      98.79,
+      36.41,
+      6.79
+     ],
+     "chain": [
+      5,
+      8,
+      9,
+      11
+     ],
+     "chain_kind": "fore",
+     "segment_label": "forearm_class",
+     "touching_neighbors": [
+      {
+       "rank": 8,
+       "gap_mm": 0.7
+      },
+      {
+       "rank": 5,
+       "gap_mm": 2.71
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 10,
+     "length_mm": 23.73,
+     "elongation": 2.04,
+     "volume_mm3": 509.4,
+     "centroid_mm": [
+      158.13,
+      15.11,
+      45.42
+     ],
+     "axis_unit": [
+      -0.4233,
+      0.9019,
+      -0.0865
+     ],
+     "end_a_mm": [
+      163.25,
+      4.2,
+      46.47
+     ],
+     "end_b_mm": [
+      153.21,
+      25.6,
+      44.42
+     ],
+     "chain": null,
+     "chain_kind": "fore",
+     "segment_label": "hand_class",
+     "touching_neighbors": [
+      {
+       "rank": 6,
+       "gap_mm": 0.36
+      }
+     ],
+     "morphology_hint": "compact block (carpal/tarsal/epiphyseal-class)",
+     "confidence": "transferred(high envelope 0.042, unique at fore position 2)"
+    },
+    {
+     "rank": 11,
+     "length_mm": 23.64,
+     "elongation": 1.99,
+     "volume_mm3": 498.2,
+     "centroid_mm": [
+      156.86,
+      30.38,
+      24.89
+     ],
+     "axis_unit": [
+      -0.4153,
+      0.4315,
+      0.8009
+     ],
+     "end_a_mm": [
+      161.68,
+      25.37,
+      15.59
+     ],
+     "end_b_mm": [
+      151.87,
+      35.57,
+      34.52
+     ],
+     "chain": [
+      5,
+      8,
+      9,
+      11
+     ],
+     "chain_kind": "fore",
+     "segment_label": "hand_class",
+     "touching_neighbors": [
+      {
+       "rank": 5,
+       "gap_mm": 1.48
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 12,
+     "length_mm": 36.36,
+     "elongation": 6.78,
+     "volume_mm3": 418.6,
+     "centroid_mm": [
+      114.88,
+      16.64,
+      47.94
+     ],
+     "axis_unit": [
+      -0.4561,
+      -0.7914,
+      -0.407
+     ],
+     "end_a_mm": [
+      122.32,
+      29.54,
+      54.57
+     ],
+     "end_b_mm": [
+      105.74,
+      0.77,
+      39.78
+     ],
+     "chain": null,
+     "chain_kind": "fore",
+     "segment_label": "forearm_class",
+     "touching_neighbors": [
+      {
+       "rank": 15,
+       "gap_mm": 0.57
+      }
+     ],
+     "morphology_hint": "robust long bone (long-bone-class)",
+     "confidence": "transferred(high envelope 0.087, unique at fore position 1)"
+    },
+    {
+     "rank": 13,
+     "length_mm": 16.66,
+     "elongation": 1.28,
+     "volume_mm3": 313.9,
+     "centroid_mm": [
+      15.77,
+      14.48,
+      43.3
+     ],
+     "axis_unit": [
+      0.025,
+      -0.852,
+      0.5229
+     ],
+     "end_a_mm": [
+      15.56,
+      21.61,
+      38.92
+     ],
+     "end_b_mm": [
+      15.97,
+      7.41,
+      47.63
+     ],
+     "chain": null,
+     "chain_kind": null,
+     "segment_label": null,
+     "touching_neighbors": [],
+     "morphology_hint": "compact block (carpal/tarsal/epiphyseal-class)"
+    },
+    {
+     "rank": 14,
+     "length_mm": 14.76,
+     "elongation": 1.04,
+     "volume_mm3": 309.5,
+     "centroid_mm": [
+      89.32,
+      24.38,
+      14.23
+     ],
+     "axis_unit": [
+      0.2657,
+      0.7765,
+      -0.5713
+     ],
+     "end_a_mm": [
+      87.22,
+      18.24,
+      18.74
+     ],
+     "end_b_mm": [
+      91.14,
+      29.7,
+      10.31
+     ],
+     "chain": [
+      14,
+      23,
+      25
+     ],
+     "chain_kind": "unknown",
+     "segment_label": null,
+     "touching_neighbors": [
+      {
+       "rank": 25,
+       "gap_mm": 0.92
+      },
+      {
+       "rank": 23,
+       "gap_mm": 0.96
+      }
+     ],
+     "morphology_hint": "compact block (carpal/tarsal/epiphyseal-class)"
+    },
+    {
+     "rank": 15,
+     "length_mm": 29.85,
+     "elongation": 7.23,
+     "volume_mm3": 297.2,
+     "centroid_mm": [
+      117.91,
+      11.15,
+      45.52
+     ],
+     "axis_unit": [
+      -0.337,
+      -0.7218,
+      -0.6045
+     ],
+     "end_a_mm": [
+      122.62,
+      21.25,
+      53.98
+     ],
+     "end_b_mm": [
+      112.56,
+      -0.3,
+      35.93
+     ],
+     "chain": null,
+     "chain_kind": null,
+     "segment_label": null,
+     "touching_neighbors": [
+      {
+       "rank": 12,
+       "gap_mm": 0.57
+      }
+     ],
+     "morphology_hint": "irregular"
+    },
+    {
+     "rank": 16,
+     "length_mm": 14.44,
+     "elongation": 1.83,
+     "volume_mm3": 260.6,
+     "centroid_mm": [
+      55.73,
+      36.22,
+      12.33
+     ],
+     "axis_unit": [
+      -0.9351,
+      -0.3247,
+      -0.1419
+     ],
+     "end_a_mm": [
+      61.83,
+      38.34,
+      13.25
+     ],
+     "end_b_mm": [
+      48.32,
+      33.65,
+      11.2
+     ],
+     "chain": null,
+     "chain_kind": "hind",
+     "segment_label": "foot_class",
+     "touching_neighbors": [
+      {
+       "rank": 2,
+       "gap_mm": 1.24
+      }
+     ],
+     "morphology_hint": "compact block (carpal/tarsal/epiphyseal-class)",
+     "confidence": "transferred(high envelope 0.025, unique at hind position 3)"
+    },
+    {
+     "rank": 17,
+     "length_mm": 14.56,
+     "elongation": 1.79,
+     "volume_mm3": 258.0,
+     "centroid_mm": [
+      52.99,
+      38.05,
+      23.5
+     ],
+     "axis_unit": [
+      -0.9169,
+      -0.3309,
+      -0.2231
+     ],
+     "end_a_mm": [
+      59.03,
+      40.23,
+      24.97
+     ],
+     "end_b_mm": [
+      45.69,
+      35.41,
+      21.73
+     ],
+     "chain": null,
+     "chain_kind": "hind",
+     "segment_label": "foot_class",
+     "touching_neighbors": [],
+     "morphology_hint": "compact block (carpal/tarsal/epiphyseal-class)",
+     "confidence": "transferred(high envelope 0.030, unique at hind position 3)"
+    },
+    {
+     "rank": 18,
+     "length_mm": 19.08,
+     "elongation": 2.28,
+     "volume_mm3": 200.0,
+     "centroid_mm": [
+      40.36,
+      2.95,
+      36.22
+     ],
+     "axis_unit": [
+      -0.9973,
+      0.0513,
+      -0.0534
+     ],
+     "end_a_mm": [
+      49.74,
+      2.47,
+      36.72
+     ],
+     "end_b_mm": [
+      30.71,
+      3.45,
+      35.7
+     ],
+     "chain": null,
+     "chain_kind": null,
+     "segment_label": null,
+     "touching_neighbors": [],
+     "morphology_hint": "compact block (carpal/tarsal/epiphyseal-class)"
+    },
+    {
+     "rank": 19,
+     "length_mm": 40.27,
+     "elongation": 14.69,
+     "volume_mm3": 182.5,
+     "centroid_mm": [
+      49.61,
+      21.13,
+      45.27
+     ],
+     "axis_unit": [
+      -0.7916,
+      0.4837,
+      -0.3732
+     ],
+     "end_a_mm": [
+      66.01,
+      11.1,
+      53.01
+     ],
+     "end_b_mm": [
+      34.13,
+      30.58,
+      37.98
+     ],
+     "chain": [
+      3,
+      7,
+      19,
+      21,
+      24
+     ],
+     "chain_kind": "hind",
+     "segment_label": "fibula",
+     "touching_neighbors": [
+      {
+       "rank": 7,
+       "gap_mm": 0.53
+      },
+      {
+       "rank": 24,
+       "gap_mm": 2.94
+      },
+      {
+       "rank": 3,
+       "gap_mm": 2.97
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 20,
+     "length_mm": 40.16,
+     "elongation": 14.58,
+     "volume_mm3": 179.5,
+     "centroid_mm": [
+      56.22,
+      10.45,
+      28.98
+     ],
+     "axis_unit": [
+      -0.9528,
+      0.1224,
+      -0.2778
+     ],
+     "end_a_mm": [
+      75.05,
+      8.03,
+      34.47
+     ],
+     "end_b_mm": [
+      36.78,
+      12.95,
+      23.31
+     ],
+     "chain": null,
+     "chain_kind": "hind",
+     "segment_label": "fibula",
+     "touching_neighbors": [
+      {
+       "rank": 4,
+       "gap_mm": 0.47
+      }
+     ],
+     "morphology_hint": "thin-rod (fibula-class morphology)",
+     "confidence": "transferred(high envelope 0.052, unique at hind position 2)"
+    },
+    {
+     "rank": 21,
+     "length_mm": 11.57,
+     "elongation": 2.15,
+     "volume_mm3": 165.1,
+     "centroid_mm": [
+      25.32,
+      31.7,
+      31.37
+     ],
+     "axis_unit": [
+      -0.7108,
+      -0.6305,
+      0.3118
+     ],
+     "end_a_mm": [
+      29.59,
+      35.49,
+      29.5
+     ],
+     "end_b_mm": [
+      21.36,
+      28.19,
+      33.11
+     ],
+     "chain": [
+      3,
+      7,
+      19,
+      21,
+      24
+     ],
+     "chain_kind": "hind",
+     "segment_label": "foot_class",
+     "touching_neighbors": [
+      {
+       "rank": 24,
+       "gap_mm": 0.93
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 22,
+     "length_mm": 21.47,
+     "elongation": 5.96,
+     "volume_mm3": 111.6,
+     "centroid_mm": [
+      162.07,
+      16.61,
+      17.93
+     ],
+     "axis_unit": [
+      -0.4625,
+      -0.708,
+      0.5336
+     ],
+     "end_a_mm": [
+      167.07,
+      24.27,
+      12.16
+     ],
+     "end_b_mm": [
+      157.14,
+      9.07,
+      23.62
+     ],
+     "chain": null,
+     "chain_kind": null,
+     "segment_label": null,
+     "touching_neighbors": [],
+     "morphology_hint": "irregular"
+    },
+    {
+     "rank": 23,
+     "length_mm": 11.24,
+     "elongation": 1.48,
+     "volume_mm3": 110.1,
+     "centroid_mm": [
+      91.28,
+      22.88,
+      27.29
+     ],
+     "axis_unit": [
+      -0.9304,
+      -0.1131,
+      -0.3486
+     ],
+     "end_a_mm": [
+      95.79,
+      23.43,
+      28.98
+     ],
+     "end_b_mm": [
+      85.33,
+      22.16,
+      25.06
+     ],
+     "chain": [
+      14,
+      23,
+      25
+     ],
+     "chain_kind": "unknown",
+     "segment_label": null,
+     "touching_neighbors": [
+      {
+       "rank": 25,
+       "gap_mm": 0.72
+      },
+      {
+       "rank": 14,
+       "gap_mm": 0.96
+      }
+     ],
+     "morphology_hint": "compact block (carpal/tarsal/epiphyseal-class)"
+    },
+    {
+     "rank": 24,
+     "length_mm": 8.73,
+     "elongation": 1.76,
+     "volume_mm3": 101.6,
+     "centroid_mm": [
+      28.76,
+      27.42,
+      33.11
+     ],
+     "axis_unit": [
+      -0.7103,
+      -0.7007,
+      -0.0668
+     ],
+     "end_a_mm": [
+      31.66,
+      30.28,
+      33.38
+     ],
+     "end_b_mm": [
+      25.46,
+      24.16,
+      32.8
+     ],
+     "chain": [
+      3,
+      7,
+      19,
+      21,
+      24
+     ],
+     "chain_kind": "hind",
+     "segment_label": "foot_class",
+     "touching_neighbors": [
+      {
+       "rank": 21,
+       "gap_mm": 0.93
+      },
+      {
+       "rank": 7,
+       "gap_mm": 2.62
+      },
+      {
+       "rank": 19,
+       "gap_mm": 2.94
+      }
+     ],
+     "morphology_hint": null,
+     "confidence": "high"
+    },
+    {
+     "rank": 25,
+     "length_mm": 10.87,
+     "elongation": 1.49,
+     "volume_mm3": 98.0,
+     "centroid_mm": [
+      92.33,
+      27.46,
+      27.37
+     ],
+     "axis_unit": [
+      -0.9319,
+      -0.1019,
+      -0.3481
+     ],
+     "end_a_mm": [
+      96.74,
+      27.95,
+      29.02
+     ],
+     "end_b_mm": [
+      86.61,
+      26.84,
+      25.23
+     ],
+     "chain": [
+      14,
+      23,
+      25
+     ],
+     "chain_kind": "unknown",
+     "segment_label": null,
+     "touching_neighbors": [
+      {
+       "rank": 23,
+       "gap_mm": 0.72
+      },
+      {
+       "rank": 14,
+       "gap_mm": 0.92
+      }
+     ],
+     "morphology_hint": "compact block (carpal/tarsal/epiphyseal-class)"
+    }
+   ]
+  }
+ },
+ "cross_specimen_homology": {
+  "femur": {
+   "000875604": [
+    {
+     "rank": 2,
+     "length_mm": 44.94,
+     "elongation": 7.01
+    },
+    {
+     "rank": 3,
+     "length_mm": 45.16,
+     "elongation": 7.11
+    }
+   ],
+   "000875599": [
+    {
+     "rank": 3,
+     "length_mm": 43.0,
+     "elongation": 6.03
+    }
+   ],
+   "pairs": [
+    {
+     "ranks": [
+      2,
+      3
+     ],
+     "lengths_mm": [
+      44.94,
+      43.0
+     ],
+     "rel_diff": 0.0432,
+     "within_10pct": true,
+     "elongation_ratio": 0.86
+    }
+   ],
+   "coverage_000875604": [
+    1,
+    2
+   ],
+   "coverage_000875599": [
+    1,
+    1
+   ],
+   "all_formed_pairs_within_10pct": true
+  },
+  "fibula": {
+   "000875604": [
+    {
+     "rank": 20,
+     "length_mm": 37.97,
+     "elongation": 13.18
+    },
+    {
+     "rank": 21,
+     "length_mm": 38.08,
+     "elongation": 14.65
+    }
+   ],
+   "000875599": [
+    {
+     "rank": 19,
+     "length_mm": 40.27,
+     "elongation": 14.69
+    }
+   ],
+   "pairs": [
+    {
+     "ranks": [
+      21,
+      19
+     ],
+     "lengths_mm": [
+      38.08,
+      40.27
+     ],
+     "rel_diff": 0.0544,
+     "within_10pct": true,
+     "elongation_ratio": 1.003
+    }
+   ],
+   "coverage_000875604": [
+    1,
+    2
+   ],
+   "coverage_000875599": [
+    1,
+    1
+   ],
+   "all_formed_pairs_within_10pct": true
+  },
+  "foot_class": {
+   "000875604": [
+    {
+     "rank": 15,
+     "length_mm": 14.1,
+     "elongation": 1.79
+    },
+    {
+     "rank": 17,
+     "length_mm": 14.14,
+     "elongation": 1.81
+    },
+    {
+     "rank": 18,
+     "length_mm": 12.89,
+     "elongation": 1.13
+    },
+    {
+     "rank": 22,
+     "length_mm": 11.17,
+     "elongation": 2.26
+    },
+    {
+     "rank": 23,
+     "length_mm": 11.17,
+     "elongation": 2.26
+    },
+    {
+     "rank": 24,
+     "length_mm": 8.97,
+     "elongation": 1.79
+    },
+    {
+     "rank": 25,
+     "length_mm": 8.98,
+     "elongation": 1.79
+    }
+   ],
+   "000875599": [
+    {
+     "rank": 21,
+     "length_mm": 11.57,
+     "elongation": 2.15
+    },
+    {
+     "rank": 24,
+     "length_mm": 8.73,
+     "elongation": 1.76
+    }
+   ],
+   "pairs": [
+    {
+     "ranks": [
+      24,
+      24
+     ],
+     "lengths_mm": [
+      8.97,
+      8.73
+     ],
+     "rel_diff": 0.0268,
+     "within_10pct": true,
+     "elongation_ratio": 0.983
+    },
+    {
+     "ranks": [
+      22,
+      21
+     ],
+     "lengths_mm": [
+      11.17,
+      11.57
+     ],
+     "rel_diff": 0.0346,
+     "within_10pct": true,
+     "elongation_ratio": 0.951
+    }
+   ],
+   "coverage_000875604": [
+    2,
+    7
+   ],
+   "coverage_000875599": [
+    2,
+    2
+   ],
+   "all_formed_pairs_within_10pct": true
+  },
+  "forearm_class": {
+   "000875604": [
+    {
+     "rank": 10,
+     "length_mm": 40.57,
+     "elongation": 9.57
+    },
+    {
+     "rank": 11,
+     "length_mm": 40.2,
+     "elongation": 9.64
+    },
+    {
+     "rank": 12,
+     "length_mm": 43.92,
+     "elongation": 9.36
+    },
+    {
+     "rank": 13,
+     "length_mm": 43.71,
+     "elongation": 9.47
+    }
+   ],
+   "000875599": [
+    {
+     "rank": 8,
+     "length_mm": 42.39,
+     "elongation": 8.33
+    },
+    {
+     "rank": 9,
+     "length_mm": 45.19,
+     "elongation": 8.58
+    }
+   ],
+   "pairs": [
+    {
+     "ranks": [
+      12,
+      9
+     ],
+     "lengths_mm": [
+      43.92,
+      45.19
+     ],
+     "rel_diff": 0.0281,
+     "within_10pct": true,
+     "elongation_ratio": 0.917
+    },
+    {
+     "ranks": [
+      13,
+      8
+     ],
+     "lengths_mm": [
+      43.71,
+      42.39
+     ],
+     "rel_diff": 0.0302,
+     "within_10pct": true,
+     "elongation_ratio": 0.88
+    }
+   ],
+   "coverage_000875604": [
+    2,
+    4
+   ],
+   "coverage_000875599": [
+    2,
+    2
+   ],
+   "all_formed_pairs_within_10pct": true
+  },
+  "hand_class": {
+   "000875604": [
+    {
+     "rank": 8,
+     "length_mm": 24.44,
+     "elongation": 2.19
+    },
+    {
+     "rank": 9,
+     "length_mm": 24.62,
+     "elongation": 2.22
+    }
+   ],
+   "000875599": [
+    {
+     "rank": 11,
+     "length_mm": 23.64,
+     "elongation": 1.99
+    }
+   ],
+   "pairs": [
+    {
+     "ranks": [
+      8,
+      11
+     ],
+     "lengths_mm": [
+      24.44,
+      23.64
+     ],
+     "rel_diff": 0.0327,
+     "within_10pct": true,
+     "elongation_ratio": 0.909
+    }
+   ],
+   "coverage_000875604": [
+    1,
+    2
+   ],
+   "coverage_000875599": [
+    1,
+    1
+   ],
+   "all_formed_pairs_within_10pct": true
+  },
+  "humerus": {
+   "000875604": [
+    {
+     "rank": 4,
+     "length_mm": 41.82,
+     "elongation": 7.23
+    },
+    {
+     "rank": 5,
+     "length_mm": 40.69,
+     "elongation": 6.84
+    }
+   ],
+   "000875599": [
+    {
+     "rank": 5,
+     "length_mm": 41.84,
+     "elongation": 6.26
+    }
+   ],
+   "pairs": [
+    {
+     "ranks": [
+      4,
+      5
+     ],
+     "lengths_mm": [
+      41.82,
+      41.84
+     ],
+     "rel_diff": 0.0005,
+     "within_10pct": true,
+     "elongation_ratio": 0.866
+    }
+   ],
+   "coverage_000875604": [
+    1,
+    2
+   ],
+   "coverage_000875599": [
+    1,
+    1
+   ],
+   "all_formed_pairs_within_10pct": true
+  },
+  "tibia": {
+   "000875604": [
+    {
+     "rank": 6,
+     "length_mm": 43.14,
+     "elongation": 8.25
+    },
+    {
+     "rank": 7,
+     "length_mm": 43.27,
+     "elongation": 8.2
+    }
+   ],
+   "000875599": [
+    {
+     "rank": 7,
+     "length_mm": 41.2,
+     "elongation": 6.69
+    }
+   ],
+   "pairs": [
+    {
+     "ranks": [
+      6,
+      7
+     ],
+     "lengths_mm": [
+      43.14,
+      41.2
+     ],
+     "rel_diff": 0.045,
+     "within_10pct": true,
+     "elongation_ratio": 0.811
+    }
+   ],
+   "coverage_000875604": [
+    1,
+    2
+   ],
+   "coverage_000875599": [
+    1,
+    1
+   ],
+   "all_formed_pairs_within_10pct": true
+  }
+ },
+ "transfer_provenance": {
+  "statement": "A's labels transfer to B by homology -- for every B bone without a confident label, a candidate A homolog exists (same chain kind at the same chain position, max-extent within 10%) and the transfer is unique.",
+  "source_specimen": "000875604",
+  "target_specimen": "000875599",
+  "target_threshold": 148.0,
+  "a_class_envelopes": {
+   "femur": {
+    "kind": "hind",
+    "chain_position": 0,
+    "donor_ranks": [
+     2,
+     3
+    ],
+    "donor_max_extent_mm": [
+     46.41,
+     46.44
+    ],
+    "donor_length_v2_mm": [
+     44.94,
+     45.16
+    ],
+    "envelope_range_mm": [
+     46.41,
+     46.44
+    ]
+   },
+   "fibula": {
+    "kind": "hind",
+    "chain_position": 2,
+    "donor_ranks": [
+     20,
+     21
+    ],
+    "donor_max_extent_mm": [
+     38.24,
+     38.37
+    ],
+    "donor_length_v2_mm": [
+     37.97,
+     38.08
+    ],
+    "envelope_range_mm": [
+     38.24,
+     38.37
+    ]
+   },
+   "foot_class": {
+    "kind": "hind",
+    "chain_position": 3,
+    "donor_ranks": [
+     15,
+     17,
+     18,
+     22,
+     23,
+     24,
+     25
+    ],
+    "donor_max_extent_mm": [
+     9.17,
+     9.21,
+     11.47,
+     11.55,
+     13.39,
+     14.48,
+     14.51
+    ],
+    "donor_length_v2_mm": [
+     8.97,
+     8.98,
+     11.17,
+     11.17,
+     12.89,
+     14.1,
+     14.14
+    ],
+    "envelope_range_mm": [
+     9.17,
+     14.51
+    ]
+   },
+   "forearm_class": {
+    "kind": "fore",
+    "chain_position": 1,
+    "donor_ranks": [
+     10,
+     11,
+     12,
+     13
+    ],
+    "donor_max_extent_mm": [
+     40.87,
+     41.19,
+     44.03,
+     44.28
+    ],
+    "donor_length_v2_mm": [
+     40.2,
+     40.57,
+     43.71,
+     43.92
+    ],
+    "envelope_range_mm": [
+     40.87,
+     44.28
+    ]
+   },
+   "hand_class": {
+    "kind": "fore",
+    "chain_position": 2,
+    "donor_ranks": [
+     8,
+     9
+    ],
+    "donor_max_extent_mm": [
+     25.62,
+     26.0
+    ],
+    "donor_length_v2_mm": [
+     24.44,
+     24.62
+    ],
+    "envelope_range_mm": [
+     25.62,
+     26.0
+    ]
+   },
+   "humerus": {
+    "kind": "fore",
+    "chain_position": 0,
+    "donor_ranks": [
+     4,
+     5
+    ],
+    "donor_max_extent_mm": [
+     41.74,
+     43.14
+    ],
+    "donor_length_v2_mm": [
+     40.69,
+     41.82
+    ],
+    "envelope_range_mm": [
+     41.74,
+     43.14
+    ]
+   },
+   "tibia": {
+    "kind": "hind",
+    "chain_position": 1,
+    "donor_ranks": [
+     6,
+     7
+    ],
+    "donor_max_extent_mm": [
+     44.62,
+     44.69
+    ],
+    "donor_length_v2_mm": [
+     43.14,
+     43.27
+    ],
+    "envelope_range_mm": [
+     44.62,
+     44.69
+    ]
+   }
+  },
+  "a_max_extents_all_bones": {
+   "2": 46.44,
+   "3": 46.41,
+   "4": 43.14,
+   "5": 41.74,
+   "6": 44.62,
+   "7": 44.69,
+   "8": 25.62,
+   "9": 26.0,
+   "10": 41.19,
+   "11": 40.87,
+   "12": 44.28,
+   "13": 44.03,
+   "14": 17.11,
+   "15": 14.48,
+   "16": 13.55,
+   "17": 14.51,
+   "18": 13.39,
+   "19": 17.3,
+   "20": 38.24,
+   "21": 38.37,
+   "22": 11.47,
+   "23": 11.55,
+   "24": 9.17,
+   "25": 9.21
+  },
+  "b_max_extents_all_bones": {
+   "2": 45.21,
+   "3": 43.63,
+   "4": 55.69,
+   "5": 42.92,
+   "6": 40.98,
+   "7": 41.82,
+   "8": 43.47,
+   "9": 45.67,
+   "10": 24.54,
+   "11": 24.67,
+   "12": 37.31,
+   "13": 17.88,
+   "14": 16.27,
+   "15": 30.55,
+   "16": 14.87,
+   "17": 14.94,
+   "18": 20.44,
+   "19": 40.44,
+   "20": 40.38,
+   "21": 11.89,
+   "22": 21.79,
+   "23": 11.42,
+   "24": 8.85,
+   "25": 11.08
+  },
+  "max_extent_definition": "span of vertex projections on the PCA long axis between the 1st and 99th percentiles, uncapped (audited: inflates v2 p2-p98 lengths by <= 3.4%; no tail pathology)",
+  "transferred_labels": [
+   {
+    "b_rank": 10,
+    "assigned_class": "hand_class",
+    "source_specimen": "000875604",
+    "a_homolog_ranks": [
+     8,
+     9
+    ],
+    "a_envelope_max_extent_mm": [
+     25.62,
+     26.0
+    ],
+    "b_max_extent_mm": 24.54,
+    "length_agreement": {
+     "rel_diff_vs_envelope": 0.042,
+     "rel_diff_vs_nearest_donor": 0.0421,
+     "nearest_a_donor_rank": 8,
+     "within_10pct": true
+    },
+    "chain_kind": "fore",
+    "chain_position": 2,
+    "chain_kind_position_matches_a_homolog": true,
+    "b_side_position_evidence": "compact block (v2 morphology) = distal element (foot or hand)",
+    "uniqueness": "unique within the kind/position-eligible class set",
+    "b_threshold": 148.0,
+    "side_assigned": null
+   },
+   {
+    "b_rank": 12,
+    "assigned_class": "forearm_class",
+    "source_specimen": "000875604",
+    "a_homolog_ranks": [
+     10,
+     11,
+     12,
+     13
+    ],
+    "a_envelope_max_extent_mm": [
+     40.87,
+     44.28
+    ],
+    "b_max_extent_mm": 37.31,
+    "length_agreement": {
+     "rel_diff_vs_envelope": 0.0872,
+     "rel_diff_vs_nearest_donor": 0.0873,
+     "nearest_a_donor_rank": 11,
+     "within_10pct": true
+    },
+    "chain_kind": "fore",
+    "chain_position": 1,
+    "chain_kind_position_matches_a_homolog": true,
+    "b_side_position_evidence": "robust long bone (v2 morphology) = proximal/intermediate, kind undetermined",
+    "uniqueness": "unique within the kind/position-eligible class set",
+    "b_threshold": 148.0,
+    "side_assigned": null
+   },
+   {
+    "b_rank": 16,
+    "assigned_class": "foot_class",
+    "source_specimen": "000875604",
+    "a_homolog_ranks": [
+     15,
+     17,
+     18,
+     22,
+     23,
+     24,
+     25
+    ],
+    "a_envelope_max_extent_mm": [
+     9.17,
+     14.51
+    ],
+    "b_max_extent_mm": 14.87,
+    "length_agreement": {
+     "rel_diff_vs_envelope": 0.0252,
+     "rel_diff_vs_nearest_donor": 0.0248,
+     "nearest_a_donor_rank": 17,
+     "within_10pct": true
+    },
+    "chain_kind": "hind",
+    "chain_position": 3,
+    "chain_kind_position_matches_a_homolog": true,
+    "b_side_position_evidence": "compact block (v2 morphology) = distal element (foot or hand)",
+    "uniqueness": "unique within the kind/position-eligible class set",
+    "b_threshold": 148.0,
+    "side_assigned": null
+   },
+   {
+    "b_rank": 17,
+    "assigned_class": "foot_class",
+    "source_specimen": "000875604",
+    "a_homolog_ranks": [
+     15,
+     17,
+     18,
+     22,
+     23,
+     24,
+     25
+    ],
+    "a_envelope_max_extent_mm": [
+     9.17,
+     14.51
+    ],
+    "b_max_extent_mm": 14.94,
+    "length_agreement": {
+     "rel_diff_vs_envelope": 0.0298,
+     "rel_diff_vs_nearest_donor": 0.0293,
+     "nearest_a_donor_rank": 17,
+     "within_10pct": true
+    },
+    "chain_kind": "hind",
+    "chain_position": 3,
+    "chain_kind_position_matches_a_homolog": true,
+    "b_side_position_evidence": "compact block (v2 morphology) = distal element (foot or hand)",
+    "uniqueness": "unique within the kind/position-eligible class set",
+    "b_threshold": 148.0,
+    "side_assigned": null
+   },
+   {
+    "b_rank": 20,
+    "assigned_class": "fibula",
+    "source_specimen": "000875604",
+    "a_homolog_ranks": [
+     20,
+     21
+    ],
+    "a_envelope_max_extent_mm": [
+     38.24,
+     38.37
+    ],
+    "b_max_extent_mm": 40.38,
+    "length_agreement": {
+     "rel_diff_vs_envelope": 0.0524,
+     "rel_diff_vs_nearest_donor": 0.0498,
+     "nearest_a_donor_rank": 21,
+     "within_10pct": true
+    },
+    "chain_kind": "hind",
+    "chain_position": 2,
+    "chain_kind_position_matches_a_homolog": true,
+    "b_side_position_evidence": "thin rod (elongation > 10, v2 valley-derived cut) = fibula",
+    "uniqueness": "unique within the kind/position-eligible class set",
+    "b_threshold": 148.0,
+    "side_assigned": null
+   }
+  ],
+  "class_transfer_counts": {
+   "fibula": 1,
+   "foot_class": 2,
+   "forearm_class": 1,
+   "hand_class": 1
+  },
+  "ambiguous_never_assigned": [
+   {
+    "b_rank": 2,
+    "matched_classes": [
+     "femur",
+     "forearm_class",
+     "humerus",
+     "tibia"
+    ],
+    "candidates": [
+     {
+      "class": "femur",
+      "a_chain_kind": "hind",
+      "a_chain_position": 0,
+      "envelope_mm": [
+       46.41,
+       46.44
+      ],
+      "b_max_extent_mm": 45.21,
+      "rel_diff_vs_envelope": 0.0259,
+      "rel_diff_vs_nearest_donor": 0.0259,
+      "nearest_a_donor_rank": 3,
+      "within_10pct": true
+     },
+     {
+      "class": "forearm_class",
+      "a_chain_kind": "fore",
+      "a_chain_position": 1,
+      "envelope_mm": [
+       40.87,
+       44.28
+      ],
+      "b_max_extent_mm": 45.21,
+      "rel_diff_vs_envelope": 0.021,
+      "rel_diff_vs_nearest_donor": 0.0205,
+      "nearest_a_donor_rank": 12,
+      "within_10pct": true
+     },
+     {
+      "class": "humerus",
+      "a_chain_kind": "fore",
+      "a_chain_position": 0,
+      "envelope_mm": [
+       41.74,
+       43.14
+      ],
+      "b_max_extent_mm": 45.21,
+      "rel_diff_vs_envelope": 0.048,
+      "rel_diff_vs_nearest_donor": 0.0458,
+      "nearest_a_donor_rank": 4,
+      "within_10pct": true
+     },
+     {
+      "class": "tibia",
+      "a_chain_kind": "hind",
+      "a_chain_position": 1,
+      "envelope_mm": [
+       44.62,
+       44.69
+      ],
+      "b_max_extent_mm": 45.21,
+      "rel_diff_vs_envelope": 0.0116,
+      "rel_diff_vs_nearest_donor": 0.0115,
+      "nearest_a_donor_rank": 7,
+      "within_10pct": true
+     }
+    ]
+   },
+   {
+    "b_rank": 6,
+    "matched_classes": [
+     "forearm_class",
+     "humerus",
+     "tibia"
+    ],
+    "candidates": [
+     {
+      "class": "femur",
+      "a_chain_kind": "hind",
+      "a_chain_position": 0,
+      "envelope_mm": [
+       46.41,
+       46.44
+      ],
+      "b_max_extent_mm": 40.98,
+      "rel_diff_vs_envelope": 0.1169,
+      "rel_diff_vs_nearest_donor": 0.1169,
+      "nearest_a_donor_rank": 3,
+      "within_10pct": false
+     },
+     {
+      "class": "forearm_class",
+      "a_chain_kind": "fore",
+      "a_chain_position": 1,
+      "envelope_mm": [
+       40.87,
+       44.28
+      ],
+      "b_max_extent_mm": 40.98,
+      "rel_diff_vs_envelope": 0.0,
+      "rel_diff_vs_nearest_donor": 0.0027,
+      "nearest_a_donor_rank": 11,
+      "within_10pct": true
+     },
+     {
+      "class": "humerus",
+      "a_chain_kind": "fore",
+      "a_chain_position": 0,
+      "envelope_mm": [
+       41.74,
+       43.14
+      ],
+      "b_max_extent_mm": 40.98,
+      "rel_diff_vs_envelope": 0.0181,
+      "rel_diff_vs_nearest_donor": 0.0181,
+      "nearest_a_donor_rank": 5,
+      "within_10pct": true
+     },
+     {
+      "class": "tibia",
+      "a_chain_kind": "hind",
+      "a_chain_position": 1,
+      "envelope_mm": [
+       44.62,
+       44.69
+      ],
+      "b_max_extent_mm": 40.98,
+      "rel_diff_vs_envelope": 0.0815,
+      "rel_diff_vs_nearest_donor": 0.0815,
+      "nearest_a_donor_rank": 6,
+      "within_10pct": true
+     }
+    ]
+   }
+  ],
+  "unassigned_no_candidate": [
+   {
+    "b_rank": 4,
+    "b_max_extent_mm": 55.69,
+    "nearest_miss": 0.1992
+   },
+   {
+    "b_rank": 13,
+    "b_max_extent_mm": 17.88,
+    "nearest_miss": 0.2321
+   },
+   {
+    "b_rank": 15,
+    "b_max_extent_mm": 30.55,
+    "nearest_miss": 0.1751
+   },
+   {
+    "b_rank": 18,
+    "b_max_extent_mm": 20.44,
+    "nearest_miss": 0.202
+   },
+   {
+    "b_rank": 22,
+    "b_max_extent_mm": 21.79,
+    "nearest_miss": 0.1494
+   }
+  ],
+  "three_bone_cluster": {
+   "members": [
+    14,
+    23,
+    25
+   ],
+   "anchor_bone": 14,
+   "anchor_max_extent_mm": 16.27,
+   "axial_dist_mm": 19.02,
+   "allowance_mm": 24.4,
+   "anchored_at_1_5x": true,
+   "auxiliary_readings": {
+    "at_v2_factor_1_2x_max_extent": true,
+    "note": "the mission's 1.5x governs; the v2-factor reading is auxiliary"
+   },
+   "member_max_extents_mm": {
+    "14": 16.27,
+    "23": 11.42,
+    "25": 11.08
+   },
+   "class_hint": null,
+   "class_hint_evaluation": [
+    {
+     "class": "femur",
+     "worst_member_rel_diff": 0.7614,
+     "covers_all_within_10pct": false
+    },
+    {
+     "class": "fibula",
+     "worst_member_rel_diff": 0.7104,
+     "covers_all_within_10pct": false
+    },
+    {
+     "class": "foot_class",
+     "worst_member_rel_diff": 0.1213,
+     "covers_all_within_10pct": false
+    },
+    {
+     "class": "forearm_class",
+     "worst_member_rel_diff": 0.729,
+     "covers_all_within_10pct": false
+    },
+    {
+     "class": "hand_class",
+     "worst_member_rel_diff": 0.5677,
+     "covers_all_within_10pct": false
+    },
+    {
+     "class": "humerus",
+     "worst_member_rel_diff": 0.7347,
+     "covers_all_within_10pct": false
+    },
+    {
+     "class": "tibia",
+     "worst_member_rel_diff": 0.7518,
+     "covers_all_within_10pct": false
+    }
+   ],
+   "hint_refused_reason": "anchored at 1.5x, but no A class envelope contains every member within 10% (worst member misses: foot_class 0.121, hand_class 0.568) -- no hint may be issued",
+   "hint_is_label": false,
+   "counted_confident": false,
+   "note": "class-hint only, per falsifier 2: the hint names the class whose envelope contains every member within 10%; members stay unlabeled and uncounted -- a hint is not an assignment."
+  }
+ },
+ "falsifiers": {
+  "carried_from_v3": {
+   "carried_from_v2": {
+    "1_chain_recovery_chaining": {
+     "criterion": "each recovered chain has >=3 bones whose centroids chain within 1.2x the neighboring bone lengths (subset reading: the longest chainable subpath must span >=3 bones; full-chain traversal reported as auxiliary)",
+     "ambiguity": "'neighboring bone lengths' read as min (strict) and mean (nominal); both reported",
+     "chains": {
+      "000875604": [
+       {
+        "members": [
+         2,
+         6,
+         15,
+         20,
+         22,
+         25
+        ],
+        "kind": "hind",
+        "min_pass": true,
+        "min_run_bones": 3,
+        "mean_pass": true,
+        "mean_run_bones": 6,
+        "full_chain_min": false
+       },
+       {
+        "members": [
+         3,
+         7,
+         17,
+         18,
+         21,
+         23,
+         24
+        ],
+        "kind": "hind",
+        "min_pass": true,
+        "min_run_bones": 3,
+        "mean_pass": true,
+        "mean_run_bones": 7,
+        "full_chain_min": false
+       },
+       {
+        "members": [
+         4,
+         8,
+         10,
+         12
+        ],
+        "kind": "fore",
+        "min_pass": true,
+        "min_run_bones": 4,
+        "mean_pass": true,
+        "mean_run_bones": 4,
+        "full_chain_min": true
+       },
+       {
+        "members": [
+         5,
+         9,
+         11,
+         13
+        ],
+        "kind": "fore",
+        "min_pass": true,
+        "min_run_bones": 4,
+        "mean_pass": true,
+        "mean_run_bones": 4,
+        "full_chain_min": true
+       }
+      ],
+      "000875599": [
+       {
+        "members": [
+         3,
+         7,
+         19,
+         21,
+         24
+        ],
+        "kind": "hind",
+        "min_pass": true,
+        "min_run_bones": 3,
+        "mean_pass": true,
+        "mean_run_bones": 5,
+        "full_chain_min": false
+       },
+       {
+        "members": [
+         5,
+         8,
+         9,
+         11
+        ],
+        "kind": "fore",
+        "min_pass": true,
+        "min_run_bones": 4,
+        "mean_pass": true,
+        "mean_run_bones": 4,
+        "full_chain_min": true
+       },
+       {
+        "members": [
+         14,
+         23,
+         25
+        ],
+        "kind": "unknown",
+        "min_pass": true,
+        "min_run_bones": 3,
+        "mean_pass": true,
+        "mean_run_bones": 3,
+        "full_chain_min": true
+       }
+      ]
+     },
+     "chains_recovered": {
+      "000875604": 4,
+      "000875599": 3
+     },
+     "pass_strict": true,
+     "pass_nominal": true
+    },
+    "2_homology_10pct": {
+     "criterion": "homologous (same segment class, both chain-labeled) lengths agree within 10%",
+     "all_formed_pairs_within_10pct": true,
+     "max_rel_diff": 0.0544,
+     "per_class": {
+      "femur": {
+       "000875604": [
+        {
+         "rank": 2,
+         "length_mm": 44.94,
+         "elongation": 7.01
+        },
+        {
+         "rank": 3,
+         "length_mm": 45.16,
+         "elongation": 7.11
+        }
+       ],
+       "000875599": [
+        {
+         "rank": 3,
+         "length_mm": 43.0,
+         "elongation": 6.03
+        }
+       ],
+       "pairs": [
+        {
+         "ranks": [
+          2,
+          3
+         ],
+         "lengths_mm": [
+          44.94,
+          43.0
+         ],
+         "rel_diff": 0.0432,
+         "within_10pct": true,
+         "elongation_ratio": 0.86
+        }
+       ],
+       "coverage_000875604": [
+        1,
+        2
+       ],
+       "coverage_000875599": [
+        1,
+        1
+       ],
+       "all_formed_pairs_within_10pct": true
+      },
+      "fibula": {
+       "000875604": [
+        {
+         "rank": 20,
+         "length_mm": 37.97,
+         "elongation": 13.18
+        },
+        {
+         "rank": 21,
+         "length_mm": 38.08,
+         "elongation": 14.65
+        }
+       ],
+       "000875599": [
+        {
+         "rank": 19,
+         "length_mm": 40.27,
+         "elongation": 14.69
+        }
+       ],
+       "pairs": [
+        {
+         "ranks": [
+          21,
+          19
+         ],
+         "lengths_mm": [
+          38.08,
+          40.27
+         ],
+         "rel_diff": 0.0544,
+         "within_10pct": true,
+         "elongation_ratio": 1.003
+        }
+       ],
+       "coverage_000875604": [
+        1,
+        2
+       ],
+       "coverage_000875599": [
+        1,
+        1
+       ],
+       "all_formed_pairs_within_10pct": true
+      },
+      "foot_class": {
+       "000875604": [
+        {
+         "rank": 15,
+         "length_mm": 14.1,
+         "elongation": 1.79
+        },
+        {
+         "rank": 17,
+         "length_mm": 14.14,
+         "elongation": 1.81
+        },
+        {
+         "rank": 18,
+         "length_mm": 12.89,
+         "elongation": 1.13
+        },
+        {
+         "rank": 22,
+         "length_mm": 11.17,
+         "elongation": 2.26
+        },
+        {
+         "rank": 23,
+         "length_mm": 11.17,
+         "elongation": 2.26
+        },
+        {
+         "rank": 24,
+         "length_mm": 8.97,
+         "elongation": 1.79
+        },
+        {
+         "rank": 25,
+         "length_mm": 8.98,
+         "elongation": 1.79
+        }
+       ],
+       "000875599": [
+        {
+         "rank": 21,
+         "length_mm": 11.57,
+         "elongation": 2.15
+        },
+        {
+         "rank": 24,
+         "length_mm": 8.73,
+         "elongation": 1.76
+        }
+       ],
+       "pairs": [
+        {
+         "ranks": [
+          24,
+          24
+         ],
+         "lengths_mm": [
+          8.97,
+          8.73
+         ],
+         "rel_diff": 0.0268,
+         "within_10pct": true,
+         "elongation_ratio": 0.983
+        },
+        {
+         "ranks": [
+          22,
+          21
+         ],
+         "lengths_mm": [
+          11.17,
+          11.57
+         ],
+         "rel_diff": 0.0346,
+         "within_10pct": true,
+         "elongation_ratio": 0.951
+        }
+       ],
+       "coverage_000875604": [
+        2,
+        7
+       ],
+       "coverage_000875599": [
+        2,
+        2
+       ],
+       "all_formed_pairs_within_10pct": true
+      },
+      "forearm_class": {
+       "000875604": [
+        {
+         "rank": 10,
+         "length_mm": 40.57,
+         "elongation": 9.57
+        },
+        {
+         "rank": 11,
+         "length_mm": 40.2,
+         "elongation": 9.64
+        },
+        {
+         "rank": 12,
+         "length_mm": 43.92,
+         "elongation": 9.36
+        },
+        {
+         "rank": 13,
+         "length_mm": 43.71,
+         "elongation": 9.47
+        }
+       ],
+       "000875599": [
+        {
+         "rank": 8,
+         "length_mm": 42.39,
+         "elongation": 8.33
+        },
+        {
+         "rank": 9,
+         "length_mm": 45.19,
+         "elongation": 8.58
+        }
+       ],
+       "pairs": [
+        {
+         "ranks": [
+          12,
+          9
+         ],
+         "lengths_mm": [
+          43.92,
+          45.19
+         ],
+         "rel_diff": 0.0281,
+         "within_10pct": true,
+         "elongation_ratio": 0.917
+        },
+        {
+         "ranks": [
+          13,
+          8
+         ],
+         "lengths_mm": [
+          43.71,
+          42.39
+         ],
+         "rel_diff": 0.0302,
+         "within_10pct": true,
+         "elongation_ratio": 0.88
+        }
+       ],
+       "coverage_000875604": [
+        2,
+        4
+       ],
+       "coverage_000875599": [
+        2,
+        2
+       ],
+       "all_formed_pairs_within_10pct": true
+      },
+      "hand_class": {
+       "000875604": [
+        {
+         "rank": 8,
+         "length_mm": 24.44,
+         "elongation": 2.19
+        },
+        {
+         "rank": 9,
+         "length_mm": 24.62,
+         "elongation": 2.22
+        }
+       ],
+       "000875599": [
+        {
+         "rank": 11,
+         "length_mm": 23.64,
+         "elongation": 1.99
+        }
+       ],
+       "pairs": [
+        {
+         "ranks": [
+          8,
+          11
+         ],
+         "lengths_mm": [
+          24.44,
+          23.64
+         ],
+         "rel_diff": 0.0327,
+         "within_10pct": true,
+         "elongation_ratio": 0.909
+        }
+       ],
+       "coverage_000875604": [
+        1,
+        2
+       ],
+       "coverage_000875599": [
+        1,
+        1
+       ],
+       "all_formed_pairs_within_10pct": true
+      },
+      "humerus": {
+       "000875604": [
+        {
+         "rank": 4,
+         "length_mm": 41.82,
+         "elongation": 7.23
+        },
+        {
+         "rank": 5,
+         "length_mm": 40.69,
+         "elongation": 6.84
+        }
+       ],
+       "000875599": [
+        {
+         "rank": 5,
+         "length_mm": 41.84,
+         "elongation": 6.26
+        }
+       ],
+       "pairs": [
+        {
+         "ranks": [
+          4,
+          5
+         ],
+         "lengths_mm": [
+          41.82,
+          41.84
+         ],
+         "rel_diff": 0.0005,
+         "within_10pct": true,
+         "elongation_ratio": 0.866
+        }
+       ],
+       "coverage_000875604": [
+        1,
+        2
+       ],
+       "coverage_000875599": [
+        1,
+        1
+       ],
+       "all_formed_pairs_within_10pct": true
+      },
+      "tibia": {
+       "000875604": [
+        {
+         "rank": 6,
+         "length_mm": 43.14,
+         "elongation": 8.25
+        },
+        {
+         "rank": 7,
+         "length_mm": 43.27,
+         "elongation": 8.2
+        }
+       ],
+       "000875599": [
+        {
+         "rank": 7,
+         "length_mm": 41.2,
+         "elongation": 6.69
+        }
+       ],
+       "pairs": [
+        {
+         "ranks": [
+          6,
+          7
+         ],
+         "lengths_mm": [
+          43.14,
+          41.2
+         ],
+         "rel_diff": 0.045,
+         "within_10pct": true,
+         "elongation_ratio": 0.811
+        }
+       ],
+       "coverage_000875604": [
+        1,
+        2
+       ],
+       "coverage_000875599": [
+        1,
+        1
+       ],
+       "all_formed_pairs_within_10pct": true
+      }
+     }
+    },
+    "3_axial_anchor": {
+     "criterion": "chain's longest bone within 1.2x its length of the axial composite",
+     "chains": {
+      "000875604": [
+       {
+        "members": [
+         2,
+         6,
+         15,
+         20,
+         22,
+         25
+        ],
+        "kind": "hind",
+        "labeled": true,
+        "anchored": true,
+        "anchor_dist_mm": 19.65,
+        "proximal_bone": 2
+       },
+       {
+        "members": [
+         3,
+         7,
+         17,
+         18,
+         21,
+         23,
+         24
+        ],
+        "kind": "hind",
+        "labeled": true,
+        "anchored": true,
+        "anchor_dist_mm": 14.74,
+        "proximal_bone": 3
+       },
+       {
+        "members": [
+         4,
+         8,
+         10,
+         12
+        ],
+        "kind": "fore",
+        "labeled": true,
+        "anchored": true,
+        "anchor_dist_mm": 6.14,
+        "proximal_bone": 12
+       },
+       {
+        "members": [
+         5,
+         9,
+         11,
+         13
+        ],
+        "kind": "fore",
+        "labeled": true,
+        "anchored": true,
+        "anchor_dist_mm": 5.33,
+        "proximal_bone": 13
+       }
+      ],
+      "000875599": [
+       {
+        "members": [
+         3,
+         7,
+         19,
+         21,
+         24
+        ],
+        "kind": "hind",
+        "labeled": true,
+        "anchored": true,
+        "anchor_dist_mm": 19.66,
+        "proximal_bone": 3
+       },
+       {
+        "members": [
+         5,
+         8,
+         9,
+         11
+        ],
+        "kind": "fore",
+        "labeled": true,
+        "anchored": true,
+        "anchor_dist_mm": 6.58,
+        "proximal_bone": 9
+       },
+       {
+        "members": [
+         14,
+         23,
+         25
+        ],
+        "kind": "unknown",
+        "labeled": false,
+        "anchored": false,
+        "anchor_dist_mm": 19.02,
+        "proximal_bone": 14
+       }
+      ]
+     },
+     "unanchored_chains": [
+      {
+       "specimen": "000875599",
+       "members": [
+        14,
+        23,
+        25
+       ],
+       "labeled": false
+      }
+     ],
+     "pass_limb_chains": true,
+     "pass_all_components": false,
+     "note": "the only unanchored component is an UNLABELED small-bone cluster (no segment rule applied); reported unanchored, never forced, per the preregistration"
+    }
+   },
+   "4_transfer_gate": {
+    "criterion": "every transferred label's length agreement <= 10% AND its chain kind/position matches the A homolog; a B bone matching two different A classes within tolerance is reported ambiguous, never assigned",
+    "reading_note": "candidate homologs are the A classes whose (chain kind, chain position) is compatible with the B bone's B-side evidence (v2's own morphology rules, kind-relative); the ambiguity clause is evaluated within that eligible set. Position evidence never comes from the extent match itself (circularity guard).",
+    "tolerance": 0.1,
+    "metric": "max extent (p1-p99 PCA-axis span, uncapped)",
+    "b_segmentation_threshold": 148.0,
+    "per_bone_decisions": [
+     {
+      "rank": 2,
+      "cluster": null,
+      "b_max_extent_mm": 45.21,
+      "position_evidence": {
+       "eligible_slots": [
+        [
+         "fore",
+         0
+        ],
+        [
+         "fore",
+         1
+        ],
+        [
+         "hind",
+         0
+        ],
+        [
+         "hind",
+         1
+        ]
+       ],
+       "basis": "robust long bone (v2 morphology) = proximal/intermediate, kind undetermined"
+      },
+      "candidates": [
+       {
+        "class": "femur",
+        "a_chain_kind": "hind",
+        "a_chain_position": 0,
+        "envelope_mm": [
+         46.41,
+         46.44
+        ],
+        "b_max_extent_mm": 45.21,
+        "rel_diff_vs_envelope": 0.0259,
+        "rel_diff_vs_nearest_donor": 0.0259,
+        "nearest_a_donor_rank": 3,
+        "within_10pct": true
+       },
+       {
+        "class": "forearm_class",
+        "a_chain_kind": "fore",
+        "a_chain_position": 1,
+        "envelope_mm": [
+         40.87,
+         44.28
+        ],
+        "b_max_extent_mm": 45.21,
+        "rel_diff_vs_envelope": 0.021,
+        "rel_diff_vs_nearest_donor": 0.0205,
+        "nearest_a_donor_rank": 12,
+        "within_10pct": true
+       },
+       {
+        "class": "humerus",
+        "a_chain_kind": "fore",
+        "a_chain_position": 0,
+        "envelope_mm": [
+         41.74,
+         43.14
+        ],
+        "b_max_extent_mm": 45.21,
+        "rel_diff_vs_envelope": 0.048,
+        "rel_diff_vs_nearest_donor": 0.0458,
+        "nearest_a_donor_rank": 4,
+        "within_10pct": true
+       },
+       {
+        "class": "tibia",
+        "a_chain_kind": "hind",
+        "a_chain_position": 1,
+        "envelope_mm": [
+         44.62,
+         44.69
+        ],
+        "b_max_extent_mm": 45.21,
+        "rel_diff_vs_envelope": 0.0116,
+        "rel_diff_vs_nearest_donor": 0.0115,
+        "nearest_a_donor_rank": 7,
+        "within_10pct": true
+       }
+      ],
+      "matched_classes": [
+       "femur",
+       "forearm_class",
+       "humerus",
+       "tibia"
+      ],
+      "verdict": "ambiguous_multiple_classes",
+      "assigned_class": null
+     },
+     {
+      "rank": 4,
+      "cluster": null,
+      "b_max_extent_mm": 55.69,
+      "position_evidence": {
+       "eligible_slots": [
+        [
+         "fore",
+         0
+        ],
+        [
+         "fore",
+         1
+        ],
+        [
+         "hind",
+         0
+        ],
+        [
+         "hind",
+         1
+        ]
+       ],
+       "basis": "robust long bone (v2 morphology) = proximal/intermediate, kind undetermined"
+      },
+      "candidates": [
+       {
+        "class": "femur",
+        "a_chain_kind": "hind",
+        "a_chain_position": 0,
+        "envelope_mm": [
+         46.41,
+         46.44
+        ],
+        "b_max_extent_mm": 55.69,
+        "rel_diff_vs_envelope": 0.1992,
+        "rel_diff_vs_nearest_donor": 0.166,
+        "nearest_a_donor_rank": 2,
+        "within_10pct": false
+       },
+       {
+        "class": "forearm_class",
+        "a_chain_kind": "fore",
+        "a_chain_position": 1,
+        "envelope_mm": [
+         40.87,
+         44.28
+        ],
+        "b_max_extent_mm": 55.69,
+        "rel_diff_vs_envelope": 0.2577,
+        "rel_diff_vs_nearest_donor": 0.2048,
+        "nearest_a_donor_rank": 12,
+        "within_10pct": false
+       },
+       {
+        "class": "humerus",
+        "a_chain_kind": "fore",
+        "a_chain_position": 0,
+        "envelope_mm": [
+         41.74,
+         43.14
+        ],
+        "b_max_extent_mm": 55.69,
+        "rel_diff_vs_envelope": 0.2909,
+        "rel_diff_vs_nearest_donor": 0.2254,
+        "nearest_a_donor_rank": 4,
+        "within_10pct": false
+       },
+       {
+        "class": "tibia",
+        "a_chain_kind": "hind",
+        "a_chain_position": 1,
+        "envelope_mm": [
+         44.62,
+         44.69
+        ],
+        "b_max_extent_mm": 55.69,
+        "rel_diff_vs_envelope": 0.2461,
+        "rel_diff_vs_nearest_donor": 0.1975,
+        "nearest_a_donor_rank": 7,
+        "within_10pct": false
+       }
+      ],
+      "matched_classes": [],
+      "verdict": "unassigned_no_class_within_tolerance",
+      "assigned_class": null
+     },
+     {
+      "rank": 6,
+      "cluster": null,
+      "b_max_extent_mm": 40.98,
+      "position_evidence": {
+       "eligible_slots": [
+        [
+         "fore",
+         0
+        ],
+        [
+         "fore",
+         1
+        ],
+        [
+         "hind",
+         0
+        ],
+        [
+         "hind",
+         1
+        ]
+       ],
+       "basis": "robust long bone (v2 morphology) = proximal/intermediate, kind undetermined"
+      },
+      "candidates": [
+       {
+        "class": "femur",
+        "a_chain_kind": "hind",
+        "a_chain_position": 0,
+        "envelope_mm": [
+         46.41,
+         46.44
+        ],
+        "b_max_extent_mm": 40.98,
+        "rel_diff_vs_envelope": 0.1169,
+        "rel_diff_vs_nearest_donor": 0.1169,
+        "nearest_a_donor_rank": 3,
+        "within_10pct": false
+       },
+       {
+        "class": "forearm_class",
+        "a_chain_kind": "fore",
+        "a_chain_position": 1,
+        "envelope_mm": [
+         40.87,
+         44.28
+        ],
+        "b_max_extent_mm": 40.98,
+        "rel_diff_vs_envelope": 0.0,
+        "rel_diff_vs_nearest_donor": 0.0027,
+        "nearest_a_donor_rank": 11,
+        "within_10pct": true
+       },
+       {
+        "class": "humerus",
+        "a_chain_kind": "fore",
+        "a_chain_position": 0,
+        "envelope_mm": [
+         41.74,
+         43.14
+        ],
+        "b_max_extent_mm": 40.98,
+        "rel_diff_vs_envelope": 0.0181,
+        "rel_diff_vs_nearest_donor": 0.0181,
+        "nearest_a_donor_rank": 5,
+        "within_10pct": true
+       },
+       {
+        "class": "tibia",
+        "a_chain_kind": "hind",
+        "a_chain_position": 1,
+        "envelope_mm": [
+         44.62,
+         44.69
+        ],
+        "b_max_extent_mm": 40.98,
+        "rel_diff_vs_envelope": 0.0815,
+        "rel_diff_vs_nearest_donor": 0.0815,
+        "nearest_a_donor_rank": 6,
+        "within_10pct": true
+       }
+      ],
+      "matched_classes": [
+       "forearm_class",
+       "humerus",
+       "tibia"
+      ],
+      "verdict": "ambiguous_multiple_classes",
+      "assigned_class": null
+     },
+     {
+      "rank": 10,
+      "cluster": null,
+      "b_max_extent_mm": 24.54,
+      "position_evidence": {
+       "eligible_slots": [
+        [
+         "fore",
+         2
+        ],
+        [
+         "hind",
+         3
+        ]
+       ],
+       "basis": "compact block (v2 morphology) = distal element (foot or hand)"
+      },
+      "candidates": [
+       {
+        "class": "foot_class",
+        "a_chain_kind": "hind",
+        "a_chain_position": 3,
+        "envelope_mm": [
+         9.17,
+         14.51
+        ],
+        "b_max_extent_mm": 24.54,
+        "rel_diff_vs_envelope": 0.6916,
+        "rel_diff_vs_nearest_donor": 0.409,
+        "nearest_a_donor_rank": 17,
+        "within_10pct": false
+       },
+       {
+        "class": "hand_class",
+        "a_chain_kind": "fore",
+        "a_chain_position": 2,
+        "envelope_mm": [
+         25.62,
+         26.0
+        ],
+        "b_max_extent_mm": 24.54,
+        "rel_diff_vs_envelope": 0.042,
+        "rel_diff_vs_nearest_donor": 0.0421,
+        "nearest_a_donor_rank": 8,
+        "within_10pct": true
+       }
+      ],
+      "matched_classes": [
+       "hand_class"
+      ],
+      "verdict": "transferred",
+      "assigned_class": "hand_class"
+     },
+     {
+      "rank": 12,
+      "cluster": null,
+      "b_max_extent_mm": 37.31,
+      "position_evidence": {
+       "eligible_slots": [
+        [
+         "fore",
+         0
+        ],
+        [
+         "fore",
+         1
+        ],
+        [
+         "hind",
+         0
+        ],
+        [
+         "hind",
+         1
+        ]
+       ],
+       "basis": "robust long bone (v2 morphology) = proximal/intermediate, kind undetermined"
+      },
+      "candidates": [
+       {
+        "class": "femur",
+        "a_chain_kind": "hind",
+        "a_chain_position": 0,
+        "envelope_mm": [
+         46.41,
+         46.44
+        ],
+        "b_max_extent_mm": 37.31,
+        "rel_diff_vs_envelope": 0.1962,
+        "rel_diff_vs_nearest_donor": 0.1962,
+        "nearest_a_donor_rank": 3,
+        "within_10pct": false
+       },
+       {
+        "class": "forearm_class",
+        "a_chain_kind": "fore",
+        "a_chain_position": 1,
+        "envelope_mm": [
+         40.87,
+         44.28
+        ],
+        "b_max_extent_mm": 37.31,
+        "rel_diff_vs_envelope": 0.0872,
+        "rel_diff_vs_nearest_donor": 0.0873,
+        "nearest_a_donor_rank": 11,
+        "within_10pct": true
+       },
+       {
+        "class": "humerus",
+        "a_chain_kind": "fore",
+        "a_chain_position": 0,
+        "envelope_mm": [
+         41.74,
+         43.14
+        ],
+        "b_max_extent_mm": 37.31,
+        "rel_diff_vs_envelope": 0.1062,
+        "rel_diff_vs_nearest_donor": 0.1062,
+        "nearest_a_donor_rank": 5,
+        "within_10pct": false
+       },
+       {
+        "class": "tibia",
+        "a_chain_kind": "hind",
+        "a_chain_position": 1,
+        "envelope_mm": [
+         44.62,
+         44.69
+        ],
+        "b_max_extent_mm": 37.31,
+        "rel_diff_vs_envelope": 0.1639,
+        "rel_diff_vs_nearest_donor": 0.164,
+        "nearest_a_donor_rank": 6,
+        "within_10pct": false
+       }
+      ],
+      "matched_classes": [
+       "forearm_class"
+      ],
+      "verdict": "transferred",
+      "assigned_class": "forearm_class"
+     },
+     {
+      "rank": 13,
+      "cluster": null,
+      "b_max_extent_mm": 17.88,
+      "position_evidence": {
+       "eligible_slots": [
+        [
+         "fore",
+         2
+        ],
+        [
+         "hind",
+         3
+        ]
+       ],
+       "basis": "compact block (v2 morphology) = distal element (foot or hand)"
+      },
+      "candidates": [
+       {
+        "class": "foot_class",
+        "a_chain_kind": "hind",
+        "a_chain_position": 3,
+        "envelope_mm": [
+         9.17,
+         14.51
+        ],
+        "b_max_extent_mm": 17.88,
+        "rel_diff_vs_envelope": 0.2321,
+        "rel_diff_vs_nearest_donor": 0.1887,
+        "nearest_a_donor_rank": 17,
+        "within_10pct": false
+       },
+       {
+        "class": "hand_class",
+        "a_chain_kind": "fore",
+        "a_chain_position": 2,
+        "envelope_mm": [
+         25.62,
+         26.0
+        ],
+        "b_max_extent_mm": 17.88,
+        "rel_diff_vs_envelope": 0.3022,
+        "rel_diff_vs_nearest_donor": 0.3023,
+        "nearest_a_donor_rank": 8,
+        "within_10pct": false
+       }
+      ],
+      "matched_classes": [],
+      "verdict": "unassigned_no_class_within_tolerance",
+      "assigned_class": null
+     },
+     {
+      "rank": 15,
+      "cluster": null,
+      "b_max_extent_mm": 30.55,
+      "position_evidence": {
+       "eligible_slots": [
+        [
+         "fore",
+         0
+        ],
+        [
+         "fore",
+         1
+        ],
+        [
+         "fore",
+         2
+        ],
+        [
+         "hind",
+         0
+        ],
+        [
+         "hind",
+         1
+        ],
+        [
+         "hind",
+         2
+        ],
+        [
+         "hind",
+         3
+        ]
+       ],
+       "basis": "irregular morphology: no position evidence, all slots eligible"
+      },
+      "candidates": [
+       {
+        "class": "femur",
+        "a_chain_kind": "hind",
+        "a_chain_position": 0,
+        "envelope_mm": [
+         46.41,
+         46.44
+        ],
+        "b_max_extent_mm": 30.55,
+        "rel_diff_vs_envelope": 0.3417,
+        "rel_diff_vs_nearest_donor": 0.3417,
+        "nearest_a_donor_rank": 3,
+        "within_10pct": false
+       },
+       {
+        "class": "fibula",
+        "a_chain_kind": "hind",
+        "a_chain_position": 2,
+        "envelope_mm": [
+         38.24,
+         38.37
+        ],
+        "b_max_extent_mm": 30.55,
+        "rel_diff_vs_envelope": 0.2011,
+        "rel_diff_vs_nearest_donor": 0.2011,
+        "nearest_a_donor_rank": 20,
+        "within_10pct": false
+       },
+       {
+        "class": "foot_class",
+        "a_chain_kind": "hind",
+        "a_chain_position": 3,
+        "envelope_mm": [
+         9.17,
+         14.51
+        ],
+        "b_max_extent_mm": 30.55,
+        "rel_diff_vs_envelope": 1.1056,
+        "rel_diff_vs_nearest_donor": 0.5252,
+        "nearest_a_donor_rank": 17,
+        "within_10pct": false
+       },
+       {
+        "class": "forearm_class",
+        "a_chain_kind": "fore",
+        "a_chain_position": 1,
+        "envelope_mm": [
+         40.87,
+         44.28
+        ],
+        "b_max_extent_mm": 30.55,
+        "rel_diff_vs_envelope": 0.2525,
+        "rel_diff_vs_nearest_donor": 0.2526,
+        "nearest_a_donor_rank": 11,
+        "within_10pct": false
+       },
+       {
+        "class": "hand_class",
+        "a_chain_kind": "fore",
+        "a_chain_position": 2,
+        "envelope_mm": [
+         25.62,
+         26.0
+        ],
+        "b_max_extent_mm": 30.55,
+        "rel_diff_vs_envelope": 0.1751,
+        "rel_diff_vs_nearest_donor": 0.1491,
+        "nearest_a_donor_rank": 9,
+        "within_10pct": false
+       },
+       {
+        "class": "humerus",
+        "a_chain_kind": "fore",
+        "a_chain_position": 0,
+        "envelope_mm": [
+         41.74,
+         43.14
+        ],
+        "b_max_extent_mm": 30.55,
+        "rel_diff_vs_envelope": 0.268,
+        "rel_diff_vs_nearest_donor": 0.268,
+        "nearest_a_donor_rank": 5,
+        "within_10pct": false
+       },
+       {
+        "class": "tibia",
+        "a_chain_kind": "hind",
+        "a_chain_position": 1,
+        "envelope_mm": [
+         44.62,
+         44.69
+        ],
+        "b_max_extent_mm": 30.55,
+        "rel_diff_vs_envelope": 0.3153,
+        "rel_diff_vs_nearest_donor": 0.3153,
+        "nearest_a_donor_rank": 6,
+        "within_10pct": false
+       }
+      ],
+      "matched_classes": [],
+      "verdict": "unassigned_no_class_within_tolerance",
+      "assigned_class": null
+     },
+     {
+      "rank": 16,
+      "cluster": null,
+      "b_max_extent_mm": 14.87,
+      "position_evidence": {
+       "eligible_slots": [
+        [
+         "fore",
+         2
+        ],
+        [
+         "hind",
+         3
+        ]
+       ],
+       "basis": "compact block (v2 morphology) = distal element (foot or hand)"
+      },
+      "candidates": [
+       {
+        "class": "foot_class",
+        "a_chain_kind": "hind",
+        "a_chain_position": 3,
+        "envelope_mm": [
+         9.17,
+         14.51
+        ],
+        "b_max_extent_mm": 14.87,
+        "rel_diff_vs_envelope": 0.0252,
+        "rel_diff_vs_nearest_donor": 0.0248,
+        "nearest_a_donor_rank": 17,
+        "within_10pct": true
+       },
+       {
+        "class": "hand_class",
+        "a_chain_kind": "fore",
+        "a_chain_position": 2,
+        "envelope_mm": [
+         25.62,
+         26.0
+        ],
+        "b_max_extent_mm": 14.87,
+        "rel_diff_vs_envelope": 0.4194,
+        "rel_diff_vs_nearest_donor": 0.4195,
+        "nearest_a_donor_rank": 8,
+        "within_10pct": false
+       }
+      ],
+      "matched_classes": [
+       "foot_class"
+      ],
+      "verdict": "transferred",
+      "assigned_class": "foot_class"
+     },
+     {
+      "rank": 17,
+      "cluster": null,
+      "b_max_extent_mm": 14.94,
+      "position_evidence": {
+       "eligible_slots": [
+        [
+         "fore",
+         2
+        ],
+        [
+         "hind",
+         3
+        ]
+       ],
+       "basis": "compact block (v2 morphology) = distal element (foot or hand)"
+      },
+      "candidates": [
+       {
+        "class": "foot_class",
+        "a_chain_kind": "hind",
+        "a_chain_position": 3,
+        "envelope_mm": [
+         9.17,
+         14.51
+        ],
+        "b_max_extent_mm": 14.94,
+        "rel_diff_vs_envelope": 0.0298,
+        "rel_diff_vs_nearest_donor": 0.0293,
+        "nearest_a_donor_rank": 17,
+        "within_10pct": true
+       },
+       {
+        "class": "hand_class",
+        "a_chain_kind": "fore",
+        "a_chain_position": 2,
+        "envelope_mm": [
+         25.62,
+         26.0
+        ],
+        "b_max_extent_mm": 14.94,
+        "rel_diff_vs_envelope": 0.4167,
+        "rel_diff_vs_nearest_donor": 0.4169,
+        "nearest_a_donor_rank": 8,
+        "within_10pct": false
+       }
+      ],
+      "matched_classes": [
+       "foot_class"
+      ],
+      "verdict": "transferred",
+      "assigned_class": "foot_class"
+     },
+     {
+      "rank": 18,
+      "cluster": null,
+      "b_max_extent_mm": 20.44,
+      "position_evidence": {
+       "eligible_slots": [
+        [
+         "fore",
+         2
+        ],
+        [
+         "hind",
+         3
+        ]
+       ],
+       "basis": "compact block (v2 morphology) = distal element (foot or hand)"
+      },
+      "candidates": [
+       {
+        "class": "foot_class",
+        "a_chain_kind": "hind",
+        "a_chain_position": 3,
+        "envelope_mm": [
+         9.17,
+         14.51
+        ],
+        "b_max_extent_mm": 20.44,
+        "rel_diff_vs_envelope": 0.409,
+        "rel_diff_vs_nearest_donor": 0.2905,
+        "nearest_a_donor_rank": 17,
+        "within_10pct": false
+       },
+       {
+        "class": "hand_class",
+        "a_chain_kind": "fore",
+        "a_chain_position": 2,
+        "envelope_mm": [
+         25.62,
+         26.0
+        ],
+        "b_max_extent_mm": 20.44,
+        "rel_diff_vs_envelope": 0.202,
+        "rel_diff_vs_nearest_donor": 0.2022,
+        "nearest_a_donor_rank": 8,
+        "within_10pct": false
+       }
+      ],
+      "matched_classes": [],
+      "verdict": "unassigned_no_class_within_tolerance",
+      "assigned_class": null
+     },
+     {
+      "rank": 20,
+      "cluster": null,
+      "b_max_extent_mm": 40.38,
+      "position_evidence": {
+       "eligible_slots": [
+        [
+         "hind",
+         2
+        ]
+       ],
+       "basis": "thin rod (elongation > 10, v2 valley-derived cut) = fibula"
+      },
+      "candidates": [
+       {
+        "class": "fibula",
+        "a_chain_kind": "hind",
+        "a_chain_position": 2,
+        "envelope_mm": [
+         38.24,
+         38.37
+        ],
+        "b_max_extent_mm": 40.38,
+        "rel_diff_vs_envelope": 0.0524,
+        "rel_diff_vs_nearest_donor": 0.0498,
+        "nearest_a_donor_rank": 21,
+        "within_10pct": true
+       }
+      ],
+      "matched_classes": [
+       "fibula"
+      ],
+      "verdict": "transferred",
+      "assigned_class": "fibula"
+     },
+     {
+      "rank": 22,
+      "cluster": null,
+      "b_max_extent_mm": 21.79,
+      "position_evidence": {
+       "eligible_slots": [
+        [
+         "fore",
+         0
+        ],
+        [
+         "fore",
+         1
+        ],
+        [
+         "fore",
+         2
+        ],
+        [
+         "hind",
+         0
+        ],
+        [
+         "hind",
+         1
+        ],
+        [
+         "hind",
+         2
+        ],
+        [
+         "hind",
+         3
+        ]
+       ],
+       "basis": "irregular morphology: no position evidence, all slots eligible"
+      },
+      "candidates": [
+       {
+        "class": "femur",
+        "a_chain_kind": "hind",
+        "a_chain_position": 0,
+        "envelope_mm": [
+         46.41,
+         46.44
+        ],
+        "b_max_extent_mm": 21.79,
+        "rel_diff_vs_envelope": 0.5305,
+        "rel_diff_vs_nearest_donor": 0.5304,
+        "nearest_a_donor_rank": 3,
+        "within_10pct": false
+       },
+       {
+        "class": "fibula",
+        "a_chain_kind": "hind",
+        "a_chain_position": 2,
+        "envelope_mm": [
+         38.24,
+         38.37
+        ],
+        "b_max_extent_mm": 21.79,
+        "rel_diff_vs_envelope": 0.4301,
+        "rel_diff_vs_nearest_donor": 0.4302,
+        "nearest_a_donor_rank": 20,
+        "within_10pct": false
+       },
+       {
+        "class": "foot_class",
+        "a_chain_kind": "hind",
+        "a_chain_position": 3,
+        "envelope_mm": [
+         9.17,
+         14.51
+        ],
+        "b_max_extent_mm": 21.79,
+        "rel_diff_vs_envelope": 0.5018,
+        "rel_diff_vs_nearest_donor": 0.3344,
+        "nearest_a_donor_rank": 17,
+        "within_10pct": false
+       },
+       {
+        "class": "forearm_class",
+        "a_chain_kind": "fore",
+        "a_chain_position": 1,
+        "envelope_mm": [
+         40.87,
+         44.28
+        ],
+        "b_max_extent_mm": 21.79,
+        "rel_diff_vs_envelope": 0.4668,
+        "rel_diff_vs_nearest_donor": 0.4669,
+        "nearest_a_donor_rank": 11,
+        "within_10pct": false
+       },
+       {
+        "class": "hand_class",
+        "a_chain_kind": "fore",
+        "a_chain_position": 2,
+        "envelope_mm": [
+         25.62,
+         26.0
+        ],
+        "b_max_extent_mm": 21.79,
+        "rel_diff_vs_envelope": 0.1494,
+        "rel_diff_vs_nearest_donor": 0.1496,
+        "nearest_a_donor_rank": 8,
+        "within_10pct": false
+       },
+       {
+        "class": "humerus",
+        "a_chain_kind": "fore",
+        "a_chain_position": 0,
+        "envelope_mm": [
+         41.74,
+         43.14
+        ],
+        "b_max_extent_mm": 21.79,
+        "rel_diff_vs_envelope": 0.4779,
+        "rel_diff_vs_nearest_donor": 0.4779,
+        "nearest_a_donor_rank": 5,
+        "within_10pct": false
+       },
+       {
+        "class": "tibia",
+        "a_chain_kind": "hind",
+        "a_chain_position": 1,
+        "envelope_mm": [
+         44.62,
+         44.69
+        ],
+        "b_max_extent_mm": 21.79,
+        "rel_diff_vs_envelope": 0.5116,
+        "rel_diff_vs_nearest_donor": 0.5116,
+        "nearest_a_donor_rank": 6,
+        "within_10pct": false
+       }
+      ],
+      "matched_classes": [],
+      "verdict": "unassigned_no_class_within_tolerance",
+      "assigned_class": null
+     }
+    ],
+    "outcomes": {
+     "transferred": 5,
+     "ambiguous": 2,
+     "unassigned": 5
+    },
+    "cluster_position_conflicts": [],
+    "pass": true
+   },
+   "5_three_bone_cluster_anchor_1_5x": {
+    "members": [
+     14,
+     23,
+     25
+    ],
+    "anchor_bone": 14,
+    "anchor_max_extent_mm": 16.27,
+    "axial_dist_mm": 19.02,
+    "allowance_mm": 24.4,
+    "anchored_at_1_5x": true,
+    "auxiliary_readings": {
+     "at_v2_factor_1_2x_max_extent": true,
+     "note": "the mission's 1.5x governs; the v2-factor reading is auxiliary"
+    },
+    "member_max_extents_mm": {
+     "14": 16.27,
+     "23": 11.42,
+     "25": 11.08
+    },
+    "class_hint": null,
+    "class_hint_evaluation": [
+     {
+      "class": "femur",
+      "worst_member_rel_diff": 0.7614,
+      "covers_all_within_10pct": false
+     },
+     {
+      "class": "fibula",
+      "worst_member_rel_diff": 0.7104,
+      "covers_all_within_10pct": false
+     },
+     {
+      "class": "foot_class",
+      "worst_member_rel_diff": 0.1213,
+      "covers_all_within_10pct": false
+     },
+     {
+      "class": "forearm_class",
+      "worst_member_rel_diff": 0.729,
+      "covers_all_within_10pct": false
+     },
+     {
+      "class": "hand_class",
+      "worst_member_rel_diff": 0.5677,
+      "covers_all_within_10pct": false
+     },
+     {
+      "class": "humerus",
+      "worst_member_rel_diff": 0.7347,
+      "covers_all_within_10pct": false
+     },
+     {
+      "class": "tibia",
+      "worst_member_rel_diff": 0.7518,
+      "covers_all_within_10pct": false
+     }
+    ],
+    "hint_refused_reason": "anchored at 1.5x, but no A class envelope contains every member within 10% (worst member misses: foot_class 0.121, hand_class 0.568) -- no hint may be issued",
+    "hint_is_label": false,
+    "counted_confident": false,
+    "note": "class-hint only, per falsifier 2: the hint names the class whose envelope contains every member within 10%; members stay unlabeled and uncounted -- a hint is not an assignment."
+   },
+   "6_no_side_assignment": {
+    "criterion": "sides are NEVER assigned (the curl jumbles them)",
+    "side_assignments": 0,
+    "pass": true,
+    "note": "no label or provenance field carries left/right; transferred labels are class-level (femur, tibia, fibula, foot_class, humerus, forearm_class, hand_class), identical to v2's side-free vocabulary."
+   }
+  },
+  "7_companion_tiebreak": {
+   "criterion": "an ambiguous bone takes the kind of exactly-one-kind decisive companions, and is assigned ONLY IF a single class of that kind matches an A envelope within 10%; ties stay refused; companion kind never read from the ambiguous bone's own extent",
+   "gap_cut_mm": 3.0,
+   "source": "v2 adjacency (surface gap)",
+   "per_bone": [
+    {
+     "b_rank": 2,
+     "b_max_extent_mm": 45.21,
+     "partners": [
+      {
+       "partner_rank": 16,
+       "gap_mm": 1.24,
+       "partner_label": "foot_class",
+       "partner_chain_kind": "hind",
+       "kind_decisive": true,
+       "kind": "hind",
+       "basis": "already-labeled: foot_class (chain_kind hind)",
+       "partner_max_extent_mm": 14.87,
+       "partner_own_extent_is_irrelevant": "partner kind never read from rank 2's extent and the companion kind never read from rank 2's extent"
+      }
+     ],
+     "decisive_kinds": [
+      "hind"
+     ],
+     "assigned_kind": "hind",
+     "kind_basis": "16: already-labeled: foot_class (chain_kind hind)",
+     "matched_classes_within_kind": [
+      {
+       "class": "femur",
+       "a_chain_position": 0,
+       "rel_diff_vs_envelope": 0.0259
+      },
+      {
+       "class": "tibia",
+       "a_chain_position": 1,
+       "rel_diff_vs_envelope": 0.0116
+      }
+     ],
+     "matched_classes_other_kind": [
+      {
+       "class": "forearm_class",
+       "rel_diff_vs_envelope": 0.021
+      },
+      {
+       "class": "humerus",
+       "rel_diff_vs_envelope": 0.048
+      }
+     ],
+     "assigned_class": null,
+     "verdict": "refused_tie_remains_within_kind",
+     "reason": "companion kind hind leaves 2 classes within 10% (femur 0.0259, tibia 0.0116) -- a tie that remains a tie stays refused"
+    },
+    {
+     "b_rank": 6,
+     "b_max_extent_mm": 40.98,
+     "partners": [
+      {
+       "partner_rank": 10,
+       "gap_mm": 0.36,
+       "partner_label": "hand_class",
+       "partner_chain_kind": "fore",
+       "kind_decisive": true,
+       "kind": "fore",
+       "basis": "already-labeled: hand_class (chain_kind fore)",
+       "partner_max_extent_mm": 24.54,
+       "partner_own_extent_is_irrelevant": "partner kind never read from rank 6's extent and the companion kind never read from rank 6's extent"
+      }
+     ],
+     "decisive_kinds": [
+      "fore"
+     ],
+     "assigned_kind": "fore",
+     "kind_basis": "10: already-labeled: hand_class (chain_kind fore)",
+     "matched_classes_within_kind": [
+      {
+       "class": "forearm_class",
+       "a_chain_position": 1,
+       "rel_diff_vs_envelope": 0.0
+      },
+      {
+       "class": "humerus",
+       "a_chain_position": 0,
+       "rel_diff_vs_envelope": 0.0181
+      }
+     ],
+     "matched_classes_other_kind": [
+      {
+       "class": "tibia",
+       "rel_diff_vs_envelope": 0.0815
+      }
+     ],
+     "assigned_class": null,
+     "verdict": "refused_tie_remains_within_kind",
+     "reason": "companion kind fore leaves 2 classes within 10% (forearm_class 0.0000, humerus 0.0181) -- a tie that remains a tie stays refused"
+    }
+   ],
+   "outcomes": {
+    "assigned_by_companion": 0,
+    "refused_tie_remains": 2,
+    "refused_companion_conflict": 0
+   },
+   "auxiliary_readings": {
+    "a_contact_grammar": {
+     "reading": "specimen A's own within-chain contacts: hands touch humeri (A8-A4 0.73 mm, A9-A5 0.86 mm) and never forearms (no edge); feet touch BOTH femora (A15-A2 1.01, A17-A3 0.69) and tibiae (A25-A6 0.66, A24-A7 0.86). Transported to B: rank 6 (touches a hand) would read humerus -> B would reach 15/24; rank 2 (touches a foot) stays undecidable -- A shows foot contact with both femur and tibia.",
+     "counted_confident": false,
+     "note": "auxiliary only; the governing rule assigns the kind only."
+    },
+    "anatomical_position_pruning": {
+     "reading": "the 16/24 prediction is reachable only by assuming feet attach to tibiae and hands to forearms (B-2=tibia, B-6=forearm_class), but BOTH assumptions are contradicted by A's measured contact grammar above, so the reading is refused by the data and recorded here for the receipt.",
+     "counted_confident": false
+    }
+   },
+   "pass": false,
+   "pass_reading": "pass=True iff the tiebreak legally adds labels; the measured refusal is the FALSIFIED prediction, recorded, not tuned away"
+  },
+  "8_mutual_corroboration": {
+   "criterion": "A medium foot upgrades to high iff a B transferred foot agrees within the lane's 10% homology tolerance on max extent (|a-b|/max); borderline agreements (rel > 0.095) are flagged",
+   "tolerance": 0.1,
+   "metric": "max extent (p1-p99 PCA-axis span, uncapped)",
+   "a_medium_ranks": [
+    15,
+    17,
+    18
+   ],
+   "b_transferred_feet_ranks": [
+    16,
+    17
+   ],
+   "pairwise": [
+    {
+     "pair": [
+      15,
+      16
+     ],
+     "extents_mm": [
+      14.48,
+      14.87
+     ],
+     "rel_diff": 0.0262,
+     "within_10pct": true,
+     "borderline": false
+    },
+    {
+     "pair": [
+      15,
+      17
+     ],
+     "extents_mm": [
+      14.48,
+      14.94
+     ],
+     "rel_diff": 0.0308,
+     "within_10pct": true,
+     "borderline": false
+    },
+    {
+     "pair": [
+      17,
+      16
+     ],
+     "extents_mm": [
+      14.51,
+      14.87
+     ],
+     "rel_diff": 0.0242,
+     "within_10pct": true,
+     "borderline": false
+    },
+    {
+     "pair": [
+      17,
+      17
+     ],
+     "extents_mm": [
+      14.51,
+      14.94
+     ],
+     "rel_diff": 0.0288,
+     "within_10pct": true,
+     "borderline": false
+    },
+    {
+     "pair": [
+      18,
+      16
+     ],
+     "extents_mm": [
+      13.39,
+      14.87
+     ],
+     "rel_diff": 0.0995,
+     "within_10pct": true,
+     "borderline": true
+    },
+    {
+     "pair": [
+      18,
+      17
+     ],
+     "extents_mm": [
+      13.39,
+      14.94
+     ],
+     "rel_diff": 0.1037,
+     "within_10pct": false,
+     "borderline": false
+    }
+   ],
+   "upgrades": [
+    {
+     "a_rank": 15,
+     "upgraded_to": "high",
+     "corroborated_by_b_ranks": [
+      16,
+      17
+     ],
+     "best_rel_diff": 0.0262,
+     "best_partner_b_rank": 16,
+     "borderline": false,
+     "reason": "the medium reason (no within-10% homolog) is resolved by B's transferred feet"
+    },
+    {
+     "a_rank": 17,
+     "upgraded_to": "high",
+     "corroborated_by_b_ranks": [
+      16,
+      17
+     ],
+     "best_rel_diff": 0.0242,
+     "best_partner_b_rank": 16,
+     "borderline": false,
+     "reason": "the medium reason (no within-10% homolog) is resolved by B's transferred feet"
+    },
+    {
+     "a_rank": 18,
+     "upgraded_to": "high",
+     "corroborated_by_b_ranks": [
+      16
+     ],
+     "best_rel_diff": 0.0995,
+     "best_partner_b_rank": 16,
+     "borderline": true,
+     "reason": "the medium reason (no within-10% homolog) is resolved by B's transferred feet"
+    }
+   ],
+   "b_side_corroboration": [
+    {
+     "b_rank": 16,
+     "assigned_class": "foot_class",
+     "corroborated_by_a_ranks": [
+      15,
+      17,
+      18
+     ],
+     "best_rel_diff": 0.0242
+    },
+    {
+     "b_rank": 17,
+     "assigned_class": "foot_class",
+     "corroborated_by_a_ranks": [
+      15,
+      17
+     ],
+     "best_rel_diff": 0.0288
+    }
+   ]
+  }
+ },
+ "prediction_outcome": {
+  "000875604": {
+   "confident_high": 21,
+   "confident_medium": 0,
+   "confident_high_ranks": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    15,
+    17,
+    18,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25
+   ],
+   "confident_medium_ranks": [],
+   "nonaxial_bones": 24,
+   "confident_total": 21,
+   "corroboration_upgraded_ranks": [
+    15,
+    17,
+    18
+   ]
+  },
+  "000875599": {
+   "confident_high": 9,
+   "transferred_count": 5,
+   "confident_total": 14,
+   "companion_assigned_ranks": [],
+   "companion_refused_tie_ranks": [
+    2,
+    6
+   ],
+   "ambiguous_refused_ranks": [
+    2,
+    6
+   ],
+   "corroborated_b_feet": [
+    {
+     "b_rank": 16,
+     "assigned_class": "foot_class",
+     "corroborated_by_a_ranks": [
+      15,
+      17,
+      18
+     ],
+     "best_rel_diff": 0.0242
+    },
+    {
+     "b_rank": 17,
+     "assigned_class": "foot_class",
+     "corroborated_by_a_ranks": [
+      15,
+      17
+     ],
+     "best_rel_diff": 0.0288
+    }
+   ],
+   "nonaxial_bones": 24,
+   "mission_prediction_16_of_24": false
+  },
+  "note": "denominator is 24 non-axial bones (ranks 2..25). v4's Task-1 prediction was B >= 16/24 (both kind-ambiguous bones resolving via companions); measured: B = 14/24 -- both companions fix the kind but each kind still leaves two classes within 10%, and a tie that remains a tie stays refused. The prediction is falsified and recorded, not tuned. A stays 21/24 (its three medium feet upgraded to high by Task-2 corroboration where the 10% agreement held)."
+ },
+ "limits": "the companion tiebreak adds ZERO labels: each ambiguous bone has exactly one partner, and the fixed kind still leaves two classes within 10% (B-2: femur 46.41-46.44 vs tibia 44.62-44.69 envelopes both admit 45.21; B-6: forearm 40.87-44.28 vs humerus 41.74-43.14 both admit 40.98) -- the curl makes a robust 41-45 mm bone length-ambiguous between the two proximal slots of EITHER limb. The 16/24 prediction required anatomical contact assumptions (foot->tibia, hand->forearm) that specimen A's own measured contacts contradict. Task-2's A18 corroboration is BORDERLINE (rel 0.0995 vs B16; the conservative |a-b|/a reading 0.1105 would refuse it) -- upgraded under the lane's preregistered |a-b|/max convention and flagged. transferred labels carry the donor specimen's class identity, not B's own chain evidence: B's fragmented limbs remain 2-bone components in B's own segmentation (threshold 148), and the transfer rests on cross-specimen envelope agreement + position uniqueness, recorded per label in transfer_provenance. foot_class transfers (3) are class assignments, not 1-1 bone pairings -- B's tarsals are more fragmented than A's, so more B bones legitimately carry the same class. Bones with no within-10% class or ambiguous class membership stay unlabeled -- reported, never forced. Side (left/right) is never assigned (the curl jumbles sides, v1's error). side (left/right) is NOT assigned -- the curl jumbles sides (v1's error); chains failing falsifier 3 are reported unanchored, never forced; 2-bone fragments and singletons are reported unresolved with class-consistency evidence only; specimen 000875599 (threshold 148 vs 118) fragmented one hindlimb and one forelimb into 2-bone pieces, which caps its confident count below the prediction -- recorded as the method's limit, not repaired by force-merging.",
+ "trailer": "Agent: GLM 5.3"
+}
