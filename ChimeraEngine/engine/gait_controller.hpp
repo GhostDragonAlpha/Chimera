@@ -83,6 +83,25 @@ class GaitWalker {
  int settle_ticks_=0; // ORBIT CAPTURE (wave 8): hold the clock at the entry pose under load for the servo's settling time
  int settle_total_=0; // immutable reset value used by the wave-10 gradual vault activation
  double e_ref_=0; // the LEDGER BASELINE: the reset state's actual mechanical energy (the gait entry injects pose+momentum the standing-pose reference never sees; measured offset -0.59 J at tick 0 before this)
+ // ── THE PLANTED-STRUT CLOSURE (wave 12): forelimb paw IK ──
+ // The fore struts no longer hold FIXED shoulder/elbow angles (the wave-11
+ // refusal cause: through the first gait transition the fixed-angle paws
+ // lift, the front sags, the hind poscorr budget exhausts). Each forelimb is
+ // a planar 2-DOF chain; the controller solves the CLOSED-FORM law-of-cosines
+ // IK for the joint targets that hold the paw reference (the heel/MP midpoint)
+ // at its PLANTED WORLD POSITION, captured at the end of the settle window.
+ bool paws_captured_=false; // armed at the END of the settle window
+ V paw_target_[2]={V{},V{}}; // the planted paw world (model-frame) position per fore leg
+ int ik_branch_[2]={-1,-1}; // the law-of-cosines branch matching the planted configuration
+ size_t fore_coord_[2][2]{{0,0},{0,0}}; // [leg][0]=shoulder, [leg][1]=elbow coordinate rows
+ size_t fore_mount_body_[2]={0,0}; // pelvis body row (the shoulder's parent)
+ V fore_mount_local_[2]={V{},V{}}; // shoulder mount point in the pelvis frame
+ size_t fore_paw_point_[2]={0,0}; // contact index of the leg's heel (names the forearm body)
+ V paw_ref_local_[2]={V{},V{}}; // paw reference = heel/MP midpoint, forearm frame
+ double fore_L1_=0,fore_rho_=0,fore_beta_=0; // the 2-DOF chain constants (humerus length; paw-polar)
+ double ik_roundtrip_m_[2]={0,0}; // |FK(IK(target)) - target| measured at capture (the closure check)
+ uint64_t ik_sat_ticks_[2]={0,0}; // ticks the plant sat outside the chain's reachable annulus
+ mutable bool ik_sat_prev_[2]={false,false}; // trace-only rising-edge flag
  std::vector<BodyRef> bodies_;bool contact_=false;
  State s_;mutable uint64_t adv_calls_=0;
  Evaluation evaluate(const State& s)const{return model_->evaluate(s.q,s.v,gravity_);}
@@ -248,9 +267,83 @@ class GaitWalker {
      for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0&&gap_of(e,k)<=kTouch)touching=true;
      if(!touching){phi_[leg]=CAPTURE_PHI;++capture_events_;return;}}
     return;}}}
+ // ── THE PLANTED-STRUT IK (wave 12) ──
+ // Planar 2-DOF closed form (deterministic, no iteration), solved in the
+ // PELVIS frame -- where the chain is defined: at q=0 the upperarm hangs
+ // along the pelvis -y and q rotates about the pelvis z, so elbow =
+ // S + L1*(sin q1, -cos q1) HOLDS in pelvis coordinates at ANY trunk lean
+ // (the vault pitch cancels exactly; a world-frame solve biases the branch
+ // and clamps -- measured and fixed the same day). The paw reference rides
+ // the forearm at polar (rho, beta) in its frame; with q12 = q1+q2 the paw =
+ // elbow + rho*(cos(q12+beta), sin(q12+beta)). The paw target stays WORLD
+ // (the planted spot); it is mapped through the pelvis rotation transpose
+ // every call. Law of cosines at the shoulder:
+ // theta1 = atan2(dy,dx) + branch*acos((D^2+L1^2-rho^2)/(2 D L1));
+ // the elbow closes vectorially: q2 = atan2(d - L1*u1) - q1 - beta.
+ // The branch (+/-1) is captured ONCE at the settle as the solution matching
+ // the planted configuration, then held -- no branch flapping mid-walk.
+ struct ForeIK{double q1,q2;bool saturated;};
+ ForeIK fore_ik(size_t leg,const Evaluation& e)const{
+  ForeIK out{0.,0.,false};
+  const Mat& T=e.frames[fore_mount_body_[leg]].t;
+  const V& m=fore_mount_local_[leg];
+  double rx=paw_target_[leg][0]-T(0,3),ry=paw_target_[leg][1]-T(1,3),rz=paw_target_[leg][2]-T(2,3);
+  double dx=T(0,0)*rx+T(1,0)*ry+T(2,0)*rz-m[0]; // (R^T r)_xy - mount: paw target
+  double dy=T(0,1)*rx+T(1,1)*ry+T(2,1)*rz-m[1]; // in shoulder-local pelvis coordinates
+  double D=std::hypot(dx,dy);
+  double dmax=fore_L1_+fore_rho_,dmin=std::abs(fore_L1_-fore_rho_);
+  // Reach saturation: the body has walked the shoulder past the plant. Pull
+  // D to the reachable annulus boundary (the nearest reachable configuration,
+  // which the capped PD then pursues) and COUNT it -- loud, never silent.
+  if(D>dmax*(1.-1e-12)||D<dmin+1e-9){
+   out.saturated=true;
+   double Dc=(std::min)((std::max)(D,dmin+1e-9),dmax*(1.-1e-12));
+   dx*=Dc/D;dy*=Dc/D;D=Dc;}
+  double ca=(D*D+fore_L1_*fore_L1_-fore_rho_*fore_rho_)/(2.*D*fore_L1_);
+  double th1=std::atan2(dy,dx)+double(ik_branch_[leg])*std::acos((std::max)(-1.,(std::min)(1.,ca)));
+  out.q1=th1+pi/2;
+  double ex=dx-fore_L1_*std::cos(th1),ey=dy-fore_L1_*std::sin(th1);
+  double q2=std::atan2(ey,ex)-out.q1-fore_beta_;
+  size_t c1=fore_coord_[leg][0],c2=fore_coord_[leg][1];
+  out.q1=(std::max)(model_->lower[c1],(std::min)(model_->upper[c1],out.q1));
+  out.q2=(std::max)(model_->lower[c2],(std::min)(model_->upper[c2],q2));
+  return out;}
+ // THE PLANT CAPTURE: at the end of the settle window the loaded state IS the
+ // planted pose. Freeze each paw's world (model-frame) position as the target,
+ // pick the IK branch that matches the planted configuration, and measure the
+ // analytic closure round-trip (FK of the solution must rebuild the paw).
+ void capture_paws(){
+  auto e=evaluate(s_);
+  for(size_t leg=0;leg<2;++leg){
+   auto sh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
+   auto pw=e.point(points_[fore_paw_point_[leg]].index,paw_ref_local_[leg]).first;
+   paw_target_[leg]=pw;
+   double err[2]={0.,0.};ForeIK sol[2]{{0,0,false},{0,0,false}};
+   for(int b=0;b<2;++b){ik_branch_[leg]=b==0?1:-1;sol[b]=fore_ik(leg,e);
+    err[b]=std::hypot(sol[b].q1-s_.q[fore_coord_[leg][0]],sol[b].q2-s_.q[fore_coord_[leg][1]]);}
+   ik_branch_[leg]=err[0]<=err[1]?1:-1;
+   const ForeIK&ik=sol[err[0]<=err[1]?0:1];
+   // Closure round-trip, end to end: FK the solution in the pelvis frame and
+   // map the paw back to the WORLD frame -- it must rebuild the target.
+   {const Mat& T=e.frames[fore_mount_body_[leg]].t;
+    double q12=ik.q1+ik.q2,r0=paw_ref_local_[leg][0],r1=paw_ref_local_[leg][1];
+    double ex=fore_L1_*std::sin(ik.q1)+r0*std::cos(q12)-r1*std::sin(q12);
+    double ey=-fore_L1_*std::cos(ik.q1)+r0*std::sin(q12)+r1*std::cos(q12);
+    const V& m=fore_mount_local_[leg];
+    double lx=m[0]+ex,ly=m[1]+ey,lz=m[2]; // paw in pelvis coordinates
+    double fx=T(0,0)*lx+T(0,1)*ly+T(0,2)*lz+T(0,3);
+    double fy=T(1,0)*lx+T(1,1)*ly+T(1,2)*lz+T(1,3);
+    ik_roundtrip_m_[leg]=std::hypot(fx-pw[0],fy-pw[1]);}
+#ifdef GAIT_EVENT_TRACE
+   std::fprintf(stderr,"[pawcap] leg=%zu paw=(%.9f,%.9f) branch=%+d qerr=%.3e rad roundtrip=%.3e m\n",
+    leg,pw[0],pw[1],ik_branch_[leg],(std::min)(err[0],err[1]),ik_roundtrip_m_[leg]);
+#endif
+  }
+  paws_captured_=true;}
  Dense servo()const{ // capped mass-normalized PD at the derived 4.0 Hz (Section 5.2)
   Dense tau(n_,0.);
   bool walking=config_["gait_enabled"].get<bool>();
+  Evaluation fe{};bool have_fe=false; // the planted-strut IK evaluates the shoulder pose once per call
   for(size_t d=0;d<nd_;++d){const Drive& dr=drives_[d];size_t c=dr.coordinate;
    if(!config_["power"].get<bool>()||!config_[dr.name+"_drive"].get<bool>()||battery_[d]<=1e-12)continue;
    // Stage E -> F handoff: with the clock frozen (gait_enabled=false) the
@@ -260,10 +353,26 @@ class GaitWalker {
    double target=0.;
    if(walking){
     if(dr.leg=="fore_left"||dr.leg=="fore_right"){
-     // Load-sharing struts hold the derived s=0.45 statics pose; they do not
-     // invent a seven-DOF forelimb gait. Constants are the quad-share lane's
-     // shoulder/elbow solution at the measured fore envelope midpoint.
-     target=dr.joint=="shoulder"?-0.903:0.838;
+     // THE PLANTED STRUT (wave 12): after the settle capture the fore targets
+     // are the closed-form IK of the planted paw position (held fixed in the
+     // world frame); before the capture the statics pose holds (the quad-share
+     // lane's shoulder/elbow solution at the measured fore envelope midpoint).
+     size_t leg=dr.leg=="fore_left"?0:1;
+     if(paws_captured_){
+      if(!have_fe){fe=evaluate(s_);have_fe=true;}
+      ForeIK ik=fore_ik(leg,fe);
+      auto sh=fe.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
+#ifdef GAIT_EVENT_TRACE
+      if(ik.saturated&&!ik_sat_prev_[leg]){ik_sat_prev_[leg]=true;
+       std::fprintf(stderr,"[ik] leg=%zu tick=%llu SATURATED paw=(%.6f,%.6f) shoulder=(%.6f,%.6f) D=%.6f reach=[%.6f,%.6f]\n",
+        leg,(unsigned long long)ticks_,paw_target_[leg][0],paw_target_[leg][1],sh[0],sh[1],
+        std::hypot(paw_target_[leg][0]-sh[0],paw_target_[leg][1]-sh[1]),
+        std::abs(fore_L1_-fore_rho_),fore_L1_+fore_rho_);}
+      else if(!ik.saturated)ik_sat_prev_[leg]=false;
+#endif
+      target=dr.joint=="shoulder"?ik.q1:ik.q2;
+     }
+     else target=dr.joint=="shoulder"?-0.903:0.838;
     } else {double qstar[4];tables_.at(dr.leg=="left"?0:1,qstar);target=qstar[dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3];}}
 
    tau[c]=(std::max)(-dr.cap,(std::min)(dr.cap,kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c]));}
@@ -435,6 +544,10 @@ class GaitWalker {
      // returns it) -- the ledger closes by construction, no net free energy
 #ifdef GAIT_EVENT_TRACE
      std::fprintf(stderr,"[poscorr] tick=%llu points=%d dq_max=%.3e du=%+.6e J\n",(unsigned long long)ticks_,(int)R,dq_max,du);
+     // Per-point totals (wave 12 diagnostic): lam_a * gap_a is the work
+     // conjugate pair of the correction at each point (gap<0, lam>=0).
+     for(size_t a2=0;a2<R;++a2)std::fprintf(stderr,"[poscorr-pt] tick=%llu pt=%s gap=%.6e lam=%.6e du_pt=%.6e J\n",
+      (unsigned long long)ticks_,points_[pen[a2]].name.c_str(),gaps[a2],lam[a2],lam[a2]*gaps[a2]);
 #endif
      }
     // gram failure: no correction applied -- the state stays infeasible and
@@ -588,11 +701,59 @@ class GaitWalker {
   require(config_.contains("posture_drive")&&config_["posture_drive"].is_boolean(),"gait_posture_flag");
   require(config_.contains("push_N")&&number(config_["push_N"])>=-30.&&number(config_["push_N"])<=30.,"gait_push_range");
   for(size_t d=0;d<nd_;++d)require(config_.contains(drives_[d].name+"_drive")&&config_[drives_[d].name+"_drive"].is_boolean(),"gait_drive_flag");
+  // ── the planted-strut constants (wave 12): the fore chain geometry from ──
+  // the scene's OWN model/contact bytes, never re-authored here.
+  {
+   for(size_t leg=0;leg<2;++leg){
+    const std::string tag=leg==0?"fore_left":"fore_right";
+    bool got_sh=false,got_el=false,got_heel=false,got_mp=false;
+    V heel{},mp{};
+    for(size_t k=0;k<npts_;++k){
+     if(points_[k].name==tag+"_heel"){fore_paw_point_[leg]=k;heel=points_[k].local;got_heel=true;}
+     if(points_[k].name==tag+"_mp_head"){mp=points_[k].local;got_mp=true;}}
+    require(got_heel&&got_mp,"gait_fore_paw_points_missing");
+    paw_ref_local_[leg]=V{0.5*(heel[0]+mp[0]),0.5*(heel[1]+mp[1]),0.5*(heel[2]+mp[2])};
+    for(size_t d=0;d<nd_;++d){const Drive& dr=drives_[d];
+     if(dr.leg==tag){bool sh=dr.joint=="shoulder";
+      require(!(sh?got_sh:got_el),"gait_fore_drive_duplicate");
+      fore_coord_[leg][sh?0:1]=dr.coordinate;(sh?got_sh:got_el)=true;}}
+    require(got_sh&&got_el,"gait_fore_drives_missing");}
+   require(std::abs(paw_ref_local_[0][0]-paw_ref_local_[1][0])<1e-12&&std::abs(paw_ref_local_[0][1]-paw_ref_local_[1][1])<1e-12,"gait_fore_paw_asym");
+   fore_rho_=std::hypot(paw_ref_local_[0][0],paw_ref_local_[0][1]);
+   fore_beta_=std::atan2(paw_ref_local_[0][1],paw_ref_local_[0][0]);
+   require(fore_rho_>1e-6,"gait_fore_paw_rho");
+   bool got_mount=false;
+   for(const J& b:model_data_.at("bodies")){
+    const std::string nm=b.at("name").get<std::string>();
+    if(nm=="upperarm_fore_left"||nm=="upperarm_fore_right"){
+     size_t leg=nm=="upperarm_fore_left"?0:1;
+     fore_mount_body_[leg]=model_->body("pelvis");
+     fore_mount_local_[leg]=b.at("joint").at("parent_location_m").get<V>();
+     got_mount=true;}
+    if(nm=="forearm_fore_left"||nm=="forearm_fore_right"){
+     double l=std::abs(number(b.at("joint").at("parent_location_m")[1]));
+     if(fore_L1_>0)require(std::abs(l-fore_L1_)<1e-12,"gait_fore_L1_mismatch");
+     fore_L1_=l;}}
+   require(got_mount&&fore_L1_>0,"gait_fore_chain_geometry_missing");
+   require(fore_L1_+fore_rho_>fore_L1_+1e-6,"gait_fore_reach_degenerate");
+   // THE DOC CEILING (the wave-11 falsifier, now code): the fore elbow cap is
+   // the doc-derived 3.76 N.m at every share; demands beyond it are banked
+   // red, never raised away.
+   for(size_t d=0;d<nd_;++d)
+    if((drives_[d].leg=="fore_left"||drives_[d].leg=="fore_right")&&drives_[d].joint=="elbow")
+     require(drives_[d].cap<=3.76*(1.+1e-9),"gait_fore_elbow_cap_raised");
+   // THE SHARE FLAG (wave 12): the quad-share envelope the strut's static
+   // load line is scoped to; the scene compiler scales the drive envelope.
+   if(recipe_.contains("fore_share")){double s=number(recipe_.at("fore_share"));
+    require(std::isfinite(s)&&s>=0.25&&s<=0.55,"gait_fore_share_range");}
+  }
   reset();}
  double timestep()const{return dt_;}const Dense& angles()const{return s_.q;}const Dense& speeds()const{return s_.v;}const Model& model()const{return *model_;}
  const Dense& batteries()const{return battery_;}double phase(size_t leg)const{return phi_[leg];}uint64_t capture_events()const{return capture_events_;}
  void reset(){
   s_=State(n_,npts_);s_.q=model_->defaults;s_.v=Dense(n_,0.);ticks_=0;capture_events_=0;last_torque_=Dense(n_,0.);settle_ticks_=settle_total_;
+  paws_captured_=false;ik_sat_ticks_[0]=ik_sat_ticks_[1]=0;ik_roundtrip_m_[0]=ik_roundtrip_m_[1]=0;
+  ik_sat_prev_[0]=ik_sat_prev_[1]=false;
   battery_.assign(nd_,0.);brake_.assign(nd_,0.);empty_events_.assign(nd_,0);store_total_=0;
   for(size_t d=0;d<nd_;++d){battery_[d]=drives_[d].store_floor;store_total_+=drives_[d].store_floor;}
   battery_post_=store_post_;brake_post_=0;empty_post_=0;store_total_+=store_post_;
@@ -629,7 +790,9 @@ class GaitWalker {
    for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0&&gap_of(e,k)<=kTouch)touching=true;
    touching_prev_[leg]=touching;}
   for(size_t k=0;k<npts_;++k)require(gap_of(e,k)>0,"gait_initial_penetration");
-  e_ref_=mechanical(s_);} // baseline the ledger at the ACTUAL initial state (entry pose + injected momentum)
+  e_ref_=mechanical(s_); // baseline the ledger at the ACTUAL initial state (entry pose + injected momentum)
+  // No settle window: the entry pose IS the settle end -- capture immediately.
+  if(settle_total_==0&&config_["gait_enabled"].get<bool>()&&config_["power"].get<bool>()&&contact_)capture_paws();}
  void configure(const J& input){
   require(input.is_object()&&!input.empty(),"gait_control_object");auto c=config_;bool restart=false;
   for(auto it=input.begin();it!=input.end();++it){
@@ -656,6 +819,10 @@ class GaitWalker {
   // stage-E stand); true releases the clock (the stage-F walk).
   bool walking=config_["gait_enabled"].get<bool>()&&(settle_ticks_<=0);
   if(settle_ticks_>0)--settle_ticks_; // the settle window: clock frozen, targets hold the entry pose
+  // THE PLANT CAPTURE (wave 12): the settle window just ended -- the loaded
+  // state IS the planted pose. Freeze the paw spots (world frame) and the IK
+  // branch; the struts hold THEM from here on, not fixed joint angles.
+  if(!paws_captured_&&settle_total_>0&&settle_ticks_==0&&walking&&config_["power"].get<bool>()&&contact_)capture_paws();
   // 1) clock update at the tick start (contact reset dominates).
   {auto e=evaluate(s_);if(walking)update_clock(e,dt_);else{for(size_t leg=0;leg<2;++leg){bool touching=false;const char* prefix=leg==0?"left":"right";
    for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0&&gap_of(e,k)<=kTouch)touching=true;touching_prev_[leg]=touching;}}}
@@ -669,6 +836,12 @@ class GaitWalker {
   //    so each drive's positive substep work fits ITS store.
   Dense impulse_torque(n_,0.);
   adv_calls_=0;
+  // Planted-strut saturation census (wave 12): once per tick, on the
+  // tick-start state -- did the body walk the shoulder outside the chain's
+  // reachable annulus? Counted, reported in status; never hidden.
+  if(paws_captured_){auto e0=evaluate(s_);
+   for(size_t leg=0;leg<2;++leg){
+    if(fore_ik(leg,e0).saturated)++ik_sat_ticks_[leg];}}
   const size_t NST=nd_+1; // the leg drives + the trunk-pitch posture drive
   for(int k=0;k<4;++k){
    auto tau=servo();
@@ -714,8 +887,16 @@ class GaitWalker {
   auto e=evaluate(s_);
   double kinetic=.5*inner(s_.v,multiply(e.mass,s_.v)),u=e.potential; // absolute; the ledger works in deltas below
   J joints=J::array();double work=0,battery_total=0,brake_total=0;uint64_t empty_total=0;
+  // Fore targets mirror servo() exactly (wave 12): the planted-paw IK after
+  // the settle capture, the statics pose before it, 0 with the clock frozen.
+  bool walking_st=config_["gait_enabled"].get<bool>();
+  auto foreTgt=[&](const Drive& dr)->double{
+   size_t leg=dr.leg=="fore_left"?0:1;
+   if(!walking_st||!paws_captured_)return dr.joint=="shoulder"?-0.903:0.838;
+   ForeIK ik=fore_ik(leg,e);
+   return dr.joint=="shoulder"?ik.q1:ik.q2;};
   for(size_t d=0;d<nd_;++d){const Drive& dr=drives_[d];size_t c=dr.coordinate;work+=s_.work[c];battery_total+=battery_[d];brake_total+=brake_[d];empty_total+=empty_events_[d];
-   double qstar[4];tables_.at(phi_[dr.leg=="left"?0:1],qstar);double target=(dr.leg=="fore_left"||dr.leg=="fore_right")?(dr.joint=="shoulder"?-0.903:0.838):qstar[dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3];
+   double qstar[4];tables_.at(phi_[dr.leg=="left"?0:1],qstar);double target=(dr.leg=="fore_left"||dr.leg=="fore_right")?foreTgt(dr):qstar[dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3];
    joints.push_back({{"name",dr.name},{"leg",dr.leg},{"joint",dr.joint},{"phase",phi_[dr.leg=="left"?0:1]},
     {"angle_deg",s_.q[c]*180/pi},{"target_rad",target},{"target_deg",target*180/pi},{"speed_rad_s",s_.v[c]},
     {"motor_torque_N_m",last_torque_[c]},{"drive_enabled",config_[dr.name+"_drive"]},{"torque_cap_N_m",dr.cap},
@@ -769,6 +950,16 @@ class GaitWalker {
   J gait{{"cycle_duration_s",T_CYCLE},{"duty_factor_sampled",DUTY_SAMPLED},{"servo_frequency_Hz",FS_HZ},
    {"phase_left",phi_[0]},{"phase_right",phi_[1]},{"phase_offset",std::fmod(phi_[1]-phi_[0]+1.,1.)},
    {"capture_events",capture_events_},{"touching_left",touching_prev_[0]},{"touching_right",touching_prev_[1]}};
+  // THE PLANTED STRUT (wave 12): paw diagnostics -- held target, tracked
+  // error, closure round-trip, saturation census.
+  {J forepaw=J::array();
+   for(size_t leg=0;leg<2;++leg){
+    if(paws_captured_){auto pw=e.point(points_[fore_paw_point_[leg]].index,paw_ref_local_[leg]).first;
+     forepaw.push_back({{"leg",leg==0?"fore_left":"fore_right"},{"target_m",{paw_target_[leg][0],paw_target_[leg][1]}},
+      {"error_m",std::hypot(pw[0]-paw_target_[leg][0],pw[1]-paw_target_[leg][1])},
+      {"ik_roundtrip_m",ik_roundtrip_m_[leg]},{"ik_saturated_ticks",ik_sat_ticks_[leg]}});}
+    else forepaw.push_back({{"leg",leg==0?"fore_left":"fore_right"},{"captured",false}});}
+   gait["fore_paw"]=forepaw;gait["fore_paw_captured"]=paws_captured_;}
   return {{"sim_time_s",ticks_*dt_},{"ticks",ticks_},{"mode","native_gait_walker"},{"joints",joints},
    {"config",config_},{"power",config_["power"]},{"gait",gait},
    {"contact",{{"enabled",contact_},{"friction",mu_>0},{"friction_mu",mu_},{"plane_world_up_m",plane_world_up_m()},{"points",points},

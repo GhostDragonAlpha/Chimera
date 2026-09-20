@@ -178,10 +178,19 @@ def require(cond,msg,*args):
     if not cond:raise SystemExit(f'REFUSAL: {msg} {list(args)}')
 
 
-def compile_gait(graph,output):
+def compile_gait(graph,output,fore_share=0.45):
     record=graph.get(RECORD)
     contract=record['physical']['contract']
     require(contract['schema']=='chimera.gait_scene.v1','gait_scene_contract')
+    # THE SHARE FLAG (wave 12): the strut's static load line scales through the
+    # measured s=0.45 envelope midpoint (quad-share lane). Shoulder cap scales
+    # linearly with s; the elbow keeps the doc-derived 3.76 N.m as an absolute
+    # CEILING (scaled down below s=0.45, never raised above it -- the wave-11
+    # falsifier). Store floors key to 15x cap at every s (the measured floors
+    # 63.435/56.4 ARE 15x the s=0.45 caps).
+    require(0.25<=fore_share<=0.55,'gait_fore_share_range',fore_share)
+    sh_cap=4.229*(fore_share/0.45)
+    el_cap=3.76*(min(fore_share,0.45)/0.45)
     derived=json.loads(DERIVED.read_text(encoding='utf-8'))
     model=build_walker_model(record,derived)
     from tools.science_funnel.coupled_arm import Assembly
@@ -191,10 +200,10 @@ def compile_gait(graph,output):
     for leg in ('fore_left','fore_right'):
         fore_drives += [
             {'coordinate':f'shoulder_flexion_{leg}','leg':leg,'joint':'shoulder',
-             'torque_cap_N_m':4.229,'store_floor_J':63.435,'store_floor_per_stride_J':4.229,
+             'torque_cap_N_m':sh_cap,'store_floor_J':15*sh_cap,'store_floor_per_stride_J':sh_cap,
              'store_stride_window':10,'viscous_damping_N_m_s_rad':0.109},
             {'coordinate':f'elbow_flexion_{leg}','leg':leg,'joint':'elbow',
-             'torque_cap_N_m':3.76,'store_floor_J':56.4,'store_floor_per_stride_J':3.76,
+             'torque_cap_N_m':el_cap,'store_floor_J':15*el_cap,'store_floor_per_stride_J':el_cap,
              'store_stride_window':10,'viscous_damping_N_m_s_rad':0.109},]
     drives=list(contract['drives'])+fore_drives
     defaults={'power':True,'gait_enabled':True,'capture_enabled':True,'posture_drive':True,'push_N':0.0,'contact_enabled':True,
@@ -353,6 +362,7 @@ def compile_gait(graph,output):
                 'tables_rad':contract['tables_rad'],
                 'trunk_vault_rad':trunk_vault,
                 'zero_map_rad':contract['zero_map_rad'],
+                'fore_share':fore_share,
                 'posture_target_phases':posture_phases,'posture_target_rad':posture_rads,
                 'contact_points':list(contract['contact_points'])+[
                     {'name':'fore_left_heel','body':'forearm_fore_left','point_m':[-0.012,-0.13555305347340657,0.],'radius_m':0.004},
@@ -375,10 +385,14 @@ def compile_gait(graph,output):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--output',type=Path,default=ROOT/'.tmp/gait-walker')
+    p.add_argument('--fore-share',type=float,default=0.45,
+                   help='forelimb static load share s (quad-share envelope 0.25..0.55; bisect {0.25,0.45,0.55})')
     a=p.parse_args()
     graph=CreatureGraph.load(str(ROOT/'tools/creature_graph/data/creature_graph.json'))
     require(RECORD in graph.objects,'gait_model_record_missing',RECORD)
-    b=compile_gait(graph,a.output)
+    b=compile_gait(graph,a.output,fore_share=a.fore_share)
     print(json.dumps({'scene':str(a.output/'scene.json'),'scene_sha256':b['scene_sha256'],
+                      'fore_share':a.fore_share,
+                      'fore_caps_N_m':{d['coordinate']:d['torque_cap_N_m'] for d in b['gait_controller']['recipe']['drives'] if d['leg'].startswith('fore')},
                       'seating_scan':b['gait_controller']['seating_scan_measured']}))
 if __name__=='__main__':main()

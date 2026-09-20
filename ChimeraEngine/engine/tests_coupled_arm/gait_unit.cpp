@@ -19,6 +19,8 @@ struct WalkOut{
  std::vector<std::array<char,2>> t;
  std::vector<std::array<double,2>> r;
  std::vector<double> liftoff[2],td[2];
+ std::vector<double> fgmax,fgmin; // per-tick worst/best FORE paw gap (wave 12)
+ double paw_err_max=0;uint64_t ik_sat=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
  J last;std::string refused;int refused_tick=-1;
 };
@@ -79,8 +81,34 @@ int main(int argc,char**argv){try{
    }
    catch(const Refusal&e){
     char b[256];std::snprintf(b,256,"WALK REFUSED tick %d: %s",i,e.what());out.refused=b;out.refused_tick=i;
-    std::fprintf(stderr,"%s | y=%.4f x=%.4f\n",b,d.angles()[4],d.angles()[3]);break;}
+    std::fprintf(stderr,"%s | y=%.4f x=%.4f\n",b,d.angles()[4],d.angles()[3]);
+    // THE BISECT WITNESS (wave 12): name the failing joint/phase from the
+    // traces at the refusal state itself, not from the last 10-tick sample.
+    try{auto sf=d.status();
+     std::fprintf(stderr,"[refusal] tick=%d refusal=%s com=(%.4f,%.4f) base=(%.4f,%.4f,%.4f)\n",
+      i,e.what(),number(sf["support"]["com_projection_east_m"]),number(sf["support"]["com_projection_south_m"]),
+      number(sf["base_q"][0]),number(sf["base_q"][1]),number(sf["base_q"][2]));
+     for(const auto&jn:sf["joints"])
+      std::fprintf(stderr,"[refusal-joint] %s phase=%.4f angle_deg=%.4f target_deg=%.4f torque=%.4f cap=%.4f\n",
+       jn["name"].get<std::string>().c_str(),number(jn["phase"]),number(jn["angle_deg"]),
+       number(jn["target_deg"]),number(jn["motor_torque_N_m"]),number(jn["torque_cap_N_m"]));
+     for(const auto&pt:sf["contact"]["points"])
+      std::fprintf(stderr,"[refusal-pt] %s gap=%.3e touching=%d rxn=%.3f slip=%.3f\n",
+       pt["name"].get<std::string>().c_str(),number(pt["gap_m"]),pt["touching"].get<bool>()?1:0,
+       number(pt["reaction_N"]),number(pt["slip_speed_m_s"]));}
+    catch(...){} // the dump never masks the refusal itself
+    break;}
    auto s=d.status();
+   // WAVE 12 fore-paw census: every tick, all four fore contact gaps.
+   {double mx=-1e9,mn=1e9;
+    for(const auto&pt:s["contact"]["points"])
+     if(pt["name"].get<std::string>().rfind("fore_",0)==0){double g=number(pt["gap_m"]);mx=(std::max)(mx,g);mn=(std::min)(mn,g);}
+    if(mx>-1e8){out.fgmax.push_back(mx);out.fgmin.push_back(mn);}}
+   if(s["gait"].contains("fore_paw_captured")){out.paw_captured=s["gait"]["fore_paw_captured"].get<bool>();
+    for(const auto&p:s["gait"]["fore_paw"]){
+     if(p.contains("error_m"))out.paw_err_max=(std::max)(out.paw_err_max,number(p["error_m"]));
+     if(p.contains("ik_roundtrip_m"))out.ik_roundtrip_max=(std::max)(out.ik_roundtrip_max,number(p["ik_roundtrip_m"]));
+     if(p.contains("ik_saturated_ticks"))out.ik_sat=(std::max)(out.ik_sat,p["ik_saturated_ticks"].get<uint64_t>());}}
    double bal=std::abs(number(s["energy"]["balance_error_J"])),stor=std::abs(number(s["energy"]["store_balance_error_J"]));
 #ifdef GAIT_EVENT_TRACE
    if((bal>1e-3||stor>1e-3)&&w_ledger_first<0){w_ledger_first=i;
@@ -119,6 +147,24 @@ int main(int argc,char**argv){try{
  std::fprintf(stderr,"run F-G1..G4 walk\n");
  WalkOut w=walk_run(true);
  note("WALK refused_tick="+(w.refused_tick<0?std::string("none"):std::to_string(w.refused_tick))+" worst_ledger_J="+std::to_string(w.worst_ledger));
+
+ // ── F-Gfore (wave 12, pre-registered): the planted-strut paw band. All four
+ //    fore contact gaps stay within the 1e-5 touch band ([0,1e-5]; penetration
+ //    bound -1e-6, the poscorr trigger) for EVERY tick through 426 (two full
+ //    cycles -- the region where wave 11 lifted and refused at 291). Plus the
+ //    analytic-closure numbers: round-trip at capture, tracked paw error,
+ //    saturation census.
+ {const size_t WIN=(size_t)(std::min)(426,(int)w.fgmax.size());
+  double mx=-1e9,mn=1e9;int breach=-1;
+  for(size_t i=0;i<WIN;++i){mx=(std::max)(mx,w.fgmax[i]);mn=(std::min)(mn,w.fgmin[i]);
+   if(breach<0&&(w.fgmax[i]>1e-5||w.fgmin[i]<-1e-6))breach=(int)i;}
+  note("F-Gfore window_ticks="+std::to_string(WIN)+" fore_gap_max_m="+std::to_string(mx)+
+   " fore_gap_min_m="+std::to_string(mn)+" first_breach_tick="+(breach<0?std::string("none"):std::to_string(breach))+
+   " paw_captured="+(w.paw_captured?"1":"0")+" ik_sat_ticks="+std::to_string(w.ik_sat)+
+   " paw_err_max_m="+std::to_string(w.paw_err_max)+" ik_roundtrip_max_m="+std::to_string(w.ik_roundtrip_max));
+  ck(breach<0,"f_g_fore_paw_band");
+  ck(w.ik_roundtrip_max<1e-9,"f_g_fore_ik_roundtrip");}
+
 
  // ── F-G1: trajectories within the tables (+/-5 deg, >=95% of samples after
  //    3 cycles); excursions within +/-10% of the measured waveforms.
