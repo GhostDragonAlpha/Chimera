@@ -37,6 +37,16 @@ struct WalkOut{
  std::vector<std::array<double,4>> comh;       // {com_x, com_z, hull_size, in_hull}
  std::vector<double> bx;                       // base x
  std::vector<std::array<double,8>> hspd;       // hind drive speeds
+ // WAVE 23 JOINT-WALL census inputs: per-tick per-fore-leg geometry from the
+ // status fore_paw block (the wave-23 instrumentation fields):
+ // {tgt_x,tgt_y,sh_x,sh_y,wall_headroom_rad,ik_q1_unc_deg,ik_q2_unc_deg,
+ //  q1_act_deg,q2_act_deg,D,off_x}
+ std::vector<std::array<double,11>> fw[2];
+ std::vector<std::array<uint64_t,2>> wpins;    // per-leg stop-pin census (LOADED)
+ std::vector<std::array<uint64_t,2>> wair;     // per-leg stop-pin census (AIRBORNE)
+ std::vector<std::array<uint64_t,2>> wbound;   // per-leg wall_bound ticks
+ std::vector<std::array<uint64_t,2>> wfollow;  // per-leg admissible follows
+ std::vector<char> fcap;                       // paws_captured per tick
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
@@ -115,6 +125,15 @@ int main(int argc,char**argv){try{
        pt["name"].get<std::string>().c_str(),number(pt["gap_m"]),pt["touching"].get<bool>()?1:0,
        number(pt["reaction_N"]),number(pt["slip_speed_m_s"]));}
     catch(...){} // the dump never masks the refusal itself
+    // WAVE 23: the pin census must see the REFUSAL state (the deadlock's
+    // pins happen inside the refusing step, after the last successful
+    // status) -- refresh the last census row from the refusal-state status.
+    try{auto sf=d.status();
+     if(!out.wpins.empty()&&!out.wair.empty()&&sf["gait"].contains("fore_paw")&&sf["gait"]["fore_paw"].size()>=2)
+      for(size_t l=0;l<2;++l){const auto&p=sf["gait"]["fore_paw"][l];
+       if(p.contains("wall_pins"))out.wpins.back()[l]=p["wall_pins"].get<uint64_t>();
+       if(p.contains("wall_pins_air"))out.wair.back()[l]=p["wall_pins_air"].get<uint64_t>();}}
+    catch(...){}
     break;}
    auto s=d.status();
    // WAVE 13 fore-paw census: every tick, per-leg worst/best gap over the
@@ -174,6 +193,7 @@ int main(int argc,char**argv){try{
       std::fprintf(stderr," vx_prev=%.4f\n",i>0?out.bx[out.bx.size()-1]-out.bx[out.bx.size()-2]:0.);}}
 #endif
     std::array<char,2> fmm{0,0};std::array<uint64_t,2> sat{};std::array<double,2> tgx{0.,0.};std::array<uint64_t,2> rep{0,0};
+    std::array<std::array<double,11>,2> fwk{};std::array<uint64_t,2> wp{},wb{},wf{},wa{};
     if(s["gait"].contains("fore_paw")&&s["gait"]["fore_paw"].size()>=2)
      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["fore_paw"][l];
       if(p.contains("fore_mode"))fmm[l]=p["fore_mode"].get<std::string>()=="swing"?1:0;
@@ -182,8 +202,29 @@ int main(int argc,char**argv){try{
       if(p.contains("error_m"))out.paw_err_max=(std::max)(out.paw_err_max,number(p["error_m"]));
       if(p.contains("ik_roundtrip_m"))out.ik_roundtrip_max=(std::max)(out.ik_roundtrip_max,number(p["ik_roundtrip_m"]));
       if(p.contains("target_m"))tgx[l]=number(p["target_m"][0]);
-      if(p.contains("replants"))rep[l]=p["replants"].get<uint64_t>();}
-    out.fm.push_back(fmm);out.fsat.push_back(sat);out.ftgt.push_back(tgx);out.frep.push_back(rep);}
+      if(p.contains("replants"))rep[l]=p["replants"].get<uint64_t>();
+      if(p.contains("wall_headroom_rad")){
+       double tx=number(p["target_m"][0]),ty=number(p["target_m"][1]);
+       double sx=number(p["shoulder_m"][0]),sy=number(p["shoulder_m"][1]);
+       fwk[l]={tx,ty,sx,sy,number(p["wall_headroom_rad"]),number(p["ik_q1_unc_rad"]),
+        number(p["ik_q2_unc_rad"]),number(s["joints"][8+2*l]["angle_deg"])*pi/180.,
+        number(s["joints"][9+2*l]["angle_deg"])*pi/180.,std::hypot(tx-sx,ty-sy),tx-sx};
+       wp[l]=p["wall_pins"].get<uint64_t>();wb[l]=p["wall_bound_ticks"].get<uint64_t>();
+       wf[l]=p["wall_follows"].get<uint64_t>();wa[l]=p["wall_pins_air"].get<uint64_t>();}}
+    out.fw[0].push_back(fwk[0]);out.fw[1].push_back(fwk[1]);
+    out.wpins.push_back(wp);out.wair.push_back(wa);out.wbound.push_back(wb);out.wfollow.push_back(wf);
+    out.fcap.push_back(s["gait"].contains("fore_paw_captured")&&s["gait"]["fore_paw_captured"].get<bool>()?1:0);
+    out.fm.push_back(fmm);out.fsat.push_back(sat);out.ftgt.push_back(tgx);out.frep.push_back(rep);
+#ifdef GAIT_EVENT_TRACE
+    // WAVE 23 MINING: the per-tick fore joint-wall state (the derivation's
+    // measured base): both legs, target/shoulder seats, actual+unclamped IK,
+    // the actual wall headroom, the target's annulus D and offset.
+    if(true)for(size_t l=0;l<2;++l){const auto&f=out.fw[l].back();
+     std::fprintf(stderr,"[dvf] t=%d leg=%zu mode=%d tgt=(%.6f,%.6f) sh=(%.6f,%.6f) D=%.6f off=%+.6f hr=%.6f q1a=%.4f q1u=%.4f q2a=%.4f q2u=%.4f pins=%llu fol=%llu\n",
+      i,l,(int)fmm[l],f[0],f[1],f[2],f[3],f[9],f[10],f[4],f[7]*180/pi,f[5]*180/pi,f[8]*180/pi,f[6]*180/pi,
+      (unsigned long long)wp[l],(unsigned long long)wf[l]);}
+#endif
+   }
    if(s["gait"].contains("fore_paw_captured"))out.paw_captured=s["gait"]["fore_paw_captured"].get<bool>();
    double bal=std::abs(number(s["energy"]["balance_error_J"])),stor=std::abs(number(s["energy"]["store_balance_error_J"]));
 #ifdef GAIT_EVENT_TRACE
@@ -321,6 +362,13 @@ int main(int argc,char**argv){try{
     if(w.fm[i][l]==0&&st>=0){runs.push_back({(int)l,st,(int)i-1});st=-1;}}
    if(st>=0)runs.push_back({(int)l,st,(int)N-1});}
   int min_gap=1<<30;size_t bad_gap=0;
+  // WAVE 23 MACHINERY NOTE: the runs were enumerated per leg (the L loop,
+  // then the R); the joint-admissible hold's law can interleave a short
+  // second window of one leg between two windows of the other, so the
+  // gap pairing now sorts the runs by time (TIGHTENS the check: real
+  // overlaps are caught in any order; the disjoint-run requirement is
+  // unchanged).
+  std::sort(runs.begin(),runs.end(),[](const Run&a,const Run&b){return a.beg<b.beg;});
   for(size_t r=0;r+1<runs.size();++r){
    int gap=runs[r+1].beg-runs[r].end-1; // clear ticks between the runs
    min_gap=(std::min)(min_gap,gap);
@@ -369,6 +417,79 @@ int main(int argc,char**argv){try{
     note(c6);
     ck(fp0[0]["entry_replant"].get<bool>()||fp0[1]["entry_replant"].get<bool>()||true,"f20_entry_state_reported");}}
   (void)inplace1;(void)min_gap;}
+
+ // ── WAVE 23 JOINT-WALL CENSUSES (pre-registered in receipt_wave23.json;
+ //    THE JOINT-ADMISSIBLE HOLD: the in-place hold's reachability includes
+ //    the JOINT LIMITS, not just the annulus). (a) THE JOINT_WALL_CENSUS --
+ //    the membrane's OWNED direct test: the advance-loop's stop PINS on the
+ //    fore drives (the deadlock's direct face; the wave-22 baseline: 64 pins
+ //    at drive 8, split depth 11) must be ZERO through the whole life; the
+ //    ACTUAL joints' worst wall approach reported with its tick (the
+ //    deflection envelope's own witness). (b) THE ADMISSIBILITY CENSUS:
+ //    every in-place HOLD tick's TARGET (the paw the servo pursues) inside
+ //    the ADMISSIBLE HOLD REGION = annulus ∩ joint-range: the UNCLAMPED
+ //    branch IK within the scene's own coordinate ranges and the target's
+ //    shoulder distance within the chain's annulus [dmin,dmax]; violations
+ //    counted (GREEN = zero), the min margins (the boundary approaches)
+ //    reported per leg per bound.
+ {const J& modelj=data.at("model");
+  auto rng=[&](const char* nm)->std::pair<double,double>{
+   const J& r=modelj.at("coordinates").at(nm).at("range_rad");
+   return {number(r[0]),number(r[1])};};
+  auto S1=rng("shoulder_flexion_fore_left"),E1=rng("elbow_flexion_fore_left");
+  auto S2=rng("shoulder_flexion_fore_right"),E2=rng("elbow_flexion_fore_right");
+  double L1=0;bool gotL1=false;
+  for(const J& b:modelj.at("bodies"))if(b.at("name")=="forearm_fore_left"){
+   L1=std::abs(number(b.at("joint").at("parent_location_m")[1]));gotL1=true;}
+  double hx=0,hy=0,mx=0,my=0;bool goth=false,gotm=false;
+  for(const J& p:recipe.at("contact_points")){
+   if(p.at("name")=="fore_left_heel"){hx=number(p.at("point_m")[0]);hy=number(p.at("point_m")[1]);goth=true;}
+   if(p.at("name")=="fore_left_mp_head"){mx=number(p.at("point_m")[0]);my=number(p.at("point_m")[1]);gotm=true;}}
+  require(gotL1&&goth&&gotm,"f23_chain_geometry_missing");
+  double rho=std::hypot(0.5*(hx+mx),0.5*(hy+my)),dmax=L1+rho,dmin=std::abs(L1-rho);
+  {char cb[192];std::snprintf(cb,192,"F-G23 chain L1=%.6f rho=%.6f annulus=[%.6f,%.6f] walls sh=[%.3f,%.3f] el=[%.3f,%.3f]",
+   L1,rho,dmin,dmax,S1.first,S1.second,E1.first,E1.second);note(cb);}
+  const size_t NCAP=std::min(w.fw[0].size(),w.fm.size());
+  // (a) the pin census (the direct test) + the actual-headroom witness
+  {uint64_t pins0=0,pins1=0;
+   if(!w.wpins.empty()){pins0=w.wpins.back()[0];pins1=w.wpins.back()[1];}
+   uint64_t pins[2]={pins0,pins1};
+   uint64_t air0=0,air1=0;
+   if(!w.wair.empty()){air0=w.wair.back()[0];air1=w.wair.back()[1];}
+   double hrmin[2]={1e9,1e9};int hrtick[2]={-1,-1};int below[2]={0,0};int swtouch[2]={0,0};
+   for(size_t i=60;i<NCAP;++i)for(size_t l=0;l<2;++l){
+    if(!w.fcap[i])continue;
+    double hr=w.fw[l][i][4];
+    if(w.fm[i][l]){if(hr<=1e-9)++swtouch[l];continue;} // swing: the pocket transit, reported
+    if(hr<hrmin[l]){hrmin[l]=hr;hrtick[l]=(int)i;}
+    if(hr<=0.0511)++below[l];}
+   char b[384];std::snprintf(b,384,"F-G23 joint_wall_census loaded_pins=(%llu,%llu) [GREEN=0,0; wave-22 baseline: 64 at drive 8] airborne_pins=(%llu,%llu) [reported: the glide's pocket transit; wave-22 witness 1] hold_headroom_min L=%.6f@%d R=%.6f@%d hold_ticks_at_or_below_envelope(0.0511) L=%d R=%d swing_wall_touches L=%d R=%d",
+    (unsigned long long)pins[0],(unsigned long long)pins[1],(unsigned long long)air0,(unsigned long long)air1,
+    hrmin[0]<1e8?hrmin[0]:-1.,hrtick[0],hrmin[1]<1e8?hrmin[1]:-1.,hrtick[1],below[0],below[1],swtouch[0],swtouch[1]);
+   note(b);
+   ck(pins[0]==0&&pins[1]==0,"f23_zero_fore_wall_pins");}
+  // (b) the admissibility census: hold ticks only (stance mode, captured)
+  {int hold[2]={0,0},viol[2]={0,0},sat_t[2]={0,0};
+   double mq1[2]={1e9,1e9},mq2[2]={1e9,1e9},mD[2]={1e9,1e9};
+   int vtick[2]={-1,-1};
+   for(size_t i=60;i<NCAP;++i)for(size_t l=0;l<2;++l){
+    if(!w.fcap[i]||w.fm[i][l])continue;
+    const auto&f=w.fw[l][i];
+    ++hold[l];
+    auto S=l==0?S1:S2;auto El=l==0?E1:E2;
+    double q1u=f[5],q2u=f[6],D=f[9];
+    double m1=(std::min)(q1u-S.first,S.second-q1u),m2=(std::min)(q2u-El.first,El.second-q2u);
+    double md=(std::min)(D-dmin,dmax-D);
+    mq1[l]=(std::min)(mq1[l],m1);mq2[l]=(std::min)(mq2[l],m2);mD[l]=(std::min)(mD[l],md);
+    if(m1<0||m2<0)++sat_t[l];
+    if(m1<0||m2<0||md<0){++viol[l];if(vtick[l]<0)vtick[l]=(int)i;}}
+   char b[512];std::snprintf(b,512,"F-G23 admissibility hold_ticks=(%d,%d) target_out_of_region=(%d,%d) [GREEN=0,0] first_viol=(%d,%d) min_margins_rad/target sh=(%.6f,%.6f) el=(%.6f,%.6f) annulus_m=(%.6f,%.6f)",
+    hold[0],hold[1],viol[0],viol[1],vtick[0],vtick[1],
+    mq1[0]<1e8?mq1[0]:-1.,mq1[1]<1e8?mq1[1]:-1.,
+    mq2[0]<1e8?mq2[0]:-1.,mq2[1]<1e8?mq2[1]:-1.,
+    mD[0]<1e8?mD[0]:-1.,mD[1]<1e8?mD[1]:-1.);
+   note(b);
+   ck(viol[0]==0&&viol[1]==0,"f23_hold_target_admissible");}}
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the
  //    causal verdict REFLEX-FIRST): (a) THE REFLEX ARMING CENSUS -- the

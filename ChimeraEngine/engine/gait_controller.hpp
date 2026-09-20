@@ -191,6 +191,19 @@ class GaitWalker {
  // fore_gate_holds_ counts the gate-held liftoff ticks (the census).
  int fore_entry_[2]={0,0};
  uint64_t fore_gate_holds_[2]={0,0};
+ // ── THE JOINT-ADMISIBLE HOLD (wave 23, receipt_wave23.json) ──
+ // The law machinery sits after fore_ik's definition (it reuses ForeIK);
+ // this block holds only its state: the censuses and the pin counter.
+ // wall_pins_ counts the advance-loop's stop pins per drive, split
+ // LOADED/AIRBORNE (the deadlock needs the contact over-constraint; the
+ // wave-22 baseline also carried ONE airborne pin on the R shoulder's swing
+ // transit -- the witness), mutable exactly like adv_calls_ (advance is
+ // const; integer increments, never a floating-point byte of the dynamics).
+ uint64_t fore_wall_bound_[2]={0,0};
+ uint64_t fore_wall_follows_[2]={0,0};
+ bool fore_td_plant_[2]={true,true}; // the leg's last plant opened a window (a TD); the gate's clause (b) scope
+ mutable uint64_t wall_pins_[12]={0,0,0,0,0,0,0,0,0,0,0,0};
+ mutable uint64_t wall_pins_air_[12]={0,0,0,0,0,0,0,0,0,0,0,0};
  std::vector<BodyRef> bodies_;bool contact_=false;
  State s_;mutable uint64_t adv_calls_=0;
  Evaluation evaluate(const State& s)const{return model_->evaluate(s.q,s.v,gravity_);}
@@ -446,9 +459,14 @@ class GaitWalker {
  // the elbow closes vectorially: q2 = atan2(d - L1*u1) - q1 - beta.
  // The branch (+/-1) is captured ONCE at the settle as the solution matching
  // the planted configuration, then held -- no branch flapping mid-walk.
- struct ForeIK{double q1,q2;bool saturated;};
+ struct ForeIK{double q1,q2;bool saturated;double q1_raw,q2_raw;};
+ // WAVE 23 INSTRUMENTATION (the admissibility census's measured base): the
+ // UNCLAMPED branch solution is carried beside the clamped one. The clamped
+ // q1/q2 (the servo's targets) keep their exact bytes and values; the raw
+ // fields expose where the branch solution sits relative to the joint walls
+ // (the census's "inside annulus ∩ joint-range" test), nothing more.
  ForeIK fore_ik(size_t leg,const Evaluation& e)const{
-  ForeIK out{0.,0.,false};
+  ForeIK out{0.,0.,false,0.,0.};
   const Mat& T=e.frames[fore_mount_body_[leg]].t;
   const V& m=fore_mount_local_[leg];
   double rx=paw_target_[leg][0]-T(0,3),ry=paw_target_[leg][1]-T(1,3),rz=paw_target_[leg][2]-T(2,3);
@@ -469,9 +487,110 @@ class GaitWalker {
   double ex=dx-fore_L1_*std::cos(th1),ey=dy-fore_L1_*std::sin(th1);
   double q2=std::atan2(ey,ex)-out.q1-fore_beta_;
   size_t c1=fore_coord_[leg][0],c2=fore_coord_[leg][1];
+  out.q1_raw=out.q1;out.q2_raw=q2;
   out.q1=(std::max)(model_->lower[c1],(std::min)(model_->upper[c1],out.q1));
   out.q2=(std::max)(model_->lower[c2],(std::min)(model_->upper[c2],q2));
   return out;}
+ // THE JOINT-ADMISIBLE HOLD's admissibility map: the branch IK at an
+ // arbitrary paw seat (the same closed form fore_ik runs on the held
+ // target; a separate body keeps fore_ik's mined bytes exact). Carries the
+ // UNCLAMPED solution.
+ ForeIK fore_ik_at(size_t leg,const Evaluation& e,const V& paw)const{
+  ForeIK out{0.,0.,false,0.,0.};
+  const Mat& T=e.frames[fore_mount_body_[leg]].t;
+  const V& m=fore_mount_local_[leg];
+  double rx=paw[0]-T(0,3),ry=paw[1]-T(1,3),rz=paw[2]-T(2,3);
+  double dx=T(0,0)*rx+T(1,0)*ry+T(2,0)*rz-m[0];
+  double dy=T(0,1)*rx+T(1,1)*ry+T(2,1)*rz-m[1];
+  double D=std::hypot(dx,dy);
+  double dmax=fore_L1_+fore_rho_,dmin=std::abs(fore_L1_-fore_rho_);
+  if(D>dmax*(1.-1e-12)||D<dmin+1e-9){
+   out.saturated=true;
+   double Dc=(std::min)((std::max)(D,dmin+1e-9),dmax*(1.-1e-12));
+   dx*=Dc/D;dy*=Dc/D;D=Dc;}
+  double ca=(D*D+fore_L1_*fore_L1_-fore_rho_*fore_rho_)/(2.*D*fore_L1_);
+  double th1=std::atan2(dy,dx)+double(ik_branch_[leg])*std::acos((std::max)(-1.,(std::min)(1.,ca)));
+  out.q1=th1+pi/2;
+  double ex=dx-fore_L1_*std::cos(th1),ey=dy-fore_L1_*std::sin(th1);
+  double q2=std::atan2(ey,ex)-out.q1-fore_beta_;
+  size_t c1=fore_coord_[leg][0],c2=fore_coord_[leg][1];
+  out.q1_raw=out.q1;out.q2_raw=q2;
+  out.q1=(std::max)(model_->lower[c1],(std::min)(model_->upper[c1],out.q1));
+  out.q2=(std::max)(model_->lower[c2],(std::min)(model_->upper[c2],q2));
+  return out;}
+ double fore_D_at(size_t leg,const Evaluation& e,const V& paw)const{ // the raw annulus radius at a seat
+  const Mat& T=e.frames[fore_mount_body_[leg]].t;
+  const V& m=fore_mount_local_[leg];
+  double rx=paw[0]-T(0,3),ry=paw[1]-T(1,3),rz=paw[2]-T(2,3);
+  double dx=T(0,0)*rx+T(1,0)*ry+T(2,0)*rz-m[0];
+  double dy=T(0,1)*rx+T(1,1)*ry+T(2,1)*rz-m[1];
+  return std::hypot(dx,dy);}
+ // ── THE JOINT-ADMISIBLE HOLD (wave 23, receipt_wave23.json) ──
+ // THE MEMBRANE: the in-place hold's reachability includes the JOINT LIMITS,
+ // not just the annulus. THE DERIVATION (measured on the byte-exact baseline,
+ // the mining pass in gait_unit.cpp): the wave-22 refusal state held its
+ // TARGET inside the joint range (0.0467 rad) while the ACTUAL shoulder sat
+ // 0.0511 rad BELOW it (the servo's deflection under the L hind's 34-37 N
+ // rear reaction: the measured 0.3314 N.m restoring at the mass-normalized
+ // kp) -- the deflection consumed the margin and the substep crossed the
+ // -1.6 rad wall (64 clamp pins at split depth 11). THE MINED SEPARATION:
+ // the death's actual headroom ran 0.0482 (70) -> 0.0017 (82) at a ~0.0039
+ // rad/tick dive, while the R's SURVIVABLE hold [60,66] dove at the same
+ // rate but its clock lifted it before the wall; the L was GATE-HELD
+ // PENDING -- a hold with no scheduled end. Both fore legs hold IK branch
+ // -1, whose admissible ground-line band has a deep-bend pocket: a FORWARD
+ // slide from the death seat DIVES THROUGH the wall (measured q1 -1.551 ->
+ // -1.688 at +21 mm) while a BACKWARD slide restores (measured -1.551 ->
+ // -1.460 at -5.5 mm); the pocket's far edge is the annulus itself, where
+ // the nearly straight arm is jointly admissible (q1 -> psi+pi/2 ~ -1.29).
+ // THE LAW: (i) the trigger -- the ACTUAL joints' wall headroom (NOT the
+ // target's: the re-plants measurably restored the target, never the
+ // actual) at or below kWallMargin, THE DEATH'S OWN DEFLECTION ENVELOPE
+ // (the one measured constant: the wave-22 refusal state's actual-minus-
+ // target offset 1.59930-1.54817 = 0.05113 rad), makes the liftoff DUE
+ // through the standing no-double-swing gate (the forward re-plant
+ // request); (ii) the gate-held wall-bound leg re-plants IN PLACE -- the
+ // admissible follow: the target slides along the GROUND LINE (zero air
+ // time, the pad stays in its band) to the seat whose TARGET headroom is
+ // exactly 2*kWallMargin, in the authority direction (the +/- sample;
+ // backward at the death window), the annulus bounding the slide (the
+ // wave-20 never-saturate law; counted in fore_clamped_). The restore
+ // re-arms the stance, so the follow recurs only at the dive rate; at the
+ // annulus edge the joint margin is wide and the leg steps normally -- the
+ // law converges, it cannot stall.
+ static constexpr double kWallMargin=0.0511;
+ double fore_wall_headroom(size_t leg)const{ // the ACTUAL joints' min wall margin
+  size_t c1=fore_coord_[leg][0],c2=fore_coord_[leg][1];
+  double h1=(std::min)(s_.q[c1]-model_->lower[c1],model_->upper[c1]-s_.q[c1]);
+  double h2=(std::min)(s_.q[c2]-model_->lower[c2],model_->upper[c2]-s_.q[c2]);
+  return (std::min)(h1,h2);}
+ double fore_target_headroom_at(size_t leg,const Evaluation& e,const V& paw)const{
+  const ForeIK& ik=fore_ik_at(leg,e,paw);
+  size_t c1=fore_coord_[leg][0],c2=fore_coord_[leg][1];
+  double h1=(std::min)(ik.q1_raw-model_->lower[c1],model_->upper[c1]-ik.q1_raw);
+  double h2=(std::min)(ik.q2_raw-model_->lower[c2],model_->upper[c2]-ik.q2_raw);
+  return (std::min)(h1,h2);}
+ // THE ADMISSIBLE FOLLOW (the crux clause): compute the seat restoring the
+ // target headroom to 2*kWallMargin -- the direction the +/- 1 mm authority
+ // sample picks, the distance a 42-step bisection finds (the machinery's own
+ // depth), bounded by the annulus edge on that side (never saturating; the
+ // edge itself is jointly admissible). Pure: returns the seat; the callers
+ // adopt it. Deterministic; iterates the closed-form IK only.
+ V fore_follow_seat(size_t leg,const Evaluation& e)const{
+  V p=paw_target_[leg];
+  V px=p,py=p;px[0]+=1e-3;py[0]-=1e-3;
+  double dir=fore_target_headroom_at(leg,e,px)>=fore_target_headroom_at(leg,e,py)?+1.:-1.;
+  double dmax=fore_L1_+fore_rho_;
+  double lo=0,hi=2.*dmax; // the annulus edge on the authority side
+  for(int j=0;j<42;++j){double mid=(lo+hi)/2;V t=p;t[0]+=dir*mid;
+   if(fore_D_at(leg,e,t)<dmax)lo=mid;else hi=mid;}
+  double edge=(lo+hi)/2;
+  if(fore_target_headroom_at(leg,e,{p[0]+dir*edge,p[1],p[2]})<2.*kWallMargin)
+   return {p[0]+dir*edge,p[1],p[2]};
+  lo=0;hi=edge; // the restore distance: target headroom -> 2*kWallMargin
+  for(int j=0;j<42;++j){double mid=(lo+hi)/2;V t=p;t[0]+=dir*mid;
+   if(fore_target_headroom_at(leg,e,t)<2.*kWallMargin)lo=mid;else hi=mid;}
+  return {p[0]+dir*((lo+hi)/2),p[1],p[2]};}
  // THE PLANT CAPTURE (per leg; wave 13 refactor): freeze the paw's world
  // (model-frame) position as the target, pick the IK branch that matches the
  // planted configuration, and measure the analytic closure round-trip (FK of
@@ -651,9 +770,24 @@ class GaitWalker {
     double c=2.*points_[fore_paw_point_[leg]].radius;
     for(int i=0;i<3;++i)paw_target_[leg][i]=swing_from_[leg][i]+(swing_to_[leg][i]-swing_from_[leg][i])*s;
     paw_target_[leg][1]+=c*std::sin(pi*s);
+    // THE GLIDE-ENTRY HOLD [REJECTED, mined v8]: holding this target at the
+    // admissible seat while the pads remain in the band was built to stop
+    // the tick-84 glide-transit clamp; it measured WORSE -- the R's pads hug
+    // the band deep into the swing, the held target prevented the very
+    // unload that clears them, the sustained crush drove its deflection
+    // past the restore (h=0.000000 at 76, 73 loaded pins, the refusal back
+    // at 82). The lift transient is owned by the deferred lift (the seat
+    // bar); the pocket transit itself is the next membrane's banked rung.
    }
    if(fore_mode_[leg]==0&&fore_t_[leg]>=fore_stance_[leg]){ // LIFTOFF
     size_t o=leg==0?1:0;
+    // THE JOINT-ADMISIBLE HOLD's trigger (wave 23): the ACTUAL joints' wall
+    // headroom at or below the deflection envelope makes the leg's liftoff
+    // DUE regardless of its schedule -- the forward re-plant request, which
+    // the standing no-double-swing gate below arbitrates exactly as always.
+    // Counted every stance tick (the census), acted on only when true.
+    bool wall_bound=fore_wall_headroom(leg)<=kWallMargin;
+    if(wall_bound)++fore_wall_bound_[leg];
     // THE NO-DOUBLE-SWING GATE (wave 20): an entry leg may not begin its step
     // while the other fore is airborne, while the other entry fore's plant is
     // younger than the hand-off clearance g (windows >= 1 tick apart are
@@ -664,10 +798,20 @@ class GaitWalker {
     // order, no deadlock. THE STAGGER IS THE GATE: the entry offsets differ
     // by 4.8 mm = 7.9 ticks, so no offset trigger can separate the steps
     // (7.9 < t_air + g); the support hand-off does.
+    // THE WAVE-23 SCOPE OF CLAUSE (b) (the stall breaker, from the clause's
+    // own derivation): the hand-off clearance exists so two AIRBORNE windows
+    // stay disjoint -- an IN-PLACE re-plant (a wave-20 re-capture or a
+    // wave-23 follow) opens NO window (both pads stay down), so the
+    // clearance keys on the other leg's last TD plant only. Without this
+    // scope the wave-23 follows (which reset fore_t_ like every re-plant)
+    // seize the gate mutually: each follow resets the leg's age below g and
+    // clause (b) then gates the OTHER leg forever -- the mined fixed-run
+    // stall (both fores holding to the budget). Clause (a) -- the other
+    // leg AIRBORNE -- is untouched and still forbids every double swing.
     bool gated=false;
     if(fore_entry_[leg]){
      if(fore_mode_[o]==1)gated=true;
-     else if(fore_entry_[o]&&fore_t_[o]<1.)gated=true;
+     else if(fore_entry_[o]&&fore_td_plant_[o]&&fore_t_[o]<1.)gated=true;
      else if(fore_entry_[o]&&fore_t_[o]>=fore_stance_[o]){
       bool o_prior=fore_t_[o]>fore_t_[leg];
       if(fore_t_[o]==fore_t_[leg]){
@@ -676,7 +820,39 @@ class GaitWalker {
        o_prior=paw_target_[o][0]-sho[0]<paw_target_[leg][0]-sha[0];}
       gated=o_prior;}
      if(gated)++fore_gate_holds_[leg];}
-    if(!gated){
+    // THE DEFERRED LIFT (wave 23): a fore leg lifts only from an ADMISSIBLE
+    // SEAT -- the target's joint headroom at or above 2*kWallMargin. THE
+    // MEASURED SEPARATION (the mining pass): the R's liftoff at tick 71 sat
+    // on a 0.111 rad seat and survived its glide (the servo's transient
+    // reached the wall only after the pads left the ground -- the airborne
+    // wall-touch, no pin), while the R's liftoff at tick 81 sat on a
+    // 0.022 rad seat and the glide's first-sweep target (the paw plus
+    // ~(to-paw)/9, diving ~0.05 rad through the branch's deep-bend pocket)
+    // commanded the LOADED joint onto its stop within the tick (the mined
+    // loaded pin). The seat bar is the law's own restore level -- no new
+    // constant. A thin-seat leg re-plants IN PLACE instead (the admissible
+    // follow below) and lifts on a later tick from the restored seat; the
+    // no-double-swing gate above is untouched (clause (a) still forbids
+    // every simultaneous swing). THE CONJUNCT (the law's own minimality):
+    // the deferral protects a LOADED, WALL-ADJACENT joint -- the transient's
+    // victim -- so it fires only when the ACTUAL is also wall-bound
+    // (fore_wall_headroom <= kWallMargin). A leg whose actual holds a wide
+    // margin has nothing to protect: deferring it would be pure re-timing
+    // (the mined L@61: seat 0.102162 -- 3.8e-5 below the bar -- with the
+    // actual at 0.0867: lifting is safe by 7x the transient; the mined
+    // R@81: seat 0.022 with the actual at 0.0036: both clauses hold and the
+    // lift pinned). The wall_bound flag is that clause.
+    bool thin_seat=fore_target_headroom_at(leg,e,paw_target_[leg])<2.*kWallMargin;
+    bool due=fore_t_[leg]>=fore_stance_[leg]||wall_bound;
+    // THE NO-PLANTABLE-RESTORE GUARD (the machinery's own contact band): a
+    // seat restore smaller than kTouch (1e-5 m -- the touch quantum, the
+    // pad's own position resolution) cannot move the pad and cannot change
+    // the transient: a seat within kTouch of the bar IS at the bar, and
+    // deferring on it would re-time the solved dance for zero physical
+    // effect (the mined L@61 knife-edge: the settle seat 0.102162 vs the
+    // bar 0.102200 -- a 2.5 um restore; the lift survivable by 7x the
+    // transient).
+    if(!gated&&due&&(!thin_seat||!wall_bound)){
      fore_mode_[leg]=1;
      if(fore_entry_[leg])fore_t_[leg]=0.; // the entry air time is EXACTLY t_air (the glide runs 0->1)
     auto pw=e.point(points_[fore_paw_point_[leg]].index,paw_ref_local_[leg]).first;
@@ -687,28 +863,72 @@ class GaitWalker {
     if(xoff>amax){xoff=amax;++fore_clamped_[leg];}
     swing_to_[leg]=V{sh[0]+xoff,paw_plant_y_[leg],pw[2]};
 #ifdef GAIT_EVENT_TRACE
-    std::fprintf(stderr,"[foreclk] lift leg=%zu tick=%llu td=%d entry=%d from=(%.6f,%.6f) to=(%.6f,%.6f) xoff=%.6f v=%.6f\n",
-     leg,(unsigned long long)ticks_,fore_td_[leg],fore_entry_[leg],pw[0],pw[1],swing_to_[leg][0],swing_to_[leg][1],xoff,s_.v[3]);
+    std::fprintf(stderr,"[foreclk] lift leg=%zu tick=%llu td=%d entry=%d from=(%.6f,%.6f) to=(%.6f,%.6f) xoff=%.6f v=%.6f wall_bound=%d\n",
+     leg,(unsigned long long)ticks_,fore_td_[leg],fore_entry_[leg],pw[0],pw[1],swing_to_[leg][0],swing_to_[leg][1],xoff,s_.v[3],wall_bound?1:0);
 #endif
-    }else if(fore_t_[leg]>=fore_cycle_[leg]||fore_t_[leg]>=fore_env_ticks(leg,e)){
+    }else if(!gated&&due&&thin_seat&&wall_bound){
+     V seat=fore_follow_seat(leg,e);
+     if(std::hypot(seat[0]-paw_target_[leg][0],seat[1]-paw_target_[leg][1])<kTouch){
+      fore_mode_[leg]=1; // the restore is sub-quantum: the seat IS at the bar; lift
+      if(fore_entry_[leg])fore_t_[leg]=0.;
+      auto pw=e.point(points_[fore_paw_point_[leg]].index,paw_ref_local_[leg]).first;
+      auto sh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
+      swing_from_[leg]=pw;
+      double xoff=fore_xoff();
+      double amax=fore_amax(e,leg);
+      if(xoff>amax){xoff=amax;++fore_clamped_[leg];}
+      swing_to_[leg]=V{sh[0]+xoff,paw_plant_y_[leg],pw[2]};
+     }else{
+      paw_target_[leg]=seat;++fore_wall_follows_[leg];
+      fore_td_plant_[leg]=false;
+      ++fore_replants_[leg];fore_t_[leg]=0.;fore_entry_stance_rearm(leg,e);}
+#ifdef GAIT_EVENT_TRACE
+     std::fprintf(stderr,"[foreclk] deflift leg=%zu tick=%llu seat_hr=%.6f\n",
+      leg,(unsigned long long)ticks_,fore_target_headroom_at(leg,e,paw_target_[leg]));
+#endif
+     }
+    else if(fore_t_[leg]>=fore_cycle_[leg]||fore_t_[leg]>=fore_env_ticks(leg,e)){
      // THE IN-PLACE GROUND RE-PLANT (wave 20): the gate-held leg re-plants
      // where it stands -- at its cycle boundary, or at its envelope edge when
      // the plant is too starved to wait that long (never saturates). Zero air
      // time, the OTHER fore planted: the fork's literal 're-plant forward
-     // along the ground while keeping the other fore planted'.
-     capture_paw(leg,e);++fore_replants_[leg];
+     // along the ground while keeping the other fore planted'. THE TRIGGER
+     // STAYS THE WAVE-20 CYCLE/ENVELOPE EDGE (the mined fence: a wall-bound
+     // leg with cycle and envelope still in hand WAITS -- the R's survivable
+     // hold [60,66] dove at the same 0.0039 rad/tick as the death but its
+     // clock lifted it in time; firing on the headroom alone re-times the
+     // solved dance).
+     // THE JOINT-ADMISIBLE HOLD's crux clause (wave 23): a WALL-BOUND
+     // gate-held leg re-plants not at its raw (deflected) seat but at the
+     // admissible follow seat -- the ground-line slide that restores the
+     // TARGET's joint headroom to 2*kWallMargin, so the servo's measured
+     // deflection (the envelope) can never walk the ACTUAL joint onto its
+     // stop while the gate holds the leg past its schedule. The raw
+     // re-capture stands when the follow adds nothing (the target already
+     // holds twice the envelope).
+     bool followed=false;
+     if(wall_bound&&fore_target_headroom_at(leg,e,paw_target_[leg])<2.*kWallMargin){
+      V seat=fore_follow_seat(leg,e);
+      if(std::hypot(seat[0]-paw_target_[leg][0],seat[1]-paw_target_[leg][1])<kTouch)
+       capture_paw(leg,e); // a sub-quantum deficit: the raw re-capture stands (wave 20)
+      else{paw_target_[leg]=seat;++fore_wall_follows_[leg];followed=true;}
+     }
+     else capture_paw(leg,e);
+     fore_td_plant_[leg]=false; // an in-place re-plant opens no airborne window
+     fore_td_plant_[leg]=false; // an in-place re-plant opens no airborne window
+     ++fore_replants_[leg];
      fore_t_[leg]=0.;
      fore_entry_stance_rearm(leg,e);
 #ifdef GAIT_EVENT_TRACE
      auto pw2=e.point(points_[fore_paw_point_[leg]].index,paw_ref_local_[leg]).first;
-     std::fprintf(stderr,"[foreclk] inplace leg=%zu tick=%llu paw=(%.6f,%.6f) stance=%.3f entry=%d\n",
-      leg,(unsigned long long)ticks_,pw2[0],pw2[1],fore_stance_[leg],fore_entry_[leg]);
+     std::fprintf(stderr,"[foreclk] inplace leg=%zu tick=%llu paw=(%.6f,%.6f) stance=%.3f entry=%d follow=%d\n",
+      leg,(unsigned long long)ticks_,pw2[0],pw2[1],fore_stance_[leg],fore_entry_[leg],followed?1:0);
 #endif
     }
    }
    if(fore_t_[leg]>=fore_cycle_[leg]){ // TOUCHDOWN: re-capture the actual paw
     capture_paw(leg,e);++fore_replants_[leg];++fore_td_[leg];
-    fore_t_[leg]=0.;fore_mode_[leg]=0;
+    fore_t_[leg]=0.;fore_mode_[leg]=0;fore_td_plant_[leg]=true; // the TD opened a window
     // THE MID-ENTRY RE-PLANT re-arm (wave 20): from the FRESH measured
     // envelope; the HAND-OFF clears the regime at the first TD at/ahead of
     // the shoulder (off >= 0 -- the symmetric regime, envelope >= amax/v),
@@ -1002,6 +1222,14 @@ class GaitWalker {
    require(clamps<64,"gait_impact_event_budget");
    State pinned=start;
    if(which>=0){size_t pc=drives_[size_t(which)].coordinate;
+    // THE WAVE-23 PIN CENSUS: the deadlock's direct face, split LOADED
+    // (the leg's pad in the contact band -- the over-constraint precondition,
+    // the wave-22 death's 64-pin loop) vs AIRBORNE (the glide's pocket
+    // transit coasting the joint onto its stop; the wave-22 baseline's own
+    // witness: one R-shoulder airborne pin).
+    {bool loaded=false;const std::string& lg=drives_[size_t(which)].leg;
+     for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(lg,0)==0&&live[k])loaded=true;
+     if(loaded)++wall_pins_[size_t(which)];else ++wall_pins_air_[size_t(which)];}
     // BOOK THE PIN: setting q to the wall is a positional change; without
     // booking, its potential shift leaves the ledger (measured: up to 2.99 J
     // of balance error accumulated over the walk's clamp events). Same law
@@ -1169,6 +1397,9 @@ class GaitWalker {
   fore_mode_[0]=fore_mode_[1]=0;fore_td_[0]=fore_td_[1]=0;
   fore_replants_[0]=fore_replants_[1]=0;fore_clamped_[0]=fore_clamped_[1]=0;fore_conv_[0]=fore_conv_[1]=0;
   fore_entry_[0]=fore_entry_[1]=0;fore_gate_holds_[0]=fore_gate_holds_[1]=0;
+  fore_wall_bound_[0]=fore_wall_bound_[1]=0;fore_wall_follows_[0]=fore_wall_follows_[1]=0;
+  fore_td_plant_[0]=fore_td_plant_[1]=true;
+  for(size_t d=0;d<12;++d){wall_pins_[d]=0;wall_pins_air_[d]=0;}
   battery_.assign(nd_,0.);brake_.assign(nd_,0.);empty_events_.assign(nd_,0);store_total_=0;
   for(size_t d=0;d<nd_;++d){battery_[d]=drives_[d].store_floor;store_total_+=drives_[d].store_floor;}
   battery_post_=store_post_;brake_post_=0;empty_post_=0;store_total_+=store_post_;
@@ -1399,10 +1630,25 @@ class GaitWalker {
   {J forepaw=J::array();
    for(size_t leg=0;leg<2;++leg){
     if(paws_captured_){auto pw=e.point(points_[fore_paw_point_[leg]].index,paw_ref_local_[leg]).first;
+     // WAVE 23 instrumentation: the shoulder's world seat, the UNCLAMPED
+     // branch solution, the ACTUAL joints' min headroom to their four walls,
+     // and the wave-23 law censuses. Read-only: no servo byte depends on it.
+     auto shw=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
+     ForeIK ikd=fore_ik(leg,e);
+     size_t c1=fore_coord_[leg][0],c2=fore_coord_[leg][1];
+     double h1=(std::min)(s_.q[c1]-model_->lower[c1],model_->upper[c1]-s_.q[c1]);
+     double h2=(std::min)(s_.q[c2]-model_->lower[c2],model_->upper[c2]-s_.q[c2]);
+     uint64_t pins=0,pins_air=0;const std::string lg=leg==0?"fore_left":"fore_right";
+     for(size_t d=0;d<nd_;++d)if(drives_[d].leg==lg){pins+=wall_pins_[d];pins_air+=wall_pins_air_[d];}
      forepaw.push_back({{"leg",leg==0?"fore_left":"fore_right"},{"target_m",{paw_target_[leg][0],paw_target_[leg][1]}},
       {"error_m",std::hypot(pw[0]-paw_target_[leg][0],pw[1]-paw_target_[leg][1])},
       {"ik_roundtrip_m",ik_roundtrip_m_[leg]},{"ik_qerr_rad",ik_qerr_[leg]},
       {"ik_saturated_ticks",ik_sat_ticks_[leg]},
+      {"shoulder_m",{shw[0],shw[1]}},
+      {"ik_q1_unc_rad",ikd.q1_raw},{"ik_q2_unc_rad",ikd.q2_raw},
+      {"wall_headroom_rad",(std::min)(h1,h2)},
+      {"wall_bound_ticks",fore_wall_bound_[leg]},{"wall_follows",fore_wall_follows_[leg]},
+      {"wall_pins",pins},{"wall_pins_air",pins_air},
       {"fore_mode",fore_mode_[leg]==1?"swing":"stance"},{"td_count",fore_td_[leg]},
       {"replants",fore_replants_[leg]},{"annulus_clamped_plants",fore_clamped_[leg]},
       {"entry_replant",fore_entry_[leg]==1},{"gate_hold_ticks",fore_gate_holds_[leg]},
