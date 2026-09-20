@@ -1,0 +1,51 @@
+{
+ "schema": "chimera.engine_determinism.receipt.v1",
+ "lane": "agent/engine-determinism-argc",
+ "taken_utc": "2026-09-20T09:49:49+00:00",
+ "provenance": {
+  "engine_source": "ChimeraEngine/engine/engine.cpp + shaders/sort.comp + main.cpp, branch agent/engine-determinism-argc (base master 32105f18)",
+  "defects_inherited_from": "tools/science_funnel/validation/skeleton_movie_20260919/receipt.json on lane agent/skeleton-movie-20260919 (F1 scorer blindness, F2 cross-upload splat-sort instability) + that lane's engine launch_note (argc FAST_FAIL trap); that lane's worktree was read-only for this lane",
+  "pre_fix_binary": "chimera_engine.exe built from base master 32105f18 sources, sha256 b8999476a5d33f296e818f715f67143f2e269bc00218b58586e1fea976f18bd9"
+ },
+ "rule0_pre_registered": {
+  "banked_utc": "2026-09-20T09:49:49+00:00",
+  "note": "THIS BLOCK WAS WRITTEN BEFORE ANY CODE EDIT OR MEASUREMENT OF THIS LANE. It is never edited after the fact; measurements are appended under 'measurements' only.",
+  "m1_sort_stability": {
+   "STATEMENT": "making the splat sort a STABLE TOTAL ORDER (depth key tie-broken by splat index) makes cross-upload renders bit-identical",
+   "diagnosis": "the GPU bitonic compare-swap uses STRICT inequality on the depth key alone (sort.comp: swap only when keys[a] > keys[b] or keys[a] < keys[b]), so EQUAL depth keys never swap and the tie order entering each frame's sort is whatever the index buffer carried in -- and the index buffer is re-initialized only when the splat COUNT changes, never on re-upload of the same count. The converged tie arrangement therefore depends on upload history: the same buffer posted twice sorts ties differently on some frames.",
+   "fix": "the comparator becomes a total order: compare depth keys first, break ties by the splat INDEX carried in the permutation itself (indices are unique for real splats; padding entries all carry index 0 and key 0xFFFFFFFF and are indistinguishable, which is inert -- they always sort after every real key and their mutual order is byte-invisible). With (key,index) unique per real splat, the fully sorted permutation is UNIQUE, so the render no longer depends on the state entering the sort.",
+   "PREDICTION": "the same splat buffer posted via 4 SEPARATE uploads to the FIXED engine renders byte-identical PNG frames: all 24 frames of the 24-frame orbit are byte-equal across all 4 uploads",
+   "FALSIFIER": "any byte difference across uploads in any frame = RED, with the frame named and the differing-pixel count and max per-pixel delta reported (per-pixel max delta over RGB channels, computed exactly as the movie lane computed it: numpy int16 absolute difference of the decoded PNGs, max over channels, pixels_differing = count of pixels with delta > 0). Byte-equality with the PRE-FIX engine's outputs is NOT claimed and NOT required: the tie order changes by design; the falsifier pins cross-upload determinism of the NEW engine only.",
+   "performance_claim": "the sort must not regress measurably: same number of compare-swap stages and dispatches (the fix adds one uint comparison on key equality inside the existing shader); render time before/after reported for the identical orbit; a >2x slowdown is a finding"
+  },
+  "m2_argc_guard": {
+   "STATEMENT": "argument parsing that never dereferences beyond the true argc makes extra flags legal (or cleanly rejected with a message and exit code 1, never FAST_FAIL)",
+   "diagnosis": "main() reads argv[4] under an `argc > 3` guard (main.cpp: `int w = atoi(argv[3]), h = atoi(argv[4]);`); with argc == 4, argv[4] is nullptr and atoi(nullptr) aborts through ucrtbase!invoke_watson with FAST_FAIL_INVALID_ARG. `chimera_engine.exe 8097 --hidden --no-restore` is argc 4 and dies at startup.",
+   "fix": "a real argument parser at the top of main(): positionals (port, board file, legacy width/height) and value flags (--width/--height/--science-surface/--thermal-salvage/--earth-patch) are read only after an argc bound check; boolean flags (--hidden, --no-restore, --preserve-mesh-topology) are recognized anywhere; an UNKNOWN flag or a value flag missing its value is rejected with a one-line stderr usage message and exit code 1. No argv index >= argc is ever dereferenced.",
+   "PREDICTION": "launching with `--hidden --no-restore <port>` and with `<port>` alone both start the engine and serve frames; a deliberately bad arg (a flag expecting a value, given none, e.g. `--port`) exits with a clear stderr message and exit code 1",
+   "FALSIFIER": "any launch variant that crashes without a message = RED (the process dies by an abort/FAST_FAIL path -- observed as exit code 3 (FAST_FAIL / abort) or 0xC0000409-class termination with empty stderr -- instead of exiting 1 with the usage message)"
+  },
+  "m3_scorer_repair": {
+   "STATEMENT": "scoring discrimination on a POSTURE/ANATOMY token vocabulary (curated BEFORE measuring) separates the true mount from both probes where raw-text similarity could not",
+   "diagnosis": "the movie lane's F1 scorer compared concatenated judgment TEXT through senses.align; boilerplate similarity (both reports describe 'a single isolated object on a black background') swamped the signal: align(true, trunk-rotated-90 deg probe) = 0.9 although every probe frame read says 'lying/horizontal, not upright'.",
+   "fix": "an align_vocab(true_report, probe_report) instrument: each report is reduced to the set of vocabulary terms it hits (case-insensitive, word-boundary regex, from the banked vocabulary below); the score is the Jaccard of the two matched-term sets (|A and B| / |A or B|; 0.0 when both sets are empty -- no vocabulary evidence of alignment is a score of 0, never a NaN). Boilerplate contains no vocabulary terms and therefore cannot contribute.",
+   "PREDICTION": "on the movie lane's OWN RECORDED verbatim judgments (the three judgement_*.json copied read-only from its validation dir into this one), vocab_align(true, P1) < 0.5 AND vocab_align(true, P2) < 0.5",
+   "FALSIFIER": "either score >= 0.5 = RED. The vocabulary below was banked in this pre-registered block BEFORE the comparison ran; no term is added, removed or re-weighted after seeing a score.",
+   "instrument_details": {
+    "scoring_rule": "Jaccard over matched vocabulary term sets; 0.0 if both sides match nothing; the discrimination gate is the movie lane's own pre-registered 0.5 (a probe scoring >= 0.5 is NOT distinguished)",
+    "vocabulary": {
+     "posture_upright": ["upright", "standing", "stands", "vertical", "vertically", "erect", "planted", "perched"],
+     "posture_lying": ["lying", "lies", "horizontal", "horizontally", "sideways", "prone", "supine", "reclining", "slumped", "hunched"],
+     "anatomy": ["skeleton", "skeletal", "skull", "rib", "ribs", "ribcage", "rib cage", "spine", "spinal", "vertebra", "vertebrae", "pelvis", "pelvic", "femur", "femora", "tibia", "fibula", "humerus", "radius", "ulna", "torso", "trunk", "limb", "limbs", "bone", "bones", "anatomy", "anatomical", "joint", "joints", "posture", "figure"],
+     "probe_state": ["fragmented", "fragment", "fragments", "particles", "particle", "oversized", "enlarged", "scaled", "twice", "double", "coral", "rock", "stone", "statue", "floating", "elongated", "clustered", "clumped", "speckled", "grainy", "non-solid", "abstract"]
+    },
+    "match_rule": "word-boundary, case-insensitive substring for single words; multiword entries ('rib cage', 'non-solid') matched literally; 'radius' is ambiguous with a circle's radius but is banked as an anatomy term (the reports describe bones, not geometry) and stays as banked",
+    "categories_are_labels_only": "the score uses the UNION of all matched terms as one set; the category labels exist to document provenance of each term, not to weight the score"
+   }
+  }
+ },
+ "measurements": {
+  "note": "APPENDED AFTER THE RUNS. The pre-registered block above is untouched.",
+  "pending": true
+ }
+}

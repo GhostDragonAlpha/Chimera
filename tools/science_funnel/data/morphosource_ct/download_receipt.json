@@ -1,0 +1,62 @@
+﻿{
+    "retrieved_utc":  "2026-09-19T17:56:55.2624908Z",
+    "specimens":  [
+                      {
+                          "resolution_um":  160,
+                          "species":  "Macaca mulatta",
+                          "tif_bytes":  390500595,
+                          "media_id":  "000875604",
+                          "zip_bytes":  390626140,
+                          "zip_sha256":  "e3faf37a6a8d670aa6f528fd9c9008359be2bd75c3a94f2287b939a27f374b54",
+                          "specimen":  "USNM 497136-3",
+                          "modality":  "X-Ray CT",
+                          "file":  "Macaca_mulatta-USNM497136-3-160um-000875604.tif"
+                      },
+                      {
+                          "resolution_um":  160,
+                          "species":  "Macaca mulatta",
+                          "tif_bytes":  399830945,
+                          "media_id":  "000875599",
+                          "zip_bytes":  399956497,
+                          "zip_sha256":  "714120a3767eab0d6a9660f900b4f6a93d0fe4cefb061c9c2e37d75e0e10714d",
+                          "specimen":  "USNM 497135",
+                          "modality":  "X-Ray CT",
+                          "file":  "Macaca_mulatta-USNM135-160um-000875599.tif"
+                      }
+                  ],
+    "source":  "MorphoSource (media IDs 000875604, 000875599) - Full Body CT of Macaca mulatta",
+    "files":  [
+                  {
+                      "path":  "000875599_media-manifest-978951d5-5ca5-4dd0-9aa7-598af0c38d67.xlsx",
+                      "sha256":  "b29fc5fc83b32becdbd0bbdfc0e635c453264fd86b40755d3587a8d20e874fbf",
+                      "bytes":  5519
+                  },
+                  {
+                      "path":  "000875599_media-manifest-dee3154e-0987-4c25-bbf1-af246dd106d1.csv",
+                      "sha256":  "459dac6e06d16248d70ce64f289dbe1439a3f6f92cfe48b263b88b355e15bf04",
+                      "bytes":  1717
+                  },
+                  {
+                      "path":  "000875599_ms_usage_std_comm_no_rearc_ms_3d_yes.pdf",
+                      "sha256":  "d68ede8f6abdc65051a070b60b628c5d8b785d77165d83ed55ef4c83e7ab9387",
+                      "bytes":  117423
+                  },
+                  {
+                      "path":  "000875604_media-manifest-32cd30ea-30e7-4212-9cbe-6f2e1f6cb23e.xlsx",
+                      "sha256":  "0edbd8f7adb0bde368caef3df4e53165a67a1512d1cae0558f89bd7ecee779f7",
+                      "bytes":  5514
+                  },
+                  {
+                      "path":  "000875604_media-manifest-b6f8e54e-72fa-4493-938d-184c6b6d1501.csv",
+                      "sha256":  "ff7cdc46cb6b2487b16b32c531ddbca31d7810d054ef5331b1910a76919c2a15",
+                      "bytes":  1711
+                  },
+                  {
+                      "path":  "000875604_ms_usage_std_comm_no_rearc_ms_3d_yes.pdf",
+                      "sha256":  "d68ede8f6abdc65051a070b60b628c5d8b785d77165d83ed55ef4c83e7ab9387",
+                      "bytes":  117423
+                  }
+              ],
+    "note":  "CT TIFFs (~400 MB each) are too large for the repo; pinned by receipt only (gitignored). ZIPs remain at E:\\PythonChimera as immutable artifacts. Metadata (manifests + license) committed.",
+    "license":  "MorphoSource standard commercial use, no rearchive, 3D yes (ms_usage_std_comm_no_rearc_ms_3d_yes.pdf pinned)"
+}

@@ -632,26 +632,86 @@ int main(int argc, char** argv) {
     // operator sees it, never a downscale. (Every downscaled dyad frame in this
     // repo was sized to 384px because a 3D bear's silhouette survives it; panel
     // TEXT does not -- at 384px the instrument is unreadable to the eye.)
-    // argv[3]/argv[4] override for a box with a different panel.
+    // [width] [height] positional override for a box with a different panel
+    // (or the explicit --width/--height flags).
     cfg.width  = 2560;
     cfg.height = 1440;
     cfg.n_particles = 1200;
     cfg.G      = 1.0f;
     cfg.dt     = 0.02f;
-    if (argc > 3) {
-        int w = atoi(argv[3]), h = atoi(argv[4]);
-        if (w > 0 && h > 0) { cfg.width = (uint32_t)w; cfg.height = (uint32_t)h; }
-    }
 
-    // HTTP port: argv[1] overrides the default 8080 (e.g. NVIDIA SDK Manager squats 8080).
+    // ── ARGUMENT PARSING, BOUNDED (agent/engine-determinism-argc, 2026-09-20) ──
+    // The old parser read argv[4] under an `argc > 3` guard, so ANY launch with
+    // one token too many (e.g. `chimera_engine.exe 8097 --hidden --no-restore`,
+    // argc == 4) fed atoi a null pointer and died at startup through
+    // ucrtbase!invoke_watson with FAST_FAIL_INVALID_ARG -- no message, no exit
+    // code a script could use. This pre-pass never indexes at or past argv[argc]:
+    // a value flag's value is consumed only behind an `i + 1 < argc` check, and
+    // an unknown flag is a clean stderr usage message + exit code 1. The flags
+    // that act later in main (--no-restore near boot restore,
+    // --preserve-mesh-topology after engine init, the scene loaders) are
+    // recognized here so their spelling is validated once, in one place.
     int http_port = 8080;
-    if (argc > 1) { http_port = atoi(argv[1]); if (http_port <= 0) http_port = 8080; }
-    // R1 DOUBLE-CLICK LAUNCH: --hidden retires the developer console (the
-    // studio overlay F1 and the HTTP contract remain the surfaces). The
-    // game must not open a terminal.
     bool console_hidden = false;
-    for (int i = 1; i < argc; ++i)
-        if (std::string(argv[i]) == "--hidden") console_hidden = true;
+    bool have_board = false;
+    std::string board_file;
+    {
+        // value flags: the token AFTER the flag belongs to the flag (consumed in
+        // the scan below, so it can never be mistaken for a positional)
+        static const char* kValueFlags[] = {
+            "--width", "--height", "--science-surface", "--thermal-salvage", "--earth-patch",
+        };
+        static const char* kBoolFlags[] = {
+            "--hidden", "--no-restore", "--preserve-mesh-topology",
+        };
+        auto is_flag = [](const char* const* list, size_t n, const std::string& a) {
+            for (size_t i = 0; i < n; ++i) if (a == list[i]) return true;
+            return false;
+        };
+        std::vector<std::string> positional;
+        std::string bad;
+        for (int i = 1; i < argc; ++i) {
+            std::string a = argv[i];
+            if (!a.empty() && a[0] == '-') {
+                if (is_flag(kBoolFlags, sizeof(kBoolFlags) / sizeof(kBoolFlags[0]), a)) {
+                    if (a == "--hidden") console_hidden = true;
+                    continue;                                  // acts later in main
+                }
+                if (is_flag(kValueFlags, sizeof(kValueFlags) / sizeof(kValueFlags[0]), a)) {
+                    if (i + 1 >= argc) { bad = a + " requires a value"; break; }
+                    if (a == "--width")  cfg.width  = (uint32_t)atoi(argv[i + 1]);
+                    if (a == "--height") cfg.height = (uint32_t)atoi(argv[i + 1]);
+                    ++i;                                       // consume the value token
+                    continue;
+                }
+                bad = "unknown argument: " + a;
+                break;
+            }
+            positional.push_back(a);
+        }
+        if (bad.empty() && positional.size() >= 3 && positional.size() != 4) {
+            // legacy positional protocol was [port] [board] [width] [height]:
+            // a dangling width (or width+board-less triple) is malformed
+            bad = "bare [width height] override needs exactly 2 numbers "
+                  "after [port] [board] (got " + std::to_string(positional.size() - 2) + ")";
+        }
+        if (!bad.empty()) {
+            fprintf(stderr,
+                    "chimera_engine: %s\n"
+                    "usage: chimera_engine.exe [port] [board.json] [width height]\n"
+                    "       [--hidden] [--no-restore] [--preserve-mesh-topology]\n"
+                    "       [--width W] [--height H]\n"
+                    "       [--science-surface FILE] [--thermal-salvage FILE] [--earth-patch FILE]\n",
+                    bad.c_str());
+            return 1;
+        }
+        if (positional.size() >= 1) { http_port = atoi(positional[0].c_str()); if (http_port <= 0) http_port = 8080; }
+        if (positional.size() >= 2) { have_board = true; board_file = positional[1]; }
+        if (positional.size() == 4) {
+            int w = atoi(positional[2].c_str()), h = atoi(positional[3].c_str());
+            if (w > 0 && h > 0) { cfg.width = (uint32_t)w; cfg.height = (uint32_t)h; }
+        }
+    }
 
     // Physics init (passes cfg so it can set physical params)
     g_physics.init(cfg.n_particles, cfg);
@@ -704,14 +764,13 @@ int main(int argc, char** argv) {
         }catch(const std::exception& e){fprintf(stderr,"earth patch: %s\n",e.what());return 2;}
     }
 
-    // THE STUDIO: optional board file path (argv[2]); default is studio_board.json
-    // in the CWD — tools/studio_board.py writes it next to the exe.
-    // 2026-09-02: flags are not paths — `chimera_engine.exe 8090 --restore`
-    // made argv[2] == "--restore" the board path, GetFileAttributesExA failed,
-    // and the window booted "no board file" forever (the eye's #1 defect:
-    // "a raw developer/console message leaking into the product UI").
-    if (argc > 2 && std::string(argv[2]).rfind("--", 0) != 0)
-        engine.ui_.set_board_file(argv[2]);
+    // THE STUDIO: optional board file path (the second positional); default is
+    // studio_board.json in the CWD — tools/studio_board.py writes it next to
+    // the exe. The positional comes from the bounded argument pre-pass above
+    // (flag tokens and value-flag values never land in it — 2026-09-02's
+    // "flags are not paths" fix, kept).
+    if (have_board)
+        engine.ui_.set_board_file(board_file);
 
     // ── HTTP server for Python shim communication ───────────────────────────────
     // F1: the handler is a NAMED function — the HTTP server and the console's
