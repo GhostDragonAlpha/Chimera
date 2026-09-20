@@ -1,0 +1,2993 @@
+{
+ "membrane": "quadruped load-share: hindlimb demand/cap vs fore share s (single support hind contact, vertical paw reactions s*W/2 each, base rows unactuated and exactly satisfied by the prescribed split)",
+ "machinery": "derive_stance_hold.py at fdc74523 (MP-Jacobian-corrected) + the trunk-scan theta DOF; fore chain = the doc's Stage-A 2-coordinate reduction; NQ=15",
+ "declarations": {
+  "fore_segments": "humerus 0.2737 kg @ 0.125 m, forearm 0.1323 kg @ 0.132 m (masses derived from the admitted hind Table-1 thigh:shank proportion 0.557:0.269; documented fore lengths retained; rod inertias; hind-chain COM fractions)",
+  "mount": "doc sec 3.1 hip->shoulder closure (0.2689, -0.1331) m, carried with the trunk bounds [0.28, 0.482] m as the declared unknown",
+  "plant": "paw tip target directly below the shoulder (l=0, tenability-optimal) at the hind contact height; grid-solved in bands shoulder/forearm within +/-1.2 rad of vertical, elbow INTERNAL angle constrained to 1.75-2.44 rad (Janisch TD 127.4 deg, doc stand 113.3 deg inside), straighter-arm branch wins ties; residuals reported per node",
+  "fore_caps": {
+   "shoulder_Nm": 4.229,
+   "elbow_Nm": 2.368,
+   "law": "hind cap x (driven segment mass x length)/(hind reference pair); doc triceps 3.76 N.m carried as the muscle-anchored elbow cross-check"
+  },
+  "shares": "mission grid {0, 0.25, 0.4, 0.55} + doc-derived 0.6944 (= 2x34.18/98.44, sec 3.2)"
+ },
+ "fore_plant": {
+  "0.0": {
+   "a": 1.1120000000000017,
+   "b": -0.2619999999999991,
+   "elbow": [
+    0.380973,
+    -0.188459
+   ],
+   "tip": [
+    0.346784,
+    -0.315954
+   ],
+   "internal_rad": 1.7675926535897923,
+   "internal_deg": 101.3,
+   "miss_mm": 79.74154767681965,
+   "target": [
+    0.2689,
+    -0.298841
+   ]
+  },
+  "0.05": {
+   "a": 1.0620000000000014,
+   "b": -0.31199999999999917,
+   "elbow": [
+    0.378066,
+    -0.193991
+   ],
+   "tip": [
+    0.337547,
+    -0.319618
+   ],
+   "internal_rad": 1.7675926535897926,
+   "internal_deg": 101.3,
+   "miss_mm": 71.05106878974715,
+   "target": [
+    0.2689,
+    -0.301293
+   ]
+  },
+  "0.1": {
+   "a": -0.31199999999999917,
+   "b": 1.0620000000000014,
+   "elbow": [
+    0.23053,
+    -0.252065
+   ],
+   "tip": [
+    0.345809,
+    -0.316366
+   ],
+   "internal_rad": 1.7675926535897926,
+   "internal_deg": 101.3,
+   "miss_mm": 78.62194609811276,
+   "target": [
+    0.2689,
+    -0.300046
+   ]
+  },
+  "0.15": {
+   "a": -0.31199999999999917,
+   "b": 1.0620000000000014,
+   "elbow": [
+    0.23053,
+    -0.252065
+   ],
+   "tip": [
+    0.345809,
+    -0.316366
+   ],
+   "internal_rad": 1.7675926535897926,
+   "internal_deg": 101.3,
+   "miss_mm": 78.70073520430161,
+   "target": [
+    0.2689,
+    -0.29967
+   ]
+  },
+  "0.2": {
+   "a": -0.31199999999999917,
+   "b": 1.0620000000000014,
+   "elbow": [
+    0.23053,
+    -0.252065
+   ],
+   "tip": [
+    0.345809,
+    -0.316366
+   ],
+   "internal_rad": 1.7675926535897926,
+   "internal_deg": 101.3,
+   "miss_mm": 78.69339766480682,
+   "target": [
+    0.2689,
+    -0.299705
+   ]
+  },
+  "0.25": {
+   "a": 1.1120000000000017,
+   "b": -0.2619999999999991,
+   "elbow": [
+    0.380973,
+    -0.188459
+   ],
+   "tip": [
+    0.346784,
+    -0.315954
+   ],
+   "internal_rad": 1.7675926535897923,
+   "internal_deg": 101.3,
+   "miss_mm": 79.62752941431746,
+   "target": [
+    0.2689,
+    -0.29938
+   ]
+  },
+  "0.3": {
+   "a": -0.31199999999999917,
+   "b": 1.0620000000000014,
+   "elbow": [
+    0.23053,
+    -0.252065
+   ],
+   "tip": [
+    0.345809,
+    -0.316366
+   ],
+   "internal_rad": 1.7675926535897926,
+   "internal_deg": 101.3,
+   "miss_mm": 78.52174954828163,
+   "target": [
+    0.2689,
+    -0.300535
+   ]
+  },
+  "0.35": {
+   "a": 1.0620000000000014,
+   "b": -0.31199999999999917,
+   "elbow": [
+    0.378066,
+    -0.193991
+   ],
+   "tip": [
+    0.337547,
+    -0.319618
+   ],
+   "internal_rad": 1.7675926535897926,
+   "internal_deg": 101.3,
+   "miss_mm": 70.92379161322785,
+   "target": [
+    0.2689,
+    -0.301793
+   ]
+  },
+  "0.4": {
+   "a": -0.31199999999999917,
+   "b": 1.0620000000000014,
+   "elbow": [
+    0.23053,
+    -0.252065
+   ],
+   "tip": [
+    0.345809,
+    -0.316366
+   ],
+   "internal_rad": 1.7675926535897926,
+   "internal_deg": 101.3,
+   "miss_mm": 78.65055016267469,
+   "target": [
+    0.2689,
+    -0.299908
+   ]
+  },
+  "0.45": {
+   "a": 1.1120000000000017,
+   "b": -0.2619999999999991,
+   "elbow": [
+    0.380973,
+    -0.188459
+   ],
+   "tip": [
+    0.346784,
+    -0.315954
+   ],
+   "internal_rad": 1.7675926535897923,
+   "internal_deg": 101.3,
+   "miss_mm": 79.9806947665244,
+   "target": [
+    0.2689,
+    -0.297759
+   ]
+  },
+  "0.5": {
+   "a": -0.2619999999999991,
+   "b": 1.1120000000000017,
+   "elbow": [
+    0.236523,
+    -0.253834
+   ],
+   "tip": [
+    0.354873,
+    -0.312293
+   ],
+   "internal_rad": 1.7675926535897923,
+   "internal_deg": 101.3,
+   "miss_mm": 87.52604569105598,
+   "target": [
+    0.2689,
+    -0.295877
+   ]
+  },
+  "0.55": {
+   "a": 1.0620000000000014,
+   "b": -0.31199999999999917,
+   "elbow": [
+    0.378066,
+    -0.193991
+   ],
+   "tip": [
+    0.337547,
+    -0.319618
+   ],
+   "internal_rad": 1.7675926535897926,
+   "internal_deg": 101.3,
+   "miss_mm": 70.80218157543995,
+   "target": [
+    0.2689,
+    -0.302283
+   ]
+  },
+  "0.6": {
+   "a": -0.41199999999999926,
+   "b": 0.9620000000000017,
+   "elbow": [
+    0.218845,
+    -0.24764
+   ],
+   "tip": [
+    0.327129,
+    -0.323128
+   ],
+   "internal_rad": 1.7675926535897921,
+   "internal_deg": 101.3,
+   "miss_mm": 60.77315207680224,
+   "target": [
+    0.2689,
+    -0.305729
+   ]
+  },
+  "0.65": {
+   "a": -0.2619999999999991,
+   "b": 1.1120000000000017,
+   "elbow": [
+    0.236523,
+    -0.253834
+   ],
+   "tip": [
+    0.354873,
+    -0.312293
+   ],
+   "internal_rad": 1.7675926535897923,
+   "internal_deg": 101.3,
+   "miss_mm": 87.42314507073067,
+   "target": [
+    0.2689,
+    -0.296435
+   ]
+  }
+ },
+ "replication_anchor": {
+  "config": "full-HAT 8.184 biped, no fore, theta* minimax (the vault scan)",
+  "single_support_worst": 0.9661,
+  "banked": "trunk_vault.json 0.8809; receipt wording 0.92-0.95"
+ },
+ "biped_baseline": {
+  "config": "HAT_eff 7.371998 kg (carve-out), no fore masses",
+  "single_support_worst": 0.8885
+ },
+ "series": {
+  "0.0": {
+   "nodes": {
+    "0.0": {
+     "theta0_ratios": {
+      "hip": 1.2961,
+      "knee": 0.417,
+      "ankle": 0.1463,
+      "mp": 0.0052,
+      "posture": 1.5018,
+      "shoulder": 0.0593,
+      "elbow": 0.0075
+     },
+     "theta0_demands_Nm": {
+      "hip": 14.54,
+      "knee": 2.77,
+      "ankle": -1.082,
+      "mp": 0.005,
+      "posture": 16.848,
+      "shoulder": 0.251,
+      "elbow": -0.018
+     },
+     "theta_star_rad": -0.44,
+     "worst_ratio_at_theta_star": 0.7903,
+     "hind_worst_at_theta_star": 0.7889,
+     "ratios_at_theta_star": {
+      "hip": 0.0162,
+      "knee": 0.7889,
+      "ankle": 0.1502,
+      "mp": 0.0049,
+      "posture": 0.7903,
+      "shoulder": 0.0337,
+      "elbow": 0.0187
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 139.6
+    },
+    "0.05": {
+     "theta0_ratios": {
+      "hip": 1.0508,
+      "knee": 0.0446,
+      "ankle": 0.1395,
+      "mp": 0.0053,
+      "posture": 1.25,
+      "shoulder": 0.0569,
+      "elbow": 0.0089
+     },
+     "theta0_demands_Nm": {
+      "hip": 11.788,
+      "knee": -0.297,
+      "ankle": -1.032,
+      "mp": 0.005,
+      "posture": 14.023,
+      "shoulder": 0.241,
+      "elbow": -0.021
+     },
+     "theta_star_rad": -0.28,
+     "worst_ratio_at_theta_star": 0.8265,
+     "hind_worst_at_theta_star": 0.8218,
+     "ratios_at_theta_star": {
+      "hip": 0.254,
+      "knee": 0.8218,
+      "ankle": 0.1509,
+      "mp": 0.005,
+      "posture": 0.8265,
+      "shoulder": 0.0409,
+      "elbow": 0.0161
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 112.2
+    },
+    "0.1": {
+     "theta0_ratios": {
+      "hip": 0.7265,
+      "knee": 0.5742,
+      "ankle": 0.1419,
+      "mp": 0.0053,
+      "posture": 0.8689,
+      "shoulder": 0.0076,
+      "elbow": 0.0252
+     },
+     "theta0_demands_Nm": {
+      "hip": 8.15,
+      "knee": -3.815,
+      "ankle": -1.049,
+      "mp": 0.005,
+      "posture": 9.748,
+      "shoulder": -0.032,
+      "elbow": 0.06
+     },
+     "theta_star_rad": -0.07,
+     "worst_ratio_at_theta_star": 0.7714,
+     "hind_worst_at_theta_star": 0.7675,
+     "ratios_at_theta_star": {
+      "hip": 0.5341,
+      "knee": 0.7675,
+      "ankle": 0.1454,
+      "mp": 0.0052,
+      "posture": 0.7714,
+      "shoulder": 0.0129,
+      "elbow": 0.0242
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 76.0
+    },
+    "0.15": {
+     "theta0_ratios": {
+      "hip": 0.3714,
+      "knee": 1.0345,
+      "ankle": 0.1472,
+      "mp": 0.0053,
+      "posture": 0.5113,
+      "shoulder": 0.0076,
+      "elbow": 0.0252
+     },
+     "theta0_demands_Nm": {
+      "hip": 4.166,
+      "knee": -6.872,
+      "ankle": -1.089,
+      "mp": 0.005,
+      "posture": 5.736,
+      "shoulder": -0.032,
+      "elbow": 0.06
+     },
+     "theta_star_rad": 0.12,
+     "worst_ratio_at_theta_star": 0.7093,
+     "hind_worst_at_theta_star": 0.7093,
+     "ratios_at_theta_star": {
+      "hip": 0.6949,
+      "knee": 0.7093,
+      "ankle": 0.1415,
+      "mp": 0.0052,
+      "posture": 0.6706,
+      "shoulder": 0.0015,
+      "elbow": 0.0268
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 36.7
+    },
+    "0.2": {
+     "theta0_ratios": {
+      "hip": 0.0603,
+      "knee": 1.3573,
+      "ankle": 0.1507,
+      "mp": 0.0053,
+      "posture": 0.2083,
+      "shoulder": 0.0076,
+      "elbow": 0.0252
+     },
+     "theta0_demands_Nm": {
+      "hip": 0.676,
+      "knee": -9.016,
+      "ankle": -1.115,
+      "mp": 0.005,
+      "posture": 2.337,
+      "shoulder": -0.032,
+      "elbow": 0.06
+     },
+     "theta_star_rad": 0.24,
+     "worst_ratio_at_theta_star": 0.7227,
+     "hind_worst_at_theta_star": 0.7227,
+     "ratios_at_theta_star": {
+      "hip": 0.7073,
+      "knee": 0.7227,
+      "ankle": 0.1414,
+      "mp": 0.0051,
+      "posture": 0.5272,
+      "shoulder": 0.0105,
+      "elbow": 0.0279
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 2.4
+    },
+    "0.25": {
+     "theta0_ratios": {
+      "hip": 0.2638,
+      "knee": 1.6288,
+      "ankle": 0.152,
+      "mp": 0.0053,
+      "posture": 0.0456,
+      "shoulder": 0.0593,
+      "elbow": 0.0075
+     },
+     "theta0_demands_Nm": {
+      "hip": -2.96,
+      "knee": -10.82,
+      "ankle": -1.124,
+      "mp": 0.005,
+      "posture": -0.512,
+      "shoulder": 0.251,
+      "elbow": -0.018
+     },
+     "theta_star_rad": 0.36,
+     "worst_ratio_at_theta_star": 0.715,
+     "hind_worst_at_theta_star": 0.715,
+     "ratios_at_theta_star": {
+      "hip": 0.715,
+      "knee": 0.6994,
+      "ankle": 0.1399,
+      "mp": 0.0049,
+      "posture": 0.4323,
+      "shoulder": 0.0721,
+      "elbow": 0.0028
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -33.1
+    },
+    "0.3": {
+     "theta0_ratios": {
+      "hip": 0.1998,
+      "knee": 0.5824,
+      "ankle": 0.9906,
+      "mp": 0.0053,
+      "posture": 0.3964,
+      "shoulder": 0.0076,
+      "elbow": 0.0252
+     },
+     "theta0_demands_Nm": {
+      "hip": 2.242,
+      "knee": -3.869,
+      "ankle": 7.327,
+      "mp": 0.005,
+      "posture": 4.447,
+      "shoulder": -0.032,
+      "elbow": 0.06
+     },
+     "theta_star_rad": -0.17,
+     "worst_ratio_at_theta_star": 0.9661,
+     "hind_worst_at_theta_star": 0.9661,
+     "ratios_at_theta_star": {
+      "hip": 0.2672,
+      "knee": 0.9536,
+      "ankle": 0.9661,
+      "mp": 0.0052,
+      "posture": 0.1569,
+      "shoulder": 0.0203,
+      "elbow": 0.0225
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 21.0
+    },
+    "0.35": {
+     "theta0_ratios": {
+      "hip": 0.042,
+      "knee": 0.7105,
+      "ankle": 0.9881,
+      "mp": 0.0053,
+      "posture": 0.2389,
+      "shoulder": 0.0569,
+      "elbow": 0.0089
+     },
+     "theta0_demands_Nm": {
+      "hip": -0.471,
+      "knee": -4.72,
+      "ankle": 7.309,
+      "mp": 0.005,
+      "posture": 2.68,
+      "shoulder": 0.241,
+      "elbow": -0.021
+     },
+     "theta_star_rad": 0.36,
+     "worst_ratio_at_theta_star": 0.9572,
+     "hind_worst_at_theta_star": 0.9572,
+     "ratios_at_theta_star": {
+      "hip": 0.9317,
+      "knee": 0.1017,
+      "ankle": 0.9572,
+      "mp": 0.0049,
+      "posture": 0.7052,
+      "shoulder": 0.0709,
+      "elbow": 0.0014
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -5.3
+    },
+    "0.4": {
+     "theta0_ratios": {
+      "hip": 0.4254,
+      "knee": 0.9321,
+      "ankle": 0.9753,
+      "mp": 0.0053,
+      "posture": 0.1753,
+      "shoulder": 0.0076,
+      "elbow": 0.0252
+     },
+     "theta0_demands_Nm": {
+      "hip": -4.773,
+      "knee": -6.192,
+      "ankle": 7.214,
+      "mp": 0.005,
+      "posture": -1.967,
+      "shoulder": -0.032,
+      "elbow": 0.06
+     },
+     "theta_star_rad": 0.5,
+     "worst_ratio_at_theta_star": 0.9439,
+     "hind_worst_at_theta_star": 0.9439,
+     "ratios_at_theta_star": {
+      "hip": 0.9403,
+      "knee": 0.1776,
+      "ankle": 0.9439,
+      "mp": 0.0047,
+      "posture": 0.5005,
+      "shoulder": 0.0294,
+      "elbow": 0.0289
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -47.1
+    },
+    "0.45": {
+     "theta0_ratios": {
+      "hip": 0.6973,
+      "knee": 1.174,
+      "ankle": 0.9288,
+      "mp": 0.0052,
+      "posture": 0.3892,
+      "shoulder": 0.0593,
+      "elbow": 0.0075
+     },
+     "theta0_demands_Nm": {
+      "hip": -7.823,
+      "knee": -7.799,
+      "ankle": 6.87,
+      "mp": 0.005,
+      "posture": -4.367,
+      "shoulder": 0.251,
+      "elbow": -0.018
+     },
+     "theta_star_rad": 0.11,
+     "worst_ratio_at_theta_star": 0.9616,
+     "hind_worst_at_theta_star": 0.9616,
+     "ratios_at_theta_star": {
+      "hip": 0.3945,
+      "knee": 0.9437,
+      "ankle": 0.9616,
+      "mp": 0.0053,
+      "posture": 0.2417,
+      "shoulder": 0.0642,
+      "elbow": 0.0044
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -77.0
+    },
+    "0.5": {
+     "theta0_ratios": {
+      "hip": 0.9223,
+      "knee": 1.3749,
+      "ankle": 0.8613,
+      "mp": 0.0052,
+      "posture": 0.6635,
+      "shoulder": 0.0038,
+      "elbow": 0.0259
+     },
+     "theta0_demands_Nm": {
+      "hip": -10.347,
+      "knee": -9.134,
+      "ankle": 6.371,
+      "mp": 0.005,
+      "posture": -7.443,
+      "shoulder": -0.016,
+      "elbow": 0.061
+     },
+     "theta_star_rad": 0.21,
+     "worst_ratio_at_theta_star": 0.9452,
+     "hind_worst_at_theta_star": 0.9452,
+     "ratios_at_theta_star": {
+      "hip": 0.3389,
+      "knee": 0.926,
+      "ankle": 0.9452,
+      "mp": 0.0052,
+      "posture": 0.3716,
+      "shoulder": 0.012,
+      "elbow": 0.028
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -101.7
+    },
+    "0.55": {
+     "theta0_ratios": {
+      "hip": 1.1196,
+      "knee": 1.6113,
+      "ankle": 0.7119,
+      "mp": 0.0051,
+      "posture": 0.8193,
+      "shoulder": 0.0569,
+      "elbow": 0.0089
+     },
+     "theta0_demands_Nm": {
+      "hip": -12.56,
+      "knee": -10.704,
+      "ankle": 5.266,
+      "mp": 0.005,
+      "posture": -9.191,
+      "shoulder": 0.241,
+      "elbow": -0.021
+     },
+     "theta_star_rad": 0.31,
+     "worst_ratio_at_theta_star": 0.8905,
+     "hind_worst_at_theta_star": 0.8905,
+     "ratios_at_theta_star": {
+      "hip": 0.2253,
+      "knee": 0.8905,
+      "ankle": 0.8889,
+      "mp": 0.0052,
+      "posture": 0.3639,
+      "shoulder": 0.0694,
+      "elbow": 0.0001
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -123.7
+    },
+    "0.6": {
+     "theta0_ratios": {
+      "hip": 1.4188,
+      "knee": 1.9293,
+      "ankle": 0.4828,
+      "mp": 0.0045,
+      "posture": 1.1797,
+      "shoulder": 0.0151,
+      "elbow": 0.0237
+     },
+     "theta0_demands_Nm": {
+      "hip": -15.917,
+      "knee": -12.816,
+      "ankle": 3.571,
+      "mp": 0.004,
+      "posture": -13.234,
+      "shoulder": -0.064,
+      "elbow": 0.056
+     },
+     "theta_star_rad": 0.45,
+     "worst_ratio_at_theta_star": 0.8118,
+     "hind_worst_at_theta_star": 0.8118,
+     "ratios_at_theta_star": {
+      "hip": 0.066,
+      "knee": 0.7857,
+      "ankle": 0.8118,
+      "mp": 0.0052,
+      "posture": 0.4479,
+      "shoulder": 0.0187,
+      "elbow": 0.0285
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -156.8
+    },
+    "0.65": {
+     "theta0_ratios": {
+      "hip": 1.5703,
+      "knee": 2.1675,
+      "ankle": 0.3513,
+      "mp": 0.0023,
+      "posture": 1.3326,
+      "shoulder": 0.0038,
+      "elbow": 0.0259
+     },
+     "theta0_demands_Nm": {
+      "hip": -17.616,
+      "knee": -14.399,
+      "ankle": 2.599,
+      "mp": 0.002,
+      "posture": -14.95,
+      "shoulder": -0.016,
+      "elbow": 0.061
+     },
+     "theta_star_rad": 0.55,
+     "worst_ratio_at_theta_star": 0.7847,
+     "hind_worst_at_theta_star": 0.7847,
+     "ratios_at_theta_star": {
+      "hip": 0.0735,
+      "knee": 0.7766,
+      "ankle": 0.7847,
+      "mp": 0.0044,
+      "posture": 0.4392,
+      "shoulder": 0.0363,
+      "elbow": 0.0288
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -173.8
+    }
+   },
+   "hind_worst_theta0_ss": 1.6288,
+   "hind_worst_thetastar_ss": 0.9661,
+   "worst_all_thetastar_ss": 0.9661
+  },
+  "0.25": {
+   "nodes": {
+    "0.0": {
+     "theta0_ratios": {
+      "hip": 0.9898,
+      "knee": 0.3177,
+      "ankle": 0.1079,
+      "mp": 0.0052,
+      "posture": 1.9563,
+      "shoulder": 0.286,
+      "elbow": 0.1851
+     },
+     "theta0_demands_Nm": {
+      "hip": 11.103,
+      "knee": 2.11,
+      "ankle": -0.798,
+      "mp": 0.005,
+      "posture": 21.946,
+      "shoulder": 1.209,
+      "elbow": -0.438
+     },
+     "theta_star_rad": -0.58,
+     "worst_ratio_at_theta_star": 0.8843,
+     "hind_worst_at_theta_star": 0.8668,
+     "ratios_at_theta_star": {
+      "hip": 0.3007,
+      "knee": 0.8668,
+      "ankle": 0.1072,
+      "mp": 0.0046,
+      "posture": 0.8843,
+      "shoulder": 0.0782,
+      "elbow": 0.5332
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 139.6
+    },
+    "0.05": {
+     "theta0_ratios": {
+      "hip": 0.8047,
+      "knee": 0.031,
+      "ankle": 0.1029,
+      "mp": 0.0053,
+      "posture": 1.7444,
+      "shoulder": 0.2567,
+      "elbow": 0.2194
+     },
+     "theta0_demands_Nm": {
+      "hip": 9.028,
+      "knee": -0.206,
+      "ankle": -0.761,
+      "mp": 0.005,
+      "posture": 19.569,
+      "shoulder": 1.085,
+      "elbow": -0.52
+     },
+     "theta_star_rad": -0.45,
+     "worst_ratio_at_theta_star": 0.9633,
+     "hind_worst_at_theta_star": 0.9531,
+     "ratios_at_theta_star": {
+      "hip": 0.1776,
+      "knee": 0.9531,
+      "ankle": 0.1122,
+      "mp": 0.0047,
+      "posture": 0.9633,
+      "shoulder": 0.0267,
+      "elbow": 0.4935
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 112.2
+    },
+    "0.1": {
+     "theta0_ratios": {
+      "hip": 0.5598,
+      "knee": 0.4308,
+      "ankle": 0.1046,
+      "mp": 0.0053,
+      "posture": 1.4608,
+      "shoulder": 0.2162,
+      "elbow": 0.6242
+     },
+     "theta0_demands_Nm": {
+      "hip": 6.28,
+      "knee": -2.862,
+      "ankle": -0.774,
+      "mp": 0.005,
+      "posture": 16.388,
+      "shoulder": 0.914,
+      "elbow": 1.478
+     },
+     "theta_star_rad": -0.29,
+     "worst_ratio_at_theta_star": 1.0134,
+     "hind_worst_at_theta_star": 1.0134,
+     "ratios_at_theta_star": {
+      "hip": 0.0545,
+      "knee": 1.0134,
+      "ankle": 0.1119,
+      "mp": 0.005,
+      "posture": 0.9997,
+      "shoulder": 0.0331,
+      "elbow": 0.4986
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 76.0
+    },
+    "0.15": {
+     "theta0_ratios": {
+      "hip": 0.291,
+      "knee": 0.7783,
+      "ankle": 0.1086,
+      "mp": 0.0053,
+      "posture": 1.1895,
+      "shoulder": 0.2162,
+      "elbow": 0.6242
+     },
+     "theta0_demands_Nm": {
+      "hip": 3.264,
+      "knee": -5.17,
+      "ankle": -0.803,
+      "mp": 0.005,
+      "posture": 13.344,
+      "shoulder": 0.914,
+      "elbow": 1.478
+     },
+     "theta_star_rad": -0.12,
+     "worst_ratio_at_theta_star": 1.0136,
+     "hind_worst_at_theta_star": 1.0126,
+     "ratios_at_theta_star": {
+      "hip": 0.0414,
+      "knee": 1.0126,
+      "ankle": 0.1112,
+      "mp": 0.0052,
+      "posture": 1.0136,
+      "shoulder": 0.1418,
+      "elbow": 0.5781
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 36.7
+    },
+    "0.2": {
+     "theta0_ratios": {
+      "hip": 0.055,
+      "knee": 1.0219,
+      "ankle": 0.1112,
+      "mp": 0.0053,
+      "posture": 0.9617,
+      "shoulder": 0.2162,
+      "elbow": 0.6242
+     },
+     "theta0_demands_Nm": {
+      "hip": 0.617,
+      "knee": -6.789,
+      "ankle": -0.822,
+      "mp": 0.005,
+      "posture": 10.789,
+      "shoulder": 0.914,
+      "elbow": 1.478
+     },
+     "theta_star_rad": 0.02,
+     "worst_ratio_at_theta_star": 0.9896,
+     "hind_worst_at_theta_star": 0.9839,
+     "ratios_at_theta_star": {
+      "hip": 0.0964,
+      "knee": 0.9839,
+      "ankle": 0.1108,
+      "mp": 0.0053,
+      "posture": 0.9896,
+      "shoulder": 0.2283,
+      "elbow": 0.6311
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 2.4
+    },
+    "0.25": {
+     "theta0_ratios": {
+      "hip": 0.1912,
+      "knee": 1.2269,
+      "ankle": 0.1121,
+      "mp": 0.0053,
+      "posture": 0.7878,
+      "shoulder": 0.286,
+      "elbow": 0.1851
+     },
+     "theta0_demands_Nm": {
+      "hip": -2.145,
+      "knee": -8.15,
+      "ankle": -0.829,
+      "mp": 0.005,
+      "posture": 8.838,
+      "shoulder": 1.209,
+      "elbow": -0.438
+     },
+     "theta_star_rad": 0.14,
+     "worst_ratio_at_theta_star": 0.9733,
+     "hind_worst_at_theta_star": 0.9682,
+     "ratios_at_theta_star": {
+      "hip": 0.1001,
+      "knee": 0.9682,
+      "ankle": 0.1103,
+      "mp": 0.0052,
+      "posture": 0.9733,
+      "shoulder": 0.364,
+      "elbow": 0.087
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -33.1
+    },
+    "0.3": {
+     "theta0_ratios": {
+      "hip": 0.1537,
+      "knee": 0.4432,
+      "ankle": 0.7448,
+      "mp": 0.0053,
+      "posture": 1.1089,
+      "shoulder": 0.2162,
+      "elbow": 0.6242
+     },
+     "theta0_demands_Nm": {
+      "hip": 1.724,
+      "knee": -2.944,
+      "ankle": 5.509,
+      "mp": 0.005,
+      "posture": 12.44,
+      "shoulder": 0.914,
+      "elbow": 1.478
+     },
+     "theta_star_rad": -0.21,
+     "worst_ratio_at_theta_star": 0.7893,
+     "hind_worst_at_theta_star": 0.7867,
+     "ratios_at_theta_star": {
+      "hip": 0.2841,
+      "knee": 0.7867,
+      "ankle": 0.719,
+      "mp": 0.0051,
+      "posture": 0.7893,
+      "shoulder": 0.0846,
+      "elbow": 0.5379
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 21.0
+    },
+    "0.35": {
+     "theta0_ratios": {
+      "hip": 0.0304,
+      "knee": 0.54,
+      "ankle": 0.743,
+      "mp": 0.0053,
+      "posture": 0.9909,
+      "shoulder": 0.2567,
+      "elbow": 0.2194
+     },
+     "theta0_demands_Nm": {
+      "hip": -0.341,
+      "knee": -3.587,
+      "ankle": 5.495,
+      "mp": 0.005,
+      "posture": 11.117,
+      "shoulder": 1.085,
+      "elbow": -0.52
+     },
+     "theta_star_rad": -0.15,
+     "worst_ratio_at_theta_star": 0.7795,
+     "hind_worst_at_theta_star": 0.7795,
+     "ratios_at_theta_star": {
+      "hip": 0.343,
+      "knee": 0.7795,
+      "ankle": 0.7243,
+      "mp": 0.0052,
+      "posture": 0.7696,
+      "shoulder": 0.1652,
+      "elbow": 0.3186
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -5.3
+    },
+    "0.4": {
+     "theta0_ratios": {
+      "hip": 0.3221,
+      "knee": 0.7073,
+      "ankle": 0.7333,
+      "mp": 0.0053,
+      "posture": 0.6866,
+      "shoulder": 0.2162,
+      "elbow": 0.6242
+     },
+     "theta0_demands_Nm": {
+      "hip": -3.614,
+      "knee": -4.699,
+      "ankle": 5.424,
+      "mp": 0.005,
+      "posture": 7.702,
+      "shoulder": 0.914,
+      "elbow": 1.478
+     },
+     "theta_star_rad": -0.01,
+     "worst_ratio_at_theta_star": 0.7319,
+     "hind_worst_at_theta_star": 0.7319,
+     "ratios_at_theta_star": {
+      "hip": 0.343,
+      "knee": 0.723,
+      "ankle": 0.7319,
+      "mp": 0.0053,
+      "posture": 0.6726,
+      "shoulder": 0.2101,
+      "elbow": 0.6207
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -47.1
+    },
+    "0.45": {
+     "theta0_ratios": {
+      "hip": 0.5285,
+      "knee": 0.8897,
+      "ankle": 0.6984,
+      "mp": 0.0052,
+      "posture": 0.5403,
+      "shoulder": 0.286,
+      "elbow": 0.1851
+     },
+     "theta0_demands_Nm": {
+      "hip": -5.929,
+      "knee": -5.911,
+      "ankle": 5.166,
+      "mp": 0.005,
+      "posture": 6.061,
+      "shoulder": 1.209,
+      "elbow": -0.438
+     },
+     "theta_star_rad": 0.11,
+     "worst_ratio_at_theta_star": 0.723,
+     "hind_worst_at_theta_star": 0.723,
+     "ratios_at_theta_star": {
+      "hip": 0.2985,
+      "knee": 0.716,
+      "ankle": 0.723,
+      "mp": 0.0053,
+      "posture": 0.6866,
+      "shoulder": 0.3478,
+      "elbow": 0.1082
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -77.0
+    },
+    "0.5": {
+     "theta0_ratios": {
+      "hip": 0.6992,
+      "knee": 1.0412,
+      "ankle": 0.6476,
+      "mp": 0.0052,
+      "posture": 0.3381,
+      "shoulder": 0.2463,
+      "elbow": 0.6409
+     },
+     "theta0_demands_Nm": {
+      "hip": -7.844,
+      "knee": -6.917,
+      "ankle": 4.79,
+      "mp": 0.005,
+      "posture": 3.793,
+      "shoulder": 1.042,
+      "elbow": 1.518
+     },
+     "theta_star_rad": 0.21,
+     "worst_ratio_at_theta_star": 0.7107,
+     "hind_worst_at_theta_star": 0.7107,
+     "ratios_at_theta_star": {
+      "hip": 0.256,
+      "knee": 0.7025,
+      "ankle": 0.7107,
+      "mp": 0.0052,
+      "posture": 0.6155,
+      "shoulder": 0.3654,
+      "elbow": 0.6928
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -101.7
+    },
+    "0.55": {
+     "theta0_ratios": {
+      "hip": 0.8484,
+      "knee": 1.2192,
+      "ankle": 0.5354,
+      "mp": 0.0051,
+      "posture": 0.1924,
+      "shoulder": 0.2567,
+      "elbow": 0.2194
+     },
+     "theta0_demands_Nm": {
+      "hip": -9.517,
+      "knee": -8.099,
+      "ankle": 3.96,
+      "mp": 0.005,
+      "posture": 2.159,
+      "shoulder": 1.085,
+      "elbow": -0.52
+     },
+     "theta_star_rad": 0.32,
+     "worst_ratio_at_theta_star": 0.6717,
+     "hind_worst_at_theta_star": 0.6717,
+     "ratios_at_theta_star": {
+      "hip": 0.1467,
+      "knee": 0.6566,
+      "ankle": 0.6717,
+      "mp": 0.0052,
+      "posture": 0.624,
+      "shoulder": 0.4301,
+      "elbow": 0.0057
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -123.7
+    },
+    "0.6": {
+     "theta0_ratios": {
+      "hip": 1.0748,
+      "knee": 1.4584,
+      "ankle": 0.3631,
+      "mp": 0.0045,
+      "posture": 0.118,
+      "shoulder": 0.1543,
+      "elbow": 0.5864
+     },
+     "theta0_demands_Nm": {
+      "hip": -12.057,
+      "knee": -9.688,
+      "ankle": 2.685,
+      "mp": 0.004,
+      "posture": -1.324,
+      "shoulder": 0.653,
+      "elbow": 1.389
+     },
+     "theta_star_rad": 0.41,
+     "worst_ratio_at_theta_star": 0.7007,
+     "hind_worst_at_theta_star": 0.6804,
+     "ratios_at_theta_star": {
+      "hip": 0.1427,
+      "knee": 0.6804,
+      "ankle": 0.5928,
+      "mp": 0.0052,
+      "posture": 0.47,
+      "shoulder": 0.3915,
+      "elbow": 0.7007
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -156.8
+    },
+    "0.65": {
+     "theta0_ratios": {
+      "hip": 1.189,
+      "knee": 1.6379,
+      "ankle": 0.2642,
+      "mp": 0.0023,
+      "posture": 0.1729,
+      "shoulder": 0.2463,
+      "elbow": 0.6409
+     },
+     "theta0_demands_Nm": {
+      "hip": -13.339,
+      "knee": -10.88,
+      "ankle": 1.954,
+      "mp": 0.002,
+      "posture": -1.939,
+      "shoulder": 1.042,
+      "elbow": 1.518
+     },
+     "theta_star_rad": 0.6,
+     "worst_ratio_at_theta_star": 0.7077,
+     "hind_worst_at_theta_star": 0.6121,
+     "ratios_at_theta_star": {
+      "hip": 0.177,
+      "knee": 0.4799,
+      "ankle": 0.6121,
+      "mp": 0.0046,
+      "posture": 0.6298,
+      "shoulder": 0.5404,
+      "elbow": 0.7077
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -173.8
+    }
+   },
+   "hind_worst_theta0_ss": 1.2269,
+   "hind_worst_thetastar_ss": 0.9839,
+   "worst_all_thetastar_ss": 0.9896
+  },
+  "0.4": {
+   "nodes": {
+    "0.0": {
+     "theta0_ratios": {
+      "hip": 0.806,
+      "knee": 0.2581,
+      "ankle": 0.0849,
+      "mp": 0.0052,
+      "posture": 2.2289,
+      "shoulder": 0.422,
+      "elbow": 0.2917
+     },
+     "theta0_demands_Nm": {
+      "hip": 9.042,
+      "knee": 1.715,
+      "ankle": -0.628,
+      "mp": 0.005,
+      "posture": 25.005,
+      "shoulder": 1.784,
+      "elbow": -0.691
+     },
+     "theta_star_rad": -0.6,
+     "worst_ratio_at_theta_star": 1.0521,
+     "hind_worst_at_theta_star": 0.7264,
+     "ratios_at_theta_star": {
+      "hip": 0.2755,
+      "knee": 0.7264,
+      "ankle": 0.0838,
+      "mp": 0.0045,
+      "posture": 1.0521,
+      "shoulder": 0.159,
+      "elbow": 0.855
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 139.6
+    },
+    "0.05": {
+     "theta0_ratios": {
+      "hip": 0.6571,
+      "knee": 0.0228,
+      "ankle": 0.0809,
+      "mp": 0.0053,
+      "posture": 2.041,
+      "shoulder": 0.3765,
+      "elbow": 0.3457
+     },
+     "theta0_demands_Nm": {
+      "hip": 7.371,
+      "knee": -0.151,
+      "ankle": -0.598,
+      "mp": 0.005,
+      "posture": 22.897,
+      "shoulder": 1.592,
+      "elbow": -0.819
+     },
+     "theta_star_rad": -0.57,
+     "worst_ratio_at_theta_star": 0.9518,
+     "hind_worst_at_theta_star": 0.9432,
+     "ratios_at_theta_star": {
+      "hip": 0.3521,
+      "knee": 0.9432,
+      "ankle": 0.0872,
+      "mp": 0.0044,
+      "posture": 0.9518,
+      "shoulder": 0.1786,
+      "elbow": 0.8695
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 112.2
+    },
+    "0.1": {
+     "theta0_ratios": {
+      "hip": 0.4597,
+      "knee": 0.3448,
+      "ankle": 0.0823,
+      "mp": 0.0053,
+      "posture": 1.8159,
+      "shoulder": 0.3505,
+      "elbow": 0.9836
+     },
+     "theta0_demands_Nm": {
+      "hip": 5.158,
+      "knee": -2.29,
+      "ankle": -0.609,
+      "mp": 0.005,
+      "posture": 20.372,
+      "shoulder": 1.482,
+      "elbow": 2.329
+     },
+     "theta_star_rad": -0.44,
+     "worst_ratio_at_theta_star": 1.0378,
+     "hind_worst_at_theta_star": 1.0321,
+     "ratios_at_theta_star": {
+      "hip": 0.296,
+      "knee": 1.0321,
+      "ankle": 0.0881,
+      "mp": 0.0047,
+      "posture": 1.0378,
+      "shoulder": 0.0784,
+      "elbow": 0.6562
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 76.0
+    },
+    "0.15": {
+     "theta0_ratios": {
+      "hip": 0.2427,
+      "knee": 0.6246,
+      "ankle": 0.0854,
+      "mp": 0.0053,
+      "posture": 1.5964,
+      "shoulder": 0.3505,
+      "elbow": 0.9836
+     },
+     "theta0_demands_Nm": {
+      "hip": 2.723,
+      "knee": -4.149,
+      "ankle": -0.631,
+      "mp": 0.005,
+      "posture": 17.909,
+      "shoulder": 1.482,
+      "elbow": 2.329
+     },
+     "theta_star_rad": -0.31,
+     "worst_ratio_at_theta_star": 1.0871,
+     "hind_worst_at_theta_star": 1.087,
+     "ratios_at_theta_star": {
+      "hip": 0.2792,
+      "knee": 1.087,
+      "ankle": 0.0882,
+      "mp": 0.005,
+      "posture": 1.0871,
+      "shoulder": 0.0505,
+      "elbow": 0.7694
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 36.7
+    },
+    "0.2": {
+     "theta0_ratios": {
+      "hip": 0.0518,
+      "knee": 0.8207,
+      "ankle": 0.0874,
+      "mp": 0.0053,
+      "posture": 1.4137,
+      "shoulder": 0.3505,
+      "elbow": 0.9836
+     },
+     "theta0_demands_Nm": {
+      "hip": 0.582,
+      "knee": -5.452,
+      "ankle": -0.647,
+      "mp": 0.005,
+      "posture": 15.859,
+      "shoulder": 1.482,
+      "elbow": 2.329
+     },
+     "theta_star_rad": -0.2,
+     "worst_ratio_at_theta_star": 1.107,
+     "hind_worst_at_theta_star": 1.107,
+     "ratios_at_theta_star": {
+      "hip": 0.2824,
+      "knee": 1.107,
+      "ankle": 0.0881,
+      "mp": 0.0052,
+      "posture": 1.1024,
+      "shoulder": 0.159,
+      "elbow": 0.855
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 2.4
+    },
+    "0.25": {
+     "theta0_ratios": {
+      "hip": 0.1476,
+      "knee": 0.9858,
+      "ankle": 0.0882,
+      "mp": 0.0053,
+      "posture": 1.2879,
+      "shoulder": 0.422,
+      "elbow": 0.2917
+     },
+     "theta0_demands_Nm": {
+      "hip": -1.656,
+      "knee": -6.549,
+      "ankle": -0.652,
+      "mp": 0.005,
+      "posture": 14.447,
+      "shoulder": 1.784,
+      "elbow": -0.691
+     },
+     "theta_star_rad": -0.11,
+     "worst_ratio_at_theta_star": 1.1361,
+     "hind_worst_at_theta_star": 1.1361,
+     "ratios_at_theta_star": {
+      "hip": 0.3311,
+      "knee": 1.1361,
+      "ankle": 0.0881,
+      "mp": 0.0052,
+      "posture": 1.1257,
+      "shoulder": 0.3208,
+      "elbow": 0.4094
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -33.1
+    },
+    "0.3": {
+     "theta0_ratios": {
+      "hip": 0.126,
+      "knee": 0.3598,
+      "ankle": 0.5974,
+      "mp": 0.0053,
+      "posture": 1.5364,
+      "shoulder": 0.3505,
+      "elbow": 0.9836
+     },
+     "theta0_demands_Nm": {
+      "hip": 1.414,
+      "knee": -2.39,
+      "ankle": 4.418,
+      "mp": 0.005,
+      "posture": 17.235,
+      "shoulder": 1.482,
+      "elbow": 2.329
+     },
+     "theta_star_rad": -0.4,
+     "worst_ratio_at_theta_star": 0.8627,
+     "hind_worst_at_theta_star": 0.8627,
+     "ratios_at_theta_star": {
+      "hip": 0.5414,
+      "knee": 0.8627,
+      "ankle": 0.536,
+      "mp": 0.0048,
+      "posture": 0.8555,
+      "shoulder": 0.0388,
+      "elbow": 0.6923
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 21.0
+    },
+    "0.35": {
+     "theta0_ratios": {
+      "hip": 0.0234,
+      "knee": 0.4377,
+      "ankle": 0.5959,
+      "mp": 0.0053,
+      "posture": 1.4422,
+      "shoulder": 0.3765,
+      "elbow": 0.3457
+     },
+     "theta0_demands_Nm": {
+      "hip": -0.262,
+      "knee": -2.908,
+      "ankle": 4.407,
+      "mp": 0.005,
+      "posture": 16.179,
+      "shoulder": 1.592,
+      "elbow": -0.819
+     },
+     "theta_star_rad": -0.35,
+     "worst_ratio_at_theta_star": 0.8648,
+     "hind_worst_at_theta_star": 0.8648,
+     "ratios_at_theta_star": {
+      "hip": 0.6038,
+      "knee": 0.8648,
+      "ankle": 0.5407,
+      "mp": 0.0049,
+      "posture": 0.8644,
+      "shoulder": 0.0388,
+      "elbow": 0.6923
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -5.3
+    },
+    "0.4": {
+     "theta0_ratios": {
+      "hip": 0.2602,
+      "knee": 0.5724,
+      "ankle": 0.5882,
+      "mp": 0.0053,
+      "posture": 1.2037,
+      "shoulder": 0.3505,
+      "elbow": 0.9836
+     },
+     "theta0_demands_Nm": {
+      "hip": -2.919,
+      "knee": -3.803,
+      "ankle": 4.35,
+      "mp": 0.005,
+      "posture": 13.504,
+      "shoulder": 1.482,
+      "elbow": 2.329
+     },
+     "theta_star_rad": -0.23,
+     "worst_ratio_at_theta_star": 0.8477,
+     "hind_worst_at_theta_star": 0.845,
+     "ratios_at_theta_star": {
+      "hip": 0.638,
+      "knee": 0.845,
+      "ankle": 0.5475,
+      "mp": 0.0051,
+      "posture": 0.8477,
+      "shoulder": 0.1295,
+      "elbow": 0.8326
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -47.1
+    },
+    "0.45": {
+     "theta0_ratios": {
+      "hip": 0.4272,
+      "knee": 0.7192,
+      "ankle": 0.5602,
+      "mp": 0.0052,
+      "posture": 1.098,
+      "shoulder": 0.422,
+      "elbow": 0.2917
+     },
+     "theta0_demands_Nm": {
+      "hip": -4.792,
+      "knee": -4.778,
+      "ankle": 4.143,
+      "mp": 0.005,
+      "posture": 12.318,
+      "shoulder": 1.784,
+      "elbow": -0.691
+     },
+     "theta_star_rad": -0.14,
+     "worst_ratio_at_theta_star": 0.8938,
+     "hind_worst_at_theta_star": 0.8844,
+     "ratios_at_theta_star": {
+      "hip": 0.6567,
+      "knee": 0.8844,
+      "ankle": 0.5253,
+      "mp": 0.0051,
+      "posture": 0.8938,
+      "shoulder": 0.2925,
+      "elbow": 0.4407
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -77.0
+    },
+    "0.5": {
+     "theta0_ratios": {
+      "hip": 0.5653,
+      "knee": 0.841,
+      "ankle": 0.5194,
+      "mp": 0.0052,
+      "posture": 0.9391,
+      "shoulder": 0.3964,
+      "elbow": 1.0098
+     },
+     "theta0_demands_Nm": {
+      "hip": -6.342,
+      "knee": -5.587,
+      "ankle": 3.842,
+      "mp": 0.005,
+      "posture": 10.535,
+      "shoulder": 1.676,
+      "elbow": 2.391
+     },
+     "theta_star_rad": -0.1,
+     "worst_ratio_at_theta_star": 0.9585,
+     "hind_worst_at_theta_star": 0.9585,
+     "ratios_at_theta_star": {
+      "hip": 0.7285,
+      "knee": 0.9585,
+      "ankle": 0.4872,
+      "mp": 0.0051,
+      "posture": 0.7958,
+      "shoulder": 0.3036,
+      "elbow": 0.955
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -101.7
+    },
+    "0.55": {
+     "theta0_ratios": {
+      "hip": 0.6856,
+      "knee": 0.9839,
+      "ankle": 0.4294,
+      "mp": 0.0051,
+      "posture": 0.7995,
+      "shoulder": 0.3765,
+      "elbow": 0.3457
+     },
+     "theta0_demands_Nm": {
+      "hip": -7.691,
+      "knee": -6.536,
+      "ankle": 3.176,
+      "mp": 0.005,
+      "posture": 8.969,
+      "shoulder": 1.592,
+      "elbow": -0.819
+     },
+     "theta_star_rad": 0.07,
+     "worst_ratio_at_theta_star": 0.8972,
+     "hind_worst_at_theta_star": 0.892,
+     "ratios_at_theta_star": {
+      "hip": 0.5653,
+      "knee": 0.892,
+      "ankle": 0.4575,
+      "mp": 0.0052,
+      "posture": 0.8972,
+      "shoulder": 0.4398,
+      "elbow": 0.2699
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -123.7
+    },
+    "0.6": {
+     "theta0_ratios": {
+      "hip": 0.8684,
+      "knee": 1.1759,
+      "ankle": 0.2912,
+      "mp": 0.0045,
+      "posture": 0.519,
+      "shoulder": 0.256,
+      "elbow": 0.9239
+     },
+     "theta0_demands_Nm": {
+      "hip": -9.742,
+      "knee": -7.812,
+      "ankle": 2.154,
+      "mp": 0.004,
+      "posture": 5.822,
+      "shoulder": 1.083,
+      "elbow": 2.188
+     },
+     "theta_star_rad": 0.13,
+     "worst_ratio_at_theta_star": 0.9996,
+     "hind_worst_at_theta_star": 0.9942,
+     "ratios_at_theta_star": {
+      "hip": 0.6391,
+      "knee": 0.9942,
+      "ankle": 0.3566,
+      "mp": 0.0048,
+      "posture": 0.7056,
+      "shoulder": 0.3782,
+      "elbow": 0.9996
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -156.8
+    },
+    "0.65": {
+     "theta0_ratios": {
+      "hip": 0.9603,
+      "knee": 1.3201,
+      "ankle": 0.2119,
+      "mp": 0.0023,
+      "posture": 0.523,
+      "shoulder": 0.3964,
+      "elbow": 1.0098
+     },
+     "theta0_demands_Nm": {
+      "hip": -10.772,
+      "knee": -8.769,
+      "ankle": 1.567,
+      "mp": 0.002,
+      "posture": 5.867,
+      "shoulder": 1.676,
+      "elbow": 2.391
+     },
+     "theta_star_rad": 0.18,
+     "worst_ratio_at_theta_star": 1.0828,
+     "hind_worst_at_theta_star": 1.0766,
+     "ratios_at_theta_star": {
+      "hip": 0.6473,
+      "knee": 1.0766,
+      "ankle": 0.3087,
+      "mp": 0.0031,
+      "posture": 0.7632,
+      "shoulder": 0.5529,
+      "elbow": 1.0828
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -173.8
+    }
+   },
+   "hind_worst_theta0_ss": 0.9858,
+   "hind_worst_thetastar_ss": 1.1361,
+   "worst_all_thetastar_ss": 1.1361
+  },
+  "0.55": {
+   "nodes": {
+    "0.0": {
+     "theta0_ratios": {
+      "hip": 0.6222,
+      "knee": 0.1986,
+      "ankle": 0.0618,
+      "mp": 0.0052,
+      "posture": 2.5016,
+      "shoulder": 0.5579,
+      "elbow": 0.3983
+     },
+     "theta0_demands_Nm": {
+      "hip": 6.98,
+      "knee": 1.319,
+      "ankle": -0.457,
+      "mp": 0.005,
+      "posture": 28.063,
+      "shoulder": 2.359,
+      "elbow": -0.943
+     },
+     "theta_star_rad": -0.6,
+     "worst_ratio_at_theta_star": 1.2644,
+     "hind_worst_at_theta_star": 0.5481,
+     "ratios_at_theta_star": {
+      "hip": 0.2051,
+      "knee": 0.5481,
+      "ankle": 0.0611,
+      "mp": 0.0045,
+      "posture": 1.2644,
+      "shoulder": 0.227,
+      "elbow": 1.1674
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 139.6
+    },
+    "0.05": {
+     "theta0_ratios": {
+      "hip": 0.5095,
+      "knee": 0.0146,
+      "ankle": 0.0589,
+      "mp": 0.0053,
+      "posture": 2.3377,
+      "shoulder": 0.4964,
+      "elbow": 0.4721
+     },
+     "theta0_demands_Nm": {
+      "hip": 5.715,
+      "knee": -0.097,
+      "ankle": -0.436,
+      "mp": 0.005,
+      "posture": 26.225,
+      "shoulder": 2.099,
+      "elbow": -1.118
+     },
+     "theta_star_rad": -0.57,
+     "worst_ratio_at_theta_star": 1.1885,
+     "hind_worst_at_theta_star": 0.7124,
+     "ratios_at_theta_star": {
+      "hip": 0.2624,
+      "knee": 0.7124,
+      "ankle": 0.0636,
+      "mp": 0.0044,
+      "posture": 1.1885,
+      "shoulder": 0.2534,
+      "elbow": 1.1872
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 112.2
+    },
+    "0.1": {
+     "theta0_ratios": {
+      "hip": 0.3597,
+      "knee": 0.2587,
+      "ankle": 0.0599,
+      "mp": 0.0053,
+      "posture": 2.1711,
+      "shoulder": 0.4847,
+      "elbow": 1.343
+     },
+     "theta0_demands_Nm": {
+      "hip": 4.035,
+      "knee": -1.719,
+      "ankle": -0.443,
+      "mp": 0.005,
+      "posture": 24.356,
+      "shoulder": 2.05,
+      "elbow": 3.181
+     },
+     "theta_star_rad": -0.6,
+     "worst_ratio_at_theta_star": 0.9775,
+     "hind_worst_at_theta_star": 0.9369,
+     "ratios_at_theta_star": {
+      "hip": 0.4239,
+      "knee": 0.9369,
+      "ankle": 0.0627,
+      "mp": 0.0042,
+      "posture": 0.9775,
+      "shoulder": 0.3049,
+      "elbow": 0.6855
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 76.0
+    },
+    "0.15": {
+     "theta0_ratios": {
+      "hip": 0.1944,
+      "knee": 0.4708,
+      "ankle": 0.0622,
+      "mp": 0.0053,
+      "posture": 2.0033,
+      "shoulder": 0.4847,
+      "elbow": 1.343
+     },
+     "theta0_demands_Nm": {
+      "hip": 2.181,
+      "knee": -3.128,
+      "ankle": -0.46,
+      "mp": 0.005,
+      "posture": 22.474,
+      "shoulder": 2.05,
+      "elbow": 3.181
+     },
+     "theta_star_rad": -0.52,
+     "worst_ratio_at_theta_star": 1.022,
+     "hind_worst_at_theta_star": 1.0162,
+     "ratios_at_theta_star": {
+      "hip": 0.4665,
+      "knee": 1.0162,
+      "ankle": 0.0622,
+      "mp": 0.0045,
+      "posture": 1.022,
+      "shoulder": 0.1997,
+      "elbow": 0.7933
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 36.7
+    },
+    "0.2": {
+     "theta0_ratios": {
+      "hip": 0.0487,
+      "knee": 0.6195,
+      "ankle": 0.0637,
+      "mp": 0.0053,
+      "posture": 1.8657,
+      "shoulder": 0.4847,
+      "elbow": 1.343
+     },
+     "theta0_demands_Nm": {
+      "hip": 0.546,
+      "knee": -4.115,
+      "ankle": -0.471,
+      "mp": 0.005,
+      "posture": 20.93,
+      "shoulder": 2.05,
+      "elbow": 3.181
+     },
+     "theta_star_rad": -0.45,
+     "worst_ratio_at_theta_star": 1.0602,
+     "hind_worst_at_theta_star": 1.0602,
+     "ratios_at_theta_star": {
+      "hip": 0.5141,
+      "knee": 1.0602,
+      "ankle": 0.0612,
+      "mp": 0.0048,
+      "posture": 1.0506,
+      "shoulder": 0.1066,
+      "elbow": 0.8835
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 2.4
+    },
+    "0.25": {
+     "theta0_ratios": {
+      "hip": 0.104,
+      "knee": 0.7447,
+      "ankle": 0.0643,
+      "mp": 0.0053,
+      "posture": 1.7879,
+      "shoulder": 0.5579,
+      "elbow": 0.3983
+     },
+     "theta0_demands_Nm": {
+      "hip": -1.167,
+      "knee": -4.947,
+      "ankle": -0.475,
+      "mp": 0.005,
+      "posture": 20.057,
+      "shoulder": 2.359,
+      "elbow": -0.943
+     },
+     "theta_star_rad": -0.4,
+     "worst_ratio_at_theta_star": 1.1064,
+     "hind_worst_at_theta_star": 1.1064,
+     "ratios_at_theta_star": {
+      "hip": 0.5965,
+      "knee": 1.1064,
+      "ankle": 0.0603,
+      "mp": 0.0049,
+      "posture": 1.0906,
+      "shoulder": 0.0397,
+      "elbow": 0.9453
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -33.1
+    },
+    "0.3": {
+     "theta0_ratios": {
+      "hip": 0.0983,
+      "knee": 0.2763,
+      "ankle": 0.4499,
+      "mp": 0.0053,
+      "posture": 1.9639,
+      "shoulder": 0.4847,
+      "elbow": 1.343
+     },
+     "theta0_demands_Nm": {
+      "hip": 1.103,
+      "knee": -1.836,
+      "ankle": 3.328,
+      "mp": 0.005,
+      "posture": 22.031,
+      "shoulder": 2.05,
+      "elbow": 3.181
+     },
+     "theta_star_rad": -0.6,
+     "worst_ratio_at_theta_star": 0.8122,
+     "hind_worst_at_theta_star": 0.8122,
+     "ratios_at_theta_star": {
+      "hip": 0.6488,
+      "knee": 0.8122,
+      "ankle": 0.3558,
+      "mp": 0.0043,
+      "posture": 0.7976,
+      "shoulder": 0.3049,
+      "elbow": 0.6855
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 21.0
+    },
+    "0.35": {
+     "theta0_ratios": {
+      "hip": 0.0164,
+      "knee": 0.3354,
+      "ankle": 0.4488,
+      "mp": 0.0053,
+      "posture": 1.8935,
+      "shoulder": 0.4964,
+      "elbow": 0.4721
+     },
+     "theta0_demands_Nm": {
+      "hip": -0.184,
+      "knee": -2.228,
+      "ankle": 3.32,
+      "mp": 0.005,
+      "posture": 21.241,
+      "shoulder": 2.099,
+      "elbow": -1.118
+     },
+     "theta_star_rad": -0.46,
+     "worst_ratio_at_theta_star": 1.0727,
+     "hind_worst_at_theta_star": 0.7458,
+     "ratios_at_theta_star": {
+      "hip": 0.5917,
+      "knee": 0.7458,
+      "ankle": 0.3836,
+      "mp": 0.0047,
+      "posture": 1.0514,
+      "shoulder": 0.1075,
+      "elbow": 1.0727
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -5.3
+    },
+    "0.4": {
+     "theta0_ratios": {
+      "hip": 0.1982,
+      "knee": 0.4375,
+      "ankle": 0.443,
+      "mp": 0.0053,
+      "posture": 1.7209,
+      "shoulder": 0.4847,
+      "elbow": 1.343
+     },
+     "theta0_demands_Nm": {
+      "hip": -2.224,
+      "knee": -2.906,
+      "ankle": 3.276,
+      "mp": 0.005,
+      "posture": 19.305,
+      "shoulder": 2.05,
+      "elbow": 3.181
+     },
+     "theta_star_rad": -0.49,
+     "worst_ratio_at_theta_star": 0.8386,
+     "hind_worst_at_theta_star": 0.8361,
+     "ratios_at_theta_star": {
+      "hip": 0.7832,
+      "knee": 0.8361,
+      "ankle": 0.3517,
+      "mp": 0.0045,
+      "posture": 0.8386,
+      "shoulder": 0.1599,
+      "elbow": 0.8324
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -47.1
+    },
+    "0.45": {
+     "theta0_ratios": {
+      "hip": 0.3259,
+      "knee": 0.5487,
+      "ankle": 0.4219,
+      "mp": 0.0052,
+      "posture": 1.6558,
+      "shoulder": 0.5579,
+      "elbow": 0.3983
+     },
+     "theta0_demands_Nm": {
+      "hip": -3.656,
+      "knee": -3.645,
+      "ankle": 3.12,
+      "mp": 0.005,
+      "posture": 18.575,
+      "shoulder": 2.359,
+      "elbow": -0.943
+     },
+     "theta_star_rad": -0.41,
+     "worst_ratio_at_theta_star": 0.9574,
+     "hind_worst_at_theta_star": 0.8758,
+     "ratios_at_theta_star": {
+      "hip": 0.8101,
+      "knee": 0.8758,
+      "ankle": 0.3237,
+      "mp": 0.0046,
+      "posture": 0.9563,
+      "shoulder": 0.0263,
+      "elbow": 0.9574
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -77.0
+    },
+    "0.5": {
+     "theta0_ratios": {
+      "hip": 0.4315,
+      "knee": 0.6408,
+      "ankle": 0.3912,
+      "mp": 0.0052,
+      "posture": 1.54,
+      "shoulder": 0.5465,
+      "elbow": 1.3788
+     },
+     "theta0_demands_Nm": {
+      "hip": -4.84,
+      "knee": -4.257,
+      "ankle": 2.894,
+      "mp": 0.005,
+      "posture": 17.276,
+      "shoulder": 2.311,
+      "elbow": 3.265
+     },
+     "theta_star_rad": -0.43,
+     "worst_ratio_at_theta_star": 0.9694,
+     "hind_worst_at_theta_star": 0.967,
+     "ratios_at_theta_star": {
+      "hip": 0.923,
+      "knee": 0.967,
+      "ankle": 0.2624,
+      "mp": 0.0044,
+      "posture": 0.8123,
+      "shoulder": 0.013,
+      "elbow": 0.9694
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -101.7
+    },
+    "0.55": {
+     "theta0_ratios": {
+      "hip": 0.5229,
+      "knee": 0.7486,
+      "ankle": 0.3234,
+      "mp": 0.0051,
+      "posture": 1.4065,
+      "shoulder": 0.4964,
+      "elbow": 0.4721
+     },
+     "theta0_demands_Nm": {
+      "hip": -5.866,
+      "knee": -4.973,
+      "ankle": 2.392,
+      "mp": 0.005,
+      "posture": 15.779,
+      "shoulder": 2.099,
+      "elbow": -1.118
+     },
+     "theta_star_rad": -0.27,
+     "worst_ratio_at_theta_star": 0.9797,
+     "hind_worst_at_theta_star": 0.9797,
+     "ratios_at_theta_star": {
+      "hip": 0.8501,
+      "knee": 0.9797,
+      "ankle": 0.228,
+      "mp": 0.0046,
+      "posture": 0.9692,
+      "shoulder": 0.1466,
+      "elbow": 0.8453
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -123.7
+    },
+    "0.6": {
+     "theta0_ratios": {
+      "hip": 0.662,
+      "knee": 0.8934,
+      "ankle": 0.2194,
+      "mp": 0.0045,
+      "posture": 1.156,
+      "shoulder": 0.3577,
+      "elbow": 1.2615
+     },
+     "theta0_demands_Nm": {
+      "hip": -7.426,
+      "knee": -5.935,
+      "ankle": 1.623,
+      "mp": 0.004,
+      "posture": 12.968,
+      "shoulder": 1.512,
+      "elbow": 2.988
+     },
+     "theta_star_rad": -0.19,
+     "worst_ratio_at_theta_star": 1.0727,
+     "hind_worst_at_theta_star": 1.0666,
+     "ratios_at_theta_star": {
+      "hip": 0.8975,
+      "knee": 1.0666,
+      "ankle": 0.1411,
+      "mp": 0.0039,
+      "posture": 0.8526,
+      "shoulder": 0.1075,
+      "elbow": 1.0727
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -156.8
+    },
+    "0.65": {
+     "theta0_ratios": {
+      "hip": 0.7315,
+      "knee": 1.0023,
+      "ankle": 0.1596,
+      "mp": 0.0023,
+      "posture": 1.2189,
+      "shoulder": 0.5465,
+      "elbow": 1.3788
+     },
+     "theta0_demands_Nm": {
+      "hip": -8.206,
+      "knee": -6.659,
+      "ankle": 1.18,
+      "mp": 0.002,
+      "posture": 13.674,
+      "shoulder": 2.311,
+      "elbow": 3.265
+     },
+     "theta_star_rad": -0.23,
+     "worst_ratio_at_theta_star": 1.1898,
+     "hind_worst_at_theta_star": 1.1898,
+     "ratios_at_theta_star": {
+      "hip": 1.002,
+      "knee": 1.1898,
+      "ankle": 0.0593,
+      "mp": 0.0012,
+      "posture": 0.8654,
+      "shoulder": 0.2534,
+      "elbow": 1.1872
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -173.8
+    }
+   },
+   "hind_worst_theta0_ss": 0.7447,
+   "hind_worst_thetastar_ss": 1.1064,
+   "worst_all_thetastar_ss": 1.1064
+  },
+  "0.6944": {
+   "nodes": {
+    "0.0": {
+     "theta0_ratios": {
+      "hip": 0.4453,
+      "knee": 0.1413,
+      "ankle": 0.0396,
+      "mp": 0.0052,
+      "posture": 2.7641,
+      "shoulder": 0.6889,
+      "elbow": 0.5009
+     },
+     "theta0_demands_Nm": {
+      "hip": 4.995,
+      "knee": 0.938,
+      "ankle": -0.293,
+      "mp": 0.005,
+      "posture": 31.008,
+      "shoulder": 2.913,
+      "elbow": -1.186
+     },
+     "theta_star_rad": -0.6,
+     "worst_ratio_at_theta_star": 1.4688,
+     "hind_worst_at_theta_star": 0.3765,
+     "ratios_at_theta_star": {
+      "hip": 0.1373,
+      "knee": 0.3765,
+      "ankle": 0.0392,
+      "mp": 0.0045,
+      "posture": 1.4688,
+      "shoulder": 0.2925,
+      "elbow": 1.4682
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 139.6
+    },
+    "0.05": {
+     "theta0_ratios": {
+      "hip": 0.3673,
+      "knee": 0.0067,
+      "ankle": 0.0378,
+      "mp": 0.0053,
+      "posture": 2.6233,
+      "shoulder": 0.6118,
+      "elbow": 0.5937
+     },
+     "theta0_demands_Nm": {
+      "hip": 4.121,
+      "knee": -0.044,
+      "ankle": -0.279,
+      "mp": 0.005,
+      "posture": 29.429,
+      "shoulder": 2.587,
+      "elbow": -1.406
+     },
+     "theta_star_rad": -0.55,
+     "worst_ratio_at_theta_star": 1.4692,
+     "hind_worst_at_theta_star": 0.4751,
+     "ratios_at_theta_star": {
+      "hip": 0.1569,
+      "knee": 0.4751,
+      "ankle": 0.0409,
+      "mp": 0.0044,
+      "posture": 1.4692,
+      "shoulder": 0.2925,
+      "elbow": 1.4682
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 112.2
+    },
+    "0.1": {
+     "theta0_ratios": {
+      "hip": 0.2634,
+      "knee": 0.1759,
+      "ankle": 0.0384,
+      "mp": 0.0053,
+      "posture": 2.513,
+      "shoulder": 0.614,
+      "elbow": 1.689
+     },
+     "theta0_demands_Nm": {
+      "hip": 2.955,
+      "knee": -1.168,
+      "ankle": -0.284,
+      "mp": 0.005,
+      "posture": 28.191,
+      "shoulder": 2.596,
+      "elbow": 4.0
+     },
+     "theta_star_rad": -0.6,
+     "worst_ratio_at_theta_star": 1.248,
+     "hind_worst_at_theta_star": 0.646,
+     "ratios_at_theta_star": {
+      "hip": 0.2887,
+      "knee": 0.646,
+      "ankle": 0.0403,
+      "mp": 0.0042,
+      "posture": 1.248,
+      "shoulder": 0.3722,
+      "elbow": 0.862
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 76.0
+    },
+    "0.15": {
+     "theta0_ratios": {
+      "hip": 0.148,
+      "knee": 0.3228,
+      "ankle": 0.0399,
+      "mp": 0.0053,
+      "posture": 2.3951,
+      "shoulder": 0.614,
+      "elbow": 1.689
+     },
+     "theta0_demands_Nm": {
+      "hip": 1.66,
+      "knee": -2.144,
+      "ankle": -0.295,
+      "mp": 0.005,
+      "posture": 26.868,
+      "shoulder": 2.596,
+      "elbow": 4.0
+     },
+     "theta_star_rad": -0.6,
+     "worst_ratio_at_theta_star": 1.1506,
+     "hind_worst_at_theta_star": 0.7446,
+     "ratios_at_theta_star": {
+      "hip": 0.3853,
+      "knee": 0.7446,
+      "ankle": 0.0389,
+      "mp": 0.0043,
+      "posture": 1.1506,
+      "shoulder": 0.3722,
+      "elbow": 0.862
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 36.7
+    },
+    "0.2": {
+     "theta0_ratios": {
+      "hip": 0.0456,
+      "knee": 0.4258,
+      "ankle": 0.0409,
+      "mp": 0.0053,
+      "posture": 2.3008,
+      "shoulder": 0.614,
+      "elbow": 1.689
+     },
+     "theta0_demands_Nm": {
+      "hip": 0.512,
+      "knee": -2.829,
+      "ankle": -0.302,
+      "mp": 0.005,
+      "posture": 25.811,
+      "shoulder": 2.596,
+      "elbow": 4.0
+     },
+     "theta_star_rad": -0.6,
+     "worst_ratio_at_theta_star": 1.07,
+     "hind_worst_at_theta_star": 0.8033,
+     "ratios_at_theta_star": {
+      "hip": 0.4722,
+      "knee": 0.8033,
+      "ankle": 0.037,
+      "mp": 0.0044,
+      "posture": 1.07,
+      "shoulder": 0.3722,
+      "elbow": 0.862
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 2.4
+    },
+    "0.25": {
+     "theta0_ratios": {
+      "hip": 0.062,
+      "knee": 0.5126,
+      "ankle": 0.0412,
+      "mp": 0.0053,
+      "posture": 2.2693,
+      "shoulder": 0.6889,
+      "elbow": 0.5009
+     },
+     "theta0_demands_Nm": {
+      "hip": -0.696,
+      "knee": -3.405,
+      "ankle": -0.305,
+      "mp": 0.005,
+      "posture": 25.457,
+      "shoulder": 2.913,
+      "elbow": -1.186
+     },
+     "theta_star_rad": -0.49,
+     "worst_ratio_at_theta_star": 1.3211,
+     "hind_worst_at_theta_star": 0.8045,
+     "ratios_at_theta_star": {
+      "hip": 0.4813,
+      "knee": 0.8045,
+      "ankle": 0.0372,
+      "mp": 0.0047,
+      "posture": 1.3202,
+      "shoulder": 0.1099,
+      "elbow": 1.3211
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -33.1
+    },
+    "0.3": {
+     "theta0_ratios": {
+      "hip": 0.0717,
+      "knee": 0.196,
+      "ankle": 0.308,
+      "mp": 0.0053,
+      "posture": 2.3754,
+      "shoulder": 0.614,
+      "elbow": 1.689
+     },
+     "theta0_demands_Nm": {
+      "hip": 0.804,
+      "knee": -1.302,
+      "ankle": 2.278,
+      "mp": 0.005,
+      "posture": 26.648,
+      "shoulder": 2.596,
+      "elbow": 4.0
+     },
+     "theta_star_rad": -0.6,
+     "worst_ratio_at_theta_star": 1.1259,
+     "hind_worst_at_theta_star": 0.5665,
+     "ratios_at_theta_star": {
+      "hip": 0.4558,
+      "knee": 0.5665,
+      "ankle": 0.2436,
+      "mp": 0.0043,
+      "posture": 1.1259,
+      "shoulder": 0.3722,
+      "elbow": 0.862
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": 21.0
+    },
+    "0.35": {
+     "theta0_ratios": {
+      "hip": 0.0097,
+      "knee": 0.2369,
+      "ankle": 0.3072,
+      "mp": 0.0053,
+      "posture": 2.3279,
+      "shoulder": 0.6118,
+      "elbow": 0.5937
+     },
+     "theta0_demands_Nm": {
+      "hip": -0.109,
+      "knee": -1.574,
+      "ankle": 2.272,
+      "mp": 0.005,
+      "posture": 26.114,
+      "shoulder": 2.587,
+      "elbow": -1.406
+     },
+     "theta_star_rad": -0.48,
+     "worst_ratio_at_theta_star": 1.3832,
+     "hind_worst_at_theta_star": 0.531,
+     "ratios_at_theta_star": {
+      "hip": 0.4322,
+      "knee": 0.531,
+      "ankle": 0.2593,
+      "mp": 0.0046,
+      "posture": 1.3832,
+      "shoulder": 0.1766,
+      "elbow": 1.3765
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -5.3
+    },
+    "0.4": {
+     "theta0_ratios": {
+      "hip": 0.1386,
+      "knee": 0.3076,
+      "ankle": 0.3032,
+      "mp": 0.0053,
+      "posture": 2.2187,
+      "shoulder": 0.614,
+      "elbow": 1.689
+     },
+     "theta0_demands_Nm": {
+      "hip": -1.554,
+      "knee": -2.044,
+      "ankle": 2.243,
+      "mp": 0.005,
+      "posture": 24.89,
+      "shoulder": 2.596,
+      "elbow": 4.0
+     },
+     "theta_star_rad": -0.6,
+     "worst_ratio_at_theta_star": 1.0039,
+     "hind_worst_at_theta_star": 0.6297,
+     "ratios_at_theta_star": {
+      "hip": 0.6297,
+      "knee": 0.6278,
+      "ankle": 0.2181,
+      "mp": 0.0042,
+      "posture": 1.0039,
+      "shoulder": 0.3722,
+      "elbow": 0.862
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -47.1
+    },
+    "0.45": {
+     "theta0_ratios": {
+      "hip": 0.2284,
+      "knee": 0.3845,
+      "ankle": 0.2888,
+      "mp": 0.0052,
+      "posture": 2.1927,
+      "shoulder": 0.6889,
+      "elbow": 0.5009
+     },
+     "theta0_demands_Nm": {
+      "hip": -2.562,
+      "knee": -2.554,
+      "ankle": 2.136,
+      "mp": 0.005,
+      "posture": 24.598,
+      "shoulder": 2.913,
+      "elbow": -1.186
+     },
+     "theta_star_rad": -0.47,
+     "worst_ratio_at_theta_star": 1.3057,
+     "hind_worst_at_theta_star": 0.6356,
+     "ratios_at_theta_star": {
+      "hip": 0.6136,
+      "knee": 0.6356,
+      "ankle": 0.2083,
+      "mp": 0.0045,
+      "posture": 1.3057,
+      "shoulder": 0.0765,
+      "elbow": 1.2926
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -77.0
+    },
+    "0.5": {
+     "theta0_ratios": {
+      "hip": 0.3026,
+      "knee": 0.4481,
+      "ankle": 0.2678,
+      "mp": 0.0052,
+      "posture": 2.1186,
+      "shoulder": 0.691,
+      "elbow": 1.734
+     },
+     "theta0_demands_Nm": {
+      "hip": -3.394,
+      "knee": -2.976,
+      "ankle": 1.981,
+      "mp": 0.005,
+      "posture": 23.767,
+      "shoulder": 2.922,
+      "elbow": 4.106
+     },
+     "theta_star_rad": -0.6,
+     "worst_ratio_at_theta_star": 0.9475,
+     "hind_worst_at_theta_star": 0.757,
+     "ratios_at_theta_star": {
+      "hip": 0.757,
+      "knee": 0.7296,
+      "ankle": 0.1346,
+      "mp": 0.0039,
+      "posture": 0.9409,
+      "shoulder": 0.2902,
+      "elbow": 0.9475
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -101.7
+    },
+    "0.55": {
+     "theta0_ratios": {
+      "hip": 0.3662,
+      "knee": 0.5221,
+      "ankle": 0.2214,
+      "mp": 0.0051,
+      "posture": 1.9909,
+      "shoulder": 0.6118,
+      "elbow": 0.5937
+     },
+     "theta0_demands_Nm": {
+      "hip": -4.108,
+      "knee": -3.468,
+      "ankle": 1.638,
+      "mp": 0.005,
+      "posture": 22.334,
+      "shoulder": 2.587,
+      "elbow": -1.406
+     },
+     "theta_star_rad": -0.4,
+     "worst_ratio_at_theta_star": 1.2636,
+     "hind_worst_at_theta_star": 0.741,
+     "ratios_at_theta_star": {
+      "hip": 0.6935,
+      "knee": 0.741,
+      "ankle": 0.1204,
+      "mp": 0.0043,
+      "posture": 1.2611,
+      "shoulder": 0.043,
+      "elbow": 1.2636
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -123.7
+    },
+    "0.6": {
+     "theta0_ratios": {
+      "hip": 0.4633,
+      "knee": 0.6214,
+      "ankle": 0.1503,
+      "mp": 0.0045,
+      "posture": 1.7692,
+      "shoulder": 0.4555,
+      "elbow": 1.5865
+     },
+     "theta0_demands_Nm": {
+      "hip": -5.197,
+      "knee": -4.128,
+      "ankle": 1.111,
+      "mp": 0.004,
+      "posture": 19.847,
+      "shoulder": 1.926,
+      "elbow": 3.757
+     },
+     "theta_star_rad": -0.5,
+     "worst_ratio_at_theta_star": 0.8765,
+     "hind_worst_at_theta_star": 0.8765,
+     "ratios_at_theta_star": {
+      "hip": 0.8489,
+      "knee": 0.8765,
+      "ankle": 0.0027,
+      "mp": 0.0027,
+      "posture": 0.8246,
+      "shoulder": 0.3722,
+      "elbow": 0.862
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -156.8
+    },
+    "0.65": {
+     "theta0_ratios": {
+      "hip": 0.5113,
+      "knee": 0.6964,
+      "ankle": 0.1093,
+      "mp": 0.0023,
+      "posture": 1.8888,
+      "shoulder": 0.691,
+      "elbow": 1.734
+     },
+     "theta0_demands_Nm": {
+      "hip": -5.735,
+      "knee": -4.626,
+      "ankle": 0.808,
+      "mp": 0.002,
+      "posture": 21.188,
+      "shoulder": 2.922,
+      "elbow": 4.106
+     },
+     "theta_star_rad": -0.6,
+     "worst_ratio_at_theta_star": 0.9475,
+     "hind_worst_at_theta_star": 0.9396,
+     "ratios_at_theta_star": {
+      "hip": 0.9276,
+      "knee": 0.9396,
+      "ankle": 0.0727,
+      "mp": 0.0007,
+      "posture": 0.7515,
+      "shoulder": 0.2902,
+      "elbow": 0.9475
+     },
+     "base_residuals": [
+      0.0,
+      -196.8783054
+     ],
+     "cp_hind_x_mm": -173.8
+    }
+   },
+   "hind_worst_theta0_ss": 0.5126,
+   "hind_worst_thetastar_ss": 0.8045,
+   "worst_all_thetastar_ss": 1.3832
+  }
+ },
+ "affinity_residual_Nm": 1.7763568394002505e-15,
+ "monotone_relief": {
+  "theta0": true,
+  "theta_star": false,
+  "signed_demands_over_s": {
+   "hip": [
+    -10.347,
+    -7.844,
+    -6.342,
+    -4.84,
+    -3.394
+   ],
+   "knee": [
+    -10.82,
+    -8.15,
+    -6.549,
+    -4.947,
+    -3.405
+   ],
+   "ankle": [
+    7.327,
+    5.509,
+    4.418,
+    3.328,
+    2.278
+   ],
+   "mp": [
+    0.005,
+    0.005,
+    0.005,
+    0.005,
+    0.005
+   ]
+  }
+ },
+ "prediction_check": {
+  "0.4": {
+   "hind_worst_theta0": 0.9858,
+   "hind_worst_thetastar": 1.1361,
+   "below_0p6": false
+  },
+  "0.55": {
+   "hind_worst_theta0": 0.7447,
+   "hind_worst_thetastar": 1.1064,
+   "below_0p6": false
+  }
+ },
+ "fore_rows_at_theta_star": {
+  "0.0": {
+   "shoulder_ratio": 0.0721,
+   "elbow_ratio_scaled_cap": 0.0289,
+   "elbow_ratio_doc_cap": 0.0162
+  },
+  "0.25": {
+   "shoulder_ratio": 0.3654,
+   "elbow_ratio_scaled_cap": 0.6928,
+   "elbow_ratio_doc_cap": 0.4037
+  },
+  "0.4": {
+   "shoulder_ratio": 0.3208,
+   "elbow_ratio_scaled_cap": 0.955,
+   "elbow_ratio_doc_cap": 0.6359
+  },
+  "0.55": {
+   "shoulder_ratio": 0.3049,
+   "elbow_ratio_scaled_cap": 1.0727,
+   "elbow_ratio_doc_cap": 0.8684
+  },
+  "0.6944": {
+   "shoulder_ratio": 0.3722,
+   "elbow_ratio_scaled_cap": 1.3765,
+   "elbow_ratio_doc_cap": 1.092
+  }
+ }
+}

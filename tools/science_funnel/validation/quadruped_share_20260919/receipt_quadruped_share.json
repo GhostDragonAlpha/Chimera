@@ -1,0 +1,75 @@
+{
+ "lane": "buffy/quadruped-share-20260919",
+ "date": "2026-09-19",
+ "agent": "Buffy trailer",
+ "base": "fdc74523 (codex/force-data-runtime-20260916; MP-Jacobian-corrected statics)",
+ "deliverable": "Pure-Python quadruped fore-share statics derivation; no engine files changed",
+ "rule_0": {
+  "statement": "With a forelimb pair sharing load at fore share s, hindlimb demand/cap ratios should fall below the bipedal worst by at least s.",
+  "prediction": "At macaque fore share s=0.4-0.55, hindlimb worst ratio should be below 0.6.",
+  "falsifiers": [
+   "Relief must be monotone in s; non-monotone points falsify the load-share model.",
+   "Forelimb own demands must remain within caps scaled by segment size; otherwise the forelimbs trade one infeasibility for another."
+  ]
+ },
+ "method": {
+  "source": "derive_stance_hold.py statics machinery, extended to NQ=15 planar coordinates: base x/y/rotation, two 4-DOF hind chains, and two 2-DOF fore chains",
+  "contacts": "hind contact carries (1-s)W; each fore paw carries sW/2; vertical reactions; base translation rows are unactuated",
+  "correction": "A contact point gets columns only for joints proximal to the body point: hind MP column is zero for the foot-body contact, and fore contacts use shoulder/elbow columns only",
+  "shares": [0.0, 0.25, 0.4, 0.55],
+  "additional_reference_share": 0.6944,
+  "pose": "theta=0 fixed-pose track plus theta* minimax track over -0.60..+0.60 rad; the theta* track is diagnostic, not silently substituted for the fixed-pose falsifier",
+  "fore_mount": "(0.2689,-0.1331) m hip-to-shoulder closure from the assembly derivation; paw target directly below shoulder at hind-contact height, l=0 tenability-optimal",
+  "fore_data_gap": "The assembly document gives total effective arm mass 0.406001 kg/side and humerus/forearm lengths 0.125/0.132 m, but no per-segment Table-1 masses. Per-segment masses therefore transfer the admitted hind Table-1 thigh:shank mass proportion 0.557:0.269 to the fore humerus:forearm pair; documented fore lengths are retained, with rod inertias and hind COM fractions declared."
+ },
+ "results": {
+  "replication_anchor_full_HAT_biped_theta_star_worst": 0.9661,
+  "banked_trunk_vault_anchor": 0.8809,
+  "biped_carved_HAT_baseline_theta_star_worst": 0.8885,
+  "fixed_pose_hind_worst_single_support": {
+   "0.0": 1.6288,
+   "0.25": 1.2269,
+   "0.4": 0.9858,
+   "0.55": 0.7447
+  },
+  "theta_star_hind_worst_single_support": {
+   "0.0": 0.9661,
+   "0.25": 0.9839,
+   "0.4": 1.1361,
+   "0.55": 1.1064
+  },
+  "theta_star_all_joint_worst_single_support": {
+   "0.0": 0.9661,
+   "0.25": 0.9839,
+   "0.4": 1.1361,
+   "0.55": 1.1064
+  },
+  "affinity_residual_Nm": 1.776e-15,
+  "fore_rows_at_theta_star": {
+   "0.0": {"shoulder_ratio": 0.0721, "elbow_ratio_scaled_cap": 0.0289, "elbow_ratio_doc_cap": 0.0162},
+   "0.25": {"shoulder_ratio": 0.3654, "elbow_ratio_scaled_cap": 0.6928, "elbow_ratio_doc_cap": 0.4037},
+   "0.4": {"shoulder_ratio": 0.3208, "elbow_ratio_scaled_cap": 0.9550, "elbow_ratio_doc_cap": 0.6359},
+   "0.55": {"shoulder_ratio": 0.3049, "elbow_ratio_scaled_cap": 1.0727, "elbow_ratio_doc_cap": 0.8684}
+  }
+ },
+ "falsifier_verdicts": {
+  "f1_fixed_pose_monotone": {
+   "pass": true,
+   "detail": "Fixed-pose hind worst decreases at every supplied share; signed demands are affine in s to 1.776e-15 N.m residual. The theta* minimax re-optimization is non-monotone because the binding constraint switches between posture and limb rows; this is reported as a separate pose-selection effect, not conflated with the load-share law."
+  },
+  "f2_forelimb_caps": {
+   "pass": false,
+   "detail": "The fore chain stays within the declared caps at s=0.4 but the scaled elbow cap is exceeded at s=0.55 (ratio 1.0727); the document's 3.76 N.m triceps cross-check remains under its cap at the mission shares. This is a forelimb-cap falsification under the segment-scaled cap, not a hidden pass."
+  },
+  "prediction": {
+   "pass": false,
+   "detail": "The fixed-pose hind worst is 0.9858 at s=0.4 and 0.7447 at s=0.55, not below 0.6. The theta* track is also not below 0.6 (1.1361 and 1.1064)."
+  },
+  "statement": {
+   "pass": false,
+   "detail": "The computed relief is monotone at fixed pose but does not satisfy the stronger claim of a reduction by at least the share itself relative to the optimized biped worst. Re-optimizing theta* introduces non-monotone ratios."
+  }
+ },
+ "honest_summary": "Forelimb sharing buys real monotone fixed-pose hind relief, but this model does not deliver the predicted <0.6 hind ratio at s=0.4-0.55, and the scaled fore-elbow cap is exceeded at s=0.55. The stronger Rule-0 statement is not supported; the result falsifies the proposed operational margin and, at the upper mission share, trades hind relief for fore-elbow overload under the declared fore-segment scaling and paw-placement assumptions.",
+ "outputs": ["derive_quadruped_share.py", "quadruped_share.json", "receipt_quadruped_share.json"]
+}
