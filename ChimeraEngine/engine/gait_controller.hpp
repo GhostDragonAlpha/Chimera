@@ -92,6 +92,24 @@ class GaitWalker {
  // a scene-only change cannot install it, which is why the controller
  // consumes it (receipt_wave14, controller_change_justification).
  double fore_pose_sh_=-0.903,fore_pose_el_=0.838;
+ // ── THE TRUNK-POSTURE ACTIVATION (the wave-10 gradual vault activation; the
+ // WAVE-15 LEVEL-ENTRY hand-off when the scene authors recipe
+ // 'trunk_handoff_ticks', derived by derive_level_entry.py): the wave-10 ramp
+ // reaches FULL theta*(entry phase) AT the settle capture -- that endpoint IS
+ // the leaned capture the wave-15 strut bound forbids (the fore MP pokes
+ // sin(|theta*|) deeper each tick, regrowing the wave-14 storm inside the
+ // settle). The level entry therefore holds the posture target at 0 through
+ // the settle (trunk LEVEL at the capture) and blends linearly onto
+ // theta*(phi) over the FIRST cycle: amp(t)=clamp((t-t_capture)/T_cycle,0,1)
+ // -- the wave-10 gradualness preserved, parameter-free, full table from the
+ // second cycle. Absent key -> the legacy wave-10 ramp bytes exactly (the
+ // zero_map/trunk_vault/fore_entry_pose pattern).
+ double post_amp()const{
+  if(!config_["gait_enabled"].get<bool>())return 0.;
+  if(recipe_.contains("trunk_handoff_ticks")){
+   double since=double(ticks_)-double(settle_total_);
+   return since<=0.?0.:(std::min)(1.,since/number(recipe_["trunk_handoff_ticks"]));}
+  return settle_total_>0?1.-double(settle_ticks_)/double(settle_total_):1.;}
  // ── THE PLANTED-STRUT CLOSURE (wave 12): forelimb paw IK ──
  // The fore struts no longer hold FIXED shoulder/elbow angles (the wave-11
  // refusal cause: through the first gait transition the fixed-angle paws
@@ -419,13 +437,21 @@ class GaitWalker {
     double tau_env=(amax+off-v*dt_)/v;
     if(tau_env<0.)tau_env=0.;
     tau1=(std::min)(lift_wait,tau_env);}
-   fore_stance_[leg]=tau1*Tf;
-   fore_cycle_[leg]=fore_stance_[leg]+(1.-DUTY_SAMPLED)*Tf;
+   // RUN-2 REPAIR (wave 15, itemized in receipt_wave15.json): the wave-14
+   // commit changed tau1 from cycle fractions (wave 13: capped at
+   // DUTY_SAMPLED, so tau1*Tf was ticks) to SECONDS but kept the *Tf
+   // (ticks-per-CYCLE) multiply -- the entry stances ran at 213/300 of the
+   // derived lengths (measured: stance 65.483 = 0.30743 s *213 exactly, the
+   // law's 92.23 ticks). Seconds -> ticks is *1/dt_; latent through wave 14
+   // because its clock never armed (paws_captured=0). No tuning: this
+   // enforces the already-derived lift slots (RF 92.23, LF 198.73).
+   fore_stance_[leg]=tau1/dt_;
+   fore_cycle_[leg]=fore_stance_[leg]+(1.-DUTY_SAMPLED)/dt_;
    fore_t_[leg]=0.;fore_mode_[leg]=0;fore_td_[leg]=0;fore_replants_[leg]=0;fore_clamped_[leg]=0;
    fore_conv_[leg]=0;
 #ifdef GAIT_EVENT_TRACE
    std::fprintf(stderr,"[foreclk] arm leg=%zu tick=%llu offset0=%+.6f xoff=%.6f amax=%.6f stance=%.3f ticks cycle=%.3f lift_wait=%.3f\n",
-    leg,(unsigned long long)ticks_,off,xoff,amax,fore_stance_[leg],fore_cycle_[leg],((std::max)(0.,(DUTY_SAMPLED-phi_[leg]))*T_CYCLE+0.25*T_CYCLE)*Tf);
+    leg,(unsigned long long)ticks_,off,xoff,amax,fore_stance_[leg],fore_cycle_[leg],((std::max)(0.,(DUTY_SAMPLED-phi_[leg]))*T_CYCLE+0.25*T_CYCLE)/dt_);
 #endif
   }}
  // GRID CONVERGENCE (receipt derivation): the entry geometry cannot originate
@@ -438,13 +464,15 @@ class GaitWalker {
  // fewest cycles, then the short way); a k=1 short-way landing marks the leg
  // CONVERGED (pure clock thereafter). Deterministic; no force thresholds.
  void fore_converge(size_t leg){
-  double Tf=T_CYCLE/dt_,swing=(1.-DUTY_SAMPLED)*Tf;
+  // RUN-2 REPAIR (wave 15, same units fix as arm_fore_clock): swing/stance
+  // lengths are seconds * (1/dt_) = ticks; the SLOTS stay in ticks (Tf).
+  double Tf=T_CYCLE/dt_,swing=(1.-DUTY_SAMPLED)/dt_;
   double slot0=(double)settle_total_+(leg==0?0.25:0.75)*Tf;
   double now=(double)ticks_;
   double slot=slot0;
   while(slot<=now+swing)slot+=Tf; // the smallest slot the leg can still land
   double d=slot-((double)now+Tf); // shift needed vs the uncorrected clock
-  if(std::abs(d)<=0.5){fore_conv_[leg]=1;fore_stance_[leg]=DUTY_SAMPLED*Tf;fore_cycle_[leg]=Tf;
+  if(std::abs(d)<=0.5){fore_conv_[leg]=1;fore_stance_[leg]=DUTY_SAMPLED/dt_;fore_cycle_[leg]=Tf;
 #ifdef GAIT_EVENT_TRACE
    std::fprintf(stderr,"[foreclk] converged leg=%zu tick=%llu slot=%.3f\n",leg,(unsigned long long)ticks_,slot);
 #endif
@@ -453,11 +481,11 @@ class GaitWalker {
   auto sh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
   double off=paw_target_[leg][0]-sh[0]; // the just-captured plant offset
   double v=(std::max)(0.,s_.v[3]),env=-1.; // env<0: lengthenings infeasible this cycle
-  if(v>1e-9)env=(off+fore_amax(e,leg)-v*dt_)/v;
+  if(v>1e-9)env=(off+fore_amax(e,leg)-v*dt_)/v/dt_; // ticks (was seconds: mixed-unit compare)
   double smin=swing;
   for(int k=1;k<=8;++k)for(int w=0;w<2;++w){
    double step=(d-(w?Tf:0.))/k;
-   double st=DUTY_SAMPLED*Tf+step;
+   double st=DUTY_SAMPLED/dt_+step;
    if(st<smin-1e-9)continue;
    if(step>0.&&(env<0.||st>env+1e-9))continue;
    fore_stance_[leg]=st;fore_cycle_[leg]=st+swing;
@@ -468,7 +496,7 @@ class GaitWalker {
 #endif
    return;}
   // no lawful correction this cycle: run nominal, retry at the next TD
-  fore_stance_[leg]=DUTY_SAMPLED*Tf;fore_cycle_[leg]=Tf;}
+  fore_stance_[leg]=DUTY_SAMPLED/dt_;fore_cycle_[leg]=Tf;}
  // THE FORE CLOCK: advances only in the walk (the hind clock's discipline).
  // LIFTOFF at fore_t_ >= fore_stance_: derive the glide (the law's plant point
  // from the CURRENT speed and shoulder position; the annulus clamps the law's
@@ -504,7 +532,7 @@ class GaitWalker {
    if(fore_t_[leg]>=fore_cycle_[leg]){ // TOUCHDOWN: re-capture the actual paw
     capture_paw(leg,e);++fore_replants_[leg];++fore_td_[leg];
     fore_t_[leg]=0.;fore_mode_[leg]=0;
-    if(fore_conv_[leg]){fore_stance_[leg]=DUTY_SAMPLED*Tf;fore_cycle_[leg]=Tf;}
+    if(fore_conv_[leg]){fore_stance_[leg]=DUTY_SAMPLED/dt_;fore_cycle_[leg]=Tf;}
     else fore_converge(leg); // bounded grid convergence until the slot lands
 #ifdef GAIT_EVENT_TRACE
     std::fprintf(stderr,"[foreclk] td leg=%zu tick=%llu td_count=%d stance=%.3f roundtrip=%.3e m\n",
@@ -560,7 +588,9 @@ class GaitWalker {
    // DOF -- the posture target tracks theta*(phi) from the continuous,
    // 0.5-periodic vault table while the walk runs; frozen clock (including
    // the main branch's settle window) holds the authored erect default 0.
-   double trunk_amp=config_["gait_enabled"].get<bool>()?(settle_total_>0?1.-double(settle_ticks_)/double(settle_total_):1.):0.;
+   // WAVE 15: the activation is the post_amp() law -- the legacy wave-10 ramp,
+   // or the level-entry first-cycle hand-off when the scene authors it.
+   double trunk_amp=post_amp();
    double target_post=trunk_amp*tables_.trunk_target(phi_[0]);
    tau[2]=(std::max)(-drives_[0].cap,(std::min)(drives_[0].cap,kp_post_*(target_post-s_.q[2])-kd_post_*s_.v[2]));}
   return tau;}
@@ -841,6 +871,11 @@ class GaitWalker {
   fore_pose_sh_=number(fp.at("shoulder_rad"));fore_pose_el_=number(fp.at("elbow_rad"));
   require(std::isfinite(fore_pose_sh_)&&std::isfinite(fore_pose_el_)&&
    std::abs(fore_pose_sh_)<=1.6&&std::abs(fore_pose_el_)<=1.6,"gait_fore_entry_pose_range");}
+ if(recipe_.contains("trunk_handoff_ticks")){ // the wave-15 level-entry hand-off (scene statics; absent -> legacy wave-10 ramp)
+  const J& th=recipe_.at("trunk_handoff_ticks");
+  require(th.is_number(),"gait_trunk_handoff_shape");
+  double thv=number(th);
+  require(std::isfinite(thv)&&thv>0.&&thv<=600.,"gait_trunk_handoff_range");}
  // theta*(phi): the derived posture target table (wave 8)
  if(config_.contains("settle_ticks")){require(config_["settle_ticks"].is_number(),"gait_settle_shape");settle_ticks_=(int)number(config_["settle_ticks"]);require(settle_ticks_>=0&&settle_ticks_<=600,"gait_settle_range");settle_total_=settle_ticks_;}
   plane_world_y_=number(recipe_.at("contact_plane_height_m"));require(std::isfinite(plane_world_y_),"gait_contact_plane_invalid");plane_model_y_=plane_world_y_-shift_[1];
@@ -966,7 +1001,11 @@ class GaitWalker {
    // reintroduces the wave-6 bounce).
    if(config_.contains("start_trunk_rad"))s_.q[2]=number(config_["start_trunk_rad"]);
    if(config_.contains("start_trunk_rad")){double p=phi_[0],dp=0.05;
-    s_.v[2]=(tables_.trunk_target(p+dp)-tables_.trunk_target(p-dp))/(2*dp*T_CYCLE);}}
+    // WAVE 15: under the level-entry hand-off the entry state is the BLEND's
+    // own state at t=0 (amp=0 -> rate 0): the trunk enters at rest in pitch.
+    // The legacy table-slope injection is the LEANED entry's rate.
+    if(recipe_.contains("trunk_handoff_ticks"))s_.v[2]=0.;
+    else s_.v[2]=(tables_.trunk_target(p+dp)-tables_.trunk_target(p-dp))/(2*dp*T_CYCLE);}}
   auto e=evaluate(s_);
   for(size_t leg=0;leg<2;++leg){bool touching=false;const char* prefix=leg==0?"left":"right";
    for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0&&gap_of(e,k)<=kTouch)touching=true;
@@ -1088,8 +1127,9 @@ class GaitWalker {
     {"motor_torque_N_m",last_torque_[c]},{"drive_enabled",config_[dr.name+"_drive"]},{"torque_cap_N_m",dr.cap},
     {"battery_J",battery_[d]},{"brake_heat_J",brake_[d]},{"empty_events",empty_events_[d]},{"actuator_work_J",s_.work[c]}});}
   // The trunk-pitch posture drive (the source model's theta_HAT musculature).
+  // WAVE 15: the reported target mirrors servo()'s post_amp() law exactly.
   {work+=s_.work[2];battery_total+=battery_post_;brake_total+=brake_post_;empty_total+=empty_post_;
-   double trunk_amp=config_["gait_enabled"].get<bool>()?(settle_total_>0?1.-double(settle_ticks_)/double(settle_total_):1.):0.;
+   double trunk_amp=post_amp();
    joints.push_back({{"name","trunk_pitch_HAT"},{"leg","trunk"},{"joint","posture"},{"phase",phi_[0]},
     {"angle_deg",s_.q[2]*180/pi},{"target_rad",trunk_amp*tables_.trunk_target(phi_[0])},
     {"target_deg",trunk_amp*tables_.trunk_target(phi_[0])*180/pi},{"speed_rad_s",s_.v[2]},

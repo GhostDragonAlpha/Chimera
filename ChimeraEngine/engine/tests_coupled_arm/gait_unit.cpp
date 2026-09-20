@@ -22,6 +22,7 @@ struct WalkOut{
  std::vector<std::array<double,2>> fgmax,fgmin; // per-leg worst/best FORE paw gap (wave 13)
  std::vector<std::array<char,2>> fm;           // per-leg fore clock mode (0 stance, 1 swing)
  std::vector<std::array<uint64_t,2>> fsat;     // per-leg IK saturation ticks (per-tick snapshot)
+ std::vector<std::array<double,8>> gp;         // per-tick ALL-paw gaps, declared point order (wave 15 strut census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
  J last;std::string refused;int refused_tick=-1;
@@ -108,6 +109,9 @@ int main(int argc,char**argv){try{
      size_t l=nm.rfind("fore_left_",0)==0?0:nm.rfind("fore_right_",0)==0?1:2;
      if(l<2){double g=number(pt["gap_m"]);mx[l]=(std::max)(mx[l],g);mn[l]=(std::min)(mn[l],g);}}
     if(mx[0]>-1e8){out.fgmax.push_back(mx);out.fgmin.push_back(mn);}
+    {std::array<double,8> gaps{};size_t k=0;
+     for(const auto&pt:s["contact"]["points"]){if(k<8)gaps[k++]=number(pt["gap_m"]);}
+     out.gp.push_back(gaps);}
     std::array<char,2> fmm{0,0};std::array<uint64_t,2> sat{};
     if(s["gait"].contains("fore_paw")&&s["gait"]["fore_paw"].size()>=2)
      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["fore_paw"][l];
@@ -230,6 +234,30 @@ int main(int argc,char**argv){try{
    note("F-G14 two_contact_ticks= "+two_windows);
   ck(bfa_mx<2,"f14_no_both_fore_airborne_window");
   ck(sup2_ticks==0,"f14_support_census_min2");}
+
+ // ── WAVE 15 STRUT CENSUS (pre-registered in receipt_wave15.json): through
+ //    the settle [0,60) the CALIBRATED fore-hind strut difference -- the
+ //    TD-side hind heel dangle over the lowest paw (the seat), the quantity
+ //    the 5.9 cm survivable / 10.5 cm fatal calibration measured -- stays
+ //    within 0.059 m at EVERY tick; the full 8-point spread stays within
+ //    0.1744 m (the strongest dangle that ever SURVIVED a settle -- the
+ //    wave-13 entry's own tick-0 spread). Worst tick named for both.
+ {const size_t N=std::min(w.gp.size(),(size_t)60);
+  // The TD heel is the FIRST declared contact point (the scene's order:
+  // left_heel before all others; the seat's +2e-6 target added back).
+  const size_t heelL=0;
+  double td_mx=0,sp_mx=0;int td_tick=-1,sp_tick=-1;
+  for(size_t i=0;i<N;++i){
+   double lo=1e9,hi=-1e9;
+   for(double g:w.gp[i]){lo=(std::min)(lo,g);hi=(std::max)(hi,g);}
+   double d_td=w.gp[i][heelL]-lo+2e-6,spread=hi-lo+2e-6;
+   if(d_td>td_mx){td_mx=d_td;td_tick=(int)i;}
+   if(spread>sp_mx){sp_mx=spread;sp_tick=(int)i;}}
+  note("F-G15 strut_census td_heel_worst_m="+std::to_string(td_mx)+" at tick "+std::to_string(td_tick)+
+   " spread_worst_m="+std::to_string(sp_mx)+" at tick "+std::to_string(sp_tick)+
+   " (bounds: 0.059 calibrated / 0.1744 survived anchor)");
+  ck(td_mx<=0.059,"f15_strut_bound_td_heel");
+  ck(sp_mx<=0.1744,"f15_strut_spread_survived_anchor");}
 
 
  // ── F-G1: trajectories within the tables (+/-5 deg, >=95% of samples after
