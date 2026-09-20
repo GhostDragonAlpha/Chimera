@@ -1,0 +1,520 @@
+{
+ "schema": "chimera.posture_cap_provenance.v1",
+ "lane": "buffy/posture-cap-provenance",
+ "date": "2026-09-19",
+ "agent": "Buffy",
+ "rule_0": {
+  "statement": "The posture cap is a muscle-grounded constant: the trunk moment is carried by the iliopsoas+gluteus-medius pair (Oku's pinned scheme), the pair envelope covers both the swept minimum and the demand peak, and the engine's cap-on-each realization is consistent with the records (same-side sums stay inside the supporting group's envelope).",
+  "prediction": "At the amended cap (the pair ceiling, 10.54 N.m) the walker lane's re-run shows posture saturation < 10% of ticks and survives past tick 426.",
+  "falsifier": "If the walker lane's re-run saturates >= 10% of ticks or dies before tick 426 at the amended cap, this membrane is false and the cap derivation reopens."
+ },
+ "cap_provenance_chain": {
+  "current_cap_N_m": 11.2125,
+  "current_chain": [
+   "Oku 2021 measured hip torque peak 8.9746 N.m (derived_numbers.json, gait_controller_20260918; 8.97 in the doc)",
+   "headroom factor 1.25 (gait_controller_derivation doc section 4.3)",
+   "1.25 x 8.9746 = 11.21825 (derive_trunk_pitch.py CAP_POST)",
+   "1.25 x 8.97 = 11.2125 (engine/wave-10 constant) -- ROUNDING SPLIT: the two lanes pin different constants; the derivation doc quotes 8.97",
+   "gait-impl adoption: the posture drive keyed to the HIP cap ('the same musculature carries the trunk moment') -- the sharing was never derived"
+  ],
+  "rounding_split": {
+   "derive_lane_N_m": 11.21825,
+   "engine_lane_N_m": 11.2125,
+   "delta_N_m": 0.00575
+  }
+ },
+ "muscle_records_source": {
+  "path": "tools/science_funnel/validation/muscle_paths_20260918/muscle_path_geometry.json",
+  "record_id": "model.creature.muscle_path_geometry",
+  "specific_tension_Pa": 1280914.14,
+  "method": "PCSA x derived specific tension x cos(pennation) x geometric moment arm (Guimaraes 2026 PCSA matched to Oku 2021 Fmax, mass-adjusted)"
+ },
+ "pair_capability": {
+  "neutral": {
+   "ILI": {
+    "pcsa_cm2": 2.6088,
+    "max_force_N": 311.56,
+    "cos_pennation": 0.9323,
+    "hip_moment_arm_m": 0.012886,
+    "hip_torque_N_m": 4.0148
+   },
+   "GMed": {
+    "pcsa_cm2": 8.5672,
+    "max_force_N": 947.48,
+    "cos_pennation": 0.8634,
+    "hip_moment_arm_m": 0.0072,
+    "hip_torque_N_m": 6.822
+   },
+   "pair_flexion_side_N_m": 10.83679177525843,
+   "per_muscle_flexion_N_m": {
+    "ILI": 4.014796280241429,
+    "GMed": 6.821995495017001
+   },
+   "hip_extensor_group_extension_side_N_m": -128.01975156337738,
+   "note": "both ILI and GMed carry a POSITIVE (flexion+) hip moment in the record's sign convention at both poses; the extension side is the extensor group's"
+  },
+  "walking": {
+   "ILI": {
+    "pcsa_cm2": 2.6088,
+    "max_force_N": 311.56,
+    "cos_pennation": 0.9323,
+    "hip_moment_arm_m": 0.012594,
+    "hip_torque_N_m": 3.9236
+   },
+   "GMed": {
+    "pcsa_cm2": 8.5672,
+    "max_force_N": 947.48,
+    "cos_pennation": 0.8634,
+    "hip_moment_arm_m": 0.006985,
+    "hip_torque_N_m": 6.6182
+   },
+   "pair_flexion_side_N_m": 10.541783062054282,
+   "per_muscle_flexion_N_m": {
+    "ILI": 3.923619011714498,
+    "GMed": 6.618164050339784
+   },
+   "hip_extensor_group_extension_side_N_m": -130.73264449829963,
+   "note": "both ILI and GMed carry a POSITIVE (flexion+) hip moment in the record's sign convention at both poses; the extension side is the extensor group's"
+  }
+ },
+ "verdict_a_sum_vs_each": {
+  "question": "is the SUM (trunk + hip concurrently) the admitted architecture's constraint, or are the drives independent?",
+  "engine_realization": "cap-on-EACH: the posture drive is capped at drives_[0].cap (the hip cap) independently of the hip drive (gait_controller.hpp servo()); separate battery_post_ store; the two caps never add in the engine.",
+  "side_structure": "the two drives draw on the SAME muscle group only when their demands share a sign: the flexion+ side is the ILI+GMed pair (10.542-10.837 N.m); the extension side is the extensor group (-128 to -131 N.m). Opposite-side draws never sum onto one group.",
+  "witness_flexion_side_ratio": 0.9319,
+  "witness_covered": true,
+  "baseline_flexion_side_ratio": 1.5749,
+  "baseline_over_nodes_attribution": "the theta=0 baseline exceeds the pair at phi=0.55-0.70, but the ENTIRE overage is the hip drive's own flexion demand (posture share <= 0.36 N.m) at the quasi-static single-contact overestimate nodes -- the hip draw exceeds the pair even ALONE there, which is the baseline artifact the posture table (theta* ~ +0.43..+0.54 rad) rescues, not a trunk+hip concurrency effect",
+  "verdict": "SUM_COVERED_ON_THE_WITNESS: along the reachable trajectory the concurrent same-side sums stay inside the supporting group's envelope at every node (worst flexion-side ratio 0.932); the engine's cap-on-each realization is therefore admissible FOR THE WITNESS ARCHITECTURE, and the never-derived sharing question resolves as: the sharing is real on the flexion side but never binding along the reachable trajectory",
+  "detail_tables": [
+   {
+    "label": "theta=0 baseline (un-optimized)",
+    "nodes": [
+     {
+      "phi": 0.0,
+      "theta_rad": 0.0,
+      "hip_N_m": -12.9507,
+      "posture_N_m": -0.4596,
+      "flexion_side_sum_N_m": 0.0,
+      "extension_side_sum_N_m": 13.4103
+     },
+     {
+      "phi": 0.05,
+      "theta_rad": 0.0,
+      "hip_N_m": -10.2953,
+      "posture_N_m": -0.3582,
+      "flexion_side_sum_N_m": 0.0,
+      "extension_side_sum_N_m": 10.6534
+     },
+     {
+      "phi": 0.1,
+      "theta_rad": 0.0,
+      "hip_N_m": -6.8114,
+      "posture_N_m": -0.1901,
+      "flexion_side_sum_N_m": 0.0,
+      "extension_side_sum_N_m": 7.0015
+     },
+     {
+      "phi": 0.15,
+      "theta_rad": 0.0,
+      "hip_N_m": -3.0513,
+      "posture_N_m": -0.0506,
+      "flexion_side_sum_N_m": 0.0,
+      "extension_side_sum_N_m": 3.1019
+     },
+     {
+      "phi": 0.2,
+      "theta_rad": 0.0,
+      "hip_N_m": 0.2035,
+      "posture_N_m": -0.0242,
+      "flexion_side_sum_N_m": 0.2035,
+      "extension_side_sum_N_m": 0.0242
+     },
+     {
+      "phi": 0.25,
+      "theta_rad": 0.0,
+      "hip_N_m": 3.561,
+      "posture_N_m": -0.1057,
+      "flexion_side_sum_N_m": 3.561,
+      "extension_side_sum_N_m": 0.1057
+     },
+     {
+      "phi": 0.3,
+      "theta_rad": 0.0,
+      "hip_N_m": -1.8984,
+      "posture_N_m": -0.3,
+      "flexion_side_sum_N_m": 0.0,
+      "extension_side_sum_N_m": 2.1984
+     },
+     {
+      "phi": 0.35,
+      "theta_rad": 0.0,
+      "hip_N_m": 0.5703,
+      "posture_N_m": -0.5774,
+      "flexion_side_sum_N_m": 0.5703,
+      "extension_side_sum_N_m": 0.5774
+     },
+     {
+      "phi": 0.4,
+      "theta_rad": 0.0,
+      "hip_N_m": 4.4964,
+      "posture_N_m": -0.5911,
+      "flexion_side_sum_N_m": 4.4964,
+      "extension_side_sum_N_m": 0.5911
+     },
+     {
+      "phi": 0.45,
+      "theta_rad": 0.0,
+      "hip_N_m": 7.3277,
+      "posture_N_m": -0.5653,
+      "flexion_side_sum_N_m": 7.3277,
+      "extension_side_sum_N_m": 0.5653
+     },
+     {
+      "phi": 0.5,
+      "theta_rad": 0.0,
+      "hip_N_m": 9.677,
+      "posture_N_m": -0.4596,
+      "flexion_side_sum_N_m": 9.677,
+      "extension_side_sum_N_m": 0.4596
+     },
+     {
+      "phi": 0.55,
+      "theta_rad": 0.0,
+      "hip_N_m": 11.7837,
+      "posture_N_m": -0.3582,
+      "flexion_side_sum_N_m": 11.7837,
+      "extension_side_sum_N_m": 0.3582
+     },
+     {
+      "phi": 0.6,
+      "theta_rad": 0.0,
+      "hip_N_m": 14.9586,
+      "posture_N_m": -0.1901,
+      "flexion_side_sum_N_m": 14.9586,
+      "extension_side_sum_N_m": 0.1901
+     },
+     {
+      "phi": 0.65,
+      "theta_rad": 0.0,
+      "hip_N_m": 16.6025,
+      "posture_N_m": -0.0506,
+      "flexion_side_sum_N_m": 16.6025,
+      "extension_side_sum_N_m": 0.0506
+     },
+     {
+      "phi": 0.7,
+      "theta_rad": 0.0,
+      "hip_N_m": 15.2531,
+      "posture_N_m": -0.0242,
+      "flexion_side_sum_N_m": 15.2531,
+      "extension_side_sum_N_m": 0.0242
+     },
+     {
+      "phi": 0.75,
+      "theta_rad": 0.0,
+      "hip_N_m": 10.2784,
+      "posture_N_m": -0.1057,
+      "flexion_side_sum_N_m": 10.2784,
+      "extension_side_sum_N_m": 0.1057
+     },
+     {
+      "phi": 0.8,
+      "theta_rad": 0.0,
+      "hip_N_m": 1.35,
+      "posture_N_m": -0.3,
+      "flexion_side_sum_N_m": 1.35,
+      "extension_side_sum_N_m": 0.3
+     },
+     {
+      "phi": 0.85,
+      "theta_rad": 0.0,
+      "hip_N_m": -9.7083,
+      "posture_N_m": -0.5774,
+      "flexion_side_sum_N_m": 0.0,
+      "extension_side_sum_N_m": 10.2858
+     },
+     {
+      "phi": 0.9,
+      "theta_rad": 0.0,
+      "hip_N_m": -8.267,
+      "posture_N_m": -0.5911,
+      "flexion_side_sum_N_m": 0.0,
+      "extension_side_sum_N_m": 8.8581
+     },
+     {
+      "phi": 0.95,
+      "theta_rad": 0.0,
+      "hip_N_m": -12.2998,
+      "posture_N_m": -0.5653,
+      "flexion_side_sum_N_m": 0.0,
+      "extension_side_sum_N_m": 12.865
+     },
+     {
+      "phi": 1.0,
+      "theta_rad": 0.0,
+      "hip_N_m": -12.9286,
+      "posture_N_m": -0.4582,
+      "flexion_side_sum_N_m": 0.0,
+      "extension_side_sum_N_m": 13.3868
+     }
+    ],
+    "worst_flexion_side_sum_N_m": 16.6025,
+    "worst_extension_side_sum_N_m": 13.4103,
+    "flexion_side_ratio_vs_pair": 1.5749,
+    "extension_side_ratio_vs_extensors": 0.1026,
+    "flexion_side_covered": false,
+    "extension_side_covered": true
+   },
+   {
+    "label": "wave-10 witness table (cap 10.334 N.m)",
+    "nodes": [
+     {
+      "phi": 0.0,
+      "theta_rad": -0.2224,
+      "hip_N_m": -6.371,
+      "posture_N_m": -4.3969,
+      "flexion_side_sum_N_m": 0.0,
+      "extension_side_sum_N_m": 10.7679
+     },
+     {
+      "phi": 0.05,
+      "theta_rad": -0.1856,
+      "hip_N_m": -4.8356,
+      "posture_N_m": -3.6586,
+      "flexion_side_sum_N_m": 0.0,
+      "extension_side_sum_N_m": 8.4942
+     },
+     {
+      "phi": 0.1,
+      "theta_rad": -0.1069,
+      "hip_N_m": -3.7298,
+      "posture_N_m": -2.1032,
+      "flexion_side_sum_N_m": 0.0,
+      "extension_side_sum_N_m": 5.8329
+     },
+     {
+      "phi": 0.15,
+      "theta_rad": 0.006,
+      "hip_N_m": -3.2227,
+      "posture_N_m": 0.0575,
+      "flexion_side_sum_N_m": 0.0575,
+      "extension_side_sum_N_m": 3.2227
+     },
+     {
+      "phi": 0.2,
+      "theta_rad": 0.1309,
+      "hip_N_m": -3.5034,
+      "posture_N_m": 2.3078,
+      "flexion_side_sum_N_m": 2.3078,
+      "extension_side_sum_N_m": 3.5034
+     },
+     {
+      "phi": 0.25,
+      "theta_rad": 0.2447,
+      "hip_N_m": -3.4022,
+      "posture_N_m": 4.2087,
+      "flexion_side_sum_N_m": 4.2087,
+      "extension_side_sum_N_m": 3.4022
+     },
+     {
+      "phi": 0.3,
+      "theta_rad": 0.3364,
+      "hip_N_m": -11.1654,
+      "posture_N_m": 5.5859,
+      "flexion_side_sum_N_m": 5.5859,
+      "extension_side_sum_N_m": 11.1654
+     },
+     {
+      "phi": 0.35,
+      "theta_rad": 0.4236,
+      "hip_N_m": -11.1942,
+      "posture_N_m": 6.8098,
+      "flexion_side_sum_N_m": 6.8098,
+      "extension_side_sum_N_m": 11.1942
+     },
+     {
+      "phi": 0.4,
+      "theta_rad": 0.4996,
+      "hip_N_m": -9.6139,
+      "posture_N_m": 8.0581,
+      "flexion_side_sum_N_m": 8.0581,
+      "extension_side_sum_N_m": 9.6139
+     },
+     {
+      "phi": 0.45,
+      "theta_rad": 0.5565,
+      "hip_N_m": -8.6289,
+      "posture_N_m": 8.9896,
+      "flexion_side_sum_N_m": 8.9896,
+      "extension_side_sum_N_m": 8.6289
+     },
+     {
+      "phi": 0.5,
+      "theta_rad": 0.5906,
+      "hip_N_m": -7.5248,
+      "posture_N_m": 9.5847,
+      "flexion_side_sum_N_m": 9.5847,
+      "extension_side_sum_N_m": 7.5248
+     },
+     {
+      "phi": 0.55,
+      "theta_rad": 0.6,
+      "hip_N_m": -6.4162,
+      "posture_N_m": 9.8241,
+      "flexion_side_sum_N_m": 9.8241,
+      "extension_side_sum_N_m": 6.4162
+     },
+     {
+      "phi": 0.6,
+      "theta_rad": 0.583,
+      "hip_N_m": -3.4449,
+      "posture_N_m": 9.7137,
+      "flexion_side_sum_N_m": 9.7137,
+      "extension_side_sum_N_m": 3.4449
+     },
+     {
+      "phi": 0.65,
+      "theta_rad": 0.538,
+      "hip_N_m": -0.1184,
+      "posture_N_m": 9.1393,
+      "flexion_side_sum_N_m": 9.1393,
+      "extension_side_sum_N_m": 0.1184
+     },
+     {
+      "phi": 0.7,
+      "theta_rad": 0.4659,
+      "hip_N_m": 1.0529,
+      "posture_N_m": 8.0042,
+      "flexion_side_sum_N_m": 9.0571,
+      "extension_side_sum_N_m": -0.0
+     },
+     {
+      "phi": 0.75,
+      "theta_rad": 0.3541,
+      "hip_N_m": -0.2812,
+      "posture_N_m": 6.0732,
+      "flexion_side_sum_N_m": 6.0732,
+      "extension_side_sum_N_m": 0.2812
+     },
+     {
+      "phi": 0.8,
+      "theta_rad": 0.2016,
+      "hip_N_m": -4.3743,
+      "posture_N_m": 3.2653,
+      "flexion_side_sum_N_m": 3.2653,
+      "extension_side_sum_N_m": 4.3743
+     },
+     {
+      "phi": 0.85,
+      "theta_rad": 0.0561,
+      "hip_N_m": -11.2183,
+      "posture_N_m": 0.4249,
+      "flexion_side_sum_N_m": 0.4249,
+      "extension_side_sum_N_m": 11.2183
+     },
+     {
+      "phi": 0.9,
+      "theta_rad": -0.0686,
+      "hip_N_m": -6.3421,
+      "posture_N_m": -1.8165,
+      "flexion_side_sum_N_m": 0.0,
+      "extension_side_sum_N_m": 8.1586
+     },
+     {
+      "phi": 0.95,
+      "theta_rad": -0.1614,
+      "hip_N_m": -7.6608,
+      "posture_N_m": -3.4388,
+      "flexion_side_sum_N_m": 0.0,
+      "extension_side_sum_N_m": 11.0996
+     },
+     {
+      "phi": 1.0,
+      "theta_rad": -0.2142,
+      "hip_N_m": -6.5982,
+      "posture_N_m": -4.2512,
+      "flexion_side_sum_N_m": 0.0,
+      "extension_side_sum_N_m": 10.8494
+     }
+    ],
+    "worst_flexion_side_sum_N_m": 9.8241,
+    "worst_extension_side_sum_N_m": 11.2183,
+    "flexion_side_ratio_vs_pair": 0.9319,
+    "extension_side_ratio_vs_extensors": 0.0858,
+    "flexion_side_covered": true,
+    "extension_side_covered": true
+   }
+  ]
+ },
+ "verdict_b_capability_vs_price_tag": {
+  "question": "does PCSA x specific tension x moment arm support a trunk-control torque at the price-tag level?",
+  "specific_tension_Pa": 1280914.14,
+  "specific_tension_N_per_cm2": 128.091,
+  "price_tag_N_m": 10.334,
+  "current_cap_N_m": 11.2125,
+  "wave10_posture_demand_peak_N_m": 8.67,
+  "pair_flexion_side_N_m": {
+   "neutral": 10.8368,
+   "walking": 10.5418,
+   "worst_side": 10.5418
+  },
+  "per_muscle_N_m": {
+   "ILI": 3.924,
+   "GMed": 6.618
+  },
+  "per_muscle_verdict": {
+   "ILI_alone": "3.92-4.01 N.m -- insufficient alone",
+   "GMed_alone": "6.62-6.82 N.m -- insufficient alone",
+   "pair": "10.542-10.837 N.m -- covers the price tag",
+   "okau_scheme": "the pinned fulltext drives the trunk with BOTH muscles (the pair), so the pair is the honest unit; neither muscle is the trunk drive alone"
+  },
+  "pair_vs_price_tag": {
+   "ratio": 1.0201,
+   "covers": true
+  },
+  "pair_vs_demand_peak": {
+   "ratio": 1.2159,
+   "covers": true
+  },
+  "headroom_at_price_tag_N_m": 0.2078
+ },
+ "falsifiers": {
+  "f1_muscle_closure": {
+   "statement": "if the minimum admissible cap exceeds what the admitted musculature can produce, the biped is closed on muscle grounds",
+   "applies": false,
+   "measured": {
+    "min_admissible_cap_Nm": 10.334,
+    "pair_worst_side_N_m": 10.5418
+   },
+   "verdict": "NOT TRIGGERED: the swept minimum (10.334 N.m) sits below the pair's worst-side capability (10.542 N.m)"
+  },
+  "f2_amendment": {
+   "statement": "if the data supports it, the amendment is derivable: exact cap, provenance chain, and the walker-lane falsifier",
+   "amendment": {
+    "proposed_posture_cap_N_m": 10.54,
+    "provenance": "the trunk-carrying pair's own capability ceiling: (PCSA_ILI x sigma x cos(pennation) + PCSA_GMed x sigma x cos(pennation)) x hip moment arm, worst side over the two audited poses (walking), from the admitted muscle-path record -- no borrowed hip peak, no derived headroom stacked on a capability (headroom belongs between demand and cap, and the wave-10 demand peak 8.67 N.m already sits 17.8% under this ceiling)",
+    "chain": [
+     "Oku 2021 pinned fulltext: postural control of the trunk by hip uniarticular muscles (iliopsoas + gluteus medius) -- the pair, not either muscle alone",
+     "Guimaraes 2026 PCSAs (ILI 2.609 cm2, GMed 8.567 cm2) x derived specific tension 128.09 N/cm2 x cos(pennation) x geometric hip moment arms",
+     "worst-side pair capability 10.542 N.m (walking pose) = the amended cap",
+     "static admissibility: swept minimum 10.334 N.m <= 10.542 (witness exists)",
+     "dynamic headroom: demand peak 8.67 N.m <= 10.542 with 17.8% margin"
+    ],
+    "also_fix": "the rounding split: derive_trunk_pitch.py pins 11.21825 (1.25 x 8.9746) while the engine and wave 10 pin 11.2125 (1.25 x 8.97) -- the amendment gives the posture drive its own constant and ends the borrow",
+    "walker_lane_falsifier": "re-run the walk with the amended cap (10.54 N.m) and the wave-10 reachable table as the posture target; PASS requires posture saturation < 10% of ticks and the run surviving past tick 426; FAIL closes the posture amendment and reopens the cap derivation",
+    "uncertainty_note": "inherits the muscle-path lane's declared 25% moment-arm uncertainty (the estimated hindlimb attachments are not dissection geometry)",
+    "requires_engine_edit": true
+   },
+   "applies": true,
+   "verdict": "AMENDMENT_DERIVABLE -- the data supports the amended cap: the swept minimum (10.334) and the demand peak (8.67) both sit under the pair ceiling (10.542)"
+  }
+ },
+ "sweep_reference": {
+  "path": "min_admissible_cap.json",
+  "min_admissible_cap_true_Nm": 10.334,
+  "min_admissible_cap_in_prompted_range_Nm": 11.2,
+  "wave10_margin_0_9": "unreachable at any swept cap (11.2-22.4 N.m): the wall is the KNEE cap, not the posture cap -- static min combined 0.9112 at phi=0.85 with theta*=-0.37 rad, knee ratio 0.785 and posture floor -6.99 N.m"
+ },
+ "boundaries": "new directory only; no engine files edited; derivation lane files untouched"
+}
