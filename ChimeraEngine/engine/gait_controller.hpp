@@ -100,8 +100,40 @@ class GaitWalker {
  V paw_ref_local_[2]={V{},V{}}; // paw reference = heel/MP midpoint, forearm frame
  double fore_L1_=0,fore_rho_=0,fore_beta_=0; // the 2-DOF chain constants (humerus length; paw-polar)
  double ik_roundtrip_m_[2]={0,0}; // |FK(IK(target)) - target| measured at capture (the closure check)
+ double ik_qerr_[2]={0,0}; // |IK solution - actual q| at capture (the closure check)
  uint64_t ik_sat_ticks_[2]={0,0}; // ticks the plant sat outside the chain's reachable annulus
  mutable bool ik_sat_prev_[2]={false,false}; // trace-only rising-edge flag
+ // ── THE STEPPING-STRUT FORE CLOCK (wave 13) ──
+ // Wave 12's membrane is banked: NO fixed world plant survives a translating
+ // body (the shoulder-paw distance hit the 0.261324 m annulus at ticks 114/122;
+ // 176/291 ticks saturated; the walk refused at 291). Each forelimb now
+ // alternates STANCE (the wave-12 exact hold of its captured world spot) and
+ // SWING (the IK target glides world-linearly to the law's plant point,
+ // airborne under a pad-geometry clearance arch). THE REPLANT LAW
+ // (receipt_wave13.json derivation; no free parameters):
+ //   x_off = v * t_stance/2,  t_stance = DUTY_SAMPLED*T_CYCLE,
+ // with v the pelvis x-speed read at the liftoff tick -- the symmetric-reach
+ // (minimax) plant: equal margins at both stance ends. Fore period = hind
+ // period, fore duty = the hind sampled duty (the reach closure passes at the
+ // measured 0.391 m/s cruise with 2.7x margin, so no shortening is derived).
+ // Phase relation: lateral-sequence lags (LF = LH + T/4, RF = RH + T/4); the
+ // entry geometry cannot originate that grid, so each leg's SECOND cycle is
+ // stretched/shrunk ONCE (stance2 = next_slot - TD1 - t_swing) to land it --
+ // pure clock thereafter. TD re-captures the ACTUAL paw (horizontal) at the
+ // leg's captured settle height (vertical): the wave-12-verified heel-grazing
+ // geometry; the capture residual is absorbed by the reach margin, never
+ // accumulated (each plant is fresh, x_off ahead).
+ double fore_t_[2]={0.,0.};      // ticks since the leg's last TD (or arm)
+ double fore_stance_[2]={0.,0.}; // stance length in ticks (entry tau1 / convergence / nominal)
+ double fore_cycle_[2]={0.,0.};  // TD-to-TD length in ticks
+ int fore_mode_[2]={0,0};        // 0 stance, 1 swing
+ int fore_td_[2]={0,0};          // TDs since armed
+ V swing_from_[2]={V{},V{}};     // world glide start (actual paw at liftoff)
+ V swing_to_[2]={V{},V{}};       // world glide end (the law's plant point)
+ double paw_plant_y_[2]={0.,0.}; // per-leg plant height (captured settle ref height)
+ uint64_t fore_replants_[2]={0,0}; // TD re-captures
+ uint64_t fore_clamped_[2]={0,0}; // liftoffs where the law's x_off hit the annulus at the current height
+ int fore_conv_[2]={0,0}; // the leg's TD schedule is on its lateral slot (pure clock)
  std::vector<BodyRef> bodies_;bool contact_=false;
  State s_;mutable uint64_t adv_calls_=0;
  Evaluation evaluate(const State& s)const{return model_->evaluate(s.q,s.v,gravity_);}
@@ -308,38 +340,164 @@ class GaitWalker {
   out.q1=(std::max)(model_->lower[c1],(std::min)(model_->upper[c1],out.q1));
   out.q2=(std::max)(model_->lower[c2],(std::min)(model_->upper[c2],q2));
   return out;}
- // THE PLANT CAPTURE: at the end of the settle window the loaded state IS the
- // planted pose. Freeze each paw's world (model-frame) position as the target,
- // pick the IK branch that matches the planted configuration, and measure the
- // analytic closure round-trip (FK of the solution must rebuild the paw).
+ // THE PLANT CAPTURE (per leg; wave 13 refactor): freeze the paw's world
+ // (model-frame) position as the target, pick the IK branch that matches the
+ // planted configuration, and measure the analytic closure round-trip (FK of
+ // the solution must rebuild the paw). Called at the settle entry AND at every
+ // fore TD re-plant.
+ void capture_paw(size_t leg,const Evaluation& e){
+  auto pw=e.point(points_[fore_paw_point_[leg]].index,paw_ref_local_[leg]).first;
+  paw_target_[leg]=pw;
+  double err[2]={0.,0.};ForeIK sol[2]{{0,0,false},{0,0,false}};
+  for(int b=0;b<2;++b){ik_branch_[leg]=b==0?1:-1;sol[b]=fore_ik(leg,e);
+   err[b]=std::hypot(sol[b].q1-s_.q[fore_coord_[leg][0]],sol[b].q2-s_.q[fore_coord_[leg][1]]);}
+  ik_branch_[leg]=err[0]<=err[1]?1:-1;
+  const ForeIK&ik=sol[err[0]<=err[1]?0:1];
+  ik_qerr_[leg]=(std::min)(err[0],err[1]);
+  // Closure round-trip, end to end: FK the solution in the pelvis frame and
+  // map the paw back to the WORLD frame -- it must rebuild the target.
+  {const Mat& T=e.frames[fore_mount_body_[leg]].t;
+   double q12=ik.q1+ik.q2,r0=paw_ref_local_[leg][0],r1=paw_ref_local_[leg][1];
+   double ex=fore_L1_*std::sin(ik.q1)+r0*std::cos(q12)-r1*std::sin(q12);
+   double ey=-fore_L1_*std::cos(ik.q1)+r0*std::sin(q12)+r1*std::cos(q12);
+   const V& m=fore_mount_local_[leg];
+   double lx=m[0]+ex,ly=m[1]+ey,lz=m[2]; // paw in pelvis coordinates
+   double fx=T(0,0)*lx+T(0,1)*ly+T(0,2)*lz+T(0,3);
+   double fy=T(1,0)*lx+T(1,1)*ly+T(1,2)*lz+T(1,3);
+   ik_roundtrip_m_[leg]=std::hypot(fx-pw[0],fy-pw[1]);}
+#ifdef GAIT_EVENT_TRACE
+  std::fprintf(stderr,"[pawcap] leg=%zu td=%d paw=(%.9f,%.9f) branch=%+d qerr=%.3e rad roundtrip=%.3e m\n",
+   leg,fore_td_[leg],pw[0],pw[1],ik_branch_[leg],ik_qerr_[leg],ik_roundtrip_m_[leg]);
+#endif
+ }
  void capture_paws(){
   auto e=evaluate(s_);
+  for(size_t leg=0;leg<2;++leg)capture_paw(leg,e);
+  paws_captured_=true;
+  arm_fore_clock(e);} // THE STEPPING-STRUT CLOCK (wave 13): armed at the entry capture
+ // ── THE REPLANT LAW (wave 13, receipt derivation) ──
+ double fore_xoff()const{ // x_off = v * t_stance/2 at the CURRENT measured speed
+  return (std::max)(0.,s_.v[3])*(DUTY_SAMPLED*T_CYCLE)/2.;}
+ double fore_amax(const Evaluation& e,size_t leg)const{ // horizontal reach envelope at plant height
+  auto sh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
+  double h=(std::max)(0.,sh[1]-paw_plant_y_[leg]),d=fore_L1_+fore_rho_,a2=d*d-h*h;
+  return a2>0.?std::sqrt(a2):0.;}
+ // ARM (entry): the settle capture plants the paws at the statics spots
+ // (offset0 behind the shoulder). The entry stance is the SMALLER of (a) the
+ // symmetric-walk time, tau_sym = (|offset0|-x_off)/v -- the body walks the
+ // offset back to the steady liftoff offset -x_off -- and (b) the
+ // REACH-ENVELOPE time, tau_env = (a - |offset0| - v*dt)/v -- the annulus
+ // inequality the pre-registered reach falsifier enforces. RUN 1 BANKED THE
+ // VIOLATION (measured, receipt): the unbounded symmetric entry held the
+ // plants 81 ticks, saturated the IK at ticks 114/122 (wave-12-identical),
+ // and the topple killed the walk at 290. The envelope bound IS the
+ // derivation's own closure; enforcing it is implementation repair, not
+ // tuning.
+ void arm_fore_clock(const Evaluation& e){
+  double Tf=T_CYCLE/dt_;
   for(size_t leg=0;leg<2;++leg){
+   paw_plant_y_[leg]=paw_target_[leg][1];
    auto sh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
-   auto pw=e.point(points_[fore_paw_point_[leg]].index,paw_ref_local_[leg]).first;
-   paw_target_[leg]=pw;
-   double err[2]={0.,0.};ForeIK sol[2]{{0,0,false},{0,0,false}};
-   for(int b=0;b<2;++b){ik_branch_[leg]=b==0?1:-1;sol[b]=fore_ik(leg,e);
-    err[b]=std::hypot(sol[b].q1-s_.q[fore_coord_[leg][0]],sol[b].q2-s_.q[fore_coord_[leg][1]]);}
-   ik_branch_[leg]=err[0]<=err[1]?1:-1;
-   const ForeIK&ik=sol[err[0]<=err[1]?0:1];
-   // Closure round-trip, end to end: FK the solution in the pelvis frame and
-   // map the paw back to the WORLD frame -- it must rebuild the target.
-   {const Mat& T=e.frames[fore_mount_body_[leg]].t;
-    double q12=ik.q1+ik.q2,r0=paw_ref_local_[leg][0],r1=paw_ref_local_[leg][1];
-    double ex=fore_L1_*std::sin(ik.q1)+r0*std::cos(q12)-r1*std::sin(q12);
-    double ey=-fore_L1_*std::cos(ik.q1)+r0*std::sin(q12)+r1*std::cos(q12);
-    const V& m=fore_mount_local_[leg];
-    double lx=m[0]+ex,ly=m[1]+ey,lz=m[2]; // paw in pelvis coordinates
-    double fx=T(0,0)*lx+T(0,1)*ly+T(0,2)*lz+T(0,3);
-    double fy=T(1,0)*lx+T(1,1)*ly+T(1,2)*lz+T(1,3);
-    ik_roundtrip_m_[leg]=std::hypot(fx-pw[0],fy-pw[1]);}
+   double off=paw_target_[leg][0]-sh[0],xoff=fore_xoff(),tau1=0.;
+   double amax=fore_amax(e,leg);
+   if(xoff>0.&&s_.v[3]>1e-9){
+    double tau_sym=((std::max)(0.,std::abs(off)-xoff))/(s_.v[3]*T_CYCLE);
+    double tau_env=((std::max)(0.,amax-std::abs(off)-(std::max)(0.,s_.v[3])*dt_))/(s_.v[3]*T_CYCLE);
+    tau1=(std::min)(tau_sym,tau_env);}
+   if(tau1>DUTY_SAMPLED)tau1=DUTY_SAMPLED;
+   fore_stance_[leg]=tau1*Tf;
+   fore_cycle_[leg]=fore_stance_[leg]+(1.-DUTY_SAMPLED)*Tf;
+   fore_t_[leg]=0.;fore_mode_[leg]=0;fore_td_[leg]=0;fore_replants_[leg]=0;fore_clamped_[leg]=0;
+   fore_conv_[leg]=0;
 #ifdef GAIT_EVENT_TRACE
-   std::fprintf(stderr,"[pawcap] leg=%zu paw=(%.9f,%.9f) branch=%+d qerr=%.3e rad roundtrip=%.3e m\n",
-    leg,pw[0],pw[1],ik_branch_[leg],(std::min)(err[0],err[1]),ik_roundtrip_m_[leg]);
+   std::fprintf(stderr,"[foreclk] arm leg=%zu tick=%llu offset0=%+.6f xoff=%.6f amax=%.6f stance=%.3f ticks cycle=%.3f\n",
+    leg,(unsigned long long)ticks_,off,xoff,amax,fore_stance_[leg],fore_cycle_[leg]);
 #endif
-  }
-  paws_captured_=true;}
+  }}
+ // GRID CONVERGENCE (receipt derivation): the entry geometry cannot originate
+ // the lateral grid (LF = LH + T/4, RF = RH + T/4), so each UNCONVERGED TD
+ // moves the next TD as far toward the leg's lateral slot as the two reach
+ // laws allow: a SHORTENING may go down to the duty-1/2 floor
+ // (stance >= t_swing -- always envelope-safe); a LENGTHENING is capped by
+ // the envelope inequality (plant_offset + a - v*dt)/v. The search walks
+ // k = 1..8 split cycles and both circular directions (first feasible wins:
+ // fewest cycles, then the short way); a k=1 short-way landing marks the leg
+ // CONVERGED (pure clock thereafter). Deterministic; no force thresholds.
+ void fore_converge(size_t leg){
+  double Tf=T_CYCLE/dt_,swing=(1.-DUTY_SAMPLED)*Tf;
+  double slot0=(double)settle_total_+(leg==0?0.25:0.75)*Tf;
+  double now=(double)ticks_;
+  double slot=slot0;
+  while(slot<=now+swing)slot+=Tf; // the smallest slot the leg can still land
+  double d=slot-((double)now+Tf); // shift needed vs the uncorrected clock
+  if(std::abs(d)<=0.5){fore_conv_[leg]=1;fore_stance_[leg]=DUTY_SAMPLED*Tf;fore_cycle_[leg]=Tf;
+#ifdef GAIT_EVENT_TRACE
+   std::fprintf(stderr,"[foreclk] converged leg=%zu tick=%llu slot=%.3f\n",leg,(unsigned long long)ticks_,slot);
+#endif
+   return;}
+  auto e=evaluate(s_);
+  auto sh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
+  double off=paw_target_[leg][0]-sh[0]; // the just-captured plant offset
+  double v=(std::max)(0.,s_.v[3]),env=-1.; // env<0: lengthenings infeasible this cycle
+  if(v>1e-9)env=(off+fore_amax(e,leg)-v*dt_)/v;
+  double smin=swing;
+  for(int k=1;k<=8;++k)for(int w=0;w<2;++w){
+   double step=(d-(w?Tf:0.))/k;
+   double st=DUTY_SAMPLED*Tf+step;
+   if(st<smin-1e-9)continue;
+   if(step>0.&&(env<0.||st>env+1e-9))continue;
+   fore_stance_[leg]=st;fore_cycle_[leg]=st+swing;
+   if(k==1&&w==0)fore_conv_[leg]=1;
+#ifdef GAIT_EVENT_TRACE
+   std::fprintf(stderr,"[foreclk] converge leg=%zu tick=%llu slot=%.3f k=%d w=%d stance=%.3f env=%.3f conv=%d\n",
+    leg,(unsigned long long)ticks_,slot,k,w,st,env,fore_conv_[leg]);
+#endif
+   return;}
+  // no lawful correction this cycle: run nominal, retry at the next TD
+  fore_stance_[leg]=DUTY_SAMPLED*Tf;fore_cycle_[leg]=Tf;}
+ // THE FORE CLOCK: advances only in the walk (the hind clock's discipline).
+ // LIFTOFF at fore_t_ >= fore_stance_: derive the glide (the law's plant point
+ // from the CURRENT speed and shoulder position; the annulus clamps the law's
+ // own x_off only if the current height has eaten the envelope -- counted,
+ // loud). TOUCHDOWN at fore_t_ >= fore_cycle_: re-capture the actual paw,
+ // converge/restore the schedule. SWING: the target glides world-linearly
+ // under the clearance arch c*sin(pi*s), c = 2*pad radius (pad geometry).
+ void update_fore_clock(const Evaluation& e){
+  double Tf=T_CYCLE/dt_;
+  for(size_t leg=0;leg<2;++leg){
+   fore_t_[leg]+=1.;
+   if(fore_mode_[leg]==1){ // glide toward the plant point
+    double s=(fore_t_[leg]-fore_stance_[leg])/(fore_cycle_[leg]-fore_stance_[leg]);
+    if(s<0.)s=0.;if(s>1.)s=1.;
+    double c=2.*points_[fore_paw_point_[leg]].radius;
+    for(int i=0;i<3;++i)paw_target_[leg][i]=swing_from_[leg][i]+(swing_to_[leg][i]-swing_from_[leg][i])*s;
+    paw_target_[leg][1]+=c*std::sin(pi*s);
+   }
+   if(fore_mode_[leg]==0&&fore_t_[leg]>=fore_stance_[leg]){ // LIFTOFF
+    fore_mode_[leg]=1;
+    auto pw=e.point(points_[fore_paw_point_[leg]].index,paw_ref_local_[leg]).first;
+    auto sh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
+    swing_from_[leg]=pw;
+    double xoff=fore_xoff();
+    double amax=fore_amax(e,leg);
+    if(xoff>amax){xoff=amax;++fore_clamped_[leg];}
+    swing_to_[leg]=V{sh[0]+xoff,paw_plant_y_[leg],pw[2]};
+#ifdef GAIT_EVENT_TRACE
+    std::fprintf(stderr,"[foreclk] lift leg=%zu tick=%llu td=%d from=(%.6f,%.6f) to=(%.6f,%.6f) xoff=%.6f v=%.6f\n",
+     leg,(unsigned long long)ticks_,fore_td_[leg],pw[0],pw[1],swing_to_[leg][0],swing_to_[leg][1],xoff,s_.v[3]);
+#endif
+   }
+   if(fore_t_[leg]>=fore_cycle_[leg]){ // TOUCHDOWN: re-capture the actual paw
+    capture_paw(leg,e);++fore_replants_[leg];++fore_td_[leg];
+    fore_t_[leg]=0.;fore_mode_[leg]=0;
+    if(fore_conv_[leg]){fore_stance_[leg]=DUTY_SAMPLED*Tf;fore_cycle_[leg]=Tf;}
+    else fore_converge(leg); // bounded grid convergence until the slot lands
+#ifdef GAIT_EVENT_TRACE
+    std::fprintf(stderr,"[foreclk] td leg=%zu tick=%llu td_count=%d stance=%.3f roundtrip=%.3e m\n",
+     leg,(unsigned long long)ticks_,fore_td_[leg],fore_stance_[leg],ik_roundtrip_m_[leg]);
+#endif
+   }
+  }}
  Dense servo()const{ // capped mass-normalized PD at the derived 4.0 Hz (Section 5.2)
   Dense tau(n_,0.);
   bool walking=config_["gait_enabled"].get<bool>();
@@ -753,7 +911,11 @@ class GaitWalker {
  void reset(){
   s_=State(n_,npts_);s_.q=model_->defaults;s_.v=Dense(n_,0.);ticks_=0;capture_events_=0;last_torque_=Dense(n_,0.);settle_ticks_=settle_total_;
   paws_captured_=false;ik_sat_ticks_[0]=ik_sat_ticks_[1]=0;ik_roundtrip_m_[0]=ik_roundtrip_m_[1]=0;
+  ik_qerr_[0]=ik_qerr_[1]=0;
   ik_sat_prev_[0]=ik_sat_prev_[1]=false;
+  fore_t_[0]=fore_t_[1]=0.;fore_stance_[0]=fore_stance_[1]=0.;fore_cycle_[0]=fore_cycle_[1]=0.;
+  fore_mode_[0]=fore_mode_[1]=0;fore_td_[0]=fore_td_[1]=0;
+  fore_replants_[0]=fore_replants_[1]=0;fore_clamped_[0]=fore_clamped_[1]=0;fore_conv_[0]=fore_conv_[1]=0;
   battery_.assign(nd_,0.);brake_.assign(nd_,0.);empty_events_.assign(nd_,0);store_total_=0;
   for(size_t d=0;d<nd_;++d){battery_[d]=drives_[d].store_floor;store_total_+=drives_[d].store_floor;}
   battery_post_=store_post_;brake_post_=0;empty_post_=0;store_total_+=store_post_;
@@ -825,7 +987,11 @@ class GaitWalker {
   if(!paws_captured_&&settle_total_>0&&settle_ticks_==0&&walking&&config_["power"].get<bool>()&&contact_)capture_paws();
   // 1) clock update at the tick start (contact reset dominates).
   {auto e=evaluate(s_);if(walking)update_clock(e,dt_);else{for(size_t leg=0;leg<2;++leg){bool touching=false;const char* prefix=leg==0?"left":"right";
-   for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0&&gap_of(e,k)<=kTouch)touching=true;touching_prev_[leg]=touching;}}}
+   for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0&&gap_of(e,k)<=kTouch)touching=true;touching_prev_[leg]=touching;}}
+   // THE STEPPING-STRUT FORE CLOCK (wave 13): armed at the settle capture,
+   // advanced only in the walk -- liftoff/glide/touchdown transitions are
+   // CLOCK-derived (deterministic), never force- or position-triggered.
+   if(walking&&paws_captured_)update_fore_clock(e);}
   // 2) reflex on the tick-start state (armed only in the walk, and only when
   //    the capture reflex is enabled -- F-G6's disarmed control leg).
   {auto e=evaluate(s_);std::vector<std::pair<double,double>> hull;V com{};
@@ -950,14 +1116,20 @@ class GaitWalker {
   J gait{{"cycle_duration_s",T_CYCLE},{"duty_factor_sampled",DUTY_SAMPLED},{"servo_frequency_Hz",FS_HZ},
    {"phase_left",phi_[0]},{"phase_right",phi_[1]},{"phase_offset",std::fmod(phi_[1]-phi_[0]+1.,1.)},
    {"capture_events",capture_events_},{"touching_left",touching_prev_[0]},{"touching_right",touching_prev_[1]}};
-  // THE PLANTED STRUT (wave 12): paw diagnostics -- held target, tracked
-  // error, closure round-trip, saturation census.
+  // THE PLANTED STRUT (wave 12) + THE STEPPING CLOCK (wave 13): paw
+  // diagnostics -- held/glided target, tracked error, closure round-trip and
+  // capture qerr, saturation census, clock phase/mode/schedule.
   {J forepaw=J::array();
    for(size_t leg=0;leg<2;++leg){
     if(paws_captured_){auto pw=e.point(points_[fore_paw_point_[leg]].index,paw_ref_local_[leg]).first;
      forepaw.push_back({{"leg",leg==0?"fore_left":"fore_right"},{"target_m",{paw_target_[leg][0],paw_target_[leg][1]}},
       {"error_m",std::hypot(pw[0]-paw_target_[leg][0],pw[1]-paw_target_[leg][1])},
-      {"ik_roundtrip_m",ik_roundtrip_m_[leg]},{"ik_saturated_ticks",ik_sat_ticks_[leg]}});}
+      {"ik_roundtrip_m",ik_roundtrip_m_[leg]},{"ik_qerr_rad",ik_qerr_[leg]},
+      {"ik_saturated_ticks",ik_sat_ticks_[leg]},
+      {"fore_mode",fore_mode_[leg]==1?"swing":"stance"},{"td_count",fore_td_[leg]},
+      {"replants",fore_replants_[leg]},{"annulus_clamped_plants",fore_clamped_[leg]},
+      {"grid_converged",fore_conv_[leg]==1},
+      {"t_in_cycle",fore_t_[leg]},{"stance_ticks",fore_stance_[leg]},{"cycle_ticks",fore_cycle_[leg]}});}
     else forepaw.push_back({{"leg",leg==0?"fore_left":"fore_right"},{"captured",false}});}
    gait["fore_paw"]=forepaw;gait["fore_paw_captured"]=paws_captured_;}
   return {{"sim_time_s",ticks_*dt_},{"ticks",ticks_},{"mode","native_gait_walker"},{"joints",joints},
