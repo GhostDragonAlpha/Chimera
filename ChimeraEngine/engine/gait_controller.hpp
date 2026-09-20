@@ -204,6 +204,20 @@ class GaitWalker {
  bool fore_td_plant_[2]={true,true}; // the leg's last plant opened a window (a TD); the gate's clause (b) scope
  mutable uint64_t wall_pins_[12]={0,0,0,0,0,0,0,0,0,0,0,0};
  mutable uint64_t wall_pins_air_[12]={0,0,0,0,0,0,0,0,0,0,0,0};
+ // ── THE POCKET-CLEAR HOLD (wave 24, receipt_wave24.json) ──
+ // The glide's joint-admissible presentation state: at a wall-bound lift
+ // whose line-march finds joint-range-exiting ticks (the POCKET: the map
+ // measured ALL nine line points of the wave-23 death glide outside the
+ // scene's own joint ranges, on BOTH IK branches, at every height above
+ // the plane), the glide holds the BODY-LOCKED LIFTED FOLLOW SEAT through
+ // those ticks and resumes the standard line+arch at the release. The
+ // body-lock keeps the held target's annulus D at its liftoff value (the
+ // world-park variant recedes into the annulus wall within 2 ticks -- the
+ // reach census); the lift clears the pad band (the v8 lesson inverted:
+ // the hold that CLEARS, not the hold that hugs).
+ int fore_glide_hold_[2]={0,0};
+ int fore_hold_last_[2]={0,0};
+ V fore_hold_off_[2]={V{},V{}}; // follow seat minus shoulder at the lift (world)
  std::vector<BodyRef> bodies_;bool contact_=false;
  State s_;mutable uint64_t adv_calls_=0;
  Evaluation evaluate(const State& s)const{return model_->evaluate(s.q,s.v,gravity_);}
@@ -591,6 +605,54 @@ class GaitWalker {
   for(int j=0;j<42;++j){double mid=(lo+hi)/2;V t=p;t[0]+=dir*mid;
    if(fore_target_headroom_at(leg,e,t)<2.*kWallMargin)lo=mid;else hi=mid;}
   return {p[0]+dir*((lo+hi)/2),p[1],p[2]};}
+ // THE POCKET-CLEAR HOLD's march (wave 24, receipt_wave24.json): at a
+ // wall-bound lift, walk the glide's own per-tick line points (no arch)
+ // through the machinery's fore_ik_at and record the LAST tick whose
+ // unclamped branch solution exits the scene's own joint ranges -- the
+ // held span is [1, min(last, cycle-2)] and the release resumes the
+ // standard line+arch. A wall_bound=0 lift marches nothing and holds
+ // nothing: the standard path bytes run (the [0,65] proof standard).
+ void fore_glide_arm_hold(size_t leg,const Evaluation& e,bool wall_bound){
+  fore_glide_hold_[leg]=0;fore_hold_last_[leg]=0;
+  if(!wall_bound)return;
+  int n=(int)(fore_cycle_[leg]-fore_stance_[leg]);
+  if(n<2)return;
+  auto sh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
+  // THE HOLD SEAT: the map's unique above-ground MAXIMUM-AUTHORITY
+  // configuration -- the annulus-edge ground seat in the authority
+  // direction (the same +/- 1 mm sample and 42-step bisection the wave-23
+  // follow runs; the wave-23 receipt's own words: the edge itself is
+  // jointly admissible). MEASURED (v2, this lane): the follow-seat hold's
+  // 0.49 N.m lost the wall fight to the contact closure on BOTH legs
+  // (64+14 LOADED pins) -- the edge seat's 2.18 N.m (kp * the edge
+  // headroom 0.3366 at the wave-23 liftoff state) is the machinery's
+  // maximum; NO lift is added (the v2 held-pad gaps never cleared -- the
+  // hug is force-held, and it is harmless once the wall is lost: the pins
+  // need the wall).
+  V p=paw_target_[leg];
+  V px=p,py=p;px[0]+=1e-3;py[0]-=1e-3;
+  double dir=fore_target_headroom_at(leg,e,px)>=fore_target_headroom_at(leg,e,py)?+1.:-1.;
+  double dmax=fore_L1_+fore_rho_;
+  double lo=0,hi=2.*dmax;
+  for(int j=0;j<42;++j){double mid=(lo+hi)/2;V t=p;t[0]+=dir*mid;
+   if(fore_D_at(leg,e,t)<dmax)lo=mid;else hi=mid;}
+  V edge={p[0]+dir*((lo+hi)/2),p[1],p[2]};
+  fore_hold_off_[leg]=V{edge[0]-sh[0],edge[1]-sh[1],edge[2]-sh[2]};
+  size_t c1=fore_coord_[leg][0],c2=fore_coord_[leg][1];
+  int last=0;
+  for(int k=1;k<=n;++k){
+   double s=double(k)/double(n);V t{};
+   for(int i=0;i<3;++i)t[i]=swing_from_[leg][i]+(swing_to_[leg][i]-swing_from_[leg][i])*s;
+   ForeIK ik=fore_ik_at(leg,e,t);
+   if(ik.q1_raw<model_->lower[c1]||ik.q1_raw>model_->upper[c1]||
+      ik.q2_raw<model_->lower[c2]||ik.q2_raw>model_->upper[c2])last=k;}
+  if(last>0){fore_glide_hold_[leg]=1;fore_hold_last_[leg]=last;}
+#ifdef GAIT_EVENT_TRACE
+  std::fprintf(stderr,"[foreclk] hold leg=%zu tick=%llu armed=%d last=%d off=(%.6f,%.6f)\n",
+   leg,(unsigned long long)ticks_,fore_glide_hold_[leg],fore_hold_last_[leg],
+   fore_hold_off_[leg][0],fore_hold_off_[leg][1]);
+#endif
+ }
  // THE PLANT CAPTURE (per leg; wave 13 refactor): freeze the paw's world
  // (model-frame) position as the target, pick the IK branch that matches the
  // planted configuration, and measure the analytic closure round-trip (FK of
@@ -768,16 +830,34 @@ class GaitWalker {
     double s=(fore_t_[leg]-fore_stance_[leg])/(fore_cycle_[leg]-fore_stance_[leg]);
     if(s<0.)s=0.;if(s>1.)s=1.;
     double c=2.*points_[fore_paw_point_[leg]].radius;
+    // THE POCKET-CLEAR HOLD (wave 24, receipt_wave24.json): during the
+    // march's joint-range-exiting span the target is the BODY-LOCKED
+    // ANNULUS-EDGE SEAT -- the map's unique above-ground maximum-authority
+    // pair (q1u -1.2634 at the wave-23 liftoff state; D held at dmax by
+    // the body-lock, the reach never recedes). MEASURED (v2): the
+    // follow-seat hold's 0.49 N.m authority LOST the wall fight (the
+    // closure pinned both legs' actuals at the wall, 64+14 LOADED pins);
+    // the edge seat's 2.18 N.m out-pulls the closure, the actual LEAVES
+    // the wall from the hold's first tick (the exit velocity is
+    // wall-LEAVING -- the clamp's precondition, a wallward crossing, is
+    // structurally dead). The release (the map's exit or the TD's eve)
+    // resumes the standard bytes below.
+    if(fore_glide_hold_[leg]&&fore_t_[leg]<fore_hold_last_[leg]&&fore_t_[leg]+1.<fore_cycle_[leg]){
+     auto shh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
+     paw_target_[leg]=V{shh[0]+fore_hold_off_[leg][0],shh[1]+fore_hold_off_[leg][1],shh[2]+fore_hold_off_[leg][2]};
+    }else{
     for(int i=0;i<3;++i)paw_target_[leg][i]=swing_from_[leg][i]+(swing_to_[leg][i]-swing_from_[leg][i])*s;
     paw_target_[leg][1]+=c*std::sin(pi*s);
+    }
     // THE GLIDE-ENTRY HOLD [REJECTED, mined v8]: holding this target at the
     // admissible seat while the pads remain in the band was built to stop
     // the tick-84 glide-transit clamp; it measured WORSE -- the R's pads hug
     // the band deep into the swing, the held target prevented the very
     // unload that clears them, the sustained crush drove its deflection
     // past the restore (h=0.000000 at 76, 73 loaded pins, the refusal back
-    // at 82). The lift transient is owned by the deferred lift (the seat
-    // bar); the pocket transit itself is the next membrane's banked rung.
+    // at 82). The pocket-clear hold (wave 24) owns the transit now: the
+    // hold that CLEARS (the lift), body-locked (the reach), released at
+    // the map's exit -- derived, not tuned.
    }
    if(fore_mode_[leg]==0&&fore_t_[leg]>=fore_stance_[leg]){ // LIFTOFF
     size_t o=leg==0?1:0;
@@ -862,6 +942,7 @@ class GaitWalker {
     double amax=fore_amax(e,leg);
     if(xoff>amax){xoff=amax;++fore_clamped_[leg];}
     swing_to_[leg]=V{sh[0]+xoff,paw_plant_y_[leg],pw[2]};
+    fore_glide_arm_hold(leg,e,wall_bound); // THE POCKET-CLEAR HOLD (wave 24)
 #ifdef GAIT_EVENT_TRACE
     std::fprintf(stderr,"[foreclk] lift leg=%zu tick=%llu td=%d entry=%d from=(%.6f,%.6f) to=(%.6f,%.6f) xoff=%.6f v=%.6f wall_bound=%d\n",
      leg,(unsigned long long)ticks_,fore_td_[leg],fore_entry_[leg],pw[0],pw[1],swing_to_[leg][0],swing_to_[leg][1],xoff,s_.v[3],wall_bound?1:0);
@@ -878,6 +959,7 @@ class GaitWalker {
       double amax=fore_amax(e,leg);
       if(xoff>amax){xoff=amax;++fore_clamped_[leg];}
       swing_to_[leg]=V{sh[0]+xoff,paw_plant_y_[leg],pw[2]};
+      fore_glide_arm_hold(leg,e,wall_bound); // THE POCKET-CLEAR HOLD (wave 24)
      }else{
       paw_target_[leg]=seat;++fore_wall_follows_[leg];
       fore_td_plant_[leg]=false;
@@ -929,6 +1011,7 @@ class GaitWalker {
    if(fore_t_[leg]>=fore_cycle_[leg]){ // TOUCHDOWN: re-capture the actual paw
     capture_paw(leg,e);++fore_replants_[leg];++fore_td_[leg];
     fore_t_[leg]=0.;fore_mode_[leg]=0;fore_td_plant_[leg]=true; // the TD opened a window
+    fore_glide_hold_[leg]=0;fore_hold_last_[leg]=0; // the hold's span ended with the swing
     // THE MID-ENTRY RE-PLANT re-arm (wave 20): from the FRESH measured
     // envelope; the HAND-OFF clears the regime at the first TD at/ahead of
     // the shoulder (off >= 0 -- the symmetric regime, envelope >= amax/v),
@@ -1399,6 +1482,8 @@ class GaitWalker {
   fore_entry_[0]=fore_entry_[1]=0;fore_gate_holds_[0]=fore_gate_holds_[1]=0;
   fore_wall_bound_[0]=fore_wall_bound_[1]=0;fore_wall_follows_[0]=fore_wall_follows_[1]=0;
   fore_td_plant_[0]=fore_td_plant_[1]=true;
+  fore_glide_hold_[0]=fore_glide_hold_[1]=0;fore_hold_last_[0]=fore_hold_last_[1]=0;
+  fore_hold_off_[0]=V{};fore_hold_off_[1]=V{};
   for(size_t d=0;d<12;++d){wall_pins_[d]=0;wall_pins_air_[d]=0;}
   battery_.assign(nd_,0.);brake_.assign(nd_,0.);empty_events_.assign(nd_,0);store_total_=0;
   for(size_t d=0;d<nd_;++d){battery_[d]=drives_[d].store_floor;store_total_+=drives_[d].store_floor;}
@@ -1652,6 +1737,8 @@ class GaitWalker {
       {"fore_mode",fore_mode_[leg]==1?"swing":"stance"},{"td_count",fore_td_[leg]},
       {"replants",fore_replants_[leg]},{"annulus_clamped_plants",fore_clamped_[leg]},
       {"entry_replant",fore_entry_[leg]==1},{"gate_hold_ticks",fore_gate_holds_[leg]},
+      {"glide_hold",fore_glide_hold_[leg]==1&&fore_t_[leg]<fore_hold_last_[leg]&&fore_t_[leg]+1.<fore_cycle_[leg]},
+      {"glide_hold_last",fore_hold_last_[leg]},
       {"grid_converged",fore_conv_[leg]==1},
       {"t_in_cycle",fore_t_[leg]},{"stance_ticks",fore_stance_[leg]},{"cycle_ticks",fore_cycle_[leg]}});}
     else forepaw.push_back({{"leg",leg==0?"fore_left":"fore_right"},{"captured",false}});}

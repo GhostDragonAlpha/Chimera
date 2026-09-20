@@ -46,6 +46,11 @@ struct WalkOut{
  std::vector<std::array<uint64_t,2>> wair;     // per-leg stop-pin census (AIRBORNE)
  std::vector<std::array<uint64_t,2>> wbound;   // per-leg wall_bound ticks
  std::vector<std::array<uint64_t,2>> wfollow;  // per-leg admissible follows
+ // WAVE 24 POCKET-CLEAR HOLD census inputs: per-tick hold flag, hold span,
+ // and the glide clock (t_in_cycle) per fore leg.
+ std::vector<std::array<char,2>> fhold;
+ std::vector<std::array<int,2>> fhl;
+ std::vector<std::array<double,2>> ftic;
  std::vector<char> fcap;                       // paws_captured per tick
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
@@ -194,10 +199,14 @@ int main(int argc,char**argv){try{
 #endif
     std::array<char,2> fmm{0,0};std::array<uint64_t,2> sat{};std::array<double,2> tgx{0.,0.};std::array<uint64_t,2> rep{0,0};
     std::array<std::array<double,11>,2> fwk{};std::array<uint64_t,2> wp{},wb{},wf{},wa{};
+    std::array<char,2> fh{0,0};std::array<int,2> fhlk{-1,-1};std::array<double,2> ftick{-1.,-1.};
     if(s["gait"].contains("fore_paw")&&s["gait"]["fore_paw"].size()>=2)
      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["fore_paw"][l];
       if(p.contains("fore_mode"))fmm[l]=p["fore_mode"].get<std::string>()=="swing"?1:0;
       if(p.contains("ik_saturated_ticks"))sat[l]=p["ik_saturated_ticks"].get<uint64_t>();
+      if(p.contains("glide_hold"))fh[l]=p["glide_hold"].get<bool>()?1:0;
+      if(p.contains("glide_hold_last"))fhlk[l]=p["glide_hold_last"].get<int>();
+      if(p.contains("t_in_cycle"))ftick[l]=number(p["t_in_cycle"]);
       if(p.contains("ik_qerr_rad"))out.ik_qerr_max=(std::max)(out.ik_qerr_max,number(p["ik_qerr_rad"]));
       if(p.contains("error_m"))out.paw_err_max=(std::max)(out.paw_err_max,number(p["error_m"]));
       if(p.contains("ik_roundtrip_m"))out.ik_roundtrip_max=(std::max)(out.ik_roundtrip_max,number(p["ik_roundtrip_m"]));
@@ -213,6 +222,7 @@ int main(int argc,char**argv){try{
        wf[l]=p["wall_follows"].get<uint64_t>();wa[l]=p["wall_pins_air"].get<uint64_t>();}}
     out.fw[0].push_back(fwk[0]);out.fw[1].push_back(fwk[1]);
     out.wpins.push_back(wp);out.wair.push_back(wa);out.wbound.push_back(wb);out.wfollow.push_back(wf);
+    out.fhold.push_back(fh);out.fhl.push_back(fhlk);out.ftic.push_back(ftick);
     out.fcap.push_back(s["gait"].contains("fore_paw_captured")&&s["gait"]["fore_paw_captured"].get<bool>()?1:0);
     out.fm.push_back(fmm);out.fsat.push_back(sat);out.ftgt.push_back(tgx);out.frep.push_back(rep);
 #ifdef GAIT_EVENT_TRACE
@@ -490,6 +500,51 @@ int main(int argc,char**argv){try{
     mD[0]<1e8?mD[0]:-1.,mD[1]<1e8?mD[1]:-1.);
    note(b);
    ck(viol[0]==0&&viol[1]==0,"f23_hold_target_admissible");}}
+
+ // ── WAVE 24 GLIDE-ADMISSIBILITY censuses (pre-registered in
+ //    receipt_wave24.json; THE JOINT-ADMISSIBLE GLIDE / THE POCKET-CLEAR
+ //    HOLD). (a) THE PIN DIRECT TEST rides the F-G23 census above (both
+ //    classes; the wave-23 reference: 64 airborne at drive 8). (b) THE
+ //    LAW-CONFORMANCE CENSUS: every SWING tick's target is either inside
+ //    the UNCLAMPED joint range (the held ticks -- the body-locked lifted
+ //    follow seat is admissible by construction) or ON THE CHOSEN LAW'S
+ //    PATH (a non-held glide tick runs the standard line+arch -- the
+ //    release); a HELD tick outside the unclamped range is the law's
+ //    DIRECT falsification. The release ticks' own clips (the machinery's
+ //    wall clip on the standard path) REPORTED, never hidden. (c) THE
+ //    TOUCH LETTER: swing_wall_touches = (0,0) recomputed here. (d) THE
+ //    HOLD-CLEARANCE WITNESS: the min swing-pad gap over the held ticks
+ //    with its tick (the v8 face: the hug must clear the band).
+ {const J& modelj24=data.at("model");
+  auto rng24=[&](const char* nm)->std::pair<double,double>{
+   const J& r=modelj24.at("coordinates").at(nm).at("range_rad");
+   return {number(r[0]),number(r[1])};};
+  auto S1_24=rng24("shoulder_flexion_fore_left"),E1_24=rng24("elbow_flexion_fore_left");
+  auto S2_24=rng24("shoulder_flexion_fore_right"),E2_24=rng24("elbow_flexion_fore_right");
+  const size_t NC24=std::min(w.fw[0].size(),w.fm.size());
+  int held[2]={0,0},held_adm[2]={0,0},rel[2]={0,0},rel_clip[2]={0,0},viol[2]={0,0},swt[2]={0,0};
+  int vtick[2]={-1,-1};
+  double held_gapmin[2]={1e9,1e9};int held_gaptick[2]={-1,-1};
+  for(size_t i=60;i<NC24;++i)for(size_t l=0;l<2;++l){
+   if(!w.fcap[i]||!w.fm[i][l])continue;
+   const auto&f=w.fw[l][i];
+   auto S=l==0?S1_24:S2_24;auto El=l==0?E1_24:E2_24;
+   bool h=w.fhold[i][l]!=0;
+   bool inr=f[5]>=S.first&&f[5]<=S.second&&f[6]>=El.first&&f[6]<=El.second;
+   if(h){++held[l];if(inr)++held_adm[l];else{++viol[l];if(vtick[l]<0)vtick[l]=(int)i;}
+    if(w.fgmin[i][l]<held_gapmin[l]){held_gapmin[l]=w.fgmin[i][l];held_gaptick[l]=(int)i;}}
+   else{++rel[l];if(!inr)++rel_clip[l];}
+   if(f[4]<=1e-9)++swt[l];}
+  char b[512];std::snprintf(b,512,"F-G24 glide_law held=(%d,%d) held_admissible=(%d,%d) [GREEN] held_viol=(%d,%d) first_viol=(%d,%d) release_ticks=(%d,%d) release_clips=(%d,%d) [REPORTED: the machinery's own wall clip on the standard release path] swing_wall_touches=(%d,%d) [GREEN=0,0]",
+   held[0],held[1],held_adm[0],held_adm[1],viol[0],viol[1],vtick[0],vtick[1],
+   rel[0],rel[1],rel_clip[0],rel_clip[1],swt[0],swt[1]);
+  note(b);
+  ck(viol[0]==0&&viol[1]==0,"f24_glide_law_conformance");
+  ck(swt[0]==0&&swt[1]==0,"f24_zero_swing_wall_touches");
+  char b2[384];std::snprintf(b2,384,"F-G24 hold_clearance held_gap_min L=%s@%d R=%s@%d (the band edge kTouch=1e-5; the wave-23 hug 3e-6..9.3e-6 is the v8 face)",
+   held_gaptick[0]>=0?std::to_string(held_gapmin[0]).c_str():"n/a",held_gaptick[0],
+   held_gaptick[1]>=0?std::to_string(held_gapmin[1]).c_str():"n/a",held_gaptick[1]);
+  note(b2);}
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the
  //    causal verdict REFLEX-FIRST): (a) THE REFLEX ARMING CENSUS -- the
