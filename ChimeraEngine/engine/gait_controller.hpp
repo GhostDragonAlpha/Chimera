@@ -34,6 +34,22 @@ namespace chimera::multibody {
 // modified -- this header only adds a sibling runtime for the gait scene.
 class GaitWalker {
  static constexpr double kTouch=1e-5,kSlip=1e-9;
+ // THE TOUCH LAW (wave 22, receipt_wave22.json): the clock's contact state
+ // releases only when the leg's pair-min gap clears the band by more than
+ // kReleaseBand -- the contact solver's OWN gap quantum, already in this
+ // machinery (the positional-correction penetration band -1e-6, the paw-band
+ // penetration bound -1e-6). MEASURED SEPARATION (the byte-exact baseline,
+ // mined per tick): a genuine touchdown arrives from departure depths of
+ // 6.5e-2/1.17e-1 m and closes 1.21e-3/1.95e-3 m in its FINAL tick (1200-
+ // 1950x the quantum; a free foot crosses it in under 1% of a tick -- gravity
+ // alone moves g*dt^2 = 1.09e-4 m per tick, 109x); the wave-21 band-edge
+ // graze (the touch-reset slam's arming event) excursed 1.6e-7 m above the
+ // band for ONE tick at 4.8e-5 m/s separation -- 6.25x BELOW the quantum and
+ // below the solver's own plane-engagement velocity gate (>= 1e-3 m/s scale):
+ // by the machinery's own contact definition that foot NEVER left. A touch
+ // event that resets a stance clock must be a TOUCHDOWN, not a band-edge
+ // graze. No free constant: the quantum is the solver's existing one.
+ static constexpr double kReleaseBand=1e-6;
  static constexpr size_t NB=6,NLEG=4;
  public:
  struct Drive {std::string name,leg,joint;size_t coordinate;double cap,store_floor,damping;};
@@ -289,14 +305,31 @@ class GaitWalker {
   if(nn>=0){for(size_t i=0;i<initial.size();++i)force[i]=row_n[i]*nn+row_t[i]*t;lambda_n=nn;lambda_t=t;mode=2;return;}
   force=Dense(initial.size(),0.);lambda_n=0;lambda_t=0;mode=0;}
  // ── the controller proper ──
+ // THE TOUCH LAW's classification (wave 22, receipt_wave22.json): the leg's
+ // contact state for the CLOCK. In contact at pair-min gap <= kTouch; released
+ // only when the pair-min gap exceeds kTouch+kReleaseBand (a GENUINE departure
+ // clears the solver's own stabilization quantum within the tick); inside the
+ // band's hysteresis margin the previous state HOLDS -- a band-edge graze
+ // never releases, so its re-entry is not a rising edge and cannot reset the
+ // stance clock. Deterministic, stateless beyond the previous state itself.
+ bool leg_contact(const Evaluation& e,size_t leg,bool prev)const{
+  double gmin=1e300;const char* prefix=leg==0?"left":"right";
+  for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0)gmin=(std::min)(gmin,gap_of(e,k));
+  if(gmin<=kTouch)return true;
+  if(gmin>kTouch+kReleaseBand)return false;
+  return prev;}
  // Contact-reset hybrid clock (Section 5.1): advance by sim time, RESET to 0
  // at the leg's own kTouch crossing (a leg is touching when ANY of its foot
  // points is inside the band). Returns true when a reset fired this tick.
+ // WAVE 22: the crossing is classified by leg_contact -- the release state
+ // cleared only by a genuine departure (> kTouch+kReleaseBand), so the edge
+ // fires for TOUCHDOWNS tick-exactly as before, while a band-edge graze (the
+ // measured 1.6e-7 m / 1-tick excursion that slammed phR 0.5282 -> 0 at the
+ // walk's step 66 and plowed the loaded foot to 2.03 m/s) re-arms NOTHING.
  bool update_clock(const Evaluation& e,double dt){
   bool reset_fired=false;
   for(size_t leg=0;leg<2;++leg){
-   bool touching=false;const char* prefix=leg==0?"left":"right";
-   for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0&&gap_of(e,k)<=kTouch)touching=true;
+   bool touching=leg_contact(e,leg,touching_prev_[leg]);
    if(touching&&!touching_prev_[leg]){phi_[leg]=0.;reset_fired=true;}
    // RUN REPAIR (wave 16, itemized in receipt_wave16.json): the phase advance
    // carried the per-leg OFFSET inside the per-tick increment for the right
@@ -1221,8 +1254,11 @@ class GaitWalker {
   // branch; the struts hold THEM from here on, not fixed joint angles.
   if(!paws_captured_&&settle_total_>0&&settle_ticks_==0&&walking&&config_["power"].get<bool>()&&contact_)capture_paws();
   // 1) clock update at the tick start (contact reset dominates).
-  {auto e=evaluate(s_);if(walking)update_clock(e,dt_);else{for(size_t leg=0;leg<2;++leg){bool touching=false;const char* prefix=leg==0?"left":"right";
-   for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0&&gap_of(e,k)<=kTouch)touching=true;touching_prev_[leg]=touching;}}
+  {auto e=evaluate(s_);if(walking)update_clock(e,dt_);else{for(size_t leg=0;leg<2;++leg)
+   // THE TOUCH LAW's classification held through the frozen window too (the
+   // same release state the walk's first update consumes; a foot planted at
+   // the band edge through the settle is ONE contact, not a new touchdown).
+   touching_prev_[leg]=leg_contact(e,leg,touching_prev_[leg]);}
    // THE STEPPING-STRUT FORE CLOCK (wave 13): armed at the settle capture,
    // advanced only in the walk -- liftoff/glide/touchdown transitions are
    // CLOCK-derived (deterministic), never force- or position-triggered.

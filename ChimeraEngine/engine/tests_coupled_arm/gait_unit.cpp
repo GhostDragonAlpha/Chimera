@@ -152,7 +152,7 @@ int main(int argc,char**argv){try{
     {std::array<double,8> sp{};for(size_t k=0;k<8;++k)sp[k]=number(s["joints"][k]["speed_rad_s"]);
      out.hspd.push_back(sp);}
 #ifdef GAIT_EVENT_TRACE
-    if(i>=50&&i<=95){
+    if(true){ // WAVE 22 MINING: the whole (short) life, per-tick hind detail
      const J& tr=s["joints"][12];
      std::fprintf(stderr,"[dv] t=%d ptq=%.5f ptgt=%.4f pang=%.4f pspd=%.4f ev=%llu phL=%.5f phR=%.5f com=(%.6f,%.6f) hull=%d in=%d bx=%.6f\n",
       i,number(tr["motor_torque_N_m"]),number(tr["target_deg"]),number(tr["angle_deg"]),number(tr["speed_rad_s"]),
@@ -438,6 +438,118 @@ int main(int argc,char**argv){try{
    char b[256];std::snprintf(b,256,"F-G21 fold_census posture_tau_max=%.5f (cap %.4f) first_rail_tick=%s ticks_pspd_negative_in_[65,79]=%d [REPORTED: not this verdict's clause]",
     cmx,CAP,first_rail<0?"none":std::to_string(first_rail).c_str(),neg_spd);
    note(b);}}
+
+ // ── WAVE 22 TOUCH-RESET CENSUSES (pre-registered in receipt_wave22.json;
+ //    THE TOUCH-RESET LAW: a touch event that legitimately resets a stance
+ //    clock must be a TOUCHDOWN, not a band-edge graze). (a) THE SLAM CENSUS
+ //    -- the membrane's OWNED direct test: every hind-clock phase event
+ //    (|dphi| > 3*dt/T = 0.014083) classified NATURAL-WRAP / RESET-at-legit-TD
+ //    / CAPTURE-JUMP / SLAM-or-unclassified; the last class must be EMPTY;
+ //    both hind phases continuous through the graze window [63,66] (the
+ //    baseline reference: phR 0.52817 -> 0.00000 during step 66). (b) THE
+ //    TOUCH CENSUS -- every band excursion per hind leg (pair-min gap > kTouch
+ //    runs) classified by DEPARTURE DEPTH vs the solver's stabilization quantum
+ //    kStab = 1e-6 m: depth <= kStab = CHATTER (a reset at its re-entry is a
+ //    SLAM); depth > kStab = LEGITIMATE. The pre-registered known-good
+ //    touchdown list (L@40, R@55 gap edges; depths 6.5e-2/1.17e-1) must
+ //    classify LEGITIMATE; zero resets at chatter edges; every clock reset
+ //    pairs tick-exactly with a LEGITIMATE edge. (c) THE RESIDUAL-SLIP CENSUS
+ //    -- REPORTED against the pre-registered band: the R hind's touching slip
+ //    [65,90], the sustained > 0.1 m/s runs, the worst tick's force balance.
+ {const double KT=1e-5,KSTAB=1e-6,DPH=T>0?dt/T:0.,BOUND=3.*DPH;
+  const double MU=number(recipe.at("contact_friction"));
+  const size_t N=std::min(w.hphase.size(),(size_t)426);
+  if(N<2)note("F-G22 censuses NOT MEASURED: the walk refused before two status samples");
+  else{
+  auto pmin=[&](size_t i,size_t leg){return (std::min)(w.hgap[i][leg*2],w.hgap[i][leg*2+1]);};
+  // release-aware replay of the clock's contact classification (the header's
+  // leg_contact law) from the mined gap series: contact[i], edges, and the
+  // departure depth of each edge.
+  std::vector<char> contact[2];std::vector<double> edge_depth[2];std::vector<int> edge_tick[2];
+  for(size_t leg=0;leg<2;++leg){
+   contact[leg].assign(N,0);double run_mx=-1;
+   char c0=pmin(0,leg)<=KT?(char)1:(char)0;contact[leg][0]=c0;
+   for(size_t i=1;i<N;++i){
+    double g=pmin(i,leg);
+    bool c=g<=KT?true:(g>KT+KSTAB?false:(contact[leg][i-1]!=0));
+    if(!c)run_mx=(std::max)(run_mx,g); // still open: track the departure depth
+    if(c&&!contact[leg][i-1]){edge_tick[leg].push_back((int)i);edge_depth[leg].push_back(run_mx);run_mx=-1;}
+    if(c)run_mx=-1;
+    contact[leg][i]=c?(char)1:(char)0;}}
+  // (a) the slam census
+  {int slams=0,wraps=0,resets=0,caps=0;std::string slam_dump;
+   for(size_t i=1;i<N;++i)for(size_t leg=0;leg<2;++leg){
+    double d=w.hphase[i][leg]-w.hphase[i-1][leg];
+    if(std::abs(d)<=BOUND)continue;
+    const char* ln=leg?"R":"L";
+    if(std::abs(w.hphase[i][leg]-(w.hphase[i-1][leg]+DPH-1.))<1e-12){++wraps;continue;}
+    if(w.hphase[i][leg]==0.){ // a clock reset: pair with the consumed edge at i-1
+     bool paired=false;bool legit=false;double dep=-1;
+     for(size_t e2=0;e2<edge_tick[leg].size();++e2)if(edge_tick[leg][e2]==(int)i-1){paired=true;legit=edge_depth[leg][e2]>KSTAB;dep=edge_depth[leg][e2];break;}
+     if(paired&&legit){++resets;
+      char cb[192];std::snprintf(cb,192,"F-G22 reset %s at step %zu <- LEGIT TD edge at %zu (departure depth %.3e m)",
+       ln,i,(size_t)(i-1),dep);
+      note(cb);}
+     else{++slams;
+      char cb[256];std::snprintf(cb,256,"F-G22 SLAM %s at step %zu: ph %.5f->%.5f, no legit edge at %zu (paired=%d)",
+       ln,i,w.hphase[i-1][leg],w.hphase[i][leg],i-1,paired?1:0);
+      if(slam_dump.size()<400)slam_dump+=cb,slam_dump+="; ";}}
+    else if(w.hphase[i][leg]==0.95)++caps; // capture jump: owned by the F-G21 clause census
+    else{++slams;
+     char cb[256];std::snprintf(cb,256,"F-G22 UNCLASSIFIED phase event %s at step %zu: %.5f->%.5f",ln,i,w.hphase[i-1][leg],w.hphase[i][leg]);
+     if(slam_dump.size()<400)slam_dump+=cb,slam_dump+="; ";}}
+   // the graze-window continuity [63,66]
+   int cont_bad=0;size_t cont_hi=std::min((size_t)66,N-1);bool cont_full=cont_hi>=66;
+   for(size_t i=63;i<=cont_hi;++i)for(size_t leg=0;leg<2;++leg)
+    if(std::abs(w.hphase[i][leg]-w.hphase[i-1][leg])>BOUND)++cont_bad;
+   char b[384];std::snprintf(b,384,"F-G22 slam_census events: wraps=%d resets_at_legit_TD=%d capture_jumps=%d slams=%d %s| graze_window_[63,%zu] continuity_breaches=%d (%s)",
+    wraps,resets,caps,slams,slams?slam_dump.c_str():"| ",cont_hi,cont_bad,
+    cont_full?"full window":"refused inside the window");
+   note(b);
+   ck(slams==0,"f22_no_touch_reset_slam");
+   if(cont_full)ck(cont_bad==0,"f22_graze_window_phase_continuous");}
+  // (b) the touch census
+  {int chatter=0,legit=0,chatter_resets=0;std::string ev;
+   for(size_t leg=0;leg<2;++leg){
+    const char* ln=leg?"R":"L";
+    for(size_t e2=0;e2<edge_tick[leg].size();++e2){
+     int t=edge_tick[leg][e2];double dep=edge_depth[leg][e2];
+     bool is_chatter=dep<=KSTAB;if(is_chatter)++chatter;else ++legit;
+     bool reset_here=false;
+     for(size_t i=1;i<N;++i)if(w.hphase[i][leg]==0.&&w.hphase[i-1][leg]!=0.&&(int)i-1==t)reset_here=true;
+     if(is_chatter&&reset_here)++chatter_resets;
+     char cb[192];std::snprintf(cb,192,"%s edge@%d depth=%.3e %s%s; ",ln,t,dep,is_chatter?"CHATTER":"LEGIT",reset_here?" RESET-FIRED":"");
+     if(ev.size()<700)ev+=cb;}}
+   char b[896];std::snprintf(b,896,"F-G22 touch_census edges: legitimate=%d chatter=%d resets_at_chatter=%d | %s (kStab=1e-6; known-good pre-registered: L@40 depth 6.5e-2, R@55 depth 1.2e-1)",
+    legit,chatter,chatter_resets,ev.c_str());
+   note(b);
+   ck(chatter_resets==0,"f22_no_reset_at_chatter");
+   // the known-good list must classify LEGITIMATE: the first L edge and the
+   // first R edge are the pre-walk landings at 40/55 (+/-2 for accounting)
+   int l0=-1,r0=-1;
+   if(edge_tick[0].size())l0=edge_tick[0][0];
+   if(edge_tick[1].size())r0=edge_tick[1][0];
+   bool l_ok=l0>=0&&edge_depth[0][0]>KSTAB&&l0>=38&&l0<=42;
+   bool r_ok=r0>=0&&edge_depth[1][0]>KSTAB&&r0>=53&&r0<=57;
+   char cb[192];std::snprintf(cb,192,"F-G22 known_good_landings L@%d depth=%.3e %s | R@%d depth=%.3e %s (pre-registered L@40/R@55 gap edges, L@42/R@57 status edges)",
+    l0,l0>=0?edge_depth[0][0]:-1.,l_ok?"LEGIT":"MISS",r0,r0>=0?edge_depth[1][0]:-1.,r_ok?"LEGIT":"MISS");
+   note(cb);
+   ck(l_ok&&r_ok,"f22_known_good_touchdowns_legit");}
+  // (c) the residual-slip census (REPORTED against the pre-registered band)
+  {double mx=-1,mx_rxn=0,mx_frc=0;int mx_tick=-1,run=0,mx_run=0,run_ticks=0;
+   for(size_t i=60;i<w.hslip.size();++i){
+    double sm=0;double rxn=0,frc=0;
+    for(size_t k=2;k<4;++k)if(w.hgap[i][k]<=KT){sm=(std::max)(sm,w.hslip[i][k]);rxn=(std::max)(rxn,w.hrxn[i][k]);frc=(std::max)(frc,std::abs(w.hfrc[i][k]));}
+    if(sm>mx){mx=sm;mx_tick=(int)i;mx_rxn=rxn;mx_frc=frc;}
+    if(i>=65&&(int)i<=90&&sm>0.1){++run;++run_ticks;mx_run=(std::max)(mx_run,run);}else run=0;}
+   std::string traj;
+   for(int t=65;t<=90;t+=5){size_t i=(size_t)t;
+    if(i<w.hslip.size()){double sm=0;for(size_t k=2;k<4;++k)if(w.hgap[i][k]<=KT)sm=(std::max)(sm,w.hslip[i][k]);
+     char cb[64];std::snprintf(cb,64,"t%d=%.3f ",t,sm);traj+=cb;}}
+   char b[384];std::snprintf(b,384,"F-G22 residual_slip R-hind [65,90] traj: %s| worst=%.4f at %d (rxn=%.3f N fric=%.3f N mu*N=%.3f N) sustained>0.1 ticks=%d max_run=%d [REPORTED: pre-registered band 0.30-0.42@70, 0.15-0.30@80, 0.1-cross in [80,95]]",
+    traj.c_str(),mx<0?0.:mx,mx_tick,mx_rxn,mx_frc,MU*mx_rxn,run_ticks,mx_run);
+   note(b);
+   (void)run_ticks;}}}
 
  // ── WAVE 19 STRUT CENSUS (pre-registered in receipt_wave19.json): through
  //    the settle [0,60) the runtime census must MATCH the derived composition
