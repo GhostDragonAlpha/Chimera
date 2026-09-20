@@ -333,13 +333,23 @@ def score_recorded_judgments(jdir: Path | None = None) -> dict:
 # ── M1: the cross-upload determinism measurement ────────────────────────────
 
 def determinism_run(engine_url: str, uploads: int, frames: int, stride: int,
-                    scratch: Path) -> dict:
+                    scratch: Path, interleave_probe: bool = False) -> dict:
     """The M1 falsifier, measured: the SAME splat buffer (built once, identical
     bytes every POST) is posted via `uploads` SEPARATE /membrane_bin uploads;
     each upload renders the full `frames`-frame orbit; the PNG frames are
     byte-compared across uploads (and, where bytes differ, scored with the
     movie lane's per-pixel delta: int16 abs difference of the decoded RGBs,
-    max over channels; pixels_differing = count of pixels with delta > 0)."""
+    max over channels; pixels_differing = count of pixels with delta > 0).
+
+    interleave_probe=True is the HISTORY-DIRTY variant: the uploads go
+    A, B(probe_rot90), A, A and the byte-comparison covers the A-orbits only.
+    The movie lane's defect is the pre-fix tie order depending on the
+    permutation ALREADY IN the index buffer when an upload lands (their engine
+    had rendered other content between/before the replicates); a fresh engine
+    starts every tie at the identity permutation and can mask the defect
+    (measured on this lane: plain 4x from a fresh process was 0/24 differing
+    on the PRE-FIX engine). Interleaving different content dirties that
+    history the way the lane's real sequence did."""
     from PIL import Image
 
     from tools.science_funnel import ct_skeleton_layer as csl
@@ -347,50 +357,66 @@ def determinism_run(engine_url: str, uploads: int, frames: int, stride: int,
     raw_bytes = np.ascontiguousarray(recenter(buf), dtype=np.float32).tobytes()
     radius = derive_camera(buf)["radius_m"]
 
+    buffers = [buf] * uploads
+    a_slots = list(range(uploads))                 # slots byte-compared (all A)
+    if interleave_probe:
+        if uploads < 3:
+            raise SystemExit("--interleave-probe needs >= 3 uploads (A,B,A)")
+        buffers[1 % uploads] = probe_rot90(buf)    # slot 1 is the dirtying probe B
+        a_slots = [u for u in range(uploads) if u != 1 % uploads]
+
     print(f"[determinism] splats: {record['splats']} (stride {stride}), "
           f"buffer bytes: {len(raw_bytes)}, radius: {radius}", flush=True)
-    print(f"[determinism] engine: {engine_url}, uploads: {uploads}, frames: {frames}",
+    print(f"[determinism] engine: {engine_url}, uploads: {uploads}, frames: {frames}, "
+          f"protocol: {'interleaved A,B,A,A (compare A-orbits)' if interleave_probe else 'plain 4x A'}",
           flush=True)
 
     runs = []
-    for u in range(1, uploads + 1):
-        print(f"[determinism] upload {u}/{uploads}: orbit...", flush=True)
-        run = render_orbit(engine_url, buf, scratch / f"upload{u}", f"u{u}", frames, radius)
+    for u in range(uploads):
+        tag = "AB"[u % 2] if interleave_probe and u == 1 % uploads else "A"
+        print(f"[determinism] upload {u + 1}/{uploads} (buffer {tag}): orbit...", flush=True)
+        run = render_orbit(engine_url, buffers[u], scratch / f"upload{u + 1}", f"u{u + 1}",
+                           frames, radius)
         runs.append(run)
         print(f"   {run['orbit_seconds']} s", flush=True)
 
-    ref = runs[0]
+    ref_slot = a_slots[0]
+    ref = runs[ref_slot]
     frames_cmp = []
     for k in range(len(ref["pngs"])):
         pa = Path(ref["pngs"][k])
         byte_ref = pa.read_bytes()
-        first_diff_upload = None
+        first_diff_slot = None
         worst_pixels, worst_delta = 0, 0
-        n_identical = uploads
-        for u in range(1, uploads):
+        n_identical = len(a_slots)
+        for u in a_slots[1:]:
             pb = Path(runs[u]["pngs"][k])
             if pb.read_bytes() == byte_ref:
                 continue
             n_identical -= 1
-            if first_diff_upload is None:
-                first_diff_upload = u + 1
+            if first_diff_slot is None:
+                first_diff_slot = u + 1
             a = np.asarray(Image.open(pa).convert("RGB"), dtype=np.int16)
             b = np.asarray(Image.open(pb).convert("RGB"), dtype=np.int16)
             d = np.abs(a - b).max(axis=2)
             worst_pixels = max(worst_pixels, int((d > 0).sum()))
             worst_delta = max(worst_delta, int(d.max()))
         entry = {"frame": pa.name, "identical_uploads": n_identical}
-        if n_identical != uploads:
+        if n_identical != len(a_slots):
             entry.update({"pixels_differing_worst_pair": worst_pixels,
                           "max_pixel_delta": worst_delta,
-                          "first_differing_vs_upload": first_diff_upload})
+                          "first_differing_vs_upload": first_diff_slot})
         frames_cmp.append(entry)
 
     return {
         "schema": "chimera.engine_determinism.v1",
         "taken_utc": now_utc(),
         "engine": engine_url,
+        "protocol": ("interleaved A,B(probe_rot90),A,A -- byte-compare across the "
+                     "A-orbits" if interleave_probe else "plain: the same buffer x "
+                     f"{uploads} uploads, byte-compare across all"),
         "uploads": uploads,
+        "compared_uploads": len(a_slots),
         "frames_per_orbit": frames,
         "splats": record["splats"],
         "buffer_bytes": len(raw_bytes),
@@ -401,7 +427,7 @@ def determinism_run(engine_url: str, uploads: int, frames: int, stride: int,
         "upload_frame_sha256": [r["frame_sha256"] for r in runs],
         "frames": frames_cmp,
         "all_frames_byte_identical_across_uploads": all(
-            f["identical_uploads"] == uploads for f in frames_cmp),
+            f["identical_uploads"] == len(a_slots) for f in frames_cmp),
     }
 
 
@@ -418,6 +444,11 @@ def main(argv=None):
     ap.add_argument("--determinism", action="store_true",
                     help="M1: post the layer buffer via N separate uploads and "
                          "byte-compare the whole orbit across uploads")
+    ap.add_argument("--interleave-probe", action="store_true",
+                    help="determinism history-dirty variant: uploads go "
+                         "A, B(probe_rot90), A, A and the A-orbits are "
+                         "byte-compared (the plain protocol from a fresh "
+                         "engine can mask the history-dependent tie defect)")
     ap.add_argument("--score-only", action="store_true",
                     help="M3: vocab_align the RECORDED judgments (no engine, "
                          "no model calls)")
@@ -436,7 +467,8 @@ def main(argv=None):
         args.scratch.mkdir(parents=True, exist_ok=True)
         args.out.mkdir(parents=True, exist_ok=True)
         result = determinism_run(args.engine, args.uploads, args.frames,
-                                 args.stride, args.scratch)
+                                 args.stride, args.scratch,
+                                 interleave_probe=args.interleave_probe)
         (args.out / "determinism_record.json").write_text(
             json.dumps(result, indent=1) + "\n", encoding="utf-8")
         print(json.dumps({"all_frames_byte_identical_across_uploads":
