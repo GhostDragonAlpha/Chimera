@@ -92,7 +92,9 @@ int main(int argc,char**argv){try{
      number(s["energy"]["brake_heat_J"]),number(s["energy"]["external_work_J"]));}
    w_ledger_prev=(std::max)(w_ledger_prev,(std::max)(bal,stor));
    if(i%10==0){std::fprintf(stderr,"[ledger10] tick %d %s\n",i,s["energy"].dump().c_str());
-    for(const auto&pt:s["contact"]["points"])std::fprintf(stderr,"[pt] %s cop_x=%.5f cop_y=%.5f gap=%.3e touching=%d rxn=%.3f slip=%.3f\n",pt["name"].get<std::string>().c_str(),number(pt["position_m"][0]),number(pt["position_m"][1]),number(pt["gap_m"]),pt["touching"].get<bool>()?1:0,number(pt["reaction_N"]),number(pt["slip_speed_m_s"]));}
+    for(const auto&pt:s["contact"]["points"])std::fprintf(stderr,"[pt] %s cop_x=%.5f cop_y=%.5f gap=%.3e touching=%d rxn=%.3f slip=%.3f\n",pt["name"].get<std::string>().c_str(),number(pt["position_m"][0]),number(pt["position_m"][1]),number(pt["gap_m"]),pt["touching"].get<bool>()?1:0,number(pt["reaction_N"]),number(pt["slip_speed_m_s"]));
+    const J& trunk=s["joints"][8];
+    std::fprintf(stderr,"[trunk] phase=%.5f angle_deg=%.5f target_deg=%.5f torque=%.5f speed=%.5f\n",number(trunk["phase"]),number(trunk["angle_deg"]),number(trunk["target_deg"]),number(trunk["motor_torque_N_m"]),number(trunk["speed_rad_s"]));}
 #endif
    out.worst_ledger=(std::max)(out.worst_ledger,(std::max)(bal,stor));
    if(s["support"]["hull_size"].get<int>()>=3){++out.hull_checks;if(!s["support"]["com_in_hull"].get<bool>())out.hull_all=false;}

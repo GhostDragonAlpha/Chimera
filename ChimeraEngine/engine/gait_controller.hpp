@@ -52,8 +52,19 @@ class GaitWalker {
   // pitches nose-up 72.5 deg (heel digging); with them +15.9 deg heel-first
   // and the stance rolling contact rides 5.8 mm.
   double zeros[4]={0.,0.,0.,0.};
+  // The trunk-vault table (wave 8, tools/science_funnel/validation/
+  // gait_zero_20260919/trunk_vault.json, derived by derive_trunk_vault.py on
+  // the wave-4 statics + the base-rot DOF + the sole CoP envelope): the
+  // posture target theta*(phi) that centers the stance leg's demands inside
+  // their caps (min-max demand/cap ratio 0.881 <= 1 at every single-support
+  // node). HAT-FORWARD-POSITIVE, 0.5-periodic (left/right symmetry). Applied
+  // exactly like the leg tables: the scene maps it through the same sign
+  // probe as every other table; absent (legacy scenes) it stays all-zero and
+  // the posture drive pins the trunk to 0 -- byte-identical legacy behavior.
+  double trunk_vault[21]={0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
   static double interp(const double* t,double phi){phi-=std::floor(phi);double x=phi*20.;int k=(int)x;if(k>=20)k=19;double f=x-k;return t[k]*(1.-f)+t[k+1]*f;}
   void at(double phi,double out[4])const{out[0]=interp(hip,phi)+zeros[0];out[1]=interp(knee,phi)+zeros[1];out[2]=interp(ankle,phi)+zeros[2];out[3]=interp(mp,phi)+zeros[3];}
+  double trunk_target(double phi)const{return interp(trunk_vault,phi);}
  };
  private:
  struct State {Dense q,v,work,impulse;double external=0,damping=0,impact=0,constraint_work=0;std::vector<double> contact_impact,contact_impact_impulse,contact_force_impulse,friction_heat,friction_heat_tick,friction_impulse,friction_force_impulse;Dense contact_generalized;
@@ -256,19 +267,11 @@ class GaitWalker {
   // musculature carries the trunk moment). Active whenever the power is on:
   // it is what makes stage E's stand a stand.
   if(config_["power"].get<bool>()&&config_["posture_drive"].get<bool>()&&battery_post_>1e-12){
-   // THE TRUNK-PITCH FREEDOM (wave 8): the posture target is the derived
-   // theta*(phi) of the STANCE leg -- the trunk is a load-bearing DOF (the
-   // statics: theta* centers the leg demands inside their caps; leaning
-   // forward 5-30 deg over the loaded leg is the vault's posture). Absent
-   // table -> the erect default 0 (the pre-wave-8 pin).
-   double target_post=0.;
-   if(posture_phi_.size()>=2){
-    double phi=(touching_prev_[0]&&!touching_prev_[1])?phi_[0]:(!touching_prev_[0]&&touching_prev_[1])?phi_[1]:std::min(phi_[0],phi_[1]);
-    if(phi<=posture_phi_.front())target_post=posture_theta_.front();
-    else if(phi>=posture_phi_.back())target_post=posture_theta_.back();
-    else{size_t k=1;while(posture_phi_[k]<phi)++k;
-     double f=(phi-posture_phi_[k-1])/(posture_phi_[k]-posture_phi_[k-1]);
-     target_post=posture_theta_[k-1]*(1.-f)+posture_theta_[k]*f;}}
+   // The trunk-vault membrane (wave 8): the trunk pitch is a LOAD-BEARING
+   // DOF -- the posture target tracks theta*(phi) from the continuous,
+   // 0.5-periodic vault table while the walk runs; frozen clock (including
+   // the main branch's settle window) holds the authored erect default 0.
+   double target_post=walking?tables_.trunk_target(phi_[0]):0.;
    tau[2]=(std::max)(-drives_[0].cap,(std::min)(drives_[0].cap,kp_post_*(target_post-s_.q[2])-kd_post_*s_.v[2]));}
   return tau;}
  // ── walker runtime (the free-root laws, n generalization) ──
@@ -524,6 +527,11 @@ class GaitWalker {
   config_=recipe_.at("defaults");
  // The derived angle zeros (revision 2): loaded from the scene recipe when
  // present; absent -> all zeros (a pre-revision scene composes unchanged).
+ if(recipe_.contains("trunk_vault_rad")){ // the trunk-vault table (wave 8); absent -> all-zero (legacy pin-to-0)
+  const J& tv=recipe_.at("trunk_vault_rad");
+  require(tv.is_array()&&tv.size()==21,"gait_trunk_vault_shape");
+  for(size_t i=0;i<21;++i){tables_.trunk_vault[i]=number(tv[i]);
+   require(std::isfinite(tables_.trunk_vault[i])&&std::abs(tables_.trunk_vault[i])<=0.6,"gait_trunk_vault_range");}}
  if(recipe_.contains("zero_map_rad")){
   const J& zm=recipe_.at("zero_map_rad");
   require(zm.contains("hip")&&zm.contains("knee")&&zm.contains("ankle")&&zm.contains("MP"),"gait_zero_map_keys");
@@ -531,12 +539,6 @@ class GaitWalker {
   tables_.zeros[2]=number(zm.at("ankle"));tables_.zeros[3]=number(zm.at("MP"));
   for(double z:tables_.zeros)require(std::isfinite(z)&&std::abs(z)<=3.,"gait_zero_map_range");}
  // theta*(phi): the derived posture target table (wave 8)
- if(recipe_.contains("posture_target_rad")&&recipe_.contains("posture_target_phases")){
-  const J& tt=recipe_.at("posture_target_rad");const J& tp=recipe_.at("posture_target_phases");
-  require(tt.is_array()&&tp.is_array()&&tt.size()==tp.size()&&tt.size()>=2,"gait_posture_table_shape");
-  for(size_t k=0;k<tt.size();++k){posture_phi_.push_back(number(tp[k]));posture_theta_.push_back(number(tt[k]));
-   require(std::isfinite(posture_theta_.back())&&std::abs(posture_theta_.back())<=1.0,"gait_posture_table_range");}
-  for(size_t k=1;k<posture_phi_.size();++k)require(posture_phi_[k]>posture_phi_[k-1],"gait_posture_table_monotone");}
  if(config_.contains("settle_ticks")){require(config_["settle_ticks"].is_number(),"gait_settle_shape");settle_ticks_=(int)number(config_["settle_ticks"]);require(settle_ticks_>=0&&settle_ticks_<=600,"gait_settle_range");}
   plane_world_y_=number(recipe_.at("contact_plane_height_m"));require(std::isfinite(plane_world_y_),"gait_contact_plane_invalid");plane_model_y_=plane_world_y_-shift_[1];
   require(config_.contains("contact_enabled")&&config_["contact_enabled"].is_boolean(),"gait_contact_flag_invalid");contact_=config_["contact_enabled"].get<bool>();
@@ -600,7 +602,15 @@ class GaitWalker {
     double p=phi_[dr.leg=="left"?0:1],dp=0.05;double a1[4],a2[4];
     tables_.at(p+dp,a1);tables_.at(p-dp,a2);
     s_.v[dr.coordinate]=(a1[ji]-a2[ji])/(2*dp*T_CYCLE);}
-   if(config_.contains("base_speed_x_m_s"))s_.v[3]=number(config_["base_speed_x_m_s"]);}
+   if(config_.contains("base_speed_x_m_s"))s_.v[3]=number(config_["base_speed_x_m_s"]);
+   // The trunk enters ON the vault table too (the source's own scheme: the
+   // entry state IS the cycle state): pitch at theta*(entry phase), speed at
+   // the vault table's phase slope -- the scene seats base_y against THIS
+   // pose (a q2=0 reset under a leaned seat dangles the contact and
+   // reintroduces the wave-6 bounce).
+   if(config_.contains("start_trunk_rad"))s_.q[2]=number(config_["start_trunk_rad"]);
+   if(config_.contains("start_trunk_rad")){double p=phi_[0],dp=0.05;
+    s_.v[2]=(tables_.trunk_target(p+dp)-tables_.trunk_target(p-dp))/(2*dp*T_CYCLE);}}
   auto e=evaluate(s_);
   for(size_t leg=0;leg<2;++leg){bool touching=false;const char* prefix=leg==0?"left":"right";
    for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0&&gap_of(e,k)<=kTouch)touching=true;
@@ -688,6 +698,7 @@ class GaitWalker {
    s_=std::move(trial);}
   last_torque_=impulse_torque;++ticks_;}
  J status()const{
+  bool walking=config_["gait_enabled"].get<bool>();
   auto e=evaluate(s_);
   double kinetic=.5*inner(s_.v,multiply(e.mass,s_.v)),u=e.potential; // absolute; the ledger works in deltas below
   J joints=J::array();double work=0,battery_total=0,brake_total=0;uint64_t empty_total=0;
@@ -699,8 +710,9 @@ class GaitWalker {
     {"battery_J",battery_[d]},{"brake_heat_J",brake_[d]},{"empty_events",empty_events_[d]},{"actuator_work_J",s_.work[c]}});}
   // The trunk-pitch posture drive (the source model's theta_HAT musculature).
   {work+=s_.work[2];battery_total+=battery_post_;brake_total+=brake_post_;empty_total+=empty_post_;
-   joints.push_back({{"name","trunk_pitch_HAT"},{"leg","trunk"},{"joint","posture"},{"phase",0.},
-    {"angle_deg",s_.q[2]*180/pi},{"target_rad",0.},{"target_deg",0.},{"speed_rad_s",s_.v[2]},
+   joints.push_back({{"name","trunk_pitch_HAT"},{"leg","trunk"},{"joint","posture"},{"phase",phi_[0]},
+    {"angle_deg",s_.q[2]*180/pi},{"target_rad",walking?tables_.trunk_target(phi_[0]):0.},
+    {"target_deg",(walking?tables_.trunk_target(phi_[0]):0.)*180/pi},{"speed_rad_s",s_.v[2]},
     {"motor_torque_N_m",last_torque_[2]},{"drive_enabled",config_["posture_drive"]},{"torque_cap_N_m",drives_[0].cap},
     {"battery_J",battery_post_},{"brake_heat_J",brake_post_},{"empty_events",empty_post_},{"actuator_work_J",s_.work[2]}});}
   double friction_heat_total=0,reaction_total=0,impact_heat_total=0;bool cone_valid=true;
