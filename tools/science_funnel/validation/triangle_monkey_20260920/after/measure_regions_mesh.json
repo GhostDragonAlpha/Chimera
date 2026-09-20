@@ -1,0 +1,175 @@
+{
+ "a_regions": {
+  "png": "tools\\science_funnel\\validation\\triangle_monkey_20260920\\after\\a_regions_mesh.png",
+  "per_bone": [
+   {
+    "bone": "bone_01_4737869vox_lo.obj",
+    "coverage": 0.475,
+    "object_pixels_in_hull": 81468,
+    "hull_pixels": 171520
+   },
+   {
+    "bone": "bone_02_210240vox_lo.obj",
+    "coverage": 0.5692,
+    "object_pixels_in_hull": 4574,
+    "hull_pixels": 8036
+   },
+   {
+    "bone": "bone_03_208514vox_lo.obj",
+    "coverage": 0.4163,
+    "object_pixels_in_hull": 4602,
+    "hull_pixels": 11055
+   },
+   {
+    "bone": "bone_04_180534vox_lo.obj",
+    "coverage": 0.4056,
+    "object_pixels_in_hull": 3044,
+    "hull_pixels": 7505
+   },
+   {
+    "bone": "bone_05_174742vox_lo.obj",
+    "coverage": 0.5269,
+    "object_pixels_in_hull": 3163,
+    "hull_pixels": 6003
+   },
+   {
+    "bone": "bone_06_154508vox_lo.obj",
+    "coverage": 0.5191,
+    "object_pixels_in_hull": 4425,
+    "hull_pixels": 8525
+   },
+   {
+    "bone": "bone_07_150102vox_lo.obj",
+    "coverage": 0.568,
+    "object_pixels_in_hull": 5615,
+    "hull_pixels": 9885
+   },
+   {
+    "bone": "bone_08_102171vox_lo.obj",
+    "coverage": 0.5559,
+    "object_pixels_in_hull": 2052,
+    "hull_pixels": 3691
+   },
+   {
+    "bone": "bone_09_100874vox_lo.obj",
+    "coverage": 0.52,
+    "object_pixels_in_hull": 3671,
+    "hull_pixels": 7059
+   },
+   {
+    "bone": "bone_10_92842vox_lo.obj",
+    "coverage": 0.7636,
+    "object_pixels_in_hull": 4865,
+    "hull_pixels": 6371
+   },
+   {
+    "bone": "bone_11_90563vox_lo.obj",
+    "coverage": 0.8187,
+    "object_pixels_in_hull": 4045,
+    "hull_pixels": 4941
+   },
+   {
+    "bone": "bone_12_88112vox_lo.obj",
+    "coverage": 0.7377,
+    "object_pixels_in_hull": 3996,
+    "hull_pixels": 5417
+   },
+   {
+    "bone": "bone_13_86590vox_lo.obj",
+    "coverage": 0.6963,
+    "object_pixels_in_hull": 3553,
+    "hull_pixels": 5103
+   },
+   {
+    "bone": "bone_14_58499vox_lo.obj",
+    "coverage": 0.645,
+    "object_pixels_in_hull": 1397,
+    "hull_pixels": 2166
+   },
+   {
+    "bone": "bone_15_54574vox_lo.obj",
+    "coverage": 0.6073,
+    "object_pixels_in_hull": 1933,
+    "hull_pixels": 3183
+   },
+   {
+    "bone": "bone_16_54463vox_lo.obj",
+    "coverage": 0.6194,
+    "object_pixels_in_hull": 3174,
+    "hull_pixels": 5124
+   },
+   {
+    "bone": "bone_17_54226vox_lo.obj",
+    "coverage": 0.4876,
+    "object_pixels_in_hull": 944,
+    "hull_pixels": 1936
+   },
+   {
+    "bone": "bone_18_53022vox_lo.obj",
+    "coverage": 0.6081,
+    "object_pixels_in_hull": 1474,
+    "hull_pixels": 2424
+   },
+   {
+    "bone": "bone_19_44805vox_lo.obj",
+    "coverage": 0.5378,
+    "object_pixels_in_hull": 2585,
+    "hull_pixels": 4807
+   },
+   {
+    "bone": "bone_20_34255vox_lo.obj",
+    "coverage": 0.4389,
+    "object_pixels_in_hull": 1710,
+    "hull_pixels": 3896
+   },
+   {
+    "bone": "bone_21_33153vox_lo.obj",
+    "coverage": 0.6098,
+    "object_pixels_in_hull": 2418,
+    "hull_pixels": 3965
+   },
+   {
+    "bone": "bone_22_31952vox_lo.obj",
+    "coverage": 0.5837,
+    "object_pixels_in_hull": 980,
+    "hull_pixels": 1679
+   },
+   {
+    "bone": "bone_23_31588vox_lo.obj",
+    "coverage": 0.5609,
+    "object_pixels_in_hull": 889,
+    "hull_pixels": 1585
+   },
+   {
+    "bone": "bone_24_25423vox_lo.obj",
+    "coverage": 0.574,
+    "object_pixels_in_hull": 733,
+    "hull_pixels": 1277
+   },
+   {
+    "bone": "bone_25_25400vox_lo.obj",
+    "coverage": 0.5244,
+    "object_pixels_in_hull": 688,
+    "hull_pixels": 1312
+   }
+  ],
+  "macro": {
+   "skull": {
+    "coverage": 0.5447,
+    "object_pixels_in_hull": 8051,
+    "hull_pixels": 14780
+   },
+   "spine_ribs": {
+    "coverage": 0.4979,
+    "object_pixels_in_hull": 30925,
+    "hull_pixels": 62112
+   },
+   "limbs": {
+    "coverage": 0.3767,
+    "object_pixels_in_hull": 67754,
+    "hull_pixels": 179873
+   }
+  },
+  "median_coverage_all_bones": 0.568
+ }
+}

@@ -29,7 +29,8 @@
 //          e^-(1.5/0.9)^2 ~ 0.06 of peak = +0.6/255 at contact, so the ink
 //          law's EXACTLY 55 holds within quantization; the ring dies with the
 //          sweep via (1-t).
-layout(location = 0) in float vDist;
+layout(location = 0) in vec2 vXZ;    // interpolated position — the distance
+                                     // is computed HERE, per fragment
 layout(location = 1) in float vMeshR;
 layout(location = 0) out vec4 fragColor;
 
@@ -37,6 +38,7 @@ void main() {
     const vec3 inner = vec3(55.0 / 255.0);
     const vec3 outer = vec3(34.0 / 255.0, 31.0 / 255.0, 27.0 / 255.0); // E1: warm, luma-equal to 32
     const vec3 stage_far = vec3(0.015, 0.02, 0.06);  // E1: THE clear color (E1_CLEAR_COLOR)
+    float vDist = length(vXZ);               // TRUE per-fragment distance
     float t = clamp((vDist - vMeshR) / (4.0 * vMeshR), 0.0, 1.0);
     t = t * t;                               // ease-in: the subject's zone stays flat
     vec3 pool = mix(inner, outer, t);
@@ -47,5 +49,22 @@ void main() {
     float d    = (vDist - 1.5 * rc) / (0.9 * rc);           // peak 1.5*Rc, sigma 0.9*Rc
     vec3  glow = (9.0 / 255.0) * vec3(1.0, 0.85, 0.62)      // warm, subtle: shadow stays >= ~25/255
                  * exp(-d * d) * (1.0 - t);                 // below its surround; dies with the sweep
-    fragColor = vec4(pool + glow, 1.0);
+    // ═══ GUIDE AMENDMENT (2026-09-20, lane agent/triangle-monkey-grid) ═══
+    // The plane is the GRID — a guide, never an occluder (operator Defect B:
+    // "you can't see through it ... it is blocking the view"). It now renders
+    // BLENDED at a = 0.5 with depth-write OFF (engine.cpp floor pipeline; the
+    // draw moved after the opaque body). The ink law is PRESERVED by
+    // premultiplying the ink: with C_out = a*C + (1-a)*dst, choosing
+    // C = ink + (ink - stage_far) gives C_out = ink + a*(dst - stage_far),
+    // solved exactly: over the clear background (dst = bg) C_out = ink EXACTLY
+    // (the 55 contact
+    // zone, the cyclorama gradient, stage_far = bg terminating in the
+    // background), and a body behind the plane keeps a = 50% of its contrast
+    // against the surround — the derived see-through bar (a falsifier gates
+    // object-present >= 0.9 from both sides; receipt
+    // tools/science_funnel/validation/triangle_monkey_20260920/receipt.json).
+    const float a  = 0.5;
+    vec3  ink = pool + glow;
+    vec3  c   = clamp(ink + (ink - stage_far), vec3(0.0), vec3(1.0));
+    fragColor = vec4(c, a);
 }

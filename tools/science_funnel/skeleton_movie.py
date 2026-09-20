@@ -133,6 +133,54 @@ def recenter(buf: np.ndarray) -> np.ndarray:
     return out
 
 
+# ── the TRIANGLE compose (Defect A repair): the standing law's presentation ──
+# The monkey scene's DEFAULT is the /mesh_bin triangle pipeline (indexed
+# geometry, depth-tested, shaded). The splat shell stays available behind
+# --render splat (the machinery serves other users); the monkey scene no
+# longer composes a splat cloud by default.
+
+def compose_triangle_layer():
+    """The registered CT skeleton as ONE merged indexed triangle mesh
+    (tools/science_funnel/ct_skeleton_triangle.layer_triangle_mesh)."""
+    from tools.science_funnel import ct_skeleton_triangle as cst
+    layer = cst.layer_triangle_mesh()
+    return layer
+
+
+def probe_rot90_mesh(verts9: np.ndarray) -> np.ndarray:
+    """P1 on the triangle payload: rotate positions AND normals 90 deg about
+    scene Z through the trunk midpoint (the normals rotate with the body --
+    a rigid rotation of the geometry, not a re-shading)."""
+    out = verts9.copy()
+    c = _trunk_midpoint(out)
+    for cols in (slice(0, 3), slice(3, 6)):          # pos and normal
+        rel = out[:, cols] - (c if cols.start == 0 else 0.0)
+        x, y = rel[:, 0].copy(), rel[:, 1].copy()
+        rel[:, 0] = -y                                # Rz(90 deg)
+        rel[:, 1] = x
+        out[:, cols] = rel + (c if cols.start == 0 else 0.0)
+    return out
+
+
+def probe_scale_x2_mesh(verts9: np.ndarray) -> np.ndarray:
+    """P2 on the triangle payload: scale positions x2 about the trunk midpoint
+    (uniform scale -- normals are unchanged by a uniform scale)."""
+    out = verts9.copy()
+    c = _trunk_midpoint(out)
+    out[:, 0:3] = c + 2.0 * (out[:, 0:3] - c)
+    return out
+
+
+def post_mesh_layer(engine_url: str, verts9: np.ndarray, tris: np.ndarray,
+                    radius: float, theta: float, phi: float,
+                    timeout: float = 180.0) -> bool:
+    """POST the triangle payload to /mesh_bin (the engine's standing triangle
+    pipeline; contract in ChimeraEngine/engine/main.cpp)."""
+    from tools.science_funnel import ct_skeleton_triangle as cst
+    return cst.post_layer_mesh(engine_url, verts9, tris, radius, theta, phi,
+                               timeout=timeout)
+
+
 # ── the render: one orbit movie through the splat shell ─────────────────────
 
 def derive_camera(buf: np.ndarray) -> dict:
@@ -222,8 +270,20 @@ def _settle_capture(engine_url: str, prev: bytes | None, timeout: float = 12.0) 
 
 def render_movie(engine_url: str, buf: np.ndarray, out_dir: Path, tag: str,
                  frames: int, watch_dir: Path | None = None,
-                 radius: float | None = None) -> dict:
+                 radius: float | None = None,
+                 post: "callable | None" = None) -> dict:
     """One orbit movie of `buf` through the engine -> {pngs, hashes, mp4}.
+
+    `buf` is the presentation payload: the (n,14) splat buffer (the splat
+    shell) or the (n,9) verts9 triangle payload (pos3+normal3+color3, the
+    /mesh_bin triangle pipeline -- the Defect A repair's DEFAULT compose; see
+    ct_skeleton_triangle.py). `post` is the FIRST-FRAME uploader: a callable
+    (engine_url, buf_final, radius, theta, phi) -> bool receiving the FINAL
+    (recentered) payload -- the default posts it as the splat buffer to
+    /membrane_bin; the mesh caller passes a poster that uploads verts9+its
+    shared indices to /mesh_bin. Every later frame is a pure /camera move --
+    the payload is loaded ONCE either way (both pipelines are GPU-resident
+    uploads; matter-kernel law 5).
 
     `radius` pins the orbit distance: the caller derives it ONCE from the TRUE
     buffer and passes it for EVERY condition (true + probes) -- the identical
@@ -238,6 +298,8 @@ def render_movie(engine_url: str, buf: np.ndarray, out_dir: Path, tag: str,
         cam["radius_pinned_from_true_buffer"] = True
     radius = cam["radius_m"]
     buf = recenter(buf)               # framing: bbox centre -> the camera's look-at (origin)
+    if post is None:
+        post = lambda url, b, r, t, p: _post_membrane(url, b, r, t, p)  # noqa: E731
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     watch = Path(watch_dir) if watch_dir else out
@@ -257,9 +319,9 @@ def render_movie(engine_url: str, buf: np.ndarray, out_dir: Path, tag: str,
                 # settle reference is the PRE-POST frame so frame 0 is always the
                 # posted membrane quiesced at theta=0 (not the previous state)
                 pre = _fetch_frame(engine_url)
-                ok = _post_membrane(engine_url, buf, radius, theta, phi)
+                ok = post(engine_url, buf, radius, theta, phi)
                 if not ok:
-                    raise RuntimeError("membrane_bin POST refused")
+                    raise RuntimeError("layer POST refused")
                 b = _settle_capture(engine_url, pre)
             else:
                 if not _set_camera(engine_url, radius, theta, phi):
@@ -531,6 +593,13 @@ def main(argv=None):
     ap.add_argument("--fps", type=int, default=12)
     ap.add_argument("--engine-pid", type=int, default=None)
     ap.add_argument("--no-judge", action="store_true")
+    ap.add_argument("--render", choices=("mesh", "splat"), default="mesh",
+                    help="the presentation the monkey scene composes: 'mesh' "
+                         "(DEFAULT -- the triangle technique, the standing law: "
+                         "one indexed mesh through /mesh_bin, depth-tested and "
+                         "shaded) or 'splat' (the old splat cloud through "
+                         "/membrane_bin -- kept for other users and A/B "
+                         "measurement; the Defect A regression)")
     ap.add_argument("--judge-only", action="store_true",
                     help="renders already recorded on disk: judge the saved "
                          "movies and assemble the receipt, no engine calls")
@@ -543,9 +612,21 @@ def main(argv=None):
     out = args.out
     out.mkdir(parents=True, exist_ok=True)
 
-    print("[1/5] layer_splat_buffer (the committed registration)...", flush=True)
-    buf, record = csl.layer_splat_buffer(args.stride)
-    print("   splats:", record["splats"], flush=True)
+    if args.render == "mesh":
+        print("[1/5] layer_triangle_mesh (the committed registration, the "
+              "triangle technique)...", flush=True)
+        from tools.science_funnel import ct_skeleton_triangle as cst
+        layer = cst.layer_triangle_mesh()
+        buf = layer["verts9"]
+        tris = layer["tris"]
+        record = layer["record"]
+        print("   triangles:", record["triangles"],
+              "verts:", record["vertices"], flush=True)
+    else:
+        print("[1/5] layer_splat_buffer (the committed registration)...", flush=True)
+        buf, record = csl.layer_splat_buffer(args.stride)
+        tris = None
+        print("   splats:", record["splats"], flush=True)
 
     if args.judge_only:
         # resume: renders already on disk and recorded (no engine calls)
@@ -566,12 +647,21 @@ def main(argv=None):
         runs = None
 
     if not args.judge_only:
+        # the presentation's uploader: mesh mode posts verts9+shared indices to
+        # /mesh_bin (the triangle pipeline); splat mode posts the (n,14) buffer
+        # to /membrane_bin. The poster receives the FINAL recentered payload.
+        if args.render == "mesh":
+            poster = lambda url, b, r, t, p: post_mesh_layer(url, b, tris, r, t, p)  # noqa: E731
+        else:
+            poster = None
+
         # F2: the TRUE movie is rendered TWICE, byte-compared.
         runs = []
         for run_i in (1, 2):
             rdir = scratch / f"true_run{run_i}"
             print(f"[2/5] rendering TRUE movie run {run_i}/2 ...", flush=True)
-            run = render_movie(args.engine, buf, rdir, f"true{run_i}", args.frames)
+            run = render_movie(args.engine, buf, rdir, f"true{run_i}", args.frames,
+                               post=poster)
             runs.append(run)
             true_radius = run["camera"]["radius_m"]   # pinned for every condition
 
@@ -587,10 +677,12 @@ def main(argv=None):
         print("   mp4 hashes identical:", det_mp4, flush=True)
 
         print("[3/5] rendering PROBE P1 (trunk rot90) + P2 (scale x2)...", flush=True)
-        p1 = render_movie(args.engine, probe_rot90(buf), scratch / "p1_rot90",
-                          "p1_rot90", args.frames, radius=true_radius)
-        p2 = render_movie(args.engine, probe_scale_x2(buf), scratch / "p2_scale_x2",
-                          "p2_scale_x2", args.frames, radius=true_radius)
+        rot = probe_rot90_mesh if args.render == "mesh" else probe_rot90
+        scl = probe_scale_x2_mesh if args.render == "mesh" else probe_scale_x2
+        p1 = render_movie(args.engine, rot(buf), scratch / "p1_rot90",
+                          "p1_rot90", args.frames, radius=true_radius, post=poster)
+        p2 = render_movie(args.engine, scl(buf), scratch / "p2_scale_x2",
+                          "p2_scale_x2", args.frames, radius=true_radius, post=poster)
         p1_mp4 = scratch / "skeleton_p1_rot90.mp4"
         p2_mp4 = scratch / "skeleton_p2_scale_x2.mp4"
         encode(p1["pngs"], p1_mp4, fps=args.fps)
