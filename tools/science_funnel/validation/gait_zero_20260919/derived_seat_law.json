@@ -1,0 +1,432 @@
+{
+ "schema": "chimera.seat_law.v1",
+ "model_validation": {
+  "wave16_fore_seat_hind_gaps_m": {
+   "left_heel": 0.046161191822190306,
+   "left_mp_head": 0.06976234594221259,
+   "right_heel": 0.09185694362423036,
+   "right_mp_head": 0.049125177137240905
+  },
+  "wave16_fore_seat_hind_pairmin_m": {
+   "left": 0.046161191822190306,
+   "right": 0.049125177137240905
+  },
+  "gate_err_m": {
+   "left": 2.7755575615628914e-17,
+   "right": 1.3877787807814457e-17
+  },
+  "note": "the entry machinery reproduces the wave-16 branch-B fore-seat derivation (gate 2e-3 m, pair-min gaps)"
+ },
+ "pair_table": {
+  "com_x_entry_m": 0.02672322145875674,
+  "com_x_standing_m": 0.023189367548867686,
+  "weight_N": 98.43913308670002,
+  "foot_x_spans_m": {
+   "left_hind": [
+    0.13963067544866528,
+    0.222328834582971
+   ],
+   "right_hind": [
+    -0.17633820087101018,
+    -0.10170579415046146
+   ],
+   "left_fore": [
+    0.3462609949455826,
+    0.4324431311392568
+   ],
+   "right_fore": [
+    0.3462609949455826,
+    0.4324431311392568
+   ]
+  },
+  "pairs": {
+   "hind_pair": {
+    "members": [
+     "left_hind",
+     "right_hind"
+    ],
+    "polygon_x_m": [
+     -0.17633820087101018,
+     0.222328834582971
+    ],
+    "contains_com": true,
+    "margin_rear_m": 0.20306142232976693,
+    "margin_front_m": 0.19560561312421426,
+    "margin_min_m": 0.19560561312421426,
+    "margin_min_standing_com_m": 0.19913946703410332
+   },
+   "fore_pair": {
+    "members": [
+     "left_fore",
+     "right_fore"
+    ],
+    "polygon_x_m": [
+     0.3462609949455826,
+     0.4324431311392568
+    ],
+    "contains_com": false,
+    "margin_rear_m": -0.3195377734868259,
+    "margin_front_m": 0.4057199096805001,
+    "margin_min_m": -0.3195377734868259,
+    "margin_min_standing_com_m": -0.3230716273967149
+   },
+   "diag_right_hind_left_fore": {
+    "members": [
+     "right_hind",
+     "left_fore"
+    ],
+    "polygon_x_m": [
+     -0.17633820087101018,
+     0.4324431311392568
+    ],
+    "contains_com": true,
+    "margin_rear_m": 0.20306142232976693,
+    "margin_front_m": 0.4057199096805001,
+    "margin_min_m": 0.20306142232976693,
+    "margin_min_standing_com_m": 0.19952756841987787,
+    "tick0_fore_reaction_total_N": 23.668382282885883,
+    "tick0_shoulder_demand_N_m": 3.8559235558693734,
+    "shoulder_cap_N_m": 4.229,
+    "capacity_feasible": true
+   },
+   "diag_left_hind_right_fore": {
+    "members": [
+     "left_hind",
+     "right_fore"
+    ],
+    "polygon_x_m": [
+     0.13963067544866528,
+     0.4324431311392568
+    ],
+    "contains_com": false,
+    "margin_rear_m": -0.11290745398990853,
+    "margin_front_m": 0.4057199096805001,
+    "margin_min_m": -0.11290745398990853,
+    "margin_min_standing_com_m": -0.11644130789979759
+   }
+  },
+  "realizability_note": "the L/R fore pads are mirror-locked (one shared shoulder/elbow pose): seating one seats both, so the realizable PAIR SEATS are {fore_pair, hind_pair}; the diagonals are enumerated as polygons with their capacity lines. The seat pair = the containing REALIZABLE pair, capacity-feasible; on this assembly exactly one qualifies: the HIND pair."
+ },
+ "branch_b_finding": {
+  "hind_seat_base_trans_y_m": 0.2988428081778097,
+  "wave14_pose_fore_gaps_m": {
+   "fore_left_heel": -0.04615719182219026,
+   "fore_left_mp_head": -0.04615719182219029,
+   "fore_right_heel": -0.04615719182219026,
+   "fore_right_mp_head": -0.04615719182219029
+  },
+  "wave14_pose_min_fore_gap_m": -0.04615719182219029,
+  "hind_residual_gaps_m": {
+   "left_heel": 1.999999999980316e-06,
+   "left_mp_head": 0.023603154120022268,
+   "right_heel": 0.04569775180204007,
+   "right_mp_head": 0.002965985315050622
+  },
+  "note": "at the hind seat the wave-14 pose plants the fore pads BELOW the plane (negative gaps): the engine gait_initial_penetration require refuses at reset. The fore pose re-derivation is FORCED by the runtime, exactly the branch-B pattern of wave 16."
+ },
+ "seat": {
+  "seated_pair": "hind_pair",
+  "base_trans_y_m": 0.2988428081778097,
+  "fore_dangle_m": 0.03477897393257359,
+  "wave16_fore_seat_base_trans_y_m": 0.34500200000000003,
+  "seat_drop_vs_wave16_fore_seat_m": 0.046159191822190304,
+  "gaps_m": {
+   "left_heel": 1.999999999980316e-06,
+   "left_mp_head": 0.023603154120022268,
+   "right_heel": 0.04569775180204007,
+   "right_mp_head": 0.002965985315050622,
+   "fore_left_heel": 0.034780973932573594,
+   "fore_left_mp_head": 0.034780973932573594,
+   "fore_right_heel": 0.034780973932573594,
+   "fore_right_mp_head": 0.034780973932573594
+  },
+  "hind_pair_x_m": [
+   -0.17633820087101018,
+   0.222328834582971
+  ],
+  "com_x_at_seat_m": 0.02583053388172982,
+  "com_x_standing_m": 0.023189367548867686,
+  "hind_polygon_margins_m": {
+   "rear_m": 0.20216873475274,
+   "front_m": 0.1964983007012412
+  },
+  "hind_polygon_margins_standing_com_m": {
+   "rear_m": 0.19952756841987787,
+   "front_m": 0.19913946703410332
+  },
+  "per_paw_dangle_max_m": 0.04569775180204007,
+  "spread_m": 0.04569775180204009,
+  "d_td_heel_m": 2e-06,
+  "branches": [
+   {
+    "q1_rad": -1.599,
+    "q2_rad": 1.5339749021624725,
+    "max_abs_q_rad": 1.599,
+    "off_reset_m": {
+     "left": -0.10264199941889118,
+     "right": -0.10264199941889118
+    },
+    "hold_height_m": 0.13096183424523616,
+    "dangle_m": 0.03477897393257359,
+    "capture_band_mid_m": {
+     "left": -0.14207953094010106,
+     "right": -0.13897453094010104
+    },
+    "err_vs_xoff_m": 0.24249886678010105,
+    "fore_gaps_m": {
+     "fore_left_heel": 0.034780973932573594,
+     "fore_left_mp_head": 0.034780973932573594,
+     "fore_right_heel": 0.034780973932573594,
+     "fore_right_mp_head": 0.034780973932573594
+    }
+   },
+   {
+    "q1_rad": 1.47415625,
+    "q2_rad": -1.5391813478375278,
+    "max_abs_q_rad": 1.5391813478375278,
+    "off_reset_m": {
+     "left": 0.14672503604296278,
+     "right": 0.14672503604296278
+    },
+    "hold_height_m": 0.14654804125831059,
+    "dangle_m": 0.019192766919499175,
+    "capture_band_mid_m": {
+     "left": 0.10728750452175291,
+     "right": 0.11039250452175291
+    },
+    "err_vs_xoff_m": 0.006868168681752912,
+    "fore_gaps_m": {
+     "fore_left_heel": 0.0191947669194992,
+     "fore_left_mp_head": 0.019194766919499173,
+     "fore_right_heel": 0.0191947669194992,
+     "fore_right_mp_head": 0.019194766919499173
+    }
+   }
+  ],
+  "chosen_branch": {
+   "q1_rad": -1.599,
+   "q2_rad": 1.5339749021624725
+  }
+ },
+ "hind_statics_at_seat": {
+  "law": "the hind pair bears the full weight at tick 0 (the fore pads DANGLE off the plane at the derived dangle with no preload); the two vertical reactions solve exactly from the unactuated base rows; tau = -(G + A^T lam) per coordinate",
+  "contacts": [
+   {
+    "foot": "foot_left",
+    "point": "left_heel"
+   },
+   {
+    "foot": "foot_right",
+    "point": "right_mp_head"
+   }
+  ],
+  "reactions_N": [
+   52.021004489722316,
+   46.41812859697768
+  ],
+  "reaction_fractions_of_W": [
+   0.5284585800233017,
+   0.47154141997669796
+  ],
+  "demands_N_m": {
+   "hip_flexion_left": -6.4692950302949805,
+   "knee_extension_left": -1.2615472644747674,
+   "ankle_dorsiflexion_left": 0.6541747431618044,
+   "MP_dorsiflexion_left": 0.00462309449142699,
+   "hip_flexion_right": 4.386164191925389,
+   "knee_extension_right": 3.9146412164031066,
+   "ankle_dorsiflexion_right": -2.931862083962258,
+   "MP_dorsiflexion_right": 0.004582635229819452,
+   "shoulder_flexion_fore_left": -0.029059903925203356,
+   "elbow_flexion_fore_left": -0.004451325588555605,
+   "shoulder_flexion_fore_right": -0.029059903925203356,
+   "elbow_flexion_fore_right": -0.004451325588555605
+  },
+  "hind_caps_N_m": {
+   "hip_flexion": 11.2125,
+   "knee_extension": 6.6375,
+   "ankle_dorsiflexion": 7.4,
+   "MP_dorsiflexion": 0.8875
+  },
+  "worst_ratio": 0.589776454448679,
+  "worst_joint": "knee_extension_right",
+  "wave8_single_support_prior": "0.92-0.95 at theta* (receipt_wave8 theta_star_derivation)",
+  "fore_pose_statics_zero_contact_N_m": {
+   "shoulder_flexion_fore_left": -0.029059903925203356,
+   "elbow_flexion_fore_left": -0.004451325588555605,
+   "shoulder_flexion_fore_right": -0.029059903925203356,
+   "elbow_flexion_fore_right": -0.004451325588555605
+  },
+  "base_rot_posture_demand_N_m": 1.3322676295501878e-15
+ },
+ "fore_touch_law": {
+  "fore_dangle_m": 0.03477897393257359,
+  "fore_dangle_law": "the wave-16 measured settle drop (the body descended 4.616e-2 m through the wave-16 settle before the hind feet landed) == the fore-seat-to-hind-seat drop the seat law moved the body by; the pads hold the authored gap PLUS the dangle at the seat (the standing-pin machinery at the hind-seated height, pad target = plane + dangle)",
+  "fore_touch_tick_derived": 23,
+  "fore_touch_window_ticks": [
+   15,
+   40
+  ],
+  "fore_touch_note": "the pads dangle OFF the plane at the seat (not touching, cannot skate -- the run-1 falsifier finding); the settle closes the dangle as the loaded hind struts compress: the wave-16 anchor rate (4.616e-2 m by ~tick 30) scales the derived dangle to the touch window [15, 40]; the LANDING PRESS (the wave-16 mechanism: the hind feet landed at 40-67 N and pinned) is the load-transfer event the plant rides on",
+  "r_mp_landing": {
+   "gap_at_seat_m": 0.002965985315050622,
+   "tip_arm_m": 0.24133646959912675,
+   "theta_land_rad": 0.012289834685894294,
+   "tip_torque_N_m": 11.202387280992864,
+   "I_edge_kg_m2": 2.7697934686445382,
+   "alpha_rad_s2": 4.044484690937988,
+   "free_tip_land_ticks_upper_bound": 23.38717014218642,
+   "derived_touch_window_ticks": [
+    0,
+    24
+   ],
+   "note": "free-rotation UPPER bound: the planted-L-heel servo chain only slows the tip; the derived R MP touch window is [0, 24] ticks"
+  },
+  "settle_landing_anchor_ticks": 30,
+  "plant_by_capture_condition": "fore pad normal forces >= N_plant total (5.199..21.850 N) once the load transfers, pads planted (gap in band, slip <= 0.1 m/s) by the capture at tick 60",
+  "n_plant_total_N": [
+   5.199,
+   21.85
+  ],
+  "mu_store": 0.6,
+  "per_paw_dangle_bound_m": 0.0919,
+  "spread_bound_m": 0.1744
+ },
+ "capture_prediction": {
+  "per_leg": {
+   "left": {
+    "reset_offset_m": -0.10264199941889118,
+    "delta_loaded_m": -0.098,
+    "delta_unloaded_m": 0.019124936957580274,
+    "band_m": [
+     -0.2006419994188912,
+     -0.08351706246131091
+    ]
+   },
+   "right": {
+    "reset_offset_m": -0.10264199941889118,
+    "delta_loaded_m": -0.0922,
+    "delta_unloaded_m": 0.019534936957580268,
+    "band_m": [
+     -0.1948419994188912,
+     -0.08310706246131092
+    ]
+   }
+  },
+  "mean_band_m": [
+   -0.1977419994188912,
+   -0.08331206246131091
+  ],
+  "x_off_prior_m": 0.10197183584,
+  "interpolation_law": "delta_settle linear in the fore load fraction between the two measured anchors; the fraction is statically indeterminate at the hind seat (three sagittal contact lines once the hind feet land), so the pre-registered band is the FULL anchor range -- derived, not chosen",
+  "fold_geometry_cross_check": {
+   "hold_height_m": 0.13096183424523616,
+   "fold_equilibrium_m": 0.081667,
+   "predicted_transfer_m": -0.04929483424523616,
+   "inside_band": true
+  }
+ },
+ "envelope": {
+  "dmax_m": 0.2613244882908271,
+  "amax_hold_m": 0.22614041246885952,
+  "amax_loaded_m": 0.24823575345115503,
+  "per_leg": {
+   "fore_right": {
+    "grid_lift_wait_ticks": 92.27159999999999,
+    "hold": {
+     "amax_m": 0.22614041246885952,
+     "tau_env_ticks": 100.91348349886925,
+     "lift_wait_ticks": 92.27159999999999
+    },
+    "loaded": {
+     "amax_m": 0.24823575345115503,
+     "tau_env_ticks": 35.029222266385574,
+     "lift_wait_ticks": 35.029222266385574
+    }
+   },
+   "fore_left": {
+    "grid_lift_wait_ticks": 198.77159999999998,
+    "hold": {
+     "amax_m": 0.22614041246885952,
+     "tau_env_ticks": 100.91348349886925,
+     "lift_wait_ticks": 100.91348349886925
+    },
+    "loaded": {
+     "amax_m": 0.24823575345115503,
+     "tau_env_ticks": 35.029222266385574,
+     "lift_wait_ticks": 35.029222266385574
+    }
+   }
+  },
+  "note": "the clock re-measures amax and the offset at the arm; the bracket covers the band's two corners"
+ },
+ "hind_clock_schedule": {
+  "release_phase": {
+   "left": 0.0,
+   "right": 0.5
+  },
+  "settle_total": 60,
+  "right_clock_reset_note": "the right foot enters AIRBORNE (2.9660e-03 m at its lowest point) at its 0.5 clock column; when the R MP lands through the opening tip the controller resets phi_right to 0 (the kTouch law) -- predicted tick <= 20",
+  "law": "phi_leg=(t/T+off) mod 1, off={0,0.5} (the doc 5.1); TOE_OFF=0.68; the clock resets at each leg s own kTouch crossing"
+ },
+ "fore_pose": {
+  "shoulder_rad": -1.599,
+  "elbow_rad": 1.5339749021624725
+ },
+ "entry_state": {
+  "entry_trunk_rad": 0.0,
+  "start_phase_left": 0.0,
+  "start_phase_right": 0.5
+ },
+ "gait_bounds": {
+  "hind_load_floor_N": 49.21956654335001,
+  "fore_load_plant_N": 5.199,
+  "fore_load_pinned_N": 21.85,
+  "per_paw_dangle_m": 0.0919,
+  "spread_m": 0.1744,
+  "d_td_m": 0.059,
+  "hind_pairmin_gaps_derived_m": {
+   "left": 1.999999999980316e-06,
+   "right": 0.002965985315050622
+  },
+  "fore_plant_slip_bound_m_s": 0.1,
+  "fore_dangle_m": 0.03477897393257359,
+  "fore_touch_window_ticks": [
+   20,
+   45
+  ],
+  "capture_band_mean_m": [
+   -0.1977419994188912,
+   -0.08331206246131091
+  ],
+  "capture_band_left_m": [
+   -0.2006419994188912,
+   -0.08351706246131091
+  ],
+  "capture_band_right_m": [
+   -0.1948419994188912,
+   -0.08310706246131092
+  ]
+ },
+ "provenance": {
+  "script": "tools/science_funnel/validation/gait_zero_20260919/derive_seat_law.py",
+  "law": "THE SEAT LAW: the seating pair is the pair whose support polygon CONTAINS the CoM with margin (the statics-stability condition); on the corrected assembly that is the HIND pair. The fore pose is re-pinned at the hind-seated height with the pads DANGLING at the derived dangle (the wave-16 measured settle drop): the run-1 kiss design was falsified (pads on the plane at ~zero load skate; the body collapses before any transfer). The hind pair bears tick 0; the pads land through the settle with the landing press (the run fore-plant census).",
+  "measured": {
+   "wave16_runtime_hind_pairmin_m": {
+    "left": 0.045758,
+    "right": 0.049195
+   },
+   "delta_loaded_m": {
+    "left": -0.098,
+    "right": -0.0922
+   },
+   "delta_unloaded_m": {
+    "left": 0.019124936957580274,
+    "right": 0.019534936957580268
+   },
+   "v_settle_prior_m_s": 0.42044,
+   "H_FOLD_m": 0.081667,
+   "settle_landing_anchor_ticks": 30
+  }
+ }
+}

@@ -24,6 +24,7 @@ struct WalkOut{
  std::vector<std::array<uint64_t,2>> fsat;     // per-leg IK saturation ticks (per-tick snapshot)
  std::vector<std::array<double,8>> gp;         // per-tick ALL-paw gaps, declared point order (wave 15 strut census)
  std::vector<double> fr,frslip;                // per-tick total FORE reaction + max fore slip (wave 16 load census)
+ std::vector<double> hr;                       // per-tick total HIND reaction (wave 17 hind-load census)
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
@@ -114,10 +115,11 @@ int main(int argc,char**argv){try{
     {std::array<double,8> gaps{};size_t k=0;
      for(const auto&pt:s["contact"]["points"]){if(k<8)gaps[k++]=number(pt["gap_m"]);}
      out.gp.push_back(gaps);}
-    {double fsum=0,fslip=0; // WAVE 16 fore-load census inputs: total fore reaction + max fore slip
+    {double fsum=0,fslip=0,hsum=0; // WAVE 16 fore-load + WAVE 17 hind-load census inputs
      for(const auto&pt:s["contact"]["points"]){const std::string nm=pt["name"].get<std::string>();
-      if(nm.rfind("fore_",0)==0){fsum+=number(pt["reaction_N"]);fslip=(std::max)(fslip,number(pt["slip_speed_m_s"]));}}
-     out.fr.push_back(fsum);out.frslip.push_back(fslip);}
+      if(nm.rfind("fore_",0)==0){fsum+=number(pt["reaction_N"]);fslip=(std::max)(fslip,number(pt["slip_speed_m_s"]));}
+      else hsum+=number(pt["reaction_N"]);} // the hind points (left_/right_ prefixed)
+     out.fr.push_back(fsum);out.frslip.push_back(fslip);out.hr.push_back(hsum);}
     std::array<char,2> fmm{0,0};std::array<uint64_t,2> sat{};
     if(s["gait"].contains("fore_paw")&&s["gait"]["fore_paw"].size()>=2)
      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["fore_paw"][l];
@@ -286,16 +288,19 @@ int main(int argc,char**argv){try{
    " plant_bound_N="+std::to_string(PLANT_N)+" pinned_marker_N="+std::to_string(PIN_N));
   ck(mn>=PLANT_N,"f16_fore_load_plant");}
 
- // ── WAVE 16 HIND-RESET CENSUS (the branch-B repair's falsifier): the
- //    runtime tick-0 hind pair-min gaps match the corrected Assembly
- //    derivation {L 4.6161e-2, R 4.9125e-2} to <= 2e-3 m (before the repair
- //    the defected assembly measured 4.575e-2/4.557e-2 -- both legs at the TD
- //    column); the right hind's tick-0 joint angles are its 0.5 CLOCK column
- //    (hip -4.09, knee -53.88, ankle +28.18, MP +21.28 deg), not the defected
- //    TD column (+43.81/-31.65/+3.77/-12.06).
- {const double L_DER=0.046161192,R_DER=0.049125177;
+ // ── WAVE 16/17 HIND-RESET CENSUS (the branch-B repair's falsifier, its
+ //    tick-0 quantities moved to the SEAT-LAW derivation): under the wave-17
+ //    hind seat the runtime pair-min gaps are {L 2e-6 (the seat), R 2.97e-3}
+ //    -- the recipe's seat_law block carries the derived values (before the
+ //    seat law the fore-seat derivation measured {4.6161e-2, 4.9125e-2}, and
+ //    before the wave-16 repair the defected runtime measured
+ //    4.575e-2/4.557e-2); the right hind's tick-0 joint angles clause stands.
+ {const J& sl=recipe.at("seat_law");
+  const double L_DER=number(sl.at("hind_pairmin_gaps_derived_m").at("left"));
+  const double R_DER=number(sl.at("hind_pairmin_gaps_derived_m").at("right"));
   double l=w.gp.empty()?0.:w.gp[0][0],r=w.gp.empty()?0.:w.gp[0][2];
-  note("F-G16 hind_reset pairmin_gaps_m L="+std::to_string(l)+" (derived 0.046161192) R="+std::to_string(r)+" (derived 0.049125177)");
+  char b[192];std::snprintf(b,192,"F-G16 hind_reset pairmin_gaps_m L=%.9f (derived %.9f) R=%.9f (derived %.9f) [seat law: the L heel IS the seat]",l,L_DER,r,R_DER);
+  note(b);
   ck(std::abs(l-L_DER)<=2e-3,"f16_hind_reset_left_pairmin");
   ck(std::abs(r-R_DER)<=2e-3,"f16_hind_reset_right_pairmin");
   const double right_der_deg[4]={-4.0914,-53.8790,28.1756,21.2830};
@@ -316,6 +321,70 @@ int main(int argc,char**argv){try{
   note(b);
   if(w.lift_tick[0]>=0)ck(std::abs(w.lift_phase[0]-0.68)<=0.08,"f16_left_hind_clock_lift");
   if(w.lift_tick[1]>=0)ck(std::abs(w.lift_phase[1]-0.68)<=0.08,"f16_right_hind_clock_lift");}
+
+ // ── WAVE 17 HIND-LOAD CENSUS (pre-registered in receipt_wave17.json): the
+ //    SEAT LAW's tick-0 clause -- the hind pair's reactions bear >= 0.5*W at
+ //    tick 0 (the recipe 'seat_law.hind_load_floor_N'), and the opening is
+ //    never a fore-only cantilever: the hind reaction stays > 0 through
+ //    [0, 30) (the L heel is the seat; the fore pads kiss at ~zero load).
+ //    A fore-only bearing tick is the direct falsification.
+ {const double FLOOR_N=number(recipe.at("seat_law").at("hind_load_floor_N"));
+  double t0=w.hr.empty()?0.:w.hr[0];int fore_only_tick=-1;double hr_min30=1e9;
+  const size_t N30=std::min(w.hr.size(),(size_t)30);
+  for(size_t i=0;i<N30;++i){hr_min30=(std::min)(hr_min30,w.hr[i]);
+   if(w.hr[i]<=1e-9&&fore_only_tick<0)fore_only_tick=(int)i;}
+  char b[224];std::snprintf(b,224,"F-G17 hind_load tick0_N=%.6f floor_N=%.6f hr_min_[0,30)_N=%.6f fore_only_first_tick=%s",
+   t0,FLOOR_N,hr_min30,fore_only_tick<0?"none":std::to_string(fore_only_tick).c_str());
+  note(b);
+  ck(t0>=FLOOR_N,"f17_hind_load_tick0");
+  ck(fore_only_tick<0,"f17_no_fore_only_cantilever");}
+
+ // ── WAVE 17 FORE-PLANT CENSUS (pre-registered in receipt_wave17.json): the
+ //    re-pinned pads TOUCH at tick 0 (kissing at the +2e-6 seat gap -- a pad
+ //    not touching at tick 0 falsifies the re-pin); their load GROWS through
+ //    the settle and they are PLANTED by the capture at 60: fore gap in the
+ //    stance band, slip <= the recipe bound (0.1 m/s), total fore reaction
+ //    >= N_plant (the 5.199 N slide ceiling; the 21.85 N pinned marker
+ //    reported alongside). THE direct test of the seat law's purpose.
+ {const double PLANT_N=number(recipe.at("fore_load_plant_N"));
+  const double PIN_N=number(recipe.at("fore_load_pinned_N"));
+  const double SLIP_B=number(recipe.at("seat_law").at("fore_plant_slip_bound_m_s"));
+  bool touch0=(!w.fgmin.empty()&&w.fgmin[0][0]<=1e-5&&w.fgmin[0][1]<=1e-5);
+  double fr_mx=-1e9;int fr_mx_tick=-1,fr_cross=-1;
+  const size_t N=std::min(w.fr.size(),(size_t)61);
+  for(size_t i=0;i<N;++i){if(w.fr[i]>fr_mx){fr_mx=w.fr[i];fr_mx_tick=(int)i;}
+   if(fr_cross<0&&w.fr[i]>=PLANT_N)fr_cross=(int)i;}
+  bool planted60=false;bool reached60=w.fgmax.size()>60;double gap60a=-9,gap60b=-9,slip60=-1,rxn60=0;
+  if(reached60){gap60a=w.fgmax[60][0];gap60b=w.fgmax[60][1];
+   double gmn=(std::min)(w.fgmin[60][0],w.fgmin[60][1]);
+   planted60=(w.fgmax[60][0]<=1e-5&&w.fgmax[60][1]<=1e-5&&gmn>=-1e-6);
+   slip60=w.frslip[60];rxn60=w.fr[60];}
+  char b[320];std::snprintf(b,320,"F-G17 fore_plant touch_at_0=%d fore_rxn_peak_N=%.6f@%d first_ge_plant_tick=%s reached60=%d at60: rxn=%.6f gap_max=(%.3e,%.3e) slip=%.6f planted=%d (bounds: N>=%.3f pinned marker %.3f slip<=%.2f)",
+   touch0?1:0,fr_mx,fr_mx_tick,fr_cross<0?"never":std::to_string(fr_cross).c_str(),
+   reached60?1:0,rxn60,gap60a,gap60b,slip60,planted60?1:0,PLANT_N,PIN_N,SLIP_B);
+  note(b);
+  ck(touch0,"f17_fore_touch_at_seat");
+  if(reached60)ck(planted60&&rxn60>=PLANT_N&&slip60<=SLIP_B,"f17_fore_planted_by_capture");
+  else note("F-G17 fore_planted_by_capture NOT MEASURED: the walk refused before the capture tick");}
+
+ // ── WAVE 17 DANGLE CENSUS (pre-registered in receipt_wave17.json): every
+ //    paw's dangle <= the wave-15 per-paw bound (0.0919 m) and the 8-point
+ //    spread <= 0.1744 m at EVERY tick in [0, 60]; worst tick named for both.
+ {const double PAW_B=number(recipe.at("seat_law").at("per_paw_dangle_m"));
+  const double SPR_B=number(recipe.at("seat_law").at("spread_m"));
+  double paw_mx=0,spr_mx=0;int paw_tick=-1,spr_tick=-1;
+  const size_t N=std::min(w.gp.size(),(size_t)60);
+  for(size_t i=0;i<N;++i){
+   double lo=1e9,hi=-1e9;
+   for(double g:w.gp[i]){lo=(std::min)(lo,g);hi=(std::max)(hi,g);}
+   if(hi>paw_mx){paw_mx=hi;paw_tick=(int)i;}
+   double spr=hi-lo+2e-6;
+   if(spr>spr_mx){spr_mx=spr;spr_tick=(int)i;}}
+  char b[192];std::snprintf(b,192,"F-G17 dangle_census per_paw_worst_m=%.6f at tick %d (bound %.4f) spread_worst_m=%.6f at tick %d (bound %.4f)",
+   paw_mx,paw_tick,PAW_B,spr_mx,spr_tick,SPR_B);
+  note(b);
+  ck(paw_mx<=PAW_B,"f17_per_paw_dangle");
+  ck(spr_mx<=SPR_B,"f17_dangle_spread");}
 
 
  // ── F-G1: trajectories within the tables (+/-5 deg, >=95% of samples after

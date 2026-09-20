@@ -216,6 +216,22 @@ def compile_gait(graph,output,fore_share=0.45):
     el_cap=3.76*(min(fore_share,0.45)/0.45)
     derived=json.loads(DERIVED.read_text(encoding='utf-8'))
     model=build_walker_model(record,derived)
+    # THE SEAT LAW (wave 17), part 1 -- the FORE POSE RE-PIN, consumed FIRST
+    # so every downstream Assembly measurement (the vault sign probe, the
+    # entry state, the seat) sees the pose the runtime actually assembles:
+    # at the hind seat (derive_seat_law.py) the wave-14 pose plants the fore
+    # pads BELOW the plane, and the standing-pin machinery was re-run at the
+    # hind-seated height (pads flat at the authored +2e-6 gap; the capture
+    # equation selected the branch). Absent file -> refusal.
+    _seat_path=ROOT/'tools/science_funnel/validation/gait_zero_20260919/derived_seat_law.json'
+    require(_seat_path.exists(),'gait_seat_law_missing','run derive_seat_law.py first')
+    _seat=json.loads(_seat_path.read_text(encoding='utf-8'))
+    require(_seat.get('schema')=='chimera.seat_law.v1','gait_seat_law_schema')
+    _shs=float(_seat['fore_pose']['shoulder_rad']);_els=float(_seat['fore_pose']['elbow_rad'])
+    for _leg in ('fore_left','fore_right'):
+        model['coordinates'][f'shoulder_flexion_{_leg}']['default_rad']=_shs
+        model['coordinates'][f'elbow_flexion_{_leg}']['default_rad']=_els
+    model['entry_pose']={'shoulder_rad':_shs,'elbow_rad':_els}
     from tools.science_funnel.coupled_arm import Assembly
     Assembly(model)
     fore_coords=['shoulder_flexion_fore_left','elbow_flexion_fore_left','shoulder_flexion_fore_right','elbow_flexion_fore_right']
@@ -233,11 +249,10 @@ def compile_gait(graph,output,fore_share=0.45):
               'contact_friction':contract['contact_friction']}
     for d in drives:
         defaults[d['coordinate']+'_drive']=True
-    measured=seating_scan(model,record)
-    recorded=contract.get('seating_scan_measured')
-    if recorded and len(model['coordinates'])<=16:
-        require(abs(measured['assembly_mass_kg']-recorded['assembly_mass_kg'])<1e-9,'gait_seating_mass_drift')
-        require(max(abs(a-b) for a,b in zip(measured['com_projection_model_m'],recorded['com_projection_model_m']))<1e-9,'gait_seating_com_drift')
+    # THE ENTRY-STATE SEAT SCAN (wave 17): the compile-time proof object moves
+    # to the entry state -- the state the runtime actually assembles -- and is
+    # measured there, after the entry machinery below (the standing pose is no
+    # longer a runtime object under the seat law).
     # THE SINGLE-SUPPORT ENTRY (the entry law, wave 4): the source model's
     # "enter at the TD state" is over-determined -- TD-left means
     # mid-stance-right, a DOUBLE-support instant, and the tables' closure
@@ -346,18 +361,22 @@ def compile_gait(graph,output,fore_share=0.45):
     _trade=json.loads(_trade_path.read_text(encoding='utf-8'))
     require(_trade.get('schema')=='chimera.load_strut_trade.v1','gait_load_strut_trade_schema')
     start_values['base_rot_z']=float(_trade['entry_state']['entry_trunk_rad'])
+    # THE SEAT LAW (wave 17), part 2 -- the seat + the compile-time proof at
+    # the seated entry state: the seating pair is the pair whose support
+    # polygon CONTAINS the CoM with margin (the statics-stability condition;
+    # waves 15/16 measured both alternatives fatal) -- on the corrected
+    # assembly that is the HIND pair (derive_seat_law.py's pair table).
+    require(_seat['seat']['seated_pair']=='hind_pair','gait_seat_law_pair',
+            _seat['seat']['seated_pair'])
+    require(abs(float(_seat['entry_state']['entry_trunk_rad'])-float(_trade['entry_state']['entry_trunk_rad']))<1e-12,
+            'gait_seat_law_trunk_mismatch')
     asm0=Assembly(model,values=start_values,gravity=[0.,-9.80665,0.])
     heights=[float(asm0.point(p['body'],p['point_m'])[0][1]) for p in _p0]
-    # THE QUADRUPED ENTRY SEAT (wave 15): the single-support ordering require
-    # (gait_entry_swing_not_clear, min(right heights) > min(left heights)) is
-    # scoped to the biped path its own comment names -- at the level reset the
-    # L/R fore pads seat symmetrically (gap equality exactly 0.0, the standing
-    # pin is a z-mirror; measured in derive_level_entry.json), so the strict
-    # ordering is impossible at ANY seat. The quadruped TD entry seats ALL
-    # paws (wave 8); its compile law is the STRUT BOUND (the wave-15
-    # membrane): the calibrated fore-hind strut difference (the TD-heel dangle
-    # over the seat) stays inside the measured survivable band and no paw
-    # dangle exceeds the strongest dangle that ever SURVIVED a settle.
+    _hind_idx=[i for i,p in enumerate(_p0) if p['name'] in
+               ('left_heel','left_mp_head','right_heel','right_mp_head')]
+    # THE QUADRUPED ENTRY SEAT LAWS (wave 15, re-measured at the hind seat):
+    # the calibrated TD-heel strut difference and the 8-point spread stay
+    # inside the measured survivable band and the strongest survived dangle.
     lo=min(heights)
     d_td=heights[[i for i,p in enumerate(_p0) if p['name']=='left_heel'][0]]-lo \
          +contract['seating_scan']['reset_gap_target_m']
@@ -367,10 +386,47 @@ def compile_gait(graph,output,fore_share=0.45):
     require(spread<=float(_trade['provenance']['measured']['D_LIVED_m']),
             'gait_entry_dangle_survived_anchor',spread,
             _trade['provenance']['measured']['D_LIVED_m'])
-    # All four paws are intended to plant during settle. Seat the lowest
-    # forepaw/hindpaw envelope together; the residual is the prescribed
-    # migrating-CoP tolerance rather than a hidden pose correction.
-    base_y=-min(heights)+contract['seating_scan']['reset_gap_target_m']
+    # THE SEAT (wave 17): base_y = the HIND pair's minimum (the derivation's
+    # own arithmetic, cross-checked against the scene's re-measurement).
+    base_y=float(_seat['seat']['base_trans_y_m'])
+    base_y_law=-min(heights[i] for i in _hind_idx)+contract['seating_scan']['reset_gap_target_m']
+    require(abs(base_y-base_y_law)<1e-9,'gait_seat_law_base_mismatch',base_y,base_y_law)
+    # THE COMPILE-TIME SEAT PROOF at the SEATED entry state: no paw penetrates
+    # (the engine's own reset require), every dangle <= the wave-15 per-paw
+    # bound, and the CoM strictly inside the SEATED PAIR's polygon.
+    _plane=float(contract['contact_plane_height_m'])
+    sv_seated=dict(start_values);sv_seated['base_trans_y']=base_y
+    asm_seated=Assembly(model,values=sv_seated,gravity=[0.,-9.80665,0.])
+    seated_gaps=[];seated_pos=[]
+    for p in _p0:
+        q,_=asm_seated.point(p['body'],p['point_m'])
+        seated_gaps.append(float(q[1])+float(p['radius_m'])-_plane)
+        seated_pos.append((float(q[0]),float(q[2])))
+    for g in seated_gaps:require(0<g<=float(_seat['gait_bounds']['per_paw_dangle_m']),
+            'gait_seat_paw_gap_invalid',g)
+    com=np.zeros(3);mtot=0.
+    for b in model['bodies']:
+        m=float(b['mass_kg']);p,_=asm_seated.point(b['name'],b['mass_center_m'])
+        com+=m*np.asarray(p);mtot+=m
+    com/=mtot
+    hx=[seated_pos[i][0] for i in _hind_idx]
+    margin_rear=com[0]-min(hx);margin_front=max(hx)-com[0]
+    require(margin_rear>0 and margin_front>0,'gait_seat_com_outside_hind_polygon',
+            margin_rear,margin_front)
+    require(float(_seat['hind_statics_at_seat']['worst_ratio'])<=1.0,
+            'gait_seat_hind_statics_over_cap',_seat['hind_statics_at_seat']['worst_ratio'])
+    measured={'reset_gaps_m':seated_gaps,'com_projection_model_m':[float(com[0]),float(com[2])],
+              'assembly_mass_kg':mtot,'weight_N':mtot*9.80665,
+              'hull_vertices':[[min(hx),seated_pos[_hind_idx[0]][1]],
+                               [max(hx),seated_pos[_hind_idx[0]][1]]],
+              'seat':{'seated_pair':'hind_pair','hind_polygon_x_m':[min(hx),max(hx)],
+                      'com_margins_m':{'rear':float(margin_rear),'front':float(margin_front)},
+                      'hind_statics_worst_ratio':float(_seat['hind_statics_at_seat']['worst_ratio']),
+                      'base_trans_y_m':base_y}}
+    recorded=contract.get('seating_scan_measured')
+    if recorded and len(model['coordinates'])<=16:
+        require(abs(measured['assembly_mass_kg']-recorded['assembly_mass_kg'])<1e-9,'gait_seating_mass_drift')
+        require(max(abs(a-b) for a,b in zip(measured['com_projection_model_m'],recorded['com_projection_model_m']))<1e-9,'gait_seating_com_drift')
     defaults['start_at_tables']=True
     # ORBIT CAPTURE: settle at the entry pose under load for the servo's
     # settling time (3 periods at 4 Hz, zeta 0.8 ~= 0.19 s -> 57 ticks; 60
@@ -419,6 +475,26 @@ def compile_gait(graph,output,fore_share=0.45):
                 # the derivation (derive_load_strut_trade.py) owns the numbers.
                 'fore_load_plant_N':float(_trade['fore_load_law']['falsifier_bound_total_N']),
                 'fore_load_pinned_N':float(_trade['fore_load_law']['pinned_marker_total_N']),
+                # THE SEAT-LAW CENSUS BOUNDS (wave 17): the hind pair bears
+                # tick 0 (the hind-load census floor 0.5*W), the fore pads
+                # kiss at tick 0 and take the load through the settle (the
+                # fore-plant census: slip bound + the N_plant bound above),
+                # the dangle bounds, and the derived pair-min gaps the
+                # F-G16 hind-reset census now judges against. The derivation
+                # (derive_seat_law.py) owns the numbers.
+                'seat_law':{
+                    'seated_pair':_seat['seat']['seated_pair'],
+                    'base_trans_y_m':base_y,
+                    'hind_load_floor_N':float(_seat['gait_bounds']['hind_load_floor_N']),
+                    'per_paw_dangle_m':float(_seat['gait_bounds']['per_paw_dangle_m']),
+                    'spread_m':float(_seat['gait_bounds']['spread_m']),
+                    'hind_pairmin_gaps_derived_m':_seat['gait_bounds']['hind_pairmin_gaps_derived_m'],
+                    'fore_plant_slip_bound_m_s':float(_seat['gait_bounds']['fore_plant_slip_bound_m_s']),
+                    'capture_band_left_m':_seat['gait_bounds']['capture_band_left_m'],
+                    'capture_band_right_m':_seat['gait_bounds']['capture_band_right_m'],
+                    'fore_touch_tick_derived':int(_seat['fore_touch_law']['fore_touch_tick_derived']),
+                    'r_mp_touch_window_ticks':_seat['fore_touch_law']['r_mp_landing']['derived_touch_window_ticks'],
+                },
                 'posture_target_phases':posture_phases,'posture_target_rad':posture_rads,
                 'contact_points':list(contract['contact_points'])+[
                     {'name':'fore_left_heel','body':'forearm_fore_left','point_m':[-0.012,-0.13555305347340657,0.],'radius_m':0.004},
