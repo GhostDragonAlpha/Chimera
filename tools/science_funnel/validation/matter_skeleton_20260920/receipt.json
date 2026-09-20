@@ -88,5 +88,16 @@
     "regressions": "GREEN -- creature_graph: 19 passed from repo root AND from tools/; matter kernel: 9/9 + 37 OK.",
     "reproducibility": "GREEN -- build regenerates byte-identical artifacts (in-run temp probe); verify mode re-derives everything from committed artifacts and demands byte equality (fresh-clone law, checklist section 5).",
     "honest_reds": "none -- all six pre-registered falsifiers measured green. The nearest-to-failing numbers are banked above: total volume delta -2.28% against a 5% tolerance, and the mass_book deviation branch (regression underprediction) discharged via the named-bias clause, not the in-band clause alone."
-  }
+  },
+  "corrections": [
+    {
+     "appended_utc": "2026-09-20T16:40:00Z",
+     "trigger": "VERIFICATION RED: the lead's fresh clone refused this lane's definition_drift gate; this repair is the one itemized fix, no re-derivation.",
+     "finding": "The committed infant_skeleton.body.json source_obj_sha256 values were sha256 of the LANE WORKING COPY's OBJ bytes, not the canonical committed bytes: the lane clone checked out meshes_preview BEFORE the .gitattributes -text rule for morphosource_ct existed in that clone, so autocrlf delivered CRLF text OBJs to the writer while the GIT BLOBS are LF. The provenance hashes were environment-dependent -- a Copernicus-EOXML-class byte-stability defect. The original 'byte-exact fresh clone' claim had NOT been a true fresh-clone proof: git does not re-normalize an existing working tree after .gitattributes changes, and verify's byte gate compares the WORKING TREE against regeneration -- in a stale worktree that proves tool determinism only, not committed-bytes reproducibility.",
+     "repair": "Regenerated in a TRUE fresh clone of the branch after proving the byte baseline first: all 25 preview OBJs git hash-object == git rev-parse HEAD:path (worktree bytes == committed blobs, LF-only). The regenerated body.json differs from the committed one by EXACTLY 25 insertions + 25 deletions, every changed line a source_obj_sha256; derivation.json, verify.json and all 25 triangle blobs are byte-identical. The hashes are now sha256 of the canonical committed (LF) bytes.",
+     "scope": "ONLY the 25 provenance hash fields changed. All geometry, mass, bond and adjacency numbers stand unchanged: 25 compartments, 21 measured bonds, total 52.3139 g, books as banked above (vertex_sha256 values are canonical float32 vertex records and were never EOL-sensitive).",
+     "proof_standard_correction": "The reproducibility proof standard for this lane is hereby sharpened: verify green in a TRUE fresh clone of the branch (worktree==blob pre-checked), not in the authoring worktree. In the repair clone the refusal was demonstrated BEFORE the fix (stale body.json restored from the pre-repair commit -> verify REFUSED definition_drift) and green after the rebuild.",
+     "post_repair_state": "closing proof: verify green in an independent second fresh clone of the branch."
+    }
+  ]
 }
