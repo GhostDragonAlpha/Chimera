@@ -218,6 +218,10 @@ def compile_gait(graph,output):
         if 0.70<phi+0.5<0.99 and _contact_vy(phi)<=0.0 and err<e_err: e_best,e_err=phi,err
     entry_phase=float(e_best)
     require(entry_phase is not None and e_err<0.35,'gait_entry_phase_not_found',e_err)
+    # WAVE 8 EXPERIMENT: the TD entry RETURNS -- the settle window absorbs the
+    # TD bounce (the wave-5 killer), so the original source-model entry scheme
+    # (enter at TD, phases {0, 0.5}) gets its fair test with settling.
+    entry_phase=0.0
     jstems=['hip_flexion','knee_extension','ankle_dorsiflexion','MP_dorsiflexion']
     start_values={}
     for leg,phi in (('left',entry_phase),('right',entry_phase+0.5)):
@@ -248,6 +252,11 @@ def compile_gait(graph,output):
             'gait_entry_swing_not_clear',min(heights[i] for i in right_idx)-seated)
     base_y=-seated+contract['seating_scan']['reset_gap_target_m']
     defaults['start_at_tables']=True
+    # ORBIT CAPTURE: settle at the entry pose under load for the servo's
+    # settling time (3 periods at 4 Hz, zeta 0.8 ~= 0.19 s -> 57 ticks; 60
+    # rounded) before releasing the clock -- the corrected statics prove the
+    # pose holdable, so the load transfer completes before the stride begins.
+    defaults['settle_ticks']=60
     defaults['base_speed_x_m_s']=float(speed)
     defaults['base_trans_y_m']=base_y
     # theta*(phi): the derived posture target (the trunk-pitch freedom, wave 8)

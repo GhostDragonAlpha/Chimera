@@ -24,5 +24,13 @@
   "3. Only if both fail does the quadruped question return -- the statics no longer demand it"
  ],
  "pass": false,
- "honest_summary": "A bug fix reversed the strategic picture (the biped is statically feasible; no forelimbs required by physics), the trunk freedom is implemented and merged with the sole contact -- and the walk still falls at tick 86, now diagnosable as orbit capture. Every remaining lever is named and cheap-first."
+ "honest_summary": "A bug fix reversed the strategy (the biped is statically feasible; no forelimbs required by physics); the trunk freedom and the sole contact are merged in; and the TD-entry-plus-settling scheme is the breakthrough of the wave: tick 127, past the 118 wall, with the settle absorbing the TD bounce exactly as derived. The walk's remaining blocker is the mid-stance knee's 5% margin under dynamic drift -- the orbit-capture campaign, with every meter in place and the next levers named (continuity-constrained theta*, longer/settled-then-ramped release, orbit initialization).",
+ "settle_and_td_entry": {
+  "settle_law": "orbit capture by settling: the clock holds at the entry pose under load for the servo's settling time (3 periods at 4 Hz, zeta 0.8 ~= 0.19 s -> 60 ticks), then releases. Implemented as settle_ticks in the scene defaults consumed by the controller (the stage-E frozen-clock machinery reused at the gait pose).",
+  "measured_combinations": {
+   "single_support_entry+settle": "refused tick 66 (6 ticks after release): the settle left BOTH feet penetrating (poscorr cycling on 2 points through the window) -- a strained spring that fires at release; the right knee slams to -2.0",
+   "TD_ENTRY+settle": "REFUSED TICK 127 -- past the 118 wall for the first time since wave 3 (60 settle + 67 walking ticks; the settle absorbs the TD bounce that killed the wave-5 entry). Ledger 2.74. The refusal: the LEFT knee at its full-crouch wall (-2.0) under mid-stance load -- the 5%-at-best knee margin (0.95 at the table pose) eaten by drift, the same fold, 60 ticks later than ever."
+  },
+  "verdict": "TD entry + settling is the best entry architecture measured (127 ticks vs 66-118 for every alternative). The remaining blocker is unchanged in kind: the mid-stance knee margin is 5% at the table pose and the dynamic drift consumes it -- orbit capture is still the membrane, now with the right entry scheme."
+ }
 }

@@ -69,6 +69,7 @@ class GaitWalker {
  Dense kp_,kd_,damping_,last_torque_,battery_,brake_;std::vector<uint64_t> empty_events_;
  double kp_post_=0,kd_post_=0,battery_post_=0,brake_post_=0,store_post_=0;uint64_t empty_post_=0;
  std::vector<double> posture_phi_,posture_theta_; // theta*(phi): the derived trunk-pitch freedom (wave 8)
+ int settle_ticks_=0; // ORBIT CAPTURE (wave 8): hold the clock at the entry pose under load for the servo's settling time (3 periods at 4 Hz, zeta 0.8 = ~0.19 s), then release onto the stance branch already loaded
  double e_ref_=0; // the LEDGER BASELINE: the reset state's actual mechanical energy (the gait entry injects pose+momentum the standing-pose reference never sees; measured offset -0.59 J at tick 0 before this)
  std::vector<BodyRef> bodies_;bool contact_=false;
  State s_;mutable uint64_t adv_calls_=0;
@@ -536,6 +537,7 @@ class GaitWalker {
   for(size_t k=0;k<tt.size();++k){posture_phi_.push_back(number(tp[k]));posture_theta_.push_back(number(tt[k]));
    require(std::isfinite(posture_theta_.back())&&std::abs(posture_theta_.back())<=1.0,"gait_posture_table_range");}
   for(size_t k=1;k<posture_phi_.size();++k)require(posture_phi_[k]>posture_phi_[k-1],"gait_posture_table_monotone");}
+ if(config_.contains("settle_ticks")){require(config_["settle_ticks"].is_number(),"gait_settle_shape");settle_ticks_=(int)number(config_["settle_ticks"]);require(settle_ticks_>=0&&settle_ticks_<=600,"gait_settle_range");}
   plane_world_y_=number(recipe_.at("contact_plane_height_m"));require(std::isfinite(plane_world_y_),"gait_contact_plane_invalid");plane_model_y_=plane_world_y_-shift_[1];
   require(config_.contains("contact_enabled")&&config_["contact_enabled"].is_boolean(),"gait_contact_flag_invalid");contact_=config_["contact_enabled"].get<bool>();
   require(config_.contains("contact_friction")&&config_["contact_friction"].is_number()&&number(config_["contact_friction"])>=0&&number(config_["contact_friction"])<=1,"gait_friction_flag_invalid");mu_=number(config_["contact_friction"]);
@@ -629,7 +631,8 @@ class GaitWalker {
   // the clock frozen at the reset columns phi={0, 0.5} -- both legs standing
   // in the double-support TD state, servos driving the frozen tables (the
   // stage-E stand); true releases the clock (the stage-F walk).
-  bool walking=config_["gait_enabled"].get<bool>();
+  bool walking=config_["gait_enabled"].get<bool>()&&(settle_ticks_<=0);
+  if(settle_ticks_>0)--settle_ticks_; // the settle window: clock frozen, targets hold the entry pose
   // 1) clock update at the tick start (contact reset dominates).
   {auto e=evaluate(s_);if(walking)update_clock(e,dt_);else{for(size_t leg=0;leg<2;++leg){bool touching=false;const char* prefix=leg==0?"left":"right";
    for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0&&gap_of(e,k)<=kTouch)touching=true;touching_prev_[leg]=touching;}}}
