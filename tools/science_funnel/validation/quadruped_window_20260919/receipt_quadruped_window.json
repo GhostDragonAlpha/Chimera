@@ -1,0 +1,67 @@
+{
+ "lane": "agent/quadruped-window (from origin/buffy/quadruped-share-20260919)",
+ "date": "2026-09-20",
+ "agent": "GLM 5.3",
+ "base": "14caff74 (buffy/quadruped-share-20260919 tip: 'Derive quadruped fore-share statics and record falsifiers')",
+ "deliverable": "Pure-Python quadruped viability window: PCSA-route forelimb caps + fore-share x forepaw-reach sensitivity sweep; no engine files",
+ "rule_0": {
+  "membrane_banked_before_computing": "viability_window.json is created with the membrane ALONE; results are merged only afterwards; a re-run reuses the banked membrane verbatim (never rewritten after results exist)",
+  "statement": "The parameterized macaque quadruped possesses a NON-EMPTY viability window: (fore share s in [0.25,0.65] step 0.05) x (forepaw cranial reach l = 0.1507 m x {0.70..1.30}) grid points with hindlimb worst demand/cap <= 0.85 AND forelimb elbow demand/cap <= 1.0 under the muscle-derived forelimb caps.",
+  "prediction": "Window roughly s in [0.50,0.65] x l in [0.105,~0.17] m; the cranial boundary set by the posture band, not the muscle cap. Secondary: under the segment-scaled cap (2.368 N.m) the same grid is EMPTY.",
+  "falsifiers": [
+   "F_window: empty window under best-justified caps => no viable static share => headline, re-opens the biped question",
+   "F_hind_l_invariance: hind worst l-invariant to <= 1e-9 N.m at every s",
+   "F_elbow_monotone: elbow flexion demand non-decreasing in commanded l to <= 1e-3 N.m"
+  ]
+ },
+ "method": {
+  "machinery": "imports the share lane's own derive_quadruped_share.py (statics, ratios, bands, plant solver); the fore plant solve is re-run with the paw-tip target shifted cranially by the commanded reach l; at l=0 it reproduces the banked fore_plant exactly (phi=0.40: a=-0.312, b=+1.062, internal 1.768 rad, miss 78.65 mm)",
+  "tracks": "primary = theta=0 fixed pose (the share lane's falsifier track); theta* minimax over all rows carried as diagnostic only (hind worst at doc reach 0.96-1.25, non-monotone in s - the known pose-selection effect, not merged)",
+  "grids": "s = 0.25..0.65 step 0.05 (9); l = 0.1507 x {0.70,0.80,0.90,1.00,1.10,1.20,1.30} (7, +/-30% around the doc value); 63 combinations x 21 stance nodes",
+  "doc_reach_value": "l_doc = 0.1507 m, assembly doc sec 3.3 'the walking pose's 0.1507 m paw offset'; the doc tenability bound l <= 0.110 m (= 3.76/34.18) sits between the -30% (0.1055) and -20% (0.1206) points",
+  "fore_masses": "admitted hind-proportion derivation, unchanged (humerus 0.2737 kg @ 0.125 m, forearm 0.1323 kg @ 0.132 m)",
+  "elbow_demand_sign": "flexion-demand = sign(b-a) x tau_elbow; at every grid point it is positive (the load folds the elbow) so the EXTENSOR side of the admitted envelope holds it - the triceps side, as quadrupedal support demands"
+ },
+ "task1_caps": {
+  "forelimb_pcsa_in_store": false,
+  "statement": "the store admits NO forelimb PCSA: the Guimaraes 2026 architecture batch is hindlimb-only (30 M. mulatta muscles); the arm model records carry max_isometric_force (39/39), fiber lengths and pennation but no PCSA row",
+  "route": "cap = SUM_i PCSA_i x sigma x r_i with PCSA_i = Fmax_i/sigma (sigma cancels) = SUM_i Fmax_i x r_i on the matching envelope side; Fmax admitted (limblab arm model @ 4fb7ddee), moment arms admitted (muscle-path lane, falsifier HELD at 4.3e-10 m worst straight-path, fd authoritative on the one active wrap)",
+  "sigma_external_constant_Pa": 300000.0,
+  "sigma_documentation": "0.30 MPa literature standard, the run's single external constant, used ONLY for the implied-PCSA column; inside the in-repo reference band 25-32 N/cm2 (docs/research/muscle_physiology_reference.md); the in-repo derived hindlimb slope 1.281 MPa (published group spread 0.31-5.29 MPa) is recorded but not used as primary (hindlimb fit)",
+  "elbow_extension_cap_walking_N_m": 5.802,
+  "elbow_extension_cap_neutral_N_m": 5.172,
+  "elbow_extension_muscles_walking": {"tricep_lat": 1.833, "tricep_sho": 1.835, "tricep_lon": 1.527, "dorsoepitrochlearis": 0.476, "anconeus": 0.131},
+  "elbow_flexion_cap_walking_N_m": 9.595,
+  "triceps_only_extension_cap_N_m": 5.195,
+  "shoulder_caps_walking_N_m": {"flexion_side": 12.54, "extension_side": 12.828},
+  "extensor_group_force_N": 462.1,
+  "extensor_effective_arm_mm": 12.56,
+  "pose_caveat": "admitted arms exist only at neutral (elbow internal 1.571 rad) and the walking surrogate (1.745 rad, the flexed edge of the quadruped band 1.75-2.44); arms in the straighter half of the band are NOT admitted; neutral bracket reported alongside",
+  "comparison": {
+   "muscle_derived_walking": 5.802,
+   "doc_triceps_anchor": 3.76,
+   "segment_scaled": 2.368,
+   "doc_anchor_decomposition": "417.3 N = the arm model's own triceps trio 387.3 N + anconeus 30.0 N, x the doc's own 9.0 mm wrap arm: SAME force source, arm ~32% below the derived fd arms (13.2-13.5 mm)",
+   "segment_scaled_implied_arm_mm": 5.12,
+   "verdict": "the segment-scaled cap implies a 5.12 mm effective extensor arm, ~2.4x below anything measured in the admitted records; the doc cap sits between; the muscle-derived cap is the best-justified and is used for the primary window"
+  }
+ },
+ "results": {
+  "hind_worst_theta0_ss_l_invariant": {"0.25": 1.2269, "0.3": 1.1465, "0.35": 1.0662, "0.4": 0.9858, "0.45": 0.9054, "0.5": 0.825, "0.55": 0.7447, "0.6": 0.6643, "0.65": 0.5839},
+  "replication_anchor": "s = 0.25/0.40/0.55 reproduce the banked share lane exactly (1.2269 / 0.9858 / 0.7447); the hind row is structurally independent of the fore plant (fore contact rows carry no hind columns), verified numerically to 0.0 N.m across all reaches",
+  "s_crit_min_grid_share_with_hind_ok": 0.5,
+  "window_primary_muscle_caps": {"n_points": 28, "region": "s in {0.50..0.65} x ALL 7 reach steps", "binding_corner": "s=0.50, any l: hind 0.8250, elbow 0.533", "worst_elbow_ratio_in_window": 0.689},
+  "window_under_doc_cap_3p76": {"n_points": 21, "region": "s in {0.50..0.60} only; at s=0.65 the doc-cap ratio hits 1.064"},
+  "window_under_segment_scaled_cap_2p368": {"n_points": 0, "region": "EMPTY - every s >= 0.50 point exceeds 1.0 (min 1.280 at s=0.50)"},
+  "secondary_prediction_confirmed": true,
+  "theta_star_diagnostic_hind_worst_at_doc_reach": {"0.25": 1.0968, "0.3": 1.1598, "0.35": 1.2115, "0.4": 1.237, "0.45": 1.2519, "0.5": 1.2328, "0.55": 1.1827, "0.6": 1.0931, "0.65": 0.962}
+ },
+ "falsifier_verdicts": {
+  "F_window_nonempty_at_admitted_parameters": {"pass": true, "detail": "28 of 63 grid points viable under the muscle-derived caps; the window is a band: s >= 0.50 (hind criterion) across the whole +/-30% reach sweep (elbow criterion slack everywhere in it, worst 0.689)"},
+  "F_hind_l_invariance": {"pass": true, "detail": "max |hind worst| difference across reaches = 0.0 N.m at every s (structural, as derived)"},
+  "F_elbow_monotone": {"pass": false, "detail": "FIRED: max demand decrease 0.079 N.m (> 1e-3 tolerance) at fixed s between l=0.166 and l=0.181. Diagnosis (measured, in viability_window.json): demand = (s*W/2) x ACHIEVED lever + arm self-weight; the achieved lever is band-limited - through l=0.105-0.166 the forearm angle pins at the B_BAND edge (+1.200 rad) with lever EXACTLY 123.0 mm (piecewise-constant demand on the solver's discrete pose lattice); at l~0.18 the plant switches branch (elbow cranially inverted, internal angle to the INT_BAND top) shortening the binding lever to 120.6 mm. R x lever closes on the demand to the 0.064 N.m self-weight intercept at every point: real statics of the band-constrained plant, not a solver fault. The monotone-in-COMMANDED-l proposition is RETRACTED; the grid rows stand as self-contained static solves; the window verdict rests on F_window, which is independent."}
+ },
+ "honest_summary": "The quadruped as parameterized HAS a viable static share window, but only under the muscle-derived forelimb caps and only at high fore share: hind worst <= 0.85 needs s >= 0.50, and at s in [0.50, 0.65] the fore elbow runs at 0.53-0.69 of the 5.80 N.m extensor cap across the entire +/-30% reach sweep - the cranial boundary is the posture band (achieved lever saturates at 123 mm), not the muscle cap, exactly as predicted. The caps question is decisive, as predicted: under the predecessor's segment-scaled cap (2.368 N.m, no muscle anchoring - implied 5.12 mm extensor arm vs 12.6-13.5 mm measured) the same grid has an EMPTY window, and under the doc's 3.76 N.m anchor the window shrinks to s in [0.50, 0.60]. The store carries no forelimb PCSA (Guimaraes is hindlimb-only); the caps were derived from the admitted arm-model forces x the admitted derived moment arms with sigma = 0.30 MPa documented as the single external constant (it cancels in the cap algebra). One falsifier fired and is banked as fired: elbow demand is NOT monotone in the commanded reach - the band-constrained plant switches branch at l~0.18; the diagnosis exonerates the machinery (R x lever closes at every point) and kills only the monotonicity proposition, which is retracted. The theta* track (diagnostic only) is non-monotone in s (0.96-1.25), the share lane's known pose-selection effect: the fixed-pose track remains the falsifier track, and on it even the viable corner leaves the hindlimb at 0.83 of cap - the quadruped buys its viability with a fore-heavy 50/50-or-more share, near the fore-dominant 69/31 the assembly doc derived, and far from any bipedal s=0.",
+ "graph_tests": "PASS: 37 tests, OK (unittest discover, POSIX PYTHONPATH with both roots: repository root + tools/creature_graph/tests). Note: tools/creature_graph/tests/run_reproduction.py (the F2 defect-reproduction runner) goes red at D1 on this branch BY DESIGN - the D1 repair (PHYSICS_FIELDS now carries value/units/source/applicability) has landed in this lineage and the runner's wrappers assert the DEFECT; pre-existing on the branch base, not touched by this lane.",
+ "outputs": ["derive_quadruped_window.py", "viability_window.json", "receipt_quadruped_window.json"]
+}
