@@ -250,6 +250,10 @@ def compile_gait(graph,output):
     defaults['start_at_tables']=True
     defaults['base_speed_x_m_s']=float(speed)
     defaults['base_trans_y_m']=base_y
+    # theta*(phi): the derived posture target (the trunk-pitch freedom, wave 8)
+    tp_table=json.loads((ROOT/'tools/science_funnel/validation/gait_zero_20260919/trunk_pitch_table.json').read_text(encoding='utf-8'))
+    posture_phases=[n['phi'] for n in tp_table['nodes']]
+    posture_rads=[n['theta_star_rad'] for n in tp_table['nodes']]
     defaults['start_phase_left']=entry_phase
     defaults['start_phase_right']=(entry_phase+0.5)%1.0
     bundle={'schema':'chimera.earth_scene.v1','graph_hash':graph.graph_hash(),
@@ -265,6 +269,7 @@ def compile_gait(graph,output):
                 'capture_step_phase':contract['capture_step_phase'],
                 'tables_rad':contract['tables_rad'],
                 'zero_map_rad':contract['zero_map_rad'],
+                'posture_target_phases':posture_phases,'posture_target_rad':posture_rads,
                 'contact_points':contract['contact_points'],
                 'contact_plane_height_m':contract['contact_plane_height_m'],
                 'contact_friction':contract['contact_friction'],

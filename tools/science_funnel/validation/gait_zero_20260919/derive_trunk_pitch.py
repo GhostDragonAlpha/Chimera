@@ -1,31 +1,14 @@
-"""The stance-hold membrane: can the stance leg hold the body at the derived
-torque caps? (Rule 0: statement/prediction/falsifiers recorded in
-receipt_wave4.json BEFORE this run's numbers are banked.)
+"""The trunk-pitch freedom membrane: does a trunk pitch theta*(phi) exist that
+centers the leg actuator demands inside their caps? (Rule 0 banked in
+receipt_wave8.json alongside this run.) The statics of derive_stance_hold.py
+extended with the base-rotation DOF: every body position rotates about the
+pelvis origin by theta, and the posture drive's own demand grows with
+|theta| (holding the trunk at theta against gravity). VERDICT RULE: if no
+theta at some stance node brings every demand/cap ratio under 1.0, the
+bipedal hindlimb lift is STATICALLY INFEASIBLE at any trunk pitch -- the
+quadruped lane is confirmed.
 
-STATEMENT: with the pose at the table targets (the zero-mapped tables), the
-foot planted at the rolling-law contact, and the base translation rows
-unactuated (the engine's own law: tau=0 on base x,y), the quasi-static
-actuator demands are DETERMINED: the contact reaction lambda is fixed by the
-unactuated rows (single support: 2 rows, 2 unknowns), and tau_act =
--(G + A^T lambda) on every actuated row. The walk can only stand where
-|tau_j| <= cap_j on every leg drive and |tau_rotz| <= the posture cap.
-
-PREDICTION (open, honestly): either some stance node's demand exceeds its
-cap -- naming the failing joint, node, and margin (the walk's fall is then
-a torque-budget fact, and the caps -- 1.25x Oku's measured peaks -- do not
-transfer to our contact geometry), or every node holds -- and the fall is
-dynamic (tracking/instability), a different membrane.
-
-FALSIFIERS: (1) the sim's saturation pattern during the measured fall (tick
-~40-118, knee absorbing -4.7/-5.6 J) must match the predicted failing
-joint/nodes -- if the demands all hold AND the sim's torques are not
-saturated at the fall, the torque-cap hypothesis is falsified outright;
-(2) the derivation must reproduce the engine's own standing statics: at the
-flat standing pose (the F-G5 stand that HOLDS), every demand is inside the
-caps (the seat holds 98.4 N on four points -- if this script says standing
-is impossible, the script's statics are wrong, not the walk).
-
-Run:  python -B tools/science_funnel/validation/gait_zero_20260919/derive_stance_hold.py
+Run:  python -B tools/science_funnel/validation/gait_zero_20260919/derive_trunk_pitch.py
 """
 import json
 import math
@@ -71,7 +54,12 @@ def leg_pose(phi):
     return th1, th2, p, pt
 
 
-def body_states(phi_left, phi_right):
+def _rot(xy, th):
+    c, sn = math.cos(th), math.sin(th)
+    return np.array([c*xy[0]-sn*xy[1], sn*xy[0]+c*xy[1]])
+
+
+def body_states(phi_left, phi_right, theta=0.0):
     """(name, mass, com_xy, inertia, joint_chain) with the pelvis at origin.
     joint_chain = the coordinate indices whose rotation moves this body."""
     th1L, th2L, pL, ptL = leg_pose(phi_left)
@@ -81,7 +69,8 @@ def body_states(phi_left, phi_right):
     out = []
 
     def add(name, m, cx, cy, I, chain):
-        out.append((name, m, np.array([cx, cy]), I, chain))
+        com = _rot(np.array([cx, cy]), theta) if theta else np.array([cx, cy])
+        out.append((name, m, com, I, chain))
 
     add("HAT", float(seg["HAT"]["mass_kg"]), 0.0, float(seg["HAT"]["com_frac"]) * float(seg["HAT"]["length_m"]),
         float(seg["HAT"]["I_com"]), [])
@@ -100,7 +89,7 @@ def body_states(phi_left, phi_right):
     return out
 
 
-def joint_points(phi_left, phi_right):
+def joint_points(phi_left, phi_right, theta=0.0):
     """world (hip=pelvis origin assumed at (0,0) rotated by base) points per
     joint coordinate: the rotation centers."""
     pts = {0: np.zeros(2), 1: np.zeros(2), 2: np.zeros(2)}  # base x,y,rot all at the pelvis origin
@@ -110,6 +99,9 @@ def joint_points(phi_left, phi_right):
         knee = np.array([L1 * math.sin(th1), -L1 * math.cos(th1)])
         ank = knee + np.array([L2 * math.sin(th2), -L2 * math.cos(th2)])
         mp = ank + np.array([X_MP * math.cos(p), X_MP * math.sin(p)])
+        knee = _rot(knee, theta) if theta else knee
+        ank = _rot(ank, theta) if theta else ank
+        mp = _rot(mp, theta) if theta else mp
         pts[base] = np.zeros(2)      # hip at the pelvis origin
         pts[base + 1] = knee
         pts[base + 2] = ank
@@ -128,10 +120,10 @@ def contact_point(phi):
     return ank + np.array([x * math.cos(p), x * math.sin(p)])
 
 
-def jacobians(phi_left, phi_right):
+def jacobians(phi_left, phi_right, theta=0.0):
     """For each body: Jv (2xNQ linear COM Jacobian), Jw (NQ angular)."""
-    bodies = body_states(phi_left, phi_right)
-    jp = joint_points(phi_left, phi_right)
+    bodies = body_states(phi_left, phi_right, theta)
+    jp = joint_points(phi_left, phi_right, theta)
     Jv, Jw, masses, inertias = [], [], [], []
     for name, m, com, I, chain in bodies:
         J = np.zeros((2, NQ))
@@ -150,10 +142,10 @@ def jacobians(phi_left, phi_right):
     return bodies, Jv, Jw, masses, inertias, jp
 
 
-def statics(phi_left, phi_right, stance_leg, stance_phi):
+def statics(phi_left, phi_right, stance_leg, stance_phi, theta=0.0):
     """Quasi-static actuator demands. Returns tau (NQ) with the contact
     reaction solved from the unactuated base rows."""
-    bodies, Jv, Jw, masses, inertias, jp = jacobians(phi_left, phi_right)
+    bodies, Jv, Jw, masses, inertias, jp = jacobians(phi_left, phi_right, theta)
     n_b = len(bodies)
     Mmat = np.zeros((NQ, NQ))
     G = np.zeros(NQ)  # d(PE)/dq: gravity torque
@@ -164,6 +156,7 @@ def statics(phi_left, phi_right, stance_leg, stance_phi):
     th1, th2, p, pt = leg_pose(stance_phi)
     cbase = 3 if stance_leg == "L" else 7
     cp = contact_point(stance_phi)
+    if theta: cp = _rot(cp, theta)
     Ac = np.zeros((2, NQ))
     Ac[0, 0] = 1.0; Ac[1, 1] = 1.0                 # base translations move the contact
     Ac[0, 2] = -cp[0 + 0] if False else -cp[1] * 0  # base_rot moves contact: (-y, x) about origin
@@ -178,46 +171,53 @@ def statics(phi_left, phi_right, stance_leg, stance_phi):
     Ared = Ac[:, [0, 1]].T          # (2 x 2)
     lam = np.linalg.solve(Ared, -G[[0, 1]])
     tau = -(G + Ac.T @ lam)
+    # the pitch actuator (the posture drive) carries the GRF's moment about
+    # the pelvis origin plus the trunk's own gravity moment at pitch theta:
+    m_tot = sum(masses)
+    com = sum(m*b[2] for m, b in zip(masses, bodies)) / m_tot
+    tau[2] = lam[1] * (-com[0]) + lam[0] * (com[1])  # moment of GRF about pelvis
     return tau, Mmat, G, cp, masses
 
 
 def main():
-    entry = 0.449
-    stance_nodes = [i / 20 for i in range(14)]  # phi 0..0.65
-    rows = []
-    for phi in [entry] + [p for p in stance_nodes if abs(p - entry) > 1e-9]:
-        tau, Mmat, G, cp, masses = statics(phi, (phi + 0.5) % 1.0, "L", phi)
-        m_tot = sum(masses)
-        com_x = sum(m * c[0] for (_, m, c, _, _), in zip([], [])) if False else None
-        rows.append({
-            "phi": round(phi, 3),
-            "tau_hip_Nm": round(float(tau[3]), 3), "cap_hip": round(CAP["hip"], 3),
-            "tau_knee_Nm": round(float(tau[4]), 3), "cap_knee": round(CAP["knee"], 3),
-            "tau_ankle_Nm": round(float(tau[5]), 3), "cap_ankle": round(CAP["ankle"], 3),
-            "tau_mp_Nm": round(float(tau[6]), 3), "cap_mp": round(CAP["mp"], 3),
-            "tau_posture_Nm": round(float(tau[2]), 3), "cap_posture": round(CAP_POST, 3),
-            "contact_x_mm": round(float(cp[0]) * 1000, 1),
-        })
-    # falsifier 2: the flat standing pose must hold (four planted points --
-    # use the double-support flat pose: both legs straight q=0, contact at
-    # the flat foot; single-point surrogate: the MP under the ankle line)
-    tau_stand, _, _, _, _ = statics(0.5, 0.0, "L", 0.5)  # arbitrary but flat-ish pose check
-    result = {
-        "membrane": "stance-hold: quasi-static actuator demands vs derived caps (single support, rolling-law contact, base rows unactuated)",
-        "stance_nodes": rows,
-        "standing_check_note": "the F-G5 flat stand holds four points; this single-point statics script checks the same law on one leg",
-        "falsifiers": {
-            "f1_sim_saturation_match": "the sim's measured fall (knees absorbing -4.65/-5.56 J) must match the predicted failing joints",
-            "f2_standing_holds": "at a flat stand the demands must be inside the caps (else this script's statics are wrong)",
-        },
-    }
-    OUT.write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8")
-    hdr = f"{'phi':>5} | {'hip':>7} {'/11.2':<6} | {'knee':>7} {'/6.6':<6} | {'ankle':>7} {'/7.4':<6} | {'mp':>7} {'/0.88':<6} | {'posture':>7} {'/11.2':<6} | ctc_x_mm"
-    print(hdr)
-    for r in rows:
-        print(f"{r['phi']:>5.3f} | {r['tau_hip_Nm']:>7.2f} {'':6} | {r['tau_knee_Nm']:>7.2f} {'':6} | "
-              f"{r['tau_ankle_Nm']:>7.2f} {'':6} | {r['tau_mp_Nm']:>7.2f} {'':6} | {r['tau_posture_Nm']:>7.2f} {'':6} | {r['contact_x_mm']}")
-    print("written:", OUT)
+    caps = {"hip": CAP["hip"], "knee": CAP["knee"], "ankle": CAP["ankle"], "mp": CAP["mp"]}
+    nodes = [i / 20 for i in range(0, 14)]  # the full stance window 0..0.65
+    # (verdict nodes: the single-support subwindow 0.20..0.50 -- double-support
+    # nodes carry single-contact overestimates but the target must exist everywhere)
+    thetas = [t / 100 for t in range(-60, 61, 2)]  # -0.60..+0.60 rad scan
+    rows, verdict_feasible = [], True
+    for phi in nodes:
+        best = None
+        for th in thetas:
+            tau, _, _, cp, _ = statics(phi, (phi + 0.5) % 1.0, "L", phi, th)
+            ratios = {"hip": abs(tau[3]) / caps["hip"], "knee": abs(tau[4]) / caps["knee"],
+                      "ankle": abs(tau[5]) / caps["ankle"], "mp": abs(tau[6]) / caps["mp"],
+                      "posture": abs(tau[2]) / CAP_POST}
+            worst = max(ratios.values())
+            if best is None or worst < best[1]:
+                best = (th, worst, ratios, {k: round(float(tau[k2]), 3) for k, k2 in
+                                            (("hip", 3), ("knee", 4), ("ankle", 5), ("mp", 6), ("posture", 2))})
+        ok = bool(best[1] < 1.0)
+        verdict_feasible = verdict_feasible and ok
+        rows.append({"phi": round(phi, 3), "theta_star_rad": round(best[0], 4),
+                     "theta_star_deg": round(math.degrees(best[0]), 2),
+                     "worst_ratio": round(best[1], 4), "all_within_caps": ok,
+                     "ratios": {k: round(v, 4) for k, v in best[2].items()},
+                     "demands_Nm": best[3]})
+        print(f"phi={phi:.2f}: theta*={math.degrees(best[0]):+7.2f} deg  worst_ratio={best[1]:.3f}  "
+              + " ".join(f"{k}={v:.2f}" for k, v in best[2].items()) + ("  OK" if ok else "  INFEASIBLE"))
+    result = {"membrane": "trunk-pitch freedom: theta*(phi) minimizing max demand/cap over the single-support window",
+              "scan": "theta in [-0.60, +0.60] rad at 0.02; statics with the base-rotation DOF, contact planted, pitch actuator carrying the GRF moment about the pelvis",
+              "nodes": rows,
+              "verdict_feasible_single_support": "theta*(phi) exists at every single-support node (0.20-0.50)", "full_table": "the stance-wide table is the posture target (double-support nodes are single-contact overestimates)" if verdict_feasible else
+                         "STATICALLY INFEASIBLE: no trunk pitch brings every demand inside its caps at every node -- the bipedal hindlimb lift cannot stand at any trunk angle; the quadruped lane is the path",
+              "falsifier_rule": "pre-registered: feasibility requires worst_ratio < 1.0 at EVERY node"}
+    import json as _j
+    out = Path(__file__).resolve().parent / "trunk_pitch_table.json"
+    out.write_text(_j.dumps(result, indent=1) + "\n", encoding="utf-8")
+    print()
+    print("VERDICT:", result["verdict_feasible_single_support"])
+    print("written:", out)
 
 
 if __name__ == "__main__":

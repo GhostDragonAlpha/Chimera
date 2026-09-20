@@ -68,6 +68,7 @@ class GaitWalker {
  Tables tables_{};double phi_[2]={0.,0.5};bool touching_prev_[2]={false,false};uint64_t ticks_=0;uint64_t capture_events_=0;
  Dense kp_,kd_,damping_,last_torque_,battery_,brake_;std::vector<uint64_t> empty_events_;
  double kp_post_=0,kd_post_=0,battery_post_=0,brake_post_=0,store_post_=0;uint64_t empty_post_=0;
+ std::vector<double> posture_phi_,posture_theta_; // theta*(phi): the derived trunk-pitch freedom (wave 8)
  double e_ref_=0; // the LEDGER BASELINE: the reset state's actual mechanical energy (the gait entry injects pose+momentum the standing-pose reference never sees; measured offset -0.59 J at tick 0 before this)
  std::vector<BodyRef> bodies_;bool contact_=false;
  State s_;mutable uint64_t adv_calls_=0;
@@ -254,7 +255,20 @@ class GaitWalker {
   // musculature carries the trunk moment). Active whenever the power is on:
   // it is what makes stage E's stand a stand.
   if(config_["power"].get<bool>()&&config_["posture_drive"].get<bool>()&&battery_post_>1e-12){
-   tau[2]=(std::max)(-drives_[0].cap,(std::min)(drives_[0].cap,kp_post_*(0.-s_.q[2])-kd_post_*s_.v[2]));}
+   // THE TRUNK-PITCH FREEDOM (wave 8): the posture target is the derived
+   // theta*(phi) of the STANCE leg -- the trunk is a load-bearing DOF (the
+   // statics: theta* centers the leg demands inside their caps; leaning
+   // forward 5-30 deg over the loaded leg is the vault's posture). Absent
+   // table -> the erect default 0 (the pre-wave-8 pin).
+   double target_post=0.;
+   if(posture_phi_.size()>=2){
+    double phi=(touching_prev_[0]&&!touching_prev_[1])?phi_[0]:(!touching_prev_[0]&&touching_prev_[1])?phi_[1]:std::min(phi_[0],phi_[1]);
+    if(phi<=posture_phi_.front())target_post=posture_theta_.front();
+    else if(phi>=posture_phi_.back())target_post=posture_theta_.back();
+    else{size_t k=1;while(posture_phi_[k]<phi)++k;
+     double f=(phi-posture_phi_[k-1])/(posture_phi_[k]-posture_phi_[k-1]);
+     target_post=posture_theta_[k-1]*(1.-f)+posture_theta_[k]*f;}}
+   tau[2]=(std::max)(-drives_[0].cap,(std::min)(drives_[0].cap,kp_post_*(target_post-s_.q[2])-kd_post_*s_.v[2]));}
   return tau;}
  // ── walker runtime (the free-root laws, n generalization) ──
  Rate rate(const State& s,const Dense& tau,const std::vector<char>& live,const std::vector<char>& plane)const{
@@ -515,6 +529,13 @@ class GaitWalker {
   tables_.zeros[0]=number(zm.at("hip"));tables_.zeros[1]=number(zm.at("knee"));
   tables_.zeros[2]=number(zm.at("ankle"));tables_.zeros[3]=number(zm.at("MP"));
   for(double z:tables_.zeros)require(std::isfinite(z)&&std::abs(z)<=3.,"gait_zero_map_range");}
+ // theta*(phi): the derived posture target table (wave 8)
+ if(recipe_.contains("posture_target_rad")&&recipe_.contains("posture_target_phases")){
+  const J& tt=recipe_.at("posture_target_rad");const J& tp=recipe_.at("posture_target_phases");
+  require(tt.is_array()&&tp.is_array()&&tt.size()==tp.size()&&tt.size()>=2,"gait_posture_table_shape");
+  for(size_t k=0;k<tt.size();++k){posture_phi_.push_back(number(tp[k]));posture_theta_.push_back(number(tt[k]));
+   require(std::isfinite(posture_theta_.back())&&std::abs(posture_theta_.back())<=1.0,"gait_posture_table_range");}
+  for(size_t k=1;k<posture_phi_.size();++k)require(posture_phi_[k]>posture_phi_[k-1],"gait_posture_table_monotone");}
   plane_world_y_=number(recipe_.at("contact_plane_height_m"));require(std::isfinite(plane_world_y_),"gait_contact_plane_invalid");plane_model_y_=plane_world_y_-shift_[1];
   require(config_.contains("contact_enabled")&&config_["contact_enabled"].is_boolean(),"gait_contact_flag_invalid");contact_=config_["contact_enabled"].get<bool>();
   require(config_.contains("contact_friction")&&config_["contact_friction"].is_number()&&number(config_["contact_friction"])>=0&&number(config_["contact_friction"])<=1,"gait_friction_flag_invalid");mu_=number(config_["contact_friction"]);

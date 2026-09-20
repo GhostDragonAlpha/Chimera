@@ -1,0 +1,28 @@
+{
+ "lane": "in-session (codex/force-data-runtime-20260916), wave 8",
+ "date": "2026-09-19",
+ "agent": "GLM 5.3",
+ "deliverable": "The trunk-pitch freedom membrane derived, implemented, and measured -- plus a Jacobian bug found in the wave-4 statics whose fix REVERSES the under-provisioning narrative: the bipedal hindlimb lift is statically feasible at every stance node.",
+ "the_mp_jacobian_bug": {
+  "what": "the contact-row construction gave FOOT-BODY contact points (heel, MP head) a nonzero moment column on the MP coordinate -- but the MP joint is distal to those points: they do not move when the MP rotates; the column must be zero. The wave-4 'MP demand 8.1-8.5 N.m windlass flags' were this artifact (then dismissed as double-support overestimates -- they were bugs).",
+  "fixed": "both derive_stance_hold.py and derive_trunk_pitch.py; the knee/ankle/hip columns were correct throughout (those conclusions stand)"
+ },
+ "theta_star_derivation": {
+  "verdict": "FEASIBLE: at every single-support node (phi 0.20-0.50) a trunk pitch theta* exists with worst demand/cap ratio 0.92-0.95; at phi 0.20-0.25 the margin is comfortable (0.64-0.66). theta* is a FORWARD lean of +5 to +30 deg through the window -- the vault's posture. The posture drive pays 0.08-0.79 of its cap for the lean.",
+  "implication": "THE 2x-UNDER-PROVISIONED HYPOTHESIS IS DEAD: after the Jacobian fix, nothing in the statics forces the quadruped. The remaining gap is the DYNAMIC orbit, not static capacity.",
+  "caveat_measured": "the theta* landscape is multi-basin (adjacent nodes jump +4.6 -> +29.8 deg): the scan's argmin table is discontinuous, and such jumps are dynamically unreachable at the 11.2 N.m posture cap (rotating the HAT inertia 25 deg in one phase interval needs ~100 N.m). A continuity-constrained theta* path is owed before the trunk target is judged."
+ },
+ "implementation_and_measurement": {
+  "what": "the posture drive now tracks theta*(phi) of the stance leg (linear interp, clamped) from the scene recipe (trunk_pitch_table.json embedded by gait_scene.py); absent table -> the erect default (backward compatible)",
+  "measured": "trunk freedom alone: tick 88 (from 88, unchanged); merged with Buffy's sole-contact lane: tick 86; ledger improved 2.50 -> 2.19 J; F-G5 green x2, F-G7 bit-identical, graph tests unaffected. Falsifier (2) FAILED: the walk does not pass tick 118 with either or both.",
+  "diagnosis": "the walk never enters the tables' periodic orbit: the entry transient + the discontinuous theta* target keep the dynamics off the limit cycle. This is orbit capture (a controls problem: basin of attraction), not static capacity and not any single constraint wall"
+ },
+ "branch_state": "buffy/gait-wave7-sole-contact MERGED into codex/force-data-runtime-20260916 (the sole row + [pt] cop trace + receipt_wave7) with the trunk freedom applied on top",
+ "next_membranes_ranked": [
+  "1. CONTINUITY-CONSTRAINED theta*: re-derive the trunk target as the reachable path through the multi-basin landscape (|dtheta| bounded by the posture torque/inertia budget per interval) -- cheap, removes the target thrash, then re-measure",
+  "2. ORBIT CAPTURE: initialize ON the limit cycle by relaxing from the tables under the controller (a settling pre-run at fixed phase before releasing the clock), or add the missing entry dynamic terms (the periodic base vertical velocity and pitch rate at the entry instant -- derivable from the ride geometry's phase derivatives)",
+  "3. Only if both fail does the quadruped question return -- the statics no longer demand it"
+ ],
+ "pass": false,
+ "honest_summary": "A bug fix reversed the strategic picture (the biped is statically feasible; no forelimbs required by physics), the trunk freedom is implemented and merged with the sole contact -- and the walk still falls at tick 86, now diagnosable as orbit capture. Every remaining lever is named and cheap-first."
+}
