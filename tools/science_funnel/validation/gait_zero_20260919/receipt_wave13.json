@@ -1,0 +1,97 @@
+{
+  "lane": "buffy/gait-wave13-stepping-struts",
+  "date": "2026-09-20",
+  "agent": "Buffy trailer",
+  "base": "a4ad0eff (buffy/gait-wave12-planted-struts)",
+  "rule_0_preregistered": {
+    "statement": "A deterministic fore gait clock makes each forelimb alternate STANCE at its current world paw spot and SWING to a forward plant; planted stance uses the existing parent-frame analytic IK and touchdown re-captures the actual paw position.",
+    "prediction": "At fore_share=0.45 the stepping struts remove the fixed-plant plow: the run exceeds tick 426, steady fore stance gaps remain in [-1e-6,1e-5] m, swing paws remain airborne, and the support census has at least two contacts at every judged tick.",
+    "falsifiers": {
+      "run": "Refusal before tick 426 ships the trace-derived failing joint/phase analysis with per-leg saturation counts.",
+      "reach": "Per-leg IK saturation ticks are <=10 over the walk; the fixed-world wave-12 plow is the baseline to beat.",
+      "paw_band": "During fore STANCE, paw gaps are in [-1e-6,1e-5] m from capture onward; during SWING gaps are >=-1e-6 m; settle ticks 0-59 are reported but not judged.",
+      "ik_closure": "At every entry and touchdown capture, qerr <1e-12 rad and FK round-trip <1e-12 m; this is also the parent-frame IK check.",
+      "stagger": "No both-fore-airborne window >=2 ticks in [60,426].",
+      "support_census": "At least two paw contacts at every tick in [60,426].",
+      "free_fall": "F-G5 remains exactly -9.806650 m/s2.",
+      "determinism": "F-G7 remains bit-identical.",
+      "graph": "Graph tests remain 19 tests OK with both roots on PYTHONPATH.",
+      "elbow_ceiling": "Elbow demand never exceeds the absolute 3.76 N*m ceiling at any share; any exceedance is banked RED, never tuned away.",
+      "ledger": "The 300-tick brake/damping/impact/friction breakdown states whether the wave-12 brake-dominant channel shrinks after the plow is removed.",
+      "F-G1/F-G2/F-G3": "If the walk passes tick 426, measure tracking over three cycles, duty, and GRF over five cycles at the admitted windows; otherwise report them honestly as not measured."
+    }
+  },
+  "derivation_preregistered": {
+    "source_trace": "wave-12 s=0.45 pre-refusal trace, pelvis x positions at ticks 60-110",
+    "fore_period_equals_hind_period": true,
+    "lateral_sequence": "fore lift = same-side hind lift + T_cycle/4",
+    "duty": 0.683,
+    "cycle_s": 0.71,
+    "stance_law": "x_off = v * t_stance / 2",
+    "entry": "Wave-12 capture/settle entry survives; first stance holds captured spots until symmetric liftoff, then periodic clock.",
+    "swing": "World-linear horizontal glide from actual liftoff paw spot to forward plant with zero-slope clearance arch; touchdown captures actual horizontal paw and captured height.",
+    "clock": "All durations convert from seconds to ticks using tick_hz; no force/position threshold transitions.",
+    "support_census": "Duty 0.683 with quarter-period lateral offsets predicts three diagonal two-paw windows per cycle and at least three paws elsewhere; never one-paw and never both fore paws airborne in steady state."
+  },
+  "measurements": {
+    "scene_reproduction": {
+      "wave12_scene_sha256": "e8fcd2706da753657f8357e15a02f88cc5764ce027c955a3d2f33e4ae9506a1b",
+      "wave13_baseline_scene_sha256": "e8fcd2706da753657f8357e15a02f88cc5764ce027c955a3d2f33e4ae9506a1b",
+      "byte_identical": true
+    },
+    "derivation": {
+      "cruise_speed_m_s": 0.47142,
+      "source_window_ticks": [60, 110],
+      "stance_s": 0.48493,
+      "swing_s": 0.22507,
+      "x_off_m": 0.11427,
+      "step_m": 0.22854,
+      "swing_chase_m": 0.10612,
+      "offset_sweep_m": 0.33466,
+      "reach_envelope_2L_m": 0.514,
+      "closure_inequality": "2*x_off + swing_chase = 0.33466 m <= 2*(L1+rho) = 0.514 m",
+      "clock_ticks": {"cycle": 213, "stance_rounded": 291, "swing_rounded": 135, "quarter_period": 53},
+      "entry_stance": "actual captured paw spot; first timed liftoff uses the symmetric half-stance slot",
+      "support_prediction": "duty 0.683 and quarter-period same-side lag; expected no simultaneous fore swing"
+    },
+    "full_walk_s045": {
+      "refusal_tick": 399,
+      "refusal": "gait_impact_event_budget",
+      "required_tick": 426,
+      "worst_ledger_J": 33.119772,
+      "F-G1": "not measured: refusal inside transient window",
+      "F-G2": "not measured: refusal inside transient window",
+      "F-G3": "not measured: refusal before cycle 5",
+      "F-G5_free_fall_m_s2": -9.806650,
+      "F-G7_bit_identical": true,
+      "F-G6_capture_events": 41,
+      "failure_phase": "late fore/hind transition with positional-correction and impact localization",
+      "failure_trace": "fore stance/swing clock active; refusal at tick 399 after the first stepping slots"
+    },
+    "reach_and_census": {
+      "fore_ik_saturation_ticks_left": 359,
+      "fore_ik_saturation_ticks_right": 348,
+      "criterion": "<=10 per leg",
+      "fore_stance_ticks_left": 331,
+      "fore_stance_ticks_right": 278,
+      "fore_air_ticks_left": 68,
+      "fore_air_ticks_right": 121,
+      "support_census": "not independently instrumented as a minimum-contact count; contact traces show fore stance and airborne windows",
+      "wave12_fixed_plant_comparison": "wave-12 had no saturation counter; its fixed-world fore paws visibly plowed before tick 405"
+    },
+    "ik_frame_check": {
+      "frame": "parent pelvis frame via rotation transpose and shoulder mount subtraction",
+      "entry_and_touchdown_round_trip": "runtime qerr/FK closure counter not yet emitted; parent-frame law applied before this measurement",
+      "wave12_world_frame_check": "corrected in controller before final run"
+    },
+    "diagnostic_300_tick": {
+      "reached": 300,
+      "ledger_J": 33.119772,
+      "channels": "trace retained in .tmp/gait-wave13-trace7.log; the brake channel remains present and the impact-event refusal persists",
+      "poscorr": "per-contact [poscorr] trace enabled"
+    },
+    "graph_tests": "pending final command; native Release gait_unit and gait_unit_trace built successfully"
+  },
+  "pass": false,
+  "honest_summary": "The deterministic fore stance/swing clock and parent-frame IK are implemented. The s=0.45 walk still refuses at tick 399 on gait_impact_event_budget, before tick 426; F-G5 and F-G7 are green, F-G1/F-G2/F-G3 are not measured, and the per-leg saturation criterion is red at 359/348 ticks. The refusal is banked as a finding rather than tuned away."
+}

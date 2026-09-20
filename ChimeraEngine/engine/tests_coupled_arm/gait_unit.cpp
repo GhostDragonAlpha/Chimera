@@ -19,6 +19,7 @@ struct WalkOut{
  std::vector<std::array<char,2>> t;
  std::vector<std::array<double,2>> r;
  std::vector<double> liftoff[2],td[2];
+ uint64_t fore_sat[2]={0,0};uint64_t fore_stance_ticks[2]={0,0};uint64_t fore_air_ticks[2]={0,0};
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
  J last;std::string refused;int refused_tick=-1;
 };
@@ -84,6 +85,7 @@ int main(int argc,char**argv){try{
     std::fprintf(stderr,"%s | y=%.4f x=%.4f\n",b,d.angles()[4],d.angles()[3]);break;}
    auto s=d.status();
    double bal=std::abs(number(s["energy"]["balance_error_J"])),stor=std::abs(number(s["energy"]["store_balance_error_J"]));
+   for(size_t side=0;side<2;++side){if(s["gait"][side?"fore_stance_right":"fore_stance_left"].get<bool>())++out.fore_stance_ticks[side];else ++out.fore_air_ticks[side];out.fore_sat[side]=number(s["gait"][side?"fore_ik_saturation_right":"fore_ik_saturation_left"]);}
 #ifdef GAIT_EVENT_TRACE
    if((bal>1e-3||stor>1e-3)&&w_ledger_first<0){w_ledger_first=i;
     std::fprintf(stderr,"[ledger] first breach tick %d: %s\n",i,s["energy"].dump().c_str());}
@@ -117,11 +119,13 @@ int main(int argc,char**argv){try{
      if(p["name"].get<std::string>().rfind(leg?"right":"left",0)==0&&p["touching"].get<bool>())rr[leg]+=number(p["reaction_N"]);}
    out.a.push_back(a);out.tg.push_back(tg);out.t.push_back(tt);out.r.push_back(rr);}
   out.captures=d.capture_events();out.last=d.status();
+  for(size_t side=0;side<2;++side)out.fore_sat[side]=number(out.last["gait"][side?"fore_ik_saturation_right":"fore_ik_saturation_left"]);
   return out;};
 
  std::fprintf(stderr,"run F-G1..G4 walk\n");
  WalkOut w=walk_run(true);
  note("WALK refused_tick="+(w.refused_tick<0?std::string("none"):std::to_string(w.refused_tick))+" worst_ledger_J="+std::to_string(w.worst_ledger));
+ note("FORE saturation_left="+std::to_string(w.fore_sat[0])+" saturation_right="+std::to_string(w.fore_sat[1])+" stance_ticks="+std::to_string(w.fore_stance_ticks[0])+","+std::to_string(w.fore_stance_ticks[1])+" air_ticks="+std::to_string(w.fore_air_ticks[0])+","+std::to_string(w.fore_air_ticks[1]));
 
  // ── F-G1: trajectories within the tables (+/-5 deg, >=95% of samples after
  //    3 cycles); excursions within +/-10% of the measured waveforms.

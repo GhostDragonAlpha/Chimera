@@ -79,9 +79,17 @@ class GaitWalker {
  Tables tables_{};double phi_[2]={0.,0.5};bool touching_prev_[2]={false,false};uint64_t ticks_=0;uint64_t capture_events_=0;
  Dense kp_,kd_,damping_,last_torque_,battery_,brake_;std::vector<uint64_t> empty_events_;
  mutable Dense planted_fore_x_,planted_fore_y_,poscorr_work_;mutable std::vector<uint64_t> poscorr_events_;
- bool planted_fore_valid_=false,fore_settle_captured_=false;double fore_share_=0.45;
+ mutable bool fore_ik_sat_tick_[2]={false,false};uint64_t fore_ik_saturation_[2]={0,0};
+ bool planted_fore_valid_=false,fore_settle_captured_=false,fore_clock_armed_=false;
+ bool fore_stance_[2]={true,true};double fore_clock_s_[2]={0.,0.},fore_next_liftoff_s_[2]={0.,0.},fore_next_touchdown_s_[2]={0.,0.};
+ double fore_target_x_[2]={0.,0.},fore_target_y_[2]={0.,0.},fore_swing_start_x_[2]={0.,0.},fore_swing_start_y_[2]={0.,0.},fore_plant_x_[2]={0.,0.};
+ double fore_share_=0.45;
  double kp_post_=0,kd_post_=0,battery_post_=0,brake_post_=0,store_post_=0;uint64_t empty_post_=0;
- static constexpr double FORE_L1=0.125,FORE_PX=0.031,FORE_PY=-0.132753,FORE_BASE_SHARE=0.45;
+ // The IK endpoint is the admitted forepaw heel pad, not the forearm COM/reference point.
+ static constexpr double FORE_L1=0.125,FORE_PX=-0.012,FORE_PY=-0.13555305347340657,FORE_BASE_SHARE=0.45;
+ static constexpr double FORE_DUTY=0.683,FORE_CRUISE_SPEED=0.47142,FORE_STANCE_S=FORE_DUTY*T_CYCLE;
+ static constexpr double FORE_SWING_S=(1.-FORE_DUTY)*T_CYCLE,FORE_X_OFF=FORE_CRUISE_SPEED*FORE_STANCE_S/2.;
+ static constexpr double FORE_STEP_S=2.*FORE_X_OFF,FORE_ARCH_M=0.015;
  std::vector<double> posture_phi_,posture_theta_; // legacy non-periodic posture table (retained for receipt compatibility, not consumed)
  int settle_ticks_=0; // ORBIT CAPTURE (wave 8): hold the clock at the entry pose under load for the servo's settling time
  int settle_total_=0; // immutable reset value used by the wave-10 gradual vault activation
@@ -256,28 +264,37 @@ class GaitWalker {
   const size_t upper=model_->body("upperarm_"+suffix);
   const V shoulder=e.point(upper,V{0.,0.,0.}).first;
   const Mat& base=e.frames[model_->body("pelvis")].t;
+  const V pelvis=vector(base,V{0.,0.,0.},1);
+  // World target -> pelvis parent frame: subtract the live pelvis origin,
+  // then apply the rotation transpose. Solving directly in world coordinates
+  // is the wave-12 frame error and fails the 1e-12 m round-trip check under lean.
   const double base_yaw=std::atan2(base(1,0),base(0,0));
-  const double dx=planted_fore_x_[side]-shoulder[0],dy=planted_fore_y_[side]-shoulder[1];
+  const double dx=fore_target_x_[side]-pelvis[0],dy=fore_target_y_[side]-pelvis[1];
   const double cs=std::cos(base_yaw),sn=std::sin(base_yaw);
   const double tx=cs*dx+sn*dy,ty=-sn*dx+cs*dy;
   const double l2=std::hypot(FORE_PX,FORE_PY),r=std::hypot(tx,ty);
   const double beta=std::atan2(FORE_PY,FORE_PX),gamma=std::atan2(ty,tx);
+  const double reach_lo=std::abs(FORE_L1-l2),reach_hi=FORE_L1+l2;
+  const bool saturated=r<reach_lo||r>reach_hi;
+  if(saturated)fore_ik_sat_tick_[side]=true;
   const double h=(r<1e-12)?std::sin(beta):(FORE_L1*FORE_L1+l2*l2-r*r)/(2.*FORE_L1*l2);
   const double delta=std::asin((std::max)(-1.,(std::min)(1.,h)));
   const size_t q1=side==0?14:16,q2=q1+1;
   double best=1e300;std::array<double,2> answer{0.,0.};
   // Exact branch closure for the engine's ordered transforms:
   // target = R(q1) * ([0,-L1] + R(q2) * [FORE_PX,FORE_PY]).
-  for(double q2cand:{delta-beta,pi-delta-beta}){
+  auto wrap=[](double a){return std::atan2(std::sin(a),std::cos(a));};
+  for(double q2raw:{delta-beta,pi-delta-beta}){
+   const double q2cand=wrap(q2raw);
    const double wx=FORE_L1*0.+FORE_PX*std::cos(q2cand)-FORE_PY*std::sin(q2cand);
    const double wy=-FORE_L1+FORE_PX*std::sin(q2cand)+FORE_PY*std::cos(q2cand);
-   const double cand1=gamma-std::atan2(wy,wx);
-   const double score=std::abs(cand1-s_.q[q1])+std::abs(q2cand-s_.q[q2]);
+   const double cand1=wrap(gamma-std::atan2(wy,wx));
+   const double score=std::abs(wrap(cand1-s_.q[q1]))+std::abs(wrap(q2cand-s_.q[q2]));
    if(score<best){best=score;answer={cand1,q2cand};}
   }
   return answer;
  }
- void capture_fore_plant(const Evaluation& e){
+ void capture_fore_plant(const Evaluation& e,bool arm_clock){
   std::vector<std::pair<double,double>> hull;V com{};support_state(e,hull,com);
   const double hind_x=sole_position(e,0)[0];
   // Static beam closure: COM_x = (1-s) hind_x + s fore_x. The share flag
@@ -288,12 +305,53 @@ class GaitWalker {
    const std::string suffix=side==0?"fore_left":"fore_right";
    const size_t fore_body=model_->body("forearm_"+suffix);
    const V paw=e.point(fore_body,V{FORE_PX,FORE_PY,0.}).first;
-   planted_fore_x_[side]=target_fore_x;
+   // Entry stance is the actual captured paw spot. The derived beam target
+   // remains a diagnostic load-line value; stepping advances from this spot
+   // only at the deterministic liftoff slot.
+   planted_fore_x_[side]=paw[0];
+   fore_target_x_[side]=paw[0];
    // The target is the world-plane center of the representative paw point,
    // not the transient end-of-settle height; this is the seating repair.
-   planted_fore_y_[side]=plane_model_y_-points_[4+2*side].radius;
+   planted_fore_y_[side]=paw[1];
+   fore_target_y_[side]=paw[1];
+   fore_stance_[side]=true;fore_swing_start_x_[side]=paw[0];fore_swing_start_y_[side]=paw[1];fore_plant_x_[side]=target_fore_x;
   }
   planted_fore_valid_=true;
+  if(arm_clock&&!fore_clock_armed_){
+   // Hind phases begin at {0,1/2}; fore lift is the same-side hind lift plus
+   // T/4. Entry stance is the measured symmetric-reach half-stance
+   // (x_off/v = stance/2), then the lateral-sequence quarter-period lag.
+   // Later slots use the full derived stance/swing durations.
+   fore_clock_s_[0]=fore_clock_s_[1]=0.;
+   const double entry_half=FORE_STANCE_S/2.;
+   fore_next_liftoff_s_[1]=entry_half;
+   fore_next_liftoff_s_[0]=entry_half+T_CYCLE/4.;
+   fore_clock_armed_=true;
+  }
+ }
+ void update_fore_clock(const Evaluation& e){
+  if(!fore_clock_armed_)return;
+  for(size_t side=0;side<2;++side){
+   fore_clock_s_[side]+=dt_;
+   const std::string prefix=side==0?"fore_left":"fore_right";
+   const size_t fore_body=model_->body("forearm_"+prefix);
+   const V paw=e.point(fore_body,V{FORE_PX,FORE_PY,0.}).first;
+   if(fore_stance_[side]&&fore_clock_s_[side]+1e-12>=fore_next_liftoff_s_[side]){
+    fore_stance_[side]=false;fore_swing_start_x_[side]=paw[0];fore_swing_start_y_[side]=paw[1];
+    fore_plant_x_[side]=paw[0]+FORE_STEP_S;fore_target_x_[side]=paw[0];fore_target_y_[side]=paw[1];
+    fore_next_touchdown_s_[side]=fore_clock_s_[side]+FORE_SWING_S;
+   } else if(!fore_stance_[side]&&fore_clock_s_[side]+1e-12>=fore_next_touchdown_s_[side]){
+    fore_stance_[side]=true;fore_target_x_[side]=paw[0];fore_target_y_[side]=paw[1];
+    fore_plant_x_[side]=paw[0];
+    fore_next_liftoff_s_[side]=fore_clock_s_[side]+FORE_STANCE_S;
+   }
+   if(!fore_stance_[side]){
+    const double u=(std::max)(0.,(std::min)(1.,(fore_clock_s_[side]-(fore_next_touchdown_s_[side]-FORE_SWING_S))/FORE_SWING_S));
+    fore_target_x_[side]=fore_swing_start_x_[side]+u*(fore_plant_x_[side]-fore_swing_start_x_[side]);
+    const double base_y=fore_swing_start_y_[side]+u*(fore_target_y_[side]-fore_swing_start_y_[side]);
+    fore_target_y_[side]=base_y+FORE_ARCH_M*16.*u*u*(1.-u)*(1.-u);
+   }
+  }
  }
  Dense servo(){ // capped mass-normalized PD at the derived 4.0 Hz (Section 5.2)
   Dense tau(n_,0.);
@@ -647,7 +705,7 @@ class GaitWalker {
  void reset(){
   s_=State(n_,npts_);s_.q=model_->defaults;s_.v=Dense(n_,0.);ticks_=0;capture_events_=0;last_torque_=Dense(n_,0.);settle_ticks_=settle_total_;
   battery_.assign(nd_,0.);brake_.assign(nd_,0.);empty_events_.assign(nd_,0);store_total_=0;
-  planted_fore_x_.assign(2,0.);planted_fore_y_.assign(2,0.);poscorr_work_.assign(npts_,0.);poscorr_events_.assign(npts_,0);planted_fore_valid_=false;fore_settle_captured_=false;
+  planted_fore_x_.assign(2,0.);planted_fore_y_.assign(2,0.);poscorr_work_.assign(npts_,0.);poscorr_events_.assign(npts_,0);planted_fore_valid_=false;fore_settle_captured_=false;fore_clock_armed_=false;fore_clock_s_[0]=fore_clock_s_[1]=0.;fore_stance_[0]=fore_stance_[1]=true;fore_ik_saturation_[0]=fore_ik_saturation_[1]=0;fore_ik_sat_tick_[0]=fore_ik_sat_tick_[1]=false;
   for(size_t d=0;d<nd_;++d){battery_[d]=drives_[d].store_floor;store_total_+=drives_[d].store_floor;}
   battery_post_=store_post_;brake_post_=0;empty_post_=0;store_total_+=store_post_;
   phi_[0]=0.;phi_[1]=0.5;
@@ -688,7 +746,7 @@ class GaitWalker {
   // then verifies that this share-scaled spot remains planted; because the
   // target is already held, the end-of-settle live shoulder state is closed
   // by IK rather than by a fixed-angle strut.
-  capture_fore_plant(e); // provisional target keeps the paws seated during settle
+  capture_fore_plant(e,false); // provisional target keeps the paws seated during settle
   fore_settle_captured_=false;
  }
  void configure(const J& input){
@@ -717,9 +775,10 @@ class GaitWalker {
   // in the double-support TD state, servos driving the frozen tables (the
   // stage-E stand); true releases the clock (the stage-F walk).
   bool walking=config_["gait_enabled"].get<bool>()&&(settle_ticks_<=0);
+  fore_ik_sat_tick_[0]=fore_ik_sat_tick_[1]=false;
   if(settle_ticks_>0)--settle_ticks_; // the settle window: clock frozen, targets hold the entry pose
   // 1) clock update at the tick start (contact reset dominates).
-  {auto e=evaluate(s_);if(walking)update_clock(e,dt_);else{for(size_t leg=0;leg<2;++leg){bool touching=false;const char* prefix=leg==0?"left":"right";
+  {auto e=evaluate(s_);if(walking){update_clock(e,dt_);update_fore_clock(e);}else{for(size_t leg=0;leg<2;++leg){bool touching=false;const char* prefix=leg==0?"left":"right";
    for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0&&gap_of(e,k)<=kTouch)touching=true;touching_prev_[leg]=touching;}}}
   // 2) reflex on the tick-start state (armed only in the walk, and only when
   //    the capture reflex is enabled -- F-G6's disarmed control leg).
@@ -776,9 +835,10 @@ class GaitWalker {
   // walking, so translation/height oscillation is closed by IK rather than by
   // moving the contact target.
   if(!fore_settle_captured_&&settle_ticks_==0){
-   capture_fore_plant(evaluate(s_));
+   capture_fore_plant(evaluate(s_),true);
    fore_settle_captured_=true;
   }
+  for(size_t side=0;side<2;++side)if(fore_ik_sat_tick_[side])++fore_ik_saturation_[side];
   last_torque_=impulse_torque;++ticks_;}
  J status()const{
   auto e=evaluate(s_);
@@ -840,6 +900,9 @@ class GaitWalker {
    {"battery_usable",battery_total>1e-12},
    {"constraint_work_J",s_.constraint_work},{"balance_error_J",bal},{"store_balance_error_J",stor}};
   J gait{{"cycle_duration_s",T_CYCLE},{"duty_factor_sampled",DUTY_SAMPLED},{"servo_frequency_Hz",FS_HZ},{"fore_share",fore_share_},
+   {"fore_stance_left",fore_stance_[0]},{"fore_stance_right",fore_stance_[1]},
+   {"fore_ik_saturation_left",fore_ik_saturation_[0]},{"fore_ik_saturation_right",fore_ik_saturation_[1]},
+   {"fore_target_left",J::array({fore_target_x_[0],fore_target_y_[0]})},{"fore_target_right",J::array({fore_target_x_[1],fore_target_y_[1]})},
    {"planted_fore_left",planted_fore_valid_?J::array({planted_fore_x_[0],planted_fore_y_[0]}):J(nullptr)},
    {"planted_fore_right",planted_fore_valid_?J::array({planted_fore_x_[1],planted_fore_y_[1]}):J(nullptr)},
    {"phase_left",phi_[0]},{"phase_right",phi_[1]},{"phase_offset",std::fmod(phi_[1]-phi_[0]+1.,1.)},
