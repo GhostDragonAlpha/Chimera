@@ -235,9 +235,9 @@ def compile_gait(graph,output):
     # mapped into the ENGINE's base_rot_z frame by the same sign probe every
     # other table gets: pitch the assembled walker +10 deg about z and watch
     # the seat rise (slope +1 -> identity) or fall (slope -1 -> negation).
-    _vault_path=ROOT/'tools/science_funnel/validation/gait_zero_20260919/trunk_vault.json'
-    require(_vault_path.exists(),'gait_trunk_vault_missing','run derive_trunk_vault.py first')
-    _vault_derived=json.loads(_vault_path.read_text(encoding='utf-8'))['theta_vault_fwd_rad']
+    _vault_path=ROOT/'tools/science_funnel/validation/gait_zero_20260919/trunk_vault_reachable.json'
+    require(_vault_path.exists(),'gait_trunk_vault_missing','run derive_reachable_vault.py first')
+    _vault_derived=json.loads(_vault_path.read_text(encoding='utf-8'))['theta_reachable_rad']
     require(len(_vault_derived)==21,'gait_trunk_vault_shape',len(_vault_derived))
     def _vault_at(phi):
         x=(phi%1.0)*20.0;k=min(19,int(x));f=x-k;return _vault_derived[k]*(1.0-f)+_vault_derived[k+1]*f

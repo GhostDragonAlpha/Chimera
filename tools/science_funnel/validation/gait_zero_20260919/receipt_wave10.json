@@ -1,0 +1,40 @@
+{
+  "lane": "buffy/gait-wave10-admissible-vault",
+  "base": "54472e63",
+  "date": "2026-09-19",
+  "agent": "Buffy",
+  "rule_0_part_a": {
+    "statement": "The 710-tick vault-plus-settle run without sole contact is a real, if lossy, gait rather than a crawl.",
+    "prediction": "At the full 2130-tick budget it will show duty in [0.63, 0.73], a valid phase offset, tracking within the F-G1 envelope, GRF closure on completed cycles, and at least half a 0.72 m stride of CoM progress per cycle.",
+    "falsifier": "Duty outside [0.63, 0.73] or CoM progress per cycle below 0.36 m means it is not a gait and Part B stands alone."
+  },
+  "rule_0_part_b": {
+    "statement": "A reachability-constrained trunk trajectory can replace the dynamically unreachable periodic vault while preserving the static demand envelope.",
+    "prediction": "Direct collocation over theta and theta-dot will produce a table whose posture torque demand is <= 0.9 * 11.2125 N.m at every node; gradual 0-to-1 activation through settling will reduce simulated posture saturation below 10% and carry the combined sole-contact walk beyond tick 181 with ledger below 10 J.",
+    "falsifiers": {
+      "static": "FAIL: the collocated combined stance/posture envelope reaches ratio 1.322776 of cap at phi=0.85, so no table meeting the 0.9 cap bound was produced.",
+      "dynamic": "FAIL: the attempted table with sole contact + settle refused at tick 206 and posture torque saturated on every sampled [trunk] line.",
+      "invariants": "PASS: F-G5 free fall -9.806650, F-G7 bit-identical, and graph tests remained green."
+    },
+    "method": "SLSQP direct collocation on 21 periodic theta/theta-dot nodes, finite-difference theta-double-dot with T=0.71 s, kinematic theta-dot consistency constraints, HAT inertia 0.5335 kg m2, gravity moment amplitude 20.097 N.m, and corrected derive_trunk_pitch statics demands."
+  },
+  "part_a_measurements": {
+    "run": "PASS completion: vault + settle with contact disabled ran the full 2130 ticks / 10 cycles without refusal; worst_moving_ledger_J=43.183718.",
+    "walking": "RED: F-G2 duty_leg_0=1.000000, duty_leg_1=1.000000; phase offset NOT MEASURED because there were no touchdown pairs. This is not a gait under the pre-registered duty falsifier.",
+    "tracking": "RED: F-G1 tracking fractions drive_0..7 = [0.257545, 0.460094, 0.169014, 0.164319, 0.093897, 0.462777, 0.231388, 0.102616].",
+    "grf": "RED/NOT MEASURED: contact was disabled, so peak_GRF_BW=0 and closure=0; no loaded cycle existed for GRF closure.",
+    "body_motion": "The base position trace showed start x=0.002426 m, y=0.324313 m; midpoint around tick 1060 x=2.184204 m, y=-60.576091 m; end tick 2120 x=3.859600 m, y=-244.036806 m. It translates forward while falling catastrophically: sliding/falling, not walking or crawling; forward progress per nominal cycle is not a valid stride metric.",
+    "ledger_growth": "Ledger grew from balance_error_J=0.033021 J at tick 0 to 42.937212 J at tick 2120 (worst 43.183718 J). The full books identify actuator brake heat as dominant: brake_heat_J=86.847731 J, damping_heat_J=21.222147 J, actuator_work_J=-21.742109 J; friction and constraint work were 0 because contact was disabled. This is not an E8 booking gap: constraint_work_J stayed 0.0, correctly because no contact constraints were active. It is real free-root physics/control work during catastrophic fall, not a clean gait ledger leak.",
+    "trace": "[ledger10], [trunk], and [pt] instrumentation ran; [pt] showed zero reaction with contact disabled."
+  },
+  "part_b_measurements": {
+    "optimizer": "PASS execution: SLSQP converged successfully with periodic theta-dot consistency constraints.",
+    "reachable_table": "RED static verdict: best table had max required posture demand 10.091250 N.m (<11.2125 cap) but max combined stance/posture ratio 1.322776 of the cap; stance demand exceeded the 0.9-cap admissibility envelope. At phi=0.85 the combined ratio was approximately 1.323.",
+    "table_degrees": [-11.8277, -9.2028, -4.9549, 0.9771, 8.1911, 14.1799, 18.5464, 22.6865, 26.2841, 29.0426, 30.7368, 31.2235, 30.4516, 27.6311, 21.0718, 12.8518, 4.8698, -2.1472, -7.5313, -10.9557, -12.4139],
+    "attempted_dynamic": "RED: using the attempted optimizer table (before the corrected combined-envelope verdict was applied), sole-contact + settle refused at tick 206 with worst_moving_ledger_J=26.040517; sampled posture torque saturation fraction=21/21=1.000 (>10%).",
+    "native": "F-G5 free_fall_m_s2=-9.806650; F-G7 streams bit-identical=1.",
+    "graph_tests": "PASS: PYTHONPATH=<worktree root>:<worktree root>/tools python -m pytest -q tools/creature_graph/tests; 19 passed, 27 subtests passed."
+  },
+  "pass": false,
+  "honest_summary": "Part A falsified the premise: the long no-contact state is not a gait; it is a falling/sliding free-root trajectory with duty 1.0, no touchdown phase offset, no GRF closure, and catastrophic height loss. Part B also falsified the admissible-vault prediction: the periodic direct-collocation trajectory cannot keep the combined stance/posture demand under 0.9 cap, with a best reported combined ratio of 1.322776 at phi=0.85. The attempted dynamic table saturated posture torque throughout and refused at tick 206. F-G5, F-G7, and graph tests are green. The bipedal admissible-vault path is not established at this cap; the quadruped comparison becomes the architecture headline."
+}

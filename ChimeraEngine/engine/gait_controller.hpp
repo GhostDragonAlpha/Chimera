@@ -79,8 +79,9 @@ class GaitWalker {
  Tables tables_{};double phi_[2]={0.,0.5};bool touching_prev_[2]={false,false};uint64_t ticks_=0;uint64_t capture_events_=0;
  Dense kp_,kd_,damping_,last_torque_,battery_,brake_;std::vector<uint64_t> empty_events_;
  double kp_post_=0,kd_post_=0,battery_post_=0,brake_post_=0,store_post_=0;uint64_t empty_post_=0;
- std::vector<double> posture_phi_,posture_theta_; // theta*(phi): the derived trunk-pitch freedom (wave 8)
- int settle_ticks_=0; // ORBIT CAPTURE (wave 8): hold the clock at the entry pose under load for the servo's settling time (3 periods at 4 Hz, zeta 0.8 = ~0.19 s), then release onto the stance branch already loaded
+ std::vector<double> posture_phi_,posture_theta_; // legacy non-periodic posture table (retained for receipt compatibility, not consumed)
+ int settle_ticks_=0; // ORBIT CAPTURE (wave 8): hold the clock at the entry pose under load for the servo's settling time
+ int settle_total_=0; // immutable reset value used by the wave-10 gradual vault activation
  double e_ref_=0; // the LEDGER BASELINE: the reset state's actual mechanical energy (the gait entry injects pose+momentum the standing-pose reference never sees; measured offset -0.59 J at tick 0 before this)
  std::vector<BodyRef> bodies_;bool contact_=false;
  State s_;mutable uint64_t adv_calls_=0;
@@ -271,7 +272,8 @@ class GaitWalker {
    // DOF -- the posture target tracks theta*(phi) from the continuous,
    // 0.5-periodic vault table while the walk runs; frozen clock (including
    // the main branch's settle window) holds the authored erect default 0.
-   double target_post=walking?tables_.trunk_target(phi_[0]):0.;
+   double trunk_amp=config_["gait_enabled"].get<bool>()?(settle_total_>0?1.-double(settle_ticks_)/double(settle_total_):1.):0.;
+   double target_post=trunk_amp*tables_.trunk_target(phi_[0]);
    tau[2]=(std::max)(-drives_[0].cap,(std::min)(drives_[0].cap,kp_post_*(target_post-s_.q[2])-kd_post_*s_.v[2]));}
   return tau;}
  // ── walker runtime (the free-root laws, n generalization) ──
@@ -539,7 +541,7 @@ class GaitWalker {
   tables_.zeros[2]=number(zm.at("ankle"));tables_.zeros[3]=number(zm.at("MP"));
   for(double z:tables_.zeros)require(std::isfinite(z)&&std::abs(z)<=3.,"gait_zero_map_range");}
  // theta*(phi): the derived posture target table (wave 8)
- if(config_.contains("settle_ticks")){require(config_["settle_ticks"].is_number(),"gait_settle_shape");settle_ticks_=(int)number(config_["settle_ticks"]);require(settle_ticks_>=0&&settle_ticks_<=600,"gait_settle_range");}
+ if(config_.contains("settle_ticks")){require(config_["settle_ticks"].is_number(),"gait_settle_shape");settle_ticks_=(int)number(config_["settle_ticks"]);require(settle_ticks_>=0&&settle_ticks_<=600,"gait_settle_range");settle_total_=settle_ticks_;}
   plane_world_y_=number(recipe_.at("contact_plane_height_m"));require(std::isfinite(plane_world_y_),"gait_contact_plane_invalid");plane_model_y_=plane_world_y_-shift_[1];
   require(config_.contains("contact_enabled")&&config_["contact_enabled"].is_boolean(),"gait_contact_flag_invalid");contact_=config_["contact_enabled"].get<bool>();
   require(config_.contains("contact_friction")&&config_["contact_friction"].is_number()&&number(config_["contact_friction"])>=0&&number(config_["contact_friction"])<=1,"gait_friction_flag_invalid");mu_=number(config_["contact_friction"]);
@@ -580,7 +582,7 @@ class GaitWalker {
  double timestep()const{return dt_;}const Dense& angles()const{return s_.q;}const Dense& speeds()const{return s_.v;}const Model& model()const{return *model_;}
  const Dense& batteries()const{return battery_;}double phase(size_t leg)const{return phi_[leg];}uint64_t capture_events()const{return capture_events_;}
  void reset(){
-  s_=State(n_,npts_);s_.q=model_->defaults;s_.v=Dense(n_,0.);ticks_=0;capture_events_=0;last_torque_=Dense(n_,0.);
+  s_=State(n_,npts_);s_.q=model_->defaults;s_.v=Dense(n_,0.);ticks_=0;capture_events_=0;last_torque_=Dense(n_,0.);settle_ticks_=settle_total_;
   battery_.assign(nd_,0.);brake_.assign(nd_,0.);empty_events_.assign(nd_,0);store_total_=0;
   for(size_t d=0;d<nd_;++d){battery_[d]=drives_[d].store_floor;store_total_+=drives_[d].store_floor;}
   battery_post_=store_post_;brake_post_=0;empty_post_=0;store_total_+=store_post_;
@@ -698,7 +700,6 @@ class GaitWalker {
    s_=std::move(trial);}
   last_torque_=impulse_torque;++ticks_;}
  J status()const{
-  bool walking=config_["gait_enabled"].get<bool>();
   auto e=evaluate(s_);
   double kinetic=.5*inner(s_.v,multiply(e.mass,s_.v)),u=e.potential; // absolute; the ledger works in deltas below
   J joints=J::array();double work=0,battery_total=0,brake_total=0;uint64_t empty_total=0;
@@ -710,9 +711,10 @@ class GaitWalker {
     {"battery_J",battery_[d]},{"brake_heat_J",brake_[d]},{"empty_events",empty_events_[d]},{"actuator_work_J",s_.work[c]}});}
   // The trunk-pitch posture drive (the source model's theta_HAT musculature).
   {work+=s_.work[2];battery_total+=battery_post_;brake_total+=brake_post_;empty_total+=empty_post_;
+   double trunk_amp=config_["gait_enabled"].get<bool>()?(settle_total_>0?1.-double(settle_ticks_)/double(settle_total_):1.):0.;
    joints.push_back({{"name","trunk_pitch_HAT"},{"leg","trunk"},{"joint","posture"},{"phase",phi_[0]},
-    {"angle_deg",s_.q[2]*180/pi},{"target_rad",walking?tables_.trunk_target(phi_[0]):0.},
-    {"target_deg",(walking?tables_.trunk_target(phi_[0]):0.)*180/pi},{"speed_rad_s",s_.v[2]},
+    {"angle_deg",s_.q[2]*180/pi},{"target_rad",trunk_amp*tables_.trunk_target(phi_[0])},
+    {"target_deg",trunk_amp*tables_.trunk_target(phi_[0])*180/pi},{"speed_rad_s",s_.v[2]},
     {"motor_torque_N_m",last_torque_[2]},{"drive_enabled",config_["posture_drive"]},{"torque_cap_N_m",drives_[0].cap},
     {"battery_J",battery_post_},{"brake_heat_J",brake_post_},{"empty_events",empty_post_},{"actuator_work_J",s_.work[2]}});}
   double friction_heat_total=0,reaction_total=0,impact_heat_total=0;bool cone_valid=true;
@@ -761,6 +763,7 @@ class GaitWalker {
    {"contact",{{"enabled",contact_},{"friction",mu_>0},{"friction_mu",mu_},{"plane_world_up_m",plane_world_up_m()},{"points",points},
      {"reaction_N",reaction_total},{"friction_heat_J",friction_heat_total},{"cone_valid",cone_valid}}},
    {"support",support},{"energy",energy},
+   {"base_q",{s_.q[3],s_.q[4],s_.q[5]}},
    {"body",{{"position_m",add(vector(e.frames[0].t,V{},1),shift_)},{"radius_m",0.05}}}};
  }
  double plane_world_up_m()const{return plane_world_y_;}
