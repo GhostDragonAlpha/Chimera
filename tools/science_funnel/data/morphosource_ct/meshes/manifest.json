@@ -1,0 +1,768 @@
+{
+ "source": "MorphoSource CT 000875604 (Macaca mulatta USNM 497136-3, infant, 160 \u03bcm)",
+ "segmentation_params": {
+  "bone_threshold": 118,
+  "threshold_percentile": 95,
+  "min_voxels": 1000,
+  "voxel_size_mm": 0.16,
+  "volume_shape": [
+   1373,
+   380,
+   374
+  ]
+ },
+ "bones": [
+  {
+   "rank": 1,
+   "label_id": 59,
+   "vertices": 1908285,
+   "faces": 3817770,
+   "volume_voxels": 4737869,
+   "volume_mm3": 19406.311424000003,
+   "bbox_min_mm": [
+    47.279998779296875,
+    0.3999999761581421,
+    2.9600000381469727
+   ],
+   "bbox_max_mm": [
+    211.1199951171875,
+    59.279998779296875,
+    56.55999755859375
+   ],
+   "extent_mm": [
+    163.83999633789062,
+    58.87999725341797,
+    53.599998474121094
+   ],
+   "centroid_mm": [
+    160.70860290527344,
+    31.71941566467285,
+    32.18611526489258
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_01_4737869vox.obj",
+   "identified_as": "large_bone"
+  },
+  {
+   "rank": 2,
+   "label_id": 63,
+   "vertices": 66779,
+   "faces": 133558,
+   "volume_voxels": 210240,
+   "volume_mm3": 861.1430400000002,
+   "bbox_min_mm": [
+    55.279998779296875,
+    2.1599998474121094,
+    33.52000045776367
+   ],
+   "bbox_max_mm": [
+    81.36000061035156,
+    44.87999725341797,
+    49.36000061035156
+   ],
+   "extent_mm": [
+    26.080001831054688,
+    42.71999740600586,
+    15.84000015258789
+   ],
+   "centroid_mm": [
+    69.33167266845703,
+    22.640718460083008,
+    41.78975296020508
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_02_210240vox.obj",
+   "identified_as": "large_bone"
+  },
+  {
+   "rank": 3,
+   "label_id": 62,
+   "vertices": 66403,
+   "faces": 132794,
+   "volume_voxels": 208514,
+   "volume_mm3": 854.0733440000001,
+   "bbox_min_mm": [
+    54.0,
+    18.799999237060547,
+    10.800000190734863
+   ],
+   "bbox_max_mm": [
+    95.43999481201172,
+    45.03999710083008,
+    26.15999984741211
+   ],
+   "extent_mm": [
+    41.43999481201172,
+    26.23999786376953,
+    15.359999656677246
+   ],
+   "centroid_mm": [
+    75.5685806274414,
+    31.636363983154297,
+    17.44709587097168
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_03_208514vox.obj",
+   "identified_as": "large_bone"
+  },
+  {
+   "rank": 4,
+   "label_id": 115,
+   "vertices": 54924,
+   "faces": 109860,
+   "volume_voxels": 180534,
+   "volume_mm3": 739.4672640000001,
+   "bbox_min_mm": [
+    124.39999389648438,
+    11.279999732971191,
+    40.87999725341797
+   ],
+   "bbox_max_mm": [
+    151.75999450683594,
+    48.55999755859375,
+    57.19999694824219
+   ],
+   "extent_mm": [
+    27.360000610351562,
+    37.279998779296875,
+    16.31999969482422
+   ],
+   "centroid_mm": [
+    137.15621948242188,
+    30.853012084960938,
+    49.785194396972656
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_04_180534vox.obj",
+   "identified_as": "large_bone"
+  },
+  {
+   "rank": 5,
+   "label_id": 116,
+   "vertices": 51667,
+   "faces": 103350,
+   "volume_voxels": 174742,
+   "volume_mm3": 715.7432320000001,
+   "bbox_min_mm": [
+    133.1999969482422,
+    2.4800000190734863,
+    5.359999656677246
+   ],
+   "bbox_max_mm": [
+    152.39999389648438,
+    42.31999969482422,
+    20.559999465942383
+   ],
+   "extent_mm": [
+    19.199996948242188,
+    39.84000015258789,
+    15.199999809265137
+   ],
+   "centroid_mm": [
+    142.09458923339844,
+    23.16977882385254,
+    12.875650405883789
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_05_174742vox.obj",
+   "identified_as": "large_bone"
+  },
+  {
+   "rank": 6,
+   "label_id": 49,
+   "vertices": 54119,
+   "faces": 108238,
+   "volume_voxels": 154508,
+   "volume_mm3": 632.8647680000001,
+   "bbox_min_mm": [
+    38.47999954223633,
+    0.7199999690055847,
+    33.52000045776367
+   ],
+   "bbox_max_mm": [
+    74.15999603271484,
+    32.07999801635742,
+    47.7599983215332
+   ],
+   "extent_mm": [
+    35.679996490478516,
+    31.35999870300293,
+    14.239997863769531
+   ],
+   "centroid_mm": [
+    56.10917282104492,
+    14.683544158935547,
+    41.13834762573242
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_06_154508vox.obj",
+   "identified_as": "large_bone"
+  },
+  {
+   "rank": 7,
+   "label_id": 58,
+   "vertices": 54071,
+   "faces": 108134,
+   "volume_voxels": 150102,
+   "volume_mm3": 614.817792,
+   "bbox_min_mm": [
+    47.119998931884766,
+    13.359999656677246,
+    13.679999351501465
+   ],
+   "bbox_max_mm": [
+    90.31999969482422,
+    31.599998474121094,
+    28.8799991607666
+   ],
+   "extent_mm": [
+    43.20000076293945,
+    18.23999786376953,
+    15.199999809265137
+   ],
+   "centroid_mm": [
+    68.92149353027344,
+    21.27090072631836,
+    21.855518341064453
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_07_150102vox.obj",
+   "identified_as": "large_bone"
+  },
+  {
+   "rank": 8,
+   "label_id": 118,
+   "vertices": 42764,
+   "faces": 85496,
+   "volume_voxels": 102171,
+   "volume_mm3": 418.49241600000005,
+   "bbox_min_mm": [
+    138.0,
+    14.960000038146973,
+    35.599998474121094
+   ],
+   "bbox_max_mm": [
+    154.95999145507812,
+    35.279998779296875,
+    55.279998779296875
+   ],
+   "extent_mm": [
+    16.959991455078125,
+    20.31999969482422,
+    19.68000030517578
+   ],
+   "centroid_mm": [
+    148.69410705566406,
+    26.025657653808594,
+    43.65530776977539
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_08_102171vox.obj",
+   "identified_as": "medium_bone"
+  },
+  {
+   "rank": 9,
+   "label_id": 119,
+   "vertices": 41868,
+   "faces": 83712,
+   "volume_voxels": 100874,
+   "volume_mm3": 413.1799040000001,
+   "bbox_min_mm": [
+    140.39999389648438,
+    5.839999675750732,
+    14.0
+   ],
+   "bbox_max_mm": [
+    157.0399932861328,
+    29.84000015258789,
+    25.68000030517578
+   ],
+   "extent_mm": [
+    16.639999389648438,
+    24.0,
+    11.680000305175781
+   ],
+   "centroid_mm": [
+    150.65090942382812,
+    18.354833602905273,
+    20.71190643310547
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_09_100874vox.obj",
+   "identified_as": "medium_bone"
+  },
+  {
+   "rank": 10,
+   "label_id": 97,
+   "vertices": 30242,
+   "faces": 60456,
+   "volume_voxels": 92842,
+   "volume_mm3": 380.2808320000001,
+   "bbox_min_mm": [
+    95.91999816894531,
+    12.559999465942383,
+    46.47999954223633
+   ],
+   "bbox_max_mm": [
+    124.39999389648438,
+    46.15999984741211,
+    54.47999954223633
+   ],
+   "extent_mm": [
+    28.479995727539062,
+    33.599998474121094,
+    8.0
+   ],
+   "centroid_mm": [
+    109.38809204101562,
+    28.13930320739746,
+    50.65298080444336
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_10_92842vox.obj",
+   "identified_as": "large_bone"
+  },
+  {
+   "rank": 11,
+   "label_id": 109,
+   "vertices": 30385,
+   "faces": 60750,
+   "volume_voxels": 90563,
+   "volume_mm3": 370.9460480000001,
+   "bbox_min_mm": [
+    104.72000122070312,
+    8.239999771118164,
+    5.839999675750732
+   ],
+   "bbox_max_mm": [
+    133.0399932861328,
+    39.119998931884766,
+    21.68000030517578
+   ],
+   "extent_mm": [
+    28.319992065429688,
+    30.8799991607666,
+    15.84000015258789
+   ],
+   "centroid_mm": [
+    117.83136749267578,
+    22.28019142150879,
+    13.86377239227295
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_11_90563vox.obj",
+   "identified_as": "large_bone"
+  },
+  {
+   "rank": 12,
+   "label_id": 95,
+   "vertices": 29226,
+   "faces": 58444,
+   "volume_voxels": 88112,
+   "volume_mm3": 360.90675200000004,
+   "bbox_min_mm": [
+    93.83999633789062,
+    18.639999389648438,
+    41.84000015258789
+   ],
+   "bbox_max_mm": [
+    125.83999633789062,
+    52.07999801635742,
+    55.91999816894531
+   ],
+   "extent_mm": [
+    32.0,
+    33.439998626708984,
+    14.079998016357422
+   ],
+   "centroid_mm": [
+    111.05667877197266,
+    37.334381103515625,
+    48.71296691894531
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_12_88112vox.obj",
+   "identified_as": "large_bone"
+  },
+  {
+   "rank": 13,
+   "label_id": 103,
+   "vertices": 29030,
+   "faces": 58052,
+   "volume_voxels": 86590,
+   "volume_mm3": 354.67264000000006,
+   "bbox_min_mm": [
+    102.0,
+    13.519999504089355,
+    7.759999752044678
+   ],
+   "bbox_max_mm": [
+    134.8000030517578,
+    46.79999923706055,
+    18.479999542236328
+   ],
+   "extent_mm": [
+    32.80000305175781,
+    33.279998779296875,
+    10.719999313354492
+   ],
+   "centroid_mm": [
+    119.65523529052734,
+    32.03239440917969,
+    12.198797225952148
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_13_86590vox.obj",
+   "identified_as": "large_bone"
+  },
+  {
+   "rank": 14,
+   "label_id": 29,
+   "vertices": 32800,
+   "faces": 65580,
+   "volume_voxels": 58499,
+   "volume_mm3": 239.61190400000004,
+   "bbox_min_mm": [
+    18.479999542236328,
+    12.079999923706055,
+    26.799999237060547
+   ],
+   "bbox_max_mm": [
+    34.15999984741211,
+    28.719999313354492,
+    37.20000076293945
+   ],
+   "extent_mm": [
+    15.680000305175781,
+    16.639999389648438,
+    10.400001525878906
+   ],
+   "centroid_mm": [
+    26.268735885620117,
+    19.817440032958984,
+    31.376401901245117
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_14_58499vox.obj",
+   "identified_as": "medium_bone"
+  },
+  {
+   "rank": 15,
+   "label_id": 55,
+   "vertices": 16500,
+   "faces": 32992,
+   "volume_voxels": 54574,
+   "volume_mm3": 223.53510400000005,
+   "bbox_min_mm": [
+    44.55999755859375,
+    38.31999969482422,
+    35.7599983215332
+   ],
+   "bbox_max_mm": [
+    58.959999084472656,
+    48.55999755859375,
+    42.47999954223633
+   ],
+   "extent_mm": [
+    14.400001525878906,
+    10.239997863769531,
+    6.720001220703125
+   ],
+   "centroid_mm": [
+    51.64980697631836,
+    43.80656814575195,
+    38.9662971496582
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_15_54574vox.obj",
+   "identified_as": "small_bone"
+  },
+  {
+   "rank": 16,
+   "label_id": 74,
+   "vertices": 29312,
+   "faces": 58612,
+   "volume_voxels": 54463,
+   "volume_mm3": 223.08044800000005,
+   "bbox_min_mm": [
+    74.63999938964844,
+    5.839999675750732,
+    48.71999740600586
+   ],
+   "bbox_max_mm": [
+    88.87999725341797,
+    18.479999542236328,
+    56.23999786376953
+   ],
+   "extent_mm": [
+    14.239997863769531,
+    12.639999389648438,
+    7.520000457763672
+   ],
+   "centroid_mm": [
+    81.73416900634766,
+    11.83267593383789,
+    53.00579833984375
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_16_54463vox.obj",
+   "identified_as": "small_bone"
+  },
+  {
+   "rank": 17,
+   "label_id": 54,
+   "vertices": 16172,
+   "faces": 32336,
+   "volume_voxels": 54226,
+   "volume_mm3": 222.10969600000004,
+   "bbox_min_mm": [
+    43.91999816894531,
+    38.15999984741211,
+    25.03999900817871
+   ],
+   "bbox_max_mm": [
+    58.31999969482422,
+    48.39999771118164,
+    32.07999801635742
+   ],
+   "extent_mm": [
+    14.400001525878906,
+    10.239997863769531,
+    7.039999008178711
+   ],
+   "centroid_mm": [
+    50.79801940917969,
+    43.655887603759766,
+    28.004304885864258
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_17_54226vox.obj",
+   "identified_as": "small_bone"
+  },
+  {
+   "rank": 18,
+   "label_id": 83,
+   "vertices": 31364,
+   "faces": 62760,
+   "volume_voxels": 53022,
+   "volume_mm3": 217.17811200000003,
+   "bbox_min_mm": [
+    85.04000091552734,
+    6.0,
+    19.760000228881836
+   ],
+   "bbox_max_mm": [
+    98.95999908447266,
+    17.19999885559082,
+    33.84000015258789
+   ],
+   "extent_mm": [
+    13.919998168945312,
+    11.19999885559082,
+    14.079999923706055
+   ],
+   "centroid_mm": [
+    91.57923889160156,
+    10.156270027160645,
+    26.073732376098633
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_18_53022vox.obj",
+   "identified_as": "small_bone"
+  },
+  {
+   "rank": 19,
+   "label_id": 26,
+   "vertices": 25597,
+   "faces": 51198,
+   "volume_voxels": 44805,
+   "volume_mm3": 183.52128000000002,
+   "bbox_min_mm": [
+    12.880000114440918,
+    14.319999694824219,
+    45.36000061035156
+   ],
+   "bbox_max_mm": [
+    25.51999855041504,
+    29.35999870300293,
+    54.31999969482422
+   ],
+   "extent_mm": [
+    12.639998435974121,
+    15.039999008178711,
+    8.959999084472656
+   ],
+   "centroid_mm": [
+    19.19200897216797,
+    21.730220794677734,
+    49.4789924621582
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_19_44805vox.obj",
+   "identified_as": "medium_bone"
+  },
+  {
+   "rank": 20,
+   "label_id": 51,
+   "vertices": 16194,
+   "faces": 32380,
+   "volume_voxels": 34255,
+   "volume_mm3": 140.30848000000003,
+   "bbox_min_mm": [
+    40.23999786376953,
+    5.519999980926514,
+    40.71999740600586
+   ],
+   "bbox_max_mm": [
+    71.43999481201172,
+    30.959999084472656,
+    51.599998474121094
+   ],
+   "extent_mm": [
+    31.199996948242188,
+    25.439998626708984,
+    10.880001068115234
+   ],
+   "centroid_mm": [
+    54.68901824951172,
+    18.773080825805664,
+    45.5196418762207
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_20_34255vox.obj",
+   "identified_as": "large_bone"
+  },
+  {
+   "rank": 21,
+   "label_id": 57,
+   "vertices": 15272,
+   "faces": 30536,
+   "volume_voxels": 33153,
+   "volume_mm3": 135.79468800000004,
+   "bbox_min_mm": [
+    47.119998931884766,
+    18.0,
+    13.359999656677246
+   ],
+   "bbox_max_mm": [
+    84.4000015258789,
+    30.479999542236328,
+    22.639999389648438
+   ],
+   "extent_mm": [
+    37.28000259399414,
+    12.479999542236328,
+    9.279999732971191
+   ],
+   "centroid_mm": [
+    64.26549530029297,
+    24.31684684753418,
+    18.587661743164062
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_21_33153vox.obj",
+   "identified_as": "large_bone"
+  },
+  {
+   "rank": 22,
+   "label_id": 40,
+   "vertices": 13048,
+   "faces": 26104,
+   "volume_voxels": 31952,
+   "volume_mm3": 130.87539200000003,
+   "bbox_min_mm": [
+    29.67999839782715,
+    32.71999740600586,
+    46.31999969482422
+   ],
+   "bbox_max_mm": [
+    40.71999740600586,
+    40.55999755859375,
+    51.439998626708984
+   ],
+   "extent_mm": [
+    11.039999008178711,
+    7.840000152587891,
+    5.119998931884766
+   ],
+   "centroid_mm": [
+    34.94198989868164,
+    36.52253341674805,
+    49.10887145996094
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_22_31952vox.obj",
+   "identified_as": "small_bone"
+  },
+  {
+   "rank": 23,
+   "label_id": 47,
+   "vertices": 13221,
+   "faces": 26450,
+   "volume_voxels": 31588,
+   "volume_mm3": 129.38444800000002,
+   "bbox_min_mm": [
+    36.07999801635742,
+    30.15999984741211,
+    21.35999870300293
+   ],
+   "bbox_max_mm": [
+    46.0,
+    38.15999984741211,
+    29.03999900817871
+   ],
+   "extent_mm": [
+    9.920001983642578,
+    8.0,
+    7.680000305175781
+   ],
+   "centroid_mm": [
+    40.85563659667969,
+    34.03943634033203,
+    25.219560623168945
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_23_31588vox.obj",
+   "identified_as": "small_bone"
+  },
+  {
+   "rank": 24,
+   "label_id": 50,
+   "vertices": 7376,
+   "faces": 14748,
+   "volume_voxels": 25423,
+   "volume_mm3": 104.13260800000002,
+   "bbox_min_mm": [
+    38.79999923706055,
+    26.0,
+    23.760000228881836
+   ],
+   "bbox_max_mm": [
+    46.63999938964844,
+    31.760000228881836,
+    31.599998474121094
+   ],
+   "extent_mm": [
+    7.840000152587891,
+    5.760000228881836,
+    7.839998245239258
+   ],
+   "centroid_mm": [
+    42.6401252746582,
+    29.01681137084961,
+    27.724943161010742
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_24_25423vox.obj",
+   "identified_as": "small_bone"
+  },
+  {
+   "rank": 25,
+   "label_id": 41,
+   "vertices": 7616,
+   "faces": 15228,
+   "volume_voxels": 25400,
+   "volume_mm3": 104.03840000000002,
+   "bbox_min_mm": [
+    30.799999237060547,
+    29.35999870300293,
+    42.15999984741211
+   ],
+   "bbox_max_mm": [
+    39.599998474121094,
+    34.31999969482422,
+    49.03999710083008
+   ],
+   "extent_mm": [
+    8.799999237060547,
+    4.960000991821289,
+    6.879997253417969
+   ],
+   "centroid_mm": [
+    35.33226013183594,
+    31.927608489990234,
+    45.482791900634766
+   ],
+   "file": "tools\\science_funnel\\data\\morphosource_ct\\meshes\\bone_25_25400vox.obj",
+   "identified_as": "small_bone"
+  }
+ ],
+ "total_bones_extracted": 25,
+ "timestamp": "2026-09-19T18:29:58+00:00"
+}

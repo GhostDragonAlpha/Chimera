@@ -35,3 +35,6 @@ tools/science_funnel/data/bodyparts3d/** -text -whitespace
 tools/science_funnel/data/macaque_arm/** -text -whitespace
 
 tools/science_funnel/data/earth/** -text -whitespace
+
+# MorphoSource CT captures (bones + receipts) retain upstream bytes for checksum replay.
+tools/science_funnel/data/morphosource_ct/** -text -whitespace

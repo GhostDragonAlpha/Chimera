@@ -1,0 +1,709 @@
+{
+ "constants": {
+  "rho_bone_kg_mm3": 1.9e-06,
+  "rho_bone_kg_m3": 1900.0,
+  "rho_cartilage_kg_mm3": 1.06e-06,
+  "cure_cartilage_pa": 13000000.0,
+  "citations": [
+   "COWIN 'Bone Mechanics Handbook'; CURREY 'Bones: Structure and Mechanics': cortical wet density 1800-2100 kg/m^3 (1900 used, = 1.9e-6 kg/mm^3); E ~15-20 GPa (17 used); tensile failure ~80-150 MPa (100 used, conservative); Vickers ~30-50 HV (40 used)",
+   "YAMADA 1970 'Strength of Biological Materials' (Williams & Wilkins): cartilage tensile strength ~13 MPa, Young's modulus 7-25 MPa (10 used), density ~1.06 g/cm^3; the joint bond material at the measured touching edges"
+  ]
+ },
+ "laws": {
+  "volume": "V = |sum_faces (1/6) v_a.(v_b x v_c)| on the resident float32 triangles",
+  "area": "kernel validator accumulation over the committed blob",
+  "thickness": "t = V/A (equivalent shell thickness; conserves V; the only derived parameter)",
+  "mass": "m = A*t*rho = V*rho"
+ },
+ "compartments": [
+  {
+   "rank": 1,
+   "id": "mem.bone_01",
+   "label": "axial_composite",
+   "side": "midline",
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_01_4737869vox_lo.obj",
+   "vertices": 14658,
+   "faces": 30000,
+   "volume_mm3_mesh": 18771.561371,
+   "area_mm2": 32331.081079,
+   "thickness_mm_equivalent": 0.580604197,
+   "mass_g": 35.665967,
+   "volume_mm3_voxel_book": 19406.311424,
+   "volume_delta_pct": -3.2708,
+   "vertex_sha256": "b934d05b70fcc29401e68f17a8f5e912ce612af4bab9e9222376e6f766f44df5"
+  },
+  {
+   "rank": 2,
+   "id": "mem.bone_02",
+   "label": "femur",
+   "side": "left",
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_02_210240vox_lo.obj",
+   "vertices": 15000,
+   "faces": 29998,
+   "volume_mm3_mesh": 860.800163,
+   "area_mm2": 1293.556086,
+   "thickness_mm_equivalent": 0.665452525,
+   "mass_g": 1.63552,
+   "volume_mm3_voxel_book": 861.14304,
+   "volume_delta_pct": -0.0398,
+   "vertex_sha256": "10130815de441fc525839f0bd87f5cc404fab9bc5b907a77aed80e3c78e3ea45"
+  },
+  {
+   "rank": 3,
+   "id": "mem.bone_03",
+   "label": "femur",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_03_208514vox_lo.obj",
+   "vertices": 15006,
+   "faces": 30000,
+   "volume_mm3_mesh": 853.669349,
+   "area_mm2": 1298.735154,
+   "thickness_mm_equivalent": 0.657308264,
+   "mass_g": 1.621972,
+   "volume_mm3_voxel_book": 854.073344,
+   "volume_delta_pct": -0.0473,
+   "vertex_sha256": "23de94f5bc6df1c5c9b8730b68e503dcce0f714d3e3187179bfad7d6a7ed48a5"
+  },
+  {
+   "rank": 4,
+   "id": "mem.bone_04",
+   "label": "humerus",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_04_180534vox_lo.obj",
+   "vertices": 14994,
+   "faces": 30000,
+   "volume_mm3_mesh": 739.07676,
+   "area_mm2": 1067.81861,
+   "thickness_mm_equivalent": 0.692136991,
+   "mass_g": 1.404246,
+   "volume_mm3_voxel_book": 739.467264,
+   "volume_delta_pct": -0.0528,
+   "vertex_sha256": "8d9f53ca7c89ec6c121fcb3f4bd35f4afee0696bb16266128d94917ac61a38f8"
+  },
+  {
+   "rank": 5,
+   "id": "mem.bone_05",
+   "label": "humerus",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_05_174742vox_lo.obj",
+   "vertices": 14987,
+   "faces": 30000,
+   "volume_mm3_mesh": 715.478016,
+   "area_mm2": 1023.687198,
+   "thickness_mm_equivalent": 0.6989225,
+   "mass_g": 1.359408,
+   "volume_mm3_voxel_book": 715.743232,
+   "volume_delta_pct": -0.0371,
+   "vertex_sha256": "423b4f914b6e80b70372b6e98ee40dd4fc77968a92bdc1bae0747b7e3346a670"
+  },
+  {
+   "rank": 6,
+   "id": "mem.bone_06",
+   "label": "tibia",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_06_154508vox_lo.obj",
+   "vertices": 14999,
+   "faces": 29998,
+   "volume_mm3_mesh": 632.642882,
+   "area_mm2": 1044.007181,
+   "thickness_mm_equivalent": 0.605975604,
+   "mass_g": 1.202021,
+   "volume_mm3_voxel_book": 632.864768,
+   "volume_delta_pct": -0.0351,
+   "vertex_sha256": "6f9dbf09116aab8f76050e75eb7e61eb64a9786a5ad47312dd9566e04032b7e0"
+  },
+  {
+   "rank": 7,
+   "id": "mem.bone_07",
+   "label": "tibia",
+   "side": "right",
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_07_150102vox_lo.obj",
+   "vertices": 15004,
+   "faces": 30000,
+   "volume_mm3_mesh": 614.701226,
+   "area_mm2": 1067.207295,
+   "thickness_mm_equivalent": 0.575990464,
+   "mass_g": 1.167932,
+   "volume_mm3_voxel_book": 614.817792,
+   "volume_delta_pct": -0.019,
+   "vertex_sha256": "6f4f8c8cbbbc966c6053173a7f9501a03813e84472e80cc74736d80f18d2f3c7"
+  },
+  {
+   "rank": 8,
+   "id": "mem.bone_08",
+   "label": "hand_class",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_08_102171vox_lo.obj",
+   "vertices": 15016,
+   "faces": 30000,
+   "volume_mm3_mesh": 418.065822,
+   "area_mm2": 817.10404,
+   "thickness_mm_equivalent": 0.511643318,
+   "mass_g": 0.794325,
+   "volume_mm3_voxel_book": 418.492416,
+   "volume_delta_pct": -0.1019,
+   "vertex_sha256": "25d89c5606c924bc34ac3ecb8ab488f438fda90fac46a195eb2a0b3bd28098d3"
+  },
+  {
+   "rank": 9,
+   "id": "mem.bone_09",
+   "label": "hand_class",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_09_100874vox_lo.obj",
+   "vertices": 15006,
+   "faces": 29998,
+   "volume_mm3_mesh": 412.794593,
+   "area_mm2": 832.438623,
+   "thickness_mm_equivalent": 0.495885921,
+   "mass_g": 0.78431,
+   "volume_mm3_voxel_book": 413.179904,
+   "volume_delta_pct": -0.0933,
+   "vertex_sha256": "34e885ef7e3d091e31ee02963bb56db9bded2b6479b52bb028f1b6baced8c222"
+  },
+  {
+   "rank": 10,
+   "id": "mem.bone_10",
+   "label": "forearm_class",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_10_92842vox_lo.obj",
+   "vertices": 15007,
+   "faces": 30000,
+   "volume_mm3_mesh": 379.863244,
+   "area_mm2": 579.167721,
+   "thickness_mm_equivalent": 0.655877789,
+   "mass_g": 0.72174,
+   "volume_mm3_voxel_book": 380.280832,
+   "volume_delta_pct": -0.1098,
+   "vertex_sha256": "bb4700f8dd27397bf291048df7a069d0f309a005ddb313a80157c7839424fe91"
+  },
+  {
+   "rank": 11,
+   "id": "mem.bone_11",
+   "label": "forearm_class",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_11_90563vox_lo.obj",
+   "vertices": 14986,
+   "faces": 30000,
+   "volume_mm3_mesh": 370.458404,
+   "area_mm2": 576.862991,
+   "thickness_mm_equivalent": 0.642194785,
+   "mass_g": 0.703871,
+   "volume_mm3_voxel_book": 370.946048,
+   "volume_delta_pct": -0.1315,
+   "vertex_sha256": "ca1e6cf63fba924d05980132db41f016661d50f9cf071502fe39e4eb47bf994d"
+  },
+  {
+   "rank": 12,
+   "id": "mem.bone_12",
+   "label": "forearm_class",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_12_88112vox_lo.obj",
+   "vertices": 14997,
+   "faces": 30000,
+   "volume_mm3_mesh": 360.272258,
+   "area_mm2": 555.346132,
+   "thickness_mm_equivalent": 0.648734614,
+   "mass_g": 0.684517,
+   "volume_mm3_voxel_book": 360.906752,
+   "volume_delta_pct": -0.1758,
+   "vertex_sha256": "b9e5dc6e3e9fb54da0a015b5b5080bb1e95fdc8dfea26559e6605c60a7a4d6e6"
+  },
+  {
+   "rank": 13,
+   "id": "mem.bone_13",
+   "label": "forearm_class",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_13_86590vox_lo.obj",
+   "vertices": 14984,
+   "faces": 30000,
+   "volume_mm3_mesh": 354.058724,
+   "area_mm2": 555.206731,
+   "thickness_mm_equivalent": 0.637706108,
+   "mass_g": 0.672712,
+   "volume_mm3_voxel_book": 354.67264,
+   "volume_delta_pct": -0.1731,
+   "vertex_sha256": "d29b8205c059900120df03c4710983690a986fdf61e7ee6871203d0acae96aae"
+  },
+  {
+   "rank": 14,
+   "id": "mem.bone_14",
+   "label": "unpaired",
+   "side": null,
+   "confidence": null,
+   "source_obj": "../meshes_preview/bone_14_58499vox_lo.obj",
+   "vertices": 14976,
+   "faces": 29998,
+   "volume_mm3_mesh": 239.225942,
+   "area_mm2": 613.310894,
+   "thickness_mm_equivalent": 0.390056567,
+   "mass_g": 0.454529,
+   "volume_mm3_voxel_book": 239.611904,
+   "volume_delta_pct": -0.1611,
+   "vertex_sha256": "820a844ad435ef5e4e08df62657552e4aa19990731e3fa98f7ce114bb63316c3"
+  },
+  {
+   "rank": 15,
+   "id": "mem.bone_15",
+   "label": "foot_class",
+   "side": "left",
+   "confidence": "medium(chain+rank, no within-10% homolog)",
+   "source_obj": "../meshes_preview/bone_15_54574vox_lo.obj",
+   "vertices": 14995,
+   "faces": 30000,
+   "volume_mm3_mesh": 223.28415,
+   "area_mm2": 328.791742,
+   "thickness_mm_equivalent": 0.679105104,
+   "mass_g": 0.42424,
+   "volume_mm3_voxel_book": 223.535104,
+   "volume_delta_pct": -0.1123,
+   "vertex_sha256": "49f771067e58155063e041479a02feb1b64a0ea04d0176e4198b78061a592383"
+  },
+  {
+   "rank": 16,
+   "id": "mem.bone_16",
+   "label": "unpaired",
+   "side": null,
+   "confidence": null,
+   "source_obj": "../meshes_preview/bone_16_54463vox_lo.obj",
+   "vertices": 14999,
+   "faces": 30000,
+   "volume_mm3_mesh": 222.814532,
+   "area_mm2": 590.584435,
+   "thickness_mm_equivalent": 0.37727803,
+   "mass_g": 0.423348,
+   "volume_mm3_voxel_book": 223.080448,
+   "volume_delta_pct": -0.1192,
+   "vertex_sha256": "1efe979b07cec33b6c58521d82dae4defb80cce8e5a4a39202b0b9fc6e0cc6bf"
+  },
+  {
+   "rank": 17,
+   "id": "mem.bone_17",
+   "label": "foot_class",
+   "side": "right",
+   "confidence": "medium(chain+rank, no within-10% homolog)",
+   "source_obj": "../meshes_preview/bone_17_54226vox_lo.obj",
+   "vertices": 15002,
+   "faces": 30000,
+   "volume_mm3_mesh": 221.857255,
+   "area_mm2": 325.297292,
+   "thickness_mm_equivalent": 0.68201384,
+   "mass_g": 0.421529,
+   "volume_mm3_voxel_book": 222.109696,
+   "volume_delta_pct": -0.1137,
+   "vertex_sha256": "f29baae2e852375611ecf66d2127ba4c5f09acfb0f9d9a730394e70bcc5cf255"
+  },
+  {
+   "rank": 18,
+   "id": "mem.bone_18",
+   "label": "foot_class",
+   "side": null,
+   "confidence": "medium(chain+rank, no within-10% homolog)",
+   "source_obj": "../meshes_preview/bone_18_53022vox_lo.obj",
+   "vertices": 14964,
+   "faces": 30000,
+   "volume_mm3_mesh": 216.900644,
+   "area_mm2": 603.666463,
+   "thickness_mm_equivalent": 0.35930544,
+   "mass_g": 0.412111,
+   "volume_mm3_voxel_book": 217.178112,
+   "volume_delta_pct": -0.1278,
+   "vertex_sha256": "7e59b9dd9bf9f7417acd187e41264159cbcda0d2ff968a0b49400b2c64c5eff9"
+  },
+  {
+   "rank": 19,
+   "id": "mem.bone_19",
+   "label": "unpaired",
+   "side": null,
+   "confidence": null,
+   "source_obj": "../meshes_preview/bone_19_44805vox_lo.obj",
+   "vertices": 14985,
+   "faces": 30000,
+   "volume_mm3_mesh": 183.231039,
+   "area_mm2": 486.307798,
+   "thickness_mm_equivalent": 0.376779973,
+   "mass_g": 0.348139,
+   "volume_mm3_voxel_book": 183.52128,
+   "volume_delta_pct": -0.1582,
+   "vertex_sha256": "0161c1909a66d95164756a0050646aaa7c61dc15a3ce50bfafbcdd8f937cc667"
+  },
+  {
+   "rank": 20,
+   "id": "mem.bone_20",
+   "label": "fibula",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_20_34255vox_lo.obj",
+   "vertices": 15002,
+   "faces": 30000,
+   "volume_mm3_mesh": 139.705175,
+   "area_mm2": 305.743222,
+   "thickness_mm_equivalent": 0.456936294,
+   "mass_g": 0.26544,
+   "volume_mm3_voxel_book": 140.30848,
+   "volume_delta_pct": -0.43,
+   "vertex_sha256": "ed0b7071f0de63dfabebcdbe7c89c015efdf532fe8e8a2839c3148124aed07da"
+  },
+  {
+   "rank": 21,
+   "id": "mem.bone_21",
+   "label": "fibula",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_21_33153vox_lo.obj",
+   "vertices": 15003,
+   "faces": 30000,
+   "volume_mm3_mesh": 135.269892,
+   "area_mm2": 305.852717,
+   "thickness_mm_equivalent": 0.442271344,
+   "mass_g": 0.257013,
+   "volume_mm3_voxel_book": 135.794688,
+   "volume_delta_pct": -0.3865,
+   "vertex_sha256": "90f115df81fb3031bb9334473a9b8258f8298215217b957ca01faeff3c59a1f2"
+  },
+  {
+   "rank": 22,
+   "id": "mem.bone_22",
+   "label": "foot_class",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_22_31952vox_lo.obj",
+   "vertices": 13048,
+   "faces": 26104,
+   "volume_mm3_mesh": 130.804875,
+   "area_mm2": 253.767627,
+   "thickness_mm_equivalent": 0.515451388,
+   "mass_g": 0.248529,
+   "volume_mm3_voxel_book": 130.875392,
+   "volume_delta_pct": -0.0539,
+   "vertex_sha256": "18221a8c7990bd5215251c39cd46d23c7eb32e70c253c8b7fef088c78268149b"
+  },
+  {
+   "rank": 23,
+   "id": "mem.bone_23",
+   "label": "foot_class",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_23_31588vox_lo.obj",
+   "vertices": 13221,
+   "faces": 26450,
+   "volume_mm3_mesh": 129.299982,
+   "area_mm2": 252.411938,
+   "thickness_mm_equivalent": 0.512257793,
+   "mass_g": 0.24567,
+   "volume_mm3_voxel_book": 129.384448,
+   "volume_delta_pct": -0.0653,
+   "vertex_sha256": "9564d890e7f67a1b1fb9f7e5da66c55cf9e0b32aee7911b721a5032199eab109"
+  },
+  {
+   "rank": 24,
+   "id": "mem.bone_24",
+   "label": "foot_class",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_24_25423vox_lo.obj",
+   "vertices": 7376,
+   "faces": 14748,
+   "volume_mm3_mesh": 103.934781,
+   "area_mm2": 142.600969,
+   "thickness_mm_equivalent": 0.728850457,
+   "mass_g": 0.197476,
+   "volume_mm3_voxel_book": 104.132608,
+   "volume_delta_pct": -0.19,
+   "vertex_sha256": "c1728827ecaaad669bdd2668f709e5b14dcfdde725b7e067904d9a7a58d66122"
+  },
+  {
+   "rank": 25,
+   "id": "mem.bone_25",
+   "label": "foot_class",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_25_25400vox_lo.obj",
+   "vertices": 7616,
+   "faces": 15228,
+   "volume_mm3_mesh": 103.879172,
+   "area_mm2": 148.47413,
+   "thickness_mm_equivalent": 0.699644927,
+   "mass_g": 0.19737,
+   "volume_mm3_voxel_book": 104.0384,
+   "volume_delta_pct": -0.153,
+   "vertex_sha256": "1e7e5c69a3662c13769e77bde99e64042603c291bd2bf2f5525e0b78c3eb1c33"
+  }
+ ],
+ "bonds": [
+  {
+   "id": "bond.joint_02_06",
+   "pair": [
+    2,
+    6
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 2.91,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_02_15",
+   "pair": [
+    2,
+    15
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 1.01,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_03_07",
+   "pair": [
+    3,
+    7
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 2.83,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_03_17",
+   "pair": [
+    3,
+    17
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 0.69,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_04_08",
+   "pair": [
+    4,
+    8
+   ],
+   "chain_kind": "fore",
+   "rest_length_mm": 0.73,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_04_10",
+   "pair": [
+    4,
+    10
+   ],
+   "chain_kind": "fore",
+   "rest_length_mm": 2.0,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_04_12",
+   "pair": [
+    4,
+    12
+   ],
+   "chain_kind": "fore",
+   "rest_length_mm": 0.93,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_05_09",
+   "pair": [
+    5,
+    9
+   ],
+   "chain_kind": "fore",
+   "rest_length_mm": 0.86,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_05_11",
+   "pair": [
+    5,
+    11
+   ],
+   "chain_kind": "fore",
+   "rest_length_mm": 2.27,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_05_13",
+   "pair": [
+    5,
+    13
+   ],
+   "chain_kind": "fore",
+   "rest_length_mm": 0.86,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_06_20",
+   "pair": [
+    6,
+    20
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 0.48,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_06_25",
+   "pair": [
+    6,
+    25
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 0.66,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_07_18",
+   "pair": [
+    7,
+    18
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 1.79,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_07_21",
+   "pair": [
+    7,
+    21
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 0.45,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_07_24",
+   "pair": [
+    7,
+    24
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 0.86,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_10_12",
+   "pair": [
+    10,
+    12
+   ],
+   "chain_kind": "fore",
+   "rest_length_mm": 0.38,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_11_13",
+   "pair": [
+    11,
+    13
+   ],
+   "chain_kind": "fore",
+   "rest_length_mm": 0.47,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_20_25",
+   "pair": [
+    20,
+    25
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 2.47,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_21_24",
+   "pair": [
+    21,
+    24
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 2.9,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_22_25",
+   "pair": [
+    22,
+    25
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 0.99,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_23_24",
+   "pair": [
+    23,
+    24
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 1.01,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  }
+ ],
+ "totals": {
+  "compartments": 25,
+  "bonds": 21,
+  "total_mass_g": 52.3139,
+  "total_volume_mm3_mesh": 27533.6503,
+  "total_volume_mm3_voxel": 28176.47,
+  "total_volume_delta_pct": -2.281,
+  "total_mass_if_voxel_volume_g": 53.5353,
+  "body_mass_band_kg": [
+   0.4,
+   0.55
+  ],
+  "skeleton_fraction_of_body_band_pct": [
+   9.51,
+   13.08
+  ],
+  "skeleton_fraction_band_pct": [
+   8.0,
+   15.0
+  ],
+  "prange_regression_predicted_g": [
+   26.08,
+   36.9
+  ],
+  "prange_source": "Prange, Anderson & Rahn 1979 (Am Nat 113:103-122): M_skel = 0.0708 * M_body^1.09 (adult-taxon)",
+  "named_deviations": [
+   "adult cortical density (1900 kg/m^3) is the cited UPPER ANCHOR: infant bone is under-mineralized (Rauch 2001), so true compartment masses sit below these numbers",
+   "the CT bone threshold (118, 95th percentile) includes partially mineralized growth cartilage in this infant, so volumes include some non-bone mineralized tissue",
+   "the cortical tissue density is applied to whole-bone volume (porous trabecular cores included), biasing masses HIGH; all three biases point the same direction and are named, not tuned"
+  ]
+ }
+}
