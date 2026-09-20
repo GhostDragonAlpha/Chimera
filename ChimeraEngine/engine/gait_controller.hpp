@@ -284,7 +284,15 @@ class GaitWalker {
    bool touching=false;const char* prefix=leg==0?"left":"right";
    for(size_t k=0;k<npts_;++k)if(points_[k].name.rfind(prefix,0)==0&&gap_of(e,k)<=kTouch)touching=true;
    if(touching&&!touching_prev_[leg]){phi_[leg]=0.;reset_fired=true;}
-   else phi_[leg]=std::fmod(phi_[leg]+dt/T_CYCLE+(leg==0?0.:0.5),1.);
+   // RUN REPAIR (wave 16, itemized in receipt_wave16.json): the phase advance
+   // carried the per-leg OFFSET inside the per-tick increment for the right
+   // leg (+0.5 every tick), which aliases phi_[1] into two interleaved
+   // half-clocks (f applied twice advances only 2c). The doc's law (Section
+   // 5.1) is phi_leg=(t/T+off) mod 1 with the offset applied ONCE -- reset()
+   // already inits phi_ to {0, 0.5}. Before: the right leg's phase (and with
+   // the wave-16 target repair, its whole gait) aliased; the status phase
+   // column alternated ~0/~0.5 tick by tick. No tuning: the doc's own law.
+   else phi_[leg]=std::fmod(phi_[leg]+dt/T_CYCLE,1.);
    touching_prev_[leg]=touching;}
   return reset_fired;}
  // Support hull + CoM (Section 5.4). Returns com_in_hull; sets hull/com refs.
@@ -573,7 +581,19 @@ class GaitWalker {
       target=dr.joint=="shoulder"?ik.q1:ik.q2;
      }
      else target=dr.joint=="shoulder"?fore_pose_sh_:fore_pose_el_;
-    } else {double qstar[4];tables_.at(dr.leg=="left"?0:1,qstar);target=qstar[dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3];}}
+    }
+    // THE HIND TARGET (wave 16 repair, itemized in receipt_wave16.json): the
+    // servo read tables_.at(dr.leg=="left"?0:1, ...) -- the CONSTANT column
+    // (phi=0 left, phi=1.0==0.0 right): the forelimb commit (f0efbba7) dropped
+    // the phase_ read here exactly as it did in reset() (the pre-forelimb
+    // bytes read tables_.at(phi_[...]) at all three sites), so the hind legs
+    // held the TD pose as a static target through every wave-12..15 walk and
+    // the books (status) disagreed with the servo. The phase-advanced target
+    // is the derivation's own law (the 21-node tables at the contact-reset
+    // clock, Section 2.4/5.1); without it the reset repair below is undone
+    // during the settle (the servo would drag the right hind back to the TD
+    // column) and no hind lift could fire at its clock phase.
+    else {double qstar[4];tables_.at(phi_[dr.leg=="left"?0:1],qstar);target=qstar[dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3];}}
 
    tau[c]=(std::max)(-dr.cap,(std::min)(dr.cap,kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c]));}
   // The source model's POSTURE CONTROL (the pinned fulltext: the trunk pitch
@@ -987,7 +1007,18 @@ class GaitWalker {
    if(config_.contains("base_trans_y_m"))s_.q[4]=number(config_["base_trans_y_m"]);
    for(size_t d=0;d<nd_;++d){const Drive& dr=drives_[d];
     if(dr.leg=="fore_left"||dr.leg=="fore_right"){s_.q[dr.coordinate]=dr.joint=="shoulder"?fore_pose_sh_:fore_pose_el_;s_.v[dr.coordinate]=0.;continue;}
-    double qstar[4];tables_.at(dr.leg=="left"?0:1,qstar);
+    // RUN REPAIR (wave 16, THE OWED DEFECT, itemized in receipt_wave16.json
+    // with before/after baselines): the right hind's JOINTS were assembled
+    // from tables_.at(1, ...) -- the phi=1.0 column, periodic to the phi=0.0
+    // (TD) column -- while its clock starts at start_phase_right=0.5: the
+    // literal '1' meant the LEG INDEX, not a phase (the forelimb commit
+    // f0efbba7 dropped the phi_ read here; the pre-forelimb bytes read
+    // tables_.at(phi_[...])). Measured before: runtime L/R hind pair-min
+    // dangles 4.575e-2/4.557e-2 m vs the scene-derived 4.616e-2/4.913e-2 --
+    // both legs at TD-pose geometry, the right against its own clock. The
+    // repair assembles each hind at ITS clock column, making the runtime
+    // state the scene's derivation state (the model-validation gate).
+    double qstar[4];tables_.at(phi_[dr.leg=="left"?0:1],qstar);
     int ji=dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3;
     s_.q[dr.coordinate]=qstar[ji];
     double p=phi_[dr.leg=="left"?0:1],dp=0.05;double a1[4],a2[4];

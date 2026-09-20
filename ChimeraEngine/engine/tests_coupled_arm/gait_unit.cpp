@@ -23,6 +23,8 @@ struct WalkOut{
  std::vector<std::array<char,2>> fm;           // per-leg fore clock mode (0 stance, 1 swing)
  std::vector<std::array<uint64_t,2>> fsat;     // per-leg IK saturation ticks (per-tick snapshot)
  std::vector<std::array<double,8>> gp;         // per-tick ALL-paw gaps, declared point order (wave 15 strut census)
+ std::vector<double> fr,frslip;                // per-tick total FORE reaction + max fore slip (wave 16 load census)
+ int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
  J last;std::string refused;int refused_tick=-1;
@@ -112,6 +114,10 @@ int main(int argc,char**argv){try{
     {std::array<double,8> gaps{};size_t k=0;
      for(const auto&pt:s["contact"]["points"]){if(k<8)gaps[k++]=number(pt["gap_m"]);}
      out.gp.push_back(gaps);}
+    {double fsum=0,fslip=0; // WAVE 16 fore-load census inputs: total fore reaction + max fore slip
+     for(const auto&pt:s["contact"]["points"]){const std::string nm=pt["name"].get<std::string>();
+      if(nm.rfind("fore_",0)==0){fsum+=number(pt["reaction_N"]);fslip=(std::max)(fslip,number(pt["slip_speed_m_s"]));}}
+     out.fr.push_back(fsum);out.frslip.push_back(fslip);}
     std::array<char,2> fmm{0,0};std::array<uint64_t,2> sat{};
     if(s["gait"].contains("fore_paw")&&s["gait"]["fore_paw"].size()>=2)
      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["fore_paw"][l];
@@ -144,7 +150,8 @@ int main(int argc,char**argv){try{
    for(size_t leg=0;leg<2;++leg){
     bool t=s["gait"][leg?"touching_right":"touching_left"].get<bool>();
     if(t&&!prev_t[leg])out.td[leg].push_back(number(s["sim_time_s"]));
-    if(!t&&prev_t[leg])out.liftoff[leg].push_back(d.phase(leg));
+    if(!t&&prev_t[leg]){out.liftoff[leg].push_back(d.phase(leg));
+     if(out.lift_tick[leg]<0){out.lift_tick[leg]=i;out.lift_phase[leg]=d.phase(leg);}}
     prev_t[leg]=t;}
    if(i%10==0){std::string j=s.dump();out.stream+=j;out.stream+='\n';}
    std::array<double,8> a{},tg{};std::array<char,2> tt{};std::array<double,2> rr{0.,0.};
@@ -258,6 +265,57 @@ int main(int argc,char**argv){try{
    " (bounds: 0.059 calibrated / 0.1744 survived anchor)");
   ck(td_mx<=0.059,"f15_strut_bound_td_heel");
   ck(sp_mx<=0.1744,"f15_strut_spread_survived_anchor");}
+
+ // ── WAVE 16 FORE-LOAD CENSUS (pre-registered in receipt_wave16.json): the
+ //    settle window [0,60) total FORE reaction (the runtime contact rows are
+ //    per-foot pair quantities; the fore sum is the trade's load) stays at or
+ //    above N_plant -- the derived slide ceiling, recipe 'fore_load_plant_N'
+ //    -- at EVERY tick; worst tick named with its slip. THE direct test of the
+ //    load/strut trade: below the bound with the pads sliding means the trade
+ //    failed to plant. The pinned marker ('fore_load_pinned_N', the wave-14
+ //    leaned anchor) is reported alongside.
+ {const double PLANT_N=number(recipe.at("fore_load_plant_N"));
+  const double PIN_N=number(recipe.at("fore_load_pinned_N"));
+  const size_t N=std::min(w.fr.size(),(size_t)60);
+  double mn=1e9,mx=-1e9,mn_slip=-1;int mn_tick=-1,mx_tick=-1;
+  for(size_t i=0;i<N;++i){
+   if(w.fr[i]<mn){mn=w.fr[i];mn_tick=(int)i;mn_slip=w.frslip[i];}
+   if(w.fr[i]>mx){mx=w.fr[i];mx_tick=(int)i;}}
+  note("F-G16 fore_load_census worst_min_N="+std::to_string(mn)+" at tick "+std::to_string(mn_tick)+
+   " slip_at_worst_m_s="+std::to_string(mn_slip)+" peak_N="+std::to_string(mx)+" at tick "+std::to_string(mx_tick)+
+   " plant_bound_N="+std::to_string(PLANT_N)+" pinned_marker_N="+std::to_string(PIN_N));
+  ck(mn>=PLANT_N,"f16_fore_load_plant");}
+
+ // ── WAVE 16 HIND-RESET CENSUS (the branch-B repair's falsifier): the
+ //    runtime tick-0 hind pair-min gaps match the corrected Assembly
+ //    derivation {L 4.6161e-2, R 4.9125e-2} to <= 2e-3 m (before the repair
+ //    the defected assembly measured 4.575e-2/4.557e-2 -- both legs at the TD
+ //    column); the right hind's tick-0 joint angles are its 0.5 CLOCK column
+ //    (hip -4.09, knee -53.88, ankle +28.18, MP +21.28 deg), not the defected
+ //    TD column (+43.81/-31.65/+3.77/-12.06).
+ {const double L_DER=0.046161192,R_DER=0.049125177;
+  double l=w.gp.empty()?0.:w.gp[0][0],r=w.gp.empty()?0.:w.gp[0][2];
+  note("F-G16 hind_reset pairmin_gaps_m L="+std::to_string(l)+" (derived 0.046161192) R="+std::to_string(r)+" (derived 0.049125177)");
+  ck(std::abs(l-L_DER)<=2e-3,"f16_hind_reset_left_pairmin");
+  ck(std::abs(r-R_DER)<=2e-3,"f16_hind_reset_right_pairmin");
+  const double right_der_deg[4]={-4.0914,-53.8790,28.1756,21.2830};
+  if(!w.a.empty()){
+   // drives 0..7 are the hind legs in contract order (left hip/knee/ankle/MP,
+   // right hip/knee/ankle/MP) -- measured one step into the settle (the
+   // servo has held the entry columns; table-slope drift <= 0.3 deg/tick).
+   double dmx=0;for(size_t k=4;k<8;++k)dmx=(std::max)(dmx,std::abs(w.a[0][k]-right_der_deg[k-4]));
+   note("F-G16 hind_reset right_column_max_dev_deg="+std::to_string(dmx)+" (bound 1.0; derived 0.5 column -4.09/-53.88/+28.18/+21.28)");
+   ck(dmx<=1.0,"f16_hind_reset_right_clock_column");}}
+
+ // ── WAVE 16 HIND CLOCK CENSUS (the repair's measurable face): the first
+ //    HIND liftoff must fire at the clock's toe-off phase 0.68 (+/-0.08) --
+ //    derived: left ~tick 204.8, right ~tick 311.3 after its ~166.5 TD --
+ //    not at TD-pose geometry as in the defected walks.
+ {char b[128];std::snprintf(b,128,"F-G16 hind_clock first_lift left=(tick %d, phase %.4f) right=(tick %d, phase %.4f) (derived phases 0.68)",
+   w.lift_tick[0],w.lift_phase[0],w.lift_tick[1],w.lift_phase[1]);
+  note(b);
+  if(w.lift_tick[0]>=0)ck(std::abs(w.lift_phase[0]-0.68)<=0.08,"f16_left_hind_clock_lift");
+  if(w.lift_tick[1]>=0)ck(std::abs(w.lift_phase[1]-0.68)<=0.08,"f16_right_hind_clock_lift");}
 
 
  // ── F-G1: trajectories within the tables (+/-5 deg, >=95% of samples after

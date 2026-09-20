@@ -1,0 +1,201 @@
+{
+ "schema": "chimera.load_strut_trade.v1",
+ "fore_load_law": {
+  "mu_store": 0.6,
+  "equation": "pad pinned iff mu*N >= F_h; N_plant = F_h/mu with F_h the settle horizontal demand per pad; the two measured anchors bracket it",
+  "slide_anchor": {
+   "left_pad_N": 1.923,
+   "right_pad_N": 3.276,
+   "slip_m_s": [
+    0.796,
+    0.786
+   ]
+  },
+  "pin_anchor": {
+   "left_pad_N": 13.58,
+   "right_pad_N": 8.27,
+   "slip_m": 0.0011
+  },
+  "F_h_bracket_per_pad_N": [
+   1.9655999999999998,
+   8.148
+  ],
+  "n_plant_pad_N": [
+   3.276,
+   13.58
+  ],
+  "n_plant_total_N": [
+   5.199,
+   21.85
+  ],
+  "falsifier_bound_total_N": 5.199,
+  "pinned_marker_total_N": 21.85
+ },
+ "branch_a": {
+  "d_td_law": {
+   "level_m": 0.046161191822190306,
+   "leaned_m": 0.10518975960706173,
+   "nose_up_m": 0.0028351332782765005,
+   "slope_neg_rad_m": 0.28599112298871815,
+   "slope_pos_rad_m": -0.20991307434066767,
+   "theta_band_min_rad": -0.04489233107531159,
+   "note": "positive branch non-ascending on the defected assembly (the seat migrates to the hind TD column at nose-up); the band is negative-side only"
+  },
+  "x_hind_line_m": 0.18097975501581814,
+  "x_fore_line_m": 0.3893520630424197,
+  "com_x_level_m": 0.038194893025966424,
+  "com_x_slope_rad_m": 0.14548638720786228,
+  "com_margin_level_m": -0.1427848619898517,
+  "f_fore_level_N": 0.0,
+  "f_fore_band_edge_N": 0.0,
+  "runtime_gate_m": {
+   "left_heel": 0.0004111918221902794,
+   "right_heel": 0.000591191822190279
+  }
+ },
+ "branch_b": {
+  "d_td_law": {
+   "level_m": 0.046161191822190306,
+   "leaned_m": 0.10518975960706173,
+   "nose_up_m": 0.04655985299526261,
+   "slope_neg_rad_m": 0.28599112298871815,
+   "slope_pos_rad_m": 0.0019314979315518464,
+   "theta_band_min_rad": -0.04489233107531159
+  },
+  "theta_e_rad": 0.0,
+  "binding": "the strut law: theta_e=0 is the unique minimum of D with the band's full margin; the load side is statically INDETERMINATE (three sagittal contact lines) and cannot bind a theta -- the run's fore-load census is its test",
+  "x_rear_contact_m": -0.13902199751073582,
+  "x_hind_left_m": 0.18097975501581814,
+  "x_hind_right_m": -0.13902199751073582,
+  "x_fore_line_m": 0.3893520630424197,
+  "com_x_level_m": 0.02672322145875674,
+  "com_margin_level_m": 0.16574521896949257,
+  "f_fore_bracket_N": [
+   0.0,
+   30.87928966751522
+  ],
+  "gaps_m": {
+   "left_heel": 0.04616119182219028,
+   "left_mp_head": 0.06976234594221258,
+   "right_heel": 0.09185694362423037,
+   "right_mp_head": 0.04912517713724092,
+   "fore_left_heel": 2.0000000000297558e-06,
+   "fore_left_mp_head": 2.000000000002e-06,
+   "fore_right_heel": 2.0000000000297558e-06,
+   "fore_right_mp_head": 2.000000000002e-06
+  },
+  "spread_level_m": 0.09185494362423036
+ },
+ "capture_prediction": {
+  "per_leg": {
+   "left": {
+    "reset_offset_m": 0.12045206304241973,
+    "delta_unloaded_m": 0.019124936957580274,
+    "delta_loaded_m": -0.098,
+    "band_m": [
+     0.02245206304241973,
+     0.139577
+    ],
+    "mid_m": 0.08101453152120987
+   },
+   "right": {
+    "reset_offset_m": 0.12045206304241973,
+    "delta_unloaded_m": 0.019534936957580268,
+    "delta_loaded_m": -0.0922,
+    "band_m": [
+     0.02825206304241973,
+     0.139987
+    ],
+    "mid_m": 0.08411953152120986
+   }
+  },
+  "mean_band_m": [
+   0.02535206304241973,
+   0.13978200000000002
+  ],
+  "interpolation_law": "delta_settle linear in the fore load fraction between the two measured anchors; the fraction is statically indeterminate (branch B), so the pre-registered band is the full anchor range -- DERIVED, not chosen"
+ },
+ "envelope": {
+  "amax_loaded_m": 0.24823575345115503,
+  "amax_extended_m": 0.19227764171755027,
+  "dmax_m": 0.2613244882908271,
+  "per_leg": {
+   "fore_right": {
+    "grid_lift_wait_ticks": 92.22899999999998,
+    "loaded": {
+     "amax_m": 0.24823575345115503,
+     "tau_env_ticks": 194.21535759697562,
+     "lift_wait_ticks": 92.22899999999998
+    },
+    "unloaded": {
+     "amax_m": 0.19227764171755027,
+     "tau_env_ticks": 235.9372384056348,
+     "lift_wait_ticks": 92.22899999999998
+    }
+   },
+   "fore_left": {
+    "grid_lift_wait_ticks": 198.729,
+    "loaded": {
+     "amax_m": 0.24823575345115503,
+     "tau_env_ticks": 194.21535759697562,
+     "lift_wait_ticks": 194.21535759697562
+    },
+    "unloaded": {
+     "amax_m": 0.19227764171755027,
+     "tau_env_ticks": 235.9372384056348,
+     "lift_wait_ticks": 198.729
+    }
+   }
+  },
+  "note": "the clock re-measures amax and the offset at the arm; the bracket covers the capture band's two corners"
+ },
+ "hind_clock_schedule": {
+  "release_phase": {
+   "left": 0.0,
+   "right": 0.5
+  },
+  "settle_total": 60,
+  "left_first_lift_tick": 204.84,
+  "left_first_lift_phase": 0.68,
+  "left_first_td_tick": 273.0,
+  "right_foot_airborne_at_release": 0.09185694362423037,
+  "right_first_td_tick": 166.5,
+  "right_first_td_note": "the right foot enters AIRBORNE at its 0.5 clock column (mid-stance geometry, dangle above); the stance columns keep it clear until its swing completes at phi=1.0==0 -- its first TOUCHDOWN is the clock's own TD event",
+  "right_second_lift_tick": 311.34000000000003,
+  "right_second_lift_phase": 0.68,
+  "law": "phi_leg=(t/T+off) mod 1, off={0,0.5} (the doc's 5.1); TOE_OFF=0.68"
+ },
+ "handoff": {
+  "law": "amp(t)=clamp((t-t_capture)/T_cycle,0,1); target_post=amp*theta*(phi); v2 init = 0",
+  "blend_ticks": 212.99999999999997,
+  "trunk_handoff_ticks": 212.99999999999997
+ },
+ "leg_geometry_laws": {
+  "contact_vy_m_s": -0.14599348483108684,
+  "no_skid_speed_m_s": 0.7636247889696474
+ },
+ "provenance": {
+  "script": "tools/science_funnel/validation/gait_zero_20260919/derive_load_strut_trade.py",
+  "law": "fore_reaction(theta)=W*clamp((x_com(theta)-x_hind)/(x_fore-x_hind),0,1); N_plant=F_h/mu bracketed by the measured sliding/pinned anchors; branch A (defected assembly, right hind at the 1.0==0.0 column) is infeasible by derivation; branch B re-derives on the corrected assembly (right hind at its 0.5 clock column)",
+  "measured": {
+   "runtime_defected_dangles_m": {
+    "left_heel": 0.04575,
+    "right_heel": 0.04557
+   },
+   "delta_settle_loaded_m": {
+    "left": -0.098,
+    "right": -0.0922
+   },
+   "v_settle_prior_m_s": 0.42044,
+   "H_FOLD_m": 0.081667,
+   "D_SURV_m": 0.059,
+   "D_LIVED_m": 0.1744
+  }
+ },
+ "entry_state": {
+  "entry_trunk_rad": 0.0,
+  "start_phase_left": 0.0,
+  "start_phase_right": 0.5,
+  "note": "theta_e pinned by the strut law (the corrected assembly re-derivation: the unique D-minimum with the band's full margin); the load side is statically indeterminate and cannot bind a theta -- the run's fore-load census is its test"
+ }
+}

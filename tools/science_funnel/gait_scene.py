@@ -136,15 +136,16 @@ def build_walker_model(record,derived):
     require(_pose_path.exists(),'gait_entry_pose_missing','run derive_entry_pose.py first')
     _pose=json.loads(_pose_path.read_text(encoding='utf-8'))
     require(_pose.get('schema')=='chimera.entry_pose.v1','gait_entry_pose_schema')
-    # THE LEVEL ENTRY (wave 15, scene statics): the entry TRUNK state derived by
-    # derive_level_entry.py (the strut-bound law pins theta_e = 0 -- the unique
-    # minimum of the calibrated fore-hind strut difference, on the vault table's
-    # own zero crossing phi_z=0.1418) + the first-cycle hand-off blend length.
+    # THE LOAD/STRUT TRADE (wave 16, scene statics): the entry TRUNK state and
+    # the strut/load bounds derived by derive_load_strut_trade.py (the strut law
+    # re-derived on the CORRECTED assembly pins theta_e = 0 again -- the unique
+    # minimum of D; the load side is statically indeterminate and is the run's
+    # fore-load census to measure) + the first-cycle hand-off blend length.
     # Absent file -> refusal: the entry trunk state is not a free constant.
-    _level_path=ROOT/'tools/science_funnel/validation/gait_zero_20260919/derived_level_entry.json'
-    require(_level_path.exists(),'gait_level_entry_missing','run derive_level_entry.py first')
-    _level=json.loads(_level_path.read_text(encoding='utf-8'))
-    require(_level.get('schema')=='chimera.level_entry.v1','gait_level_entry_schema')
+    _trade_path=ROOT/'tools/science_funnel/validation/gait_zero_20260919/derived_load_strut_trade.json'
+    require(_trade_path.exists(),'gait_load_strut_trade_missing','run derive_load_strut_trade.py first')
+    _trade=json.loads(_trade_path.read_text(encoding='utf-8'))
+    require(_trade.get('schema')=='chimera.load_strut_trade.v1','gait_load_strut_trade_schema')
     _sh=float(_pose['targets']['shoulder_rad']);_el=float(_pose['targets']['elbow_rad'])
     coordinates['shoulder_flexion_fore_left']={'default_rad':_sh,'range_rad':[-1.6,1.6],'locked':False}
     coordinates['elbow_flexion_fore_left']={'default_rad':_el,'range_rad':[-1.6,1.6],'locked':False}
@@ -331,21 +332,20 @@ def compile_gait(graph,output,fore_share=0.45):
     speed=-_contact_rel_vx  # base speed making the stance contact still on the ground
     for b in ('base_rot_x','base_rot_y','base_rot_z','base_trans_x','base_trans_y','base_trans_z'):
         start_values[b]=0.0  # probe the gait pose relative to the origin
-    # THE ENTRY TRUNK STATE (wave 15): the LEVEL ENTRY -- the strut-bound law
-    # (derive_level_entry.py) pins theta_e = 0: the vault lean theta*(entry
-    # phase) = -0.2064 rad drops forward points (the wave-14 strut storm,
-    # refusal tick 30); the admissible band is theta_e >= -0.0449 rad and the
-    # unique minimum of the strut difference is 0 (D(0) = 4.62 cm <= the 5.9 cm
-    # survivable band, branch-independent -- the standing pin seats both). The
-    # level state is ON the vault table: theta* crosses zero at phi_z = 0.1418.
-    # The vault table itself (trunk_vault, the posture target the walk tracks)
-    # is unchanged measured law; the entry-to-table transition is the
-    # first-cycle hand-off blend (recipe 'trunk_handoff_ticks' below).
-    _level_path=ROOT/'tools/science_funnel/validation/gait_zero_20260919/derived_level_entry.json'
-    require(_level_path.exists(),'gait_level_entry_missing','run derive_level_entry.py first')
-    _level=json.loads(_level_path.read_text(encoding='utf-8'))
-    require(_level.get('schema')=='chimera.level_entry.v1','gait_level_entry_schema')
-    start_values['base_rot_z']=float(_level['entry_state']['entry_trunk_rad'])
+    # THE ENTRY TRUNK STATE (wave 16): the LOAD/STRUT TRADE -- the strut law
+    # re-derived on the CORRECTED assembly (derive_load_strut_trade.py; the
+    # wave-15 owed hind-reset repair puts the runtime state where the Assembly
+    # derivation already was) pins theta_e = 0 again: the unique minimum of the
+    # calibrated strut difference (D(0) = 4.616 cm <= the 5.9 cm survivable
+    # band, band theta_e >= -0.0449). The LOAD side cannot bind a theta (the
+    # corrected entry is statically indeterminate: fore-only cantilever at
+    # tick 0, three contact lines after the hind feet land) -- the run's
+    # fore-load census is its test (recipe 'fore_load_plant_N' below).
+    _trade_path=ROOT/'tools/science_funnel/validation/gait_zero_20260919/derived_load_strut_trade.json'
+    require(_trade_path.exists(),'gait_load_strut_trade_missing','run derive_load_strut_trade.py first')
+    _trade=json.loads(_trade_path.read_text(encoding='utf-8'))
+    require(_trade.get('schema')=='chimera.load_strut_trade.v1','gait_load_strut_trade_schema')
+    start_values['base_rot_z']=float(_trade['entry_state']['entry_trunk_rad'])
     asm0=Assembly(model,values=start_values,gravity=[0.,-9.80665,0.])
     heights=[float(asm0.point(p['body'],p['point_m'])[0][1]) for p in _p0]
     # THE QUADRUPED ENTRY SEAT (wave 15): the single-support ordering require
@@ -362,11 +362,11 @@ def compile_gait(graph,output,fore_share=0.45):
     d_td=heights[[i for i,p in enumerate(_p0) if p['name']=='left_heel'][0]]-lo \
          +contract['seating_scan']['reset_gap_target_m']
     spread=max(heights)-lo+contract['seating_scan']['reset_gap_target_m']
-    require(d_td<=float(_level['provenance']['measured']['D_SURV_m']),
-            'gait_entry_strut_bound',d_td,_level['provenance']['measured']['D_SURV_m'])
-    require(spread<=float(_level['provenance']['measured']['D_LIVED_m']),
+    require(d_td<=float(_trade['provenance']['measured']['D_SURV_m']),
+            'gait_entry_strut_bound',d_td,_trade['provenance']['measured']['D_SURV_m'])
+    require(spread<=float(_trade['provenance']['measured']['D_LIVED_m']),
             'gait_entry_dangle_survived_anchor',spread,
-            _level['provenance']['measured']['D_LIVED_m'])
+            _trade['provenance']['measured']['D_LIVED_m'])
     # All four paws are intended to plant during settle. Seat the lowest
     # forepaw/hindpaw envelope together; the residual is the prescribed
     # migrating-CoP tolerance rather than a hidden pose correction.
@@ -410,7 +410,15 @@ def compile_gait(graph,output,fore_share=0.45):
                 # theta*(phi) over the FIRST cycle (the wave-10 gradualness,
                 # moved); full table from the second cycle. The controller
                 # gates on this key: absent -> the legacy wave-10 ramp bytes.
-                'trunk_handoff_ticks':float(_level['handoff']['trunk_handoff_ticks']),
+                'trunk_handoff_ticks':float(_trade['handoff']['trunk_handoff_ticks']),
+                # THE FORE-LOAD CENSUS BOUND (wave 16): N_plant's conservative
+                # low end -- the largest total fore load measured SLIDING (the
+                # wave-15 level anchor, this lane's baseline re-measured) -- and
+                # the pinned marker (the wave-14 leaned anchor) alongside. The
+                # gait_unit census judges the settle window against the bound;
+                # the derivation (derive_load_strut_trade.py) owns the numbers.
+                'fore_load_plant_N':float(_trade['fore_load_law']['falsifier_bound_total_N']),
+                'fore_load_pinned_N':float(_trade['fore_load_law']['pinned_marker_total_N']),
                 'posture_target_phases':posture_phases,'posture_target_rad':posture_rads,
                 'contact_points':list(contract['contact_points'])+[
                     {'name':'fore_left_heel','body':'forearm_fore_left','point_m':[-0.012,-0.13555305347340657,0.],'radius_m':0.004},
