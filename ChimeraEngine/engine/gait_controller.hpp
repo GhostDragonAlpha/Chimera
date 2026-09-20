@@ -83,6 +83,15 @@ class GaitWalker {
  int settle_ticks_=0; // ORBIT CAPTURE (wave 8): hold the clock at the entry pose under load for the servo's settling time
  int settle_total_=0; // immutable reset value used by the wave-10 gradual vault activation
  double e_ref_=0; // the LEDGER BASELINE: the reset state's actual mechanical energy (the gait entry injects pose+momentum the standing-pose reference never sees; measured offset -0.59 J at tick 0 before this)
+ // ── THE ENTRY POSE (wave 14): the pre-capture fore targets, consumed from ──
+ // the scene recipe ('fore_entry_pose_rad', derived by the scene-statics
+ // derivation derive_entry_pose.py). The wave-12/13 constants (-0.903/0.838)
+ // are the legacy default: absent recipe key -> byte-identical legacy behavior
+ // (the zero_map/trunk_vault pattern). The pose lives at THREE sites (the
+ // reset initial state, the pre-capture servo target, the status fallback) --
+ // a scene-only change cannot install it, which is why the controller
+ // consumes it (receipt_wave14, controller_change_justification).
+ double fore_pose_sh_=-0.903,fore_pose_el_=0.838;
  // ── THE PLANTED-STRUT CLOSURE (wave 12): forelimb paw IK ──
  // The fore struts no longer hold FIXED shoulder/elbow angles (the wave-11
  // refusal cause: through the first gait transition the fixed-angle paws
@@ -382,36 +391,41 @@ class GaitWalker {
   auto sh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
   double h=(std::max)(0.,sh[1]-paw_plant_y_[leg]),d=fore_L1_+fore_rho_,a2=d*d-h*h;
   return a2>0.?std::sqrt(a2):0.;}
- // ARM (entry): the settle capture plants the paws at the statics spots
- // (offset0 behind the shoulder). The entry stance is the SMALLER of (a) the
- // symmetric-walk time, tau_sym = (|offset0|-x_off)/v -- the body walks the
- // offset back to the steady liftoff offset -x_off -- and (b) the
- // REACH-ENVELOPE time, tau_env = (a - |offset0| - v*dt)/v -- the annulus
- // inequality the pre-registered reach falsifier enforces. RUN 1 BANKED THE
- // VIOLATION (measured, receipt): the unbounded symmetric entry held the
- // plants 81 ticks, saturated the IK at ticks 114/122 (wave-12-identical),
- // and the topple killed the walk at 290. The envelope bound IS the
- // derivation's own closure; enforcing it is implementation repair, not
- // tuning.
+ // ARM (entry, WAVE 14 LAW): the capture is a TOUCHDOWN plant -- the scene
+ // statics derivation (derive_entry_pose.py) seats the paws at/under the
+ // stepping law's symmetric offset, so the entry stance is timed by the
+ // LATERAL-SEQUENCE LIFT GRID, not by the capture geometry: the fore lift =
+ // same-side hind lift + T/4, read ONCE from the hind clock at the arm (the
+ // hind entry phases are {0, 0.5}: RF ~92.2 ticks, LF ~198.7 -- the first
+ // lifts land ON the steady lift slots, ~T/2 apart, swings disjoint). The
+ // bound is the annulus HOLD time tau_env = (a + off0 - v*dt)/v -- the
+ // RECEDING-side bound, the single formula valid for either capture sign
+ // (wave 13's (a-|off0|-v*dt)/v is its off0<0 form; from an AHEAD capture
+ // the shoulder walks ONTO the plant before the offset recedes, so the old
+ // form would cut a legal stance). The wave-13 duty cap is DISSOLVED: the
+ // grid-derived LF stance lawfully exceeds one duty because the capture is
+ // at the touchdown offset; the envelope remains the guard. RUN-2 BANKED
+ // WHY: the wave-13 behind-pose entry (tau_sym form) lifted BOTH paws within
+ // 3.8 ticks and the walk died at 120 of support starvation.
  void arm_fore_clock(const Evaluation& e){
   double Tf=T_CYCLE/dt_;
   for(size_t leg=0;leg<2;++leg){
    paw_plant_y_[leg]=paw_target_[leg][1];
    auto sh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
    double off=paw_target_[leg][0]-sh[0],xoff=fore_xoff(),tau1=0.;
-   double amax=fore_amax(e,leg);
-   if(xoff>0.&&s_.v[3]>1e-9){
-    double tau_sym=((std::max)(0.,std::abs(off)-xoff))/(s_.v[3]*T_CYCLE);
-    double tau_env=((std::max)(0.,amax-std::abs(off)-(std::max)(0.,s_.v[3])*dt_))/(s_.v[3]*T_CYCLE);
-    tau1=(std::min)(tau_sym,tau_env);}
-   if(tau1>DUTY_SAMPLED)tau1=DUTY_SAMPLED;
+   double amax=fore_amax(e,leg),v=(std::max)(0.,s_.v[3]);
+   if(xoff>0.&&v>1e-9){
+    double lift_wait=(std::max)(0.,(DUTY_SAMPLED-phi_[leg]))*T_CYCLE+0.25*T_CYCLE;
+    double tau_env=(amax+off-v*dt_)/v;
+    if(tau_env<0.)tau_env=0.;
+    tau1=(std::min)(lift_wait,tau_env);}
    fore_stance_[leg]=tau1*Tf;
    fore_cycle_[leg]=fore_stance_[leg]+(1.-DUTY_SAMPLED)*Tf;
    fore_t_[leg]=0.;fore_mode_[leg]=0;fore_td_[leg]=0;fore_replants_[leg]=0;fore_clamped_[leg]=0;
    fore_conv_[leg]=0;
 #ifdef GAIT_EVENT_TRACE
-   std::fprintf(stderr,"[foreclk] arm leg=%zu tick=%llu offset0=%+.6f xoff=%.6f amax=%.6f stance=%.3f ticks cycle=%.3f\n",
-    leg,(unsigned long long)ticks_,off,xoff,amax,fore_stance_[leg],fore_cycle_[leg]);
+   std::fprintf(stderr,"[foreclk] arm leg=%zu tick=%llu offset0=%+.6f xoff=%.6f amax=%.6f stance=%.3f ticks cycle=%.3f lift_wait=%.3f\n",
+    leg,(unsigned long long)ticks_,off,xoff,amax,fore_stance_[leg],fore_cycle_[leg],((std::max)(0.,(DUTY_SAMPLED-phi_[leg]))*T_CYCLE+0.25*T_CYCLE)*Tf);
 #endif
   }}
  // GRID CONVERGENCE (receipt derivation): the entry geometry cannot originate
@@ -530,7 +544,7 @@ class GaitWalker {
 #endif
       target=dr.joint=="shoulder"?ik.q1:ik.q2;
      }
-     else target=dr.joint=="shoulder"?-0.903:0.838;
+     else target=dr.joint=="shoulder"?fore_pose_sh_:fore_pose_el_;
     } else {double qstar[4];tables_.at(dr.leg=="left"?0:1,qstar);target=qstar[dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3];}}
 
    tau[c]=(std::max)(-dr.cap,(std::min)(dr.cap,kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c]));}
@@ -821,6 +835,12 @@ class GaitWalker {
   tables_.zeros[0]=number(zm.at("hip"));tables_.zeros[1]=number(zm.at("knee"));
   tables_.zeros[2]=number(zm.at("ankle"));tables_.zeros[3]=number(zm.at("MP"));
   for(double z:tables_.zeros)require(std::isfinite(z)&&std::abs(z)<=3.,"gait_zero_map_range");}
+ if(recipe_.contains("fore_entry_pose_rad")){ // the wave-14 entry pose (scene statics; absent -> legacy constants)
+  const J& fp=recipe_.at("fore_entry_pose_rad");
+  require(fp.contains("shoulder_rad")&&fp.contains("elbow_rad"),"gait_fore_entry_pose_keys");
+  fore_pose_sh_=number(fp.at("shoulder_rad"));fore_pose_el_=number(fp.at("elbow_rad"));
+  require(std::isfinite(fore_pose_sh_)&&std::isfinite(fore_pose_el_)&&
+   std::abs(fore_pose_sh_)<=1.6&&std::abs(fore_pose_el_)<=1.6,"gait_fore_entry_pose_range");}
  // theta*(phi): the derived posture target table (wave 8)
  if(config_.contains("settle_ticks")){require(config_["settle_ticks"].is_number(),"gait_settle_shape");settle_ticks_=(int)number(config_["settle_ticks"]);require(settle_ticks_>=0&&settle_ticks_<=600,"gait_settle_range");settle_total_=settle_ticks_;}
   plane_world_y_=number(recipe_.at("contact_plane_height_m"));require(std::isfinite(plane_world_y_),"gait_contact_plane_invalid");plane_model_y_=plane_world_y_-shift_[1];
@@ -931,7 +951,7 @@ class GaitWalker {
   if(config_.contains("start_at_tables")&&config_["start_at_tables"].get<bool>()){
    if(config_.contains("base_trans_y_m"))s_.q[4]=number(config_["base_trans_y_m"]);
    for(size_t d=0;d<nd_;++d){const Drive& dr=drives_[d];
-    if(dr.leg=="fore_left"||dr.leg=="fore_right"){s_.q[dr.coordinate]=dr.joint=="shoulder"?-0.903:0.838;s_.v[dr.coordinate]=0.;continue;}
+    if(dr.leg=="fore_left"||dr.leg=="fore_right"){s_.q[dr.coordinate]=dr.joint=="shoulder"?fore_pose_sh_:fore_pose_el_;s_.v[dr.coordinate]=0.;continue;}
     double qstar[4];tables_.at(dr.leg=="left"?0:1,qstar);
     int ji=dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3;
     s_.q[dr.coordinate]=qstar[ji];
@@ -1058,7 +1078,7 @@ class GaitWalker {
   bool walking_st=config_["gait_enabled"].get<bool>();
   auto foreTgt=[&](const Drive& dr)->double{
    size_t leg=dr.leg=="fore_left"?0:1;
-   if(!walking_st||!paws_captured_)return dr.joint=="shoulder"?-0.903:0.838;
+   if(!walking_st||!paws_captured_)return dr.joint=="shoulder"?fore_pose_sh_:fore_pose_el_;
    ForeIK ik=fore_ik(leg,e);
    return dr.joint=="shoulder"?ik.q1:ik.q2;};
   for(size_t d=0;d<nd_;++d){const Drive& dr=drives_[d];size_t c=dr.coordinate;work+=s_.work[c];battery_total+=battery_[d];brake_total+=brake_[d];empty_total+=empty_events_[d];

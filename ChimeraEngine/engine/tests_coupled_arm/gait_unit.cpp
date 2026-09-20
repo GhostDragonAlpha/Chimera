@@ -199,6 +199,38 @@ int main(int argc,char**argv){try{
   ck(w.ik_roundtrip_max<1e-12,"f_g_fore_ik_roundtrip");
   ck(w.ik_qerr_max<1e-12,"f_g_fore_ik_qerr");}
 
+ // ── WAVE 14 ENTRY CENSUS (pre-registered in receipt_wave14.json): STAGGER --
+ //    no BOTH-FORE-AIRBORNE window >= 2 ticks in [60, 426] (the wave-13 death:
+ //    both entry stances envelope-starved, lifts at 79/83, fores airborne
+ //    ~[84,166)); SUPPORT CENSUS >= 2 paw contacts at every tick in [60, 426]
+ //    (>= 3 except the steady lateral pattern's own 2-paw windows). A fore leg
+ //    is AIRBORNE here in the clock sense (swing mode) and in the contact
+ //    sense (both pad gaps above the 1e-5 band) -- both counted.
+ {const size_t N=std::min(w.fm.size(),(size_t)426);
+  int bfa_run=0,bfa_mx=0,bfa_first=-1,bfa_windows=0,bfa_contact_run=0,bfa_contact_mx=0;
+  int sup2_first=-1,sup2_ticks=0,sup_min=99;
+  std::string two_windows;
+  for(size_t i=60;i<N;++i){
+   bool l_air=w.fm[i][0]==1,r_air=w.fm[i][1]==1;
+   bool l_ct=w.fgmin[i][0]>1e-5,r_ct=w.fgmin[i][1]>1e-5; // contact-airborne
+   if(l_air&&r_air){++bfa_run;if(bfa_run==1)++bfa_windows;if(bfa_first<0)bfa_first=(int)i;bfa_mx=(std::max)(bfa_mx,bfa_run);}
+   else bfa_run=0;
+   if(l_ct&&r_ct){++bfa_contact_run;bfa_contact_mx=(std::max)(bfa_contact_mx,bfa_contact_run);}
+   else bfa_contact_run=0;
+   int c=(w.t[i][0]?1:0)+(w.t[i][1]?1:0)+((w.fgmin[i][0]<=1e-5)?1:0)+((w.fgmin[i][1]<=1e-5)?1:0);
+   sup_min=(std::min)(sup_min,c);
+   if(c<2){++sup2_ticks;if(sup2_first<0)sup2_first=(int)i;}
+   if(c==2){char b[64];std::snprintf(b,64,"%d ",(int)i);two_windows+=b;}}
+  note("F-G14 stagger both_fore_swing_windows="+std::to_string(bfa_windows)+
+   " max_window_ticks="+std::to_string(bfa_mx)+" first="+(bfa_first<0?"none":std::to_string(bfa_first))+
+   " both_fore_contact_airborne_max_ticks="+std::to_string(bfa_contact_mx));
+  note("F-G14 support_census min_contacts="+std::to_string(sup_min)+
+   " sub2_ticks="+std::to_string(sup2_ticks)+" sub2_first="+(sup2_first<0?"none":std::to_string(sup2_first)));
+  if(!two_windows.empty()&&two_windows.size()<800)
+   note("F-G14 two_contact_ticks= "+two_windows);
+  ck(bfa_mx<2,"f14_no_both_fore_airborne_window");
+  ck(sup2_ticks==0,"f14_support_census_min2");}
+
 
  // ── F-G1: trajectories within the tables (+/-5 deg, >=95% of samples after
  //    3 cycles); excursions within +/-10% of the measured waveforms.

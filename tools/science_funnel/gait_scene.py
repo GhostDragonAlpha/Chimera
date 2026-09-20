@@ -125,11 +125,24 @@ def build_walker_model(record,derived):
     leg_drop=float(seg['thigh']['length_m'])+float(seg['shank']['length_m'])
     base_y=leg_drop+contract['seating_scan']['reset_gap_target_m']
     coordinates['base_trans_y']['default_rad']=base_y
-    coordinates['shoulder_flexion_fore_left']={'default_rad':-0.903,'range_rad':[-1.6,1.6],'locked':False}
-    coordinates['elbow_flexion_fore_left']={'default_rad':0.838,'range_rad':[-1.6,1.6],'locked':False}
-    coordinates['shoulder_flexion_fore_right']={'default_rad':-0.903,'range_rad':[-1.6,1.6],'locked':False}
-    coordinates['elbow_flexion_fore_right']={'default_rad':0.838,'range_rad':[-1.6,1.6],'locked':False}
-    return {'schema':'chimera.anatomical_assembly.v1','coordinates':coordinates,'bodies':bodies}
+    # THE WAVE-14 ENTRY POSE (scene statics): the fore joint targets derived by
+    # derive_entry_pose.py (the wave-1 zero-map pattern: the derivation writes
+    # the table, the scene consumes it). The standing seating pin (pad flat at
+    # the authored +2e-6 gap) solves both fore unknowns; the capture equation
+    # selects the branch. Absent file -> refusal: the entry pose is not a free
+    # constant, it is derived (the legacy -0.903/0.838 pose is what wave 13
+    # falsified: paws 0.21 m behind the shoulders, a doubly starved entry).
+    _pose_path=ROOT/'tools/science_funnel/validation/gait_zero_20260919/derived_entry_pose.json'
+    require(_pose_path.exists(),'gait_entry_pose_missing','run derive_entry_pose.py first')
+    _pose=json.loads(_pose_path.read_text(encoding='utf-8'))
+    require(_pose.get('schema')=='chimera.entry_pose.v1','gait_entry_pose_schema')
+    _sh=float(_pose['targets']['shoulder_rad']);_el=float(_pose['targets']['elbow_rad'])
+    coordinates['shoulder_flexion_fore_left']={'default_rad':_sh,'range_rad':[-1.6,1.6],'locked':False}
+    coordinates['elbow_flexion_fore_left']={'default_rad':_el,'range_rad':[-1.6,1.6],'locked':False}
+    coordinates['shoulder_flexion_fore_right']={'default_rad':_sh,'range_rad':[-1.6,1.6],'locked':False}
+    coordinates['elbow_flexion_fore_right']={'default_rad':_el,'range_rad':[-1.6,1.6],'locked':False}
+    return {'schema':'chimera.anatomical_assembly.v1','coordinates':coordinates,'bodies':bodies,
+            'entry_pose':{'shoulder_rad':_sh,'elbow_rad':_el}}
 
 
 def seating_scan(model,record):
@@ -363,6 +376,7 @@ def compile_gait(graph,output,fore_share=0.45):
                 'trunk_vault_rad':trunk_vault,
                 'zero_map_rad':contract['zero_map_rad'],
                 'fore_share':fore_share,
+                'fore_entry_pose_rad':model['entry_pose'],
                 'posture_target_phases':posture_phases,'posture_target_rad':posture_rads,
                 'contact_points':list(contract['contact_points'])+[
                     {'name':'fore_left_heel','body':'forearm_fore_left','point_m':[-0.012,-0.13555305347340657,0.],'radius_m':0.004},
