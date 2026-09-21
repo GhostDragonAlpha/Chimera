@@ -1584,6 +1584,14 @@ class GaitWalker {
        tgt[1]+=c*std::sin(pi*sg);
       }
       if(!have_fe){fe=evaluate(s_);have_fe=true;}
+#ifdef GAIT_EVENT_TRACE
+      if(dr.joint=="hip"){ // WAVE 42 ARCH INSTRUMENT (read-only plumbing, receipt_wave42.json):
+       double py=0.5*(fe.point(points_[hind_heel_pt_[hl]].index,points_[hind_heel_pt_[hl]].local).first[1]
+        +fe.point(points_[hind_mp_pt_[hl]].index,points_[hind_mp_pt_[hl]].local).first[1]);
+       std::fprintf(stderr,"[dvfa] t=%llu leg=%zu br=%c held=%d sg=%.5f c=%.5f cmd_y=%.9f pad_y=%.9f plant_y=%.9f\n",
+        (unsigned long long)ticks_,hl,hind_step_held_[hl]?'h':'g',hind_step_held_[hl]?1:0,sg,c,tgt[1],py,
+        hind_step_plant_y_[hl]);} // the hold command vs the delivered pad y, one line per leg per tick
+#endif
       double qh,qk,qa;hind_step_ik(hl,fe,tgt,qh,qk,qa);
       target=dr.joint=="hip"?qh:dr.joint=="knee"?qk:dr.joint=="ankle"?qa:hind_step_mp_[hl];
      }else{
@@ -1594,6 +1602,14 @@ class GaitWalker {
      if(hind_step_stand_[hl]){
       if(!have_fe){fe=evaluate(s_);have_fe=true;}
       V stgt=hind_step_stand_from_[hl];stgt[1]=hind_step_stand_y_[hl];
+#ifdef GAIT_EVENT_TRACE
+      if(dr.joint=="hip"){ // WAVE 42 ARCH INSTRUMENT: the stand-first hold's command (the arm-tick y anchor)
+       double py=0.5*(fe.point(points_[hind_heel_pt_[hl]].index,points_[hind_heel_pt_[hl]].local).first[1]
+        +fe.point(points_[hind_mp_pt_[hl]].index,points_[hind_mp_pt_[hl]].local).first[1]);
+       std::fprintf(stderr,"[dvfa] t=%llu leg=%zu br=%c held=%d sg=%.5f c=%.5f cmd_y=%.9f pad_y=%.9f plant_y=%.9f\n",
+        (unsigned long long)ticks_,hl,'d',0,0.,2.*points_[hind_heel_pt_[hl]].radius,stgt[1],py,
+        hind_step_plant_y_[hl]);}
+#endif
       double qh,qk,qa;hind_step_ik(hl,fe,stgt,qh,qk,qa);
       target=dr.joint=="hip"?qh:dr.joint=="knee"?qk:dr.joint=="ankle"?qa:hind_step_stand_mp_[hl];
      }else{
@@ -1607,7 +1623,17 @@ class GaitWalker {
      // swings; it resumes at the next TD. No gain bytes change. The torque
      // is read at the drive's COORDINATE row (last_torque_ is n_-indexed).
      if(hind_height_hold_latched_&&touching_prev_[hl])
-      target+=last_torque_[c]/kp_[d];}}}}
+      target+=last_torque_[c]/kp_[d];
+#ifdef GAIT_EVENT_TRACE
+     if(dr.joint=="hip"){ // WAVE 42 ARCH INSTRUMENT: the stance tables (joint-space, no world command --
+      if(!have_fe){fe=evaluate(s_);have_fe=true;} // cmd_y carries the declared print-only -1 sentinel)
+       double py=0.5*(fe.point(points_[hind_heel_pt_[hl]].index,points_[hind_heel_pt_[hl]].local).first[1]
+        +fe.point(points_[hind_mp_pt_[hl]].index,points_[hind_mp_pt_[hl]].local).first[1]);
+       std::fprintf(stderr,"[dvfa] t=%llu leg=%zu br=%c held=%d sg=%.5f c=%.5f cmd_y=%.9f pad_y=%.9f plant_y=%.9f\n",
+        (unsigned long long)ticks_,hl,'t',0,0.,2.*points_[hind_heel_pt_[hl]].radius,-1.,py,
+        hind_step_plant_y_[hl]);}
+#endif
+     }}}}
 
    tau[c]=(std::max)(-dr.cap,(std::min)(dr.cap,kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c]));}
   // The source model's POSTURE CONTROL (the pinned fulltext: the trunk pitch
