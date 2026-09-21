@@ -210,72 +210,86 @@
  "inputs_sha_verified": {
   "ankle_arms_book": {
    "path": "tools/science_funnel/validation/ankle_arms_20260921/ankle_arms_book.json",
+   "repinned_20260921": false,
    "sha256": "7ce03069c1e033b52db0fb315d218eb2223e79a67a9018123da206d68adcb6f6",
    "verified": true
   },
   "ankle_receipt": {
    "path": "tools/science_funnel/validation/ankle_arms_20260921/receipt.json",
+   "repinned_20260921": false,
    "sha256": "06df272d97638597334a50b8076581839cfef2aade066a12bb7bf2577c91dee4",
    "verified": true
   },
   "hind_book": {
    "path": "tools/science_funnel/validation/hind_torque_book_20260921/hind_torque_book.json",
+   "repinned_20260921": false,
    "sha256": "9fc5c0ba09f6ec183d5348bb21cc5dc18b5987240406ccdcdbb34e514e26f01c",
    "verified": true
   },
   "hind_receipt": {
    "path": "tools/science_funnel/validation/hind_torque_book_20260921/receipt.json",
+   "repinned_20260921": false,
    "sha256": "cb6f4e07bed554c8bfb56ea01e7b66693a8d7ab45da41a774fbd845ae2d463e1",
    "verified": true
   },
   "lit_francis2023": {
    "path": "tools/science_funnel/validation/k_forensics_20260921/literature/francis2023.xml",
+   "repinned_20260921": false,
    "sha256": "e6005a8d3c126300b57895d4c2d6b4d41b11e610d613c6c30554cb785f1b3cd6",
    "verified": true
   },
   "lit_turcotte2024": {
    "path": "tools/science_funnel/validation/k_forensics_20260921/literature/turcotte2024.xml",
+   "repinned_20260921": false,
    "sha256": "fc78967127307d2814dd02850a3bbf9f6d54f26ec3ca41dad956fe43b4ac6619",
    "verified": true
   },
   "macaque_model": {
    "path": "tools/science_funnel/data/wiseman2026/models/Macaque_model.osim",
+   "repinned_20260921": false,
    "sha256": "d5c65cbc0a72bd2d5c2258c6bd018fe850ae25cce6fb07c1f268b91e598c88e9",
    "verified": true
   },
   "pulley_arms_derivation": {
    "path": "tools/science_funnel/validation/pulley_rederivation_20260920/pulley_arms_derivation.json",
+   "repinned_20260921": false,
    "sha256": "2a99cd2becaf4b0a8d4dda176cca23af05397906ba43dcd504c06a1b6c8f76d5",
    "verified": true
   },
   "pulley_receipt": {
    "path": "tools/science_funnel/validation/pulley_rederivation_20260920/receipt.json",
+   "repinned_20260921": false,
    "sha256": "61f767db4ba92088b4fdfdd5328ade7faa1fc95deab1239a4bdd220479a2d2cd",
    "verified": true
   },
   "si1": {
    "path": "tools/science_funnel/data/wiseman2026/rsos260107_si_001.docx",
+   "repinned_20260921": false,
    "sha256": "11ca4a19d4028dfb0c5260541a057f63e348d69609e795c3ebd17d3654c3b367",
    "verified": true
   },
   "si2": {
    "path": "tools/science_funnel/data/wiseman2026/rsos260107_si_002.xlsx",
+   "repinned_20260921": false,
    "sha256": "957af7fa9b9d8b29a4c327eaf53bc25c95f369bac83d5de9c341f728ffcba48d",
    "verified": true
   },
   "wiseman_download_receipt": {
    "path": "tools/science_funnel/data/wiseman2026/download_receipt.json",
+   "repinned_20260921": false,
    "sha256": "bb2363e452b7f50e5bb149709bdbf2ae6f22e9cc1d00609fdb3333896b2e5f73",
    "verified": true
   },
   "wiseman_inventory": {
    "path": "tools/science_funnel/data/wiseman2026/inventory.json",
-   "sha256": "04a3dd1a61fd8ddce9fd9f6ed42236d29eda5e90c45a54fde1fd8c3b8e056ab6",
+   "repinned_20260921": true,
+   "sha256": "eba1545a4009119a5f4bf1d49704db5750855fa46c24776b0c878e3a3b4f31e3",
    "verified": true
   },
   "wiseman_sha256_manifest": {
    "path": "tools/science_funnel/data/wiseman2026/sha256_manifest.json",
-   "sha256": "e72b6616fc23960e3e9a50491d104ee752240fc8b8787f7541c1da85b84a78e3",
+   "repinned_20260921": true,
+   "sha256": "b7570ab81ad6d94c9cadb9ba2726fddd1e37c5b9b828fb19bf7eee240654552b",
    "verified": true
   }
  },

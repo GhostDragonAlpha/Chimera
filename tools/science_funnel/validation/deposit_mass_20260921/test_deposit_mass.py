@@ -27,6 +27,12 @@ class DepositMass(unittest.TestCase):
     def test_inputs_match_receipt_pins(self):
         receipt = json.loads((LANE / "receipt.json").read_text(encoding="utf-8"))
         pins = receipt["pre_registration"]["inputs_pinned"]
+        # repin_20260921: the receipt's appended re-pin section supersedes the
+        # pre-repair (autocrlf-smudged) pins per path on the repaired lineage.
+        repins = {
+            r["path"]: r["new_sha256"]
+            for r in receipt.get("repin_20260921", {}).get("re_pins", [])
+        }
         for name, pin in pins.items():
             if "sha256" not in pin and "sha256_manifest_entry" not in pin:
                 continue
@@ -34,11 +40,20 @@ class DepositMass(unittest.TestCase):
             if "path" not in pin:
                 continue
             self.assertEqual(sha256_file(REPO / pin["path"]), want, name)
-        # the k-lane book pin, quoted from the k-lane receipt
+        for r in receipt.get("repin_20260921", {}).get("re_pins", []):
+            self.assertEqual(
+                sha256_file(REPO / r["path"]), r["new_sha256"], r["pin_name"]
+            )
+        # the k-lane book pin, quoted from the k-lane receipt (re-pinned
+        # second-order: the k deliverable regenerated with its post-repair
+        # provenance; see receipt repin_20260921 re_pins)
         kbook = REPO / "tools/science_funnel/validation/k_forensics_20260921/k_forensics_book.json"
         self.assertEqual(
             sha256_file(kbook),
-            "0c2d8b397a158283f19a8ff81a8f6be5f6a787ac09c09b7394c70e5402166b4b",
+            repins.get(
+                "tools/science_funnel/validation/k_forensics_20260921/k_forensics_book.json",
+                "0c2d8b397a158283f19a8ff81a8f6be5f6a787ac09c09b7394c70e5402166b4b",
+            ),
         )
 
     def test_parse_refuses_on_sha_mismatch(self):
