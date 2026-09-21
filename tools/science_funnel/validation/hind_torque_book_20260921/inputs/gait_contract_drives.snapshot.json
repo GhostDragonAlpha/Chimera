@@ -1,0 +1,117 @@
+{
+ "record_id": "model.dynamics.gait_walker",
+ "source_branch": "origin/agent/gait-wave27c-decay-seats",
+ "contract": {
+  "schema": "chimera.gait_scene.v1",
+  "drives": [
+   {
+    "coordinate": "hip_flexion_left",
+    "leg": "left",
+    "joint": "hip",
+    "torque_cap_N_m": 11.2125,
+    "store_floor_J": 78.732,
+    "store_floor_per_stride_J": 7.8732,
+    "store_stride_window": 10,
+    "viscous_damping_N_m_s_rad": 0.109
+   },
+   {
+    "coordinate": "knee_extension_left",
+    "leg": "left",
+    "joint": "knee",
+    "torque_cap_N_m": 6.6375,
+    "store_floor_J": 38.3505,
+    "store_floor_per_stride_J": 3.83505,
+    "store_stride_window": 10,
+    "viscous_damping_N_m_s_rad": 0.317
+   },
+   {
+    "coordinate": "ankle_dorsiflexion_left",
+    "leg": "left",
+    "joint": "ankle",
+    "torque_cap_N_m": 7.4,
+    "store_floor_J": 48.987,
+    "store_floor_per_stride_J": 4.8987,
+    "store_stride_window": 10,
+    "viscous_damping_N_m_s_rad": 0.0943
+   },
+   {
+    "coordinate": "MP_dorsiflexion_left",
+    "leg": "left",
+    "joint": "MP",
+    "torque_cap_N_m": 0.8875,
+    "store_floor_J": 7.5195,
+    "store_floor_per_stride_J": 0.75195,
+    "store_stride_window": 10,
+    "viscous_damping_N_m_s_rad": 0.01
+   },
+   {
+    "coordinate": "hip_flexion_right",
+    "leg": "right",
+    "joint": "hip",
+    "torque_cap_N_m": 11.2125,
+    "store_floor_J": 78.732,
+    "store_floor_per_stride_J": 7.8732,
+    "store_stride_window": 10,
+    "viscous_damping_N_m_s_rad": 0.109
+   },
+   {
+    "coordinate": "knee_extension_right",
+    "leg": "right",
+    "joint": "knee",
+    "torque_cap_N_m": 6.6375,
+    "store_floor_J": 38.3505,
+    "store_floor_per_stride_J": 3.83505,
+    "store_stride_window": 10,
+    "viscous_damping_N_m_s_rad": 0.317
+   },
+   {
+    "coordinate": "ankle_dorsiflexion_right",
+    "leg": "right",
+    "joint": "ankle",
+    "torque_cap_N_m": 7.4,
+    "store_floor_J": 48.987,
+    "store_floor_per_stride_J": 4.8987,
+    "store_stride_window": 10,
+    "viscous_damping_N_m_s_rad": 0.0943
+   },
+   {
+    "coordinate": "MP_dorsiflexion_right",
+    "leg": "right",
+    "joint": "MP",
+    "torque_cap_N_m": 0.8875,
+    "store_floor_J": 7.5195,
+    "store_floor_per_stride_J": 0.75195,
+    "store_stride_window": 10,
+    "viscous_damping_N_m_s_rad": 0.01
+   }
+  ],
+  "cap_provenance": "source_peaks_v1_RESTORED",
+  "cap_amendment_note": "REVISED (wave 5, falsifier 1 fired): the assembly-statics cap amendment (knee 13.18, ankle 9.01) was banked, measured, and FALSIFIED -- the walk fell identically (tick 118, y=0.1345) with the doubled caps; the caps were not binding. Original source-peak caps restored. The binding failures are the entry-contact bounce and stance-foot skating (see receipt_wave5).",
+  "mp_range_amendment": "revision 2: the MP plantarflexion stop moves -0.35 -> -1.2 rad. The zero map composes the admitted M table (min -0.142 in Oku's convention) to scene -0.911 rad; the authored stop would clamp 0.56 rad off the measured target. Macaque MP joints curl far past 52 deg (grasping foot); -1.2 rad = -69 deg covers the demand with margin. Falsifier: if the walk shows MP hyper-curl artifacts, the amendment is wrong, not the zeros.",
+  "joint_ranges_rad": {
+   "hip_flexion": [
+    -0.35,
+    1.1
+   ],
+   "knee_extension": [
+    -2.0,
+    0.05
+   ],
+   "ankle_dorsiflexion": [
+    -0.3,
+    1.7
+   ],
+   "MP_dorsiflexion": [
+    -1.2,
+    1.55
+   ]
+  },
+  "zero_map_rad": {
+   "hip": -0.044399,
+   "knee": -0.080389,
+   "ankle": -0.862213,
+   "MP": -0.768513
+  },
+  "cycle_duration_s": 0.71
+ }
+}

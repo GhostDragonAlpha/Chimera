@@ -1,0 +1,303 @@
+{
+ "schema": "chimera.ankle_arms.v1",
+ "lane": "ankle-arms-20260921",
+ "branch": "agent/ankle-arms-20260921",
+ "clone_of": "git@github.com-fleetdeploy:GhostDragonAlpha/Chimera.git @ b17cbf6c (branch agent/hind-torque-book-20260921, sparse: tools/science_funnel/, docs/)",
+ "mission": "THE ANGLE-DIRECTION MEASURED ARM CURVE: the hind torque book (b17cbf6c) left the ankle cap doc-derived because NO measured ankle-direction arm curve existed - its BLOCKED cell measured the admitted record's straight-line ankle arms falling 1.8-3.7x short of the 5.9171 N.m Oku measured walk demand. This lane derives the arm-versus-ankle-angle curves for EVERY ankle-crossing muscle in the Wiseman macaque model (SOL, MG, LG, TA, TP, PB, PL, EDL II-V, EHL, FDL II-V, FHL - mined from the model's paths) with the pulley lane's exact tangent-wrapping machinery, verifies them against SI 2's macaque AnkleFE rows (the independent authors' reference) under the k = 0.11975394 scale gate, and computes (1) the ankle cap re-derivation (cap = max over the scan of sum F|r(q)| at the Oku measured walk forces and the PCSA x sigma PROVISIONAL variant, deposit and k-gated scales), (2) the consumption deltas the book could not: the ankle chain's height-law delta (the book's 'delta 0 (blocked)' cell) and the stance-hold ankle node ratios.",
+ "pre_registration": {
+  "written_before_first_arm_computation": true,
+  "note": "This file was written BEFORE the first ankle moment arm was computed. The SI 2 AnkleFE rows quoted below were READ from the xlsx (that is what makes them the prior), as were the record forces/arms and the hind book's blocked cells; no derivation code had been run at write time. The measured section at the bottom is appended AFTER the run.",
+  "inputs_pinned": {
+   "model": {
+    "path": "tools/science_funnel/data/wiseman2026/models/Macaque_model.osim",
+    "sha256": "d5c65cbc0a72bd2d5c2258c6bd018fe850ae25cce6fb07c1f268b91e598c88e9"
+   },
+   "si2": {
+    "path": "tools/science_funnel/data/wiseman2026/rsos260107_si_002.xlsx",
+    "sha256": "957af7fa9b9d8b29a4c327eaf53bc25c95f369bac83d5de9c341f728ffcba48d"
+   },
+   "pulley_machinery": {
+    "path": "tools/science_funnel/validation/pulley_rederivation_20260920/derive_pulley_arms.py",
+    "sha256": "ce93c114c4e89d2726dc4c04b15416518e16208ffadfe14595f9cb14cde5cfa1",
+    "provenance": "the pulley lane's committed derivation module at THIS branch's commit - the exact tangent-wrapping machinery imported, not copied; its wrap/fk/arm primitives are consumed unmodified"
+   },
+   "pulley_arms_derivation": {
+    "path": "tools/science_funnel/validation/pulley_rederivation_20260920/pulley_arms_derivation.json",
+    "sha256": "2a99cd2becaf4b0a8d4dda176cca23af05397906ba43dcd504c06a1b6c8f76d5"
+   },
+   "pulley_receipt": {
+    "path": "tools/science_funnel/validation/pulley_rederivation_20260920/receipt.json",
+    "sha256": "61f767db4ba92088b4fdfdd5328ade7faa1fc95deab1239a4bdd220479a2d2cd"
+   },
+   "hind_receipt": {
+    "path": "tools/science_funnel/validation/hind_torque_book_20260921/receipt.json",
+    "sha256": "cb6f4e07bed554c8bfb56ea01e7b66693a8d7ab45da41a774fbd845ae2d463e1"
+   },
+   "hind_book": {
+    "path": "tools/science_funnel/validation/hind_torque_book_20260921/hind_torque_book.json",
+    "sha256": "9fc5c0ba09f6ec183d5348bb21cc5dc18b5987240406ccdcdbb34e514e26f01c"
+   },
+   "muscle_path_geometry_snapshot": {
+    "path": "tools/science_funnel/validation/hind_torque_book_20260921/inputs/muscle_path_geometry.snapshot.json",
+    "sha256": "ca0e890ec69e74d9589c08224d74e74defa53bbc058d371f784175cfca50cb22"
+   },
+   "derived_numbers_snapshot": {
+    "path": "tools/science_funnel/validation/hind_torque_book_20260921/inputs/derived_numbers.snapshot.json",
+    "sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173"
+   },
+   "derived_zeros_snapshot": {
+    "path": "tools/science_funnel/validation/hind_torque_book_20260921/inputs/derived_zeros.snapshot.json",
+    "sha256": "447c1e74bcdae27e0c5d5073461785b15929298242240be808f6ac19f16c7977"
+   },
+   "stance_hold_snapshot": {
+    "path": "tools/science_funnel/validation/hind_torque_book_20260921/inputs/stance_hold.snapshot.json",
+    "sha256": "71e40cd8a161938a3a358792076dda0f98966a8909ae564cec7774a61126a5e5"
+   },
+   "gait_contract_drives_snapshot": {
+    "path": "tools/science_funnel/validation/hind_torque_book_20260921/inputs/gait_contract_drives.snapshot.json",
+    "sha256": "75863f2210a28826c9144b24d92e331185665a9abb253b3a10683f641ae564b0"
+   }
+  }
+ },
+ "prior_reading": {
+  "note": "READ from pinned inputs before this receipt was written - the derivation's raw material, not the book.",
+  "si2_anklefe_macaque_rows": {
+   "table": "rsos260107_si_002.xlsx Sheet1, Joint=AnkleFE, Taxon=macaque; the sheet carries two blocks (first block rows 281-361 with 11 muscles; a second block rows 465-593 whose 11 shared rows are byte-identical and which uniquely adds EDL_TENDONIII/IV/V and FDL_TENDONIII/IV/V) - duplicates noted, FIRST occurrences used, so EDL III/IV/V and FDL III/IV/V cite their second-block first occurrences",
+   "rows_first_occurrence": {
+    "R_EDL_TENDONII": {"row": 281, "min": -0.46386302467525314, "max": 0.433435652088741, "jrange_deg": [30, -30]},
+    "R_EDL_TENDONIII": {"row": 473, "min": -0.4471042334525521, "max": 0.47672230118002723, "jrange_deg": [30, -30]},
+    "R_EDL_TENDONIV": {"row": 481, "min": -0.3929052690174772, "max": 0.5416895857049702, "jrange_deg": [30, -30]},
+    "R_EDL_TENDONV": {"row": 489, "min": -0.3228630345311549, "max": 0.6037484009009886, "jrange_deg": [30, -30]},
+    "R_EHL": {"row": 289, "min": 0.12772995913363994, "max": 0.8151922413806364, "jrange_deg": [30, -30]},
+    "R_FDL_TENDONII": {"row": 297, "min": -1.064835643943583, "max": -0.8822217079587087, "jrange_deg": [24, -30]},
+    "R_FDL_TENDONIII": {"row": 513, "min": -1.064835643943583, "max": -0.8822217079587087, "jrange_deg": [24, -30]},
+    "R_FDL_TENDONIV": {"row": 521, "min": -1.064835643943583, "max": -0.8822217079587087, "jrange_deg": [24, -30]},
+    "R_FDL_TENDONV": {"row": 529, "min": -0.008425689855690926, "max": 0.9077012739632979, "jrange_deg": [-30, 30]},
+    "R_FHL": {"row": 305, "min": -1.0191552634527443, "max": -0.8445874888501931, "jrange_deg": [30, -30]},
+    "R_LG": {"row": 313, "min": -1.9384057304587725, "max": -1.5868001008386348, "jrange_deg": [4.2, -30]},
+    "R_MG": {"row": 321, "min": -1.9686059131915294, "max": -1.623768884333018, "jrange_deg": [3.5999999999999996, -30]},
+    "R_PB": {"row": 329, "min": -0.9973926791406817, "max": -0.7007552791135848, "jrange_deg": [-18.599999999999998, 30]},
+    "R_PL": {"row": 337, "min": -0.806556399779579, "max": -0.11194741792290126, "jrange_deg": [-30, 30]},
+    "R_SOL": {"row": 345, "min": -1.8234921575087033, "max": -1.5689995557091452, "jrange_deg": [-1.7999999999999998, 30]},
+    "R_TA": {"row": 353, "min": 1.985197030982495, "max": 2.338619832386933, "jrange_deg": [-30, 7.8]},
+    "R_TP": {"row": 361, "min": -1.016277951240185, "max": -0.7778310796999676, "jrange_deg": [30, -30]}
+   },
+   "shape_prior": "signs: plantarflexors NEGATIVE (SOL, MG, LG, TP, PB, PL, FDL II-IV, FHL), dorsiflexors POSITIVE (TA, EHL whole-range; EDL II-V and FDL V change sign across their scans - FDL V's min is -0.0084, effectively zero); triceps magnitude ordering |MG| > |LG| > |SOL| at BOTH endpoints; units unstated in the sheet - the pulley lane's unit membrane resolved CM (with the uniform x1.1974 residual the fitted scalar makes exact), and the same protocol is re-run here",
+   "expected_deposit_scale_note": "if the per-taxon scalar is a uniform model scale (the pulley lane's cross-taxon finding: k constant per taxon across knee AND mtp), the ankle rows obey it too: deposit arm = SI / k with k = 0.11975394, i.e. SOL extrema -15.2281..-13.1009 mm, MG -16.4385..-13.5597, LG -16.1867..-13.2497, TA +16.5772..+19.5286, TP -8.4862..-6.4962, PB -8.3287..-5.8517, PL -6.7352..-0.9349, EHL +1.0666..+6.8071, EDL II -3.8734..+3.6194, EDL III -3.7335..+3.9809, EDL IV -3.2810..+4.5235, EDL V -2.6960..+5.0423, FDL II/III/IV -8.8907..-7.3665 (the three SI rows are identical), FDL V -0.0704..+7.5800, FHL -8.5094..-7.0528"
+  },
+  "model_mining_prior": {
+   "ankle_crossing_muscles": "paths spanning (shank_r -> foot_r): R_SOL (2 pts, no wraps), R_MG (3 pts, no wraps), R_LG (3 pts, references rProxTibiaCylinder which is active=FALSE in the deposit - honored as deposit state, divergence suspect named in advance), R_TA (4 pts, no wraps), R_TP (4 pts, wraps R_Ankle_Cylinder), R_PB (3 pts, no wraps), R_PL (3 pts, no wraps), R_EDL_TENDONII..V (4 pts each, no wraps), R_EHL (4 pts, no wraps), R_FDL_TENDONII..IV (5 pts, wrap R_Ankle_Cylinder), R_FDL_TENDONV (5 pts, wraps rDistalTibia_ellipsoid), R_FHL (5 pts, wraps R_Ankle_Cylinder) - 17 path entries, 17 SI-compared muscles (FDL II/III/IV share one identical SI value triple)",
+   "coordinate": "r_ankle_flexion, PinJoint ankle_r (parent shank_r, child foot_r), model range +/-0.8 rad; the hallux coupler (r_hallux_flexion = 1.0 x r_mtp_flexion) holds mtp/hallux at defaults during an ankle scan, so the FDL/FHL toes/hallux segments are rigid here - the ANKLE arm arises from the shank->foot segments and the wraps that were rigid during the pulley lane's MTP scan go LIVE exactly here (the hind book's named future work)",
+   "sign_convention_mapping": "r = -dL/dq on r_ankle_flexion: dorsiflexion-positive coordinate (SI 2's TA positive / SOL negative pattern), so PLANTARFLEXION arms are NEGATIVE. The 2026-09-18 record's moment_arms_m_flexion_positive.ankle column is PLANTAR-POSITIVE (its SOL +0.00486 m): record arm = -(derived arm) at the walking pose. All cap sums use F x |r| within a declared direction class, so the mapping only matters for class membership and the record comparison, both stated explicitly"
+  },
+  "record_force_priors": {
+   "oku_walk_peaks_N": {"SOL": 214.99, "GAS": 125.8, "FDL": 204.57, "TA": 63.87, "EDL": 24.2},
+   "oku_walk_peaks_status": "MEASURED (Oku Fig3D digitigrade before-block, derived_numbers_snapshot oku_muscle_forces_N.before); NO Oku measurement exists for TP, PB, PL, FHL, EHL - named gaps",
+   "pcsa_sigma_law": "record max_force_N = PCSA x sigma x cos(pennation), sigma = 1280914.14 Pa (the hind book's PROVISIONAL law, unchanged): SOL 157.342, MG 255.185, LG 302.887, TA 92.166, EDL 48.593, EHL 102.979, FDL 548.851, FHL 128.075, PB 244.077, PL 625.873; TP has NO record row (named gap)",
+   "record_straight_line_ankle_arms_m": {"SOL": 0.0048614479297661856, "MG": 0.004486474298801335, "LG": 0.004622015254593367, "TA": -0.0534345832878771, "EDL": -0.061225698380248675, "EHL": -0.0738499901662211, "FDL": -0.08043130345822057, "FHL": -0.036293297903908436, "PB": -0.06259999559121698, "PL": -0.06637528954854416, "TP": null},
+   "record_arms_status": "the 2026-09-18 lane's straight-line estimates with unresolved wraps - the numbers the hind book measured falling 1.8-3.7x short of the walk demand; shown for the before/after comparison only, never consumed as a cap"
+  },
+  "demand_priors": {
+   "oku_walk_ankle_peaks_N_m": {"plantarflexion_demand": 5.9171, "dorsiflexion_demand": 1.1202, "source": "derived_numbers_snapshot oku_before_alteration.torques.ankle (min -5.9171 at 25 pct stride; max +1.1202 at 78 pct) - the plantar side binds"},
+    "stance_hold_binding_N_m": {"phi": 0.3, "tau_ankle_Nm": -7.215, "cap_ankle_exact": 7.396, "cap_ankle_contract": 7.4, "source": "stance_hold_snapshot stance_nodes: ankle demands -7.215..+1.236 over the 15 nodes; ALL inside 7.396 today (max ratio 0.9754 at phi 0.30)"},
+   "scene_walk_ankle_range_rad": [-0.02, 0.64],
+   "scene_walk_ankle_range_source": "derived_zeros_snapshot premises.joint.checks name 'ankle_rad_range' measured '-0.02..0.64' (rad); = -1.1459..+36.6714 deg",
+   "current_cap": {"contract_N_m": 7.4, "exact_scale_N_m": 7.396, "provenance": "1.25 x doc-rounded Oku ankle peak 5.92 (exact 5.9171) - DOC_DERIVED statics, unchanged by the hind book (its BLOCKED cell)"}
+  },
+  "k_gate_prior": {
+   "k": 0.11975394,
+   "mtp_class_spread": [0.1197283, 0.11976842],
+   "knee_class_post_k_residual_bound_mm": 0.089,
+   "source": "pulley receipt scale_diagnosis (sha-pinned): the per-taxon scalar is constant to 4-5 digits across the pure-point MTP class and across knee (post-k residuals <= 0.089 mm); cross-taxon it is constant per taxon across BOTH joints - the ankle is the third joint and the gate's standing prediction is that it obeys the same scalar"
+  }
+ },
+ "rule0": {
+  "statement": "The ankle torque cap (7.4 N.m) is the last doc-derived hind number because no measured ankle-direction arm curve existed. The Wiseman macaque model's ankle-crossing paths - mined, not assumed: SOL/MG/LG (triceps surae), TA/EDL II-V/EHL (dorsiflexors), TP/PB/PL (peroneal class), FDL II-V/FHL (deep digit flexors) - plus the model's wrap geometry (R_Ankle_Cylinder, rDistalTibia_ellipsoid live during an ankle scan; rProxTibiaCylinder inactive in the deposit) yield measured -dL/dq arm curves by the pulley lane's machinery. SI 2's macaque AnkleFE rows are the independent authors' reference on these same models; the k = 0.11975394 per-taxon scale gate applies and is stated. With the curves measured, cap_new(direction, variant) = max over the measured scan of sum_m F_m x |r_m(q)| closes the hind book's BLOCKED cell: the Oku measured walk forces (MEASURED variant) and the record's PCSA x sigma law (PROVISIONAL variant), on the deposit scale (S1) and the k-gated SI-matched scale (S2), and the height-law delta the book could not compute becomes a number.",
+  "prediction": "(1) SHAPE: the derived curves reproduce the SI 2 ankle rows' shape - signs (plantar negative / dorsal positive), the triceps ordering |MG| > |LG| > |SOL| at both endpoints, and per-endpoint agreement within max(0.25 mm, 25% |SI|) under exactly one unit hypothesis (CM, as at knee/MTP); (2) SCALE GATE: the fitted ankle scalar over the point-only ankle muscles (SOL, MG, TA, PB, PL, EHL - no wrap references) lands INSIDE the MTP-class spread [0.1197283, 0.11976842]; the wrapped rows (FDL II-V, FHL, TP) land within the knee-class criterion |derived x k - SI| <= max(0.25 mm, 25% |SI|); (3) WRAPS: R_Ankle_Cylinder engages on R_FDL_TENDONII/III/IV, R_FHL and R_TP somewhere in every scan (zero events on a load-bearing ankle pulley = the direction fails); FDL V's ellipsoid engagement is recorded with its true (possibly partial) extent; (4) CAP: the plantarflexion V1_S1 cap is BELOW the current doc cap 7.4 (delta NEGATIVE, band [5.4, 6.9] N.m) but EXCEEDS the Oku walk demand peak 5.9171 - the measured arms close the walk the record's straight-line arms fell 3.7x short of; the coverage is carried by FDL's inclusion and the triceps-only sub-envelope does NOT cover (band [4.3, 5.5]); (5) V2_S1 (PCSA x sigma, PROVISIONAL) exceeds V1_S1 (band [14.5, 23.5]); (6) S2 COLLAPSE: both k-gated plantar caps fall far below the demand (V1_S2 band [0.60, 0.90], V2_S2 band [1.6, 2.9]) - the k gate, exactly as the hind book measured at knee/MP; (7) CONSUMPTION: the stance-hold binding ankle node 7.215 N.m EXCEEDS the V1_S1 plantar cap - over-cap ankle stance-hold nodes RISE from 0, and the ankle chain's height-law authority factor (cap_new / 7.396) lands in [0.73, 0.94] at V1_S1 (NEGATIVE delta - the measured book TIGHTENS the height chain the doc cap was padding) while the V2_S1 factor is POSITIVE; (8) the derivation is byte-deterministic and every number traces to a sha-pinned input.",
+  "falsifier": "(a) any compared muscle whose arm shape misses: unit verdict not exactly-one, sign mismatch, triceps-ordering violation, ankle k outside the MTP spread, or a wrapped row outside the k-scaled tolerance - each recorded with its number (the LG row carries a named advance suspect: its rProxTibiaCylinder wrap is active=false in the deposit while the authors' model may route it); (b) zero wrap contacts on R_Ankle_Cylinder for any of FDL II/III/IV, FHL, TP across its scanned range; (c) any pre-registered delta SIGN measured opposite or any band missed - recorded as FIRED with the number, never tuned; (d) two full in-process derivations disagreeing at any byte, or a subprocess rerun disagreeing; (e) any number whose provenance chain does not resolve to a sha-verified input and key path; (f) any file changed outside tools/science_funnel/validation/ankle_arms_20260921/. Any hit is recorded as measured."
+ },
+ "protocol_declared": {
+  "scan_protocol": "identical to the pulley lane: the named coordinate r_ankle_flexion over EACH muscle's SI 2 recorded jrange (2001 samples, degrees -> radians, recorded order preserved), all other coordinates at model-file defaults, fd = -dL/dq central differences step 1e-4 rad (authoritative), advisory geometric arm = signed perpendicular distance from the ankle pin axis to the joint-spanning line of action; wrap resolution exactly the pulley machinery's (cylinder tangent + quadrant + <=pi arc, ellipsoid iterative refinement, endpoint-inside raises); the machinery is IMPORTED from the sha-pinned pulley module, not re-implemented",
+  "direction_classes_and_force_variants": {
+   "sign_law": "a muscle contributes F x |r(q)| to a direction's cap at sample q only when its arm's SIGN matches the direction (plantarflexion = negative arms, dorsiflexion = positive arms under r = -dL/dq); a sign-flipping muscle (FDL V) contributes only on its matching-sign sub-window - the abs() shortcut the hind book could take on fixed-sign classes is NOT taken here because EDL II-V and FDL V change side",
+   "V1_oku_walk_peaks": "MEASURED-demand variant: SOL 214.99 N whole; GAS 125.8 N split across MG/LG by the record's PCSA share (MG 0.4534 / LG 0.5466 - group force measured, intra-group split not, same law as the hind book's vasti); FDL 204.57 N split EQUALLY across tendons II-V (one muscle, four slips, no measured partition - the hind book's declared law); TA 63.87 whole and EDL 24.2 quarter-split across II-V on the DORSIFLEXION side. EXCLUDED - named gaps (no Oku measurement): TP, PB, PL, FHL, EHL. Declared sub-envelope: triceps-only (SOL+MG+LG, FDL excluded) - the no-cross-joint-force-reuse reading, since FDL's Oku force is also the hind book's MTP cap input",
+   "V2_pcsa_sigma": "PROVISIONAL capability variant (the hind book's law, unchanged): record max_force_N straight - SOL 157.342, MG 255.185, LG 302.887, FDL 548.851 quarter-split, FHL 128.075 whole, PB 244.077, PL 625.873 on the plantar side; TA 92.166, EDL 48.593 quarter-split, EHL 102.979 on the dorsal side; TP has NO record row (named gap); inherits the sigma caveat and the 25% moment-arm uncertainty",
+   "brackets": "V1 plantarflexion reports the triceps-only sub-envelope alongside the full class; the FDL slip partition is bracketed by all-force-on-min-arm and all-force-on-max-arm single-slip bounds; the split laws are declared BEFORE the run and are not a sweep"
+  },
+  "scale_variants": {
+   "S1_deposit": "the deposit-geometry arms as derived here - the hind book's S1 stance, deterministic from the pinned .osim",
+   "S2_si_matched": "arms x k = 0.11975394 (the pulley lane's fitted per-taxon scalar, the hind book's S2 constant) - the authors'-scale reading; carried because the k divergence is the standing absolute-scale caveat"
+  },
+  "grid_and_coverage_law": "per direction x variant the cap grid is the INTERSECTION of the class's measured scan ranges (normalized to ascending); the walk's scene ankle window -0.02..+0.64 rad is mapped under BOTH sense hypotheses: AGREE (scene ankle_dorsiflexion is dorsiflexion-positive like the model coordinate, the declared primary reading) gives window [-1.1459, +36.6714] deg; INVERTED gives [-36.6714, +1.1459] deg; each walk-window sub-cap is evaluated ONLY on the measured overlap with the class grid and both readings are reported - no extrapolation through any scan boundary, per-muscle coverage boundaries reported",
+  "demand_law": "the plantarflexion side binds: demand peak = |min Oku ankle torque| = 5.9171 N.m (walk), binding stance-hold node = 7.215 N.m at phi 0.30; the dorsiflexion side is derived and reported against 1.1202 N.m (walk max) - the scene drive clamp is symmetric so BOTH sides are measured, the plantar comparison is the book cell being closed",
+  "consumption_map_law": "order-of-magnitude deltas only, from the sha-pinned snapshots: (i) the stance-hold ankle node ratios recomputed at cap_new (all 15 nodes, before 7.396 / after cap_new, over-cap counts); (ii) the height-law delta for the ankle plantar chain - the authority factor cap_new / 7.396 and the binding-node re-price 7.215 / cap_new, the cell the hind book left at 'delta 0 (blocked)'; the 0.9-margin wall itself stays knee-bound (this lane changes no knee number) and that re-hearing remains the posture-cap lane's; (iii) the walk demand coverage ratios on both sides. NO engine changes in this lane; the book is the future wave's input",
+  "determinism_protocol": "pure function of sha-verified inputs; two in-process derivations must agree byte-for-byte on the canonical JSON and the unittest re-invokes the script via subprocess and compares sha256",
+  "no_source_changes": "the derivation writes ONLY inside tools/science_funnel/validation/ankle_arms_20260921/; the unittest asserts git status --porcelain names no file outside that directory (book, not patch)"
+ },
+ "pre_registered_delta_signs": {
+  "note": "delta := cap_new - cap_current (contract 7.4) per direction x force variant x scale. Signs and bands pinned before computation, derived from the SI 2 rows (expected deposit arms = SI/k) and the pinned forces only; a miss is a FIRED falsifier recorded with its number.",
+  "ankle_plantarflexion": {
+   "current_cap_N_m": 7.4,
+   "demand_peak_walk_N_m": 5.9171,
+   "binding_stance_node_N_m": 7.215,
+   "V1_S1": {
+    "expected_sign": "NEGATIVE",
+    "band_N_m": [5.4, 6.9],
+    "derivation_of_band": "SI/k arms on the [-1.8, +3.6] deg common grid: SOL 214.99 x 13.10..15.23 mm = 2.82..3.27; GAS 125.8 split MG 57.03 x 13.56..16.44 + LG 68.77 x 13.25..16.19 = 1.68..2.05; FDL 204.57 quarter-split x 7.37..8.89 mm x 3 slips (FDL V ~0 on the plantar side) = 1.13..1.37; sum 5.63..6.69"
+   },
+   "V1_S1_coverage_of_walk_demand": {
+    "expected_sign": "POSITIVE (cap > 5.9171)",
+    "note": "THE UNBLOCKING CLAIM: the measured wrap arms cover the walk demand the record's straight-line arms fell 3.7x short of; the band above reaches down to 5.4 < 5.9171 - the claim is honest at risk, and the triceps-only sub-envelope (band 4.3..5.5) is pre-registered as NOT covering, so the coverage verdict is carried by FDL's inclusion and either outcome is measured, not tuned"
+   },
+   "V1_S1_triceps_only_subenvelope": {
+    "expected_sign_vs_demand": "NEGATIVE (envelope < demand)",
+    "band_N_m": [4.3, 5.5],
+    "derivation_of_band": "the V1 band minus the FDL slip term 1.13..1.37 = 4.50..5.33 - the no-cross-joint-reuse reading"
+   },
+   "V2_S1": {
+    "expected_sign": "POSITIVE",
+    "band_N_m": [14.5, 23.5],
+    "derivation_of_band": "SOL 157.342 x 13.10..15.23 = 2.06..2.40; MG 255.185 x 13.56..16.44 = 3.46..4.20; LG 302.887 x 13.25..16.19 = 4.01..4.90; FDL 548.851/4 x 3 slips x 7.37..8.89 = 3.03..3.66; FHL 128.075 x 7.05..8.51 = 0.90..1.09; PB 244.077 x 5.85..8.33 = 1.43..2.03; PL 625.873 x 0.93..6.74 = 0.59..4.22; sum 15.48..22.50"
+   },
+   "V1_S2": {
+    "expected_sign": "NEGATIVE",
+    "band_N_m": [0.6, 0.9],
+    "derivation_of_band": "V1_S1 x k = 6.2 x 0.11975 ~ 0.74 - the S2 collapse, P6 of the hind book's pattern at its third joint"
+   },
+   "V2_S2": {
+    "expected_sign": "NEGATIVE",
+    "band_N_m": [1.6, 2.9],
+    "derivation_of_band": "V2_S1 x k ~ 18.9 x 0.11975 ~ 2.26"
+   },
+   "V2_S1_gt_V1_S1": true
+  },
+  "ankle_dorsiflexion": {
+   "current_cap_N_m": 7.4,
+   "demand_peak_walk_N_m": 1.1202,
+   "V1_S1": {
+    "expected_sign": "NEGATIVE",
+    "band_N_m": [1.0, 1.5],
+    "derivation_of_band": "TA 63.87 x 16.58..19.53 mm = 1.06..1.25; EDL 24.2 quarter-split x dorsal-lobe sums 13.3..16.4 mm = 0.08..0.10; sum 1.14..1.35; EHL excluded (no Oku measurement - named gap)"
+   },
+   "V2_S1": {
+    "expected_sign": "NEGATIVE",
+    "band_N_m": [1.7, 2.9],
+    "derivation_of_band": "TA 92.166 x 16.58..19.53 = 1.53..1.80; EDL 48.593/4 x 4 slips x 13.3..16.4 = 0.16..0.20; EHL 102.979 x 1.07..6.81 = 0.11..0.70; sum 1.80..2.70"
+   },
+   "V2_S1_gt_V1_S1": true
+  },
+  "consumption_deltas": {
+   "stance_hold_over_cap_nodes": {
+    "before": 0,
+    "expected_sign": "POSITIVE (the count RISES)",
+    "derivation_of_band": "the binding node 7.215 and nodes -7.197/-7.104/-6.774/-6.765/-6.273 all exceed the V1_S1 band's top 6.9 -> at least 6 of 15 over-cap at V1_S1; the exact count is measured"
+   },
+   "height_law_ankle_chain_authority_factor": {
+    "definition": "cap_new_V1_S1 / 7.396 - the delta the hind book's cell put at 0 (blocked)",
+    "expected_sign": "NEGATIVE (factor < 1: band [0.73, 0.94])",
+    "derivation_of_band": "V1_S1 band 5.4..6.9 divided by 7.396",
+    "V2_S1_expected_sign": "POSITIVE (factor ~2.0..3.1)"
+   }
+  },
+  "sign_falsifier_note": "any measured sign opposite the above, or any band miss, is a FIRED falsifier: recorded in the measured block with its number and left standing - the book is not tuned to re-enter its bands"
+ },
+ "falsifiers_pre_registered": {
+  "si_shape_per_muscle": "the k-fit class: (i) unit verdict exactly-one-of {mm, cm} under per-endpoint |derived - SI| <= max(0.25 mm, 0.25 x |SI|) across all 17 compared muscles; (ii) fitted ankle k over the POINT-ONLY class (SOL, MG, TA, PB, PL, EHL) inside the MTP-class spread [0.1197283, 0.11976842]; (iii) every wrapped row (FDL II-V, FHL, TP) inside max(0.25 mm, 25% |SI|) under SI = derived x k_mtp; (iv) per-muscle sign pattern matches SI; (v) triceps ordering |MG| > |LG| > |SOL| at both endpoints; every miss recorded with its number (LG's inactive proximal-tibia wrap named in advance as the suspect if its row alone misses)",
+  "wrap_activity": "R_Ankle_Cylinder engaged on >= 1 sample for each of R_FDL_TENDONII/III/IV, R_FHL, R_TP across its scan; FDL V's ellipsoid and every disengagement recorded with its true extent; LG's rProxTibiaCylinder active=false recorded as deposit state",
+  "traceability": "every computed number in the deliverable carries a provenance block {input, sha256, key_path}; the unittest asserts each input's sha256 equals the pin in this receipt at run time (load REFUSES on mismatch)",
+  "determinism": "two full in-process derivations byte-identical (sha256 of canonical JSON); the unittest additionally re-runs the script via subprocess and compares the deliverable sha256",
+  "no_source_changes": "git status --porcelain names no file outside tools/science_funnel/validation/ankle_arms_20260921/ (asserted by the unittest)",
+  "delta_signs": "the pre_registered_delta_signs block above; a measured sign/band miss is recorded, never absorbed"
+ },
+ "measured": {
+  "recorded_utc": "2026-09-21T09:40:00+00:00",
+  "note": "APPENDED AFTER THE RUN. The pre-registration block above is unedited; the derivation script and this block were written around it. Two transcription slips were fixed BEFORE the first run (the ankle-muscle count phrases 15/16 -> 17, and a missing closing brace in demand_priors that blocked JSON parse); no band, sign, prior value, or tolerance was touched after the first computation.",
+  "deliverable": {
+   "path": "tools/science_funnel/validation/ankle_arms_20260921/ankle_arms_book.json",
+   "sha256": "7ce03069c1e033b52db0fb315d218eb2223e79a67a9018123da206d68adcb6f6"
+  },
+  "arms_headline": {
+   "k_gate": "HELD - the ankle is the scalar's THIRD joint: fitted k over the point-only ankle class (SOL, MG, TA, PB, PL, EHL - no wrap references) = 0.11976026, spread [0.11975902, 0.11976056], INSIDE the pre-registered MTP-class spread [0.1197283, 0.11976842]; e.g. SOL derived -15.2263/-13.1011 mm vs SI/k -15.2281/-13.1009. The pulley receipt's per-taxon-scalar reading extends to the ankle.",
+   "triceps_ordering": "HELD - |MG| > |LG| > |SOL| at both endpoints, as in SI 2",
+   "fd_geo_identity": "the -dL/dq arm equals the advisory geometric line-of-action arm to 0.0 mm at every sample of every muscle (frictionless-wrap virtual-work identity, through live cylinder wraps included)",
+   "lg_inactive_wrap": "the advance-named suspect did NOT fire: LG's rProxTibiaCylinder is active=false in the deposit and was honored as deposit state (0/2001 engagement, reason recorded); LG's arms match SI x k to 0.0006/0.0001 mm",
+   "fdl_v_ellipsoid": "R_FDL_TENDONV's rDistalTibia_ellipsoid engaged 0/2001 (no segment contact anywhere in the scan - recorded as the true extent), yet its arms match SI x k at BOTH endpoints (-0.0704 vs -0.0704; +7.5793 vs +7.5800): at the ankle the authors' FDL V row is reproduced by pure point geometry",
+   "engagement_extents": {"R_FDL_TENDONII": "1456/2001", "R_FDL_TENDONIII": "1456/2001",
+                           "R_FDL_TENDONIV": "1456/2001", "R_FHL": "443/2001",
+                           "R_TP": "1069/2001"},
+   "unit_verdict_and_sign_pattern": "FIRED, recorded: no single raw unit hypothesis covers all 17 rows (mm fails grossly at ~8.2x as at knee/MTP; cm holds on the 12 clean rows and on every wrap-engaged branch but breaks on the 5 R_Ankle_Cylinder rows' LIFT-OFF branches)",
+   "fired_rows": {
+    "R_FDL_TENDONII/III/IV": "derived [-7.5512, +6.8974] mm vs SI x k [-8.8907, -7.3665]: min endpoint within tolerance k-scaled (residual 0.160 mm); max endpoint is a POSITIVE lobe at +24 deg where the cylinder lift-off leaves the tendon straight ('no segment contact') - sign flip the SI rows do not carry",
+    "R_FHL": "derived [-6.7695, +9.3532] mm vs SI x k [-8.5094, -7.0528]: engaged-branch min within tolerance (residual 0.209 mm); cylinder wraps only 443/2001 (deep plantarflexion), lift-off lobe +9.35 mm at +30 deg",
+    "R_TP": "derived [-5.7488, +7.3256] mm vs SI x k [-8.4862, -6.4962]: FIRED on BOTH endpoints - the engaged-branch min is 32 percent short of SI x k (residual 0.328 mm) as well as the lift-off lobe; the one row whose engaged branch itself misses",
+    "diagnosis_status": "the lift-off reading is a MECHANISM HYPOTHESIS attached to measured numbers (engagement extents + extrema angles in ankle_arms_book.json si2_miss_diagnosis): the pulley machinery is stateless per sample, OpenSim's wrap solver carries wrap persistence; NOT resolved here, NOT tuned - the caps below stand on the deposit geometry as measured, with this caveat carried exactly as the k caveat is carried"
+   },
+   "cap_sensitivity_note": "the fired lobes are dorsiflexion-side and were EXCLUDED from the plantar cap by the pre-registered sign gate (they never inflated it); at the plantar V1 argmax (-1.8 deg) FDL II-IV sit on their ENGAGED branch (-6.08 mm) - the SI-implied -7.37 mm would move the cap by ~+0.09 N.m, inside the pre-registered band; FHL/TP contribute 0 at the plantar argmax (positive/disengaged or named-gap force 0)"
+  },
+  "caps_measured": {
+   "plantarflexion": {
+    "V1_S1_oku_walk_peaks": {"cap_N_m": 6.247077, "argmax_q_deg": -1.8,
+     "delta_N_m": -1.152923, "ratio_vs_current": 0.8442,
+     "coverage_ratio_vs_walk_demand": 1.0558,
+     "arms_at_argmax_mm": {"SOL": -15.23, "MG": -16.37, "LG": -16.10, "FDL_II/III/IV": -6.08}},
+    "triceps_only_subenvelope": {"cap_N_m": 5.318868, "coverage_ratio": 0.8989,
+     "verdict": "below demand as pre-registered - the coverage verdict is carried by FDL's inclusion"},
+    "V2_S1_pcsa_sigma_PROVISIONAL": {"cap_N_m": 18.595726, "delta_N_m": 11.195726,
+     "coverage_ratio_vs_walk_demand": 3.1427},
+    "V1_S2_si_matched": {"cap_N_m": 0.748112, "delta_N_m": -6.651888},
+    "V2_S2_si_matched_PROVISIONAL": {"cap_N_m": 2.226912, "delta_N_m": -5.173088},
+    "fdl_partition_bracket_N_m": [0.000548, 1.544741],
+    "walk_windows": {"scene_sense_AGREE": {"overlap_deg": [-1.1459, 3.6], "cap_N_m": 6.243516},
+                      "scene_sense_INVERTED": {"overlap_deg": [-1.8, 1.1459], "cap_N_m": 6.247077},
+                      "note": "the walk-window capability equals the scan-max under both declared sense mappings - the plantar arms are flat across the measured window"}
+   },
+   "dorsiflexion": {
+    "V1_S1_oku_walk_peaks": {"cap_N_m": 1.251106, "argmax_q_deg": 3.1,
+     "coverage_ratio_vs_walk_demand": 1.1169},
+    "V2_S1_pcsa_sigma_PROVISIONAL": {"cap_N_m": 2.448757, "argmax_q_deg": -23.4,
+     "coverage_ratio_vs_walk_demand": 2.186},
+    "V1_S2_si_matched": {"cap_N_m": 0.149825},
+    "V2_S2_si_matched_PROVISIONAL": {"cap_N_m": 0.293248}
+   }
+  },
+  "consumption_measured": {
+   "the_blocked_cell_closed": "the hind receipt's ankle_context verdict ('the admitted record's straight-line ankle arms fall 1.8-3.7x short of the 5.92 N.m measured demand under both force variants') is re-priced by the measured wrap arms: record envelopes 1.618881 / 3.309738 N.m (3.6551x / 1.7878x short) become 6.247077 / 18.595726 N.m - COVERING the walk demand at 1.0558x (V1, measured forces) and 3.14x (V2, PROVISIONAL)",
+   "stance_hold_ankle_nodes": "over-cap ankle nodes 0 -> 6 of 15 at the V1_S1 cap (demands -7.215/-7.197/-7.104/-6.774/-6.765/-6.273 vs cap 6.247077); the binding node phi=0.30 re-prices 0.9754 -> 1.1549 OVER - the measured book TIGHTENS the ankle tier clamp the doc cap was padding",
+   "height_law_ankle_chain_delta": "THE CELL THE BOOK LEFT AT 'delta 0 (BLOCKED)': authority factor cap_new/7.396 = 0.8447 at V1_S1 (NEGATIVE as pre-registered, in band [0.73, 0.94]); 2.5143 at V2_S1 (POSITIVE, PROVISIONAL); 0.1012 at V1_S2 (the k-gated collapse). Reading: the measured-arms plantar chain EXISTS and covers the walk, but the honest V1 authority is ~15 percent BELOW the doc-derived 7.4 cap - the doc cap's 25 percent headroom was real headroom, not slack",
+   "caveat": "the 0.9-margin wall stays knee-bound (no knee number changed in this lane); no engine changes made"
+  },
+  "falsifier_verdicts": {
+   "pre_registered_delta_signs_and_bands": {
+    "plantar_V1_S1": "HELD (delta sign NEGATIVE; cap 6.247077 in [5.4, 6.9])",
+    "plantar_V1_S1_coverage": "HELD (cap > demand 5.9171 by +0.329977)",
+    "plantar_V1_S1_triceps_only": "HELD (5.318868 < demand, as pre-registered)",
+    "plantar_V2_S1": "HELD (sign POSITIVE; cap 18.595726 in [14.5, 23.5])",
+    "plantar_V1_S2": "HELD (sign NEGATIVE; cap 0.748112 in [0.6, 0.9])",
+    "plantar_V2_S2": "HELD (sign NEGATIVE; cap 2.226912 in [1.6, 2.9])",
+    "plantar_V2_gt_V1": "HELD",
+    "dorsal_V1_S1": "HELD (sign NEGATIVE; cap 1.251106 in [1.0, 1.5])",
+    "dorsal_V2_S1": "HELD (sign NEGATIVE; cap 2.448757 in [1.7, 2.9])",
+    "dorsal_V2_gt_V1": "HELD",
+    "stance_over_cap_count": "HELD (0 -> 6, RISES; the pre-registration's 'at least 6 of 15' prose also held exactly)",
+    "height_factor_V1_S1": "HELD (0.8447 in [0.73, 0.94], NEGATIVE)",
+    "height_factor_V2_S1": "HELD (2.5143 > 1)",
+    "note_on_check_implementation": "the first checker mis-targeted the pre-registered bands onto the DELTAS (5 spurious fires); the receipt's bands are unambiguously on the CAP values (each band's derivation_of_band computes a cap sum), and the corrected checker reads the pre-registration exactly as written - the bands themselves were never moved (the same correction the hind lane documented)",
+    "summary": "ALL pre-registered cap signs, delta signs, and bands HELD"
+   },
+   "si_shape_per_muscle": {
+    "k_gate": "HELD (0.11976026 inside [0.1197283, 0.11976842])",
+    "triceps_ordering": "HELD",
+    "wrap_activity_ankle_cylinder": "HELD (FDL II/III/IV 1456/2001, FHL 443/2001, TP 1069/2001 - all >= 1)",
+    "unit_verdict": "FIRED - INVALID (neither raw hypothesis covers all 17 rows; cm holds on the 12 clean rows and every wrap-engaged branch)",
+    "wrapped_rows_within_k_tolerance": "FIRED - R_FDL_TENDONII/III/IV max, R_FHL max (lift-off lobes), R_TP both endpoints (engaged min 32 percent short); FDL V passes both; numbers in arms_headline.fired_rows",
+    "sign_pattern": "FIRED - 12/17 match; the 5 mismatches are exactly the R_Ankle_Cylinder rows' lift-off branches",
+    "summary": "3 FIRED, recorded with numbers and the named lift-off mechanism; nothing tuned, no tolerance widened, the FIRED rows' sensitivity to the caps measured and bounded (cap_sensitivity_note)"
+   },
+   "traceability": "HELD - all 11 inputs sha-verified at load (load REFUSES on mismatch); the machinery import re-verifies its own sha at run time; SI rows re-read from the xlsx and matched against the receipt's transcription at load (REFUSES on drift); every cap and consumption number carries a trace block",
+   "determinism": "HELD - deliverable sha256 7ce03069c1e033b52db0fb315d218eb2223e79a67a9018123da206d68adcb6f6 identical across three independent full derivations (two process invocations + a temp-path rerun; the unittest repeats in-process x2 + subprocess)",
+   "no_source_changes": "HELD - git status --porcelain names nothing outside tools/science_funnel/validation/ankle_arms_20260921/ (asserted by the unittest)"
+  },
+  "the_scale_gate": "unchanged in force and now measured at a THIRD joint: at S1 (deposit arms) the measured book covers the walk (plantar 1.0558x demand) but sits BELOW the doc cap (0.8442x); at S2 (SI-matched arms) it collapses to 0.1264x demand - consistent with the hind book's knee/MP S2 collapse. NO engine consumption is lawful until the operator resolves the deposit-vs-SI absolute scale; the 5 fired R_Ankle_Cylinder rows add a second, narrower open item: the stateless-wrap lift-off branches at the dorsiflexed end (engaged branches agree with the authors to tolerance).",
+  "tests": "20/20 green: python -B -m unittest tools.science_funnel.validation.ankle_arms_20260921.test_ankle_arms"
+ }
+}

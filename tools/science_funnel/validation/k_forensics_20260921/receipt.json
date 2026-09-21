@@ -1,0 +1,222 @@
+{
+ "schema": "chimera.k_forensics.v1",
+ "lane": "k-forensics-20260921",
+ "branch": "agent/k-scale-forensics-20260921",
+ "clone_of": "git@github.com-fleetdeploy:GhostDragonAlpha/Chimera.git @ b15ff31e (branch agent/ankle-arms-20260921, sparse: tools/science_funnel/, docs/)",
+ "mission": "THE AUTHOR-EMAIL FORENSICS on the k-scale divergence: the pulley lane (20260920) measured SI 2 macaque moment arm = deposited-geometry arm x k with k = 0.11975394, constant to 4-5 digits across the MTP class, the knee class (post-k residual <= 0.089 mm) and - at the ankle lane (20260921) - a THIRD joint (0.11976026 inside the MTP spread); and per-taxon constants across taxa (macaque 0.11975, gibbon 0.10845, gorilla 0.0329). The question put to the Wiseman/van Beesel/Vereecke authors: is the DEPOSITED model the anatomically-scaled scan and the SI 2 tables computed from differently-scaled subject-specific models, or the reverse, or a units artifact? This lane assembles OUR side's evidence BEFORE that email: (1) the ANATOMICAL SCALE CHECK - the deposit's macaque bone meshes measured against the adult rhesus literature, per bone, with the SI-implied scales classified; (2) the CONSISTENCY CROSS-CHECK - angle columns invariant, length columns carrying k, no absolute-scale anchor anywhere in the SI package; (3) the FORCE-FEASIBILITY evidence - the measured adult walk demand is coverable at deposit scale and not at SI scale at all three measured joints; (4) the EMAIL PACKET itself (author_email_packet.md, paste-ready). Evidence, not verdict: the verdict is the authors' to give.",
+ "pre_registration": {
+  "written_before_first_mesh_measurement": true,
+  "note": "This file was written BEFORE the first OBJ vertex of the deposit meshes was read by this lane. The literature table transcriptions below were READ from the PMC full text (literature/francis2023.xml, sha-pinned) before writing; the acquisition lane's mesh_scale_probe (femur bbox 0.035 x 0.172 x 0.038 m, 'units metres, adult macaque scale') is quoted as the prior that motivated this check. The measured section at the bottom is appended AFTER the run.",
+  "inputs_pinned": {
+   "macaque_model": {
+    "path": "tools/science_funnel/data/wiseman2026/models/Macaque_model.osim",
+    "sha256": "d5c65cbc0a72bd2d5c2258c6bd018fe850ae25cce6fb07c1f268b91e598c88e9"
+   },
+   "si2": {
+    "path": "tools/science_funnel/data/wiseman2026/rsos260107_si_002.xlsx",
+    "sha256": "957af7fa9b9d8b29a4c327eaf53bc25c95f369bac83d5de9c341f728ffcba48d"
+   },
+   "si1": {
+    "path": "tools/science_funnel/data/wiseman2026/rsos260107_si_001.docx",
+    "sha256": "11ca4a19d4028dfb0c5260541a057f63e348d69609e795c3ebd17d3654c3b367"
+   },
+   "pulley_arms_derivation": {
+    "path": "tools/science_funnel/validation/pulley_rederivation_20260920/pulley_arms_derivation.json",
+    "sha256": "2a99cd2becaf4b0a8d4dda176cca23af05397906ba43dcd504c06a1b6c8f76d5"
+   },
+   "pulley_receipt": {
+    "path": "tools/science_funnel/validation/pulley_rederivation_20260920/receipt.json",
+    "sha256": "61f767db4ba92088b4fdfdd5328ade7faa1fc95deab1239a4bdd220479a2d2cd"
+   },
+   "ankle_arms_book": {
+    "path": "tools/science_funnel/validation/ankle_arms_20260921/ankle_arms_book.json",
+    "sha256": "7ce03069c1e033b52db0fb315d218eb2223e79a67a9018123da206d68adcb6f6"
+   },
+   "ankle_receipt": {
+    "path": "tools/science_funnel/validation/ankle_arms_20260921/receipt.json",
+    "sha256": "06df272d97638597334a50b8076581839cfef2aade066a12bb7bf2577c91dee4"
+   },
+   "hind_book": {
+    "path": "tools/science_funnel/validation/hind_torque_book_20260921/hind_torque_book.json",
+    "sha256": "9fc5c0ba09f6ec183d5348bb21cc5dc18b5987240406ccdcdbb34e514e26f01c"
+   },
+   "hind_receipt": {
+    "path": "tools/science_funnel/validation/hind_torque_book_20260921/receipt.json",
+    "sha256": "cb6f4e07bed554c8bfb56ea01e7b66693a8d7ab45da41a774fbd845ae2d463e1"
+   },
+   "wiseman_sha256_manifest": {
+    "path": "tools/science_funnel/data/wiseman2026/sha256_manifest.json",
+    "sha256": "e72b6616fc23960e3e9a50491d104ee752240fc8b8787f7541c1da85b84a78e3",
+    "note": "pins all 289 deposit bytes incl. the 233 OBJ meshes under _extracted/Primate_models/ and the 7 .osim models"
+   },
+   "wiseman_download_receipt": {
+    "path": "tools/science_funnel/data/wiseman2026/download_receipt.json",
+    "sha256": "bb2363e452b7f50e5bb149709bdbf2ae6f22e9cc1d00609fdb3333896b2e5f73",
+    "zenodo_zip_sha256_pin": "6cb8e29ad6d7664beb19ed8f5f6aadeef0153f49dd0aea052135c846768f6181"
+   },
+   "wiseman_inventory": {
+    "path": "tools/science_funnel/data/wiseman2026/inventory.json",
+    "sha256": "04a3dd1a61fd8ddce9fd9f6ed42236d29eda5e90c45a54fde1fd8c3b8e056ab6",
+    "note": "the ONE file in the manifest whose on-disk sha does NOT match its manifest entry (a lane-authored summary, regenerated after manifest creation) - recorded, and its consumed claims are the mesh_scale_probe bbox priors and the units_note, both quoted in this receipt"
+   },
+   "lit_francis2023": {
+    "path": "tools/science_funnel/validation/k_forensics_20260921/literature/francis2023.xml",
+    "sha256": "e6005a8d3c126300b57895d4c2d6b4d41b11e610d613c6c30554cb785f1b3cd6",
+    "provenance": "PMC full-text XML of Francis G & Wang Q (2023), 'Coming to the Caribbean - Acclimation of Rhesus macaques (Macaca mulatta) at Cayo Santiago', Am J Biol Anthropol 181:e24748, DOI 10.1002/ajpa.24748, PMCID PMC10443431, retrieved via NCBI E-utilities efetch db=pmc"
+   },
+   "lit_turcotte2024": {
+    "path": "tools/science_funnel/validation/k_forensics_20260921/literature/turcotte2024.xml",
+    "sha256": "fc78967127307d2814dd02850a3bbf9f6d54f26ec3ca41dad956fe43b4ac6619",
+    "provenance": "PMC full-text XML of Turcotte CM et al. (2024), 'Mechanical and morphometric approaches to body mass estimation in rhesus macaques: a test of skeletal variables', Am J Biol Anthropol, DOI 10.1002/ajpa.24901, PMCID PMC11137856 - supporting citation for body-mass/long-bone methodology, no numbers consumed"
+   }
+  },
+  "mesh_provenance": {
+   "extraction_root_used": "E:/ChimeraWork/osim-agent/tools/science_funnel/data/wiseman2026/_extracted/Primate_models/ (a PRIOR lane's extraction of the same Zenodo zip; consumed READ-ONLY - this lane writes nothing there)",
+   "provenance_chain": "every consumed mesh is re-verified at run time against the committed wiseman_sha256_manifest entry, and the zip itself was re-hashed against the download receipt's Zenodo pin BEFORE this receipt was written (matched: 6cb8e29ad6d7664b...); the manifest re-verification at run time covered all 289 entries: 288 ok, 1 mismatch = inventory.json (lane-authored, see inputs_pinned), 233/233 OBJ meshes and 7/7 .osim models byte-exact",
+   "consumed_meshes": {
+    "femur": ["_extracted/Primate_models/Macaque/geometry/lFemurbone.obj", "_extracted/Primate_models/Macaque/geometry/rThighbone.obj"],
+    "tibia_plus_fibula": ["_extracted/Primate_models/Macaque/geometry/lShankbone.obj", "_extracted/Primate_models/Macaque/geometry/rShankbone.obj"],
+    "humerus": "NOT PRESENT - the deposited macaque model is HINDLIMB-ONLY (10 bodies: Pelvis, thigh_l/r, shank_l/r, foot_l/r, toes_l/r, R_Hallux; no forelimb segment exists), so the humerus check the mission sketched is PRE-REGISTERED AS UNMEASURABLE from this deposit; the literature humerus values are carried for the authors' email only",
+    "deposit_mesh_count_context": "233 OBJ meshes across the 7 taxon folders (Bonobo 26, Chimpanzee 20, Macaque 24, Orangutan 28, Siamang 24, gibbon 76, gorilla 35), all pinned by the committed manifest"
+   }
+  }
+ },
+ "literature_prior": {
+  "note": "TRANSCRIBED BEFORE MEASURING, from literature/francis2023.xml (sha above). Source: Francis & Wang 2023, Appendix Tables 1 (female) and 2 (male): 'Measurement (mm) averages and standard deviations (SD) [female/male] individuals categorized by year of their birth', n = 635 skeletally mature specimens (398 F, 237 M), Cayo Santiago derived skeletal collection, 1951-2002. Measurement protocol (their words): 'Length measurements represent the absolute maximum distance from the most inferior to the most superior aspects of the long bones.' Year rows carrying NA for a bone are excluded per bone (females: 48 year rows, NA count 4; males: 38 year rows, NA count 27).",
+  "female": {
+   "n_year_rows": 48,
+   "humerus_length_mm": {"year_mean_min": 133.05, "year_mean_max": 145.78, "grand_mean": 140.48, "sd_of_year_means": 2.28},
+   "femur_length_mm": {"year_mean_min": 158.92, "year_mean_max": 175.21, "grand_mean": 167.50, "sd_of_year_means": 3.30},
+   "tibia_length_mm": {"year_mean_min": 146.47, "year_mean_max": 161.64, "grand_mean": 154.37, "sd_of_year_means": 3.02}
+  },
+  "male": {
+   "n_year_rows": 38,
+   "humerus_length_mm": {"year_mean_min": 147.27, "year_mean_max": 163.60, "grand_mean": 156.97, "sd_of_year_means": 3.19},
+   "femur_length_mm": {"year_mean_min": 178.36, "year_mean_max": 207.39, "grand_mean": 192.40, "sd_of_year_means": 5.18},
+   "tibia_length_mm": {"year_mean_min": 165.06, "year_mean_max": 184.45, "grand_mean": 175.69, "sd_of_year_means": 4.01}
+  },
+  "body_mass_prior": {
+   "adult_female_kg": {"range": [5.4, 6.9], "source": "Turnquist JE & Kessler MJ (1989), Free-ranging Cayo Santiago rhesus monkeys (Macaca mulatta): I. Body size, proportion, and allometry, Am J Primatol 19:1-13, DOI 10.1002/ajp.1350190102 (as compiled by the NC3Rs macaque guidance, macaques.nc3rs.org.uk)"},
+   "birth_mass_kg": {"range": [0.40, 0.57], "source": "NC3Rs macaque guidance (0.4-0.55 kg); Coe CL et al. 2021 (PMC) reports mean birthweight 569.3 g for postterm rhesus infants, premature >100 g smaller"},
+   "interpolation_declared": "isometric (mass ~ length^3) interpolation, declared here as a CLASS estimate only: newborn linear ratio = (0.5/6.0)^(1/3) = 0.437 of adult female -> expected newborn femur ~ 0.437 x 167.5 = 73.2 mm; an animal at linear ratio 0.119754 carries mass ratio 0.119754^3 = 0.00172 -> ~10.3 g at 6 kg adult female - FETAL class (rhesus near-term fetus ~0.4-0.5 kg), far below ANY postnatal rhesus"
+  },
+  "acquisition_prior_quoted": {
+   "source": "tools/science_funnel/data/wiseman2026/inventory.json macaque_detail.mesh_scale_probe (the acquisition lane's probe):",
+   "lFemurbone.obj": "0.035 x 0.172 x 0.038 m",
+   "lShankbone.obj": "0.030 x 0.156 x 0.027 m",
+   "probe_note": "units metres, adult macaque scale",
+   "units_note_quoted": "units not stated in-sheet; joint ranges are clearly degrees (e.g. 90 to -41.6); moment-arm magnitude max 5.38 with model femur 0.172 m infers millimetres - INFERRED, not stated; article PDF is bot-blocked",
+   "status": "PRIOR - the 'adult macaque scale' phrase is exactly what check 1 tests systematically per bone"
+  }
+ },
+ "mesh_measure_protocol_declared": {
+  "parse": "OBJ 'v ' lines only (vertices); coordinates in metres (the model's Mesh scale_factors are 1 1 1, so mesh scale = model scale); no normals/faces consumed",
+  "measures_per_mesh": {
+   "bbox_extents_mm": "per-axis (max-min), the acquisition probe's measure, recorded for continuity",
+   "pca_extents_mm": "vertex projection extents on the covariance eigenvectors (numpy eigh, ascending eigenvalue order, deterministic)",
+   "diameter_mm": "PRIMARY - the exact maximum pairwise vertex distance (the digital twin of the caliper 'absolute maximum distance' the literature measured), computed exactly by chunked numpy over all vertex pairs (no hull approximation, no sampling)",
+   "outlier_guard": "diameter_mm minus pca1 extent reported per mesh; if > 5 mm, stray-vertex inflation is suspected and the classification is ALSO run on pca1 (both numbers reported regardless - nothing hidden)"
+  },
+  "bones_measured": "femur: lFemurbone.obj + rThighbone.obj; tibia(+fibula): lShankbone.obj + rShankbone.obj; left/right measured independently - pre-registered self-consistency expectation |L-R|/mean <= 2% (a check on the measurement itself, not on the literature)",
+  "caveats_declared_in_advance": [
+   "the shank mesh may carry the fibula alongside the tibia; if so the max length may be the fibula's - the literature values are TIBIA lengths, so a shank reading somewhat above the tibia range is not by itself a falsification; recorded with the number",
+   "the literature value is the BONE's absolute max length; the model's JOINT-CENTER distances (hip->knee 150.37 mm thigh, knee->ankle 164.54 mm shank, parsed from the pinned .osim at run time) are anatomically DIFFERENT quantities (joint centers sit inside/outside bone extremes) - reported as auxiliary model-scale facts, never compared 1:1 against the literature bone lengths",
+   "the deposit's bones are from ONE taxon folder of ONE zip - this check says nothing about the other six taxa's deposits"
+  ]
+ },
+ "rule0": {
+  "statement": "The deposit-vs-SI k divergence (macaque k = 0.11975394, constant across three joints to 4-5 digits, per-taxon distinct) has three live readings: (R1) the deposit is the anatomical scan and the SI 2 tables come from differently-scaled subject-specific models; (R2) the reverse; (R3) a units artifact. THE THEORY: if R1 holds, the deposit's macaque bone meshes measure ADULT rhesus against the literature (femur inside the female/male adult year-mean ranges), and the SI-implied scales classify as non-adult (0.12x reading) or adult-male (1.20x reading); if the deposit bones measure SUBADULT/INFANT against the same literature, R1 is dead and R2 rises. This is measurable from the deposit + literature alone, before any author input.",
+  "prediction": "(1) the deposit femur diameter lands INSIDE the adult rhesus year-mean union [158.92, 207.39] mm - specifically near the FEMALE band (the acquisition's probe: 172 mm bbox Y), and the tibia inside [146.47, 184.45] mm; L/R agreement <= 2%; (2) the k-implied scale (SI-in-mm reading: lengths x 0.119754) puts the femur at ~20-21 mm - BELOW the interpolated newborn ~73 mm, i.e. FETAL class, not merely 'infant'; (3) the cm reading (lengths x 1.19754) puts the femur at ~206-210 mm - the ADULT MALE band (male grand mean 192.40, year-mean max 207.39); (4) check 2: the SI 2 sheet's ONLY length-bearing columns are the three moment-arm columns; both jrange columns sit inside [-90, +90] degrees and reproduce the deposit model's radian scans at 57.2958 deg/rad EXACTLY as recorded per muscle - angles invariant under the divergence, the signature of a pure length/units difference and NOT of different animals' angulation; (5) check 2: no absolute-scale anchor (body mass, bone length, subject demographics) exists anywhere in SI 1 or SI 2, so the deposit-vs-SI scale question is UNDECIDABLE from the public deposits alone - which is why the authors are being asked; (6) check 3: the committed books' numbers stand as evidence - at deposit scale the measured arms COVER the measured adult walk demand (ankle plantar V1_S1 6.247077 vs 5.9171 N.m, 1.0558x) while at SI scale they collapse at all three joints (ankle 0.748112 = 0.1264x; hind book S2 0.17x knee / 0.22x MP) - an adult animal cannot walk on 0.13x ankles, so the paper's internal physics is consistent with the DEPOSIT scale doing the torque production; (7) the derivation is byte-deterministic.",
+  "falsifier": "(a) the deposit femur or tibia diameter lands BELOW the female year-mean minimum (femur 158.92 / tibia 146.47) - the acquisition's 'adult macaque scale' claim FIRES and reading R1 loses its anatomical leg; (b) L/R asymmetry > 2% on a bone pair; (c) any SI 2 length-bearing column OTHER than the moment arms, or any jrange column outside degrees-range or disagreeing with the committed per-muscle scans' recorded ranges; (d) an absolute-scale anchor FOUND in SI 1/SI 2 (falsifies prediction 5 and partially answers the question without the authors); (e) the k table failing to reproduce the published constants from the committed artifacts within 5e-6; (f) non-deterministic rerun; (g) any file changed outside tools/science_funnel/validation/k_forensics_20260921/. Any hit is recorded as measured, never tuned."
+ },
+ "check2_pre_registered": {
+  "c1_column_scan": "SI 2 Sheet1 is 673 rows x 8 columns: Joint, Taxon, Muscle, Minimum moment arm, Maximum moment arm, Moment arm range, Joint range - min, Joint range - max; the ONLY length-bearing columns are the three moment-arm columns; both jrange columns bounded in [-90, +90]",
+  "c2_angle_invariance": "a uniform geometric scale of a musculoskeletal model changes every LENGTH and NO angle - so the measured agreement (pulley lane: SI jrange degrees = model radian ranges x 57.2958; per-muscle SI scan ranges reproduced by this repo's derivations; ankle lane: jrange agreement to the recorded decimal) is the exact signature the scale-factor reading predicts; a units artifact in ANGLES would show a 57.3x or 0.0175x signature - the observed length factor 1/k = 8.35x is numerically DIFFERENT from any angle factor and appears in NO angle column",
+  "c3_no_scale_anchor": "SI 1 (docx, sha-pinned) is the muscle-homology text with no lengths or masses; SI 2 carries no body mass, no bone length, no subject table - pre-registered: NO anchor exists, so 'which scale is the subject's' cannot be decided from the deposits",
+  "c4_single_artifact_dead": "a single global units artifact predicts ONE k for every taxon; the committed cross-taxon measurement (macaque 0.11975, gibbon 0.10845, gorilla 0.0329 - pulley deliverable si2_comparison.cross_taxon_k_measured) is three different constants, so the divergence is PER-TAXON/PER-BUILD, not one spreadsheet-wide unit slip - the exact pattern subject-specific scaling differences would produce"
+ },
+ "check3_evidence_numbers_pre_registered": {
+  "note": "quoted from the sha-pinned committed books; this lane RE-DISPLAYS them, it does not re-derive the caps",
+  "demand_measured_on_real_adult_animals": "Oku 2021 measured walk joint-moment peaks (digitigrade macaques): hip 8.9746, knee 5.3144, ankle 5.9171, MP 0.7051 N.m (hind book inputs)",
+  "deposit_scale_coverage": "ankle plantarflexion V1_S1 cap 6.247077 N.m = 1.0558x the 5.9171 N.m walk demand (ankle book caps_measured); hind book knee V1_S1 9.576795 N.m vs 6.6375 doc cap; MP V1_S1 1.657925 N.m vs 0.8875 doc cap",
+  "si_scale_collapse": "ankle V1_S2 0.748112 N.m = 0.1264x walk demand; V2_S2 2.226912 N.m = 0.3765x; hind book S2 knee 0.17x and MP 0.22x of their own demand-side references - the collapse holds at ALL THREE measured joints",
+  "the_reading_declared_in_advance": "the walk demand is a measurement on REAL adult macaques; a 0.12x-linear animal has ~0.0017x the mass and cannot produce OR need adult torques - if the deposit is anatomically adult (check 1), then the arms that cover the measured adult walk are the deposit's, and the paper's internal physics (its own models must power real locomotion) favors the deposit scale for torque production; STATED AS EVIDENCE - the verdict is the authors'"
+ },
+ "falsifiers_pre_registered": {
+  "citation_integrity": "every deposit length reports its mesh file + its manifest sha256; every literature number cites Francis & Wang 2023 Appendix Tables 1-2 (PMC10443431) with the quoted protocol sentence; every k number cites its committed deliverable + key path",
+  "k_table_reproduction": "from the COMMITTED artifacts only: (i) MTP class k per endpoint = si2/derived_mm over the 5 mtp rows x 2 endpoints reproduces fitted_mtp_class_scalar_k = 0.11975394 and spread [0.1197283, 0.11976842]; (ii) ankle point class (SOL, MG, TA, PB, PL, EHL x 2 endpoints) reproduces k_ankle_point_class_fitted = 0.11976026 and spread [0.11975902, 0.11976056]; (iii) knee class max |derived x 0.11975394 - si2| over the 4 knee rows reproduces the <= 0.089 mm published bound; (iv) cross_taxon block re-read from the committed pulley deliverable; each reproduced within 5e-6 absolute or the falsifier fires",
+  "determinism": "two full in-process derivations byte-identical (sha256 of the canonical deliverable); the unittest additionally re-invokes via subprocess and compares the deliverable sha256",
+  "no_source_changes": "git status --porcelain names no file outside tools/science_funnel/validation/k_forensics_20260921/ (asserted by the unittest; book, not patch)",
+  "mesh_integrity": "every consumed mesh sha256 == its committed manifest entry at run time (load REFUSES on mismatch); any manifest mismatch beyond the pre-declared inventory.json is a FIRED falsifier"
+ },
+ "measured": {
+  "recorded_utc": "2026-09-21T11:59:00+00:00",
+  "note": "APPENDED AFTER THE RUN. The pre-registration block above is unedited; the derivation script and this block were written around it. One load-refusal bug (manifest key construction) and two comparison-precision fixes (float-representation equality on transcribed jrange values) were made BEFORE the first committed measurement; no expectation, band, class, or falsifier was touched after the first mesh vertex was read.",
+  "deliverable": {
+   "path": "tools/science_funnel/validation/k_forensics_20260921/k_forensics_book.json",
+   "sha256": "0c2d8b397a158283f19a8ff81a8f6be5f6a787ac09c09b7394c70e5402166b4b"
+  },
+  "email_packet": {
+   "path": "tools/science_funnel/validation/k_forensics_20260921/author_email_packet.md",
+   "note": "paste-ready technical note for the operator; the paste section is self-contained, the table below it is operator reference"
+  },
+  "check1_anatomical_scale_measured": {
+   "femur": {
+    "diameter_mm": 173.132408,
+    "pca1_mm": 173.033747,
+    "bbox_Y_mm": 172.215,
+    "class": "ADULT_FEMALE_BAND (female year-mean range 158.92-175.21, grand mean 167.50)",
+    "meshes": "lFemurbone.obj + rThighbone.obj, sha-verified vs committed manifest",
+    "mesh_vertices": 15000
+   },
+   "tibia": {
+    "diameter_mm": 156.806231,
+    "pca1_mm": 156.324107,
+    "bbox_Y_mm": 156.3368,
+    "class": "ADULT_FEMALE_BAND (female year-mean range 146.47-161.64, grand mean 154.37)",
+    "meshes": "lShankbone.obj + rShankbone.obj (fibula caveat stands; the reading sits INSIDE the tibia band regardless)",
+    "mesh_vertices": 7200
+   },
+   "humerus": "NOT MEASURABLE - hindlimb-only deposit, as pre-registered",
+   "left_right": "L/R diameters agree to <= 1.5e-05 mm - the right bones are mirror copies of the left meshes (deposit observation: measurement-determinism check, not independent anatomical sampling)",
+   "outlier_guard": "diameter - PCA1 <= 0.49 mm on every mesh - no stray-vertex inflation",
+   "verdict": "THE DEPOSIT IS ANATOMICALLY ADULT (adult-female rhesus class) - the acquisition lane's 'adult macaque scale' phrase is CONFIRMED per bone against the literature; the model's hip->knee 150.37 mm and knee->ankle 164.54 mm joint distances are auxiliary model-scale facts (joint centers vs bone extremes are different measures)"
+  },
+  "si_implied_scales_measured": {
+   "k_reading_SI_numbers_are_mm_of_SI_model": "femur 20.73 mm, tibia 18.78 mm, implied body mass ~10.3 g = FETAL class (isometric newborn interpolation 73.2 mm femur at 0.40-0.57 kg birth mass) - below ANY postnatal rhesus, impossible for animals that produced the measured adult walk data",
+   "cm_reading_SI_numbers_are_cm_of_SI_model": "femur 207.33 mm - the TOP of the adult male year-mean range (max 207.39), tibia 187.78 mm - 3.3 mm ABOVE the male max - against a female-band deposit; possible only as a large male subject, i.e. under this reading the SI models and the deposit are DIFFERENT ANIMALS (or differently scaled builds), not the same model at two unit readings",
+   "reading_interpretation": "the 0.12x reading asked for by the mission is the mm reading and it classifies FETAL, not merely infant; the measurement-driven reading of record is the cm reading with a per-taxon BUILD difference of 1.1975x"
+  },
+  "check2_consistency_measured": {
+   "si2_column_scan": "8 columns exactly as pre-registered; the ONLY length-bearing columns are the three moment-arm columns; both jrange columns within [-90, +90] degrees; 672 data rows, one sheet",
+   "angle_invariance": "26/26 jrange agreements between the SI xlsx (re-read at run time) and the committed derivations' recorded scans (17 ankle rows + 9 pulley rows); every checked range inside the deposited model's own coordinate ranges - angles IDENTICAL, the divergence lives only in the length columns at factor 1/k = 8.35x, distinct from any angle-unit factor",
+   "scale_anchor_scan": "SI 1 docx: zero absolute-scale anchors (no kg/mm/cm/mass/length data); SI 2: no mass/bone-length/subject column - the pre-registered 'no anchor exists' prediction HELD, the question must go to the authors",
+   "single_artifact_check": "three DIFFERENT per-taxon constants (committed cross-taxon block) - a single global unit artifact is FALSIFIED, as pre-registered"
+  },
+  "check3_force_evidence_displayed": {
+   "ankle": "V1_S1 deposit-scale cap 6.247077 N.m = 1.0558x the 5.9171 N.m Oku measured walk demand; V1_S2 SI-scale cap 0.748112 N.m = 0.1264x; V2_S2 2.226912 N.m = 0.3764x (ankle_arms_20260921 cap_book.ankle_plantarflexion)",
+   "hind": "S2 collapse at knee 0.17x and MP 0.22x (hind_torque_book_20260921, commit b17cbf6c)",
+   "statement_status": "displayed as EVIDENCE with the classes declared (V1 Oku forces / V2 PCSA x sigma PROVISIONAL; S1 deposit / S2 SI-matched); the deposit scale covers the measured adult walk at every measured joint, the SI scale collapses at every measured joint - the paper's internal physics favors deposit scale for torque production; the verdict is the authors'"
+  },
+  "k_table_reproduction_measured": {
+   "mtp_class": "recomputed mean 0.11975394 vs published 0.11975394 (diff 3.8e-09); spread endpoints within 6.1e-08",
+   "ankle_point_class": "recomputed mean 0.11976027 vs published 0.11976026 (diff 9.7e-09); spread endpoints within 4.0e-08",
+   "knee_class": "recomputed max |derived x k - SI| = 0.088615 mm vs published bound 0.089 mm",
+   "cross_taxon": "re-read from the committed pulley deliverable: macaque 0.11975 / gibbon 0.10845 / gorilla 0.0329",
+   "verdict": "HELD - all within the pre-registered 5e-6 tolerance"
+  },
+  "falsifier_verdicts": {
+   "a_deposit_below_female_min": "NOT FIRED - femur 173.13 and tibia 156.81 both inside the female band",
+   "b_LR_asymmetry_gt_2pct": "NOT FIRED (and the mirror-copy observation recorded)",
+   "c_extra_length_column_or_angle_disagreement": "NOT FIRED (26/26, columns exactly as declared)",
+   "d_scale_anchor_found_in_SI": "NOT FIRED (zero anchors in SI 1 and SI 2)",
+   "e_k_reproduction": "NOT FIRED (all within 5e-6)",
+   "f_determinism": "HELD - two in-process runs byte-identical; subprocess rerun reproduced the deliverable sha256 0c2d8b397a158283f19a8ff81a8f6be5f6a787ac09c09b7394c70e5402166b4b",
+   "g_no_source_changes": "HELD - git status --porcelain names nothing outside tools/science_funnel/validation/k_forensics_20260921/ (unittest-asserted)",
+   "mesh_integrity": "HELD - 4/4 consumed meshes sha-verified against the committed manifest; zip pin re-verified pre-registration",
+   "summary": "ALL pre-registered falsifiers held; no band moved, nothing tuned"
+  },
+  "the_verdict_this_lane_hands_the_operator": "The deposited macaque model IS anatomically scaled (adult-female class, femur 173.13 mm / tibia 156.81 mm vs Francis & Wang 2023). The SI-implied 0.12x scale is a FETAL-class animal - physically impossible for the source of measured adult walk data; the only measured-consistent alternative is that SI 2 came from builds 1.1975x LARGER than the deposit (adult-male class), i.e. subject-specific builds differing from the deposit. The divergence is per-taxon (single unit artifact falsified), angles are identical, and the SI package carries no scale anchor. The author email asks the five questions in author_email_packet.md; our force books say the deposit scale is the one that powers the walk (evidence, not verdict).",
+  "tests": "8/8 green: python -B -m unittest tools.science_funnel.validation.k_forensics_20260921.test_k_forensics"
+ }
+}
