@@ -491,26 +491,20 @@ class GaitWalker {
  uint64_t hind_step_waive_fires_[2]={0,0};  // the (a)-waiving unload-deadline fires
  int hind_step_waive_first_[2]={-1,-1};     // the first waive fire's tick (the census)
  int hind_step_waive_last_[2]={-1,-1};      // the last waive fire's tick (the census)
- // ── THE WAIVE-ERA HAND-OFF PRESERVATION (wave 36, receipt_wave36.json) ──
- // THE MINED FACE (the declared script .tmp/w36_receipt/mine_w36.py on this
- // lane's byte-exact reproduction trace, the decision rule fixed in its header
- // BEFORE the numbers): (R1) the hand-off fires are COMPLETION-TICK-LOCKED --
- // all 10 unloadgate-class fires land ON the other's last TD -- so any
- // completion perturbation shifts the whole resumed calendar (the wave-35
- // build-2 death: the waive-perturbed R landing at 174 re-phased the stall
- // chain -1 against the unshifted fore cadence, the dead-pad fire at 201, the
- // impact death at 266); (R2) the +2 waive edge is STRUCTURALLY DEAD in the
- // twelfth era (the carrier's touch hysteresis releases at the 249 tick-start:
- // 1.317e-5 > kTouch+kReleaseBand=1.1e-5; 8.207e-6 @248 in band) -- the wave-35
- // build-1 gate's +1 edge is the ONLY lawful waive edge, so the phase must be
- // restored at the HAND-OFF, not at the waive; (R3) the wave-35 amendment's
- // concentration repair is inert on the shipped trajectory over [0,160]
- // (0 flips). THE LAW'S THIRD CLAUSE: the (b)-waive is disarmed for the
- // hand-off out of a waive-ridden swing -- when this leg's own waive fire
- // postdates the other's current-swing launch, the hand-off rides the natural
- // g=1 clause (b) and lands at the completion + 1, the shipped grid tick; the
- // disarm self-expires at the other's next fire. One +1 hand-off absorbs the
- // perturbation; the stall calendar re-locks to the shipped cadence.
+ // ── THE WAIVE-ERA HAND-OFF PRESERVATION's CENSUS (wave 36, receipt_wave36.json)
+ // -- READ-ONLY PLUMBING, ALL-ZERO (NOT MEASURED): the wave-36 law (the wave-35
+ // build-1 waive gate verbatim + the concentration repair verbatim + this
+ // preservation clause) was measured -- the fence GREEN in full, the phase
+ // restoration GREEN (the preserved hand-off EXACTLY 175, the stall grid
+ // re-locked 7/7) -- and STILL the rung falsifier fired at 298 <= 300 (the
+ // twelfth real launch drifted +1 and closed the waive's touch-window); the
+ // pre-committed terminal action restored the ship bytes. The mined face the
+ // fields recorded: (R1) the hand-off fires are COMPLETION-TICK-LOCKED (all 10
+ // unloadgate-class fires ON the other's last TD); (R2) the +2 waive edge is
+ // STRUCTURALLY DEAD in the twelfth era (the carrier's touch hysteresis
+ // releases at the 249 tick-start: 1.317e-5 > kTouch+kReleaseBand=1.1e-5);
+ // (R3) the concentration repair is inert on the shipped trajectory over
+ // [0,160] (0 flips). The fired falsifiers are carried verbatim in the receipt.
  mutable uint64_t hind_alt_repairs_[2]={0,0};        // the repair-flipped concentration reads
  uint64_t hind_step_handoff_restores_[2]={0,0};      // the (b)-waive disarms (the preserved hand-offs)
  bool hind_stand_hold(size_t hl)const{
@@ -545,21 +539,20 @@ class GaitWalker {
  bool hind_alt_due(size_t hl,double tair)const{
   size_t o=hl==0?1:0;
   if(hind_step_last_td_[o]==0)return false;            // no completed other step yet
-  // THE EXCHANGE-CHAIN CONCENTRATION REPAIR (the wave-35 amendment form, carried
-  // by the wave-36 law; receipt_wave35.json + receipt_wave36.json): the hand-off
-  // is STALE only when NEITHER the other's last fire NOR the other's last replant
-  // postdates this leg's own last replant. The wave-35 build-2 lesson is carried
-  // by the preservation clause at the (b)-waive site, not here: the repair alone
-  // re-armed the hand-off ON the perturbed completion tick and the completion-
-  // tick-locked calendar re-phased -1 against the fore cadence (the R's dead-pad
-  // fire at 201, the impact death at 266). STRUCTURAL FENCE PROOF (mined, the
-  // declared script, R3): on the shipped trajectory the repair NEVER flips the
-  // read over [0,160] -- 0 flips -- so the [0,160] identity and the named ticks
-  // are untouched by this clause.
-  if(hind_step_last_fire_[o]<hind_step_last_td_[hl]&&
-     hind_step_last_td_[o]<hind_step_last_td_[hl])return false; // not concentrated
-  if(hind_step_last_fire_[o]<hind_step_last_td_[hl])   // the repair flipped the read
-   ++hind_alt_repairs_[hl];                            // (the census, status-only)
+  // THE EXCHANGE-CHAIN CONCENTRATION REPAIR WAS TRIED TWICE AND REVERTED (the
+  // wave 35 amendment, receipt_wave35.json: the hand-off read stale only when
+  // NEITHER the other's last fire NOR its last replant postdates this leg's
+  // own -- the calendar RESUMED exactly as predicted but the re-phased ride
+  // degraded and the impact-event budget refused at 266; AND the wave 36 law,
+  // receipt_wave36.json: carried verbatim WITH the waive gate and the new
+  // hand-off preservation clause -- the fence held in full, the preserved
+  // hand-off fired EXACTLY 175 and the stall grid re-locked 7/7, but the
+  // twelfth real launch drifted +1 (248 vs the shipped 247), which closed the
+  // twelfth waive's touch-window (the R's waive landed 274, dead-padded) and
+  // the rung falsifier fired at 298 <= 300). The pre-committed terminal action
+  // restored the shipped clause; the fired falsifiers are carried verbatim in
+  // the receipt.
+  if(hind_step_last_fire_[o]<hind_step_last_td_[hl])return false; // not concentrated
   if(phi_[hl]>=TOE_OFF)return false;                   // the natural slot owns
   uint64_t deadline=hind_deadline(hl,tair);
   double wait=(TOE_OFF-phi_[hl])/(dt_/T_CYCLE);        // the clock's own rate
@@ -2399,52 +2392,42 @@ class GaitWalker {
      bool deadline_fire=hind_step_alt_due_[hl]!=0&&hind_step_deadline_tick_[hl]>0&&
       ticks_>=hind_step_deadline_tick_[hl];
      if(floor_gated&&deadline_fire){floor_gated=false;++hind_step_deadline_fires_[hl];}
-     // THE WAIVE-ERA HAND-OFF PRESERVATION (wave 36, the third clause): the
-     // (b)-waive may not fire for the hand-off OUT of a waive-ridden swing --
-     // when this leg's own waive fire postdates the other's current-swing
-     // launch, the hand-off rides the natural g=1 clause (b) and lands at the
-     // completion + 1 (the shipped grid tick); the disarm self-expires at the
-     // other's next fire. The wave-35 build-2 face this owns: the repaired
-     // concentration re-armed the (b)-waive ON the perturbed 174 completion and
-     // the completion-tick-locked calendar re-phased -1 (the dead-pad fire at
-     // 201, the impact death at 266).
-     bool waive_ridden=hind_step_waive_last_[hl]>(int)hind_step_last_fire_[o];
-     if(gated_b&&deadline_fire){
-      if(waive_ridden){++hind_step_handoff_restores_[hl];}
-      else{gated=false;gated_b=false;++hind_step_deadline_fires_[hl];
-       if(hind_step_dl_unload_[hl])++hind_step_unload_fires_[hl];
+     if(gated_b&&deadline_fire){gated=false;gated_b=false;++hind_step_deadline_fires_[hl];
+      if(hind_step_dl_unload_[hl])++hind_step_unload_fires_[hl];
 #ifdef GAIT_EVENT_TRACE
-       std::fprintf(stderr,"[hindstep] unloadgate leg=%zu tick=%llu dl=%llu class=%s\n",
-        hl,(unsigned long long)ticks_,(unsigned long long)hind_step_deadline_tick_[hl],
-        hind_step_dl_unload_[hl]?"unload":"fold");
-#endif
-      }}
-     // THE CARRIER SELF-UNLOAD FIRE DEADLINE, TICKED BY THE REAL SWING (the
-     // wave-36 law's first clause, the wave-35 build-1 gate VERBATIM; receipt
-     // wave 35 measured the gate TRUE -- the first waive fire EXACTLY 161,
-     // dead=0, stall_era=0 -- and its cost was the CHAIN AROUND it: the
-     // waive-era double-completion disarmed the wave-29 concentration read
-     // (the calendar death, 305), and repairing the concentration alone let
-     // the (b)-waive re-phase the calendar (the death at 266); the wave-36
-     // law carries the gate VERBATIM plus the repair plus the preservation
-     // clause above, so the waive's perturbation is absorbed by ONE +1
-     // hand-off and the stall calendar re-locks to the shipped grid).
-     // THE GATE: clause (a) yields for the carrier's alternation fire when
-     // the deadline fire is binding ON THE UNLOAD FORM and the other's
-     // lift-first hold has GENUINELY CLEARED (the stall swings' holds never
-     // clear, so the stall eras never see the waive). ZERO new numeric
-     // constants: the deadline flag, the deadline fire and the held_ read are
-     // the machinery's own.
-     if(gated&&!gated_b&&!floor_gated&&alt_fire&&hind_step_dl_unload_[hl]&&
-        deadline_fire&&!hind_step_held_[o]){
-      gated=false;++hind_step_waive_fires_[hl];
-      if(hind_step_waive_first_[hl]<0)hind_step_waive_first_[hl]=(int)ticks_;
-      hind_step_waive_last_[hl]=(int)ticks_;
-#ifdef GAIT_EVENT_TRACE
-      std::fprintf(stderr,"[hindstep] waivefire leg=%zu tick=%llu dl=%llu\n",
-       hl,(unsigned long long)ticks_,(unsigned long long)hind_step_deadline_tick_[hl]);
+      std::fprintf(stderr,"[hindstep] unloadgate leg=%zu tick=%llu dl=%llu class=%s\n",
+       hl,(unsigned long long)ticks_,(unsigned long long)hind_step_deadline_tick_[hl],
+       hind_step_dl_unload_[hl]?"unload":"fold");
 #endif
      }
+     // THE CARRIER SELF-UNLOAD FIRE DEADLINE WAS TRIED AND REVERTED (the wave
+     // 35 law, receipt_wave35.json: clause (a) yielding for a carrier's
+     // alternation fire when the deadline is binding ON THE UNLOAD FORM and
+     // the other's lift-first hold has genuinely cleared). MEASURED TWICE:
+     // build 1 (the law exactly as pre-registered) -- the first waive fire
+     // EXACTLY 161 as predicted, but the waive-era double-completion
+     // permanently disarmed the wave-29 concentration clause (the calendar
+     // died, the walk stood, refused 305); build 2 (the amendment: the
+     // concentration repair) -- the calendar resumed exactly as predicted but
+     // the re-phased ride degraded (the dead-pad fire at 201, 6 pin-era band
+     // exits) and the impact-event budget refused at 266, EARLIER than the
+     // shipped 295. AND THE WAVE-36 RE-TRIAL (receipt_wave36.json: the gate
+     // VERBATIM + the concentration repair + the WAIVE-ERA HAND-OFF
+     // PRESERVATION -- the (b)-waive disarmed for the hand-off out of a
+     // waive-ridden swing, hind_step_waive_last_[hl] > the other's last fire)
+     // MEASURED: the fence GREEN in full (the first divergence EXACTLY 161),
+     // the phase restoration GREEN (the preserved hand-off EXACTLY 175, the
+     // stall grid re-locked 7/7, worst drift 1), and STILL the twelfth real
+     // launch drifted +1 (248 vs the shipped 247) -- the waive's clear-window
+     // (the gate read at 250) and the carrier's touch-window (released at the
+     // 249 tick-start) never overlapped, the R's waive landed 274 dead-padded,
+     // and the rung falsifier fired at 298 <= 300. The pre-committed terminal
+     // action RESTORED the ship bytes; the counters below stay as read-only
+     // census plumbing reporting NOT MEASURED (all-zero), the fired
+     // falsifiers carried verbatim in the receipt. The wave-37 bank: the
+     // preservation works -- the residual disease is the +1 stall-era drift
+     // accumulating into the twelfth launch, whose lawful waive window
+     // collapsed to the empty set.
 #ifdef GAIT_EVENT_TRACE
      if(alt_fire)std::fprintf(stderr,"[hindgate] tick=%llu leg=%zu live=%d tL=%d sL=%.1f tR=%d sR=%.1f hL=%d hR=%d gated=%d floor=%d dl=%llu v=%.3f\n",
       (unsigned long long)ticks_,hl,live,
