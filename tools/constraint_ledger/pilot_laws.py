@@ -229,6 +229,19 @@ def pilot_records() -> list[dict]:
     return [TOUCH_BAND, STAND_FIRST_HOLD]
 
 
+def concrete_externals() -> dict[str, dict]:
+    """The external-input declarations, expanded over the {leg} hole — the
+    form compile_fragment consumes (quantities are concrete after expansion)."""
+    out = {}
+    for tmpl, decl in EXTERN_DECLS.items():
+        if '{leg}' in tmpl:
+            for leg in ('left', 'right'):
+                out[tmpl.replace('{leg}', leg)] = dict(decl)
+        else:
+            out[tmpl] = dict(decl)
+    return out
+
+
 def load_pilot():
     """Load + validate the two pilot records (template form)."""
     return [_load(TOUCH_BAND), _load(STAND_FIRST_HOLD)]
