@@ -1,0 +1,27 @@
+{
+ "schema": "chimera.osim4_adapter_validation.v1",
+ "written_utc": "2026-09-20T21:30:00Z",
+ "written_before_build": true,
+ "agent": "osim4 adapter lane (branch agent/osim4-adapter-20260920), GLM 5.3",
+ "candidate_commit": "aede5de9516949d4584e5cfffc8b71064afe7edc",
+ "prior": "acquisition head aede5de9 (agent/wiseman-osim-20260920): tools/science_funnel/data/wiseman2026/ admitted with inventory.json recording 7 taxa x (36 muscles, per-taxon path points/wraps/bodies) and compatibility.kernel_adapter_gap naming THIS gap: macaque_anatomy.py parse_source() is OpenSim 3.x-shaped",
+ "rule0": {
+  "statement": "The Wiseman 2026 macaque .osim (OpenSimDocument Version 40600) is fully decodable into the repo's existing chimera.anatomical_assembly.v1 anatomy store format by a pure structural translation of its 4.x idioms - PathPoint socket_parent_frame -> attachment body, joint socket_parent_frame/socket_child_frame -> PhysicalOffsetFrame translations/orientations, PinJoint -> implicit +X revolute axis, PhysicalOffsetFrame -> joint frame offsets, Millard2012EquilibriumMuscle -> muscle record with placeholder force parameters kept as data - with zero record loss and no macaque-specific branching.",
+  "prediction": "One shared parser handles all 7 taxa: Macaque_model.osim reconciles exactly against inventory.json (36 muscles, 125 path points, 14 wrap surfaces, 10 bodies, 10 joints, 19 coordinates), the other 6 taxa reconcile against their own inventory records (121-127 path points, 10-18 wrap surfaces, 10-11 bodies), re-parse is byte-identical, the built store-format proposal passes the anatomy intake's own graph checks, and the 3.x parser's tests stay green with macaque_anatomy.py byte-unchanged.",
+  "falsifiers": {
+   "A_round_trip_reconciliation": "Every muscle, path point, wrap surface, body and joint in each .osim is accounted in the store-format output and the counts equal the acquisition inventory for ALL 7 taxa. FALSIFIED if any count mismatches, any XML record is silently dropped, or any socket resolves to nothing.",
+   "B_deterministic_parse": "canonical() bytes of the parsed model are identical across independent re-parses (and identical across parse orderings of the 7 taxa). FALSIFIED if any byte differs.",
+   "C_store_format_checks": "A CreatureGraph proposal built from the parsed macaque model on a copy of the live store passes the intake's own validators: validate_object() on every added object and g.check() == []. FALSIFIED if any schema or structural error is reported.",
+   "D_three_x_regression": "tools/science_funnel/tests/test_macaque_anatomy.py passes and tools/science_funnel/macaque_anatomy.py is byte-identical to its aede5de9 state (sha256 d1e23defcf27a6fae61d637609f7bfc609ac3a6fccdffeaa666ef44b738105ad). FALSIFIED if any test fails or the file drifts by one byte.",
+   "E_not_macaque_special_cased": "The same parse_wiseman() code path with zero taxon-conditional branches parses the other 6 taxa, each reconciling against its own inventory record. FALSIFIED if any taxon requires a species-name branch, a hardcoded count, or fails the shared path."
+  }
+ },
+ "force_pairing_preregistration": {
+  "law": "Wiseman models ship PLACEHOLDER forces (max_isometric_force=1 N, optimal_fiber_length=1 m, tendon_slack_length=1, pennation_angle_at_optimal=0). Paths come from Wiseman; forces MUST pair with the admitted Guimaraes numbers. The adapter emits force_runtime_ready=false until paired.",
+  "reachability_measured_before_build": "The admitted Guimaraes batch is NOT reachable on this lineage: intake commit 46ed85a3 is not an ancestor of candidate aede5de9 and tools/science_funnel/data/guimaraes_arch/ does not exist in the aede5de9 tree (measured by git merge-base --is-ancestor and git ls-tree before any adapter code was written). The batch exists in the same object store on other refs (origin/agent/skeleton-movie-20260919); a later lane may merge or re-derive it. In-lineage name authorities used instead: the research memo's measured Guimaraes Macaca mulatta 36-name list (docs/research/20260920_adult_and_muscle_data_options.md @ fc45106c, in-lineage) and the SI1 homology table (rsos260107_si_001.docx @ aede5de9).",
+  "prediction": "Name-level pairing after stripping the R_ prefix and case-normalizing: 28 of 36 Wiseman names match a Guimaraes name exactly; the 8 EDL_TENDONII..V / FDL_TENDONII..V slips map many-to-one onto Guimaraes EDL/FDL (mapping DEFERRED - no per-slip force division law exists and inventing one is taste); 6 Guimaraes-only records (GemInf, GemSup, ObtExt, ObtInt, PLANT, POP) have no Wiseman counterpart. All 36 force_runtime_ready stay false on this lineage.",
+  "falsifier": "The 36x36 name match table in the results section below diverges from this prediction (a name that should match does not, or an unexpected exact match appears)."
+ },
+ "results": null,
+ "results_note": "Filled by the run BELOW THIS LINE ONLY; the sections above are the preregistration and are never edited after the first commit."
+}
