@@ -59,8 +59,30 @@ ZIHLMAN_FRAC_MAX = 0.24
 DE_LEVA_PELVIS_FRAC = 0.142
 
 # Pre-verified pins (receipt.json inputs_pinned).
-MANIFEST_SHA = "e72b6616fc23960e3e9a50491d104ee752240fc8b8787f7541c1da85b84a78e3"
-K_BOOK_SHA = "0c2d8b397a158283f19a8ff81a8f6be5f6a787ac09c09b7394c70e5402166b4b"
+# repin_20260921: the wiseman-pin-repair lane (68730eab) rewrote the manifest
+# (route-b re-canonicalization of its inventory.json entry) and made
+# wiseman2026 checkout == blob (-text). The receipt's appended repin_20260921
+# section supersedes the pre-repair (autocrlf-smudged) pin below when present;
+# the old value stays as the documented fallback and still refuses without it.
+MANIFEST_SHA_PRE_REPAIR = "e72b6616fc23960e3e9a50491d104ee752240fc8b8787f7541c1da85b84a78e3"
+_repins = {
+    r["path"]: r["new_sha256"]
+    for r in json.loads((LANE / "receipt.json").read_text(encoding="utf-8"))
+    .get("repin_20260921", {})
+    .get("re_pins", [])
+}
+MANIFEST_SHA = _repins.get(
+    "tools/science_funnel/data/wiseman2026/sha256_manifest.json",
+    MANIFEST_SHA_PRE_REPAIR,
+)
+# repin_20260921 (second order): the k deliverable regenerated with its honest
+# post-repair provenance (its inputs_sha_verified block records the k receipt's
+# re-pins); this lane's byte-pin on it follows the same repin section.
+K_BOOK_SHA_PRE_REPIN = "0c2d8b397a158283f19a8ff81a8f6be5f6a787ac09c09b7394c70e5402166b4b"
+K_BOOK_SHA = _repins.get(
+    "tools/science_funnel/validation/k_forensics_20260921/k_forensics_book.json",
+    K_BOOK_SHA_PRE_REPIN,
+)
 LIT_SHAS = {
     "oku2021.xml": "e8e60ac390192ed6259d792d317d5c722a62ab23511a0efc653e95ff1a69eef0",
     "hazotte2026.xml": "8ee615e176570d9412d9a44ef1209ef753e72faa7b0a03e183d37bb466f35790",

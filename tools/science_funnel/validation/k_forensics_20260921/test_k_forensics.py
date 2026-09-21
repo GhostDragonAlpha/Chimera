@@ -25,10 +25,17 @@ def sha256_file(path):
 class KForensics(unittest.TestCase):
     def test_inputs_match_receipt_pins(self):
         receipt = json.loads((LANE / "receipt.json").read_text())
+        # repin_20260921: the receipt's appended re-pin section supersedes the
+        # pre-repair (autocrlf-smudged) pins per path on the repaired lineage.
+        repins = {
+            r["path"]: r["new_sha256"]
+            for r in receipt.get("repin_20260921", {}).get("re_pins", [])
+        }
         for name, pin in receipt["pre_registration"]["inputs_pinned"].items():
             if "sha256" not in pin:
                 continue
-            self.assertEqual(sha256_file(REPO / pin["path"]), pin["sha256"], name)
+            want = repins.get(pin["path"], pin["sha256"])
+            self.assertEqual(sha256_file(REPO / pin["path"]), want, name)
 
     def test_derive_subprocess_reproducible(self):
         """A subprocess rerun must reproduce the committed deliverable bytes."""

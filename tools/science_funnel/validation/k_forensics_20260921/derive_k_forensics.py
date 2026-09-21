@@ -60,18 +60,31 @@ def refuse(msg):
 
 
 def verify_inputs(receipt):
-    """Every pinned input must match its sha (REFUSES on mismatch)."""
+    """Every pinned input must match its sha (REFUSES on mismatch).
+
+    repin_20260921: the wiseman-pin-repair lane (68730eab) rewrote
+    tools/science_funnel/data/wiseman2026/** blobs and made checkout == blob
+    (-text). The receipt's appended repin_20260921 section supersedes each
+    pre-repair pin per path; the pre-repair pins stay in the file verbatim and
+    still refuse if no re-pin covers them.
+    """
     out = {}
+    repins = {
+        r["path"]: r["new_sha256"]
+        for r in receipt.get("repin_20260921", {}).get("re_pins", [])
+    }
     for name, pin in receipt["pre_registration"]["inputs_pinned"].items():
         if "sha256" not in pin:
             continue
+        want = repins.get(pin["path"], pin["sha256"])
         p = REPO / pin["path"]
         if not p.exists():
             refuse(f"pinned input missing: {pin['path']}")
         got = sha256_file(p)
-        if got != pin["sha256"]:
+        if got != want:
             refuse(f"pinned input sha mismatch: {pin['path']}")
-        out[name] = {"path": pin["path"], "sha256": got, "verified": True}
+        out[name] = {"path": pin["path"], "sha256": got, "verified": True,
+                     "repinned_20260921": pin["path"] in repins}
     return out
 
 

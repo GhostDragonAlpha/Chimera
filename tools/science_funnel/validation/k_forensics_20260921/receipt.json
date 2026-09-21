@@ -218,5 +218,62 @@
   },
   "the_verdict_this_lane_hands_the_operator": "The deposited macaque model IS anatomically scaled (adult-female class, femur 173.13 mm / tibia 156.81 mm vs Francis & Wang 2023). The SI-implied 0.12x scale is a FETAL-class animal - physically impossible for the source of measured adult walk data; the only measured-consistent alternative is that SI 2 came from builds 1.1975x LARGER than the deposit (adult-male class), i.e. subject-specific builds differing from the deposit. The divergence is per-taxon (single unit artifact falsified), angles are identical, and the SI package carries no scale anchor. The author email asks the five questions in author_email_packet.md; our force books say the deposit scale is the one that powers the walk (evidence, not verdict).",
   "tests": "8/8 green: python -B -m unittest tools.science_funnel.validation.k_forensics_20260921.test_k_forensics"
+ },
+ "repin_20260921": {
+  "schema": "chimera.receipt_repin.v1",
+  "appended_by": "receipt-repin-20260921 (branch agent/receipt-repin-20260921)",
+  "append_only": true,
+  "note": "AMENDMENT, not an edit: every pin above is retained verbatim; it describes this lane's pre-repair checkout state (autocrlf=true smudge of the LF-normalized acquisition blobs). This section supersedes per-path pins for checkouts of the repaired lineage.",
+  "cause": "wiseman-pin-repair lane (branch agent/wiseman-pin-repair-20260921, commit 68730eab; EOL class instance 3): restored the acquisition receipt's pinned ORIGINAL bytes into the tools/science_funnel/data/wiseman2026 blobs and placed tools/science_funnel/data/wiseman2026/** under '-text -whitespace' (.gitattributes), so integrated checkouts now yield raw blob bytes instead of the autocrlf=true CRLF smudge this lane's worktree was measured in",
+  "cause_commit": "68730eab",
+  "re_pins": [
+   {
+    "pin_name": "wiseman_sha256_manifest",
+    "path": "tools/science_funnel/data/wiseman2026/sha256_manifest.json",
+    "old_sha256": "e72b6616fc23960e3e9a50491d104ee752240fc8b8787f7541c1da85b84a78e3",
+    "old_sha256_provenance": "sha256 of the autocrlf=true checkout of pre-repair blob f3155b640dfbdebe2cd0f77baafa5d874eea581f (raw blob bytes 38a70fc2ee8119ce72c49f49aada63e5d028ba6517dcd1dabdf92ee6e6c9339b) - the bytes this lane's worktree held and hashed",
+    "new_sha256": "b7570ab81ad6d94c9cadb9ba2726fddd1e37c5b9b828fb19bf7eee240654552b",
+    "new_sha256_provenance": "raw bytes of the repaired blob f681cbe34770c99d0726b8b96b4e1ec12d38b24d; checkout==blob under the new -text rule",
+    "cause": "the repair rewrote the manifest itself (route-b re-canonicalization of its inventory.json entry)",
+    "semantic_delta": "the manifest's path->sha map: 289 entries before, 289 after, same key set, 288 identical; exactly 1 entry changed - inventory.json 7e1b85ad758f880bd3d759767d8f687e5f2319e9a41780bc6916e9c464940ebc (70541 B, the original mixed-EOL bytes, provably unrecoverable) -> eba1545a4009119a5f4bf1d49704db5750855fa46c24776b0c878e3a3b4f31e3 (67154 B, canonical). All 233 mesh entries and all 7 .osim entry VALUES are identical old->new (they always pinned the original downloaded bytes; the repair made the blobs match them). This lane consumed the manifest ONLY as the mesh-entry lookup in verify_meshes(): every consumed value is unchanged."
+   },
+   {
+    "pin_name": "wiseman_inventory",
+    "path": "tools/science_funnel/data/wiseman2026/inventory.json",
+    "old_sha256": "04a3dd1a61fd8ddce9fd9f6ed42236d29eda5e90c45a54fde1fd8c3b8e056ab6",
+    "old_sha256_provenance": "sha256 of the autocrlf=true checkout of blob 9c85aaea74445b3f686c11af03f222b60f168df4 (raw eba1545a4009119a...) - the GIT-INVISIBLE case: the blob is byte-identical pre/post repair, only the checkout rule changed",
+    "new_sha256": "eba1545a4009119a5f4bf1d49704db5750855fa46c24776b0c878e3a3b4f31e3",
+    "new_sha256_provenance": "raw blob bytes (unchanged) - now what checkout yields under -text",
+    "cause": "the repair's .gitattributes rule ends smudged checkouts of wiseman2026/**",
+    "semantic_delta": "content semantics unchanged - same data, LF class only (the canonical bytes were already the committed blob; this receipt's own note above already recorded that the on-disk sha never matched the manifest's inventory entry - the entry this repair re-canonicalized was stale in the OTHER direction). Consumed claims are the mesh_scale_probe bbox priors and the units_note, both quoted verbatim in this receipt; both strings are present unchanged in the canonical content."
+   }
+  ],
+  "consumed_bytes_unchanged_proof": {
+   "macaque_model": "pin d5c65cbc0a72bd2d5c2258c6bd018fe850ae25cce6fb07c1f268b91e598c88e9 == repaired raw blob sha (this lane parsed the ORIGINAL bytes through the smudge; byte-identical pre/post repair)",
+   "si2": "pin 957af7fa9b9d8b29a4c327eaf53bc25c95f369bac83d5de9c341f728ffcba48d holds (binary blob untouched)",
+   "si1": "pin 11ca4a19d4028dfb0c5260541a057f63e348d69609e795c3ebd17d3654c3b367 holds (binary blob untouched)",
+   "pulley_ankle_hind_artifacts": "files outside wiseman2026/**, untouched by the repair; pins hold"
+  },
+  "downstream_reverification": {
+   "method": "derive_k_forensics.py re-run end-to-end on the repaired content (after the repin-aware pin reader below); the deliverable must regenerate byte-identical",
+   "k_forensics_book_sha256_before": "0c2d8b397a158283f19a8ff81a8f6be5f6a787ac09c09b7394c70e5402166b4b",
+   "k_forensics_book_sha256_after_rerun": "47b6a26a87d5c887e7b2061cf71c16fbe4fde43f15e2dd93267832e18c751bbb",
+   "numbers_delta": "ZERO on every derived number: femur 173.1324 mm ADULT_FEMALE_BAND, tibia 156.8062 mm ADULT_FEMALE_BAND, k reproduction all within tolerance (mtp 0.11975394, ankle 0.11976026), angle invariance, force ratios - the git diff of the regenerated deliverable against the committed book touches ONLY the inputs_sha_verified provenance block (16 insertions / 2 deletions, all inside that block)",
+   "headline_numbers": "k mtp 0.11975394 / ankle 0.11976026, femur 173.13 mm, tibia 156.81 mm - MEASURED identical",
+   "deliverable_byte_delta": "FIRED, narrowly and for the expected reason: the prereg predicted byte-identical book regeneration, but the book embeds the input-pin provenance it verified THIS run, so the two re-pins necessarily change those bytes. The prereg's substance holds: every measured number is identical and the only byte delta is the provenance block itself. The deliverable is re-committed with its honest post-repair provenance; the downstream byte-pin (deposit_mass k_forensics_book 0c2d8b39...) is therefore re-pinned in the same amendment set (second-order re-pin, cause chain recorded in the deposit receipt's repin_20260921 section)",
+   "determinism": "two in-process runs byte-identical: True (derive's own machinery, post-repair content)"
+  },
+  "code_touches": [
+   {
+    "file": "tools/science_funnel/validation/k_forensics_20260921/derive_k_forensics.py",
+    "change": "verify_inputs() now resolves each pinned sha through receipt['repin_20260921'] re_pins (per-path override) before refusing; old pins still refuse if the override is absent",
+    "cause": "the appended section must be the enforced pin source or the funnel would refuse forever"
+   },
+   {
+    "file": "tools/science_funnel/validation/k_forensics_20260921/test_k_forensics.py",
+    "change": "test_inputs_match_receipt_pins applies the same per-path override",
+    "cause": "mirror of the derive change"
+   }
+  ]
  }
 }
