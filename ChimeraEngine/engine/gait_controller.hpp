@@ -340,6 +340,72 @@ class GaitWalker {
  uint64_t hind_step_clamped_[2]={0,0};
  uint64_t hind_step_last_fire_[2]={0,0};
  uint64_t hind_step_last_td_[2]={0,0};
+ // ── THE HIND ALTERNATION LAW (wave 29, receipt_wave29.json) ──
+ // THE SECOND HIND STEPS BEFORE THE FIRST'S STANCE EXHAUSTS. THE MEASURED
+ // DEATH (the wave-28 run, re-mined on this lane's byte-reproduced baseline):
+ // the R's replant (TD 107) concentrated the ride on the L hind, whose knee
+ // was already at its wave-27 cap; the L's standing ride ran [107,152): the
+ // mined load-share series peaks 82.8 N at 120, decays to zero at 151, and
+ // the touch law's OWN release classification flips at the status 152 (the
+ // tick-start pair-min gap 1.184e-4 > kTouch+kReleaseBand) -- the forced
+ // liftoff at clock phase 0.4319, NOT a slot phase: the fold class. The body
+ // slid one-legged into the [226,298] collapse. THE BUDGET: concentration
+ // (the other's TD) to forced liftoff = 45 ticks of standing ride -- THE
+ // MINED DEATH ENVELOPE, the kSinkRateMax precedent (the controller owns its
+ // mined death constants; zero free numbers). The KINEMATIC envelope is NOT
+ // the owner (measured): the fore_env_ticks form mirrored hind-side reads
+ // 143 ticks at 107 -- the fold is CAP-LIMITED DYNAMICS, not reach
+ // exhaustion; hence the budget is MINED, not geometric. THE NATURAL SLOT
+ // CANNOT OWN THE SECOND STEP (measured): the L's slot read ~204, outside
+ // the budget. THE LAW: at a live CONCENTRATION (the other hind's last fire
+ // younger than this leg's last step-TD) whose natural slot lies beyond the
+ // deadline arithmetic (the other's TD + kFoldBudgetTicks - tair - g, the
+ // wave-20 tau1 form hind-side), the standing hind steps at the EARLIEST
+ // LAWFUL SLOT -- the wave-28 gate's clauses PLUS THE KICK-STAND PROMISE
+ // (new clause (d)): when the floor at the fire is exactly the pair (the
+ // standing hind + one fore), that fore must promise its pads through the
+ // glide -- its own fore clock covering tair from stance, or its held-glide
+ // span covering tair (the wave-24/25 measured face). A floor of 3+ needs
+ // no promise (the R's 98 fire ran support min 3: byte-preserved calendar).
+ // At the deadline, clauses (c)/(d) YIELD to the fold's precedence -- (a)/(b)
+ // NEVER (the no-double-step structure); the override counted, predicted
+ // inert (the gate opens ~124, 18 ticks before 142 on the mined walk).
+ // THE LIFT-FIRST GLIDE (the wave-28 bank's amendment, hind-side): while the
+ // stepping leg's pads remain inside the release band, the glide target
+ // HOLDS AT THE LIFTOFT SPOT + THE FULL ARCH (a static vertical demand: no
+ // haul, no drag BY CONSTRUCTION, full servo authority into the lift); the
+ // hold releases when the leg's pair-min gap clears the touch law's OWN
+ // release quantum kTouch+kReleaseBand (checked at the tick-start), then the
+ // standard line+arch resumes at the current glide phase (the clock never
+ // stopped -- the fore pocket-clear hold's pattern). THE MINED DRAG FACE IT
+ // OWNS: the wave-28 R pad cleared at the fire, SAGGED to ~1.4e-3 under the
+ // 4.8 m/s haul's servo lag, RE-ENTERED the band at 104 (a hovering pad has
+ // no normal force and no friction catch) and was hauled at slip 1.8674.
+ static constexpr int kFoldBudgetTicks=45; // the mined [TD 107, release 152) standing budget
+ bool hind_step_held_[2]={false,false};     // the lift-first hold is armed
+ int hind_step_clear_tick_[2]={-1,-1};      // the tick the release quantum cleared
+ uint64_t hind_step_hold_ticks_[2]={0,0};   // the held-tick census
+ int hind_step_alt_[2]={0,0};               // the last fire's class: 0 slot, 1 alternation
+ int hind_step_alt_due_[2]={0,0};           // the alternation-due flag at this tick (status)
+ uint64_t hind_step_deadline_tick_[2]={0,0};// the current deadline arithmetic (status)
+ uint64_t hind_step_deadline_fires_[2]={0,0};// the (c)/(d)-waiving deadline fires
+ // The alternation-due predicate: THE SKEW REPAIR, ONCE PER LEG -- the law
+ // exists because the ENTRY clock skew put this leg's natural slot beyond
+ // its fold budget (the L's slot ~204 vs the forced liftoff at 152); the
+ // step's own TD touch reset re-syncs the clock, repairing the skew, so a
+ // leg that has step-replanted even once is owned by the natural cadence
+ // (its budget premise -- the entry-era cap deficit -- was consumed by the
+ // replant). The concentration (the other's fire after this leg's last
+ // step-TD) plus phi below the slot (the natural trigger keeps precedence).
+ bool hind_alt_due(size_t hl,double tair)const{
+  size_t o=hl==0?1:0;
+  if(hind_step_last_td_[hl]!=0)return false;           // the skew repaired: the natural cadence owns
+  if(hind_step_last_td_[o]==0)return false;            // no completed other step yet
+  if(hind_step_last_fire_[o]<=hind_step_last_td_[hl])return false; // not concentrated
+  if(phi_[hl]>=TOE_OFF)return false;                   // the natural slot owns
+  uint64_t deadline=hind_step_last_td_[o]+(uint64_t)(kFoldBudgetTicks-(int)tair-1); // g=1
+  double wait=(TOE_OFF-phi_[hl])/(dt_/T_CYCLE);        // the clock's own rate
+  return double(ticks_)+wait>double(deadline);}
  // the harvested hind chain geometry (the scene's own model bytes)
  size_t hind_coord_[2][4]{{0,0,0,0},{0,0,0,0}}; // [leg][hip,knee,ankle,MP]
  size_t pelvis_row_=0;
@@ -1328,9 +1394,20 @@ class GaitWalker {
       double sg=hind_step_t_[hl]/ta;if(sg<0.)sg=0.;if(sg>1.)sg=1.;
       double c=2.*points_[hind_heel_pt_[hl]].radius;
       V tgt{};
-      for(int i2=0;i2<3;++i2)
-       tgt[i2]=hind_step_from_[hl][i2]+(hind_step_to_[hl][i2]-hind_step_from_[hl][i2])*sg;
-      tgt[1]+=c*std::sin(pi*sg);
+      // THE LIFT-FIRST HOLD (wave 29): while the pads remain inside the
+      // release band the target is the LIFTOFT SPOT + THE FULL ARCH -- a
+      // static vertical demand: no haul (no drag BY CONSTRUCTION), full
+      // servo authority into the lift. The glide clock never stopped: at
+      // the release the standard line+arch resumes at the current phase
+      // (the fore pocket-clear hold's pattern, hind-side).
+      if(hind_step_held_[hl]){
+       for(int i2=0;i2<3;++i2)tgt[i2]=hind_step_from_[hl][i2];
+       tgt[1]+=c;
+      }else{
+       for(int i2=0;i2<3;++i2)
+        tgt[i2]=hind_step_from_[hl][i2]+(hind_step_to_[hl][i2]-hind_step_from_[hl][i2])*sg;
+       tgt[1]+=c*std::sin(pi*sg);
+      }
       if(!have_fe){fe=evaluate(s_);have_fe=true;}
       double qh,qk,qa;hind_step_ik(hl,fe,tgt,qh,qk,qa);
       target=dr.joint=="hip"?qh:dr.joint=="knee"?qk:dr.joint=="ankle"?qa:hind_step_mp_[hl];
@@ -1824,6 +1901,10 @@ class GaitWalker {
   hind_step_fires_[0]=hind_step_fires_[1]=0;hind_step_tds_[0]=hind_step_tds_[1]=0;
   hind_step_gated_[0]=hind_step_gated_[1]=0;hind_step_clamped_[0]=hind_step_clamped_[1]=0;
   hind_step_last_fire_[0]=hind_step_last_fire_[1]=0;hind_step_last_td_[0]=hind_step_last_td_[1]=0;
+  hind_step_held_[0]=hind_step_held_[1]=false;hind_step_clear_tick_[0]=hind_step_clear_tick_[1]=-1;
+  hind_step_hold_ticks_[0]=hind_step_hold_ticks_[1]=0;hind_step_alt_[0]=hind_step_alt_[1]=0;
+  hind_step_alt_due_[0]=hind_step_alt_due_[1]=0;hind_step_deadline_tick_[0]=hind_step_deadline_tick_[1]=0;
+  hind_step_deadline_fires_[0]=hind_step_deadline_fires_[1]=0;
   for(size_t d=0;d<12;++d){wall_pins_[d]=0;wall_pins_air_[d]=0;}
   battery_.assign(nd_,0.);brake_.assign(nd_,0.);empty_events_.assign(nd_,0);store_total_=0;
   for(size_t d=0;d<nd_;++d){battery_[d]=drives_[d].store_floor;store_total_+=drives_[d].store_floor;}
@@ -1943,9 +2024,16 @@ class GaitWalker {
    if(walking&&paws_captured_&&hind_height_hold_latched_){
     double tair=(std::ceil)((T_CYCLE-DUTY_SAMPLED)/dt_);
     for(size_t hl=0;hl<2;++hl)if(hind_step_mode_[hl]==1){ // the glide clock
+     if(hind_step_held_[hl]){ // THE LIFT-FIRST HOLD's release test: the leg's
+      // OWN release quantum (the touch law's), on this same tick-start
+      // evaluation -- a static vertical demand until the band clears.
+      double g1=gap_of(e,hind_heel_pt_[hl]),g2=gap_of(e,hind_mp_pt_[hl]);
+      if((g1<g2?g1:g2)>kTouch+kReleaseBand){hind_step_held_[hl]=false;hind_step_clear_tick_[hl]=(int)ticks_;}
+      else ++hind_step_hold_ticks_[hl];}
      ++hind_step_t_[hl];
      if(hind_step_t_[hl]>=tair){ // TD: the leg returns to the tables; the
       hind_step_mode_[hl]=0;hind_step_t_[hl]=0.; // touch reset re-syncs phi
+      hind_step_held_[hl]=false;
       hind_step_last_td_[hl]=ticks_;++hind_step_tds_[hl];
 #ifdef GAIT_EVENT_TRACE
       std::fprintf(stderr,"[hindstep] td leg=%zu tick=%llu tds=%llu\n",
@@ -1955,12 +2043,22 @@ class GaitWalker {
     for(size_t hl=0;hl<2;++hl){
      size_t o=hl==0?1:0;
      if(hind_step_mode_[hl]!=0)continue;
-     if(phi_[hl]<TOE_OFF||!touching_prev_[hl])continue; // a live slot only
+     // THE ALTERNATION-DUE FLAG (wave 29): computed every decision tick for
+     // the status census; the alternation leg still requires LIVE PADS (it
+     // is the standing leg's ride that the budget bounds).
+     hind_step_alt_due_[hl]=hind_alt_due(hl,tair)?1:0;
+     {uint64_t dl=hind_step_last_td_[o]>0?
+        hind_step_last_td_[o]+(uint64_t)((int)kFoldBudgetTicks-(int)tair-1):0;
+      hind_step_deadline_tick_[hl]=dl;}
+     bool live_slot=phi_[hl]>=TOE_OFF&&touching_prev_[hl];
+     bool alt_fire=hind_step_alt_due_[hl]!=0&&touching_prev_[hl];
+     if(!live_slot&&!alt_fire)continue; // a live slot or a due alternation only
      bool gated=false;
+     bool floor_gated=false;
+     int live=0; // the other-three live-pad count (clause (c); trace-reported)
      if(hind_step_mode_[o]==1)gated=true;                    // (a) no double step
      else if(hind_step_last_td_[o]+1>ticks_)gated=true;      // (b) the hand-off g
      else{ // (c) THE SUPPORT FLOOR: the other three legs >= 2 live pads
-      int live=0;
       for(size_t l2=0;l2<2;++l2){
        double mn=1e300;
        for(size_t k=0;k<npts_;++k)
@@ -1972,10 +2070,59 @@ class GaitWalker {
        if(points_[k].name.rfind(o==0?"left_":"right_",0)==0)
         mn=(std::min)(mn,gap_of(e,k));
       if(mn<=kTouch)++live;
-      if(live<2)gated=true;}
-     if(gated){++hind_step_gated_[hl];continue;}
-     // FIRE: the wave-20 glide, hind side.
+      if(live<2)floor_gated=true;
+      // (d) THE KICK-STAND PROMISE (wave 29, ALTERNATION fires only): the
+      // alternation fire is the gate's own scheduling choice, so it must
+      // PROMISE its floor -- the standing hind (the other, touching) plus
+      // one fore whose own clock holds a real stance across the glide
+      // (mode 0, stance remaining >= tair) or whose held-glide span covers
+      // tair (the wave-24/25 measured pads-live face). MEASURED BASIS (the
+      // first build's falsifier firing, reported in the receipt): a
+      // transient 3-pad floor at the fire is NOT a promise -- both fores
+      // left inside the glide (the L fore's scheduled 115 lift, the R
+      // fore's geometric ~118 leave) and the floor ran at 1 for 8 ticks.
+      // The natural SLOT fires keep the wave-28 gate (a)-(c) unchanged:
+      // their floor is that census's own judged face (min 3 at the 98
+      // fire), and no clock promise exists for the decayed-seated fores
+      // (the wave-28b map's geometric-unload class: the in-place churn
+      // holds them without a stance to cite).
+      if(alt_fire&&!gated&&!floor_gated){
+       bool promised=false;
+       if(touching_prev_[o]){
+        for(size_t l2=0;l2<2;++l2){
+         double mn2=1e300;
+         for(size_t k=0;k<npts_;++k)
+          if(points_[k].name.rfind(l2==0?"fore_left":"fore_right",0)==0)
+           mn2=(std::min)(mn2,gap_of(e,k));
+         if(mn2>kTouch)continue;
+         if((fore_mode_[l2]==0&&fore_stance_[l2]-fore_t_[l2]>=tair)||
+            (fore_mode_[l2]==1&&fore_glide_held(l2)&&fore_hold_last_[l2]-fore_t_[l2]>=tair)){
+          promised=true;break;}}}
+       if(!promised)floor_gated=true;}
+     }
+     // THE DEADLINE (the fold's precedence): at the budget's deadline
+     // arithmetic the floor clauses (c)/(d) yield -- a forced fold-liftoff
+     // kills the walk, a floor dip is transient and healed by the replant.
+     // Clauses (a)/(b) NEVER yield (the no-double-step structure). Counted,
+     // predicted inert on this walk (the gate opens ~18 ticks earlier).
+     bool deadline_fire=hind_step_alt_due_[hl]!=0&&hind_step_deadline_tick_[hl]>0&&
+      ticks_>=hind_step_deadline_tick_[hl];
+     if(floor_gated&&deadline_fire){floor_gated=false;++hind_step_deadline_fires_[hl];}
+#ifdef GAIT_EVENT_TRACE
+     if(alt_fire)std::fprintf(stderr,"[hindgate] tick=%llu leg=%zu live=%d tL=%d sL=%.1f tR=%d sR=%.1f hL=%d hR=%d gated=%d floor=%d dl=%llu v=%.3f\n",
+      (unsigned long long)ticks_,hl,live,
+      fore_mode_[0]==0?(int)fore_t_[0]:-1,fore_stance_[0]-fore_t_[0],
+      fore_mode_[1]==0?(int)fore_t_[1]:-1,fore_stance_[1]-fore_t_[1],
+      fore_glide_held(0)?1:0,fore_glide_held(1)?1:0,
+      gated,floor_gated,(unsigned long long)hind_step_deadline_tick_[hl],s_.v[3]);
+#endif
+     if(gated||floor_gated){++hind_step_gated_[hl];continue;}
+     // FIRE: the wave-20 glide, hind side. The class recorded; the
+     // LIFT-FIRST HOLD armed (the target holds at the spot + arch until the
+     // release quantum clears).
      hind_step_mode_[hl]=1;hind_step_t_[hl]=0.;
+     hind_step_alt_[hl]=live_slot?0:1;
+     hind_step_held_[hl]=true;hind_step_clear_tick_[hl]=-1;
      ++hind_step_fires_[hl];hind_step_last_fire_[hl]=ticks_;
      auto p1=e.point(points_[hind_heel_pt_[hl]].index,points_[hind_heel_pt_[hl]].local).first;
      auto p2=e.point(points_[hind_mp_pt_[hl]].index,points_[hind_mp_pt_[hl]].local).first;
@@ -1999,9 +2146,10 @@ class GaitWalker {
       hind_step_qerr_[hl]=(std::max)(std::abs(qh-s_.q[hind_coord_[hl][0]]),
        (std::max)(std::abs(qk-s_.q[hind_coord_[hl][1]]),std::abs(qa-s_.q[hind_coord_[hl][2]])));}
 #ifdef GAIT_EVENT_TRACE
-     std::fprintf(stderr,"[hindstep] fire leg=%zu tick=%llu phi=%.5f from=(%.6f,%.6f) to=(%.6f,%.6f) xoff=%.6f v=%.6f qerr=%.3e ap=%.4f br=%+d\n",
-      hl,(unsigned long long)ticks_,phi_[hl],from[0],from[1],hind_step_to_[hl][0],hind_step_to_[hl][1],
-      xoff,s_.v[3],hind_step_qerr_[hl],hind_step_ap_[hl],hind_step_branch_[hl]);
+     std::fprintf(stderr,"[hindstep] fire leg=%zu tick=%llu phi=%.5f class=%s from=(%.6f,%.6f) to=(%.6f,%.6f) xoff=%.6f v=%.6f qerr=%.3e ap=%.4f br=%+d dl=%llu\n",
+      hl,(unsigned long long)ticks_,phi_[hl],hind_step_alt_[hl]?"alt":"slot",from[0],from[1],hind_step_to_[hl][0],hind_step_to_[hl][1],
+      xoff,s_.v[3],hind_step_qerr_[hl],hind_step_ap_[hl],hind_step_branch_[hl],
+      (unsigned long long)hind_step_deadline_tick_[hl]);
 #endif
     }}}
   // 2) reflex on the tick-start state (armed only in the walk, and only when
@@ -2190,7 +2338,15 @@ class GaitWalker {
       {"plant_y",hind_step_plant_y_[hl]},{"xoff_m",hind_step_xoff_[hl]},
       {"held_ap_deg",hind_step_ap_[hl]*180/pi},{"branch",hind_step_branch_[hl]},
       {"fire_qerr_rad",hind_step_qerr_[hl]},
-      {"wall_pins",hp},{"wall_pins_air",hpa},{"phase",phi_[hl]}});}
+      {"wall_pins",hp},{"wall_pins_air",hpa},{"phase",phi_[hl]},
+      // THE HIND ALTERNATION LAW's census fields (wave 29). Read-only.
+      {"fire_class",hind_step_alt_[hl]==1?"alternation":"slot"},
+      {"held",hind_step_held_[hl]},{"clear_tick",hind_step_clear_tick_[hl]},
+      {"hold_ticks",hind_step_hold_ticks_[hl]},
+      {"alt_due",hind_step_alt_due_[hl]!=0},
+      {"deadline_tick",hind_step_deadline_tick_[hl]},
+      {"deadline_fires",hind_step_deadline_fires_[hl]},
+      {"fold_budget_ticks",(double)kFoldBudgetTicks}});}
     gait["hind_step"]=hs;}}
   return {{"sim_time_s",ticks_*dt_},{"ticks",ticks_},{"mode","native_gait_walker"},{"joints",joints},
    {"config",config_},{"power",config_["power"]},{"gait",gait},
