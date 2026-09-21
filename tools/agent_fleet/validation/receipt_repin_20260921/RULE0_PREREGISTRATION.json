@@ -1,0 +1,76 @@
+{
+  "schema": "chimera.receipt_repin.rule0.v1",
+  "lane": "receipt-repin-20260921",
+  "branch": "agent/receipt-repin-20260921 (forked at 5a5914b3 = agent/k-scale-forensics-20260921)",
+  "written_before": "the merge of agent/wiseman-pin-repair-20260921 (68730eab) and agent/deposit-mass-forensics-20260921 (5f54a161) into this branch, and before any re-derivation run, amendment write, or crosscheck run",
+  "class": "rehearsal-2 top risk #1: repair lanes silently invalidate downstream receipt pins (text-clean, git-invisible; only the receipts' own hash checks catch it)",
+
+  "statement": "The k-forensics and deposit-mass receipts pin tools/science_funnel/data/wiseman2026/** bytes as their worktrees held them: CRLF-smudged autocrlf=true checkouts of the LF-normalized acquisition blobs (instance-3 state). The wiseman pin-repair lane restored the pinned original bytes into the blobs AND put tools/science_funnel/data/wiseman2026/** under '-text -whitespace' (.gitattributes, 68730eab), so at integration the checked-out bytes become the raw blobs. Every enforced pin on a wiseman2026 text file whose pre-repair verification relied on the smudge, and every pin naming a file whose bytes the repair rewrote, now fails its own verification. The fix is append-only re-pins (amendments) naming old pin, new hash, cause, and a re-verification of every downstream number - plus a systemic crosscheck so the class is caught before merge.",
+
+  "prediction": {
+    "P1_red_state": "On the integrated tree (5a5914b3 + 68730eab + 5f54a161) with receipts unamended: derive_k_forensics.py exits nonzero with 'k-forensics LOAD REFUSAL: pinned input sha mismatch: tools/science_funnel/data/wiseman2026/sha256_manifest.json'; derive_deposit_mass_book.py exits nonzero with 'LOAD REFUSED: sha256_manifest.json != k-lane receipt pin'; the two lane test batteries fail exactly 5 tests (k_forensics 3: test_inputs_match_receipt_pins, test_derive_subprocess_reproducible, test_determinism_two_runs_byte_identical; deposit_mass 2: its derive-invoking determinism/subprocess tests).",
+    "P2_zero_delta": "The repaired files' semantic content equals the consumed content: the manifest path->sha map (289 entries) changes in exactly 1 entry (inventory.json re-canonicalization, route b); the derivations' parsed inputs are byte-identical pre/post repair (Macaque_model.osim: the k lanes' measured d5c65cbc... IS the repaired raw blob; SI blobs untouched). Therefore after the append-only amendments both books regenerate byte-identical: k_forensics_book.json sha256 0c2d8b397a158283f19a8ff81a8f6be5f6a787ac09c09b7394c70e5402166b4b and deposit_mass_book.json sha256 6779e5dc48c8ab93c29a0cd01852b6a4fa5a3f41aee90397525a58732cc0a8d6; every k number (k=0.11975394 mtp / 0.11976026 ankle, femur 173.13 mm, tibia 156.81 mm) and every deposit number (0.772 kg pelvis+hindlimbs anomaly) is unchanged. DELTA EXPECTED: EXACTLY ZERO.",
+    "P3_crosscheck": "pin_crosscheck.py with --own 5f54a161 --target 68730eab flags EXACTLY the enforced-pin collision instances pre-registered in affected_enforced_pins below (4 instances: k receipt x2 pins, deposit receipt x1 pin, deposit derive code constant x1) and flags NO enforced pin on any other receipt (ankle_arms, pulley_rederivation, hind_torque, wiseman_pin_repair, and all earlier lanes); book-recorded provenance shas are reported as informational records, not enforced pins, and are not edited.",
+    "P4_determinism": "The crosscheck report regenerates byte-identical on rerun (pure function of refs, no timestamps); both derives remain byte-identical on rerun by their own machinery."
+  },
+
+  "affected_enforced_pins": [
+    {
+      "receipt": "tools/science_funnel/validation/k_forensics_20260921/receipt.json",
+      "pin_name": "wiseman_sha256_manifest",
+      "path": "tools/science_funnel/data/wiseman2026/sha256_manifest.json",
+      "old_sha256": "e72b6616fc23960e3e9a50491d104ee752240fc8b8787f7541c1da85b84a78e3",
+      "old_sha256_provenance": "sha256 of the autocrlf=true checkout of pre-repair blob f3155b640dfbdebe2cd0f77baafa5d874eea581f (raw 38a70fc2ee8119ce...) - what the k lane's worktree held",
+      "new_sha256_predicted": "b7570ab81ad6d94c9cadb9ba2726fddd1e37c5b9b828fb19bf7eee240654552b",
+      "new_provenance": "raw bytes of repaired blob f681cbe34770c99d0726b8b96b4e1ec12d38b24d (checkout==blob under the new -text rule)",
+      "cause": "pin-repair lane rewrote the manifest (route-b re-canonicalization of the inventory entry)",
+      "enforced_by": "test_k_forensics.py::test_inputs_match_receipt_pins + derive_k_forensics.py verify_inputs"
+    },
+    {
+      "receipt": "tools/science_funnel/validation/k_forensics_20260921/receipt.json",
+      "pin_name": "wiseman_inventory",
+      "path": "tools/science_funnel/data/wiseman2026/inventory.json",
+      "old_sha256": "04a3dd1a61fd8ddce9fd9f6ed42236d29eda5e90c45a54fde1fd8c3b8e056ab6",
+      "old_sha256_provenance": "sha256 of the autocrlf=true checkout of blob 9c85aaea74445b3f686c11af03f222b60f168df4 (raw eba1545a4009119a...) - the git-INVISIBLE case: the blob does not change at all, only the checkout rule does",
+      "new_sha256_predicted": "eba1545a4009119a5f4bf1d49704db5750855fa46c24776b0c878e3a3b4f31e3",
+      "new_provenance": "raw blob bytes (unchanged blob, new -text rule)",
+      "cause": "the repair's .gitattributes rule tools/science_funnel/data/wiseman2026/** -text -whitespace ends smudged checkouts",
+      "enforced_by": "test_k_forensics.py::test_inputs_match_receipt_pins + derive_k_forensics.py verify_inputs"
+    },
+    {
+      "receipt": "tools/science_funnel/validation/deposit_mass_20260921/receipt.json",
+      "pin_name": "wiseman_sha256_manifest (sha256_pre_verified; equals k lane receipt pin)",
+      "path": "tools/science_funnel/data/wiseman2026/sha256_manifest.json",
+      "old_sha256": "e72b6616fc23960e3e9a50491d104ee752240fc8b8787f7541c1da85b84a78e3",
+      "old_sha256_provenance": "same smudged-checkout provenance as the k receipt pin it quotes",
+      "new_sha256_predicted": "b7570ab81ad6d94c9cadb9ba2726fddd1e37c5b9b828fb19bf7eee240654552b",
+      "new_provenance": "raw repaired blob bytes",
+      "cause": "same manifest rewrite; ALSO duplicated as MANIFEST_SHA constant in derive_deposit_mass_book.py (code-side pin, same old value e72b6616...)",
+      "enforced_by": "derive_deposit_mass_book.py verify_inputs refuse (the receipt key sha256_pre_verified is not iterated by the test loop, but the derive refusal fails its derive-invoking tests)"
+    }
+  ],
+
+  "hold_pins_verified_read_only": [
+    "k receipt: Macaque_model.osim d5c65cbc0a72bd2d5c2258c6bd018fe850ae25cce6fb07c1f268b91e598c88e9 == repaired raw blob (the lane measured the ORIGINAL bytes through the smudge); download_receipt.json bb2363e452b7f50e5bb149709bdbf2ae6f22e9cc1d00609fdb3333896b2e5f73 == repaired raw blob; si1 11ca4a19d4028dfb0c5260541a057f63e348d69609e795c3ebd17d3654c3b367 and si2 957af7fa9b9d8b29a4c327eaf53bc25c95f369bac83d5de9c341f728ffcba48d (binary, blobs untouched)",
+    "k receipt pins on pulley/ankle/hind receipts+books (files the repair does not touch, outside wiseman2026/**)",
+    "ankle_arms receipt: Macaque d5c65cbc... + si2 957af7fa... (hold, same mechanism)",
+    "pulley receipt + pulley_arms_derivation.json: Macaque d5c65cbc... + si2 957af7fa... (hold)",
+    "deposit receipt: macaque_model sha256_manifest_entry d5c65cbc... (the manifest VALUE is unchanged by the repair and the repaired blob now matches it - holds, and becomes more true); k_forensics_book sha 0c2d8b39... (book bytes untouched by this lane's amendments - the k book is a delivered artifact and is NOT edited); literature pins",
+    "wiseman_pin_repair receipt: pins post-repair state (this lane does not touch wiseman2026 bytes)"
+  ],
+
+  "scope": {
+    "refs_swept": ["5a5914b3 (k-forensics)", "5f54a161 (deposit-mass, contains k)", "68730eab (wiseman-pin-repair)"],
+    "sweep_method": "git grep wiseman2026 over every ref + git grep for .osim|sha256_manifest|inventory.json|download_receipt over all validation/evidence dirs; every hit scanned for 64-hex shas near wiseman2026 paths; structured JSON pin walk on every hit",
+    "repair_touched_paths": "git diff aede5de9..68730eab: .gitattributes, wiseman2026/{sha256_manifest.json, download_receipt.json, LICENSE_CC_BY_4.0.txt, _api/article_32017184.json, _api/article_32017187.json, _api/zenodo_20041122.json, models/{7}.osim} (inventory.json blob unchanged - the collision is the checkout-rule change); new lane dir wiseman_pin_repair_20260921/",
+    "manifest_semantic_delta_read_only": "289 entries, same key set, 288 identical, 1 changed: inventory.json pin 7e1b85ad758f880bd3d759767d8f687e5f2319e9a41780bc6916e9c464940ebc (70541 B) -> eba1545a4009119a5f4bf1d49704db5750855fa46c24776b0c878e3a3b4f31e3 (67154 B); the .osim/mesh entry VALUES are identical old->new (they always pinned the original bytes; the repair made the blobs match them)"
+  },
+
+  "falsifiers": {
+    "F1_every_repin_traced": "if any re-pin lacks old_sha256 -> new_sha256 + cause + provenance on BOTH sides, or if any inputs_pinned entry is edited/deleted rather than superseded by an appended section, the amendment is an edit, not an amendment - FAIL",
+    "F2_zero_delta_or_honest_delta": "if either book regenerates with a sha other than 0c2d8b39.../6779e5dc..., the delta is measured, reported, and the amendments record it - a non-zero delta does NOT block the re-pin (the pins must still point at the bytes actually consumed) but the zero-delta claim is then FALSE and must be reported as fired",
+    "F3_crosscheck_exactness": "if the crosscheck flags any receipt outside the pre-registered affected set, misses any pre-registered instance, or runs non-green on the post-amendment state, the tool is wrong - FAIL",
+    "F4_enumeration_completeness": "if any file on the swept refs pins a repair-touched path with an enforced sha that this preregistration does not list, the survey was incomplete - FAIL",
+    "F5_determinism": "non-identical reruns of the crosscheck or the derives - FAIL"
+  }
+}
