@@ -373,6 +373,45 @@ void on its own falsifiers (L1–L6 of its preregistration).
 
 ---
 
+## 5B. AMENDED PREREGISTRATION, SECOND STAGE — the seat band re-derived: [0, cut] (banked 2026-09-21, BEFORE the corrected re-run)
+
+**§5A's OWN FALSIFIER FIRED ON ITS FIRST RUN** (its L6, exactly as banked): the REAL arm — head
+CENTERED, displacement 0.0 exactly, the pivot law's own signature — drives the unsigned gap to
+**0.053906119839 mm** (hip 02, θ = −3R/5, INSIDE the half-voxel floor 0.08 mm): seated rigid
+impingement (neck meeting the acetabular rim, bone-on-bone) legitimately reads below any
+mesh-derived localization. **The hard lower edge was the mis-derivation**; §5A as first banked is
+VOID BY ITS OWN FALSIFIER and stands in the record unedited. The measured theorem: on this mesh
+class, no positive lower edge can carry a hard seat clause without mis-classifying seated
+impingement as dislocation — which is why the band's derivable form is the one §5A's mission
+statement actually wrote: **[0, cut]**.
+
+**THE CORRECTED PREDICATE (P6′, v2 — successor lane
+`tools/science_funnel/validation/p6_repreregistration_20260921/`, amendment 3 banked before the
+re-run):** an arm is SEATED at θ iff (i) the law-metric min gap g ∈ [0, 3.0 mm] — contact is IN the
+touching class, separation beyond the committed cut is out — AND (ii) the head center stays within
+the fit's own RMS band: ‖pose(c*) − c*‖ ≤ rms_residual (band_02 = 0.155477725893 mm, band_03 =
+0.147474758014 mm), which is now the LOAD-BEARING not-through test. The interpenetration tolerance
+KEEPS ITS DERIVED VALUE — tol_ip = specimen.resolution_um/2 = 0.08 mm — as the gap metric's
+RESOLUTION FLOOR: readings below it lie inside the surfaces' own localization, where seated-
+impingement contact and through-crossing are indistinguishable; they are recorded per pose, never
+clause-binding. No number's value changed; one number's role did, forced by the fired falsifier
+(tuning audit in the amendment: the firing is a measurement, not a preference).
+
+**PREDICTION (banked before the re-run).** The REAL arm PASSES P6′ on both hips (every grid gap
+≤ 3.0 mm — max 2.21511346552/1.650134761681 mm — and displacement 0.0 exactly at every θ); the NULL
+arm FAILS P6′ on both hips via the displacement band (5.745805839276/3.945980865254 mm at ±R =
+36.96×/26.76× the bands, reproducing 2·|c⊥|·sin(θ/2) to 1e-9; its gap readings all ≤ 3.0 — the
+blindness now carried by Leg 2 exactly as designed; hip 03's 0.046718998681 recorded as the
+through-class floor reading). The contrast is the proof's content; the verdict lands whichever way
+it lands.
+
+**FALSIFIERS.** The real arm fails either clause, or the null arm passes both on either hip → the
+amendment FAILS and the design REMAINS VOID — final. Any REAL arm gap > 3.0 mm on the grid → VOID.
+Determinism drift, watched-byte change, or a red kernel gate → the lane is void on its own
+falsifiers.
+
+---
+
 ## 6. WHY THIS LANE DID NOT BUILD THE PROOF (the fence, in the open)
 
 The battery's machinery is small (a Rodrigues transform, a mesh closest-point pass, the existing

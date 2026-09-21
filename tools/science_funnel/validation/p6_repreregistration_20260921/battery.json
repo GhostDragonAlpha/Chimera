@@ -1,0 +1,1121 @@
+{
+ "bands": {
+  "band_02_mm": 0.155477725893,
+  "band_03_mm": 0.147474758014,
+  "cut_mm": 3.0,
+  "tol_ip_mm": 0.08
+ },
+ "base_commit": "427e9d0 (agent/hip-pivot-proof-20260921, the proof head)",
+ "corrected_predicate": {
+  "band_source": "the registered fit's own RMS residual (the pivot's measured radius+residual ARE the socket's geometry)",
+  "cut_mm": 3.0,
+  "cut_source": "bone_identification_v3 derived_cuts.joint_gap_mm (committed)",
+  "definition": "SEATED at theta iff (tol_ip <= seat_gap <= cut) AND (displacement <= band_h); passes P6' iff both hold at every theta of the closed cited range",
+  "range_coverage": "grid {\u2212R} \u222a {R\u00b7k/5, k = \u22124..4} \u222a {+R}; displacement covered on the whole range: real arm identity (d \u2261 0), null arm monotone 2|c_perp| sin(|\u03b8|/2) (endpoints dominate)",
+  "resolution_um": 160,
+  "tol_ip_derivation": "specimen.resolution_um/2 = 160 um / 2 = 0.08 mm: half the committed CT sampling step; a vertex-vertex reading below the surfaces' own localization cannot certify not-through",
+  "tol_ip_mm": 0.08
+ },
+ "fits": {
+  "02": {
+   "band_eps_mm": 0.310857620079,
+   "center_mm": [
+    58.481285783297,
+    40.201005541148,
+    43.245619125234
+   ],
+   "gauss_newton_iters_final": 7,
+   "inliers": 599,
+   "iterations": 72,
+   "max_residual_mm": 0.310489428534,
+   "outcome": "fixed_point",
+   "radius_mm": 3.044128510081,
+   "rms_residual_mm": 0.155477725893,
+   "seed_vertex": 2426
+  },
+  "03": {
+   "band_eps_mm": 0.302305969593,
+   "center_mm": [
+    57.206718169476,
+    41.501776979145,
+    22.591386466803
+   ],
+   "gauss_newton_iters_final": 8,
+   "inliers": 533,
+   "iterations": 60,
+   "max_residual_mm": 0.301130722294,
+   "outcome": "fixed_point",
+   "radius_mm": 2.682250273053,
+   "rms_residual_mm": 0.147474758014,
+   "seed_vertex": 2148
+  }
+ },
+ "grid": {
+  "definition": "endpoints exact; interior R*k/5.0 (the prior lane's registered probe fraction)",
+  "flexion_signs": {
+   "02": -1,
+   "03": -1
+  },
+  "thetas_rad": [
+   -2.0943951,
+   -1.67551608,
+   -1.25663706,
+   -0.83775804,
+   -0.41887902,
+   0.0,
+   0.41887902,
+   0.83775804,
+   1.25663706,
+   1.67551608,
+   2.0943951
+  ]
+ },
+ "hard_checks_pass": false,
+ "inputs": {
+  "definition_sha256": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+  "osim_sha256": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
+  "osim_sha_matches_citation": true,
+  "vertex_books_match_membranes": true
+ },
+ "lane": "agent/p6-repreregistration-20260921",
+ "law_amendment_bank_sha256": "e18d46ca29b8cfa0ba2cd81791d73dade52f2ba3c1733aa6d912004f2f533447",
+ "margins": {
+  "null_disp_over_band_02": 36.955813485608,
+  "null_disp_over_band_03": 26.756991626141,
+  "null_hip02_hi_seat_over_tol": 2.61635810915,
+  "null_hip03_hi_seat_over_tol": 0.583987483512,
+  "real_min_seat_over_tol_02": 0.673826497987,
+  "real_min_seat_over_tol_03": 1.7828988583
+ },
+ "metric_transfer": {
+  "02": {
+   "abs_dev_mm": 0.001569569807,
+   "committed_measured_gap_mm": 1.44,
+   "law_gap_theta0_mm": 1.438430430193,
+   "pass": true
+  },
+  "03": {
+   "abs_dev_mm": 0.003633446347,
+   "committed_measured_gap_mm": 1.49,
+   "law_gap_theta0_mm": 1.486366553653,
+   "pass": true
+  }
+ },
+ "null_arm": {
+  "02": {
+   "band_mm": 0.155477725893,
+   "clause_breaches_at": [
+    "lo_endpoint",
+    "grid_k-4",
+    "grid_k-3",
+    "grid_k-2",
+    "grid_k-1",
+    "grid_k+1",
+    "grid_k+2",
+    "grid_k+3",
+    "grid_k+4",
+    "hi_endpoint"
+   ],
+   "displacement_clause_ok_all_grid": false,
+   "max_displacement_mm": 5.745805839276,
+   "max_seat_mm": 1.438430430193,
+   "min_seat_mm": 0.08843746898,
+   "pass_p6_corrected": false,
+   "rows": [
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": false,
+     "displacement_mm": 5.745805839276,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": 5.745805839276,
+     "provenance": [
+      "child_vertex",
+      2030,
+      "parent_vertex",
+      255
+     ],
+     "seat_gap_mm": 0.08843746898,
+     "seat_ok": true,
+     "theta_rad": -2.0943951
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": false,
+     "displacement_mm": 4.930531896947,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": 4.930531896947,
+     "provenance": [
+      "child_vertex",
+      2106,
+      "parent_vertex",
+      197
+     ],
+     "seat_gap_mm": 0.122594797758,
+     "seat_ok": true,
+     "theta_rad": -1.67551608
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": false,
+     "displacement_mm": 3.899770051894,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": 3.899770051894,
+     "provenance": [
+      "child_vertex",
+      12392,
+      "parent_vertex",
+      1405
+     ],
+     "seat_gap_mm": 0.102783716788,
+     "seat_ok": true,
+     "theta_rad": -1.25663706
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": false,
+     "displacement_mm": 2.698569542789,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": 2.698569542789,
+     "provenance": [
+      "child_vertex",
+      2163,
+      "parent_vertex",
+      175
+     ],
+     "seat_gap_mm": 0.583738826751,
+     "seat_ok": true,
+     "theta_rad": -0.83775804
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": false,
+     "displacement_mm": 1.37942859576,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": 1.37942859576,
+     "provenance": [
+      "child_vertex",
+      2163,
+      "parent_vertex",
+      175
+     ],
+     "seat_gap_mm": 1.201252391417,
+     "seat_ok": true,
+     "theta_rad": -0.41887902
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "rest",
+     "predicted_displacement_mm": 0.0,
+     "provenance": [
+      "child_vertex",
+      2426,
+      "parent_vertex",
+      182
+     ],
+     "seat_gap_mm": 1.438430430193,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": false,
+     "displacement_mm": 1.37942859576,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": 1.37942859576,
+     "provenance": [
+      "child_vertex",
+      1808,
+      "parent_vertex",
+      143
+     ],
+     "seat_gap_mm": 1.366120257525,
+     "seat_ok": true,
+     "theta_rad": 0.41887902
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": false,
+     "displacement_mm": 2.698569542789,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": 2.698569542789,
+     "provenance": [
+      "child_vertex",
+      1272,
+      "parent_vertex",
+      127
+     ],
+     "seat_gap_mm": 0.219458747235,
+     "seat_ok": true,
+     "theta_rad": 0.83775804
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": false,
+     "displacement_mm": 3.899770051894,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": 3.899770051894,
+     "provenance": [
+      "child_vertex",
+      1741,
+      "parent_vertex",
+      143
+     ],
+     "seat_gap_mm": 0.153151799471,
+     "seat_ok": true,
+     "theta_rad": 1.25663706
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": false,
+     "displacement_mm": 4.930531896947,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": 4.930531896947,
+     "provenance": [
+      "child_vertex",
+      1802,
+      "parent_vertex",
+      143
+     ],
+     "seat_gap_mm": 0.148620743985,
+     "seat_ok": true,
+     "theta_rad": 1.67551608
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": false,
+     "displacement_mm": 5.745805839276,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": 5.745805839276,
+     "provenance": [
+      "child_vertex",
+      485,
+      "parent_vertex",
+      198
+     ],
+     "seat_gap_mm": 0.209308648732,
+     "seat_ok": true,
+     "theta_rad": 2.0943951
+    }
+   ],
+   "seat_clause_ok_all_grid": true
+  },
+  "03": {
+   "band_mm": 0.147474758014,
+   "clause_breaches_at": [
+    "lo_endpoint",
+    "grid_k-4",
+    "grid_k-3",
+    "grid_k-2",
+    "grid_k-1",
+    "grid_k+1",
+    "grid_k+2",
+    "grid_k+3",
+    "grid_k+4",
+    "hi_endpoint"
+   ],
+   "displacement_clause_ok_all_grid": false,
+   "max_displacement_mm": 3.945980865254,
+   "max_seat_mm": 1.486366553653,
+   "min_seat_mm": 0.046718998681,
+   "pass_p6_corrected": false,
+   "rows": [
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": false,
+     "displacement_mm": 3.945980865254,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": 3.945980865254,
+     "provenance": [
+      "child_vertex",
+      2003,
+      "parent_vertex",
+      144
+     ],
+     "seat_gap_mm": 0.116945747601,
+     "seat_ok": true,
+     "theta_rad": -2.0943951
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": false,
+     "displacement_mm": 3.386084574575,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": 3.386084574575,
+     "provenance": [
+      "child_vertex",
+      1388,
+      "parent_vertex",
+      141
+     ],
+     "seat_gap_mm": 0.177075975979,
+     "seat_ok": true,
+     "theta_rad": -1.67551608
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": false,
+     "displacement_mm": 2.678200140087,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": 2.678200140087,
+     "provenance": [
+      "child_vertex",
+      1718,
+      "parent_vertex",
+      141
+     ],
+     "seat_gap_mm": 0.384640287165,
+     "seat_ok": true,
+     "theta_rad": -1.25663706
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": false,
+     "displacement_mm": 1.853265508315,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": 1.853265508315,
+     "provenance": [
+      "child_vertex",
+      6282,
+      "parent_vertex",
+      814
+     ],
+     "seat_gap_mm": 0.327565384122,
+     "seat_ok": true,
+     "theta_rad": -0.83775804
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.947334281058,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": 0.947334281058,
+     "provenance": [
+      "child_vertex",
+      2062,
+      "parent_vertex",
+      121
+     ],
+     "seat_gap_mm": 0.91287483794,
+     "seat_ok": true,
+     "theta_rad": -0.41887902
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "rest",
+     "predicted_displacement_mm": 0.0,
+     "provenance": [
+      "child_vertex",
+      2062,
+      "parent_vertex",
+      121
+     ],
+     "seat_gap_mm": 1.486366553653,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.947334281058,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": 0.947334281058,
+     "provenance": [
+      "child_vertex",
+      2152,
+      "parent_vertex",
+      122
+     ],
+     "seat_gap_mm": 1.369231486215,
+     "seat_ok": true,
+     "theta_rad": 0.41887902
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": false,
+     "displacement_mm": 1.853265508315,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": 1.853265508315,
+     "provenance": [
+      "child_vertex",
+      1246,
+      "parent_vertex",
+      104
+     ],
+     "seat_gap_mm": 0.63184045262,
+     "seat_ok": true,
+     "theta_rad": 0.83775804
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": false,
+     "displacement_mm": 2.678200140087,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": 2.678200140087,
+     "provenance": [
+      "child_vertex",
+      1153,
+      "parent_vertex",
+      123
+     ],
+     "seat_gap_mm": 0.180475274103,
+     "seat_ok": true,
+     "theta_rad": 1.25663706
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": false,
+     "displacement_mm": 3.386084574575,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": 3.386084574575,
+     "provenance": [
+      "child_vertex",
+      808,
+      "parent_vertex",
+      123
+     ],
+     "seat_gap_mm": 0.132211430199,
+     "seat_ok": true,
+     "theta_rad": 1.67551608
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": false,
+     "displacement_mm": 3.945980865254,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": 3.945980865254,
+     "provenance": [
+      "child_vertex",
+      18,
+      "parent_vertex",
+      136
+     ],
+     "seat_gap_mm": 0.046718998681,
+     "seat_ok": false,
+     "theta_rad": 2.0943951
+    }
+   ],
+   "seat_clause_ok_all_grid": false
+  }
+ },
+ "parent_battery_sha256": "18f0ef0641cdcba610bb0a67109540220cfb3400bdff1eee2ae6451fb7d81c16",
+ "parent_battery_sha_matches_receipt": true,
+ "parent_lane": "agent/hip-pivot-proof-20260921 (P6 as written: VOID in the record, fired 2026-09-21)",
+ "prediction_checks": {
+  "null_disp_beyond_band_both_hips": true,
+  "null_disp_reproduces_committed_02": true,
+  "null_disp_reproduces_committed_03": true,
+  "null_formula_ok_all_grid": true,
+  "null_seats_reproduce_committed_02": true,
+  "null_seats_reproduce_committed_03": true,
+  "real_demo_seat_reproduces_committed_02": true,
+  "real_demo_seat_reproduces_committed_03": true,
+  "real_disp_exact_zero_all_grid": true,
+  "real_seats_in_band_all_grid": false,
+  "real_seats_reproduce_committed_02": true,
+  "real_seats_reproduce_committed_03": true
+ },
+ "preregistration_bank_matches_file": true,
+ "preregistration_sha256": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407",
+ "real_arm": {
+  "02": {
+   "band_mm": 0.155477725893,
+   "clause_breaches_at": [
+    "grid_k-3"
+   ],
+   "displacement_clause_ok_all_grid": true,
+   "max_displacement_mm": 0.0,
+   "max_seat_mm": 2.21511346552,
+   "min_seat_mm": 0.053906119839,
+   "pass_p6_corrected": false,
+   "rows": [
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      1956,
+      "parent_vertex",
+      203
+     ],
+     "seat_gap_mm": 0.861959512899,
+     "seat_ok": true,
+     "theta_rad": -2.0943951
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      3074,
+      "parent_vertex",
+      268
+     ],
+     "seat_gap_mm": 0.686687196483,
+     "seat_ok": true,
+     "theta_rad": -1.67551608
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7705,
+      "parent_vertex",
+      870
+     ],
+     "seat_gap_mm": 0.053906119839,
+     "seat_ok": false,
+     "theta_rad": -1.25663706
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      2823,
+      "parent_vertex",
+      197
+     ],
+     "seat_gap_mm": 2.21511346552,
+     "seat_ok": true,
+     "theta_rad": -0.83775804
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      2323,
+      "parent_vertex",
+      164
+     ],
+     "seat_gap_mm": 2.14303796227,
+     "seat_ok": true,
+     "theta_rad": -0.41887902
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "rest",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      2426,
+      "parent_vertex",
+      182
+     ],
+     "seat_gap_mm": 1.438430430193,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      1432,
+      "parent_vertex",
+      143
+     ],
+     "seat_gap_mm": 0.877122409466,
+     "seat_ok": true,
+     "theta_rad": 0.41887902
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      1270,
+      "parent_vertex",
+      164
+     ],
+     "seat_gap_mm": 0.165013143951,
+     "seat_ok": true,
+     "theta_rad": 0.83775804
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      1358,
+      "parent_vertex",
+      203
+     ],
+     "seat_gap_mm": 0.132490319785,
+     "seat_ok": true,
+     "theta_rad": 1.25663706
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      394,
+      "parent_vertex",
+      203
+     ],
+     "seat_gap_mm": 0.240659733201,
+     "seat_ok": true,
+     "theta_rad": 1.67551608
+    },
+    {
+     "band_mm": 0.155477725893,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      106,
+      "parent_vertex",
+      197
+     ],
+     "seat_gap_mm": 0.098475213606,
+     "seat_ok": true,
+     "theta_rad": 2.0943951
+    }
+   ],
+   "seat_clause_ok_all_grid": false
+  },
+  "03": {
+   "band_mm": 0.147474758014,
+   "clause_breaches_at": [],
+   "displacement_clause_ok_all_grid": true,
+   "max_displacement_mm": 0.0,
+   "max_seat_mm": 1.650134761681,
+   "min_seat_mm": 0.142631908664,
+   "pass_p6_corrected": true,
+   "rows": [
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      1457,
+      "parent_vertex",
+      144
+     ],
+     "seat_gap_mm": 0.887240079415,
+     "seat_ok": true,
+     "theta_rad": -2.0943951
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      2048,
+      "parent_vertex",
+      148
+     ],
+     "seat_gap_mm": 0.589352815805,
+     "seat_ok": true,
+     "theta_rad": -1.67551608
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      2253,
+      "parent_vertex",
+      158
+     ],
+     "seat_gap_mm": 0.935792317371,
+     "seat_ok": true,
+     "theta_rad": -1.25663706
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6905,
+      "parent_vertex",
+      839
+     ],
+     "seat_gap_mm": 0.630736604805,
+     "seat_ok": true,
+     "theta_rad": -0.83775804
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      2062,
+      "parent_vertex",
+      121
+     ],
+     "seat_gap_mm": 1.650134761681,
+     "seat_ok": true,
+     "theta_rad": -0.41887902
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "rest",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      2062,
+      "parent_vertex",
+      121
+     ],
+     "seat_gap_mm": 1.486366553653,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      2152,
+      "parent_vertex",
+      144
+     ],
+     "seat_gap_mm": 0.905795048116,
+     "seat_ok": true,
+     "theta_rad": 0.41887902
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      594,
+      "parent_vertex",
+      104
+     ],
+     "seat_gap_mm": 0.458706379084,
+     "seat_ok": true,
+     "theta_rad": 0.83775804
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      372,
+      "parent_vertex",
+      117
+     ],
+     "seat_gap_mm": 0.253023677088,
+     "seat_ok": true,
+     "theta_rad": 1.25663706
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      1487,
+      "parent_vertex",
+      121
+     ],
+     "seat_gap_mm": 0.142631908664,
+     "seat_ok": true,
+     "theta_rad": 1.67551608
+    },
+    {
+     "band_mm": 0.147474758014,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      96,
+      "parent_vertex",
+      158
+     ],
+     "seat_gap_mm": 0.160824534903,
+     "seat_ok": true,
+     "theta_rad": 2.0943951
+    }
+   ],
+   "seat_clause_ok_all_grid": true
+  }
+ },
+ "replica_integrity": {
+  "committed_script_sha256": "748e20a7c07b7a8340bf2ae7b17e5a86af36fcc389a2b4563f0adf5cf3b62543",
+  "expected_field_diff_vs_committed_battery": [
+   "preregistration_sha256"
+  ],
+  "prereg_copy_equals_lane_prereg": true,
+  "script_byte_identical_to_committed": true
+ },
+ "reproduction_guards": {
+  "axis_equal_committed": true,
+  "axis_u": [
+   -0.061471266067,
+   0.062735053276,
+   -0.996135330434
+  ],
+  "control_axis_u": [
+   -0.093215123522,
+   0.023854145165,
+   -0.995360196364
+  ],
+  "fits_equal_committed_battery_records": true,
+  "repro_diffs": {
+   "02": [],
+   "03": []
+  }
+ },
+ "schema": "chimera.p6_contrast_battery.v1",
+ "trailer": "Agent: GLM 5.3",
+ "untouched": {
+  "after": {
+   "docs\\THE_ARTICULATION_LAW.md": "e18d46ca29b8cfa0ba2cd81791d73dade52f2ba3c1733aa6d912004f2f533447",
+   "research_references\\human\\opensim\\gait2392_thelen2003muscle.osim": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_01.bin": "bf649f07180123250d0d861782be5922d0995f0523859ede8874a61475da84a7",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_02.bin": "7e750f78fb7a6b2c7fe358fd6d1274b2be2623b6e78334ecb0567319087bc029",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_03.bin": "52756398ebbf8eb22d9350ea5490574f6e6130f4ba162ed207b66428cec10c40",
+   "tools\\science_funnel\\validation\\articulation_design_20260921\\receipt.json": "5112d9b68dee94b7b591646fd6d3787bee15a12cffe2ddff9bcfbb922e136a3f",
+   "tools\\science_funnel\\validation\\axial_adjacency_20260920\\receipt.json": "f1dd047b34b7f1015c7fa9fafb4956eb1774786cc3b86c9dbdff8287d655c8d5",
+   "tools\\science_funnel\\validation\\hip_adoption_20260921\\receipt.json": "d000701f78449265d4ae53e847c2a09ad506b919af9c6f18c3c7f68be943614d",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\battery.json": "18f0ef0641cdcba610bb0a67109540220cfb3400bdff1eee2ae6451fb7d81c16",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\hip_pivot_proof.py": "748e20a7c07b7a8340bf2ae7b17e5a86af36fcc389a2b4563f0adf5cf3b62543",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration.md": "96ddb5016a222eff655fb51a2951ab441c9b77cd5d166e83592ba4badf4b2b7f",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration.sha256": "f4c5f2f64957736059c6eb2f7cb132d6dd56f10ba3fe3873c909ef1cf49e53b9",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration_amendment_1.md": "0c3484c19c0878e50e807b4a416adb3b0854bc9018a7dae854fb0700b166ab8a",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration_amendment_1.sha256": "e3ee94fe29edf1dee32815a9659c814a14c87535c30c555e5544e4cc51e7f08a",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration_amendment_2.md": "b050093ede83ec6fdfa46e4f50dc39233cfcc2f3c7a4f4bd17433de866ca8603",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration_amendment_2.sha256": "c9803a9b16d4e13a3d6609f479be7d10124fecbbb1e7254a38f8b82d4857bc20",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\receipt.json": "c39c708c7fb8e167abed88c5405036b810cd64c817fa3f634859aa22bc60235a",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\law_amendment.sha256": "6c5c971dd306b0c7d0842190bb2c895c90f9b229cc35e46b86fe7adb7079c004",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration.md": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration.sha256": "4d3b48c790eadd8950bfa8c9e46b9d221e6a9ab1dd9bf879d14b2e5ba6e5ac78",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\replica\\hip_pivot_proof.py": "748e20a7c07b7a8340bf2ae7b17e5a86af36fcc389a2b4563f0adf5cf3b62543",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\replica\\preregistration.md": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407"
+  },
+  "before": {
+   "docs\\THE_ARTICULATION_LAW.md": "e18d46ca29b8cfa0ba2cd81791d73dade52f2ba3c1733aa6d912004f2f533447",
+   "research_references\\human\\opensim\\gait2392_thelen2003muscle.osim": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_01.bin": "bf649f07180123250d0d861782be5922d0995f0523859ede8874a61475da84a7",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_02.bin": "7e750f78fb7a6b2c7fe358fd6d1274b2be2623b6e78334ecb0567319087bc029",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_03.bin": "52756398ebbf8eb22d9350ea5490574f6e6130f4ba162ed207b66428cec10c40",
+   "tools\\science_funnel\\validation\\articulation_design_20260921\\receipt.json": "5112d9b68dee94b7b591646fd6d3787bee15a12cffe2ddff9bcfbb922e136a3f",
+   "tools\\science_funnel\\validation\\axial_adjacency_20260920\\receipt.json": "f1dd047b34b7f1015c7fa9fafb4956eb1774786cc3b86c9dbdff8287d655c8d5",
+   "tools\\science_funnel\\validation\\hip_adoption_20260921\\receipt.json": "d000701f78449265d4ae53e847c2a09ad506b919af9c6f18c3c7f68be943614d",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\battery.json": "18f0ef0641cdcba610bb0a67109540220cfb3400bdff1eee2ae6451fb7d81c16",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\hip_pivot_proof.py": "748e20a7c07b7a8340bf2ae7b17e5a86af36fcc389a2b4563f0adf5cf3b62543",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration.md": "96ddb5016a222eff655fb51a2951ab441c9b77cd5d166e83592ba4badf4b2b7f",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration.sha256": "f4c5f2f64957736059c6eb2f7cb132d6dd56f10ba3fe3873c909ef1cf49e53b9",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration_amendment_1.md": "0c3484c19c0878e50e807b4a416adb3b0854bc9018a7dae854fb0700b166ab8a",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration_amendment_1.sha256": "e3ee94fe29edf1dee32815a9659c814a14c87535c30c555e5544e4cc51e7f08a",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration_amendment_2.md": "b050093ede83ec6fdfa46e4f50dc39233cfcc2f3c7a4f4bd17433de866ca8603",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration_amendment_2.sha256": "c9803a9b16d4e13a3d6609f479be7d10124fecbbb1e7254a38f8b82d4857bc20",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\receipt.json": "c39c708c7fb8e167abed88c5405036b810cd64c817fa3f634859aa22bc60235a",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\law_amendment.sha256": "6c5c971dd306b0c7d0842190bb2c895c90f9b229cc35e46b86fe7adb7079c004",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration.md": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration.sha256": "4d3b48c790eadd8950bfa8c9e46b9d221e6a9ab1dd9bf879d14b2e5ba6e5ac78",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\replica\\hip_pivot_proof.py": "748e20a7c07b7a8340bf2ae7b17e5a86af36fcc389a2b4563f0adf5cf3b62543",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\replica\\preregistration.md": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407"
+  },
+  "equal": true
+ },
+ "verdict": {
+  "arms_discriminate": false,
+  "null_arm_fails_p6_corrected": true,
+  "real_arm_passes_p6_corrected": false
+ }
+}

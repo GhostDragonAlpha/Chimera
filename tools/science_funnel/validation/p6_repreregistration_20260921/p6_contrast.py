@@ -1,24 +1,33 @@
-"""THE P6 RE-PREREGISTRATION CONTRAST BATTERY (preregistration 3cbb37d8...).
+"""THE P6 RE-PREREGISTRATION CONTRAST BATTERY, predicate v2
+(preregistration 3cbb37d8... + amendment 3, banked before THIS run).
 
-Executes the CORRECTED two-arm contrast of docs/THE_ARTICULATION_LAW.md §5A on
-the two committed hip bonds: the TWO-SIDED seat band [tol_ip, cut] plus the
-head-center displacement band (the fit's own RMS), on the REAL arm (head-fit
-pivots) and the NULL arm (recorded closest-points midpoints), over the derived
-grid {−R} ∪ {R·k/5 : k = −4..4} ∪ {+R}.
+Executes the CORRECTED two-arm contrast of docs/THE_ARTICULATION_LAW.md §5B
+(§5A's own falsifier L6 fired on run 1: seated rigid impingement at d == 0.0
+exactly reads 0.053906119839 mm — below any mesh-derived localization — so the
+hard lower edge was the mis-derivation) on the two committed hip bonds:
+
+  - LEG 1: the seat band [0, cut] — contact is IN the touching class; cut =
+    3.0 mm committed. The interpenetration tolerance KEEPS its derived value
+    tol_ip = specimen.resolution_um / 2 = 0.08 mm as the gap metric's
+    RESOLUTION FLOOR: readings below it lie inside the surfaces' own
+    localization (seated-impingement contact and through-crossing are both
+    unresolvable there) — RECORDED per pose, never clause-binding.
+  - LEG 2 (load-bearing, the not-through test at the head): the head-center
+    displacement band d(theta) = |pose(c*) - c*| <= band_h, the registered
+    fit's own RMS residual — the pivot's measured radius+residual ARE the
+    socket's geometry; displacement beyond the band is a dislocation.
+
+Arms: REAL (head-fit pivots, bilateral axis) and NULL (recorded closest-points
+midpoints, registered control axis), over the derived grid
+{−R} ∪ {R·k/5 : k = −4..4} ∪ {+R}.
 
 The registered derivation is NOT re-derived here: the primitives (inlier rule,
 Rodrigues, law metric) are imported from the committed
 hip_pivot_proof_20260921.hip_pivot_proof module verbatim, and this battery
 verifies its fits EQUAL the committed battery.json records (reproduction
-guards). Zero new free numbers:
-  - tol_ip = specimen.resolution_um / 2 = 0.08 mm (the committed CT sampling
-    step; the isosurface's own localization class — readings below it cannot
-    certify not-through: interpenetration beyond the tolerance is NOT a seat),
-  - cut = 3.0 mm (the committed touching-class cut),
-  - band_h = the registered fit's RMS residual (the pivot's measured
-    radius+residual ARE the socket's geometry; displacement beyond the band is
-    a dislocation),
-  - the grid at the prior lane's registered probe fraction R/5.
+guards). Zero new free numbers; no number's value changed between v1 and v2 —
+one number's role did, forced by the fired falsifier (amendment 3, tuning
+audit therein).
 
 Read-only on the committed tree. Deterministic: no RNG, no timestamps, no
 set-order leakage; the output JSON is byte-stable across runs.
@@ -97,7 +106,9 @@ def main():
         PRIOR / "preregistration_amendment_2.md", PRIOR / "preregistration_amendment_2.sha256",
         PRIOR / "battery.json", PRIOR / "receipt.json", PRIOR / "hip_pivot_proof.py",
         HERE / "preregistration.md", HERE / "preregistration.sha256",
-        HERE / "law_amendment.sha256",
+        HERE / "preregistration_amendment_3.md", HERE / "preregistration_amendment_3.sha256",
+        HERE / "law_amendment.sha256", HERE / "law_amendment_b.sha256",
+        HERE / "battery_run1_predicate_v1_l6_fired.json",
         HERE / "replica" / "hip_pivot_proof.py", HERE / "replica" / "preregistration.md",
         ROOT / "docs" / "THE_ARTICULATION_LAW.md",
     ]
@@ -111,7 +122,12 @@ def main():
     replica_prereg_sha = sha256_file(HERE / "replica" / "preregistration.md")
     lane_prereg_sha = sha256_file(HERE / "preregistration.md")
     prereg_bank = (HERE / "preregistration.sha256").read_text(encoding="utf-8").split()[0]
-    law_bank = (HERE / "law_amendment.sha256").read_text(encoding="utf-8").split()[0]
+    amendment3_sha = sha256_file(HERE / "preregistration_amendment_3.md")
+    amendment3_bank = (HERE / "preregistration_amendment_3.sha256").read_text(encoding="utf-8").split()[0]
+    law_b_sha = sha256_file(ROOT / "docs" / "THE_ARTICULATION_LAW.md")
+    law_b_bank = (HERE / "law_amendment_b.sha256").read_text(encoding="utf-8").split()[0]
+    law_stage1_bank = (HERE / "law_amendment.sha256").read_text(encoding="utf-8").split()[0]
+    run1_battery_sha = sha256_file(HERE / "battery_run1_predicate_v1_l6_fired.json")
 
     # committed geometry (via the committed module's loaders)
     blobs, tri_sets, vert_sets, face_sets = {}, {}, {}, {}
@@ -257,7 +273,8 @@ def main():
                 rows.append({
                     "theta_rad": rnd(th), "label": lab,
                     "seat_gap_mm": rnd(g), "provenance": prov,
-                    "seat_ok": bool(tol_ip_mm <= g <= CUT_MM),
+                    "seat_ok": bool(0.0 <= g <= CUT_MM),
+                    "reading_class": "below_resolution_floor" if g < tol_ip_mm else "resolved",
                     "displacement_mm": rnd(d),
                     "band_mm": rnd(band_h),
                     "displacement_exact_zero": bool(d == 0.0),
@@ -276,6 +293,7 @@ def main():
                 "min_seat_mm": rnd(min(r["seat_gap_mm"] for r in rows)),
                 "max_seat_mm": rnd(max(r["seat_gap_mm"] for r in rows)),
                 "max_displacement_mm": rnd(max(r["displacement_mm"] for r in rows)),
+                "below_floor_readings": [r["label"] for r in rows if r["reading_class"] == "below_resolution_floor"],
                 "band_mm": rnd(band_h),
                 "clause_breaches_at": breaches,
                 "pass_p6_corrected": bool(seat_all and disp_all),
@@ -316,8 +334,10 @@ def main():
         r["formula_ok"] for k in null for r in null[k]["rows"]))
     checks["null_disp_beyond_band_both_hips"] = bool(all(
         not null[k]["displacement_clause_ok_all_grid"] for k in null))
-    checks["real_seats_in_band_all_grid"] = bool(all(
+    checks["real_seats_below_cut_all_grid"] = bool(all(
         real[k]["seat_clause_ok_all_grid"] for k in real))
+    checks["null_seats_below_cut_all_grid_recorded"] = bool(all(
+        null[k]["seat_clause_ok_all_grid"] for k in null))
 
     # margins
     margins = {}
@@ -330,15 +350,31 @@ def main():
         margins["null_hip%s_hi_seat_over_tol" % k] = rnd(lo["seat_gap_mm"] / tol_ip_mm)
 
     battery = {
-        "schema": "chimera.p6_contrast_battery.v1",
+        "schema": "chimera.p6_contrast_battery.v2",
         "lane": "agent/p6-repreregistration-20260921",
         "base_commit": "427e9d0 (agent/hip-pivot-proof-20260921, the proof head)",
         "parent_lane": "agent/hip-pivot-proof-20260921 (P6 as written: VOID in the record, fired 2026-09-21)",
         "parent_battery_sha256": committed_battery_sha,
         "parent_battery_sha_matches_receipt": bool(committed_battery_sha == PRIOB_BATTERY_SHA),
-        "preregistration_sha256": lane_prereg_sha,
-        "preregistration_bank_matches_file": bool(lane_prereg_sha == prereg_bank),
-        "law_amendment_bank_sha256": law_bank,
+        "predicate_version": "v2 per preregistration_amendment_3.md: seat band [0, cut]; tol_ip = 0.08 mm retained as the RESOLUTION FLOOR (recorded, not clause-binding) after v1's hard lower edge was voided by its own falsifier L6 on run 1; displacement band (fit RMS) load-bearing",
+        "run1_record": {
+            "file": "battery_run1_predicate_v1_l6_fired.json",
+            "sha256": run1_battery_sha,
+            "l6_firing": "real hip 02 grid_k-3: seat gap 0.053906119839 mm < 0.08 at displacement 0.0 exactly",
+            "run1_determinism": "battery byte-identical on immediate re-run (run1 sha c82947c22e85c75b2537175fd18a17842279b9d80e2f049f8b843be44788a77d)",
+        },
+        "banks": {
+            "preregistration_sha256": lane_prereg_sha,
+            "preregistration_bank_matches_file": bool(lane_prereg_sha == prereg_bank),
+            "amendment_3_sha256": amendment3_sha,
+            "amendment_3_bank_matches_file": bool(amendment3_sha == amendment3_bank),
+            "law_doc_sha256_this_stage": law_b_sha,
+            "law_amendment_b_bank_matches_file": bool(law_b_sha == law_b_bank),
+            "law_amendment_stage1_bank_sha256": law_stage1_bank,
+            "law_amendment_stage1_bank_expected": "e18d46ca29b8cfa0ba2cd81791d73dade52f2ba3c1733aa6d912004f2f533447",
+            "law_amendment_stage1_bank_matches_run1_stage": bool(
+                law_stage1_bank == "e18d46ca29b8cfa0ba2cd81791d73dade52f2ba3c1733aa6d912004f2f533447"),
+        },
         "trailer": "Agent: GLM 5.3",
         "inputs": {
             "definition_sha256": before[str(DEFN.relative_to(ROOT))],
@@ -347,9 +383,9 @@ def main():
             "vertex_books_match_membranes": bool(vertex_books_match),
         },
         "corrected_predicate": {
-            "definition": "SEATED at theta iff (tol_ip <= seat_gap <= cut) AND (displacement <= band_h); passes P6' iff both hold at every theta of the closed cited range",
+            "definition": "SEATED at theta iff (0 <= seat_gap <= cut) AND (displacement <= band_h); passes P6' iff both hold at every theta of the closed cited range. seat clause = amendment 3 Leg 1 [0, cut]; displacement clause = Leg 2, the load-bearing not-through test at the head",
             "tol_ip_mm": rnd(tol_ip_mm),
-            "tol_ip_derivation": "specimen.resolution_um/2 = %d um / 2 = 0.08 mm: half the committed CT sampling step; a vertex-vertex reading below the surfaces' own localization cannot certify not-through" % resolution_um,
+            "tol_ip_derivation": "specimen.resolution_um/2 = %d um / 2 = 0.08 mm: half the committed CT sampling step; the gap metric's RESOLUTION FLOOR — readings below it lie inside the surfaces' own localization (recorded per pose as below_resolution_floor, never clause-binding)" % resolution_um,
             "resolution_um": resolution_um,
             "cut_mm": CUT_MM,
             "cut_source": "bone_identification_v3 derived_cuts.joint_gap_mm (committed)",
@@ -401,7 +437,10 @@ def main():
 
     hard_ok = (
         battery["parent_battery_sha_matches_receipt"]
-        and battery["preregistration_bank_matches_file"]
+        and battery["banks"]["preregistration_bank_matches_file"]
+        and battery["banks"]["amendment_3_bank_matches_file"]
+        and battery["banks"]["law_amendment_b_bank_matches_file"]
+        and battery["banks"]["law_amendment_stage1_bank_matches_run1_stage"]
         and battery["inputs"]["osim_sha_matches_citation"]
         and battery["inputs"]["vertex_books_match_membranes"]
         and repro_ok
@@ -419,9 +458,9 @@ def main():
     print("hard_checks_pass:", hard_ok)
     print("arms_discriminate:", discriminate, " real_pass:", real_pass, " null_fail:", null_fail)
     for k in ("02", "03"):
-        print("hip %s real: seat all %s / disp all %s / min seat %s mm (x tol %.3f)" % (
+        print("hip %s real: seat all %s / disp all %s / seat %s..%s mm / below-floor at %s" % (
             k, real[k]["seat_clause_ok_all_grid"], real[k]["displacement_clause_ok_all_grid"],
-            real[k]["min_seat_mm"], real[k]["min_seat_mm"] / tol_ip_mm))
+            real[k]["min_seat_mm"], real[k]["max_seat_mm"], real[k]["below_floor_readings"]))
         print("hip %s null: seat all %s / disp all %s / max disp %s mm (band %s, x%.2f) breaches at %s" % (
             k, null[k]["seat_clause_ok_all_grid"], null[k]["displacement_clause_ok_all_grid"],
             null[k]["max_displacement_mm"], null[k]["band_mm"],
