@@ -38,3 +38,6 @@ tools/science_funnel/data/earth/** -text -whitespace
 
 # Downloaded scientific artifacts are SHA-pinned upstream bytes (all data dirs).
 tools/science_funnel/data/** -text
+
+# MorphoSource CT captures (bones + receipts) retain upstream bytes for checksum replay.
+tools/science_funnel/data/morphosource_ct/** -text -whitespace
