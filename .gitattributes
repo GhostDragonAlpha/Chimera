@@ -28,6 +28,9 @@ tools/science_funnel/data/coolprop/** -text
 tools/science_funnel/data/pubchem/** -text
 # Preserve pinned scientific downloads, including source line endings.
 tools/science_funnel/data/force_sources/** -text -whitespace
+# Wiseman 2026 RSOS acquisition (pin-repair 20260921, class instance 3):
+# sha256_manifest.json pins the downloaded bytes; keep checkout == blob.
+tools/science_funnel/data/wiseman2026/** -text -whitespace
 
 # Anatomical source captures retain their upstream bytes for checksum replay.
 tools/science_funnel/data/bodyparts3d/** -text -whitespace
