@@ -12,7 +12,7 @@
   "law_amendment_stage1_bank_expected": "e18d46ca29b8cfa0ba2cd81791d73dade52f2ba3c1733aa6d912004f2f533447",
   "law_amendment_stage1_bank_matches_run1_stage": true,
   "law_amendment_stage1_bank_sha256": "e18d46ca29b8cfa0ba2cd81791d73dade52f2ba3c1733aa6d912004f2f533447",
-  "law_doc_sha256_this_stage": "97585c4e7b5781d3e776d7cdaa7b4d19ce8b33772f239178cbd60be7f6410e4c",
+  "law_doc_sha256_this_stage": "580fdee486af4562d10b65ae356c215a8790751582ec1c84aed0d18ecee50328",
   "preregistration_bank_matches_file": true,
   "preregistration_sha256": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407"
  },
@@ -83,7 +83,7 @@
  },
  "hard_checks_pass": true,
  "inputs": {
-  "definition_sha256": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+  "definition_sha256": "db412e0c8debd45750b1cc06e13c50e08367ac94d434fe3be5be7f8dd5f1fbfe",
   "osim_sha256": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
   "osim_sha_matches_citation": true,
   "vertex_books_match_membranes": true
@@ -1128,9 +1128,9 @@
  "trailer": "Agent: GLM 5.3",
  "untouched": {
   "after": {
-   "docs\\THE_ARTICULATION_LAW.md": "97585c4e7b5781d3e776d7cdaa7b4d19ce8b33772f239178cbd60be7f6410e4c",
+   "docs\\THE_ARTICULATION_LAW.md": "580fdee486af4562d10b65ae356c215a8790751582ec1c84aed0d18ecee50328",
    "research_references\\human\\opensim\\gait2392_thelen2003muscle.osim": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
-   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "db412e0c8debd45750b1cc06e13c50e08367ac94d434fe3be5be7f8dd5f1fbfe",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_01.bin": "bf649f07180123250d0d861782be5922d0995f0523859ede8874a61475da84a7",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_02.bin": "7e750f78fb7a6b2c7fe358fd6d1274b2be2623b6e78334ecb0567319087bc029",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_03.bin": "52756398ebbf8eb22d9350ea5490574f6e6130f4ba162ed207b66428cec10c40",
@@ -1148,7 +1148,7 @@
    "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\receipt.json": "c39c708c7fb8e167abed88c5405036b810cd64c817fa3f634859aa22bc60235a",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\battery_run1_predicate_v1_l6_fired.json": "c82947c22e85c75b2537175fd18a17842279b9d80e2f049f8b843be44788a77d",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\law_amendment.sha256": "6c5c971dd306b0c7d0842190bb2c895c90f9b229cc35e46b86fe7adb7079c004",
-   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\law_amendment_b.sha256": "e1973d5b379cf16e3b02f58bcf517c31844c396b2ed773b5b1bf4b88eb18e96a",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\law_amendment_b.sha256": "f06bfcf0224541537901c839ea8b357fbbfa0cecb8b346f697643313618e7823",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration.md": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration.sha256": "4d3b48c790eadd8950bfa8c9e46b9d221e6a9ab1dd9bf879d14b2e5ba6e5ac78",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration_amendment_3.md": "a6959fe31db1e5087fa8def857bed23b529a49f52323b2df508eafd4bba03973",
@@ -1157,9 +1157,9 @@
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921_replica\\preregistration.md": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407"
   },
   "before": {
-   "docs\\THE_ARTICULATION_LAW.md": "97585c4e7b5781d3e776d7cdaa7b4d19ce8b33772f239178cbd60be7f6410e4c",
+   "docs\\THE_ARTICULATION_LAW.md": "580fdee486af4562d10b65ae356c215a8790751582ec1c84aed0d18ecee50328",
    "research_references\\human\\opensim\\gait2392_thelen2003muscle.osim": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
-   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "db412e0c8debd45750b1cc06e13c50e08367ac94d434fe3be5be7f8dd5f1fbfe",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_01.bin": "bf649f07180123250d0d861782be5922d0995f0523859ede8874a61475da84a7",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_02.bin": "7e750f78fb7a6b2c7fe358fd6d1274b2be2623b6e78334ecb0567319087bc029",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_03.bin": "52756398ebbf8eb22d9350ea5490574f6e6130f4ba162ed207b66428cec10c40",
@@ -1177,7 +1177,7 @@
    "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\receipt.json": "c39c708c7fb8e167abed88c5405036b810cd64c817fa3f634859aa22bc60235a",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\battery_run1_predicate_v1_l6_fired.json": "c82947c22e85c75b2537175fd18a17842279b9d80e2f049f8b843be44788a77d",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\law_amendment.sha256": "6c5c971dd306b0c7d0842190bb2c895c90f9b229cc35e46b86fe7adb7079c004",
-   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\law_amendment_b.sha256": "e1973d5b379cf16e3b02f58bcf517c31844c396b2ed773b5b1bf4b88eb18e96a",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\law_amendment_b.sha256": "f06bfcf0224541537901c839ea8b357fbbfa0cecb8b346f697643313618e7823",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration.md": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration.sha256": "4d3b48c790eadd8950bfa8c9e46b9d221e6a9ab1dd9bf879d14b2e5ba6e5ac78",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration_amendment_3.md": "a6959fe31db1e5087fa8def857bed23b529a49f52323b2df508eafd4bba03973",
