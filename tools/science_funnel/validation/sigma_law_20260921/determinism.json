@@ -1,0 +1,19 @@
+{
+  "F4_outcome": "PASS",
+  "audit_table_csv_sha256": "f4bb52bef20558c0fc36b76be59199ee39e0c2b5b7235682dcb6c2a5659b9d97",
+  "inputs": {
+    "guimaraes_fulltext": "a1ded31fa6d615b4b1dabc91bec824c2b05b90ad37fbbcf709480027b3eb9d40",
+    "guimaraes_xlsx": "08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678",
+    "oku_xlsx": "0dd92e443bfc895eebb0e25c1304820adac67679b5989dfb7159f84407433185"
+  },
+  "outputs_byte_identical_across_runs": true,
+  "protocol": "two consecutive runs of derive_sigma_law.py on the same pinned inputs; results.json and audit_table.csv compared byte-exact via sha256",
+  "python": "CPython 3.14.3",
+  "receipt_frozen_sha256": "e3c5535091516299ceb6cd7ad276cc494c13e49c047196bf4ef7f326fa6adf94",
+  "results_json_sha256": "d2b9f14be32e929de751445d50d361efded0b09f7d58b160851f5b4709f9751b",
+  "run1_audit_csv_sha256": "f4bb52bef20558c0fc36b76be59199ee39e0c2b5b7235682dcb6c2a5659b9d97",
+  "run1_results_sha256": "d2b9f14be32e929de751445d50d361efded0b09f7d58b160851f5b4709f9751b",
+  "runs": 2,
+  "schema": "chimera.sigma_law.determinism.v1",
+  "script_sha256": "716feedc0f8a866e859e268de8329ff1d61a6b980da157fdc89c468f00a68153"
+}

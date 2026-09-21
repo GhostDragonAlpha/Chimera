@@ -1,0 +1,103 @@
+{
+  "schema": "chimera.rule0.receipt.v1",
+  "receipt_id": "sigma_law_20260921",
+  "recorded_utc": "2026-09-21T03:58:13Z",
+  "lane": "intake-muscle / sigma-law derivation",
+  "agent": "sigma-agent (branch agent/sigma-law-20260921, forked at 77f3d279e8e7d35b2e1eac022ed6c0d0f79bc757)",
+
+  "statement": "The admitted Guimaraes 2026 hindlimb batch carries both Fmax and PCSA for its 36 Macaca mulatta hindlimb muscles, so sigma_implied = Fmax/PCSA is measured per muscle and taxon-true, and the measured median with its spread can retire the assumed literature constant sigma = 0.3 MPa (30 N/cm^2) used by the interim Fmax-bootstrap and the hind torque book.",
+
+  "prediction": {
+    "prior_band_N_per_cm2": [23, 32],
+    "prior_sources": [
+      "docs/research/muscle_physiology_reference.md: vertebrate skeletal average 25-32 N/cm^2 (the myobody value)",
+      "Saito 2021 (PMC8693514, CC BY) Table 2: Fmax = PCSA x 23 N/cm^2 (Spector 1980 cat soleus), declared, 'applied to primate hand muscles without validation' by the paper's own wording",
+      "docs/research/20260921_arm_architecture_options.md section 2: sigma candidates 23-32 N/cm^2, in-repo posture-cap constant 0.3 MPa (30 N/cm^2) mid-band"
+    ],
+    "predictions": [
+      {
+        "id": "P1",
+        "text": "IF the batch carries per-muscle Fmax, the measured median sigma_implied over the 36 M. mulatta muscles falls inside 23-32 N/cm^2.",
+        "conditional_on": "F2 (premise) not firing"
+      },
+      {
+        "id": "P2",
+        "text": "The batch's own closure identities hold per admitted row: PCSA = muscle_mass/(1060 kg/m^3 * FL) within 2%, and muscle mass = belly_mass + tendon_mass within 2%.",
+        "conditional_on": "nothing (arithmetic on admitted rows)"
+      },
+      {
+        "id": "P3",
+        "text": "Demand-side lower bounds from the admitted Oku 2021 gait simulation paired per muscle with measured PCSA (peak muscle force / PCSA) all fall strictly BELOW 23 N/cm^2: gait demand never exceeds tissue capacity; any bound at or above 23 falsifies the band's lower edge.",
+        "conditional_on": "nothing (arithmetic on two admitted batches)"
+      }
+    ]
+  },
+
+  "falsifiers": [
+    {
+      "id": "F1",
+      "name": "traceability",
+      "text": "Every emitted sigma number traces to an admitted batch row, cited as sheet:row with muscle name and the fields used. A sigma that cannot be walked back to rows fires this falsifier."
+    },
+    {
+      "id": "F2",
+      "name": "premise",
+      "text": "The admitted batch bytes must carry an Fmax-bearing field for the derivation to exist. The Macaca mulatta sheet's column set is re-enumerated from the pinned bytes at compute time; ABSENCE of any Fmax-bearing column fires this falsifier, bars the 36-row sigma_implied derivation, and bars retiring the 0.3 MPa constant by measurement.",
+      "pre_freeze_status": {
+        "observation": "Reconnaissance before this receipt was frozen (disclosed): workbook sheets and header rows were listed; the Information sheet column dictionary was read; the paper's four table-wrap labels were read. NO per-row statistics over the 36 rows were computed before freeze. The header enumeration shows 13 columns (Species_common, Species, Mus_abbrev, FL_m, PCSA_m2, musc_LENGTH, musc_MASS, belly_LENGTH, belly_MASS, tendon_LENGTH, tendon_MASS, avg_pen_deg, [Limb]) and the dictionary declares exactly these; no Fmax column is declared or present, and the paper's tables are specimen list, muscle list, functional groups, and a PCSA-with/without-pennation t-test - no force data. F2 is ARMED with expected outcome FIRE; the compute script re-verifies from bytes so the firing is measured, not assumed."
+      }
+    },
+    {
+      "id": "F3",
+      "name": "unit_consistency",
+      "text": "The sheet headers declare _m/_kg on segment columns whose values are mm/g (the Information dictionary itself mislabels belly_LENGTH_m as 'Muscle belly mass (m)'). The compute script must re-derive the mm/g interpretation row by row via the PCSA closure law (independent of the intake adapter) and must PASS at 2%, or name every contradicting row. It must also decide, per row with pennation present, whether the sheet PCSA is the pennation-uncorrected area (m/(rho*FL)) or the pennation-corrected one (with cos factor), and quantify which convention the column carries - this decides how a PCSA-driven Fmax bootstrap must treat pennate muscles.",
+      "pre_freeze_status": "armed; no row checked yet"
+    },
+    {
+      "id": "F4",
+      "name": "determinism",
+      "text": "A second byte-exact re-run of the derivation script must reproduce results.json and audit_table.csv identically (sha256 compared)."
+    },
+    {
+      "id": "F5",
+      "name": "band_containment",
+      "text": "IF any measured sigma_implied values materialize (F2 does not fire), their median must sit inside 23-32 N/cm^2; outside, the literature band is falsified for M. mulatta hindlimb and the recommendation changes to the measured band with the literature constant retired anyway (in the direction measured)."
+    }
+  ],
+
+  "inputs": [
+    {
+      "role": "architecture batch (PCSA, FL, masses, lengths, pennation)",
+      "path_at_ref": "tools/science_funnel/data/guimaraes_arch/AJPA-190-e70329-s001.xlsx",
+      "sha256": "08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678",
+      "ref_cited": "46ed85a3ba1e451cf5b02f068134bf6801dbd258 (intake-muscle: admit Guimaraes 2026 hindlimb architecture + Oku 2021 macaque bipedal series, 2026-09-17)",
+      "pin_provenance": "member sha256 pinned in tools/science_funnel/data/guimaraes_arch/download_receipt.json at the same ref; endpoint repackages the outer zip per request, members are stable"
+    },
+    {
+      "role": "functional group map (extensor/flexor/biarticular)",
+      "path_at_ref": "tools/science_funnel/data/guimaraes_arch/PMC13425262_fulltext.xml",
+      "sha256": "a1ded31fa6d615b4b1dabc91bec824c2b05b90ad37fbbcf709480027b3eb9d40",
+      "ref_cited": "46ed85a3ba1e451cf5b02f068134bf6801dbd258",
+      "use": "Table 3 'Muscle functional groups for each joint in the primate hind limb' - the batch's own taxonomy, not an agent's"
+    },
+    {
+      "role": "demand-side force series for the lower-bound pairing",
+      "path_at_ref": "tools/science_funnel/data/oku_bipedal/42003_2021_1831_MOESM2_ESM.xlsx",
+      "sha256": "0dd92e443bfc895eebb0e25c1304820adac67679b5989dfb7159f84407433185",
+      "ref_cited": "46ed85a3ba1e451cf5b02f068134bf6801dbd258"
+    }
+  ],
+
+  "method_contract": [
+    "derive_sigma_law.py runs strictly after this receipt exists; it refuses to run if the receipt is missing",
+    "sigma is never read from header text; units are resolved only through the row-level closure laws",
+    "the M. mulatta sheet rows are the sampling frame; 36 data rows expected (memo 20260920 records 36)",
+    "group assignment uses Table 3 of the admitted fulltext verbatim; a muscle listed in two functional groups by Table 3 is BIARTICULAR per source; no agent-invented taxonomy",
+    "no file outside tools/science_funnel/validation/sigma_law_20260921/ is created or modified"
+  ],
+
+  "honesty_notes": [
+    "The mission premise ('the batch carries BOTH Fmax AND PCSA') is in tension with the reconnaissance; F2 exists precisely so the derivation attempt cannot quietly become a literature constant wearing measured clothes. If F2 fires, the deliverable is the measured quantities the batch DOES carry (PCSA/FL/mass distributions, group structure, pennation convention), the demand-side bounds, and the verdict that 0.3 MPa stays an assumed constant - a red recorded with numbers, not tuned away.",
+    "The arm model's 39 Fmax values are FORELIMB and share zero muscles with this hindlimb batch; the forelimb round-trip (Fmax/PCSA) remains blocked by the missing measured PCSA (Cheng & Scott, paywalled), per docs/research/20260921_arm_architecture_options.md - not retried here."
+  ]
+}

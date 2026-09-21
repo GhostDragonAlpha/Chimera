@@ -1,0 +1,793 @@
+{
+  "falsifier_ledger": {
+    "F1_traceability": "PASS - every number in this file traces to audit_table.csv rows (36 rows, sheet:row cited per muscle)",
+    "F2_premise": "FIRED",
+    "F3_unit_consistency": "PASS on admitted rows; CONTRADICTIONS NAMED on the remaining rows (pcsa_closure_fail: AB, PB; mass_additivity_fail: ObtInt, TP, RF, SAR; mass fields absent at source: BFS) - all reported in audit_table.csv, none dropped",
+    "F4_determinism": "measured by rerun wrapper (determinism.json)",
+    "F5_band_containment": "NOT EVALUABLE (conditional on F2; F2 fired)"
+  },
+  "group_structure": {
+    "biarticular_per_source": {
+      "members": [
+        "BFL",
+        "EHL",
+        "GRA",
+        "PIRI"
+      ],
+      "pairs": {
+        "BFL": [
+          "hip_extensors",
+          "knee_flexors"
+        ],
+        "EHL": [
+          "ankle_dorsiflexors",
+          "mtp_extensors"
+        ],
+        "GRA": [
+          "hip_adductors",
+          "knee_flexors"
+        ],
+        "PIRI": [
+          "hip_abductors",
+          "hip_rotators"
+        ]
+      },
+      "pcsa_cm2": {
+        "max": 10.07659,
+        "mean": 3.489827,
+        "median": 1.53186,
+        "min": 0.819,
+        "n": 4,
+        "p10": 0.991812,
+        "p90": 7.554217,
+        "stdev_sample": 4.405431
+      }
+    },
+    "biarticular_rule": "a muscle listed by Table 3 in two functional groups is biarticular per source; no agent-invented taxonomy",
+    "groups": {
+      "ankle_dorsiflexors": {
+        "fl_cm": {
+          "max": 7.4,
+          "mean": 6.426667,
+          "median": 6.35,
+          "min": 5.53,
+          "n": 3,
+          "p10": 5.694,
+          "p90": 7.19,
+          "stdev_sample": 0.937354
+        },
+        "muscles": [
+          "EDL",
+          "EHL",
+          "TA"
+        ],
+        "n": 3,
+        "pcsa_cm2": {
+          "max": 0.819,
+          "mean": 0.645,
+          "median": 0.733,
+          "min": 0.383,
+          "n": 3,
+          "p10": 0.453,
+          "p90": 0.8018,
+          "stdev_sample": 0.230937
+        }
+      },
+      "ankle_plantarflexors": {
+        "fl_cm": {
+          "max": 9.53,
+          "mean": 6.933333,
+          "median": 6.905,
+          "min": 2.9,
+          "n": 6,
+          "p10": 4.55,
+          "p90": 9.345,
+          "stdev_sample": 2.389106
+        },
+        "muscles": [
+          "LG",
+          "MG",
+          "PB",
+          "PL",
+          "SOL",
+          "TP"
+        ],
+        "n": 6,
+        "pcsa_cm2": {
+          "max": 4.88614,
+          "mean": 2.393875,
+          "median": 1.957735,
+          "min": 1.24136,
+          "n": 6,
+          "p10": 1.573425,
+          "p90": 3.650465,
+          "stdev_sample": 1.277748
+        }
+      },
+      "hip_abductors": {
+        "fl_cm": {
+          "max": 6.89,
+          "mean": 5.17,
+          "median": 4.47,
+          "min": 4.15,
+          "n": 3,
+          "p10": 4.214,
+          "p90": 6.406,
+          "stdev_sample": 1.498132
+        },
+        "muscles": [
+          "GMed",
+          "GMin",
+          "PIRI"
+        ],
+        "n": 3,
+        "pcsa_cm2": {
+          "max": 8.56724,
+          "mean": 3.856487,
+          "median": 1.60718,
+          "min": 1.39504,
+          "n": 3,
+          "p10": 1.437468,
+          "p90": 7.175228,
+          "stdev_sample": 4.081011
+        }
+      },
+      "hip_adductors": {
+        "fl_cm": {
+          "max": 16.22,
+          "mean": 8.686,
+          "median": 7.26,
+          "min": 3.08,
+          "n": 5,
+          "p10": 3.94,
+          "p90": 14.388,
+          "stdev_sample": 5.265262
+        },
+        "muscles": [
+          "AB",
+          "AL",
+          "AM",
+          "GRA",
+          "PECT"
+        ],
+        "n": 5,
+        "pcsa_cm2": {
+          "max": 4.46229,
+          "mean": 2.151488,
+          "median": 1.66868,
+          "min": 0.891,
+          "n": 5,
+          "p10": 0.9314,
+          "p90": 3.774762,
+          "stdev_sample": 1.488002
+        }
+      },
+      "hip_extensors": {
+        "fl_cm": {
+          "max": 11.75,
+          "mean": 8.4595,
+          "median": 8.09,
+          "min": 5.908,
+          "n": 4,
+          "p10": 6.2716,
+          "p90": 10.943,
+          "stdev_sample": 2.549013
+        },
+        "muscles": [
+          "BFL",
+          "GMax",
+          "SM",
+          "ST"
+        ],
+        "n": 4,
+        "pcsa_cm2": {
+          "max": 10.07659,
+          "mean": 4.541372,
+          "median": 3.149995,
+          "min": 1.78891,
+          "n": 4,
+          "p10": 1.882828,
+          "p90": 8.313019,
+          "stdev_sample": 3.842016
+        }
+      },
+      "hip_flexors": {
+        "fl_cm": {
+          "max": 21.775,
+          "mean": 13.4875,
+          "median": 13.4875,
+          "min": 5.2,
+          "n": 2,
+          "p10": 6.8575,
+          "p90": 20.1175,
+          "stdev_sample": 11.720295
+        },
+        "muscles": [
+          "ILI",
+          "SAR"
+        ],
+        "n": 2,
+        "pcsa_cm2": {
+          "max": 2.60885,
+          "mean": 1.507925,
+          "median": 1.507925,
+          "min": 0.407,
+          "n": 2,
+          "p10": 0.627185,
+          "p90": 2.388665,
+          "stdev_sample": 1.556943
+        }
+      },
+      "hip_rotators": {
+        "fl_cm": {
+          "max": 4.25,
+          "mean": 2.805,
+          "median": 2.5,
+          "min": 1.97,
+          "n": 4,
+          "p10": 2.084,
+          "p90": 3.77,
+          "stdev_sample": 1.002713
+        },
+        "muscles": [
+          "GemInf",
+          "GemSup",
+          "ObtExt",
+          "ObtInt"
+        ],
+        "n": 4,
+        "pcsa_cm2": {
+          "max": 3.60899,
+          "mean": 1.511762,
+          "median": 1.14703,
+          "min": 0.144,
+          "n": 4,
+          "p10": 0.2343,
+          "p90": 3.081011,
+          "stdev_sample": 1.583339
+        }
+      },
+      "knee_extensors": {
+        "fl_cm": {
+          "max": 10.3,
+          "mean": 7.67,
+          "median": 8.235,
+          "min": 3.91,
+          "n": 4,
+          "p10": 4.882,
+          "p90": 10.006,
+          "stdev_sample": 2.831219
+        },
+        "muscles": [
+          "RF",
+          "VI",
+          "VL",
+          "VM"
+        ],
+        "n": 4,
+        "pcsa_cm2": {
+          "max": 6.21306,
+          "mean": 3.840602,
+          "median": 3.715725,
+          "min": 1.7179,
+          "n": 4,
+          "p10": 2.083462,
+          "p90": 5.697645,
+          "stdev_sample": 1.947664
+        }
+      },
+      "knee_flexors": {
+        "fl_cm": {
+          "max": 7.12,
+          "mean": 4.8,
+          "median": 4.23,
+          "min": 3.05,
+          "n": 3,
+          "p10": 3.286,
+          "p90": 6.542,
+          "stdev_sample": 2.094015
+        },
+        "muscles": [
+          "BFS",
+          "PLANT",
+          "POP"
+        ],
+        "n": 3,
+        "pcsa_cm2": {
+          "max": 10.07659,
+          "mean": 4.219167,
+          "median": 1.36096,
+          "min": 1.21995,
+          "n": 3,
+          "p10": 1.248152,
+          "p90": 8.333464,
+          "stdev_sample": 5.073167
+        }
+      },
+      "mtp_flexors": {
+        "fl_cm": {
+          "max": 4.21,
+          "mean": 3.255,
+          "median": 3.255,
+          "min": 2.3,
+          "n": 2,
+          "p10": 2.491,
+          "p90": 4.019,
+          "stdev_sample": 1.350574
+        },
+        "muscles": [
+          "FDL",
+          "FHL"
+        ],
+        "n": 2,
+        "pcsa_cm2": {
+          "max": 4.60213,
+          "mean": 2.804135,
+          "median": 2.804135,
+          "min": 1.00614,
+          "n": 2,
+          "p10": 1.365739,
+          "p90": 4.242531,
+          "stdev_sample": 2.542749
+        }
+      }
+    },
+    "sigma_caveat": "group sigma comparison is NOT computable in this batch (no Fmax); only PCSA/FL/mass structure is measured. Anatomy note: SM, ST, RF, MG, LG are conventionally two-joint but Table 3 lists them once; recorded, not overridden.",
+    "source": "Table 3 of the admitted fulltext (PMC13425262), verbatim",
+    "unicarticular_pcsa_cm2": {
+      "max": 10.07659,
+      "mean": 2.672575,
+      "median": 1.90889,
+      "min": 0.144,
+      "n": 32,
+      "p10": 0.4738,
+      "p90": 4.857739,
+      "stdev_sample": 2.31538
+    }
+  },
+  "input_sha256": {
+    "guimaraes_fulltext": "a1ded31fa6d615b4b1dabc91bec824c2b05b90ad37fbbcf709480027b3eb9d40",
+    "guimaraes_xlsx": "08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678",
+    "oku_xlsx": "0dd92e443bfc895eebb0e25c1304820adac67679b5989dfb7159f84407433185"
+  },
+  "measured_distributions": {
+    "fascicle_length_cm_all_rows": {
+      "max": 21.775,
+      "mean": 6.762306,
+      "median": 6.275,
+      "min": 1.97,
+      "n": 36,
+      "p10": 2.775,
+      "p90": 10.97,
+      "stdev_sample": 4.038686
+    },
+    "muscle_mass_g_mass_bearing_rows": {
+      "max": 76.05,
+      "mean": 17.908,
+      "median": 13.02,
+      "min": 0.3,
+      "n": 35,
+      "p10": 4.436,
+      "p90": 34.144,
+      "stdev_sample": 17.880589
+    },
+    "note": "these ARE the measured quantities the batch carries; sigma per muscle is not among them (F2)",
+    "pcsa_cm2_admitted_only": {
+      "max": 10.07659,
+      "mean": 2.680825,
+      "median": 1.78891,
+      "min": 0.144,
+      "n": 29,
+      "p10": 0.6754,
+      "p90": 5.151524,
+      "stdev_sample": 2.404196
+    },
+    "pcsa_cm2_all_rows": {
+      "max": 10.07659,
+      "mean": 2.763381,
+      "median": 1.877275,
+      "min": 0.144,
+      "n": 36,
+      "p10": 0.589,
+      "p90": 5.5496,
+      "stdev_sample": 2.545521
+    },
+    "total_pcsa_cm2_all_rows": 99.48172
+  },
+  "oku_demand_side_bounds": {
+    "P3_outcome": "bounds above the band floor WERE observed (9 of 10 pairs, max 268.501 N/cm^2), which at face value fires the pre-registered P3 falsifier; the named internal inconsistency of the series blocks taking that firing as a band verdict",
+    "basis": "peak simulated muscle force (Oku 2021, admitted batch, M. fuscata forward dynamics) / measured PCSA (Guimaraes 2026 M. mulatta) = LOWER bound on required specific tension; a declared within-genus pairing, not a measurement of tissue sigma",
+    "bounds_N_per_cm2": {
+      "max": 268.501412,
+      "mean": 78.914709,
+      "median": 42.595195,
+      "min": 14.113268,
+      "n": 10,
+      "p10": 23.085146,
+      "p90": 182.720904,
+      "stdev_sample": 80.644992
+    },
+    "bounds_at_or_above_band_floor_23": 268.501412,
+    "internal_consistency_of_series": {
+      "consequence": "the demand-side numbers are NOT trusted either to confirm or to falsify the literature band; recorded with numbers, unusable as a sigma floor until the Oku series scale is resolved from the paper's model parameters",
+      "finding": "the same workbook's vertical GRF never exceeds 1.1 body weights (GRFv peak 119.6 N, model mass ~10.7 kg) and hip torque peaks at |11.23| N*m, while the muscle-force series carries IL at 700 N (~6.4 BW); the implied co-contraction / scale of the muscle-force series is unresolved from anything we hold (the model's own Fmax and PCSA inputs are not published in the admitted files)",
+      "grfv_peak_N": 119.613035,
+      "hip_torque_peak_abs_Nm": 11.225053,
+      "il_peak_N": 700.479908
+    },
+    "max_bound": 268.501412,
+    "pairing": [
+      {
+        "guimaraes_muscles": [
+          "BFL"
+        ],
+        "oku_muscle": "BIFl",
+        "pairing_basis": "biceps femoris long head; Oku has no short head",
+        "pcsa_cm2_used": 10.07659,
+        "peak_N_after": 126.348857,
+        "peak_N_before": 142.21361,
+        "peak_N_used": 142.21361,
+        "sigma_lower_N_per_cm2": 14.113268,
+        "status": "paired"
+      },
+      {
+        "guimaraes_muscles": [
+          "EDL"
+        ],
+        "oku_muscle": "EDL",
+        "pairing_basis": "extensor digitorum longus",
+        "pcsa_cm2_used": 0.383,
+        "peak_N_after": 20.235645,
+        "peak_N_before": 24.20264,
+        "peak_N_used": 24.20264,
+        "sigma_lower_N_per_cm2": 63.192272,
+        "status": "paired"
+      },
+      {
+        "guimaraes_muscles": [
+          "FDL"
+        ],
+        "oku_muscle": "FDL",
+        "pairing_basis": "flexor digitorum longus",
+        "pcsa_cm2_used": 4.60213,
+        "peak_N_after": 173.326464,
+        "peak_N_before": 204.569712,
+        "peak_N_used": 204.569712,
+        "sigma_lower_N_per_cm2": 44.451094,
+        "status": "paired"
+      },
+      {
+        "guimaraes_muscles": [
+          "MG",
+          "LG"
+        ],
+        "oku_muscle": "GAS",
+        "pairing_basis": "gastrocnemius: Oku one muscle, Guimaraes two heads; PCSA summed",
+        "pcsa_cm2_used": 4.41797,
+        "peak_N_after": 166.362566,
+        "peak_N_before": 125.803224,
+        "peak_N_used": 166.362566,
+        "sigma_lower_N_per_cm2": 37.655884,
+        "status": "paired"
+      },
+      {
+        "guimaraes_muscles": [
+          "GMed"
+        ],
+        "oku_muscle": "GMED",
+        "pairing_basis": "gluteus medius",
+        "pcsa_cm2_used": 8.56724,
+        "peak_N_after": 349.023329,
+        "peak_N_before": 330.212934,
+        "peak_N_used": 349.023329,
+        "sigma_lower_N_per_cm2": 40.739296,
+        "status": "paired"
+      },
+      {
+        "guimaraes_muscles": [
+          "ILI"
+        ],
+        "oku_muscle": "IL",
+        "pairing_basis": "iliacus; Oku model single-joint hip flexor",
+        "pcsa_cm2_used": 2.60885,
+        "peak_N_after": 700.479908,
+        "peak_N_before": 668.46202,
+        "peak_N_used": 700.479908,
+        "sigma_lower_N_per_cm2": 268.501412,
+        "status": "paired"
+      },
+      {
+        "guimaraes_muscles": [
+          "RF"
+        ],
+        "oku_muscle": "RF",
+        "pairing_basis": "rectus femoris",
+        "pcsa_cm2_used": 2.93644,
+        "peak_N_after": 98.829994,
+        "peak_N_before": 105.98436,
+        "peak_N_used": 105.98436,
+        "sigma_lower_N_per_cm2": 36.092806,
+        "status": "paired"
+      },
+      {
+        "guimaraes_muscles": [
+          "SOL"
+        ],
+        "oku_muscle": "SOL",
+        "pairing_basis": "soleus",
+        "pcsa_cm2_used": 1.24136,
+        "peak_N_after": 180.205827,
+        "peak_N_before": 214.990812,
+        "peak_N_used": 214.990812,
+        "sigma_lower_N_per_cm2": 173.189737,
+        "status": "paired"
+      },
+      {
+        "guimaraes_muscles": [
+          "TA"
+        ],
+        "oku_muscle": "TA",
+        "pairing_basis": "tibialis anterior",
+        "pcsa_cm2_used": 0.733,
+        "peak_N_after": 47.135579,
+        "peak_N_before": 63.865776,
+        "peak_N_used": 63.865776,
+        "sigma_lower_N_per_cm2": 87.129299,
+        "status": "paired"
+      },
+      {
+        "guimaraes_muscles": [
+          "VI",
+          "VL",
+          "VM"
+        ],
+        "oku_muscle": "VAS",
+        "pairing_basis": "vastus group: Oku one muscle, Guimaraes three heads; PCSA summed",
+        "pcsa_cm2_used": 12.42597,
+        "peak_N_after": 299.242476,
+        "peak_N_before": 276.686818,
+        "peak_N_used": 299.242476,
+        "sigma_lower_N_per_cm2": 24.082021,
+        "status": "paired"
+      }
+    ],
+    "sheets_with_force_series": [
+      "Fig3ABC",
+      "Fig3D"
+    ]
+  },
+  "premise_check_F2": {
+    "FMAX_BEARING_FIELD_FOUND": false,
+    "consequence": "sigma_implied = Fmax/PCSA is NOT computable from the admitted batch; the 36-row measured derivation does not exist; the literature constant is not retired by this lane",
+    "fired": true,
+    "fmax_pattern": "f\\s*max|max[_ ]?isometric|max[_ ]?force|tetanic|peak\\s*force|force\\b|stress\\b|tension\\b|po\\b",
+    "fmax_pattern_matches_in_dictionary": [],
+    "fmax_pattern_matches_in_sheet_headers": {},
+    "fulltext_force_keyword_hits": 0,
+    "fulltext_tables": [
+      "specimen details",
+      "pelvis and hind limb muscles included",
+      "muscle functional groups",
+      "t-tests PCSA with/without pennation"
+    ],
+    "information_dictionary_labels": [
+      "Species_common",
+      "Species",
+      "Mus_abbrev",
+      "FL_m",
+      "PCSA_m2",
+      "musc_LENGTH_m",
+      "musc_MASS_kg",
+      "belly_LENGTH_m",
+      "belly_MASS_kg",
+      "tendon_LENGTH_m",
+      "tendon_MASS_kg",
+      "avg_penn_deg",
+      "Limb"
+    ],
+    "sheet_headers_scanned": {
+      "Gorilla gorilla": [
+        "Species_common",
+        "Species",
+        "Mus_abbrev",
+        "FL_m",
+        "PCSA_m2",
+        "musc_LENGTH",
+        "musc_MASS",
+        "belly_LENGTH",
+        "belly_MASS",
+        "tendon_LENGTH",
+        "tendon_MASS",
+        "avg_penn_deg"
+      ],
+      "Hylobates lar": [
+        "Species_common",
+        "Species",
+        "Mus_abbrev",
+        "FL_m",
+        "PCSA_m2",
+        "musc_LENGTH",
+        "musc_MASS",
+        "belly_LENGTH",
+        "belly_MASS",
+        "tendon_LENGTH",
+        "tendon_MASS",
+        "avg_pen_deg",
+        "Limb"
+      ],
+      "Macaca mulatta": [
+        "Species_common",
+        "Species",
+        "Mus_abbrev",
+        "FL_m",
+        "PCSA_m2",
+        "musc_LENGTH",
+        "musc_MASS",
+        "belly_LENGTH",
+        "belly_MASS",
+        "tendon_LENGTH",
+        "tendon_MASS",
+        "avg_pen_deg"
+      ],
+      "Pan troglodytes": [
+        "Species_common",
+        "Species",
+        "Mus_abbrev",
+        "FL_m",
+        "PCSA_m2",
+        "musc_LENGTH_m",
+        "musc_MASS_kg",
+        "belly_LENGTH_m",
+        "belly_MASS_kg",
+        "tendon_LENGTH_m",
+        "tendon_MASS_kg",
+        "avg_penn_deg",
+        "Limb"
+      ],
+      "Pongo abelii": [
+        "Species_common",
+        "Species",
+        "Mus_abbrev",
+        "FL_m",
+        "PCSA_m2",
+        "musc_LENGTH",
+        "musc_MASS",
+        "belly_LENGTH",
+        "belly_MASS",
+        "tendon_LENGTH",
+        "tendon_MASS",
+        "avg_penn_deg"
+      ],
+      "Symphalangus syndactylus": [
+        "Species_common",
+        "Species",
+        "Mus_abbrev",
+        "FL_m",
+        "PCSA_m2",
+        "musc_LENGTH",
+        "musc_MASS",
+        "belly_LENGTH",
+        "belly_MASS",
+        "tendon_LENGTH",
+        "tendon_MASS",
+        "avg_pen_deg"
+      ]
+    }
+  },
+  "receipt_recorded_utc": "2026-09-21T03:58:13Z",
+  "receipt_sha256": "e3c5535091516299ceb6cd7ad276cc494c13e49c047196bf4ef7f326fa6adf94",
+  "ref_cited": "46ed85a3ba1e451cf5b02f068134bf6801dbd258 (intake-muscle: admit Guimaraes 2026 hindlimb architecture + Oku 2021 macaque bipedal series, 2026-09-17)",
+  "rows_admitted_closure_passing": 29,
+  "rows_count_identity": "PASS",
+  "rows_expected": 36,
+  "rows_found": 36,
+  "rows_mass_additivity_fail": [
+    "ObtInt",
+    "TP",
+    "RF",
+    "SAR"
+  ],
+  "rows_mass_fields_absent_at_source": [
+    "BFS"
+  ],
+  "rows_pcsa_closure_fail": [
+    "AB",
+    "PB"
+  ],
+  "schema": "chimera.sigma_law.derivation.v1",
+  "species_sheet": "Macaca mulatta",
+  "specimen": {
+    "body_mass_kg": 8.0,
+    "limb": "R",
+    "specimen_id": "127 [KU Leuven, Belgium]"
+  },
+  "unit_consistency_F3": {
+    "F3_pass": false,
+    "contradictions_named": {
+      "mass_additivity_fail": [
+        "ObtInt",
+        "TP",
+        "RF",
+        "SAR"
+      ],
+      "note": "per-row deviations in audit_table.csv; these rows fail the dataset's own 2% closure identities and are quarantine-equivalent under the intake's whole-row rule; they are reported, never dropped",
+      "pcsa_closure_fail": [
+        "AB",
+        "PB"
+      ]
+    },
+    "denominator": "35 mass-bearing rows of 36",
+    "discrimination_ratio_header_over_resolved": 50329.8,
+    "interpretations": {
+      "header_literal_kg": "deviation of PCSA vs mass-as-kg closure",
+      "resolved_mm_g": "deviation of PCSA vs mass-as-g closure"
+    },
+    "length_additivity_note": "continuous (recorded condition in the intake adapter, never a quarantine)",
+    "max_dev_resolved_admitted_rows": 0.00233056,
+    "max_length_additivity_dev": 0.90242347,
+    "max_mass_additivity_dev_admitted_rows": 0.01433268,
+    "mean_dev_header_literal": 1019.10456593,
+    "mean_dev_resolved": 0.02024853,
+    "pennation_convention": {
+      "conclusion": "sheet PCSA is the pennation-UNCORRECTED area m/(rho*FL): decided by the 18 muscles with pennation > 11.48 deg where the two conventions differ >2% (17 match uncorrected, 0 match corrected): treating sheet PCSA as physiological PCSA OVERestimates Fmax = sigma*PCSA for pennate muscles by 1/cos(pennation); per-muscle factors are in audit_table.csv",
+      "decisive_bucket_penn_gt_11_48_deg": {
+        "match_corrected": 0,
+        "match_uncorrected": 17,
+        "members": [
+          "AL",
+          "BFL",
+          "BFS",
+          "FDL",
+          "GMed",
+          "GMin",
+          "GemInf",
+          "ILI",
+          "LG",
+          "ObtInt",
+          "PECT",
+          "POP",
+          "SM",
+          "ST",
+          "TP",
+          "VI",
+          "VL",
+          "VM"
+        ],
+        "n": 18
+      },
+      "match_corrected_with_cos": 11,
+      "match_uncorrected_m_over_rhoFL": 17,
+      "max_dev_corrected": 0.6749267,
+      "max_dev_uncorrected": 0.68446423,
+      "rows_with_pennation": 30
+    }
+  },
+  "unparsed_rows_named": [],
+  "verdicts": {
+    "P1_band_prediction": "NOT EVALUABLE (conditional on F2; F2 fired)",
+    "P2_closure_laws": "FAIL",
+    "P3_demand_below_band_floor": "FACE-VALUE FIRE BLOCKED: bounds above the floor were observed but the series is internally untrusted; no band verdict taken from demand data",
+    "sigma_implied_derivation": "IMPOSSIBLE_FROM_ADMITTED_BATCH (F2 fired: no Fmax-bearing field in the 13 columns, the column dictionary, or the paper's tables)",
+    "sigma_recommendation": {
+      "band_N_per_cm2": [
+        23.0,
+        32.0
+      ],
+      "band_basis": "literature prior (docs/research/muscle_physiology_reference.md 25-32; Saito 2021 x Spector 1980 at 23); no measured M. mulatta hindlimb sigma exists to replace it; the Oku demand-side series cannot set a floor (internal inconsistency, recorded above)",
+      "capacity_budget_for_torque_book": {
+        "total_measured_pcsa_cm2_all_rows": 99.48172,
+        "use": "hindlimb force capacity at sigma: 30 N/cm^2 * 99.5 cm^2 = 2984 N total (uncorrected; multiply per muscle by cos(pennation) where measured)"
+      },
+      "constant_MPa": 0.3,
+      "constant_N_per_cm2": 30.0,
+      "derived_pennation_correction_for_bootstrap": {
+        "max_overestimate_pct_uncorrected": 16.059,
+        "per_muscle_factors": "audit_table.csv penn_deg column",
+        "rows_with_measured_pennation": 30,
+        "rule": "Fmax = sigma * PCSA * cos(pennation); the sheet PCSA is the pennation-UNCORRECTED area, so Fmax = sigma * PCSA_sheet alone OVERestimates pennate muscles by 1/cos(pennation)"
+      },
+      "status": "RETAINED AS ASSUMED, NOT RETIRED BY MEASUREMENT",
+      "upgrade_path": "a measured M. mulatta hindlimb Fmax source (none admitted anywhere on canonical as of 46ed85a3..77f3d279) or per-muscle specific tension measurements; the forelimb round trip stays blocked by the missing measured forelimb PCSA (Cheng & Scott, paywalled)"
+    }
+  }
+}
