@@ -1,0 +1,66 @@
+refusal: (302, 'gait_positional_correction_budget')  fires: 18  tds: 17  dvfk (t,leg) first-sample series: 294  dvfj series: 169  dvfa series: 303
+SAMPLING BASIS: [dvfj] present at the fire tick (first sample) for 18/18 fires
+ERA TABLE: fire->compl leg fireCls eraClass form dl STANCEspan CMD DEL e0h/e0k qerr(anchor) stanceBuild dh/dk(d/t ticks) fireJump jh/jk ERA-END e1h/e1k swingDecay dh/dk tauH/tauK@fire demand CLMPfrac
+    98-> 107 leg=1 slot LIFT  none   dl=   0 span=entry CMD=  8.000 DEL=  3.872 e0=+0.0090/-0.0558 qerr=6.66e-16 build=+0.0000/+0.0000(0d/0t n=0) jump=+nan/+nan e1=+1.5350/-0.6216 dec=+0.1696/-0.0629 tauH=-0.697 tauK= 0.245 PINNED clmp=0.00
+   142-> 160 leg=0 alt LIFT  fold   dl= 142 span=entry CMD=  8.000 DEL= 20.590 e0=+0.0285/-0.0781 qerr=4.44e-16 build=+0.0000/+0.0000(0d/0t n=0) jump=+nan/+nan e1=+0.6870/+0.2867 dec=+0.0366/+0.0203 tauH= 5.082 tauK=-0.252 flows clmp=0.00
+   160-> 174 leg=1 alt LIFT  unload dl= 160 span=  53 CMD=  8.000 DEL= 15.942 e0=+0.0325/-0.0815 qerr=2.22e-16 build=-0.8604/-0.7391(0d/53t n=53) jump=+0.1512/-0.0887 e1=+0.8093/+0.0493 dec=+0.0555/+0.0093 tauH= 4.486 tauK= 0.127 flows clmp=0.00
+   161-> 170 leg=0 alt STALL unload dl= 107 span=   1 CMD=  8.000 DEL= -0.000 e0=+0.0344/-0.0789 qerr=4.44e-16 build=+0.0000/+0.0000(0d/1t n=1) jump=+0.0344/-0.6968 e1=-0.0747/-0.1164 dec=-0.0121/-0.0042 tauH=-6.539 tauK=-1.336 flows clmp=0.00
+   175-> 184 leg=0 alt STALL unload dl= 174 span=   5 CMD=  8.000 DEL=  0.000 e0=+0.0399/-0.0879 qerr=1.33e-15 build=+0.0184/-0.1190(0d/5t n=5) jump=+0.1150/-0.3184 e1=+0.0546/-0.1111 dec=+0.0016/-0.0026 tauH= 3.047 tauK=-0.787 flows clmp=0.00
+   184-> 193 leg=1 alt STALL unload dl= 184 span=  10 CMD=  8.000 DEL=  0.065 e0=+0.0253/-0.0699 qerr=1.33e-15 build=+0.0779/-0.7643(8d/2t n=10) jump=-0.0040/-0.0119 e1=+0.0245/-0.0755 dec=-0.0001/-0.0006 tauH= 0.021 tauK= 0.027 flows clmp=0.00
+   193-> 202 leg=0 alt STALL unload dl= 193 span=   9 CMD=  8.000 DEL= -0.000 e0=+0.0296/-0.0773 qerr=1.55e-15 build=+0.1249/-0.1779(8d/1t n=9) jump=-0.0050/-0.0013 e1=+0.0449/-0.1220 dec=+0.0017/-0.0050 tauH= 0.276 tauK= 0.046 flows clmp=0.00
+   202-> 211 leg=1 alt LIFT  unload dl= 202 span=   9 CMD=  8.000 DEL=  3.240 e0=+0.0144/-0.0589 qerr=3.33e-16 build=+0.1189/-0.4419(7d/2t n=9) jump=-0.0133/-0.0092 e1=+1.5273/-0.5445 dec=+0.1681/-0.0540 tauH= 0.314 tauK= 0.091 PINNED clmp=0.00
+   211-> 220 leg=0 alt LIFT  unload dl= 211 span=   9 CMD=  8.000 DEL=  2.476 e0=+0.0180/-0.0643 qerr=4.44e-16 build=+0.1156/-0.5317(7d/2t n=9) jump=-0.0157/+0.0310 e1=+1.5085/-0.7697 dec=+0.1656/-0.0784 tauH=-1.653 tauK=-0.164 PINNED clmp=0.00
+   220-> 229 leg=1 alt LIFT  unload dl= 220 span=   9 CMD=  8.000 DEL=  3.026 e0=+0.0012/-0.0436 qerr=2.22e-16 build=+0.2202/-0.8844(7d/2t n=9) jump=-0.0200/-0.0034 e1=+0.0016/-0.0299 dec=+0.0000/+0.0015 tauH=-0.955 tauK=-0.219 flows clmp=0.00
+   229-> 238 leg=0 alt LIFT  unload dl= 229 span=   9 CMD=  8.000 DEL=  3.974 e0=+0.0029/-0.0451 qerr=4.44e-16 build=+0.2510/-0.7427(8d/1t n=9) jump=-0.0094/+0.0179 e1=-0.0155/-0.0069 dec=-0.0020/+0.0042 tauH= 0.478 tauK= 0.051 flows clmp=0.00
+   238-> 247 leg=1 alt LIFT  unload dl= 238 span=   9 CMD=  8.000 DEL=  3.407 e0=-0.0148/-0.0233 qerr=4.44e-16 build=+0.2490/-0.7059(8d/1t n=9) jump=-0.0228/-0.0282 e1=-0.0928/+0.1245 dec=-0.0087/+0.0164 tauH= 0.711 tauK=-0.026 flows clmp=0.00
+   247-> 256 leg=0 alt LIFT  unload dl= 247 span=   9 CMD=  8.000 DEL=  5.140 e0=-0.0166/-0.0185 qerr=2.22e-16 build=+0.2925/-0.4328(8d/1t n=9) jump=-0.0252/-0.0178 e1=-0.1276/+0.2062 dec=-0.0123/+0.0250 tauH= 1.164 tauK=-0.038 flows clmp=0.00
+   256-> 265 leg=1 alt STALL unload dl= 256 span=   9 CMD=  8.000 DEL=  0.242 e0=-0.0309/+0.0040 qerr=2.22e-16 build=+0.2492/-0.4378(8d/1t n=9) jump=-0.0251/-0.0230 e1=-0.2144/+0.4021 dec=-0.0204/+0.0442 tauH= 0.852 tauK= 0.005 flows clmp=0.00
+   265-> 274 leg=0 alt LIFT  unload dl= 265 span=   9 CMD=  8.000 DEL=  7.529 e0=-0.0367/+0.0183 qerr=1.11e-15 build=+0.3627/-0.3076(8d/1t n=9) jump=-0.0724/+0.0265 e1=-0.2821/+0.7054 dec=-0.0273/+0.0763 tauH= 3.013 tauK= 0.378 flows clmp=0.00
+   274-> 291 leg=1 alt STALL unload dl= 274 span=   9 CMD=  8.000 DEL=  0.000 e0=-0.0449/+0.0400 qerr=2.22e-16 build=+0.0182/-0.1008(0d/9t n=9) jump=+0.2764/-0.2266 e1=-1.9212/+1.0554 dec=-0.1104/+0.0597 tauH= 3.576 tauK=-0.276 PINNED clmp=0.53
+   291-> 300 leg=0 alt STALL unload dl= 291 span=  17 CMD=  8.000 DEL=  0.000 e0=-0.0552/+0.0852 qerr=6.66e-16 build=+0.1022/-0.1196(0d/17t n=17) jump=+0.1461/-0.0705 e1=-0.2280/+0.8833 dec=-0.0192/+0.0887 tauH= 1.517 tauK=-0.618 flows clmp=0.56
+   300-> 302 leg=1 alt STALL unload dl= 300 span=   9 CMD=  8.000 DEL=  0.007 e0=-0.0892/+0.1569 qerr=1.44e-15 build=-0.6827/+0.3962(8d/1t n=9) jump=+0.3766/-0.6915 e1=-0.0721/+0.1397 dec=+0.0085/-0.0086 tauH=11.213 tauK=-6.638 PINNED clmp=0.33
+------------------------------------------------------------------------------------------------------------------------------------------------------
+ERA CLASSES: 8 STALL (fires [161, 175, 184, 193, 256, 274, 291, 300]) / 10 LIFT (fires [98, 142, 160, 202, 211, 220, 229, 238, 247, 265])
+THE SEPARABILITY CENSUS (F1..F5, the machinery's own discrete reads):
+    slot    : fires [98]  (stall 0 / lift 1)
+    alt     : fires [142, 160, 161, 175, 184, 193, 202, 211, 220, 229, 238, 247, 256, 265, 274, 291, 300]  (stall 8 / lift 9)
+  F1 fire class alt/slot -> not separating
+    none    : fires [98]  (stall 0 / lift 1)
+    fold    : fires [142]  (stall 0 / lift 1)
+    unload  : fires [160, 161, 175, 184, 193, 202, 211, 220, 229, 238, 247, 256, 265, 274, 291, 300]  (stall 8 / lift 8)
+  F2 deadline form (unload/fold/none/other) -> not separating
+    entry   : fires [98, 142]  (stall 0 / lift 2)
+    other   : fires [160, 175, 184, 291]  (stall 3 / lift 1)
+    g=1     : fires [161]  (stall 1 / lift 0)
+    tair    : fires [193, 202, 211, 220, 229, 238, 247, 256, 265, 274, 300]  (stall 4 / lift 7)
+  F3 stance span {entry,1,tair,other} -> not separating
+    clean   : fires [98, 142, 175]  (stall 1 / lift 2)
+    event   : fires [160, 161, 184, 193, 202, 211, 220, 229, 238, 247, 256, 265, 274, 291, 300]  (stall 7 / lift 8)
+  F4 waive/unload/guard census event at the fire tick -> not separating
+    clmp=0  : fires [98, 142, 160, 161, 175, 184, 193, 202, 211, 220, 229, 238, 247, 256, 265]  (stall 5 / lift 10)
+    clmp>0  : fires [274, 291, 300]  (stall 3 / lift 0)
+  F5 clamp regime CLMP_frac>0 -> not separating
+SEPARATING FACES: 0 of 5
+THE DRIFT TEST (the signed fire-gap series in era order vs the walk's own advance):
+  era order e0h: +0.0090 +0.0285 +0.0325 +0.0344 +0.0399 +0.0253 +0.0296 +0.0144 +0.0180 +0.0012 +0.0029 -0.0148 -0.0166 -0.0309 -0.0367 -0.0449 -0.0552 -0.0892
+  era order e0k: -0.0558 -0.0781 -0.0815 -0.0789 -0.0879 -0.0699 -0.0773 -0.0589 -0.0643 -0.0436 -0.0451 -0.0233 -0.0185 +0.0040 +0.0183 +0.0400 +0.0852 +0.1569
+  era order bx (tick-1, mm): 218.0 314.0 355.1 357.6 391.1 415.4 440.0 464.2 487.4 510.2 536.1 566.1 599.7 637.9 680.8 729.3 841.9 904.2
+  e0h era-order steps: 7 up / 10 down of 17;  e0k: 11 up / 6 down of 17
+  vs cumulative bx: slope(e0h,bx) -0.182483 rad/m  slope(e0k,bx) +0.331362 rad/m (least-squares, mine-side reading)
+  detrended residual LIFT: hip -0.0441..+0.0141  knee -0.0252..+0.0725 (n=10)
+  detrended residual STALL: hip -0.0170..+0.0184  knee -0.0226..+0.0578 (n=8)
+  DETRENDED CLASS RANGES disjoint: hip False (stall -0.0170..+0.0184 vs lift -0.0441..+0.0141); knee False (stall -0.0226..+0.0578 vs lift -0.0252..+0.0725)
+THE REACHABILITY TEST (the stall fires' stance-side gap trajectories, [dvfk] over (prev_td,ft)):
+  stall fire 161 leg=0 span=1: NO [dvfk] stance samples
+  stall fire 175 leg=0 span=5: |g| hip 0.0931->0.0751 knee 0.3251->0.2306 (sum 0.4182->0.3056 shrank); hip min 0.0751; monotone-decay-into-lift-band False
+  stall fire 184 leg=1 span=10: |g| hip 0.0694->0.0293 knee 0.6920->0.0579 (sum 0.7614->0.0873 shrank); hip min 0.0069; monotone-decay-into-lift-band False
+  stall fire 193 leg=0 span=9: |g| hip 0.0151->0.0346 knee 0.0307->0.0760 (sum 0.0458->0.1106 GREW); hip min 0.0151; monotone-decay-into-lift-band False
+  stall fire 256 leg=1 span=9: |g| hip 0.0050->0.0058 knee 0.0109->0.0270 (sum 0.0159->0.0328 GREW); hip min 0.0045; monotone-decay-into-lift-band False
+  stall fire 274 leg=1 span=9: |g| hip 0.3398->0.3213 knee 0.3532->0.2666 (sum 0.6930->0.5879 shrank); hip min 0.3213; monotone-decay-into-lift-band False
+  stall fire 291 leg=0 span=17: |g| hip 0.2929->0.2014 knee 0.2587->0.1556 (sum 0.5515->0.3570 shrank); hip min 0.1724; monotone-decay-into-lift-band False
+  stall fire 300 leg=1 span=9: |g| hip 0.0153->0.4658 knee 0.0308->0.8485 (sum 0.0461->1.3142 GREW); hip min 0.0153; monotone-decay-into-lift-band False
+  stall fires whose stance gap GREW (|g| at f- >= at td+): 3 of 8 measured
+------------------------------------------------------------------------------------------------------------------------------------------------------
+THE SELECTION RULE (fixed in receipt_wave44.json): NO face separates -> VERDICT C-LANDING iff the stance-side build /
+preceding-close series predicts the fire gap (the law moves to the LANDING side; no fire-side law bytes); else THE
+RECORD. (the reachability + drift tests above carry the C-LANDING vs THE RECORD read; the amendment never invents).

@@ -1625,6 +1625,14 @@ class GaitWalker {
         hind_step_plant_y_[hl]);}
 #endif
       double qh,qk,qa;hind_step_ik(hl,fe,stgt,qh,qk,qa);
+#ifdef GAIT_EVENT_TRACE
+      if(dr.joint=="hip"){ // WAVE 44 FIRE-GATE INSTRUMENT (read-only plumbing, receipt_wave44.json): the stance-side gap build
+       std::fprintf(stderr,"[dvfk] t=%llu leg=%zu br=d phi=%.9f qh=%.9f qk=%.9f qa=%.9f ah=%.9f ak=%.9f aa=%.9f stag=%llu oth=%d dl=%llu\n",
+        (unsigned long long)ticks_,hl,phi_[hl],qh,qk,qa,
+        s_.q[hind_coord_[hl][0]],s_.q[hind_coord_[hl][1]],s_.q[hind_coord_[hl][2]],
+        (unsigned long long)hind_step_stand_ticks_[hl],(int)hind_step_mode_[1-hl],
+        (unsigned long long)hind_step_deadline_tick_[hl]);} // the pinned solve vs the actuals: WHERE the next fire gap comes from
+#endif
       target=dr.joint=="hip"?qh:dr.joint=="knee"?qk:dr.joint=="ankle"?qa:hind_step_stand_mp_[hl];
      }else{
      double qstar[4];tables_.at(phi_[hl],qstar);
@@ -1646,6 +1654,12 @@ class GaitWalker {
        std::fprintf(stderr,"[dvfa] t=%llu leg=%zu br=%c held=%d sg=%.5f c=%.5f cmd_y=%.9f pad_y=%.9f plant_y=%.9f\n",
         (unsigned long long)ticks_,hl,'t',0,0.,2.*points_[hind_heel_pt_[hl]].radius,-1.,py,
         hind_step_plant_y_[hl]);}
+     if(dr.joint=="hip"){ // WAVE 44 FIRE-GATE INSTRUMENT (read-only plumbing, receipt_wave44.json): the stance-side gap build
+      std::fprintf(stderr,"[dvfk] t=%llu leg=%zu br=t phi=%.9f qh=%.9f qk=%.9f qa=%.9f ah=%.9f ak=%.9f aa=%.9f stag=%llu oth=%d dl=%llu\n",
+       (unsigned long long)ticks_,hl,phi_[hl],qstar[0],qstar[1],qstar[2],
+       s_.q[hind_coord_[hl][0]],s_.q[hind_coord_[hl][1]],s_.q[hind_coord_[hl][2]],
+       (unsigned long long)hind_step_stand_ticks_[hl],(int)hind_step_mode_[1-hl],
+       (unsigned long long)hind_step_deadline_tick_[hl]);} // the tables pose vs the actuals: WHERE the next fire gap comes from
 #endif
      }}}}
 
