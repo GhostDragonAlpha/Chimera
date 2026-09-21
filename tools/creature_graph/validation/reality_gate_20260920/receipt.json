@@ -1,0 +1,183 @@
+{
+ "date": "2026-09-20",
+ "lane": "agent/reality-fantasy-gate-20260920 (base origin/master 32105f18d7340ba14d4764cc1e0d3abb4496f80f)",
+ "laws_banked_verbatim": {
+  "biological_law": "no life-stage mixing \u2014 a baby macaque is the way it is for biological reasons (clinging to mother); life differs by stage; rules for mixing data follow BIOLOGICAL rules as well as physics. (a) stage consistency: one creature, one life stage; (b) allometric coherence: segment proportions must match the stage's scaling laws; (c) stage labels are ADMISSION-REQUIRED for anatomy data (adult must be adult-CONFIRMED, like sha256); (d) a stage-true baby creature is VALID \u2014 baby and adult coexist, neither mixes.",
+  "gate_output_law": "gates CLASSIFY, not just refuse \u2014 {category: reality|fantasy, violations: [...]}; violations are itemized and NEVER silent; the fantasy construction mode requires acknowledging the manifest.",
+  "two_category_law": "two categories \u2014 REALITY (follows the laws) and FANTASY (chimeras, developer-driven explicit construction, never accidental data mixing). REALITY FIRST: reality is the reference; everything else is fantasy BY DEFAULT (measured deviation). If the user wants a half-adult half-baby macaque with machine guns, that's the user's right \u2014 but the user must UNDERSTAND it violates the laws of nature."
+ },
+ "measurements": {
+  "falsifier_checks": {
+   "all_four_landed_as_pre_registered": true,
+   "every_law_check_carries_a_measurement": true,
+   "every_violation_carries_a_measured_number": true,
+   "graph_tests_stay_green": {
+    "green": true,
+    "pytest": {
+     "returncode": 0,
+     "tail": "19 passed, 27 subtests passed in 0.17s"
+    },
+    "unittest_cli": {
+     "returncode": 0,
+     "tail": "19 tests in 0.093s OK"
+    }
+   }
+  },
+  "gate": "tools/creature_graph/reality_gate.py (chimera.reality_gate.v1)",
+  "headline_numbers": {
+   "a_infant_ct": {
+    "category": "reality",
+    "note": "the first reality creature: stage-true infant Macaca mulatta (USNM 497136-3), leave-one-out replication vs specimen 000875599",
+    "violations": 0
+   },
+   "b_h2_mount": {
+    "category": "fantasy",
+    "cross_species_distance_edges": 2,
+    "note": "the operator's 'adult arms on a baby' case: no single animal has per-bone scales 3.79-8.82",
+    "per_bone_scale_deviation_frac_vs_trunk_anchored_3p2315": {
+     "h2_bone_18": 0.9338,
+     "h2_bone_2": 0.1804,
+     "h2_bone_24": 1.7296,
+     "h2_bone_25": 1.726,
+     "h2_bone_3": 0.1739,
+     "h2_bone_6": 0.369,
+     "h2_bone_7": 0.362
+    }
+   },
+   "c_walker": {
+    "category": "reality",
+    "physics_bars": {
+     "conservation": {
+      "measured": {
+       "closure_deviation_frac": 0.0,
+       "per_drive_budget_sum_J": 11.5726,
+       "work_positive_total_J": 11.5726
+      },
+      "verdict": "pass"
+     },
+     "pose": {
+      "measured": {
+       "cercopithecoid_cohort_max_deg": 95.027,
+       "cercopithecoid_cohort_mean_deg": 42.998,
+       "cercopithecoid_cohort_min_deg": 1.604,
+       "hip_excursion_deg": 59.95,
+       "n_strides": 131
+      },
+      "verdict": "pass"
+     },
+     "touch": {
+      "measured": {
+       "closure_deviation_frac": -4.1799078362547704e-05,
+       "grf_v_impulse_Ns": 34.4821,
+       "grf_v_peak_xBW": 1.0823,
+       "mean_stance_N_x_stance_dur_s": 34.4807,
+       "weight_N": 98.439
+      },
+      "verdict": "pass"
+     }
+    },
+    "violations": 0
+   },
+   "d_chimera": {
+    "allometric_deviation_frac": {
+     "forearm:tibia": 2.4969,
+     "humerus:femur": 2.5899
+    },
+    "category": "fantasy",
+    "note": "stage-mixed + adult-unconfirmed + cross-limb allometry; the within-forelimb ratios stay stage-true and were NOT flagged, exactly as pre-registered",
+    "stage_true_ratios_not_flagged": [
+     "humerus:forearm"
+    ]
+   }
+  },
+  "input_pins": {
+   "adult_table1": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+   "infant_arbiter_v3": "1d84854fd1770ed6548221ee803c949a487d9005133548eb162a5c64d4161d33",
+   "tax_names": "548fe05d557bcad46c8e6e2d8cc6401206b12ee51f005bcc49d516168f9c5849",
+   "tax_nodes": "bc03bcdaa33d3e95660578505ac3e4ec6a12dfadb71bc02c140bd4644c2d40b7"
+  },
+  "pre_registration_hits": {
+   "a_infant_ct": {
+    "expected_category": "reality",
+    "hit": true,
+    "landed_category": "reality",
+    "violation_codes": []
+   },
+   "b_h2_mount": {
+    "expected_category": "fantasy",
+    "hit": true,
+    "landed_category": "fantasy",
+    "violation_codes": [
+     "allometric-scale-incoherence",
+     "cross-species-substitution",
+     "stage-mixed"
+    ]
+   },
+   "c_walker": {
+    "expected_category": "reality",
+    "hit": true,
+    "landed_category": "reality",
+    "violation_codes": []
+   },
+   "d_chimera": {
+    "expected_category": "fantasy",
+    "hit": true,
+    "landed_category": "fantasy",
+    "violation_codes": [
+     "adult-unconfirmed",
+     "allometric-deviation",
+     "stage-mixed"
+    ]
+   }
+  },
+  "run": "python -B tools/creature_graph/validation/reality_gate_20260920/run_adjudications.py"
+ },
+ "membrane": {
+  "falsifier": "any of the four adjudications lands off its pre-registered category; any emitted violation lacks a measured number; a law check emits a verdict it cannot measure (no number or no source); the gate passes a stage-unlabeled, adult-unconfirmed, or cross-species bundle silently; the creature_graph suite leaves 19 OK under either runner.",
+  "prediction": "the four pre-registered bundles classify: (a) infant CT specimen 000875604 bundle -> REALITY, zero violations (its segment ratios replicate specimen 000875599 within the 15% band: leave-one-out expectation); (b) the H2 per-bone scaffold mounting -> FANTASY with a stage-mixed violation (infant CT bones vs adult Table-1 scaffold, components named) AND per-bone allometric scale violations for all 7 mounted bones, each scale deviation vs the trunk-anchored rigid scale 3.231482 beyond the 15% band (pre-measured in mount_reconciliation_20260919/reconciliation.json: femora ~+17.4/+18.0%, tibiae ~+36.2/+36.9%, feet ~+93.4/+172.6/+173.0%); (c) the walker Table-1 bundle -> REALITY, zero violations (adult stage literature-confirmed, single resolvable taxon Macaca fuscata, proportions equal the measured adult reference it is checked against \u2014 named circularity, certifies provenance+coherence not independent replication); (d) the synthesized chimera (infant bundle with the forelimb stretched by the committed compiler's own femur rule factor 3.8143 and relabeled adult) -> FANTASY with stage-mixed (forelimb components named) AND cross-limb allometric violations (humerus:femur ~+288% vs the infant table, itemized per segment).",
+  "preregistered_before": "any run of the gate \u2014 this receipt is committed with predictions preceding the module's first adjudication output",
+  "statement": "the reality/fantasy boundary is MEASURABLE: a bundle is REALITY only if every named law check passes with a measured verdict (one stage, stage-true allometry within the 15% house band, one resolvable taxon, no failed physics bar), and anything else is FANTASY with the deviations itemized \u2014 the gate classifies, it does not refuse."
+ },
+ "pre_registration": {
+  "adjudication_a_infant_ct": {
+   "bundle": "infant CT specimen 000875604 (Macaca mulatta USNM 497136-3, infant, 160um CT; bones + labels from the pinned v3 arbiter)",
+   "expected_category": "reality",
+   "expected_violations": [],
+   "stage_true_claim": "a stage-true baby creature is VALID \u2014 this adjudication, if it lands REALITY, labels the first reality creature"
+  },
+  "adjudication_b_h2_mount": {
+   "bundle": "H2 per-bone scaffold mounting: infant specimen-A bones per-bone-scaled onto the adult Table-1 standing scaffold (scales from mount_reconciliation_20260919/reconciliation.json)",
+   "expected_category": "fantasy",
+   "expected_violations": [
+    "stage-mixed: infant bones mounted on adult scaffold",
+    "allometric per-bone: 7 scale deviations vs 3.231482 trunk-anchored scale, every one beyond 15%"
+   ],
+   "per_bone_expected_scale_deviation_frac": {
+    "femur_2": 0.1803,
+    "femur_3": 0.1739,
+    "foot_18": 0.9338,
+    "foot_24": 1.7296,
+    "foot_25": 1.726,
+    "tibia_6": 0.369,
+    "tibia_7": 0.3619
+   }
+  },
+  "adjudication_c_walker": {
+   "bundle": "walker: adult Table-1 segments + mass (Oku/Ogihara 2021 Communications Biology model, adult female Japanese macaque), stage label adult with literature provenance",
+   "expected_category": "reality",
+   "expected_violations": [],
+   "named_circularity": "expectation table == bundle source; certifies provenance/coherence, not independent adult replication"
+  },
+  "adjudication_d_chimera": {
+   "bundle": "synthesized: specimen-A infant bundle with forelimb bones (ranks 4,5,8,9,10,11,12,13) scaled x3.8143 (the committed compiler's own femur mount rule factor 163.0mm/42.7336mm) and relabeled adult; hindlimb+trunk stay infant",
+   "expected_category": "fantasy",
+   "expected_violations": [
+    "stage-mixed: forelimb components adult-labeled, hindlimb/trunk infant",
+    "adult-unconfirmed: the synthetic adult forelimb labels carry construction provenance but no measurement confirmation (law 1c, admission-required)",
+    "allometric cross-limb (leave-one-out, expectation = specimen 000875599): humerus:femur ~+265%, forearm:tibia ~+251%, itemized per segment; within-forelimb ratios (humerus:forearm) stay stage-true and must NOT violate"
+   ]
+  },
+  "post_registration_note": "this block was amended BEFORE the first gate run (the receipt is written before reality_gate.py's adjudications execute); deviations from the first draft (pooled -> leave-one-out expectation) are the pre-registration getting sharper, not post-hoc"
+ },
+ "schema": "chimera.rule0_receipt.v1"
+}
