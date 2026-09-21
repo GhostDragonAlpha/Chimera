@@ -1,0 +1,194 @@
+{
+ "schema": "chimera.pixel_masks.route_study.v1",
+ "obb_vs_vertices": {
+  "viewport": [
+   2560,
+   1369
+  ],
+  "obb_hull_over_banked_hull": {
+   "min": 1.4116,
+   "max": 6.1869,
+   "mean": 3.2946
+  },
+  "obb_per_bone_abs_delta_max": 0.645,
+  "vertex_per_bone_abs_delta_max": 0.0661,
+  "obb_worse_than_vertex": true,
+  "per_bone": [
+   {
+    "bone": "bone_01_4737869vox_lo.obj",
+    "obb": 0.2043,
+    "obb_hull_ratio": 2.1592,
+    "vertex": 0.4967,
+    "banked": 0.475
+   },
+   {
+    "bone": "bone_02_210240vox_lo.obj",
+    "obb": 0.173,
+    "obb_hull_ratio": 4.3219,
+    "vertex": 0.5777,
+    "banked": 0.5692
+   },
+   {
+    "bone": "bone_03_208514vox_lo.obj",
+    "obb": 0.1255,
+    "obb_hull_ratio": 2.9443,
+    "vertex": 0.4285,
+    "banked": 0.4163
+   },
+   {
+    "bone": "bone_04_180534vox_lo.obj",
+    "obb": 0.3381,
+    "obb_hull_ratio": 4.0822,
+    "vertex": 0.4039,
+    "banked": 0.4056
+   },
+   {
+    "bone": "bone_05_174742vox_lo.obj",
+    "obb": 0.1182,
+    "obb_hull_ratio": 3.681,
+    "vertex": 0.5504,
+    "banked": 0.5269
+   },
+   {
+    "bone": "bone_06_154508vox_lo.obj",
+    "obb": 0.0828,
+    "obb_hull_ratio": 4.0394,
+    "vertex": 0.5341,
+    "banked": 0.5191
+   },
+   {
+    "bone": "bone_07_150102vox_lo.obj",
+    "obb": 0.0666,
+    "obb_hull_ratio": 2.9711,
+    "vertex": 0.5872,
+    "banked": 0.568
+   },
+   {
+    "bone": "bone_08_102171vox_lo.obj",
+    "obb": 0.355,
+    "obb_hull_ratio": 4.4237,
+    "vertex": 0.5779,
+    "banked": 0.5559
+   },
+   {
+    "bone": "bone_09_100874vox_lo.obj",
+    "obb": 0.1905,
+    "obb_hull_ratio": 1.8323,
+    "vertex": 0.5378,
+    "banked": 0.52
+   },
+   {
+    "bone": "bone_10_92842vox_lo.obj",
+    "obb": 0.387,
+    "obb_hull_ratio": 3.5376,
+    "vertex": 0.7912,
+    "banked": 0.7636
+   },
+   {
+    "bone": "bone_11_90563vox_lo.obj",
+    "obb": 0.1938,
+    "obb_hull_ratio": 5.4392,
+    "vertex": 0.8531,
+    "banked": 0.8187
+   },
+   {
+    "bone": "bone_12_88112vox_lo.obj",
+    "obb": 0.3471,
+    "obb_hull_ratio": 5.5677,
+    "vertex": 0.7584,
+    "banked": 0.7377
+   },
+   {
+    "bone": "bone_13_86590vox_lo.obj",
+    "obb": 0.2222,
+    "obb_hull_ratio": 5.1646,
+    "vertex": 0.7155,
+    "banked": 0.6963
+   },
+   {
+    "bone": "bone_14_58499vox_lo.obj",
+    "obb": 0.0,
+    "obb_hull_ratio": 1.5406,
+    "vertex": 0.6791,
+    "banked": 0.645
+   },
+   {
+    "bone": "bone_15_54574vox_lo.obj",
+    "obb": 0.4686,
+    "obb_hull_ratio": 1.5501,
+    "vertex": 0.6403,
+    "banked": 0.6073
+   },
+   {
+    "bone": "bone_16_54463vox_lo.obj",
+    "obb": 0.0831,
+    "obb_hull_ratio": 1.4116,
+    "vertex": 0.6784,
+    "banked": 0.6194
+   },
+   {
+    "bone": "bone_17_54226vox_lo.obj",
+    "obb": 0.1231,
+    "obb_hull_ratio": 2.5506,
+    "vertex": 0.5227,
+    "banked": 0.4876
+   },
+   {
+    "bone": "bone_18_53022vox_lo.obj",
+    "obb": 0.0096,
+    "obb_hull_ratio": 3.7063,
+    "vertex": 0.6704,
+    "banked": 0.6081
+   },
+   {
+    "bone": "bone_19_44805vox_lo.obj",
+    "obb": null,
+    "obb_hull_ratio": null,
+    "vertex": 0.5636,
+    "banked": 0.5378
+   },
+   {
+    "bone": "bone_20_34255vox_lo.obj",
+    "obb": 0.1076,
+    "obb_hull_ratio": 6.1869,
+    "vertex": 0.4623,
+    "banked": 0.4389
+   },
+   {
+    "bone": "bone_21_33153vox_lo.obj",
+    "obb": 0.0025,
+    "obb_hull_ratio": 3.998,
+    "vertex": 0.6356,
+    "banked": 0.6098
+   },
+   {
+    "bone": "bone_22_31952vox_lo.obj",
+    "obb": 0.0,
+    "obb_hull_ratio": 1.7427,
+    "vertex": 0.6498,
+    "banked": 0.5837
+   },
+   {
+    "bone": "bone_23_31588vox_lo.obj",
+    "obb": 0.0,
+    "obb_hull_ratio": 2.2379,
+    "vertex": 0.6107,
+    "banked": 0.5609
+   },
+   {
+    "bone": "bone_24_25423vox_lo.obj",
+    "obb": 0.0,
+    "obb_hull_ratio": 2.0971,
+    "vertex": 0.6366,
+    "banked": 0.574
+   },
+   {
+    "bone": "bone_25_25400vox_lo.obj",
+    "obb": 0.0,
+    "obb_hull_ratio": 1.8841,
+    "vertex": 0.5457,
+    "banked": 0.5244
+   }
+  ]
+ }
+}

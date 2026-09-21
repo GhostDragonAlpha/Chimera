@@ -1,0 +1,19 @@
+{
+ "schema": "chimera.pixel_masks.determinism.v1",
+ "determinism": {
+  "fresh_processes": 2,
+  "mask_files_compared": 28,
+  "all_mask_bytes_identical": true,
+  "coverage_tables_byte_identical": true,
+  "sha256_first_8": {
+   "a_regions_mesh__bone__bone_01_4737869vox_lo.png": "d10f5497",
+   "a_regions_mesh__bone__bone_02_210240vox_lo.png": "3a0e9bd5",
+   "a_regions_mesh__bone__bone_03_208514vox_lo.png": "dfad7ef6",
+   "a_regions_mesh__bone__bone_04_180534vox_lo.png": "ebb0bfa8",
+   "a_regions_mesh__bone__bone_05_174742vox_lo.png": "b86e378a",
+   "a_regions_mesh__bone__bone_06_154508vox_lo.png": "c38cdcc6",
+   "a_regions_mesh__bone__bone_07_150102vox_lo.png": "0e0756f1",
+   "a_regions_mesh__bone__bone_08_102171vox_lo.png": "bacd4659"
+  }
+ }
+}

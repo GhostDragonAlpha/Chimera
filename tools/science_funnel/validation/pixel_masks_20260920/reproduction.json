@@ -1,0 +1,1451 @@
+{
+ "schema": "chimera.pixel_masks.reproduction.v1",
+ "viewport_measured": [
+  2560,
+  1369
+ ],
+ "reproduction": {
+  "mesh": {
+   "viewport": [
+    2560,
+    1369
+   ],
+   "camera_radius_mine": 1.008712,
+   "camera_radius_banked": 1.0087,
+   "camera_radius_abs_delta": 1.2e-05,
+   "hull_masks_exact": 1,
+   "n_hull_masks_exact": 25,
+   "n_hull_masks_total": 25,
+   "macro_hulls_exact": true,
+   "macro_pixels_mine": {
+    "skull": 14780,
+    "spine_ribs": 62112,
+    "limbs": 179873
+   },
+   "macro_pixels_banked": {
+    "skull": 14780,
+    "spine_ribs": 62112,
+    "limbs": 179873
+   },
+   "coverage_at_viewport": {
+    "nearest": {
+     "per_bone": [
+      {
+       "bone": "bone_01_4737869vox_lo.obj",
+       "mine": 0.4967,
+       "banked": 0.475,
+       "abs_delta": 0.0217
+      },
+      {
+       "bone": "bone_02_210240vox_lo.obj",
+       "mine": 0.5777,
+       "banked": 0.5692,
+       "abs_delta": 0.0085
+      },
+      {
+       "bone": "bone_03_208514vox_lo.obj",
+       "mine": 0.4285,
+       "banked": 0.4163,
+       "abs_delta": 0.0122
+      },
+      {
+       "bone": "bone_04_180534vox_lo.obj",
+       "mine": 0.4039,
+       "banked": 0.4056,
+       "abs_delta": 0.0017
+      },
+      {
+       "bone": "bone_05_174742vox_lo.obj",
+       "mine": 0.5504,
+       "banked": 0.5269,
+       "abs_delta": 0.0235
+      },
+      {
+       "bone": "bone_06_154508vox_lo.obj",
+       "mine": 0.5341,
+       "banked": 0.5191,
+       "abs_delta": 0.015
+      },
+      {
+       "bone": "bone_07_150102vox_lo.obj",
+       "mine": 0.5872,
+       "banked": 0.568,
+       "abs_delta": 0.0192
+      },
+      {
+       "bone": "bone_08_102171vox_lo.obj",
+       "mine": 0.5779,
+       "banked": 0.5559,
+       "abs_delta": 0.022
+      },
+      {
+       "bone": "bone_09_100874vox_lo.obj",
+       "mine": 0.5378,
+       "banked": 0.52,
+       "abs_delta": 0.0178
+      },
+      {
+       "bone": "bone_10_92842vox_lo.obj",
+       "mine": 0.7912,
+       "banked": 0.7636,
+       "abs_delta": 0.0276
+      },
+      {
+       "bone": "bone_11_90563vox_lo.obj",
+       "mine": 0.8531,
+       "banked": 0.8187,
+       "abs_delta": 0.0344
+      },
+      {
+       "bone": "bone_12_88112vox_lo.obj",
+       "mine": 0.7584,
+       "banked": 0.7377,
+       "abs_delta": 0.0207
+      },
+      {
+       "bone": "bone_13_86590vox_lo.obj",
+       "mine": 0.7155,
+       "banked": 0.6963,
+       "abs_delta": 0.0192
+      },
+      {
+       "bone": "bone_14_58499vox_lo.obj",
+       "mine": 0.6791,
+       "banked": 0.645,
+       "abs_delta": 0.0341
+      },
+      {
+       "bone": "bone_15_54574vox_lo.obj",
+       "mine": 0.6403,
+       "banked": 0.6073,
+       "abs_delta": 0.033
+      },
+      {
+       "bone": "bone_16_54463vox_lo.obj",
+       "mine": 0.6784,
+       "banked": 0.6194,
+       "abs_delta": 0.059
+      },
+      {
+       "bone": "bone_17_54226vox_lo.obj",
+       "mine": 0.5227,
+       "banked": 0.4876,
+       "abs_delta": 0.0351
+      },
+      {
+       "bone": "bone_18_53022vox_lo.obj",
+       "mine": 0.6704,
+       "banked": 0.6081,
+       "abs_delta": 0.0623
+      },
+      {
+       "bone": "bone_19_44805vox_lo.obj",
+       "mine": 0.5636,
+       "banked": 0.5378,
+       "abs_delta": 0.0258
+      },
+      {
+       "bone": "bone_20_34255vox_lo.obj",
+       "mine": 0.4623,
+       "banked": 0.4389,
+       "abs_delta": 0.0234
+      },
+      {
+       "bone": "bone_21_33153vox_lo.obj",
+       "mine": 0.6356,
+       "banked": 0.6098,
+       "abs_delta": 0.0258
+      },
+      {
+       "bone": "bone_22_31952vox_lo.obj",
+       "mine": 0.6498,
+       "banked": 0.5837,
+       "abs_delta": 0.0661
+      },
+      {
+       "bone": "bone_23_31588vox_lo.obj",
+       "mine": 0.6107,
+       "banked": 0.5609,
+       "abs_delta": 0.0498
+      },
+      {
+       "bone": "bone_24_25423vox_lo.obj",
+       "mine": 0.6366,
+       "banked": 0.574,
+       "abs_delta": 0.0626
+      },
+      {
+       "bone": "bone_25_25400vox_lo.obj",
+       "mine": 0.5457,
+       "banked": 0.5244,
+       "abs_delta": 0.0213
+      }
+     ],
+     "n_bones": 25,
+     "n_exact": 0,
+     "max_abs_delta": 0.0661,
+     "n_gt_0p02": 18,
+     "median_mine": 0.5872,
+     "median_banked": 0.568,
+     "median_abs_delta": 0.0192,
+     "bones_at_zero_mine": 0,
+     "bones_at_zero_banked_table": 0,
+     "bones_zero_numerator_banked_table": 0,
+     "macro": {
+      "limbs": 0.3896,
+      "skull": 0.5709,
+      "spine_ribs": 0.5313
+     },
+     "macro_abs_delta_max": 0.0334
+    },
+    "bilinear": {
+     "per_bone": [
+      {
+       "bone": "bone_01_4737869vox_lo.obj",
+       "mine": 0.5086,
+       "banked": 0.475,
+       "abs_delta": 0.0336
+      },
+      {
+       "bone": "bone_02_210240vox_lo.obj",
+       "mine": 0.5954,
+       "banked": 0.5692,
+       "abs_delta": 0.0262
+      },
+      {
+       "bone": "bone_03_208514vox_lo.obj",
+       "mine": 0.4461,
+       "banked": 0.4163,
+       "abs_delta": 0.0298
+      },
+      {
+       "bone": "bone_04_180534vox_lo.obj",
+       "mine": 0.4152,
+       "banked": 0.4056,
+       "abs_delta": 0.0096
+      },
+      {
+       "bone": "bone_05_174742vox_lo.obj",
+       "mine": 0.5504,
+       "banked": 0.5269,
+       "abs_delta": 0.0235
+      },
+      {
+       "bone": "bone_06_154508vox_lo.obj",
+       "mine": 0.558,
+       "banked": 0.5191,
+       "abs_delta": 0.0389
+      },
+      {
+       "bone": "bone_07_150102vox_lo.obj",
+       "mine": 0.6157,
+       "banked": 0.568,
+       "abs_delta": 0.0477
+      },
+      {
+       "bone": "bone_08_102171vox_lo.obj",
+       "mine": 0.5966,
+       "banked": 0.5559,
+       "abs_delta": 0.0407
+      },
+      {
+       "bone": "bone_09_100874vox_lo.obj",
+       "mine": 0.5583,
+       "banked": 0.52,
+       "abs_delta": 0.0383
+      },
+      {
+       "bone": "bone_10_92842vox_lo.obj",
+       "mine": 0.7989,
+       "banked": 0.7636,
+       "abs_delta": 0.0353
+      },
+      {
+       "bone": "bone_11_90563vox_lo.obj",
+       "mine": 0.8733,
+       "banked": 0.8187,
+       "abs_delta": 0.0546
+      },
+      {
+       "bone": "bone_12_88112vox_lo.obj",
+       "mine": 0.7628,
+       "banked": 0.7377,
+       "abs_delta": 0.0251
+      },
+      {
+       "bone": "bone_13_86590vox_lo.obj",
+       "mine": 0.7204,
+       "banked": 0.6963,
+       "abs_delta": 0.0241
+      },
+      {
+       "bone": "bone_14_58499vox_lo.obj",
+       "mine": 0.6593,
+       "banked": 0.645,
+       "abs_delta": 0.0143
+      },
+      {
+       "bone": "bone_15_54574vox_lo.obj",
+       "mine": 0.651,
+       "banked": 0.6073,
+       "abs_delta": 0.0437
+      },
+      {
+       "bone": "bone_16_54463vox_lo.obj",
+       "mine": 0.7293,
+       "banked": 0.6194,
+       "abs_delta": 0.1099
+      },
+      {
+       "bone": "bone_17_54226vox_lo.obj",
+       "mine": 0.5367,
+       "banked": 0.4876,
+       "abs_delta": 0.0491
+      },
+      {
+       "bone": "bone_18_53022vox_lo.obj",
+       "mine": 0.7137,
+       "banked": 0.6081,
+       "abs_delta": 0.1056
+      },
+      {
+       "bone": "bone_19_44805vox_lo.obj",
+       "mine": 0.5621,
+       "banked": 0.5378,
+       "abs_delta": 0.0243
+      },
+      {
+       "bone": "bone_20_34255vox_lo.obj",
+       "mine": 0.4687,
+       "banked": 0.4389,
+       "abs_delta": 0.0298
+      },
+      {
+       "bone": "bone_21_33153vox_lo.obj",
+       "mine": 0.6547,
+       "banked": 0.6098,
+       "abs_delta": 0.0449
+      },
+      {
+       "bone": "bone_22_31952vox_lo.obj",
+       "mine": 0.6778,
+       "banked": 0.5837,
+       "abs_delta": 0.0941
+      },
+      {
+       "bone": "bone_23_31588vox_lo.obj",
+       "mine": 0.6088,
+       "banked": 0.5609,
+       "abs_delta": 0.0479
+      },
+      {
+       "bone": "bone_24_25423vox_lo.obj",
+       "mine": 0.6304,
+       "banked": 0.574,
+       "abs_delta": 0.0564
+      },
+      {
+       "bone": "bone_25_25400vox_lo.obj",
+       "mine": 0.5579,
+       "banked": 0.5244,
+       "abs_delta": 0.0335
+      }
+     ],
+     "n_bones": 25,
+     "n_exact": 0,
+     "max_abs_delta": 0.1099,
+     "n_gt_0p02": 23,
+     "median_mine": 0.6088,
+     "median_banked": 0.568,
+     "median_abs_delta": 0.0408,
+     "bones_at_zero_mine": 0,
+     "bones_at_zero_banked_table": 0,
+     "bones_zero_numerator_banked_table": 0,
+     "macro": {
+      "limbs": 0.3985,
+      "skull": 0.5871,
+      "spine_ribs": 0.5458
+     },
+     "macro_abs_delta_max": 0.0479
+    },
+    "lanczos": {
+     "per_bone": [
+      {
+       "bone": "bone_01_4737869vox_lo.obj",
+       "mine": 0.4987,
+       "banked": 0.475,
+       "abs_delta": 0.0237
+      },
+      {
+       "bone": "bone_02_210240vox_lo.obj",
+       "mine": 0.5796,
+       "banked": 0.5692,
+       "abs_delta": 0.0104
+      },
+      {
+       "bone": "bone_03_208514vox_lo.obj",
+       "mine": 0.4326,
+       "banked": 0.4163,
+       "abs_delta": 0.0163
+      },
+      {
+       "bone": "bone_04_180534vox_lo.obj",
+       "mine": 0.4097,
+       "banked": 0.4056,
+       "abs_delta": 0.0041
+      },
+      {
+       "bone": "bone_05_174742vox_lo.obj",
+       "mine": 0.5522,
+       "banked": 0.5269,
+       "abs_delta": 0.0253
+      },
+      {
+       "bone": "bone_06_154508vox_lo.obj",
+       "mine": 0.5394,
+       "banked": 0.5191,
+       "abs_delta": 0.0203
+      },
+      {
+       "bone": "bone_07_150102vox_lo.obj",
+       "mine": 0.5943,
+       "banked": 0.568,
+       "abs_delta": 0.0263
+      },
+      {
+       "bone": "bone_08_102171vox_lo.obj",
+       "mine": 0.5817,
+       "banked": 0.5559,
+       "abs_delta": 0.0258
+      },
+      {
+       "bone": "bone_09_100874vox_lo.obj",
+       "mine": 0.5426,
+       "banked": 0.52,
+       "abs_delta": 0.0226
+      },
+      {
+       "bone": "bone_10_92842vox_lo.obj",
+       "mine": 0.7898,
+       "banked": 0.7636,
+       "abs_delta": 0.0262
+      },
+      {
+       "bone": "bone_11_90563vox_lo.obj",
+       "mine": 0.8531,
+       "banked": 0.8187,
+       "abs_delta": 0.0344
+      },
+      {
+       "bone": "bone_12_88112vox_lo.obj",
+       "mine": 0.7591,
+       "banked": 0.7377,
+       "abs_delta": 0.0214
+      },
+      {
+       "bone": "bone_13_86590vox_lo.obj",
+       "mine": 0.7106,
+       "banked": 0.6963,
+       "abs_delta": 0.0143
+      },
+      {
+       "bone": "bone_14_58499vox_lo.obj",
+       "mine": 0.663,
+       "banked": 0.645,
+       "abs_delta": 0.018
+      },
+      {
+       "bone": "bone_15_54574vox_lo.obj",
+       "mine": 0.6409,
+       "banked": 0.6073,
+       "abs_delta": 0.0336
+      },
+      {
+       "bone": "bone_16_54463vox_lo.obj",
+       "mine": 0.6891,
+       "banked": 0.6194,
+       "abs_delta": 0.0697
+      },
+      {
+       "bone": "bone_17_54226vox_lo.obj",
+       "mine": 0.5263,
+       "banked": 0.4876,
+       "abs_delta": 0.0387
+      },
+      {
+       "bone": "bone_18_53022vox_lo.obj",
+       "mine": 0.6724,
+       "banked": 0.6081,
+       "abs_delta": 0.0643
+      },
+      {
+       "bone": "bone_19_44805vox_lo.obj",
+       "mine": 0.5638,
+       "banked": 0.5378,
+       "abs_delta": 0.026
+      },
+      {
+       "bone": "bone_20_34255vox_lo.obj",
+       "mine": 0.4541,
+       "banked": 0.4389,
+       "abs_delta": 0.0152
+      },
+      {
+       "bone": "bone_21_33153vox_lo.obj",
+       "mine": 0.6346,
+       "banked": 0.6098,
+       "abs_delta": 0.0248
+      },
+      {
+       "bone": "bone_22_31952vox_lo.obj",
+       "mine": 0.6641,
+       "banked": 0.5837,
+       "abs_delta": 0.0804
+      },
+      {
+       "bone": "bone_23_31588vox_lo.obj",
+       "mine": 0.6057,
+       "banked": 0.5609,
+       "abs_delta": 0.0448
+      },
+      {
+       "bone": "bone_24_25423vox_lo.obj",
+       "mine": 0.628,
+       "banked": 0.574,
+       "abs_delta": 0.054
+      },
+      {
+       "bone": "bone_25_25400vox_lo.obj",
+       "mine": 0.5617,
+       "banked": 0.5244,
+       "abs_delta": 0.0373
+      }
+     ],
+     "n_bones": 25,
+     "n_exact": 0,
+     "max_abs_delta": 0.0804,
+     "n_gt_0p02": 19,
+     "median_mine": 0.5943,
+     "median_banked": 0.568,
+     "median_abs_delta": 0.0263,
+     "bones_at_zero_mine": 0,
+     "bones_at_zero_banked_table": 0,
+     "bones_zero_numerator_banked_table": 0,
+     "macro": {
+      "limbs": 0.3911,
+      "skull": 0.5735,
+      "spine_ribs": 0.5343
+     },
+     "macro_abs_delta_max": 0.0364
+    }
+   },
+   "coverage_at_still_resolution": {
+    "per_bone": [
+     {
+      "bone": "bone_01_4737869vox_lo.obj",
+      "mine": 0.4876,
+      "banked": 0.475,
+      "abs_delta": 0.0126
+     },
+     {
+      "bone": "bone_02_210240vox_lo.obj",
+      "mine": 0.5457,
+      "banked": 0.5692,
+      "abs_delta": 0.0235
+     },
+     {
+      "bone": "bone_03_208514vox_lo.obj",
+      "mine": 0.4231,
+      "banked": 0.4163,
+      "abs_delta": 0.0068
+     },
+     {
+      "bone": "bone_04_180534vox_lo.obj",
+      "mine": 0.3886,
+      "banked": 0.4056,
+      "abs_delta": 0.017
+     },
+     {
+      "bone": "bone_05_174742vox_lo.obj",
+      "mine": 0.5276,
+      "banked": 0.5269,
+      "abs_delta": 0.0007
+     },
+     {
+      "bone": "bone_06_154508vox_lo.obj",
+      "mine": 0.5121,
+      "banked": 0.5191,
+      "abs_delta": 0.007
+     },
+     {
+      "bone": "bone_07_150102vox_lo.obj",
+      "mine": 0.5554,
+      "banked": 0.568,
+      "abs_delta": 0.0126
+     },
+     {
+      "bone": "bone_08_102171vox_lo.obj",
+      "mine": 0.5197,
+      "banked": 0.5559,
+      "abs_delta": 0.0362
+     },
+     {
+      "bone": "bone_09_100874vox_lo.obj",
+      "mine": 0.5189,
+      "banked": 0.52,
+      "abs_delta": 0.0011
+     },
+     {
+      "bone": "bone_10_92842vox_lo.obj",
+      "mine": 0.7631,
+      "banked": 0.7636,
+      "abs_delta": 0.0005
+     },
+     {
+      "bone": "bone_11_90563vox_lo.obj",
+      "mine": 0.8143,
+      "banked": 0.8187,
+      "abs_delta": 0.0044
+     },
+     {
+      "bone": "bone_12_88112vox_lo.obj",
+      "mine": 0.6862,
+      "banked": 0.7377,
+      "abs_delta": 0.0515
+     },
+     {
+      "bone": "bone_13_86590vox_lo.obj",
+      "mine": 0.6949,
+      "banked": 0.6963,
+      "abs_delta": 0.0014
+     },
+     {
+      "bone": "bone_14_58499vox_lo.obj",
+      "mine": 0.5459,
+      "banked": 0.645,
+      "abs_delta": 0.0991
+     },
+     {
+      "bone": "bone_15_54574vox_lo.obj",
+      "mine": 0.5787,
+      "banked": 0.6073,
+      "abs_delta": 0.0286
+     },
+     {
+      "bone": "bone_16_54463vox_lo.obj",
+      "mine": 0.6853,
+      "banked": 0.6194,
+      "abs_delta": 0.0659
+     },
+     {
+      "bone": "bone_17_54226vox_lo.obj",
+      "mine": 0.4444,
+      "banked": 0.4876,
+      "abs_delta": 0.0432
+     },
+     {
+      "bone": "bone_18_53022vox_lo.obj",
+      "mine": 0.6064,
+      "banked": 0.6081,
+      "abs_delta": 0.0017
+     },
+     {
+      "bone": "bone_19_44805vox_lo.obj",
+      "mine": 0.5026,
+      "banked": 0.5378,
+      "abs_delta": 0.0352
+     },
+     {
+      "bone": "bone_20_34255vox_lo.obj",
+      "mine": 0.4378,
+      "banked": 0.4389,
+      "abs_delta": 0.0011
+     },
+     {
+      "bone": "bone_21_33153vox_lo.obj",
+      "mine": 0.6133,
+      "banked": 0.6098,
+      "abs_delta": 0.0035
+     },
+     {
+      "bone": "bone_22_31952vox_lo.obj",
+      "mine": 0.5411,
+      "banked": 0.5837,
+      "abs_delta": 0.0426
+     },
+     {
+      "bone": "bone_23_31588vox_lo.obj",
+      "mine": 0.5571,
+      "banked": 0.5609,
+      "abs_delta": 0.0038
+     },
+     {
+      "bone": "bone_24_25423vox_lo.obj",
+      "mine": 0.5614,
+      "banked": 0.574,
+      "abs_delta": 0.0126
+     },
+     {
+      "bone": "bone_25_25400vox_lo.obj",
+      "mine": 0.5042,
+      "banked": 0.5244,
+      "abs_delta": 0.0202
+     }
+    ],
+    "n_bones": 25,
+    "n_exact": 0,
+    "max_abs_delta": 0.0991,
+    "n_gt_0p02": 10,
+    "median_mine": 0.5457,
+    "median_banked": 0.568,
+    "median_abs_delta": 0.0223,
+    "bones_at_zero_mine": 0,
+    "bones_at_zero_banked_table": 0,
+    "bones_zero_numerator_banked_table": 0,
+    "macro": {
+     "skull": 0.5477,
+     "spine_ribs": 0.5227,
+     "limbs": 0.382
+    },
+    "macro_abs_delta_max": 0.0248,
+    "viewport": [
+     960,
+     513
+    ],
+    "camera": {
+     "radius": 1.0087124969096808,
+     "theta": 0.6,
+     "phi": 0.3,
+     "lift": 0.4,
+     "target": [
+      0.0,
+      0.4,
+      0.0
+     ],
+     "law": "pose_a (measure_triangle_monkey: theta 0.6, phi 0.3, lift A_LIFT, fit_radius)"
+    }
+   }
+  },
+  "splat": {
+   "viewport": [
+    2560,
+    1369
+   ],
+   "camera_radius_mine": 1.007932,
+   "camera_radius_banked": 1.0079,
+   "camera_radius_abs_delta": 3.2e-05,
+   "hull_masks_exact": 1,
+   "n_hull_masks_exact": 25,
+   "n_hull_masks_total": 25,
+   "macro_hulls_exact": true,
+   "macro_pixels_mine": {
+    "skull": 14472,
+    "spine_ribs": 60567,
+    "limbs": 179865
+   },
+   "macro_pixels_banked": {
+    "skull": 14472,
+    "spine_ribs": 60567,
+    "limbs": 179865
+   },
+   "coverage_at_viewport": {
+    "nearest": {
+     "per_bone": [
+      {
+       "bone": "bone_01_4737869vox_lo.obj",
+       "mine": 0.3748,
+       "banked": 0.354,
+       "abs_delta": 0.0208
+      },
+      {
+       "bone": "bone_02_210240vox_lo.obj",
+       "mine": 0.201,
+       "banked": 0.1858,
+       "abs_delta": 0.0152
+      },
+      {
+       "bone": "bone_03_208514vox_lo.obj",
+       "mine": 0.1032,
+       "banked": 0.098,
+       "abs_delta": 0.0052
+      },
+      {
+       "bone": "bone_04_180534vox_lo.obj",
+       "mine": 0.3201,
+       "banked": 0.2983,
+       "abs_delta": 0.0218
+      },
+      {
+       "bone": "bone_05_174742vox_lo.obj",
+       "mine": 0.1363,
+       "banked": 0.1283,
+       "abs_delta": 0.008
+      },
+      {
+       "bone": "bone_06_154508vox_lo.obj",
+       "mine": 0.1321,
+       "banked": 0.1201,
+       "abs_delta": 0.012
+      },
+      {
+       "bone": "bone_07_150102vox_lo.obj",
+       "mine": 0.1125,
+       "banked": 0.1043,
+       "abs_delta": 0.0082
+      },
+      {
+       "bone": "bone_08_102171vox_lo.obj",
+       "mine": 0.7464,
+       "banked": 0.7073,
+       "abs_delta": 0.0391
+      },
+      {
+       "bone": "bone_09_100874vox_lo.obj",
+       "mine": 0.283,
+       "banked": 0.257,
+       "abs_delta": 0.026
+      },
+      {
+       "bone": "bone_10_92842vox_lo.obj",
+       "mine": 0.2887,
+       "banked": 0.2762,
+       "abs_delta": 0.0125
+      },
+      {
+       "bone": "bone_11_90563vox_lo.obj",
+       "mine": 0.2963,
+       "banked": 0.2836,
+       "abs_delta": 0.0127
+      },
+      {
+       "bone": "bone_12_88112vox_lo.obj",
+       "mine": 0.0844,
+       "banked": 0.0807,
+       "abs_delta": 0.0037
+      },
+      {
+       "bone": "bone_13_86590vox_lo.obj",
+       "mine": 0.2517,
+       "banked": 0.2544,
+       "abs_delta": 0.0027
+      },
+      {
+       "bone": "bone_14_58499vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_15_54574vox_lo.obj",
+       "mine": 0.1932,
+       "banked": 0.1766,
+       "abs_delta": 0.0166
+      },
+      {
+       "bone": "bone_16_54463vox_lo.obj",
+       "mine": 0.1697,
+       "banked": 0.1601,
+       "abs_delta": 0.0096
+      },
+      {
+       "bone": "bone_17_54226vox_lo.obj",
+       "mine": 0.4311,
+       "banked": 0.3828,
+       "abs_delta": 0.0483
+      },
+      {
+       "bone": "bone_18_53022vox_lo.obj",
+       "mine": 0.0004,
+       "banked": 0.0,
+       "abs_delta": 0.0004
+      },
+      {
+       "bone": "bone_19_44805vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_20_34255vox_lo.obj",
+       "mine": 0.114,
+       "banked": 0.1069,
+       "abs_delta": 0.0071
+      },
+      {
+       "bone": "bone_21_33153vox_lo.obj",
+       "mine": 0.056,
+       "banked": 0.0484,
+       "abs_delta": 0.0076
+      },
+      {
+       "bone": "bone_22_31952vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_23_31588vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_24_25423vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_25_25400vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      }
+     ],
+     "n_bones": 25,
+     "n_exact": 6,
+     "max_abs_delta": 0.0483,
+     "n_gt_0p02": 5,
+     "median_mine": 0.1321,
+     "median_banked": 0.1201,
+     "median_abs_delta": 0.012,
+     "bones_at_zero_mine": 6,
+     "bones_at_zero_banked_table": 7,
+     "bones_zero_numerator_banked_table": 7,
+     "macro": {
+      "limbs": 0.2061,
+      "skull": 0.4606,
+      "spine_ribs": 0.4472
+     },
+     "macro_abs_delta_max": 0.0394
+    },
+    "bilinear": {
+     "per_bone": [
+      {
+       "bone": "bone_01_4737869vox_lo.obj",
+       "mine": 0.3795,
+       "banked": 0.354,
+       "abs_delta": 0.0255
+      },
+      {
+       "bone": "bone_02_210240vox_lo.obj",
+       "mine": 0.1969,
+       "banked": 0.1858,
+       "abs_delta": 0.0111
+      },
+      {
+       "bone": "bone_03_208514vox_lo.obj",
+       "mine": 0.0998,
+       "banked": 0.098,
+       "abs_delta": 0.0018
+      },
+      {
+       "bone": "bone_04_180534vox_lo.obj",
+       "mine": 0.3201,
+       "banked": 0.2983,
+       "abs_delta": 0.0218
+      },
+      {
+       "bone": "bone_05_174742vox_lo.obj",
+       "mine": 0.1429,
+       "banked": 0.1283,
+       "abs_delta": 0.0146
+      },
+      {
+       "bone": "bone_06_154508vox_lo.obj",
+       "mine": 0.1284,
+       "banked": 0.1201,
+       "abs_delta": 0.0083
+      },
+      {
+       "bone": "bone_07_150102vox_lo.obj",
+       "mine": 0.1089,
+       "banked": 0.1043,
+       "abs_delta": 0.0046
+      },
+      {
+       "bone": "bone_08_102171vox_lo.obj",
+       "mine": 0.763,
+       "banked": 0.7073,
+       "abs_delta": 0.0557
+      },
+      {
+       "bone": "bone_09_100874vox_lo.obj",
+       "mine": 0.2816,
+       "banked": 0.257,
+       "abs_delta": 0.0246
+      },
+      {
+       "bone": "bone_10_92842vox_lo.obj",
+       "mine": 0.289,
+       "banked": 0.2762,
+       "abs_delta": 0.0128
+      },
+      {
+       "bone": "bone_11_90563vox_lo.obj",
+       "mine": 0.3041,
+       "banked": 0.2836,
+       "abs_delta": 0.0205
+      },
+      {
+       "bone": "bone_12_88112vox_lo.obj",
+       "mine": 0.0804,
+       "banked": 0.0807,
+       "abs_delta": 0.0003
+      },
+      {
+       "bone": "bone_13_86590vox_lo.obj",
+       "mine": 0.2474,
+       "banked": 0.2544,
+       "abs_delta": 0.007
+      },
+      {
+       "bone": "bone_14_58499vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_15_54574vox_lo.obj",
+       "mine": 0.1882,
+       "banked": 0.1766,
+       "abs_delta": 0.0116
+      },
+      {
+       "bone": "bone_16_54463vox_lo.obj",
+       "mine": 0.1456,
+       "banked": 0.1601,
+       "abs_delta": 0.0145
+      },
+      {
+       "bone": "bone_17_54226vox_lo.obj",
+       "mine": 0.421,
+       "banked": 0.3828,
+       "abs_delta": 0.0382
+      },
+      {
+       "bone": "bone_18_53022vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_19_44805vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_20_34255vox_lo.obj",
+       "mine": 0.1185,
+       "banked": 0.1069,
+       "abs_delta": 0.0116
+      },
+      {
+       "bone": "bone_21_33153vox_lo.obj",
+       "mine": 0.0509,
+       "banked": 0.0484,
+       "abs_delta": 0.0025
+      },
+      {
+       "bone": "bone_22_31952vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_23_31588vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_24_25423vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_25_25400vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      }
+     ],
+     "n_bones": 25,
+     "n_exact": 7,
+     "max_abs_delta": 0.0557,
+     "n_gt_0p02": 6,
+     "median_mine": 0.1284,
+     "median_banked": 0.1201,
+     "median_abs_delta": 0.0083,
+     "bones_at_zero_mine": 7,
+     "bones_at_zero_banked_table": 7,
+     "bones_zero_numerator_banked_table": 7,
+     "macro": {
+      "limbs": 0.2076,
+      "skull": 0.4828,
+      "spine_ribs": 0.449
+     },
+     "macro_abs_delta_max": 0.0616
+    },
+    "lanczos": {
+     "per_bone": [
+      {
+       "bone": "bone_01_4737869vox_lo.obj",
+       "mine": 0.3743,
+       "banked": 0.354,
+       "abs_delta": 0.0203
+      },
+      {
+       "bone": "bone_02_210240vox_lo.obj",
+       "mine": 0.199,
+       "banked": 0.1858,
+       "abs_delta": 0.0132
+      },
+      {
+       "bone": "bone_03_208514vox_lo.obj",
+       "mine": 0.1014,
+       "banked": 0.098,
+       "abs_delta": 0.0034
+      },
+      {
+       "bone": "bone_04_180534vox_lo.obj",
+       "mine": 0.3215,
+       "banked": 0.2983,
+       "abs_delta": 0.0232
+      },
+      {
+       "bone": "bone_05_174742vox_lo.obj",
+       "mine": 0.1377,
+       "banked": 0.1283,
+       "abs_delta": 0.0094
+      },
+      {
+       "bone": "bone_06_154508vox_lo.obj",
+       "mine": 0.1278,
+       "banked": 0.1201,
+       "abs_delta": 0.0077
+      },
+      {
+       "bone": "bone_07_150102vox_lo.obj",
+       "mine": 0.1088,
+       "banked": 0.1043,
+       "abs_delta": 0.0045
+      },
+      {
+       "bone": "bone_08_102171vox_lo.obj",
+       "mine": 0.7575,
+       "banked": 0.7073,
+       "abs_delta": 0.0502
+      },
+      {
+       "bone": "bone_09_100874vox_lo.obj",
+       "mine": 0.2763,
+       "banked": 0.257,
+       "abs_delta": 0.0193
+      },
+      {
+       "bone": "bone_10_92842vox_lo.obj",
+       "mine": 0.2907,
+       "banked": 0.2762,
+       "abs_delta": 0.0145
+      },
+      {
+       "bone": "bone_11_90563vox_lo.obj",
+       "mine": 0.2975,
+       "banked": 0.2836,
+       "abs_delta": 0.0139
+      },
+      {
+       "bone": "bone_12_88112vox_lo.obj",
+       "mine": 0.0828,
+       "banked": 0.0807,
+       "abs_delta": 0.0021
+      },
+      {
+       "bone": "bone_13_86590vox_lo.obj",
+       "mine": 0.2476,
+       "banked": 0.2544,
+       "abs_delta": 0.0068
+      },
+      {
+       "bone": "bone_14_58499vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_15_54574vox_lo.obj",
+       "mine": 0.1932,
+       "banked": 0.1766,
+       "abs_delta": 0.0166
+      },
+      {
+       "bone": "bone_16_54463vox_lo.obj",
+       "mine": 0.1553,
+       "banked": 0.1601,
+       "abs_delta": 0.0048
+      },
+      {
+       "bone": "bone_17_54226vox_lo.obj",
+       "mine": 0.4242,
+       "banked": 0.3828,
+       "abs_delta": 0.0414
+      },
+      {
+       "bone": "bone_18_53022vox_lo.obj",
+       "mine": 0.0004,
+       "banked": 0.0,
+       "abs_delta": 0.0004
+      },
+      {
+       "bone": "bone_19_44805vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_20_34255vox_lo.obj",
+       "mine": 0.1165,
+       "banked": 0.1069,
+       "abs_delta": 0.0096
+      },
+      {
+       "bone": "bone_21_33153vox_lo.obj",
+       "mine": 0.0504,
+       "banked": 0.0484,
+       "abs_delta": 0.002
+      },
+      {
+       "bone": "bone_22_31952vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_23_31588vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_24_25423vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      },
+      {
+       "bone": "bone_25_25400vox_lo.obj",
+       "mine": 0.0,
+       "banked": 0.0,
+       "abs_delta": 0.0
+      }
+     ],
+     "n_bones": 25,
+     "n_exact": 6,
+     "max_abs_delta": 0.0502,
+     "n_gt_0p02": 4,
+     "median_mine": 0.1278,
+     "median_banked": 0.1201,
+     "median_abs_delta": 0.0077,
+     "bones_at_zero_mine": 6,
+     "bones_at_zero_banked_table": 7,
+     "bones_zero_numerator_banked_table": 7,
+     "macro": {
+      "limbs": 0.2058,
+      "skull": 0.4651,
+      "spine_ribs": 0.4438
+     },
+     "macro_abs_delta_max": 0.0439
+    }
+   },
+   "coverage_at_still_resolution": {
+    "per_bone": [
+     {
+      "bone": "bone_01_4737869vox_lo.obj",
+      "mine": 0.3738,
+      "banked": 0.354,
+      "abs_delta": 0.0198
+     },
+     {
+      "bone": "bone_02_210240vox_lo.obj",
+      "mine": 0.1923,
+      "banked": 0.1858,
+      "abs_delta": 0.0065
+     },
+     {
+      "bone": "bone_03_208514vox_lo.obj",
+      "mine": 0.1045,
+      "banked": 0.098,
+      "abs_delta": 0.0065
+     },
+     {
+      "bone": "bone_04_180534vox_lo.obj",
+      "mine": 0.3204,
+      "banked": 0.2983,
+      "abs_delta": 0.0221
+     },
+     {
+      "bone": "bone_05_174742vox_lo.obj",
+      "mine": 0.1398,
+      "banked": 0.1283,
+      "abs_delta": 0.0115
+     },
+     {
+      "bone": "bone_06_154508vox_lo.obj",
+      "mine": 0.1274,
+      "banked": 0.1201,
+      "abs_delta": 0.0073
+     },
+     {
+      "bone": "bone_07_150102vox_lo.obj",
+      "mine": 0.1081,
+      "banked": 0.1043,
+      "abs_delta": 0.0038
+     },
+     {
+      "bone": "bone_08_102171vox_lo.obj",
+      "mine": 0.7525,
+      "banked": 0.7073,
+      "abs_delta": 0.0452
+     },
+     {
+      "bone": "bone_09_100874vox_lo.obj",
+      "mine": 0.2776,
+      "banked": 0.257,
+      "abs_delta": 0.0206
+     },
+     {
+      "bone": "bone_10_92842vox_lo.obj",
+      "mine": 0.2841,
+      "banked": 0.2762,
+      "abs_delta": 0.0079
+     },
+     {
+      "bone": "bone_11_90563vox_lo.obj",
+      "mine": 0.2895,
+      "banked": 0.2836,
+      "abs_delta": 0.0059
+     },
+     {
+      "bone": "bone_12_88112vox_lo.obj",
+      "mine": 0.0922,
+      "banked": 0.0807,
+      "abs_delta": 0.0115
+     },
+     {
+      "bone": "bone_13_86590vox_lo.obj",
+      "mine": 0.2509,
+      "banked": 0.2544,
+      "abs_delta": 0.0035
+     },
+     {
+      "bone": "bone_14_58499vox_lo.obj",
+      "mine": 0.0,
+      "banked": 0.0,
+      "abs_delta": 0.0
+     },
+     {
+      "bone": "bone_15_54574vox_lo.obj",
+      "mine": 0.2062,
+      "banked": 0.1766,
+      "abs_delta": 0.0296
+     },
+     {
+      "bone": "bone_16_54463vox_lo.obj",
+      "mine": 0.1675,
+      "banked": 0.1601,
+      "abs_delta": 0.0074
+     },
+     {
+      "bone": "bone_17_54226vox_lo.obj",
+      "mine": 0.4116,
+      "banked": 0.3828,
+      "abs_delta": 0.0288
+     },
+     {
+      "bone": "bone_18_53022vox_lo.obj",
+      "mine": 0.0025,
+      "banked": 0.0,
+      "abs_delta": 0.0025
+     },
+     {
+      "bone": "bone_19_44805vox_lo.obj",
+      "mine": 0.0,
+      "banked": 0.0,
+      "abs_delta": 0.0
+     },
+     {
+      "bone": "bone_20_34255vox_lo.obj",
+      "mine": 0.1125,
+      "banked": 0.1069,
+      "abs_delta": 0.0056
+     },
+     {
+      "bone": "bone_21_33153vox_lo.obj",
+      "mine": 0.0534,
+      "banked": 0.0484,
+      "abs_delta": 0.005
+     },
+     {
+      "bone": "bone_22_31952vox_lo.obj",
+      "mine": 0.0,
+      "banked": 0.0,
+      "abs_delta": 0.0
+     },
+     {
+      "bone": "bone_23_31588vox_lo.obj",
+      "mine": 0.0,
+      "banked": 0.0,
+      "abs_delta": 0.0
+     },
+     {
+      "bone": "bone_24_25423vox_lo.obj",
+      "mine": 0.0,
+      "banked": 0.0,
+      "abs_delta": 0.0
+     },
+     {
+      "bone": "bone_25_25400vox_lo.obj",
+      "mine": 0.0,
+      "banked": 0.0,
+      "abs_delta": 0.0
+     }
+    ],
+    "n_bones": 25,
+    "n_exact": 6,
+    "max_abs_delta": 0.0452,
+    "n_gt_0p02": 5,
+    "median_mine": 0.1274,
+    "median_banked": 0.1201,
+    "median_abs_delta": 0.0073,
+    "bones_at_zero_mine": 6,
+    "bones_at_zero_banked_table": 7,
+    "bones_zero_numerator_banked_table": 7,
+    "macro": {
+     "skull": 0.4575,
+     "spine_ribs": 0.4472,
+     "limbs": 0.203
+    },
+    "macro_abs_delta_max": 0.0363,
+    "viewport": [
+     960,
+     513
+    ],
+    "camera": {
+     "radius": 1.0079321433970319,
+     "theta": 0.6,
+     "phi": 0.3,
+     "lift": 0.4,
+     "target": [
+      0.0,
+      0.4,
+      0.0
+     ],
+     "law": "pose_a (measure_triangle_monkey: theta 0.6, phi 0.3, lift A_LIFT, fit_radius)"
+    }
+   }
+  }
+ }
+}

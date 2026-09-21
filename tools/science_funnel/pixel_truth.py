@@ -280,6 +280,28 @@ def main(argv=None) -> int:  # pragma: no cover - CLI
     o = sub.add_parser("object-seen"); o.add_argument("img"); o.add_argument("--roi", required=True)
     d = sub.add_parser("guide-seen"); d.add_argument("img"); d.add_argument("--roi", required=True)
     s = sub.add_parser("clipscan"); s.add_argument("frame_dir"); s.add_argument("glob")
+    # ADDITIVE (agent/pixel-masks-20260920): the `masks` subcommand -- generate
+    # or load per-bone/per-region masks (tools/science_funnel/pixel_masks.py,
+    # the mask library + its Rule-0 receipt) for a frames dir and print the
+    # per-bone/per-region coverage table in one call. Nothing above this line
+    # was modified; the existing functions are byte-unchanged.
+    m = sub.add_parser("masks"); m.add_argument("frame_dir"); m.add_argument("--glob", required=True)
+    m.add_argument("--presentation", choices=("mesh", "splat"), default="mesh")
+    m.add_argument("--camera-json", default=None,
+                   help="JSON: {\"default\": {radius,theta,phi,lift,target}, \"frames\": {fname: {...}}}; "
+                        "default is the recorded pose-A law (fit radius)")
+    m.add_argument("--outdir", default=None, help="write mask PNGs + masks_manifest.json here")
+    m.add_argument("--load", action="store_true", help="load previously generated masks from --outdir")
+    m.add_argument("--route", choices=("vertices", "obb"), default="vertices",
+                   help="vertices = the banked route (hull of the bone's own projected vertices); "
+                        "obb = the measured-and-rejected manifest-bbox route (route study)")
+    m.add_argument("--width", type=int, default=None,
+                   help="mask viewport width (default: the frame's own pixel size); use when the "
+                        "committed frames are downscales of the render viewport")
+    m.add_argument("--height", type=int, default=None, help="mask viewport height")
+    m.add_argument("--resample", choices=("nearest", "bilinear", "lanczos"), default="nearest",
+                   help="carrier when the frame is carried up to the viewport (default nearest: "
+                        "committed pixel values only, no invented colors)")
 
     a = ap.parse_args(argv)
     if a.cmd == "grain":
@@ -301,6 +323,16 @@ def main(argv=None) -> int:  # pragma: no cover - CLI
             counts.append(int(m.sum()))
             touches.append(boundary_touch(m))
         print(json.dumps(clip_scan(counts, touches)))
+    elif a.cmd == "masks":                   # ADDITIVE (pixel_masks_20260920)
+        import sys as _sys                   # script-mode shim (docstring usage
+        _sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # runs this file directly)
+        from tools.science_funnel import pixel_masks as pm
+        out = pm.run_masks(Path(a.frame_dir), a.glob, presentation=a.presentation,
+                           camera_json_path=a.camera_json,
+                           outdir=Path(a.outdir) if a.outdir else None,
+                           load=a.load, route=a.route,
+                           width=a.width, height=a.height, resample=a.resample)
+        print(json.dumps(out, indent=1))
     return 0
 
 
