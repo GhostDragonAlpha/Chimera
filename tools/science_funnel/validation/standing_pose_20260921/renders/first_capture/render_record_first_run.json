@@ -1,0 +1,192 @@
+{
+ "base_commit": "52f101c1",
+ "engine": {
+  "exe_sha256": "16ca3c1854289470ffed05dd4ac3789cf4a0a6163fb69d2e239e4383fc3c34dd",
+  "launch": "port argument ONLY; own bind-tested port; 8127 and sibling ports never touched",
+  "pid": 141052,
+  "port": 8130
+ },
+ "falsifiers_fired": [
+  "F10: P_R1_corpse_coverage_class failed",
+  "F10: P_R1_standing_coverage_class failed",
+  "F10: P_R3_corpse_revisit_identical failed",
+  "F10: P_R4_within_1e-6 failed"
+ ],
+ "files": [
+  "E:\\ChimeraWork\\pose-agent\\tools\\science_funnel\\validation\\standing_pose_20260921\\renders\\corpse_still.png",
+  "E:\\ChimeraWork\\pose-agent\\tools\\science_funnel\\validation\\standing_pose_20260921\\renders\\standing_still.png"
+ ],
+ "lane": "agent/standing-pose-20260921",
+ "placement": {
+  "R_place": [
+   [
+    0.907786036393,
+    0.303666246226,
+    0.289329091232
+   ],
+   [
+    -0.303666246226,
+    -8.399054e-06,
+    0.952778468917
+   ],
+   [
+    0.289329091232,
+    -0.952778468917,
+    0.092205564553
+   ]
+  ],
+  "lift_m": -0.034125040584
+ },
+ "pose_sha256": "27e6fd9e95a057af276f63859af65c6a8a4d20a35d0cedf7b495ea9c9ffa0053",
+ "predictions": {
+  "P_R1_corpse_coverage_class": false,
+  "P_R1_standing_coverage_class": false,
+  "P_R2_pixel_diff_at_least_1000": true,
+  "P_R2_pixel_diff_count": 330631,
+  "P_R3_corpse_revisit_identical": false,
+  "P_R3_standing_revisit_identical": true,
+  "P_R4_abs_dev_m": 0.356967742572,
+  "P_R4_ct_spread_mm": 2.1e-11,
+  "P_R4_scene_spread_m": 0.356967742572,
+  "P_R4_within_1e-6": false
+ },
+ "preregistration_sha256": "63e9def46d2c7a40215e8eda5c1599565203aed639d648bc97a97d6cbccc9348",
+ "registration_diagnostics": {
+  "dorsal_ct_to_scene": "+y_ct -> +Z_scene (left); trunk axis -> +Y_scene (up)",
+  "pelvis_end_ct_mm": [
+   61.561,
+   51.358,
+   26.821
+  ],
+  "rotation_ct_to_walker": [
+   [
+    -0.05635628,
+    0.0,
+    0.99841072
+   ],
+   [
+    0.97868636,
+    -0.19779087,
+    0.05524292
+   ],
+   [
+    0.19747653,
+    0.98024424,
+    0.01114676
+   ]
+  ],
+  "scale_scene_per_mm": 3.23148227,
+  "skull_end_ct_mm": [
+   207.54,
+   21.856,
+   35.061
+  ],
+  "translation_m": [
+   -0.075324,
+   -0.497432,
+   -0.202934
+  ],
+  "trunk_axis_ct": [
+   0.978686,
+   -0.197791,
+   0.055243
+  ],
+  "trunk_midpoint_scene_m": [
+   0.0,
+   -0.089776,
+   0.0
+  ],
+  "trunk_pca_explained_variance": null,
+  "trunk_span_mm": 149.158
+ },
+ "render_path": "ct_skeleton_layer + ct_skeleton_triangle (byte-identical copies of agent/triangle-monkey-grid-20260920 @ 1b08b29d) -> /mesh_bin (depth-tested triangle pipeline); ONE committed registration; standing placement = pads' plane normal -> scene up, pads' mean plane -> y=0",
+ "schema": "chimera.standing_pose_render.v1",
+ "seat_height_m_banked": -0.089775882224,
+ "stills": {
+  "corpse_still": {
+   "background_rgb": [
+    27,
+    27,
+    24
+   ],
+   "camera": {
+    "bbox_height_m": 0.618996,
+    "bbox_max_m": [
+     0.097192,
+     0.159609,
+     0.09832
+    ],
+    "bbox_min_m": [
+     -0.097674,
+     -0.459388,
+     -0.155264
+    ],
+    "camera_margin": 1.35,
+    "fov_y_deg": 45.0,
+    "radius_m": 1.008713
+   },
+   "coverage_fraction": 0.996547,
+   "frame_pixels": 3504640,
+   "height": 1369,
+   "layer": {
+    "bones": 25,
+    "triangles": 712522,
+    "vertices": 355831
+   },
+   "name": "corpse_still",
+   "object_bbox_xyxy": [
+    0,
+    0,
+    2559,
+    1368
+   ],
+   "object_pixels": 3492538,
+   "png_sha256": "57d9202b559502a58b42a4f85cf2ef7cc7a8dc4431753e39f784a2f0f8ddca1d",
+   "revisit_byte_identical": false,
+   "width": 2560
+  },
+  "standing_still": {
+   "background_rgb": [
+    27,
+    27,
+    24
+   ],
+   "camera": {
+    "bbox_height_m": 0.269292,
+    "bbox_max_m": [
+     0.102128,
+     0.134578,
+     0.45177
+    ],
+    "bbox_min_m": [
+     -0.159165,
+     -0.134714,
+     -0.153338
+    ],
+    "camera_margin": 1.35,
+    "fov_y_deg": 45.0,
+    "radius_m": 0.438837
+   },
+   "coverage_fraction": 0.995272,
+   "frame_pixels": 3504640,
+   "height": 1369,
+   "layer": {
+    "bones": 25,
+    "triangles": 712522,
+    "vertices": 355831
+   },
+   "name": "standing_still",
+   "object_bbox_xyxy": [
+    0,
+    0,
+    2559,
+    1368
+   ],
+   "object_pixels": 3488071,
+   "png_sha256": "f8fa0f2c76dc4393afdfe59176e922ef18af4f32efa7055a96bbd851ef31e3b4",
+   "revisit_byte_identical": true,
+   "width": 2560
+  }
+ },
+ "trailer": "Agent: GLM 5.3"
+}
