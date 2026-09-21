@@ -257,7 +257,7 @@
  },
  "hard_checks_pass": true,
  "inputs": {
-  "definition_sha256": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+  "definition_sha256": "db412e0c8debd45750b1cc06e13c50e08367ac94d434fe3be5be7f8dd5f1fbfe",
   "osim_sha256": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
   "osim_sha_matches_citation": true,
   "tris_sha256": {
@@ -942,7 +942,7 @@
  "untouched": {
   "after": {
    "research_references\\human\\opensim\\gait2392_thelen2003muscle.osim": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
-   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "db412e0c8debd45750b1cc06e13c50e08367ac94d434fe3be5be7f8dd5f1fbfe",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_01.bin": "bf649f07180123250d0d861782be5922d0995f0523859ede8874a61475da84a7",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_02.bin": "7e750f78fb7a6b2c7fe358fd6d1274b2be2623b6e78334ecb0567319087bc029",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_03.bin": "52756398ebbf8eb22d9350ea5490574f6e6130f4ba162ed207b66428cec10c40",
@@ -953,7 +953,7 @@
   },
   "before": {
    "research_references\\human\\opensim\\gait2392_thelen2003muscle.osim": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
-   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "db412e0c8debd45750b1cc06e13c50e08367ac94d434fe3be5be7f8dd5f1fbfe",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_01.bin": "bf649f07180123250d0d861782be5922d0995f0523859ede8874a61475da84a7",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_02.bin": "7e750f78fb7a6b2c7fe358fd6d1274b2be2623b6e78334ecb0567319087bc029",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_03.bin": "52756398ebbf8eb22d9350ea5490574f6e6130f4ba162ed207b66428cec10c40",
