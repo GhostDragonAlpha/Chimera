@@ -1,0 +1,52 @@
+=== STEP 0: THE RECONSTRUCTION IDENTITY (measured before the mine) ===
+AMEND stdout sha 02ec5e3013b3eb688341e737a3e2ff52ec9856781a279f69f5b7a98dc2604eaa
+      refusal 298 / ledger 30.408697 / 47 reds 158 checks == the parent's recorded amended run
+
+=== M1: THE FIRST CALENDAR DIVERGENCE (the amended fires vs the shipped grid) ===
+shipped-grid fires present on AMEND: [('R', 98), ('L', 142), ('R', 160), ('L', 161), ('L', 175), ('R', 184), ('L', 194), ('R', 203), ('L', 212), ('R', 221), ('L', 230), ('R', 239), ('L', 248)]
+FIRST FIRE OFF THE SHIPPED GRID: ('L', 161)
+the SWINGING leg (R): fire 160 -> TD 174, era=14 ticks (9 == on-grid; >9 == the stall-era seeding)
+the STANDING leg (L) at the missed completion tick 161 (the decision's status row 160):
+  pair-min gap = 4.2505e-08  (kTouch=1e-5, kTouch+kReleaseBand=1.1e-5) rxn = 16.160 N
+  graze-released: False  (loaded: True)
+
+=== M2: THE DIRECTION TEST ===
+B FEASIBILITY: the drifted twelfth era [248,257): the launcher's (L) max pair-min gap = 1.0170e-05 vs 1.1e-5 -> the clear window EMPTY (the gate read never opens: B's waive-side arm STRUCTURALLY DEAD)
+
+=== M3: THE FENCE INERTNESS (the re-lock predicate on the REPRO trace, whole walk) ===
+engagements on the shipped walk: 75 [('R', 161), ('R', 162), ('R', 163), ('R', 164), ('R', 165), ('R', 166), ('R', 167), ('R', 168), ('R', 169), ('R', 170)]
+
+=== M4: THE ENGAGEMENT COUNT (the predicate on the AMEND trace, [161,298)) ===
+engagements on the amended walk: 26
+  R@161 dl=160 gap=6.3583e-04 rxn=0.000 phi=0.5047
+  R@162 dl=160 gap=1.7887e-03 rxn=0.000 phi=0.5094
+  R@163 dl=160 gap=3.1240e-03 rxn=0.000 phi=0.5141
+  R@164 dl=160 gap=4.4767e-03 rxn=0.000 phi=0.5188
+  R@165 dl=160 gap=5.7003e-03 rxn=0.000 phi=0.5235
+  R@166 dl=160 gap=6.6684e-03 rxn=0.000 phi=0.5281
+  R@167 dl=160 gap=7.2776e-03 rxn=0.000 phi=0.5328
+  R@168 dl=160 gap=7.4397e-03 rxn=0.000 phi=0.5375
+  R@169 dl=160 gap=7.0863e-03 rxn=0.000 phi=0.5422
+  L@193 dl=193 gap=1.1707e-05 rxn=9.739 phi=0.1548
+  R@215 dl=203 gap=1.2050e-05 rxn=6.852 phi=0.1923
+  R@267 dl=257 gap=3.8762e-05 rxn=0.000 phi=0.2392
+  R@268 dl=257 gap=8.6744e-05 rxn=0.000 phi=0.2439
+  R@269 dl=257 gap=9.0054e-05 rxn=0.000 phi=0.2486
+  R@270 dl=257 gap=2.7362e-05 rxn=0.000 phi=0.2533
+  L@274 dl=266 gap=5.0252e-05 rxn=4.441 phi=0.3752
+  R@278 dl=275 gap=1.4298e-05 rxn=0.000 phi=0.0328
+  R@279 dl=275 gap=4.5722e-04 rxn=0.000 phi=0.0375
+  R@280 dl=275 gap=1.6747e-03 rxn=0.000 phi=0.0422
+  R@281 dl=275 gap=3.7019e-03 rxn=0.000 phi=0.0469
+  R@282 dl=275 gap=6.5963e-03 rxn=0.000 phi=0.0516
+  R@283 dl=275 gap=8.6561e-03 rxn=0.000 phi=0.0563
+  R@284 dl=275 gap=9.4601e-03 rxn=0.000 phi=0.0610
+  R@285 dl=275 gap=8.9893e-03 rxn=0.000 phi=0.0657
+  R@286 dl=275 gap=7.2189e-03 rxn=0.000 phi=0.0704
+  R@287 dl=275 gap=4.0314e-03 rxn=0.000 phi=0.0750
+
+=== THE DECISION (the rule fixed a priori in the header) ===
+M1 the seed owner: read from M1 above (the swinging era 14; the standing graze False)
+M2 the direction: read from M2 above
+M3 fence inertness (0 shipped engagements): NO -> BLOCKED
+M4 exactly one amended engagement at the seed: NO -> BLOCKED

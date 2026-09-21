@@ -405,6 +405,133 @@ class GaitWalker {
  // mined face (the R's re-synced slot ~252 vs its window closed at 161; the
  // unloaded pad cannot wait for a slot 91 ticks past its own unload).
  static constexpr int kUnloadTicks=1;      // the mined +1 class (the unload = entry+1)
+ // ── THE STAND-FIRST HOLD (wave 33, receipt_wave33.json) ──
+ // THE MINED FACE (the wave-32 shipped trace, the declared mining script):
+ // from the L@175 fire on, every exchange swing STALLED -- its lift-first hold
+ // never released (the arch peak 0.0087-0.0124 mm vs the real lifts' 1.52-13.1
+ // mm), the fired pads crept IN-BAND dragging (slip 0.10-0.7674 m/s), because
+ // the exchange fires land on pads STILL LOADED (the fired leg's rxn at its
+ // own fire 2.265/2.156/0.492/5.455/4.649 N). At the sixth exchange the sole
+ // carrier's share drained mid-swing (the R 4.025@211 -> 0.000@215) and the
+ // unloaded columns lifted its pad (the pair-min 9.63um@214 -> 193.72um@215):
+ // the wave-30 unload-lift face, the strand, the refusal at 300. The wave-32
+ // deadline reads the other's LAST TD and (a) never yields mid-glide -- no
+ // FIRE deadline can cover a carrier unloading mid-swing. THE MIRROR: a PAD
+ // HOLD (the descent-armed amendment). While the other hind is mid-glide AND
+ // its pads are IN THE TOUCH BAND -- the swing's tick-start TOUCHING CLASS,
+ // the mechanism's own clock: never-left (the stall swings) or RETURNED (the
+ // real swings' descent re-entry, the mined +1 class's own face) -- AND this
+ // leg is the ride-era carrier with live pads, this leg's stance target is
+ // REPLACED by the IK hold at the pad spots RE-CAPTURED at each pinned tick
+ // (a zero-velocity demand at the pads' instant position) -- the wave-29
+ // glide hold's whole-branch replacement mirrored (the designed stance
+ // tables AND the wave-27 ff both displaced): the unloaded columns cannot
+ // lift the pad, disarmed BY STRUCTURE. The hold releases when the other
+ // completes or its pads genuinely clear (the real lift's own era -- the
+ // stance columns resume); the wave-32 exchange fire then lands on live pads
+ // at the completion, untouched. Clause (a) NEVER yields -- untouched. Zero
+ // new numeric constants: the read is the wave-22 touching class's own
+ // hysteresis state. MAPPED LEAD (mined): the swing's in-band read lands one
+ // decision before the fold's first band-exit read -- the +1 class again.
+ // First engagement on the shipped bytes: the 176 decision (the cycle-2 stall
+ // swing's first glide tick-start; the pre-176 real lifts' pads are out of
+ // band at every glide tick-start until their completion -- the wave-31 hold
+ // class: 1.2383e-3 m @159, 6.29e-4 m @174).
+ uint64_t hind_step_stall_[2]={0,0};        // the per-swing stall clock (held ticks, reset at each fire; census)
+ bool hind_step_stand_[2]={false,false};    // the stand-first hold is pinned this tick
+ V hind_step_stand_from_[2]={V{},V{}};      // the pinned pad spots (planar re-captured every pinned tick)
+ double hind_step_stand_y_[2]={0.,0.};      // the FLOOR ANCHOR: the pads' height captured at the arm tick
+ double hind_step_stand_mp_[2]={0.,0.};     // the pinned MP angle (re-captured every pinned tick)
+ uint64_t hind_step_stand_ticks_[2]={0,0};  // the pinned-tick census
+ // THE LATCHED CARRIER HOLD (wave 34, receipt_wave34.json): the mined
+ // 250 disarm -- the per-tick predicate defeats itself on the carrier's own
+ // 1-tick graze past the genuine-departure bound (1.317e-5 > kTouch+
+ // kReleaseBand), exactly the unload-lift it exists to prevent -- so the
+ // LATCH: once the hold has armed in the other's swing era it stays armed
+ // until the other completes or this leg fires, gated to the swing's own
+ // genuinely-cleared lift-first hold (the real lift's own read: the stall
+ // blinks ride the shipped 1-tick column resumptions -- pinning through them
+ // launched the walk at 215, measured twice; the airborne gate was the wave
+ // 34 first amendment). The latch's continuation pins with the SHIPPED
+ // anchor (the planar re-captured every pinned tick, the y the arm capture):
+ // the FROZEN WORLD PIVOT variant was tried and reverted (the second
+ // amended build: the roll demand marched the knee target -59.5 -> -31.7
+ // deg, the capped servo lost the pads at 259, the walk refused 298); its
+ // extension-envelope release read is reverted with it (the release field
+ // stays at its -1 sentinel).
+ bool hind_step_stand_latch_[2]={false,false}; // the latch is armed this swing era
+ bool hind_step_stand_pivot_[2]={false,false}; // the latch-era marker (the census)
+ int hind_step_stand_release_[2]={-1,-1};      // the envelope-release tick (-1 sentinel; the read reverted)
+ uint64_t hind_step_stand_latch_ticks_[2]={0,0};// the latch-era pinned-tick census
+ // ── THE CARRIER SELF-UNLOAD FIRE DEADLINE (wave 35, receipt_wave35.json) ──
+ // THE MINED FACE (the declared script .tmp/w35_receipt/mine_carrier.py on this
+ // lane's byte-exact reproduction trace, the FRONT decision rule fixed in its
+ // header BEFORE the numbers): the twelfth-era carrier drain on the SHIPPED
+ // (unpinned) bytes is 4.648 N @247 -> 4.415 @248 -> 0.309 @249 -> 0.000 @250
+ // (the pair-min 8.21e-6 -> 1.317e-5 = the band exit -> 6.70e-5): the carrier
+ // gets EXACTLY THREE legal-fire decisions after the other's launch, while its
+ // own alternation fire is alt-due the whole era with the deadline BINDING ON
+ // THE UNLOAD FORM (dl=238 = the L's last TD + kUnloadTicks - g, the wave-32
+ // arithmetic) and gated ONLY by clause (a). FRONT 2 failed both its
+ // pre-registered conditions (R1: the era length does NOT scale with the plant
+ // lead, r=0.3587; R2: the drain onset does NOT align geometrically, 0.126 vs
+ // 0.382 m at the onsets) -- FRONT 1 owns. THE LAW: the no-double-step clause
+ // (a) YIELDS for a carrier's alternation fire when the deadline fire is
+ // binding ON THE UNLOAD FORM (hind_step_dl_unload_, the machinery's own
+ // wave-32 flag) AND the other's lift-first hold has GENUINELY CLEARED
+ // (hind_step_held_[o]==false, the machinery's own wave-31/34 airborne read --
+ // the stall swings' holds never clear, so the stall eras never see the
+ // waive). The wave-34 core carried verbatim: the drain is GEOMETRIC (every
+ // replant under-delivers its target by 0.156-0.462 m -- the splay) and the
+ // pin only presses dead pads; the REAL haul delivers (the L's 0.337 ->
+ // 0.428 m, 47.717 N at the 262 completion) -- the fired carrier's own haul is
+ // the escape. ZERO new numeric constants: the deadline is the machinery's own
+ // kUnloadTicks/kFoldBudgetTicks/g arithmetic, the gate the machinery's own
+ // held_ read.
+ uint64_t hind_step_waive_fires_[2]={0,0};  // the (a)-waiving unload-deadline fires
+ int hind_step_waive_first_[2]={-1,-1};     // the first waive fire's tick (the census)
+ int hind_step_waive_last_[2]={-1,-1};      // the last waive fire's tick (the census)
+ uint64_t hind_step_graze_yields_[2]={0,0}; // the completion-tick re-lock's graze yields (the census)
+ int hind_step_graze_first_[2]={-1,-1};     // the first graze yield's tick (the census)
+ uint64_t hind_step_guard_blocks_[2]={0,0}; // the calendar-arithmetic waive scope guard's blocks (the census)
+ int hind_step_guard_first_[2]={-1,-1};     // the first guard block's tick (the census)
+ // ── THE WAIVE-ERA HAND-OFF PRESERVATION (wave 36, receipt_wave36.json) ──
+ // THE MINED FACE (the declared script .tmp/w36_receipt/mine_w36.py on this
+ // lane's byte-exact reproduction trace, the decision rule fixed in its header
+ // BEFORE the numbers): (R1) the hand-off fires are COMPLETION-TICK-LOCKED --
+ // all 10 unloadgate-class fires land ON the other's last TD -- so any
+ // completion perturbation shifts the whole resumed calendar (the wave-35
+ // build-2 death: the waive-perturbed R landing at 174 re-phased the stall
+ // chain -1 against the unshifted fore cadence, the dead-pad fire at 201, the
+ // impact death at 266); (R2) the +2 waive edge is STRUCTURALLY DEAD in the
+ // twelfth era (the carrier's touch hysteresis releases at the 249 tick-start:
+ // 1.317e-5 > kTouch+kReleaseBand=1.1e-5; 8.207e-6 @248 in band) -- the wave-35
+ // build-1 gate's +1 edge is the ONLY lawful waive edge, so the phase must be
+ // restored at the HAND-OFF, not at the waive; (R3) the wave-35 amendment's
+ // concentration repair is inert on the shipped trajectory over [0,160]
+ // (0 flips). THE LAW'S THIRD CLAUSE: the (b)-waive is disarmed for the
+ // hand-off out of a waive-ridden swing -- when this leg's own waive fire
+ // postdates the other's current-swing launch, the hand-off rides the natural
+ // g=1 clause (b) and lands at the completion + 1, the shipped grid tick; the
+ // disarm self-expires at the other's next fire. One +1 hand-off absorbs the
+ // perturbation; the stall calendar re-locks to the shipped cadence.
+ mutable uint64_t hind_alt_repairs_[2]={0,0};        // the repair-flipped concentration reads
+ uint64_t hind_step_handoff_restores_[2]={0,0};      // the (b)-waive disarms (the preserved hand-offs)
+ bool hind_stand_hold(size_t hl)const{
+  size_t o=hl==0?1:0;
+  if(hind_step_mode_[o]!=1)return false;              // the exchange era only
+  if(hind_step_last_td_[hl]==0)return false;          // the ride era only
+  if(!(hind_step_t_[o]>=1.))return false;             // the swing UNDERWAY (not the same-tick fire)
+  if(!touching_prev_[hl]||!touching_prev_[o])return false;
+  // THE DESCENT ARM (the amendment): the swing's tick-start touching class is
+  // the mechanism's own clock -- the pads in the band whether NEVER-LEFT (the
+  // stall swings) or RETURNED (the real swings' descent re-entry, the mined
+  // +1 class's own face). The wave-22 hysteresis is the read's dead-band.
+  // The t>=1 guard excludes the fire tick itself: a just-fired leg is in-band
+  // BY THE LIFT-FIRST HOLD's own design, and the same-tick loop order (leg 0
+  // fires before leg 1's decision) would otherwise pin the carrier at the
+  // fire -- measured: the 142 one-tick pin derailed the whole ride.
+  return true;}
  bool hind_step_held_[2]={false,false};     // the lift-first hold is armed
  int hind_step_clear_tick_[2]={-1,-1};      // the tick the release quantum cleared
  uint64_t hind_step_hold_ticks_[2]={0,0};   // the held-tick census
@@ -422,7 +549,21 @@ class GaitWalker {
  bool hind_alt_due(size_t hl,double tair)const{
   size_t o=hl==0?1:0;
   if(hind_step_last_td_[o]==0)return false;            // no completed other step yet
-  if(hind_step_last_fire_[o]<hind_step_last_td_[hl])return false; // not concentrated
+  // THE EXCHANGE-CHAIN CONCENTRATION REPAIR (the wave-35 amendment form, carried
+  // by the wave-36 law; receipt_wave35.json + receipt_wave36.json): the hand-off
+  // is STALE only when NEITHER the other's last fire NOR the other's last replant
+  // postdates this leg's own last replant. The wave-35 build-2 lesson is carried
+  // by the preservation clause at the (b)-waive site, not here: the repair alone
+  // re-armed the hand-off ON the perturbed completion tick and the completion-
+  // tick-locked calendar re-phased -1 against the fore cadence (the R's dead-pad
+  // fire at 201, the impact death at 266). STRUCTURAL FENCE PROOF (mined, the
+  // declared script, R3): on the shipped trajectory the repair NEVER flips the
+  // read over [0,160] -- 0 flips -- so the [0,160] identity and the named ticks
+  // are untouched by this clause.
+  if(hind_step_last_fire_[o]<hind_step_last_td_[hl]&&
+     hind_step_last_td_[o]<hind_step_last_td_[hl])return false; // not concentrated
+  if(hind_step_last_fire_[o]<hind_step_last_td_[hl])   // the repair flipped the read
+   ++hind_alt_repairs_[hl];                            // (the census, status-only)
   if(phi_[hl]>=TOE_OFF)return false;                   // the natural slot owns
   uint64_t deadline=hind_deadline(hl,tair);
   double wait=(TOE_OFF-phi_[hl])/(dt_/T_CYCLE);        // the clock's own rate
@@ -1446,6 +1587,16 @@ class GaitWalker {
       double qh,qk,qa;hind_step_ik(hl,fe,tgt,qh,qk,qa);
       target=dr.joint=="hip"?qh:dr.joint=="knee"?qk:dr.joint=="ankle"?qa:hind_step_mp_[hl];
      }else{
+     // THE STAND-FIRST HOLD (wave 33): the carrier's pads are pinned at the
+     // spots captured at the arm tick -- the same whole-branch replacement
+     // the wave-29 glide hold makes (the designed stance tables AND the
+     // wave-27 ff both displaced): the unloaded columns cannot lift the pad.
+     if(hind_step_stand_[hl]){
+      if(!have_fe){fe=evaluate(s_);have_fe=true;}
+      V stgt=hind_step_stand_from_[hl];stgt[1]=hind_step_stand_y_[hl];
+      double qh,qk,qa;hind_step_ik(hl,fe,stgt,qh,qk,qa);
+      target=dr.joint=="hip"?qh:dr.joint=="knee"?qk:dr.joint=="ankle"?qa:hind_step_stand_mp_[hl];
+     }else{
      double qstar[4];tables_.at(phi_[hl],qstar);
      target=qstar[dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3];
      // THE HIND EXTENSION LAW (wave 27, receipt_wave27.json): the height
@@ -1456,7 +1607,7 @@ class GaitWalker {
      // swings; it resumes at the next TD. No gain bytes change. The torque
      // is read at the drive's COORDINATE row (last_torque_ is n_-indexed).
      if(hind_height_hold_latched_&&touching_prev_[hl])
-      target+=last_torque_[c]/kp_[d];}}}
+      target+=last_torque_[c]/kp_[d];}}}}
 
    tau[c]=(std::max)(-dr.cap,(std::min)(dr.cap,kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c]));}
   // The source model's POSTURE CONTROL (the pinned fulltext: the trunk pitch
@@ -1937,9 +2088,23 @@ class GaitWalker {
   hind_step_last_fire_[0]=hind_step_last_fire_[1]=0;hind_step_last_td_[0]=hind_step_last_td_[1]=0;
   hind_step_held_[0]=hind_step_held_[1]=false;hind_step_clear_tick_[0]=hind_step_clear_tick_[1]=-1;
   hind_step_hold_ticks_[0]=hind_step_hold_ticks_[1]=0;hind_step_alt_[0]=hind_step_alt_[1]=0;
+  hind_step_stall_[0]=hind_step_stall_[1]=0;
+  hind_step_stand_[0]=hind_step_stand_[1]=false;hind_step_stand_ticks_[0]=hind_step_stand_ticks_[1]=0;
+  hind_step_stand_mp_[0]=hind_step_stand_mp_[1]=0.;
+  hind_step_stand_latch_[0]=hind_step_stand_latch_[1]=false;
+  hind_step_stand_pivot_[0]=hind_step_stand_pivot_[1]=false;
+  hind_step_stand_release_[0]=hind_step_stand_release_[1]=-1;
+  hind_step_stand_latch_ticks_[0]=hind_step_stand_latch_ticks_[1]=0;
   hind_step_alt_due_[0]=hind_step_alt_due_[1]=0;hind_step_deadline_tick_[0]=hind_step_deadline_tick_[1]=0;
   hind_step_deadline_fires_[0]=hind_step_deadline_fires_[1]=0;
   hind_step_dl_unload_[0]=hind_step_dl_unload_[1]=0;hind_step_unload_fires_[0]=hind_step_unload_fires_[1]=0;
+  hind_step_waive_fires_[0]=hind_step_waive_fires_[1]=0;
+  hind_step_waive_first_[0]=hind_step_waive_first_[1]=-1;hind_step_waive_last_[0]=hind_step_waive_last_[1]=-1;
+  hind_step_graze_yields_[0]=hind_step_graze_yields_[1]=0;
+  hind_step_graze_first_[0]=hind_step_graze_first_[1]=-1;
+  hind_step_guard_blocks_[0]=hind_step_guard_blocks_[1]=0;
+  hind_step_guard_first_[0]=hind_step_guard_first_[1]=-1;
+  hind_alt_repairs_[0]=hind_alt_repairs_[1]=0;hind_step_handoff_restores_[0]=hind_step_handoff_restores_[1]=0;
   for(size_t d=0;d<12;++d){wall_pins_[d]=0;wall_pins_air_[d]=0;}
   battery_.assign(nd_,0.);brake_.assign(nd_,0.);empty_events_.assign(nd_,0);store_total_=0;
   for(size_t d=0;d<nd_;++d){battery_[d]=drives_[d].store_floor;store_total_+=drives_[d].store_floor;}
@@ -2064,7 +2229,7 @@ class GaitWalker {
       // evaluation -- a static vertical demand until the band clears.
       double g1=gap_of(e,hind_heel_pt_[hl]),g2=gap_of(e,hind_mp_pt_[hl]);
       if((g1<g2?g1:g2)>kTouch+kReleaseBand){hind_step_held_[hl]=false;hind_step_clear_tick_[hl]=(int)ticks_;}
-      else ++hind_step_hold_ticks_[hl];}
+      else{++hind_step_hold_ticks_[hl];++hind_step_stall_[hl];}}
      ++hind_step_t_[hl];
      // THE GLIDE-RETURN LAW (wave 31, receipt_wave31.json): A REPLANT IS NOT
      // COMPLETE UNTIL THE BAND ENTRY. The wave-28..30 clocked TD delivered the
@@ -2115,8 +2280,85 @@ class GaitWalker {
       uint64_t dl=hind_deadline(hl,tair,&is_unload);
       hind_step_deadline_tick_[hl]=dl;
       hind_step_dl_unload_[hl]=is_unload?1:0;}
+     // THE STAND-FIRST HOLD (wave 33): arm/disarm per decision tick, BEFORE
+     // any gate continue -- the carrier must be pinned while the swing's pads
+     // are in the band (the stall's never-left or the descent's returned
+     // read), released the tick the other completes OR the swing's pads clear
+     // (the real lift's own era: the stance columns resume). THE LATCH WAS
+     // TRIED AND REVERTED (the fourth amended build, receipt): a hold held
+     // through the swing's airborne era removed the vault's pivot for the
+     // whole glide -- the planar re-capture folded the leg under the hauling
+     // body (the R's hip 63 deg), the body launched, the impact-event budget
+     // refused at 215. The planar re-capture needs the columns' periodic
+     // resumption to re-establish the pivot; the latch's falsifier fired and
+     // the bytes were restored. The pin re-captures its planar target every
+     // pinned tick; the y-anchor is captured once at the arm tick (the floor
+     // anchor, the second amendment).
+     // THE LATCHED CARRIER HOLD (wave 34): the mined 250 disarm -- the
+     // predicate read the CARRIER's own 1-tick graze past the genuine-
+     // departure bound (1.317e-5) one tick after the arm, while the swing's
+     // read was still in band: the trigger defeats itself on the exact lift
+     // it exists to prevent. THE LATCH: once armed in the other's swing era,
+     // the hold stays armed until the other completes (mode 0) or this leg
+     // fires. The latch's continuation pins with the SHIPPED anchor (the
+     // planar re-captured every pinned tick, the y the arm capture) -- the
+     // frozen world pivot was tried and reverted (the second amended build:
+     // the 259 pad loss under the roll demand, the 298 refusal); the
+     // extension-envelope release read is reverted with it.
+     // THE WAVE-34 LATCH IS REVERTED (the pre-committed falsifier action,
+     // receipt_wave34.json amendment 2): three builds measured -- (1) the
+     // latch through the stall blinks launches the walk at 215 (the wave-33
+     // amendment-3 face, reproduced on the world-pivot variant:
+     // gait_impact_event_budget, the R's hip 63.0254 deg) -- the 1-tick
+     // blink resumptions are the vault's pivot re-establishment; (2)+(3) the
+     // AIRBORNE-GATED latch (the swing's hold genuinely cleared) with EITHER
+     // anchor -- the frozen world pivot AND the shipped re-capture -- rides
+     // the twelfth exchange exactly [250,262) and still loses the pads at
+     // 259: the real swing's 15-tick haul transfers the carrier's whole share
+     // forward (the rxn 10.1 N @254 -> 0 @260, both anchors) before the 262
+     // window opens -- the drain is GEOMETRIC (the mined hind splay: the
+     // plants 0.12-0.24 m ahead of the body's 4 mm/tick advance), not
+     // control. The pin buys 9-10 ticks of ride; the era needs 13. THE
+     // WAVE-35 BANK: the carrier's exchange fire must land before its share
+     // drains -- a fire deadline reading the carrier's own rxn decay (the
+     // wave-31/32-mined LAW-1 candidate), or the splay itself.
+     if(hind_stand_hold(hl)){
+      auto p1=e.point(points_[hind_heel_pt_[hl]].index,points_[hind_heel_pt_[hl]].local).first;
+      auto p2=e.point(points_[hind_mp_pt_[hl]].index,points_[hind_mp_pt_[hl]].local).first;
+      for(int i2=0;i2<3;++i2)hind_step_stand_from_[hl][i2]=(p1[i2]+p2[i2])/2.;
+      hind_step_stand_mp_[hl]=s_.q[hind_coord_[hl][3]];
+      if(!hind_step_stand_[hl]){
+       // THE FLOOR ANCHOR (the second amendment): the pads' HEIGHT is captured
+       // ONCE at the arm tick -- the vault must roll the body OVER the pinned
+       // pads (the planar position stays re-captured, the pads slide with the
+       // drag), only the unload-lift's HEIGHT demand is held down.
+       hind_step_stand_y_[hl]=hind_step_stand_from_[hl][1];
+       hind_step_stand_[hl]=true;
+#ifdef GAIT_EVENT_TRACE
+       std::fprintf(stderr,"[hindstep] standhold leg=%zu tick=%llu swing_stall=%llu\n",
+        hl,(unsigned long long)ticks_,(unsigned long long)hind_step_stall_[hl==0?1:0]);
+#endif
+      }
+      ++hind_step_stand_ticks_[hl];}
+     else hind_step_stand_[hl]=false;
+     hind_step_stand_latch_[hl]=false;hind_step_stand_pivot_[hl]=false;
      bool live_slot=phi_[hl]>=TOE_OFF&&touching_prev_[hl];
      bool alt_fire=hind_step_alt_due_[hl]!=0&&touching_prev_[hl];
+     // THE COMPLETION-TICK RE-LOCK (wave 37, the fourth clause): on the
+     // completion tick itself (ticks_ == the binding unload deadline, which
+     // kUnloadTicks=1 makes the other's last TD tick) the alternation fire
+     // attempt YIELDS the standing leg's transient band-edge graze and
+     // proceeds on hind_alt_due alone -- the deadline's own transient-dip
+     // precedence extended to the graze. The machine's own guards keep the
+     // scope inside the hand-off class (the loop's mode-0 continue; N ==
+     // deadline names the completion tick by construction); the yield
+     // changes no read and adds no bound. Zero new numeric constants.
+     if(!touching_prev_[hl]&&hind_step_alt_due_[hl]!=0&&
+        hind_step_dl_unload_[hl]!=0&&hind_step_deadline_tick_[hl]>0&&
+        ticks_==hind_step_deadline_tick_[hl]){
+      ++hind_step_graze_yields_[hl];
+      if(hind_step_graze_first_[hl]<0)hind_step_graze_first_[hl]=(int)ticks_;
+      alt_fire=true;}
      if(!live_slot&&!alt_fire)continue; // a live slot or a due alternation only
      bool gated=false;
      bool gated_b=false; // clause (b) is the gate holding (the wave-32 waive target)
@@ -2180,14 +2422,77 @@ class GaitWalker {
      bool deadline_fire=hind_step_alt_due_[hl]!=0&&hind_step_deadline_tick_[hl]>0&&
       ticks_>=hind_step_deadline_tick_[hl];
      if(floor_gated&&deadline_fire){floor_gated=false;++hind_step_deadline_fires_[hl];}
-     if(gated_b&&deadline_fire){gated=false;gated_b=false;++hind_step_deadline_fires_[hl];
-      if(hind_step_dl_unload_[hl])++hind_step_unload_fires_[hl];
+     // THE WAIVE-ERA HAND-OFF PRESERVATION (wave 36, the third clause): the
+     // (b)-waive may not fire for the hand-off OUT of a waive-ridden swing --
+     // when this leg's own waive fire postdates the other's current-swing
+     // launch, the hand-off rides the natural g=1 clause (b) and lands at the
+     // completion + 1 (the shipped grid tick); the disarm self-expires at the
+     // other's next fire. The wave-35 build-2 face this owns: the repaired
+     // concentration re-armed the (b)-waive ON the perturbed 174 completion and
+     // the completion-tick-locked calendar re-phased -1 (the dead-pad fire at
+     // 201, the impact death at 266).
+     bool waive_ridden=hind_step_waive_last_[hl]>(int)hind_step_last_fire_[o];
+     if(gated_b&&deadline_fire){
+      if(waive_ridden){++hind_step_handoff_restores_[hl];}
+      else{gated=false;gated_b=false;++hind_step_deadline_fires_[hl];
+       if(hind_step_dl_unload_[hl])++hind_step_unload_fires_[hl];
 #ifdef GAIT_EVENT_TRACE
-      std::fprintf(stderr,"[hindstep] unloadgate leg=%zu tick=%llu dl=%llu class=%s\n",
-       hl,(unsigned long long)ticks_,(unsigned long long)hind_step_deadline_tick_[hl],
-       hind_step_dl_unload_[hl]?"unload":"fold");
+       std::fprintf(stderr,"[hindstep] unloadgate leg=%zu tick=%llu dl=%llu class=%s\n",
+        hl,(unsigned long long)ticks_,(unsigned long long)hind_step_deadline_tick_[hl],
+        hind_step_dl_unload_[hl]?"unload":"fold");
 #endif
-     }
+      }}
+     // THE CARRIER SELF-UNLOAD FIRE DEADLINE, TICKED BY THE REAL SWING (the
+     // wave-36 law's first clause, the wave-35 build-1 gate VERBATIM; receipt
+     // wave 35 measured the gate TRUE -- the first waive fire EXACTLY 161,
+     // dead=0, stall_era=0 -- and its cost was the CHAIN AROUND it: the
+     // waive-era double-completion disarmed the wave-29 concentration read
+     // (the calendar death, 305), and repairing the concentration alone let
+     // the (b)-waive re-phase the calendar (the death at 266); the wave-36
+     // law carries the gate VERBATIM plus the repair plus the preservation
+     // clause above, so the waive's perturbation is absorbed by ONE +1
+     // hand-off and the stall calendar re-locks to the shipped grid).
+     // THE GATE: clause (a) yields for the carrier's alternation fire when
+     // the deadline fire is binding ON THE UNLOAD FORM and the other's
+     // lift-first hold has GENUINELY CLEARED (the stall swings' holds never
+     // clear, so the stall eras never see the waive). ZERO new numeric
+     // constants: the deadline flag, the deadline fire and the held_ read are
+     // the machinery's own.
+     // THE CALENDAR-ARITHMETIC WAIVE SCOPE GUARD (wave 38, the fifth
+     // clause): the pose read (!hind_step_held_[o]) cannot tell a real era
+     // from a stall era -- the [202,211) stall graze cleared at 206 on EVERY
+     // measured trajectory (the shipped walk's own era max pair-min
+     // 1.116e-05, the re-locked walk's 1.147e-05, both past the 1.1e-05
+     // release bound). The era's CLASS the calendar arithmetic owns: this
+     // leg's own just-completed era ran the stall cadence (its length ==
+     // tair, the machine's own constant) iff the other's current era is that
+     // chain's next link. The waive rides REAL swings only: the yield
+     // additionally requires the link test to FAIL. The pose read stays
+     // byte-verbatim -- the guard only REMOVES openings (the chain-head case
+     // the pose read correctly holds: the R's 175 decision on the L's
+     // [175,184) head, the R's own last era 14 ticks). ZERO new numeric
+     // constants.
+     bool stall_era_link=hind_step_last_td_[hl]!=0&&
+      hind_step_last_td_[hl]-hind_step_last_fire_[hl]==tair;
+     if(gated&&!gated_b&&!floor_gated&&alt_fire&&hind_step_dl_unload_[hl]&&
+        deadline_fire&&!hind_step_held_[o]){
+      if(stall_era_link){
+       if(hind_step_guard_first_[hl]<0)hind_step_guard_first_[hl]=(int)ticks_;
+       ++hind_step_guard_blocks_[hl];
+#ifdef GAIT_EVENT_TRACE
+       std::fprintf(stderr,"[hindstep] guardblock leg=%zu tick=%llu dl=%llu link_td=%llu link_fire=%llu\n",
+        hl,(unsigned long long)ticks_,(unsigned long long)hind_step_deadline_tick_[hl],
+        (unsigned long long)hind_step_last_td_[hl],(unsigned long long)hind_step_last_fire_[hl]);
+#endif
+      }else{
+      gated=false;++hind_step_waive_fires_[hl];
+      if(hind_step_waive_first_[hl]<0)hind_step_waive_first_[hl]=(int)ticks_;
+      hind_step_waive_last_[hl]=(int)ticks_;
+#ifdef GAIT_EVENT_TRACE
+      std::fprintf(stderr,"[hindstep] waivefire leg=%zu tick=%llu dl=%llu\n",
+       hl,(unsigned long long)ticks_,(unsigned long long)hind_step_deadline_tick_[hl]);
+#endif
+      }}
 #ifdef GAIT_EVENT_TRACE
      if(alt_fire)std::fprintf(stderr,"[hindgate] tick=%llu leg=%zu live=%d tL=%d sL=%.1f tR=%d sR=%.1f hL=%d hR=%d gated=%d floor=%d dl=%llu v=%.3f\n",
       (unsigned long long)ticks_,hl,live,
@@ -2202,7 +2507,7 @@ class GaitWalker {
      // release quantum clears).
      hind_step_mode_[hl]=1;hind_step_t_[hl]=0.;
      hind_step_alt_[hl]=live_slot?0:1;
-     hind_step_held_[hl]=true;hind_step_clear_tick_[hl]=-1;
+     hind_step_held_[hl]=true;hind_step_clear_tick_[hl]=-1;hind_step_stall_[hl]=0;
      ++hind_step_fires_[hl];hind_step_last_fire_[hl]=ticks_;
      auto p1=e.point(points_[hind_heel_pt_[hl]].index,points_[hind_heel_pt_[hl]].local).first;
      auto p2=e.point(points_[hind_mp_pt_[hl]].index,points_[hind_mp_pt_[hl]].local).first;
@@ -2429,7 +2734,29 @@ class GaitWalker {
       {"fold_budget_ticks",(double)kFoldBudgetTicks},
       // THE UNLOAD-LIFT DEADLINE's census fields (wave 32). Read-only.
       {"deadline_unload",hind_step_dl_unload_[hl]!=0},
-      {"unload_fires",hind_step_unload_fires_[hl]}});}
+      {"unload_fires",hind_step_unload_fires_[hl]},
+      // THE STAND-FIRST HOLD's census fields (wave 33). Read-only.
+      {"swing_stall_ticks",hind_step_stall_[hl]},
+      {"stand_hold",hind_step_stand_[hl]},
+      {"stand_hold_ticks",hind_step_stand_ticks_[hl]},
+      // THE LATCHED WORLD-PIVOT HOLD's census fields (wave 34). Read-only.
+      {"stand_latch",hind_step_stand_latch_[hl]},
+      {"stand_pivot",hind_step_stand_pivot_[hl]},
+      {"stand_release",hind_step_stand_release_[hl]},
+      {"stand_latch_ticks",hind_step_stand_latch_ticks_[hl]},
+      // THE CARRIER SELF-UNLOAD FIRE DEADLINE's census fields (wave 35). Read-only.
+      {"waive_fires",hind_step_waive_fires_[hl]},
+      {"waive_first_tick",hind_step_waive_first_[hl]},
+      {"waive_last_tick",hind_step_waive_last_[hl]},
+      // THE COMPLETION-TICK RE-LOCK's census fields (wave 37). Read-only.
+      {"graze_yields",hind_step_graze_yields_[hl]},
+      {"graze_first_tick",hind_step_graze_first_[hl]},
+      // THE CALENDAR-ARITHMETIC WAIVE SCOPE GUARD's census fields (wave 38). Read-only.
+      {"guard_blocks",hind_step_guard_blocks_[hl]},
+      {"guard_first_tick",hind_step_guard_first_[hl]},
+      // THE WAIVE-ERA HAND-OFF PRESERVATION's census fields (wave 36). Read-only.
+      {"handoff_restores",hind_step_handoff_restores_[hl]},
+      {"alt_repairs",hind_alt_repairs_[hl]}});}
     gait["hind_step"]=hs;}}
   return {{"sim_time_s",ticks_*dt_},{"ticks",ticks_},{"mode","native_gait_walker"},{"joints",joints},
    {"config",config_},{"power",config_["power"]},{"gait",gait},

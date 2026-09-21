@@ -1,0 +1,100 @@
+=== A. THE EXCHANGE CALENDAR ===
+fire R@98 slot phi=0.6831 from_x=0.015 to_x=0.361 xoff=0.1437 v=0.593 -> td 107 era=9
+fire L@142 alt phi=0.3897 from_x=0.201 to_x=0.546 xoff=0.2283 v=0.942 -> td 160 era=18
+fire R@160 alt phi=0.2535 from_x=0.256 to_x=0.527 xoff=0.1772 v=0.731 -> td 175 era=15
+fire L@175 alt phi=0.0704 from_x=0.330 to_x=0.520 xoff=0.1242 v=0.512 -> td 184 era=9
+fire R@184 alt phi=0.0423 from_x=0.317 to_x=0.582 xoff=0.1798 v=0.742 -> td 193 era=9
+fire L@193 alt phi=0.1549 from_x=0.324 to_x=0.631 xoff=0.1905 v=0.786 -> td 202 era=9
+fire R@202 alt phi=0.1268 from_x=0.317 to_x=0.646 xoff=0.1972 v=0.813 -> td 211 era=9
+fire L@211 alt phi=0.2394 from_x=0.319 to_x=0.666 xoff=0.1766 v=0.728 -> td 220 era=9
+fire R@220 alt phi=0.0282 from_x=0.331 to_x=0.718 xoff=0.2192 v=0.904 -> td 229 era=9
+fire L@229 alt phi=0.0094 from_x=0.317 to_x=0.782 xoff=0.2389 v=0.985 -> td 238 era=9
+fire R@238 alt phi=0.1127 from_x=0.341 to_x=0.818 xoff=0.2584 v=1.066 -> td 247 era=9
+fire L@247 alt phi=0.0047 from_x=0.337 to_x=0.890 xoff=0.2857 v=1.178 -> td 262 era=15
+
+=== B. THE (b)-WAIVE UNLOADGATE EVENTS ===
+unloadgate R@160 dl=160 class=unload
+unloadgate L@175 dl=175 class=unload
+unloadgate R@184 dl=184 class=unload
+unloadgate L@193 dl=193 class=unload
+unloadgate R@202 dl=202 class=unload
+unloadgate L@211 dl=211 class=unload
+unloadgate R@220 dl=220 class=unload
+unloadgate L@229 dl=229 class=unload
+unloadgate R@238 dl=238 class=unload
+unloadgate L@247 dl=247 class=unload
+
+=== R1. THE HAND-OFF LOCK: every hand-off fire ON the other's last TD ===
+    (CLASS CORRECTION, declared: the rule's letter said 'every alternation fire in
+    [142,295)' and its first run flagged the L@142 fire -- that fire is the WAVE-29
+    FOLD-BUDGET fire, not a hand-off: it carries NO unloadgate event (it waived the
+    floor clauses, not clause (b)) and its era is not a completed-other-swing hand-off.
+    The rule's own intent names the hand-off class; the class's structural signature is
+    the unloadgate event. The counter below classifies by that signature; the correction
+    is carried verbatim in the receipt.)
+hand-off fire R@160 (unloadgate): the other's (L) last TD = 160 -> ON-COMPLETION: True
+hand-off fire L@175 (unloadgate): the other's (R) last TD = 175 -> ON-COMPLETION: True
+hand-off fire R@184 (unloadgate): the other's (L) last TD = 184 -> ON-COMPLETION: True
+hand-off fire L@193 (unloadgate): the other's (R) last TD = 193 -> ON-COMPLETION: True
+hand-off fire R@202 (unloadgate): the other's (L) last TD = 202 -> ON-COMPLETION: True
+hand-off fire L@211 (unloadgate): the other's (R) last TD = 211 -> ON-COMPLETION: True
+hand-off fire R@220 (unloadgate): the other's (L) last TD = 220 -> ON-COMPLETION: True
+hand-off fire L@229 (unloadgate): the other's (R) last TD = 229 -> ON-COMPLETION: True
+hand-off fire R@238 (unloadgate): the other's (L) last TD = 238 -> ON-COMPLETION: True
+hand-off fire L@247 (unloadgate): the other's (R) last TD = 247 -> ON-COMPLETION: True
+R1 hand-off lock: 10/10 hand-off fires ON the completion -> LOCKED
+
+=== R1b. THE TWELFTH-ERA LEGAL-FIRE WINDOW [247,255) ===
+t=247 R rxn=4.648 gapmin=8.526e-06 touch-live=YES
+t=248 R rxn=4.415 gapmin=8.207e-06 touch-live=YES
+t=249 R rxn=0.309 gapmin=1.317e-05 touch-live=no
+t=250 R rxn=0.000 gapmin=6.702e-05 touch-live=no
+t=251 R rxn=0.000 gapmin=2.340e-04 touch-live=no
+t=252 R rxn=0.000 gapmin=4.911e-04 touch-live=no
+t=253 R rxn=0.000 gapmin=7.593e-04 touch-live=no
+t=254 R rxn=0.000 gapmin=9.444e-04 touch-live=no
+
+=== C. THE [hindgate] STATES IN THE REAL ERAS ===
+hindgate t=161 leg=L live=0 gated=1 floor=0 dl=107
+hindgate t=162 leg=L live=0 gated=1 floor=0 dl=107
+hindgate t=163 leg=L live=0 gated=1 floor=0 dl=107
+hindgate t=164 leg=L live=0 gated=1 floor=0 dl=107
+hindgate t=165 leg=L live=0 gated=1 floor=0 dl=107
+hindgate t=166 leg=L live=0 gated=1 floor=0 dl=107
+hindgate t=167 leg=L live=0 gated=1 floor=0 dl=107
+hindgate t=168 leg=L live=0 gated=1 floor=0 dl=107
+hindgate t=169 leg=L live=0 gated=1 floor=0 dl=107
+hindgate t=170 leg=L live=0 gated=1 floor=0 dl=107
+hindgate t=171 leg=L live=0 gated=1 floor=0 dl=107
+hindgate t=172 leg=L live=0 gated=1 floor=0 dl=107
+hindgate t=173 leg=L live=0 gated=1 floor=0 dl=107
+hindgate t=174 leg=L live=0 gated=1 floor=0 dl=107
+hindgate t=175 leg=L live=0 gated=0 floor=0 dl=175
+hindgate t=247 leg=R live=0 gated=1 floor=0 dl=238
+hindgate t=248 leg=R live=0 gated=1 floor=0 dl=238
+hindgate t=249 leg=R live=0 gated=1 floor=0 dl=238
+
+=== E. THE REAL-SWING HOLD-CLEARS (the swing heads' gap series) ===
+the R's [160,?) real swing:
+  t=160 R gapmin=6.358e-04 (the clear read at the 161 decision is on this status)
+  t=161 R gapmin=1.792e-03 (the clear read at the 162 decision is on this status)
+  t=162 R gapmin=3.154e-03 (the clear read at the 163 decision is on this status)
+  t=163 R gapmin=4.566e-03 (the clear read at the 164 decision is on this status)
+the L's [247,?) real swing:
+  t=247 L gapmin=1.116e-05 (the clear read at the 248 decision is on this status)
+  t=248 L gapmin=2.625e-06 (the clear read at the 249 decision is on this status)
+  t=249 L gapmin=9.749e-06 (the clear read at the 250 decision is on this status)
+  t=250 L gapmin=-5.331e-10 (the clear read at the 251 decision is on this status)
+
+=== R3. THE CONCENTRATION REPAIR'S INERTNESS OVER [0,160] ===
+R3 repair flips over [0,160]: 0 -> INERT (fence floor holds)
+
+=== R2. THE LATE-EDGE FEASIBILITY (the twelfth-era touch hysteresis) ===
+the R's pair-min at the +2 tick-start (249): 1.317e-05 -> touch-live for a +2 fire: NO (the hysteresis releases; the +2 fire is structurally dead in the twelfth era)
+
+=== THE DECISION (the rule fixed a priori in the header) ===
+R1 hand-off lock: YES
+R3 repair inertness: YES
+R2 the clears at fire+1 (both real eras) and the +2 feasibility: read from E/R1b/R2 above.
+  - the +1 waive (build-1's gate) is the ONLY lawful edge in the twelfth era unless R2=YES.
+THE WAVE-36 LAW IS: BUILD-1'S WAIVE GATE VERBATIM (the +1 edge, forced by the twelfth-era touch hysteresis) + THE WAVE-35 AMENDMENT'S CONCENTRATION REPAIR VERBATIM + THE WAIVE-ERA HAND-OFF PRESERVATION (the (b)-waive disarmed for the hand-off out of a waive-ridden swing: waive_last_[hl] > the other's last fire -> the natural g=1 hand-off restores the shipped grid tick)
