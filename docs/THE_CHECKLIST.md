@@ -20,6 +20,15 @@ a BLOCKED-with-evidence verdict (AGENTS.md: blocked must be earned), never a wor
 - [ ] **Orient first**: `python tools/orient.py`; read AGENTS.md → `docs/THE_LAW.md` → this file.
 - [ ] **Rule 0 banked BEFORE any code**: statement (disagreeable) · prediction (unmeasured) ·
       falsifier (named before the run). Home: `Chimera/docs/EXPERIMENTAL_METHOD.md`.
+- [ ] **Rule 0 — the null configuration (the floor)**: AN OPERATIONAL DEFINITION MUST EXCLUDE
+      THE TRIVIALLY-SATISFIED CONFIGURATION. Before optimizing any "the system achieves X"
+      objective, evaluate X at the null configuration (rest/corpse/zero) BEFORE the run and
+      bank the number in the preregistration as the objective's floor. A ~satisfied floor
+      means the objective is missing its discriminating term (clearance, separation, sign) —
+      it must gain that term or the preregistration is incomplete and the run proves nothing.
+      Case: standing-pose (agent/standing-pose-20260921 @ 4ea008cb) — the corpse itself
+      satisfied pad coplanarity (1.94 of 1.94 mm²), the numeric battery went green, and the
+      fired visual falsifier showed the collapsed heap; successor v2.
 - [ ] **Rule 1 — derive it**: no parameter sweeps; every number traces to an equation or a
       measurement. Home: AGENTS.md CHIMERA-LAW.
 - [ ] **Scope**: own worktree, own branch (`agent/<lane>-YYYYMMDD`), NEVER master, NEVER
