@@ -272,6 +272,81 @@ class GaitWalker {
  uint64_t hind_height_fire_tick_=0;    // the fire's census record
  double hind_height_fire_margin_=0;    // the margin at the fire
  uint64_t hind_height_fires_=0;        // the census counter (integer increments)
+ // ── THE HIND STEP LAW (wave 28, receipt_wave28.json) ──
+ // THE ARREST'S GROUND PATH, OWNED. The wave-27 ff holds the vertical ride,
+ // but the body's advance (v ~ 0.63-0.74 m/s) outruns the hind schedule: the
+ // hind clock's first lift slots land at ~98 (R) / ~204 (L), and the R's slot
+ // FIRED INTO A STALL on the reproduced baseline -- at phi >= TOE_OFF the
+ // pads are still LIVE and LOADED (gap 2.4e-6, rxn 62.2 N at t=98): the
+ // designed hind lift is kinematic only (the swing-column targets), and a
+ // 60 N ride cannot be lifted by target motion. The swing columns pull the
+ // joints against the planted paw: the ankle actual is driven ONTO ITS WALL
+ // (the mined headroom 0.0032 rad at tick 120; the dive 0.053 rad/tick, 13x
+ // the fore's 0.0039 class), the paw creeps past its designed stance end and
+ // SKIDS (1.2455 m/s at 121, rxn 17.4 N, inside the cone), and the contact
+ // event tree exhausts the budget at 122. THE LAW: when the clock's OWN lift
+ // slot arrives (phi >= TOE_OFF -- the trigger is the clock's own constant,
+ // derived by measurement among five candidates: the absolute stance-end
+ // envelope never fires (the R's offset bottoms 1.7 mm short -- the skid
+ // starts first); the actual-vs-own-column recede misfires on the L (its paw
+ // rides 5.2 cm behind its column from the entry geometry); the raw slip
+ // bound v_bound misfires on the DESIGNED residual (the R's settle face
+ // sustains > 0.2089 m/s for ~35 ticks [55,90] admissibly); the CoM hull
+ // face is a continuous regime from 84 with no derivable threshold; the
+ // ankle wall is the death's ENDPOINT (0-1 tick of warning at its dive)) --
+ // and the pads are STILL LIVE (the lift stalled), the leg STEPS: the
+ // wave-20 minimal-air-time pattern, hind side -- the paw target glides
+ // world-linearly from the liftoff spot to the symmetric offset ahead of the
+ // hip at the current v (xoff = v*DUTY_SAMPLED*T_CYCLE/2, the fore law's own
+ // form) under the 2*pad-radius clearance arch for the machinery's OWN
+ // nominal air time t_air = ceil((T_CYCLE-DUTY_SAMPLED)/dt) = 9 ticks,
+ // tracked by a closed-form 2-link IK on the hind chain (the held foot pitch
+ // and MP preserve the paw's presentation; the branch captured at the fire),
+ // with the xoff clamped to the chain's own reach annulus at the plant
+ // height (counted, never silent). At the TD the leg returns to the tables
+ // and the TOUCH RESET -- the machinery's own wave-22 law -- re-syncs the
+ // clock to the TRUE stance (phi := 0), repairing the entry's clock skew
+ // that scheduled the R's slot 43 ticks ahead of its real stance. THE
+ // STAGGER: the no-double-step gate, the wave-20 clauses hind-side -- the
+ // other hind not in step, its true-TD recency >= the hand-off clearance
+ // g=1 tick, and THE SUPPORT FLOOR: the other three legs carry >= 2 live
+ // pads at the fire (support >= 2 through every hind swing, the wave-25
+ // clause hind-side). THE HEIGHT-LAW ORDERING (the composition derivation):
+ // the step is REGIME-GATED to the height emergency (latched only -- pre-
+ // latch the designed ride owns the walk, the [0,65] fence's proof); the
+ // ff's own pads-live gate auto-releases the stepping leg (its equilibrium
+ // identity needs a loaded pad), the stance leg keeps the ff UNCHANGED --
+ // the laws compose leg-disjointly; the glide targets REPLACE the whole
+ // hind target branch for the stepping leg, so the swing columns' pull --
+ // the death's actuator -- is structurally removed during the step; at the
+ // TD the ff re-engages and holds the re-synced TD column through the
+ // qualified envelope (tau_settle). NO NEW CONSTANTS: the slot is TOE_OFF,
+ // the air time the fore machinery's own, the plant offset the fore law's
+ // own form, the arch the pad geometry, the reach the model's own segment
+ // bytes (harvested below, require-guarded). The scene bytes: UNTOUCHED.
+ int hind_step_mode_[2]={0,0};         // 0 stance (tables+ff), 1 step glide
+ double hind_step_t_[2]={0.,0.};       // ticks since the fire
+ V hind_step_from_[2]={V{},V{}};       // the liftoff paw spot (world)
+ V hind_step_to_[2]={V{},V{}};         // the plant point (world)
+ double hind_step_plant_y_[2]={0.,0.}; // the liftoff paw height
+ double hind_step_ap_[2]={0.,0.};      // the held composed foot pitch
+ double hind_step_mp_[2]={0.,0.};      // the held MP actual
+ int hind_step_branch_[2]={-1,-1};     // the knee branch captured at the fire
+ double hind_step_xoff_[2]={0.,0.};    // the plant offset used
+ double hind_step_qerr_[2]={0.,0.};    // the fire-time IK self-check
+ uint64_t hind_step_fires_[2]={0,0};
+ uint64_t hind_step_tds_[2]={0,0};
+ uint64_t hind_step_gated_[2]={0,0};
+ uint64_t hind_step_clamped_[2]={0,0};
+ uint64_t hind_step_last_fire_[2]={0,0};
+ uint64_t hind_step_last_td_[2]={0,0};
+ // the harvested hind chain geometry (the scene's own model bytes)
+ size_t hind_coord_[2][4]{{0,0,0,0},{0,0,0,0}}; // [leg][hip,knee,ankle,MP]
+ size_t pelvis_row_=0;
+ V hind_mount_[2]={V{},V{}};           // the hip mounts in the pelvis frame
+ double hind_L1_=0,hind_L2_=0;         // the thigh/shank lengths
+ double hind_xm_=0;                    // the paw-midpoint x in the foot frame
+ size_t hind_heel_pt_[2]={0,0},hind_mp_pt_[2]={0,0};
  std::vector<BodyRef> bodies_;bool contact_=false;
  State s_;mutable uint64_t adv_calls_=0;
  Evaluation evaluate(const State& s)const{return model_->evaluate(s.q,s.v,gravity_);}
@@ -898,6 +973,38 @@ class GaitWalker {
    return;}
   // no lawful correction this cycle: run nominal, retry at the next TD
   fore_stance_[leg]=DUTY_SAMPLED/dt_;fore_cycle_[leg]=Tf;}
+ // ── THE HIND STEP LAW's helpers (wave 28) ──
+ // The composed paw-MIDPOINT offset from the hip at a clock phase (the
+ // scene's own stance-column FK -- the same composed chain the entry
+ // derivation seats; engine-validated on this lane against the runtime's
+ // own contact geometry at the reset state). The designed column the hind
+ // ride is supposed to hold at that phase.
+ double hind_off_col(double phi)const{
+  double a1=tables_.zeros[0]+Tables::interp(tables_.hip,phi);
+  double a2=a1+tables_.zeros[1]+Tables::interp(tables_.knee,phi);
+  double ap=a2+tables_.zeros[2]+Tables::interp(tables_.ankle,phi);
+  return hind_L1_*std::sin(a1)+hind_L2_*std::sin(a2)+hind_xm_*std::cos(ap);}
+ // THE HIND STEP IK: the closed-form 2-link solve for the paw-MIDPOINT
+ // target (the held composed foot pitch ap places the paw reference
+ // xm*cos(ap), xm*sin(ap) off the ankle; the MP is held outright -- the
+ // declared hind contact points live on the FOOT body, the MP does not move
+ // them). Branch captured at the fire (the knee's sign); the wrist distance
+ // clamped to the chain's own annulus (the nearest reachable configuration,
+ // the fore_ik pattern: loud in the census, never silent).
+ void hind_step_ik(size_t hl,const Evaluation& e,const V& tgt,double& qh,double& qk,double& qa)const{
+  const Mat& T=e.frames[pelvis_row_].t;
+  double rx=tgt[0]-T(0,3),ry=tgt[1]-T(1,3),rz=tgt[2]-T(2,3);
+  double dx=T(0,0)*rx+T(1,0)*ry+T(2,0)*rz; // the pelvis-plane x (the hip
+  double dy=T(0,1)*rx+T(1,1)*ry+T(2,1)*rz; //  mount sits ON the z-axis: no
+  double ap=hind_step_ap_[hl];             //  in-plane correction)
+  double wx=dx-hind_xm_*std::cos(ap),wy=dy-hind_xm_*std::sin(ap);
+  double D=std::hypot(wx,wy);
+  double dmax=hind_L1_+hind_L2_,dmin=std::abs(hind_L1_-hind_L2_);
+  double Dc=(std::min)((std::max)(D,dmin+1e-9),dmax*(1.-1e-12));
+  double ca=(Dc*Dc-hind_L1_*hind_L1_-hind_L2_*hind_L2_)/(2.*hind_L1_*hind_L2_);
+  double k=double(hind_step_branch_[hl])*std::acos((std::max)(-1.,(std::min)(1.,ca)));
+  double a1=std::atan2(wy,wx)-std::atan2(-hind_L1_-hind_L2_*std::cos(k),hind_L2_*std::sin(k));
+  qh=a1;qk=k;qa=ap-a1-k;}
  // THE FORE CLOCK: advances only in the walk (the hind clock's discipline).
  // LIFTOFF at fore_t_ >= fore_stance_: derive the glide (the law's plant point
  // from the CURRENT speed and shoulder position; the annulus clamps the law's
@@ -1212,6 +1319,22 @@ class GaitWalker {
     // during the settle (the servo would drag the right hind back to the TD
     // column) and no hind lift could fire at its clock phase.
     else {size_t hl=dr.leg=="left"?0:1;
+     // THE HIND STEP LAW's glide (wave 28): while the leg steps, the glide
+     // target REPLACES the whole hind branch (tables AND the wave-27 ff) --
+     // the swing columns' pull (the death's actuator) is structurally
+     // removed for the stepping leg; the ff re-engages at the TD.
+     if(hind_step_mode_[hl]==1){
+      double ta=(std::ceil)((T_CYCLE-DUTY_SAMPLED)/dt_);
+      double sg=hind_step_t_[hl]/ta;if(sg<0.)sg=0.;if(sg>1.)sg=1.;
+      double c=2.*points_[hind_heel_pt_[hl]].radius;
+      V tgt{};
+      for(int i2=0;i2<3;++i2)
+       tgt[i2]=hind_step_from_[hl][i2]+(hind_step_to_[hl][i2]-hind_step_from_[hl][i2])*sg;
+      tgt[1]+=c*std::sin(pi*sg);
+      if(!have_fe){fe=evaluate(s_);have_fe=true;}
+      double qh,qk,qa;hind_step_ik(hl,fe,tgt,qh,qk,qa);
+      target=dr.joint=="hip"?qh:dr.joint=="knee"?qk:dr.joint=="ankle"?qa:hind_step_mp_[hl];
+     }else{
      double qstar[4];tables_.at(phi_[hl],qstar);
      target=qstar[dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3];
      // THE HIND EXTENSION LAW (wave 27, receipt_wave27.json): the height
@@ -1222,7 +1345,7 @@ class GaitWalker {
      // swings; it resumes at the next TD. No gain bytes change. The torque
      // is read at the drive's COORDINATE row (last_torque_ is n_-indexed).
      if(hind_height_hold_latched_&&touching_prev_[hl])
-      target+=last_torque_[c]/kp_[d];}}
+      target+=last_torque_[c]/kp_[d];}}}
 
    tau[c]=(std::max)(-dr.cap,(std::min)(dr.cap,kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c]));}
   // The source model's POSTURE CONTROL (the pinned fulltext: the trunk pitch
@@ -1628,6 +1751,51 @@ class GaitWalker {
    require(std::isfinite(hind_height_crit_)&&hind_height_crit_>0.,"gait_height_hold_crit");
    require(std::abs(number(recipe_.at("hind_height_hold_floor_m"))-hind_height_floor_)<=1e-9,"gait_height_hold_floor_mismatch");
    hind_height_hold_armed_=true;}
+  // ── THE HIND STEP LAW's chain geometry (wave 28): harvested from the ──
+  // scene's OWN model bytes (the same segments the Assembly seats), never
+  // re-authored: the thigh/shank lengths from the chain's child-joint
+  // parent offsets, the hip mounts from the thigh joints, the paw-midpoint
+  // offset from the declared hind contact locals.
+  {
+   pelvis_row_=model_->body("pelvis");
+   for(size_t leg=0;leg<2;++leg){
+    const std::string legn=leg==0?"left":"right";
+    bool got[4]={false,false,false,false};
+    for(size_t d=0;d<nd_;++d){const Drive& dr=drives_[d];
+     if(dr.leg!=legn)continue;
+     int ji=dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:dr.joint=="MP"?3:-1;
+     require(ji>=0&&!got[ji],"gait_hind_drive_duplicate");
+     hind_coord_[leg][ji]=dr.coordinate;got[ji]=true;}
+    require(got[0]&&got[1]&&got[2]&&got[3],"gait_hind_drives_missing");}
+   {bool gh=false,gm=false;
+    for(size_t k=0;k<npts_;++k){
+     if(points_[k].name=="left_heel"){hind_heel_pt_[0]=k;gh=true;}
+     if(points_[k].name=="left_mp_head"){hind_mp_pt_[0]=k;gm=true;}
+     if(points_[k].name=="right_heel")hind_heel_pt_[1]=k;
+     if(points_[k].name=="right_mp_head")hind_mp_pt_[1]=k;}
+    require(gh&&gm,"gait_hind_paw_points_missing");
+    require(std::abs(points_[hind_heel_pt_[0]].local[0]-points_[hind_heel_pt_[1]].local[0])<1e-12&&
+     std::abs(points_[hind_mp_pt_[0]].local[0]-points_[hind_mp_pt_[1]].local[0])<1e-12,"gait_hind_paw_asym");
+    hind_xm_=0.5*(points_[hind_heel_pt_[0]].local[0]+points_[hind_mp_pt_[0]].local[0]);}
+   {bool gotM=false,gotL1=false,gotL2=false;
+    for(const J& b:model_data_.at("bodies")){
+     const std::string nm=b.at("name").get<std::string>();
+     if(nm=="thigh_left"||nm=="thigh_right"){
+      size_t leg=nm=="thigh_left"?0:1;
+      hind_mount_[leg]=b.at("joint").at("parent_location_m").get<V>();
+      require(b.at("joint").at("parent").get<std::string>()=="pelvis","gait_hind_mount_parent");
+      gotM=true;}
+     if(nm=="shank_left"||nm=="shank_right"){
+      double l=std::abs(number(b.at("joint").at("parent_location_m")[1]));
+      if(gotL1)require(std::abs(l-hind_L1_)<1e-12,"gait_hind_L1_mismatch");
+      hind_L1_=l;gotL1=true;}
+     if(nm=="foot_left"||nm=="foot_right"){
+      double l=std::abs(number(b.at("joint").at("parent_location_m")[1]));
+      if(gotL2)require(std::abs(l-hind_L2_)<1e-12,"gait_hind_L2_mismatch");
+      hind_L2_=l;gotL2=true;}}
+    require(gotM&&gotL1&&gotL2,"gait_hind_chain_geometry_missing");
+    require(hind_L1_+hind_L2_>hind_L1_+1e-6,"gait_hind_reach_degenerate");}
+  }
   reset();}
  double timestep()const{return dt_;}const Dense& angles()const{return s_.q;}const Dense& speeds()const{return s_.v;}const Model& model()const{return *model_;}
  const Dense& batteries()const{return battery_;}double phase(size_t leg)const{return phi_[leg];}uint64_t capture_events()const{return capture_events_;}
@@ -1646,6 +1814,16 @@ class GaitWalker {
   fore_glide_hold_[0]=fore_glide_hold_[1]=0;fore_hold_last_[0]=fore_hold_last_[1]=0;
   fore_hold_off_[0]=V{};fore_hold_off_[1]=V{};
   fore_wait_fires_[0]=fore_wait_fires_[1]=0;
+  hind_step_mode_[0]=hind_step_mode_[1]=0;
+  hind_step_t_[0]=hind_step_t_[1]=0.;
+  hind_step_from_[0]=hind_step_from_[1]=V{};hind_step_to_[0]=hind_step_to_[1]=V{};
+  hind_step_plant_y_[0]=hind_step_plant_y_[1]=0.;
+  hind_step_ap_[0]=hind_step_ap_[1]=0.;hind_step_mp_[0]=hind_step_mp_[1]=0.;
+  hind_step_branch_[0]=hind_step_branch_[1]=-1;
+  hind_step_xoff_[0]=hind_step_xoff_[1]=0.;hind_step_qerr_[0]=hind_step_qerr_[1]=0.;
+  hind_step_fires_[0]=hind_step_fires_[1]=0;hind_step_tds_[0]=hind_step_tds_[1]=0;
+  hind_step_gated_[0]=hind_step_gated_[1]=0;hind_step_clamped_[0]=hind_step_clamped_[1]=0;
+  hind_step_last_fire_[0]=hind_step_last_fire_[1]=0;hind_step_last_td_[0]=hind_step_last_td_[1]=0;
   for(size_t d=0;d<12;++d){wall_pins_[d]=0;wall_pins_air_[d]=0;}
   battery_.assign(nd_,0.);brake_.assign(nd_,0.);empty_events_.assign(nd_,0);store_total_=0;
   for(size_t d=0;d<nd_;++d){battery_[d]=drives_[d].store_floor;store_total_+=drives_[d].store_floor;}
@@ -1754,7 +1932,78 @@ class GaitWalker {
     double shmin=shl<shr?shl:shr;
     if(shmin-hind_height_crit_<=hind_height_floor_){
      hind_height_hold_latched_=true;hind_height_fire_tick_=ticks_;
-     hind_height_fire_margin_=shmin-hind_height_crit_;++hind_height_fires_;}}}
+     hind_height_fire_margin_=shmin-hind_height_crit_;++hind_height_fires_;}}
+   // ── THE HIND STEP LAW's trigger (wave 28): the clock's own lift slot ──
+   // arrived with the pads STILL LIVE -- the designed kinematic lift has
+   // stalled under the ride -- so the leg STEPS (the wave-20 pattern, hind
+   // side), and the step's TD touch reset re-syncs the clock to the true
+   // stance. Regime-gated to the height emergency; the fore decisions at
+   // this tick are byte-safe (the same pre-servo evaluation they already
+   // read). The gate is the wave-20 clauses hind-side + the support floor.
+   if(walking&&paws_captured_&&hind_height_hold_latched_){
+    double tair=(std::ceil)((T_CYCLE-DUTY_SAMPLED)/dt_);
+    for(size_t hl=0;hl<2;++hl)if(hind_step_mode_[hl]==1){ // the glide clock
+     ++hind_step_t_[hl];
+     if(hind_step_t_[hl]>=tair){ // TD: the leg returns to the tables; the
+      hind_step_mode_[hl]=0;hind_step_t_[hl]=0.; // touch reset re-syncs phi
+      hind_step_last_td_[hl]=ticks_;++hind_step_tds_[hl];
+#ifdef GAIT_EVENT_TRACE
+      std::fprintf(stderr,"[hindstep] td leg=%zu tick=%llu tds=%llu\n",
+       hl,(unsigned long long)ticks_,(unsigned long long)hind_step_tds_[hl]);
+#endif
+     }}
+    for(size_t hl=0;hl<2;++hl){
+     size_t o=hl==0?1:0;
+     if(hind_step_mode_[hl]!=0)continue;
+     if(phi_[hl]<TOE_OFF||!touching_prev_[hl])continue; // a live slot only
+     bool gated=false;
+     if(hind_step_mode_[o]==1)gated=true;                    // (a) no double step
+     else if(hind_step_last_td_[o]+1>ticks_)gated=true;      // (b) the hand-off g
+     else{ // (c) THE SUPPORT FLOOR: the other three legs >= 2 live pads
+      int live=0;
+      for(size_t l2=0;l2<2;++l2){
+       double mn=1e300;
+       for(size_t k=0;k<npts_;++k)
+        if(points_[k].name.rfind(l2==0?"fore_left":"fore_right",0)==0)
+         mn=(std::min)(mn,gap_of(e,k));
+       if(mn<=kTouch)++live;}
+      double mn=1e300;
+      for(size_t k=0;k<npts_;++k)
+       if(points_[k].name.rfind(o==0?"left_":"right_",0)==0)
+        mn=(std::min)(mn,gap_of(e,k));
+      if(mn<=kTouch)++live;
+      if(live<2)gated=true;}
+     if(gated){++hind_step_gated_[hl];continue;}
+     // FIRE: the wave-20 glide, hind side.
+     hind_step_mode_[hl]=1;hind_step_t_[hl]=0.;
+     ++hind_step_fires_[hl];hind_step_last_fire_[hl]=ticks_;
+     auto p1=e.point(points_[hind_heel_pt_[hl]].index,points_[hind_heel_pt_[hl]].local).first;
+     auto p2=e.point(points_[hind_mp_pt_[hl]].index,points_[hind_mp_pt_[hl]].local).first;
+     V from{(p1[0]+p2[0])/2,(p1[1]+p2[1])/2,(p1[2]+p2[2])/2};
+     hind_step_from_[hl]=from;hind_step_plant_y_[hl]=from[1];
+     hind_step_ap_[hl]=s_.q[hind_coord_[hl][0]]+s_.q[hind_coord_[hl][1]]+s_.q[hind_coord_[hl][2]];
+     hind_step_mp_[hl]=s_.q[hind_coord_[hl][3]];
+     hind_step_branch_[hl]=s_.q[hind_coord_[hl][1]]>=0.?1:-1;
+     double xoff=(std::max)(0.,s_.v[3])*(DUTY_SAMPLED*T_CYCLE)/2.;
+     auto hip=e.point(pelvis_row_,hind_mount_[hl]).first;
+     double h=(std::max)(0.,hip[1]-hind_step_plant_y_[hl]);
+     double a2m=hind_L1_+hind_L2_;
+     double dxs=hind_xm_*std::cos(hind_step_ap_[hl]);
+     double dys=h+hind_xm_*std::sin(hind_step_ap_[hl]);
+     double under=a2m*a2m-dys*dys;
+     double xmax=dxs+(under>0.?std::sqrt(under):0.);
+     if(xoff>xmax){xoff=xmax;++hind_step_clamped_[hl];}
+     hind_step_xoff_[hl]=xoff;
+     hind_step_to_[hl]=V{hip[0]+xoff,hind_step_plant_y_[hl],from[2]};
+     {double qh,qk,qa;hind_step_ik(hl,e,from,qh,qk,qa);
+      hind_step_qerr_[hl]=(std::max)(std::abs(qh-s_.q[hind_coord_[hl][0]]),
+       (std::max)(std::abs(qk-s_.q[hind_coord_[hl][1]]),std::abs(qa-s_.q[hind_coord_[hl][2]])));}
+#ifdef GAIT_EVENT_TRACE
+     std::fprintf(stderr,"[hindstep] fire leg=%zu tick=%llu phi=%.5f from=(%.6f,%.6f) to=(%.6f,%.6f) xoff=%.6f v=%.6f qerr=%.3e ap=%.4f br=%+d\n",
+      hl,(unsigned long long)ticks_,phi_[hl],from[0],from[1],hind_step_to_[hl][0],hind_step_to_[hl][1],
+      xoff,s_.v[3],hind_step_qerr_[hl],hind_step_ap_[hl],hind_step_branch_[hl]);
+#endif
+    }}}
   // 2) reflex on the tick-start state (armed only in the walk, and only when
   //    the capture reflex is enabled -- F-G6's disarmed control leg). THE
   //    WAVE-21 ARMING LAW: the containment test runs on the TRUE monotone-chain
@@ -1924,7 +2173,25 @@ class GaitWalker {
    // read by the F-G27 height census. Read-only.
    gait["height_hold"]={{"armed",hind_height_hold_armed_},{"latched",hind_height_hold_latched_},
     {"fire_tick",hind_height_fire_tick_},{"fire_margin_m",hind_height_fire_margin_},
-    {"fires",hind_height_fires_}};}
+    {"fires",hind_height_fires_}};
+   // THE HIND STEP LAW's census block (wave 28): the step clocks and their
+   // counters, read by the F-G28 census. Read-only. The hind drives' stop
+   // pins (loaded/airborne) are summed per leg here -- the wave-23 array
+   // covers all 12 drives but only the fore legs were exposed before.
+   {J hs=J::array();
+    for(size_t hl=0;hl<2;++hl){
+     uint64_t hp=0,hpa=0;const std::string lg=hl==0?"left":"right";
+     for(size_t d=0;d<nd_;++d)if(drives_[d].leg==lg){hp+=wall_pins_[d];hpa+=wall_pins_air_[d];}
+     hs.push_back({{"leg",lg},{"mode",hind_step_mode_[hl]==1?"step":"stance"},
+      {"t",hind_step_t_[hl]},{"fires",hind_step_fires_[hl]},{"tds",hind_step_tds_[hl]},
+      {"gated",hind_step_gated_[hl]},{"reach_clamped",hind_step_clamped_[hl]},
+      {"last_fire_tick",hind_step_last_fire_[hl]},{"last_td_tick",hind_step_last_td_[hl]},
+      {"from_x",hind_step_from_[hl][0]},{"to_x",hind_step_to_[hl][0]},
+      {"plant_y",hind_step_plant_y_[hl]},{"xoff_m",hind_step_xoff_[hl]},
+      {"held_ap_deg",hind_step_ap_[hl]*180/pi},{"branch",hind_step_branch_[hl]},
+      {"fire_qerr_rad",hind_step_qerr_[hl]},
+      {"wall_pins",hp},{"wall_pins_air",hpa},{"phase",phi_[hl]}});}
+    gait["hind_step"]=hs;}}
   return {{"sim_time_s",ticks_*dt_},{"ticks",ticks_},{"mode","native_gait_walker"},{"joints",joints},
    {"config",config_},{"power",config_["power"]},{"gait",gait},
    {"contact",{{"enabled",contact_},{"friction",mu_>0},{"friction_mu",mu_},{"plane_world_up_m",plane_world_up_m()},{"points",points},

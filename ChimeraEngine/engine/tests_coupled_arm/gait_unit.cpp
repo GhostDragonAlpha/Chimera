@@ -31,6 +31,7 @@ struct WalkOut{
  // 0..3 = left heel/mp, right heel/mp), the posture drive, the capture events,
  // the hind clock phases, the CoM/hull state, the base x.
  std::vector<std::array<double,4>> hgap,hrxn,hfrc,hslip; // per hind point
+ std::vector<std::array<double,8>> hpos;       // per hind point CoP {x,y} (wave-28 mining)
  std::vector<std::array<double,4>> post;       // posture {torque, target_deg, angle_deg, speed}
  std::vector<uint64_t> cev;                    // capture_events
  std::vector<std::array<double,2>> hphase;     // {phase_left, phase_right}
@@ -52,6 +53,11 @@ struct WalkOut{
  std::vector<std::array<int,2>> fhl;
  std::vector<std::array<double,2>> ftic;
  std::vector<char> fcap;                       // paws_captured per tick
+ // WAVE 28 HIND STEP census inputs: per-tick hind_step status, per leg 12
+ // fields {mode,t,fires,tds,gated,reach_clamped,last_fire_tick,last_td_tick,
+ // fire_qerr,wall_pins,wall_pins_air,xoff} -- leg 0 at [0,12), leg 1 at
+ // [12,24); -1 filled when the block is absent.
+ std::vector<std::array<double,24>> hindst;
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
@@ -164,6 +170,14 @@ int main(int argc,char**argv){try{
       hg[k]=number(pt["gap_m"]);hn[k]=number(pt["reaction_N"]);
       hf[k]=number(pt["friction_force_N"]);hs[k]=number(pt["slip_speed_m_s"]);++k;}
      out.hgap.push_back(hg);out.hrxn.push_back(hn);out.hfrc.push_back(hf);out.hslip.push_back(hs);}
+    // WAVE 28 MINING (trace print only): the hind points' world CoP positions
+    // per tick -- the recede series' measured base. Read-only harness state;
+    // no status byte and no stdout byte depends on it (the trace print below
+    // is stderr-only, GAIT_EVENT_TRACE builds).
+    {std::array<double,8> hp{};size_t k=0;
+     for(const auto&pt:s["contact"]["points"]){if(k>=4)break;
+      hp[2*k]=number(pt["position_m"][0]);hp[2*k+1]=number(pt["position_m"][1]);++k;}
+     out.hpos.push_back(hp);}
     {const J& tr=s["joints"][12];
      out.post.push_back({number(tr["motor_torque_N_m"]),number(tr["target_deg"]),
       number(tr["angle_deg"]),number(tr["speed_rad_s"])});}
@@ -183,8 +197,9 @@ int main(int argc,char**argv){try{
       (unsigned long long)out.cev.back(),out.hphase.back()[0],out.hphase.back()[1],
       out.comh.back()[0],out.comh.back()[1],(int)out.comh.back()[2],(int)out.comh.back()[3],out.bx.back());
      for(size_t k=0;k<4;++k)
-      std::fprintf(stderr,"[dvp] t=%d k=%zu gap=%.4e rxn=%.5f frc=%.5f slip=%.5f\n",
-       i,k,out.hgap.back()[k],out.hrxn.back()[k],out.hfrc.back()[k],out.hslip.back()[k]);
+      std::fprintf(stderr,"[dvp] t=%d k=%zu gap=%.4e rxn=%.5f frc=%.5f slip=%.5f pos=%.9f,%.9f\n",
+       i,k,out.hgap.back()[k],out.hrxn.back()[k],out.hfrc.back()[k],out.hslip.back()[k],
+       out.hpos.back()[2*k],out.hpos.back()[2*k+1]);
      for(size_t k=0;k<8;++k)
       std::fprintf(stderr,"[dvj] t=%d k=%zu ang=%.4f tgt=%.4f spd=%.4f\n",
        i,k,number(s["joints"][k]["angle_deg"]),number(s["joints"][k]["target_deg"]),number(s["joints"][k]["speed_rad_s"]));
@@ -224,6 +239,21 @@ int main(int argc,char**argv){try{
     out.wpins.push_back(wp);out.wair.push_back(wa);out.wbound.push_back(wb);out.wfollow.push_back(wf);
     out.fhold.push_back(fh);out.fhl.push_back(fhlk);out.ftic.push_back(ftick);
     out.fcap.push_back(s["gait"].contains("fore_paw_captured")&&s["gait"]["fore_paw_captured"].get<bool>()?1:0);
+    {std::array<double,24> hst{};hst.fill(-1.);
+     if(s["gait"].contains("hind_step")&&s["gait"]["hind_step"].size()>=2)
+      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["hind_step"][l];
+       size_t b=12*l;
+       hst[b+0]=p["mode"].get<std::string>()=="step"?1.:0.;
+       hst[b+1]=number(p["t"]);hst[b+2]=double(p["fires"].get<uint64_t>());
+       hst[b+3]=double(p["tds"].get<uint64_t>());hst[b+4]=double(p["gated"].get<uint64_t>());
+       hst[b+5]=double(p["reach_clamped"].get<uint64_t>());
+       hst[b+6]=double(p["last_fire_tick"].get<uint64_t>());
+       hst[b+7]=double(p["last_td_tick"].get<uint64_t>());
+       hst[b+8]=number(p["fire_qerr_rad"]);
+       hst[b+9]=double(p["wall_pins"].get<uint64_t>());
+       hst[b+10]=double(p["wall_pins_air"].get<uint64_t>());
+       hst[b+11]=number(p["xoff_m"]);}
+     out.hindst.push_back(hst);}
     out.fm.push_back(fmm);out.fsat.push_back(sat);out.ftgt.push_back(tgx);out.frep.push_back(rep);
 #ifdef GAIT_EVENT_TRACE
     // WAVE 23 MINING: the per-tick fore joint-wall state (the derivation's
@@ -347,6 +377,7 @@ int main(int argc,char**argv){try{
   // "the steady lateral pattern's own 2-paw windows") is REPORTED with its
   // ticks, never hidden. Both readings reported per the pre-registration.
   int steady2_ticks=0,unload2_ticks=0;std::string steady2_list,unload2_list;
+  int hstep2_ticks=0;std::string hstep2_list; // the wave-28 hind-step class (reported)
   std::string two_windows;
   for(size_t i=60;i<N;++i){
    bool l_air=w.fm[i][0]==1,r_air=w.fm[i][1]==1;
@@ -359,8 +390,19 @@ int main(int argc,char**argv){try{
    sup_min=(std::min)(sup_min,c);
    if(c<2){++sup2_ticks;if(sup2_first<0)sup2_first=(int)i;}
    if(c==2){char b[64];std::snprintf(b,64,"%d ",(int)i);two_windows+=b;
-    if(w.fgmin[i][0]>1e-5||w.fgmin[i][1]>1e-5){++unload2_ticks;
-     if(unload2_list.size()<240){char ub[64];std::snprintf(ub,64,"%d ",(int)i);unload2_list+=ub;}}
+    if(w.fgmin[i][0]>1e-5||w.fgmin[i][1]>1e-5){
+     // WAVE 28 CLASSIFICATION AMENDMENT (pre-registered in
+     // receipt_wave28.json, the wave-25 held-glide precedent): a
+     // HIND-STEP-CLASS 2-support tick (a hind mid-glide under the gate's
+     // support floor -- the law's DESIGNED face) is REPORTED, owned by the
+     // F-G28 support letter; a FORE-spending tick with no hind step active
+     // stays OWNED RED.
+     bool hs_now=w.hindst.size()>i&&(w.hindst[i][0]>0.5||w.hindst[i][12]>0.5);
+     bool hind_out=!(w.t[i][0]&&w.t[i][1]);
+     if(hs_now&&hind_out){++hstep2_ticks;
+      if(hstep2_list.size()<240){char hb[64];std::snprintf(hb,64,"%d ",(int)i);hstep2_list+=hb;}}
+     else{++unload2_ticks;
+      if(unload2_list.size()<240){char ub[64];std::snprintf(ub,64,"%d ",(int)i);unload2_list+=ub;}}}
     else{++steady2_ticks;
      if(steady2_list.size()<240){char sb[64];std::snprintf(sb,64,"%d ",(int)i);steady2_list+=sb;}}}
    // THE WAVE-25 CADENCE-LAW SUPPORT CLAUSES (per tick): a held glide's
@@ -379,8 +421,9 @@ int main(int argc,char**argv){try{
    " [WAVE 25 dual reading: the contact sense owns; a held glide (pads live) is not airborne]");
   note("F-G14 support_census min_contacts="+std::to_string(sup_min)+
    " sub2_ticks="+std::to_string(sup2_ticks)+" sub2_first="+(sup2_first<0?"none":std::to_string(sup2_first)));
-  {char b[512];std::snprintf(b,512,"F-G26 support_2_support_reading min_contacts=%d unload_class_ticks=%d%s%s [OWNED 0: no micro-unload shipped] steady_pattern_class_ticks=%d%s%s [REPORTED: the wave-14 banked carve-out; both readings per the pre-registration]",
+  {char b[512];std::snprintf(b,512,"F-G26 support_2_support_reading min_contacts=%d unload_class_ticks=%d%s%s [OWNED 0: no micro-unload shipped] hind_step_class_ticks=%d%s%s [REPORTED: the wave-28 law's designed face, owned by F-G28 support>=2] steady_pattern_class_ticks=%d%s%s [REPORTED: the wave-14 banked carve-out; readings per the pre-registrations]",
    sup_min,unload2_ticks,unload2_ticks?" @ ":"",unload2_ticks?unload2_list.c_str():"",
+   hstep2_ticks,hstep2_ticks?" @ ":"",hstep2_ticks?hstep2_list.c_str():"",
    steady2_ticks,steady2_ticks?" @ ":"",steady2_ticks?steady2_list.c_str():"");
    note(b);
    ck(unload2_ticks==0,"f26_no_unload_class_support2");}
@@ -729,6 +772,95 @@ int main(int argc,char**argv){try{
    ck(worst_rate<=kSinkCensus+1e-9,"f27_sink_rate_bound");
    ck(min_sh>=crit-1e-12,"f27_height_above_crit");
    ck(fire_i>=0&&shmin_end>shmin_fire,"f27_height_recovery");}}
+
+ // ── WAVE 28 HIND STEP CENSUS (pre-registered in receipt_wave28.json):
+ //    THE HIND STEP LAW -- the clock's own lift slot (phi >= TOE_OFF)
+ //    arriving with the pads STILL LIVE is a stalled designed lift; the law
+ //    machines it (the wave-20 minimal-air-time glide, hind side) and the
+ //    TD touch reset re-syncs the clock to the true stance. (a) THE FIRES:
+ //    the calendar (the R at 98 +/-1; any L fire at 203 +/-3), the TD at
+ //    fire+9 +/-1 with the clock re-synced by TD+1, the replant ahead of
+ //    the hip. (b) THE STAGGER: no two hinds in step-mode the same tick.
+ //    (c) THE SUPPORT: support >= 2 through every hind step tick. (d) THE
+ //    SKID: past the law's first fire, no pads-live hind paw at or past its
+ //    slot outside the 2-tick engage windows (the baseline RED face: 24
+ //    such ticks [98,122)), and no such paw's touching slip above the
+ //    capture bound v_bound (the baseline's 1.2455 m/s at 121 is the
+ //    reference red).
+ {const double MU28=number(recipe.at("contact_friction"));
+  const double VB28=MU28*9.80665*(1.-number(recipe.at("capture_step_phase")))*T;
+  const size_t N28=std::min({w.hindst.size(),w.hphase.size(),w.hgap.size(),(size_t)426});
+  if(w.hindst.size()<=61)note("F-G28 NOT MEASURED: the walk refused before the census window");
+  else{
+   std::vector<int> fire28[2],td28[2];
+   for(size_t i=61;i<N28;++i)for(size_t l=0;l<2;++l){
+    if(w.hindst[i][12*l+2]>w.hindst[i-1][12*l+2])fire28[l].push_back((int)i);
+    if(w.hindst[i][12*l+3]>w.hindst[i-1][12*l+3])td28[l].push_back((int)i);}
+   int dbl=0,supviol=0,supmin=99,tdpair_bad=0,plant_bad=0;
+   double plant_off[2]={1e9,1e9};
+   double qerr_mx=0;
+   for(size_t i=61;i<N28;++i){
+    bool L=w.hindst[i][0]>0.5,R=w.hindst[i][12]>0.5;
+    if(L&&R)++dbl;
+    if(L||R){
+     int c=(w.t[i][0]?1:0)+(w.t[i][1]?1:0)+((w.fgmin[i][0]<=1e-5)?1:0)+((w.fgmin[i][1]<=1e-5)?1:0);
+     supmin=(std::min)(supmin,c);
+     if(c<2)++supviol;}
+    for(size_t l=0;l<2;++l){
+     size_t b=12*l;
+     if(w.hindst[i][b+0]>0.5)qerr_mx=(std::max)(qerr_mx,w.hindst[i][b+8]);}}
+   for(size_t l=0;l<2;++l){
+    if(!fire28[l].empty())plant_off[l]=w.hindst[(size_t)fire28[l].front()][12*l+11];
+    for(int f:fire28[l]){
+     bool paired=false;
+     for(int d:td28[l])if(d>=f+8&&d<=f+11){paired=true;
+      // the clock re-sync: the phase at TD+1 ~0 (the touch reset fired)
+      if((size_t)(d+1)<w.hphase.size()&&w.hphase[d+1][l]>0.05)++tdpair_bad;
+      break;}
+     if(!paired)++tdpair_bad;}
+    if(plant_off[l]<1e8&&plant_off[l]<0.)++plant_bad;}
+   // (d) the past-slot live-load / skid classes after the law's first fire
+   int psl=0,psv=0;double psmx=0.;int psmx_tick=-1;
+   for(size_t l=0;l<2;++l){
+    if(fire28[l].empty())continue;
+    for(size_t i=(size_t)fire28[l].front();i<N28;++i){
+     bool inwin=false;
+     for(int f:fire28[l])if((int)i>=f&&(int)i<=f+2){inwin=true;break;}
+     if(inwin)continue;
+     double phi=w.hphase[i][l];
+     double g=(std::min)(w.hgap[i][2*l],w.hgap[i][2*l+1]);
+     if(phi>=0.68&&g<=1e-5){
+      ++psl;
+      double sl=0.;
+      if(w.hgap[i][2*l]<=1e-5)sl=(std::max)(sl,w.hslip[i][2*l]);
+      if(w.hgap[i][2*l+1]<=1e-5)sl=(std::max)(sl,w.hslip[i][2*l+1]);
+      if(sl>psmx){psmx=sl;psmx_tick=(int)i;}
+      if(sl>VB28)++psv;}}}
+   {std::string rr,lr,tr,tlr;
+    for(int f:fire28[1]){char c[24];std::snprintf(c,24,"%d ",f);rr+=c;}
+    for(int f:fire28[0]){char c[24];std::snprintf(c,24,"%d ",f);lr+=c;}
+    for(int d:td28[1]){char c[24];std::snprintf(c,24,"%d ",d);tr+=c;}
+    for(int d:td28[0]){char c[24];std::snprintf(c,24,"%d ",d);tlr+=c;}
+    char b[896];std::snprintf(b,896,"F-G28 hind_step fires R=[%s] L=[%s] (calendar: R 98 +/-1; L 203 +/-3 if reached) tds R=[%s] L=[%s] (fire+9 +/-1, re-synced) stagger_double=%d [OWNED 0] support_min=%d viol=%d [OWNED 0] td_pair_bad=%d [OWNED 0] plant_off=(%.4f,%.4f) [OWNED >=0] fire_qerr_max=%.3e reach_clamped=(%llu,%llu) gated=(%llu,%llu) hind_pins=(%llu,%llu)/(%llu,%llu) loaded/air",
+     rr.c_str(),lr.c_str(),tr.c_str(),tlr.c_str(),dbl,supmin,supviol,tdpair_bad,
+     plant_off[0]<1e8?plant_off[0]:-1.,plant_off[1]<1e8?plant_off[1]:-1.,
+     qerr_mx,
+     (unsigned long long)w.hindst.back()[5],(unsigned long long)w.hindst.back()[17],
+     (unsigned long long)w.hindst.back()[4],(unsigned long long)w.hindst.back()[16],
+     (unsigned long long)w.hindst.back()[9],(unsigned long long)w.hindst.back()[21],
+     (unsigned long long)w.hindst.back()[10],(unsigned long long)w.hindst.back()[22]);
+    note(b);}
+   {char b[384];std::snprintf(b,384,"F-G28 past_slot_census live_loaded_ticks=%d [OWNED 0 outside the 2-tick engage windows; the baseline RED: 24 ticks [98,122)] worst_touching_slip=%.4f@%d [bound %.4f] viol=%d [OWNED 0]",
+    psl,psmx,psmx_tick,VB28,psv);
+    note(b);
+    ck(psl==0,"f28_no_past_slot_live_load");
+    ck(psv==0,"f28_no_past_slot_skid");}
+   ck(dbl==0,"f28_no_double_hind_step");
+   ck(supviol==0,"f28_support_min2_through_hind_step");
+   ck(tdpair_bad==0,"f28_td_within_air_window_resynced");
+   ck(plant_bad==0,"f28_replant_ahead_of_hip");
+   for(int f:fire28[1])ck(f>=97&&f<=99,"f28_R_fire_calendar_98_pm1");
+   for(int f:fire28[0])ck(f>=200&&f<=206,"f28_L_fire_calendar_203_pm3");}}
 
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the
