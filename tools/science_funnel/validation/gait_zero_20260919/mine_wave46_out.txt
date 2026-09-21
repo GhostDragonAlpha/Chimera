@@ -1,0 +1,65 @@
+refusal: (302, 'gait_positional_correction_budget')  fires: 18  tds: 17  dvfl (t,leg) first-sample series: 113  dvfa series: 303
+THE ABSOLUTE-SPLIT CALIBRATION (declared): plane_model_y_=0.004 (shift V{0,0,0}), pad radius=0.004 => mean_gap=pad_y, split_abs=2*(pad_y-gmin), maxpad=2*pad_y-gmin; the heel/MP identity per tick is NOT
+  recoverable from (mean,min) alone -- the registered max-clause is identity-agnostic (reported honestly).
+THE BAND EDGE (the machinery's own kTouch+kReleaseBand, printed by [dvfl]): 1.1e-05
+------------------------------------------------------------------------------------------------------------------------------------------------------
+ERA TABLE: fire->ct leg eraClass(fireCls) CMD DEL R1 nBand cross(flip) maxpad>edge FLIP maxgmin maxsplit_abs
+    98-> 107 leg=1 LIFT (slot) CMD=  8.000 DEL=  3.872 instant nB= 1 cross=  99 FLIP=  99 SAME-TICK maxgmin=2.41e-04 maxsplit=+62.1434 mm
+   142-> 160 leg=0 LIFT (alt) CMD=  8.000 DEL= 20.590 instant nB= 1 cross= 143 FLIP= 143 SAME-TICK maxgmin=1.00e-03 maxsplit=+39.2110 mm
+   160-> 174 leg=1 LIFT (alt) CMD=  8.000 DEL= 15.942 instant nB= 1 cross= 161 FLIP= 161 SAME-TICK maxgmin=6.36e-04 maxsplit=+46.6619 mm
+   161-> 170 leg=0 STALL(alt) CMD=  8.000 DEL= -0.000 never  nB= 9 cross=none FLIP= 162 DIVERGES maxgmin=9.72e-06 maxsplit=+35.2533 mm
+   175-> 184 leg=0 STALL(alt) CMD=  8.000 DEL=  0.000 never  nB= 9 cross=none FLIP= 176 DIVERGES maxgmin=8.19e-06 maxsplit=+16.4889 mm
+   184-> 193 leg=1 STALL(alt) CMD=  8.000 DEL=  0.080 never  nB= 9 cross=none FLIP= 185 DIVERGES maxgmin=9.26e-06 maxsplit=+49.5576 mm
+   193-> 202 leg=0 STALL(alt) CMD=  8.000 DEL= -0.000 never  nB= 9 cross=none FLIP= 194 DIVERGES maxgmin=9.00e-06 maxsplit=+11.5271 mm
+   202-> 211 leg=1 LIFT (alt) CMD=  8.000 DEL=  3.802 mid    nB= 4 cross= 206 FLIP= 203 DIVERGES maxgmin=1.15e-05 maxsplit=+48.4314 mm
+   211-> 220 leg=0 LIFT (alt) CMD=  8.000 DEL=  2.503 mid    nB= 4 cross= 215 FLIP= 212 DIVERGES maxgmin=1.11e-05 maxsplit=+0.1193 mm
+   220-> 229 leg=1 LIFT (alt) CMD=  8.000 DEL=  3.445 never  nB= 9 cross=none FLIP= 221 DIVERGES maxgmin=9.94e-06 maxsplit=+59.0869 mm
+   229-> 238 leg=0 LIFT (alt) CMD=  8.000 DEL=  4.568 never  nB= 9 cross=none FLIP= 230 DIVERGES maxgmin=6.96e-06 maxsplit=+11.5974 mm
+   238-> 247 leg=1 LIFT (alt) CMD=  8.000 DEL=  3.739 never  nB= 9 cross=none FLIP= 239 DIVERGES maxgmin=9.61e-06 maxsplit=+74.5737 mm
+   247-> 256 leg=0 LIFT (alt) CMD=  8.000 DEL=  5.789 never  nB= 9 cross=none FLIP= 248 DIVERGES maxgmin=8.60e-06 maxsplit=+34.8664 mm
+   256-> 265 leg=1 STALL(alt) CMD=  8.000 DEL=  0.242 never  nB= 9 cross=none FLIP= 257 DIVERGES maxgmin=7.68e-06 maxsplit=+79.6609 mm
+   265-> 274 leg=0 LIFT (alt) CMD=  8.000 DEL=  8.203 never  nB= 9 cross=none FLIP= 266 DIVERGES maxgmin=9.88e-06 maxsplit=+71.5581 mm
+   274-> 291 leg=1 STALL(alt) CMD=  8.000 DEL=  0.000 instant nB= 1 cross= 275 FLIP= 275 SAME-TICK maxgmin=4.97e-03 maxsplit=+73.8875 mm
+   291-> 300 leg=0 STALL(alt) CMD=  8.000 DEL=  0.000 never  nB= 9 cross=none FLIP= 292 DIVERGES maxgmin=-3.67e-11 maxsplit=+53.3052 mm
+   300-> 302 leg=1 STALL(alt) CMD=  8.000 DEL=  0.007 never  nB= 2 cross=none FLIP= 301 DIVERGES maxgmin=-6.32e-05 maxsplit=+0.6390 mm
+------------------------------------------------------------------------------------------------------------------------------------------------------
+THE CALIBRATION CROSS-CHECK (my wave-45-verbatim lever delta vs mine_wave45_out.txt's printed maxima):
+  fire 161 STALL: mine=-3.142 mm  wave45=-3.142 mm  MATCH
+  fire 175 STALL: mine=-0.003 mm  wave45=-0.003 mm  MATCH
+  fire 184 STALL: mine=+0.151 mm  wave45=+0.151 mm  MATCH
+  fire 193 STALL: mine=-0.497 mm  wave45=-0.497 mm  MATCH
+  fire 220 LIFT: mine=+6.902 mm  wave45=+6.902 mm  MATCH
+  fire 229 LIFT: mine=+9.125 mm  wave45=+9.125 mm  MATCH
+  fire 238 LIFT: mine=+7.476 mm  wave45=+7.476 mm  MATCH
+  fire 247 LIFT: mine=+11.577 mm  wave45=+11.577 mm  MATCH
+  fire 256 STALL: mine=+0.468 mm  wave45=+0.468 mm  MATCH
+  fire 265 LIFT: mine=+16.426 mm  wave45=+16.426 mm  MATCH
+  fire 291 STALL: mine=-6.416 mm  wave45=-6.416 mm  MATCH
+  fire 300 STALL: mine=+0.551 mm  wave45=+0.551 mm  MATCH
+  CROSS-CHECK: GREEN (all 12 never-crossed eras match to the printed precision)
+------------------------------------------------------------------------------------------------------------------------------------------------------
+THE FLIP CENSUS (the law's release decision max(gh,gm) > edge, per era, first held tick):
+  fire 98 LIFT maxpad mm/tick: 99:+62.3847
+  fire 142 LIFT maxpad mm/tick: 143:+40.2147
+  fire 160 LIFT maxpad mm/tick: 161:+47.2977
+  fire 161 STALL maxpad mm/tick: 162:+35.2534 163:+32.6975 164:+30.5499 165:+28.7271 166:+27.1764 167:+25.8680 168:+24.7860 169:+23.9267 170:+23.2688
+  fire 175 STALL maxpad mm/tick: 176:+16.0122 177:+16.2028 178:+16.4159 179:+16.4898 180:+16.4748 181:+16.4298 182:+16.3540 183:+16.2420 184:+16.0913
+  fire 184 STALL maxpad mm/tick: 185:+49.3604 186:+49.3525 187:+49.3612 188:+49.3808 189:+49.4097 190:+49.4474 191:+49.4930 192:+49.5314 193:+49.5619
+  fire 193 STALL maxpad mm/tick: 194:+11.5294 195:+11.0280 196:+10.5236 197:+10.0372 198:+9.5811 199:+9.1788 200:+8.8179 201:+8.4663 202:+8.1394
+  fire 202 LIFT maxpad mm/tick: 203:+48.1523 204:+48.2248 205:+48.3221 206:+48.4429
+  fire 211 LIFT maxpad mm/tick: 212:+0.0691 213:+0.0004 214:+0.0197 215:+0.1303
+  fire 220 LIFT maxpad mm/tick: 221:+52.6438 222:+53.2713 223:+54.0597 224:+54.9182 225:+55.7807 226:+56.6240 227:+57.4411 228:+58.2508 229:+59.0879
+  fire 229 LIFT maxpad mm/tick: 230:+3.2930 231:+4.1636 232:+5.0819 233:+6.0529 234:+7.0780 235:+8.1526 236:+9.2721 237:+10.4213 238:+11.6033
+  fire 238 LIFT maxpad mm/tick: 239:+68.0895 240:+69.0354 241:+69.9426 242:+70.8134 243:+71.6513 244:+72.4545 245:+73.2086 246:+73.9193 247:+74.5833
+  fire 247 LIFT maxpad mm/tick: 248:+24.5834 249:+25.8892 250:+27.1864 251:+28.4698 252:+29.7503 253:+31.0308 254:+32.3021 255:+33.5706 256:+34.8708
+  fire 256 STALL maxpad mm/tick: 257:+79.3961 258:+79.5485 259:+79.6338 260:+79.6686 261:+79.6566 262:+79.6065 263:+79.5213 264:+79.4052 265:+79.2630
+  fire 265 LIFT maxpad mm/tick: 266:+57.3759 267:+59.5170 268:+61.5781 269:+63.5357 270:+65.3825 271:+67.1148 272:+68.7262 273:+70.2101 274:+71.5581
+  fire 274 STALL maxpad mm/tick: 275:+78.8594
+  fire 291 STALL maxpad mm/tick: 292:+53.3052 293:+46.4542 294:+39.4120 295:+32.3193 296:+25.4913 297:+18.4210 298:+10.7675 299:+2.5372 300:-0.0025
+  fire 300 STALL maxpad mm/tick: 301:+0.0397 302:-0.0246
+------------------------------------------------------------------------------------------------------------------------------------------------------
+THE FIRST DIVERGENCE: F = 162 (era fire 161 leg 0 STALL)
+DIVERGENCE TICKS (law flip < baseline crossing): [(162, 161), (176, 175), (185, 184), (194, 193), (203, 202), (212, 211), (221, 220), (230, 229), (239, 238), (248, 247), (257, 256), (266, 265), (292, 291), (301, 300)]
+SELECTION (receipt_wave46.json): lineage DERIVED (receipt L1/L2/L3) + every LIFT era flips within 2 held ticks: True + F=162 < 302: True
+VERDICT: C-SPLITLAW (the amendment freezes clause+F+census; the law builds, dual-gated)
+  per-era first-held-tick maxpad (the fire+1 face): {98: '62.3847 mm', 142: '40.2147 mm', 160: '47.2977 mm', 161: '35.2534 mm', 175: '16.0122 mm', 184: '49.3604 mm', 193: '11.5294 mm', 202: '48.1523 mm', 211: '0.0691 mm', 220: '52.6438 mm', 229: '3.2930 mm', 238: '68.0895 mm', 247: '24.5834 mm', 256: '79.3961 mm', 265: '57.3759 mm', 274: '78.8594 mm', 291: '53.3052 mm', 300: '0.0397 mm'}
