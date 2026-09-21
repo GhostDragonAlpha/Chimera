@@ -1,0 +1,4412 @@
+{
+ "area_invariance_reading_non_binding": {
+  "cycle_A": 0.0,
+  "cycle_B": 0.0
+ },
+ "axis": {
+  "driver_center_A_mm": [
+   36.83565478293,
+   32.260135932044,
+   46.224951880972
+  ],
+  "driver_center_B_mm": [
+   43.784032845164,
+   29.623876636742,
+   26.559001107115
+  ],
+  "separation_mm": 21.023307080657,
+  "u": [
+   0.330508327523,
+   -0.125396983699,
+   -0.935435642851
+  ]
+ },
+ "bands": {
+  "bond.joint_06_20": 0.085764861488,
+  "bond.joint_06_25": 0.083161873871,
+  "bond.joint_07_21": 0.080396592835,
+  "bond.joint_07_24": 0.079898136736,
+  "bond.joint_20_25": 0.084481592551,
+  "bond.joint_21_24": 0.079675095915
+ },
+ "base_commit": "13d7c31e (agent/p6-repreregistration-20260921, the reinstatement head)",
+ "cycle_demo": {
+  "cycle_A": {
+   "arms": {
+    "null": {
+     "breaches_at": [
+      "lo_endpoint",
+      "grid_k-4",
+      "grid_k-3",
+      "grid_k-2",
+      "grid_k-1",
+      "grid_k+1",
+      "grid_k+2",
+      "grid_k+3",
+      "grid_k+4",
+      "hi_endpoint"
+     ],
+     "driver_displacement_ok_all": false,
+     "driver_seat_ok_all": true,
+     "loop_closes": false,
+     "loop_seat_ok_all": true,
+     "max_driver_seat_mm": 0.659698121371,
+     "max_loop_seat_mm": 2.538508317503,
+     "pivot_of_motion_mm": [
+      39.039999008179,
+      30.719999313354,
+      44.959999084473
+     ],
+     "rows": [
+      {
+       "driver_displacement_mm": 0.728526778265,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.535820316182,
+       "driver_seat_ok": true,
+       "label": "lo_endpoint",
+       "loop_pivot_transport_mm": 0.622457105853,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.538508317503,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        6590,
+        "parent_vertex",
+        62
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": -0.34906585
+      },
+      {
+       "driver_displacement_mm": 0.583889403421,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.561588648305,
+       "driver_seat_ok": true,
+       "label": "grid_k-4",
+       "loop_pivot_transport_mm": 0.498878173096,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.527769103002,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        6590,
+        "parent_vertex",
+        62
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": -0.27925268
+      },
+      {
+       "driver_displacement_mm": 0.438540649283,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.587132524561,
+       "driver_seat_ok": true,
+       "label": "grid_k-3",
+       "loop_pivot_transport_mm": 0.374691434132,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.52072286666,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        6590,
+        "parent_vertex",
+        62
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": -0.20943951
+      },
+      {
+       "driver_displacement_mm": 0.292657600916,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.612363315834,
+       "driver_seat_ok": true,
+       "label": "grid_k-2",
+       "loop_pivot_transport_mm": 0.250048191373,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.513849382631,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        6590,
+        "parent_vertex",
+        62
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": -0.13962634
+      },
+      {
+       "driver_displacement_mm": 0.146417994344,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.637202521315,
+       "driver_seat_ok": true,
+       "label": "grid_k-1",
+       "loop_pivot_transport_mm": 0.125100303411,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.493240928395,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        6590,
+        "parent_vertex",
+        62
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": -0.06981317
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.659698121371,
+       "driver_seat_ok": true,
+       "label": "rest",
+       "loop_pivot_transport_mm": 0.0,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.468359650708,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        6897,
+        "parent_vertex",
+        89
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": 0.0
+      },
+      {
+       "driver_displacement_mm": 0.146417994344,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.651073181851,
+       "driver_seat_ok": true,
+       "label": "grid_k+1",
+       "loop_pivot_transport_mm": 0.125100303411,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.447533361335,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7161,
+        "parent_vertex",
+        250
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": 0.06981317
+      },
+      {
+       "driver_displacement_mm": 0.292657600916,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.622834245855,
+       "driver_seat_ok": true,
+       "label": "grid_k+2",
+       "loop_pivot_transport_mm": 0.250048191373,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.407327909015,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7161,
+        "parent_vertex",
+        250
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": 0.13962634
+      },
+      {
+       "driver_displacement_mm": 0.438540649283,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.594182640976,
+       "driver_seat_ok": true,
+       "label": "grid_k+3",
+       "loop_pivot_transport_mm": 0.374691434132,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.357154386929,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7161,
+        "parent_vertex",
+        250
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": 0.20943951
+      },
+      {
+       "driver_displacement_mm": 0.583889403421,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.565205898628,
+       "driver_seat_ok": true,
+       "label": "grid_k+4",
+       "loop_pivot_transport_mm": 0.498878173096,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.290161931507,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7161,
+        "parent_vertex",
+        250
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": 0.27925268
+      },
+      {
+       "driver_displacement_mm": 0.728526778265,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.536003975515,
+       "driver_seat_ok": true,
+       "label": "hi_endpoint",
+       "loop_pivot_transport_mm": 0.622457105853,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.216423740807,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7161,
+        "parent_vertex",
+        250
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": 0.34906585
+      }
+     ],
+     "side_identity_ok_all": true
+    },
+    "real": {
+     "breaches_at": [],
+     "driver_displacement_ok_all": true,
+     "driver_seat_ok_all": true,
+     "loop_closes": true,
+     "loop_seat_ok_all": true,
+     "max_driver_seat_mm": 0.758213465625,
+     "max_loop_seat_mm": 2.642331743574,
+     "pivot_of_motion_mm": [
+      36.83565478293,
+      32.260135932044,
+      46.224951880972
+     ],
+     "rows": [
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.758213465625,
+       "driver_seat_ok": true,
+       "label": "lo_endpoint",
+       "loop_pivot_transport_mm": 0.107744991663,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.642331743574,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        6461,
+        "parent_vertex",
+        89
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": -0.34906585
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.720986459756,
+       "driver_seat_ok": true,
+       "label": "grid_k-4",
+       "loop_pivot_transport_mm": 0.086353941654,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.595412894817,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        6461,
+        "parent_vertex",
+        89
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": -0.27925268
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.688174582972,
+       "driver_seat_ok": true,
+       "label": "grid_k-3",
+       "loop_pivot_transport_mm": 0.064857682669,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.559366713947,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        6461,
+        "parent_vertex",
+        62
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": -0.20943951
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.654928712328,
+       "driver_seat_ok": true,
+       "label": "grid_k-2",
+       "loop_pivot_transport_mm": 0.043282404589,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.519723786823,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        6461,
+        "parent_vertex",
+        62
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": -0.13962634
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.651206608686,
+       "driver_seat_ok": true,
+       "label": "grid_k-1",
+       "loop_pivot_transport_mm": 0.021654393566,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.498676832617,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        6461,
+        "parent_vertex",
+        62
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": -0.06981317
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.659698121371,
+       "driver_seat_ok": true,
+       "label": "rest",
+       "loop_pivot_transport_mm": 0.0,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.468359650708,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        6897,
+        "parent_vertex",
+        89
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": 0.0
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.624302293546,
+       "driver_seat_ok": true,
+       "label": "grid_k+1",
+       "loop_pivot_transport_mm": 0.021654393566,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.450116121505,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        6897,
+        "parent_vertex",
+        62
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": 0.06981317
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.562340934241,
+       "driver_seat_ok": true,
+       "label": "grid_k+2",
+       "loop_pivot_transport_mm": 0.043282404589,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.418880329989,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        6897,
+        "parent_vertex",
+        62
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": 0.13962634
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.531838481017,
+       "driver_seat_ok": true,
+       "label": "grid_k+3",
+       "loop_pivot_transport_mm": 0.064857682669,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.409099483251,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7018,
+        "parent_vertex",
+        62
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": 0.20943951
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.495980425814,
+       "driver_seat_ok": true,
+       "label": "grid_k+4",
+       "loop_pivot_transport_mm": 0.086353941654,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.368452771419,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7039,
+        "parent_vertex",
+        62
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": 0.27925268
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.455040215397,
+       "driver_seat_ok": true,
+       "label": "hi_endpoint",
+       "loop_pivot_transport_mm": 0.107744991663,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.341043191668,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7161,
+        "parent_vertex",
+        62
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.479999542236,
+       "theta_rad": 0.34906585
+      }
+     ],
+     "side_identity_ok_all": true
+    }
+   },
+   "driver_bond": "bond.joint_06_25",
+   "loop_bond": "bond.joint_20_25",
+   "loop_pivot_reused_from_rest": true,
+   "posed_member": "mem.bone_25",
+   "side_bond": "bond.joint_06_20"
+  },
+  "cycle_B": {
+   "arms": {
+    "null": {
+     "breaches_at": [
+      "lo_endpoint",
+      "grid_k-4",
+      "grid_k-3",
+      "grid_k-2",
+      "grid_k-1",
+      "grid_k+1",
+      "grid_k+2",
+      "grid_k+3",
+      "grid_k+4",
+      "hi_endpoint"
+     ],
+     "driver_displacement_ok_all": false,
+     "driver_seat_ok_all": true,
+     "loop_closes": false,
+     "loop_seat_ok_all": true,
+     "max_driver_seat_mm": 0.861625547431,
+     "max_loop_seat_mm": 2.936836629788,
+     "pivot_of_motion_mm": [
+      46.879999160767,
+      29.119998931885,
+      25.760000228882
+     ],
+     "rows": [
+      {
+       "driver_displacement_mm": 0.926333111495,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.736328796716,
+       "driver_seat_ok": true,
+       "label": "lo_endpoint",
+       "loop_pivot_transport_mm": 0.926994241872,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.839817149779,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7126,
+        "parent_vertex",
+        14
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": -0.34906585
+      },
+      {
+       "driver_displacement_mm": 0.742424443379,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.762715482808,
+       "driver_seat_ok": true,
+       "label": "grid_k-4",
+       "loop_pivot_transport_mm": 0.742954316862,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.850339751867,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7126,
+        "parent_vertex",
+        14
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": -0.27925268
+      },
+      {
+       "driver_displacement_mm": 0.557611245443,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.788498264236,
+       "driver_seat_ok": true,
+       "label": "grid_k-3",
+       "loop_pivot_transport_mm": 0.558009216463,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.861640717621,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7126,
+        "parent_vertex",
+        14
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": -0.20943951
+      },
+      {
+       "driver_displacement_mm": 0.372118684099,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.813614811902,
+       "driver_seat_ok": true,
+       "label": "grid_k-2",
+       "loop_pivot_transport_mm": 0.372384267789,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.873591019349,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7126,
+        "parent_vertex",
+        14
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": -0.13962634
+      },
+      {
+       "driver_displacement_mm": 0.186172753461,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.838008062611,
+       "driver_seat_ok": true,
+       "label": "grid_k-1",
+       "loop_pivot_transport_mm": 0.186305626248,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.886209894215,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7126,
+        "parent_vertex",
+        14
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": -0.06981317
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.861625547431,
+       "driver_seat_ok": true,
+       "label": "rest",
+       "loop_pivot_transport_mm": 0.0,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.899930898961,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7244,
+        "parent_vertex",
+        47
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": 0.0
+      },
+      {
+       "driver_displacement_mm": 0.186172753461,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.861166253915,
+       "driver_seat_ok": true,
+       "label": "grid_k+1",
+       "loop_pivot_transport_mm": 0.186305626248,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.913922848807,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7244,
+        "parent_vertex",
+        47
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": 0.06981317
+      },
+      {
+       "driver_displacement_mm": 0.372118684099,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.859789143075,
+       "driver_seat_ok": true,
+       "label": "grid_k+2",
+       "loop_pivot_transport_mm": 0.372384267789,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.928543691578,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7244,
+        "parent_vertex",
+        47
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": 0.13962634
+      },
+      {
+       "driver_displacement_mm": 0.557611245443,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.857496525431,
+       "driver_seat_ok": true,
+       "label": "grid_k+3",
+       "loop_pivot_transport_mm": 0.558009216463,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.936836629788,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7244,
+        "parent_vertex",
+        47
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": 0.20943951
+      },
+      {
+       "driver_displacement_mm": 0.742424443379,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.854292256589,
+       "driver_seat_ok": true,
+       "label": "grid_k+4",
+       "loop_pivot_transport_mm": 0.742954316862,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.93503326383,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7244,
+        "parent_vertex",
+        47
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": 0.27925268
+      },
+      {
+       "driver_displacement_mm": 0.926333111495,
+       "driver_displacement_ok": false,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.848799566763,
+       "driver_seat_ok": true,
+       "label": "hi_endpoint",
+       "loop_pivot_transport_mm": 0.926994241872,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.933397472155,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7363,
+        "parent_vertex",
+        110
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": 0.34906585
+      }
+     ],
+     "side_identity_ok_all": true
+    },
+    "real": {
+     "breaches_at": [],
+     "driver_displacement_ok_all": true,
+     "driver_seat_ok_all": true,
+     "loop_closes": true,
+     "loop_seat_ok_all": true,
+     "max_driver_seat_mm": 1.057371066341,
+     "max_loop_seat_mm": 2.959470853325,
+     "pivot_of_motion_mm": [
+      43.784032845164,
+      29.623876636742,
+      26.559001107115
+     ],
+     "rows": [
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 1.057371066341,
+       "driver_seat_ok": true,
+       "label": "lo_endpoint",
+       "loop_pivot_transport_mm": 0.002398824534,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.925524043028,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7119,
+        "parent_vertex",
+        78
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": -0.34906585
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 1.021884680251,
+       "driver_seat_ok": true,
+       "label": "grid_k-4",
+       "loop_pivot_transport_mm": 0.001922576174,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.918109113808,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7119,
+        "parent_vertex",
+        78
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": -0.27925268
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.98410777663,
+       "driver_seat_ok": true,
+       "label": "grid_k-3",
+       "loop_pivot_transport_mm": 0.001443985452,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.909427920179,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7002,
+        "parent_vertex",
+        14
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": -0.20943951
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.917917324509,
+       "driver_seat_ok": true,
+       "label": "grid_k-2",
+       "loop_pivot_transport_mm": 0.000963635455,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.903034442483,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7119,
+        "parent_vertex",
+        14
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": -0.13962634
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.877581487534,
+       "driver_seat_ok": true,
+       "label": "grid_k-1",
+       "loop_pivot_transport_mm": 0.000482111417,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.899879287475,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7119,
+        "parent_vertex",
+        14
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": -0.06981317
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.861625547431,
+       "driver_seat_ok": true,
+       "label": "rest",
+       "loop_pivot_transport_mm": 0.0,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.899930898961,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7244,
+        "parent_vertex",
+        47
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": 0.0
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.817490013469,
+       "driver_seat_ok": true,
+       "label": "grid_k+1",
+       "loop_pivot_transport_mm": 0.000482111417,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.904051743834,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7245,
+        "parent_vertex",
+        14
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": 0.06981317
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.765377594293,
+       "driver_seat_ok": true,
+       "label": "grid_k+2",
+       "loop_pivot_transport_mm": 0.000963635455,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.913086883722,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7245,
+        "parent_vertex",
+        14
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": 0.13962634
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.756398787242,
+       "driver_seat_ok": true,
+       "label": "grid_k+3",
+       "loop_pivot_transport_mm": 0.001443985452,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.926068074135,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7245,
+        "parent_vertex",
+        14
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": 0.20943951
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.737340164023,
+       "driver_seat_ok": true,
+       "label": "grid_k+4",
+       "loop_pivot_transport_mm": 0.001922576174,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.943172322357,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7340,
+        "parent_vertex",
+        12
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": 0.27925268
+      },
+      {
+       "driver_displacement_mm": 0.0,
+       "driver_displacement_ok": true,
+       "driver_reading_class": "resolved",
+       "driver_seat_mm": 0.724525094068,
+       "driver_seat_ok": true,
+       "label": "hi_endpoint",
+       "loop_pivot_transport_mm": 0.002398824534,
+       "loop_pivot_transport_recorded_only": true,
+       "loop_reading_class": "resolved",
+       "loop_seat_mm": 2.959470853325,
+       "loop_seat_ok": true,
+       "provenance": [
+        "child_vertex",
+        7340,
+        "parent_vertex",
+        12
+       ],
+       "side_gap_exact_constant": true,
+       "side_gap_mm": 0.452547908376,
+       "theta_rad": 0.34906585
+      }
+     ],
+     "side_identity_ok_all": true
+    }
+   },
+   "driver_bond": "bond.joint_07_24",
+   "loop_bond": "bond.joint_21_24",
+   "loop_pivot_reused_from_rest": true,
+   "posed_member": "mem.bone_24",
+   "side_bond": "bond.joint_07_21"
+  }
+ },
+ "falsifiers_fired": [],
+ "fits": {
+  "bond.joint_06_20": {
+   "M_mm": [
+    42.400001525879,
+    28.799999237061,
+    47.839998245239
+   ],
+   "band_eps_mm": 0.159999847412,
+   "center_mm": [
+    42.510281096263,
+    28.580577124817,
+    49.84341727624
+   ],
+   "gap0_mm": 0.479999542236,
+   "gauss_newton_iters_final": 7,
+   "inliers": 653,
+   "iterations": 62,
+   "max_residual_mm": 0.158577583511,
+   "radius_mm": 1.798457133157,
+   "rms_residual_mm": 0.085764861488,
+   "seed_vertex": 855
+  },
+  "bond.joint_06_25": {
+   "M_mm": [
+    39.039999008179,
+    30.719999313354,
+    44.959999084473
+   ],
+   "band_eps_mm": 0.159999847412,
+   "center_mm": [
+    36.83565478293,
+    32.260135932044,
+    46.224951880972
+   ],
+   "gap0_mm": 0.659698121371,
+   "gauss_newton_iters_final": 6,
+   "inliers": 2079,
+   "iterations": 80,
+   "max_residual_mm": 0.159976440168,
+   "radius_mm": 2.725501481479,
+   "rms_residual_mm": 0.083161873871,
+   "seed_vertex": 6897
+  },
+  "bond.joint_07_21": {
+   "M_mm": [
+    48.479999542236,
+    28.319999694824,
+    22.799999237061
+   ],
+   "band_eps_mm": 0.159999847412,
+   "center_mm": [
+    47.968308156265,
+    28.636882624647,
+    20.432938517872
+   ],
+   "gap0_mm": 0.452547908376,
+   "gauss_newton_iters_final": 9,
+   "inliers": 572,
+   "iterations": 43,
+   "max_residual_mm": 0.158028300418,
+   "radius_mm": 2.199498152185,
+   "rms_residual_mm": 0.080396592835,
+   "seed_vertex": 627
+  },
+  "bond.joint_07_24": {
+   "M_mm": [
+    46.879999160767,
+    29.119998931885,
+    25.760000228882
+   ],
+   "band_eps_mm": 0.159999847412,
+   "center_mm": [
+    43.784032845164,
+    29.623876636742,
+    26.559001107115
+   ],
+   "gap0_mm": 0.861625547431,
+   "gauss_newton_iters_final": 6,
+   "inliers": 2221,
+   "iterations": 62,
+   "max_residual_mm": 0.159720693001,
+   "radius_mm": 2.69091894703,
+   "rms_residual_mm": 0.079898136736,
+   "seed_vertex": 7244
+  },
+  "bond.joint_20_25": {
+   "M_mm": [
+    39.839998245239,
+    30.159997940063,
+    47.840000152588
+   ],
+   "band_eps_mm": 0.159999847412,
+   "center_mm": [
+    37.102235303594,
+    32.005134837085,
+    46.103602819749
+   ],
+   "gap0_mm": 2.468359650708,
+   "gauss_newton_iters_final": 6,
+   "inliers": 1940,
+   "iterations": 115,
+   "max_residual_mm": 0.15992152951,
+   "radius_mm": 2.568014657909,
+   "rms_residual_mm": 0.084481592551,
+   "seed_vertex": 7017
+  },
+  "bond.joint_21_24": {
+   "M_mm": [
+    46.680000305176,
+    28.639999389648,
+    23.639999389648
+   ],
+   "band_eps_mm": 0.159999847412,
+   "center_mm": [
+    43.783660151501,
+    29.630446227854,
+    26.556460834362
+   ],
+   "gap0_mm": 2.899930898961,
+   "gauss_newton_iters_final": 6,
+   "inliers": 2216,
+   "iterations": 60,
+   "max_residual_mm": 0.159765688762,
+   "radius_mm": 2.68938625145,
+   "rms_residual_mm": 0.079675095915,
+   "seed_vertex": 6641
+  }
+ },
+ "graph": {
+  "bonds": 23,
+  "components": 6,
+  "cyclomatic_number": 4,
+  "fk_contrast_counted": "a spanning tree of a 3-node cycle holds <= 2 of its 3 edges; the engine's FK loader is a TREE (law doc section 1.3a), so the cycle-closing bond is unrepresentable at ANY pose; the materials graph reads it at every pose of the demo below",
+  "independent_cycles_prediction": 4,
+  "membranes": 25,
+  "triangle_A_06_20_25_present": true,
+  "triangle_B_07_21_24_present": true
+ },
+ "grid": {
+  "labels": [
+   "lo_endpoint",
+   "grid_k-4",
+   "grid_k-3",
+   "grid_k-2",
+   "grid_k-1",
+   "rest",
+   "grid_k+1",
+   "grid_k+2",
+   "grid_k+3",
+   "grid_k+4",
+   "hi_endpoint"
+  ],
+  "thetas_rad": [
+   -0.34906585,
+   -0.27925268,
+   -0.20943951,
+   -0.13962634,
+   -0.06981317,
+   0.0,
+   0.06981317,
+   0.13962634,
+   0.20943951,
+   0.27925268,
+   0.34906585
+  ]
+ },
+ "hard_checks_pass": true,
+ "inputs": {
+  "definition_sha256": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+  "osim_gait2392_sha256": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
+  "osim_rajagopal_sha256": "4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e",
+  "osim_shas_match_citations": true,
+  "ranges_parsed": {
+   "ankle_angle_l": [
+    -0.6981317,
+    0.52359878
+   ],
+   "ankle_angle_r": [
+    -0.6981317,
+    0.52359878
+   ],
+   "subtalar_angle_l": [
+    -0.34906585,
+    0.34906585
+   ],
+   "subtalar_angle_r": [
+    -0.34906585,
+    0.34906585
+   ]
+  },
+  "vertex_books_checked": {
+   "bone_06": true,
+   "bone_07": true,
+   "bone_20": true,
+   "bone_21": true,
+   "bone_24": true,
+   "bone_25": true
+  }
+ },
+ "lane": "agent/tarsal-cycle-pivots-20260921",
+ "metric_transfer": {
+  "bond.joint_06_20": {
+   "abs_dev_mm": 4.57764e-07,
+   "committed_measured_gap_mm": 0.48,
+   "law_gap_theta0_mm": 0.479999542236,
+   "pass": true
+  },
+  "bond.joint_06_25": {
+   "abs_dev_mm": 0.000301878629,
+   "committed_measured_gap_mm": 0.66,
+   "law_gap_theta0_mm": 0.659698121371,
+   "pass": true
+  },
+  "bond.joint_07_21": {
+   "abs_dev_mm": 0.002547908376,
+   "committed_measured_gap_mm": 0.45,
+   "law_gap_theta0_mm": 0.452547908376,
+   "pass": true
+  },
+  "bond.joint_07_24": {
+   "abs_dev_mm": 0.001625547431,
+   "committed_measured_gap_mm": 0.86,
+   "law_gap_theta0_mm": 0.861625547431,
+   "pass": true
+  },
+  "bond.joint_20_25": {
+   "abs_dev_mm": 0.001640349292,
+   "committed_measured_gap_mm": 2.47,
+   "law_gap_theta0_mm": 2.468359650708,
+   "pass": true
+  },
+  "bond.joint_21_24": {
+   "abs_dev_mm": 6.9101039e-05,
+   "committed_measured_gap_mm": 2.9,
+   "law_gap_theta0_mm": 2.899930898961,
+   "pass": true
+  }
+ },
+ "null_arm": {
+  "bond.joint_06_20": {
+   "below_floor_readings": [
+    "grid_k+1",
+    "grid_k+2",
+    "grid_k+3",
+    "grid_k+4"
+   ],
+   "clause_breaches_at": [
+    "lo_endpoint",
+    "grid_k-4",
+    "grid_k-3",
+    "grid_k-2",
+    "grid_k+2",
+    "grid_k+3",
+    "grid_k+4",
+    "hi_endpoint"
+   ],
+   "displacement_clause_ok_all_grid": false,
+   "displacement_exact_zero_all_grid": false,
+   "formula_ok_all_grid": true,
+   "max_displacement_mm": 0.310147574043,
+   "max_seat_mm": 0.479999542236,
+   "min_seat_mm": 0.013915493821,
+   "pass_p6_class_adapted": false,
+   "rows": [
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.310147574043,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": 0.310147574043,
+     "provenance": [
+      "child_vertex",
+      1020,
+      "parent_vertex",
+      1151
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.390102735158,
+     "seat_ok": true,
+     "theta_rad": -0.34906585
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.248572718784,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": 0.248572718784,
+     "provenance": [
+      "child_vertex",
+      1020,
+      "parent_vertex",
+      1209
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.403198781969,
+     "seat_ok": true,
+     "theta_rad": -0.27925268
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.186695015958,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": 0.186695015958,
+     "provenance": [
+      "child_vertex",
+      936,
+      "parent_vertex",
+      1151
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.422932351796,
+     "seat_ok": true,
+     "theta_rad": -0.20943951
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.124589854014,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": 0.124589854014,
+     "provenance": [
+      "child_vertex",
+      936,
+      "parent_vertex",
+      1151
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.445559053289,
+     "seat_ok": true,
+     "theta_rad": -0.13962634
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.062332898525,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": 0.062332898525,
+     "provenance": [
+      "child_vertex",
+      864,
+      "parent_vertex",
+      1151
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.464324086914,
+     "seat_ok": true,
+     "theta_rad": -0.06981317
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "rest",
+     "predicted_displacement_mm": 0.0,
+     "provenance": [
+      "child_vertex",
+      855,
+      "parent_vertex",
+      1206
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.479999542236,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.062332898524,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": 0.062332898525,
+     "provenance": [
+      "child_vertex",
+      10645,
+      "parent_vertex",
+      9305
+     ],
+     "reading_class": "below_resolution_floor",
+     "seat_gap_mm": 0.026199125165,
+     "seat_ok": true,
+     "theta_rad": 0.06981317
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.124589854014,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": 0.124589854014,
+     "provenance": [
+      "child_vertex",
+      8407,
+      "parent_vertex",
+      6947
+     ],
+     "reading_class": "below_resolution_floor",
+     "seat_gap_mm": 0.021763408256,
+     "seat_ok": true,
+     "theta_rad": 0.13962634
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.186695015958,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": 0.186695015958,
+     "provenance": [
+      "child_vertex",
+      12434,
+      "parent_vertex",
+      9644
+     ],
+     "reading_class": "below_resolution_floor",
+     "seat_gap_mm": 0.018047770312,
+     "seat_ok": true,
+     "theta_rad": 0.20943951
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.248572718784,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": 0.248572718784,
+     "provenance": [
+      "child_vertex",
+      8128,
+      "parent_vertex",
+      6086
+     ],
+     "reading_class": "below_resolution_floor",
+     "seat_gap_mm": 0.013915493821,
+     "seat_ok": true,
+     "theta_rad": 0.27925268
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.310147574043,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": 0.310147574043,
+     "provenance": [
+      "child_vertex",
+      5517,
+      "parent_vertex",
+      4123
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.224174581299,
+     "seat_ok": true,
+     "theta_rad": 0.34906585
+    }
+   ],
+   "seat_clause_ok_all_grid": true
+  },
+  "bond.joint_06_25": {
+   "below_floor_readings": [],
+   "clause_breaches_at": [
+    "lo_endpoint",
+    "grid_k-4",
+    "grid_k-3",
+    "grid_k-2",
+    "grid_k-1",
+    "grid_k+1",
+    "grid_k+2",
+    "grid_k+3",
+    "grid_k+4",
+    "hi_endpoint"
+   ],
+   "displacement_clause_ok_all_grid": false,
+   "displacement_exact_zero_all_grid": false,
+   "formula_ok_all_grid": true,
+   "max_displacement_mm": 0.728526778265,
+   "max_seat_mm": 0.659698121371,
+   "min_seat_mm": 0.535820316182,
+   "pass_p6_class_adapted": false,
+   "rows": [
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.728526778265,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": 0.728526778265,
+     "provenance": [
+      "child_vertex",
+      6590,
+      "parent_vertex",
+      62
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.535820316182,
+     "seat_ok": true,
+     "theta_rad": -0.34906585
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.583889403421,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": 0.583889403421,
+     "provenance": [
+      "child_vertex",
+      6590,
+      "parent_vertex",
+      62
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.561588648305,
+     "seat_ok": true,
+     "theta_rad": -0.27925268
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.438540649283,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": 0.438540649283,
+     "provenance": [
+      "child_vertex",
+      6590,
+      "parent_vertex",
+      62
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.587132524561,
+     "seat_ok": true,
+     "theta_rad": -0.20943951
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.292657600916,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": 0.292657600916,
+     "provenance": [
+      "child_vertex",
+      6590,
+      "parent_vertex",
+      62
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.612363315834,
+     "seat_ok": true,
+     "theta_rad": -0.13962634
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.146417994344,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": 0.146417994344,
+     "provenance": [
+      "child_vertex",
+      6590,
+      "parent_vertex",
+      62
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.637202521315,
+     "seat_ok": true,
+     "theta_rad": -0.06981317
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "rest",
+     "predicted_displacement_mm": 0.0,
+     "provenance": [
+      "child_vertex",
+      6897,
+      "parent_vertex",
+      89
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.659698121371,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.146417994344,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": 0.146417994344,
+     "provenance": [
+      "child_vertex",
+      7161,
+      "parent_vertex",
+      250
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.651073181851,
+     "seat_ok": true,
+     "theta_rad": 0.06981317
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.292657600916,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": 0.292657600916,
+     "provenance": [
+      "child_vertex",
+      7161,
+      "parent_vertex",
+      250
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.622834245855,
+     "seat_ok": true,
+     "theta_rad": 0.13962634
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.438540649283,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": 0.438540649283,
+     "provenance": [
+      "child_vertex",
+      7161,
+      "parent_vertex",
+      250
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.594182640976,
+     "seat_ok": true,
+     "theta_rad": 0.20943951
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.583889403421,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": 0.583889403421,
+     "provenance": [
+      "child_vertex",
+      7161,
+      "parent_vertex",
+      250
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.565205898628,
+     "seat_ok": true,
+     "theta_rad": 0.27925268
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.728526778265,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": 0.728526778265,
+     "provenance": [
+      "child_vertex",
+      7161,
+      "parent_vertex",
+      250
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.536003975515,
+     "seat_ok": true,
+     "theta_rad": 0.34906585
+    }
+   ],
+   "seat_clause_ok_all_grid": true
+  },
+  "bond.joint_07_21": {
+   "below_floor_readings": [],
+   "clause_breaches_at": [
+    "lo_endpoint",
+    "grid_k-4",
+    "grid_k-3",
+    "grid_k-2",
+    "grid_k-1",
+    "grid_k+1",
+    "grid_k+2",
+    "grid_k+3",
+    "grid_k+4",
+    "hi_endpoint"
+   ],
+   "displacement_clause_ok_all_grid": false,
+   "displacement_exact_zero_all_grid": false,
+   "formula_ok_all_grid": true,
+   "max_displacement_mm": 0.484185954915,
+   "max_seat_mm": 0.452547908376,
+   "min_seat_mm": 0.104303355225,
+   "pass_p6_class_adapted": false,
+   "rows": [
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.484185954915,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": 0.484185954915,
+     "provenance": [
+      "child_vertex",
+      627,
+      "parent_vertex",
+      385
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.44693854283,
+     "seat_ok": true,
+     "theta_rad": -0.34906585
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.388058554325,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": 0.388058554325,
+     "provenance": [
+      "child_vertex",
+      627,
+      "parent_vertex",
+      385
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.448952796198,
+     "seat_ok": true,
+     "theta_rad": -0.27925268
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.291458364163,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": 0.291458364163,
+     "provenance": [
+      "child_vertex",
+      627,
+      "parent_vertex",
+      385
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.450523421409,
+     "seat_ok": true,
+     "theta_rad": -0.20943951
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.194503076881,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": 0.194503076881,
+     "provenance": [
+      "child_vertex",
+      627,
+      "parent_vertex",
+      385
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.451647427107,
+     "seat_ok": true,
+     "theta_rad": -0.13962634
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.097310817561,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": 0.097310817561,
+     "provenance": [
+      "child_vertex",
+      627,
+      "parent_vertex",
+      385
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.452322681733,
+     "seat_ok": true,
+     "theta_rad": -0.06981317
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "rest",
+     "predicted_displacement_mm": 0.0,
+     "provenance": [
+      "child_vertex",
+      627,
+      "parent_vertex",
+      385
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.452547908376,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.097310817561,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": 0.097310817561,
+     "provenance": [
+      "child_vertex",
+      14799,
+      "parent_vertex",
+      12559
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.104303355225,
+     "seat_ok": true,
+     "theta_rad": 0.06981317
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.194503076881,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": 0.194503076881,
+     "provenance": [
+      "child_vertex",
+      14989,
+      "parent_vertex",
+      12535
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.339996572605,
+     "seat_ok": true,
+     "theta_rad": 0.13962634
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.291458364163,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": 0.291458364163,
+     "provenance": [
+      "child_vertex",
+      753,
+      "parent_vertex",
+      506
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.338993156728,
+     "seat_ok": true,
+     "theta_rad": 0.20943951
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.388058554325,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": 0.388058554325,
+     "provenance": [
+      "child_vertex",
+      753,
+      "parent_vertex",
+      502
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.26252889005,
+     "seat_ok": true,
+     "theta_rad": 0.27925268
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.484185954915,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": 0.484185954915,
+     "provenance": [
+      "child_vertex",
+      753,
+      "parent_vertex",
+      502
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.200016062874,
+     "seat_ok": true,
+     "theta_rad": 0.34906585
+    }
+   ],
+   "seat_clause_ok_all_grid": true
+  },
+  "bond.joint_07_24": {
+   "below_floor_readings": [],
+   "clause_breaches_at": [
+    "lo_endpoint",
+    "grid_k-4",
+    "grid_k-3",
+    "grid_k-2",
+    "grid_k-1",
+    "grid_k+1",
+    "grid_k+2",
+    "grid_k+3",
+    "grid_k+4",
+    "hi_endpoint"
+   ],
+   "displacement_clause_ok_all_grid": false,
+   "displacement_exact_zero_all_grid": false,
+   "formula_ok_all_grid": true,
+   "max_displacement_mm": 0.926333111495,
+   "max_seat_mm": 0.861625547431,
+   "min_seat_mm": 0.736328796716,
+   "pass_p6_class_adapted": false,
+   "rows": [
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.926333111495,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": 0.926333111495,
+     "provenance": [
+      "child_vertex",
+      7126,
+      "parent_vertex",
+      14
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.736328796716,
+     "seat_ok": true,
+     "theta_rad": -0.34906585
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.742424443379,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": 0.742424443379,
+     "provenance": [
+      "child_vertex",
+      7126,
+      "parent_vertex",
+      14
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.762715482808,
+     "seat_ok": true,
+     "theta_rad": -0.27925268
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.557611245443,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": 0.557611245443,
+     "provenance": [
+      "child_vertex",
+      7126,
+      "parent_vertex",
+      14
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.788498264236,
+     "seat_ok": true,
+     "theta_rad": -0.20943951
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.372118684099,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": 0.372118684099,
+     "provenance": [
+      "child_vertex",
+      7126,
+      "parent_vertex",
+      14
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.813614811902,
+     "seat_ok": true,
+     "theta_rad": -0.13962634
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.186172753461,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": 0.186172753461,
+     "provenance": [
+      "child_vertex",
+      7126,
+      "parent_vertex",
+      14
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.838008062611,
+     "seat_ok": true,
+     "theta_rad": -0.06981317
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "rest",
+     "predicted_displacement_mm": 0.0,
+     "provenance": [
+      "child_vertex",
+      7244,
+      "parent_vertex",
+      47
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.861625547431,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.186172753461,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": 0.186172753461,
+     "provenance": [
+      "child_vertex",
+      7244,
+      "parent_vertex",
+      47
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.861166253915,
+     "seat_ok": true,
+     "theta_rad": 0.06981317
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.372118684099,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": 0.372118684099,
+     "provenance": [
+      "child_vertex",
+      7244,
+      "parent_vertex",
+      47
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.859789143075,
+     "seat_ok": true,
+     "theta_rad": 0.13962634
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.557611245443,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": 0.557611245443,
+     "provenance": [
+      "child_vertex",
+      7244,
+      "parent_vertex",
+      47
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.857496525431,
+     "seat_ok": true,
+     "theta_rad": 0.20943951
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.742424443379,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": 0.742424443379,
+     "provenance": [
+      "child_vertex",
+      7244,
+      "parent_vertex",
+      47
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.854292256589,
+     "seat_ok": true,
+     "theta_rad": 0.27925268
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.926333111495,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": 0.926333111495,
+     "provenance": [
+      "child_vertex",
+      7363,
+      "parent_vertex",
+      110
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.848799566763,
+     "seat_ok": true,
+     "theta_rad": 0.34906585
+    }
+   ],
+   "seat_clause_ok_all_grid": true
+  },
+  "bond.joint_20_25": {
+   "below_floor_readings": [],
+   "clause_breaches_at": [
+    "lo_endpoint",
+    "grid_k-4",
+    "grid_k-3",
+    "grid_k-2",
+    "grid_k-1",
+    "grid_k+1",
+    "grid_k+2",
+    "grid_k+3",
+    "grid_k+4",
+    "hi_endpoint"
+   ],
+   "displacement_clause_ok_all_grid": false,
+   "displacement_exact_zero_all_grid": false,
+   "formula_ok_all_grid": true,
+   "max_displacement_mm": 1.284374482709,
+   "max_seat_mm": 2.468359650708,
+   "min_seat_mm": 2.209364021266,
+   "pass_p6_class_adapted": false,
+   "rows": [
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": false,
+     "displacement_mm": 1.284374482709,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": 1.284374482709,
+     "provenance": [
+      "child_vertex",
+      6742,
+      "parent_vertex",
+      109
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.414766325602,
+     "seat_ok": true,
+     "theta_rad": -0.34906585
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": false,
+     "displacement_mm": 1.029382409614,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": 1.029382409614,
+     "provenance": [
+      "child_vertex",
+      6889,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.441805292597,
+     "seat_ok": true,
+     "theta_rad": -0.27925268
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.77313619262,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": 0.77313619262,
+     "provenance": [
+      "child_vertex",
+      7017,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.454878729335,
+     "seat_ok": true,
+     "theta_rad": -0.20943951
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.515948028269,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": 0.515948028269,
+     "provenance": [
+      "child_vertex",
+      7017,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.462365059256,
+     "seat_ok": true,
+     "theta_rad": -0.13962634
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.258131260724,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": 0.258131260724,
+     "provenance": [
+      "child_vertex",
+      7017,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.466860542084,
+     "seat_ok": true,
+     "theta_rad": -0.06981317
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "rest",
+     "predicted_displacement_mm": 0.0,
+     "provenance": [
+      "child_vertex",
+      7017,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.468359650708,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.258131260724,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": 0.258131260724,
+     "provenance": [
+      "child_vertex",
+      7178,
+      "parent_vertex",
+      290
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.46450569629,
+     "seat_ok": true,
+     "theta_rad": 0.06981317
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.515948028269,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": 0.515948028269,
+     "provenance": [
+      "child_vertex",
+      7178,
+      "parent_vertex",
+      290
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.426738610445,
+     "seat_ok": true,
+     "theta_rad": 0.13962634
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.77313619262,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": 0.77313619262,
+     "provenance": [
+      "child_vertex",
+      7454,
+      "parent_vertex",
+      493
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.384054166781,
+     "seat_ok": true,
+     "theta_rad": 0.20943951
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": false,
+     "displacement_mm": 1.029382409614,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": 1.029382409614,
+     "provenance": [
+      "child_vertex",
+      7454,
+      "parent_vertex",
+      493
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.298098716684,
+     "seat_ok": true,
+     "theta_rad": 0.27925268
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": false,
+     "displacement_mm": 1.284374482709,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": 1.284374482709,
+     "provenance": [
+      "child_vertex",
+      7454,
+      "parent_vertex",
+      493
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.209364021266,
+     "seat_ok": true,
+     "theta_rad": 0.34906585
+    }
+   ],
+   "seat_clause_ok_all_grid": true
+  },
+  "bond.joint_21_24": {
+   "below_floor_readings": [],
+   "clause_breaches_at": [
+    "lo_endpoint",
+    "grid_k-4",
+    "grid_k-3",
+    "grid_k-2",
+    "grid_k-1",
+    "grid_k+1",
+    "grid_k+2",
+    "grid_k+3",
+    "grid_k+4",
+    "hi_endpoint"
+   ],
+   "displacement_clause_ok_all_grid": false,
+   "displacement_exact_zero_all_grid": false,
+   "formula_ok_all_grid": true,
+   "max_displacement_mm": 0.636819890982,
+   "max_seat_mm": 2.899930898961,
+   "min_seat_mm": 2.888620063675,
+   "pass_p6_class_adapted": false,
+   "rows": [
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.636819890982,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": 0.636819890982,
+     "provenance": [
+      "child_vertex",
+      6508,
+      "parent_vertex",
+      265
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.888620063675,
+     "seat_ok": true,
+     "theta_rad": -0.34906585
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.510389456264,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": 0.510389456264,
+     "provenance": [
+      "child_vertex",
+      6509,
+      "parent_vertex",
+      265
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.892416760365,
+     "seat_ok": true,
+     "theta_rad": -0.27925268
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.383337190615,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": 0.383337190615,
+     "provenance": [
+      "child_vertex",
+      6509,
+      "parent_vertex",
+      265
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.895247685237,
+     "seat_ok": true,
+     "theta_rad": -0.20943951
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.255817887648,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": 0.255817887648,
+     "provenance": [
+      "child_vertex",
+      6509,
+      "parent_vertex",
+      265
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.897449491905,
+     "seat_ok": true,
+     "theta_rad": -0.13962634
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.127986909991,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": 0.127986909991,
+     "provenance": [
+      "child_vertex",
+      6509,
+      "parent_vertex",
+      265
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.899012896713,
+     "seat_ok": true,
+     "theta_rad": -0.06981317
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "rest",
+     "predicted_displacement_mm": 0.0,
+     "provenance": [
+      "child_vertex",
+      6641,
+      "parent_vertex",
+      266
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.899930898961,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.127986909991,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": 0.127986909991,
+     "provenance": [
+      "child_vertex",
+      6641,
+      "parent_vertex",
+      266
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.899597752877,
+     "seat_ok": true,
+     "theta_rad": 0.06981317
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.255817887648,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": 0.255817887648,
+     "provenance": [
+      "child_vertex",
+      6641,
+      "parent_vertex",
+      266
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.898599708592,
+     "seat_ok": true,
+     "theta_rad": 0.13962634
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.383337190615,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": 0.383337190615,
+     "provenance": [
+      "child_vertex",
+      6641,
+      "parent_vertex",
+      266
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.896940944898,
+     "seat_ok": true,
+     "theta_rad": 0.20943951
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.510389456264,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": 0.510389456264,
+     "provenance": [
+      "child_vertex",
+      6641,
+      "parent_vertex",
+      266
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.89462841603,
+     "seat_ok": true,
+     "theta_rad": 0.27925268
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": false,
+     "displacement_mm": 0.636819890982,
+     "displacement_ok": false,
+     "formula_abs_dev_mm": 0.0,
+     "formula_ok": true,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": 0.636819890982,
+     "provenance": [
+      "child_vertex",
+      6641,
+      "parent_vertex",
+      266
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.89167183595,
+     "seat_ok": true,
+     "theta_rad": 0.34906585
+    }
+   ],
+   "seat_clause_ok_all_grid": true
+  }
+ },
+ "null_endpoint_reproduction": {
+  "bond.joint_06_20": true,
+  "bond.joint_06_25": true,
+  "bond.joint_07_21": true,
+  "bond.joint_07_24": true,
+  "bond.joint_20_25": true,
+  "bond.joint_21_24": true
+ },
+ "parent_lanes": [
+  "agent/articulation-semantics-20260921 (the design; receipt articulation_design_20260921)",
+  "agent/hip-pivot-proof-20260921 (the registered primitives)",
+  "agent/p6-repreregistration_20260921 (the corrected predicate P6' v2)"
+ ],
+ "per_bond": {
+  "bond.joint_06_20": {
+   "discriminate": true,
+   "null_fail": true,
+   "null_max_disp_over_band": 3.616254590296,
+   "real_pass": true
+  },
+  "bond.joint_06_25": {
+   "discriminate": true,
+   "null_fail": true,
+   "null_max_disp_over_band": 8.760345869479,
+   "real_pass": true
+  },
+  "bond.joint_07_21": {
+   "discriminate": true,
+   "null_fail": true,
+   "null_max_disp_over_band": 6.02246858783,
+   "real_pass": true
+  },
+  "bond.joint_07_24": {
+   "discriminate": true,
+   "null_fail": true,
+   "null_max_disp_over_band": 11.593926333456,
+   "real_pass": true
+  },
+  "bond.joint_20_25": {
+   "discriminate": true,
+   "null_fail": true,
+   "null_max_disp_over_band": 15.20300983833,
+   "real_pass": true
+  },
+  "bond.joint_21_24": {
+   "discriminate": true,
+   "null_fail": true,
+   "null_max_disp_over_band": 7.992709436623,
+   "real_pass": true
+  }
+ },
+ "pivot_derivation_count": 6,
+ "predicate": {
+  "R_rad": 0.34906585,
+  "R_source": "Rajagopal2016.osim subtalar_angle_l/r band edge (the tarsal-class cited record, symmetric both sides); gait2392 wide band recorded as context",
+  "axis": "the unit line through the two homologous DRIVER fit centers (bond.joint_06_25 child fit, bond.joint_07_24 child fit); shared by both arms",
+  "band_source": "the bond's own registered fit RMS residual (section 5A Leg 2 verbatim)",
+  "cut_mm": 3.0,
+  "definition": "SEATED at theta iff (0 <= seat_gap <= cut) AND (displacement <= band_b); an arm PASSES a bond iff both hold at every theta of the registered grid. The pivot form is a MEASURED CANDIDATE (transplanted hip sphere machinery), never a prescribed form: the law prescribes a pivot derivation for the hip ball-and-socket class ONLY (law doc section 3); the preregistration's class-gap clause (section 2) owns the interpretation.",
+  "grid": "endpoints exact + R*k/5, k=-4..4 (the registered probe fraction); 11 poses",
+  "null_pivot": "the realized rest closest-pair midpoint (derivation-free)",
+  "sign_labeling": "DEFERRED - no held curl-contact rule binds a tarsal child; every clause is sign-symmetric; the class amendment owns dorsi/plantar labeling",
+  "tasking_correction": "the tasking's 'bone 19<->24' is NO COMMITTED BOND: mem.bone_19 is a committed unpaired singleton (no bond, no cycle); the tarsal 3-cycle members are the six bonds measured here",
+  "tol_ip_derivation": "specimen.resolution_um/2 = 160 um / 2 = 0.08 mm: the gap metric's RESOLUTION FLOOR; readings below it RECORDED per pose, never clause-binding (law doc section 5B)",
+  "tol_ip_mm": 0.08
+ },
+ "prediction_checks": {
+  "all_bonds_discriminate": true,
+  "all_fits_match_banked_constants": true,
+  "all_metric_transfers_pass": true,
+  "axis_matches_banked": true,
+  "both_named_triangles_present": true,
+  "demo_real_loop_closes_both_cycles": true,
+  "demo_side_identity_ok_both_cycles": true,
+  "graph_cyclomatic_equals_4": true,
+  "null_disp_beyond_band_all_bonds": true,
+  "null_endpoint_displacement_matches_banked_all_bonds": true,
+  "null_formula_ok_all_grid_all_bonds": true,
+  "osim_gait2392_sha_matches_citation": true,
+  "osim_rajagopal_sha_matches_citation": true,
+  "preregistration_bank_matches_file": true,
+  "real_displacement_exact_zero_all_grid_all_bonds": true,
+  "real_seats_within_cut_all_grid_all_bonds": true,
+  "subtalar_band_parsed_equals_banked": true,
+  "untouched_watch_equal": true
+ },
+ "preregistration_bank_matches_file": true,
+ "preregistration_sha256": "39b5760e70882da02fff0c488180dbcf61642ec5668f29575ed6761d70f02e44",
+ "real_arm": {
+  "bond.joint_06_20": {
+   "below_floor_readings": [
+    "grid_k+1",
+    "grid_k+2",
+    "grid_k+3",
+    "grid_k+4",
+    "hi_endpoint"
+   ],
+   "clause_breaches_at": [],
+   "displacement_clause_ok_all_grid": true,
+   "displacement_exact_zero_all_grid": true,
+   "formula_ok_all_grid": true,
+   "max_displacement_mm": 0.0,
+   "max_seat_mm": 0.479999542236,
+   "min_seat_mm": 0.009482581177,
+   "pass_p6_class_adapted": true,
+   "rows": [
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      1017,
+      "parent_vertex",
+      1035
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.389230394358,
+     "seat_ok": true,
+     "theta_rad": -0.34906585
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      1017,
+      "parent_vertex",
+      1035
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.410630996086,
+     "seat_ok": true,
+     "theta_rad": -0.27925268
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      1020,
+      "parent_vertex",
+      1151
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.429701040233,
+     "seat_ok": true,
+     "theta_rad": -0.20943951
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      552,
+      "parent_vertex",
+      993
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.441301215338,
+     "seat_ok": true,
+     "theta_rad": -0.13962634
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      936,
+      "parent_vertex",
+      1151
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.465277687428,
+     "seat_ok": true,
+     "theta_rad": -0.06981317
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "rest",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      855,
+      "parent_vertex",
+      1206
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.479999542236,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      10951,
+      "parent_vertex",
+      9559
+     ],
+     "reading_class": "below_resolution_floor",
+     "seat_gap_mm": 0.029956119351,
+     "seat_ok": true,
+     "theta_rad": 0.06981317
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      12205,
+      "parent_vertex",
+      9738
+     ],
+     "reading_class": "below_resolution_floor",
+     "seat_gap_mm": 0.013681085613,
+     "seat_ok": true,
+     "theta_rad": 0.13962634
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      9970,
+      "parent_vertex",
+      7702
+     ],
+     "reading_class": "below_resolution_floor",
+     "seat_gap_mm": 0.021452845724,
+     "seat_ok": true,
+     "theta_rad": 0.20943951
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      11615,
+      "parent_vertex",
+      8539
+     ],
+     "reading_class": "below_resolution_floor",
+     "seat_gap_mm": 0.009482581177,
+     "seat_ok": true,
+     "theta_rad": 0.27925268
+    },
+    {
+     "band_mm": 0.085764861488,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7756,
+      "parent_vertex",
+      5696
+     ],
+     "reading_class": "below_resolution_floor",
+     "seat_gap_mm": 0.024002538575,
+     "seat_ok": true,
+     "theta_rad": 0.34906585
+    }
+   ],
+   "seat_clause_ok_all_grid": true
+  },
+  "bond.joint_06_25": {
+   "below_floor_readings": [],
+   "clause_breaches_at": [],
+   "displacement_clause_ok_all_grid": true,
+   "displacement_exact_zero_all_grid": true,
+   "formula_ok_all_grid": true,
+   "max_displacement_mm": 0.0,
+   "max_seat_mm": 0.758213465625,
+   "min_seat_mm": 0.455040215397,
+   "pass_p6_class_adapted": true,
+   "rows": [
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6461,
+      "parent_vertex",
+      89
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.758213465625,
+     "seat_ok": true,
+     "theta_rad": -0.34906585
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6461,
+      "parent_vertex",
+      89
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.720986459756,
+     "seat_ok": true,
+     "theta_rad": -0.27925268
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6461,
+      "parent_vertex",
+      62
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.688174582972,
+     "seat_ok": true,
+     "theta_rad": -0.20943951
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6461,
+      "parent_vertex",
+      62
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.654928712328,
+     "seat_ok": true,
+     "theta_rad": -0.13962634
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6461,
+      "parent_vertex",
+      62
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.651206608686,
+     "seat_ok": true,
+     "theta_rad": -0.06981317
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "rest",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6897,
+      "parent_vertex",
+      89
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.659698121371,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6897,
+      "parent_vertex",
+      62
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.624302293546,
+     "seat_ok": true,
+     "theta_rad": 0.06981317
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6897,
+      "parent_vertex",
+      62
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.562340934241,
+     "seat_ok": true,
+     "theta_rad": 0.13962634
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7018,
+      "parent_vertex",
+      62
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.531838481017,
+     "seat_ok": true,
+     "theta_rad": 0.20943951
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7039,
+      "parent_vertex",
+      62
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.495980425814,
+     "seat_ok": true,
+     "theta_rad": 0.27925268
+    },
+    {
+     "band_mm": 0.083161873871,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7161,
+      "parent_vertex",
+      62
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.455040215397,
+     "seat_ok": true,
+     "theta_rad": 0.34906585
+    }
+   ],
+   "seat_clause_ok_all_grid": true
+  },
+  "bond.joint_07_21": {
+   "below_floor_readings": [],
+   "clause_breaches_at": [],
+   "displacement_clause_ok_all_grid": true,
+   "displacement_exact_zero_all_grid": true,
+   "formula_ok_all_grid": true,
+   "max_displacement_mm": 0.0,
+   "max_seat_mm": 0.452547908376,
+   "min_seat_mm": 0.087751405953,
+   "pass_p6_class_adapted": true,
+   "rows": [
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      526,
+      "parent_vertex",
+      385
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.336790213459,
+     "seat_ok": true,
+     "theta_rad": -0.34906585
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      624,
+      "parent_vertex",
+      385
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.379531912798,
+     "seat_ok": true,
+     "theta_rad": -0.27925268
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      624,
+      "parent_vertex",
+      385
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.368604725636,
+     "seat_ok": true,
+     "theta_rad": -0.20943951
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      624,
+      "parent_vertex",
+      385
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.384175909406,
+     "seat_ok": true,
+     "theta_rad": -0.13962634
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      624,
+      "parent_vertex",
+      385
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.42326401073,
+     "seat_ok": true,
+     "theta_rad": -0.06981317
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "rest",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      627,
+      "parent_vertex",
+      385
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.452547908376,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      14648,
+      "parent_vertex",
+      12437
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.087751405953,
+     "seat_ok": true,
+     "theta_rad": 0.06981317
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      14827,
+      "parent_vertex",
+      12292
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.381007454189,
+     "seat_ok": true,
+     "theta_rad": 0.13962634
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      951,
+      "parent_vertex",
+      494
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.438641607058,
+     "seat_ok": true,
+     "theta_rad": 0.20943951
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      954,
+      "parent_vertex",
+      494
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.405968121328,
+     "seat_ok": true,
+     "theta_rad": 0.27925268
+    },
+    {
+     "band_mm": 0.080396592835,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      765,
+      "parent_vertex",
+      502
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.363192426258,
+     "seat_ok": true,
+     "theta_rad": 0.34906585
+    }
+   ],
+   "seat_clause_ok_all_grid": true
+  },
+  "bond.joint_07_24": {
+   "below_floor_readings": [],
+   "clause_breaches_at": [],
+   "displacement_clause_ok_all_grid": true,
+   "displacement_exact_zero_all_grid": true,
+   "formula_ok_all_grid": true,
+   "max_displacement_mm": 0.0,
+   "max_seat_mm": 1.057371066341,
+   "min_seat_mm": 0.724525094068,
+   "pass_p6_class_adapted": true,
+   "rows": [
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7119,
+      "parent_vertex",
+      78
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 1.057371066341,
+     "seat_ok": true,
+     "theta_rad": -0.34906585
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7119,
+      "parent_vertex",
+      78
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 1.021884680251,
+     "seat_ok": true,
+     "theta_rad": -0.27925268
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7002,
+      "parent_vertex",
+      14
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.98410777663,
+     "seat_ok": true,
+     "theta_rad": -0.20943951
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7119,
+      "parent_vertex",
+      14
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.917917324509,
+     "seat_ok": true,
+     "theta_rad": -0.13962634
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7119,
+      "parent_vertex",
+      14
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.877581487534,
+     "seat_ok": true,
+     "theta_rad": -0.06981317
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "rest",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7244,
+      "parent_vertex",
+      47
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.861625547431,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7245,
+      "parent_vertex",
+      14
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.817490013469,
+     "seat_ok": true,
+     "theta_rad": 0.06981317
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7245,
+      "parent_vertex",
+      14
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.765377594293,
+     "seat_ok": true,
+     "theta_rad": 0.13962634
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7245,
+      "parent_vertex",
+      14
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.756398787242,
+     "seat_ok": true,
+     "theta_rad": 0.20943951
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7340,
+      "parent_vertex",
+      12
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.737340164023,
+     "seat_ok": true,
+     "theta_rad": 0.27925268
+    },
+    {
+     "band_mm": 0.079898136736,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7340,
+      "parent_vertex",
+      12
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 0.724525094068,
+     "seat_ok": true,
+     "theta_rad": 0.34906585
+    }
+   ],
+   "seat_clause_ok_all_grid": true
+  },
+  "bond.joint_20_25": {
+   "below_floor_readings": [],
+   "clause_breaches_at": [],
+   "displacement_clause_ok_all_grid": true,
+   "displacement_exact_zero_all_grid": true,
+   "formula_ok_all_grid": true,
+   "max_displacement_mm": 0.0,
+   "max_seat_mm": 2.633906569972,
+   "min_seat_mm": 2.303296270599,
+   "pass_p6_class_adapted": true,
+   "rows": [
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6458,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.633906569972,
+     "seat_ok": true,
+     "theta_rad": -0.34906585
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6458,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.597264464126,
+     "seat_ok": true,
+     "theta_rad": -0.27925268
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6742,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.559473520584,
+     "seat_ok": true,
+     "theta_rad": -0.20943951
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6742,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.524284933905,
+     "seat_ok": true,
+     "theta_rad": -0.13962634
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6889,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.501316061311,
+     "seat_ok": true,
+     "theta_rad": -0.06981317
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "rest",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7017,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.468359650708,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7178,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.447004808767,
+     "seat_ok": true,
+     "theta_rad": 0.06981317
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7178,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.407985703093,
+     "seat_ok": true,
+     "theta_rad": 0.13962634
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7178,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.393786158461,
+     "seat_ok": true,
+     "theta_rad": 0.20943951
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7454,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.347756410884,
+     "seat_ok": true,
+     "theta_rad": 0.27925268
+    },
+    {
+     "band_mm": 0.084481592551,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      7454,
+      "parent_vertex",
+      169
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.303296270599,
+     "seat_ok": true,
+     "theta_rad": 0.34906585
+    }
+   ],
+   "seat_clause_ok_all_grid": true
+  },
+  "bond.joint_21_24": {
+   "below_floor_readings": [],
+   "clause_breaches_at": [],
+   "displacement_clause_ok_all_grid": true,
+   "displacement_exact_zero_all_grid": true,
+   "formula_ok_all_grid": true,
+   "max_displacement_mm": 0.0,
+   "max_seat_mm": 2.960563288748,
+   "min_seat_mm": 2.899697937222,
+   "pass_p6_class_adapted": true,
+   "rows": [
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "lo_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6509,
+      "parent_vertex",
+      355
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.92457065599,
+     "seat_ok": true,
+     "theta_rad": -0.34906585
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6377,
+      "parent_vertex",
+      265
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.917371221759,
+     "seat_ok": true,
+     "theta_rad": -0.27925268
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6508,
+      "parent_vertex",
+      265
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.908893328196,
+     "seat_ok": true,
+     "theta_rad": -0.20943951
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6508,
+      "parent_vertex",
+      265
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.902657759727,
+     "seat_ok": true,
+     "theta_rad": -0.13962634
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k-1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6509,
+      "parent_vertex",
+      265
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.899697937222,
+     "seat_ok": true,
+     "theta_rad": -0.06981317
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "rest",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6641,
+      "parent_vertex",
+      266
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.899930898961,
+     "seat_ok": true,
+     "theta_rad": 0.0
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+1",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6641,
+      "parent_vertex",
+      266
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.904251331577,
+     "seat_ok": true,
+     "theta_rad": 0.06981317
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+2",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6509,
+      "parent_vertex",
+      265
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.913501468106,
+     "seat_ok": true,
+     "theta_rad": 0.13962634
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+3",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6509,
+      "parent_vertex",
+      265
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.926711819797,
+     "seat_ok": true,
+     "theta_rad": 0.20943951
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "grid_k+4",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6509,
+      "parent_vertex",
+      265
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.944056838505,
+     "seat_ok": true,
+     "theta_rad": 0.27925268
+    },
+    {
+     "band_mm": 0.079675095915,
+     "displacement_exact_zero": true,
+     "displacement_mm": 0.0,
+     "displacement_ok": true,
+     "formula_abs_dev_mm": null,
+     "formula_ok": null,
+     "label": "hi_endpoint",
+     "predicted_displacement_mm": null,
+     "provenance": [
+      "child_vertex",
+      6514,
+      "parent_vertex",
+      265
+     ],
+     "reading_class": "resolved",
+     "seat_gap_mm": 2.960563288748,
+     "seat_ok": true,
+     "theta_rad": 0.34906585
+    }
+   ],
+   "seat_clause_ok_all_grid": true
+  }
+ },
+ "reproduction_guards": {
+  "bond.joint_06_20": {
+   "matches_banked": true,
+   "repro_diffs": []
+  },
+  "bond.joint_06_25": {
+   "matches_banked": true,
+   "repro_diffs": []
+  },
+  "bond.joint_07_21": {
+   "matches_banked": true,
+   "repro_diffs": []
+  },
+  "bond.joint_07_24": {
+   "matches_banked": true,
+   "repro_diffs": []
+  },
+  "bond.joint_20_25": {
+   "matches_banked": true,
+   "repro_diffs": []
+  },
+  "bond.joint_21_24": {
+   "matches_banked": true,
+   "repro_diffs": []
+  }
+ },
+ "schema": "chimera.tarsal_cycle_battery.v1",
+ "trailer": "Agent: GLM 5.3",
+ "untouched": {
+  "after": {
+   "docs\\THE_ARTICULATION_LAW.md": "97585c4e7b5781d3e776d7cdaa7b4d19ce8b33772f239178cbd60be7f6410e4c",
+   "research_references\\human\\opensim\\Rajagopal2016.osim": "4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e",
+   "research_references\\human\\opensim\\gait2392_thelen2003muscle.osim": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_01.bin": "bf649f07180123250d0d861782be5922d0995f0523859ede8874a61475da84a7",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_02.bin": "7e750f78fb7a6b2c7fe358fd6d1274b2be2623b6e78334ecb0567319087bc029",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_03.bin": "52756398ebbf8eb22d9350ea5490574f6e6130f4ba162ed207b66428cec10c40",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_06.bin": "e5461836d021c5993f150e9970d843d2ee85288d0b747e457a75911a4ac9d644",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_07.bin": "06b3c0640ad8d3cab25be57d11a40f3c1a3134b32cd2fd1224e7637ce7f26035",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_20.bin": "059daf6119db3cd31a2576392b5501b417e92cf2ccfaebf01949b92f539920d3",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_21.bin": "e7a511f54519eec88ad8bbdba383fe9e937f109f9cf114ff660380411e509539",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_24.bin": "52092928d11b9148fd8a1165fdf0b992aaab2b04482b13850a00d4809c4e5bed",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_25.bin": "1c46bddcc5af44873ac048d7fbc54052f5d3d1bf07c58ada491037b4c3c76325",
+   "tools\\science_funnel\\validation\\articulation_design_20260921\\receipt.json": "5112d9b68dee94b7b591646fd6d3787bee15a12cffe2ddff9bcfbb922e136a3f",
+   "tools\\science_funnel\\validation\\axial_adjacency_20260920\\receipt.json": "f1dd047b34b7f1015c7fa9fafb4956eb1774786cc3b86c9dbdff8287d655c8d5",
+   "tools\\science_funnel\\validation\\hip_adoption_20260921\\receipt.json": "d000701f78449265d4ae53e847c2a09ad506b919af9c6f18c3c7f68be943614d",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\battery.json": "18f0ef0641cdcba610bb0a67109540220cfb3400bdff1eee2ae6451fb7d81c16",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\hip_pivot_proof.py": "748e20a7c07b7a8340bf2ae7b17e5a86af36fcc389a2b4563f0adf5cf3b62543",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration.md": "96ddb5016a222eff655fb51a2951ab441c9b77cd5d166e83592ba4badf4b2b7f",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\receipt.json": "c39c708c7fb8e167abed88c5405036b810cd64c817fa3f634859aa22bc60235a",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\battery.json": "6fa98112d716c9678fa69ae289ec239982db6236bb1fb9151ed5f8c280f40623",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\p6_contrast.py": "bd0466f165ee86dba72ed15d7a782195e729022de006be3cf613d97cc14db93d",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration.md": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\receipt.json": "cedccfe72db8b543ff7d3286d7325e1dca352617eecb6c5a2f2e45dc3114298f",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\preregistration.md": "39b5760e70882da02fff0c488180dbcf61642ec5668f29575ed6761d70f02e44",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\preregistration.sha256": "7b24d706713b71ab67e7767624591cb223372f292ea39d4db437fd5abfcb0917"
+  },
+  "before": {
+   "docs\\THE_ARTICULATION_LAW.md": "97585c4e7b5781d3e776d7cdaa7b4d19ce8b33772f239178cbd60be7f6410e4c",
+   "research_references\\human\\opensim\\Rajagopal2016.osim": "4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e",
+   "research_references\\human\\opensim\\gait2392_thelen2003muscle.osim": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_01.bin": "bf649f07180123250d0d861782be5922d0995f0523859ede8874a61475da84a7",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_02.bin": "7e750f78fb7a6b2c7fe358fd6d1274b2be2623b6e78334ecb0567319087bc029",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_03.bin": "52756398ebbf8eb22d9350ea5490574f6e6130f4ba162ed207b66428cec10c40",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_06.bin": "e5461836d021c5993f150e9970d843d2ee85288d0b747e457a75911a4ac9d644",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_07.bin": "06b3c0640ad8d3cab25be57d11a40f3c1a3134b32cd2fd1224e7637ce7f26035",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_20.bin": "059daf6119db3cd31a2576392b5501b417e92cf2ccfaebf01949b92f539920d3",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_21.bin": "e7a511f54519eec88ad8bbdba383fe9e937f109f9cf114ff660380411e509539",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_24.bin": "52092928d11b9148fd8a1165fdf0b992aaab2b04482b13850a00d4809c4e5bed",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_25.bin": "1c46bddcc5af44873ac048d7fbc54052f5d3d1bf07c58ada491037b4c3c76325",
+   "tools\\science_funnel\\validation\\articulation_design_20260921\\receipt.json": "5112d9b68dee94b7b591646fd6d3787bee15a12cffe2ddff9bcfbb922e136a3f",
+   "tools\\science_funnel\\validation\\axial_adjacency_20260920\\receipt.json": "f1dd047b34b7f1015c7fa9fafb4956eb1774786cc3b86c9dbdff8287d655c8d5",
+   "tools\\science_funnel\\validation\\hip_adoption_20260921\\receipt.json": "d000701f78449265d4ae53e847c2a09ad506b919af9c6f18c3c7f68be943614d",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\battery.json": "18f0ef0641cdcba610bb0a67109540220cfb3400bdff1eee2ae6451fb7d81c16",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\hip_pivot_proof.py": "748e20a7c07b7a8340bf2ae7b17e5a86af36fcc389a2b4563f0adf5cf3b62543",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration.md": "96ddb5016a222eff655fb51a2951ab441c9b77cd5d166e83592ba4badf4b2b7f",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\receipt.json": "c39c708c7fb8e167abed88c5405036b810cd64c817fa3f634859aa22bc60235a",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\battery.json": "6fa98112d716c9678fa69ae289ec239982db6236bb1fb9151ed5f8c280f40623",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\p6_contrast.py": "bd0466f165ee86dba72ed15d7a782195e729022de006be3cf613d97cc14db93d",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration.md": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\receipt.json": "cedccfe72db8b543ff7d3286d7325e1dca352617eecb6c5a2f2e45dc3114298f",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\preregistration.md": "39b5760e70882da02fff0c488180dbcf61642ec5668f29575ed6761d70f02e44",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\preregistration.sha256": "7b24d706713b71ab67e7767624591cb223372f292ea39d4db437fd5abfcb0917"
+  },
+  "equal": true
+ }
+}
