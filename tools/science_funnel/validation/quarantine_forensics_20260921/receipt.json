@@ -1,0 +1,172 @@
+{
+ "agent": "quarantine forensics lane (branch agent/quarantine-forensics-20260921 off pairing head 2098797b), GLM 5.3",
+ "artifact_plan": {
+  "builder": "tools/science_funnel/validation/quarantine_forensics_20260921/forensics.py (committed; stdlib-only; reads the carrier xlsx + store via `git show` READ-ONLY; no timestamps in output)",
+  "not_done_here": "NO store is modified, no record is re-admitted, no batch is re-run: this lane is read-only forensics. A recovery fix SPEC is documentation for a future lawful lane, never an admission here. E:/PythonChimera, port 8127 and master are never touched.",
+  "outputs": [
+   "tools/science_funnel/validation/quarantine_forensics_20260921/raw_cells.json (byte-cited raw cell text of the six rows + the column dictionary + the Information specimen rows, from the sha-pinned xlsx)",
+   "tools/science_funnel/validation/quarantine_forensics_20260921/forensics_table.json (per-row: both sides of each law from raw bytes, the admitting store's own refusal detail, the residual, the differential diagnosis with the numbers, the verdict RECOVERABLE-with-equation or GENUINELY-BAD, and the fix spec for recoverable rows)",
+   "this receipt, results appended below the line only"
+  ]
+ },
+ "inputs_pinned_at_preregistration": {
+  "admitting_adapter_sha256": "82ccdc6745f5b44ce29cb7dc4e8b1c7929c56c7683fcd4e05a0b66148b2ec452 (tools/science_funnel/adapters_muscle.py at 46ed85a3 - the law enforcement code)",
+  "admitting_batch_receipt_sha256": "8e8cea31adf7b6e883b56c736bfd15076c01dc910ccb951f57c5fa0161f35067 (validation/batch_muscle_20260917/receipt.json at 46ed85a3: guimaraes_arch quarantined=49, count identity closed)",
+  "admitting_connector_sha256": "00a17594f3b5eafc171af1d31b9d4b277efda06f29a6163303c884c0fcf68489 (tools/science_funnel/batch/connectors_muscle.py at 46ed85a3)",
+  "carrier_commit": "46ed85a3ba1e451cf5b02f068134bf6801dbd258",
+  "carrier_ref": "refs/remotes/origin/agent/skeleton-movie-20260919 (fetched READ-ONLY; ancestry 46ed85a3 measured true before this file was written; never merged, never checked out)",
+  "pairing_builder_sha256": "f8a4eddf21c2227fd44eafcbb3881d95fa511cc3cc5f27eb602ae8f9d3b74c13 (build_force_annotation.py at 2098797b - the read path this lane mirrors)",
+  "pairing_receipt_sha256": "958093c80c4cef9e3e608fa9a692fe2e4f78f41d840e552d618c6e5b43b2f154 (receipt.json at 2098797b - the failure-mode measurement this lane diagnoses)",
+  "store_sha256_at_carrier": "f625169a2568e735462cd63605492d7fef212977966ddf73f08027c8e87ce80f (tools/creature_graph/data/creature_graph.json at 46ed85a3)",
+  "xlsx": {
+   "bytes": 321899,
+   "path": "tools/science_funnel/data/guimaraes_arch/AJPA-190-e70329-s001.xlsx",
+   "sha256": "08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678",
+   "verified_before_preregistration": "git show 46ed85a3:<path> | sha256sum == pin, measured before this file was written"
+  }
+ },
+ "laws_under_forensics": {
+  "enforced_by_admitting_lane": [
+   "PCSA closure: musc_mass_g/1000 / (1060 kg/m^3 * FL_m) == PCSA_m2 within 2% relative (adapters_muscle.py:221-226)",
+   "mass additivity: belly_mass + tendon_mass == musc_mass within 2% relative (adapters_muscle.py:227-230)",
+   "no blanks: every required field parses as a finite positive number (common.number refuses '' as invalid_number; adapters_muscle.py:210-213)",
+   "a row failing ANY enforced law is refused whole and recorded as a rejection {location, refusal{code, detail}} in the batch capture (adapters.py:9-11); length additivity is a recorded condition, NEVER a quarantine"
+  ],
+  "known_failure_modes_measured_by_the_pairing_lane": {
+   "AB_row8": "pcsa_closure_dev_0.684",
+   "BFS_row23": "musc_mass_blank, belly_mass_blank, tendon_mass_blank (admitting store refusal: invalid_number)",
+   "ObtInt_row4": "mass_additivity_dev_0.225",
+   "RF_row11": "mass_additivity_dev_0.023",
+   "SAR_row21": "mass_additivity_dev_0.095",
+   "TP_row9": "mass_additivity_dev_0.060"
+  }
+ },
+ "results_note": "Filled by the run BELOW THIS LINE ONLY; the sections above are the preregistration and are never edited after the first commit.",
+ "rule0": {
+  "falsifiers": {
+   "F1_pin_and_identity": "The forensics read only bytes whose sha256 equals 08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678 (xlsx) and f625169a2568e735462cd63605492d7fef212977966ddf73f08027c8e87ce80f (store), both extracted from 46ed85a3 via `git show`, ancestry verified. The store's Macaca mulatta refusal locations must number exactly 6 (rows 4, 8, 9, 11, 21, 23) and map 1:1 onto {ObtInt, AB, TP, RF, SAR, BFS}. FALSIFIED on any byte drift, ancestry failure, or identity mismatch.",
+   "F2_both_sides_numbers": "Every per-row diagnosis carries BOTH sides of the failing law recomputed from the raw cell bytes AND the admitting store's own recorded refusal detail, and the recomputed deviation must reproduce the pairing lane's printed 3-decimal problem tag (e.g. mass_additivity_dev_0.023) to its printed precision. FALSIFIED if any diagnosis asserts a side without its number, or if recomputation disagrees with either recorded layer.",
+   "F3_byte_cited_read_path": "Every raw value is cited as sheet/row/cell-address with the exact raw text string, and the value the admitting lane's parser would produce is float(raw_text) computed here; the raw-vs-read comparison must be exact for all six rows. FALSIFIED if any parsed value differs from float(raw_text) - that would be an upstream extraction bug (repairable defect), the hypothesis this falsifier can spring.",
+   "F4_minimal_correction_law": "A RECOVERABLE verdict requires: one named cell (or a source-cited external value), one explicit equation, the corrected number, and proof that the corrected row passes ALL enforced laws at 2%. FALSIFIED if a recovery needs two invented cells, a taste-chosen number, a circular derivation (a mass invented from the very closure law that would then 'validate' it), or leaves any law red.",
+   "F5_determinism_and_readonly": "Two independent runs of forensics.py produce byte-identical artifacts; the lane makes zero writes to any store, never merges the carrier, and commits only its own validation directory. FALSIFIED on any byte drift or any store mutation."
+  },
+  "prediction": "Measured BEFORE reading any raw cell of the six rows or any cross-species band: (P1) identity holds as F1 states (six refusals, 1:1 with the six quarantined muscles). (P2) MAGNITUDE-CLASS LAW: the observed deviation class predicts the cause class per row - [class A: clean factor (x10^k, x1000, x0.5...) between the two sides] predicts a UNIT inconsistency (mm/m, g/kg, cm2/m2) and a clean-factor residual; [class B: non-clean deviation in roughly 5%-60% with the row otherwise passing the OTHER law] predicts a DIGIT-ENTRY error in exactly one cell of the failing law, and the failing cell can be named by which quantities the row's PASSING law corroborates; [class C: deviation barely above the 2% cut with a small absolute gap] predicts rounding/minor source inconsistency in the published sheet, not a blunder; [class D: blanks] predicts a source gap in the published sheet itself (the quarantine was right) unless the same source package carries the numbers elsewhere. Per row: AB (dev 0.684, additivity PASS -> mass corroborated by belly+tendon at 2%): predicts class B, error in exactly one of {pcsa_m2, fl_m} (mass disfavored by the passing additivity law); unit class A is DISFAVORED a priori because 0.684 is not a clean factor, and FALSIFIED if the measured residual ratio is within 2% of any power of 10, 2, 5 or 1000/100 factor. BFS (blanks on all three mass columns): predicts class D source gap, GENUINELY BAD, unless the workbook's other sheets or the paper fulltext (PMC13425262 XML / S2 docx at 46ed85a3) carry numeric Macaca BFS masses - measured, not assumed. ObtInt (dev 0.225, closure PASS): predicts class B single-cell error in {belly_mass, tendon_mass, musc_mass} with mass disfavored (closure corroborates whole mass at 2%); the direction (parts 6.97 < whole 8.99, i.e. a component entered LOW) is recorded before the component fractions are measured. RF (dev 0.023, closure PASS): predicts class C (barely over the cut); falsified to class B if the gap's absolute size or a digit-neighbor structure shows entry error; in either case the correction must keep closure green. SAR (dev 0.095, closure PASS): predicts class B single-cell error in {belly_mass, tendon_mass, musc_mass}; mass disfavored by passing closure. TP (dev 0.060, closure PASS): same class-B prediction as SAR. (P3) READ-PATH INTEGRITY: for all six rows the admitting lane's recorded refusal numbers equal the recomputation from raw bytes (no upstream extraction bug); the blank refusal for BFS must be the ONLY failure mode attributable to the read path, and even there the reader faithfully reported the sheet's own emptiness. FALSIFIED if any recorded number disagrees with the raw bytes - then the sheet row is fine and the admitting read was wrong, which flips that row to a repairable DEFECT of the admitting lane rather than bad data. (P4) NO STORE CHANGE: the lane's git footprint is exactly fetch + show + its own validation directory; any recovery appears as a fix SPEC in forensics_table.json, never as an admission.",
+  "statement": "The six quarantined rows (AB, BFS, ObtInt, RF, SAR, TP of the Guimaraes 2026 Macaca mulatta sheet, sha-pinned at 46ed85a3) each fail exactly one of the admitting lane's own laws for a diagnosable cause; the failure magnitude classes recorded by the pairing lane and in the admitting store's own refusal details predict the cause class per row (unit inconsistency / digit-entry error / rounding-scale source inconsistency / source gap / upstream extraction bug), and the diagnosis is computable READ-ONLY from the pinned bytes plus the pinned store rejections. Every diagnosis carries both sides' numbers and a byte-cited cell path; a RECOVERABLE verdict names its correction equation explicitly; a GENUINELY BAD verdict documents that the sheet itself is wrong and the quarantine was right. Nothing is re-admitted here."
+ },
+ "schema": "chimera.quarantine_forensics_validation.v1",
+ "written_before_build": true,
+ "written_utc": "2026-09-21T04:05:00Z",
+ "results": {
+ "artifact_sha256": {
+  "forensics_table.json": "12682935230a17b44d42356f31feee2445f4cb848e552aa0eee158dcc09efb6e",
+  "raw_cells.json": "2f6cffcf65a0f1d4919c3d5bed658dbb00f552526d316c4df3e2d0d0d23f45a6"
+ },
+ "builder": "tools/science_funnel/validation/quarantine_forensics_20260921/forensics.py",
+ "consequences_for_a_future_lane": "The two RECOVERABLE rows carry fix specs (fix_spec in forensics_table.json), NOT admissions: this lane changed no store. If a future lawful lane re-runs admission with the ObtInt belly override (8.84 g, equation-derived, band-corroborated) and the SAR tendon override (0.01 g, equation-derived, band-corroborated), both rows pass every enforced law, and the pairing lane's lawful force count moves 23 -> 24 (SAR is an exact Wiseman name; ObtInt joins the Wiseman-absent admitted 5 -> 6). SAR adds F=12.21 N and ObtInt F=108.2697 N (F = 30.0 N/cm2 * PCSA * 1e4; the PCSA cells are untouched by both fixes, so closure stays exact). The four GENUINELY_BAD rows stay quarantined by right: AB and RF are measurement-internal inconsistencies with no lawful completion, BFS is an empty source row whose only numbers are BFL copy-forwards, TP is a whole-vs-parts inconsistency the data cannot assign.",
+ "falsifier_verdicts": {
+  "F1_pin_and_identity": {
+   "admitted_store_cross_check": "30 macaque subjects, 265 records, count identity 25x9 + 5x8 = 265 exact, zero records for all six quarantined muscles",
+   "carrier_ancestry": "git merge-base --is-ancestor 46ed85a3 refs/remotes/origin/agent/skeleton-movie-20260919 -> true",
+   "macaque_refusal_rows": "the store holds exactly 6 macaque refusals, rows {4, 8, 9, 11, 21, 23}, 1:1 with {ObtInt, AB, TP, RF, SAR, BFS}",
+   "pins": "xlsx 08ead4a9.../321899 bytes, store f625169a..., adapter 82ccdc67... all extracted from 46ed85a3 via git show and sha-equal",
+   "reconciliation": "recomputing the adapter's own law semantics over all 6 species sheets reproduces the refusal LOCATION set exactly (49 = 49); the two naive-tolerance near-misses (Macaca PB +2.013%, Hylobates ObtInt +2.03%) are correctly ADMITTED by the adapter's symmetric math.isclose and were never refused",
+   "verdict": "PASS"
+  },
+  "F2_both_sides_numbers": {
+   "both_sides": "every row's failing law carries both sides recomputed from raw bytes: AB predicted 1.50086e-4 m2 vs sheet 8.91e-05 m2 (+68.446%); ObtInt parts 6.97 g vs whole 8.99 g (-22.469%); TP 15.11 g vs 14.25 g (-6.035%); RF 31.31 g vs 32.06 g (-2.339%); SAR 10.29 g vs 9.4 g (-9.468%); BFS three required mass fields blank (plus all three length fields)",
+   "detail_strings": "all six store refusal details reproduce BYTE-EXACTLY from the raw cell bytes using the adapter's own f-strings and float op order (e.g. AB: 'pcsa=8.91e-05 predicted=0.00015008576329331047'; ObtInt: 'belly+tendon=6.970000000000001 whole=8.99'; SAR: 'belly+tendon=10.290000000000001 whole=9.4')",
+   "problem_tags": "the pairing lane's 3-decimal tags (0.684, 0.225, 0.060, 0.023, 0.095) all reproduce",
+   "verdict": "PASS"
+  },
+  "F3_byte_cited_read_path": {
+   "byte_cites": "every required-field cell of the six rows cited as sheet/cell-address/raw-text in raw_cells.json (e.g. AB PCSA = 'Macaca mulatta/E8' raw '8.9099999999999997E-5'; SAR tendon = 'Macaca mulatta/K21' raw '0.9'; ObtInt belly = 'Macaca mulatta/I4' raw '6.82'; BFS masses = absent cells",
+   "verdict": "PASS - no upstream extraction bug anywhere; the sheet bytes are what failed",
+   "vs_read": "parsed value == float(raw_text) for every field of every one of the six rows; even BFS's invalid_number refusal is the reader faithfully reporting the sheet's own emptiness"
+  },
+  "F4_minimal_correction_law": {
+   "candidates_measured": "all single-cell completions re-tested against the adapter's own law semantics after correction. AB: PCSA-candidate all-green but 2.19x above the admitted specific-PCSA band max (margin 119.4%), FL-candidate all-green but 23.2% below the admitted FL band min, mass-candidate breaks additivity -> 0 lawful survivors. RF: belly-candidate 89.86% vs band [97.46, 99.83]% (7.8% out), tendon-candidate 12.48% vs [0.17, 2.10]% (4.9x out), whole-candidate breaks closure (-2.36%) -> 0 survivors. TP: BOTH tendon (0.98% in band [0.17, 40.60]%) and belly (92.98% in band [59.40, 99.83]%) completions all-green AND in-band -> 2 survivors, undecidable, choosing would be taste. ObtInt: unique survivor belly := 8.84 g (98.33% in band [93.77, 99.90]%; tendon-candidate 24.1% vs [0.10, 6.23]% excluded; whole-candidate breaks closure -22.47%). SAR: unique survivor tendon := 0.01 g (0.106% in band [0.057, 8.41]%; belly-candidate 90.43% vs [91.59, 99.94]% excluded by a 1.27% margin; whole-candidate breaks closure +9.52%)",
+   "digit_signatures": "NONE of the six rows shows a keystroke signature (worst cases 2-3 digit substitutions; no single substitution, no adjacent transposition, no single insertion/deletion anywhere) - the classic data-entry-transposition class is FALSIFIED for every row; the recoveries rest on the additivity equation plus measured cross-species admitted bands, never on a keystroke story",
+   "unit_factors": "no clean factor (10^k, 2, 4, 5, 20, 50 and reciprocals at 0.5%) between the two sides of ANY failing law - the unit-inconsistency class is FALSIFIED for all six rows (a global unit error would also have broken the 30 passing rows, which close at 1e-5..1e-3)",
+   "verdict": "PASS - the two RECOVERABLE verdicts each name one cell, one equation, the corrected number, and an all-laws-green proof with a unique band selection; the four GENUINELY_BAD verdicts each document why no lawful unique completion exists"
+  },
+  "F5_determinism_and_readonly": {
+   "determinism": "two independent runs of forensics.py produce byte-identical artifacts (sha256 equality on both)",
+   "git_footprint": "one fetch of the carrier ref (read-only) + git show reads only; zero writes to any store; the carrier never merged or checked out; E:/PythonChimera, port 8127 and master untouched",
+   "verdict": "PASS"
+  }
+ },
+ "measured_utc_start": "2026-09-21T04:35:00Z (run 1); run 2 for determinism immediately after",
+ "per_row": {
+  "AB": {
+   "cause_class": "measurement_internal_inconsistency (undecidable origin)",
+   "failing_law": "PCSA closure",
+   "sheet_row": 8,
+   "statement": "predicted 1.50086e-4 m2 vs sheet 8.91e-05 m2, +68.446%; additivity PASSES (4.83 vs 4.90 g, 1.43%) so the mass is corroborated; the 3-digit-rounded PCSA cell disagrees with its own row's mass/FL by 68% - it was rounded from a computation inconsistent with BOTH current cells (edited later, or from another measurement round); Hylobates AB rows are corrupted the same way (leg1 closure +76.9%, leg2 additivity +18.4% with a 12 mm FL outlier); no keystroke signature, no unit factor, no band-surviving completion",
+   "verdict": "GENUINELY_BAD"
+  },
+  "BFS": {
+   "cause_class": "source_gap",
+   "failing_law": "no blanks",
+   "sheet_row": 23,
+   "statement": "six cells (musc_len/musc_mass/belly_len/belly_mass/tendon_len/tendon_mass) are EMPTY in the published sheet itself; the only numbers present (FL '7.1199999999999999E-2', PCSA '1.0076589999999999E-3', pennation '26.2') are BYTE-IDENTICAL copies of the BFL row 22 - not independent BFS measurements; the paper fulltext (6 BFS mentions) and S2 docx (3 mentions) carry no numeric mass at any mention; the admitting invalid_number refusal was faithful to the bytes",
+   "verdict": "GENUINELY_BAD"
+  },
+  "ObtInt": {
+   "cause_class": "single_cell_source_inconsistency (belly_mass), band-decided",
+   "failing_law": "mass additivity",
+   "fix": "belly_mass 6.82 -> 8.84 g (equation belly := whole - tendon)",
+   "sheet_row": 4,
+   "statement": "parts 6.97 g vs whole 8.99 g (-22.469%); whole corroborated (sheet PCSA 3.60899e-4 recomputes exactly from 8.99 g and FL 0.0235); raw belly fraction 75.86% sits 18 points below the admitted cross-species band [93.77, 99.90]% while the corrected 98.33% lands in-band and the raw tendon 0.15 g sits mid-band (band [0.10, 6.23]%; the tendon-candidate 24.1% is excluded 4x over); unique lawful completion",
+   "verdict": "RECOVERABLE"
+  },
+  "RF": {
+   "cause_class": "measurement_internal_inconsistency (systematic; recurs in Pan troglodytes RF, +3.83%, also refused)",
+   "failing_law": "mass additivity",
+   "sheet_row": 11,
+   "statement": "parts 31.31 g vs whole 32.06 g (-2.339%, barely over the 2% cut, but the 0.75 g gap is ~75x the sheet's 0.01 g weighing precision - not rounding scale); whole corroborated (PCSA 2.93644e-4 recomputes exactly); BOTH completions land far outside the admitted bands (belly 89.86% vs [97.46, 99.83]%; tendon 12.48% vs [0.17, 2.10]%) and the whole-candidate breaks closure (-2.36%); no keystroke signature anywhere",
+   "verdict": "GENUINELY_BAD"
+  },
+  "SAR": {
+   "cause_class": "single_cell_source_inconsistency (tendon_mass), band-decided",
+   "failing_law": "mass additivity",
+   "fix": "tendon_mass 0.9 -> 0.01 g (equation tendon := whole - belly); decimal-slip variant 0.09 documented in forensics_table.json and NOT adopted (F4: equation only; it would leave a lawful 0.851% residual instead of an exact one)",
+   "sheet_row": 21,
+   "statement": "parts 10.29 g vs whole 9.4 g (-9.468%); whole corroborated (3-digit PCSA 4.07E-5 recomputes from 9.4 g to +0.062%); raw belly 99.89% matches every admitted SAR's strap-muscle partition while the raw tendon 9.57% is the intruder; corrected tendon 0.01 g lands mid-band, corrected belly 8.5 g falls below the admitted belly band (90.43% vs [91.59, 99.94]%); unique lawful completion",
+   "verdict": "RECOVERABLE"
+  },
+  "TP": {
+   "cause_class": "measurement_internal_inconsistency (undecidable partition)",
+   "failing_law": "mass additivity",
+   "sheet_row": 9,
+   "statement": "parts 15.11 g vs whole 14.25 g (-6.035%); whole corroborated (PCSA recomputes exactly; belly+tendon LENGTHS also partition the whole length exactly, 0.00%); BOTH completions stay inside the admitted bands (tendon := 0.14 g -> 0.98% in [0.17, 40.60]%; belly := 13.25 g -> 92.98% in [59.40, 99.83]%) and neither shows a keystroke signature - the data cannot name the wrong cell and choosing would be taste",
+   "verdict": "GENUINELY_BAD"
+  }
+ },
+ "predictions_measured": {
+  "P1_identity": {
+   "measured": "49 refusals, location set equal to the recomputation; macaque refusal rows 1:1 with the six muscles; store 30 subjects / 265 records with count identity exact and zero records for the six",
+   "verdict": "PASS"
+  },
+  "P2_magnitude_class_law": {
+   "honest_falsifier_note": "the preregistered class-B prediction (digit-entry error) is FALSIFIED for all five numeric rows - no keystroke signature exists anywhere; class A (unit) is FALSIFIED for all six; class D is CONFIRMED for BFS. The measured causes are: two rows whose whole-vs-parts inconsistency is uniquely decidable by admitted cross-species bands (ObtInt, SAR -> RECOVERABLE), two rows the data cannot decide (AB origin, TP partition), one row whose entire candidate family is excluded (RF, systematic), one source gap (BFS). The magnitude classes did not cleanly predict the cause; the falsifier caught that and the measured bands did the deciding",
+   "verdict": "FALSIFIED (digit-entry class) - cause classes measured directly per row; see per_row"
+  },
+  "P3_read_path_integrity": {
+   "measured": "parsed == float(raw_text) for all fields of all six rows; all six refusal detail strings reproduce byte-exactly; the only read-path-adjacent failure is BFS's blank refusal, which faithfully reports the sheet's own emptiness",
+   "verdict": "PASS - no upstream extraction bug; no repairable defect in the admitting lane's read"
+  },
+  "P4_no_store_change": {
+   "measured": "git footprint is one fetch + git show reads + commits of this validation directory only; both fix specs are documentation, not admissions",
+   "verdict": "PASS"
+  }
+ },
+ "verdict_table": {
+  "AB": "GENUINELY_BAD",
+  "BFS": "GENUINELY_BAD",
+  "ObtInt": "RECOVERABLE",
+  "RF": "GENUINELY_BAD",
+  "SAR": "RECOVERABLE",
+  "TP": "GENUINELY_BAD"
+ }
+}
+}
