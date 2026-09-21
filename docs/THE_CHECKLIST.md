@@ -99,3 +99,30 @@ a BLOCKED-with-evidence verdict (AGENTS.md: blocked must be earned), never a wor
 
 **The one-line law underneath all of it: no reference, no verdict; a description survives any
 result, a theory can lose. If your step cannot lose, it is not a step — it is prose.**
+
+
+---
+
+## THE CONSTITUTION POINTERS (the three body laws, Amendment 2)
+
+<!-- Appended 2026-09-20, lane agent/constitution-bio-laws-20260920. The
+     operator's three body laws are constitution-grade in docs/THE_GAME.md
+     (Amendment 2). This checklist POINTS; it does not duplicate law text. -->
+
+- [ ] **THE BIOLOGICAL LAW** — one creature, one life stage; allometric
+      coherence per stage; stage labels admission-required (adult must be
+      adult-CONFIRMED, like sha256). Enforced by section 1 · DATA INTAKE (the
+      stage-label + allometry steps). Canonical home: docs/THE_GAME.md,
+      Amendment 2; gate: tools/creature_graph/reality_gate.py,
+      stage_consistency + allometric_coherence.
+- [ ] **THE TWO-CATEGORY LAW** — REALITY is the default and the reference;
+      FANTASY is developer-driven explicit construction with an acknowledged
+      violation manifest; violations never silent. Enforced by section 1 ·
+      DATA INTAKE (the classification step). Canonical home: docs/THE_GAME.md,
+      Amendment 2; gate output {category, violations[]} +
+      bio.fantasy_acknowledge.
+- [ ] **THE TRIANGLE DOCTRINE** — mesh-with-triangles is the data currency;
+      anatomy layers are triangle-defined membrane outlines (bones, muscles,
+      skin); never splatified for rendering. Enforced by section 2 ·
+      CONSTRUCTION and section 3 · VISUAL. Canonical home: docs/THE_GAME.md,
+      Amendment 2; the conformance gate + pixel_truth.
