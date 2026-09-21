@@ -305,5 +305,66 @@
   "no byte of any other lane's clone modified (sources read-only)",
   "sha256_manifest.json: only the inventory.json entry's two values change; every other pin byte-identical"
  ],
- "results_note": "Filled by the run BELOW THIS LINE ONLY; the sections above are the preregistration and are never edited after the first commit."
+ "results_note": "Filled by the run BELOW THIS LINE ONLY; the sections above are the preregistration and are never edited after the first commit.",
+ "results": {
+  "measured_utc": "2026-09-21T05:35:00+00:00",
+  "fix_commit": "c15694dde95dc8ea5b82d8c40943a4ab1a50a4b7",
+  "environment": "git 2.55.0.windows.2 / Windows / python -B / numpy 2.2.6; verify clones E:/ChimeraWork/pinfix_verify_a (default autocrlf=true) and E:/ChimeraWork/pinfix_verify_b (cloned with -c core.autocrlf=false: the integrator/CI raw-blob flavor); adapter scratch E:/ChimeraWork/adapter_scratch at c15694dd (raw-blob checkout) + adapter lane files injected byte-exact from bbbc4d67 blobs",
+  "falsifier_verdicts": {
+   "F1_restore_bytes": {
+    "verdict": "PASS",
+    "measured": "12/12 route-(a) staged blobs sha256 == manifest pins, asserted at git-add time; sha256_manifest.json staged == amended LF blob (54291 B); all other manifest entries byte-identical"
+   },
+   "F2_fresh_clone_verify": {
+    "verdict": "PASS",
+    "measured": "16/16 manifest-covered committed files sha256-verify in BOTH fresh clones: autocrlf=true 16/16, autocrlf=false 16/16 (pre-fix: 14/16 and 3/16 respectively - measured in preregistration)"
+   },
+   "F3_worktree_equals_blob": {
+    "verdict": "PASS",
+    "measured": "7/7 .osim git hash-object == git rev-parse HEAD:path in BOTH flavors; additionally raw worktree bytes == raw blob bytes 7/7 in both flavors; measurer note: git hash-object with an ABSOLUTE BACKSLASH path bypasses attribute lookup (falls back to core.autocrlf, returning the pre-repair LF id 8d3ccc828399...) - measured, isolated (relative and forward-slash absolute paths honor -text), and excluded as a measuring-tool artifact, not a repo defect"
+   },
+   "F4_adapter_parse_reproduction": {
+    "verdict": "PASS",
+    "measured": "canonical(parse_wiseman('Macaque')) sha256 == fcc119b953cf93d957760770e3d24884f79f9db14396e7f12b7ec4ec7857f792 (adapter receipt falsifier B pin) EXACT; proposal_graph_hash c85744d3654060609e42d223d3737001084170386a2bc58cd5be24d4afa1b45b EXACT (49 objects / 194 relations); macaque_assembly.json regenerates BYTE-EXACT from the live parse (canonical(live) == committed bytes, 165398 B); macaque_proposal_fragment.json BYTE-EXACT (375824 B); macaque_output.json committed bytes are the canonical form of their content and every embedded value (model_sha256, proposal_graph_hash, proposal_objects 49, proposal_relations 194, graph_check [], reconciliation match=exact) equals the live-computed value"
+   },
+   "F5_adapter_tests": {
+    "verdict": "PASS",
+    "measured": "tools/science_funnel/tests/test_wiseman_osim.py @ bbbc4d67 on the repaired raw-blob checkout: Ran 12 tests in 6.970s - OK (12/12); includes test_pin_drift_and_dispatch_refuse, which exercises the adapter's pinned_bytes() source_pin_drift refusal against the repaired manifest"
+   }
+  },
+  "prediction_audit": [
+   {
+    "prediction": "16 manifest-covered files committed",
+    "outcome": "HIT"
+   },
+   {
+    "prediction": "13 blobs diverge pre-fix (12 pure CRLF-strip delta==LF count; 1 mixed-EOL)",
+    "outcome": "HIT"
+   },
+   {
+    "prediction": "16/16 fresh-clone verify both flavors post-fix",
+    "outcome": "HIT"
+   },
+   {
+    "prediction": "7/7 worktree==blob post-fix",
+    "outcome": "HIT"
+   },
+   {
+    "prediction": "adapter canonical digest fcc119b9... reproduced",
+    "outcome": "HIT"
+   },
+   {
+    "prediction": "adapter artifacts byte-exact",
+    "outcome": "HIT (2 byte-exact + 1 canonical-content equivalence)"
+   },
+   {
+    "prediction": "adapter tests 12/12",
+    "outcome": "HIT"
+   },
+   {
+    "corrections": "one preregistration arithmetic slip (counts 12/13/16 mis-stated as 11/12/15) was corrected in the preregistration commit itself BEFORE the run started; the run used the corrected numbers"
+   }
+  ],
+  "verdict": "ALL FALSIFIERS GREEN - the wiseman2026 sha pins verify on every clone flavor and the downstream adapter consumer is byte-identical on the repaired bytes"
+ }
 }
