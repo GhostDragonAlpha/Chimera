@@ -458,6 +458,19 @@ def render_movie(url: str, meshes: list, camera: dict, out_dir: Path,
                 raise RuntimeError("walk_movie refusal: camera_post_refused")
             b = sm._settle_capture(url, pre)
         else:
+            # WALK-MOVIE RECORD REPAIR (lane agent/record-movie-20260921,
+            # receipt_addendum.json FA2): the prestage's i>0 branch posted only
+            # the camera -- the mesh was uploaded once (i==0) and every later
+            # frame re-rendered the FROZEN tick-60 pose under a moving camera
+            # (measured: frame 237 pixel-identical to frame 0; hull coverage
+            # exactly 0.0 for the walked-away tail while ~100k warm pixels stay
+            # on screen). This branch re-posts this frame's mesh -- the module
+            # docstring's own contract ("a WALK changes geometry every frame,
+            # so each frame re-posts its mesh") -- then the camera, then the
+            # same quiesced settle-capture. F1 unchanged: /mesh_bin stays the
+            # sole uploader.
+            if not cst.post_layer_mesh(url, v9, tris, radius, theta, phi):
+                raise RuntimeError("walk_movie refusal: mesh_post_refused (/mesh_bin)")
             if not _set_camera_targeted(url, radius, theta, phi, target):
                 raise RuntimeError("walk_movie refusal: camera_post_refused")
             b = sm._settle_capture(url, prev)
