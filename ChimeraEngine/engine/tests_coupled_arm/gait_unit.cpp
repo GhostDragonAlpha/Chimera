@@ -86,6 +86,7 @@ struct WalkOut{
  // The fired falsifiers are carried verbatim in the receipt.)
  std::vector<std::array<double,4>> hind37;
  std::vector<std::array<double,4>> hind38;
+ std::vector<std::array<double,4>> hind39;
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
@@ -330,6 +331,12 @@ int main(int argc,char**argv){try{
        if(p.contains("guard_blocks"))h38[2*l]=double(p["guard_blocks"].get<uint64_t>());
        if(p.contains("guard_first_tick"))h38[2*l+1]=number(p["guard_first_tick"]);}
      out.hind38.push_back(h38);}
+    {std::array<double,4> h39;h39.fill(-1.); // WAVE 39 APPEND: the stay-era haul restoration census
+     if(s["gait"].contains("hind_step")&&s["gait"]["hind_step"].size()>=2)
+      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["hind_step"][l];
+       if(p.contains("refires"))h39[2*l]=double(p["refires"].get<uint64_t>());
+       if(p.contains("refire_first_tick"))h39[2*l+1]=number(p["refire_first_tick"]);}
+     out.hind39.push_back(h39);}
     out.fm.push_back(fmm);out.fsat.push_back(sat);out.ftgt.push_back(tgx);out.frep.push_back(rep);
 #ifdef GAIT_EVENT_TRACE
     // WAVE 23 MINING: the per-tick fore joint-wall state (the derivation's
@@ -1643,6 +1650,35 @@ int main(int argc,char**argv){try{
    ck(launch247,"f38_twelfth_launch_247");
    ck(td_Ltwelfth>=258&&td_Ltwelfth<=268,"f38_twelfth_td_window");}
   else note("F-G38 NOT MEASURED: the guard never blocked and no waive fired (the wave-38 law REVERTED per the pre-committed terminal action)");}
+
+ // -- WAVE 39 STAY-ERA HAUL RESTORATION CENSUS (pre-registered in
+ //    receipt_wave39.json, amendment 39a) -- READ-ONLY PLUMBING: the sixth
+ //    clause (the certified stay does not certify the replant; the machine
+ //    re-fires the swing once; the carrier pin disarms on the same
+ //    certificate) measured on the law build; the pre-committed terminal
+ //    action restored the wave-38 law bytes after the rung falsifier fired
+ //    twice (the first build 225, the amended build 231, both
+ //    gait_impact_event_budget -- the wave-34 mined fold/launch class
+ //    re-phased by the re-attempt cascade). The counters below report NOT
+ //    MEASURED on the restored ship bytes; the fired falsifiers are carried
+ //    verbatim in receipt_wave39.json.
+ {const size_t N39=std::min({w.hind39.size(),w.hind35.size(),w.hind38.size()});
+  double refires=N39>0?w.hind39[N39-1][0]+w.hind39[N39-1][2]:-1.;
+  if(N39>1&&refires>0.){
+   int rfirst=(int)w.hind39[N39-1][1]; // the L's first refire tick
+   double refires_L=w.hind39[N39-1][0],refires_R=w.hind39[N39-1][2];
+   int td_L_after=-1; // the L's first td after its first refire (the re-fired era's own certification)
+   if(rfirst>0)for(size_t i=(size_t)rfirst+1;i<w.hindst.size();++i)
+    if(w.hindst[i][3]>w.hindst[i-1][3]){td_L_after=(int)i;break;}
+   int td_L_twelfth=-1; // the L's first td at/after the twelfth window's opening
+   for(size_t i=(size_t)257;i<w.hindst.size();++i)
+    if(w.hindst[i][3]>w.hindst[i-1][3]){td_L_twelfth=(int)i;break;}
+   char b39[640];std::snprintf(b39,640,"F-G39 stay_refires=%.0f (L=%.0f R=%.0f) refire_first=%d [PREDICTED EXACTLY 184: the L's [175,184) chain-link stay] re-fired_era_td=%d [the re-fired era certifies by the shipped band entry -- the balanced-book amendment] td_L_twelfth=%d [window 258..268; carried verbatim if fired]",
+    refires,refires_L,refires_R,rfirst,td_L_after,td_L_twelfth);
+   note(b39);
+   ck(rfirst==184,"f39_refire_first_184");
+   ck(refires_L>=1.,"f39_stay_refires_engaged");}
+  else note("F-G39 NOT MEASURED: the stay-era haul restoration never engaged (the wave-39 law REVERTED per the pre-committed terminal action; the counters stay read-only plumbing)");}
 
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the
