@@ -57,7 +57,7 @@ struct WalkOut{
  // fields {mode,t,fires,tds,gated,reach_clamped,last_fire_tick,last_td_tick,
  // fire_qerr,wall_pins,wall_pins_air,xoff} -- leg 0 at [0,12), leg 1 at
  // [12,24); -1 filled when the block is absent.
- std::vector<std::array<double,30>> hindst;
+ std::vector<std::array<double,36>> hindst;
  // WAVE 29 ALTERNATION census inputs: per-tick per-leg 4 fields
  // {fire_class(1=alternation),held,clear_tick,deadline_fires} -- leg 0 at
  // [0,4), leg 1 at [4,8); -1 filled when the block is absent.
@@ -249,7 +249,7 @@ int main(int argc,char**argv){try{
     out.wpins.push_back(wp);out.wair.push_back(wa);out.wbound.push_back(wb);out.wfollow.push_back(wf);
     out.fhold.push_back(fh);out.fhl.push_back(fhlk);out.ftic.push_back(ftick);
     out.fcap.push_back(s["gait"].contains("fore_paw_captured")&&s["gait"]["fore_paw_captured"].get<bool>()?1:0);
-    {std::array<double,30> hst{};hst.fill(-1.);
+    {std::array<double,36> hst{};hst.fill(-1.);
      if(s["gait"].contains("hind_step")&&s["gait"]["hind_step"].size()>=2)
       for(size_t l=0;l<2;++l){const auto&p=s["gait"]["hind_step"][l];
        size_t b=12*l;
@@ -268,7 +268,12 @@ int main(int argc,char**argv){try{
        // slots 12..23 belong to the RIGHT leg's reads; indices preserved)
        hst[24+3*l]=double(p["swing_stall_ticks"].get<uint64_t>());
        hst[25+3*l]=p["stand_hold"].get<bool>()?1.:0.;
-       hst[26+3*l]=double(p["stand_hold_ticks"].get<uint64_t>());}
+       hst[26+3*l]=double(p["stand_hold_ticks"].get<uint64_t>());
+       // THE LATCHED WORLD-PIVOT HOLD's census fields (wave 34, appended to
+       // the DISJOINT TAIL slots 30+3*l; indices preserved)
+       hst[30+3*l]=p["stand_latch"].get<bool>()?1.:0.;
+       hst[31+3*l]=p["stand_pivot"].get<bool>()?1.:0.;
+       hst[32+3*l]=p.value("stand_release",-1.);}
      out.hindst.push_back(hst);}
     {std::array<double,12> h29{};h29.fill(-1.);
      if(s["gait"].contains("hind_step")&&s["gait"]["hind_step"].size()>=2)
@@ -1294,6 +1299,78 @@ int main(int argc,char**argv){try{
     note(b);
     ck(sub2_law_t<70,"f33_support_touching_shrinks");
     ck(sub2_law_c<68,"f33_support_contact_shrinks");}}}
+
+ // ── WAVE 34 LATCHED WORLD-PIVOT HOLD CENSUS (pre-registered in
+ //    receipt_wave34.json): (a) THE LATCH ERAS -- every stand_pivot
+ //    engagement (the phase-2 first ticks) against the replay prediction
+ //    (the single-tick splits 206/213/226/243/245 byte-inert + the R's 250
+ //    engagement, released by the L's completion); (b) THE RELEASES -- zero
+ //    envelope releases (the release tick field stays -1); (c) THE LATCH-ERA
+ //    PADS -- the pinned carrier's pair-min never past the genuine-departure
+ //    bound inside a latch era, its share never vanishing mid-era; (d) THE
+ //    TWELFTH EXCHANGE -- the R's fire lands on the L's 262 completion with
+ //    live pads and the chain continues past the wave-33 strand.
+ {const size_t N34=std::min({w.hindst.size(),w.hgap.size(),w.hrxn.size(),(size_t)426});
+  int first_latch=-1;std::string latches;int latch_ticks[2]={0,0};int releases=0;std::string rel_ticks;
+  for(size_t l=0;l<2;++l){
+   bool in_era=false;int start=-1;
+   for(size_t i=0;i<N34;++i){
+    bool now=w.hindst[i][31+3*l]>0.5;
+    if(now&&!in_era){in_era=true;start=(int)i;
+     char cb[48];std::snprintf(cb,48,"%s@%d ",l?"R":"L",start);latches+=cb;
+     if(first_latch<0)first_latch=(int)i;}
+    else if(!now&&in_era){in_era=false;
+     char cb[48];std::snprintf(cb,48,"%s[%d,%d) ",l?"R":"L",start,(int)i);latches+=cb;}
+    if(now)++latch_ticks[l];}
+   if(in_era){char cb[48];std::snprintf(cb,48,"%s[%d,open) ",l?"R":"L",start);latches+=cb;}}
+  for(size_t i=0;i<N34;++i)for(size_t l=0;l<2;++l)
+   if(w.hindst[i][32+3*l]>=0.){++releases;
+    char cb[32];std::snprintf(cb,32,"%s@%d ",l?"R":"L",(int)w.hindst[i][32+3*l]);rel_ticks+=cb;}
+  {char b[640];std::snprintf(b,640,"F-G34 latch eras=%s latch_ticks=(%d,%d) releases=%d %s[PREDICTED (the airborne gate): the stall blinks ride the shipped resumptions; the R's latch [250,262) released by the L's completion; ZERO envelope releases]",
+    latches.c_str(),latch_ticks[0],latch_ticks[1],releases,rel_ticks.c_str());
+   note(b);
+   if(first_latch<0)
+    note("F-G34 NOT MEASURED: the latch never engaged -- the wave-34 law REVERTED (the falsifiers fired and are carried verbatim in receipt_wave34.json: the stall-blink latch launches at 215; the airborne-gated latch, either anchor, loses the pads at 259 -- the drain is geometric); the 295 twelfth-exchange strand is the shipped face");
+   else{
+    ck(first_latch==250,"f34_first_latch_engagement_predicted");
+    ck(releases==0,"f34_zero_envelope_releases");}}
+  // (c) the latch-era pads: the carrier's pair-min and share inside the eras
+  //    (the engagement transient: the first 2 ticks of an era re-load the
+  //    contact from the graze height -- the mid-era read starts at era+2)
+  if(first_latch>=0){
+   int era_band_exits=0;int era_rxn0=0;double worst_era_gap=-1.;
+   for(size_t l=0;l<2;++l){
+    bool in_era=false;int era_start=-1;
+    for(size_t i=0;i<N34;++i){
+     bool now=w.hindst[i][31+3*l]>0.5;
+     if(now&&!in_era){in_era=true;era_start=(int)i;}
+     else if(!now&&in_era){in_era=false;era_start=-1;}
+     if(in_era){
+      double g1=w.hgap[i][2*l],g2=w.hgap[i][2*l+1],gm=g1<g2?g1:g2;
+      if(gm>worst_era_gap)worst_era_gap=gm;
+      if(gm>1e-5+1e-6)++era_band_exits;
+      if(era_start>=0&&(int)i>=era_start+2){
+       double cr=w.hrxn[i][2*l]+w.hrxn[i][2*l+1];
+       if(cr<=0.)++era_rxn0;}}}}
+   char b[384];std::snprintf(b,384,"F-G34 latch_era_pads worst_pairmin_mm=%.4f band_exits_past_departure=%d rxn0_mid_era=%d [PREDICTED: the pads hold under the height demand; the pinned share never vanishes mid-era]",
+    worst_era_gap*1000.,era_band_exits,era_rxn0);
+   note(b);
+   ck(era_band_exits==0,"f34_latch_era_pads_hold");
+   ck(era_rxn0==0,"f34_latch_era_share_live");}
+  // (d) the twelfth exchange: the R's fire at the L's completion, live pads
+  if(first_latch>=0){
+   int fire_R=-1;
+   for(size_t i=250;i<w.hindst.size();++i)
+    if(w.hindst[i][14]>w.hindst[i-1][14]){fire_R=(int)i;break;}
+   int last_fire34=-1;
+   for(size_t i=250;i<w.hindst.size();++i)for(size_t l=0;l<2;++l)
+    if(w.hindst[i][12*l+2]>w.hindst[i-1][12*l+2])last_fire34=(int)i;
+   bool live=(fire_R>0&&(size_t)(fire_R-1)<w.t.size())?w.t[(size_t)(fire_R-1)][1]!=0:false;
+   char b[384];std::snprintf(b,384,"F-G34 twelfth_exchange fire_R=%d live_pads=%d last_fire=%d [PREDICTED: the R fires AT 262 ON the L's completion with live pads; the chain continues past the wave-33 strand at 247]",
+    fire_R,live?1:0,last_fire34);
+   note(b);
+   ck(fire_R>0&&fire_R<=266&&live,"f34_twelfth_fire_lands");
+   ck(last_fire34>262,"f34_chain_continues_past_twelfth");}}
 
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the

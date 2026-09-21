@@ -443,6 +443,26 @@ class GaitWalker {
  double hind_step_stand_y_[2]={0.,0.};      // the FLOOR ANCHOR: the pads' height captured at the arm tick
  double hind_step_stand_mp_[2]={0.,0.};     // the pinned MP angle (re-captured every pinned tick)
  uint64_t hind_step_stand_ticks_[2]={0,0};  // the pinned-tick census
+ // THE LATCHED CARRIER HOLD (wave 34, receipt_wave34.json): the mined
+ // 250 disarm -- the per-tick predicate defeats itself on the carrier's own
+ // 1-tick graze past the genuine-departure bound (1.317e-5 > kTouch+
+ // kReleaseBand), exactly the unload-lift it exists to prevent -- so the
+ // LATCH: once the hold has armed in the other's swing era it stays armed
+ // until the other completes or this leg fires, gated to the swing's own
+ // genuinely-cleared lift-first hold (the real lift's own read: the stall
+ // blinks ride the shipped 1-tick column resumptions -- pinning through them
+ // launched the walk at 215, measured twice; the airborne gate was the wave
+ // 34 first amendment). The latch's continuation pins with the SHIPPED
+ // anchor (the planar re-captured every pinned tick, the y the arm capture):
+ // the FROZEN WORLD PIVOT variant was tried and reverted (the second
+ // amended build: the roll demand marched the knee target -59.5 -> -31.7
+ // deg, the capped servo lost the pads at 259, the walk refused 298); its
+ // extension-envelope release read is reverted with it (the release field
+ // stays at its -1 sentinel).
+ bool hind_step_stand_latch_[2]={false,false}; // the latch is armed this swing era
+ bool hind_step_stand_pivot_[2]={false,false}; // the latch-era marker (the census)
+ int hind_step_stand_release_[2]={-1,-1};      // the envelope-release tick (-1 sentinel; the read reverted)
+ uint64_t hind_step_stand_latch_ticks_[2]={0,0};// the latch-era pinned-tick census
  bool hind_stand_hold(size_t hl)const{
   size_t o=hl==0?1:0;
   if(hind_step_mode_[o]!=1)return false;              // the exchange era only
@@ -2003,6 +2023,10 @@ class GaitWalker {
   hind_step_stall_[0]=hind_step_stall_[1]=0;
   hind_step_stand_[0]=hind_step_stand_[1]=false;hind_step_stand_ticks_[0]=hind_step_stand_ticks_[1]=0;
   hind_step_stand_mp_[0]=hind_step_stand_mp_[1]=0.;
+  hind_step_stand_latch_[0]=hind_step_stand_latch_[1]=false;
+  hind_step_stand_pivot_[0]=hind_step_stand_pivot_[1]=false;
+  hind_step_stand_release_[0]=hind_step_stand_release_[1]=-1;
+  hind_step_stand_latch_ticks_[0]=hind_step_stand_latch_ticks_[1]=0;
   hind_step_alt_due_[0]=hind_step_alt_due_[1]=0;hind_step_deadline_tick_[0]=hind_step_deadline_tick_[1]=0;
   hind_step_deadline_fires_[0]=hind_step_deadline_fires_[1]=0;
   hind_step_dl_unload_[0]=hind_step_dl_unload_[1]=0;hind_step_unload_fires_[0]=hind_step_unload_fires_[1]=0;
@@ -2195,6 +2219,34 @@ class GaitWalker {
      // the bytes were restored. The pin re-captures its planar target every
      // pinned tick; the y-anchor is captured once at the arm tick (the floor
      // anchor, the second amendment).
+     // THE LATCHED CARRIER HOLD (wave 34): the mined 250 disarm -- the
+     // predicate read the CARRIER's own 1-tick graze past the genuine-
+     // departure bound (1.317e-5) one tick after the arm, while the swing's
+     // read was still in band: the trigger defeats itself on the exact lift
+     // it exists to prevent. THE LATCH: once armed in the other's swing era,
+     // the hold stays armed until the other completes (mode 0) or this leg
+     // fires. The latch's continuation pins with the SHIPPED anchor (the
+     // planar re-captured every pinned tick, the y the arm capture) -- the
+     // frozen world pivot was tried and reverted (the second amended build:
+     // the 259 pad loss under the roll demand, the 298 refusal); the
+     // extension-envelope release read is reverted with it.
+     // THE WAVE-34 LATCH IS REVERTED (the pre-committed falsifier action,
+     // receipt_wave34.json amendment 2): three builds measured -- (1) the
+     // latch through the stall blinks launches the walk at 215 (the wave-33
+     // amendment-3 face, reproduced on the world-pivot variant:
+     // gait_impact_event_budget, the R's hip 63.0254 deg) -- the 1-tick
+     // blink resumptions are the vault's pivot re-establishment; (2)+(3) the
+     // AIRBORNE-GATED latch (the swing's hold genuinely cleared) with EITHER
+     // anchor -- the frozen world pivot AND the shipped re-capture -- rides
+     // the twelfth exchange exactly [250,262) and still loses the pads at
+     // 259: the real swing's 15-tick haul transfers the carrier's whole share
+     // forward (the rxn 10.1 N @254 -> 0 @260, both anchors) before the 262
+     // window opens -- the drain is GEOMETRIC (the mined hind splay: the
+     // plants 0.12-0.24 m ahead of the body's 4 mm/tick advance), not
+     // control. The pin buys 9-10 ticks of ride; the era needs 13. THE
+     // WAVE-35 BANK: the carrier's exchange fire must land before its share
+     // drains -- a fire deadline reading the carrier's own rxn decay (the
+     // wave-31/32-mined LAW-1 candidate), or the splay itself.
      if(hind_stand_hold(hl)){
       auto p1=e.point(points_[hind_heel_pt_[hl]].index,points_[hind_heel_pt_[hl]].local).first;
       auto p2=e.point(points_[hind_mp_pt_[hl]].index,points_[hind_mp_pt_[hl]].local).first;
@@ -2214,6 +2266,7 @@ class GaitWalker {
       }
       ++hind_step_stand_ticks_[hl];}
      else hind_step_stand_[hl]=false;
+     hind_step_stand_latch_[hl]=false;hind_step_stand_pivot_[hl]=false;
      bool live_slot=phi_[hl]>=TOE_OFF&&touching_prev_[hl];
      bool alt_fire=hind_step_alt_due_[hl]!=0&&touching_prev_[hl];
      if(!live_slot&&!alt_fire)continue; // a live slot or a due alternation only
@@ -2532,7 +2585,12 @@ class GaitWalker {
       // THE STAND-FIRST HOLD's census fields (wave 33). Read-only.
       {"swing_stall_ticks",hind_step_stall_[hl]},
       {"stand_hold",hind_step_stand_[hl]},
-      {"stand_hold_ticks",hind_step_stand_ticks_[hl]}});}
+      {"stand_hold_ticks",hind_step_stand_ticks_[hl]},
+      // THE LATCHED WORLD-PIVOT HOLD's census fields (wave 34). Read-only.
+      {"stand_latch",hind_step_stand_latch_[hl]},
+      {"stand_pivot",hind_step_stand_pivot_[hl]},
+      {"stand_release",hind_step_stand_release_[hl]},
+      {"stand_latch_ticks",hind_step_stand_latch_ticks_[hl]}});}
     gait["hind_step"]=hs;}}
   return {{"sim_time_s",ticks_*dt_},{"ticks",ticks_},{"mode","native_gait_walker"},{"joints",joints},
    {"config",config_},{"power",config_["power"]},{"gait",gait},
