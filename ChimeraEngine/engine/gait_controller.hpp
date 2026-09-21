@@ -2283,7 +2283,21 @@ class GaitWalker {
       // evaluation -- a static vertical demand until the band clears.
       double g1=gap_of(e,hind_heel_pt_[hl]),g2=gap_of(e,hind_mp_pt_[hl]);
       if((g1<g2?g1:g2)>kTouch+kReleaseBand){hind_step_held_[hl]=false;hind_step_clear_tick_[hl]=(int)ticks_;}
-      else{++hind_step_hold_ticks_[hl];++hind_step_stall_[hl];}}
+      else{++hind_step_hold_ticks_[hl];++hind_step_stall_[hl];}
+#ifdef GAIT_EVENT_TRACE
+      // WAVE 45 HOLD-CLEARANCE INSTRUMENT (read-only plumbing, receipt_wave45.json):
+      // the release band's OWN decision view -- the heel/MP gaps the release test
+      // reads, the band edge (the machinery's own constants), the held state after
+      // the test (hd=0 marks THE CROSSING TICK), the hold census clock, the glide
+      // clock pre-increment (the td test this tick evaluates tm+1 >= tair), the
+      // clear tick, the other leg's mode, the deadline. One line per held tick.
+      std::fprintf(stderr,"[dvfl] t=%llu leg=%zu g1=%.9e g2=%.9e edge=%.1e hd=%d ht=%llu tm=%.1f clr=%d oth=%d dl=%llu\n",
+       (unsigned long long)ticks_,hl,g1,g2,kTouch+kReleaseBand,hind_step_held_[hl]?1:0,
+       (unsigned long long)hind_step_hold_ticks_[hl],hind_step_t_[hl],
+       hind_step_clear_tick_[hl],(int)hind_step_mode_[1-hl],
+       (unsigned long long)hind_step_deadline_tick_[hl]);
+#endif
+     }
      ++hind_step_t_[hl];
      // THE GLIDE-RETURN LAW (wave 31, receipt_wave31.json): A REPLANT IS NOT
      // COMPLETE UNTIL THE BAND ENTRY. The wave-28..30 clocked TD delivered the
