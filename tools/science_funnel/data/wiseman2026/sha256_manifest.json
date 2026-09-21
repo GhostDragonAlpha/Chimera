@@ -1,0 +1,1452 @@
+{
+ "schema": "chimera.sha256_manifest.v1",
+ "generated": "2026-09-20",
+ "root": "tools/science_funnel/data/wiseman2026/",
+ "files": [
+  {
+   "path": "LICENSE_CC_BY_4.0.txt",
+   "bytes": 19053,
+   "sha256": "d07988f4be47912f75a73b44da8a9c0b602bf6c8ced69de858b848f379ecd973"
+  },
+  {
+   "path": "Primate_models.zip",
+   "bytes": 20510615,
+   "sha256": "6cb8e29ad6d7664beb19ed8f5f6aadeef0153f49dd0aea052135c846768f6181"
+  },
+  {
+   "path": "_api/article_32017184.json",
+   "bytes": 4458,
+   "sha256": "3b80788d14ebb0e1b47cdcf44b250392cebdd15ef81f664ce176f1e885189d19"
+  },
+  {
+   "path": "_api/article_32017187.json",
+   "bytes": 4555,
+   "sha256": "b09fb8a36248cb87262a24cbbd9a80a717c8ae251d9679048197640130d9479a"
+  },
+  {
+   "path": "_api/zenodo_20041122.json",
+   "bytes": 5198,
+   "sha256": "c15b1520d294f230ce85e8d57d323503fa2aafa55cb9a52f8ae3b9b23a77e5d1"
+  },
+  {
+   "path": "acquisition_preregistration.json",
+   "bytes": 5599,
+   "sha256": "e2fd2de9689e56d789977f5ec69a613390d1e2113f578e00c62a98d47c8f9c34"
+  },
+  {
+   "path": "download_receipt.json",
+   "bytes": 3907,
+   "sha256": "bb2363e452b7f50e5bb149709bdbf2ae6f22e9cc1d00609fdb3333896b2e5f73"
+  },
+  {
+   "path": "inventory.json",
+   "bytes": 67154,
+   "sha256": "eba1545a4009119a5f4bf1d49704db5750855fa46c24776b0c878e3a3b4f31e3"
+  },
+  {
+   "path": "models/Bonobo_model.osim",
+   "bytes": 405076,
+   "sha256": "d4032d9b464f72de923a1bdac5d3c1428d6eb35bbf7890f1dec405c635dba9a7"
+  },
+  {
+   "path": "models/Chimpanzee_model.osim",
+   "bytes": 385267,
+   "sha256": "0be4386e96bda1bed4ab8462c6ef84cca98efe1bbeea4766f9a5d3a1037b8607"
+  },
+  {
+   "path": "models/Gibbon_model.osim",
+   "bytes": 389405,
+   "sha256": "08303243f29c49ba39a2ccc4bdc8ab633eb1eb64069adb4a911ed6f4036ad076"
+  },
+  {
+   "path": "models/Gorilla_model.osim",
+   "bytes": 387499,
+   "sha256": "4050e00576e7bd3a0f640b372c3044f98e391504d8a859a8658c48d29b7e3ae5"
+  },
+  {
+   "path": "models/Macaque_model.osim",
+   "bytes": 381616,
+   "sha256": "d5c65cbc0a72bd2d5c2258c6bd018fe850ae25cce6fb07c1f268b91e598c88e9"
+  },
+  {
+   "path": "models/Orangutan_model.osim",
+   "bytes": 400510,
+   "sha256": "38441595463e296639e849a4b5018c4dc3cf8f439bb10c8acdae637dfb848e28"
+  },
+  {
+   "path": "models/Siamang_model.osim",
+   "bytes": 390826,
+   "sha256": "62df812b72c45da379b6df1b7b8b05dbaecb8b4c171546cf2556c08eee426f8a"
+  },
+  {
+   "path": "rsos260107_si_001.docx",
+   "bytes": 43062,
+   "sha256": "11ca4a19d4028dfb0c5260541a057f63e348d69609e795c3ebd17d3654c3b367"
+  },
+  {
+   "path": "rsos260107_si_002.xlsx",
+   "bytes": 59229,
+   "sha256": "957af7fa9b9d8b29a4c327eaf53bc25c95f369bac83d5de9c341f728ffcba48d"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/bonobo_model.osim",
+   "bytes": 405076,
+   "sha256": "d4032d9b464f72de923a1bdac5d3c1428d6eb35bbf7890f1dec405c635dba9a7"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/L_femur.obj",
+   "bytes": 438734,
+   "sha256": "d490da8f21be0ab29c4beaad5b3486351a4e909788760562b07f4b8bafa1c60f"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/L_fibula.obj",
+   "bytes": 400943,
+   "sha256": "081217f0d2b2ff15400b27b13b7bb6c7ebd9a6468b5bed71928115c837817df6"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/L_footmass.obj",
+   "bytes": 107748,
+   "sha256": "2d69249adfea2b4046a3cefdc26ef483baba8802512b857db2ffb2b8fdc78643"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/L_hallux.obj",
+   "bytes": 87329,
+   "sha256": "efd95d81e93b55838e073221d2817cfd9fef0f0556cc20771b0048770e5b844a"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/L_halluxbone.obj",
+   "bytes": 147350,
+   "sha256": "95482dcf23a213aac607b874409fd07ebb394b2a13c060bf6ecd93475369d5d9"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/L_halluxmass.obj",
+   "bytes": 60820,
+   "sha256": "9be813c3f52c9713335dc5c304044fa49c1c3a05aed9627318a8defc3bc7b2fe"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/L_metatarsals.obj",
+   "bytes": 480191,
+   "sha256": "22fe1a1ee634e7bc3569191a35c94b021673343578db3c97e5079d148a7e5250"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/L_shank.obj",
+   "bytes": 199104,
+   "sha256": "1fe7bbb847e3001bdfc50b0221801c3da0e5bb3e5e75737591d92f45118a9d6d"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/L_shankBones.obj",
+   "bytes": 689392,
+   "sha256": "e56378853a5095bf47bc67d70abbe0b6bc206a2e96bdcdd8e138d01427b0781f"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/L_thigh.obj",
+   "bytes": 142968,
+   "sha256": "656cb6d14900d35c4111e11b0ec0e05830cdeedc44b44da429f1c721e0bb7242"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/L_toesbone.obj",
+   "bytes": 497639,
+   "sha256": "1cfb0c95f36bed6e8754d5f934b96acf9ebb3b8494d4980477352c3c142d3643"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/L_toesmass.obj",
+   "bytes": 75858,
+   "sha256": "07a0cb6a069410d6c2a5774d9db8d1100bbf803c0d1e81a8fa428d9a435e9d9c"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/Pelvis.obj",
+   "bytes": 62763,
+   "sha256": "a46bf2269fd60deadcf1d3eb8e2daa99b66811c83e6d42dff93dbdcd275a02e0"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/Pelvisbone.obj",
+   "bytes": 514567,
+   "sha256": "c60e5358e45b2d7f63d595b27783e8d6c90c749a6a56699dbc8163441e2016bd"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/R_Meta1st.obj",
+   "bytes": 87843,
+   "sha256": "162ee60938ecfab8ec1d376122faf05ba0f21b4fb846bf963219c9714b30d10c"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/R_bones.obj",
+   "bytes": 684169,
+   "sha256": "d367a750b532b51d62742c1439338961c56f63d3570bde7d4a315e6dc4035a31"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/R_fibula.obj",
+   "bytes": 394907,
+   "sha256": "72e41119c1ea0ecd0c849b0e41458323473d54c02aec5dd497c58ee436442342"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/R_foot.obj",
+   "bytes": 108283,
+   "sha256": "df5240164f66ef34760003af83cd954c5636ffb2f081e4016a22ca52bcde8695"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/R_footBone.obj",
+   "bytes": 500940,
+   "sha256": "d059e5eaf67e78789cb70d01c6c14e64c91ea3c4061e26536190b3c78062b7c9"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/R_halluxMass.obj",
+   "bytes": 75478,
+   "sha256": "f157d7fb5d22a0106d84530bc8db1417e42a8b8a72d85542fcfdb9be0cc9af38"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/R_shank.obj",
+   "bytes": 197031,
+   "sha256": "de052b48f8dc37896217f7447e0ba4e9f7994abbe655968df0f4428637f212ba"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/R_toesbones.obj",
+   "bytes": 493708,
+   "sha256": "5026bdb58c598d0468950f4471d6ab5c94ef9c3656565cb2d7aa13bce913bddc"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/halluxr.obj",
+   "bytes": 91599,
+   "sha256": "74880b1093aec05277bdd3b5bea63cc8f788ba0fe63fd85f6577434dc91e402f"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/halluxr_bone.obj",
+   "bytes": 145633,
+   "sha256": "34834b141607674a0f6bf491b6bb91814bcf9b69ca0b37cb3c6f998f456e8e8c"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/r_femur.obj",
+   "bytes": 434525,
+   "sha256": "a86440b5ed8a1b66f410998935c7490046e3e2ffeae9210537c35505c07dd679"
+  },
+  {
+   "path": "_extracted/Primate_models/Bonobo/geometry/r_thigh.obj",
+   "bytes": 142805,
+   "sha256": "d9c3f98f3da96e5df3be22341ce73e9e833735d9a30587082528e2c8a1b7deaa"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/chimpanzee_model.osim",
+   "bytes": 385267,
+   "sha256": "0be4386e96bda1bed4ab8462c6ef84cca98efe1bbeea4766f9a5d3a1037b8607"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/BodyMass.obj",
+   "bytes": 250601,
+   "sha256": "df7003a20a3dbafb0ddf512a6275d3c6552721cd3d3967bdd02225b89df7435f"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/Pelvis.obj",
+   "bytes": 2643532,
+   "sha256": "4276252ec3423ae94464a838409f751fb47b9854848b20d3a51784765fced810"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/halluxr_bone.obj",
+   "bytes": 31751,
+   "sha256": "086c78b28846b8176084d449c6c8d643e7dc6f54241378de1962bf75f9c27775"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/lDigits.obj",
+   "bytes": 15156,
+   "sha256": "b035baf7444088d2b33f004c955b5c028f5af831489f45d4e54054392a42af39"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/lDigitsbone.obj",
+   "bytes": 899928,
+   "sha256": "f921cb256aa6d813726cf41c4d1afee06e1613ccf1abbeefda621e0bf058c797"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/lFemurbone.obj",
+   "bytes": 1672695,
+   "sha256": "a2ce4901a6929aa7fbd9a2be0fecb34f4a5e492c778e03a1dd4f3427db8a1a17"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/lFoot.obj",
+   "bytes": 124759,
+   "sha256": "11b14eb93d50e59f9716a12e49a8f6f3bb5d22014b9d83ef6f386ac22816eff1"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/lFootbone.obj",
+   "bytes": 520944,
+   "sha256": "ba9b733c2a229eaed0c16cd55d9e13dc1f629c218be87e8668ef884b0f5277b1"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/lShank.obj",
+   "bytes": 70773,
+   "sha256": "35613ada884ad2cf0d4a5b3133dfbaa5d8f917f435becfc85ddb25a6179c1fa9"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/lShankbone.obj",
+   "bytes": 2761133,
+   "sha256": "6353d006e4afc9303f5dc100f46a34cee65931475220647687c7a9aec38ec020"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/lThigh.obj",
+   "bytes": 7266,
+   "sha256": "9918e72cf89fa4fbd100493a3973b299039ffaa0459af16de8cbd01149247b83"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/pelvisSegment.obj",
+   "bytes": 10118,
+   "sha256": "12014d904c3241252f211f5a69bba3b5fdb15ab98525109ebcaff942260a7ba6"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/rDigitsbone.obj",
+   "bytes": 886574,
+   "sha256": "d4035adf1baf95b1b07b87cf3d44b5f05a0990a022f061489241e82d3e1747fa"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/rDigitsmass.obj",
+   "bytes": 15075,
+   "sha256": "831d423b5651509075bb223bc30f5f2baa9e010c4363d0233cf9cb1fde16858e"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/rFootbones.obj",
+   "bytes": 468023,
+   "sha256": "f577faf51cd694a4ce28f30f9fc6c349f23735225439d9e98d5f13dee3431295"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/rFootmass.obj",
+   "bytes": 125458,
+   "sha256": "2d145348ab2fb36ef106757ff9cb2e5ca3535295cedad38938928c0dbac4bb62"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/rShank.obj",
+   "bytes": 70617,
+   "sha256": "7b2118fb0de022f63c4b7f908eaf7c9661aa7b055bce7843137d2fe9e96f9835"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/rShankbone.obj",
+   "bytes": 2765142,
+   "sha256": "f49e9857a60a4231a0fda49c1fabc0047ff3a8f3b118ef4f56125f6bf0d477df"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/rThigh.obj",
+   "bytes": 7211,
+   "sha256": "07a940fe3653c54d9a679ade865f1994f014246426c8342c40fcba87ce39818b"
+  },
+  {
+   "path": "_extracted/Primate_models/Chimpanzee/geometry/rThighbone.obj",
+   "bytes": 1644177,
+   "sha256": "004cf15ee70f82ac859c98708e81974fe0357e8748a11b545630d74e649a37cb"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/Macaque_model.osim",
+   "bytes": 381616,
+   "sha256": "d5c65cbc0a72bd2d5c2258c6bd018fe850ae25cce6fb07c1f268b91e598c88e9"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/BodyMass.obj",
+   "bytes": 64146,
+   "sha256": "9d5c4a896d145d75521bd6b853acda7e0732d67eb9dc2126762d280288ca170d"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/L_halluxmass.obj",
+   "bytes": 110029,
+   "sha256": "836e07a7e33d29217ef8b2ccc33fa376aac31b08b63ca5265133c81d0cd141cb"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/Pelvis.obj",
+   "bytes": 527218,
+   "sha256": "c345480ca4a5e1953432f98ff5b46d6778ab019f791f69c6039fb395da8fc761"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/halluxr_bone.obj",
+   "bytes": 89275,
+   "sha256": "d00e8630a7964c66d6a1cbcd0689745c8c855e2c62fdcf7e72c26925160defc9"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/lDigits.obj",
+   "bytes": 62880,
+   "sha256": "e76d23d5097bcd42ef7da9d03f6a69409aa7b5c098c55984ff73db14b3f3d8af"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/lDigitsbone.obj",
+   "bytes": 276262,
+   "sha256": "812485035ae47b02e166b5d0b850546810f65dc66b1456cb58e2fb7a217fa1e6"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/lFemurbone.obj",
+   "bytes": 697496,
+   "sha256": "f9f33f15668ab1ea8dd685aef7fbc930cef312967e25c7e18a3a58ae6685cb8b"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/lFoot.obj",
+   "bytes": 153875,
+   "sha256": "f76d5461edba95b83994fb645c6b740e8fab9ba7cd6d397e2cf8cb5d16714aa7"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/lFootbone.obj",
+   "bytes": 271645,
+   "sha256": "7592adbeddeb378d7d316930fbbb0d973947fdaf239f395b8bda6fe4bee8a765"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/lFootbone2.obj",
+   "bytes": 383668,
+   "sha256": "0520a4e059ca08210e721d3092e6c524db715d33da478b91cd055d47d7600625"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/lShank.obj",
+   "bytes": 108497,
+   "sha256": "26022512951d5fc2225ecff73f316f74d676656e41a4f0695f695f3fac33315d"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/lShankbone.obj",
+   "bytes": 477762,
+   "sha256": "6de78ddd0f766e6accdf4b1e26c18822140e1b6bad29ca5bd361dd09aa97bb2b"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/lThigh.obj",
+   "bytes": 173900,
+   "sha256": "36f2a84791f1e081a3e6f98a93c09680d8cdd1c72d7055edf1e9fa603c886399"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/l_halluxBone.obj",
+   "bytes": 261424,
+   "sha256": "bdb9a03f35eff1253a3625e8e5f942e6c269d3e59317f22bd38d602db9cc4f8b"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/rDigitsbone.obj",
+   "bytes": 272971,
+   "sha256": "66516a1159f041e1f9e446f03c6745c7b5e94f8e55759949f718f93bc12a8ac0"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/rDigitsmass.obj",
+   "bytes": 62118,
+   "sha256": "0e48aed4fb44a19c43af475243f418c175c19517dbaec3e75616e98e204f45d5"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/rFootbones.obj",
+   "bytes": 384718,
+   "sha256": "a4d5d18c7ac726853dfc6f9a4d32e2771e8ffc31595c3c3ea6b0629c68df1612"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/rFootbones2.obj",
+   "bytes": 274274,
+   "sha256": "ef08842aa2fc4cf054143548fee282cfa30a8a6875e331e96ebe9fe983abb680"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/rFootbones3.obj",
+   "bytes": 154789,
+   "sha256": "d1c8d08170c8169c4b192c0f622542547a3493047a146ca566aa4427bb3803ee"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/rFootmass.obj",
+   "bytes": 119581,
+   "sha256": "054b2c915b4129274d4bbeeaf2cb85f1104c56b4939d34ec555b4afe9da13340"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/rShank.obj",
+   "bytes": 107956,
+   "sha256": "15e06e28582352f5772ca553fd4de569d2a0fce812053b62760ec1e763c88c80"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/rShankbone.obj",
+   "bytes": 475815,
+   "sha256": "eee8e9420c361063fb10b0593a5657994644eee48675e2a1916b219da4958089"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/rThigh.obj",
+   "bytes": 172852,
+   "sha256": "c1a93f357bf913018baf927f6bdfa3123cf0666dd9f5a57c083fde42b4fe3661"
+  },
+  {
+   "path": "_extracted/Primate_models/Macaque/geometry/rThighbone.obj",
+   "bytes": 717175,
+   "sha256": "638b1462333df5b321869f9bb2e046b2c9703eab0630ce615353902fa3ce9bfa"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/Orangutan_model.osim",
+   "bytes": 400510,
+   "sha256": "38441595463e296639e849a4b5018c4dc3cf8f439bb10c8acdae637dfb848e28"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/L_femur.obj",
+   "bytes": 336266,
+   "sha256": "cbb2d618e942ef1a9285d29625b6d885eec290d519a9f374688d56f692c66932"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/L_fibula.obj",
+   "bytes": 267947,
+   "sha256": "724067d48adbe4dcdf65f677f829e32d93dafb2462c22fa6a3468705e0ebcb7a"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/L_footmass.obj",
+   "bytes": 68869,
+   "sha256": "e60f87a4bcfbe74989b6f67f8ed664c28e08dcfc65d28c759af49fac3f434b93"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/L_halluxBone.obj",
+   "bytes": 46846,
+   "sha256": "ae7ddcb088b7351ee7708686fc215821c0bfa28eca663e813101cb4b458438c4"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/L_halluxMass.obj",
+   "bytes": 28268,
+   "sha256": "e34785c3fc0d183037cc84cfb7e8ca38952c1d7ab06ccc48dd5854bde1383510"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/L_mass.obj",
+   "bytes": 78473,
+   "sha256": "22eb1066576b1fdd807d2e71fdd997efc3de02d322b4a2f500f769d1d6f3bfc4"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/L_metatarsals.obj",
+   "bytes": 250557,
+   "sha256": "86d5a009fd96a81944c4b3da20ee3c4fb7edb18fac152d27363d7028d47ae252"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/L_shank.obj",
+   "bytes": 122791,
+   "sha256": "41722fa33fb1458fe45b3b3bbfa14b838e94f05b96eb8cc6699106924a805b91"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/L_shankBones.obj",
+   "bytes": 265941,
+   "sha256": "692170722e9167a678850daf5bfbe837c262a71fa6b85510af3ba94ef637af1a"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/L_thigh.obj",
+   "bytes": 145190,
+   "sha256": "cb15cb8d8aef340bd70b82150e85c8c236f9903f90df6918861db4eb28007a8d"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/L_toesbone.obj",
+   "bytes": 390613,
+   "sha256": "bbdc1925142d84b8ae676635704f4626da18295901240ac8bfa5e6316a0c46b9"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/L_toesmass.obj",
+   "bytes": 68508,
+   "sha256": "d732dde3c59b84480838214189c1e611e72de51da19096dad7bc987230ece07e"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/Pelvis.obj",
+   "bytes": 112389,
+   "sha256": "8b5336bf1b08915c45cd13dd520430b7dd0803550289bcb1d242e2e2266c4a1f"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/Pelvisbone.obj",
+   "bytes": 529033,
+   "sha256": "7eae6338c77992d375fb602d7ab32e41c113d66447e55644c655a25f0bcdabc0"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/R_bones.obj",
+   "bytes": 266308,
+   "sha256": "264820a2eef329c2c688123dca79a02c3cd7a5722705793142d861c3fb14c068"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/R_fibulae.obj",
+   "bytes": 263929,
+   "sha256": "3b234666dfa16c56552a28d7c6350afed26ed2c6d3bf3d0419f3fdd1785df973"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/R_foot.obj",
+   "bytes": 69571,
+   "sha256": "21e7ea69f8b1c704a6920ee765c4f962691f779d104b09665514963dffa2c303"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/R_footBone.obj",
+   "bytes": 250962,
+   "sha256": "ab79d0f7da5891651bba7c373598413bd4de8d3bb531c23948512abbff999a56"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/R_shank.obj",
+   "bytes": 121860,
+   "sha256": "c9d776d9780b8e62dd698b9e1f2750b784e1c41cd941a8a2f29d868458d6e33f"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/R_toes.obj",
+   "bytes": 67798,
+   "sha256": "a815da93c2c67d6cc8cde34e882401e2e559f4dec9d482b5608f34e314dca19f"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/R_toesbones.obj",
+   "bytes": 388150,
+   "sha256": "073fe8d402fe6870e91f50498cdc046deeeab82e91466664db7ac8085eef7e32"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/halluxr.obj",
+   "bytes": 78721,
+   "sha256": "f40f59a287c5014a1388951797dd459338d80d0d31d03c338fe751d939c0fb89"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/halluxr_bone.obj",
+   "bytes": 46937,
+   "sha256": "0864e54d4bbbc414e9a9dc607ab026b0bb9e8060a544889462463d5c26a26df8"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/l_patella.obj",
+   "bytes": 29948,
+   "sha256": "6b08b17981b0aae451813cdaba094cded3de4623eb416cf330dddc6510eb3fe3"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/pelvisBone2.obj",
+   "bytes": 514101,
+   "sha256": "68171fd08f072dc7a3d88431a3322a117652da81009fbca310b7fc6caedd50c5"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/r_femur.obj",
+   "bytes": 334019,
+   "sha256": "a9dab26c167da91163d3ce8c95db274e1dda1f1d8d8f21267f04699c9f52e0ff"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/r_patella.obj",
+   "bytes": 29610,
+   "sha256": "6f68622ad591eb13019d0afb6dca27aa641718c774c8b19244a97cd54a21c30c"
+  },
+  {
+   "path": "_extracted/Primate_models/Orangutan/geometry/r_thigh.obj",
+   "bytes": 145675,
+   "sha256": "43e639634eb5cf69d2332eddf1211adfc557c74160b8164ed08afbc6f513d1a5"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/Siamang_model.osim",
+   "bytes": 390826,
+   "sha256": "62df812b72c45da379b6df1b7b8b05dbaecb8b4c171546cf2556c08eee426f8a"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/L_femur.obj",
+   "bytes": 405714,
+   "sha256": "c4a3ab5ee37870e7278abd2cddee63795cd84b09d99a87aafd9fbd133d559303"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/L_footmass.obj",
+   "bytes": 94237,
+   "sha256": "77ddec5e85df21259e841205e076dc368d59bb1eb4332ee3827e7a21024ae1d5"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/L_halluxBone.obj",
+   "bytes": 27168,
+   "sha256": "6ef57f304a2a0cc2fc8beec86e194793cc2ed5c743fbcca38946a592aabeb059"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/L_halluxMass.obj",
+   "bytes": 31863,
+   "sha256": "c06191abb4c01bbe982f273d9c2232e35a6587e8e81e681612fd42cfea9983ef"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/L_metatarsals.obj",
+   "bytes": 427398,
+   "sha256": "661cd15b5c31d80ac01186ade958a941301e8481b3a66655f24b9554dd130b44"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/L_shank.obj",
+   "bytes": 80494,
+   "sha256": "09a1e63f360b7567e190916f3a9a8292d2ac7b4a57671bd99063f9aba72dfed8"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/L_shankBones.obj",
+   "bytes": 233687,
+   "sha256": "c930d2416128a1cfb24fd08085bb8a7a3a889f7826bc2f2ee9c2583b6683c0e5"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/L_thigh.obj",
+   "bytes": 142384,
+   "sha256": "c38a73238e8339ab15ac0dea381267f8efd60ab201d06ebd067df1701e0e31b3"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/L_toesbone.obj",
+   "bytes": 116128,
+   "sha256": "fc3c188b15334937d723bb7a0e7d3d1b13c787c8895329a55bc933576948da1d"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/L_toesmass.obj",
+   "bytes": 43700,
+   "sha256": "bb09def844e255bea3eafcf21d0f81fc8f71df84e430e8481e1b1270700c192b"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/Pelvis.obj",
+   "bytes": 83495,
+   "sha256": "1ea1226a0ec4c16823b14f36badab872db75dc6b4456e5a1203b24d1a2894b3b"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/Pelvisbone.obj",
+   "bytes": 468833,
+   "sha256": "35a09634a130f4d00e578a196912325ff539b64656cd71076f895469aa421eab"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/R_bones.obj",
+   "bytes": 232161,
+   "sha256": "71de5336a7eafa6931a3bbb3036503bceef9ffd18143578f9495d83c9c5a5216"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/R_foot.obj",
+   "bytes": 93738,
+   "sha256": "ceea01f18abb9495c4c5f79f6851ad6647fcb377a0121849f5542317854bf310"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/R_footBone.obj",
+   "bytes": 427651,
+   "sha256": "58050c762d949bfd6c7be3fdd81fbd5ed2917e60f23dccdb733afc0b247becdb"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/R_halluxBone.obj",
+   "bytes": 27620,
+   "sha256": "2c2729bd9c6523119cd28a5938ecfd79678a0154fc465719b0c6e88019605179"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/R_halluxMass.obj",
+   "bytes": 32733,
+   "sha256": "edb4816cab81cadf586bd3c175d3b374cf211fceb34c6276a16465db14c45b96"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/R_shank.obj",
+   "bytes": 79825,
+   "sha256": "c3f475ab7e8765e27c5b208b1a4462367459cebe0ec5ea6972453109cb2c789a"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/R_toes.obj",
+   "bytes": 43331,
+   "sha256": "e2cd35fc62ef2f5783b654284bc320e2eeacf007cdc8a5fd52f7f59e981b1146"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/R_toesbones.obj",
+   "bytes": 114785,
+   "sha256": "d0d2c3d54724e9d8345a46e9b22dbade79c0081288163a64ddce1800993bb948"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/halluxr.obj",
+   "bytes": 33088,
+   "sha256": "f33618e5a2c00adf46c44a85a759849326546642f2c36fb3725326b85f1cfb9f"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/halluxr_bone.obj",
+   "bytes": 27544,
+   "sha256": "5fcc630f6f004cc845ca3549b3ffcdbe1f9773a0ceabe742c68565833e492a39"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/r_femur.obj",
+   "bytes": 402584,
+   "sha256": "bada56f4b7cea9000840b95ef910df334079fc1777d1fa3acbb6ed6b1e9322e8"
+  },
+  {
+   "path": "_extracted/Primate_models/Siamang/geometry/r_thigh.obj",
+   "bytes": 142141,
+   "sha256": "05769fa3376ee0e50ad6731b5f3ec38a066f206a187199fbb9cf62e5ac5416a4"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Gibbon_model.osim",
+   "bytes": 389405,
+   "sha256": "08303243f29c49ba39a2ccc4bdc8ab633eb1eb64069adb4a911ed6f4036ad076"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/MMA_across_range.csv",
+   "bytes": 914795,
+   "sha256": "78cb5bb6b18a6b764b22cfe3edb0b57e8c8398b78631822e7ce0ae31d8eb7bb1"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/MMA_curves_across_range.csv",
+   "bytes": 7733911,
+   "sha256": "1d38019689e6c5080c9882dad238ca3eeeb5dbba4af2c922a201c9f438f3f095"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/Maya2OpenSim.asv",
+   "bytes": 20774,
+   "sha256": "738efd00a1d0d38843114514e352e944264c3ecdd1f3f7789f793ee4f36fd694"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/Maya2OpenSim.m",
+   "bytes": 21319,
+   "sha256": "18deb76ddc6eec2e50618a091b295097670ce8b42bda9c55eb2b99c7cfcb8e81"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/Templates/OsimBodyTemplate.xml",
+   "bytes": 4556,
+   "sha256": "16d08cc125d9bd8e3c4f45b1ffdc930f6b040356c945a0acd9dfe4e1a2189c67"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/Templates/OsimModelTemplate.xml",
+   "bytes": 733,
+   "sha256": "39b898fce98fb4e4f278a5ddef903e35b7f880fca2bebf1d226d394b50eaeaec"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/Templates/OsimMuscleTemplate.xml",
+   "bytes": 2750,
+   "sha256": "580739d2cb7f0ca053a070a76e7afb2729fdfb23a7a9ecd28bbe5b896b13a1e7"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/get_VF_mass_props.m",
+   "bytes": 24144,
+   "sha256": "913ee4ce2dfef53bc3c96a0ca88b4896522a15fa2a96612124f557ffb03c81d5"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/get_angle.m",
+   "bytes": 3140,
+   "sha256": "cdb03fb9282d48e14420535c3d43304e2b45a44087b8cc62199ad0d921b733e0"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/get_angle_free_axis.m",
+   "bytes": 2109,
+   "sha256": "30e349ffc69f91e9fd071e2838ef7e2ec85c869ddd36fdd84fa545651aeab9db"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/get_cs_origin.m",
+   "bytes": 1161,
+   "sha256": "5a6543a6b7750e585f3cd70c1c1e918b499b9551db08e712ae50d4d9cb220959"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/loadWobj.m",
+   "bytes": 2619,
+   "sha256": "3a865268759f00bf3401ecb00ffb26145b12929601e0322c3d1eff1631068875"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/foot_l/L_ankleacs_proxACS.obj",
+   "bytes": 18448,
+   "sha256": "38a961ebce541d2a4d00bcdbd5d8b58e25a687c78bdc9053a622efefab459eff"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/foot_l/L_footmass_MASS.obj",
+   "bytes": 58298,
+   "sha256": "0d15154f7594a581105493d9705eef9d1d879243cb60c580f26b4a945ae6c05d"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/foot_l/L_metatarsals_BONE.obj",
+   "bytes": 59408,
+   "sha256": "6f8d84257cdef3bf2c50a31124a1ef4c0ce7318d49ce618375fe986a19a0d0a9"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/foot_l/lMetatarsals_BONE.obj",
+   "bytes": 57893,
+   "sha256": "3a6be4a2f38b16626873788f6524aa7ac6d174e9476f2bc3946973af862fc96d"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/foot_l/l_calc_BONE.obj",
+   "bytes": 49455,
+   "sha256": "adb7925834bcf2296e10ae2a969cb73837e757ab57deb3861615186da2c8743c"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/foot_l/l_distHallux_BONE.obj",
+   "bytes": 29325,
+   "sha256": "570e1eb07f318f2e5bf746a87d99cdb34bb78693025f6f010094b9679b13f6c5"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/foot_l/l_halluxMeta_BONE.obj",
+   "bytes": 14372,
+   "sha256": "4c0100a3266861b28a7def27e9c389f2cb0d272cf91107416b6a66cb5873242d"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/foot_r/R_ankleACS_proxACS.obj",
+   "bytes": 18265,
+   "sha256": "1484c57b786ab1a1ded355a131204892ad36e7be3038edc5c08e8e4eb2b83763"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/foot_r/R_footBone_BONE.obj",
+   "bytes": 58414,
+   "sha256": "5cd939719afd69cf006c66fa015abf8bb63ea7312699f779f544730094edfe3a"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/foot_r/R_foot_MASS.obj",
+   "bytes": 57298,
+   "sha256": "f4bd7d2ff5dd78609387a30bd060763a44664a55d72b1de0e7d7b20d66e1aeb4"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/foot_r/r_calc_BONE.obj",
+   "bytes": 48455,
+   "sha256": "112bd5272a64b14187b5b6b05fa419e0a68f514d73ba506954c4fbaa12cfa2e6"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/foot_r/r_halluxmeta_BONE.obj",
+   "bytes": 14122,
+   "sha256": "16e8b8e314647fcb43facccc76ce57924972e48925464271574b3ff9ed554603"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/foot_r/r_metatarsals_BONE.obj",
+   "bytes": 56893,
+   "sha256": "99240b2791bd56bcf2b3bd25ce84b7513ef8d9c4a5ad4b628b5c81559dda09aa"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/hallux_r/Siamang_hallux_proxACS.obj",
+   "bytes": 18175,
+   "sha256": "cecf8d4ebfa35262f7e55d528a1351b03eb28f2e30eb66adcd01016dcb08fea2"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/hallux_r/halluxr_MASS.obj",
+   "bytes": 28821,
+   "sha256": "72ea9bde2779b4251648c6bef5fefc6772c0abc98e40c5eae77939efc1a849cc"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/hallux_r/halluxr_bone_BONE.obj",
+   "bytes": 28821,
+   "sha256": "72ea9bde2779b4251648c6bef5fefc6772c0abc98e40c5eae77939efc1a849cc"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/modelSetup_bodies.xlsx",
+   "bytes": 9745,
+   "sha256": "695c6d21022142e39d2b48ef77aa0649b1cf5b85df3936acf2010be89063a825"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/modelSetup_muscles.xlsx",
+   "bytes": 11034,
+   "sha256": "21660ba0eddccf4cd86a325dac0664327445f8d94d3dccc94413c3b3a2df3332"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/pelvis/Pelvis_MASS.obj",
+   "bytes": 475031,
+   "sha256": "0e53dd27808a8b4252c3f131ca86ae139f54f803cacd787a1f482affd300e18b"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/pelvis/Pelvisbone_BONE.obj",
+   "bytes": 475031,
+   "sha256": "0e53dd27808a8b4252c3f131ca86ae139f54f803cacd787a1f482affd300e18b"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/pelvis/pelvis_ACS.obj",
+   "bytes": 18001,
+   "sha256": "f8a7d120bcb208332257708e939c626880fef666f18412ed2e7c7c01c49f6135"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/shank_l/L_kneeacs_proxACS.obj",
+   "bytes": 18395,
+   "sha256": "b63450fc26ce2e259e4de6b17e8ce85cd17153278f034cb95a61dc963c0edec9"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/shank_l/L_shankBones_BONE.obj",
+   "bytes": 324923,
+   "sha256": "92d50cab961fcb2e12dbff962478d0121ed17039ae2c2f06a6572596b0d30a5e"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/shank_l/L_shank_MASS.obj",
+   "bytes": 324923,
+   "sha256": "92d50cab961fcb2e12dbff962478d0121ed17039ae2c2f06a6572596b0d30a5e"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/shank_l/l_fibula_BONE.obj",
+   "bytes": 327382,
+   "sha256": "1fb7f4a0923e5f8638e8186f225b575d6bf392c3d7068fe29fdf8289c07bf6bb"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/shank_r/R_bones_BONE.obj",
+   "bytes": 319923,
+   "sha256": "53b73c517da76deae4dd591eba059782b6555d5ed814248fcca9da64f98ba591"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/shank_r/R_kneeACS_proxACS.obj",
+   "bytes": 18233,
+   "sha256": "5e7e6ae2bb0e599932f4cfd16caf9ec340ee859519383c45fb1bb1ea10c5e9df"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/shank_r/R_shank_MASS.obj",
+   "bytes": 319923,
+   "sha256": "53b73c517da76deae4dd591eba059782b6555d5ed814248fcca9da64f98ba591"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/shank_r/r_fibula_BONE.obj",
+   "bytes": 322382,
+   "sha256": "b3563deac2589b408f22d36e00466e35f8215bf6d795320d8e478458a53efc91"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/thigh_l/L_femur_BONE.obj",
+   "bytes": 452145,
+   "sha256": "ee9daeb48390142e3ee36eec0be24d7fed41c496a1c5bbc437c1adac11cff461"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/thigh_l/L_hipacs_proxACS.obj",
+   "bytes": 18117,
+   "sha256": "aa10934d684ea609a6de7f0a7a6461f706bee63169fd8e188502dfeecfab6483"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/thigh_l/L_thigh_MASS.obj",
+   "bytes": 452145,
+   "sha256": "ee9daeb48390142e3ee36eec0be24d7fed41c496a1c5bbc437c1adac11cff461"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/thigh_l/l_patella_BONE.obj",
+   "bytes": 59378,
+   "sha256": "4152c5ef85f071fba4d2e231f52d383af5a5c1a2c7d7807c134965a9d022db60"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/thigh_r/hipACS_proxACS.obj",
+   "bytes": 17955,
+   "sha256": "5f8346e2dc6f4153708780c31ef978a4c53d10f856a4ebd6407d8ef1d0c329a6"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/thigh_r/patella_BONE.obj",
+   "bytes": 58378,
+   "sha256": "b290593a09617f8920329afe4663295239844676625f5dd0dcad317833b38b3c"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/thigh_r/r_femur_BONE.obj",
+   "bytes": 445145,
+   "sha256": "649a4719209ff47fa48e62ee04ad190c3a6769dabe0ff38f1fd533180f9864e8"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/thigh_r/r_thigh_MASS.obj",
+   "bytes": 445145,
+   "sha256": "649a4719209ff47fa48e62ee04ad190c3a6769dabe0ff38f1fd533180f9864e8"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/toes_l/L_halluxBone_BONE.obj",
+   "bytes": 25064,
+   "sha256": "c0a5c43e7ea546c9740e60b3e617bb2a8c34e0bd3ece8f2e9a18d59230749045"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/toes_l/L_halluxMass_MASS.obj",
+   "bytes": 29516,
+   "sha256": "972d4fa3fbfdd051e5e793c9c539ff4c467d119da3de0ea6e77308fa1a37020d"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/toes_l/L_mtp_proxACS.mtl",
+   "bytes": 3179,
+   "sha256": "2da9b66cd3581d35915e43ee7b1a0a0628b49e53bbecdc804a6b5994a142cf64"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/toes_l/L_mtp_proxACS.obj",
+   "bytes": 18316,
+   "sha256": "070e61bd6b629354bbbfa3f25a6bb8bc53bbadd841f0fb88ce50b41e35a8e060"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/toes_l/L_toesbone_BONE.mtl",
+   "bytes": 3179,
+   "sha256": "2da9b66cd3581d35915e43ee7b1a0a0628b49e53bbecdc804a6b5994a142cf64"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/toes_l/L_toesbone_BONE.obj",
+   "bytes": 125170,
+   "sha256": "daadc733c78f3f969df6fc0d5efcf2c7d49ba7eaea29c9974533915134758208"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/toes_l/L_toesmass_MASS.mtl",
+   "bytes": 3179,
+   "sha256": "2da9b66cd3581d35915e43ee7b1a0a0628b49e53bbecdc804a6b5994a142cf64"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/toes_l/L_toesmass_MASS.obj",
+   "bytes": 125170,
+   "sha256": "daadc733c78f3f969df6fc0d5efcf2c7d49ba7eaea29c9974533915134758208"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/toes_r/R_halluxMass_MASS.obj",
+   "bytes": 123180,
+   "sha256": "b6dd5501bacde9c84bbcb6bc2124253954999813785fbb6728f4aaec6610a7d5"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/toes_r/R_mtp_proxACS.obj",
+   "bytes": 18133,
+   "sha256": "55f384b77a658b96eae511879c81e52e5133e472db2598817d5ff28cb701ccf2"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/modelSetup/toes_r/R_toesbones_BONE.obj",
+   "bytes": 123180,
+   "sha256": "b6dd5501bacde9c84bbcb6bc2124253954999813785fbb6728f4aaec6610a7d5"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/Gibbon_Base_Model.osim",
+   "bytes": 389277,
+   "sha256": "c20f28b4065a22a74432de296225cf52f065e27da09182a5ad73b1cddf69e80c"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/Gibbon_MuscleBuilding.osim",
+   "bytes": 389405,
+   "sha256": "08303243f29c49ba39a2ccc4bdc8ab633eb1eb64069adb4a911ed6f4036ad076"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/L_femur.obj",
+   "bytes": 476744,
+   "sha256": "47983acfa3129715843f97f568630a871d2af45d4804ddc6c0d07d25659bd094"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/L_footmass.obj",
+   "bytes": 61203,
+   "sha256": "c999b8986a47ae86579c72152177d4f02848ff42d89cfab76ee5e9dcfd9c533f"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/L_halluxBone.obj",
+   "bytes": 25441,
+   "sha256": "5ec8029a2eb7b5ff284e4f95a1e30e6d757782d2ea965e1a71a91f2970e2914b"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/L_halluxMass.obj",
+   "bytes": 29132,
+   "sha256": "682721b6770c125064e9bd656e86bac667b6ce787d49ffcf5776b0b16be88e4e"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/L_metatarsals.obj",
+   "bytes": 63060,
+   "sha256": "4c294549245a51c67590da65145b3d26da96b479a7d04fb44c8c7eeac0c076b6"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/L_shank.obj",
+   "bytes": 337772,
+   "sha256": "79ac98a72b708abbe0ffc589efdf01c88b361b90bf28cf7fabaa12175648c267"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/L_shankBones.obj",
+   "bytes": 337772,
+   "sha256": "79ac98a72b708abbe0ffc589efdf01c88b361b90bf28cf7fabaa12175648c267"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/L_thigh.obj",
+   "bytes": 476744,
+   "sha256": "47983acfa3129715843f97f568630a871d2af45d4804ddc6c0d07d25659bd094"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/L_toesbone.obj",
+   "bytes": 130844,
+   "sha256": "e48f17ed72e5bf17116f175b1d9a8c483357654ec5eeab64f298c781cc01b10d"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/L_toesmass.obj",
+   "bytes": 130844,
+   "sha256": "e48f17ed72e5bf17116f175b1d9a8c483357654ec5eeab64f298c781cc01b10d"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/Pelvis.obj",
+   "bytes": 501195,
+   "sha256": "b293bb17b398689e2344b69fb9fdda6cce4e5d35225f12570f76d4a91713da62"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/Pelvisbone.obj",
+   "bytes": 501195,
+   "sha256": "b293bb17b398689e2344b69fb9fdda6cce4e5d35225f12570f76d4a91713da62"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/R_bones.obj",
+   "bytes": 339563,
+   "sha256": "4df76e14413d4ece14d0959f025d8c37d7997ceef0391e8a667fc908bdf035a5"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/R_foot.obj",
+   "bytes": 61016,
+   "sha256": "63ae6e065fccf5db2f04c43d5135d2cdc382c4840648ef76c6bcb83eec1cb473"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/R_footBone.obj",
+   "bytes": 63351,
+   "sha256": "091c6f169bdbaf83ad75bcbd53f44f1ee4d754c41c88f71f37bd2b30c11e4213"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/R_halluxMass.obj",
+   "bytes": 129836,
+   "sha256": "2a18463cadfb7cfda74df25c0c043a9ea0b8e55aa12ff23f3bb5114f118452eb"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/R_shank.obj",
+   "bytes": 339563,
+   "sha256": "4df76e14413d4ece14d0959f025d8c37d7997ceef0391e8a667fc908bdf035a5"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/R_toesbones.obj",
+   "bytes": 129836,
+   "sha256": "2a18463cadfb7cfda74df25c0c043a9ea0b8e55aa12ff23f3bb5114f118452eb"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/halluxr.obj",
+   "bytes": 31006,
+   "sha256": "538df8f1a1f9e1bb9be2eb3cb5bb65879c2cc0c64593552ea4fdc3cf9f6870d1"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/halluxr_bone.obj",
+   "bytes": 31006,
+   "sha256": "538df8f1a1f9e1bb9be2eb3cb5bb65879c2cc0c64593552ea4fdc3cf9f6870d1"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/lMetatarsals.obj",
+   "bytes": 60770,
+   "sha256": "776d8915667ab82cbfd6fbe283ab7dd7374dbf9ffa36de6c2845f7f9accd2bd9"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/l_calc.obj",
+   "bytes": 51567,
+   "sha256": "987570e2a10f4a92c9da0a8d95ff73dc29f49fdd1ed58beec16bcf260a5131e4"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/l_distHallux.obj",
+   "bytes": 29845,
+   "sha256": "bbc6316a3a50e120cb655fab2f8b720f237fdec6f1d597c6e5ac05d224a2d873"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/l_fibula.obj",
+   "bytes": 340408,
+   "sha256": "f3379f0959f444a24e5680c78a9cc2feef7d2d7f9404b1415855182bc417be69"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/l_halluxMeta.obj",
+   "bytes": 14642,
+   "sha256": "ade6906df1af79b9b9b6a0817d31ff6a5260c8e69bc6cc4128464c07d1024b86"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/l_patella.obj",
+   "bytes": 61002,
+   "sha256": "2f4799c24c15d9c3543b43af3b71f2bf249d4722a8d7ed761fe4d356ace36f2a"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/patella.obj",
+   "bytes": 60556,
+   "sha256": "7389b31dbf150163f7edda40d71c4fc024523da983e7cce243dc91b1eee980db"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/r_calc.obj",
+   "bytes": 51748,
+   "sha256": "c9b6f3dff92a82d8f184c10890176d4cc649429d063d2a700bdd757bac0b3bf5"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/r_femur.obj",
+   "bytes": 473915,
+   "sha256": "dbcbfccdbca5fcff4884e63a6b8dc8d7caa358310c026e3800ed18883e94b64a"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/r_fibula.obj",
+   "bytes": 335415,
+   "sha256": "daa4dd36959c891ed87c4e56c2db19c892c901629c9e98b1ca9935afb196bfe9"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/r_halluxmeta.obj",
+   "bytes": 14890,
+   "sha256": "c814dfbd241291e089acb8bf45e4b12fff96ae9db0ebc5b4d667d6948fdea7bf"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/r_metatarsals.obj",
+   "bytes": 60582,
+   "sha256": "4fa95ac2236712eaaa8ab7ea6c2940f7ecaec62afd348dbb6917bab8f878bb7b"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/outputModel/geometry/r_thigh.obj",
+   "bytes": 473915,
+   "sha256": "dbcbfccdbca5fcff4884e63a6b8dc8d7caa358310c026e3800ed18883e94b64a"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/rot_free_axis.m",
+   "bytes": 2128,
+   "sha256": "474bb5320baa2a52565492ea22a038ca36ae78be55e9b5c8e6a9daa5ae326b68"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/rotate_coordinates.m",
+   "bytes": 5157,
+   "sha256": "9e182c0329b6c9ac298311d65e61a039a639d74a3caed1a0066308ebe8f91e91"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/system_mass_props_VF.m",
+   "bytes": 11902,
+   "sha256": "609c00b1b5c7517c574e0ab4b0d1a68c6d4698e75a7f4e0421d3678c7bb39598"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/win.bat",
+   "bytes": 181,
+   "sha256": "dc94041dd6214a2c756afec8a3c84970dec3f773bf66afeac57666545ff615e4"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/writeWobj2.m",
+   "bytes": 1245,
+   "sha256": "0ee8065d7e8b66ee715d21fc1d96a3324c0fe57c69f53d5295be79cb92bf5af7"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/xml_io_tools/base64decode.m",
+   "bytes": 4310,
+   "sha256": "f1db4f5b37783249a1d6aef0497b05578a5f3bdc184f959e973b4e2c8d0e3ef7"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/xml_io_tools/base64encode.m",
+   "bytes": 4962,
+   "sha256": "65b3429a8591d2bdc6068da45464de5b0d77f33ed9a12f19c472a2d473db1bac"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/xml_io_tools/gen_object_display.m",
+   "bytes": 4718,
+   "sha256": "747093006716df3ed5a73c817debad0300091b704e9d6689152698bc9a62dea9"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/xml_io_tools/license.txt",
+   "bytes": 1318,
+   "sha256": "bea16fe80772642fd9339041a65b8b2aa2b2bee7cb20bcc8937a30759635d072"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/xml_io_tools/xml_read.m",
+   "bytes": 23868,
+   "sha256": "d16f47d1332751515e045e4855b3b115e4469de7d93b6635c885bf3bf75a88d6"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/xml_io_tools/xml_tutorial_script.m",
+   "bytes": 35903,
+   "sha256": "776dd4d327b2799ede4142819cd23c6e7a07db979181fd5bf5bfe085f08af5d7"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/xml_io_tools/xml_write.m",
+   "bytes": 18335,
+   "sha256": "3f429c7704d09a7367ada955ee6a53d9f6d2a534bf64f5f50be94ad90aabdb06"
+  },
+  {
+   "path": "_extracted/Primate_models/gibbon/Maya_to_opensim/xml_io_tools/xmlwrite_xerces.m",
+   "bytes": 3637,
+   "sha256": "9203210d62742c3325e62b77c6ffe63121ebcef2a50f54785828194da5d74fa0"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/Gorilla_model.osim",
+   "bytes": 387499,
+   "sha256": "4050e00576e7bd3a0f640b372c3044f98e391504d8a859a8658c48d29b7e3ae5"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/BodyMass.obj",
+   "bytes": 453105,
+   "sha256": "ee91e22321c75bf3b7a76c6a03942513f400a807354ffc638a1d598e6c12c747"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/Pelvis.obj",
+   "bytes": 453105,
+   "sha256": "ee91e22321c75bf3b7a76c6a03942513f400a807354ffc638a1d598e6c12c747"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/PelvisLeft.obj",
+   "bytes": 459481,
+   "sha256": "4363ee95415c1cb92ad897a25fa1c2961937a578b36ca6f12d1be7c4ec8bb753"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/calc.obj",
+   "bytes": 479676,
+   "sha256": "808075943fa036e814524587cdba5aa4dcdd51ffc20acc29cce1a4781009a641"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/halluxr_bone.obj",
+   "bytes": 83648,
+   "sha256": "ae1e10bf2915cfbab3be2320457958ee8c4c5ec3ba5b77fe3bd741667b641f12"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/lDigits.obj",
+   "bytes": 369904,
+   "sha256": "8e8e59da5b3253be36c5b89d064b4c41aa433748e0ebc54ecc9f50b618653a1c"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/lDigitsbone.obj",
+   "bytes": 369904,
+   "sha256": "8e8e59da5b3253be36c5b89d064b4c41aa433748e0ebc54ecc9f50b618653a1c"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/lFemurbone.obj",
+   "bytes": 332530,
+   "sha256": "a292e59541b63b850f1f61fab17e0ce30403f1bff35e2ed96b60e4fb862fac42"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/lFoot.obj",
+   "bytes": 188722,
+   "sha256": "47c04cc19166dbf0185673e99949e5992fd5b766c933466b98bf326d3ab1332e"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/lFootbone.obj",
+   "bytes": 463150,
+   "sha256": "47f7e5866aa21304455109a472132b3fa967ddfd46b20e0ac0b4e8cb6d3f52fa"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/lShank.obj",
+   "bytes": 331999,
+   "sha256": "553d0cec5530effc429b635af2da5b1bc73eaaa8b1a4836f0d4c2d6cc52a25dd"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/lShankbone.obj",
+   "bytes": 331999,
+   "sha256": "553d0cec5530effc429b635af2da5b1bc73eaaa8b1a4836f0d4c2d6cc52a25dd"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/lShankboneFib.obj",
+   "bytes": 651562,
+   "sha256": "b2766b6aca70ae9fe97bfe64763cb7ed52481ea7122921fa256b768db38a50ff"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/lThigh.obj",
+   "bytes": 332530,
+   "sha256": "a292e59541b63b850f1f61fab17e0ce30403f1bff35e2ed96b60e4fb862fac42"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/l_halluxToe.obj",
+   "bytes": 79240,
+   "sha256": "db4fd5cee3635260a96e00138456920b36896425990b673783d421f09b4c6812"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/l_patella.obj",
+   "bytes": 160592,
+   "sha256": "f401e6bc25e80ebc3308b9266714f02cbba06bf42f2e00b87378ad412f91ec63"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/lcalc.obj",
+   "bytes": 477532,
+   "sha256": "0e7f3db73af7619bbd92eada93de69252359fa937391d6ac93e71c9e7b0bb29b"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/lmeta1st.obj",
+   "bytes": 476926,
+   "sha256": "ce8dc176c9498c8aa75d1b177ab8c87c064ec56af4105e9d942df4264c60c661"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/lmetatarsals.obj",
+   "bytes": 188722,
+   "sha256": "47c04cc19166dbf0185673e99949e5992fd5b766c933466b98bf326d3ab1332e"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/lnavicular.obj",
+   "bytes": 188404,
+   "sha256": "9b2e331da4578b1d541ad6855b3c98518d1367c0788f60558917cd41e95eae9d"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/meta1st.obj",
+   "bytes": 484721,
+   "sha256": "0ed6cb28cbb4ebdf937fe71863a86ebf854cde7f40ffc6225f4611e6c2d6ba1a"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/metatarsals.obj",
+   "bytes": 190583,
+   "sha256": "797e86e8018fe1025c89bc425b4e0bd753d2ba136f7d05da52ea37fd099f5a97"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/navicular.obj",
+   "bytes": 191399,
+   "sha256": "a8ca453ce3db6fcf78ae1e7e8a1c387232f4eb1b3e188e24f9eab5a0d4430ef5"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/patella.obj",
+   "bytes": 159097,
+   "sha256": "0d507fd56d7c74db1422ea5b375d31d73b44f4b989c63f63135fabda60408654"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/pelvisSegment.obj",
+   "bytes": 10614,
+   "sha256": "185c279f606d4e0297683e0a16ef89dec200058b6b234ee04a2f174fb2043320"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/rDigitsbone.obj",
+   "bytes": 364404,
+   "sha256": "90f7cc06d56adc8eb762f1434b487ac806a3bbdbf11f5db6940356c9f4192343"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/rDigitsmass.obj",
+   "bytes": 364404,
+   "sha256": "90f7cc06d56adc8eb762f1434b487ac806a3bbdbf11f5db6940356c9f4192343"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/rFootbones.obj",
+   "bytes": 466373,
+   "sha256": "84efaf7aa4c2a0102020433672cd95b41008724ff45d986347c138dc7147763d"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/rFootmass.obj",
+   "bytes": 83648,
+   "sha256": "ae1e10bf2915cfbab3be2320457958ee8c4c5ec3ba5b77fe3bd741667b641f12"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/rShank.obj",
+   "bytes": 332357,
+   "sha256": "e1aefe6acc09453c0305e3891b0f5c6d7ef63eefa19121dac9f80683409d115d"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/rShankbone.obj",
+   "bytes": 332357,
+   "sha256": "e1aefe6acc09453c0305e3891b0f5c6d7ef63eefa19121dac9f80683409d115d"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/rShankboneFib.obj",
+   "bytes": 639531,
+   "sha256": "612999a7fb9694fe8f1a53accba74de25e6ffb1a3618f40a3675b0b2a22f9261"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/rThigh.obj",
+   "bytes": 329986,
+   "sha256": "d16610e27384ea34d556a02f1a74133e38f10de2fdfec045cad9e72828922a08"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/rThighbone.obj",
+   "bytes": 329986,
+   "sha256": "d16610e27384ea34d556a02f1a74133e38f10de2fdfec045cad9e72828922a08"
+  },
+  {
+   "path": "_extracted/Primate_models/gorilla/geometry/sacrum.obj",
+   "bytes": 473556,
+   "sha256": "1807bb448a5bb7684b7e618140e76e61ca77476c80b0861be1d1292521ce9b2a"
+  }
+ ]
+}
