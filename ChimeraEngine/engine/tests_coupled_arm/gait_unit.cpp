@@ -52,6 +52,12 @@ struct WalkOut{
  std::vector<std::array<int,2>> fhl;
  std::vector<std::array<double,2>> ftic;
  std::vector<char> fcap;                       // paws_captured per tick
+ // WAVE 27c SEAT-REGION census inputs (receipt_wave27c.json): per-tick
+ // ground-line admissible region {pts,width_m,best_hr,seat_hr} on the seat's
+ // own line (0.25 mm grid, target +-0.30 m), and the seat's joint-face
+ // membership per leg (the status instrumentation, read-only).
+ std::vector<std::array<double,4>> sr[2];
+ std::vector<std::array<char,2>> srjt;
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
@@ -200,6 +206,7 @@ int main(int argc,char**argv){try{
     std::array<char,2> fmm{0,0};std::array<uint64_t,2> sat{};std::array<double,2> tgx{0.,0.};std::array<uint64_t,2> rep{0,0};
     std::array<std::array<double,11>,2> fwk{};std::array<uint64_t,2> wp{},wb{},wf{},wa{};
     std::array<char,2> fh{0,0};std::array<int,2> fhlk{-1,-1};std::array<double,2> ftick{-1.,-1.};
+    std::array<std::array<double,4>,2> srk{};std::array<char,2> sjk{0,0};
     if(s["gait"].contains("fore_paw")&&s["gait"]["fore_paw"].size()>=2)
      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["fore_paw"][l];
       if(p.contains("fore_mode"))fmm[l]=p["fore_mode"].get<std::string>()=="swing"?1:0;
@@ -219,7 +226,13 @@ int main(int argc,char**argv){try{
         number(p["ik_q2_unc_rad"]),number(s["joints"][8+2*l]["angle_deg"])*pi/180.,
         number(s["joints"][9+2*l]["angle_deg"])*pi/180.,std::hypot(tx-sx,ty-sy),tx-sx};
        wp[l]=p["wall_pins"].get<uint64_t>();wb[l]=p["wall_bound_ticks"].get<uint64_t>();
-       wf[l]=p["wall_follows"].get<uint64_t>();wa[l]=p["wall_pins_air"].get<uint64_t>();}}
+       wf[l]=p["wall_follows"].get<uint64_t>();wa[l]=p["wall_pins_air"].get<uint64_t>();}
+      if(p.contains("seat_region_pts"))
+       srk[l]={(double)p["seat_region_pts"].get<int>(),number(p["seat_region_m"]),
+               number(p["seat_region_best_hr"]),number(p["seat_frz_hr"])};
+      if(p.contains("seat_joint_face_ok"))sjk[l]=p["seat_joint_face_ok"].get<bool>()?1:0;
+      if(i==60)std::fprintf(stderr,"[SR27] raw60 l=%zu: %s\n",l,p.dump().c_str());}
+    out.sr[0].push_back(srk[0]);out.sr[1].push_back(srk[1]);out.srjt.push_back(sjk);
     out.fw[0].push_back(fwk[0]);out.fw[1].push_back(fwk[1]);
     out.wpins.push_back(wp);out.wair.push_back(wa);out.wbound.push_back(wb);out.wfollow.push_back(wf);
     out.fhold.push_back(fh);out.fhl.push_back(fhlk);out.ftic.push_back(ftick);
@@ -622,6 +635,43 @@ int main(int argc,char**argv){try{
    held_gaptick[1]>=0?std::to_string(held_gapmin[1]).c_str():"n/a",held_gaptick[1]);
   note(b2);}
 
+ // ── WAVE 27c SEAT-REGION CENSUS (pre-registered in receipt_wave27c.json;
+ //    THE DECAY-AWARE SEATS, resolved as the honest negative). (a) THE SEAT
+ //    JOINT-FACE CENSUS: every captured tick's fore seat (the planted/hold/
+ //    follow target the servo pursues) inside the UNCLAMPED joint ranges at
+ //    the live state. GREEN=(0,0): the wave-27c mining measured the seats
+ //    NEVER leave the joint face through the death -- the refusal's face is
+ //    the ACTUAL load-pinned at the -1.6 wall (q1a -1.5977 rad from tick 89,
+ //    commanded torque 0.64 of 4.229 N.m), not the seat; a decay-aware seat
+ //    re-anchoring therefore provably cannot lift the run (the whole
+ //    remaining region's width times the paw reaction bounds the load
+ //    relief at ~0.006-0.033 N.m, 20-250x below the wall-hold deficit).
+ //    (b) THE REGION-SHRINK WITNESS: the ground-line admissible region's
+ //    width per captured tick -- the body sink's face (~1.8 mm/tick,
+ //    sh_y 0.0993@72 -> 0.0425@104), banked: R 20.3 mm @72 -> 2.3 mm @104,
+ //    L 6.8 mm @93 -> 2.5 mm @104, monotone, emptying as the shoulder
+ //    approaches the anchor line. The minimum with its tick reported.
+ {const size_t NC27=std::min(w.srjt.size(),w.fcap.size());
+  int viol[2]={0,0},vtick[2]={-1,-1},pmin[2]={1<<30,1<<30};double wmin[2]={0.,0.};
+  std::fprintf(stderr,"[SR27] t60 raw: l0 srjt=%d hr=%.6f | l1 srjt=%d hr=%.6f\n",(int)w.srjt[60][0],w.sr[0][60][3],(int)w.srjt[60][1],w.sr[1][60][3]);
+  for(size_t i=60;i<NC27;++i){
+   if(!w.fcap[i])continue;
+   for(size_t l=0;l<2;++l){
+    // THE SEAT-CLASS SCOPE (the wave-24 law's own conformance letter): the
+    // seat law owns the STANCE targets (captured plants / follow seats) and
+    // the HELD targets; a non-held glide tick runs the STANDARD line+arch
+    // bytes -- the pocket transit, exempted here exactly as the wave-24
+    // release clips are reported, never judged.
+    if(w.fm[i][l]==1&&w.fhold[i][l]==0)continue;
+    if(!w.srjt[i][l]){++viol[l];if(vtick[l]<0)vtick[l]=(int)i;if(viol[l]<=99)std::fprintf(stderr,"[SR27] v t=%zu l=%zu q1u=%.4f q2u=%.4f hr=%.4f pts=%d mo=%d ho=%d\n",i,l,w.fw[l][i][5],w.fw[l][i][6],w.sr[l][i][3],(int)w.sr[l][i][0],(int)w.fm[i][l],(int)w.fhold[i][l]);}
+    int pts=(int)w.sr[l][i][0];
+    if(pts<pmin[l]){pmin[l]=pts;wmin[l]=w.sr[l][i][1];}}}
+  char b27[512];std::snprintf(b27,512,"F-G27 seat_region joint_face_viol=(%d,%d) [GREEN=0,0: the seats never left the joint face -- the wave-27c negative's core fact] first_viol=(%d,%d) region_pts_min=(%d,%d) region_width_min_m=(%.6f,%.6f) [the sink's shrink face on the seat's own line]",
+   viol[0],viol[1],vtick[0],vtick[1],
+   pmin[0]<(1<<30)?pmin[0]:-1,pmin[1]<(1<<30)?pmin[1]:-1,wmin[0],wmin[1]);
+  note(b27);
+  ck(viol[0]==0&&viol[1]==0,"f27_seat_joint_face_admissible");}
+
  // ── WAVE 25 CADENCE CENSUS (pre-registered in receipt_wave25.json; THE
  //    GATE'S CADENCE LAW). THE DERIVED BOUND (not tuned): every fore leg's
  //    PLANTED span (a stance-mode run of the fore clock, ticks >= 60) is at
@@ -634,7 +684,7 @@ int main(int argc,char**argv){try{
  //    (the R's planted [81,99+] span, its actual at hr=0.000007@89): the
  //    separation IS the test. Inter-lift intervals (mode 0->1 transitions)
  //    reported per leg.
- {const double DIVE_RATE=0.0039;const int SPAN_BOUND=(int)(0.0511/DIVE_RATE); // = 13, derived
+  {const double DIVE_RATE=0.0039;const int SPAN_BOUND=(int)(0.0511/DIVE_RATE); // = 13, derived
   const size_t NC=std::min(w.fm.size(),w.fcap.size());
   int worst[2]={-1,-1},wtick[2]={-1,-1};
   std::vector<int> lifts[2];
