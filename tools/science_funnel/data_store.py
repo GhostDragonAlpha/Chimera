@@ -122,7 +122,4 @@ def register_file(src, rel, *, cls, dataset, provenance, registered_by,
              'sha256': sha, 'bytes': len(data), 'class': cls, 'dataset': dataset,
              'registered_utc': registered_utc or (datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds')),
              'registered_by': registered_by, 'provenance': provenance, 'status': 'active'}
-    idx = _read_index()
-    idx['schema'] = 'chimera.data_store_index.v1'
-    idx.setdefault('entries', []).append(entry)
-    return idx, entry
+    return entry

@@ -26,7 +26,7 @@ import os
 import sys
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(REPO))
 os.environ.setdefault('CHIMERA_DATA_STORE', 'E:/ChimeraData')
 
@@ -67,10 +67,10 @@ def main():
         got = hashlib.sha256(data).hexdigest()
         if got != manifest_entry['sha256'] or len(data) != manifest_entry['bytes']:
             raise SystemExit(f'PIN FAIL before registration: {logical}')
-        idx, ent = DS.register_file(src, logical, cls=cls, dataset=DATASET, provenance=prov,
-                                    registered_by=BY, registered_utc=NOW,
-                                    path_in_git_at_registration=git_path)
-        index.update(idx)
+        ent = DS.register_file(src, logical, cls=cls, dataset=DATASET, provenance=prov,
+                               registered_by=BY, registered_utc=NOW,
+                               path_in_git_at_registration=git_path)
+        index.setdefault('entries', []).append(ent)
         registered.append(ent)
 
     zip_src = STORE / 'tmp' / 'Primate_models.zip'
