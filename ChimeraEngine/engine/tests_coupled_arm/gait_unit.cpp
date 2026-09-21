@@ -339,6 +339,14 @@ int main(int argc,char**argv){try{
   int bfc_run=0,bfc_mx=0,bfc_first=-1,bfc_windows=0;
   int sup2_first=-1,sup2_ticks=0,sup_min=99;
   int held_ticks=0,held_sup_bad=0,held_sup_min=99,swing_true_ticks=0,swing_sup_bad=0,swing_sup_min=99;
+  // WAVE 26 (pre-registered in receipt_wave26.json): the 2-support tick
+  // classification. NO micro-unload is shipped this wave, so an UNLOAD-CLASS
+  // 2-support tick (a fore leg's pads OUT of the band -- the R fore spending
+  // support) is OWNED RED. The STEADY-PATTERN class (both fores' pads
+  // in-band, exactly one hind mid-clock-swing -- the wave-14 banked carve-out
+  // "the steady lateral pattern's own 2-paw windows") is REPORTED with its
+  // ticks, never hidden. Both readings reported per the pre-registration.
+  int steady2_ticks=0,unload2_ticks=0;std::string steady2_list,unload2_list;
   std::string two_windows;
   for(size_t i=60;i<N;++i){
    bool l_air=w.fm[i][0]==1,r_air=w.fm[i][1]==1;
@@ -350,7 +358,11 @@ int main(int argc,char**argv){try{
    int c=(w.t[i][0]?1:0)+(w.t[i][1]?1:0)+((w.fgmin[i][0]<=1e-5)?1:0)+((w.fgmin[i][1]<=1e-5)?1:0);
    sup_min=(std::min)(sup_min,c);
    if(c<2){++sup2_ticks;if(sup2_first<0)sup2_first=(int)i;}
-   if(c==2){char b[64];std::snprintf(b,64,"%d ",(int)i);two_windows+=b;}
+   if(c==2){char b[64];std::snprintf(b,64,"%d ",(int)i);two_windows+=b;
+    if(w.fgmin[i][0]>1e-5||w.fgmin[i][1]>1e-5){++unload2_ticks;
+     if(unload2_list.size()<240){char ub[64];std::snprintf(ub,64,"%d ",(int)i);unload2_list+=ub;}}
+    else{++steady2_ticks;
+     if(steady2_list.size()<240){char sb[64];std::snprintf(sb,64,"%d ",(int)i);steady2_list+=sb;}}}
    // THE WAVE-25 CADENCE-LAW SUPPORT CLAUSES (per tick): a held glide's
    // pads are live -> support >= 3 through every held tick; a true
    // airborne fore swing (mode 1, not held, pads above the band) must
@@ -367,6 +379,11 @@ int main(int argc,char**argv){try{
    " [WAVE 25 dual reading: the contact sense owns; a held glide (pads live) is not airborne]");
   note("F-G14 support_census min_contacts="+std::to_string(sup_min)+
    " sub2_ticks="+std::to_string(sup2_ticks)+" sub2_first="+(sup2_first<0?"none":std::to_string(sup2_first)));
+  {char b[512];std::snprintf(b,512,"F-G26 support_2_support_reading min_contacts=%d unload_class_ticks=%d%s%s [OWNED 0: no micro-unload shipped] steady_pattern_class_ticks=%d%s%s [REPORTED: the wave-14 banked carve-out; both readings per the pre-registration]",
+   sup_min,unload2_ticks,unload2_ticks?" @ ":"",unload2_ticks?unload2_list.c_str():"",
+   steady2_ticks,steady2_ticks?" @ ":"",steady2_ticks?steady2_list.c_str():"");
+   note(b);
+   ck(unload2_ticks==0,"f26_no_unload_class_support2");}
   if(!two_windows.empty()&&two_windows.size()<800)
    note("F-G14 two_contact_ticks= "+two_windows);
   note("F-G25 cadence_support held_ticks="+std::to_string(held_ticks)+
@@ -636,6 +653,45 @@ int main(int argc,char**argv){try{
    SPAN_BOUND,worst[0],wtick[0],worst[1],wtick[1],iv.c_str());
   note(b);
   ck(worst[0]<=SPAN_BOUND&&worst[1]<=SPAN_BOUND,"f25_no_leg_planted_past_the_dive_margin");}
+
+ // ── WAVE 26 WALL-ADJACENT WAIT CENSUSES (pre-registered in
+ //    receipt_wave26.json; THE ACTUAL-SIDE MECHANISM FOR THE LAWFUL WAIT --
+ //    THE EARLY-STEP OVERRIDE). (a) THE HEADROOM DIRECT TEST -- the
+ //    membrane's OWNED face: the ACTUAL joints' wall headroom NEVER reaches
+ //    0 through [0, 426] on EITHER leg, over ALL captured ticks (stance AND
+ //    swing -- the strict letter; the baseline's 0.000000@89 is the
+ //    reference RED). (b) THE PIN DIRECT TEST, BOTH CLASSES (owned this
+ //    wave): loaded AND airborne stop pins (0,0) on BOTH drives through the
+ //    whole life INCLUDING the refusing step (the wave-23 refresh above
+ //    keeps the last row current); the F-G23 census keeps its loaded-only
+ //    letter. (c) THE OVERRIDE CENSUS: the wait-override fires per leg from
+ //    the status (predicted: the R fires at 88, the L never -- its
+ //    wait-window min 0.037575@74 sits above the 0.008040 floor).
+ {const size_t N26=std::min({w.fw[0].size(),w.fw[1].size(),w.fcap.size(),(size_t)426});
+  double hrmin26[2]={1e9,1e9};int hrtick26[2]={-1,-1};
+  for(size_t i=60;i<N26;++i)for(size_t l=0;l<2;++l){
+   if(!w.fcap[i])continue;
+   double hr=w.fw[l][i][4];
+   if(hr<hrmin26[l]){hrmin26[l]=hr;hrtick26[l]=(int)i;}}
+  char b[512];std::snprintf(b,512,"F-G26 wall_adjacent_wait headroom_min L=%.6f@%d R=%.6f@%d [OWNED GREEN > 0 both legs, all captured ticks; the wave-25 baseline RED: R 0.000000@89, the wall-adjacent wait]",
+   hrmin26[0]<1e8?hrmin26[0]:-1.,hrtick26[0],hrmin26[1]<1e8?hrmin26[1]:-1.,hrtick26[1]);
+  note(b);
+  ck(hrmin26[0]>0.&&hrmin26[1]>0.,"f26_wall_headroom_never_zero");
+  {uint64_t pins0=0,pins1=0,air0=0,air1=0;
+   if(!w.wpins.empty()){pins0=w.wpins.back()[0];pins1=w.wpins.back()[1];}
+   if(!w.wair.empty()){air0=w.wair.back()[0];air1=w.wair.back()[1];}
+   char b2[384];std::snprintf(b2,384,"F-G26 pin_census BOTH CLASSES loaded=(%llu,%llu) airborne=(%llu,%llu) [OWNED GREEN 0,0 both classes; the wave-25 baseline: loaded (0,103) airborne (0,14), the [89,96] pin storm]",
+    (unsigned long long)pins0,(unsigned long long)pins1,(unsigned long long)air0,(unsigned long long)air1);
+   note(b2);
+   ck(pins0==0&&pins1==0&&air0==0&&air1==0,"f26_zero_fore_wall_pins_both_classes");}
+  {uint64_t wf0=0,wf1=0;
+   const J& fp26=w.last["gait"]["fore_paw"];
+   if(fp26.size()>=2&&fp26[0].contains("wait_override_fires")){
+    wf0=fp26[0]["wait_override_fires"].get<uint64_t>();
+    wf1=fp26[1]["wait_override_fires"].get<uint64_t>();}
+   char b3[320];std::snprintf(b3,320,"F-G26 wait_override fires=(L %llu, R %llu) [predicted: the R fires at tick 88 (the step-88 decision state hr 0.005897 < floor 0.008040 <= the step-87 state 0.009348), the L never]",
+    (unsigned long long)wf0,(unsigned long long)wf1);
+   note(b3);}}
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the
  //    causal verdict REFLEX-FIRST): (a) THE REFLEX ARMING CENSUS -- the

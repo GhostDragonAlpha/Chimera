@@ -218,6 +218,15 @@ class GaitWalker {
  int fore_glide_hold_[2]={0,0};
  int fore_hold_last_[2]={0,0};
  V fore_hold_off_[2]={V{},V{}}; // follow seat minus shoulder at the lift (world)
+ // ── THE WALL-ADJACENT WAIT OVERRIDE (wave 26, receipt_wave26.json) ──
+ // THE ACTUAL-SIDE MECHANISM FOR THE LAWFUL WAIT: at a gate-held liftoff-due
+ // stance tick whose ACTUAL headroom crossed the derived floor, the gate
+ // yields and the leg takes its lift now -- wall_bound arms the pocket-clear
+ // hold, whose measured face is the ACTUAL healing WITH PADS LIVE (the L's
+ // [73,82] heal 0.037575 -> 0.052603 on the wave-25 law-free baseline).
+ // fore_wait_fires_ is the census counter (integer increments only, exactly
+ // like adv_calls_/wall_pins_: never a floating-point byte of the dynamics).
+ uint64_t fore_wait_fires_[2]={0,0};
  std::vector<BodyRef> bodies_;bool contact_=false;
  State s_;mutable uint64_t adv_calls_=0;
  Evaluation evaluate(const State& s)const{return model_->evaluate(s.q,s.v,gravity_);}
@@ -573,6 +582,26 @@ class GaitWalker {
  // annulus edge the joint margin is wide and the leg steps normally -- the
  // law converges, it cannot stall.
  static constexpr double kWallMargin=0.0511;
+ // THE WAIT-OVERRIDE FLOOR (wave 26, receipt_wave26.json; derived, not
+ // tuned). kDiveRateMax is the MAX measured per-tick dive of the wall-
+ // adjacent wait on the byte-reproduced wave-25 law-free baseline: the R's
+ // [dvf] series [81,89] = 0.026927, 0.023963, 0.020428, 0.017078, 0.013368,
+ // 0.009348, 0.005897, 0.002231, 0.000000 -- the worst tick delta 0.004020
+ // at [85,86] (the wave-25 chord 0.00373 is this same class). The fire
+ // tick's integration completes under the PRE-FIRE target (the held-target
+ // update runs BEFORE the liftoff decision in the same pass), so the worst-
+ // case fire-tick dive is one full kDiveRateMax; the floor exceeds one full
+ // dive-tick with the remainder at least one more dive-tick of standing
+ // margin: at the worst fire (hr just under kWaitFloor) the minimum headroom
+ // is >= kWaitFloor - kDiveRateMax = kDiveRateMax > 0 -- THE WALL IS NEVER
+ // TOUCHED, WITH A FULL DIVE-TICK OF MARGIN, BY CONSTRUCTION. Emergency-
+ // scoped: (kWallMargin - kWaitFloor)/kDiveRateMax ~ 10.7 wall-bound wait
+ // ticks must elapse before it can fire (this baseline: the only crossing
+ // in the measured life is the R's wait, hr 0.009348@86 -> 0.005897@87
+ // decision states; the R's own first-stance dive bottoms 0.018355@70, the
+ // L's 0.037575@74 -- both far above the floor).
+ static constexpr double kDiveRateMax=0.004020;
+ static constexpr double kWaitFloor=2.*kDiveRateMax;
  double fore_wall_headroom(size_t leg)const{ // the ACTUAL joints' min wall margin
   size_t c1=fore_coord_[leg][0],c2=fore_coord_[leg][1];
   double h1=(std::min)(s_.q[c1]-model_->lower[c1],model_->upper[c1]-s_.q[c1]);
@@ -993,6 +1022,44 @@ class GaitWalker {
 #ifdef GAIT_EVENT_TRACE
      std::fprintf(stderr,"[foreclk] deflift leg=%zu tick=%llu seat_hr=%.6f\n",
       leg,(unsigned long long)ticks_,fore_target_headroom_at(leg,e,paw_target_[leg]));
+#endif
+     }
+    else if(gated&&wall_bound&&fore_wall_headroom(leg)<kWaitFloor){
+     // THE WALL-ADJACENT WAIT OVERRIDE (wave 26, receipt_wave26.json): the
+     // gate yields to the wall emergency. THE MEASURED DEATH IT OWNS: the
+     // wave-25 R's lawful gate-held wait -- the follow restored the TARGET
+     // every 2-3 ticks and the ACTUAL dove straight through to hr=0.000000
+     // (the loaded deflection GROWS faster than the restore; the follow's
+     // convergence premise is measured false under load). THE MECHANISM: the
+     // actual has crossed kWaitFloor = 2*kDiveRateMax -- one dive-tick of
+     // engage latency plus one dive-tick of standing margin -- so the leg
+     // takes its lift NOW through the standard lift bytes; wall_bound=1 arms
+     // the POCKET-CLEAR HOLD (the wave-24 map's maximum-authority seat,
+     // kp*0.3366 = 2.18 N.m), whose measured face is the ACTUAL healing WITH
+     // PADS LIVE (the L's [73,82] heal on the same baseline: 0.037575 ->
+     // 0.052603, monotonic from the hold's first engaged tick) -- the held
+     // glide rides the GROUND LINE, spends NO support, and the other fore's
+     // clause (a) reads it held (a held glide is not a swing). The wave-23
+     // thin-seat pin route is closed by the hold arming at the fire: the
+     // glide's first-sweep target is the wall-LEAVING edge seat, not the
+     // pocket-diving line point. The floor is emergency-scoped (~10.7
+     // wall-bound wait ticks of arming delay): in a healthy dance the branch
+     // is inert.
+     fore_mode_[leg]=1;
+     if(fore_entry_[leg])fore_t_[leg]=0.; // the entry air time is EXACTLY t_air (the glide runs 0->1)
+     auto pw=e.point(points_[fore_paw_point_[leg]].index,paw_ref_local_[leg]).first;
+     auto sh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
+     swing_from_[leg]=pw;
+     double xoff=fore_xoff();
+     double amax=fore_amax(e,leg);
+     if(xoff>amax){xoff=amax;++fore_clamped_[leg];}
+     swing_to_[leg]=V{sh[0]+xoff,paw_plant_y_[leg],pw[2]};
+     fore_glide_arm_hold(leg,e,wall_bound);
+     ++fore_wait_fires_[leg];
+#ifdef GAIT_EVENT_TRACE
+     std::fprintf(stderr,"[foreclk] waitfire leg=%zu tick=%llu hr=%.6f floor=%.6f hold=%d last=%d\n",
+      leg,(unsigned long long)ticks_,fore_wall_headroom(leg),kWaitFloor,
+      fore_glide_hold_[leg],fore_hold_last_[leg]);
 #endif
      }
     else if(fore_t_[leg]>=fore_cycle_[leg]||fore_t_[leg]>=fore_env_ticks(leg,e)){
@@ -1510,6 +1577,7 @@ class GaitWalker {
   fore_td_plant_[0]=fore_td_plant_[1]=true;
   fore_glide_hold_[0]=fore_glide_hold_[1]=0;fore_hold_last_[0]=fore_hold_last_[1]=0;
   fore_hold_off_[0]=V{};fore_hold_off_[1]=V{};
+  fore_wait_fires_[0]=fore_wait_fires_[1]=0;
   for(size_t d=0;d<12;++d){wall_pins_[d]=0;wall_pins_air_[d]=0;}
   battery_.assign(nd_,0.);brake_.assign(nd_,0.);empty_events_.assign(nd_,0);store_total_=0;
   for(size_t d=0;d<nd_;++d){battery_[d]=drives_[d].store_floor;store_total_+=drives_[d].store_floor;}
@@ -1760,6 +1828,7 @@ class GaitWalker {
       {"wall_headroom_rad",(std::min)(h1,h2)},
       {"wall_bound_ticks",fore_wall_bound_[leg]},{"wall_follows",fore_wall_follows_[leg]},
       {"wall_pins",pins},{"wall_pins_air",pins_air},
+      {"wait_override_fires",fore_wait_fires_[leg]},
       {"fore_mode",fore_mode_[leg]==1?"swing":"stance"},{"td_count",fore_td_[leg]},
       {"replants",fore_replants_[leg]},{"annulus_clamped_plants",fore_clamped_[leg]},
       {"entry_replant",fore_entry_[leg]==1},{"gate_hold_ticks",fore_gate_holds_[leg]},
