@@ -1,0 +1,51 @@
+{
+ "schema": "chimera.data_store_design_results.v1",
+ "written_utc": "2026-09-21T09:05:00+00:00",
+ "agent": "GLM 5.3",
+ "base_commit": "6ea2702c23c191ff1d3f14bc895ba668f4586dac",
+ "branch": "agent/data-store-design-20260921",
+ "environment": "E:/ChimeraWork/datastore-agent, blob:none sparse clone (tools, docs, Chimera, ChimeraEngine, core, story-set); working tree of tools/science_funnel/data verified byte-equal to committed (du -sb == 369762399)",
+ "note": "this lane's diff adds ONLY documents under tools/science_funnel/validation/data_store_design_20260921/; every verdict below is therefore master 6ea2702c behavior in this environment",
+ "gates": {
+  "graph_suite_root_creature": {
+   "command": "python -B -m unittest discover -s tools/creature_graph/tests -p test_*.py",
+   "verdict": "PASS — Ran 69 tests, OK (measured twice, 0.175s / 0.166s)"
+  },
+  "graph_suite_root_funnel_graph_modules": {
+   "command": "python -B -m unittest tools.science_funnel.tests.<module> (per module)",
+   "results": {
+    "test_funnels": "OK",
+    "test_store_relate_guard": "OK",
+    "test_wiseman_osim": "OK — 12 tests in 376.5s (slow: full model round-trips; includes test_pin_drift_and_dispatch_refuse and test_store_proposal_passes_intake_checks, both load-bearing for the pilot)",
+    "test_ct_skeleton_layer": "OK",
+    "test_terrain": "OK",
+    "test_macaque_scene": "RED at base — Refusal model_semantic_replay_mismatch data.assertion.0621570672a1da0f28caf1f707f86a988ebead0fae2e43ceae551eeac992eba9 (tools/science_funnel/force_models.py:79 semantic replay table vs graph record)",
+    "test_earth_scene": "RED at base — same Refusal, 2 errors",
+    "test_workflow_commands": "RED at base — test_08_adjudicate_returns_structured_absence: 'classified' != 'unavailable'"
+   },
+   "diagnosis": "the three reds are pre-existing at 6ea2702c in this environment (the lane's diff cannot affect them: documents only); they are semantic-replay/adjudication expectations, not data-path reads — none of them opens a RAW dataset blob. Recorded as honest reds, not tuned away, per law.",
+   "full_discover": "python -B -m unittest discover -s tools/science_funnel/tests -p test_*.py — full run exceeds design-lane budget (live qualifier modules; wiseman_osim alone 376s); one full background run completed with visible_monkey_volume_route verify OK (byte-exact receipt reproduction) as its last output; per-module verdicts above stand in for it. If the fleet requires the full discover green before merge, it is a run-budget item, not a design item."
+  },
+  "matter_kernel_test_definition": {
+   "command": "python -B -m unittest tools.matter_kernel.test_definition",
+   "verdict": "PASS — Ran 9 tests, OK (9/9, measured twice)"
+  },
+  "training_gate": {
+   "command": "python tools/training_gate.py",
+   "verdict": "PASS — every target is Froude-consistent with the world this body stands in",
+   "note": "theHuman story/theHuman/numbers.json staged read-only from the walk lane clone (E:/ChimeraWork/w34-agent) because this sparse checkout lacked story blobs; file removed after the run, never committed"
+  },
+  "pin_crosscheck_baseline": {
+   "command": "python -B tools/agent_fleet/validation/receipt_repin_20260921/pin_crosscheck.py --own master --target master",
+   "verdict": "638 pins scanned across 2763 files: 64 hold, 4 repinned_at_target, 0 collision, 0 stale — the baseline the pilot falsifier compares against"
+  }
+ },
+ "measurements_for_the_report": {
+  "data_committed": "369,762,399 B across 267 files (RAW 264,659,087 / DERIVED 104,630,983 / RECEIPT-EVIDENCE 472,329)",
+  "data_packed": "259.1 MB (measured via cat-file --batch-check objectsize:disk over all 267 data blobs) = 42% of the measured 617.76 MiB six-dir partial-clone pack",
+  "evidence_packed": "docs/evidence: 8,712.3 MB logical -> 95.4 MB packed (delta chains; one blob shared by 91 files) — NOT a migration target",
+  "creature_graph_data_packed": "657.8 MB -> 61.0 MB",
+  "raw_already_outside_git": "wiseman2026: 273 files, 94,643,527 B pinned by sha256_manifest.json, gitignored",
+  "dependency_count": "33 files reference science_funnel/data (8 funnel-core readers, 1 writer, 12 validation scripts, 5 tests, 6 creature_graph refs, RUNBOOK); ChimeraEngine/core: 0"
+ }
+}
