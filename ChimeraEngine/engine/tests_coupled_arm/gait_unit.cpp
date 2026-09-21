@@ -89,11 +89,11 @@ struct WalkOut{
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
- J last;std::string refused;int refused_tick=-1;
+ J last;std::string refused;std::string refused_class;int refused_tick=-1;
 };
 
 int main(int argc,char**argv){try{
- require(argc==2,"usage: gait_unit gait_scene.json");
+ require(argc==2||argc==3,"usage: gait_unit gait_scene.json [tick:vx,tick:vx...]");
  J scene=load_json(argv[1]);
  const J& data=scene.at("gait_controller");
  const J& recipe=data.at("recipe");
@@ -101,6 +101,23 @@ int main(int argc,char**argv){try{
  const int CYCLE_TICKS=(int)std::lround(GaitWalker::T_CYCLE*number(recipe.at("tick_hz")));
  const double BW=number(data.at("seating_scan_measured").at("weight_N"));
  const double PUSH=0.1*BW; // F-G6 scripted push: a derived fraction of the measured weight
+ // ── THE COMMAND SCHEDULE (typea-command-adapter 20260921; argv[2], OPTIONAL:
+ // "tick:vx[,tick:vx...]"): the declared command corpus -- each pair is a
+ // commanded_target_velocity_x issued through configure() at the named tick
+ // boundary (zero-order hold: it applies at that step and holds until
+ // replaced). ABSENT -> the exact ship behavior: every command census below
+ // is gated on cmd_mode, so the unexercised stdout stays byte-identical
+ // (the F-FENCE-ADAPTER license; prereg_command_adapter.json).
+ const bool cmd_mode=argc==3;
+ std::vector<std::pair<int,double>> cmd_sched;
+ if(cmd_mode){const std::string spec=argv[2];size_t p=0;
+  while(p<spec.size()){size_t q=spec.find(',',p),r=spec.find(':',p);
+   if(r==std::string::npos||r<p)throw std::runtime_error("bad command spec (want tick:vx)");
+   int tk=std::atoi(spec.substr(p,r-p).c_str());
+   double vx=std::atof(spec.substr(r+1,(q==std::string::npos?spec.size():q)-r-1).c_str());
+   if(vx<0.)throw std::runtime_error("commanded_target_velocity_x domain is max(0,.)");
+   cmd_sched.push_back({tk,vx});
+   if(q==std::string::npos)break;p=q+1;}}
  int checks=0;int reds=0;std::vector<std::string> measured;
  auto ck=[&](bool ok,const char* msg){if(!ok){++reds;measured.push_back(std::string("RED falsifier: ")+msg);}++checks;};
  auto note=[&](const std::string& s){measured.push_back(s);};
@@ -138,8 +155,11 @@ int main(int argc,char**argv){try{
   d.configure({{"capture_enabled",capture},{"reset",true}});
   const int WALK=10*CYCLE_TICKS;
   WalkOut out;bool prev_t[2]={false,false};int w_ledger_first=-1;double w_ledger_prev=0;
+  size_t cmd_i=0; // the command schedule cursor (cmd_mode only)
   auto t_start=std::chrono::steady_clock::now();
   for(int i=0;i<WALK;++i){
+   if(cmd_mode)while(cmd_i<cmd_sched.size()&&cmd_sched[cmd_i].first==i){
+    d.configure({{"commanded_target_velocity_x",cmd_sched[cmd_i].second}});++cmd_i;} // zero-order hold from this tick boundary
    try{
     d.step();
     double sec=std::chrono::duration<double>(std::chrono::steady_clock::now()-t_start).count();
@@ -147,7 +167,7 @@ int main(int argc,char**argv){try{
      std::fprintf(stderr,"%s\n",b);break;}
    }
    catch(const Refusal&e){
-    char b[256];std::snprintf(b,256,"WALK REFUSED tick %d: %s",i,e.what());out.refused=b;out.refused_tick=i;
+    char b[256];std::snprintf(b,256,"WALK REFUSED tick %d: %s",i,e.what());out.refused=b;out.refused_tick=i;out.refused_class=e.what();
     std::fprintf(stderr,"%s | y=%.4f x=%.4f\n",b,d.angles()[4],d.angles()[3]);
     // THE BISECT WITNESS (wave 12): name the failing joint/phase from the
     // traces at the refusal state itself, not from the last 10-tick sample.
@@ -332,6 +352,16 @@ int main(int argc,char**argv){try{
      out.hind38.push_back(h38);}
     out.fm.push_back(fmm);out.fsat.push_back(sat);out.ftgt.push_back(tgx);out.frep.push_back(rep);
 #ifdef GAIT_EVENT_TRACE
+    // THE COMMAND CHANNEL's per-tick series (typea 20260921): the fence and
+    // the F-G42 tracker's measured base. stderr-only, trace-build-only,
+    // command-mode-only: the unexercised trace bytes stay the ship bytes.
+    if(cmd_mode&&out.bx.size()>=2)
+     std::fprintf(stderr,"[cmd] tick=%d bx=%.6f vx=%.6f fires=%llu first=%lld\n",
+      i,out.bx.back(),(out.bx.back()-out.bx[out.bx.size()-2])*300.,
+      (unsigned long long)s["gait"]["command"]["plant_law_consumptions"].get<uint64_t>(),
+      (long long)s["gait"]["command"]["first_plant_law_tick"].get<long long>());
+#endif
+#ifdef GAIT_EVENT_TRACE
     // WAVE 23 MINING: the per-tick fore joint-wall state (the derivation's
     // measured base): both legs, target/shoulder seats, actual+unclamped IK,
     // the actual wall headroom, the target's annulus D and offset.
@@ -381,6 +411,37 @@ int main(int argc,char**argv){try{
  std::fprintf(stderr,"run F-G1..G4 walk\n");
  WalkOut w=walk_run(true);
  note("WALK refused_tick="+(w.refused_tick<0?std::string("none"):std::to_string(w.refused_tick))+" worst_ledger_J="+std::to_string(w.worst_ledger));
+
+ // ── F-G42: THE COMMAND CENSUS (typea-command-adapter 20260921; gated on the
+ //    EXERCISED channel -- with no argv[2] the unexercised stdout is the ship
+ //    stdout byte-for-byte, the F-FENCE-ADAPTER license). The command echo,
+ //    the achieved-velocity tracker (per-tick finite-difference body speed
+ //    over declared windows), and the veto-free horizon, per
+ //    prereg_command_adapter.json. The grading across the corpus is judged in
+ //    the receipt's authority table (cross-run, not visible to one run).
+ if(cmd_mode&&!cmd_sched.empty()){
+  const J& c=w.last["gait"]["command"];
+  int issue=cmd_sched.front().first,onset=(int)c["first_plant_law_tick"].get<long long>();
+  auto win=[&](int a,int b){double m=0.;int n=0;
+   for(int i=a;i<b&&i+1<(int)w.bx.size();++i){m+=(w.bx[i+1]-w.bx[i])*300.;++n;}
+   return n?m/n:0.;};
+  int end=(int)w.bx.size()-1;
+  double v_pre=win(90,140),v_a=win(onset+20,onset+70),v_b=win(onset+70,onset+120),v_tail=win(end-50,end);
+  std::string spec;{double prev=-1.; // the echo lists VALUE-CHANGING issues only: a same-value re-issue is a ZOH no-op (the R6 20 Hz twin must echo byte-identically to its R2 single-issue twin)
+   for(auto&sc:cmd_sched)if(sc.second!=prev){spec+=(spec.empty()?"":",")+std::to_string(sc.first)+":"+std::to_string(sc.second);prev=sc.second;}}
+  int veto=(w.refused_tick>=0&&onset>=0)?(w.refused_tick-onset):-1;
+  note("F-G42 command_spec="+spec+" echo_live="+(c["live"].get<bool>()?"1":"0")+
+   " echo_target_m_s="+std::to_string(number(c["target_velocity_x_m_s"]))+
+   " issued_tick="+std::to_string((long long)c["issued_tick"].get<uint64_t>())+
+   " onset_tick="+std::to_string(onset)+
+   " plant_law_consumptions="+std::to_string(c["plant_law_consumptions"].get<uint64_t>()));
+  note("F-G42 achieved_v_pre90_140="+std::to_string(v_pre)+" post_onset20_70="+std::to_string(v_a)+
+   " post_onset70_120="+std::to_string(v_b)+" tail50="+std::to_string(v_tail));
+  note("F-G42 veto_free_horizon_ticks="+(w.refused_tick<0?std::string("unrefused"):(veto<0?std::string("n/a_onset"):(veto>=0?std::to_string(veto):std::string("?"))))+
+    " refused_tick="+(w.refused_tick<0?std::string("none"):std::to_string(w.refused_tick))+
+    " refusal_class="+(w.refused_class.empty()?"none":w.refused_class));
+  ck(onset>=0&&onset-issue<=15,"f42_machinery_onset_within_15");
+  ck(w.refused_tick<0||veto>=100,"f42_veto_free_horizon_100");}
 
  // ── F-Gfore (wave 13, pre-registered): the STEPPING-STRUT paw band + the
  //    reach census. From the capture tick (60) on: STANCE-phase fore gaps

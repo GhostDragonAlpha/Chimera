@@ -1,0 +1,54 @@
+{
+ "lane": "agent/typea-command-adapter-20260921",
+ "date": "2026-09-21",
+ "agent": "Type-A COMMAND-ADAPTER lane (trailer Agent: GLM 5.3)",
+ "preregisters": "the Rule-0 theory, the falsifiers, and the frozen numeric corpus BEFORE any commanded run and BEFORE the adapter build. Order kept: (1) the pinned ship state reproduced byte-exactly on this lane (plain stdout sha 71065ac54fa988704ce29cd79cfb5cdbe0d4e2eab3f7db69b10d4b8d94517592, 22184 bytes; plain==trace; refusal 302 gait_positional_correction_budget; worst moving ledger 30.970714 J; 49 reds / 173 checks; scene file sha f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342), (2) THE BAND MINE (the declared instrument .tmp/cmd_receipt/mine_band.py, a deterministic read of the ship trace -- never a command run), (3) THIS FREEZE, (4) the build, (5) the measurements.",
+ "rule_0": {
+  "statement": "THE COMMAND-ADAPTER LAW. The walk's own derived plant law x_off = v * t_stance/2 (t_stance = DUTY_SAMPLED*T_CYCLE = 0.683*0.71 s, t_half = 0.2424650 s) is the ONE measured-live injection surface (TypeB-P1 receipt, surface B: onset 10 ticks, graded dose response, reaches the plant; surfaces A/C/D dead). THE CLAIM: surfacing that surface as a declared first-class command channel -- the commanded velocity REPLACES the v argument of the derived relation at its two plant-target sites (fore_xoff(), the hind step fire) -- gives a learned layer graded, sustained, veto-free velocity authority INSIDE the walk's own measured envelope, with zero new constants and the reflex layer untouched (the envelope/entry/reach machinery and every budget keep the MEASURED v; the learned layer never disables a reflex).",
+  "prediction": "Held commands below the walk's own operating ceiling produce a monotone dose-response in the achieved body velocity with machinery onset within one clock slot (<= 15 ticks), veto-free for >= 100 ticks, and the seed-pinned run rides its baseline class to its baseline horizon; commands above the ceiling meet the existing annulus clamps and the existing budgets, lawfully, with no adapter-invented refusal.",
+  "falsifiers_declared_before_the_run": {
+   "F-FENCE-ADAPTER": "FIRES if, with the channel UNEXERCISED, the adapter build differs from the ship bytes by ONE byte: stdout sha != 71065ac54fa988704ce29cd79cfb5cdbe0d4e2eab3f7db69b10d4b8d94517592, plain != trace stdout, patched trace stderr != the pristine 30821ef7 trace stderr, the [0,65] trace window not line-identical, or the named ticks 98/107/142/160 not byte-exact (the wave-38 fence convention). The interface must be INVISIBLE when unused.",
+   "F-COMMAND-AUTHORITY-2": "FIRES unless ALL of: (a) MACHINERY ONSET <= 15 ticks after the issue tick (the first plant-law consumption under command; the M2 onset class); (b) VETO-FREE HORIZON >= 100 ticks post-onset for EVERY in-band run (no budget refusal within 100 ticks of onset); (c) GRADED: the achieved steady-state velocity over matched post-onset windows is monotone non-strict in the commanded velocity across R1<R2<R3 with a total spread >= 0.05 m/s (the receipt's graded bar); (d) STABILITY: R4 (seed pinned from tick 0) refuses, if it refuses, with the BASELINE class gait_positional_correction_budget at tick >= 300.",
+   "F-COMMAND-ENVELOPE": "FIRES if the out-of-band probe R5 (1.30 m/s, the TypeB receipt's own A-command value) is absorbed byte-identically (the command does not reach the plant path) OR dies in a refusal class the ship machinery does not own (the adapter inventing a refusal). Passes only by the EXISTING budgets/clamps governing.",
+   "F-ZOH-CLOCK": "FIRES if R6 (the command re-issued at 20 Hz, every 15 ticks, per the Astra round-4 interface clock) differs by one byte from R2 (single issue + hold): the hold state is value-only, so a constant command re-issued at the 20 Hz decision clock MUST be byte-equivalent to one issue."
+  }
+ },
+ "the_band_mine_measured": {
+  "method": "the ship trace's [dvf] lines carry per-tick per-leg D (the fore chain's reach) and the tgt/sh seats; amax = sqrt(D^2-h^2), h = shoulder height above the plant; stance-mode ticks only (t >= 60, the post-capture walk)",
+  "t_half_s": 0.242465,
+  "seed_v_m_s": 0.7636247890,
+  "seed_xoff_m": 0.1851523,
+  "stance_leg_ticks": 834,
+  "stance_amax_min_m": 0.007454,
+  "stance_amax_p05_m": 0.114337,
+  "stance_amax_median_m": 0.226317,
+  "central_annulus_bound_m_s": 0.9334,
+  "ship_graze_fact": "378/834 stance leg-ticks carry |off| > amax within print precision (median excess ~1e-7 m, the graze class): the ship walk plants AT its own reach edge at the seed -- extra reach is clamped away, which is the M2 B-gentle absorption measured. ABOVE-seed commands therefore buy clamps, not reach.",
+  "band_declaration": "THE MEASURED ENVELOPE (ceiling = the walk's own demonstrated operating point): [0, 0.763625] m/s. The central annulus bound (0.9334 m/s) is reported as context; the seed is the ceiling because the ship walk demonstrably carries it and already grazes its edge there. The in-band test region is [0.15, 0.70]: strictly below the ceiling, spread across the lower band."
+ },
+ "frozen_corpus": {
+  "issue_tick": 150,
+  "runs": {
+   "R1": {"command": "150:0.50", "class": "in-band low"},
+   "R2": {"command": "150:0.60", "class": "in-band mid (the ZOH twin's value)"},
+   "R3": {"command": "150:0.70", "class": "in-band high (just under the 0.763625 ceiling)"},
+   "R4": {"command": "0:0.763625 (held to refusal)", "class": "STABILITY: the seed pinned, the walk's full 302-tick life under one command"},
+   "R5": {"command": "150:1.30", "class": "out-of-band envelope probe (the receipt's A-command value)"},
+   "R6": {"command": "0.60 re-issued at ticks 150+15k while the walk lives", "class": "F-ZOH-CLOCK twin of R2"}
+  },
+  "corpus_justification": "0.50/0.60/0.70 span the lower measured envelope with the ceiling gap to the seed as the fourth implicit dose; 1.30 is the TypeB receipt's own recorded A-command; the seed is the scene-derived no-slip entry speed (base_speed_x_m_s in the regenerated scene). The corpus doses are TEST INPUTS (a dose-response curve needs doses); the MACHINERY gains no constant from them -- the adapter's only numbers are the walk's own (DUTY_SAMPLED, T_CYCLE, the measured-v fallback)."
+ },
+ "interface_spec": {
+  "channel": "commanded_target_velocity_x (m/s, non-negative -- the plant law's own max(0,.) domain); commanded_heading is RESERVED for a later lane (lateral/heading authority is not claimed here)",
+  "entry": "GaitWalker::configure({\"commanded_target_velocity_x\": v}) between ticks -- the scene/test harness injects; NOT restart-gated",
+  "semantics": "ZERO-ORDER HOLD: a new command applies at the next tick boundary and holds until replaced; a constant command re-issued at the 20 Hz decision clock (every 15 ticks over 300 Hz physics) is byte-equivalent to one issue (F-ZOH-CLOCK)",
+  "reflex_bound": "the command enters ONLY the two derived plant-target x_off sites; the envelope/entry/reach machinery, the capture reflex, and every budget keep the MEASURED v -- the reflex layer never cancels an in-envelope request and the learned layer can never disable a reflex",
+  "invisibility": "with the channel unexercised every byte of stdout and stderr is the ship byte (F-FENCE-ADAPTER)"
+ },
+ "pre_committed_actions": {
+  "if_F_COMMAND_AUTHORITY_2_fires": "carry the fired falsifier with its full graded table verbatim in the receipt; the adapter SHIPS anyway (it is the Type-B prerequisite surface, and a measured absence of graded body authority IS the answer the next lane needs) -- but the receipt names the body-speed path as the open defect, exactly as the TypeB-P1 receipt's verdict line does",
+  "if_F_FENCE_ADAPTER_fires": "do not run the corpus at all; fix the bytes first, the fence is the license for every measurement after it",
+  "if_F_COMMAND_ENVELOPE_fires": "carry it; the envelope claim is re-derived before any training lane consumes the adapter",
+  "no_tuning_clause": "no corpus value, window, or threshold is adjusted after any measurement; the graded spread (0.05 m/s), the horizon (100 ticks), the onset bound (15 ticks), and the stability horizon (tick >= 300) are frozen HERE"
+ }
+}
