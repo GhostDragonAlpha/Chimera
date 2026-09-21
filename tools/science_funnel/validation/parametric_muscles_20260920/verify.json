@@ -1,0 +1,253 @@
+{
+ "schema": "chimera.parametric_muscles_verify.v1",
+ "verified_utc_mode": "deterministic re-derivation (no wall clock in verdicts)",
+ "verdicts": {
+  "traceability": "GREEN -- 30/30 muscles fully traced: path points from muscle_paths_20260918 (sha ca0e890ec69e...), architecture from the pinned guimaraes xlsx via the admitted adapter (sha256 08ead4a901a5...), density law, closed-form radius, derived thickness; zero authored shape parameters; capsule branches: {'capsule': 29, 'prolate_spheroid': 1}; min sphere-bound margin 0.2x volume",
+  "mass_reconciliation": "GREEN -- total stated 0.557180000 kg == batch total 0.557180000 kg over exactly the 30 admitted mulatta rows (rel 0.00e+00); kernel derived mass within the 5% law on every membrane (max rel 2.48e-16)",
+  "pcsa_closure": "GREEN -- the dataset's own identity on the FINAL volume book: max rel 1.9730% over 30 muscles (tolerance 2%); the belly-is-not-a-cylinder deviation is reported per muscle as r_pcsa/r_mass in derivation.json (range 0.520-2.393), never tuned",
+  "kernel_conformance": "GREEN -- tools.matter_kernel.definition.parse_body validates adult_muscle_layer.body.json unmodified (30 membranes, 0 bonds); the kernel suite result is recorded in regressions",
+  "stage_consistency": "REALITY -- computed classification: L1_stage=ok; L1_no_infant_chimera=ok; L3_substitution_declared=ok; L2_allometry=ok; L4_physics=ok",
+  "pixel_truth": "GREEN -- solid-geometry rasterization of the COMMITTED 36-byte blobs at 256 px: layer-mean coverage 0.9974 (min 0.97), worst muscle POP 0.9587 (min 0.9); every muscle renders as solid z-buffered geometry"
+ },
+ "pixel_truth_detail": [
+  {
+   "id": "mem.muscle_00",
+   "label": "AL",
+   "coverage": 0.9991119005328597
+  },
+  {
+   "id": "mem.muscle_01",
+   "label": "AM",
+   "coverage": 1.0
+  },
+  {
+   "id": "mem.muscle_02",
+   "label": "BFL",
+   "coverage": 0.998589562764457
+  },
+  {
+   "id": "mem.muscle_03",
+   "label": "EDL",
+   "coverage": 0.9956140350877193
+  },
+  {
+   "id": "mem.muscle_04",
+   "label": "EHL",
+   "coverage": 1.0
+  },
+  {
+   "id": "mem.muscle_05",
+   "label": "FDL",
+   "coverage": 1.0
+  },
+  {
+   "id": "mem.muscle_06",
+   "label": "FHL",
+   "coverage": 1.0
+  },
+  {
+   "id": "mem.muscle_07",
+   "label": "GMax",
+   "coverage": 0.9989361702127659
+  },
+  {
+   "id": "mem.muscle_08",
+   "label": "GMed",
+   "coverage": 1.0
+  },
+  {
+   "id": "mem.muscle_09",
+   "label": "GMin",
+   "coverage": 1.0
+  },
+  {
+   "id": "mem.muscle_10",
+   "label": "GRA",
+   "coverage": 0.9956709956709957
+  },
+  {
+   "id": "mem.muscle_11",
+   "label": "GemInf",
+   "coverage": 1.0
+  },
+  {
+   "id": "mem.muscle_12",
+   "label": "GemSup",
+   "coverage": 1.0
+  },
+  {
+   "id": "mem.muscle_13",
+   "label": "ILI",
+   "coverage": 0.9988925802879292
+  },
+  {
+   "id": "mem.muscle_14",
+   "label": "LG",
+   "coverage": 0.996996996996997
+  },
+  {
+   "id": "mem.muscle_15",
+   "label": "MG",
+   "coverage": 0.992462311557789
+  },
+  {
+   "id": "mem.muscle_16",
+   "label": "ObtExt",
+   "coverage": 1.0
+  },
+  {
+   "id": "mem.muscle_17",
+   "label": "PB",
+   "coverage": 1.0
+  },
+  {
+   "id": "mem.muscle_18",
+   "label": "PECT",
+   "coverage": 1.0
+  },
+  {
+   "id": "mem.muscle_19",
+   "label": "PIRI",
+   "coverage": 0.9991189427312775
+  },
+  {
+   "id": "mem.muscle_20",
+   "label": "PL",
+   "coverage": 1.0
+  },
+  {
+   "id": "mem.muscle_21",
+   "label": "PLANT",
+   "coverage": 0.994475138121547
+  },
+  {
+   "id": "mem.muscle_22",
+   "label": "POP",
+   "coverage": 0.958656330749354
+  },
+  {
+   "id": "mem.muscle_23",
+   "label": "SM",
+   "coverage": 1.0
+  },
+  {
+   "id": "mem.muscle_24",
+   "label": "SOL",
+   "coverage": 0.9977924944812362
+  },
+  {
+   "id": "mem.muscle_25",
+   "label": "ST",
+   "coverage": 1.0
+  },
+  {
+   "id": "mem.muscle_26",
+   "label": "TA",
+   "coverage": 1.0
+  },
+  {
+   "id": "mem.muscle_27",
+   "label": "VI",
+   "coverage": 0.9985775248933144
+  },
+  {
+   "id": "mem.muscle_28",
+   "label": "VL",
+   "coverage": 0.9991304347826087
+  },
+  {
+   "id": "mem.muscle_29",
+   "label": "VM",
+   "coverage": 0.9989429175475687
+  }
+ ],
+ "reality_classification": {
+  "category": "REALITY",
+  "violations": [],
+  "stage_label": "adult",
+  "stage_evidence": "Guimaraes Information sheet via every admitted record's conditions (species Macaca_mulatta, sex Male, age Adult, limb R); scaffold Oku Table 1 adult male (model.dynamics.gait_walker)"
+ },
+ "stage_checks": [
+  {
+   "law": "L1_stage",
+   "ok": true,
+   "evidence": {
+    "age_values": [
+     "Adult"
+    ],
+    "species": [
+     "Macaca_mulatta"
+    ],
+    "sex": [
+     "Male"
+    ],
+    "scaffold": "Oku 2021 Table 1 adult male M. fuscata (walker assembly)"
+   },
+   "note": "L1 demands ONE stage across bound records: all muscle records Adult; the scaffold is the adult walker assembly; the infant skeleton is referenced by no membrane and no bond (checked below)"
+  },
+  {
+   "law": "L1_no_infant_chimera",
+   "ok": true,
+   "evidence": {
+    "infant_membranes_referenced": 0,
+    "bonds": 0,
+    "life_stage": "adult"
+   },
+   "note": "the adult muscle layer binds no infant membrane (no bonds at all until an adult bone layer exists as matter)"
+  },
+  {
+   "law": "L3_substitution_declared",
+   "ok": true,
+   "evidence": {
+    "declaration": "mulatta architecture on fuscata segment geometry, mass ratio 0.79697 (path lane), declared not merged"
+   },
+   "note": "mulatta architecture on fuscata geometry, genus-mates, declared not merged"
+  },
+  {
+   "law": "L2_allometry",
+   "ok": true,
+   "evidence": {
+    "scope": "a limb layer makes no whole-body proportion claim"
+   },
+   "note": "declared: no L2 surface is claimed by a layer-only body"
+  },
+  {
+   "law": "L4_physics",
+   "ok": true,
+   "evidence": {
+    "mass_book": {
+     "muscles": 30,
+     "total_mass_stated_kg": 0.55718,
+     "batch_total_admitted_musc_mass_kg": 0.55718,
+     "mass_reconciliation_rel": 0.0,
+     "total_volume_mm3": 525641.5094339623,
+     "pcsa_closure_max_rel": 0.019729740014316557,
+     "pcsa_closure_max_rel_vs_admitted": 0.02012683728118479,
+     "mesh_volume_delta_max_pct": 0.46524750781613555,
+     "sphere_bound_min_margin": 0.23953312854985667,
+     "capsule_branches": {
+      "capsule": 29,
+      "prolate_spheroid": 1
+     }
+    }
+   },
+   "note": "the mass book and the admitted force record are the physics carried; no new force claim"
+  }
+ ],
+ "totals": {
+  "muscles": 30,
+  "total_mass_stated_kg": 0.55718,
+  "batch_total_admitted_musc_mass_kg": 0.55718,
+  "mass_reconciliation_rel": 0.0,
+  "total_volume_mm3": 525641.5094339623,
+  "pcsa_closure_max_rel": 0.019729740014316557,
+  "pcsa_closure_max_rel_vs_admitted": 0.02012683728118479,
+  "mesh_volume_delta_max_pct": 0.46524750781613555,
+  "sphere_bound_min_margin": 0.23953312854985667,
+  "capsule_branches": {
+   "capsule": 29,
+   "prolate_spheroid": 1
+  }
+ },
+ "failures": []
+}

@@ -38,3 +38,11 @@ tools/science_funnel/data/earth/** -text -whitespace
 
 # MorphoSource CT captures (bones + receipts) retain upstream bytes for checksum replay.
 tools/science_funnel/data/morphosource_ct/** -text -whitespace
+
+# Parametric muscle lane (20260920): the pinned Guimaraes/Oku upstream bytes
+# must stay checkout-invariant (the receipt sha256s verify on every platform),
+# and the derived triangle blobs + body definition are byte-pinned artifacts.
+tools/science_funnel/data/guimaraes_arch/** -text -whitespace
+tools/science_funnel/data/oku_bipedal/** -text -whitespace
+tools/science_funnel/data/oku_paper_table/** -text -whitespace
+tools/science_funnel/data/parametric_muscles/** -text -whitespace

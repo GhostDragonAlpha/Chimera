@@ -1,0 +1,32 @@
+{
+ "retrieved_utc": "2026-09-17T00:00:00+00:00",
+ "files": [
+  {
+   "path": "42003_2021_1831_MOESM2_ESM.xlsx",
+   "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/supplementaryFiles :: zip member 42003_2021_1831_MOESM2_ESM.xlsx",
+   "resolved_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/supplementaryFiles :: zip member 42003_2021_1831_MOESM2_ESM.xlsx",
+   "bytes": 64560,
+   "sha256": "0dd92e443bfc895eebb0e25c1304820adac67679b5989dfb7159f84407433185"
+  },
+  {
+   "path": "42003_2021_1831_MOESM1_ESM.pdf",
+   "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/supplementaryFiles :: zip member 42003_2021_1831_MOESM1_ESM.pdf",
+   "resolved_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/supplementaryFiles :: zip member 42003_2021_1831_MOESM1_ESM.pdf",
+   "bytes": 78234,
+   "sha256": "110ae5fb972bc50120dbd59707d48eac685c2f40521cdbbe7acd8abcd082f131"
+  },
+  {
+   "path": "PMC7940622_fulltext.xml",
+   "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML",
+   "resolved_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML",
+   "bytes": 252950,
+   "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+  }
+ ],
+ "source": "Oku, Ide & Ogihara 2021 (Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w), Supplementary Data 1 (MOESM2 xlsx: joint angles, GRFs, joint moments, muscle forces over the gait cycle, before/after foot morphology alteration) + supplementary methods PDF + article full text (license line), via the EuropePMC supplementaryFiles endpoint",
+ "license": "CC BY 4.0 (article full text permissions block: creativecommons.org/licenses/by/4.0; (c) The Author(s) 2021)",
+ "verification": {
+  "task_brief_pmcid_correction": "the task brief named PMC8134959, which EuropePMC identifies as an unrelated gynecology case report (Gynecol Oncol Rep 2021); the macaque bipedal dataset verified by docs/research/20260917_dbhunt_motion.md C7 is PMC7940622 and that endpoint was used",
+  "task_brief_expected_sha256": "b8cbffd618234b1c11b9ece8d4a5f0d5cfd5a1f48bf65e0a0e7443d3d6ac00900 did not reproduce (belongs to the wrong PMCID and the outer zip is repackaged per request); the pinned identity is the member xlsx sha256"
+ }
+}

@@ -1,0 +1,2283 @@
+{
+ "schema": "chimera.parametric_muscles_derivation.v1",
+ "lane": "agent/parametric-muscles-20260920",
+ "inputs": {
+  "guimaraes_xlsx_sha256": "08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678",
+  "guimaraes_pin_expectation": "08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678",
+  "muscle_path_geometry_sha256": "ca0e890ec69e74d9589c08224d74e74defa53bbc058d371f784175cfca50cb22",
+  "admitted_rows_mulatta": 30,
+  "quarantined_rows_total": 49,
+  "quarantined_rows_mulatta": [
+   {
+    "location": "guimaraes:Macaca mulatta:row4",
+    "code": "mass_additivity_violation"
+   },
+   {
+    "location": "guimaraes:Macaca mulatta:row8",
+    "code": "pcsa_closure_violation"
+   },
+   {
+    "location": "guimaraes:Macaca mulatta:row9",
+    "code": "mass_additivity_violation"
+   },
+   {
+    "location": "guimaraes:Macaca mulatta:row11",
+    "code": "mass_additivity_violation"
+   },
+   {
+    "location": "guimaraes:Macaca mulatta:row21",
+    "code": "mass_additivity_violation"
+   },
+   {
+    "location": "guimaraes:Macaca mulatta:row23",
+    "code": "invalid_number"
+   }
+  ],
+  "adapter": "tools/science_funnel/adapters_muscle.py (the admitted-adapter read; row laws enforced at 2%)"
+ },
+ "laws": {
+  "volume": "V = m / rho, rho = 1060 kg/m^3 = 1.06e-6 kg/mm^3 (the dataset's own closure constant; Mendez & Keys 1960)",
+  "path": "muscle_path_geometry neutral pose, m -> mm x1000",
+  "capsule": "pi r^2 L - (2/3) pi r^3 = V, bisection 1e-12 on [0, L/2]; sphere bound pi L^3/6; prolate-spheroid fallback recorded per muscle",
+  "mass": "kernel law area x thickness x density with thickness := V / A_mesh (the derived equivalent shell)",
+  "mesh": "48 circumferential x 52 meridian parallels (polar profile) -- discretization only; the enclosed-volume check (0.5%) gates it per muscle",
+  "attachment": "the landmark book (no bonds: the adult bone layer does not exist as matter; successor)"
+ },
+ "muscles": [
+  {
+   "id": "mem.muscle_00",
+   "label": "AL",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.0032600000000000003,
+     0.01956
+    ],
+    "insertion_point_m": [
+     -0.006520000000000001,
+     -0.06520000000000001
+    ],
+    "straight_length_m": 0.08482266913980013,
+    "measured_mtu_length_m": 0.11428,
+    "origin_landmark_segment_u_v": [
+     "pelvis",
+     -0.02,
+     0.12
+    ],
+    "insertion_landmark_segment_u_v": [
+     "thigh",
+     0.4,
+     -0.04
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.03434,
+    "fl_m": 0.0726,
+    "pcsa_m2": 0.000446229,
+    "penn_deg": 0.5148721293383273,
+    "musc_len_m": 0.11428,
+    "belly_len_m": 0.10928,
+    "belly_mass_kg": 0.03422,
+    "tendon_len_m": 0.005,
+    "tendon_mass_kg": 0.00012,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 497.478809469959,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": -0.004009343297597642,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 32396.22641509434,
+    "capsule_branch": "capsule",
+    "radius_mm": 11.56398453428638,
+    "radius_residual_mm3": 2.875822247005999e-08,
+    "r_pcsa_report_mm": 11.9180158668256,
+    "r_pcsa_over_r_mass": 1.0306149953322354,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 6152.6292012741,
+    "mesh_enclosed_volume_mm3": 32250.773085701705,
+    "mesh_volume_delta_pct": -0.44898232136341143,
+    "thickness_mm": 5.265428056087901,
+    "mass_stated_kg": 0.03434,
+    "pcsa_book_m2": 0.0004462290139820157,
+    "pcsa_closure_rel_vs_admitted": 3.133372256467542e-08,
+    "pcsa_closure_rel_dataset_predicate": 3.1333721582873283e-08,
+    "sphere_bound_mm3": 319546.7652267987
+   }
+  },
+  {
+   "id": "mem.muscle_01",
+   "label": "AM",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.008150000000000001,
+     0.02445
+    ],
+    "insertion_point_m": [
+     -0.008150000000000001,
+     -0.0978
+    ],
+    "straight_length_m": 0.12225,
+    "measured_mtu_length_m": 0.17558,
+    "origin_landmark_segment_u_v": [
+     "pelvis",
+     -0.05,
+     0.15
+    ],
+    "insertion_landmark_segment_u_v": [
+     "thigh",
+     0.6,
+     -0.05
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.033850000000000005,
+    "fl_m": 0.1164,
+    "pcsa_m2": 0.000274347,
+    "penn_deg": null,
+    "musc_len_m": 0.17558,
+    "belly_len_m": 0.17358,
+    "belly_mass_kg": 0.03375,
+    "tendon_len_m": 0.002,
+    "tendon_mass_kg": 0.0001,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 351.4149510645451,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": -0.008150000000000001,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 31933.96226415095,
+    "capsule_branch": "capsule",
+    "radius_mm": 9.360618065425413,
+    "radius_residual_mm3": 2.333763404749334e-08,
+    "r_pcsa_report_mm": 9.34491103996525,
+    "r_pcsa_over_r_mass": 0.998322009791407,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 7178.087814565153,
+    "mesh_enclosed_volume_mm3": 31787.904876651122,
+    "mesh_volume_delta_pct": -0.4573732075326853,
+    "thickness_mm": 4.448811868719873,
+    "mass_stated_kg": 0.033850000000000005,
+    "pcsa_book_m2": 0.00027434675484665764,
+    "pcsa_closure_rel_vs_admitted": 8.935885660938234e-07,
+    "pcsa_closure_rel_dataset_predicate": 8.935885660938234e-07,
+    "sphere_bound_mm3": 956632.7081078463
+   }
+  },
+  {
+   "id": "mem.muscle_02",
+   "label": "BFL",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.06520000000000001,
+     0.01956
+    ],
+    "insertion_point_m": [
+     -0.008150000000000001,
+     -0.15485
+    ],
+    "straight_length_m": 0.1835035438349897,
+    "measured_mtu_length_m": 0.28237,
+    "origin_landmark_segment_u_v": [
+     "pelvis",
+     -0.4,
+     0.12
+    ],
+    "insertion_landmark_segment_u_v": [
+     "thigh",
+     0.95,
+     -0.05
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.07604999999999999,
+    "fl_m": 0.0712,
+    "pcsa_m2": 0.001007659,
+    "penn_deg": 0.4572762640225143,
+    "musc_len_m": 0.28237,
+    "belly_len_m": 0.22791,
+    "belly_mass_kg": 0.07604000000000001,
+    "tendon_len_m": 0.05103,
+    "tendon_mass_kg": 0.0011,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 1158.1135037301601,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": -0.05588793429091529,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 71745.28301886792,
+    "capsule_branch": "capsule",
+    "radius_mm": 11.394088294336662,
+    "radius_residual_mm3": 7.523340173065662e-09,
+    "r_pcsa_report_mm": 17.909433871623982,
+    "r_pcsa_over_r_mass": 1.571818069948231,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 13115.438491480714,
+    "mesh_enclosed_volume_mm3": 71415.75494154294,
+    "mesh_volume_delta_pct": -0.45930277707361133,
+    "thickness_mm": 5.470292363116255,
+    "mass_stated_kg": 0.07604999999999999,
+    "pcsa_book_m2": 0.0010076584693661226,
+    "pcsa_closure_rel_vs_admitted": 5.266006430080905e-07,
+    "pcsa_closure_rel_dataset_predicate": 5.266006430080905e-07,
+    "sphere_bound_mm3": 3235429.8629601207
+   }
+  },
+  {
+   "id": "mem.muscle_03",
+   "label": "EDL",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     0.01092,
+     -0.20850000000000002
+    ],
+    "insertion_point_m": [
+     0.07029999999999999,
+     -0.34425999999999995
+    ],
+    "straight_length_m": 0.14817814278765942,
+    "measured_mtu_length_m": 0.15303,
+    "origin_landmark_segment_u_v": [
+     "shank",
+     0.25,
+     0.06
+    ],
+    "insertion_landmark_segment_u_v": [
+     "foot",
+     0.95,
+     0.01
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.0025800000000000003,
+    "fl_m": 0.0635,
+    "pcsa_m2": 3.83e-05,
+    "penn_deg": 0.13788101090755203,
+    "musc_len_m": 0.15303,
+    "belly_len_m": 0.13588,
+    "belly_mass_kg": 0.0025099999999999996,
+    "tendon_len_m": 0.01715,
+    "tendon_mass_kg": 7.000000000000001e-05,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 48.59341513985758,
+    "moment_arms_m_flexion_positive": {
+     "ankle": -0.06470501667536416,
+     "hip": null,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 2433.9622641509436,
+    "capsule_branch": "capsule",
+    "radius_mm": 2.2985140847672865,
+    "radius_residual_mm3": 2.8694557840935886e-10,
+    "r_pcsa_report_mm": 3.4915997251745776,
+    "r_pcsa_over_r_mass": 1.5190682312169017,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 2136.4910210483245,
+    "mesh_enclosed_volume_mm3": 2422.638315375796,
+    "mesh_volume_delta_pct": -0.46524750781613555,
+    "thickness_mm": 1.1392335564118856,
+    "mass_stated_kg": 0.0025800000000000003,
+    "pcsa_book_m2": 3.833011439607785e-05,
+    "pcsa_closure_rel_vs_admitted": 0.0007862766599960175,
+    "pcsa_closure_rel_dataset_predicate": 0.0007856589147286486,
+    "sphere_bound_mm3": 1703535.0120584953
+   }
+  },
+  {
+   "id": "mem.muscle_04",
+   "label": "EHL",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     0.0091,
+     -0.254
+    ],
+    "insertion_point_m": [
+     0.074,
+     -0.34352
+    ],
+    "straight_length_m": 0.1105705222923361,
+    "measured_mtu_length_m": 0.15,
+    "origin_landmark_segment_u_v": [
+     "shank",
+     0.5,
+     0.05
+    ],
+    "insertion_landmark_segment_u_v": [
+     "foot",
+     1.0,
+     0.02
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.0048,
+    "fl_m": 0.0553,
+    "pcsa_m2": 8.19e-05,
+    "penn_deg": 0.19198621771937624,
+    "musc_len_m": 0.15,
+    "belly_len_m": 0.145,
+    "belly_mass_kg": 0.00475,
+    "tendon_len_m": 0.005,
+    "tendon_mass_kg": 5e-05,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 102.97943327682583,
+    "moment_arms_m_flexion_positive": {
+     "ankle": -0.0607805033445683,
+     "hip": null,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 4528.301886792452,
+    "capsule_branch": "capsule",
+    "radius_mm": 3.650955086685146,
+    "radius_residual_mm3": 6.234586180653423e-09,
+    "r_pcsa_report_mm": 5.105837803774465,
+    "r_pcsa_over_r_mass": 1.3984937317895816,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 2532.278983143283,
+    "mesh_enclosed_volume_mm3": 4507.33468943927,
+    "mesh_volume_delta_pct": -0.4630256082161055,
+    "thickness_mm": 1.7882318326441005,
+    "mass_stated_kg": 0.0048,
+    "pcsa_book_m2": 8.188611006857961e-05,
+    "pcsa_closure_rel_vs_admitted": 0.00016959623223915355,
+    "pcsa_closure_rel_dataset_predicate": 0.00016959623223915355,
+    "sphere_bound_mm3": 707810.0184580347
+   }
+  },
+  {
+   "id": "mem.muscle_05",
+   "label": "FDL",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.01092,
+     -0.2631
+    ],
+    "insertion_point_m": [
+     0.0965,
+     -0.345
+    ],
+    "straight_length_m": 0.13508022209043039,
+    "measured_mtu_length_m": 0.14197,
+    "origin_landmark_segment_u_v": [
+     "shank",
+     0.55,
+     -0.06
+    ],
+    "insertion_landmark_segment_u_v": [
+     "toe",
+     0.5,
+     0.0
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.01122,
+    "fl_m": 0.023,
+    "pcsa_m2": 0.000460213,
+    "penn_deg": 0.3735004599267865,
+    "musc_len_m": 0.14197,
+    "belly_len_m": 0.11714000000000001,
+    "belly_mass_kg": 0.01116,
+    "tendon_len_m": 0.024829999999999998,
+    "tendon_mass_kg": 6e-05,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 548.8512010081874,
+    "moment_arms_m_flexion_positive": {
+     "ankle": -0.05850856533763355,
+     "hip": null,
+     "knee": null,
+     "mtp": -0.013641893472505232
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 10584.905660377359,
+    "capsule_branch": "capsule",
+    "radius_mm": 5.057802877350686,
+    "radius_residual_mm3": 2.0609149942174554e-09,
+    "r_pcsa_report_mm": 12.103319695451363,
+    "r_pcsa_over_r_mass": 2.392999487910286,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 4285.665318383971,
+    "mesh_enclosed_volume_mm3": 10535.950993803355,
+    "mesh_volume_delta_pct": -0.46249506745493774,
+    "thickness_mm": 2.469839540426057,
+    "mass_stated_kg": 0.01122,
+    "pcsa_book_m2": 0.00046021328958162437,
+    "pcsa_closure_rel_vs_admitted": 6.292339076884472e-07,
+    "pcsa_closure_rel_dataset_predicate": 6.292335117533858e-07,
+    "sphere_bound_mm3": 1290547.281493508
+   }
+  },
+  {
+   "id": "mem.muscle_06",
+   "label": "FHL",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.0091,
+     -0.3086
+    ],
+    "insertion_point_m": [
+     0.0965,
+     -0.345
+    ],
+    "straight_length_m": 0.11169744849368762,
+    "measured_mtu_length_m": 0.149,
+    "origin_landmark_segment_u_v": [
+     "shank",
+     0.8,
+     -0.05
+    ],
+    "insertion_landmark_segment_u_v": [
+     "toe",
+     0.5,
+     0.0
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.00449,
+    "fl_m": 0.0421,
+    "pcsa_m2": 0.000100614,
+    "penn_deg": 0.1117010721276371,
+    "musc_len_m": 0.149,
+    "belly_len_m": 0.14400000000000002,
+    "belly_mass_kg": 0.00435,
+    "tendon_len_m": 0.005,
+    "tendon_mass_kg": 0.00014000000000000001,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 128.07471763718183,
+    "moment_arms_m_flexion_positive": {
+     "ankle": -0.03144745065683848,
+     "hip": null,
+     "knee": null,
+     "mtp": -0.007332307147967527
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 4235.8490566037735,
+    "capsule_branch": "capsule",
+    "radius_mm": 3.5113400582628587,
+    "radius_residual_mm3": 3.4888216760009527e-09,
+    "r_pcsa_report_mm": 5.659189949851119,
+    "r_pcsa_over_r_mass": 1.6116895133907514,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 2460.2670933644476,
+    "mesh_enclosed_volume_mm3": 4216.22837830017,
+    "mesh_volume_delta_pct": -0.46320532298038675,
+    "thickness_mm": 1.721702927307455,
+    "mass_stated_kg": 0.00449,
+    "pcsa_book_m2": 0.00010061399184332005,
+    "pcsa_closure_rel_vs_admitted": 8.106903560576376e-08,
+    "pcsa_closure_rel_dataset_predicate": 8.106903560576376e-08,
+    "sphere_bound_mm3": 729673.1744120371
+   }
+  },
+  {
+   "id": "mem.muscle_07",
+   "label": "GMax",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.05705,
+     0.032600000000000004
+    ],
+    "insertion_point_m": [
+     -0.013040000000000001,
+     -0.0489
+    ],
+    "straight_length_m": 0.09262359364654343,
+    "measured_mtu_length_m": 0.0911,
+    "origin_landmark_segment_u_v": [
+     "pelvis",
+     -0.35,
+     0.2
+    ],
+    "insertion_landmark_segment_u_v": [
+     "thigh",
+     0.3,
+     -0.08
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.02629,
+    "fl_m": 0.05908,
+    "pcsa_m2": 0.000419802,
+    "penn_deg": 0.15707963267948966,
+    "musc_len_m": 0.0911,
+    "belly_len_m": 0.0815,
+    "belly_mass_kg": 0.02539,
+    "tendon_len_m": 0.0096,
+    "tendon_mass_kg": 0.0009000000000000001,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 531.1099645171057,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": -0.03470874831598561,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 24801.88679245283,
+    "capsule_branch": "capsule",
+    "radius_mm": 9.567530527941713,
+    "radius_residual_mm3": 8.370989235118032e-09,
+    "r_pcsa_report_mm": 11.559720015628738,
+    "r_pcsa_over_r_mass": 1.2082240011535776,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 5558.665831356115,
+    "mesh_enclosed_volume_mm3": 24689.358463037304,
+    "mesh_volume_delta_pct": -0.4537087454562938,
+    "thickness_mm": 4.4618416621749075,
+    "mass_stated_kg": 0.02629,
+    "pcsa_book_m2": 0.0004198017398857961,
+    "pcsa_closure_rel_vs_admitted": 6.196116356873502e-07,
+    "pcsa_closure_rel_dataset_predicate": 6.196116356873502e-07,
+    "sphere_bound_mm3": 416067.22186673054
+   }
+  },
+  {
+   "id": "mem.muscle_08",
+   "label": "GMed",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     0.0,
+     0.06520000000000001
+    ],
+    "insertion_point_m": [
+     0.008150000000000001,
+     -0.008150000000000001
+    ],
+    "straight_length_m": 0.07380138887581995,
+    "measured_mtu_length_m": 0.1036,
+    "origin_landmark_segment_u_v": [
+     "pelvis",
+     0.0,
+     0.4
+    ],
+    "insertion_landmark_segment_u_v": [
+     "thigh",
+     0.05,
+     0.05
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.06257,
+    "fl_m": 0.0689,
+    "pcsa_m2": 0.000856724,
+    "penn_deg": 0.5288347633542818,
+    "musc_len_m": 0.1036,
+    "belly_len_m": 0.091,
+    "belly_mass_kg": 0.06217,
+    "tendon_len_m": 0.0126,
+    "tendon_mass_kg": 0.0004,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 947.4815432211251,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": 0.0072001355000799955,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 59028.301886792455,
+    "capsule_branch": "capsule",
+    "radius_mm": 17.378184379359933,
+    "radius_residual_mm3": 1.5643308870494366e-08,
+    "r_pcsa_report_mm": 16.513743334899022,
+    "r_pcsa_over_r_mass": 0.9502571140004932,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 8044.275542155021,
+    "mesh_enclosed_volume_mm3": 58772.52509179321,
+    "mesh_volume_delta_pct": -0.4333121347278146,
+    "thickness_mm": 7.33792640213056,
+    "mass_stated_kg": 0.06257,
+    "pcsa_book_m2": 0.0008567242654106308,
+    "pcsa_closure_rel_vs_admitted": 3.0979712340978144e-07,
+    "pcsa_closure_rel_dataset_predicate": 3.097970274355535e-07,
+    "sphere_bound_mm3": 210470.98187489994
+   }
+  },
+  {
+   "id": "mem.muscle_09",
+   "label": "GMin",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     0.008150000000000001,
+     0.0489
+    ],
+    "insertion_point_m": [
+     0.00489,
+     -0.013040000000000001
+    ],
+    "straight_length_m": 0.06202573014483586,
+    "measured_mtu_length_m": 0.06741,
+    "origin_landmark_segment_u_v": [
+     "pelvis",
+     0.05,
+     0.3
+    ],
+    "insertion_landmark_segment_u_v": [
+     "thigh",
+     0.08,
+     0.03
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.007070000000000001,
+    "fl_m": 0.0415,
+    "pcsa_m2": 0.000160718,
+    "penn_deg": 0.2007128639793479,
+    "musc_len_m": 0.06741,
+    "belly_len_m": 0.05601,
+    "belly_mass_kg": 0.007,
+    "tendon_len_m": 0.0114,
+    "tendon_mass_kg": 7.000000000000001e-05,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 201.7331385338491,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": 0.005568608369356812,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 6669.811320754718,
+    "capsule_branch": "capsule",
+    "radius_mm": 6.05059081191947,
+    "radius_residual_mm3": 3.746208676602691e-09,
+    "r_pcsa_report_mm": 7.1524910547085945,
+    "r_pcsa_over_r_mass": 1.182114487170148,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 2354.073956600935,
+    "mesh_enclosed_volume_mm3": 6639.496436115733,
+    "mesh_volume_delta_pct": -0.45450887860429834,
+    "thickness_mm": 2.8333057685177008,
+    "mass_stated_kg": 0.007070000000000001,
+    "pcsa_book_m2": 0.00016071834507842692,
+    "pcsa_closure_rel_vs_admitted": 2.1471050344919046e-06,
+    "pcsa_closure_rel_dataset_predicate": 2.1471004244417734e-06,
+    "sphere_bound_mm3": 124943.67571993788
+   }
+  },
+  {
+   "id": "mem.muscle_10",
+   "label": "GRA",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.04075,
+     0.008150000000000001
+    ],
+    "insertion_point_m": [
+     -0.00728,
+     -0.3177
+    ],
+    "straight_length_m": 0.32756444159890125,
+    "measured_mtu_length_m": 0.18806,
+    "origin_landmark_segment_u_v": [
+     "pelvis",
+     -0.25,
+     0.05
+    ],
+    "insertion_landmark_segment_u_v": [
+     "shank",
+     0.85,
+     -0.04
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.02869,
+    "fl_m": 0.1622,
+    "pcsa_m2": 0.000166868,
+    "penn_deg": null,
+    "musc_len_m": 0.18806,
+    "belly_len_m": 0.17846,
+    "belly_mass_kg": 0.02854,
+    "tendon_len_m": 0.0096,
+    "tendon_mass_kg": 0.00015,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 213.74358040816384,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": -0.03970396461996083,
+     "knee": 0.023048890664527262,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 27066.037735849055,
+    "capsule_branch": "capsule",
+    "radius_mm": 5.155603988022576,
+    "radius_residual_mm3": 2.6117049856111407e-08,
+    "r_pcsa_report_mm": 7.288054204499084,
+    "r_pcsa_over_r_mass": 1.4136179236090642,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 10593.659296491422,
+    "mesh_enclosed_volume_mm3": 26940.120950596585,
+    "mesh_volume_delta_pct": -0.4652206077644383,
+    "thickness_mm": 2.5549280922044777,
+    "mass_stated_kg": 0.028690000000000004,
+    "pcsa_book_m2": 0.00016686829676848986,
+    "pcsa_closure_rel_vs_admitted": 1.7784625563630666e-06,
+    "pcsa_closure_rel_dataset_predicate": 1.7784593934396274e-06,
+    "sphere_bound_mm3": 18403010.595230315
+   }
+  },
+  {
+   "id": "mem.muscle_11",
+   "label": "GemInf",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.04564000000000001,
+     0.0
+    ],
+    "insertion_point_m": [
+     -0.0032600000000000003,
+     -0.00489
+    ],
+    "straight_length_m": 0.042661182590265835,
+    "measured_mtu_length_m": 0.03118,
+    "origin_landmark_segment_u_v": [
+     "pelvis",
+     -0.28,
+     0.0
+    ],
+    "insertion_landmark_segment_u_v": [
+     "thigh",
+     0.03,
+     -0.02
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.0003,
+    "fl_m": 0.0197,
+    "pcsa_m2": 1.44e-05,
+    "penn_deg": 0.2583087292951608,
+    "musc_len_m": 0.03118,
+    "belly_len_m": 0.022180000000000002,
+    "belly_mass_kg": 0.0002,
+    "tendon_len_m": 0.009000000000000001,
+    "tendon_mass_kg": 0.0001,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 17.833215565108098,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": -0.005231444288441357,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 283.01886792452825,
+    "capsule_branch": "capsule",
+    "radius_mm": 1.4701555317412045,
+    "radius_residual_mm3": 3.5157654565409757e-10,
+    "r_pcsa_report_mm": 2.140948939383325,
+    "r_pcsa_over_r_mass": 1.4562737704681183,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 393.4245508910323,
+    "mesh_enclosed_volume_mm3": 281.7088385665958,
+    "mesh_volume_delta_pct": -0.4628770398028115,
+    "thickness_mm": 0.7193726656954782,
+    "mass_stated_kg": 0.0003,
+    "pcsa_book_m2": 1.436643999616895e-05,
+    "pcsa_closure_rel_vs_admitted": 0.002330555821600703,
+    "pcsa_closure_rel_dataset_predicate": 0.002330555821600703,
+    "sphere_bound_mm3": 40653.43927754658
+   }
+  },
+  {
+   "id": "mem.muscle_12",
+   "label": "GemSup",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.032600000000000004,
+     0.008150000000000001
+    ],
+    "insertion_point_m": [
+     -0.0032600000000000003,
+     -0.00489
+    ],
+    "straight_length_m": 0.03210727643385531,
+    "measured_mtu_length_m": 0.03875,
+    "origin_landmark_segment_u_v": [
+     "pelvis",
+     -0.2,
+     0.05
+    ],
+    "insertion_landmark_segment_u_v": [
+     "thigh",
+     0.03,
+     -0.02
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.00125,
+    "fl_m": 0.0265,
+    "pcsa_m2": 4.45e-05,
+    "penn_deg": null,
+    "musc_len_m": 0.03875,
+    "belly_len_m": 0.0293,
+    "belly_mass_kg": 0.00124,
+    "tendon_len_m": 0.00585,
+    "tendon_mass_kg": 1e-05,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 57.00067914856827,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": -0.005792549872087297,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 1179.245283018868,
+    "capsule_branch": "capsule",
+    "radius_mm": 3.552758020444327,
+    "radius_residual_mm3": 1.0509211278986186e-09,
+    "r_pcsa_report_mm": 3.763613946086751,
+    "r_pcsa_over_r_mass": 1.05934992600933,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 715.5112127049828,
+    "mesh_enclosed_volume_mm3": 1173.9071131447126,
+    "mesh_volume_delta_pct": -0.45267680532836696,
+    "thickness_mm": 1.6481157277196863,
+    "mass_stated_kg": 0.00125,
+    "pcsa_book_m2": 4.4499822000712e-05,
+    "pcsa_closure_rel_vs_admitted": 3.9999839999530754e-06,
+    "pcsa_closure_rel_dataset_predicate": 3.9999839999530754e-06,
+    "sphere_bound_mm3": 17330.417446647025
+   }
+  },
+  {
+   "id": "mem.muscle_13",
+   "label": "ILI",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     0.032600000000000004,
+     0.05705
+    ],
+    "insertion_point_m": [
+     0.008150000000000001,
+     -0.016300000000000002
+    ],
+    "straight_length_m": 0.07731768879111688,
+    "measured_mtu_length_m": 0.11674,
+    "origin_landmark_segment_u_v": [
+     "pelvis",
+     0.2,
+     0.35
+    ],
+    "insertion_landmark_segment_u_v": [
+     "thigh",
+     0.1,
+     0.05
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.01438,
+    "fl_m": 0.052,
+    "pcsa_m2": 0.000260885,
+    "penn_deg": 0.3700098014227979,
+    "musc_len_m": 0.11674,
+    "belly_len_m": 0.11273999999999999,
+    "belly_mass_kg": 0.01428,
+    "tendon_len_m": 0.004,
+    "tendon_mass_kg": 0.0001,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 311.55584262906933,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": 0.01288628146518615,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 13566.037735849057,
+    "capsule_branch": "capsule",
+    "radius_mm": 7.735737338827949,
+    "radius_residual_mm3": 4.3273757910355926e-09,
+    "r_pcsa_report_mm": 9.112753407014711,
+    "r_pcsa_over_r_mass": 1.178007086832578,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 3751.7200448512185,
+    "mesh_enclosed_volume_mm3": 13504.42600272817,
+    "mesh_volume_delta_pct": -0.45416159324157546,
+    "thickness_mm": 3.6159515032223157,
+    "mass_stated_kg": 0.01438,
+    "pcsa_book_m2": 0.00026088534107402035,
+    "pcsa_closure_rel_vs_admitted": 1.307373058521392e-06,
+    "pcsa_closure_rel_dataset_predicate": 1.3073713492993125e-06,
+    "sphere_bound_mm3": 242011.05934686566
+   }
+  },
+  {
+   "id": "mem.muscle_14",
+   "label": "LG",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.00978,
+     -0.15485
+    ],
+    "insertion_point_m": [
+     -0.011099999999999999,
+     -0.34869999999999995
+    ],
+    "straight_length_m": 0.1938544941444484,
+    "measured_mtu_length_m": 0.16294999999999998,
+    "origin_landmark_segment_u_v": [
+     "thigh",
+     0.95,
+     -0.06
+    ],
+    "insertion_landmark_segment_u_v": [
+     "foot",
+     -0.15,
+     -0.05
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.01587,
+    "fl_m": 0.062,
+    "pcsa_m2": 0.000241479,
+    "penn_deg": 0.20420352248333654,
+    "musc_len_m": 0.16294999999999998,
+    "belly_len_m": 0.12259,
+    "belly_mass_kg": 0.01562,
+    "tendon_len_m": 0.04036,
+    "tendon_mass_kg": 0.00025,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 302.88719241719616,
+    "moment_arms_m_flexion_positive": {
+     "ankle": 0.011074548513692432,
+     "hip": null,
+     "knee": 0.009835268500813352,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 14971.698113207545,
+    "capsule_branch": "capsule",
+    "radius_mm": 5.001382096269092,
+    "radius_residual_mm3": 7.64703145250678e-09,
+    "r_pcsa_report_mm": 8.767277399841731,
+    "r_pcsa_over_r_mass": 1.7529709250532777,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 6081.815474349463,
+    "mesh_enclosed_volume_mm3": 14902.234316591153,
+    "mesh_volume_delta_pct": -0.4639673876079109,
+    "thickness_mm": 2.4617152849098862,
+    "mass_stated_kg": 0.015869999999999995,
+    "pcsa_book_m2": 0.00024147900182592817,
+    "pcsa_closure_rel_vs_admitted": 7.561436654634531e-09,
+    "pcsa_closure_rel_dataset_predicate": 7.561436597459208e-09,
+    "sphere_bound_mm3": 3814400.086237377
+   }
+  },
+  {
+   "id": "mem.muscle_15",
+   "label": "MG",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.00978,
+     -0.15811
+    ],
+    "insertion_point_m": [
+     -0.011099999999999999,
+     -0.34869999999999995
+    ],
+    "straight_length_m": 0.19059457101397193,
+    "measured_mtu_length_m": 0.16971,
+    "origin_landmark_segment_u_v": [
+     "thigh",
+     0.97,
+     -0.06
+    ],
+    "insertion_landmark_segment_u_v": [
+     "foot",
+     -0.15,
+     -0.05
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.01945,
+    "fl_m": 0.0916,
+    "pcsa_m2": 0.000200318,
+    "penn_deg": 0.10471975511965978,
+    "musc_len_m": 0.16971,
+    "belly_len_m": 0.16571000000000002,
+    "belly_mass_kg": 0.019350000000000003,
+    "tendon_len_m": 0.004,
+    "tendon_mass_kg": 0.0001,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 255.18453059514997,
+    "moment_arms_m_flexion_positive": {
+     "ankle": 0.011074108715537719,
+     "hip": null,
+     "knee": 0.00981363209901128,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 18349.056603773584,
+    "capsule_branch": "capsule",
+    "radius_mm": 5.590686088953341,
+    "radius_residual_mm3": 1.7065758584067225e-08,
+    "r_pcsa_report_mm": 7.985186270874624,
+    "r_pcsa_over_r_mass": 1.4283016688510888,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 6684.087566056302,
+    "mesh_enclosed_volume_mm3": 18264.00444497111,
+    "mesh_volume_delta_pct": -0.46352333331940443,
+    "thickness_mm": 2.7451849519379894,
+    "mass_stated_kg": 0.01945,
+    "pcsa_book_m2": 0.00020031721183158937,
+    "pcsa_closure_rel_vs_admitted": 3.934586061346603e-06,
+    "pcsa_closure_rel_dataset_predicate": 3.934586061346603e-06,
+    "sphere_bound_mm3": 3625185.2125315224
+   }
+  },
+  {
+   "id": "mem.muscle_16",
+   "label": "ObtExt",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.052160000000000005,
+     0.0
+    ],
+    "insertion_point_m": [
+     -0.0032600000000000003,
+     -0.00489
+    ],
+    "straight_length_m": 0.04914389178728116,
+    "measured_mtu_length_m": 0.0514,
+    "origin_landmark_segment_u_v": [
+     "pelvis",
+     -0.32,
+     0.0
+    ],
+    "insertion_landmark_segment_u_v": [
+     "thigh",
+     0.03,
+     -0.02
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.00833,
+    "fl_m": 0.0425,
+    "pcsa_m2": 0.000184906,
+    "penn_deg": 0.1466076571675237,
+    "musc_len_m": 0.0514,
+    "belly_len_m": 0.043500000000000004,
+    "belly_mass_kg": 0.00743,
+    "tendon_len_m": 0.0079,
+    "tendon_mass_kg": 0.0009000000000000001,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 234.30787553739256,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": -0.005190113984135303,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 7858.490566037736,
+    "capsule_branch": "capsule",
+    "radius_mm": 7.5293152216260815,
+    "radius_residual_mm3": 7.476955943275243e-09,
+    "r_pcsa_report_mm": 7.671858172222685,
+    "r_pcsa_over_r_mass": 1.0189317283711519,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 2320.931699770041,
+    "mesh_enclosed_volume_mm3": 7823.404156591062,
+    "mesh_volume_delta_pct": -0.44647771924939406,
+    "thickness_mm": 3.3859206485121294,
+    "mass_stated_kg": 0.00833,
+    "pcsa_book_m2": 0.00018490566037735847,
+    "pcsa_closure_rel_vs_admitted": 1.8367313204179009e-06,
+    "pcsa_closure_rel_dataset_predicate": 1.8367313204179009e-06,
+    "sphere_bound_mm3": 62145.152824932484
+   }
+  },
+  {
+   "id": "mem.muscle_17",
+   "label": "PB",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.0091,
+     -0.2449
+    ],
+    "insertion_point_m": [
+     0.0629,
+     -0.34647999999999995
+    ],
+    "straight_length_m": 0.12450902135989982,
+    "measured_mtu_length_m": 0.15130000000000002,
+    "origin_landmark_segment_u_v": [
+     "shank",
+     0.45,
+     -0.05
+    ],
+    "insertion_landmark_segment_u_v": [
+     "foot",
+     0.85,
+     -0.02
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.013970000000000002,
+    "fl_m": 0.0678,
+    "pcsa_m2": 0.000190549,
+    "penn_deg": null,
+    "musc_len_m": 0.15130000000000002,
+    "belly_len_m": 0.12796,
+    "belly_mass_kg": 0.01317,
+    "tendon_len_m": 0.02334,
+    "tendon_mass_kg": 0.0008,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 244.07690811416936,
+    "moment_arms_m_flexion_positive": {
+     "ankle": -0.05046077731057875,
+     "hip": null,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 13179.245283018869,
+    "capsule_branch": "capsule",
+    "radius_mm": 5.898459615259993,
+    "radius_residual_mm3": 7.723429007455707e-09,
+    "r_pcsa_report_mm": 7.788044074248369,
+    "r_pcsa_over_r_mass": 1.3203521906125804,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 4606.824975504683,
+    "mesh_enclosed_volume_mm3": 13118.46196080619,
+    "mesh_volume_delta_pct": -0.4612048786359346,
+    "thickness_mm": 2.8608087680984817,
+    "mass_stated_kg": 0.013970000000000003,
+    "pcsa_book_m2": 0.0001943841487170925,
+    "pcsa_closure_rel_vs_admitted": 0.02012683728118479,
+    "pcsa_closure_rel_dataset_predicate": 0.019729740014316557,
+    "sphere_bound_mm3": 1010650.6998261433
+   }
+  },
+  {
+   "id": "mem.muscle_18",
+   "label": "PECT",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     0.0,
+     0.016300000000000002
+    ],
+    "insertion_point_m": [
+     -0.00489,
+     -0.04075
+    ],
+    "straight_length_m": 0.05725918790901597,
+    "measured_mtu_length_m": 0.07057,
+    "origin_landmark_segment_u_v": [
+     "pelvis",
+     0.0,
+     0.1
+    ],
+    "insertion_landmark_segment_u_v": [
+     "thigh",
+     0.25,
+     -0.03
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.0055,
+    "fl_m": 0.0523,
+    "pcsa_m2": 9.92e-05,
+    "penn_deg": 0.2234021442552742,
+    "musc_len_m": 0.07057,
+    "belly_len_m": 0.07047,
+    "belly_mass_kg": 0.0054,
+    "tendon_len_m": 0.0001,
+    "tendon_mass_kg": 0.0001,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 123.9089933999355,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": -0.0013920386039469037,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 5188.679245283019,
+    "capsule_branch": "capsule",
+    "radius_mm": 5.553224085320832,
+    "radius_residual_mm3": 3.01588443107903e-09,
+    "r_pcsa_report_mm": 5.619282935520514,
+    "r_pcsa_over_r_mass": 1.0118955851924467,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 1994.5317322071874,
+    "mesh_enclosed_volume_mm3": 5165.092181939076,
+    "mesh_volume_delta_pct": -0.454587038992349,
+    "thickness_mm": 2.6014523416687516,
+    "mass_stated_kg": 0.0055,
+    "pcsa_book_m2": 9.920992820808832e-05,
+    "pcsa_closure_rel_vs_admitted": 0.00010008274282579432,
+    "pcsa_closure_rel_dataset_predicate": 0.0001000727272727668,
+    "sphere_bound_mm3": 98295.62197671756
+   }
+  },
+  {
+   "id": "mem.muscle_19",
+   "label": "PIRI",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.0489,
+     0.0032600000000000003
+    ],
+    "insertion_point_m": [
+     -0.006520000000000001,
+     -0.006520000000000001
+    ],
+    "straight_length_m": 0.04349382484905185,
+    "measured_mtu_length_m": 0.06705,
+    "origin_landmark_segment_u_v": [
+     "pelvis",
+     -0.3,
+     0.02
+    ],
+    "insertion_landmark_segment_u_v": [
+     "thigh",
+     0.04,
+     -0.04
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.00661,
+    "fl_m": 0.0447,
+    "pcsa_m2": 0.000139504,
+    "penn_deg": 0.17453292519943295,
+    "musc_len_m": 0.06705,
+    "belly_len_m": 0.061649999999999996,
+    "belly_mass_kg": 0.0064800000000000005,
+    "tendon_len_m": 0.0054,
+    "tendon_mass_kg": 0.00013000000000000002,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 175.97790311938792,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": -0.007819114579604824,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 6235.8490566037735,
+    "capsule_branch": "capsule",
+    "radius_mm": 7.159813900974121,
+    "radius_residual_mm3": 1.926309778355062e-09,
+    "r_pcsa_report_mm": 6.66374537044923,
+    "r_pcsa_over_r_mass": 0.9307148848579153,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 1953.2776949793717,
+    "mesh_enclosed_volume_mm3": 6208.115284540309,
+    "mesh_volume_delta_pct": -0.4447473280979164,
+    "thickness_mm": 3.192505127474785,
+    "mass_stated_kg": 0.00661,
+    "pcsa_book_m2": 0.00013950445316786967,
+    "pcsa_closure_rel_vs_admitted": 3.248422049959113e-06,
+    "pcsa_closure_rel_dataset_predicate": 3.2484114977475767e-06,
+    "sphere_bound_mm3": 43080.56852728026
+   }
+  },
+  {
+   "id": "mem.muscle_20",
+   "label": "PL",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.01092,
+     -0.2358
+    ],
+    "insertion_point_m": [
+     0.06659999999999999,
+     -0.34796
+    ],
+    "straight_length_m": 0.1363422751753835,
+    "measured_mtu_length_m": 0.15344,
+    "origin_landmark_segment_u_v": [
+     "shank",
+     0.4,
+     -0.06
+    ],
+    "insertion_landmark_segment_u_v": [
+     "foot",
+     0.9,
+     -0.04
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.01502,
+    "fl_m": 0.029,
+    "pcsa_m2": 0.000488614,
+    "penn_deg": null,
+    "musc_len_m": 0.15344,
+    "belly_len_m": 0.13924,
+    "belly_mass_kg": 0.01491,
+    "tendon_len_m": 0.014199999999999999,
+    "tendon_mass_kg": 0.00011,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 625.8725807078322,
+    "moment_arms_m_flexion_positive": {
+     "ankle": -0.053104561961331016,
+     "hip": null,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 14169.811320754718,
+    "capsule_branch": "capsule",
+    "radius_mm": 5.835498078305553,
+    "radius_residual_mm3": 1.1306838132441044e-08,
+    "r_pcsa_report_mm": 12.471193476480376,
+    "r_pcsa_over_r_mass": 2.1371257961414023,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 4990.818570093637,
+    "mesh_enclosed_volume_mm3": 14104.372962693655,
+    "mesh_volume_delta_pct": -0.4618153098849942,
+    "thickness_mm": 2.839175802876133,
+    "mass_stated_kg": 0.01502,
+    "pcsa_book_m2": 0.0004886141834743006,
+    "pcsa_closure_rel_vs_admitted": 3.754994753312763e-07,
+    "pcsa_closure_rel_dataset_predicate": 3.7549933433147323e-07,
+    "sphere_bound_mm3": 1327059.0040168352
+   }
+  },
+  {
+   "id": "mem.muscle_21",
+   "label": "PLANT",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.008150000000000001,
+     -0.15811
+    ],
+    "insertion_point_m": [
+     -0.008879999999999999,
+     -0.34796
+    ],
+    "straight_length_m": 0.18985140347124116,
+    "measured_mtu_length_m": 0.18351,
+    "origin_landmark_segment_u_v": [
+     "thigh",
+     0.97,
+     -0.05
+    ],
+    "insertion_landmark_segment_u_v": [
+     "foot",
+     -0.12,
+     -0.04
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.00547,
+    "fl_m": 0.0423,
+    "pcsa_m2": 0.000121995,
+    "penn_deg": 0.16929693744344995,
+    "musc_len_m": 0.18351,
+    "belly_len_m": 0.12344,
+    "belly_mass_kg": 0.00536,
+    "tendon_len_m": 0.06007,
+    "tendon_mass_kg": 0.00011,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 154.03107116355446,
+    "moment_arms_m_flexion_positive": {
+     "ankle": 0.008868552821918166,
+     "hip": null,
+     "knee": 0.008168742351356511,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 5160.377358490566,
+    "capsule_branch": "capsule",
+    "radius_mm": 2.956822816723769,
+    "radius_residual_mm3": 2.0500010577961802e-09,
+    "r_pcsa_report_mm": 6.231549932800951,
+    "r_pcsa_over_r_mass": 2.1075155053442325,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 3521.3472204746195,
+    "mesh_enclosed_volume_mm3": 5136.36918175042,
+    "mesh_volume_delta_pct": -0.465240719278881,
+    "thickness_mm": 1.465455416746728,
+    "mass_stated_kg": 0.00547,
+    "pcsa_book_m2": 0.00012199473660734199,
+    "pcsa_closure_rel_vs_admitted": 2.1590446986553754e-06,
+    "pcsa_closure_rel_dataset_predicate": 2.1590446986553754e-06,
+    "sphere_bound_mm3": 3582944.312968632
+   }
+  },
+  {
+   "id": "mem.muscle_22",
+   "label": "POP",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.006520000000000001,
+     -0.15974
+    ],
+    "insertion_point_m": [
+     -0.00728,
+     -0.1721
+    ],
+    "straight_length_m": 0.012383343651857531,
+    "measured_mtu_length_m": 0.784,
+    "origin_landmark_segment_u_v": [
+     "thigh",
+     0.98,
+     -0.04
+    ],
+    "insertion_landmark_segment_u_v": [
+     "shank",
+     0.05,
+     -0.04
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.0044,
+    "fl_m": 0.0305,
+    "pcsa_m2": 0.000136096,
+    "penn_deg": 0.24085543677521748,
+    "musc_len_m": 0.784,
+    "belly_len_m": 0.0664,
+    "belly_mass_kg": 0.00428,
+    "tendon_len_m": 0.0101,
+    "tendon_mass_kg": 6e-05,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 169.2952077753128,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": null,
+     "knee": 0.006707784451054959,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 4150.943396226416,
+    "capsule_branch": "prolate_spheroid",
+    "radius_mm": 12.651008168890884,
+    "radius_residual_mm3": null,
+    "r_pcsa_report_mm": 6.581846417994663,
+    "r_pcsa_over_r_mass": 0.5202626012193694,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 1372.8796806623145,
+    "mesh_enclosed_volume_mm3": 4135.323610027864,
+    "mesh_volume_delta_pct": -0.376294849328751,
+    "thickness_mm": 3.0235303608134747,
+    "mass_stated_kg": 0.0044,
+    "pcsa_book_m2": 0.00013609650479430872,
+    "pcsa_closure_rel_vs_admitted": 3.70910466677637e-06,
+    "pcsa_closure_rel_dataset_predicate": 3.7090909093699685e-06,
+    "sphere_bound_mm3": 994.2884581314806
+   }
+  },
+  {
+   "id": "mem.muscle_23",
+   "label": "SM",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.06520000000000001,
+     0.016300000000000002
+    ],
+    "insertion_point_m": [
+     -0.0091,
+     -0.17756
+    ],
+    "straight_length_m": 0.2018140470829521,
+    "measured_mtu_length_m": 0.19166,
+    "origin_landmark_segment_u_v": [
+     "pelvis",
+     -0.4,
+     0.1
+    ],
+    "insertion_landmark_segment_u_v": [
+     "shank",
+     0.08,
+     -0.05
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.026180000000000002,
+    "fl_m": 0.1175,
+    "pcsa_m2": 0.000210197,
+    "penn_deg": 0.21642082724729686,
+    "musc_len_m": 0.19166,
+    "belly_len_m": 0.17168,
+    "belly_mass_kg": 0.02596,
+    "tendon_len_m": 0.0339,
+    "tendon_mass_kg": 0.00019,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 262.963452798119,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": -0.058099236249796564,
+     "knee": 0.012788713359180345,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 24698.113207547172,
+    "capsule_branch": "capsule",
+    "radius_mm": 6.307445406127737,
+    "radius_residual_mm3": 1.4864781405776739e-08,
+    "r_pcsa_report_mm": 8.179717791352845,
+    "r_pcsa_over_r_mass": 1.2968352898316295,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 7984.926722352749,
+    "mesh_enclosed_volume_mm3": 24583.69131343221,
+    "mesh_volume_delta_pct": -0.4632819242240682,
+    "thickness_mm": 3.093092030313574,
+    "mass_stated_kg": 0.026180000000000002,
+    "pcsa_book_m2": 0.00021019670814933768,
+    "pcsa_closure_rel_vs_admitted": 1.3884625485461993e-06,
+    "pcsa_closure_rel_dataset_predicate": 1.3884625485461993e-06,
+    "sphere_bound_mm3": 4303807.0951325
+   }
+  },
+  {
+   "id": "mem.muscle_24",
+   "label": "SOL",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.01456,
+     -0.19940000000000002
+    ],
+    "insertion_point_m": [
+     -0.011099999999999999,
+     -0.34869999999999995
+    ],
+    "straight_length_m": 0.14934008704965984,
+    "measured_mtu_length_m": 0.13776,
+    "origin_landmark_segment_u_v": [
+     "shank",
+     0.2,
+     -0.08
+    ],
+    "insertion_landmark_segment_u_v": [
+     "foot",
+     -0.15,
+     -0.05
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.012539999999999999,
+    "fl_m": 0.0953,
+    "pcsa_m2": 0.000124136,
+    "penn_deg": 0.14486232791552936,
+    "musc_len_m": 0.13776,
+    "belly_len_m": 0.13276,
+    "belly_mass_kg": 0.01202,
+    "tendon_len_m": 0.005,
+    "tendon_mass_kg": 0.0005200000000000001,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 157.3420787594594,
+    "moment_arms_m_flexion_positive": {
+     "ankle": 0.011182744251680164,
+     "hip": null,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 11830.188679245282,
+    "capsule_branch": "capsule",
+    "radius_mm": 5.079408886720309,
+    "radius_residual_mm3": 8.785718819126487e-10,
+    "r_pcsa_report_mm": 6.285993639140199,
+    "r_pcsa_over_r_mass": 1.2375443244142847,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 4758.334520584344,
+    "mesh_enclosed_volume_mm3": 11775.422993147751,
+    "mesh_volume_delta_pct": -0.46293163686907945,
+    "thickness_mm": 2.486203655516108,
+    "mass_stated_kg": 0.012539999999999999,
+    "pcsa_book_m2": 0.00012413629254192323,
+    "pcsa_closure_rel_vs_admitted": 2.3566243734421866e-06,
+    "pcsa_closure_rel_dataset_predicate": 2.356618819776837e-06,
+    "sphere_bound_mm3": 1743925.0770670846
+   }
+  },
+  {
+   "id": "mem.muscle_25",
+   "label": "ST",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.06846,
+     0.016300000000000002
+    ],
+    "insertion_point_m": [
+     -0.01092,
+     -0.1812
+    ],
+    "straight_length_m": 0.20571120922302705,
+    "measured_mtu_length_m": 0.23047,
+    "origin_landmark_segment_u_v": [
+     "pelvis",
+     -0.42,
+     0.1
+    ],
+    "insertion_landmark_segment_u_v": [
+     "shank",
+     0.1,
+     -0.06
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.01718,
+    "fl_m": 0.0906,
+    "pcsa_m2": 0.000178891,
+    "penn_deg": 0.3735004599267865,
+    "musc_len_m": 0.23047,
+    "belly_len_m": 0.17597000000000002,
+    "belly_mass_kg": 0.00011,
+    "tendon_len_m": 0.0573,
+    "tendon_mass_kg": 0.01703,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 213.34586419669947,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": -0.06116802311126311,
+     "knee": 0.015574882924957095,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 16207.547169811322,
+    "capsule_branch": "capsule",
+    "radius_mm": 5.049373714920324,
+    "radius_residual_mm3": 5.191395757719874e-09,
+    "r_pcsa_report_mm": 7.546043589146866,
+    "r_pcsa_over_r_mass": 1.4944513944074225,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 6515.729881800954,
+    "mesh_enclosed_volume_mm3": 16132.322042358675,
+    "mesh_volume_delta_pct": -0.4641364091956035,
+    "thickness_mm": 2.4874492134918795,
+    "mass_stated_kg": 0.01718,
+    "pcsa_book_m2": 0.00017889124911491525,
+    "pcsa_closure_rel_vs_admitted": 1.392551415368661e-06,
+    "pcsa_closure_rel_dataset_predicate": 1.3925494761719171e-06,
+    "sphere_bound_mm3": 4557980.822459389
+   }
+  },
+  {
+   "id": "mem.muscle_26",
+   "label": "TA",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     0.012740000000000001,
+     -0.1903
+    ],
+    "insertion_point_m": [
+     0.06659999999999999,
+     -0.34352
+    ],
+    "straight_length_m": 0.16241080013348866,
+    "measured_mtu_length_m": 0.16174000000000002,
+    "origin_landmark_segment_u_v": [
+     "shank",
+     0.15,
+     0.07
+    ],
+    "insertion_landmark_segment_u_v": [
+     "foot",
+     0.9,
+     0.02
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.00575,
+    "fl_m": 0.074,
+    "pcsa_m2": 7.33e-05,
+    "penn_deg": 0.19198621771937624,
+    "musc_len_m": 0.16174000000000002,
+    "belly_len_m": 0.13672,
+    "belly_mass_kg": 0.00535,
+    "tendon_len_m": 0.02502,
+    "tendon_mass_kg": 0.0004,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 92.16596409269029,
+    "moment_arms_m_flexion_positive": {
+     "ankle": -0.06332192681488692,
+     "hip": null,
+     "knee": null,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 5424.528301886792,
+    "capsule_branch": "capsule",
+    "radius_mm": 3.2828014668210352,
+    "radius_residual_mm3": 8.48558556754142e-10,
+    "r_pcsa_report_mm": 4.830332768792629,
+    "r_pcsa_over_r_mass": 1.471405693464057,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 3344.4763131657833,
+    "mesh_enclosed_volume_mm3": 5399.321226590636,
+    "mesh_volume_delta_pct": -0.46468695328566456,
+    "thickness_mm": 1.621936528757201,
+    "mass_stated_kg": 0.00575,
+    "pcsa_book_m2": 7.330443651198368e-05,
+    "pcsa_closure_rel_vs_admitted": 6.052540223291113e-05,
+    "pcsa_closure_rel_dataset_predicate": 6.052173913030644e-05,
+    "sphere_bound_mm3": 2243072.650876831
+   }
+  },
+  {
+   "id": "mem.muscle_27",
+   "label": "VI",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     0.0032600000000000003,
+     -0.07335
+    ],
+    "insertion_point_m": [
+     0.012740000000000001,
+     -0.17756
+    ],
+    "straight_length_m": 0.10464031011039675,
+    "measured_mtu_length_m": 0.12819,
+    "origin_landmark_segment_u_v": [
+     "thigh",
+     0.45,
+     0.02
+    ],
+    "insertion_landmark_segment_u_v": [
+     "shank",
+     0.08,
+     0.07
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.01302,
+    "fl_m": 0.0715,
+    "pcsa_m2": 0.00017179,
+    "penn_deg": 0.2234021442552742,
+    "musc_len_m": 0.12819,
+    "belly_len_m": 0.12319,
+    "belly_mass_kg": 0.012920000000000001,
+    "tendon_len_m": 0.005,
+    "tendon_mass_kg": 0.0001,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 214.57989895337622,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": null,
+     "knee": -0.011368530910745116,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 12283.01886792453,
+    "capsule_branch": "capsule",
+    "radius_mm": 6.237837020601373,
+    "radius_residual_mm3": 3.4815457183867693e-09,
+    "r_pcsa_report_mm": 7.394758640247389,
+    "r_pcsa_over_r_mass": 1.1854683948658986,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 4094.420148685593,
+    "mesh_enclosed_volume_mm3": 12226.562631615836,
+    "mesh_volume_delta_pct": -0.4596283447558802,
+    "thickness_mm": 2.999940998206467,
+    "mass_stated_kg": 0.013020000000000002,
+    "pcsa_book_m2": 0.00017179047367726617,
+    "pcsa_closure_rel_vs_admitted": 2.7573040698880942e-06,
+    "pcsa_closure_rel_dataset_predicate": 2.7572964671833236e-06,
+    "sphere_bound_mm3": 599923.2267019678
+   }
+  },
+  {
+   "id": "mem.muscle_28",
+   "label": "VL",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     -0.00978,
+     -0.08965000000000001
+    ],
+    "insertion_point_m": [
+     0.012740000000000001,
+     -0.17756
+    ],
+    "straight_length_m": 0.09074865563742528,
+    "measured_mtu_length_m": 0.1551,
+    "origin_landmark_segment_u_v": [
+     "thigh",
+     0.55,
+     -0.06
+    ],
+    "insertion_landmark_segment_u_v": [
+     "shank",
+     0.08,
+     0.07
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.061380000000000004,
+    "fl_m": 0.0932,
+    "pcsa_m2": 0.000621306,
+    "penn_deg": 0.3839724354387525,
+    "musc_len_m": 0.1551,
+    "belly_len_m": 0.1464,
+    "belly_mass_kg": 0.06129,
+    "tendon_len_m": 0.0105,
+    "tendon_mass_kg": 8.999999999999999e-05,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 737.8896645963713,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": null,
+     "knee": -0.008728307812786383,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 57905.660377358494,
+    "capsule_branch": "capsule",
+    "radius_mm": 15.115595421630317,
+    "radius_residual_mm3": 5.704350769519806e-09,
+    "r_pcsa_report_mm": 14.062995489770529,
+    "r_pcsa_over_r_mass": 0.930363316660783,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 8603.985219605791,
+    "mesh_enclosed_volume_mm3": 57648.29900042769,
+    "mesh_volume_delta_pct": -0.44444942904310336,
+    "thickness_mm": 6.730097611675298,
+    "mass_stated_kg": 0.061380000000000004,
+    "pcsa_book_m2": 0.0006213053688557778,
+    "pcsa_closure_rel_vs_admitted": 1.0158347451523095e-06,
+    "pcsa_closure_rel_dataset_predicate": 1.0158347451523095e-06,
+    "sphere_bound_mm3": 391308.44661099865
+   }
+  },
+  {
+   "id": "mem.muscle_29",
+   "label": "VM",
+   "side": "R",
+   "path_source": {
+    "origin_point_m": [
+     0.00978,
+     -0.08965000000000001
+    ],
+    "insertion_point_m": [
+     0.012740000000000001,
+     -0.17756
+    ],
+    "straight_length_m": 0.08795981866738925,
+    "measured_mtu_length_m": 0.14894,
+    "origin_landmark_segment_u_v": [
+     "thigh",
+     0.55,
+     0.06
+    ],
+    "insertion_landmark_segment_u_v": [
+     "shank",
+     0.08,
+     0.07
+    ]
+   },
+   "architecture_source": {
+    "musc_mass_kg": 0.01863,
+    "fl_m": 0.0391,
+    "pcsa_m2": 0.000449501,
+    "penn_deg": 0.5323254218582705,
+    "musc_len_m": 0.14894,
+    "belly_len_m": 0.14394,
+    "belly_mass_kg": 0.01823,
+    "tendon_len_m": 0.005,
+    "tendon_mass_kg": 0.0004,
+    "conditions": {
+     "species": "Macaca_mulatta",
+     "specimen_id": "127 [KU Leuven, Belgium]",
+     "sex": "Male",
+     "age": "Adult",
+     "limb": "R"
+    }
+   },
+   "force_source": {
+    "max_force_N": 496.10210524736135,
+    "moment_arms_m_flexion_positive": {
+     "ankle": null,
+     "hip": null,
+     "knee": -0.012242815143492871,
+     "mtp": null
+    }
+   },
+   "derivation": {
+    "density_kg_mm3": 1.06e-06,
+    "volume_mm3": 17575.471698113208,
+    "capsule_branch": "capsule",
+    "radius_mm": 8.236322827478324,
+    "radius_residual_mm3": 8.658389560878277e-10,
+    "r_pcsa_report_mm": 11.961630831517084,
+    "r_pcsa_over_r_mass": 1.452302329822509,
+    "mesh_vertices": 2450,
+    "mesh_faces": 4896,
+    "mesh_area_mm2": 4544.321425005459,
+    "mesh_enclosed_volume_mm3": 17495.494679095864,
+    "mesh_volume_delta_pct": -0.45504906150501956,
+    "thickness_mm": 3.867567906047072,
+    "mass_stated_kg": 0.01863,
+    "pcsa_book_m2": 0.00044950055493895674,
+    "pcsa_closure_rel_vs_admitted": 9.901224763669216e-07,
+    "pcsa_closure_rel_dataset_predicate": 9.901224763669216e-07,
+    "sphere_bound_mm3": 356329.35230366373
+   }
+  }
+ ],
+ "totals": {
+  "muscles": 30,
+  "total_mass_stated_kg": 0.55718,
+  "batch_total_admitted_musc_mass_kg": 0.55718,
+  "mass_reconciliation_rel": 0.0,
+  "total_volume_mm3": 525641.5094339623,
+  "pcsa_closure_max_rel": 0.019729740014316557,
+  "pcsa_closure_max_rel_vs_admitted": 0.02012683728118479,
+  "mesh_volume_delta_max_pct": 0.46524750781613555,
+  "sphere_bound_min_margin": 0.23953312854985667,
+  "capsule_branches": {
+   "capsule": 29,
+   "prolate_spheroid": 1
+  }
+ }
+}

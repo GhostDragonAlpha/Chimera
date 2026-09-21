@@ -1,0 +1,79 @@
+{
+ "schema": "chimera.rule0_receipt.v1",
+ "lane": "agent/parametric-muscles-20260920",
+ "captured_utc": "2026-09-20T18:30:00Z",
+ "base_commit": "2d585c7b (agent/matter-skeleton-import-20260920 tip; the infant matter skeleton)",
+ "scope": "Membrane layer 2: the PARAMETRIC MUSCLE LAYER derived from the admitted numbers (research memo Option A interim, pending external adult muscle geometry). One capsule membrane per admitted hindlimb muscle, along the muscle-path lane's straight-line attachment geometry, mass-conserving at the dataset's own density law, expressed on the ADULT-proportioned walker Table-1 scaffold. No engine, gait-lane, skeleton-lane, or visual-repair files touched.",
+ "stage_composition_declared": {
+  "decision": "The muscle layer is staged ADULT and is built on the ADULT-PROPORTIONED scaffold: the walker Table-1 assembly (Oku 2021 Table 1 segment chain: hip [0,0], knee [0,-0.163], ankle [0,-0.345], mtp [0.074,-0.345], toe [0.119,-0.345] m -- the muscle-path lane's neutral pose IS the walker scaffold's own frame).",
+  "why_not_the_infant_skeleton": "The admitted muscle numbers are ADULT (Guimaraes specimen 127, M. mulatta male, 'Age at death (yrs) = Adult', 8 kg, right limb). The matter skeleton is INFANT (MorphoSource 000875604, USNM 497136-3). The biological mixing laws (research memo section 6, L1 STAGE CONSISTENCY) refuse the adult-muscles-on-infant-bones chimera outright. The infant skeleton stays reality-creature #1; this lane builds reality-creature #2's muscle layer. NO membrane of this lane touches the infant body.",
+  "declared_substitution_L3": "muscle architecture = M. mulatta (Guimaraes, adult male 8 kg) on segment geometry = M. fuscata (Oku Table 1, adult male 10.038 kg). Same genus, declared substitution carried by both prior lanes (mass ratio mulatta/fuscata = 0.79697 recorded in the path lane's specific-tension derivation). Never merged: every muscle record keeps its species tag in the audit table."
+ },
+ "admitted_inputs": {
+  "guimaraes_arch_batch": {
+   "what": "36 hindlimb muscle architecture rows for Macaca mulatta (FL, PCSA, muscle mass, pennation); 30 admitted / 6 whole-row quarantined by the dataset's own closure laws (pcsa_closure_violation, mass_additivity_violation, invalid_number)",
+   "where": "tools/science_funnel/data/guimaraes_arch/AJPA-190-e70329-s001.xlsx",
+   "pin": "sha256 08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678 (batch_muscle_20260917 receipt + muscle_paths_20260918 source_pins)",
+   "admission": "batch fc6d7b406bdb52d1... 1908 records admitted / 49 quarantined; store after merge 9916 objects / 14527 relations, graph hash 4aa3e223...",
+   "reader": "the admitted adapter tools/science_funnel/adapters_muscle.py (checked out from origin/agent/skeleton-movie-20260919; the same read the muscle-path lane used), enforcing the dataset's own row laws: PCSA = m/(1060 kg/m^3 * FL) at 2%, muscle = belly + tendon at 2%"
+  },
+  "muscle_paths_20260918": {
+   "what": "straight-line attachment geometry + moment arms per muscle on the walker scaffold frame: origin/insertion landmark segments and points, straight_length, measured_mtu_length, moment_arms at the neutral pose",
+   "where": "tools/science_funnel/validation/muscle_paths_20260918/muscle_path_geometry.json (schema chimera.muscle_path_geometry.v1)",
+   "pin": "committed blob on this branch (bytes never edited by this lane); its falsifier record: knee-extension and MTP-flexion directions FALSIFIED for straight-line proxies -- those two directions carry no force claim here either"
+  },
+  "walker_table1_scaffold": {
+   "what": "the adult-proportioned segment chain (HAT/thigh/shank/foot/phalanges, 10.038 kg adult male M. fuscata), record model.dynamics.gait_walker",
+   "where": "tools/science_funnel/gait_scene.py + validation/gait_controller_20260918/derived_numbers.json segments_Table1"
+  },
+  "arm_model_fmax": {
+   "what": "39 musculotendon Fmax records (model.anatomy.macaque_arm)",
+   "why_out_of_scope": "Fmax is admitted FORCE, not admitted GEOMETRY: no PCSA, no muscle mass, no fiber length exists for the arm, so no capsule volume is derivable without inventing one; additionally the arm paths live in the arm model's own body frames and the walker scaffold has no forelimb compartments, so placement would require an authored transform (the assembly contract's shoulder span s=0.30 m is a DECLARED assumption of that contract, not a measurement). The 39 Fmax stay in their lane; named successor, never silently dropped."
+  }
+ },
+ "rule_0": {
+  "statement": "The admitted numbers alone determine a solid capsule geometry per muscle with ZERO authored shape parameters: the path (origin->insertion) comes from the muscle-path lane, the volume from the muscle mass over the dataset's own density closure constant, the radius by solving the closed-form capsule volume equation for that volume along that path, and the kernel's mass law is closed exactly by the derived equivalent shell thickness t := V/A. The layer is the adult creature's right-hindlimb musculature on the adult scaffold -- a matter body the kernel parses unmodified.",
+  "prediction": "(a) Per-muscle capsule volume closes on V = m/rho to better than 0.5% (mesh discretization only; thickness := V/A makes the kernel's own mass law exact). (b) The dataset's own PCSA closure re-measured on the built layer (V_book/FL vs admitted PCSA) holds within the adapter's 2% LAW_TOLERANCE for all 30 muscles. (c) The layer's total stated mass equals the batch total (sum of the 30 admitted mulatta musc_mass values) exactly. (d) tools.matter_kernel.definition.parse_body accepts the body unmodified and the kernel suite stays green. (e) Software z-buffer rasterization of the COMMITTED triangle blobs shows solid geometry: silhouette coverage >= 0.97 layer-mean, >= 0.90 per muscle at the declared 256 px resolution.",
+  "falsifiers": {
+   "traceability": "Every muscle's dimensions trace to admitted numbers: the audit table (derivation.json) carries per muscle the admitted path points (muscle_path_geometry neutral pose), admitted mass/FL/PCSA/pennation (pinned xlsx via the admitted adapter), the density law, the closed-form radius solution, and the derived thickness. A single hand-chosen shape number anywhere falsifies. Predicted: 30/30 rows fully traced, zero free parameters.",
+   "mass_reconciliation": "Sum of stated membrane masses == sum of the 30 admitted musc_mass values (the batch total for the admitted set), and the kernel's derived mass (area x thickness x density) matches the stated mass within the kernel's 5% law per membrane (predicted ~1e-9 relative, by construction of thickness := V/A). A mismatch is a broken book, never tuned.",
+   "pcsa_closure": "The dataset's own identity PCSA = m/(rho * FL), recomputed from the FINAL volume book (V_book/FL vs the admitted PCSA_m2), holds within 2% per muscle for all 30. The belly-is-not-a-cylinder deviation is REPORTED per muscle (r_pcsa = sqrt(PCSA/pi) vs r_mass), never tuned away: the mass book dominates because the kernel's mass law is structural.",
+   "kernel_conformance": "tools.matter_kernel.definition.parse_body validates the committed adult_muscle_layer.body.json unmodified (30 membranes, 0 bonds); test_definition 9/9 OK plus the kernel battery (scratch, glue, tensile, drape, residency). The layer uses the kernel's format, not a side format.",
+   "stage_consistency": "The reality classification of the bundle, computed not asserted: L1 stage agreement across all bound records (Guimaraes Information sheet 'Adult'; Oku Table 1 adult male) and L3 substitution declaration present -> expect category REALITY on the adult scaffold. The infant skeleton is NOT referenced by any membrane or bond; if it were, the gate must return FANTASY with an L1 violation manifest. L2: the layer carries no whole-body proportion claim (a layer is not an animal), declared. L4: the mass book (this bundle's totals) and the path lane's torque record are the physics carried; no new physics is claimed.",
+   "pixel_truth": "An offline z-buffered triangle rasterizer over the COMMITTED 36-byte-format blobs (the kernel's own triangle format, PIL-free numpy rasterization, perspective projection, per-pixel depth) must render each muscle as SOLID geometry: rendered-vs-analytic-silhouette coverage >= 0.97 layer-mean and >= 0.90 per muscle at 256 px on the longest bbox axis. A pixel sweep of the same blobs is the triangle path proof that the layer renders as solid matter, independent of any engine.",
+   "regressions": "The muscle-path lane's committed geometry file is byte-unchanged (sha256 pinned before/after); the creature_graph test battery is unaffected and green; the science_funnel batch-muscle tests that the checked-out adapter participates in stay green."
+  }
+ },
+ "rule_1_derivation_plan": {
+  "note": "Every number below is derived or cited; the tool authors none.",
+  "volume_law": "V_i = m_i / rho_muscle with m_i the admitted musc_mass and rho_muscle = 1060 kg/m^3 = 1.06e-6 kg/mm^3 -- THE DATASET'S OWN closure constant (adapters_muscle.MUSCLE_DENSITY_KG_M3, the law that admits each row: PCSA = m/(rho*FL)); independently the classic measured mammalian skeletal-muscle density (Mendez & Keys 1960, J Appl Physiol 15:617-621, ~1.06 g/cm^3), so the constant is both the admitted law and a cited physical measurement.",
+  "path_law": "p_origin, p_insertion = the muscle-path lane's neutral-pose origin_point_m / insertion_point_m (converted m -> mm by x1000); L = straight_length_m (admitted). No path is re-estimated.",
+  "capsule_law": "radius r solves pi r^2 L - (2/3) pi r^3 = V (a capsule of axis length L: cylinder pi r^2 (L - 2r) plus two hemispherical caps (4/3) pi r^3). Closed-form monotone solve (bisection to 1e-12 relative on [0, L/2]); the solution exists iff V <= pi L^3/6 (the sphere bound at r = L/2). If a muscle exceeded the bound the fallback is the prolate spheroid with semi-major L/2 and semi-minor b = sqrt(3V/(2 pi L)) -- both laws closed-form, whichever branch used is recorded per muscle. Predicted: no muscle approaches the bound (belly volumes are far below the sphere bound).",
+  "mass_law": "the kernel's own: mass = area(triangles) x thickness x density, with thickness := V / A_mesh -- the same derived-equivalent-shell pattern the skeleton lane used, which makes stated mass == V * rho_muscle exactly and keeps the kernel's 5% check a live falsifier rather than a formality.",
+  "mesh_law": "surface of revolution: 48 circumferential segments x 52 meridian parallels over the analytic polar profile (a DISCRETIZATION choice, not a shape parameter: the analytic solid is fixed by V and L; only the triangle count varies, the mass law closes through t := V/A, and the 0.5% enclosed-volume gate is measured on every muscle). Vertex frame: millimetres, the skeleton body's convention.",
+  "attachment_law": "attachment is carried as the measured landmark book per muscle (origin/insertion segment + landmark u,v + joint-frame points + the path lane's moment arms at neutral) -- the bones this layer would bond to do not exist as matter on the adult scaffold (no adult bone geometry is admitted: the memo's central measured gap), so there are NO bonds in this body. Bonds to adult bone compartments are named successor work the day an adult bone layer lands as matter. No bond is invented here.",
+  "force_note": "max_force_N and the moment arms ride in the audit table as ADMITTED numbers of the path lane; this layer makes no new force claim. The path lane's falsified directions (knee extension, MTP flexion) stay falsified here."
+ },
+ "outputs_planned": {
+  "tools/science_funnel/data/parametric_muscles/adult_muscle_layer.body.json": "the kernel-format muscle layer body (layer 2, adult)",
+  "tools/science_funnel/data/parametric_muscles/tris/muscle_XX.bin": "36-byte-per-triangle kernel triangle blobs",
+  "tools/science_funnel/validation/parametric_muscles_20260920/derivation.json": "the derivation book: per-muscle audit table (every number traced), totals, capsule branches, PCSA-closure ratios",
+  "tools/science_funnel/validation/parametric_muscles_20260920/verify.json": "falsifier verdicts with measured numbers (appended after the run)"
+ },
+ "limits_and_successors": [
+  "Right hindlimb only: all admitted muscle architecture IS one right limb; a bilateral mirror would author an inter-leg offset. Successor: mirror with the gait contract's leg_z_offset.",
+  "Arm muscles (39 Fmax, admitted force) are out of scope: no admitted volume/geometry path exists; successor needs arm PCSA/mass or an admitted arm-frame-to-scaffold transform.",
+  "Neutral pose only: the layer is a static matter body; pose animation is engine/runtime work outside matter definition.",
+  "Six quarantined mulatta rows (AB, BFS, ObtInt, RF, SAR, TP -- the dataset's own closure refusals) are NOT rebuilt here; they re-enter only through a revised source row, never through tuning.",
+  "Adult bone layer as matter does not exist; when it lands, bond these capsules to its compartments and retire the landmark-book interim."
+ ],
+ "corrections": [
+  {
+   "appended_utc": "2026-09-20T20:10:00Z",
+   "trigger": "byte-stability sweep before commit: the working-tree copy of guimaraes_arch/PMC13425262_fulltext.xml hashed b30ddc12... while the git blob holds the receipt-pinned a1ded31f... -- core.autocrlf=true delivered CRLF bytes on checkout for the text-format pinned artifacts. The SAME defect class the matter-skeleton lane repaired for the CT OBJs (receipt corrections, 2026-09-20).",
+   "finding": "tools/science_funnel/data/guimaraes_arch/**, oku_bipedal/** and oku_paper_table/** had no -text rule in .gitattributes, so the sha256-pinned upstream bytes were environment-dependent on checkout (the xlsx/docx are binary-detected and were never affected; the XML fulltext was).",
+   "repair": "Added -text -whitespace rules for guimaraes_arch, oku_bipedal, oku_paper_table and this lane's parametric_muscles output dir (the validation bundle was already covered by the validation/** rule), then re-checked out the three data dirs fresh; all receipt pins now verify in the working tree. No lane number changed: the build input (the pinned xlsx, binary) was byte-identical throughout; the derivation, body, blobs and every recorded measurement stand.",
+   "scope": ".gitattributes + working-tree renormalization of pinned upstream bytes only."
+  }
+ ]
+}

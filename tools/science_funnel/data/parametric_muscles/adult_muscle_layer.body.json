@@ -1,0 +1,1441 @@
+{
+ "schema": "chimera.matter_body.v1",
+ "subject": {
+  "layer": "muscles -- the second membrane layer (the research memo Option A interim, pending external adult muscle geometry data)",
+  "anatomy": "right hindlimb musculature (the dissected limb), 30 admitted muscles of 36 source rows (6 whole-row quarantines by the dataset's own closure laws)",
+  "species_muscles": "Macaca mulatta (Guimaraes specimen 127, adult male, 8 kg, right limb)",
+  "scaffold": "the ADULT walker Table-1 assembly (Oku 2021 Table 1, M. fuscata adult male 10.038 kg; record model.dynamics.gait_walker): hip [0,0], knee [0,-0.163], ankle [0,-0.345], mtp [0.074,-0.345], toe [0.119,-0.345] m",
+  "coordinate_frame": "the walker scaffold frame, millimetres (path-lane metres x1000); x anterior, y vertical, z out-of-plane",
+  "not_a_claim": "no actuation, no pose animation, no whole-animal mass claim (a limb layer is not an animal); the falsified path directions (knee extension, MTP flexion) carry no force claim"
+ },
+ "stage": {
+  "life_stage": "adult",
+  "scale": 1.0,
+  "allometric_scaling_applied": false,
+  "provenance": "Guimaraes Information sheet: specimen \"127 [KU Leuven, Belgium]\", Macaca mulatta, Male, \"Age at death (yrs)\" = \"Adult\", 8 kg, limb R (carried in every admitted record's conditions); scaffold: Oku 2021 Table 1 adult male",
+  "stage_law": "the infant matter skeleton (morphosource_ct/matter_skeleton/) is a DIFFERENT creature (stage infant): L1 refuses the adult-muscles-on-infant-bones chimera, so this layer references no infant membrane and no infant coordinate",
+  "declared_substitution_L3": "mulatta architecture on fuscata segment geometry, mass ratio 0.79697 (path lane), declared not merged"
+ },
+ "units": {
+  "coordinates": "mm",
+  "thickness": "mm",
+  "density": "kg/mm^3",
+  "mass": "kg",
+  "cure_strength": "Pa (kernel convention)",
+  "note": "the kernel mass law (area x thickness x density) is unit-agnostic; these three agree, so mass is kg"
+ },
+ "membrane_layer": {
+  "layer": "muscles (parametric capsules) -- membrane layer 2",
+  "over": "the adult walker Table-1 scaffold (attachment carried as the landmark book; adult bones are NOT yet matter -- no adult bone geometry is admitted, the memo's central measured gap)",
+  "successors": [
+   "bonds to an adult bone layer when one lands as matter",
+   "bilateral mirror with the gait contract's leg_z_offset",
+   "arm muscles when arm volume data or an admitted transform exists",
+   "skin eventually"
+  ],
+  "doctrine": "operator 2026-09-20: the triangles ARE the membranes"
+ },
+ "materials": {
+  "mat.skeletal_muscle": {
+   "density": 1.06e-06,
+   "young_modulus": 50000.0,
+   "yield": 140000.0,
+   "hardness_vickers": 0.05,
+   "source": "DENSITY: the admitted dataset's own closure law PCSA = m/(1060 kg/m^3 * FL) (adapters_muscle.MUSCLE_DENSITY_KG_M3; enforced per row at 2%) -- the same constant as the measured mammalian skeletal-muscle density of MENDEZ & KEYS 1960, J Appl Physiol 15:617-621 (~1.06 g/cm^3). YOUNG: passive skeletal-muscle tangent-modulus band 10-100 kPa (FUNG, Biomechanics: Mechanical Properties of Living Tissues; band quoted, mid-band 50 kPa used, the cartilage-lane band pattern). YIELD: skeletal-muscle tensile strength ~0.14 MPa (YAMADA 1970, Strength of Biological Materials, ~1.4 kgf/cm^2). HARDNESS: Vickers is not defined for hydrated muscle gel; 0.05 is a NAMED POSITIVE PLACEHOLDER for the validator's positivity law (the cartilage lane's 0.3 proxy pattern), used by NO derivation -- every mass number in this body uses density only."
+  }
+ },
+ "membranes": [
+  {
+   "id": "mem.muscle_00",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_00.bin",
+   "thickness": 5.265428056087901,
+   "mass": 0.03434,
+   "label": "AL",
+   "side": "R",
+   "functional_groups": [
+    "hip_adductors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -3.2600000000000002,
+    19.560000000000002,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -6.5200000000000005,
+    -65.2,
+    0.0
+   ],
+   "straight_length_mm": 84.82266913980013,
+   "admitted_musc_mass_kg": 0.03434,
+   "admitted_fl_m": 0.0726,
+   "admitted_pcsa_m2": 0.000446229,
+   "admitted_penn_deg": 0.5148721293383273,
+   "admitted_musc_len_m": 0.11428,
+   "max_force_N": 497.478809469959,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": -0.004009343297597642,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "hip"
+   ],
+   "volume_mm3": 32396.22641509434,
+   "area_mm2": 6152.6292012741,
+   "radius_mm": 11.56398453428638,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_01",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_01.bin",
+   "thickness": 4.448811868719873,
+   "mass": 0.033850000000000005,
+   "label": "AM",
+   "side": "R",
+   "functional_groups": [
+    "hip_adductors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -8.15,
+    24.45,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -8.15,
+    -97.8,
+    0.0
+   ],
+   "straight_length_mm": 122.25,
+   "admitted_musc_mass_kg": 0.033850000000000005,
+   "admitted_fl_m": 0.1164,
+   "admitted_pcsa_m2": 0.000274347,
+   "admitted_penn_deg": null,
+   "admitted_musc_len_m": 0.17558,
+   "max_force_N": 351.4149510645451,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": -0.008150000000000001,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "hip"
+   ],
+   "volume_mm3": 31933.96226415095,
+   "area_mm2": 7178.087814565153,
+   "radius_mm": 9.360618065425413,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_02",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_02.bin",
+   "thickness": 5.470292363116255,
+   "mass": 0.07604999999999999,
+   "label": "BFL",
+   "side": "R",
+   "functional_groups": [
+    "hip_extensors",
+    "knee_flexors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -65.2,
+    19.560000000000002,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -8.15,
+    -154.85,
+    0.0
+   ],
+   "straight_length_mm": 183.5035438349897,
+   "admitted_musc_mass_kg": 0.07604999999999999,
+   "admitted_fl_m": 0.0712,
+   "admitted_pcsa_m2": 0.001007659,
+   "admitted_penn_deg": 0.4572762640225143,
+   "admitted_musc_len_m": 0.28237,
+   "max_force_N": 1158.1135037301601,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": -0.05588793429091529,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "hip"
+   ],
+   "volume_mm3": 71745.28301886792,
+   "area_mm2": 13115.438491480714,
+   "radius_mm": 11.394088294336662,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_03",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_03.bin",
+   "thickness": 1.1392335564118856,
+   "mass": 0.0025800000000000003,
+   "label": "EDL",
+   "side": "R",
+   "functional_groups": [
+    "ankle_dorsiflexors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    10.92,
+    -208.50000000000003,
+    0.0
+   ],
+   "insertion_point_mm": [
+    70.29999999999998,
+    -344.25999999999993,
+    0.0
+   ],
+   "straight_length_mm": 148.17814278765943,
+   "admitted_musc_mass_kg": 0.0025800000000000003,
+   "admitted_fl_m": 0.0635,
+   "admitted_pcsa_m2": 3.83e-05,
+   "admitted_penn_deg": 0.13788101090755203,
+   "admitted_musc_len_m": 0.15303,
+   "max_force_N": 48.59341513985758,
+   "moment_arms_m_flexion_positive": {
+    "ankle": -0.06470501667536416,
+    "hip": null,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "ankle"
+   ],
+   "volume_mm3": 2433.9622641509436,
+   "area_mm2": 2136.4910210483245,
+   "radius_mm": 2.2985140847672865,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_04",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_04.bin",
+   "thickness": 1.7882318326441005,
+   "mass": 0.0048,
+   "label": "EHL",
+   "side": "R",
+   "functional_groups": [
+    "ankle_dorsiflexors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    9.1,
+    -254.0,
+    0.0
+   ],
+   "insertion_point_mm": [
+    74.0,
+    -343.52,
+    0.0
+   ],
+   "straight_length_mm": 110.57052229233611,
+   "admitted_musc_mass_kg": 0.0048,
+   "admitted_fl_m": 0.0553,
+   "admitted_pcsa_m2": 8.19e-05,
+   "admitted_penn_deg": 0.19198621771937624,
+   "admitted_musc_len_m": 0.15,
+   "max_force_N": 102.97943327682583,
+   "moment_arms_m_flexion_positive": {
+    "ankle": -0.0607805033445683,
+    "hip": null,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "ankle"
+   ],
+   "volume_mm3": 4528.301886792452,
+   "area_mm2": 2532.278983143283,
+   "radius_mm": 3.650955086685146,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_05",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_05.bin",
+   "thickness": 2.469839540426057,
+   "mass": 0.01122,
+   "label": "FDL",
+   "side": "R",
+   "functional_groups": [
+    "mtp_flexors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -10.92,
+    -263.1,
+    0.0
+   ],
+   "insertion_point_mm": [
+    96.5,
+    -345.0,
+    0.0
+   ],
+   "straight_length_mm": 135.0802220904304,
+   "admitted_musc_mass_kg": 0.01122,
+   "admitted_fl_m": 0.023,
+   "admitted_pcsa_m2": 0.000460213,
+   "admitted_penn_deg": 0.3735004599267865,
+   "admitted_musc_len_m": 0.14197,
+   "max_force_N": 548.8512010081874,
+   "moment_arms_m_flexion_positive": {
+    "ankle": -0.05850856533763355,
+    "hip": null,
+    "knee": null,
+    "mtp": -0.013641893472505232
+   },
+   "spanned_joints": [
+    "ankle",
+    "mtp"
+   ],
+   "volume_mm3": 10584.905660377359,
+   "area_mm2": 4285.665318383971,
+   "radius_mm": 5.057802877350686,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_06",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_06.bin",
+   "thickness": 1.721702927307455,
+   "mass": 0.00449,
+   "label": "FHL",
+   "side": "R",
+   "functional_groups": [
+    "mtp_flexors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -9.1,
+    -308.59999999999997,
+    0.0
+   ],
+   "insertion_point_mm": [
+    96.5,
+    -345.0,
+    0.0
+   ],
+   "straight_length_mm": 111.69744849368762,
+   "admitted_musc_mass_kg": 0.00449,
+   "admitted_fl_m": 0.0421,
+   "admitted_pcsa_m2": 0.000100614,
+   "admitted_penn_deg": 0.1117010721276371,
+   "admitted_musc_len_m": 0.149,
+   "max_force_N": 128.07471763718183,
+   "moment_arms_m_flexion_positive": {
+    "ankle": -0.03144745065683848,
+    "hip": null,
+    "knee": null,
+    "mtp": -0.007332307147967527
+   },
+   "spanned_joints": [
+    "ankle",
+    "mtp"
+   ],
+   "volume_mm3": 4235.8490566037735,
+   "area_mm2": 2460.2670933644476,
+   "radius_mm": 3.5113400582628587,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_07",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_07.bin",
+   "thickness": 4.4618416621749075,
+   "mass": 0.02629,
+   "label": "GMax",
+   "side": "R",
+   "functional_groups": [
+    "hip_extensors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -57.05,
+    32.6,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -13.040000000000001,
+    -48.9,
+    0.0
+   ],
+   "straight_length_mm": 92.62359364654344,
+   "admitted_musc_mass_kg": 0.02629,
+   "admitted_fl_m": 0.05908,
+   "admitted_pcsa_m2": 0.000419802,
+   "admitted_penn_deg": 0.15707963267948966,
+   "admitted_musc_len_m": 0.0911,
+   "max_force_N": 531.1099645171057,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": -0.03470874831598561,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "hip"
+   ],
+   "volume_mm3": 24801.88679245283,
+   "area_mm2": 5558.665831356115,
+   "radius_mm": 9.567530527941713,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_08",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_08.bin",
+   "thickness": 7.33792640213056,
+   "mass": 0.06257,
+   "label": "GMed",
+   "side": "R",
+   "functional_groups": [
+    "hip_abductors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    0.0,
+    65.2,
+    0.0
+   ],
+   "insertion_point_mm": [
+    8.15,
+    -8.15,
+    0.0
+   ],
+   "straight_length_mm": 73.80138887581995,
+   "admitted_musc_mass_kg": 0.06257,
+   "admitted_fl_m": 0.0689,
+   "admitted_pcsa_m2": 0.000856724,
+   "admitted_penn_deg": 0.5288347633542818,
+   "admitted_musc_len_m": 0.1036,
+   "max_force_N": 947.4815432211251,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": 0.0072001355000799955,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "hip"
+   ],
+   "volume_mm3": 59028.301886792455,
+   "area_mm2": 8044.275542155021,
+   "radius_mm": 17.378184379359933,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_09",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_09.bin",
+   "thickness": 2.8333057685177008,
+   "mass": 0.007070000000000001,
+   "label": "GMin",
+   "side": "R",
+   "functional_groups": [
+    "hip_abductors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    8.15,
+    48.9,
+    0.0
+   ],
+   "insertion_point_mm": [
+    4.890000000000001,
+    -13.040000000000001,
+    0.0
+   ],
+   "straight_length_mm": 62.02573014483586,
+   "admitted_musc_mass_kg": 0.007070000000000001,
+   "admitted_fl_m": 0.0415,
+   "admitted_pcsa_m2": 0.000160718,
+   "admitted_penn_deg": 0.2007128639793479,
+   "admitted_musc_len_m": 0.06741,
+   "max_force_N": 201.7331385338491,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": 0.005568608369356812,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "hip"
+   ],
+   "volume_mm3": 6669.811320754718,
+   "area_mm2": 2354.073956600935,
+   "radius_mm": 6.05059081191947,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_10",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_10.bin",
+   "thickness": 2.5549280922044777,
+   "mass": 0.028690000000000004,
+   "label": "GRA",
+   "side": "R",
+   "functional_groups": [
+    "hip_adductors",
+    "knee_flexors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -40.75,
+    8.15,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -7.28,
+    -317.7,
+    0.0
+   ],
+   "straight_length_mm": 327.5644415989012,
+   "admitted_musc_mass_kg": 0.02869,
+   "admitted_fl_m": 0.1622,
+   "admitted_pcsa_m2": 0.000166868,
+   "admitted_penn_deg": null,
+   "admitted_musc_len_m": 0.18806,
+   "max_force_N": 213.74358040816384,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": -0.03970396461996083,
+    "knee": 0.023048890664527262,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "hip",
+    "knee"
+   ],
+   "volume_mm3": 27066.037735849055,
+   "area_mm2": 10593.659296491422,
+   "radius_mm": 5.155603988022576,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_11",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_11.bin",
+   "thickness": 0.7193726656954782,
+   "mass": 0.0003,
+   "label": "GemInf",
+   "side": "R",
+   "functional_groups": [
+    "hip_rotators"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -45.64000000000001,
+    0.0,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -3.2600000000000002,
+    -4.890000000000001,
+    0.0
+   ],
+   "straight_length_mm": 42.66118259026584,
+   "admitted_musc_mass_kg": 0.0003,
+   "admitted_fl_m": 0.0197,
+   "admitted_pcsa_m2": 1.44e-05,
+   "admitted_penn_deg": 0.2583087292951608,
+   "admitted_musc_len_m": 0.03118,
+   "max_force_N": 17.833215565108098,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": -0.005231444288441357,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "hip"
+   ],
+   "volume_mm3": 283.01886792452825,
+   "area_mm2": 393.4245508910323,
+   "radius_mm": 1.4701555317412045,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_12",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_12.bin",
+   "thickness": 1.6481157277196863,
+   "mass": 0.00125,
+   "label": "GemSup",
+   "side": "R",
+   "functional_groups": [
+    "hip_rotators"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -32.6,
+    8.15,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -3.2600000000000002,
+    -4.890000000000001,
+    0.0
+   ],
+   "straight_length_mm": 32.10727643385531,
+   "admitted_musc_mass_kg": 0.00125,
+   "admitted_fl_m": 0.0265,
+   "admitted_pcsa_m2": 4.45e-05,
+   "admitted_penn_deg": null,
+   "admitted_musc_len_m": 0.03875,
+   "max_force_N": 57.00067914856827,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": -0.005792549872087297,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "hip"
+   ],
+   "volume_mm3": 1179.245283018868,
+   "area_mm2": 715.5112127049828,
+   "radius_mm": 3.552758020444327,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_13",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_13.bin",
+   "thickness": 3.6159515032223157,
+   "mass": 0.01438,
+   "label": "ILI",
+   "side": "R",
+   "functional_groups": [
+    "hip_flexors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    32.6,
+    57.05,
+    0.0
+   ],
+   "insertion_point_mm": [
+    8.15,
+    -16.3,
+    0.0
+   ],
+   "straight_length_mm": 77.31768879111688,
+   "admitted_musc_mass_kg": 0.01438,
+   "admitted_fl_m": 0.052,
+   "admitted_pcsa_m2": 0.000260885,
+   "admitted_penn_deg": 0.3700098014227979,
+   "admitted_musc_len_m": 0.11674,
+   "max_force_N": 311.55584262906933,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": 0.01288628146518615,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "hip"
+   ],
+   "volume_mm3": 13566.037735849057,
+   "area_mm2": 3751.7200448512185,
+   "radius_mm": 7.735737338827949,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_14",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_14.bin",
+   "thickness": 2.4617152849098862,
+   "mass": 0.015869999999999995,
+   "label": "LG",
+   "side": "R",
+   "functional_groups": [
+    "ankle_plantarflexors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -9.780000000000001,
+    -154.85,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -11.099999999999998,
+    -348.69999999999993,
+    0.0
+   ],
+   "straight_length_mm": 193.8544941444484,
+   "admitted_musc_mass_kg": 0.01587,
+   "admitted_fl_m": 0.062,
+   "admitted_pcsa_m2": 0.000241479,
+   "admitted_penn_deg": 0.20420352248333654,
+   "admitted_musc_len_m": 0.16294999999999998,
+   "max_force_N": 302.88719241719616,
+   "moment_arms_m_flexion_positive": {
+    "ankle": 0.011074548513692432,
+    "hip": null,
+    "knee": 0.009835268500813352,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "knee",
+    "ankle"
+   ],
+   "volume_mm3": 14971.698113207545,
+   "area_mm2": 6081.815474349463,
+   "radius_mm": 5.001382096269092,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_15",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_15.bin",
+   "thickness": 2.7451849519379894,
+   "mass": 0.01945,
+   "label": "MG",
+   "side": "R",
+   "functional_groups": [
+    "ankle_plantarflexors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -9.780000000000001,
+    -158.11,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -11.099999999999998,
+    -348.69999999999993,
+    0.0
+   ],
+   "straight_length_mm": 190.59457101397192,
+   "admitted_musc_mass_kg": 0.01945,
+   "admitted_fl_m": 0.0916,
+   "admitted_pcsa_m2": 0.000200318,
+   "admitted_penn_deg": 0.10471975511965978,
+   "admitted_musc_len_m": 0.16971,
+   "max_force_N": 255.18453059514997,
+   "moment_arms_m_flexion_positive": {
+    "ankle": 0.011074108715537719,
+    "hip": null,
+    "knee": 0.00981363209901128,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "knee",
+    "ankle"
+   ],
+   "volume_mm3": 18349.056603773584,
+   "area_mm2": 6684.087566056302,
+   "radius_mm": 5.590686088953341,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_16",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_16.bin",
+   "thickness": 3.3859206485121294,
+   "mass": 0.00833,
+   "label": "ObtExt",
+   "side": "R",
+   "functional_groups": [
+    "hip_rotators"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -52.160000000000004,
+    0.0,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -3.2600000000000002,
+    -4.890000000000001,
+    0.0
+   ],
+   "straight_length_mm": 49.143891787281156,
+   "admitted_musc_mass_kg": 0.00833,
+   "admitted_fl_m": 0.0425,
+   "admitted_pcsa_m2": 0.000184906,
+   "admitted_penn_deg": 0.1466076571675237,
+   "admitted_musc_len_m": 0.0514,
+   "max_force_N": 234.30787553739256,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": -0.005190113984135303,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "hip"
+   ],
+   "volume_mm3": 7858.490566037736,
+   "area_mm2": 2320.931699770041,
+   "radius_mm": 7.5293152216260815,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_17",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_17.bin",
+   "thickness": 2.8608087680984817,
+   "mass": 0.013970000000000003,
+   "label": "PB",
+   "side": "R",
+   "functional_groups": [
+    "ankle_plantarflexors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -9.1,
+    -244.9,
+    0.0
+   ],
+   "insertion_point_mm": [
+    62.9,
+    -346.47999999999996,
+    0.0
+   ],
+   "straight_length_mm": 124.50902135989982,
+   "admitted_musc_mass_kg": 0.013970000000000002,
+   "admitted_fl_m": 0.0678,
+   "admitted_pcsa_m2": 0.000190549,
+   "admitted_penn_deg": null,
+   "admitted_musc_len_m": 0.15130000000000002,
+   "max_force_N": 244.07690811416936,
+   "moment_arms_m_flexion_positive": {
+    "ankle": -0.05046077731057875,
+    "hip": null,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "ankle"
+   ],
+   "volume_mm3": 13179.245283018869,
+   "area_mm2": 4606.824975504683,
+   "radius_mm": 5.898459615259993,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_18",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_18.bin",
+   "thickness": 2.6014523416687516,
+   "mass": 0.0055,
+   "label": "PECT",
+   "side": "R",
+   "functional_groups": [
+    "hip_adductors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    0.0,
+    16.3,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -4.890000000000001,
+    -40.75,
+    0.0
+   ],
+   "straight_length_mm": 57.25918790901597,
+   "admitted_musc_mass_kg": 0.0055,
+   "admitted_fl_m": 0.0523,
+   "admitted_pcsa_m2": 9.92e-05,
+   "admitted_penn_deg": 0.2234021442552742,
+   "admitted_musc_len_m": 0.07057,
+   "max_force_N": 123.9089933999355,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": -0.0013920386039469037,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "hip"
+   ],
+   "volume_mm3": 5188.679245283019,
+   "area_mm2": 1994.5317322071874,
+   "radius_mm": 5.553224085320832,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_19",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_19.bin",
+   "thickness": 3.192505127474785,
+   "mass": 0.00661,
+   "label": "PIRI",
+   "side": "R",
+   "functional_groups": [
+    "hip_abductors",
+    "hip_rotators"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -48.9,
+    3.2600000000000002,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -6.5200000000000005,
+    -6.5200000000000005,
+    0.0
+   ],
+   "straight_length_mm": 43.49382484905185,
+   "admitted_musc_mass_kg": 0.00661,
+   "admitted_fl_m": 0.0447,
+   "admitted_pcsa_m2": 0.000139504,
+   "admitted_penn_deg": 0.17453292519943295,
+   "admitted_musc_len_m": 0.06705,
+   "max_force_N": 175.97790311938792,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": -0.007819114579604824,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "hip"
+   ],
+   "volume_mm3": 6235.8490566037735,
+   "area_mm2": 1953.2776949793717,
+   "radius_mm": 7.159813900974121,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_20",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_20.bin",
+   "thickness": 2.839175802876133,
+   "mass": 0.01502,
+   "label": "PL",
+   "side": "R",
+   "functional_groups": [
+    "ankle_plantarflexors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -10.92,
+    -235.8,
+    0.0
+   ],
+   "insertion_point_mm": [
+    66.6,
+    -347.96,
+    0.0
+   ],
+   "straight_length_mm": 136.3422751753835,
+   "admitted_musc_mass_kg": 0.01502,
+   "admitted_fl_m": 0.029,
+   "admitted_pcsa_m2": 0.000488614,
+   "admitted_penn_deg": null,
+   "admitted_musc_len_m": 0.15344,
+   "max_force_N": 625.8725807078322,
+   "moment_arms_m_flexion_positive": {
+    "ankle": -0.053104561961331016,
+    "hip": null,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "ankle"
+   ],
+   "volume_mm3": 14169.811320754718,
+   "area_mm2": 4990.818570093637,
+   "radius_mm": 5.835498078305553,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_21",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_21.bin",
+   "thickness": 1.465455416746728,
+   "mass": 0.00547,
+   "label": "PLANT",
+   "side": "R",
+   "functional_groups": [
+    "knee_flexors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -8.15,
+    -158.11,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -8.879999999999999,
+    -347.96,
+    0.0
+   ],
+   "straight_length_mm": 189.85140347124116,
+   "admitted_musc_mass_kg": 0.00547,
+   "admitted_fl_m": 0.0423,
+   "admitted_pcsa_m2": 0.000121995,
+   "admitted_penn_deg": 0.16929693744344995,
+   "admitted_musc_len_m": 0.18351,
+   "max_force_N": 154.03107116355446,
+   "moment_arms_m_flexion_positive": {
+    "ankle": 0.008868552821918166,
+    "hip": null,
+    "knee": 0.008168742351356511,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "knee",
+    "ankle"
+   ],
+   "volume_mm3": 5160.377358490566,
+   "area_mm2": 3521.3472204746195,
+   "radius_mm": 2.956822816723769,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_22",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_22.bin",
+   "thickness": 3.0235303608134747,
+   "mass": 0.0044,
+   "label": "POP",
+   "side": "R",
+   "functional_groups": [
+    "knee_flexors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -6.5200000000000005,
+    -159.73999999999998,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -7.28,
+    -172.1,
+    0.0
+   ],
+   "straight_length_mm": 12.383343651857531,
+   "admitted_musc_mass_kg": 0.0044,
+   "admitted_fl_m": 0.0305,
+   "admitted_pcsa_m2": 0.000136096,
+   "admitted_penn_deg": 0.24085543677521748,
+   "admitted_musc_len_m": 0.784,
+   "max_force_N": 169.2952077753128,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": null,
+    "knee": 0.006707784451054959,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "knee"
+   ],
+   "volume_mm3": 4150.943396226416,
+   "area_mm2": 1372.8796806623145,
+   "radius_mm": 12.651008168890884,
+   "capsule_branch": "prolate_spheroid",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_23",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_23.bin",
+   "thickness": 3.093092030313574,
+   "mass": 0.026180000000000002,
+   "label": "SM",
+   "side": "R",
+   "functional_groups": [
+    "hip_extensors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -65.2,
+    16.3,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -9.1,
+    -177.56,
+    0.0
+   ],
+   "straight_length_mm": 201.8140470829521,
+   "admitted_musc_mass_kg": 0.026180000000000002,
+   "admitted_fl_m": 0.1175,
+   "admitted_pcsa_m2": 0.000210197,
+   "admitted_penn_deg": 0.21642082724729686,
+   "admitted_musc_len_m": 0.19166,
+   "max_force_N": 262.963452798119,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": -0.058099236249796564,
+    "knee": 0.012788713359180345,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "hip",
+    "knee"
+   ],
+   "volume_mm3": 24698.113207547172,
+   "area_mm2": 7984.926722352749,
+   "radius_mm": 6.307445406127737,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_24",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_24.bin",
+   "thickness": 2.486203655516108,
+   "mass": 0.012539999999999999,
+   "label": "SOL",
+   "side": "R",
+   "functional_groups": [
+    "ankle_plantarflexors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -14.56,
+    -199.40000000000003,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -11.099999999999998,
+    -348.69999999999993,
+    0.0
+   ],
+   "straight_length_mm": 149.34008704965984,
+   "admitted_musc_mass_kg": 0.012539999999999999,
+   "admitted_fl_m": 0.0953,
+   "admitted_pcsa_m2": 0.000124136,
+   "admitted_penn_deg": 0.14486232791552936,
+   "admitted_musc_len_m": 0.13776,
+   "max_force_N": 157.3420787594594,
+   "moment_arms_m_flexion_positive": {
+    "ankle": 0.011182744251680164,
+    "hip": null,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "ankle"
+   ],
+   "volume_mm3": 11830.188679245282,
+   "area_mm2": 4758.334520584344,
+   "radius_mm": 5.079408886720309,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_25",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_25.bin",
+   "thickness": 2.4874492134918795,
+   "mass": 0.01718,
+   "label": "ST",
+   "side": "R",
+   "functional_groups": [
+    "hip_extensors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -68.46,
+    16.3,
+    0.0
+   ],
+   "insertion_point_mm": [
+    -10.92,
+    -181.2,
+    0.0
+   ],
+   "straight_length_mm": 205.71120922302705,
+   "admitted_musc_mass_kg": 0.01718,
+   "admitted_fl_m": 0.0906,
+   "admitted_pcsa_m2": 0.000178891,
+   "admitted_penn_deg": 0.3735004599267865,
+   "admitted_musc_len_m": 0.23047,
+   "max_force_N": 213.34586419669947,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": -0.06116802311126311,
+    "knee": 0.015574882924957095,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "hip",
+    "knee"
+   ],
+   "volume_mm3": 16207.547169811322,
+   "area_mm2": 6515.729881800954,
+   "radius_mm": 5.049373714920324,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_26",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_26.bin",
+   "thickness": 1.621936528757201,
+   "mass": 0.00575,
+   "label": "TA",
+   "side": "R",
+   "functional_groups": [
+    "ankle_dorsiflexors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    12.740000000000002,
+    -190.29999999999998,
+    0.0
+   ],
+   "insertion_point_mm": [
+    66.6,
+    -343.52,
+    0.0
+   ],
+   "straight_length_mm": 162.41080013348866,
+   "admitted_musc_mass_kg": 0.00575,
+   "admitted_fl_m": 0.074,
+   "admitted_pcsa_m2": 7.33e-05,
+   "admitted_penn_deg": 0.19198621771937624,
+   "admitted_musc_len_m": 0.16174000000000002,
+   "max_force_N": 92.16596409269029,
+   "moment_arms_m_flexion_positive": {
+    "ankle": -0.06332192681488692,
+    "hip": null,
+    "knee": null,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "ankle"
+   ],
+   "volume_mm3": 5424.528301886792,
+   "area_mm2": 3344.4763131657833,
+   "radius_mm": 3.2828014668210352,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_27",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_27.bin",
+   "thickness": 2.999940998206467,
+   "mass": 0.013020000000000002,
+   "label": "VI",
+   "side": "R",
+   "functional_groups": [
+    "knee_extensors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    3.2600000000000002,
+    -73.35,
+    0.0
+   ],
+   "insertion_point_mm": [
+    12.740000000000002,
+    -177.56,
+    0.0
+   ],
+   "straight_length_mm": 104.64031011039675,
+   "admitted_musc_mass_kg": 0.01302,
+   "admitted_fl_m": 0.0715,
+   "admitted_pcsa_m2": 0.00017179,
+   "admitted_penn_deg": 0.2234021442552742,
+   "admitted_musc_len_m": 0.12819,
+   "max_force_N": 214.57989895337622,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": null,
+    "knee": -0.011368530910745116,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "knee"
+   ],
+   "volume_mm3": 12283.01886792453,
+   "area_mm2": 4094.420148685593,
+   "radius_mm": 6.237837020601373,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_28",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_28.bin",
+   "thickness": 6.730097611675298,
+   "mass": 0.061380000000000004,
+   "label": "VL",
+   "side": "R",
+   "functional_groups": [
+    "knee_extensors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    -9.780000000000001,
+    -89.65,
+    0.0
+   ],
+   "insertion_point_mm": [
+    12.740000000000002,
+    -177.56,
+    0.0
+   ],
+   "straight_length_mm": 90.74865563742527,
+   "admitted_musc_mass_kg": 0.061380000000000004,
+   "admitted_fl_m": 0.0932,
+   "admitted_pcsa_m2": 0.000621306,
+   "admitted_penn_deg": 0.3839724354387525,
+   "admitted_musc_len_m": 0.1551,
+   "max_force_N": 737.8896645963713,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": null,
+    "knee": -0.008728307812786383,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "knee"
+   ],
+   "volume_mm3": 57905.660377358494,
+   "area_mm2": 8603.985219605791,
+   "radius_mm": 15.115595421630317,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  },
+  {
+   "id": "mem.muscle_29",
+   "material": "mat.skeletal_muscle",
+   "triangles": "tris/muscle_29.bin",
+   "thickness": 3.867567906047072,
+   "mass": 0.01863,
+   "label": "VM",
+   "side": "R",
+   "functional_groups": [
+    "knee_extensors"
+   ],
+   "source_batch": "guimaraes_arch (admitted 20260917; xlsx sha256 08ead4a901a5...)",
+   "source_paths": "muscle_paths_20260918 neutral pose (chimera.muscle_path_geometry.v1)",
+   "origin_point_mm": [
+    9.780000000000001,
+    -89.65,
+    0.0
+   ],
+   "insertion_point_mm": [
+    12.740000000000002,
+    -177.56,
+    0.0
+   ],
+   "straight_length_mm": 87.95981866738926,
+   "admitted_musc_mass_kg": 0.01863,
+   "admitted_fl_m": 0.0391,
+   "admitted_pcsa_m2": 0.000449501,
+   "admitted_penn_deg": 0.5323254218582705,
+   "admitted_musc_len_m": 0.14894,
+   "max_force_N": 496.10210524736135,
+   "moment_arms_m_flexion_positive": {
+    "ankle": null,
+    "hip": null,
+    "knee": -0.012242815143492871,
+    "mtp": null
+   },
+   "spanned_joints": [
+    "knee"
+   ],
+   "volume_mm3": 17575.471698113208,
+   "area_mm2": 4544.321425005459,
+   "radius_mm": 8.236322827478324,
+   "capsule_branch": "capsule",
+   "vertices": 2450,
+   "faces": 4896
+  }
+ ],
+ "bonds": []
+}
