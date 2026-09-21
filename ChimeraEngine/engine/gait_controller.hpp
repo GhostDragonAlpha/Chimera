@@ -1232,7 +1232,8 @@ class GaitWalker {
  // them). Branch captured at the fire (the knee's sign); the wrist distance
  // clamped to the chain's own annulus (the nearest reachable configuration,
  // the fore_ik pattern: loud in the census, never silent).
- void hind_step_ik(size_t hl,const Evaluation& e,const V& tgt,double& qh,double& qk,double& qa)const{
+ struct HindIKDiag{double wx=0,wy=0,ap=0,D=0,Dc=0,dmax=0,dmin=0;int clamped=0;}; // wave-43 [dvfj]: the solve's own inputs, read-only plumbing
+ void hind_step_ik(size_t hl,const Evaluation& e,const V& tgt,double& qh,double& qk,double& qa,HindIKDiag* dg=nullptr)const{
   const Mat& T=e.frames[pelvis_row_].t;
   double rx=tgt[0]-T(0,3),ry=tgt[1]-T(1,3),rz=tgt[2]-T(2,3);
   double dx=T(0,0)*rx+T(1,0)*ry+T(2,0)*rz; // the pelvis-plane x (the hip
@@ -1242,6 +1243,7 @@ class GaitWalker {
   double D=std::hypot(wx,wy);
   double dmax=hind_L1_+hind_L2_,dmin=std::abs(hind_L1_-hind_L2_);
   double Dc=(std::min)((std::max)(D,dmin+1e-9),dmax*(1.-1e-12));
+  if(dg){dg->wx=wx;dg->wy=wy;dg->ap=ap;dg->D=D;dg->Dc=Dc;dg->dmax=dmax;dg->dmin=dmin;dg->clamped=(Dc!=D)?1:0;}
   double ca=(Dc*Dc-hind_L1_*hind_L1_-hind_L2_*hind_L2_)/(2.*hind_L1_*hind_L2_);
   double k=double(hind_step_branch_[hl])*std::acos((std::max)(-1.,(std::min)(1.,ca)));
   double a1=std::atan2(wy,wx)-std::atan2(-hind_L1_-hind_L2_*std::cos(k),hind_L2_*std::sin(k));
@@ -1591,6 +1593,18 @@ class GaitWalker {
        std::fprintf(stderr,"[dvfa] t=%llu leg=%zu br=%c held=%d sg=%.5f c=%.5f cmd_y=%.9f pad_y=%.9f plant_y=%.9f\n",
         (unsigned long long)ticks_,hl,hind_step_held_[hl]?'h':'g',hind_step_held_[hl]?1:0,sg,c,tgt[1],py,
         hind_step_plant_y_[hl]);} // the hold command vs the delivered pad y, one line per leg per tick
+#endif
+#ifdef GAIT_EVENT_TRACE
+      if(dr.joint=="hip"){ // WAVE 43 IK-ABSORPTION INSTRUMENT (read-only plumbing, receipt_wave43.json):
+       double dgh,dgk,dga;HindIKDiag dg;hind_step_ik(hl,fe,tgt,dgh,dgk,dga,&dg);
+       const Mat& Tp=fe.frames[pelvis_row_].t;
+       double cp=std::cos(dg.ap),sp=std::sin(dg.ap);
+       double solx=Tp(0,3)+dg.wx*Tp(0,0)+dg.wy*Tp(0,1)+hind_xm_*(cp*Tp(0,0)+sp*Tp(0,1));
+       double soly=Tp(1,3)+dg.wx*Tp(1,0)+dg.wy*Tp(1,1)+hind_xm_*(cp*Tp(1,0)+sp*Tp(1,1));
+       std::fprintf(stderr,"[dvfj] t=%llu leg=%zu br=%c brn=%+d ap=%.9f qh=%.9f qk=%.9f qa=%.9f mp=%.9f ah=%.9f ak=%.9f aa=%.9f amp=%.9f D=%.9f Dc=%.9f dmax=%.9f clmp=%d sol_x=%.9f sol_y=%.9f\n",
+        (unsigned long long)ticks_,hl,hind_step_held_[hl]?'h':'g',hind_step_branch_[hl],dg.ap,dgh,dgk,dga,
+        hind_step_mp_[hl],s_.q[hind_coord_[hl][0]],s_.q[hind_coord_[hl][1]],s_.q[hind_coord_[hl][2]],
+        s_.q[hind_coord_[hl][3]],dg.D,dg.Dc,dg.dmax,dg.clamped,solx,soly);} // the IK's own solve vs the actuals: WHERE the +8 mm demand goes
 #endif
       double qh,qk,qa;hind_step_ik(hl,fe,tgt,qh,qk,qa);
       target=dr.joint=="hip"?qh:dr.joint=="knee"?qk:dr.joint=="ankle"?qa:hind_step_mp_[hl];
