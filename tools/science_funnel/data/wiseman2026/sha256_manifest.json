@@ -40,8 +40,8 @@
   },
   {
    "path": "inventory.json",
-   "bytes": 70541,
-   "sha256": "7e1b85ad758f880bd3d759767d8f687e5f2319e9a41780bc6916e9c464940ebc"
+   "bytes": 67154,
+   "sha256": "eba1545a4009119a5f4bf1d49704db5750855fa46c24776b0c878e3a3b4f31e3"
   },
   {
    "path": "models/Bonobo_model.osim",
