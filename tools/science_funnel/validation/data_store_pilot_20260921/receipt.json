@@ -1,0 +1,77 @@
+{
+ "schema": "chimera.data_store_pilot_receipt.v1",
+ "written_utc": "2026-09-21T09:45:00+00:00",
+ "agent": "GLM 5.3",
+ "lane": "data-store-pilot-20260921",
+ "base": "2dfd8021 (agent/data-store-design-20260921 tip); canonical master 6ea2702c untouched",
+ "branch": "agent/data-store-pilot-20260921",
+ "clone": "E:/ChimeraWork/store-agent (blob:none sparse: tools, story)",
+ "rule0": "RULE0_PREREGISTRATION_PILOT.json (written before the run; cites the design's RULE0_PREREGISTRATION.json)",
+ "scope_held": [
+  "touched ONLY: tools/science_funnel/data_store.py (new), tools/science_funnel/chimera_data_index.json (new), tools/science_funnel/wiseman_osim.py (pinned_bytes switch, +5 lines), this validation dir",
+  "data/morphosource_ct and every other dataset: untouched; port 8127 untouched; master untouched; E:/PythonChimera untouched",
+  "worktree after all gate runs: only the intended pilot files modified (no evidence re-render side effects; the visual-proof modules were deliberately not run)"
+ ],
+ "line_1_resolution_module": {
+  "landed": "tools/science_funnel/data_store.py: resolve(rel, must_exist=True, pin=None) honoring CHIMERA_DATA_STORE with the in-repo path as default fallback; store blob path <store>/store/<aa>/<bb>/<sha256>; refusals are common.Refusal (house contract: test assertRaisesRegex keeps working); committed append-only index chimera_data_index.json beside it (172,383 B, 280 entries, all active, sorted by logical)",
+  "noop_proof": "with CHIMERA_DATA_STORE unset every resolve is in-repo; verify_store_reads.py repo_pass: all 7 taxa served from repo paths, pins verified, parses identical"
+ },
+ "line_2_registration": {
+  "event": "the acquisition lanes' local raw copies were GONE (worktree janitor; only one 1,318 B leftover file survived in lane-archive/osim-agent); the corpus was rebuilt from the receipt-pinned Zenodo route - the design's re-fetch mitigation exercised for real",
+  "fetch_verify": "Primate_models.zip re-fetched from Zenodo record 20041122 via download_receipt.json: 20,510,615 B, sha256 6cb8e29ad6d7664beb19ed8f5f6aadeef0153f49dd0aea052135c846768f6181 MATCH, md5 330b8e8a6af66ea22f4023ca60829cad MATCH; 272/272 extracted entries verified byte-exact against sha256_manifest.json; janitor leftover cross-check PASS",
+  "registered": {
+   "logical_entries": 280,
+   "RAW": {"files": 273, "bytes": 94643527},
+   "DERIVED": {"files": 7, "bytes": 2740199},
+   "summed_logical_bytes": 97383726,
+   "deduplicated_disk_bytes": 86745896,
+   "note": "the wrapped DERIVED models byte-share store slots with their extracted counterparts; duplication is free by design"
+  },
+  "store_root": "E:/ChimeraData (outside all repos; store blobs 86,745,896 B + tmp staging 94,643,527 B held until later phases)",
+  "store_blob_verify": "280/280 entries verified sha256 == address after registration",
+  "pre_registration_pin_check": "every file's bytes+sha256 checked against sha256_manifest.json BEFORE addressing; no pin, no entry"
+ },
+ "line_3_wiseman_switch": {
+  "diff": "wiseman_osim.py pinned_bytes: local_file(DATA,rel) -> data_store.resolve('wiseman2026/'+rel, pin=entry['sha256']); import added; manifest pin STILL enforced after resolve (resolve verifies against the same pin)",
+  "core_falsifier": {
+   "all_7_served_from_store": true,
+   "all_7_pins_verified_from_store": true,
+   "resolved_paths": "all under E:/ChimeraData/store/<aa>/<bb>/<sha256>",
+   "canonical_identical_across_modes": true,
+   "env_unset_all_in_repo": true,
+   "drift_refusal_fires_both_modes": true,
+   "macaque_canonical_sha256": "fcc119b953cf93d957760770e3d24884f79f9db14396e7f12b7ec4ec7857f792",
+   "macaque_matches_pin_repair_receipt_preregistration": true
+  },
+  "receipt": "store_verification.json (verbatim, emitted by verify_store_reads.py)"
+ },
+ "line_4_gates": {
+  "env": "all gates run with CHIMERA_DATA_STORE=E:/ChimeraData SET (the strongest form: wiseman bytes came from the store during every gate)",
+  "creature_graph_suite": "Ran 69 tests in 0.251s - OK (matches design baseline 69 OK)",
+  "matter_kernel_test_definition": "Ran 9 tests in 0.038s - OK (9/9, matches baseline)",
+  "test_funnels": "Ran 40 tests in 1.927s - OK",
+  "training_gate": "PASS - 'every target is Froude-consistent with the world this body stands in' (matches baseline; story/theHuman sparse-materialized, nothing staged from other clones)",
+  "test_wiseman_osim": "Ran 12 tests in 329.330s - OK under store resolution (includes test_pin_drift_and_dispatch_refuse and test_store_proposal_passes_intake_checks)",
+  "test_ct_skeleton_layer": "Ran 13 tests - OK",
+  "test_store_relate_guard": "Ran 4 tests - OK",
+  "test_terrain": "Ran 9 tests - OK",
+  "pre_existing_reds_reproduced_honestly": {
+   "test_macaque_scene": "FAILED (errors=1) - SAME Refusal model_semantic_replay_mismatch data.assertion.0621570672a1da0f28caf1f707f86a988ebead0fae2e43ceae551eeac992eba9 as the design's base record (pre-existing; not a pilot red)",
+   "test_earth_scene": "FAILED (errors=2) - same Refusal as base record (pre-existing; not a pilot red)",
+   "test_workflow_commands": "FAILED (failures=1, errors=2) - the failure is exactly the base-recorded 'classified' != 'unavailable' (test_08); the 2 errors are ModuleNotFoundError: No module named 'mcp_server' (environment-pre-existing, reproduced IDENTICALLY with CHIMERA_DATA_STORE unset; not pilot-caused)"
+  },
+  "pin_crosscheck": {
+   "command": "python -B tools/agent_fleet/validation/receipt_repin_20260921/pin_crosscheck.py --own master --target master and --own <pilot tip> --target master",
+   "verdict": "PENDING_RUN_IN_FLIGHT (blob:none clone fetches each scanned blob over SSH; run started 09:10Z)"
+  }
+ },
+ "line_5_fresh_clone_measurements": {
+  "method": "two TRUE fresh sparse clones (blob:none, sparse=tools/science_funnel): before @ 2dfd8021, after @ pilot tip c95a24c3",
+  "before": {"data_checkout": "267 files, 369,762,399 B (EXACTLY the design's recorded number)", "wiseman2026_in_repo": "18 files, 3,006,903 B", "size_pack_kb": 287480},
+  "after": {"data_checkout": "267 files, 369,762,399 B", "wiseman2026_in_repo": "18 files, 3,006,903 B", "size_pack_kb": 287481, "pilot_additions": "chimera_data_index.json 172,383 B + data_store.py 5,770 B + wiseman_osim.py +~500 B"},
+  "data_checkout_delta_bytes": 0,
+  "honest_reading": "the pilot moves ZERO bytes out of git - exactly as the design's RULE0 honest_limits predicted (the raw corpus was already gitignored). The mechanism claim is what the pilot proves: 280 files / 97,383,726 B of wiseman bytes now exist in E:/ChimeraData/store having cost git ZERO bytes, with the committed 172 KB index as the only mapping, and the corpus was REBUILT FROM RECEIPTS ALONE this run after the janitor ate every local copy. The ~95 MB 'immediate win' is therefore not a checkout shrink today; it is the demonstrated shape of the next acquisition: land in the store, never touch git.",
+  "pack_delta_kb": 1
+ },
+ "verdict": "PILOT GREEN pending pin_crosscheck completion - every preregistered falsifier that has fired has PASSED; no baseline-green gate went red; the three base-reds reproduce base behavior (verified identical with the env unset for the ambiguous one)"
+}

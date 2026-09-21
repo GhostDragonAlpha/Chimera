@@ -36,6 +36,7 @@ import json, xml.etree.ElementTree as ET
 from pathlib import Path
 import numpy as np
 from .common import Refusal, canonical, require, sha, local_file
+from . import data_store
 from .macaque_anatomy import numbers, vec, frame, xml_record, pose_frames
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -54,9 +55,12 @@ def model_path(taxon):
     return f'models/{taxon}_model.osim'
 
 def pinned_bytes(rel):
-    raw=local_file(DATA,rel).read_bytes()
+    # reads through the data store (validation/data_store_design_20260921): the same
+    # logical path resolves in-repo (env unset) or to verified store bytes
+    # (CHIMERA_DATA_STORE set); the manifest pin below is enforced either way.
     entry=next((f for f in MANIFEST['files'] if f['path']==rel),None)
     require(entry is not None,'unpinned_file',rel)
+    raw=data_store.resolve('wiseman2026/'+rel,pin=entry['sha256']).read_bytes()
     require(sha(raw)==entry['sha256'] and len(raw)==entry['bytes'],'source_pin_drift',rel)
     return raw
 

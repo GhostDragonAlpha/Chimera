@@ -16,10 +16,10 @@ tools/science_funnel/data/, e.g. 'wiseman2026/Primate_models.zip'.
       address before every hand-out); falls back to the in-repo file when the
       store is not seeded for rel (fresh machine) or rel is unregistered;
       refuses loudly naming the missing artifact when neither exists -- never a
-      silent empty read. (Design section 3.2 lists in-repo first; this order is
-      the same contract under the pilot's reading: the env var is what turns the
-      store on, the in-repo path is the default fallback, and the 7/7
-      from-store pin verification is the preregistered falsifier.)
+      silent empty read. (Design section 3.2 lists in-repo first; same contract
+      under the pilot's reading: the env var is what turns the store on, the
+      in-repo path is the default fallback, and the 7/7 from-store pin
+      verification is the preregistered falsifier.)
 
 Pins stay pins: pin=<sha256> makes resolve verify the handed-over bytes against
 the caller's pin (wiseman_osim.pinned_bytes keeps enforcing its own manifest pin
@@ -30,18 +30,17 @@ DERIVED outputs keep landing in-repo first; the repo remains the origin of
 derived proof bytes. register() is always an explicit step (receipt-carrying),
 never a silent redirect of writes.
 """
+import datetime
 import hashlib
 import json
 import os
 from pathlib import Path
 
+from .common import Refusal, require
+
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'tools/science_funnel/data'
 INDEX = Path(__file__).resolve().parent / 'chimera_data_index.json'
-
-
-class Refusal(Exception):
-    """Same contract as common.Refusal, without importing the funnel world."""
 
 
 def _read_index():
@@ -62,23 +61,19 @@ def blob_path(store_root, sha256):
     return Path(store_root) / 'store' / sha256[:2] / sha256[2:4] / sha256
 
 
+def require_sha(p, pin, rel):
+    require(hashlib.sha256(p.read_bytes()).hexdigest() == pin, 'source_pin_drift', rel)
+
+
 def _in_repo(rel, must_exist, pin):
     p = (DATA / rel).resolve()
-    if Path(rel).is_absolute() or not p.is_relative_to(DATA.resolve()):
-        raise Refusal(f'path_escape: {rel}')
+    require(not Path(rel).is_absolute() and p.is_relative_to(DATA.resolve()), 'path_escape', rel)
     if not p.is_file():
-        if must_exist:
-            raise Refusal(f'artifact_missing: {rel} resolves to no in-repo file and no store blob')
+        require(not must_exist, 'artifact_missing', f'{rel} resolves to no in-repo file and no store blob')
         return p
     if pin is not None:
         require_sha(p, pin, rel)
     return p
-
-
-def require_sha(p, pin, rel):
-    got = hashlib.sha256(p.read_bytes()).hexdigest()
-    if got != pin:
-        raise Refusal(f'source_pin_drift: {rel} bytes sha256 {got} != pinned {pin}')
 
 
 def resolve(rel, must_exist=True, pin=None):
@@ -87,27 +82,26 @@ def resolve(rel, must_exist=True, pin=None):
     if entry is not None:
         blob = blob_path(store, entry['sha256'])
         if blob.is_file():
-            require_sha(blob, entry['sha256'], rel)  # index mapping must not lie
-            if pin is not None and entry['sha256'] != pin:
-                raise Refusal(f'source_pin_drift: {rel} store sha256 {entry["sha256"]} != pinned {pin}')
+            require_sha(blob, entry['sha256'], rel)  # the index mapping must not lie
+            require(pin is None or entry['sha256'] == pin, 'source_pin_drift',
+                    f'{rel} store sha256 {entry["sha256"]} != pinned {pin}')
             return blob
-        p = _in_repo(rel, must_exist=False, pin=pin)  # store not seeded: the repo copy still verifies
-        return p
+        return _in_repo(rel, must_exist, pin)  # store not seeded: the repo copy still verifies
     return _in_repo(rel, must_exist, pin)
 
 
 def register_file(src, rel, *, cls, dataset, provenance, registered_by,
                   path_in_git_at_registration=None, registered_utc=None):
-    """Content-address one file into $CHIMERA_DATA_STORE and append its index entry.
+    """Content-address one file into $CHIMERA_DATA_STORE; return its index entry.
 
     Store writes are atomic (tmp staging + rename into the addressed slot); an
     identical blob is never rewritten (duplication across logical names is free).
-    The index is appended in memory; callers write it once per batch and COMMIT it.
+    register_file addresses the blob and returns the entry; appending it to the
+    caller's in-memory index is the caller's move -- one writer per batch, which
+    then writes chimera_data_index.json once and COMMITS it.
     """
-    import datetime
     store = os.environ.get('CHIMERA_DATA_STORE')
-    if not store:
-        raise Refusal('CHIMERA_DATA_STORE unset: registration has no store to address into')
+    require(bool(store), 'store_unset', 'CHIMERA_DATA_STORE unset: registration has no store to address into')
     src = Path(src)
     data = src.read_bytes()
     sha = hashlib.sha256(data).hexdigest()
@@ -118,8 +112,7 @@ def register_file(src, rel, *, cls, dataset, provenance, registered_by,
         tmp.parent.mkdir(parents=True, exist_ok=True)
         tmp.write_bytes(data)
         os.replace(tmp, dst)
-    entry = {'logical': rel, 'path_in_git_at_registration': path_in_git_at_registration,
-             'sha256': sha, 'bytes': len(data), 'class': cls, 'dataset': dataset,
-             'registered_utc': registered_utc or (datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds')),
-             'registered_by': registered_by, 'provenance': provenance, 'status': 'active'}
-    return entry
+    return {'logical': rel, 'path_in_git_at_registration': path_in_git_at_registration,
+            'sha256': sha, 'bytes': len(data), 'class': cls, 'dataset': dataset,
+            'registered_utc': registered_utc or (datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds')),
+            'registered_by': registered_by, 'provenance': provenance, 'status': 'active'}
