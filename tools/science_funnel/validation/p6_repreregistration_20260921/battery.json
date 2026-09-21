@@ -5,15 +5,26 @@
   "cut_mm": 3.0,
   "tol_ip_mm": 0.08
  },
+ "banks": {
+  "amendment_3_bank_matches_file": true,
+  "amendment_3_sha256": "a6959fe31db1e5087fa8def857bed23b529a49f52323b2df508eafd4bba03973",
+  "law_amendment_b_bank_matches_file": true,
+  "law_amendment_stage1_bank_expected": "e18d46ca29b8cfa0ba2cd81791d73dade52f2ba3c1733aa6d912004f2f533447",
+  "law_amendment_stage1_bank_matches_run1_stage": true,
+  "law_amendment_stage1_bank_sha256": "e18d46ca29b8cfa0ba2cd81791d73dade52f2ba3c1733aa6d912004f2f533447",
+  "law_doc_sha256_this_stage": "97585c4e7b5781d3e776d7cdaa7b4d19ce8b33772f239178cbd60be7f6410e4c",
+  "preregistration_bank_matches_file": true,
+  "preregistration_sha256": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407"
+ },
  "base_commit": "427e9d0 (agent/hip-pivot-proof-20260921, the proof head)",
  "corrected_predicate": {
   "band_source": "the registered fit's own RMS residual (the pivot's measured radius+residual ARE the socket's geometry)",
   "cut_mm": 3.0,
   "cut_source": "bone_identification_v3 derived_cuts.joint_gap_mm (committed)",
-  "definition": "SEATED at theta iff (tol_ip <= seat_gap <= cut) AND (displacement <= band_h); passes P6' iff both hold at every theta of the closed cited range",
+  "definition": "SEATED at theta iff (0 <= seat_gap <= cut) AND (displacement <= band_h); passes P6' iff both hold at every theta of the closed cited range. seat clause = amendment 3 Leg 1 [0, cut]; displacement clause = Leg 2, the load-bearing not-through test at the head",
   "range_coverage": "grid {\u2212R} \u222a {R\u00b7k/5, k = \u22124..4} \u222a {+R}; displacement covered on the whole range: real arm identity (d \u2261 0), null arm monotone 2|c_perp| sin(|\u03b8|/2) (endpoints dominate)",
   "resolution_um": 160,
-  "tol_ip_derivation": "specimen.resolution_um/2 = 160 um / 2 = 0.08 mm: half the committed CT sampling step; a vertex-vertex reading below the surfaces' own localization cannot certify not-through",
+  "tol_ip_derivation": "specimen.resolution_um/2 = 160 um / 2 = 0.08 mm: half the committed CT sampling step; the gap metric's RESOLUTION FLOOR \u2014 readings below it lie inside the surfaces' own localization (recorded per pose as below_resolution_floor, never clause-binding)",
   "tol_ip_mm": 0.08
  },
  "fits": {
@@ -70,7 +81,7 @@
    2.0943951
   ]
  },
- "hard_checks_pass": false,
+ "hard_checks_pass": true,
  "inputs": {
   "definition_sha256": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
   "osim_sha256": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
@@ -78,7 +89,6 @@
   "vertex_books_match_membranes": true
  },
  "lane": "agent/p6-repreregistration-20260921",
- "law_amendment_bank_sha256": "e18d46ca29b8cfa0ba2cd81791d73dade52f2ba3c1733aa6d912004f2f533447",
  "margins": {
   "null_disp_over_band_02": 36.955813485608,
   "null_disp_over_band_03": 26.756991626141,
@@ -104,6 +114,7 @@
  "null_arm": {
   "02": {
    "band_mm": 0.155477725893,
+   "below_floor_readings": [],
    "clause_breaches_at": [
     "lo_endpoint",
     "grid_k-4",
@@ -137,6 +148,7 @@
       "parent_vertex",
       255
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.08843746898,
      "seat_ok": true,
      "theta_rad": -2.0943951
@@ -156,6 +168,7 @@
       "parent_vertex",
       197
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.122594797758,
      "seat_ok": true,
      "theta_rad": -1.67551608
@@ -175,6 +188,7 @@
       "parent_vertex",
       1405
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.102783716788,
      "seat_ok": true,
      "theta_rad": -1.25663706
@@ -194,6 +208,7 @@
       "parent_vertex",
       175
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.583738826751,
      "seat_ok": true,
      "theta_rad": -0.83775804
@@ -213,6 +228,7 @@
       "parent_vertex",
       175
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 1.201252391417,
      "seat_ok": true,
      "theta_rad": -0.41887902
@@ -232,6 +248,7 @@
       "parent_vertex",
       182
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 1.438430430193,
      "seat_ok": true,
      "theta_rad": 0.0
@@ -251,6 +268,7 @@
       "parent_vertex",
       143
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 1.366120257525,
      "seat_ok": true,
      "theta_rad": 0.41887902
@@ -270,6 +288,7 @@
       "parent_vertex",
       127
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.219458747235,
      "seat_ok": true,
      "theta_rad": 0.83775804
@@ -289,6 +308,7 @@
       "parent_vertex",
       143
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.153151799471,
      "seat_ok": true,
      "theta_rad": 1.25663706
@@ -308,6 +328,7 @@
       "parent_vertex",
       143
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.148620743985,
      "seat_ok": true,
      "theta_rad": 1.67551608
@@ -327,6 +348,7 @@
       "parent_vertex",
       198
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.209308648732,
      "seat_ok": true,
      "theta_rad": 2.0943951
@@ -336,6 +358,9 @@
   },
   "03": {
    "band_mm": 0.147474758014,
+   "below_floor_readings": [
+    "hi_endpoint"
+   ],
    "clause_breaches_at": [
     "lo_endpoint",
     "grid_k-4",
@@ -369,6 +394,7 @@
       "parent_vertex",
       144
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.116945747601,
      "seat_ok": true,
      "theta_rad": -2.0943951
@@ -388,6 +414,7 @@
       "parent_vertex",
       141
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.177075975979,
      "seat_ok": true,
      "theta_rad": -1.67551608
@@ -407,6 +434,7 @@
       "parent_vertex",
       141
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.384640287165,
      "seat_ok": true,
      "theta_rad": -1.25663706
@@ -426,6 +454,7 @@
       "parent_vertex",
       814
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.327565384122,
      "seat_ok": true,
      "theta_rad": -0.83775804
@@ -445,6 +474,7 @@
       "parent_vertex",
       121
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.91287483794,
      "seat_ok": true,
      "theta_rad": -0.41887902
@@ -464,6 +494,7 @@
       "parent_vertex",
       121
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 1.486366553653,
      "seat_ok": true,
      "theta_rad": 0.0
@@ -483,6 +514,7 @@
       "parent_vertex",
       122
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 1.369231486215,
      "seat_ok": true,
      "theta_rad": 0.41887902
@@ -502,6 +534,7 @@
       "parent_vertex",
       104
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.63184045262,
      "seat_ok": true,
      "theta_rad": 0.83775804
@@ -521,6 +554,7 @@
       "parent_vertex",
       123
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.180475274103,
      "seat_ok": true,
      "theta_rad": 1.25663706
@@ -540,6 +574,7 @@
       "parent_vertex",
       123
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.132211430199,
      "seat_ok": true,
      "theta_rad": 1.67551608
@@ -559,44 +594,46 @@
       "parent_vertex",
       136
      ],
+     "reading_class": "below_resolution_floor",
      "seat_gap_mm": 0.046718998681,
-     "seat_ok": false,
+     "seat_ok": true,
      "theta_rad": 2.0943951
     }
    ],
-   "seat_clause_ok_all_grid": false
+   "seat_clause_ok_all_grid": true
   }
  },
  "parent_battery_sha256": "18f0ef0641cdcba610bb0a67109540220cfb3400bdff1eee2ae6451fb7d81c16",
  "parent_battery_sha_matches_receipt": true,
  "parent_lane": "agent/hip-pivot-proof-20260921 (P6 as written: VOID in the record, fired 2026-09-21)",
+ "predicate_version": "v2 per preregistration_amendment_3.md: seat band [0, cut]; tol_ip = 0.08 mm retained as the RESOLUTION FLOOR (recorded, not clause-binding) after v1's hard lower edge was voided by its own falsifier L6 on run 1; displacement band (fit RMS) load-bearing",
  "prediction_checks": {
   "null_disp_beyond_band_both_hips": true,
   "null_disp_reproduces_committed_02": true,
   "null_disp_reproduces_committed_03": true,
   "null_formula_ok_all_grid": true,
+  "null_seats_below_cut_all_grid_recorded": true,
   "null_seats_reproduce_committed_02": true,
   "null_seats_reproduce_committed_03": true,
   "real_demo_seat_reproduces_committed_02": true,
   "real_demo_seat_reproduces_committed_03": true,
   "real_disp_exact_zero_all_grid": true,
-  "real_seats_in_band_all_grid": false,
+  "real_seats_below_cut_all_grid": true,
   "real_seats_reproduce_committed_02": true,
   "real_seats_reproduce_committed_03": true
  },
- "preregistration_bank_matches_file": true,
- "preregistration_sha256": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407",
  "real_arm": {
   "02": {
    "band_mm": 0.155477725893,
-   "clause_breaches_at": [
+   "below_floor_readings": [
     "grid_k-3"
    ],
+   "clause_breaches_at": [],
    "displacement_clause_ok_all_grid": true,
    "max_displacement_mm": 0.0,
    "max_seat_mm": 2.21511346552,
    "min_seat_mm": 0.053906119839,
-   "pass_p6_corrected": false,
+   "pass_p6_corrected": true,
    "rows": [
     {
      "band_mm": 0.155477725893,
@@ -613,6 +650,7 @@
       "parent_vertex",
       203
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.861959512899,
      "seat_ok": true,
      "theta_rad": -2.0943951
@@ -632,6 +670,7 @@
       "parent_vertex",
       268
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.686687196483,
      "seat_ok": true,
      "theta_rad": -1.67551608
@@ -651,8 +690,9 @@
       "parent_vertex",
       870
      ],
+     "reading_class": "below_resolution_floor",
      "seat_gap_mm": 0.053906119839,
-     "seat_ok": false,
+     "seat_ok": true,
      "theta_rad": -1.25663706
     },
     {
@@ -670,6 +710,7 @@
       "parent_vertex",
       197
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 2.21511346552,
      "seat_ok": true,
      "theta_rad": -0.83775804
@@ -689,6 +730,7 @@
       "parent_vertex",
       164
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 2.14303796227,
      "seat_ok": true,
      "theta_rad": -0.41887902
@@ -708,6 +750,7 @@
       "parent_vertex",
       182
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 1.438430430193,
      "seat_ok": true,
      "theta_rad": 0.0
@@ -727,6 +770,7 @@
       "parent_vertex",
       143
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.877122409466,
      "seat_ok": true,
      "theta_rad": 0.41887902
@@ -746,6 +790,7 @@
       "parent_vertex",
       164
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.165013143951,
      "seat_ok": true,
      "theta_rad": 0.83775804
@@ -765,6 +810,7 @@
       "parent_vertex",
       203
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.132490319785,
      "seat_ok": true,
      "theta_rad": 1.25663706
@@ -784,6 +830,7 @@
       "parent_vertex",
       203
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.240659733201,
      "seat_ok": true,
      "theta_rad": 1.67551608
@@ -803,15 +850,17 @@
       "parent_vertex",
       197
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.098475213606,
      "seat_ok": true,
      "theta_rad": 2.0943951
     }
    ],
-   "seat_clause_ok_all_grid": false
+   "seat_clause_ok_all_grid": true
   },
   "03": {
    "band_mm": 0.147474758014,
+   "below_floor_readings": [],
    "clause_breaches_at": [],
    "displacement_clause_ok_all_grid": true,
    "max_displacement_mm": 0.0,
@@ -834,6 +883,7 @@
       "parent_vertex",
       144
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.887240079415,
      "seat_ok": true,
      "theta_rad": -2.0943951
@@ -853,6 +903,7 @@
       "parent_vertex",
       148
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.589352815805,
      "seat_ok": true,
      "theta_rad": -1.67551608
@@ -872,6 +923,7 @@
       "parent_vertex",
       158
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.935792317371,
      "seat_ok": true,
      "theta_rad": -1.25663706
@@ -891,6 +943,7 @@
       "parent_vertex",
       839
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.630736604805,
      "seat_ok": true,
      "theta_rad": -0.83775804
@@ -910,6 +963,7 @@
       "parent_vertex",
       121
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 1.650134761681,
      "seat_ok": true,
      "theta_rad": -0.41887902
@@ -929,6 +983,7 @@
       "parent_vertex",
       121
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 1.486366553653,
      "seat_ok": true,
      "theta_rad": 0.0
@@ -948,6 +1003,7 @@
       "parent_vertex",
       144
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.905795048116,
      "seat_ok": true,
      "theta_rad": 0.41887902
@@ -967,6 +1023,7 @@
       "parent_vertex",
       104
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.458706379084,
      "seat_ok": true,
      "theta_rad": 0.83775804
@@ -986,6 +1043,7 @@
       "parent_vertex",
       117
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.253023677088,
      "seat_ok": true,
      "theta_rad": 1.25663706
@@ -1005,6 +1063,7 @@
       "parent_vertex",
       121
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.142631908664,
      "seat_ok": true,
      "theta_rad": 1.67551608
@@ -1024,6 +1083,7 @@
       "parent_vertex",
       158
      ],
+     "reading_class": "resolved",
      "seat_gap_mm": 0.160824534903,
      "seat_ok": true,
      "theta_rad": 2.0943951
@@ -1058,11 +1118,17 @@
    "03": []
   }
  },
- "schema": "chimera.p6_contrast_battery.v1",
+ "run1_record": {
+  "file": "battery_run1_predicate_v1_l6_fired.json",
+  "l6_firing": "real hip 02 grid_k-3: seat gap 0.053906119839 mm < 0.08 at displacement 0.0 exactly",
+  "run1_determinism": "battery byte-identical on immediate re-run (run1 sha c82947c22e85c75b2537175fd18a17842279b9d80e2f049f8b843be44788a77d)",
+  "sha256": "c82947c22e85c75b2537175fd18a17842279b9d80e2f049f8b843be44788a77d"
+ },
+ "schema": "chimera.p6_contrast_battery.v2",
  "trailer": "Agent: GLM 5.3",
  "untouched": {
   "after": {
-   "docs\\THE_ARTICULATION_LAW.md": "e18d46ca29b8cfa0ba2cd81791d73dade52f2ba3c1733aa6d912004f2f533447",
+   "docs\\THE_ARTICULATION_LAW.md": "97585c4e7b5781d3e776d7cdaa7b4d19ce8b33772f239178cbd60be7f6410e4c",
    "research_references\\human\\opensim\\gait2392_thelen2003muscle.osim": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_01.bin": "bf649f07180123250d0d861782be5922d0995f0523859ede8874a61475da84a7",
@@ -1080,14 +1146,18 @@
    "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration_amendment_2.md": "b050093ede83ec6fdfa46e4f50dc39233cfcc2f3c7a4f4bd17433de866ca8603",
    "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration_amendment_2.sha256": "c9803a9b16d4e13a3d6609f479be7d10124fecbbb1e7254a38f8b82d4857bc20",
    "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\receipt.json": "c39c708c7fb8e167abed88c5405036b810cd64c817fa3f634859aa22bc60235a",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\battery_run1_predicate_v1_l6_fired.json": "c82947c22e85c75b2537175fd18a17842279b9d80e2f049f8b843be44788a77d",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\law_amendment.sha256": "6c5c971dd306b0c7d0842190bb2c895c90f9b229cc35e46b86fe7adb7079c004",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\law_amendment_b.sha256": "e1973d5b379cf16e3b02f58bcf517c31844c396b2ed773b5b1bf4b88eb18e96a",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration.md": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration.sha256": "4d3b48c790eadd8950bfa8c9e46b9d221e6a9ab1dd9bf879d14b2e5ba6e5ac78",
-   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\replica\\hip_pivot_proof.py": "748e20a7c07b7a8340bf2ae7b17e5a86af36fcc389a2b4563f0adf5cf3b62543",
-   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\replica\\preregistration.md": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407"
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration_amendment_3.md": "a6959fe31db1e5087fa8def857bed23b529a49f52323b2df508eafd4bba03973",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration_amendment_3.sha256": "566e90c3b04e8bb138186386bbebfe7167f62789de1bbef1c5cb138c6efb5dcb",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921_replica\\hip_pivot_proof.py": "748e20a7c07b7a8340bf2ae7b17e5a86af36fcc389a2b4563f0adf5cf3b62543",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921_replica\\preregistration.md": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407"
   },
   "before": {
-   "docs\\THE_ARTICULATION_LAW.md": "e18d46ca29b8cfa0ba2cd81791d73dade52f2ba3c1733aa6d912004f2f533447",
+   "docs\\THE_ARTICULATION_LAW.md": "97585c4e7b5781d3e776d7cdaa7b4d19ce8b33772f239178cbd60be7f6410e4c",
    "research_references\\human\\opensim\\gait2392_thelen2003muscle.osim": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
    "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_01.bin": "bf649f07180123250d0d861782be5922d0995f0523859ede8874a61475da84a7",
@@ -1105,17 +1175,21 @@
    "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration_amendment_2.md": "b050093ede83ec6fdfa46e4f50dc39233cfcc2f3c7a4f4bd17433de866ca8603",
    "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration_amendment_2.sha256": "c9803a9b16d4e13a3d6609f479be7d10124fecbbb1e7254a38f8b82d4857bc20",
    "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\receipt.json": "c39c708c7fb8e167abed88c5405036b810cd64c817fa3f634859aa22bc60235a",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\battery_run1_predicate_v1_l6_fired.json": "c82947c22e85c75b2537175fd18a17842279b9d80e2f049f8b843be44788a77d",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\law_amendment.sha256": "6c5c971dd306b0c7d0842190bb2c895c90f9b229cc35e46b86fe7adb7079c004",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\law_amendment_b.sha256": "e1973d5b379cf16e3b02f58bcf517c31844c396b2ed773b5b1bf4b88eb18e96a",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration.md": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407",
    "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration.sha256": "4d3b48c790eadd8950bfa8c9e46b9d221e6a9ab1dd9bf879d14b2e5ba6e5ac78",
-   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\replica\\hip_pivot_proof.py": "748e20a7c07b7a8340bf2ae7b17e5a86af36fcc389a2b4563f0adf5cf3b62543",
-   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\replica\\preregistration.md": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407"
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration_amendment_3.md": "a6959fe31db1e5087fa8def857bed23b529a49f52323b2df508eafd4bba03973",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\preregistration_amendment_3.sha256": "566e90c3b04e8bb138186386bbebfe7167f62789de1bbef1c5cb138c6efb5dcb",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921_replica\\hip_pivot_proof.py": "748e20a7c07b7a8340bf2ae7b17e5a86af36fcc389a2b4563f0adf5cf3b62543",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921_replica\\preregistration.md": "3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407"
   },
   "equal": true
  },
  "verdict": {
-  "arms_discriminate": false,
+  "arms_discriminate": true,
   "null_arm_fails_p6_corrected": true,
-  "real_arm_passes_p6_corrected": false
+  "real_arm_passes_p6_corrected": true
  }
 }

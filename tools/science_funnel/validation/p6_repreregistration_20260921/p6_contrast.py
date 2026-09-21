@@ -109,7 +109,8 @@ def main():
         HERE / "preregistration_amendment_3.md", HERE / "preregistration_amendment_3.sha256",
         HERE / "law_amendment.sha256", HERE / "law_amendment_b.sha256",
         HERE / "battery_run1_predicate_v1_l6_fired.json",
-        HERE / "replica" / "hip_pivot_proof.py", HERE / "replica" / "preregistration.md",
+        ROOT / "tools" / "science_funnel" / "validation" / "p6_repreregistration_20260921_replica" / "hip_pivot_proof.py",
+        ROOT / "tools" / "science_funnel" / "validation" / "p6_repreregistration_20260921_replica" / "preregistration.md",
         ROOT / "docs" / "THE_ARTICULATION_LAW.md",
     ]
     before = {str(p.relative_to(ROOT)): sha256_file(p) for p in watch}
@@ -118,8 +119,8 @@ def main():
     osim_sha = sha256_file(OSIM)
     committed_battery_sha = sha256_file(PRIOR / "battery.json")
     committed_script_sha = sha256_file(PRIOR / "hip_pivot_proof.py")
-    replica_script_sha = sha256_file(HERE / "replica" / "hip_pivot_proof.py")
-    replica_prereg_sha = sha256_file(HERE / "replica" / "preregistration.md")
+    replica_script_sha = sha256_file(ROOT / "tools" / "science_funnel" / "validation" / "p6_repreregistration_20260921_replica" / "hip_pivot_proof.py")
+    replica_prereg_sha = sha256_file(ROOT / "tools" / "science_funnel" / "validation" / "p6_repreregistration_20260921_replica" / "preregistration.md")
     lane_prereg_sha = sha256_file(HERE / "preregistration.md")
     prereg_bank = (HERE / "preregistration.sha256").read_text(encoding="utf-8").split()[0]
     amendment3_sha = sha256_file(HERE / "preregistration_amendment_3.md")
