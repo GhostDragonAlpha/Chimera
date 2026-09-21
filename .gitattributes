@@ -35,3 +35,6 @@ tools/science_funnel/data/bodyparts3d/** -text -whitespace
 tools/science_funnel/data/macaque_arm/** -text -whitespace
 
 tools/science_funnel/data/earth/** -text -whitespace
+
+# Visible Monkey intake contracts: byte-stable specs (the CRLF lesson).
+tools/science_funnel/data/visible_monkey/** -text -whitespace
