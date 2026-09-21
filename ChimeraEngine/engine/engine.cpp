@@ -51,6 +51,7 @@ static std::atomic<uint32_t> g_pending_resize_h{0};
 // near plane SLICES it (operator report: "the nose and one hand are severed
 // at the wall of deletion"). Derived from the geometry, never a constant.
 static float      g_mesh_sphere = 0.0f;
+static float      g_mesh_center[3] = {0.f, 0.f, 0.f}; // ORBIT PIVOT LAW: the loaded mesh's bbox center
 static float      g_shadow_contact_radius = 2.0f;   // floor-projected contact disk radius
 static float radius_floor() { return fmaxf(1.0f, g_mesh_sphere * 1.02f); }
 static float shadow_radius() { return fmaxf(2.0f, 0.65f * (0.5f * g_mesh_sphere * 2.f)); }
@@ -1727,7 +1728,13 @@ bool Engine::create_triangle_pipeline() {
     }
     // Shadow twin (the eye's "subject ungrounded", 2026-09-02): the same mesh
     // projected to the floor plane by the vertex stage; blended translucent
-    // black, no depth write (the mesh's own depth test decides visibility).
+    // black, no depth write. GUIDE AMENDMENT (2026-09-20, Defect B): the plane
+    // no longer writes depth, so the shadow cannot lean on it — the shadow is
+    // DEPTH-TESTED (LESS, write OFF) against the body's own depth: it lands on
+    // the plane wherever the body is not in front of it in screen space, and
+    // can never paint over the body (drawn after the body and the plane — see
+    // frame()'s draw order). The old FLOOR-COEXIST depth-equality gamble against
+    // the plane's own depth is GONE: the plane writes nothing.
     // Culling stays OFF — the recon mesh's winding is unreliable (the fill
     // pipeline is CULL_MODE_NONE for the same reason), and a culled shadow is
     // an invisible shadow. Requires its own frag module (flat alpha) —
@@ -1747,26 +1754,32 @@ bool Engine::create_triangle_pipeline() {
         blend.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
         blend.alphaBlendOp        = VK_BLEND_OP_ADD;
         ds.depthWriteEnable = VK_FALSE;
-        ds.depthTestEnable  = VK_FALSE;
+        ds.depthTestEnable  = VK_TRUE;             // AMENDMENT: tested against the
+                                                   // body's depth (drawn after it);
+                                                   // never paints over the subject
+        ds.depthCompareOp   = VK_COMPARE_OP_LESS;
         // GRID DEPTH CONTRACT: the shadow is ink ON the floor, not an occluder —
         // the grid draws OVER it (pinned; the shared ds carries the fill's mark)
         ds.stencilTestEnable = VK_FALSE;
-        // FLOOR-COEXIST (2026-09-03, two rounds): the shadow projects onto the
-        // SAME y=0 plane the floor rasterizes, so its fragment depth equals the
-        // floor's only up to float ulps — LESS rejected every fragment (shadow
-        // = 0 pixels measured), and LESS_OR_EQUAL still rejected the half where
-        // the interpolated depth lands 1e-6 FARTHER. A decal that draws
-        // immediately after the floor and before the mesh must not gamble on
-        // depth equality at all: test OFF, write OFF. The mesh (drawn later,
-        // depth-tested) still wins where it stands in front.
         if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr, &tri_shadow_pipeline_) != VK_SUCCESS) {
             fprintf(stderr, "Failed to create triangle shadow pipeline\n");
             tri_shadow_pipeline_ = VK_NULL_HANDLE;
         }
     }
-    // THE GROUND PLANE twin: position-only verts (one vec3), opaque, depth-test
-    // ON + depth-write ON — the floor is world geometry the subject stands ON,
-    // and the shadow's no-depth-write draw must lose to it where they overlap.
+    // THE GROUND PLANE twin: position-only verts (one vec3). GUIDE AMENDMENT
+    // (2026-09-20, lane agent/triangle-monkey-grid-20260920 — operator Defect B:
+    // "you can't see through it; anything on the backside of the grid is culled;
+    // from underneath, the top side is culled. It is not working as its intended
+    // purpose of a Gaussian guide; it is blocking the view."): the grid plane is
+    // a GUIDE, never an occluder. The plane is BLENDED (alpha 0.5, derived in
+    // floor.frag — the body behind keeps >= half its contrast), depth-write OFF
+    // (it never enters the depth solution), depth-TEST ON with LESS (so it still
+    // loses to geometry in front of it and never paints over the subject), and
+    // cull stays NONE (visible from BOTH sides). Drawn AFTER the opaque body in
+    // frame() so the body lands first and the guide composites over it. The
+    // shadow (drawn after the plane) keeps ink ON the plane and is depth-tested
+    // against the body so it can never paint over it. Contract record:
+    // docs/THE_STUDIO_GRID_DEPTH.md (the 2026-09-20 amendment).
     // Built ONLY if both modules loaded (same instrument policy as the shadow).
     if (floor_vert_mod_ != VK_NULL_HANDLE && floor_frag_mod_ != VK_NULL_HANDLE) {
         printf("floor: building pipeline (modules ok)\n");
@@ -1787,17 +1800,24 @@ bool Engine::create_triangle_pipeline() {
         vi.pVertexAttributeDescriptions = fattrs;
         vi.vertexAttributeDescriptionCount = 1;
 
-        blend.blendEnable = VK_FALSE;             // opaque
-        ds.depthTestEnable  = VK_TRUE;            // shared ds now carries the shadow's
-                                                  // depthTestEnable=FALSE — pin the
-                                                  // floor's own law explicitly
-        ds.depthWriteEnable = VK_TRUE;
-        ds.depthCompareOp    = VK_COMPARE_OP_LESS; // shared ds carries the shadow's
-                                                   // LESS_OR_EQUAL — pin the floor's
-                                                   // own law explicitly
+        blend.blendEnable = VK_TRUE;              // GUIDE: the plane is see-through
+        blend.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+        blend.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+        blend.colorBlendOp        = VK_BLEND_OP_ADD;
+        blend.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+        blend.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+        blend.alphaBlendOp        = VK_BLEND_OP_ADD;
+        ds.depthTestEnable  = VK_TRUE;            // the guide still loses to geometry
+                                                  // in FRONT of it (never paints over
+                                                  // the subject)
+        ds.depthWriteEnable = VK_FALSE;           // GUIDE: never enters the depth
+                                                  // solution — nothing can be culled
+                                                  // behind/below the plane any more
+        ds.depthCompareOp    = VK_COMPARE_OP_LESS; // unchanged law
         ds.stencilTestEnable = VK_FALSE;          // the floor IS the grid's plane —
                                                   // it never marks (grid draws on it)
-        ras.cullMode = VK_CULL_MODE_NONE;         // winding kept unordered by intent
+        ras.cullMode = VK_CULL_MODE_NONE;         // winding kept unordered by intent —
+                                                  // visible from BOTH sides (guide law)
 
         if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr, &floor_pipeline_) != VK_SUCCESS) {
             fprintf(stderr, "Failed to create floor pipeline\n");
@@ -2057,17 +2077,33 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     // (pos3 + normal3 + color3).
     float r2max = 0.0f;
     float ymin = 0.0f, ymax = 1.0f;   // H0 defaults sane for degenerate payloads
+    float xmin = 0.0f, xmax = 0.0f, zmin = 0.0f, zmax = 0.0f;
     bool first = true;
     for (size_t i = 0; i + 2 < clean.size(); i += 9) {
         float x = clean[i], y = clean[i + 1], z = clean[i + 2];
         float r2 = x * x + y * y + z * z;
         if (r2 > r2max) r2max = r2;
-        if (first)      { ymin = y; ymax = y; first = false; }
-        else if (y < ymin) ymin = y;
-        else if (y > ymax) ymax = y;
+        if (first)      { ymin = y; ymax = y; xmin = x; xmax = x; zmin = z; zmax = z; first = false; }
+        else {
+            if (y < ymin) ymin = y;
+            if (y > ymax) ymax = y;
+            if (x < xmin) xmin = x;
+            if (x > xmax) xmax = x;
+            if (z < zmin) zmin = z;
+            if (z > zmax) zmax = z;
+        }
     }
     g_mesh_sphere = sqrtf(r2max);
     g_mesh_ymin = ymin; g_mesh_ymax = ymax;
+    // ORBIT PIVOT LAW (2026-09-20, membrane D, lane agent/triangle-monkey-grid):
+    // the viewer's orbit pivot is the loaded mesh's bbox CENTER -- derived from
+    // what the viewer itself loads (geometry only; the mass book is not
+    // reachable in the engine path). The engine exposes it and the mesh upload
+    // hands it to the camera as the orbit target, so rotating no longer swings
+    // the eye in and out around a point the body is not at.
+    g_mesh_center[0] = 0.5f * (xmin + xmax);
+    g_mesh_center[1] = 0.5f * (ymin + ymax);
+    g_mesh_center[2] = 0.5f * (zmin + zmax);
     return true;
 }
 
@@ -6658,7 +6694,35 @@ void Engine::push_grid_overlay() {
 
 void Engine::update_camera_matrices(float proj[16], float view[16]) {
     float aspect = static_cast<float>(extent_.width) / static_cast<float>(extent_.height);
-    perspective(proj, 45.0f * 3.14159265f / 180.0f, aspect, 0.1f, 1000.0f);
+    // CAMERA CLIPPING LAW (2026-09-20, lane agent/triangle-monkey-grid-20260920;
+    // operator Defect C: "clipping ... when you rotate around to the back of the
+    // object"). The near plane was the fixed constant 0.1 while the HTTP /camera
+    // (and /mesh_bin's header camera) set the radius WITHOUT the keyboard zoom's
+    // radius_floor() clamp — so any orbit whose eye-to-subject clearance fell
+    // under 0.1 sliced the subject, at the orbit phases where the off-center
+    // body swings nearest the eye. The near plane now tracks the SUBJECT: the
+    // clearance is the eye-to-target distance minus the mesh's measured bounding
+    // sphere (g_mesh_sphere, measured at upload — a true upper bound of the
+    // surface's distance from the ORIGIN, and the orbit target is the origin).
+    // Inside the old constant's wall (clearance < 0.1) the near plane shrinks to
+    // a quarter of the clearance (floor 2 mm) so a full orbit never clips;
+    // outside that regime the tested 0.1 stands — minimal behavior change for
+    // every existing view. far stays 1000: the subject never exceeds
+    // radius+sphere (~< 101 wu at the clamped max radius) and the R=300 floor
+    // quad's far corner ~524 wu from the worst camera, both far inside it.
+    float cam_near = 0.1f;
+    if (g_mesh_sphere > 0.0f) {
+        float cs = cosf(g_cam.phi), ss = sinf(g_cam.phi);
+        float cx = cosf(g_cam.theta), sx = sinf(g_cam.theta);
+        float ex = g_cam.radius * cs * sx + g_cam.pan_x;   // eye - target, the SAME
+        float ey = g_cam.radius * ss + g_cam.pan_y;        // law the eye build below
+        float ez = -g_cam.radius * cs * cx;                // uses (target at origin)
+        float dist_eye_target = sqrtf(ex * ex + ey * ey + ez * ez);
+        float clearance = dist_eye_target - g_mesh_sphere;
+        if (clearance < cam_near)
+            cam_near = fmaxf(clearance * 0.25f, 0.002f);
+    }
+    perspective(proj, 45.0f * 3.14159265f / 180.0f, aspect, cam_near, 1000.0f);
 
     update_camera_input(g_cam, cfg_.dt);
 
@@ -7243,12 +7307,25 @@ bool Engine::load_membrane(const std::string& term, const std::vector<float>& po
     return ok;
 }
 
-void Engine::set_camera(float radius, float theta, float phi) {
+const float* Engine::mesh_center() const { return g_mesh_center; }
+
+void Engine::set_camera(float radius, float theta, float phi,
+                        float pan_x, float pan_y,
+                        float target_x, float target_y, float target_z) {
     g_cam.radius = fmaxf(radius_floor(), radius);
     g_cam.theta  = theta;
     g_cam.phi    = phi;   // free spin — the camera up vector handles any elevation
-    g_cam.target[0] = g_cam.target[1] = g_cam.target[2] = 0.0f;
-    g_cam.pan_x = g_cam.pan_y = 0.0f;
+    // CAM-PAN/TARGET LAW (2026-09-20, Defect C lane): pan and target default to
+    // 0 — every existing caller keeps today's zeroed behavior — but /camera can
+    // now carry them so a deterministic harness can (a) reproduce the
+    // operator's pan-then-orbit scenario (pan is the unclamped eye offset; the
+    // near plane tracks it, see update_camera_matrices) and (b) frame an
+    // off-origin body (the orbit looks at the target).
+    g_cam.target[0] = target_x;
+    g_cam.target[1] = target_y;
+    g_cam.target[2] = target_z;
+    g_cam.pan_x = pan_x;
+    g_cam.pan_y = pan_y;
 }
 
 bool Engine::capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h, uint64_t* sequence, std::array<uint64_t,5>* phases_us) {
@@ -8404,28 +8481,11 @@ bool Engine::frame() {
             vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
                                     frost_render_layout_, 1, 1, &frost_frag_set_, 0, nullptr);
         }
-        // THE GROUND PLANE first of all (opaque, depth-writing): the surface
-        // the contact shadow lands on. The shadow (no depth write) blends over
-        // it; the mesh's depth-tested draw wins where they overlap.
-        if (floor_pipeline_ != VK_NULL_HANDLE && floor_vbuf_ != VK_NULL_HANDLE) {
-            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, floor_pipeline_);
-            vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                    pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
-            VkBuffer fvb = floor_vbuf_; VkDeviceSize foff = 0;
-            vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &fvb, &foff);
-            vkCmdDraw(cmd_bufs_[img_idx], FLOOR_VERTS, 1, 0, 0);
-        }
-        // THE CONTACT SHADOW first (blended over the cleared background, under
-        // the mesh): the flattened mesh on the floor plane, moving with the
-        // pose. Depth write is off, so the mesh's own draw wins the depth test.
-        if (tri_shadow_pipeline_ != VK_NULL_HANDLE) {
-            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, tri_shadow_pipeline_);
-            vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                    pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
-            vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &vb, &off);
-            vkCmdBindIndexBuffer(cmd_bufs_[img_idx], ib, 0, VK_INDEX_TYPE_UINT32);
-            vkCmdDrawIndexed(cmd_bufs_[img_idx], draw_idx_count, 1, 0, 0, 0);
-        }
+        // THE BODY FIRST (GUIDE AMENDMENT 2026-09-20, Defect B): the opaque
+        // accepted fill lands before the grid plane so the plane — now a
+        // blended, depth-write-OFF guide — composites over the scene and can
+        // never hide geometry behind/below it. The contact shadow (depth-tested,
+        // write OFF) inks ON the plane after it.
         if (mesh_mode_ != 1) {
             vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
                               frost_draw ? tri_frost_pipeline_ : tri_pipeline_);
@@ -8459,6 +8519,36 @@ bool Engine::frame() {
             VkBuffer wvb = w_vis_vbuf_; VkDeviceSize woff = 0;
             vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &wvb, &woff);
             vkCmdDrawIndirect(cmd_bufs_[img_idx], w_vis_indirect_buf_, 0, 1, 0);
+        }
+        // THE GRID PLANE (the guide): blended, depth-write OFF, cull NONE —
+        // visible from BOTH sides, never occluding. Drawn after the opaque body:
+        // the guide composites over it at alpha 0.5 where the plane is nearer,
+        // and loses the depth test to geometry in front of it.
+        static const bool floor_diag = getenv("CHIMERA_FLOOR_DIAG") != nullptr;
+        if (floor_diag && floor_pipeline_ != VK_NULL_HANDLE && floor_vbuf_ != VK_NULL_HANDLE) {
+            static int floor_diag_frames = 0;
+            if (floor_diag_frames++ < 3)
+                fprintf(stderr, "[floor-diag] drawing floor: pipe=%p vbuf=%p\n", (void*)floor_pipeline_, (void*)floor_vbuf_);
+        }
+        if (floor_pipeline_ != VK_NULL_HANDLE && floor_vbuf_ != VK_NULL_HANDLE) {
+            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, floor_pipeline_);
+            vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                    pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
+            VkBuffer fvb = floor_vbuf_; VkDeviceSize foff = 0;
+            vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &fvb, &foff);
+            vkCmdDraw(cmd_bufs_[img_idx], FLOOR_VERTS, 1, 0, 0);
+        }
+        // THE CONTACT SHADOW (ink ON the plane, drawn after it): depth-tested
+        // against the body's depth, write OFF — it can never paint over the
+        // body, and with the plane no longer writing depth there is no
+        // depth-equality gamble (the old FLOOR-COEXIST hazard is gone).
+        if (tri_shadow_pipeline_ != VK_NULL_HANDLE) {
+            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, tri_shadow_pipeline_);
+            vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                    pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
+            vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &vb, &off);
+            vkCmdBindIndexBuffer(cmd_bufs_[img_idx], ib, 0, VK_INDEX_TYPE_UINT32);
+            vkCmdDrawIndexed(cmd_bufs_[img_idx], draw_idx_count, 1, 0, 0, 0);
         }
     } else {
         vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_);

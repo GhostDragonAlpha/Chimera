@@ -12,6 +12,7 @@ from pathlib import Path
 from .common import canonical, digest, require
 from .coupled_free_scene import FREE_MODEL, compile_free
 from .coupled_free_scene import ROOT
+from .ct_skeleton_layer import measure_falsifier
 from tools.creature_graph.store import CreatureGraph
 
 TERRAIN_HEIGHT_M = -42.827
@@ -53,6 +54,19 @@ def compile_macaque(graph, output):
         "support-hull state from the native solver. No skin, muscles, whole-animal "
         "anatomy, scanned terrain relief, or walking controller claim."
     )
+    # CT skeleton VISUAL layer (lane buffy/ct-skeleton-visual-20260919): the
+    # committed MorphoSource CT previews in their own CT frame, placed by ONE
+    # documented rigid registration into the scene frame. Purely additive: the
+    # visual layer carries no physics claim, so the solver/dynamics contract
+    # above is untouched and the scene hash still covers the physics bundle.
+    # Measured here so the falsifier verdict ships with the bundle.
+    bundle["ct_skeleton_layer"] = {
+        "schema": "chimera.ct_skeleton_layer.v1",
+        "mode": "visual_only_no_physics_claim",
+        "frame": "own CT frame, rigidly registered (uniform scale + one rotation + translation)",
+        "source": "tools/science_funnel/data/morphosource_ct (committed previews, millimetre units)",
+        "falsifier": measure_falsifier()["falsifier"],
+    }
     bundle.pop("scene_sha256", None)
     bundle["scene_sha256"] = digest(bundle)
     output.mkdir(parents=True, exist_ok=True)

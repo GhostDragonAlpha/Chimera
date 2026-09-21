@@ -43,7 +43,12 @@ public:
 
     // ── membrane streaming (the C++ engine is the emission target) ──────────────
     bool load_membrane(const std::string& term, const std::vector<float>& pos, uint32_t count);
-    void set_camera(float radius, float theta, float phi);
+    void set_camera(float radius, float theta, float phi,
+                    float pan_x = 0.f, float pan_y = 0.f,
+                    float target_x = 0.f, float target_y = 0.f, float target_z = 0.f);
+    // ORBIT PIVOT LAW (membrane D): the loaded mesh's bbox center — what the
+    // viewer orbits. Geometry-only: the mass book is not reachable here.
+    const float* mesh_center() const;
     void request_capture() { capture_ready_.store(false); capture_requested_.store(true); }
     bool capture_ready() const { return capture_ready_.load(); }
     bool capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h, uint64_t* sequence = nullptr, std::array<uint64_t,5>* phases_us = nullptr);

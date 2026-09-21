@@ -133,8 +133,12 @@ class FreeRootDynamics {
     for(size_t a=0;a<k;++a)rhs[a]=-(inner(rows[act[a]],initial)-floors[act[a]]);
     if(!gram_factor(g,k,rhs,lam)){
      // Dependent rows: drop the one with the smallest Gram diagonal, re-solve.
-     size_t small=0;for(size_t a=1;a<k;++a)if(g[a*k+a]<g[small*k+small])small=a;
-     sick[act[small]]=1;act.erase(act.begin()+small);continue;}}
+     // (2026-09-20, lane agent/triangle-monkey-grid: the identifier `small` is a
+     // Win32 MACRO — rpcndr.h `#define small char` — and windows.h precedes this
+     // header in main.cpp, so the original `size_t small` failed to compile
+     // (C2628 'size_t' followed by 'char'). Rename only; semantics identical.)
+     size_t drop_idx=0;for(size_t a=1;a<k;++a)if(g[a*k+a]<g[drop_idx*k+drop_idx])drop_idx=a;
+     sick[act[drop_idx]]=1;act.erase(act.begin()+drop_idx);continue;}}
    int worst=-1;for(size_t a=0;a<k;++a)if(lam[a]<-1e-6&&(worst<0||lam[a]<lam[worst]))worst=int(a);// removal threshold calibrated at n=8 with impact-scale rhs (solve noise ~1e-6*|rhs|); the clamp zeroes smaller negatives
    if(worst>=0){act.erase(act.begin()+worst);continue;}
    Dense p(initial.size(),0.);for(size_t a=0;a<k;++a){double l=(std::max)(0.,lam[a]);for(size_t i=0;i<p.size();++i)p[i]+=l*rows[act[a]][i];}
