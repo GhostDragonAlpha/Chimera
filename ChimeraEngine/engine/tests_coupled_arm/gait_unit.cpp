@@ -69,6 +69,22 @@ struct WalkOut{
  // 2 fields {waive_fires, waive_first_tick} -- leg 0 at [0,2), leg 1 at [2,4);
  // -1 filled when the field is absent.
  std::vector<std::array<double,10>> hind35;
+ // WAVE 37 COMPLETION-TICK RE-LOCK census inputs (READ-ONLY PLUMBING, ALL
+ // -1: the wave-37 law -- the wave-36 exchange protocol + the completion-
+ // tick re-lock -- was measured and REVERTED per its pre-committed terminal
+ // action, receipt_wave37.json: the re-lock's OWN engagement measured GREEN
+ // (the L's graze-owned hand-off EXACTLY 193 ON the R's on-grid completion,
+ // the fence green in full through the engagement) and the rung PASSED for
+ // the first time (refusal 304 > 300, 9 ticks past the shipped strand) --
+ // AND THE LEDGER FALSIFIER FIRED (33.559179 > the 32.861605 bound): the
+ // re-locked calendar held exactly two eras (175..202 ON the shipped grid)
+ // and then derailed -- the R's NEXT stall swing's hold cleared at 206 on
+ // the re-locked trajectory, the (a)-waive fired INSIDE stall eras
+ // (L@206, L@218), the grid scattered (4/9, worst drift 29), the twelfth
+ // launch never came (the R's [215,292) era rode dead from 253), and the
+ // new f4_work_envelope red (drive_4 12.938264 J/stride) carried the face.
+ // The fired falsifiers are carried verbatim in the receipt.)
+ std::vector<std::array<double,4>> hind37;
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
@@ -301,6 +317,12 @@ int main(int argc,char**argv){try{
        if(p.contains("handoff_restores"))h35[5+3*l]=double(p["handoff_restores"].get<uint64_t>());
        if(p.contains("alt_repairs"))h35[6+3*l]=double(p["alt_repairs"].get<uint64_t>());}
      out.hind35.push_back(h35);}
+    {std::array<double,4> h37;h37.fill(-1.); // WAVE 37 APPEND: the re-lock census
+     if(s["gait"].contains("hind_step")&&s["gait"]["hind_step"].size()>=2)
+      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["hind_step"][l];
+       if(p.contains("graze_yields"))h37[2*l]=double(p["graze_yields"].get<uint64_t>());
+       if(p.contains("graze_first_tick"))h37[2*l+1]=number(p["graze_first_tick"]);}
+     out.hind37.push_back(h37);}
     out.fm.push_back(fmm);out.fsat.push_back(sat);out.ftgt.push_back(tgx);out.frep.push_back(rep);
 #ifdef GAIT_EVENT_TRACE
     // WAVE 23 MINING: the per-tick fore joint-wall state (the derivation's
@@ -1492,6 +1514,76 @@ int main(int argc,char**argv){try{
    ck(grid_hit==7,"f36_stall_grid_relocked");
    ck(restores>=1.,"f36_handoff_restores");}
   else note("F-G36 NOT MEASURED: the waive never fired");}
+
+ // ── WAVE 37 COMPLETION-TICK RE-LOCK CENSUS (pre-registered in
+ //    receipt_wave37.json) -- READ-ONLY PLUMBING, REPORTS NOT MEASURED: the
+ //    wave-37 law (the wave-36 exchange protocol verbatim + the completion-
+ //    tick re-lock) was measured -- the fence GREEN in full (the first
+ //    divergence EXACTLY 161, the re-lock's unloadgate EXACTLY 193, the
+ //    named ticks exact, the composed walk byte-identical to the parent law's
+ //    trajectory through 192), the re-lock's OWN engagement GREEN (the L's
+ //    graze-owned hand-off EXACTLY 193 ON the R's on-grid completion, the
+ //    first waive EXACTLY 161, dead-pad 0, the stall grid EXACT through 202)
+ //    and the rung PASSED (refusal 304 > 300, the first rung bank in the
+ //    campaign's measured record) -- AND THE LEDGER FALSIFIER FIRED
+ //    (33.559179 > 32.861605): the re-locked calendar derailed at the L's
+ //    NEXT hand-off (the R's next stall swing's hold cleared at 206 on the
+ //    re-locked trajectory; the (a)-waive fired INSIDE stall eras L@206/L@218;
+ //    the grid 4/9 worst drift 29; the twelfth launch never came; the new
+ //    f4_work_envelope red). The pre-committed terminal action RESTORED the
+ //    ship bytes; the counters below stay read-only reporting NOT MEASURED,
+ //    the fired falsifiers carried verbatim in the receipt.
+ {const size_t N37=std::min({w.hind37.size(),w.hind35.size(),w.hindst.size()});
+  double yields37=N37>0?w.hind37[N37-1][0]+w.hind37[N37-1][2]:-1.;
+  if(N37>1&&(w.hind35[N37-1][0]+w.hind35[N37-1][2])>0.&&yields37>0.){
+   std::vector<std::pair<int,int>> fires; // (leg,tick), in order
+   for(size_t i=1;i<N37;++i)for(size_t l=0;l<2;++l)
+    if(w.hindst[i][12*l+2]>w.hindst[i-1][12*l+2])fires.push_back({(int)l,(int)i});
+   int wf_first=-1,wf_R=-1;double deadpads=0;
+   for(size_t i=1;i<N37;++i)for(size_t l=0;l<2;++l)
+    if(w.hind35[i][2*l]>w.hind35[i-1][2*l]){
+     if(wf_first<0)wf_first=(int)i;
+     if(l==1)wf_R=(int)i;
+     if(w.hrxn[i][2*l]+w.hrxn[i][2*l+1]<=0.)++deadpads;}
+   static const int GRID37[9]={175,184,193,202,211,220,229,238,247};
+   int hits=0,worst=0;
+   for(int g=0;g<9;++g){int best=99;
+    for(auto&pr:fires)if(pr.first==g%2){
+     int d=pr.second-GRID37[g];if(d<0)d=-d;if(d<best)best=d;}
+    if(best==0)++hits;
+    if(best<99&&best>worst)worst=best;}
+   bool relock193=false,launch247=false;
+   for(auto&pr:fires){if(pr.first==0&&pr.second==193)relock193=true;
+    if(pr.first==0&&pr.second==247)launch247=true;}
+   char b37[640];std::snprintf(b37,640,"F-G37 relock_fire_L=%d [PREDICTED EXACTLY 193: the graze-owned hand-off ON the R's on-grid completion] grid_hits=%d/9 worst_drift=%d [OWNED 9/9, drift 0: the calendar re-locked ALL THE WAY] twelfth_launch=%d [PREDICTED EXACTLY 247] wf_R_twelfth=%d [PREDICTED EXACTLY 248] dead_pad_waives=%.0f [OWNED 0] graze_yields=%.0f [OWNED >=1] wf_first=%d [PREDICTED EXACTLY 161]",
+    relock193?193:-1,hits,worst,launch247?247:-1,wf_R,deadpads,yields37,wf_first);
+   note(b37);
+   ck(relock193,"f37_relock_on_grid");
+   ck(hits==9&&worst==0,"f37_stall_grid_exact");
+   ck(launch247,"f37_twelfth_launch_247");
+   ck(wf_R==248,"f37_twelfth_waive_248");
+   ck(deadpads==0.,"f37_no_dead_pad_waives");
+   ck(yields37>=1.,"f37_graze_yields");
+   ck(wf_first==161,"f37_first_waive_161");
+   if(wf_R>0){
+    auto next_td37=[&](size_t l,int after)->int{
+     for(size_t i=(size_t)after+1;i<w.hindst.size();++i)
+      if(w.hindst[i][12*l+3]>w.hindst[i-1][12*l+3])return (int)i;
+     return -1;};
+    int td_Rpost=next_td37(1,wf_R);
+    double land_rxn=td_Rpost>0?w.hrxn[(size_t)td_Rpost][2]+w.hrxn[(size_t)td_Rpost][3]:-1.;
+    {char b37b[320];std::snprintf(b37b,320,"F-G37 delivery td_R_postwaive=%d [window 253..276] land_rxn_R=%.3f [OWNED >10: the L's 47.717 N @262 precedent]",
+      td_Rpost,land_rxn);
+     note(b37b);
+     ck(td_Rpost>=253&&td_Rpost<=276,"f37_replant_completes");
+     ck(land_rxn>10.,"f37_replant_lands_loaded");}
+    {int both=0;
+     for(int t=td_Rpost;t<=td_Rpost+6&&t>=0&&(size_t)t<w.hrxn.size();++t){
+      double lh=w.hrxn[(size_t)t][0]+w.hrxn[(size_t)t][1],rh=w.hrxn[(size_t)t][2]+w.hrxn[(size_t)t][3];
+      if(lh>0.&&rh>0.){both=1;break;}}
+     note(std::string("F-G37 two_legged_within_6_of_replant=")+(both?"1":"0")+" [OWNED 1]");
+     ck(both==1,"f37_two_legged_after_replant");}}}
+  else note("F-G37 NOT MEASURED: the waive never fired or no graze yield (the wave-37 law REVERTED per the pre-committed terminal action)");}
 
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the
