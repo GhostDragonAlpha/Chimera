@@ -1,0 +1,55 @@
+{
+ "schema": "chimera.walk_movie.receipt_addendum.v1",
+ "lane": "agent/record-movie-20260921",
+ "date": "2026-09-21",
+ "agent": "GLM 5.3",
+ "mission": "render and judge the RECORD WALK: the wave-28 campaign-record run (refusal tick 298 gait_contact_impact_gain, 3x the prestage's 105-tick attempt, including the FIRST HIND STEP: fire 98, TD 107, replant +0.1437 ahead) so the operator sees the creature's current state",
+ "base_lineage": "prestage head 6ff615d3 (agent/walk-movie-prestage-20260920), sparse clone E:/ChimeraWork/record-movie-agent, branch agent/record-movie-20260921",
+ "walker_state_source": "the wave-28 head 0557fc99 (E:/ChimeraWork/w28-agent, branch agent/gait-wave28-hind-step, 'Wave 28: THE HIND STEP LAW derived, built, measured'); receipt tools/science_funnel/validation/gait_zero_20260919/receipt_wave28.json",
+ "pre_registration_note": "THIS BLOCK (statement/prediction/falsifiers, including the judgment-delta predictions against the prestage's measured vocab table) was COMMITTED BEFORE the repaired re-render and before any judgment file of this lane existed. The repro run (FA1) had already been measured when this was committed -- its numbers are recorded as inputs, and its falsifier text follows the prestage's own F5 pattern.",
+ "rule0": {
+  "statement": "A rendered movie of the wave-28 walker's OWN measured state trace -- the 18-DOF assembly rebuilt as indexed triangle meshes per tick from the dumped q, the walk translation preserved, orbiting camera, ffmpeg MP4 -- is a falsifiable visual proof of the walk's CURRENT state: it must show the walk LIVING (the fore steps, the R hind's step: liftoff ~98, TD 107, the replant ahead) and the walk DYING (the L-hind ride-concentration fold from ~150, the one-legged slide, both hinds airborne [226,289], the fall-edge 289, refusal 298); the dyad's judgment of it, scored by the prestage's banked vocabulary (gait + body-plan + size/proportion, sha-pinned below), either reads that walk or the visual proof has no power.",
+  "prediction": "(i) REPRO: the state-dump variant re-applied to the WAVE-28 gait_unit.cpp (the prestage's exact hunks) reproduces the wave-28 run -- stderr byte-identical to the unmodified wave-28 trace build outside the marked hunks, refusal tick 298 verbatim, worst moving ledger 30.139317 J verbatim, the hind-step faces verbatim (fires R=[98], tds R=[107], plant_off 0.1437, fire_qerr_max 6.661e-16); the full-q dump (298 ticks x 18 coords) bit-identical across the binary's two internal runs. (ii) RENDER (the REPAIRED instrument): every frame re-posts its mesh (the module docstring's own contract); the movie shows the walk -- frame poses CHANGE with the trace, the body's screen position advances with the walk translation, the tail frames show the collapse. Pixel truth on the repaired frames: 0 object pixels outside the FK-projected hull on checked frames (alignment), clip scan clean, warm visibility on every frame; hull coverage REPORTED not gated (the banked stick-figure lesson: a whole-body-hull coverage bar has no power for this planar geometry class). (iii) THE DYAD (qwen3.8 eye, one frame per call, 12 sampled frames as the instrument's own stride): the aggregate verbatim report reads a small four-legged animal-like figure with limbs that step AND a collapse near the end -- the gait and body-plan required categories hit on the aggregate (as in the prestage); the collapse language (falling/slumping/sprawled/sinking) HITS in the tail frames' reports, which the prestage's 45-tick window could not test (its window ended mid-transient).",
+  "falsifiers": {
+   "FA1_state_repro": "the variant's stderr MUST be byte-identical to the unmodified wave-28 trace build's stderr (0 diffs -- the dump is a separate stream, reads only); the stdout summary differs by EXACTLY one added check (f7_qstream_bit_identical) and its two note rows; refusal tick 298 verbatim; the dumped qstream bit-identical within the run. Any other diff = the variant perturbed the dynamics = FAIL.",
+   "FA2_render_integrity": "THE MEASURED PRESTAGE INSTRUMENT DEFECT AND ITS REPAIR ARE PART OF THIS RECEIPT: (a) THE DEFECT, measured on this lane's first render BEFORE any repair: walk_movie.py render_movie posts the mesh ONLY at i==0 -- the i>0 branch posts only /camera -- contradicting the module's own docstring ('a WALK changes geometry every frame, so each frame re-posts its mesh'). The measured consequence on the 238-frame first render: frame 237 is PIXEL-IDENTICAL to frame 0 (mean abs pixel diff 5.27e-05, 7 pixels >8, warm masks exactly equal 93381=93381 px), every frame's silhouette closes smoothly back onto frame 0's (the mask bbox loop: f237 (1322,2075,176,737) == f000), and hull coverage is EXACTLY 0.0 for the last 24 frames (216..237) while ~93-114k warm pixels remain on screen -- the FK-projected hull (the TRUE walked pose) leaves the RENDERED body (frozen at the tick-60 pose). A fresh-engine probe (post tick-60 mesh, capture; post tick-297 mesh, capture) renders A != B (sha fbaaebdbc137b17c vs 49ee6bfda192856c): mesh replacement works WHEN POSTED -- the defect is the missing post, not the engine. The prestage's own 45-frame movie carried the same defect (its committed judgement.json's 'one frozen pose' per-frame instability was this defect's visible symptom). (b) THE REPAIR: the i>0 branch posts its mesh before the camera (marked WALK-MOVIE RECORD REPAIR in walk_movie.py; the F1 triangle-conformance contract unchanged -- /mesh_bin remains the sole uploader). (c) THE FALSIFIER ON THE REPAIRED RENDER: any frame pixel-identical to a NON-ADJACENT frame, or any coverage==0.0 frame whose FK hull overlaps the warm mask's screen region, = the repair failed = FAIL. Also recorded: 0-object-pixels-outside-hull alignment on checked frames; clip scan clean; coverage REPORTED (min/med/max) with the stick-figure caveat -- coverage itself does NOT gate.",
+   "FA3_vocab_banked_before_scoring": "the scorer reads the PRESTAGE's banked vocabulary ONLY (tools/science_funnel/validation/walk_movie_20260920/vocab_bank.json, sha256 7e9cb737e6a845f8b92289d7e39b1a4443dfd266973fe9585c9ac82006ccffe2 -- committed there before this lane existed; NO new terms added, the size/proportion stems included per the P2 lesson). The judgment file of this lane must not exist before this addendum's commit; the scores are computed FROM the recorded verbatim text by vocab_align (deterministic string machinery). A scorer reading unbanked terms = FAIL.",
+   "FA4_dyad_verbatim": "every per-frame report recorded verbatim in judgement.json (dark frames as null), the aggregate is the verbatim join, scores computed from the recorded text. Any paraphrase = FAIL.",
+   "FA5_own_port": "the engine runs on this lane's own bind-tested free port (workflow_commands.start_engine refuses 8127 by code); only processes this lane started are stopped."
+  }
+ },
+ "judgment_delta_predictions": {
+  "vs": "the prestage's measured table (receipt.walk_movie_20260920 measurements.prediction_ii_dyad_reading: gait 5/14 hits ratio 0.3571; body_plan 3/21 ratio 0.1429; size_proportion 13/22 ratio 0.5909; posture_collapse 4/15 ratio 0.2667; segment_build 9/16 ratio 0.5625; ground_contact 7/9 ratio 0.7778; per_frame_required_hit_rate 0.0833)",
+  "deltas": [
+   "GAIT RISES: the prestage judged 12 frames of a 45-tick window rendered AS ONE FROZEN POSE ORBITING (the defect above) -- its 0.3571 gait ratio was read off degenerate material. The repaired record walk shows 3x the window with true per-frame step poses (the sampled ticks 60,79,98,117,136,155,174,193,212,231,250,269 include the R hind's fire 98 and TD 107 territory and the post-fold sprawl). Prediction: gait ratio > 0.3571 and the aggregate still hits the required gait category.",
+   "BODY_PLAN holds or rises: prediction >= 3 stems (the prestage's animal/ape/four-leg face) on the aggregate.",
+   "COLLAPSE RISES: the record walk ENDS collapsed (L-hind fold from ~150, one-legged slide, both hinds airborne [226,289], fall-edge 289); the last sampled frame (tick 269) is post-fold sprawl. Prediction: posture_collapse ratio > 0.2667 (the prestage's window ended mid-transient and could not test this).",
+   "PER-FRAME REQUIRED-HIT RATE RISES but stays < 1.0: prediction > 0.0833 (true pose variety replaces the orbit's degenerate end-on angles), with the planar stick-figure caveat standing (single frames may still read lamp/stool/arm).",
+   "SIZE/PROPORTION and GROUND_CONTACT: no directional prediction -- recorded for the table."
+  ],
+  "falsifier": "if the AGGREGATE verbatim report misses the required categories (gait AND body_plan), the movie has no power as a visual proof of the walk = FAIL, recorded, not retuned."
+ },
+ "provenance_pins": {
+  "wave28_head": "0557fc99 (E:/ChimeraWork/w28-agent git HEAD)",
+  "wave28_receipt": "E:/ChimeraWork/w28-agent/tools/science_funnel/validation/gait_zero_20260919/receipt_wave28.json (refusal 122 -> 298 gait_contact_impact_gain; the hind step fire 98 / TD 107)",
+  "gait_scene_json": {
+   "file_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+   "bundle_scene_sha256": "e61ad3864472453f2b2a77a71ca0579f1b78e905b2495f581a9f87f27502333c",
+   "note": "REGENERATED this lane from the wave-28 gait_scene.py (tools/science_funnel/gait_scene.py at 0557fc99), byte-identical to the wave-28 lane's own .tmp/scene28_a.json -- the stale-scene lesson honored; NOT the prestage's wave-26 scene"
+  },
+  "vendored_wave28_files": {
+   "gait_controller.hpp": "sha256 e2c852317a6d968e94917ce07e00f3e2389756761c235f3a3b254dcbff092811 (wave-28 working tree, clean at 0557fc99)",
+   "coupled_articulation.hpp": "sha256 cec1853b86e5f2dd0910817ff737a92041359c76f11ea8a4771ac3e842dead63",
+   "earth_environment.hpp": "sha256 af98f59a3f1ea772720728b98d970aaf10d38f3891717282352b599490d07063",
+   "force_models.hpp": "sha256 29c63922d5eca98675ecb777a2e0828e309a95c5300fd8f8cd02bcbaeec1facc",
+   "json.hpp": "sha256 853b2eb3bf7632c949f4a2dd6fb8a629c5ff25cc0059d29c7d21915dc719487f",
+   "gait_unit.cpp": "sha256 37fee4eb9e4de613893384cbd63e317f009abd383303e49d48eeee4e5145d0eb (wave-28 blob, the tracebase target compiles this UNMODIFIED)",
+   "gait_unit_statedump.cpp": "the wave-28 blob + the prestage's four hunks re-applied, all marked WALK-MOVIE PRESTAGE (diff-verified: 29 added lines, 1 replaced line, CRLF preserved)"
+  },
+  "vocab_bank": {
+   "path": "tools/science_funnel/validation/walk_movie_20260920/vocab_bank.json",
+   "sha256": "7e9cb737e6a845f8b92289d7e39b1a4443dfd266973fe9585c9ac82006ccffe2",
+   "note": "the PRESTAGE's bank, unchanged -- gait + body-plan + size/proportion (the P2 lesson)"
+  }
+ }
+}
