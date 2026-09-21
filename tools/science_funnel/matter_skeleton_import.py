@@ -24,13 +24,25 @@ Stage-true law: the import applies NO transform to source coordinates
 allometric stretch factors (3.79-8.8x) are the named negative example.
 
 Usage (repo root):
-    python -B tools/science_funnel/matter_skeleton_import.py build
-    python -B tools/science_funnel/matter_skeleton_import.py verify
+    python -B tools/science_funnel/matter_skeleton_import.py build [a|b]
+    python -B tools/science_funnel/matter_skeleton_import.py verify [a|b]
+
+Specimen "a" (default, MorphoSource 000875604) is the lane of record:
+the module constants below ARE specimen A, so the bare invocation runs
+byte-identically to the committed A artifacts (proved: A build in the B
+lane's clone leaves git status empty). "b" (000875599, Macaca mulatta
+USNM 497135 infant) selects specimen B: same derivation laws, same cited
+constants, B's own committed data (meshes_875599/, meshes_preview_875599/,
+bone_identification_v3.json) and B's own output/validation dirs. B's
+labels come from v3 ONLY (14 of 24 nonaxial bones identified; the 10
+unidentified bones and the unlabeled axial composite stay out -- never
+invented, and v1's superseded B labels are never resurrected); B's bond
+set is the measured touching edges whose BOTH endpoints are identified.
 
 build  regenerates the definition byte-exactly, validates it through the
-       kernel's own parser (tools.matter_kernel.definition), re-reads it
-       and checks every falsifier, then writes the derivation book and
-       verification records.
+kernel's own parser (tools.matter_kernel.definition), re-reads it
+and checks every falsifier, then writes the derivation book and
+verification records.
 verify reads ONLY committed artifacts (fresh-clone mode): regenerates
        into a temp dir, demands byte-identical output, re-runs every
        falsifier check. Refuses loudly on any mismatch.
@@ -105,6 +117,57 @@ MASS_TOL_FRAC = 0.05
 VOXEL_TOTAL_TOL_FRAC = 0.05
 
 SPECIMEN_ID = "000875604"
+
+# Specimen parameterization (agent/matter-skeleton-b-20260920). The module
+# constants above ARE specimen A: the bare CLI invocation runs A exactly as
+# committed. select_specimen("b") repoints them at B's committed data; the
+# derivation laws, the cited constants and the falsifier shapes are shared.
+BODY_NAME = "infant_skeleton.body.json"
+MANIFEST_PATH = DATA_DIR / "meshes/manifest.json"
+EXPECTED_MEMBRANES = 25
+EXPECTED_BONDS = 21
+SPECIMEN_KEY = "a"
+
+# B's loader banks the measured-but-excluded touching edges here (an
+# all-unidentified chain, or a fragment pair with one unidentified endpoint)
+# so the verify record can itemize them. Never touched on the A path.
+EXCLUDED_EDGES: dict = {}
+
+B_SPEC = {
+    "specimen_id": "000875599",
+    "preview_dir": "meshes_preview_875599",
+    "manifest_rel": "meshes_875599/manifest.json",
+    "out_dir": "matter_skeleton_875599",
+    "body_name": "infant_skeleton_875599.body.json",
+    "validation_dir": "matter_skeleton_b_20260920",
+    "membranes": 14,   # v3 segment_label count, of 24 nonaxial bones
+    "bonds": 8,        # measured touching edges, both endpoints identified
+}
+
+# B's v3-labeled rank set (receipt falsifier honest_labels: the import set
+# is EXACTLY this; anything else must be absent from the definition).
+B_IDENTIFIED_RANKS = [3, 5, 7, 8, 9, 10, 11, 12, 16, 17, 19, 20, 21, 24]
+
+
+def select_specimen(key: str) -> None:
+    """Point the module at a specimen's committed inputs. "a" (the default)
+    is the identity: the module constants already are specimen A's."""
+    global SPECIMEN_ID, PREVIEW_DIR, MANIFEST_PATH, OUT_DIR, VALIDATION_DIR
+    global BODY_NAME, EXPECTED_MEMBRANES, EXPECTED_BONDS, SPECIMEN_KEY
+    if key in ("a", "000875604"):
+        return
+    if key not in ("b", "000875599"):
+        raise Refusal("unknown_specimen", key)
+    SPECIMEN_KEY = "b"
+    SPECIMEN_ID = B_SPEC["specimen_id"]
+    PREVIEW_DIR = DATA_DIR / B_SPEC["preview_dir"]
+    MANIFEST_PATH = DATA_DIR / B_SPEC["manifest_rel"]
+    OUT_DIR = DATA_DIR / B_SPEC["out_dir"]
+    BODY_NAME = B_SPEC["body_name"]
+    VALIDATION_DIR = (REPO_ROOT / "tools/science_funnel/validation"
+                      / B_SPEC["validation_dir"])
+    EXPECTED_MEMBRANES = B_SPEC["membranes"]
+    EXPECTED_BONDS = B_SPEC["bonds"]
 
 
 # ---------------------------------------------------------------- geometry
@@ -197,6 +260,8 @@ def load_identifications() -> tuple[dict, dict]:
     v3 = read_json(DATA_DIR / "bone_identification_v3.json")
     v1 = read_json(DATA_DIR / "bone_identification.json")
     a3 = v3["specimens"][SPECIMEN_ID]
+    if SPECIMEN_KEY == "b":
+        return load_identifications_b(a3)
     a1 = v1["specimens"][SPECIMEN_ID]
     by_rank3 = {b["rank"]: b for b in a3["bones"]}
     by_rank1 = {b["rank"]: b for b in a1["bones"]}
@@ -244,6 +309,87 @@ def load_identifications() -> tuple[dict, dict]:
     return records, edges
 
 
+def load_identifications_b(a3: dict) -> tuple[dict, dict]:
+    """Specimen B: v3 is the ONLY label source. bone_identification.json
+    (v1) carries superseded B entries (rank 1 axial_composite; ranks 23/25
+    femur_class at low mirror confidence) that v3's homolog transfer REFUSED
+    to confirm -- they are dead letters here, never resurrected. The import
+    set is exactly the v3-labeled ranks (14 of 24); the unidentified stay
+    out. Sides: v3's side_rule says sides are never assigned (the curl
+    jumbles them), so side is None everywhere. The measured edge book is
+    the chains' touching_edges UNION the per-bone touching_neighbors (both
+    live in the same v3 file, conflict-checked); the bond set is the edges
+    whose BOTH endpoints are identified, and every excluded measured edge
+    is itemized with its reason -- measured, not importable, never invented."""
+    by_rank3 = {b["rank"]: b for b in a3["bones"]}
+    require(sorted(by_rank3) == list(range(2, 26)), "b_rank_set",
+            f"expected ranks 2..25 (24 nonaxial bones), got {sorted(by_rank3)}")
+
+    records = {}
+    for r in sorted(by_rank3):
+        b3 = by_rank3[r]
+        records[r] = {
+            "rank": r,
+            "label": b3.get("segment_label"),
+            "confidence": b3.get("confidence"),
+            "chain_kind": b3.get("chain_kind"),
+            "chain": b3.get("chain"),
+            "side": None,   # v3 side_rule: sides never assigned
+            "side_source": None,
+            "label_source": "bone_identification_v3.json",
+        }
+    identified = {r for r, rec in records.items() if rec["label"]}
+    require(len(identified) == EXPECTED_MEMBRANES, "b_identified_count",
+            f"expected {EXPECTED_MEMBRANES} v3-labeled bones, "
+            f"got {len(identified)}")
+    require(sorted(identified) == B_IDENTIFIED_RANKS, "b_identified_set",
+            str(sorted(identified)))
+
+    # The measured edge book: chains UNION per-bone records, gap-conflicted.
+    edges: dict[tuple, dict] = {}
+    for chain in a3["chains"]:
+        for e in chain["touching_edges"]:
+            key = tuple(sorted(e["pair"]))
+            gap = float(e["gap_mm"])
+            require(key not in edges or edges[key]["gap_mm"] == gap,
+                    "edge_conflict", str(key))
+            edges[key] = {"gap_mm": gap, "chain_kind": chain["kind"],
+                          "chain_members": chain["members"]}
+    for b in a3["bones"]:
+        for tn in b.get("touching_neighbors", []):
+            key = tuple(sorted((b["rank"], tn["rank"])))
+            gap = float(tn["gap_mm"])
+            require(key not in edges or edges[key]["gap_mm"] == gap,
+                    "edge_mismatch", f"per-bone {key} contradicts chain book")
+            edges.setdefault(key, {"gap_mm": gap, "chain_kind": None,
+                                   "chain_members": None})
+    require(len(edges) == 15, "b_edge_book",
+            f"expected 15 measured edges (11 chain + 4 fragment pairs), "
+            f"got {len(edges)}")
+
+    bonds = {k: v for k, v in edges.items()
+             if k[0] in identified and k[1] in identified}
+    EXCLUDED_EDGES.clear()
+    for (u, v), ev in edges.items():
+        if (u, v) in bonds:
+            continue
+        if u not in identified and v not in identified:
+            reason = ("both endpoints unidentified in v3 "
+                      f"(chain kind {ev['chain_kind']})")
+        else:
+            other = v if u in identified else u
+            reason = (f"fragment pair: rank {other} unidentified in v3 "
+                      "(v3 fragments_2bone; reassociation is successor work)")
+        EXCLUDED_EDGES[(u, v)] = {"gap_mm": ev["gap_mm"], "reason": reason}
+    require(len(bonds) == EXPECTED_BONDS, "b_bond_count",
+            f"expected {EXPECTED_BONDS} both-endpoints-identified bonds, "
+            f"got {len(bonds)}: {sorted(bonds)}")
+    require(len(EXCLUDED_EDGES) == 7, "b_excluded_count",
+            f"expected 7 measured-but-excluded edges, "
+            f"got {len(EXCLUDED_EDGES)}")
+    return records, bonds
+
+
 # ------------------------------------------------------------------ build
 def obj_path(rank: int) -> Path:
     matches = sorted(PREVIEW_DIR.glob(f"bone_{rank:02d}_*_lo.obj"))
@@ -253,17 +399,20 @@ def obj_path(rank: int) -> Path:
 
 def build_body() -> tuple[dict, dict]:
     """Generate the kernel-format body definition + the derivation book."""
-    manifest = read_json(DATA_DIR / "meshes/manifest.json")
+    manifest = read_json(MANIFEST_PATH)
     require(manifest["bones"][0]["bbox_min_mm"] and True, "manifest_shape")
     voxel_book = {b["rank"]: b for b in manifest["bones"]}
     download = read_json(DATA_DIR / "download_receipt.json")
     spec_meta = next(s for s in download["specimens"]
                      if s["media_id"] == SPECIMEN_ID)
     records, edges = load_identifications()
+    # The import set: labeled ranks ONLY. A: all 25. B: the 14 v3-labeled;
+    # an unlabeled rank has no record to import and is never invented.
+    import_ranks = sorted(r for r, rec in records.items() if rec["label"])
 
     membranes = []
     book_rows = []
-    for rank in range(1, 26):
+    for rank in import_ranks:
         src = obj_path(rank)
         verts64, faces = parse_obj(src)
         referenced = {i for tri in faces for i in tri}
@@ -351,6 +500,24 @@ def build_body() -> tuple[dict, dict]:
             "cure_strength_pa": CURE_CARTILAGE_PA,
         })
 
+    if SPECIMEN_KEY == "b":
+        spec_source = (
+            "MorphoSource CT 000875599; manual operator download "
+            "(download_receipt.json); meshes_preview_875599 committed with "
+            "mesh_receipt_875599.json sha pinning")
+        stage_prov = (
+            "MorphoSource media 000875599 metadata: Macaca mulatta "
+            "USNM 497135, infant, 160 um CT (meshes_875599/manifest.json "
+            "source field + download_receipt.json)")
+    else:
+        spec_source = ("MorphoSource CT 000875604; manual operator download "
+                       "(download_receipt.json); meshes_preview committed with "
+                       "mesh_receipt.json sha pinning")
+        stage_prov = ("MorphoSource media 000875604 metadata: Macaca "
+                      "mulatta USNM 497136-3, infant, 160 um CT "
+                      "(meshes/manifest.json source field + "
+                      "download_receipt.json)")
+
     body = {
         "schema": "chimera.matter_body.v1",
         "specimen": {
@@ -359,9 +526,7 @@ def build_body() -> tuple[dict, dict]:
             "specimen": spec_meta["specimen"],
             "modality": spec_meta["modality"],
             "resolution_um": spec_meta["resolution_um"],
-            "source": "MorphoSource CT 000875604; manual operator download "
-                      "(download_receipt.json); meshes_preview committed with "
-                      "mesh_receipt.json sha pinning",
+            "source": spec_source,
             "coordinate_frame": "CT millimetres (voxel 0.16 mm), the committed "
                                 "preview meshes' own frame, no transform applied",
         },
@@ -369,10 +534,7 @@ def build_body() -> tuple[dict, dict]:
             "life_stage": "infant",
             "scale": 1.0,
             "allometric_scaling_applied": False,
-            "provenance": "MorphoSource media 000875604 metadata: Macaca "
-                          "mulatta USNM 497136-3, infant, 160 um CT "
-                          "(meshes/manifest.json source field + "
-                          "download_receipt.json)",
+            "provenance": stage_prov,
             "negative_example": "the H2 per-bone 3.79-8.8x stretch factors "
                                 "(adjudicated FANTASY) -- this import shows "
                                 "scale 1.0 and an identity transform",
@@ -407,6 +569,44 @@ def build_body() -> tuple[dict, dict]:
     frac_hi = total_mass_g / 1000.0 / lo
     prange_lo = 1000.0 * PRANGE_A * lo ** PRANGE_B
     prange_hi = 1000.0 * PRANGE_A * hi ** PRANGE_B
+    if SPECIMEN_KEY == "b":
+        full_mm3 = sum(b["volume_mm3"] for b in manifest["bones"])
+        full_g = full_mm3 * RHO_BONE_KG_MM3 * 1000.0
+        full_frac_lo = round(100.0 * full_g / 1000.0 / hi, 2)
+        full_frac_hi = round(100.0 * full_g / 1000.0 / lo, 2)
+        unimported = sorted(r for r in voxel_book
+                            if r not in records or not records[r]["label"])
+        named_deviations = [
+            "PARTIAL skeleton: the import covers the 14 v3-identified "
+            "bones of the 25-rank segmentation; 10 nonaxial bones are "
+            "unidentified and the axial composite is unlabeled, so they "
+            "stay OUT (never invented) -- the imported mass is checked "
+            "as a subset of the full specimen book, never as a whole "
+            "skeleton",
+            "adult cortical density (1900 kg/m^3) is the cited UPPER "
+            "ANCHOR: infant bone is under-mineralized (Rauch 2001), so "
+            "true compartment masses sit below these numbers",
+            "the CT bone threshold (148, 95th percentile) includes "
+            "partially mineralized growth cartilage in this infant, so "
+            "volumes include some non-bone mineralized tissue",
+            "the cortical tissue density is applied to whole-bone volume "
+            "(porous trabecular cores included), biasing masses HIGH; "
+            "all biases point the same direction and are named, "
+            "not tuned",
+        ]
+    else:
+        named_deviations = [
+            "adult cortical density (1900 kg/m^3) is the cited UPPER "
+            "ANCHOR: infant bone is under-mineralized (Rauch 2001), so "
+            "true compartment masses sit below these numbers",
+            "the CT bone threshold (118, 95th percentile) includes "
+            "partially mineralized growth cartilage in this infant, so "
+            "volumes include some non-bone mineralized tissue",
+            "the cortical tissue density is applied to whole-bone volume "
+            "(porous trabecular cores included), biasing masses HIGH; "
+            "all three biases point the same direction and are named, "
+            "not tuned",
+        ]
     book = {
         "constants": {
             "rho_bone_kg_mm3": RHO_BONE_KG_MM3,
@@ -445,20 +645,25 @@ def build_body() -> tuple[dict, dict]:
                                               round(prange_hi, 2)],
             "prange_source": "Prange, Anderson & Rahn 1979 (Am Nat 113:103-122): "
                              "M_skel = 0.0708 * M_body^1.09 (adult-taxon)",
-            "named_deviations": [
-                "adult cortical density (1900 kg/m^3) is the cited UPPER "
-                "ANCHOR: infant bone is under-mineralized (Rauch 2001), so "
-                "true compartment masses sit below these numbers",
-                "the CT bone threshold (118, 95th percentile) includes "
-                "partially mineralized growth cartilage in this infant, so "
-                "volumes include some non-bone mineralized tissue",
-                "the cortical tissue density is applied to whole-bone volume "
-                "(porous trabecular cores included), biasing masses HIGH; "
-                "all three biases point the same direction and are named, "
-                "not tuned",
-            ],
+            "named_deviations": named_deviations,
         },
     }
+    if SPECIMEN_KEY == "b":
+        book["totals"].update({
+            "import_set": "the v3-labeled ranks only "
+                          "(bone_identification_v3.json is the ONLY label "
+                          "source; v1's superseded B labels are not "
+                          "resurrected)",
+            "identified_ranks": sorted(import_ranks),
+            "unimported_ranks": unimported,
+            "full_specimen_volume_mm3_voxel": round(full_mm3, 4),
+            "full_specimen_mass_g": round(full_g, 4),
+            "full_specimen_fraction_of_body_band_pct": [full_frac_lo,
+                                                        full_frac_hi],
+            "excluded_measured_edges": {
+                f"{u}-{v}": EXCLUDED_EDGES[(u, v)]["gap_mm"]
+                for (u, v) in sorted(EXCLUDED_EDGES)},
+        })
     return body, book
 
 
@@ -471,8 +676,8 @@ def write_json(path: Path, payload) -> None:
 
 
 # ------------------------------------------------------- falsifier checks
-def components(body: dict) -> list[set[int]]:
-    parent = {r: r for r in range(1, 26)}
+def components(body: dict, ranks) -> list[set[int]]:
+    parent = {r: r for r in ranks}
 
     def find(x):
         while parent[x] != x:
@@ -487,7 +692,7 @@ def components(body: dict) -> list[set[int]]:
         if ru != rv:
             parent[ru] = rv
     groups: dict[int, set[int]] = {}
-    for r in range(1, 26):
+    for r in ranks:
         groups.setdefault(find(r), set()).add(r)
     return sorted(groups.values(), key=lambda s: min(s))
 
@@ -497,10 +702,12 @@ def run_checks(body: dict, book: dict) -> dict:
     results: dict = {}
 
     # -- kernel_conformance: the kernel's OWN parser validates the definition
-    body_path = OUT_DIR / "infant_skeleton.body.json"
+    body_path = OUT_DIR / BODY_NAME
     parsed = kdef.parse_body(body_path)
-    require(len(parsed["membranes"]) == 25, "kernel_membranes", "expected 25")
-    require(len(parsed["bonds"]) == 21, "kernel_bonds", "expected 21")
+    require(len(parsed["membranes"]) == EXPECTED_MEMBRANES, "kernel_membranes",
+            f"expected {EXPECTED_MEMBRANES}")
+    require(len(parsed["bonds"]) == EXPECTED_BONDS, "kernel_bonds",
+            f"expected {EXPECTED_BONDS}")
     results["kernel_conformance"] = {
         "pass": True,
         "measured": {
@@ -556,7 +763,8 @@ def run_checks(body: dict, book: dict) -> dict:
             "worst_bbox_dev_mm": worst_bbox,
             "bbox_tolerance_mm": BBOX_TOL_MM,
             "vertex_sha256_all_match": True,
-            "losses": "none itemized; all 25 compartments byte-canonical",
+            "losses": f"none itemized; all {EXPECTED_MEMBRANES} "
+                      f"compartments byte-canonical",
         },
     }
 
@@ -572,7 +780,21 @@ def run_checks(body: dict, book: dict) -> dict:
             f"dropped={set(edges) - set(def_edges)}")
     gap_dev = max(abs(def_edges[k] - edges[k]["gap_mm"]) for k in edges)
     require(gap_dev <= 0.005, "gap_tol", str(gap_dev))
-    comps = components(parsed)
+    comps = components(parsed, sorted(m["rank"] for m in parsed["membranes"]))
+    if SPECIMEN_KEY == "b":
+        components_note = (
+            "7 honest components: the hind chain {3,7,19,21,24} + the fore "
+            "chain {5,8,9,11} + 5 transferred-label singletons (10, 12, 16, "
+            "17, 20) with NO measured adjacency; the 7 measured-but-excluded "
+            "edges (unknown chain {14,23,25}; fragment pairs 2-16, 4-20, "
+            "6-10, 12-15) have an unidentified endpoint and are itemized in "
+            "excluded_measured_edges; cross-component joints are successor "
+            "measurement work, never invented here")
+    else:
+        components_note = ("8 honest components: 4 measured chains + the "
+                           "axial composite + 3 singletons with NO measured "
+                           "adjacency; cross-component joints are successor "
+                           "measurement work, never invented here")
     results["adjacency_reproduced"] = {
         "pass": True,
         "measured": {
@@ -581,46 +803,141 @@ def run_checks(body: dict, book: dict) -> dict:
             "dropped_joints": 0,
             "max_rest_length_dev_mm": gap_dev,
             "components": [sorted(c) for c in comps],
-            "components_note": "8 honest components: 4 measured chains + the "
-                               "axial composite + 3 singletons with NO measured "
-                               "adjacency; cross-component joints are successor "
-                               "measurement work, never invented here",
+            "components_note": components_note,
         },
     }
+    if SPECIMEN_KEY == "b":
+        results["adjacency_reproduced"]["measured"][
+            "excluded_measured_edges"] = {
+            f"{u}-{v}": EXCLUDED_EDGES[(u, v)]
+            for (u, v) in sorted(EXCLUDED_EDGES)}
 
     # -- mass_book
     tot = book["totals"]
     require(abs(tot["total_volume_delta_pct"]) / 100.0
             <= VOXEL_TOTAL_TOL_FRAC, "voxel_total_tol",
             str(tot["total_volume_delta_pct"]))
-    frac = tot["skeleton_fraction_of_body_band_pct"]
-    in_band = (frac[1] >= tot["skeleton_fraction_band_pct"][0]
-               and frac[0] <= tot["skeleton_fraction_band_pct"][1])
-    mass_g = tot["total_mass_g"]
-    in_window = 30.0 <= mass_g <= 65.0
-    require(in_window, "mass_window", str(mass_g))
-    results["mass_book"] = {
-        "pass": True,
-        "measured": {
-            "total_mass_g": mass_g,
-            "mass_window_g": [30.0, 65.0],
-            "in_window": in_window,
-            "total_volume_mesh_mm3": tot["total_volume_mm3_mesh"],
-            "total_volume_voxel_mm3": tot["total_volume_mm3_voxel"],
-            "total_volume_delta_pct": tot["total_volume_delta_pct"],
-            "worst_compartment_delta_pct": min(
-                r["volume_delta_pct"] for r in book["compartments"]),
-            "worst_compartment": min(
-                book["compartments"],
-                key=lambda r: r["volume_delta_pct"])["id"],
-            "fraction_of_body_band_pct": frac,
-            "skeleton_fraction_band_pct": tot["skeleton_fraction_band_pct"],
-            "lands_in_band": in_band,
-            "prange_predicted_g": tot["prange_regression_predicted_g"],
-            "deviation_vs_regression": "named, not tuned: " + "; ".join(
-                tot["named_deviations"]),
-        },
-    }
+    if SPECIMEN_KEY == "b":
+        # Partial-skeleton law: the imported body is the 14-bone identified
+        # SUBSET, so the literature window binds to the FULL specimen book
+        # (all 25 manifest ranks at the same cited density), and the
+        # imported total is checked against the identified-subset voxel
+        # book -- never dressed up as a whole skeleton.
+        subset_g = tot["total_mass_g"]
+        subset_vox_g = tot["total_mass_if_voxel_volume_g"]
+        subset_dev = abs(subset_g - subset_vox_g) / subset_vox_g
+        require(subset_dev <= MASS_TOL_FRAC, "subset_voxel_tol",
+                str(subset_dev))
+        full_g = tot["full_specimen_mass_g"]
+        in_full_window = 30.0 <= full_g <= 65.0
+        require(in_full_window, "full_book_window", str(full_g))
+        ffrac = tot["full_specimen_fraction_of_body_band_pct"]
+        full_in_band = (ffrac[1] >= tot["skeleton_fraction_band_pct"][0]
+                        and ffrac[0] <= tot["skeleton_fraction_band_pct"][1])
+        require(full_in_band, "full_book_fraction_band", str(ffrac))
+        require(subset_g < full_g, "partial_not_whole",
+                f"subset {subset_g} g must be < full book {full_g} g")
+        results["mass_book"] = {
+            "pass": True,
+            "measured": {
+                "mode": "partial_skeleton_subset",
+                "total_mass_g": subset_g,
+                "identified_subset_voxel_book_g": subset_vox_g,
+                "subset_vs_voxel_dev_frac": subset_dev,
+                "total_volume_mesh_mm3": tot["total_volume_mm3_mesh"],
+                "total_volume_voxel_mm3": tot["total_volume_mm3_voxel"],
+                "total_volume_delta_pct": tot["total_volume_delta_pct"],
+                "worst_compartment_delta_pct": min(
+                    r["volume_delta_pct"] for r in book["compartments"]),
+                "worst_compartment": min(
+                    book["compartments"],
+                    key=lambda r: r["volume_delta_pct"])["id"],
+                "identified_ranks": tot["identified_ranks"],
+                "unimported_ranks": tot["unimported_ranks"],
+                "imported_fraction_of_full_book_pct": round(
+                    100.0 * subset_g / full_g, 3),
+                "full_specimen_voxel_book_mass_g": full_g,
+                "full_book_literature_window_g": [30.0, 65.0],
+                "full_book_in_window": in_full_window,
+                "full_book_fraction_of_body_band_pct": ffrac,
+                "full_book_lands_in_band": full_in_band,
+                "prange_predicted_g": tot["prange_regression_predicted_g"],
+                "deviation_vs_regression": "named, not tuned: " + "; ".join(
+                    tot["named_deviations"]),
+            },
+        }
+    else:
+        frac = tot["skeleton_fraction_of_body_band_pct"]
+        in_band = (frac[1] >= tot["skeleton_fraction_band_pct"][0]
+                   and frac[0] <= tot["skeleton_fraction_band_pct"][1])
+        mass_g = tot["total_mass_g"]
+        in_window = 30.0 <= mass_g <= 65.0
+        require(in_window, "mass_window", str(mass_g))
+        results["mass_book"] = {
+            "pass": True,
+            "measured": {
+                "total_mass_g": mass_g,
+                "mass_window_g": [30.0, 65.0],
+                "in_window": in_window,
+                "total_volume_mesh_mm3": tot["total_volume_mm3_mesh"],
+                "total_volume_voxel_mm3": tot["total_volume_mm3_voxel"],
+                "total_volume_delta_pct": tot["total_volume_delta_pct"],
+                "worst_compartment_delta_pct": min(
+                    r["volume_delta_pct"] for r in book["compartments"]),
+                "worst_compartment": min(
+                    book["compartments"],
+                    key=lambda r: r["volume_delta_pct"])["id"],
+                "fraction_of_body_band_pct": frac,
+                "skeleton_fraction_band_pct": tot["skeleton_fraction_band_pct"],
+                "lands_in_band": in_band,
+                "prange_predicted_g": tot["prange_regression_predicted_g"],
+                "deviation_vs_regression": "named, not tuned: " + "; ".join(
+                    tot["named_deviations"]),
+            },
+        }
+
+    # -- honest_labels (B): the committed definition contains EXACTLY the
+    # v3-labeled ranks, each carrying its v3 label verbatim, v3 as the
+    # label source, and no assigned side; v1's superseded B entries
+    # (rank 1 axial_composite; ranks 23/25 femur_class at low mirror
+    # confidence, refused by v3) appear NOWHERE in the body.
+    if SPECIMEN_KEY == "b":
+        def_ranks = sorted(m["rank"] for m in parsed["membranes"])
+        require(def_ranks == sorted(B_IDENTIFIED_RANKS), "honest_label_set",
+                str(def_ranks))
+        recs, _ = load_identifications()
+        for m in parsed["membranes"]:
+            r = m["rank"]
+            require(m.get("label") == recs[r]["label"], "honest_label",
+                    f"rank {r}")
+            require(m.get("label_source") == "bone_identification_v3.json",
+                    "honest_label_source", f"rank {r}")
+            require(m.get("side") is None, "honest_side", f"rank {r}")
+        v1 = read_json(DATA_DIR / "bone_identification.json")[
+            "specimens"][SPECIMEN_ID]
+        v1_dead_letters = {b["rank"]: b.get("identified_as")
+                           for b in v1["bones"]
+                           if b.get("rank") not in B_IDENTIFIED_RANKS
+                           and b.get("identified_as") not in (None, "unpaired")}
+        body_labels = {m["rank"]: m.get("label")
+                       for m in parsed["membranes"]}
+        for r, dead in sorted(v1_dead_letters.items()):
+            require(r not in body_labels, "v1_resurrected",
+                    f"rank {r} ({dead}) imported on a superseded label")
+        results["honest_labels"] = {
+            "pass": True,
+            "measured": {
+                "import_set": def_ranks,
+                "label_source": "bone_identification_v3.json (v3 ONLY)",
+                "all_labels_v3_verbatim": True,
+                "sides_assigned": 0,
+                "absent_ranks": [r for r in sorted(set(range(1, 26)))
+                                 if r not in def_ranks],
+                "v1_dead_letters_not_resurrected": {
+                    str(r): dead for r, dead in sorted(
+                        v1_dead_letters.items())},
+            },
+        }
 
     # -- stage_true
     stage = parsed["stage"]
@@ -649,16 +966,17 @@ def regenerate(tmp: Path) -> None:
     OUT_DIR = tmp
     try:
         body, _book = build_body()
-        write_json(OUT_DIR / "infant_skeleton.body.json", body)
+        write_json(OUT_DIR / BODY_NAME, body)
     finally:
         OUT_DIR = saved
 
 
 def main(argv: list[str]) -> int:
     cmd = argv[1] if len(argv) > 1 else "build"
+    select_specimen(argv[2] if len(argv) > 2 else "a")
     if cmd == "build":
         body, book = build_body()
-        write_json(OUT_DIR / "infant_skeleton.body.json", body)
+        write_json(OUT_DIR / BODY_NAME, body)
         # byte-determinism: regenerate into a temp dir and demand equality
         with tempfile.TemporaryDirectory() as td:
             regen = Path(td) / "regen"
@@ -674,21 +992,27 @@ def main(argv: list[str]) -> int:
         checks = run_checks(body, book)
         write_json(VALIDATION_DIR / "derivation.json", book)
         write_json(VALIDATION_DIR / "verify.json", checks)
-        print(f"matter_skeleton_import build OK: 25 compartments, 21 bonds, "
-              f"total {book['totals']['total_mass_g']} g; "
-              f"all falsifiers green")
+        if SPECIMEN_KEY == "b":
+            print(f"matter_skeleton_import build OK ({SPECIMEN_ID}): "
+                  f"{EXPECTED_MEMBRANES} compartments, {EXPECTED_BONDS} "
+                  f"bonds, total {book['totals']['total_mass_g']} g; "
+                  f"all falsifiers green")
+        else:
+            print(f"matter_skeleton_import build OK: 25 compartments, "
+                  f"21 bonds, total {book['totals']['total_mass_g']} g; "
+                  f"all falsifiers green")
         return 0
     if cmd == "verify":
         require(OUT_DIR.is_dir(), "missing_definition", str(OUT_DIR))
-        body = read_json(OUT_DIR / "infant_skeleton.body.json")
+        body = read_json(OUT_DIR / BODY_NAME)
         book = read_json(VALIDATION_DIR / "derivation.json")
         checks = run_checks(body, book)
         with tempfile.TemporaryDirectory() as td:
             regen = Path(td) / "regen"
             regen.mkdir()
             regenerate(regen)
-            committed = (OUT_DIR / "infant_skeleton.body.json").read_bytes()
-            require((regen / "infant_skeleton.body.json").read_bytes()
+            committed = (OUT_DIR / BODY_NAME).read_bytes()
+            require((regen / BODY_NAME).read_bytes()
                     == committed, "definition_drift",
                     "committed body.json != fresh regeneration")
             for p in sorted(OUT_DIR.rglob("*.bin")):
