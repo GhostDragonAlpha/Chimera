@@ -1,0 +1,4 @@
+# Wiseman 2026 RSOS osim lane — large binaries stay local; sha256_manifest.json
+# pins every byte and the Zenodo record (see download_receipt.json) re-fetches them.
+Primate_models.zip
+_extracted/
