@@ -1,0 +1,28 @@
+{
+ "a_fixed_pose": {
+  "presentation": "mesh",
+  "png": "tools\\science_funnel\\validation\\triangle_monkey_20260920\\after\\a_fixed_pose_mesh.png",
+  "camera": {
+   "radius_m": 1.0087,
+   "theta": 0.6,
+   "phi": 0.3,
+   "lift_m": 0.4,
+   "target": [
+    0.0,
+    0.4,
+    0.0
+   ]
+  },
+  "grain": {
+   "grain_median_local_variance": 339.4973,
+   "grain_p90_local_variance": 1058.2049,
+   "window": 5,
+   "interior_pixels": 50925
+  },
+  "coverage": {
+   "coverage": 0.3957,
+   "object_pixels_in_hull": 103705,
+   "hull_pixels": 262104
+  }
+ }
+}

@@ -52,6 +52,9 @@ struct MembraneRequest {
     float cam_radius = 12.0f;
     float cam_theta  = 0.0f;
     float cam_phi    = 0.3f;
+    float cam_pan_x  = 0.0f;     // CAM-PAN LAW (Defect C lane): /camera's optional
+    float cam_pan_y  = 0.0f;     // pan; default 0 keeps today's zeroed-pan behavior
+    float cam_target[3] = {0.f, 0.f, 0.f}; // /camera's optional orbit target
     float cam_full[8] = {};      // D6: r,theta,phi,target xyz,pan xy (recall)
     bool cam_full_set = false;       // true: apply all 8, ignore the r/theta/phi fields
     bool camera_only = false;         // true: only move the camera, keep the loaded membrane
@@ -2594,11 +2597,23 @@ int main(int argc, char** argv) {
             float cam_radius = get_float(req_body, "cam_radius", 12.0f);
             float cam_theta  = get_float(req_body, "cam_theta", 0.0f);
             float cam_phi    = get_float(req_body, "cam_phi", 0.3f);
+            // CAM-PAN LAW (Defect C lane): optional pan, default 0 — today's
+            // zeroed-pan behavior is bit-identical when the fields are absent.
+            float cam_pan_x  = get_float(req_body, "pan_x", 0.0f);
+            float cam_pan_y  = get_float(req_body, "pan_y", 0.0f);
+            float cam_tx     = get_float(req_body, "target_x", 0.0f);
+            float cam_ty     = get_float(req_body, "target_y", 0.0f);
+            float cam_tz     = get_float(req_body, "target_z", 0.0f);
             {
                 std::lock_guard<std::mutex> lk(g_mem_mutex);
                 g_mem_req.cam_radius = cam_radius;
                 g_mem_req.cam_theta  = cam_theta;
                 g_mem_req.cam_phi    = cam_phi;
+                g_mem_req.cam_pan_x  = cam_pan_x;
+                g_mem_req.cam_pan_y  = cam_pan_y;
+                g_mem_req.cam_target[0] = cam_tx;
+                g_mem_req.cam_target[1] = cam_ty;
+                g_mem_req.cam_target[2] = cam_tz;
                 g_mem_req.camera_only = true;
                 g_mem_req.valid = true;
                 g_mem_pending = true;
@@ -4117,10 +4132,14 @@ int main(int argc, char** argv) {
                     engine.set_camera_full(g_mem_req.cam_full);
                     g_mem_req.cam_full_set = false;
                 } else if (g_mem_req.camera_only) {
-                    engine.set_camera(g_mem_req.cam_radius, g_mem_req.cam_theta, g_mem_req.cam_phi);
+                    engine.set_camera(g_mem_req.cam_radius, g_mem_req.cam_theta, g_mem_req.cam_phi,
+                                      g_mem_req.cam_pan_x, g_mem_req.cam_pan_y,
+                                      g_mem_req.cam_target[0], g_mem_req.cam_target[1], g_mem_req.cam_target[2]);
                 } else {
                     engine.load_membrane(g_mem_req.term, g_mem_req.pos, g_mem_req.count);
-                    engine.set_camera(g_mem_req.cam_radius, g_mem_req.cam_theta, g_mem_req.cam_phi);
+                    engine.set_camera(g_mem_req.cam_radius, g_mem_req.cam_theta, g_mem_req.cam_phi,
+                                      g_mem_req.cam_pan_x, g_mem_req.cam_pan_y,
+                                      g_mem_req.cam_target[0], g_mem_req.cam_target[1], g_mem_req.cam_target[2]);
                     g_membrane_active = true;
                 }
                 g_mem_req.camera_only = false;
@@ -4202,7 +4221,10 @@ int main(int argc, char** argv) {
                 }                // cam_radius <= 0 = "keep the current camera": animation drivers stream
                 // meshes every frame and must NOT steal the operator's orbit/zoom/pan.
                 if (!g_mesh_req.update_only && g_mesh_req.cam_radius > 0.0f)
-                    engine.set_camera(g_mesh_req.cam_radius, g_mesh_req.cam_theta, g_mesh_req.cam_phi);
+                    engine.set_camera(g_mesh_req.cam_radius, g_mesh_req.cam_theta, g_mesh_req.cam_phi,
+                                      0.f, 0.f,
+                                      engine.mesh_center()[0], engine.mesh_center()[1],
+                                      engine.mesh_center()[2]);   // ORBIT PIVOT LAW (membrane D)
                 g_mesh_req.update_only = false;
                 g_mesh_pending = false; g_mesh_applied = true; g_mesh_cv.notify_all();
             }
