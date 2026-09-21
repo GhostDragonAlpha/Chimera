@@ -933,13 +933,34 @@ int main(int argc,char**argv){try{
     ck(lfirst>=108&&lfirst<=142,"f29_L_first_fire_alternation_window");
     ck(lcls>0.5,"f29_L_first_fire_class_alternation");}
    else note("F-G29 L first fire NOT MEASURED: no L fire in the measured life");
-   // (b) the tds
+   // (b) the tds -- THE WAVE-31 AMENDMENT (declared in the receipt's
+   // pre-registration, P3/f31_touchdown): the glide-return law moves the
+   // replant's completion to the FIRST BAND ENTRY (the touchdown), bounded
+   // by the wave-29 mirrored reach envelope at the clock TD (21 ticks past
+   // fire+9 -> fire+30 exclusive). A completion whose tick-start pair-min
+   // (the post-(d-1) status) is above kTouch would be a clock event with no
+   // touchdown -- the wave-30 death face -- and is a DIRECT falsification.
+   // The held-return era (glide mode with t >= tair) is REPORTED, never
+   // owned silent.
+   {int held_returns=0;int first_hold=-1;
+    for(size_t i=61;i<N29;++i)for(size_t l=0;l<2;++l)
+     if(w.hindst[i][12*l]>0.5&&w.hindst[i][12*l+1]>=9.){
+      ++held_returns;if(first_hold<0)first_hold=(int)i;}
+    char b[192];std::snprintf(b,192,"F-G31 held_return_ticks=%d first=%d [REPORTED: the glide holding the plant point past the clock TD until the band entry]",
+     held_returns,first_hold);
+    note(b);}
    for(size_t l=0;l<2;++l){
     std::vector<int>&fs=fire29[l];std::vector<int>&ts=td29[l];
     for(size_t k2=0;k2<fs.size();++k2){
-     bool paired=false;
-     for(int d:ts)if(d>=fs[k2]+8&&d<=fs[k2]+10){paired=true;break;}
-     ck(paired,"f29_td_within_air_window");}}
+     bool paired=false;bool inband=false;
+     for(int d:ts)if(d>=fs[k2]+8&&d<=fs[k2]+30){
+      paired=true;
+      if(d>=1&&(size_t)(d-1)<w.hgap.size()){
+       double g=w.hgap[(size_t)(d-1)][2*l],g2=w.hgap[(size_t)(d-1)][2*l+1];
+       if((g<g2?g:g2)<=1e-5)inband=true;}
+      break;}
+     ck(paired,"f31_td_completes_within_reach_ceiling");
+     ck(inband,"f31_replant_touchdown_in_band");}}
    // (c) the deadline override fires (reported, predicted inert)
    {uint64_t dlf0=0,dlf1=0;
     if(!w.hind29.empty()){dlf0=(uint64_t)w.hind29.back()[3];dlf1=(uint64_t)w.hind29.back()[7];}
@@ -1000,6 +1021,55 @@ int main(int argc,char**argv){try{
       char c[160];std::snprintf(c,160,"%s fire %d: concentration era %.0f of budget 45, deadline %.0f%s; ",leg.c_str(),f,conc,dl,conc>45.0?" OVER":" ok");
       mg+=c;}}
     note("F-G29 fold_margin "+std::string(fire29[0].empty()&&fire29[1].empty()?std::string("no fires"):mg));}}}
+
+ // ── WAVE 31 GLIDE-RETURN CENSUS (pre-registered in receipt_wave31.json):
+ //    THE GLIDE-RETURN LAW -- the haul-back must DELIVER the pads into the
+ //    touch band. (a) THE TOUCHDOWN CALENDAR: the L's replant completes at
+ //    the first band entry in (151,172] (the wave-29 mirrored reach
+ //    envelope's ceiling; a completion at 151 would mean the law never
+ //    engaged, a completion past 172 that it could not deliver inside the
+ //    kinematic budget). (b) THE SUPPORT CENSUS: at least 2 of the 4 legs
+ //    touching on every tick through the return era [142, completion+3].
+ //    (c) THE RIDE RESUMPTION: the L touching by completion+3 (the
+ //    two-legged ride resumes; the wave-30 one-legged cascade's driver
+ //    removed). (d) THE FOLD'S FATE: the first fold-class tick reported
+ //    against the resumption (the wave-29 (d) census owns the class).
+ {const size_t N31=std::min({w.hindst.size(),w.hphase.size(),w.hgap.size(),w.fgmin.size(),w.t.size()});
+  if(w.hindst.size()<=172)note("F-G31 NOT MEASURED: the walk refused before the census ceiling");
+  else{
+   // the L's completion: the first tds increment after the clock TD tick 151
+   int compl_L=-1;
+   for(size_t i=152;i<N31;++i)
+    if(w.hindst[i][3]>w.hindst[i-1][3]){compl_L=(int)i;break;}
+   char b[512];
+   if(compl_L<0){
+    std::snprintf(b,512,"F-G31 touchdown_calendar L_completion=NONE within [152,%zu] [RED face: the replant never delivered -- the reach-clamped tow or a stall]",
+     (size_t)172);
+    note(b);++reds;measured.push_back("RED falsifier: f31_L_touchdown_absent");++checks;}
+   else{
+    double g151=(std::min)(w.hgap[151][0],w.hgap[151][1]);
+    double gcd=(std::min)(w.hgap[(size_t)(compl_L-1)][0],w.hgap[(size_t)(compl_L-1)][1]);
+    std::snprintf(b,512,"F-G31 touchdown_calendar L_completion=%d pairmin_at_clockTD151=%.4fmm pairmin_at_completion_tickstart=%.4fmm ceiling=172 point_estimate_band=[152,172]pt160",
+     compl_L,g151*1000.,gcd*1000.);
+    note(b);
+    ck(compl_L<=172,"f31_L_touchdown_within_reach_ceiling");
+    ck(compl_L>151,"f31_L_held_past_clock_TD (the law engaged: the 151 clock event did NOT complete)");}
+   // the support + the ride resumption through the return era
+   if(compl_L>0){
+    int support_min=99;int first_touch=-1;int badsup=0;int liftoff=-1;
+    int era_end=compl_L+3;
+    for(int i=142;i<=era_end&&(size_t)i<N31;++i){
+     int legs=(w.t[(size_t)i][0]?1:0)+(w.t[(size_t)i][1]?1:0)
+      +(w.fgmin[(size_t)i][0]<=1e-5?1:0)+(w.fgmin[(size_t)i][1]<=1e-5?1:0);
+     if(legs<support_min)support_min=legs;
+     if(legs<2)++badsup;
+     if(liftoff<0&&!w.t[(size_t)i][0])liftoff=i; // the pads' first departure
+     else if(liftoff>0&&first_touch<0&&w.t[(size_t)i][0])first_touch=i;} // the re-touch
+    char c[384];std::snprintf(c,384,"F-G31 return_support min_legs=%d sub2_ticks=%d L_touch_again=%d (liftoff %d) completion=%d [OWNED 0: support>=2 through the return; the two-legged ride resumes]",
+     support_min,badsup,first_touch,liftoff,compl_L);
+    note(c);
+    ck(badsup==0,"f31_support_ge2_through_return");
+    ck(first_touch>0&&first_touch<=compl_L+3,"f31_ride_resumes_by_completion");}}}
 
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the

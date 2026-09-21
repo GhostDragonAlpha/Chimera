@@ -2031,13 +2031,39 @@ class GaitWalker {
       if((g1<g2?g1:g2)>kTouch+kReleaseBand){hind_step_held_[hl]=false;hind_step_clear_tick_[hl]=(int)ticks_;}
       else ++hind_step_hold_ticks_[hl];}
      ++hind_step_t_[hl];
-     if(hind_step_t_[hl]>=tair){ // TD: the leg returns to the tables; the
+     // THE GLIDE-RETURN LAW (wave 31, receipt_wave31.json): A REPLANT IS NOT
+     // COMPLETE UNTIL THE BAND ENTRY. The wave-28..30 clocked TD delivered the
+     // L's 142 replant 12.9 mm HIGH (the formal decomposition: pin error
+     // 0.0100 mm = the fire-tick-start touch gap itself, the pin FRESH -- the
+     // settle-staleness hypothesis falsified; the delivery error 12.88 mm
+     // owns the miss: the pad tracked the arch's RISE to 0.1-0.3 mm and then
+     // under-tracked the descent +1.4 -> +10.4 mm as the haul-dominated hip
+     // never reversed) and the pads never re-entered the band (rxn 0 from
+     // 142, 56 mm by 200): the replant was a CLOCK event with no touchdown.
+     // The law: the clock's TD test no longer completes the replant by
+     // itself; the leg HOLDS THE PLANT POINT (the glide's own sg clamp at 1
+     // already commands exactly the plant target -- zero new constants)
+     // until the pair-min pads gap <= kTouch (the wave-22 touch class, the
+     // same band the crossing reset reads), and ONLY THEN does the replant
+     // complete: mode 0, the tds counter, and the wave-22 crossing re-syncs
+     // phi_[leg]=0 at that same class crossing (the completion and the
+     // re-sync land on the same tick, the R's own 107 pattern). Shipped
+     // completions whose pads are already in band (the R's 107: tick-start
+     // pair-min 4.16e-7 m) are UNCHANGED -- the fence bytes through 150 stand.
+     if(hind_step_t_[hl]>=tair){
+      double g1=gap_of(e,hind_heel_pt_[hl]),g2=gap_of(e,hind_mp_pt_[hl]);
+      if((g1<g2?g1:g2)<=kTouch){ // the band entry: the replant IS a touchdown
       hind_step_mode_[hl]=0;hind_step_t_[hl]=0.; // touch reset re-syncs phi
       hind_step_held_[hl]=false;
       hind_step_last_td_[hl]=ticks_;++hind_step_tds_[hl];
 #ifdef GAIT_EVENT_TRACE
       std::fprintf(stderr,"[hindstep] td leg=%zu tick=%llu tds=%llu\n",
        hl,(unsigned long long)ticks_,(unsigned long long)hind_step_tds_[hl]);
+#endif
+      }
+#ifdef GAIT_EVENT_TRACE
+      else std::fprintf(stderr,"[hindstep] holdreturn leg=%zu tick=%llu t=%d pairmin=%.4e\n",
+       hl,(unsigned long long)ticks_,(int)hind_step_t_[hl],(g1<g2?g1:g2));
 #endif
      }}
     for(size_t hl=0;hl<2;++hl){
