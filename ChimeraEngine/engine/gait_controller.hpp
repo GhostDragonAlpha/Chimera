@@ -2683,6 +2683,44 @@ class GaitWalker {
      double h2=(std::min)(s_.q[c2]-model_->lower[c2],model_->upper[c2]-s_.q[c2]);
      uint64_t pins=0,pins_air=0;const std::string lg=leg==0?"fore_left":"fore_right";
      for(size_t d=0;d<nd_;++d)if(drives_[d].leg==lg){pins+=wall_pins_[d];pins_air+=wall_pins_air_[d];}
+     // WAVE 27c SEAT-REGION instrumentation (receipt_wave27c.json, the honest
+     // negative's reproducible face; read-only: no servo byte depends on it).
+     // THE GROUND-LINE ADMISSIBLE REGION at the live state: the x-set on the
+     // seat's own line (the current target's y and z) whose branch IK is
+     // inside the unclamped joint ranges AND inside the reachable annulus
+     // [dmin,dmax] -- the F-G23/F-G24 region test walked on a 0.25 mm grid
+     // over the target +-0.30 m. Reported: the admissible point count, the
+     // span, the region's best target headroom (the map's true maximum at
+     // this state), and the current seat's own joint-face membership +
+     // headroom. The wave-27c mining measured on the parent bytes: the seats
+     // NEVER leave the joint face (jt=1 at every captured tick, both legs,
+     // through the 105 refusal); the region SHRINKS monotonely with the body
+     // sink (R: 81 grid pts=20.3 mm @72 -> 9 pts=2.3 mm @104); the region's
+     // best seat never beats the body-locked hold seat by a useful margin
+     // (0.2708 vs 0.2353 rad @88 the only lead, spent where the hold won
+     // anyway; from 89 the frozen seat IS the region's best to 3e-4 rad);
+     // and the refusal's own face is the ACTUAL load-pinned at the -1.6 wall
+     // (q1a -1.5977 rad from tick 89, commanded torque 0.64 of 4.229 N.m)
+     // -- no admissible seat can lift a load-pinned joint: the whole
+     // remaining region's width times the paw reaction bounds the load
+     // relief at ~0.006-0.033 N.m, 20-250x below the wall-hold deficit.
+     int sr_pts=0;double sr_lo=0,sr_hi=0,sr_best=-1.;
+     {double dmaxr=fore_L1_+fore_rho_,dminr=std::abs(fore_L1_-fore_rho_);
+      double x0=paw_target_[leg][0]-0.30;
+      for(int k=0;k<=2400;++k){
+       double x=x0+0.00025*k;V spt{x,paw_target_[leg][1],paw_target_[leg][2]};
+       double Dr=fore_D_at(leg,e,spt);
+       if(Dr<dminr||Dr>dmaxr)continue;
+       ForeIK g=fore_ik_at(leg,e,spt);
+       if(g.q1_raw<model_->lower[c1]||g.q1_raw>model_->upper[c1]||
+          g.q2_raw<model_->lower[c2]||g.q2_raw>model_->upper[c2])continue;
+       ++sr_pts;if(sr_pts==1)sr_lo=x;sr_hi=x;
+       double hr2=fore_target_headroom_at(leg,e,spt);
+       if(hr2>sr_best)sr_best=hr2;}}
+     ForeIK fiks=fore_ik_at(leg,e,paw_target_[leg]);
+     bool frz_jt=fiks.q1_raw>=model_->lower[c1]&&fiks.q1_raw<=model_->upper[c1]&&
+                 fiks.q2_raw>=model_->lower[c2]&&fiks.q2_raw<=model_->upper[c2];
+     double frz_hr=fore_target_headroom_at(leg,e,paw_target_[leg]);
      forepaw.push_back({{"leg",leg==0?"fore_left":"fore_right"},{"target_m",{paw_target_[leg][0],paw_target_[leg][1]}},
       {"error_m",std::hypot(pw[0]-paw_target_[leg][0],pw[1]-paw_target_[leg][1])},
       {"ik_roundtrip_m",ik_roundtrip_m_[leg]},{"ik_qerr_rad",ik_qerr_[leg]},
@@ -2699,6 +2737,9 @@ class GaitWalker {
       {"glide_hold",fore_glide_hold_[leg]==1&&fore_t_[leg]<fore_hold_last_[leg]&&fore_t_[leg]+1.<fore_cycle_[leg]},
       {"glide_hold_last",fore_hold_last_[leg]},
       {"grid_converged",fore_conv_[leg]==1},
+      {"seat_region_pts",sr_pts},{"seat_region_m",sr_pts>0?sr_hi-sr_lo:0.},
+      {"seat_region_best_hr",sr_pts>0?sr_best:0.},
+      {"seat_joint_face_ok",frz_jt},{"seat_frz_hr",frz_hr},
       {"t_in_cycle",fore_t_[leg]},{"stance_ticks",fore_stance_[leg]},{"cycle_ticks",fore_cycle_[leg]}});}
     else forepaw.push_back({{"leg",leg==0?"fore_left":"fore_right"},{"captured",false}});}
    gait["fore_paw"]=forepaw;gait["fore_paw_captured"]=paws_captured_;
