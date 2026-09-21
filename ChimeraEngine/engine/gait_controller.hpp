@@ -382,30 +382,64 @@ class GaitWalker {
  // 4.8 m/s haul's servo lag, RE-ENTERED the band at 104 (a hovering pad has
  // no normal force and no friction catch) and was hauled at slip 1.8674.
  static constexpr int kFoldBudgetTicks=45; // the mined [TD 107, release 152) standing budget
+ // ── THE UNLOAD-LIFT DEADLINE (wave 32, receipt_wave32.json) ──
+ // THE MINED UNLOAD LAW (the wave-31 shipped trace, the declared mining
+ // script): a standing hind whose share vanishes lifts within ONE TICK -- the
+ // R's rxn read 7.473@158 -> 3.795@159 -> 1.595@160 -> 0.000@161 N around the
+ // L's 160 completion, and the pads left the band AT the vanish tick (0.0782
+ // mm @161): the unload tick = the other's band entry + kUnloadTicks (the +1
+ // class). THE CONTROL ERA: around the R's 107 completion the standing L's
+ // share HELD (49-86 N, zero rxn-0 ticks in [107,142)) -- the ENTRY-era seat
+ // (no completed step-replant of its own) survives the other's landing; the
+ // RIDE era does not. The fire must PRECEDE the unload, and the machinery's
+ // own hand-off g=1 already prices one tick of clearance into the wave-20
+ // tau1 form, so the unload bound reads the OTHER'S BAND ENTRY TICK ITSELF:
+ // min-form deadline = min(other_last_td + kFoldBudgetTicks - tair - g,
+ //                          other_last_td + kUnloadTicks - g).
+ // THE ARMING: the unload term binds only when THIS leg has completed a
+ // step-replant (the ride era) -- disarmed, the deadline is the wave-29 fold
+ // form exactly (the L's 108..141 due arithmetic and its 142 deadline fire
+ // stay byte-identical). The WAVE-29 SKEW-REPAIR clause ('this leg replanted
+ // -> the natural cadence owns') is REMOVED: its premise -- the re-synced
+ // clock's slot arrives within the standing budget -- is falsified by the
+ // mined face (the R's re-synced slot ~252 vs its window closed at 161; the
+ // unloaded pad cannot wait for a slot 91 ticks past its own unload).
+ static constexpr int kUnloadTicks=1;      // the mined +1 class (the unload = entry+1)
  bool hind_step_held_[2]={false,false};     // the lift-first hold is armed
  int hind_step_clear_tick_[2]={-1,-1};      // the tick the release quantum cleared
  uint64_t hind_step_hold_ticks_[2]={0,0};   // the held-tick census
  int hind_step_alt_[2]={0,0};               // the last fire's class: 0 slot, 1 alternation
  int hind_step_alt_due_[2]={0,0};           // the alternation-due flag at this tick (status)
  uint64_t hind_step_deadline_tick_[2]={0,0};// the current deadline arithmetic (status)
- uint64_t hind_step_deadline_fires_[2]={0,0};// the (c)/(d)-waiving deadline fires
- // The alternation-due predicate: THE SKEW REPAIR, ONCE PER LEG -- the law
- // exists because the ENTRY clock skew put this leg's natural slot beyond
- // its fold budget (the L's slot ~204 vs the forced liftoff at 152); the
- // step's own TD touch reset re-syncs the clock, repairing the skew, so a
- // leg that has step-replanted even once is owned by the natural cadence
- // (its budget premise -- the entry-era cap deficit -- was consumed by the
- // replant). The concentration (the other's fire after this leg's last
- // step-TD) plus phi below the slot (the natural trigger keeps precedence).
+ uint64_t hind_step_deadline_fires_[2]={0,0};// the (b)/(c)/(d)-waiving deadline fires
+ int hind_step_dl_unload_[2]={0,0};         // the binding deadline is the unload form (status)
+ uint64_t hind_step_unload_fires_[2]={0,0}; // the unload-deadline fires (the exchange census)
+ // The alternation-due predicate. THE WAVE-29 CONCENTRATION CLAUSE, '<' form
+ // (wave 32): the other's fire ON THE SAME TICK as this leg's landing -- the
+ // handed exchange's own signature -- concentrates the ride (byte-identical
+ // through 159: no equal case arises before 160). Phi below the slot: the
+ // natural trigger keeps precedence whenever the clock can still own the leg.
  bool hind_alt_due(size_t hl,double tair)const{
   size_t o=hl==0?1:0;
-  if(hind_step_last_td_[hl]!=0)return false;           // the skew repaired: the natural cadence owns
   if(hind_step_last_td_[o]==0)return false;            // no completed other step yet
-  if(hind_step_last_fire_[o]<=hind_step_last_td_[hl])return false; // not concentrated
+  if(hind_step_last_fire_[o]<hind_step_last_td_[hl])return false; // not concentrated
   if(phi_[hl]>=TOE_OFF)return false;                   // the natural slot owns
-  uint64_t deadline=hind_step_last_td_[o]+(uint64_t)(kFoldBudgetTicks-(int)tair-1); // g=1
+  uint64_t deadline=hind_deadline(hl,tair);
   double wait=(TOE_OFF-phi_[hl])/(dt_/T_CYCLE);        // the clock's own rate
   return double(ticks_)+wait>double(deadline);}
+ // THE WAVE-32 MIN-FORM DEADLINE (the one arithmetic, shared by the due
+ // predicate and the status census so they cannot drift): the wave-29 fold
+ // budget form, tightened by the armed unload bound. Returns the deadline
+ // tick; sets is_unload when the binding term is the unload form.
+ uint64_t hind_deadline(size_t hl,double tair,bool* is_unload=nullptr)const{
+  size_t o=hl==0?1:0;
+  if(is_unload)*is_unload=false;
+  if(hind_step_last_td_[o]==0)return 0;
+  uint64_t fold=hind_step_last_td_[o]+(uint64_t)(kFoldBudgetTicks-(int)tair-1); // g=1
+  if(hind_step_last_td_[hl]!=0){                       // the ride era: the unload arms
+   uint64_t unload=hind_step_last_td_[o]+(uint64_t)(kUnloadTicks-1);            // g=1
+   if(unload<fold){if(is_unload)*is_unload=true;return unload;}}
+  return fold;}
  // the harvested hind chain geometry (the scene's own model bytes)
  size_t hind_coord_[2][4]{{0,0,0,0},{0,0,0,0}}; // [leg][hip,knee,ankle,MP]
  size_t pelvis_row_=0;
@@ -1905,6 +1939,7 @@ class GaitWalker {
   hind_step_hold_ticks_[0]=hind_step_hold_ticks_[1]=0;hind_step_alt_[0]=hind_step_alt_[1]=0;
   hind_step_alt_due_[0]=hind_step_alt_due_[1]=0;hind_step_deadline_tick_[0]=hind_step_deadline_tick_[1]=0;
   hind_step_deadline_fires_[0]=hind_step_deadline_fires_[1]=0;
+  hind_step_dl_unload_[0]=hind_step_dl_unload_[1]=0;hind_step_unload_fires_[0]=hind_step_unload_fires_[1]=0;
   for(size_t d=0;d<12;++d){wall_pins_[d]=0;wall_pins_air_[d]=0;}
   battery_.assign(nd_,0.);brake_.assign(nd_,0.);empty_events_.assign(nd_,0);store_total_=0;
   for(size_t d=0;d<nd_;++d){battery_[d]=drives_[d].store_floor;store_total_+=drives_[d].store_floor;}
@@ -2073,17 +2108,22 @@ class GaitWalker {
      // the status census; the alternation leg still requires LIVE PADS (it
      // is the standing leg's ride that the budget bounds).
      hind_step_alt_due_[hl]=hind_alt_due(hl,tair)?1:0;
-     {uint64_t dl=hind_step_last_td_[o]>0?
-        hind_step_last_td_[o]+(uint64_t)((int)kFoldBudgetTicks-(int)tair-1):0;
-      hind_step_deadline_tick_[hl]=dl;}
+     // THE WAVE-32 MIN-FORM DEADLINE: the one arithmetic shared with the due
+     // predicate (hind_deadline); the status census reads the same ticks.
+     hind_step_dl_unload_[hl]=0;
+     {bool is_unload=false;
+      uint64_t dl=hind_deadline(hl,tair,&is_unload);
+      hind_step_deadline_tick_[hl]=dl;
+      hind_step_dl_unload_[hl]=is_unload?1:0;}
      bool live_slot=phi_[hl]>=TOE_OFF&&touching_prev_[hl];
      bool alt_fire=hind_step_alt_due_[hl]!=0&&touching_prev_[hl];
      if(!live_slot&&!alt_fire)continue; // a live slot or a due alternation only
      bool gated=false;
+     bool gated_b=false; // clause (b) is the gate holding (the wave-32 waive target)
      bool floor_gated=false;
      int live=0; // the other-three live-pad count (clause (c); trace-reported)
      if(hind_step_mode_[o]==1)gated=true;                    // (a) no double step
-     else if(hind_step_last_td_[o]+1>ticks_)gated=true;      // (b) the hand-off g
+     else if(hind_step_last_td_[o]+1>ticks_){gated=true;gated_b=true;} // (b) the hand-off g
      else{ // (c) THE SUPPORT FLOOR: the other three legs >= 2 live pads
       for(size_t l2=0;l2<2;++l2){
        double mn=1e300;
@@ -2129,11 +2169,25 @@ class GaitWalker {
      // THE DEADLINE (the fold's precedence): at the budget's deadline
      // arithmetic the floor clauses (c)/(d) yield -- a forced fold-liftoff
      // kills the walk, a floor dip is transient and healed by the replant.
-     // Clauses (a)/(b) NEVER yield (the no-double-step structure). Counted,
-     // predicted inert on this walk (the gate opens ~18 ticks earlier).
+     // THE WAVE-32 UNLOAD-LIFT DEADLINE: clause (b) yields too -- the armed
+     // unload bound IS the other's band entry tick, the very tick (b) guards,
+     // so (b)'s one-tick hand-off would consume the whole window the law
+     // exists to spend (the unload lands at entry+1). The waive is PROVABLY
+     // INERT for the fold class: the +35 form lies 34 ticks past (b)'s
+     // one-tick window, so only the armed unload term can ever engage it.
+     // Clause (a) (the no-double-step) NEVER yields. Counted per leg; the
+     // trace-only line reports each waive (never owned silent).
      bool deadline_fire=hind_step_alt_due_[hl]!=0&&hind_step_deadline_tick_[hl]>0&&
       ticks_>=hind_step_deadline_tick_[hl];
      if(floor_gated&&deadline_fire){floor_gated=false;++hind_step_deadline_fires_[hl];}
+     if(gated_b&&deadline_fire){gated=false;gated_b=false;++hind_step_deadline_fires_[hl];
+      if(hind_step_dl_unload_[hl])++hind_step_unload_fires_[hl];
+#ifdef GAIT_EVENT_TRACE
+      std::fprintf(stderr,"[hindstep] unloadgate leg=%zu tick=%llu dl=%llu class=%s\n",
+       hl,(unsigned long long)ticks_,(unsigned long long)hind_step_deadline_tick_[hl],
+       hind_step_dl_unload_[hl]?"unload":"fold");
+#endif
+     }
 #ifdef GAIT_EVENT_TRACE
      if(alt_fire)std::fprintf(stderr,"[hindgate] tick=%llu leg=%zu live=%d tL=%d sL=%.1f tR=%d sR=%.1f hL=%d hR=%d gated=%d floor=%d dl=%llu v=%.3f\n",
       (unsigned long long)ticks_,hl,live,
@@ -2372,7 +2426,10 @@ class GaitWalker {
       {"alt_due",hind_step_alt_due_[hl]!=0},
       {"deadline_tick",hind_step_deadline_tick_[hl]},
       {"deadline_fires",hind_step_deadline_fires_[hl]},
-      {"fold_budget_ticks",(double)kFoldBudgetTicks}});}
+      {"fold_budget_ticks",(double)kFoldBudgetTicks},
+      // THE UNLOAD-LIFT DEADLINE's census fields (wave 32). Read-only.
+      {"deadline_unload",hind_step_dl_unload_[hl]!=0},
+      {"unload_fires",hind_step_unload_fires_[hl]}});}
     gait["hind_step"]=hs;}}
   return {{"sim_time_s",ticks_*dt_},{"ticks",ticks_},{"mode","native_gait_walker"},{"joints",joints},
    {"config",config_},{"power",config_["power"]},{"gait",gait},

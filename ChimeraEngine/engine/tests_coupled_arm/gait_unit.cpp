@@ -61,7 +61,10 @@ struct WalkOut{
  // WAVE 29 ALTERNATION census inputs: per-tick per-leg 4 fields
  // {fire_class(1=alternation),held,clear_tick,deadline_fires} -- leg 0 at
  // [0,4), leg 1 at [4,8); -1 filled when the block is absent.
- std::vector<std::array<double,8>> hind29;
+ // WAVE 32 APPEND (indices preserved): the unload-deadline census --
+ // {deadline_unload(1=the binding term is the unload form),unload_fires}
+ // leg 0 at [8,10), leg 1 at [10,12).
+ std::vector<std::array<double,12>> hind29;
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
@@ -261,14 +264,17 @@ int main(int argc,char**argv){try{
        hst[b+10]=double(p["wall_pins_air"].get<uint64_t>());
        hst[b+11]=number(p["xoff_m"]);}
      out.hindst.push_back(hst);}
-    {std::array<double,8> h29{};h29.fill(-1.);
+    {std::array<double,12> h29{};h29.fill(-1.);
      if(s["gait"].contains("hind_step")&&s["gait"]["hind_step"].size()>=2)
       for(size_t l=0;l<2;++l){const auto&p=s["gait"]["hind_step"][l];
        size_t b=4*l;
        if(p.contains("fire_class"))h29[b+0]=p["fire_class"].get<std::string>()=="alternation"?1.:0.;
        if(p.contains("held"))h29[b+1]=p["held"].get<bool>()?1.:0.;
        if(p.contains("clear_tick"))h29[b+2]=number(p["clear_tick"]);
-       if(p.contains("deadline_fires"))h29[b+3]=double(p["deadline_fires"].get<uint64_t>());}
+       if(p.contains("deadline_fires"))h29[b+3]=double(p["deadline_fires"].get<uint64_t>());
+       // WAVE 32 APPEND (indices preserved: leg 0 [8,10), leg 1 [10,12))
+       if(p.contains("deadline_unload"))h29[8+2*l]=p["deadline_unload"].get<bool>()?1.:0.;
+       if(p.contains("unload_fires"))h29[10+2*l]=double(p["unload_fires"].get<uint64_t>());}
      out.hind29.push_back(h29);}
     out.fm.push_back(fmm);out.fsat.push_back(sat);out.ftgt.push_back(tgx);out.frep.push_back(rep);
 #ifdef GAIT_EVENT_TRACE
@@ -894,11 +900,22 @@ int main(int argc,char**argv){try{
    // outside the fold budget (the L's slot ~204 vs the forced liftoff at
    // 152) -- the alternation calendar (F-G29) owns the L's first fire.
    if(!fire28[1].empty())ck(fire28[1].front()>=97&&fire28[1].front()<=99,"f28_R_fire_calendar_98_pm1");
+   // WAVE 32 SUPERSESSION (declared in receipt_wave32.json P7): the wave-29
+   // slot-phase letter owned every post-first fire because the wave-29 law's
+   // own skew repair made the natural cadence own every replanted leg. The
+   // wave-32 unload-lift deadline removes that premise: a fire is judged BY
+   // ITS CLASS -- SLOT fires keep the 0.58-0.78 phase window; EXCHANGE fires
+   // (the alternation class) are owned by the F-G32 law below (fire == the
+   // other's completion tick; the phase is the re-synced clock's reading
+   // there, ~0.04-0.17, reported not judged).
    for(size_t l=0;l<2;++l)for(size_t k2=1;k2<fire28[l].size();++k2){
     int f=fire28[l][k2];
-    if((size_t)f<w.hphase.size()){
+    if((size_t)f<w.hphase.size()&&(size_t)f<w.hind29.size()){
      double ph=w.hphase[(size_t)f][l];
-     ck(ph>=0.58&&ph<=0.78,"f29_post_first_fire_slot_phase");}}}}
+     bool alt=w.hind29[(size_t)f][4*l]>0.5;
+     if(alt)note("F-G28 fire "+std::to_string(f)+" leg="+(l?"R":"L")+
+      " = the EXCHANGE class (phase "+std::to_string(ph).substr(0,6)+" reported; owned by F-G32)");
+     else ck(ph>=0.58&&ph<=0.78,"f29_post_first_fire_slot_phase");}}}}
 
  // ── WAVE 29 HIND ALTERNATION CENSUS (pre-registered in receipt_wave29.json):
  //    THE HIND ALTERNATION LAW -- the second hind steps before the first's
@@ -1069,7 +1086,108 @@ int main(int argc,char**argv){try{
      support_min,badsup,first_touch,liftoff,compl_L);
     note(c);
     ck(badsup==0,"f31_support_ge2_through_return");
-    ck(first_touch>0&&first_touch<=compl_L+3,"f31_ride_resumes_by_completion");}}}
+    ck(first_touch>0&&first_touch<=compl_L+3,"f31_ride_resumes_by_completion");}}
+
+ // ── WAVE 32 UNLOAD-LIFT DEADLINE CENSUS (pre-registered in
+ //    receipt_wave32.json): THE HANDED SWING-STANCE EXCHANGE. (a) THE
+ //    CALENDAR: every fire after the engagement (the L's completion at 160)
+ //    lands ON the other leg's completion tick (the exchange law, 0 ticks
+ //    tolerance), class alternation; every replant completes at a band entry
+ //    in [fire+9, fire+30] (the wave-31 reach class, the tick-start pair-min
+ //    <= kTouch); the legs strictly alternate. (b) THE SUPPORT FLOOR, BOTH
+ //    READINGS (the clock touching class AND the raw contact class over the
+ //    pad gaps): min legs over [142,426]; the sub-2 ticks split by era -- the
+ //    named divergence era [142,163] (count < 14, per-tick leg detail) vs the
+ //    EXCHANGE era [164,426] (OWNED 0: predicted zero unexplained sub-2
+ //    ticks). (c) THE INTERACTION: the carrier hind's rxn stays > 0 on every
+ //    tick the other is mid-glide in the exchange era (the unload mechanism
+ //    disarmed by the growing share); the (b)-waive unload fires counted.
+ {const size_t N32=std::min({w.hindst.size(),w.hind29.size(),w.hphase.size(),w.hgap.size(),
+    w.hrxn.size(),w.fgmin.size(),w.t.size(),(size_t)426});
+  int engage=-1; // the engagement: the L's first completion (the first tds[0] increment past the clock TD)
+  for(size_t i=152;i<w.hindst.size();++i)
+   if(w.hindst[i][3]>w.hindst[i-1][3]){engage=(int)i;break;}
+  if(w.hindst.size()<=172||engage<0) note("F-G32 NOT MEASURED: the walk refused before the exchange window");
+  else{
+   std::vector<int> fire32[2],td32[2];
+   for(size_t i=61;i<w.hindst.size();++i)for(size_t l=0;l<2;++l){
+    if(w.hindst[i][12*l+2]>w.hindst[i-1][12*l+2])fire32[l].push_back((int)i);
+    if(w.hindst[i][12*l+3]>w.hindst[i-1][12*l+3])td32[l].push_back((int)i);}
+   // (a) the exchange calendar, owned over [engage, 426)
+   int off_cal=0,off_win=0,off_band=0,off_cls=0,off_rep=0,dbl32=0;int first_off=-1;
+   std::string cal;
+   {std::vector<std::pair<int,size_t>> chf; // (tick, leg) chronological
+    for(size_t l=0;l<2;++l)for(int f:fire32[l])if(f>=engage&&(size_t)f<N32)chf.push_back({f,l});
+    std::sort(chf.begin(),chf.end());
+    int prev_leg=-1;
+    for(auto&fl:chf){
+     int f=fl.first;size_t l=fl.second,o=l==0?1:0;
+     bool on_td=(size_t)f<w.hindst.size()&&w.hindst[(size_t)f][12*o+7]==double(f);
+     bool altcls=(size_t)f<w.hind29.size()&&w.hind29[(size_t)f][4*l]>0.5;
+     if(!on_td){++off_cal;if(first_off<0)first_off=f;}
+     if(!altcls)++off_cls;
+     if(prev_leg==(int)l)++off_rep; // a same-leg repeat without the other's fire between
+     prev_leg=(int)l;
+     bool paired=false;
+     for(size_t k2=0;k2<td32[l].size();++k2){int d=td32[l][k2];
+      if(d>=f+9&&(size_t)d<N32&&d<=f+30){paired=true;
+       if(d>=1&&(size_t)(d-1)<w.hgap.size()){
+        double g1=w.hgap[(size_t)(d-1)][2*l],g2=w.hgap[(size_t)(d-1)][2*l+1];
+        if((g1<g2?g1:g2)>1e-5)++off_band;}
+       break;}}
+     if(!paired)++off_win;
+     {char cb[64];std::snprintf(cb,64,"%s@%d ",l?"R":"L",f);cal+=cb;}}
+    for(size_t i=(size_t)engage+1;i<N32;++i)
+     if(w.hindst[i][0]>0.5&&w.hindst[i][12]>0.5)++dbl32;}
+   {uint64_t uf0=0,uf1=0;
+    const J& hs32=w.last["gait"]["hind_step"];
+    if(hs32.size()>=2){uf0=hs32[0]["unload_fires"].get<uint64_t>();uf1=hs32[1]["unload_fires"].get<uint64_t>();}
+    char b[768];std::snprintf(b,768,"F-G32 exchange_calendar fires=%s off_other_completion=%d [OWNED 0: every exchange fire lands ON the other's completion tick] first_off=%d not_alternation_class=%d same_leg_repeat=%d unpaired_or_late=%d [OWNED 0: each completion in [fire+9,fire+30]] out_of_band_completions=%d [OWNED 0: the wave-31 in-band class] double_step_ticks=%d [OWNED 0] unload_fires=(L %llu, R %llu) [the (b)-waive counted; the trace's unloadgate lines are the authority]",
+     cal.c_str(),off_cal,first_off,off_cls,off_rep,off_win,off_band,dbl32,
+     (unsigned long long)uf0,(unsigned long long)uf1);
+    note(b);
+    ck(off_cal==0,"f32_exchange_fires_on_other_completion");
+    ck(off_win==0,"f32_exchange_completion_within_window");
+    ck(off_band==0,"f32_exchange_completion_in_band");
+    ck(dbl32==0,"f32_no_double_step_in_exchange");}
+   // (b) the support floor, BOTH readings, split by era
+   {int smin_d=99,smin_c=99,sub2_div_t=0,sub2_div_c=0,sub2_ex_t=0,sub2_ex_c=0,sub2_div_mixed=0;
+    std::string div_list,ex_list;
+    for(size_t i=142;i<N32;++i){
+     double gL=(std::min)(w.hgap[i][0],w.hgap[i][1]),gR=(std::min)(w.hgap[i][2],w.hgap[i][3]);
+     int ct=(w.t[i][0]?1:0)+(w.t[i][1]?1:0)+((w.fgmin[i][0]<=1e-5)?1:0)+((w.fgmin[i][1]<=1e-5)?1:0);
+     int cc=(gL<=1e-5?1:0)+(gR<=1e-5?1:0)+((w.fgmin[i][0]<=1e-5)?1:0)+((w.fgmin[i][1]<=1e-5)?1:0);
+     int cm=ct; // the F-G31 wave-31 comparable mixed reading: hinds by the clock class
+     smin_d=(std::min)(smin_d,ct);smin_c=(std::min)(smin_c,cc);
+     if(ct<2||cc<2){
+      bool div=(int)i<=163;
+      char cb[96];
+      std::snprintf(cb,96,"%d(L%s R%s fL%s fR%s) ",(int)i,
+       (gL>1e-5||!w.t[i][0])?"out":"dn",(gR>1e-5||!w.t[i][1])?"out":"dn",
+       (w.fgmin[i][0]>1e-5)?"out":"dn",(w.fgmin[i][1]>1e-5)?"out":"dn");
+      if(div){if(ct<2)++sub2_div_t;if(cc<2)++sub2_div_c;if(cm<2)++sub2_div_mixed;
+       if(div_list.size()<400)div_list+=cb;}
+      else{if(ct<2)++sub2_ex_t;if(cc<2)++sub2_ex_c;
+       if(ex_list.size()<400)ex_list+=cb;}}}
+    char b[896];std::snprintf(b,896,"F-G32 support_floor both_readings [142,426] touching: min=%d sub2_div_era=%d sub2_exchange_era=%d | contact: min=%d sub2_div_era=%d sub2_exchange_era=%d | wave31_mixed_div_era=%d (the wave-31 baseline counted 14) | divergence-era detail: %s| exchange-era detail: %s[OWNED 0 exchange-era sub-2 on BOTH readings: predicted zero unexplained; the [142,163] faces are the named inherited bytes (the L's glide era, the strand era)]",
+     smin_d,sub2_div_t,sub2_ex_t,smin_c,sub2_div_c,sub2_ex_c,sub2_div_mixed,
+     div_list.c_str(),ex_list.c_str());
+    note(b);
+    ck(sub2_ex_t==0,"f32_support_ge2_exchange_era_touching");
+    ck(sub2_ex_c==0,"f32_support_ge2_exchange_era_contact");
+    ck(sub2_div_mixed<14,"f32_support_shrinks_vs_wave31");}
+   // (c) the interaction: the carrier's rxn > 0 while the other is mid-glide
+   {int bad=0;int first_bad=-1;double worst=1e9;
+    for(size_t i=(size_t)engage+1;i<N32;++i)for(size_t l=0;l<2;++l){
+     size_t o=l==0?1:0;
+     if(!(w.hindst[i][12*l]>0.5&&w.hindst[i][12*o]<0.5))continue;
+     double rxn=w.hrxn[i][2*o]+w.hrxn[i][2*o+1];
+     if(rxn<=0.){++bad;if(first_bad<0)first_bad=(int)i;}
+     worst=(std::min)(worst,rxn);}
+    char b[256];std::snprintf(b,256,"F-G32 carrier_load carrier_rxn_zero_ticks=%d first=%d min_carrier_rxn=%.3f [OWNED 0: the sole carrier's share RISES through every swing -- the unload mechanism disarmed by the load]",
+     bad,first_bad,worst<1e8?worst:-1.);
+    note(b);
+    ck(bad==0,"f32_carrier_rxn_positive_through_swings");}}}}
 
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the
