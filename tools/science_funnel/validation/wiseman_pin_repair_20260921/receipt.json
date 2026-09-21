@@ -1,0 +1,309 @@
+{
+ "schema": "chimera.wiseman_pin_repair_validation.v1",
+ "written_utc": "2026-09-21T04:48:46+00:00",
+ "written_before_fix": true,
+ "agent": "GLM 5.3",
+ "base": {
+  "canonical_branch": "agent/wiseman-osim-20260920",
+  "canonical_commit": "aede5de9516949d4584e5cfffc8b71064afe7edc",
+  "repair_branch": "agent/wiseman-pin-repair-20260921",
+  "clone": "E:/ChimeraWork/pinfix-agent (sparse: tools/science_funnel)"
+ },
+ "class_history": [
+  "instance 1 (repo-wide, pre-2026-09): sha-recorded evidence drifted on checkout; fixed by enumerated -text rules in .gitattributes (PR #73 review LOW-1; PR #69 gen-2 HIGH root), e.g. docs/evidence/** -text",
+  "instance 2 (2026-09-20, matter-skeleton lane): verifier's fresh clone refused definition_drift and was RIGHT; commit 2d585c7b canonicalized source_obj_sha256 to the committed LF bytes because the original bytes were not what the repo holds; 815a6504 then applied the CRLF lesson PRE-check (worktree==blob proved for all 27 data files before use)",
+  "instance 3 (THIS repair, 2026-09-21): the Wiseman 2026 acquisition (aede5de9) committed under core.autocrlf=true (system gitconfig C:/Program Files/Git/etc/gitconfig) with NO -text rule covering tools/science_funnel/data/wiseman2026/** - the clean filter stripped CR from every text file at git-add time, so the committed BLOBS are LF-normalized while the acquisition receipt's sha256_manifest.json pins the ORIGINAL downloaded bytes"
+ ],
+ "rule0": {
+  "statement": "The Wiseman 2026 acquisition's committed git blobs have drifted from the sha256_manifest.json pins by exactly their line-ending counts (autocrlf clean at commit time); the repair is to restore the PINNED ORIGINAL BYTES into the blobs (route a) for every file whose original bytes are recoverable from hash-verified sources, extend the twice-proven .gitattributes -text -whitespace rule to tools/science_funnel/data/wiseman2026/**, and re-canonicalize the pin (route b) ONLY for files whose original bytes are provably unrecoverable - then a TRUE fresh clone in BOTH autocrlf flavors must sha256-verify every manifest-covered committed file, and the downstream osim4 adapter (bbbc4d67) must reproduce its committed artifacts byte-exact and pass 12/12 tests against the repaired bytes.",
+  "prediction": "16 manifest-covered files are committed; 13 blobs diverge from their pins (12 by pure CRLF-stripping: delta == blob LF count; 1 mixed-EOL file inventory.json: delta 3387 = its original CRLF count, blob LF count 3848 = 3387 CRLF + 461 bare LF); 4 blobs (acquisition_preregistration.json, 2 SIs, and after amendment inventory.json) already match or will match their canonical bytes; after the fix, both autocrlf flavors verify 16/16 manifest-covered files, worktree==blob holds 7/7 .osim by hash-object==rev-parse, the adapter's canonical Macaque parse digest reproduces fcc119b953cf93d957760770e3d24884f79f9db14396e7f12b7ec4ec7857f792, its three committed JSON artifacts regenerate byte-identical, and its tests pass 12/12.",
+  "falsifiers": {
+   "F1_restore_bytes": "if any route-(a) file's post-fix committed blob sha256 differs from its manifest pin (12 files), the restore failed and the fix is wrong",
+   "F2_fresh_clone_verify": "if a TRUE fresh clone (default clone command, no config edits) in EITHER core.autocrlf=true or core.autocrlf=false flavor fails to sha256-verify ANY manifest-covered committed file against the (amended) manifest, the repair does not hold - measured pre-fix: autocrlf=true clone FAILS 2/16 (inventory.json smudged 71002!=70541, acquisition_preregistration.json smudged 5650!=5599), autocrlf=false clone FAILS 13/16 (raw blobs)",
+   "F3_worktree_equals_blob": "if git hash-object(worktree) != git rev-parse(HEAD:path) for any of the 7 .osim in a fresh clone of either flavor, checkout is still lossy",
+   "F4_adapter_parse_reproduction": "if canonical(parse_wiseman('Macaque')) sha256 != fcc119b953cf93d957760770e3d24884f79f9db14396e7f12b7ec4ec7857f792 (pinned in validation/osim4_adapter_20260920/receipt.json falsifier B), or the committed macaque_output.json / macaque_assembly.json / macaque_proposal_fragment.json do not regenerate byte-identical from the repaired bytes, the repair changed what the adapter sees",
+   "F5_adapter_tests": "if tools/science_funnel/tests/test_wiseman_osim.py (the osim4 adapter suite, 12 tests) does not pass 12/12 against the repaired bytes, the repair broke the downstream consumer"
+  }
+ },
+ "pre_fix_measurements": {
+  "method": "TRUE fresh clone of aede5de9 (E:/ChimeraWork/pinfix-agent, cloned --no-hardlinks from the canonical lane, branch agent/wiseman-pin-repair-20260921); worktree==blob pre-check: git hash-object == git rev-parse HEAD:path for 7/7 .osim (git's own CRLF round-trip is lossless, which is exactly why git status was clean while the bytes drifted from the pins); blob bytes read via git cat-file (what autocrlf=false / CI / git-archive consumers get); worktree bytes measured in the autocrlf=true checkout",
+  "normalization_source": "core.autocrlf=true from system gitconfig (file:C:/Program Files/Git/etc/gitconfig), no overriding .gitattributes rule for the path",
+  "files": [
+   {
+    "path": "LICENSE_CC_BY_4.0.txt",
+    "pin_bytes": 19053,
+    "pin_sha256": "d07988f4be47912f75a73b44da8a9c0b602bf6c8ced69de858b848f379ecd973",
+    "blob_bytes": 18657,
+    "blob_sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+    "raw_delta": 396,
+    "blob_lf_count": 396,
+    "blob_crlf_count": 0,
+    "raw_blob_matches_pin": false,
+    "route": "a_restore_pinned_bytes",
+    "expected_post_fix_sha256": "d07988f4be47912f75a73b44da8a9c0b602bf6c8ced69de858b848f379ecd973"
+   },
+   {
+    "path": "_api/article_32017184.json",
+    "pin_bytes": 4458,
+    "pin_sha256": "3b80788d14ebb0e1b47cdcf44b250392cebdd15ef81f664ce176f1e885189d19",
+    "blob_bytes": 4331,
+    "blob_sha256": "2d5467c2418b5c60bb867932e606044e78f5945e6aaef7d1e82d70340245e71e",
+    "raw_delta": 127,
+    "blob_lf_count": 127,
+    "blob_crlf_count": 0,
+    "raw_blob_matches_pin": false,
+    "route": "a_restore_pinned_bytes",
+    "expected_post_fix_sha256": "3b80788d14ebb0e1b47cdcf44b250392cebdd15ef81f664ce176f1e885189d19"
+   },
+   {
+    "path": "_api/article_32017187.json",
+    "pin_bytes": 4555,
+    "pin_sha256": "b09fb8a36248cb87262a24cbbd9a80a717c8ae251d9679048197640130d9479a",
+    "blob_bytes": 4428,
+    "blob_sha256": "fbc542b0101e286d2e393576023c1de8eecb3a8a27696d03cf3148929abad12c",
+    "raw_delta": 127,
+    "blob_lf_count": 127,
+    "blob_crlf_count": 0,
+    "raw_blob_matches_pin": false,
+    "route": "a_restore_pinned_bytes",
+    "expected_post_fix_sha256": "b09fb8a36248cb87262a24cbbd9a80a717c8ae251d9679048197640130d9479a"
+   },
+   {
+    "path": "_api/zenodo_20041122.json",
+    "pin_bytes": 5198,
+    "pin_sha256": "c15b1520d294f230ce85e8d57d323503fa2aafa55cb9a52f8ae3b9b23a77e5d1",
+    "blob_bytes": 5079,
+    "blob_sha256": "94a6c8968a4ba3ced69d31d290c9577594a55ec85de854822732c9870ec5bb6b",
+    "raw_delta": 119,
+    "blob_lf_count": 119,
+    "blob_crlf_count": 0,
+    "raw_blob_matches_pin": false,
+    "route": "a_restore_pinned_bytes",
+    "expected_post_fix_sha256": "c15b1520d294f230ce85e8d57d323503fa2aafa55cb9a52f8ae3b9b23a77e5d1"
+   },
+   {
+    "path": "acquisition_preregistration.json",
+    "pin_bytes": 5599,
+    "pin_sha256": "e2fd2de9689e56d789977f5ec69a613390d1e2113f578e00c62a98d47c8f9c34",
+    "blob_bytes": 5599,
+    "blob_sha256": "e2fd2de9689e56d789977f5ec69a613390d1e2113f578e00c62a98d47c8f9c34",
+    "raw_delta": 0,
+    "blob_lf_count": 51,
+    "blob_crlf_count": 0,
+    "raw_blob_matches_pin": true,
+    "route": "no_change_blob_attribute_only",
+    "expected_post_fix_sha256": "e2fd2de9689e56d789977f5ec69a613390d1e2113f578e00c62a98d47c8f9c34"
+   },
+   {
+    "path": "download_receipt.json",
+    "pin_bytes": 3907,
+    "pin_sha256": "bb2363e452b7f50e5bb149709bdbf2ae6f22e9cc1d00609fdb3333896b2e5f73",
+    "blob_bytes": 3837,
+    "blob_sha256": "c680c1c6c44f2a783f641361d7eb32afa67a290149168df2228f6676eda4e0a0",
+    "raw_delta": 70,
+    "blob_lf_count": 70,
+    "blob_crlf_count": 0,
+    "raw_blob_matches_pin": false,
+    "route": "a_restore_pinned_bytes",
+    "expected_post_fix_sha256": "bb2363e452b7f50e5bb149709bdbf2ae6f22e9cc1d00609fdb3333896b2e5f73"
+   },
+   {
+    "path": "inventory.json",
+    "pin_bytes": 70541,
+    "pin_sha256": "7e1b85ad758f880bd3d759767d8f687e5f2319e9a41780bc6916e9c464940ebc",
+    "blob_bytes": 67154,
+    "blob_sha256": "eba1545a4009119a5f4bf1d49704db5750855fa46c24776b0c878e3a3b4f31e3",
+    "raw_delta": 3387,
+    "blob_lf_count": 3848,
+    "blob_crlf_count": 0,
+    "raw_blob_matches_pin": false,
+    "route": "b_recanonicalize_pin",
+    "expected_post_fix_sha256": "eba1545a4009119a5f4bf1d49704db5750855fa46c24776b0c878e3a3b4f31e3"
+   },
+   {
+    "path": "models/Bonobo_model.osim",
+    "pin_bytes": 405076,
+    "pin_sha256": "d4032d9b464f72de923a1bdac5d3c1428d6eb35bbf7890f1dec405c635dba9a7",
+    "blob_bytes": 398722,
+    "blob_sha256": "4a7642ec2373d18926a6c4a49ab82a4a6fde11f7eff5d9c69285b8889d703deb",
+    "raw_delta": 6354,
+    "blob_lf_count": 6354,
+    "blob_crlf_count": 0,
+    "raw_blob_matches_pin": false,
+    "route": "a_restore_pinned_bytes",
+    "expected_post_fix_sha256": "d4032d9b464f72de923a1bdac5d3c1428d6eb35bbf7890f1dec405c635dba9a7"
+   },
+   {
+    "path": "models/Chimpanzee_model.osim",
+    "pin_bytes": 385267,
+    "pin_sha256": "0be4386e96bda1bed4ab8462c6ef84cca98efe1bbeea4766f9a5d3a1037b8607",
+    "blob_bytes": 379153,
+    "blob_sha256": "ab5717860e8685e7b32383cc687392d45d0abd72c2be4518cca8c21da6603916",
+    "raw_delta": 6114,
+    "blob_lf_count": 6114,
+    "blob_crlf_count": 0,
+    "raw_blob_matches_pin": false,
+    "route": "a_restore_pinned_bytes",
+    "expected_post_fix_sha256": "0be4386e96bda1bed4ab8462c6ef84cca98efe1bbeea4766f9a5d3a1037b8607"
+   },
+   {
+    "path": "models/Gibbon_model.osim",
+    "pin_bytes": 389405,
+    "pin_sha256": "08303243f29c49ba39a2ccc4bdc8ab633eb1eb64069adb4a911ed6f4036ad076",
+    "blob_bytes": 383289,
+    "blob_sha256": "2a46e6e77dc130e47f06a203478ed3f1077026ef8e3a3507b80f732a0af8b1f2",
+    "raw_delta": 6116,
+    "blob_lf_count": 6116,
+    "blob_crlf_count": 0,
+    "raw_blob_matches_pin": false,
+    "route": "a_restore_pinned_bytes",
+    "expected_post_fix_sha256": "08303243f29c49ba39a2ccc4bdc8ab633eb1eb64069adb4a911ed6f4036ad076"
+   },
+   {
+    "path": "models/Gorilla_model.osim",
+    "pin_bytes": 387499,
+    "pin_sha256": "4050e00576e7bd3a0f640b372c3044f98e391504d8a859a8658c48d29b7e3ae5",
+    "blob_bytes": 381298,
+    "blob_sha256": "60848e718ee5b62f61e185175187d8c48789e5bc6ea6e64cbb1b6b5b9c72a1d5",
+    "raw_delta": 6201,
+    "blob_lf_count": 6201,
+    "blob_crlf_count": 0,
+    "raw_blob_matches_pin": false,
+    "route": "a_restore_pinned_bytes",
+    "expected_post_fix_sha256": "4050e00576e7bd3a0f640b372c3044f98e391504d8a859a8658c48d29b7e3ae5"
+   },
+   {
+    "path": "models/Macaque_model.osim",
+    "pin_bytes": 381616,
+    "pin_sha256": "d5c65cbc0a72bd2d5c2258c6bd018fe850ae25cce6fb07c1f268b91e598c88e9",
+    "blob_bytes": 375571,
+    "blob_sha256": "35e5235ce8c61a320ec2d2594883bf2c8b797f56bbd3217acb1dd72141293702",
+    "raw_delta": 6045,
+    "blob_lf_count": 6045,
+    "blob_crlf_count": 0,
+    "raw_blob_matches_pin": false,
+    "route": "a_restore_pinned_bytes",
+    "expected_post_fix_sha256": "d5c65cbc0a72bd2d5c2258c6bd018fe850ae25cce6fb07c1f268b91e598c88e9"
+   },
+   {
+    "path": "models/Orangutan_model.osim",
+    "pin_bytes": 400510,
+    "pin_sha256": "38441595463e296639e849a4b5018c4dc3cf8f439bb10c8acdae637dfb848e28",
+    "blob_bytes": 394223,
+    "blob_sha256": "06b0ab084769781cc7a41058c994f6e545172be2ea33881b3dfea296add972d8",
+    "raw_delta": 6287,
+    "blob_lf_count": 6287,
+    "blob_crlf_count": 0,
+    "raw_blob_matches_pin": false,
+    "route": "a_restore_pinned_bytes",
+    "expected_post_fix_sha256": "38441595463e296639e849a4b5018c4dc3cf8f439bb10c8acdae637dfb848e28"
+   },
+   {
+    "path": "models/Siamang_model.osim",
+    "pin_bytes": 390826,
+    "pin_sha256": "62df812b72c45da379b6df1b7b8b05dbaecb8b4c171546cf2556c08eee426f8a",
+    "blob_bytes": 384712,
+    "blob_sha256": "330a87f0d7171370a84b7bd0576d00ce1519e611e544e24807fa30a9aae17748",
+    "raw_delta": 6114,
+    "blob_lf_count": 6114,
+    "blob_crlf_count": 0,
+    "raw_blob_matches_pin": false,
+    "route": "a_restore_pinned_bytes",
+    "expected_post_fix_sha256": "62df812b72c45da379b6df1b7b8b05dbaecb8b4c171546cf2556c08eee426f8a"
+   },
+   {
+    "path": "rsos260107_si_001.docx",
+    "pin_bytes": 43062,
+    "pin_sha256": "11ca4a19d4028dfb0c5260541a057f63e348d69609e795c3ebd17d3654c3b367",
+    "blob_bytes": 43062,
+    "blob_sha256": "11ca4a19d4028dfb0c5260541a057f63e348d69609e795c3ebd17d3654c3b367",
+    "raw_delta": 0,
+    "blob_lf_count": 140,
+    "blob_crlf_count": 0,
+    "raw_blob_matches_pin": true,
+    "route": "no_change_blob_attribute_only",
+    "expected_post_fix_sha256": "11ca4a19d4028dfb0c5260541a057f63e348d69609e795c3ebd17d3654c3b367"
+   },
+   {
+    "path": "rsos260107_si_002.xlsx",
+    "pin_bytes": 59229,
+    "pin_sha256": "957af7fa9b9d8b29a4c327eaf53bc25c95f369bac83d5de9c341f728ffcba48d",
+    "blob_bytes": 59229,
+    "blob_sha256": "957af7fa9b9d8b29a4c327eaf53bc25c95f369bac83d5de9c341f728ffcba48d",
+    "raw_delta": 0,
+    "blob_lf_count": 247,
+    "blob_crlf_count": 1,
+    "raw_blob_matches_pin": true,
+    "route": "no_change_blob_attribute_only",
+    "expected_post_fix_sha256": "957af7fa9b9d8b29a4c327eaf53bc25c95f369bac83d5de9c341f728ffcba48d"
+   }
+  ]
+ },
+ "route_decision": {
+  "route_a_restore_pinned_bytes": {
+   "applies_to": [
+    "LICENSE_CC_BY_4.0.txt",
+    "_api/article_32017184.json",
+    "_api/article_32017187.json",
+    "_api/zenodo_20041122.json",
+    "download_receipt.json",
+    "models/Bonobo_model.osim",
+    "models/Chimpanzee_model.osim",
+    "models/Gibbon_model.osim",
+    "models/Gorilla_model.osim",
+    "models/Macaque_model.osim",
+    "models/Orangutan_model.osim",
+    "models/Siamang_model.osim"
+   ],
+   "sources": {
+    "7 models": "Primate_models.zip inside the acquisition lane worktree, itself sha256-verified 6cb8e29ad6d7664beb19ed8f5f6aadeef0153f49dd0aea052135c846768f6181 == manifest pin BEFORE extraction; all 272 _extracted manifest entries re-verified byte-exact against zip members (measured 2026-09-21 pre-fix)",
+    "LICENSE + 3 _api + download_receipt.json": "the acquisition lane's un-smudged worktree copies at E:/ChimeraWork/osim-agent/tools/science_funnel/data/wiseman2026/, each re-verified sha256 == pin immediately before copying; re-download via the recorded Zenodo/Figshare routes (download_receipt.json) named as fallback, NOT needed - the local route fired"
+   },
+   "why_not_route_b": "route (b) would rewrite the acquisition receipt's pins and weaken the provenance chain to the upstream deposit; the pinned original bytes EXIST and are hash-verified, so restoring them is strictly stronger and keeps every upstream pin (zip, SIs, _api, LICENSE, download_receipt) untouched"
+  },
+  "route_b_recanonicalize_pin": {
+   "applies_to": [
+    "inventory.json"
+   ],
+   "amendment": {
+    "bytes": [
+     70541,
+     67154
+    ],
+    "sha256": [
+     "7e1b85ad758f880bd3d759767d8f687e5f2319e9a41780bc6916e9c464940ebc",
+     "eba1545a4009119a5f4bf1d49704db5750855fa46c24776b0c878e3a3b4f31e3"
+    ],
+    "method": "surgical two-value edit of the entry inside sha256_manifest.json; no other entry or byte of the manifest changes"
+   },
+   "why_route_b_only_here": "inventory.json is DERIVED lane metadata (schema chimera.wiseman2026_inventory.v1), not upstream deposit content - the upstream provenance chain lives in the zip/SI/_api/receipt pins, all restored by route (a); its original bytes are unrecoverable with evidence: (1) the generator was never committed (git show aede5de9 carries no script; the lane worktree has no .py referencing inventory.json; git status clean), (2) the lane worktree copy was re-smudged by a later checkout (71002 B, sha != pin; the original mixed-EOL file had 3387 CRLF + 461 bare LF and the LF-normalized blob cannot be uniquely re-mixed - sha256 is not invertible and Rule 1 forbids guessing which lines carried CR), (3) the zip contains only upstream artifacts, not this derived file; the committed LF blob's CONTENT is exactly what every adapter consumer has parsed since aede5de9 (validated by falsifiers F4/F5), so canonicalizing the pin to it documents reality instead of inventing history"
+  },
+  "attribute_rule": {
+   "file": ".gitattributes",
+   "line_added": "tools/science_funnel/data/wiseman2026/** -text -whitespace",
+   "pattern_provenance": "the lane's own twice-proven pattern, same file: tools/science_funnel/data/force_sources/** -text -whitespace (and docs/evidence/** -text, agent_logs/codex/graph_contracts_20260915/** -text whitespace=...); last-match-wins over * text=auto makes checkout bytes == committed bytes on every platform"
+  }
+ },
+ "expected_post_fix": {
+  "staged_blob_verify": "12/12 route-(a) staged blobs sha256 == pins; inventory.json staged blob sha256 == eba1545a4009119a5f4bf1d49704db5750855fa46c24776b0c878e3a3b4f31e3",
+  "fresh_clone_verify": "16/16 manifest-covered committed files sha256-verify in a TRUE fresh clone under core.autocrlf=true AND under core.autocrlf=false (the integrator/CI flavor that originally exposed the class)",
+  "worktree_equals_blob": "7/7 .osim hash-object == rev-parse in both flavors",
+  "adapter": {
+   "canonical_macaque_sha256": "fcc119b953cf93d957760770e3d24884f79f9db14396e7f12b7ec4ec7857f792",
+   "artifact_byte_compare": [
+    "macaque_output.json",
+    "macaque_assembly.json",
+    "macaque_proposal_fragment.json"
+   ],
+   "tests": "12/12 (tools/science_funnel/tests/test_wiseman_osim.py @ bbbc4d67)"
+  }
+ },
+ "scope_guards": [
+  "E:/PythonChimera untouched",
+  "port 8127 untouched",
+  "master untouched (repair branch only)",
+  "no byte of any other lane's clone modified (sources read-only)",
+  "sha256_manifest.json: only the inventory.json entry's two values change; every other pin byte-identical"
+ ],
+ "results_note": "Filled by the run BELOW THIS LINE ONLY; the sections above are the preregistration and are never edited after the first commit."
+}
