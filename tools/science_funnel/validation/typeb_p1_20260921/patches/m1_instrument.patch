@@ -1,0 +1,118 @@
+diff --git a/ChimeraEngine/engine/tests_coupled_arm/gait_unit.cpp b/ChimeraEngine/engine/tests_coupled_arm/gait_unit.cpp
+index 69492aef..593f580d 100644
+--- a/ChimeraEngine/engine/tests_coupled_arm/gait_unit.cpp
++++ b/ChimeraEngine/engine/tests_coupled_arm/gait_unit.cpp
+@@ -92,6 +92,31 @@ struct WalkOut{
+  J last;std::string refused;int refused_tick=-1;
+ };
+ 
++
++// ==== TYPEB-P1 DECLARED TIMING INSTRUMENT (working-tree patch, NEVER COMMITTED;
++// stderr-only, stdout bytes unchanged -- prereg_typeb_p1.json M1/M2) ====
++namespace tb1 {
++struct Timing {
++  double fG5=0, push426=0, report=0;
++  double walk_startup=0, walk_step=0, walk_status=0, walk_census=0;
++  double walk_step_ss=0, walk_status_ss=0, walk_census_ss=0; // ticks>=20 per run
++  long long walk_ticks=0, walk_ticks_ss=0; int walk_runs=0;
++  std::chrono::steady_clock::time_point t;
++  void begin(){t=std::chrono::steady_clock::now();}
++  double end(){return std::chrono::duration<double>(std::chrono::steady_clock::now()-t).count();}
++};
++inline Timing& tm(){static Timing x;return x;}
++inline void summary(){
++  Timing&T=tm();const long long n=T.walk_ticks,ns=T.walk_ticks_ss;
++  std::fprintf(stderr,"[tb1-timing] runs=%d ticks=%lld ss_ticks=%lld startup_s=%.3f step_s=%.3f status_s=%.3f census_s=%.3f fG5_s=%.3f push426_s=%.3f report_s=%.3f\n",
++    T.walk_runs,n,ns,T.walk_startup,T.walk_step,T.walk_status,T.walk_census,T.fG5,T.push426,T.report);
++  if(n){std::fprintf(stderr,"[tb1-timing] per_tick_ms step=%.4f status=%.4f census=%.4f | ticks_per_s_step_only=%.2f ticks_per_s_full_loop=%.2f | ss(t>=20) step_only=%.2f full_loop=%.2f\n",
++    1e3*T.walk_step/n,1e3*T.walk_status/n,1e3*T.walk_census/n,
++    n/T.walk_step,n/(T.walk_step+T.walk_status+T.walk_census),
++    ns?ns/T.walk_step_ss:0.,ns?ns/(T.walk_step_ss+T.walk_status_ss+T.walk_census_ss):0.);}
++}
++}
++// ==== END TYPEB-P1 INSTRUMENT ====
+ int main(int argc,char**argv){try{
+  require(argc==2,"usage: gait_unit gait_scene.json");
+  J scene=load_json(argv[1]);
+@@ -107,6 +132,7 @@ int main(int argc,char**argv){try{
+ 
+  // ── F-G5: the free-root falsifier -- controller powered off, the body FALLS
+  //    (in flight, at g; plus the zero-torque standing fold onto its stops).
++ tb1::tm().begin();
+  std::fprintf(stderr,"run F-G5\n");
+  try{
+   {GaitWalker d(data,9.80665,V{0,0,0},dt);
+@@ -129,19 +155,25 @@ int main(int argc,char**argv){try{
+    note("F-G5 stand_fold_deg="+std::to_string(fold*180/pi));
+    ck(fold>5.*pi/180,"f5_joints_fold");}
+  }catch(const Refusal&e){++reds;note(std::string("F-G5 REFUSED: ")+e.what());std::fprintf(stderr,"F-G5 refused: %s\n",e.what());}
++ tb1::tm().fG5+=tb1::tm().end();
+ 
+  // ── THE WALK RUN: initialized at the measured gait state (the TD columns,
+  //    the measured 1.01 m/s forward speed, the table phase slopes) -- the
+  //    source model's own periodic-cycle entry.
+  auto walk_run=[&](bool capture){
++  {auto&T=tb1::tm();T.begin();}
+   GaitWalker d(data,9.80665,V{0,0,0},dt);
+   d.configure({{"capture_enabled",capture},{"reset",true}});
++  {auto&T=tb1::tm();T.walk_startup+=T.end();++T.walk_runs;}
+   const int WALK=10*CYCLE_TICKS;
+   WalkOut out;bool prev_t[2]={false,false};int w_ledger_first=-1;double w_ledger_prev=0;
+   auto t_start=std::chrono::steady_clock::now();
+   for(int i=0;i<WALK;++i){
++   {auto&T=tb1::tm();T.begin();std::fprintf(stderr,"[tb1] run=%d tick=%d bx=%.6f by=%.6f\n",T.walk_runs,i,d.angles()[3],d.angles()[4]);}
++   double t_step=0,t_stat=0,t_cen=0;{auto&T=tb1::tm();T.begin();}
+    try{
+     d.step();
++   {auto&T=tb1::tm();double e=T.end();T.walk_step+=e;if(i>=20)T.walk_step_ss+=e;}
+     double sec=std::chrono::duration<double>(std::chrono::steady_clock::now()-t_start).count();
+     if(sec>120.){char b[256];std::snprintf(b,256,"WALK exceeded the 120 s window guard at tick %d",i);out.refused=b;out.refused_tick=i;
+      std::fprintf(stderr,"%s\n",b);break;}
+@@ -174,7 +206,10 @@ int main(int argc,char**argv){try{
+        if(p.contains("wall_pins_air"))out.wair.back()[l]=p["wall_pins_air"].get<uint64_t>();}}
+     catch(...){}
+     break;}
++   tb1::tm().begin();
+    auto s=d.status();
++   {auto&T=tb1::tm();double e=T.end();T.walk_status+=e;if(i>=20)T.walk_status_ss+=e;}
++   tb1::tm().begin();
+    // WAVE 13 fore-paw census: every tick, per-leg worst/best gap over the
+    // leg's heel+MP, the fore clock mode, and the per-leg saturation snapshot.
+    {std::array<double,2> mx{-1e9,-1e9},mn{1e9,1e9};
+@@ -374,7 +409,9 @@ int main(int argc,char**argv){try{
+    for(size_t leg=0;leg<2;++leg){tt[leg]=s["gait"][leg?"touching_right":"touching_left"].get<bool>();
+     for(const auto&p:s["contact"]["points"])
+      if(p["name"].get<std::string>().rfind(leg?"right":"left",0)==0&&p["touching"].get<bool>())rr[leg]+=number(p["reaction_N"]);}
+-   out.a.push_back(a);out.tg.push_back(tg);out.t.push_back(tt);out.r.push_back(rr);}
++   out.a.push_back(a);out.tg.push_back(tg);out.t.push_back(tt);out.r.push_back(rr);
++   {auto&T=tb1::tm();double e=T.end();T.walk_census+=e;if(i>=20){T.walk_census_ss+=e;++T.walk_ticks_ss;}++T.walk_ticks;}}
++  {auto&T=tb1::tm();(void)T;tb1::summary();}
+   out.captures=d.capture_events();out.last=d.status();
+   return out;};
+ 
+@@ -2081,6 +2118,7 @@ int main(int argc,char**argv){try{
+   // capture measure rides the armed walk (the reflex fires whenever the CoM
+   // exits the hull moving outward, push or not).
+   ck(wp.captures+ (uint64_t)w.captures>0||!wp.refused.empty()||true,"f6_capture_placeholder");}
++ tb1::tm().begin();
+  {GaitWalker d(data,9.80665,V{0,0,0},dt);
+   d.configure({{"capture_enabled",false},{"reset",true}});
+   int refused=0;
+@@ -2092,6 +2130,7 @@ int main(int argc,char**argv){try{
+    if(std::chrono::duration<double>(std::chrono::steady_clock::now()-t0d).count()>60.){refused=2;break;}}
+   note("F-G6 disarmed captures=0 (expected-tip regime; refused="+std::to_string(refused)+")");
+   ck(d.capture_events()==0,"f6_disarmed_no_capture");}
++ tb1::tm().push426+=tb1::tm().end();
+ 
+  // ── F-G7: determinism -- a second identical run is BIT-identical.
+  {WalkOut w2=walk_run(true);
+@@ -2105,7 +2144,9 @@ int main(int argc,char**argv){try{
+   auto s=d.status();
+   ck(std::abs(number(s["energy"]["balance_error_J"]))<1e-5&&std::abs(number(s["energy"]["store_balance_error_J"]))<1e-5,"f8_ledger_static_tier");}
+ 
++ tb1::tm().begin();
+  bool pass=reds==0;
+  std::cout<<J({{"pass",pass},{"red_falsifiers",reds},{"checks",checks},{"cycle_ticks",CYCLE_TICKS},{"bw_N",BW},
+   {"measured",measured}}).dump(2)<<"\n";
++ tb1::tm().report+=tb1::tm().end();
+ }catch(const std::exception& e){std::cerr<<e.what()<<"\n";return 1;}return 0;}

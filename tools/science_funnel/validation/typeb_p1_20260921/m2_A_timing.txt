@@ -1,0 +1,1 @@
+[tb1-timing] per_tick_ms step=30.9516 status=0.3486 census=0.0363 | ticks_per_s_step_only=32.31 ticks_per_s_full_loop=31.91 | ss(t>=20) step_only=24.64 full_loop=24.41
