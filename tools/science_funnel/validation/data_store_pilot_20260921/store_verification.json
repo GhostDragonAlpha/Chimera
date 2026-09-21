@@ -1,0 +1,110 @@
+{
+ "checks": {
+  "all_7_pins_verified_from_store": true,
+  "all_7_served_from_store": true,
+  "canonical_identical_across_modes": true,
+  "drift_refusal_both_modes": true,
+  "macaque_canonical_matches_pin_repair_receipt": true,
+  "repo_pass_all_in_repo": true
+ },
+ "repo_pass": {
+  "drift_refusal": true,
+  "env": null,
+  "mode": "env-unset (in-repo no-op)",
+  "taxa": {
+   "Bonobo": {
+    "canonical_sha256": "8631de6b6d1e2eefe1d2954d09580276a1bc41d867d8f8e6c09db0934b9181dd",
+    "pin_verified": true,
+    "resolved_path": "E:\\ChimeraWork\\store-agent\\tools\\science_funnel\\data\\wiseman2026\\models\\Bonobo_model.osim",
+    "served_from_store": false
+   },
+   "Chimpanzee": {
+    "canonical_sha256": "95a59d03122c63b8b5f6c4c8854e4ece1a661e05fe49f3c2c24e8e4aa59b70cc",
+    "pin_verified": true,
+    "resolved_path": "E:\\ChimeraWork\\store-agent\\tools\\science_funnel\\data\\wiseman2026\\models\\Chimpanzee_model.osim",
+    "served_from_store": false
+   },
+   "Gibbon": {
+    "canonical_sha256": "1efa612bb3a78c7bf6e799883d8668cd797e73fa47e99189831dab20aa30f870",
+    "pin_verified": true,
+    "resolved_path": "E:\\ChimeraWork\\store-agent\\tools\\science_funnel\\data\\wiseman2026\\models\\Gibbon_model.osim",
+    "served_from_store": false
+   },
+   "Gorilla": {
+    "canonical_sha256": "2b82c807b9dbf3325fd8d80a7880c45e29fde915fb23a7872927810f35576dd8",
+    "pin_verified": true,
+    "resolved_path": "E:\\ChimeraWork\\store-agent\\tools\\science_funnel\\data\\wiseman2026\\models\\Gorilla_model.osim",
+    "served_from_store": false
+   },
+   "Macaque": {
+    "canonical_sha256": "fcc119b953cf93d957760770e3d24884f79f9db14396e7f12b7ec4ec7857f792",
+    "pin_verified": true,
+    "resolved_path": "E:\\ChimeraWork\\store-agent\\tools\\science_funnel\\data\\wiseman2026\\models\\Macaque_model.osim",
+    "served_from_store": false
+   },
+   "Orangutan": {
+    "canonical_sha256": "2b4fc0b841402d02d7ee8d15dc4efe3808bac27d4a2d9d369af82d2c96c0321c",
+    "pin_verified": true,
+    "resolved_path": "E:\\ChimeraWork\\store-agent\\tools\\science_funnel\\data\\wiseman2026\\models\\Orangutan_model.osim",
+    "served_from_store": false
+   },
+   "Siamang": {
+    "canonical_sha256": "ed1dd77c563db2d7938660c59f16b24ad9b34cd8d11016b4ec4b463261ee2a74",
+    "pin_verified": true,
+    "resolved_path": "E:\\ChimeraWork\\store-agent\\tools\\science_funnel\\data\\wiseman2026\\models\\Siamang_model.osim",
+    "served_from_store": false
+   }
+  }
+ },
+ "schema": "chimera.data_store_pilot_verification.v1",
+ "store_pass": {
+  "drift_refusal": true,
+  "env": "E:/ChimeraData",
+  "mode": "CHIMERA_DATA_STORE set (store-resolved)",
+  "taxa": {
+   "Bonobo": {
+    "canonical_sha256": "8631de6b6d1e2eefe1d2954d09580276a1bc41d867d8f8e6c09db0934b9181dd",
+    "pin_verified": true,
+    "resolved_path": "E:\\ChimeraData\\store\\d4\\03\\d4032d9b464f72de923a1bdac5d3c1428d6eb35bbf7890f1dec405c635dba9a7",
+    "served_from_store": true
+   },
+   "Chimpanzee": {
+    "canonical_sha256": "95a59d03122c63b8b5f6c4c8854e4ece1a661e05fe49f3c2c24e8e4aa59b70cc",
+    "pin_verified": true,
+    "resolved_path": "E:\\ChimeraData\\store\\0b\\e4\\0be4386e96bda1bed4ab8462c6ef84cca98efe1bbeea4766f9a5d3a1037b8607",
+    "served_from_store": true
+   },
+   "Gibbon": {
+    "canonical_sha256": "1efa612bb3a78c7bf6e799883d8668cd797e73fa47e99189831dab20aa30f870",
+    "pin_verified": true,
+    "resolved_path": "E:\\ChimeraData\\store\\08\\30\\08303243f29c49ba39a2ccc4bdc8ab633eb1eb64069adb4a911ed6f4036ad076",
+    "served_from_store": true
+   },
+   "Gorilla": {
+    "canonical_sha256": "2b82c807b9dbf3325fd8d80a7880c45e29fde915fb23a7872927810f35576dd8",
+    "pin_verified": true,
+    "resolved_path": "E:\\ChimeraData\\store\\40\\50\\4050e00576e7bd3a0f640b372c3044f98e391504d8a859a8658c48d29b7e3ae5",
+    "served_from_store": true
+   },
+   "Macaque": {
+    "canonical_sha256": "fcc119b953cf93d957760770e3d24884f79f9db14396e7f12b7ec4ec7857f792",
+    "pin_verified": true,
+    "resolved_path": "E:\\ChimeraData\\store\\d5\\c6\\d5c65cbc0a72bd2d5c2258c6bd018fe850ae25cce6fb07c1f268b91e598c88e9",
+    "served_from_store": true
+   },
+   "Orangutan": {
+    "canonical_sha256": "2b4fc0b841402d02d7ee8d15dc4efe3808bac27d4a2d9d369af82d2c96c0321c",
+    "pin_verified": true,
+    "resolved_path": "E:\\ChimeraData\\store\\38\\44\\38441595463e296639e849a4b5018c4dc3cf8f439bb10c8acdae637dfb848e28",
+    "served_from_store": true
+   },
+   "Siamang": {
+    "canonical_sha256": "ed1dd77c563db2d7938660c59f16b24ad9b34cd8d11016b4ec4b463261ee2a74",
+    "pin_verified": true,
+    "resolved_path": "E:\\ChimeraData\\store\\62\\df\\62df812b72c45da379b6df1b7b8b05dbaecb8b4c171546cf2556c08eee426f8a",
+    "served_from_store": true
+   }
+  }
+ },
+ "verdict": "PASS 7/7 store-served, pins verified, parses byte-identical"
+}

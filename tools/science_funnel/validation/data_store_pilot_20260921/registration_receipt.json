@@ -1,0 +1,23 @@
+{
+ "classes": {
+  "DERIVED": {
+   "bytes": 2740199,
+   "files": 7
+  },
+  "RAW": {
+   "bytes": 94643527,
+   "files": 273
+  }
+ },
+ "fetch_event": "re-fetched 2026-09-21 from Zenodo record 20041122 via download_receipt.json (sha256 6cb8e29ad6d7664beb19ed8f5f6aadeef0153f49dd0aea052135c846768f6181, md5 330b8e8a6af66ea22f4023ca60829cad, 20510615 B verified at fetch); local copies lost to worktree janitor - receipt-driven rebuild",
+ "index_file": "tools/science_funnel/chimera_data_index.json",
+ "pin_prechecks": "all passed (bytes+sha256 vs sha256_manifest.json, before addressing)",
+ "registered_by": "agent/data-store-pilot-20260921 (GLM 5.3)",
+ "registered_now": 279,
+ "schema": "chimera.data_store_pilot_registration.v1",
+ "skipped_already_active": 1,
+ "store_blob_verify": "280/280",
+ "store_root": "E:\\ChimeraData",
+ "total_registered_bytes": 97383726,
+ "written_utc": "2026-09-21T13:57:24+00:00"
+}
