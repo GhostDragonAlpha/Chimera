@@ -57,7 +57,7 @@ struct WalkOut{
  // fields {mode,t,fires,tds,gated,reach_clamped,last_fire_tick,last_td_tick,
  // fire_qerr,wall_pins,wall_pins_air,xoff} -- leg 0 at [0,12), leg 1 at
  // [12,24); -1 filled when the block is absent.
- std::vector<std::array<double,24>> hindst;
+ std::vector<std::array<double,30>> hindst;
  // WAVE 29 ALTERNATION census inputs: per-tick per-leg 4 fields
  // {fire_class(1=alternation),held,clear_tick,deadline_fires} -- leg 0 at
  // [0,4), leg 1 at [4,8); -1 filled when the block is absent.
@@ -249,7 +249,7 @@ int main(int argc,char**argv){try{
     out.wpins.push_back(wp);out.wair.push_back(wa);out.wbound.push_back(wb);out.wfollow.push_back(wf);
     out.fhold.push_back(fh);out.fhl.push_back(fhlk);out.ftic.push_back(ftick);
     out.fcap.push_back(s["gait"].contains("fore_paw_captured")&&s["gait"]["fore_paw_captured"].get<bool>()?1:0);
-    {std::array<double,24> hst{};hst.fill(-1.);
+    {std::array<double,30> hst{};hst.fill(-1.);
      if(s["gait"].contains("hind_step")&&s["gait"]["hind_step"].size()>=2)
       for(size_t l=0;l<2;++l){const auto&p=s["gait"]["hind_step"][l];
        size_t b=12*l;
@@ -262,7 +262,13 @@ int main(int argc,char**argv){try{
        hst[b+8]=number(p["fire_qerr_rad"]);
        hst[b+9]=double(p["wall_pins"].get<uint64_t>());
        hst[b+10]=double(p["wall_pins_air"].get<uint64_t>());
-       hst[b+11]=number(p["xoff_m"]);}
+       hst[b+11]=number(p["xoff_m"]);
+       // THE STAND-FIRST HOLD's census fields (wave 33, appended to the
+       // DISJOINT TAIL slots 24+3*l -- the old layout is interleaved 12/leg,
+       // slots 12..23 belong to the RIGHT leg's reads; indices preserved)
+       hst[24+3*l]=double(p["swing_stall_ticks"].get<uint64_t>());
+       hst[25+3*l]=p["stand_hold"].get<bool>()?1.:0.;
+       hst[26+3*l]=double(p["stand_hold_ticks"].get<uint64_t>());}
      out.hindst.push_back(hst);}
     {std::array<double,12> h29{};h29.fill(-1.);
      if(s["gait"].contains("hind_step")&&s["gait"]["hind_step"].size()>=2)
@@ -1188,6 +1194,106 @@ int main(int argc,char**argv){try{
      bad,first_bad,worst<1e8?worst:-1.);
     note(b);
     ck(bad==0,"f32_carrier_rxn_positive_through_swings");}}}}
+
+ // ── WAVE 33 STAND-FIRST HOLD CENSUS (pre-registered in
+ //    receipt_wave33.json): (a) THE PIN ERAS -- every stand_hold engagement
+ //    (arm tick, leg, pinned ticks) against the replay prediction (the arm
+ //    ticks 179/188/197/206/215; the first engagement exactly 179); (b) THE
+ //    RESCUE -- ZERO band exits inside any pin era (the carrier's tick-start
+ //    pair-min stays <= kTouch while pinned: the unloaded columns cannot
+ //    lift the pad); (c) THE LEAD -- per exchange, the carrier's rxn-0 tick
+ //    and its band exit vs the swing's band entry (the mined +1 class: the
+ //    arm one decision ahead of the lift); (d) THE LIVE-PAD FIRES -- every
+ //    post-engagement fire lands on a touching leg and the fire chain
+ //    continues past the wave-32 strand (a fire after 220); (e) THE SUPPORT
+ //    SHRINK -- the exchange-era sub-2 counts vs the wave-32's 70/68.
+ {const size_t N33=std::min({w.hindst.size(),w.hgap.size(),w.hrxn.size(),
+    w.t.size(),w.fgmin.size(),(size_t)426});
+  int engage33=-1;
+  for(size_t i=0;i<N33;++i){bool any=false;
+   for(size_t l=0;l<2;++l)if(w.hindst[i][25+3*l]>0.5)any=true;
+   if(any){engage33=(int)i;break;}}
+  if(engage33<0) note("F-G33 NOT MEASURED: the stand-first hold never engaged");
+  else{
+   // (a) the pin eras: contiguous stand_hold runs per leg
+   int arm_preds[2]={-1,-1};int pin_ticks[2]={0,0};int band_exits_in_pins=0;
+   double worst_pin_gap[2]={-1.,-1.};std::string pins;
+   for(size_t l=0;l<2;++l){
+    bool in_pin=false;int start=-1;
+    for(size_t i=(size_t)engage33;i<N33;++i){
+     bool now=w.hindst[i][25+3*l]>0.5;
+     if(now&&!in_pin){in_pin=true;start=(int)i;}
+     else if(!now&&in_pin){in_pin=false;
+      char cb[48];std::snprintf(cb,48,"%s[%d,%d) ",l?"R":"L",start,(int)i);pins+=cb;}
+     if(now){++pin_ticks[l];
+      double g1=w.hgap[i][2*l],g2=w.hgap[i][2*l+1],gm=g1<g2?g1:g2;
+      if(gm>worst_pin_gap[l])worst_pin_gap[l]=gm;
+      if(gm>1e-5)++band_exits_in_pins;}
+     if(arm_preds[l]<0&&now)arm_preds[l]=(int)i;}
+    if(in_pin){char cb[48];std::snprintf(cb,48,"%s[%d,open) ",l?"R":"L",start);pins+=cb;}}
+   {char b[512];std::snprintf(b,512,"F-G33 stand_hold engage=%d [PREDICTED 176: the cycle-2 stall swing's first in-band glide tick-start] pins=%s pin_ticks=(%d,%d) worst_pin_pairmin_mm=(%.4f,%.4f) band_exits_inside_pins=%d [OWNED 0: the unload cannot lift a pinned pad]",
+     engage33,pins.c_str(),pin_ticks[0],pin_ticks[1],
+     worst_pin_gap[0]*1000.,worst_pin_gap[1]*1000.,band_exits_in_pins);
+    note(b);
+    ck(engage33==176,"f33_first_engagement_tick_predicted");
+    ck(band_exits_in_pins==0,"f33_pin_eras_zero_band_exits");}
+   // (d) the post-engagement fires: live pads, the chain continues
+   {std::vector<std::pair<int,size_t>> chf;
+    for(size_t i=61;i<w.hindst.size();++i)for(size_t l=0;l<2;++l)
+     if(w.hindst[i][12*l+2]>w.hindst[i-1][12*l+2])chf.push_back({(int)i,l});
+    int dead_fires=0,first_dead=-1;int last_fire=-1;std::string fs;
+    for(auto&fl:chf){int f=fl.first;size_t l=fl.second;
+     if(f<engage33)continue;
+     char cb[48];std::snprintf(cb,48,"%s@%d ",l?"R":"L",f);fs+=cb;
+     if((size_t)(f-1)<w.t.size()&&w.t[(size_t)(f-1)][l]!=1){++dead_fires;if(first_dead<0)first_dead=f;}
+     last_fire=f;}
+    char b[512];std::snprintf(b,512,"F-G33 post_engage_fires fires=%s dead_pad_fires=%d [OWNED 0: every fire lands on a touching leg] first_dead=%d last_fire=%d [OWNED >220: the exchange chain continues past the wave-32 strand]",
+     fs.c_str(),dead_fires,first_dead,last_fire);
+    note(b);
+    ck(dead_fires==0,"f33_fires_on_live_pads");
+    ck(last_fire>220,"f33_chain_continues_past_strand");}
+   // (c) the carrier-unload lead, per exchange (the swing = the fired leg,
+   // the completion = its next td; the carrier = the other leg)
+   {std::vector<int> fire33[2],td33[2];
+    for(size_t i=160;i<w.hindst.size()&&(size_t)i<N33;++i)for(size_t l=0;l<2;++l){
+     if(w.hindst[i][12*l+2]>w.hindst[i-1][12*l+2])fire33[l].push_back((int)i);
+     if(w.hindst[i][12*l+3]>w.hindst[i-1][12*l+3])td33[l].push_back((int)i);}
+    std::string leads;int arm_ahead=0,arm_total=0;
+    for(size_t l=0;l<2;++l){size_t o=l==0?1:0;
+     for(int f:fire33[l]){
+      int d=-1;for(int x:td33[l])if(x>f){d=x;break;}
+      if(d<0)continue;
+      int rxn0=-1,lift=-1;
+      for(int t=f;t<d&&(size_t)t<N33;++t){
+       double cr=w.hrxn[(size_t)t][2*o]+w.hrxn[(size_t)t][2*o+1];
+       double g1=w.hgap[(size_t)t][2*o],g2=w.hgap[(size_t)t][2*o+1],gm=g1<g2?g1:g2;
+       if(rxn0<0&&cr<=0.)rxn0=t;
+       if(lift<0&&gm>1e-5)lift=t;}
+      // the arm tick inside the era: the first pinned tick of the carrier
+      int arm=-1;for(int t=f;t<d&&(size_t)t<N33;++t)
+       if(w.hindst[(size_t)t][12*o+13]>0.5){arm=t;break;}
+      char cb[96];
+      std::snprintf(cb,96,"%s[%d,%d) rxn0=%d lift=%d arm=%d ",l?"cR":"cL",f,d,rxn0,lift,arm);
+      leads+=cb;
+      if(arm>=0){++arm_total;
+       if(lift<0||arm<lift||w.hgap[(size_t)arm][2*o]<=1e-5)++arm_ahead;}}}
+    char b[640];std::snprintf(b,640,"F-G33 carrier_lead %s arm_ahead_of_lift=%d/%d [the mined +1 class: the hold arms one decision before the lift]",
+     leads.c_str(),arm_ahead,arm_total);
+    note(b);}
+   // (e) the support shrink, split by era, both readings
+   {int sub2_pre_t=0,sub2_pre_c=0,sub2_law_t=0,sub2_law_c=0;
+    for(size_t i=164;i<N33;++i){
+     double gL=(std::min)(w.hgap[i][0],w.hgap[i][1]),gR=(std::min)(w.hgap[i][2],w.hgap[i][3]);
+     int ct=(w.t[i][0]?1:0)+(w.t[i][1]?1:0)+((w.fgmin[i][0]<=1e-5)?1:0)+((w.fgmin[i][1]<=1e-5)?1:0);
+     int cc=(gL<=1e-5?1:0)+(gR<=1e-5?1:0)+((w.fgmin[i][0]<=1e-5)?1:0)+((w.fgmin[i][1]<=1e-5)?1:0);
+     bool law=(int)i>=engage33;
+     if(ct<2){if(law)++sub2_law_t;else ++sub2_pre_t;}
+     if(cc<2){if(law)++sub2_law_c;else ++sub2_pre_c;}}
+    char b[384];std::snprintf(b,384,"F-G33 support_by_era [164,refusal) pre_law: touching=%d contact=%d (wave-32 exchange era counted 70/68) law_era: touching=%d contact=%d [PREDICTED: both shrink -- the pinned carrier stays DOWN; the fores face persists]",
+     sub2_pre_t,sub2_pre_c,sub2_law_t,sub2_law_c);
+    note(b);
+    ck(sub2_law_t<70,"f33_support_touching_shrinks");
+    ck(sub2_law_c<68,"f33_support_contact_shrinks");}}}
 
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the

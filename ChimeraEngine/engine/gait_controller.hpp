@@ -405,6 +405,59 @@ class GaitWalker {
  // mined face (the R's re-synced slot ~252 vs its window closed at 161; the
  // unloaded pad cannot wait for a slot 91 ticks past its own unload).
  static constexpr int kUnloadTicks=1;      // the mined +1 class (the unload = entry+1)
+ // ── THE STAND-FIRST HOLD (wave 33, receipt_wave33.json) ──
+ // THE MINED FACE (the wave-32 shipped trace, the declared mining script):
+ // from the L@175 fire on, every exchange swing STALLED -- its lift-first hold
+ // never released (the arch peak 0.0087-0.0124 mm vs the real lifts' 1.52-13.1
+ // mm), the fired pads crept IN-BAND dragging (slip 0.10-0.7674 m/s), because
+ // the exchange fires land on pads STILL LOADED (the fired leg's rxn at its
+ // own fire 2.265/2.156/0.492/5.455/4.649 N). At the sixth exchange the sole
+ // carrier's share drained mid-swing (the R 4.025@211 -> 0.000@215) and the
+ // unloaded columns lifted its pad (the pair-min 9.63um@214 -> 193.72um@215):
+ // the wave-30 unload-lift face, the strand, the refusal at 300. The wave-32
+ // deadline reads the other's LAST TD and (a) never yields mid-glide -- no
+ // FIRE deadline can cover a carrier unloading mid-swing. THE MIRROR: a PAD
+ // HOLD (the descent-armed amendment). While the other hind is mid-glide AND
+ // its pads are IN THE TOUCH BAND -- the swing's tick-start TOUCHING CLASS,
+ // the mechanism's own clock: never-left (the stall swings) or RETURNED (the
+ // real swings' descent re-entry, the mined +1 class's own face) -- AND this
+ // leg is the ride-era carrier with live pads, this leg's stance target is
+ // REPLACED by the IK hold at the pad spots RE-CAPTURED at each pinned tick
+ // (a zero-velocity demand at the pads' instant position) -- the wave-29
+ // glide hold's whole-branch replacement mirrored (the designed stance
+ // tables AND the wave-27 ff both displaced): the unloaded columns cannot
+ // lift the pad, disarmed BY STRUCTURE. The hold releases when the other
+ // completes or its pads genuinely clear (the real lift's own era -- the
+ // stance columns resume); the wave-32 exchange fire then lands on live pads
+ // at the completion, untouched. Clause (a) NEVER yields -- untouched. Zero
+ // new numeric constants: the read is the wave-22 touching class's own
+ // hysteresis state. MAPPED LEAD (mined): the swing's in-band read lands one
+ // decision before the fold's first band-exit read -- the +1 class again.
+ // First engagement on the shipped bytes: the 176 decision (the cycle-2 stall
+ // swing's first glide tick-start; the pre-176 real lifts' pads are out of
+ // band at every glide tick-start until their completion -- the wave-31 hold
+ // class: 1.2383e-3 m @159, 6.29e-4 m @174).
+ uint64_t hind_step_stall_[2]={0,0};        // the per-swing stall clock (held ticks, reset at each fire; census)
+ bool hind_step_stand_[2]={false,false};    // the stand-first hold is pinned this tick
+ V hind_step_stand_from_[2]={V{},V{}};      // the pinned pad spots (planar re-captured every pinned tick)
+ double hind_step_stand_y_[2]={0.,0.};      // the FLOOR ANCHOR: the pads' height captured at the arm tick
+ double hind_step_stand_mp_[2]={0.,0.};     // the pinned MP angle (re-captured every pinned tick)
+ uint64_t hind_step_stand_ticks_[2]={0,0};  // the pinned-tick census
+ bool hind_stand_hold(size_t hl)const{
+  size_t o=hl==0?1:0;
+  if(hind_step_mode_[o]!=1)return false;              // the exchange era only
+  if(hind_step_last_td_[hl]==0)return false;          // the ride era only
+  if(!(hind_step_t_[o]>=1.))return false;             // the swing UNDERWAY (not the same-tick fire)
+  if(!touching_prev_[hl]||!touching_prev_[o])return false;
+  // THE DESCENT ARM (the amendment): the swing's tick-start touching class is
+  // the mechanism's own clock -- the pads in the band whether NEVER-LEFT (the
+  // stall swings) or RETURNED (the real swings' descent re-entry, the mined
+  // +1 class's own face). The wave-22 hysteresis is the read's dead-band.
+  // The t>=1 guard excludes the fire tick itself: a just-fired leg is in-band
+  // BY THE LIFT-FIRST HOLD's own design, and the same-tick loop order (leg 0
+  // fires before leg 1's decision) would otherwise pin the carrier at the
+  // fire -- measured: the 142 one-tick pin derailed the whole ride.
+  return true;}
  bool hind_step_held_[2]={false,false};     // the lift-first hold is armed
  int hind_step_clear_tick_[2]={-1,-1};      // the tick the release quantum cleared
  uint64_t hind_step_hold_ticks_[2]={0,0};   // the held-tick census
@@ -1446,6 +1499,16 @@ class GaitWalker {
       double qh,qk,qa;hind_step_ik(hl,fe,tgt,qh,qk,qa);
       target=dr.joint=="hip"?qh:dr.joint=="knee"?qk:dr.joint=="ankle"?qa:hind_step_mp_[hl];
      }else{
+     // THE STAND-FIRST HOLD (wave 33): the carrier's pads are pinned at the
+     // spots captured at the arm tick -- the same whole-branch replacement
+     // the wave-29 glide hold makes (the designed stance tables AND the
+     // wave-27 ff both displaced): the unloaded columns cannot lift the pad.
+     if(hind_step_stand_[hl]){
+      if(!have_fe){fe=evaluate(s_);have_fe=true;}
+      V stgt=hind_step_stand_from_[hl];stgt[1]=hind_step_stand_y_[hl];
+      double qh,qk,qa;hind_step_ik(hl,fe,stgt,qh,qk,qa);
+      target=dr.joint=="hip"?qh:dr.joint=="knee"?qk:dr.joint=="ankle"?qa:hind_step_stand_mp_[hl];
+     }else{
      double qstar[4];tables_.at(phi_[hl],qstar);
      target=qstar[dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3];
      // THE HIND EXTENSION LAW (wave 27, receipt_wave27.json): the height
@@ -1456,7 +1519,7 @@ class GaitWalker {
      // swings; it resumes at the next TD. No gain bytes change. The torque
      // is read at the drive's COORDINATE row (last_torque_ is n_-indexed).
      if(hind_height_hold_latched_&&touching_prev_[hl])
-      target+=last_torque_[c]/kp_[d];}}}
+      target+=last_torque_[c]/kp_[d];}}}}
 
    tau[c]=(std::max)(-dr.cap,(std::min)(dr.cap,kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c]));}
   // The source model's POSTURE CONTROL (the pinned fulltext: the trunk pitch
@@ -1937,6 +2000,9 @@ class GaitWalker {
   hind_step_last_fire_[0]=hind_step_last_fire_[1]=0;hind_step_last_td_[0]=hind_step_last_td_[1]=0;
   hind_step_held_[0]=hind_step_held_[1]=false;hind_step_clear_tick_[0]=hind_step_clear_tick_[1]=-1;
   hind_step_hold_ticks_[0]=hind_step_hold_ticks_[1]=0;hind_step_alt_[0]=hind_step_alt_[1]=0;
+  hind_step_stall_[0]=hind_step_stall_[1]=0;
+  hind_step_stand_[0]=hind_step_stand_[1]=false;hind_step_stand_ticks_[0]=hind_step_stand_ticks_[1]=0;
+  hind_step_stand_mp_[0]=hind_step_stand_mp_[1]=0.;
   hind_step_alt_due_[0]=hind_step_alt_due_[1]=0;hind_step_deadline_tick_[0]=hind_step_deadline_tick_[1]=0;
   hind_step_deadline_fires_[0]=hind_step_deadline_fires_[1]=0;
   hind_step_dl_unload_[0]=hind_step_dl_unload_[1]=0;hind_step_unload_fires_[0]=hind_step_unload_fires_[1]=0;
@@ -2064,7 +2130,7 @@ class GaitWalker {
       // evaluation -- a static vertical demand until the band clears.
       double g1=gap_of(e,hind_heel_pt_[hl]),g2=gap_of(e,hind_mp_pt_[hl]);
       if((g1<g2?g1:g2)>kTouch+kReleaseBand){hind_step_held_[hl]=false;hind_step_clear_tick_[hl]=(int)ticks_;}
-      else ++hind_step_hold_ticks_[hl];}
+      else{++hind_step_hold_ticks_[hl];++hind_step_stall_[hl];}}
      ++hind_step_t_[hl];
      // THE GLIDE-RETURN LAW (wave 31, receipt_wave31.json): A REPLANT IS NOT
      // COMPLETE UNTIL THE BAND ENTRY. The wave-28..30 clocked TD delivered the
@@ -2115,6 +2181,39 @@ class GaitWalker {
       uint64_t dl=hind_deadline(hl,tair,&is_unload);
       hind_step_deadline_tick_[hl]=dl;
       hind_step_dl_unload_[hl]=is_unload?1:0;}
+     // THE STAND-FIRST HOLD (wave 33): arm/disarm per decision tick, BEFORE
+     // any gate continue -- the carrier must be pinned while the swing's pads
+     // are in the band (the stall's never-left or the descent's returned
+     // read), released the tick the other completes OR the swing's pads clear
+     // (the real lift's own era: the stance columns resume). THE LATCH WAS
+     // TRIED AND REVERTED (the fourth amended build, receipt): a hold held
+     // through the swing's airborne era removed the vault's pivot for the
+     // whole glide -- the planar re-capture folded the leg under the hauling
+     // body (the R's hip 63 deg), the body launched, the impact-event budget
+     // refused at 215. The planar re-capture needs the columns' periodic
+     // resumption to re-establish the pivot; the latch's falsifier fired and
+     // the bytes were restored. The pin re-captures its planar target every
+     // pinned tick; the y-anchor is captured once at the arm tick (the floor
+     // anchor, the second amendment).
+     if(hind_stand_hold(hl)){
+      auto p1=e.point(points_[hind_heel_pt_[hl]].index,points_[hind_heel_pt_[hl]].local).first;
+      auto p2=e.point(points_[hind_mp_pt_[hl]].index,points_[hind_mp_pt_[hl]].local).first;
+      for(int i2=0;i2<3;++i2)hind_step_stand_from_[hl][i2]=(p1[i2]+p2[i2])/2.;
+      hind_step_stand_mp_[hl]=s_.q[hind_coord_[hl][3]];
+      if(!hind_step_stand_[hl]){
+       // THE FLOOR ANCHOR (the second amendment): the pads' HEIGHT is captured
+       // ONCE at the arm tick -- the vault must roll the body OVER the pinned
+       // pads (the planar position stays re-captured, the pads slide with the
+       // drag), only the unload-lift's HEIGHT demand is held down.
+       hind_step_stand_y_[hl]=hind_step_stand_from_[hl][1];
+       hind_step_stand_[hl]=true;
+#ifdef GAIT_EVENT_TRACE
+       std::fprintf(stderr,"[hindstep] standhold leg=%zu tick=%llu swing_stall=%llu\n",
+        hl,(unsigned long long)ticks_,(unsigned long long)hind_step_stall_[hl==0?1:0]);
+#endif
+      }
+      ++hind_step_stand_ticks_[hl];}
+     else hind_step_stand_[hl]=false;
      bool live_slot=phi_[hl]>=TOE_OFF&&touching_prev_[hl];
      bool alt_fire=hind_step_alt_due_[hl]!=0&&touching_prev_[hl];
      if(!live_slot&&!alt_fire)continue; // a live slot or a due alternation only
@@ -2202,7 +2301,7 @@ class GaitWalker {
      // release quantum clears).
      hind_step_mode_[hl]=1;hind_step_t_[hl]=0.;
      hind_step_alt_[hl]=live_slot?0:1;
-     hind_step_held_[hl]=true;hind_step_clear_tick_[hl]=-1;
+     hind_step_held_[hl]=true;hind_step_clear_tick_[hl]=-1;hind_step_stall_[hl]=0;
      ++hind_step_fires_[hl];hind_step_last_fire_[hl]=ticks_;
      auto p1=e.point(points_[hind_heel_pt_[hl]].index,points_[hind_heel_pt_[hl]].local).first;
      auto p2=e.point(points_[hind_mp_pt_[hl]].index,points_[hind_mp_pt_[hl]].local).first;
@@ -2429,7 +2528,11 @@ class GaitWalker {
       {"fold_budget_ticks",(double)kFoldBudgetTicks},
       // THE UNLOAD-LIFT DEADLINE's census fields (wave 32). Read-only.
       {"deadline_unload",hind_step_dl_unload_[hl]!=0},
-      {"unload_fires",hind_step_unload_fires_[hl]}});}
+      {"unload_fires",hind_step_unload_fires_[hl]},
+      // THE STAND-FIRST HOLD's census fields (wave 33). Read-only.
+      {"swing_stall_ticks",hind_step_stall_[hl]},
+      {"stand_hold",hind_step_stand_[hl]},
+      {"stand_hold_ticks",hind_step_stand_ticks_[hl]}});}
     gait["hind_step"]=hs;}}
   return {{"sim_time_s",ticks_*dt_},{"ticks",ticks_},{"mode","native_gait_walker"},{"joints",joints},
    {"config",config_},{"power",config_["power"]},{"gait",gait},
