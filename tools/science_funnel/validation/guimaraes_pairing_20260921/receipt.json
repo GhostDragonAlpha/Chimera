@@ -1,0 +1,71 @@
+{
+ "schema": "chimera.guimaraes_pairing_validation.v1",
+ "written_utc": "2026-09-21T03:19:52Z",
+ "written_before_build": true,
+ "agent": "guimaraes pairing lane (branch agent/guimaraes-pairing-20260921 off adapter head bbbc4d67), GLM 5.3",
+ "prior": "adapter head bbbc4d67 (agent/osim4-adapter-20260920) emitted the Wiseman 2026 macaque assembly with force_runtime_ready=false on all 36 muscles and a measured name pairing table (validation/osim4_adapter_20260920/guimaraes_match_table.json: 28 exact / 8 split-homolog deferred / 6 Guimaraes-only / 0 unmatched) carrying NO numbers, because the admitted Guimaraes batch was not on that lineage. This lane pairs the numbers without merging the carrier.",
+ "reachability_measured_before_build": {
+  "carrier_commit": "46ed85a3ba1e451cf5b02f068134bf6801dbd258 (intake-muscle: admit Guimaraes 2026 hindlimb architecture + Oku 2021 macaque bipedal series, 1948 records)",
+  "carrier_ref": "refs/remotes/origin/agent/skeleton-movie-20260919 (fetched into this clone from the shared origin; also present in E:/ChimeraWork/osim-agent and E:/ChimeraWork/osim4-agent local stores)",
+  "carrier_verified": "git merge-base --is-ancestor 46ed85a3 refs/remotes/origin/agent/skeleton-movie-20260919 -> true, measured 2026-09-21T03:19:52Z before any build",
+  "access": "READ-ONLY via git show <commit>:<path> only; the carrier ref is never merged, never modified, never checked out",
+  "batch_paths_at_46ed85a3": [
+   "tools/science_funnel/data/guimaraes_arch/AJPA-190-e70329-s001.xlsx",
+   "tools/science_funnel/data/guimaraes_arch/AJPA-190-e70329-s002.docx",
+   "tools/science_funnel/data/guimaraes_arch/PMC13425262_fulltext.xml",
+   "tools/science_funnel/data/guimaraes_arch/download_receipt.json"
+  ],
+  "xlsx_pin": {
+   "path": "tools/science_funnel/data/guimaraes_arch/AJPA-190-e70329-s001.xlsx",
+   "bytes": 321899,
+   "sha256": "08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678",
+   "pin_authority": "download_receipt.json at 46ed85a3 (EuropePMC PMC13425262 supplementaryFiles member), cross-verified by that lane against the dbhunt dossier C1",
+   "verified_before_build": "git show 46ed85a3:<path> | sha256sum == pin, measured before any number was read"
+  }
+ },
+ "rule0": {
+  "statement": "The 28 exact-matched Wiseman macaque muscles can be lawfully force-annotated NOW, without merging the carrier, by reading the admitted Guimaraes 2026 Macaca mulatta rows sha-pinned at 46ed85a3 through refs/remotes/origin/agent/skeleton-movie-20260919 and deriving each max isometric force with the repo's own preregistered specific-tension datum (LightEngine/kinematic/muscles.py SPECIFIC_TENSION_N_PER_CM2 = 30.0 N/cm^2: F_max_N = 30.0 * PCSA_m2 * 1e4) - flipping force_runtime_ready on EXACTLY those 28 records, keeping the 8 EDL/FDL digit-slip records deferred (per-slip force division is an unstated law), and recording the 6 Guimaraes-only muscles (GemInf, GemSup, ObtExt, ObtInt, PLANT, POP) as present-in-batch/absent-in-model with their batch numbers.",
+  "prediction": "Measured BEFORE reading any sheet value: (P1) the xlsx extracted at the carrier sha-matches the pin 08ead4a9... (already verified true before this file was written); (P2) its Macaca mulatta sheet holds exactly 36 data rows whose muscle-name set equals guimaraes_name_pairing.json's guimaraes_names_36, each of the 28 exact names appearing exactly once; (P3) every one of the 36 macaque rows passes the batch's own laws as re-measured here (PCSA closure m/(1060 kg/m^3 * FL) and belly+tendon mass additivity, both 2%) - the admitting lane's 49 quarantined rows all live in the other 5 species sheets; (P4) the derived batch total F_36 = 30e4 * sum(PCSA over 36 rows) lands between 2000 and 12000 N for the 8 kg adult male specimen (hindlimb architecture of an 8 kg primate), with the plantarflexor group SOL+LG+MG contributing the largest single-muscle forces; (P5) the 6 absent muscles' PCSA sums to less than 15% of the batch total (they are the deep hip rotators, plantaris and popliteus - small muscles); (P6) the arithmetic closes exactly: F_28 + F(EDL) + F(FDL) + sum(F_absent6) == F_36 to within 1e-9 relative, because every term is 30e4 * PCSA and the PCSA sets partition the 36 rows; (P7) two independent runs of the builder produce byte-identical artifacts; (P8) test_wiseman_osim stays 12/12 (baseline measured 12/12 before any change) and the science_funnel suite's failure set is unchanged from its pre-existing baseline (4 failed / 16 errors, all native-toolchain or the known cross-machine store-drift failure, none in test_wiseman_osim).",
+  "falsifiers": {
+   "F1_pin_lawfulness": "Every number derives from xlsx bytes whose sha256 equals 08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678, extracted from commit 46ed85a3 which merge-base --is-ancestor confirms rides refs/remotes/origin/agent/skeleton-movie-20260919. FALSIFIED if the bytes drift, the ancestry fails, or any number can be shown to come from anywhere else.",
+   "F2_row_identity": "The Macaca mulatta sheet yields exactly 36 data rows matching guimaraes_names_36, each exact-matched name found exactly once, all rows passing the re-measured batch laws. FALSIFIED on any name mismatch, duplicate, quarantine, or count != 36.",
+   "F3_audit_completeness": "The audit table carries one row per EMITTED number (muscle, field, sheet row, raw cell text, parsed SI value, provenance pins), and a completeness scan inside the builder proves the set of numbers appearing in the artifacts equals the set audited. FALSIFIED if any emitted number lacks its audit row or vice versa.",
+   "F4_provenance_on_every_force": "No force number appears in any emitted artifact outside a record carrying provenance (source ref + commit + path + member sha256 + sheet + row + law). FALSIFIED if a bare number is found.",
+   "F5_determinism": "Two independent builder invocations produce byte-identical artifacts (sha256 equality, no timestamps in artifacts). FALSIFIED on any byte difference.",
+   "F6_closure_arithmetic": "F_28 + F(EDL) + F(FDL) + sum over the 6 absent == F_36 at 1e-9 relative tolerance, and every per-muscle force equals 30.0 * PCSA_cm2 exactly. FALSIFIED if the sums part or any force deviates from the law.",
+   "F7_tests_green": "tools/science_funnel/tests/test_wiseman_osim.py passes 12/12 after the build and the full-suite failure set equals the pre-existing baseline measured before any lane change. FALSIFIED if the adapter's tests regress or a new failure appears."
+  }
+ },
+ "force_law": {
+  "datum": "SPECIFIC_TENSION_N_PER_CM2 = 30.0",
+  "datum_home": "LightEngine/kinematic/muscles.py line 79 (ANATOMY-DATUM per that module's own header: the textbook isometric plateau of vertebrate skeletal muscle; the module states 'Nothing is tuned')",
+  "muscles_py_sha256_at_preregistration": "e807d7f5533dcae06c338f6f053655ac0212073bac08f1d6e150e0808f51488a",
+  "derivation": "F_max_N = 30.0 * (PCSA_m2 * 1e4). No number is chosen by this lane: sigma is a repo datum, PCSA is a measured sheet value.",
+  "pennation": "carried as measured datum (deg, sheet avg_penn_deg) and converted to rad with the repo's units.convert; rows without a pennation value carry null plus an explicit treat-as-0 note - the Millard placeholder 0 is NOT silently reused",
+  "optimal_fiber_length": "sheet FL_m (resting fascicle length, meters - the sheet column the batch's own PCSA closure law ties to mass) mapped to Millard optimal_fiber_length; the mapping is declared, standard OpenSim practice",
+  "tendon_slack_length": "NO lawful measured value exists (the batch's external tendon length is a dissected length whose additivity the batch itself does not enforce; no repo law maps it to slack length); the field stays ABSENT from force_parameters and its absence is declared - the placeholder 1 m is not carried as if real"
+ },
+ "artifact_plan": {
+  "builder": "tools/science_funnel/validation/guimaraes_pairing_20260921/build_force_annotation.py (committed; stdlib-only xlsx reader mirroring the admitting lane's adapter; reads the carrier via git show; no timestamps in output)",
+  "outputs": [
+   "tools/science_funnel/validation/guimaraes_pairing_20260921/macaque_assembly_force_annotated.json (the adapter's macaque_assembly.json with per-muscle force records, force_runtime_ready true on exactly the 28, and a force_pairing_status section naming the 8 deferred and the 6 absent)",
+   "tools/science_funnel/validation/guimaraes_pairing_20260921/audit_table.json (muscle -> Guimaraes row -> sha for every emitted number + the closure arithmetic)",
+   "this receipt, results appended below the line only"
+  ],
+  "not_done_here": "the store proposal/fragment and live-store admission are downstream (the committed adapter fragment stays as-is); the carrier is never merged; E:/PythonChimera, port 8127 and master are never touched"
+ },
+ "input_pins_at_preregistration": {
+  "adapter_assembly_sha256": "fcc119b953cf93d957760770e3d24884f79f9db14396e7f12b7ec4ec7857f792",
+  "adapter_match_table_sha256": "2b415b4fb34a37bd24922526512a7503c39e827dada39bc5841555f8618540fe",
+  "adapter_name_pairing_sha256": "c2e5cc70bdc33e4172013222a4527ee086a9b7e39147dbbe25e9d1b5e31431d6",
+  "wiseman_osim_py_sha256": "84aed9dc2621afa706a2af08af12ff150953898a99f3f23377344393f193435e",
+  "head": "bbbc4d67690042268f8f0057a1c1e4fb0faea461"
+ },
+ "baseline_tests_before_build": {
+  "test_wiseman_osim": "12 passed",
+  "science_funnel_suite": "4 failed, 110 passed, 16 errors (pre-existing, none in test_wiseman_osim: 3 native-scene/compiler failures, 1 known cross-machine store-drift failure in test_macaque_anatomy, 16 collection errors in test_force_arm/test_force_compiler native toolchain)",
+  "measured_utc": "2026-09-21T03:19:52Z"
+ },
+ "results_note": "Filled by the run BELOW THIS LINE ONLY; the sections above are the preregistration and are never edited after the first commit.",
+ "results": null
+}
