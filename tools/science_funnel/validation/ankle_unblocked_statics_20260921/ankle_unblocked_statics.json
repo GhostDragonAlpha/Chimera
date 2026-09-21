@@ -1,0 +1,6720 @@
+{
+ "ankle_cap_trace": {
+  "input": "inputs/ankle_arms_book.json (git blob f55ebe5f at b15ff31e, branch agent/ankle-arms-20260921)",
+  "key_paths": {
+   "dorsal": "cap_book.ankle_dorsiflexion.V1_S2_oku_peaks_si_matched_arms.cap_N_m",
+   "plantar": "cap_book.ankle_plantarflexion.V1_S2_oku_peaks_si_matched_arms.cap_N_m"
+  },
+  "sha256": "7ce03069c1e033b52db0fb315d218eb2223e79a67a9018123da206d68adcb6f6",
+  "sign_gate": "the ankle book's cap_law: 'plantar negative / dorsal positive'",
+  "values": {
+   "D_S2_dorsal": 0.149825,
+   "D_S2_plantar": 0.748112,
+   "D_dorsal": 1.251106,
+   "D_plantar": 6.247077
+  }
+ },
+ "cap_provenance_classes": {
+  "HELD_FROM_A": "this lane re-derives nothing for the hip (the posture-cap lane's 10.54 N.m amendment stays banked-unconsumed)",
+  "HELD_FROM_A_KEYED_TO_HIP": "the posture cap stays at the (a) hip-keyed value",
+  "LIVE_DOC": "1.25 x the DOC-ROUNDED Oku walk peaks - the live graph-contract/engine pin (torque book audit)",
+  "LIVE_DOC_HELD_AT_A_STATICS_LANE_BLOCKED": "the (b)/(c) ankle cap the statics lane doc-held (blocked at its base) - carried UNCHANGED for the chain check, superseded by (d)",
+  "LIVE_DOC_KEYED_TO_HIP": "the posture drive borrows the hip cap (cap-on-each, the live contract) - the (a) set's class, carried for the chain check",
+  "MEASURED_V1_S1_ANKLE_BOOK_DIRECTION_SPLIT_PLANTAR_NEG_DORSAL_POS": "the ankle-arms lane's MEASURED wrap-arm caps, V1_S1, both directions, sign-gated per the book's own cap_law (blob f55ebe5f at b15ff31e)",
+  "MEASURED_V1_S1_BOOK": "Oku measured walk forces x pulley-lane MEASURED deposit arms (hind book V1_S1)",
+  "PROVISIONAL_V2_S1_BOOK": "PCSA x sigma x cos(pennation) x measured deposit arms (hind book V2_S1) - PROVISIONAL by the standing order (the sigma caveat)",
+  "SI_MATCHED_GATE_ANKLE_BOOK_DIRECTION_SPLIT": "the ankle book's V1_S2 caps (arms x k = 0.11975394), both directions",
+  "SI_MATCHED_GATE_BOOK": "the hind book's S2 caps (arms x k) - the standing scale gate, INVERSION bracket"
+ },
+ "cap_sets": {
+  "A_live_doc": {
+   "caps": {
+    "ankle": 7.4,
+    "hip": 11.2125,
+    "knee": 6.6375,
+    "mp": 0.8875,
+    "posture": 11.2125
+   },
+   "provenance_class": {
+    "ankle": "LIVE_DOC",
+    "hip": "LIVE_DOC",
+    "knee": "LIVE_DOC",
+    "mp": "LIVE_DOC",
+    "posture": "LIVE_DOC_KEYED_TO_HIP"
+   }
+  },
+  "B_measured_v1_s1": {
+   "caps": {
+    "ankle": 7.4,
+    "hip": 11.2125,
+    "knee": 9.576795,
+    "mp": 1.657925,
+    "posture": 11.2125
+   },
+   "provenance_class": {
+    "ankle": "LIVE_DOC_HELD_AT_A_STATICS_LANE_BLOCKED",
+    "hip": "HELD_FROM_A",
+    "knee": "MEASURED_V1_S1_BOOK",
+    "mp": "MEASURED_V1_S1_BOOK",
+    "posture": "HELD_FROM_A_KEYED_TO_HIP"
+   }
+  },
+  "C_provisional_v2_s1": {
+   "caps": {
+    "ankle": 7.4,
+    "hip": 11.2125,
+    "knee": 36.247782,
+    "mp": 4.636664,
+    "posture": 11.2125
+   },
+   "provenance_class": {
+    "ankle": "LIVE_DOC_HELD_AT_A_STATICS_LANE_BLOCKED",
+    "hip": "HELD_FROM_A",
+    "knee": "PROVISIONAL_V2_S1_BOOK",
+    "mp": "PROVISIONAL_V2_S1_BOOK",
+    "posture": "HELD_FROM_A_KEYED_TO_HIP"
+   }
+  },
+  "D_measured_ankle_unblocked": {
+   "caps": {
+    "ankle": 6.247077,
+    "hip": 11.2125,
+    "knee": 9.576795,
+    "mp": 1.657925,
+    "posture": 11.2125
+   },
+   "provenance_class": {
+    "ankle": "MEASURED_V1_S1_ANKLE_BOOK_DIRECTION_SPLIT_PLANTAR_NEG_DORSAL_POS",
+    "hip": "HELD_FROM_A",
+    "knee": "MEASURED_V1_S1_BOOK",
+    "mp": "MEASURED_V1_S1_BOOK",
+    "posture": "HELD_FROM_A_KEYED_TO_HIP"
+   }
+  }
+ },
+ "cap_sets_direction_split": {
+  "D_S2_si_matched_gate": {
+   "ankle_dorsiflexion_tau_positive": 0.149825,
+   "ankle_plantarflexion_tau_negative": 0.748112
+  },
+  "D_measured_ankle_unblocked": {
+   "ankle_dorsiflexion_tau_positive": 1.251106,
+   "ankle_plantarflexion_tau_negative": 6.247077
+  }
+ },
+ "demand_trace": {
+  "ankle_sign_classes": {
+   "dorsiflexion_tau_positive_phis": [
+    0.0,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25
+   ],
+   "plantarflexion_tau_negative_phis": [
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.449
+   ]
+  },
+  "input": "inputs/stance_hold.snapshot.json (byte copy, sha equals the statics receipt's pin)",
+  "key_path": "stance_nodes[].tau_{hip,knee,ankle,mp,posture}_Nm",
+  "sha256": "71e40cd8a161938a3a358792076dda0f98966a8909ae564cec7774a61126a5e5"
+ },
+ "derived_from_commit": "eab707f5 (branch agent/measured-caps-statics-20260921); ankle artifacts from b15ff31e (branch agent/ankle-arms-20260921, blob f55ebe5f)",
+ "hind_book_cap_trace": {
+  "input": "tools/science_funnel/validation/hind_torque_book_20260921/hind_torque_book.json (in-tree at eab707f5)",
+  "key_paths": {
+   "knee_B": "rederivation.knee_extension.variants.V1_S1_oku_walk_peaks_deposit_arms.cap_N_m",
+   "knee_C": "rederivation.knee_extension.variants.V2_S1_pcsa_sigma_deposit_arms.cap_N_m",
+   "knee_S2": "rederivation.knee_extension.variants.V1_S2_oku_peaks_si_matched_arms.cap_N_m",
+   "mp_B": "rederivation.mtp_flexion.variants.V1_S1_oku_walk_peaks_deposit_arms_equal_split.cap_N_m",
+   "mp_C": "rederivation.mtp_flexion.variants.V2_S1_pcsa_sigma_deposit_arms.cap_N_m",
+   "mp_S2": "rederivation.mtp_flexion.variants.V1_S2_oku_peaks_si_matched_arms.cap_N_m"
+  },
+  "sha256": "9fc5c0ba09f6ec183d5348bb21cc5dc18b5987240406ccdcdbb34e514e26f01c",
+  "values": {
+   "knee_B": 9.576795,
+   "knee_C": 36.247782,
+   "knee_S2": 1.146859,
+   "mp_B": 1.657925,
+   "mp_C": 4.636664,
+   "mp_S2": 0.198543
+  }
+ },
+ "instrument": {
+  "ankle_column_bit_identical_wave8_vs_wave4": true,
+  "banked_rows": 15,
+  "lineage_note": "the wave-8 corrected MP column is the NAMED variant (the mission's 'use the corrected variant, named'); the ankle/knee/hip/posture columns are re-measured bit-identical here, so no ANKLE verdict depends on the machinery choice",
+  "rows": 15,
+  "wave4_reproduces_banked_exactly": true,
+  "wave4_script_run": "inputs/run_env_wave4/.../derive_stance_hold.py (byte copy of 724f2464, the banked table's generator)",
+  "wave8_script_run": "inputs/run_env/.../derive_stance_hold.py (byte copy of the 4198dbdc head; the wave-8 MP-Jacobian fix)",
+  "wave8_vs_banked_diff_cells": 6
+ },
+ "lane": "ankle-unblocked-statics-20260921",
+ "margin_wall": {
+  "A_live_doc": {
+   "ankle_term_at_phi_0_5": 0.977235,
+   "binder_histogram": {
+    "ankle": 7,
+    "hip": 2,
+    "knee": 8,
+    "posture": 4
+   },
+   "crosses_1_0": false,
+   "headroom_factors": {
+    "ankle": 1.0,
+    "hip": 1.0,
+    "knee": 1.0,
+    "mp": 1.0,
+    "posture": 1.0
+   },
+   "knee_term_at_phi_0_75": 1.322776,
+   "margin_0_9_reachable": false,
+   "max_binder": {
+    "joint": "knee",
+    "phi": 0.75
+   },
+   "max_combined_ratio": 1.322776,
+   "nodes": [
+    {
+     "binder": "posture",
+     "combined": 0.611427,
+     "phi": 0.0,
+     "terms": {
+      "ankle": 0.16683,
+      "hip": 0.611427,
+      "knee": 0.170488,
+      "mp": 0.005207,
+      "posture": 0.611427
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.497697,
+     "phi": 0.05,
+     "terms": {
+      "ankle": 0.162098,
+      "hip": 0.497693,
+      "knee": 0.497697,
+      "mp": 0.005171,
+      "posture": 0.497696
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.802179,
+     "phi": 0.1,
+     "terms": {
+      "ankle": 0.160652,
+      "hip": 0.385424,
+      "knee": 0.802179,
+      "mp": 0.005221,
+      "posture": 0.802179
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.97174,
+     "phi": 0.15,
+     "terms": {
+      "ankle": 0.161089,
+      "hip": 0.315168,
+      "knee": 0.97174,
+      "mp": 0.005257,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.96904,
+     "phi": 0.2,
+     "terms": {
+      "ankle": 0.16072,
+      "hip": 0.342581,
+      "knee": 0.96904,
+      "mp": 0.005187,
+      "posture": 0.328703
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.987291,
+     "phi": 0.25,
+     "terms": {
+      "ankle": 0.160212,
+      "hip": 0.310419,
+      "knee": 0.987291,
+      "mp": 0.005075,
+      "posture": 0.252193
+     }
+    },
+    {
+     "binder": "hip",
+     "combined": 0.965502,
+     "phi": 0.3,
+     "terms": {
+      "ankle": 0.943803,
+      "hip": 0.965502,
+      "knee": 0.182356,
+      "mp": 0.004988,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.932832,
+     "phi": 0.35,
+     "terms": {
+      "ankle": 0.932832,
+      "hip": 0.932832,
+      "knee": 0.203281,
+      "mp": 0.004862,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.941225,
+     "phi": 0.4,
+     "terms": {
+      "ankle": 0.941225,
+      "hip": 0.75799,
+      "knee": 0.107654,
+      "mp": 0.004804,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.966845,
+     "phi": 0.45,
+     "terms": {
+      "ankle": 0.966845,
+      "hip": 0.645543,
+      "knee": 0.00976,
+      "mp": 0.004791,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.977235,
+     "phi": 0.5,
+     "terms": {
+      "ankle": 0.977235,
+      "hip": 0.531864,
+      "knee": 0.120505,
+      "mp": 0.004867,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.952474,
+     "phi": 0.55,
+     "terms": {
+      "ankle": 0.952474,
+      "hip": 0.422729,
+      "knee": 0.244467,
+      "mp": 0.004983,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.842401,
+     "phi": 0.6,
+     "terms": {
+      "ankle": 0.842401,
+      "hip": 0.15808,
+      "knee": 0.507818,
+      "mp": 0.005257,
+      "posture": 0.352235
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.909326,
+     "phi": 0.65,
+     "terms": {
+      "ankle": 0.730353,
+      "hip": 0.151456,
+      "knee": 0.909326,
+      "mp": 0.004247,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 1.258391,
+     "phi": 0.7,
+     "terms": {
+      "ankle": 0.642364,
+      "hip": 0.371683,
+      "knee": 1.258391,
+      "mp": 0.000404,
+      "posture": 0.11917
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 1.322776,
+     "phi": 0.75,
+     "terms": {
+      "ankle": 0.680925,
+      "hip": 0.32599,
+      "knee": 1.322776,
+      "mp": 0.00059,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.897515,
+     "phi": 0.8,
+     "terms": {
+      "ankle": 0.897515,
+      "hip": 0.095437,
+      "knee": 0.892956,
+      "mp": 0.001312,
+      "posture": 0.897515
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.976833,
+     "phi": 0.85,
+     "terms": {
+      "ankle": 0.976833,
+      "hip": 0.774021,
+      "knee": 0.130179,
+      "mp": 0.003272,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.797499,
+     "phi": 0.9,
+     "terms": {
+      "ankle": 0.16575,
+      "hip": 0.405679,
+      "knee": 0.797499,
+      "mp": 0.004105,
+      "posture": 0.797499
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.604249,
+     "phi": 0.95,
+     "terms": {
+      "ankle": 0.165445,
+      "hip": 0.604249,
+      "knee": 0.353115,
+      "mp": 0.004639,
+      "posture": 0.604249
+     }
+    },
+    {
+     "binder": "hip",
+     "combined": 0.581342,
+     "phi": 1.0,
+     "terms": {
+      "ankle": 0.166952,
+      "hip": 0.581342,
+      "knee": 0.19764,
+      "mp": 0.005199,
+      "posture": 0.581342
+     }
+    }
+   ],
+   "nodes_over_0_9": [
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.65,
+    0.7,
+    0.75,
+    0.85
+   ],
+   "nodes_over_1_0": [
+    0.7,
+    0.75
+   ]
+  },
+  "B_measured_v1_s1": {
+   "ankle_term_at_phi_0_5": 0.977235,
+   "binder_histogram": {
+    "ankle": 7,
+    "hip": 2,
+    "knee": 4,
+    "posture": 8
+   },
+   "crosses_1_0": true,
+   "headroom_factors": {
+    "ankle": 1.0,
+    "hip": 1.0,
+    "knee": 0.69308156,
+    "mp": 0.53530769,
+    "posture": 1.0
+   },
+   "knee_term_at_phi_0_75": 0.916792,
+   "margin_0_9_reachable": false,
+   "max_binder": {
+    "joint": "ankle",
+    "phi": 0.5
+   },
+   "max_combined_ratio": 0.977235,
+   "nodes": [
+    {
+     "binder": "posture",
+     "combined": 0.611427,
+     "phi": 0.0,
+     "terms": {
+      "ankle": 0.16683,
+      "hip": 0.611427,
+      "knee": 0.118162,
+      "mp": 0.002787,
+      "posture": 0.611427
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.497696,
+     "phi": 0.05,
+     "terms": {
+      "ankle": 0.162098,
+      "hip": 0.497693,
+      "knee": 0.344945,
+      "mp": 0.002768,
+      "posture": 0.497696
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.802179,
+     "phi": 0.1,
+     "terms": {
+      "ankle": 0.160652,
+      "hip": 0.385424,
+      "knee": 0.555975,
+      "mp": 0.002795,
+      "posture": 0.802179
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.9,
+     "phi": 0.15,
+     "terms": {
+      "ankle": 0.161089,
+      "hip": 0.315168,
+      "knee": 0.673495,
+      "mp": 0.002814,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.671623,
+     "phi": 0.2,
+     "terms": {
+      "ankle": 0.16072,
+      "hip": 0.342581,
+      "knee": 0.671623,
+      "mp": 0.002777,
+      "posture": 0.328703
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.684273,
+     "phi": 0.25,
+     "terms": {
+      "ankle": 0.160212,
+      "hip": 0.310419,
+      "knee": 0.684273,
+      "mp": 0.002717,
+      "posture": 0.252193
+     }
+    },
+    {
+     "binder": "hip",
+     "combined": 0.965502,
+     "phi": 0.3,
+     "terms": {
+      "ankle": 0.943803,
+      "hip": 0.965502,
+      "knee": 0.126387,
+      "mp": 0.00267,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.932832,
+     "phi": 0.35,
+     "terms": {
+      "ankle": 0.932832,
+      "hip": 0.932832,
+      "knee": 0.140891,
+      "mp": 0.002602,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.941225,
+     "phi": 0.4,
+     "terms": {
+      "ankle": 0.941225,
+      "hip": 0.75799,
+      "knee": 0.074613,
+      "mp": 0.002572,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.966845,
+     "phi": 0.45,
+     "terms": {
+      "ankle": 0.966845,
+      "hip": 0.645543,
+      "knee": 0.006765,
+      "mp": 0.002565,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.977235,
+     "phi": 0.5,
+     "terms": {
+      "ankle": 0.977235,
+      "hip": 0.531864,
+      "knee": 0.08352,
+      "mp": 0.002605,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.952474,
+     "phi": 0.55,
+     "terms": {
+      "ankle": 0.952474,
+      "hip": 0.422729,
+      "knee": 0.169436,
+      "mp": 0.002667,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.842401,
+     "phi": 0.6,
+     "terms": {
+      "ankle": 0.842401,
+      "hip": 0.15808,
+      "knee": 0.351959,
+      "mp": 0.002814,
+      "posture": 0.352235
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.9,
+     "phi": 0.65,
+     "terms": {
+      "ankle": 0.730353,
+      "hip": 0.151456,
+      "knee": 0.630237,
+      "mp": 0.002274,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.872168,
+     "phi": 0.7,
+     "terms": {
+      "ankle": 0.642364,
+      "hip": 0.371683,
+      "knee": 0.872168,
+      "mp": 0.000216,
+      "posture": 0.11917
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.916792,
+     "phi": 0.75,
+     "terms": {
+      "ankle": 0.680925,
+      "hip": 0.32599,
+      "knee": 0.916792,
+      "mp": 0.000316,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.897515,
+     "phi": 0.8,
+     "terms": {
+      "ankle": 0.897515,
+      "hip": 0.095437,
+      "knee": 0.618892,
+      "mp": 0.000702,
+      "posture": 0.897515
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.976833,
+     "phi": 0.85,
+     "terms": {
+      "ankle": 0.976833,
+      "hip": 0.774021,
+      "knee": 0.090225,
+      "mp": 0.001752,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.797499,
+     "phi": 0.9,
+     "terms": {
+      "ankle": 0.16575,
+      "hip": 0.405679,
+      "knee": 0.552732,
+      "mp": 0.002197,
+      "posture": 0.797499
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.604249,
+     "phi": 0.95,
+     "terms": {
+      "ankle": 0.165445,
+      "hip": 0.604249,
+      "knee": 0.244738,
+      "mp": 0.002483,
+      "posture": 0.604249
+     }
+    },
+    {
+     "binder": "hip",
+     "combined": 0.581342,
+     "phi": 1.0,
+     "terms": {
+      "ankle": 0.166952,
+      "hip": 0.581342,
+      "knee": 0.136981,
+      "mp": 0.002783,
+      "posture": 0.581342
+     }
+    }
+   ],
+   "nodes_over_0_9": [
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.75,
+    0.85
+   ],
+   "nodes_over_1_0": []
+  },
+  "C_provisional_v2_s1": {
+   "ankle_term_at_phi_0_5": 0.977235,
+   "binder_histogram": {
+    "ankle": 8,
+    "hip": 4,
+    "posture": 9
+   },
+   "crosses_1_0": true,
+   "headroom_factors": {
+    "ankle": 1.0,
+    "hip": 1.0,
+    "knee": 0.18311465,
+    "mp": 0.19140917,
+    "posture": 1.0
+   },
+   "knee_term_at_phi_0_75": 0.24222,
+   "margin_0_9_reachable": false,
+   "max_binder": {
+    "joint": "ankle",
+    "phi": 0.5
+   },
+   "max_combined_ratio": 0.977235,
+   "nodes": [
+    {
+     "binder": "posture",
+     "combined": 0.611427,
+     "phi": 0.0,
+     "terms": {
+      "ankle": 0.16683,
+      "hip": 0.611427,
+      "knee": 0.031219,
+      "mp": 0.000997,
+      "posture": 0.611427
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.497696,
+     "phi": 0.05,
+     "terms": {
+      "ankle": 0.162098,
+      "hip": 0.497693,
+      "knee": 0.091136,
+      "mp": 0.00099,
+      "posture": 0.497696
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.802179,
+     "phi": 0.1,
+     "terms": {
+      "ankle": 0.160652,
+      "hip": 0.385424,
+      "knee": 0.146891,
+      "mp": 0.000999,
+      "posture": 0.802179
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.9,
+     "phi": 0.15,
+     "terms": {
+      "ankle": 0.161089,
+      "hip": 0.315168,
+      "knee": 0.17794,
+      "mp": 0.001006,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "hip",
+     "combined": 0.342581,
+     "phi": 0.2,
+     "terms": {
+      "ankle": 0.16072,
+      "hip": 0.342581,
+      "knee": 0.177445,
+      "mp": 0.000993,
+      "posture": 0.328703
+     }
+    },
+    {
+     "binder": "hip",
+     "combined": 0.310419,
+     "phi": 0.25,
+     "terms": {
+      "ankle": 0.160212,
+      "hip": 0.310419,
+      "knee": 0.180787,
+      "mp": 0.000971,
+      "posture": 0.252193
+     }
+    },
+    {
+     "binder": "hip",
+     "combined": 0.965502,
+     "phi": 0.3,
+     "terms": {
+      "ankle": 0.943803,
+      "hip": 0.965502,
+      "knee": 0.033392,
+      "mp": 0.000955,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.932832,
+     "phi": 0.35,
+     "terms": {
+      "ankle": 0.932832,
+      "hip": 0.932832,
+      "knee": 0.037224,
+      "mp": 0.000931,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.941225,
+     "phi": 0.4,
+     "terms": {
+      "ankle": 0.941225,
+      "hip": 0.75799,
+      "knee": 0.019713,
+      "mp": 0.00092,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.966845,
+     "phi": 0.45,
+     "terms": {
+      "ankle": 0.966845,
+      "hip": 0.645543,
+      "knee": 0.001787,
+      "mp": 0.000917,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.977235,
+     "phi": 0.5,
+     "terms": {
+      "ankle": 0.977235,
+      "hip": 0.531864,
+      "knee": 0.022066,
+      "mp": 0.000932,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.952474,
+     "phi": 0.55,
+     "terms": {
+      "ankle": 0.952474,
+      "hip": 0.422729,
+      "knee": 0.044765,
+      "mp": 0.000954,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.842401,
+     "phi": 0.6,
+     "terms": {
+      "ankle": 0.842401,
+      "hip": 0.15808,
+      "knee": 0.092989,
+      "mp": 0.001006,
+      "posture": 0.352235
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.9,
+     "phi": 0.65,
+     "terms": {
+      "ankle": 0.730353,
+      "hip": 0.151456,
+      "knee": 0.166511,
+      "mp": 0.000813,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.642364,
+     "phi": 0.7,
+     "terms": {
+      "ankle": 0.642364,
+      "hip": 0.371683,
+      "knee": 0.23043,
+      "mp": 7.7e-05,
+      "posture": 0.11917
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.9,
+     "phi": 0.75,
+     "terms": {
+      "ankle": 0.680925,
+      "hip": 0.32599,
+      "knee": 0.24222,
+      "mp": 0.000113,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.897515,
+     "phi": 0.8,
+     "terms": {
+      "ankle": 0.897515,
+      "hip": 0.095437,
+      "knee": 0.163513,
+      "mp": 0.000251,
+      "posture": 0.897515
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.976833,
+     "phi": 0.85,
+     "terms": {
+      "ankle": 0.976833,
+      "hip": 0.774021,
+      "knee": 0.023838,
+      "mp": 0.000626,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.797499,
+     "phi": 0.9,
+     "terms": {
+      "ankle": 0.16575,
+      "hip": 0.405679,
+      "knee": 0.146034,
+      "mp": 0.000786,
+      "posture": 0.797499
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.604249,
+     "phi": 0.95,
+     "terms": {
+      "ankle": 0.165445,
+      "hip": 0.604249,
+      "knee": 0.064661,
+      "mp": 0.000888,
+      "posture": 0.604249
+     }
+    },
+    {
+     "binder": "hip",
+     "combined": 0.581342,
+     "phi": 1.0,
+     "terms": {
+      "ankle": 0.166952,
+      "hip": 0.581342,
+      "knee": 0.036191,
+      "mp": 0.000995,
+      "posture": 0.581342
+     }
+    }
+   ],
+   "nodes_over_0_9": [
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.85
+   ],
+   "nodes_over_1_0": []
+  },
+  "D_S2_si_matched_gate": {
+   "ankle_term_at_phi_0_5": 9.666383,
+   "binder_histogram": {
+    "ankle": 12,
+    "knee": 9
+   },
+   "crosses_1_0": false,
+   "headroom_factors": {
+    "ankle": 9.89156704,
+    "hip": 1.0,
+    "knee": 5.78754668,
+    "mp": 4.47006442,
+    "posture": 1.0
+   },
+   "knee_term_at_phi_0_75": 7.65563,
+   "margin_0_9_reachable": false,
+   "max_binder": {
+    "joint": "ankle",
+    "phi": 0.5
+   },
+   "max_combined_ratio": 9.666383,
+   "nodes": [
+    {
+     "binder": "ankle",
+     "combined": 1.650211,
+     "phi": 0.0,
+     "terms": {
+      "ankle": 1.650211,
+      "hip": 0.611427,
+      "knee": 0.986705,
+      "mp": 0.023274,
+      "posture": 0.611427
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 2.880444,
+     "phi": 0.05,
+     "terms": {
+      "ankle": 1.603399,
+      "hip": 0.497693,
+      "knee": 2.880444,
+      "mp": 0.023116,
+      "posture": 0.497696
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 4.642648,
+     "phi": 0.1,
+     "terms": {
+      "ankle": 1.589102,
+      "hip": 0.385424,
+      "knee": 4.642648,
+      "mp": 0.023337,
+      "posture": 0.802179
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 5.623993,
+     "phi": 0.15,
+     "terms": {
+      "ankle": 1.593424,
+      "hip": 0.315168,
+      "knee": 5.623993,
+      "mp": 0.0235,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 5.608362,
+     "phi": 0.2,
+     "terms": {
+      "ankle": 1.589777,
+      "hip": 0.342581,
+      "knee": 5.608362,
+      "mp": 0.023187,
+      "posture": 0.328703
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 5.71399,
+     "phi": 0.25,
+     "terms": {
+      "ankle": 1.584747,
+      "hip": 0.310419,
+      "knee": 5.71399,
+      "mp": 0.022686,
+      "posture": 0.252193
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 9.33569,
+     "phi": 0.3,
+     "terms": {
+      "ankle": 9.33569,
+      "hip": 0.965502,
+      "knee": 1.055392,
+      "mp": 0.022299,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 9.227169,
+     "phi": 0.35,
+     "terms": {
+      "ankle": 9.227169,
+      "hip": 0.932832,
+      "knee": 1.1765,
+      "mp": 0.021732,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 9.310194,
+     "phi": 0.4,
+     "terms": {
+      "ankle": 9.310194,
+      "hip": 0.75799,
+      "knee": 0.623054,
+      "mp": 0.021475,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 9.563611,
+     "phi": 0.45,
+     "terms": {
+      "ankle": 9.563611,
+      "hip": 0.645543,
+      "knee": 0.056487,
+      "mp": 0.021416,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 9.666383,
+     "phi": 0.5,
+     "terms": {
+      "ankle": 9.666383,
+      "hip": 0.531864,
+      "knee": 0.697429,
+      "mp": 0.021754,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 9.421461,
+     "phi": 0.55,
+     "terms": {
+      "ankle": 9.421461,
+      "hip": 0.422729,
+      "knee": 1.414864,
+      "mp": 0.022274,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 8.332664,
+     "phi": 0.6,
+     "terms": {
+      "ankle": 8.332664,
+      "hip": 0.15808,
+      "knee": 2.939022,
+      "mp": 0.0235,
+      "posture": 0.352235
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 7.224335,
+     "phi": 0.65,
+     "terms": {
+      "ankle": 7.224335,
+      "hip": 0.151456,
+      "knee": 5.262766,
+      "mp": 0.018985,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 7.282996,
+     "phi": 0.7,
+     "terms": {
+      "ankle": 6.353984,
+      "hip": 0.371683,
+      "knee": 7.282996,
+      "mp": 0.001806,
+      "posture": 0.11917
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 7.65563,
+     "phi": 0.75,
+     "terms": {
+      "ankle": 6.73542,
+      "hip": 0.32599,
+      "knee": 7.65563,
+      "mp": 0.002636,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 8.877825,
+     "phi": 0.8,
+     "terms": {
+      "ankle": 8.877825,
+      "hip": 0.095437,
+      "knee": 5.168027,
+      "mp": 0.005866,
+      "posture": 0.897515
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 9.662413,
+     "phi": 0.85,
+     "terms": {
+      "ankle": 9.662413,
+      "hip": 0.774021,
+      "knee": 0.753417,
+      "mp": 0.014627,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 4.615563,
+     "phi": 0.9,
+     "terms": {
+      "ankle": 1.63953,
+      "hip": 0.405679,
+      "knee": 4.615563,
+      "mp": 0.018348,
+      "posture": 0.797499
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 2.043672,
+     "phi": 0.95,
+     "terms": {
+      "ankle": 1.636515,
+      "hip": 0.604249,
+      "knee": 2.043672,
+      "mp": 0.020738,
+      "posture": 0.604249
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.651422,
+     "phi": 1.0,
+     "terms": {
+      "ankle": 1.651422,
+      "hip": 0.581342,
+      "knee": 1.143851,
+      "mp": 0.023239,
+      "posture": 0.581342
+     }
+    }
+   ],
+   "nodes_over_0_9": [
+    0.0,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    0.95,
+    1.0
+   ],
+   "nodes_over_1_0": [
+    0.0,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    0.95,
+    1.0
+   ]
+  },
+  "D_dorsal_bracket": {
+   "ankle_term_at_phi_0_5": 5.780115,
+   "binder_histogram": {
+    "ankle": 21
+   },
+   "crosses_1_0": false,
+   "headroom_factors": {
+    "ankle": 5.91476661,
+    "hip": 1.0,
+    "knee": 0.69308156,
+    "mp": 0.53530769,
+    "posture": 1.0
+   },
+   "knee_term_at_phi_0_75": 0.916792,
+   "margin_0_9_reachable": false,
+   "max_binder": {
+    "joint": "ankle",
+    "phi": 0.5
+   },
+   "max_combined_ratio": 5.780115,
+   "named_law": "the receipt's DORSAL bracket: every wall ankle term priced at the dorsal cap 1.251106 - the pessimistic direction of the named plantar law",
+   "nodes": [
+    {
+     "binder": "ankle",
+     "combined": 0.986761,
+     "phi": 0.0,
+     "terms": {
+      "ankle": 0.986761,
+      "hip": 0.611427,
+      "knee": 0.118162,
+      "mp": 0.002787,
+      "posture": 0.611427
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.958769,
+     "phi": 0.05,
+     "terms": {
+      "ankle": 0.958769,
+      "hip": 0.497693,
+      "knee": 0.344945,
+      "mp": 0.002768,
+      "posture": 0.497696
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.95022,
+     "phi": 0.1,
+     "terms": {
+      "ankle": 0.95022,
+      "hip": 0.385424,
+      "knee": 0.555975,
+      "mp": 0.002795,
+      "posture": 0.802179
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.952805,
+     "phi": 0.15,
+     "terms": {
+      "ankle": 0.952805,
+      "hip": 0.315168,
+      "knee": 0.673495,
+      "mp": 0.002814,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.950624,
+     "phi": 0.2,
+     "terms": {
+      "ankle": 0.950624,
+      "hip": 0.342581,
+      "knee": 0.671623,
+      "mp": 0.002777,
+      "posture": 0.328703
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.947616,
+     "phi": 0.25,
+     "terms": {
+      "ankle": 0.947616,
+      "hip": 0.310419,
+      "knee": 0.684273,
+      "mp": 0.002717,
+      "posture": 0.252193
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 5.582374,
+     "phi": 0.3,
+     "terms": {
+      "ankle": 5.582374,
+      "hip": 0.965502,
+      "knee": 0.126387,
+      "mp": 0.00267,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 5.517483,
+     "phi": 0.35,
+     "terms": {
+      "ankle": 5.517483,
+      "hip": 0.932832,
+      "knee": 0.140891,
+      "mp": 0.002602,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 5.567128,
+     "phi": 0.4,
+     "terms": {
+      "ankle": 5.567128,
+      "hip": 0.75799,
+      "knee": 0.074613,
+      "mp": 0.002572,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 5.718662,
+     "phi": 0.45,
+     "terms": {
+      "ankle": 5.718662,
+      "hip": 0.645543,
+      "knee": 0.006765,
+      "mp": 0.002565,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 5.780115,
+     "phi": 0.5,
+     "terms": {
+      "ankle": 5.780115,
+      "hip": 0.531864,
+      "knee": 0.08352,
+      "mp": 0.002605,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 5.633661,
+     "phi": 0.55,
+     "terms": {
+      "ankle": 5.633661,
+      "hip": 0.422729,
+      "knee": 0.169436,
+      "mp": 0.002667,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 4.982604,
+     "phi": 0.6,
+     "terms": {
+      "ankle": 4.982604,
+      "hip": 0.15808,
+      "knee": 0.351959,
+      "mp": 0.002814,
+      "posture": 0.352235
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 4.319867,
+     "phi": 0.65,
+     "terms": {
+      "ankle": 4.319867,
+      "hip": 0.151456,
+      "knee": 0.630237,
+      "mp": 0.002274,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 3.799432,
+     "phi": 0.7,
+     "terms": {
+      "ankle": 3.799432,
+      "hip": 0.371683,
+      "knee": 0.872168,
+      "mp": 0.000216,
+      "posture": 0.11917
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 4.027515,
+     "phi": 0.75,
+     "terms": {
+      "ankle": 4.027515,
+      "hip": 0.32599,
+      "knee": 0.916792,
+      "mp": 0.000316,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 5.308589,
+     "phi": 0.8,
+     "terms": {
+      "ankle": 5.308589,
+      "hip": 0.095437,
+      "knee": 0.618892,
+      "mp": 0.000702,
+      "posture": 0.897515
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 5.777741,
+     "phi": 0.85,
+     "terms": {
+      "ankle": 5.777741,
+      "hip": 0.774021,
+      "knee": 0.090225,
+      "mp": 0.001752,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.980374,
+     "phi": 0.9,
+     "terms": {
+      "ankle": 0.980374,
+      "hip": 0.405679,
+      "knee": 0.552732,
+      "mp": 0.002197,
+      "posture": 0.797499
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.978571,
+     "phi": 0.95,
+     "terms": {
+      "ankle": 0.978571,
+      "hip": 0.604249,
+      "knee": 0.244738,
+      "mp": 0.002483,
+      "posture": 0.604249
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.987485,
+     "phi": 1.0,
+     "terms": {
+      "ankle": 0.987485,
+      "hip": 0.581342,
+      "knee": 0.136981,
+      "mp": 0.002783,
+      "posture": 0.581342
+     }
+    }
+   ],
+   "nodes_over_0_9": [
+    0.0,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    0.95,
+    1.0
+   ],
+   "nodes_over_1_0": [
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.85
+   ]
+  },
+  "D_measured_ankle_unblocked": {
+   "ankle_term_at_phi_0_5": 1.157587,
+   "binder_histogram": {
+    "ankle": 9,
+    "hip": 1,
+    "knee": 4,
+    "posture": 7
+   },
+   "crosses_1_0": false,
+   "headroom_factors": {
+    "ankle": 1.18455399,
+    "hip": 1.0,
+    "knee": 0.69308156,
+    "mp": 0.53530769,
+    "posture": 1.0
+   },
+   "knee_term_at_phi_0_75": 0.916792,
+   "margin_0_9_reachable": false,
+   "max_binder": {
+    "joint": "ankle",
+    "phi": 0.5
+   },
+   "max_combined_ratio": 1.157587,
+   "nodes": [
+    {
+     "binder": "posture",
+     "combined": 0.611427,
+     "phi": 0.0,
+     "terms": {
+      "ankle": 0.197619,
+      "hip": 0.611427,
+      "knee": 0.118162,
+      "mp": 0.002787,
+      "posture": 0.611427
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.497696,
+     "phi": 0.05,
+     "terms": {
+      "ankle": 0.192013,
+      "hip": 0.497693,
+      "knee": 0.344945,
+      "mp": 0.002768,
+      "posture": 0.497696
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.802179,
+     "phi": 0.1,
+     "terms": {
+      "ankle": 0.190301,
+      "hip": 0.385424,
+      "knee": 0.555975,
+      "mp": 0.002795,
+      "posture": 0.802179
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.9,
+     "phi": 0.15,
+     "terms": {
+      "ankle": 0.190819,
+      "hip": 0.315168,
+      "knee": 0.673495,
+      "mp": 0.002814,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.671623,
+     "phi": 0.2,
+     "terms": {
+      "ankle": 0.190382,
+      "hip": 0.342581,
+      "knee": 0.671623,
+      "mp": 0.002777,
+      "posture": 0.328703
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.684273,
+     "phi": 0.25,
+     "terms": {
+      "ankle": 0.18978,
+      "hip": 0.310419,
+      "knee": 0.684273,
+      "mp": 0.002717,
+      "posture": 0.252193
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.117986,
+     "phi": 0.3,
+     "terms": {
+      "ankle": 1.117986,
+      "hip": 0.965502,
+      "knee": 0.126387,
+      "mp": 0.00267,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.10499,
+     "phi": 0.35,
+     "terms": {
+      "ankle": 1.10499,
+      "hip": 0.932832,
+      "knee": 0.140891,
+      "mp": 0.002602,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.114932,
+     "phi": 0.4,
+     "terms": {
+      "ankle": 1.114932,
+      "hip": 0.75799,
+      "knee": 0.074613,
+      "mp": 0.002572,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.14528,
+     "phi": 0.45,
+     "terms": {
+      "ankle": 1.14528,
+      "hip": 0.645543,
+      "knee": 0.006765,
+      "mp": 0.002565,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.157587,
+     "phi": 0.5,
+     "terms": {
+      "ankle": 1.157587,
+      "hip": 0.531864,
+      "knee": 0.08352,
+      "mp": 0.002605,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.128257,
+     "phi": 0.55,
+     "terms": {
+      "ankle": 1.128257,
+      "hip": 0.422729,
+      "knee": 0.169436,
+      "mp": 0.002667,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.997869,
+     "phi": 0.6,
+     "terms": {
+      "ankle": 0.997869,
+      "hip": 0.15808,
+      "knee": 0.351959,
+      "mp": 0.002814,
+      "posture": 0.352235
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.9,
+     "phi": 0.65,
+     "terms": {
+      "ankle": 0.865143,
+      "hip": 0.151456,
+      "knee": 0.630237,
+      "mp": 0.002274,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.872168,
+     "phi": 0.7,
+     "terms": {
+      "ankle": 0.760915,
+      "hip": 0.371683,
+      "knee": 0.872168,
+      "mp": 0.000216,
+      "posture": 0.11917
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.916792,
+     "phi": 0.75,
+     "terms": {
+      "ankle": 0.806593,
+      "hip": 0.32599,
+      "knee": 0.916792,
+      "mp": 0.000316,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.063154,
+     "phi": 0.8,
+     "terms": {
+      "ankle": 1.063154,
+      "hip": 0.095437,
+      "knee": 0.618892,
+      "mp": 0.000702,
+      "posture": 0.897515
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.157112,
+     "phi": 0.85,
+     "terms": {
+      "ankle": 1.157112,
+      "hip": 0.774021,
+      "knee": 0.090225,
+      "mp": 0.001752,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.797499,
+     "phi": 0.9,
+     "terms": {
+      "ankle": 0.19634,
+      "hip": 0.405679,
+      "knee": 0.552732,
+      "mp": 0.002197,
+      "posture": 0.797499
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.604249,
+     "phi": 0.95,
+     "terms": {
+      "ankle": 0.195979,
+      "hip": 0.604249,
+      "knee": 0.244738,
+      "mp": 0.002483,
+      "posture": 0.604249
+     }
+    },
+    {
+     "binder": "hip",
+     "combined": 0.581342,
+     "phi": 1.0,
+     "terms": {
+      "ankle": 0.197764,
+      "hip": 0.581342,
+      "knee": 0.136981,
+      "mp": 0.002783,
+      "posture": 0.581342
+     }
+    }
+   ],
+   "nodes_over_0_9": [
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.75,
+    0.8,
+    0.85
+   ],
+   "nodes_over_1_0": [
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.8,
+    0.85
+   ]
+  },
+  "S2_si_matched_gate": {
+   "ankle_term_at_phi_0_5": 0.977235,
+   "binder_histogram": {
+    "ankle": 4,
+    "knee": 17
+   },
+   "crosses_1_0": false,
+   "headroom_factors": {
+    "ankle": 1.0,
+    "hip": 1.0,
+    "knee": 5.78754668,
+    "mp": 4.47006442,
+    "posture": 1.0
+   },
+   "knee_term_at_phi_0_75": 7.65563,
+   "margin_0_9_reachable": false,
+   "max_binder": {
+    "joint": "knee",
+    "phi": 0.75
+   },
+   "max_combined_ratio": 7.65563,
+   "nodes": [
+    {
+     "binder": "knee",
+     "combined": 0.986705,
+     "phi": 0.0,
+     "terms": {
+      "ankle": 0.16683,
+      "hip": 0.611427,
+      "knee": 0.986705,
+      "mp": 0.023274,
+      "posture": 0.611427
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 2.880444,
+     "phi": 0.05,
+     "terms": {
+      "ankle": 0.162098,
+      "hip": 0.497693,
+      "knee": 2.880444,
+      "mp": 0.023116,
+      "posture": 0.497696
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 4.642648,
+     "phi": 0.1,
+     "terms": {
+      "ankle": 0.160652,
+      "hip": 0.385424,
+      "knee": 4.642648,
+      "mp": 0.023337,
+      "posture": 0.802179
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 5.623993,
+     "phi": 0.15,
+     "terms": {
+      "ankle": 0.161089,
+      "hip": 0.315168,
+      "knee": 5.623993,
+      "mp": 0.0235,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 5.608362,
+     "phi": 0.2,
+     "terms": {
+      "ankle": 0.16072,
+      "hip": 0.342581,
+      "knee": 5.608362,
+      "mp": 0.023187,
+      "posture": 0.328703
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 5.71399,
+     "phi": 0.25,
+     "terms": {
+      "ankle": 0.160212,
+      "hip": 0.310419,
+      "knee": 5.71399,
+      "mp": 0.022686,
+      "posture": 0.252193
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 1.055392,
+     "phi": 0.3,
+     "terms": {
+      "ankle": 0.943803,
+      "hip": 0.965502,
+      "knee": 1.055392,
+      "mp": 0.022299,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 1.1765,
+     "phi": 0.35,
+     "terms": {
+      "ankle": 0.932832,
+      "hip": 0.932832,
+      "knee": 1.1765,
+      "mp": 0.021732,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.941225,
+     "phi": 0.4,
+     "terms": {
+      "ankle": 0.941225,
+      "hip": 0.75799,
+      "knee": 0.623054,
+      "mp": 0.021475,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.966845,
+     "phi": 0.45,
+     "terms": {
+      "ankle": 0.966845,
+      "hip": 0.645543,
+      "knee": 0.056487,
+      "mp": 0.021416,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.977235,
+     "phi": 0.5,
+     "terms": {
+      "ankle": 0.977235,
+      "hip": 0.531864,
+      "knee": 0.697429,
+      "mp": 0.021754,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 1.414864,
+     "phi": 0.55,
+     "terms": {
+      "ankle": 0.952474,
+      "hip": 0.422729,
+      "knee": 1.414864,
+      "mp": 0.022274,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 2.939022,
+     "phi": 0.6,
+     "terms": {
+      "ankle": 0.842401,
+      "hip": 0.15808,
+      "knee": 2.939022,
+      "mp": 0.0235,
+      "posture": 0.352235
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 5.262766,
+     "phi": 0.65,
+     "terms": {
+      "ankle": 0.730353,
+      "hip": 0.151456,
+      "knee": 5.262766,
+      "mp": 0.018985,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 7.282996,
+     "phi": 0.7,
+     "terms": {
+      "ankle": 0.642364,
+      "hip": 0.371683,
+      "knee": 7.282996,
+      "mp": 0.001806,
+      "posture": 0.11917
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 7.65563,
+     "phi": 0.75,
+     "terms": {
+      "ankle": 0.680925,
+      "hip": 0.32599,
+      "knee": 7.65563,
+      "mp": 0.002636,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 5.168027,
+     "phi": 0.8,
+     "terms": {
+      "ankle": 0.897515,
+      "hip": 0.095437,
+      "knee": 5.168027,
+      "mp": 0.005866,
+      "posture": 0.897515
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.976833,
+     "phi": 0.85,
+     "terms": {
+      "ankle": 0.976833,
+      "hip": 0.774021,
+      "knee": 0.753417,
+      "mp": 0.014627,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 4.615563,
+     "phi": 0.9,
+     "terms": {
+      "ankle": 0.16575,
+      "hip": 0.405679,
+      "knee": 4.615563,
+      "mp": 0.018348,
+      "posture": 0.797499
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 2.043672,
+     "phi": 0.95,
+     "terms": {
+      "ankle": 0.165445,
+      "hip": 0.604249,
+      "knee": 2.043672,
+      "mp": 0.020738,
+      "posture": 0.604249
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 1.143851,
+     "phi": 1.0,
+     "terms": {
+      "ankle": 0.166952,
+      "hip": 0.581342,
+      "knee": 1.143851,
+      "mp": 0.023239,
+      "posture": 0.581342
+     }
+    }
+   ],
+   "nodes_over_0_9": [
+    0.0,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    0.95,
+    1.0
+   ],
+   "nodes_over_1_0": [
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.9,
+    0.95,
+    1.0
+   ]
+  }
+ },
+ "receipt": "receipt.json (pre-registration written before this script existed)",
+ "schema": "chimera.ankle_unblocked_statics.v1",
+ "stance_tables": {
+  "A_live_doc": {
+   "margin_binder_holding": {
+    "joint": "ankle",
+    "phi": 0.3,
+    "ratio": 0.975
+   },
+   "nodes": [
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.449,
+     "ratio": {
+      "ankle": 0.915405,
+      "hip": 0.648473,
+      "knee": 1.096045,
+      "mp": 0.005634,
+      "posture": 0.720803
+     },
+     "tau_Nm": {
+      "ankle": -6.774,
+      "hip": 7.271,
+      "knee": 7.275,
+      "mp": 0.005,
+      "posture": 8.082
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "mp",
+      "posture"
+     ],
+     "phi": 0.0,
+     "ratio": {
+      "ankle": 0.160811,
+      "hip": 1.15505,
+      "knee": 0.377401,
+      "mp": 9.177465,
+      "posture": 1.184928
+     },
+     "tau_Nm": {
+      "ankle": 1.19,
+      "hip": -12.951,
+      "knee": -2.505,
+      "mp": 8.145,
+      "posture": -13.286
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.05,
+     "ratio": {
+      "ankle": 0.153378,
+      "hip": 0.918172,
+      "knee": 0.064783,
+      "mp": 8.753803,
+      "posture": 0.952865
+     },
+     "tau_Nm": {
+      "ankle": 1.135,
+      "hip": -10.295,
+      "knee": 0.43,
+      "mp": 7.769,
+      "posture": -10.684
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.1,
+     "ratio": {
+      "ankle": 0.155946,
+      "hip": 0.607447,
+      "knee": 0.573559,
+      "mp": 8.902535,
+      "posture": 0.650256
+     },
+     "tau_Nm": {
+      "ankle": 1.154,
+      "hip": -6.811,
+      "knee": 3.807,
+      "mp": 7.901,
+      "posture": -7.291
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "mp"
+     ],
+     "phi": 0.15,
+     "ratio": {
+      "ankle": 0.161757,
+      "hip": 0.272107,
+      "knee": 1.016196,
+      "mp": 9.233803,
+      "posture": 0.317324
+     },
+     "tau_Nm": {
+      "ankle": 1.197,
+      "hip": -3.051,
+      "knee": 6.745,
+      "mp": 8.195,
+      "posture": -3.558
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "mp"
+     ],
+     "phi": 0.2,
+     "ratio": {
+      "ankle": 0.165541,
+      "hip": 0.018194,
+      "knee": 1.326704,
+      "mp": 9.453521,
+      "posture": 0.018907
+     },
+     "tau_Nm": {
+      "ankle": 1.225,
+      "hip": 0.204,
+      "knee": 8.806,
+      "mp": 8.39,
+      "posture": -0.212
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "mp"
+     ],
+     "phi": 0.25,
+     "ratio": {
+      "ankle": 0.167027,
+      "hip": 0.317592,
+      "knee": 1.587495,
+      "mp": 9.534648,
+      "posture": 0.300201
+     },
+     "tau_Nm": {
+      "ankle": 1.236,
+      "hip": 3.561,
+      "knee": 10.537,
+      "mp": 8.462,
+      "posture": 3.366
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.3,
+     "ratio": {
+      "ankle": 0.975,
+      "hip": 0.169275,
+      "knee": 0.530923,
+      "mp": 0.005634,
+      "posture": 0.15786
+     },
+     "tau_Nm": {
+      "ankle": -7.215,
+      "hip": -1.898,
+      "knee": 3.524,
+      "mp": 0.005,
+      "posture": -1.77
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.35,
+     "ratio": {
+      "ankle": 0.972568,
+      "hip": 0.050836,
+      "knee": 0.654011,
+      "mp": 0.005634,
+      "posture": 0.097926
+     },
+     "tau_Nm": {
+      "ankle": -7.197,
+      "hip": 0.57,
+      "knee": 4.341,
+      "mp": 0.005,
+      "posture": 1.098
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.4,
+     "ratio": {
+      "ankle": 0.96,
+      "hip": 0.400981,
+      "knee": 0.867194,
+      "mp": 0.005634,
+      "posture": 0.466087
+     },
+     "tau_Nm": {
+      "ankle": -7.104,
+      "hip": 4.496,
+      "knee": 5.756,
+      "mp": 0.005,
+      "posture": 5.226
+     }
+    },
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.45,
+     "ratio": {
+      "ankle": 0.914189,
+      "hip": 0.653556,
+      "knee": 1.100866,
+      "mp": 0.005634,
+      "posture": 0.725975
+     },
+     "tau_Nm": {
+      "ankle": -6.765,
+      "hip": 7.328,
+      "knee": 7.307,
+      "mp": 0.005,
+      "posture": 8.14
+     }
+    },
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.5,
+     "ratio": {
+      "ankle": 0.847703,
+      "hip": 0.863055,
+      "knee": 1.295819,
+      "mp": 0.005634,
+      "posture": 0.933868
+     },
+     "tau_Nm": {
+      "ankle": -6.273,
+      "hip": 9.677,
+      "knee": 8.601,
+      "mp": 0.005,
+      "posture": 10.471
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.55,
+     "ratio": {
+      "ankle": 0.700405,
+      "hip": 1.05097,
+      "knee": 1.527081,
+      "mp": 0.005634,
+      "posture": 1.117503
+     },
+     "tau_Nm": {
+      "ankle": -5.183,
+      "hip": 11.784,
+      "knee": 10.136,
+      "mp": 0.005,
+      "posture": 12.53
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.6,
+     "ratio": {
+      "ankle": 0.47473,
+      "hip": 1.334136,
+      "knee": 1.839096,
+      "mp": 0.004507,
+      "posture": 1.393802
+     },
+     "tau_Nm": {
+      "ankle": -3.513,
+      "hip": 14.959,
+      "knee": 12.207,
+      "mp": 0.004,
+      "posture": 15.628
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.65,
+     "ratio": {
+      "ankle": 0.345676,
+      "hip": 1.480669,
+      "knee": 2.071111,
+      "mp": 0.002254,
+      "posture": 1.530435
+     },
+     "tau_Nm": {
+      "ankle": -2.558,
+      "hip": 16.602,
+      "knee": 13.747,
+      "mp": 0.002,
+      "posture": 17.16
+     }
+    }
+   ],
+   "per_joint": {
+    "ankle": {
+     "binding_node_phi": 0.3,
+     "over_cap_nodes": 0,
+     "over_cap_phis": [],
+     "worst_holding_phi": 0.3,
+     "worst_holding_ratio": 0.975,
+     "worst_ratio": 0.975
+    },
+    "hip": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.918172,
+     "worst_ratio": 1.480669
+    },
+    "knee": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 9,
+     "over_cap_phis": [
+      0.449,
+      0.15,
+      0.2,
+      0.25,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.4,
+     "worst_holding_ratio": 0.867194,
+     "worst_ratio": 2.071111
+    },
+    "mp": {
+     "binding_node_phi": 0.25,
+     "over_cap_nodes": 6,
+     "over_cap_phis": [
+      0.0,
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25
+     ],
+     "worst_holding_phi": 0.449,
+     "worst_holding_ratio": 0.005634,
+     "worst_ratio": 9.534648
+    },
+    "posture": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.952865,
+     "worst_ratio": 1.530435
+    }
+   },
+   "worst_case_binder": {
+    "joint": "mp",
+    "phi": 0.25
+   },
+   "worst_case_ratio": 9.534648
+  },
+  "B_measured_v1_s1": {
+   "margin_binder_holding": {
+    "joint": "ankle",
+    "phi": 0.3,
+    "ratio": 0.975
+   },
+   "nodes": [
+    {
+     "over_cap": [],
+     "phi": 0.449,
+     "ratio": {
+      "ankle": 0.915405,
+      "hip": 0.648473,
+      "knee": 0.759649,
+      "mp": 0.003016,
+      "posture": 0.720803
+     },
+     "tau_Nm": {
+      "ankle": -6.774,
+      "hip": 7.271,
+      "knee": 7.275,
+      "mp": 0.005,
+      "posture": 8.082
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "mp",
+      "posture"
+     ],
+     "phi": 0.0,
+     "ratio": {
+      "ankle": 0.160811,
+      "hip": 1.15505,
+      "knee": 0.26157,
+      "mp": 4.912767,
+      "posture": 1.184928
+     },
+     "tau_Nm": {
+      "ankle": 1.19,
+      "hip": -12.951,
+      "knee": -2.505,
+      "mp": 8.145,
+      "posture": -13.286
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.05,
+     "ratio": {
+      "ankle": 0.153378,
+      "hip": 0.918172,
+      "knee": 0.0449,
+      "mp": 4.685978,
+      "posture": 0.952865
+     },
+     "tau_Nm": {
+      "ankle": 1.135,
+      "hip": -10.295,
+      "knee": 0.43,
+      "mp": 7.769,
+      "posture": -10.684
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.1,
+     "ratio": {
+      "ankle": 0.155946,
+      "hip": 0.607447,
+      "knee": 0.397523,
+      "mp": 4.765596,
+      "posture": 0.650256
+     },
+     "tau_Nm": {
+      "ankle": 1.154,
+      "hip": -6.811,
+      "knee": 3.807,
+      "mp": 7.901,
+      "posture": -7.291
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.15,
+     "ratio": {
+      "ankle": 0.161757,
+      "hip": 0.272107,
+      "knee": 0.704307,
+      "mp": 4.942926,
+      "posture": 0.317324
+     },
+     "tau_Nm": {
+      "ankle": 1.197,
+      "hip": -3.051,
+      "knee": 6.745,
+      "mp": 8.195,
+      "posture": -3.558
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.2,
+     "ratio": {
+      "ankle": 0.165541,
+      "hip": 0.018194,
+      "knee": 0.919514,
+      "mp": 5.060543,
+      "posture": 0.018907
+     },
+     "tau_Nm": {
+      "ankle": 1.225,
+      "hip": 0.204,
+      "knee": 8.806,
+      "mp": 8.39,
+      "posture": -0.212
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "mp"
+     ],
+     "phi": 0.25,
+     "ratio": {
+      "ankle": 0.167027,
+      "hip": 0.317592,
+      "knee": 1.100264,
+      "mp": 5.10397,
+      "posture": 0.300201
+     },
+     "tau_Nm": {
+      "ankle": 1.236,
+      "hip": 3.561,
+      "knee": 10.537,
+      "mp": 8.462,
+      "posture": 3.366
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.3,
+     "ratio": {
+      "ankle": 0.975,
+      "hip": 0.169275,
+      "knee": 0.367973,
+      "mp": 0.003016,
+      "posture": 0.15786
+     },
+     "tau_Nm": {
+      "ankle": -7.215,
+      "hip": -1.898,
+      "knee": 3.524,
+      "mp": 0.005,
+      "posture": -1.77
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.35,
+     "ratio": {
+      "ankle": 0.972568,
+      "hip": 0.050836,
+      "knee": 0.453283,
+      "mp": 0.003016,
+      "posture": 0.097926
+     },
+     "tau_Nm": {
+      "ankle": -7.197,
+      "hip": 0.57,
+      "knee": 4.341,
+      "mp": 0.005,
+      "posture": 1.098
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.4,
+     "ratio": {
+      "ankle": 0.96,
+      "hip": 0.400981,
+      "knee": 0.601036,
+      "mp": 0.003016,
+      "posture": 0.466087
+     },
+     "tau_Nm": {
+      "ankle": -7.104,
+      "hip": 4.496,
+      "knee": 5.756,
+      "mp": 0.005,
+      "posture": 5.226
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.45,
+     "ratio": {
+      "ankle": 0.914189,
+      "hip": 0.653556,
+      "knee": 0.76299,
+      "mp": 0.003016,
+      "posture": 0.725975
+     },
+     "tau_Nm": {
+      "ankle": -6.765,
+      "hip": 7.328,
+      "knee": 7.307,
+      "mp": 0.005,
+      "posture": 8.14
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.5,
+     "ratio": {
+      "ankle": 0.847703,
+      "hip": 0.863055,
+      "knee": 0.898108,
+      "mp": 0.003016,
+      "posture": 0.933868
+     },
+     "tau_Nm": {
+      "ankle": -6.273,
+      "hip": 9.677,
+      "knee": 8.601,
+      "mp": 0.005,
+      "posture": 10.471
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.55,
+     "ratio": {
+      "ankle": 0.700405,
+      "hip": 1.05097,
+      "knee": 1.058392,
+      "mp": 0.003016,
+      "posture": 1.117503
+     },
+     "tau_Nm": {
+      "ankle": -5.183,
+      "hip": 11.784,
+      "knee": 10.136,
+      "mp": 0.005,
+      "posture": 12.53
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.6,
+     "ratio": {
+      "ankle": 0.47473,
+      "hip": 1.334136,
+      "knee": 1.274644,
+      "mp": 0.002413,
+      "posture": 1.393802
+     },
+     "tau_Nm": {
+      "ankle": -3.513,
+      "hip": 14.959,
+      "knee": 12.207,
+      "mp": 0.004,
+      "posture": 15.628
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.65,
+     "ratio": {
+      "ankle": 0.345676,
+      "hip": 1.480669,
+      "knee": 1.435449,
+      "mp": 0.001206,
+      "posture": 1.530435
+     },
+     "tau_Nm": {
+      "ankle": -2.558,
+      "hip": 16.602,
+      "knee": 13.747,
+      "mp": 0.002,
+      "posture": 17.16
+     }
+    }
+   ],
+   "per_joint": {
+    "ankle": {
+     "binding_node_phi": 0.3,
+     "over_cap_nodes": 0,
+     "over_cap_phis": [],
+     "worst_holding_phi": 0.3,
+     "worst_holding_ratio": 0.975,
+     "worst_ratio": 0.975
+    },
+    "hip": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.918172,
+     "worst_ratio": 1.480669
+    },
+    "knee": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.25,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.2,
+     "worst_holding_ratio": 0.919514,
+     "worst_ratio": 1.435449
+    },
+    "mp": {
+     "binding_node_phi": 0.25,
+     "over_cap_nodes": 6,
+     "over_cap_phis": [
+      0.0,
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25
+     ],
+     "worst_holding_phi": 0.449,
+     "worst_holding_ratio": 0.003016,
+     "worst_ratio": 5.10397
+    },
+    "posture": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.952865,
+     "worst_ratio": 1.530435
+    }
+   },
+   "worst_case_binder": {
+    "joint": "mp",
+    "phi": 0.25
+   },
+   "worst_case_ratio": 5.10397
+  },
+  "C_provisional_v2_s1": {
+   "margin_binder_holding": {
+    "joint": "ankle",
+    "phi": 0.3,
+    "ratio": 0.975
+   },
+   "nodes": [
+    {
+     "over_cap": [],
+     "phi": 0.449,
+     "ratio": {
+      "ankle": 0.915405,
+      "hip": 0.648473,
+      "knee": 0.200702,
+      "mp": 0.001078,
+      "posture": 0.720803
+     },
+     "tau_Nm": {
+      "ankle": -6.774,
+      "hip": 7.271,
+      "knee": 7.275,
+      "mp": 0.005,
+      "posture": 8.082
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "mp",
+      "posture"
+     ],
+     "phi": 0.0,
+     "ratio": {
+      "ankle": 0.160811,
+      "hip": 1.15505,
+      "knee": 0.069108,
+      "mp": 1.756651,
+      "posture": 1.184928
+     },
+     "tau_Nm": {
+      "ankle": 1.19,
+      "hip": -12.951,
+      "knee": -2.505,
+      "mp": 8.145,
+      "posture": -13.286
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.05,
+     "ratio": {
+      "ankle": 0.153378,
+      "hip": 0.918172,
+      "knee": 0.011863,
+      "mp": 1.675558,
+      "posture": 0.952865
+     },
+     "tau_Nm": {
+      "ankle": 1.135,
+      "hip": -10.295,
+      "knee": 0.43,
+      "mp": 7.769,
+      "posture": -10.684
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.1,
+     "ratio": {
+      "ankle": 0.155946,
+      "hip": 0.607447,
+      "knee": 0.105027,
+      "mp": 1.704027,
+      "posture": 0.650256
+     },
+     "tau_Nm": {
+      "ankle": 1.154,
+      "hip": -6.811,
+      "knee": 3.807,
+      "mp": 7.901,
+      "posture": -7.291
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.15,
+     "ratio": {
+      "ankle": 0.161757,
+      "hip": 0.272107,
+      "knee": 0.18608,
+      "mp": 1.767435,
+      "posture": 0.317324
+     },
+     "tau_Nm": {
+      "ankle": 1.197,
+      "hip": -3.051,
+      "knee": 6.745,
+      "mp": 8.195,
+      "posture": -3.558
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.2,
+     "ratio": {
+      "ankle": 0.165541,
+      "hip": 0.018194,
+      "knee": 0.242939,
+      "mp": 1.809491,
+      "posture": 0.018907
+     },
+     "tau_Nm": {
+      "ankle": 1.225,
+      "hip": 0.204,
+      "knee": 8.806,
+      "mp": 8.39,
+      "posture": -0.212
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.25,
+     "ratio": {
+      "ankle": 0.167027,
+      "hip": 0.317592,
+      "knee": 0.290694,
+      "mp": 1.825019,
+      "posture": 0.300201
+     },
+     "tau_Nm": {
+      "ankle": 1.236,
+      "hip": 3.561,
+      "knee": 10.537,
+      "mp": 8.462,
+      "posture": 3.366
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.3,
+     "ratio": {
+      "ankle": 0.975,
+      "hip": 0.169275,
+      "knee": 0.09722,
+      "mp": 0.001078,
+      "posture": 0.15786
+     },
+     "tau_Nm": {
+      "ankle": -7.215,
+      "hip": -1.898,
+      "knee": 3.524,
+      "mp": 0.005,
+      "posture": -1.77
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.35,
+     "ratio": {
+      "ankle": 0.972568,
+      "hip": 0.050836,
+      "knee": 0.119759,
+      "mp": 0.001078,
+      "posture": 0.097926
+     },
+     "tau_Nm": {
+      "ankle": -7.197,
+      "hip": 0.57,
+      "knee": 4.341,
+      "mp": 0.005,
+      "posture": 1.098
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.4,
+     "ratio": {
+      "ankle": 0.96,
+      "hip": 0.400981,
+      "knee": 0.158796,
+      "mp": 0.001078,
+      "posture": 0.466087
+     },
+     "tau_Nm": {
+      "ankle": -7.104,
+      "hip": 4.496,
+      "knee": 5.756,
+      "mp": 0.005,
+      "posture": 5.226
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.45,
+     "ratio": {
+      "ankle": 0.914189,
+      "hip": 0.653556,
+      "knee": 0.201585,
+      "mp": 0.001078,
+      "posture": 0.725975
+     },
+     "tau_Nm": {
+      "ankle": -6.765,
+      "hip": 7.328,
+      "knee": 7.307,
+      "mp": 0.005,
+      "posture": 8.14
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.5,
+     "ratio": {
+      "ankle": 0.847703,
+      "hip": 0.863055,
+      "knee": 0.237283,
+      "mp": 0.001078,
+      "posture": 0.933868
+     },
+     "tau_Nm": {
+      "ankle": -6.273,
+      "hip": 9.677,
+      "knee": 8.601,
+      "mp": 0.005,
+      "posture": 10.471
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "posture"
+     ],
+     "phi": 0.55,
+     "ratio": {
+      "ankle": 0.700405,
+      "hip": 1.05097,
+      "knee": 0.279631,
+      "mp": 0.001078,
+      "posture": 1.117503
+     },
+     "tau_Nm": {
+      "ankle": -5.183,
+      "hip": 11.784,
+      "knee": 10.136,
+      "mp": 0.005,
+      "posture": 12.53
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "posture"
+     ],
+     "phi": 0.6,
+     "ratio": {
+      "ankle": 0.47473,
+      "hip": 1.334136,
+      "knee": 0.336765,
+      "mp": 0.000863,
+      "posture": 1.393802
+     },
+     "tau_Nm": {
+      "ankle": -3.513,
+      "hip": 14.959,
+      "knee": 12.207,
+      "mp": 0.004,
+      "posture": 15.628
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "posture"
+     ],
+     "phi": 0.65,
+     "ratio": {
+      "ankle": 0.345676,
+      "hip": 1.480669,
+      "knee": 0.379251,
+      "mp": 0.000431,
+      "posture": 1.530435
+     },
+     "tau_Nm": {
+      "ankle": -2.558,
+      "hip": 16.602,
+      "knee": 13.747,
+      "mp": 0.002,
+      "posture": 17.16
+     }
+    }
+   ],
+   "per_joint": {
+    "ankle": {
+     "binding_node_phi": 0.3,
+     "over_cap_nodes": 0,
+     "over_cap_phis": [],
+     "worst_holding_phi": 0.3,
+     "worst_holding_ratio": 0.975,
+     "worst_ratio": 0.975
+    },
+    "hip": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.918172,
+     "worst_ratio": 1.480669
+    },
+    "knee": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 0,
+     "over_cap_phis": [],
+     "worst_holding_phi": 0.65,
+     "worst_holding_ratio": 0.379251,
+     "worst_ratio": 0.379251
+    },
+    "mp": {
+     "binding_node_phi": 0.25,
+     "over_cap_nodes": 6,
+     "over_cap_phis": [
+      0.0,
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25
+     ],
+     "worst_holding_phi": 0.449,
+     "worst_holding_ratio": 0.001078,
+     "worst_ratio": 1.825019
+    },
+    "posture": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.952865,
+     "worst_ratio": 1.530435
+    }
+   },
+   "worst_case_binder": {
+    "joint": "mp",
+    "phi": 0.25
+   },
+   "worst_case_ratio": 1.825019
+  },
+  "D_S2_si_matched_gate": {
+   "margin_binder_holding": {
+    "joint": "posture",
+    "phi": 0.05,
+    "ratio": 0.952865
+   },
+   "nodes": [
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.449,
+     "ratio": {
+      "ankle": 9.054794,
+      "hip": 0.648473,
+      "knee": 6.343413,
+      "mp": 0.025183,
+      "posture": 0.720803
+     },
+     "tau_Nm": {
+      "ankle": -6.774,
+      "hip": 7.271,
+      "knee": 7.275,
+      "mp": 0.005,
+      "posture": 8.082
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "ankle",
+      "mp",
+      "posture"
+     ],
+     "phi": 0.0,
+     "ratio": {
+      "ankle": 7.9426,
+      "hip": 1.15505,
+      "knee": 2.184227,
+      "mp": 41.023859,
+      "posture": 1.184928
+     },
+     "tau_Nm": {
+      "ankle": 1.19,
+      "hip": -12.951,
+      "knee": -2.505,
+      "mp": 8.145,
+      "posture": -13.286
+     }
+    },
+    {
+     "over_cap": [
+      "ankle",
+      "mp"
+     ],
+     "phi": 0.05,
+     "ratio": {
+      "ankle": 7.575505,
+      "hip": 0.918172,
+      "knee": 0.374937,
+      "mp": 39.130063,
+      "posture": 0.952865
+     },
+     "tau_Nm": {
+      "ankle": 1.135,
+      "hip": -10.295,
+      "knee": 0.43,
+      "mp": 7.769,
+      "posture": -10.684
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle",
+      "mp"
+     ],
+     "phi": 0.1,
+     "ratio": {
+      "ankle": 7.702319,
+      "hip": 0.607447,
+      "knee": 3.319501,
+      "mp": 39.794906,
+      "posture": 0.650256
+     },
+     "tau_Nm": {
+      "ankle": 1.154,
+      "hip": -6.811,
+      "knee": 3.807,
+      "mp": 7.901,
+      "posture": -7.291
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle",
+      "mp"
+     ],
+     "phi": 0.15,
+     "ratio": {
+      "ankle": 7.989321,
+      "hip": 0.272107,
+      "knee": 5.881281,
+      "mp": 41.275693,
+      "posture": 0.317324
+     },
+     "tau_Nm": {
+      "ankle": 1.197,
+      "hip": -3.051,
+      "knee": 6.745,
+      "mp": 8.195,
+      "posture": -3.558
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle",
+      "mp"
+     ],
+     "phi": 0.2,
+     "ratio": {
+      "ankle": 8.176206,
+      "hip": 0.018194,
+      "knee": 7.678363,
+      "mp": 42.257848,
+      "posture": 0.018907
+     },
+     "tau_Nm": {
+      "ankle": 1.225,
+      "hip": 0.204,
+      "knee": 8.806,
+      "mp": 8.39,
+      "posture": -0.212
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle",
+      "mp"
+     ],
+     "phi": 0.25,
+     "ratio": {
+      "ankle": 8.249625,
+      "hip": 0.317592,
+      "knee": 9.187703,
+      "mp": 42.62049,
+      "posture": 0.300201
+     },
+     "tau_Nm": {
+      "ankle": 1.236,
+      "hip": 3.561,
+      "knee": 10.537,
+      "mp": 8.462,
+      "posture": 3.366
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.3,
+     "ratio": {
+      "ankle": 9.644278,
+      "hip": 0.169275,
+      "knee": 3.07274,
+      "mp": 0.025183,
+      "posture": 0.15786
+     },
+     "tau_Nm": {
+      "ankle": -7.215,
+      "hip": -1.898,
+      "knee": 3.524,
+      "mp": 0.005,
+      "posture": -1.77
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.35,
+     "ratio": {
+      "ankle": 9.620217,
+      "hip": 0.050836,
+      "knee": 3.785121,
+      "mp": 0.025183,
+      "posture": 0.097926
+     },
+     "tau_Nm": {
+      "ankle": -7.197,
+      "hip": 0.57,
+      "knee": 4.341,
+      "mp": 0.005,
+      "posture": 1.098
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.4,
+     "ratio": {
+      "ankle": 9.495904,
+      "hip": 0.400981,
+      "knee": 5.018926,
+      "mp": 0.025183,
+      "posture": 0.466087
+     },
+     "tau_Nm": {
+      "ankle": -7.104,
+      "hip": 4.496,
+      "knee": 5.756,
+      "mp": 0.005,
+      "posture": 5.226
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.45,
+     "ratio": {
+      "ankle": 9.042764,
+      "hip": 0.653556,
+      "knee": 6.371315,
+      "mp": 0.025183,
+      "posture": 0.725975
+     },
+     "tau_Nm": {
+      "ankle": -6.765,
+      "hip": 7.328,
+      "knee": 7.307,
+      "mp": 0.005,
+      "posture": 8.14
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.5,
+     "ratio": {
+      "ankle": 8.385108,
+      "hip": 0.863055,
+      "knee": 7.499614,
+      "mp": 0.025183,
+      "posture": 0.933868
+     },
+     "tau_Nm": {
+      "ankle": -6.273,
+      "hip": 9.677,
+      "knee": 8.601,
+      "mp": 0.005,
+      "posture": 10.471
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "ankle",
+      "posture"
+     ],
+     "phi": 0.55,
+     "ratio": {
+      "ankle": 6.928107,
+      "hip": 1.05097,
+      "knee": 8.838052,
+      "mp": 0.025183,
+      "posture": 1.117503
+     },
+     "tau_Nm": {
+      "ankle": -5.183,
+      "hip": 11.784,
+      "knee": 10.136,
+      "mp": 0.005,
+      "posture": 12.53
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "ankle",
+      "posture"
+     ],
+     "phi": 0.6,
+     "ratio": {
+      "ankle": 4.695821,
+      "hip": 1.334136,
+      "knee": 10.643854,
+      "mp": 0.020147,
+      "posture": 1.393802
+     },
+     "tau_Nm": {
+      "ankle": -3.513,
+      "hip": 14.959,
+      "knee": 12.207,
+      "mp": 0.004,
+      "posture": 15.628
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "ankle",
+      "posture"
+     ],
+     "phi": 0.65,
+     "ratio": {
+      "ankle": 3.419274,
+      "hip": 1.480669,
+      "knee": 11.986652,
+      "mp": 0.010073,
+      "posture": 1.530435
+     },
+     "tau_Nm": {
+      "ankle": -2.558,
+      "hip": 16.602,
+      "knee": 13.747,
+      "mp": 0.002,
+      "posture": 17.16
+     }
+    }
+   ],
+   "per_joint": {
+    "ankle": {
+     "binding_node_phi": 0.3,
+     "over_cap_nodes": 15,
+     "over_cap_phis": [
+      0.449,
+      0.0,
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": null,
+     "worst_holding_ratio": null,
+     "worst_ratio": 9.644278
+    },
+    "hip": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.918172,
+     "worst_ratio": 1.480669
+    },
+    "knee": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 14,
+     "over_cap_phis": [
+      0.449,
+      0.0,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.374937,
+     "worst_ratio": 11.986652
+    },
+    "mp": {
+     "binding_node_phi": 0.25,
+     "over_cap_nodes": 6,
+     "over_cap_phis": [
+      0.0,
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25
+     ],
+     "worst_holding_phi": 0.449,
+     "worst_holding_ratio": 0.025183,
+     "worst_ratio": 42.62049
+    },
+    "posture": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.952865,
+     "worst_ratio": 1.530435
+    }
+   },
+   "worst_case_binder": {
+    "joint": "mp",
+    "phi": 0.25
+   },
+   "worst_case_ratio": 42.62049
+  },
+  "D_measured_ankle_unblocked": {
+   "margin_binder_holding": {
+    "joint": "ankle",
+    "phi": 0.25,
+    "ratio": 0.987926
+   },
+   "nodes": [
+    {
+     "over_cap": [
+      "ankle"
+     ],
+     "phi": 0.449,
+     "ratio": {
+      "ankle": 1.084347,
+      "hip": 0.648473,
+      "knee": 0.759649,
+      "mp": 0.003016,
+      "posture": 0.720803
+     },
+     "tau_Nm": {
+      "ankle": -6.774,
+      "hip": 7.271,
+      "knee": 7.275,
+      "mp": 0.005,
+      "posture": 8.082
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "mp",
+      "posture"
+     ],
+     "phi": 0.0,
+     "ratio": {
+      "ankle": 0.951158,
+      "hip": 1.15505,
+      "knee": 0.26157,
+      "mp": 4.912767,
+      "posture": 1.184928
+     },
+     "tau_Nm": {
+      "ankle": 1.19,
+      "hip": -12.951,
+      "knee": -2.505,
+      "mp": 8.145,
+      "posture": -13.286
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.05,
+     "ratio": {
+      "ankle": 0.907197,
+      "hip": 0.918172,
+      "knee": 0.0449,
+      "mp": 4.685978,
+      "posture": 0.952865
+     },
+     "tau_Nm": {
+      "ankle": 1.135,
+      "hip": -10.295,
+      "knee": 0.43,
+      "mp": 7.769,
+      "posture": -10.684
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.1,
+     "ratio": {
+      "ankle": 0.922384,
+      "hip": 0.607447,
+      "knee": 0.397523,
+      "mp": 4.765596,
+      "posture": 0.650256
+     },
+     "tau_Nm": {
+      "ankle": 1.154,
+      "hip": -6.811,
+      "knee": 3.807,
+      "mp": 7.901,
+      "posture": -7.291
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.15,
+     "ratio": {
+      "ankle": 0.956753,
+      "hip": 0.272107,
+      "knee": 0.704307,
+      "mp": 4.942926,
+      "posture": 0.317324
+     },
+     "tau_Nm": {
+      "ankle": 1.197,
+      "hip": -3.051,
+      "knee": 6.745,
+      "mp": 8.195,
+      "posture": -3.558
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.2,
+     "ratio": {
+      "ankle": 0.979134,
+      "hip": 0.018194,
+      "knee": 0.919514,
+      "mp": 5.060543,
+      "posture": 0.018907
+     },
+     "tau_Nm": {
+      "ankle": 1.225,
+      "hip": 0.204,
+      "knee": 8.806,
+      "mp": 8.39,
+      "posture": -0.212
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "mp"
+     ],
+     "phi": 0.25,
+     "ratio": {
+      "ankle": 0.987926,
+      "hip": 0.317592,
+      "knee": 1.100264,
+      "mp": 5.10397,
+      "posture": 0.300201
+     },
+     "tau_Nm": {
+      "ankle": 1.236,
+      "hip": 3.561,
+      "knee": 10.537,
+      "mp": 8.462,
+      "posture": 3.366
+     }
+    },
+    {
+     "over_cap": [
+      "ankle"
+     ],
+     "phi": 0.3,
+     "ratio": {
+      "ankle": 1.15494,
+      "hip": 0.169275,
+      "knee": 0.367973,
+      "mp": 0.003016,
+      "posture": 0.15786
+     },
+     "tau_Nm": {
+      "ankle": -7.215,
+      "hip": -1.898,
+      "knee": 3.524,
+      "mp": 0.005,
+      "posture": -1.77
+     }
+    },
+    {
+     "over_cap": [
+      "ankle"
+     ],
+     "phi": 0.35,
+     "ratio": {
+      "ankle": 1.152059,
+      "hip": 0.050836,
+      "knee": 0.453283,
+      "mp": 0.003016,
+      "posture": 0.097926
+     },
+     "tau_Nm": {
+      "ankle": -7.197,
+      "hip": 0.57,
+      "knee": 4.341,
+      "mp": 0.005,
+      "posture": 1.098
+     }
+    },
+    {
+     "over_cap": [
+      "ankle"
+     ],
+     "phi": 0.4,
+     "ratio": {
+      "ankle": 1.137172,
+      "hip": 0.400981,
+      "knee": 0.601036,
+      "mp": 0.003016,
+      "posture": 0.466087
+     },
+     "tau_Nm": {
+      "ankle": -7.104,
+      "hip": 4.496,
+      "knee": 5.756,
+      "mp": 0.005,
+      "posture": 5.226
+     }
+    },
+    {
+     "over_cap": [
+      "ankle"
+     ],
+     "phi": 0.45,
+     "ratio": {
+      "ankle": 1.082906,
+      "hip": 0.653556,
+      "knee": 0.76299,
+      "mp": 0.003016,
+      "posture": 0.725975
+     },
+     "tau_Nm": {
+      "ankle": -6.765,
+      "hip": 7.328,
+      "knee": 7.307,
+      "mp": 0.005,
+      "posture": 8.14
+     }
+    },
+    {
+     "over_cap": [
+      "ankle"
+     ],
+     "phi": 0.5,
+     "ratio": {
+      "ankle": 1.00415,
+      "hip": 0.863055,
+      "knee": 0.898108,
+      "mp": 0.003016,
+      "posture": 0.933868
+     },
+     "tau_Nm": {
+      "ankle": -6.273,
+      "hip": 9.677,
+      "knee": 8.601,
+      "mp": 0.005,
+      "posture": 10.471
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.55,
+     "ratio": {
+      "ankle": 0.829668,
+      "hip": 1.05097,
+      "knee": 1.058392,
+      "mp": 0.003016,
+      "posture": 1.117503
+     },
+     "tau_Nm": {
+      "ankle": -5.183,
+      "hip": 11.784,
+      "knee": 10.136,
+      "mp": 0.005,
+      "posture": 12.53
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.6,
+     "ratio": {
+      "ankle": 0.562343,
+      "hip": 1.334136,
+      "knee": 1.274644,
+      "mp": 0.002413,
+      "posture": 1.393802
+     },
+     "tau_Nm": {
+      "ankle": -3.513,
+      "hip": 14.959,
+      "knee": 12.207,
+      "mp": 0.004,
+      "posture": 15.628
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.65,
+     "ratio": {
+      "ankle": 0.409472,
+      "hip": 1.480669,
+      "knee": 1.435449,
+      "mp": 0.001206,
+      "posture": 1.530435
+     },
+     "tau_Nm": {
+      "ankle": -2.558,
+      "hip": 16.602,
+      "knee": 13.747,
+      "mp": 0.002,
+      "posture": 17.16
+     }
+    }
+   ],
+   "per_joint": {
+    "ankle": {
+     "binding_node_phi": 0.3,
+     "over_cap_nodes": 6,
+     "over_cap_phis": [
+      0.449,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5
+     ],
+     "worst_holding_phi": 0.25,
+     "worst_holding_ratio": 0.987926,
+     "worst_ratio": 1.15494
+    },
+    "hip": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.918172,
+     "worst_ratio": 1.480669
+    },
+    "knee": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.25,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.2,
+     "worst_holding_ratio": 0.919514,
+     "worst_ratio": 1.435449
+    },
+    "mp": {
+     "binding_node_phi": 0.25,
+     "over_cap_nodes": 6,
+     "over_cap_phis": [
+      0.0,
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25
+     ],
+     "worst_holding_phi": 0.449,
+     "worst_holding_ratio": 0.003016,
+     "worst_ratio": 5.10397
+    },
+    "posture": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.952865,
+     "worst_ratio": 1.530435
+    }
+   },
+   "worst_case_binder": {
+    "joint": "mp",
+    "phi": 0.25
+   },
+   "worst_case_ratio": 5.10397
+  },
+  "S2_si_matched_gate": {
+   "margin_binder_holding": {
+    "joint": "ankle",
+    "phi": 0.3,
+    "ratio": 0.975
+   },
+   "nodes": [
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.449,
+     "ratio": {
+      "ankle": 0.915405,
+      "hip": 0.648473,
+      "knee": 6.343413,
+      "mp": 0.025183,
+      "posture": 0.720803
+     },
+     "tau_Nm": {
+      "ankle": -6.774,
+      "hip": 7.271,
+      "knee": 7.275,
+      "mp": 0.005,
+      "posture": 8.082
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "mp",
+      "posture"
+     ],
+     "phi": 0.0,
+     "ratio": {
+      "ankle": 0.160811,
+      "hip": 1.15505,
+      "knee": 2.184227,
+      "mp": 41.023859,
+      "posture": 1.184928
+     },
+     "tau_Nm": {
+      "ankle": 1.19,
+      "hip": -12.951,
+      "knee": -2.505,
+      "mp": 8.145,
+      "posture": -13.286
+     }
+    },
+    {
+     "over_cap": [
+      "mp"
+     ],
+     "phi": 0.05,
+     "ratio": {
+      "ankle": 0.153378,
+      "hip": 0.918172,
+      "knee": 0.374937,
+      "mp": 39.130063,
+      "posture": 0.952865
+     },
+     "tau_Nm": {
+      "ankle": 1.135,
+      "hip": -10.295,
+      "knee": 0.43,
+      "mp": 7.769,
+      "posture": -10.684
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "mp"
+     ],
+     "phi": 0.1,
+     "ratio": {
+      "ankle": 0.155946,
+      "hip": 0.607447,
+      "knee": 3.319501,
+      "mp": 39.794906,
+      "posture": 0.650256
+     },
+     "tau_Nm": {
+      "ankle": 1.154,
+      "hip": -6.811,
+      "knee": 3.807,
+      "mp": 7.901,
+      "posture": -7.291
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "mp"
+     ],
+     "phi": 0.15,
+     "ratio": {
+      "ankle": 0.161757,
+      "hip": 0.272107,
+      "knee": 5.881281,
+      "mp": 41.275693,
+      "posture": 0.317324
+     },
+     "tau_Nm": {
+      "ankle": 1.197,
+      "hip": -3.051,
+      "knee": 6.745,
+      "mp": 8.195,
+      "posture": -3.558
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "mp"
+     ],
+     "phi": 0.2,
+     "ratio": {
+      "ankle": 0.165541,
+      "hip": 0.018194,
+      "knee": 7.678363,
+      "mp": 42.257848,
+      "posture": 0.018907
+     },
+     "tau_Nm": {
+      "ankle": 1.225,
+      "hip": 0.204,
+      "knee": 8.806,
+      "mp": 8.39,
+      "posture": -0.212
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "mp"
+     ],
+     "phi": 0.25,
+     "ratio": {
+      "ankle": 0.167027,
+      "hip": 0.317592,
+      "knee": 9.187703,
+      "mp": 42.62049,
+      "posture": 0.300201
+     },
+     "tau_Nm": {
+      "ankle": 1.236,
+      "hip": 3.561,
+      "knee": 10.537,
+      "mp": 8.462,
+      "posture": 3.366
+     }
+    },
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.3,
+     "ratio": {
+      "ankle": 0.975,
+      "hip": 0.169275,
+      "knee": 3.07274,
+      "mp": 0.025183,
+      "posture": 0.15786
+     },
+     "tau_Nm": {
+      "ankle": -7.215,
+      "hip": -1.898,
+      "knee": 3.524,
+      "mp": 0.005,
+      "posture": -1.77
+     }
+    },
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.35,
+     "ratio": {
+      "ankle": 0.972568,
+      "hip": 0.050836,
+      "knee": 3.785121,
+      "mp": 0.025183,
+      "posture": 0.097926
+     },
+     "tau_Nm": {
+      "ankle": -7.197,
+      "hip": 0.57,
+      "knee": 4.341,
+      "mp": 0.005,
+      "posture": 1.098
+     }
+    },
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.4,
+     "ratio": {
+      "ankle": 0.96,
+      "hip": 0.400981,
+      "knee": 5.018926,
+      "mp": 0.025183,
+      "posture": 0.466087
+     },
+     "tau_Nm": {
+      "ankle": -7.104,
+      "hip": 4.496,
+      "knee": 5.756,
+      "mp": 0.005,
+      "posture": 5.226
+     }
+    },
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.45,
+     "ratio": {
+      "ankle": 0.914189,
+      "hip": 0.653556,
+      "knee": 6.371315,
+      "mp": 0.025183,
+      "posture": 0.725975
+     },
+     "tau_Nm": {
+      "ankle": -6.765,
+      "hip": 7.328,
+      "knee": 7.307,
+      "mp": 0.005,
+      "posture": 8.14
+     }
+    },
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.5,
+     "ratio": {
+      "ankle": 0.847703,
+      "hip": 0.863055,
+      "knee": 7.499614,
+      "mp": 0.025183,
+      "posture": 0.933868
+     },
+     "tau_Nm": {
+      "ankle": -6.273,
+      "hip": 9.677,
+      "knee": 8.601,
+      "mp": 0.005,
+      "posture": 10.471
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.55,
+     "ratio": {
+      "ankle": 0.700405,
+      "hip": 1.05097,
+      "knee": 8.838052,
+      "mp": 0.025183,
+      "posture": 1.117503
+     },
+     "tau_Nm": {
+      "ankle": -5.183,
+      "hip": 11.784,
+      "knee": 10.136,
+      "mp": 0.005,
+      "posture": 12.53
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.6,
+     "ratio": {
+      "ankle": 0.47473,
+      "hip": 1.334136,
+      "knee": 10.643854,
+      "mp": 0.020147,
+      "posture": 1.393802
+     },
+     "tau_Nm": {
+      "ankle": -3.513,
+      "hip": 14.959,
+      "knee": 12.207,
+      "mp": 0.004,
+      "posture": 15.628
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.65,
+     "ratio": {
+      "ankle": 0.345676,
+      "hip": 1.480669,
+      "knee": 11.986652,
+      "mp": 0.010073,
+      "posture": 1.530435
+     },
+     "tau_Nm": {
+      "ankle": -2.558,
+      "hip": 16.602,
+      "knee": 13.747,
+      "mp": 0.002,
+      "posture": 17.16
+     }
+    }
+   ],
+   "per_joint": {
+    "ankle": {
+     "binding_node_phi": 0.3,
+     "over_cap_nodes": 0,
+     "over_cap_phis": [],
+     "worst_holding_phi": 0.3,
+     "worst_holding_ratio": 0.975,
+     "worst_ratio": 0.975
+    },
+    "hip": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.918172,
+     "worst_ratio": 1.480669
+    },
+    "knee": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 14,
+     "over_cap_phis": [
+      0.449,
+      0.0,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.374937,
+     "worst_ratio": 11.986652
+    },
+    "mp": {
+     "binding_node_phi": 0.25,
+     "over_cap_nodes": 6,
+     "over_cap_phis": [
+      0.0,
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25
+     ],
+     "worst_holding_phi": 0.449,
+     "worst_holding_ratio": 0.025183,
+     "worst_ratio": 42.62049
+    },
+    "posture": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.952865,
+     "worst_ratio": 1.530435
+    }
+   },
+   "worst_case_binder": {
+    "joint": "mp",
+    "phi": 0.25
+   },
+   "worst_case_ratio": 42.62049
+  }
+ },
+ "stance_tables_wave8_corrected_mp_VARIANT": {
+  "A_live_doc": {
+   "margin_binder_holding": {
+    "joint": "ankle",
+    "phi": 0.3,
+    "ratio": 0.975
+   },
+   "nodes": [
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.449,
+     "ratio": {
+      "ankle": 0.915405,
+      "hip": 0.648473,
+      "knee": 1.096045,
+      "mp": 0.005634,
+      "posture": 0.720803
+     },
+     "tau_Nm": {
+      "ankle": -6.774,
+      "hip": 7.271,
+      "knee": 7.275,
+      "mp": 0.005,
+      "posture": 8.082
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "posture"
+     ],
+     "phi": 0.0,
+     "ratio": {
+      "ankle": 0.160811,
+      "hip": 1.15505,
+      "knee": 0.377401,
+      "mp": 0.005634,
+      "posture": 1.184928
+     },
+     "tau_Nm": {
+      "ankle": 1.19,
+      "hip": -12.951,
+      "knee": -2.505,
+      "mp": 0.005,
+      "posture": -13.286
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.05,
+     "ratio": {
+      "ankle": 0.153378,
+      "hip": 0.918172,
+      "knee": 0.064783,
+      "mp": 0.005634,
+      "posture": 0.952865
+     },
+     "tau_Nm": {
+      "ankle": 1.135,
+      "hip": -10.295,
+      "knee": 0.43,
+      "mp": 0.005,
+      "posture": -10.684
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.1,
+     "ratio": {
+      "ankle": 0.155946,
+      "hip": 0.607447,
+      "knee": 0.573559,
+      "mp": 0.005634,
+      "posture": 0.650256
+     },
+     "tau_Nm": {
+      "ankle": 1.154,
+      "hip": -6.811,
+      "knee": 3.807,
+      "mp": 0.005,
+      "posture": -7.291
+     }
+    },
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.15,
+     "ratio": {
+      "ankle": 0.161757,
+      "hip": 0.272107,
+      "knee": 1.016196,
+      "mp": 0.005634,
+      "posture": 0.317324
+     },
+     "tau_Nm": {
+      "ankle": 1.197,
+      "hip": -3.051,
+      "knee": 6.745,
+      "mp": 0.005,
+      "posture": -3.558
+     }
+    },
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.2,
+     "ratio": {
+      "ankle": 0.165541,
+      "hip": 0.018194,
+      "knee": 1.326704,
+      "mp": 0.005634,
+      "posture": 0.018907
+     },
+     "tau_Nm": {
+      "ankle": 1.225,
+      "hip": 0.204,
+      "knee": 8.806,
+      "mp": 0.005,
+      "posture": -0.212
+     }
+    },
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.25,
+     "ratio": {
+      "ankle": 0.167027,
+      "hip": 0.317592,
+      "knee": 1.587495,
+      "mp": 0.005634,
+      "posture": 0.300201
+     },
+     "tau_Nm": {
+      "ankle": 1.236,
+      "hip": 3.561,
+      "knee": 10.537,
+      "mp": 0.005,
+      "posture": 3.366
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.3,
+     "ratio": {
+      "ankle": 0.975,
+      "hip": 0.169275,
+      "knee": 0.530923,
+      "mp": 0.005634,
+      "posture": 0.15786
+     },
+     "tau_Nm": {
+      "ankle": -7.215,
+      "hip": -1.898,
+      "knee": 3.524,
+      "mp": 0.005,
+      "posture": -1.77
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.35,
+     "ratio": {
+      "ankle": 0.972568,
+      "hip": 0.050836,
+      "knee": 0.654011,
+      "mp": 0.005634,
+      "posture": 0.097926
+     },
+     "tau_Nm": {
+      "ankle": -7.197,
+      "hip": 0.57,
+      "knee": 4.341,
+      "mp": 0.005,
+      "posture": 1.098
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.4,
+     "ratio": {
+      "ankle": 0.96,
+      "hip": 0.400981,
+      "knee": 0.867194,
+      "mp": 0.005634,
+      "posture": 0.466087
+     },
+     "tau_Nm": {
+      "ankle": -7.104,
+      "hip": 4.496,
+      "knee": 5.756,
+      "mp": 0.005,
+      "posture": 5.226
+     }
+    },
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.45,
+     "ratio": {
+      "ankle": 0.914189,
+      "hip": 0.653556,
+      "knee": 1.100866,
+      "mp": 0.005634,
+      "posture": 0.725975
+     },
+     "tau_Nm": {
+      "ankle": -6.765,
+      "hip": 7.328,
+      "knee": 7.307,
+      "mp": 0.005,
+      "posture": 8.14
+     }
+    },
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.5,
+     "ratio": {
+      "ankle": 0.847703,
+      "hip": 0.863055,
+      "knee": 1.295819,
+      "mp": 0.005634,
+      "posture": 0.933868
+     },
+     "tau_Nm": {
+      "ankle": -6.273,
+      "hip": 9.677,
+      "knee": 8.601,
+      "mp": 0.005,
+      "posture": 10.471
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.55,
+     "ratio": {
+      "ankle": 0.700405,
+      "hip": 1.05097,
+      "knee": 1.527081,
+      "mp": 0.005634,
+      "posture": 1.117503
+     },
+     "tau_Nm": {
+      "ankle": -5.183,
+      "hip": 11.784,
+      "knee": 10.136,
+      "mp": 0.005,
+      "posture": 12.53
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.6,
+     "ratio": {
+      "ankle": 0.47473,
+      "hip": 1.334136,
+      "knee": 1.839096,
+      "mp": 0.004507,
+      "posture": 1.393802
+     },
+     "tau_Nm": {
+      "ankle": -3.513,
+      "hip": 14.959,
+      "knee": 12.207,
+      "mp": 0.004,
+      "posture": 15.628
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.65,
+     "ratio": {
+      "ankle": 0.345676,
+      "hip": 1.480669,
+      "knee": 2.071111,
+      "mp": 0.002254,
+      "posture": 1.530435
+     },
+     "tau_Nm": {
+      "ankle": -2.558,
+      "hip": 16.602,
+      "knee": 13.747,
+      "mp": 0.002,
+      "posture": 17.16
+     }
+    }
+   ],
+   "per_joint": {
+    "ankle": {
+     "binding_node_phi": 0.3,
+     "over_cap_nodes": 0,
+     "over_cap_phis": [],
+     "worst_holding_phi": 0.3,
+     "worst_holding_ratio": 0.975,
+     "worst_ratio": 0.975
+    },
+    "hip": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.918172,
+     "worst_ratio": 1.480669
+    },
+    "knee": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 9,
+     "over_cap_phis": [
+      0.449,
+      0.15,
+      0.2,
+      0.25,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.4,
+     "worst_holding_ratio": 0.867194,
+     "worst_ratio": 2.071111
+    },
+    "mp": {
+     "binding_node_phi": 0.449,
+     "over_cap_nodes": 0,
+     "over_cap_phis": [],
+     "worst_holding_phi": 0.449,
+     "worst_holding_ratio": 0.005634,
+     "worst_ratio": 0.005634
+    },
+    "posture": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.952865,
+     "worst_ratio": 1.530435
+    }
+   },
+   "worst_case_binder": {
+    "joint": "knee",
+    "phi": 0.65
+   },
+   "worst_case_ratio": 2.071111
+  },
+  "B_measured_v1_s1": {
+   "margin_binder_holding": {
+    "joint": "ankle",
+    "phi": 0.3,
+    "ratio": 0.975
+   },
+   "nodes": [
+    {
+     "over_cap": [],
+     "phi": 0.449,
+     "ratio": {
+      "ankle": 0.915405,
+      "hip": 0.648473,
+      "knee": 0.759649,
+      "mp": 0.003016,
+      "posture": 0.720803
+     },
+     "tau_Nm": {
+      "ankle": -6.774,
+      "hip": 7.271,
+      "knee": 7.275,
+      "mp": 0.005,
+      "posture": 8.082
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "posture"
+     ],
+     "phi": 0.0,
+     "ratio": {
+      "ankle": 0.160811,
+      "hip": 1.15505,
+      "knee": 0.26157,
+      "mp": 0.003016,
+      "posture": 1.184928
+     },
+     "tau_Nm": {
+      "ankle": 1.19,
+      "hip": -12.951,
+      "knee": -2.505,
+      "mp": 0.005,
+      "posture": -13.286
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.05,
+     "ratio": {
+      "ankle": 0.153378,
+      "hip": 0.918172,
+      "knee": 0.0449,
+      "mp": 0.003016,
+      "posture": 0.952865
+     },
+     "tau_Nm": {
+      "ankle": 1.135,
+      "hip": -10.295,
+      "knee": 0.43,
+      "mp": 0.005,
+      "posture": -10.684
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.1,
+     "ratio": {
+      "ankle": 0.155946,
+      "hip": 0.607447,
+      "knee": 0.397523,
+      "mp": 0.003016,
+      "posture": 0.650256
+     },
+     "tau_Nm": {
+      "ankle": 1.154,
+      "hip": -6.811,
+      "knee": 3.807,
+      "mp": 0.005,
+      "posture": -7.291
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.15,
+     "ratio": {
+      "ankle": 0.161757,
+      "hip": 0.272107,
+      "knee": 0.704307,
+      "mp": 0.003016,
+      "posture": 0.317324
+     },
+     "tau_Nm": {
+      "ankle": 1.197,
+      "hip": -3.051,
+      "knee": 6.745,
+      "mp": 0.005,
+      "posture": -3.558
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.2,
+     "ratio": {
+      "ankle": 0.165541,
+      "hip": 0.018194,
+      "knee": 0.919514,
+      "mp": 0.003016,
+      "posture": 0.018907
+     },
+     "tau_Nm": {
+      "ankle": 1.225,
+      "hip": 0.204,
+      "knee": 8.806,
+      "mp": 0.005,
+      "posture": -0.212
+     }
+    },
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.25,
+     "ratio": {
+      "ankle": 0.167027,
+      "hip": 0.317592,
+      "knee": 1.100264,
+      "mp": 0.003016,
+      "posture": 0.300201
+     },
+     "tau_Nm": {
+      "ankle": 1.236,
+      "hip": 3.561,
+      "knee": 10.537,
+      "mp": 0.005,
+      "posture": 3.366
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.3,
+     "ratio": {
+      "ankle": 0.975,
+      "hip": 0.169275,
+      "knee": 0.367973,
+      "mp": 0.003016,
+      "posture": 0.15786
+     },
+     "tau_Nm": {
+      "ankle": -7.215,
+      "hip": -1.898,
+      "knee": 3.524,
+      "mp": 0.005,
+      "posture": -1.77
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.35,
+     "ratio": {
+      "ankle": 0.972568,
+      "hip": 0.050836,
+      "knee": 0.453283,
+      "mp": 0.003016,
+      "posture": 0.097926
+     },
+     "tau_Nm": {
+      "ankle": -7.197,
+      "hip": 0.57,
+      "knee": 4.341,
+      "mp": 0.005,
+      "posture": 1.098
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.4,
+     "ratio": {
+      "ankle": 0.96,
+      "hip": 0.400981,
+      "knee": 0.601036,
+      "mp": 0.003016,
+      "posture": 0.466087
+     },
+     "tau_Nm": {
+      "ankle": -7.104,
+      "hip": 4.496,
+      "knee": 5.756,
+      "mp": 0.005,
+      "posture": 5.226
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.45,
+     "ratio": {
+      "ankle": 0.914189,
+      "hip": 0.653556,
+      "knee": 0.76299,
+      "mp": 0.003016,
+      "posture": 0.725975
+     },
+     "tau_Nm": {
+      "ankle": -6.765,
+      "hip": 7.328,
+      "knee": 7.307,
+      "mp": 0.005,
+      "posture": 8.14
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.5,
+     "ratio": {
+      "ankle": 0.847703,
+      "hip": 0.863055,
+      "knee": 0.898108,
+      "mp": 0.003016,
+      "posture": 0.933868
+     },
+     "tau_Nm": {
+      "ankle": -6.273,
+      "hip": 9.677,
+      "knee": 8.601,
+      "mp": 0.005,
+      "posture": 10.471
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.55,
+     "ratio": {
+      "ankle": 0.700405,
+      "hip": 1.05097,
+      "knee": 1.058392,
+      "mp": 0.003016,
+      "posture": 1.117503
+     },
+     "tau_Nm": {
+      "ankle": -5.183,
+      "hip": 11.784,
+      "knee": 10.136,
+      "mp": 0.005,
+      "posture": 12.53
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.6,
+     "ratio": {
+      "ankle": 0.47473,
+      "hip": 1.334136,
+      "knee": 1.274644,
+      "mp": 0.002413,
+      "posture": 1.393802
+     },
+     "tau_Nm": {
+      "ankle": -3.513,
+      "hip": 14.959,
+      "knee": 12.207,
+      "mp": 0.004,
+      "posture": 15.628
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.65,
+     "ratio": {
+      "ankle": 0.345676,
+      "hip": 1.480669,
+      "knee": 1.435449,
+      "mp": 0.001206,
+      "posture": 1.530435
+     },
+     "tau_Nm": {
+      "ankle": -2.558,
+      "hip": 16.602,
+      "knee": 13.747,
+      "mp": 0.002,
+      "posture": 17.16
+     }
+    }
+   ],
+   "per_joint": {
+    "ankle": {
+     "binding_node_phi": 0.3,
+     "over_cap_nodes": 0,
+     "over_cap_phis": [],
+     "worst_holding_phi": 0.3,
+     "worst_holding_ratio": 0.975,
+     "worst_ratio": 0.975
+    },
+    "hip": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.918172,
+     "worst_ratio": 1.480669
+    },
+    "knee": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.25,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.2,
+     "worst_holding_ratio": 0.919514,
+     "worst_ratio": 1.435449
+    },
+    "mp": {
+     "binding_node_phi": 0.449,
+     "over_cap_nodes": 0,
+     "over_cap_phis": [],
+     "worst_holding_phi": 0.449,
+     "worst_holding_ratio": 0.003016,
+     "worst_ratio": 0.003016
+    },
+    "posture": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.952865,
+     "worst_ratio": 1.530435
+    }
+   },
+   "worst_case_binder": {
+    "joint": "posture",
+    "phi": 0.65
+   },
+   "worst_case_ratio": 1.530435
+  },
+  "C_provisional_v2_s1": {
+   "margin_binder_holding": {
+    "joint": "ankle",
+    "phi": 0.3,
+    "ratio": 0.975
+   },
+   "nodes": [
+    {
+     "over_cap": [],
+     "phi": 0.449,
+     "ratio": {
+      "ankle": 0.915405,
+      "hip": 0.648473,
+      "knee": 0.200702,
+      "mp": 0.001078,
+      "posture": 0.720803
+     },
+     "tau_Nm": {
+      "ankle": -6.774,
+      "hip": 7.271,
+      "knee": 7.275,
+      "mp": 0.005,
+      "posture": 8.082
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "posture"
+     ],
+     "phi": 0.0,
+     "ratio": {
+      "ankle": 0.160811,
+      "hip": 1.15505,
+      "knee": 0.069108,
+      "mp": 0.001078,
+      "posture": 1.184928
+     },
+     "tau_Nm": {
+      "ankle": 1.19,
+      "hip": -12.951,
+      "knee": -2.505,
+      "mp": 0.005,
+      "posture": -13.286
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.05,
+     "ratio": {
+      "ankle": 0.153378,
+      "hip": 0.918172,
+      "knee": 0.011863,
+      "mp": 0.001078,
+      "posture": 0.952865
+     },
+     "tau_Nm": {
+      "ankle": 1.135,
+      "hip": -10.295,
+      "knee": 0.43,
+      "mp": 0.005,
+      "posture": -10.684
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.1,
+     "ratio": {
+      "ankle": 0.155946,
+      "hip": 0.607447,
+      "knee": 0.105027,
+      "mp": 0.001078,
+      "posture": 0.650256
+     },
+     "tau_Nm": {
+      "ankle": 1.154,
+      "hip": -6.811,
+      "knee": 3.807,
+      "mp": 0.005,
+      "posture": -7.291
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.15,
+     "ratio": {
+      "ankle": 0.161757,
+      "hip": 0.272107,
+      "knee": 0.18608,
+      "mp": 0.001078,
+      "posture": 0.317324
+     },
+     "tau_Nm": {
+      "ankle": 1.197,
+      "hip": -3.051,
+      "knee": 6.745,
+      "mp": 0.005,
+      "posture": -3.558
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.2,
+     "ratio": {
+      "ankle": 0.165541,
+      "hip": 0.018194,
+      "knee": 0.242939,
+      "mp": 0.001078,
+      "posture": 0.018907
+     },
+     "tau_Nm": {
+      "ankle": 1.225,
+      "hip": 0.204,
+      "knee": 8.806,
+      "mp": 0.005,
+      "posture": -0.212
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.25,
+     "ratio": {
+      "ankle": 0.167027,
+      "hip": 0.317592,
+      "knee": 0.290694,
+      "mp": 0.001078,
+      "posture": 0.300201
+     },
+     "tau_Nm": {
+      "ankle": 1.236,
+      "hip": 3.561,
+      "knee": 10.537,
+      "mp": 0.005,
+      "posture": 3.366
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.3,
+     "ratio": {
+      "ankle": 0.975,
+      "hip": 0.169275,
+      "knee": 0.09722,
+      "mp": 0.001078,
+      "posture": 0.15786
+     },
+     "tau_Nm": {
+      "ankle": -7.215,
+      "hip": -1.898,
+      "knee": 3.524,
+      "mp": 0.005,
+      "posture": -1.77
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.35,
+     "ratio": {
+      "ankle": 0.972568,
+      "hip": 0.050836,
+      "knee": 0.119759,
+      "mp": 0.001078,
+      "posture": 0.097926
+     },
+     "tau_Nm": {
+      "ankle": -7.197,
+      "hip": 0.57,
+      "knee": 4.341,
+      "mp": 0.005,
+      "posture": 1.098
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.4,
+     "ratio": {
+      "ankle": 0.96,
+      "hip": 0.400981,
+      "knee": 0.158796,
+      "mp": 0.001078,
+      "posture": 0.466087
+     },
+     "tau_Nm": {
+      "ankle": -7.104,
+      "hip": 4.496,
+      "knee": 5.756,
+      "mp": 0.005,
+      "posture": 5.226
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.45,
+     "ratio": {
+      "ankle": 0.914189,
+      "hip": 0.653556,
+      "knee": 0.201585,
+      "mp": 0.001078,
+      "posture": 0.725975
+     },
+     "tau_Nm": {
+      "ankle": -6.765,
+      "hip": 7.328,
+      "knee": 7.307,
+      "mp": 0.005,
+      "posture": 8.14
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.5,
+     "ratio": {
+      "ankle": 0.847703,
+      "hip": 0.863055,
+      "knee": 0.237283,
+      "mp": 0.001078,
+      "posture": 0.933868
+     },
+     "tau_Nm": {
+      "ankle": -6.273,
+      "hip": 9.677,
+      "knee": 8.601,
+      "mp": 0.005,
+      "posture": 10.471
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "posture"
+     ],
+     "phi": 0.55,
+     "ratio": {
+      "ankle": 0.700405,
+      "hip": 1.05097,
+      "knee": 0.279631,
+      "mp": 0.001078,
+      "posture": 1.117503
+     },
+     "tau_Nm": {
+      "ankle": -5.183,
+      "hip": 11.784,
+      "knee": 10.136,
+      "mp": 0.005,
+      "posture": 12.53
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "posture"
+     ],
+     "phi": 0.6,
+     "ratio": {
+      "ankle": 0.47473,
+      "hip": 1.334136,
+      "knee": 0.336765,
+      "mp": 0.000863,
+      "posture": 1.393802
+     },
+     "tau_Nm": {
+      "ankle": -3.513,
+      "hip": 14.959,
+      "knee": 12.207,
+      "mp": 0.004,
+      "posture": 15.628
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "posture"
+     ],
+     "phi": 0.65,
+     "ratio": {
+      "ankle": 0.345676,
+      "hip": 1.480669,
+      "knee": 0.379251,
+      "mp": 0.000431,
+      "posture": 1.530435
+     },
+     "tau_Nm": {
+      "ankle": -2.558,
+      "hip": 16.602,
+      "knee": 13.747,
+      "mp": 0.002,
+      "posture": 17.16
+     }
+    }
+   ],
+   "per_joint": {
+    "ankle": {
+     "binding_node_phi": 0.3,
+     "over_cap_nodes": 0,
+     "over_cap_phis": [],
+     "worst_holding_phi": 0.3,
+     "worst_holding_ratio": 0.975,
+     "worst_ratio": 0.975
+    },
+    "hip": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.918172,
+     "worst_ratio": 1.480669
+    },
+    "knee": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 0,
+     "over_cap_phis": [],
+     "worst_holding_phi": 0.65,
+     "worst_holding_ratio": 0.379251,
+     "worst_ratio": 0.379251
+    },
+    "mp": {
+     "binding_node_phi": 0.449,
+     "over_cap_nodes": 0,
+     "over_cap_phis": [],
+     "worst_holding_phi": 0.449,
+     "worst_holding_ratio": 0.001078,
+     "worst_ratio": 0.001078
+    },
+    "posture": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.952865,
+     "worst_ratio": 1.530435
+    }
+   },
+   "worst_case_binder": {
+    "joint": "posture",
+    "phi": 0.65
+   },
+   "worst_case_ratio": 1.530435
+  },
+  "D_S2_si_matched_gate": {
+   "margin_binder_holding": {
+    "joint": "posture",
+    "phi": 0.05,
+    "ratio": 0.952865
+   },
+   "nodes": [
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.449,
+     "ratio": {
+      "ankle": 9.054794,
+      "hip": 0.648473,
+      "knee": 6.343413,
+      "mp": 0.025183,
+      "posture": 0.720803
+     },
+     "tau_Nm": {
+      "ankle": -6.774,
+      "hip": 7.271,
+      "knee": 7.275,
+      "mp": 0.005,
+      "posture": 8.082
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "ankle",
+      "posture"
+     ],
+     "phi": 0.0,
+     "ratio": {
+      "ankle": 7.9426,
+      "hip": 1.15505,
+      "knee": 2.184227,
+      "mp": 0.025183,
+      "posture": 1.184928
+     },
+     "tau_Nm": {
+      "ankle": 1.19,
+      "hip": -12.951,
+      "knee": -2.505,
+      "mp": 0.005,
+      "posture": -13.286
+     }
+    },
+    {
+     "over_cap": [
+      "ankle"
+     ],
+     "phi": 0.05,
+     "ratio": {
+      "ankle": 7.575505,
+      "hip": 0.918172,
+      "knee": 0.374937,
+      "mp": 0.025183,
+      "posture": 0.952865
+     },
+     "tau_Nm": {
+      "ankle": 1.135,
+      "hip": -10.295,
+      "knee": 0.43,
+      "mp": 0.005,
+      "posture": -10.684
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.1,
+     "ratio": {
+      "ankle": 7.702319,
+      "hip": 0.607447,
+      "knee": 3.319501,
+      "mp": 0.025183,
+      "posture": 0.650256
+     },
+     "tau_Nm": {
+      "ankle": 1.154,
+      "hip": -6.811,
+      "knee": 3.807,
+      "mp": 0.005,
+      "posture": -7.291
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.15,
+     "ratio": {
+      "ankle": 7.989321,
+      "hip": 0.272107,
+      "knee": 5.881281,
+      "mp": 0.025183,
+      "posture": 0.317324
+     },
+     "tau_Nm": {
+      "ankle": 1.197,
+      "hip": -3.051,
+      "knee": 6.745,
+      "mp": 0.005,
+      "posture": -3.558
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.2,
+     "ratio": {
+      "ankle": 8.176206,
+      "hip": 0.018194,
+      "knee": 7.678363,
+      "mp": 0.025183,
+      "posture": 0.018907
+     },
+     "tau_Nm": {
+      "ankle": 1.225,
+      "hip": 0.204,
+      "knee": 8.806,
+      "mp": 0.005,
+      "posture": -0.212
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.25,
+     "ratio": {
+      "ankle": 8.249625,
+      "hip": 0.317592,
+      "knee": 9.187703,
+      "mp": 0.025183,
+      "posture": 0.300201
+     },
+     "tau_Nm": {
+      "ankle": 1.236,
+      "hip": 3.561,
+      "knee": 10.537,
+      "mp": 0.005,
+      "posture": 3.366
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.3,
+     "ratio": {
+      "ankle": 9.644278,
+      "hip": 0.169275,
+      "knee": 3.07274,
+      "mp": 0.025183,
+      "posture": 0.15786
+     },
+     "tau_Nm": {
+      "ankle": -7.215,
+      "hip": -1.898,
+      "knee": 3.524,
+      "mp": 0.005,
+      "posture": -1.77
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.35,
+     "ratio": {
+      "ankle": 9.620217,
+      "hip": 0.050836,
+      "knee": 3.785121,
+      "mp": 0.025183,
+      "posture": 0.097926
+     },
+     "tau_Nm": {
+      "ankle": -7.197,
+      "hip": 0.57,
+      "knee": 4.341,
+      "mp": 0.005,
+      "posture": 1.098
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.4,
+     "ratio": {
+      "ankle": 9.495904,
+      "hip": 0.400981,
+      "knee": 5.018926,
+      "mp": 0.025183,
+      "posture": 0.466087
+     },
+     "tau_Nm": {
+      "ankle": -7.104,
+      "hip": 4.496,
+      "knee": 5.756,
+      "mp": 0.005,
+      "posture": 5.226
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.45,
+     "ratio": {
+      "ankle": 9.042764,
+      "hip": 0.653556,
+      "knee": 6.371315,
+      "mp": 0.025183,
+      "posture": 0.725975
+     },
+     "tau_Nm": {
+      "ankle": -6.765,
+      "hip": 7.328,
+      "knee": 7.307,
+      "mp": 0.005,
+      "posture": 8.14
+     }
+    },
+    {
+     "over_cap": [
+      "knee",
+      "ankle"
+     ],
+     "phi": 0.5,
+     "ratio": {
+      "ankle": 8.385108,
+      "hip": 0.863055,
+      "knee": 7.499614,
+      "mp": 0.025183,
+      "posture": 0.933868
+     },
+     "tau_Nm": {
+      "ankle": -6.273,
+      "hip": 9.677,
+      "knee": 8.601,
+      "mp": 0.005,
+      "posture": 10.471
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "ankle",
+      "posture"
+     ],
+     "phi": 0.55,
+     "ratio": {
+      "ankle": 6.928107,
+      "hip": 1.05097,
+      "knee": 8.838052,
+      "mp": 0.025183,
+      "posture": 1.117503
+     },
+     "tau_Nm": {
+      "ankle": -5.183,
+      "hip": 11.784,
+      "knee": 10.136,
+      "mp": 0.005,
+      "posture": 12.53
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "ankle",
+      "posture"
+     ],
+     "phi": 0.6,
+     "ratio": {
+      "ankle": 4.695821,
+      "hip": 1.334136,
+      "knee": 10.643854,
+      "mp": 0.020147,
+      "posture": 1.393802
+     },
+     "tau_Nm": {
+      "ankle": -3.513,
+      "hip": 14.959,
+      "knee": 12.207,
+      "mp": 0.004,
+      "posture": 15.628
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "ankle",
+      "posture"
+     ],
+     "phi": 0.65,
+     "ratio": {
+      "ankle": 3.419274,
+      "hip": 1.480669,
+      "knee": 11.986652,
+      "mp": 0.010073,
+      "posture": 1.530435
+     },
+     "tau_Nm": {
+      "ankle": -2.558,
+      "hip": 16.602,
+      "knee": 13.747,
+      "mp": 0.002,
+      "posture": 17.16
+     }
+    }
+   ],
+   "per_joint": {
+    "ankle": {
+     "binding_node_phi": 0.3,
+     "over_cap_nodes": 15,
+     "over_cap_phis": [
+      0.449,
+      0.0,
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": null,
+     "worst_holding_ratio": null,
+     "worst_ratio": 9.644278
+    },
+    "hip": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.918172,
+     "worst_ratio": 1.480669
+    },
+    "knee": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 14,
+     "over_cap_phis": [
+      0.449,
+      0.0,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.374937,
+     "worst_ratio": 11.986652
+    },
+    "mp": {
+     "binding_node_phi": 0.449,
+     "over_cap_nodes": 0,
+     "over_cap_phis": [],
+     "worst_holding_phi": 0.449,
+     "worst_holding_ratio": 0.025183,
+     "worst_ratio": 0.025183
+    },
+    "posture": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.952865,
+     "worst_ratio": 1.530435
+    }
+   },
+   "worst_case_binder": {
+    "joint": "knee",
+    "phi": 0.65
+   },
+   "worst_case_ratio": 11.986652
+  },
+  "D_measured_ankle_unblocked": {
+   "margin_binder_holding": {
+    "joint": "posture",
+    "phi": 0.05,
+    "ratio": 0.952865
+   },
+   "nodes": [
+    {
+     "over_cap": [
+      "ankle"
+     ],
+     "phi": 0.449,
+     "ratio": {
+      "ankle": 1.084347,
+      "hip": 0.648473,
+      "knee": 0.759649,
+      "mp": 0.003016,
+      "posture": 0.720803
+     },
+     "tau_Nm": {
+      "ankle": -6.774,
+      "hip": 7.271,
+      "knee": 7.275,
+      "mp": 0.005,
+      "posture": 8.082
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "posture"
+     ],
+     "phi": 0.0,
+     "ratio": {
+      "ankle": 0.190489,
+      "hip": 1.15505,
+      "knee": 0.26157,
+      "mp": 0.003016,
+      "posture": 1.184928
+     },
+     "tau_Nm": {
+      "ankle": 1.19,
+      "hip": -12.951,
+      "knee": -2.505,
+      "mp": 0.005,
+      "posture": -13.286
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.05,
+     "ratio": {
+      "ankle": 0.181685,
+      "hip": 0.918172,
+      "knee": 0.0449,
+      "mp": 0.003016,
+      "posture": 0.952865
+     },
+     "tau_Nm": {
+      "ankle": 1.135,
+      "hip": -10.295,
+      "knee": 0.43,
+      "mp": 0.005,
+      "posture": -10.684
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.1,
+     "ratio": {
+      "ankle": 0.184726,
+      "hip": 0.607447,
+      "knee": 0.397523,
+      "mp": 0.003016,
+      "posture": 0.650256
+     },
+     "tau_Nm": {
+      "ankle": 1.154,
+      "hip": -6.811,
+      "knee": 3.807,
+      "mp": 0.005,
+      "posture": -7.291
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.15,
+     "ratio": {
+      "ankle": 0.19161,
+      "hip": 0.272107,
+      "knee": 0.704307,
+      "mp": 0.003016,
+      "posture": 0.317324
+     },
+     "tau_Nm": {
+      "ankle": 1.197,
+      "hip": -3.051,
+      "knee": 6.745,
+      "mp": 0.005,
+      "posture": -3.558
+     }
+    },
+    {
+     "over_cap": [],
+     "phi": 0.2,
+     "ratio": {
+      "ankle": 0.196092,
+      "hip": 0.018194,
+      "knee": 0.919514,
+      "mp": 0.003016,
+      "posture": 0.018907
+     },
+     "tau_Nm": {
+      "ankle": 1.225,
+      "hip": 0.204,
+      "knee": 8.806,
+      "mp": 0.005,
+      "posture": -0.212
+     }
+    },
+    {
+     "over_cap": [
+      "knee"
+     ],
+     "phi": 0.25,
+     "ratio": {
+      "ankle": 0.197853,
+      "hip": 0.317592,
+      "knee": 1.100264,
+      "mp": 0.003016,
+      "posture": 0.300201
+     },
+     "tau_Nm": {
+      "ankle": 1.236,
+      "hip": 3.561,
+      "knee": 10.537,
+      "mp": 0.005,
+      "posture": 3.366
+     }
+    },
+    {
+     "over_cap": [
+      "ankle"
+     ],
+     "phi": 0.3,
+     "ratio": {
+      "ankle": 1.15494,
+      "hip": 0.169275,
+      "knee": 0.367973,
+      "mp": 0.003016,
+      "posture": 0.15786
+     },
+     "tau_Nm": {
+      "ankle": -7.215,
+      "hip": -1.898,
+      "knee": 3.524,
+      "mp": 0.005,
+      "posture": -1.77
+     }
+    },
+    {
+     "over_cap": [
+      "ankle"
+     ],
+     "phi": 0.35,
+     "ratio": {
+      "ankle": 1.152059,
+      "hip": 0.050836,
+      "knee": 0.453283,
+      "mp": 0.003016,
+      "posture": 0.097926
+     },
+     "tau_Nm": {
+      "ankle": -7.197,
+      "hip": 0.57,
+      "knee": 4.341,
+      "mp": 0.005,
+      "posture": 1.098
+     }
+    },
+    {
+     "over_cap": [
+      "ankle"
+     ],
+     "phi": 0.4,
+     "ratio": {
+      "ankle": 1.137172,
+      "hip": 0.400981,
+      "knee": 0.601036,
+      "mp": 0.003016,
+      "posture": 0.466087
+     },
+     "tau_Nm": {
+      "ankle": -7.104,
+      "hip": 4.496,
+      "knee": 5.756,
+      "mp": 0.005,
+      "posture": 5.226
+     }
+    },
+    {
+     "over_cap": [
+      "ankle"
+     ],
+     "phi": 0.45,
+     "ratio": {
+      "ankle": 1.082906,
+      "hip": 0.653556,
+      "knee": 0.76299,
+      "mp": 0.003016,
+      "posture": 0.725975
+     },
+     "tau_Nm": {
+      "ankle": -6.765,
+      "hip": 7.328,
+      "knee": 7.307,
+      "mp": 0.005,
+      "posture": 8.14
+     }
+    },
+    {
+     "over_cap": [
+      "ankle"
+     ],
+     "phi": 0.5,
+     "ratio": {
+      "ankle": 1.00415,
+      "hip": 0.863055,
+      "knee": 0.898108,
+      "mp": 0.003016,
+      "posture": 0.933868
+     },
+     "tau_Nm": {
+      "ankle": -6.273,
+      "hip": 9.677,
+      "knee": 8.601,
+      "mp": 0.005,
+      "posture": 10.471
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.55,
+     "ratio": {
+      "ankle": 0.829668,
+      "hip": 1.05097,
+      "knee": 1.058392,
+      "mp": 0.003016,
+      "posture": 1.117503
+     },
+     "tau_Nm": {
+      "ankle": -5.183,
+      "hip": 11.784,
+      "knee": 10.136,
+      "mp": 0.005,
+      "posture": 12.53
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.6,
+     "ratio": {
+      "ankle": 0.562343,
+      "hip": 1.334136,
+      "knee": 1.274644,
+      "mp": 0.002413,
+      "posture": 1.393802
+     },
+     "tau_Nm": {
+      "ankle": -3.513,
+      "hip": 14.959,
+      "knee": 12.207,
+      "mp": 0.004,
+      "posture": 15.628
+     }
+    },
+    {
+     "over_cap": [
+      "hip",
+      "knee",
+      "posture"
+     ],
+     "phi": 0.65,
+     "ratio": {
+      "ankle": 0.409472,
+      "hip": 1.480669,
+      "knee": 1.435449,
+      "mp": 0.001206,
+      "posture": 1.530435
+     },
+     "tau_Nm": {
+      "ankle": -2.558,
+      "hip": 16.602,
+      "knee": 13.747,
+      "mp": 0.002,
+      "posture": 17.16
+     }
+    }
+   ],
+   "per_joint": {
+    "ankle": {
+     "binding_node_phi": 0.3,
+     "over_cap_nodes": 6,
+     "over_cap_phis": [
+      0.449,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5
+     ],
+     "worst_holding_phi": 0.55,
+     "worst_holding_ratio": 0.829668,
+     "worst_ratio": 1.15494
+    },
+    "hip": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.918172,
+     "worst_ratio": 1.480669
+    },
+    "knee": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.25,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.2,
+     "worst_holding_ratio": 0.919514,
+     "worst_ratio": 1.435449
+    },
+    "mp": {
+     "binding_node_phi": 0.449,
+     "over_cap_nodes": 0,
+     "over_cap_phis": [],
+     "worst_holding_phi": 0.449,
+     "worst_holding_ratio": 0.003016,
+     "worst_ratio": 0.003016
+    },
+    "posture": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.952865,
+     "worst_ratio": 1.530435
+    }
+   },
+   "worst_case_binder": {
+    "joint": "posture",
+    "phi": 0.65
+   },
+   "worst_case_ratio": 1.530435
+  }
+ },
+ "statics_chain_reproduction": {
+  "all_equal_committed_statics": true,
+  "checks": {
+   "margin_wall.A_live_doc": "EQUAL",
+   "margin_wall.B_measured_v1_s1": "EQUAL",
+   "margin_wall.C_provisional_v2_s1": "EQUAL",
+   "margin_wall.S2_si_matched_gate": "EQUAL",
+   "mp_variant.A_live_doc": "EQUAL",
+   "mp_variant.B_measured_v1_s1": "EQUAL",
+   "mp_variant.C_provisional_v2_s1": "EQUAL",
+   "stance_tables.A_live_doc": "EQUAL",
+   "stance_tables.B_measured_v1_s1": "EQUAL",
+   "stance_tables.C_provisional_v2_s1": "EQUAL",
+   "stance_tables.S2_si_matched_gate": "EQUAL"
+  },
+  "committed_sha256": "21d3dbbe2a477d67f7d7d5572f0171cd0c2e8cfe34a6cd1770ccd81abf06908a"
+ },
+ "verdict": {
+  "ankle_unblocked_verdict": {
+   "ankle_binding_phi": 0.3,
+   "ankle_lane_prediction": "consumption_map.stance_hold_ankle_nodes (ankle book): after=6 over, binding demand -7.215 at phi=0.3 ratio_after 1.1549",
+   "ankle_over_cap_nodes": 6,
+   "ankle_over_cap_phis": [
+    0.449,
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5
+   ],
+   "ankle_worst_ratio": 1.15494,
+   "dorsal_class_over_cap_nodes": 0,
+   "dorsal_class_worst_ratio": 0.987926,
+   "question": "the stance-hold table at (d): the ankle's worst ratio and over-cap count - the ankle lane's statics-side table predicted 6 over-cap nodes at V1_S1",
+   "verified_from_the_statics_side": true
+  },
+  "binder_map": {
+   "margin_binder_holding_class": {
+    "joint": "ankle",
+    "migration": "(a) ankle-plantar 0.975 @ phi=0.3 -> (d) ankle-DORSAL 0.987926 @ phi=0.25 - the last sub-unity ankle class is the dorsal double-support one, and it sits at 0.988",
+    "phi": 0.25,
+    "ratio": 0.987926
+   },
+   "per_joint_d": {
+    "ankle": {
+     "binding_node_phi": 0.3,
+     "over_cap_nodes": 6,
+     "over_cap_phis": [
+      0.449,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5
+     ],
+     "worst_holding_phi": 0.25,
+     "worst_holding_ratio": 0.987926,
+     "worst_ratio": 1.15494
+    },
+    "hip": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.918172,
+     "worst_ratio": 1.480669
+    },
+    "knee": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.25,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.2,
+     "worst_holding_ratio": 0.919514,
+     "worst_ratio": 1.435449
+    },
+    "mp": {
+     "binding_node_phi": 0.25,
+     "over_cap_nodes": 6,
+     "over_cap_phis": [
+      0.0,
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25
+     ],
+     "worst_holding_phi": 0.449,
+     "worst_holding_ratio": 0.003016,
+     "worst_ratio": 5.10397
+    },
+    "posture": {
+     "binding_node_phi": 0.65,
+     "over_cap_nodes": 4,
+     "over_cap_phis": [
+      0.0,
+      0.55,
+      0.6,
+      0.65
+     ],
+     "worst_holding_phi": 0.05,
+     "worst_holding_ratio": 0.952865,
+     "worst_ratio": 1.530435
+    }
+   },
+   "question": "which joint owns what at (d)",
+   "stance_table_worst_case_binder_banked_mp": {
+    "joint": "mp",
+    "phi": 0.25,
+    "ratio": 5.10397
+   },
+   "stance_table_worst_case_binder_wave8_corrected_mp_VARIANT": {
+    "joint": "posture",
+    "note": "the windlass MP class VANISHES under the corrected column (the statics receipt's F3, confirmed at (d)); the table's worst case falls to the POSTURE column (the receipt's pre-registered band named the HIP - the prior omitted the posture column's worst; FIRED, recorded with its number in the receipt's measured block)",
+    "phi": 0.65,
+    "ratio": 1.530435
+   },
+   "wall_binder_histogram_D": {
+    "ankle": 9,
+    "hip": 1,
+    "knee": 4,
+    "posture": 7
+   },
+   "wall_owner": {
+    "joint": "ankle",
+    "phi": 0.5,
+    "state": "OVER-CAP - the ankle OWNS the wall (at (b)/(c) it merely held it at 0.977235)"
+   }
+  },
+  "honest_reds": [
+   "the wall's direction law is an ALIGNMENT decision, not a measurement: the wave-10 artifact carries ratios only, so the receipt NAMED the plantar law before compute and bounds it with the dorsal bracket [1.157587, 5.780115] at phi=0.5 - a signed-torque wave-10 artifact would retire it",
+   "the stance-hold push-off tail stays OVER at (d): knee ratios at phi 0.55/0.6/0.65 unchanged from (b) (1.0584/1.2746/1.4354) - the measured knee book covers entry/mid-window, not the push-off statics (only the PROVISIONAL V2 cap clears them)",
+   "the hip and posture columns gain NOTHING at (d) (caps held): 4/15 over each, unchanged from every set - the 10.54 N.m muscle-grounded posture amendment stays banked-unconsumed",
+   "the banked MP windlass flags (phi 0.0-0.25) stay over at (d) on the banked demands (worst 5.1040) - the wave-8 corrected column says the class is an ARTIFACT (worst 0.0030); the table is carried both ways, named, never silently substituted",
+   "the wall verdict is measured AT THE BANKED wave-10 optimum under the statics lane's re-price law; a collocation re-hearing at the measured caps could move the ankle terms - named future work"
+  ],
+  "instrument_chain_held": true,
+  "the_scale_gate": "S1 GATE ON EVERY VERDICT ABOVE: sets (b)/(c)/(d) stand on the DEPOSIT arm scale (the ankle book's own SI2 cross-check fits k_ankle = 0.11976026 over the point-class arms - consistent with the MTP class and with the k = 0.11975394 used for the S2 caps). At the SI-matched scale the books collapse (knee 1.146859, MP 0.198543, ankle plantar 0.748112, dorsal 0.149825) and every (d) verdict INVERTS: the ankle is over-cap at 15/15 nodes (worst 9.644278 at phi=0.3; the dorsal class too: 8.249625 at phi=0.25), knee 14/15, wall max combined 9.666383 ankle-bound at phi=0.5 (plantar law; knee term 7.65563 at phi=0.75) - the walker can neither hold nor vault. No engine consumption is lawful until the operator resolves the k divergence (the torque book's standing gate, inherited verbatim).",
+  "wall_verdict": {
+   "ankle_term_at_phi_0_5_D": 1.157587,
+   "crosses_1_0_under_B_was": true,
+   "crosses_1_0_under_D": false,
+   "dorsal_bracket_binder": {
+    "joint": "ankle",
+    "phi": 0.5
+   },
+   "dorsal_bracket_wall_max": 5.780115,
+   "knee_term_at_phi_0_75_D": 0.916792,
+   "margin_0_9_reachable_under_D": false,
+   "margin_value_moved": "0.977235 -> 1.157587 - AWAY from the 0.9 margin (it does not move toward reachability; it re-blocks)",
+   "nodes_over_1_0_D": [
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.8,
+    0.85
+   ],
+   "question": "does the statics lane's 1.0-crossing (0.977235 at (b)/(c), ankle doc-held) SURVIVE the measured ankle - and does the 0.9 margin move",
+   "statement": "THE CROSSING DOES NOT SURVIVE. The doc cap the wall wore at (a)-(c) (7.4) was TIGHTER-bound only by the knee; once the knee clears (the statics lane's result) the wall's fate rests entirely on the ankle - and the MEASURED plantar cap (6.247077) is TIGHTER than the doc cap by factor 0.8447, so the binding ankle term GROWS: 0.977235 -> 1.157587. The wall RE-BLOCKS at phi=0.5 ankle-bound. The statics receipt's own finding pointed here: its (b)/(c) crossing was held UNDER 1.0 precisely by the BLOCKED (over-generous) doc ankle - the honest statics verdict under measured caps for ALL loaded leg joints is that the banked wave-10 optimum is INFEASIBLE again, and the ANKLE owns the wall. Direction-robust: under the receipt's dorsal bracket the same node re-blocks at 5.780115. Clearing 1.0 now needs the ankle-side capability (the PROVISIONAL V2_S1 plantar cap 18.595726 would clear it) or a re-collocation hearing at the new caps - both named future work, not measured here.",
+   "wall_binder_D": {
+    "joint": "ankle",
+    "phi": 0.5
+   },
+   "wall_ratio_B_doc_held_ankle": 0.977235,
+   "wall_ratio_D_measured_ankle": 1.157587
+  },
+  "worst_case_ratios": {
+   "A_live_doc": 9.534648,
+   "B_measured_v1_s1": 5.10397,
+   "C_provisional_v2_s1": 1.825019,
+   "D_S2_si_matched_gate": 42.62049,
+   "D_measured_ankle_unblocked": 5.10397,
+   "S2_si_matched_gate": 42.62049
+  }
+ },
+ "wall_trace": {
+  "direction_law": "the wall artifact carries leg_ratios ONLY (no signed ankle torques); the ankle term re-prices at the PLANTAR cap per the receipt's NAMED law, the DORSAL bracket wall computed alongside (walls.D_dorsal_bracket)",
+  "input": "inputs/vendored_gait_zero/trunk_vault_reachable.wave10.json (byte copy at 4198dbdc)",
+  "key_path": "nodes[].leg_ratios + nodes[].posture_ratio",
+  "sha256": "e922153318778e4cd8c1891f59454261c6d5be0a77aebdc5f78d2758ccd2faa7"
+ }
+}
