@@ -85,6 +85,7 @@ struct WalkOut{
  // new f4_work_envelope red (drive_4 12.938264 J/stride) carried the face.
  // The fired falsifiers are carried verbatim in the receipt.)
  std::vector<std::array<double,4>> hind37;
+ std::vector<std::array<double,4>> hind38;
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
@@ -323,6 +324,12 @@ int main(int argc,char**argv){try{
        if(p.contains("graze_yields"))h37[2*l]=double(p["graze_yields"].get<uint64_t>());
        if(p.contains("graze_first_tick"))h37[2*l+1]=number(p["graze_first_tick"]);}
      out.hind37.push_back(h37);}
+    {std::array<double,4> h38;h38.fill(-1.); // WAVE 38 APPEND: the waive-scope-guard census
+     if(s["gait"].contains("hind_step")&&s["gait"]["hind_step"].size()>=2)
+      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["hind_step"][l];
+       if(p.contains("guard_blocks"))h38[2*l]=double(p["guard_blocks"].get<uint64_t>());
+       if(p.contains("guard_first_tick"))h38[2*l+1]=number(p["guard_first_tick"]);}
+     out.hind38.push_back(h38);}
     out.fm.push_back(fmm);out.fsat.push_back(sat);out.ftgt.push_back(tgx);out.frep.push_back(rep);
 #ifdef GAIT_EVENT_TRACE
     // WAVE 23 MINING: the per-tick fore joint-wall state (the derivation's
@@ -1584,6 +1591,58 @@ int main(int argc,char**argv){try{
      note(std::string("F-G37 two_legged_within_6_of_replant=")+(both?"1":"0")+" [OWNED 1]");
      ck(both==1,"f37_two_legged_after_replant");}}}
   else note("F-G37 NOT MEASURED: the waive never fired or no graze yield (the wave-37 law REVERTED per the pre-committed terminal action)");}
+
+ // ── WAVE 38 CALENDAR-ARITHMETIC WAIVE SCOPE GUARD CENSUS (pre-registered in
+ //    receipt_wave38.json, frozen BEFORE the composed build): the pose read
+ //    cannot own the era class -- the [202,211) stall graze cleared at 206 on
+ //    EVERY measured trajectory (the shipped walk's own era max pair-min
+ //    1.116e-05, the re-locked walk's 1.147e-05, both past the 1.1e-05
+ //    release bound). The fifth clause guards the waive by the CALENDAR: the
+ //    deciding leg's own just-completed era ran the stall cadence (its
+ //    length == tair) iff the other's current era is that chain's next link;
+ //    the waive rides REAL swings only, composed with the pose read
+ //    byte-verbatim (the guard only removes openings). Pre-registered:
+ //    exactly ONE waive fire (the L@161), the guard's first block EXACTLY
+ //    206, the stall calendar re-locked 9/9 drift 0, the twelfth launch
+ //    EXACTLY 247, the twelfth-era TD in [258,268], and the 248 twelfth-era
+ //    waive BLOCKED by the link test (the f37_twelfth_waive_248 letter fires
+ //    BY DESIGN and is carried as the pre-registered cost).
+ {const size_t N38=std::min({w.hind38.size(),w.hind35.size(),w.hind37.size()});
+  double blocks=N38>0?w.hind38[N38-1][0]+w.hind38[N38-1][2]:-1.;
+  if(N38>1&&(w.hind35[N38-1][0]+w.hind35[N38-1][2])>0.&&blocks>=0.){
+   int wf_first=-1,wf_last=-1,wf_R=-1;double waives=0,deadpads=0;
+   for(size_t i=1;i<N38;++i)for(size_t l=0;l<2;++l)
+    if(w.hind35[i][2*l]>w.hind35[i-1][2*l]){
+     ++waives;if(wf_first<0)wf_first=(int)i;wf_last=(int)i;if(l==1)wf_R=(int)i;
+     if(w.hrxn[i][2*l]+w.hrxn[i][2*l+1]<=0.)++deadpads;}
+   static const int GRID38[9]={175,184,193,202,211,220,229,238,247};
+   std::vector<std::pair<int,int>> fires; // (leg,tick), in order
+   for(size_t i=1;i<w.hindst.size();++i)for(size_t l=0;l<2;++l)
+    if(w.hindst[i][12*l+2]>w.hindst[i-1][12*l+2])fires.push_back({(int)l,(int)i});
+   int hits=0,worst=0;
+   for(int g=0;g<9;++g){int best=99;
+    for(auto&pr:fires)if(pr.first==g%2){
+     int d=pr.second-GRID38[g];if(d<0)d=-d;if(d<best)best=d;}
+    if(best==0)++hits;
+    if(best<99&&best>worst)worst=best;}
+   bool launch247=false;
+   for(auto&pr:fires)if(pr.first==0&&pr.second==247)launch247=true;
+   int td_Ltwelfth=-1;
+   for(size_t i=(size_t)248;i<w.hindst.size();++i)
+    if(w.hindst[i][3]>w.hindst[i-1][3]){td_Ltwelfth=(int)i;break;}
+   int gfirst=(int)w.hind38[N38-1][1]; // the L's first block tick
+   char b38[640];std::snprintf(b38,640,"F-G38 guard waive_fires=%.0f [PREDICTED EXACTLY 1: the L@161, the only REAL-era host] first=%d dead=%.0f [OWNED 0] guard_blocks=%.0f guard_first=%d [PREDICTED EXACTLY 206: the [202,211) graze era -- the pose read opens, the link test blocks] grid=%d/9 worst_drift=%d [OWNED 9/9, drift 0: the calendar re-locked ALL THE WAY] twelfth_launch=%s [PREDICTED EXACTLY 247] td_L_twelfth=%d [window 258..268, the shipped 262]",
+    waives,wf_first,deadpads,blocks,gfirst,hits,worst,launch247?"247":"-1",td_Ltwelfth);
+   note(b38);
+   ck(waives==1.,"f38_one_waive_only");
+   ck(wf_first==161,"f38_first_waive_161");
+   ck(deadpads==0.,"f38_no_dead_pad_waives");
+   ck(blocks>=1.,"f38_guard_blocks");
+   ck(gfirst==206,"f38_guard_first_206");
+   ck(hits==9&&worst==0,"f38_stall_grid_exact");
+   ck(launch247,"f38_twelfth_launch_247");
+   ck(td_Ltwelfth>=258&&td_Ltwelfth<=268,"f38_twelfth_td_window");}
+  else note("F-G38 NOT MEASURED: the guard never blocked and no waive fired (the wave-38 law REVERTED per the pre-committed terminal action)");}
 
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the
