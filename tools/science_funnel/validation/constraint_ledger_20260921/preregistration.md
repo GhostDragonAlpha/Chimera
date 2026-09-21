@@ -132,3 +132,21 @@ P1 schema and P2 representation BEFORE finalization:
 
 The ten-lane program (L0-L9, F-BASELINE-BYTES … F-CLOSED-LOOP-BYTES) is the successor
 structure; this pilot proves its L1/L2/L3/L5/L9 core on real substrate.
+
+## AMENDMENT-2 (the evidence boundary of the trace instrument)
+
+Appended before the harness was built. The shipped public status exposes the
+hind pads' sole-segment CoP (`sole_position`, the closest point of the
+heel-MP segment), NOT the pad centers the fire capture reads
+(`e.point(points_[k].index, points_[k].local)`). The floor-anchor capture's
+input quantities are therefore NOT observable through the public boundary —
+an F-EVIDENCE-GAP by the Astra protocol. Named remedy, measured before the
+replay: the trace instrument relaxes access IN ITS OWN TRANSLATION UNIT ONLY
+(`#define private public` around the substrate include, std headers
+pre-included so no std class sees the hack) and evaluates the pad centers
+with the substrate's OWN `evaluate`/`point` — the exact expressions the fire
+capture uses, bit-exact. The substrate is untouched (READ-ONLY holds: zero
+bytes change); the Itanium/MSVC ABIs do not depend on access specifiers for
+layout, and the instrument's double-run byte-equality check plus the
+refusal-tick cross-check against the wave-32 receipt verify the instrumented
+binary behaves like the plain build.
