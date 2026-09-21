@@ -1,0 +1,104 @@
+{
+  "schema": "chimera.rule0_receipt.v1",
+  "lane": "agent/p6-repreregistration-20260921",
+  "base_commit": "427e9d0 (agent/hip-pivot-proof-20260921, the proof head; sparse clone E:/ChimeraWork/p6-agent, branch agent/p6-repreregistration-20260921; tools/ + docs/ + research_references/human/opensim/ + story/theHuman/ retained)",
+  "scope": "THE NAMED SUCCESSOR OF THE VOIDED section 5-P6 PREDICATE: the corrected predicate P6' is DERIVED (two-sided seat band + head-center displacement band), RE-PREREGISTERED in two banked stages (law doc sections 5A and 5B; lane preregistration.md + preregistration_amendment_3.md, each sha-pinned BEFORE its run), and the two-arm contrast is RE-RUN on both hips over the derived grid {-.R} \\u222a {R\\u00b7k/5, k = -4..4} \\u222a {+.R}. Read-only on the kernel, the engine, and the skeleton definition; the lane's writes are its own two directories (the second, p6_repreregistration_20260921_replica/, exists because the byte-identical A1-A6 replica script derives ROOT = HERE.parents[3] and must sit at the original lane's directory depth).",
+
+  "rule_0": {
+    "statement": "An arm (real: the fitted head centers and the bilateral axis; null: the recorded closest-points midpoints and the registered control axis - zero new derivation) is SEATED at theta of the closed cited range iff (i) the law-metric min vertex-vertex gap g is in the band [0, 3.0 mm] - the committed touching-class cut; contact is IN the seat class - AND (ii) the head-center displacement d = ||pose(c*) - c*|| stays within the registered fit's own RMS residual band (band_02 = 0.155477725893 mm, band_03 = 0.147474758014 mm): the pivot's measured radius+residual ARE the socket's geometry, and a displacement beyond the fit's own localization is a DISLOCATION. The interpenetration tolerance tol_ip = specimen.resolution_um/2 = 0.08 mm keeps its derived value as the gap metric's RESOLUTION FLOOR: readings below it lie inside the surfaces' own localization, where seated-impingement contact and through-crossing are indistinguishable - recorded per pose, never clause-binding. P6' has teeth: the REAL arm must PASS, the NULL arm must FAIL; that contrast is the proof's content.",
+    "prediction": "BANKED BEFORE EACH RUN. Stage 1 (preregistration.md section 3, sha 3cbb37d8...): real arm displacement 0.0 exactly at every grid pose with every grid seat in [0.08, 3.0] mm; null arm displacement 5.745805839276/3.945980865254 mm at +-.R = 36.96x/26.76x beyond the bands, hip 03 additionally breaching the seat band at 0.046718998681 < 0.08. Stage 1's own falsifier L6 ALSO banked: real seats below tol_ip anywhere => the half-voxel hard edge is mis-derived and the amendment voids. Stage 2 (preregistration_amendment_3.md, sha a6959fe3..., banked before the re-run): the re-run reproduces run 1's readings exactly; real arm PASSES both clauses on both hips (all grid gaps <= 3.0: max 2.21511346552/1.650134761681 mm; d == 0.0 exactly); null arm FAILS both hips via the displacement band; below-floor readings recorded, never binding.",
+    "falsifiers": {
+      "L6_tolerance_honesty_STAGE_1": "The real arm's seats fall below tol_ip anywhere on the grid => the half-voxel derivation is mis-derived, the stage-1 amendment voids. MEASURED: FIRED - real hip 02 at grid_k-3 (theta = -3R/5) reads seat gap 0.053906119839 mm < 0.08 mm at head-center displacement 0.0 EXACTLY: seated rigid impingement (neck meeting the acetabular rim, bone-on-bone) legitimately reads below any mesh-derived localization while the head stays centered. Measured theorem: NO positive lower edge can carry a hard seat clause on this mesh class. Recorded red, never tuned away: run 1's battery stands as battery_run1_predicate_v1_l6_fired.json (sha256 c82947c22e85c75b2537175fd18a17842279b9d80e2f049f8b843be44788a77d, byte-identical on immediate re-run), and the law doc's section 5A stands UNEDITED with its fired falsifier in the record.",
+      "L5b_the_discrimination_STAGE_2_HEADLINE": "The corrected predicate must PASS the real arm and FAIL the null arm on BOTH hips, else the design REMAINS VOID - final. MEASURED: GREEN - real PASS both hips (every grid gap <= 3.0 mm; d == 0.0 exactly at every grid pose, both hips); null FAIL both hips (displacement clause breached at EVERY non-rest grid pose, both hips). arms_discriminate = TRUE.",
+      "L6b_upper_edge": "Any REAL arm gap > 3.0 mm on the grid => the design remains VOID. MEASURED: GREEN - real max seat 2.21511346552 mm (hip 02) / 1.650134761681 mm (hip 03), both <= 3.0 at every one of the 11 grid poses.",
+      "L1b_determinism": "Double-run byte drift in either battery => VOID. MEASURED: GREEN - contrast battery.json sha256 6fa98112d716c9678fa69ae289ec239982db6236bb1fb9151ed5f8c280f40623 byte-identical on immediate re-run; replica battery.json sha256 1a36fce13579b48c1b2a45829a9ed9811d5f70a4ed7d366738be9cbe619b3d47 byte-identical on immediate re-run; run-1 archive byte-identical (c82947c2... twice).",
+      "L2b_untouched": "Any watched sha256 change during a run => VOID. MEASURED: GREEN - every battery's before == after watch (committed definition, tris bins, osim, all three prior lanes' receipts, the prior lane's preregistration+amendments+battery.json+script, this lane's prereg+banks+run-1 archive, the amended law doc, the replica's byte-copies). git status shows no modified file outside the lane's two directories and docs/THE_ARTICULATION_LAW.md (amended by append-only sections 5A/5B).",
+      "L3b_gates": "Any kernel gate red => VOID. MEASURED: GREEN - test_definition 9/9 OK, test_glue 8/8 OK, training_gate PASS (comfortable speed 0.9924 m/s derived by the body), re-run at final state.",
+      "L4b_honest_arms": "Both arms run exactly on the registered constructions; verdicts reported whichever way they land. MEASURED: GREEN - the contrast battery imports the committed hip_pivot_proof module's registered primitives (zero re-derivation), its fits EQUAL the committed battery.json records (inliers 599/533, centers, radii 3.044128510081/2.682250273053, RMS 0.155477725893/0.147474758014, median edges 0.310857620079/0.302305969593), and both arms' shared-theta readings equal the committed records exactly."
+    }
+  },
+
+  "rule_1_derivation_plan": "No number is chosen. tol_ip = specimen.resolution_um/2 (the definition's committed field, 160 um) - first banked as a hard clause edge, re-banked BY ITS OWN FIRED FALSIFIER as the metric's resolution floor; its VALUE never changed and no alternative value was tried (trying the float32 ULP instead, because the half-voxel failed the real arm, would be tuning-to-pass - refused). cut = 3.0 mm, the committed touching-class cut. band_h = the registered fit's own RMS residual (no multiplier). Grid = exact endpoints + R*k/5 (the prior lane's REGISTERED probe fraction). Displacement covered on the whole closed range analytically: real arm d == 0 identity (rotation about an axis through c* fixes c*, float-exact); null arm d(theta) = 2*|c_perp|*sin(|theta|/2), monotone in |theta| on [0, R] - the measured endpoints dominate. The stage-2 form ([0, cut] + floor-recorded + displacement-band discriminator) is forced by the run-1 measurement (0.053906119839 mm at d == 0.0 exactly), not by a search over predicate variants: exactly one predicate form was run per stage.",
+
+  "inputs": [
+    "tools/science_funnel/data/morphosource_ct/matter_skeleton/infant_skeleton.body.json (the committed definition; bonds, closest_points_mm, pose_contacts, specimen.resolution_um = 160)",
+    "tools/science_funnel/data/morphosource_ct/matter_skeleton/tris/bone_{01,02,03}.bin (36-byte float32 triangles; vertex books match the membrane records)",
+    "research_references/human/opensim/gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019; hip flexion ranges +-.2.0943951 rad, parsed from the file at battery time)",
+    "tools/matter_kernel/{definition,constants,glue}.py and tools/science_funnel/validation/hip_pivot_proof_20260921/hip_pivot_proof.py (consumed VERBATIM - the contrast battery imports the committed module's registered primitives)",
+    "tools/science_funnel/validation/{axial_adjacency_20260920,hip_adoption_20260921,articulation_design_20260921,hip_pivot_proof_20260921}/ (the prior lanes' receipts, read-only)"
+  ],
+
+  "outputs_planned": [
+    "tools/science_funnel/validation/p6_repreregistration_20260921/preregistration.md (sha256 3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407, banked in preregistration.sha256 BEFORE run 1)",
+    "tools/science_funnel/validation/p6_repreregistration_20260921/preregistration_amendment_3.md (sha256 a6959fe31db1e5087fa8def857bed23b529a49f52323b2df508eafd4bba03973, banked BEFORE run 2)",
+    "docs/THE_ARTICULATION_LAW.md section 5A (stage-1 bank e18d46ca29b8cfa0ba2cd81791d73dade52f2ba3c1733aa6d912004f2f533447, verified unchanged) and section 5B (stage-2 bank 97585c4e7b5781d3e776d7cdaa7b4d19ce8b33772f239178cbd60be7f6410e4c); the old section 5-P6 void stands in the record, never edited",
+    "tools/science_funnel/validation/p6_repreregistration_20260921/p6_contrast.py (the corrected-predicate battery)",
+    "tools/science_funnel/validation/p6_repreregistration_20260921/battery.json (sha256 6fa98112d716c9678fa69ae289ec239982db6236bb1fb9151ed5f8c280f40623, byte-identical twice)",
+    "tools/science_funnel/validation/p6_repreregistration_20260921/battery_run1_predicate_v1_l6_fired.json (the fired-falsifier record, sha256 c82947c22e85c75b2537175fd18a17842279b9d80e2f049f8b843be44788a77d, byte-identical twice)",
+    "tools/science_funnel/validation/p6_repreregistration_20260921_replica/ (the committed A1-A6 battery BYTE-IDENTICAL at the original lane's directory depth + this lane's preregistration.md byte-copy + the prior amendments' byte-copies; battery.json sha256 1a36fce13579b48c1b2a45829a9ed9811d5f70a4ed7d366738be9cbe619b3d47, byte-identical twice)",
+    "tools/science_funnel/validation/p6_repreregistration_20260921/receipt.json (this file)"
+  ],
+
+  "preregistration_discipline": {
+    "stage_1_banked": "preregistration.md (3cbb37d8...) + law doc section 5A (bank e18d46ca...) committed (bea62a2b) BEFORE any measurement: the corrected predicate as first derived - seat band HARD [tol_ip, cut], tol_ip = 0.08 mm derived as resolution_um/2, displacement band = fit RMS; BOTH arms' outcomes pre-registered with the margins.",
+    "run_1": "Executed: REAL arm FAILED the seat clause on hip 02 - grid_k-3 seat gap 0.053906119839 mm < 0.08 at displacement 0.0 EXACTLY (hip 03 cleared: min 0.142631908664). The displacement clause certified CENTERED while the hard lower edge refused the SEAT; the identity (d == 0 for ANY rotation about the fitted center) decides which clause is wrong: the lower edge. The banked falsifier L6 fired; the stage-1 predicate VOIDED BY ITS OWN TEXT. Determinism GREEN (c82947c2... twice). NO alternative predicate was tried on run 1's numbers.",
+    "amendment_3_banked": "preregistration_amendment_3.md (a6959fe3...) + law doc section 5B (bank 97585c4e...) committed BEFORE the re-run: the measured theorem (seated rigid impingement reads below any mesh-derived localization - neck/rim bone-on-bone contact at d == 0.0), the re-derivation (seat band [0, cut]: contact is IN the committed touching class; tol_ip retained at its derived 0.08 mm as the recorded RESOLUTION FLOOR, never clause-binding; the displacement band = fit RMS load-bearing as the not-through test at the head), the tuning audit (no value changed; one role changed, forced by the firing), and run-2 predictions banked.",
+    "run_2_final": "Executed: hard_checks_pass TRUE; real PASS both hips; null FAIL both hips; arms_discriminate TRUE; all 13 prediction checks TRUE; determinism GREEN (6fa98112... twice).",
+    "replica_mechanical_note": "The A1-A6 replica (the committed hip_pivot_proof.py byte-identical, sha-verified) must sit at the original lane's directory depth because the script derives ROOT = HERE.parents[3]; after two mechanical path moves it runs from tools/science_funnel/validation/p6_repreregistration_20260921_replica/. Mechanical only - no predicate content."
+  },
+
+  "measurements": {
+    "completed_utc": "2026-09-21",
+    "the_corrected_predicate_bands": {
+      "seat_band": "[0, 3.0] mm - lower edge 0 (the touching class includes contact; the committed cut's own class), upper edge cut = 3.0 mm (bone_identification_v3 derived_cuts.joint_gap_mm, committed)",
+      "interpenetration_tolerance": "tol_ip = specimen.resolution_um/2 = 160 um / 2 = 0.08 mm - DERIVED (half the committed CT sampling step = the isosurface's own localization class); a vertex-vertex reading below it lies inside the surfaces' own localization and cannot certify not-through; RECORDED per pose (reading_class below_resolution_floor), never clause-binding",
+      "displacement_band": "band_h = the registered fit's own RMS residual: 0.155477725893 mm (hip 02), 0.147474758014 mm (hip 03) - the pivot's measured radius+residual ARE the socket's geometry; displacement beyond the band = dislocation",
+      "grid": "thetas = {-.2.0943951, +2.0943951} exact plus R*k/5.0 for k = -4..4 (the prior lane's registered probe fraction): 11 poses per arm per hip; flexion signs recomputed by the registered curl rule (s = -1 both hips, labeling only)"
+    },
+    "real_arm": {
+      "verdict": "PASS P6' BOTH HIPS - seat clause and displacement clause green at every grid pose",
+      "hip_02": "seats 0.053906119839 .. 2.21511346552 mm across the grid (max <= 3.0); below-floor reading at grid_k-3 (0.053906119839 mm - seated-impingement contact class, RECORDED); displacement 0.0 EXACTLY at every grid pose",
+      "hip_03": "seats 0.142631908664 .. 1.650134761681 mm; no below-floor readings; displacement 0.0 EXACTLY at every grid pose",
+      "committed_reproduction": "rest/hi/lo seats == the committed battery.json exactly (1.438430430193/0.098475213606/0.861959512899 and 1.486366553653/0.160824534903/0.887240079415); the in-grid demo magnitude reproduces the committed demo seats (2.14303796227/1.650134761681)"
+    },
+    "null_arm": {
+      "verdict": "FAIL P6' BOTH HIPS - the displacement band catches the excursions",
+      "hip_02": "displacement 5.745805839276 mm at BOTH endpoints = 36.955813485608x band_02; 0.0 at rest only; breaches at every non-rest grid pose; the 2*|c_perp|*sin(|theta|/2) formula reproduces the measured displacement to <= 1e-9 mm at EVERY grid pose; seats 0.08843746898 .. 1.438430430193 mm - ALL <= 3.0 (the predicate-blindness reading, now carried by Leg 2 exactly as designed); no below-floor readings",
+      "hip_03": "displacement 3.945980865254 mm at BOTH endpoints = 26.756991626141x band_03; breaches at every non-rest grid pose; seats 0.046718998681 .. 1.486366553653 mm; below-floor reading at +R (0.046718998681 mm - the through-class reading the prior lane diagnosed, RECORDED)"
+    },
+    "run1_record": {
+      "predicate": "v1: seat band hard [tol_ip, cut]",
+      "outcome": "L6 FIRED - real hip 02 grid_k-3 0.053906119839 mm < 0.08 at d == 0.0 exactly; hard_checks_pass FALSE; arms_discriminate FALSE",
+      "battery_sha256": "c82947c22e85c75b2537175fd18a17842279b9d80e2f049f8b843be44788a77d (byte-identical twice; archived as battery_run1_predicate_v1_l6_fired.json)"
+    },
+    "replica_A1_A6": {
+      "protocol": "the committed hip_pivot_proof.py executed BYTE-IDENTICAL (sha-verified) from the replica directory with this lane's preregistration.md beside it",
+      "verdict": "hard_checks_pass TRUE - A1 rest identity, A2 seat, A3 cure at exactly cure*A, A4 bitwise mass, A5 named range refusals, A6 untouched: ALL GREEN, UNCHANGED",
+      "diff_vs_committed_battery": "exactly 5 field diffs: the single predicted semantic diff (preregistration_sha256 96ddb501... -> 3cbb37d8..., this lane's banked preregistration) plus its 4 watch-map echoes (the replica's untouched-watch maps its OWN preregistration.md path; same bytes, different relative key). A1-A6 verdict objects EQUAL to the committed record.",
+      "battery_sha256": "1a36fce13579b48c1b2a45829a9ed9811d5f70a4ed7d366738be9cbe619b3d47 (byte-identical twice)"
+    },
+    "determinism": {
+      "contrast_battery": "sha256 6fa98112d716c9678fa69ae289ec239982db6236bb1fb9151ed5f8c280f40623, reproduced byte-identically on an immediate re-run",
+      "run1_archive": "sha256 c82947c22e85c75b2537175fd18a17842279b9d80e2f049f8b843be44788a77d, byte-identical twice",
+      "replica_battery": "sha256 1a36fce13579b48c1b2a45829a9ed9811d5f70a4ed7d366738be9cbe619b3d47, byte-identical twice"
+    },
+    "gates": {
+      "test_definition": "python -B -m tools.matter_kernel.test_definition: 9/9 OK (re-run at final state)",
+      "test_glue": "python -B -m tools.matter_kernel.test_glue: 8/8 OK (re-run at final state)",
+      "training_gate": "python -B tools/training_gate.py: PASS - every target Froude-consistent (comfortable speed 0.9924 m/s derived by the body)"
+    },
+    "reproduction_guards": "the re-derived fits EQUAL the committed battery.json records exactly at the recorded rounding (centers [58.481285783297, 40.201005541148, 43.245619125234]/[57.206718169476, 41.501776979145, 22.591386466803]; radii 3.044128510081/2.682250273053; RMS 0.155477725893/0.147474758014; inliers 599/533; median edges 0.310857620079/0.302305969593) and both axis constructions equal the committed records; metric transfer at rest green (1.44/1.49 within the 0.005 mm house tolerance)"
+  },
+
+  "verdicts": {
+    "L6_stage1": "RED, FIRED AS BANKED - the hard lower edge was the mis-derivation; recorded with its numbers; stage-1 predicate void BY ITS OWN FALSIFIER; section 5A stands unedited",
+    "L5b_the_discrimination_HEADLINE": "GREEN - real arm PASSES P6' on both hips (every grid gap <= 3.0 mm, displacement 0.0 exactly everywhere); null arm FAILS P6' on both hips (displacement band breached at every non-rest grid pose: 36.96x/26.76x beyond the bands). The two arms DISCRIMINATE on the corrected predicate.",
+    "L6b_upper_edge": "GREEN - real max seat 2.21511346552 mm <= 3.0 everywhere",
+    "L1b_L2b_L3b_L4b": "GREEN - determinism byte-exact everywhere; watched bytes unchanged; gates 9/9 + 8/8 + PASS; both arms on the registered constructions with committed-record reproduction",
+    "replica_A1_A6": "GREEN, UNCHANGED - the committed battery re-executed byte-identically: hard_checks_pass TRUE, verdicts equal to the committed record",
+    "THE_DESIGN": "REINSTATED. The joints-are-materials design's void clause (section 5-P6 as written) is CURED by the amended predicate (section 5B / amendment 3): the one-sided cut's degeneracy is removed by the two-legged form - the seat band [0, cut] that admits seated impingement contact, and the head-center displacement band (the fit's own RMS) that carries the not-through test the gap metric provably cannot carry on this mesh class. Both arms discriminate with the numbers: real 0.0 vs null 5.745805839276/3.945980865254 mm against bands 0.155477725893/0.147474758014 mm. The cure is honest: it passed through its own fired falsifier (L6) and a banked amendment BEFORE the deciding run - the void was earned, the reinstatement is earned.",
+    "headline": "P6 RE-PREREGISTERED IN TWO BANKED STAGES AND THE TWO-ARM CONTRAST RE-RUN: the corrected predicate - seat band [0, 3.0] mm with the derived interpenetration tolerance 0.08 mm (resolution_um/2) as the recorded resolution floor, plus the head-center displacement band = the fits' own RMS (0.155477725893/0.147474758014 mm) - DISCRIMINATES the arms on both hips over the derived grid: the REAL arm seated at every one of the 11 poses (max gap 2.21511346552/1.650134761681 mm, displacement 0.0 EXACTLY everywhere) and the NULL arm dislocated at every non-rest pose (5.745805839276/3.945980865254 mm = 36.96x/26.76x beyond the bands, reproducing 2|c_perp|sin(theta/2) to 1e-9). Stage 1's hard lower edge was voided by its own fired falsifier (0.053906119839 mm at d == 0.0 - seated rigid impingement reads below any mesh-derived localization) and re-derived by banked amendment before the deciding run. A1-A6 re-verified green byte-identically; determinism byte-exact; kernel gates green; the committed skeleton and every prior receipt untouched. THE JOINTS-ARE-MATERIALS DESIGN IS REINSTATED."
+  },
+
+  "trailer": "Agent: GLM 5.3"
+}

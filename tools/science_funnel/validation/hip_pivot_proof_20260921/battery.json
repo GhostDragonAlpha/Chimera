@@ -1,0 +1,967 @@
+{
+ "amendments": {
+  "1": {
+   "file": "preregistration_amendment_1.md",
+   "scope": "the inlier floor only: quota proxy (run-1, refused hip 02) recorded verbatim; binding floor is A_set >= pi*r^2; banked before any seat/cure/control/pose number existed",
+   "sha256": "0c3484c19c0878e50e807b4a416adb3b0854bc9018a7dae854fb0700b166ab8a"
+  },
+  "2": {
+   "file": "preregistration_amendment_2.md",
+   "scope": "the A3 invariance carrier only: the pinned patch triangles rigidly posed (the proximity-class recompute is reclassified as a recorded A2 reading); failure-force checks unchanged and were green in run 2",
+   "sha256": "b050093ede83ec6fdfa46e4f50dc39233cfcc2f3c7a4f4bd17433de866ca8603"
+  }
+ },
+ "axis": {
+  "control_axis_definition": "the same construction on the recorded midpoints (zero new derivation)",
+  "control_axis_null_unit": [
+   -0.093215123522,
+   0.023854145165,
+   -0.995360196364
+  ],
+  "definition": "the bilateral line through the two fitted head centers (left->right)",
+  "pivot_02_mm": [
+   58.481285783297,
+   40.201005541148,
+   43.245619125234
+  ],
+  "pivot_03_mm": [
+   57.206718169476,
+   41.501776979145,
+   22.591386466803
+  ],
+  "pivot_separation_mm": 20.734364124436,
+  "u": [
+   -0.061471266067,
+   0.062735053276,
+   -0.996135330434
+  ]
+ },
+ "base_commit": "7b7529290f2b88b16db364f9f5f81887ec554a80",
+ "control_arm": {
+  "02": {
+   "axis_shared_unit": [
+    -0.093215123522,
+    0.023854145165,
+    -0.995360196364
+   ],
+   "hi_endpoint": {
+    "apposition_pair_distance_mm": 0.824742530313,
+    "center_displacement_mm": 5.745805839276,
+    "min_gap_mm": 0.209308648732,
+    "patch": {
+     "patch_max_gap_mm": 3.540682118459,
+     "patch_mean_gap_mm": 1.405592309829,
+     "patch_vertices": 1031
+    },
+    "patch_same_region_as_rest": false,
+    "predicted_center_displacement_mm": 5.745805839276,
+    "predicted_pair_tick_mm": 0.824742530313,
+    "provenance": [
+     "child_vertex",
+     485,
+     "parent_vertex",
+     198
+    ],
+    "theta_rad": 2.0943951,
+    "within_touching_class": true
+   },
+   "lo_endpoint": {
+    "apposition_pair_distance_mm": 0.824742530313,
+    "center_displacement_mm": 5.745805839276,
+    "min_gap_mm": 0.08843746898,
+    "patch": {
+     "patch_max_gap_mm": 3.466017954766,
+     "patch_mean_gap_mm": 1.948703138519,
+     "patch_vertices": 2030
+    },
+    "patch_same_region_as_rest": false,
+    "predicted_center_displacement_mm": 5.745805839276,
+    "predicted_pair_tick_mm": 0.824742530313,
+    "provenance": [
+     "child_vertex",
+     2030,
+     "parent_vertex",
+     255
+    ],
+    "theta_rad": -2.0943951,
+    "within_touching_class": true
+   },
+   "pass_P2_as_written": true,
+   "pivot_mm": [
+    60.523,
+    42.721,
+    41.4245
+   ],
+   "pivot_source": "the midpoint of the bond's recorded closest_points_mm pair (zero new derivation)",
+   "rest": {
+    "min_gap_mm": 1.438430430193,
+    "provenance": [
+     "child_vertex",
+     2426,
+     "parent_vertex",
+     182
+    ],
+    "theta_rad": 0.0,
+    "within_touching_class": true
+   },
+   "verdict_note": "P6-as-written: the null arm PASSES the global min-gap predicate iff pass_P2_as_written; per \u00a75's own clause the design's pivot law is then VOID as written. The preregistered derivation (preregistration.md \u00a76) predicted this pass: the pivot sits inside the apposition gap, so the realizing vertex pair is pinned within the recorded refined gap for every theta (|pose(on)-on_01| = |w|cos(theta/2)). The predicate, not the pivot, is what fails; the arm-discriminating readings are the center displacement and the patch persistence."
+  },
+  "03": {
+   "axis_shared_unit": [
+    -0.093215123522,
+    0.023854145165,
+    -0.995360196364
+   ],
+   "hi_endpoint": {
+    "apposition_pair_distance_mm": 0.759220566617,
+    "center_displacement_mm": 3.945980865254,
+    "min_gap_mm": 0.046718998681,
+    "patch": {
+     "patch_max_gap_mm": 3.587391179596,
+     "patch_mean_gap_mm": 1.418969196715,
+     "patch_vertices": 970
+    },
+    "patch_same_region_as_rest": false,
+    "predicted_center_displacement_mm": 3.945980865254,
+    "predicted_pair_tick_mm": 0.759220566617,
+    "provenance": [
+     "child_vertex",
+     18,
+     "parent_vertex",
+     136
+    ],
+    "theta_rad": 2.0943951,
+    "within_touching_class": true
+   },
+   "lo_endpoint": {
+    "apposition_pair_distance_mm": 0.759220566617,
+    "center_displacement_mm": 3.945980865254,
+    "min_gap_mm": 0.116945747601,
+    "patch": {
+     "patch_max_gap_mm": 3.248599428815,
+     "patch_mean_gap_mm": 1.772581342696,
+     "patch_vertices": 1480
+    },
+    "patch_same_region_as_rest": false,
+    "predicted_center_displacement_mm": 3.945980865254,
+    "predicted_pair_tick_mm": 0.759220566617,
+    "provenance": [
+     "child_vertex",
+     2003,
+     "parent_vertex",
+     144
+    ],
+    "theta_rad": -2.0943951,
+    "within_touching_class": true
+   },
+   "pass_P2_as_written": true,
+   "pivot_mm": [
+    58.9775,
+    43.1165,
+    24.9215
+   ],
+   "pivot_source": "the midpoint of the bond's recorded closest_points_mm pair (zero new derivation)",
+   "rest": {
+    "min_gap_mm": 1.486366553653,
+    "provenance": [
+     "child_vertex",
+     2062,
+     "parent_vertex",
+     121
+    ],
+    "theta_rad": 0.0,
+    "within_touching_class": true
+   },
+   "verdict_note": "P6-as-written: the null arm PASSES the global min-gap predicate iff pass_P2_as_written; per \u00a75's own clause the design's pivot law is then VOID as written. The preregistered derivation (preregistration.md \u00a76) predicted this pass: the pivot sits inside the apposition gap, so the realizing vertex pair is pinned within the recorded refined gap for every theta (|pose(on)-on_01| = |w|cos(theta/2)). The predicate, not the pivot, is what fails; the arm-discriminating readings are the center displacement and the patch persistence."
+  }
+ },
+ "derivations": {
+  "02": {
+   "apposition_area_mm2": 22.541335700859,
+   "area_quota_mm2_per_vertex": 0.086237072414,
+   "cut_margin_mm": 0.00018246855,
+   "median_edge_mm": 0.310857620079,
+   "patch_tris": 492,
+   "pinned_area_agreement_ok": true
+  },
+  "03": {
+   "apposition_area_mm2": 31.993611826038,
+   "area_quota_mm2_per_vertex": 0.086547724483,
+   "cut_margin_mm": 0.000195289244,
+   "median_edge_mm": 0.302305969593,
+   "patch_tris": 710,
+   "pinned_area_agreement_ok": true
+  }
+ },
+ "fits": {
+  "02": {
+   "area_floor_mm2": 29.112254403991,
+   "area_floor_ok": true,
+   "area_set_mm2": 39.405068518843,
+   "band_eps_mm": 0.310857620079,
+   "center_mm": [
+    58.481285783297,
+    40.201005541148,
+    43.245619125234
+   ],
+   "center_to_record_mm": 3.172344444209,
+   "distal_vertex": 13965,
+   "gauss_newton_iters_final": 7,
+   "hemisphere_coverage": 0.676778032577,
+   "inliers": 599,
+   "iterations": 72,
+   "max_residual_mm": 0.310489428534,
+   "n_min_ok": true,
+   "n_min_quota": 676,
+   "n_min_quota_ok": false,
+   "n_min_rule": "amendment 1: A_set >= pi*r^2 (half-hemisphere); quota proxy recorded verbatim",
+   "outcome": "fixed_point",
+   "p0_band_ok": true,
+   "radius_mm": 3.044128510081,
+   "rms_residual_mm": 0.155477725893,
+   "seed_vertex": 2426,
+   "seed_vertex_offset_from_record_mm": 0.000430427444,
+   "subject_apposition_on_cap": true,
+   "subject_center_pelvis_side": true
+  },
+  "03": {
+   "area_floor_mm2": 22.602083188641,
+   "area_floor_ok": true,
+   "area_set_mm2": 30.84957143749,
+   "band_eps_mm": 0.302305969593,
+   "center_mm": [
+    57.206718169476,
+    41.501776979145,
+    22.591386466803
+   ],
+   "center_to_record_mm": 2.924508639086,
+   "distal_vertex": 14874,
+   "gauss_newton_iters_final": 8,
+   "hemisphere_coverage": 0.682449736602,
+   "inliers": 533,
+   "iterations": 60,
+   "max_residual_mm": 0.301130722294,
+   "n_min_ok": true,
+   "n_min_quota": 523,
+   "n_min_quota_ok": true,
+   "n_min_rule": "amendment 1: A_set >= pi*r^2 (half-hemisphere); quota proxy recorded verbatim",
+   "outcome": "fixed_point",
+   "p0_band_ok": true,
+   "radius_mm": 2.682250273053,
+   "rms_residual_mm": 0.147474758014,
+   "seed_vertex": 2148,
+   "seed_vertex_offset_from_record_mm": 0.000353388243,
+   "subject_apposition_on_cap": true,
+   "subject_center_pelvis_side": true
+  }
+ },
+ "hard_checks_pass": true,
+ "inputs": {
+  "definition_sha256": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+  "osim_sha256": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
+  "osim_sha_matches_citation": true,
+  "tris_sha256": {
+   "01": "bf649f07180123250d0d861782be5922d0995f0523859ede8874a61475da84a7",
+   "02": "7e750f78fb7a6b2c7fe358fd6d1274b2be2623b6e78334ecb0567319087bc029",
+   "03": "52756398ebbf8eb22d9350ea5490574f6e6130f4ba162ed207b66428cec10c40"
+  },
+  "vertex_book_sha256": {
+   "02": {
+    "computed": "10130815de441fc525839f0bd87f5cc404fab9bc5b907a77aed80e3c78e3ea45",
+    "match": true,
+    "record": "10130815de441fc525839f0bd87f5cc404fab9bc5b907a77aed80e3c78e3ea45"
+   },
+   "03": {
+    "computed": "23de94f5bc6df1c5c9b8730b68e503dcce0f714d3e3187179bfad7d6a7ed48a5",
+    "match": true,
+    "record": "23de94f5bc6df1c5c9b8730b68e503dcce0f714d3e3187179bfad7d6a7ed48a5"
+   }
+  }
+ },
+ "kernel_member_areas_mm2": {
+  "bone_01": 32331.081079475643,
+  "bone_02": 1293.556086213973,
+  "bone_03": 1298.735153589442
+ },
+ "lane": "agent/hip-pivot-proof-20260921",
+ "materials_registry_loaded_from_definition": {
+  "mat.bone_cortical": {
+   "source": "COWIN 'Bone Mechanics Handbook'; CURREY 'Bones: Structure and Mechanics': cortical wet density 1800-2100 kg/m^3 (1900 used, = 1.9e-6 kg/mm^3); E ~15-20 GPa (17 used); tensile failure ~80-150 MPa (100 used, conservative); Vickers ~30-50 HV (40 used)",
+   "yield_pa": 100000000.0
+  },
+  "mat.cartilage": {
+   "source": "YAMADA 1970 'Strength of Biological Materials' (Williams & Wilkins): cartilage tensile strength ~13 MPa, Young's modulus 7-25 MPa (10 used), density ~1.06 g/cm^3; the joint bond material at the measured touching edges",
+   "yield_pa": 13000000.0
+  }
+ },
+ "metric_transfer": {
+  "02": {
+   "abs_dev_mm": 0.001569569807,
+   "committed_measured_gap_mm": 1.44,
+   "law_gap_theta0_mm": 1.438430430193,
+   "pass": true,
+   "provenance": [
+    "child_vertex",
+    2426,
+    "parent_vertex",
+    182
+   ]
+  },
+  "03": {
+   "abs_dev_mm": 0.003633446347,
+   "committed_measured_gap_mm": 1.49,
+   "law_gap_theta0_mm": 1.486366553653,
+   "pass": true,
+   "provenance": [
+    "child_vertex",
+    2062,
+    "parent_vertex",
+    121
+   ]
+  }
+ },
+ "pose_record": {
+  "02": {
+   "default_pose": {
+    "blob_sha256": "7e750f78fb7a6b2c7fe358fd6d1274b2be2623b6e78334ecb0567319087bc029",
+    "reading": "the scanned corpse-pose; bytes-identical (A1)",
+    "theta_rad": 0.0
+   },
+   "demo_pose": {
+    "L4_note": "no force or torque attached: metadata only, like a pose_contact",
+    "center_displacement_mm": 0.0,
+    "enters_physics": false,
+    "flexion_sign": -1,
+    "id": "pose.demo_flexion_02",
+    "in_range": true,
+    "mass_checks": {
+     "detector_within_1e-12": true,
+     "kernel_derived_bitwise_equal_rest": true,
+     "posed_area_rel_dev_vs_rest": 0.0
+    },
+    "min_gap_mm": 2.14303796227,
+    "min_gap_provenance": [
+     "child_vertex",
+     2323,
+     "parent_vertex",
+     164
+    ],
+    "posed_bbox_mm": {
+     "max": [
+      93.836340745196,
+      44.10834304848,
+      49.345451670054
+     ],
+     "min": [
+      54.45101481378,
+      13.619059510936,
+      33.428402343801
+     ]
+    },
+    "posed_vertex_sha256_f64le": "b3f152f1ba1621ef8a7a5dccd47576bd57b1f884c3df9ace57fef81d8c485cb2",
+    "rest_bbox_mm": {
+     "max": [
+      81.367919921875,
+      44.886806488037,
+      49.360000610352
+     ],
+     "min": [
+      55.270587921143,
+      2.145078420639,
+      33.517429351807
+     ]
+    },
+    "rest_vertex_sha256_f64le": "6b51e50bf5fa49da697cfb0dc0df999f377c7aef978266081bf8c8169350a9d9",
+    "theta_rad": -0.41887902
+   }
+  },
+  "03": {
+   "default_pose": {
+    "blob_sha256": "52756398ebbf8eb22d9350ea5490574f6e6130f4ba162ed207b66428cec10c40",
+    "reading": "the scanned corpse-pose; bytes-identical (A1)",
+    "theta_rad": 0.0
+   },
+   "demo_pose": {
+    "L4_note": "no force or torque attached: metadata only, like a pose_contact",
+    "center_displacement_mm": 0.0,
+    "enters_physics": false,
+    "flexion_sign": -1,
+    "id": "pose.demo_flexion_03",
+    "in_range": true,
+    "mass_checks": {
+     "detector_within_1e-12": true,
+     "kernel_derived_bitwise_equal_rest": true,
+     "posed_area_rel_dev_vs_rest": 0.0
+    },
+    "min_gap_mm": 1.650134761681,
+    "min_gap_provenance": [
+     "child_vertex",
+     2062,
+     "parent_vertex",
+     121
+    ],
+    "posed_bbox_mm": {
+     "max": [
+      100.863040529061,
+      44.174094171759,
+      26.155067279234
+     ],
+     "min": [
+      53.283378419744,
+      35.412981914076,
+      11.461557707383
+     ]
+    },
+    "posed_vertex_sha256_f64le": "7ce2b70735c7f557e9bdf5c88ce8c1d83fdfce025f3f6d5469de538043833d5c",
+    "rest_bbox_mm": {
+     "max": [
+      95.440620422363,
+      45.041389465332,
+      26.159999847412
+     ],
+     "min": [
+      54.0,
+      18.799999237061,
+      10.800000190735
+     ]
+    },
+    "rest_vertex_sha256_f64le": "b4d894d4ecd2a2c29389bfb78487fcd1ffba35ca0732727dac84bce10a9d99d9",
+    "theta_rad": -0.41887902
+   }
+  }
+ },
+ "preregistration_sha256": "96ddb5016a222eff655fb51a2951ab441c9b77cd5d166e83592ba4badf4b2b7f",
+ "range_record": {
+  "equal_bands": true,
+  "hip_flexion_l": [
+   -2.0943951,
+   2.0943951
+  ],
+  "hip_flexion_r": [
+   -2.0943951,
+   2.0943951
+  ],
+  "source": "gait2392_thelen2003muscle.osim (committed, adult band, stage gap named in preregistration)"
+ },
+ "real_arm": {
+  "02": {
+   "A1_rest_identity": {
+    "committed_blob_sha256": "7e750f78fb7a6b2c7fe358fd6d1274b2be2623b6e78334ecb0567319087bc029",
+    "identical": true,
+    "theta0_bytes_sha256": "7e750f78fb7a6b2c7fe358fd6d1274b2be2623b6e78334ecb0567319087bc029"
+   },
+   "A2_seat": {
+    "hi_endpoint": {
+     "label": "hi_endpoint",
+     "min_gap_mm": 0.098475213606,
+     "patch": {
+      "patch_max_gap_mm": 3.422759677759,
+      "patch_mean_gap_mm": 1.917527314976,
+      "patch_vertices": 693
+     },
+     "patch_same_region_as_rest": false,
+     "provenance": [
+      "child_vertex",
+      106,
+      "parent_vertex",
+      197
+     ],
+     "theta_rad": 2.0943951,
+     "within_touching_class": true
+    },
+    "lo_endpoint": {
+     "label": "lo_endpoint",
+     "min_gap_mm": 0.861959512899,
+     "patch": {
+      "patch_max_gap_mm": 3.371210402761,
+      "patch_mean_gap_mm": 2.408830782072,
+      "patch_vertices": 839
+     },
+     "patch_same_region_as_rest": false,
+     "provenance": [
+      "child_vertex",
+      1956,
+      "parent_vertex",
+      203
+     ],
+     "theta_rad": -2.0943951,
+     "within_touching_class": true
+    },
+    "pass_P2": true,
+    "rest": {
+     "label": "rest",
+     "min_gap_mm": 1.438430430193,
+     "patch": {
+      "patch_max_gap_mm": 3.301229443451,
+      "patch_mean_gap_mm": 2.537918029033,
+      "patch_vertices": 291
+     },
+     "provenance": [
+      "child_vertex",
+      2426,
+      "parent_vertex",
+      182
+     ],
+     "theta_rad": 0.0,
+     "within_touching_class": true
+    }
+   },
+   "A3_cure": {
+    "hi_endpoint": {
+     "failure_force_equals_cureA": true,
+     "outcomes": {
+      "above": {
+       "failure_force_n": 293.037364111167,
+       "holds": false,
+       "site": "glue_line"
+      },
+      "at_failure": {
+       "failure_force_n": 293.037364111167,
+       "holds": false,
+       "site": "glue_line"
+      },
+      "half": {
+       "failure_force_n": 293.037364111167,
+       "holds": true,
+       "site": null
+      }
+     },
+     "pinned_patch_area_posed_mm2": 22.541335700859,
+     "pinned_patch_area_rel_dev": 0.0,
+     "pinned_patch_area_rest_mm2": 22.541335700859,
+     "pinned_patch_carrier_ok": true,
+     "proximity_patch_posed": {
+      "area_mm2": 57.630318993383,
+      "tris": 1300
+     }
+    },
+    "lo_endpoint": {
+     "failure_force_equals_cureA": true,
+     "outcomes": {
+      "above": {
+       "failure_force_n": 293.037364111167,
+       "holds": false,
+       "site": "glue_line"
+      },
+      "at_failure": {
+       "failure_force_n": 293.037364111167,
+       "holds": false,
+       "site": "glue_line"
+      },
+      "half": {
+       "failure_force_n": 293.037364111167,
+       "holds": true,
+       "site": null
+      }
+     },
+     "pinned_patch_area_posed_mm2": 22.541335700859,
+     "pinned_patch_area_rel_dev": 0.0,
+     "pinned_patch_area_rest_mm2": 22.541335700859,
+     "pinned_patch_carrier_ok": true,
+     "proximity_patch_posed": {
+      "area_mm2": 72.391582286343,
+      "tris": 1478
+     }
+    },
+    "outcomes_identical_across_thetas": true,
+    "outcomes_pattern_ok": true,
+    "pass_P3": true,
+    "rest": {
+     "failure_force_equals_cureA": true,
+     "outcomes": {
+      "above": {
+       "failure_force_n": 293.037364111167,
+       "holds": false,
+       "site": "glue_line"
+      },
+      "at_failure": {
+       "failure_force_n": 293.037364111167,
+       "holds": false,
+       "site": "glue_line"
+      },
+      "half": {
+       "failure_force_n": 293.037364111167,
+       "holds": true,
+       "site": null
+      }
+     },
+     "pinned_patch_area_posed_mm2": 22.541335700859,
+     "pinned_patch_area_rel_dev": 0.0,
+     "pinned_patch_area_rest_mm2": 22.541335700859,
+     "pinned_patch_carrier_ok": true,
+     "proximity_patch_posed": {
+      "area_mm2": 22.541335700859,
+      "tris": 492
+     }
+    }
+   },
+   "A4_mass": {
+    "demo": {
+     "detector_within_1e-12": true,
+     "kernel_derived_bitwise_equal_rest": true,
+     "posed_area_rel_dev_vs_rest": 0.0
+    },
+    "hi_endpoint": {
+     "detector_within_1e-12": true,
+     "kernel_derived_bitwise_equal_rest": true,
+     "posed_area_rel_dev_vs_rest": 0.0
+    },
+    "lo_endpoint": {
+     "detector_within_1e-12": true,
+     "kernel_derived_bitwise_equal_rest": true,
+     "posed_area_rel_dev_vs_rest": 0.0
+    },
+    "pass_P4": true,
+    "rest": {
+     "detector_within_1e-12": true,
+     "kernel_derived_bitwise_equal_rest": true,
+     "posed_area_rel_dev_vs_rest": 0.0
+    },
+    "rest_derived_kg": 0.00163552031,
+    "stated_mass_kg": 0.00163552031,
+    "stated_vs_kernel_rel": 0.0,
+    "within_kernel_5pct": true
+   },
+   "A5_stop": {
+    "pass_P5": true,
+    "tests": [
+     {
+      "accepted": true,
+      "label": "hi_endpoint",
+      "theta": 2.0943951
+     },
+     {
+      "accepted": true,
+      "label": "lo_endpoint",
+      "theta": -2.0943951
+     },
+     {
+      "accepted": true,
+      "label": "rest",
+      "theta": 0.0
+     },
+     {
+      "accepted": true,
+      "label": "demo",
+      "theta": -0.41887902
+     },
+     {
+      "accepted": false,
+      "label": "nextafter_hi",
+      "refusal": "out_of_anatomical_range",
+      "theta": 2.0943951
+     },
+     {
+      "accepted": false,
+      "label": "nextafter_lo",
+      "refusal": "out_of_anatomical_range",
+      "theta": -2.0943951
+     },
+     {
+      "accepted": false,
+      "label": "double_hi",
+      "refusal": "out_of_anatomical_range",
+      "theta": 4.1887902
+     },
+     {
+      "accepted": false,
+      "label": "double_lo",
+      "refusal": "out_of_anatomical_range",
+      "theta": -4.1887902
+     }
+    ]
+   },
+   "center_displacement": {
+    "exact_zero_all": true,
+    "expected": "0.0 exactly: the fitted center lies ON the shared axis",
+    "hi_endpoint_mm": 0.0,
+    "lo_endpoint_mm": 0.0,
+    "theta_demo_mm": 0.0
+   }
+  },
+  "03": {
+   "A1_rest_identity": {
+    "committed_blob_sha256": "52756398ebbf8eb22d9350ea5490574f6e6130f4ba162ed207b66428cec10c40",
+    "identical": true,
+    "theta0_bytes_sha256": "52756398ebbf8eb22d9350ea5490574f6e6130f4ba162ed207b66428cec10c40"
+   },
+   "A2_seat": {
+    "hi_endpoint": {
+     "label": "hi_endpoint",
+     "min_gap_mm": 0.160824534903,
+     "patch": {
+      "patch_max_gap_mm": 3.421832870448,
+      "patch_mean_gap_mm": 1.672063918808,
+      "patch_vertices": 771
+     },
+     "patch_same_region_as_rest": false,
+     "provenance": [
+      "child_vertex",
+      96,
+      "parent_vertex",
+      158
+     ],
+     "theta_rad": 2.0943951,
+     "within_touching_class": true
+    },
+    "lo_endpoint": {
+     "label": "lo_endpoint",
+     "min_gap_mm": 0.887240079415,
+     "patch": {
+      "patch_max_gap_mm": 3.516949775258,
+      "patch_mean_gap_mm": 2.089052110872,
+      "patch_vertices": 792
+     },
+     "patch_same_region_as_rest": false,
+     "provenance": [
+      "child_vertex",
+      1457,
+      "parent_vertex",
+      144
+     ],
+     "theta_rad": -2.0943951,
+     "within_touching_class": true
+    },
+    "pass_P2": true,
+    "rest": {
+     "label": "rest",
+     "min_gap_mm": 1.486366553653,
+     "patch": {
+      "patch_max_gap_mm": 3.575430441081,
+      "patch_mean_gap_mm": 2.598509074555,
+      "patch_vertices": 416
+     },
+     "provenance": [
+      "child_vertex",
+      2062,
+      "parent_vertex",
+      121
+     ],
+     "theta_rad": 0.0,
+     "within_touching_class": true
+    }
+   },
+   "A3_cure": {
+    "hi_endpoint": {
+     "failure_force_equals_cureA": true,
+     "outcomes": {
+      "above": {
+       "failure_force_n": 415.916953738494,
+       "holds": false,
+       "site": "glue_line"
+      },
+      "at_failure": {
+       "failure_force_n": 415.916953738494,
+       "holds": false,
+       "site": "glue_line"
+      },
+      "half": {
+       "failure_force_n": 415.916953738494,
+       "holds": true,
+       "site": null
+      }
+     },
+     "pinned_patch_area_posed_mm2": 31.993611826038,
+     "pinned_patch_area_rel_dev": 0.0,
+     "pinned_patch_area_rest_mm2": 31.993611826038,
+     "pinned_patch_carrier_ok": true,
+     "proximity_patch_posed": {
+      "area_mm2": 62.955426368749,
+      "tris": 1481
+     }
+    },
+    "lo_endpoint": {
+     "failure_force_equals_cureA": true,
+     "outcomes": {
+      "above": {
+       "failure_force_n": 415.916953738494,
+       "holds": false,
+       "site": "glue_line"
+      },
+      "at_failure": {
+       "failure_force_n": 415.916953738494,
+       "holds": false,
+       "site": "glue_line"
+      },
+      "half": {
+       "failure_force_n": 415.916953738494,
+       "holds": true,
+       "site": null
+      }
+     },
+     "pinned_patch_area_posed_mm2": 31.993611826038,
+     "pinned_patch_area_rel_dev": 0.0,
+     "pinned_patch_area_rest_mm2": 31.993611826038,
+     "pinned_patch_carrier_ok": true,
+     "proximity_patch_posed": {
+      "area_mm2": 60.587247649088,
+      "tris": 1456
+     }
+    },
+    "outcomes_identical_across_thetas": true,
+    "outcomes_pattern_ok": true,
+    "pass_P3": true,
+    "rest": {
+     "failure_force_equals_cureA": true,
+     "outcomes": {
+      "above": {
+       "failure_force_n": 415.916953738494,
+       "holds": false,
+       "site": "glue_line"
+      },
+      "at_failure": {
+       "failure_force_n": 415.916953738494,
+       "holds": false,
+       "site": "glue_line"
+      },
+      "half": {
+       "failure_force_n": 415.916953738494,
+       "holds": true,
+       "site": null
+      }
+     },
+     "pinned_patch_area_posed_mm2": 31.993611826038,
+     "pinned_patch_area_rel_dev": 0.0,
+     "pinned_patch_area_rest_mm2": 31.993611826038,
+     "pinned_patch_carrier_ok": true,
+     "proximity_patch_posed": {
+      "area_mm2": 31.993611826038,
+      "tris": 710
+     }
+    }
+   },
+   "A4_mass": {
+    "demo": {
+     "detector_within_1e-12": true,
+     "kernel_derived_bitwise_equal_rest": true,
+     "posed_area_rel_dev_vs_rest": 0.0
+    },
+    "hi_endpoint": {
+     "detector_within_1e-12": true,
+     "kernel_derived_bitwise_equal_rest": true,
+     "posed_area_rel_dev_vs_rest": 0.0
+    },
+    "lo_endpoint": {
+     "detector_within_1e-12": true,
+     "kernel_derived_bitwise_equal_rest": true,
+     "posed_area_rel_dev_vs_rest": 0.0
+    },
+    "pass_P4": true,
+    "rest": {
+     "detector_within_1e-12": true,
+     "kernel_derived_bitwise_equal_rest": true,
+     "posed_area_rel_dev_vs_rest": 0.0
+    },
+    "rest_derived_kg": 0.001621971764,
+    "stated_mass_kg": 0.001621971764,
+    "stated_vs_kernel_rel": 0.0,
+    "within_kernel_5pct": true
+   },
+   "A5_stop": {
+    "pass_P5": true,
+    "tests": [
+     {
+      "accepted": true,
+      "label": "hi_endpoint",
+      "theta": 2.0943951
+     },
+     {
+      "accepted": true,
+      "label": "lo_endpoint",
+      "theta": -2.0943951
+     },
+     {
+      "accepted": true,
+      "label": "rest",
+      "theta": 0.0
+     },
+     {
+      "accepted": true,
+      "label": "demo",
+      "theta": -0.41887902
+     },
+     {
+      "accepted": false,
+      "label": "nextafter_hi",
+      "refusal": "out_of_anatomical_range",
+      "theta": 2.0943951
+     },
+     {
+      "accepted": false,
+      "label": "nextafter_lo",
+      "refusal": "out_of_anatomical_range",
+      "theta": -2.0943951
+     },
+     {
+      "accepted": false,
+      "label": "double_hi",
+      "refusal": "out_of_anatomical_range",
+      "theta": 4.1887902
+     },
+     {
+      "accepted": false,
+      "label": "double_lo",
+      "refusal": "out_of_anatomical_range",
+      "theta": -4.1887902
+     }
+    ]
+   },
+   "center_displacement": {
+    "exact_zero_all": true,
+    "expected": "0.0 exactly: the fitted center lies ON the shared axis",
+    "hi_endpoint_mm": 0.0,
+    "lo_endpoint_mm": 0.0,
+    "theta_demo_mm": 0.0
+   }
+  }
+ },
+ "schema": "chimera.hip_pivot_battery.v1",
+ "signs": {
+  "02": {
+   "distal_minus_mm": 44.694182178218,
+   "distal_plus_mm": 47.051237614429,
+   "extension_endpoint_rad": 2.0943951,
+   "flexion_endpoint_rad": -2.0943951,
+   "flexion_sign": -1,
+   "rule": "flexion = the rotation deepening the recorded fetal curl (chain contact pose.joint_01_15)",
+   "theta_demo_rad": -0.41887902,
+   "theta_probe_rad": 0.41887902
+  },
+  "03": {
+   "distal_minus_mm": 44.536020798759,
+   "distal_plus_mm": 47.53962775713,
+   "extension_endpoint_rad": 2.0943951,
+   "flexion_endpoint_rad": -2.0943951,
+   "flexion_sign": -1,
+   "rule": "flexion = the rotation deepening the recorded fetal curl (chain contact pose.joint_01_17)",
+   "theta_demo_rad": -0.41887902,
+   "theta_probe_rad": 0.41887902
+  }
+ },
+ "trailer": "Agent: GLM 5.3",
+ "untouched": {
+  "after": {
+   "research_references\\human\\opensim\\gait2392_thelen2003muscle.osim": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_01.bin": "bf649f07180123250d0d861782be5922d0995f0523859ede8874a61475da84a7",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_02.bin": "7e750f78fb7a6b2c7fe358fd6d1274b2be2623b6e78334ecb0567319087bc029",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_03.bin": "52756398ebbf8eb22d9350ea5490574f6e6130f4ba162ed207b66428cec10c40",
+   "tools\\science_funnel\\validation\\articulation_design_20260921\\receipt.json": "5112d9b68dee94b7b591646fd6d3787bee15a12cffe2ddff9bcfbb922e136a3f",
+   "tools\\science_funnel\\validation\\axial_adjacency_20260920\\receipt.json": "f1dd047b34b7f1015c7fa9fafb4956eb1774786cc3b86c9dbdff8287d655c8d5",
+   "tools\\science_funnel\\validation\\hip_adoption_20260921\\receipt.json": "d000701f78449265d4ae53e847c2a09ad506b919af9c6f18c3c7f68be943614d",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration.md": "96ddb5016a222eff655fb51a2951ab441c9b77cd5d166e83592ba4badf4b2b7f"
+  },
+  "before": {
+   "research_references\\human\\opensim\\gait2392_thelen2003muscle.osim": "18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_01.bin": "bf649f07180123250d0d861782be5922d0995f0523859ede8874a61475da84a7",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_02.bin": "7e750f78fb7a6b2c7fe358fd6d1274b2be2623b6e78334ecb0567319087bc029",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\tris\\bone_03.bin": "52756398ebbf8eb22d9350ea5490574f6e6130f4ba162ed207b66428cec10c40",
+   "tools\\science_funnel\\validation\\articulation_design_20260921\\receipt.json": "5112d9b68dee94b7b591646fd6d3787bee15a12cffe2ddff9bcfbb922e136a3f",
+   "tools\\science_funnel\\validation\\axial_adjacency_20260920\\receipt.json": "f1dd047b34b7f1015c7fa9fafb4956eb1774786cc3b86c9dbdff8287d655c8d5",
+   "tools\\science_funnel\\validation\\hip_adoption_20260921\\receipt.json": "d000701f78449265d4ae53e847c2a09ad506b919af9c6f18c3c7f68be943614d",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\preregistration.md": "96ddb5016a222eff655fb51a2951ab441c9b77cd5d166e83592ba4badf4b2b7f"
+  },
+  "equal": true
+ }
+}
