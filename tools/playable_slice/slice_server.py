@@ -77,22 +77,14 @@ class World:
                 self.ghost_obj, self.ghost_rec = sb.build_ghost_obj()
             body_obj, self.body_rec = sb.build_stand_in_body()
             rec = sb.boot_standing_start(self.url)
-            # the standing start: the engine's own settle, then a dwell so the
-            # fixed point is quiet (byte-clean restarts ride the attractor)
-            st = sb.wait_settled(self.url, timeout=30)
-            deadline = time.time() + 2.0
-            while time.time() < deadline:
-                s2 = sb.http_get_json(self.url, "/tick_state")
-                time.sleep(0.1)
-            start_verts = sb.verts_payload(self.url)
-            start_sha = sb.sha256(start_verts)
             marker_x = MARKER_DIST_M * math.sin(MARKER_AZIMUTH_RAD)
             marker_z = MARKER_DIST_M * math.cos(MARKER_AZIMUTH_RAD)
             self.scene_spec = {
                 "schema": "chimera.playable_slice.scene.v1",
                 "scene_sha256": rec["scene_sha256"],
-                "start_state_sha256": start_sha,
-                "start_root_y": st.get("root_y"),
+                "start_state_sha256": None,   # set when the settle lands
+                "settled": False,
+                "start_root_y": None,
                 "marker": {"x": marker_x, "z": marker_z,
                            "radius": ARRIVE_RADIUS_M,
                            "azimuth_rad": MARKER_AZIMUTH_RAD,
@@ -104,10 +96,35 @@ class World:
             self.mock_carry = {"active": False, "x": 0.0, "z": 0.0, "arrived": False}
             self.fall_test = None
             self.events = [{"t": time.time(), "event": "boot",
-                            "scene_sha256": rec["scene_sha256"],
-                            "start_state_sha256": start_sha,
-                            "settled_root_y": st.get("root_y")}]
-            return self.scene_spec
+                            "scene_sha256": rec["scene_sha256"]}]
+        # the standing start settles in the background: the page is live and
+        # the settle itself is REAL physics the player watches
+        threading.Thread(target=self._finish_settle, daemon=True).start()
+        return self.scene_spec
+
+    def _finish_settle(self):
+        """The standing start = the engine's own settle, then CONVERGENCE: the
+        root law's fixed point is bit-stable once root_y stops moving (the
+        measured attractor: 0.25529300 constant, /verts sha constant)."""
+        st = sb.wait_settled(self.url, timeout=30)
+        prev = None
+        deadline = time.time() + 90.0
+        while time.time() < deadline:
+            cur = sb.http_get_json(self.url, "/tick_state")
+            ry, vy = float(cur.get("root_y", 0.0)), abs(float(cur.get("root_vy", 1.0)))
+            if prev is not None and abs(ry - prev) < 1e-7 and vy < 1e-5:
+                break
+            prev = ry
+            time.sleep(0.25)
+        start_verts = sb.verts_payload(self.url)
+        start_sha = sb.sha256(start_verts)
+        with self.lock:
+            self.scene_spec["start_state_sha256"] = start_sha
+            self.scene_spec["start_root_y"] = st.get("root_y")
+            self.scene_spec["settled"] = True
+            self.events.append({"t": time.time(), "event": "standing_start",
+                                "start_state_sha256": start_sha,
+                                "settled_root_y": st.get("root_y")})
 
     def shutdown_engine(self):
         if self.proc is not None and self.proc.poll() is None:
@@ -226,11 +243,13 @@ class World:
             return {"ok": False, "error": str(e)}
 
     def status(self) -> dict:
+        # the status read never blocks behind a boot: try the engine directly,
+        # and answer with the honest absence when it is mid-restart
+        try:
+            st = sb.http_get_json(self.url, "/tick_state", timeout=4)
+        except OSError:
+            st = {"restarting": True}
         with self.lock:
-            try:
-                st = self.tick_state()
-            except OSError:
-                st = {"unreachable": True}
             return {
                 "engine_state": st,
                 "mock_carry": {k: self.mock_carry[k] for k in ("active", "x", "z", "arrived")},
@@ -338,8 +357,7 @@ def main() -> int:
     WORLD = World(engine_exe)
     spec = WORLD.boot()
     print("scene booted: scene %s" % spec["scene_sha256"][:16])
-    print("standing start: root_y %.4f, start sha %s"
-          % (spec["start_root_y"], spec["start_state_sha256"][:16]))
+    print("standing start: settling in the background (real physics)")
 
     port = a.port
     if not port:

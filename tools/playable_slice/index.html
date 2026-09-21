@@ -107,10 +107,12 @@ function prog(vs,fs){const p=gl.createProgram();gl.attachShader(p,sh(gl.VERTEX_S
   gl.attachShader(p,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);
   if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw gl.getProgramInfoLog(p);return p;}
 
-const MESH_P = prog(`#version 300 es
+// one program with a model offset: the mesh passes uOff=0, the ghost rides
+// the body's live root through uOff (rebuilt-as-const killed the boot once)
+let MESH_P = prog(`#version 300 es
   in vec3 aPos; in vec3 aNrm; in vec3 aCol;
-  uniform mat4 uVP; out vec3 vN; out vec3 vC; out vec3 vP;
-  void main(){vN=aNrm; vC=aCol; vP=aPos; gl_Position=uVP*vec4(aPos,1.0);}`,
+  uniform mat4 uVP; uniform vec3 uOff; out vec3 vN; out vec3 vC; out vec3 vP;
+  void main(){vN=aNrm; vC=aCol; vP=aPos+uOff; gl_Position=uVP*vec4(aPos+uOff,1.0);}`,
 `#version 300 es
   precision highp float; in vec3 vN; in vec3 vC; in vec3 vP; out vec4 o;
   uniform float uAlpha;
@@ -253,24 +255,6 @@ function draw(){
   requestAnimationFrame(draw);
 }
 
-// NOTE on the ghost offset: the ghost VBO is authored centered (loadGhost), and
-// uOff shifts it to the body's live centre — add uOff in the vertex shader.
-{
-  const src=`#version 300 es
-  in vec3 aPos; in vec3 aNrm; in vec3 aCol;
-  uniform mat4 uVP; uniform vec3 uOff; out vec3 vN; out vec3 vC; out vec3 vP;
-  void main(){vN=aNrm; vC=aCol; vP=aPos+uOff; gl_Position=uVP*vec4(aPos+uOff,1.0);}`;
-  // recompile MESH_P with the offset (the mesh path passes uOff=0)
-  gl.deleteProgram(MESH_P);
-  MESH_P=prog(src,`#version 300 es
-  precision highp float; in vec3 vN; in vec3 vC; in vec3 vP; out vec4 o;
-  uniform float uAlpha;
-  void main(){
-    vec3 L=normalize(vec3(0.5,0.9,0.35));
-    float d=max(dot(normalize(vN),L),0.0)*0.75+0.25;
-    o=vec4(vC*d, uAlpha);}`);
-}
-
 // ── camera control (orbit/zoom — the slice's own view) ────────────────────
 let drag=false,lx=0,ly=0;
 cv.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;
@@ -290,13 +274,14 @@ cv.addEventListener('wheel',e=>{e.preventDefault();
 //    one path, the page's own camera convention), snaps to a vertex, posts
 //    the engine's ready-world-point form. Force stated, never defaulted.
 async function pressAt(e){
-  if(!liveVerts||!nVerts)return;
+  if(!liveVerts||!liveVerts.length)return;
   const r=cv.getBoundingClientRect();
   const px=e.clientX-r.left, py=e.clientY-r.top;
   const asp=cv.width/cv.height;
   const V=lookFrom(cam.yaw,cam.pit,cam.dist,cam.tx,cam.ty,cam.tz);
   const P=persp(0.9,asp,0.05,60), VP=mul(P,V.mat);
   let best=-1,bd=28*28;
+  const nVerts=liveVerts.length/9;
   for(let i=0;i<nVerts;i++){
     const x=liveVerts[i*9],y=liveVerts[i*9+1],z=liveVerts[i*9+2];
     let cx=VP[0]*x+VP[4]*y+VP[8]*z+VP[12], cy=VP[1]*x+VP[5]*y+VP[9]*z+VP[13],

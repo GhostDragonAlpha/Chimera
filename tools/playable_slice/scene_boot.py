@@ -88,7 +88,7 @@ def build_stand_in_body(segments: int = 24, rings: int = 12) -> tuple[bytes, dic
     """A closed capsule sized by ONE rule from the committed standing
     skeleton's bbox: radius = min(bbox_x, bbox_z)/2, height = bbox_y.
     Deterministic; edge-audited under the importer's own rule."""
-    ghost_v, ghost_t, _ = build_standing_layer()
+    ghost_v, ghost_t, _ = build_standing_layer_cached()
     lo, hi = ghost_v.min(axis=0), ghost_v.max(axis=0)
     bbox = (hi - lo)
     radius = float(min(bbox[0], bbox[2]) / 2.0)
@@ -218,15 +218,27 @@ def build_standing_layer() -> tuple[np.ndarray, np.ndarray, dict]:
     return verts, tris, rec
 
 
-def build_ghost_obj() -> tuple[bytes, dict]:
-    verts, tris, rec = build_standing_layer()
+_LAYER_CACHE = None
+
+
+def build_standing_layer_cached():
+    """One build per process: the FK + registration is deterministic, so the
+    body and the ghost share it (the clean-machine launch pays it once)."""
+    global _LAYER_CACHE
+    if _LAYER_CACHE is None:
+        _LAYER_CACHE = build_standing_layer()
+    return _LAYER_CACHE
+
+
+def build_ghost_obj():
+    verts, tris, rec = build_standing_layer_cached()
     out = io.BytesIO()
     out.write(b"# chimera.playable_slice DECLARED[ghost_standing_pose] visual overlay\n")
     out.write(b"# the committed standing skeleton (pose of record); rides the tick body's real root\n")
-    for p in verts:
-        out.write(("v %.6f %.6f %.6f\n" % (p[0], p[1], p[2])).encode("ascii"))
-    for t in tris:
-        out.write(("f %d %d %d\n" % (t[0] + 1, t[1] + 1, t[2] + 1)).encode("ascii"))
+    # vectorized writers: 355k verts + 712k tris must build in ~1 s or the
+    # clean-machine launch bar (10 s) pays for string formatting
+    np.savetxt(out, verts, fmt="v %.6f %.6f %.6f")
+    np.savetxt(out, tris + 1, fmt="f %d %d %d")
     return out.getvalue(), rec
 
 

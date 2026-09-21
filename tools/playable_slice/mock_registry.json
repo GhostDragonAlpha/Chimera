@@ -1,7 +1,7 @@
 {
   "schema": "chimera.playable_slice.mock_registry.v1",
   "lane": "agent/playable-slice-20260921",
-  "law": "Two categories only: REALITY (the engine does it) and FANTASY (mocked, named here, named at the code site with a MOCK[id] token, and named in the UI while active). DECLARED items are real committed geometry shown as an explicit overlay, not claimed as physics.",
+  "law": "Two categories only: REALITY (the engine does it) and FANTASY (mocked, named here, named at the code site with a bracketed mock token carrying this id, and named in the UI while active). DECLARED items are real committed geometry shown as an explicit overlay, not claimed as physics.",
   "physics_target": {
     "ticks": 426,
     "current": 302,
