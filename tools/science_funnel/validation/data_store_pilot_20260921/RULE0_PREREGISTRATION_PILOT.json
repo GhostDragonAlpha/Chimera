@@ -1,0 +1,37 @@
+{
+ "schema": "chimera.rule0_preregistration.v1",
+ "written_utc": "2026-09-21T11:05:00+00:00",
+ "written_before_pilot_run": true,
+ "agent": "GLM 5.3",
+ "lane": "data-store-pilot-20260921 (phase-1 PILOT execution of the design; scope: resolution module + wiseman2026 raw registration + wiseman_osim read path ONLY)",
+ "cites": "tools/science_funnel/validation/data_store_design_20260921/RULE0_PREREGISTRATION.json (the design's theory, predictions and falsifiers) + STORE_DESIGN.md section 0 + results_addendum.json (the measured green baseline this pilot is judged against)",
+ "base": {
+  "canonical_commit": "2dfd8021 (agent/data-store-design-20260921 tip; descends from master 6ea2702c23c191ff1d3f14bc895ba668f4586dac, the design's measured base)",
+  "branch": "agent/data-store-pilot-20260921",
+  "clone": "E:/ChimeraWork/store-agent (blob:none sparse: tools, story)"
+ },
+ "theory": {
+  "statement": "The design's phase-1 pilot is executable exactly as designed: a resolve()-honoring CHIMERA_DATA_STORE module, the wiseman2026 gitignored raw corpus registered content-addressed into E:/ChimeraData/store, and wiseman_osim.py reads through resolve() leave every gate exactly as green as the design's recorded baseline with all 7 model pins verifying from store-served bytes.",
+  "prediction_1": "pinned_bytes under CHIMERA_DATA_STORE=E:/ChimeraData serves all 7 taxa models FROM THE STORE (resolved paths under E:/ChimeraData, not the repo) and every sha256_manifest.json pin verifies: 7/7.",
+  "prediction_2": "the same gates as results_addendum.json are green on the pilot worktree: creature_graph suite 69 OK, funnel root test_funnels OK (+ test_wiseman_osim 12/12, the pilot-critical module), matter_kernel test_definition 9/9, training_gate PASS.",
+  "prediction_3": "pin_crosscheck reports zero collision and zero stale at the design's baseline scale (638 pins, 0 collision / 0 stale at 6ea2702c) both for --own master --target master and --own <pilot> --target master.",
+  "prediction_4": "the committed index lands small (287 entries, order 100 KB) and the fresh-clone data checkout is byte-unchanged by the pilot: the raw corpus was already gitignored, so the honest immediate win is ZERO git bytes moved; the mechanism claim is that the 94,643,527 B corpus now exists in the store WITHOUT a single byte in git, re-fetchable from receipts alone.",
+  "prediction_5": "env-unset behavior is a no-op: with CHIMERA_DATA_STORE unset every resolve() of a registered-elsewhere rel is byte-identical in-repo service, so lanes that never set the env cannot move."
+ },
+ "falsifier": {
+  "pilot": "ANY gate red that results_addendum.json records green (including per-module funnel verdicts), ANY pin_crosscheck collision or stale verdict not already in its 638-pin baseline, ANY of the 7 model pins failing to verify from store-served bytes, or any wiseman_osim source_pin_drift under store resolution => THE DESIGN IS WRONG at pilot scope: stop, report, no phase 2. The 7/7 from-store pin verification is the core falsifier.",
+  "scope": " Touch nothing under data/morphosource_ct or any other dataset (later phases); touch nothing outside tools/science_funnel (module, index, wiseman switch) + this validation dir + the store root E:/ChimeraData.",
+  "measurement_discipline": "the pilot records: registered file count + bytes in store, gate verdicts verbatim, pin_crosscheck verdict table, fresh sparse clone data checkout before/after (checkout bytes AND pack bytes reported separately), resolved-path provenance (store vs in-repo) for all 7 models"
+ },
+ "pilot_specific_falsifiers": {
+  "F_store_serving": "if any of the 7 resolved model paths under store resolution is NOT under E:/ChimeraData/store/, the 'served FROM THE STORE' claim is false even if pins pass",
+  "F_env_noop": "if any funnel test that passes at base changes behavior with CHIMERA_DATA_STORE UNSET, the no-op claim is false",
+  "F_index_append_only": "if the landed index is not append-only-shaped (entries with status, no edits of prior revisions), the store discipline is violated",
+  "F_refetch": "if the registered corpus cannot be shown to derive from receipt-pinned bytes (zip sha256 6cb8e29a... + md5 330b8e8a... verified at fetch; 272/272 extracted entries verified against sha256_manifest.json), the provenance chain is broken"
+ },
+ "honest_limits": [
+  "the local raw copies were lost to the worktree janitor before this lane started; the corpus was rebuilt from the receipt-pinned Zenodo route (download_receipt.json), which is itself the design's re-fetch mitigation exercised for real - recorded as an event, not hidden",
+  "the pilot moves ZERO bytes out of git (RULE0 honest_limits of the design, still true); the ~95 MB figure is the size of the corpus that now lives outside git without having cost git a byte",
+  "fresh-clone checkout size and pack size are different numbers and both are reported"
+ ]
+}
