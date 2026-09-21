@@ -1,0 +1,96 @@
+{
+ "35": {
+  "phases_seconds": {
+   "wait_for_lead": 776.0,
+   "reproduce": 290.0,
+   "mine_derive": 1762.0,
+   "build_run": 1356.0,
+   "verify_decide": 262.0
+  },
+  "lane_span_seconds": 4446.0,
+  "reconciled_sum_seconds": 4446.0,
+  "f_time_accounting_delta_seconds": 0.0,
+  "f_time_accounting": "PASS",
+  "boundary_anchors": {
+   "parent_ship": 1789995266.0,
+   "first_artifact": 1789996042.0,
+   "base_trace": 1789996332.0,
+   "prereg_commit": 1789998094.0,
+   "candidate_stdout": 1789999450.0,
+   "ship_commit": 1789999712.0
+  },
+  "carried_in_artifacts_ignored": [],
+  "note": "build and run are NOT separable in the surviving artifacts; build_run is the combined interval (recorded limitation, never split by guess). Artifacts with mtimes predating the parent's ship commit are carried-in instruments and are excluded from lane phases (recorded, not hidden)."
+ },
+ "36": {
+  "phases_seconds": {
+   "wait_for_lead": 639.0,
+   "reproduce": 75.0,
+   "mine_derive": 2099.0,
+   "build_run": 1120.0,
+   "verify_decide": 123.0
+  },
+  "lane_span_seconds": 4056.0,
+  "reconciled_sum_seconds": 4056.0,
+  "f_time_accounting_delta_seconds": 0.0,
+  "f_time_accounting": "PASS",
+  "boundary_anchors": {
+   "parent_ship": 1789999712.0,
+   "first_artifact": 1790000351.0,
+   "base_trace": 1790000426.0,
+   "prereg_commit": 1790002525.0,
+   "candidate_stdout": 1790003645.0,
+   "ship_commit": 1790003768.0
+  },
+  "carried_in_artifacts_ignored": [
+   "run_and_hash.py"
+  ],
+  "note": "build and run are NOT separable in the surviving artifacts; build_run is the combined interval (recorded limitation, never split by guess). Artifacts with mtimes predating the parent's ship commit are carried-in instruments and are excluded from lane phases (recorded, not hidden)."
+ },
+ "37": {
+  "phases_seconds": {
+   "wait_for_lead": 342.0,
+   "reproduce": 72.0,
+   "mine_derive": 2448.0,
+   "build_run": 904.0,
+   "verify_decide": 239.0
+  },
+  "lane_span_seconds": 4005.0,
+  "reconciled_sum_seconds": 4005.0,
+  "f_time_accounting_delta_seconds": 0.0,
+  "f_time_accounting": "PASS",
+  "boundary_anchors": {
+   "parent_ship": 1790003768.0,
+   "first_artifact": 1790004110.0,
+   "base_trace": 1790004182.0,
+   "prereg_commit": 1790006630.0,
+   "candidate_stdout": 1790007534.0,
+   "ship_commit": 1790007773.0
+  },
+  "carried_in_artifacts_ignored": [],
+  "note": "build and run are NOT separable in the surviving artifacts; build_run is the combined interval (recorded limitation, never split by guess). Artifacts with mtimes predating the parent's ship commit are carried-in instruments and are excluded from lane phases (recorded, not hidden)."
+ },
+ "38": {
+  "phases_seconds": {
+   "wait_for_lead": 303.0,
+   "reproduce": 96.0,
+   "mine_derive": 2260.0,
+   "build_run": 201.0,
+   "verify_decide": 631.0
+  },
+  "lane_span_seconds": 3491.0,
+  "reconciled_sum_seconds": 3491.0,
+  "f_time_accounting_delta_seconds": 0.0,
+  "f_time_accounting": "PASS",
+  "boundary_anchors": {
+   "parent_ship": 1790007773.0,
+   "first_artifact": 1790008076.0,
+   "base_trace": 1790008172.0,
+   "prereg_commit": 1790010432.0,
+   "candidate_stdout": 1790010633.0,
+   "ship_commit": 1790011264.0
+  },
+  "carried_in_artifacts_ignored": [],
+  "note": "build and run are NOT separable in the surviving artifacts; build_run is the combined interval (recorded limitation, never split by guess). Artifacts with mtimes predating the parent's ship commit are carried-in instruments and are excluded from lane phases (recorded, not hidden)."
+ }
+}
