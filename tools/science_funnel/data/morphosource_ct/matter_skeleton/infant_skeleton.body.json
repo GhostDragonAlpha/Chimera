@@ -612,7 +612,21 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 2.91,
    "measured_gap_mm": 2.91,
-   "evidence": "bone_identification_v3.json chain hind touching_edge [2, 6], gap_mm 2.91"
+   "evidence": "bone_identification_v3.json chain hind touching_edge [2, 6], gap_mm 2.91",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "knee joint (left, femur (side left) to tibia): femorotibial apposition, the hind chain's touching_edge at the derived gap valley (2.91 mm at the (2.91, 3.04) shared cut interval)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (hinge) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -2.0943951,
+     0.17453293
+    ],
+    "range_source": "gait2392_thelen2003muscle.osim knee_l/r knee_angle [-2.0943951, 0.17453293] rad, one-sided flexion (parsed from the sha-pinned committed record); Rajagopal2016.osim walker_knee_l/r knee_angle [0.0, 2.0944] recorded as the same-class context (one-sided, opposite sign convention); adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a and 3; gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
   },
   {
    "id": "bond.joint_02_15",
@@ -624,7 +638,18 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 1.01,
    "measured_gap_mm": 1.01,
-   "evidence": "bone_identification_v3.json chain hind touching_edge [2, 15], gap_mm 1.01"
+   "evidence": "bone_identification_v3.json chain hind touching_edge [2, 15], gap_mm 1.01",
+   "joint_class": {
+    "class": "positional_contact",
+    "reading": "curl apposition (hind, left): the pes fragment mem.bone_15 carried against the femur mem.bone_02 in the scanned curled fetal pose - a positional contact, NOT an anatomical articulation (the pose_contacts finding of this definition, applied here to the in-chain appositions); flagged for anatomical review",
+    "dof_count": 0,
+    "dof_form": "NONE - no anatomical joint exists at this contact to own a coordinate (the corpse-pose apposition class); the bond keeps its cure and B2 failure semantics exactly like every bond - the class record binds poses only",
+    "range_rad": null,
+    "range_source": "none exists to cite: no anatomical joint is claimed at this contact - no range is invented; the pose_contacts wording is the precedent",
+    "pivot_form": "none",
+    "pivot_record": "no rotation center: a pose that would rotate this bond has no anatomical record to cite and is refused by name",
+    "citations": "this definition's pose_contacts section; docs/THE_ARTICULATION_LAW.md sections 0 and 3(3)"
+   }
   },
   {
    "id": "bond.joint_03_07",
@@ -636,7 +661,21 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 2.83,
    "measured_gap_mm": 2.83,
-   "evidence": "bone_identification_v3.json chain hind touching_edge [3, 7], gap_mm 2.83"
+   "evidence": "bone_identification_v3.json chain hind touching_edge [3, 7], gap_mm 2.83",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "knee joint (right, femur to tibia (side right)): femorotibial apposition, the hind chain's touching_edge at the derived gap valley (2.83 mm)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (hinge) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -2.0943951,
+     0.17453293
+    ],
+    "range_source": "gait2392_thelen2003muscle.osim knee_l/r knee_angle [-2.0943951, 0.17453293] rad, one-sided flexion (parsed from the sha-pinned committed record); Rajagopal2016.osim walker_knee_l/r knee_angle [0.0, 2.0944] recorded as the same-class context (one-sided, opposite sign convention); adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a and 3; gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
   },
   {
    "id": "bond.joint_03_17",
@@ -648,7 +687,18 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 0.69,
    "measured_gap_mm": 0.69,
-   "evidence": "bone_identification_v3.json chain hind touching_edge [3, 17], gap_mm 0.69"
+   "evidence": "bone_identification_v3.json chain hind touching_edge [3, 17], gap_mm 0.69",
+   "joint_class": {
+    "class": "positional_contact",
+    "reading": "curl apposition (hind, right): the pes fragment mem.bone_17 carried against the femur mem.bone_03 in the scanned curled fetal pose - a positional contact, NOT an anatomical articulation (the pose_contacts finding of this definition, applied here to the in-chain appositions); flagged for anatomical review",
+    "dof_count": 0,
+    "dof_form": "NONE - no anatomical joint exists at this contact to own a coordinate (the corpse-pose apposition class); the bond keeps its cure and B2 failure semantics exactly like every bond - the class record binds poses only",
+    "range_rad": null,
+    "range_source": "none exists to cite: no anatomical joint is claimed at this contact - no range is invented; the pose_contacts wording is the precedent",
+    "pivot_form": "none",
+    "pivot_record": "no rotation center: a pose that would rotate this bond has no anatomical record to cite and is refused by name",
+    "citations": "this definition's pose_contacts section; docs/THE_ARTICULATION_LAW.md sections 0 and 3(3)"
+   }
   },
   {
    "id": "bond.joint_04_08",
@@ -660,7 +710,18 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 0.73,
    "measured_gap_mm": 0.73,
-   "evidence": "bone_identification_v3.json chain fore touching_edge [4, 8], gap_mm 0.73"
+   "evidence": "bone_identification_v3.json chain fore touching_edge [4, 8], gap_mm 0.73",
+   "joint_class": {
+    "class": "positional_contact",
+    "reading": "curl apposition (fore, chain A): the hand membrane mem.bone_08 carried against the humerus mem.bone_04 in the scanned curled fetal pose - a positional contact, NOT an anatomical articulation (the pose_contacts finding of this definition, applied here to the in-chain appositions); flagged for anatomical review",
+    "dof_count": 0,
+    "dof_form": "NONE - no anatomical joint exists at this contact to own a coordinate (the corpse-pose apposition class); the bond keeps its cure and B2 failure semantics exactly like every bond - the class record binds poses only",
+    "range_rad": null,
+    "range_source": "none exists to cite: no anatomical joint is claimed at this contact - no range is invented; the pose_contacts wording is the precedent",
+    "pivot_form": "none",
+    "pivot_record": "no rotation center: a pose that would rotate this bond has no anatomical record to cite and is refused by name",
+    "citations": "this definition's pose_contacts section; docs/THE_ARTICULATION_LAW.md sections 0 and 3(3)"
+   }
   },
   {
    "id": "bond.joint_04_10",
@@ -672,7 +733,21 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 2.0,
    "measured_gap_mm": 2.0,
-   "evidence": "bone_identification_v3.json chain fore touching_edge [4, 10], gap_mm 2.0"
+   "evidence": "bone_identification_v3.json chain fore touching_edge [4, 10], gap_mm 2.0",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "elbow (forelimb A): humero-antebrachial apposition - the humerus membrane articulates with BOTH forearm membranes (the elbow's two osseous appositions of one anatomical hinge, carried by this bond and bond.joint_04_12)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (hinge) per anatomical hinge - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     0.34906585,
+     2.44346095
+    ],
+    "range_source": "monkeyArm_current.osim (macaca forelimb) elbow elbow_flexion [0.34906585, 2.44346095] rad, one-sided (parsed from the sha-pinned committed record) - the closest-species record in the held set; Rajagopal2016.osim elbow_l/r [0.0, 2.618] same-class context; adult-band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a, 1.4 and 3; monkeyArm_current.osim (sha256 4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895; limblab/monkeyArmModel @ 4fb7ddde, MIT); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
   },
   {
    "id": "bond.joint_04_12",
@@ -684,7 +759,21 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 0.93,
    "measured_gap_mm": 0.93,
-   "evidence": "bone_identification_v3.json chain fore touching_edge [4, 12], gap_mm 0.93"
+   "evidence": "bone_identification_v3.json chain fore touching_edge [4, 12], gap_mm 0.93",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "elbow (forelimb A): humero-antebrachial apposition - the humerus membrane articulates with BOTH forearm membranes (the elbow's two osseous appositions of one anatomical hinge, carried by this bond and bond.joint_04_10)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (hinge) per anatomical hinge - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     0.34906585,
+     2.44346095
+    ],
+    "range_source": "monkeyArm_current.osim (macaca forelimb) elbow elbow_flexion [0.34906585, 2.44346095] rad, one-sided (parsed from the sha-pinned committed record) - the closest-species record in the held set; Rajagopal2016.osim elbow_l/r [0.0, 2.618] same-class context; adult-band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a, 1.4 and 3; monkeyArm_current.osim (sha256 4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895; limblab/monkeyArmModel @ 4fb7ddde, MIT); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
   },
   {
    "id": "bond.joint_05_09",
@@ -696,7 +785,18 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 0.86,
    "measured_gap_mm": 0.86,
-   "evidence": "bone_identification_v3.json chain fore touching_edge [5, 9], gap_mm 0.86"
+   "evidence": "bone_identification_v3.json chain fore touching_edge [5, 9], gap_mm 0.86",
+   "joint_class": {
+    "class": "positional_contact",
+    "reading": "curl apposition (fore, chain B): the hand membrane mem.bone_09 carried against the humerus mem.bone_05 in the scanned curled fetal pose - a positional contact, NOT an anatomical articulation (the pose_contacts finding of this definition, applied here to the in-chain appositions); flagged for anatomical review",
+    "dof_count": 0,
+    "dof_form": "NONE - no anatomical joint exists at this contact to own a coordinate (the corpse-pose apposition class); the bond keeps its cure and B2 failure semantics exactly like every bond - the class record binds poses only",
+    "range_rad": null,
+    "range_source": "none exists to cite: no anatomical joint is claimed at this contact - no range is invented; the pose_contacts wording is the precedent",
+    "pivot_form": "none",
+    "pivot_record": "no rotation center: a pose that would rotate this bond has no anatomical record to cite and is refused by name",
+    "citations": "this definition's pose_contacts section; docs/THE_ARTICULATION_LAW.md sections 0 and 3(3)"
+   }
   },
   {
    "id": "bond.joint_05_11",
@@ -708,7 +808,21 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 2.27,
    "measured_gap_mm": 2.27,
-   "evidence": "bone_identification_v3.json chain fore touching_edge [5, 11], gap_mm 2.27"
+   "evidence": "bone_identification_v3.json chain fore touching_edge [5, 11], gap_mm 2.27",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "elbow (forelimb B): humero-antebrachial apposition - the humerus membrane articulates with BOTH forearm membranes (the elbow's two osseous appositions of one anatomical hinge, carried by this bond and bond.joint_05_13)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (hinge) per anatomical hinge - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     0.34906585,
+     2.44346095
+    ],
+    "range_source": "monkeyArm_current.osim (macaca forelimb) elbow elbow_flexion [0.34906585, 2.44346095] rad, one-sided (parsed from the sha-pinned committed record) - the closest-species record in the held set; Rajagopal2016.osim elbow_l/r [0.0, 2.618] same-class context; adult-band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a, 1.4 and 3; monkeyArm_current.osim (sha256 4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895; limblab/monkeyArmModel @ 4fb7ddde, MIT); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
   },
   {
    "id": "bond.joint_05_13",
@@ -720,7 +834,21 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 0.86,
    "measured_gap_mm": 0.86,
-   "evidence": "bone_identification_v3.json chain fore touching_edge [5, 13], gap_mm 0.86"
+   "evidence": "bone_identification_v3.json chain fore touching_edge [5, 13], gap_mm 0.86",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "elbow (forelimb B): humero-antebrachial apposition - the humerus membrane articulates with BOTH forearm membranes (the elbow's two osseous appositions of one anatomical hinge, carried by this bond and bond.joint_05_11)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (hinge) per anatomical hinge - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     0.34906585,
+     2.44346095
+    ],
+    "range_source": "monkeyArm_current.osim (macaca forelimb) elbow elbow_flexion [0.34906585, 2.44346095] rad, one-sided (parsed from the sha-pinned committed record) - the closest-species record in the held set; Rajagopal2016.osim elbow_l/r [0.0, 2.618] same-class context; adult-band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a, 1.4 and 3; monkeyArm_current.osim (sha256 4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895; limblab/monkeyArmModel @ 4fb7ddde, MIT); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
   },
   {
    "id": "bond.joint_06_20",
@@ -732,7 +860,18 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 0.48,
    "measured_gap_mm": 0.48,
-   "evidence": "bone_identification_v3.json chain hind touching_edge [6, 20], gap_mm 0.48"
+   "evidence": "bone_identification_v3.json chain hind touching_edge [6, 20], gap_mm 0.48",
+   "joint_class": {
+    "class": "syndesmosis_nodof",
+    "reading": "tibiofibular syndesmosis (left): the apposed shafts of tibia and fibula, measured gap 0.48 mm",
+    "dof_count": 0,
+    "dof_form": "NONE - fusion class (law doc section 3(4)): today's bond semantics IS the law for this class, stated explicitly instead of by omission - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": null,
+    "range_source": "CITED ABSENCE: no tibiofibular joint exists in any held model (Rajagopal2016.osim: ten PinJoints - ankle/subtalar/mtp/elbow/radioulnar per side - and none tibiofibular; gait2392_thelen2003muscle.osim: none; monkeyArm_current.osim: none); no range exists to cite and none is invented",
+    "pivot_form": "none",
+    "pivot_record": "the measured sphere fits of tarsal_cycle_pivots_20260921 converge on this bond and DISCRIMINATE real from null - and bind NOTHING: geometric admissibility is not a DOF; the class record refuses every pose through this bond (out_of_anatomical_range), the law doc A5 refusal",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4 and 3(4); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
   },
   {
    "id": "bond.joint_06_25",
@@ -744,7 +883,21 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 0.66,
    "measured_gap_mm": 0.66,
-   "evidence": "bone_identification_v3.json chain hind touching_edge [6, 25], gap_mm 0.66"
+   "evidence": "bone_identification_v3.json chain hind touching_edge [6, 25], gap_mm 0.66",
+   "joint_class": {
+    "class": "condyled_gliding",
+    "reading": "tibiocrural apposition (left): the pes's tarsal trochlear region against the tibia - tarsal 3-cycle A (06-20-25) DRIVER bond",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (the held PinJoint record of the tarsal complex) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -0.34906585,
+     0.34906585
+    ],
+    "range_source": "Rajagopal2016.osim subtalar_l/r subtalar_angle [-0.34906585, 0.34906585] rad (parsed from the sha-pinned committed record; symmetric both sides) - the tarsal-class cited band and the registered band of tarsal_cycle_pivots_20260921; same-model adjacent records: ankle_l/r [-0.6981317, 0.52359878], mtp_l/r [-0.52359878, 0.52359878]; gait2392 wide bands (+/-1.57079633) context only; adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM (the held PinJoint records), AXIS DERIVATION OPEN - and the measured evidence recorded beside it, never as prescription: the transplanted sphere-form fits of tarsal_cycle_pivots_20260921 converge on this bond, seat through the registered band, and DISCRIMINATE real from null (the receipt's class verdict; the prescription gap that receipt named is filled here by the cited PinJoint form)",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4, 3 and 5B; Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
   },
   {
    "id": "bond.joint_07_18",
@@ -756,7 +909,21 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 1.79,
    "measured_gap_mm": 1.79,
-   "evidence": "bone_identification_v3.json chain hind touching_edge [7, 18], gap_mm 1.79"
+   "evidence": "bone_identification_v3.json chain hind touching_edge [7, 18], gap_mm 1.79",
+   "joint_class": {
+    "class": "condyled_gliding",
+    "reading": "tibiocrural apposition (right): tibiopodal contact of the pes fragment mem.bone_18",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (the held PinJoint record of the tarsal complex) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -0.34906585,
+     0.34906585
+    ],
+    "range_source": "Rajagopal2016.osim subtalar_l/r subtalar_angle [-0.34906585, 0.34906585] rad (parsed from the sha-pinned committed record; symmetric both sides) - the tarsal-class cited band and the registered band of tarsal_cycle_pivots_20260921; same-model adjacent records: ankle_l/r [-0.6981317, 0.52359878], mtp_l/r [-0.52359878, 0.52359878]; gait2392 wide bands (+/-1.57079633) context only; adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM (the held PinJoint records), AXIS DERIVATION OPEN - and the measured evidence recorded beside it, never as prescription: the transplanted sphere-form fits of tarsal_cycle_pivots_20260921 converge on this bond, seat through the registered band, and DISCRIMINATE real from null (the receipt's class verdict; the prescription gap that receipt named is filled here by the cited PinJoint form). This bond is NOT among the six measured cycle bonds: no fit or seat reading exists for it; the first pose through it pre-registers its derivation and inherits the falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4, 3 and 5B; Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
   },
   {
    "id": "bond.joint_07_21",
@@ -768,7 +935,18 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 0.45,
    "measured_gap_mm": 0.45,
-   "evidence": "bone_identification_v3.json chain hind touching_edge [7, 21], gap_mm 0.45"
+   "evidence": "bone_identification_v3.json chain hind touching_edge [7, 21], gap_mm 0.45",
+   "joint_class": {
+    "class": "syndesmosis_nodof",
+    "reading": "tibiofibular syndesmosis (right): the apposed shafts of tibia and fibula, measured gap 0.45 mm",
+    "dof_count": 0,
+    "dof_form": "NONE - fusion class (law doc section 3(4)): today's bond semantics IS the law for this class, stated explicitly instead of by omission - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": null,
+    "range_source": "CITED ABSENCE: no tibiofibular joint exists in any held model (Rajagopal2016.osim: ten PinJoints - ankle/subtalar/mtp/elbow/radioulnar per side - and none tibiofibular; gait2392_thelen2003muscle.osim: none; monkeyArm_current.osim: none); no range exists to cite and none is invented",
+    "pivot_form": "none",
+    "pivot_record": "the measured sphere fits of tarsal_cycle_pivots_20260921 converge on this bond and DISCRIMINATE real from null - and bind NOTHING: geometric admissibility is not a DOF; the class record refuses every pose through this bond (out_of_anatomical_range), the law doc A5 refusal",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4 and 3(4); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
   },
   {
    "id": "bond.joint_07_24",
@@ -780,7 +958,21 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 0.86,
    "measured_gap_mm": 0.86,
-   "evidence": "bone_identification_v3.json chain hind touching_edge [7, 24], gap_mm 0.86"
+   "evidence": "bone_identification_v3.json chain hind touching_edge [7, 24], gap_mm 0.86",
+   "joint_class": {
+    "class": "condyled_gliding",
+    "reading": "tibiocrural apposition (right): the pes's tarsal trochlear region against the tibia - tarsal 3-cycle B (07-21-24) DRIVER bond",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (the held PinJoint record of the tarsal complex) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -0.34906585,
+     0.34906585
+    ],
+    "range_source": "Rajagopal2016.osim subtalar_l/r subtalar_angle [-0.34906585, 0.34906585] rad (parsed from the sha-pinned committed record; symmetric both sides) - the tarsal-class cited band and the registered band of tarsal_cycle_pivots_20260921; same-model adjacent records: ankle_l/r [-0.6981317, 0.52359878], mtp_l/r [-0.52359878, 0.52359878]; gait2392 wide bands (+/-1.57079633) context only; adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM (the held PinJoint records), AXIS DERIVATION OPEN - and the measured evidence recorded beside it, never as prescription: the transplanted sphere-form fits of tarsal_cycle_pivots_20260921 converge on this bond, seat through the registered band, and DISCRIMINATE real from null (the receipt's class verdict; the prescription gap that receipt named is filled here by the cited PinJoint form)",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4, 3 and 5B; Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
   },
   {
    "id": "bond.joint_10_12",
@@ -792,7 +984,21 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 0.38,
    "measured_gap_mm": 0.38,
-   "evidence": "bone_identification_v3.json chain fore touching_edge [10, 12], gap_mm 0.38"
+   "evidence": "bone_identification_v3.json chain fore touching_edge [10, 12], gap_mm 0.38",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "radioulnar articulation (forelimb A): the apposed shafts of the two forearm membranes (the bond carries the radioulnar complex's apposition; the proximal and distal pivots are not distinguished at membrane granularity)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (pronation-supination pivot) - the same paired-bone morphology that holds NO DOF as the tibiofibular syndesmosis by cited absence: THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -1.57079633,
+     1.57079633
+    ],
+    "range_source": "monkeyArm_current.osim ulnar_radial radial_pronation [-1.57079633, 1.57079633] rad (parsed from the sha-pinned committed record); Rajagopal2016.osim radioulnar_l/r pro_sup [0.0, 1.57079633] same-class context; adult-band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a, 1.4 and 3; monkeyArm_current.osim (sha256 4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895; limblab/monkeyArmModel @ 4fb7ddde, MIT); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
   },
   {
    "id": "bond.joint_11_13",
@@ -804,7 +1010,21 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 0.47,
    "measured_gap_mm": 0.47,
-   "evidence": "bone_identification_v3.json chain fore touching_edge [11, 13], gap_mm 0.47"
+   "evidence": "bone_identification_v3.json chain fore touching_edge [11, 13], gap_mm 0.47",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "radioulnar articulation (forelimb B): the apposed shafts of the two forearm membranes (the bond carries the radioulnar complex's apposition; the proximal and distal pivots are not distinguished at membrane granularity)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (pronation-supination pivot) - the same paired-bone morphology that holds NO DOF as the tibiofibular syndesmosis by cited absence: THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -1.57079633,
+     1.57079633
+    ],
+    "range_source": "monkeyArm_current.osim ulnar_radial radial_pronation [-1.57079633, 1.57079633] rad (parsed from the sha-pinned committed record); Rajagopal2016.osim radioulnar_l/r pro_sup [0.0, 1.57079633] same-class context; adult-band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a, 1.4 and 3; monkeyArm_current.osim (sha256 4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895; limblab/monkeyArmModel @ 4fb7ddde, MIT); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
   },
   {
    "id": "bond.joint_20_25",
@@ -816,7 +1036,21 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 2.47,
    "measured_gap_mm": 2.47,
-   "evidence": "bone_identification_v3.json chain hind touching_edge [20, 25], gap_mm 2.47"
+   "evidence": "bone_identification_v3.json chain hind touching_edge [20, 25], gap_mm 2.47",
+   "joint_class": {
+    "class": "condyled_gliding",
+    "reading": "fibulotarsal apposition (left): the lateral malleolar contact of the pes - tarsal 3-cycle A (06-20-25) LOOP bond; measured loop-seat margin 0.357668256426 mm at the registered band",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (the held PinJoint record of the tarsal complex) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -0.34906585,
+     0.34906585
+    ],
+    "range_source": "Rajagopal2016.osim subtalar_l/r subtalar_angle [-0.34906585, 0.34906585] rad (parsed from the sha-pinned committed record; symmetric both sides) - the tarsal-class cited band and the registered band of tarsal_cycle_pivots_20260921; same-model adjacent records: ankle_l/r [-0.6981317, 0.52359878], mtp_l/r [-0.52359878, 0.52359878]; gait2392 wide bands (+/-1.57079633) context only; adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM (the held PinJoint records), AXIS DERIVATION OPEN - and the measured evidence recorded beside it, never as prescription: the transplanted sphere-form fits of tarsal_cycle_pivots_20260921 converge on this bond, seat through the registered band, and DISCRIMINATE real from null (the receipt's class verdict; the prescription gap that receipt named is filled here by the cited PinJoint form)",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4, 3 and 5B; Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
   },
   {
    "id": "bond.joint_21_24",
@@ -828,7 +1062,21 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 2.9,
    "measured_gap_mm": 2.9,
-   "evidence": "bone_identification_v3.json chain hind touching_edge [21, 24], gap_mm 2.9"
+   "evidence": "bone_identification_v3.json chain hind touching_edge [21, 24], gap_mm 2.9",
+   "joint_class": {
+    "class": "condyled_gliding",
+    "reading": "fibulotarsal apposition (right): the lateral malleolar contact of the pes - tarsal 3-cycle B (07-21-24) LOOP bond; measured loop-seat margin 0.040529146675 mm at the registered band - THIN, RECORDED THIN: the practical edge of the band on this cycle; a future pose needing margin narrows the band lawfully (a pre-registered, derived narrowing of the class's own range record), never widens the committed 3.0 mm cut; the class-prescribed pin-axis form is the receipt's named lawful route to widen the margin itself",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (the held PinJoint record of the tarsal complex) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -0.34906585,
+     0.34906585
+    ],
+    "range_source": "Rajagopal2016.osim subtalar_l/r subtalar_angle [-0.34906585, 0.34906585] rad (parsed from the sha-pinned committed record; symmetric both sides) - the tarsal-class cited band and the registered band of tarsal_cycle_pivots_20260921; same-model adjacent records: ankle_l/r [-0.6981317, 0.52359878], mtp_l/r [-0.52359878, 0.52359878]; gait2392 wide bands (+/-1.57079633) context only; adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM (the held PinJoint records), AXIS DERIVATION OPEN - and the measured evidence recorded beside it, never as prescription: the transplanted sphere-form fits of tarsal_cycle_pivots_20260921 converge on this bond, seat through the registered band, and DISCRIMINATE real from null (the receipt's class verdict; the prescription gap that receipt named is filled here by the cited PinJoint form) The receipt's own words: the successor class amendment (a hinge-axis or contact-frame pivot form prescribed per class) is the lawful way to widen it.",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4, 3 and 5B; Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
   },
   {
    "id": "bond.joint_22_25",
@@ -840,7 +1088,21 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 0.99,
    "measured_gap_mm": 0.99,
-   "evidence": "bone_identification_v3.json chain hind touching_edge [22, 25], gap_mm 0.99"
+   "evidence": "bone_identification_v3.json chain hind touching_edge [22, 25], gap_mm 0.99",
+   "joint_class": {
+    "class": "condyled_gliding",
+    "reading": "intertarsal apposition within the left pes (fragments mem.bone_22 - mem.bone_25)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (the held PinJoint record of the tarsal complex) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -0.34906585,
+     0.34906585
+    ],
+    "range_source": "Rajagopal2016.osim subtalar_l/r subtalar_angle [-0.34906585, 0.34906585] rad (parsed from the sha-pinned committed record; symmetric both sides) - the tarsal-class cited band and the registered band of tarsal_cycle_pivots_20260921; same-model adjacent records: ankle_l/r [-0.6981317, 0.52359878], mtp_l/r [-0.52359878, 0.52359878]; gait2392 wide bands (+/-1.57079633) context only; adult-human band, species and stage deviation named, never tuned; the held models carry NO intertarsal record; the class's cited band is applied as the class record and the joint-level gap is named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM (the held PinJoint records), AXIS DERIVATION OPEN - and the measured evidence recorded beside it, never as prescription: the transplanted sphere-form fits of tarsal_cycle_pivots_20260921 converge on this bond, seat through the registered band, and DISCRIMINATE real from null (the receipt's class verdict; the prescription gap that receipt named is filled here by the cited PinJoint form). This bond is NOT among the six measured cycle bonds: no fit or seat reading exists for it; the first pose through it pre-registers its derivation and inherits the falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4, 3 and 5B; Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
   },
   {
    "id": "bond.joint_23_24",
@@ -852,7 +1114,21 @@
    "cure_strength": 13000000.0,
    "rest_length_mm": 1.01,
    "measured_gap_mm": 1.01,
-   "evidence": "bone_identification_v3.json chain hind touching_edge [23, 24], gap_mm 1.01"
+   "evidence": "bone_identification_v3.json chain hind touching_edge [23, 24], gap_mm 1.01",
+   "joint_class": {
+    "class": "condyled_gliding",
+    "reading": "intertarsal apposition within the right pes (fragments mem.bone_23 - mem.bone_24)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (the held PinJoint record of the tarsal complex) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -0.34906585,
+     0.34906585
+    ],
+    "range_source": "Rajagopal2016.osim subtalar_l/r subtalar_angle [-0.34906585, 0.34906585] rad (parsed from the sha-pinned committed record; symmetric both sides) - the tarsal-class cited band and the registered band of tarsal_cycle_pivots_20260921; same-model adjacent records: ankle_l/r [-0.6981317, 0.52359878], mtp_l/r [-0.52359878, 0.52359878]; gait2392 wide bands (+/-1.57079633) context only; adult-human band, species and stage deviation named, never tuned; the held models carry NO intertarsal record; the class's cited band is applied as the class record and the joint-level gap is named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM (the held PinJoint records), AXIS DERIVATION OPEN - and the measured evidence recorded beside it, never as prescription: the transplanted sphere-form fits of tarsal_cycle_pivots_20260921 converge on this bond, seat through the registered band, and DISCRIMINATE real from null (the receipt's class verdict; the prescription gap that receipt named is filled here by the cited PinJoint form). This bond is NOT among the six measured cycle bonds: no fit or seat reading exists for it; the first pose through it pre-registers its derivation and inherits the falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4, 3 and 5B; Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
   },
   {
    "id": "bond.joint_01_02",
@@ -878,7 +1154,31 @@
     ]
    },
    "anatomical_reading": "hip joint: femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933, The Anatomy of the Rhesus Monkey)",
-   "evidence": "axial_adjacency_20260920 measured law gap 1.44 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json; adopted by lane agent/axial-limb-adjacency-20260920 successor agent/hip-bond-adoption-20260921 from candidate_bonds.json bond.joint_01_02 (pre-registered GREEN, rest_length = the law gap per the refinement_law: bonds are defined on the vertex metric); receipt tools/science_funnel/validation/hip_adoption_20260921/receipt.json"
+   "evidence": "axial_adjacency_20260920 measured law gap 1.44 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json; adopted by lane agent/axial-limb-adjacency-20260920 successor agent/hip-bond-adoption-20260921 from candidate_bonds.json bond.joint_01_02 (pre-registered GREEN, rest_length = the law gap per the refinement_law: bonds are defined on the vertex metric); receipt tools/science_funnel/validation/hip_adoption_20260921/receipt.json",
+   "joint_class": {
+    "class": "ball_and_socket",
+    "reading": "hip joint (left): femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933) - the bond's anatomical_reading promoted verbatim to the class record by lane agent/joint-class-records-20260921",
+    "dof_count": 3,
+    "dof_form": "three named rotational coordinates (the OpenSim ball-and-socket record: flexion, adduction, rotation) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     [
+      -2.0943951,
+      2.0943951
+     ],
+     [
+      -2.0943951,
+      2.0943951
+     ],
+     [
+      -2.0943951,
+      2.0943951
+     ]
+    ],
+    "range_source": "gait2392_thelen2003muscle.osim hip_l: hip_flexion_l/adduction_l/rotation_l, each [-2.0943951, 2.0943951] rad (parsed from the sha-pinned committed record; the hip lane's registered band edge R); Rajagopal2016.osim hip per-axis bands [-0.52359878, 2.0943951] / [-0.87266463, 0.52359878] / [-0.6981317, 0.6981317] recorded as the same-class context; adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "sphere_fit",
+    "pivot_record": "REGISTERED: the femoral-head center fit of hip_pivot_proof_20260921/battery.json (radius 3.044128510081 mm, rms_residual 0.155477725893 mm; predicate P6' v2, law doc 5B - real-vs-null discriminating); the axis is the bilateral line through the two hip pivots, sign set by the recorded curl (law doc section 3)",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 3, 5, 5A, 5B; gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); Hartman & Straus 1933, The Anatomy of the Rhesus Monkey"
+   }
   },
   {
    "id": "bond.joint_01_03",
@@ -904,7 +1204,31 @@
     ]
    },
    "anatomical_reading": "hip joint: femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933)",
-   "evidence": "axial_adjacency_20260920 measured law gap 1.49 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json; adopted by lane agent/axial-limb-adjacency-20260920 successor agent/hip-bond-adoption-20260921 from candidate_bonds.json bond.joint_01_03 (pre-registered GREEN, rest_length = the law gap per the refinement_law: bonds are defined on the vertex metric); receipt tools/science_funnel/validation/hip_adoption_20260921/receipt.json"
+   "evidence": "axial_adjacency_20260920 measured law gap 1.49 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json; adopted by lane agent/axial-limb-adjacency-20260920 successor agent/hip-bond-adoption-20260921 from candidate_bonds.json bond.joint_01_03 (pre-registered GREEN, rest_length = the law gap per the refinement_law: bonds are defined on the vertex metric); receipt tools/science_funnel/validation/hip_adoption_20260921/receipt.json",
+   "joint_class": {
+    "class": "ball_and_socket",
+    "reading": "hip joint (right): femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933) - the bond's anatomical_reading promoted verbatim to the class record by lane agent/joint-class-records-20260921",
+    "dof_count": 3,
+    "dof_form": "three named rotational coordinates (the OpenSim ball-and-socket record: flexion, adduction, rotation) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     [
+      -2.0943951,
+      2.0943951
+     ],
+     [
+      -2.0943951,
+      2.0943951
+     ],
+     [
+      -2.0943951,
+      2.0943951
+     ]
+    ],
+    "range_source": "gait2392_thelen2003muscle.osim hip_r: hip_flexion_r/adduction_r/rotation_r, each [-2.0943951, 2.0943951] rad (parsed from the sha-pinned committed record; the hip lane's registered band edge R); Rajagopal2016.osim hip per-axis bands [-0.52359878, 2.0943951] / [-0.87266463, 0.52359878] / [-0.6981317, 0.6981317] recorded as the same-class context; adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "sphere_fit",
+    "pivot_record": "REGISTERED: the femoral-head center fit of hip_pivot_proof_20260921/battery.json (radius 2.682250273053 mm, rms_residual 0.147474758014 mm; predicate P6' v2, law doc 5B - real-vs-null discriminating); the axis is the bilateral line through the two hip pivots, sign set by the recorded curl (law doc section 3)",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 3, 5, 5A, 5B; gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); Hartman & Straus 1933, The Anatomy of the Rhesus Monkey"
+   }
   }
  ],
  "pose_contacts": {
