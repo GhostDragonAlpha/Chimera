@@ -236,6 +236,24 @@ int main(int argc,char**argv){try{
      for(size_t k=0;k<8;++k) // WAVE 30 DEMAND CENSUS: per-tick per-hind-drive {torque, cap} (the [dvq] instrument;
       std::fprintf(stderr,"[dvq] t=%d k=%zu tau=%.6f cap=%.6f\n", //  stderr-only, GAIT_EVENT_TRACE builds; stdout-inert)
        i,k,number(s["joints"][k]["motor_torque_N_m"]),number(s["joints"][k]["torque_cap_N_m"]));
+     { // WAVE 41 SHARE INSTRUMENT (read-only plumbing, receipt_wave41.json):
+       // the per-tick FORE pad detail {gap,rxn,frc,slip,pos} -- the [dvp]
+       // format mirrored, the fore points classified by their own name
+       // prefixes in file order k=0..3 -- and the fore-column rxn sums (the
+       // [dvfs] series). The fore columns' share is in NO other trace series
+       // (the wave-40 bank's declared instrument gap). stderr-only,
+       // GAIT_EVENT_TRACE builds; stdout-inert (the byte equality is the
+       // inertness proof).
+      size_t kf=0;double sl=0.,sr=0.;
+      for(const auto&pt:s["contact"]["points"]){const std::string nm=pt["name"].get<std::string>();
+       if(nm.rfind("fore_",0)!=0)continue;
+       if(kf<4)std::fprintf(stderr,"[dvfp] t=%d k=%zu gap=%.4e rxn=%.5f frc=%.5f slip=%.5f pos=%.9f,%.9f\n",
+        i,kf,number(pt["gap_m"]),number(pt["reaction_N"]),number(pt["friction_force_N"]),
+        number(pt["slip_speed_m_s"]),number(pt["position_m"][0]),number(pt["position_m"][1]));
+       {double rr=number(pt["reaction_N"]);
+        if(nm.rfind("fore_left",0)==0)sl+=rr;else sr+=rr;}
+       ++kf;}
+      std::fprintf(stderr,"[dvfs] t=%d sumL=%.5f sumR=%.5f n=%zu\n",i,sl,sr,kf);}
      if(out.cev.size()>=2&&out.cev[out.cev.size()-2]!=out.cev.back())
       std::fprintf(stderr,"[dvfire] t=%d capture_events %llu->%llu phL=%.5f phR=%.5f in_hull=%d com=(%.6f,%.6f)\n",
        i,(unsigned long long)out.cev[out.cev.size()-2],(unsigned long long)out.cev.back(),
