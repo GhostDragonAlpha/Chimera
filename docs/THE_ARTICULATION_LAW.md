@@ -334,6 +334,45 @@ passes is F4 and the lane dies by its own receipt.
 
 ---
 
+## 5A. AMENDED PREREGISTRATION — P6′, the two-sided predicate (banked 2026-09-21, BEFORE the contrast re-runs)
+
+**THE VOID STANDS IN THE RECORD: §5-P6 as written is VOID** — fired by its own clause on 2026-09-21
+(the null arm PASSED the one-sided cut exactly as the proof lane's banked derivation predicted, while
+its head left the socket by 5.7458/3.9460 mm; receipt
+`tools/science_funnel/validation/hip_pivot_proof_20260921/receipt.json`, battery sha256
+`18f0ef0641cdcba610bb0a67109540220cfb3400bdff1eee2ae6451fb7d81c16`). Nothing above is edited; this
+block REPLACES THE PREDICATE ONLY. Successor lane:
+`tools/science_funnel/validation/p6_repreregistration_20260921/` — its full derivation and banked
+predictions live in its `preregistration.md`, sha256
+`3cbb37d878b3bca798f73d83b334e347dcf97c5a8c71502ed45df86ac35a1407`, banked before the re-run.
+
+**STATEMENT.** An arm (head-fit pivot, or the null midpoint) is SEATED at θ of the cited range iff
+(i) the law-metric min gap g is in the TWO-SIDED band [tol_ip, 3.0 mm] — upper edge the committed
+touching-class cut; lower edge DERIVED: tol_ip = specimen.resolution_um/2 = 0.08 mm, the CT
+isosurface's own localization class, because a vertex-vertex reading below half the sampling step
+cannot certify that the shells are not THROUGH each other — interpenetration beyond the tolerance is
+NOT a seat; and (ii) the head center stays within the fit's own RMS band of its seat:
+‖pose(c*) − c*‖ ≤ rms_residual (band_02 = 0.155477725893 mm, band_03 = 0.147474758014 mm) — the
+pivot's measured radius+residual ARE the socket's geometry, and a displacement beyond the fit's own
+localization is a DISLOCATION. Someone can disagree: the half-voxel edge may be too loose to mean
+anything, and the RMS band may be too tight for honest fits — both disagreements are measurable and
+both are named as falsifiers below.
+
+**PREDICTION (banked before the re-run).** The REAL arm PASSES P6′ on both hips (displacement 0.0
+exactly at every θ; every grid seat reading in [0.08, 3.0] mm, extremes reproducing the committed
+0.098475213606/0.160824534903 mm); the NULL arm FAILS P6′ on both hips (displacement 5.745805839276/
+3.945980865254 mm at ±R = 36.96×/26.76× beyond the bands, reproducing 2·|c⊥|·sin(θ/2) to 1e-9; hip 03
+additionally breaches the seat band at 0.046718998681 < 0.08). The contrast is the proof's content
+again; the verdict is reported whichever way it lands.
+
+**FALSIFIERS.** The real arm fails any clause, or the null arm passes both clauses on either hip →
+the amendment FAILS and the design REMAINS VOID. The real arm's seats fall below tol_ip anywhere on
+the derived grid {−R} ∪ {R·k/5, k = −4..4} ∪ {+R} → the half-voxel derivation is mis-derived and the
+amendment voids. Kernel gates red, watched bytes changed, or double-run byte drift → the lane is
+void on its own falsifiers (L1–L6 of its preregistration).
+
+---
+
 ## 6. WHY THIS LANE DID NOT BUILD THE PROOF (the fence, in the open)
 
 The battery's machinery is small (a Rodrigues transform, a mesh closest-point pass, the existing
