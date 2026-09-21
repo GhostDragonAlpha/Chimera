@@ -58,6 +58,10 @@ struct WalkOut{
  // fire_qerr,wall_pins,wall_pins_air,xoff} -- leg 0 at [0,12), leg 1 at
  // [12,24); -1 filled when the block is absent.
  std::vector<std::array<double,24>> hindst;
+ // WAVE 29 ALTERNATION census inputs: per-tick per-leg 4 fields
+ // {fire_class(1=alternation),held,clear_tick,deadline_fires} -- leg 0 at
+ // [0,4), leg 1 at [4,8); -1 filled when the block is absent.
+ std::vector<std::array<double,8>> hind29;
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
@@ -254,6 +258,15 @@ int main(int argc,char**argv){try{
        hst[b+10]=double(p["wall_pins_air"].get<uint64_t>());
        hst[b+11]=number(p["xoff_m"]);}
      out.hindst.push_back(hst);}
+    {std::array<double,8> h29{};h29.fill(-1.);
+     if(s["gait"].contains("hind_step")&&s["gait"]["hind_step"].size()>=2)
+      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["hind_step"][l];
+       size_t b=4*l;
+       if(p.contains("fire_class"))h29[b+0]=p["fire_class"].get<std::string>()=="alternation"?1.:0.;
+       if(p.contains("held"))h29[b+1]=p["held"].get<bool>()?1.:0.;
+       if(p.contains("clear_tick"))h29[b+2]=number(p["clear_tick"]);
+       if(p.contains("deadline_fires"))h29[b+3]=double(p["deadline_fires"].get<uint64_t>());}
+     out.hind29.push_back(h29);}
     out.fm.push_back(fmm);out.fsat.push_back(sat);out.ftgt.push_back(tgx);out.frep.push_back(rep);
 #ifdef GAIT_EVENT_TRACE
     // WAVE 23 MINING: the per-tick fore joint-wall state (the derivation's
@@ -819,29 +832,40 @@ int main(int argc,char**argv){try{
       break;}
      if(!paired)++tdpair_bad;}
     if(plant_off[l]<1e8&&plant_off[l]<0.)++plant_bad;}
-   // (d) the past-slot live-load / skid classes after the law's first fire
-   int psl=0,psv=0;double psmx=0.;int psmx_tick=-1;
+   // (d) the past-slot live-load / skid classes after the law's first fire.
+   // WAVE 29 CLASSIFICATION AMENDMENT (pre-registered in receipt_wave29.json,
+   // the wave-28 F-G26 precedent): an in-band phi>=0.68 tick outside the
+   // engage window [f,f+2] splits -- the ARRIVAL class ([f+8,f+9]: the
+   // glide's own plant crossing, the haul completing at the TD; the wave-28
+   // law's designed face) is COUNTED and REPORTED with its slip, never owned
+   // silent; the STALL class (anywhere else: the wave-28 death's 24-tick
+   // face -- a pad that never lifted, dragged by the swing columns) stays
+   // OWNED 0 ticks and 0 slip violations.
+   int psl=0,psv=0,arr=0;double psmx=0.,arrmx=0.;int psmx_tick=-1,arrmx_tick=-1;
    for(size_t l=0;l<2;++l){
     if(fire28[l].empty())continue;
     for(size_t i=(size_t)fire28[l].front();i<N28;++i){
-     bool inwin=false;
-     for(int f:fire28[l])if((int)i>=f&&(int)i<=f+2){inwin=true;break;}
+     bool inwin=false,inarr=false;
+     for(int f:fire28[l]){
+      if((int)i>=f&&(int)i<=f+2)inwin=true;
+      if((int)i>=f+8&&(int)i<=f+9)inarr=true;}
      if(inwin)continue;
      double phi=w.hphase[i][l];
      double g=(std::min)(w.hgap[i][2*l],w.hgap[i][2*l+1]);
      if(phi>=0.68&&g<=1e-5){
-      ++psl;
       double sl=0.;
       if(w.hgap[i][2*l]<=1e-5)sl=(std::max)(sl,w.hslip[i][2*l]);
       if(w.hgap[i][2*l+1]<=1e-5)sl=(std::max)(sl,w.hslip[i][2*l+1]);
-      if(sl>psmx){psmx=sl;psmx_tick=(int)i;}
-      if(sl>VB28)++psv;}}}
+      if(inarr){++arr;if(sl>arrmx){arrmx=sl;arrmx_tick=(int)i;}}
+      else{++psl;
+       if(sl>psmx){psmx=sl;psmx_tick=(int)i;}
+       if(sl>VB28)++psv;}}}}
    {std::string rr,lr,tr,tlr;
     for(int f:fire28[1]){char c[24];std::snprintf(c,24,"%d ",f);rr+=c;}
     for(int f:fire28[0]){char c[24];std::snprintf(c,24,"%d ",f);lr+=c;}
     for(int d:td28[1]){char c[24];std::snprintf(c,24,"%d ",d);tr+=c;}
     for(int d:td28[0]){char c[24];std::snprintf(c,24,"%d ",d);tlr+=c;}
-    char b[896];std::snprintf(b,896,"F-G28 hind_step fires R=[%s] L=[%s] (calendar: R 98 +/-1; L 203 +/-3 if reached) tds R=[%s] L=[%s] (fire+9 +/-1, re-synced) stagger_double=%d [OWNED 0] support_min=%d viol=%d [OWNED 0] td_pair_bad=%d [OWNED 0] plant_off=(%.4f,%.4f) [OWNED >=0] fire_qerr_max=%.3e reach_clamped=(%llu,%llu) gated=(%llu,%llu) hind_pins=(%llu,%llu)/(%llu,%llu) loaded/air",
+    char b[896];std::snprintf(b,896,"F-G28 hind_step fires R=[%s] L=[%s] (wave-29 calendar: the R's first 98 +/-1; the L's first the ALTERNATION window [108,142], F-G29; post-first fires the slot phase) tds R=[%s] L=[%s] (fire+9 +/-1, re-synced) stagger_double=%d [OWNED 0] support_min=%d viol=%d [OWNED 0] td_pair_bad=%d [OWNED 0] plant_off=(%.4f,%.4f) [OWNED >=0] fire_qerr_max=%.3e reach_clamped=(%llu,%llu) [REPORTED: the L's first fire predicted to clamp] gated=(%llu,%llu) hind_pins=(%llu,%llu)/(%llu,%llu) loaded/air",
      rr.c_str(),lr.c_str(),tr.c_str(),tlr.c_str(),dbl,supmin,supviol,tdpair_bad,
      plant_off[0]<1e8?plant_off[0]:-1.,plant_off[1]<1e8?plant_off[1]:-1.,
      qerr_mx,
@@ -850,8 +874,8 @@ int main(int argc,char**argv){try{
      (unsigned long long)w.hindst.back()[9],(unsigned long long)w.hindst.back()[21],
      (unsigned long long)w.hindst.back()[10],(unsigned long long)w.hindst.back()[22]);
     note(b);}
-   {char b[384];std::snprintf(b,384,"F-G28 past_slot_census live_loaded_ticks=%d [OWNED 0 outside the 2-tick engage windows; the baseline RED: 24 ticks [98,122)] worst_touching_slip=%.4f@%d [bound %.4f] viol=%d [OWNED 0]",
-    psl,psmx,psmx_tick,VB28,psv);
+   {char b[384];std::snprintf(b,384,"F-G28 past_slot_census stall_live_loaded_ticks=%d [WAVE 29 OWNED 0 outside the 2-tick engage AND [f+8,f+9] arrival windows; the baseline RED: 1 tick @104] worst_stall_slip=%.4f@%d arrival_ticks=%d worst_arrival_slip=%.4f@%d [REPORTED: the glide's own plant crossing] viol=%d [OWNED 0]",
+    psl,psmx,psmx_tick,arr,arrmx,arrmx_tick,psv);
     note(b);
     ck(psl==0,"f28_no_past_slot_live_load");
     ck(psv==0,"f28_no_past_slot_skid");}
@@ -859,8 +883,120 @@ int main(int argc,char**argv){try{
    ck(supviol==0,"f28_support_min2_through_hind_step");
    ck(tdpair_bad==0,"f28_td_within_air_window_resynced");
    ck(plant_bad==0,"f28_replant_ahead_of_hip");
-   for(int f:fire28[1])ck(f>=97&&f<=99,"f28_R_fire_calendar_98_pm1");
-   for(int f:fire28[0])ck(f>=200&&f<=206,"f28_L_fire_calendar_203_pm3");}}
+   // WAVE 29 CALENDAR AMENDMENT (pre-registered in receipt_wave29.json): the
+   // R's FIRST fire stays owned at 98 +/-1; every later fire (both legs) is
+   // owned by the SLOT-PHASE class (0.68 +/- 0.10 at the fire -- the clocks
+   // re-sync after each step, so the tick offsets shift). The wave-28 L-fire
+   // tick letter [200,206] is SUPERSEDED: the natural slot was MEASURED
+   // outside the fold budget (the L's slot ~204 vs the forced liftoff at
+   // 152) -- the alternation calendar (F-G29) owns the L's first fire.
+   if(!fire28[1].empty())ck(fire28[1].front()>=97&&fire28[1].front()<=99,"f28_R_fire_calendar_98_pm1");
+   for(size_t l=0;l<2;++l)for(size_t k2=1;k2<fire28[l].size();++k2){
+    int f=fire28[l][k2];
+    if((size_t)f<w.hphase.size()){
+     double ph=w.hphase[(size_t)f][l];
+     ck(ph>=0.58&&ph<=0.78,"f29_post_first_fire_slot_phase");}}}}
+
+ // ── WAVE 29 HIND ALTERNATION CENSUS (pre-registered in receipt_wave29.json):
+ //    THE HIND ALTERNATION LAW -- the second hind steps before the first's
+ //    stance exhausts -- plus the LIFT-FIRST GLIDE. (a) THE CALENDARS: the R's
+ //    first fire 98 +/-1 (the wave-28 letter); the L's first fire the
+ //    ALTERNATION class in [108,142] (the earliest lawful tick to the
+ //    deadline arithmetic: the other's TD + kFoldBudgetTicks 45 - tair 9 -
+ //    g 1); every post-first fire at the slot phase (owned in F-G28 above).
+ //    (b) THE TDS: fire+9 +/-1, re-synced (carried). (c) THE DEADLINE: the
+ //    (c)/(d)-waiving deadline fires reported (predicted inert). (d) THE FOLD
+ //    CENSUS (the membrane's core, OWNED 0): no hind pads leave the band
+ //    while NOT in glide mode and phi < TOE_OFF -- the baseline's phase-0.42
+ //    fold class (the L's release at 152) never fires. (e) THE DRAG: every
+ //    fire's pads clear the release quantum within [fire,fire+2] and no
+ //    in-band gliding-leg tick within [fire,fire+4] carries slip > 0.1 m/s.
+ //    (f) THE FOLD'S MARGIN reported per fire (the standing era vs the
+ //    45-tick budget; the deadline tick).
+ {const size_t N29=std::min({w.hindst.size(),w.hind29.size(),w.hphase.size(),w.hgap.size(),w.hslip.size(),(size_t)426});
+  if(w.hindst.size()<=61)note("F-G29 NOT MEASURED: the walk refused before the census window");
+  else{
+   std::vector<int> fire29[2],td29[2];
+   for(size_t i=61;i<N29;++i)for(size_t l=0;l<2;++l){
+    if(w.hindst[i][12*l+2]>w.hindst[i-1][12*l+2])fire29[l].push_back((int)i);
+    if(w.hindst[i][12*l+3]>w.hindst[i-1][12*l+3])td29[l].push_back((int)i);}
+   // (a) the calendars + the classes
+   int rfirst=fire29[1].empty()?-1:fire29[1].front();
+   int lfirst=fire29[0].empty()?-1:fire29[0].front();
+   double lcls=lfirst>=0&&N29>(size_t)lfirst?w.hind29[(size_t)lfirst][0]:-1.;
+   double rcls=rfirst>=0&&N29>(size_t)rfirst?w.hind29[(size_t)rfirst][4]:-1.;
+   if(rfirst>=0)ck(rfirst>=97&&rfirst<=99,"f29_R_first_fire_calendar_98_pm1");
+   if(lfirst>=0){
+    ck(lfirst>=108&&lfirst<=142,"f29_L_first_fire_alternation_window");
+    ck(lcls>0.5,"f29_L_first_fire_class_alternation");}
+   else note("F-G29 L first fire NOT MEASURED: no L fire in the measured life");
+   // (b) the tds
+   for(size_t l=0;l<2;++l){
+    std::vector<int>&fs=fire29[l];std::vector<int>&ts=td29[l];
+    for(size_t k2=0;k2<fs.size();++k2){
+     bool paired=false;
+     for(int d:ts)if(d>=fs[k2]+8&&d<=fs[k2]+10){paired=true;break;}
+     ck(paired,"f29_td_within_air_window");}}
+   // (c) the deadline override fires (reported, predicted inert)
+   {uint64_t dlf0=0,dlf1=0;
+    if(!w.hind29.empty()){dlf0=(uint64_t)w.hind29.back()[3];dlf1=(uint64_t)w.hind29.back()[7];}
+    char b[256];std::snprintf(b,256,"F-G29 deadline_override fires=(L %llu, R %llu) [predicted INERT: the gate opens ~18 ticks before the deadline]",
+     (unsigned long long)dlf0,(unsigned long long)dlf1);
+    note(b);}
+   // (d) THE FOLD CENSUS: no hind pads leave the band while NOT in glide
+   // mode and phi < TOE_OFF (the clock's own touching classification; the
+   // baseline's red face: the L's release at 152, phase 0.4319).
+   // WAVE 29 REPLANT-RETURN AMENDMENT (declared in the receipt's
+   // measurements, from the first build's honest measurement): each glide's
+   // [TD, TD+3] window is the REPLANT-RETURN class -- the leg returned to
+   // the tables at the clocked TD while airborne and the pads landed
+   // TD+1..3 (the haul's own completion; the touch census classifies the
+   // arrival LEGITIMATE with the reset) -- counted and REPORTED, never
+   // owned silent; the FOLD class (anywhere else) stays OWNED 0.
+   {int fold=0,ret=0;int fold_tick=-1;double fold_phi=-1.;
+    for(size_t i=61;i<N29;++i)for(size_t l=0;l<2;++l){
+     if(w.hindst[i][12*l]>0.5)continue;               // in glide: not the fold class
+     if(w.hphase[i][l]>=0.68)continue;                // the slot/designed class
+     if(w.t[i][l])continue;                           // touching: no fold
+     bool inret=false;
+     for(int d:td29[l])if(i>=(size_t)d&&i<=(size_t)(d+3)){inret=true;break;}
+     if(inret){++ret;continue;}
+     ++fold;if(fold_tick<0){fold_tick=(int)i;fold_phi=w.hphase[i][l];}}
+    char b[384];std::snprintf(b,384,"F-G29 fold_census fold_class_ticks=%d first=%d phi=%.4f [OWNED 0: the baseline RED face was the L's release at 152, phase 0.4319 -- the phase-0.42 forced liftoff] replant_return_ticks=%d [REPORTED: the clocked TD's own arrival transient] R_first_fire=%d L_first_fire=%d L_class=%.0f",
+     fold,fold_tick,fold_phi,ret,rfirst,lfirst,lcls);
+    note(b);
+    ck(fold==0,"f29_no_fold_liftoff");}
+   // (e) THE DRAG: the engage-window lift letter + the swing-start slip
+   {int badclear=0,badslip=0;double worst=0.;int worst_tick=-1;
+    for(size_t l=0;l<2;++l)for(int f:fire29[l]){
+     double ct=w.hind29[(size_t)f][4*l+2];
+     if(!(ct>=double(f)&&ct<=double(f+2)))++badclear;
+     for(int i=f;i<=f+4&&(size_t)i<N29;++i){
+      double g=(std::min)(w.hgap[(size_t)i][2*l],w.hgap[(size_t)i][2*l+1]);
+      if(g<=1e-5){
+       double sl=(std::max)(w.hslip[(size_t)i][2*l],w.hslip[(size_t)i][2*l+1]);
+       if(sl>worst){worst=sl;worst_tick=i;}
+       if(sl>0.1)++badslip;}}}
+    char b[384];std::snprintf(b,384,"F-G29 glide_drag bad_clear_ticks=%d [OWNED 0: every fire's pads clear kTouch+kReleaseBand within [fire,fire+2]] swing_start_drag_ticks=%d worst=%.4f@%d [OWNED 0: bound 0.1 m/s at swing start]",
+     badclear,badslip,worst,worst_tick);
+    note(b);
+    ck(badclear==0,"f29_lift_first_clear_window");
+    ck(badslip==0,"f29_no_pad_drag_at_swing_start");}
+   // (f) THE FOLD'S MARGIN per fire (reported): the concentration era (the
+   // fire minus the other's TD at the fire) vs the 45-tick budget, and the
+   // deadline tick (the other's TD + 45 - 9 - 1 = +35).
+   {std::string mg;
+    for(size_t l=0;l<2;++l){
+     std::string leg=l?"R":"L";
+     for(size_t k2=0;k2<fire29[l].size();++k2){
+      int f=fire29[l][k2];
+      size_t o=l==0?1:0;
+      double other_td=w.hindst[(size_t)f][12*o+7];
+      double conc=other_td>=0.?double(f)-other_td:-1.;
+      double dl=other_td>=0.?other_td+35.:-1.;
+      char c[160];std::snprintf(c,160,"%s fire %d: concentration era %.0f of budget 45, deadline %.0f%s; ",leg.c_str(),f,conc,dl,conc>45.0?" OVER":" ok");
+      mg+=c;}}
+    note("F-G29 fold_margin "+std::string(fire29[0].empty()&&fire29[1].empty()?std::string("no fires"):mg));}}}
 
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the
@@ -1133,11 +1269,24 @@ int main(int argc,char**argv){try{
  //    HIND liftoff must fire at the clock's toe-off phase 0.68 (+/-0.08) --
  //    derived: left ~tick 204.8, right ~tick 311.3 after its ~166.5 TD --
  //    not at TD-pose geometry as in the defected walks.
- {char b[128];std::snprintf(b,128,"F-G16 hind_clock first_lift left=(tick %d, phase %.4f) right=(tick %d, phase %.4f) (derived phases 0.68)",
+ {char b[224];std::snprintf(b,224,"F-G16 hind_clock first_lift left=(tick %d, phase %.4f) right=(tick %d, phase %.4f) (the R's derived slot phase 0.68; the L's phase per its fire class -- WAVE 29)",
    w.lift_tick[0],w.lift_phase[0],w.lift_tick[1],w.lift_phase[1]);
   note(b);
-  if(w.lift_tick[0]>=0)ck(std::abs(w.lift_phase[0]-0.68)<=0.08,"f16_left_hind_clock_lift");
-  if(w.lift_tick[1]>=0)ck(std::abs(w.lift_phase[1]-0.68)<=0.08,"f16_right_hind_clock_lift");}
+  // WAVE 29 CLASS AMENDMENT (pre-registered in receipt_wave29.json): a leg's
+  // first liftoff is judged BY ITS FIRE CLASS -- the SLOT class (0.68 +/- 0.08,
+  // the wave-16 letter) or the ALTERNATION class (the phase is the skewed
+  // clock's reading at the derived earliest-lawful slot; its law is the
+  // fold-budget window [108,142], owned by F-G29). The fold class (a liftoff
+  // at phi < TOE_OFF outside any glide) is owned DEAD by F-G29's fold census.
+  const size_t N16=std::min({w.hindst.size(),w.hind29.size(),(size_t)426});
+  for(size_t l=0;l<2;++l){
+   if(w.lift_tick[l]<0)continue;
+   int ffirst=-1;double fcls=-1.;
+   for(size_t i=61;i<N16;++i)
+    if(w.hindst[i][12*l+2]>w.hindst[i-1][12*l+2]){ffirst=(int)i;fcls=w.hind29[i][4*l];break;}
+   bool alt_lift=ffirst>=0&&fcls>0.5&&w.lift_tick[l]>=ffirst&&w.lift_tick[l]<=ffirst+2;
+   if(alt_lift)note("F-G16 first_lift leg="+(l?std::string("right"):"left")+" = the ALTERNATION class (phase reported; owned by F-G29's window)");
+   else ck(std::abs(w.lift_phase[l]-0.68)<=0.08,l==0?"f16_left_hind_clock_lift":"f16_right_hind_clock_lift");}}
 
  // ── WAVE 19 HIND-LANDING CENSUS (pre-registered in receipt_wave19.json):
  //    the corrected composition's hind clauses: the LEFT hind lands through
