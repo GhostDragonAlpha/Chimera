@@ -1,0 +1,120 @@
+INTEGRATION REHEARSAL ROUND 2 — SCRATCH MERGE LOG
+Date: 2026-09-21; Clone: E:/ChimeraWork/rehearsal2-agent
+Branch: agent/integration-rehearsal-2-20260921 (from origin/master 6946f3b9)
+Prereg: tools/agent_fleet/validation/integration_rehearsal2_20260921/RULE0_PREREGISTRATION.md (c1a0def6)
+
+=== Round-1 verification: merge-bases ===
+mb(master 6946f3b9, chain d981bc04) = 6946f3b9  [FF-able chain]
+mb(d981bc04, wave28 0557fc99) = d981bc04  [FF-able arm]
+mb(d981bc04, wave28b 0759f4b2) = d981bc04  [FF-able arm]
+mb(wave28, wave28b) = d981bc04  [SIBLINGS — the chain FORKED]
+
+=== STEP 1: chain FF d981bc04 ===
+hint: Disable this message with "git config set advice.diverging false"
+fatal: Not possible to fast-forward, aborting.
+
+=== STEP 2: wave-28 FF 0557fc99 ===
+hint: Disable this message with "git config set advice.diverging false"
+fatal: Not possible to fast-forward, aborting.
+
+=== STEP 3: wave-28b merge 0759f4b2 (--no-ff, the sibling) ===
+ create mode 100644 tools/science_funnel/validation/gait_zero_20260919/trunk_pitch_table.json
+ create mode 100644 tools/science_funnel/validation/gait_zero_20260919/trunk_vault.json
+ create mode 100644 tools/science_funnel/validation/gait_zero_20260919/trunk_vault_reachable.json
+STEP3-exit:0
+
+=== PROCEDURE NOTE: the prereg commit (c1a0def6) broke the chain FF (a pre-chain commit diverges HEAD from master); prereg parked on branch tmp-prereg-bank, work branch reset to pristine master, FF steps re-run, prereg merged in before the first conflict-bearing step (step 4). Prediction CONTENT unchanged (banked pre-merge; see tmp-prereg-bank). ===
+
+=== STEP 1 (redo): chain FF d981bc04 ===
+ create mode 100644 tools/science_funnel/validation/gait_zero_20260919/trunk_vault_reachable.json
+STEP1-exit:0
+
+=== STEP 2 (redo): wave-28 FF 0557fc99 ===
+ create mode 100644 tools/science_funnel/validation/gait_zero_20260919/receipt_wave28.json
+STEP2-exit:0
+
+=== STEP 2.5: bank the prereg (merge tmp-prereg-bank, --no-ff) ===
+ create mode 100644 tools/agent_fleet/validation/integration_rehearsal2_20260921/RULE0_PREREGISTRATION.md
+STEP2.5-exit:0
+
+=== STEP 3 (redo): wave-28b sibling merge 0759f4b2 (--no-ff) ===
+ create mode 100644 tools/science_funnel/validation/gait_zero_20260919/mined_share_lever_wave28b.json
+ create mode 100644 tools/science_funnel/validation/gait_zero_20260919/receipt_wave28b.json
+STEP3-exit:0
+
+=== T1 (after step 3): gait_unit build OK; scene sha e61ad386... (identical to round-1's chain scene); run EXIT 0; refusal tick=298 refusal=gait_contact_impact_gain — EXACTLY receipt_wave28's banked state ('tick 298 ... THE LADDER ADVANCED 176 TICKS'); red_falsifiers counter 26 (the wave-28 family's carried reds; wave-27-era was 16 — growth came from the chain, not the merge); pass=false carried honestly. The 28b sibling merge did NOT move the walk membrane. F4 GREEN at T1.
+
+=== STEP 4: matter B 53affb9c (contains matter A) ===
+  CONFLICT (1): .gitattributes — resolved UNION exactly as pre-registered (master blanket 'data/** -text' first, matter's 'morphosource_ct/** -text -whitespace' after, last-match-wins). All data/tris/manifest adds auto-merged (identical content both sides where overlapping).
+
+=== STEP 5: reality gate 4d1c0ffa ===
+=== STEP 7: engine determinism ee2dec83 ===
+  CONFLICTS (2), both add/add — same as round 1: ct_skeleton_layer.py → THEIRS (engdet strict superset; SEAT_HEIGHT_M verified present in theirs); skeleton_movie.py → OURS keeps canonical path, engdet's instrument preserved verbatim as tools/science_funnel/skeleton_movie_engine_determinism.py (same integrator split as round 1). ChimeraEngine/engine/main.cpp auto-merged clean again.
+
+=== STEP 8: workflow MCP a672b16b ===
+=== STEP 10: constitution c0e130c5 ===
+  CONFLICT (1): docs/THE_CHECKLIST.md add/add — resolved THEIRS (strict superset; 'THE CONSTITUTION POINTERS' appendix verified present). docs/THE_GAME.md merged clean. Round-1 replay COMPLETE: conflict set = exactly the pre-registered set (matter B .gitattributes; engdet x2; constitution x1); steps 5,6,8,9 clean.
+
+=== NEW-LANE PHASE ===
+=== STEP 11: wiseman pin repair 68730eab ===
+  MERGE CLEAN, 0 conflicts (98d33a1a) — pin repair one-sided as predicted; .gitattributes auto-unioned (wiseman2026 rule L33 + master blanket L43 + morphosource_ct L46). test_wiseman_osim.py not yet in tree: the adapter (inside step 12) creates it; T2 moved after step 12, matching round-1's ERROR state provenance.
+
+=== STEP 12: quarantine-forensics 72d02366 (brings adapter + guimaraes) ===
+=== STEP 13: pennation-correction 37d053ac ===
+  MERGE CLEAN (q-forensics), MERGE CLEAN (pennation) — 0 conflicts, as predicted.
+  T2 (after step 13): python -B -m pytest tools/science_funnel/tests/test_wiseman_osim.py → 12 passed in 288.55s, ZERO tree dirt. Round-1 state: 12 ERROR (setUpClass source_pin_drift). Round-1 RISK #1 (broken wiseman pins) IS RESOLVED BY THE PIN-REPAIR LANE AND SURVIVES INTEGRATION.
+
+=== STEP 14: deposit-mass 5f54a161 (W1 arm tip) ===
+=== STEP 15: ankle-unblocked 90636814 (brings measured-caps) ===
+=== STEP 16: record-movie 0d78e6d6 (brings skeleton-movie + walk-movie prestage + legibility chain) ===
+  MERGE CLEAN, 0 conflicts (as predicted: engine-side content already contained via visual/MCP ancestry; own delta = walk_movie.py + native/ snapshots + validation records; ct_skeleton_layer/skeleton_movie one-sided-ours vs base a672b16b).
+=== STEP 17: visible-monkey intake ebbe814d (brings arm-arch/Vanhoof memo) — .gitattributes WATCH ===
+  CONFLICT (1): .gitattributes — the WATCHED conflict fired (adjacent-EOF hunks: ours blanket+morphosource_ct vs theirs visible_monkey over 32105f18 base). Resolved UNION (pre-registered fallback): ours kept, VM's visible_monkey class appended after. All VM data/tests/auto-merged clean.
+
+=== STEP 18: P6 13d7c31e (brings axial-adjacency + hip-bond + articulation-semantics + hip-pivot) ===
+=== STEP 19: tarsal-cycle-pivots cf1857c2 ===
+  MERGE CLEAN, 0 conflicts (LANDED MID-REHEARSAL: agent/joint-class-records-20260921 appeared on canonical during this rehearsal — the round-1 'moving family' pattern again). Contains tarsal cf1857c2 entirely; own delta = the joint_class amendment + validation/joint_class_records_20260921/ + .gitattributes append (auto-unioned this time). FINAL STEP COUNT: 20.
+
+=== T3 re-verify at final state (post step 20) ===
+
+  MERGE CLEAN (step 20 joint-class, 282a2318) — 0 conflicts.
+
+=====================================================================
+STEP T1/T2/T3 — TEST DELTAS (full detail in receipt.json)
+=====================================================================
+T1 (after step 3): gait_unit build OK; scene sha e61ad386... = round-1's chain scene
+   byte-identical; run EXIT 0; refusal tick=298 gait_contact_impact_gain = receipt_wave28's
+   banked state verbatim (ladder advanced 176 ticks from wave-27's 122); red_falsifiers 26;
+   pass=false carried honestly.
+T2 (after step 13): python -B -m pytest tools/science_funnel/tests/test_wiseman_osim.py -q
+   → 12 passed in 288.55s, ZERO tree dirt. Round-1: 12 ERROR (source_pin_drift).
+   ROUND-1 RISK #1 RESOLVED BY THE PIN-REPAIR LANE AND SURVIVES INTEGRATION.
+T3 (final, after step 20): gait_unit rebuild OK, tick=298, full output sorted-line IDENTICAL
+   to T1 (no lane moved the walk membrane); creature_graph 19 passed + 27 subtests;
+   engine full build: chimera_engine.exe LINKS (LNK4315 only).
+T3 root suite (ONCE, final committed state, F5 protocol):
+   32 failed, 483 passed, 1 skipped, 16 errors, 16 subtests in 2431.14s (0:40:31).
+   errors 16 = round-1's pre-existing class exactly (7 force_arm + 9 force_compiler).
+   passed 352→483 (+131 new-lane batteries); failed 20→32.
+   The +11 new-lane failures decompose (single-test reruns to root cause):
+   - 6 HYGIENE class: the lanes' 'clean outside lane dir' tests caught the SUITE ITSELF
+     regenerating the 15 visual_proof evidence files mid-run (round-1 risk #2's second detector).
+   - 5 PIN-DRIFT class: k_forensics receipt pinned wiseman2026 sha256_manifest.json +
+     inventory.json at PRE-repair bytes; the pin-repair lane rewrote exactly those two files.
+     Git-merge clean, funnel loudly refuses, 5 tests fail. Model/SI/literature pins hold.
+     INTEGRATOR ACTION: re-pin those two receipt entries (text-clean semantic amendment).
+F5: suite regenerated 15 evidence files (6 visual_proof_20260917 + 9 visual_proof_wave2_20260918
+   = round-1's exact set); git checkout -- restored; post-restore dirt 0.
+
+=====================================================================
+ROUND-1 FINDINGS RE-VERIFIED
+=====================================================================
+1. Chain FF: still true per arm; FALSE as one statement — the chain FORKED (28/28b siblings,
+   mb = d981bc04), and wave-29 ab60a20b is absent from canonical (checked 3x incl. receipt time).
+2. Round-1 conflict map: reproduced exactly — matter .gitattributes union, engdet 2 add/adds
+   (same resolutions valid), constitution THE_CHECKLIST take-theirs; all other round-1 steps clean.
+3. Round-1 risk #1 (wiseman pins): RESOLVED (T2). Round-1 risk #2 (suite mutates evidence):
+   STILL LIVE, re-measured (15 files). Round-1 risk #3 (moving family, pins-by-hash): STILL
+   LIVE — joint-class landed mid-rehearsal; master itself unmoved since before round 1.
+FINAL BRANCH TIP: see git log -1 (step 20 merge 282a2318's child commits are receipt-only).
+Master verification: origin/master ls-remote before AND after — see receipt.json master_never_pushed.

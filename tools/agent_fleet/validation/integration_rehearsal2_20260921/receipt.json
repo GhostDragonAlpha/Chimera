@@ -1,0 +1,107 @@
+{
+  "lane": "agent/integration-rehearsal-2-20260921",
+  "date": "2026-09-21",
+  "agent": "GLM 5.3",
+  "kind": "DRY-RUN of master integration, ROUND 2 — refresh of agent/integration-rehearsal-20260921 (f0c8e245-era) after ~12 more lanes landed; no master push; everything in the scratch clone",
+  "clone": "E:/ChimeraWork/rehearsal2-agent",
+  "branch": "agent/integration-rehearsal-2-20260921",
+  "master_never_pushed": {
+    "before": "6946f3b99f04b794bca948a1b2cdc44688c2354d",
+    "before_recorded_when": "before any work, from the fresh clone (.rehearsal2_master_before.txt)",
+    "after": "6946f3b99f04b794bca948a1b2cdc44688c2354d",
+    "after_recorded_when": "after final push of the receipt branch",
+    "unchanged_round1_to_round2": true,
+    "note": "master is at the SAME hash round 1 measured as its 'before' AND 'after' — nothing has landed on master itself; every lane lives as a branch",
+    "method": "git ls-remote origin refs/heads/master"
+  },
+  "rule_0": {
+    "statement": "The refreshed lane set (round-1's 11 + the families that landed since) can be brought onto the walk chain in the pre-registered dependency order with ONLY the pre-registered conflicts (.gitattributes unions, engdet's two instruments, THE_CHECKLIST add/add), and the merged walk state reproduces the wave-28 family's banked refusal while the wiseman pin repair turns round-1's 12 fresh-clone ERRORs into passes.",
+    "prediction": "Chain FORKED (28/28b siblings), wave-29 absent; exactly 3 conflict merges + 2 watched .gitattributes appends; wiseman battery flips ERROR->PASS.",
+    "preregistration": "tools/agent_fleet/validation/integration_rehearsal2_20260921/RULE0_PREREGISTRATION.md (commit c1a0def6, banked before any conflict-bearing merge via tmp-prereg-bank merge 20a0ed24; a pre-chain commit would have falsified the FF steps themselves — procedure note in merge log)",
+    "falsifiers": {
+      "f1_master_unchanged": "ls-remote identical before/after (see master_never_pushed)",
+      "f2_claims_backed_by_commits": "every clean claim = --no-ff merge commit in this clone; every conflict claim carries file list + resolution (hashes below)",
+      "f3_missing_lanes_reported": "wave-29 ab60a20b, row-readmission, Vanhoof prestage: NOT on canonical, reported, not substituted; joint-class was missing at prereg time and LANDED MID-REHEARSAL (merged as step 20)",
+      "f4_walk_state": "gait_unit must reproduce receipt_wave28's banked refusal at every checkpoint; drift = finding",
+      "f5_no_suite_mid_commit": "root suite runs ONCE at the final committed state; evidence regenerations restored before any further commit",
+      "RESULT_f1": "GREEN (through final push; hash recorded below)",
+      "RESULT_f2": "GREEN (20/20 steps logged with merge commits)",
+      "RESULT_f3": "GREEN (see missing_lanes)",
+      "RESULT_f4": "GREEN (T1 pre-lanes, T3/T3b post-all-lanes: tick=298 byte-identical outputs)",
+      "RESULT_f5": "GREEN (suite run ONCE at the final committed state; 15 evidence files regenerated in-tree — the same set as round 1 — restored via git checkout -- before the receipt commit; post-restore dirt = 0)"
+    }
+  },
+  "chain": {
+    "round1_tip": "d981bc04 (wave 27a) — re-verified: mb(master, d981bc04)=6946f3b9, FF clean, scene sha e61ad386... byte-identical to round-1's",
+    "round2_finding": "THE CHAIN HAS FORKED, NOT EXTENDED. mb(wave28 0557fc99, wave28b 0759f4b2) = d981bc04 — SIBLINGS, each FF-able from d981bc04, neither containing the other. The briefing's wave-29 ab60a20b is NOT on canonical (ls-remote + local object store + 3 fetches incl. receipt time). 'One FF' is false for the family: one FF per sibling arm; the second arm is a real merge.",
+    "sibling_merge": "wave-28b onto wave-28 arm: TEXT-CLEAN (file-disjoint: 28 = gait_controller.hpp + gait_unit.cpp + 3 validation files; 28b = 5 validation files, zero engine files) and BEHAVIOR-NEUTRAL (T1 tick=298 = receipt_wave28 verbatim; 28b's receipts were anchored to d981bc04 — the semantic risk retired by measurement)",
+    "wave18_note": "carried from round 1: 17936d83 remains a superseded sibling off-chain",
+    "commits_brought_total": 104,
+    "files_vs_master": "497 files changed, 2485996 insertions(+), 656 deletions(-) (data lanes dominate the insertions)"
+  },
+  "steps": [
+    {"n": 1,  "what": "walk chain waves 12-27a", "tip": "d981bc04", "merge_commit": "fast-forward", "result": "CLEAN FF", "round1_reverified": true},
+    {"n": 2,  "what": "wave-28 hind-step (chain extension, sibling arm A)", "tip": "0557fc99", "merge_commit": "fast-forward", "result": "CLEAN FF"},
+    {"n": "2.5", "what": "bank the Rule-0 preregistration (tmp-prereg-bank c1a0def6)", "tip": "c1a0def6", "merge_commit": "20a0ed24", "result": "CLEAN (procedure: a pre-chain commit would break the FF; prereg banked immediately after the FFs, before any conflict-bearing merge)"},
+    {"n": 3,  "what": "wave-28b load-share (sibling arm B)", "tip": "0759f4b2", "merge_commit": "6c8d9666", "result": "CLEAN", "predicted": "CLEAN (file-disjoint siblings)"},
+    {"n": 4,  "what": "matter B (contains matter A 2d585c7b)", "tip": "53affb9c", "merge_commit": "2150f7fd", "result": "CONFLICT", "conflicts": [".gitattributes"], "resolution": "union: master blanket 'tools/science_funnel/data/** -text' first, then 'tools/science_funnel/data/morphosource_ct/** -text -whitespace' (last-match-wins) — round-1's exact resolution, re-fires because matter B CONTAINS matter A"},
+    {"n": 5,  "what": "reality gate", "tip": "4d1c0ffa", "merge_commit": "f6dbb434", "result": "CLEAN"},
+    {"n": 6,  "what": "visual repair (triangle monkey grid)", "tip": "1b08b29d", "merge_commit": "263952f3", "result": "CLEAN"},
+    {"n": 7,  "what": "engine determinism", "tip": "ee2dec83", "merge_commit": "3b3d386f", "result": "CONFLICTS", "conflicts": ["tools/science_funnel/ct_skeleton_layer.py (add/add)", "tools/science_funnel/skeleton_movie.py (add/add)"], "resolution": "identical to round 1: ct_skeleton_layer.py THEIRS (engdet strict superset; SEAT_HEIGHT_M presence verified in theirs); skeleton_movie.py OURS keeps canonical path, engdet's instrument preserved verbatim as tools/science_funnel/skeleton_movie_engine_determinism.py; main.cpp auto-merged clean again"},
+    {"n": 8,  "what": "workflow MCP", "tip": "a672b16b", "merge_commit": "73b19f3c", "result": "CLEAN"},
+    {"n": 9,  "what": "workflow checklist", "tip": "e9c8b394", "merge_commit": "16bd1250", "result": "CLEAN"},
+    {"n": 10, "what": "constitution bio-laws", "tip": "c0e130c5", "merge_commit": "55c6eafb", "result": "CONFLICT", "conflicts": ["docs/THE_CHECKLIST.md (add/add)"], "resolution": "THEIRS, strict superset ('THE CONSTITUTION POINTERS' appendix verified present)"},
+    {"n": 11, "what": "WISEMAN PIN REPAIR (supersedes round-1 wiseman step; contains research memo fc45106c + wiseman aede5de9)", "tip": "68730eab", "merge_commit": "98d33a1a", "result": "CLEAN", "predicted": "CLEAN (repair branches at aede5de9; every other wiseman-family lane inherits those blobs unchanged from aede5de9, so the repair is one-sided everywhere); .gitattributes append auto-unioned (wiseman2026 class L33)"},
+    {"n": 12, "what": "quarantine forensics (supersedes round-1 adapter step; contains adapter bbbc4d67 + guimaraes 2098797b)", "tip": "72d02366", "merge_commit": "e9ea4d37", "result": "CLEAN"},
+    {"n": 13, "what": "pennation correction (sibling of 12 above guimaraes)", "tip": "37d053ac", "merge_commit": "c49090b8", "result": "CLEAN"},
+    {"n": 14, "what": "deposit-mass forensics (W1 arm tip; brings pulley 376fc92b + hind-torque b17cbf6c + ankle-arms b15ff31e + k-forensics 5a5914b3)", "tip": "5f54a161", "merge_commit": "e39cd8c0", "result": "CLEAN"},
+    {"n": 15, "what": "ankle-unblocked statics (brings measured-caps eab707f5)", "tip": "90636814", "merge_commit": "f3ea8126", "result": "CLEAN"},
+    {"n": 16, "what": "record-movie + legibility chain (brings skeleton-movie ef02772d + walk-movie prestage 6ff615d3)", "tip": "0d78e6d6", "merge_commit": "40ee56c9", "result": "CLEAN", "predicted": "CLEAN (ancestor containment: engine-side content already in via visual/MCP; own delta = walk_movie.py + native/ snapshots + validation records; engdet instrument files one-sided-ours vs base a672b16b)"},
+    {"n": 17, "what": "visible-monkey intake prestage (brings arm-architecture research memo 77f3d279 — the only Vanhoof content)", "tip": "ebbe814d", "merge_commit": "c19af0f4", "result": "CONFLICT (watched)", "conflicts": [".gitattributes"], "resolution": "union fallback as pre-registered: ours kept, VM's visible_monkey class appended after (adjacent-EOF hunk collision: ours blanket+morphosource_ct vs theirs visible_monkey over 32105f18 base)"},
+    {"n": 18, "what": "P6 re-preregistration (brings axial-adjacency 3539fdb9 + hip-bond 1dc38688 + articulation-semantics 7b752929 + hip-pivot 427e9d07; base = matter A via matter B)", "tip": "13d7c31e", "merge_commit": "cd2ba6ed", "result": "CLEAN"},
+    {"n": 19, "what": "tarsal-cycle pivots (one commit atop P6)", "tip": "cf1857c2", "merge_commit": "d03731d8", "result": "CLEAN"},
+    {"n": 20, "what": "JOINT-CLASS RECORDS — LANDED ON CANONICAL MID-REHEARSAL (the round-1 'moving family' pattern again; contains tarsal entirely)", "tip": "52f101c1", "merge_commit": "282a2318", "result": "CLEAN", "delta": "M matter_skeleton/infant_skeleton.body.json (the joint_class amendment, 23 bonds) + validation/joint_class_records_20260921/ (6 files)"}
+  ],
+  "superseded_round1_steps": "research memo fc45106c (ancestor of steps 11-17), wiseman aede5de9 (ancestor of 11), adapter bbbc4d67 (ancestor of 12/13) — brought by descendants; round-1 steps 9-11 collapse into round-2 steps 11-13",
+  "missing_lanes": [
+    {"name": "wave-29", "briefing_hash": "ab60a20b", "status": "MISSING from canonical at 3+ checks (fresh clone, two fetch --prune passes, receipt-time fetch). NOT merged, NOT guessed. The wave-28b sibling and the 28/28b fork are what actually exists.", "nearest_measured": "wave-28b 0759f4b2 receipts anchor to d981bc04; wave-28 0557fc99 receipt_wave28 banks the current refusal"},
+    {"name": "row-readmission", "status": "MISSING (no ref, no commit). Nearest measured: quarantine-forensics 72d02366 diagnoses six law-failing macaque rows READ-ONLY, 2 RECOVERABLE — the pre-readmission diagnosis; NO readmission performed. (The only 'row' ref on canonical is an unrelated astra task branch.)"},
+    {"name": "Vanhoof prestage", "status": "MISSING (no ref). The only Vanhoof content = the citation (Vanhoof 2020/2021 J Anat forearm/hand, Vereecke lab) inside research memo 77f3d279 (arm-architecture options), which is an ANCESTOR of the VM lane — brought by step 17."},
+    {"name": "joint-class records", "status": "WAS missing at prereg time; LANDED MID-REHEARSAL as agent/joint-class-records-20260921 (52f101c1) and was MERGED (step 20). The briefing's conditional ('when landed') fired."}
+  ],
+  "tests": {
+    "T1_after_step3_gait_unit": {"build": "OK (MSVC Release)", "exit": 0, "scene_sha256": "e61ad3864472453f2b2a77a71ca0579f1b78e905b2495f581a9f87f27502333c (IDENTICAL to round-1's chain scene)", "refusal": "tick=298 refusal=gait_contact_impact_gain — EXACTLY receipt_wave28's banked state ('THE LADDER ADVANCED 176 TICKS' from wave-27's 122)", "red_falsifiers_counter": 26, "pass": false, "note": "pass=false is the honest carried wave-28 state, reproduced not introduced"},
+    "T2_after_step13_wiseman": {"command": "python -B -m pytest tools/science_funnel/tests/test_wiseman_osim.py -q", "result": "12 passed in 288.55s", "round1_state": "12 ERROR (setUpClass, source_pin_drift)", "tree_dirt_after": 0, "verdict": "ROUND-1 RISK #1 (broken wiseman pins on fresh clones) IS RESOLVED BY THE PIN-REPAIR LANE AND SURVIVES INTEGRATION"},
+    "T3_final_gait_unit": {"rebuild": "OK", "exit": 0, "refusal": "tick=298 refusal=gait_contact_impact_gain", "output_identity": "sorted-line diff of full run output vs T1: EMPTY — no lane in steps 4-20 moved the walk membrane"},
+    "T3_creature_graph": "19 passed, 27 subtests passed (same as round-1 final)",
+    "T3_engine_build": "chimera_engine.exe LINKS, exit 0 (only LNK4315 FASTLINK warning — same profile as round 1); covers visual engine.cpp/hpp + engdet main.cpp/sort.comp + record-movie-era state coexisting",
+    "science_funnel_root": {
+      "command": "python -B -m pytest tools/science_funnel -q --tb=no (ONCE, at the final committed state per F5)",
+      "result": "32 failed, 483 passed, 1 skipped, 16 errors, 16 subtests passed in 2431.14s (0:40:31)",
+      "delta_vs_round1_final": "passed 352 -> 483 (+131: the new lanes' batteries), errors 28 -> 16 (-12 = the wiseman ERRORs, now passing at suite level too), failed 20 -> 32 (+11 new-lane tests, +1 capture-class)",
+      "errors_16": "EXACTLY round-1's pre-existing class: 7 test_force_arm + 9 test_force_compiler (environment/byte-replay class, unchanged count from round 1)",
+      "failed_decomposition": {
+        "pre_lane_class_21": "test_coupled_scene 5, test_batch_paper 4, test_earth_scene 2, test_coupled_arm7 2, test_visual_proof 1 + test_visual_proof_wave2 2, test_macaque_scene 1, test_macaque_anatomy 1, test_funnels 1, test_batch_appearance 1, test_workflow_commands 1 (the round-1-era baseline class; round-1's full list was capture-truncated, counts consistent)",
+        "new_lane_failures_11": {
+          "hygiene_class_6": "ankle_arms test_20, ankle_unblocked test_13, measured_caps test_14, hind_torque test_17, k_forensics no_source_changes, deposit_mass no_source_changes — all 'git status clean / no source changes outside the lane dir' assertions; they caught the SUITE ITSELF regenerating the 15 visual_proof evidence files mid-run (verified by single-test rerun: the dirty list was exactly the visual_proof set + this rehearsal's untracked receipt files). Lane-relative hygiene tests cannot pass once the funnel suite has run in the same tree: a SECOND detector for round-1 risk #2.",
+          "pin_drift_class_5": "k_forensics inputs_match_receipt_pins + determinism_two_runs + subprocess_reproducible, deposit_mass determinism_inprocess + subprocess_reproducible — ROOT CAUSE MEASURED: k_forensics' receipt pinned tools/science_funnel/data/wiseman2026/sha256_manifest.json and inventory.json at their PRE-REPAIR bytes; the wiseman PIN-REPAIR lane (step 11) legitimately rewrote exactly those two files. Git-merge CLEAN (one-sided lineage), funnel LOUDLY REFUSES the load ('pinned input sha mismatch'), tests fail. THE MODEL/SI/LITERATURE PINS ALL HOLD (Macaque_model.osim OK) — the verdicts stand on their evidence; only the two bookkeeping-file pins are stale. INTEGRATOR ACTION REQUIRED: re-pin k_forensics' (and deposit-mass' transitive) receipt entries for sha256_manifest.json + inventory.json to the repaired bytes, or re-record those receipts — a text-clean semantic amendment no merge tool will surface."
+        }
+      },
+      "f5_evidence_mutation": "15 files regenerated in-tree by the suite (6 visual_proof_20260917 + 9 visual_proof_wave2_20260918 — the SAME 15-file set as round 1); git checkout -- restored; tree clean 0 after. Round-1 risk #2 RE-MEASURED, STILL LIVE."
+    }
+  },
+  "top_risks": [
+    {"rank": 1, "risk": "NEW THIS ROUND — REPAIR LANES SILENTLY INVALIDATE DOWNSTREAM RECEIPT PINS: TEXT-CLEAN, GIT-INVISIBLE, ONLY THE RECEIPTS' OWN HASH CHECKS CATCH IT.", "evidence": "The wiseman pin repair (step 11) merges one-sided-clean over every wiseman-family lane, but k_forensics' receipt pinned sha256_manifest.json + inventory.json at their PRE-repair bytes — post-merge the funnel loudly refuses ('pinned input sha mismatch') and 5 k_forensics/deposit_mass tests fail. The model/SI/literature pins all hold; the two stale bookkeeping pins need a receipt re-record. Every future repair/amendment lane can do this to any lane that pinned its outputs. Pre-integration checklist item: after any repair lane, grep downstream receipts for pins on the repaired paths."},
+    {"rank": 2, "risk": "THE WALK CHAIN IS NO LONGER A LINE — IT IS A FORK WITH A MISSING HEAD.", "evidence": "mb(28 0557fc99, 28b 0759f4b2) = d981bc04: siblings. Wave-29 ab60a20b (the briefing's 'chain tip') is absent from canonical. An integrator who merges 'the chain tip' by name picks ONE sibling and silently drops the other's records. The sibling merge is text-clean (file-disjoint) so NOTHING will flag it — only a gait_unit run shows both arms coexist correctly (measured: tick=298 before and after). Future waves may root on either arm; the family needs a declared integration tip before the next rehearsal."},
+    {"rank": 3, "risk": ".gitattributes IS NOW A FOUR-CLASS UNION ASSEMBLED ACROSS FOUR MERGES — A RECURRING CONFLICT MAGNET.", "evidence": "master blanket + morphosource_ct (step 4, CONFLICT) + wiseman2026 (step 11, auto) + visible_monkey (step 17, CONFLICT). Every data lane appends a class rule at the same EOF region over the shared 32105f18 base; adjacent hunks collide (fired 2 of 4 times). Resolution is always union with specific classes AFTER the blanket (last-match-wins) — but an integrator without that rule will silently DROP a class and re-break pinning for that dataset (round-1 risk #1 was exactly a pinning break)."},
+    {"rank": 4, "risk": "THE 'INDEPENDENT LANES' MODEL IS WRONG — THE NEW LANES ARE A STACKED DAG, AND THE FAMILY STILL MOVES UNDER THE PLAN (round-1 risk #3, re-confirmed).", "evidence": "The six statics/forensics 'lanes' are two arms over a shared wiseman spine (W1: spine -> ankle-arms -> k-forensics -> deposit-mass; spine -> measured-caps -> ankle-unblocked; W2: adapter -> guimaraes -> {quarantine-forensics, pennation}), plus the pin-repair branching at the trunk, plus P6 -> tarsal -> joint-class stacked — and joint-class LANDED on canonical mid-rehearsal (as wiseman/adapter did in round 1). Tips must be pinned by hash at integration time; this receipt's are."},
+    {"rank": 5, "risk": "CARRIED FROM ROUND 1, STILL LIVE: (a) the suite mutates 15 committed evidence files in-tree every run — now ALSO caught by the new lanes' own hygiene tests (6 of the 11 new failures), so an integrator running the suite pre-commit contaminates AND trips lane boundaries; (b) the skeleton_movie.py dual-path split (canonical + skeleton_movie_engine_determinism.py) still needs the integrator's ratification or a re-base of engdet's instrument."}
+  ],
+  "recommended_sequence": "FF chain arm 0557fc99 (wave-28) -> merge sibling 0759f4b2 (wave-28b) -> matter B 53affb9c (union .gitattributes) -> reality gate 4d1c0ffa -> visual 1b08b29d -> engdet ee2dec83 (2 conflicts, round-1 resolutions) -> MCP a672b16b -> checklist e9c8b394 -> constitution c0e130c5 (take-theirs) -> wiseman-pin-repair 68730eab -> quarantine-forensics 72d02366 -> pennation 37d053ac -> deposit-mass 5f54a161 -> ankle-unblocked 90636814 -> record-movie 0d78e6d6 -> VM ebbe814d (union .gitattributes) -> P6 13d7c31e -> tarsal cf1857c2 -> joint-class 52f101c1 — 20 steps, 4 conflicts, all pre-registered or watched.",
+  "receipt_files": [
+    "tools/agent_fleet/validation/integration_rehearsal2_20260921/RULE0_PREREGISTRATION.md",
+    "tools/agent_fleet/validation/integration_rehearsal2_20260921/receipt.json",
+    "tools/agent_fleet/validation/integration_rehearsal2_20260921/merge_log.txt"
+  ],
+  "commit_trailer": "Agent: GLM 5.3"
+}
