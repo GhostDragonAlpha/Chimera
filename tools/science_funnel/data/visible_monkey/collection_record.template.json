@@ -1,0 +1,28 @@
+{
+  "_comment": "chimera.visible_monkey.collection_record.v1 -- THE STAGE GATE. adult is admitted ONLY with age evidence (age_months + age_source) from the collection/publication record; unlabeled = unadmitted. Fill from the landed data's own records, never from memory.",
+
+  "schema": "chimera.visible_monkey.collection_record.v1",
+
+  "species": "Macaca mulatta",
+  "specimen": "the Visible Monkey cadaver (Chung et al. 2019)",
+  "sex": "female",
+
+  "age_months": 93,
+  "age_source": "Chung et al. 2019, J Korean Med Sci 34:e70 (PMCID PMC6393759): whole-body cadaver of a 93-month (7.75 y) female rhesus -- adult-confirmed at source",
+  "life_stage": "adult",
+
+  "body_mass_kg": 4.3,
+  "body_length_mm": 758,
+  "body_mass_source": "Chung et al. 2019 (same record): 4.3 kg, 758 mm",
+
+  "provenance": "serial sectioned images (0.05 mm head / 0.5 mm body; 2,967 sections) + paired 3T T1/T2 MRI + CT; segmented 167-structure STL set per Kim et al. 2020 (PMCID PMC7167398, Mimics 17.01). Acquired by operator request/certification (ETRI); see license/record in the data root.",
+
+  "license": {
+    "articles": "CC BY-NC 4.0 (both papers)",
+    "dataset": "UNSTATED at source -- RECORD THE WRITTEN TERMS that arrive with the data here; the RUNBOOK's LICENSE gate is the operator's call",
+    "certification": "ETRI user certification (Kim et al. 2020 download terms)",
+    "commercial_use": "NOT PERMITTED unless the operator's recorded written terms say otherwise"
+  },
+
+  "coordinate_frame": "mm, the STL set's own Mimics export frame; the translator applies NO transform (scale 1.0)"
+}

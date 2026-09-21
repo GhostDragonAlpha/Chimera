@@ -44,3 +44,6 @@ tools/science_funnel/data/** -text
 
 # MorphoSource CT captures (bones + receipts) retain upstream bytes for checksum replay.
 tools/science_funnel/data/morphosource_ct/** -text -whitespace
+
+# Visible Monkey intake contracts: byte-stable specs (the CRLF lesson).
+tools/science_funnel/data/visible_monkey/** -text -whitespace
