@@ -1,0 +1,102 @@
+{
+ "checks": {
+  "a5_refusal_class_present_and_named": true,
+  "all_23_bonds_classed": true,
+  "all_25_vertex_books_match_committed_tris_bins": true,
+  "all_citations_green": true,
+  "applied_equals_banked_prereg_table": true,
+  "citations": {
+   "elbows_vs_monkeyarm": true,
+   "hip_rajagopal_per_axis_context_in_source_string": true,
+   "hips_vs_gait2392_three_coordinates": true,
+   "knees_vs_gait2392": true,
+   "osim_sha256_pins": true,
+   "positional_contacts_no_joint_no_number": true,
+   "radioulnar_vs_monkeyarm": true,
+   "subtalar_band_is_the_registered_symmetric_band": true,
+   "syndesmosis_cited_absence_no_number": true,
+   "tarsal_adjacent_ankle_record_in_source_string": true,
+   "tarsal_class_vs_rajagopal_subtalar": true
+  },
+  "class_counts_exact": true,
+  "committed_batteries_green_with_records_present": true,
+  "dof_census_3x2_1x15_0x6": true,
+  "geometry_is_the_rest_state_theta0_A1": true,
+  "kernel_gates_green": true,
+  "pre_existing_bond_fields_byte_identical": true,
+  "preregistration_bank_matches_file": true,
+  "range_shapes_match_dof": true,
+  "validator_parses_with_records_present": true
+ },
+ "definition_sha256_amended": "db412e0c8debd45750b1cc06e13c50e08367ac94d434fe3be5be7f8dd5f1fbfe",
+ "definition_sha256_pre_amendment_banked": "95ddd2802d811f852cb842cfdcda4c1b6b4cc4160151589ec73c38e03d0b6a6c",
+ "falsifiers_fired": [],
+ "gates": {
+  "test_definition": {
+   "returncode": 0,
+   "tail": " | OK"
+  },
+  "test_glue": {
+   "returncode": 0,
+   "tail": " | OK"
+  },
+  "training_gate": {
+   "pass_line": true,
+   "returncode": 0,
+   "tail": " | PASS -- every target is Froude-consistent with the world this body stands in."
+  }
+ },
+ "hard_checks_pass": true,
+ "lane": "agent/joint-class-records-20260921",
+ "preregistration_bank_matches_file": true,
+ "preregistration_sha256": "24fd45c607130b40e5814029ffade453f0fce3a11505b7f33c223d28d1f75ab0",
+ "reruns": {
+  "hip_pivot_proof": {
+   "committed_bytes_restored": true,
+   "committed_sha256": "18f0ef0641cdcba610bb0a67109540220cfb3400bdff1eee2ae6451fb7d81c16",
+   "diff_leaf_paths": [
+    "/inputs/definition_sha256",
+    "/untouched/after/tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json",
+    "/untouched/before/tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json"
+   ],
+   "diff_only_predicted_echoes": true,
+   "hard_checks_pass_regenerated": true,
+   "regenerated_differs": true,
+   "returncode": 0,
+   "script": "hip_pivot_proof.py",
+   "verdict_leaves_identical": true
+  },
+  "p6_contrast": {
+   "committed_bytes_restored": true,
+   "committed_sha256": "6fa98112d716c9678fa69ae289ec239982db6236bb1fb9151ed5f8c280f40623",
+   "diff_leaf_paths": [
+    "/inputs/definition_sha256",
+    "/untouched/after/tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json",
+    "/untouched/before/tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json"
+   ],
+   "diff_only_predicted_echoes": true,
+   "hard_checks_pass_regenerated": true,
+   "regenerated_differs": true,
+   "returncode": 0,
+   "script": "p6_contrast.py",
+   "verdict_leaves_identical": true
+  },
+  "tarsal_cycle_battery": {
+   "committed_bytes_restored": true,
+   "committed_sha256": "c344173cfca3ee85470a087bf7169bdc9d4f2c8bff95320521acca0099824656",
+   "diff_leaf_paths": [
+    "/inputs/definition_sha256",
+    "/untouched/after/tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json",
+    "/untouched/before/tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json"
+   ],
+   "diff_only_predicted_echoes": true,
+   "hard_checks_pass_regenerated": true,
+   "regenerated_differs": true,
+   "returncode": 0,
+   "script": "tarsal_cycle_battery.py",
+   "verdict_leaves_identical": true
+  }
+ },
+ "schema": "chimera.matter_lane_battery.v1",
+ "title": "THE CLASS RECORDS: the joint_class amendment measured against its banked preregistration and the committed batteries"
+}
