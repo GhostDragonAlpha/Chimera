@@ -1,0 +1,1691 @@
+{
+ "branch": "agent/measured-caps-collocation-20260921",
+ "cap_sets_used": {
+  "D": {
+   "ankle_d": 1.251106,
+   "ankle_p": 6.247077,
+   "hip": 11.218250000000001,
+   "knee": 9.576795,
+   "mp": 1.657925,
+   "posture": 11.2125,
+   "provenance": "knee/mp hind book V1_S1; ankle plantar/dorsal ankle book V1_S1 (sign-gated); hip/posture HELD at the instrument's constants (the posture drive borrows the hip cap)"
+  },
+  "S2": {
+   "ankle_d": 0.149825,
+   "ankle_p": 0.748112,
+   "hip": 11.218250000000001,
+   "knee": 1.146859,
+   "mp": 0.198543,
+   "posture": 11.2125,
+   "provenance": "the k-gated inversion bracket (k = 0.11975394)"
+  }
+ },
+ "collocation_runs": {
+  "D": {
+   "runs": [
+    {
+     "max_required_posture_Nm": 10.09125,
+     "message": "Optimization terminated successfully",
+     "objective": 0.995727999,
+     "posture_constraint_holds": true,
+     "posture_constraint_limit_Nm": 10.09125,
+     "start": "warm_banked_optimum",
+     "success": true,
+     "theta_dot_rad_s": [
+      0.751868388,
+      1.691009036,
+      2.286733199,
+      2.846952762,
+      2.806277234,
+      1.980696309,
+      1.577896238,
+      1.486456459,
+      0.861224213,
+      0.577971198,
+      -0.166486707,
+      -0.492671554,
+      -1.198435286,
+      -1.410306611,
+      -2.044516656,
+      -3.12721808,
+      -2.904414228,
+      -2.55820693,
+      -1.814212823,
+      -1.074950457,
+      -0.075665705
+     ],
+     "theta_rad": [
+      -0.072519571,
+      -0.029158497,
+      0.041446427,
+      0.132569353,
+      0.232914186,
+      0.317882966,
+      0.381047984,
+      0.435440244,
+      0.477111576,
+      0.502657295,
+      0.509961144,
+      0.498261085,
+      0.468243939,
+      0.42193877,
+      0.360615657,
+      0.268817366,
+      0.161755892,
+      0.064794367,
+      -0.012816084,
+      -0.064098732,
+      -0.084522169
+     ],
+     "wall_binder": "ankle",
+     "wall_max_combined": 1.157111501,
+     "wall_node_phi": 0.5,
+     "wall_terms": {
+      "ankle": 1.157111501,
+      "hip": 0.463263126,
+      "knee": 0.126389286,
+      "mp": 0.002614258,
+      "posture": 0.9
+     }
+    },
+    {
+     "max_required_posture_Nm": 10.09125,
+     "message": "Optimization terminated successfully",
+     "objective": 0.996823827,
+     "posture_constraint_holds": true,
+     "posture_constraint_limit_Nm": 10.09125,
+     "start": "fresh_zero",
+     "success": true,
+     "theta_dot_rad_s": [
+      -0.027825667,
+      2.471241674,
+      1.506987389,
+      3.627089943,
+      1.420917583,
+      1.178752507,
+      1.197789358,
+      1.019247863,
+      0.881987519,
+      0.542586994,
+      0.282430109,
+      -0.136308645,
+      -0.422047309,
+      -0.815932536,
+      -1.172997438,
+      -3.907243792,
+      -2.124418525,
+      -3.338071975,
+      -1.034066105,
+      -1.854689369,
+      0.704570423
+     ],
+     "theta_rad": [
+      -0.072518878,
+      -0.029148244,
+      0.041465322,
+      0.132595195,
+      0.222197329,
+      0.268341473,
+      0.310525091,
+      0.349877501,
+      0.383624429,
+      0.408910627,
+      0.423554681,
+      0.426148337,
+      0.416237518,
+      0.394263376,
+      0.358959869,
+      0.268785587,
+      0.161723581,
+      0.064764375,
+      -0.012841076,
+      -0.064116486,
+      -0.084531097
+     ],
+     "wall_binder": "ankle",
+     "wall_max_combined": 1.155776474,
+     "wall_node_phi": 0.45,
+     "wall_terms": {
+      "ankle": 1.155776474,
+      "hip": 0.39710159,
+      "knee": 0.159282508,
+      "mp": 0.002647287,
+      "posture": 0.9
+     }
+    },
+    {
+     "max_required_posture_Nm": 10.09125,
+     "message": "Optimization terminated successfully",
+     "objective": 0.998709163,
+     "posture_constraint_holds": true,
+     "posture_constraint_limit_Nm": 10.09125,
+     "start": "fresh_wave8",
+     "success": true,
+     "theta_dot_rad_s": [
+      1.219525553,
+      1.080591699,
+      2.362826547,
+      -0.025401116,
+      0.670662344,
+      -1.152223912,
+      -0.19190405,
+      -0.024603143,
+      0.99142342,
+      1.073609673,
+      1.901263557,
+      1.705085938,
+      2.200627201,
+      0.534230293,
+      -0.792617166,
+      -2.438098167,
+      -3.394915156,
+      -2.042596748,
+      -2.398620257,
+      -0.593713714,
+      -0.685152795
+     ],
+     "theta_rad": [
+      -0.072334632,
+      -0.031507551,
+      0.029613123,
+      0.071102424,
+      0.082555811,
+      0.074008093,
+      0.050149822,
+      0.046306819,
+      0.063467879,
+      0.100122217,
+      0.152926217,
+      0.21693892,
+      0.286265328,
+      0.334809049,
+      0.330222682,
+      0.272877485,
+      0.169341498,
+      0.072825662,
+      -0.00600594,
+      -0.059119868,
+      -0.081819748
+     ],
+     "wall_binder": "ankle",
+     "wall_max_combined": 1.157054604,
+     "wall_node_phi": 0.3,
+     "wall_terms": {
+      "ankle": 1.157054604,
+      "hip": 0.295890019,
+      "knee": 0.292620323,
+      "mp": 0.002791674,
+      "posture": 0.9
+     }
+    }
+   ],
+   "tag": "D_measured"
+  },
+  "S2": {
+   "runs": [
+    {
+     "max_required_posture_Nm": 10.09125,
+     "message": "Optimization terminated successfully",
+     "objective": 7.942975763,
+     "posture_constraint_holds": true,
+     "posture_constraint_limit_Nm": 10.09125,
+     "start": "warm_banked_optimum",
+     "success": true,
+     "theta_dot_rad_s": [
+      -0.786294819,
+      -1.552633859,
+      -0.598782778,
+      -2.402642201,
+      -1.680445262,
+      -1.440715364,
+      -0.428471224,
+      0.004056581,
+      1.091215484,
+      1.427588601,
+      2.285473612,
+      2.276049521,
+      2.715375254,
+      2.248036508,
+      0.156109258,
+      0.630438357,
+      -0.561925918,
+      -0.068590428,
+      -1.179244824,
+      -0.583737289,
+      -1.55085921
+     ],
+     "theta_rad": [
+      0.281140672,
+      0.239624688,
+      0.201437042,
+      0.148161749,
+      0.075686947,
+      0.020286345,
+      -0.012891716,
+      -0.020425076,
+      -0.000983997,
+      0.043724775,
+      0.10963163,
+      0.190598665,
+      0.279196455,
+      0.367297014,
+      0.409970601,
+      0.423931821,
+      0.425147917,
+      0.413956252,
+      0.391807176,
+      0.360514244,
+      0.322625156
+     ],
+     "wall_binder": "ankle",
+     "wall_max_combined": 9.642983106,
+     "wall_node_phi": 0.8,
+     "wall_terms": {
+      "ankle": 9.642983106,
+      "hip": 0.936647728,
+      "knee": 0.482219626,
+      "mp": 0.013031572,
+      "posture": 0.9
+     }
+    },
+    {
+     "max_required_posture_Nm": 10.09125,
+     "message": "Optimization terminated successfully",
+     "objective": 7.939474818,
+     "posture_constraint_holds": true,
+     "posture_constraint_limit_Nm": 10.09125,
+     "start": "fresh_zero",
+     "success": true,
+     "theta_dot_rad_s": [
+      -1.343461566,
+      -0.996372882,
+      -1.156011259,
+      -0.642414461,
+      -2.275973758,
+      -0.186021168,
+      -1.294162083,
+      0.953739068,
+      -0.087583151,
+      2.084237006,
+      0.86059794,
+      2.756458998,
+      1.199326474,
+      2.728446006,
+      0.713241614,
+      0.073997082,
+      -0.005005059,
+      -0.625282625,
+      -0.622596232,
+      -1.140701041,
+      -0.994458904
+     ],
+     "theta_rad": [
+      0.281169303,
+      0.239637241,
+      0.201432423,
+      0.169510366,
+      0.117708975,
+      0.074008565,
+      0.047735313,
+      0.041692804,
+      0.057067072,
+      0.092507677,
+      0.144778498,
+      0.208981258,
+      0.279196451,
+      0.348914412,
+      0.410004367,
+      0.423977854,
+      0.425202463,
+      0.414014856,
+      0.391865006,
+      0.36056648,
+      0.322667391
+     ],
+     "wall_binder": "ankle",
+     "wall_max_combined": 9.66165239,
+     "wall_node_phi": 0.3,
+     "wall_terms": {
+      "ankle": 9.66165239,
+      "hip": 0.289806003,
+      "knee": 2.473974002,
+      "mp": 0.023314371,
+      "posture": 0.9
+     }
+    },
+    {
+     "max_required_posture_Nm": 10.09125,
+     "message": "Optimization terminated successfully",
+     "objective": 7.939475625,
+     "posture_constraint_holds": true,
+     "posture_constraint_limit_Nm": 10.09125,
+     "start": "fresh_wave8",
+     "success": true,
+     "theta_dot_rad_s": [
+      -1.343160091,
+      -0.996617048,
+      -1.155727604,
+      -0.642680056,
+      -2.275969891,
+      -0.186025018,
+      -1.294158215,
+      0.953735219,
+      -0.087579284,
+      2.084233153,
+      0.860601803,
+      2.75645514,
+      1.199330332,
+      2.728442143,
+      0.712978009,
+      0.074282046,
+      -0.005248598,
+      -0.624980952,
+      -0.622827691,
+      -1.140393011,
+      -0.994690387
+     ],
+     "theta_rad": [
+      0.281171909,
+      0.239640865,
+      0.201436747,
+      0.169515011,
+      0.117708974,
+      0.074008565,
+      0.047735312,
+      0.041692804,
+      0.057067072,
+      0.092507678,
+      0.144778499,
+      0.20898126,
+      0.279196452,
+      0.348914413,
+      0.409999621,
+      0.423973487,
+      0.42519883,
+      0.414012256,
+      0.391863652,
+      0.360566485,
+      0.322668755
+     ],
+     "wall_binder": "ankle",
+     "wall_max_combined": 9.66165239,
+     "wall_node_phi": 0.3,
+     "wall_terms": {
+      "ankle": 9.66165239,
+      "hip": 0.289806003,
+      "knee": 2.473974003,
+      "mp": 0.023314371,
+      "posture": 0.9
+     }
+    }
+   ],
+   "tag": "S2_si_matched_gate"
+  }
+ },
+ "derived_from_commit": "906368142212a5ff18b13bf4b0e5088e36a1a81d",
+ "environment": {
+  "numpy": "2.2.6",
+  "platform": "win32",
+  "python": "3.14.3",
+  "scipy": "1.17.0"
+ },
+ "inputs": {
+  "ankle_arms_book": {
+   "expected": "7ce03069c1e033b52db0fb315d218eb2223e79a67a9018123da206d68adcb6f6",
+   "path": "tools\\science_funnel\\validation\\rehearing_20260921\\inputs\\ankle_arms_book.json",
+   "sha256": "7ce03069c1e033b52db0fb315d218eb2223e79a67a9018123da206d68adcb6f6"
+  },
+  "ankle_lane_committed_deliverable": {
+   "expected": "31c6e3fb717c310086e0bf023b8b45f6cf2335692e15e9794eaa325f402184ea",
+   "path": "tools\\science_funnel\\validation\\rehearing_20260921\\inputs\\ankle_lane_committed_deliverable.json",
+   "sha256": "31c6e3fb717c310086e0bf023b8b45f6cf2335692e15e9794eaa325f402184ea"
+  },
+  "derived_numbers": {
+   "expected": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+   "path": "tools\\science_funnel\\validation\\rehearing_20260921\\inputs\\run_env\\tools\\science_funnel\\validation\\gait_controller_20260918\\derived_numbers.json",
+   "sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173"
+  },
+  "hind_torque_book": {
+   "expected": "9fc5c0ba09f6ec183d5348bb21cc5dc18b5987240406ccdcdbb34e514e26f01c",
+   "path": "tools\\science_funnel\\validation\\hind_torque_book_20260921\\hind_torque_book.json",
+   "sha256": "9fc5c0ba09f6ec183d5348bb21cc5dc18b5987240406ccdcdbb34e514e26f01c"
+  },
+  "receipt": {
+   "path": "tools\\science_funnel\\validation\\rehearing_20260921\\receipt.json"
+  },
+  "statics_lane_committed_deliverable": {
+   "expected": "21d3dbbe2a477d67f7d7d5572f0171cd0c2e8cfe34a6cd1770ccd81abf06908a",
+   "path": "tools\\science_funnel\\validation\\rehearing_20260921\\inputs\\statics_lane_committed_deliverable.json",
+   "sha256": "21d3dbbe2a477d67f7d7d5572f0171cd0c2e8cfe34a6cd1770ccd81abf06908a"
+  },
+  "wave10_deliverable": {
+   "expected": "e922153318778e4cd8c1891f59454261c6d5be0a77aebdc5f78d2758ccd2faa7",
+   "path": "tools\\science_funnel\\validation\\rehearing_20260921\\inputs\\vendored_gait_zero\\trunk_vault_reachable.wave10.json",
+   "sha256": "e922153318778e4cd8c1891f59454261c6d5be0a77aebdc5f78d2758ccd2faa7"
+  },
+  "wave10_generator": {
+   "expected": "0c722cffae81268c2a4933ed3f482e7af6c942afe66e35f9d6380893d1acf2a5",
+   "path": "tools\\science_funnel\\validation\\rehearing_20260921\\inputs\\run_env\\tools\\science_funnel\\validation\\gait_zero_20260919\\derive_reachable_vault.py",
+   "sha256": "0c722cffae81268c2a4933ed3f482e7af6c942afe66e35f9d6380893d1acf2a5"
+  },
+  "wave10_statics_module": {
+   "expected": "5be624d304f029d6de92559650a438bca531c30b6eaf111c1459d0e9374fac16",
+   "path": "tools\\science_funnel\\validation\\rehearing_20260921\\inputs\\run_env\\tools\\science_funnel\\validation\\gait_zero_20260919\\derive_trunk_pitch.py",
+   "sha256": "5be624d304f029d6de92559650a438bca531c30b6eaf111c1459d0e9374fac16"
+  }
+ },
+ "instrument_reproduction": {
+  "checks": {
+   "bytes_equal_to_banked": true,
+   "feasible": {
+    "banked": false,
+    "equal": true,
+    "run": false
+   },
+   "held": true,
+   "max_posture_ratio_to_cap": {
+    "band": [
+     0.89999,
+     0.90001
+    ],
+    "banked": 0.9000000000000385,
+    "in_band": true,
+    "run": 0.9000000000000385
+   },
+   "max_ratio_to_cap": {
+    "band": [
+     1.3227,
+     1.3229
+    ],
+    "banked": 1.3227763257041534,
+    "in_band": true,
+    "run": 1.3227763257041534
+   },
+   "objective": {
+    "band": [
+     0.8941,
+     0.8943
+    ],
+    "banked": 0.894190750157879,
+    "in_band": true,
+    "run": 0.894190750157879
+   },
+   "success": {
+    "banked": true,
+    "equal": true,
+    "run": true
+   },
+   "verdict_class": {
+    "banked": "INFEASIBLE",
+    "equal": true,
+    "run": "INFEASIBLE"
+   }
+  },
+  "method": "vendored derive_reachable_vault.py run UNMODIFIED (subprocess, python -B)",
+  "written_sha256": "e922153318778e4cd8c1891f59454261c6d5be0a77aebdc5f78d2758ccd2faa7"
+ },
+ "lane": "rehearing_20260921",
+ "maximin_bound": {
+  "D": {
+   "binding_node_phi": 0.4,
+   "maximin_lower_bound": 1.04250229,
+   "nodes": [
+    {
+     "argmin_theta_rad": -0.6,
+     "binder": "ankle",
+     "lb_stance_ratio": 0.937690379,
+     "phi": 0.0,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 0.937690379,
+      "hip": 0.475532268,
+      "knee": 0.815212214,
+      "mp": 0.002407852
+     }
+    },
+    {
+     "argmin_theta_rad": -0.003577665,
+     "binder": "ankle",
+     "lb_stance_ratio": 0.908586492,
+     "phi": 0.05,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 0.908586492,
+      "hip": 0.908586061,
+      "knee": 0.051602139,
+      "mp": 0.002794033
+     }
+    },
+    {
+     "argmin_theta_rad": 0.108451564,
+     "binder": "ankle",
+     "lb_stance_ratio": 0.878656083,
+     "phi": 0.1,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 0.878656083,
+      "hip": 0.878655409,
+      "knee": 0.194149678,
+      "mp": 0.002786576
+     }
+    },
+    {
+     "argmin_theta_rad": 0.241185888,
+     "binder": "ankle",
+     "lb_stance_ratio": 0.869469929,
+     "phi": 0.15,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 0.869469929,
+      "hip": 0.869469837,
+      "knee": 0.261081166,
+      "mp": 0.002723978
+     }
+    },
+    {
+     "argmin_theta_rad": 0.35805118,
+     "binder": "ankle",
+     "lb_stance_ratio": 0.869834242,
+     "phi": 0.2,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 0.869834242,
+      "hip": 0.869833488,
+      "knee": 0.275977207,
+      "mp": 0.002596987
+     }
+    },
+    {
+     "argmin_theta_rad": 0.470437626,
+     "binder": "ankle",
+     "lb_stance_ratio": 0.860899018,
+     "phi": 0.25,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 0.860899018,
+      "hip": 0.860898075,
+      "knee": 0.274104764,
+      "mp": 0.002470018
+     }
+    },
+    {
+     "argmin_theta_rad": -0.465884152,
+     "binder": "ankle",
+     "lb_stance_ratio": 1.000169504,
+     "phi": 0.3,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 1.000169504,
+      "hip": 0.985807558,
+      "knee": 1.000169472,
+      "mp": 0.002493819
+     }
+    },
+    {
+     "argmin_theta_rad": -0.394163968,
+     "binder": "ankle",
+     "lb_stance_ratio": 1.022478641,
+     "phi": 0.35,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 1.022478641,
+      "hip": 1.022478273,
+      "knee": 0.97542934,
+      "mp": 0.002574572
+     }
+    },
+    {
+     "argmin_theta_rad": -0.262776053,
+     "binder": "hip",
+     "lb_stance_ratio": 1.04250229,
+     "phi": 0.4,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 1.042502235,
+      "hip": 1.04250229,
+      "knee": 0.940388118,
+      "mp": 0.002667285
+     }
+    },
+    {
+     "argmin_theta_rad": -0.146411553,
+     "binder": "ankle",
+     "lb_stance_ratio": 1.011818042,
+     "phi": 0.45,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 1.011818042,
+      "hip": 1.011817417,
+      "knee": 0.953200465,
+      "mp": 0.002721929
+     }
+    },
+    {
+     "argmin_theta_rad": -0.046100439,
+     "binder": "ankle",
+     "lb_stance_ratio": 0.976507303,
+     "phi": 0.5,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 0.976507303,
+      "hip": 0.976506266,
+      "knee": 0.959173479,
+      "mp": 0.002742084
+     }
+    },
+    {
+     "argmin_theta_rad": 0.102403825,
+     "binder": "ankle",
+     "lb_stance_ratio": 0.907829822,
+     "phi": 0.55,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 0.907829822,
+      "hip": 0.78440481,
+      "knee": 0.907829733,
+      "mp": 0.002775373
+     }
+    },
+    {
+     "argmin_theta_rad": 0.279196479,
+     "binder": "knee",
+     "lb_stance_ratio": 0.81931974,
+     "phi": 0.6,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 0.819319664,
+      "hip": 0.570781507,
+      "knee": 0.81931974,
+      "mp": 0.002702827
+     }
+    },
+    {
+     "argmin_theta_rad": 0.394494576,
+     "binder": "ankle",
+     "lb_stance_ratio": 0.793999278,
+     "phi": 0.65,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 0.793999278,
+      "hip": 0.405204416,
+      "knee": 0.793999101,
+      "mp": 0.002104826
+     }
+    },
+    {
+     "argmin_theta_rad": 0.410004551,
+     "binder": "ankle",
+     "lb_stance_ratio": 0.796695058,
+     "phi": 0.7,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 0.796695058,
+      "hip": 0.252414128,
+      "knee": 0.796694706,
+      "mp": 9.6998e-05
+     }
+    },
+    {
+     "argmin_theta_rad": 0.268817929,
+     "binder": "ankle",
+     "lb_stance_ratio": 0.842350157,
+     "phi": 0.75,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 0.842350157,
+      "hip": 0.205960083,
+      "knee": 0.842349497,
+      "mp": 0.000189623
+     }
+    },
+    {
+     "argmin_theta_rad": -0.12937878,
+     "binder": "ankle",
+     "lb_stance_ratio": 0.940728495,
+     "phi": 0.8,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 0.940728495,
+      "hip": 0.44661912,
+      "knee": 0.94072828,
+      "mp": 0.000105909
+     }
+    },
+    {
+     "argmin_theta_rad": -0.598152385,
+     "binder": "knee",
+     "lb_stance_ratio": 0.956097114,
+     "phi": 0.85,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 0.956097013,
+      "hip": 0.649243169,
+      "knee": 0.956097114,
+      "mp": 0.000309952
+     }
+    },
+    {
+     "argmin_theta_rad": 0.079777434,
+     "binder": "ankle",
+     "lb_stance_ratio": 0.932123051,
+     "phi": 0.9,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 0.932123051,
+      "hip": 0.932122246,
+      "knee": 0.16392098,
+      "mp": 0.002499673
+     }
+    },
+    {
+     "argmin_theta_rad": -0.057916842,
+     "binder": "ankle",
+     "lb_stance_ratio": 0.950757045,
+     "phi": 0.95,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 0.950757045,
+      "hip": 0.950756422,
+      "knee": 0.002633136,
+      "mp": 0.002619183
+     }
+    },
+    {
+     "argmin_theta_rad": -0.6,
+     "binder": "ankle",
+     "lb_stance_ratio": 0.937378152,
+     "phi": 1.0,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 0.937378152,
+      "hip": 0.478151625,
+      "knee": 0.815171424,
+      "mp": 0.002407852
+     }
+    }
+   ],
+   "over_unity_lb_phis": [
+    0.3,
+    0.35,
+    0.4,
+    0.45
+   ]
+  },
+  "S2": {
+   "binding_node_phi": 0.4,
+   "maximin_lower_bound": 8.435634783,
+   "nodes": [
+    {
+     "argmin_theta_rad": 0.317662339,
+     "binder": "ankle",
+     "lb_stance_ratio": 6.838199119,
+     "phi": 0.0,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 6.838199119,
+      "hip": 1.886787704,
+      "knee": 6.838196009,
+      "mp": 0.021628534
+     }
+    },
+    {
+     "argmin_theta_rad": 0.396449971,
+     "binder": "ankle",
+     "lb_stance_ratio": 5.721902264,
+     "phi": 0.05,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 5.721902264,
+      "hip": 1.832180535,
+      "knee": 5.721896872,
+      "mp": 0.02170839
+     }
+    },
+    {
+     "argmin_theta_rad": 0.537947328,
+     "binder": "ankle",
+     "lb_stance_ratio": 5.095703822,
+     "phi": 0.1,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 5.095703822,
+      "hip": 1.823424421,
+      "knee": 5.095697367,
+      "mp": 0.020408818
+     }
+    },
+    {
+     "argmin_theta_rad": 0.6,
+     "binder": "ankle",
+     "lb_stance_ratio": 5.417832077,
+     "phi": 0.15,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 5.417832077,
+      "hip": 1.655511855,
+      "knee": 3.493364163,
+      "mp": 0.019463986
+     }
+    },
+    {
+     "argmin_theta_rad": 0.6,
+     "binder": "ankle",
+     "lb_stance_ratio": 6.11110477,
+     "phi": 0.2,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 6.11110477,
+      "hip": 1.413875243,
+      "knee": 1.536189204,
+      "mp": 0.01898789
+     }
+    },
+    {
+     "argmin_theta_rad": 0.6,
+     "binder": "ankle",
+     "lb_stance_ratio": 6.603806447,
+     "phi": 0.25,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 6.603806447,
+      "hip": 1.162891386,
+      "knee": 0.232471918,
+      "mp": 0.019042016
+     }
+    },
+    {
+     "argmin_theta_rad": 0.6,
+     "binder": "ankle",
+     "lb_stance_ratio": 8.29277095,
+     "phi": 0.3,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 8.29277095,
+      "hip": 1.568822506,
+      "knee": 4.510721389,
+      "mp": 0.01929494
+     }
+    },
+    {
+     "argmin_theta_rad": -0.421727906,
+     "binder": "ankle",
+     "lb_stance_ratio": 8.410244685,
+     "phi": 0.35,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 8.410244685,
+      "hip": 1.086193115,
+      "knee": 8.410242484,
+      "mp": 0.021240404
+     }
+    },
+    {
+     "argmin_theta_rad": -0.32333622,
+     "binder": "ankle",
+     "lb_stance_ratio": 8.435634783,
+     "phi": 0.4,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 8.435634783,
+      "hip": 1.181763704,
+      "knee": 8.435634703,
+      "mp": 0.021810359
+     }
+    },
+    {
+     "argmin_theta_rad": -0.179044527,
+     "binder": "ankle",
+     "lb_stance_ratio": 8.291677646,
+     "phi": 0.45,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 8.291677646,
+      "hip": 1.089061195,
+      "knee": 8.291675008,
+      "mp": 0.022544453
+     }
+    },
+    {
+     "argmin_theta_rad": -0.055105476,
+     "binder": "ankle",
+     "lb_stance_ratio": 8.107264959,
+     "phi": 0.5,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 8.107264959,
+      "hip": 0.998518968,
+      "knee": 8.107260214,
+      "mp": 0.022856087
+     }
+    },
+    {
+     "argmin_theta_rad": 0.102404005,
+     "binder": "ankle",
+     "lb_stance_ratio": 7.580794868,
+     "phi": 0.55,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 7.580794868,
+      "hip": 0.784404334,
+      "knee": 7.580789462,
+      "mp": 0.023175635
+     }
+    },
+    {
+     "argmin_theta_rad": 0.279196426,
+     "binder": "knee",
+     "lb_stance_ratio": 6.841693789,
+     "phi": 0.6,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 6.841693166,
+      "hip": 0.57078166,
+      "knee": 6.841693789,
+      "mp": 0.022569844
+     }
+    },
+    {
+     "argmin_theta_rad": 0.394494526,
+     "binder": "ankle",
+     "lb_stance_ratio": 6.630256385,
+     "phi": 0.65,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 6.630256385,
+      "hip": 0.405204558,
+      "knee": 6.630254887,
+      "mp": 0.017576258
+     }
+    },
+    {
+     "argmin_theta_rad": 0.410004497,
+     "binder": "ankle",
+     "lb_stance_ratio": 6.652767349,
+     "phi": 0.7,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 6.652767349,
+      "hip": 0.252414282,
+      "knee": 6.652764488,
+      "mp": 0.000809981
+     }
+    },
+    {
+     "argmin_theta_rad": 0.26881784,
+     "binder": "ankle",
+     "lb_stance_ratio": 7.034008072,
+     "phi": 0.75,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 7.034008072,
+      "hip": 0.205960325,
+      "knee": 7.034003232,
+      "mp": 0.001583445
+     }
+    },
+    {
+     "argmin_theta_rad": -0.129378851,
+     "binder": "ankle",
+     "lb_stance_ratio": 7.855512334,
+     "phi": 0.8,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 7.855512334,
+      "hip": 0.446619297,
+      "knee": 7.855510435,
+      "mp": 0.000884388
+     }
+    },
+    {
+     "argmin_theta_rad": 0.6,
+     "binder": "ankle",
+     "lb_stance_ratio": 7.979392298,
+     "phi": 0.85,
+     "sign_class": "plantar",
+     "terms": {
+      "ankle": 7.979392298,
+      "hip": 2.08234362,
+      "knee": 7.615168499,
+      "mp": 0.022544722
+     }
+    },
+    {
+     "argmin_theta_rad": 0.541850504,
+     "binder": "ankle",
+     "lb_stance_ratio": 5.751313422,
+     "phi": 0.9,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 5.751313422,
+      "hip": 1.909729038,
+      "knee": 5.751311529,
+      "mp": 0.023338197
+     }
+    },
+    {
+     "argmin_theta_rad": 0.360566136,
+     "binder": "ankle",
+     "lb_stance_ratio": 6.34084608,
+     "phi": 0.95,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 6.34084608,
+      "hip": 1.902440103,
+      "knee": 6.340839247,
+      "mp": 0.023293312
+     }
+    },
+    {
+     "argmin_theta_rad": 0.317945371,
+     "binder": "ankle",
+     "lb_stance_ratio": 6.841503181,
+     "phi": 1.0,
+     "sign_class": "dorsal",
+     "terms": {
+      "ankle": 6.841503181,
+      "hip": 1.886039842,
+      "knee": 6.841499917,
+      "mp": 0.021626052
+     }
+    }
+   ],
+   "over_unity_lb_phis": [
+    0.0,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    0.95,
+    1.0
+   ]
+  }
+ },
+ "receipt": {
+  "note": "the receipt pins THIS deliverable (measured.deliverable.sha256); the reverse pin is a path only - the receipt's measured block is appended after the derive, so a content pin here would break cross-run determinism",
+  "path": "tools/science_funnel/validation/rehearing_20260921/receipt.json"
+ },
+ "reprice_D_chain": {
+  "chain_note": "the (d) wall block is committed in the ANKLE lane's deliverable (31c6e3fb..., in-tree at this base); the receipt's inputs_pinned.statics_lane_deliverable attribution to 21d3dbbe named the STATICS lane's deliverable, which carries A/B/C/S2 only - recorded in the measured block as a lane-side attribution note, the priors unedited",
+  "committed_ref_sha256": "31c6e3fb717c310086e0bf023b8b45f6cf2335692e15e9794eaa325f402184ea",
+  "field_diffs": [],
+  "field_for_field_equal": true,
+  "wall": {
+   "ankle_term_at_phi_0_5": 1.157587,
+   "binder_histogram": {
+    "ankle": 9,
+    "hip": 1,
+    "knee": 4,
+    "posture": 7
+   },
+   "crosses_1_0": false,
+   "headroom_factors": {
+    "ankle": 1.18455399,
+    "hip": 1.0,
+    "knee": 0.69308156,
+    "mp": 0.53530769,
+    "posture": 1.0
+   },
+   "knee_term_at_phi_0_75": 0.916792,
+   "margin_0_9_reachable": false,
+   "max_binder": {
+    "joint": "ankle",
+    "phi": 0.5
+   },
+   "max_combined_ratio": 1.157587,
+   "nodes": [
+    {
+     "binder": "posture",
+     "combined": 0.611427,
+     "phi": 0.0,
+     "terms": {
+      "ankle": 0.197619,
+      "hip": 0.611427,
+      "knee": 0.118162,
+      "mp": 0.002787,
+      "posture": 0.611427
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.497696,
+     "phi": 0.05,
+     "terms": {
+      "ankle": 0.192013,
+      "hip": 0.497693,
+      "knee": 0.344945,
+      "mp": 0.002768,
+      "posture": 0.497696
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.802179,
+     "phi": 0.1,
+     "terms": {
+      "ankle": 0.190301,
+      "hip": 0.385424,
+      "knee": 0.555975,
+      "mp": 0.002795,
+      "posture": 0.802179
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.9,
+     "phi": 0.15,
+     "terms": {
+      "ankle": 0.190819,
+      "hip": 0.315168,
+      "knee": 0.673495,
+      "mp": 0.002814,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.671623,
+     "phi": 0.2,
+     "terms": {
+      "ankle": 0.190382,
+      "hip": 0.342581,
+      "knee": 0.671623,
+      "mp": 0.002777,
+      "posture": 0.328703
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.684273,
+     "phi": 0.25,
+     "terms": {
+      "ankle": 0.18978,
+      "hip": 0.310419,
+      "knee": 0.684273,
+      "mp": 0.002717,
+      "posture": 0.252193
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.117986,
+     "phi": 0.3,
+     "terms": {
+      "ankle": 1.117986,
+      "hip": 0.965502,
+      "knee": 0.126387,
+      "mp": 0.00267,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.10499,
+     "phi": 0.35,
+     "terms": {
+      "ankle": 1.10499,
+      "hip": 0.932832,
+      "knee": 0.140891,
+      "mp": 0.002602,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.114932,
+     "phi": 0.4,
+     "terms": {
+      "ankle": 1.114932,
+      "hip": 0.75799,
+      "knee": 0.074613,
+      "mp": 0.002572,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.14528,
+     "phi": 0.45,
+     "terms": {
+      "ankle": 1.14528,
+      "hip": 0.645543,
+      "knee": 0.006765,
+      "mp": 0.002565,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.157587,
+     "phi": 0.5,
+     "terms": {
+      "ankle": 1.157587,
+      "hip": 0.531864,
+      "knee": 0.08352,
+      "mp": 0.002605,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.128257,
+     "phi": 0.55,
+     "terms": {
+      "ankle": 1.128257,
+      "hip": 0.422729,
+      "knee": 0.169436,
+      "mp": 0.002667,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 0.997869,
+     "phi": 0.6,
+     "terms": {
+      "ankle": 0.997869,
+      "hip": 0.15808,
+      "knee": 0.351959,
+      "mp": 0.002814,
+      "posture": 0.352235
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.9,
+     "phi": 0.65,
+     "terms": {
+      "ankle": 0.865143,
+      "hip": 0.151456,
+      "knee": 0.630237,
+      "mp": 0.002274,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.872168,
+     "phi": 0.7,
+     "terms": {
+      "ankle": 0.760915,
+      "hip": 0.371683,
+      "knee": 0.872168,
+      "mp": 0.000216,
+      "posture": 0.11917
+     }
+    },
+    {
+     "binder": "knee",
+     "combined": 0.916792,
+     "phi": 0.75,
+     "terms": {
+      "ankle": 0.806593,
+      "hip": 0.32599,
+      "knee": 0.916792,
+      "mp": 0.000316,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.063154,
+     "phi": 0.8,
+     "terms": {
+      "ankle": 1.063154,
+      "hip": 0.095437,
+      "knee": 0.618892,
+      "mp": 0.000702,
+      "posture": 0.897515
+     }
+    },
+    {
+     "binder": "ankle",
+     "combined": 1.157112,
+     "phi": 0.85,
+     "terms": {
+      "ankle": 1.157112,
+      "hip": 0.774021,
+      "knee": 0.090225,
+      "mp": 0.001752,
+      "posture": 0.9
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.797499,
+     "phi": 0.9,
+     "terms": {
+      "ankle": 0.19634,
+      "hip": 0.405679,
+      "knee": 0.552732,
+      "mp": 0.002197,
+      "posture": 0.797499
+     }
+    },
+    {
+     "binder": "posture",
+     "combined": 0.604249,
+     "phi": 0.95,
+     "terms": {
+      "ankle": 0.195979,
+      "hip": 0.604249,
+      "knee": 0.244738,
+      "mp": 0.002483,
+      "posture": 0.604249
+     }
+    },
+    {
+     "binder": "hip",
+     "combined": 0.581342,
+     "phi": 1.0,
+     "terms": {
+      "ankle": 0.197764,
+      "hip": 0.581342,
+      "knee": 0.136981,
+      "mp": 0.002783,
+      "posture": 0.581342
+     }
+    }
+   ]
+  }
+ },
+ "schema": "chimera.rehearing_collocation.deliverable.v1",
+ "trajectory_shift": {
+  "note": "demand ratios priced at the (d) caps for both trajectories; raw N.m from the vendored statics",
+  "per_node": [
+   {
+    "ankle_demand_banked_Nm": 1.233938,
+    "ankle_demand_run_Nm": 1.211209,
+    "hip_ratio_banked": 0.611427,
+    "hip_ratio_run": 0.968113,
+    "knee_ratio_banked": 0.11826,
+    "knee_ratio_run": 0.128597,
+    "phi": 0.0,
+    "theta_banked_rad": -0.206432709,
+    "theta_delta_rad": 0.133913831,
+    "theta_run_rad": -0.072518878
+   },
+   {
+    "ankle_demand_banked_Nm": 1.198935,
+    "ankle_demand_run_Nm": 1.148821,
+    "hip_ratio_banked": 0.497693,
+    "hip_ratio_run": 0.842944,
+    "knee_ratio_banked": 0.34523,
+    "knee_ratio_run": 0.099692,
+    "phi": 0.05,
+    "theta_banked_rad": -0.160618558,
+    "theta_delta_rad": 0.131470314,
+    "theta_run_rad": -0.029148244
+   },
+   {
+    "ankle_demand_banked_Nm": 1.188244,
+    "ankle_demand_run_Nm": 1.13476,
+    "hip_ratio_banked": 0.385424,
+    "hip_ratio_run": 0.71199,
+    "knee_ratio_banked": 0.556436,
+    "knee_ratio_run": 0.32018,
+    "phi": 0.1,
+    "theta_banked_rad": -0.086479329,
+    "theta_delta_rad": 0.127944651,
+    "theta_run_rad": 0.041465322
+   },
+   {
+    "ankle_demand_banked_Nm": 1.191476,
+    "ankle_demand_run_Nm": 1.145213,
+    "hip_ratio_banked": 0.315168,
+    "hip_ratio_run": 0.604668,
+    "knee_ratio_banked": 0.674053,
+    "knee_ratio_run": 0.464098,
+    "phi": 0.15,
+    "theta_banked_rad": 0.01705283,
+    "theta_delta_rad": 0.115542365,
+    "theta_run_rad": 0.132595195
+   },
+   {
+    "ankle_demand_banked_Nm": 1.188748,
+    "ankle_demand_run_Nm": 1.157909,
+    "hip_ratio_banked": 0.342581,
+    "hip_ratio_run": 0.539966,
+    "knee_ratio_banked": 0.67218,
+    "knee_ratio_run": 0.528883,
+    "phi": 0.2,
+    "theta_banked_rad": 0.14296181,
+    "theta_delta_rad": 0.079235519,
+    "theta_run_rad": 0.222197329
+   },
+   {
+    "ankle_demand_banked_Nm": 1.184988,
+    "ankle_demand_run_Nm": 1.177318,
+    "hip_ratio_banked": 0.310419,
+    "hip_ratio_run": 0.362995,
+    "knee_ratio_banked": 0.68484,
+    "knee_ratio_run": 0.647551,
+    "phi": 0.25,
+    "theta_banked_rad": 0.247485771,
+    "theta_delta_rad": 0.020855702,
+    "theta_run_rad": 0.268341473
+   },
+   {
+    "ankle_demand_banked_Nm": 6.980721,
+    "ankle_demand_run_Nm": 7.004834,
+    "hip_ratio_banked": 0.965502,
+    "hip_ratio_run": 0.934524,
+    "knee_ratio_banked": 0.126492,
+    "knee_ratio_run": 0.106278,
+    "phi": 0.3,
+    "theta_banked_rad": 0.323695481,
+    "theta_delta_rad": -0.01317039,
+    "theta_run_rad": 0.310525091
+   },
+   {
+    "ankle_demand_banked_Nm": 6.899574,
+    "ankle_demand_run_Nm": 6.991566,
+    "hip_ratio_banked": 0.932832,
+    "hip_ratio_run": 0.822989,
+    "knee_ratio_banked": 0.141007,
+    "knee_ratio_run": 0.071184,
+    "phi": 0.35,
+    "theta_banked_rad": 0.395953434,
+    "theta_delta_rad": -0.046075933,
+    "theta_run_rad": 0.349877501
+   },
+   {
+    "ankle_demand_banked_Nm": 6.961656,
+    "ankle_demand_run_Nm": 7.088111,
+    "hip_ratio_banked": 0.75799,
+    "hip_ratio_run": 0.572742,
+    "knee_ratio_banked": 0.074675,
+    "knee_ratio_run": 0.038753,
+    "phi": 0.4,
+    "theta_banked_rad": 0.458744123,
+    "theta_delta_rad": -0.075119694,
+    "theta_run_rad": 0.383624429
+   },
+   {
+    "ankle_demand_banked_Nm": 7.151148,
+    "ankle_demand_run_Nm": 7.220225,
+    "hip_ratio_banked": 0.645543,
+    "hip_ratio_run": 0.397102,
+    "knee_ratio_banked": 0.00677,
+    "knee_ratio_run": 0.159283,
+    "phi": 0.45,
+    "theta_banked_rad": 0.506889675,
+    "theta_delta_rad": -0.097979048,
+    "theta_run_rad": 0.408910627
+   },
+   {
+    "ankle_demand_banked_Nm": 7.227995,
+    "ankle_demand_run_Nm": 7.195189,
+    "hip_ratio_banked": 0.531864,
+    "hip_ratio_run": 0.237554,
+    "knee_ratio_banked": 0.083589,
+    "knee_ratio_run": 0.265185,
+    "phi": 0.5,
+    "theta_banked_rad": 0.536458472,
+    "theta_delta_rad": -0.112903791,
+    "theta_run_rad": 0.423554681
+   },
+   {
+    "ankle_demand_banked_Nm": 7.044855,
+    "ankle_demand_run_Nm": 6.802871,
+    "hip_ratio_banked": 0.422729,
+    "hip_ratio_run": 0.096923,
+    "knee_ratio_banked": 0.169576,
+    "knee_ratio_run": 0.377228,
+    "phi": 0.55,
+    "theta_banked_rad": 0.544952627,
+    "theta_delta_rad": -0.11880429,
+    "theta_run_rad": 0.426148337
+   },
+   {
+    "ankle_demand_banked_Nm": 6.230712,
+    "ankle_demand_run_Nm": 5.767821,
+    "hip_ratio_banked": 0.15808,
+    "hip_ratio_run": 0.176421,
+    "knee_ratio_banked": 0.352251,
+    "knee_ratio_run": 0.570211,
+    "phi": 0.6,
+    "theta_banked_rad": 0.531481023,
+    "theta_delta_rad": -0.115243505,
+    "theta_run_rad": 0.416237518
+   },
+   {
+    "ankle_demand_banked_Nm": 5.401965,
+    "ankle_demand_run_Nm": 4.958959,
+    "hip_ratio_banked": 0.151456,
+    "hip_ratio_run": 0.40587,
+    "knee_ratio_banked": 0.630759,
+    "knee_ratio_run": 0.794422,
+    "phi": 0.65,
+    "theta_banked_rad": 0.482254504,
+    "theta_delta_rad": -0.087991128,
+    "theta_run_rad": 0.394263376
+   },
+   {
+    "ankle_demand_banked_Nm": 4.751163,
+    "ankle_demand_run_Nm": 4.702957,
+    "hip_ratio_banked": 0.371683,
+    "hip_ratio_run": 0.396492,
+    "knee_ratio_banked": 0.87289,
+    "knee_ratio_run": 0.888597,
+    "phi": 0.7,
+    "theta_banked_rad": 0.367771849,
+    "theta_delta_rad": -0.00881198,
+    "theta_run_rad": 0.358959869
+   },
+   {
+    "ankle_demand_banked_Nm": 5.03638,
+    "ankle_demand_run_Nm": 5.262066,
+    "hip_ratio_banked": 0.32599,
+    "hip_ratio_run": 0.206047,
+    "knee_ratio_banked": 0.917552,
+    "knee_ratio_run": 0.842405,
+    "phi": 0.75,
+    "theta_banked_rad": 0.224306909,
+    "theta_delta_rad": 0.044478678,
+    "theta_run_rad": 0.268785587
+   },
+   {
+    "ankle_demand_banked_Nm": 6.638354,
+    "ankle_demand_run_Nm": 6.838477,
+    "hip_ratio_banked": 0.095437,
+    "hip_ratio_run": 0.289686,
+    "knee_ratio_banked": 0.619404,
+    "knee_ratio_run": 0.496692,
+    "phi": 0.8,
+    "theta_banked_rad": 0.084994407,
+    "theta_delta_rad": 0.076729174,
+    "theta_run_rad": 0.161723581
+   },
+   {
+    "ankle_demand_banked_Nm": 7.225026,
+    "ankle_demand_run_Nm": 7.215325,
+    "hip_ratio_banked": 0.774021,
+    "hip_ratio_run": 1.020403,
+    "knee_ratio_banked": 0.090299,
+    "knee_ratio_run": 0.078999,
+    "phi": 0.85,
+    "theta_banked_rad": -0.037475038,
+    "theta_delta_rad": 0.102239413,
+    "theta_run_rad": 0.064764375
+   },
+   {
+    "ankle_demand_banked_Nm": 1.225951,
+    "ankle_demand_run_Nm": 1.198985,
+    "hip_ratio_banked": 0.405679,
+    "hip_ratio_run": 0.705035,
+    "knee_ratio_banked": 0.55319,
+    "knee_ratio_run": 0.336545,
+    "phi": 0.9,
+    "theta_banked_rad": -0.131445835,
+    "theta_delta_rad": 0.118604759,
+    "theta_run_rad": -0.012841076
+   },
+   {
+    "ankle_demand_banked_Nm": 1.223697,
+    "ankle_demand_run_Nm": 1.191563,
+    "hip_ratio_banked": 0.604249,
+    "hip_ratio_run": 0.934968,
+    "knee_ratio_banked": 0.244941,
+    "knee_ratio_run": 0.008915,
+    "phi": 0.95,
+    "theta_banked_rad": -0.191213385,
+    "theta_delta_rad": 0.127096899,
+    "theta_run_rad": -0.064116486
+   },
+   {
+    "ankle_demand_banked_Nm": 1.234843,
+    "ankle_demand_run_Nm": 1.214379,
+    "hip_ratio_banked": 0.581342,
+    "hip_ratio_run": 0.934618,
+    "knee_ratio_banked": 0.137094,
+    "knee_ratio_run": 0.106458,
+    "phi": 1.0,
+    "theta_banked_rad": -0.216662595,
+    "theta_delta_rad": 0.132131498,
+    "theta_run_rad": -0.084531097
+   }
+  ]
+ },
+ "verdict": {
+  "achievable_wall_D": 1.155776474,
+  "achieving_run": "fresh_zero",
+  "bound_respected_by_every_run": true,
+  "crosses_1_0": false,
+  "maximin_bound_D": 1.04250229,
+  "quadruped_statement": "the maximin bound over-unity nodes (phis [0.3, 0.35, 0.4, 0.45]) admit NO theta in the bounds that clears 1.0 on any leg ratio - the vendored statics module's own verdict rule: statically infeasible at any trunk pitch; the quadruped lane stands alone at the measured (d) caps",
+  "scale_gate": "S1 GATE (deposit arm scale): this verdict. At the SI-matched S2 scale the measured walls are {\"warm_banked_optimum\": 9.642983106, \"fresh_zero\": 9.66165239, \"fresh_wave8\": 9.66165239} (bound 8.435634783) - every S1 verdict inverts; no engine consumption until the operator resolves the deposit-vs-SI divergence (k = 0.11975394), the standing gate inherited verbatim",
+  "verdict": "CLOSED at the trajectory level: the minimum achievable wall under (d) is >= 1.0 - no periodic collocated theta trajectory within the formulation clears the measured caps; the measured-caps bipedal vault question is closed with the statics, and the quadruped line stands alone as the only admissible gait line at (d)"
+ },
+ "wrapper_drift_check": {
+  "exact": true,
+  "fields": [
+   "phi",
+   "theta_rad",
+   "theta_dot_rad_s",
+   "theta_ddot_rad_s2",
+   "static_posture_Nm",
+   "gravity_Nm",
+   "inertial_Nm",
+   "required_posture_Nm",
+   "posture_ratio",
+   "stance_ratio",
+   "leg_ratios"
+  ],
+  "n_mismatches": 0,
+  "node_mismatches": []
+ }
+}

@@ -1,0 +1,168 @@
+{
+ "schema": "chimera.rehearing_collocation.v1",
+ "lane": "rehearing_20260921",
+ "branch": "agent/measured-caps-collocation-20260921",
+ "clone_of": "the canonical branch agent/ankle-unblocked-statics-20260921 at 90636814 (local sparse clone of the ankstat lane; base commit 906368142212a5ff18b13bf4b0e5088e36a1a81d)",
+ "mission": "THE RE-HEARING: the statics receipts closed with the banked wave-10 optimum INFEASIBLE at set (d) (wall 1.157587, ankle-bound at phi=0.5) and named re-collocation as the open door (ankle receipt F6): does the optimizer find a DIFFERENT admissible trajectory under the MEASURED caps? This lane re-runs the wave-10 collocation optimizer (the reachable-vault machinery, vendored byte copies from the gait_zero lineage at 4198dbdc - the commit that banks generator, deliverable and receipt together) with the (d) cap set - measured knee/MTP (hind book V1_S1), measured ankle BOTH DIRECTIONS sign-gated per the ankle book's cap_law, hip/posture HELD at the vendored module's own contract (the posture drive borrows the hip cap - noted, held) - same 21-node periodic formulation, warm-started from the banked optimum AND from fresh starts, both reported. The verdict is the minimum achievable wall under (d): if < 1.0 the biped's admissible-vault question REOPENS with the measured book; if >= 1.0 the measured-caps biped is CLOSED at the trajectory level too. The k-gated (S2) bracket is stated on every verdict.",
+ "pre_registration": {
+  "written_before_first_verdict_computation": true,
+  "note": "This receipt was written BEFORE this lane's derive script existed and BEFORE any collocation run of this lane. Every band below is derived by hand from sha-verified banked artifacts that were READ first (the wave-10 deliverable's cap-independent columns; the statics receipts' committed walls), plus ONE named prior-derivation probe: a per-node theta-scan of the vendored statics (a maximin computation, NOT the collocation optimizer - the probe computes the lower envelope the optimizer must respect; it is Rule-1 derivation, run before the receipt is written and its numbers are registered here unedited). The measured block at the bottom is appended AFTER the runs.",
+  "inputs_pinned": {
+   "wave10_generator": {
+    "path": "tools/science_funnel/validation/rehearing_20260921/inputs/vendored_gait_zero/derive_reachable_vault.py",
+    "sha256": "0c722cffae81268c2a4933ed3f482e7af6c942afe66e35f9d6380893d1acf2a5",
+    "git_object": "blob f3f65483b477b98bcb73bc9490ffbac538df8a33 at commit 4198dbdc (the gait_zero tree that banks the wave-10 generator, its deliverable trunk_vault_reachable.json and receipt_wave10.json together)"
+   },
+   "wave10_statics_module": {
+    "path": "tools/science_funnel/validation/rehearing_20260921/inputs/vendored_gait_zero/derive_trunk_pitch.py",
+    "sha256": "5be624d304f029d6de92559650a438bca531c30b6eaf111c1459d0e9374fac16",
+    "git_object": "blob 5319bc2649c042dd2a482ea105a3150a2255d10d, IDENTICAL at the wave-10 base 54472e63 and at 4198dbdc (checked) - the physics module did not drift across the wave-10 lineage"
+   },
+   "wave10_deliverable": {
+    "path": "tools/science_funnel/validation/rehearing_20260921/inputs/vendored_gait_zero/trunk_vault_reachable.wave10.json",
+    "sha256": "e922153318778e4cd8c1891f59454261c6d5be0a77aebdc5f78d2758ccd2faa7",
+    "git_object": "byte copy of the statics lane's vendored deliverable; verified byte-EQUAL to gait_zero's trunk_vault_reachable.json at 4198dbdc (sha equality measured on this clone)"
+   },
+   "derived_numbers": {
+    "path": "tools/science_funnel/validation/rehearing_20260921/inputs/run_env/tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json",
+    "sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+    "git_object": "byte copy of the statics lane's run_env input; verified byte-EQUAL to blob 8b6d75fbd408a8e1e2db31cdf15fc4a104b9a36a at 4198dbdc"
+   },
+   "ankle_arms_book": {
+    "path": "tools/science_funnel/validation/rehearing_20260921/inputs/ankle_arms_book.json",
+    "sha256": "7ce03069c1e033b52db0fb315d218eb2223e79a67a9018123da206d68adcb6f6",
+    "git_object": "byte copy of the statics lane's verified input = the blob f55ebe5f94109fe3c659c13cc6d46598591b9595 at commit b15ff31e (branch agent/ankle-arms-20260921, the statics lane's own PD8 chain); source of the measured plantar/dorsal caps and of the SIGN GATE (cap_law: 'plantar negative / dorsal positive')"
+   },
+   "hind_torque_book": {
+    "path": "tools/science_funnel/validation/hind_torque_book_20260921/hind_torque_book.json (in-tree at this base)",
+    "sha256": "9fc5c0ba09f6ec183d5348bb21cc5dc18b5987240406ccdcdbb34e514e26f01c",
+    "git_object": "in-tree at 90636814, sha equals the statics receipts' pin; source of the measured knee/MP caps (V1_S1 9.576795 / 1.657925; S2 1.146859 / 0.198543)"
+   },
+   "statics_lane_committed_deliverable": {
+    "path": "tools/science_funnel/validation/rehearing_20260921/inputs/statics_lane_committed_deliverable.json",
+    "sha256": "21d3dbbe2a477d67f7d7d5572f0171cd0c2e8cfe34a6cd1770ccd81abf06908a",
+    "git_object": "byte copy of the measured-caps statics lane's committed deliverable at eab707f5 (the ankle lane's own instrument-chain reference); source of the committed (d) wall block this lane's re-price must reproduce field-for-field"
+   }
+  },
+  "cap_sets": {
+   "D_measured": {
+    "hip": "HELD at the vendored module's own statics.CAP['hip'] = 1.25*8.9746 N.m (the posture drive borrows the hip cap - CAP_POST = CAP['hip'] - both HELD at the generator's internal contract, not re-pinned to 11.2125; the difference from the statics tables' live pin is 5.75e-3 N.m, named here)",
+    "knee": 9.576795,
+    "ankle_plantarflexion_tau_negative": 6.247077,
+    "ankle_dorsiflexion_tau_positive": 1.251106,
+    "mp": 1.657925,
+    "provenance": "knee/MP the hind book MEASURED V1_S1 (the statics set (b) values); ankle BOTH DIRECTIONS the ankle book's MEASURED V1_S1 wrap-arm caps, direction-split by the ankle book's own cap_law sign gate (a muscle contributes only where its arm's sign matches the direction: plantar negative / dorsal positive); hip/posture HELD exactly as the wave-10 instrument computes them"
+   },
+   "S2_si_matched_gate": {
+    "knee": 1.146859, "mp": 0.198543,
+    "ankle_plantarflexion_tau_negative": 0.748112,
+    "ankle_dorsiflexion_tau_positive": 0.149825,
+    "hip_posture": "HELD as in D",
+    "provenance": "the k-gated variant (k = 0.11975394, the pulley receipt's constant, the books' S2 convention) - THE INVERSION BRACKET, stated on every verdict; no engine consumption until the operator resolves the deposit-vs-SI scale"
+   }
+  },
+  "formulation_law": "the wave-10 formulation UNCHANGED: 21 periodic nodes, T=0.71 s, DT=0.0355, finite-difference theta_ddot = (roll(v,-1)-roll(v,1))/(2 DT); required_posture = static_posture(tau[2]) + M_HAT*g*R_HAT*sin(theta) + I_HAT*acc; objective = mean over nodes of max(stance_ratio, posture_ratio) + 1e-4*mean(v^2) + 1e-5*mean(diff(theta)^2); hard constraint posture |required| <= LIMIT (LIMIT = 0.9*CAP_POST, HELD from the instrument); trapezoidal kinematic equality; bounds theta in [-0.6, 0.6] rad, vel in [-8, 8] rad/s; SLSQP maxiter=500 ftol=1e-10. THE ONLY DELTA at (d)/S2: the leg-cap normalization - knee |tau[4]|/9.576795, mp |tau[6]|/1.657925, ankle SIGN-GATED (tau[5] < 0 at the measured plantar cap 6.247077; tau[5] >= 0 at the measured dorsal cap 1.251106), hip |tau[3]|/CAP['hip'] held. The leg torque tau[3..6] at a node depends ONLY on that node's own theta (verified from the vendored row(): statics(phi, (phi+0.5)%1, 'L', phi, theta_i)) - the property the maximin bound below stands on",
+  "verdict_law": "wall(set, trajectory) := max over the 21 nodes of max(stance_ratio, posture_ratio). achievable_wall(D) := the minimum wall over this lane's (d) runs (three starts, per-start results all reported). REOPENS iff achievable_wall(D) < 1.0; CLOSED iff >= 1.0. The maximin bound LB := max over nodes of (min over theta in [-0.6, 0.6] of the stance_ratio at that node) is a THEOREM-grade lower bound on achievable_wall(D) within the formulation: the wall at any node >= that node's stance_ratio >= the node's theta-minimum, and theta is decoupled across nodes in the leg columns; LB > 1.0 therefore closes the question REGARDLESS of what the optimizer finds, and every optimizer run must return wall >= LB (its own falsifier)",
+  "protocol_declared": {
+   "instrument": "the vendored wave-10 generator runs UNMODIFIED (subprocess, python -B) in inputs/run_env/ at the DOC caps and must reproduce the banked artifact (falsifier PR1); only then does the lane's (d) driver run - it imports the vendored modules and re-implements ONLY the cap normalization (the posture-cap lane's proven 'copied+modified, parameterized cap only' pattern, derive_posture_cap_sweep.py on agent/posture-cap-provenance)",
+   "starts": "warm = the banked artifact's own stored theta/vel (42-vector, full precision from nodes[], not the 7-digit rounded echo); fresh-zero = zeros(42); fresh-wave8 = the vendored main()'s second start. The vendored main() itself is the instrument reproduction and uses the vendored starts. Per-start results are reported separately AND the lane's best-of is the verdict number",
+   "determinism_protocol": "the full derive runs twice in-process and must agree byte-for-byte on the deliverable canonical JSON (sort_keys, indent 1); the unittest re-invokes via subprocess and compares sha256; scipy SLSQP is deterministic given fixed inputs and pinned versions (numpy 2.2.6 / scipy 1.17.0 recorded in the deliverable)",
+   "scale_gate_stated_on_every_verdict": "S1 gate: the (d) caps stand on the DEPOSIT arm scale (the statics receipts' standing gate, inherited verbatim; the ankle book's own SI2 cross-check fits k_ankle = 0.11976026, consistent with k = 0.11975394). At the SI-matched scale (S2) every S1 verdict INVERTS. No engine consumption until the operator resolves the divergence",
+   "scope_law": "NO engine or source changes; the lane writes ONLY inside tools/science_funnel/validation/rehearing_20260921/ (the one exception: the vendored generator's own output file inside inputs/run_env/, which is the instrument's own write location and still inside the lane dir); the vendored machinery is never executed in its gait_zero home (it does not exist in this sparse checkout); order-of-magnitude consumption verdict (book, not patch); no tolerance widened anywhere"
+  },
+  "pre_registered_predictions": {
+   "note": "delta := measured - expected per the bands; every number derived by hand as described above BEFORE the lane's derive script exists. A miss is a FIRED falsifier recorded with its number and never absorbed",
+   "PR1_instrument_reproduction": {
+    "prediction": "the vendored generator, run unmodified on this machine, reproduces the banked wave-10 optimum: max_ratio_to_cap in [1.3227, 1.3229] (banked 1.3227763257041534), max_posture_ratio in [0.89999, 0.90001] (banked 0.9000000000000385 - the 0.9 posture constraint SATURATED, the histogram's '0.9 margin never moves'), success True, verdict string INFEASIBLE, objective in [0.8941, 0.8943] (banked 0.894190750157879); two runs on this machine are BYTE-IDENTICAL (the cross-machine float exactness of an SLSQP artifact is NOT pre-registered - a band, never 'exact', because the banked floats came from a different scipy; the run-vs-run byte identity IS the lawful exactness here and it is required)",
+    "band": "as stated per field",
+    "derivation": "same shas, same starts, same SLSQP options; the basin is pinned by ftol=1e-10; only cross-machine float noise can move the 6th digit"
+   },
+   "PR2_reprice_identity": {
+    "prediction": "this lane's re-price of the banked table at (d) under the statics lanes' own live-pin law (term = banked ratio x capA/capX, capA the live pins 7.4/6.6375/11.2125/0.8875) equals the statics lane's committed (d) wall block FIELD-FOR-FIELD: wall max 1.157587, binder ankle phi=0.5, over-set phis {0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.8, 0.85} all ankle-bound, binder histogram ankle 9 / posture 7 / knee 4 / hip 1 of 21; ankle term at phi 0.5 = 1.157587, runner-up 1.157112 at phi 0.85; knee term at phi 0.75 = 0.916792. NAMED 6th-digit note (pre-registered, not a band): the vendored generator's internal caps are 1.25 x the UNROUNDED Oku peaks (ankle 7.396375, knee 6.643, hip 11.21825, mp 0.881375) - the banked ratios wore THOSE caps, so the physically-priced demand at phi 0.5 is ratio x 7.396375 = 7.228144 N.m and at the measured plantar cap prices 1.157043, 0.05% under the live-pin law's 1.157587; the statics lanes' chain convention (live pins) is what this lane reproduces, and the collocation itself prices at the measured caps directly so the ambiguity never enters the (d) verdict",
+    "band": "field-for-field equality with the committed deliverable's D wall block (the chain convention), exact",
+    "derivation": "the statics receipts' PD1/PD3 measured numbers, re-derived on this clone from the same shas"
+   },
+   "PR3_maximin_bound_and_verdict_direction": {
+    "lb_phi_0_4": {"expected": 1.043892, "band": [1.040, 1.048]},
+    "lb_over_unity_nodes": {"phis": [0.3, 0.35, 0.4, 0.45], "expected_values": [1.000684, 1.024422, 1.043892, 1.012610], "band_each": "+-0.004"},
+    "s2_lb_phi_0_4": {"expected": 8.451224, "band": [8.40, 8.51]},
+    "verdict_direction": "CLOSED - the achievable wall under (d) is >= 1.0439 > 1.0: NO admissible trajectory exists within the formulation. The derivation: at the over-unity maximin nodes (phis 0.30-0.45) NO theta in the full bounds scan brings every leg ratio under 1.0 simultaneously - the best theta at phi 0.4 (-0.26 rad) still carries ankle 1.0439 with hip already at 1.0360; the shift off the ankle saturates the HIP before the ankle clears its measured cap. This is the vendored statics module's own verdict rule ('if no theta at some stance node brings every demand/cap ratio under 1.0, the bipedal hindlimb lift is STATICALLY INFEASIBLE at any trunk pitch -- the quadruped lane is confirmed') measured at the (d) caps by this lane's probe",
+    "optimizer_band": "every (d) run's wall lands in [1.0439, 1.20] and >= its per-run bound check; the SLSQP mean-of-maxima objective is NOT expected to reach the minimax floor - the banked warm start re-prices to 1.157587 and the fresh starts are expected to land between the floor and the re-price. IF ANY RUN RETURNS WALL < LB+1e-9 the bound derivation is wrong - falsifier on this receipt's own derivation law",
+    "derivation": "the prior-derivation probe (241-point theta grid, step 0.005 rad, vendored statics, sign-gated ankle): per-node min-max over theta. A finer grid can only LOWER a node minimum, so the registered LB is conservative in the safe direction; the derive script re-derives the bound with bounded scalar refinement per node"
+   },
+   "PR4_shift_prediction": {
+    "prediction": "WHERE THE LOAD SHIFTS (pre-registered from the statics binder histogram before any trajectory run): the histogram at (d) is ankle 9 / posture 7 / knee 4 / hip 1 of 21 - the knee has the room (worst (d) knee term on the banked table 0.9168, and ~0.08-0.17 at the ankle-loaded nodes). The predicted admissible-or-best trajectory therefore moves theta NEGATIVE at the mid-stance ankle-loaded nodes (the banked trajectory rides theta +0.32..+0.54 there, saturating the 0.9 posture constraint) - a shift of roughly -0.5 to -0.8 rad at phis 0.35-0.45 - unloading the ankle into KNEE and HIP. But the probe already shows the shift CANNOT clear the wall: at phi 0.4 the hip saturates first (1.0360 at the optimum theta vs the ankle's 1.0439) - the measured hip cap, UNCHANGED from doc, becomes the second binder. Prediction: the best trajectory's binding term at the worst node is the ANKLE (with the hip within a few hundredths), the wall lands in [1.04, 1.16], and the ankle's plantar demand at the binding node falls ~10-15% vs the banked trajectory's while hip+knee demands there RISE",
+    "bands": {"theta_shift_at_phi_0_4": {"expected": -0.72, "band": [-1.0, -0.3], "note": "banked theta +0.458744 -> predicted near the probe optimum -0.26"},
+              "best_wall": {"expected": 1.10, "band": [1.0439, 1.16]}},
+    "derivation": "the probe's theta-landscape at the binding nodes (phi 0.5 detail: ankle ratio falls 1.1535->0.9416 as theta goes +0.6->-0.1 while hip rises 0.695->1.107 - the crossover is the wall's floor)"
+   },
+   "PR5_S2_inversion_bracket": {
+    "prediction": "every S2 run's wall >= 8.4 (the maximin S2 bound 8.451224 at phi 0.4, band [8.40, 8.51]): at the SI-matched scale the walker cannot vault from any theta in the bounds - the S1 verdicts invert, quadruped-only again, no consumption",
+    "band": "as stated",
+    "derivation": "the same probe at the S2 caps"
+   },
+   "PR6_determinism": "two full in-process derives byte-identical on the deliverable sha256; the unittest's subprocess rerun matches",
+   "PR7_no_source_changes": "git status --porcelain names no file outside tools/science_funnel/validation/rehearing_20260921/ (unittest-asserted)",
+   "PR8_input_pins": "every pinned input's sha verified before compute; the derive script REFUSES to run on any pin mismatch (unittest re-asserts)"
+  },
+  "the_question_stated_plainly": "the statics receipt's F6: is the (d) re-block (1.157587 ankle-bound) a posture of the ONE banked optimum, or of the envelope? The pre-registered answer: OF THE ENVELOPE - the maximin probe says even a free theta at every node cannot clear 1.0 (floor 1.0439 at phi 0.4), because the ankle shift saturates the hip before the ankle clears its measured cap. The re-hearing is still owed its runs (the mission's warm and fresh collocations, the measured achievable wall from each start) - the bound closes the 1.0 question, the runs measure how far above the floor the mean-objective optimizer lands and WHERE the load actually shifts. If the optimizer DID return a wall below the bound, this receipt's derivation law is falsified and the question reopens",
+  "falsifiers_pre_registered": {
+   "instrument": "PR1 fails -> the vendored instrument does not reproduce the banked optimum on this clone and every (d) number is void (recorded, not tuned)",
+   "reprice_chain": "PR2 fails -> this lane's re-price law diverges from the committed statics chain (recorded, not tuned)",
+   "bound_vs_optimizer": "any (d) run with wall < LB + 1e-9 -> the maximin derivation law is WRONG (the theta-decoupling or the bound's construction) - FIRED, recorded, and the CLOSED verdict is void; the question reopens on the optimizer's numbers",
+   "delta_bands": "the pre_registered_predictions block; a band miss is a FIRED falsifier recorded with its number in the measured block",
+   "determinism": "PR6",
+   "no_source_changes": "PR7 (unittest-asserted)",
+   "input_pins": "PR8 (unittest-asserted)"
+  }
+ },
+ "measured": {
+  "recorded_utc": "2026-09-21T02:05:00+00:00",
+  "note": "APPENDED AFTER THE RUN. The pre-registration block above is unedited; the derive script and this block were written per the protocol (receipt first, script second, measured third).",
+  "deliverable": {
+   "path": "tools/science_funnel/validation/rehearing_20260921/rehearing_20260921.json",
+   "sha256": "12dc4b192c65f0b703249f46a625c352aa43fbf62a171e47b2634d9f1938bbaa",
+   "note": "the deliverable pins this receipt BY PATH ONLY (never by content - neither in its receipt block nor in its recorded inputs): a first build carried this receipt's pre-run sha and broke cross-run byte-determinism when the measured block was appended - the reverse pins were removed, recorded here per the chain direction receipt -> deliverable"
+  },
+  "headline": {
+   "verdict": "THE RE-HEARING, MEASURED: the wave-10 collocation optimizer re-run at the measured (d) caps (knee 9.576795 / MP 1.657925 hind book V1_S1; ankle plantar 6.247077 / dorsal 1.251106 sign-gated per the ankle book's cap_law; hip/posture HELD at the instrument's constants) finds NO admissible trajectory. The minimum achievable wall over the three starts is 1.155776 (fresh-zero start; warm-start 1.157112, fresh-wave8 1.157055) - every run ankle-bound, every run over 1.0, and every run above the lane's maximin LOWER BOUND of 1.042502 at phi=0.4: a per-node theta-scan of the vendored statics proves (within the formulation - the leg torque at a node depends only on that node's theta) that NO periodic theta trajectory in the bounds clears 1.0, because at phis 0.30-0.45 shifting the ankle load saturates the HIP before the ankle clears its measured cap (best theta at phi 0.4 still carries ankle 1.0425 with hip 1.0354). THE MEASURED-CAPS BIPED IS CLOSED AT THE TRAJECTORY LEVEL: the (d) re-block is a property of the ENVELOPE, not of the banked optimum - the statics receipt's open door (F6) is measured shut. THE QUADRUPED LINE STANDS ALONE as the only admissible gait line at the measured S1 caps. The k-gated S2 inversion bracket: S2 collocation walls 9.642983-9.661652 (maximin bound 8.435635 at phi 0.4) - at the SI-matched scale the walker cannot vault from any theta in the bounds; no engine consumption until the operator resolves the deposit-vs-SI scale.",
+   "achievable_wall_per_start_D": {
+    "warm_banked_optimum": 1.157111501,
+    "fresh_zero": 1.155776474,
+    "fresh_wave8": 1.157054604
+   },
+   "wall_binders_per_start_D": {
+    "warm_banked_optimum": "ankle phi=0.5",
+    "fresh_zero": "ankle phi=0.45",
+    "fresh_wave8": "ankle phi=0.3"
+   },
+   "maximin_lower_bound_D": 1.04250229,
+   "maximin_over_unity_phis": [0.3, 0.35, 0.4, 0.45],
+   "S2_walls_per_start": {
+    "warm_banked_optimum": 9.642983,
+    "fresh_zero": 9.661652,
+    "fresh_wave8": 9.661652
+   },
+   "maximin_lower_bound_S2": 8.435634783
+  },
+  "falsifier_verdicts": {
+   "PR1_instrument_reproduction": "HELD AT EXACTNESS - the vendored generator, run UNMODIFIED on this clone, reproduced the banked wave-10 optimum to the LAST DIGIT: max_ratio_to_cap 1.3227763257041534 (== banked exactly), max_posture_ratio 0.9000000000000385 (== exactly), objective 0.894190750157879 (== exactly), and the written file is BYTE-EQUAL to the pinned deliverable (bytes_equal_to_banked True) - stronger than the pre-registered band; two derive passes agree byte-for-byte (the in-process determinism gate passed)",
+   "PR2_reprice_identity": "HELD - the lane's (d) wall re-price under the statics chain's live-pin law equals the ankle lane's committed D wall block FIELD-FOR-FIELD (max 1.157587 ankle@0.5, histogram ankle 9 / posture 7 / knee 4 / hip 1, all 21 nodes). ONE LANE-SIDE ATTRIBUTION NOTE (recorded, not absorbed): the receipt's inputs_pinned.statics_lane_committed_deliverable said it was 'source of the committed (d) wall block' - the statics lane's 21d3dbbe deliverable carries A/B/C/S2 only; the (d) block is committed in the ANKLE lane's deliverable (31c6e3fb..., in-tree at this base), now pinned alongside as inputs/ankle_lane_committed_deliverable.json. No band predicted a value, so no falsifier fires; the priors stay unedited",
+   "PR3_maximin_bound_and_verdict_direction": "HELD - refined bound 1.04250229 at phi 0.4 in [1.040, 1.048] (the registered probe value 1.043892 was the 0.005-grid estimate; the bounded refinement lowered it exactly as the receipt anticipated: 'a finer grid can only LOWER a node minimum'); over-unity phis exactly {0.3, 0.35, 0.4, 0.45}; S2 bound 8.435635 in [8.40, 8.51]; bound_respected_by_every_run TRUE; verdict direction CLOSED as registered. The wrapper-drift check: the lane's metrics at doc caps equal the vendored metrics EXACTLY on the banked x (0 mismatches)",
+   "PR4_shift_prediction": "WALL BAND HELD, THETA-SHIFT SUB-PREDICTION FIRED - best wall 1.155776 in [1.0439, 1.16] as registered (binding term the ANKLE as registered, hip within a few hundredths at the worst node as registered). FIRED AT ITS LETTER: the registered theta shift at phi 0.4 was -0.72 with band [-1.0, -0.3]; MEASURED -0.075119694 (fresh-zero's theta +0.383624 vs the banked +0.458744) - the optimizer did NOT make the large negative theta move the probe's node-wise landscape suggested. The mechanism, named on the table: the wave-10 objective minimizes the MEAN of node maxima (with velocity/curvature regularizers and the trapezoidal kinematic equality coupling theta across nodes), not the max - a node-wise minimax shift buys 1/21 of the mean while paying the regularizers and the kinematic coupling, so the optimizer barely moves (all three starts land within 0.002 of each other and of the banked re-price). The ankle/knee/hip demands at phi 0.4 moved only slightly (ankle 6.961656 -> 7.088111 N.m, hip ratio 0.757990 -> 0.572742, knee 0.074675 -> 0.038753). Recorded with its numbers; not absorbed; the CLOSED verdict is unaffected - it stands on the bound and the runs (PR3), and the bound says even the node-wise-optimal shift (theta -0.26 at phi 0.4) floors at 1.0425 > 1.0",
+   "PR5_S2_inversion_bracket": "HELD - all three S2 runs' walls in [9.643, 9.662] >= 8.40, above the S2 maximin bound 8.435635 at phi 0.4 (band [8.40, 8.51]); every S1 verdict inverts at the SI-matched scale",
+   "PR6_determinism": "HELD after one chain repair, recorded: the FIRST build pinned this receipt's content sha inside the deliverable (in its receipt block AND its recorded inputs), so appending this measured block changed the rerun's bytes (78cb2fcf... -> 00262cae..., the unittest's subprocess comparison FIRED as designed). The reverse pins were removed (the deliverable carries the receipt by path only - the chain direction is receipt -> deliverable), the deliverable rebuilt: two full in-process derives byte-identical, and the subprocess rerun reproduces the deliverable sha256 12dc4b192c65f0b703249f46a625c352aa43fbf62a171e47b2634d9f1938bbaa. The verdict numbers were byte-identical across every build (each diff named exactly the receipt-sha fields)",
+   "PR7_no_source_changes": "HELD - git status --porcelain names nothing outside tools/science_funnel/validation/rehearing_20260921/ (unittest-asserted)",
+   "PR8_input_pins": "HELD - all nine pinned inputs verified before compute (receipt included); the derive script refuses on any mismatch (unittest re-asserts)"
+  },
+  "findings": [
+   "F1 - THE RE-HEARING ANSWER: the (d) re-block is a property of the ENVELOPE. Three independent starts of the wave-10 collocation at the measured caps converge to walls 1.1558-1.1571 (the banked optimum's own re-price is 1.157587 - the optimizer improves it by at most 0.0018), every one ankle-bound, and the maximin bound proves nothing in the formulation can beat 1.0425: the statics receipt's F6 open door ('a re-collocation at the measured caps could redistribute the ankle load') is measured SHUT at S1. The banked wave-10 optimum was never the problem - the measured ankle cap is.",
+   "F2 - WHERE THE LOAD CAN AND CANNOT SHIFT: the histogram's room is real - the probe shows theta moves CAN unload the ankle into hip+knee node-wise (at phi 0.5 the ankle ratio falls 1.1535 -> 0.9416 as theta goes +0.6 -> -0.1 while the hip rises to 1.107) - but the shift saturates the HIP at phis 0.30-0.45 before the ankle clears 1.0 (the bound's over-unity set), and the mission's own objective (the wave-10 mean-of-maxima) does not drive the trajectory to the node-wise optimum. The knee's measured headroom (cap x1.443 of doc) is never the binding constraint: the hip, UNCHANGED from doc, is what blocks the shift. The borrowed hip/posture cap (CAP_POST = CAP['hip'] = 11.21825 at the instrument, held) now owns the next question the way the ankle owned the last one.",
+   "F3 - THE QUADRUPED LINE STANDS ALONE: the vendored statics module's own verdict rule ('if no theta at some stance node brings every demand/cap ratio under 1.0, the bipedal hindlimb lift is STATICALLY INFEASIBLE at any trunk pitch -- the quadruped lane is confirmed') is measured TRUE at the measured (d) caps at phis 0.30-0.45. At the trajectory level as at the statics level, the measured-caps bipedal vault is closed at S1; the quadruped gait line is the only admissible line at these caps.",
+   "F4 - THE S2 BRACKET: at the SI-matched scale the collocation walls are 9.64-9.66 (bound 8.435635), matching the statics receipt's S2 re-price 9.666383 - the walker can neither hold nor vault; the scale gate stands on every verdict.",
+   "F5 - INSTRUMENT NOTE: the wave-10 optimum reproduces BYTE-EXACT on this clone (numpy 2.2.6 / scipy 1.17.0) - the banked SLSQP artifact is bit-stable across the lineage's machines and years, which upgrades every downstream band that assumed cross-machine float noise."
+  ],
+  "the_scale_gate_on_every_verdict": "S1 GATE (deposit arm scale): the CLOSED verdict above. At the SI-matched S2 scale the same runs measure walls 9.642983-9.661652 with bound 8.435635 - every S1 verdict inverts (the walker can neither hold nor vault at S2 either, so the CLOSING is scale-robust in direction: closed at S1 by the ankle/hip envelope, closed at S2 by everything). No engine consumption until the operator resolves the deposit-vs-SI absolute-scale divergence (k = 0.11975394) - the torque book's standing gate, inherited verbatim.",
+  "tests": "python -B -m unittest tools.science_funnel.validation.rehearing_20260921.test_rehearing_20260921"
+ }
+}
