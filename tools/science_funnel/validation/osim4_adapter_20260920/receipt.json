@@ -22,6 +22,347 @@
   "prediction": "Name-level pairing after stripping the R_ prefix and case-normalizing: 28 of 36 Wiseman names match a Guimaraes name exactly; the 8 EDL_TENDONII..V / FDL_TENDONII..V slips map many-to-one onto Guimaraes EDL/FDL (mapping DEFERRED - no per-slip force division law exists and inventing one is taste); 6 Guimaraes-only records (GemInf, GemSup, ObtExt, ObtInt, PLANT, POP) have no Wiseman counterpart. All 36 force_runtime_ready stay false on this lineage.",
   "falsifier": "The 36x36 name match table in the results section below diverges from this prediction (a name that should match does not, or an unexpected exact match appears)."
  },
- "results": null,
+ "results": {
+  "measured_utc": "2026-09-21T02:47:48.095952+00:00",
+  "falsifiers": {
+   "A_round_trip_reconciliation": {
+    "verdict": "PASS",
+    "macaque_parsed": {
+     "body_count": 10,
+     "coordinate_count": 19,
+     "joint_count": 10,
+     "muscle_count": 36,
+     "path_points": 125,
+     "wrap_surfaces": 14
+    },
+    "macaque_expected": {
+     "body_count": 10,
+     "coordinate_count": 19,
+     "joint_count": 10,
+     "muscle_count": 36,
+     "path_points": 125,
+     "wrap_surfaces": 14
+    },
+    "all_taxa": {
+     "Bonobo": {
+      "body_count": 11,
+      "joint_count": 11,
+      "muscle_count": 36,
+      "path_points": 127,
+      "wrap_surfaces": 18,
+      "coordinate_count": 20,
+      "match": "exact",
+      "ground_synthesized": 1
+     },
+     "Chimpanzee": {
+      "body_count": 10,
+      "joint_count": 10,
+      "muscle_count": 36,
+      "path_points": 126,
+      "wrap_surfaces": 16,
+      "coordinate_count": 19,
+      "match": "exact",
+      "ground_synthesized": 1
+     },
+     "Gibbon": {
+      "body_count": 10,
+      "joint_count": 10,
+      "muscle_count": 36,
+      "path_points": 125,
+      "wrap_surfaces": 10,
+      "coordinate_count": 19,
+      "match": "exact",
+      "ground_synthesized": 1
+     },
+     "Gorilla": {
+      "body_count": 10,
+      "joint_count": 10,
+      "muscle_count": 36,
+      "path_points": 126,
+      "wrap_surfaces": 11,
+      "coordinate_count": 19,
+      "match": "exact",
+      "ground_synthesized": 1
+     },
+     "Macaque": {
+      "body_count": 10,
+      "joint_count": 10,
+      "muscle_count": 36,
+      "path_points": 125,
+      "wrap_surfaces": 14,
+      "coordinate_count": 19,
+      "match": "exact",
+      "ground_synthesized": 1
+     },
+     "Orangutan": {
+      "body_count": 11,
+      "joint_count": 11,
+      "muscle_count": 36,
+      "path_points": 121,
+      "wrap_surfaces": 17,
+      "coordinate_count": 20,
+      "match": "exact",
+      "ground_synthesized": 1
+     },
+     "Siamang": {
+      "body_count": 10,
+      "joint_count": 10,
+      "muscle_count": 36,
+      "path_points": 125,
+      "wrap_surfaces": 16,
+      "coordinate_count": 19,
+      "match": "exact",
+      "ground_synthesized": 1
+     }
+    },
+    "note": "36 muscles / 125 path points / 14 wrap surfaces / 10 bodies / 10 joints / 19 coordinates exact for macaque; every other taxon exact against its OWN inventory record. Distinct inventories, not to be conflated: 14 body-level wrap surfaces, 15 muscle pathwrap records (R_RF carries 2), 14 wrapped muscles (inventory total_wrapped_muscles). 1 explicitly marked synthesized ground body record is added by the store-format conversion (the 4.x Ground is massless/separate; the 3.x store format requires a ground body); file-side body count reconciles at 10."
+   },
+   "B_deterministic_parse": {
+    "verdict": "PASS",
+    "canonical_bytes_equal_on_reparse": "7/7 taxa",
+    "parse_order_independent": true,
+    "macaque_model_canonical_sha256": "fcc119b953cf93d957760770e3d24884f79f9db14396e7f12b7ec4ec7857f792"
+   },
+   "C_store_format_checks": {
+    "verdict": "PASS",
+    "proposal_graph_check": [],
+    "idempotent_double_build": true,
+    "objects_added": 49,
+    "relations_added": 194,
+    "proposal_graph_hash": "c85744d3654060609e42d223d3737001084170386a2bc58cd5be24d4afa1b45b",
+    "note": "the converted hierarchy is additionally validated by the UNMODIFIED 3.x pose_frames(), the same validator the 3.x lane feeds its own models through"
+   },
+   "D_three_x_regression": {
+    "verdict": "PASS_WITH_PREREGISTERED_CAVEAT",
+    "macaque_anatomy_sha256": "d1e23defcf27a6fae61d637609f7bfc609ac3a6fccdffeaa666ef44b738105ad",
+    "byte_unchanged": true,
+    "test_macaque_anatomy": "12 passed, 1 failed",
+    "pre_existing_failure": {
+     "test": "test_graph_intake_is_idempotent_and_connected",
+     "error": "Refusal anatomy_proposal_conflict: ref.macaque_arm.body.radius",
+     "cause": "the committed store's posed frame matrices differ from this machine's fresh replay at ~1e-13 relative (float/BLAS summation drift between the admitting machine and this one); measured at baseline aede5de9 BEFORE any lane file existed; identical failure after; lane changed neither macaque_anatomy.py nor the store"
+    },
+    "test_funnels": "40 passed (after widening the sparse checkout to tools/reference_data; the 30 failures seen with the narrower sparse set were checkout-scope, not code)",
+    "other_lane_suites": "test_force_arm/test_force_compiler/test_coupled_scene/test_earth_scene: 4 failed + 16 errors, byte-identical counts at baseline (stash-measured) and after; pre-existing replay drift on this machine, lane-external"
+   },
+   "E_not_macaque_special_cased": {
+    "verdict": "PASS",
+    "taxon_name_occurrences": "each of the 7 taxon names occurs exactly once in wiseman_osim.py, on the TAXA data-table line; no taxon conditional exists",
+    "other_6_taxa": "all reconcile exact against their own inventory records through the same parse_wiseman path"
+   }
+  },
+  "force_pairing": {
+   "prediction": "28 exact / 8 split-deferred / 0 unmatched / 6 Guimaraes-only",
+   "measured": {
+    "exact": 28,
+    "force_runtime_ready": 0,
+    "guimaraes_total": 36,
+    "guimaraes_without_wiseman_record": 6,
+    "split_homolog_deferred": 8,
+    "unmatched": 0,
+    "wiseman_muscles": 36
+   },
+   "guimaraes_without_wiseman_record": [
+    "GemInf",
+    "GemSup",
+    "ObtExt",
+    "ObtInt",
+    "PLANT",
+    "POP"
+   ],
+   "force_runtime_ready_count": 0,
+   "reachability": {
+    "46ed85a3_ancestor_of_aede5de9": false,
+    "data_guimaraes_arch_at_aede5de9": false,
+    "in_lineage_authorities": [
+     "docs/research/20260920_adult_and_muscle_data_options.md @ fc45106c (36-name Guimaraes list)",
+     "rsos260107_si_001.docx @ aede5de9 (homology table)"
+    ],
+    "cross_ref_availability": "the admitted batch exists in the same object store on refs carrying 46ed85a3 (e.g. origin/agent/skeleton-movie-20260919); a later lane may merge it and flip force_runtime_ready through the recorded name pairs"
+   },
+   "match_table": {
+    "counts": {
+     "exact": 28,
+     "force_runtime_ready": 0,
+     "guimaraes_total": 36,
+     "guimaraes_without_wiseman_record": 6,
+     "split_homolog_deferred": 8,
+     "unmatched": 0,
+     "wiseman_muscles": 36
+    },
+    "exact": [
+     {
+      "guimaraes": "AM",
+      "wiseman": "R_AM"
+     },
+     {
+      "guimaraes": "AB",
+      "wiseman": "R_AB"
+     },
+     {
+      "guimaraes": "AL",
+      "wiseman": "R_AL"
+     },
+     {
+      "guimaraes": "BFS",
+      "wiseman": "R_BFS"
+     },
+     {
+      "guimaraes": "BFL",
+      "wiseman": "R_BFL"
+     },
+     {
+      "guimaraes": "EHL",
+      "wiseman": "R_EHL"
+     },
+     {
+      "guimaraes": "FHL",
+      "wiseman": "R_FHL"
+     },
+     {
+      "guimaraes": "GMax",
+      "wiseman": "R_GMax"
+     },
+     {
+      "guimaraes": "GMed",
+      "wiseman": "R_GMed"
+     },
+     {
+      "guimaraes": "GMin",
+      "wiseman": "R_GMin"
+     },
+     {
+      "guimaraes": "GRA",
+      "wiseman": "R_GRA"
+     },
+     {
+      "guimaraes": "ILI",
+      "wiseman": "R_ILI"
+     },
+     {
+      "guimaraes": "LG",
+      "wiseman": "R_LG"
+     },
+     {
+      "guimaraes": "MG",
+      "wiseman": "R_MG"
+     },
+     {
+      "guimaraes": "PB",
+      "wiseman": "R_PB"
+     },
+     {
+      "guimaraes": "PIRI",
+      "wiseman": "R_PIRI"
+     },
+     {
+      "guimaraes": "PL",
+      "wiseman": "R_PL"
+     },
+     {
+      "guimaraes": "RF",
+      "wiseman": "R_RF"
+     },
+     {
+      "guimaraes": "SAR",
+      "wiseman": "R_SAR"
+     },
+     {
+      "guimaraes": "SM",
+      "wiseman": "R_SM"
+     },
+     {
+      "guimaraes": "SOL",
+      "wiseman": "R_SOL"
+     },
+     {
+      "guimaraes": "ST",
+      "wiseman": "R_ST"
+     },
+     {
+      "guimaraes": "TA",
+      "wiseman": "R_TA"
+     },
+     {
+      "guimaraes": "TP",
+      "wiseman": "R_TP"
+     },
+     {
+      "guimaraes": "PECT",
+      "wiseman": "R_PECT"
+     },
+     {
+      "guimaraes": "VI",
+      "wiseman": "R_VI"
+     },
+     {
+      "guimaraes": "VL",
+      "wiseman": "R_VL"
+     },
+     {
+      "guimaraes": "VM",
+      "wiseman": "R_VMed"
+     }
+    ],
+    "guimaraes_without_wiseman_record": [
+     "GemInf",
+     "GemSup",
+     "ObtExt",
+     "ObtInt",
+     "PLANT",
+     "POP"
+    ],
+    "split_homolog_deferred": [
+     {
+      "guimaraes": "EDL",
+      "wiseman": "R_EDL_TENDONII"
+     },
+     {
+      "guimaraes": "EDL",
+      "wiseman": "R_EDL_TENDONIII"
+     },
+     {
+      "guimaraes": "EDL",
+      "wiseman": "R_EDL_TENDONIV"
+     },
+     {
+      "guimaraes": "EDL",
+      "wiseman": "R_EDL_TENDONV"
+     },
+     {
+      "guimaraes": "FDL",
+      "wiseman": "R_FDL_TENDONII"
+     },
+     {
+      "guimaraes": "FDL",
+      "wiseman": "R_FDL_TENDONIII"
+     },
+     {
+      "guimaraes": "FDL",
+      "wiseman": "R_FDL_TENDONIV"
+     },
+     {
+      "guimaraes": "FDL",
+      "wiseman": "R_FDL_TENDONV"
+     }
+    ],
+    "taxon": "Macaque",
+    "unmatched": []
+   }
+  },
+  "adapter": {
+   "file": "tools/science_funnel/wiseman_osim.py",
+   "shape": "parallel parser + version-dispatching front end (parse_anatomy); justification: parse_source() has the 3.x dialect welded into every require() and is byte-pinned by this receipt's falsifier D; the parallel module shares the store target and imports the numeric/frame/record helpers AND pose_frames from macaque_anatomy, so both dialects converge on chimera.anatomical_assembly.v1 through shared code",
+   "tests": "tools/science_funnel/tests/test_wiseman_osim.py: 12 passed"
+  },
+  "artifacts": [
+   "receipt.json",
+   "guimaraes_name_pairing.json",
+   "guimaraes_match_table.json",
+   "macaque_output.json",
+   "macaque_assembly.json",
+   "macaque_proposal_fragment.json"
+  ]
+ },
  "results_note": "Filled by the run BELOW THIS LINE ONLY; the sections above are the preregistration and are never edited after the first commit."
 }
