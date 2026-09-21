@@ -1,0 +1,263 @@
+{
+ "base_commit": "2d585c7b",
+ "bond_law_source": "matter_skeleton_import.py bond_law (cartilage, cure 13 MPa Yamada 1970, rest_length = measured gap) -- reused, not re-authored",
+ "bonds": [
+  {
+   "anatomical_reading": "hip joint: femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933, The Anatomy of the Rhesus Monkey)",
+   "closest_points_mm": {
+    "on_01": [
+     61.142,
+     42.844,
+     41.118
+    ],
+    "on_02": [
+     59.904,
+     42.598,
+     41.731
+    ]
+   },
+   "components": [
+    "axial_composite",
+    "hind_chain_min02"
+   ],
+   "cure_strength": 13000000.0,
+   "evidence": "axial_adjacency_20260920 measured law gap 1.44 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json",
+   "id": "bond.joint_01_02",
+   "material": "mat.cartilage",
+   "measured_gap_mm": 1.44,
+   "members": [
+    "mem.bone_01",
+    "mem.bone_02"
+   ],
+   "pre_registered": true,
+   "refined_gap_mm": 1.403,
+   "rest_length_mm": 1.44
+  },
+  {
+   "anatomical_reading": "hip joint: femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933)",
+   "closest_points_mm": {
+    "on_01": [
+     59.633,
+     43.14,
+     25.066
+    ],
+    "on_03": [
+     58.322,
+     43.093,
+     24.777
+    ]
+   },
+   "components": [
+    "axial_composite",
+    "hind_chain_min03"
+   ],
+   "cure_strength": 13000000.0,
+   "evidence": "axial_adjacency_20260920 measured law gap 1.49 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json",
+   "id": "bond.joint_01_03",
+   "material": "mat.cartilage",
+   "measured_gap_mm": 1.49,
+   "members": [
+    "mem.bone_01",
+    "mem.bone_03"
+   ],
+   "pre_registered": true,
+   "refined_gap_mm": 1.343,
+   "rest_length_mm": 1.49
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_points_mm": {
+    "on_01": [
+     137.894,
+     32.19,
+     40.069
+    ],
+    "on_08": [
+     138.24,
+     32.72,
+     40.32
+    ]
+   },
+   "components": [
+    "axial_composite",
+    "fore_chain_min04"
+   ],
+   "cure_strength": 13000000.0,
+   "evidence": "axial_adjacency_20260920 measured law gap 0.68 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json",
+   "id": "bond.joint_01_08",
+   "material": "mat.cartilage",
+   "measured_gap_mm": 0.68,
+   "members": [
+    "mem.bone_01",
+    "mem.bone_08"
+   ],
+   "pre_registered": false,
+   "refined_gap_mm": 0.681,
+   "rest_length_mm": 0.68
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_points_mm": {
+    "on_01": [
+     127.734,
+     10.687,
+     21.46
+    ],
+    "on_09": [
+     143.2,
+     22.64,
+     19.36
+    ]
+   },
+   "components": [
+    "axial_composite",
+    "fore_chain_min05"
+   ],
+   "cure_strength": 13000000.0,
+   "evidence": "axial_adjacency_20260920 measured law gap 0.56 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json",
+   "id": "bond.joint_01_09",
+   "material": "mat.cartilage",
+   "measured_gap_mm": 0.56,
+   "members": [
+    "mem.bone_01",
+    "mem.bone_09"
+   ],
+   "pre_registered": false,
+   "refined_gap_mm": 0.0,
+   "rest_length_mm": 0.56
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_points_mm": {
+    "on_01": [
+     111.319,
+     12.211,
+     23.265
+    ],
+    "on_11": [
+     110.08,
+     11.84,
+     20.4
+    ]
+   },
+   "components": [
+    "axial_composite",
+    "fore_chain_min05"
+   ],
+   "cure_strength": 13000000.0,
+   "evidence": "axial_adjacency_20260920 measured law gap 2.75 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json",
+   "id": "bond.joint_01_11",
+   "material": "mat.cartilage",
+   "measured_gap_mm": 2.75,
+   "members": [
+    "mem.bone_01",
+    "mem.bone_11"
+   ],
+   "pre_registered": false,
+   "refined_gap_mm": 0.0,
+   "rest_length_mm": 2.75
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_points_mm": {
+    "on_01": [
+     87.466,
+     55.778,
+     28.531
+    ],
+    "on_13": [
+     114.72,
+     29.36,
+     13.12
+    ]
+   },
+   "components": [
+    "axial_composite",
+    "fore_chain_min05"
+   ],
+   "cure_strength": 13000000.0,
+   "evidence": "axial_adjacency_20260920 measured law gap 2.83 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json",
+   "id": "bond.joint_01_13",
+   "material": "mat.cartilage",
+   "measured_gap_mm": 2.83,
+   "members": [
+    "mem.bone_01",
+    "mem.bone_13"
+   ],
+   "pre_registered": false,
+   "refined_gap_mm": 0.0,
+   "rest_length_mm": 2.83
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_points_mm": {
+    "on_01": [
+     59.782,
+     43.848,
+     37.8
+    ],
+    "on_15": [
+     58.96,
+     43.84,
+     37.76
+    ]
+   },
+   "components": [
+    "axial_composite",
+    "hind_chain_min02"
+   ],
+   "cure_strength": 13000000.0,
+   "evidence": "axial_adjacency_20260920 measured law gap 0.85 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json",
+   "id": "bond.joint_01_15",
+   "material": "mat.cartilage",
+   "measured_gap_mm": 0.85,
+   "members": [
+    "mem.bone_01",
+    "mem.bone_15"
+   ],
+   "pre_registered": false,
+   "refined_gap_mm": 0.823,
+   "rest_length_mm": 0.85
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_points_mm": {
+    "on_01": [
+     58.904,
+     44.821,
+     27.901
+    ],
+    "on_17": [
+     58.32,
+     44.8,
+     28.0
+    ]
+   },
+   "components": [
+    "axial_composite",
+    "hind_chain_min03"
+   ],
+   "cure_strength": 13000000.0,
+   "evidence": "axial_adjacency_20260920 measured law gap 0.64 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json",
+   "id": "bond.joint_01_17",
+   "material": "mat.cartilage",
+   "measured_gap_mm": 0.64,
+   "members": [
+    "mem.bone_01",
+    "mem.bone_17"
+   ],
+   "pre_registered": false,
+   "refined_gap_mm": 0.592,
+   "rest_length_mm": 0.64
+  }
+ ],
+ "candidate_count": 8,
+ "lane": "agent/axial-limb-adjacency-20260920",
+ "schema": "chimera.matter_candidate_bonds.v1",
+ "status": "CANDIDATE -- data file for the integrator; adopting it is the integrator's act. The committed infant_skeleton.body.json is NOT modified by this lane.",
+ "threshold_law": {
+  "cut_mm": 3.0,
+  "source": "bone_identification_v3.json derived_cuts.joint_gap_mm (v2 shared gap valley)"
+ },
+ "trailer": "Agent: GLM 5.3"
+}
