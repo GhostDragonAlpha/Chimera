@@ -1,0 +1,1654 @@
+{
+ "base_commit": "3539fdb9",
+ "committed_edges_receipt": {
+  "edges": {
+   "02_06": {
+    "committed_mm": 2.91,
+    "new_default_exact_mm": 2.911,
+    "new_default_mm": 2.91,
+    "still_touching_new": true,
+    "v2_measured_mm": 2.91
+   },
+   "02_15": {
+    "committed_mm": 1.01,
+    "new_default_exact_mm": 1.006,
+    "new_default_mm": 1.01,
+    "still_touching_new": true,
+    "v2_measured_mm": 1.01
+   },
+   "03_07": {
+    "committed_mm": 2.83,
+    "new_default_exact_mm": 2.826,
+    "new_default_mm": 2.83,
+    "still_touching_new": true,
+    "v2_measured_mm": 2.83
+   },
+   "03_17": {
+    "committed_mm": 0.69,
+    "new_default_exact_mm": 0.69,
+    "new_default_mm": 0.69,
+    "still_touching_new": true,
+    "v2_measured_mm": 0.69
+   },
+   "04_08": {
+    "committed_mm": 0.73,
+    "new_default_exact_mm": 0.733,
+    "new_default_mm": 0.73,
+    "still_touching_new": true,
+    "v2_measured_mm": 0.73
+   },
+   "04_10": {
+    "committed_mm": 2.0,
+    "new_default_exact_mm": 2.004,
+    "new_default_mm": 2.0,
+    "still_touching_new": true,
+    "v2_measured_mm": 2.0
+   },
+   "04_12": {
+    "committed_mm": 0.93,
+    "new_default_exact_mm": 0.926,
+    "new_default_mm": 0.93,
+    "still_touching_new": true,
+    "v2_measured_mm": 0.93
+   },
+   "05_09": {
+    "committed_mm": 0.86,
+    "new_default_exact_mm": 0.861,
+    "new_default_mm": 0.86,
+    "still_touching_new": true,
+    "v2_measured_mm": 0.86
+   },
+   "05_11": {
+    "committed_mm": 2.27,
+    "new_default_exact_mm": 2.267,
+    "new_default_mm": 2.27,
+    "still_touching_new": true,
+    "v2_measured_mm": 2.27
+   },
+   "05_13": {
+    "committed_mm": 0.86,
+    "new_default_exact_mm": 0.862,
+    "new_default_mm": 0.86,
+    "still_touching_new": true,
+    "v2_measured_mm": 0.86
+   },
+   "06_20": {
+    "committed_mm": 0.48,
+    "new_default_exact_mm": 0.479,
+    "new_default_mm": 0.48,
+    "still_touching_new": true,
+    "v2_measured_mm": 0.48
+   },
+   "06_25": {
+    "committed_mm": 0.66,
+    "new_default_exact_mm": 0.66,
+    "new_default_mm": 0.66,
+    "still_touching_new": true,
+    "v2_measured_mm": 0.66
+   },
+   "07_18": {
+    "committed_mm": 1.79,
+    "new_default_exact_mm": 1.785,
+    "new_default_mm": 1.79,
+    "still_touching_new": true,
+    "v2_measured_mm": 1.79
+   },
+   "07_21": {
+    "committed_mm": 0.45,
+    "new_default_exact_mm": 0.453,
+    "new_default_mm": 0.45,
+    "still_touching_new": true,
+    "v2_measured_mm": 0.45
+   },
+   "07_24": {
+    "committed_mm": 0.86,
+    "new_default_exact_mm": 0.862,
+    "new_default_mm": 0.86,
+    "still_touching_new": true,
+    "v2_measured_mm": 0.86
+   },
+   "10_12": {
+    "committed_mm": 0.38,
+    "new_default_exact_mm": 0.375,
+    "new_default_mm": 0.38,
+    "still_touching_new": true,
+    "v2_measured_mm": 0.38
+   },
+   "11_13": {
+    "committed_mm": 0.47,
+    "new_default_exact_mm": 0.462,
+    "new_default_mm": 0.46,
+    "still_touching_new": true,
+    "v2_measured_mm": 0.47
+   },
+   "20_25": {
+    "committed_mm": 2.47,
+    "new_default_exact_mm": 2.468,
+    "new_default_mm": 2.47,
+    "still_touching_new": true,
+    "v2_measured_mm": 2.47
+   },
+   "21_24": {
+    "committed_mm": 2.9,
+    "new_default_exact_mm": 2.9,
+    "new_default_mm": 2.9,
+    "still_touching_new": true,
+    "v2_measured_mm": 2.9
+   },
+   "22_25": {
+    "committed_mm": 0.99,
+    "new_default_exact_mm": 0.986,
+    "new_default_mm": 0.99,
+    "still_touching_new": true,
+    "v2_measured_mm": 0.99
+   },
+   "23_24": {
+    "committed_mm": 1.01,
+    "new_default_exact_mm": 1.012,
+    "new_default_mm": 1.01,
+    "still_touching_new": true,
+    "v2_measured_mm": 1.01
+   }
+  },
+  "note": "the 21 committed bonds under BOTH metrics: v2 reproduces the committed numbers (history); the new default keeps every edge in the touching class (law), each with its measured number"
+ },
+ "component_counts": {
+  "committed_only": {
+   "components": [
+    {
+     "component": "axial_composite",
+     "ranks": [
+      1
+     ]
+    },
+    {
+     "component": "hind_chain_min02",
+     "ranks": [
+      2,
+      6,
+      15,
+      20,
+      22,
+      25
+     ]
+    },
+    {
+     "component": "hind_chain_min03",
+     "ranks": [
+      3,
+      7,
+      17,
+      18,
+      21,
+      23,
+      24
+     ]
+    },
+    {
+     "component": "fore_chain_min04",
+     "ranks": [
+      4,
+      8,
+      10,
+      12
+     ]
+    },
+    {
+     "component": "fore_chain_min05",
+     "ranks": [
+      5,
+      9,
+      11,
+      13
+     ]
+    },
+    {
+     "component": "singleton_14",
+     "ranks": [
+      14
+     ]
+    },
+    {
+     "component": "singleton_16",
+     "ranks": [
+      16
+     ]
+    },
+    {
+     "component": "singleton_19",
+     "ranks": [
+      19
+     ]
+    }
+   ],
+   "count": 8,
+   "matches_committed_body": true
+  },
+  "plus_new_metric_candidates": {
+   "added_pairs": [],
+   "components": [
+    {
+     "component": "axial_composite",
+     "ranks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      17,
+      18,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25
+     ]
+    },
+    {
+     "component": "singleton_14",
+     "ranks": [
+      14
+     ]
+    },
+    {
+     "component": "singleton_16",
+     "ranks": [
+      16
+     ]
+    },
+    {
+     "component": "singleton_19",
+     "ranks": [
+      19
+     ]
+    }
+   ],
+   "count": 4
+  },
+  "plus_old_metric_candidates": {
+   "candidate_pairs": [
+    [
+     1,
+     2
+    ],
+    [
+     1,
+     3
+    ],
+    [
+     1,
+     8
+    ],
+    [
+     1,
+     9
+    ],
+    [
+     1,
+     11
+    ],
+    [
+     1,
+     13
+    ],
+    [
+     1,
+     15
+    ],
+    [
+     1,
+     17
+    ]
+   ],
+   "components": [
+    {
+     "component": "axial_composite",
+     "ranks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      17,
+      18,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25
+     ]
+    },
+    {
+     "component": "singleton_14",
+     "ranks": [
+      14
+     ]
+    },
+    {
+     "component": "singleton_16",
+     "ranks": [
+      16
+     ]
+    },
+    {
+     "component": "singleton_19",
+     "ranks": [
+      19
+     ]
+    }
+   ],
+   "count": 4,
+   "matches_prior_lane_file": true
+  }
+ },
+ "corroboration_vs_prior_lane": {
+  "corrected_pairs": {
+   "01_09": {
+    "guarded_exact_mm": 0.516,
+    "prior_refined_mm": 0.0,
+    "v2_mm": 0.56
+   },
+   "01_11": {
+    "guarded_exact_mm": 2.752,
+    "prior_refined_mm": 0.0,
+    "v2_mm": 2.75
+   },
+   "01_13": {
+    "guarded_exact_mm": 2.785,
+    "prior_refined_mm": 0.0,
+    "v2_mm": 2.83
+   },
+   "01_14": {
+    "guarded_exact_mm": 29.754,
+    "prior_refined_mm": 0.0,
+    "v2_mm": 29.75
+   },
+   "01_19": {
+    "guarded_exact_mm": 36.928,
+    "prior_refined_mm": 0.0,
+    "v2_mm": 36.93
+   },
+   "04_10": {
+    "guarded_exact_mm": 2.004,
+    "prior_refined_mm": 0.0,
+    "v2_mm": 2.0
+   },
+   "04_12": {
+    "guarded_exact_mm": 0.926,
+    "prior_refined_mm": 0.0,
+    "v2_mm": 0.93
+   },
+   "05_09": {
+    "guarded_exact_mm": 0.861,
+    "prior_refined_mm": 0.0,
+    "v2_mm": 0.86
+   },
+   "05_11": {
+    "guarded_exact_mm": 2.267,
+    "prior_refined_mm": 0.0,
+    "v2_mm": 2.27
+   },
+   "06_20": {
+    "guarded_exact_mm": 0.479,
+    "prior_refined_mm": 0.0,
+    "v2_mm": 0.48
+   },
+   "07_18": {
+    "guarded_exact_mm": 1.785,
+    "prior_refined_mm": 0.0,
+    "v2_mm": 1.79
+   },
+   "07_21": {
+    "guarded_exact_mm": 0.453,
+    "prior_refined_mm": 0.0,
+    "v2_mm": 0.45
+   },
+   "11_13": {
+    "guarded_exact_mm": 0.462,
+    "prior_refined_mm": 0.0,
+    "v2_mm": 0.47
+   },
+   "21_24": {
+    "guarded_exact_mm": 2.9,
+    "prior_refined_mm": 0.0,
+    "v2_mm": 2.9
+   }
+  },
+  "max_abs_dev_mm": 36.928,
+  "note": "the prior lane's refined_gap_mm came from the SAME estimator WITHOUT the degenerate-triangle guard; every deviation itemized here is a forged 0.000 (zero-area triangle) corrected by the guarded exact metric",
+  "pairs_equal_at_0.001mm": 21,
+  "prior_refined_pairs_compared": 35
+ },
+ "cut_derivation": {
+  "new_default": {
+   "class_change_points": {
+    "last_touching_pair": {
+     "gap_new_default_mm": 2.91,
+     "gap_v2_mm": 2.91,
+     "pair_ranks": [
+      2,
+      6
+     ]
+    },
+    "next_separated_pair": {
+     "gap_new_default_mm": 3.3,
+     "gap_v2_mm": 3.3,
+     "pair_ranks": [
+      3,
+      21
+     ]
+    }
+   },
+   "cut_3.0_inside_valley": true,
+   "flip_set_cut_independence": "the flip set is EMPTY and therefore identical for every cut in (0.000, 3.298]",
+   "valley_new_mm": [
+    2.911,
+    3.298
+   ],
+   "verdict": "RE-JUSTIFIED UNCHANGED: 3.0 mm lies inside the new-metric valley; no pair changes class for any cut in the valley"
+  },
+  "procedure": "the v2 derivation procedure (last touching pair / next separated pair on the metric's own 300-pair distribution) re-run under the new default metric; the cut is re-derived, never re-chosen",
+  "v2_history": {
+   "committed_cut_inside": true,
+   "last_touching_mm": 2.91,
+   "last_touching_pair": [
+    2,
+    6
+   ],
+   "next_separated_mm": 3.3,
+   "next_separated_pair": [
+    3,
+    21
+   ]
+  }
+ },
+ "falsifiers": {
+  "F1_history_reproduction": {
+   "edges_checked": 21,
+   "max_abs_dev_mm": 0.00477,
+   "pass": true,
+   "per_edge": {
+    "02_06": {
+     "committed_mm": 2.91,
+     "new_default_mm": 2.91,
+     "v2_measured_mm": 2.91
+    },
+    "02_15": {
+     "committed_mm": 1.01,
+     "new_default_mm": 1.01,
+     "v2_measured_mm": 1.01
+    },
+    "03_07": {
+     "committed_mm": 2.83,
+     "new_default_mm": 2.83,
+     "v2_measured_mm": 2.83
+    },
+    "03_17": {
+     "committed_mm": 0.69,
+     "new_default_mm": 0.69,
+     "v2_measured_mm": 0.69
+    },
+    "04_08": {
+     "committed_mm": 0.73,
+     "new_default_mm": 0.73,
+     "v2_measured_mm": 0.73
+    },
+    "04_10": {
+     "committed_mm": 2.0,
+     "new_default_mm": 2.0,
+     "v2_measured_mm": 2.0
+    },
+    "04_12": {
+     "committed_mm": 0.93,
+     "new_default_mm": 0.93,
+     "v2_measured_mm": 0.93
+    },
+    "05_09": {
+     "committed_mm": 0.86,
+     "new_default_mm": 0.86,
+     "v2_measured_mm": 0.86
+    },
+    "05_11": {
+     "committed_mm": 2.27,
+     "new_default_mm": 2.27,
+     "v2_measured_mm": 2.27
+    },
+    "05_13": {
+     "committed_mm": 0.86,
+     "new_default_mm": 0.86,
+     "v2_measured_mm": 0.86
+    },
+    "06_20": {
+     "committed_mm": 0.48,
+     "new_default_mm": 0.48,
+     "v2_measured_mm": 0.48
+    },
+    "06_25": {
+     "committed_mm": 0.66,
+     "new_default_mm": 0.66,
+     "v2_measured_mm": 0.66
+    },
+    "07_18": {
+     "committed_mm": 1.79,
+     "new_default_mm": 1.79,
+     "v2_measured_mm": 1.79
+    },
+    "07_21": {
+     "committed_mm": 0.45,
+     "new_default_mm": 0.45,
+     "v2_measured_mm": 0.45
+    },
+    "07_24": {
+     "committed_mm": 0.86,
+     "new_default_mm": 0.86,
+     "v2_measured_mm": 0.86
+    },
+    "10_12": {
+     "committed_mm": 0.38,
+     "new_default_mm": 0.38,
+     "v2_measured_mm": 0.38
+    },
+    "11_13": {
+     "committed_mm": 0.47,
+     "new_default_mm": 0.46,
+     "v2_measured_mm": 0.47
+    },
+    "20_25": {
+     "committed_mm": 2.47,
+     "new_default_mm": 2.47,
+     "v2_measured_mm": 2.47
+    },
+    "21_24": {
+     "committed_mm": 2.9,
+     "new_default_mm": 2.9,
+     "v2_measured_mm": 2.9
+    },
+    "22_25": {
+     "committed_mm": 0.99,
+     "new_default_mm": 0.99,
+     "v2_measured_mm": 0.99
+    },
+    "23_24": {
+     "committed_mm": 1.01,
+     "new_default_mm": 1.01,
+     "v2_measured_mm": 1.01
+    }
+   }
+  },
+  "F2_monotonicity": {
+   "pairs_checked": 300,
+   "pass": true,
+   "violations": []
+  },
+  "F3_committed_edges_survive": {
+   "left_class": [],
+   "pass": true
+  },
+  "F4_flip_set_exact": {
+   "measured": [],
+   "pass": false,
+   "predicted": [
+    [
+     1,
+     14
+    ],
+    [
+     1,
+     19
+    ]
+   ]
+  },
+  "F5_refuse_when_no_contact": {
+   "named_stays": {
+    "01_04": {
+     "gap_new_default_mm": 4.95,
+     "gap_v2_mm": 5.0,
+     "still_refused": true
+    },
+    "01_05": {
+     "gap_new_default_mm": 4.6,
+     "gap_v2_mm": 4.6,
+     "still_refused": true
+    }
+   },
+   "pass": true,
+   "singleton_rows": {
+    "14": {
+     "flip_partners": [],
+     "joins_through": "nothing -- stays isolated",
+     "row_min_excluding_flips_mm": 6.99,
+     "row_min_new_default_mm": 6.99,
+     "row_min_partner_rank": 24,
+     "row_partners_above_cut_excluding_flips": true
+    },
+    "16": {
+     "flip_partners": [],
+     "joins_through": "nothing -- stays isolated",
+     "row_min_excluding_flips_mm": 5.82,
+     "row_min_new_default_mm": 5.82,
+     "row_min_partner_rank": 2,
+     "row_partners_above_cut_excluding_flips": true
+    },
+    "19": {
+     "flip_partners": [],
+     "joins_through": "nothing -- stays isolated",
+     "row_min_excluding_flips_mm": 7.71,
+     "row_min_new_default_mm": 7.71,
+     "row_min_partner_rank": 22,
+     "row_partners_above_cut_excluding_flips": true
+    }
+   }
+  },
+  "F7_cherry_pick_guard": {
+   "pairs_under_both_metrics": 300,
+   "pass": true
+  },
+  "F8_full_guarantee": {
+   "pass": true,
+   "unguaranteed_pairs": []
+  }
+ },
+ "flips": {
+  "count": 0,
+  "predicted_exactly": false,
+  "records": []
+ },
+ "inputs": {
+  "bone_identification_v3_sha256": "1d84854fd1770ed6548221ee803c949a487d9005133548eb162a5c64d4161d33",
+  "mesh_sha256": {
+   "bone_01_4737869vox_lo.obj": "b95cd329084d4b44ce5eb2fae66cd19a8599134d782fb6a020d67b9714afe9f7",
+   "bone_02_210240vox_lo.obj": "c20aa8364c8d09623755fdbfbdc014d9548fdc3f6d89d1b998cacbaf37b49ed4",
+   "bone_03_208514vox_lo.obj": "f7d638a01c2a34a19c0bc0240b058ccbf79d94cea467314c422d89b2b0ab9a99",
+   "bone_04_180534vox_lo.obj": "00a9a32628c0e6857864326473976f4a2cf07de8f34e8c2480803752bd923cc5",
+   "bone_05_174742vox_lo.obj": "f06fefd372a57e8ba88f384f06cfa67036ffb973e44d444ad6f5b5e77a63fe2d",
+   "bone_06_154508vox_lo.obj": "b1b15ff5e631ec4bac5353e0f2461c7d8561579ab1a78018bd83f3113838f901",
+   "bone_07_150102vox_lo.obj": "5a2e24d5947dd2514205a8187599036ffa349af47fcde2d471f221511d0af157",
+   "bone_08_102171vox_lo.obj": "f053884c6f2b98107db180f95c9ed5bc5904c3144a8956be6d2a39ba79ef5924",
+   "bone_09_100874vox_lo.obj": "10a1f1b21c2b535565048bea69764a99c1c2f35bd5356f004c909ebb89e76281",
+   "bone_10_92842vox_lo.obj": "54678dbca44db5fa7a35c29fdb3baedaeea6fc7b890ad97ed619a8302a972f55",
+   "bone_11_90563vox_lo.obj": "2e1e286207faf65486984b3cf703f8d7ebaef6bc58577917b43ce2b53948f3fa",
+   "bone_12_88112vox_lo.obj": "9f90a8c2d3c23cb296c2be900af8e1d8a922f1597d6ebfa684561da45cc9c9ed",
+   "bone_13_86590vox_lo.obj": "6e7e1c988e78805d20a180447dd57b17b5eb1e2182b3bd975eb8cdbc786ec3a6",
+   "bone_14_58499vox_lo.obj": "1e51c0b691c107a945cab0deb89e19d3b0092c57afcec76cd249ffc7c4f1fae5",
+   "bone_15_54574vox_lo.obj": "f7111f3f1767eac74c510df8667c24798f5f065280ecabb9a65f0f7e7b6ad536",
+   "bone_16_54463vox_lo.obj": "52dfdd47f851a67b738f0f3dd369de833dd501381a849e2fedaac43fa08645dc",
+   "bone_17_54226vox_lo.obj": "74c14826c748245762fb45d966eb12ffb6796503c7fd8043744f4f8dae4f1a8a",
+   "bone_18_53022vox_lo.obj": "c752e9458b6d267c741da1be256737758528e7d7542c92472a3d458a9fa38a50",
+   "bone_19_44805vox_lo.obj": "526d8da177574a3d9d3b248b5b78c8096a02990e00523b383b87721189265a25",
+   "bone_20_34255vox_lo.obj": "6ab6c392b5d65670c88c37f1de7d1b6c0e79a31fa80850b6497d8c35ac771b9b",
+   "bone_21_33153vox_lo.obj": "b4a43a6499e5dd4131678a582e7b002d94fa6de43bd7dcde2e7aba4ad6d5d8e9",
+   "bone_22_31952vox_lo.obj": "15272ed8bab2e9e9c584d5a78a0983c525863368c31f10fcec5311b3351835bf",
+   "bone_23_31588vox_lo.obj": "6afe670eeae573511787ba1b6853de714462a99e0703d01daba85150b7c4b6bd",
+   "bone_24_25423vox_lo.obj": "5e93fd0604d82285ce1f15f613795cf6931257c2a2b09794954948370c660892",
+   "bone_25_25400vox_lo.obj": "e73d847f2d937e3af921821ca8569b57c31456a29d3653c5efa03c45276e7f43"
+  },
+  "preview_dir": "tools/science_funnel/data/morphosource_ct/meshes_preview",
+  "prior_lane_adjacency_table_sha256": "0b6f11e69685328b3265f3aead4bc118560497b1bef34283b2b9a01b236d30fd",
+  "prior_lane_candidate_bonds_sha256": "ce58287d1589ccbadc8a9762f49c291b53a909792df402007f3c0c6f5fef4610"
+ },
+ "lane": "agent/face-face-metric-20260921",
+ "method": {
+  "exact_resolution_mm": 0.001,
+  "joint_gap_mm": 3.0,
+  "joint_gap_source": "bone_identification_v3.json derived_cuts.joint_gap_mm; re-derived (not re-chosen) under the new metric -- see cut_derivation",
+  "law_resolution_mm": 0.01,
+  "lower_bound_derivation": "every vertex of B lies on a triangle of B, so min_v dist(v, T_B) <= min_v dist(v, V_B); mirrored and composed through the mins: gap_new <= gap_v2 on every pair (F2)",
+  "metric_new_default": "CANDIDATE DEFAULT (tools/science_funnel/surface_gap_metric.py): symmetric min exact point-to-triangle (Ericson), per-vertex k-escalation guarantee over triangle-centroid KD order, promoted verbatim from the axial_adjacency_20260920 lane's refinement",
+  "metric_old_history": "identify_bones_v2.py surface_gaps() verbatim: symmetric min vertex-to-nearest-vertex, trimesh preview vertices, scipy cKDTree, float64",
+  "metrics_per_pair": 2,
+  "pairs_measured": 300
+ },
+ "preregistration_sha256": "03b21f82a23abb543ad82acf20e20f4f397ec929cabaef119b00de7aca99c241",
+ "schema": "chimera.face_face_table.v1",
+ "touching_class_new_default": [
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[13575] of 10 -> triangle[23988] of 12",
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min04",
+    "fore_chain_min04"
+   ],
+   "escalation_rounds": [
+    2,
+    2
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.375,
+   "gap_new_default_mm": 0.38,
+   "gap_v2_mm": 0.38,
+   "guaranteed": true,
+   "labels": [
+    "forearm_class",
+    "forearm_class"
+   ],
+   "pair_members": [
+    "mem.bone_10",
+    "mem.bone_12"
+   ],
+   "pair_ranks": [
+    10,
+    12
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[628] of 21 -> triangle[684] of 07",
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min03",
+    "hind_chain_min03"
+   ],
+   "escalation_rounds": [
+    2,
+    3
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.453,
+   "gap_new_default_mm": 0.45,
+   "gap_v2_mm": 0.45,
+   "guaranteed": true,
+   "labels": [
+    "tibia",
+    "fibula"
+   ],
+   "pair_members": [
+    "mem.bone_07",
+    "mem.bone_21"
+   ],
+   "pair_ranks": [
+    7,
+    21
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[11534] of 13 -> triangle[27012] of 11",
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min05",
+    "fore_chain_min05"
+   ],
+   "escalation_rounds": [
+    2,
+    2
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.462,
+   "gap_new_default_mm": 0.46,
+   "gap_v2_mm": 0.47,
+   "guaranteed": true,
+   "labels": [
+    "forearm_class",
+    "forearm_class"
+   ],
+   "pair_members": [
+    "mem.bone_11",
+    "mem.bone_13"
+   ],
+   "pair_ranks": [
+    11,
+    13
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[1070] of 06 -> triangle[1789] of 20",
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min02",
+    "hind_chain_min02"
+   ],
+   "escalation_rounds": [
+    2,
+    3
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.479,
+   "gap_new_default_mm": 0.48,
+   "gap_v2_mm": 0.48,
+   "guaranteed": true,
+   "labels": [
+    "tibia",
+    "fibula"
+   ],
+   "pair_members": [
+    "mem.bone_06",
+    "mem.bone_20"
+   ],
+   "pair_ranks": [
+    6,
+    20
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[72] of 09 -> triangle[6881] of 01",
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "fore_chain_min05"
+   ],
+   "escalation_rounds": [
+    2,
+    2
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.516,
+   "gap_new_default_mm": 0.52,
+   "gap_v2_mm": 0.56,
+   "guaranteed": true,
+   "labels": [
+    "axial_composite",
+    "hand_class"
+   ],
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_09"
+   ],
+   "pair_ranks": [
+    1,
+    9
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[14996] of 17 -> triangle[206] of 01",
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "hind_chain_min03"
+   ],
+   "escalation_rounds": [
+    2,
+    1
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.592,
+   "gap_new_default_mm": 0.59,
+   "gap_v2_mm": 0.64,
+   "guaranteed": true,
+   "labels": [
+    "axial_composite",
+    "foot_class"
+   ],
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_17"
+   ],
+   "pair_ranks": [
+    1,
+    17
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[77] of 06 -> triangle[13698] of 25",
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min02",
+    "hind_chain_min02"
+   ],
+   "escalation_rounds": [
+    1,
+    3
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.66,
+   "gap_new_default_mm": 0.66,
+   "gap_v2_mm": 0.66,
+   "guaranteed": true,
+   "labels": [
+    "tibia",
+    "foot_class"
+   ],
+   "pair_members": [
+    "mem.bone_06",
+    "mem.bone_25"
+   ],
+   "pair_ranks": [
+    6,
+    25
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[11] of 08 -> triangle[6609] of 01",
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "fore_chain_min04"
+   ],
+   "escalation_rounds": [
+    3,
+    2
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.681,
+   "gap_new_default_mm": 0.68,
+   "gap_v2_mm": 0.68,
+   "guaranteed": true,
+   "labels": [
+    "axial_composite",
+    "hand_class"
+   ],
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_08"
+   ],
+   "pair_ranks": [
+    1,
+    8
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[12018] of 17 -> triangle[1261] of 03",
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min03",
+    "hind_chain_min03"
+   ],
+   "escalation_rounds": [
+    3,
+    3
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.69,
+   "gap_new_default_mm": 0.69,
+   "gap_v2_mm": 0.69,
+   "guaranteed": true,
+   "labels": [
+    "femur",
+    "foot_class"
+   ],
+   "pair_members": [
+    "mem.bone_03",
+    "mem.bone_17"
+   ],
+   "pair_ranks": [
+    3,
+    17
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[14461] of 04 -> triangle[14806] of 08",
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min04",
+    "fore_chain_min04"
+   ],
+   "escalation_rounds": [
+    3,
+    3
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.733,
+   "gap_new_default_mm": 0.73,
+   "gap_v2_mm": 0.73,
+   "guaranteed": true,
+   "labels": [
+    "humerus",
+    "hand_class"
+   ],
+   "pair_members": [
+    "mem.bone_04",
+    "mem.bone_08"
+   ],
+   "pair_ranks": [
+    4,
+    8
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[14942] of 15 -> triangle[250] of 01",
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "hind_chain_min02"
+   ],
+   "escalation_rounds": [
+    2,
+    1
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.823,
+   "gap_new_default_mm": 0.82,
+   "gap_v2_mm": 0.85,
+   "guaranteed": true,
+   "labels": [
+    "axial_composite",
+    "foot_class"
+   ],
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_15"
+   ],
+   "pair_ranks": [
+    1,
+    15
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[14759] of 05 -> triangle[14782] of 09",
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min05",
+    "fore_chain_min05"
+   ],
+   "escalation_rounds": [
+    3,
+    3
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.861,
+   "gap_new_default_mm": 0.86,
+   "gap_v2_mm": 0.86,
+   "guaranteed": true,
+   "labels": [
+    "humerus",
+    "hand_class"
+   ],
+   "pair_members": [
+    "mem.bone_05",
+    "mem.bone_09"
+   ],
+   "pair_ranks": [
+    5,
+    9
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[13] of 07 -> triangle[14190] of 24",
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min03",
+    "hind_chain_min03"
+   ],
+   "escalation_rounds": [
+    1,
+    3
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.862,
+   "gap_new_default_mm": 0.86,
+   "gap_v2_mm": 0.86,
+   "guaranteed": true,
+   "labels": [
+    "tibia",
+    "foot_class"
+   ],
+   "pair_members": [
+    "mem.bone_07",
+    "mem.bone_24"
+   ],
+   "pair_ranks": [
+    7,
+    24
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[161] of 05 -> triangle[28939] of 13",
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min05",
+    "fore_chain_min05"
+   ],
+   "escalation_rounds": [
+    3,
+    2
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.862,
+   "gap_new_default_mm": 0.86,
+   "gap_v2_mm": 0.86,
+   "guaranteed": true,
+   "labels": [
+    "humerus",
+    "forearm_class"
+   ],
+   "pair_members": [
+    "mem.bone_05",
+    "mem.bone_13"
+   ],
+   "pair_ranks": [
+    5,
+    13
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[14263] of 12 -> triangle[108] of 04",
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min04",
+    "fore_chain_min04"
+   ],
+   "escalation_rounds": [
+    3,
+    2
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.926,
+   "gap_new_default_mm": 0.93,
+   "gap_v2_mm": 0.93,
+   "guaranteed": true,
+   "labels": [
+    "humerus",
+    "forearm_class"
+   ],
+   "pair_members": [
+    "mem.bone_04",
+    "mem.bone_12"
+   ],
+   "pair_ranks": [
+    4,
+    12
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[5066] of 22 -> triangle[5499] of 25",
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min02",
+    "hind_chain_min02"
+   ],
+   "escalation_rounds": [
+    1,
+    1
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 0.986,
+   "gap_new_default_mm": 0.99,
+   "gap_v2_mm": 0.99,
+   "guaranteed": true,
+   "labels": [
+    "foot_class",
+    "foot_class"
+   ],
+   "pair_members": [
+    "mem.bone_22",
+    "mem.bone_25"
+   ],
+   "pair_ranks": [
+    22,
+    25
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[592] of 02 -> triangle[23463] of 15",
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min02",
+    "hind_chain_min02"
+   ],
+   "escalation_rounds": [
+    3,
+    2
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 1.006,
+   "gap_new_default_mm": 1.01,
+   "gap_v2_mm": 1.01,
+   "guaranteed": true,
+   "labels": [
+    "femur",
+    "foot_class"
+   ],
+   "pair_members": [
+    "mem.bone_02",
+    "mem.bone_15"
+   ],
+   "pair_ranks": [
+    2,
+    15
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[7956] of 23 -> triangle[6148] of 24",
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min03",
+    "hind_chain_min03"
+   ],
+   "escalation_rounds": [
+    1,
+    1
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 1.012,
+   "gap_new_default_mm": 1.01,
+   "gap_v2_mm": 1.01,
+   "guaranteed": true,
+   "labels": [
+    "foot_class",
+    "foot_class"
+   ],
+   "pair_members": [
+    "mem.bone_23",
+    "mem.bone_24"
+   ],
+   "pair_ranks": [
+    23,
+    24
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": "hip joint: femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933)",
+   "closest_provenance": "vertex[2116] of 03 -> triangle[239] of 01",
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "hind_chain_min03"
+   ],
+   "escalation_rounds": [
+    3,
+    2
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 1.343,
+   "gap_new_default_mm": 1.34,
+   "gap_v2_mm": 1.49,
+   "guaranteed": true,
+   "labels": [
+    "axial_composite",
+    "femur"
+   ],
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_03"
+   ],
+   "pair_ranks": [
+    1,
+    3
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": "hip joint: femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933, The Anatomy of the Rhesus Monkey)",
+   "closest_provenance": "vertex[2486] of 02 -> triangle[318] of 01",
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "hind_chain_min02"
+   ],
+   "escalation_rounds": [
+    2,
+    2
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 1.403,
+   "gap_new_default_mm": 1.4,
+   "gap_v2_mm": 1.44,
+   "guaranteed": true,
+   "labels": [
+    "axial_composite",
+    "femur"
+   ],
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_02"
+   ],
+   "pair_ranks": [
+    1,
+    2
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[14453] of 07 -> triangle[7681] of 18",
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min03",
+    "hind_chain_min03"
+   ],
+   "escalation_rounds": [
+    3,
+    3
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 1.785,
+   "gap_new_default_mm": 1.79,
+   "gap_v2_mm": 1.79,
+   "guaranteed": true,
+   "labels": [
+    "tibia",
+    "foot_class"
+   ],
+   "pair_members": [
+    "mem.bone_07",
+    "mem.bone_18"
+   ],
+   "pair_ranks": [
+    7,
+    18
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[27] of 04 -> triangle[28572] of 10",
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min04",
+    "fore_chain_min04"
+   ],
+   "escalation_rounds": [
+    3,
+    3
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 2.004,
+   "gap_new_default_mm": 2.0,
+   "gap_v2_mm": 2.0,
+   "guaranteed": true,
+   "labels": [
+    "humerus",
+    "forearm_class"
+   ],
+   "pair_members": [
+    "mem.bone_04",
+    "mem.bone_10"
+   ],
+   "pair_ranks": [
+    4,
+    10
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[10] of 05 -> triangle[28821] of 11",
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min05",
+    "fore_chain_min05"
+   ],
+   "escalation_rounds": [
+    3,
+    3
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 2.267,
+   "gap_new_default_mm": 2.27,
+   "gap_v2_mm": 2.27,
+   "guaranteed": true,
+   "labels": [
+    "humerus",
+    "forearm_class"
+   ],
+   "pair_members": [
+    "mem.bone_05",
+    "mem.bone_11"
+   ],
+   "pair_ranks": [
+    5,
+    11
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[167] of 20 -> triangle[13945] of 25",
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min02",
+    "hind_chain_min02"
+   ],
+   "escalation_rounds": [
+    2,
+    2
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 2.468,
+   "gap_new_default_mm": 2.47,
+   "gap_v2_mm": 2.47,
+   "guaranteed": true,
+   "labels": [
+    "fibula",
+    "foot_class"
+   ],
+   "pair_members": [
+    "mem.bone_20",
+    "mem.bone_25"
+   ],
+   "pair_ranks": [
+    20,
+    25
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[1943] of 01 -> triangle[11292] of 11",
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "fore_chain_min05"
+   ],
+   "escalation_rounds": [
+    3,
+    2
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 2.752,
+   "gap_new_default_mm": 2.75,
+   "gap_v2_mm": 2.75,
+   "guaranteed": true,
+   "labels": [
+    "axial_composite",
+    "forearm_class"
+   ],
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_11"
+   ],
+   "pair_ranks": [
+    1,
+    11
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[3203] of 13 -> triangle[3472] of 01",
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "fore_chain_min05"
+   ],
+   "escalation_rounds": [
+    3,
+    2
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 2.785,
+   "gap_new_default_mm": 2.78,
+   "gap_v2_mm": 2.83,
+   "guaranteed": true,
+   "labels": [
+    "axial_composite",
+    "forearm_class"
+   ],
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_13"
+   ],
+   "pair_ranks": [
+    1,
+    13
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[12142] of 03 -> triangle[28418] of 07",
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min03",
+    "hind_chain_min03"
+   ],
+   "escalation_rounds": [
+    3,
+    4
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 2.826,
+   "gap_new_default_mm": 2.83,
+   "gap_v2_mm": 2.83,
+   "guaranteed": true,
+   "labels": [
+    "femur",
+    "tibia"
+   ],
+   "pair_members": [
+    "mem.bone_03",
+    "mem.bone_07"
+   ],
+   "pair_ranks": [
+    3,
+    7
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[6641] of 24 -> triangle[479] of 21",
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min03",
+    "hind_chain_min03"
+   ],
+   "escalation_rounds": [
+    2,
+    2
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 2.9,
+   "gap_new_default_mm": 2.9,
+   "gap_v2_mm": 2.9,
+   "guaranteed": true,
+   "labels": [
+    "fibula",
+    "foot_class"
+   ],
+   "pair_members": [
+    "mem.bone_21",
+    "mem.bone_24"
+   ],
+   "pair_ranks": [
+    21,
+    24
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  },
+  {
+   "anatomical_reading": null,
+   "closest_provenance": "vertex[11614] of 02 -> triangle[29996] of 06",
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min02",
+    "hind_chain_min02"
+   ],
+   "escalation_rounds": [
+    3,
+    3
+   ],
+   "flip": false,
+   "gap_new_default_exact_mm": 2.911,
+   "gap_new_default_mm": 2.91,
+   "gap_v2_mm": 2.91,
+   "guaranteed": true,
+   "labels": [
+    "femur",
+    "tibia"
+   ],
+   "pair_members": [
+    "mem.bone_02",
+    "mem.bone_06"
+   ],
+   "pair_ranks": [
+    2,
+    6
+   ],
+   "touching_new_default": true,
+   "touching_v2": true
+  }
+ ],
+ "trailer": "Agent: GLM 5.3"
+}

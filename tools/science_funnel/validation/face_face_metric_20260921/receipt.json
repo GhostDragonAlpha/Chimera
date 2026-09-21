@@ -1,0 +1,363 @@
+{
+ "schema": "chimera.rule0_receipt.v1",
+ "lane": "agent/face-face-metric-20260921",
+ "base_commit": "3539fdb9 (agent/axial-limb-adjacency-20260920, clone E:/ChimeraWork/ffmet-agent, branch agent/face-face-metric-20260921)",
+ "scope": "The named successor law amendment the axial-limb adjacency lane demanded: UPGRADE the touching-edge law metric from vertex-to-vertex (identify_bones_v2.py surface_gaps, which cannot see face-face contact through decimated triangle interiors) to the exact bidirectional point-to-triangle surface gap with a per-vertex k-escalation guarantee. The old metric stays reproducible for history; the new metric becomes the DEFAULT touching-edge measurement, as a CANDIDATE in tools/science_funnel/ with its own receipts. Pure geometry; no invention; the committed infant_skeleton.body.json is NOT modified.",
+ "rule_0": {
+  "statement": "The vertex-vertex law metric is a MEASUREMENT-RESOLUTION artifact, not a law of contact: for a vertex v, dist(v, nearest triangle of B) <= dist(v, nearest vertex of B) holds for every v because every vertex of B lies on a triangle of B, so the exact bidirectional point-to-triangle gap is a lower bound of the v2 number on every pair, while remaining an upper bound of the true surface-to-surface gap (its only admitted overestimate is the edge-edge-interior corner, where neither mesh owns the closest vertex -- named caveat, carried since the adjacency lane). The v2 metric therefore reads a FALSE REFUSAL exactly when a surface point of one bone lies inside the vertex-sparse interior region of a large decimated triangle of the other: contact exists, but no vertex pair sees it. The adjacency lane measured this artifact on the committed preview meshes: singleton 19's refined gap to the axial composite is 0.000 mm (a composite preview vertex lies ON a singleton-19 triangle) while the law metric reads 36.93 mm; singleton 14 shows the same pattern (refined 0.000 vs law 29.75 mm). A metric that reports a 36.93 mm refusal where the measured surfaces touch is measuring the mesh SAMPLING, not the anatomy. The upgraded law (exact point-to-triangle, per-vertex k-escalation certificate) measures contact directly: a measured 0.000 mm face-face gap IS contact and bonds; a measured 4.6 mm gap (shoulder) is still refusal and never self-grants.",
+  "prediction": "Registered BEFORE this lane ran any measurement. All numbers below that are already measurements come from the COMMITTED axial_adjacency_20260920 table (base 3539fdb9); predictions are about THIS lane's independent re-measurement of all 300 pairs and about the 264 pairs that lane never refined.  FLIP-SET (named): exactly TWO refused identifications become touching under the new default metric -- pair (1,19) (the task-named one: v2 36.93 -> point-to-triangle 0.000, composite vertex on a 19-triangle face) and pair (1,14) (the committed adjacency table already carries its 0.000 refined gap at law 29.75; honesty forbids pre-registering 19 alone when the committed record two directories over shows 14 in the same artifact class). Each flip becomes one candidate bond (bond.joint_01_14, bond.joint_01_19, material mat.cartilage per the committed bond law, rest_length = measured gap).  STAY-REFUSED (named): the two shoulders stay refused -- (1,4) point-to-triangle ~4.949 mm, (1,5) ~4.603 mm, both > 3.0 mm: a real cartilage-plus-soft-tissue joint gap at CT scale, not a sampling artifact. Singleton 16 stays isolated: its full 24-partner row stays > 3.0 mm under the new metric (prior row-min 5.815 mm to femur 2 at v2; the point-to-triangle number moves by vertex-sampling margins, not by 2.8 mm). Singleton 14's OTHER 23 partners stay refused (prior row-min 6.99 mm to foot 24); 14 joins the body ONLY through the composite contact.  NO-OTHER-FLIPS: among the 264 pairs the adjacency lane never refined, ZERO pairs cross from refusal (v2 > 3.0) to touching (new metric <= 3.0). Reasoning, not taste: the new-metric gap differs from the v2 gap only through triangle-interior approach, whose measured magnitude on this specimen is large exactly where the CT shows true contact ((1,14),(1,19) to 0.0) and small on genuine separations (shoulders moved 0.051/0.003 mm); a > 3.0 mm v2 refusal hiding a <= 3.0 mm face gap would be an intermediate artifact class with no member yet observed.  CUT STABILITY: under the new metric the touching class compresses (predicted class max ~2.911 mm at committed edge (2,6)) and the separation floor rises (predicted next non-touching ~4.603 mm at shoulder (1,5)); the v2-era cut 3.0 mm lands INSIDE the new valley, so the cut is RE-JUSTIFIED UNCHANGED, not re-chosen. The flip set is cut-independent: (1,14)/(1,19) enter the touching class at ANY cut > 0.0 mm.  COMPONENTS: with the committed 21 intra-chain bonds alone the body is 8 connected components (the committed honest reading); adding the 8 old-metric cross-component candidates closes it to 4; adding the 2 new-metric flips closes it to 2 (one body; singleton 16 the only isolate).  MONOTONICITY: point-to-triangle <= vertex-vertex on ALL 300 pairs (the derivation above), no exceptions.",
+  "falsifiers": {
+   "F1_history_reproduction": "The OLD metric, rerun verbatim (trimesh.load(preview, process=False) vertices, scipy cKDTree, symmetric min), reproduces ALL 21 committed touching_edges gaps at 0.01 mm resolution (max abs dev <= 0.005 mm). ANY mismatch voids the history claim: the old metric would not be reproducible and no new-default comparison to the committed 21 bonds would be meaningful.",
+   "F2_monotonicity": "New-metric gap <= old-metric gap on EVERY one of the 300 pairs. Any violation means the implementation is not the derived estimator and every output of this lane is void.",
+   "F3_committed_edges_survive": "All 21 committed touching edges remain in the touching class under the NEW default metric (each new-metric gap <= 3.0 mm). If any committed edge left the class, the upgrade would not be additive and would be refused.",
+   "F4_flip_set_exact": "The refusal-to-touching flip set is EXACTLY {(1,14), (1,19)} with both numbers (old, new) reported per flip. Any third flip falsifies the no-other-flips prediction and is itemized with its measured gaps under BOTH metrics -- reported, never hidden.",
+   "F5_refuse_when_no_contact": "The law never self-grants: (1,4) and (1,5) stay > 3.0 mm under the new metric (honest refusals stand), and singleton 16's full row stays > 3.0 mm. If a shoulder or a 16 row crosses to <= 3.0 mm, the refusal was an artifact and the flip is REPORTED as a measurement (falsifier fires as an honest outcome, the number is never tuned).",
+   "F6_byte_determinism": "Every output file regenerates byte-identically on rerun (same script, same committed inputs, sorted keys, fixed rounding, no timestamps in tool outputs); sha256-verified.",
+   "F7_cherry_pick_guard": "ALL 300 rank pairs measured under BOTH metrics -- no pair is exempted from either metric, including the far pairs (20-40 mm) whose refinement cost is highest.",
+   "F8_full_guarantee": "Every reported new-metric number carries its k-escalation guarantee flag TRUE (per-vertex certificate: an unevaluated triangle cannot beat the reported minimum). Any pair reported with guarantee FALSE is marked VOID in the table and its verdict is refusal, never bond."
+  }
+ },
+ "rule_1_derivation_plan": {
+  "note": "No new free numbers. The new estimator, its guarantee, the cut, the resolution and the bond law are all inherited or derived; the only new numbers this lane produces are measurements.",
+  "metric_law_new_default": "gap_new(A,B) = min( min_{v in V_A} dist(v, T_B), min_{v in V_B} dist(v, T_A) ) with T the preview mesh's triangle set, dist the exact Ericson point-to-triangle distance; certified per-vertex by k-escalation over triangle-centroid KD order: a vertex is exempt from deeper search iff dist_to_kth_centroid - R_max >= best_global (any unevaluated triangle for v lies >= kth_centroid - circumradius away), k quadruples for non-exempt vertices to a cap of n_tri (= full enumeration = unconditional guarantee). DERIVATION of the lower-bound property: every vertex of B is a point of T_B, hence min_{v} dist(v, T_B) <= min_{v} dist(v, V_B); the same holds mirrored, and monotone composition of mins gives gap_new <= gap_v2 identically. Both metrics are upper bounds of the true surface-surface gap; gap_new's only slack over truth is the edge-edge-interior corner (closest features on two edge interiors, neither mesh contributing a vertex) -- inherited, named, and unchanged from the adjacency lane's estimator, which this lane promotes verbatim.",
+  "metric_law_old_history": "gap_v2(A,B) = min( min_{v in V_A} dist(v, V_B), min_{v in V_B} dist(v, V_A) ) on trimesh.load(preview, process=False) vertices, scipy cKDTree, float64 -- identify_bones_v2.py surface_gaps() verbatim, the metric that produced the 21 committed bonds. Kept as a first-class output column so the committed history stays reproducible forever.",
+  "cut_law": "The cut is NOT re-chosen; it is RE-DERIVED by the same procedure that derived it for v2 (the shared empirical gap valley: last touching pair / next separated pair). Under the new default metric the same procedure runs on the new 300-pair distribution: valley_new = (max new-metric gap over the touching class, min new-metric gap over the non-touching class at the v2-era cut). The v2-era cut 3.0 mm is re-justified iff 3.0 lies in valley_new; if it does not, the derived cut is reported with the valley numbers and the classification stability/instability at the boundary is shown explicitly (which pairs change class at which cut). DERIVATION of why the valley can only widen: the new metric compresses true contacts toward 0 (measured: 9 of the 21 committed edges refine to 0.000) while true separations barely move (measured: shoulders 5.00 -> 4.949, 4.60 -> 4.603), so the class boundary sharpens; a cut valid for the blurrier metric inside the sharper valley remains valid.",
+  "resolution_law": "0.01 mm (committed gap_mm resolution) for both law columns; 0.001 mm for closest-point coordinates; float64 throughout; deterministic numpy reductions (first-index argmin ties).",
+  "bond_law": "Unchanged from the committed matter_skeleton_import.py bond law: material mat.cartilage, cure 13 MPa (Yamada 1970), rest_length = measured gap. A 0.000 mm measured gap is contact: rest_length 0.0, cure applies. Candidate bonds are a DATA file for the law owner; this lane does not modify the committed body.",
+  "component_law": "Union-find over the committed membrane graph (21 intra-chain bonds) plus the candidate cross-component set, reported at three stages: committed-only (must reproduce the committed 8), +old-metric candidates, +new-metric candidates."
+ },
+ "inputs_and_artifacts": {
+  "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_01..25_*.obj": "the committed preview meshes (sha256 of committed bytes pinned in the output table before measuring)",
+  "tools/science_funnel/data/morphosource_ct/bone_identification_v3.json": "labels, chains, singletons, the 21 touching_neighbors, derived_cuts.joint_gap_mm 3.0",
+  "tools/science_funnel/validation/axial_adjacency_20260920/": "the committed prior lane: measure_adjacency.py (the estimator this lane promotes), adjacency_table.json (the measured 0.000 refined gaps for (1,14)/(1,19) this pre-registration cites), candidate_bonds.json (the 8 old-metric candidates), receipt.json",
+  "identify_bones_v2.py (origin/buffy/bone-id-v2-20260919, tools/science_funnel/data/morphosource_ct/)": "the old metric source, replicated verbatim",
+  "tools/science_funnel/data/morphosource_ct/matter_skeleton/infant_skeleton.body.json": "the committed body (21 bonds, mem.bone_NN naming) -- READ for the component count and naming only, NOT modified"
+ },
+ "outputs_planned": {
+  "tools/science_funnel/surface_gap_metric.py": "the candidate module: BOTH law metrics (old verbatim for history, new default with the guarantee certificate), deterministic, importable, no I/O side effects",
+  "tools/science_funnel/validation/face_face_metric_20260921/measure_face_face.py": "the deterministic runner: 300 pairs x 2 metrics, falsifier checks, cut re-derivation, component counts, candidate bonds under the new default",
+  "tools/science_funnel/validation/face_face_metric_20260921/face_face_table.json": "the full double-metric table (touching class + all refusals under the new metric + committed-edge receipt + singleton rows + cut derivation + component counts)",
+  "tools/science_funnel/validation/face_face_metric_20260921/candidate_bonds.json": "the candidate bond list under the NEW default metric (data file; adoption is the law owner's act)",
+  "tools/science_funnel/validation/face_face_metric_20260921/preregistration.sha256": "sha256 of THIS file's pre-registration state, hashed before any measurement ran",
+  "tools/science_funnel/validation/face_face_metric_20260921/receipt.json": "this file; measurements + verdicts appended below AFTER the run"
+ },
+ "preregistration": "This receipt is hashed to preregistration.sha256 in its CURRENT state -- before the runner exists, before any pair is measured by this lane.",
+ "measurements": {
+  "runner": "python -B tools/science_funnel/validation/face_face_metric_20260921/measure_face_face.py (guarded estimator, tools/science_funnel/surface_gap_metric.py)",
+  "pairs_measured": 300,
+  "metrics_per_pair": 2,
+  "discovery_degenerate_triangles": {
+   "what": "the preview meshes contain 314 EXACTLY-zero-area triangles (plus a sliver continuum down to |n|^2 ~ 2e-28 mm^4, measured). The point-to-triangle estimator promoted from the axial_adjacency_20260920 lane FORGES a 0.000 mm contact for any query vertex whose k-nearest-centroid shell contains one: the zero normal makes face_d = 0/1e-20 = 0 and a garbage face_ok. The first full run (unguarded, per the original promotion plan) produced 79 impossible 0.000 'flips' including pairs whose vertex-vertex gap is 101-107 mm -- geometrically impossible, which is what exposed the defect.",
+   "guard_derivation": "det = d11*d22 - d12^2 equals |ab x ac|^2 exactly (Lagrange identity); the barycentric face case is valid iff det > 64*eps_machine*d11*d22 (float64 roundoff of the product); below that the EXACT distance to the degenerate triangle is its edge minimum (error <= sliver height, ~1e-6 mm at the threshold for mm-scale edges -- below the 0.001 mm record resolution). The guard is relative (scale-free), not a tuned threshold.",
+   "consequence_for_the_prior_lane": "the committed axial_adjacency_20260920 refined_gap_mm numbers were produced by the SAME unguarded estimator: 14 of its 35 refined pairs are corrected here, all forged 0.000 -> real values ~= their v2 numbers (itemized in corroboration_vs_prior_lane). The named metric-artifact observation for singleton 19 was one of these forges."
+  },
+  "method_validation": {
+   "F1_history_21_edges": {
+    "edges_checked": 21,
+    "max_abs_dev_mm": 0.00477,
+    "pass": true,
+    "per_edge": {
+     "02_06": {
+      "committed_mm": 2.91,
+      "new_default_mm": 2.91,
+      "v2_measured_mm": 2.91
+     },
+     "02_15": {
+      "committed_mm": 1.01,
+      "new_default_mm": 1.01,
+      "v2_measured_mm": 1.01
+     },
+     "03_07": {
+      "committed_mm": 2.83,
+      "new_default_mm": 2.83,
+      "v2_measured_mm": 2.83
+     },
+     "03_17": {
+      "committed_mm": 0.69,
+      "new_default_mm": 0.69,
+      "v2_measured_mm": 0.69
+     },
+     "04_08": {
+      "committed_mm": 0.73,
+      "new_default_mm": 0.73,
+      "v2_measured_mm": 0.73
+     },
+     "04_10": {
+      "committed_mm": 2.0,
+      "new_default_mm": 2.0,
+      "v2_measured_mm": 2.0
+     },
+     "04_12": {
+      "committed_mm": 0.93,
+      "new_default_mm": 0.93,
+      "v2_measured_mm": 0.93
+     },
+     "05_09": {
+      "committed_mm": 0.86,
+      "new_default_mm": 0.86,
+      "v2_measured_mm": 0.86
+     },
+     "05_11": {
+      "committed_mm": 2.27,
+      "new_default_mm": 2.27,
+      "v2_measured_mm": 2.27
+     },
+     "05_13": {
+      "committed_mm": 0.86,
+      "new_default_mm": 0.86,
+      "v2_measured_mm": 0.86
+     },
+     "06_20": {
+      "committed_mm": 0.48,
+      "new_default_mm": 0.48,
+      "v2_measured_mm": 0.48
+     },
+     "06_25": {
+      "committed_mm": 0.66,
+      "new_default_mm": 0.66,
+      "v2_measured_mm": 0.66
+     },
+     "07_18": {
+      "committed_mm": 1.79,
+      "new_default_mm": 1.79,
+      "v2_measured_mm": 1.79
+     },
+     "07_21": {
+      "committed_mm": 0.45,
+      "new_default_mm": 0.45,
+      "v2_measured_mm": 0.45
+     },
+     "07_24": {
+      "committed_mm": 0.86,
+      "new_default_mm": 0.86,
+      "v2_measured_mm": 0.86
+     },
+     "10_12": {
+      "committed_mm": 0.38,
+      "new_default_mm": 0.38,
+      "v2_measured_mm": 0.38
+     },
+     "11_13": {
+      "committed_mm": 0.47,
+      "new_default_mm": 0.46,
+      "v2_measured_mm": 0.47
+     },
+     "20_25": {
+      "committed_mm": 2.47,
+      "new_default_mm": 2.47,
+      "v2_measured_mm": 2.47
+     },
+     "21_24": {
+      "committed_mm": 2.9,
+      "new_default_mm": 2.9,
+      "v2_measured_mm": 2.9
+     },
+     "22_25": {
+      "committed_mm": 0.99,
+      "new_default_mm": 0.99,
+      "v2_measured_mm": 0.99
+     },
+     "23_24": {
+      "committed_mm": 1.01,
+      "new_default_mm": 1.01,
+      "v2_measured_mm": 1.01
+     }
+    }
+   },
+   "F2_monotonicity_300_pairs": {
+    "pass": true,
+    "violations": []
+   },
+   "F8_guarantee_certificates": {
+    "pass": true,
+    "unguaranteed": []
+   }
+  },
+  "the_named_question_singleton_19": {
+   "predicted_by_preregistration": "flip: v2 36.93 -> point-to-triangle 0.000 (the mission-named candidate; cited from the prior lane's committed refined number)",
+   "measured_guarded": "36.928 mm (v2 36.928 mm) -- REFUSAL STANDS, no bond",
+   "what_happened": "the prior lane's 0.000 refined number was a forged zero-area-triangle reading, not face-face contact: a composite preview vertex never lies on a 19-triangle; the guarded exact gap equals the v2 gap to within 0.001 mm"
+  },
+  "flips_refusal_to_touching": {
+   "count": 0,
+   "set": [],
+   "itemized": []
+  },
+  "named_stays_measured": {
+   "01_04": {
+    "gap_new_default_mm": 4.95,
+    "gap_v2_mm": 5.0,
+    "still_refused": true
+   },
+   "01_05": {
+    "gap_new_default_mm": 4.6,
+    "gap_v2_mm": 4.6,
+    "still_refused": true
+   }
+  },
+  "singleton_rows_measured": {
+   "14": {
+    "row_min_new_default_mm": 6.99,
+    "row_min_partner_rank": 24,
+    "joins_through": "nothing -- stays isolated"
+   },
+   "16": {
+    "row_min_new_default_mm": 5.82,
+    "row_min_partner_rank": 2,
+    "joins_through": "nothing -- stays isolated"
+   },
+   "19": {
+    "row_min_new_default_mm": 7.71,
+    "row_min_partner_rank": 22,
+    "joins_through": "nothing -- stays isolated"
+   }
+  },
+  "cut_rederivation": {
+   "v2_history_valley_mm": [
+    2.91,
+    3.3
+   ],
+   "new_default_valley_mm": [
+    2.911,
+    3.298
+   ],
+   "cut_3.0_inside_new_valley": true,
+   "verdict": "RE-JUSTIFIED UNCHANGED: the guarded exact metric reproduces the SAME valley at law resolution -- last touching (2,6) 2.911 mm, next separated (3,21) 3.298 mm, the committed derived_cuts gap_valley_specA (2.91, 3.30) -- so 3.0 mm remains the touching-class cut; classification identical for every cut in the valley; the (empty) flip set is cut-independent",
+   "stability": {
+    "class_change_points": {
+     "last_touching_pair": {
+      "gap_new_default_mm": 2.91,
+      "gap_v2_mm": 2.91,
+      "pair_ranks": [
+       2,
+       6
+      ]
+     },
+     "next_separated_pair": {
+      "gap_new_default_mm": 3.3,
+      "gap_v2_mm": 3.3,
+      "pair_ranks": [
+       3,
+       21
+      ]
+     }
+    },
+    "cut_3.0_inside_valley": true,
+    "flip_set_cut_independence": "the flip set is EMPTY and therefore identical for every cut in (0.000, 3.298]",
+    "valley_new_mm": [
+     2.911,
+     3.298
+    ],
+    "verdict": "RE-JUSTIFIED UNCHANGED: 3.0 mm lies inside the new-metric valley; no pair changes class for any cut in the valley"
+   }
+  },
+  "component_counts": {
+   "committed_only": 8,
+   "plus_old_metric_candidates": 4,
+   "plus_new_metric_candidates": 4,
+   "candidate_bonds_issued": 8,
+   "note": "the face-face law re-run CLOSES NOTHING NEW: the 8->4 closure is the standing old-metric candidates' work (already delivered by the prior lane as a data file); singletons 14, 16, 19 all stay isolated"
+  },
+  "corroboration_vs_prior_lane": {
+   "corrected_pairs": {
+    "01_09": {
+     "guarded_exact_mm": 0.516,
+     "prior_refined_mm": 0.0,
+     "v2_mm": 0.56
+    },
+    "01_11": {
+     "guarded_exact_mm": 2.752,
+     "prior_refined_mm": 0.0,
+     "v2_mm": 2.75
+    },
+    "01_13": {
+     "guarded_exact_mm": 2.785,
+     "prior_refined_mm": 0.0,
+     "v2_mm": 2.83
+    },
+    "01_14": {
+     "guarded_exact_mm": 29.754,
+     "prior_refined_mm": 0.0,
+     "v2_mm": 29.75
+    },
+    "01_19": {
+     "guarded_exact_mm": 36.928,
+     "prior_refined_mm": 0.0,
+     "v2_mm": 36.93
+    },
+    "04_10": {
+     "guarded_exact_mm": 2.004,
+     "prior_refined_mm": 0.0,
+     "v2_mm": 2.0
+    },
+    "04_12": {
+     "guarded_exact_mm": 0.926,
+     "prior_refined_mm": 0.0,
+     "v2_mm": 0.93
+    },
+    "05_09": {
+     "guarded_exact_mm": 0.861,
+     "prior_refined_mm": 0.0,
+     "v2_mm": 0.86
+    },
+    "05_11": {
+     "guarded_exact_mm": 2.267,
+     "prior_refined_mm": 0.0,
+     "v2_mm": 2.27
+    },
+    "06_20": {
+     "guarded_exact_mm": 0.479,
+     "prior_refined_mm": 0.0,
+     "v2_mm": 0.48
+    },
+    "07_18": {
+     "guarded_exact_mm": 1.785,
+     "prior_refined_mm": 0.0,
+     "v2_mm": 1.79
+    },
+    "07_21": {
+     "guarded_exact_mm": 0.453,
+     "prior_refined_mm": 0.0,
+     "v2_mm": 0.45
+    },
+    "11_13": {
+     "guarded_exact_mm": 0.462,
+     "prior_refined_mm": 0.0,
+     "v2_mm": 0.47
+    },
+    "21_24": {
+     "guarded_exact_mm": 2.9,
+     "prior_refined_mm": 0.0,
+     "v2_mm": 2.9
+    }
+   },
+   "max_abs_dev_mm": 36.928,
+   "note": "the prior lane's refined_gap_mm came from the SAME estimator WITHOUT the degenerate-triangle guard; every deviation itemized here is a forged 0.000 (zero-area triangle) corrected by the guarded exact metric",
+   "pairs_equal_at_0.001mm": 21,
+   "prior_refined_pairs_compared": 35
+  },
+  "reproducibility": {
+   "rerun": "run5 (same script, same committed inputs) regenerated both output files; sha256 compared against the run4 pins (run4.sha256)",
+   "sha256": {
+    "face_face_table.json": "fb4a6327c3acd6b721a4948e612fc84ebbb163c1e3dec316f1b4cbf3e0598054",
+    "candidate_bonds.json": "93d7c7974b11313278732eeeca0cf90feedf7cf40603d73da1188ddf7a5ae07d"
+   },
+   "byte_identical": true
+  },
+  "scope_guard": "git diff proves the lane touches ONLY tools/science_funnel/surface_gap_metric.py (the candidate module) and tools/science_funnel/validation/face_face_metric_20260921/; the committed infant_skeleton.body.json, bone_identification_v3.json and the prior lane's committed outputs are untouched"
+ },
+ "verdicts": {
+  "F1_history_reproduction": "GREEN -- 21/21 committed edges reproduced by the OLD metric verbatim (max dev 0.00477 mm = committed 0.01 mm storage rounding). The old metric stays reproducible for history.",
+  "F2_monotonicity": "GREEN -- new <= old on all 300 pairs, zero violations (the derivation holds exactly; the guard keeps degenerate triangles' edge distance, which still includes their endpoints).",
+  "F3_committed_edges_survive": "GREEN -- all 21 committed touching edges remain in the touching class under the new default (each guarded gap <= its v2 gap, all <= 3.0 mm); the upgrade is additive.",
+  "F4_flip_set_exact": "FIRED (honest red, the lane's headline) -- predicted flips {(1,14), (1,19)}: MEASURED FLIP SET IS EMPTY. Singleton 19's guarded composite gap is 36.928 mm (not 0.000); singleton 14's is 29.754 mm (not 0.000). The pre-registration's cited evidence -- the prior lane's committed refined 0.000 numbers -- was itself produced by the unguarded estimator and was forged by zero-area triangles. No refusal becomes touching: the refuse-when-no-contact law never self-granted because there was no contact to grant. The falsifier did its job: the impossible 'flip' pattern (0.000 at 101-107 mm vertex gaps) forced the guard's derivation and the correction of 14 committed prior numbers.",
+  "F5_refuse_when_no_contact": "GREEN -- the shoulders stay refused under the guarded metric (1,4): 5.00 -> 4.95 mm; (1,5): 4.60 -> 4.60 mm. Singleton 16 row minimum 5.82 mm (femur 2), singleton 14 row minimum 6.99 mm (foot 24), singleton 19 row minimum 7.71 mm (foot 22): all three singletons stay isolated. Every refusal the v2 law ever issued is confirmed.",
+  "F6_byte_determinism": "GREEN -- both output files regenerate byte-identically on rerun (sha256 verified: face_face_table.json fb4a6327c3acd6b7, candidate_bonds.json 93d7c7974b113132).",
+  "F7_cherry_pick_guard": "GREEN -- all 300 rank pairs measured under BOTH metrics in one deterministic run.",
+  "F8_full_guarantee": "GREEN -- every one of the 300 pair results carries a closed k-escalation certificate (per-vertex exemption or full enumeration); zero unguaranteed pairs.",
+  "cut_verdict": "RE-JUSTIFIED UNCHANGED -- the 3.0 mm cut was derived for vertex-vertex as the shared empirical gap valley; the guarded face-face metric re-derives the SAME valley at law resolution (last touching (2,6) 2.911 mm; next separated (3,21) 3.298 mm; the committed spec-A valley (2.91, 3.30)). 3.0 mm sits inside it; NO pair changes class for any cut in the valley; the table is stable at the boundary.",
+  "headline": "THE REFUSALS STAND. The named successor work -- the bone-adjacency law metric upgrade -- lands as the candidate default (tools/science_funnel/surface_gap_metric.py): exact bidirectional point-to-triangle with the per-vertex k-escalation certificate AND the degenerate-triangle guard derived here. Under the corrected metric: ZERO refusal-to-touching flips (the mission-named singleton-19 composite bond does not exist -- its 0.000 evidence was an estimator forge; the true gap is 36.928 mm); the component count is unchanged (8 committed -> 4 with the standing 8 old-metric candidates -> 4 with the new metric); the 3.0 mm cut re-derives to the same valley it was derived from. The vertex-vertex law metric is CONFIRMED, not overturned: at this mesh density it under-measures face-face proximity by at most ~0.05 mm, never by enough to threaten a refusal.",
+  "trailer": "Agent: GLM 5.3"
+ },
+ "trailer": "Agent: GLM 5.3"
+}
