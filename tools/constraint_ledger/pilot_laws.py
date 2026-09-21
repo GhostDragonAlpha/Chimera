@@ -129,6 +129,13 @@ STAND_FIRST_HOLD = {
         'gait.hind.mp_y.{leg}': EXTERN_DECLS['gait.hind.mp_y.{leg}'],
         'gait.fire.{leg}': EXTERN_DECLS['gait.fire.{leg}'],
         'gait.hind.phase.{leg}': EXTERN_DECLS['gait.hind.phase.{leg}'],
+        'gait.touch.{leg}': {
+            # THE COMPOSITION: the hold's arming reads the touch record's
+            # SAME-TICK write (role record-input — produced by another
+            # record of the set, never by this one).
+            'entity': 'gait_walker.leg_contact_state', 'frame': 'controller state',
+            'unit': 'bool', 'dtype': 'bool', 'phase': 'tick-start',
+            'role': 'record-input'},
         'gait.hold.armed.{leg}': {
             'entity': 'gait_walker.hind_hold', 'frame': 'controller state',
             'unit': 'bool', 'dtype': 'bool', 'phase': 'tick-start', 'role': 'state'},

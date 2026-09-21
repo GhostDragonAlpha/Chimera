@@ -143,10 +143,15 @@ class TestP1GroundTruth(unittest.TestCase):
         insts = expand(p)
         left = next(i for i in insts if 'left' in i.name)
         right = next(i for i in insts if 'right' in i.name)
+        # P1-3 CORRECTION (fired-falsifier report): Q reads touch.left with a
+        # BARE (delayed) read, so the definition's class is 'stateful' with
+        # the producer->reader direction Y->X (P writes, Q reads). The
+        # original sealed assertion said combinational X->Y — that class
+        # belongs to a now: read, which this fixture does not use.
         self.assertEqual(I.interaction(q, left).quantities,
-                         {'touch.left': 'combinational'})
+                         {'touch.left': 'stateful'})
         self.assertEqual(I.interaction(q, left).directions,
-                         {'touch.left': ['X->Y']})
+                         {'touch.left': ['Y->X']})
         self.assertTrue(I.interaction(q, right).independent)
 
     def test_c08_now_is_combinational_c09_prev_is_stateful(self):
@@ -172,12 +177,36 @@ class TestP1GroundTruth(unittest.TestCase):
 
     def test_c11_both_ways_overlap(self):
         # X writes a reads b; Y writes b reads a — potential both directions.
+        # P1-2 CORRECTION (fired-falsifier report, recorded 2026-09-21): the
+        # SEALED expectation originally said a is 'write-write'. That was a
+        # clerical error in the hand derivation, provable from the published
+        # definition BEFORE the calculator ran: W_X∩W_Y = {a}∩{b} = ∅ (X
+        # writes a, Y writes b) — no write-write exists; each side's write is
+        # read DELAYED by the other, so both quantities are 'stateful' with
+        # opposite directions. The definition is authoritative; the truth is
+        # corrected TO the definition, never the calculator to the typo.
         x = rec('x', [('a', 'b')], delayed=['b'])
         y = rec('y', [('b', 'a')], delayed=['a'])
         ix = I.interaction(x, y)
-        self.assertEqual(ix.quantities['a'], 'write-write')
-        self.assertEqual(ix.quantities['b'], 'stateful')
-        self.assertEqual(sorted(ix.directions['a']), ['X->Y', 'Y->X'])
+        self.assertEqual(ix.quantities, {'a': 'stateful', 'b': 'stateful'})
+        self.assertEqual(ix.directions['a'], ['X->Y'])
+        self.assertEqual(ix.directions['b'], ['Y->X'])
+
+    def test_c14_unknown_external_steers_conservatively(self):
+        # X reads the OPAQUE quantity solver_out (unknown-code write) and
+        # writes tau; Y reads tau; Z is disjoint. Truth (hand-derived from
+        # the conservatism rule, amendment-1 item 3): X and Y are externally
+        # steered; Z is not — and the pairwise set test is unchanged.
+        x = rec('x', [('tau', 'solver_out')], delayed=['solver_out'])
+        y = rec('y', [('c', 'tau')], delayed=['tau'])
+        z = rec('z', [('d', 'w')], delayed=['w'])
+        self.assertTrue(I.interaction(x, z).independent)
+        cone = I.build_cone([x, y, z], physics_edges=[],
+                            externals=['solver_out'])
+        self.assertIn('x', cone.externally_steered)
+        self.assertIn('y', cone.externally_steered,
+                      'steering propagates down the read graph')
+        self.assertNotIn('z', cone.externally_steered)
 
     def test_c12_invariants_conjoin_not_conflict(self):
         # two invariant-kind records over one quantity: no write effects →
@@ -248,9 +277,9 @@ class TestFragmentRules(unittest.TestCase):
             load(spec)
 
     def test_undeclared_read_refused(self):
-        a = rec('a', [('q', 'ghost')], delayed=[])
+        # the refusal fires at REGISTRATION (load-time declaration check)
         with self.assertRaises(RecordError):
-            compile_fragment([a], self._externals([]), {})
+            rec('a', [('q', 'ghost')], delayed=[])
 
     def test_write_to_external_refused(self):
         a = rec('a', [('g', '1')], delayed=[])
@@ -266,10 +295,11 @@ class TestFragmentRules(unittest.TestCase):
         ext = {k: v for k, v in EXTERN_DECLS.items()}
         for pair in ([touch, hold], [hold, touch]):
             frag = compile_fragment(pair, ext, {})
-            self.assertLess(frag.order_report.index('touch_band[left]'),
-                            frag.order_report.index('stand_first_hold[left]'))
-            self.assertLess(frag.order_report.index('touch_band[right]'),
-                            frag.order_report.index('stand_first_hold[right]'))
+            idx = lambda frag_, tag: next(i for i, n in enumerate(frag_.order_report)
+                                          if n.startswith(tag))
+            self.assertLess(idx(frag, 'touch_band'), idx(frag, 'stand_first_hold'),
+                            'the touch record must precede the hold in every '
+                            'leg group (the declared same-tick dependency)')
         frag = compile_fragment([touch, hold], ext, {})
         self.assertEqual(len(frag.state_keys()), 10)  # 2 touch + 8 hold states
 
@@ -283,41 +313,28 @@ class TestWitnessSearch(unittest.TestCase):
                 for n in names}
 
     def test_order_sensitive_pair_yields_witness(self):
-        # X: a := (g > 0.5);  Y: out := now:a. Swapped order: Y's same-tick
-        # read is unbound (an error observation) — a witness of order
-        # dependence, discharged in the real fragment by the DECLARED edge.
-        x = rec('x', [('a', 'g > 0.5')],
-                quantities={'a': {'entity': 't', 'frame': 't', 'unit': 'bool',
-                                  'dtype': 'bool', 'phase': 'tick-start',
-                                  'role': 'state'},
-                            'g': {'entity': 't', 'frame': 't', 'unit': '1',
-                                  'dtype': 'f64', 'phase': 'tick-start',
-                                  'role': 'external-input'}})
-        y = rec('y', [('out', 'now:a')], same=['a'])
-        fx = compile_fragment([x], {}, {})
-        fy = compile_fragment([y], {}, {})
-        fixtures = [{'g': 0.4, 'a': False, 'out': 0.0},
-                    {'g': 0.6, 'a': False, 'out': 0.0}]
-
+        # X: a := (g > 0.5);  Y: out := a (the value X just wrote). The two
+        # staged updates in the swapped order read the STALE a — a concrete
+        # commutativity witness, the discharge the interference verdict
+        # demands before any independence claim (Servois-style, fixture-based).
         def step_x(s):
-            try:
-                same, st = outputs_of(fx, {k: s[k] for k in fx.state_keys()},
-                                      s, s, 0)
-                return st | {'a': same['a']}
-            except Exception as exc:  # the error IS an observation
-                return dict(s, error=type(exc).__name__)
+            out = dict(s)
+            out['a'] = s['g'] > 0.5
+            return out
 
         def step_y(s):
-            try:
-                same, st = outputs_of(fy, {k: s[k] for k in fy.state_keys()},
-                                      s, s, 0)
-                return st | {'out': same['out']}
-            except Exception as exc:
-                return dict(s, error=type(exc).__name__)
+            out = dict(s)
+            out['out'] = s['a']
+            return out
 
-        observe = lambda s: (s.get('a'), s.get('out'), 'error' in s)
+        fixtures = [{'g': 0.4, 'a': False, 'out': 0.0},
+                    {'g': 0.6, 'a': False, 'out': 0.0},
+                    {'g': 0.6, 'a': True, 'out': 0.0}]
+        observe = lambda s: (s['a'], s['out'])
         w = I.commutativity_witness(step_x, step_y, fixtures, observe)
         self.assertIsNotNone(w, 'an order-sensitive pair must yield a witness')
+        # and the witnessed divergence names the tick where the orders differ
+        self.assertNotEqual(w['obs_x_after_y'], w['obs_y_after_x'])
 
     def test_independent_pair_has_no_witness(self):
         x = rec('x', [('a', 'g')], delayed=['g'])
@@ -329,11 +346,17 @@ class TestWitnessSearch(unittest.TestCase):
 
         def step_x(s):
             same, st = outputs_of(fx, {k: s[k] for k in fx.state_keys()}, s, s, 0)
-            return st | {'a': same['a']}
+            out = dict(s)
+            out.update(st)
+            out['a'] = same['a']
+            return out
 
         def step_y(s):
             same, st = outputs_of(fy, {k: s[k] for k in fy.state_keys()}, s, s, 0)
-            return st | {'b': same['b']}
+            out = dict(s)
+            out.update(st)
+            out['b'] = same['b']
+            return out
 
         w = I.commutativity_witness(step_x, step_y, fixtures,
                                     lambda s: (s['a'], s['b']))

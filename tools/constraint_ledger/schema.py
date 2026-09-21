@@ -29,7 +29,10 @@ from . import expr as X
 KINDS = ('invariant', 'definition', 'contribution', 'alternative', 'measurement', 'proof')
 DTYPES = ('f64', 'int', 'bool')
 PHASES = ('tick-start', 'decision')   # when the quantity's value is bound in a tick
-ROLES = ('external-input', 'state', 'constant')
+ROLES = ('external-input', 'state', 'constant', 'record-input')
+# record-input: produced by ANOTHER record of the set (e.g. the hold law's
+# same-tick read of the touch law's write); never written by the declarer,
+# no initial of its own — the producer owns the value.
 
 
 class RecordError(ValueError):
@@ -153,7 +156,8 @@ def load(spec: dict) -> Record:
                if k not in ('name', 'kind', 'lane', 'provenance', 'falsifier',
                             'params', 'quantities', 'assign', 'constants', 'initial')},
     )
-    rec.digest = content_digest(rec)
+    check_declarations(rec)   # effects derive from the expression and are
+    rec.digest = content_digest(rec)   # CHECKED at registration (amend-1 #2)
     return rec
 
 
@@ -204,10 +208,11 @@ def effects(rec: Record) -> tuple[set, set, set]:
 def check_declarations(rec: Record, externals: dict[str, Quantity] | None = None,
                        constants: set[str] | None = None) -> None:
     """Every derived read must resolve to a declared quantity, a declared
-    constant, or (when provided) a registered external input; every declared
-    `state` quantity written must have an initial value (explicit delayed
-    state, amendment-1 item 4). Effects escaping declarations are REFUSED."""
-    consts = set(rec.constants) | (constants or set())
+    constant, the control.step builtin, or (when provided) a registered
+    external input; every declared `state` quantity written must have an
+    initial value (explicit delayed state, amendment-1 item 4). Effects
+    escaping declarations are REFUSED, never silently widened."""
+    consts = set(rec.constants) | (constants or set()) | {'control.step'}
     writes, delayed, same = effects(rec)
     known = dict(rec.quantities)
     if externals:
@@ -222,8 +227,8 @@ def check_declarations(rec: Record, externals: dict[str, Quantity] | None = None
         q = known[w]
         if q.role == 'state' and w not in rec.initial:
             raise RecordError(f'{rec.name}: state write {w!r} without declared initial')
-        if q.role == 'external-input':
-            raise RecordError(f'{rec.name}: writes external-input quantity {w!r}')
+        if q.role in ('external-input', 'record-input'):
+            raise RecordError(f'{rec.name}: writes {q.role} quantity {w!r}')
     for qname, q in rec.quantities.items():
         if q.role == 'state':
             if qname not in rec.initial:

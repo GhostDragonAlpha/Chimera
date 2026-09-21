@@ -17,7 +17,8 @@ delayed state of amendment-1 item 4):
     addexpr := mulexpr ( ( '+' | '-' ) mulexpr )* ;
     mulexpr := unary ( ( '*' | '/' ) unary )* ;
     unary   := '-' unary | primary ;
-    primary := NUMBER | 'now' ':' qname | qname | IDENT '(' args ')' | '(' expr ')' ;
+    primary := NUMBER | 'true' | 'false' | 'now' ':' qname | qname
+             | IDENT '(' args ')' | '(' expr ')' ;
     qname   := seg ( '.' seg )* ;
     seg     := IDENT | '{' IDENT '}' ;          (* '{leg}' = parameter hole *)
     args    := expr ( ',' expr )* ;
@@ -38,8 +39,8 @@ import math
 from dataclasses import dataclass
 
 # ── tokenizer ──────────────────────────────────────────────────────────────
-_OPS = ('==', '!=', '<=', '>=', '<', '>', '+', '-', '*', '/', '(', ')', ':', ',', '.')
-_KEYWORDS = {'if', 'then', 'else', 'and', 'or', 'not', 'now'}
+_OPS = ('==', '!=', '<=', '>=', '<', '>', '+', '-', '*', '/', '(', ')', ':', ',', '.', '{', '}')
+_KEYWORDS = {'if', 'then', 'else', 'and', 'or', 'not', 'now', 'true', 'false'}
 
 
 class Token:
@@ -92,6 +93,11 @@ def tokenize(src: str) -> list[Token]:
 @dataclass(frozen=True)
 class Num:
     value: float
+
+
+@dataclass(frozen=True)
+class _BoolLit:
+    value: bool
 
 
 @dataclass(frozen=True)
@@ -212,6 +218,12 @@ class _Parser:
         if t.kind == 'num':
             self.take('num')
             return Num(float(t.text))
+        if t.kind == 'true':
+            self.take('true')
+            return _BoolLit(True)
+        if t.kind == 'false':
+            self.take('false')
+            return _BoolLit(False)
         if t.kind == '(':
             self.take('(')
             e = self.expr()
@@ -234,7 +246,11 @@ class _Parser:
                         args.append(self.expr())
                 self.take(')')
                 return Call(name, tuple(args))
-            return Qty(name)
+            segs = [name]
+            while self.peek().kind == '.':
+                self.take('.')
+                segs.append(self.seg())
+            return Qty('.'.join(segs))
         raise SyntaxError(f'chimpl: unexpected {t.kind}({t.text}) at {t.pos}')
 
     def qname(self):
@@ -269,7 +285,7 @@ def reads(ast) -> tuple[set, set]:
     delayed, same = set(), set()
 
     def walk(e):
-        if isinstance(e, Num):
+        if isinstance(e, (Num, _BoolLit)):
             return
         if isinstance(e, Qty):
             delayed.add(e.name)
@@ -317,6 +333,8 @@ def evaluate(ast, delayed: dict, same: dict, constants: dict) -> object:
     Arithmetic is float64 (Python floats); booleans stay Python bools."""
     def ev(e):
         if isinstance(e, Num):
+            return e.value
+        if isinstance(e, _BoolLit):
             return e.value
         if isinstance(e, Qty):
             if e.name in delayed:

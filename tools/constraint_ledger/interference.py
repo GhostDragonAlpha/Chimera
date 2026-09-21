@@ -47,8 +47,21 @@ def _fx(record):
 
 
 def interaction(x, y) -> Interaction:
-    """The asymmetric pairwise test on concrete (expanded) records."""
+    """The asymmetric pairwise test on concrete (expanded) records.
+
+    Self-interaction (x is y) reports the record's own FEEDBACK quantities
+    (its delayed/same-tick reads of its own writes): a hysteresis law is
+    'stateful' on its latch quantity, a stateless law is independent of
+    itself. (Definitional refinement, fired-falsifier report P1-1: the
+    naive W_X ∩ W_X is trivially the whole write set and says nothing.)"""
     wx, rxd, rxs = _fx(x)
+    if x.name == y.name:
+        rx, ry_ = rxd | rxs, rxd | rxs
+        feedback = wx & rx
+        quantities = {q: ('stateful' if q in rxd else 'combinational')
+                      for q in sorted(feedback)}
+        directions = {q: ['self'] for q in quantities}
+        return Interaction(x.name, y.name, quantities, directions)
     wy, ryd, rys = _fx(y)
     rx, ry = rxd | rxs, ryd | rys
     hit_a = wx & (ry | wy)    # x's writes feed y
@@ -62,16 +75,12 @@ def interaction(x, y) -> Interaction:
         if q in wx and q in wy:
             cls.append('write-write')
             dirs.append('X<->Y')
-        else:
-            if q in wx and q in ry:
-                cls.append('combinational' if q in rys else 'stateful')
-                dirs.append('X->Y')
-            if q in wx and q in wy:      # (already covered above)
-                pass
-            if q in wy and q in rx:
-                cls.append('combinational' if q in rxs else 'stateful')
-                dirs.append('Y->X')
-        # de-duplicate preserving order
+        if q in wx and q in ry and q not in wy:
+            cls.append('combinational' if q in rys else 'stateful')
+            dirs.append('X->Y')
+        if q in wy and q in rx and q not in wx:
+            cls.append('combinational' if q in rxs else 'stateful')
+            dirs.append('Y->X')
         quantities[q] = '+'.join(dict.fromkeys(cls))
         directions[q] = list(dict.fromkeys(dirs))
     return Interaction(x.name, y.name, quantities, directions)
@@ -91,6 +100,7 @@ def matrix(records: list) -> list[Interaction]:
 @dataclass
 class Cone:
     reach: dict = field(default_factory=dict)   # record name -> set of quantities it can influence
+    externally_steered: set = field(default_factory=set)  # records whose inputs unknown code can steer
 
     def influenced(self, rec_name: str, q: str) -> bool:
         return q in self.reach.get(rec_name, set())
@@ -98,32 +108,30 @@ class Cone:
 
 def build_cone(records: list, physics_edges: list[tuple[str, str]],
                externals: list[str] | None = None) -> Cone:
-    """Fixpoint over: X writes q -> q; X now:-reads q' (same-tick, immediate)
-    and delayed-reads q' (next tick, still reaches eventually) where q' is
-    influenced by someone; plus the declared physics edges (force, body
-    state, contact guards, sensors). Unknown externals (opaque writers) reach
-    every quantity in `externals`."""
-    writes = {}
-    for r in records:
-        wx, _, _ = _fx(r)
-        for q in wx:
-            writes.setdefault(q, set()).add(r.name)
+    """Fixpoint influence cone. reach[X] grows by: every record READING a
+    quantity in reach[X] contributes ITS writes (transitively), and the
+    registered physics edges (law → force → body state → contact guard →
+    load-share sensor → later law) carry influence across the plant.
+    `externals` names OPAQUE quantities (unknown-code writes): records
+    reading them are externally steered — their behavior cannot be
+    certified by inspection, and steering propagates down the read graph."""
     influence = {r.name: set(_fx(r)[0]) for r in records}     # own writes
-    # opaque externals: any record reading them may be influenced arbitrarily
+    readers = []          # (record name, all reads)
+    for r in records:
+        _, rd, rs = _fx(r)
+        readers.append((r.name, rd | rs))
     external_qs = set(externals or ())
+    steered = {name for name, rds in readers if rds & external_qs}
     changed = True
     while changed:
         changed = False
         for r in records:
-            wx, rd, rs = _fx(r)
             cur = influence[r.name]
             add = set()
-            for q in rd | rs:
-                for other, reach in influence.items():
-                    if other != r.name and q in reach:
-                        add |= wx
-                if q in external_qs:
-                    add |= wx
+            # any record READING a quantity X influences joins X's reach
+            for other, rds in readers:
+                if other != r.name and rds & cur:
+                    add |= influence[other]     # transitively
             # physics edges: (src, dst) — an influenced src influences dst
             for src, dst in physics_edges:
                 if src in cur or src in external_qs:
@@ -132,7 +140,15 @@ def build_cone(records: list, physics_edges: list[tuple[str, str]],
             if new != cur:
                 influence[r.name] = new
                 changed = True
-    return Cone(reach=influence)
+        # steering propagates: a record reading a steered record's output
+        # is itself steerable by the same unknown code
+        grew = {name for name, rds in readers
+                if any(q in influence.get(producer, ())
+                       for producer in steered for q in rds)}
+        if not grew <= steered:
+            steered |= grew
+            changed = True
+    return Cone(reach=influence, externally_steered=steered)
 
 
 # ── witness search (fixture-based commutativity discharge) ────────────────

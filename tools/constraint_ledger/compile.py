@@ -85,14 +85,30 @@ def compile_fragment(records: list[Record], externals: dict[str, dict],
         for inst in expand(spec):
             instances.append(inst)
 
-    # declaration merge: same name, same declared shape
+    # declaration merge: same name, same declared shape. A producer's own
+    # role (state/external-input) is canonical; consumers declare the same
+    # quantity as record-input — identical otherwise is ACCEPTED.
+    def _canon(d):
+        d = dict(d)
+        return d
+
     for inst in instances:
         for qname, decl in inst.quantities.items():
             d = decl.as_decl()
-            if qname in all_quantities and all_quantities[qname] != d:
-                raise RecordError(f'quantity {qname!r} declared twice with '
-                                  f'different types: {all_quantities[qname]} vs {d}')
-            all_quantities[qname] = d
+            if qname in all_quantities:
+                prev = all_quantities[qname]
+                roles = {prev['role'], d['role']}
+                shallow = {k: (None if k == 'role' else d[k]) for k in d}
+                prev_shallow = {k: (None if k == 'role' else prev[k]) for k in prev}
+                if shallow != prev_shallow or not (
+                        roles <= {'state', 'record-input'}
+                        or roles <= {'external-input', 'record-input'}):
+                    raise RecordError(f'quantity {qname!r} declared twice with '
+                                      f'different types: {prev} vs {d}')
+                if d['role'] != 'record-input':   # producer's decl wins
+                    all_quantities[qname] = d
+            else:
+                all_quantities[qname] = d
     # writers: one defining writer per quantity-version
     for inst in instances:
         wx, _, _ = effects(inst)
@@ -112,7 +128,8 @@ def compile_fragment(records: list[Record], externals: dict[str, dict],
     for inst in instances:
         wx, rd, rs = effects(inst)
         for name in rd | rs:
-            if name in inst.quantities or name in constants or name in externals:
+            if name in inst.quantities or name in constants or name in externals \
+                    or name == 'control.step':
                 continue
             raise RecordError(f'{inst.name}: read of undeclared quantity {name!r}')
         for w in wx:
@@ -172,11 +189,11 @@ def outputs_of(frag: Fragment, state: dict, row_prev: dict, row_now: dict,
     reset from the reference mid-run."""
     delayed: dict = dict(state)
     same: dict = {}
+    delayed['control.step'] = step_index
     for qname, decl in frag.externals.items():
         row = row_now if decl.get('phase') == 'decision' else row_prev
         if qname in row:
             delayed[qname] = row[qname]
-    delayed['control.step'] = step_index
     for a_rec in frag.instances:
         for a in a_rec.__dict__['_ordered']:
             same[a.write] = X.evaluate(a.ast, delayed, same, frag.constants)
