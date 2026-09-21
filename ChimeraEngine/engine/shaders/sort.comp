@@ -1,9 +1,11 @@
 #version 450
 // GPU sort for 3DGS back-to-front splat ordering. Two modes via push constant:
 //   mode 0 = compute a sortable uint key from view-space depth (monotonic: uint order == depth order)
-//   mode 1 = one bitonic compare-swap step (sorts indices ascending by key)
-// Bitonic sort is a comparison sort — it produces a CORRECT total order (ties may swap, which is
-// fine for alpha blending). Runs entirely on the GPU so the CPU never touches per-splat data.
+//   mode 1 = one bitonic compare-swap step (sorts indices ascending by (key, index))
+// Bitonic sort is a comparison sort — with the (key, index) tie-break it realizes a
+// STABLE TOTAL ORDER: the sorted permutation is unique, so renders are reproducible
+// across re-uploads (agent/engine-determinism-argc, 2026-09-20). Runs entirely on
+// the GPU so the CPU never touches per-splat data.
 layout(local_size_x = 256) in;
 
 layout(std430, binding = 0) buffer PosB { float pos[]; };    // N*14 floats (engine vertex layout)
@@ -36,7 +38,23 @@ void main() {
             uint a = indices[i];
             uint b = indices[ixj];
             bool asc  = (i & k) == 0u;
-            bool swap = asc ? (keys[a] > keys[b]) : (keys[a] < keys[b]);
+            // STABLE TOTAL ORDER (agent/engine-determinism-argc, 2026-09-20): ties
+            // on the depth key are broken by the splat index carried in the
+            // permutation itself, so (key, index) pairs are unique for real splats
+            // and the fully sorted order is UNIQUE — independent of the
+            // permutation entering the sort. The strict key-only compare left
+            // equal keys unswapped, so the converged tie arrangement depended on
+            // the index buffer's history — and that buffer is re-initialized only
+            // when the splat COUNT changes, never on re-upload of the same count:
+            // the same buffer posted twice sorted ties differently (measured
+            // 2026-09-20: 8/48 replicate frames differed, splat-overlap pixels,
+            // max per-pixel delta 3/255). Padding entries all carry index 0 and
+            // key 0xFFFFFFFF — indistinguishable from each other (inert: they
+            // always sort after every real key, which is strictly smaller, and
+            // their mutual order is byte-invisible) and never tied with a real
+            // entry. Same stage count, same dispatches: no added passes.
+            bool swap = asc ? (keys[a] > keys[b] || (keys[a] == keys[b] && a > b))
+                            : (keys[a] < keys[b] || (keys[a] == keys[b] && a < b));
             if (swap) {
                 indices[i]   = b;
                 indices[ixj] = a;

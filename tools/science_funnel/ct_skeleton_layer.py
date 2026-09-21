@@ -318,10 +318,7 @@ def measure_falsifier() -> dict:
     _require(hat_length_m > 0.1 and hat_length_m < 2.0, "hat_length implausible", hat_length_m)
 
     # Authored free-root seat height (the coupled free scene's base scaffold).
-    from tools.creature_graph.store import CreatureGraph
-    graph = CreatureGraph.load(str(ROOT / "tools/creature_graph/data/creature_graph.json"))
-    contract = graph.get("model.dynamics.coupled_arm_free")["physical"]["contract"]
-    seat_y = float(contract["base_scaffold"]["defaults_rad_m"][4])
+    seat_y = _seat_height()
 
     composite = load_obj_vertices(PREVIEW_DIR / COMPOSITE_PREVIEW)
     scale, R, translation, diag = ct_registration(composite, hat_length_m, seat_y)
@@ -437,11 +434,28 @@ def layer_splat_buffer(stride: int = 3) -> tuple:
     return buf, record
 
 
+# The authored free-root seat height: base_scaffold.defaults_rad_m[4] of
+# model.dynamics.coupled_arm_free. PINNED 2026-09-20 (lane
+# agent/engine-determinism-argc): master's creature_graph.json does not carry
+# that object (it exists in the graph of lane agent/skeleton-movie-20260919,
+# whose blob sha256 is pinned below), so the value travels as a pinned constant
+# under the SAME discipline as WALKER_DERIVED_SHA256: if the local graph ever
+# gains the object, the pin is cross-checked against it and any drift is a
+# loud refusal, never a silent bend.
+SEAT_HEIGHT_SOURCE_GRAPH_SHA256 = "39faccb1247838d5a361f3ded14086006fe1ec1145627b6cc2a3010736e229ef"
+SEAT_HEIGHT_M = -0.08977588222411312
+
+
 def _seat_height() -> float:
     from tools.creature_graph.store import CreatureGraph
     graph = CreatureGraph.load(str(ROOT / "tools/creature_graph/data/creature_graph.json"))
-    contract = graph.get("model.dynamics.coupled_arm_free")["physical"]["contract"]
-    return float(contract["base_scaffold"]["defaults_rad_m"][4])
+    try:
+        contract = graph.get("model.dynamics.coupled_arm_free")["physical"]["contract"]
+        local = float(contract["base_scaffold"]["defaults_rad_m"][4])
+        _require(local == SEAT_HEIGHT_M, "seat_height_pin_drift", (local, SEAT_HEIGHT_M))
+    except KeyError:
+        pass                      # object absent on this branch's graph: the pin governs
+    return SEAT_HEIGHT_M
 
 
 # ── the runner: post the layer through the splat shell and fetch the frame ──

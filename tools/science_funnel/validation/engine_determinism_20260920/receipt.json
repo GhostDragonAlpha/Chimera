@@ -1,0 +1,352 @@
+{
+ "schema": "chimera.engine_determinism.receipt.v1",
+ "lane": "agent/engine-determinism-argc",
+ "taken_utc": "2026-09-20T09:49:49+00:00",
+ "provenance": {
+  "engine_source": "ChimeraEngine/engine/engine.cpp + shaders/sort.comp + main.cpp, branch agent/engine-determinism-argc (base master 32105f18)",
+  "defects_inherited_from": "tools/science_funnel/validation/skeleton_movie_20260919/receipt.json on lane agent/skeleton-movie-20260919 (F1 scorer blindness, F2 cross-upload splat-sort instability) + that lane's engine launch_note (argc FAST_FAIL trap); that lane's worktree was read-only for this lane",
+  "pre_fix_binary": "chimera_engine.exe built from base master 32105f18 sources, sha256 b8999476a5d33f296e818f715f67143f2e269bc00218b58586e1fea976f18bd9"
+ },
+ "rule0_pre_registered": {
+  "banked_utc": "2026-09-20T09:49:49+00:00",
+  "note": "THIS BLOCK WAS WRITTEN BEFORE ANY CODE EDIT OR MEASUREMENT OF THIS LANE. It is never edited after the fact; measurements are appended under 'measurements' only.",
+  "m1_sort_stability": {
+   "STATEMENT": "making the splat sort a STABLE TOTAL ORDER (depth key tie-broken by splat index) makes cross-upload renders bit-identical",
+   "diagnosis": "the GPU bitonic compare-swap uses STRICT inequality on the depth key alone (sort.comp: swap only when keys[a] > keys[b] or keys[a] < keys[b]), so EQUAL depth keys never swap and the tie order entering each frame's sort is whatever the index buffer carried in -- and the index buffer is re-initialized only when the splat COUNT changes, never on re-upload of the same count. The converged tie arrangement therefore depends on upload history: the same buffer posted twice sorts ties differently on some frames.",
+   "fix": "the comparator becomes a total order: compare depth keys first, break ties by the splat INDEX carried in the permutation itself (indices are unique for real splats; padding entries all carry index 0 and key 0xFFFFFFFF and are indistinguishable, which is inert -- they always sort after every real key and their mutual order is byte-invisible). With (key,index) unique per real splat, the fully sorted permutation is UNIQUE, so the render no longer depends on the state entering the sort.",
+   "PREDICTION": "the same splat buffer posted via 4 SEPARATE uploads to the FIXED engine renders byte-identical PNG frames: all 24 frames of the 24-frame orbit are byte-equal across all 4 uploads",
+   "FALSIFIER": "any byte difference across uploads in any frame = RED, with the frame named and the differing-pixel count and max per-pixel delta reported (per-pixel max delta over RGB channels, computed exactly as the movie lane computed it: numpy int16 absolute difference of the decoded PNGs, max over channels, pixels_differing = count of pixels with delta > 0). Byte-equality with the PRE-FIX engine's outputs is NOT claimed and NOT required: the tie order changes by design; the falsifier pins cross-upload determinism of the NEW engine only.",
+   "performance_claim": "the sort must not regress measurably: same number of compare-swap stages and dispatches (the fix adds one uint comparison on key equality inside the existing shader); render time before/after reported for the identical orbit; a >2x slowdown is a finding"
+  },
+  "m2_argc_guard": {
+   "STATEMENT": "argument parsing that never dereferences beyond the true argc makes extra flags legal (or cleanly rejected with a message and exit code 1, never FAST_FAIL)",
+   "diagnosis": "main() reads argv[4] under an `argc > 3` guard (main.cpp: `int w = atoi(argv[3]), h = atoi(argv[4]);`); with argc == 4, argv[4] is nullptr and atoi(nullptr) aborts through ucrtbase!invoke_watson with FAST_FAIL_INVALID_ARG. `chimera_engine.exe 8097 --hidden --no-restore` is argc 4 and dies at startup.",
+   "fix": "a real argument parser at the top of main(): positionals (port, board file, legacy width/height) and value flags (--width/--height/--science-surface/--thermal-salvage/--earth-patch) are read only after an argc bound check; boolean flags (--hidden, --no-restore, --preserve-mesh-topology) are recognized anywhere; an UNKNOWN flag or a value flag missing its value is rejected with a one-line stderr usage message and exit code 1. No argv index >= argc is ever dereferenced.",
+   "PREDICTION": "launching with `--hidden --no-restore <port>` and with `<port>` alone both start the engine and serve frames; a deliberately bad arg (a flag expecting a value, given none, e.g. `--port`) exits with a clear stderr message and exit code 1",
+   "FALSIFIER": "any launch variant that crashes without a message = RED (the process dies by an abort/FAST_FAIL path -- observed as exit code 3 (FAST_FAIL / abort) or 0xC0000409-class termination with empty stderr -- instead of exiting 1 with the usage message)"
+  },
+  "m3_scorer_repair": {
+   "STATEMENT": "scoring discrimination on a POSTURE/ANATOMY token vocabulary (curated BEFORE measuring) separates the true mount from both probes where raw-text similarity could not",
+   "diagnosis": "the movie lane's F1 scorer compared concatenated judgment TEXT through senses.align; boilerplate similarity (both reports describe 'a single isolated object on a black background') swamped the signal: align(true, trunk-rotated-90 deg probe) = 0.9 although every probe frame read says 'lying/horizontal, not upright'.",
+   "fix": "an align_vocab(true_report, probe_report) instrument: each report is reduced to the set of vocabulary terms it hits (case-insensitive, word-boundary regex, from the banked vocabulary below); the score is the Jaccard of the two matched-term sets (|A and B| / |A or B|; 0.0 when both sets are empty -- no vocabulary evidence of alignment is a score of 0, never a NaN). Boilerplate contains no vocabulary terms and therefore cannot contribute.",
+   "PREDICTION": "on the movie lane's OWN RECORDED verbatim judgments (the three judgement_*.json copied read-only from its validation dir into this one), vocab_align(true, P1) < 0.5 AND vocab_align(true, P2) < 0.5",
+   "FALSIFIER": "either score >= 0.5 = RED. The vocabulary below was banked in this pre-registered block BEFORE the comparison ran; no term is added, removed or re-weighted after seeing a score.",
+   "instrument_details": {
+    "scoring_rule": "Jaccard over matched vocabulary term sets; 0.0 if both sides match nothing; the discrimination gate is the movie lane's own pre-registered 0.5 (a probe scoring >= 0.5 is NOT distinguished)",
+    "vocabulary": {
+     "posture_upright": [
+      "upright",
+      "standing",
+      "stands",
+      "vertical",
+      "vertically",
+      "erect",
+      "planted",
+      "perched"
+     ],
+     "posture_lying": [
+      "lying",
+      "lies",
+      "horizontal",
+      "horizontally",
+      "sideways",
+      "prone",
+      "supine",
+      "reclining",
+      "slumped",
+      "hunched"
+     ],
+     "anatomy": [
+      "skeleton",
+      "skeletal",
+      "skull",
+      "rib",
+      "ribs",
+      "ribcage",
+      "rib cage",
+      "spine",
+      "spinal",
+      "vertebra",
+      "vertebrae",
+      "pelvis",
+      "pelvic",
+      "femur",
+      "femora",
+      "tibia",
+      "fibula",
+      "humerus",
+      "radius",
+      "ulna",
+      "torso",
+      "trunk",
+      "limb",
+      "limbs",
+      "bone",
+      "bones",
+      "anatomy",
+      "anatomical",
+      "joint",
+      "joints",
+      "posture",
+      "figure"
+     ],
+     "probe_state": [
+      "fragmented",
+      "fragment",
+      "fragments",
+      "particles",
+      "particle",
+      "oversized",
+      "enlarged",
+      "scaled",
+      "twice",
+      "double",
+      "coral",
+      "rock",
+      "stone",
+      "statue",
+      "floating",
+      "elongated",
+      "clustered",
+      "clumped",
+      "speckled",
+      "grainy",
+      "non-solid",
+      "abstract"
+     ]
+    },
+    "match_rule": "word-boundary, case-insensitive substring for single words; multiword entries ('rib cage', 'non-solid') matched literally; 'radius' is ambiguous with a circle's radius but is banked as an anatomy term (the reports describe bones, not geometry) and stays as banked",
+    "categories_are_labels_only": "the score uses the UNION of all matched terms as one set; the category labels exist to document provenance of each term, not to weight the score"
+   }
+  }
+ },
+ "measurements": {
+  "note": "APPENDED AFTER THE RUNS. The pre-registered block above is untouched (banked in commit e435de97 before any run of this lane).",
+  "environment": {
+   "gpu": "NVIDIA GeForce RTX 4090 (reported by the articulation_gpu probe)",
+   "port": 8129,
+   "port_policy": "bind-tested free immediately before every launch; 8127 (operator live scene) and 8096/8097 (other lanes) never touched",
+   "process_policy": "only processes started by this lane were ever stopped; the movie lane's engine (its receipt pid 187488, port 8097) was never signalled"
+  },
+  "binaries": {
+   "fixed_engine": {
+    "sha256": "169f38def9cfd43a267ecda92de976c2b6b2dca31629bc9e547e402b0676eebd",
+    "source": "agent/engine-determinism-argc at measurement time (main.cpp bounded argument parser + sort.comp stable total order)"
+   },
+   "pre_fix_engine_rebuild": {
+    "sha256": "bd87d1562112c8b54406653236b1788f60498eb75a942ca02ce39a4d474f2e21",
+    "source": "master 32105f18 sources rebuilt for measurement. The first pre-fix build (sha256 b8999476a5d33f296e818f715f67143f2e269bc00218b58586e1fea976f18bd9, recorded at bank time) was overwritten by the fixed build before it could be stashed; MSVC builds of identical sources are not byte-reproducible, so the pre-fix measurements use the rebuild -- same source state, both hashes recorded here."
+   },
+   "posted_buffer": {
+    "splats": 118617,
+    "stride": 3,
+    "bytes_sha256": "4a6d85a9f9ad1de6fa6fc52ce7520b8a2983d4000a4b8941da15e2dabab3bb52",
+    "camera_radius_m": 1.007932,
+    "note": "byte-identical POST across every run and every upload (identical buffer_sha256 in all four records); the registration was verified equal to the movie lane's recorded numbers (splats 118617, radius 1.007932, identical bbox) after pinning the seat height"
+   }
+  },
+  "m1_sort_stability": {
+   "runs": {
+    "prefix_plain": {
+     "record": "determinism_record_prefix_plain.json",
+     "protocol": "plain: the same buffer x 4 uploads, byte-compare across all",
+     "engine_binary_sha256": "bd87d1562112c8b54406653236b1788f60498eb75a942ca02ce39a4d474f2e21",
+     "launch_argv": [
+      "8129"
+     ],
+     "compared_uploads": 4,
+     "frames_differing": 0,
+     "frames_total": 24,
+     "worst_frame_max_pixel_delta": 0,
+     "orbit_seconds": [
+      10.27,
+      10.65,
+      10.67,
+      10.82
+     ],
+     "median_orbit_seconds": 10.66
+    },
+    "prefix_interleaved": {
+     "record": "determinism_record_prefix_interleave.json",
+     "protocol": "interleaved A,B(probe_rot90),A,A -- byte-compare across the A-orbits",
+     "engine_binary_sha256": "bd87d1562112c8b54406653236b1788f60498eb75a942ca02ce39a4d474f2e21",
+     "launch_argv": [
+      "8129"
+     ],
+     "compared_uploads": 3,
+     "frames_differing": 0,
+     "frames_total": 24,
+     "worst_frame_max_pixel_delta": 0,
+     "orbit_seconds": [
+      10.08,
+      10.08,
+      10.35,
+      10.92
+     ],
+     "median_orbit_seconds": 10.21
+    },
+    "fixed_plain": {
+     "record": "determinism_record_fixed.json",
+     "protocol": "plain: the same buffer x 4 uploads, byte-compare across all",
+     "engine_binary_sha256": "169f38def9cfd43a267ecda92de976c2b6b2dca31629bc9e547e402b0676eebd",
+     "launch_argv": [
+      "--hidden",
+      "--no-restore",
+      "8129"
+     ],
+     "compared_uploads": 4,
+     "frames_differing": 0,
+     "frames_total": 24,
+     "worst_frame_max_pixel_delta": 0,
+     "orbit_seconds": [
+      10.79,
+      25.07,
+      10.7,
+      10.1
+     ],
+     "median_orbit_seconds": 10.74
+    },
+    "fixed_interleaved": {
+     "record": "determinism_record_fixed_interleave.json",
+     "protocol": "interleaved A,B(probe_rot90),A,A -- byte-compare across the A-orbits",
+     "engine_binary_sha256": "169f38def9cfd43a267ecda92de976c2b6b2dca31629bc9e547e402b0676eebd",
+     "launch_argv": [
+      "--hidden",
+      "--no-restore",
+      "8129"
+     ],
+     "compared_uploads": 3,
+     "frames_differing": 0,
+     "frames_total": 24,
+     "worst_frame_max_pixel_delta": 0,
+     "orbit_seconds": [
+      10.25,
+      10.25,
+      10.53,
+      10.74
+     ],
+     "median_orbit_seconds": 10.39
+    }
+   },
+   "falsifier_verdict": {
+    "fixed_engine_plain_4x": "GREEN -- all 24 frames byte-identical across 4 separate uploads (0 differing frames, max per-pixel delta 0)",
+    "fixed_engine_interleaved_ABA": "GREEN -- the three A-orbits byte-identical (0/24 differing)"
+   },
+   "performance": {
+    "pre_fix_median_orbit_s": [
+     10.66,
+     10.21
+    ],
+    "fixed_median_orbit_s": [
+     10.74,
+     10.39
+    ],
+    "verdict": "no measurable regression: medians 10.2-10.8 s per 24-frame orbit on both engines (fixed_plain upload 2 hit a 25.07 s settle outlier -- one long quiesce wait, not per-frame cost; every other orbit within noise). Nowhere near the 2x slowdown bar."
+   },
+   "honest_finding_nonrepro": "the movie lane's RED (8/48 replicate frames differing, max delta 3/255) did NOT reproduce on the PRE-FIX engine from this lane's launch states: 0/24 differing in BOTH the plain and the history-dirtying interleaved protocol. The defect mechanism (tie order inheriting the index buffer's prior permutation) is history-dependent, and the movie lane's engine carried hours of prior render state this lane cannot reconstruct (its binary e6a5... was also a different build). This lane therefore reports the pre-fix defect as NOT REPRODUCED FROM FRESH STATES -- the original lane's measurement stands as the defect evidence -- and the fix's value is (a) it removes the mechanism by construction (the converged permutation is unique under a total order, so no history can matter) and (b) the banked cross-upload falsifier is measured GREEN on the fixed engine under both protocols."
+  },
+  "m2_argc_guard": {
+   "pre_fix_crash_evidence": {
+    "argv": [
+     "8129",
+     "--hidden",
+     "--no-restore"
+    ],
+    "exit_code": 3221226505,
+    "exit_code_hex": "0xC0000409 (fail-fast, FAST_FAIL_INVALID_ARG path)",
+    "stderr": "",
+    "verdict": "defect reproduced exactly as the movie lane diagnosed"
+   },
+   "fixed_matrix": [
+    {
+     "variant": "port_only",
+     "argv": [
+      "8129"
+     ],
+     "result": "SERVED 2560x1369 in 0.8s",
+     "pass": true
+    },
+    {
+     "variant": "flags_first (the banked prediction)",
+     "argv": [
+      "--hidden",
+      "--no-restore",
+      "8129"
+     ],
+     "result": "SERVED 2560x1369 in 0.7s",
+     "pass": true
+    },
+    {
+     "variant": "flags_after_port (the previously-crashing shape)",
+     "argv": [
+      "8129",
+      "--hidden",
+      "--no-restore"
+     ],
+     "result": "SERVED 2560x1369 in 0.7s",
+     "pass": true
+    },
+    {
+     "variant": "launch_chimera.bat shape",
+     "argv": [
+      "8129",
+      "--hidden"
+     ],
+     "result": "SERVED 2560x1369 in 0.7s",
+     "pass": true
+    },
+    {
+     "variant": "unknown flag",
+     "argv": [
+      "--port"
+     ],
+     "result": "exit=1, stderr: 'chimera_engine: unknown argument: --port' + usage",
+     "pass": true
+    },
+    {
+     "variant": "value flag without value",
+     "argv": [
+      "--width"
+     ],
+     "result": "exit=1, stderr: 'chimera_engine: --width requires a value' + usage",
+     "pass": true
+    },
+    {
+     "variant": "legacy positional [port] [board] [w] [h]",
+     "argv": [
+      "8129",
+      "studio_board.json",
+      "640",
+      "480"
+     ],
+     "result": "SERVED 2560x1369 in 0.7s",
+     "pass": true
+    }
+   ],
+   "legacy_parity_check": "the PRE-FIX engine launched with the same legacy 4-positional argv also serves a 2560x1369 frame (the render target follows the desktop-sized window on this box, a pre-existing engine behavior independent of cfg): the positional protocol's observable behavior is preserved exactly",
+   "falsifier_verdict": "GREEN -- every serve variant served; every bad arg exited 1 with a clear stderr usage message; no variant crashed without a message"
+  },
+  "m3_scorer_repair": {
+   "corpus": "the three judgement_*.json copied byte-identical (sha256-verified) from lane agent/skeleton-movie-20260919's validation dir into this one and committed in e435de97 BEFORE this comparison ran",
+   "raw_instrument_baseline": "the movie lane's own receipt: senses.align(true, P1) = 0.9 (raw concatenated-text similarity, boilerplate-dominated)",
+   "vocab_align_true_vs_p1": 0.3584905660377358,
+   "vocab_align_true_vs_p2": 0.6078431372549019,
+   "p1_distinguished": true,
+   "p2_distinguished": false,
+   "falsifier_verdict": "SPLIT, reported honestly: P1 GREEN (0.358 < 0.5 -- the raw instrument scored the SAME pair 0.9); P2 RED (0.608 >= 0.5 -- the banked falsifier fires for the scale probe). NO term was added, removed or re-weighted after the score was seen (Rule 0); the RED stands.",
+   "red_mechanism": "the true mount's own 12-frame orbit reads share 31 of 51 banked terms with P2's reads (matched terms recorded in scorer_repair_scores.json): the grainy splat body reads as particles/fragments/stone in BOTH conditions' frames, the true orbit's below/level stops draw horizontal/lying/sideways terms themselves, and P2's wrongness is SIZE, which the banked posture/anatomy vocabulary does not separate (true's own reads even contain 'twice'). The vocabulary separates the posture-flip probe decisively but is not a sufficient instrument for the scale probe on this recorded corpus.",
+   "scores_file": "scorer_repair_scores.json",
+   "model_calls": 0
+  },
+  "regressions": {
+   "graph_contract_tests": "python -B tools/creature_graph/tests/test_contracts.py -> Ran 19 tests, OK (bare AND with PYTHONPATH='E:/ChimeraWork/engdet-agent;E:/ChimeraWork/engdet-agent/ChimeraEngine')",
+   "engine_tests_p1": "test_p1_inventory: 165/165 PASS; test_p1_persistence: 9/9 PASS (R4d refusal volume witness PASS, R5 restore semantics PASS)",
+   "engine_tests_articulation": {
+    "articulation_native": "16 checks, failed=0",
+    "articulation_gpu": "3 cases (rest, hip_and_knee, whole_body_mixed_axes) pass, failed=0",
+    "body_surface": "16 checks, failed=0"
+   },
+   "teddy_smoke": "the committed teddy shell (native/genomes/teddy_shell.json) posted through cpp_bridge.render_teddy (legacy 7-float splat layout) on the FIXED engine -> real PNG returned, 14,021,062 bytes, 2560x1369 (PASS)"
+  }
+ }
+}
