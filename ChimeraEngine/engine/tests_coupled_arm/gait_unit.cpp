@@ -65,6 +65,10 @@ struct WalkOut{
  // {deadline_unload(1=the binding term is the unload form),unload_fires}
  // leg 0 at [8,10), leg 1 at [10,12).
  std::vector<std::array<double,12>> hind29;
+ // WAVE 35 CARRIER SELF-UNLOAD FIRE DEADLINE census inputs: per-tick per-leg
+ // 2 fields {waive_fires, waive_first_tick} -- leg 0 at [0,2), leg 1 at [2,4);
+ // -1 filled when the field is absent.
+ std::vector<std::array<double,4>> hind35;
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
@@ -287,6 +291,12 @@ int main(int argc,char**argv){try{
        if(p.contains("deadline_unload"))h29[8+2*l]=p["deadline_unload"].get<bool>()?1.:0.;
        if(p.contains("unload_fires"))h29[10+2*l]=double(p["unload_fires"].get<uint64_t>());}
      out.hind29.push_back(h29);}
+    {std::array<double,4> h35{-1.,-1.,-1.,-1.}; // WAVE 35 APPEND: the waive census
+     if(s["gait"].contains("hind_step")&&s["gait"]["hind_step"].size()>=2)
+      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["hind_step"][l];
+       if(p.contains("waive_fires"))h35[2*l]=double(p["waive_fires"].get<uint64_t>());
+       if(p.contains("waive_first_tick"))h35[2*l+1]=number(p["waive_first_tick"]);}
+     out.hind35.push_back(h35);}
     out.fm.push_back(fmm);out.fsat.push_back(sat);out.ftgt.push_back(tgx);out.frep.push_back(rep);
 #ifdef GAIT_EVENT_TRACE
     // WAVE 23 MINING: the per-tick fore joint-wall state (the derivation's
@@ -1371,6 +1381,63 @@ int main(int argc,char**argv){try{
    note(b);
    ck(fire_R>0&&fire_R<=266&&live,"f34_twelfth_fire_lands");
    ck(last_fire34>262,"f34_chain_continues_past_twelfth");}}
+
+ // ── WAVE 35 CARRIER SELF-UNLOAD FIRE DEADLINE CENSUS (pre-registered in
+ //    receipt_wave35.json): (a) THE WAIVE FIRES -- every (a)-waiving
+ //    unload-deadline fire; the FIRST EXACTLY 161 (the L, inside the R's
+ //    [160,175) real swing); the twelfth-era engagement the R in [247,250]
+ //    (predicted 248); every waive fire on a touch-live pad; ZERO waive fires
+ //    inside the stall calendar [176,246] (the stalls' holds never clear).
+ //    (b) THE CALENDAR SURVIVAL -- the R's post-160 TD in [173,178]; the L's
+ //    post-247 TD in [258,268]; the R's post-fire TD in [256,274].
+ //    (c) THE DELIVERY -- the R's landing rxn at its post-fire completion
+ //    > 10 N (the L's 47.717 N @262 precedent) and both hinds rxn-positive
+ //    within 6 ticks of that completion.
+ {const size_t N35=std::min(w.hind35.size(),w.hgap.size());
+  std::string wf;int first_wf=-1;int dead_wf=0;int stall_era_wf=0;int wf_R_twelfth=-1;
+  for(size_t i=1;i<N35;++i)for(size_t l=0;l<2;++l)
+   if(w.hind35[i][2*l]>w.hind35[i-1][2*l]){
+    int f=(int)i;
+    char cb[48];std::snprintf(cb,48,"%s@%d ",l?"R":"L",f);wf+=cb;
+    if(first_wf<0)first_wf=f;
+    if(f>=176&&f<=243)++stall_era_wf;
+    if(l==1&&f>=244&&f<=252)wf_R_twelfth=f;
+    if((size_t)(f-1)<w.t.size()&&w.t[(size_t)(f-1)][l]!=1)++dead_wf;}
+  {char b[640];std::snprintf(b,640,"F-G35 waive_fires %s first=%d [PREDICTED EXACTLY 161: the L, inside the R's [160,175) real swing] twelfth_R=%d [AMENDED PREDICTED ~247, window [244,252]] dead=%d [OWNED 0] stall_era=%d [OWNED 0: the stalls' holds never clear]",
+    wf.c_str(),first_wf,wf_R_twelfth,dead_wf,stall_era_wf);
+   note(b);
+   if(first_wf>0){
+    ck(first_wf==161,"f35_first_waive_fire_predicted");
+    ck(dead_wf==0,"f35_waive_fires_on_live_pads");
+    ck(stall_era_wf==0,"f35_no_waive_in_stall_eras");
+    ck(wf_R_twelfth>0,"f35_twelfth_waive_fires");}
+   else note("F-G35 NOT MEASURED: the waive never fired");}
+  // (b)+(c): the calendar survival + the delivery, only if the twelfth fired
+  if(wf_R_twelfth>0){
+   auto next_td=[&](size_t l,int after)->int{
+    for(size_t i=(size_t)after+1;i<w.hindst.size();++i)
+     if(w.hindst[i][12*l+3]>w.hindst[i-1][12*l+3])return (int)i;
+    return -1;};
+   int td_R160=next_td(1,160),td_L247=next_td(0,247),td_Rpost=next_td(1,wf_R_twelfth);
+   double land_rxn=td_Rpost>0?w.hrxn[(size_t)td_Rpost][2]+w.hrxn[(size_t)td_Rpost][3]:-1.;
+   int resumed_fire=-1; // the amended calendar's resume: a fire within [173,180]
+   for(size_t i=(size_t)171;i<(size_t)181&&(size_t)i<w.hindst.size()&&resumed_fire<0;++i)
+    for(size_t l=0;l<2;++l)
+     if(w.hindst[i][12*l+2]>w.hindst[i-1][12*l+2]){resumed_fire=(int)i;break;}
+   {char b[640];std::snprintf(b,640,"F-G35 calendar td_R_post160=%d [window 173..178] resumed_fire=%d [AMENDED window 173..180: the +1 class on the R's landing] td_L_post247=%d [window 254..268] td_R_postfire=%d [window 253..276] land_rxn_R=%.3f [OWNED >10: the L's 47.717 N @262 precedent]",
+     td_R160,resumed_fire,td_L247,td_Rpost,land_rxn);
+    note(b);
+    ck(td_R160>=173&&td_R160<=178,"f35_calendar_R_swing_survives");
+    ck(resumed_fire>=173&&resumed_fire<=180,"f35_calendar_resumes");
+    ck(td_L247>=254&&td_L247<=268,"f35_calendar_L_twelfth_completes");
+    ck(td_Rpost>=253&&td_Rpost<=276,"f35_calendar_R_replant_completes");
+    ck(land_rxn>10.,"f35_replant_lands_loaded");}
+   {int both=0;
+    for(int t=td_Rpost;t<=td_Rpost+6&&t>=0&&(size_t)t<w.hrxn.size();++t){
+     double lh=w.hrxn[(size_t)t][0]+w.hrxn[(size_t)t][1],rh=w.hrxn[(size_t)t][2]+w.hrxn[(size_t)t][3];
+     if(lh>0.&&rh>0.){both=1;break;}}
+    note(std::string("F-G35 two_legged_within_6_of_replant=")+(both?"1":"0")+" [OWNED 1]");
+    ck(both==1,"f35_two_legged_after_replant");}}}
 
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the

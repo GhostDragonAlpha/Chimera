@@ -463,6 +463,34 @@ class GaitWalker {
  bool hind_step_stand_pivot_[2]={false,false}; // the latch-era marker (the census)
  int hind_step_stand_release_[2]={-1,-1};      // the envelope-release tick (-1 sentinel; the read reverted)
  uint64_t hind_step_stand_latch_ticks_[2]={0,0};// the latch-era pinned-tick census
+ // ── THE CARRIER SELF-UNLOAD FIRE DEADLINE (wave 35, receipt_wave35.json) ──
+ // THE MINED FACE (the declared script .tmp/w35_receipt/mine_carrier.py on this
+ // lane's byte-exact reproduction trace, the FRONT decision rule fixed in its
+ // header BEFORE the numbers): the twelfth-era carrier drain on the SHIPPED
+ // (unpinned) bytes is 4.648 N @247 -> 4.415 @248 -> 0.309 @249 -> 0.000 @250
+ // (the pair-min 8.21e-6 -> 1.317e-5 = the band exit -> 6.70e-5): the carrier
+ // gets EXACTLY THREE legal-fire decisions after the other's launch, while its
+ // own alternation fire is alt-due the whole era with the deadline BINDING ON
+ // THE UNLOAD FORM (dl=238 = the L's last TD + kUnloadTicks - g, the wave-32
+ // arithmetic) and gated ONLY by clause (a). FRONT 2 failed both its
+ // pre-registered conditions (R1: the era length does NOT scale with the plant
+ // lead, r=0.3587; R2: the drain onset does NOT align geometrically, 0.126 vs
+ // 0.382 m at the onsets) -- FRONT 1 owns. THE LAW: the no-double-step clause
+ // (a) YIELDS for a carrier's alternation fire when the deadline fire is
+ // binding ON THE UNLOAD FORM (hind_step_dl_unload_, the machinery's own
+ // wave-32 flag) AND the other's lift-first hold has GENUINELY CLEARED
+ // (hind_step_held_[o]==false, the machinery's own wave-31/34 airborne read --
+ // the stall swings' holds never clear, so the stall eras never see the
+ // waive). The wave-34 core carried verbatim: the drain is GEOMETRIC (every
+ // replant under-delivers its target by 0.156-0.462 m -- the splay) and the
+ // pin only presses dead pads; the REAL haul delivers (the L's 0.337 ->
+ // 0.428 m, 47.717 N at the 262 completion) -- the fired carrier's own haul is
+ // the escape. ZERO new numeric constants: the deadline is the machinery's own
+ // kUnloadTicks/kFoldBudgetTicks/g arithmetic, the gate the machinery's own
+ // held_ read.
+ uint64_t hind_step_waive_fires_[2]={0,0};  // the (a)-waiving unload-deadline fires
+ int hind_step_waive_first_[2]={-1,-1};     // the first waive fire's tick (the census)
+ int hind_step_waive_last_[2]={-1,-1};      // the last waive fire's tick (the census)
  bool hind_stand_hold(size_t hl)const{
   size_t o=hl==0?1:0;
   if(hind_step_mode_[o]!=1)return false;              // the exchange era only
@@ -495,6 +523,15 @@ class GaitWalker {
  bool hind_alt_due(size_t hl,double tair)const{
   size_t o=hl==0?1:0;
   if(hind_step_last_td_[o]==0)return false;            // no completed other step yet
+  // THE EXCHANGE-CHAIN CONCENTRATION REPAIR WAS TRIED AND REVERTED (the wave
+  // 35 amendment, receipt_wave35.json: the hand-off read stale only when
+  // NEITHER the other's last fire NOR its last replant postdates this leg's
+  // own) -- the calendar RESUMED exactly as predicted (the L re-fired at 174,
+  // the 9-tick handed alternation) but the re-phased ride degraded (the
+  // dead-pad fire at 201, 6 pin-era band exits) and the impact-event budget
+  // refused at 266 -- EARLIER than the shipped 295. The rung falsifier fired
+  // and the bytes are RESTORED (the pre-committed terminal action); the
+  // fired falsifiers are carried verbatim in the receipt.
   if(hind_step_last_fire_[o]<hind_step_last_td_[hl])return false; // not concentrated
   if(phi_[hl]>=TOE_OFF)return false;                   // the natural slot owns
   uint64_t deadline=hind_deadline(hl,tair);
@@ -2030,6 +2067,8 @@ class GaitWalker {
   hind_step_alt_due_[0]=hind_step_alt_due_[1]=0;hind_step_deadline_tick_[0]=hind_step_deadline_tick_[1]=0;
   hind_step_deadline_fires_[0]=hind_step_deadline_fires_[1]=0;
   hind_step_dl_unload_[0]=hind_step_dl_unload_[1]=0;hind_step_unload_fires_[0]=hind_step_unload_fires_[1]=0;
+  hind_step_waive_fires_[0]=hind_step_waive_fires_[1]=0;
+  hind_step_waive_first_[0]=hind_step_waive_first_[1]=-1;hind_step_waive_last_[0]=hind_step_waive_last_[1]=-1;
   for(size_t d=0;d<12;++d){wall_pins_[d]=0;wall_pins_air_[d]=0;}
   battery_.assign(nd_,0.);brake_.assign(nd_,0.);empty_events_.assign(nd_,0);store_total_=0;
   for(size_t d=0;d<nd_;++d){battery_[d]=drives_[d].store_floor;store_total_+=drives_[d].store_floor;}
@@ -2340,6 +2379,24 @@ class GaitWalker {
        hind_step_dl_unload_[hl]?"unload":"fold");
 #endif
      }
+     // THE CARRIER SELF-UNLOAD FIRE DEADLINE WAS TRIED AND REVERTED (the wave
+     // 35 law, receipt_wave35.json: clause (a) yielding for a carrier's
+     // alternation fire when the deadline is binding ON THE UNLOAD FORM and
+     // the other's lift-first hold has genuinely cleared). MEASURED TWICE:
+     // build 1 (the law exactly as pre-registered) -- the first waive fire
+     // EXACTLY 161 as predicted, but the waive-era double-completion
+     // permanently disarmed the wave-29 concentration clause (the calendar
+     // died, the walk stood, refused 305); build 2 (the amendment: the
+     // concentration repair) -- the calendar resumed exactly as predicted but
+     // the re-phased ride degraded (the dead-pad fire at 201, 6 pin-era band
+     // exits) and the impact-event budget refused at 266, EARLIER than the
+     // shipped 295. The rung falsifier fired and the law bytes are RESTORED
+     // (the pre-committed terminal action); the counters below stay as
+     // read-only census plumbing reporting NOT MEASURED (all-zero), the
+     // fired falsifiers carried verbatim in the receipt. The wave-36 bank:
+     // the early fire must not phase-shift the stall hand-offs -- the
+     // resumed calendar's +1-class fires landed 1-2 ticks before the handed
+     // completions and ate the hand-off margin.
 #ifdef GAIT_EVENT_TRACE
      if(alt_fire)std::fprintf(stderr,"[hindgate] tick=%llu leg=%zu live=%d tL=%d sL=%.1f tR=%d sR=%.1f hL=%d hR=%d gated=%d floor=%d dl=%llu v=%.3f\n",
       (unsigned long long)ticks_,hl,live,
@@ -2590,7 +2647,11 @@ class GaitWalker {
       {"stand_latch",hind_step_stand_latch_[hl]},
       {"stand_pivot",hind_step_stand_pivot_[hl]},
       {"stand_release",hind_step_stand_release_[hl]},
-      {"stand_latch_ticks",hind_step_stand_latch_ticks_[hl]}});}
+      {"stand_latch_ticks",hind_step_stand_latch_ticks_[hl]},
+      // THE CARRIER SELF-UNLOAD FIRE DEADLINE's census fields (wave 35). Read-only.
+      {"waive_fires",hind_step_waive_fires_[hl]},
+      {"waive_first_tick",hind_step_waive_first_[hl]},
+      {"waive_last_tick",hind_step_waive_last_[hl]}});}
     gait["hind_step"]=hs;}}
   return {{"sim_time_s",ticks_*dt_},{"ticks",ticks_},{"mode","native_gait_walker"},{"joints",joints},
    {"config",config_},{"power",config_["power"]},{"gait",gait},
