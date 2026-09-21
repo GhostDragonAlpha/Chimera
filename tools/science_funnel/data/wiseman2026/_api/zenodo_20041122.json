@@ -1,0 +1,120 @@
+{
+  "created": "2026-05-05T15:40:33.360273+00:00",
+  "modified": "2026-05-05T15:42:08.591341+00:00",
+  "id": 20041122,
+  "conceptrecid": "18312812",
+  "doi": "10.1098/rsos.260107",
+  "conceptdoi": "10.5281/zenodo.18312812",
+  "doi_url": "https://doi.org/10.1098/rsos.260107",
+  "metadata": {
+    "title": "Dataset for 'Comparative analysis of primate hindlimb muscle moment arms using subject-specific 3D musculoskeletal models' By Wiseman et al.",
+    "doi": "10.1098/rsos.260107",
+    "publication_date": "2026-03-29",
+    "description": "<p>Ashleigh L. Wiseman<span class=\"al-author-delim\">,&nbsp;</span>Julia Bollmann van Beesel<span class=\"al-author-delim\">,&nbsp;</span>Evie Vereecke; Comparative analysis of primate hind limb muscle moment arms using subject-specific three-dimensional musculoskeletal models.&nbsp;<em>R Soc Open Sci.</em>&nbsp;1 April 2026; 13 (4): 260107.&nbsp;<a href=\"https://doi.org/10.1098/rsos.260107\" rel=\"noopener\">https://doi.org/10.1098/rsos.260107</a></p>",
+    "access_right": "open",
+    "creators": [
+      {
+        "name": "Wiseman, Ashleigh L",
+        "affiliation": "McDonald Institute for Archaeological Research",
+        "orcid": "0000-0002-9575-4387"
+      }
+    ],
+    "resource_type": {
+      "title": "Dataset",
+      "type": "dataset"
+    },
+    "license": {
+      "id": "cc-by-4.0"
+    },
+    "grants": [
+      {
+        "code": "101219207",
+        "internal_id": "0472cxd90::101219207",
+        "funder": {
+          "name": "European Research Council"
+        },
+        "title": "STEPS: Biomechanical simulations of hominin locomotion across complex terrains"
+      }
+    ],
+    "relations": {
+      "version": [
+        {
+          "index": 1,
+          "is_last": true,
+          "parent": {
+            "pid_type": "recid",
+            "pid_value": "18312812"
+          }
+        }
+      ]
+    }
+  },
+  "title": "Dataset for 'Comparative analysis of primate hindlimb muscle moment arms using subject-specific 3D musculoskeletal models' By Wiseman et al.",
+  "links": {
+    "self": "https://zenodo.org/api/records/20041122",
+    "self_html": "https://zenodo.org/records/20041122",
+    "preview_html": "https://zenodo.org/records/20041122?preview=1",
+    "doi": "https://doi.org/10.1098/rsos.260107",
+    "self_doi": "https://doi.org/10.1098/rsos.260107",
+    "self_doi_html": "https://zenodo.org/doi/10.1098/rsos.260107",
+    "reserve_doi": "https://zenodo.org/api/records/20041122/draft/pids/doi",
+    "parent": "https://zenodo.org/api/records/18312812",
+    "parent_html": "https://zenodo.org/records/18312812",
+    "parent_doi": "https://doi.org/10.5281/zenodo.18312812",
+    "parent_doi_html": "https://zenodo.org/doi/10.5281/zenodo.18312812",
+    "self_iiif_manifest": "https://zenodo.org/api/iiif/record:20041122/manifest",
+    "self_iiif_sequence": "https://zenodo.org/api/iiif/record:20041122/sequence/default",
+    "files": "https://zenodo.org/api/records/20041122/files",
+    "media_files": "https://zenodo.org/api/records/20041122/media-files",
+    "archive": "https://zenodo.org/api/records/20041122/files-archive",
+    "archive_media": "https://zenodo.org/api/records/20041122/media-files-archive",
+    "latest": "https://zenodo.org/api/records/20041122/versions/latest",
+    "latest_html": "https://zenodo.org/records/20041122/latest",
+    "versions": "https://zenodo.org/api/records/20041122/versions",
+    "draft": "https://zenodo.org/api/records/20041122/draft",
+    "access_links": "https://zenodo.org/api/records/20041122/access/links",
+    "access_grants": "https://zenodo.org/api/records/20041122/access/grants",
+    "access_users": "https://zenodo.org/api/records/20041122/access/users",
+    "access_request": "https://zenodo.org/api/records/20041122/access/request",
+    "access": "https://zenodo.org/api/records/20041122/access",
+    "communities": "https://zenodo.org/api/records/20041122/communities",
+    "communities-suggestions": "https://zenodo.org/api/records/20041122/communities-suggestions",
+    "request_deletion": "https://zenodo.org/api/records/20041122/request-deletion",
+    "file_modification": "https://zenodo.org/api/records/20041122/file-modification",
+    "quota_increase": "https://zenodo.org/api/records/20041122/quota-increase",
+    "requests": "https://zenodo.org/api/records/20041122/requests"
+  },
+  "updated": "2026-05-05T15:42:08.591341+00:00",
+  "recid": "20041122",
+  "revision": 6,
+  "files": [
+    {
+      "id": "8f22c1b9-dc21-4aaf-aa9e-d1b3699be024",
+      "key": "Primate_models.zip",
+      "size": 20510615,
+      "checksum": "md5:330b8e8a6af66ea22f4023ca60829cad",
+      "links": {
+        "self": "https://zenodo.org/api/records/20041122/files/Primate_models.zip/content"
+      }
+    }
+  ],
+  "swh": {},
+  "owners": [
+    {
+      "id": "1521016"
+    }
+  ],
+  "status": "published",
+  "stats": {
+    "downloads": 15,
+    "unique_downloads": 14,
+    "views": 88,
+    "unique_views": 70,
+    "version_downloads": 13,
+    "version_unique_downloads": 12,
+    "version_unique_views": 29,
+    "version_views": 42
+  },
+  "state": "done",
+  "submitted": true
+}
