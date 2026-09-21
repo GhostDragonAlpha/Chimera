@@ -32,6 +32,7 @@ class StoreError(ValueError):
 def append_records(inbox: Path, specs: list[dict]) -> list[str]:
     """Append records (canonical JSON lines) to a lane's inbox. Returns the
     appended content digests. Append-only: existing bytes are never touched."""
+    inbox = Path(inbox)
     digests = []
     inbox.parent.mkdir(parents=True, exist_ok=True)
     with open(inbox, 'a', encoding='utf-8', newline='\n') as f:
@@ -45,6 +46,7 @@ def append_records(inbox: Path, specs: list[dict]) -> list[str]:
 
 
 def read_inbox(inbox: Path) -> list[Record]:
+    inbox = Path(inbox)
     out = []
     if not inbox.exists():
         return out
