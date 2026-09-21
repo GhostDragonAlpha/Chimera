@@ -1,0 +1,764 @@
+{
+ "carrier": "46ed85a3ba1e451cf5b02f068134bf6801dbd258",
+ "carrier_ref": "refs/remotes/origin/agent/skeleton-movie-20260919",
+ "f1_identity": {
+  "count_identity": "25x9 + 5x8 = 265",
+  "macaque_refusal_rows": [
+   4,
+   8,
+   9,
+   11,
+   21,
+   23
+  ],
+  "quarantined_six_have_zero_store_records": true,
+  "recomputed_refusal_set_equal": true,
+  "refusal_detail_strings_reproduced_byte_exactly": true,
+  "store_record_count": 265,
+  "store_refusals_total": 49,
+  "store_subjects": [
+   "AL",
+   "AM",
+   "BFL",
+   "EDL",
+   "EHL",
+   "FDL",
+   "FHL",
+   "GMax",
+   "GMed",
+   "GMin",
+   "GRA",
+   "GemInf",
+   "GemSup",
+   "ILI",
+   "LG",
+   "MG",
+   "ObtExt",
+   "PB",
+   "PECT",
+   "PIRI",
+   "PL",
+   "PLANT",
+   "POP",
+   "SM",
+   "SOL",
+   "ST",
+   "TA",
+   "VI",
+   "VL",
+   "VM"
+  ]
+ },
+ "inputs": {
+  "adapter_sha256": "82ccdc6745f5b44ce29cb7dc4e8b1c7929c56c7683fcd4e05a0b66148b2ec452",
+  "store_sha256": "f625169a2568e735462cd63605492d7fef212977966ddf73f08027c8e87ce80f",
+  "xlsx_sha256": "08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678"
+ },
+ "rows": {
+  "AB": {
+   "admitted_comparison_band_other_species": {
+    "belly_frac": {
+     "max": 0.9978131833801935,
+     "min": 0.9449339207048458,
+     "n": 4
+    },
+    "fl": {
+     "max": 0.1891,
+     "min": 0.06758,
+     "n": 4
+    },
+    "spec_pcsa": {
+     "max": 1.3959691629955947e-05,
+     "min": 4.988872227428928e-06,
+     "n": 4
+    },
+    "tendon_frac": {
+     "max": 0.05506607929515418,
+     "min": 0.0021868166198063103,
+     "n": 4
+    }
+   },
+   "admitting_refusal": {
+    "code": "pcsa_closure_violation",
+    "detail": "pcsa=8.91e-05 predicted=0.00015008576329331047"
+   },
+   "candidate_single_cell_corrections": {
+    "fl_m": {
+     "band_test": {
+      "band": [
+       0.06758,
+       0.1891
+      ],
+      "in_band": false,
+      "out_margin_rel": 0.23229508105387794,
+      "quantity": "fl",
+      "value": 0.05188149842237893
+     },
+     "cell": "Macaca mulatta/D8",
+     "clean_unit_factor": null,
+     "corrected_value": 0.05188149842237893,
+     "corrected_value_display": "0.0518815",
+     "digit_edit_signature": null,
+     "equation": "FL := musc_mass_g/1000/(1060*PCSA_m2)",
+     "laws_after_correction": "ALL_GREEN",
+     "raw_text": "3.0800000000000001E-2"
+    },
+    "musc_mass": {
+     "cell": "Macaca mulatta/G8",
+     "clean_unit_factor": null,
+     "corrected_value": 2.9089368,
+     "corrected_value_display": "2.90894",
+     "digit_edit_signature": null,
+     "equation": "musc_mass := PCSA*1060*FL*1000",
+     "laws_after_correction": "FAILS:mass_additivity_violation",
+     "raw_text": "4.9000000000000004"
+    },
+    "pcsa_m2": {
+     "band_test": {
+      "band": [
+       4.988872227428928e-06,
+       1.3959691629955947e-05
+      ],
+      "in_band": false,
+      "out_margin_rel": 1.194156462965962,
+      "quantity": "spec_pcsa",
+      "value": 3.0629747610879685e-05
+     },
+     "cell": "Macaca mulatta/E8",
+     "clean_unit_factor": null,
+     "corrected_value": 0.00015008576329331047,
+     "corrected_value_display": "0.000150086",
+     "digit_edit_signature": null,
+     "equation": "PCSA := musc_mass_g/1000/(1060*FL_m)",
+     "laws_after_correction": "ALL_GREEN",
+     "raw_text": "8.9099999999999997E-5"
+    }
+   },
+   "cause_class": "no_lawful_single_cell_completion",
+   "cause_statement": "Closure off by +68.4% (predicted 1.50086e-4 m2 vs sheet 8.91e-05 m2). Class B (digit-entry) FALSIFIED: neither single-cell completion shows a keystroke signature and neither lands in the admitted cross-species band (corrected PCSA 3.06e-5 g-1 is 2.2x above the admitted specific-PCSA max; corrected FL 0.0519 m is below the admitted FL band min). No clean unit factor anywhere. The sheet has two PCSA display classes (6-significant-digit computed values and 3-digit rounded); AB 8.91E-5 is 3-digit-rounded yet disagrees with its own row by 68% - the value was rounded from a computation inconsistent with BOTH current cells (edited later or from a different measurement round). AB rows are corrupted across species (Hylobates leg1 closure +76.9%, leg2 additivity +18.4% + a 12 mm FL outlier). Undecidable origin; quarantine right.",
+   "law_failure": {
+    "additivity_side": {
+     "belly_plus_tendon_g": 4.83,
+     "rel_dev": 0.014285714285714343,
+     "status": "PASS (corroborates musc_mass within 2%)",
+     "whole_g": 4.9
+    },
+    "law": "PCSA closure: musc_mass_g/1000/(1060*FL_m) == PCSA_m2 within 2%",
+    "left_side_predicted_pcsa_m2": 0.00015008576329331047,
+    "rel_deviation_vs_sheet": 0.6844642344928225,
+    "right_side_sheet_pcsa_m2": 8.91e-05
+   },
+   "muscle": "AB",
+   "problem_tags": [
+    "pcsa_closure_dev_0.684"
+   ],
+   "read_path_integrity": {
+    "parsed_equals_float_raw_text": true,
+    "verdict": "no upstream extraction bug: the admitting lane read what the sheet bytes say"
+   },
+   "reproduced_detail": "pcsa=8.91e-05 predicted=0.00015008576329331047",
+   "sheet_row": 8,
+   "unit_class_test": {
+    "clean_factor": null,
+    "ratio_two_sides": 1.6844642344928225
+   },
+   "verdict": "GENUINELY_BAD"
+  },
+  "BFS": {
+   "admitting_refusal": {
+    "code": "invalid_number",
+    "detail": ""
+   },
+   "cause_class": "source_gap",
+   "cause_statement": "The published sheet itself carries EMPTY mass and length cells for Macaca BFS (6.82-free row: no digits to misread); the only numbers present (FL, PCSA, pennation) are byte-identical copies of the BFL row, so they are not independent BFS measurements; the paper fulltext and S2 docx carry no numeric masses at any BFS mention. The admitting refusal (invalid_number) was faithful to the bytes. Quarantine right; nothing to recover from.",
+   "diagnosis": {
+    "BFL_twin_fields": {
+     "fl_m": {
+      "BFL_raw": "7.1199999999999999E-2",
+      "BFS_raw": "7.1199999999999999E-2",
+      "byte_identical": true
+     },
+     "pcsa_m2": {
+      "BFL_raw": "1.0076589999999999E-3",
+      "BFS_raw": "1.0076589999999999E-3",
+      "byte_identical": true
+     },
+     "penn_deg": {
+      "BFL_raw": "26.2",
+      "BFS_raw": "26.2",
+      "byte_identical": true
+     }
+    },
+    "also_blank": [
+     "musc_len",
+     "belly_len",
+     "tendon_len"
+    ],
+    "blank_required_fields": [
+     "musc_mass",
+     "belly_mass",
+     "tendon_mass"
+    ],
+    "law": "no blanks",
+    "package_scan": [
+     {
+      "mentions": 6,
+      "numeric_mass_at_any_mention": false,
+      "source": "tools/science_funnel/data/guimaraes_arch/PMC13425262_fulltext.xml",
+      "windows": [
+       {
+        "numeric_mass_in_window": false,
+        "pattern": "BFS",
+        "window": "AM a M. biceps femoris ( long head ) BFL M. adductor brevis AB M. biceps femoris ( short head ) BFS M. adductor longus AL M. semimembranosus SM M. adductor minimus AMin M. semitendinosus ST M. pectineus PECT M. popliteus POP M. gracilis GRA"
+       },
+       {
+        "numeric_mass_in_window": false,
+        "pattern": "BFS",
+        "window": "Hip rotators GemSup, GemInf, ObtInt, ObtExt, PIRI, QF Knee Knee extensors VI, VL, VM, RF Knee flexors POP, BFS, BFL, GRA, PLANT Ankle Ankle dorsiflexors TA, EHL, EDL Ankle plantarflexors SOL, MG, LG, TP, PB, PL Toe MTP flexors AbDm c , AbH c , FDB c , FDL, FHL"
+       },
+       {
+        "numeric_mass_in_window": false,
+        "pattern": "BFS",
+        "window": "cle function were evident in this muscle group. The knee flexors displayed some interspecific variation (Figure 4B ). BFS and POP were more force\u2010specialized in humans, bonobos and gorilla. In the other species, these muscles typically have smaller L f and sma"
+       },
+       {
+        "numeric_mass_in_window": false,
+        "pattern": "biceps femoris",
+        "window": "Muscle name Abbrev. Muscle name (cont.) Abbrev. (cont.) M. adductor magnus a AM a M. biceps femoris ( long head ) BFL M. adductor brevis AB M. biceps femoris ( short head ) BFS M. adductor longus AL M. semimembranosus SM M. adductor minimus AMin"
+       },
+       {
+        "numeric_mass_in_window": false,
+        "pattern": "biceps femoris",
+        "window": "M. adductor magnus a AM a M. biceps femoris ( long head ) BFL M. adductor brevis AB M. biceps femoris ( short head ) BFS M. adductor longus AL M. semimembranosus SM M. adductor minimus AMin M. semitendinosus ST M. pectineus PECT M. popliteus P"
+       },
+       {
+        "numeric_mass_in_window": false,
+        "pattern": "short head",
+        "window": "us a AM a M. biceps femoris ( long head ) BFL M. adductor brevis AB M. biceps femoris ( short head ) BFS M. adductor longus AL M. semimembranosus SM M. adductor minimus AMin M. semitendinosus ST M. pectineus PECT M. popliteus POP M. graci"
+       }
+      ]
+     },
+     {
+      "mentions": 3,
+      "numeric_mass_at_any_mention": false,
+      "source": "tools/science_funnel/data/guimaraes_arch/AJPA-190-e70329-s002.docx",
+      "windows": [
+       {
+        "numeric_mass_in_window": false,
+        "pattern": "BFS",
+        "window": "nserts in to the tibial head, tibial tuberosity, and fibula. Biceps femoris (short head) (BFS) Arises from the dorsolateral femoral shaft and inserts on the fibular head in most taxa. The chimpanzee had an additional insertion into the tibial shaft."
+       },
+       {
+        "numeric_mass_in_window": false,
+        "pattern": "BFS",
+        "window": "VL was velocity-specialised in Pongo abelii but force-specialised elsewhere. Knee flexors (e.g., BFL, BFS, GRA) showed greater architectural dispersion, particularly in Hylobates lar , where elevated Lf:PCSA ratios suggest enhanced velocity capacity. Overall,"
+       },
+       {
+        "numeric_mass_in_window": false,
+        "pattern": "short head",
+        "window": "l species and inserts in to the tibial head, tibial tuberosity, and fibula. Biceps femoris (short head) (BFS) Arises from the dorsolateral femoral shaft and inserts on the fibular head in most taxa. The chimpanzee had an additional insertion into the tibial"
+       }
+      ]
+     }
+    ]
+   },
+   "muscle": "BFS",
+   "problem_tags": [
+    "musc_len_blank"
+   ],
+   "read_path_integrity": {
+    "parsed_equals_float_raw_text": true,
+    "verdict": "no upstream extraction bug: the admitting lane read what the sheet bytes say"
+   },
+   "reproduced_detail": "",
+   "sheet_row": 23,
+   "verdict": "GENUINELY_BAD"
+  },
+  "ObtInt": {
+   "admitted_comparison_band_other_species": {
+    "belly_frac": {
+     "max": 0.9989740959220313,
+     "min": 0.9376947040498442,
+     "n": 4
+    },
+    "fl": {
+     "max": 0.1151,
+     "min": 0.03876,
+     "n": 4
+    },
+    "spec_pcsa": {
+     "max": 2.433946037099494e-05,
+     "min": 8.196311874839704e-06,
+     "n": 4
+    },
+    "tendon_frac": {
+     "max": 0.06230529595015577,
+     "min": 0.00102590407796871,
+     "n": 4
+    }
+   },
+   "admitting_refusal": {
+    "code": "mass_additivity_violation",
+    "detail": "belly+tendon=6.970000000000001 whole=8.99"
+   },
+   "candidate_single_cell_corrections": {
+    "belly_mass": {
+     "band_test": {
+      "band": [
+       0.9376947040498442,
+       0.9989740959220313
+      ],
+      "in_band": true,
+      "quantity": "belly_frac",
+      "value": 0.9833147942157953
+     },
+     "cell": "Macaca mulatta/I4",
+     "clean_unit_factor": null,
+     "corrected_value": 8.84,
+     "corrected_value_display": "8.84",
+     "digit_edit_signature": "2_substitutions",
+     "equation": "belly := musc_mass - tendon_mass",
+     "laws_after_correction": "ALL_GREEN",
+     "raw_text": "6.82"
+    },
+    "musc_mass": {
+     "cell": "Macaca mulatta/G4",
+     "clean_unit_factor": null,
+     "corrected_value": 6.970000000000001,
+     "corrected_value_display": "6.97",
+     "digit_edit_signature": "2_substitutions",
+     "equation": "musc_mass := belly_mass + tendon_mass",
+     "laws_after_correction": "FAILS:pcsa_closure_violation",
+     "raw_text": "8.99"
+    },
+    "tendon_mass": {
+     "band_test": {
+      "band": [
+       0.00102590407796871,
+       0.06230529595015577
+      ],
+      "in_band": false,
+      "out_margin_rel": 2.874137931034482,
+      "quantity": "tendon_frac",
+      "value": 0.24137931034482757
+     },
+     "cell": "Macaca mulatta/K4",
+     "clean_unit_factor": null,
+     "corrected_value": 2.17,
+     "corrected_value_display": "2.17",
+     "digit_edit_signature": "2_substitutions",
+     "equation": "tendon := musc_mass - belly_mass",
+     "laws_after_correction": "ALL_GREEN",
+     "raw_text": "0.15"
+    }
+   },
+   "cause_class": "single_cell_entry_error_or_source_inconsistency",
+   "cause_statement": "Parts fall short of whole by 2.02 g (22.47%). Whole corroborated (PCSA recomputes exactly). Tendon candidate excluded: corrected tendon 2.17 g would be 24.1% of whole vs admitted band [0.10, 6.23]% (4x out) while the sheet tendon 0.15 g sits mid-band; belly candidate lands in-band (98.33% vs [93.77, 99.90]%) - the raw belly 6.82 g (75.86%) is the outlier cell. Unique lawful completion; RECOVERABLE.",
+   "fix_spec": {
+    "band_test": {
+     "band": [
+      0.9376947040498442,
+      0.9989740959220313
+     ],
+     "in_band": true,
+     "quantity": "belly_frac",
+     "value": 0.9833147942157953
+    },
+    "cell": "Macaca mulatta/I4",
+    "derived_value": 8.84,
+    "derived_value_display": "8.84",
+    "digit_edit_signature": "2_substitutions",
+    "equation": "belly := musc_mass - tendon_mass",
+    "force_consequence_N": 108.2697,
+    "force_law": "F_max_N = 30.0 * PCSA_m2 * 1e4 (PCSA unchanged by this fix)",
+    "note": "FIX SPEC ONLY - NOT executed here, NO store change, the pinned xlsx is NEVER edited; a future lane must re-run the admission laws and the pairing with this override recorded as a derivation, with the raw cell and this diagnosis carried as provenance.",
+    "raw_text": "6.82"
+   },
+   "law_failure": {
+    "closure_side": {
+     "note": "the sheet PCSA column recomputes from the whole mass and FL - the whole is the value the published PCSA was derived from",
+     "predicted_pcsa_m2": 0.0003608992372541148,
+     "sheet_pcsa_m2": 0.000360899
+    },
+    "direction": "parts_fall_short_of_whole",
+    "law": "mass additivity: belly_mass + tendon_mass == musc_mass within 2%",
+    "left_side_parts_g": 6.970000000000001,
+    "rel_deviation_vs_whole": 0.22469410456062286,
+    "right_side_whole_g": 8.99
+   },
+   "muscle": "ObtInt",
+   "problem_tags": [
+    "mass_additivity_dev_0.225"
+   ],
+   "read_path_integrity": {
+    "parsed_equals_float_raw_text": true,
+    "verdict": "no upstream extraction bug: the admitting lane read what the sheet bytes say"
+   },
+   "reproduced_detail": "belly+tendon=6.970000000000001 whole=8.99",
+   "sheet_row": 4,
+   "unit_class_test": {
+    "clean_factor": null,
+    "ratio_two_sides": 6.970000000000001
+   },
+   "verdict": "RECOVERABLE"
+  },
+  "RF": {
+   "admitted_comparison_band_other_species": {
+    "belly_frac": {
+     "max": 0.9983188930557352,
+     "min": 0.9745845552297165,
+     "n": 3
+    },
+    "fl": {
+     "max": 0.1775,
+     "min": 0.04869,
+     "n": 3
+    },
+    "spec_pcsa": {
+     "max": 1.9430511571254568e-05,
+     "min": 5.329988361567309e-06,
+     "n": 3
+    },
+    "tendon_frac": {
+     "max": 0.021016617790811338,
+     "min": 0.0016811069442648392,
+     "n": 3
+    }
+   },
+   "admitting_refusal": {
+    "code": "mass_additivity_violation",
+    "detail": "belly+tendon=31.31 whole=32.06"
+   },
+   "candidate_single_cell_corrections": {
+    "belly_mass": {
+     "band_test": {
+      "band": [
+       0.9745845552297165,
+       0.9983188930557352
+      ],
+      "in_band": false,
+      "out_margin_rel": 0.07793780593183171,
+      "quantity": "belly_frac",
+      "value": 0.8986275733000624
+     },
+     "cell": "Macaca mulatta/I11",
+     "clean_unit_factor": null,
+     "corrected_value": 28.810000000000002,
+     "corrected_value_display": "28.81",
+     "digit_edit_signature": "2_substitutions",
+     "equation": "belly := musc_mass - tendon_mass",
+     "laws_after_correction": "ALL_GREEN",
+     "raw_text": "28.06"
+    },
+    "musc_mass": {
+     "cell": "Macaca mulatta/G11",
+     "clean_unit_factor": null,
+     "corrected_value": 31.31,
+     "corrected_value_display": "31.31",
+     "digit_edit_signature": "3_substitutions",
+     "equation": "musc_mass := belly_mass + tendon_mass",
+     "laws_after_correction": "FAILS:pcsa_closure_violation",
+     "raw_text": "32.06"
+    },
+    "tendon_mass": {
+     "band_test": {
+      "band": [
+       0.0016811069442648392,
+       0.021016617790811338
+      ],
+      "in_band": false,
+      "out_margin_rel": 4.936543399730162,
+      "quantity": "tendon_frac",
+      "value": 0.12476606363069255
+     },
+     "cell": "Macaca mulatta/K11",
+     "clean_unit_factor": null,
+     "corrected_value": 4.0000000000000036,
+     "corrected_value_display": "4",
+     "digit_edit_signature": null,
+     "equation": "tendon := musc_mass - belly_mass",
+     "laws_after_correction": "ALL_GREEN",
+     "raw_text": "3.25"
+    }
+   },
+   "cause_class": "no_lawful_single_cell_completion",
+   "cause_statement": "Parts fall short of whole by 0.75 g (2.34%). Whole mass is corroborated (sheet PCSA 2.93644e-4 recomputes exactly from 32.06 g and FL 0.103). Both single-cell completions land far outside the admitted RF bands (corrected belly 89.86% vs band [97.46, 99.98]%; corrected tendon 12.48% vs [0.016, 2.10]%) and neither shows a keystroke signature; whole := 31.31 breaks closure by -2.36%. The same partition failure recurs in Pan troglodytes RF (+3.83%, also refused) - a systematically inconsistent measurement at source, not a typo. Quarantine right.",
+   "law_failure": {
+    "closure_side": {
+     "note": "the sheet PCSA column recomputes from the whole mass and FL - the whole is the value the published PCSA was derived from",
+     "predicted_pcsa_m2": 0.00029364352445502846,
+     "sheet_pcsa_m2": 0.000293644
+    },
+    "direction": "parts_fall_short_of_whole",
+    "law": "mass additivity: belly_mass + tendon_mass == musc_mass within 2%",
+    "left_side_parts_g": 31.31,
+    "rel_deviation_vs_whole": 0.023393636930754944,
+    "right_side_whole_g": 32.06
+   },
+   "muscle": "RF",
+   "problem_tags": [
+    "mass_additivity_dev_0.023"
+   ],
+   "read_path_integrity": {
+    "parsed_equals_float_raw_text": true,
+    "verdict": "no upstream extraction bug: the admitting lane read what the sheet bytes say"
+   },
+   "reproduced_detail": "belly+tendon=31.31 whole=32.06",
+   "sheet_row": 11,
+   "unit_class_test": {
+    "clean_factor": null,
+    "ratio_two_sides": 31.31
+   },
+   "verdict": "GENUINELY_BAD"
+  },
+  "SAR": {
+   "admitted_comparison_band_other_species": {
+    "belly_frac": {
+     "max": 0.999434101069549,
+     "min": 0.9158878504672898,
+     "n": 7
+    },
+    "fl": {
+     "max": 0.556,
+     "min": 0.10202,
+     "n": 7
+    },
+    "spec_pcsa": {
+     "max": 9.271028037383179e-06,
+     "min": 1.6967563233471828e-06,
+     "n": 7
+    },
+    "tendon_frac": {
+     "max": 0.08411214953271029,
+     "min": 0.0005658989304510215,
+     "n": 7
+    }
+   },
+   "admitting_refusal": {
+    "code": "mass_additivity_violation",
+    "detail": "belly+tendon=10.290000000000001 whole=9.4"
+   },
+   "candidate_single_cell_corrections": {
+    "belly_mass": {
+     "band_test": {
+      "band": [
+       0.9158878504672898,
+       0.999434101069549
+      ],
+      "in_band": false,
+      "out_margin_rel": 0.012700825010855605,
+      "quantity": "belly_frac",
+      "value": 0.9042553191489361
+     },
+     "cell": "Macaca mulatta/I21",
+     "clean_unit_factor": null,
+     "corrected_value": 8.5,
+     "corrected_value_display": "8.5",
+     "digit_edit_signature": null,
+     "equation": "belly := musc_mass - tendon_mass",
+     "laws_after_correction": "ALL_GREEN",
+     "raw_text": "9.39"
+    },
+    "musc_mass": {
+     "cell": "Macaca mulatta/G21",
+     "clean_unit_factor": null,
+     "corrected_value": 10.290000000000001,
+     "corrected_value_display": "10.29",
+     "digit_edit_signature": null,
+     "equation": "musc_mass := belly_mass + tendon_mass",
+     "laws_after_correction": "FAILS:pcsa_closure_violation",
+     "raw_text": "9.4"
+    },
+    "tendon_mass": {
+     "band_test": {
+      "band": [
+       0.0005658989304510215,
+       0.08411214953271029
+      ],
+      "in_band": true,
+      "quantity": "tendon_frac",
+      "value": 0.0010638297872340198
+     },
+     "cell": "Macaca mulatta/K21",
+     "clean_unit_factor": null,
+     "corrected_value": 0.009999999999999787,
+     "corrected_value_display": "0.01",
+     "digit_edit_signature": null,
+     "equation": "tendon := musc_mass - belly_mass",
+     "laws_after_correction": "ALL_GREEN",
+     "raw_text": "0.9"
+    }
+   },
+   "cause_class": "single_cell_entry_error_or_source_inconsistency",
+   "cause_statement": "Parts exceed whole by 0.89 g (9.47%). Whole corroborated (3-digit PCSA 4.07E-5 recomputes from 9.4 g to +0.062%). Belly candidate excluded: corrected belly 8.5 g would be 90.43% of whole vs admitted band [91.59, 99.94]% (every admitted SAR is a strap muscle with belly >= 98% except Hylobates row56, whose 91.59% comes with a genuinely additive 8.41% tendon); corrected tendon := 0.01 g lands mid-band (0.106% in [0.057, 8.41]). Raw 0.9 shows no keystroke signature to 0.01; the decimal-slip variant 0.09 (also lawful, 0.85% residual) is documented and NOT adopted (F4: equation only). Unique lawful completion; RECOVERABLE.",
+   "documented_variant_not_adopted": {
+    "additivity_dev_if_adopted": 0.008510638297872348,
+    "story": "tendon 0.9 entered for 0.09 (decimal-point slip, clean factor 10 on one cell); leaves additivity at 0.85% (lawful, not exact)",
+    "why_not_spec": "F4 requires the equation-derived value; 0.09 is not derivable from the sheet alone"
+   },
+   "fix_spec": {
+    "band_test": {
+     "band": [
+      0.0005658989304510215,
+      0.08411214953271029
+     ],
+     "in_band": true,
+     "quantity": "tendon_frac",
+     "value": 0.0010638297872340198
+    },
+    "cell": "Macaca mulatta/K21",
+    "derived_value": 0.009999999999999787,
+    "derived_value_display": "0.01",
+    "digit_edit_signature": null,
+    "equation": "tendon := musc_mass - belly_mass",
+    "force_consequence_N": 12.21,
+    "force_law": "F_max_N = 30.0 * PCSA_m2 * 1e4 (PCSA unchanged by this fix)",
+    "note": "FIX SPEC ONLY - NOT executed here, NO store change, the pinned xlsx is NEVER edited; a future lane must re-run the admission laws and the pairing with this override recorded as a derivation, with the raw cell and this diagnosis carried as provenance.",
+    "raw_text": "0.9"
+   },
+   "law_failure": {
+    "closure_side": {
+     "note": "the sheet PCSA column recomputes from the whole mass and FL - the whole is the value the published PCSA was derived from",
+     "predicted_pcsa_m2": 4.0725256157528756e-05,
+     "sheet_pcsa_m2": 4.07e-05
+    },
+    "direction": "parts_exceed_whole",
+    "law": "mass additivity: belly_mass + tendon_mass == musc_mass within 2%",
+    "left_side_parts_g": 10.290000000000001,
+    "rel_deviation_vs_whole": 0.09468085106382984,
+    "right_side_whole_g": 9.4
+   },
+   "muscle": "SAR",
+   "problem_tags": [
+    "mass_additivity_dev_0.095"
+   ],
+   "read_path_integrity": {
+    "parsed_equals_float_raw_text": true,
+    "verdict": "no upstream extraction bug: the admitting lane read what the sheet bytes say"
+   },
+   "reproduced_detail": "belly+tendon=10.290000000000001 whole=9.4",
+   "sheet_row": 21,
+   "unit_class_test": {
+    "clean_factor": null,
+    "ratio_two_sides": 10.290000000000001
+   },
+   "verdict": "RECOVERABLE"
+  },
+  "TP": {
+   "admitted_comparison_band_other_species": {
+    "belly_frac": {
+     "max": 0.9982856163209326,
+     "min": 0.5939626093419473,
+     "n": 7
+    },
+    "fl": {
+     "max": 0.1069,
+     "min": 0.03223,
+     "n": 7
+    },
+    "spec_pcsa": {
+     "max": 2.9353911205073992e-05,
+     "min": 8.825030001714384e-06,
+     "n": 7
+    },
+    "tendon_frac": {
+     "max": 0.4060373906580527,
+     "min": 0.0017143836790673753,
+     "n": 7
+    }
+   },
+   "admitting_refusal": {
+    "code": "mass_additivity_violation",
+    "detail": "belly+tendon=15.11 whole=14.25"
+   },
+   "candidate_single_cell_corrections": {
+    "belly_mass": {
+     "band_test": {
+      "band": [
+       0.5939626093419473,
+       0.9982856163209326
+      ],
+      "in_band": true,
+      "quantity": "belly_frac",
+      "value": 0.9298245614035088
+     },
+     "cell": "Macaca mulatta/I9",
+     "clean_unit_factor": null,
+     "corrected_value": 13.25,
+     "corrected_value_display": "13.25",
+     "digit_edit_signature": "3_substitutions",
+     "equation": "belly := musc_mass - tendon_mass",
+     "laws_after_correction": "ALL_GREEN",
+     "raw_text": "14.11"
+    },
+    "musc_mass": {
+     "cell": "Macaca mulatta/G9",
+     "clean_unit_factor": null,
+     "corrected_value": 15.11,
+     "corrected_value_display": "15.11",
+     "digit_edit_signature": "3_substitutions",
+     "equation": "musc_mass := belly_mass + tendon_mass",
+     "laws_after_correction": "FAILS:pcsa_closure_violation",
+     "raw_text": "14.25"
+    },
+    "tendon_mass": {
+     "band_test": {
+      "band": [
+       0.0017143836790673753,
+       0.4060373906580527
+      ],
+      "in_band": true,
+      "quantity": "tendon_frac",
+      "value": 0.009824561403508812
+     },
+     "cell": "Macaca mulatta/K9",
+     "clean_unit_factor": null,
+     "corrected_value": 0.14000000000000057,
+     "corrected_value_display": "0.14",
+     "digit_edit_signature": null,
+     "equation": "tendon := musc_mass - belly_mass",
+     "laws_after_correction": "ALL_GREEN",
+     "raw_text": "1"
+    }
+   },
+   "cause_class": "undecidable_partition",
+   "cause_statement": "Parts exceed whole by 0.86 g (6.04%). Whole mass corroborated (PCSA recomputes exactly; belly+tendon lengths also partition the whole length exactly at 0.00% deviation). BOTH single-cell completions stay inside the admitted TP bands (tendon := 0.14 g -> 0.98% in [0.17, 40.60]; belly := 13.25 g -> 93.0% in [59.40, 99.83]) and neither shows a keystroke signature - the data cannot name the wrong cell, and choosing one would be taste. Undecidable partition; quarantine right.",
+   "law_failure": {
+    "closure_side": {
+     "note": "the sheet PCSA column recomputes from the whole mass and FL - the whole is the value the published PCSA was derived from",
+     "predicted_pcsa_m2": 0.00019122896481387047,
+     "sheet_pcsa_m2": 0.000191229
+    },
+    "direction": "parts_exceed_whole",
+    "law": "mass additivity: belly_mass + tendon_mass == musc_mass within 2%",
+    "left_side_parts_g": 15.11,
+    "rel_deviation_vs_whole": 0.06035087719298242,
+    "right_side_whole_g": 14.25
+   },
+   "muscle": "TP",
+   "problem_tags": [
+    "mass_additivity_dev_0.060"
+   ],
+   "read_path_integrity": {
+    "parsed_equals_float_raw_text": true,
+    "verdict": "no upstream extraction bug: the admitting lane read what the sheet bytes say"
+   },
+   "reproduced_detail": "belly+tendon=15.11 whole=14.25",
+   "sheet_row": 9,
+   "unit_class_test": {
+    "clean_factor": null,
+    "ratio_two_sides": 15.11
+   },
+   "verdict": "GENUINELY_BAD"
+  }
+ },
+ "schema": "chimera.quarantine_forensics_table.v1",
+ "verdict_table": {
+  "AB": "GENUINELY_BAD",
+  "BFS": "GENUINELY_BAD",
+  "ObtInt": "RECOVERABLE",
+  "RF": "GENUINELY_BAD",
+  "SAR": "RECOVERABLE",
+  "TP": "GENUINELY_BAD"
+ }
+}
