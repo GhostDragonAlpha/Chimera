@@ -227,6 +227,51 @@ class GaitWalker {
  // fore_wait_fires_ is the census counter (integer increments only, exactly
  // like adv_calls_/wall_pins_: never a floating-point byte of the dynamics).
  uint64_t fore_wait_fires_[2]={0,0};
+ // ── THE HIND EXTENSION LAW (wave 27, receipt_wave27.json) ──
+ // THE SINKING SHOULDER, OWNED. THE MEASURED COMPOSITION (the per-tick trace
+ // of the byte-reproduced wave-26 baseline): the shoulder sink -71.2 mm over
+ // [60,104] = the BASE drop -78.4 mm (110%) + the pitch coupling +7.2 mm
+ // (-10%); the drop is the HIND STANCE EQUILIBRIUM FOLD (the L knee ACTUAL
+ // folds 37.9 deg, its drive at 56% of cap with a 0.7917 rad deficit -- the
+ // wave-23 deflection physics: error = tau_load/kp growing with the recede
+ // lever), NOT the designed tables (2.60 mm of the 78.4 mm). The trunk pitch
+ // -- the load-shift dial -- is MEASURED RAILING at its cap (11.213 =
+ // drives_[0].cap exactly): no posture authority remains, hence the
+ // feed-forward below and not a table amendment. THE LAW: at a derived
+ // height emergency the pads-live hind drives take ff = last_torque/kp
+ // (the wave-23 equilibrium identity: at equilibrium kp*(tgt+ff-actual) =
+ // tau_load gives actual = tgt -- the DESIGNED pose, where the wave-8 load
+ // book closes at 0.881 <= 1). A FEED-FORWARD, NOT A GAIN CHANGE: gains are
+ // law. THE EMERGENCY CONSTANTS (derive_height_hold.py, validated
+ // bit-for-bit against this lane's baseline): kSinkRateMax is the MAX
+ // measured per-tick sh_min sink [61,104] (0.002349 m/tick at [103,104] --
+ // the wave-26 kDiveRateMax mining pattern); the CRIT key (the scene's
+ // 'hind_height_hold_crit_m', authored from derived_height_hold.json) is
+ // h_crit = 0.055939 m -- the shoulder-min height at the first
+ // stance-target admissibility death, reproduced by the F-G23(b) census's
+ // own formula (march L@104, R@98: EXACTLY the measured first_viol); the
+ // FLOOR is the wave-26 kWaitFloor turnaround shape in the qualified
+ // servo's own envelope: kHeightFloor = 2*kSinkRateMax +
+ // kSinkRateMax*tau_settle, tau_settle = 1/(ZETA*2*pi*FS_HZ) = 14.92 ticks
+ // -- the error envelope e^(-zeta*omega_n*t) of the qualified PD the
+ // derivation itself qualified (zero new free numbers): one full sink-tick
+ // of pre-fire integration, one of standing margin, plus the envelope's
+ // stop distance at the WORST measured rate (the constant worst-rate form:
+ // the conservative early fire; the scene's floor key is cross-checked
+ // against this controller expression at construction). THE SCOPE: the ff
+ // applies to the pads-live hind drives only (touching_prev_: the legs that
+ // bear the ride; a leg whose pads leave, swings, and resumes at the next
+ // TD); consumed only when the recipe keys are present (absent ->
+ // byte-identical legacy, the zero_map/trunk_vault/fore_entry_pose
+ // pattern).
+ static constexpr double kSinkRateMax=0.002349;
+ bool hind_height_hold_armed_=false;   // the recipe keys present (constructor)
+ bool hind_height_hold_latched_=false; // the emergency, once declared, holds
+ double hind_height_crit_=0;           // h_crit (the scene key)
+ double hind_height_floor_=0;          // kHeightFloor (the controller expression)
+ uint64_t hind_height_fire_tick_=0;    // the fire's census record
+ double hind_height_fire_margin_=0;    // the margin at the fire
+ uint64_t hind_height_fires_=0;        // the census counter (integer increments)
  std::vector<BodyRef> bodies_;bool contact_=false;
  State s_;mutable uint64_t adv_calls_=0;
  Evaluation evaluate(const State& s)const{return model_->evaluate(s.q,s.v,gravity_);}
@@ -1166,7 +1211,18 @@ class GaitWalker {
     // clock, Section 2.4/5.1); without it the reset repair below is undone
     // during the settle (the servo would drag the right hind back to the TD
     // column) and no hind lift could fire at its clock phase.
-    else {double qstar[4];tables_.at(phi_[dr.leg=="left"?0:1],qstar);target=qstar[dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3];}}
+    else {size_t hl=dr.leg=="left"?0:1;
+     double qstar[4];tables_.at(phi_[hl],qstar);
+     target=qstar[dr.joint=="hip"?0:dr.joint=="knee"?1:dr.joint=="ankle"?2:3];
+     // THE HIND EXTENSION LAW (wave 27, receipt_wave27.json): the height
+     // emergency's feed-forward -- the drive's OWN last applied tick-mean
+     // torque over its OWN mass-normalized gain (the wave-23 equilibrium
+     // identity: the actual returns to the designed pose, where the wave-8
+     // load book closes). Pads-live drives only: a leg whose pads leave,
+     // swings; it resumes at the next TD. No gain bytes change. The torque
+     // is read at the drive's COORDINATE row (last_torque_ is n_-indexed).
+     if(hind_height_hold_latched_&&touching_prev_[hl])
+      target+=last_torque_[c]/kp_[d];}}
 
    tau[c]=(std::max)(-dr.cap,(std::min)(dr.cap,kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c]));}
   // The source model's POSTURE CONTROL (the pinned fulltext: the trunk pitch
@@ -1561,11 +1617,23 @@ class GaitWalker {
    if(recipe_.contains("fore_share")){double s=number(recipe_.at("fore_share"));
     require(std::isfinite(s)&&s>=0.25&&s<=0.55,"gait_fore_share_range");}
   }
+  // ── THE HIND EXTENSION LAW's emergency constants (wave 27, derived by ──
+  // derive_height_hold.py; absent keys -> the law is inert, byte-identical
+  // legacy behavior -- the zero_map/trunk_vault/fore_entry_pose pattern).
+  // The floor key is CROSS-CHECKED against this controller's own expression
+  // (the scene's authored constant must be the same derivation).
+  if(recipe_.contains("hind_height_hold_crit_m")&&recipe_.contains("hind_height_hold_floor_m")){
+   hind_height_crit_=number(recipe_.at("hind_height_hold_crit_m"));
+   hind_height_floor_=2.*kSinkRateMax+kSinkRateMax*(1./(ZETA*2.*pi*FS_HZ))/dt_;
+   require(std::isfinite(hind_height_crit_)&&hind_height_crit_>0.,"gait_height_hold_crit");
+   require(std::abs(number(recipe_.at("hind_height_hold_floor_m"))-hind_height_floor_)<=1e-9,"gait_height_hold_floor_mismatch");
+   hind_height_hold_armed_=true;}
   reset();}
  double timestep()const{return dt_;}const Dense& angles()const{return s_.q;}const Dense& speeds()const{return s_.v;}const Model& model()const{return *model_;}
  const Dense& batteries()const{return battery_;}double phase(size_t leg)const{return phi_[leg];}uint64_t capture_events()const{return capture_events_;}
  void reset(){
   s_=State(n_,npts_);s_.q=model_->defaults;s_.v=Dense(n_,0.);ticks_=0;capture_events_=0;last_torque_=Dense(n_,0.);settle_ticks_=settle_total_;
+  hind_height_hold_latched_=false;hind_height_fire_tick_=0;hind_height_fire_margin_=0;hind_height_fires_=0;
   paws_captured_=false;ik_sat_ticks_[0]=ik_sat_ticks_[1]=0;ik_roundtrip_m_[0]=ik_roundtrip_m_[1]=0;
   ik_qerr_[0]=ik_qerr_[1]=0;
   ik_sat_prev_[0]=ik_sat_prev_[1]=false;
@@ -1672,7 +1740,21 @@ class GaitWalker {
    // THE STEPPING-STRUT FORE CLOCK (wave 13): armed at the settle capture,
    // advanced only in the walk -- liftoff/glide/touchdown transitions are
    // CLOCK-derived (deterministic), never force- or position-triggered.
-   if(walking&&paws_captured_)update_fore_clock(e);}
+   if(walking&&paws_captured_)update_fore_clock(e);
+   // ── THE HEIGHT EMERGENCY (wave 27): the hind extension law's trigger. ──
+   // Runs on the SAME tick-start evaluation update_fore_clock read (the fore
+   // decisions at the fire tick stay byte-identical: they read the pre-servo
+   // state); the ff engages THIS tick's servo calls. The latch is one-way:
+   // the decayed regime, once declared, is never un-declared -- the ff is
+   // equilibrium-seeking (it drives the actual TO the designed pose), so the
+   // latch cannot overshoot the pose it holds.
+   if(walking&&paws_captured_&&hind_height_hold_armed_&&!hind_height_hold_latched_){
+    double shl=e.point(fore_mount_body_[0],fore_mount_local_[0]).first[1];
+    double shr=e.point(fore_mount_body_[1],fore_mount_local_[1]).first[1];
+    double shmin=shl<shr?shl:shr;
+    if(shmin-hind_height_crit_<=hind_height_floor_){
+     hind_height_hold_latched_=true;hind_height_fire_tick_=ticks_;
+     hind_height_fire_margin_=shmin-hind_height_crit_;++hind_height_fires_;}}}
   // 2) reflex on the tick-start state (armed only in the walk, and only when
   //    the capture reflex is enabled -- F-G6's disarmed control leg). THE
   //    WAVE-21 ARMING LAW: the containment test runs on the TRUE monotone-chain
@@ -1837,7 +1919,12 @@ class GaitWalker {
       {"grid_converged",fore_conv_[leg]==1},
       {"t_in_cycle",fore_t_[leg]},{"stance_ticks",fore_stance_[leg]},{"cycle_ticks",fore_cycle_[leg]}});}
     else forepaw.push_back({{"leg",leg==0?"fore_left":"fore_right"},{"captured",false}});}
-   gait["fore_paw"]=forepaw;gait["fore_paw_captured"]=paws_captured_;}
+   gait["fore_paw"]=forepaw;gait["fore_paw_captured"]=paws_captured_;
+   // THE HIND EXTENSION LAW's census block (wave 27): the emergency's state,
+   // read by the F-G27 height census. Read-only.
+   gait["height_hold"]={{"armed",hind_height_hold_armed_},{"latched",hind_height_hold_latched_},
+    {"fire_tick",hind_height_fire_tick_},{"fire_margin_m",hind_height_fire_margin_},
+    {"fires",hind_height_fires_}};}
   return {{"sim_time_s",ticks_*dt_},{"ticks",ticks_},{"mode","native_gait_walker"},{"joints",joints},
    {"config",config_},{"power",config_["power"]},{"gait",gait},
    {"contact",{{"enabled",contact_},{"friction",mu_>0},{"friction_mu",mu_},{"plane_world_up_m",plane_world_up_m()},{"points",points},

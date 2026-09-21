@@ -452,6 +452,17 @@ def compile_gait(graph,output,fore_share=0.45):
     defaults['start_phase_left']=entry_phase
     defaults['start_phase_right']=(entry_phase+0.5)%1.0
     defaults['start_trunk_rad']=float(start_values['base_rot_z'])
+    # THE HIND EXTENSION LAW's emergency constants (wave 27,
+    # receipt_wave27.json): derived by derive_height_hold.py on the
+    # byte-reproduced wave-26 baseline (h_crit validated bit-for-bit against
+    # the F-G23(b) first_viol (104,98); the floor is the qualified servo's
+    # own envelope arithmetic and is cross-checked against the controller's
+    # expression at construction). Absent in legacy scenes -> the law is
+    # inert, byte-identical legacy behavior.
+    _hh_path = ROOT/'tools/science_funnel/validation/gait_zero_20260919/derived_height_hold.json'
+    _hh = json.loads(_hh_path.read_text(encoding='utf-8'))
+    require('h_crit_m' in _hh and 'floor_m' in _hh, 'gait_height_hold_derived_missing')
+    hind_height_hold = {'crit_m': float(_hh['h_crit_m']), 'floor_m': float(_hh['floor_m'])}
     bundle={'schema':'chimera.earth_scene.v1','graph_hash':graph.graph_hash(),
             'scene':{'arm_translation_m':[0.,0.,0.],'world_id':'gait_walker_plane','ground_id':'gait_plane'},
             'gait_controller':{'gait_enabled':True,'recipe':{
@@ -507,6 +518,8 @@ def compile_gait(graph,output,fore_share=0.45):
                     'capture_band_right_m':_gb['capture_band_right_m'],
                 },
                 'posture_target_phases':posture_phases,'posture_target_rad':posture_rads,
+                'hind_height_hold_crit_m':hind_height_hold['crit_m'],
+                'hind_height_hold_floor_m':hind_height_hold['floor_m'],
                 'contact_points':list(contract['contact_points'])+[
                     {'name':'fore_left_heel','body':'forearm_fore_left','point_m':[-0.012,-0.13555305347340657,0.],'radius_m':0.004},
                     {'name':'fore_left_mp_head','body':'forearm_fore_left','point_m':[0.074,-0.129953,0.],'radius_m':0.004},

@@ -693,6 +693,44 @@ int main(int argc,char**argv){try{
     (unsigned long long)wf0,(unsigned long long)wf1);
    note(b3);}}
 
+ // ── WAVE 27 HEIGHT CENSUS (pre-registered in receipt_wave27.json): the
+ //    SINKING SHOULDER owned by THE HIND EXTENSION LAW. (a) THE FIRE: the
+ //    height-hold latched at the derived crossing (predicted tick 75, the
+ //    margin ~39.3 mm vs the 39.75 mm floor). (b) THE RATE: the per-tick
+ //    sh_min sink <= kSinkRateMax = 0.002349 m/tick at EVERY captured tick
+ //    [61, 426) (1e-9 fp guard: the bound's own source tick is the
+ //    baseline's worst); the pre-fire segment IS the bound's source -- the
+ //    owned letter is the post-fire compliance. (c) THE FLOOR: sh_min >=
+ //    h_crit = 0.055939 m through the run. (d) THE RECOVERY: sh_min above
+ //    its fire value at the run's end or the refusal.
+ {double crit=0.,floor27=0.;
+  if(data.at("recipe").contains("hind_height_hold_crit_m"))
+   crit=number(data.at("recipe").at("hind_height_hold_crit_m"));
+  if(data.at("recipe").contains("hind_height_hold_floor_m"))
+   floor27=number(data.at("recipe").at("hind_height_hold_floor_m"));
+  static constexpr double kSinkCensus=0.002349; // mirrors the controller constant
+  const size_t N27=std::min({w.fw[0].size(),w.fw[1].size(),w.fcap.size(),(size_t)426});
+  if(crit>0.&&N27>61){
+   double shmin_prev=0.;int fire_i=-1;double worst_rate=0.;int wr_tick=-1;
+   double shmin_fire=0.,shmin_end=0.,min_sh=1e9;int min_sh_tick=-1;
+   for(size_t i=60;i<N27;++i){
+    if(!w.fcap[i])continue;
+    double sl=w.fw[0][i][3],sr=w.fw[1][i][3],shmin=sl<sr?sl:sr;
+    if(shmin<min_sh){min_sh=shmin;min_sh_tick=(int)i;}
+    if(i>60&&shmin_prev>0.){
+     double rate=shmin_prev-shmin; // positive = sinking
+     if(rate>worst_rate){worst_rate=rate;wr_tick=(int)i;}}
+    if(fire_i<0&&shmin_prev>0.&&shmin-crit<=floor27){fire_i=(int)i;shmin_fire=shmin;}
+    shmin_prev=shmin;}
+   shmin_end=shmin_prev;
+   char b4[512];std::snprintf(b4,512,"F-G27 height_census fire_tick=%d fire_margin=%.6f worst_sink_rate=%.7f@%d [bound 0.002349000] sh_min_min=%.6f@%d [h_crit %.6f] sh_min_end=%.6f fire_sh=%.6f",
+    fire_i,fire_i>=0?shmin_fire-crit:-1.,worst_rate,wr_tick,min_sh,min_sh_tick,crit,shmin_end,fire_i>=0?shmin_fire:-1.);
+   note(b4);
+   ck(worst_rate<=kSinkCensus+1e-9,"f27_sink_rate_bound");
+   ck(min_sh>=crit-1e-12,"f27_height_above_crit");
+   ck(fire_i>=0&&shmin_end>shmin_fire,"f27_height_recovery");}}
+
+
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the
  //    causal verdict REFLEX-FIRST): (a) THE REFLEX ARMING CENSUS -- the
  //    mechanism's OWNED direct test: at every capture event (the per-tick
