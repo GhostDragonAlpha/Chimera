@@ -1,0 +1,54 @@
+{
+ "b_two_sided": {
+  "above_object_below": {
+   "png": "tools\\science_funnel\\validation\\triangle_monkey_20260920\\before\\b_above_object_below_mesh.png",
+   "camera": {
+    "radius_m": 1.0087,
+    "phi": 1.23,
+    "lift_m": -0.55,
+    "target": [
+     0.0,
+     -0.55,
+     0.0
+    ]
+   },
+   "object": {
+    "object_seen_ratio": 0.0,
+    "object_pixels_in_roi": 0,
+    "roi_pixels": 176242,
+    "dim_detector": true
+   },
+   "guide": {
+    "guide_seen_ratio": 0.001842,
+    "guide_pixels_in_roi": 3231,
+    "roi_pixels": 1753600
+   }
+  },
+  "below_object_above": {
+   "png": "tools\\science_funnel\\validation\\triangle_monkey_20260920\\before\\b_below_object_above_mesh.png",
+   "camera": {
+    "radius_m": 1.0087,
+    "phi": -1.23,
+    "lift_m": 0.55,
+    "target": [
+     0.0,
+     0.55,
+     0.0
+    ]
+   },
+   "object": {
+    "object_seen_ratio": 0.0,
+    "object_pixels_in_roi": 0,
+    "roi_pixels": 101519,
+    "dim_detector": true
+   },
+   "guide": {
+    "guide_seen_ratio": 0.003633,
+    "guide_pixels_in_roi": 6361,
+    "roi_pixels": 1751040,
+    "reference_guide_pixels": 3231,
+    "guide_presence_ratio": 1.9687
+   }
+  }
+ }
+}
