@@ -853,6 +853,299 @@
    "rest_length_mm": 1.01,
    "measured_gap_mm": 1.01,
    "evidence": "bone_identification_v3.json chain hind touching_edge [23, 24], gap_mm 1.01"
+  },
+  {
+   "id": "bond.joint_01_02",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_01",
+    "mem.bone_02"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 1.44,
+   "measured_gap_mm": 1.44,
+   "refined_gap_mm": 1.403,
+   "closest_points_mm": {
+    "on_01": [
+     61.142,
+     42.844,
+     41.118
+    ],
+    "on_02": [
+     59.904,
+     42.598,
+     41.731
+    ]
+   },
+   "anatomical_reading": "hip joint: femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933, The Anatomy of the Rhesus Monkey)",
+   "evidence": "axial_adjacency_20260920 measured law gap 1.44 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json; adopted by lane agent/axial-limb-adjacency-20260920 successor agent/hip-bond-adoption-20260921 from candidate_bonds.json bond.joint_01_02 (pre-registered GREEN, rest_length = the law gap per the refinement_law: bonds are defined on the vertex metric); receipt tools/science_funnel/validation/hip_adoption_20260921/receipt.json"
+  },
+  {
+   "id": "bond.joint_01_03",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_01",
+    "mem.bone_03"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 1.49,
+   "measured_gap_mm": 1.49,
+   "refined_gap_mm": 1.343,
+   "closest_points_mm": {
+    "on_01": [
+     59.633,
+     43.14,
+     25.066
+    ],
+    "on_03": [
+     58.322,
+     43.093,
+     24.777
+    ]
+   },
+   "anatomical_reading": "hip joint: femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933)",
+   "evidence": "axial_adjacency_20260920 measured law gap 1.49 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json; adopted by lane agent/axial-limb-adjacency-20260920 successor agent/hip-bond-adoption-20260921 from candidate_bonds.json bond.joint_01_03 (pre-registered GREEN, rest_length = the law gap per the refinement_law: bonds are defined on the vertex metric); receipt tools/science_funnel/validation/hip_adoption_20260921/receipt.json"
   }
- ]
+ ],
+ "pose_contacts": {
+  "status": "RECORDED, NOT BONDED -- the discovered (unpre-registered) curl appositions from axial_adjacency_20260920 are the specimen's actual contacts in the curled fetal pose it was CT-scanned in: real measured geometry, NOT anatomical joints. A standing-pose animal would not have them. The biological law's stage/pose honesty applies to pose: they ride this metadata section, never the bond graph, so no connected component merges through them.",
+  "measured_source": "tools/science_funnel/validation/axial_adjacency_20260920/candidate_bonds.json (pre_registered: false entries, verbatim); receipt of the same lane",
+  "contacts": [
+   {
+    "id": "pose.joint_01_08",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_08"
+    ],
+    "measured_gap_mm": 0.68,
+    "refined_gap_mm": 0.681,
+    "closest_points_mm": {
+     "on_01": [
+      137.894,
+      32.19,
+      40.069
+     ],
+     "on_08": [
+      138.24,
+      32.72,
+      40.32
+     ]
+    },
+    "components": [
+     "axial_composite",
+     "fore_chain_min04"
+    ],
+    "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+    "evidence": "axial_adjacency_20260920 measured law gap 0.68 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json"
+   },
+   {
+    "id": "pose.joint_01_09",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_09"
+    ],
+    "measured_gap_mm": 0.56,
+    "refined_gap_mm": 0.0,
+    "closest_points_mm": {
+     "on_01": [
+      127.734,
+      10.687,
+      21.46
+     ],
+     "on_09": [
+      143.2,
+      22.64,
+      19.36
+     ]
+    },
+    "components": [
+     "axial_composite",
+     "fore_chain_min05"
+    ],
+    "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+    "evidence": "axial_adjacency_20260920 measured law gap 0.56 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json"
+   },
+   {
+    "id": "pose.joint_01_11",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_11"
+    ],
+    "measured_gap_mm": 2.75,
+    "refined_gap_mm": 0.0,
+    "closest_points_mm": {
+     "on_01": [
+      111.319,
+      12.211,
+      23.265
+     ],
+     "on_11": [
+      110.08,
+      11.84,
+      20.4
+     ]
+    },
+    "components": [
+     "axial_composite",
+     "fore_chain_min05"
+    ],
+    "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+    "evidence": "axial_adjacency_20260920 measured law gap 2.75 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json"
+   },
+   {
+    "id": "pose.joint_01_13",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_13"
+    ],
+    "measured_gap_mm": 2.83,
+    "refined_gap_mm": 0.0,
+    "closest_points_mm": {
+     "on_01": [
+      87.466,
+      55.778,
+      28.531
+     ],
+     "on_13": [
+      114.72,
+      29.36,
+      13.12
+     ]
+    },
+    "components": [
+     "axial_composite",
+     "fore_chain_min05"
+    ],
+    "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+    "evidence": "axial_adjacency_20260920 measured law gap 2.83 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json"
+   },
+   {
+    "id": "pose.joint_01_15",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_15"
+    ],
+    "measured_gap_mm": 0.85,
+    "refined_gap_mm": 0.823,
+    "closest_points_mm": {
+     "on_01": [
+      59.782,
+      43.848,
+      37.8
+     ],
+     "on_15": [
+      58.96,
+      43.84,
+      37.76
+     ]
+    },
+    "components": [
+     "axial_composite",
+     "hind_chain_min02"
+    ],
+    "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+    "evidence": "axial_adjacency_20260920 measured law gap 0.85 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json"
+   },
+   {
+    "id": "pose.joint_01_17",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_17"
+    ],
+    "measured_gap_mm": 0.64,
+    "refined_gap_mm": 0.592,
+    "closest_points_mm": {
+     "on_01": [
+      58.904,
+      44.821,
+      27.901
+     ],
+     "on_17": [
+      58.32,
+      44.8,
+      28.0
+     ]
+    },
+    "components": [
+     "axial_composite",
+     "hind_chain_min03"
+    ],
+    "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+    "evidence": "axial_adjacency_20260920 measured law gap 0.64 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json"
+   }
+  ]
+ },
+ "refused_joints": {
+  "status": "HONEST REFUSALS -- measured on the law metric and never tuned away; no bond is claimed. The 8-component reading stands as anatomy for these pairs.",
+  "measured_source": "tools/science_funnel/validation/axial_adjacency_20260920/receipt.json pre_registered_outcomes + verdicts",
+  "refusals": [
+   {
+    "id": "refusal.shoulder_01_04",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_04"
+    ],
+    "pair_prediction": "P3 shoulder A",
+    "measured_gap_mm": 5.0,
+    "verdict": "REFUSED (law gap 5.00 mm > 3.0 mm cut) -- falsifier F2 fired: at CT this specimen's shoulder carries a real cartilage-plus-soft-tissue gap; no bond."
+   },
+   {
+    "id": "refusal.shoulder_01_05",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_05"
+    ],
+    "pair_prediction": "P4 shoulder B",
+    "measured_gap_mm": 4.6,
+    "verdict": "REFUSED (law gap 4.60 mm > 3.0 mm cut) -- falsifier F2 fired; no bond."
+   },
+   {
+    "id": "refusal.singleton_16",
+    "members": [
+     "mem.bone_16"
+    ],
+    "pair_prediction": "P5",
+    "measured_row_minimum_mm": 5.82,
+    "composite_gap_mm": 22.9,
+    "femur2_gap_mm": 5.82,
+    "verdict": "REFUSED -- falsifier F3 fired (both pre-registered partners > 3.0 mm; nothing in the full row is <= 3.0); stays isolated."
+   },
+   {
+    "id": "refusal.singleton_14",
+    "members": [
+     "mem.bone_14"
+    ],
+    "pair_prediction": "P6",
+    "measured_row_minimum_mm": 6.99,
+    "row_minimum_partner": "foot_class rank 24",
+    "composite_gap_mm": 29.75,
+    "verdict": "REFUSED -- falsifier F3 fired; stays isolated."
+   },
+   {
+    "id": "refusal.singleton_19",
+    "members": [
+     "mem.bone_19"
+    ],
+    "pair_prediction": "P6",
+    "measured_row_minimum_mm": 7.71,
+    "row_minimum_partner": "foot_class rank 22",
+    "composite_gap_mm": 36.93,
+    "metric_artifact": "the true surface gap to the composite is 0.0 mm (refined): a composite preview vertex lies on a singleton-19 triangle face -- face-face contact invisible to the committed vertex-vertex law metric. NAMED successor law work (a surface-metric adjacency class owned by a lane that owns that law); NOT self-granted here; 19 stays isolated in this graph.",
+    "verdict": "REFUSED on the law metric -- falsifier F3 fired; stays isolated."
+   }
+  ]
+ },
+ "adoption": {
+  "lane": "agent/hip-bond-adoption-20260921",
+  "receipt": "tools/science_funnel/validation/hip_adoption_20260921/receipt.json",
+  "preregistration_sha256": "pinned in tools/science_funnel/validation/hip_adoption_20260921/preregistration.sha256 (receipt pre-state hash 620292c0209561fdea65af0241ef1e5211a193812670c61ca5cb690c1dad478d, hashed before any edit)",
+  "base_commit": "3539fdb9",
+  "bond_source": "axial_adjacency_20260920 candidate_bonds.json pre_registered:true entries, verbatim fields",
+  "rest_length_law": "rest_length_mm = the measured LAW gap (vertex metric) per the measurement lane's refinement_law; refined_gap_mm recorded as metadata, never substituted",
+  "class_law": "2 hip bonds (joint class) joined the graph; 6 curl appositions (pose class) recorded in pose_contacts, no graph edges; 2 shoulders + 3 singletons (refusal class) recorded in refused_joints",
+  "components_before": 8,
+  "components_after": 6,
+  "component_consequence": "the two femoral chains joined the composite's component through the hip bonds; the fore chains and singletons did not merge (curl contacts carry no graph edges)",
+  "geometry_untouched": "bonds + metadata only; every triangle blob, vertex record, thickness and mass is byte-identical to the pre-adoption definition"
+ }
 }
