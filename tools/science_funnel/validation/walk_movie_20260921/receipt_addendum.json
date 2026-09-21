@@ -51,5 +51,162 @@
    "sha256": "7e9cb737e6a845f8b92289d7e39b1a4443dfd266973fe9585c9ac82006ccffe2",
    "note": "the PRESTAGE's bank, unchanged -- gait + body-plan + size/proportion (the P2 lesson)"
   }
+ },
+ "measurements": {
+  "taken_utc": "2026-09-21T02:20:00+00:00",
+  "fa1_state_repro": {
+   "pass": true,
+   "stderr_byte_identical": true,
+   "stderr_lines": 32442,
+   "baseline_stdout_equals_wave28_committed_run": true,
+   "checks": "tracebase 90 vs statedump 91 (the one added check f7_qstream_bit_identical) + the two note rows; no other stdout row differs",
+   "refusal": {
+    "tick": 298,
+    "class": "gait_contact_impact_gain",
+    "worst_ledger_J": 30.139317,
+    "hind_step_verbatim": "fires R=[98] tds R=[107] plant_off=(-1.0000,0.1437) fire_qerr_max=6.661e-16 hind_pins=(0,0)/(0,0)"
+   },
+   "qstream": {
+    "ticks": 298,
+    "q_dim": 18,
+    "v_dim": 18,
+    "bytes": 224907,
+    "bit_identical_within_run": true,
+    "states_jsonl_sha256": "see repro_summary.json"
+   },
+   "scene": "regenerated from the wave-28 gait_scene.py: file sha f6844eeae3dc8717..., bundle e61ad386..., byte-identical to the wave-28 lane's scene28_a.json",
+   "binaries": {
+    "gait_unit_tracebase_exe_sha256_16": "803608c775a5d352",
+    "gait_unit_statedump_exe_sha256_16": "ca7ccb02558ea3b9"
+   }
+  },
+  "fa2_render_integrity": {
+   "pass": true,
+   "repair": "walk_movie.py render_movie i>0 branch now posts its mesh (marked WALK-MOVIE RECORD REPAIR); F1 AST conformance PASS on the repaired file (splat route unreachable, /mesh_bin sole uploader)",
+   "window": "ticks 60..297 (298 is the refusal tick; the window ends at the last living state -- the prestage's convention), stride 1, 238 frames, fps 12",
+   "fk_verification": {
+    "max_err_m": 9.526886673538563e-07,
+    "bar_m": 1e-06,
+    "checks": 476,
+    "pass": true
+   },
+   "engine_ports_used": [
+    54880,
+    62589
+   ],
+   "falsifier_checks": {
+    "unique_frame_hashes": "238/238",
+    "pixel_identical_non_adjacent_pairs": 0,
+    "coverage_zero_frames": 0,
+    "clip_scan": "clean, no events",
+    "hull_alignment_outside_px": {
+     "frame_0": 0,
+     "frame_60": 0,
+     "frame_130": 0,
+     "frame_190": 0,
+     "frame_220": 0,
+     "frame_237": 0
+    }
+   },
+   "coverage_reported_not_gated": {
+    "min": 0.3184,
+    "median": 0.547,
+    "max": 0.9333,
+    "note": "the banked stick-figure lesson: reported; for contrast the DEFECT run measured 0.0/0.2922/0.7431 with 24 exactly-zero tail frames"
+   },
+   "mp4": {
+    "sha256_16": "067f9bbfdd8d600e",
+    "bytes": 4123479,
+    "fps": 12
+   },
+   "overlay_movie": "238 frames (hind target-pose sticks + fore paw world-target markers, now including the hind-step machinery); NOT the judged movie; 115.25 s",
+   "render_seconds": {
+    "main": 116.57,
+    "overlay": 115.25
+   },
+   "visual_check": "frames inspected at ticks 100 (mid-gait, hind legs trailing/stepping) and 297 (the fold's end: trunk down on the ground, legs sprawling) -- the movie shows the walk living and dying"
+  },
+  "fa3_fa4_judgment_and_vocab": {
+   "pass": false,
+   "FALSIFIER_FIRED": "the aggregate verbatim report MISSES the required categories: gait 1/14 (only 'motion'), body_plan 0/21 -- per the pre-registered falsifier, on this eye/lane the movie has NO POWER as a visual proof of the walk. RED, recorded, not retuned.",
+   "lane": "ollama",
+   "model": "qwen3.8",
+   "policy_lane_error": "the permanent DYAD policy model qwen3.8-27b-nvfp4-mtp was not loaded on the shared server ([dyad_required_model_not_loaded]); the judgment ran on the prestage's documented fallback (ollama qwen3.8:latest, one frame per call) -- the SAME lane as the prestage's judgment, so the tables are comparable",
+   "n_frames": 12,
+   "n_dark_frames": 0,
+   "elapsed_s": 106.6,
+   "sampled_ticks": [
+    60,
+    79,
+    98,
+    117,
+    136,
+    155,
+    174,
+    193,
+    212,
+    231,
+    250,
+    269
+   ],
+   "verbatim": "all 12 per-frame reports recorded verbatim in judgement.json (one frame per call, senses.watch_one); the aggregate IS the verbatim join; scores computed from the recorded text by vocab_align over the bank ONLY",
+   "bank_sha256_at_scoring": "7e9cb737e6a845f8b92289d7e39b1a4443dfd266973fe9585c9ac82006ccffe2",
+   "bank_sha256_at_pre_registration": "7e9cb737e6a845f8b92289d7e39b1a4443dfd266973fe9585c9ac82006ccffe2",
+   "identical": true
+  },
+  "delta_table_vs_prestage": {
+   "note": "record walk (repaired movie, ticks 60..297) vs the prestage's 105-tick attempt (its movie carried the frozen-pose defect; 45-tick window); required rows marked *",
+   "gait_required": {
+    "prestage": "5/14 = 0.3571",
+    "record": "1/14 = 0.0714",
+    "predicted": "RISE",
+    "measured": "FELL -- prediction WRONG"
+   },
+   "body_plan_required": {
+    "prestage": "3/21 = 0.1429",
+    "record": "0/21 = 0.0",
+    "predicted": "hold or rise",
+    "measured": "FELL -- prediction WRONG"
+   },
+   "posture_collapse": {
+    "prestage": "4/15 = 0.2667",
+    "record": "2/15 = 0.1333",
+    "predicted": "RISE",
+    "measured": "FELL -- prediction WRONG"
+   },
+   "size_proportion": {
+    "prestage": "13/22 = 0.5909",
+    "record": "12/22 = 0.5455",
+    "predicted": "record only",
+    "measured": "~held"
+   },
+   "segment_build": {
+    "prestage": "9/16 = 0.5625",
+    "record": "10/16 = 0.625",
+    "predicted": "record only",
+    "measured": "rose"
+   },
+   "ground_contact": {
+    "prestage": "7/9 = 0.7778",
+    "record": "6/9 = 0.6667",
+    "predicted": "record only",
+    "measured": "fell"
+   },
+   "per_frame_required_hit_rate": {
+    "prestage": 0.0833,
+    "record": 0.0,
+    "predicted": "rise, stay < 1.0",
+    "measured": "FELL to 0.0 -- prediction WRONG"
+   }
+  },
+  "the_honest_finding": "THE REPAIRED (HONEST) MOVIE READS WORSE TO THE EYE THAN THE PRESTAGE'S DEFECTIVE ONE. The prestage's movie -- 45 camera angles of ONE frozen tick-60 pose -- accidentally gave the eye a stable object silhouette, and its aggregate scraped past the required categories (gait 0.3571, body_plan 0.1429). The repaired movie shows the TRUE trace (steps, the hind step, the fold, the ground) -- and the eye, one frame per call, reads EVERY sampled frame as lamp/arm/mechanism/capsule/sculpture: a planar stick figure in extreme transient poses (mid-swing, folded, sprawled) has no per-frame legibility on the ollama qwen3.8 lane, worse than the frozen pose did. The walk is visually IN the movie (frames inspected at ticks 100 and 297; hull alignment 0-outside on 6 frames; FK 9.5e-07) -- the failure is localized to the DYAD layer's per-frame reading of this geometry class, and the prestage's banked per-frame-instability caveat (0.0833) was generous. THE MOVIE IS THE RECORD; THE EYE LANE FAILED TO READ IT. What a 426-celebration movie needs is NOT only the wider window the prestage banked -- it needs a legibility repair on the judgment side (e.g. multi-frame-per-call context so the eye sees MOTION, not one frozen planar instant, or a side-locked non-orbit camera for the judgment material) -- derived, not tuned, and NOT done on this lane: this lane's pre-registration forbade retuning after the falsifier fired.",
+  "same_day_budget_measured": {
+   "render_s": 116.57,
+   "overlay_s": 115.25,
+   "judge_s": 106.6,
+   "verdict": "238 frames: render ~2 min + overlay ~2 min + judge ~1.8 min on the ollama lane (8.9 s/frame this run vs the prestage's 34.5) -- ships the same day"
+  },
+  "pass_strict": false,
+  "pass_note": "FA1 GREEN (the wave-28 record byte-reproduced: stderr 32,442 lines 0 diffs, refusal 298 verbatim, stdout byte-identical to the wave-28 lane's committed run). FA2 GREEN (the defect measured, repaired, and falsified-against: no identity pairs, no zero-coverage, clip clean, 0-outside-hull on 6 frames, coverage reported). FA3 bank-pinned GREEN. FA4 verbatim GREEN. THE JUDGMENT LETTER RED: the aggregate misses the required categories -- the pre-registered falsifier fired and stands. pass = false."
  }
 }
