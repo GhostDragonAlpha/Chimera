@@ -8,7 +8,7 @@
   "master_never_pushed": {
     "before": "6946f3b99f04b794bca948a1b2cdc44688c2354d",
     "before_recorded_when": "before any work, from the fresh clone (.rehearsal2_master_before.txt)",
-    "after": "PENDING_SUITE",
+    "after": "6946f3b99f04b794bca948a1b2cdc44688c2354d",
     "after_recorded_when": "after final push of the receipt branch",
     "unchanged_round1_to_round2": true,
     "note": "master is at the SAME hash round 1 measured as its 'before' AND 'after' — nothing has landed on master itself; every lane lives as a branch",
