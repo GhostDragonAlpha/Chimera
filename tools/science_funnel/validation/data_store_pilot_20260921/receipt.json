@@ -61,8 +61,10 @@
    "test_workflow_commands": "FAILED (failures=1, errors=2) - the failure is exactly the base-recorded 'classified' != 'unavailable' (test_08); the 2 errors are ModuleNotFoundError: No module named 'mcp_server' (environment-pre-existing, reproduced IDENTICALLY with CHIMERA_DATA_STORE unset; not pilot-caused)"
   },
   "pin_crosscheck": {
-   "command": "python -B tools/agent_fleet/validation/receipt_repin_20260921/pin_crosscheck.py --own master --target master and --own <pilot tip> --target master",
-   "verdict": "PENDING_RUN_IN_FLIGHT (blob:none clone fetches each scanned blob over SSH; run started 09:10Z)"
+   "command": "python -B tools/agent_fleet/validation/receipt_repin_20260921/pin_crosscheck.py --own master --target master  AND  --own HEAD --target master",
+   "baseline_reproduction": "master/master: 638 pins / 2763 files / 64 hold / 4 repinned_at_target / 0 collision / 0 stale - EXACT match to the design's recorded baseline",
+   "pilot_vs_master": "pilot tip 210027fb vs master: 0 collisions, 0 stale_on_own (64 hold, 4 repinned - identical to baseline); +275 new pins scanned are this lane's own committed artifacts, +273 of them unresolvable-in-git BECAUSE they pin store-backed gitignored bytes by design (full table in pin_crosscheck_verdicts.json)",
+   "verdict": "PASS - zero new collision/stale verdicts"
   }
  },
  "line_5_fresh_clone_measurements": {
@@ -73,5 +75,5 @@
   "honest_reading": "the pilot moves ZERO bytes out of git - exactly as the design's RULE0 honest_limits predicted (the raw corpus was already gitignored). The mechanism claim is what the pilot proves: 280 files / 97,383,726 B of wiseman bytes now exist in E:/ChimeraData/store having cost git ZERO bytes, with the committed 172 KB index as the only mapping, and the corpus was REBUILT FROM RECEIPTS ALONE this run after the janitor ate every local copy. The ~95 MB 'immediate win' is therefore not a checkout shrink today; it is the demonstrated shape of the next acquisition: land in the store, never touch git.",
   "pack_delta_kb": 1
  },
- "verdict": "PILOT GREEN pending pin_crosscheck completion - every preregistered falsifier that has fired has PASSED; no baseline-green gate went red; the three base-reds reproduce base behavior (verified identical with the env unset for the ambiguous one)"
+ "verdict": "PILOT GREEN - every preregistered falsifier PASSED: 7/7 model pins verified from store-served bytes (the core falsifier), no baseline-green gate went red, pin_crosscheck reproduced its baseline exactly and reports zero new collision/stale at both ref pairs. The design holds at pilot scope; phase 2 (morphosource) may proceed by the design's migration order."
 }
