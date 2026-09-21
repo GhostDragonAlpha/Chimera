@@ -1,0 +1,395 @@
+{
+ "anatomy_context_quoted": {
+  "class": "ADULT_FEMALE_BAND",
+  "femur_mm": 173.132408,
+  "source": "committed k_forensics_20260921/receipt.json check1 (sha-pinned by base commit)",
+  "tibia_mm": 156.806231
+ },
+ "base_commit": "5a5914b37de55dcbcf246721c398d78770bceb0b",
+ "comparison": {
+  "anomaly_real_at_conservative_bound": true,
+  "deficit_factor_envelope": {
+   "definition": "expected / measured_sum",
+   "max": 2.145078,
+   "min": 1.29193
+  },
+  "derived_context_note": "6.15 kg = midpoint of the pinned adult female band [5.4, 6.9]; literature hindlimb chains ALONE are 18.5-24% of body mass (pelvis excluded), so the deposit's pelvis+hindlimbs at ~12.6% is below the hindlimb-only floor",
+  "expected_envelope_kg": [
+   0.99737,
+   1.656
+  ],
+  "measured_sum_kg": 0.7717839,
+  "sum_as_pct_of_6_15kg_adult_female": 12.5493,
+  "sum_inside_expected_envelope": false,
+  "sum_over_expected_max": 0.466053,
+  "sum_over_expected_min": 0.773819
+ },
+ "expected_band": {
+  "body_band_kg": [
+   5.4,
+   6.9
+  ],
+  "body_source": "Turnquist & Kessler 1989 DOI 10.1002/ajp.1350190102 via committed k_forensics_20260921/receipt.json body_mass_prior.adult_female_kg",
+  "deficit_factor_envelope": {
+   "definition": "expected / measured_sum",
+   "max": 2.145078,
+   "min": 1.29193
+  },
+  "expected_kg": {
+   "max": 1.656,
+   "min": 0.99737,
+   "pelvis_caveat": "the deposit sum INCLUDES a Pelvis body; both literature fractions EXCLUDE the pelvis segment - the true expectation is STRICTLY ABOVE this envelope"
+  },
+  "hazotte_hindlimb_chain_fraction": 0.186,
+  "oku_hindlimb_chain_fraction": 0.184698,
+  "oku_model_total_kg": 10.038,
+  "primary_fraction_band": {
+   "max": 0.24,
+   "min": 0.184698,
+   "sources": "min = Oku 2021 Table 1 arithmetic (2 x 0.927 kg / 10.038 kg, CT model, pelvis excluded, lit_oku2021 Table 1); max = Zihlman & Underwood 2013 dissection band 20-24% stated for M. fuscata and M. mulatta (pelvis segment excluded, lit_zihlman2013); Hazotte 2026 Table 2 = 0.186 of the same CT model (lit_hazotte2026)"
+  },
+  "secondary_cross_species_extension": {
+   "deficit_factor": [
+    2.285194,
+    3.414249
+   ],
+   "expected_kg": [
+    1.76417,
+    2.6358
+   ],
+   "fraction_band": [
+    0.326698,
+    0.382
+   ],
+   "pelvis_source": "de Leva 1996 DOI 10.1016/0021-9290(95)00178-6, ~0.142 of body mass, cited by DOI ONLY (paywalled, NOT byte-pinned) - declared cross-species context, never the primary verdict"
+  },
+  "zihlman_hindlimb_fraction_band": [
+   0.2,
+   0.24
+  ]
+ },
+ "hypothesis_closures": {
+  "a_template_placeholder": {
+   "closes": false,
+   "evidence": "",
+   "pattern_reference": "the same deposit's placeholder 1 N muscle forces (author_email_packet.md question 4, committed k-lane)"
+  },
+  "b_geometric_scaling": {
+   "arithmetic": "deposit_sum = expected x k (linear) or expected x k^3 (density-preserving); both directions reported above",
+   "cube_law_k3_closes": false,
+   "linear_k_closes": false
+  },
+  "c_genuinely_low": {
+   "closes": true,
+   "meaning": "masses differentiated per body, non-round, no scaling closure"
+  }
+ },
+ "inputs_verified": {
+  "k_forensics_book": true,
+  "literature/hazotte2026.xml": true,
+  "literature/nc3rs_health_indicators.html": true,
+  "literature/oku2021.xml": true,
+  "literature/zihlman2013.xml": true,
+  "models/Bonobo_model.osim": true,
+  "models/Chimpanzee_model.osim": true,
+  "models/Gibbon_model.osim": true,
+  "models/Gorilla_model.osim": true,
+  "models/Macaque_model.osim": true,
+  "models/Orangutan_model.osim": true,
+  "models/Siamang_model.osim": true,
+  "wiseman_sha256_manifest": true
+ },
+ "lane": "deposit-mass-20260921",
+ "macaque_masses": {
+  "abs_diff_vs_packet_kg": 0.0002161,
+  "bodies": [
+   {
+    "mass_kg": 0.37876,
+    "name": "Pelvis"
+   },
+   {
+    "mass_kg": 0.10233,
+    "name": "thigh_l"
+   },
+   {
+    "mass_kg": 0.067935,
+    "name": "shank_l"
+   },
+   {
+    "mass_kg": 0.028383,
+    "name": "foot_l"
+   },
+   {
+    "mass_kg": 0.0094512,
+    "name": "toes_l"
+   },
+   {
+    "mass_kg": 0.10233,
+    "name": "thigh_r"
+   },
+   {
+    "mass_kg": 0.067935,
+    "name": "shank_r"
+   },
+   {
+    "mass_kg": 0.0026046,
+    "name": "foot_r"
+   },
+   {
+    "mass_kg": 0.0094512,
+    "name": "toes_r"
+   },
+   {
+    "mass_kg": 0.0026039,
+    "name": "R_Hallux"
+   }
+  ],
+  "n_bodies": 10,
+  "packet_reproduced": true,
+  "packet_sum_kg": 0.772,
+  "source": "tools/science_funnel/data/wiseman2026/models/Macaque_model.osim (manifest sha d5c65cbc0a72bd2d5c2258c6bd018fe850ae25cce6fb07c1f268b91e598c88e9, verified at run time); parsed from <Body>/<mass> fields only, document order",
+  "sum_kg": 0.7717839,
+  "sum_source_note": "the packet's '0.772 kg segment-mass sum' (question 4) is this quantity: the model is hindlimb-only (k-lane receipt), so its total IS pelvis+hindlimbs"
+ },
+ "placeholder_signature": {
+  "closing_evidence": "",
+  "hypothesis_a_closes": false,
+  "s1_uniformity": {
+   "max_minus_min_kg": 0.3761561,
+   "n_bodies": 10,
+   "n_distinct_values": 7,
+   "uniform_if_spread_le_1e9_rel": false
+  },
+  "s2_lateral_symmetry": {
+   "lateral_inconsistency_callout": {
+    "foot_l_over_foot_r": 10.897259,
+    "foot_r_minus_R_Hallux_kg": 7e-07,
+    "note": "the k-lane measured the deposit's femur/tibia meshes as exact mirror copies (L/R diameters <= 1.5e-05 mm); the mass set's own L/R thigh, shank and toes masses are EQUAL, but foot_l carries 10.9x the foot_r mass, and foot_r sits within 1 mg of the R_Hallux mass - the mass set cannot be a density reading of ANY bilaterally symmetric geometry, whether the deposit's or a real subject's"
+   },
+   "max_abs_diff_kg": 0.0257784,
+   "note": "consistent with a placeholder AND with the k-lane's mirror-copy observation; not verdict-bearing alone",
+   "pairs": [
+    {
+     "abs_diff_kg": 0.0,
+     "pair": "thigh"
+    },
+    {
+     "abs_diff_kg": 0.0,
+     "pair": "shank"
+    },
+    {
+     "abs_diff_kg": 0.0257784,
+     "pair": "foot"
+    },
+    {
+     "abs_diff_kg": 0.0,
+     "pair": "toes"
+    }
+   ]
+  },
+  "s3_cross_taxon_identity": {
+   "all_taxa_identical_body_mass_sets": false,
+   "note": "a macaque and a gorilla cannot share subject-derived segment masses",
+   "per_body_equality_vs_macaque": {
+    "Bonobo": {
+     "same_body_names": false,
+     "same_masses": false
+    },
+    "Chimpanzee": {
+     "same_body_names": false,
+     "same_masses": false
+    },
+    "Gibbon": {
+     "same_body_names": false,
+     "same_masses": false
+    },
+    "Gorilla": {
+     "same_body_names": false,
+     "same_masses": false
+    },
+    "Orangutan": {
+     "same_body_names": false,
+     "same_masses": false
+    },
+    "Siamang": {
+     "same_body_names": false,
+     "same_masses": false
+    }
+   },
+   "per_taxon_bodies": {
+    "Bonobo": {
+     "body_names": [
+      "pelvis",
+      "thigh_l",
+      "shank_l",
+      "foot_l",
+      "toes_l",
+      "hallux_l",
+      "thigh_r",
+      "shank_r",
+      "foot_r",
+      "toes_r",
+      "hallux_r"
+     ],
+     "has_trunk_like_body": false,
+     "n_bodies": 11
+    },
+    "Chimpanzee": {
+     "body_names": [
+      "Pelvis",
+      "L_Thigh",
+      "L_Shank",
+      "L_Foot",
+      "L_Toes",
+      "R_Thigh",
+      "R_Shank",
+      "R_Foot",
+      "R_Toes",
+      "R_Hallux"
+     ],
+     "has_trunk_like_body": false,
+     "n_bodies": 10
+    },
+    "Gibbon": {
+     "body_names": [
+      "pelvis",
+      "thigh_l",
+      "shank_l",
+      "foot_l",
+      "toes_l",
+      "thigh_r",
+      "shank_r",
+      "foot_r",
+      "toes_r",
+      "hallux_r"
+     ],
+     "has_trunk_like_body": false,
+     "n_bodies": 10
+    },
+    "Gorilla": {
+     "body_names": [
+      "Pelvis",
+      "L_Thigh",
+      "L_Shank",
+      "L_Foot",
+      "L_Toes",
+      "R_Thigh",
+      "R_Shank",
+      "R_Foot",
+      "R_Toes",
+      "R_Hallux"
+     ],
+     "has_trunk_like_body": false,
+     "n_bodies": 10
+    },
+    "Macaque": {
+     "body_names": [
+      "Pelvis",
+      "thigh_l",
+      "shank_l",
+      "foot_l",
+      "toes_l",
+      "thigh_r",
+      "shank_r",
+      "foot_r",
+      "toes_r",
+      "R_Hallux"
+     ],
+     "has_trunk_like_body": false,
+     "n_bodies": 10
+    },
+    "Orangutan": {
+     "body_names": [
+      "pelvis",
+      "thigh_l",
+      "shank_l",
+      "foot_l",
+      "toes_l",
+      "hallux_l",
+      "thigh_r",
+      "shank_r",
+      "foot_r",
+      "toes_r",
+      "hallux_r"
+     ],
+     "has_trunk_like_body": false,
+     "n_bodies": 11
+    },
+    "Siamang": {
+     "body_names": [
+      "pelvis",
+      "thigh_l",
+      "shank_l",
+      "foot_l",
+      "toes_l",
+      "thigh_r",
+      "shank_r",
+      "foot_r",
+      "toes_r",
+      "hallux_r"
+     ],
+     "has_trunk_like_body": false,
+     "n_bodies": 10
+    }
+   },
+   "per_taxon_total_kg": {
+    "Bonobo": 6.6028811,
+    "Chimpanzee": 31.932512,
+    "Gibbon": 0.17266888,
+    "Gorilla": 4.0863347,
+    "Macaque": 0.7717839,
+    "Orangutan": 4.7710778,
+    "Siamang": 1.9128273
+   }
+  },
+  "s4_round_numbers": {
+   "decimal_places_per_body": {
+    "Pelvis": 5,
+    "R_Hallux": 7,
+    "foot_l": 6,
+    "foot_r": 7,
+    "shank_l": 6,
+    "shank_r": 6,
+    "thigh_l": 5,
+    "thigh_r": 5,
+    "toes_l": 7,
+    "toes_r": 7
+   },
+   "min_decimal_places_across_bodies": 5
+  }
+ },
+ "scale_tests": {
+  "cube_law_closure": {
+   "closes": false,
+   "reading": "0.772 / k^3 demands a ~449 kg class source model - no primate template class exists there; closes NOWHERE",
+   "required_source_pelvis_hindlimb_kg": 449.393
+  },
+  "expected_x_k3_kg": [
+   0.001712875,
+   0.002844001
+  ],
+  "expected_x_k_kg": [
+   0.119439,
+   0.198313
+  ],
+  "implied_body_reading": {
+   "definition": "0.772 / fraction, IF the mass set were anatomically proportioned",
+   "implied_body_kg": [
+    3.215766,
+    4.178626
+   ],
+   "verdict": "below the adult female band [5.4, 6.9] kg and above birth mass [0.40, 0.57] kg (both via committed k-lane receipt): an IMMATURE animal at this reading - the packet's 'infant-class' is coarser than this measured statement"
+  },
+  "k": 0.11975394,
+  "k2": 0.014341006,
+  "k3": 0.001717392,
+  "k_source": "committed k_forensics_20260921 deliverable, MTP class 0.11975394 (k-lane receipt: recomputed diff 3.8e-09)",
+  "linear_closure": {
+   "closes": false,
+   "reading": "0.772 / k demands a source model whose pelvis+hindlimb mass alone equals 6.445 kg - ABOVE the whole adult female body band [5.4, 6.9] kg; anatomically incoherent",
+   "required_source_pelvis_hindlimb_kg": 6.444747
+  }
+ },
+ "schema": "chimera.deposit_mass.v1",
+ "verdict": "ANOMALY MEASURED: 0.771784 kg vs expected envelope [0.997370, 1.656000] kg; deficit factor 1.291930-2.145078x; no scaling arithmetic closes and the masses are not a uniform stamp (hypothesis c: genuinely low)"
+}

@@ -1,0 +1,205 @@
+{
+ "schema": "chimera.deposit_mass.v1",
+ "lane": "deposit-mass-20260921",
+ "branch": "agent/deposit-mass-forensics-20260921",
+ "clone_of": "git@github.com-fleetdeploy:GhostDragonAlpha/Chimera.git @ 5a5914b3 (branch agent/k-scale-forensics-20260921, sparse: tools/science_funnel/)",
+ "mission": "THE DEPOSIT-MASS FORENSICS arming author_email_packet.md question 4 with measured numbers: the k-forensics-20260921 lane proved the deposit's macaque bone geometry is anatomically adult-female rhesus (femur 173.13 mm, tibia 156.81 mm vs Francis & Wang 2023), yet its packet flags the model's 0.772 kg pelvis+hindlimbs segment-mass sum as anomalous ('infant-class'). THIS LANE MEASURES THAT ANOMALY: (1) parse the deposit's per-body mass fields from the pinned Macaque_model.osim; (2) assemble the literature expectation: adult female rhesus body mass x primate hindlimb(+pelvis) mass-fraction band; (3) the comparison: measured vs expected, the deficit factor, and WHICH closing hypothesis the arithmetic supports - (a) density/placeholder template masses (the deposit's own 1 N muscle-force pattern), (b) mass set scaled by the SI geometry factor k = 0.119754 (linear or cube-law), (c) genuinely low; (4) a paste-ready 2-3 line APPEND amendment for packet question 4 (the packet file itself is never edited; amendment file lives in this lane dir).",
+ "pre_registration": {
+  "written_before_first_deposit_mass_read": true,
+  "note": "This file was written BEFORE any mass value was read from any .osim by this lane. The literature transcriptions below were read from the sha-pinned full texts in literature/ before writing; the packet's 0.772 kg sum and the k-lane's anatomy verdict are consumed as GIVEN CONTEXT (quoted from the committed packet and receipt, both sha-verified at run time). No deposit mass field was read, parsed, or computed before this block was complete.",
+  "inputs_pinned": {
+   "macaque_model": {
+    "path": "tools/science_funnel/data/wiseman2026/models/Macaque_model.osim",
+    "sha256_manifest_entry": "d5c65cbc0a72bd2d5c2258c6bd018fe850ae25cce6fb07c1f268b91e598c88e9",
+    "pre_verified_note": "on-disk sha256 re-computed by this lane pre-registration and MATCHES the manifest entry; re-verified at run time before parse (load REFUSES on mismatch)"
+   },
+   "other_taxon_models": {
+    "paths": ["tools/science_funnel/data/wiseman2026/models/Bonobo_model.osim", "tools/science_funnel/data/wiseman2026/models/Chimpanzee_model.osim", "tools/science_funnel/data/wiseman2026/models/Gibbon_model.osim", "tools/science_funnel/data/wiseman2026/models/Gorilla_model.osim", "tools/science_funnel/data/wiseman2026/models/Orangutan_model.osim", "tools/science_funnel/data/wiseman2026/models/Siamang_model.osim"],
+    "note": "consumed for the cross-taxon placeholder signature check (are the seven taxon models' mass sets identical?); each re-verified against its committed manifest entry at run time"
+   },
+   "wiseman_sha256_manifest": {
+    "path": "tools/science_funnel/data/wiseman2026/sha256_manifest.json",
+    "sha256_pre_verified": "e72b6616fc23960e3e9a50491d104ee752240fc8b8787f7541c1da85b84a78e3",
+    "equals_k_lane_receipt_pin": true
+   },
+   "k_forensics_receipt": {
+    "path": "tools/science_funnel/validation/k_forensics_20260921/receipt.json",
+    "consumed_for": "anatomy verdict (femur 173.13 / tibia 156.81 mm ADULT_FEMALE_BAND), body-mass prior (Turnquist & Kessler 1989 adult female 5.4-6.9 kg; birth 0.40-0.57 kg), k = 0.11975394, 1 N placeholder-force pattern",
+    "sha_pinned_by": "git commit 5a5914b3 of this clone (branch agent/k-scale-forensics-20260921)"
+   },
+   "k_forensics_book": {
+    "path": "tools/science_funnel/validation/k_forensics_20260921/k_forensics_book.json",
+    "sha256_pre_verified": "0c2d8b397a158283f19a8ff81a8f6be5f6a787ac09c09b7394c70e5402166b4b",
+    "equals_k_lane_receipt_pin": true
+   },
+   "author_email_packet": {
+    "path": "tools/science_funnel/validation/k_forensics_20260921/author_email_packet.md",
+    "consumed_for": "the 0.772 kg claim under test (section 2 secondary note + question 4) and the 'placeholder 1 N muscle forces' pattern phrase",
+    "sha_pinned_by": "git commit 5a5914b3"
+   },
+   "lit_oku2021": {
+    "path": "tools/science_funnel/validation/deposit_mass_20260921/literature/oku2021.xml",
+    "sha256": "e8e60ac390192ed6259d792d317d5c722a62ab23511a0efc653e95ff1a69eef0",
+    "provenance": "PMC full-text XML of Oku H, Ide N, Ogihara N (2021), 'Forward dynamic simulation of Japanese macaque bipedal locomotion demonstrates better energetic economy in a virtualised plantigrade posture', Communications Biology 4:308, DOI 10.1038/s42003-021-01831-w, PMCID PMC7940622, retrieved via NCBI E-utilities efetch db=pmc id=7940622"
+   },
+   "lit_hazotte2026": {
+    "path": "tools/science_funnel/validation/deposit_mass_20260921/literature/hazotte2026.xml",
+    "sha256": "8ee615e176570d9412d9a44ef1209ef753e72faa7b0a03e183d37bb466f35790",
+    "provenance": "PMC full-text XML of Hazotte E, Ito K, Nakatsukasa M, Ogihara N (2026), 'Kinematic and kinetic adjustments of Japanese macaques during quadrupedal walking on horizontal poles', J Exp Biol 229(4):jeb252010, DOI 10.1242/jeb.252010, PMCID PMC12967147, retrieved via NCBI E-utilities efetch db=pmc id=12967147"
+   },
+   "lit_zihlman2013": {
+    "path": "tools/science_funnel/validation/deposit_mass_20260921/literature/zihlman2013.xml",
+    "sha256": "33eff5f6c7e6151970c63418c198abe505f0284adf6c375399a6068e824eb945",
+    "provenance": "PMC full-text XML of Zihlman AL & Underwood CE (2013), 'Locomotor Anatomy and Behavior of Patas Monkeys (Erythrocebus patas) with Comparison to Vervet Monkeys (Cercopithecus aethiops)', Anatomy Research International 2013:409534, DOI 10.1155/2013/409534, PMCID PMC3804282, retrieved via NCBI E-utilities efetch db=pmc id=3804282"
+   },
+   "nc3rs_page": {
+    "path": "tools/science_funnel/validation/deposit_mass_20260921/literature/nc3rs_health_indicators.html",
+    "sha256": "bf465b1241164215be7fc25ec5af848a8b2462c2594496037dc6c3efc7288c47",
+    "provenance": "https://macaques.nc3rs.org.uk/welfare-assessment/health-indicators, fetched 2026-09-21; its reference list carries 'Turnquist JE and Kessler MJ (1989). Free-ranging cayo santiago rhesus monkeys (macaca mulatta): I. Body size, proportion, and allometry. American Journal of Primatology 19(1): 1-13. https://doi.org/10.1002/ajp.1350190102'. CAVEAT RECORDED: the page is JS-rendered and its numeric body-mass table is NOT in the static HTML; the 5.4-6.9 kg adult-female figure is the COMMITTED k_forensics_20260921/receipt.json transcription of that NC3Rs compilation (that receipt is sha-pinned by this clone's commit), so the number's citation chain is: Turnquist & Kessler 1989 (DOI above) -> NC3Rs guidance -> committed k-lane receipt -> this lane."
+   }
+  },
+  "literature_prior": {
+   "body_mass_anchor": {
+    "adult_female_rhesus_kg": {"range": [5.4, 6.9], "source": "Turnquist JE & Kessler MJ (1989), Am J Primatol 19:1-13, DOI 10.1002/ajp.1350190102 (free-ranging Cayo Santiago Macaca mulatta; as compiled by NC3Rs macaque guidance), transcribed in the committed k_forensics_20260921/receipt.json body_mass_prior.adult_female_kg"},
+    "birth_mass_kg": {"range": [0.4, 0.57], "source": "committed k_forensics_20260921/receipt.json body_mass_prior.birth_mass_kg (NC3Rs; Coe CL et al. 2021)"},
+    "interpolation_declared": "isometric (mass ~ length^3) class interpolation as declared by the k-lane: an animal at linear ratio k = 0.119754 of an adult female carries mass ratio k^3 = 0.00172"
+   },
+   "hindlimb_fraction_anchors": {
+    "oku2021_table1": {
+     "quote": "Table 1 Dimensions and inertial parameters of the limb segments. Mass (kg) Length (m) COM (%) M of I (kgm2): HAT 8.184 0.482 52 2.07E-02 | Thigh 0.557 0.163 41 1.61E-03 | Shank 0.269 0.182 40 7.01E-04 | Foot 0.080 0.074 62 5.49E-05 | Phalanges 0.021 0.045 50 6.26E-06 ... Parameters were taken from Ogihara et al. 62",
+     "model_total_arithmetic": "HAT + 2 x (Thigh + Shank + Foot + Phalanges) = 8.184 + 2 x 0.927 = 10.038 kg - the model body mass the hind_torque_book_20260921 receipt calls 'the Oku 10.038 kg scale' (the hind lane consumed Oku's measured walk moments); the arithmetic reproduces it EXACTLY from Table 1",
+     "hindlimb_chain_fraction_measured": "2 x 0.927 / 10.038 = 0.184698... (both hindlimb chains, pelvis NOT included - Oku's model lumps head+forelimbs+trunk into HAT)",
+     "status": "CT-derived inertial parameters of the anatomically-based whole-body Japanese macaque musculoskeletal model (Ogihara et al. 2009 lineage) - the same model family whose walk moments the repo's force books consume"
+    },
+    "hazotte2026_table2": {
+     "quote": "Table 2. Inertial parameters of limb segments in the Japanese macaque. Segment mass fraction (%): Trunk 70.0 | Upper arm 3.2 | Forearm 2.0 | Hand 0.6 | Thigh 5.6 | Shank 2.7 | Foot 1.0 ... Segment mass is expressed as a percentage of total body mass ... determined according to the anatomically based whole-body musculoskeletal model of the Japanese macaque (Ogihara et al., 2009) ... The mass of the trunk segment was defined to include the head",
+     "hindlimb_chain_fraction": "2 x (5.6 + 2.7 + 1.0) / 100 = 0.186 (rounded-percent version of the same model; Trunk 70.0 includes head AND pelvis)",
+     "subjects": "Table 1: four adult male Japanese macaques, body mass 4.55-8.25 kg"
+    },
+    "zihlman2013": {
+     "quote": "Body proportions, for example, forelimb mass (11-13%) and hindlimb mass (20-24%), are not only characteristic of vervets [30] but also of macaques (Macaca fuscata and M. mulatta, [22, 25]), baboons (Papio cynocephalus, [9]), and langurs (Semnopithecus entellus, [31])",
+     "hindlimb_mass_fraction_band": [0.20, 0.24],
+     "scope_note": "DISSECTION soft-tissue masses: 'all hindlimb muscles plus hip muscles that attach to the femur (the gluteals, iliopsoas, obturator internus and externus, and gemelli)' - the bony pelvic girdle is counted in head/trunk ('Skull, trunk, pectoral, and pelvic girdles comprise the head/trunk segment'), so this band also EXCLUDES the pelvis segment proper, and it is explicitly stated to characterize M. mulatta"
+    }
+   },
+   "pelvis_fraction_status": {
+    "statement": "NO byte-pinned primate source for a pelvis-segment mass fraction was found: the two primate hindlimb anchors above both EXCLUDE the pelvis segment (Oku lumps it in HAT; Zihlman counts the girdle bone in head/trunk). The pre-registered PRIMARY expectation therefore counts the deposit's Pelvis body as ZERO mass - the most conservative bound against this lane's own conclusion (any pelvis mass > 0 pushes the expectation UP and the deficit factor further UP).",
+    "secondary_context_declared_cross_species": "the gait field's standard human pelvis fraction is ~0.142 of body mass (de Leva 1996, 'Adjustments to Zatsiorsky-Seluyanov's segment inertia parameters', J Biomech 29:1223-1230, DOI 10.1016/0021-9290(95)00178-6). CITED BY DOI ONLY - the paper is paywalled and NOT byte-pinned by this lane; used solely for a secondary, clearly-declared cross-species upper extension of the band, never for the primary verdict."
+   }
+  },
+  "expected_band_pre_registered": {
+   "primary_fraction_band": {
+    "min": 0.184698,
+    "max": 0.24,
+    "sources": "min: Oku 2021 Table 1 arithmetic (2 x 0.927 / 10.038, CT model, pelvis excluded); max: Zihlman & Underwood 2013 dissection band 20-24% stated for M. fuscata and M. mulatta (pelvis segment excluded); Hazotte 2026 Table 2 gives 0.186 of the same CT model - consistency of the two independent anchors recorded"
+   },
+   "body_band_kg": [5.4, 6.9],
+   "expected_pelvis_plus_both_hindlimbs_kg": {
+    "min": "0.184698 x 5.4 = 0.997369 (rounding rule below)",
+    "max": "0.24 x 6.9 = 1.656",
+    "rounding_rule": "the book computes and reports every band endpoint to 6 decimals from the pinned inputs; the pre-registered ENVELOPE is [0.997, 1.656] kg",
+    "pelvis_caveat": "the deposit's 0.772 kg sum INCLUDES a Pelvis body; the literature fractions EXCLUDE the pelvis segment - so the true anatomical expectation is STRICTLY ABOVE this envelope, and the deficit factor STRICTLY ABOVE its envelope maximum"
+   },
+   "deficit_factor_envelope": {
+    "definition": "expected / 0.772",
+    "min": "0.997 / 0.772 = 1.2914...",
+    "max": "1.656 / 0.772 = 2.1451...",
+    "pre_registered_statement": "deficit factor = 1.29x to 2.15x (lower bound if the deposit's body is a 5.4 kg female with zero-mass pelvis; upper bound at 6.9 kg female with zero-mass pelvis), and any pelvis mass pushes it higher"
+   },
+   "secondary_cross_species_extension": {
+    "fraction_band_with_human_pelvis": [0.326698, 0.382],
+    "expected_kg": [1.764, 2.636],
+    "deficit_factor": [2.285, 3.415],
+    "status": "declared cross-species (human pelvis 0.142 + primate hindlimb chains), context only"
+   }
+  },
+  "scale_tests_pre_registered": {
+   "k_definition": "k = 0.11975394 (MTP class, committed k_forensics deliverable, reproduced in the k-lane receipt to 3.8e-09); k^3 and k^2 computed at run time from this constant",
+   "reading_b_linear": "IF the mass set were scaled by the LINEAR geometry factor k from an anatomically-proportioned source: deposit_sum = expected x k -> required expected = 0.772 / k = 6.4467 kg - EXCEEDS the entire adult female body band [5.4, 6.9] kg; i.e. linear scaling closes ONLY IF the source model's pelvis+hindlimb mass equaled a WHOLE adult female's body mass. Pre-registered as anatomically incoherent unless the parse says otherwise.",
+   "reading_b_cubelaw": "IF scaled by the CUBE LAW (OpenSim-style density-preserving scale): deposit_sum = expected x k^3 -> required expected = 0.772 / k^3 ~= 449 kg class - no primate template class exists there (the largest pinned primate body mass in this repo's lanes is the human-scale literature; gorilla-class is ~10x less). Pre-registered as closing NOWHERE.",
+   "forward_directions_also_reported": "expected x k and expected x k^3 vs the measured 0.772 kg, from both envelope ends",
+   "implied_body_reading": "IF the deposit mass set were anatomically PROPORTIONED (an animal whose pelvis+hindlimbs follow the fraction band): implied body = 0.772 / fraction ∈ [0.772/0.24, 0.772/0.184698] = [3.217, 4.180] kg - BELOW the adult female band [5.4, 6.9] kg and ABOVE birth mass [0.40, 0.57] kg, i.e. an IMMATURE animal at this reading (the packet's 'infant-class' phrasing is coarser than this measured statement)"
+  },
+  "placeholder_signature_tests_pre_registered": {
+   "s1_uniformity": "are the 10 macaque body masses mutually identical or near-identical (a single value stamped on every body, the same pattern as the deposit's 1 N muscle forces)?",
+   "s2_lateral_symmetry": "left/right pairs (thigh_l/r, shank_l/r, foot_l/r, toes_l/r) equal? - consistent BOTH with a placeholder AND with mirror-copy geometry (the k-lane measured the right bones as mirror copies); recorded, not verdict-bearing alone",
+   "s3_cross_taxon_identity": "do all seven taxon models carry IDENTICAL per-body (or identical total) mass sets? A macaque and a gorilla CANNOT share subject-derived segment masses - identity would falsify 'subject-derived' outright",
+   "s4_round_numbers": "are the masses round decimal numbers (e.g. 2-3 significant digits) rather than measured/derived values?",
+   "verdict_rule": "hypothesis (a) template/placeholder CLOSES if s1 or s3 holds (s2/s4 recorded as corroboration); hypothesis (b) geometric scaling closes ONLY if one of the scale tests closes exactly; hypothesis (c) genuinely low is the remainder - anatomically differentiated, non-round masses with no scaling closure"
+  }
+ },
+ "rule0": {
+  "statement": "The deposit's mass set (0.772 kg pelvis+hindlimbs, packet question 4) is inconsistent with its own proven adult-female anatomy under literature mass fractions, and the INCONSISTENCY'S ARITHMETIC FINGERPRINT discriminates: a uniform/stamped mass set across bodies or across taxa = template placeholder (the 1 N force pattern); a single scaling arithmetic (linear k or cube-law k^3) closing exactly = scaled mass set; differentiated non-round masses with no scaling closure = genuinely low masses. THE THEORY: at adult female body mass 5.4-6.9 kg, primate hindlimb-chain fractions (18.5-24% of body mass, pelvis excluded, two independent pinned sources) put the expected pelvis+hindlimb mass at 0.997-1.656 kg, STRICTLY ABOVE the packet's 0.772 kg - so the packet's question 4 is answerable with measured numbers BEFORE the authors reply, and the amendment line's arithmetic must close against one of the three fingerprints.",
+  "prediction": "(1) the parsed macaque body-mass sum reproduces the packet's 0.772 kg to within 0.0005 kg (the packet's own 3-decimal rounding); (2) 0.772 < 0.997 - the pre-registered expected envelope's MINIMUM - so the anomaly is real at the most conservative bound, deficit factor >= 1.29x, rising to >= 2.15x at the band top and higher with any pelvis mass; (3) neither scale reading closes: expected x k falls at 0.12-0.20 kg (3.9-6.5x BELOW 0.772) and expected x k^3 at ~0.002 kg (271-450x below); the inverse linear reading demands a 6.45 kg pelvis+hindlimb source mass (above the whole adult female band) and the cube-law inverse demands ~449 kg (no primate class); (4) the implied-body reading puts the mass set at a 3.22-4.18 kg animal - below the adult female band and above birth mass, i.e. immature-class; (5) the placeholder signature tests s1-s4 will show whether hypothesis (a) closes - pre-registered as OPEN, decided by the parse, not by this block; (6) the derivation is byte-deterministic.",
+  "falsifier": "(a) the measured sum LANDING INSIDE OR ABOVE the expected envelope [0.997, 1.656] kg - the anomaly evaporates, packet question 4 loses its measured leg, and this lane records that verdict instead; (b) the parsed sum disagreeing with the packet's 0.772 by more than 0.0005 kg - a packet-number correction is recorded, never silently absorbed; (c) citation integrity - every number in the book and in the measured block cites a sha-pinned literature file, a manifest-verified deposit file, or a committed lane artifact; the de Leva pelvis fraction appears ONLY in the declared secondary context, never in the primary verdict; (d) non-deterministic rerun; (e) any file changed outside tools/science_funnel/validation/deposit_mass_20260921/; (f) any consumed .osim whose on-disk sha256 disagrees with its committed manifest entry (load REFUSES). Any hit is recorded as measured, never tuned."
+ },
+ "measured": {
+  "recorded_utc": "2026-09-21T02:20:00+00:00",
+  "note": "APPENDED AFTER THE RUN. The pre-registration block above is unedited; the derivation script and this block were written around it. Every deposit mass value was first read by the derivation run AFTER this file's pre_registration was complete and committed to disk. No band, fraction, or falsifier was touched after the first mass value was read.",
+  "deliverable": {
+   "path": "tools/science_funnel/validation/deposit_mass_20260921/deposit_mass_book.json",
+   "sha256": "6779e5dc48c8ab93c29a0cd01852b6a4fa5a3f41aee90397525a58732cc0a8d6",
+   "tests": "8/8 green: python -B -m unittest tools.science_funnel.validation.deposit_mass_20260921.test_deposit_mass"
+  },
+  "macaque_masses_measured": {
+   "parse": "<Body>/<mass> fields only, document order, from models/Macaque_model.osim (manifest sha d5c65cbc... verified at run time); 10 bodies, exactly the k-lane's hindlimb-only body list",
+   "bodies_kg": {
+    "Pelvis": 0.37876,
+    "thigh_l": 0.10233,
+    "thigh_r": 0.10233,
+    "shank_l": 0.067935,
+    "shank_r": 0.067935,
+    "foot_l": 0.028383,
+    "foot_r": 0.0026046,
+    "toes_l": 0.0094512,
+    "toes_r": 0.0094512,
+    "R_Hallux": 0.0026039
+   },
+   "sum_kg": 0.7717839,
+   "packet_reproduction": "0.7717839 vs the packet's 0.772 kg - |diff| = 0.0002161 kg, inside the pre-registered 0.0005 kg rounding tolerance: PREDICTION 1 HELD (the packet's number is the model's TOTAL segment mass; the model is hindlimb-only, so total = pelvis+hindlimbs)",
+   "the_lateral_inconsistency_measured": "thigh L/R, shank L/R and toes L/R are byte-EQUAL, but foot_l = 0.028383 kg carries 10.897259x the mass of foot_r = 0.0026046 kg, and foot_r sits 0.0000007 kg (0.7 mg) from R_Hallux = 0.0026039 kg. The k-lane measured the deposit's femur/tibia meshes as exact mirror copies (L/R diameters <= 1.5e-05 mm). A density reading of ANY bilaterally symmetric geometry - the deposit's or a real subject's - cannot produce a 10.9x L/R foot difference; this one number rules out both 'density-representative of the deposit geometry' and 'measured from an intact animal' as the mass set's provenance"
+  },
+  "comparison_measured": {
+   "expected_envelope_kg": [0.99737, 1.656],
+   "measured_kg": 0.7717839,
+   "anomaly_real_at_conservative_bound": true,
+   "deficit_factor": "1.291930x to 2.145078x (expected envelope / measured), strictly HIGHER once the deposit's Pelvis body is given any mass, since both literature fractions exclude the pelvis segment",
+   "secondary_cross_species_extension": "with the declared human pelvis fraction 0.142 (de Leva 1996, DOI-cited only, NOT byte-pinned): expected [1.76417, 2.6358] kg, deficit factor [2.285194, 3.414249]x - context, never the primary verdict",
+   "derived_context": "the sum is 0.773819x the envelope MINIMUM and 0.466053x the envelope MAXIMUM; as a fraction of a 6.15 kg (band-midpoint) adult female it is 12.5493% - BELOW the 18.5-24% literature floor for the hindlimb chains ALONE",
+   "prediction_2": "HELD - 0.7717839 < 0.99737 (the envelope minimum)"
+  },
+  "scale_tests_measured": {
+   "linear_k": "expected x k = [0.119439, 0.198313] kg vs measured 0.7717839 kg - misses by 3.9-6.5x; inverse: 0.7717839 / k = 6.444747 kg demanded as the SOURCE model's pelvis+hindlimb mass alone - ABOVE the whole adult female body band [5.4, 6.9] kg. DOES NOT CLOSE",
+   "cube_law_k3": "k^3 = 0.001717392; expected x k^3 = [0.001712875, 0.002844001] kg - misses by 271-450x; inverse: 0.7717839 / k^3 = 449.393 kg demanded - no primate template class. DOES NOT CLOSE",
+   "prediction_3": "HELD - neither arithmetic closes (as pre-registered)",
+   "implied_body_reading": "IF the mass set were anatomically proportioned: implied body = 0.7717839 / fraction in [3.215766, 4.178626] kg - below the adult female band [5.4, 6.9] kg, above birth mass [0.40, 0.57] kg (both via the committed k-lane receipt): an IMMATURE animal at this reading. PREDICTION 4 HELD"
+  },
+  "placeholder_signature_measured": {
+   "s1_uniformity": "NOT a uniform stamp: 10 bodies, 7 distinct values, max-min = 0.3761561 kg (Pelvis alone is 49.08% of the sum)",
+   "s2_lateral_symmetry": "thigh/shank/toes L/R byte-equal; foot L/R off by 0.0257784 kg (the 10.9x callout above)",
+   "s3_cross_taxon_identity": "NOT one stamped template across taxa: per-taxon pelvis+hindlimbs totals Bonobo 6.6028811 / Chimpanzee 31.932512 / Gibbon 0.17266888 / Gorilla 4.0863347 / Macaque 0.7717839 / Orangutan 4.7710778 / Siamang 1.9128273 kg, with different body-naming conventions per model (pelvis vs Pelvis, thigh_l vs L_Thigh); all seven models are hindlimb-only 10-11 body sets",
+   "s4_round_numbers": "masses carry 5-7 decimal places (min 5) - not round template numbers",
+   "verdict": "hypothesis (a) in its literal 'uniform stamp' form does NOT close"
+  },
+  "hypothesis_adjudication": {
+   "a_template_placeholder_uniform_stamp": "CLOSES NO - masses are per-segment differentiated (7 distinct values), non-round (5-7 decimals), and per-taxon distinct",
+   "b_geometric_scaling": "CLOSES NO - neither the linear k reading nor the cube-law k^3 reading closes, in either direction (numbers above)",
+   "c_genuinely_low": "CLOSES as the pre-registered REMAINDER - differentiated, non-round, no scaling closure - BUT the lateral-inconsistency measurement constrains its interpretation: a set this asymmetric in the foot pair cannot be an intact animal's dissection/CT reading either; whatever produced it mixed per-segment sources at model-assembly time",
+   "the_reading_of_record": "the packet's question-4 binary ('template artifact like the placeholder 1 N forces, or subject-derived?') is measured as: NOT subject-derived (below anatomical expectation by 1.29-2.15x with zero-mass pelvis assumed; more with any pelvis mass), NOT density-derived from the deposit's own mirror-symmetric geometry (foot L/R 10.9x), NOT the 1 N-style uniform stamp (7 distinct values), NOT k-scaled (no arithmetic closure). The mass set is a per-segment assembled artifact whose exact source only the authors can name - which is precisely what question 4 asks them"
+  },
+  "falsifier_verdicts": {
+   "a_sum_inside_expected_envelope": "NOT FIRED - measured 0.7717839 kg sits BELOW the envelope [0.99737, 1.656] kg",
+   "b_sum_disagrees_with_packet": "NOT FIRED - |0.7717839 - 0.772| = 0.0002161 kg, inside the 0.0005 kg tolerance",
+   "c_citation_integrity": "HELD - every number cites a sha-pinned literature file, a manifest-verified deposit file, or a committed lane artifact; the de Leva pelvis fraction appears only in the declared secondary extension",
+   "d_determinism": "HELD - two in-process runs byte-identical; subprocess rerun reproduced the deliverable sha256 6779e5dc48c8ab93c29a0cd01852b6a4fa5a3f41aee90397525a58732cc0a8d6",
+   "e_no_source_changes": "HELD - git status --porcelain names nothing outside tools/science_funnel/validation/deposit_mass_20260921/ (unittest-asserted)",
+   "f_input_integrity": "HELD - all 7 taxon .osim files sha-verified against the committed manifest at run time (and the load REFUSES on a tampered manifest, unittest-tested); wiseman manifest sha re-verified == k-lane receipt pin; k_forensics_book.json sha re-verified == k-lane receipt pin",
+   "summary": "ALL pre-registered falsifiers held; no band moved, nothing tuned"
+  },
+  "packet_amendment": {
+   "path": "tools/science_funnel/validation/deposit_mass_20260921/packet_amendment_question4.md",
+   "note": "the 2-3 measured lines to APPEND to question 4 of author_email_packet.md; the packet file itself is untouched (falsifier e)"
+  },
+  "the_verdict_this_lane_hands_the_operator": "The 0.772 kg anomaly is REAL and now MEASURED: expected pelvis+hindlimbs for an adult female rhesus is 0.997-1.656 kg (hindlimb chains alone 18.5-24% of body mass, pelvis EXCLUDED by both literature anchors - Oku/Ogihara CT model 0.1847 and Zihlman dissection 0.20-0.24 stated for M. mulatta), so the deposit carries 1.29-2.15x TOO LITTLE mass before the pelvis is even counted. The mass set is not a uniform stamp, not k-scaled (neither linear nor cube-law closes), and not a density reading of any bilaterally symmetric geometry (foot_l = 10.897259x foot_r while thigh/shank/toes L/R are byte-equal and foot_r sits 0.7 mg from R_Hallux). Under the anatomical-fraction reading the set implies a 3.22-4.18 kg animal - immature class. The authors are being asked the right question; the amendment gives them the numbers that sharpen it."
+ }
+}
