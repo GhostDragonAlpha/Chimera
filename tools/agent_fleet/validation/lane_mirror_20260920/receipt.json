@@ -1,0 +1,475 @@
+{
+  "agent": "GLM 5.3",
+  "date": "2026-09-20",
+  "task": "lane-worktree mirror-verify-prune (E: disk 96-100% full)",
+  "canonical_origin": "git@github.com-fleetdeploy:GhostDragonAlpha/Chimera.git",
+  "disk_before": {
+    "used_pct_start": 96,
+    "avail_gb_start": 89,
+    "used_pct_pre_prune": 100,
+    "avail_gb_pre_prune": 4
+  },
+  "topology_note": "6 lane dirs were linked worktrees of E:/PythonChimera (shared ref store: w12-agent, quadwin-agent, posture-agent, mount-agent, id3-agent, movie-agent); 23 were independent clones with chained origins (wN origin = wN-1 path). E:/PythonChimera itself was never operated on; shared-repo refs were pushed through the movie-agent worktree.",
+  "inventory": {
+    "worktrees_scanned": 29,
+    "total_local_branch_refs": 181,
+    "union_branches": 181,
+    "already_on_canonical_same_hash": 132,
+    "missing_from_canonical": 45,
+    "diverged_reported_not_pushed": 4
+  },
+  "mirror": {
+    "branches_pushed": 45,
+    "verified_match": 45,
+    "failed": 0,
+    "detail": [
+      {
+        "branch": "agent/engine-determinism-argc",
+        "pushed_from": "engdet-agent",
+        "local_hash": "ee2dec8378d48c284c3f9eca400c820ff1f0981e",
+        "canonical_hash": "ee2dec8378d48c284c3f9eca400c820ff1f0981e",
+        "verified": true
+      },
+      {
+        "branch": "agent/gait-wave13-stepping-struts",
+        "pushed_from": "w13-agent",
+        "local_hash": "554f40edbce92111d2ef972d2b6a262e3c3c2da8",
+        "canonical_hash": "554f40edbce92111d2ef972d2b6a262e3c3c2da8",
+        "verified": true
+      },
+      {
+        "branch": "agent/gait-wave14-entry-pose",
+        "pushed_from": "w14-agent",
+        "local_hash": "b588645159b0292678b28e66fb9e61df8cdcb60b",
+        "canonical_hash": "b588645159b0292678b28e66fb9e61df8cdcb60b",
+        "verified": true
+      },
+      {
+        "branch": "agent/gait-wave15-level-entry",
+        "pushed_from": "w15-agent",
+        "local_hash": "c3db49cd59952e69e7c01aaaed8d48542c80b40d",
+        "canonical_hash": "c3db49cd59952e69e7c01aaaed8d48542c80b40d",
+        "verified": true
+      },
+      {
+        "branch": "agent/gait-wave16-load-strut-trade",
+        "pushed_from": "w16-agent",
+        "local_hash": "47d30cb4d03ed69ec46f332887367b5e6e204c6c",
+        "canonical_hash": "47d30cb4d03ed69ec46f332887367b5e6e204c6c",
+        "verified": true
+      },
+      {
+        "branch": "agent/gait-wave17-seat-law",
+        "pushed_from": "w17-agent",
+        "local_hash": "c03ddf41406515233d5ffc9b1415519c5ef3b2b9",
+        "canonical_hash": "c03ddf41406515233d5ffc9b1415519c5ef3b2b9",
+        "verified": true
+      },
+      {
+        "branch": "agent/gait-wave18-partial-lean",
+        "pushed_from": "w18-agent",
+        "local_hash": "17936d83f40f2925c394c71c9abc307897127c4a",
+        "canonical_hash": "17936d83f40f2925c394c71c9abc307897127c4a",
+        "verified": true
+      },
+      {
+        "branch": "agent/gait-wave19-leaned-entry",
+        "pushed_from": "w19-agent",
+        "local_hash": "74fc019521ccce4b2c9a4719ed4fd2bb1048eb02",
+        "canonical_hash": "74fc019521ccce4b2c9a4719ed4fd2bb1048eb02",
+        "verified": true
+      },
+      {
+        "branch": "agent/gait-wave20-midentry-replant",
+        "pushed_from": "w20-agent",
+        "local_hash": "5c94fb4bb65d56d2ae212179a9be9ea729f79131",
+        "canonical_hash": "5c94fb4bb65d56d2ae212179a9be9ea729f79131",
+        "verified": true
+      },
+      {
+        "branch": "agent/gait-wave21-hind-ride",
+        "pushed_from": "w21-agent",
+        "local_hash": "8a17c5003caaba4c2c34db9b74bc1b4ffc007209",
+        "canonical_hash": "8a17c5003caaba4c2c34db9b74bc1b4ffc007209",
+        "verified": true
+      },
+      {
+        "branch": "agent/gait-wave22-touch-reset",
+        "pushed_from": "w22-agent",
+        "local_hash": "17b6bdde5ba6b59f576c053b428afb8747533d76",
+        "canonical_hash": "17b6bdde5ba6b59f576c053b428afb8747533d76",
+        "verified": true
+      },
+      {
+        "branch": "agent/gait-wave23-joint-wall",
+        "pushed_from": "w23-agent",
+        "local_hash": "3cf3674cb16d70a91ad7b0b7d59657e840ad90b7",
+        "canonical_hash": "3cf3674cb16d70a91ad7b0b7d59657e840ad90b7",
+        "verified": true
+      },
+      {
+        "branch": "agent/gait-wave24-glide-pocket",
+        "pushed_from": "w24-agent",
+        "local_hash": "ecddf6eb34f72c5643f9bb7c069d3e9a7b05006e",
+        "canonical_hash": "ecddf6eb34f72c5643f9bb7c069d3e9a7b05006e",
+        "verified": true
+      },
+      {
+        "branch": "agent/gait-wave25-gate-cadence",
+        "pushed_from": "w25b-agent",
+        "local_hash": "40811bddfce8a5f5885fc58030a39d60dd2c00f4",
+        "canonical_hash": "40811bddfce8a5f5885fc58030a39d60dd2c00f4",
+        "verified": true
+      },
+      {
+        "branch": "agent/gait-wave26-wall-wait",
+        "pushed_from": "w26-agent",
+        "local_hash": "6efb3ef0e287e5ee268463cc0e26bfd68caf22d9",
+        "canonical_hash": "6efb3ef0e287e5ee268463cc0e26bfd68caf22d9",
+        "verified": true
+      },
+      {
+        "branch": "agent/gait-wave27-sinking-shoulder",
+        "pushed_from": "w27-agent",
+        "local_hash": "6efb3ef0e287e5ee268463cc0e26bfd68caf22d9",
+        "canonical_hash": "d981bc04e92fb0040d481d2c75c07a8c7448d49e",
+        "verified": true,
+        "note": "branch advanced 6efb3ef0->d981bc04 in kept worktree w27-agent during the run; re-mirrored as fast-forward and re-verified",
+        "mirrored_initially": "6efb3ef0e287e5ee268463cc0e26bfd68caf22d9"
+      },
+      {
+        "branch": "agent/matter-skeleton-import-20260920",
+        "pushed_from": "mkskel-agent",
+        "local_hash": "2d585c7b76a60dc299b2df798e8de22b4a59acfc",
+        "canonical_hash": "2d585c7b76a60dc299b2df798e8de22b4a59acfc",
+        "verified": true
+      },
+      {
+        "branch": "agent/muscle-data-research-20260920",
+        "pushed_from": "muscle-research-agent",
+        "local_hash": "fc45106cd700c8c0096c3a395b1f90ee0df7b3ae",
+        "canonical_hash": "fc45106cd700c8c0096c3a395b1f90ee0df7b3ae",
+        "verified": true
+      },
+      {
+        "branch": "agent/reality-fantasy-gate-20260920",
+        "pushed_from": "gate-agent",
+        "local_hash": "4d1c0ffa160c816a444c8d35159ba5781bc49ec8",
+        "canonical_hash": "4d1c0ffa160c816a444c8d35159ba5781bc49ec8",
+        "verified": true
+      },
+      {
+        "branch": "agent/triangle-monkey-grid-20260920",
+        "pushed_from": "trimonkey-agent",
+        "local_hash": "1b08b29d8d5607484afda59532912261c6a53267",
+        "canonical_hash": "1b08b29d8d5607484afda59532912261c6a53267",
+        "verified": true
+      },
+      {
+        "branch": "agent/workflow-checklist-20260920",
+        "pushed_from": "checklist-agent",
+        "local_hash": "e9c8b394118e8b6cb4d43d3c932bfdfab8c3b113",
+        "canonical_hash": "e9c8b394118e8b6cb4d43d3c932bfdfab8c3b113",
+        "verified": true
+      },
+      {
+        "branch": "agent/workflow-mcp-20260920",
+        "pushed_from": "trimonkey-agent",
+        "local_hash": "a672b16ba2422a68fa43896a78571d9ee3eb2250",
+        "canonical_hash": "a672b16ba2422a68fa43896a78571d9ee3eb2250",
+        "verified": true
+      },
+      {
+        "branch": "astra/dyad-harness",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "9d1ce05858a73330dbac3e979fa2ebe521fbc475",
+        "canonical_hash": "9d1ce05858a73330dbac3e979fa2ebe521fbc475",
+        "verified": true
+      },
+      {
+        "branch": "astra/tasks/feature-invisible-elements-01",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "a37a941bcfed3da39dac94cf98a474c4f912824c",
+        "canonical_hash": "a37a941bcfed3da39dac94cf98a474c4f912824c",
+        "verified": true
+      },
+      {
+        "branch": "astra/tasks/feature-water-room-v2-01",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "d1e8769d77776d56889bb1c87695eb2ecaecf84f",
+        "canonical_hash": "d1e8769d77776d56889bb1c87695eb2ecaecf84f",
+        "verified": true
+      },
+      {
+        "branch": "astra/tasks/fleet-review-handoff-claim-delegation-01",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "05f2dac59c576b7ad1f2eb7a416494cf27ea36ac",
+        "canonical_hash": "05f2dac59c576b7ad1f2eb7a416494cf27ea36ac",
+        "verified": true
+      },
+      {
+        "branch": "astra/tasks/product-framing-01",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "84c3d8dd5d864af2ec94670048eb3acbb3916736",
+        "canonical_hash": "84c3d8dd5d864af2ec94670048eb3acbb3916736",
+        "verified": true
+      },
+      {
+        "branch": "buffy/bone-id-v3-companion",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "59098314f92d1b4ca6d3d5bac272c05b1f063e41",
+        "canonical_hash": "59098314f92d1b4ca6d3d5bac272c05b1f063e41",
+        "verified": true
+      },
+      {
+        "branch": "buffy/quadruped-window",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "14caff74201578b5482ce99547acfd1f79c42365",
+        "canonical_hash": "14caff74201578b5482ce99547acfd1f79c42365",
+        "verified": true
+      },
+      {
+        "branch": "codex/graph-contract-repairs",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "32382a9586d0fb53350a37cc3bc2ad88c246cbf6",
+        "canonical_hash": "32382a9586d0fb53350a37cc3bc2ad88c246cbf6",
+        "verified": true
+      },
+      {
+        "branch": "codex/graph-workflow-gate",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "7621ad33224ead6094856b96877ada9873ac5074",
+        "canonical_hash": "7621ad33224ead6094856b96877ada9873ac5074",
+        "verified": true
+      },
+      {
+        "branch": "codex/limb-state-fixes",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "1f3c062cf280930402998492e16703bc788b3196",
+        "canonical_hash": "1f3c062cf280930402998492e16703bc788b3196",
+        "verified": true
+      },
+      {
+        "branch": "codex/material-phase-inventory-20260916",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "e19159ad86d3ee8ff83afc6bae3c4205aeb79a71",
+        "canonical_hash": "e19159ad86d3ee8ff83afc6bae3c4205aeb79a71",
+        "verified": true
+      },
+      {
+        "branch": "codex/publish-completed-work-20260916",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "9060fcd83139d72bcdaa54b45e38615d4cfa9970",
+        "canonical_hash": "9060fcd83139d72bcdaa54b45e38615d4cfa9970",
+        "verified": true
+      },
+      {
+        "branch": "freebuff/join-chimera-through-docs-agent-start-md-in-your-s-e3dd0e7b-1bbd-4f5f-b584-e5a4e4f1adf8",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "51cd7212fd6ef2cfda95c330abcc2ff154cc6141",
+        "canonical_hash": "51cd7212fd6ef2cfda95c330abcc2ff154cc6141",
+        "verified": true
+      },
+      {
+        "branch": "glm53/graph-consumer",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "c99d6b6bae38697c895c1975aff1092b9345f820",
+        "canonical_hash": "c99d6b6bae38697c895c1975aff1092b9345f820",
+        "verified": true
+      },
+      {
+        "branch": "glm53/graph-tests",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "0284daac1499a1c69c01a49d42825cbf7411301d",
+        "canonical_hash": "0284daac1499a1c69c01a49d42825cbf7411301d",
+        "verified": true
+      },
+      {
+        "branch": "hello-833b",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "51cd7212fd6ef2cfda95c330abcc2ff154cc6141",
+        "canonical_hash": "51cd7212fd6ef2cfda95c330abcc2ff154cc6141",
+        "verified": true
+      },
+      {
+        "branch": "lane/grasp-and-stand-20260919",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "2caddb4d844cda83802c2ca7fe377f7347924677",
+        "canonical_hash": "2caddb4d844cda83802c2ca7fe377f7347924677",
+        "verified": true
+      },
+      {
+        "branch": "lane/seven-coord-20260918",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "b6dde64d709431cd21951b20480e518017564fca",
+        "canonical_hash": "b6dde64d709431cd21951b20480e518017564fca",
+        "verified": true
+      },
+      {
+        "branch": "master-merge",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "8e939e7717efbb1bfbb60877532cc73c68a84905",
+        "canonical_hash": "8e939e7717efbb1bfbb60877532cc73c68a84905",
+        "verified": true
+      },
+      {
+        "branch": "opencode/skeleton-movie-20260919",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "0f9e3dd0c46fb8e8316a3360565035d89d5bafc4",
+        "canonical_hash": "0f9e3dd0c46fb8e8316a3360565035d89d5bafc4",
+        "verified": true
+      },
+      {
+        "branch": "preserved/elastic-ref-publish-1896c721",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "1896c721bbbe4c5312636ebaf9115143336e87ac",
+        "canonical_hash": "1896c721bbbe4c5312636ebaf9115143336e87ac",
+        "verified": true
+      },
+      {
+        "branch": "preserved/engine-shutdown-order-01-a3b12a86",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "a3b12a861317d1f11a0888eaf67f36b8f5396bc7",
+        "canonical_hash": "a3b12a861317d1f11a0888eaf67f36b8f5396bc7",
+        "verified": true
+      },
+      {
+        "branch": "rogue-backup",
+        "pushed_from": "E:/ChimeraWork/movie-agent (shared repo of E:/PythonChimera)",
+        "local_hash": "70599b6f9758f3cdb221c356bdd5da8adf829b83",
+        "canonical_hash": "70599b6f9758f3cdb221c356bdd5da8adf829b83",
+        "verified": true
+      }
+    ]
+  },
+  "left_untouched": {
+    "master_local_32105f18_vs_remote_6946f3b9": "local master NEVER pushed; remote master ref unchanged",
+    "diverged_shared_repo_branches_not_in_prune_scope": [
+      {
+        "branch": "astra/tasks/fleet-head-reconcile-01",
+        "local": "7e7d8466bb3ec88e5979168bcecea1fa50cb07a8",
+        "remote": "e37fd19072af36b1452a3743cae086ff63d7ede7"
+      },
+      {
+        "branch": "astra/tasks/matter-kernel-format-01",
+        "local": "63805f4174cfdb666552dfdac9b5d290789b73e0",
+        "remote": "09e71b558c2b6d0a95bac36e9b90688385da85ff"
+      },
+      {
+        "branch": "astra/tasks/window-capture-ownership-01",
+        "local": "b8d37f1f9d22c8722c86d4cd2e38b9249ce42381",
+        "remote": "00a556b3444fd02a3f230519fd985f9bb0316707"
+      }
+    ]
+  },
+  "kept_worktrees": [
+    "movie-agent",
+    "w24-agent",
+    "w25b-agent",
+    "w26-agent",
+    "w27-agent",
+    "mcp-agent"
+  ],
+  "pruned": {
+    "worktrees": [
+      "w12-agent",
+      "w13-agent",
+      "w14-agent",
+      "w15-agent",
+      "w16-agent",
+      "w17-agent",
+      "w18-agent",
+      "w19-agent",
+      "w20-agent",
+      "w21-agent",
+      "w22-agent",
+      "w23-agent",
+      "quadwin-agent",
+      "posture-agent",
+      "mount-agent",
+      "gate-agent",
+      "mkskel-agent",
+      "mkskel-repairA",
+      "mkskel-proofB",
+      "muscle-research-agent",
+      "engdet-agent",
+      "trimonkey-agent",
+      "checklist-agent",
+      "id3-agent"
+    ],
+    "count": 24,
+    "size_mb": {
+      "w12-agent": 11409,
+      "w13-agent": 14932,
+      "w14-agent": 14926,
+      "w15-agent": 14930,
+      "w16-agent": 14928,
+      "w17-agent": 14926,
+      "w18-agent": 14926,
+      "w19-agent": 14926,
+      "w20-agent": 14936,
+      "w21-agent": 14930,
+      "w22-agent": 14931,
+      "w23-agent": 14937,
+      "quadwin-agent": 11385,
+      "posture-agent": 11384,
+      "mount-agent": 11385,
+      "gate-agent": 13971,
+      "mkskel-agent": 14031,
+      "mkskel-repairA": 14024,
+      "mkskel-proofB": 14024,
+      "muscle-research-agent": 13974,
+      "engdet-agent": 20648,
+      "trimonkey-agent": 15258,
+      "checklist-agent": 13969,
+      "id3-agent": 11385
+    },
+    "total_mb": 341075,
+    "all_clean_before_delete": "git status --porcelain empty in all 24"
+  },
+  "master_hash_before": "6946f3b99f04b794bca948a1b2cdc44688c2354d",
+  "master_hash_after": "6946f3b99f04b794bca948a1b2cdc44688c2354d",
+  "linked_worktree_metadata_followup": "git worktree prune in E:/PythonChimera will clear stale metadata for the deleted linked worktrees (w12-agent, quadwin-agent, posture-agent, mount-agent, id3-agent); left to operator because E:/PythonChimera must not be touched",
+  "origin_repoint_followup": "kept clones whose origin path was deleted should repoint origin to the canonical: w24-agent(->w23-agent), w25b-agent(->w24-agent), w26-agent(->w25b-agent), w27-agent(->w26-agent), mcp-agent(->trimonkey-agent)",
+  "disk_after": {
+    "used_gib": 1582,
+    "avail_gib": 327,
+    "used_pct": 83
+  },
+  "freed": {
+    "df_used_before_gib": 1904,
+    "df_used_after_gib": 1582,
+    "df_freed_gib": 322,
+    "du_payload_deleted_mb": 341075
+  },
+  "post_prune_falsifier_checks": {
+    "pruned_branches_retrievable_from_canonical": {
+      "sampled": 13,
+      "passed": 13,
+      "branches": {
+        "agent/bone-id-v3-companion": "554dd62af26dc5c14e54374a2b2fbc74dd8c5597",
+        "agent/engine-determinism-argc": "ee2dec8378d48c284c3f9eca400c820ff1f0981e",
+        "agent/gait-wave12-planted-struts": "e7dce7e2013d7c62591b15a23b7a42c686c72884",
+        "agent/gait-wave13-stepping-struts": "554f40edbce92111d2ef972d2b6a262e3c3c2da8",
+        "agent/gait-wave23-joint-wall": "3cf3674cb16d70a91ad7b0b7d59657e840ad90b7",
+        "agent/matter-skeleton-import-20260920": "2d585c7b76a60dc299b2df798e8de22b4a59acfc",
+        "agent/mount-reconciliation": "8deef67f55f40cffd8434b4eca4e3f64d03859bc",
+        "agent/muscle-data-research-20260920": "fc45106cd700c8c0096c3a395b1f90ee0df7b3ae",
+        "agent/posture-cap-provenance": "a88874245a0e4abe9413284857d582a25b4e58ca",
+        "agent/quadruped-window": "4b2bdb27922abbca92d68292ffd7524e1346fbb5",
+        "agent/reality-fantasy-gate-20260920": "4d1c0ffa160c816a444c8d35159ba5781bc49ec8",
+        "agent/triangle-monkey-grid-20260920": "1b08b29d8d5607484afda59532912261c6a53267",
+        "agent/workflow-checklist-20260920": "e9c8b394118e8b6cb4d43d3c932bfdfab8c3b113"
+      }
+    },
+    "master_ref_unchanged": true,
+    "kept_worktrees_functional": {
+      "movie-agent": "ef02772dae269fac496071c69937982ce7ecf309",
+      "w24-agent": "ecddf6eb34f72c5643f9bb7c069d3e9a7b05006e",
+      "w25b-agent": "40811bddfce8a5f5885fc58030a39d60dd2c00f4",
+      "w26-agent": "6efb3ef0e287e5ee268463cc0e26bfd68caf22d9",
+      "w27-agent": "d981bc04e92fb0040d481d2c75c07a8c7448d49e",
+      "mcp-agent": "a672b16ba2422a68fa43896a78571d9ee3eb2250"
+    }
+  }
+}
