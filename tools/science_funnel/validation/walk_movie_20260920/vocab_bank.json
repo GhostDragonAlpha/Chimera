@@ -1,0 +1,39 @@
+{
+ "schema": "chimera.walk_movie.vocab_bank.v1",
+ "lane": "agent/walk-movie-prestage-20260920",
+ "banked_before_judgement_utc": "2026-09-20T00:00:00+00:00",
+ "banking_law": "This bank was written and hash-committed (its sha256 recorded in receipt.json provenance_pins.vocab_bank) BEFORE any judgment run and before judgement.json existed. The P2 lesson (skeleton_movie_20260919: the size probe's judgment vocabulary must be banked too) is honored: the size/proportion category is banked alongside gait, not added after seeing reports.",
+ "scorer_contract": "vocab_align(report, bank) in tools/science_funnel/walk_movie.py: for each category, a stem counts as HIT when the case-folded report contains it as a word prefix (regex r'\\b' + stem, so 'walk' hits walk/walking/walked, 'collaps' hits collapse/collapsing). Per-category: hits, ratio = hits/len(stems), matched stems listed. The scorer reads NOTHING outside this bank; it is pure string arithmetic, deterministic, no model.",
+ "categories": {
+  "gait": {
+   "required_for_pass": true,
+   "why": "the movie shows a WALK trace: limb phases, stepping; the eye must read motion of legs/limbs",
+   "stems": ["walk", "step", "stride", "gait", "swing", "stance", "trot", "pace", "march", "locomot", "limb motion", "moving", "motion", "walking"]
+  },
+  "body_plan": {
+   "required_for_pass": true,
+   "why": "the walker is a quadruped (pelvis trunk + two hind + two fore legs): the eye must read a four-legged / animal-like body plan",
+   "stems": ["quadruped", "four-legged", "four leg", "four limb", "animal", "creature", "mammal", "primate", "monkey", "ape", "macaque", "dog", "cat", "bear", "horse", "lizard", "dinosaur", "crab", "insect", "spider", "table with legs"]
+  },
+  "size_proportion": {
+   "required_for_pass": false,
+   "why": "the P2 lesson: size/proportion vocabulary banked BEFORE the judgment so a size miss (oversized/undersized/proportion reading) can never be excused by an unbanked term",
+   "stems": ["small", "tiny", "large", "big", "oversiz", "over-siz", "enlarg", "scal", "size", "proportion", "elongat", "stubby", "thin", "slender", "thick", "bulky", "long", "short", "stocky", "compact", "low to the ground", "low-set"]
+  },
+  "posture_collapse": {
+   "required_for_pass": false,
+   "why": "the honest current trace ends in a collapse (the R shoulder sinking, the body tipping); predicted the eye reads falling/slumping but honestly uncertain",
+   "stems": ["collaps", "fall", "slump", "sink", "stumbl", "trip", "buckl", "tip", "pitch", "crouch", "lower", "droop", "toppl", "crash", "tilt"]
+  },
+  "segment_build": {
+   "required_for_pass": false,
+   "why": "the walker is rendered as boxes/capsules per Table-1 segment: blocky build terms",
+   "stems": ["box", "block", "segment", "joint", "limb", "trunk", "torso", "spine", "angular", "facet", "low-poly", "geometric", "cuboid", "rectangular", "cylind", "stick"]
+  },
+  "ground_contact": {
+   "required_for_pass": false,
+   "why": "a walk is a ground contact phenomenon: feet/paws on a floor",
+   "stems": ["ground", "floor", "stand", "plant", "feet", "paw", "contact", "touch", "surface"]
+  }
+ }
+}
