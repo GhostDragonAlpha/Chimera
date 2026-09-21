@@ -68,7 +68,7 @@ struct WalkOut{
  // WAVE 35 CARRIER SELF-UNLOAD FIRE DEADLINE census inputs: per-tick per-leg
  // 2 fields {waive_fires, waive_first_tick} -- leg 0 at [0,2), leg 1 at [2,4);
  // -1 filled when the field is absent.
- std::vector<std::array<double,4>> hind35;
+ std::vector<std::array<double,10>> hind35;
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
@@ -291,11 +291,15 @@ int main(int argc,char**argv){try{
        if(p.contains("deadline_unload"))h29[8+2*l]=p["deadline_unload"].get<bool>()?1.:0.;
        if(p.contains("unload_fires"))h29[10+2*l]=double(p["unload_fires"].get<uint64_t>());}
      out.hind29.push_back(h29);}
-    {std::array<double,4> h35{-1.,-1.,-1.,-1.}; // WAVE 35 APPEND: the waive census
+    {std::array<double,10> h35;h35.fill(-1.); // WAVE 35 APPEND: the waive census
      if(s["gait"].contains("hind_step")&&s["gait"]["hind_step"].size()>=2)
       for(size_t l=0;l<2;++l){const auto&p=s["gait"]["hind_step"][l];
        if(p.contains("waive_fires"))h35[2*l]=double(p["waive_fires"].get<uint64_t>());
-       if(p.contains("waive_first_tick"))h35[2*l+1]=number(p["waive_first_tick"]);}
+       if(p.contains("waive_first_tick"))h35[2*l+1]=number(p["waive_first_tick"]);
+       // WAVE 36 APPEND (indices preserved: leg 0 [4,7), leg 1 [7,10))
+       if(p.contains("waive_last_tick"))h35[4+3*l]=number(p["waive_last_tick"]);
+       if(p.contains("handoff_restores"))h35[5+3*l]=double(p["handoff_restores"].get<uint64_t>());
+       if(p.contains("alt_repairs"))h35[6+3*l]=double(p["alt_repairs"].get<uint64_t>());}
      out.hind35.push_back(h35);}
     out.fm.push_back(fmm);out.fsat.push_back(sat);out.ftgt.push_back(tgx);out.frep.push_back(rep);
 #ifdef GAIT_EVENT_TRACE
@@ -1438,6 +1442,56 @@ int main(int argc,char**argv){try{
      if(lh>0.&&rh>0.){both=1;break;}}
     note(std::string("F-G35 two_legged_within_6_of_replant=")+(both?"1":"0")+" [OWNED 1]");
     ck(both==1,"f35_two_legged_after_replant");}}}
+
+ // ── WAVE 36 WAIVE-ERA HAND-OFF PRESERVATION CENSUS (pre-registered in
+ //    receipt_wave36.json): the waive's perturbation must be absorbed by ONE
+ //    +1 hand-off and the stall calendar must re-lock to the shipped grid.
+ //    (a) THE PRESERVED HAND-OFF -- the first fire after the first waive
+ //    EXACTLY 175 (the natural g=1 clause (b); the wave-35 build-2 fired it
+ //    AT the perturbed 174 completion and re-phased the whole calendar -1).
+ //    (b) THE RE-LOCKED GRID -- the stall-calendar fires within 1 tick of the
+ //    shipped 184/193/202/211/220/229/238 and the twelfth real launch in
+ //    [246,248]. (c) THE TWELFTH WAIVE EXACTLY 248 (the last lawful decision:
+ //    the touch hysteresis releases at the 249 tick-start, mined 1.317e-5 m >
+ //    kTouch+kReleaseBand=1.1e-5). (d) THE PRESERVATION MECHANISM -- the
+ //    hand-off restores >= 1 and the concentration repairs counted (status).
+ {const size_t N36=std::min(w.hind35.size(),w.hindst.size());
+  if(N36>1&&w.hind35[N36-1][0]+w.hind35[N36-1][2]>0.){
+   int wf_first=-1,wf_R=-1;
+   for(size_t i=1;i<N36;++i)for(size_t l=0;l<2;++l)
+    if(w.hind35[i][2*l]>w.hind35[i-1][2*l]){
+     if(wf_first<0)wf_first=(int)i;
+     if(l==1)wf_R=(int)i;}
+   int resumed=-1; // the preserved hand-off: the first fire after the first waive
+   for(size_t i=(size_t)wf_first+1;i<=(size_t)wf_first+30&&(size_t)i<N36&&resumed<0;++i)
+    for(size_t l=0;l<2;++l)
+     if(w.hindst[i][12*l+2]>w.hindst[i-1][12*l+2]){resumed=(int)i;break;}
+   static const int GRID[7]={184,193,202,211,220,229,238};
+   int grid_hit=0,grid_worst=0;
+   for(int g=0;g<7;++g){
+    int best=99;
+    for(size_t i=(size_t)(GRID[g]-2);i<=(size_t)(GRID[g]+2)&&(size_t)i<N36;++i)
+     for(size_t l=0;l<2;++l)
+      if(w.hindst[i][12*l+2]>w.hindst[i-1][12*l+2]){
+       int d=(int)i-GRID[g];if(d<0)d=-d;
+       if(d<best)best=d;}
+    if(best<=1)++grid_hit;
+    if(best<99&&best>grid_worst)grid_worst=best;}
+   int twelfth_launch=-1;
+   for(size_t i=(size_t)244;i<=(size_t)250&&(size_t)i<N36&&twelfth_launch<0;++i)
+    for(size_t l=0;l<2;++l)
+     if(w.hindst[i][12*l+2]>w.hindst[i-1][12*l+2]){twelfth_launch=(int)i;break;}
+   double restores=w.hind35[N36-1][5]+w.hind35[N36-1][8];
+   double repairs=w.hind35[N36-1][6]+w.hind35[N36-1][9];
+   char b[640];std::snprintf(b,640,"F-G36 preserved_handoff=%d [PREDICTED EXACTLY 175: the natural g=1 clause (b), the (b)-waive disarmed by the preservation clause] wf_R_twelfth=%d [PREDICTED EXACTLY 248: the last lawful decision] twelfth_launch=%d [window 246..248] grid_hits=%d/7 worst_drift=%d [OWNED 7/7, drift<=1] handoff_restores=%.0f [OWNED >=1] alt_repairs=%.0f",
+    resumed,wf_R,twelfth_launch,grid_hit,grid_worst,restores,repairs);
+   note(b);
+   ck(resumed==175,"f36_preserved_handoff_on_grid");
+   ck(wf_R==248,"f36_twelfth_waive_248");
+   ck(twelfth_launch>=246&&twelfth_launch<=248,"f36_twelfth_launch_window");
+   ck(grid_hit==7,"f36_stall_grid_relocked");
+   ck(restores>=1.,"f36_handoff_restores");}
+  else note("F-G36 NOT MEASURED: the waive never fired");}
 
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the
