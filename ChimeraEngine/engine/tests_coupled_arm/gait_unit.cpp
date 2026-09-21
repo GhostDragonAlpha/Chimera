@@ -207,6 +207,9 @@ int main(int argc,char**argv){try{
      for(size_t k=0;k<8;++k)
       std::fprintf(stderr,"[dvj] t=%d k=%zu ang=%.4f tgt=%.4f spd=%.4f\n",
        i,k,number(s["joints"][k]["angle_deg"]),number(s["joints"][k]["target_deg"]),number(s["joints"][k]["speed_rad_s"]));
+     for(size_t k=0;k<8;++k) // WAVE 30 DEMAND CENSUS: per-tick per-hind-drive {torque, cap} (the [dvq] instrument;
+      std::fprintf(stderr,"[dvq] t=%d k=%zu tau=%.6f cap=%.6f\n", //  stderr-only, GAIT_EVENT_TRACE builds; stdout-inert)
+       i,k,number(s["joints"][k]["motor_torque_N_m"]),number(s["joints"][k]["torque_cap_N_m"]));
      if(out.cev.size()>=2&&out.cev[out.cev.size()-2]!=out.cev.back())
       std::fprintf(stderr,"[dvfire] t=%d capture_events %llu->%llu phL=%.5f phR=%.5f in_hull=%d com=(%.6f,%.6f)\n",
        i,(unsigned long long)out.cev[out.cev.size()-2],(unsigned long long)out.cev.back(),
