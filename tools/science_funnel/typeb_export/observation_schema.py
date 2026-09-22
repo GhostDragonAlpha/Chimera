@@ -226,6 +226,18 @@ def project_trace(rec: dict, norm_mean: np.ndarray, norm_std: np.ndarray,
     return np.clip(x, -_CLIP, _CLIP).astype(np.float32), mask
 
 
+def read_field(name: str, rec: dict, prev_state: dict):
+    """Public delegate to the projector's own field reader (ADDED by
+    lane/policy-interface-freeze-20260920 -- purely additive: no existing
+    behavior changes). The option-certificate lane evaluates entry/termination
+    guards through THIS so a guard's semantics are exactly the deployed
+    projection's semantics, never a re-implementation."""
+    i = _NAME_TO_IDX.get(name)
+    if i is None:
+        raise KeyError(f"unknown observation field: {name}")
+    return _read_field(FIELDS[i], rec, prev_state)
+
+
 def _read_field(f: dict, rec: dict, prev: dict):
     """Raw scalar for one field, or None if the trace record does not carry it.
     The caller owns availability: None -> mean-fill + mask 0."""
