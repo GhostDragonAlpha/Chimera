@@ -166,11 +166,19 @@ class WalkScene:
         self.params = params
         self.seed = int(seed)
         self.build_id = build_id
-        # body_state
+        # body_state. Entry law (declared): the case's seed selects its entry
+        # phase residue in the gait cycle, preserving the declared half-cycle
+        # L/R offset. DERIVED, not tuned: without a seed-dependent entry state
+        # the seed never reaches the v1-observed channels (the micro-terrain
+        # draw is pad-gap-sized and the v1 observation masks the pad channels),
+        # and the registered cases would degenerate to one effective command
+        # stream -- found and fixed BEFORE the measurement of record
+        # (receipt pre_data_amendment_3).
         self.v = 0.0
         self.x = 0.0
         self.phase_l = 0.0
-        self.phase_r = 0.5             # declared half-cycle offset (P3 slice convention)
+        self.phase_r = (((self.seed % params["cycle_ticks"]) + 0.5)
+                        / params["cycle_ticks"]) % 1.0
         # contact_warm_start_cache (trajectory-visible by declaration)
         self.warm_l = 0.0
         self.warm_r = 0.0
@@ -191,6 +199,15 @@ class WalkScene:
         self._phase_off_l, self._phase_off_r = center[0], center[4]
         self._lift_l, self._lift_r = center[2], center[6]
         self.tick = 0
+
+    # ------------------------------------------------------------- priming
+    def begin(self, center_commands) -> None:
+        """Prime the held-command state so tick 0's record is well-formed."""
+        self._held = [float(c) for c in center_commands]
+        self._sat = [0.0] * 8
+        self._phase_off_l, self._phase_off_r = float(center_commands[0]), float(center_commands[4])
+        self._lift_l, self._lift_r = float(center_commands[2]), float(center_commands[6])
+        self._last_micro = 0.0
 
     # -------------------------------------------------- observation record
     def observation_record(self) -> dict:

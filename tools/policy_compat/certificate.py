@@ -178,12 +178,15 @@ def _validate_inventory(inv: dict, errs: list[str]) -> None:
 
 
 def verify_evidence_chain(evidence: dict) -> tuple[bool, str]:
-    """Recompute the hash chain: chain_0 from the initial snapshot, then each
-    event's chain_sha256 = sha256(prev_chain + ':' + tick + ':' + kind + ':'
-    + state_sha256). Any mismatch invalidates the certificate."""
-    prev = evidence.get("initial_snapshot_sha256")
-    if not prev:
+    """Recompute the hash chain: chain_0 = sha256('chain0:' + initial snapshot
+    sha), then each event's chain_sha256 = sha256(prev_chain + ':' + tick + ':'
+    + kind + ':' + state_sha256). Any mismatch invalidates the certificate.
+    (The issuer's convention -- runner.run_closed_loop -- seeds chain0 exactly
+    this way; the verifier recomputes from the pinned initial snapshot.)"""
+    initial = evidence.get("initial_snapshot_sha256")
+    if not initial:
         return False, "evidence missing initial_snapshot_sha256"
+    prev = sha256_hex(f"chain0:{initial}".encode("utf-8"))
     for ev in evidence.get("events", []):
         want = sha256_hex(f"{prev}:{ev['tick']}:{ev['kind']}:{ev['state_sha256']}".encode("utf-8"))
         if want != ev["chain_sha256"]:
@@ -199,11 +202,12 @@ def _validate_evidence(ev: dict, errs: list[str]) -> None:
     if not isinstance(ev, dict):
         errs.append("replay_evidence must be an object")
         return
-    for k in ("initial_snapshot_sha256", "events", "periodic_stride",
-              "final_state_sha256", "monitors", "trajectory_sha256"):
-        if k not in ev:
-            errs.append(f"replay_evidence missing: {k}")
-    if errs:
+    missing = [k for k in ("initial_snapshot_sha256", "events", "periodic_stride",
+                           "final_state_sha256", "monitors", "trajectory_sha256")
+               if k not in ev]
+    for k in missing:
+        errs.append(f"replay_evidence missing: {k}")
+    if missing:
         return
     ok, detail = verify_evidence_chain(ev)
     if not ok:
@@ -229,11 +233,11 @@ def _validate_scope(scope: dict, errs: list[str]) -> None:
     if not isinstance(scope, dict):
         errs.append("qualification_scope must be an object")
         return
-    for k in ("bodies", "skills", "transitions", "ranges", "horizons", "bars",
-              "non_regression_margins"):
-        if k not in scope:
-            errs.append(f"qualification_scope missing: {k}")
-    if errs:
+    missing = [k for k in ("bodies", "skills", "transitions", "ranges", "horizons",
+                           "bars", "non_regression_margins") if k not in scope]
+    for k in missing:
+        errs.append(f"qualification_scope missing: {k}")
+    if missing:
         return
     missing_bars = [b for b in REQUIRED_SCOPE_BARS if b not in scope["bars"]]
     if missing_bars:

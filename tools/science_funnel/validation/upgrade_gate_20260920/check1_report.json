@@ -1,0 +1,41 @@
+{
+  "check": "CHECK_1_same_build_replay_and_checkpoint_resume",
+  "checkpoint_tick": 317,
+  "detail": "fresh-process replay IDENTICAL; checkpoint(317) resume BIT-IDENTICAL to the uninterrupted tail; structural refusals named: ['contact_warm_start_cache', 'rng_stream']; forced resumes detected: ['rng', 'warm']",
+  "f2_forced_resumes": {
+    "rng": {
+      "action_bytes_moved": false,
+      "differs_from_reference": true,
+      "missing_reported": [
+        "rng_stream"
+      ],
+      "n_diff_bytes": 0,
+      "state_hashes_moved": true
+    },
+    "warm": {
+      "action_bytes_moved": true,
+      "differs_from_reference": true,
+      "missing_reported": [
+        "contact_warm_start_cache"
+      ],
+      "n_diff_bytes": 2325,
+      "state_hashes_moved": true
+    }
+  },
+  "f2_structural_refusals": {
+    "contact_warm_start_cache": "REFUSED: restart snapshot INCOMPLETE -- missing registered inventory items: ['contact_warm_start_cache'] (only a complete snapshot may resume)",
+    "rng_stream": "REFUSED: restart snapshot INCOMPLETE -- missing registered inventory items: ['rng_stream'] (only a complete snapshot may resume)"
+  },
+  "horizon": 900,
+  "pass": true,
+  "replay_byte_identical": true,
+  "replay_sha256": [
+    "cd4944d99be1270951926be53859828a6b0aef21d32d6551f68e78d504ef6c7a",
+    "cd4944d99be1270951926be53859828a6b0aef21d32d6551f68e78d504ef6c7a"
+  ],
+  "resume_byte_identical": true,
+  "resume_head_sha256": "fbba8ed87764cb2fd54ba0516648c04c1fbfd6eaa07b96316d6a9b5783616a88",
+  "resume_tail_sha256": "53e5858189853d82317a6a5ef1086cc55898200664cd555c3244cf14f004a429",
+  "seed": 20260920,
+  "uninterrupted_tail_sha256": "53e5858189853d82317a6a5ef1086cc55898200664cd555c3244cf14f004a429"
+}

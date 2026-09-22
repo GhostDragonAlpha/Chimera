@@ -1,0 +1,10 @@
+{
+  "bundle_sha256": [
+    "f11c82ea3ec9fa2a5d2d598f66562782cd8753e5ec165bd11fc127a5a31e9b29",
+    "f11c82ea3ec9fa2a5d2d598f66562782cd8753e5ec165bd11fc127a5a31e9b29",
+    "f11c82ea3ec9fa2a5d2d598f66562782cd8753e5ec165bd11fc127a5a31e9b29"
+  ],
+  "detail": "three clean full-gate runs (corpus -> runs -> checks 1-3 -> issue -> deploy checks) produced BYTE-IDENTICAL canonical bundles -- no false positives on the unmodified artifacts",
+  "pass": true,
+  "suite": "upgrade_gate_20260920/clean_triple_v1"
+}
