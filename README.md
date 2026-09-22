@@ -24,6 +24,11 @@ runs offline from the pinned data already in the repository.
 
 The last development worktree was
 `E:\ChimeraWork\codex-graph-workflow-20260916`; verify it using the checks below.
+As of 2026-09-20 the integration of record ran in `E:\ChimeraWork\pass3-integ\repo`:
+master stands at the INTEGRATION PASS 5 receipt commit `5b2b7f89` — nine lane
+tips merged behind full verification across two passes (receipts
+`tools/science_funnel/validation/integration_pass4_20260920/receipt.json` and
+`tools/science_funnel/validation/integration_pass5_20260920/receipt.json`).
 The project home's separate dirty checkout may be older than GitHub master.
 Do not switch or reset that checkout to obtain the latest work.
 The graph handoff covers Z Code/GLM, resumable subagents, serial integration,
@@ -267,8 +272,10 @@ powershell -File tools/science_funnel/run_creature.ps1 -Anatomy -EnginePort 8124
 
 Choose free private ports. Read `doc.workflow.macaque_assembly` for source pins,
 units, geometry processing, native checks and the remaining anatomical work.
-This is a jointed anatomical reference; muscle forces and whole-body tissue layers
-remain unimplemented.
+This is a jointed anatomical reference; muscle forces and whole-body tissue
+layers remain unimplemented in this runnable — the derived muscle force books
+themselves landed 2026-09-20 and are banked as receipts (see Status below),
+not wired into this scene.
 
 ### Explore the creature–Earth boundary
 
@@ -333,5 +340,84 @@ flag the qualified authored world is untouched.
 Read `doc.workflow.coupled_native`, `work.creature.coupled_arm_contact` and
 `work.creature.coupled_arm_friction` for
 equations, checks, scope and next work. This reference has a fixed mount and two
-moving coordinates; grasping, whole-body balance, muscles and GPU
-integration remain unfinished.
+moving coordinates; grasping, whole-body balance, muscle-driven actuation in the
+engine and GPU integration remain unfinished — the muscle force books themselves
+are now derived and banked (see Status below).
+
+### Status: 2026-09-20 — the real body, the save-any-moment proof, the muscle books
+
+The 2026-09-20 consolidation, merged onto master by two integration passes
+behind full verification: nine lane tips, zero conflicts, every test suite at
+its receipt count (`tools/science_funnel/validation/integration_pass4_20260920/receipt.json`,
+`tools/science_funnel/validation/integration_pass5_20260920/receipt.json`).
+Plain words, each with its receipt:
+
+- **The playable slice now rides the real body.** The bounding-box stand-in is
+  retired (zero code sites); the tick body is the real CT-derived macaque
+  skeleton — 25 closed bones, 499,976 triangles (inside the importer's own
+  500,000-triangle cap), hip and knee pivots aligned to the pose chain within
+  0.058-0.072 mm against a 5 mm bound, and the boot is byte-clean three boots
+  running (`tools/science_funnel/validation/slice_real_body_20260920/receipt.json`).
+  The honest red, measured where it stands: the slice's own 10-second boot bar
+  is MISSED — first data at 135.73 s, and the cost is the engine's own mesh
+  import at this scale (237.67 s isolated parse, 130-240+ s across boots). The
+  importer-performance successor lane is named and NOT merged
+  (`integration_pass5_20260920/receipt.json`, evaluated_and_NOT_merged).
+- **The walk can be saved mid-stride and resumed perfectly.** The walker's
+  state was captured at tick 150 of the ship-fenced 302-tick walk and restored
+  into a fresh process: state hashes and all 21,888 action bytes identical to
+  the end, same refusal tick and class — with zero engine bytes changed
+  (`tools/science_funnel/validation/snapshot_apis_20260920/receipt.json`).
+  On top of it sits the compatibility-certificate gate — the law that a policy
+  trained on build N must never silently degrade on build N+1. The gate caught
+  4/4 injected incompatibilities, resumed bit-identically, and three clean runs
+  stayed byte-identical (`tools/science_funnel/validation/upgrade_gate_20260920/receipt.json`);
+  the first production-class certificate then issued end-to-end and rejected
+  every tampered re-issue, 3/3, while allowing the clean one
+  (`tools/science_funnel/validation/cert_dryrun_20260920/receipt.json`). The
+  forward gaps are named, not hidden: no ship-tree HTTP snapshot route, no
+  first-class engine build id, no actor-in-the-engine-loop coupling
+  (cert_dryrun_20260920, forward_gaps).
+- **The muscle books are derived, not placeholder.** Every muscle force is one
+  cited specific tension (0.30 MPa, never swept) x published macaque PCSA x
+  measured pennation; the 1 N placeholders are gone
+  (`tools/science_funnel/validation/k_fill_20260920/receipt.json`). Walking
+  demand: covered at the knee (1.60x) and MTP (1.65x), UNDER at the ankle
+  (plantar 0.7434x) — fired as pre-registered, then adjudicated as the
+  demand's own mass context (a 10.038 kg simulated animal vs the game's
+  6.15 kg animal); nothing was tuned (`tools/science_funnel/validation/ankle_adjudication_20260920/receipt.json`).
+  The hip moment arms are measured on the deposit's own geometry, retiring the
+  declared 25% straight-line caveat
+  (`tools/science_funnel/validation/hip_arms_20260920/receipt.json`), and the
+  five quarantined muscle rows stand — no lawful second source exists
+  (`tools/science_funnel/validation/hip_quarantine_review_20260920/receipt.json`).
+  Rear-up as static strength is CLOSED: NOT COVERED on both definitions and
+  both arm books (26.58 N·m on the record arms, 10.72 N·m measured on the
+  deposit's arms, vs the operator's 33.6 N·m class top) — the move belongs to
+  the trained-skill layer, whose certificate schema is frozen with a declared
+  `rear_up_v1` example carrying zero behavior claims
+  (`tools/science_funnel/validation/policy_interface_freeze_20260920`).
+- **The brain's eyes are frozen and honest.** The 80-field observation
+  interface is versioned and regenerates byte-identically; its own audit fired
+  a red — 21 state-aliased pairs on the live walk — and the fix landed at the
+  sensor path: delivering com_vel separated all 21 pairs (277 -> 302 distinct
+  observations) while the walk's physics bytes stayed identical
+  (`tools/science_funnel/validation/policy_interface_freeze_20260920`,
+  `tools/science_funnel/validation/obs_populate_20260920/receipt.json`).
+- **The cost truth is measured.** The CPU walk oracle misses the 300 Hz tick
+  budget by 6.7-13.7x even after byte-neutral removal of every peripheral; the
+  cost is the integration core itself — the model's FK evaluation inside RK4,
+  87.9% of the tick. No optimization was smuggled in: every candidate that
+  would change replay bytes is recorded as a rejected change request, and the
+  GPU-production split is named with its lane not yet landed
+  (`tools/science_funnel/validation/tick_cost_attribution_20260920/receipt_tick_cost.json`;
+  `integration_pass5_20260920/receipt.json`).
+- **A real scan intake refused to guess.** The Vanhoof forearm tables
+  downloaded and sha-pinned; the calibration STOP gate then fired (median
+  glyph confidence far below its floor on the best faithful tier) and ZERO
+  records were admitted — the refusal taxonomy worked in a domain it cannot
+  read (`tools/science_funnel/validation/vanhoof_intake_20260920/receipt.json`).
+
+The ship-goal status these moves touch is kept in
+[docs/THE_SHIP_GOAL.md](docs/THE_SHIP_GOAL.md) — its dated 2026-09-20 section
+holds the lane-by-lane verdicts, and the open reds are stated there.
