@@ -106,4 +106,38 @@ under test.
   AFTER the run; the change touches a report string only — no constant, floor,
   tolerance, tier, or verdict changed (measured numbers identical pre/post edit:
   146/218 = 0.6697).
+- funnel admission (`admit_law.py` -> admission.json + records_vanhoof_s2.json,
+  commit bae5ef0a, 3-run byte-identical): the prereg's admission_tiers_original
+  executed — **438 cells ADMITTED** (the 146 law-PASS row-triples) as
+  batch.property.measurement v1 drafts with full provenance (tiff sha + panel +
+  both-pass crop shas + both-pass printed values + legibility + row_closure_law
+  verdict); **336 cells refused, named**: 216 row_closure_violation (168
+  moderate_register_unrounded / 48 large_per_row_structure), 105 source-marker
+  cells (45 marker_absent, 42 marker_absent_cfr, 6 marker_crossref_APB,
+  12 marker_crossref_FDP), 15 merged-covered. Count identity closes:
+  **774 = 438 + 336, zero silent drops**. admit_vanhoof.admit not modified, not
+  forced (7-field require vs the measured 3-field manifest — the intake's
+  F-MANIFEST named branch); the manifest registered honestly (3-field source)
+  in admission.json. Graph apply / controller admission NOT run from this lane
+  (shared state; the funnel's proposal-not-claim mode is the honest ceiling);
+  training_gate named not-applicable (it gates trainer targets, not batches).
+- cross-specimen summary (`cross_specimen.py` -> cross_specimen_summary.json +
+  .csv, 3-run byte-identical): 35 source muscle keys x 3 fields x {n, mean, min,
+  max} across Mm1-Mm7, all 654 TENTATIVE cells summarized (admitted and refused
+  alike — the extraction the forearm/hand books consume), law verdicts riding
+  along as conditions. Highlights: FDP n=7 mass 30.43 g (16.3-42.9) FL 44.23 mm
+  (38.1-54.2); FDS n=7 mass 11.13 g (6.8-14.0) FL 33.46 mm (25.5-48.3); Bb n=4
+  (upper-arm group only in panel 1) mass 40.85 g (34.1-45.8) FL 85.4 mm
+  (67.5-118.3); APB n=7 mass 0.87 g (0.4-1.4); conn. FDS-FDP n=3.
+- lane tests: `test_lane.py` 9/9 OK (pins, constant consistency, law agreement,
+  count identity, no-guess, provenance completeness, replay digest, mutation
+  probe, summary closure).
+- falsifier verdicts (receipt_final.json): **F1 FIRED** (66.97% << 90% — the
+  headline statement is measured false, reported); F2/F3/F5 HELD; F4 GREEN;
+  P-CONST true at band edge, P-RATE measured false, P-RESIDUAL true (structured,
+  not uniform). Successor scope named: a print-register error model derived from
+  the paper's own declared precision (analytic propagation — a new instrument,
+  preregistered, never a widened tolerance), or consumption of the 438
+  law-verified cells with their law-verdict conditions as-is. The constant may
+  never again be chosen against a pass rate.
 
