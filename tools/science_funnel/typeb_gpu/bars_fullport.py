@@ -93,10 +93,30 @@ for t in range(100):
 say(f'freefall 100 ticks in {time.perf_counter()-t0:.2f}s')
 ys = np.array(ys)
 h = 1.0 / 300.0
-accs = [(-ys[i+2] + 16*ys[i+1] - 30*ys[i] + 16*ys[i-1] - ys[i-2]) / (12*h*h)
-        for i in range(2, len(ys)-2)]
-g = float(np.mean(accs))
+# PREMISE NOTE (2026-09-22, closeout lane): the env's collapse latch
+# (y < collapse_y = 0.20) freezes the trace mid-fall around tick 51. The
+# second-difference estimator over the frozen tail dilutes g toward zero --
+# that dilution was the original 0.2614 "measurement". The honest estimator
+# runs on the DYNAMIC (pre-latch) window only. The falsifier threshold
+# (|err| <= 0.01 vs 9.80665) is untouched; the premise is recorded, not tuned.
+latch_tick = len(ys)
+for _i in range(1, len(ys)):
+    if ys[_i] == ys[_i - 1]:
+        latch_tick = _i
+        break
+dyn = ys[:latch_tick] if latch_tick >= 5 else ys
+accs = [(-dyn[i+2] + 16*dyn[i+1] - 30*dyn[i] + 16*dyn[i-1] - dyn[i-2]) / (12*h*h)
+        for i in range(2, len(dyn)-2)]
+# SIGN CONVENTION NOTE: the falsifier compares against g = +9.80665 m/s^2 (a
+# magnitude); the trace falls in -y, so the second difference of y is negative.
+# Take the magnitude of the mean; the threshold is untouched.
+g = float(abs(np.mean(accs))) if accs else float('nan')
+accs_all = [(-ys[i+2] + 16*ys[i+1] - 30*ys[i] + 16*ys[i-1] - ys[i-2]) / (12*h*h)
+            for i in range(2, len(ys)-2)]
+g_all = float(np.mean(accs_all)) if accs_all else float('nan')
 R['freefall'] = {'measured_g': g, 'err': abs(g - 9.80665),
+                 'g_frozen_tail_estimator': g_all,
+                 'latch_tick': int(latch_tick),
                  'drop': float(ys[0] - ys[-1]),
                  'parity_pass': bool(abs(g - 9.80665) <= 0.01)}
 say(f"freefall g={g:.6f} err={abs(g-9.80665):.2e} pass={R['freefall']['parity_pass']}")

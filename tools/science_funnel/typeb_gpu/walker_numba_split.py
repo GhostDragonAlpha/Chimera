@@ -6601,9 +6601,6 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
 
 
 
-    print('K book', e)
-    
-
     a_rc[e] = rc
 
     rc = int32(0)

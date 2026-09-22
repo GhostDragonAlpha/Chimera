@@ -34,6 +34,7 @@ int main() {
     f = fopen("host_shim/csti_nom.txt", "r"); for (int i = 0; i < 20; ++i) fscanf(f, "%d", &csti[i]); fclose(f);
     if (getenv("HL_NOCONTACT")) csti[1] = 0;
     if (getenv("HL_NOPOWER")) csti[2] = 0;
+    if (getenv("HL_NOGAIT")) csti[3] = 0;
     if (getenv("HL_SETTLE")) csti[0] = atoi(getenv("HL_SETTLE"));
     f = fopen("host_shim/q.txt", "r"); for (int i = 0; i < 18; ++i) fscanf(f, "%lf", &q0a[i]); fclose(f);
     f = fopen("host_shim/v.txt", "r"); for (int i = 0; i < 18; ++i) fscanf(f, "%lf", &v0a[i]); fclose(f);

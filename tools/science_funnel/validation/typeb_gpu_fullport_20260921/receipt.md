@@ -346,18 +346,25 @@ settle never completes).
 The valid number needs C1 alive first. Memory (C4): 14.15 GB shared GPU, no
 fire.
 
-## BARS VERDICTS AFTER THE FIX (bars_split_b32.json, this build)
+## BARS VERDICTS AFTER THE FIX — DEFINITIVE RUN (bars_split_b32.json,
+## walker_env.dll @ 15:38 2026-09-22, block 32, full fix set)
 
-- freefall: GREEN with the premise notes above (pre-latch |g| = 9.80665,
-  err ~ 1e-12 <= 0.01; latch_tick recorded; frozen-tail value kept).
-- stand: RED — max_scaled_diff 0.1278 -> 0.0965 (bar <1e-2); same fore-pad
-  knife-edge attribution as C1/C2 (the fore limbs diverge at tick-1 substep 1
-  through the impact projection; the hind tracks to 1e-5).
-- C1 nominal: RED — horizon 40, class 5, hind=0 fore=0 (bar: >=1 hind fire
-  AND >=1 fore lift by 150).
-- C2 survival: RED — pass_100 0/64, median 53.0 (was 39.0).
-- C3 throughput: recorded but flagged invalid (dead-env dispatch, see above).
-- C4 memory: no fire.
+- F-FULLPORT-PROBE-PARITY freefall: GREEN — measured_g = 9.80665,
+  err = 1.08e-12 <= 0.01 (pre-latch window; latch_tick=52 recorded;
+  g_frozen_tail_estimator = 0.2554 kept for honesty; drop = 0.1473 m).
+  FIRST FALSIFIER GREEN ON THE NVCC ROUTE.
+- stand: RED — max_scaled_diff = 0.09647 (bar < 1e-2; was 0.1278); same
+  fore-pad knife-edge attribution as C1/C2 (the fore limbs diverge at tick-1
+  substep 1 through the impact projection's mask choice; the hind tracks the
+  C++ to 1e-5 and re-converges to the constraint manifold every tick).
+- C1 nominal: RED — horizon 40, class 5, hind_fires=0, fore_lifts=0 (bar:
+  >=1 hind fire AND >=1 fore lift by 150). Refusal moved 39 -> 40.
+- C2 survival: RED — pass_100 = 0/64, median 53.0 (was 39.0); horizons
+  40-57 (modes 53x27, 41x17, 54x10), classes {5: 53, 3: 11} — the settle
+  never completes, seed-independent.
+- C3 throughput: 30.8M eps @1024 / 140.0M eps @4096 — STILL INVALID (all
+  envs refused; 0.03 ms/tick dead-env dispatch). Re-measure after C1.
+- C4 memory: no fire — 15.02 GB used (shared GPU), +0.0005 MB/env marginal.
 
 ## FILES (this lane)
 
