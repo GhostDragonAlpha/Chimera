@@ -86,14 +86,51 @@ def wait_health(base: str, timeout: float = 90.0) -> None:
 def wait_settled(base: str, timeout: float = 120.0) -> dict:
     t0 = time.time()
     last = None
+    st = {}
     while time.time() - t0 < timeout:
         st = json.loads(http_get(base, "/api/status"))["engine_state"]
+        if "root_vy" not in st:      # the slice's honest absence while its
+            last = None              # engine wedges/restarts: keep waiting
+            time.sleep(0.5)
+            continue
         vy, y = abs(float(st["root_vy"])), float(st["root_y"])
         if vy < 1e-5 and last is not None and abs(y - last) < 1e-9:
             return st
         last = y
         time.sleep(0.4)
     return st
+
+
+def wait_boot_settled(base: str, timeout: float = 240.0) -> None:
+    """wait for the slice's own scene.settled flag (boot-complete)."""
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        try:
+            st = json.loads(http_get(base, "/api/status"))
+            if st.get("scene") and st["scene"].get("settled"):
+                return
+        except (OSError, KeyError):
+            pass
+        time.sleep(0.5)
+    raise RuntimeError(f"boot at {base} never reached scene.settled")
+
+
+def wait_engine_alive(base: str, timeout: float = 90.0) -> None:
+    """MEASURED GAP (recorded in the receipt): the engine's single-thread
+    HTTP worker can wedge for seconds on a half-open connection after a
+    trace-proxy teardown (no per-connection recv deadline) -- the slice
+    answers /api/status with its honest {'restarting': true}. Every run
+    gates on a live engine state before it starts."""
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        try:
+            st = json.loads(http_get(base, "/api/status"))["engine_state"]
+            if "root_vy" in st:
+                return
+        except (OSError, KeyError):
+            pass
+        time.sleep(0.5)
+    raise RuntimeError(f"engine at {base} never came back to life")
 
 
 def paced_puller(base: str, fmt: str, rate: float, seconds: float,
@@ -267,10 +304,23 @@ def main() -> int:
         # ── BROWSER RUNS ──────────────────────────────────────────────
         from playwright.sync_api import sync_playwright
         with sync_playwright() as pw:
-            browser = pw.chromium.launch(channel="chrome", headless=True)
+            browser = pw.chromium.launch(headless=True, args=["--disable-background-timer-throttling", "--disable-renderer-backgrounding", "--disable-backgrounding-occluded-windows"])  # bundled chromium: the system chrome (v153) broke loopback connects mid-session 2026-09-22 ~16:00; recorded in the receipt
             for (name, scen, rate, fmt, trace, jhead) in RUNS:
                 if only is not None and name not in only and "browser" not in only:
                     continue
+                wait_engine_alive(baseA)
+                wait_engine_alive(baseB)
+                if scen == "FALL":
+                    # each FALL run boots a byte-clean world first. The
+                    # readiness signal is the slice's OWN scene.settled flag
+                    # (set by the boot's convergence waiter) -- /api/health
+                    # lies during a boot (the previous scene_spec still
+                    # answers), and a trigger fired into a mid-swap world is
+                    # swallowed (measured: R06 of the first redo).
+                    http_post(baseA, "/api/restart")
+                    http_post(baseB, "/api/restart")
+                    wait_boot_settled(baseA)
+                    wait_boot_settled(baseB)
                 wait_settled(baseA)
                 wait_settled(baseB)
                 # trace proxy in front of A (the page's whole origin rides it)
@@ -315,7 +365,13 @@ def main() -> int:
                 page = browser.new_page(viewport={"width": 960, "height": 540})
                 url = (f"{base_page}/?thin=1&rate={rate}&fmt={fmt}"
                        f"&pilot=1&jhead={jhead}")
-                page.goto(url)
+                # a streaming page never 'loads' cleanly: the snapshot
+                # chain keeps one fetch in flight, so load/DCL starve.
+                # 'commit' = navigation delivered the document; readiness is
+                # the thin client's own state hook.
+                page.goto(url, wait_until="commit", timeout=60000)
+                page.wait_for_function("window.__thin_state !== undefined",
+                                       timeout=60000)
                 page.wait_for_timeout(2500)
                 st = page.evaluate("window.__thin_state()")
                 if st["achieved"] <= 0:
@@ -327,6 +383,26 @@ def main() -> int:
                 if scen == "FALL":
                     http_post(baseA, "/api/drop_test")
                     http_post(baseB, "/api/drop_test")
+                    # verify the fall STARTED (the engine wedge could swallow
+                    # the trigger silently -- measured in this lane): the
+                    # page's own snapshot stream must show root_y leave rest
+                    fell = False
+                    for attempt in (1, 2):
+                        if attempt == 2:
+                            http_post(baseA, "/api/drop_test")   # retry the trigger
+                            http_post(baseB, "/api/drop_test")
+                        for _ in range(30):
+                            time.sleep(0.5)
+                            snap = json.loads(http_get(baseA, "/api/status"))["engine_state"]
+                            if "root_y" in snap and (
+                                    float(snap["root_y"]) > 0.4 or float(snap["root_y"]) < 0.2):
+                                fell = True
+                                break
+                        if fell:
+                            break
+                    if not fell:
+                        raise RuntimeError(f"{name}: the fall never started "
+                                           f"(engine swallowed the trigger twice)")
                     page.wait_for_timeout(24000)     # launch+descent+landing
                     while True:
                         ft = json.loads(http_get(baseA, "/api/status"))["fall_test"]
@@ -345,10 +421,23 @@ def main() -> int:
                     http_post(baseA, "/api/stop")
                     http_post(baseB, "/api/stop")
                 elif scen == "PRESS":
-                    page.wait_for_timeout(2000)
-                    page.keyboard.press(" ")
-                    press_info = {"pressed_wall": time.time()}
-                    page.wait_for_timeout(6000)
+                    # EVENT-LATENCY probe. The engine's off-body refusal
+                    # ("the point is not on the body") rejects picked hits on
+                    # the stand-in capsule -- the press is unusable as the
+                    # probe; the carry start is the same shape of event (a
+                    # discrete scene change with an authoritative ts), applied
+                    # server-side. Recorded as a substitution in the receipt.
+                    http_post(baseA, "/api/carry_reset")
+                    http_post(baseB, "/api/carry_reset")
+                    time.sleep(0.3)
+                    page.wait_for_timeout(1500)
+                    http_post(baseA, "/api/send")
+                    http_post(baseB, "/api/send")
+                    press_info = {"event": "carry_start",
+                                  "sent_wall": time.time()}
+                    page.wait_for_timeout(8000)
+                    http_post(baseA, "/api/stop")
+                    http_post(baseB, "/api/stop")
                 dump = json.loads(page.evaluate("window.__pilot_dump()"))
                 shot = page.screenshot(path=str(out / f"page_{name}.png"))
                 del shot

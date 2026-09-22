@@ -43,7 +43,12 @@ async def pump(reader: asyncio.StreamReader, writer: asyncio.StreamWriter,
                stop: asyncio.Event) -> None:
     try:
         while not stop.is_set():
-            chunk = await asyncio.wait_for(reader.read(65536), timeout=0.5)
+            try:
+                chunk = await asyncio.wait_for(reader.read(65536), timeout=0.5)
+            except asyncio.TimeoutError:
+                continue        # idle keep-alive socket: NOT dead -- keep the
+                # connection pooled (measured: closing it killed the page's
+                # ghost fetch and with it the whole render loop)
             if not chunk:
                 break
             d = delay_s

@@ -17,6 +17,7 @@ Usage: python analyze.py --dir .tmp/suite [--runs name,name] [--stills]
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import statistics
 from pathlib import Path
@@ -119,25 +120,54 @@ def main() -> int:
                         "max_ms": round(dts[-1], 1),
                         "long_frames_gt25ms": long_frames,
                         "trace": cfg["trace"], "rate": cfg["rate_nominal"]}
-        if cfg["scenario"] == "PRESS" and cfg.get("press"):
-            # ── press-event visible latency (server-timeline arithmetic) ──
-            snaps = dump["snaps"]
-            ev = next((s for s in snaps if s.get("dimple", 0) > 1e-4), None)
-            if ev is not None:
-                nxt = snaps[snaps.index(ev) + 1] if snaps.index(ev) + 1 < len(snaps) else None
-                crossings = [f for f in raf if f["r"] and f["r"] >= ev["ts"]]
-                if crossings:
-                    t_render = crossings[0]["t"]
-                    w_e = ev["arrival"] - (snaps[snaps.index(ev)]["ts"] - ev["ts"]) / 1000.0
-                    latency = t_render - ev["arrival"] + \
-                        ((nxt["ts"] - ev["ts"]) / 1000.0 if nxt else 0)
-                    timing[name]["press"] = {
-                        "ts_event_us": ev["ts"],
-                        "age_at_first_render_ms": (crossings[0]["r"] - ev["ts"]) / 1000.0,
-                        "latency_est_ms": round(latency, 2),
-                        "d_ms": 50.0}
+        if cfg["scenario"] in ("PRESS", "CARRY") and (cfg.get("press") or cfg["scenario"] == "CARRY"):
+            # EVENT visible latency (carry_start; the press was refused by
+            # the engine's off-body guard on the stand-in capsule -- recorded
+            # in the receipt as a substitution)
+            # ts_e: the twin truth's own first-motion frame (B carries the
+            # same event; machine-clock ts is shared). Visible at: the first
+            # client render point whose rendered frame departs rest.
+            import base64 as _b64
+            import numpy as _np
+            frames = load_truth_frames(d / f"truth_{name}.bin")   # own truth; the visual block loads its own later
+            def _cent(arr_b64):
+                f32 = _np.frombuffer(_b64.b64decode(arr_b64), dtype=_np.float32)
+                return float(f32.reshape(-1, 9)[:, 0].mean())
+            def _tcent(ts):
+                t = rr.truth_at(frames, ts)
+                return None if t is None else float(_np.asarray(t["pos"]).reshape(-1, 3)[:, 0].mean())
+            smp = dump.get("samples", [])
+            if smp:
+                base_c = _cent(smp[0]["frame"])
+                vis = next((x for x in smp if abs(_cent(x["frame"]) - base_c) > 0.002), None)
+                te = None
+                lo_c = _tcent(smp[0]["r"])
+                if lo_c is not None:
+                    for f in frames:
+                        c = float(_np.asarray(f["pos"]).reshape(-1, 3)[:, 0].mean())
+                        if abs(c - lo_c) > 0.002:
+                            te = f["ts"]
+                            break
+                if vis is not None:
+                    # the display age of the GOVERNING snapshot that first
+                    # showed the event (authoritative A.ts), plus the
+                    # detection bound (one snapshot interval, since the event
+                    # could have happened any time inside it)
+                    age = (vis["r"] - vis["a"]) / 1000.0
+                    prev = max((x["a"] for x in smp if x["a"] < vis["a"]),
+                               default=vis["a"])
+                    timing[name]["event_latency"] = {
+                        "event": "carry_start",
+                        "ts_first_motion_snapshot_us": int(vis["a"]),
+                        "age_at_first_render_ms": round(age, 2),
+                        "detection_bound_one_interval_ms":
+                            round((vis["a"] - prev) / 1000.0, 2),
+                        "d_ms": (1.5 * 1000.0 / cfg["rate_nominal"])
+                                + cfg.get("jhead_ms", 0)}
+                    if te is not None:
+                        timing[name]["event_latency"]["twin_onset_offset_ms"] =                             round((vis["r"] - te) / 1000.0, 2)
         if cfg["scenario"] == "PRESS":
-            continue     # post-press truth has no dimple (press is A-only)
+            continue     # the event run contributes latency, not F2 visuals
 
         # ── visual error via the replay instrument ────────────────────
         truth_path = d / f"truth_{name}.bin"
@@ -171,28 +201,40 @@ def main() -> int:
                              {i: ph for i, ph in enumerate(pairs_meta)}, still_idx)
         if not data["pairs"]:
             continue
-        res = rr.run_replay(data)
+        # THE METRIC INSTRUMENT: the numpy software rasterizer (the page's own
+        # shader math; browser-free after the environment broke both browsers'
+        # usable paths -- recorded in the receipt as an instrument substitution)
+        import raster as _raster
+        import base64 as _b64
+        vp = _raster.camera_vp(data["camera"], data["target"])
+        topo_idx = np.frombuffer(topo, dtype=np.uint32, offset=4)
         per_phase: dict = {}
         mads = []
-        for p in res["pairs"]:
-            ph = p["phase"] or "?"
-            per_phase.setdefault(ph, []).append(p["mad"])
-            mads.append(p["mad"])
+        still_frames = {}
+        for pr in data["pairs"]:
+            fa = np.frombuffer(base64.b64decode(pr["a"]), dtype=np.float32).reshape(-1, 9)
+            fb = np.frombuffer(base64.b64decode(pr["b"]), dtype=np.float32).reshape(-1, 9)
+            ia = _raster.raster_frame(fa, vp, topo_idx)
+            ib = _raster.raster_frame(fb, vp, topo_idx)
+            m = _raster.mad_frames(ia, ib)
+            ph = pr["phase"] or "?"
+            per_phase.setdefault(ph, []).append(m["mad"])
+            mads.append(m["mad"])
+            still_frames[pr["i"]] = (ia, ib)
+        res = {"pairs": [{"i": pr["i"], "t": pr["t"], "phase": pr["phase"],
+                          "r": pr["r"], "mad": mads[j], "max": 0}
+                         for j, pr in enumerate(data["pairs"])]}
         agg = {ph: {"n": len(v), "median_mad": round(statistics.median(v), 3),
                     "p95_mad": round(sorted(v)[int(0.95 * (len(v) - 1))], 3),
                     "max_mad": round(max(v), 3)} for ph, v in per_phase.items()}
         # name the worst sample's phase + save its still
         worst_i = max(range(len(mads)), key=lambda i: mads[i])
         worst_phase = res["pairs"][worst_i]["phase"]
-        if a.stills:
-            worst_data = rr.build_data(
-                dump, frames, topo, -shift,
-                {i: ph for i, ph in enumerate(pairs_meta)}, [worst_i])
-            res_w = rr.run_replay(worst_data)
-            for st in res_w["stills"]:
-                import base64
-                (d / f"still_{name}_worst_{worst_phase}.png").write_bytes(
-                    base64.b64decode(st["pngB64"]))
+        if a.stills and worst_i in still_frames:
+            ia, ib = still_frames[worst_i]
+            from PIL import Image
+            side = np.concatenate([ia, ib], axis=1)
+            Image.fromarray(side).save(d / f"still_{name}_worst_{worst_phase}.png")
         visual[name] = {"shift_us": shift, "shift_rmse_m": round(rmse, 9),
                         "peak_root_y": round(peak, 3),
                         "per_phase": agg,

@@ -362,7 +362,9 @@ document.getElementById('btn-save').onclick=async()=>{
     if(s.marker)MARKER=s.marker;
   }catch(e){}
   buildWorldDecor();
-  await loadGhost();
+  try{ await loadGhost(); }catch(e){ /* the declared overlay is optional:
+      its loss must never kill the render loop (measured through the trace
+      proxy: one failed 2 MB fetch blacked the page) */ }
   await pollVerts();
   draw();
 })();
@@ -495,7 +497,8 @@ function decodeSnapshot(buf, arrival){
       nrm[3*i]=f16(u[6*i+3]); nrm[3*i+1]=f16(u[6*i+4]); nrm[3*i+2]=f16(u[6*i+5]);
     }
   } else if(fmtc === 3){                // Z12 -> POS12 after inflate (async)
-    return {inflatable: true, buf, arrival};
+    return {inflatable: true, buf, arrival, ts, ticks, root_y, root_vy,
+            P_l, P_u, dimple, gap, n, bytes: buf.byteLength};
   } else if(fmtc === 4){                // DELTA: C3 chain frame
     if(p[0] !== 0xD1) return null;
     const flags = p[1];
@@ -543,13 +546,22 @@ async function pullSnapshot(){
   try{
     const url = P.fmt === 'DELTA'
       ? '/api/snapshot?fmt=DELTA' + (needKey ? '&key=1' : '') : '/api/snapshot?fmt=' + P.fmt;
-    const resp = await fetch(url);
-    const buf = await resp.arrayBuffer();
+    // a hung transport must never kill the stream: abort well past the
+    // playout horizon, count it, and let the next pull proceed
+    const ctrl = new AbortController();
+    const abort_t = setTimeout(() => ctrl.abort(), 5 * interval_ms() + 2000);
+    let resp, buf;
+    try{
+      resp = await fetch(url, {signal: ctrl.signal});
+      buf = await resp.arrayBuffer();
+    } finally { clearTimeout(abort_t); }
     const arrival = performance.now();
     if(P.fmt === 'DELTA') needKey = false;
     let s = decodeSnapshot(buf, arrival);
     if(s && s.inflatable) s = await inflateZ12(s);
     if(!s) return;
+    if(pullsPaused) return;      // an in-flight pull must not poison a
+                                 // paused buffer (the F3 injection path)
     if(!colRef && s.col && P.fmt !== 'FULL36') colRef = s.col;
     snaps.push(s);
     noteOffset(s.ts, arrival);
@@ -754,9 +766,11 @@ window.__thin_canned = function(list){
   snaps = list.map(c => ({ts: c.ts, ticks: c.ticks || 0, root_y: c.root_y,
     root_vy: c.root_vy || 0, P_l: c.P_l, P_u: c.P_u, dimple: c.dimple || 0,
     gap: c.gap || 0, n: c.pos.length / 3, pos: Float32Array.from(c.pos),
-    nrm: null, col: colRef, arrival: performance.now(), bytes: 0})
-  ).map(s => { if(!s.nrm) s.nrm = recomputeNormals(s.pos, s.n); if(!s.col) s.col = colRef; return s; });
+    nrm: null, col: null, arrival: performance.now(), bytes: 0})
+  ).map(s => { if(!s.nrm) s.nrm = recomputeNormals(s.pos, s.n);
+    if(!s.col){ s.col = new Float32Array(s.n * 3).fill(0.55); } return s; });
 };
+window.__thin_pressCenter = function(){ return pressAtCenter(); };
 window.__thin_state = function(){
   return {mode, rate: P.rate, achieved: achR, snaps_ts: snaps.map(s => s.ts),
           underruns, panel: {
@@ -769,9 +783,10 @@ window.__thin_state = function(){
 // ── wrap the render loop: thin frame first, then the unchanged renderer ───
 const _sliceDraw = draw;
 draw = function(){
-  thinFrame();
+  try{ thinFrame(); }catch(e){ if(window.__thin_errs) window.__thin_errs.push(String(e)); }
   _sliceDraw();
 };
+window.__thin_errs = [];
 
 // ── init: topology (+ a color reference when the fmt drops colors) ────────
 (async function thinInit(){

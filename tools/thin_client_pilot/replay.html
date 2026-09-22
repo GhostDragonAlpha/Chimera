@@ -16,7 +16,9 @@
    Loads /data.json, draws each pair, computes MAD on readback pixels, saves
    named stills, POSTs everything to /result. */
 const cv = document.getElementById('gl');
-const gl = cv.getContext('webgl2', {antialias: false});
+const gl = cv.getContext('webgl2', {antialias: false, preserveDrawingBuffer: true});
+// preserveDrawingBuffer: readPixels must see the drawn frame (the bundled
+// headless compositor clears between tasks; measured as all-zero MADs)
 function sh(t, src){const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);
   if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw gl.getShaderInfoLog(s);return s;}
 function prog(vs,fs){const p=gl.createProgram();gl.attachShader(p,sh(gl.VERTEX_SHADER,vs));

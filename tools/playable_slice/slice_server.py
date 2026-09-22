@@ -197,7 +197,9 @@ class World:
         # verts arrived before state: ts postdates the geometry by gap_us.
         # A second smaller ambiguity (the verts pull's own transit) is bounded
         # by gap_us too -- both live inside one measured number.
-        if fmt == "POS12":
+        if fmt == "DELTA":
+            payload = vraw           # the C3 chain frame, intact (16 B head)
+        elif fmt == "POS12":
             payload = bytearray(12 * n)
             for i in range(n):
                 payload[12 * i:12 * i + 12] = vraw[4 + 36 * i:4 + 36 * i + 12]

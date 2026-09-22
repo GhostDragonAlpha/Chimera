@@ -18,7 +18,7 @@ def main() -> int:
     from playwright.sync_api import sync_playwright
 
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(channel="chrome", headless=True)
+        browser = pw.chromium.launch(headless=True, args=["--disable-background-timer-throttling", "--disable-renderer-backgrounding", "--disable-backgrounding-occluded-windows"])  # bundled: system chrome broke loopback mid-session
         page = browser.new_page(viewport={"width": 960, "height": 540})
         errors = []
         page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
