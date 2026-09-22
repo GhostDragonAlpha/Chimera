@@ -273,6 +273,15 @@ class World:
             self.mock_carry["active"] = False
             return {"ok": True}
 
+    def carry_reset(self) -> dict:
+        """MOCK[mock_carry] home: the slide's persisted XY offset returns to
+        zero (stop does not reset it -- arrival parks the body at the marker).
+        The pilot's CARRY scenario needs a fresh slide from the start pose."""
+        with self.lock:
+            self.mock_carry = {"active": False, "x": 0.0, "z": 0.0,
+                               "arrived": False}
+            return {"ok": True}
+
     def drop_test(self) -> dict:
         """THE FALL TEST -- REALITY. The engine's own root law, run live:
         gravity off re-seats the authored rest; gravity on integrates
@@ -459,6 +468,8 @@ class Handler(BaseHTTPRequestHandler):
             self._json(WORLD.send())
         elif p == "/api/stop":
             self._json(WORLD.stop())
+        elif p == "/api/carry_reset":
+            self._json(WORLD.carry_reset())
         elif p == "/api/press":
             self._json(WORLD.press(body))
         elif p == "/api/drop_test":

@@ -424,7 +424,15 @@ function serverNowUs(now_ms){
   if(best === -Infinity) return 0;
   return best + now_ms * 1000;
 }
-const pilot = {raf: [], snaps: [], on: P.pilot};
+const pilot = {raf: [], snaps: [], samples: [], on: P.pilot};
+let pilotFrameNo = 0;
+function b64(f32){ // base64 of a Float32Array (the sampled-frame transport)
+  const u8 = new Uint8Array(f32.buffer, f32.byteOffset, f32.byteLength);
+  let s = '';
+  for(let i = 0; i < u8.length; i += 0x8000)
+    s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+  return btoa(s);
+}
 
 // ── f16 (IEEE 754 half) — manual decode, no browser-version dependence ────
 function f16(u){
@@ -551,7 +559,8 @@ async function pullSnapshot(){
     if(now - bytesWinT0 >= 1000){ bps = bytesAcc * 1000 / (now - bytesWinT0); bytesAcc = 0; bytesWinT0 = now; }
     achN++;
     if(now - achT0 >= 2000){ achR = achN * 1000 / (now - achT0); achN = 0; achT0 = now; }
-    if(pilot.on) pilot.snaps.push({ts: s.ts, arrival, bytes: s.bytes, gap: s.gap, fmt: P.fmt});
+    if(pilot.on) pilot.snaps.push({ts: s.ts, arrival, bytes: s.bytes, gap: s.gap,
+                                   fmt: P.fmt, dimple: s.dimple, root_y: s.root_y});
   }catch(e){ pullErrs++; }
 }
 function schedulePull(){
@@ -633,6 +642,15 @@ function thinFrame(){
     pilot.raf.push({t: now, r: r_us, ur: underrun ? 1 : 0, A: A.ts, B: B ? B.ts : 0,
                     a: +alpha.toFixed(4), cam: [cam.yaw, cam.pit, cam.dist]});
     if(pilot.raf.length > 36000) pilot.raf.splice(0, 6000);
+    // sampled RENDERED frames (the offline pixel metric renders THESE through
+    // the page's own shader text against the twin truth at the same r):
+    if((pilotFrameNo++ % 10) === 0){
+      pilot.samples.push({t: now, r: r_us, a: A.ts, b: B ? B.ts : 0,
+        alpha: +alpha.toFixed(4), ur: underrun ? 1 : 0, n,
+        root_y: A.root_y, root_vy: A.root_vy, dimple: A.dimple,
+        frame: b64(work9.f32)});
+      if(pilot.samples.length > 4000) pilot.samples.splice(0, 1000);
+    }
   }
 }
 
@@ -725,7 +743,11 @@ window.addEventListener('keydown', (e) => {
 window.__pilot_dump = function(){
   return JSON.stringify({params: P, jhead_ms, mode, underruns, underrun_ms,
     pullErrs, achieved_hz: achR, bps, cam: [cam.yaw, cam.pit, cam.dist],
-    raf: pilot.raf, snaps: pilot.snaps});
+    raf: pilot.raf, snaps: pilot.snaps, samples: pilot.samples});
+};
+window.__pilot_samples_only = function(){
+  return JSON.stringify({samples: pilot.samples, underruns, underrun_ms,
+    achieved_hz: achR, mode});
 };
 window.__thin_canned = function(list){
   pullsPaused = true; clearTimeout(pullTimer);
