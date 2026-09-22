@@ -1,0 +1,16 @@
+{
+ "schema": "chimera.realbody_movie_20260920.boot_check.v1",
+ "port": 58344,
+ "engine_exe": "E:\\ChimeraWork\\rbmovie-agent\\.tmp\\slice_build\\Release\\chimera_engine.exe",
+ "t_server_up": 2.05,
+ "t_world_up": 2.05,
+ "t_first_verts": 2.1,
+ "first_verts_count": 249743,
+ "t_settled": 17.0,
+ "import_route": "cache",
+ "import_bytes": 8997312,
+ "scene_sha256": "bc9033bfc6c54db0",
+ "start_root_y": 0.124853,
+ "pass": true,
+ "claim_under_test": "full boot ~2.1 s through the cached path (landed mesh-parse lane)"
+}
