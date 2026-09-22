@@ -1,0 +1,24 @@
+{
+ "schema": "chimera.mesh_parse.v1",
+ "lane": "lane/mesh-parse-20260920",
+ "base_commit": "9a341b5c",
+ "date": "2026-09-20",
+ "agent_trailer": "Agent: meshparse",
+ "theory": "the 237.67 s /mesh_import parse cost is attributable and removable to the slice's own 10 s launch bar by an admission-time preprocessed cache in a format the engine's import contract already accepts ('G' GLB beside 'O' OBJ), import semantics preserved exactly; the ghost's 7.92 s text build gets the same cache class",
+ "prereg": "record.md (this directory), committed before any measurement",
+ "falsifiers": {
+  "F1-PARITY": "pending",
+  "F2-BAR": "pending",
+  "F3-SCOPE": "pending",
+  "F4-DETERMINISM": "pending",
+  "F5-CONTAINMENT": "pending"
+ },
+ "predictions": {
+  "P-COST": "pending: parse_obj text conversion dominates (>90%); finish() < 5 s; HTTP layer < 1 s",
+  "P-CACHE": "pending: pinned derived GLB import < 10 s isolated, bit-identical engine-side state",
+  "P-GHOST": "pending: cached ghost bytes load < 1 s, sha == fresh compose x3",
+  "P-BOOT": "pending: full-boot t_first_verts <= 10 s"
+ },
+ "pass": null,
+ "notes": "verdicts filled only from measurements recorded beside this file"
+}
