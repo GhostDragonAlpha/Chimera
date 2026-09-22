@@ -119,3 +119,17 @@ yet finished it.
    vs impact; the LIFO stack in global scratch), or reduce NVVM input size
    per kernel further.
 3. Then the block ladder (H2's surviving question) and the bars.
+
+### Addendum (same lane, final): the opt knob does not rescue integ
+
+`diag_t2d.py` (advance-only, `@cuda.jit(opt=False)`): compile still ~10+ min
+wall (24.75 GB peak host working set — the UNOPTIMIZED IR itself is the
+volume, i.e. numba's frontend emits the explosion, LLVM's passes merely
+crunch it), and the resulting kernel then failed at `cuLaunchKernel` with
+CUDA_ERROR_INVALID_VALUE (unoptimized local frame not launchable). Neither
+numba knob (`inline='never'`, `opt=False`) makes the integ kernel viable on
+numba 0.63.1/CUDA 12.8. The remaining local lever is a deeper split of
+advance itself (drift vs event-DFS vs impact, the LIFO stack hoisted to
+global scratch); the remaining global lever is the original receipt's
+option 2 (a non-numba CUDA compiler path). No falsifier number has changed;
+the bars remain UNMEASURED.
