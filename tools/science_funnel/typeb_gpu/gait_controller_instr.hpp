@@ -2562,8 +2562,8 @@ class GaitWalker {
     if(fore_ik(leg,e0).saturated)++ik_sat_ticks_[leg];}}
   const size_t NST=nd_+1; // the leg drives + the trunk-pitch posture drive
   for(int k=0;k<4;++k){
-   if(ticks_==0){auto ed=evaluate(s_);
-    std::fprintf(stderr,"SUBPRE t=0 sub=%d",k);
+   if(ticks_<=1){auto ed=evaluate(s_);
+    std::fprintf(stderr,"SUBPRE t=%d sub=%d",(int)ticks_,k);
     for(size_t i=0;i<s_.q.size();++i)std::fprintf(stderr," q%d=%.17g",(int)i,s_.q[i]);
     for(size_t i=0;i<s_.v.size();++i)std::fprintf(stderr," v%d=%.17g",(int)i,s_.v[i]);
     for(size_t i=0;i<ed.mass.size();++i)std::fprintf(stderr," M%d=%.17g",(int)i,ed.mass[i]);
@@ -2572,7 +2572,7 @@ class GaitWalker {
     std::fprintf(stderr," batpost=%.17g w2=%.17g",battery_post_,s_.work[2]);
     std::fprintf(stderr,"\n");}
    auto tau=servo();
-   if(ticks_==0){std::fprintf(stderr,"TAUFULL t=0 sub=%d",k);
+   if(ticks_<=1){std::fprintf(stderr,"TAUFULL t=%d sub=%d",(int)ticks_,k);
     for(size_t i=0;i<tau.size();++i)std::fprintf(stderr," tau%d=%.17g",(int)i,tau[i]);
     std::fprintf(stderr," batpost=%.17g w2=%.17g",battery_post_,s_.work[2]);
     std::fprintf(stderr,"\n");}
@@ -2613,7 +2613,7 @@ class GaitWalker {
     if(i==2)continue; // the trunk-pitch posture drive: admitted source architecture (the paper's theta_HAT musculature)
     require(trial.work[i]==0,"gait_base_actuator_work");require(tau[i]==0,"gait_base_torque");}
    s_=std::move(trial);
-   if(ticks_==0){std::fprintf(stderr,"SUBFULL t=0 sub=%d",k);
+   if(ticks_<=1){std::fprintf(stderr,"SUBFULL t=%d sub=%d",(int)ticks_,k);
     for(size_t i=0;i<s_.q.size();++i)std::fprintf(stderr," q%d=%.17g",(int)i,s_.q[i]);
     for(size_t i=0;i<s_.v.size();++i)std::fprintf(stderr," v%d=%.17g",(int)i,s_.v[i]);
     for(size_t i=0;i<scales.size();++i)std::fprintf(stderr," sc%d=%.17g",(int)i,scales[i]);

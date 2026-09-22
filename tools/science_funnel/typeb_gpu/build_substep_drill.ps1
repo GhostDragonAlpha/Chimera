@@ -8,6 +8,6 @@ $here = "E:\ChimeraWork\finish-agent\tools\science_funnel\typeb_gpu"
 Set-Location -LiteralPath $here
 $log = "build_substep_drill.log"
 $vcvars = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-cmd /v /c "call ""$vcvars"" >nul 2>&1 && cd /d $here && cl /nologo /O2 /EHsc /std:c++17 /I engine_inc cpp_substep_probe_instr.cpp /Fe:cpp_substep_probe_instr.exe && cl /nologo /O2 /EHsc /I host_shim substep_probe.cxx /Fe:substep_probe.exe" 2>&1 | Out-File -Encoding utf8 $log
+cmd /v /c "call ""$vcvars"" >nul 2>&1 && cd /d $here && cl /nologo /O2 /EHsc /std:c++17 /I engine_inc cpp_substep_probe_instr.cpp /Fe:cpp_substep_probe_instr.exe && cl /nologo /O2 /EHsc /I host_shim substep_probe.cxx /Fe:substep_probe.exe && cl /nologo /O2 /EHsc /I host_shim host_loop.cxx /Fe:host_loop.exe" 2>&1 | Out-File -Encoding utf8 $log
 "EXIT=$LASTEXITCODE"
 Get-Content $log -Tail 6

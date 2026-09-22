@@ -5,6 +5,9 @@ $cl = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\M
 $here = "E:\ChimeraWork\finish-agent\tools\science_funnel\typeb_gpu"
 Set-Location -LiteralPath $here
 Copy-Item walker_env.dll walker_env.dll.pre_chainfix -Force
-& $nvcc -shared -arch=sm_89 -lineinfo -ccbin $cl -I. -std=c++17 --expt-relaxed-constexpr walker_env.cu -o walker_env.dll -Xcompiler "/EHsc" 2>&1 | Out-File -Encoding utf8 build_dll8.log
+# -fmad=false: the byte-match lever (closeout-2). The cl-compiled reference
+# (/fp:precise) never contracts a*b+c; nvcc's default fmad=true does, which
+# flips the degenerate cone-mask/lam decisions the walk rides on.
+& $nvcc -shared -arch=sm_89 -lineinfo -fmad=false -ccbin $cl -I. -std=c++17 --expt-relaxed-constexpr walker_env.cu -o walker_env.dll -Xcompiler "/EHsc" 2>&1 | Out-File -Encoding utf8 build_dll_fmad0.log
 "NVCC_EXIT=$LASTEXITCODE"
 Get-Content build_dll8.log -Tail 4

@@ -379,3 +379,119 @@ rate_probe (C++-side interrogators), inject_probe.py + gait_controller_instr.hpp
 (throwaway instrumented copies; the tracked reference header untouched),
 build_host_loop.cmd / build_probes.cmd / build_dll.ps1 / rebuild_dll_bg.ps1,
 host_shim/ regenerated.
+
+---
+
+# CLOSEOUT-2 APPENDIX — the byte-match lane (2026-09-22, agent GLM 5.3)
+
+Branch agent/typeb-gpu-finish-20260922 @ b8cacfa7+. Mandate: byte-match the
+solver path's fp order to the C++ reference (the lead's route; the fore-sole
+premise change stays forbidden and was NOT done). Method: a per-substep drill
+pair — cpp_substep_probe_instr.exe (the C++ evaluate() with SUBPRE/TAUFULL/
+SUBFULL per-substep dumps via gait_controller_instr.hpp, itself instrumented
+through coupled_articulation_instr.hpp) vs substep_probe.exe (the translated
+kernels' host replay with the same dumps via probe_inject.py) — diffed at
+token granularity by diff_census.py; full-walk traces diffed by diff_trace.py.
+
+## THE CENSUS (knife-edge decision sites, ranked by divergence contribution)
+
+The named wall — "tick-1 substep-1's impact projection cone-validity mask at
+the fore-MP pads, flipped by 1e-12-scale fp-order noise between inverse_spd18
+and inverse_spd" — was reproduced and RE-ATTRIBUTED. The two inverse_spd
+implementations are source-order identical (their fp order already matches;
+no reduction-order/grouping/cast difference exists). The noise that flipped
+the mask was NOT fp-order noise: it was STRUCTURAL error generated upstream in
+fk_eval and in the translator, and one drill-harness defect. Ranked:
+
+1. numba2cu int_kind (THE BIGGER KILL — a REAL defect in every DLL built
+   before this lane): any assignment whose RHS merely CONTAINS a comparison
+   was typed int. `store = bat[d-1] if (d-1) < 12 else bat_post` became
+   `int store` — the posture battery drained to zero at tick-1 substep-1, so
+   tau2 (the 11.2125 N·m posture torque) was DEAD FROM TICK 1 ON in every DLL
+   bars run to date. Same class: `bound` (the event-localization joint bound)
+   was truncated to int. int_kind now follows both branches of a ternary.
+2. fk_eval world-axis Jacobians: the axis direction was computed as COLUMN
+   SUMS of pfp (not a rotation application), and the preceding same-body
+   rotational composition was missing — the free-root tilt. Measured: the
+   kernels' slot-2 column was exactly (0,0,1) where the reference carries
+   (9.818e-7, 5.112e-8, 0.99999999999952); M[2][5] was exactly 0 where the
+   reference measures 1.357248550688573e-06 at the same q.
+3. rot_axis: direct sincos form vs the reference's Rodrigues
+   identity()+k*sin(v)+(k*k)*(1-cos(v)) — different bits at every nonzero
+   angle; invisible in freefall (zero pose), which is why it survived.
+4. ptJ/contact rows and ptp/ptbias: apply_point's addition order (translation
+   term LAST) vs vector()'s (FIRST) — ulp noise injected directly into the
+   gap/CoP knife-edge values (2e-6/1e-5 bands).
+5. frd/frdd: per-term-*fc-then-add vs product()'s sum-first-then-one-fc.
+6. alpha: 3x3-only transpose dropped the col3/row3 outer terms of
+   f.dt*transpose(f.dt).
+7. Iw: single-pass R(i,k)*(I_k*R(j,k)) vs the reference's two-pass
+   (f.t*inertia)*rt.
+8. Drill harness: substep_probe's store_post hardcoded 1.0; the reference
+   uses drives_[0].store_floor = 78.732.
+
+## BYTE-MATCH VERDICT PER PATH
+
+- inverse_spd18 vs inverse_spd: SOURCE-IDENTICAL operation order (Cholesky,
+  forward/back substitution, the same reduction order). No ordering fix
+  needed; the GPU side got nvcc -fmad=false (build_dll.ps1) so the device
+  rounds like the cl reference. Gate met at every drilled substep once its
+  INPUTS (M) were bit-matched.
+- fk_eval M/gv/bv: after fixes 2-7 the host-vs-host (cl/cl) residuals are
+  0.5-3.2 ulp on M entries, 1.5 ulp on gv2 — NOT yet bit-exact. The named
+  remaining pair: the tables/phi interpolation path (tau 1-2 ulp: tau9/tau13)
+  and the residual Jacobian-path ulps.
+- Tick 1: END-OF-TICK-1 STATE BIT-EXACT (host replay vs C++, all 36
+  components); GPU DLL ulp-level (max rel 7.6e-15, was 1.4e-5 — 10 orders).
+
+## DISCRETE-DIVERGENCE COUNT, TICK 1..40 (before -> after)
+
+- Before: first divergence tick-1 substep-1 (the named wall); O(1e-5) state
+  injection; fore velocities O(1) by tick 4; host horizon 63 rc=3, GPU 40-41
+  rc=5.
+- After: tick 1 bit-exact (host) / ulp (GPU). The remaining residual ulp
+  noise still trips ONE degenerate discrete decision: a second active-set tie
+  inside tick-2 substep-2 (host) / tick 4 (GPU) — two masks are cone-valid
+  within <1e-15 of each other at the settle's fore rows, i.e. the scene parks
+  an EXACT tie on the solver's knife edge, and last-ulp rounding decides it.
+  Count of discrete-divergence sites in ticks 1..40: was >=1 at tick-1
+  substep-1 plus the flip cascade from tick 4; now exactly 1 (the tick-2/4
+  tie). After the tie the trajectory is O(1) different and every later
+  discrete decision differs — the refusal (rc=3 at tick 41/42) is downstream
+  of that single tie.
+
+## FROZEN BARS RE-RUN (bars_split_b32.json, walker_env.dll rebuilt with
+## -fmad=false + all fixes above, block 32; thresholds untouched, nothing
+## re-tuned)
+
+- F-FULLPORT-PROBE-PARITY freefall: GREEN — measured_g = 9.806650000000689,
+  err = 6.89e-13 <= 0.01 (was 1.08e-12). Still the only green.
+- stand: RED — max_scaled_diff = 0.0699 (was 0.0965; bar < 1e-2). Improved
+  by the posture-store repair (tau2 now alive) but the tie flip still
+  diverges the fore limbs.
+- C1 nominal: RED — horizon 41, class 3 (was 40, class 5), hind_fires=0,
+  fore_lifts=0.
+- C2 survival: RED — pass_100 = 0/64, median 41 (was 53); horizons 41-55,
+  classes {3: 53, 5: 11}.
+- C3 throughput: 58.5M eps @1024 / 224.5M eps @4096 — STILL INVALID (all
+  envs refused; 0.018 ms/tick dead-env dispatch).
+- C4 memory: no fire — 19.93 GB used (shared GPU), -0.0005 MB/env marginal.
+
+## UPDATED ATTRIBUTION (what remains red, and why)
+
+The refusal is no longer a translation-defect chain and no longer unexplained
+fp-order noise: the port now tracks the reference bit-for-bit through tick 1
+and to 1e-15 relative through tick 3. What remains red is decided by a
+SCENE-DESIGN DEGENERACY: at the settle the fore-MP/heel active set is an
+EXACT tie (two masks cone-valid within noise <1e-15 — the lam values sit on
+the -1e-10 boundary to within a few ulps because the correction is degenerate
+when the fore sole rests at 2e-6 gaps with near-parallel contact rows). Any
+remaining ulp difference (tables/phi interpolation, residual Jacobian ulps,
+or nvcc-vs-cl transcendental implementations on the GPU) picks a mask and the
+settle diverges O(1). The route to GREEN is therefore either (a) finish the
+byte-match to FULL bit-equality — the named next pair is the tables/phi
+interpolation path and the residual 1-ulp M entries; the GPU additionally
+needs libdevice-vs-CRT transcendental parity measured — or (b) the forbidden
+preregistered premise change (move the fore sole off the knife edges), which
+this lane did NOT do per mandate. Deferral honesty clause: unchanged — no
+deferred law engages anywhere near ticks 1-55.

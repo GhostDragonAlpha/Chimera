@@ -34,8 +34,8 @@ anchor = """        pot =  fk_eval(q,  v, mdl, mdi, cst, M, gv, bv, fr, frd, frd
         d =  (int)(0);"""
 assert anchor in src
 inject = """        pot =  fk_eval(q,  v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
-        if (a_ticks[e] == 0) {
-            printf("SUBPRE t=0 sub=%d", sub - 1);
+        if (a_ticks[e] <= 1) {
+            printf("SUBPRE t=%d sub=%d", a_ticks[e], sub - 1);
             printf(" batpost=%.17g w2=%.17g", bat_post, w[2]);
             for (i = 0; i < (18); ++i) printf(" q%d=%.17g", i, q[i]);
             for (i = 0; i < (18); ++i) printf(" v%d=%.17g", i, v[i]);
@@ -56,8 +56,8 @@ anchor = """            tau[2] = tq;
 assert anchor in src
 inject = """            tau[2] = tq;
 }
-        if (a_ticks[e] == 0) {
-            printf("TAUFULL t=0 sub=%d", sub - 1);
+        if (a_ticks[e] <= 1) {
+            printf("TAUFULL t=%d sub=%d", a_ticks[e], sub - 1);
             printf(" batpost=%.17g w2=%.17g", bat_post, w[2]);
             for (i = 0; i < (18); ++i) printf(" tau%d=%.17g", i, tau[i]);
             printf("\\n");
@@ -68,7 +68,7 @@ inject = """            tau[2] = tq;
 src = src.replace(anchor, inject, 1)
 
 # 5) SUBFULL after the trial commit
-anchor = """        if (a_ticks[e] == 0) {
+anchor = """        if (a_ticks[e] <= 1) {
             printf("[SUB] sub=%d rc=%d q12=%.17g v9=%.17g v12=%.17g v13=%.17g v14=%.17g v17=%.17g v4=%.17g\\n", sub, rc, q[12], v[9], v[12], v[13], v[14], v[17], v[4]);
         }"""
 if anchor not in src:
@@ -85,8 +85,8 @@ if anchor not in src:
             v[i] = trial_v[i];
             w[i] = trial_w[i];
 }
-        if (a_ticks[e] == 0) {
-            printf("SUBFULL t=0 sub=%d", sub);
+        if (a_ticks[e] <= 1) {
+            printf("SUBFULL t=%d sub=%d", a_ticks[e], sub);
             printf(" batpost=%.17g w2=%.17g", bat_post, w[2]);
             for (i = 0; i < (18); ++i) printf(" q%d=%.17g", i, q[i]);
             for (i = 0; i < (18); ++i) printf(" v%d=%.17g", i, v[i]);
@@ -96,8 +96,8 @@ if anchor not in src:
         for (d = 0; d < (12); ++d) {"""
     src = src.replace(anchor2, inject, 1)
 else:
-    inject = """        if (a_ticks[e] == 0) {
-            printf("SUBFULL t=0 sub=%d", sub);
+    inject = """        if (a_ticks[e] <= 1) {
+            printf("SUBFULL t=%d sub=%d", a_ticks[e], sub);
             printf(" batpost=%.17g w2=%.17g", bat_post, w[2]);
             for (i = 0; i < (18); ++i) printf(" q%d=%.17g", i, q[i]);
             for (i = 0; i < (18); ++i) printf(" v%d=%.17g", i, v[i]);
@@ -122,8 +122,8 @@ inject = """            if (d < 12) {
                 bat_post =  store - spent;
 }
 }
-        if (a_ticks[e] == 0) {
-            printf("STOREDBG t=0 sub=%d curw2=%.17g trialw2=%.17g spentw2=%.17g batpost=%.17g\\n", sub - 1, cur_w[2], trial_w[2], trial_w[2] - cur_w[2], bat_post);
+        if (a_ticks[e] <= 1) {
+            printf("STOREDBG t=%d sub=%d curw2=%.17g trialw2=%.17g spentw2=%.17g batpost=%.17g\\n", sub - 1, cur_w[2], trial_w[2], trial_w[2] - cur_w[2], bat_post);
         }"""
 src = src.replace(anchor, inject, 1)
 
@@ -139,7 +139,7 @@ inject = """            if (d < 12) {
                 bat[d] = store - spent;
 }
             else {
-                if (a_ticks[e] == 0) {
+                if (a_ticks[e] <= 1) {
                     printf("DRAIN12 sub=%d d=%d c=%d store=%.17g spent=%.17g\\n", sub - 1, d, c, store, spent);
 }
                 bat_post =  store - spent;

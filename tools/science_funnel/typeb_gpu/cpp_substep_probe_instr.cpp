@@ -18,7 +18,8 @@ int main(int argc,char**argv){
   GaitWalker d(data,9.80665,V{0,0,0},dt);
   // default config == cpu_probe "walk" (the nominal walk the shim mirrors);
   // SUBFULL per-substep prints fire inside step() while ticks_==0.
-  d.step();
+  d.step(); // tick 1
+  d.step(); // tick 2
   return 0;
  }catch(const std::exception&e){std::fprintf(stderr,"ERROR %s\n",e.what());return 1;}
 }

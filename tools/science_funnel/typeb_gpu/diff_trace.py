@@ -58,7 +58,7 @@ def main():
         off = min(cand, key=cand.get)
         print(f"auto offset = {off} (mean state dist {cand[off]:.3e}; "
               f"others {' '.join(f'{o}:{d:.1e}' for o, d in sorted(cand.items()) if o != off)})")
-    common = sorted(set(a) & set(t + off for t in a if t + off in b))
+    common = sorted(t for t in a if t + off in b)
     first_div = None
     ndiv = 0
     for t in common:
