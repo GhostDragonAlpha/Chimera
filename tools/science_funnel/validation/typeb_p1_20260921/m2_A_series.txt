@@ -1,0 +1,6 @@
+baseline ticks=303 refused=302 | perturbed ticks=41 refused=40
+first_divergence_tick=1
+end_compare_tick=40 |dx|=0.0655 m |dy|=0.0018 m
+tail50 base_x velocity: baseline=1.7813 m/s perturbed=1.1965 m/s delta=-0.5848
+sustained(|dx|>=0.05 at end)=True onset_within_20=True graded_response=False
+AUTHORITY: NO
