@@ -1,0 +1,31 @@
+{
+ "lane": "lane/obs-populate-20260920",
+ "date": "2026-09-20",
+ "agent": "OBS-POPULATE lane (git trailer Agent: obspop)",
+ "base": "1beb72e9 (lane/policy-interface-freeze-20260920 tip, 'LANE RECEIPT ... STATE-ALIASING FIRED'); branch lane/obs-populate-20260920; worktree E:/ChimeraWork/obspop-agent",
+ "serves": "the interface-freeze lane's declared forward path: SENSOR-SIDE DELIVERY of com_vel (field 21 com_vel_x_heading) and the lawful per-foot determination, with NO version bump -- so the 21 aliased pairs its F1 audit fired on separate",
+ "prereg": {
+  "record_md": "record.md (THIS commit; frozen BEFORE the delivery build, BEFORE the fresh walk run, BEFORE any measurement of this lane)",
+  "statement": "sensor-side delivery of the named undetermined fields separates the actionable aliased pairs without touching the frozen interface or the walk's physics bytes",
+  "prediction": {
+   "P1": "the 20 body-advance aliased pairs separate (16 exclusively-body + 4 pad+body)",
+   "P2": "the touch-pattern pair (12,25) separates on this walk through field 21; its named deciding fields (per-foot slots) remain STRUCTURAL on the 4-paw body -- declared residual, not solved",
+   "P3": "no NEW aliased pairs appear (delivery only adds information)",
+   "P4": "the 4 pad-deformation pairs separate via their body-advance clause without any pad-deformation vocabulary delivery; the per-paw min-gap deformation-rate vocabulary question is declared a v3-schema residual for another lane"
+  },
+  "falsifiers": {
+   "F1_SEPARATION": "re-run the aliasing audit END-TO-END (fresh scene, fresh out-of-tree cl.exe GAIT_EVENT_TRACE + no-trace builds of the IDENTICAL HEAD source, fresh walk, fresh parse, the interface-freeze clauses verbatim) with the delivered values: ZERO of the 21 pairs survive; a surviving separable pair or a new aliased pair = FIRED",
+   "F2_TRACE_INVARIANCE": "scene FILE sha == f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342; LEG A trace stdout == no-trace stdout, both == the wave-47 ship anchor 8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc; stderr walk trace == c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481; the control leg (interface-freeze mine VERBATIM on the fresh trace) reproduces their pinned census (21 aliased pairs, 13 context, 277 distinct obs, 13 groups / 38 ticks)",
+   "F3_TABLE_INVARIANCE": "the frozen 80-field table regenerates BYTE-IDENTICAL (e8c2d698dee0337414c48e8d2f6569c45f6f61828dabdeff6a4f1188b1c0671c, 68230 bytes) from the live code + the pinned section 3de82a1156ac2f39ed04da24c7fd40357642d7bc029e09b509dfc3ea1af63079; OBS_SCHEMA_VERSION stays 2; scope diff limited to ONE additive typeb_export module + this dir + the declared test file",
+   "F4_CORPUS_REFREEZE": "the observation stream moves BY CONSTRUCTION (delivered field on 301/302 ticks + the mask census it feeds) -- legal PRE-training (no frozen actor exists; this lane IS the pre-training gate), cause registered; the P3 manifest hash 9ca7e976dfb0dedd3f56dfa404673ee77c00801acb2753cdfd83604c480c35b7, replay sha e25406e86cbf5347683ee3824d385bc1d07bfd500e83eb6b9133a1e82d4bfbd9 (slice 69babe84 carries NO com_vel keys -- measured), section sha 3de82a11..., table sha e8c2d698..., legacy literal must NOT move; body_velocity normalization constants remain the frozen 0/1 placeholders (declared cause; measured-constants regeneration is the trainer lane's contract)",
+   "F5_DETERMINISM": "the delivered pipeline 3-run byte-identical (mine output + pair ledger)"
+  }
+ },
+ "pre_measured_context": {
+  "anchor_trace": {"path": "ifreeze worktree .tmp/ifreeze/audit/audit_stderr.txt (ephemeral; sha-verified at use)", "sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481"},
+  "anchor_scene_file_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+  "derivation_comparison": "com-projection-east delta x 300 Hz separates all 21 pairs (margins 3.0e-4 .. 9.1e-2 m/s; thinest (20,35) at one 1e-6 m print quantum); base-x delta x 300 Hz (the audit label) also separates all 21 with larger margins; the com-projection delta is the field's literal named quantity (com_vel_x_heading, CoM velocity) and is the chosen delivery",
+  "p3_slice_has_no_com_vel_keys": true
+ },
+ "measurements": "PENDING (appended after the run; the prereg block above is frozen and never edited)"
+}
