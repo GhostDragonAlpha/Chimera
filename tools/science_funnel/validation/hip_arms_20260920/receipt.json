@@ -1,0 +1,82 @@
+{
+ "schema": "chimera.hip_arms.v1",
+ "lane": "hip-arms-20260920",
+ "branch": "lane/hip-arms-20260920",
+ "base_commit": "a13a4d87898dc70b4b0344303d5ee823caae49a2 (the landed k-fill close-out; its hip book and derived force set are in this tree)",
+ "git_trailer_agent": "hiparms",
+ "pre_registration": {
+  "written_before_first_arm_computation": true,
+  "note": "This file was written BEFORE the first moment arm of this lane was computed. The geometry inspection recorded in record.md is a parse-only structural read of the deposited .osim (no arm number). The measured block at the bottom is APPENDED AFTER the runs; the preregistration above it is never edited.",
+  "inputs_pinned": {
+   "model": {
+    "path": "tools/science_funnel/data/wiseman2026/models/Macaque_model.osim",
+    "sha256": "d5c65cbc0a72bd2d5c2258c6bd018fe850ae25cce6fb07c1f268b91e598c88e9",
+    "provenance": "byte-matches the pulley_rederivation_20260920 and k_forensics_20260921 pins of the same deposit file"
+   },
+   "machinery": {
+    "path": "tools/science_funnel/validation/pulley_rederivation_20260920/derive_pulley_arms.py",
+    "sha256": "ce93c114c4e89d2726dc4c04b15416518e16208ffadfe14595f9cb14cde5cfa1",
+    "consumed_for": "parse_model / forward_kinematics / path_length / resolve_path - imported UNMODIFIED (F5); exact -dL/dq machinery that produced the knee/ankle/MTP arms",
+    "machinery_receipt": {
+     "path": "tools/science_funnel/validation/pulley_rederivation_20260920/pulley_arms_derivation.json",
+     "sha256": "2a99cd2becaf4b0a8d4dda176cca23af05397906ba43dcd504c06a1b6c8f76d5"
+    }
+   },
+   "force_set": {
+    "path": "tools/science_funnel/validation/k_fill_20260920/k_fill_book.json",
+    "sha256": "252105017e5fd87728cea0ec77058c08c7244a66e2a78aeff7841296c57eb55c",
+    "commit": "a13a4d87898dc70b4b0344303d5ee823caae49a2",
+    "consumed_for": "derived_force_set.muscles (BFL 271.23914145829923, GMax 124.39006222755602, SM 61.58807486670213, ST 49.96725178663907 N; AL/AM/GRA/PECT secondary; ILI/GMed/GMin/PIRI inventory; RF/SAR/AB quarantined named gaps), the prior hip_extension_context book (26.58202 N.m at record straight-line arms), the rearup_verdict machinery (C* in (22.4, 33.6], covered iff > 33.6), and the conservative measured-arm caps"
+   },
+   "record_straight_line_arms": {
+    "path": "tools/science_funnel/validation/muscle_paths_20260918/muscle_path_geometry.json",
+    "sha256": "ca0e890ec69e74d9589c08224d74e74defa53bbc058d371f784175cfca50cb22",
+    "consumed_for": "the record hip arms the 25% caveat was named on: BFL 0.056704702, GMax 0.035304172, SM 0.059558106, ST 0.062879751 m (the comparison baseline; the record's OWN 2D schematic geometry, not the deposit)"
+   },
+   "walk_hip_range": {
+    "path": "tools/science_funnel/validation/hind_torque_book_20260921/inputs/derived_numbers.snapshot.json",
+    "sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+    "consumed_for": "oku_before_alteration.angles.hip: td_rad 0.809476729, min_rad -0.1556169071 (x 63 pct), max_rad 0.8906684904 (x 92 pct), excursion 1.0463 rad - the WALK window; and node_table_rad.hip x=0.50 entry -0.0272 rad - the P1 mid-stance evaluation point"
+   },
+   "rear_up_pose_context": {
+    "path": "tools/science_funnel/validation/standing_pose_20260921/pose.json",
+    "sha256": "27e6fd9e95a057af276f63859af65c6a8a4d20a35d0cedf7b495ea9c9ffa0053",
+    "consumed_for": "the standing-pose-of-record hip flexions (hipL -0.165336845485 rad, hipR -0.163993995356 rad) inside the declared rear-up window, and the recorded hip bound +/-2.0943951 rad that EXCEEDS the deposit's declared range (so the deposit range binds)"
+   }
+  }
+ },
+ "rule0": {
+  "statement": "The deposit's hip path geometry yields moment-arm curves sufficient to retire the k-fill hip book's named straight-line caveat (the DECLARED 25% unknown, the estimate class the pulley lane falsified at the knee, ratio 0.00) and to re-adjudicate the operator's rear-up class C* in (22.4, 33.6] N.m on measured-deposit arms.",
+  "prediction": "P1: at the Oku mid-stance walk node (hip_flexion_r = -0.0272 rad) the derived extension arms of R_BFL and R_SM each EXCEED their record straight-line arms (0.056704702 m, 0.059558106 m) - the geometry-concentration hypothesis (the record arms came from the record's OWN 2D schematic, not the deposit). P0 internal anatomical check: R_ILI arm about hip_flexion_r POSITIVE at the model default pose, R_BFL/R_GMax/R_SM/R_ST NEGATIVE there; a uniform inversion is recorded as a convention divergence, never normalized. The honest alternative named in advance: if EVERY derived arm sits within the record straight-line band, that is the answer and P1 FIRES.",
+  "falsifier": "F1 NO-GEOMETRY: no wrap/via structure at the hip -> straight-line-as-geometry reported with the tightened bound (the measured derived-vs-record spread), book still re-run; declared, not failed. F2 VERDICT-DRIFT: the re-run verdict changes -> both books side by side, arm curves as evidence, NO constant moved except the arms (forces byte-equal, demand 33.6 fixed, class fixed). F3 TRACEABILITY: every number sha-pinned, zero uncited constants. F4 DETERMINISM: 3 full derivations byte-identical. F5 CONTAINMENT: no source changes outside tools/science_funnel/validation/hip_arms_20260920/. Any hit recorded as measured, not tuned."
+ },
+ "geometry_inspection": {
+  "performed": "parse-only structural read BEFORE the prereg was finalized; zero arm numbers computed at write time",
+  "wrap_objects_declared": 14,
+  "primary_class_paths": {
+   "R_BFL": {"points": ["Pelvis", "shank_r"], "wraps": []},
+   "R_GMax": {"points": ["Pelvis", "Pelvis", "thigh_r"], "wraps": []},
+   "R_SM": {"points": ["Pelvis", "thigh_r", "shank_r"], "wraps": []},
+   "R_ST": {"points": ["Pelvis", "thigh_r", "shank_r", "shank_r"], "wraps": []}
+  },
+  "finding": "F1's condition is MET IN ADVANCE for the primary class: no PathWrap reference and no via structure on any of the four paths - the paths are point-path poly-lines. The machinery runs as-is (exact -dL/dq on the poly-line through the hip CustomJoint FK); the deliverable is the certified arm curves plus the honest re-verdict; the 25% unknown collapses to the measured derived-vs-record spread.",
+  "wraps_at_the_hip_honored_where_referenced": {
+   "R_AL": "rIschium_Cylinder (on Pelvis)",
+   "R_ILI": "rFemoralneck (on thigh_r)",
+   "R_RF": "rFemoralCondyles_Cylinder2 + rFemoralneck",
+   "R_SAR": "rFemoralMedialCondyle_Sphere",
+   "note": "so 'no geometry anywhere in the deposit' is FALSE; these enter the inventory with wraps resolved by the imported machinery"
+   },
+  "hip_joint": "CustomJoint hip_r: hip_flexion_r / hip_rotation_r / hip_adduction_r, each range [-1.5708, 1.5708] rad; default hip_flexion_r = 0.37350046631756723 rad"
+ },
+ "decisions": {
+  "D1_scan": "coordinate hip_flexion_r ONLY (the extension book's axis; per-axis -dL/dq needs no abduction scan); range = the deposit's own declared [-1.5708, 1.5708] rad, 2001 samples, all other coordinates at model-file defaults (the pulley lane's declared protocol); advisory adduction-axis arm at the default pose recorded as a named reading, never consumed",
+  "D2_windows": "one scan per muscle over the full declared range; WALK window = Oku before-alteration recorded hip range [-0.1556169071, +0.8906684904] rad (sha-pinned); REAR-UP window = the extension side of the deposit's declared range [-1.5708, 0] rad (the standing-pose-of-record hips -0.165336845485/-0.163993995356 rad sit inside it; the standing-pose lane's recorded +/-2.0943951 rad bound exceeds the deposit range, so the deposit range binds); C* is adjudicated on the REAR-UP window; the walk window is the walk-side reading",
+  "D3_class_fixed": "primary class = k-fill's hip_extensors group BFL+GMax+SM+ST, forces byte-equal to the k-fill set; adductor secondary AL+AM+GRA+PECT named as k-fill named it (not in the primary class); other admitted hip crossers ILI+GMed+GMin+PIRI inventoried as a NON-CLASS reading; quarantined hip crossers RF/SAR/AB stay NAMED GAPS, never admitted",
+  "D4_cap_law_fixed": "cap = max over window of SUM over class F_m x |r_m(q)| with the per-muscle per-q sign gate (the ankle book's sign law); r = -dL/dq about hip_flexion_r, POSITIVE = flexor, NEGATIVE = extensor; extension sums NEGATIVE arms as |r|; the ONLY consumer-side change in this lane: r_m(q) is the derived curve instead of the record's straight-line scalar",
+  "D5_verdict": "covered iff max capability > 33.6 N.m; PRIMARY = the derived hip book at the REAR-UP window; CONSERVATIVE = the k-fill book's measured-arm caps (knee 8.489511 / ankle plantar 4.398653 / ankle dorsal 0.573906 / MTP 1.163086, untouched); both books side by side; both outcomes are results",
+  "D6_machinery": "pulley_rederivation_20260920.derive_pulley_arms imported UNMODIFIED; FD step 1e-4 rad central differences; -dL/dq authoritative; advisory geometric arm recorded only where a pelvis-thigh joint-spanning segment exists (R_BFL spans pelvis->shank in one segment -> advisory null with that reason)",
+  "D7_determinism": "three independent full derivations to three paths; deliverable sha256 identical across all three, recorded below"
+ },
+ "status": "PREREGISTERED - measured block appended after the runs"
+}
