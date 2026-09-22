@@ -1,0 +1,20 @@
+== e.bias ==
+  b[0] base_rot_x                   0.0041421782002142539
+  b[1] base_rot_y                   -0.00028107869163963102
+  b[2] base_rot_z                   -0.042982483162934945
+  b[3] base_trans_x                 -0.13862838928817942
+  b[4] base_trans_y                 -0.036826222383019816
+  b[5] base_trans_z                 0
+  b[6] hip_flexion_left             -0.0037744442046503328
+  b[7] knee_extension_left          -0.0030741513126336627
+  b[8] ankle_dorsiflexion_left      0.00083517648952694781
+  b[9] MP_dorsiflexion_left         4.2247712713868694e-05
+  b[10] hip_flexion_right            -0.039208038958284612
+  b[11] knee_extension_right         -0.027002028067689556
+  b[12] ankle_dorsiflexion_right     0.0031262115636176745
+  b[13] MP_dorsiflexion_right        0.00056736052344399761
+  b[14] shoulder_flexion_fore_left   -0.00048577582187866249
+  b[15] elbow_flexion_fore_left      -0.00023884336981235663
+  b[16] shoulder_flexion_fore_right  -0.00048577582187866249
+  b[17] elbow_flexion_fore_right     -0.00023884336981235663
+== acc ==

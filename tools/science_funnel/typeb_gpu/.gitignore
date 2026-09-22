@@ -7,3 +7,5 @@
 *.lib
 __pycache__/
 *.exe
+# MSVC object files join the built-binaries rule (recompile is minutes).
+*.obj
